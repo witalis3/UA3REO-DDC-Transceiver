@@ -23,6 +23,7 @@ extern DMA_HandleTypeDef hdma_spi3_tx;
 extern void WM8731_Init(void);
 extern void WM8731_start_i2s_and_dma(void);
 extern void WM8731_Beep(void);
+extern void WM8731_CleanBuffer(void);
 extern void WM8731_TX_mode(void);
 extern void WM8731_RX_mode(void);
 extern void WM8731_TXRX_mode(void);

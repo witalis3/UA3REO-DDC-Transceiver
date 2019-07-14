@@ -73,6 +73,12 @@ static void I2SEx_Fix(I2S_HandleTypeDef *hi2s)
 	hi2s->hdmatx->XferCpltCallback = UA3REO_I2SEx_TxRxDMACplt;
 }
 
+void WM8731_CleanBuffer(void)
+{
+	memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
+	memset(CODEC_Audio_Buffer_TX, 0x00, sizeof CODEC_Audio_Buffer_TX);
+}
+
 void WM8731_Beep(void)
 {
 	if (!TRX.Beeping) return;

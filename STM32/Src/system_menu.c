@@ -112,6 +112,7 @@ static void SYSMENU_HANDL_ENCODER_SLOW_RATE(int8_t direction)
 
 static void SYSMENU_HANDL_Touch_Calibrate(int8_t direction)
 {
+	WM8731_CleanBuffer();
 	HAL_Delay(500);
 	Touch_Calibrate();
 	drawSystemMenu(true);
@@ -156,6 +157,7 @@ static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction)
 
 static void SYSMENU_HANDL_Bootloader(int8_t direction)
 {
+	WM8731_CleanBuffer();
 	JumpToBootloader();
 }
 

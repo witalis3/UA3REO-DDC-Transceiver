@@ -86,9 +86,8 @@ static void TRX_Start_RX()
 {
 	sendToDebug_str("RX MODE\r\n");
 	TRX_RF_UNIT_UpdateState(false);
-	memset(&CODEC_Audio_Buffer_RX[0], 0x00, CODEC_AUDIO_BUFFER_SIZE * 4);
+	WM8731_CleanBuffer();
 	Processor_NeedRXBuffer = true;
-	FPGA_Audio_Buffer_Index = 0;
 	WM8731_Buffer_underrun = false;
 	WM8731_DMA_state = true;
 	WM8731_RX_mode();
@@ -99,8 +98,7 @@ static void TRX_Start_TX()
 {
 	sendToDebug_str("TX MODE\r\n");
 	TRX_RF_UNIT_UpdateState(false);
-	memset(&CODEC_Audio_Buffer_RX[0], 0x00, CODEC_AUDIO_BUFFER_SIZE * 4);
-	memset(&CODEC_Audio_Buffer_TX[0], 0x00, CODEC_AUDIO_BUFFER_SIZE * 4);
+	WM8731_CleanBuffer();
 	HAL_Delay(10); //задерка перед подачей ВЧ сигнала, чтобы успели сработать реле
 	WM8731_TX_mode();
 	WM8731_start_i2s_and_dma();
@@ -110,8 +108,7 @@ static void TRX_Start_Loopback()
 {
 	sendToDebug_str("LOOP MODE\r\n");
 	TRX_RF_UNIT_UpdateState(false);
-	memset(&CODEC_Audio_Buffer_RX[0], 0x00, CODEC_AUDIO_BUFFER_SIZE * 4);
-	memset(&CODEC_Audio_Buffer_TX[0], 0x00, CODEC_AUDIO_BUFFER_SIZE * 4);
+	WM8731_CleanBuffer();
 	WM8731_TXRX_mode();
 	WM8731_start_i2s_and_dma();
 }
