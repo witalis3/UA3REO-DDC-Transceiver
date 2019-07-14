@@ -49,6 +49,7 @@ extern bool TRX_on_TX(void);
 extern void TRX_DoAutoGain(void);
 extern void TRX_Restart_Mode(void);
 extern void TRX_ProcessFrontPanel(void);
+extern void TRX_ProcessSWRMeter(void);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_cat;
@@ -71,5 +72,6 @@ volatile extern uint8_t TRX_Fan_Timeout;
 volatile extern TRX_FrontPanel_Type TRX_FrontPanel;
 
 extern const char *MODE_DESCR[];
+extern ADC_HandleTypeDef hadc1;
 
 #endif

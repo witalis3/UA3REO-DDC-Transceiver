@@ -432,3 +432,17 @@ void TRX_ProcessFrontPanel(void)
 	TRX_FrontPanel.key_enc_prev = TRX_FrontPanel.key_enc;
 	TRX_FrontPanel.sec_encoder = 0;
 }
+
+void TRX_ProcessSWRMeter(void)
+{
+	ADC_ChannelConfTypeDef sConfig = {0};
+	sConfig.Channel = ADC_CHANNEL_12;
+	//sConfig.Channel = ADC_CHANNEL_13;
+  sConfig.Rank = 1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  HAL_ADC_ConfigChannel(&hadc1, &sConfig);
+	HAL_ADC_Start(&hadc1); // запускаем преобразование сигнала АЦП
+  HAL_ADC_PollForConversion(&hadc1, 100); // ожидаем окончания преобразования
+  uint32_t adc = HAL_ADC_GetValue(&hadc1); // читаем полученное значение в переменную adc
+	//sendToDebug_uint32(adc,false);
+}

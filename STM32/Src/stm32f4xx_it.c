@@ -414,6 +414,10 @@ void TIM6_DAC_IRQHandler(void)
 		//Process keyboard and secondary encoder
 		TRX_ProcessFrontPanel();
 		FPGA_NeedGetParams = true;
+		
+		//Process SWR / Power meter
+		if (TRX_on_TX() && TRX_getMode() != TRX_MODE_NO_TX)
+			TRX_ProcessSWRMeter();
 	}
 	
 	if (ms50_counter == 20) // every 1 sec
