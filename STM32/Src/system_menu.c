@@ -7,6 +7,7 @@
 
 static void drawSystemMenuElement(char* title, SystemMenuType type, uint32_t *value, bool onlyVal);
 static void redrawCurrentItem(void);
+
 static void SYSMENU_HANDL_FFTEnabled(int8_t direction);
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
 static void SYSMENU_HANDL_LCD_Brightness(int8_t direction);
@@ -20,31 +21,56 @@ static void SYSMENU_HANDL_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
 static void SYSMENU_HANDL_CWDecoder(int8_t direction);
+static void SYSMENU_HANDL_CWMENU(int8_t direction);
+static void SYSMENU_HANDL_LCDMENU(int8_t direction);
+static void SYSMENU_HANDL_FFTMENU(int8_t direction);
+
+static const uint8_t sysmenu_x1 = 5;
+static const uint8_t sysmenu_x2 = 240;
+static const uint16_t sysmenu_w = 288;
 
 static struct sysmenu_item_handler sysmenu_handlers[] =
 {
 	{"SSB HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_HPF_pass, SYSMENU_HANDL_SSB_HPF_pass},
+	{"CW Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_CWMENU},
+	{"LCD Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
+	{"FFT Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_FFTMENU},
+	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_ENCODER_SLOW_RATE},
+	{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
+	{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
+};
+static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
+
+static struct sysmenu_item_handler sysmenu_cw_handlers[] =
+{
 	{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.Key_timeout, SYSMENU_HANDL_Key_timeout},
 	{"CW Generator shift", SYSMENU_UINT16, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
 	{"CW Decoder", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CWDecoder},
+};
+static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
+
+static struct sysmenu_item_handler sysmenu_lcd_handlers[] =
+{
 	{"Touchpad beeping", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Beeping, SYSMENU_HANDL_Beeping},
-	{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
 	{"LCD Calibrate", SYSMENU_RUN, 0, SYSMENU_HANDL_Touch_Calibrate},
 	{"LCD Brightness", SYSMENU_UINT8, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_LCD_Brightness},
 	{"LCD Sleep Time", SYSMENU_UINT8, (uint32_t *)&TRX.Standby_Time, SYSMENU_HANDL_Standby_Time},
-	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_ENCODER_SLOW_RATE},
+};
+static uint8_t sysmenu_lcd_item_count = sizeof(sysmenu_lcd_handlers) / sizeof(sysmenu_lcd_handlers[0]);
+
+static struct sysmenu_item_handler sysmenu_fft_handlers[] =
+{
 	{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_FFTEnabled},
 	{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_FFT_Averaging},
-	{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
 };
+static uint8_t sysmenu_fft_item_count = sizeof(sysmenu_fft_handlers) / sizeof(sysmenu_fft_handlers[0]);
 
-static const uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
-static const uint8_t sysmenu_x1 = 5;
-static const uint8_t sysmenu_x2 = 240;
-static const uint16_t sysmenu_w = 288;
+static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
+static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
 static uint8_t systemMenuIndex = 0;
 static uint8_t sysmenu_y = 5;
 static uint8_t sysmenu_i = 0;
+static bool sysmenu_onroot = true;
 
 void drawSystemMenu(bool draw_background)
 {
@@ -62,8 +88,8 @@ void drawSystemMenu(bool draw_background)
 
 	if (draw_background) LCDDriver_Fill(COLOR_BLACK);
 
-	for (uint8_t m = 0; m < sysmenu_item_count; m++)
-		drawSystemMenuElement(sysmenu_handlers[m].title, sysmenu_handlers[m].type, sysmenu_handlers[m].value, false);
+	for (uint8_t m = 0; m < *sysmenu_item_count_selected; m++)
+		drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
 
 	LCDDriver_Fill_RectXY(290, 0, 320, 30, COLOR_GREEN);
 	LCDDriver_printText("X", 298, 5, COLOR_BLACK, COLOR_GREEN, 3);
@@ -161,10 +187,37 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction)
 	JumpToBootloader();
 }
 
+static void SYSMENU_HANDL_CWMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_cw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_LCDMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_lcd_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_lcd_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_FFTMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_fft_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_fft_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
 void eventRotateSystemMenu(int8_t direction)
 {
-	sysmenu_handlers[systemMenuIndex].menuHandler(direction);
-	if (sysmenu_handlers[systemMenuIndex].type != SYSMENU_RUN)
+	sysmenu_handlers_selected[systemMenuIndex].menuHandler(direction);
+	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_RUN)
 		redrawCurrentItem();
 }
 
@@ -172,12 +225,23 @@ void eventClickSystemMenu(uint16_t x, uint16_t y)
 {
 	if (x >= 290 && x <= 320 && y >= 1 && y <= 30)
 	{
-		LCD_systemMenuOpened = false;
-		LCD_mainMenuOpened = true;
-		LCD_UpdateQuery.Background = true;
-		LCD_UpdateQuery.MainMenu = true;
-		LCD_redraw();
-		NeedSaveSettings = true;
+		if(sysmenu_onroot)
+		{
+			LCD_systemMenuOpened = false;
+			LCD_mainMenuOpened = true;
+			LCD_UpdateQuery.Background = true;
+			LCD_UpdateQuery.MainMenu = true;
+			LCD_redraw();
+			NeedSaveSettings = true;
+		}
+		else
+		{
+			sysmenu_handlers_selected = &sysmenu_handlers[0];
+			sysmenu_item_count_selected = &sysmenu_item_count;
+			sysmenu_onroot = true;
+			systemMenuIndex = 0;
+			drawSystemMenu(true);
+		}
 	}
 	else if (y < 120)
 	{
@@ -189,7 +253,7 @@ void eventClickSystemMenu(uint16_t x, uint16_t y)
 	else
 	{
 		LCDDriver_drawFastHLine(0, (5 + systemMenuIndex * 18) + 17, sysmenu_w, COLOR_BLACK);
-		if (systemMenuIndex < (sysmenu_item_count - 1))
+		if (systemMenuIndex < (*sysmenu_item_count_selected - 1))
 			systemMenuIndex++;
 		redrawCurrentItem();
 	}
@@ -199,7 +263,7 @@ static void redrawCurrentItem(void)
 {
 	sysmenu_i = systemMenuIndex;
 	sysmenu_y = 5 + systemMenuIndex * 18;
-	drawSystemMenuElement(sysmenu_handlers[systemMenuIndex].title, sysmenu_handlers[systemMenuIndex].type, sysmenu_handlers[systemMenuIndex].value, true);
+	drawSystemMenuElement(sysmenu_handlers_selected[systemMenuIndex].title, sysmenu_handlers_selected[systemMenuIndex].type, sysmenu_handlers_selected[systemMenuIndex].value, true);
 }
 
 static void drawSystemMenuElement(char* title, SystemMenuType type, uint32_t *value, bool onlyVal)
@@ -239,6 +303,9 @@ static void drawSystemMenuElement(char* title, SystemMenuType type, uint32_t *va
 		break;
 	case SYSMENU_RUN:
 		sprintf(ctmp, "RUN");
+		break;
+	case SYSMENU_MENU:
+		sprintf(ctmp, "->");
 		break;
 	}
 	if (onlyVal)
