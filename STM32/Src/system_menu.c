@@ -3,10 +3,15 @@
 #include "settings.h"
 #include "audio_filters.h"
 #include "bootloader.h"
+#include "functions.h"
+#include "wifi.h"
 #include "LCD/xpt2046_spi.h"
+#include "LCD/fonts.h"
 
 static void drawSystemMenuElement(char* title, SystemMenuType type, uint32_t *value, bool onlyVal);
 static void redrawCurrentItem(void);
+static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw);
+static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir);
 
 static void SYSMENU_HANDL_FFTEnabled(int8_t direction);
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
@@ -21,9 +26,13 @@ static void SYSMENU_HANDL_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
 static void SYSMENU_HANDL_CWDecoder(int8_t direction);
+static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
+static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
+
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
 static void SYSMENU_HANDL_FFTMENU(int8_t direction);
+static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 
 static const uint8_t sysmenu_x1 = 5;
 static const uint8_t sysmenu_x2 = 240;
@@ -36,6 +45,7 @@ static struct sysmenu_item_handler sysmenu_handlers[] =
 	{"LCD Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
 	{"FFT Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_FFTMENU},
 	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_ENCODER_SLOW_RATE},
+	{"WIFI Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_WIFIMENU},
 	{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
 	{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
 };
@@ -65,12 +75,20 @@ static struct sysmenu_item_handler sysmenu_fft_handlers[] =
 };
 static uint8_t sysmenu_fft_item_count = sizeof(sysmenu_fft_handlers) / sizeof(sysmenu_fft_handlers[0]);
 
+static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
+{
+	{"WIFI Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
+	{"WIFI Select AP", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SelectAP},
+};
+static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
+
 static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
 static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
 static uint8_t systemMenuIndex = 0;
 static uint8_t sysmenu_y = 5;
 static uint8_t sysmenu_i = 0;
 static bool sysmenu_onroot = true;
+static bool sysmenu_wifi_selectap_menu_opened = false;
 
 void drawSystemMenu(bool draw_background)
 {
@@ -81,6 +99,7 @@ void drawSystemMenu(bool draw_background)
 	}
 	if (!LCD_systemMenuOpened) return;
 	if (LCD_timeMenuOpened) { LCD_Handler_SETTIME(); return; }
+	if (sysmenu_wifi_selectap_menu_opened) { SYSMENU_WIFI_DrawSelectAPMenu(false); return; }
 	LCD_busy = true;
 
 	sysmenu_i = 0;
@@ -106,12 +125,14 @@ void drawSystemMenu(bool draw_background)
 
 static void SYSMENU_HANDL_CWDecoder(int8_t direction)
 {
-	TRX.CWDecoder = !TRX.CWDecoder;
+	if(direction>0) TRX.CWDecoder = true;
+	if(direction<0) TRX.CWDecoder = false;
 }
 
 static void SYSMENU_HANDL_FFTEnabled(int8_t direction)
 {
-	TRX.FFT_Enabled = !TRX.FFT_Enabled;
+	if(direction>0) TRX.FFT_Enabled = true;
+	if(direction<0) TRX.FFT_Enabled = false;
 }
 
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction)
@@ -157,7 +178,8 @@ static void SYSMENU_HANDL_Standby_Time(int8_t direction)
 
 static void SYSMENU_HANDL_Beeping(int8_t direction)
 {
-	TRX.Beeping = !TRX.Beeping;
+	if(direction>0) TRX.Beeping = true;
+	if(direction<0) TRX.Beeping = false;
 }
 
 static void SYSMENU_HANDL_Key_timeout(int8_t direction)
@@ -187,6 +209,19 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction)
 	JumpToBootloader();
 }
 
+static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction)
+{
+	if(direction>0) TRX.WIFI_Enabled = true;
+	if(direction<0) TRX.WIFI_Enabled = false;
+}
+
+static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction)
+{
+	sysmenu_wifi_selectap_menu_opened = true;
+	SYSMENU_WIFI_DrawSelectAPMenu(true);
+	drawSystemMenu(true);
+}
+
 static void SYSMENU_HANDL_CWMENU(int8_t direction)
 {
 	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
@@ -214,8 +249,22 @@ static void SYSMENU_HANDL_FFTMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
+static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_wifi_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_wifi_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
 void eventRotateSystemMenu(int8_t direction)
 {
+	if(sysmenu_wifi_selectap_menu_opened)
+	{
+		SYSMENU_WIFI_SelectAPMenuMove(0);
+		return;
+	}
 	sysmenu_handlers_selected[systemMenuIndex].menuHandler(direction);
 	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_RUN)
 		redrawCurrentItem();
@@ -223,6 +272,16 @@ void eventRotateSystemMenu(int8_t direction)
 
 void eventClickSystemMenu(uint16_t x, uint16_t y)
 {
+	//wifi select AP menu
+	if(sysmenu_wifi_selectap_menu_opened)
+	{
+		if (y < 120)
+			SYSMENU_WIFI_SelectAPMenuMove(-1);
+		else
+			SYSMENU_WIFI_SelectAPMenuMove(1);
+		return;
+	}
+	//other
 	if (x >= 290 && x <= 320 && y >= 1 && y <= 30)
 	{
 		if(sysmenu_onroot)
@@ -314,4 +373,39 @@ static void drawSystemMenuElement(char* title, SystemMenuType type, uint32_t *va
 	if (systemMenuIndex == sysmenu_i) LCDDriver_drawFastHLine(0, sysmenu_y + 17, sysmenu_w, COLOR_WHITE);
 	sysmenu_i++;
 	sysmenu_y += 18;
+}
+
+uint16_t rescan_interval=0;
+uint8_t selected_ap_index=0;
+
+void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
+{
+	if(full_redraw || rescan_interval == 0)
+	{
+		LCDDriver_Fill(COLOR_BLACK);
+		LCDDriver_printText("AP Found:", 5, 5, COLOR_WHITE, COLOR_BLACK, 1);
+		for(uint8_t i=0; i<WIFI_FOUNDED_AP_MAXCOUNT; i++)
+			LCDDriver_printText((char*)WIFI_FoundedAP[i], 10, 25+i*12, COLOR_GREEN, COLOR_BLACK, 1);
+		LCDDriver_drawFastHLine(0, 37+selected_ap_index*12, sysmenu_w, COLOR_WHITE);
+		WIFI_ListAP();
+	}
+	rescan_interval++;
+	if(rescan_interval>100)
+		rescan_interval = 0;
+	LCD_UpdateQuery.SystemMenu = true;
+}
+
+static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir)
+{
+	if(dir<0 && selected_ap_index>0) selected_ap_index--;
+	if(dir>0 && selected_ap_index<WIFI_FOUNDED_AP_MAXCOUNT) selected_ap_index++;
+	SYSMENU_WIFI_DrawSelectAPMenu(true);
+	if(dir==0)
+	{
+		strcpy(TRX.WIFI_AP,(char*)&WIFI_FoundedAP[selected_ap_index]);
+		WIFI_State = WIFI_INITED;
+		sysmenu_wifi_selectap_menu_opened = false;
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+	}
 }

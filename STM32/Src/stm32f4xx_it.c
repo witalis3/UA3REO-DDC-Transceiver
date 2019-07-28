@@ -409,7 +409,8 @@ void TIM6_DAC_IRQHandler(void)
 		Processor_RX_Audio_Samples_MIN_value=0;
 		
 		//WIFI
-		//WIFI_ProcessAnswer();
+		if(TRX.WIFI_Enabled)
+			WIFI_ProcessAnswer();
 		
 		//Process keyboard and secondary encoder
 		TRX_ProcessFrontPanel();
@@ -442,8 +443,8 @@ void TIM6_DAC_IRQHandler(void)
 		//Print Debug info
 		sendToDebug_str("FPGA Samples: "); sendToDebug_uint32(dbg_FPGA_samples,false); //~48000
 		sendToDebug_str("Audio DMA samples: "); sendToDebug_uint32(dbg_WM8731_DMA_samples,false); //~48000
-		sendToDebug_str("Audioproc cycles A: "); sendToDebug_uint32(dbg_AUDIOPROC_TXA_samples,false); //~187
-		sendToDebug_str("Audioproc cycles B: "); sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples,false); //~187
+		sendToDebug_str("Audioproc cycles A: "); sendToDebug_uint32(dbg_AUDIOPROC_TXA_samples,false); //~120
+		sendToDebug_str("Audioproc cycles B: "); sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples,false); //~120
 		sendToDebug_str("CPU Sleep counter: "); sendToDebug_float32(dbg_cpu_sleep_counter,false);  
 		sendToDebug_str("Audioproc timer counter: "); sendToDebug_uint32(dbg_tim5_counter,false); 
 		sendToDebug_str("TX Autogain: "); sendToDebug_float32(dbg_ALC_need_gain,false);

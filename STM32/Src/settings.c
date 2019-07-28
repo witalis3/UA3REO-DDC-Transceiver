@@ -92,6 +92,9 @@ void LoadSettings(void)
 		TRX.Key_timeout = 1000; //время отпуская передачи после последнего знака на ключе
 		TRX.FFT_Averaging = 4; //усреднение FFT, чтобы сделать его более гладким
 		TRX.SSB_HPF_pass = 300; //частота среза ФВЧ в SSB моде
+		TRX.WIFI_Enabled = false; //активировать WiFi
+		strcpy(TRX.WIFI_AP, "WIFI-AP"); //точка доступа WiFi
+		strcpy(TRX.WIFI_PASSWORD, "WIFI-PASSWORD"); //пароль к точке WiFi
 	}
 }
 
