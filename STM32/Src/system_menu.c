@@ -12,6 +12,8 @@ static void drawSystemMenuElement(char* title, SystemMenuType type, uint32_t *va
 static void redrawCurrentItem(void);
 static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir);
+static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
+static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 
 static void SYSMENU_HANDL_FFTEnabled(int8_t direction);
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
@@ -28,6 +30,7 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction);
 static void SYSMENU_HANDL_CWDecoder(int8_t direction);
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
+static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction);
 
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
@@ -79,6 +82,7 @@ static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 {
 	{"WIFI Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
 	{"WIFI Select AP", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SelectAP},
+	{"WIFI Set AP Pass", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SetAPpassword},
 };
 static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
 
@@ -88,7 +92,14 @@ static uint8_t systemMenuIndex = 0;
 static uint8_t sysmenu_y = 5;
 static uint8_t sysmenu_i = 0;
 static bool sysmenu_onroot = true;
+
+//WIFI
 static bool sysmenu_wifi_selectap_menu_opened = false;
+static bool sysmenu_wifi_setAPpassword_menu_opened = false;
+uint16_t sysmenu_wifi_rescan_interval=0;
+uint8_t sysmenu_wifi_selected_ap_index=0;
+uint8_t sysmenu_wifi_selected_ap_password_char_index=0;
+//
 
 void drawSystemMenu(bool draw_background)
 {
@@ -100,6 +111,7 @@ void drawSystemMenu(bool draw_background)
 	if (!LCD_systemMenuOpened) return;
 	if (LCD_timeMenuOpened) { LCD_Handler_SETTIME(); return; }
 	if (sysmenu_wifi_selectap_menu_opened) { SYSMENU_WIFI_DrawSelectAPMenu(false); return; }
+	if (sysmenu_wifi_setAPpassword_menu_opened) { SYSMENU_WIFI_DrawAPpasswordMenu(false); return; }
 	LCD_busy = true;
 
 	sysmenu_i = 0;
@@ -222,6 +234,13 @@ static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction)
 	drawSystemMenu(true);
 }
 
+static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction)
+{
+	sysmenu_wifi_setAPpassword_menu_opened = true;
+	SYSMENU_WIFI_DrawAPpasswordMenu(true);
+	drawSystemMenu(true);
+}
+
 static void SYSMENU_HANDL_CWMENU(int8_t direction)
 {
 	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
@@ -265,6 +284,11 @@ void eventRotateSystemMenu(int8_t direction)
 		SYSMENU_WIFI_SelectAPMenuMove(0);
 		return;
 	}
+	if(sysmenu_wifi_setAPpassword_menu_opened)
+	{
+		SYSMENU_WIFI_RotatePasswordChar(direction);
+		return;
+	}
 	sysmenu_handlers_selected[systemMenuIndex].menuHandler(direction);
 	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_RUN)
 		redrawCurrentItem();
@@ -279,6 +303,28 @@ void eventClickSystemMenu(uint16_t x, uint16_t y)
 			SYSMENU_WIFI_SelectAPMenuMove(-1);
 		else
 			SYSMENU_WIFI_SelectAPMenuMove(1);
+		return;
+	}
+	//wifi set password menu
+	if(sysmenu_wifi_setAPpassword_menu_opened)
+	{
+		if (x >= 290 && x <= 320 && y >= 1 && y <= 30)
+		{
+			sysmenu_wifi_setAPpassword_menu_opened = false;
+			systemMenuIndex = 0;
+			drawSystemMenu(true);
+			WIFI_State = WIFI_INITED;
+		}
+		else if (y < 120 && sysmenu_wifi_selected_ap_password_char_index>0)
+		{
+			sysmenu_wifi_selected_ap_password_char_index--;
+			SYSMENU_WIFI_DrawAPpasswordMenu(true);
+		}
+		else if (sysmenu_wifi_selected_ap_password_char_index<(MAX_WIFIPASS_LENGTH-1))
+		{
+			sysmenu_wifi_selected_ap_password_char_index++;
+			SYSMENU_WIFI_DrawAPpasswordMenu(true);
+		}
 		return;
 	}
 	//other
@@ -375,37 +421,71 @@ static void drawSystemMenuElement(char* title, SystemMenuType type, uint32_t *va
 	sysmenu_y += 18;
 }
 
-uint16_t rescan_interval=0;
-uint8_t selected_ap_index=0;
-
-void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
+static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
 {
-	if(full_redraw || rescan_interval == 0)
+	if(full_redraw || sysmenu_wifi_rescan_interval == 0)
 	{
 		LCDDriver_Fill(COLOR_BLACK);
 		LCDDriver_printText("AP Found:", 5, 5, COLOR_WHITE, COLOR_BLACK, 1);
 		for(uint8_t i=0; i<WIFI_FOUNDED_AP_MAXCOUNT; i++)
 			LCDDriver_printText((char*)WIFI_FoundedAP[i], 10, 25+i*12, COLOR_GREEN, COLOR_BLACK, 1);
-		LCDDriver_drawFastHLine(0, 37+selected_ap_index*12, sysmenu_w, COLOR_WHITE);
+		LCDDriver_drawFastHLine(0, 37+sysmenu_wifi_selected_ap_index*12, sysmenu_w, COLOR_WHITE);
 		WIFI_ListAP();
 	}
-	rescan_interval++;
-	if(rescan_interval>100)
-		rescan_interval = 0;
+	sysmenu_wifi_rescan_interval++;
+	if(sysmenu_wifi_rescan_interval>100)
+		sysmenu_wifi_rescan_interval = 0;
 	LCD_UpdateQuery.SystemMenu = true;
 }
 
 static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir)
 {
-	if(dir<0 && selected_ap_index>0) selected_ap_index--;
-	if(dir>0 && selected_ap_index<WIFI_FOUNDED_AP_MAXCOUNT) selected_ap_index++;
+	if(dir<0 && sysmenu_wifi_selected_ap_index>0) sysmenu_wifi_selected_ap_index--;
+	if(dir>0 && sysmenu_wifi_selected_ap_index<WIFI_FOUNDED_AP_MAXCOUNT) sysmenu_wifi_selected_ap_index++;
 	SYSMENU_WIFI_DrawSelectAPMenu(true);
 	if(dir==0)
 	{
-		strcpy(TRX.WIFI_AP,(char*)&WIFI_FoundedAP[selected_ap_index]);
+		strcpy(TRX.WIFI_AP,(char*)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
 		WIFI_State = WIFI_INITED;
 		sysmenu_wifi_selectap_menu_opened = false;
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}
+}
+
+static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw)
+{
+	if(full_redraw)
+	{
+		LCDDriver_Fill(COLOR_BLACK);
+		LCDDriver_Fill_RectXY(290, 0, 320, 30, COLOR_GREEN);
+		LCDDriver_printText("X", 298, 5, COLOR_BLACK, COLOR_GREEN, 3);
+		LCDDriver_printText("AP Password:", 5, 5, COLOR_WHITE, COLOR_BLACK, 1);
+	}
+	
+	LCDDriver_printText(TRX.WIFI_PASSWORD, 10, 25, COLOR_GREEN, COLOR_BLACK, 1);
+	LCDDriver_drawFastHLine(10+sysmenu_wifi_selected_ap_password_char_index*6, 37, 6, COLOR_RED);
+}
+
+static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir)
+{
+	bool full_redraw=false;
+	if(TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]==0)
+		full_redraw=true;
+	TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]+=dir;
+	
+	//не показываем спецсимволы
+	if(TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]>=1 && TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]<=32 && dir>0)
+		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]=33;
+	if(TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]>=1 && TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]<=32 && dir<0)
+		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]=0;
+	if(TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]>=127)
+		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]=0;
+	if(TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index]==0)
+		full_redraw=true;
+	
+	if(full_redraw)
+		SYSMENU_WIFI_DrawAPpasswordMenu(true);
+	else
+		SYSMENU_WIFI_DrawAPpasswordMenu(false);
 }

@@ -54,6 +54,8 @@
 #define W25Q16_COMMAND_Page_Program 0x02
 #define W25Q16_COMMAND_Read_Data 0x03
 
+#define MAX_WIFIPASS_LENGTH 32
+
 typedef struct {
 	uint32_t Freq;
 	uint8_t Mode;
@@ -121,8 +123,8 @@ extern struct TRX_SETTINGS {
 	uint8_t FFT_Averaging;
 	uint16_t SSB_HPF_pass;
 	bool WIFI_Enabled;
-	char WIFI_AP[32];
-	char WIFI_PASSWORD[32];
+	char WIFI_AP[MAX_WIFIPASS_LENGTH];
+	char WIFI_PASSWORD[MAX_WIFIPASS_LENGTH];
 } TRX;
 
 volatile extern bool NeedSaveSettings;

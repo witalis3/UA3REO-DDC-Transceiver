@@ -81,11 +81,12 @@ void WIFI_ProcessAnswer(void)
 		case WIFI_CONNECTING:
 			WIFI_GetLine();
 			if(strstr(WIFI_readed, "GOT IP")!=NULL)
+				sendToDebug_str("WIFI: CONNECTED\r\n");
 				WIFI_State = WIFI_READY;
 			if(strstr(WIFI_readed, "WIFI DISCONNECT")!=NULL)
 				WIFI_State = WIFI_INITED;
 			if(strstr(WIFI_readed, "FAIL")!=NULL)
-				WIFI_State = WIFI_FAIL;
+				WIFI_State = WIFI_INITED;
 			break;
 			
 		case WIFI_READY:
