@@ -2,6 +2,7 @@
 #include "stm32f4xx_hal.h"
 #include "functions.h"
 #include "settings.h"
+#include <stdlib.h>
 
 extern UART_HandleTypeDef huart6;
 extern IWDG_HandleTypeDef hiwdg;
@@ -41,6 +42,14 @@ void WIFI_Init(void)
 		{
 			sendToDebug_str("WIFI Module Inited\r\n");
 			WIFI_State = WIFI_INITED;
+			
+			//проверяем, есть ли активные подключения, если да - новое не создаём
+			WIFI_SendCommand("AT+CIPSTATUS\r\n");
+			while(WIFI_GetLine())
+			{
+				if(strstr(WIFI_readed,"STATUS:2")!=NULL)
+					WIFI_State = WIFI_READY;
+			}
 		}
 	}
 	if(WIFI_State==WIFI_UNDEFINED)
@@ -67,7 +76,13 @@ void WIFI_ProcessAnswer(void)
 			WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); //AUTOCONNECT
 			WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); //Hostname
 			WIFI_SendCommand("AT+CWCOUNTRY_CUR=1,\"RU\",1,13\r\n"); //Country
-			WIFI_SendCommand("AT+CIPSNTPCFG=1,3,\"us.pool.ntp.org\"\r\n"); //configure SNMP
+			char com_t[128]={0};
+			char tz[2]={0};
+			strcat(com_t,"AT+CIPSNTPCFG=1,");
+			sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
+			strcat(com_t, tz);
+			strcat(com_t,",\"us.pool.ntp.org\"\r\n");
+			WIFI_SendCommand(com_t); //configure SNMP
 			char com[128]={0};
 			strcat(com,"AT+CWJAP_CUR=\"");
 			strcat(com,TRX.WIFI_AP);
@@ -81,8 +96,10 @@ void WIFI_ProcessAnswer(void)
 		case WIFI_CONNECTING:
 			WIFI_GetLine();
 			if(strstr(WIFI_readed, "GOT IP")!=NULL)
+			{
 				sendToDebug_str("WIFI: CONNECTED\r\n");
 				WIFI_State = WIFI_READY;
+			}
 			if(strstr(WIFI_readed, "WIFI DISCONNECT")!=NULL)
 				WIFI_State = WIFI_INITED;
 			if(strstr(WIFI_readed, "FAIL")!=NULL)
@@ -110,9 +127,9 @@ void WIFI_ProcessAnswer(void)
 				WIFI_State = WIFI_READY;
 				WIFI_ProcessingCommand = WIFI_COMM_NONE;
 			}
-			else if(WIFI_ProcessingCommand == WIFI_COMM_LISTAP) //ListAP Command process
+			else if(strlen(WIFI_readed)>5)
 			{
-				if(strlen(WIFI_readed)>5)
+				if(WIFI_ProcessingCommand==WIFI_COMM_LISTAP) //ListAP Command process
 				{
 					char *start = strchr(WIFI_readed, '"')+1;
 					char *end = strchr(start, '"');
@@ -120,6 +137,43 @@ void WIFI_ProcessAnswer(void)
 					strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
 					if(WIFI_FoundedAP_Index < WIFI_FOUNDED_AP_MAXCOUNT)
 						WIFI_FoundedAP_Index++;
+				}
+				else if(WIFI_ProcessingCommand==WIFI_COMM_GETSNMP) //Get and sync SNMP time
+				{
+					char *hrs_str = strchr(WIFI_readed, ' ')+1;
+					hrs_str = strchr(hrs_str, ' ')+1;
+					hrs_str = strchr(hrs_str, ' ')+1;
+					//hh:mm:ss here
+					char *min_str = strchr(hrs_str, ':')+1;
+					char *sec_str = strchr(min_str, ':')+1;
+					char *year_str = strchr(min_str, ' ')+1;
+					char *end = strchr(hrs_str, ':'); *end = 0x00;
+					end = strchr(min_str, ':'); *end = 0x00;
+					end = strchr(sec_str, ' '); *end = 0x00;
+					//split strings here
+					int8_t hrs=atoi(hrs_str);
+					int8_t min=atoi(min_str);
+					int8_t sec=atoi(sec_str);
+					int16_t year=atoi(year_str);
+					//save to RTC clock
+					if(year>2018)
+					{
+						uint32_t Time = RTC->TR;
+						RTC_TimeTypeDef sTime;
+						sTime.TimeFormat = RTC_HOURFORMAT12_PM;
+						sTime.SubSeconds = 0;
+						sTime.SecondFraction = 0;
+						sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+						sTime.StoreOperation = RTC_STOREOPERATION_SET;
+						sTime.Hours = hrs;
+						sTime.Minutes = min;
+						sTime.Seconds = sec;
+						HAL_RTC_DeInit(&hrtc);
+						HAL_RTC_Init(&hrtc);
+						HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+						TRX_SNMP_Synced=true;
+						sendToDebug_str("WIFI: TIME SYNCED\r\n");
+					}
 				}
 			}
 			

@@ -95,6 +95,7 @@ void LoadSettings(void)
 		TRX.WIFI_Enabled = false; //активировать WiFi
 		strcpy(TRX.WIFI_AP, "WIFI-AP"); //точка доступа WiFi
 		strcpy(TRX.WIFI_PASSWORD, "WIFI-PASSWORD"); //пароль к точке WiFi
+		TRX.WIFI_TIMEZONE = 3; //часовой пояс (для синхронизации времени)
 	}
 }
 

@@ -70,6 +70,7 @@ volatile extern int16_t TRX_ADC_MAXAMPLITUDE;
 volatile extern uint8_t TRX_Time_InActive;
 volatile extern uint8_t TRX_Fan_Timeout;
 volatile extern TRX_FrontPanel_Type TRX_FrontPanel;
+volatile extern bool TRX_SNMP_Synced;
 
 extern const char *MODE_DESCR[];
 extern ADC_HandleTypeDef hadc1;

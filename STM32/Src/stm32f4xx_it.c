@@ -426,6 +426,9 @@ void TIM6_DAC_IRQHandler(void)
 		ms50_counter = 0;
 		TRX_DoAutoGain(); //Process AutoGain feature
 
+		if(!TRX_SNMP_Synced) //Sync time from internet
+			WIFI_GetSNMPTime();
+		
 #if 0
 		//Save Debug variables
 		uint32_t dbg_FPGA_samples=FPGA_samples;

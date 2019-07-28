@@ -29,6 +29,8 @@ typedef enum
 	WIFI_COMM_GETSTATUS = 0x04U,
 } WiFiProcessingCommand;
 
+extern RTC_HandleTypeDef hrtc;
+
 extern volatile WiFiState WIFI_State;
 extern volatile char WIFI_FoundedAP[10][32];
 

@@ -31,7 +31,8 @@ static void SYSMENU_HANDL_CWDecoder(int8_t direction);
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction);
-
+static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction);
+	
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
 static void SYSMENU_HANDL_FFTMENU(int8_t direction);
@@ -83,6 +84,7 @@ static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 	{"WIFI Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
 	{"WIFI Select AP", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SelectAP},
 	{"WIFI Set AP Pass", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SetAPpassword},
+	{"WIFI Timezone", SYSMENU_INT8, (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_HANDL_WIFI_Timezone},
 };
 static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
 
@@ -239,6 +241,14 @@ static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction)
 	sysmenu_wifi_setAPpassword_menu_opened = true;
 	SYSMENU_WIFI_DrawAPpasswordMenu(true);
 	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction)
+{
+	TRX.WIFI_TIMEZONE += direction;
+	if (TRX.WIFI_TIMEZONE < -12) TRX.WIFI_TIMEZONE = -12;
+	if (TRX.WIFI_TIMEZONE > 12) TRX.WIFI_TIMEZONE = 12;
+	WIFI_State = WIFI_INITED;
 }
 
 static void SYSMENU_HANDL_CWMENU(int8_t direction)
