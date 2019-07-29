@@ -543,6 +543,16 @@
               <FilePath>..\Src\system_menu.h</FilePath>
             </File>
             <File>
+              <FileName>spec_analyzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\spec_analyzer.c</FilePath>
+            </File>
+            <File>
+              <FileName>spec_analyzer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\spec_analyzer.h</FilePath>
+            </File>
+            <File>
               <FileName>trx_manager.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\trx_manager.c</FilePath>

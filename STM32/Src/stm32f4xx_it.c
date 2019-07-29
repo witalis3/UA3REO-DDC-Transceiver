@@ -71,6 +71,7 @@
 #include "audio_filters.h"
 #include "LCD/xpt2046_spi.h"
 #include "wifi.h"
+#include "system_menu.h"
 
 static uint32_t ms50_counter = 0;
 static uint32_t tim5_counter = 0;
@@ -315,10 +316,15 @@ void EXTI9_5_IRQHandler(void)
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
-
+	
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
+	if (sysmenu_spectrum_opened)
+	{
+		drawSystemMenu(false);
+		return;
+	}
 	ua3reo_dev_cat_parseCommand();
 	if (FFT_need_fft) FFT_doFFT();
   /* USER CODE END TIM4_IRQn 1 */
@@ -377,7 +383,7 @@ void TIM6_DAC_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
 	ms50_counter++;
-	
+
 	if(TRX_Key_Timeout_est>0)
 	{
 		TRX_Key_Timeout_est-=50;
@@ -398,15 +404,7 @@ void TIM6_DAC_IRQHandler(void)
 	if ((ms50_counter % 2) == 0) // every 100ms
 	{
 		//S-Meter Calculate
-		float32_t Audio_Vpp_value=(Processor_RX_Audio_Samples_MAX_value/(float32_t)TRX.RF_Gain)-(Processor_RX_Audio_Samples_MIN_value/(float32_t)TRX.RF_Gain); //получаем разницу между максимальным и минимальным значением в аудио-семплах
-		for(int i=0;i<(FPGA_BUS_BITS-ADC_BITS);i++) Audio_Vpp_value=Audio_Vpp_value/2; //приводим разрядность аудио к разрядности АЦП
-		float32_t ADC_Vpp_Value=Audio_Vpp_value*ADC_VREF/((float32_t)pow(2.0,ADC_BITS)-1); //получаем значение пик-пик напряжения на входе АЦП в вольтах
-		float32_t ADC_Vrms_Value=ADC_Vpp_Value*0.3535f; // Получаем действующее (RMS) напряжение на аходе АЦП
-		float32_t ADC_RF_IN_Value=(ADC_Vrms_Value/ADC_RF_TRANS_RATIO)*ADC_RF_INPUT_VALUE_CALIBRATION; //Получаем напряжение на антенном входе с учётом трансформатора и калибровки
-		if(ADC_RF_IN_Value<0.0000001f) ADC_RF_IN_Value=0.0000001f;
-		TRX_RX_dBm=10*log10f_fast((ADC_RF_IN_Value*ADC_RF_IN_Value)/(50.0f*0.001f)) ; //получаем значение мощности в dBm для сопротивления 50ом
-		Processor_RX_Audio_Samples_MAX_value=0;
-		Processor_RX_Audio_Samples_MIN_value=0;
+		TRX_DBMCalculate();
 		
 		//WIFI
 		if(TRX.WIFI_Enabled)
@@ -503,6 +501,7 @@ void TIM6_DAC_IRQHandler(void)
 	
 	LCD_doEvents();
 	FFT_printFFT();
+	//if(!sysmenu_spectrum_opened)
 	TRX_RF_UNIT_UpdateState(false);
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }

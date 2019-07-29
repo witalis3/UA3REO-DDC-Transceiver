@@ -63,7 +63,7 @@ void LoadSettings(void)
 		TRX.AutoGain = false; //авто-управление предусилителем и аттенюатором
 		TRX.NotchFilter = false; //нотч-фильтр для вырезания помехи
 		TRX.NotchFC = 1000; //частота среза нотч-фильтра
-		TRX.CWDecoder = true; //автоматический декодер телеграфа
+		TRX.CWDecoder = false; //автоматический декодер телеграфа
 		//system settings
 		TRX.FFT_Enabled = true; //использовать спектр FFT
 		TRX.CW_GENERATOR_SHIFT_HZ = 500; //смещение гетеродина в CW моде

@@ -184,6 +184,7 @@ int main(void)
 	{
 		Touch_Calibrate();
 		LCD_Init();
+		SaveSettings();
 	}
 	FFT_Init();
 	WM8731_Init();

@@ -5,6 +5,7 @@
 #include "bootloader.h"
 #include "functions.h"
 #include "wifi.h"
+#include "spec_analyzer.h"
 #include "LCD/xpt2046_spi.h"
 #include "LCD/fonts.h"
 
@@ -32,11 +33,15 @@ static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction);
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction);
-	
+static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
+
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
 static void SYSMENU_HANDL_FFTMENU(int8_t direction);
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 
 static const uint8_t sysmenu_x1 = 5;
 static const uint8_t sysmenu_x2 = 240;
@@ -52,6 +57,7 @@ static struct sysmenu_item_handler sysmenu_handlers[] =
 	{"WIFI Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_WIFIMENU},
 	{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
 	{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
+	{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
 };
 static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 
@@ -88,6 +94,14 @@ static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 };
 static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
 
+static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
+{
+	{"Spectrum START", SYSMENU_RUN, 0, SYSMENU_HANDL_SPECTRUM_Start},
+	{"Begin, 10kHz", SYSMENU_UINT16, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
+	{"End, 10kHz", SYSMENU_UINT16, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
+};
+static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
+
 static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
 static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
 static uint8_t systemMenuIndex = 0;
@@ -101,8 +115,10 @@ static bool sysmenu_wifi_setAPpassword_menu_opened = false;
 uint16_t sysmenu_wifi_rescan_interval=0;
 uint8_t sysmenu_wifi_selected_ap_index=0;
 uint8_t sysmenu_wifi_selected_ap_password_char_index=0;
+//SPEC analyser
+bool sysmenu_spectrum_opened = false;
+uint32_t sysmenu_spectrum_lastfreq = 0;
 //
-
 void drawSystemMenu(bool draw_background)
 {
 	if (LCD_busy)
@@ -114,6 +130,7 @@ void drawSystemMenu(bool draw_background)
 	if (LCD_timeMenuOpened) { LCD_Handler_SETTIME(); return; }
 	if (sysmenu_wifi_selectap_menu_opened) { SYSMENU_WIFI_DrawSelectAPMenu(false); return; }
 	if (sysmenu_wifi_setAPpassword_menu_opened) { SYSMENU_WIFI_DrawAPpasswordMenu(false); return; }
+	if (sysmenu_spectrum_opened) { SPEC_Draw(); return; }
 	LCD_busy = true;
 
 	sysmenu_i = 0;
@@ -251,6 +268,26 @@ static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction)
 	WIFI_State = WIFI_INITED;
 }
 
+static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction)
+{
+	TRX.SPEC_Begin += direction;
+	if (TRX.SPEC_Begin < 1) TRX.SPEC_Begin = 1;
+}
+
+static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction)
+{
+	TRX.SPEC_End += direction;
+	if (TRX.SPEC_End < 1) TRX.SPEC_End = 1;
+}
+
+static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
+{
+	sysmenu_spectrum_lastfreq=TRX_getFrequency();
+	sysmenu_spectrum_opened=true;
+	SPEC_Start();
+	drawSystemMenu(true);
+}
+
 static void SYSMENU_HANDL_CWMENU(int8_t direction)
 {
 	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
@@ -282,6 +319,15 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 {
 	sysmenu_handlers_selected = &sysmenu_wifi_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_wifi_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_spectrum_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_spectrum_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	drawSystemMenu(true);
@@ -336,6 +382,14 @@ void eventClickSystemMenu(uint16_t x, uint16_t y)
 			SYSMENU_WIFI_DrawAPpasswordMenu(true);
 		}
 		return;
+	}
+	//spectrum analyzer
+	if(sysmenu_spectrum_opened)
+	{
+		sysmenu_spectrum_opened=false;
+		LCDDriver_Fill(COLOR_BLACK);
+		drawSystemMenu(true);
+		TRX_setFrequency(sysmenu_spectrum_lastfreq);
 	}
 	//other
 	if (x >= 290 && x <= 320 && y >= 1 && y <= 30)
