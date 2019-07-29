@@ -126,6 +126,8 @@ extern struct TRX_SETTINGS {
 	char WIFI_AP[MAX_WIFIPASS_LENGTH];
 	char WIFI_PASSWORD[MAX_WIFIPASS_LENGTH];
 	int8_t WIFI_TIMEZONE;
+	uint16_t SPEC_Begin;
+	uint16_t SPEC_End;
 } TRX;
 
 volatile extern bool NeedSaveSettings;
