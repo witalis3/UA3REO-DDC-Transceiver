@@ -54,24 +54,26 @@ static void ENCODER_Rotated(int direction) //энкодер повернули, 
 	if (!LCD_mainMenuOpened)
 	{
 		switch (TRX.LCD_menu_freq_index) {
-		case MENU_FREQ_HZ:
-			if (TRX.Fast)
-				TRX_setFrequency(TRX_getFrequency() + 100 * direction);
-			else
-				TRX_setFrequency(TRX_getFrequency() + 10 * direction);
-			break;
-		case MENU_FREQ_KHZ:
-			if (TRX.Fast)
-				TRX_setFrequency(TRX_getFrequency() + 10000 * direction);
-			else
-				TRX_setFrequency(TRX_getFrequency() + 1000 * direction);
-			break;
-		case MENU_FREQ_MHZ:
-			TRX_setFrequency(TRX_getFrequency() + 1000000 * direction);
-			break;
-		default:
-			break;
+			case MENU_FREQ_HZ:
+				if (TRX.Fast)
+					TRX_setFrequency(TRX_getFrequency() + 100 * direction);
+				else
+					TRX_setFrequency(TRX_getFrequency() + 10 * direction);
+				break;
+			case MENU_FREQ_KHZ:
+				if (TRX.Fast)
+					TRX_setFrequency(TRX_getFrequency() + 10000 * direction);
+				else
+					TRX_setFrequency(TRX_getFrequency() + 1000 * direction);
+				break;
+			case MENU_FREQ_MHZ:
+				TRX_setFrequency(TRX_getFrequency() + 1000000 * direction);
+				break;
+			default:
+				break;
 		}
+		if((TRX_getFrequency() % 10) > 0)
+			TRX_setFrequency(TRX_getFrequency()/10*10);
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 	if (LCD_mainMenuOpened)
