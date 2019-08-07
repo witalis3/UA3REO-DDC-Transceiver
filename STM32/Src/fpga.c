@@ -48,16 +48,16 @@ void FPGA_Init(void)
 	HAL_GPIO_Init(GPIOA, &FPGA_GPIO_InitStruct);
 
 	FPGA_test_bus();
-	
+
 	FPGA_start_audio_clock();
-	
+
 	//FPGA_read_flash();
 }
 
 void FPGA_test_bus(void) //проверка шины
 {
 	FPGA_busy = true;
-	for(uint8_t b = 0 ; b < 8 ; b++)
+	for (uint8_t b = 0; b < 8; b++)
 	{
 		//STAGE 1
 		//out
@@ -68,14 +68,14 @@ void FPGA_test_bus(void) //проверка шины
 		//in
 		//clock
 		GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
-		
+
 		//STAGE 2
 		//out
 		FPGA_writePacket(b);
 		//clock
 		FPGA_clockRise();
 		//in
-		if(FPGA_readPacket() != b)
+		if (FPGA_readPacket() != b)
 		{
 			char buff[32] = "";
 			sprintf(buff, "FPGA BUS Pin%d error", b);
@@ -224,7 +224,7 @@ inline void FPGA_fpgadata_getparam(void)
 	uint8_t FPGA_fpgadata_in_tmp8 = 0;
 	int16_t adc_min = 0;
 	int16_t adc_max = 0;
-	
+
 	//STAGE 2
 	//clock
 	FPGA_clockRise();
@@ -269,14 +269,14 @@ inline void FPGA_fpgadata_getparam(void)
 	TRX_ADC_MAXAMPLITUDE = adc_max;
 	//clock
 	FPGA_clockFall();
-	
+
 	//STAGE 6
 	//clock
 	FPGA_clockRise();
 	//in
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket();
 	int8_t enc_val = (FPGA_fpgadata_in_tmp8 & 0XF);
-	if(enc_val>7) enc_val |= 0xF0;
+	if (enc_val > 7) enc_val |= 0xF0;
 	TRX_FrontPanel.sec_encoder = enc_val;
 	TRX_FrontPanel.key_enc = bitRead(FPGA_fpgadata_in_tmp8, 4);
 	//clock
@@ -478,7 +478,7 @@ inline void FPGA_setBusInput(void)
 			GPIOA->MODER = temp;
 		}
 	}
-	
+
 	FPGA_bus_direction = true;
 }
 
@@ -533,7 +533,7 @@ inline void FPGA_writePacket(uint8_t packet)
 {
 	if (FPGA_bus_direction)
 		FPGA_setBusOutput();
-	
+
 	FPGA_BUS_D0_GPIO_Port->BSRR = packet | 0xFF0000;
 	/*
 	FPGA_BUS_D0_GPIO_Port->BSRR =
@@ -559,14 +559,14 @@ inline void FPGA_writePacket(uint8_t packet)
 void FPGA_start_command(uint8_t command) //выполнение команды к SPI flash
 {
 	FPGA_busy = true;
-	
+
 	//STAGE 1
 	FPGA_writePacket(7); //FPGA FLASH READ command
 	GPIOC->BSRR = FPGA_SYNC_Pin;
 	FPGA_clockRise();
 	GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
 	HAL_Delay(1);
-	
+
 	//STAGE 2
 	FPGA_writePacket(command); //SPI FLASH READ STATUS COMMAND
 	FPGA_clockRise();
@@ -577,7 +577,7 @@ void FPGA_start_command(uint8_t command) //выполнение команды �
 uint8_t FPGA_continue_command(uint8_t writedata) //продолжение чтения и записи к SPI flash
 {
 	//STAGE 3 WRITE
-	FPGA_writePacket(writedata); 
+	FPGA_writePacket(writedata);
 	FPGA_clockRise();
 	FPGA_clockFall();
 	HAL_Delay(1);
@@ -586,7 +586,7 @@ uint8_t FPGA_continue_command(uint8_t writedata) //продолжение чте
 	FPGA_clockFall();
 	uint8_t data = FPGA_readPacket();
 	HAL_Delay(1);
-	
+
 	return data;
 }
 
@@ -594,17 +594,17 @@ uint8_t FPGA_continue_command(uint8_t writedata) //продолжение чте
 Micron M25P80 Serial Flash COMMANDS:
 06h - WRITE ENABLE
 04h - WRITE DISABLE
-9Fh - READ IDENTIFICATION 
-9Eh - READ IDENTIFICATION 
-05h - READ STATUS REGISTER 
-01h - WRITE STATUS REGISTER 
+9Fh - READ IDENTIFICATION
+9Eh - READ IDENTIFICATION
+05h - READ STATUS REGISTER
+01h - WRITE STATUS REGISTER
 03h - READ DATA BYTES
 0Bh - READ DATA BYTES at HIGHER SPEED
-02h - PAGE PROGRAM 
-D8h - SECTOR ERASE 
-C7h - BULK ERASE 
-B9h - DEEP POWER-DOWN 
-ABh - RELEASE from DEEP POWER-DOWN 
+02h - PAGE PROGRAM
+D8h - SECTOR ERASE
+C7h - BULK ERASE
+B9h - DEEP POWER-DOWN
+ABh - RELEASE from DEEP POWER-DOWN
 */
 void FPGA_read_flash(void) //чтение flash памяти
 {
@@ -618,13 +618,13 @@ void FPGA_read_flash(void) //чтение flash памяти
 	//FPGA_continue_command(0x00); //addr 1
 	//FPGA_continue_command(0x00); //addr 2
 	//FPGA_continue_command(0x00); //addr 3
-	
-	for(uint16_t i=1 ; i<=512 ; i++)
+
+	for (uint16_t i = 1; i <= 512; i++)
 	{
 		uint8_t data = FPGA_continue_command(0x05);
-		sendToDebug_hex(data,true);
+		sendToDebug_hex(data, true);
 		sendToDebug_str(" ");
-		if(i % 16 == 0)
+		if (i % 16 == 0)
 		{
 			sendToDebug_str("\r\n");
 			HAL_IWDG_Refresh(&hiwdg);
@@ -634,6 +634,6 @@ void FPGA_read_flash(void) //чтение flash памяти
 		//DEBUG_Transmit_FIFO_Events();
 	}
 	sendToDebug_newline();
-	
+
 	FPGA_busy = false;
 }

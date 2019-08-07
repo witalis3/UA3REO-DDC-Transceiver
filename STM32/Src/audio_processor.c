@@ -64,7 +64,7 @@ void processTxAudio(void)
 	AUDIOPROC_samples++;
 	selected_rfpower_amplitude = TRX.RF_Power / 100.0f * MAX_TX_AMPLITUDE;
 	uint8_t mode = TRX_getMode();
-	
+
 	if (TRX.InputType == 2) //USB AUDIO
 	{
 		uint16_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / 2; //buffer 8bit, data 16 bit
@@ -98,7 +98,7 @@ void processTxAudio(void)
 		dc_filter(FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 2);
 		dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 3);
 	}
-	
+
 	if (mode != TRX_MODE_IQ && !TRX_tune)
 	{
 		//IIR HPF
@@ -253,7 +253,7 @@ void processTxAudio(void)
 	else
 	{
 		//CW SelfHear
-		if(TRX.CW_SelfHear && (TRX_key_serial || TRX_key_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U))
+		if (TRX.CW_SelfHear && (TRX_key_serial || TRX_key_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U))
 		{
 			for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
 				CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX.Volume / 100.0f)*2000.0f*arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE)*PI*2.0f*(float32_t)TRX.CW_GENERATOR_SHIFT_HZ);
@@ -338,7 +338,7 @@ void processRxAudio(void)
 		doRX_SMETER();
 		doRX_DNR();
 		doRX_AGC();
-		doCW_Decode();	
+		doCW_Decode();
 		doRX_COPYCHANNEL();
 		break;
 	case TRX_MODE_AM:
@@ -445,7 +445,7 @@ void processRxAudio(void)
 static void doCW_Decode(void)
 {
 	//CW Decoder
-	if(TRX.CWDecoder && (TRX_getMode()==TRX_MODE_CW_L || TRX_getMode()==TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (TRX_getMode() == TRX_MODE_CW_L || TRX_getMode() == TRX_MODE_CW_U))
 		for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
 			CWDecoder_Process((float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*CWDECODER_SAMPLES));
 }

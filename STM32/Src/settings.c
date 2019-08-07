@@ -27,7 +27,7 @@ static void Flash_Read_Data(void);
 void LoadSettings(void)
 {
 	Flash_Read_Data();
-	
+
 	if (TRX.clean_flash != 180) //code to trace new clean flash
 	{
 		TRX.clean_flash = 180; //ID прошивки в eeprom, если не совпадает - используем дефолтные
@@ -122,13 +122,13 @@ void SaveSettings(void)
 
 static void Flash_Sector_Erase(void)
 {
-	for(uint8_t page=0; page<=(sizeof(TRX)/0xFF); page++)
+	for (uint8_t page = 0; page <= (sizeof(TRX) / 0xFF); page++)
 	{
 		Address[1] = page;
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
 		HAL_SPI_Transmit(&hspi1, &Write_Enable, 1, HAL_MAX_DELAY); // Write Enable Command
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-		
+
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
 		HAL_SPI_Transmit(&hspi1, &Sector_Erase, 1, HAL_MAX_DELAY);   // Erase Chip Command
 		HAL_SPI_Transmit(&hspi1, Address, sizeof(Address), HAL_MAX_DELAY);      // Write Address ( The first address of flash module is 0x00000000 )
@@ -139,20 +139,20 @@ static void Flash_Sector_Erase(void)
 
 static void Flash_Write_Data(void)
 {
-	for(uint8_t page=0; page<=(sizeof(TRX)/0xFF); page++)
+	for (uint8_t page = 0; page <= (sizeof(TRX) / 0xFF); page++)
 	{
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
 		HAL_SPI_Transmit(&hspi1, &Write_Enable, 1, HAL_MAX_DELAY); // Write Enable Command
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-	
+
 		Address[1] = page;
-		uint16_t size = sizeof(TRX) - 0xFF*page;
-		if(size>0xFF) size=0xFF;
-		
+		uint16_t size = sizeof(TRX) - 0xFF * page;
+		if (size > 0xFF) size = 0xFF;
+
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
 		HAL_SPI_Transmit(&hspi1, &Page_Program, 1, HAL_MAX_DELAY); // Page Program Command
 		HAL_SPI_Transmit(&hspi1, Address, sizeof(Address), HAL_MAX_DELAY);      // Write Address ( The first address of flash module is 0x00000000 )
-		HAL_SPI_Transmit(&hspi1, (uint8_t*)((uint32_t)&TRX + 0xFF*page), size, HAL_MAX_DELAY);       // Write
+		HAL_SPI_Transmit(&hspi1, (uint8_t*)((uint32_t)&TRX + 0xFF * page), size, HAL_MAX_DELAY);       // Write
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
 		HAL_Delay(10);
 	}
@@ -160,16 +160,16 @@ static void Flash_Write_Data(void)
 
 static void Flash_Read_Data(void)
 {
-	for(uint8_t page=0; page<=(sizeof(TRX)/0xFF); page++)
+	for (uint8_t page = 0; page <= (sizeof(TRX) / 0xFF); page++)
 	{
 		Address[1] = page;
-		uint16_t size = sizeof(TRX) - 0xFF*page;
-		if(size>0xFF) size=0xFF;
-		
+		uint16_t size = sizeof(TRX) - 0xFF * page;
+		if (size > 0xFF) size = 0xFF;
+
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
 		HAL_SPI_Transmit(&hspi1, &Read_Data, 1, HAL_MAX_DELAY);  // Read Command
 		HAL_SPI_Transmit(&hspi1, Address, sizeof(Address), HAL_MAX_DELAY);    // Write Address
-		HAL_SPI_Receive(&hspi1, (uint8_t*)((uint32_t)&TRX + 0xFF*page), size, HAL_MAX_DELAY);      // Read
+		HAL_SPI_Receive(&hspi1, (uint8_t*)((uint32_t)&TRX + 0xFF * page), size, HAL_MAX_DELAY);      // Read
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
 		HAL_Delay(10);
 	}

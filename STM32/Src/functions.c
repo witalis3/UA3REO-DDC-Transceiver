@@ -87,10 +87,10 @@ void sendToDebug_newline(void)
 
 void sendToDebug_flush(void)
 {
-	while(!DEBUG_Transmit_FIFO_Events()) 
-	{ 
+	while (!DEBUG_Transmit_FIFO_Events())
+	{
 		HAL_IWDG_Refresh(&hiwdg);
-		HAL_Delay(1); 
+		HAL_Delay(1);
 	}
 }
 
@@ -172,9 +172,9 @@ void sendToDebug_float32(float32_t data, bool _inline)
 
 void delay_us(uint32_t us)
 {
-	if(bitRead(DWT->CTRL, DWT_CTRL_CYCCNTENA_Pos))
+	if (bitRead(DWT->CTRL, DWT_CTRL_CYCCNTENA_Pos))
 	{
-		HAL_Delay(1); 
+		HAL_Delay(1);
 		return;
 	}
 	unsigned long us_count_tick = us * (SystemCoreClock / 1000000);
@@ -191,8 +191,8 @@ void delay_us(uint32_t us)
 
 bool beetween(float32_t a, float32_t b, float32_t val)
 {
-	if(a <= val && val <= b) return true;
-	if(b <= val && val <= a) return true;
+	if (a <= val && val <= b) return true;
+	if (b <= val && val <= a) return true;
 	return false;
 }
 
@@ -266,13 +266,13 @@ double db2rateV(double i) //из децибелл в разы (для напря
 
 void shiftTextLeft(char *string, int16_t shiftLength)
 {
-	int16_t i,size=strlen(string);
-	if(shiftLength >= size){
-			memset(string,'\0',size);
-			return;
+	int16_t i, size = strlen(string);
+	if (shiftLength >= size) {
+		memset(string, '\0', size);
+		return;
 	}
-	for (i=0; i < size-shiftLength; i++){
-			string[i] = string[i + shiftLength];
-			string[i + shiftLength] = '\0';
+	for (i = 0; i < size - shiftLength; i++) {
+		string[i] = string[i + shiftLength];
+		string[i + shiftLength] = '\0';
 	}
 }

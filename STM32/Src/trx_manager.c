@@ -247,10 +247,10 @@ void TRX_RF_UNIT_UpdateState(bool clean) //передаём значения в 
 
 			//if(registerNumber==8) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==9) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
-			if(registerNumber==10 && ((TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) || TRX_Fan_Timeout>0))
+			if (registerNumber == 10 && ((TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) || TRX_Fan_Timeout > 0))
 			{
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //FAN
-				if(TRX_Fan_Timeout>0) TRX_Fan_Timeout--;
+				if (TRX_Fan_Timeout > 0) TRX_Fan_Timeout--;
 			}
 			if (registerNumber == 11 && TRX.BPF && TRX_getFrequency() >= BPF_7_HPF && !hpf_lock) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_7_HPF
 			if (registerNumber == 12 && TRX.BPF && TRX_getFrequency() >= BPF_6_START && TRX_getFrequency() < BPF_6_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_6
@@ -357,57 +357,57 @@ void TRX_DoAutoGain(void)
 void TRX_ProcessFrontPanel(void)
 {
 	//BAND-
-	if(TRX_FrontPanel.key_1_prev != TRX_FrontPanel.key_1 && TRX_FrontPanel.key_1 == 1)
+	if (TRX_FrontPanel.key_1_prev != TRX_FrontPanel.key_1 && TRX_FrontPanel.key_1 == 1)
 	{
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
 		band--;
-		if(band>=BANDS_COUNT) band=0;
-		if(band<0) band = BANDS_COUNT-1;
-		if(band>=0) TRX_setFrequency(TRX.saved_freq[band]);
+		if (band >= BANDS_COUNT) band = 0;
+		if (band < 0) band = BANDS_COUNT - 1;
+		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band]);
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 	//BAND+
-	if(TRX_FrontPanel.key_2_prev != TRX_FrontPanel.key_2 && TRX_FrontPanel.key_2)
+	if (TRX_FrontPanel.key_2_prev != TRX_FrontPanel.key_2 && TRX_FrontPanel.key_2)
 	{
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
 		band++;
-		if(band>=BANDS_COUNT) band=0;
-		if(band<0) band = BANDS_COUNT-1;
-		if(band>=0) TRX_setFrequency(TRX.saved_freq[band]);
+		if (band >= BANDS_COUNT) band = 0;
+		if (band < 0) band = BANDS_COUNT - 1;
+		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band]);
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 	//MODE-
-	if(TRX_FrontPanel.key_3_prev != TRX_FrontPanel.key_3 && TRX_FrontPanel.key_3)
+	if (TRX_FrontPanel.key_3_prev != TRX_FrontPanel.key_3 && TRX_FrontPanel.key_3)
 	{
 		int8_t mode = CurrentVFO()->Mode;
 		mode--;
-		if(mode<0) mode = TRX_MODE_COUNT - 2;
-		if(mode >= (TRX_MODE_COUNT - 1)) mode = 0;
+		if (mode < 0) mode = TRX_MODE_COUNT - 2;
+		if (mode >= (TRX_MODE_COUNT - 1)) mode = 0;
 		TRX_setMode(mode);
 		LCD_UpdateQuery.TopButtons = true;
 	}
 	//MODE+
-	if(TRX_FrontPanel.key_4_prev != TRX_FrontPanel.key_4 && TRX_FrontPanel.key_4)
+	if (TRX_FrontPanel.key_4_prev != TRX_FrontPanel.key_4 && TRX_FrontPanel.key_4)
 	{
 		int8_t mode = CurrentVFO()->Mode;
 		mode++;
-		if(mode<0) mode = TRX_MODE_COUNT - 2;
-		if(mode >= (TRX_MODE_COUNT - 1)) mode = 0;
+		if (mode < 0) mode = TRX_MODE_COUNT - 2;
+		if (mode >= (TRX_MODE_COUNT - 1)) mode = 0;
 		TRX_setMode(mode);
 		LCD_UpdateQuery.TopButtons = true;
 	}
 	//NOTCH
-	if(TRX_FrontPanel.key_enc_prev != TRX_FrontPanel.key_enc && TRX_FrontPanel.key_enc)
+	if (TRX_FrontPanel.key_enc_prev != TRX_FrontPanel.key_enc && TRX_FrontPanel.key_enc)
 	{
 		LCD_Handler_NOTCH();
 		LCD_UpdateQuery.TopButtons = true;
 	}
 	//VOLUME+NOTCH
-	if(TRX_FrontPanel.sec_encoder != 0)
+	if (TRX_FrontPanel.sec_encoder != 0)
 	{
-		if(LCD_NotchEdit)
+		if (LCD_NotchEdit)
 		{
 			if (TRX.NotchFC > 50 && TRX_FrontPanel.sec_encoder < 0)
 				TRX.NotchFC -= 25;
@@ -418,12 +418,12 @@ void TRX_ProcessFrontPanel(void)
 		}
 		else
 		{
-			if( ((TRX.Volume + TRX_FrontPanel.sec_encoder) > 0) && ((TRX.Volume + TRX_FrontPanel.sec_encoder) < 100))
-					TRX.Volume += TRX_FrontPanel.sec_encoder;
+			if (((TRX.Volume + TRX_FrontPanel.sec_encoder) > 0) && ((TRX.Volume + TRX_FrontPanel.sec_encoder) < 100))
+				TRX.Volume += TRX_FrontPanel.sec_encoder;
 			LCD_UpdateQuery.MainMenu = true;
 		}
 	}
-	
+
 	TRX_FrontPanel.key_1_prev = TRX_FrontPanel.key_1;
 	TRX_FrontPanel.key_2_prev = TRX_FrontPanel.key_2;
 	TRX_FrontPanel.key_3_prev = TRX_FrontPanel.key_3;
@@ -434,27 +434,27 @@ void TRX_ProcessFrontPanel(void)
 
 void TRX_ProcessSWRMeter(void)
 {
-	ADC_ChannelConfTypeDef sConfig = {0};
+	ADC_ChannelConfTypeDef sConfig = { 0 };
 	sConfig.Channel = ADC_CHANNEL_12;
 	//sConfig.Channel = ADC_CHANNEL_13;
-  sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-  HAL_ADC_ConfigChannel(&hadc1, &sConfig);
+	sConfig.Rank = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
 	HAL_ADC_Start(&hadc1); // запускаем преобразование сигнала АЦП
-  HAL_ADC_PollForConversion(&hadc1, 100); // ожидаем окончания преобразования
-  uint32_t adc = HAL_ADC_GetValue(&hadc1); // читаем полученное значение в переменную adc
-	//sendToDebug_uint32(adc,false);
+	HAL_ADC_PollForConversion(&hadc1, 100); // ожидаем окончания преобразования
+	uint32_t adc = HAL_ADC_GetValue(&hadc1); // читаем полученное значение в переменную adc
+	  //sendToDebug_uint32(adc,false);
 }
 
 void TRX_DBMCalculate(void)
 {
-	float32_t Audio_Vpp_value=(Processor_RX_Audio_Samples_MAX_value/(float32_t)TRX.RF_Gain)-(Processor_RX_Audio_Samples_MIN_value/(float32_t)TRX.RF_Gain); //получаем разницу между максимальным и минимальным значением в аудио-семплах
-	for(int i=0;i<(FPGA_BUS_BITS-ADC_BITS);i++) Audio_Vpp_value=Audio_Vpp_value/2; //приводим разрядность аудио к разрядности АЦП
-	float32_t ADC_Vpp_Value=Audio_Vpp_value*ADC_VREF/((float32_t)pow(2.0,ADC_BITS)-1); //получаем значение пик-пик напряжения на входе АЦП в вольтах
-	float32_t ADC_Vrms_Value=ADC_Vpp_Value*0.3535f; // Получаем действующее (RMS) напряжение на аходе АЦП
-	float32_t ADC_RF_IN_Value=(ADC_Vrms_Value/ADC_RF_TRANS_RATIO)*ADC_RF_INPUT_VALUE_CALIBRATION; //Получаем напряжение на антенном входе с учётом трансформатора и калибровки
-	if(ADC_RF_IN_Value<0.0000001f) ADC_RF_IN_Value=0.0000001f;
-	TRX_RX_dBm=10*log10f_fast((ADC_RF_IN_Value*ADC_RF_IN_Value)/(50.0f*0.001f)) ; //получаем значение мощности в dBm для сопротивления 50ом
-	Processor_RX_Audio_Samples_MAX_value=0;
-	Processor_RX_Audio_Samples_MIN_value=0;
-}	
+	float32_t Audio_Vpp_value = (Processor_RX_Audio_Samples_MAX_value / (float32_t)TRX.RF_Gain) - (Processor_RX_Audio_Samples_MIN_value / (float32_t)TRX.RF_Gain); //получаем разницу между максимальным и минимальным значением в аудио-семплах
+	for (int i = 0; i < (FPGA_BUS_BITS - ADC_BITS); i++) Audio_Vpp_value = Audio_Vpp_value / 2; //приводим разрядность аудио к разрядности АЦП
+	float32_t ADC_Vpp_Value = Audio_Vpp_value * ADC_VREF / ((float32_t)pow(2.0, ADC_BITS) - 1); //получаем значение пик-пик напряжения на входе АЦП в вольтах
+	float32_t ADC_Vrms_Value = ADC_Vpp_Value * 0.3535f; // Получаем действующее (RMS) напряжение на аходе АЦП
+	float32_t ADC_RF_IN_Value = (ADC_Vrms_Value / ADC_RF_TRANS_RATIO)*ADC_RF_INPUT_VALUE_CALIBRATION; //Получаем напряжение на антенном входе с учётом трансформатора и калибровки
+	if (ADC_RF_IN_Value < 0.0000001f) ADC_RF_IN_Value = 0.0000001f;
+	TRX_RX_dBm = 10 * log10f_fast((ADC_RF_IN_Value*ADC_RF_IN_Value) / (50.0f*0.001f)); //получаем значение мощности в dBm для сопротивления 50ом
+	Processor_RX_Audio_Samples_MAX_value = 0;
+	Processor_RX_Audio_Samples_MIN_value = 0;
+}

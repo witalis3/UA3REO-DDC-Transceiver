@@ -179,7 +179,7 @@ void DEBUG_Transmit_FIFO(uint8_t *data, uint16_t length)
 		{
 			debug_tx_fifo[debug_tx_fifo_head] = data[i];
 			debug_tx_fifo_head++;
-			if(debug_tx_fifo_head == debug_tx_fifo_tail) break;
+			if (debug_tx_fifo_head == debug_tx_fifo_tail) break;
 			if (debug_tx_fifo_head >= DEBUG_TX_FIFO_BUFFER_SIZE) debug_tx_fifo_head = 0;
 		}
 }
@@ -200,10 +200,10 @@ bool DEBUG_Transmit_FIFO_Events(void)
 			temp_buff[indx] = debug_tx_fifo[i];
 			indx++;
 			debug_tx_fifo_tail++;
-			if(indx == DEBUG_APP_TX_DATA_SIZE) break;
+			if (indx == DEBUG_APP_TX_DATA_SIZE) break;
 		}
-		if(debug_tx_fifo_tail==DEBUG_TX_FIFO_BUFFER_SIZE)
-			debug_tx_fifo_tail=0;
+		if (debug_tx_fifo_tail == DEBUG_TX_FIFO_BUFFER_SIZE)
+			debug_tx_fifo_tail = 0;
 	}
 	else if (debug_tx_fifo_head > debug_tx_fifo_tail)
 	{
@@ -212,7 +212,7 @@ bool DEBUG_Transmit_FIFO_Events(void)
 			temp_buff[indx] = debug_tx_fifo[i];
 			indx++;
 			debug_tx_fifo_tail++;
-			if(indx == DEBUG_APP_TX_DATA_SIZE) break;
+			if (indx == DEBUG_APP_TX_DATA_SIZE) break;
 		}
 	}
 	DEBUG_Transmit_FS(temp_buff, indx);

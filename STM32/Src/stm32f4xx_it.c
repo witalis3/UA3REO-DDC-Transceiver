@@ -246,7 +246,7 @@ void EXTI2_IRQHandler(void)
   /* USER CODE END EXTI2_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
   /* USER CODE BEGIN EXTI2_IRQn 1 */
-	TRX_Time_InActive=0;
+	TRX_Time_InActive = 0;
 	if (TRX_inited) ENCODER_checkRotate();
   /* USER CODE END EXTI2_IRQn 1 */
 }
@@ -261,7 +261,7 @@ void EXTI4_IRQHandler(void)
   /* USER CODE END EXTI4_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
   /* USER CODE BEGIN EXTI4_IRQn 1 */
-	TRX_Time_InActive=0;
+	TRX_Time_InActive = 0;
 	if (TRX_inited && TRX_getMode() != TRX_MODE_NO_TX) TRX_ptt_change();
   /* USER CODE END EXTI4_IRQn 1 */
 }
@@ -304,8 +304,8 @@ void EXTI9_5_IRQHandler(void)
   /* USER CODE END EXTI9_5_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
-	TRX_Time_InActive=0;
-	if(!TOUCH_InCalibrate)
+	TRX_Time_InActive = 0;
+	if (!TOUCH_InCalibrate)
 		LCD_checkTouchPad();
   /* USER CODE END EXTI9_5_IRQn 1 */
 }
@@ -316,7 +316,7 @@ void EXTI9_5_IRQHandler(void)
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
-	
+
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
@@ -340,7 +340,7 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
-	//StartProfilerUs();
+	  //StartProfilerUs();
 	if (!FPGA_busy) FPGA_fpgadata_iqclock();
 	if (!FPGA_busy) FPGA_fpgadata_stuffclock();
 	//EndProfilerUs(true);
@@ -357,7 +357,7 @@ void TIM5_IRQHandler(void)
   /* USER CODE END TIM5_IRQn 0 */
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
-	//StartProfilerUs();
+	  //StartProfilerUs();
 	tim5_counter++;
 	if (TRX_on_TX())
 	{
@@ -384,78 +384,78 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
 	ms50_counter++;
 
-	if(TRX_Key_Timeout_est>0 && !TRX_key_serial && !TRX_key_hard)
+	if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_hard)
 	{
-		TRX_Key_Timeout_est-=50;
-		if(TRX_Key_Timeout_est==0)
+		TRX_Key_Timeout_est -= 50;
+		if (TRX_Key_Timeout_est == 0)
 		{
 			LCD_UpdateQuery.StatusInfoGUI = true;
 			FPGA_NeedSendParams = true;
 			TRX_Restart_Mode();
 		}
 	}
-	
+
 	if (NeedSaveSettings)
 		FPGA_NeedSendParams = true;
-	
-	if(NeedReinitNotch)
+
+	if (NeedReinitNotch)
 		InitNotchFilter();
-	
+
 	if ((ms50_counter % 2) == 0) // every 100ms
 	{
 		//S-Meter Calculate
 		TRX_DBMCalculate();
-		
+
 		//WIFI
-		if(TRX.WIFI_Enabled)
+		if (TRX.WIFI_Enabled)
 			WIFI_ProcessAnswer();
-		
+
 		//Process keyboard and secondary encoder
 		TRX_ProcessFrontPanel();
 		FPGA_NeedGetParams = true;
-		
+
 		//Process SWR / Power meter
 		if (TRX_on_TX() && TRX_getMode() != TRX_MODE_NO_TX)
 			TRX_ProcessSWRMeter();
 	}
-	
+
 	if (ms50_counter == 20) // every 1 sec
 	{
 		ms50_counter = 0;
 		TRX_DoAutoGain(); //Process AutoGain feature
 
-		if(!TRX_SNMP_Synced) //Sync time from internet
+		if (!TRX_SNMP_Synced) //Sync time from internet
 			WIFI_GetSNMPTime();
-		
+
 #if 0
 		//Save Debug variables
-		uint32_t dbg_FPGA_samples=FPGA_samples;
-		uint32_t dbg_WM8731_DMA_samples=WM8731_DMA_samples/2;
-		uint32_t dbg_AUDIOPROC_TXA_samples=AUDIOPROC_TXA_samples;
-		uint32_t dbg_AUDIOPROC_TXB_samples=AUDIOPROC_TXB_samples;
-		float32_t dbg_cpu_sleep_counter=cpu_sleep_counter/1000.0f;
-		uint32_t dbg_tim5_counter=tim5_counter;
-		float32_t dbg_ALC_need_gain=ALC_need_gain;
-		float32_t dbg_Processor_TX_MAX_amplitude=Processor_TX_MAX_amplitude;
-		float32_t dbg_FPGA_Audio_Buffer_I_tmp=FPGA_Audio_Buffer_I_tmp[0];
-		float32_t dbg_FPGA_Audio_Buffer_Q_tmp=FPGA_Audio_Buffer_Q_tmp[0];
-		uint32_t dbg_RX_USB_AUDIO_SAMPLES=RX_USB_AUDIO_SAMPLES;
-		uint32_t dbg_TX_USB_AUDIO_SAMPLES=TX_USB_AUDIO_SAMPLES;
+		uint32_t dbg_FPGA_samples = FPGA_samples;
+		uint32_t dbg_WM8731_DMA_samples = WM8731_DMA_samples / 2;
+		uint32_t dbg_AUDIOPROC_TXA_samples = AUDIOPROC_TXA_samples;
+		uint32_t dbg_AUDIOPROC_TXB_samples = AUDIOPROC_TXB_samples;
+		float32_t dbg_cpu_sleep_counter = cpu_sleep_counter / 1000.0f;
+		uint32_t dbg_tim5_counter = tim5_counter;
+		float32_t dbg_ALC_need_gain = ALC_need_gain;
+		float32_t dbg_Processor_TX_MAX_amplitude = Processor_TX_MAX_amplitude;
+		float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_I_tmp[0];
+		float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_Q_tmp[0];
+		uint32_t dbg_RX_USB_AUDIO_SAMPLES = RX_USB_AUDIO_SAMPLES;
+		uint32_t dbg_TX_USB_AUDIO_SAMPLES = TX_USB_AUDIO_SAMPLES;
 		//Print Debug info
-		sendToDebug_str("FPGA Samples: "); sendToDebug_uint32(dbg_FPGA_samples,false); //~48000
-		sendToDebug_str("Audio DMA samples: "); sendToDebug_uint32(dbg_WM8731_DMA_samples,false); //~48000
-		sendToDebug_str("Audioproc cycles A: "); sendToDebug_uint32(dbg_AUDIOPROC_TXA_samples,false); //~120
-		sendToDebug_str("Audioproc cycles B: "); sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples,false); //~120
-		sendToDebug_str("CPU Sleep counter: "); sendToDebug_float32(dbg_cpu_sleep_counter,false);  
-		sendToDebug_str("Audioproc timer counter: "); sendToDebug_uint32(dbg_tim5_counter,false); 
-		sendToDebug_str("TX Autogain: "); sendToDebug_float32(dbg_ALC_need_gain,false);
-		sendToDebug_str("Processor TX MAX amplitude: "); sendToDebug_float32(dbg_Processor_TX_MAX_amplitude,false);
-		sendToDebug_str("First byte of I: "); sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp,false); //first byte of I
-		sendToDebug_str("First byte of Q: "); sendToDebug_float32(dbg_FPGA_Audio_Buffer_Q_tmp,false); //first byte of Q
-		sendToDebug_str("USB Audio RX samples: "); sendToDebug_uint32(dbg_RX_USB_AUDIO_SAMPLES,false); //~48000
-		sendToDebug_str("USB Audio TX samples: "); sendToDebug_uint32(dbg_TX_USB_AUDIO_SAMPLES,false); //~48000
-		sendToDebug_str("ADC MIN Amplitude: "); sendToDebug_int16(TRX_ADC_MINAMPLITUDE,false);
-		sendToDebug_str("ADC MAX Amplitude: "); sendToDebug_int16(TRX_ADC_MAXAMPLITUDE,false);
+		sendToDebug_str("FPGA Samples: "); sendToDebug_uint32(dbg_FPGA_samples, false); //~48000
+		sendToDebug_str("Audio DMA samples: "); sendToDebug_uint32(dbg_WM8731_DMA_samples, false); //~48000
+		sendToDebug_str("Audioproc cycles A: "); sendToDebug_uint32(dbg_AUDIOPROC_TXA_samples, false); //~120
+		sendToDebug_str("Audioproc cycles B: "); sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples, false); //~120
+		sendToDebug_str("CPU Sleep counter: "); sendToDebug_float32(dbg_cpu_sleep_counter, false);
+		sendToDebug_str("Audioproc timer counter: "); sendToDebug_uint32(dbg_tim5_counter, false);
+		sendToDebug_str("TX Autogain: "); sendToDebug_float32(dbg_ALC_need_gain, false);
+		sendToDebug_str("Processor TX MAX amplitude: "); sendToDebug_float32(dbg_Processor_TX_MAX_amplitude, false);
+		sendToDebug_str("First byte of I: "); sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp, false); //first byte of I
+		sendToDebug_str("First byte of Q: "); sendToDebug_float32(dbg_FPGA_Audio_Buffer_Q_tmp, false); //first byte of Q
+		sendToDebug_str("USB Audio RX samples: "); sendToDebug_uint32(dbg_RX_USB_AUDIO_SAMPLES, false); //~48000
+		sendToDebug_str("USB Audio TX samples: "); sendToDebug_uint32(dbg_TX_USB_AUDIO_SAMPLES, false); //~48000
+		sendToDebug_str("ADC MIN Amplitude: "); sendToDebug_int16(TRX_ADC_MINAMPLITUDE, false);
+		sendToDebug_str("ADC MAX Amplitude: "); sendToDebug_int16(TRX_ADC_MAXAMPLITUDE, false);
 		//sendToDebug_str("WIFI State: "); sendToDebug_int16(WIFI_State,false);
 		sendToDebug_newline();
 		PrintProfilerResult();
@@ -477,28 +477,28 @@ void TIM6_DAC_IRQHandler(void)
 		FPGA_NeedSendParams = true;
 		if (NeedSaveSettings)
 		{
-			if(eeprom_save_delay<30) //Запись в EEPROM не чаще, чем раз в 30 секунд (против износа)
+			if (eeprom_save_delay < 30) //Запись в EEPROM не чаще, чем раз в 30 секунд (против износа)
 			{
 				eeprom_save_delay++;
 			}
 			else
 			{
 				SaveSettings();
-				eeprom_save_delay=0;
+				eeprom_save_delay = 0;
 			}
 		}
 	}
-	
+
 	if (TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK)
 	{
 		TRX_Fan_Timeout += 3; //дуем в 2 раза больше чем работаем на передачу
-		if(TRX_Fan_Timeout > 120) TRX_Fan_Timeout=120; //но не более 2х минут
+		if (TRX_Fan_Timeout > 120) TRX_Fan_Timeout = 120; //но не более 2х минут
 	}
 	if (TRX_ptt_hard == HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin)) TRX_ptt_change();
 	if (TRX_ptt_cat != TRX_old_ptt_cat) TRX_ptt_change();
 	if (TRX_key_serial != TRX_old_key_serial) TRX_key_change();
 	if (TRX_key_hard == HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin)) TRX_key_change();
-	
+
 	LCD_doEvents();
 	FFT_printFFT();
 	//if(!sysmenu_spectrum_opened)
@@ -512,9 +512,9 @@ void TIM6_DAC_IRQHandler(void)
 void TIM7_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM7_IRQn 0 */
-	
-	//таймер вывода отладки
-	
+
+	  //таймер вывода отладки
+
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
@@ -529,8 +529,8 @@ void DMA2_Stream0_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
 
-	//DMA, занимающийся пересылкой данных в буфер кодека при приёме
-	
+	  //DMA, занимающийся пересылкой данных в буфер кодека при приёме
+
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream0);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
@@ -544,8 +544,8 @@ void DMA2_Stream0_IRQHandler(void)
 void DMA2_Stream1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream1_IRQn 0 */
-	
-	//DMA, занимающийся пересылкой данных в буфер кодека при приёме
+
+	  //DMA, занимающийся пересылкой данных в буфер кодека при приёме
 
   /* USER CODE END DMA2_Stream1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream1);
@@ -602,15 +602,15 @@ void OTG_FS_IRQHandler(void)
 void DMA2_Stream6_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream6_IRQn 0 */
-	
-	//DMA, занимающийся отрисовкой водопада
-	
+
+	  //DMA, занимающийся отрисовкой водопада
+
   /* USER CODE END DMA2_Stream6_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream6);
   /* USER CODE BEGIN DMA2_Stream6_IRQn 1 */
-	
+
 	FFT_printWaterfallDMA();
-	
+
   /* USER CODE END DMA2_Stream6_IRQn 1 */
 }
 

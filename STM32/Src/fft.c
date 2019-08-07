@@ -189,9 +189,9 @@ void FFT_Init(void)
 	if (TRX.FFT_Zoom > 1)
 	{
 		IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[TRX.FFT_Zoom];
-		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, 4*4*32);
+		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, 4 * 4 * 32);
 		IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[TRX.FFT_Zoom];
-		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, 4*4*32);
+		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, 4 * 4 * 32);
 		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_I,
 			FirZoomFFTDecimate[TRX.FFT_Zoom].numTaps,
 			TRX.FFT_Zoom,          // Decimation factor
@@ -231,7 +231,7 @@ void FFT_doFFT(void)
 		arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
 		arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
 	}
-	
+
 	//ZoomFFT
 	if (TRX.FFT_Zoom > 1)
 	{
@@ -268,7 +268,7 @@ void FFT_doFFT(void)
 			FFTInput[i * 2 + 1] = FFTInput_Q[i];
 		}
 	}
-	
+
 	NeedFFTInputBuffer = true;
 
 	//Окно для FFT
@@ -279,8 +279,8 @@ void FFT_doFFT(void)
 		//Окно Hanning
 		//window_multiplier = 0.5f * (1.0f - arm_cos_f32(2.0f * PI*i / (float32_t)FFT_SIZE * 2));
 		//Окно Hamming
-		window_multiplier = 0.54f - 0.46f * arm_cos_f32 ( (2.0f * PI * i) / ( (float32_t)FFT_SIZE - 1.0f) ) ;
-		
+		window_multiplier = 0.54f - 0.46f * arm_cos_f32((2.0f * PI * i) / ((float32_t)FFT_SIZE - 1.0f));
+
 		FFTInput[i * 2] = window_multiplier * FFTInput[i * 2];
 		FFTInput[i * 2 + 1] = window_multiplier * FFTInput[i * 2 + 1];
 	}
@@ -326,7 +326,7 @@ void FFT_doFFT(void)
 			FFTOutput_mean[i] += (FFTInput[i] - FFTOutput_mean[i]) / TRX.FFT_Averaging;
 		else
 			FFTOutput_mean[i] -= (FFTOutput_mean[i] - FFTInput[i]) / TRX.FFT_Averaging;
-	
+
 	FFT_need_fft = false;
 }
 
@@ -428,12 +428,12 @@ void FFT_printFFT(void)
 void FFT_printWaterfallDMA(void)
 {
 	uint8_t cwdecoder_offset = 0;
-	if(TRX.CWDecoder && (TRX_getMode()==TRX_MODE_CW_L || TRX_getMode()==TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (TRX_getMode() == TRX_MODE_CW_L || TRX_getMode() == TRX_MODE_CW_U))
 		cwdecoder_offset = FFT_CWDECODER_OFFSET;
-	
-	if(print_wtf_yindex<(FFT_WTF_HEIGHT - cwdecoder_offset))
+
+	if (print_wtf_yindex < (FFT_WTF_HEIGHT - cwdecoder_offset))
 	{
-		if(print_wtf_xindex==0)
+		if (print_wtf_xindex == 0)
 		{
 			LCDDriver_SetCursorAreaPosition(0, FFT_BOTTOM_OFFSET + print_wtf_yindex, FFT_PRINT_SIZE / 2, FFT_BOTTOM_OFFSET + print_wtf_yindex + 1);
 			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_buffer[print_wtf_yindex][0], LCD_FSMC_DATA_ADDR, FFT_PRINT_SIZE / 2);

@@ -92,7 +92,7 @@ SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-volatile uint32_t cpu_sleep_counter=0;
+volatile uint32_t cpu_sleep_counter = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -140,7 +140,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	//checkBootloaderButton(); //Go to bootloader if (K0 PE4) pressed
+	  //checkBootloaderButton(); //Go to bootloader if (K0 PE4) pressed
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -180,7 +180,7 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
 	LoadSettings();
 	LCD_Init();
-	if(!TRX.Calibrated)
+	if (!TRX.Calibrated)
 	{
 		Touch_Calibrate();
 		LCD_Init();
@@ -1225,10 +1225,10 @@ static void MX_FSMC_Init(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-		/* User can add his own implementation to report the HAL error return state */
+		  /* User can add his own implementation to report the HAL error return state */
 	while (1)
 	{
-		
+
 	}
   /* USER CODE END Error_Handler_Debug */
 }
@@ -1244,8 +1244,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 { 
   /* USER CODE BEGIN 6 */
-		/* User can add his own implementation to report the file name and line number,
-		   tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+		  /* User can add his own implementation to report the file name and line number,
+			 tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

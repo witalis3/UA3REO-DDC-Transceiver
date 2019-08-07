@@ -426,12 +426,12 @@ static void LCD_displayStatusInfoGUI(void) { //вывод RX/TX и с-метра
 	}
 
 	//Redraw CW decoder
-	if(TRX.CWDecoder && (TRX_getMode()==TRX_MODE_CW_L || TRX_getMode()==TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (TRX_getMode() == TRX_MODE_CW_L || TRX_getMode() == TRX_MODE_CW_U))
 	{
 		LCDDriver_Fill_RectWH(0, LCD_HEIGHT - FFT_CWDECODER_OFFSET, FFT_PRINT_SIZE, FFT_CWDECODER_OFFSET, COLOR_BLACK);
 		LCD_UpdateQuery.TextBar = true;
 	}
-	
+
 	LCD_UpdateQuery.StatusInfoGUI = false;
 	LCD_busy = false;
 }
@@ -530,14 +530,14 @@ static void LCD_displayTextBar(void) { //вывод текста под водо
 	}
 	LCD_busy = true;
 
-	if(TRX.CWDecoder && (TRX_getMode()==TRX_MODE_CW_L || TRX_getMode()==TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (TRX_getMode() == TRX_MODE_CW_L || TRX_getMode() == TRX_MODE_CW_U))
 	{
 		char ctmp[50];
 		sprintf(ctmp, "WPM:%d", CW_Decoder_WPM);
 		LCDDriver_printText(ctmp, 0, LCD_HEIGHT - FFT_CWDECODER_OFFSET + 1, COLOR_WHITE, COLOR_BLACK, 2);
 		LCDDriver_printText((char *)&CW_Decoder_Text, 75, LCD_HEIGHT - FFT_CWDECODER_OFFSET + 1, COLOR_WHITE, COLOR_BLACK, 2);
 	}
-	
+
 	LCD_UpdateQuery.TextBar = false;
 	LCD_busy = false;
 }

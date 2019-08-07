@@ -85,12 +85,12 @@ void Get_Touch_XY(volatile uint16_t *x_kor, volatile uint16_t *y_kor, uint8_t co
 			touch_y = (touch_y + tmpy) / 2;
 		}
 	}
-	
+
 	//определяем в какую из 4-х частей экрана попадает нажатие, запоминаем края нужной части
 	uint8_t area = 0;
 	float32_t area_touch_x0, area_touch_x1, area_touch_x2, area_touch_x3, area_touch_x4;
 	float32_t area_touch_y0, area_touch_y1, area_touch_y2, area_touch_y3, area_touch_y4;
-	if(beetween(touch_x0, touch_x1, touch_x) && beetween(touch_y0, touch_y3, touch_y)) //top-left
+	if (beetween(touch_x0, touch_x1, touch_x) && beetween(touch_y0, touch_y3, touch_y)) //top-left
 	{
 		area = 1;
 		area_touch_x0 = touch_x0;
@@ -102,7 +102,7 @@ void Get_Touch_XY(volatile uint16_t *x_kor, volatile uint16_t *y_kor, uint8_t co
 		area_touch_y2 = touch_y3;
 		area_touch_y3 = touch_y8;
 	}
-	else if(beetween(touch_x1, touch_x2, touch_x) && beetween(touch_y2, touch_y4, touch_y)) //top-right
+	else if (beetween(touch_x1, touch_x2, touch_x) && beetween(touch_y2, touch_y4, touch_y)) //top-right
 	{
 		area = 2;
 		area_touch_x0 = touch_x1;
@@ -114,7 +114,7 @@ void Get_Touch_XY(volatile uint16_t *x_kor, volatile uint16_t *y_kor, uint8_t co
 		area_touch_y2 = touch_y8;
 		area_touch_y3 = touch_y4;
 	}
-	else if(beetween(touch_x5, touch_x6, touch_x) && beetween(touch_y3, touch_y5, touch_y)) //bottom-left
+	else if (beetween(touch_x5, touch_x6, touch_x) && beetween(touch_y3, touch_y5, touch_y)) //bottom-left
 	{
 		area = 3;
 		area_touch_x0 = touch_x3;
@@ -126,7 +126,7 @@ void Get_Touch_XY(volatile uint16_t *x_kor, volatile uint16_t *y_kor, uint8_t co
 		area_touch_y2 = touch_y5;
 		area_touch_y3 = touch_y6;
 	}
-	else if(beetween(touch_x6, touch_x7, touch_x) && beetween(touch_y4, touch_y7, touch_y)) //bottom-right
+	else if (beetween(touch_x6, touch_x7, touch_x) && beetween(touch_y4, touch_y7, touch_y)) //bottom-right
 	{
 		area = 4;
 		area_touch_x0 = touch_x8;
@@ -150,7 +150,7 @@ void Get_Touch_XY(volatile uint16_t *x_kor, volatile uint16_t *y_kor, uint8_t co
 		area_touch_y3 = touch_y8;
 	}
 	//
-	
+
 	//производим расчёт используя координаты полученные при калибровке
 	//вычисляем коэффициенты влияния каждой из координат тачпада
 	float32_t x0_coeff = 1 - (touch_x - area_touch_x0) / (area_touch_x1 - area_touch_x0);
@@ -189,22 +189,22 @@ void Get_Touch_XY(volatile uint16_t *x_kor, volatile uint16_t *y_kor, uint8_t co
 	//получаем значения координат на экране
 	float32_t true_x = 0;
 	float32_t true_y = 0;
-	if(area==1)
+	if (area == 1)
 	{
 		true_x = (LCD_WIDTH / 2) * (q1 + q3);
 		true_y = (LCD_HEIGHT / 2) * (q2 + q3);
 	}
-	else if(area==2)
+	else if (area == 2)
 	{
 		true_x = (LCD_WIDTH / 2) + (LCD_WIDTH / 2) * (q1 + q3);
 		true_y = (LCD_HEIGHT / 2) * (q2 + q3);
 	}
-	else if(area==3)
+	else if (area == 3)
 	{
 		true_x = (LCD_WIDTH / 2) * (q1 + q3);
 		true_y = (LCD_HEIGHT / 2) + (LCD_HEIGHT / 2) * (q2 + q3);
 	}
-	else if(area==4)
+	else if (area == 4)
 	{
 		true_x = (LCD_WIDTH / 2) + (LCD_WIDTH / 2) * (q1 + q3);
 		true_y = (LCD_HEIGHT / 2) + (LCD_HEIGHT / 2) * (q2 + q3);
@@ -248,7 +248,7 @@ void Touch_Set_Coef(float32_t x0, float32_t y0, float32_t x1, float32_t y1, floa
 	touch_y7 = y7;
 	touch_x8 = x8;
 	touch_y8 = y8;
-	
+
 	//char dest[300];
 	//sprintf(dest, "Set touchpad calibrate:\r\n x0 = %f  y0 = %f\r\n x1 = %f  y1 = %f\r\n x2 = %f  y2 = %f\r\n x3 = %f  y3 = %f\r\n x4 = %f  y4 = %f\r\n x5 = %f  y5 = %f\r\n x6 = %f  y6 = %f\r\n x7 = %f  y7 = %f\r\n x8 = %f  y8 = %f\r\n", x0,y0,x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6,x7,y7,x8,y8);
 	//sendToDebug_str(dest);
@@ -260,8 +260,8 @@ static void Touch_DoCalibratePoint(uint16_t cal_x, uint16_t cal_y, uint16_t *ret
 	uint16_t x, y;
 	LCDDriver_Fill(COLOR_WHITE);
 	LCDDriver_printText("Callibration", 50, 100, 0xFFE0, 0x0000, 2);
-	LCDDriver_drawLine(cal_x-CALIBRATE_OFFSET, cal_y, cal_x+CALIBRATE_OFFSET, cal_y, 0x0000); //h
-	LCDDriver_drawLine(cal_x, cal_y-CALIBRATE_OFFSET, cal_x, cal_y+CALIBRATE_OFFSET, 0x0000); //v
+	LCDDriver_drawLine(cal_x - CALIBRATE_OFFSET, cal_y, cal_x + CALIBRATE_OFFSET, cal_y, 0x0000); //h
+	LCDDriver_drawLine(cal_x, cal_y - CALIBRATE_OFFSET, cal_x, cal_y + CALIBRATE_OFFSET, 0x0000); //v
 
 	LCDDriver_printText("Press", 50, 120, 0xFFE0, 0x0000, 2);
 	while (1)
@@ -281,7 +281,7 @@ static void Touch_DoCalibratePoint(uint16_t cal_x, uint16_t cal_y, uint16_t *ret
 	//ждать отпускания
 	while (isTouch());
 	LCDDriver_printText("     ", 50, 120, 0xFFE0, 0x0000, 2);
-	
+
 	//sendToDebug_float32(x,false);
 	//sendToDebug_float32(y,false);
 	//sendToDebug_newline();
@@ -293,7 +293,7 @@ void Touch_Calibrate(void)
 {
 	uint16_t x, y;
 	TOUCH_InCalibrate = true;
-	
+
 	Touch_DoCalibratePoint(CALIBRATE_OFFSET, CALIBRATE_OFFSET, &xPos[0], &yPos[0]); //рисуем крестик в левом верхнем углу
 	Touch_DoCalibratePoint(LCD_WIDTH / 2, CALIBRATE_OFFSET, &xPos[1], &yPos[1]); //рисуем крестик вверху
 	Touch_DoCalibratePoint(LCD_WIDTH - CALIBRATE_OFFSET, CALIBRATE_OFFSET, &xPos[2], &yPos[2]); //рисуем крестик в правом верхнем углу

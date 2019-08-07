@@ -79,7 +79,7 @@ void CWDecoder_Process(float32_t* bufferIn)
 	//sendToDebug_float32(magnitudelimit,false);
 	//sendToDebug_float32(magnitude,false);
 	//sendToDebug_newline();
-	
+
 	// now we check for the magnitude
 	//if (magnitude > magnitudelimit*0.6) // just to have some space up 
 	if (magnitude > (magnitudelimit_low + (magnitudelimit - magnitudelimit_low) * 0.8f))
@@ -239,7 +239,7 @@ static void CWDecoder_Decode(void)
 
 static void CWDecoder_PrintChar(char * str)
 {
-	if(strlen(CW_Decoder_Text)>=CWDECODER_STRLEN)
+	if (strlen(CW_Decoder_Text) >= CWDECODER_STRLEN)
 		shiftTextLeft(CW_Decoder_Text, 1);
 	strcat(CW_Decoder_Text, str);
 	LCD_UpdateQuery.TextBar = true;
