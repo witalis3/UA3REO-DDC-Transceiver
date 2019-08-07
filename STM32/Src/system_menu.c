@@ -17,18 +17,19 @@ static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
 static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 
 static void SYSMENU_HANDL_FFTEnabled(int8_t direction);
-static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
-static void SYSMENU_HANDL_LCD_Brightness(int8_t direction);
-static void SYSMENU_HANDL_ENCODER_SLOW_RATE(int8_t direction);
-static void SYSMENU_HANDL_Touch_Calibrate(int8_t direction);
-static void SYSMENU_HANDL_SETTIME(int8_t direction);
-static void SYSMENU_HANDL_Standby_Time(int8_t direction);
-static void SYSMENU_HANDL_Beeping(int8_t direction);
-static void SYSMENU_HANDL_Key_timeout(int8_t direction);
 static void SYSMENU_HANDL_FFT_Averaging(int8_t direction);
+static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
+static void SYSMENU_HANDL_Standby_Time(int8_t direction);
+static void SYSMENU_HANDL_CWDecoder(int8_t direction);
+static void SYSMENU_HANDL_CWSelfHear(int8_t direction);
+static void SYSMENU_HANDL_LCD_Brightness(int8_t direction);
+static void SYSMENU_HANDL_Touch_Calibrate(int8_t direction);
+static void SYSMENU_HANDL_Beeping(int8_t direction);
+static void SYSMENU_HANDL_ENCODER_SLOW_RATE(int8_t direction);
+static void SYSMENU_HANDL_SETTIME(int8_t direction);
+static void SYSMENU_HANDL_Key_timeout(int8_t direction);
 static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
-static void SYSMENU_HANDL_CWDecoder(int8_t direction);
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction);
@@ -65,6 +66,7 @@ static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 {
 	{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.Key_timeout, SYSMENU_HANDL_Key_timeout},
 	{"CW Generator shift", SYSMENU_UINT16, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
+	{"CW Self Hear", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CWSelfHear},
 	{"CW Decoder", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CWDecoder},
 };
 static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
@@ -286,6 +288,12 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 	sysmenu_spectrum_opened=true;
 	SPEC_Start();
 	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_CWSelfHear(int8_t direction)
+{
+	if(direction>0) TRX.CW_SelfHear = true;
+	if(direction<0) TRX.CW_SelfHear = false;
 }
 
 static void SYSMENU_HANDL_CWMENU(int8_t direction)

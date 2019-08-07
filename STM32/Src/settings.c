@@ -90,7 +90,7 @@ void LoadSettings(void)
 		TRX.LCD_Brightness = 60; //яркость экрана
 		TRX.Standby_Time = 180; //время до гашения экрана по бездействию
 		TRX.Beeping = true; //звуки нажатия на кнопки
-		TRX.Key_timeout = 1000; //время отпуская передачи после последнего знака на ключе
+		TRX.Key_timeout = 500; //время отпуская передачи после последнего знака на ключе
 		TRX.FFT_Averaging = 4; //усреднение FFT, чтобы сделать его более гладким
 		TRX.SSB_HPF_pass = 300; //частота среза ФВЧ в SSB моде
 		TRX.WIFI_Enabled = false; //активировать WiFi
@@ -99,6 +99,7 @@ void LoadSettings(void)
 		TRX.WIFI_TIMEZONE = 3; //часовой пояс (для синхронизации времени)
 		TRX.SPEC_Begin = 700; //старт диапазона анализатора спектра
 		TRX.SPEC_End = 800; //старт диапазона анализатора спектра
+		TRX.CW_SelfHear = true; //самоконтоль CW
 	}
 }
 

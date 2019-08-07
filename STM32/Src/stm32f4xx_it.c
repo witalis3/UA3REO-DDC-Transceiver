@@ -384,7 +384,7 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
 	ms50_counter++;
 
-	if(TRX_Key_Timeout_est>0)
+	if(TRX_Key_Timeout_est>0 && !TRX_key_serial && !TRX_key_hard)
 	{
 		TRX_Key_Timeout_est-=50;
 		if(TRX_Key_Timeout_est==0)

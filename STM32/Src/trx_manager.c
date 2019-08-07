@@ -53,7 +53,7 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
-static void TRX_Start_Loopback(void);
+static void TRX_Start_TXRX(void);
 
 bool TRX_on_TX(void)
 {
@@ -70,10 +70,11 @@ void TRX_Init()
 
 void TRX_Restart_Mode()
 {
+	uint8_t mode = TRX_getMode();
 	if (TRX_on_TX())
 	{
-		if (TRX_getMode() == TRX_MODE_LOOPBACK)
-			TRX_Start_Loopback();
+		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
+			TRX_Start_TXRX();
 		else
 			TRX_Start_TX();
 	}
@@ -105,7 +106,7 @@ static void TRX_Start_TX()
 	WM8731_start_i2s_and_dma();
 }
 
-static void TRX_Start_Loopback()
+static void TRX_Start_TXRX()
 {
 	sendToDebug_str("LOOP MODE\r\n");
 	TRX_RF_UNIT_UpdateState(false);
@@ -191,7 +192,7 @@ uint32_t TRX_getFrequency(void)
 void TRX_setMode(uint8_t _mode)
 {
 	CurrentVFO()->Mode = _mode;
-	if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK || _mode == TRX_MODE_LOOPBACK) TRX_Start_Loopback();
+	if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK) TRX_Start_TXRX();
 	switch (_mode)
 	{
 	case TRX_MODE_LSB:

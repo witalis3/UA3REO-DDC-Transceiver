@@ -128,6 +128,7 @@ extern struct TRX_SETTINGS {
 	int8_t WIFI_TIMEZONE;
 	uint16_t SPEC_Begin;
 	uint16_t SPEC_End;
+	uint16_t CW_SelfHear;
 } TRX;
 
 volatile extern bool NeedSaveSettings;

@@ -63,7 +63,8 @@ void processTxAudio(void)
 	if (!Processor_NeedTXBuffer) return;
 	AUDIOPROC_samples++;
 	selected_rfpower_amplitude = TRX.RF_Power / 100.0f * MAX_TX_AMPLITUDE;
-
+	uint8_t mode = TRX_getMode();
+	
 	if (TRX.InputType == 2) //USB AUDIO
 	{
 		uint16_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / 2; //buffer 8bit, data 16 bit
@@ -98,7 +99,7 @@ void processTxAudio(void)
 		dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 3);
 	}
 	
-	if (TRX_getMode() != TRX_MODE_IQ && !TRX_tune)
+	if (mode != TRX_MODE_IQ && !TRX_tune)
 	{
 		//IIR HPF
 		for (block = 0; block < numBlocks; block++)
@@ -138,13 +139,13 @@ void processTxAudio(void)
 		//шумовой порог
 		if (Processor_TX_MAX_amplitude < TX_AGC_NOISEGATE) ALC_need_gain = 0.0f;
 		//оключаем усиление для некоторых видов мод
-		if ((ALC_need_gain > 1.0f) && (TRX_getMode() == TRX_MODE_DIGI_L || TRX_getMode() == TRX_MODE_DIGI_U || TRX_getMode() == TRX_MODE_IQ || TRX_getMode() == TRX_MODE_LOOPBACK)) ALC_need_gain = 1.0f;
+		if ((ALC_need_gain > 1.0f) && (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_IQ || mode == TRX_MODE_LOOPBACK)) ALC_need_gain = 1.0f;
 		if (TRX_tune) ALC_need_gain = 1.0f;
 		//применяем усиление
 		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, ALC_need_gain, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, ALC_need_gain, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		//
-		switch (TRX_getMode())
+		switch (mode)
 		{
 		case TRX_MODE_CW_L:
 		case TRX_MODE_CW_U:
@@ -225,7 +226,7 @@ void processTxAudio(void)
 	}
 
 	//Loopback mode
-	if (TRX_getMode() == TRX_MODE_LOOPBACK && !TRX_tune)
+	if (mode == TRX_MODE_LOOPBACK && !TRX_tune)
 	{
 		//OUT Volume
 		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, (float32_t)TRX.Volume / 50.0f, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -251,6 +252,13 @@ void processTxAudio(void)
 	}
 	else
 	{
+		//CW SelfHear
+		if(TRX.CW_SelfHear && (TRX_key_serial || TRX_key_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U))
+		{
+			for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
+				CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX.Volume / 100.0f)*2000.0f*arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE)*PI*2.0f*(float32_t)TRX.CW_GENERATOR_SHIFT_HZ);
+		}
+		//
 		if (FPGA_Audio_Buffer_State) //Send to FPGA DMA
 		{
 			AUDIOPROC_TXA_samples++;
