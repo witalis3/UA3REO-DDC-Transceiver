@@ -36,6 +36,8 @@
 #define	TWOPI		6.28318530717958647692f
 #define SQRT2   1.41421356237f
 
+#define MINI_DELAY for(int wait_i=0;wait_i<100;wait_i++) { __asm("nop"); };
+
 extern uint8_t FPGA_spi_data;
 extern UART_HandleTypeDef huart1;
 

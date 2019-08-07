@@ -227,9 +227,12 @@ void TRX_RF_UNIT_UpdateState(bool clean) //передаём значения в 
 {
 	bool hpf_lock = false;
 	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //защёлка
+	MINI_DELAY
 	for (uint8_t registerNumber = 0; registerNumber < 16; registerNumber++) {
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); //клок данных
+		MINI_DELAY
 		HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); //данные
+		MINI_DELAY
 		if (!clean)
 		{
 			if (registerNumber == 0 && TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK && TRX.TX_Amplifier) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_AMP
@@ -258,9 +261,12 @@ void TRX_RF_UNIT_UpdateState(bool clean) //передаём значения в 
 			if (registerNumber == 14 && TRX.BPF && TRX_getFrequency() >= BPF_4_START && TRX_getFrequency() < BPF_4_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_4
 			if (registerNumber == 15 && TRX.BPF && TRX_getFrequency() >= BPF_3_START && TRX_getFrequency() < BPF_3_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_3
 		}
+		MINI_DELAY
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_SET);
 	}
+	MINI_DELAY
 	HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET);
+	MINI_DELAY
 	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_SET);
 }
 

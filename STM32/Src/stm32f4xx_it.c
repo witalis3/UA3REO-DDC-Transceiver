@@ -501,7 +501,6 @@ void TIM6_DAC_IRQHandler(void)
 
 	LCD_doEvents();
 	FFT_printFFT();
-	//if(!sysmenu_spectrum_opened)
 	TRX_RF_UNIT_UpdateState(false);
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
