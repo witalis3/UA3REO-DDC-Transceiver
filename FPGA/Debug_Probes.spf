@@ -5,11 +5,25 @@
     <sources/>
     <probes>
       <probe name="probe[0]"/>
+      <probe name="probe[1]"/>
+      <probe name="probe[2]"/>
+      <probe name="probe[3]"/>
+      <probe name="probe[4]"/>
+      <probe name="probe[5]"/>
+      <probe name="probe[6]"/>
+      <probe name="probe[7]"/>
     </probes>
     <view>
-      <view_node expanded="true" group_name="probe[0..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
+      <view_node expanded="false" group_name="probe[7..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
+      <view_node expanded="true" index="7" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="6" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="5" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="4" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="3" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="2" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
     </view>
-    <log data="FF" max_size="8" size="8" time="8CEBB1D5000000009CEBB1D5000000009CEBB1D5000000009CEBB1D5000000009CEBB1D5000000009CEBB1D5000000009CEBB1D5000000009CEBB1D500000000" width="1"/>
+    <log data="" max_size="8" size="0" time="" width="8"/>
   </instance>
 </session>

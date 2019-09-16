@@ -88,25 +88,25 @@ extern volatile uint32_t cpu_sleep_counter;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define ENC_DT_Pin GPIO_PIN_2
-#define ENC_DT_GPIO_Port GPIOE
-#define ENC_DT_EXTI_IRQn EXTI2_IRQn
+#define ENC_CLK_Pin GPIO_PIN_2
+#define ENC_CLK_GPIO_Port GPIOE
+#define ENC_CLK_EXTI_IRQn EXTI2_IRQn
 #define ENC2_SW_Pin GPIO_PIN_4
 #define ENC2_SW_GPIO_Port GPIOE
-#define ENC_CLK_Pin GPIO_PIN_5
-#define ENC_CLK_GPIO_Port GPIOE
+#define ENC_DT_Pin GPIO_PIN_5
+#define ENC_DT_GPIO_Port GPIOE
 #define ENC2_DT_Pin GPIO_PIN_6
 #define ENC2_DT_GPIO_Port GPIOE
 #define ENC2_CLK_Pin GPIO_PIN_13
 #define ENC2_CLK_GPIO_Port GPIOC
-#define FPGA_CLK_Pin GPIO_PIN_0
-#define FPGA_CLK_GPIO_Port GPIOC
-#define FPGA_SYNC_Pin GPIO_PIN_1
-#define FPGA_SYNC_GPIO_Port GPIOC
-#define SWR_FORW_Pin GPIO_PIN_2
+#define SWR_FORW_Pin GPIO_PIN_0
 #define SWR_FORW_GPIO_Port GPIOC
-#define SWR_BACKW_Pin GPIO_PIN_3
+#define SWR_BACKW_Pin GPIO_PIN_1
 #define SWR_BACKW_GPIO_Port GPIOC
+#define FPGA_CLK_Pin GPIO_PIN_2
+#define FPGA_CLK_GPIO_Port GPIOC
+#define FPGA_SYNC_Pin GPIO_PIN_3
+#define FPGA_SYNC_GPIO_Port GPIOC
 #define FPGA_BUS_D0_Pin GPIO_PIN_0
 #define FPGA_BUS_D0_GPIO_Port GPIOA
 #define FPGA_BUS_D1_Pin GPIO_PIN_1
@@ -138,12 +138,12 @@ extern volatile uint32_t cpu_sleep_counter;
 #define AUDIO_48K_CLOCK_EXTI_IRQn EXTI15_10_IRQn
 #define TOUCH_CS_Pin GPIO_PIN_12
 #define TOUCH_CS_GPIO_Port GPIOB
-#define TOUCH_SCK_Pin GPIO_PIN_13
-#define TOUCH_SCK_GPIO_Port GPIOB
-#define TOUCH_MISO_Pin GPIO_PIN_14
-#define TOUCH_MISO_GPIO_Port GPIOB
-#define TOUCH_MOSI_Pin GPIO_PIN_15
-#define TOUCH_MOSI_GPIO_Port GPIOB
+#define PERI_SCK_Pin GPIO_PIN_13
+#define PERI_SCK_GPIO_Port GPIOB
+#define PERI_MISO_Pin GPIO_PIN_14
+#define PERI_MISO_GPIO_Port GPIOB
+#define PERI_MOSI_Pin GPIO_PIN_15
+#define PERI_MOSI_GPIO_Port GPIOB
 #define SD_CS_Pin GPIO_PIN_11
 #define SD_CS_GPIO_Port GPIOD
 #define F_CS_Pin GPIO_PIN_12

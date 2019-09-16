@@ -82,8 +82,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 0 160)
 		(input)
-		(text "ADC_IN[11..0]" (rect 0 0 60 12)(font "Arial" ))
-		(text "ADC_IN[11..0]" (rect 21 155 81 167)(font "Arial" ))
+		(text "ADC_IN[15..0]" (rect 0 0 61 12)(font "Arial" ))
+		(text "ADC_IN[15..0]" (rect 21 155 82 167)(font "Arial" ))
 		(line (pt 0 160)(pt 16 160)(line_width 3))
 	)
 	(port

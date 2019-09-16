@@ -3,9 +3,9 @@ module nco_shift (
 	out
 );
 
-input	[13:0] in;
-output [11:0] out;
+input	[15:0] in;
+output [13:0] out;
 
-assign out[11:0]=in[13:2];
+assign out[13:0]=in[15:2];
 	
 endmodule
