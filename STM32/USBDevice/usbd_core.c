@@ -451,7 +451,7 @@ USBD_StatusTypeDef USBD_LL_SOF(USBD_HandleTypeDef  *pdev)
   {
     if(pdev->pClass->SOF != NULL)
     {
-      pdev->pClass->SOF(pdev);
+      pdev->pClass->SOF();
     }
   }
   return USBD_OK;

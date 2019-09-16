@@ -115,8 +115,8 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
   
     __HAL_RCC_GPIOC_CLK_ENABLE();
     /**ADC1 GPIO Configuration    
-    PC2     ------> ADC1_IN12
-    PC3     ------> ADC1_IN13 
+    PC0     ------> ADC1_IN10
+    PC1     ------> ADC1_IN11 
     */
     GPIO_InitStruct.Pin = SWR_FORW_Pin|SWR_BACKW_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
@@ -147,8 +147,8 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
     __HAL_RCC_ADC1_CLK_DISABLE();
   
     /**ADC1 GPIO Configuration    
-    PC2     ------> ADC1_IN12
-    PC3     ------> ADC1_IN13 
+    PC0     ------> ADC1_IN10
+    PC1     ------> ADC1_IN11 
     */
     HAL_GPIO_DeInit(GPIOC, SWR_FORW_Pin|SWR_BACKW_Pin);
 
@@ -367,7 +367,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     GPIO_InitStruct.Pin = W25Q16_SCK_Pin|W25Q16_MISO_Pin|W25Q16_MOSI_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
@@ -385,12 +385,11 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
   
     __HAL_RCC_GPIOB_CLK_ENABLE();
     /**SPI2 GPIO Configuration    
-    PB12     ------> SPI2_NSS
     PB13     ------> SPI2_SCK
     PB14     ------> SPI2_MISO
     PB15     ------> SPI2_MOSI 
     */
-    GPIO_InitStruct.Pin = TOUCH_CS_Pin|TOUCH_SCK_Pin|TOUCH_MISO_Pin|TOUCH_MOSI_Pin;
+    GPIO_InitStruct.Pin = PERI_SCK_Pin|PERI_MISO_Pin|PERI_MOSI_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -440,12 +439,11 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
     __HAL_RCC_SPI2_CLK_DISABLE();
   
     /**SPI2 GPIO Configuration    
-    PB12     ------> SPI2_NSS
     PB13     ------> SPI2_SCK
     PB14     ------> SPI2_MISO
     PB15     ------> SPI2_MOSI 
     */
-    HAL_GPIO_DeInit(GPIOB, TOUCH_CS_Pin|TOUCH_SCK_Pin|TOUCH_MISO_Pin|TOUCH_MOSI_Pin);
+    HAL_GPIO_DeInit(GPIOB, PERI_SCK_Pin|PERI_MISO_Pin|PERI_MOSI_Pin);
 
   /* USER CODE BEGIN SPI2_MspDeInit 1 */
 

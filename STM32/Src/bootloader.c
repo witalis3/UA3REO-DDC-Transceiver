@@ -38,12 +38,12 @@ void JumpToBootloader(void) {
 	GPIO_InitStruct.Pin = LCD_BACKLIGT_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	HAL_GPIO_Init(LCD_BACKLIGT_GPIO_Port, &GPIO_InitStruct);
-	HAL_GPIO_WritePin(LCD_BACKLIGT_GPIO_Port, LCD_BACKLIGT_Pin, 0);
+	HAL_GPIO_WritePin(LCD_BACKLIGT_GPIO_Port, LCD_BACKLIGT_Pin, GPIO_PIN_RESET);
 	//prepare cpu
 	MX_USB_DevDisconnect();
 	hiwdg.Init.Reload = 0;
 	for (uint8_t i = 0; i < 255; i++)
-		HAL_NVIC_DisableIRQ(i);
+		HAL_NVIC_DisableIRQ((IRQn_Type)i);
 	HAL_RCC_DeInit();
 	SysTick->CTRL = 0;
 	SysTick->LOAD = 0;

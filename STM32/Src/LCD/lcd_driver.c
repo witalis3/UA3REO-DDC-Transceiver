@@ -6,7 +6,7 @@
 
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern SRAM_HandleTypeDef hsram1;
-static uint8_t rotationNum = 1;
+//static uint8_t rotationNum = 1;
 static bool _cp437 = false;
 uint32_t LCD_FSMC_COMM_ADDR = 0;
 uint32_t LCD_FSMC_DATA_ADDR = 0;
@@ -691,27 +691,22 @@ void LCDDriver_setRotation(uint8_t rotate)
 	switch (rotate)
 	{
 	case 1:
-		rotationNum = 1;
 		LCDDriver_SendCommand(LCD_COMMAND_MEMCONTROL);
 		LCDDriver_SendData(LCD_COMMAND_MADCTL_MY | LCD_COMMAND_MADCTL_BGR);
 		break;
 	case 2:
-		rotationNum = 2;
 		LCDDriver_SendCommand(LCD_COMMAND_MEMCONTROL);
 		LCDDriver_SendData(LCD_COMMAND_MADCTL_MV | LCD_COMMAND_MADCTL_BGR);
 		break;
 	case 3:
-		rotationNum = 3;
 		LCDDriver_SendCommand(LCD_COMMAND_MEMCONTROL);
 		LCDDriver_SendData(LCD_COMMAND_MADCTL_MX | LCD_COMMAND_MADCTL_BGR);
 		break;
 	case 4:
-		rotationNum = 4;
 		LCDDriver_SendCommand(LCD_COMMAND_MEMCONTROL);
 		LCDDriver_SendData(LCD_COMMAND_MADCTL_MX | LCD_COMMAND_MADCTL_MY | LCD_COMMAND_MADCTL_MV | LCD_COMMAND_MADCTL_BGR);
 		break;
 	default:
-		rotationNum = 1;
 		LCDDriver_SendCommand(LCD_COMMAND_MEMCONTROL);
 		LCDDriver_SendData(LCD_COMMAND_MADCTL_MY | LCD_COMMAND_MADCTL_BGR);
 		break;

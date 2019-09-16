@@ -8,8 +8,6 @@
  * - always start with i2c_delay rather than end
  */
 
-static uint8_t i2c_rx_buf_idx = 0;               /* first unread idx in rx_buf */
-static uint8_t i2c_rx_buf_len = 0;               /* number of bytes read */
 static uint8_t i2c_tx_addr = 0;                  /* address transmitting to */
 static uint8_t i2c_tx_buf[WIRE_BUFSIZ] = { 0 };      /* transmit buffer */
 static uint8_t i2c_tx_buf_idx = 0;  /* next idx available in tx_buf, -1 overflow */
@@ -131,8 +129,6 @@ void i2c_beginTransmission_u8(uint8_t slave_address) {
 	i2c_tx_addr = slave_address;
 	i2c_tx_buf_idx = 0;
 	i2c_tx_buf_overflow = false;
-	i2c_rx_buf_idx = 0;
-	i2c_rx_buf_len = 0;
 }
 
 uint8_t i2c_endTransmission(void) {

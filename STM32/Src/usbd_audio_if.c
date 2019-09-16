@@ -6,8 +6,8 @@
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-static int8_t AUDIO_Init_FS(uint32_t options);
-static int8_t AUDIO_DeInit_FS(uint32_t options);
+static int8_t AUDIO_Init_FS(void);
+static int8_t AUDIO_DeInit_FS(void);
 
 int16_t USB_AUDIO_rx_buffer_a[(USB_AUDIO_RX_BUFFER_SIZE / 2)] = { 0 };
 int16_t USB_AUDIO_rx_buffer_b[(USB_AUDIO_RX_BUFFER_SIZE / 2)] = { 0 };
@@ -31,7 +31,7 @@ USBD_AUDIO_ItfTypeDef USBD_AUDIO_fops_FS =
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
 
-static int8_t AUDIO_Init_FS()
+static int8_t AUDIO_Init_FS(void)
 {
 	USBD_AUDIO_HandleTypeDef   *haudio = (USBD_AUDIO_HandleTypeDef*)hUsbDeviceFS.pClassDataAUDIO;
 	haudio->TxBuffer = (uint8_t*)&USB_AUDIO_tx_buffer;
@@ -52,7 +52,7 @@ int16_t USB_AUDIO_GetTXBufferIndex_FS(void)
   * @param  options: Reserved for future use
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-static int8_t AUDIO_DeInit_FS()
+static int8_t AUDIO_DeInit_FS(void)
 {
 	/* USER CODE BEGIN 1 */
 	return (USBD_OK);

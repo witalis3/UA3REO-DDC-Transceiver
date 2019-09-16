@@ -375,113 +375,112 @@ void dc_filter(float32_t *agcBuffer, int16_t blockSize, uint8_t stateNum)	//уд
 static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain)
 {
 	float32_t a0, a1, a2, b1, b2, norm;
-	float32_t ymin, ymax, minVal, maxVal;
 
-	float32_t V = pow(10.0, fabs(peakGain) / 20.0);
+	float32_t V = pow(10.0f, fabs(peakGain) / 20.0f);
 	float32_t K = tan(PI * Fc / Fs);
 	switch (type) {
 	case BIQUAD_onepolelp:
-		b1 = exp(-2.0 * PI * (Fc / Fs));
-		a0 = 1.0 - b1;
+		b1 = exp(-2.0f * PI * (Fc / Fs));
+		a0 = 1.0f - b1;
 		b1 = -b1;
-		a1 = a2 = b2 = 0.0;
+		a1 = a2 = b2 = 0.0f;
 		break;
 
 	case BIQUAD_onepolehp:
-		b1 = -exp(-2.0 * PI * (0.5 - Fc / Fs));
-		a0 = 1.0 + b1;
+		b1 = -exp(-2.0f * PI * (0.5f - Fc / Fs));
+		a0 = 1.0f + b1;
 		b1 = -b1;
-		a1 = a2 = b2 = 0.0;
+		a1 = a2 = b2 = 0.0f;
 		break;
 
 	case BIQUAD_lowpass:
-		norm = 1.0 / (1.0 + K / Q + K * K);
+		norm = 1.0f / (1.0f + K / Q + K * K);
 		a0 = K * K * norm;
-		a1 = 2.0 * a0;
+		a1 = 2.0f * a0;
 		a2 = a0;
-		b1 = 2.0 * (K * K - 1.0) * norm;
-		b2 = (1.0 - K / Q + K * K) * norm;
+		b1 = 2.0f * (K * K - 1.0f) * norm;
+		b2 = (1.0f - K / Q + K * K) * norm;
 		break;
 
 	case BIQUAD_highpass:
-		norm = 1.0 / (1.0 + K / Q + K * K);
-		a0 = 1.0 * norm;
-		a1 = -2.0 * a0;
+		norm = 1.0f / (1.0f + K / Q + K * K);
+		a0 = 1.0f * norm;
+		a1 = -2.0f * a0;
 		a2 = a0;
-		b1 = 2.0 * (K * K - 1.0) * norm;
-		b2 = (1.0 - K / Q + K * K) * norm;
+		b1 = 2.0f * (K * K - 1.0f) * norm;
+		b2 = (1.0f - K / Q + K * K) * norm;
 		break;
 
 	case BIQUAD_bandpass:
-		norm = 1.0 / (1.0 + K / Q + K * K);
+		norm = 1.0f / (1.0f + K / Q + K * K);
 		a0 = K / Q * norm;
-		a1 = 0.0;
+		a1 = 0.0f;
 		a2 = -a0;
-		b1 = 2.0 * (K * K - 1.0) * norm;
-		b2 = (1.0 - K / Q + K * K) * norm;
+		b1 = 2.0f * (K * K - 1.0f) * norm;
+		b2 = (1.0f - K / Q + K * K) * norm;
 		break;
 
 	case BIQUAD_notch:
-		norm = 1.0 / (1.0 + K / Q + K * K);
-		a0 = (1.0 + K * K) * norm;
-		a1 = 2.0 * (K * K - 1.0) * norm;
+		norm = 1.0f / (1.0f + K / Q + K * K);
+		a0 = (1.0f + K * K) * norm;
+		a1 = 2.0f * (K * K - 1.0f) * norm;
 		a2 = a0;
 		b1 = a1;
-		b2 = (1.0 - K / Q + K * K) * norm;
+		b2 = (1.0f - K / Q + K * K) * norm;
 		break;
 
 	case BIQUAD_peak:
-		if (peakGain >= 0.0) {
-			norm = 1.0 / (1.0 + 1.0 / Q * K + K * K);
-			a0 = (1.0 + V / Q * K + K * K) * norm;
-			a1 = 2.0 * (K * K - 1.0) * norm;
-			a2 = (1.0 - V / Q * K + K * K) * norm;
+		if (peakGain >= 0.0f) {
+			norm = 1.0f / (1.0f + 1.0f / Q * K + K * K);
+			a0 = (1.0f + V / Q * K + K * K) * norm;
+			a1 = 2.0f * (K * K - 1.0f) * norm;
+			a2 = (1.0f - V / Q * K + K * K) * norm;
 			b1 = a1;
-			b2 = (1.0 - 1.0 / Q * K + K * K) * norm;
+			b2 = (1.0f - 1.0f / Q * K + K * K) * norm;
 		}
 		else {
-			norm = 1.0 / (1.0 + V / Q * K + K * K);
-			a0 = (1.0 + 1.0 / Q * K + K * K) * norm;
-			a1 = 2.0 * (K * K - 1.0) * norm;
-			a2 = (1.0 - 1.0 / Q * K + K * K) * norm;
+			norm = 1.0f / (1.0f + V / Q * K + K * K);
+			a0 = (1.0f + 1.0f / Q * K + K * K) * norm;
+			a1 = 2.0f * (K * K - 1.0f) * norm;
+			a2 = (1.0f - 1.0f / Q * K + K * K) * norm;
 			b1 = a1;
-			b2 = (1.0 - V / Q * K + K * K) * norm;
+			b2 = (1.0f - V / Q * K + K * K) * norm;
 		}
 		break;
 	case BIQUAD_lowShelf:
-		if (peakGain >= 0.0) {
-			norm = 1.0 / (1.0 + SQRT2 * K + K * K);
-			a0 = (1.0 + sqrt(2.0*V) * K + V * K * K) * norm;
-			a1 = 2.0 * (V * K * K - 1.0) * norm;
-			a2 = (1.0 - sqrt(2.0*V) * K + V * K * K) * norm;
-			b1 = 2.0 * (K * K - 1.0) * norm;
-			b2 = (1.0 - SQRT2 * K + K * K) * norm;
+		if (peakGain >= 0.0f) {
+			norm = 1.0f / (1.0f + SQRT2 * K + K * K);
+			a0 = (1.0f + sqrt(2.0f*V) * K + V * K * K) * norm;
+			a1 = 2.0f * (V * K * K - 1.0f) * norm;
+			a2 = (1.0f - sqrt(2.0f*V) * K + V * K * K) * norm;
+			b1 = 2.0f * (K * K - 1.0f) * norm;
+			b2 = (1.0f - SQRT2 * K + K * K) * norm;
 		}
 		else {
-			norm = 1.0 / (1.0 + sqrt(2.0*V) * K + V * K * K);
-			a0 = (1.0 + SQRT2 * K + K * K) * norm;
-			a1 = 2.0 * (K * K - 1.0) * norm;
-			a2 = (1.0 - SQRT2 * K + K * K) * norm;
-			b1 = 2.0 * (V * K * K - 1.0) * norm;
-			b2 = (1.0 - sqrt(2.0*V) * K + V * K * K) * norm;
+			norm = 1.0f / (1.0f + sqrt(2.0f*V) * K + V * K * K);
+			a0 = (1.0f + SQRT2 * K + K * K) * norm;
+			a1 = 2.0f * (K * K - 1.0f) * norm;
+			a2 = (1.0f - SQRT2 * K + K * K) * norm;
+			b1 = 2.0f * (V * K * K - 1.0f) * norm;
+			b2 = (1.0f - sqrt(2.0f*V) * K + V * K * K) * norm;
 		}
 		break;
 	case BIQUAD_highShelf:
-		if (peakGain >= 0.0) {
-			norm = 1.0 / (1.0 + SQRT2 * K + K * K);
-			a0 = (V + sqrt(2.0*V) * K + K * K) * norm;
-			a1 = 2.0 * (K * K - V) * norm;
-			a2 = (V - sqrt(2.0*V) * K + K * K) * norm;
-			b1 = 2.0 * (K * K - 1.0) * norm;
-			b2 = (1.0 - SQRT2 * K + K * K) * norm;
+		if (peakGain >= 0.0f) {
+			norm = 1.0f / (1.0f + SQRT2 * K + K * K);
+			a0 = (V + sqrt(2.0f*V) * K + K * K) * norm;
+			a1 = 2.0f * (K * K - V) * norm;
+			a2 = (V - sqrt(2.0f*V) * K + K * K) * norm;
+			b1 = 2.0f * (K * K - 1.0f) * norm;
+			b2 = (1.0f - SQRT2 * K + K * K) * norm;
 		}
 		else {
-			norm = 1.0 / (V + sqrt(2.0*V) * K + K * K);
-			a0 = (1.0 + SQRT2 * K + K * K) * norm;
-			a1 = 2.0 * (K * K - 1.0) * norm;
-			a2 = (1.0 - SQRT2 * K + K * K) * norm;
-			b1 = 2.0 * (K * K - V) * norm;
-			b2 = (V - sqrt(2.0*V) * K + K * K) * norm;
+			norm = 1.0f / (V + sqrt(2.0f*V) * K + K * K);
+			a0 = (1.0f + SQRT2 * K + K * K) * norm;
+			a1 = 2.0f * (K * K - 1.0f) * norm;
+			a2 = (1.0f - SQRT2 * K + K * K) * norm;
+			b1 = 2.0f * (K * K - V) * norm;
+			b2 = (V - sqrt(2.0f*V) * K + K * K) * norm;
 		}
 		break;
 	}
@@ -492,11 +491,4 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 	NOTCH_Coeffs[2] = a2;
 	NOTCH_Coeffs[3] = -b1;
 	NOTCH_Coeffs[4] = -b2;
-
-	// list coefficients
-	//sendToDebug_float32(a0,false);
-	//sendToDebug_float32(a1,false);
-	//sendToDebug_float32(a2,false);
-	//sendToDebug_float32(b1,false);
-	//sendToDebug_float32(b2,false);
 }

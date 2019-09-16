@@ -8,8 +8,8 @@
 volatile bool TOUCH_InCalibrate = false;
 
 static float32_t touch_x0, touch_x1, touch_x2, touch_x3, touch_x4, touch_x5, touch_x6, touch_x7, touch_x8, touch_y0, touch_y1, touch_y2, touch_y3, touch_y4, touch_y5, touch_y6, touch_y7, touch_y8;
-static const int16_t xCenter[] = { CALIBRATE_OFFSET, LCD_WIDTH - CALIBRATE_OFFSET, CALIBRATE_OFFSET, LCD_WIDTH - CALIBRATE_OFFSET };
-static const int16_t yCenter[] = { CALIBRATE_OFFSET, CALIBRATE_OFFSET, LCD_HEIGHT - CALIBRATE_OFFSET, LCD_HEIGHT - CALIBRATE_OFFSET };
+//static const int16_t xCenter[] = { CALIBRATE_OFFSET, LCD_WIDTH - CALIBRATE_OFFSET, CALIBRATE_OFFSET, LCD_WIDTH - CALIBRATE_OFFSET };
+//static const int16_t yCenter[] = { CALIBRATE_OFFSET, CALIBRATE_OFFSET, LCD_HEIGHT - CALIBRATE_OFFSET, LCD_HEIGHT - CALIBRATE_OFFSET };
 static uint16_t xPos[9], yPos[9];
 
 extern IWDG_HandleTypeDef hiwdg;
@@ -42,19 +42,24 @@ uint8_t isTouch(void)
 uint16_t Get_Touch(uint8_t adress)
 {
 	uint16_t data = 0;
-	//CS_TOUCH_LOW;//активируем XPT2046
-
+	//char dest[100];
+	
+	HAL_GPIO_WritePin(TOUCH_CS_GPIO_Port, TOUCH_CS_Pin, GPIO_PIN_RESET); //активируем XPT2046
 		//отправляем запрос для получения интересющей нас координаты 
 	Spi_Master_Transmit(adress);
 
 	//считываем старший байт 
 	data = Spi_Master_Transmit(0X00);
+	//sprintf(dest, "Touchpad b1 = %d\r\n", data);
+	//sendToDebug_str(dest);
 	data <<= 8;
 
 	//считываем младший байт 
 	data |= Spi_Master_Transmit(0X00);
+	//sprintf(dest, "Touchpad b2 = %d\r\n\r\n", data);
+	//sendToDebug_str(dest);
 	data >>= 3;
-	//CS_TOUCH_HIGH;//деактивируем XPT2046
+	HAL_GPIO_WritePin(TOUCH_CS_GPIO_Port, TOUCH_CS_Pin, GPIO_PIN_SET); //деактивируем XPT2046
 
 	return data;
 }
@@ -88,8 +93,8 @@ void Get_Touch_XY(volatile uint16_t *x_kor, volatile uint16_t *y_kor, uint8_t co
 
 	//определяем в какую из 4-х частей экрана попадает нажатие, запоминаем края нужной части
 	uint8_t area = 0;
-	float32_t area_touch_x0, area_touch_x1, area_touch_x2, area_touch_x3, area_touch_x4;
-	float32_t area_touch_y0, area_touch_y1, area_touch_y2, area_touch_y3, area_touch_y4;
+	float32_t area_touch_x0, area_touch_x1, area_touch_x2, area_touch_x3;
+	float32_t area_touch_y0, area_touch_y1, area_touch_y2, area_touch_y3;
 	if (beetween(touch_x0, touch_x1, touch_x) && beetween(touch_y0, touch_y3, touch_y)) //top-left
 	{
 		area = 1;

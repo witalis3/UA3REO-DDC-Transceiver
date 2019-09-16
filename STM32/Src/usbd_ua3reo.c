@@ -12,7 +12,7 @@ static uint8_t  USBD_UA3REO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum);
 static uint8_t  USBD_UA3REO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum);
 static uint8_t  USBD_UA3REO_EP0_RxReady(USBD_HandleTypeDef *pdev);
 static uint8_t  USBD_UA3REO_EP0_TxReady(void);
-static uint8_t  USBD_UA3REO_SOF(USBD_HandleTypeDef *pdev);
+static uint8_t  USBD_UA3REO_SOF(void);
 static uint8_t  USBD_UA3REO_IsoINIncomplete(void);
 static uint8_t  USBD_UA3REO_IsoOutIncomplete(void);
 static void AUDIO_REQ_GetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
@@ -569,7 +569,7 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 		haudio->alt_setting = 0U;
 
 		// Initialize the Audio output Hardware layer
-		if (((USBD_AUDIO_ItfTypeDef *)pdev->pUserDataAUDIO)->Init(0U) != 0)
+		if (((USBD_AUDIO_ItfTypeDef *)pdev->pUserDataAUDIO)->Init() != 0)
 		{
 			return USBD_FAIL;
 		}
@@ -619,7 +619,7 @@ static uint8_t USBD_UA3REO_DeInit(USBD_HandleTypeDef *pdev)
 	}
 	if (pdev->pClassDataAUDIO != NULL)
 	{
-		((USBD_AUDIO_ItfTypeDef *)pdev->pUserDataAUDIO)->DeInit(0U);
+		((USBD_AUDIO_ItfTypeDef *)pdev->pUserDataAUDIO)->DeInit();
 		USBD_free(pdev->pClassDataAUDIO);
 		pdev->pClassDataAUDIO = NULL;
 	}
@@ -1386,7 +1386,7 @@ static void AUDIO_REQ_SetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef 
 	}
 }
 
-static uint8_t USBD_UA3REO_SOF()
+static uint8_t USBD_UA3REO_SOF(void)
 {
 	return USBD_OK;
 }

@@ -181,7 +181,7 @@ typedef struct _Device_cb
   /* Class Specific Endpoints*/
   uint8_t  (*DataIn)           (struct _USBD_HandleTypeDef *pdev , uint8_t epnum);
   uint8_t  (*DataOut)          (struct _USBD_HandleTypeDef *pdev , uint8_t epnum);
-  uint8_t  (*SOF)              (struct _USBD_HandleTypeDef *pdev);
+  uint8_t  (*SOF)              (void);
   uint8_t  (*IsoINIncomplete)  (void);
   uint8_t  (*IsoOUTIncomplete) (void);
 
@@ -300,8 +300,12 @@ typedef struct _USBD_HandleTypeDef
    with the DMA during the transaction process should be 4-bytes aligned */
 
 #if defined   (__GNUC__)        /* GNU Compiler */
-  #define __ALIGN_END    __attribute__ ((aligned (4)))
-  #define __ALIGN_BEGIN
+  #ifndef __ALIGN_END
+		#define __ALIGN_END    __attribute__ ((aligned (4)))
+	#endif
+	#ifndef __ALIGN_BEGIN
+		#define __ALIGN_BEGIN
+	#endif
 #else
   #define __ALIGN_END
   #if defined   (__CC_ARM)      /* ARM Compiler */

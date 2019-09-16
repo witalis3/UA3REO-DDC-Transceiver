@@ -64,7 +64,10 @@ void WIFI_ProcessAnswer(void)
 	if (WIFI_State == WIFI_NOTFOUND) return;
 	if (WIFI_State == WIFI_UNDEFINED) WIFI_Init();
 	HAL_IWDG_Refresh(&hiwdg);
-
+	char com_t[128] = { 0 };
+	char tz[2] = { 0 };
+	char com[128] = { 0 };
+		
 	switch (WIFI_State)
 	{
 	case WIFI_INITED:
@@ -76,14 +79,11 @@ void WIFI_ProcessAnswer(void)
 		WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); //AUTOCONNECT
 		WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); //Hostname
 		WIFI_SendCommand("AT+CWCOUNTRY_CUR=1,\"RU\",1,13\r\n"); //Country
-		char com_t[128] = { 0 };
-		char tz[2] = { 0 };
 		strcat(com_t, "AT+CIPSNTPCFG=1,");
 		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
 		strcat(com_t, tz);
 		strcat(com_t, ",\"us.pool.ntp.org\"\r\n");
 		WIFI_SendCommand(com_t); //configure SNMP
-		char com[128] = { 0 };
 		strcat(com, "AT+CWJAP_CUR=\"");
 		strcat(com, TRX.WIFI_AP);
 		strcat(com, "\",\"");

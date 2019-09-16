@@ -27,10 +27,9 @@ static void Flash_Read_Data(void);
 void LoadSettings(void)
 {
 	Flash_Read_Data();
-
-	if (TRX.clean_flash != 180) //code to trace new clean flash
+	if (TRX.clean_flash != 182) //code to trace new clean flash
 	{
-		TRX.clean_flash = 180; //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		TRX.clean_flash = 182; //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000; //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
 		TRX.VFO_A.Filter_Width = 2700; //сохранённая ширина полосы VFO-A
@@ -100,6 +99,8 @@ void LoadSettings(void)
 		TRX.SPEC_Begin = 700; //старт диапазона анализатора спектра
 		TRX.SPEC_End = 800; //старт диапазона анализатора спектра
 		TRX.CW_SelfHear = true; //самоконтоль CW
+		
+		SaveSettings();
 	}
 }
 
@@ -128,12 +129,12 @@ static void Flash_Sector_Erase(void)
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
 		HAL_SPI_Transmit(&hspi1, &Write_Enable, 1, HAL_MAX_DELAY); // Write Enable Command
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-
+		HAL_Delay(20);
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
 		HAL_SPI_Transmit(&hspi1, &Sector_Erase, 1, HAL_MAX_DELAY);   // Erase Chip Command
 		HAL_SPI_Transmit(&hspi1, Address, sizeof(Address), HAL_MAX_DELAY);      // Write Address ( The first address of flash module is 0x00000000 )
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-		HAL_Delay(10);
+		HAL_Delay(20);
 	}
 }
 

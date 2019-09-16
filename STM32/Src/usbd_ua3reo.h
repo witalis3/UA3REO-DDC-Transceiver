@@ -134,8 +134,8 @@ extern "C" {
 
 	typedef struct
 	{
-		int8_t(*Init)         (uint32_t options);
-		int8_t(*DeInit)       (uint32_t options);
+		int8_t(*Init)         (void);
+		int8_t(*DeInit)       (void);
 	}USBD_AUDIO_ItfTypeDef;
 
 	typedef struct

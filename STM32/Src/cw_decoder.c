@@ -13,9 +13,6 @@
 volatile uint16_t CW_Decoder_WPM = 0;
 char CW_Decoder_Text[CWDECODER_STRLEN] = "               ";
 
-static float32_t sine = 0;
-static float32_t cosine = 0;
-static float32_t bw = 0;
 static float32_t coeff = 0;
 static float32_t Q1 = 0;
 static float32_t Q2 = 0;
@@ -30,11 +27,11 @@ static bool stop = false;
 static long laststarttime = 0;
 static long starttimehigh = 0;
 static long highduration = 0;
-static long lowtimesavg = 0;
+//static long lowtimesavg = 0;
 static long startttimelow = 0;
 static long lowduration = 0;
 static long hightimesavg = 0;
-static long lasthighduration = 0;
+//static long lasthighduration = 0;
 static char code[20] = { 0 };
 
 static void CWDecoder_Decode(void);
@@ -43,14 +40,12 @@ static void CWDecoder_PrintChar(char * str);
 void CWDecoder_Init(void)
 {
 	//Алгоритм Гёрцеля (goertzel calculation)
-	int16_t	k = 0;
-	float32_t	omega = 0;
-	bw = (TRX_SAMPLERATE / CWDECODER_SAMPLES);
-	k = (int)(0.5 + ((CWDECODER_SAMPLES * CWDECODER_TARGET_FREQ) / TRX_SAMPLERATE));
-	omega = (2.0 * PI * k) / CWDECODER_SAMPLES;
-	sine = arm_sin_f32(omega);
-	cosine = arm_cos_f32(omega);
-	coeff = 2.0 * cosine;
+	//float32_t bw = (TRX_SAMPLERATE / CWDECODER_SAMPLES);
+	int16_t k = (int)(0.5f + ((CWDECODER_SAMPLES * CWDECODER_TARGET_FREQ) / TRX_SAMPLERATE));
+	float32_t omega = (2.0f * PI * k) / CWDECODER_SAMPLES;
+	//float32_t sine = arm_sin_f32(omega);
+	float32_t cosine = arm_cos_f32(omega);
+	coeff = 2.0f * cosine;
 }
 
 void CWDecoder_Process(float32_t* bufferIn)
@@ -74,11 +69,6 @@ void CWDecoder_Process(float32_t* bufferIn)
 	magnitudelimit_low = (magnitudelimit_low + ((magnitude - magnitudelimit_low) / CWDECODER_LOW_AVERAGE));  /// moving average filter high
 	if (magnitudelimit_low > magnitude)
 		magnitudelimit_low = magnitude;
-
-	//sendToDebug_float32(magnitudelimit_low,false);
-	//sendToDebug_float32(magnitudelimit,false);
-	//sendToDebug_float32(magnitude,false);
-	//sendToDebug_newline();
 
 	// now we check for the magnitude
 	//if (magnitude > magnitudelimit*0.6) // just to have some space up 
@@ -169,7 +159,7 @@ void CWDecoder_Process(float32_t* bufferIn)
 
 	// the end of main loop clean up
 	realstatebefore = realstate;
-	lasthighduration = highduration;
+	//lasthighduration = highduration;
 	filteredstatebefore = filteredstate;
 }
 
