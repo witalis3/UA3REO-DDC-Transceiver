@@ -1,6 +1,6 @@
 <sld_project_info>
   <project>
-    <hash md5_digest_80b="f16024347b65d119b7b6"/>
+    <hash md5_digest_80b="262f22f3c2d9b9218f55"/>
   </project>
   <file_info>
     <file device="EP4CE22E22C8" path="UA3REO.sof" usercode="0xFFFFFFFF"/>
@@ -16,7 +16,7 @@
         <parameter name="SLD_NODE_INFO" type="dec" value="4746752"/>
         <parameter name="sld_ir_width" type="dec" value="4"/>
         <parameter name="instance_id" type="string" value="DBG"/>
-        <parameter name="probe_width" type="dec" value="8"/>
+        <parameter name="probe_width" type="dec" value="16"/>
         <parameter name="source_width" type="dec" value="0"/>
         <parameter name="source_initial_value" type="string" value="0"/>
         <parameter name="enable_metastability" type="string" value="NO"/>
@@ -30,6 +30,14 @@
         <port name="probe[5]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[5]"/>
         <port name="probe[6]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[6]"/>
         <port name="probe[7]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[7]"/>
+        <port name="probe[8]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[8]"/>
+        <port name="probe[9]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[9]"/>
+        <port name="probe[10]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[10]"/>
+        <port name="probe[11]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[11]"/>
+        <port name="probe[12]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[12]"/>
+        <port name="probe[13]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[13]"/>
+        <port name="probe[14]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[14]"/>
+        <port name="probe[15]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[15]"/>
         <port name="source_clk" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|source_clk"/>
         <port name="source_ena" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|source_ena"/>
         <port name="jtag.bp.inst_in_system_sources_probes_0_issp_impl_raw_tck" source="jtag.bp.inst_in_system_sources_probes_0_issp_impl_raw_tck"/>
@@ -63,13 +71,13 @@
   <sld_infos>
     <sld_info hpath="DEBUG:inst" name="inst">
       <assignment_values>
-        <assignment_value text="QSYS_NAME DEBUG HAS_SOPCINFO 1 GENERATION_ID 1568651917"/>
+        <assignment_value text="QSYS_NAME DEBUG HAS_SOPCINFO 1 GENERATION_ID 1568757082"/>
       </assignment_values>
       <parameters/>
     </sld_info>
     <sld_info hpath="nco:NCO" name="NCO">
       <assignment_values>
-        <assignment_value text="QSYS_NAME nco HAS_SOPCINFO 1 GENERATION_ID 1568651926"/>
+        <assignment_value text="QSYS_NAME nco HAS_SOPCINFO 1 GENERATION_ID 1568757092"/>
       </assignment_values>
       <parameters/>
     </sld_info>
