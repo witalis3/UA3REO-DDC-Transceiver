@@ -29,7 +29,7 @@ void ENCODER_checkRotate(void) {
 			ENCODER_slowler--;
 			if (ENCODER_slowler < -TRX.ENCODER_SLOW_RATE)
 			{
-				ENCODER_Rotated(-1);
+				ENCODER_Rotated(ENCODER_INVERT ? 1 : -1);
 				ENCODER_slowler = 0;
 			}
 		}
@@ -37,7 +37,7 @@ void ENCODER_checkRotate(void) {
 			ENCODER_slowler++;
 			if (ENCODER_slowler > TRX.ENCODER_SLOW_RATE)
 			{
-				ENCODER_Rotated(1);
+				ENCODER_Rotated(ENCODER_INVERT ? -1 : 1);
 				ENCODER_slowler = 0;
 			}
 		}

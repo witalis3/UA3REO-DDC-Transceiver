@@ -99,6 +99,10 @@ void LoadSettings(void)
 		TRX.SPEC_Begin = 700; //старт диапазона анализатора спектра
 		TRX.SPEC_End = 800; //старт диапазона анализатора спектра
 		TRX.CW_SelfHear = true; //самоконтоль CW
+		TRX.ADC_PGA = false; //ADC преамп
+		TRX.ADC_RAND = false; //ADC шифрование
+		TRX.ADC_SHDN = false; //ADC отключение
+		TRX.ADC_DITH = false; //ADC дизеринг
 		
 		SaveSettings();
 	}

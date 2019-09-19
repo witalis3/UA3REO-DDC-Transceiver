@@ -66,7 +66,7 @@ begin
 				end
 				else
 				begin
-					spi_bit_position=spi_bit_position-1;
+					spi_bit_position=spi_bit_position-8'd1;
 					spi_stage=1;
 				end
 			end

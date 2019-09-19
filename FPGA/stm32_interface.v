@@ -23,7 +23,11 @@ audio_clk_en,
 stage_debug,
 FLASH_data_out,
 FLASH_enable,
-FLASH_continue_read
+FLASH_continue_read,
+ADC_PGA,
+ADC_RAND,
+ADC_SHDN,
+ADC_DITH
 );
 
 input clk_in;
@@ -50,6 +54,10 @@ output reg [15:0] stage_debug=0;
 output reg unsigned [7:0] FLASH_data_out=0;
 output reg FLASH_enable=0;
 output reg FLASH_continue_read=0;
+output reg ADC_PGA=0;
+output reg ADC_RAND=0;
+output reg ADC_SHDN=0;
+output reg ADC_DITH=0;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -112,8 +120,12 @@ begin
 	end
 	else if (k==100) //GET PARAMS
 	begin
-		preamp_enable=DATA_BUS[2:2];
-		if(DATA_BUS[3:3]==1)
+		ADC_PGA=DATA_BUS[5:5];
+		ADC_RAND=DATA_BUS[4:4];
+		ADC_SHDN=DATA_BUS[3:3];
+		ADC_DITH=DATA_BUS[2:2];
+		preamp_enable=DATA_BUS[1:1];
+		if(DATA_BUS[0:0]==1)
 		begin
 			tx=1;
 			rx=0;
@@ -148,8 +160,7 @@ begin
 	end
 	else if (k==201)
 	begin
-		DATA_BUS_OUT[7:4]=ADC_MIN[11:8];
-		DATA_BUS_OUT[3:0]=ADC_MAX[11:8];
+		DATA_BUS_OUT[7:0]=ADC_MIN[15:8];
 		k=202;
 	end
 	else if (k==202)
@@ -158,6 +169,11 @@ begin
 		k=203;
 	end
 	else if (k==203)
+	begin
+		DATA_BUS_OUT[7:0]=ADC_MAX[15:8];
+		k=204;
+	end
+	else if (k==204)
 	begin
 		DATA_BUS_OUT[7:0]=ADC_MAX[7:0];
 		ADC_MINMAX_RESET=1;
@@ -269,8 +285,8 @@ begin
 	//ADC MIN-MAX
 	if(ADC_MINMAX_RESET==1)
 	begin
-		ADC_MIN=2000;
-		ADC_MAX=-2000;
+		ADC_MIN='d2000;
+		ADC_MAX=-16'd2000;
 	end
 	if(ADC_MAX<ADC_IN)
 	begin

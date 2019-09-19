@@ -455,8 +455,8 @@ void TRX_ProcessSWRMeter(void)
 void TRX_DBMCalculate(void)
 {
 	float32_t Audio_Vpp_value = (Processor_RX_Audio_Samples_MAX_value / (float32_t)TRX.RF_Gain) - (Processor_RX_Audio_Samples_MIN_value / (float32_t)TRX.RF_Gain); //получаем разницу между максимальным и минимальным значением в аудио-семплах
-	for (int i = 0; i < (FPGA_BUS_BITS - ADC_BITS); i++) Audio_Vpp_value = Audio_Vpp_value / 2; //приводим разрядность аудио к разрядности АЦП
-	float32_t ADC_Vpp_Value = Audio_Vpp_value * ADC_VREF / ((float32_t)pow(2.0, ADC_BITS) - 1); //получаем значение пик-пик напряжения на входе АЦП в вольтах
+	for (int i = 0; i < (FPGA_BUS_BITS - ADC_BITS); i++) Audio_Vpp_value = Audio_Vpp_value / 2.0f; //приводим разрядность аудио к разрядности АЦП
+	float32_t ADC_Vpp_Value = Audio_Vpp_value * ADC_VREF / ((float32_t)powf(2.0f, ADC_BITS) - 1.0f); //получаем значение пик-пик напряжения на входе АЦП в вольтах
 	float32_t ADC_Vrms_Value = ADC_Vpp_Value * 0.3535f; // Получаем действующее (RMS) напряжение на аходе АЦП
 	float32_t ADC_RF_IN_Value = (ADC_Vrms_Value / ADC_RF_TRANS_RATIO)*ADC_RF_INPUT_VALUE_CALIBRATION; //Получаем напряжение на антенном входе с учётом трансформатора и калибровки
 	if (ADC_RF_IN_Value < 0.0000001f) ADC_RF_IN_Value = 0.0000001f;

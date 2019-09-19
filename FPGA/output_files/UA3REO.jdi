@@ -1,6 +1,6 @@
 <sld_project_info>
   <project>
-    <hash md5_digest_80b="262f22f3c2d9b9218f55"/>
+    <hash md5_digest_80b="afda795f49846a7054de"/>
   </project>
   <file_info>
     <file device="EP4CE22E22C8" path="UA3REO.sof" usercode="0xFFFFFFFF"/>
@@ -16,7 +16,7 @@
         <parameter name="SLD_NODE_INFO" type="dec" value="4746752"/>
         <parameter name="sld_ir_width" type="dec" value="4"/>
         <parameter name="instance_id" type="string" value="DBG"/>
-        <parameter name="probe_width" type="dec" value="16"/>
+        <parameter name="probe_width" type="dec" value="32"/>
         <parameter name="source_width" type="dec" value="0"/>
         <parameter name="source_initial_value" type="string" value="0"/>
         <parameter name="enable_metastability" type="string" value="NO"/>
@@ -38,6 +38,22 @@
         <port name="probe[13]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[13]"/>
         <port name="probe[14]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[14]"/>
         <port name="probe[15]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[15]"/>
+        <port name="probe[16]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[16]"/>
+        <port name="probe[17]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[17]"/>
+        <port name="probe[18]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[18]"/>
+        <port name="probe[19]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[19]"/>
+        <port name="probe[20]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[20]"/>
+        <port name="probe[21]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[21]"/>
+        <port name="probe[22]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[22]"/>
+        <port name="probe[23]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[23]"/>
+        <port name="probe[24]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[24]"/>
+        <port name="probe[25]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[25]"/>
+        <port name="probe[26]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[26]"/>
+        <port name="probe[27]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[27]"/>
+        <port name="probe[28]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[28]"/>
+        <port name="probe[29]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[29]"/>
+        <port name="probe[30]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[30]"/>
+        <port name="probe[31]" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|probe[31]"/>
         <port name="source_clk" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|source_clk"/>
         <port name="source_ena" source="DEBUG:inst|altsource_probe_top:in_system_sources_probes_0|source_ena"/>
         <port name="jtag.bp.inst_in_system_sources_probes_0_issp_impl_raw_tck" source="jtag.bp.inst_in_system_sources_probes_0_issp_impl_raw_tck"/>
@@ -71,13 +87,19 @@
   <sld_infos>
     <sld_info hpath="DEBUG:inst" name="inst">
       <assignment_values>
-        <assignment_value text="QSYS_NAME DEBUG HAS_SOPCINFO 1 GENERATION_ID 1568757082"/>
+        <assignment_value text="QSYS_NAME DEBUG HAS_SOPCINFO 1 GENERATION_ID 1568922070"/>
+      </assignment_values>
+      <parameters/>
+    </sld_info>
+    <sld_info hpath="clock_buffer:SYS_CLK_BUFF" name="SYS_CLK_BUFF">
+      <assignment_values>
+        <assignment_value text="QSYS_NAME clock_buffer HAS_SOPCINFO 1 GENERATION_ID 1568922083"/>
       </assignment_values>
       <parameters/>
     </sld_info>
     <sld_info hpath="nco:NCO" name="NCO">
       <assignment_values>
-        <assignment_value text="QSYS_NAME nco HAS_SOPCINFO 1 GENERATION_ID 1568757092"/>
+        <assignment_value text="QSYS_NAME nco HAS_SOPCINFO 1 GENERATION_ID 1568922096"/>
       </assignment_values>
       <parameters/>
     </sld_info>

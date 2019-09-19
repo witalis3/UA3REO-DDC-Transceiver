@@ -47,10 +47,10 @@ module mixer (
 	input	  clock;
 	input	[15:0]  dataa;
 	input	[15:0]  datab;
-	output	[23:0]  result;
+	output	[31:0]  result;
 
-	wire [23:0] sub_wire0;
-	wire [23:0] result = sub_wire0[23:0];
+	wire [31:0] sub_wire0;
+	wire [31:0] result = sub_wire0[31:0];
 
 	lpm_mult	lpm_mult_component (
 				.clken (clken),
@@ -68,7 +68,7 @@ module mixer (
 		lpm_mult_component.lpm_type = "LPM_MULT",
 		lpm_mult_component.lpm_widtha = 16,
 		lpm_mult_component.lpm_widthb = 16,
-		lpm_mult_component.lpm_widthp = 24;
+		lpm_mult_component.lpm_widthp = 32;
 
 
 endmodule
@@ -76,7 +76,7 @@ endmodule
 // ============================================================
 // CNX file retrieval info
 // ============================================================
-// Retrieval info: PRIVATE: AutoSizeResult NUMERIC "0"
+// Retrieval info: PRIVATE: AutoSizeResult NUMERIC "1"
 // Retrieval info: PRIVATE: B_isConstant NUMERIC "0"
 // Retrieval info: PRIVATE: ConstantB NUMERIC "0"
 // Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone IV E"
@@ -88,7 +88,7 @@ endmodule
 // Retrieval info: PRIVATE: ValidConstant NUMERIC "0"
 // Retrieval info: PRIVATE: WidthA NUMERIC "16"
 // Retrieval info: PRIVATE: WidthB NUMERIC "16"
-// Retrieval info: PRIVATE: WidthP NUMERIC "24"
+// Retrieval info: PRIVATE: WidthP NUMERIC "32"
 // Retrieval info: PRIVATE: aclr NUMERIC "0"
 // Retrieval info: PRIVATE: clken NUMERIC "1"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
@@ -100,17 +100,17 @@ endmodule
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_MULT"
 // Retrieval info: CONSTANT: LPM_WIDTHA NUMERIC "16"
 // Retrieval info: CONSTANT: LPM_WIDTHB NUMERIC "16"
-// Retrieval info: CONSTANT: LPM_WIDTHP NUMERIC "24"
+// Retrieval info: CONSTANT: LPM_WIDTHP NUMERIC "32"
 // Retrieval info: USED_PORT: clken 0 0 0 0 INPUT NODEFVAL "clken"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: dataa 0 0 16 0 INPUT NODEFVAL "dataa[15..0]"
 // Retrieval info: USED_PORT: datab 0 0 16 0 INPUT NODEFVAL "datab[15..0]"
-// Retrieval info: USED_PORT: result 0 0 24 0 OUTPUT NODEFVAL "result[23..0]"
+// Retrieval info: USED_PORT: result 0 0 32 0 OUTPUT NODEFVAL "result[31..0]"
 // Retrieval info: CONNECT: @clken 0 0 0 0 clken 0 0 0 0
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @dataa 0 0 16 0 dataa 0 0 16 0
 // Retrieval info: CONNECT: @datab 0 0 16 0 datab 0 0 16 0
-// Retrieval info: CONNECT: result 0 0 24 0 @result 0 0 24 0
+// Retrieval info: CONNECT: result 0 0 32 0 @result 0 0 32 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL mixer.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL mixer.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL mixer.cmp FALSE

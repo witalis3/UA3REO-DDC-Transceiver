@@ -102,9 +102,9 @@ module MAIN_PLL (
 				.vcounderrange ());
 	defparam
 		altpll_component.bandwidth_type = "AUTO",
-		altpll_component.clk0_divide_by = 32,
+		altpll_component.clk0_divide_by = 512,
 		altpll_component.clk0_duty_cycle = 50,
-		altpll_component.clk0_multiply_by = 1,
+		altpll_component.clk0_multiply_by = 17,
 		altpll_component.clk0_phase_shift = "0",
 		altpll_component.clk1_divide_by = 4,
 		altpll_component.clk1_duty_cycle = 50,
@@ -198,7 +198,7 @@ endmodule
 // Retrieval info: PRIVATE: DUTY_CYCLE1 STRING "50.00000000"
 // Retrieval info: PRIVATE: DUTY_CYCLE2 STRING "50.00000000"
 // Retrieval info: PRIVATE: DUTY_CYCLE3 STRING "50.00000000"
-// Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE0 STRING "1.536000"
+// Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE0 STRING "1.632000"
 // Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE1 STRING "12.288000"
 // Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE2 STRING "0.048000"
 // Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE3 STRING "2.208000"
@@ -230,7 +230,7 @@ endmodule
 // Retrieval info: PRIVATE: MIRROR_CLK1 STRING "0"
 // Retrieval info: PRIVATE: MIRROR_CLK2 STRING "0"
 // Retrieval info: PRIVATE: MIRROR_CLK3 STRING "0"
-// Retrieval info: PRIVATE: MULT_FACTOR0 NUMERIC "16"
+// Retrieval info: PRIVATE: MULT_FACTOR0 NUMERIC "17"
 // Retrieval info: PRIVATE: MULT_FACTOR1 NUMERIC "256"
 // Retrieval info: PRIVATE: MULT_FACTOR2 NUMERIC "1"
 // Retrieval info: PRIVATE: MULT_FACTOR3 NUMERIC "23"
@@ -298,9 +298,9 @@ endmodule
 // Retrieval info: PRIVATE: ZERO_DELAY_RADIO STRING "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: BANDWIDTH_TYPE STRING "AUTO"
-// Retrieval info: CONSTANT: CLK0_DIVIDE_BY NUMERIC "32"
+// Retrieval info: CONSTANT: CLK0_DIVIDE_BY NUMERIC "512"
 // Retrieval info: CONSTANT: CLK0_DUTY_CYCLE NUMERIC "50"
-// Retrieval info: CONSTANT: CLK0_MULTIPLY_BY NUMERIC "1"
+// Retrieval info: CONSTANT: CLK0_MULTIPLY_BY NUMERIC "17"
 // Retrieval info: CONSTANT: CLK0_PHASE_SHIFT STRING "0"
 // Retrieval info: CONSTANT: CLK1_DIVIDE_BY NUMERIC "4"
 // Retrieval info: CONSTANT: CLK1_DUTY_CYCLE NUMERIC "50"

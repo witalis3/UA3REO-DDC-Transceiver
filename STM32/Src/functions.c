@@ -261,7 +261,7 @@ float log10f_fast(float X) {
 
 double db2rateV(double i) //из децибелл в разы (для напряжения)
 {
-	return pow(10.0, (i / 20.0));
+	return powf(10.0f, (i / 20.0f));
 }
 
 void shiftTextLeft(char *string, int16_t shiftLength)

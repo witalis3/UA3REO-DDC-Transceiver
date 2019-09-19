@@ -19,10 +19,11 @@
 #define TOUCHPAD_DELAY 200 //Время защиты от анти-дребезга нажания на тачпад
 #define ADC_VREF 2.25f //опорное напряжение АЦП, при подаче на вход которого АЦП отдаёт максимальное значение, вольт
 #define ADC_RF_TRANS_RATIO 4 //коэффициент трансформации трансформатора :) на входе АЦП
-#define ADC_RF_INPUT_VALUE_CALIBRATION 0.2f //коэффициент, на который умножаем данные с АЦП, чтобы получить реальное напряжение, устанавливается при калибровке трансивера по S9 (ATT выключен, PREAMP,LPF,BPF включен)
+#define ADC_RF_INPUT_VALUE_CALIBRATION 0.5f //коэффициент, на который умножаем данные с АЦП, чтобы получить реальное напряжение, устанавливается при калибровке трансивера по S9 (ATT выключен, PREAMP,LPF,BPF включен)
 #define ATT_DB 12 //подавление в аттенюаторе
 #define PREAMP_GAIN_DB 20 //усиление в предусилителе
 #define AUTOGAIN_MAX_AMPLITUDE 1100 //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
+#define ENCODER_INVERT 1 //инвертировать вращение влево-вправо у основного энкодера
 
 #define ILI9341 true //выбираем используемый дисплей
 //#define ILI9325 true //другие комментируем
@@ -129,6 +130,10 @@ extern struct TRX_SETTINGS {
 	uint16_t SPEC_Begin;
 	uint16_t SPEC_End;
 	uint16_t CW_SelfHear;
+	bool ADC_PGA;
+	bool ADC_RAND;
+	bool ADC_SHDN;
+	bool ADC_DITH;
 } TRX;
 
 volatile extern bool NeedSaveSettings;

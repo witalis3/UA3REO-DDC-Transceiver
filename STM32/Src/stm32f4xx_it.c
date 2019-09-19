@@ -427,7 +427,7 @@ void TIM6_DAC_IRQHandler(void)
 		if (!TRX_SNMP_Synced) //Sync time from internet
 			WIFI_GetSNMPTime();
 
-#if 0
+#if 1
 		//Save Debug variables
 		uint32_t dbg_FPGA_samples = FPGA_samples;
 		uint32_t dbg_WM8731_DMA_samples = WM8731_DMA_samples / 2;

@@ -357,7 +357,7 @@ static dc_filter_state_type dc_filter_state[6] =
 
 void dc_filter(float32_t *agcBuffer, int16_t blockSize, uint8_t stateNum)	//удаляет постоянную составлющую сигнала
 {
-	const float32_t A1 = (1.0 - pow(2.0, (-11.0))); // (1-2^(-7)) Q32:1.31
+	const float32_t A1 = (1.0f - powf(2.0f, (-11.0f))); // (1-2^(-7)) Q32:1.31
 
 	for (uint16_t i = 0; i < blockSize; i++)
 	{
@@ -376,7 +376,7 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 {
 	float32_t a0, a1, a2, b1, b2, norm;
 
-	float32_t V = pow(10.0f, fabs(peakGain) / 20.0f);
+	float32_t V = powf(10.0f, fabsf(peakGain) / 20.0f);
 	float32_t K = tan(PI * Fc / Fs);
 	switch (type) {
 	case BIQUAD_onepolelp:
