@@ -23,22 +23,7 @@
 
 #define TRX_MODE_COUNT 12
 
-typedef struct {
-	bool key_1;
-	bool key_1_prev;
-	bool key_2;
-	bool key_2_prev;
-	bool key_3;
-	bool key_3_prev;
-	bool key_4;
-	bool key_4_prev;
-	bool key_enc;
-	bool key_enc_prev;
-	int8_t sec_encoder;
-} TRX_FrontPanel_Type;
-
 extern void TRX_Init(void);
-extern void TRX_RF_UNIT_UpdateState(bool clean);
 extern void TRX_setFrequency(int32_t _freq);
 extern uint32_t TRX_getFrequency(void);
 extern void TRX_setMode(uint8_t _mode);
@@ -48,7 +33,6 @@ extern void TRX_key_change(void);
 extern bool TRX_on_TX(void);
 extern void TRX_DoAutoGain(void);
 extern void TRX_Restart_Mode(void);
-extern void TRX_ProcessFrontPanel(void);
 extern void TRX_ProcessSWRMeter(void);
 extern void TRX_DBMCalculate(void);
 
@@ -70,7 +54,6 @@ volatile extern int16_t TRX_ADC_MINAMPLITUDE;
 volatile extern int16_t TRX_ADC_MAXAMPLITUDE;
 volatile extern uint8_t TRX_Time_InActive;
 volatile extern uint8_t TRX_Fan_Timeout;
-volatile extern TRX_FrontPanel_Type TRX_FrontPanel;
 volatile extern bool TRX_SNMP_Synced;
 
 extern const char *MODE_DESCR[];

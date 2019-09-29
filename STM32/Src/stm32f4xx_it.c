@@ -53,7 +53,7 @@
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 #include "functions.h"
-#include "encoder.h"
+#include "peripheral.h"
 #include "fpga.h"
 #include "lcd.h"
 #include "wm8731.h"
@@ -246,8 +246,7 @@ void EXTI2_IRQHandler(void)
   /* USER CODE END EXTI2_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
   /* USER CODE BEGIN EXTI2_IRQn 1 */
-	TRX_Time_InActive = 0;
-	if (TRX_inited) ENCODER_checkRotate();
+	
   /* USER CODE END EXTI2_IRQn 1 */
 }
 
@@ -261,8 +260,7 @@ void EXTI4_IRQHandler(void)
   /* USER CODE END EXTI4_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
   /* USER CODE BEGIN EXTI4_IRQn 1 */
-	TRX_Time_InActive = 0;
-	if (TRX_inited && TRX_getMode() != TRX_MODE_NO_TX) TRX_ptt_change();
+	
   /* USER CODE END EXTI4_IRQn 1 */
 }
 
@@ -304,9 +302,7 @@ void EXTI9_5_IRQHandler(void)
   /* USER CODE END EXTI9_5_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
-	TRX_Time_InActive = 0;
-	if (!TOUCH_InCalibrate)
-		LCD_checkTouchPad();
+	
   /* USER CODE END EXTI9_5_IRQn 1 */
 }
 
@@ -339,11 +335,9 @@ void EXTI15_10_IRQHandler(void)
 
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
-	  //StartProfilerUs();
-	if (!FPGA_busy) FPGA_fpgadata_iqclock();
-	if (!FPGA_busy) FPGA_fpgadata_stuffclock();
-	//EndProfilerUs(true);
+	
   /* USER CODE END EXTI15_10_IRQn 1 */
 }
 
@@ -403,17 +397,15 @@ void TIM6_DAC_IRQHandler(void)
 
 	if ((ms50_counter % 2) == 0) // every 100ms
 	{
+		FPGA_NeedGetParams = true;
+		
 		//S-Meter Calculate
 		TRX_DBMCalculate();
 
 		//WIFI
 		if (TRX.WIFI_Enabled)
 			WIFI_ProcessAnswer();
-
-		//Process keyboard and secondary encoder
-		TRX_ProcessFrontPanel();
-		FPGA_NeedGetParams = true;
-
+		
 		//Process SWR / Power meter
 		if (TRX_on_TX() && TRX_getMode() != TRX_MODE_NO_TX)
 			TRX_ProcessSWRMeter();
@@ -427,7 +419,7 @@ void TIM6_DAC_IRQHandler(void)
 		if (!TRX_SNMP_Synced) //Sync time from internet
 			WIFI_GetSNMPTime();
 
-#if 1
+#if 0
 		//Save Debug variables
 		uint32_t dbg_FPGA_samples = FPGA_samples;
 		uint32_t dbg_WM8731_DMA_samples = WM8731_DMA_samples / 2;
@@ -498,10 +490,10 @@ void TIM6_DAC_IRQHandler(void)
 	if (TRX_ptt_cat != TRX_old_ptt_cat) TRX_ptt_change();
 	if (TRX_key_serial != TRX_old_key_serial) TRX_key_change();
 	if (TRX_key_hard == HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin)) TRX_key_change();
-
+	PERIPH_RF_UNIT_UpdateState(false);
 	LCD_doEvents();
 	FFT_printFFT();
-	TRX_RF_UNIT_UpdateState(false);
+	PERIPH_ProcessFrontPanel();
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
@@ -628,6 +620,41 @@ void USART6_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{ 
+	if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
+	{
+			//StartProfilerUs();
+			if (!FPGA_busy) FPGA_fpgadata_iqclock();
+			if (!FPGA_busy) FPGA_fpgadata_stuffclock();
+			//EndProfilerUs(true);
+	}
+	else if (GPIO_Pin == GPIO_PIN_2) //Main encoder
+	{
+		TRX_Time_InActive = 0;
+		if (TRX_inited)
+			PERIPH_ENCODER_checkRotate();
+	}
+	else if (GPIO_Pin == GPIO_PIN_13) //Secondary encoder
+	{
+		TRX_Time_InActive = 0;
+		if (TRX_inited)
+			PERIPH_ENCODER2_checkRotate();
+	}
+	else if (GPIO_Pin == GPIO_PIN_4) //PTT
+	{
+		TRX_Time_InActive = 0;
+		if (TRX_inited && TRX_getMode() != TRX_MODE_NO_TX) 
+			TRX_ptt_change();
+	}
+	else if (GPIO_Pin == GPIO_PIN_5) //Touchpad
+	{
+		TRX_Time_InActive = 0;
+		if (!TOUCH_InCalibrate)
+			LCD_checkTouchPad();
+	}
+}
 
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

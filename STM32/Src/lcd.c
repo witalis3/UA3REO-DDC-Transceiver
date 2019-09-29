@@ -13,6 +13,7 @@
 #include "usbd_ua3reo.h"
 #include "noise_reduction.h"
 #include "cw_decoder.h"
+#include "peripheral.h"
 
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = { false };
@@ -56,19 +57,16 @@ static void LCD_displayStatusInfoGUI(void);
 static void LCD_displayTextBar(void);
 
 //BUTTONS HANDLERS
-static void LCD_Handler_TUNE(void);
 static void LCD_Handler_MODE(void);
 static void LCD_Handler_BAND(void);
 static void LCD_Handler_WIDTH(void);
 static void LCD_Handler_WIDTH_BACK(void);
 static void LCD_Handler_PREAMP(void);
-static void LCD_Handler_AB(void);
 static void LCD_Handler_ATT(void);
 static void LCD_Handler_DNR(void);
-static void LCD_Handler_VFO(void);
+static void LCD_Handler_AB(void);
 static void LCD_Handler_AGC(void);
 static void LCD_Handler_MUTE(void);
-static void LCD_Handler_FAST(void);
 static void LCD_Handler_TIMEMENU_NEXT(void);
 static void LCD_Handler_TIMEMENU_BACK(void);
 static void LCD_Handler_MENU(void);
@@ -587,7 +585,7 @@ void LCD_doEvents(void)
 	if (LCD_UpdateQuery.TextBar) LCD_displayTextBar();
 }
 
-static void LCD_Handler_TUNE(void)
+void LCD_Handler_TUNE(void)
 {
 	TRX_tune = !TRX_tune;
 	TRX_ptt_hard = TRX_tune;
@@ -887,7 +885,7 @@ static void LCD_Handler_AGC(void)
 	NeedSaveSettings = true;
 }
 
-static void LCD_Handler_VFO(void)
+void LCD_Handler_VFO(void)
 {
 	TRX.current_vfo = !TRX.current_vfo;
 	NeedSaveSettings = true;
@@ -902,7 +900,7 @@ static void LCD_Handler_MUTE(void)
 	NeedSaveSettings = true;
 }
 
-static void LCD_Handler_FAST(void)
+void LCD_Handler_FAST(void)
 {
 	TRX.Fast = !TRX.Fast;
 	LCD_UpdateQuery.TopButtons = true;
@@ -1260,7 +1258,7 @@ void LCD_checkTouchPad(void)
 		if (button_handlers[i].x1 <= x && button_handlers[i].x2 >= x && button_handlers[i].y1 <= y && button_handlers[i].y2 >= y && button_handlers[i].onClickHandler != 0)
 		{
 			button_handlers[i].onClickHandler();
-			TRX_RF_UNIT_UpdateState(false);
+			PERIPH_RF_UNIT_UpdateState(false);
 			return;
 		}
 

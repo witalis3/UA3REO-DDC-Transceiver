@@ -12,20 +12,25 @@
 static uint8_t ENCODER_ALast = 0;
 static uint8_t ENCODER_AVal = 0;
 static int32_t ENCODER_slowler = 0;
+static uint8_t ENCODER2_ALast = 0;
+static uint8_t ENCODER2_SWLast = 0;
+static uint8_t ENCODER2_AVal = 0;
 
 static void ENCODER_Rotated(int direction);
+static void ENCODER2_Rotated(int direction);
 
-void ENCODER_Init()
+void ENCODERS_Init()
 {
-	ENCODER_ALast = HAL_GPIO_ReadPin(GPIOE, ENC_CLK_Pin);
+	ENCODER_ALast = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
+	ENCODER2_ALast = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
 }
 
 void ENCODER_checkRotate(void) {
-	ENCODER_AVal = HAL_GPIO_ReadPin(GPIOE, ENC_CLK_Pin);
+	ENCODER_AVal = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
 	if (ENCODER_AVal != ENCODER_ALast) { // проверка на изменение значения на выводе А по сравнению с предыдущим запомненным, что означает, что вал повернулся
 		ENCODER_ALast = ENCODER_AVal;
 		// а чтобы определить направление вращения, нам понадобится вывод В.
-		if (HAL_GPIO_ReadPin(GPIOE, ENC_DT_Pin) != ENCODER_AVal) {  // Если вывод A изменился первым - вращение по часовой стрелке
+		if (HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin) != ENCODER_AVal) {  // Если вывод A изменился первым - вращение по часовой стрелке
 			ENCODER_slowler--;
 			if (ENCODER_slowler < -TRX.ENCODER_SLOW_RATE)
 			{
@@ -40,6 +45,20 @@ void ENCODER_checkRotate(void) {
 				ENCODER_Rotated(ENCODER_INVERT ? -1 : 1);
 				ENCODER_slowler = 0;
 			}
+		}
+	}
+}
+
+void ENCODER2_checkRotate(void) {
+	ENCODER2_AVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
+	if (ENCODER2_AVal != ENCODER2_ALast) { // проверка на изменение значения на выводе А по сравнению с предыдущим запомненным, что означает, что вал повернулся
+		ENCODER2_ALast = ENCODER2_AVal;
+		// а чтобы определить направление вращения, нам понадобится вывод В.
+		if (HAL_GPIO_ReadPin(ENC2_DT_GPIO_Port, ENC2_DT_Pin) != ENCODER2_AVal) {  // Если вывод A изменился первым - вращение по часовой стрелке
+			ENCODER2_Rotated(ENCODER2_INVERT ? 1 : -1);
+		}
+		else {// иначе B изменил свое состояние первым - вращение против часовой стрелки
+			ENCODER2_Rotated(ENCODER2_INVERT ? -1 : 1);
 		}
 	}
 }
@@ -149,5 +168,22 @@ static void ENCODER_Rotated(int direction) //энкодер повернули, 
 			break;
 		}
 		NeedSaveSettings = true;
+	}
+}
+
+static void ENCODER2_Rotated(int direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
+{
+	
+}
+
+void ENCODER2_checkSwitch(void) {
+	bool ENCODER2_SWNow = HAL_GPIO_ReadPin(ENC2_SW_GPIO_Port, ENC2_SW_Pin);
+	if(ENCODER2_SWLast != ENCODER2_SWNow)
+	{
+		ENCODER2_SWLast = ENCODER2_SWNow;
+		if (ENCODER2_SWNow)
+		{
+			
+		}
 	}
 }

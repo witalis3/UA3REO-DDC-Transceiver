@@ -11,6 +11,7 @@
 #include "audio_filters.h"
 #include "usbd_audio_if.h"
 #include "cw_decoder.h"
+#include "peripheral.h"
 
 volatile bool TRX_ptt_hard = false;
 volatile bool TRX_ptt_cat = false;
@@ -30,7 +31,6 @@ volatile uint8_t TRX_Time_InActive = 0; //секунд бездействия, �
 volatile uint8_t TRX_Fan_Timeout = 0; //секунд, сколько ещё осталось крутить вентилятор
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
-volatile TRX_FrontPanel_Type TRX_FrontPanel = { 0 };
 volatile bool TRX_SNMP_Synced = false;
 
 static uint8_t autogain_wait_reaction = 0; //таймер ожидания реакции от смены режимов ATT/PRE
@@ -87,7 +87,7 @@ void TRX_Restart_Mode()
 static void TRX_Start_RX()
 {
 	sendToDebug_str("RX MODE\r\n");
-	TRX_RF_UNIT_UpdateState(false);
+	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	Processor_NeedRXBuffer = true;
 	WM8731_Buffer_underrun = false;
@@ -99,7 +99,7 @@ static void TRX_Start_RX()
 static void TRX_Start_TX()
 {
 	sendToDebug_str("TX MODE\r\n");
-	TRX_RF_UNIT_UpdateState(false);
+	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	HAL_Delay(10); //задерка перед подачей ВЧ сигнала, чтобы успели сработать реле
 	WM8731_TX_mode();
@@ -109,7 +109,7 @@ static void TRX_Start_TX()
 static void TRX_Start_TXRX()
 {
 	sendToDebug_str("LOOP MODE\r\n");
-	TRX_RF_UNIT_UpdateState(false);
+	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	WM8731_TXRX_mode();
 	WM8731_start_i2s_and_dma();
@@ -223,53 +223,6 @@ uint8_t TRX_getMode(void)
 	return CurrentVFO()->Mode;
 }
 
-void TRX_RF_UNIT_UpdateState(bool clean) //передаём значения в RF-UNIT
-{
-	bool hpf_lock = false;
-	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //защёлка
-	MINI_DELAY
-	for (uint8_t registerNumber = 0; registerNumber < 16; registerNumber++) {
-		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); //клок данных
-		MINI_DELAY
-		HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); //данные
-		MINI_DELAY
-		if (!clean)
-		{
-			if (registerNumber == 0 && TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK && TRX.TX_Amplifier) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_AMP
-			if (registerNumber == 1 && TRX.ATT) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //ATT_ON
-			if (registerNumber == 2 && (!TRX.LPF || TRX_getFrequency() > LPF_END)) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //LPF_OFF
-			if (registerNumber == 3 && (!TRX.BPF || TRX_getFrequency() < BPF_1_START)) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_OFF
-			if (registerNumber == 4 && TRX.BPF && TRX_getFrequency() >= BPF_0_START && TRX_getFrequency() < BPF_0_END)
-			{
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_0
-				hpf_lock = true; //блокируем HPF для выделенного BPF фильтра УКВ
-			}
-			if (registerNumber == 5 && TRX.BPF && TRX_getFrequency() >= BPF_1_START && TRX_getFrequency() < BPF_1_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_1
-			if (registerNumber == 6 && TRX.BPF && TRX_getFrequency() >= BPF_2_START && TRX_getFrequency() < BPF_2_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_2
-			if (registerNumber == 7 && TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_RX
-
-			//if(registerNumber==8) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
-			//if(registerNumber==9) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
-			if (registerNumber == 10 && ((TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) || TRX_Fan_Timeout > 0))
-			{
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //FAN
-				if (TRX_Fan_Timeout > 0) TRX_Fan_Timeout--;
-			}
-			if (registerNumber == 11 && TRX.BPF && TRX_getFrequency() >= BPF_7_HPF && !hpf_lock) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_7_HPF
-			if (registerNumber == 12 && TRX.BPF && TRX_getFrequency() >= BPF_6_START && TRX_getFrequency() < BPF_6_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_6
-			if (registerNumber == 13 && TRX.BPF && TRX_getFrequency() >= BPF_5_START && TRX_getFrequency() < BPF_5_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_5
-			if (registerNumber == 14 && TRX.BPF && TRX_getFrequency() >= BPF_4_START && TRX_getFrequency() < BPF_4_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_4
-			if (registerNumber == 15 && TRX.BPF && TRX_getFrequency() >= BPF_3_START && TRX_getFrequency() < BPF_3_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_3
-		}
-		MINI_DELAY
-		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_SET);
-	}
-	MINI_DELAY
-	HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET);
-	MINI_DELAY
-	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_SET);
-}
-
 void TRX_DoAutoGain(void)
 {
 	//Process AutoGain feature
@@ -358,84 +311,6 @@ void TRX_DoAutoGain(void)
 			break;
 		}
 	}
-}
-
-void TRX_ProcessFrontPanel(void)
-{
-	//BAND-
-	if (TRX_FrontPanel.key_1_prev != TRX_FrontPanel.key_1 && TRX_FrontPanel.key_1 == 1)
-	{
-		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
-		band--;
-		if (band >= BANDS_COUNT) band = 0;
-		if (band < 0) band = BANDS_COUNT - 1;
-		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band]);
-		LCD_UpdateQuery.TopButtons = true;
-		LCD_UpdateQuery.FreqInfo = true;
-	}
-	//BAND+
-	if (TRX_FrontPanel.key_2_prev != TRX_FrontPanel.key_2 && TRX_FrontPanel.key_2)
-	{
-		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
-		band++;
-		if (band >= BANDS_COUNT) band = 0;
-		if (band < 0) band = BANDS_COUNT - 1;
-		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band]);
-		LCD_UpdateQuery.TopButtons = true;
-		LCD_UpdateQuery.FreqInfo = true;
-	}
-	//MODE-
-	if (TRX_FrontPanel.key_3_prev != TRX_FrontPanel.key_3 && TRX_FrontPanel.key_3)
-	{
-		int8_t mode = CurrentVFO()->Mode;
-		mode--;
-		if (mode < 0) mode = TRX_MODE_COUNT - 2;
-		if (mode >= (TRX_MODE_COUNT - 1)) mode = 0;
-		TRX_setMode(mode);
-		LCD_UpdateQuery.TopButtons = true;
-	}
-	//MODE+
-	if (TRX_FrontPanel.key_4_prev != TRX_FrontPanel.key_4 && TRX_FrontPanel.key_4)
-	{
-		int8_t mode = CurrentVFO()->Mode;
-		mode++;
-		if (mode < 0) mode = TRX_MODE_COUNT - 2;
-		if (mode >= (TRX_MODE_COUNT - 1)) mode = 0;
-		TRX_setMode(mode);
-		LCD_UpdateQuery.TopButtons = true;
-	}
-	//NOTCH
-	if (TRX_FrontPanel.key_enc_prev != TRX_FrontPanel.key_enc && TRX_FrontPanel.key_enc)
-	{
-		LCD_Handler_NOTCH();
-		LCD_UpdateQuery.TopButtons = true;
-	}
-	//VOLUME+NOTCH
-	if (TRX_FrontPanel.sec_encoder != 0)
-	{
-		if (LCD_NotchEdit)
-		{
-			if (TRX.NotchFC > 50 && TRX_FrontPanel.sec_encoder < 0)
-				TRX.NotchFC -= 25;
-			else if (TRX.NotchFC < CurrentVFO()->Filter_Width && TRX_FrontPanel.sec_encoder > 0)
-				TRX.NotchFC += 25;
-			LCD_UpdateQuery.StatusInfoGUI = true;
-			NeedReinitNotch = true;
-		}
-		else
-		{
-			if (((TRX.Volume + TRX_FrontPanel.sec_encoder) > 0) && ((TRX.Volume + TRX_FrontPanel.sec_encoder) < 100))
-				TRX.Volume += TRX_FrontPanel.sec_encoder;
-			LCD_UpdateQuery.MainMenu = true;
-		}
-	}
-
-	TRX_FrontPanel.key_1_prev = TRX_FrontPanel.key_1;
-	TRX_FrontPanel.key_2_prev = TRX_FrontPanel.key_2;
-	TRX_FrontPanel.key_3_prev = TRX_FrontPanel.key_3;
-	TRX_FrontPanel.key_4_prev = TRX_FrontPanel.key_4;
-	TRX_FrontPanel.key_enc_prev = TRX_FrontPanel.key_enc;
-	TRX_FrontPanel.sec_encoder = 0;
 }
 
 void TRX_ProcessSWRMeter(void)

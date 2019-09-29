@@ -29,7 +29,7 @@
 #include "bootloader.h"
 #include "trx_manager.h"
 #include "lcd.h"
-#include "encoder.h"
+#include "peripheral.h"
 #include "fpga.h"
 #include "fft.h"
 #include "wm8731.h"
@@ -148,7 +148,7 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 	MX_GPIO_Init();
-	TRX_RF_UNIT_UpdateState(true);
+	PERIPH_RF_UNIT_UpdateState(true);
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -189,7 +189,6 @@ int main(void)
 	FFT_Init();
 	WM8731_Init();
 	TRX_Init();
-	ENCODER_Init();
 	FPGA_Init();
 	initAudioProcessor();
 	HAL_TIM_Base_Start(&htim5);
@@ -200,7 +199,7 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim4);
 	HAL_TIM_Base_Start(&htim7);
 	HAL_TIM_Base_Start_IT(&htim7);
-	TRX_RF_UNIT_UpdateState(false);
+	PERIPH_RF_UNIT_UpdateState(false);
 	sendToDebug_str("UA3REO Started\r\n\r\n");
 	TRX_inited = true;
   /* USER CODE END 2 */
@@ -1040,11 +1039,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : ENC2_CLK_Pin */
-  GPIO_InitStruct.Pin = ENC2_CLK_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  /*Configure GPIO pins : ENC2_CLK_Pin PTT_IN_Pin */
+  GPIO_InitStruct.Pin = ENC2_CLK_Pin|PTT_IN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(ENC2_CLK_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : FPGA_CLK_Pin FPGA_SYNC_Pin */
   GPIO_InitStruct.Pin = FPGA_CLK_Pin|FPGA_SYNC_Pin;
@@ -1061,12 +1060,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PTT_IN_Pin */
-  GPIO_InitStruct.Pin = PTT_IN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(PTT_IN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_PEN_Pin */
   GPIO_InitStruct.Pin = LED_PEN_Pin;

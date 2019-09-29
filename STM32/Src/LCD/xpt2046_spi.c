@@ -4,32 +4,22 @@
 #include "main.h"
 #include "../functions.h"
 #include "../settings.h"
+#include "../peripheral.h"
 
 volatile bool TOUCH_InCalibrate = false;
 
 static float32_t touch_x0, touch_x1, touch_x2, touch_x3, touch_x4, touch_x5, touch_x6, touch_x7, touch_x8, touch_y0, touch_y1, touch_y2, touch_y3, touch_y4, touch_y5, touch_y6, touch_y7, touch_y8;
-//static const int16_t xCenter[] = { CALIBRATE_OFFSET, LCD_WIDTH - CALIBRATE_OFFSET, CALIBRATE_OFFSET, LCD_WIDTH - CALIBRATE_OFFSET };
-//static const int16_t yCenter[] = { CALIBRATE_OFFSET, CALIBRATE_OFFSET, LCD_HEIGHT - CALIBRATE_OFFSET, LCD_HEIGHT - CALIBRATE_OFFSET };
 static uint16_t xPos[9], yPos[9];
 
 extern IWDG_HandleTypeDef hiwdg;
 
 void Init_XPT2046()
 {
-	Spi_Master_Transmit(0X80);
-	Spi_Master_Transmit(0X00);
-	Spi_Master_Transmit(0X00);
+	uint8_t inData[3] = {0};
+	uint8_t outData[3] = {0X80, 0X00, 0X00};
+	PERIPH_SPI_Transmit(outData, inData, 3, TOUCH_CS_GPIO_Port, TOUCH_CS_Pin);
 	HAL_Delay(1);
 }
-///////////////////////////////////
-uint8_t Spi_Master_Transmit(uint8_t out_data)
-{
-	uint8_t in_data = 0;
-	HAL_SPI_TransmitReceive(&hspi2, &out_data, &in_data, 1, 0x1000);
-	return in_data;
-
-}
-/////////////////////////////////
 
 uint8_t isTouch(void)
 {
@@ -42,24 +32,14 @@ uint8_t isTouch(void)
 uint16_t Get_Touch(uint8_t adress)
 {
 	uint16_t data = 0;
-	//char dest[100];
+	uint8_t inData[3] = {0};
+	uint8_t outData[3] = {adress, 0, 0};
 	
-	HAL_GPIO_WritePin(TOUCH_CS_GPIO_Port, TOUCH_CS_Pin, GPIO_PIN_RESET); //активируем XPT2046
-		//отправляем запрос для получения интересющей нас координаты 
-	Spi_Master_Transmit(adress);
-
-	//считываем старший байт 
-	data = Spi_Master_Transmit(0X00);
-	//sprintf(dest, "Touchpad b1 = %d\r\n", data);
-	//sendToDebug_str(dest);
-	data <<= 8;
-
-	//считываем младший байт 
-	data |= Spi_Master_Transmit(0X00);
-	//sprintf(dest, "Touchpad b2 = %d\r\n\r\n", data);
-	//sendToDebug_str(dest);
+	//отправляем запрос для получения интересющей нас координаты 
+	PERIPH_SPI_Transmit(outData, inData, 3, TOUCH_CS_GPIO_Port, TOUCH_CS_Pin);
+	data = inData[1] << 8;
+	data |= inData[2];
 	data >>= 3;
-	HAL_GPIO_WritePin(TOUCH_CS_GPIO_Port, TOUCH_CS_Pin, GPIO_PIN_SET); //деактивируем XPT2046
 
 	return data;
 }

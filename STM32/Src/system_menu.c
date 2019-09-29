@@ -18,6 +18,10 @@ static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 
 static void SYSMENU_HANDL_FFTEnabled(int8_t direction);
 static void SYSMENU_HANDL_FFT_Averaging(int8_t direction);
+static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
+static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
+static void SYSMENU_HANDL_ADC_SHDN(int8_t direction);
+static void SYSMENU_HANDL_ADC_DITH(int8_t direction);
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
 static void SYSMENU_HANDL_Standby_Time(int8_t direction);
 static void SYSMENU_HANDL_CWDecoder(int8_t direction);
@@ -41,6 +45,7 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
 static void SYSMENU_HANDL_FFTMENU(int8_t direction);
+static void SYSMENU_HANDL_ADCMENU(int8_t direction);
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 
@@ -54,6 +59,7 @@ static struct sysmenu_item_handler sysmenu_handlers[] =
 	{"CW Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_CWMENU},
 	{"LCD Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
 	{"FFT Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_FFTMENU},
+	{"ADC Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_ADCMENU},
 	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_ENCODER_SLOW_RATE},
 	{"WIFI Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_WIFIMENU},
 	{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
@@ -86,6 +92,15 @@ static struct sysmenu_item_handler sysmenu_fft_handlers[] =
 	{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_FFT_Averaging},
 };
 static uint8_t sysmenu_fft_item_count = sizeof(sysmenu_fft_handlers) / sizeof(sysmenu_fft_handlers[0]);
+
+static struct sysmenu_item_handler sysmenu_adc_handlers[] =
+{
+	{"ADC Preamp", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},
+	{"ADC Dither", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
+	{"ADC Randomizer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
+	{"ADC Shutdown", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
+};
+static uint8_t sysmenu_adc_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 {
@@ -228,6 +243,30 @@ static void SYSMENU_HANDL_FFT_Averaging(int8_t direction)
 	if (TRX.FFT_Averaging > 10) TRX.FFT_Averaging = 10;
 }
 
+static void SYSMENU_HANDL_ADC_PGA(int8_t direction)
+{
+	TRX.ADC_PGA = !TRX.ADC_PGA;
+	FPGA_NeedSendParams = true;
+}
+
+static void SYSMENU_HANDL_ADC_RAND(int8_t direction)
+{
+	TRX.ADC_RAND = !TRX.ADC_RAND;
+	FPGA_NeedSendParams = true;
+}
+
+static void SYSMENU_HANDL_ADC_SHDN(int8_t direction)
+{
+	TRX.ADC_SHDN = !TRX.ADC_SHDN;
+	FPGA_NeedSendParams = true;
+}
+
+static void SYSMENU_HANDL_ADC_DITH(int8_t direction)
+{
+	TRX.ADC_DITH = !TRX.ADC_DITH;
+	FPGA_NeedSendParams = true;
+}
+
 static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction)
 {
 	TRX.SSB_HPF_pass += direction * 100;
@@ -318,6 +357,15 @@ static void SYSMENU_HANDL_FFTMENU(int8_t direction)
 {
 	sysmenu_handlers_selected = &sysmenu_fft_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_fft_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_ADCMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_adc_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_adc_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	drawSystemMenu(true);

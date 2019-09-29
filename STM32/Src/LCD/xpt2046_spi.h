@@ -18,7 +18,6 @@ extern volatile bool TOUCH_InCalibrate;
 void delay_us(uint32_t us);
 void Init_XPT2046(void);
 uint8_t isTouch(void);
-uint8_t Spi_Master_Transmit(uint8_t out_data);
 void Touch_Calibrate(void);
 uint16_t Get_Touch(uint8_t adress);
 void Touch_Set_Coef(float32_t x0, float32_t y0, float32_t x1, float32_t y1, float32_t x2, float32_t y2, float32_t x3, float32_t y3, float32_t x4, float32_t y4, float32_t x5, float32_t y5, float32_t x6, float32_t y6, float32_t x7, float32_t y7, float32_t x8, float32_t y8);

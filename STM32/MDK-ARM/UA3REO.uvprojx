@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx,ARM_MATH_CM4</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                                                            ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                            ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                            ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                            ../Drivers/CMSIS/Include;                                                                            ..\USBDevice;                                                                            ..\Src;                                                                            ..\Src\LCD</IncludePath>
+              <IncludePath>../Inc;                                                                                ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                                ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                                ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                                ../Drivers/CMSIS/Include;                                                                                ..\USBDevice;                                                                                ..\Src;                                                                                ..\Src\LCD</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -453,16 +453,6 @@
               <FilePath>..\Src\cw_decoder.h</FilePath>
             </File>
             <File>
-              <FileName>encoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\encoder.c</FilePath>
-            </File>
-            <File>
-              <FileName>encoder.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\encoder.h</FilePath>
-            </File>
-            <File>
               <FileName>fft.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\fft.c</FilePath>
@@ -511,6 +501,16 @@
               <FileName>noise_reduction.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\noise_reduction.h</FilePath>
+            </File>
+            <File>
+              <FileName>peripheral.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\peripheral.c</FilePath>
+            </File>
+            <File>
+              <FileName>peripheral.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\peripheral.h</FilePath>
             </File>
             <File>
               <FileName>profiler.c</FileName>
