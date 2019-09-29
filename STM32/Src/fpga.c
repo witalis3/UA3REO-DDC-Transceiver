@@ -194,6 +194,7 @@ inline void FPGA_fpgadata_sendparam(void)
 	if (!TRX_on_TX()) bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX.Preamp);
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_SHDN);
+	if (TRX_on_TX()) bitWrite(FPGA_fpgadata_out_tmp8, 3, true);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_RAND);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX.ADC_PGA);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
