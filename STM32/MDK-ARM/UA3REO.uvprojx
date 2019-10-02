@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx,ARM_MATH_CM4</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                                                                ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                                ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                                ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                                ../Drivers/CMSIS/Include;                                                                                ..\USBDevice;                                                                                ..\Src;                                                                                ..\Src\LCD</IncludePath>
+              <IncludePath>../Inc;                                                                                    ../Drivers/STM32F4xx_HAL_Driver/Inc;                                                                                    ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                                                                    ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                                                                    ../Drivers/CMSIS/Include;                                                                                    ..\USBDevice;                                                                                    ..\Src;                                                                                    ..\Src\LCD</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -473,6 +473,11 @@
               <FilePath>..\Src\fpga.h</FilePath>
             </File>
             <File>
+              <FileName>fonts.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\fonts.h</FilePath>
+            </File>
+            <File>
               <FileName>functions.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\functions.c</FilePath>
@@ -491,6 +496,16 @@
               <FileName>lcd.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\lcd.h</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\lcd_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_driver.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\lcd_driver.h</FilePath>
             </File>
             <File>
               <FileName>noise_reduction.c</FileName>
@@ -831,36 +846,6 @@
               <FileName>system_stm32f4xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32f4xx.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>LCD</GroupName>
-          <Files>
-            <File>
-              <FileName>xpt2046_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\LCD\xpt2046_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>xpt2046_spi.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\LCD\xpt2046_spi.h</FilePath>
-            </File>
-            <File>
-              <FileName>fonts.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\LCD\fonts.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\LCD\lcd_driver.c</FilePath>
-            </File>
-            <File>
-              <FileName>lcd_driver.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\LCD\lcd_driver.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -2,7 +2,7 @@
 #include "usbd_debug_if.h"
 #include "usbd_cat_if.h"
 #include "trx_manager.h"
-#include "LCD/lcd_driver.h"
+#include "lcd_driver.h"
 
 #define DEBUG_APP_RX_DATA_SIZE  8
 #define DEBUG_APP_TX_DATA_SIZE  8

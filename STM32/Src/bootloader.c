@@ -31,7 +31,7 @@ void JumpToBootloader(void) {
 	 *       For other families, check AN2606 document table 110 with descriptions of memory addresses
 	 */
 	volatile uint32_t addr = 0x1FFF0000;
-	if (TRX_inited)
+	if (TRX_Inited)
 		LCD_showError("Flash DFU mode", false);
 	//turn on LCD backlight
 	GPIO_InitTypeDef GPIO_InitStruct;

@@ -148,16 +148,8 @@ void processRxAudio(void)
 	}
 
 	//OUT Volume
-	if (TRX.Mute)
-	{
-		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, 0, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-		arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, 0, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-	}
-	else
-	{
-		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, (float32_t)TRX.Volume / 100.0f, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-		arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, (float32_t)TRX.Volume / 100.0f, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-	}
+	arm_scale_f32(FPGA_Audio_Buffer_I_tmp, (float32_t)TRX.Volume / 100.0f, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, (float32_t)TRX.Volume / 100.0f, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 
 	//Prepare data to DMA
 	if (Processor_AudioBuffer_ReadyBuffer == 0)
@@ -227,7 +219,7 @@ void processTxAudio(void)
 	selected_rfpower_amplitude = TRX.RF_Power / 100.0f * MAX_TX_AMPLITUDE;
 	uint8_t mode = TRX_getMode();
 
-	if (TRX.InputType == 2) //USB AUDIO
+	if (TRX.InputType_USB) //USB AUDIO
 	{
 		uint16_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / 2; //buffer 8bit, data 16 bit
 		if ((buffer_index % 2) == 1) buffer_index--;
@@ -242,7 +234,7 @@ void processTxAudio(void)
 
 	for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
-		if (TRX_tune)
+		if (TRX_Tune)
 		{
 			FPGA_Audio_Buffer_Q_tmp[i] = selected_rfpower_amplitude;
 			FPGA_Audio_Buffer_I_tmp[i] = selected_rfpower_amplitude;
@@ -255,13 +247,13 @@ void processTxAudio(void)
 	}
 
 	//Process DC corrector filter
-	if (!TRX_tune)
+	if (!TRX_Tune)
 	{
 		dc_filter(FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 2);
 		dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 3);
 	}
 
-	if (mode != TRX_MODE_IQ && !TRX_tune)
+	if (mode != TRX_MODE_IQ && !TRX_Tune)
 	{
 		//IIR HPF
 		for (block = 0; block < numBlocks; block++)
@@ -302,7 +294,7 @@ void processTxAudio(void)
 		if (Processor_TX_MAX_amplitude < TX_AGC_NOISEGATE) ALC_need_gain = 0.0f;
 		//оключаем усиление для некоторых видов мод
 		if ((ALC_need_gain > 1.0f) && (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_IQ || mode == TRX_MODE_LOOPBACK)) ALC_need_gain = 1.0f;
-		if (TRX_tune) ALC_need_gain = 1.0f;
+		if (TRX_Tune) ALC_need_gain = 1.0f;
 		//применяем усиление
 		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, ALC_need_gain, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, ALC_need_gain, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -365,12 +357,6 @@ void processTxAudio(void)
 		}
 	}
 
-	if (TRX.Mute && !TRX_tune)
-	{
-		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, 0, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-		arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, 0, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-	}
-
 	//Send TX data to FFT
 	for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
@@ -388,7 +374,7 @@ void processTxAudio(void)
 	}
 
 	//Loopback mode
-	if (mode == TRX_MODE_LOOPBACK && !TRX_tune)
+	if (mode == TRX_MODE_LOOPBACK && !TRX_Tune)
 	{
 		//OUT Volume
 		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, (float32_t)TRX.Volume / 50.0f, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -538,7 +524,7 @@ static void DemodulateFM(void)
 		q_prev = FPGA_Audio_Buffer_Q_tmp[i];// save "previous" value of each channel to allow detection of the change of angle in next go-around
 		i_prev = FPGA_Audio_Buffer_I_tmp[i];
 
-		if ((!TRX_squelched) || (!TRX.FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
+		if ((!TRX_Squelched) || (!TRX.FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
 		{
 			if (TRX_getMode() == TRX_MODE_WFM)
 			{
@@ -552,7 +538,7 @@ static void DemodulateFM(void)
 				FPGA_Audio_Buffer_I_tmp[i] = b * 30000.0f;// save demodulated and filtered audio in main audio processing buffer
 			}
 		}
-		else if (TRX_squelched)// were we squelched or tone NOT detected?
+		else if (TRX_Squelched)// were we squelched or tone NOT detected?
 			FPGA_Audio_Buffer_I_tmp[i] = 0;// do not filter receive audio - fill buffer with zeroes to mute it
 	}
 
@@ -569,23 +555,23 @@ static void DemodulateFM(void)
 		b = fm_sql_avg * 10.0f;// scale noise amplitude to range of squelch setting
 		// Now evaluate noise power with respect to squelch setting
 		if (!TRX.FM_SQL_threshold)	 	// is squelch set to zero?
-			TRX_squelched = false;		// yes, the we are un-squelched
-		else if (TRX_squelched)	 	// are we squelched?
+			TRX_Squelched = false;		// yes, the we are un-squelched
+		else if (TRX_Squelched)	 	// are we squelched?
 		{
 			if (b <= (float)((10 - TRX.FM_SQL_threshold) - FM_SQUELCH_HYSTERESIS))	// yes - is average above threshold plus hysteresis?
-				TRX_squelched = false;		//  yes, open the squelch
+				TRX_Squelched = false;		//  yes, open the squelch
 		}
 		else	 	// is the squelch open (e.g. passing audio)?
 		{
 			if ((10.0f - TRX.FM_SQL_threshold) > FM_SQUELCH_HYSTERESIS)// is setting higher than hysteresis?
 			{
 				if (b > (float)((10 - TRX.FM_SQL_threshold) + FM_SQUELCH_HYSTERESIS))// yes - is average below threshold minus hysteresis?
-					TRX_squelched = true;	// yes, close the squelch
+					TRX_Squelched = true;	// yes, close the squelch
 			}
 			else	 // setting is lower than hysteresis so we can't use it!
 			{
 				if (b > (10.0f - (float)TRX.FM_SQL_threshold))// yes - is average below threshold?
-					TRX_squelched = true;	// yes, close the squelch
+					TRX_Squelched = true;	// yes, close the squelch
 			}
 		}
 		//

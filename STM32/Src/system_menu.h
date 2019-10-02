@@ -25,8 +25,9 @@ struct sysmenu_item_handler {
 };
 
 extern void drawSystemMenu(bool draw_background);
-extern void eventClickSystemMenu(uint16_t x, uint16_t y);
 extern void eventRotateSystemMenu(int8_t direction);
+extern void eventSecRotateSystemMenu(int8_t direction);
+extern void eventCloseSystemMenu(void);
 extern bool sysmenu_spectrum_opened;
 
 #endif

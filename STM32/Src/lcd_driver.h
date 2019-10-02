@@ -6,7 +6,7 @@
 #include "stm32f4xx_hal.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include "../settings.h"
+#include "settings.h"
 
 //LCD dimensions defines
 #define LCD_WIDTH       320

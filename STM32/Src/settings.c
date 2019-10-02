@@ -27,9 +27,9 @@ static void Flash_Read_Data(void);
 void LoadSettings(void)
 {
 	Flash_Read_Data();
-	if (TRX.clean_flash != 182) //code to trace new clean flash
+	if (TRX.clean_flash != 184) //code to trace new clean flash
 	{
-		TRX.clean_flash = 182; //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		TRX.clean_flash = 184; //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000; //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
 		TRX.VFO_A.Filter_Width = 2700; //сохранённая ширина полосы VFO-A
@@ -42,14 +42,13 @@ void LoadSettings(void)
 		TRX.ATT = false; //аттенюатор
 		TRX.LPF = true; //ФНЧ
 		TRX.BPF = true; //ДПФ
-		TRX.TX_Amplifier = true; //Усилитель RF
 		TRX.DNR = false; //цифровое шумоподавление
-		TRX.Agc_speed = 3; //скорость AGC
-		TRX.LCD_menu_freq_index = MENU_FREQ_KHZ; //выбранный разряд частоты для изменения
+		TRX.AGC_speed = 3; //скорость AGC
 		TRX.BandMapEnabled = true; //автоматическая смена моды по карте диапазонов
 		TRX.Volume = 20; //громкость
-		TRX.InputType = 0; //тип входа для передачи: 0 - mic ; 1 - line ; 2 - usb
-		TRX.Mute = false; //приглушить звук
+		TRX.InputType_MIC = true; //тип входа для передачи
+		TRX.InputType_LINE = false;
+		TRX.InputType_USB = false;
 		TRX.Fast = false; //ускоренная смена частоты при вращении энкодера
 		TRX.CW_Filter = 500; //дефолтное значение ширины фильтра CW
 		TRX.SSB_Filter = 2700; //дефолтное значение ширины фильтра SSB
@@ -66,25 +65,6 @@ void LoadSettings(void)
 		//system settings
 		TRX.FFT_Enabled = true; //использовать спектр FFT
 		TRX.CW_GENERATOR_SHIFT_HZ = 500; //смещение гетеродина в CW моде
-		TRX.Calibrated = false; //был ли калиброван экран
-		TRX.Touchpad_x0 = 3935.0f; //данные для калибровки экрана
-		TRX.Touchpad_y0 = 427.0; //данные для калибровки экрана
-		TRX.Touchpad_x1 = 2118.0f; //данные для калибровки экрана
-		TRX.Touchpad_y1 = 1181.0; //данные для калибровки экрана
-		TRX.Touchpad_x2 = 345.0; //данные для калибровки экрана
-		TRX.Touchpad_y2 = 991.0; //данные для калибровки экрана
-		TRX.Touchpad_x3 = 3908.0; //данные для калибровки экрана
-		TRX.Touchpad_y3 = 1948.0; //данные для калибровки экрана
-		TRX.Touchpad_x4 = 369.0; //данные для калибровки экрана
-		TRX.Touchpad_y4 = 2000.0; //данные для калибровки экрана
-		TRX.Touchpad_x5 = 3900.0; //данные для калибровки экрана
-		TRX.Touchpad_y5 = 3286.0; //данные для калибровки экрана
-		TRX.Touchpad_x6 = 2146.0; //данные для калибровки экрана
-		TRX.Touchpad_y6 = 3109.0; //данные для калибровки экрана
-		TRX.Touchpad_x7 = 338.0; //данные для калибровки экрана
-		TRX.Touchpad_y7 = 2893.0; //данные для калибровки экрана
-		TRX.Touchpad_x8 = 2125.0; //данные для калибровки экрана
-		TRX.Touchpad_y8 = 1983.0; //данные для калибровки экрана
 		TRX.ENCODER_SLOW_RATE = 35; //замедление энкодера для больших разрешений
 		TRX.LCD_Brightness = 60; //яркость экрана
 		TRX.Standby_Time = 180; //время до гашения экрана по бездействию

@@ -25,18 +25,18 @@ typedef struct {
 	bool key_bandn;
 	bool key_bandn_prev;
 	//MCP3008 - 2
-	bool key_f1;
-	bool key_f1_prev;
-	bool key_f2;
-	bool key_f2_prev;
-	bool key_f3;
-	bool key_f3_prev;
-	bool key_f4;
-	bool key_f4_prev;
-	bool key_f5;
-	bool key_f5_prev;
-	bool key_f6;
-	bool key_f6_prev;
+	bool key_agc;
+	bool key_agc_prev;
+	bool key_dnr;
+	bool key_dnr_prev;
+	bool key_a_b;
+	bool key_a_b_prev;
+	bool key_notch;
+	bool key_notch_prev;
+	bool key_func;
+	bool key_func_prev;
+	bool key_menu;
+	bool key_menu_prev;
 	uint16_t key_afgain; //10-bit
 	uint16_t key_shift; //10-bit
 	//

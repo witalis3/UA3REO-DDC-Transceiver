@@ -1,8 +1,8 @@
 //Header files
 #include "lcd_driver.h"
 #include "fonts.h"
-#include "../settings.h"
-#include "../functions.h"
+#include "settings.h"
+#include "functions.h"
 
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern SRAM_HandleTypeDef hsram1;

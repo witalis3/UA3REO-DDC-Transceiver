@@ -69,7 +69,6 @@
 #include "usbd_ua3reo.h"
 #include "trx_manager.h"
 #include "audio_filters.h"
-#include "LCD/xpt2046_spi.h"
 #include "wifi.h"
 #include "system_menu.h"
 
@@ -633,26 +632,20 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	else if (GPIO_Pin == GPIO_PIN_2) //Main encoder
 	{
 		TRX_Time_InActive = 0;
-		if (TRX_inited)
+		if (TRX_Inited)
 			PERIPH_ENCODER_checkRotate();
 	}
 	else if (GPIO_Pin == GPIO_PIN_13) //Secondary encoder
 	{
 		TRX_Time_InActive = 0;
-		if (TRX_inited)
+		if (TRX_Inited)
 			PERIPH_ENCODER2_checkRotate();
 	}
 	else if (GPIO_Pin == GPIO_PIN_4) //PTT
 	{
 		TRX_Time_InActive = 0;
-		if (TRX_inited && TRX_getMode() != TRX_MODE_NO_TX) 
+		if (TRX_Inited && TRX_getMode() != TRX_MODE_NO_TX) 
 			TRX_ptt_change();
-	}
-	else if (GPIO_Pin == GPIO_PIN_5) //Touchpad
-	{
-		TRX_Time_InActive = 0;
-		if (!TOUCH_InCalibrate)
-			LCD_checkTouchPad();
 	}
 }
 

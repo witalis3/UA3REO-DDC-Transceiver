@@ -291,17 +291,17 @@ void FFT_doFFT(void)
 	//Уменьшаем расчитанный FFT до видимого
 	if (FFT_SIZE > FFT_PRINT_SIZE)
 	{
-		uint8_t fft_compress_rate = FFT_SIZE / FFT_PRINT_SIZE;
+		float32_t fft_compress_rate = (float32_t)FFT_SIZE / (float32_t)FFT_PRINT_SIZE;
 		for (uint16_t i = 0; i < FFT_PRINT_SIZE; i++)
 		{
 			float32_t fft_compress_tmp = 0;
 			for (uint8_t c = 0; c < fft_compress_rate; c++)
-				fft_compress_tmp += FFTInput[i*fft_compress_rate + c];
+				fft_compress_tmp += FFTInput[(uint16_t)(i*fft_compress_rate + c)];
 			FFTInput[i] = fft_compress_tmp / fft_compress_rate;
 		}
 	}
 
-	FFTInput[0] = FFTInput[1];
+	//FFTInput[0] = FFTInput[1];
 
 	//Автокалибровка уровней FFT
 	arm_max_f32(FFTInput, FFT_PRINT_SIZE, &maxValue, &maxIndex); //ищем максимум в АЧХ
@@ -335,9 +335,7 @@ void FFT_printFFT(void)
 	if (LCD_busy) return;
 	if (!TRX.FFT_Enabled) return;
 	if (FFT_need_fft) return;
-	if (LCD_mainMenuOpened) return;
-	if (LCD_modeMenuOpened) return;
-	if (LCD_bandMenuOpened) return;
+	if (LCD_systemMenuOpened) return;
 	LCD_busy = true;
 
 	uint16_t height = 0; //высота столбца в выводе FFT
@@ -358,7 +356,7 @@ void FFT_printFFT(void)
 	}
 
 	//расчитываем цвета для водопада
-	uint8_t new_x = 0;
+	uint16_t new_x = 0;
 	uint8_t fft_header[FFT_PRINT_SIZE] = { 0 };
 	for (uint32_t fft_x = 0; fft_x < FFT_PRINT_SIZE; fft_x++)
 	{

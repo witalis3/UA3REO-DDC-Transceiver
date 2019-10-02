@@ -15,8 +15,8 @@ static uint8_t ENCODER_ALast = 0;
 static uint8_t ENCODER_AVal = 0;
 static int32_t ENCODER_slowler = 0;
 static uint8_t ENCODER2_ALast = 0;
-static bool ENCODER2_SWLast = true;
 static uint8_t ENCODER2_AVal = 0;
+static bool ENCODER2_SWLast = true;
 
 volatile PERIPH_FrontPanel_Type PERIPH_FrontPanel = { 0 };
 
@@ -25,159 +25,119 @@ static void PERIPH_ENCODER2_Rotated(int direction);
 static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN);
 	
 void PERIPH_ENCODER_checkRotate(void) {
-	if (HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin) != HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin)) {  // Если вывод A изменился первым - вращение по часовой стрелке
-		ENCODER_slowler--;
-		if (ENCODER_slowler < -TRX.ENCODER_SLOW_RATE)
-		{
-			PERIPH_ENCODER_Rotated(ENCODER_INVERT ? 1 : -1);
-			ENCODER_slowler = 0;
+	ENCODER_AVal = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
+	if( ENCODER_ALast != ENCODER_AVal)
+	{
+		ENCODER_ALast = ENCODER_AVal;
+		if (ENCODER_AVal != HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin)) {  // Если вывод A изменился первым - вращение по часовой стрелке
+			ENCODER_slowler--;
+			if (ENCODER_slowler < -TRX.ENCODER_SLOW_RATE)
+			{
+				PERIPH_ENCODER_Rotated(ENCODER_INVERT ? 1 : -1);
+				ENCODER_slowler = 0;
+			}
 		}
-	}
-	else {// иначе B изменил свое состояние первым - вращение против часовой стрелки
-		ENCODER_slowler++;
-		if (ENCODER_slowler > TRX.ENCODER_SLOW_RATE)
-		{
-			PERIPH_ENCODER_Rotated(ENCODER_INVERT ? -1 : 1);
-			ENCODER_slowler = 0;
+		else {// иначе B изменил свое состояние первым - вращение против часовой стрелки
+			ENCODER_slowler++;
+			if (ENCODER_slowler > TRX.ENCODER_SLOW_RATE)
+			{
+				PERIPH_ENCODER_Rotated(ENCODER_INVERT ? -1 : 1);
+				ENCODER_slowler = 0;
+			}
 		}
 	}
 }
 
 void PERIPH_ENCODER2_checkRotate(void) {
-	if (HAL_GPIO_ReadPin(ENC2_DT_GPIO_Port, ENC2_DT_Pin) != HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin)) {  // Если вывод A изменился первым - вращение по часовой стрелке
-		PERIPH_ENCODER2_Rotated(ENCODER2_INVERT ? 1 : -1);
-	}
-	else {// иначе B изменил свое состояние первым - вращение против часовой стрелки
-		PERIPH_ENCODER2_Rotated(ENCODER2_INVERT ? -1 : 1);
+	ENCODER2_AVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
+	if( ENCODER2_ALast != ENCODER2_AVal)
+	{
+		ENCODER2_ALast = ENCODER2_AVal;
+		if (ENCODER2_AVal != HAL_GPIO_ReadPin(ENC2_DT_GPIO_Port, ENC2_DT_Pin)) {  // Если вывод A изменился первым - вращение по часовой стрелке
+			PERIPH_ENCODER2_Rotated(ENCODER2_INVERT ? 1 : -1);
+		}
+		else {// иначе B изменил свое состояние первым - вращение против часовой стрелки
+			PERIPH_ENCODER2_Rotated(ENCODER2_INVERT ? -1 : 1);
+		}
 	}
 }
 
 static void PERIPH_ENCODER_Rotated(int direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
 {
+	TRX_Time_InActive = 0;
+	
 	if (LCD_systemMenuOpened && !LCD_timeMenuOpened)
 	{
 		eventRotateSystemMenu(direction);
 		return;
 	}
-	if (!LCD_mainMenuOpened)
+	if (!LCD_timeMenuOpened)
 	{
-		switch (TRX.LCD_menu_freq_index) {
-			case MENU_FREQ_HZ:
-				if (TRX.Fast)
-					TRX_setFrequency(TRX_getFrequency() + 100 * direction);
-				else
-					TRX_setFrequency(TRX_getFrequency() + 10 * direction);
-				break;
-			case MENU_FREQ_KHZ:
-				if (TRX.Fast)
-					TRX_setFrequency(TRX_getFrequency() + 10000 * direction);
-				else
-					TRX_setFrequency(TRX_getFrequency() + 1000 * direction);
-				break;
-			case MENU_FREQ_MHZ:
-				TRX_setFrequency(TRX_getFrequency() + 1000000 * direction);
-				break;
-			default:
-				break;
-		}
+		if (TRX.Fast)
+			TRX_setFrequency(TRX_getFrequency() + 100 * direction);
+		else
+			TRX_setFrequency(TRX_getFrequency() + 10 * direction);
+				
 		if((TRX_getFrequency() % 10) > 0)
 			TRX_setFrequency(TRX_getFrequency()/10*10);
 		LCD_UpdateQuery.FreqInfo = true;
 	}
-	if (LCD_mainMenuOpened)
+	if (LCD_timeMenuOpened)
 	{
-		if (LCD_timeMenuOpened)
+		uint32_t Time = RTC->TR;
+		RTC_TimeTypeDef sTime;
+		sTime.TimeFormat = RTC_HOURFORMAT12_PM;
+		sTime.SubSeconds = 0;
+		sTime.SecondFraction = 0;
+		sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+		sTime.StoreOperation = RTC_STOREOPERATION_SET;
+		sTime.Hours = (uint8_t)(((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f));
+		sTime.Minutes = (uint8_t)(((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f));
+		sTime.Seconds = (uint8_t)(((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f));
+		if (TimeMenuSelection == 0)
 		{
-			uint32_t Time = RTC->TR;
-			RTC_TimeTypeDef sTime;
-			sTime.TimeFormat = RTC_HOURFORMAT12_PM;
-			sTime.SubSeconds = 0;
-			sTime.SecondFraction = 0;
-			sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-			sTime.StoreOperation = RTC_STOREOPERATION_SET;
-			sTime.Hours = (uint8_t)(((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f));
-			sTime.Minutes = (uint8_t)(((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f));
-			sTime.Seconds = (uint8_t)(((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f));
-			if (TimeMenuSelection == 0)
-			{
-				if (sTime.Hours == 0 && direction < 0) return;
-				sTime.Hours = sTime.Hours + direction;
-			}
-			if (TimeMenuSelection == 1)
-			{
-				if (sTime.Minutes == 0 && direction < 0) return;
-				sTime.Minutes = sTime.Minutes + direction;
-			}
-			if (TimeMenuSelection == 2)
-			{
-				if (sTime.Seconds == 0 && direction < 0) return;
-				sTime.Seconds = sTime.Seconds + direction;
-			}
-			if (sTime.Hours >= 24) sTime.Hours = 0;
-			if (sTime.Minutes >= 60) sTime.Minutes = 0;
-			if (sTime.Seconds >= 60) sTime.Seconds = 0;
-			HAL_RTC_DeInit(&hrtc);
-			HAL_RTC_Init(&hrtc);
-			HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-			LCD_UpdateQuery.SystemMenu = true;
-			return;
+			if (sTime.Hours == 0 && direction < 0) return;
+			sTime.Hours = sTime.Hours + direction;
 		}
-		switch (LCD_menu_main_index) {
-		case MENU_MAIN_VOLUME:
-			TRX.Volume = TRX.Volume + direction;
-			if (TRX.Volume < 1) TRX.Volume = 1;
-			if (TRX.Volume > 100) TRX.Volume = 100;
-			LCD_UpdateQuery.MainMenu = true;
-			break;
-		case MENU_MAIN_RF_GAIN:
-			TRX.RF_Gain = TRX.RF_Gain + direction;
-			if (TRX.RF_Gain < 1) TRX.RF_Gain = 1;
-			if (TRX.RF_Gain > 250) TRX.RF_Gain = 250;
-			LCD_UpdateQuery.MainMenu = true;
-			break;
-		case MENU_MAIN_FM_SQL:
-			if (direction > 0 || TRX.FM_SQL_threshold > 0) TRX.FM_SQL_threshold = TRX.FM_SQL_threshold + direction;
-			if (TRX.FM_SQL_threshold > 10) TRX.FM_SQL_threshold = 10;
-			LCD_UpdateQuery.MainMenu = true;
-			break;
-		case MENU_MAIN_RF_POWER:
-			TRX.RF_Power = TRX.RF_Power + direction;
-			if (TRX.RF_Power < 1) TRX.RF_Power = 1;
-			if (TRX.RF_Power > 100) TRX.RF_Power = 100;
-			LCD_UpdateQuery.MainMenu = true;
-			break;
-		case MENU_MAIN_AGCSPEED:
-			if (direction > 0 || TRX.Agc_speed > 0) TRX.Agc_speed = TRX.Agc_speed + direction;
-			if (TRX.Agc_speed < 1) TRX.Agc_speed = 1;
-			if (TRX.Agc_speed > 4) TRX.Agc_speed = 4;
-			InitAGC();
-			LCD_UpdateQuery.MainMenu = true;
-			break;
-		default:
-			break;
+		if (TimeMenuSelection == 1)
+		{
+			if (sTime.Minutes == 0 && direction < 0) return;
+			sTime.Minutes = sTime.Minutes + direction;
 		}
-		NeedSaveSettings = true;
+		if (TimeMenuSelection == 2)
+		{
+			if (sTime.Seconds == 0 && direction < 0) return;
+			sTime.Seconds = sTime.Seconds + direction;
+		}
+		if (sTime.Hours >= 24) sTime.Hours = 0;
+		if (sTime.Minutes >= 60) sTime.Minutes = 0;
+		if (sTime.Seconds >= 60) sTime.Seconds = 0;
+		HAL_RTC_DeInit(&hrtc);
+		HAL_RTC_Init(&hrtc);
+		HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+		LCD_UpdateQuery.SystemMenu = true;
+		return;
 	}
+	NeedSaveSettings = true;
 }
 
 static void PERIPH_ENCODER2_Rotated(int direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
 {
-	//VOLUME+NOTCH
-	if (LCD_NotchEdit)
+	TRX_Time_InActive = 0;
+	
+	if (LCD_systemMenuOpened || LCD_timeMenuOpened)
 	{
-		if (TRX.NotchFC > 50 && direction < 0)
-			TRX.NotchFC -= 25;
-		else if (TRX.NotchFC < CurrentVFO()->Filter_Width && direction > 0)
-			TRX.NotchFC += 25;
-		LCD_UpdateQuery.StatusInfoGUI = true;
-		NeedReinitNotch = true;
+		eventSecRotateSystemMenu(direction);
+		return;
 	}
-	else
-	{
-		if (((TRX.Volume + direction) > 0) && ((TRX.Volume + direction) < 100))
-			TRX.Volume += direction;
-		LCD_UpdateQuery.MainMenu = true;
-	}
+	
+	//NOTCH - default action
+	if (TRX.NotchFC > 50 && direction < 0)
+		TRX.NotchFC -= 25;
+	else if (TRX.NotchFC < CurrentVFO()->Filter_Width && direction > 0)
+		TRX.NotchFC += 25;
+	LCD_UpdateQuery.StatusInfoGUI = true;
+	NeedReinitNotch = true;
 }
 
 void PERIPH_ENCODER2_checkSwitch(void) {
@@ -187,9 +147,7 @@ void PERIPH_ENCODER2_checkSwitch(void) {
 		ENCODER2_SWLast = ENCODER2_SWNow;
 		if (!ENCODER2_SWNow)
 		{
-			//NOTCH
-			LCD_Handler_NOTCH();
-			LCD_UpdateQuery.TopButtons = true;
+			TRX_Time_InActive = 0;
 		}
 	}
 }
@@ -206,7 +164,7 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 		MINI_DELAY
 		if (!clean)
 		{
-			if (registerNumber == 0 && TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK && TRX.TX_Amplifier) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_AMP
+			if (registerNumber == 0 && TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_AMP
 			if (registerNumber == 1 && TRX.ATT) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //ATT_ON
 			if (registerNumber == 2 && (!TRX.LPF || TRX_getFrequency() > LPF_END)) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //LPF_OFF
 			if (registerNumber == 3 && (!TRX.BPF || TRX_getFrequency() < BPF_1_START)) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_OFF
@@ -249,7 +207,7 @@ void PERIPH_ProcessFrontPanel(void)
 	
 	//MCP3008 - 1 (10bit - 1024values)
 	mcp3008_value = PERIPH_ReadMCP3008_Value(0, AD1_CS_GPIO_Port, AD1_CS_Pin); // AB
-	if(mcp3008_value < MCP3008_THRESHOLD) 
+	if(mcp3008_value < MCP3008_THRESHOLD)
 		PERIPH_FrontPanel.key_ab = true; 
 	else 
 		PERIPH_FrontPanel.key_ab = false;
@@ -296,19 +254,30 @@ void PERIPH_ProcessFrontPanel(void)
 	else 
 		PERIPH_FrontPanel.key_bandn = false;
 	
-	//AB
+	//A/B
 	if (PERIPH_FrontPanel.key_ab_prev != PERIPH_FrontPanel.key_ab && PERIPH_FrontPanel.key_ab)
 	{
-		LCD_Handler_VFO();
+		TRX_Time_InActive = 0;
+		TRX.current_vfo = !TRX.current_vfo;
+		NeedSaveSettings = true;
+		ReinitAudioFilters();
+		LCD_redraw();
 	}
 	//TUNE
 	if (PERIPH_FrontPanel.key_tune_prev != PERIPH_FrontPanel.key_tune && PERIPH_FrontPanel.key_tune)
 	{
-		LCD_Handler_TUNE();
+		TRX_Time_InActive = 0;
+		TRX_Tune = !TRX_Tune;
+		TRX_ptt_hard = TRX_Tune;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.TopButtons = true;
+		NeedSaveSettings = true;
+		TRX_Restart_Mode();
 	}
 	//PREATT
 	if (PERIPH_FrontPanel.key_preatt_prev != PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt)
 	{
+		TRX_Time_InActive = 0;
 		if(!TRX.Preamp && !TRX.ATT)
 		{
 			TRX.Preamp = true;
@@ -335,11 +304,15 @@ void PERIPH_ProcessFrontPanel(void)
 	//FAST
 	if (PERIPH_FrontPanel.key_fast_prev != PERIPH_FrontPanel.key_fast && PERIPH_FrontPanel.key_fast)
 	{
-		LCD_Handler_FAST();
+		TRX_Time_InActive = 0;
+		TRX.Fast = !TRX.Fast;
+		LCD_UpdateQuery.TopButtons = true;
+		NeedSaveSettings = true;
 	}
 	//MODE+
 	if (PERIPH_FrontPanel.key_modep_prev != PERIPH_FrontPanel.key_modep && PERIPH_FrontPanel.key_modep)
 	{
+		TRX_Time_InActive = 0;
 		int8_t mode = CurrentVFO()->Mode;
 		mode++;
 		if (mode < 0) mode = TRX_MODE_COUNT - 2;
@@ -350,6 +323,7 @@ void PERIPH_ProcessFrontPanel(void)
 	//MODE-
 	if (PERIPH_FrontPanel.key_moden_prev != PERIPH_FrontPanel.key_moden && PERIPH_FrontPanel.key_moden)
 	{
+		TRX_Time_InActive = 0;
 		int8_t mode = CurrentVFO()->Mode;
 		mode--;
 		if (mode < 0) mode = TRX_MODE_COUNT - 2;
@@ -360,6 +334,7 @@ void PERIPH_ProcessFrontPanel(void)
 	//BAND+
 	if (PERIPH_FrontPanel.key_bandp_prev != PERIPH_FrontPanel.key_bandp && PERIPH_FrontPanel.key_bandp)
 	{
+		TRX_Time_InActive = 0;
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
 		band++;
 		if (band >= BANDS_COUNT) band = 0;
@@ -371,6 +346,7 @@ void PERIPH_ProcessFrontPanel(void)
 	//BAND-
 	if (PERIPH_FrontPanel.key_bandn_prev != PERIPH_FrontPanel.key_bandn && PERIPH_FrontPanel.key_bandn == 1)
 	{
+		TRX_Time_InActive = 0;
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
 		band--;
 		if (band >= BANDS_COUNT) band = 0;
@@ -392,51 +368,113 @@ void PERIPH_ProcessFrontPanel(void)
 	//MCP3008 - 2 (10bit - 1024values)
 	mcp3008_value = PERIPH_ReadMCP3008_Value(0, AD2_CS_GPIO_Port, AD2_CS_Pin); // F6
 	if(mcp3008_value < MCP3008_THRESHOLD) 
-		PERIPH_FrontPanel.key_f6 = true; 
+		PERIPH_FrontPanel.key_menu = true; 
 	else 
-		PERIPH_FrontPanel.key_f6 = false;
+		PERIPH_FrontPanel.key_menu = false;
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(1, AD2_CS_GPIO_Port, AD2_CS_Pin); // F5
 	if(mcp3008_value < MCP3008_THRESHOLD) 
-		PERIPH_FrontPanel.key_f5 = true; 
+		PERIPH_FrontPanel.key_func = true; 
 	else 
-		PERIPH_FrontPanel.key_f5 = false;
+		PERIPH_FrontPanel.key_func = false;
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(2, AD2_CS_GPIO_Port, AD2_CS_Pin); // F4
 	if(mcp3008_value < MCP3008_THRESHOLD) 
-		PERIPH_FrontPanel.key_f4 = true; 
+		PERIPH_FrontPanel.key_notch = true; 
 	else 
-		PERIPH_FrontPanel.key_f4 = false;
+		PERIPH_FrontPanel.key_notch = false;
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(3, AD2_CS_GPIO_Port, AD2_CS_Pin); // F3
 	if(mcp3008_value < MCP3008_THRESHOLD) 
-		PERIPH_FrontPanel.key_f3 = true; 
+		PERIPH_FrontPanel.key_a_b = true; 
 	else 
-		PERIPH_FrontPanel.key_f3 = false;
+		PERIPH_FrontPanel.key_a_b = false;
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(4, AD2_CS_GPIO_Port, AD2_CS_Pin); // F2
 	if(mcp3008_value < MCP3008_THRESHOLD) 
-		PERIPH_FrontPanel.key_f2 = true; 
+		PERIPH_FrontPanel.key_dnr = true; 
 	else 
-		PERIPH_FrontPanel.key_f2 = false;
+		PERIPH_FrontPanel.key_dnr = false;
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(5, AD2_CS_GPIO_Port, AD2_CS_Pin); // F1
 	if(mcp3008_value < MCP3008_THRESHOLD) 
-		PERIPH_FrontPanel.key_f1 = true; 
+		PERIPH_FrontPanel.key_agc = true; 
 	else 
-		PERIPH_FrontPanel.key_f1 = false;
+		PERIPH_FrontPanel.key_agc = false;
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(6, AD2_CS_GPIO_Port, AD2_CS_Pin); // AF_GAIN
 	TRX.Volume=(1023.0f-mcp3008_value)/1023.0f*100.0f;
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT
 	
-	PERIPH_FrontPanel.key_f1_prev = PERIPH_FrontPanel.key_f1;
-	PERIPH_FrontPanel.key_f2_prev = PERIPH_FrontPanel.key_f2;
-	PERIPH_FrontPanel.key_f3_prev = PERIPH_FrontPanel.key_f3;
-	PERIPH_FrontPanel.key_f4_prev = PERIPH_FrontPanel.key_f4;
-	PERIPH_FrontPanel.key_f5_prev = PERIPH_FrontPanel.key_f5;
-	PERIPH_FrontPanel.key_f6_prev = PERIPH_FrontPanel.key_f6;
+	//F1 AGC
+	if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc == 1)
+	{
+		TRX.AGC = !TRX.AGC;
+		InitAGC();
+		LCD_UpdateQuery.TopButtons = true;
+		NeedSaveSettings = true;
+	}
+
+	//F2 DNR
+	if (PERIPH_FrontPanel.key_dnr_prev != PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr == 1)
+	{
+		TRX.DNR = !TRX.DNR;
+		LCD_UpdateQuery.TopButtons = true;
+		NeedSaveSettings = true;
+	}
+
+	//F3 A=B
+	if (PERIPH_FrontPanel.key_a_b_prev != PERIPH_FrontPanel.key_a_b && PERIPH_FrontPanel.key_a_b == 1)
+	{
+		if (TRX.current_vfo)
+		{
+			TRX.VFO_A.Filter_Width = TRX.VFO_B.Filter_Width;
+			TRX.VFO_A.Freq = TRX.VFO_B.Freq;
+			TRX.VFO_A.Mode = TRX.VFO_B.Mode;
+		}
+		else
+		{
+			TRX.VFO_B.Filter_Width = TRX.VFO_A.Filter_Width;
+			TRX.VFO_B.Freq = TRX.VFO_A.Freq;
+			TRX.VFO_B.Mode = TRX.VFO_A.Mode;
+		}
+		LCD_UpdateQuery.TopButtons = true;
+		NeedSaveSettings = true;
+	}
+
+	//F4 NOTCH
+	if (PERIPH_FrontPanel.key_notch_prev != PERIPH_FrontPanel.key_notch && PERIPH_FrontPanel.key_notch == 1)
+	{
+			if (TRX.NotchFC > CurrentVFO()->Filter_Width)
+				TRX.NotchFC = CurrentVFO()->Filter_Width;
+			if (!TRX.NotchFilter)
+				TRX.NotchFilter = true;
+			else
+				TRX.NotchFilter = false;
+
+			NeedReinitNotch = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
+			LCD_UpdateQuery.TopButtons = true;
+			NeedSaveSettings = true;
+	}
+	
+	//F6 MENU
+	if (PERIPH_FrontPanel.key_menu_prev != PERIPH_FrontPanel.key_menu && PERIPH_FrontPanel.key_menu == 1)
+	{
+		if(!LCD_systemMenuOpened)
+			LCD_systemMenuOpened = true;
+		else
+			eventCloseSystemMenu();
+		LCD_redraw();
+	}
+	
+	PERIPH_FrontPanel.key_agc_prev = PERIPH_FrontPanel.key_agc;
+	PERIPH_FrontPanel.key_dnr_prev = PERIPH_FrontPanel.key_dnr;
+	PERIPH_FrontPanel.key_a_b_prev = PERIPH_FrontPanel.key_a_b;
+	PERIPH_FrontPanel.key_notch_prev = PERIPH_FrontPanel.key_notch;
+	PERIPH_FrontPanel.key_func_prev = PERIPH_FrontPanel.key_func;
+	PERIPH_FrontPanel.key_menu_prev = PERIPH_FrontPanel.key_menu;
 }
 
 static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN)

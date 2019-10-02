@@ -14,7 +14,7 @@ static float32_t AGC_need_gain_old = 1.0f;
 void InitAGC(void)
 {
 	//выше скорость в настройках - выше скорость отработки AGC
-	RX_AGC_STEPSIZE_UP = 500.0f / (float32_t)TRX.Agc_speed;
+	RX_AGC_STEPSIZE_UP = 500.0f / (float32_t)TRX.AGC_speed;
 	RX_AGC_STEPSIZE_DOWN = RX_AGC_STEPSIZE_UP / 10.0f;
 }
 
@@ -44,8 +44,9 @@ void DoAGC(float32_t *agcBuffer, int16_t blockSize)
 		//sendToDebug_str("RX AGC Clip");
 	}
 	//AGC выключен, ничего не усиливаем (требуется для плавного выключения)
-	if (!TRX.AGC || TRX_getMode() == TRX_MODE_DIGI_L || TRX_getMode() == TRX_MODE_DIGI_U)
-		AGC_need_gain = 1.0f;
+	//if (!TRX.AGC || TRX_getMode() == TRX_MODE_DIGI_L || TRX_getMode() == TRX_MODE_DIGI_U) AGC_need_gain = 1.0f;
+	if (!TRX.AGC) AGC_need_gain = 1.0f;
+	
 	//применяем усиление
 	if (AGC_need_gain_old != AGC_need_gain) //усиление изменилось
 	{

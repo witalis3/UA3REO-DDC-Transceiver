@@ -112,15 +112,15 @@ void WM8731_TX_mode(void)
 	WM8731_SendI2CCommand(B8(00000100), B8(00000000)); //R2 Left Headphone Out 
 	WM8731_SendI2CCommand(B8(00000110), B8(00000000)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00001111)); //R5 Digital Audio Path Control
-	if (TRX.InputType == 1)
-	{ //line
+	if (TRX.InputType_LINE) //line
+	{
 		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); //R0 Left Line In
 		WM8731_SendI2CCommand(B8(00000010), B8(00010111)); //R1 Right Line In 
 		WM8731_SendI2CCommand(B8(00001000), B8(00000010)); //R4 Analogue Audio Path Control
 		WM8731_SendI2CCommand(B8(00001100), B8(01101010)); //R6 Power Down Control
 	}
-	else
-	{ //mic
+	if (TRX.InputType_MIC) //mic
+	{
 		WM8731_SendI2CCommand(B8(00000001), B8(10000000)); //R0 Left Line In
 		WM8731_SendI2CCommand(B8(00000011), B8(10000000)); //R1 Right Line In 
 		WM8731_SendI2CCommand(B8(00001000), B8(00000101)); //R4 Analogue Audio Path Control
@@ -148,15 +148,15 @@ void WM8731_TXRX_mode(void) //loopback
 	WM8731_SendI2CCommand(B8(00000100), B8(01111001)); //R2 Left Headphone Out 
 	WM8731_SendI2CCommand(B8(00000110), B8(01111001)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00000111)); //R5 Digital Audio Path Control
-	if (TRX.InputType == 1)
-	{ //line
+	if (TRX.InputType_LINE) //line
+	{ 
 		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); //R0 Left Line In
 		WM8731_SendI2CCommand(B8(00000010), B8(00010111)); //R1 Right Line In 
 		WM8731_SendI2CCommand(B8(00001000), B8(00010010)); //R4 Analogue Audio Path Control
 		WM8731_SendI2CCommand(B8(00001100), B8(01100010)); //R6 Power Down Control, internal crystal
 	}
-	else
-	{ //mic
+	if (TRX.InputType_MIC) //mic
+	{ 
 		WM8731_SendI2CCommand(B8(00000001), B8(10000000)); //R0 Left Line In
 		WM8731_SendI2CCommand(B8(00000011), B8(10000000)); //R1 Right Line In 
 		WM8731_SendI2CCommand(B8(00001000), B8(00010101)); //R4 Analogue Audio Path Control

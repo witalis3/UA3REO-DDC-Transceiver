@@ -1,7 +1,6 @@
 #include "spec_analyzer.h"
 #include "main.h"
-#include "LCD/lcd_driver.h"
-#include "LCD/xpt2046_spi.h"
+#include "lcd_driver.h"
 #include "trx_manager.h"
 #include "functions.h"
 #include "fpga.h"

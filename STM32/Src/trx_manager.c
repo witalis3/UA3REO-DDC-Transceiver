@@ -21,9 +21,9 @@ volatile bool TRX_old_key_serial = false;
 volatile bool TRX_key_hard = false;
 volatile uint16_t TRX_Key_Timeout_est = 0;
 volatile bool TRX_IQ_swap = false;
-volatile bool TRX_squelched = false;
-volatile bool TRX_tune = false;
-volatile bool TRX_inited = false;
+volatile bool TRX_Squelched = false;
+volatile bool TRX_Tune = false;
+volatile bool TRX_Inited = false;
 volatile int16_t TRX_RX_dBm = -100;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
@@ -57,7 +57,7 @@ static void TRX_Start_TXRX(void);
 
 bool TRX_on_TX(void)
 {
-	if (TRX_ptt_hard || TRX_ptt_cat || TRX_tune || TRX_getMode() == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0) return true;
+	if (TRX_ptt_hard || TRX_ptt_cat || TRX_Tune || TRX_getMode() == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0) return true;
 	return false;
 }
 
@@ -117,7 +117,7 @@ static void TRX_Start_TXRX()
 
 void TRX_ptt_change(void)
 {
-	if (TRX_tune) return;
+	if (TRX_Tune) return;
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
 	if (TRX_ptt_hard != TRX_new_ptt_hard)
 	{
@@ -140,7 +140,7 @@ void TRX_ptt_change(void)
 
 void TRX_key_change(void)
 {
-	if (TRX_tune) return;
+	if (TRX_Tune) return;
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
 	if (TRX_key_hard != TRX_new_ptt_hard)
 	{
@@ -235,7 +235,6 @@ void TRX_DoAutoGain(void)
 		case 0: //этап 1 - включаем ДПФ, ЛПФ, Аттенюатор, выключаем предусилитель (-12dB)
 			TRX.Preamp = false;
 			TRX.ATT = true;
-			LCD_UpdateQuery.MainMenu = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
@@ -255,7 +254,6 @@ void TRX_DoAutoGain(void)
 		case 2: //этап 1 - включаем ДПФ, ЛПФ, выключаем Аттенюатор, выключаем предусилитель (+0dB)
 			TRX.Preamp = false;
 			TRX.ATT = false;
-			LCD_UpdateQuery.MainMenu = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
@@ -276,7 +274,6 @@ void TRX_DoAutoGain(void)
 		case 4: //этап 2 - включаем ДПФ, ЛПФ, Аттенюатор, Предусилитель (+8dB)
 			TRX.Preamp = true;
 			TRX.ATT = true;
-			LCD_UpdateQuery.MainMenu = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
@@ -297,7 +294,6 @@ void TRX_DoAutoGain(void)
 		case 6: //этап 3 - включаем ДПФ, ЛПФ, Предусилитель, выключаем Аттенюатор (+20dB)
 			TRX.Preamp = true;
 			TRX.ATT = false;
-			LCD_UpdateQuery.MainMenu = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;

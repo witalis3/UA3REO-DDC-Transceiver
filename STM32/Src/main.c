@@ -23,8 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "LCD/lcd_driver.h"
-#include "LCD/xpt2046_spi.h"
+#include "lcd_driver.h"
 #include "functions.h"
 #include "bootloader.h"
 #include "trx_manager.h"
@@ -180,12 +179,6 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
 	LoadSettings();
 	LCD_Init();
-	if (!TRX.Calibrated)
-	{
-		Touch_Calibrate();
-		LCD_Init();
-		SaveSettings();
-	}
 	FFT_Init();
 	WM8731_Init();
 	TRX_Init();
@@ -201,7 +194,7 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim7);
 	PERIPH_RF_UNIT_UpdateState(false);
 	sendToDebug_str("UA3REO Started\r\n\r\n");
-	TRX_inited = true;
+	TRX_Inited = true;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -1039,9 +1032,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ENC2_CLK_Pin PTT_IN_Pin */
-  GPIO_InitStruct.Pin = ENC2_CLK_Pin|PTT_IN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  /*Configure GPIO pins : ENC2_CLK_Pin LED_PEN_Pin */
+  GPIO_InitStruct.Pin = ENC2_CLK_Pin|LED_PEN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -1061,11 +1054,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LED_PEN_Pin */
-  GPIO_InitStruct.Pin = LED_PEN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  /*Configure GPIO pin : PTT_IN_Pin */
+  GPIO_InitStruct.Pin = PTT_IN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(LED_PEN_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(PTT_IN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : W26Q16_CS_Pin */
   GPIO_InitStruct.Pin = W26Q16_CS_Pin;
@@ -1086,12 +1079,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(AUDIO_48K_CLOCK_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : TOUCH_CS_Pin RFUNIT_RCLK_Pin RFUNIT_CLK_Pin RFUNIT_DATA_Pin */
-  GPIO_InitStruct.Pin = TOUCH_CS_Pin|RFUNIT_RCLK_Pin|RFUNIT_CLK_Pin|RFUNIT_DATA_Pin;
+  /*Configure GPIO pin : TOUCH_CS_Pin */
+  GPIO_InitStruct.Pin = TOUCH_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(TOUCH_CS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : SD_CS_Pin F_CS_Pin */
   GPIO_InitStruct.Pin = SD_CS_Pin|F_CS_Pin;
@@ -1134,6 +1127,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RFUNIT_RCLK_Pin RFUNIT_CLK_Pin RFUNIT_DATA_Pin */
+  GPIO_InitStruct.Pin = RFUNIT_RCLK_Pin|RFUNIT_CLK_Pin|RFUNIT_DATA_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI2_IRQn, 3, 0);
