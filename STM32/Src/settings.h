@@ -115,6 +115,7 @@ extern struct TRX_SETTINGS {
 	bool ADC_RAND;
 	bool ADC_SHDN;
 	bool ADC_DITH;
+	uint8_t FFT_Window;
 } TRX;
 
 volatile extern bool NeedSaveSettings;

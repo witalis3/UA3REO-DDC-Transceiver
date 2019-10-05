@@ -274,13 +274,16 @@ void FFT_doFFT(void)
 	//Окно для FFT
 	for (uint16_t i = 0; i < FFT_SIZE; i++)
 	{
-		//Окно Blackman-Harris
-		//window_multiplier = 0.35875f - 0.48829f * arm_cos_f32( 2.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f) ) + 0.14128f * arm_cos_f32( 4.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f) ) - 0.01168f * arm_cos_f32( 6.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f) );
-		//Окно Hanning
-		//window_multiplier = 0.5f * (1.0f - arm_cos_f32(2.0f * PI*i / (float32_t)FFT_SIZE * 2));
 		//Окно Hamming
-		window_multiplier = 0.54f - 0.46f * arm_cos_f32((2.0f * PI * i) / ((float32_t)FFT_SIZE - 1.0f));
-
+		if(TRX.FFT_Window==1)
+			window_multiplier = 0.54f - 0.46f * arm_cos_f32((2.0f * PI * i) / ((float32_t)FFT_SIZE - 1.0f));
+		//Окно Blackman-Harris
+		else if(TRX.FFT_Window==2)
+			window_multiplier = 0.35875f - 0.48829f * arm_cos_f32( 2.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f) ) + 0.14128f * arm_cos_f32( 4.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f) ) - 0.01168f * arm_cos_f32( 6.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f) );
+		//Окно Hanning
+		else if(TRX.FFT_Window==3)
+			window_multiplier = 0.5f * (1.0f - arm_cos_f32(2.0f * PI*i / (float32_t)FFT_SIZE * 2));
+		
 		FFTInput[i * 2] = window_multiplier * FFTInput[i * 2];
 		FFTInput[i * 2 + 1] = window_multiplier * FFTInput[i * 2 + 1];
 	}

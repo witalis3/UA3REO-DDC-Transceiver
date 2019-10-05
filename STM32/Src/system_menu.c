@@ -29,6 +29,7 @@ static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_USBIN(int8_t direction);
 static void SYSMENU_HANDL_FFTEnabled(int8_t direction);
 static void SYSMENU_HANDL_FFT_Averaging(int8_t direction);
+static void SYSMENU_HANDL_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_FFTZoom(int8_t direction);
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
@@ -132,6 +133,7 @@ static struct sysmenu_item_handler sysmenu_fft_handlers[] =
 	{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_FFTZoom},
 	{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_FFTEnabled},
 	{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_FFT_Averaging},
+	{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_FFT_Window},
 };
 static uint8_t sysmenu_fft_item_count = sizeof(sysmenu_fft_handlers) / sizeof(sysmenu_fft_handlers[0]);
 
@@ -372,6 +374,13 @@ static void SYSMENU_HANDL_FFT_Averaging(int8_t direction)
 	TRX.FFT_Averaging += direction;
 	if (TRX.FFT_Averaging < 1) TRX.FFT_Averaging = 1;
 	if (TRX.FFT_Averaging > 10) TRX.FFT_Averaging = 10;
+}
+
+static void SYSMENU_HANDL_FFT_Window(int8_t direction)
+{
+	TRX.FFT_Window += direction;
+	if (TRX.FFT_Window < 1) TRX.FFT_Window = 1;
+	if (TRX.FFT_Window > 3) TRX.FFT_Window = 3;
 }
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction)

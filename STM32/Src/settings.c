@@ -83,6 +83,7 @@ void LoadSettings(void)
 		TRX.ADC_RAND = false; //ADC шифрование
 		TRX.ADC_SHDN = false; //ADC отключение
 		TRX.ADC_DITH = false; //ADC дизеринг
+		TRX.FFT_Window = 1;
 		
 		SaveSettings();
 	}
