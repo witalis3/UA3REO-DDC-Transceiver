@@ -1,4 +1,5 @@
 FPGA/db/*
+FPGA/output_files/*
 FPGA/greybox_tmp/*
 FPGA/incremental_db/*
 Filters/Iowa*
