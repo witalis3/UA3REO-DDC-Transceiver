@@ -149,11 +149,12 @@ void FPGA_fpgadata_iqclock(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
 	FPGA_busy = true;
+	VFO* current_vfo = CurrentVFO();
 	//обмен данными
 
 	//STAGE 1
 	//out
-	if (TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) FPGA_fpgadata_out_tmp8 = 3;
+	if (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK) FPGA_fpgadata_out_tmp8 = 3;
 	else FPGA_fpgadata_out_tmp8 = 4;
 
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
@@ -164,7 +165,7 @@ void FPGA_fpgadata_iqclock(void)
 	//clock
 	GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
 
-	if (TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) FPGA_fpgadata_sendiq();
+	if (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK) FPGA_fpgadata_sendiq();
 	else FPGA_fpgadata_getiq();
 
 	FPGA_busy = false;
@@ -173,16 +174,17 @@ void FPGA_fpgadata_iqclock(void)
 inline void FPGA_fpgadata_sendparam(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
-	uint32_t TRX_freq_phrase = getPhraseFromFrequency(CurrentVFO()->Freq + TRX_SHIFT);
+	VFO* current_vfo=CurrentVFO();
+	uint32_t TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT);
 	if (!TRX_on_TX())
 	{
-		switch (TRX_getMode())
+		switch (TRX_getMode(current_vfo))
 		{
 		case TRX_MODE_CW_L:
-			TRX_freq_phrase = getPhraseFromFrequency(CurrentVFO()->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ);
+			TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ);
 			break;
 		case TRX_MODE_CW_U:
-			TRX_freq_phrase = getPhraseFromFrequency(CurrentVFO()->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ);
+			TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ);
 			break;
 		default:
 			break;
@@ -190,7 +192,7 @@ inline void FPGA_fpgadata_sendparam(void)
 	}
 	//STAGE 2
 	//out PTT+PREAMP
-	bitWrite(FPGA_fpgadata_out_tmp8, 0, (TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK));
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK));
 	if (!TRX_on_TX()) bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX.Preamp);
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_SHDN);

@@ -9,6 +9,7 @@
 #include "wm8731.h"
 #include "settings.h"
 #include "noise_reduction.h"
+#include "trx_manager.h"
 
 arm_fir_instance_f32    FIR_TX_Hilbert_I;
 arm_fir_instance_f32    FIR_TX_Hilbert_Q;
@@ -303,7 +304,7 @@ void ReinitAudioFilters(void)
 	}
 
 	//HPF
-	if (TRX_getMode() == TRX_MODE_USB || TRX_getMode() == TRX_MODE_LSB)
+	if (TRX_getMode(CurrentVFO()) == TRX_MODE_USB || TRX_getMode(CurrentVFO()) == TRX_MODE_LSB)
 	{
 		if (TRX.SSB_HPF_pass == 100)
 		{

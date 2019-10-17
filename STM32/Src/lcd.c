@@ -69,14 +69,15 @@ static void LCD_displayTopButtons(bool redraw) { //вывод верхних к�
 
 	//вывод инфо о работе трансивера
 	printInfo(0, 0, 50, 22, (!TRX.current_vfo) ? "VFOA" : "VFOB", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
-	printInfo(50, 0, 60, 22, (char *)MODE_DESCR[TRX_getMode()], COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	printInfo(50, 0, 60, 22, (char *)MODE_DESCR[TRX_getMode(CurrentVFO())], COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
 	printInfo(110, 0, 50, 22, "PRE", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Preamp);
 	printInfo(160, 0, 50, 22, "ATT", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ATT);
+	printInfo(210, 0, 50, 22, "CLAR", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.CLAR);
 	
 	printInfo(0, 22, 50, 22, "FAST", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, (TRX.Fast == true));
 	printInfo(50, 22, 50, 22, "AGC", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.AGC);
 	printInfo(100, 22, 50, 22, "DNR", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.DNR);
-	printInfo(150, 22, 50, 22, "LOCK", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Locked);
+	printInfo(160, 22, 50, 22, "LOCK", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Locked);
 
 	LCD_busy = false;
 	LCD_UpdateQuery.TopButtons = false;
@@ -84,7 +85,7 @@ static void LCD_displayTopButtons(bool redraw) { //вывод верхних к�
 
 static void LCD_displayFreqInfo() { //вывод частоты на экран
 	if (LCD_systemMenuOpened) return;
-	if (LCD_last_showed_freq == TRX_getFrequency()) return;
+	if (LCD_last_showed_freq == TRX_getFrequency(CurrentVFO())) return;
 	if (LCD_busy)
 	{
 		LCD_UpdateQuery.FreqInfo = true;
@@ -92,19 +93,19 @@ static void LCD_displayFreqInfo() { //вывод частоты на экран
 	}
 	LCD_busy = true;
 	uint16_t mhz_x_offset = 0;
-	LCD_last_showed_freq = TRX_getFrequency();
-	if (TRX_getFrequency() >= 100000000)
+	LCD_last_showed_freq = TRX_getFrequency(CurrentVFO());
+	if (TRX_getFrequency(CurrentVFO()) >= 100000000)
 		mhz_x_offset = 0;
-	else if (TRX_getFrequency() >= 10000000)
+	else if (TRX_getFrequency(CurrentVFO()) >= 10000000)
 		mhz_x_offset = 26;
 	else
 		mhz_x_offset = 52;
 	LCDDriver_Fill_RectWH(0, 57, mhz_x_offset, 35, COLOR_BLACK);
 
 	//добавляем пробелов для вывода частоты
-	uint16_t hz = ((uint32_t)TRX_getFrequency() % 1000);
-	uint16_t khz = ((uint32_t)(TRX_getFrequency() / 1000) % 1000);
-	uint16_t mhz = ((uint32_t)(TRX_getFrequency() / 1000000) % 1000000);
+	uint16_t hz = ((uint32_t)TRX_getFrequency(CurrentVFO()) % 1000);
+	uint16_t khz = ((uint32_t)(TRX_getFrequency(CurrentVFO()) / 1000) % 1000);
+	uint16_t mhz = ((uint32_t)(TRX_getFrequency(CurrentVFO()) / 1000000) % 1000000);
 	sprintf(LCD_freq_string_hz, "%d", hz);
 	sprintf(LCD_freq_string_khz, "%d", khz);
 	sprintf(LCD_freq_string_mhz, "%d", mhz);
@@ -187,7 +188,7 @@ static void LCD_displayStatusInfoGUI(void) { //вывод RX/TX и с-метра
 	}
 
 	//Redraw CW decoder
-	if (TRX.CWDecoder && (TRX_getMode() == TRX_MODE_CW_L || TRX_getMode() == TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
 	{
 		LCDDriver_Fill_RectWH(0, LCD_HEIGHT - FFT_CWDECODER_OFFSET, FFT_PRINT_SIZE, FFT_CWDECODER_OFFSET, COLOR_BLACK);
 		LCD_UpdateQuery.TextBar = true;
@@ -209,7 +210,7 @@ static void LCD_displayStatusInfoBar(void) { //S-метра и прочей ин
 	const int width = METER_WIDTH - 2;
 
 	float32_t TRX_s_meter = (127.0f + TRX_RX_dBm) / 6; //127dbm - S0, 6dBm - 1S div
-	if (TRX_getFrequency() >= 144000000)
+	if (TRX_getFrequency(CurrentVFO()) >= 144000000)
 		TRX_s_meter = (127.0f + TRX_RX_dBm) / 6; //147dbm - S0 для частот выше 144мгц
 	if (TRX_s_meter <= 9.0f)
 		TRX_s_meter = TRX_s_meter * ((width / 9.0f)*5.0f / 9.0f); //первые 9 баллов по 6 дб, первые 5 из 8 рисок (9 участков)
@@ -285,7 +286,7 @@ static void LCD_displayTextBar(void) { //вывод текста под водо
 	}
 	LCD_busy = true;
 
-	if (TRX.CWDecoder && (TRX_getMode() == TRX_MODE_CW_L || TRX_getMode() == TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
 	{
 		char ctmp[50];
 		sprintf(ctmp, "WPM:%d", CW_Decoder_WPM);

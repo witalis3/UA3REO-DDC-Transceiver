@@ -2,6 +2,7 @@
 #include "stm32f4xx_hal.h"
 #include "functions.h"
 #include "settings.h"
+#include "trx_manager.h"
 #include <stdlib.h>
 
 extern UART_HandleTypeDef huart6;

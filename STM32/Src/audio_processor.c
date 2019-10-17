@@ -61,6 +61,8 @@ void initAudioProcessor(void)
 void processRxAudio(void)
 {
 	if (!Processor_NeedRXBuffer) return;
+	VFO* current_vfo = CurrentVFO();
+	
 	AUDIOPROC_samples++;
 	uint16_t FPGA_Audio_Buffer_Index_tmp = FPGA_Audio_Buffer_Index;
 	if (FPGA_Audio_Buffer_Index_tmp == 0)
@@ -68,7 +70,7 @@ void processRxAudio(void)
 	else
 		FPGA_Audio_Buffer_Index_tmp--;
 
-	switch (TRX_getMode())
+	switch (TRX_getMode(current_vfo))
 	{
 	case TRX_MODE_IQ:
 	case TRX_MODE_NFM:
@@ -91,7 +93,7 @@ void processRxAudio(void)
 	arm_scale_f32(FPGA_Audio_Buffer_I_tmp, TRX.RF_Gain, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 	arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, TRX.RF_Gain, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 
-	switch (TRX_getMode())
+	switch (TRX_getMode(current_vfo))
 	{
 	case TRX_MODE_LSB:
 	case TRX_MODE_CW_L:
@@ -215,9 +217,11 @@ void processRxAudio(void)
 void processTxAudio(void)
 {
 	if (!Processor_NeedTXBuffer) return;
+	VFO* current_vfo = CurrentVFO();
+	
 	AUDIOPROC_samples++;
 	selected_rfpower_amplitude = TRX.RF_Power / 100.0f * MAX_TX_AMPLITUDE;
-	uint8_t mode = TRX_getMode();
+	uint8_t mode = TRX_getMode(current_vfo);
 
 	if (TRX.InputType_USB) //USB AUDIO
 	{
@@ -259,7 +263,7 @@ void processTxAudio(void)
 		for (block = 0; block < numBlocks; block++)
 			arm_iir_lattice_f32(&IIR_HPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], APROCESSOR_BLOCK_SIZE);
 		//IIR LPF
-		if (CurrentVFO()->Filter_Width > 0)
+		if (current_vfo->Filter_Width > 0)
 			for (block = 0; block < numBlocks; block++)
 				arm_iir_lattice_f32(&IIR_LPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], APROCESSOR_BLOCK_SIZE);
 		memcpy(&FPGA_Audio_Buffer_Q_tmp[0], &FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE * 4); //double left and right channel
@@ -431,7 +435,7 @@ void processTxAudio(void)
 static void doCW_Decode(void)
 {
 	//CW Decoder
-	if (TRX.CWDecoder && (TRX_getMode() == TRX_MODE_CW_L || TRX_getMode() == TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
 		for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
 			CWDecoder_Process((float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*CWDECODER_SAMPLES));
 }
@@ -526,7 +530,7 @@ static void DemodulateFM(void)
 
 		if ((!TRX_Squelched) || (!TRX.FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
 		{
-			if (TRX_getMode() == TRX_MODE_WFM)
+			if (TRX_getMode(CurrentVFO()) == TRX_MODE_WFM)
 			{
 				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / PI * (1 << 14)); //second way
 			}

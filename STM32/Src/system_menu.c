@@ -423,7 +423,7 @@ static void SYSMENU_HANDL_CW_LPF_pass(int8_t direction)
 		TRX.CW_Filter = 500;
 	
 	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode());
+	TRX_setMode(TRX_getMode(CurrentVFO()),CurrentVFO());
 	NeedSaveSettings = true;
 }
 
@@ -477,7 +477,7 @@ static void SYSMENU_HANDL_SSB_LPF_pass(int8_t direction)
 	}
 	
 	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode());
+	TRX_setMode(TRX_getMode(CurrentVFO()),CurrentVFO());
 	NeedSaveSettings = true;
 }
 
@@ -519,7 +519,7 @@ static void SYSMENU_HANDL_FM_LPF_pass(int8_t direction)
 	}
 	
 	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode());
+	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
 	NeedSaveSettings = true;
 }
 
@@ -598,7 +598,7 @@ static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction)
 
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 {
-	sysmenu_spectrum_lastfreq = TRX_getFrequency();
+	sysmenu_spectrum_lastfreq = TRX_getFrequency(CurrentVFO());
 	sysmenu_spectrum_opened = true;
 	SPEC_Start();
 	drawSystemMenu(true);
@@ -760,7 +760,7 @@ void eventSecRotateSystemMenu(int8_t direction)
 		sysmenu_spectrum_opened = false;
 		LCDDriver_Fill(COLOR_BLACK);
 		drawSystemMenu(true);
-		TRX_setFrequency(sysmenu_spectrum_lastfreq);
+		TRX_setFrequency(sysmenu_spectrum_lastfreq, CurrentVFO());
 		return;
 	}
 	//time menu

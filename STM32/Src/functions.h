@@ -8,6 +8,21 @@
 #include "arm_math.h"
 #include "profiler.h"
 
+#define TRX_MODE_LSB 0
+#define TRX_MODE_USB 1
+#define TRX_MODE_IQ 2
+#define TRX_MODE_CW_L 3
+#define TRX_MODE_CW_U 4
+#define TRX_MODE_DIGI_L 5
+#define TRX_MODE_DIGI_U 6
+#define TRX_MODE_NO_TX 7
+#define TRX_MODE_NFM 8
+#define TRX_MODE_WFM 9
+#define TRX_MODE_AM 10
+#define TRX_MODE_LOOPBACK 11
+
+#define TRX_MODE_COUNT 12
+
 // Internal Macros
 #define HEX__(n) 0x##n##LU
 #define B8__(x) ((x&0x0000000FLU)?1:0) \

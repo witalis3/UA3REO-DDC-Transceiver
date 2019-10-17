@@ -318,7 +318,7 @@ void FFT_doFFT(void)
 	if ((meanValue * 4) > maxValueFFT) maxValueFFT = (meanValue * 4);
 	maxValueErrors = 0;
 	if (maxValueFFT < FFT_MIN) maxValueFFT = FFT_MIN;
-	if (TRX_getMode() == TRX_MODE_LOOPBACK) maxValueFFT = 60000;
+	if (TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK) maxValueFFT = 60000;
 
 	//Нормируем АЧХ к единице
 	arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, FFT_PRINT_SIZE);
@@ -429,7 +429,7 @@ void FFT_printFFT(void)
 void FFT_printWaterfallDMA(void)
 {
 	uint8_t cwdecoder_offset = 0;
-	if (TRX.CWDecoder && (TRX_getMode() == TRX_MODE_CW_L || TRX_getMode() == TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
 		cwdecoder_offset = FFT_CWDECODER_OFFSET;
 
 	if (print_wtf_yindex < (FFT_WTF_HEIGHT - cwdecoder_offset))

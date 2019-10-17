@@ -294,13 +294,13 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			char answer[30] = { 0 };
 			strcat(answer, "IF001"); //memory channel
-			if (TRX_getFrequency() < 10000000) strcat(answer, "0");
-			sprintf(ctmp, "%d", TRX_getFrequency());
+			if (TRX_getFrequency(CurrentVFO()) < 10000000) strcat(answer, "0");
+			sprintf(ctmp, "%d", TRX_getFrequency(CurrentVFO()));
 			strcat(answer, ctmp); //freq
 			strcat(answer, "+0000"); //clirifier offset
 			strcat(answer, "0"); //RX clar off
 			strcat(answer, "0"); //TX clar off
-			sprintf(ctmp, "%d", getFT450Mode(TRX_getMode()));
+			sprintf(ctmp, "%d", getFT450Mode(TRX_getMode(CurrentVFO())));
 			strcat(answer, ctmp); //mode
 			strcat(answer, "0"); //VFO Memory
 			strcat(answer, "0"); //CTCSS OFF
@@ -330,7 +330,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		else
 		{
 			if (TRX.current_vfo == 0)
-				TRX_setFrequency(atoi(arguments));
+				TRX_setFrequency(atoi(arguments), CurrentVFO());
 			TRX.VFO_A.Freq = atoi(arguments);
 			LCD_UpdateQuery.FreqInfo = true;
 			LCD_UpdateQuery.TopButtons = true;
@@ -353,7 +353,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		else
 		{
 			if (TRX.current_vfo == 1)
-				TRX_setFrequency(atoi(arguments));
+				TRX_setFrequency(atoi(arguments), CurrentVFO());
 			TRX.VFO_B.Freq = atoi(arguments);
 			LCD_UpdateQuery.FreqInfo = true;
 			LCD_UpdateQuery.TopButtons = true;
@@ -432,16 +432,16 @@ void ua3reo_dev_cat_parseCommand(void)
 			{
 				char answer[30] = { 0 };
 				strcat(answer, "MD0");
-				sprintf(ctmp, "%d", getFT450Mode(TRX_getMode()));
+				sprintf(ctmp, "%d", getFT450Mode(TRX_getMode(CurrentVFO())));
 				strcat(answer, ctmp); //mode
 				strcat(answer, ";");
 				CAT_Transmit(answer);
 			}
 			else
 			{
-				if (TRX_getMode() != setFT450Mode(atoi(arguments)))
+				if (TRX_getMode(CurrentVFO()) != setFT450Mode(atoi(arguments)))
 				{
-					TRX_setMode(setFT450Mode(atoi(arguments)));
+					TRX_setMode(setFT450Mode(atoi(arguments)), CurrentVFO());
 					LCD_UpdateQuery.TopButtons = true;
 				}
 			}

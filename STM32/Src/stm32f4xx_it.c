@@ -354,7 +354,7 @@ void TIM5_IRQHandler(void)
 	tim5_counter++;
 	if (TRX_on_TX())
 	{
-		if (TRX_getMode() != TRX_MODE_NO_TX)
+		if (TRX_getMode(CurrentVFO()) != TRX_MODE_NO_TX)
 			processTxAudio();
 	}
 	else
@@ -406,7 +406,7 @@ void TIM6_DAC_IRQHandler(void)
 			WIFI_ProcessAnswer();
 		
 		//Process SWR / Power meter
-		if (TRX_on_TX() && TRX_getMode() != TRX_MODE_NO_TX)
+		if (TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_NO_TX)
 			TRX_ProcessSWRMeter();
 	}
 
@@ -480,7 +480,7 @@ void TIM6_DAC_IRQHandler(void)
 		}
 	}
 
-	if (TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK)
+	if (TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_LOOPBACK)
 	{
 		TRX_Fan_Timeout += 3; //дуем в 2 раза больше чем работаем на передачу
 		if (TRX_Fan_Timeout > 120) TRX_Fan_Timeout = 120; //но не более 2х минут
@@ -644,7 +644,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	else if (GPIO_Pin == GPIO_PIN_4) //PTT
 	{
 		TRX_Time_InActive = 0;
-		if (TRX_Inited && TRX_getMode() != TRX_MODE_NO_TX) 
+		if (TRX_Inited && TRX_getMode(CurrentVFO()) != TRX_MODE_NO_TX) 
 			TRX_ptt_change();
 	}
 }

@@ -85,6 +85,7 @@ void LoadSettings(bool clear)
 		TRX.ADC_DITH = false; //ADC дизеринг
 		TRX.FFT_Window = 1;
 		TRX.Locked = false; //Блокировка управления
+		TRX.CLAR = false; //Режим разноса частот (приём один VFO, передача другой)
 		
 		SaveSettings();
 	}

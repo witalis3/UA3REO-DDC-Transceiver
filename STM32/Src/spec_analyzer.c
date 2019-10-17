@@ -31,8 +31,8 @@ void SPEC_Start(void)
 
 	//начинаем сканирование
 	TRX.BandMapEnabled = false;
-	TRX_setFrequency(TRX.SPEC_Begin*SPEC_Resolution);
-	TRX_setMode(TRX_MODE_CW_U);
+	TRX_setFrequency(TRX.SPEC_Begin*SPEC_Resolution, CurrentVFO());
+	TRX_setMode(TRX_MODE_CW_U, CurrentVFO());
 	now_freq = TRX.SPEC_Begin*SPEC_Resolution;
 	freq_step = (TRX.SPEC_End*SPEC_Resolution - TRX.SPEC_Begin*SPEC_Resolution) / graph_width;
 	graph_print_x = graph_start_x + 1;
@@ -49,7 +49,7 @@ void SPEC_Draw(void)
 	dbm += 130;
 	dbm *= 4;
 	now_freq += freq_step;
-	TRX_setFrequency(now_freq);
+	TRX_setFrequency(now_freq, CurrentVFO());
 	FPGA_NeedSendParams = true;
 	FPGA_NeedGetParams = true;
 	//рисуем

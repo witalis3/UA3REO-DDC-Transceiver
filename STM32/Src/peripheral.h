@@ -29,12 +29,12 @@ typedef struct {
 	bool key_agc_prev;
 	bool key_dnr;
 	bool key_dnr_prev;
-	bool key_a_b;
-	bool key_a_b_prev;
+	bool key_a_set_b;
+	bool key_a_set_b_prev;
 	bool key_notch;
 	bool key_notch_prev;
-	bool key_func;
-	bool key_func_prev;
+	bool key_clar;
+	bool key_clar_prev;
 	bool key_menu;
 	uint32_t key_menu_starttime;
 	bool key_menu_afterhold;

@@ -10,6 +10,8 @@
 #define ADCDAC_CLOCK 49152000 //Частота генератора АЦП/ЦАП
 #define MAX_FREQ_HZ 750000000 //Максимальная частота приёма (из даташита АЦП)
 #define ADC_BITS 16 //разрядность АЦП
+#define FPGA_BUS_BITS 16 //разрядность данных из FPGA
+#define TRX_SAMPLERATE 48000 //частота дискретизации аудио-потока
 #define MAX_TX_AMPLITUDE 31000.0f //Максимальный размах при передаче в ЦАП (32767.0f - лимит)
 #define AGC_CLIP_THRESHOLD 10000 //Максимальный уровень усиления в AGC, выше него происходит клиппинг
 #define AGC_OPTIMAL_THRESHOLD 7000 //Рабочий уровень усиления в AGC
@@ -27,6 +29,7 @@
 #define ENCODER2_INVERT 0 //инвертировать вращение влево-вправо у дополнительного энкодера
 #define KEY_HOLD_TIME 1000 //время длительного нажатия на кнопку клавиатуры для срабатывания, мс
 #define SHIFT_INTERVAL 400.0f //диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
+#define AUTOGAIN_CORRECTOR_WAITSTEP 7 //ожидание усреднения результатов при работе автокорректора входных цепей
 
 #define ILI9341 true //выбираем используемый дисплей
 //#define ILI9325 true //другие комментируем
@@ -119,6 +122,7 @@ extern struct TRX_SETTINGS {
 	bool ADC_DITH;
 	uint8_t FFT_Window;
 	bool Locked;
+	bool CLAR;
 } TRX;
 
 volatile extern bool NeedSaveSettings;

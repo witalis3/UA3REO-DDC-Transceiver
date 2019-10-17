@@ -74,13 +74,14 @@ static void PERIPH_ENCODER_Rotated(int direction) //энкодер поверн�
 	}
 	if (!LCD_timeMenuOpened)
 	{
+		VFO* vfo=CurrentVFO();
 		if (TRX.Fast)
-			TRX_setFrequency(TRX_getFrequency() + 100 * direction);
+			TRX_setFrequency(TRX_getFrequency(vfo) + 100 * direction, vfo);
 		else
-			TRX_setFrequency(TRX_getFrequency() + 10 * direction);
+			TRX_setFrequency(TRX_getFrequency(vfo) + 10 * direction, vfo);
 				
-		if((TRX_getFrequency() % 10) > 0)
-			TRX_setFrequency(TRX_getFrequency()/10*10);
+		if((TRX_getFrequency(vfo) % 10) > 0)
+			TRX_setFrequency(TRX_getFrequency(vfo)/10*10, vfo);
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 	if (LCD_timeMenuOpened)
@@ -169,31 +170,31 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 		MINI_DELAY
 		if (!clean)
 		{
-			if (registerNumber == 0 && TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_AMP
+			if (registerNumber == 0 && TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_LOOPBACK) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_AMP
 			if (registerNumber == 1 && TRX.ATT) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //ATT_ON
-			if (registerNumber == 2 && (!TRX.LPF || TRX_getFrequency() > LPF_END)) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //LPF_OFF
-			if (registerNumber == 3 && (!TRX.BPF || TRX_getFrequency() < BPF_1_START)) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_OFF
-			if (registerNumber == 4 && TRX.BPF && TRX_getFrequency() >= BPF_0_START && TRX_getFrequency() < BPF_0_END)
+			if (registerNumber == 2 && (!TRX.LPF || TRX_getFrequency(CurrentVFO()) > LPF_END)) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //LPF_OFF
+			if (registerNumber == 3 && (!TRX.BPF || TRX_getFrequency(CurrentVFO()) < BPF_1_START)) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_OFF
+			if (registerNumber == 4 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_0_START && TRX_getFrequency(CurrentVFO()) < BPF_0_END)
 			{
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_0
 				hpf_lock = true; //блокируем HPF для выделенного BPF фильтра УКВ
 			}
-			if (registerNumber == 5 && TRX.BPF && TRX_getFrequency() >= BPF_1_START && TRX_getFrequency() < BPF_1_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_1
-			if (registerNumber == 6 && TRX.BPF && TRX_getFrequency() >= BPF_2_START && TRX_getFrequency() < BPF_2_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_2
-			if (registerNumber == 7 && TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_RX
+			if (registerNumber == 5 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_1_START && TRX_getFrequency(CurrentVFO()) < BPF_1_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_1
+			if (registerNumber == 6 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_2_START && TRX_getFrequency(CurrentVFO()) < BPF_2_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_2
+			if (registerNumber == 7 && TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_LOOPBACK) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_RX
 
 			//if(registerNumber==8) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==9) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
-			if (registerNumber == 10 && ((TRX_on_TX() && TRX_getMode() != TRX_MODE_LOOPBACK) || TRX_Fan_Timeout > 0))
+			if (registerNumber == 10 && ((TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_LOOPBACK) || TRX_Fan_Timeout > 0))
 			{
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //FAN
 				if (TRX_Fan_Timeout > 0) TRX_Fan_Timeout--;
 			}
-			if (registerNumber == 11 && TRX.BPF && TRX_getFrequency() >= BPF_7_HPF && !hpf_lock) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_7_HPF
-			if (registerNumber == 12 && TRX.BPF && TRX_getFrequency() >= BPF_6_START && TRX_getFrequency() < BPF_6_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_6
-			if (registerNumber == 13 && TRX.BPF && TRX_getFrequency() >= BPF_5_START && TRX_getFrequency() < BPF_5_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_5
-			if (registerNumber == 14 && TRX.BPF && TRX_getFrequency() >= BPF_4_START && TRX_getFrequency() < BPF_4_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_4
-			if (registerNumber == 15 && TRX.BPF && TRX_getFrequency() >= BPF_3_START && TRX_getFrequency() < BPF_3_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_3
+			if (registerNumber == 11 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_7_HPF && !hpf_lock) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_7_HPF
+			if (registerNumber == 12 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_6_START && TRX_getFrequency(CurrentVFO()) < BPF_6_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_6
+			if (registerNumber == 13 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_5_START && TRX_getFrequency(CurrentVFO()) < BPF_5_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_5
+			if (registerNumber == 14 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_4_START && TRX_getFrequency(CurrentVFO()) < BPF_4_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_4
+			if (registerNumber == 15 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_3_START && TRX_getFrequency(CurrentVFO()) < BPF_3_END) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_3
 		}
 		MINI_DELAY
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_SET);
@@ -322,7 +323,7 @@ void PERIPH_ProcessFrontPanel(void)
 		mode++;
 		if (mode < 0) mode = TRX_MODE_COUNT - 2;
 		if (mode >= (TRX_MODE_COUNT - 1)) mode = 0;
-		TRX_setMode(mode);
+		TRX_setMode(mode, CurrentVFO());
 		LCD_UpdateQuery.TopButtons = true;
 	}
 	//MODE-
@@ -333,7 +334,7 @@ void PERIPH_ProcessFrontPanel(void)
 		mode--;
 		if (mode < 0) mode = TRX_MODE_COUNT - 2;
 		if (mode >= (TRX_MODE_COUNT - 1)) mode = 0;
-		TRX_setMode(mode);
+		TRX_setMode(mode,CurrentVFO());
 		LCD_UpdateQuery.TopButtons = true;
 	}
 	//BAND+
@@ -344,7 +345,7 @@ void PERIPH_ProcessFrontPanel(void)
 		band++;
 		if (band >= BANDS_COUNT) band = 0;
 		if (band < 0) band = BANDS_COUNT - 1;
-		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band]);
+		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band],CurrentVFO());
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.FreqInfo = true;
 	}
@@ -356,7 +357,7 @@ void PERIPH_ProcessFrontPanel(void)
 		band--;
 		if (band >= BANDS_COUNT) band = 0;
 		if (band < 0) band = BANDS_COUNT - 1;
-		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band]);
+		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band],CurrentVFO());
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.FreqInfo = true;
 	}
@@ -371,37 +372,37 @@ void PERIPH_ProcessFrontPanel(void)
 	PERIPH_FrontPanel.key_bandn_prev = PERIPH_FrontPanel.key_bandn;
 	
 	//MCP3008 - 2 (10bit - 1024values)
-	mcp3008_value = PERIPH_ReadMCP3008_Value(0, AD2_CS_GPIO_Port, AD2_CS_Pin); // F6
+	mcp3008_value = PERIPH_ReadMCP3008_Value(0, AD2_CS_GPIO_Port, AD2_CS_Pin); // MENU
 	if(mcp3008_value < MCP3008_THRESHOLD) 
 		PERIPH_FrontPanel.key_menu = true; 
 	else 
 		PERIPH_FrontPanel.key_menu = false;
 	
-	mcp3008_value = PERIPH_ReadMCP3008_Value(1, AD2_CS_GPIO_Port, AD2_CS_Pin); // F5
+	mcp3008_value = PERIPH_ReadMCP3008_Value(1, AD2_CS_GPIO_Port, AD2_CS_Pin); // CLAR
 	if(mcp3008_value < MCP3008_THRESHOLD) 
-		PERIPH_FrontPanel.key_func = true; 
+		PERIPH_FrontPanel.key_clar = true; 
 	else 
-		PERIPH_FrontPanel.key_func = false;
+		PERIPH_FrontPanel.key_clar = false;
 	
-	mcp3008_value = PERIPH_ReadMCP3008_Value(2, AD2_CS_GPIO_Port, AD2_CS_Pin); // F4
+	mcp3008_value = PERIPH_ReadMCP3008_Value(2, AD2_CS_GPIO_Port, AD2_CS_Pin); // NOTCH
 	if(mcp3008_value < MCP3008_THRESHOLD) 
 		PERIPH_FrontPanel.key_notch = true; 
 	else 
 		PERIPH_FrontPanel.key_notch = false;
 	
-	mcp3008_value = PERIPH_ReadMCP3008_Value(3, AD2_CS_GPIO_Port, AD2_CS_Pin); // F3
+	mcp3008_value = PERIPH_ReadMCP3008_Value(3, AD2_CS_GPIO_Port, AD2_CS_Pin); // A=B
 	if(mcp3008_value < MCP3008_THRESHOLD) 
-		PERIPH_FrontPanel.key_a_b = true; 
+		PERIPH_FrontPanel.key_a_set_b = true; 
 	else 
-		PERIPH_FrontPanel.key_a_b = false;
+		PERIPH_FrontPanel.key_a_set_b = false;
 	
-	mcp3008_value = PERIPH_ReadMCP3008_Value(4, AD2_CS_GPIO_Port, AD2_CS_Pin); // F2
+	mcp3008_value = PERIPH_ReadMCP3008_Value(4, AD2_CS_GPIO_Port, AD2_CS_Pin); // DNR
 	if(mcp3008_value < MCP3008_THRESHOLD) 
 		PERIPH_FrontPanel.key_dnr = true; 
 	else 
 		PERIPH_FrontPanel.key_dnr = false;
 	
-	mcp3008_value = PERIPH_ReadMCP3008_Value(5, AD2_CS_GPIO_Port, AD2_CS_Pin); // F1
+	mcp3008_value = PERIPH_ReadMCP3008_Value(5, AD2_CS_GPIO_Port, AD2_CS_Pin); // AGC
 	if(mcp3008_value < MCP3008_THRESHOLD) 
 		PERIPH_FrontPanel.key_agc = true; 
 	else 
@@ -433,7 +434,7 @@ void PERIPH_ProcessFrontPanel(void)
 	}
 
 	//F3 A=B
-	if (PERIPH_FrontPanel.key_a_b_prev != PERIPH_FrontPanel.key_a_b && PERIPH_FrontPanel.key_a_b && !TRX.Locked)
+	if (PERIPH_FrontPanel.key_a_set_b_prev != PERIPH_FrontPanel.key_a_set_b && PERIPH_FrontPanel.key_a_set_b && !TRX.Locked)
 	{
 		if (TRX.current_vfo)
 		{
@@ -467,6 +468,14 @@ void PERIPH_ProcessFrontPanel(void)
 			NeedSaveSettings = true;
 	}
 	
+	//F5 CLAR
+	if (PERIPH_FrontPanel.key_clar_prev != PERIPH_FrontPanel.key_clar && PERIPH_FrontPanel.key_clar && !TRX.Locked)
+	{
+		TRX.CLAR = !TRX.CLAR;
+		LCD_UpdateQuery.TopButtons = true;
+		NeedSaveSettings = true;
+	}
+	
 	//F6 MENU
 	if (PERIPH_FrontPanel.key_menu_prev != PERIPH_FrontPanel.key_menu && PERIPH_FrontPanel.key_menu)
 	{
@@ -495,9 +504,9 @@ void PERIPH_ProcessFrontPanel(void)
 	
 	PERIPH_FrontPanel.key_agc_prev = PERIPH_FrontPanel.key_agc;
 	PERIPH_FrontPanel.key_dnr_prev = PERIPH_FrontPanel.key_dnr;
-	PERIPH_FrontPanel.key_a_b_prev = PERIPH_FrontPanel.key_a_b;
+	PERIPH_FrontPanel.key_a_set_b_prev = PERIPH_FrontPanel.key_a_set_b;
 	PERIPH_FrontPanel.key_notch_prev = PERIPH_FrontPanel.key_notch;
-	PERIPH_FrontPanel.key_func_prev = PERIPH_FrontPanel.key_func;
+	PERIPH_FrontPanel.key_clar_prev = PERIPH_FrontPanel.key_clar;
 	PERIPH_FrontPanel.key_menu_prev = PERIPH_FrontPanel.key_menu;
 }
 
