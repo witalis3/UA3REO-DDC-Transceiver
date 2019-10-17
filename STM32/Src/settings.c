@@ -24,10 +24,10 @@ static void Flash_Sector_Erase(void);
 static void Flash_Write_Data(void);
 static void Flash_Read_Data(void);
 
-void LoadSettings(void)
+void LoadSettings(bool clear)
 {
 	Flash_Read_Data();
-	if (TRX.clean_flash != 184) //code to trace new clean flash
+	if (TRX.clean_flash != 184 || clear) //code to trace new clean flash
 	{
 		TRX.clean_flash = 184; //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000; //сохранённая частота VFO-A

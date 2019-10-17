@@ -25,6 +25,7 @@
 #define AUTOGAIN_MAX_AMPLITUDE 1100 //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
 #define ENCODER_INVERT 1 //инвертировать вращение влево-вправо у основного энкодера
 #define ENCODER2_INVERT 0 //инвертировать вращение влево-вправо у дополнительного энкодера
+#define KEY_HOLD_TIME 1000 //время длительного нажатия на кнопку клавиатуры для срабатывания, мс
 
 #define ILI9341 true //выбираем используемый дисплей
 //#define ILI9325 true //другие комментируем
@@ -121,7 +122,7 @@ extern struct TRX_SETTINGS {
 volatile extern bool NeedSaveSettings;
 extern SPI_HandleTypeDef hspi1;
 
-extern void LoadSettings(void);
+extern void LoadSettings(bool clear);
 extern void SaveSettings(void);
 extern VFO *CurrentVFO(void);
 

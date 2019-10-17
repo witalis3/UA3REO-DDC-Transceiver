@@ -36,6 +36,8 @@ typedef struct {
 	bool key_func;
 	bool key_func_prev;
 	bool key_menu;
+	uint32_t key_menu_starttime;
+	bool key_menu_afterhold;
 	bool key_menu_prev;
 	uint16_t key_afgain; //10-bit
 	uint16_t key_shift; //10-bit

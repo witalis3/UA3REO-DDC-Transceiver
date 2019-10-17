@@ -78,7 +78,6 @@ static struct sysmenu_item_handler sysmenu_handlers[] =
 	{"LCD Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
 	{"FFT Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_FFTMENU},
 	{"ADC Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_ADCMENU},
-	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_ENCODER_SLOW_RATE},
 	{"WIFI Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_WIFIMENU},
 	{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
 	{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
@@ -96,6 +95,7 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 	{"AutoGainer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
 	{"LPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.LPF, SYSMENU_HANDL_TRX_LPFFilter},
 	{"BPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BPF, SYSMENU_HANDL_TRX_BPFFilter},
+	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_ENCODER_SLOW_RATE},
 	{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
 	{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
 	{"USB IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_USB, SYSMENU_HANDL_TRX_USBIN},
@@ -122,7 +122,7 @@ static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysm
 
 static struct sysmenu_item_handler sysmenu_lcd_handlers[] =
 {
-	{"Touchpad beeping", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Beeping, SYSMENU_HANDL_Beeping},
+	//{"Touchpad beeping", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Beeping, SYSMENU_HANDL_Beeping},
 	{"LCD Brightness", SYSMENU_UINT8, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_LCD_Brightness},
 	{"LCD Sleep Time", SYSMENU_UINT8, (uint32_t *)&TRX.Standby_Time, SYSMENU_HANDL_Standby_Time},
 };

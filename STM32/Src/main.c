@@ -177,7 +177,11 @@ int main(void)
 	InitProfiler();
 	sendToDebug_str("\r\n");
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
-	LoadSettings();
+	PERIPH_ProcessFrontPanel();
+	if(PERIPH_FrontPanel.key_menu) //hard reset
+		LoadSettings(true);
+	else
+		LoadSettings(false);
 	LCD_Init();
 	FFT_Init();
 	WM8731_Init();
