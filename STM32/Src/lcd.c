@@ -76,6 +76,7 @@ static void LCD_displayTopButtons(bool redraw) { //вывод верхних к�
 	printInfo(0, 22, 50, 22, "FAST", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, (TRX.Fast == true));
 	printInfo(50, 22, 50, 22, "AGC", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.AGC);
 	printInfo(100, 22, 50, 22, "DNR", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.DNR);
+	printInfo(150, 22, 50, 22, "LOCK", COLOR_BLACK, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Locked);
 
 	LCD_busy = false;
 	LCD_UpdateQuery.TopButtons = false;

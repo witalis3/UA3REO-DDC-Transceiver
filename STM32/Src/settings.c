@@ -27,9 +27,9 @@ static void Flash_Read_Data(void);
 void LoadSettings(bool clear)
 {
 	Flash_Read_Data();
-	if (TRX.clean_flash != 184 || clear) //code to trace new clean flash
+	if (TRX.clean_flash != 185 || clear) //code to trace new clean flash
 	{
-		TRX.clean_flash = 184; //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		TRX.clean_flash = 185; //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000; //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
 		TRX.VFO_A.Filter_Width = 2700; //сохранённая ширина полосы VFO-A
@@ -84,6 +84,7 @@ void LoadSettings(bool clear)
 		TRX.ADC_SHDN = false; //ADC отключение
 		TRX.ADC_DITH = false; //ADC дизеринг
 		TRX.FFT_Window = 1;
+		TRX.Locked = false; //Блокировка управления
 		
 		SaveSettings();
 	}

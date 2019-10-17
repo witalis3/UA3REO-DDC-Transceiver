@@ -65,6 +65,7 @@ void PERIPH_ENCODER2_checkRotate(void) {
 static void PERIPH_ENCODER_Rotated(int direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
 {
 	TRX_Time_InActive = 0;
+	if(TRX.Locked) return;
 	
 	if (LCD_systemMenuOpened && !LCD_timeMenuOpened)
 	{
@@ -124,6 +125,7 @@ static void PERIPH_ENCODER_Rotated(int direction) //энкодер поверн�
 static void PERIPH_ENCODER2_Rotated(int direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
 {
 	TRX_Time_InActive = 0;
+	if(TRX.Locked) return;
 	
 	if (LCD_systemMenuOpened || LCD_timeMenuOpened)
 	{
@@ -141,6 +143,9 @@ static void PERIPH_ENCODER2_Rotated(int direction) //энкодер поверн
 }
 
 void PERIPH_ENCODER2_checkSwitch(void) {
+	TRX_Time_InActive = 0;
+	if(TRX.Locked) return;
+	
 	bool ENCODER2_SWNow = HAL_GPIO_ReadPin(ENC2_SW_GPIO_Port, ENC2_SW_Pin);
 	if(ENCODER2_SWLast != ENCODER2_SWNow)
 	{
@@ -255,7 +260,7 @@ void PERIPH_ProcessFrontPanel(void)
 		PERIPH_FrontPanel.key_bandn = false;
 	
 	//A/B
-	if (PERIPH_FrontPanel.key_ab_prev != PERIPH_FrontPanel.key_ab && PERIPH_FrontPanel.key_ab)
+	if (PERIPH_FrontPanel.key_ab_prev != PERIPH_FrontPanel.key_ab && PERIPH_FrontPanel.key_ab && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
 		TRX.current_vfo = !TRX.current_vfo;
@@ -264,7 +269,7 @@ void PERIPH_ProcessFrontPanel(void)
 		LCD_redraw();
 	}
 	//TUNE
-	if (PERIPH_FrontPanel.key_tune_prev != PERIPH_FrontPanel.key_tune && PERIPH_FrontPanel.key_tune)
+	if (PERIPH_FrontPanel.key_tune_prev != PERIPH_FrontPanel.key_tune && PERIPH_FrontPanel.key_tune && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
 		TRX_Tune = !TRX_Tune;
@@ -275,7 +280,7 @@ void PERIPH_ProcessFrontPanel(void)
 		TRX_Restart_Mode();
 	}
 	//PREATT
-	if (PERIPH_FrontPanel.key_preatt_prev != PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt)
+	if (PERIPH_FrontPanel.key_preatt_prev != PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
 		if(!TRX.Preamp && !TRX.ATT)
@@ -302,7 +307,7 @@ void PERIPH_ProcessFrontPanel(void)
 		NeedSaveSettings = true;
 	}
 	//FAST
-	if (PERIPH_FrontPanel.key_fast_prev != PERIPH_FrontPanel.key_fast && PERIPH_FrontPanel.key_fast)
+	if (PERIPH_FrontPanel.key_fast_prev != PERIPH_FrontPanel.key_fast && PERIPH_FrontPanel.key_fast && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
 		TRX.Fast = !TRX.Fast;
@@ -310,7 +315,7 @@ void PERIPH_ProcessFrontPanel(void)
 		NeedSaveSettings = true;
 	}
 	//MODE+
-	if (PERIPH_FrontPanel.key_modep_prev != PERIPH_FrontPanel.key_modep && PERIPH_FrontPanel.key_modep)
+	if (PERIPH_FrontPanel.key_modep_prev != PERIPH_FrontPanel.key_modep && PERIPH_FrontPanel.key_modep && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
 		int8_t mode = CurrentVFO()->Mode;
@@ -321,7 +326,7 @@ void PERIPH_ProcessFrontPanel(void)
 		LCD_UpdateQuery.TopButtons = true;
 	}
 	//MODE-
-	if (PERIPH_FrontPanel.key_moden_prev != PERIPH_FrontPanel.key_moden && PERIPH_FrontPanel.key_moden)
+	if (PERIPH_FrontPanel.key_moden_prev != PERIPH_FrontPanel.key_moden && PERIPH_FrontPanel.key_moden && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
 		int8_t mode = CurrentVFO()->Mode;
@@ -332,7 +337,7 @@ void PERIPH_ProcessFrontPanel(void)
 		LCD_UpdateQuery.TopButtons = true;
 	}
 	//BAND+
-	if (PERIPH_FrontPanel.key_bandp_prev != PERIPH_FrontPanel.key_bandp && PERIPH_FrontPanel.key_bandp)
+	if (PERIPH_FrontPanel.key_bandp_prev != PERIPH_FrontPanel.key_bandp && PERIPH_FrontPanel.key_bandp && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
@@ -344,7 +349,7 @@ void PERIPH_ProcessFrontPanel(void)
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 	//BAND-
-	if (PERIPH_FrontPanel.key_bandn_prev != PERIPH_FrontPanel.key_bandn && PERIPH_FrontPanel.key_bandn)
+	if (PERIPH_FrontPanel.key_bandn_prev != PERIPH_FrontPanel.key_bandn && PERIPH_FrontPanel.key_bandn && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
@@ -408,7 +413,7 @@ void PERIPH_ProcessFrontPanel(void)
 	mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT
 	
 	//F1 AGC
-	if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc)
+	if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc && !TRX.Locked)
 	{
 		TRX.AGC = !TRX.AGC;
 		InitAGC();
@@ -417,7 +422,7 @@ void PERIPH_ProcessFrontPanel(void)
 	}
 
 	//F2 DNR
-	if (PERIPH_FrontPanel.key_dnr_prev != PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr)
+	if (PERIPH_FrontPanel.key_dnr_prev != PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr && !TRX.Locked)
 	{
 		TRX.DNR = !TRX.DNR;
 		LCD_UpdateQuery.TopButtons = true;
@@ -425,7 +430,7 @@ void PERIPH_ProcessFrontPanel(void)
 	}
 
 	//F3 A=B
-	if (PERIPH_FrontPanel.key_a_b_prev != PERIPH_FrontPanel.key_a_b && PERIPH_FrontPanel.key_a_b)
+	if (PERIPH_FrontPanel.key_a_b_prev != PERIPH_FrontPanel.key_a_b && PERIPH_FrontPanel.key_a_b && !TRX.Locked)
 	{
 		if (TRX.current_vfo)
 		{
@@ -444,7 +449,7 @@ void PERIPH_ProcessFrontPanel(void)
 	}
 
 	//F4 NOTCH
-	if (PERIPH_FrontPanel.key_notch_prev != PERIPH_FrontPanel.key_notch && PERIPH_FrontPanel.key_notch)
+	if (PERIPH_FrontPanel.key_notch_prev != PERIPH_FrontPanel.key_notch && PERIPH_FrontPanel.key_notch && !TRX.Locked)
 	{
 			if (TRX.NotchFC > CurrentVFO()->Filter_Width)
 				TRX.NotchFC = CurrentVFO()->Filter_Width;
@@ -465,14 +470,17 @@ void PERIPH_ProcessFrontPanel(void)
 		PERIPH_FrontPanel.key_menu_starttime=HAL_GetTick();
 		PERIPH_FrontPanel.key_menu_afterhold=false;
 	}
-	//F6 MENU HOLD
+	//F6 MENU HOLD - LOCK
 	if (PERIPH_FrontPanel.key_menu_prev == PERIPH_FrontPanel.key_menu && PERIPH_FrontPanel.key_menu && (HAL_GetTick()-PERIPH_FrontPanel.key_menu_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_menu_afterhold)
 	{
 		PERIPH_FrontPanel.key_menu_afterhold=true;
-		//do something
+		
+		TRX.Locked=!TRX.Locked;
+		LCD_UpdateQuery.TopButtons = true;
+		NeedSaveSettings = true;
 	}
 	//F6 MENU CLICK
-	if (PERIPH_FrontPanel.key_menu_prev != PERIPH_FrontPanel.key_menu && !PERIPH_FrontPanel.key_menu && (HAL_GetTick()-PERIPH_FrontPanel.key_menu_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_menu_afterhold)
+	if (PERIPH_FrontPanel.key_menu_prev != PERIPH_FrontPanel.key_menu && !PERIPH_FrontPanel.key_menu && (HAL_GetTick()-PERIPH_FrontPanel.key_menu_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_menu_afterhold && !TRX.Locked)
 	{
 		if(!LCD_systemMenuOpened)
 			LCD_systemMenuOpened = true;
