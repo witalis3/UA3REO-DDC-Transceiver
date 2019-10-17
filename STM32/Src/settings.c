@@ -49,7 +49,7 @@ void LoadSettings(bool clear)
 		TRX.InputType_MIC = true; //тип входа для передачи
 		TRX.InputType_LINE = false;
 		TRX.InputType_USB = false;
-		TRX.Fast = false; //ускоренная смена частоты при вращении энкодера
+		TRX.Fast = true; //ускоренная смена частоты при вращении энкодера
 		TRX.CW_Filter = 500; //дефолтное значение ширины фильтра CW
 		TRX.SSB_Filter = 2700; //дефолтное значение ширины фильтра SSB
 		TRX.FM_Filter = 15000; //дефолтное значение ширины фильтра FM

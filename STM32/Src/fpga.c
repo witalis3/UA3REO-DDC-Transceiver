@@ -173,16 +173,16 @@ void FPGA_fpgadata_iqclock(void)
 inline void FPGA_fpgadata_sendparam(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
-	uint32_t TRX_freq_phrase = getPhraseFromFrequency(CurrentVFO()->Freq);
+	uint32_t TRX_freq_phrase = getPhraseFromFrequency(CurrentVFO()->Freq + TRX_SHIFT);
 	if (!TRX_on_TX())
 	{
 		switch (TRX_getMode())
 		{
 		case TRX_MODE_CW_L:
-			TRX_freq_phrase = getPhraseFromFrequency(CurrentVFO()->Freq + TRX.CW_GENERATOR_SHIFT_HZ);
+			TRX_freq_phrase = getPhraseFromFrequency(CurrentVFO()->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ);
 			break;
 		case TRX_MODE_CW_U:
-			TRX_freq_phrase = getPhraseFromFrequency(CurrentVFO()->Freq - TRX.CW_GENERATOR_SHIFT_HZ);
+			TRX_freq_phrase = getPhraseFromFrequency(CurrentVFO()->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ);
 			break;
 		default:
 			break;

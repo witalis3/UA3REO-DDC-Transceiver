@@ -411,6 +411,9 @@ void PERIPH_ProcessFrontPanel(void)
 	TRX.Volume=(1023.0f-mcp3008_value)/1023.0f*100.0f;
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT
+	TRX_SHIFT = ((1023.0f-mcp3008_value)*SHIFT_INTERVAL/1023.0f) - SHIFT_INTERVAL / 2.0f;
+	if(abs(TRX_SHIFT)<(SHIFT_INTERVAL / 10.0f)) //при минимальных отклонениях - игнорируем
+		TRX_SHIFT = 0;
 	
 	//F1 AGC
 	if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc && !TRX.Locked)
