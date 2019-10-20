@@ -4,7 +4,7 @@
 #include "stm32f4xx_hal.h"
 #include <stdbool.h>
 
-#define MCP3008_THRESHOLD 10
+#define MCP3008_THRESHOLD 100
 
 typedef struct {
 	//MCP3008 - 1

@@ -76,12 +76,17 @@ static void PERIPH_ENCODER_Rotated(int direction) //энкодер поверн�
 	{
 		VFO* vfo=CurrentVFO();
 		if (TRX.Fast)
+		{
 			TRX_setFrequency(TRX_getFrequency(vfo) + 100 * direction, vfo);
+			if((TRX_getFrequency(vfo) % 100) > 0)
+				TRX_setFrequency(TRX_getFrequency(vfo)/100*100, vfo);
+		}
 		else
+		{
 			TRX_setFrequency(TRX_getFrequency(vfo) + 10 * direction, vfo);
-				
-		if((TRX_getFrequency(vfo) % 10) > 0)
-			TRX_setFrequency(TRX_getFrequency(vfo)/10*10, vfo);
+			if((TRX_getFrequency(vfo) % 10) > 0)
+				TRX_setFrequency(TRX_getFrequency(vfo)/10*10, vfo);
+		}
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 	if (LCD_timeMenuOpened)
@@ -135,12 +140,24 @@ static void PERIPH_ENCODER2_Rotated(int direction) //энкодер поверн
 	}
 	
 	//NOTCH - default action
-	if (TRX.NotchFC > 50 && direction < 0)
-		TRX.NotchFC -= 25;
-	else if (TRX.NotchFC < CurrentVFO()->Filter_Width && direction > 0)
-		TRX.NotchFC += 25;
-	LCD_UpdateQuery.StatusInfoGUI = true;
-	NeedReinitNotch = true;
+	if(TRX.NotchFilter)
+	{
+		if (TRX.NotchFC > 50 && direction < 0)
+			TRX.NotchFC -= 25;
+		else if (TRX.NotchFC < CurrentVFO()->Filter_Width && direction > 0)
+			TRX.NotchFC += 25;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		NeedReinitNotch = true;
+	}
+	else
+	{
+		VFO* vfo=CurrentVFO();
+		if (TRX.Fast)
+			TRX_setFrequency(TRX_getFrequency(vfo) + 500000 * direction, vfo);
+		else
+			TRX_setFrequency(TRX_getFrequency(vfo) + 25000 * direction, vfo);
+		LCD_UpdateQuery.FreqInfo = true;
+	}
 }
 
 void PERIPH_ENCODER2_checkSwitch(void) {
