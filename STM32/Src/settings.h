@@ -30,6 +30,7 @@
 #define KEY_HOLD_TIME 1000 //время длительного нажатия на кнопку клавиатуры для срабатывания, мс
 #define SHIFT_INTERVAL 400.0f //диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
 #define AUTOGAIN_CORRECTOR_WAITSTEP 7 //ожидание усреднения результатов при работе автокорректора входных цепей
+#define EEPROM_WRITE_INTERVAL 30 //Запись в EEPROM не чаще, чем раз в 30 секунд (против износа)
 
 #define ILI9341 true //выбираем используемый дисплей
 //#define ILI9325 true //другие комментируем
@@ -60,6 +61,7 @@
 #define W25Q16_COMMAND_Sector_Erase 0x20
 #define W25Q16_COMMAND_Page_Program 0x02
 #define W25Q16_COMMAND_Read_Data 0x03
+#define W25Q16_SECTOR_SIZE 4096
 
 #define MAX_WIFIPASS_LENGTH 32
 
@@ -123,6 +125,7 @@ extern struct TRX_SETTINGS {
 	uint8_t FFT_Window;
 	bool Locked;
 	bool CLAR;
+	uint8_t ENDBit;
 } TRX;
 
 volatile extern bool NeedSaveSettings;

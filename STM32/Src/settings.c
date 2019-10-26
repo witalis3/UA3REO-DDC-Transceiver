@@ -17,7 +17,8 @@ static uint8_t Page_Program = W25Q16_COMMAND_Page_Program;
 static uint8_t Read_Data = W25Q16_COMMAND_Read_Data;
 static uint8_t Address[3] = { 0x00 };
 struct TRX_SETTINGS TRX = { 0 };
-
+static uint8_t eeprom_bank = 0;
+	
 volatile bool NeedSaveSettings = false;
 
 static void Flash_Sector_Erase(void);
@@ -27,6 +28,17 @@ static void Flash_Read_Data(void);
 void LoadSettings(bool clear)
 {
 	Flash_Read_Data();
+
+	//Проверка, что запись в eeprom была успешна, иначе используем второй банк
+	if(TRX.ENDBit != 100)
+	{
+		eeprom_bank++;
+		if(eeprom_bank == 2)
+			eeprom_bank = 0;
+		Flash_Read_Data();
+	}
+	TRX.ENDBit = 100;
+
 	if (TRX.clean_flash != 185 || clear) //code to trace new clean flash
 	{
 		TRX.clean_flash = 185; //ID прошивки в eeprom, если не совпадает - используем дефолтные
@@ -86,7 +98,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Window = 1;
 		TRX.Locked = false; //Блокировка управления
 		TRX.CLAR = false; //Режим разноса частот (приём один VFO, передача другой)
-		
+		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		SaveSettings();
 	}
 }
@@ -102,27 +114,30 @@ VFO *CurrentVFO(void)
 void SaveSettings(void)
 {
 	NeedSaveSettings = false;
-	FPGA_NeedSendParams = true;
-	Flash_Sector_Erase();
-	HAL_Delay(50);
 	Flash_Write_Data();
+	HAL_Delay(50);
+	eeprom_bank++;
+	if(eeprom_bank == 2)
+		eeprom_bank = 0;
+	Flash_Sector_Erase();
 }
 
 static void Flash_Sector_Erase(void)
 {
-	for (uint8_t page = 0; page <= (sizeof(TRX) / 0xFF); page++)
-	{
-		Address[1] = page;
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
-		HAL_SPI_Transmit(&hspi1, &Write_Enable, 1, HAL_MAX_DELAY); // Write Enable Command
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-		HAL_Delay(20);
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
-		HAL_SPI_Transmit(&hspi1, &Sector_Erase, 1, HAL_MAX_DELAY);   // Erase Chip Command
-		HAL_SPI_Transmit(&hspi1, Address, sizeof(Address), HAL_MAX_DELAY);      // Write Address ( The first address of flash module is 0x00000000 )
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-		HAL_Delay(20);
-	}
+	uint32_t BigAddress = eeprom_bank * W25Q16_SECTOR_SIZE;
+	Address[0] = BigAddress & 0xFF;
+	Address[1] = (BigAddress >> 8) & 0xFF;
+	Address[2] = (BigAddress >> 16) & 0xFF;
+	
+	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
+	HAL_SPI_Transmit(&hspi1, &Write_Enable, 1, HAL_MAX_DELAY); // Write Enable Command
+	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
+	HAL_Delay(20);
+	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
+	HAL_SPI_Transmit(&hspi1, &Sector_Erase, 1, HAL_MAX_DELAY);   // Erase Chip Command
+	HAL_SPI_Transmit(&hspi1, Address, sizeof(Address), HAL_MAX_DELAY);      // Write Address ( The first address of flash module is 0x00000000 )
+	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
+	HAL_Delay(20);
 }
 
 static void Flash_Write_Data(void)
@@ -133,7 +148,10 @@ static void Flash_Write_Data(void)
 		HAL_SPI_Transmit(&hspi1, &Write_Enable, 1, HAL_MAX_DELAY); // Write Enable Command
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
 
-		Address[1] = page;
+		uint32_t BigAddress = page + (eeprom_bank * W25Q16_SECTOR_SIZE);
+		Address[0] = BigAddress & 0xFF;
+		Address[1] = (BigAddress >> 8) & 0xFF;
+		Address[2] = (BigAddress >> 16) & 0xFF;
 		uint16_t size = sizeof(TRX) - 0xFF * page;
 		if (size > 0xFF) size = 0xFF;
 
@@ -150,7 +168,10 @@ static void Flash_Read_Data(void)
 {
 	for (uint8_t page = 0; page <= (sizeof(TRX) / 0xFF); page++)
 	{
-		Address[1] = page;
+		uint32_t BigAddress = page + (eeprom_bank * W25Q16_SECTOR_SIZE);
+		Address[0] = BigAddress & 0xFF;
+		Address[1] = (BigAddress >> 8) & 0xFF;
+		Address[2] = (BigAddress >> 16) & 0xFF;
 		uint16_t size = sizeof(TRX) - 0xFF * page;
 		if (size > 0xFF) size = 0xFF;
 

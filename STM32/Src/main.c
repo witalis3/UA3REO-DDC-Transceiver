@@ -204,6 +204,7 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim7);
 	PERIPH_RF_UNIT_UpdateState(false);
 	sendToDebug_str("UA3REO Started\r\n\r\n");
+	sendToDebug_flush();
 	TRX_Inited = true;
   /* USER CODE END 2 */
 
