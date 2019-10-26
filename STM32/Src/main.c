@@ -139,13 +139,19 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	  //checkBootloaderButton(); //Go to bootloader if (K0 PE4) pressed
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+	
+	//Enable Memory Protect
+	ARM_MPU_Disable();
+	ARM_MPU_SetRegion(ARM_MPU_RBAR(0, 0x20000000), ARM_MPU_RASR(0, ARM_MPU_AP_RO, 0, 0, 0, 0, 0, ARM_MPU_REGION_SIZE_32B) | 0x1 | (ARM_MPU_REGION_SIZE_32B << 1)); //protect stack
+	ARM_MPU_SetRegion(ARM_MPU_RBAR(1, 0x20000000+0xB00+0x600-32), ARM_MPU_RASR(0, ARM_MPU_AP_RO, 0, 0, 0, 0, 0, ARM_MPU_REGION_SIZE_32B) | 0x1 | (ARM_MPU_REGION_SIZE_32B << 1)); //protect heap
+	ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
+	
 	MX_GPIO_Init();
 	PERIPH_RF_UNIT_UpdateState(true);
   /* USER CODE END SysInit */
@@ -1226,10 +1232,9 @@ static void MX_FSMC_Init(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-		  /* User can add his own implementation to report the HAL error return state */
 	while (1)
 	{
-
+		LCD_showError("Error handled", true);
 	}
   /* USER CODE END Error_Handler_Debug */
 }
