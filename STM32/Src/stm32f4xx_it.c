@@ -434,6 +434,11 @@ void TIM6_DAC_IRQHandler(void)
 		float32_t dbg_Processor_TX_MAX_amplitude = Processor_TX_MAX_amplitude;
 		float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_I_tmp[0];
 		float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_Q_tmp[0];
+		if (TRX_on_TX())
+		{
+			dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_SendBuffer_I[0];
+			dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_SendBuffer_Q[0];
+		}
 		uint32_t dbg_RX_USB_AUDIO_SAMPLES = RX_USB_AUDIO_SAMPLES;
 		uint32_t dbg_TX_USB_AUDIO_SAMPLES = TX_USB_AUDIO_SAMPLES;
 		//Print Debug info

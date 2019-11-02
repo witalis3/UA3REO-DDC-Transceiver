@@ -74,11 +74,12 @@ extern void sendToDebug_float32(float32_t data, bool _inline);
 extern void sendToDebug_hex(uint8_t data, bool _inline);
 extern void delay_us(uint32_t us);
 extern bool beetween(float32_t a, float32_t b, float32_t val);
-extern float log10f_fast(float X);
+extern float32_t log10f_fast(float32_t X);
 extern void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length);
 extern void readHalfFromCircleUSBBuffer(int16_t *source, int32_t *dest, uint16_t index, uint16_t length);
 extern void dma_memcpy32(uint32_t dest, uint32_t src, uint32_t len);
-extern double db2rateV(double i);
+extern float32_t db2rateV(float32_t i);
 extern void shiftTextLeft(char *string, int16_t shiftLength);
+extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 
 #endif

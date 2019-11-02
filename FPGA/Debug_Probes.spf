@@ -18,13 +18,9 @@
       <probe name="probe[11]"/>
       <probe name="probe[12]"/>
       <probe name="probe[13]"/>
-      <probe name="probe[14]"/>
-      <probe name="probe[15]"/>
     </probes>
     <view>
-      <view_node expanded="true" group_name="probe[15..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
-      <view_node expanded="true" index="15" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="14" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" group_name="probe[13..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
       <view_node expanded="true" index="13" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="12" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="11" node_type="probe" view_type="group_member"/>
@@ -40,6 +36,6 @@
       <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
     </view>
-    <log data="15FF25FF74FFE4FF15FF17FF16FF26FF" max_size="8" size="8" time="1D24DBD5000000001D24DBD5000000001D24DBD5000000001D24DBD5000000002D24DBD5000000002D24DBD5000000002D24DBD5000000002D24DBD500000000" width="16"/>
+    <log data="0000000000000000000000000000" max_size="8" size="8" time="8096DBD5000000008096DBD5000000008096DBD5000000008096DBD5000000008096DBD5000000008096DBD5000000008096DBD5000000008096DBD500000000" width="14"/>
   </instance>
 </session>

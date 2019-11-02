@@ -33,7 +33,8 @@ volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile bool TRX_SNMP_Synced = false;
 volatile int16_t TRX_SHIFT = 0;
-
+volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
+	
 static uint8_t autogain_wait_reaction = 0; //таймер ожидания реакции от смены режимов ATT/PRE
 static uint8_t autogain_stage = 0; //этап отработки актокорректировщика усиления
 
@@ -195,6 +196,7 @@ void TRX_setFrequency(int32_t _freq, VFO* vfo)
 			LCD_UpdateQuery.TopButtons = true;
 		}
 	}
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
 	FPGA_NeedSendParams = true;
 	NeedFFTInputBuffer = true;
 }

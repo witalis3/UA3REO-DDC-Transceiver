@@ -12,7 +12,7 @@
 #define ADC_BITS 16 //разрядность АЦП
 #define FPGA_BUS_BITS 16 //разрядность данных из FPGA
 #define TRX_SAMPLERATE 48000 //частота дискретизации аудио-потока
-#define MAX_TX_AMPLITUDE 31000.0f //Максимальный размах при передаче в ЦАП (32767.0f - лимит)
+#define MAX_TX_AMPLITUDE 32700.0f //Максимальный размах при передаче в ЦАП (32767.0f - лимит)
 #define AGC_CLIP_THRESHOLD 10000 //Максимальный уровень усиления в AGC, выше него происходит клиппинг
 #define AGC_OPTIMAL_THRESHOLD 7000 //Рабочий уровень усиления в AGC
 #define TUNE_POWER 100 // % от выбранной в настройках мощности при запуске TUNE (100 - полная)
@@ -65,6 +65,10 @@
 #define W25Q16_SECTOR_SIZE 4096
 
 #define MAX_WIFIPASS_LENGTH 32
+
+extern struct t_CALIBRATE {
+	uint8_t rf_out_power[32]; //калибровка выходной мощности на каждый мегагерц
+} CALIBRATE;
 
 typedef struct {
 	uint32_t Freq;

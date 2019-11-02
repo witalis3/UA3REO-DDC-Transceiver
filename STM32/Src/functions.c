@@ -244,8 +244,8 @@ void addSymbols(char* dest, char* str, uint8_t length, char* symbol, bool toEnd)
 	strcpy(dest, res);
 }
 
-float log10f_fast(float X) {
-	float Y, F;
+float32_t log10f_fast(float32_t X) {
+	float32_t Y, F;
 	int E;
 	F = frexpf(fabsf(X), &E);
 	Y = 1.23149591368684f;
@@ -259,7 +259,7 @@ float log10f_fast(float X) {
 	return(Y * 0.3010299956639812f);
 }
 
-double db2rateV(double i) //из децибелл в разы (для напряжения)
+float32_t db2rateV(float32_t i) //из децибелл в разы (для напряжения)
 {
 	return powf(10.0f, (i / 20.0f));
 }
@@ -275,4 +275,23 @@ void shiftTextLeft(char *string, int16_t shiftLength)
 		string[i] = string[i + shiftLength];
 		string[i + shiftLength] = '\0';
 	}
+}
+
+float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
+{
+	if(freq>30000000) return 0.0f;
+	const uint8_t calibration_points = 31;
+	uint8_t mhz_left = 0;
+	uint8_t mhz_right = calibration_points;
+	for(uint8_t i=0;i<=calibration_points;i++)
+		if((i * 1000000) < freq)
+			mhz_left=i;
+	for(uint8_t i=calibration_points;i>0;i--)
+		if((i * 1000000) >= freq)
+			mhz_right=i;
+	
+	float32_t power_left = (float32_t)CALIBRATE.rf_out_power[mhz_left] / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+	float32_t power_right = (float32_t)CALIBRATE.rf_out_power[mhz_right] / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+	float32_t freq_point = (freq - (mhz_left * 1000000.0f)) / 1000000.0f;
+	return (power_left * (1.0f - freq_point)) + (power_right * (freq_point));
 }

@@ -192,6 +192,7 @@ int main(void)
 	FFT_Init();
 	WM8731_Init();
 	TRX_Init();
+	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	FPGA_Init();
 	initAudioProcessor();
 	HAL_TIM_Base_Start(&htim5);

@@ -25,6 +25,44 @@ static void Flash_Sector_Erase(void);
 static void Flash_Write_Data(void);
 static void Flash_Read_Data(void);
 
+//калибровка выходной мощности на каждый мегагерц
+struct t_CALIBRATE CALIBRATE = {
+	.rf_out_power = {
+		33, // 0 mhz
+		20, // 1 mhz
+		24, // 2 mhz
+		42, // 3 mhz
+		43, // 4 mhz
+		54, // 5 mhz
+		63, // 6 mhz
+		72, // 7 mhz
+		80, // 8 mhz
+		86, // 9 mhz
+		94, // 10 mhz
+		97, // 11 mhz
+		100, // 12 mhz
+		100, // 13 mhz
+		100, // 14 mhz
+		100, // 15 mhz
+		96, // 16 mhz
+		90, // 17 mhz
+		83, // 18 mhz
+		72, // 19 mhz
+		61, // 20 mhz
+		50, // 21 mhz
+		41, // 22 mhz
+		38, // 23 mhz
+		43, // 24 mhz
+		57, // 25 mhz
+		72, // 26 mhz
+		88, // 27 mhz
+		100, // 28 mhz
+		100, // 29 mhz
+		100, // 30 mhz
+		0    // 31+ mhz
+	}
+};
+
 void LoadSettings(bool clear)
 {
 	Flash_Read_Data();

@@ -397,14 +397,14 @@ inline void FPGA_fpgadata_sendiq(void)
 	FPGA_samples++;
 	//STAGE 2 out Q
 	FPGA_fpgadata_out_tmp16 = (float32_t)FPGA_Audio_SendBuffer_Q[FPGA_Audio_Buffer_Index];
-	FPGA_writePacket(FPGA_fpgadata_out_tmp16 >> 8);
+	FPGA_writePacket((FPGA_fpgadata_out_tmp16 >> 8) & 0xFF);
 	//clock
 	FPGA_clockRise();
 	//clock
 	FPGA_clockFall();
 
 	//STAGE 3
-	FPGA_writePacket(FPGA_fpgadata_out_tmp16);
+	FPGA_writePacket(FPGA_fpgadata_out_tmp16 & 0xFF);
 	//clock
 	FPGA_clockRise();
 	//clock
@@ -412,14 +412,14 @@ inline void FPGA_fpgadata_sendiq(void)
 
 	//STAGE 4 out I
 	FPGA_fpgadata_out_tmp16 = (float32_t)FPGA_Audio_SendBuffer_I[FPGA_Audio_Buffer_Index];
-	FPGA_writePacket(FPGA_fpgadata_out_tmp16 >> 8);
+	FPGA_writePacket((FPGA_fpgadata_out_tmp16 >> 8) & 0xFF);
 	//clock
 	FPGA_clockRise();
 	//clock
 	FPGA_clockFall();
 
 	//STAGE 5
-	FPGA_writePacket(FPGA_fpgadata_out_tmp16);
+	FPGA_writePacket(FPGA_fpgadata_out_tmp16 & 0xFF);
 	//clock
 	FPGA_clockRise();
 	//clock

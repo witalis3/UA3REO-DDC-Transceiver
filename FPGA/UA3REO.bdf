@@ -1968,21 +1968,21 @@ refer to the applicable agreement for further details.
 		(pt 256 72)
 		(output)
 		(text "fsin_o[15..0]" (rect 0 0 70 14)(font "Arial" (font_size 8)))
-		(text "fsin_o[15..0]" (rect 194 61 253 75)(font "Arial" (font_size 8)))
+		(text "fsin_o[15..0]" (rect 194 61 264 75)(font "Arial" (font_size 8)))
 		(line (pt 256 72)(pt 176 72)(line_width 3))
 	)
 	(port
 		(pt 256 88)
 		(output)
 		(text "fcos_o[15..0]" (rect 0 0 75 14)(font "Arial" (font_size 8)))
-		(text "fcos_o[15..0]" (rect 190 77 253 91)(font "Arial" (font_size 8)))
+		(text "fcos_o[15..0]" (rect 190 77 265 91)(font "Arial" (font_size 8)))
 		(line (pt 256 88)(pt 176 88)(line_width 3))
 	)
 	(port
 		(pt 256 104)
 		(output)
 		(text "out_valid" (rect 0 0 50 14)(font "Arial" (font_size 8)))
-		(text "out_valid" (rect 210 93 252 107)(font "Arial" (font_size 8)))
+		(text "out_valid" (rect 210 93 260 107)(font "Arial" (font_size 8)))
 		(line (pt 256 104)(pt 176 104))
 	)
 	(drawing
@@ -2052,14 +2052,14 @@ refer to the applicable agreement for further details.
 		(pt 216 32)
 		(output)
 		(text "filter_out[31..0]" (rect 0 0 75 12)(font "Arial" ))
-		(text "filter_out[31..0]" (rect 132 27 195 39)(font "Arial" ))
+		(text "filter_out[31..0]" (rect 132 27 207 39)(font "Arial" ))
 		(line (pt 216 32)(pt 200 32)(line_width 3))
 	)
 	(port
 		(pt 216 48)
 		(output)
 		(text "ce_out" (rect 0 0 33 12)(font "Arial" ))
-		(text "ce_out" (rect 168 43 195 55)(font "Arial" ))
+		(text "ce_out" (rect 168 43 201 55)(font "Arial" ))
 		(line (pt 216 48)(pt 200 48))
 	)
 	(drawing
@@ -2102,14 +2102,14 @@ refer to the applicable agreement for further details.
 		(pt 216 32)
 		(output)
 		(text "filter_out[31..0]" (rect 0 0 75 12)(font "Arial" ))
-		(text "filter_out[31..0]" (rect 132 27 195 39)(font "Arial" ))
+		(text "filter_out[31..0]" (rect 132 27 207 39)(font "Arial" ))
 		(line (pt 216 32)(pt 200 32)(line_width 3))
 	)
 	(port
 		(pt 216 48)
 		(output)
 		(text "ce_out" (rect 0 0 33 12)(font "Arial" ))
-		(text "ce_out" (rect 168 43 195 55)(font "Arial" ))
+		(text "ce_out" (rect 168 43 201 55)(font "Arial" ))
 		(line (pt 216 48)(pt 200 48))
 	)
 	(drawing
@@ -2152,14 +2152,14 @@ refer to the applicable agreement for further details.
 		(pt 208 32)
 		(output)
 		(text "filter_out[15..0]" (rect 0 0 75 12)(font "Arial" ))
-		(text "filter_out[15..0]" (rect 124 27 187 39)(font "Arial" ))
+		(text "filter_out[15..0]" (rect 124 27 199 39)(font "Arial" ))
 		(line (pt 208 32)(pt 192 32)(line_width 3))
 	)
 	(port
 		(pt 208 48)
 		(output)
 		(text "ce_out" (rect 0 0 33 12)(font "Arial" ))
-		(text "ce_out" (rect 160 43 187 55)(font "Arial" ))
+		(text "ce_out" (rect 160 43 193 55)(font "Arial" ))
 		(line (pt 208 48)(pt 192 48))
 	)
 	(drawing
@@ -2202,14 +2202,14 @@ refer to the applicable agreement for further details.
 		(pt 208 32)
 		(output)
 		(text "filter_out[15..0]" (rect 0 0 75 12)(font "Arial" ))
-		(text "filter_out[15..0]" (rect 124 27 187 39)(font "Arial" ))
+		(text "filter_out[15..0]" (rect 124 27 199 39)(font "Arial" ))
 		(line (pt 208 32)(pt 192 32)(line_width 3))
 	)
 	(port
 		(pt 208 48)
 		(output)
 		(text "ce_out" (rect 0 0 33 12)(font "Arial" ))
-		(text "ce_out" (rect 160 43 187 55)(font "Arial" ))
+		(text "ce_out" (rect 160 43 193 55)(font "Arial" ))
 		(line (pt 208 48)(pt 192 48))
 	)
 	(drawing
@@ -2324,14 +2324,14 @@ refer to the applicable agreement for further details.
 		(pt 208 32)
 		(output)
 		(text "filter_out[13..0]" (rect 0 0 75 12)(font "Arial" ))
-		(text "filter_out[13..0]" (rect 124 27 187 39)(font "Arial" ))
+		(text "filter_out[13..0]" (rect 124 27 199 39)(font "Arial" ))
 		(line (pt 208 32)(pt 192 32)(line_width 3))
 	)
 	(port
 		(pt 208 48)
 		(output)
 		(text "ce_out" (rect 0 0 33 12)(font "Arial" ))
-		(text "ce_out" (rect 160 43 187 55)(font "Arial" ))
+		(text "ce_out" (rect 160 43 193 55)(font "Arial" ))
 		(line (pt 208 48)(pt 192 48))
 	)
 	(drawing
@@ -2374,114 +2374,14 @@ refer to the applicable agreement for further details.
 		(pt 208 32)
 		(output)
 		(text "filter_out[13..0]" (rect 0 0 75 12)(font "Arial" ))
-		(text "filter_out[13..0]" (rect 124 27 187 39)(font "Arial" ))
+		(text "filter_out[13..0]" (rect 124 27 199 39)(font "Arial" ))
 		(line (pt 208 32)(pt 192 32)(line_width 3))
 	)
 	(port
 		(pt 208 48)
 		(output)
 		(text "ce_out" (rect 0 0 33 12)(font "Arial" ))
-		(text "ce_out" (rect 160 43 187 55)(font "Arial" ))
-		(line (pt 208 48)(pt 192 48))
-	)
-	(drawing
-		(rectangle (rect 16 16 192 96))
-	)
-)
-(symbol
-	(rect 2616 256 2824 368)
-	(text "tx_ciccomp" (rect 5 0 61 12)(font "Arial" ))
-	(text "TX_CICCOMP_Q" (rect 8 96 91 108)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "clk" (rect 0 0 14 12)(font "Arial" ))
-		(text "clk" (rect 21 27 35 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "clk_enable" (rect 0 0 51 12)(font "Arial" ))
-		(text "clk_enable" (rect 21 43 72 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48))
-	)
-	(port
-		(pt 0 64)
-		(input)
-		(text "reset" (rect 0 0 24 12)(font "Arial" ))
-		(text "reset" (rect 21 59 45 71)(font "Arial" ))
-		(line (pt 0 64)(pt 16 64))
-	)
-	(port
-		(pt 0 80)
-		(input)
-		(text "filter_in[15..0]" (rect 0 0 68 12)(font "Arial" ))
-		(text "filter_in[15..0]" (rect 21 75 89 87)(font "Arial" ))
-		(line (pt 0 80)(pt 16 80)(line_width 3))
-	)
-	(port
-		(pt 208 32)
-		(output)
-		(text "filter_out[15..0]" (rect 0 0 75 12)(font "Arial" ))
-		(text "filter_out[15..0]" (rect 124 27 187 39)(font "Arial" ))
-		(line (pt 208 32)(pt 192 32)(line_width 3))
-	)
-	(port
-		(pt 208 48)
-		(output)
-		(text "ce_out" (rect 0 0 33 12)(font "Arial" ))
-		(text "ce_out" (rect 160 43 187 55)(font "Arial" ))
-		(line (pt 208 48)(pt 192 48))
-	)
-	(drawing
-		(rectangle (rect 16 16 192 96))
-	)
-)
-(symbol
-	(rect 2616 80 2824 192)
-	(text "tx_ciccomp" (rect 5 0 61 12)(font "Arial" ))
-	(text "TX_CICCOMP_I" (rect 8 96 87 108)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "clk" (rect 0 0 14 12)(font "Arial" ))
-		(text "clk" (rect 21 27 35 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "clk_enable" (rect 0 0 51 12)(font "Arial" ))
-		(text "clk_enable" (rect 21 43 72 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48))
-	)
-	(port
-		(pt 0 64)
-		(input)
-		(text "reset" (rect 0 0 24 12)(font "Arial" ))
-		(text "reset" (rect 21 59 45 71)(font "Arial" ))
-		(line (pt 0 64)(pt 16 64))
-	)
-	(port
-		(pt 0 80)
-		(input)
-		(text "filter_in[15..0]" (rect 0 0 68 12)(font "Arial" ))
-		(text "filter_in[15..0]" (rect 21 75 89 87)(font "Arial" ))
-		(line (pt 0 80)(pt 16 80)(line_width 3))
-	)
-	(port
-		(pt 208 32)
-		(output)
-		(text "filter_out[15..0]" (rect 0 0 75 12)(font "Arial" ))
-		(text "filter_out[15..0]" (rect 124 27 187 39)(font "Arial" ))
-		(line (pt 208 32)(pt 192 32)(line_width 3))
-	)
-	(port
-		(pt 208 48)
-		(output)
-		(text "ce_out" (rect 0 0 33 12)(font "Arial" ))
-		(text "ce_out" (rect 160 43 187 55)(font "Arial" ))
+		(text "ce_out" (rect 160 43 193 55)(font "Arial" ))
 		(line (pt 208 48)(pt 192 48))
 	)
 	(drawing
@@ -2593,77 +2493,14 @@ refer to the applicable agreement for further details.
 	(pt 840 408)
 )
 (connector
-	(pt 2552 336)
-	(pt 2616 336)
-	(bus)
-)
-(connector
-	(pt 2552 160)
-	(pt 2616 160)
-	(bus)
-)
-(connector
-	(text "TX_N" (rect 2496 296 2521 313)(font "Intel Clear" ))
-	(pt 2616 320)
-	(pt 2504 320)
-)
-(connector
-	(text "TX_N" (rect 2496 120 2521 137)(font "Intel Clear" ))
-	(pt 2616 144)
-	(pt 2504 144)
-)
-(connector
-	(text "TX" (rect 2546 104 2558 121)(font "Intel Clear" ))
-	(pt 2616 128)
-	(pt 2536 128)
-)
-(connector
-	(text "TX" (rect 2530 280 2542 297)(font "Intel Clear" ))
-	(pt 2616 304)
-	(pt 2520 304)
-)
-(connector
-	(pt 2616 112)
-	(pt 2600 112)
-)
-(connector
-	(pt 2616 288)
-	(pt 2600 288)
-)
-(connector
-	(pt 2824 112)
-	(pt 2840 112)
-	(bus)
-)
-(connector
-	(pt 2824 288)
-	(pt 2840 288)
-	(bus)
-)
-(connector
-	(pt 2840 288)
-	(pt 2840 336)
-	(bus)
-)
-(connector
 	(text "TX_N" (rect 2866 304 2891 321)(font "Intel Clear" ))
 	(pt 2856 320)
 	(pt 2896 320)
 )
 (connector
-	(pt 2840 336)
-	(pt 2896 336)
-	(bus)
-)
-(connector
 	(text "TX_N" (rect 2866 128 2891 145)(font "Intel Clear" ))
 	(pt 2856 144)
 	(pt 2896 144)
-)
-(connector
-	(pt 2840 160)
-	(pt 2896 160)
-	(bus)
 )
 (connector
 	(text "TX" (rect 2874 104 2886 121)(font "Intel Clear" ))
@@ -2834,18 +2671,6 @@ refer to the applicable agreement for further details.
 	(pt 816 520)
 )
 (connector
-	(pt 2600 824)
-	(pt 1096 824)
-)
-(connector
-	(pt 2600 112)
-	(pt 2600 288)
-)
-(connector
-	(pt 2600 288)
-	(pt 2600 824)
-)
-(connector
 	(pt 456 584)
 	(pt 2056 584)
 	(bus)
@@ -2857,16 +2682,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 1984 16)
 	(pt 2072 16)
-)
-(connector
-	(pt 2552 336)
-	(pt 2552 272)
-	(bus)
-)
-(connector
-	(pt 2552 160)
-	(pt 2552 256)
-	(bus)
 )
 (connector
 	(pt 2056 584)
@@ -3112,11 +2927,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 2552 272)
 	(pt 1968 272)
-	(bus)
-)
-(connector
-	(pt 2552 256)
-	(pt 1968 256)
 	(bus)
 )
 (connector
@@ -3917,11 +3727,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 3104 112)
-	(pt 3184 112)
-	(bus)
-)
-(connector
 	(pt 3616 224)
 	(pt 3672 224)
 	(bus)
@@ -3929,11 +3734,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 4096 216)
 	(pt 4120 216)
-	(bus)
-)
-(connector
-	(pt 2840 160)
-	(pt 2840 112)
 	(bus)
 )
 (connector
@@ -3955,10 +3755,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 1096 640)
 	(pt 1096 688)
-)
-(connector
-	(pt 1096 688)
-	(pt 1096 824)
 )
 (connector
 	(text "RX_I_MIXOUT[31..0]" (rect 706 32 803 49)(font "Intel Clear" ))
@@ -4080,6 +3876,36 @@ refer to the applicable agreement for further details.
 	(pt -104 792)
 	(pt -56 792)
 )
+(connector
+	(pt 1968 256)
+	(pt 2552 256)
+	(bus)
+)
+(connector
+	(pt 2552 256)
+	(pt 2552 160)
+	(bus)
+)
+(connector
+	(pt 2552 160)
+	(pt 2896 160)
+	(bus)
+)
+(connector
+	(pt 2552 272)
+	(pt 2552 336)
+	(bus)
+)
+(connector
+	(pt 2552 336)
+	(pt 2896 336)
+	(bus)
+)
+(connector
+	(pt 3104 112)
+	(pt 3184 112)
+	(bus)
+)
 (junction (pt 376 120))
 (junction (pt 440 32))
 (junction (pt 472 504))
@@ -4088,7 +3914,6 @@ refer to the applicable agreement for further details.
 (junction (pt 816 392))
 (junction (pt 816 120))
 (junction (pt 840 176))
-(junction (pt 2600 288))
 (junction (pt 2888 288))
 (junction (pt 816 520))
 (junction (pt 2888 224))
@@ -4156,5 +3981,4 @@ refer to the applicable agreement for further details.
 (junction (pt -232 704))
 (junction (pt -184 736))
 (junction (pt -232 752))
-(junction (pt 1096 688))
 (junction (pt 2336 384))

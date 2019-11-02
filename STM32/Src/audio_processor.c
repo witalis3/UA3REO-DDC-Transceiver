@@ -222,7 +222,7 @@ void processTxAudio(void)
 	VFO* current_vfo = CurrentVFO();
 	
 	AUDIOPROC_samples++;
-	selected_rfpower_amplitude = TRX.RF_Power / 100.0f * MAX_TX_AMPLITUDE;
+	selected_rfpower_amplitude = TRX.RF_Power / 100.0f * TRX_MAX_TX_Amplitude;
 	uint8_t mode = TRX_getMode(current_vfo);
 
 	if (TRX.InputType_USB) //USB AUDIO
