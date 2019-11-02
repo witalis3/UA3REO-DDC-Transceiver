@@ -153,9 +153,17 @@ static void PERIPH_ENCODER2_Rotated(int direction) //энкодер поверн
 	{
 		VFO* vfo=CurrentVFO();
 		if (TRX.Fast)
-			TRX_setFrequency(TRX_getFrequency(vfo) + 500000 * direction, vfo);
+		{
+			TRX_setFrequency(TRX_getFrequency(vfo) + 100000 * direction, vfo);
+			if((TRX_getFrequency(vfo) % 100000) > 0)
+				TRX_setFrequency(TRX_getFrequency(vfo)/100000*100000, vfo);
+		}
 		else
+		{
 			TRX_setFrequency(TRX_getFrequency(vfo) + 25000 * direction, vfo);
+			if((TRX_getFrequency(vfo) % 25000) > 0)
+				TRX_setFrequency(TRX_getFrequency(vfo)/25000*25000, vfo);
+		}
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 }
