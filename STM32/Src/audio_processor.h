@@ -36,7 +36,8 @@ extern volatile uint8_t Processor_AudioBuffer_ReadyBuffer;
 extern volatile bool Processor_NeedRXBuffer;
 extern volatile bool Processor_NeedTXBuffer;
 extern volatile float32_t Processor_AVG_amplitude;
-extern volatile float32_t Processor_TX_MAX_amplitude;
+extern volatile float32_t Processor_TX_MAX_amplitude_IN;
+extern volatile float32_t Processor_TX_MAX_amplitude_OUT;
 extern volatile float32_t ALC_need_gain;
 extern volatile float32_t ALC_need_gain_new;
 extern float32_t FPGA_Audio_Buffer_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
@@ -44,5 +45,6 @@ extern float32_t FPGA_Audio_Buffer_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern volatile float32_t fm_sql_avg;
 extern volatile float32_t Processor_RX_Audio_Samples_MAX_value;
 extern volatile float32_t Processor_RX_Audio_Samples_MIN_value;
+extern volatile float32_t Processor_selected_RFpower_amplitude;
 
 #endif

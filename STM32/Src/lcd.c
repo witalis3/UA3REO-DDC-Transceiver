@@ -153,9 +153,9 @@ static void LCD_displayStatusInfoGUI(void) { //вывод RX/TX и с-метра
 			LCDDriver_printTextFont("TX", 10, 114, COLOR_RED, COLOR_BLACK, FreeSans9pt7b);
 		
 		LCDDriver_drawRectXY(40, 100, 40 + PMETER_WIDTH, 115, COLOR_RED); //рамка SWR-метра
-		LCDDriver_printText("PWR:", 45, 120, COLOR_GREEN, COLOR_BLACK, 1);
-		LCDDriver_printText("SWR:", 45+50, 120, COLOR_GREEN, COLOR_BLACK, 1);
-		LCDDriver_printText("REF:", 45+50*2, 120, COLOR_GREEN, COLOR_BLACK, 1);
+		LCDDriver_printText("SWR:", 45, 120, COLOR_GREEN, COLOR_BLACK, 1);
+		LCDDriver_printText("FWD:", 45+55, 120, COLOR_GREEN, COLOR_BLACK, 1);
+		LCDDriver_printText("REF:", 45+55*2, 120, COLOR_GREEN, COLOR_BLACK, 1);
 		
 		LCDDriver_drawRectXY(40 + PMETER_WIDTH + 10, 100, 40 + PMETER_WIDTH + 10 + AMETER_WIDTH, 115, COLOR_RED); //рамка ALC-метра
 		LCDDriver_printText("ALC:", 40 + PMETER_WIDTH + 15, 120, COLOR_GREEN, COLOR_BLACK, 1);
@@ -246,6 +246,30 @@ static void LCD_displayStatusInfoBar(void) { //S-метра и прочей ин
 		sprintf(ctmp, "%d", TRX_RX_dBm);
 		LCDDriver_Fill_RectWH(41 + width + 5, 105, 23, 8, COLOR_BLACK);
 		LCDDriver_printText(ctmp, 41 + width + 5, 105, COLOR_GREEN, COLOR_BLACK, 1);
+	}
+	else
+	{
+		//SWR
+		LCDDriver_Fill_RectWH(45+23, 120, 25, 8, COLOR_BLACK);
+		//LCDDriver_printText("2.5", 45+23, 120, COLOR_RED, COLOR_BLACK, 1);
+		
+		//FWD
+		LCDDriver_Fill_RectWH(45+55+23, 120, 25, 8, COLOR_BLACK);
+		//LCDDriver_printText("7.0W", 45+55+23, 120, COLOR_RED, COLOR_BLACK, 1);
+		
+		//REF
+		LCDDriver_Fill_RectWH(45+55*2+23, 120, 25, 8, COLOR_BLACK);
+		//LCDDriver_printText("0.5W", 45+55*2+23, 120, COLOR_RED, COLOR_BLACK, 1);
+		
+		//ALC
+		LCDDriver_Fill_RectWH(40 + PMETER_WIDTH + 40, 120, 25, 8, COLOR_BLACK);
+		uint8_t alc_level = (uint8_t)(TRX_GetALC()*100);
+		sprintf(ctmp, "%d%%", alc_level);
+		LCDDriver_printText(ctmp, 40 + PMETER_WIDTH + 40, 120, COLOR_RED, COLOR_BLACK, 1);
+		uint8_t alc_level_width = (AMETER_WIDTH - 2) * alc_level / 100;
+		LCDDriver_Fill_RectWH(40 + PMETER_WIDTH + 11, 101, alc_level_width, 13, COLOR_GREEN);
+		if(alc_level<100)
+			LCDDriver_Fill_RectWH(40 + PMETER_WIDTH + 11 + alc_level_width, 101, AMETER_WIDTH - 2 - alc_level_width, 13, COLOR_BLUE);
 	}
 	
 	LCDDriver_Fill_RectWH(270, 20, 50, 8, COLOR_BLACK);

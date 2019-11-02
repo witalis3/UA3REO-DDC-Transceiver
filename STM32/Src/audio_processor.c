@@ -28,16 +28,17 @@ volatile bool Processor_NeedTXBuffer = false;
 float32_t FPGA_Audio_Buffer_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = { 0 };
 float32_t FPGA_Audio_Buffer_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = { 0 };
 volatile float32_t Processor_AVG_amplitude = 0.0f; //средняя амплитуда семплов при прёме
-volatile float32_t Processor_TX_MAX_amplitude = 0.0f; //средняя амплитуда семплов при передаче
+volatile float32_t Processor_TX_MAX_amplitude_IN = 0.0f; //средняя амплитуда семплов при передаче (до процессора)
+volatile float32_t Processor_TX_MAX_amplitude_OUT = 0.0f; //средняя амплитуда семплов при передаче (после процессора)
 volatile float32_t Processor_RX_Audio_Samples_MAX_value = 0.0f; //максимальное значение семплов
 volatile float32_t Processor_RX_Audio_Samples_MIN_value = 0.0f; //минимальное значение семплов
 volatile float32_t ALC_need_gain = 1.0f;
 volatile float32_t fm_sql_avg = 0.0f;
+volatile float32_t Processor_selected_RFpower_amplitude = 0.0f;
 
 static const uint16_t numBlocks = FPGA_AUDIO_BUFFER_HALF_SIZE / APROCESSOR_BLOCK_SIZE;
 static float32_t ampl_val_i = 0.0f;
 static float32_t ampl_val_q = 0.0f;
-static float32_t selected_rfpower_amplitude = 0.0f;
 static float32_t ALC_need_gain_target = 1.0f;
 static uint16_t block = 0;
 
@@ -222,7 +223,7 @@ void processTxAudio(void)
 	VFO* current_vfo = CurrentVFO();
 	
 	AUDIOPROC_samples++;
-	selected_rfpower_amplitude = TRX.RF_Power / 100.0f * TRX_MAX_TX_Amplitude;
+	Processor_selected_RFpower_amplitude = TRX.RF_Power / 100.0f * TRX_MAX_TX_Amplitude;
 	uint8_t mode = TRX_getMode(current_vfo);
 
 	if (TRX.InputType_USB) //USB AUDIO
@@ -242,8 +243,8 @@ void processTxAudio(void)
 	{
 		if (TRX_Tune)
 		{
-			FPGA_Audio_Buffer_Q_tmp[i] = selected_rfpower_amplitude / 100 * TUNE_POWER;
-			FPGA_Audio_Buffer_I_tmp[i] = selected_rfpower_amplitude / 100 * TUNE_POWER;
+			FPGA_Audio_Buffer_Q_tmp[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
+			FPGA_Audio_Buffer_I_tmp[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
 		}
 		else
 		{
@@ -271,18 +272,18 @@ void processTxAudio(void)
 		memcpy(&FPGA_Audio_Buffer_Q_tmp[0], &FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE * 4); //double left and right channel
 
 		//RF PowerControl (Audio Level Control) Compressor
-		Processor_TX_MAX_amplitude = 0;
+		Processor_TX_MAX_amplitude_IN = 0;
 		//ищем максимум в амплитуде
 		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			arm_abs_f32(&FPGA_Audio_Buffer_I_tmp[i], &ampl_val_i, 1);
 			arm_abs_f32(&FPGA_Audio_Buffer_Q_tmp[i], &ampl_val_q, 1);
-			if (ampl_val_i > Processor_TX_MAX_amplitude) Processor_TX_MAX_amplitude = ampl_val_i;
-			if (ampl_val_q > Processor_TX_MAX_amplitude) Processor_TX_MAX_amplitude = ampl_val_q;
+			if (ampl_val_i > Processor_TX_MAX_amplitude_IN) Processor_TX_MAX_amplitude_IN = ampl_val_i;
+			if (ampl_val_q > Processor_TX_MAX_amplitude_IN) Processor_TX_MAX_amplitude_IN = ampl_val_q;
 		}
-		if (Processor_TX_MAX_amplitude == 0.0f) Processor_TX_MAX_amplitude = 0.001f;
+		if (Processor_TX_MAX_amplitude_IN == 0.0f) Processor_TX_MAX_amplitude_IN = 0.001f;
 		//расчитываем целевое значение усиления
-		ALC_need_gain_target = selected_rfpower_amplitude / Processor_TX_MAX_amplitude;
+		ALC_need_gain_target = Processor_selected_RFpower_amplitude / Processor_TX_MAX_amplitude_IN;
 		//двигаем усиление на шаг
 		if (ALC_need_gain_target > ALC_need_gain)
 			ALC_need_gain += (ALC_need_gain_target - ALC_need_gain) / TX_AGC_STEPSIZE;
@@ -293,11 +294,11 @@ void processTxAudio(void)
 			ALC_need_gain = ALC_need_gain_target;
 		if (ALC_need_gain < 0.0f) ALC_need_gain = 0.0f;
 		//перегрузка (клиппинг), резко снижаем усиление
-		if ((ALC_need_gain*Processor_TX_MAX_amplitude) > (selected_rfpower_amplitude*1.1f))
+		if ((ALC_need_gain*Processor_TX_MAX_amplitude_IN) > (Processor_selected_RFpower_amplitude*1.1f))
 			ALC_need_gain = ALC_need_gain_target;
 		if (ALC_need_gain > TX_AGC_MAXGAIN) ALC_need_gain = TX_AGC_MAXGAIN;
 		//шумовой порог
-		if (Processor_TX_MAX_amplitude < TX_AGC_NOISEGATE) ALC_need_gain = 0.0f;
+		if (Processor_TX_MAX_amplitude_IN < TX_AGC_NOISEGATE) ALC_need_gain = 0.0f;
 		//оключаем усиление для некоторых видов мод
 		if ((ALC_need_gain > 1.0f) && (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_IQ || mode == TRX_MODE_LOOPBACK)) ALC_need_gain = 1.0f;
 		if (TRX_Tune) ALC_need_gain = 1.0f;
@@ -309,11 +310,11 @@ void processTxAudio(void)
 		{
 		case TRX_MODE_CW_L:
 		case TRX_MODE_CW_U:
-			if (!TRX_key_serial && !TRX_ptt_hard && !TRX_key_hard) selected_rfpower_amplitude = 0;
+			if (!TRX_key_serial && !TRX_ptt_hard && !TRX_key_hard) Processor_selected_RFpower_amplitude = 0;
 			for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				FPGA_Audio_Buffer_Q_tmp[i] = selected_rfpower_amplitude;
-				FPGA_Audio_Buffer_I_tmp[i] = selected_rfpower_amplitude;
+				FPGA_Audio_Buffer_Q_tmp[i] = Processor_selected_RFpower_amplitude;
+				FPGA_Audio_Buffer_I_tmp[i] = Processor_selected_RFpower_amplitude;
 			}
 			break;
 		case TRX_MODE_USB:
@@ -348,8 +349,8 @@ void processTxAudio(void)
 			}
 			for (size_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				float32_t i_am = ((FPGA_Audio_Buffer_I_tmp[i] - FPGA_Audio_Buffer_Q_tmp[i]) + (selected_rfpower_amplitude)) / 2.0f;
-				float32_t q_am = ((FPGA_Audio_Buffer_Q_tmp[i] - FPGA_Audio_Buffer_I_tmp[i]) - (selected_rfpower_amplitude)) / 2.0f;
+				float32_t i_am = ((FPGA_Audio_Buffer_I_tmp[i] - FPGA_Audio_Buffer_Q_tmp[i]) + (Processor_selected_RFpower_amplitude)) / 2.0f;
+				float32_t q_am = ((FPGA_Audio_Buffer_Q_tmp[i] - FPGA_Audio_Buffer_I_tmp[i]) - (Processor_selected_RFpower_amplitude)) / 2.0f;
 				FPGA_Audio_Buffer_I_tmp[i] = i_am;
 				FPGA_Audio_Buffer_Q_tmp[i] = q_am;
 			}
@@ -431,6 +432,17 @@ void processTxAudio(void)
 			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream1, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
 	}
+	
+	Processor_TX_MAX_amplitude_OUT = 0;
+	//ищем максимум в амплитуде
+	for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+	{
+		arm_abs_f32(&FPGA_Audio_Buffer_I_tmp[i], &ampl_val_i, 1);
+		arm_abs_f32(&FPGA_Audio_Buffer_Q_tmp[i], &ampl_val_q, 1);
+		if (ampl_val_i > Processor_TX_MAX_amplitude_OUT) Processor_TX_MAX_amplitude_OUT = ampl_val_i;
+		if (ampl_val_q > Processor_TX_MAX_amplitude_OUT) Processor_TX_MAX_amplitude_OUT = ampl_val_q;
+	}
+	
 	Processor_NeedTXBuffer = false;
 	Processor_NeedRXBuffer = false;
 }
@@ -614,7 +626,7 @@ static void ModulateFM(void)
 		fm_mod_accum += hpf_prev_b;   // save differentiated data in audio buffer // change frequency using scaled audio
 		fm_mod_accum %= modulation;             // limit range
 		sin_data = (fm_mod_accum / (float32_t)modulation)*PI*modulation_index;
-		FPGA_Audio_Buffer_I_tmp[i] = selected_rfpower_amplitude * arm_sin_f32(sin_data);
-		FPGA_Audio_Buffer_Q_tmp[i] = selected_rfpower_amplitude * arm_cos_f32(sin_data);
+		FPGA_Audio_Buffer_I_tmp[i] = Processor_selected_RFpower_amplitude * arm_sin_f32(sin_data);
+		FPGA_Audio_Buffer_Q_tmp[i] = Processor_selected_RFpower_amplitude * arm_cos_f32(sin_data);
 	}
 }

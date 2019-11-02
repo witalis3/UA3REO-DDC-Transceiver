@@ -339,3 +339,11 @@ void TRX_DBMCalculate(void)
 	Processor_RX_Audio_Samples_MAX_value = 0;
 	Processor_RX_Audio_Samples_MIN_value = 0;
 }
+
+float32_t TRX_GetALC(void)
+{
+	float32_t res = Processor_TX_MAX_amplitude_OUT/Processor_selected_RFpower_amplitude;
+	if (res>0.99f && res<1.0f)
+		res = 1.0f;
+	return res;
+}

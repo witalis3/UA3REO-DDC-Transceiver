@@ -1,5 +1,5 @@
 ----TODO Ideas SOFT----
-Шкала SWR/ALC/PWR
+Шкала SWR/PWR
 Исправить хлопанье AGC в CW без сигналов
 RTTY декодер
 Заставка
