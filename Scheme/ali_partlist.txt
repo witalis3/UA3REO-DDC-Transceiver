@@ -13,7 +13,7 @@ DF2-DC12V https://www.aliexpress.com/item/DF2-DC12V-12V-DF2-8-pin-12VDC/32854815
 LTC6400IUD-20 https://ru.aliexpress.com/item/1000004749151.html
 OPA2674 https://www.aliexpress.com/item/5PCS-OPA2674I-14DR-OPA2674I-OPA2674-SOP-14/32863064043.html
 ST1S10 https://www.aliexpress.com/item/5pcs-ST1S10-ST1S10PHR-sop-8-Chipset-New-original/32895297431.html
-49.152Mhz Generator https://www.aliexpress.com/item/10PCS-5070-4P-OSC-3-3V-5V-6-000MHZ-6M-6MHZ-6-000M-6-000-7/32878185662.html
+122.88Mhz Generator https://ru.aliexpress.com/item/32842308508.html
 BAP64-03 https://www.aliexpress.com/item/20pcs-lot-BAP64-03-printing-A3-SOD-323-175V-0-1A-SMD-diode-IC-new-original/32963212006.html
 SMD Chip inductor https://www.aliexpress.com/store/group/SMD-Chip-inductor/319544_512811919.html
 IM06 https://ru.aliexpress.com/item/32821506940.html

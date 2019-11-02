@@ -43,7 +43,7 @@ input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
 
-output reg unsigned [21:0] freq_out=620407;
+output reg unsigned [21:0] freq_out=242347;
 output reg preamp_enable=0;
 output reg rx=1;
 output reg tx=0;

@@ -1,7 +1,7 @@
 set_time_format -unit ns -decimal_places 3
 
-create_clock -name "clock_crystal" -period 49.152MHz [get_ports {clk_sys}]
-create_clock -name "clock_adc" -period 49.152MHz [get_ports {ADC_CLK}]
+create_clock -name "clock_crystal" -period 122.880MHz [get_ports {clk_sys}]
+create_clock -name "clock_adc" -period 122.880MHz [get_ports {ADC_CLK}]
 
 set_clock_groups -asynchronous -group { clock_adc clock_crystal }
 
