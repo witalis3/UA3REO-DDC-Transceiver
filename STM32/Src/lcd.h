@@ -8,7 +8,9 @@
 #define COLOR_BUTTON_TEXT COLOR_DGREEN
 #define COLOR_BUTTON_INACTIVE_TEXT rgb888torgb565(150, 150, 150)
 
-#define METER_WIDTH 220
+#define SMETER_WIDTH 220
+#define PMETER_WIDTH 170
+#define AMETER_WIDTH 90
 
 typedef struct {
 	bool Background;

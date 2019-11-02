@@ -142,51 +142,63 @@ static void LCD_displayStatusInfoGUI(void) { //вывод RX/TX и с-метра
 		return;
 	}
 	LCD_busy = true;
+	
+	LCDDriver_Fill_RectWH(0, 100, LCD_WIDTH, 130, COLOR_BLACK);
+	
 	if (TRX_on_TX())
 	{
-		LCDDriver_Fill_RectWH(10, 98, 25, 20, COLOR_BLACK);
 		if(TRX_Tune)
 			LCDDriver_printTextFont("TU", 10, 114, COLOR_RED, COLOR_BLACK, FreeSans9pt7b);
 		else
 			LCDDriver_printTextFont("TX", 10, 114, COLOR_RED, COLOR_BLACK, FreeSans9pt7b);
+		
+		LCDDriver_drawRectXY(40, 100, 40 + PMETER_WIDTH, 115, COLOR_RED); //рамка SWR-метра
+		LCDDriver_printText("PWR:", 45, 120, COLOR_GREEN, COLOR_BLACK, 1);
+		LCDDriver_printText("SWR:", 45+50, 120, COLOR_GREEN, COLOR_BLACK, 1);
+		LCDDriver_printText("REF:", 45+50*2, 120, COLOR_GREEN, COLOR_BLACK, 1);
+		
+		LCDDriver_drawRectXY(40 + PMETER_WIDTH + 10, 100, 40 + PMETER_WIDTH + 10 + AMETER_WIDTH, 115, COLOR_RED); //рамка ALC-метра
+		LCDDriver_printText("ALC:", 40 + PMETER_WIDTH + 15, 120, COLOR_GREEN, COLOR_BLACK, 1);
 	}
 	else
+	{
 		LCDDriver_printTextFont("RX", 10, 114, COLOR_GREEN, COLOR_BLACK, FreeSans9pt7b);
+		
+		LCDDriver_drawRectXY(40, 100, 40 + SMETER_WIDTH, 115, COLOR_RED); //рамка S-метра
 
-	LCDDriver_drawRectXY(40, 100, 40 + METER_WIDTH, 115, COLOR_RED);
+		LCDDriver_printTextFont(".", 78, 90, COLOR_WHITE, COLOR_BLACK, FreeSans24pt7b); //разделители частоты
+		LCDDriver_printTextFont(".", 169, 90, COLOR_WHITE, COLOR_BLACK, FreeSans24pt7b);
 
-	LCDDriver_printTextFont(".", 78, 90, COLOR_WHITE, COLOR_BLACK, FreeSans24pt7b); //разделители частоты
-	LCDDriver_printTextFont(".", 169, 90, COLOR_WHITE, COLOR_BLACK, FreeSans24pt7b);
+		LCDDriver_printText("dBm", SMETER_WIDTH + 69, 105, COLOR_GREEN, COLOR_BLACK, 1);
 
-	LCDDriver_printText("dBm", METER_WIDTH + 69, 105, COLOR_GREEN, COLOR_BLACK, 1);
+		uint16_t step = SMETER_WIDTH / 8;
+		LCDDriver_printText("1", 50 + step * 0, 120, COLOR_RED, COLOR_BLACK, 1);
+		LCDDriver_printText("3", 50 + step * 1, 120, COLOR_RED, COLOR_BLACK, 1);
+		LCDDriver_printText("5", 50 + step * 2, 120, COLOR_RED, COLOR_BLACK, 1);
+		LCDDriver_printText("7", 50 + step * 3, 120, COLOR_RED, COLOR_BLACK, 1);
+		LCDDriver_printText("9", 50 + step * 4, 120, COLOR_RED, COLOR_BLACK, 1);
+		LCDDriver_printText("+20", 50 + step * 5, 120, COLOR_RED, COLOR_BLACK, 1);
+		LCDDriver_printText("+40", 50 + step * 6, 120, COLOR_RED, COLOR_BLACK, 1);
+		LCDDriver_printText("+60", 50 + step * 7, 120, COLOR_RED, COLOR_BLACK, 1);
 
-	uint16_t step = METER_WIDTH / 8;
-	LCDDriver_printText("1", 50 + step * 0, 120, COLOR_RED, COLOR_BLACK, 1);
-	LCDDriver_printText("3", 50 + step * 1, 120, COLOR_RED, COLOR_BLACK, 1);
-	LCDDriver_printText("5", 50 + step * 2, 120, COLOR_RED, COLOR_BLACK, 1);
-	LCDDriver_printText("7", 50 + step * 3, 120, COLOR_RED, COLOR_BLACK, 1);
-	LCDDriver_printText("9", 50 + step * 4, 120, COLOR_RED, COLOR_BLACK, 1);
-	LCDDriver_printText("+20", 50 + step * 5, 120, COLOR_RED, COLOR_BLACK, 1);
-	LCDDriver_printText("+40", 50 + step * 6, 120, COLOR_RED, COLOR_BLACK, 1);
-	LCDDriver_printText("+60", 50 + step * 7, 120, COLOR_RED, COLOR_BLACK, 1);
-
-	if (TRX.NotchFilter)
-	{
-		char buff[10] = "";
-		sprintf(buff, "%dhz", TRX.NotchFC);
-		addSymbols(buff, buff, 7, " ", false);
-		LCDDriver_printText(buff, METER_WIDTH + 46, 120, COLOR_BLUE, COLOR_BLACK, 1);
+		if (TRX.NotchFilter)
+		{
+			char buff[10] = "";
+			sprintf(buff, "%dhz", TRX.NotchFC);
+			addSymbols(buff, buff, 7, " ", false);
+			LCDDriver_printText(buff, SMETER_WIDTH + 46, 120, COLOR_BLUE, COLOR_BLACK, 1);
+		}
+		else
+		{
+			LCDDriver_Fill_RectWH(SMETER_WIDTH + 46, 120, 44, 8, COLOR_BLACK);
+			if (TRX.FFT_Zoom == 1) LCDDriver_printText("48kHz", SMETER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
+			if (TRX.FFT_Zoom == 2) LCDDriver_printText("24kHz", SMETER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
+			if (TRX.FFT_Zoom == 4) LCDDriver_printText("12kHz", SMETER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
+			if (TRX.FFT_Zoom == 8) LCDDriver_printText(" 6kHz", SMETER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
+			if (TRX.FFT_Zoom == 16) LCDDriver_printText(" 3kHz", SMETER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
+		}
 	}
-	else
-	{
-		LCDDriver_Fill_RectWH(METER_WIDTH + 46, 120, 44, 8, COLOR_BLACK);
-		if (TRX.FFT_Zoom == 1) LCDDriver_printText("48kHz", METER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
-		if (TRX.FFT_Zoom == 2) LCDDriver_printText("24kHz", METER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
-		if (TRX.FFT_Zoom == 4) LCDDriver_printText("12kHz", METER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
-		if (TRX.FFT_Zoom == 8) LCDDriver_printText(" 6kHz", METER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
-		if (TRX.FFT_Zoom == 16) LCDDriver_printText(" 3kHz", METER_WIDTH + 46, 120, COLOR_WHITE, COLOR_BLACK, 1);
-	}
-
+	
 	//Redraw CW decoder
 	if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
 	{
@@ -207,32 +219,35 @@ static void LCD_displayStatusInfoBar(void) { //S-метра и прочей ин
 	}
 	LCD_busy = true;
 	char ctmp[50];
-	const int width = METER_WIDTH - 2;
+	const int width = SMETER_WIDTH - 2;
 
-	float32_t TRX_s_meter = (127.0f + TRX_RX_dBm) / 6; //127dbm - S0, 6dBm - 1S div
-	if (TRX_getFrequency(CurrentVFO()) >= 144000000)
-		TRX_s_meter = (127.0f + TRX_RX_dBm) / 6; //147dbm - S0 для частот выше 144мгц
-	if (TRX_s_meter <= 9.0f)
-		TRX_s_meter = TRX_s_meter * ((width / 9.0f)*5.0f / 9.0f); //первые 9 баллов по 6 дб, первые 5 из 8 рисок (9 участков)
-	else
-		TRX_s_meter = ((width / 9.0f)*5.0f) + (TRX_s_meter - 9.0f)*((width / 9.0f)*3.0f / 10.0f); //остальные 3 балла по 10 дб
-	if (TRX_s_meter > width) TRX_s_meter = width;
-	if (TRX_s_meter < 0.0f) TRX_s_meter = 0.0f;
-
-	int s_width = TRX_s_meter;
-	if (LCD_last_s_meter > s_width) s_width = LCD_last_s_meter - ((LCD_last_s_meter - s_width) / 4); //сглаживаем движение с-метра
-	else if (LCD_last_s_meter < s_width) s_width = s_width - ((s_width - LCD_last_s_meter) / 2);
-	if (LCD_last_s_meter != s_width)
+	if (!TRX_on_TX())
 	{
-		LCDDriver_Fill_RectWH(41 + s_width, 101, width - s_width, 13, COLOR_BLACK);
-		LCDDriver_Fill_RectWH(41, 101, s_width, 13, COLOR_WHITE);
-		LCD_last_s_meter = s_width;
+		float32_t TRX_s_meter = (127.0f + TRX_RX_dBm) / 6; //127dbm - S0, 6dBm - 1S div
+		if (TRX_getFrequency(CurrentVFO()) >= 144000000)
+			TRX_s_meter = (127.0f + TRX_RX_dBm) / 6; //147dbm - S0 для частот выше 144мгц
+		if (TRX_s_meter <= 9.0f)
+			TRX_s_meter = TRX_s_meter * ((width / 9.0f)*5.0f / 9.0f); //первые 9 баллов по 6 дб, первые 5 из 8 рисок (9 участков)
+		else
+			TRX_s_meter = ((width / 9.0f)*5.0f) + (TRX_s_meter - 9.0f)*((width / 9.0f)*3.0f / 10.0f); //остальные 3 балла по 10 дб
+		if (TRX_s_meter > width) TRX_s_meter = width;
+		if (TRX_s_meter < 0.0f) TRX_s_meter = 0.0f;
+
+		int s_width = TRX_s_meter;
+		if (LCD_last_s_meter > s_width) s_width = LCD_last_s_meter - ((LCD_last_s_meter - s_width) / 4); //сглаживаем движение с-метра
+		else if (LCD_last_s_meter < s_width) s_width = s_width - ((s_width - LCD_last_s_meter) / 2);
+		if (LCD_last_s_meter != s_width)
+		{
+			LCDDriver_Fill_RectWH(41 + s_width, 101, width - s_width, 13, COLOR_BLACK);
+			LCDDriver_Fill_RectWH(41, 101, s_width, 13, COLOR_WHITE);
+			LCD_last_s_meter = s_width;
+		}
+
+		sprintf(ctmp, "%d", TRX_RX_dBm);
+		LCDDriver_Fill_RectWH(41 + width + 5, 105, 23, 8, COLOR_BLACK);
+		LCDDriver_printText(ctmp, 41 + width + 5, 105, COLOR_GREEN, COLOR_BLACK, 1);
 	}
-
-	sprintf(ctmp, "%d", TRX_RX_dBm);
-	LCDDriver_Fill_RectWH(41 + width + 5, 105, 23, 8, COLOR_BLACK);
-	LCDDriver_printText(ctmp, 41 + width + 5, 105, COLOR_GREEN, COLOR_BLACK, 1);
-
+	
 	LCDDriver_Fill_RectWH(270, 20, 50, 8, COLOR_BLACK);
 	if (TRX_ADC_OTR || TRX_DAC_OTR || TRX_ADC_MAXAMPLITUDE > (powf(2,ADC_BITS)*0.49) || TRX_ADC_MINAMPLITUDE < -(powf(2,ADC_BITS)*0.49))
 		LCDDriver_printText("OVR", 270, 20, COLOR_RED, COLOR_BLACK, 1);
