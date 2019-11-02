@@ -15,7 +15,6 @@ extern void TRX_key_change(void);
 extern bool TRX_on_TX(void);
 extern void TRX_DoAutoGain(void);
 extern void TRX_Restart_Mode(void);
-extern void TRX_ProcessSWRMeter(void);
 extern void TRX_DBMCalculate(void);
 
 volatile extern bool TRX_ptt_hard;

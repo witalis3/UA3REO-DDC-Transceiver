@@ -849,6 +849,7 @@ static void HAL_FSMC_MspInit(void){
     return;
   }
   FSMC_Initialized = 1;
+
   /* Peripheral clock enable */
   __HAL_RCC_FSMC_CLK_ENABLE();
   

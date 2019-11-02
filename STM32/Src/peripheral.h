@@ -49,6 +49,7 @@ extern void PERIPH_ENCODER2_checkRotate(void);
 extern void PERIPH_ENCODER2_checkSwitch(void);
 extern void PERIPH_RF_UNIT_UpdateState(bool clean);
 extern void PERIPH_ProcessFrontPanel(void);
+extern void PERIPH_ProcessSWRMeter(void);
 extern bool PERIPH_SPI_Transmit(uint8_t* out_data, uint8_t* in_data, uint8_t count, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN);
 
 volatile extern PERIPH_FrontPanel_Type PERIPH_FrontPanel;

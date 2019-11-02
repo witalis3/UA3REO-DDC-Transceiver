@@ -214,6 +214,8 @@ void processRxAudio(void)
 	Processor_NeedRXBuffer = false;
 }
 
+
+
 void processTxAudio(void)
 {
 	if (!Processor_NeedTXBuffer) return;
@@ -240,8 +242,8 @@ void processTxAudio(void)
 	{
 		if (TRX_Tune)
 		{
-			FPGA_Audio_Buffer_Q_tmp[i] = selected_rfpower_amplitude;
-			FPGA_Audio_Buffer_I_tmp[i] = selected_rfpower_amplitude;
+			FPGA_Audio_Buffer_Q_tmp[i] = selected_rfpower_amplitude / 100 * TUNE_POWER;
+			FPGA_Audio_Buffer_I_tmp[i] = selected_rfpower_amplitude / 100 * TUNE_POWER;
 		}
 		else
 		{

@@ -527,6 +527,29 @@ void PERIPH_ProcessFrontPanel(void)
 	PERIPH_FrontPanel.key_menu_prev = PERIPH_FrontPanel.key_menu;
 }
 
+void PERIPH_ProcessSWRMeter(void)
+{
+	ADC_ChannelConfTypeDef sConfig = { 0 };
+	sConfig.Rank = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	
+	sConfig.Channel = ADC_CHANNEL_10; // Forward
+	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
+	HAL_ADC_Start(&hadc1); // запускаем преобразование сигнала АЦП
+	HAL_ADC_PollForConversion(&hadc1, 100); // ожидаем окончания преобразования
+	uint32_t forward = HAL_ADC_GetValue(&hadc1); // читаем полученное значение в переменную adc
+	
+	sConfig.Channel = ADC_CHANNEL_11; // Backward
+	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
+	HAL_ADC_Start(&hadc1); // запускаем преобразование сигнала АЦП
+	HAL_ADC_PollForConversion(&hadc1, 100); // ожидаем окончания преобразования
+	uint32_t backward = HAL_ADC_GetValue(&hadc1); // читаем полученное значение в переменную adc
+	
+	//sendToDebug_uint32(forward,false);
+	//sendToDebug_uint32(backward,false);
+	//sendToDebug_newline();
+}
+
 static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN)
 {
 	uint8_t outData[3] = {0};

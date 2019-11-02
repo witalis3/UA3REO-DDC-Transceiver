@@ -850,35 +850,6 @@ refer to the applicable agreement for further details.
 	)
 )
 (symbol
-	(rect 3672 176 3920 256)
-	(text "DAC_corrector" (rect 5 0 78 12)(font "Arial" ))
-	(text "DAC_CORRECTOR" (rect 8 64 108 76)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "clk_in" (rect 0 0 28 12)(font "Arial" ))
-		(text "clk_in" (rect 21 27 49 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "DATA_IN[27..0]" (rect 0 0 77 12)(font "Arial" ))
-		(text "DATA_IN[27..0]" (rect 21 43 98 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48)(line_width 3))
-	)
-	(port
-		(pt 248 32)
-		(output)
-		(text "DATA_OUT[13..0]" (rect 0 0 88 12)(font "Arial" ))
-		(text "DATA_OUT[13..0]" (rect 139 27 227 39)(font "Arial" ))
-		(line (pt 248 32)(pt 232 32)(line_width 3))
-	)
-	(drawing
-		(rectangle (rect 16 16 232 64))
-	)
-)
-(symbol
 	(rect 3952 168 4096 248)
 	(text "mux14" (rect 54 0 100 16)(font "Arial" (font_size 10)))
 	(text "DAC_MUX" (rect 8 64 59 76)(font "Arial" ))
@@ -1839,33 +1810,6 @@ refer to the applicable agreement for further details.
 	)
 )
 (symbol
-	(rect 1120 -208 1296 -104)
-	(text "DEBUG" (rect 66 -1 120 15)(font "Arial" (font_size 10)))
-	(text "inst" (rect 8 88 25 100)(font "Arial" ))
-	(port
-		(pt 0 72)
-		(input)
-		(text "probe[31..0]" (rect 0 0 68 14)(font "Arial" (font_size 8)))
-		(text "probe[31..0]" (rect 4 61 72 75)(font "Arial" (font_size 8)))
-		(line (pt 0 72)(pt 64 72)(line_width 3))
-	)
-	(drawing
-		(text "probes" (rect 25 43 71 58)(font "Arial" (color 128 0 0)(font_size 9)))
-		(text "probe" (rect 69 67 96 79)(font "Arial" (color 0 0 0)))
-		(text " DEBUG " (rect 139 88 185 100)(font "Arial" ))
-		(line (pt 64 32)(pt 112 32))
-		(line (pt 112 32)(pt 112 88))
-		(line (pt 64 88)(pt 112 88))
-		(line (pt 64 32)(pt 64 88))
-		(line (pt 65 52)(pt 65 76))
-		(line (pt 66 52)(pt 66 76))
-		(line (pt 0 0)(pt 176 0))
-		(line (pt 176 0)(pt 176 104))
-		(line (pt 0 104)(pt 176 104))
-		(line (pt 0 0)(pt 0 104))
-	)
-)
-(symbol
 	(rect -160 -32 -112 0)
 	(text "WIRE" (rect 1 0 24 10)(font "Arial" (font_size 6)))
 	(text "adcw0" (rect 3 21 33 33)(font "Arial" ))
@@ -2527,6 +2471,35 @@ refer to the applicable agreement for further details.
 		(line (pt 70 56)(pt 64 62))
 	)
 )
+(symbol
+	(rect 3672 176 3920 256)
+	(text "DAC_corrector" (rect 5 0 78 12)(font "Arial" ))
+	(text "DAC_CORRECTOR" (rect 8 64 108 76)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "clk_in" (rect 0 0 28 12)(font "Arial" ))
+		(text "clk_in" (rect 21 27 49 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "DATA_IN[27..0]" (rect 0 0 77 12)(font "Arial" ))
+		(text "DATA_IN[27..0]" (rect 21 43 98 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48)(line_width 3))
+	)
+	(port
+		(pt 248 32)
+		(output)
+		(text "DATA_OUT[13..0]" (rect 0 0 88 12)(font "Arial" ))
+		(text "DATA_OUT[13..0]" (rect 153 27 227 39)(font "Arial" ))
+		(line (pt 248 32)(pt 232 32)(line_width 3))
+	)
+	(drawing
+		(rectangle (rect 16 16 232 64))
+	)
+)
 (connector
 	(pt 528 32)
 	(pt 440 32)
@@ -2695,11 +2668,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 2840 112)
-	(pt 2840 160)
-	(bus)
-)
-(connector
 	(text "TX_N" (rect 2866 128 2891 145)(font "Intel Clear" ))
 	(pt 2856 144)
 	(pt 2896 144)
@@ -2730,11 +2698,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 2888 288)
 	(pt 2888 520)
-)
-(connector
-	(pt 3104 112)
-	(pt 3184 112)
-	(bus)
 )
 (connector
 	(pt 3104 288)
@@ -2778,11 +2741,6 @@ refer to the applicable agreement for further details.
 	(pt 3136 368)
 )
 (connector
-	(pt 3152 144)
-	(pt 3184 144)
-	(bus)
-)
-(connector
 	(pt 3160 344)
 	(pt 3184 344)
 	(bus)
@@ -2792,11 +2750,6 @@ refer to the applicable agreement for further details.
 	(pt 528 8)
 )
 (connector
-	(pt 3352 128)
-	(pt 3376 128)
-	(bus)
-)
-(connector
 	(pt 3176 224)
 	(pt 3176 288)
 )
@@ -2804,16 +2757,6 @@ refer to the applicable agreement for further details.
 	(text "TX" (rect 3410 248 3422 265)(font "Intel Clear" ))
 	(pt 3432 264)
 	(pt 3456 264)
-)
-(connector
-	(pt 3376 208)
-	(pt 3456 208)
-	(bus)
-)
-(connector
-	(pt 3376 128)
-	(pt 3376 208)
-	(bus)
 )
 (connector
 	(pt 3176 88)
@@ -2848,11 +2791,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 3616 224)
-	(pt 3672 224)
-	(bus)
-)
-(connector
 	(pt 3672 208)
 	(pt 3632 208)
 )
@@ -2884,11 +2822,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 3920 208)
 	(pt 3952 208)
-	(bus)
-)
-(connector
-	(pt 4120 216)
-	(pt 4096 216)
 	(bus)
 )
 (connector
@@ -3446,16 +3379,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 3104 8)
-	(pt 3152 8)
-	(bus)
-)
-(connector
-	(pt 3152 8)
-	(pt 3152 144)
-	(bus)
-)
-(connector
 	(pt 992 176)
 	(pt 992 144)
 )
@@ -3585,26 +3508,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 1408 64)
 	(pt 1408 112)
-	(bus)
-)
-(connector
-	(pt 1120 -136)
-	(pt 1096 -136)
-	(bus)
-)
-(connector
-	(pt 1096 -136)
-	(pt 1096 40)
-	(bus)
-)
-(connector
-	(pt 1072 40)
-	(pt 1096 40)
-	(bus)
-)
-(connector
-	(pt 1096 40)
-	(pt 1136 40)
 	(bus)
 )
 (connector
@@ -4130,6 +4033,61 @@ refer to the applicable agreement for further details.
 	(pt -272 -32)
 	(bus)
 )
+(connector
+	(pt 3376 128)
+	(pt 3352 128)
+	(bus)
+)
+(connector
+	(pt 3376 128)
+	(pt 3376 208)
+	(bus)
+)
+(connector
+	(pt 3376 208)
+	(pt 3456 208)
+	(bus)
+)
+(connector
+	(pt 1072 40)
+	(pt 1136 40)
+	(bus)
+)
+(connector
+	(pt 3104 8)
+	(pt 3152 8)
+	(bus)
+)
+(connector
+	(pt 3152 8)
+	(pt 3152 144)
+	(bus)
+)
+(connector
+	(pt 3152 144)
+	(pt 3184 144)
+	(bus)
+)
+(connector
+	(pt 3104 112)
+	(pt 3184 112)
+	(bus)
+)
+(connector
+	(pt 3616 224)
+	(pt 3672 224)
+	(bus)
+)
+(connector
+	(pt 4096 216)
+	(pt 4120 216)
+	(bus)
+)
+(connector
+	(pt 2840 160)
+	(pt 2840 112)
+	(bus)
+)
 (junction (pt 376 120))
 (junction (pt 440 32))
 (junction (pt 472 504))
@@ -4160,7 +4118,6 @@ refer to the applicable agreement for further details.
 (junction (pt 992 176))
 (junction (pt 848 224))
 (junction (pt 992 224))
-(junction (pt 1096 40))
 (junction (pt -56 -16))
 (junction (pt -56 120))
 (junction (pt -56 168))

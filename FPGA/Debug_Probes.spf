@@ -18,45 +18,9 @@
       <probe name="probe[11]"/>
       <probe name="probe[12]"/>
       <probe name="probe[13]"/>
-      <probe name="probe[14]"/>
-      <probe name="probe[15]"/>
-      <probe name="probe[16]"/>
-      <probe name="probe[17]"/>
-      <probe name="probe[18]"/>
-      <probe name="probe[19]"/>
-      <probe name="probe[20]"/>
-      <probe name="probe[21]"/>
-      <probe name="probe[22]"/>
-      <probe name="probe[23]"/>
-      <probe name="probe[24]"/>
-      <probe name="probe[25]"/>
-      <probe name="probe[26]"/>
-      <probe name="probe[27]"/>
-      <probe name="probe[28]"/>
-      <probe name="probe[29]"/>
-      <probe name="probe[30]"/>
-      <probe name="probe[31]"/>
     </probes>
     <view>
-      <view_node expanded="true" group_name="probe[31..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
-      <view_node expanded="true" index="31" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="30" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="29" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="28" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="27" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="26" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="25" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="24" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="23" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="22" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="21" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="20" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="19" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="18" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="17" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="16" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="15" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="14" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" group_name="probe[13..0]" index="0" lsb_to_msb="false" node_type="probe" radix="unsigned" view_type="group_header"/>
       <view_node expanded="true" index="13" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="12" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="11" node_type="probe" view_type="group_member"/>
@@ -72,6 +36,6 @@
       <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
     </view>
-    <log data="8E600000E83400006EABFFFFE530000087930000B54300005CDFFFFFDD95FFFF" max_size="8" size="8" time="A7EC38D500000000A7EC38D500000000A7EC38D500000000A7EC38D500000000A7EC38D500000000A7EC38D500000000A7EC38D500000000A7EC38D500000000" width="32"/>
+    <log data="3CFF0FF3CFF0FF3CFF0FF3CFF0FF" max_size="8" size="8" time="7911DBD5000000007911DBD5000000007911DBD5000000007911DBD5000000007911DBD5000000007911DBD5000000008911DBD5000000008911DBD500000000" width="14"/>
   </instance>
 </session>

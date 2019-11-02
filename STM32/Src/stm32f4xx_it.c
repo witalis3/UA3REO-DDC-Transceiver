@@ -411,7 +411,7 @@ void TIM6_DAC_IRQHandler(void)
 		
 		//Process SWR / Power meter
 		if (TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_NO_TX)
-			TRX_ProcessSWRMeter();
+			PERIPH_ProcessSWRMeter();
 	}
 
 	if (ms50_counter == 20) // every 1 sec
