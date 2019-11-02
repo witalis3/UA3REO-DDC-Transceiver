@@ -384,6 +384,7 @@ inline void FPGA_fpgadata_getiq(void)
 		{
 			FFT_buff_index = 0;
 			NeedFFTInputBuffer = false;
+			FFT_buffer_ready = true;
 		}
 	}
 	//clock

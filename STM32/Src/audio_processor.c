@@ -375,6 +375,7 @@ void processTxAudio(void)
 			{
 				FFT_buff_index = 0;
 				NeedFFTInputBuffer = false;
+				FFT_buffer_ready = true;
 			}
 		}
 	}

@@ -18,6 +18,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 
 bool NeedFFTInputBuffer = false; //флаг необходимости заполнения буфера с FPGA
 bool FFT_need_fft = true; //необходимо подготовить данные для отображения на экран
+bool FFT_buffer_ready = false; //буффер наполнен, можно обрабатывать
 
 volatile uint32_t FFT_buff_index = 0; //текущий индекс буфера при его наполнении с FPGA
 float32_t FFTInput_I[FFT_SIZE] = { 0 }; //входящий буфер FFT I
@@ -27,7 +28,8 @@ static float32_t FFTInput_ZOOMFFT[FFT_DOUBLE_SIZE_BUFFER] = { 0 }; //совме�
 static float32_t FFTOutput_mean[FFT_PRINT_SIZE] = { 0 }; //усредненный буфер FFT (для вывода)
 static uint16_t wtf_buffer[FFT_WTF_HEIGHT][FFT_PRINT_SIZE] = { {0} }; //буфер водопада
 static uint16_t maxValueErrors = 0; //количество превышений сигнала в FFT
-static float32_t maxValueFFT = 0; //максимальное значение амплитуды в результирующей АЧХ
+static float32_t maxValueFFT_rx = 0; //максимальное значение амплитуды в результирующей АЧХ
+static float32_t maxValueFFT_tx = 0; //максимальное значение амплитуды в результирующей АЧХ
 static uint32_t currentFFTFreq = 0;
 static uint16_t color_scale[FFT_MAX_HEIGHT] = { 0 }; //цветовой градиент по высоте FFT
 
@@ -214,7 +216,8 @@ void FFT_doFFT(void)
 	if (!TRX.FFT_Enabled) return;
 	if (!FFT_need_fft) return;
 	if (NeedFFTInputBuffer) return;
-
+	if (!FFT_buffer_ready) return;
+	
 	uint32_t maxIndex = 0; // Индекс элемента массива с максимальной амплитудой в результирующей АЧХ
 	float32_t maxValue = 0; // Максимальное значение амплитуды в результирующей АЧХ
 	float32_t meanValue = 0; // Среднее значение амплитуды в результирующей АЧХ
@@ -222,16 +225,19 @@ void FFT_doFFT(void)
 	float32_t window_multiplier = 0; //Множитель для вычисления окна к FFT
 
 	//Process DC corrector filter
-	dc_filter(FFTInput_I, FFT_SIZE, 4);
-	dc_filter(FFTInput_Q, FFT_SIZE, 5);
-
+	if (!TRX_on_TX())
+	{
+		dc_filter(FFTInput_I, FFT_SIZE, 4);
+		dc_filter(FFTInput_Q, FFT_SIZE, 5);
+	}
+	
 	//Process Notch filter
-	if (TRX.NotchFilter)
+	if (TRX.NotchFilter && !TRX_on_TX())
 	{
 		arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
 		arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
 	}
-
+	
 	//ZoomFFT
 	if (TRX.FFT_Zoom > 1)
 	{
@@ -304,9 +310,10 @@ void FFT_doFFT(void)
 		}
 	}
 
-	//FFTInput[0] = FFTInput[1];
-
 	//Автокалибровка уровней FFT
+	float32_t maxValueFFT = maxValueFFT_rx;
+	if(TRX_on_TX())
+		maxValueFFT = maxValueFFT_tx;
 	arm_max_f32(FFTInput, FFT_PRINT_SIZE, &maxValue, &maxIndex); //ищем максимум в АЧХ
 	arm_mean_f32(FFTInput, FFT_PRINT_SIZE, &meanValue); //ищем среднее в АЧХ
 	diffValue = (maxValue - maxValueFFT) / FFT_STEP_COEFF;
@@ -319,7 +326,11 @@ void FFT_doFFT(void)
 	maxValueErrors = 0;
 	if (maxValueFFT < FFT_MIN) maxValueFFT = FFT_MIN;
 	if (TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK) maxValueFFT = 60000;
-
+	if(TRX_on_TX())
+		maxValueFFT_tx = maxValueFFT;
+	else
+		maxValueFFT_rx = maxValueFFT;
+	
 	//Нормируем АЧХ к единице
 	arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, FFT_PRINT_SIZE);
 
@@ -545,4 +556,17 @@ static void fft_fill_color_scale(void) //заполняем градиент ц�
 	{
 		color_scale[i] = getFFTColor(FFT_MAX_HEIGHT - i);
 	}
+}
+
+void FFT_Reset(void) //очищаем FFT
+{
+	NeedFFTInputBuffer = false;
+	FFT_buffer_ready = false;
+	memset(FFTInput_I, 0x00, sizeof FFTInput_I);
+	memset(FFTInput_Q, 0x00, sizeof FFTInput_Q);
+	memset(FFTInput, 0x00, sizeof FFTInput);
+	memset(FFTInput_ZOOMFFT, 0x00, sizeof FFTInput_ZOOMFFT);
+	memset(FFTOutput_mean, 0x00, sizeof FFTOutput_mean);
+	FFT_buff_index = 0;
+	NeedFFTInputBuffer = true;
 }
