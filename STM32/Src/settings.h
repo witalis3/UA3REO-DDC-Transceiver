@@ -31,6 +31,7 @@
 #define SHIFT_INTERVAL 400.0f //диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
 #define AUTOGAIN_CORRECTOR_WAITSTEP 7 //ожидание усреднения результатов при работе автокорректора входных цепей
 #define EEPROM_WRITE_INTERVAL 30 //Запись в EEPROM не чаще, чем раз в 30 секунд (против износа)
+#define MAX_RF_POWER 7.0f //Максимум мощности (для шкалы измерителя)
 
 #define ILI9341 true //выбираем используемый дисплей
 //#define ILI9325 true //другие комментируем

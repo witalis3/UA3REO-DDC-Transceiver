@@ -268,6 +268,18 @@ static void LCD_displayStatusInfoBar(void) { //S-метра и прочей ин
 		sprintf(ctmp, "%.1fW", ref_power);
 		LCDDriver_printText(ctmp, 45+55*2+23, 120, COLOR_RED, COLOR_BLACK, 1);
 		
+		//SWR Meter
+		if(fwd_power>MAX_RF_POWER) fwd_power=MAX_RF_POWER;
+		uint16_t ref_width=ref_power * (PMETER_WIDTH - 2) / MAX_RF_POWER;
+		uint16_t fwd_width=fwd_power * (PMETER_WIDTH - 2) / MAX_RF_POWER;
+		uint16_t est_width=(MAX_RF_POWER - fwd_power) * (PMETER_WIDTH - 2) / MAX_RF_POWER;
+		if(ref_width>fwd_width)
+			ref_width=fwd_width;
+		fwd_width -= ref_width;
+		LCDDriver_Fill_RectWH(40 + 1, 101, fwd_width, 13, COLOR_GREEN);
+		LCDDriver_Fill_RectWH(40 + 1 + fwd_width, 101, ref_width, 13, COLOR_RED);
+		LCDDriver_Fill_RectWH(40 + 1 + fwd_width + ref_width, 101, est_width, 13, COLOR_BLACK);
+		
 		//ALC
 		LCDDriver_Fill_RectWH(40 + PMETER_WIDTH + 40, 120, 25, 8, COLOR_BLACK);
 		uint8_t alc_level = (uint8_t)(TRX_GetALC()*100);
