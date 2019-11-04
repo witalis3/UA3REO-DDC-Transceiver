@@ -26,7 +26,6 @@ static void Flash_Write_Data(void);
 static void Flash_Read_Data(void);
 
 struct t_CALIBRATE CALIBRATE = {
-	//калибровка выходной мощности на каждый мегагерц
 	.rf_out_power = {
 		33, // 0 mhz
 		20, // 1 mhz
@@ -61,8 +60,14 @@ struct t_CALIBRATE CALIBRATE = {
 		100, // 30 mhz
 		0    // 31+ mhz
 	},
-	//коэффициент, на который умножаем данные с АЦП, чтобы получить реальное напряжение, устанавливается при калибровке трансивера по S9 (ATT, PREAMP выключен, LPF,BPF включен)
 	.adc_calibration = 3.5f,
+	.swr_meter_Rtop = 0.1f,
+	.swr_meter_Rbottom = 510.0f,
+	.swr_meter_fwd_diff = 0.0f,
+	.swr_meter_ref_diff = -0.055f,
+	.swr_meter_diode_drop = 0.62f,
+	.swr_meter_trans_rate = 10.0f,
+	.swr_meter_ref_sub = 0.0f,
 };
 
 void LoadSettings(bool clear)

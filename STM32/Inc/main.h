@@ -100,10 +100,10 @@ extern volatile uint32_t cpu_sleep_counter;
 #define ENC2_CLK_Pin GPIO_PIN_13
 #define ENC2_CLK_GPIO_Port GPIOC
 #define ENC2_CLK_EXTI_IRQn EXTI15_10_IRQn
-#define SWR_FORW_Pin GPIO_PIN_0
-#define SWR_FORW_GPIO_Port GPIOC
-#define SWR_BACKW_Pin GPIO_PIN_1
+#define SWR_BACKW_Pin GPIO_PIN_0
 #define SWR_BACKW_GPIO_Port GPIOC
+#define SWR_FORW_Pin GPIO_PIN_1
+#define SWR_FORW_GPIO_Port GPIOC
 #define FPGA_CLK_Pin GPIO_PIN_2
 #define FPGA_CLK_GPIO_Port GPIOC
 #define FPGA_SYNC_Pin GPIO_PIN_3

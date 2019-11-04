@@ -68,6 +68,13 @@
 extern struct t_CALIBRATE {
 	uint8_t rf_out_power[32]; //калибровка выходной мощности на каждый мегагерц
 	float32_t adc_calibration; //коэффициент, на который умножаем данные с АЦП, чтобы получить реальное напряжение, устанавливается при калибровке трансивера по S9 (ATT, PREAMP выключен, LPF,BPF включен)
+	float32_t swr_meter_Rtop; //Верхнее плечо делителя напряжения КСВ метра, ом
+	float32_t swr_meter_Rbottom; //Нижнее плечо делителя напряжения КСВ метра, ом
+	float32_t swr_meter_fwd_diff; //Разница напряжения FWD получаемым АЦП с реальным, в
+	float32_t swr_meter_ref_diff; //Разница напряжения REF получаемым АЦП с реальным, в
+	float32_t swr_meter_diode_drop; //Падение напряжения на диодах
+	float32_t swr_meter_trans_rate; //Коэффициент трансформации КСВ метра
+	float32_t swr_meter_ref_sub; //% вычитаемого FWD из REF
 } CALIBRATE;
 
 typedef struct {

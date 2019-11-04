@@ -541,21 +541,56 @@ void PERIPH_ProcessSWRMeter(void)
 	sConfig.Rank = 1;
 	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
 	
-	sConfig.Channel = ADC_CHANNEL_10; // Forward
+	sConfig.Channel = ADC_CHANNEL_11; // Forward PC1
 	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
 	HAL_ADC_Start(&hadc1); // запускаем преобразование сигнала АЦП
 	HAL_ADC_PollForConversion(&hadc1, 100); // ожидаем окончания преобразования
-	uint32_t forward = HAL_ADC_GetValue(&hadc1); // читаем полученное значение в переменную adc
+	float32_t forward = (float32_t)HAL_ADC_GetValue(&hadc1)*3.3f/4096.0f; // читаем полученное значение в переменную adc
+	HAL_ADC_Stop(&hadc1);
+	forward = forward/(CALIBRATE.swr_meter_Rbottom/(CALIBRATE.swr_meter_Rtop+CALIBRATE.swr_meter_Rbottom)); //корректируем напряжение исходя из делителя
+	forward += CALIBRATE.swr_meter_fwd_diff; //корректируем напряжение по калибровке
+	if(forward<0.001f) //меньше 1mV не измеряем
+	{
+		TRX_SWR_forward = 0.0f;
+		TRX_SWR_backward = 0.0f;
+		TRX_SWR = 1.0f;
+		return;
+	}
 	
-	sConfig.Channel = ADC_CHANNEL_11; // Backward
+	forward += CALIBRATE.swr_meter_diode_drop; // падение на диоде
+	forward = forward * CALIBRATE.swr_meter_trans_rate; // падение на трансформаторе
+	
+	sConfig.Channel = ADC_CHANNEL_10; // Backward PC0
 	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
 	HAL_ADC_Start(&hadc1); // запускаем преобразование сигнала АЦП
 	HAL_ADC_PollForConversion(&hadc1, 100); // ожидаем окончания преобразования
-	uint32_t backward = HAL_ADC_GetValue(&hadc1); // читаем полученное значение в переменную adc
+	float32_t backward = (float32_t)HAL_ADC_GetValue(&hadc1)*3.3f/4096.0f; // читаем полученное значение в переменную adc
+	HAL_ADC_Stop(&hadc1);
+	backward = backward/(CALIBRATE.swr_meter_Rbottom/(CALIBRATE.swr_meter_Rtop+CALIBRATE.swr_meter_Rbottom));  //корректируем напряжение исходя из делителя
+	backward += CALIBRATE.swr_meter_ref_diff; //корректируем напряжение по калибровке
+	backward -= forward * CALIBRATE.swr_meter_ref_sub; //% вычитаемого FWD из REF
+	if(backward>=0.001f)
+	{
+		backward += CALIBRATE.swr_meter_diode_drop; // падение на диоде
+		backward = backward * CALIBRATE.swr_meter_trans_rate; // падение на трансформаторе
+	}
+	if(backward<0.001f) //меньше 1mV не измеряем
+		backward = 0.001f;
 	
-	//sendToDebug_uint32(forward,false);
-	//sendToDebug_uint32(backward,false);
-	//sendToDebug_newline();
+	TRX_SWR_forward = TRX_SWR_forward + ((forward - TRX_SWR_forward) / 10.0f);
+	TRX_SWR_backward = TRX_SWR_backward + ((backward - TRX_SWR_backward) / 10.0f);
+	TRX_SWR = (TRX_SWR_forward + TRX_SWR_backward) / (TRX_SWR_forward - TRX_SWR_backward);
+	if(TRX_SWR_backward>TRX_SWR_forward) TRX_SWR=10.0f;
+	if(TRX_SWR>10.0f) TRX_SWR=10.0f;
+	/*
+	float32_t power = (TRX_SWR_forward * TRX_SWR_forward) / 50.0f;
+	if(power<0.0f) power=0.0f;
+	sendToDebug_float32(TRX_SWR_forward,false);
+	sendToDebug_float32(TRX_SWR_backward,false);
+	sendToDebug_float32(TRX_SWR,false);
+	sendToDebug_float32(power,false);
+	sendToDebug_newline();
+	*/
 }
 
 static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN)

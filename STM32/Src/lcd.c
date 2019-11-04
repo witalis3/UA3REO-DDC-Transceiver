@@ -251,15 +251,22 @@ static void LCD_displayStatusInfoBar(void) { //S-метра и прочей ин
 	{
 		//SWR
 		LCDDriver_Fill_RectWH(45+23, 120, 25, 8, COLOR_BLACK);
-		//LCDDriver_printText("2.5", 45+23, 120, COLOR_RED, COLOR_BLACK, 1);
+		sprintf(ctmp, "%.1f", TRX_SWR);
+		LCDDriver_printText(ctmp, 45+23, 120, COLOR_RED, COLOR_BLACK, 1);
 		
 		//FWD
 		LCDDriver_Fill_RectWH(45+55+23, 120, 25, 8, COLOR_BLACK);
-		//LCDDriver_printText("7.0W", 45+55+23, 120, COLOR_RED, COLOR_BLACK, 1);
+		float32_t fwd_power = (TRX_SWR_forward * TRX_SWR_forward) / 50.0f;
+		if(fwd_power<0.0f) fwd_power=0.0f;
+		sprintf(ctmp, "%.1fW", fwd_power);
+		LCDDriver_printText(ctmp, 45+55+23, 120, COLOR_RED, COLOR_BLACK, 1);
 		
 		//REF
 		LCDDriver_Fill_RectWH(45+55*2+23, 120, 25, 8, COLOR_BLACK);
-		//LCDDriver_printText("0.5W", 45+55*2+23, 120, COLOR_RED, COLOR_BLACK, 1);
+		float32_t ref_power = (TRX_SWR_backward * TRX_SWR_backward) / 50.0f;
+		if(ref_power<0.0f) ref_power=0.0f;
+		sprintf(ctmp, "%.1fW", ref_power);
+		LCDDriver_printText(ctmp, 45+55*2+23, 120, COLOR_RED, COLOR_BLACK, 1);
 		
 		//ALC
 		LCDDriver_Fill_RectWH(40 + PMETER_WIDTH + 40, 120, 25, 8, COLOR_BLACK);

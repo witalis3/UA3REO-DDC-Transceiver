@@ -39,6 +39,9 @@ volatile extern uint8_t TRX_Fan_Timeout;
 volatile extern bool TRX_SNMP_Synced;
 volatile extern int16_t TRX_SHIFT;
 volatile extern float32_t TRX_MAX_TX_Amplitude;
+volatile extern float32_t TRX_SWR_forward;
+volatile extern float32_t TRX_SWR_backward;
+volatile extern float32_t TRX_SWR;
 
 extern const char *MODE_DESCR[];
 extern ADC_HandleTypeDef hadc1;
