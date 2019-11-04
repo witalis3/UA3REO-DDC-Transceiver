@@ -87,10 +87,12 @@ void sendToDebug_newline(void)
 
 void sendToDebug_flush(void)
 {
-	while (!DEBUG_Transmit_FIFO_Events())
+	uint16_t tryes=0;
+	while (!DEBUG_Transmit_FIFO_Events() && tryes < 100)
 	{
 		HAL_IWDG_Refresh(&hiwdg);
 		HAL_Delay(1);
+		tryes++;
 	}
 }
 

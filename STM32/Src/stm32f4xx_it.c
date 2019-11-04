@@ -431,7 +431,7 @@ void TIM6_DAC_IRQHandler(void)
 		float32_t dbg_cpu_sleep_counter = cpu_sleep_counter / 1000.0f;
 		uint32_t dbg_tim5_counter = tim5_counter;
 		float32_t dbg_ALC_need_gain = ALC_need_gain;
-		float32_t dbg_Processor_TX_MAX_amplitude = Processor_TX_MAX_amplitude;
+		float32_t dbg_Processor_TX_MAX_amplitude = Processor_TX_MAX_amplitude_OUT;
 		float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_I_tmp[0];
 		float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_Q_tmp[0];
 		if (TRX_on_TX())
