@@ -58,7 +58,7 @@ struct t_CALIBRATE CALIBRATE = {
 		100, // 28 mhz
 		100, // 29 mhz
 		100, // 30 mhz
-		0    // 31+ mhz
+		100    // 31+ mhz
 	},
 	.adc_calibration = 3.5f,
 	.swr_meter_Rtop = 0.1f,

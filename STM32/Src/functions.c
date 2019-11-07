@@ -281,7 +281,7 @@ void shiftTextLeft(char *string, int16_t shiftLength)
 
 float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 {
-	if(freq>30000000) return 0.0f;
+	if(freq>MAX_TX_FREQ_HZ) return 0.0f;
 	const uint8_t calibration_points = 31;
 	uint8_t mhz_left = 0;
 	uint8_t mhz_right = calibration_points;
@@ -295,5 +295,13 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 	float32_t power_left = (float32_t)CALIBRATE.rf_out_power[mhz_left] / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 	float32_t power_right = (float32_t)CALIBRATE.rf_out_power[mhz_right] / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 	float32_t freq_point = (freq - (mhz_left * 1000000.0f)) / 1000000.0f;
-	return (power_left * (1.0f - freq_point)) + (power_right * (freq_point));
+	float32_t ret = (power_left * (1.0f - freq_point)) + (power_right * (freq_point));
+		
+	//sendToDebug_float32(power_left, false);
+	//sendToDebug_float32(power_right, false);
+	//sendToDebug_float32(freq_point, false);
+	//sendToDebug_float32(ret, false);
+	//sendToDebug_newline();
+		
+	return ret;
 }
