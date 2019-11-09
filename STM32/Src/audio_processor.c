@@ -239,28 +239,32 @@ void processTxAudio(void)
 		readHalfFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&Processor_AudioBuffer_A[0], dma_index, CODEC_AUDIO_BUFFER_SIZE);
 	}
 
+	//TUNE
+	if (TRX_Tune)
+	{
+		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
+		{
+			//FPGA_Audio_SendBuffer_I[i] = (Processor_selected_RFpower_amplitude / 100 * TUNE_POWER) * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE)*PI*2.0f*1.0f);
+			//FPGA_Audio_SendBuffer_Q[i] = FPGA_Audio_SendBuffer_I[i];
+			FPGA_Audio_SendBuffer_I[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
+			FPGA_Audio_SendBuffer_Q[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
+		}
+		Processor_NeedTXBuffer = false;
+		Processor_NeedRXBuffer = false;
+		return;
+	}
+	
 	for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
-		if (TRX_Tune)
-		{
-			FPGA_Audio_Buffer_Q_tmp[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
-			FPGA_Audio_Buffer_I_tmp[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
-		}
-		else
-		{
-			FPGA_Audio_Buffer_I_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2]);
-			FPGA_Audio_Buffer_Q_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2 + 1]);
-		}
+		FPGA_Audio_Buffer_I_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2]);
+		FPGA_Audio_Buffer_Q_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2 + 1]);
 	}
 
 	//Process DC corrector filter
-	if (!TRX_Tune)
-	{
-		dc_filter(FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 2);
-		dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 3);
-	}
+	dc_filter(FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 2);
+	dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 3);
 
-	if (mode != TRX_MODE_IQ && !TRX_Tune)
+	if (mode != TRX_MODE_IQ)
 	{
 		//IIR HPF
 		for (block = 0; block < numBlocks; block++)
@@ -382,7 +386,7 @@ void processTxAudio(void)
 	}
 
 	//Loopback mode
-	if (mode == TRX_MODE_LOOPBACK && !TRX_Tune)
+	if (mode == TRX_MODE_LOOPBACK)
 	{
 		//OUT Volume
 		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, (float32_t)TRX.Volume / 50.0f, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
