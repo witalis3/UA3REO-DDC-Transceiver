@@ -22,6 +22,7 @@ static void SYSMENU_HANDL_TRX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_TRX_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
+static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TRX_LPFFilter(int8_t direction);
 static void SYSMENU_HANDL_TRX_BPFFilter(int8_t direction);
 static void SYSMENU_HANDL_TRX_MICIN(int8_t direction);
@@ -96,6 +97,7 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 	{"LPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.LPF, SYSMENU_HANDL_TRX_LPFFilter},
 	{"BPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BPF, SYSMENU_HANDL_TRX_BPFFilter},
 	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_ENCODER_SLOW_RATE},
+	{"Two Signal TUNE", SYSMENU_BOOLEAN, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
 	{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
 	{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
 	{"USB IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_USB, SYSMENU_HANDL_TRX_USBIN},
@@ -237,6 +239,12 @@ static void SYSMENU_HANDL_TRX_BPFFilter(int8_t direction)
 {
 	if (direction > 0) TRX.BPF = true;
 	if (direction < 0) TRX.BPF = false;
+}
+
+static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction)
+{
+	if (direction > 0) TRX.TWO_SIGNAL_TUNE = true;
+	if (direction < 0) TRX.TWO_SIGNAL_TUNE = false;
 }
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)

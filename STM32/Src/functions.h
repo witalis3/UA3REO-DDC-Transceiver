@@ -81,5 +81,6 @@ extern void dma_memcpy32(uint32_t dest, uint32_t src, uint32_t len);
 extern float32_t db2rateV(float32_t i);
 extern void shiftTextLeft(char *string, int16_t shiftLength);
 extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
+extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);
 
 #endif

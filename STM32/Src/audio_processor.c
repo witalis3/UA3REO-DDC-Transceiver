@@ -41,6 +41,7 @@ static float32_t ampl_val_i = 0.0f;
 static float32_t ampl_val_q = 0.0f;
 static float32_t ALC_need_gain_target = 1.0f;
 static uint16_t block = 0;
+static uint32_t two_signal_gen_position = 0;
 
 static void doRX_LPF(void);
 static void doRX_HPF(void);
@@ -215,8 +216,6 @@ void processRxAudio(void)
 	Processor_NeedRXBuffer = false;
 }
 
-
-
 void processTxAudio(void)
 {
 	if (!Processor_NeedTXBuffer) return;
@@ -240,31 +239,56 @@ void processTxAudio(void)
 	}
 
 	//TUNE
-	if (TRX_Tune)
+	if (TRX_Tune && !TRX.TWO_SIGNAL_TUNE)
 	{
-		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
+		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			//FPGA_Audio_SendBuffer_I[i] = (Processor_selected_RFpower_amplitude / 100 * TUNE_POWER) * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE)*PI*2.0f*1.0f);
-			//FPGA_Audio_SendBuffer_Q[i] = FPGA_Audio_SendBuffer_I[i];
-			FPGA_Audio_SendBuffer_I[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
-			FPGA_Audio_SendBuffer_Q[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
+			FPGA_Audio_Buffer_I_tmp[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
+			FPGA_Audio_Buffer_Q_tmp[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
 		}
-		Processor_NeedTXBuffer = false;
-		Processor_NeedRXBuffer = false;
-		return;
 	}
 	
-	for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+	//Two-signal tune generator
+	if (TRX_Tune && TRX.TWO_SIGNAL_TUNE)
 	{
-		FPGA_Audio_Buffer_I_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2]);
-		FPGA_Audio_Buffer_Q_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2 + 1]);
+		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+		{
+			float32_t point = generateSin((Processor_selected_RFpower_amplitude / 100 * TUNE_POWER) / 2.0f, two_signal_gen_position, TRX_SAMPLERATE, 1000);
+			point += generateSin((Processor_selected_RFpower_amplitude / 100 * TUNE_POWER) / 2.0f, two_signal_gen_position, TRX_SAMPLERATE, 2000);
+			two_signal_gen_position++;
+			if(two_signal_gen_position>TRX_SAMPLERATE) 
+				two_signal_gen_position=0;
+			FPGA_Audio_Buffer_I_tmp[i] = point;
+			FPGA_Audio_Buffer_Q_tmp[i] = point;
+		}
+		//hilbert fir
+		for (block = 0; block < numBlocks; block++)
+		{
+			// + 45 deg to Q data
+			arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
+			// - 45 deg to I data
+			arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
+		}
+	}
+	
+	//Copy and convert buffer
+	if (!TRX_Tune)
+	{
+		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+		{
+			FPGA_Audio_Buffer_I_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2]);
+			FPGA_Audio_Buffer_Q_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2 + 1]);
+		}
 	}
 
 	//Process DC corrector filter
-	dc_filter(FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 2);
-	dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 3);
-
-	if (mode != TRX_MODE_IQ)
+	if (!TRX_Tune)
+	{
+		dc_filter(FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 2);
+		dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 3);
+	}
+	
+	if (mode != TRX_MODE_IQ && !TRX_Tune)
 	{
 		//IIR HPF
 		for (block = 0; block < numBlocks; block++)
@@ -386,7 +410,7 @@ void processTxAudio(void)
 	}
 
 	//Loopback mode
-	if (mode == TRX_MODE_LOOPBACK)
+	if (mode == TRX_MODE_LOOPBACK && !TRX_Tune)
 	{
 		//OUT Volume
 		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, (float32_t)TRX.Volume / 50.0f, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -413,7 +437,7 @@ void processTxAudio(void)
 	else
 	{
 		//CW SelfHear
-		if (TRX.CW_SelfHear && (TRX_key_serial || TRX_key_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U))
+		if (TRX.CW_SelfHear && (TRX_key_serial || TRX_key_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U) && !TRX_Tune)
 		{
 			for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
 				CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX.Volume / 100.0f)*2000.0f*arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE)*PI*2.0f*(float32_t)TRX.CW_GENERATOR_SHIFT_HZ);

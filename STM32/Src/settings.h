@@ -140,6 +140,7 @@ extern struct TRX_SETTINGS {
 	uint8_t FFT_Window;
 	bool Locked;
 	bool CLAR;
+	bool TWO_SIGNAL_TUNE;
 	uint8_t ENDBit;
 } TRX;
 

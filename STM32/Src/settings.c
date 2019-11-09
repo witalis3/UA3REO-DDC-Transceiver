@@ -146,6 +146,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Window = 1;
 		TRX.Locked = false; //Блокировка управления
 		TRX.CLAR = false; //Режим разноса частот (приём один VFO, передача другой)
+		TRX.TWO_SIGNAL_TUNE = false; //Двухсигнальный генератор в режиме TUNE (1+2кГц)
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		SaveSettings();
 	}
