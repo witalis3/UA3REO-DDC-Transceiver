@@ -31,7 +31,7 @@
 #define KEY_HOLD_TIME 1000 //время длительного нажатия на кнопку клавиатуры для срабатывания, мс
 #define SHIFT_INTERVAL 400.0f //диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
 #define AUTOGAIN_CORRECTOR_WAITSTEP 7 //ожидание усреднения результатов при работе автокорректора входных цепей
-#define EEPROM_WRITE_INTERVAL 30 //Запись в EEPROM не чаще, чем раз в 30 секунд (против износа)
+#define EEPROM_WRITE_INTERVAL 10 //Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
 #define MAX_RF_POWER 7.0f //Максимум мощности (для шкалы измерителя)
 
 #define ILI9341 true //выбираем используемый дисплей
@@ -66,6 +66,7 @@
 #define W25Q16_SECTOR_SIZE 4096
 
 #define MAX_WIFIPASS_LENGTH 32
+#define EEPROM_OP_DELAY 30
 
 extern struct t_CALIBRATE {
 	uint8_t rf_out_power[32]; //калибровка выходной мощности на каждый мегагерц
@@ -142,7 +143,8 @@ extern struct TRX_SETTINGS {
 	uint8_t ENDBit;
 } TRX;
 
-volatile extern bool NeedSaveSettings;
+extern volatile bool NeedSaveSettings;
+extern volatile bool EEPROM_Busy;
 extern SPI_HandleTypeDef hspi1;
 
 extern void LoadSettings(bool clear);

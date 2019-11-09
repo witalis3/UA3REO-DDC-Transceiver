@@ -20,6 +20,7 @@ struct TRX_SETTINGS TRX = { 0 };
 static uint8_t eeprom_bank = 0;
 	
 volatile bool NeedSaveSettings = false;
+volatile bool EEPROM_Busy = false;
 
 static void Flash_Sector_Erase(void);
 static void Flash_Write_Data(void);
@@ -73,14 +74,16 @@ struct t_CALIBRATE CALIBRATE = {
 void LoadSettings(bool clear)
 {
 	Flash_Read_Data();
-
+	eeprom_bank++;
+	
 	//Проверка, что запись в eeprom была успешна, иначе используем второй банк
 	if(TRX.ENDBit != 100)
 	{
-		eeprom_bank++;
-		if(eeprom_bank == 2)
-			eeprom_bank = 0;
 		Flash_Read_Data();
+		eeprom_bank = 0;
+		
+		if(TRX.ENDBit != 100)
+			sendToDebug_str("EEPROM error, loading default...");
 	}
 	TRX.ENDBit = 100;
 
@@ -158,17 +161,24 @@ VFO *CurrentVFO(void)
 
 void SaveSettings(void)
 {
+	if(EEPROM_Busy) return;
 	NeedSaveSettings = false;
+	EEPROM_Busy = true;
 	Flash_Write_Data();
-	HAL_Delay(50);
+	HAL_Delay(EEPROM_OP_DELAY);
+	HAL_Delay(EEPROM_OP_DELAY);
 	eeprom_bank++;
-	if(eeprom_bank == 2)
+	if(eeprom_bank >= 2)
 		eeprom_bank = 0;
 	Flash_Sector_Erase();
+	EEPROM_Busy = false;
 }
 
 static void Flash_Sector_Erase(void)
 {
+	//if(eeprom_bank==0) sendToDebug_str("ERASE EEPROM BANK 1\r\n");
+	//if(eeprom_bank==1) sendToDebug_str("ERASE EEPROM BANK 2\r\n");
+	
 	uint32_t BigAddress = eeprom_bank * W25Q16_SECTOR_SIZE;
 	Address[0] = BigAddress & 0xFF;
 	Address[1] = (BigAddress >> 8) & 0xFF;
@@ -177,16 +187,19 @@ static void Flash_Sector_Erase(void)
 	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
 	HAL_SPI_Transmit(&hspi1, &Write_Enable, 1, HAL_MAX_DELAY); // Write Enable Command
 	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-	HAL_Delay(20);
+	HAL_Delay(EEPROM_OP_DELAY);
 	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
 	HAL_SPI_Transmit(&hspi1, &Sector_Erase, 1, HAL_MAX_DELAY);   // Erase Chip Command
 	HAL_SPI_Transmit(&hspi1, Address, sizeof(Address), HAL_MAX_DELAY);      // Write Address ( The first address of flash module is 0x00000000 )
 	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-	HAL_Delay(20);
+	HAL_Delay(EEPROM_OP_DELAY);
 }
 
 static void Flash_Write_Data(void)
 {
+	//if(eeprom_bank==0) sendToDebug_str("SAVE EEPROM BANK 1\r\n");
+	//if(eeprom_bank==1) sendToDebug_str("SAVE EEPROM BANK 2\r\n");
+	
 	for (uint8_t page = 0; page <= (sizeof(TRX) / 0xFF); page++)
 	{
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);     // CS to low
@@ -205,12 +218,15 @@ static void Flash_Write_Data(void)
 		HAL_SPI_Transmit(&hspi1, Address, sizeof(Address), HAL_MAX_DELAY);      // Write Address ( The first address of flash module is 0x00000000 )
 		HAL_SPI_Transmit(&hspi1, (uint8_t*)((uint32_t)&TRX + 0xFF * page), size, HAL_MAX_DELAY);       // Write
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-		HAL_Delay(10);
+		HAL_Delay(EEPROM_OP_DELAY);
 	}
 }
 
 static void Flash_Read_Data(void)
 {
+	//if(eeprom_bank==0) sendToDebug_str("LOAD EEPROM BANK 1\r\n");
+	//if(eeprom_bank==1) sendToDebug_str("LOAD EEPROM BANK 2\r\n");
+	
 	for (uint8_t page = 0; page <= (sizeof(TRX) / 0xFF); page++)
 	{
 		uint32_t BigAddress = page + (eeprom_bank * W25Q16_SECTOR_SIZE);
@@ -225,6 +241,6 @@ static void Flash_Read_Data(void)
 		HAL_SPI_Transmit(&hspi1, Address, sizeof(Address), HAL_MAX_DELAY);    // Write Address
 		HAL_SPI_Receive(&hspi1, (uint8_t*)((uint32_t)&TRX + 0xFF * page), size, HAL_MAX_DELAY);      // Read
 		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);       // CS to high
-		HAL_Delay(10);
+		HAL_Delay(EEPROM_OP_DELAY);
 	}
 }
