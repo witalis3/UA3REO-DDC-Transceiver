@@ -366,7 +366,7 @@ void PERIPH_ProcessFrontPanel(void)
 	if (PERIPH_FrontPanel.key_bandp_prev != PERIPH_FrontPanel.key_bandp && PERIPH_FrontPanel.key_bandp && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
-		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
+		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 		band++;
 		if (band >= BANDS_COUNT) band = 0;
 		if (band < 0) band = BANDS_COUNT - 1;
@@ -378,7 +378,7 @@ void PERIPH_ProcessFrontPanel(void)
 	if (PERIPH_FrontPanel.key_bandn_prev != PERIPH_FrontPanel.key_bandn && PERIPH_FrontPanel.key_bandn && !TRX.Locked)
 	{
 		TRX_Time_InActive = 0;
-		int8_t band = getBandFromFreq(CurrentVFO()->Freq);
+		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 		band--;
 		if (band >= BANDS_COUNT) band = 0;
 		if (band < 0) band = BANDS_COUNT - 1;

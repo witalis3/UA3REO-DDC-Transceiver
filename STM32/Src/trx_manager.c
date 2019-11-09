@@ -189,7 +189,8 @@ void TRX_setFrequency(int32_t _freq, VFO* vfo)
 	if (_freq >= MAX_FREQ_HZ) _freq = MAX_FREQ_HZ;
 
 	vfo->Freq = _freq;
-	if (getBandFromFreq(_freq) >= 0) TRX.saved_freq[getBandFromFreq(_freq)] = _freq;
+	int8_t bandFromFreq = getBandFromFreq(_freq, false);
+	if (bandFromFreq >= 0) TRX.saved_freq[bandFromFreq] = _freq;
 	if (TRX.BandMapEnabled)
 	{
 		uint8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);

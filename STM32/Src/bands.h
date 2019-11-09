@@ -23,6 +23,6 @@ typedef struct {
 
 extern const BAND_MAP BANDS[];
 extern uint8_t getModeFromFreq(uint32_t freq);
-extern int8_t getBandFromFreq(uint32_t freq);
+extern int8_t getBandFromFreq(uint32_t freq, bool nearest);
 
 #endif

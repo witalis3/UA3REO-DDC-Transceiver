@@ -1,5 +1,6 @@
 #include "bands.h"
 #include "functions.h"
+#include <stdlib.h>
 
 const BAND_MAP BANDS[] =
 {
@@ -376,11 +377,32 @@ const BAND_MAP BANDS[] =
 	//
 };
 
-int8_t getBandFromFreq(uint32_t freq)
+int8_t getBandFromFreq(uint32_t freq, bool nearest)
 {
-	for (int b = 0; b < BANDS_COUNT; b++)
+	for (uint16_t b = 0; b < BANDS_COUNT; b++)
 		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq)
 			return b;
+		
+	if(nearest)
+	{
+		uint16_t near_band = 0;
+		uint32_t near_diff = 999999;
+		for (uint16_t b = 0; b < BANDS_COUNT; b++)
+		{
+			if (abs((int32_t)BANDS[b].startFreq - (int32_t)freq) < near_diff)
+			{
+				near_diff = abs((int32_t)BANDS[b].startFreq - (int32_t)freq);
+				near_band = b;
+			}
+			if (abs((int32_t)BANDS[b].endFreq - (int32_t)freq) < near_diff)
+			{
+				near_diff = abs((int32_t)BANDS[b].endFreq - (int32_t)freq);
+				near_band = b;
+			}
+		}
+		return near_band;
+	}		
+	
 	return -1;
 }
 
