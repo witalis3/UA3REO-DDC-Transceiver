@@ -1,98 +1,150 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<EnsembleReport name="rx_cic" kind="rx_cic" version="1.0" fabric="QSYS">
+<EnsembleReport name="tx_cic" kind="system" version="18.1" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2019.11.09.20:12:51 -->
+ <!-- 2019.11.09.20:12:23 -->
  <!-- A collection of modules and connections -->
- <parameter name="AUTO_GENERATION_ID">
-  <type>java.lang.Integer</type>
-  <value>1573315971</value>
+ <parameter name="clockCrossingAdapter">
+  <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
+  <value>HANDSHAKE</value>
   <derived>false</derived>
   <enabled>true</enabled>
-  <visible>false</visible>
+  <visible>true</visible>
   <valid>true</valid>
-  <sysinfo_type>GENERATION_ID</sysinfo_type>
  </parameter>
- <parameter name="AUTO_UNIQUE_ID">
-  <type>java.lang.String</type>
-  <value></value>
-  <derived>false</derived>
-  <enabled>true</enabled>
-  <visible>false</visible>
-  <valid>true</valid>
-  <sysinfo_type>UNIQUE_ID</sysinfo_type>
- </parameter>
- <parameter name="AUTO_DEVICE_FAMILY">
-  <type>java.lang.String</type>
-  <value>CYCLONEIVE</value>
-  <derived>false</derived>
-  <enabled>true</enabled>
-  <visible>false</visible>
-  <valid>true</valid>
-  <sysinfo_type>DEVICE_FAMILY</sysinfo_type>
- </parameter>
- <parameter name="AUTO_DEVICE">
+ <parameter name="device">
   <type>java.lang.String</type>
   <value>EP4CE22E22C8</value>
   <derived>false</derived>
   <enabled>true</enabled>
-  <visible>false</visible>
+  <visible>true</visible>
   <valid>true</valid>
-  <sysinfo_type>DEVICE</sysinfo_type>
  </parameter>
- <parameter name="AUTO_DEVICE_SPEEDGRADE">
+ <parameter name="deviceFamily">
+  <type>java.lang.String</type>
+  <value>CYCLONEIVE</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>true</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="deviceSpeedGrade">
   <type>java.lang.String</type>
   <value>8</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
   <valid>true</valid>
-  <sysinfo_type>DEVICE_SPEEDGRADE</sysinfo_type>
  </parameter>
- <parameter name="AUTO_CLOCK_CLOCK_RATE">
-  <type>java.lang.Long</type>
-  <value>-1</value>
+ <parameter name="fabricMode">
+  <type>com.altera.sopcmodel.ensemble.Ensemble$EFabricMode</type>
+  <value>QSYS</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
   <valid>true</valid>
-  <sysinfo_type>CLOCK_RATE</sysinfo_type>
-  <sysinfo_arg>clock</sysinfo_arg>
- </parameter>
- <parameter name="AUTO_CLOCK_CLOCK_DOMAIN">
-  <type>java.lang.Integer</type>
-  <value>-1</value>
-  <derived>false</derived>
-  <enabled>true</enabled>
-  <visible>false</visible>
-  <valid>true</valid>
-  <sysinfo_type>CLOCK_DOMAIN</sysinfo_type>
-  <sysinfo_arg>clock</sysinfo_arg>
- </parameter>
- <parameter name="AUTO_CLOCK_RESET_DOMAIN">
-  <type>java.lang.Integer</type>
-  <value>-1</value>
-  <derived>false</derived>
-  <enabled>true</enabled>
-  <visible>false</visible>
-  <valid>true</valid>
-  <sysinfo_type>RESET_DOMAIN</sysinfo_type>
-  <sysinfo_arg>clock</sysinfo_arg>
- </parameter>
- <parameter name="deviceFamily">
-  <type>java.lang.String</type>
-  <value>Cyclone IV E</value>
-  <derived>false</derived>
-  <enabled>true</enabled>
-  <visible>false</visible>
-  <valid>true</valid>
-  <sysinfo_type>DEVICE_FAMILY</sysinfo_type>
  </parameter>
  <parameter name="generateLegacySim">
   <type>boolean</type>
   <value>false</value>
   <derived>false</derived>
   <enabled>true</enabled>
+  <visible>false</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="generationId">
+  <type>int</type>
+  <value>1573315942</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
   <visible>true</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="globalResetBus">
+  <type>boolean</type>
+  <value>false</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>false</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="hdlLanguage">
+  <type>com.altera.entityinterfaces.moduleext.IModuleGenerateHDL$HDLLanguage</type>
+  <value>VERILOG</value>
+  <derived>false</derived>
+  <enabled>false</enabled>
+  <visible>false</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="hideFromIPCatalog">
+  <type>boolean</type>
+  <value>true</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>true</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="lockedInterfaceDefinition">
+  <type>com.altera.sopcmodel.definition.BoundaryDefinition</type>
+  <value></value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>false</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="maxAdditionalLatency">
+  <type>int</type>
+  <value>1</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>true</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="projectName">
+  <type>java.lang.String</type>
+  <value>UA3REO.qpf</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>false</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="sopcBorderPoints">
+  <type>boolean</type>
+  <value>false</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>false</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="systemHash">
+  <type>long</type>
+  <value>0</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>false</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="testBenchDutName">
+  <type>java.lang.String</type>
+  <value></value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>false</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="timeStamp">
+  <type>long</type>
+  <value>0</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>false</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="useTestBenchNamingPattern">
+  <type>boolean</type>
+  <value>false</value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>false</visible>
   <valid>true</valid>
  </parameter>
  <module name="cic_ii_0" kind="altera_cic_ii" version="18.1" path="cic_ii_0">
@@ -118,7 +170,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="FILTER_TYPE">
    <type>java.lang.String</type>
-   <value>decimator</value>
+   <value>interpolator</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -126,7 +178,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="STAGES">
    <type>int</type>
-   <value>5</value>
+   <value>10</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -150,7 +202,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="RCF_FIX">
    <type>int</type>
-   <value>256</value>
+   <value>2560</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -174,7 +226,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="RCF_MIN">
    <type>int</type>
-   <value>256</value>
+   <value>2560</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -182,7 +234,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="RCF_MAX">
    <type>int</type>
-   <value>256</value>
+   <value>2560</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -206,7 +258,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="IN_WIDTH">
    <type>int</type>
-   <value>31</value>
+   <value>16</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -222,7 +274,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="ROUND_TYPE">
    <type>java.lang.String</type>
-   <value>CONV_ROUND</value>
+   <value>TRUNCATE</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -230,7 +282,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="REQ_OUT_WIDTH">
    <type>int</type>
-   <value>32</value>
+   <value>16</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -238,7 +290,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="OUT_WIDTH">
    <type>int</type>
-   <value>32</value>
+   <value>16</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -310,7 +362,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_0_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -318,7 +370,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_0_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -326,7 +378,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_1_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -334,7 +386,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_1_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -342,7 +394,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_2_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -350,7 +402,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_2_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -358,7 +410,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_3_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -366,7 +418,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_3_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -374,7 +426,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_4_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -382,7 +434,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_4_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -390,7 +442,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_5_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -398,7 +450,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_5_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -406,7 +458,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_6_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -414,7 +466,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_6_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -422,7 +474,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_7_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -430,7 +482,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_7_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -438,7 +490,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_8_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -446,7 +498,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_8_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -454,7 +506,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_9_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -462,7 +514,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_9_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -470,7 +522,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_10_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -478,7 +530,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_10_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -486,7 +538,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="C_STAGE_11_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -494,7 +546,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="I_STAGE_11_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -502,7 +554,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="MAX_I_STAGE_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -510,7 +562,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="MAX_C_STAGE_WIDTH">
    <type>int</type>
-   <value>71</value>
+   <value>118</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -697,7 +749,7 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>in_data</name>
     <direction>Input</direction>
-    <width>31</width>
+    <width>16</width>
     <role>in_data</role>
    </port>
   </interface>
@@ -746,7 +798,7 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>out_data</name>
     <direction>Output</direction>
-    <width>32</width>
+    <width>16</width>
     <role>out_data</role>
    </port>
    <port>
@@ -802,5 +854,5 @@ parameters are a RESULT of the module parameters. -->
   <version>18.1</version>
  </plugin>
  <reportVersion>18.1 625</reportVersion>
- <uniqueIdentifier></uniqueIdentifier>
+ <uniqueIdentifier>00FF3199AA160000016E50F01A90</uniqueIdentifier>
 </EnsembleReport>
