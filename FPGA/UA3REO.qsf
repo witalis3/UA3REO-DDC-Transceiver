@@ -214,6 +214,7 @@ set_global_assignment -name VHDL_FILE rx_hilb.vhd
 set_global_assignment -name SOURCE_FILE Debug_Probes.spf
 set_global_assignment -name QIP_FILE mixer.qip
 set_global_assignment -name SDC_FILE SDC.sdc
+set_global_assignment -name QSYS_FILE clock_buffer.qsys
 set_global_assignment -name QSYS_FILE rx_cic.qsys
 set_global_assignment -name QSYS_FILE tx_cic.qsys
 set_global_assignment -name QSYS_FILE nco.qsys

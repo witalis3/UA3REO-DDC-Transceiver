@@ -21,7 +21,7 @@ refer to the applicable agreement for further details.
 (header "graphic" (version "1.4"))
 (pin
 	(input)
-	(rect 144 216 320 232)
+	(rect -104 -160 72 -144)
 	(text "INPUT" (rect 133 0 161 10)(font "Arial" (font_size 6)))
 	(text "clk_sys" (rect 9 0 47 12)(font "Arial" ))
 	(pt 176 8)
@@ -34,7 +34,7 @@ refer to the applicable agreement for further details.
 		(line (pt 117 12)(pt 121 8))
 	)
 	(text "GND" (rect 136 7 157 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect 88 232 144 256))
+	(annotation_block (location)(rect -160 -144 -104 -120))
 )
 (pin
 	(input)
@@ -123,7 +123,7 @@ refer to the applicable agreement for further details.
 )
 (pin
 	(input)
-	(rect -680 -40 -504 -24)
+	(rect -928 56 -752 72)
 	(text "INPUT" (rect 133 0 161 10)(font "Arial" (font_size 6)))
 	(text "ADC_CLK" (rect 9 0 59 12)(font "Arial" ))
 	(pt 176 8)
@@ -136,7 +136,7 @@ refer to the applicable agreement for further details.
 		(line (pt 117 12)(pt 121 8))
 	)
 	(text "VCC" (rect 136 7 156 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect -736 -24 -680 0))
+	(annotation_block (location)(rect -984 72 -928 96))
 )
 (pin
 	(output)
@@ -157,7 +157,7 @@ refer to the applicable agreement for further details.
 )
 (pin
 	(output)
-	(rect 1224 704 1400 720)
+	(rect 1256 704 1432 720)
 	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
 	(text "AUDIO_I2S_CLOCK" (rect 90 0 191 12)(font "Arial" ))
 	(pt 0 8)
@@ -170,11 +170,11 @@ refer to the applicable agreement for further details.
 		(line (pt 82 8)(pt 78 12))
 		(line (pt 78 12)(pt 82 8))
 	)
-	(annotation_block (location)(rect 1400 720 1464 744))
+	(annotation_block (location)(rect 1432 720 1496 744))
 )
 (pin
 	(output)
-	(rect 1120 768 1296 784)
+	(rect 1256 776 1432 792)
 	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
 	(text "AUDIO_48K_CLOCK" (rect 90 0 193 12)(font "Arial" ))
 	(pt 0 8)
@@ -187,7 +187,7 @@ refer to the applicable agreement for further details.
 		(line (pt 82 8)(pt 78 12))
 		(line (pt 78 12)(pt 82 8))
 	)
-	(annotation_block (location)(rect 1296 784 1360 808))
+	(annotation_block (location)(rect 1432 792 1496 816))
 )
 (pin
 	(output)
@@ -2664,6 +2664,82 @@ refer to the applicable agreement for further details.
 		(line (pt 8 8)(pt 24 8))
 	)
 )
+(symbol
+	(rect -736 -8 -464 96)
+	(text "clock_buffer" (rect 99 -1 180 15)(font "Arial" (font_size 10)))
+	(text "ADC_CLOCK_BUFFER" (rect 8 88 115 105)(font "Intel Clear" ))
+	(port
+		(pt 0 72)
+		(input)
+		(text "inclk" (rect 0 0 24 14)(font "Arial" (font_size 8)))
+		(text "inclk" (rect 4 61 28 75)(font "Arial" (font_size 8)))
+		(line (pt 0 72)(pt 96 72))
+	)
+	(port
+		(pt 272 72)
+		(output)
+		(text "outclk" (rect 0 0 33 14)(font "Arial" (font_size 8)))
+		(text "outclk" (rect 242 61 275 75)(font "Arial" (font_size 8)))
+		(line (pt 272 72)(pt 160 72))
+	)
+	(drawing
+		(text "altclkctrl_input" (rect 13 43 105 58)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "inclk" (rect 101 67 123 79)(font "Arial" (color 0 0 0)))
+		(text "altclkctrl_output" (rect 161 43 261 58)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "outclk" (rect 132 67 161 79)(font "Arial" (color 0 0 0)))
+		(text " clock_buffer " (rect 214 88 283 100)(font "Arial" ))
+		(line (pt 96 32)(pt 160 32))
+		(line (pt 160 32)(pt 160 88))
+		(line (pt 96 88)(pt 160 88))
+		(line (pt 96 32)(pt 96 88))
+		(line (pt 97 52)(pt 97 76))
+		(line (pt 98 52)(pt 98 76))
+		(line (pt 159 52)(pt 159 76))
+		(line (pt 158 52)(pt 158 76))
+		(line (pt 0 0)(pt 272 0))
+		(line (pt 272 0)(pt 272 104))
+		(line (pt 0 104)(pt 272 104))
+		(line (pt 0 0)(pt 0 104))
+	)
+)
+(symbol
+	(rect 80 -224 352 -120)
+	(text "clock_buffer" (rect 99 -1 180 15)(font "Arial" (font_size 10)))
+	(text "SYS_CLOCK_BUFFER" (rect 8 88 113 105)(font "Intel Clear" ))
+	(port
+		(pt 0 72)
+		(input)
+		(text "inclk" (rect 0 0 24 14)(font "Arial" (font_size 8)))
+		(text "inclk" (rect 4 61 28 75)(font "Arial" (font_size 8)))
+		(line (pt 0 72)(pt 96 72))
+	)
+	(port
+		(pt 272 72)
+		(output)
+		(text "outclk" (rect 0 0 33 14)(font "Arial" (font_size 8)))
+		(text "outclk" (rect 242 61 275 75)(font "Arial" (font_size 8)))
+		(line (pt 272 72)(pt 160 72))
+	)
+	(drawing
+		(text "altclkctrl_input" (rect 13 43 105 58)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "inclk" (rect 101 67 123 79)(font "Arial" (color 0 0 0)))
+		(text "altclkctrl_output" (rect 161 43 261 58)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "outclk" (rect 132 67 161 79)(font "Arial" (color 0 0 0)))
+		(text " clock_buffer " (rect 214 88 283 100)(font "Arial" ))
+		(line (pt 96 32)(pt 160 32))
+		(line (pt 160 32)(pt 160 88))
+		(line (pt 96 88)(pt 160 88))
+		(line (pt 96 32)(pt 96 88))
+		(line (pt 97 52)(pt 97 76))
+		(line (pt 98 52)(pt 98 76))
+		(line (pt 159 52)(pt 159 76))
+		(line (pt 158 52)(pt 158 76))
+		(line (pt 0 0)(pt 272 0))
+		(line (pt 272 0)(pt 272 104))
+		(line (pt 0 104)(pt 272 104))
+		(line (pt 0 0)(pt 0 104))
+	)
+)
 (connector
 	(pt 528 32)
 	(pt 440 32)
@@ -2813,14 +2889,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 1208 712)
-	(pt 1224 712)
-)
-(connector
-	(pt 1120 776)
-	(pt 1112 776)
-)
-(connector
 	(pt 520 424)
 	(pt 376 424)
 )
@@ -2852,10 +2920,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 320 224)
-	(pt 376 224)
-)
-(connector
 	(pt 376 224)
 	(pt 480 224)
 )
@@ -2878,10 +2942,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt -184 -16)
 	(pt -184 40)
-)
-(connector
-	(pt -448 -104)
-	(pt -448 -32)
 )
 (connector
 	(pt 48 -16)
@@ -3309,10 +3369,6 @@ refer to the applicable agreement for further details.
 	(pt 1112 720)
 )
 (connector
-	(pt 1096 640)
-	(pt 1096 688)
-)
-(connector
 	(pt -504 -48)
 	(pt -432 -48)
 	(bus)
@@ -3438,10 +3494,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 376 120)
 	(pt 776 120)
-)
-(connector
-	(pt 376 8)
-	(pt 376 120)
 )
 (connector
 	(pt 376 120)
@@ -3642,37 +3694,8 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 1168 744)
-	(pt 1168 752)
-)
-(connector
-	(pt 2304 288)
-	(pt 2304 752)
-)
-(connector
 	(pt 2280 288)
 	(pt 2304 288)
-)
-(connector
-	(pt 1168 752)
-	(pt 2304 752)
-)
-(connector
-	(text "HILB_CLOCK" (rect 1122 792 1185 809)(font "Intel Clear" ))
-	(pt 1080 808)
-	(pt 1184 808)
-)
-(connector
-	(pt 1080 704)
-	(pt 1080 808)
-)
-(connector
-	(pt 1072 704)
-	(pt 1080 704)
-)
-(connector
-	(pt 1080 704)
-	(pt 1128 704)
 )
 (connector
 	(text "FLASH_ENABLE" (rect 2410 648 2486 665)(font "Intel Clear" ))
@@ -3805,36 +3828,12 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 1112 656)
-	(pt 1512 656)
-)
-(connector
-	(pt 1112 656)
-	(pt 1112 720)
-)
-(connector
-	(pt 1112 720)
-	(pt 1112 776)
-)
-(connector
-	(pt 1096 640)
-	(pt 1288 640)
-)
-(connector
 	(pt 1288 240)
 	(pt 1304 240)
 )
 (connector
 	(pt 1304 112)
 	(pt 1288 112)
-)
-(connector
-	(pt 1288 112)
-	(pt 1288 240)
-)
-(connector
-	(pt 1288 240)
-	(pt 1288 640)
 )
 (connector
 	(pt 1304 272)
@@ -4024,10 +4023,6 @@ refer to the applicable agreement for further details.
 	(pt 1536 344)
 )
 (connector
-	(pt 1512 656)
-	(pt 1512 344)
-)
-(connector
 	(pt 1528 208)
 	(pt 1528 240)
 	(bus)
@@ -4184,10 +4179,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt -504 -32)
-	(pt -448 -32)
-)
-(connector
 	(pt -448 -32)
 	(pt -432 -32)
 )
@@ -4223,13 +4214,113 @@ refer to the applicable agreement for further details.
 	(pt 864 440)
 	(pt 864 432)
 )
+(connector
+	(pt 72 -152)
+	(pt 80 -152)
+)
+(connector
+	(pt 352 -152)
+	(pt 376 -152)
+)
+(connector
+	(pt 376 -152)
+	(pt 376 8)
+)
+(connector
+	(pt 376 8)
+	(pt 376 120)
+)
+(connector
+	(pt 1096 688)
+	(pt 1096 600)
+)
+(connector
+	(pt 1096 600)
+	(pt 1288 600)
+)
+(connector
+	(pt 1288 112)
+	(pt 1288 240)
+)
+(connector
+	(pt 1288 240)
+	(pt 1288 600)
+)
+(connector
+	(pt 1112 616)
+	(pt 1512 616)
+)
+(connector
+	(pt 1512 344)
+	(pt 1512 616)
+)
+(connector
+	(pt 1168 744)
+	(pt 1168 760)
+)
+(connector
+	(pt 2304 288)
+	(pt 2304 760)
+)
+(connector
+	(pt 1168 760)
+	(pt 2304 760)
+)
+(connector
+	(pt 1208 712)
+	(pt 1256 712)
+)
+(connector
+	(pt -448 64)
+	(pt -464 64)
+)
+(connector
+	(pt -448 -104)
+	(pt -448 -32)
+)
+(connector
+	(pt -448 -32)
+	(pt -448 64)
+)
+(connector
+	(pt -752 64)
+	(pt -736 64)
+)
+(connector
+	(pt 1112 784)
+	(pt 1256 784)
+)
+(connector
+	(pt 1112 616)
+	(pt 1112 720)
+)
+(connector
+	(pt 1112 720)
+	(pt 1112 784)
+)
+(connector
+	(text "HILB_CLOCK" (rect 1122 792 1185 809)(font "Intel Clear" ))
+	(pt 1184 808)
+	(pt 1088 808)
+)
+(connector
+	(pt 1088 704)
+	(pt 1088 808)
+)
+(connector
+	(pt 1072 704)
+	(pt 1088 704)
+)
+(connector
+	(pt 1088 704)
+	(pt 1128 704)
+)
 (junction (pt 376 120))
 (junction (pt 440 32))
 (junction (pt 472 504))
 (junction (pt 360 320))
 (junction (pt 3176 224))
 (junction (pt 3424 224))
-(junction (pt 1080 704))
 (junction (pt 440 448))
 (junction (pt 1112 720))
 (junction (pt 376 224))
@@ -4250,7 +4341,6 @@ refer to the applicable agreement for further details.
 (junction (pt -56 744))
 (junction (pt -184 -16))
 (junction (pt -232 -16))
-(junction (pt -448 -32))
 (junction (pt -184 112))
 (junction (pt -232 128))
 (junction (pt -184 160))
@@ -4297,3 +4387,6 @@ refer to the applicable agreement for further details.
 (junction (pt 3176 240))
 (junction (pt 2760 408))
 (junction (pt 2760 240))
+(junction (pt 376 8))
+(junction (pt -448 -32))
+(junction (pt 1088 704))
