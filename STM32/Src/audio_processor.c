@@ -30,8 +30,7 @@ float32_t FPGA_Audio_Buffer_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = { 0 };
 volatile float32_t Processor_AVG_amplitude = 0.0f; //средняя амплитуда семплов при прёме
 volatile float32_t Processor_TX_MAX_amplitude_IN = 0.0f; //средняя амплитуда семплов при передаче (до процессора)
 volatile float32_t Processor_TX_MAX_amplitude_OUT = 0.0f; //средняя амплитуда семплов при передаче (после процессора)
-volatile float32_t Processor_RX_Audio_Samples_MAX_value = 0.0f; //максимальное значение семплов
-volatile float32_t Processor_RX_Audio_Samples_MIN_value = 0.0f; //минимальное значение семплов
+volatile float32_t Processor_RX_Power_value = 0.0f; //максимальное значение силы сигнала
 volatile float32_t ALC_need_gain = 1.0f;
 volatile float32_t fm_sql_avg = 0.0f;
 volatile float32_t Processor_selected_RFpower_amplitude = 0.0f;
@@ -86,14 +85,14 @@ void processRxAudio(void)
 		readHalfFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_VOICE_I[0], (uint32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_AUDIO_BUFFER_SIZE);
 		break;
 	}
-
+	
 	//Process DC corrector filter
 	dc_filter(FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 0);
 	dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 1);
 
 	//RF Gain
-	arm_scale_f32(FPGA_Audio_Buffer_I_tmp, TRX.RF_Gain, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-	arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, TRX.RF_Gain, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(FPGA_Audio_Buffer_I_tmp, 50, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, 50, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 
 	switch (TRX_getMode(current_vfo))
 	{
@@ -532,13 +531,11 @@ static void doRX_AGC(void)
 static void doRX_SMETER(void)
 {
 	//Prepare data to calculate s-meter
-	for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
-	{
-		if (FPGA_Audio_Buffer_I_tmp[i] > Processor_RX_Audio_Samples_MAX_value) Processor_RX_Audio_Samples_MAX_value = FPGA_Audio_Buffer_I_tmp[i];
-		if (FPGA_Audio_Buffer_Q_tmp[i] > Processor_RX_Audio_Samples_MAX_value) Processor_RX_Audio_Samples_MAX_value = FPGA_Audio_Buffer_Q_tmp[i];
-		if (FPGA_Audio_Buffer_I_tmp[i] < Processor_RX_Audio_Samples_MIN_value) Processor_RX_Audio_Samples_MIN_value = FPGA_Audio_Buffer_I_tmp[i];
-		if (FPGA_Audio_Buffer_Q_tmp[i] < Processor_RX_Audio_Samples_MIN_value) Processor_RX_Audio_Samples_MIN_value = FPGA_Audio_Buffer_Q_tmp[i];
-	}
+	float32_t i,q = 0;
+	arm_power_f32(FPGA_Audio_Buffer_I_tmp,FPGA_AUDIO_BUFFER_HALF_SIZE, &i);
+	arm_power_f32(FPGA_Audio_Buffer_Q_tmp,FPGA_AUDIO_BUFFER_HALF_SIZE, &q);
+	if (i > Processor_RX_Power_value) Processor_RX_Power_value = i;
+	if (q > Processor_RX_Power_value) Processor_RX_Power_value = q;
 }
 
 static void doRX_COPYCHANNEL(void)

@@ -43,8 +43,7 @@ extern volatile float32_t ALC_need_gain_new;
 extern float32_t FPGA_Audio_Buffer_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern float32_t FPGA_Audio_Buffer_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern volatile float32_t fm_sql_avg;
-extern volatile float32_t Processor_RX_Audio_Samples_MAX_value;
-extern volatile float32_t Processor_RX_Audio_Samples_MIN_value;
+extern volatile float32_t Processor_RX_Power_value;
 extern volatile float32_t Processor_selected_RFpower_amplitude;
 
 #endif

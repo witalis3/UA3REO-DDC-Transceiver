@@ -27,7 +27,7 @@ static void Flash_Write_Data(void);
 static void Flash_Read_Data(void);
 
 struct t_CALIBRATE CALIBRATE = {
-	.rf_out_power = {
+	.rf_out_power = { //калибровка выходной мощности на каждый мегагерц
 		33, // 0 mhz
 		20, // 1 mhz
 		24, // 2 mhz
@@ -61,14 +61,14 @@ struct t_CALIBRATE CALIBRATE = {
 		100, // 30 mhz
 		100    // 31+ mhz
 	},
-	.adc_calibration = 3.5f,
-	.swr_meter_Rtop = 0.1f,
-	.swr_meter_Rbottom = 510.0f,
-	.swr_meter_fwd_diff = 0.0f,
-	.swr_meter_ref_diff = -0.055f,
-	.swr_meter_diode_drop = 0.62f,
-	.swr_meter_trans_rate = 10.0f,
-	.swr_meter_ref_sub = 0.0f,
+	.adc_calibration = 0.001f, //калибровка АЦП, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
+	.swr_meter_Rtop = 0.1f, //Верхнее плечо делителя напряжения КСВ метра, ом
+	.swr_meter_Rbottom = 510.0f, //Нижнее плечо делителя напряжения КСВ метра, ом
+	.swr_meter_fwd_diff = 0.0f, //Разница напряжения FWD получаемым АЦП с реальным, в
+	.swr_meter_ref_diff = -0.055f, //Разница напряжения REF получаемым АЦП с реальным, в
+	.swr_meter_diode_drop = 0.62f, //Падение напряжения на диодах
+	.swr_meter_trans_rate = 10.0f, //Коэффициент трансформации КСВ метра
+	.swr_meter_ref_sub = 0.0f, //% вычитаемого FWD из REF
 };
 
 void LoadSettings(bool clear)
@@ -115,7 +115,6 @@ void LoadSettings(bool clear)
 		TRX.FM_Filter = 15000; //дефолтное значение ширины фильтра FM
 		TRX.RF_Power = 20; //выходная мощность (%)
 		TRX.FM_SQL_threshold = 1; //FM-шумодав
-		TRX.RF_Gain = 50; //усиление ВЧ
 		for (uint8_t i = 0; i < BANDS_COUNT; i++) TRX.saved_freq[i] = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
 		TRX.FFT_Zoom = 1; //приближение спектра FFT
 		TRX.AutoGain = false; //авто-управление предусилителем и аттенюатором

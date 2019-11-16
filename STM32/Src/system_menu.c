@@ -16,7 +16,6 @@ static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
 static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 
-static void SYSMENU_HANDL_TRX_RFGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_TRX_FMSquelch(int8_t direction);
@@ -92,7 +91,6 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 {
 	{"RF Power", SYSMENU_UINT8, (uint32_t *)&TRX.RF_Power, SYSMENU_HANDL_TRX_RFPower},
 	{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_TRX_FMSquelch},
-	{"RF Gain", SYSMENU_UINT8, (uint32_t *)&TRX.RF_Gain, SYSMENU_HANDL_TRX_RFGain},
 	{"AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.AGC_speed, SYSMENU_HANDL_TRX_AGCSpeed},
 	{"Band Map", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
 	{"AutoGainer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
@@ -263,13 +261,6 @@ static void SYSMENU_HANDL_TRX_FMSquelch(int8_t direction)
 	if(direction<0 && TRX.FM_SQL_threshold == 0) return;
 	TRX.FM_SQL_threshold += direction;
 	if (TRX.FM_SQL_threshold > 10) TRX.FM_SQL_threshold = 10;
-}
-
-static void SYSMENU_HANDL_TRX_RFGain(int8_t direction)
-{
-	TRX.RF_Gain += direction;
-	if (TRX.RF_Gain < 1) TRX.RF_Gain = 1;
-	if (TRX.RF_Gain > 250) TRX.RF_Gain = 250;
 }
 
 static void SYSMENU_HANDL_TRX_MICIN(int8_t direction)

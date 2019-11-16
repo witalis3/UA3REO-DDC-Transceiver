@@ -69,15 +69,15 @@
 #define EEPROM_OP_DELAY 30
 
 extern struct t_CALIBRATE {
-	uint8_t rf_out_power[32]; //калибровка выходной мощности на каждый мегагерц
-	float32_t adc_calibration; //коэффициент, на который умножаем данные с АЦП, чтобы получить реальное напряжение, устанавливается при калибровке трансивера по S9 (ATT, PREAMP выключен, LPF,BPF включен)
-	float32_t swr_meter_Rtop; //Верхнее плечо делителя напряжения КСВ метра, ом
-	float32_t swr_meter_Rbottom; //Нижнее плечо делителя напряжения КСВ метра, ом
-	float32_t swr_meter_fwd_diff; //Разница напряжения FWD получаемым АЦП с реальным, в
-	float32_t swr_meter_ref_diff; //Разница напряжения REF получаемым АЦП с реальным, в
-	float32_t swr_meter_diode_drop; //Падение напряжения на диодах
-	float32_t swr_meter_trans_rate; //Коэффициент трансформации КСВ метра
-	float32_t swr_meter_ref_sub; //% вычитаемого FWD из REF
+	uint8_t rf_out_power[32]; 
+	float32_t adc_calibration; 
+	float32_t swr_meter_Rtop; 
+	float32_t swr_meter_Rbottom; 
+	float32_t swr_meter_fwd_diff; 
+	float32_t swr_meter_ref_diff; 
+	float32_t swr_meter_diode_drop; 
+	float32_t swr_meter_trans_rate; 
+	float32_t swr_meter_ref_sub; 
 } CALIBRATE;
 
 typedef struct {
@@ -109,7 +109,6 @@ extern struct TRX_SETTINGS {
 	uint16_t FM_Filter;
 	uint8_t RF_Power;
 	uint8_t	FM_SQL_threshold;
-	uint8_t	RF_Gain;
 	uint32_t saved_freq[BANDS_COUNT];
 	uint8_t FFT_Zoom;
 	bool AutoGain;
