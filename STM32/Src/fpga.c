@@ -224,6 +224,20 @@ inline void FPGA_fpgadata_sendparam(void)
 	//clock
 	FPGA_clockRise();
 	FPGA_clockFall();
+	
+	//STAGE 5
+	//OUT CIC-GAIN
+	FPGA_writePacket(TRX.CIC_GAINER_val);
+	//clock
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	//STAGE 5
+	//OUT CICCOMP-GAIN
+	FPGA_writePacket(TRX.CICFIR_GAINER_val);
+	//clock
+	FPGA_clockRise();
+	FPGA_clockFall();
 }
 
 inline void FPGA_fpgadata_getparam(void)

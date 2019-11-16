@@ -36,6 +36,8 @@ static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
 static void SYSMENU_HANDL_ADC_SHDN(int8_t direction);
 static void SYSMENU_HANDL_ADC_DITH(int8_t direction);
+static void SYSMENU_HANDL_ADC_CIC(int8_t direction);
+static void SYSMENU_HANDL_ADC_CICCOMP(int8_t direction);
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
 static void SYSMENU_HANDL_Standby_Time(int8_t direction);
 static void SYSMENU_HANDL_CWDecoder(int8_t direction);
@@ -145,6 +147,8 @@ static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 	{"ADC Dither", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
 	{"ADC Randomizer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
 	{"ADC Shutdown", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
+	{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CIC_GAINER_val, SYSMENU_HANDL_ADC_CIC},
+	{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CICFIR_GAINER_val, SYSMENU_HANDL_ADC_CICCOMP},
 };
 static uint8_t sysmenu_adc_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
 
@@ -393,26 +397,43 @@ static void SYSMENU_HANDL_FFT_Window(int8_t direction)
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction)
 {
-	TRX.ADC_PGA = !TRX.ADC_PGA;
+	if (direction > 0) TRX.ADC_PGA = true;
+	if (direction < 0) TRX.ADC_PGA = false;
 	FPGA_NeedSendParams = true;
 }
 
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction)
 {
-	TRX.ADC_RAND = !TRX.ADC_RAND;
+	if (direction > 0) TRX.ADC_RAND = true;
+	if (direction < 0) TRX.ADC_RAND = false;
 	FPGA_NeedSendParams = true;
 }
 
 static void SYSMENU_HANDL_ADC_SHDN(int8_t direction)
 {
-	TRX.ADC_SHDN = !TRX.ADC_SHDN;
+	if (direction > 0) TRX.ADC_SHDN = true;
+	if (direction < 0) TRX.ADC_SHDN = false;
 	FPGA_NeedSendParams = true;
 }
 
 static void SYSMENU_HANDL_ADC_DITH(int8_t direction)
 {
-	TRX.ADC_DITH = !TRX.ADC_DITH;
+	if (direction > 0) TRX.ADC_DITH = true;
+	if (direction < 0) TRX.ADC_DITH = false;
 	FPGA_NeedSendParams = true;
+}
+
+static void SYSMENU_HANDL_ADC_CIC(int8_t direction)
+{
+	TRX.CIC_GAINER_val += direction;
+	if (TRX.CIC_GAINER_val < 32) TRX.CIC_GAINER_val = 32;
+	if (TRX.CIC_GAINER_val > 88) TRX.CIC_GAINER_val = 88;
+}
+static void SYSMENU_HANDL_ADC_CICCOMP(int8_t direction)
+{
+	TRX.CICFIR_GAINER_val += direction;
+	if (TRX.CICFIR_GAINER_val < 16) TRX.CICFIR_GAINER_val = 16;
+	if (TRX.CICFIR_GAINER_val > 64) TRX.CICFIR_GAINER_val = 64;
 }
 
 static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction)

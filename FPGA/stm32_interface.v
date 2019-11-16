@@ -11,6 +11,7 @@ ADC_IN,
 adcclk_in,
 FLASH_data_in,
 FLASH_busy,
+IQ_valid,
 
 DATA_BUS,
 freq_out,
@@ -27,7 +28,9 @@ FLASH_continue_read,
 ADC_PGA,
 ADC_RAND,
 ADC_SHDN,
-ADC_DITH
+ADC_DITH,
+CIC_GAIN,
+CICFIR_GAIN
 );
 
 input clk_in;
@@ -42,6 +45,7 @@ input signed [15:0] ADC_IN;
 input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
+input IQ_valid;
 
 output reg unsigned [21:0] freq_out=242347;
 output reg preamp_enable=0;
@@ -58,6 +62,8 @@ output reg ADC_PGA=0;
 output reg ADC_RAND=0;
 output reg ADC_SHDN=0;
 output reg ADC_DITH=0;
+output reg unsigned [7:0] CIC_GAIN=32;
+output reg unsigned [7:0] CICFIR_GAIN=32;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -65,11 +71,23 @@ reg         DATA_BUS_OE; // 1 - out 0 - in
 assign DATA_BUS = DATA_BUS_OE ? DATA_BUS_OUT : 8'bZ ;
 
 reg signed [15:0] k=1;
+reg signed [15:0] REG_SPEC_I;
+reg signed [15:0] REG_SPEC_Q;
+reg signed [15:0] REG_VOICE_I;
+reg signed [15:0] REG_VOICE_Q;
 reg signed [15:0] I_HOLD;
 reg signed [15:0] Q_HOLD;
 reg signed [15:0] ADC_MIN;
 reg signed [15:0] ADC_MAX;
 reg ADC_MINMAX_RESET;
+
+always @ (posedge IQ_valid)
+begin
+	REG_SPEC_I[15:0]=SPEC_I[15:0];
+	REG_SPEC_Q[15:0]=SPEC_Q[15:0];
+	REG_VOICE_I[15:0]=VOICE_I[15:0];
+	REG_VOICE_Q[15:0]=VOICE_Q[15:0];
+end
 
 always @ (posedge clk_in)
 begin
@@ -150,6 +168,16 @@ begin
 	else if (k==103)
 	begin
 		freq_out[7:0]=DATA_BUS[7:0];
+		k=104;
+	end
+	else if (k==104)
+	begin
+		CIC_GAIN[7:0]=DATA_BUS[7:0];
+		k=105;
+	end
+	else if (k==105)
+	begin
+		CICFIR_GAIN[7:0]=DATA_BUS[7:0];
 		k=999;
 	end
 	else if (k==200) //SEND PARAMS
@@ -203,8 +231,8 @@ begin
 	end
 	else if (k==400) //RX IQ SPECTRUM
 	begin
-		I_HOLD=SPEC_I;
-		Q_HOLD=SPEC_Q;
+		I_HOLD=REG_SPEC_I;
+		Q_HOLD=REG_SPEC_Q;
 		DATA_BUS_OUT[7:0]=Q_HOLD[15:8];
 		k=401;
 	end
@@ -225,8 +253,8 @@ begin
 	end
 	else if (k==404) //RX IQ VOICE
 	begin
-		I_HOLD=VOICE_I;
-		Q_HOLD=VOICE_Q;
+		I_HOLD=REG_VOICE_I;
+		Q_HOLD=REG_VOICE_Q;
 		DATA_BUS_OUT[7:0]=Q_HOLD[15:8];
 		k=405;
 	end

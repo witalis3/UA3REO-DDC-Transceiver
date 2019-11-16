@@ -141,6 +141,8 @@ extern struct TRX_SETTINGS {
 	bool Locked;
 	bool CLAR;
 	bool TWO_SIGNAL_TUNE;
+	uint8_t CIC_GAINER_val;
+	uint8_t CICFIR_GAINER_val;
 	uint8_t ENDBit;
 } TRX;
 

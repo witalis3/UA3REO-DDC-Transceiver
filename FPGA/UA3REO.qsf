@@ -107,7 +107,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[4]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[1]
 set_global_assignment -name ENABLE_DRC_SETTINGS OFF
-set_global_assignment -name AUTO_MERGE_PLLS OFF
+set_global_assignment -name AUTO_MERGE_PLLS ON
 set_location_assignment PIN_42 -to PREAMP
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[0]
@@ -146,7 +146,7 @@ set_location_assignment PIN_103 -to DAC_OUTPUT[13]
 
 set_global_assignment -name TIMING_ANALYZER_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS OFF
 set_global_assignment -name OPTIMIZATION_MODE BALANCED
-set_global_assignment -name AUTO_RAM_TO_LCELL_CONVERSION ON
+set_global_assignment -name AUTO_RAM_TO_LCELL_CONVERSION OFF
 
 set_location_assignment PIN_135 -to AUDIO_I2S_CLOCK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to AUDIO_I2S_CLOCK
@@ -203,13 +203,15 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_OUTPUT[10]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_OUTPUT[11]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_OUTPUT[12]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_OUTPUT[13]
+set_global_assignment -name ALLOW_REGISTER_RETIMING OFF
+set_global_assignment -name POWER_USE_DEVICE_CHARACTERISTICS MAXIMUM
+set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
 set_global_assignment -name BDF_FILE UA3REO.bdf
 set_global_assignment -name VERILOG_FILE DAC_corrector.v
 set_global_assignment -name VERILOG_FILE spi_interface.v
 set_global_assignment -name VERILOG_FILE data_delay.v
 set_global_assignment -name VERILOG_FILE stm32_interface.v
-set_global_assignment -name VERILOG_FILE cic_decoder.v
-set_global_assignment -name VHDL_FILE rx_ciccomp.vhd
+set_global_assignment -name VERILOG_FILE data_shifter.v
 set_global_assignment -name VHDL_FILE rx_hilb.vhd
 set_global_assignment -name SOURCE_FILE Debug_Probes.spf
 set_global_assignment -name QIP_FILE mixer.qip
@@ -220,6 +222,7 @@ set_global_assignment -name QSYS_FILE tx_cic.qsys
 set_global_assignment -name QSYS_FILE nco.qsys
 set_global_assignment -name QSYS_FILE DEBUG.qsys
 set_global_assignment -name QSYS_FILE DEBUG2.qsys
+set_global_assignment -name SOURCE_FILE rx_ciccomp.cmp
 set_global_assignment -name QIP_FILE mux16.qip
 set_global_assignment -name QIP_FILE MAIN_PLL.qip
 set_global_assignment -name QIP_FILE mux14.qip
@@ -228,4 +231,6 @@ set_global_assignment -name QIP_FILE tx_mixer.qip
 set_global_assignment -name QIP_FILE tx_summator.qip
 set_global_assignment -name QIP_FILE ADC_Latch.qip
 set_global_assignment -name QIP_FILE dac_null.qip
+set_global_assignment -name QIP_FILE rx_ciccomp.qip
+set_global_assignment -name SIP_FILE rx_ciccomp.sip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

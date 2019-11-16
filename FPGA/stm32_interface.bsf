@@ -20,9 +20,9 @@ refer to the applicable agreement for further details.
 */
 (header "symbol" (version "1.1"))
 (symbol
-	(rect 16 16 296 320)
+	(rect 16 16 296 352)
 	(text "stm32_interface" (rect 5 0 69 12)(font "Arial" ))
-	(text "inst" (rect 8 288 20 300)(font "Arial" ))
+	(text "inst" (rect 8 320 20 332)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
@@ -106,6 +106,13 @@ refer to the applicable agreement for further details.
 		(text "FLASH_busy" (rect 0 0 59 12)(font "Arial" ))
 		(text "FLASH_busy" (rect 21 203 80 215)(font "Arial" ))
 		(line (pt 0 208)(pt 16 208)(line_width 1))
+	)
+	(port
+		(pt 0 224)
+		(input)
+		(text "IQ_valid" (rect 0 0 33 12)(font "Arial" ))
+		(text "IQ_valid" (rect 21 219 54 231)(font "Arial" ))
+		(line (pt 0 224)(pt 16 224)(line_width 1))
 	)
 	(port
 		(pt 280 48)
@@ -213,6 +220,20 @@ refer to the applicable agreement for further details.
 		(line (pt 280 272)(pt 264 272)(line_width 1))
 	)
 	(port
+		(pt 280 288)
+		(output)
+		(text "CIC_GAIN[7..0]" (rect 0 0 67 12)(font "Arial" ))
+		(text "CIC_GAIN[7..0]" (rect 192 283 259 295)(font "Arial" ))
+		(line (pt 280 288)(pt 264 288)(line_width 3))
+	)
+	(port
+		(pt 280 304)
+		(output)
+		(text "CICFIR_GAIN[7..0]" (rect 0 0 83 12)(font "Arial" ))
+		(text "CICFIR_GAIN[7..0]" (rect 176 299 259 311)(font "Arial" ))
+		(line (pt 280 304)(pt 264 304)(line_width 3))
+	)
+	(port
 		(pt 280 32)
 		(bidir)
 		(text "DATA_BUS[7..0]" (rect 0 0 74 12)(font "Arial" ))
@@ -220,6 +241,6 @@ refer to the applicable agreement for further details.
 		(line (pt 280 32)(pt 264 32)(line_width 3))
 	)
 	(drawing
-		(rectangle (rect 16 16 264 288)(line_width 1))
+		(rectangle (rect 16 16 264 320)(line_width 1))
 	)
 )
