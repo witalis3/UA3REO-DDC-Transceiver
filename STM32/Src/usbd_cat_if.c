@@ -21,7 +21,7 @@ static uint8_t CAT_UserTxBufferFS[CAT_APP_TX_DATA_SIZE];
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
 static uint8_t getFT450Mode(uint8_t VFO_Mode);
-static uint8_t setFT450Mode(uint8_t FT450_Mode);
+static uint8_t setFT450Mode(char* FT450_Mode);
 static int8_t CAT_Init_FS(void);
 static int8_t CAT_DeInit_FS(void);
 static int8_t CAT_Control_FS(uint8_t cmd);
@@ -439,9 +439,9 @@ void ua3reo_dev_cat_parseCommand(void)
 			}
 			else
 			{
-				if (TRX_getMode(CurrentVFO()) != setFT450Mode(atoi(arguments)))
+				if (TRX_getMode(CurrentVFO()) != setFT450Mode(arguments))
 				{
-					TRX_setMode(setFT450Mode(atoi(arguments)), CurrentVFO());
+					TRX_setMode(setFT450Mode(arguments), CurrentVFO());
 					LCD_UpdateQuery.TopButtons = true;
 				}
 			}
@@ -692,16 +692,18 @@ static uint8_t getFT450Mode(uint8_t VFO_Mode)
 	return 1;
 }
 
-static uint8_t setFT450Mode(uint8_t FT450_Mode)
+static uint8_t setFT450Mode(char* FT450_Mode)
 {
-	if (FT450_Mode == 1) return TRX_MODE_LSB;
-	if (FT450_Mode == 2) return TRX_MODE_USB;
-	if (FT450_Mode == 8) return TRX_MODE_IQ;
-	if (FT450_Mode == 3) return TRX_MODE_CW_L;
-	if (FT450_Mode == 6) return TRX_MODE_DIGI_L;
-	if (FT450_Mode == 9) return TRX_MODE_DIGI_U;
-	if (FT450_Mode == 4) return TRX_MODE_NFM;
-	if (FT450_Mode == 5) return TRX_MODE_AM;
+	if (strcmp(FT450_Mode, "01") == 0) return TRX_MODE_LSB;
+	if (strcmp(FT450_Mode, "02") == 0) return TRX_MODE_USB;
+	if (strcmp(FT450_Mode, "08") == 0) return TRX_MODE_IQ;
+	if (strcmp(FT450_Mode, "03") == 0) return TRX_MODE_CW_L;
+	if (strcmp(FT450_Mode, "06") == 0) return TRX_MODE_DIGI_L;
+	if (strcmp(FT450_Mode, "09") == 0) return TRX_MODE_DIGI_U;
+	if (strcmp(FT450_Mode, "0C") == 0) return TRX_MODE_DIGI_U;
+	if (strcmp(FT450_Mode, "04") == 0) return TRX_MODE_NFM;
+	if (strcmp(FT450_Mode, "05") == 0) return TRX_MODE_AM;
+	sendToDebug_str3("Unknown mode ",FT450_Mode,"\r\n");
 	return TRX_MODE_USB;
 }
 
