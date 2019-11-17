@@ -273,6 +273,7 @@ static void SYSMENU_HANDL_TRX_MICIN(int8_t direction)
 	if (direction < 0) TRX.InputType_MIC = false;
 	TRX.InputType_LINE = false;
 	TRX.InputType_USB = false;
+	drawSystemMenu(false);
 	TRX_Restart_Mode();
 }
 
@@ -282,6 +283,7 @@ static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction)
 	if (direction < 0) TRX.InputType_LINE = false;
 	TRX.InputType_MIC = false;
 	TRX.InputType_USB = false;
+	drawSystemMenu(false);
 	TRX_Restart_Mode();
 }
 
@@ -291,8 +293,8 @@ static void SYSMENU_HANDL_TRX_USBIN(int8_t direction)
 	if (direction < 0) TRX.InputType_USB = false;
 	TRX.InputType_MIC = false;
 	TRX.InputType_LINE = false;
+	drawSystemMenu(false);
 	TRX_Restart_Mode();
-	NeedSaveSettings = true;
 }
 
 static void SYSMENU_HANDL_CWDecoder(int8_t direction)
@@ -463,7 +465,6 @@ static void SYSMENU_HANDL_CW_LPF_pass(int8_t direction)
 	
 	ReinitAudioFilters();
 	TRX_setMode(TRX_getMode(CurrentVFO()),CurrentVFO());
-	NeedSaveSettings = true;
 }
 
 static void SYSMENU_HANDL_SSB_LPF_pass(int8_t direction)
@@ -517,7 +518,6 @@ static void SYSMENU_HANDL_SSB_LPF_pass(int8_t direction)
 	
 	ReinitAudioFilters();
 	TRX_setMode(TRX_getMode(CurrentVFO()),CurrentVFO());
-	NeedSaveSettings = true;
 }
 
 static void SYSMENU_HANDL_FM_LPF_pass(int8_t direction)
@@ -559,7 +559,6 @@ static void SYSMENU_HANDL_FM_LPF_pass(int8_t direction)
 	
 	ReinitAudioFilters();
 	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
-	NeedSaveSettings = true;
 }
 
 static void SYSMENU_HANDL_FFTZoom(int8_t direction)
@@ -747,7 +746,6 @@ void eventCloseSystemMenu(void)
 		drawSystemMenu(true);
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
-		NeedSaveSettings = true;
 	}
 	else
 	if (sysmenu_wifi_setAPpassword_menu_opened)
@@ -757,7 +755,6 @@ void eventCloseSystemMenu(void)
 		drawSystemMenu(true);
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
-		NeedSaveSettings = true;
 	}
 	else
 	{
@@ -766,7 +763,6 @@ void eventCloseSystemMenu(void)
 			LCD_systemMenuOpened = false;
 			LCD_UpdateQuery.Background = true;
 			LCD_redraw();
-			NeedSaveSettings = true;
 		}
 		else
 		{
@@ -777,6 +773,7 @@ void eventCloseSystemMenu(void)
 			drawSystemMenu(true);
 		}
 	}
+	NeedSaveSettings = true;
 }
 
 void eventSecRotateSystemMenu(int8_t direction)
@@ -932,7 +929,6 @@ static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir)
 		strcpy(TRX.WIFI_AP, (char*)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
-		NeedSaveSettings = true;
 		sysmenu_wifi_selectap_menu_opened = false;
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
