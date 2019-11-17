@@ -149,7 +149,7 @@ void LoadSettings(bool clear)
 		TRX.CIC_GAINER_val = 88; //Смещение с выхода CIC
 		TRX.CICFIR_GAINER_val = 56; //Смещение с выхода CIC компенсатора
 		TRX.TXCICFIR_GAINER_val = 32; //Смещение с выхода TX-CIC компенсатора
-		TRX.DAC_GAINER_val = 31; //Смещение DAC корректора
+		TRX.DAC_GAINER_val = 30; //Смещение DAC корректора
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		SaveSettings();
 	}
