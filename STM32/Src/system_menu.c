@@ -757,6 +757,13 @@ void eventCloseSystemMenu(void)
 		WIFI_State = WIFI_INITED;
 	}
 	else
+	if (sysmenu_spectrum_opened)
+	{
+		sysmenu_spectrum_opened = false;
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+	}
+	else
 	{
 		if (sysmenu_onroot)
 		{
