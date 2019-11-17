@@ -37,6 +37,8 @@ static void SYSMENU_HANDL_ADC_SHDN(int8_t direction);
 static void SYSMENU_HANDL_ADC_DITH(int8_t direction);
 static void SYSMENU_HANDL_ADC_CIC(int8_t direction);
 static void SYSMENU_HANDL_ADC_CICCOMP(int8_t direction);
+static void SYSMENU_HANDL_ADC_TXCICCOMP(int8_t direction);
+static void SYSMENU_HANDL_ADC_DAC(int8_t direction);
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
 static void SYSMENU_HANDL_Standby_Time(int8_t direction);
 static void SYSMENU_HANDL_CWDecoder(int8_t direction);
@@ -79,7 +81,7 @@ static struct sysmenu_item_handler sysmenu_handlers[] =
 	{"CW Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_CWMENU},
 	{"LCD Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
 	{"FFT Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_FFTMENU},
-	{"ADC Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_ADCMENU},
+	{"ADC/DAC Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_ADCMENU},
 	{"WIFI Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_WIFIMENU},
 	{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
 	{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
@@ -147,6 +149,8 @@ static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 	{"ADC Shutdown", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
 	{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CIC_GAINER_val, SYSMENU_HANDL_ADC_CIC},
 	{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CICFIR_GAINER_val, SYSMENU_HANDL_ADC_CICCOMP},
+	{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.TXCICFIR_GAINER_val, SYSMENU_HANDL_ADC_TXCICCOMP},
+	{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.DAC_GAINER_val, SYSMENU_HANDL_ADC_DAC},
 };
 static uint8_t sysmenu_adc_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
 
@@ -420,11 +424,26 @@ static void SYSMENU_HANDL_ADC_CIC(int8_t direction)
 	if (TRX.CIC_GAINER_val < 32) TRX.CIC_GAINER_val = 32;
 	if (TRX.CIC_GAINER_val > 88) TRX.CIC_GAINER_val = 88;
 }
+
 static void SYSMENU_HANDL_ADC_CICCOMP(int8_t direction)
 {
 	TRX.CICFIR_GAINER_val += direction;
 	if (TRX.CICFIR_GAINER_val < 16) TRX.CICFIR_GAINER_val = 16;
 	if (TRX.CICFIR_GAINER_val > 64) TRX.CICFIR_GAINER_val = 64;
+}
+
+static void SYSMENU_HANDL_ADC_TXCICCOMP(int8_t direction)
+{
+	TRX.TXCICFIR_GAINER_val += direction;
+	if (TRX.TXCICFIR_GAINER_val < 16) TRX.TXCICFIR_GAINER_val = 16;
+	if (TRX.TXCICFIR_GAINER_val > 38) TRX.TXCICFIR_GAINER_val = 38;
+}
+
+static void SYSMENU_HANDL_ADC_DAC(int8_t direction)
+{
+	TRX.DAC_GAINER_val += direction;
+	if (TRX.DAC_GAINER_val < 14) TRX.DAC_GAINER_val = 14;
+	if (TRX.DAC_GAINER_val > 32) TRX.DAC_GAINER_val = 32;
 }
 
 static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction)

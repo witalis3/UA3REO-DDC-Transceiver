@@ -148,6 +148,8 @@ void LoadSettings(bool clear)
 		TRX.TWO_SIGNAL_TUNE = false; //Двухсигнальный генератор в режиме TUNE (1+2кГц)
 		TRX.CIC_GAINER_val = 88; //Смещение с выхода CIC
 		TRX.CICFIR_GAINER_val = 56; //Смещение с выхода CIC компенсатора
+		TRX.TXCICFIR_GAINER_val = 31; //Смещение с выхода TX-CIC компенсатора
+		TRX.DAC_GAINER_val = 31; //Смещение DAC корректора
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		SaveSettings();
 	}

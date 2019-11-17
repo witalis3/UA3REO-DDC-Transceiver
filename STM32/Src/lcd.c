@@ -286,6 +286,8 @@ static void LCD_displayStatusInfoBar(void) { //S-метра и прочей ин
 		sprintf(ctmp, "%d%%", alc_level);
 		LCDDriver_printText(ctmp, 40 + PMETER_WIDTH + 40, 120, COLOR_RED, COLOR_BLACK, 1);
 		uint8_t alc_level_width = (AMETER_WIDTH - 2) * alc_level / 100;
+		if(alc_level_width > (AMETER_WIDTH - 2))
+			alc_level_width = AMETER_WIDTH - 2;
 		LCDDriver_Fill_RectWH(40 + PMETER_WIDTH + 11, 101, alc_level_width, 13, COLOR_GREEN);
 		if(alc_level<100)
 			LCDDriver_Fill_RectWH(40 + PMETER_WIDTH + 11 + alc_level_width, 101, AMETER_WIDTH - 2 - alc_level_width, 13, COLOR_BLUE);

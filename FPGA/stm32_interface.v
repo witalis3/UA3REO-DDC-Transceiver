@@ -30,7 +30,9 @@ ADC_RAND,
 ADC_SHDN,
 ADC_DITH,
 CIC_GAIN,
-CICFIR_GAIN
+CICFIR_GAIN,
+TX_CICFIR_GAIN,
+DAC_GAIN
 );
 
 input clk_in;
@@ -64,6 +66,8 @@ output reg ADC_SHDN=0;
 output reg ADC_DITH=0;
 output reg unsigned [7:0] CIC_GAIN=32;
 output reg unsigned [7:0] CICFIR_GAIN=32;
+output reg unsigned [7:0] TX_CICFIR_GAIN=32;
+output reg unsigned [7:0] DAC_GAIN=32;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -178,6 +182,16 @@ begin
 	else if (k==105)
 	begin
 		CICFIR_GAIN[7:0]=DATA_BUS[7:0];
+		k=106;
+	end
+	else if (k==106)
+	begin
+		TX_CICFIR_GAIN[7:0]=DATA_BUS[7:0];
+		k=107;
+	end
+	else if (k==107)
+	begin
+		DAC_GAIN[7:0]=DATA_BUS[7:0];
 		k=999;
 	end
 	else if (k==200) //SEND PARAMS

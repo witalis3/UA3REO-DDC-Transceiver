@@ -237,13 +237,13 @@ void processTxAudio(void)
 		readHalfFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&Processor_AudioBuffer_A[0], dma_index, CODEC_AUDIO_BUFFER_SIZE);
 	}
 
-	//TUNE
+	//One-signal zero-tune generator
 	if (TRX_Tune && !TRX.TWO_SIGNAL_TUNE)
 	{
 		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			FPGA_Audio_Buffer_I_tmp[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
-			FPGA_Audio_Buffer_Q_tmp[i] = Processor_selected_RFpower_amplitude / 100 * TUNE_POWER;
+			FPGA_Audio_Buffer_I_tmp[i] = (Processor_selected_RFpower_amplitude / 100 * TUNE_POWER);
+			FPGA_Audio_Buffer_Q_tmp[i] = (Processor_selected_RFpower_amplitude / 100 * TUNE_POWER);
 		}
 	}
 	
@@ -328,7 +328,6 @@ void processTxAudio(void)
 		if (Processor_TX_MAX_amplitude_IN < TX_AGC_NOISEGATE) ALC_need_gain = 0.0f;
 		//оключаем усиление для некоторых видов мод
 		if ((ALC_need_gain > 1.0f) && (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_IQ || mode == TRX_MODE_LOOPBACK)) ALC_need_gain = 1.0f;
-		if (TRX_Tune) ALC_need_gain = 1.0f;
 		//применяем усиление
 		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, ALC_need_gain, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, ALC_need_gain, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
