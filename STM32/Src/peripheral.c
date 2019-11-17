@@ -582,6 +582,18 @@ void PERIPH_ProcessSWRMeter(void)
 	TRX_SWR = (TRX_SWR_forward + TRX_SWR_backward) / (TRX_SWR_forward - TRX_SWR_backward);
 	if(TRX_SWR_backward>TRX_SWR_forward) TRX_SWR=10.0f;
 	if(TRX_SWR>10.0f) TRX_SWR=10.0f;
+	
+	if(TRX_SWR>=SWR_CRITICAL) //опасный порог КСВ, отключаем передачу
+	{
+		TRX_Time_InActive = 0;
+		TRX_Tune = false;
+		TRX_ptt_hard = false;
+		TRX_ptt_cat = false;
+		TRX_Restart_Mode();
+		NeedSaveSettings = true;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.TopButtons = true;
+	}
 	/*
 	float32_t power = (TRX_SWR_forward * TRX_SWR_forward) / 50.0f;
 	if(power<0.0f) power=0.0f;
