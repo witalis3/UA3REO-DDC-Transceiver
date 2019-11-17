@@ -259,7 +259,7 @@ void TRX_DoAutoGain(void)
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
-			//sendToDebug_str("AUTOGAIN LPF+BPF+ATT\r\n");
+		//sendToDebug_str("AUTOGAIN LPF+BPF+ATT\r\n");
 			break;
 		case 1: //сменили состояние, обрабатываем результаты
 			if ((TRX_ADC_MAXAMPLITUDE*db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
@@ -278,7 +278,7 @@ void TRX_DoAutoGain(void)
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
-			//sendToDebug_str("AUTOGAIN LPF+BPF\r\n");
+		//sendToDebug_str("AUTOGAIN LPF+BPF\r\n");
 			break;
 		case 3: //сменили состояние, обрабатываем результаты
 			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE) autogain_stage -= 3; //слишком большое усиление, возвращаемся на этап назад
@@ -298,7 +298,7 @@ void TRX_DoAutoGain(void)
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
-			//sendToDebug_str("AUTOGAIN LPF+BPF+PREAMP+ATT\r\n");
+		//sendToDebug_str("AUTOGAIN LPF+BPF+PREAMP+ATT\r\n");
 			break;
 		case 5: //сменили состояние, обрабатываем результаты
 			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE) autogain_stage -= 3; //слишком большое усиление, возвращаемся на этап назад
@@ -318,7 +318,7 @@ void TRX_DoAutoGain(void)
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
-			//sendToDebug_str("AUTOGAIN LPF+BPF+PREAMP\r\n");
+		//sendToDebug_str("AUTOGAIN LPF+BPF+PREAMP\r\n");
 			break;
 		case 7: //сменили состояние, обрабатываем результаты
 			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE) autogain_stage -= 3; //слишком большое усиление, возвращаемся на этап назад
