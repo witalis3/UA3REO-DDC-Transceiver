@@ -17,6 +17,7 @@ static uint16_t WIFI_Answer_ReadIndex = 0;
 static uint32_t commandStartTime = 0;
 static bool WIFI_connected = false;
 static uint8_t WIFI_FoundedAP_Index = 0;
+static uint16_t WIFI_Reconnect_Timeout = 0;
 
 static void WIFI_SendCommand(char* command);
 static bool WIFI_GetLine(void);
@@ -78,7 +79,7 @@ void WIFI_ProcessAnswer(void)
 		switch(WIFI_InitStateIndex)
 		{
 			case 0:
-				sendToDebug_str3("WIFI: START CONNECTING TO AP: ",TRX.WIFI_AP,"\r\n");
+				sendToDebug_str3("WIFI: Start connecting to AP: ",TRX.WIFI_AP,"\r\n");
 				WIFI_SendCommand("AT+RFPOWER=82\r\n"); //rf power
 			break;
 			case 1:
@@ -121,22 +122,25 @@ void WIFI_ProcessAnswer(void)
 		WIFI_GetLine();
 		if (strstr(WIFI_readed, "GOT IP") != NULL)
 		{
-			sendToDebug_str("WIFI: CONNECTED\r\n");
+			sendToDebug_str("WIFI: Connected\r\n");
 			WIFI_State = WIFI_READY;
 			WIFI_connected = true;
 		}
 		if (strstr(WIFI_readed, "WIFI DISCONNECT") != NULL)
 		{
+			sendToDebug_str("WIFI: Disconnected\r\n");
 			WIFI_State = WIFI_INITED;
 			WIFI_connected = false;
 		}
 		if (strstr(WIFI_readed, "FAIL") != NULL)
 		{
+			sendToDebug_str("WIFI: Connect failed\r\n");
 			WIFI_State = WIFI_FAIL;
 			WIFI_connected = false;
 		}
 		if (strstr(WIFI_readed, "ERROR") != NULL)
 		{
+			sendToDebug_str("WIFI: Connect error\r\n");
 			WIFI_State = WIFI_FAIL;
 			WIFI_connected = false;
 		}
@@ -224,10 +228,23 @@ void WIFI_ProcessAnswer(void)
 			WIFI_State = WIFI_READY;
 		else
 			WIFI_State = WIFI_INITED;
+			WIFI_InitStateIndex = 0;
 		break;
 
 	default:
 		break;
+	}
+	
+	//WiFi reconnect try
+	if(WIFI_State == WIFI_FAIL && !WIFI_connected)
+	{
+		WIFI_Reconnect_Timeout++;
+		if(WIFI_Reconnect_Timeout>100)
+		{
+			WIFI_State = WIFI_INITED;
+			WIFI_InitStateIndex = 0;
+			WIFI_Reconnect_Timeout = 0;
+		}
 	}
 }
 
