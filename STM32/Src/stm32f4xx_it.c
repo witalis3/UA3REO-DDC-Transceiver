@@ -408,6 +408,8 @@ void TIM6_DAC_IRQHandler(void)
 		//WIFI
 		if (TRX.WIFI_Enabled)
 			WIFI_ProcessAnswer();
+		else
+			WIFI_GoSleep();
 		
 		//Process SWR / Power meter
 		if (TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_NO_TX)
@@ -422,7 +424,8 @@ void TIM6_DAC_IRQHandler(void)
 		if (!TRX_SNMP_Synced) //Sync time from internet
 			WIFI_GetSNMPTime();
 
-#if 0
+if (WM8731_Buffer_underrun)
+{
 		//Save Debug variables
 		uint32_t dbg_FPGA_samples = FPGA_samples;
 		uint32_t dbg_WM8731_DMA_samples = WM8731_DMA_samples / 2;
@@ -459,7 +462,7 @@ void TIM6_DAC_IRQHandler(void)
 		sendToDebug_str("WIFI State: "); sendToDebug_int16(WIFI_State,false);
 		sendToDebug_newline();
 		PrintProfilerResult();
-#endif
+}
 
 		tim5_counter = 0;
 		FPGA_samples = 0;

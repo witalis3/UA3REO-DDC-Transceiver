@@ -8,7 +8,6 @@
 extern UART_HandleTypeDef huart6;
 extern IWDG_HandleTypeDef hiwdg;
 
-volatile WiFiState WIFI_State = WIFI_UNDEFINED;
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static char WIFI_Answer[WIFI_ANSWER_BUFFER_SIZE] = { 0 };
 static char WIFI_readed[WIFI_ANSWER_BUFFER_SIZE] = { 0 };
@@ -17,12 +16,15 @@ static char tmp2[WIFI_ANSWER_BUFFER_SIZE] = { 0 };
 static uint16_t WIFI_Answer_ReadIndex = 0;
 static uint32_t commandStartTime = 0;
 static bool WIFI_connected = false;
+static uint8_t WIFI_FoundedAP_Index = 0;
 
 static void WIFI_SendCommand(char* command);
 static bool WIFI_GetLine(void);
-static uint8_t WIFI_FoundedAP_Index = 0;
-char volatile WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = { 0 };
-char volatile WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][32] = { 0 };
+
+volatile uint8_t WIFI_InitStateIndex = 0;
+volatile WiFiState WIFI_State = WIFI_UNDEFINED;
+volatile char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = { 0 };
+volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][32] = { 0 };
 
 void WIFI_Init(void)
 {
@@ -73,26 +75,46 @@ void WIFI_ProcessAnswer(void)
 	switch (WIFI_State)
 	{
 	case WIFI_INITED:
-		sendToDebug_str("WIFI: START CONNECTING\r\n");
-		WIFI_State = WIFI_CONNECTING;
-		//WIFI_SendCommand("AT+RFPOWER=82\r\n"); //rf power
-		WIFI_SendCommand("AT+CWMODE_CUR=1\r\n"); //station mode
-		WIFI_SendCommand("AT+CWDHCP_CUR=1,1\r\n"); //DHCP
-		WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); //AUTOCONNECT
-		WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); //Hostname
-		WIFI_SendCommand("AT+CWCOUNTRY_CUR=1,\"RU\",1,13\r\n"); //Country
-		strcat(com_t, "AT+CIPSNTPCFG=1,");
-		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
-		strcat(com_t, tz);
-		strcat(com_t, ",\"us.pool.ntp.org\"\r\n");
-		WIFI_SendCommand(com_t); //configure SNMP
-		strcat(com, "AT+CWJAP_CUR=\"");
-		strcat(com, TRX.WIFI_AP);
-		strcat(com, "\",\"");
-		strcat(com, TRX.WIFI_PASSWORD);
-		strcat(com, "\"\r\n");
-		WIFI_SendCommand(com); //connect to AP
-		while (WIFI_GetLine()) {}
+		switch(WIFI_InitStateIndex)
+		{
+			case 0:
+				sendToDebug_str3("WIFI: START CONNECTING TO AP: ",TRX.WIFI_AP,"\r\n");
+				WIFI_SendCommand("AT+RFPOWER=82\r\n"); //rf power
+			break;
+			case 1:
+				WIFI_SendCommand("AT+CWMODE_CUR=1\r\n"); //station mode
+			break;
+			case 2:
+				WIFI_SendCommand("AT+CWDHCP_CUR=1,1\r\n"); //DHCP
+			break;
+			case 3:
+				WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); //AUTOCONNECT
+			break;
+			case 4:
+				WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); //Hostname
+			break;
+			case 5:
+				WIFI_SendCommand("AT+CWCOUNTRY_CUR=1,\"RU\",1,13\r\n"); //Country
+			break;
+			case 6:
+				strcat(com_t, "AT+CIPSNTPCFG=1,");
+				sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
+				strcat(com_t, tz);
+				strcat(com_t, ",\"us.pool.ntp.org\"\r\n");
+				WIFI_SendCommand(com_t); //configure SNMP
+			break;
+			case 7:
+				strcat(com, "AT+CWJAP_CUR=\"");
+				strcat(com, TRX.WIFI_AP);
+				strcat(com, "\",\"");
+				strcat(com, TRX.WIFI_PASSWORD);
+				strcat(com, "\"\r\n");
+				WIFI_SendCommand(com); //connect to AP
+				WIFI_State = WIFI_CONNECTING;
+			break;
+		}
+		if(WIFI_InitStateIndex<100)
+			WIFI_InitStateIndex++;
 		break;
 
 	case WIFI_CONNECTING:
@@ -246,6 +268,13 @@ void WIFI_GetStatus(void)
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_GETSTATUS;
 	WIFI_SendCommand("AT+CIPSTATUS\r\n"); //connection status
+}
+
+void WIFI_GoSleep(void)
+{
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_DEEPSLEEP;
+	WIFI_SendCommand("AT+GSLP=1000\r\n"); //go sleep
 }
 
 static void WIFI_SendCommand(char* command)

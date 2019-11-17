@@ -740,12 +740,24 @@ void eventRotateSystemMenu(int8_t direction)
 
 void eventCloseSystemMenu(void)
 {
+	if (sysmenu_wifi_selectap_menu_opened)
+	{
+		sysmenu_wifi_selectap_menu_opened = false;
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+		WIFI_InitStateIndex = 0;
+		WIFI_State = WIFI_INITED;
+		NeedSaveSettings = true;
+	}
+	else
 	if (sysmenu_wifi_setAPpassword_menu_opened)
 	{
 		sysmenu_wifi_setAPpassword_menu_opened = false;
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
+		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
+		NeedSaveSettings = true;
 	}
 	else
 	{
@@ -918,7 +930,9 @@ static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir)
 	if (dir == 0)
 	{
 		strcpy(TRX.WIFI_AP, (char*)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
+		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
+		NeedSaveSettings = true;
 		sysmenu_wifi_selectap_menu_opened = false;
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
