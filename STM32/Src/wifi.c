@@ -16,6 +16,7 @@ static char tmp[WIFI_ANSWER_BUFFER_SIZE] = { 0 };
 static char tmp2[WIFI_ANSWER_BUFFER_SIZE] = { 0 };
 static uint16_t WIFI_Answer_ReadIndex = 0;
 static uint32_t commandStartTime = 0;
+static bool WIFI_connected = false;
 
 static void WIFI_SendCommand(char* command);
 static bool WIFI_GetLine(void);
@@ -100,11 +101,23 @@ void WIFI_ProcessAnswer(void)
 		{
 			sendToDebug_str("WIFI: CONNECTED\r\n");
 			WIFI_State = WIFI_READY;
+			WIFI_connected = true;
 		}
 		if (strstr(WIFI_readed, "WIFI DISCONNECT") != NULL)
+		{
 			WIFI_State = WIFI_INITED;
+			WIFI_connected = false;
+		}
 		if (strstr(WIFI_readed, "FAIL") != NULL)
-			WIFI_State = WIFI_INITED;
+		{
+			WIFI_State = WIFI_FAIL;
+			WIFI_connected = false;
+		}
+		if (strstr(WIFI_readed, "ERROR") != NULL)
+		{
+			WIFI_State = WIFI_FAIL;
+			WIFI_connected = false;
+		}
 		break;
 
 	case WIFI_READY:
@@ -125,7 +138,10 @@ void WIFI_ProcessAnswer(void)
 				for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
 					strcpy((char*)&WIFI_FoundedAP[i], (char*)&WIFI_FoundedAP_InWork[i]);
 
-			WIFI_State = WIFI_READY;
+			if(WIFI_connected)
+				WIFI_State = WIFI_READY;
+			else
+				WIFI_State = WIFI_FAIL;
 			WIFI_ProcessingCommand = WIFI_COMM_NONE;
 		}
 		else if (strlen(WIFI_readed) > 5)
@@ -182,7 +198,10 @@ void WIFI_ProcessAnswer(void)
 
 	case WIFI_TIMEOUT:
 		WIFI_GetLine();
-		WIFI_State = WIFI_READY;
+		if(WIFI_connected)
+			WIFI_State = WIFI_READY;
+		else
+			WIFI_State = WIFI_INITED;
 		break;
 
 	default:

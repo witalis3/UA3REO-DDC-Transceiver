@@ -930,8 +930,6 @@ static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(COLOR_BLACK);
-		LCDDriver_Fill_RectXY(290, 0, 320, 30, COLOR_GREEN);
-		LCDDriver_printText("X", 298, 5, COLOR_BLACK, COLOR_GREEN, 3);
 		LCDDriver_printText("AP Password:", 5, 5, COLOR_WHITE, COLOR_BLACK, 1);
 	}
 
