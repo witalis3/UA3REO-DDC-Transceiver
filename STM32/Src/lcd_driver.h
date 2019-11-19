@@ -480,7 +480,7 @@ void LCDDriver_printTextFont(char text[], int16_t x, int16_t y, uint16_t color, 
 void LCDDriver_charBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, GFXfont gfxFont);
 void LCDDriver_getTextBounds(char text[], int16_t x, int16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont gfxFont);
 //12. Image print (RGB 565, 2 bytes per pixel)
-void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data, uint32_t size);
+void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data);
 //13. Set screen rotation
 void LCDDriver_setRotation(uint8_t rotate);
 

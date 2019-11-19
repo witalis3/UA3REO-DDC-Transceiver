@@ -182,13 +182,15 @@ int main(void)
 	HAL_RTC_Init(&hrtc);
 	InitProfiler();
 	sendToDebug_str("\r\n");
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
 	PERIPH_ProcessFrontPanel();
 	if(PERIPH_FrontPanel.key_menu) //hard reset
 		LoadSettings(true);
 	else
 		LoadSettings(false);
 	LCD_Init();
+	LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
+	LCD_busy=true;
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
 	FFT_Init();
 	WM8731_Init();
 	TRX_Init();
@@ -204,6 +206,9 @@ int main(void)
 	HAL_TIM_Base_Start(&htim7);
 	HAL_TIM_Base_Start_IT(&htim7);
 	PERIPH_RF_UNIT_UpdateState(false);
+	HAL_Delay(1000); //logo wait
+	LCD_busy=false;
+	LCD_redraw();
 	sendToDebug_str("UA3REO Started\r\n\r\n");
 	sendToDebug_flush();
 	TRX_Inited = true;

@@ -54,7 +54,6 @@ void LCD_Init(void)
 	LCDDriver_setRotation(4);
 #endif
 	LCDDriver_Fill(COLOR_WHITE);
-	LCD_redraw();
 }
 
 static void LCD_displayTopButtons(bool redraw) { //вывод верхних кнопок

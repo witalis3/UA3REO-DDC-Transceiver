@@ -674,13 +674,13 @@ void LCDDriver_getTextBounds(char text[], int16_t x, int16_t y, uint16_t *x1, ui
 }
 
 //12. Image print (RGB 565, 2 bytes per pixel)
-void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data, uint32_t size)
+void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data)
 {
-	uint32_t n = size;
+	uint32_t n = w * h * 2;
 	LCDDriver_SetCursorAreaPosition(x, y, w + x - 1, h + y - 1);
-	for (uint32_t i = 0; i < n; i++)
+	for (uint32_t i = 0; i < n; i+=2 )
 	{
-		LCDDriver_SendData(data[i]);
+		LCDDriver_SendData(((data[i]<<8) | data[i+1]));
 	}
 }
 
