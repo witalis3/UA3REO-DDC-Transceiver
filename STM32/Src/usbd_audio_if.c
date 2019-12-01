@@ -9,9 +9,9 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 static int8_t AUDIO_Init_FS(void);
 static int8_t AUDIO_DeInit_FS(void);
 
-int16_t USB_AUDIO_rx_buffer_a[(USB_AUDIO_RX_BUFFER_SIZE / 2)] = { 0 };
-int16_t USB_AUDIO_rx_buffer_b[(USB_AUDIO_RX_BUFFER_SIZE / 2)] = { 0 };
-int16_t USB_AUDIO_tx_buffer[(USB_AUDIO_TX_BUFFER_SIZE / 2)] = { 0 };
+int16_t IRAM2 USB_AUDIO_rx_buffer_a[(USB_AUDIO_RX_BUFFER_SIZE / 2)] = { 0 };
+int16_t IRAM2 USB_AUDIO_rx_buffer_b[(USB_AUDIO_RX_BUFFER_SIZE / 2)] = { 0 };
+int16_t IRAM2 USB_AUDIO_tx_buffer[(USB_AUDIO_TX_BUFFER_SIZE / 2)] = { 0 };
 
 volatile bool USB_AUDIO_current_rx_buffer = false; // a-false b-true
 volatile bool USB_AUDIO_need_rx_buffer = false; // a-false b-true

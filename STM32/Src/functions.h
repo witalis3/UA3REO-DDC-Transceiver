@@ -20,8 +20,9 @@
 #define TRX_MODE_WFM 9
 #define TRX_MODE_AM 10
 #define TRX_MODE_LOOPBACK 11
-
 #define TRX_MODE_COUNT 12
+
+#define IRAM2 __attribute__((section("IRAM2")))
 
 // Internal Macros
 #define HEX__(n) 0x##n##LU
