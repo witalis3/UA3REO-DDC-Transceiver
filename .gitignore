@@ -6,7 +6,10 @@ Filters/Iowa*
 Filters/WinFilter.exe
 STM32/MDK-ARM/UA3REO/UA3REO.build_log.htm
 STM32/MDK-ARM/UA3REO/UA3REO.htm
-Scheme/EXPERIMENTS/*
+#Scheme/EXPERIMENTS/*
+Status Report.txt
+*~*.zip
+*.log
 *.o
 *.bak
 *.d
