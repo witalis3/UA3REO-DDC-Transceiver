@@ -188,7 +188,8 @@ int main(void)
 	else
 		LoadSettings(false);
 	LCD_Init();
-	LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
+	if(SHOW_LOGO)
+		LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
 	LCD_busy=true;
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
 	FFT_Init();
