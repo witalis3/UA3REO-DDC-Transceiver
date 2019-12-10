@@ -171,7 +171,7 @@ void processRxAudio(void)
 	}
 	
 	//Send to USB Audio
-	if (USB_AUDIO_need_rx_buffer)
+	if (USB_AUDIO_need_rx_buffer && TRX_Inited)
 	{
 		if (Processor_AudioBuffer_ReadyBuffer == 0)
 		{
@@ -206,23 +206,26 @@ void processRxAudio(void)
 	}
 
 	//Send to Codec DMA
-	if (WM8731_DMA_state) //complete
+	if (TRX_Inited)
 	{
-		if (Processor_AudioBuffer_ReadyBuffer == 0)
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream0, (uint32_t)&Processor_AudioBuffer_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[FPGA_AUDIO_BUFFER_SIZE], FPGA_AUDIO_BUFFER_SIZE);
-		else
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream0, (uint32_t)&Processor_AudioBuffer_B[0], (uint32_t)&CODEC_Audio_Buffer_RX[FPGA_AUDIO_BUFFER_SIZE], FPGA_AUDIO_BUFFER_SIZE);
-		AUDIOPROC_TXA_samples++;
+		if (WM8731_DMA_state) //complete
+		{
+			if (Processor_AudioBuffer_ReadyBuffer == 0)
+				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream0, (uint32_t)&Processor_AudioBuffer_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[FPGA_AUDIO_BUFFER_SIZE], FPGA_AUDIO_BUFFER_SIZE);
+			else
+				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream0, (uint32_t)&Processor_AudioBuffer_B[0], (uint32_t)&CODEC_Audio_Buffer_RX[FPGA_AUDIO_BUFFER_SIZE], FPGA_AUDIO_BUFFER_SIZE);
+			AUDIOPROC_TXA_samples++;
+		}
+		else //half
+		{
+			if (Processor_AudioBuffer_ReadyBuffer == 0)
+				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream1, (uint32_t)&Processor_AudioBuffer_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], FPGA_AUDIO_BUFFER_SIZE);
+			else
+				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream1, (uint32_t)&Processor_AudioBuffer_B[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], FPGA_AUDIO_BUFFER_SIZE);
+			AUDIOPROC_TXB_samples++;
+		}
 	}
-	else //half
-	{
-		if (Processor_AudioBuffer_ReadyBuffer == 0)
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream1, (uint32_t)&Processor_AudioBuffer_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], FPGA_AUDIO_BUFFER_SIZE);
-		else
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream1, (uint32_t)&Processor_AudioBuffer_B[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], FPGA_AUDIO_BUFFER_SIZE);
-		AUDIOPROC_TXB_samples++;
-	}
-
+	
 	Processor_NeedRXBuffer = false;
 }
 

@@ -188,8 +188,7 @@ int main(void)
 	else
 		LoadSettings(false);
 	LCD_Init();
-	if(SHOW_LOGO)
-		LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
+	if(SHOW_LOGO) LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
 	LCD_busy=true;
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
 	FFT_Init();
@@ -207,7 +206,7 @@ int main(void)
 	HAL_TIM_Base_Start(&htim7);
 	HAL_TIM_Base_Start_IT(&htim7);
 	PERIPH_RF_UNIT_UpdateState(false);
-	HAL_Delay(1000); //logo wait
+	if(SHOW_LOGO) HAL_Delay(1000); //logo wait
 	LCD_busy=false;
 	LCD_redraw();
 	sendToDebug_str("UA3REO Started\r\n\r\n");
