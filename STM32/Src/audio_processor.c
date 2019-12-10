@@ -150,10 +150,6 @@ void processRxAudio(void)
 		break;
 	}
 
-	//OUT Volume
-	arm_scale_f32(FPGA_Audio_Buffer_I_tmp, (float32_t)TRX.Volume / 100.0f, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-	arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, (float32_t)TRX.Volume / 100.0f, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-
 	//Prepare data to DMA
 	if (Processor_AudioBuffer_ReadyBuffer == 0)
 	{
@@ -172,6 +168,41 @@ void processRxAudio(void)
 			Processor_AudioBuffer_A[i * 2 + 1] = FPGA_Audio_Buffer_Q_tmp[i]; //right channel
 		}
 		Processor_AudioBuffer_ReadyBuffer = 0;
+	}
+	
+	//Send to USB Audio
+	if (USB_AUDIO_need_rx_buffer)
+	{
+		if (Processor_AudioBuffer_ReadyBuffer == 0)
+		{
+			if (!USB_AUDIO_current_rx_buffer)
+				for (uint16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / 2); i++) USB_AUDIO_rx_buffer_a[i] = (int16_t)((int32_t)Processor_AudioBuffer_A[i]);
+			else
+				for (uint16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / 2); i++) USB_AUDIO_rx_buffer_b[i] = (int16_t)((int32_t)Processor_AudioBuffer_A[i]);
+		}
+		else
+		{
+			if (!USB_AUDIO_current_rx_buffer)
+				for (uint16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / 2); i++) USB_AUDIO_rx_buffer_a[i] = (int16_t)((int32_t)Processor_AudioBuffer_B[i]);
+			else
+				for (uint16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / 2); i++) USB_AUDIO_rx_buffer_b[i] = (int16_t)((int32_t)Processor_AudioBuffer_B[i]);
+		}
+		USB_AUDIO_need_rx_buffer = false;
+	}
+	//
+	
+	//OUT Volume
+	float32_t volume_gain = (float32_t)TRX.Volume / 100.0f;
+	
+	if (Processor_AudioBuffer_ReadyBuffer == 1)
+	{
+		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
+			Processor_AudioBuffer_B[i] = Processor_AudioBuffer_B[i] * volume_gain;
+	}
+	else
+	{
+		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
+			Processor_AudioBuffer_A[i] = Processor_AudioBuffer_A[i] * volume_gain;
 	}
 
 	//Send to Codec DMA
@@ -192,26 +223,6 @@ void processRxAudio(void)
 		AUDIOPROC_TXB_samples++;
 	}
 
-	//Send to USB Audio
-	if (USB_AUDIO_need_rx_buffer)
-	{
-		if (Processor_AudioBuffer_ReadyBuffer == 0)
-		{
-			if (!USB_AUDIO_current_rx_buffer)
-				for (uint16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / 2); i++) USB_AUDIO_rx_buffer_a[i] = (int16_t)((int32_t)Processor_AudioBuffer_A[i] * (1.0f / TRX.Volume*100.0f));
-			else
-				for (uint16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / 2); i++) USB_AUDIO_rx_buffer_b[i] = (int16_t)((int32_t)Processor_AudioBuffer_A[i] * (1.0f / TRX.Volume*100.0f));
-		}
-		else
-		{
-			if (!USB_AUDIO_current_rx_buffer)
-				for (uint16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / 2); i++) USB_AUDIO_rx_buffer_a[i] = (int16_t)((int32_t)Processor_AudioBuffer_B[i] * (1.0f / TRX.Volume*100.0f));
-			else
-				for (uint16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / 2); i++) USB_AUDIO_rx_buffer_b[i] = (int16_t)((int32_t)Processor_AudioBuffer_B[i] * (1.0f / TRX.Volume*100.0f));
-		}
-		USB_AUDIO_need_rx_buffer = false;
-	}
-	//
 	Processor_NeedRXBuffer = false;
 }
 
