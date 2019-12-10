@@ -17,7 +17,7 @@
 #define FFT_STEP_COEFF 10.0f //коэффициент шага автокалибровки сигнала FFT (больше - медленней)
 #define FFT_STEP_FIX 10.0f //шаг снижения коэффициента FFT
 #define FFT_STEP_PRECISION 1.0f //шаг снижения коэффициента FFT (для слабых сигналов)
-#define FFT_MAX_IN_RED_ZONE 6 //максимум красных пиков на водопаде (для автоподстройки)
+#define FFT_MAX_IN_RED_ZONE 10 //максимум красных пиков на водопаде (для автоподстройки)
 #define FFT_MIN_IN_RED_ZONE 1 //минимум красных пиков на водопаде (для автоподстройки)
 #define FFT_HZ_IN_PIXEL (TRX_SAMPLERATE / FFT_PRINT_SIZE) // герц в одном пикселе
 #define FFT_CWDECODER_OFFSET 17 //место под текст CW декодера

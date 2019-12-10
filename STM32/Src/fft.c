@@ -310,12 +310,33 @@ void FFT_doFFT(void)
 		}
 	}
 
-	//Автокалибровка уровней FFT
+	//Ищем Максимум амплитуды
 	float32_t maxValueFFT = maxValueFFT_rx;
 	if(TRX_on_TX())
 		maxValueFFT = maxValueFFT_tx;
 	arm_max_f32(FFTInput, FFT_PRINT_SIZE, &maxValue, &maxIndex); //ищем максимум в АЧХ
-	arm_mean_f32(FFTInput, FFT_PRINT_SIZE, &meanValue); //ищем среднее в АЧХ
+	
+	//Ищем медиану в АЧХ
+	//arm_mean_f32(FFTInput, FFT_PRINT_SIZE, &meanValue); //ищем среднее в АЧХ
+	float32_t median_max=maxValue;
+	float32_t median_min=0;
+	while (median_max>median_min)
+	{
+		float32_t median_max_find=0;
+		float32_t median_min_find=median_max;
+		for (uint16_t i = 0; i < FFT_PRINT_SIZE; i++)
+		{
+			if(FFTInput[i]<median_max && FFTInput[i]>median_max_find)
+				median_max_find=FFTInput[i];
+			if(FFTInput[i]>median_min && FFTInput[i]<median_min_find)
+				median_min_find=FFTInput[i];
+		}
+		median_max=median_max_find;
+		median_min=median_min_find;
+	}
+	meanValue=median_max;
+	
+	//Автокалибровка уровней FFT
 	diffValue = (maxValue - maxValueFFT) / FFT_STEP_COEFF;
 	if (maxValueErrors >= FFT_MAX_IN_RED_ZONE && diffValue > 0) maxValueFFT += diffValue;
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && diffValue < 0 && diffValue < -FFT_STEP_FIX) maxValueFFT += diffValue;
