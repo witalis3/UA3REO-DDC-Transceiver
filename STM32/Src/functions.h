@@ -83,6 +83,7 @@ extern float32_t db2rateV(float32_t i);
 extern float32_t db2rateP(float32_t i);
 extern float32_t rate2dbV(float32_t i);
 extern float32_t rate2dbP(float32_t i);
+extern float32_t volume2rate(float32_t i);
 extern void shiftTextLeft(char *string, int16_t shiftLength);
 extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);

@@ -14,9 +14,9 @@
 #define FPGA_BUS_BITS 16 //разрядность данных из FPGA
 #define TRX_SAMPLERATE 48000 //частота дискретизации аудио-потока
 #define MAX_TX_AMPLITUDE 32700.0f //Максимальный размах при передаче в ЦАП (32767.0f - лимит)
-#define AGC_CLIP_THRESHOLD -25.0f //Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
-#define AGC_OPTIMAL_THRESHOLD -40.0f //Рабочий уровень усиления в AGC, dbFS
-#define AGC_DISABLED_GAIN 20.0f //Усиление при выключенном AGC, db
+#define AGC_CLIP_THRESHOLD -20.0f //Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
+#define AGC_OPTIMAL_THRESHOLD -30.0f //Рабочий уровень усиления в AGC, dbFS
+#define AGC_DISABLED_GAIN 30.0f //Усиление при выключенном AGC, db
 #define TUNE_POWER 100 // % от выбранной в настройках мощности при запуске TUNE (100 - полная)
 #define TX_AGC_STEPSIZE 50.0f //Время срабатывания компрессора голосового сигнала на передачу (меньше-быстрее)
 #define TX_AGC_MAXGAIN 500.0f //Максимальное усиление микрофона при компрессировании
@@ -71,8 +71,8 @@
 #define MAX_WIFIPASS_LENGTH 32
 #define EEPROM_OP_DELAY 30
 
-#define FPGA_BUS_FULL_SCALE powf(2,FPGA_BUS_BITS)
-#define FPGA_BUS_FULL_SCALE_POW FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE
+#define FPGA_BUS_FULL_SCALE powf(2,FPGA_BUS_BITS) //максимальная аплитуда сигнала в шине
+#define FPGA_BUS_FULL_SCALE_POW (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE) //магнитуда максимального сигнала в шине
 
 extern struct t_CALIBRATE {
 	uint8_t rf_out_power[32]; 
@@ -105,7 +105,7 @@ extern struct TRX_SETTINGS {
 	bool DNR;
 	uint8_t AGC_speed;
 	bool BandMapEnabled;
-	uint8_t Volume;
+	uint16_t Volume;
 	bool InputType_MIC;
 	bool InputType_LINE;
 	bool InputType_USB;

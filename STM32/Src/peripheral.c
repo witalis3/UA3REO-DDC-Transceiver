@@ -433,7 +433,7 @@ void PERIPH_ProcessFrontPanel(void)
 		PERIPH_FrontPanel.key_agc = false;
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(6, AD2_CS_GPIO_Port, AD2_CS_Pin); // AF_GAIN
-	TRX.Volume=(1023.0f-mcp3008_value)/1023.0f*100.0f;
+	TRX.Volume=(1023.0f-mcp3008_value);
 	
 	mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT
 	TRX_SHIFT = ((1023.0f-mcp3008_value)*SHIFT_INTERVAL/1023.0f) - SHIFT_INTERVAL / 2.0f;

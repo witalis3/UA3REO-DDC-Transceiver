@@ -281,6 +281,14 @@ float32_t rate2dbP(float32_t i) //из разов в децибеллы (для 
 	return 10*log10f_fast(i);
 }
 
+#define VOLUME_LOW_DB (-20.0f)
+#define VOLUME_EPSILON powf(10.0f,(VOLUME_LOW_DB/20.0f))
+float32_t volume2rate(float32_t i) //из положения ручки громкости в усиление
+{
+	if(i<0.01f) return 0.0f;
+	return powf(VOLUME_EPSILON, (1.0f-i));
+}
+
 void shiftTextLeft(char *string, int16_t shiftLength)
 {
 	int16_t i, size = strlen(string);

@@ -192,7 +192,7 @@ void processRxAudio(void)
 	//
 	
 	//OUT Volume
-	float32_t volume_gain = (float32_t)TRX.Volume / 100.0f;
+	float32_t volume_gain = volume2rate((float32_t)TRX.Volume / 1023.0f);
 	
 	if (Processor_AudioBuffer_ReadyBuffer == 1)
 	{
