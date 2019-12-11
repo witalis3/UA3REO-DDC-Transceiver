@@ -266,6 +266,21 @@ float32_t db2rateV(float32_t i) //из децибелл в разы (для на
 	return powf(10.0f, (i / 20.0f));
 }
 
+float32_t db2rateP(float32_t i) //из децибелл в разы (для мощности)
+{
+	return powf(10.0f, (i / 10.0f));
+}
+
+float32_t rate2dbV(float32_t i) //из разов в децибеллы (для напряжения)
+{
+	return 20*log10f_fast(i);
+}
+
+float32_t rate2dbP(float32_t i) //из разов в децибеллы (для мощности)
+{
+	return 10*log10f_fast(i);
+}
+
 void shiftTextLeft(char *string, int16_t shiftLength)
 {
 	int16_t i, size = strlen(string);

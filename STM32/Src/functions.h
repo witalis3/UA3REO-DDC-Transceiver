@@ -80,6 +80,9 @@ extern void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_
 extern void readHalfFromCircleUSBBuffer(int16_t *source, int32_t *dest, uint16_t index, uint16_t length);
 extern void dma_memcpy32(uint32_t dest, uint32_t src, uint32_t len);
 extern float32_t db2rateV(float32_t i);
+extern float32_t db2rateP(float32_t i);
+extern float32_t rate2dbV(float32_t i);
+extern float32_t rate2dbP(float32_t i);
 extern void shiftTextLeft(char *string, int16_t shiftLength);
 extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);
