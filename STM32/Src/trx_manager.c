@@ -40,21 +40,6 @@ volatile float32_t TRX_SWR = 0;
 static uint8_t autogain_wait_reaction = 0; //таймер ожидания реакции от смены режимов ATT/PRE
 static uint8_t autogain_stage = 0; //этап отработки актокорректировщика усиления
 
-const char *MODE_DESCR[TRX_MODE_COUNT] = {
-	"LSB",
-	"USB",
-	"IQ",
-	"CW_L",
-	"CW_U",
-	"DIGL",
-	"DIGU",
-	"NOTX",
-	"NFM",
-	"WFM",
-	"AM",
-	"LOOP"
-};
-
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);

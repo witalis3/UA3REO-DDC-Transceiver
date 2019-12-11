@@ -71,6 +71,21 @@ struct t_CALIBRATE CALIBRATE = {
 	.swr_meter_ref_sub = 0.0f, //% вычитаемого FWD из REF
 };
 
+const char *MODE_DESCR[TRX_MODE_COUNT] = {
+	"LSB",
+	"USB",
+	"CW_L",
+	"CW_U",
+	"NFM",
+	"WFM",
+	"AM",
+	"DIGL",
+	"DIGU",
+	"IQ",
+	"LOOP",
+	"NOTX",
+};
+
 void LoadSettings(bool clear)
 {
 	Flash_Read_Data();

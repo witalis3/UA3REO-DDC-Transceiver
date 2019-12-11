@@ -10,16 +10,16 @@
 
 #define TRX_MODE_LSB 0
 #define TRX_MODE_USB 1
-#define TRX_MODE_IQ 2
-#define TRX_MODE_CW_L 3
-#define TRX_MODE_CW_U 4
-#define TRX_MODE_DIGI_L 5
-#define TRX_MODE_DIGI_U 6
-#define TRX_MODE_NO_TX 7
-#define TRX_MODE_NFM 8
-#define TRX_MODE_WFM 9
-#define TRX_MODE_AM 10
-#define TRX_MODE_LOOPBACK 11
+#define TRX_MODE_CW_L 2
+#define TRX_MODE_CW_U 3
+#define TRX_MODE_NFM 4
+#define TRX_MODE_WFM 5
+#define TRX_MODE_AM 6
+#define TRX_MODE_DIGI_L 7
+#define TRX_MODE_DIGI_U 8
+#define TRX_MODE_IQ 9
+#define TRX_MODE_LOOPBACK 10
+#define TRX_MODE_NO_TX 11
 #define TRX_MODE_COUNT 12
 
 #define IRAM2 __attribute__((section("IRAM2")))
