@@ -142,7 +142,7 @@ static void LCD_displayStatusInfoGUI(void) { //вывод RX/TX и с-метра
 	}
 	LCD_busy = true;
 	
-	LCDDriver_Fill_RectWH(0, 100, LCD_WIDTH, 130, COLOR_BLACK);
+	LCDDriver_Fill_RectWH(0, 100, LCD_WIDTH, 30, COLOR_BLACK);
 	
 	if (TRX_on_TX())
 	{

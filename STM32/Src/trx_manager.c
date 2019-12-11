@@ -197,8 +197,12 @@ uint32_t TRX_getFrequency(VFO* vfo)
 
 void TRX_setMode(uint8_t _mode, VFO* vfo)
 {
+	if(vfo->Mode == TRX_MODE_LOOPBACK || _mode == TRX_MODE_LOOPBACK)
+		LCD_UpdateQuery.StatusInfoGUI = true;
 	vfo->Mode = _mode;
-	if (vfo->Mode == TRX_MODE_LOOPBACK) TRX_Start_TXRX();
+	if (vfo->Mode == TRX_MODE_LOOPBACK)
+		TRX_Start_TXRX();
+	
 	switch (_mode)
 	{
 	case TRX_MODE_LSB:
@@ -220,7 +224,6 @@ void TRX_setMode(uint8_t _mode, VFO* vfo)
 		break;
 	}
 	ReinitAudioFilters();
-	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 }
 
@@ -319,7 +322,6 @@ void TRX_DBMCalculate(void)
 {
 	float32_t magnitude = Processor_RX_Power_value / FPGA_AUDIO_BUFFER_HALF_SIZE;
 	Processor_RX_Power_value = 0;
-	//arm_sqrt_f32(magnitude, &magnitude);
 	float32_t Audio_Vpp_value = magnitude * CALIBRATE.adc_calibration; // калибровка АЦП
 	for (int i = 0; i < (FPGA_BUS_BITS - ADC_BITS); i++) Audio_Vpp_value = Audio_Vpp_value / 2.0f; //приводим разрядность аудио к разрядности АЦП
 	float32_t ADC_Vpp_Value = Audio_Vpp_value * ADC_VREF / ((float32_t)powf(2.0f, ADC_BITS) - 1.0f); //получаем значение пик-пик напряжения на входе АЦП в вольтах
