@@ -320,12 +320,10 @@ void TRX_DoAutoGain(void)
 
 void TRX_DBMCalculate(void)
 {
-	float32_t magnitude = Processor_RX_Power_value / FPGA_AUDIO_BUFFER_HALF_SIZE;
+	float32_t s_meter_power = Processor_RX_Power_value * CALIBRATE.adc_calibration; // калибровка АЦП
 	Processor_RX_Power_value = 0;
-	float32_t Audio_Vpp_value = magnitude * CALIBRATE.adc_calibration; // калибровка АЦП
-	for (int i = 0; i < (FPGA_BUS_BITS - ADC_BITS); i++) Audio_Vpp_value = Audio_Vpp_value / 2.0f; //приводим разрядность аудио к разрядности АЦП
-	float32_t ADC_Vpp_Value = Audio_Vpp_value * ADC_VREF / ((float32_t)powf(2.0f, ADC_BITS) - 1.0f); //получаем значение пик-пик напряжения на входе АЦП в вольтах
-	float32_t ADC_Vrms_Value = ADC_Vpp_Value * 0.3535f; // Получаем действующее (RMS) напряжение на аходе АЦП
+	float32_t s_meter_rate = s_meter_power / (float32_t)FPGA_BUS_FULL_SCALE_POW;
+	float32_t ADC_Vrms_Value = ADC_VREF * s_meter_rate; //получаем значение пик-пик напряжения на входе АЦП в вольтах
 	float32_t ADC_RF_IN_Value = (ADC_Vrms_Value / ADC_RF_TRANS_RATIO); //Получаем напряжение на антенном входе с учётом трансформатора
 	if (ADC_RF_IN_Value < 0.0000001f) ADC_RF_IN_Value = 0.0000001f;
 	TRX_RX_dBm = 10 * log10f_fast((ADC_RF_IN_Value*ADC_RF_IN_Value) / (50.0f*0.001f)); //получаем значение мощности в dBm для сопротивления 50ом
