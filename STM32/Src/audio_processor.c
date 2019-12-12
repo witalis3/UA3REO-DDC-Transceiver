@@ -90,7 +90,7 @@ void processRxAudio(void)
 	dc_filter(FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 0);
 	dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 1);
 
-	//применяем усиление ПЧ IF Gain
+	//Применяем усиление ПЧ IF Gain
 	arm_scale_f32(FPGA_Audio_Buffer_I_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 	arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 
@@ -233,9 +233,8 @@ void processTxAudio(void)
 {
 	if (!Processor_NeedTXBuffer) return;
 	VFO* current_vfo = CurrentVFO();
-	
 	AUDIOPROC_samples++;
-	Processor_selected_RFpower_amplitude = TRX.RF_Power / 100.0f * TRX_MAX_TX_Amplitude;
+	Processor_selected_RFpower_amplitude = ((log10f_fast((float32_t)TRX.RF_Power/10)+1)/2.0f) * TRX_MAX_TX_Amplitude;
 	uint8_t mode = TRX_getMode(current_vfo);
 
 	if (TRX.InputType_USB) //USB AUDIO
