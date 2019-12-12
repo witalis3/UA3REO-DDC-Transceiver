@@ -540,9 +540,10 @@ static void doRX_SMETER(void)
 	//Prepare data to calculate s-meter
 	float32_t i,q = 0;
 	arm_power_f32(FPGA_Audio_Buffer_I_tmp,FPGA_AUDIO_BUFFER_HALF_SIZE, &i);
-	arm_power_f32(FPGA_Audio_Buffer_Q_tmp,FPGA_AUDIO_BUFFER_HALF_SIZE, &q);
-	if (i > Processor_RX_Power_value) Processor_RX_Power_value = i;
-	if (q > Processor_RX_Power_value) Processor_RX_Power_value = q;
+	//arm_power_f32(FPGA_Audio_Buffer_Q_tmp,FPGA_AUDIO_BUFFER_HALF_SIZE, &q);
+	//if (i > Processor_RX_Power_value) Processor_RX_Power_value = i;
+	Processor_RX_Power_value = i;
+	//if (q > Processor_RX_Power_value) Processor_RX_Power_value = q;
 }
 
 static void doRX_COPYCHANNEL(void)

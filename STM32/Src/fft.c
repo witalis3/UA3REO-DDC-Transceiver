@@ -317,10 +317,9 @@ void FFT_doFFT(void)
 	arm_max_f32(FFTInput, FFT_PRINT_SIZE, &maxValue, &maxIndex); //ищем максимум в АЧХ
 	
 	//Ищем медиану в АЧХ
-	//arm_mean_f32(FFTInput, FFT_PRINT_SIZE, &meanValue); //ищем среднее в АЧХ
 	float32_t median_max=maxValue;
 	float32_t median_min=0;
-	while (median_max>median_min)
+	for (uint16_t f = 0; ((f < FFT_PRINT_SIZE) && (median_max>median_min)); f++)
 	{
 		float32_t median_max_find=0;
 		float32_t median_min_find=median_max;
@@ -343,10 +342,10 @@ void FFT_doFFT(void)
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_FIX) maxValueFFT -= FFT_STEP_FIX;
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && diffValue < 0 && diffValue < -FFT_STEP_PRECISION) maxValueFFT += diffValue;
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_PRECISION) maxValueFFT -= FFT_STEP_PRECISION;
-	if ((meanValue * 4) > maxValueFFT) maxValueFFT = (meanValue * 4);
+	if ((meanValue * 4.0f) > maxValueFFT) maxValueFFT = (meanValue * 4.0f);
 	maxValueErrors = 0;
 	if (maxValueFFT < FFT_MIN) maxValueFFT = FFT_MIN;
-	if (TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK) maxValueFFT = 60000;
+	if (TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK) maxValueFFT = 60000.0f;
 	if(TRX_on_TX())
 		maxValueFFT_tx = maxValueFFT;
 	else
