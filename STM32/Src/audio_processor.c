@@ -90,9 +90,9 @@ void processRxAudio(void)
 	dc_filter(FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 0);
 	dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 1);
 
-	//RF Gain
-	arm_scale_f32(FPGA_Audio_Buffer_I_tmp, 50, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-	arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, 50, FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+	//применяем усиление ПЧ IF Gain
+	arm_scale_f32(FPGA_Audio_Buffer_I_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 
 	switch (TRX_getMode(current_vfo))
 	{

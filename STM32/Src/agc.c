@@ -46,7 +46,7 @@ void DoAGC(float32_t *agcBuffer, int16_t blockSize)
 	}
 	
 	//AGC выключен, ничего не регулируем
-	if (!TRX.AGC) AGC_need_gain_db = AGC_DISABLED_GAIN;
+	if (!TRX.AGC) AGC_need_gain_db = 1.0f;
 		
 	//применяем усиление
 	if (AGC_need_gain_db_old != AGC_need_gain_db) //усиление изменилось

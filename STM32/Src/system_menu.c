@@ -17,6 +17,7 @@ static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
 static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
+static void SYSMENU_HANDL_TRX_IFGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_TRX_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -92,6 +93,7 @@ static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_ha
 static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 {
 	{"RF Power", SYSMENU_UINT8, (uint32_t *)&TRX.RF_Power, SYSMENU_HANDL_TRX_RFPower},
+	{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_TRX_IFGain},
 	{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_TRX_FMSquelch},
 	{"AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.AGC_speed, SYSMENU_HANDL_TRX_AGCSpeed},
 	{"Band Map", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
@@ -258,6 +260,13 @@ static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)
 	TRX.RF_Power += direction;
 	if (TRX.RF_Power < 1) TRX.RF_Power = 1;
 	if (TRX.RF_Power > 100) TRX.RF_Power = 100;
+}
+
+static void SYSMENU_HANDL_TRX_IFGain(int8_t direction)
+{
+	TRX.IF_Gain += direction;
+	if (TRX.IF_Gain < 1) TRX.IF_Gain = 1;
+	if (TRX.IF_Gain > 200) TRX.IF_Gain = 200;
 }
 
 static void SYSMENU_HANDL_TRX_FMSquelch(int8_t direction)

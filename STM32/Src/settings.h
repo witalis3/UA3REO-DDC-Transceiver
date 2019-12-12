@@ -16,7 +16,6 @@
 #define MAX_TX_AMPLITUDE 32700.0f //Максимальный размах при передаче в ЦАП (32767.0f - лимит)
 #define AGC_CLIP_THRESHOLD -20.0f //Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
 #define AGC_OPTIMAL_THRESHOLD -30.0f //Рабочий уровень усиления в AGC, dbFS
-#define AGC_DISABLED_GAIN 30.0f //Усиление при выключенном AGC, db
 #define TUNE_POWER 100 // % от выбранной в настройках мощности при запуске TUNE (100 - полная)
 #define TX_AGC_STEPSIZE 50.0f //Время срабатывания компрессора голосового сигнала на передачу (меньше-быстрее)
 #define TX_AGC_MAXGAIN 500.0f //Максимальное усиление микрофона при компрессировании
@@ -150,6 +149,7 @@ extern struct TRX_SETTINGS {
 	uint8_t CICFIR_GAINER_val;
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;
+	uint8_t IF_Gain;
 	uint8_t ENDBit;
 } TRX;
 
