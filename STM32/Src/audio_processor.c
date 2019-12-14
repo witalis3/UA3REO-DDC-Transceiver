@@ -372,9 +372,9 @@ void processTxAudio(void)
 		ALC_need_gain_target = Processor_selected_RFpower_amplitude / Processor_TX_MAX_amplitude_IN;
 		//двигаем усиление на шаг
 		if (ALC_need_gain_target > ALC_need_gain)
-			ALC_need_gain += (ALC_need_gain_target - ALC_need_gain) / TX_AGC_STEPSIZE;
+			ALC_need_gain += (ALC_need_gain_target - ALC_need_gain) / (100.0f / (float32_t)TRX.TX_AGC_speed);
 		else
-			ALC_need_gain -= (ALC_need_gain - ALC_need_gain_target) / TX_AGC_STEPSIZE;
+			ALC_need_gain -= (ALC_need_gain - ALC_need_gain_target) / (100.0f / (float32_t)TRX.TX_AGC_speed);
 
 		if (ALC_need_gain_target < ALC_need_gain)
 			ALC_need_gain = ALC_need_gain_target;

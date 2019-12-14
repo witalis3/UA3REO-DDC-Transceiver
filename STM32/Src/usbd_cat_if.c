@@ -408,11 +408,11 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			if (strcmp(arguments, "0") == 0)
 			{
-				if (TRX.AGC_speed == 0 || !TRX.AGC) CAT_Transmit("GT00;");
-				else if (TRX.AGC_speed == 1) CAT_Transmit("GT04;");
-				else if (TRX.AGC_speed == 2) CAT_Transmit("GT03;");
-				else if (TRX.AGC_speed == 3) CAT_Transmit("GT02;");
-				else if (TRX.AGC_speed == 4) CAT_Transmit("GT01;");
+				if (TRX.RX_AGC_speed == 0 || !TRX.AGC) CAT_Transmit("GT00;");
+				else if (TRX.RX_AGC_speed == 1) CAT_Transmit("GT04;");
+				else if (TRX.RX_AGC_speed == 2) CAT_Transmit("GT03;");
+				else if (TRX.RX_AGC_speed == 3) CAT_Transmit("GT02;");
+				else CAT_Transmit("GT01;");
 			}
 			else
 				sendToDebug_str3("Unknown CAT arguments: ", _command, "\r\n");

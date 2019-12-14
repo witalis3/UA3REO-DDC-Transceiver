@@ -18,7 +18,8 @@ static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_IFGain(int8_t direction);
-static void SYSMENU_HANDL_TRX_AGCSpeed(int8_t direction);
+static void SYSMENU_HANDL_TRX_RX_AGCSpeed(int8_t direction);
+static void SYSMENU_HANDL_TRX_TX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_TRX_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
@@ -96,8 +97,6 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 {
 	{"RF Power", SYSMENU_UINT8, (uint32_t *)&TRX.RF_Power, SYSMENU_HANDL_TRX_RFPower},
 	{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_TRX_IFGain},
-	{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_TRX_FMSquelch},
-	{"AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.AGC_speed, SYSMENU_HANDL_TRX_AGCSpeed},
 	{"Band Map", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
 	{"AutoGainer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
 	{"LPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.LPF, SYSMENU_HANDL_TRX_LPFFilter},
@@ -116,6 +115,9 @@ static struct sysmenu_item_handler sysmenu_bw_handlers[] =
 	{"SSB LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_Filter, SYSMENU_HANDL_SSB_LPF_pass},
 	{"CW LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_Filter, SYSMENU_HANDL_CW_LPF_pass},
 	{"FM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.FM_Filter, SYSMENU_HANDL_FM_LPF_pass},
+	{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_TRX_FMSquelch},
+	{"RX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_speed, SYSMENU_HANDL_TRX_RX_AGCSpeed},
+	{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_TRX_TX_AGCSpeed},
 };
 static uint8_t sysmenu_bw_item_count = sizeof(sysmenu_bw_handlers) / sizeof(sysmenu_bw_handlers[0]);
 
@@ -220,11 +222,19 @@ void drawSystemMenu(bool draw_background)
 	LCD_busy = false;
 }
 
-static void SYSMENU_HANDL_TRX_AGCSpeed(int8_t direction)
+static void SYSMENU_HANDL_TRX_RX_AGCSpeed(int8_t direction)
 {
-	TRX.AGC_speed += direction;
-	if (TRX.AGC_speed < 1) TRX.AGC_speed = 1;
-	if (TRX.AGC_speed > 4) TRX.AGC_speed = 4;
+	TRX.RX_AGC_speed += direction;
+	if (TRX.RX_AGC_speed < 1) TRX.RX_AGC_speed = 1;
+	if (TRX.RX_AGC_speed > 20) TRX.RX_AGC_speed = 20;
+	InitAGC();
+}
+
+static void SYSMENU_HANDL_TRX_TX_AGCSpeed(int8_t direction)
+{
+	TRX.TX_AGC_speed += direction;
+	if (TRX.TX_AGC_speed < 1) TRX.TX_AGC_speed = 1;
+	if (TRX.TX_AGC_speed > 50) TRX.TX_AGC_speed = 50;
 	InitAGC();
 }
 

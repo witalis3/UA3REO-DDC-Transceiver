@@ -17,7 +17,6 @@
 #define AGC_CLIP_THRESHOLD -20.0f //Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
 #define AGC_OPTIMAL_THRESHOLD -30.0f //Рабочий уровень усиления в AGC, dbFS
 #define TUNE_POWER 100 // % от выбранной в настройках мощности при запуске TUNE (100 - полная)
-#define TX_AGC_STEPSIZE 25.0f //Время срабатывания компрессора голосового сигнала на передачу (меньше-быстрее)
 #define TX_AGC_MAXGAIN 500.0f //Максимальное усиление микрофона при компрессировании
 #define TX_AGC_NOISEGATE 15.0f //Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
 #define TOUCHPAD_DELAY 200 //Время защиты от анти-дребезга нажания на тачпад
@@ -102,7 +101,7 @@ extern struct TRX_SETTINGS {
 	bool LPF;
 	bool BPF;
 	bool DNR;
-	uint8_t AGC_speed;
+	uint8_t RX_AGC_speed;
 	bool BandMapEnabled;
 	uint16_t Volume;
 	bool InputType_MIC;
@@ -152,6 +151,7 @@ extern struct TRX_SETTINGS {
 	bool CW_KEYER;
 	uint16_t CW_KEYER_WPM;
 	bool S_METER_Style;
+	uint8_t TX_AGC_speed;
 	uint8_t ENDBit;
 } TRX;
 

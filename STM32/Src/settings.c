@@ -118,7 +118,8 @@ void LoadSettings(bool clear)
 		TRX.LPF = true; //ФНЧ
 		TRX.BPF = true; //ДПФ
 		TRX.DNR = false; //цифровое шумоподавление
-		TRX.AGC_speed = 3; //скорость AGC
+		TRX.RX_AGC_speed = 3; //скорость AGC на приём
+		TRX.TX_AGC_speed = 3; //скорость AGC на передачу
 		TRX.BandMapEnabled = true; //автоматическая смена моды по карте диапазонов
 		TRX.Volume = 20; //громкость
 		TRX.InputType_MIC = true; //тип входа для передачи

@@ -14,8 +14,8 @@ static float32_t RX_AGC_STEPSIZE_DOWN = 1.0f;
 void InitAGC(void)
 {
 	//выше скорость в настройках - выше скорость отработки AGC
-	RX_AGC_STEPSIZE_UP = 100.0f / (float32_t)TRX.AGC_speed;
-	RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.AGC_speed;
+	RX_AGC_STEPSIZE_UP = 100.0f / (float32_t)TRX.RX_AGC_speed;
+	RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.RX_AGC_speed;
 }
 
 void DoAGC(float32_t *agcBuffer, int16_t blockSize)
