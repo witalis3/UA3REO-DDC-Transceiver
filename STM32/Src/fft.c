@@ -343,7 +343,14 @@ void FFT_doFFT(void)
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_FIX) maxValueFFT -= FFT_STEP_FIX;
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && diffValue < 0 && diffValue < -FFT_STEP_PRECISION) maxValueFFT += diffValue;
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_PRECISION) maxValueFFT -= FFT_STEP_PRECISION;
-	if ((meanValue * 4.0f) > maxValueFFT) maxValueFFT = (meanValue * 4.0f);
+	if ((meanValue * 4.0f) > maxValueFFT) 
+	{
+		maxValueFFT = (meanValue * 4.0f);
+	}
+	if ((meanValue * 8.0f) < maxValueFFT) 
+	{
+		maxValueFFT = (meanValue * 8.0f);
+	}
 	maxValueErrors = 0;
 	if (maxValueFFT < FFT_MIN) maxValueFFT = FFT_MIN;
 	if (TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK) maxValueFFT = 60000.0f;
@@ -488,11 +495,11 @@ void FFT_printWaterfallDMA(void)
 	}
 }
 
-void FFT_moveWaterfall(int16_t freq_diff)
+void FFT_moveWaterfall(int32_t _freq_diff)
 {
-	if(freq_diff==0) return;
-	int16_t new_x = 0;
-	freq_diff = (freq_diff / FFT_HZ_IN_PIXEL) * TRX.FFT_Zoom;
+	if(_freq_diff==0) return;
+	int32_t new_x = 0;
+	int32_t freq_diff = (_freq_diff / FFT_HZ_IN_PIXEL) * TRX.FFT_Zoom;
 	freq_diff = freq_diff * 1.4f;
 	//Move mean Buffer
 	if (freq_diff > 0) //freq up
@@ -502,16 +509,26 @@ void FFT_moveWaterfall(int16_t freq_diff)
 			new_x = x + freq_diff;
 			if (new_x >= FFT_PRINT_SIZE)
 				new_x -= FFT_PRINT_SIZE;
+			if (new_x < 0 || new_x >= FFT_PRINT_SIZE)
+			{
+				FFTOutput_mean[x] = 0;
+				continue;
+			}
 			FFTOutput_mean[x] = FFTOutput_mean[new_x];
 		}		
 	}
-	else
+	else //freq down
 	{
 		for (int16_t x = FFT_PRINT_SIZE - 1; x >= 0; x--)
 		{
 			new_x = x + freq_diff;
 			if (new_x < 0)
 				new_x += FFT_PRINT_SIZE;
+			if (new_x < 0 || new_x >= FFT_PRINT_SIZE)
+			{
+				FFTOutput_mean[x] = 0;
+				continue;
+			}
 			FFTOutput_mean[x] = FFTOutput_mean[new_x];
 		}
 	}
@@ -519,9 +536,13 @@ void FFT_moveWaterfall(int16_t freq_diff)
 	uint16_t margin_left = 0;
 	if(freq_diff<0)
 		margin_left=-freq_diff;
+	if(margin_left>FFT_PRINT_SIZE) margin_left=FFT_PRINT_SIZE;
 	uint16_t margin_right = 0;
 	if(freq_diff>0)
 		margin_right=freq_diff;
+	if(margin_right>FFT_PRINT_SIZE) margin_right=FFT_PRINT_SIZE;
+	if((margin_left+margin_right) > FFT_PRINT_SIZE)
+		margin_right = 0;
 	uint16_t body_width = FFT_PRINT_SIZE-margin_left-margin_right;
 	
 	for (uint8_t y = 0; y < FFT_WTF_HEIGHT; y++)
