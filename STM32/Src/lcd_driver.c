@@ -16,13 +16,13 @@ static bool wrap = false;
 
 //***** Functions prototypes *****//
 //1. Write Command to LCD
-void LCDDriver_SendCommand(uint16_t com)
+inline void LCDDriver_SendCommand(uint16_t com)
 {
 	*(__IO uint16_t *)(LCD_FSMC_COMM_ADDR) = com;
 }
 
 //2. Write data to LCD
-void LCDDriver_SendData(uint16_t data)
+inline void LCDDriver_SendData(uint16_t data)
 {
 	*(__IO uint16_t *)(LCD_FSMC_DATA_ADDR) = data;
 }

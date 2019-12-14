@@ -16,6 +16,23 @@
   *
   ******************************************************************************
   */
+
+//TIM3 - ШИМ подсветки LCD
+//TIM4 - расчёт FFT
+//TIM5 - аудио-процессор
+//TIM6 - каждые 50мс, различные действия
+//TIM7 - USB FIFO
+
+//DMA1-0 - получение данных с аудио-кодека
+//DMA1-5 - отсылка данных в аудио-кодек
+//DMA2-0 - отправка буфера аудио-процессора в буффер кодека - A
+//DMA2-1 - отправка буфера аудио-процессора в буффер кодека - B
+//DMA2-2 - получение данных из WiFi по UART
+//DMA2-3 - копирование аудио-буфферов по 32бит
+//DMA2-5 - DMA видео-драйвера, для заливки
+//DMA2-6 - отрисовка водопада
+//DMA2-7 - смещение водопада вниз
+
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
@@ -382,7 +399,7 @@ void TIM5_IRQHandler(void)
   /* USER CODE END TIM5_IRQn 0 */
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
-	  //StartProfilerUs();
+	StartProfilerUs();
 	tim5_counter++;
 	if (TRX_on_TX())
 	{
@@ -393,7 +410,7 @@ void TIM5_IRQHandler(void)
 	{
 		processRxAudio();
 	}
-	//EndProfilerUs(true);
+	EndProfilerUs(true);
   /* USER CODE END TIM5_IRQn 1 */
 }
 
@@ -490,7 +507,7 @@ void TIM6_DAC_IRQHandler(void)
 				sendToDebug_str("WIFI State: "); sendToDebug_int16(WIFI_State,false);
 				sendToDebug_newline();
 		}
-		//PrintProfilerResult();
+		PrintProfilerResult();
 
 		tim5_counter = 0;
 		FPGA_samples = 0;

@@ -193,7 +193,6 @@ void processRxAudio(void)
 	
 	//OUT Volume
 	float32_t volume_gain = volume2rate((float32_t)TRX.Volume / 1023.0f);
-	
 	if (Processor_AudioBuffer_ReadyBuffer == 1)
 	{
 		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
