@@ -35,7 +35,6 @@ volatile float32_t ALC_need_gain = 1.0f;
 volatile float32_t fm_sql_avg = 0.0f;
 volatile float32_t Processor_selected_RFpower_amplitude = 0.0f;
 
-static const uint16_t numBlocks = FPGA_AUDIO_BUFFER_HALF_SIZE / APROCESSOR_BLOCK_SIZE;
 static float32_t ampl_val_i = 0.0f;
 static float32_t ampl_val_q = 0.0f;
 static float32_t ALC_need_gain_target = 1.0f;
@@ -275,13 +274,10 @@ void processTxAudio(void)
 			FPGA_Audio_Buffer_Q_tmp[i] = point;
 		}
 		//hilbert fir
-		for (block = 0; block < numBlocks; block++)
-		{
-			// + 45 deg to Q data
-			arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-			// - 45 deg to I data
-			arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-		}
+		// + 45 deg to Q data
+		arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		// - 45 deg to I data
+		arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	
 	//Copy and convert buffer
@@ -304,12 +300,10 @@ void processTxAudio(void)
 	if (mode != TRX_MODE_IQ && !TRX_Tune)
 	{
 		//IIR HPF
-		for (block = 0; block < numBlocks; block++)
-			arm_iir_lattice_f32(&IIR_HPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_f32(&IIR_HPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		//IIR LPF
 		if (current_vfo->Filter_Width > 0)
-			for (block = 0; block < numBlocks; block++)
-				arm_iir_lattice_f32(&IIR_LPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], APROCESSOR_BLOCK_SIZE);
+			arm_iir_lattice_f32(&IIR_LPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		memcpy(&FPGA_Audio_Buffer_Q_tmp[0], &FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE * 4); //double left and right channel
 
 		switch (mode)
@@ -326,33 +320,24 @@ void processTxAudio(void)
 		case TRX_MODE_USB:
 		case TRX_MODE_DIGI_U:
 			//hilbert fir
-			for (block = 0; block < numBlocks; block++)
-			{
-				// + 45 deg to Q data
-				arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-				// - 45 deg to I data
-				arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-			}
+			// + 45 deg to Q data
+			arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			// - 45 deg to I data
+			arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_DIGI_L:
 			//hilbert fir
-			for (block = 0; block < numBlocks; block++)
-			{
-				// + 45 deg to I data
-				arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-				// - 45 deg to Q data
-				arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-			}
+			// + 45 deg to I data
+			arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			// - 45 deg to Q data
+			arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_AM:
-			for (block = 0; block < numBlocks; block++)
-			{
-				// + 45 deg to I data
-				arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-				// - 45 deg to Q data
-				arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-			}
+			// + 45 deg to I data
+			arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			// - 45 deg to Q data
+			arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 			for (size_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 			{
 				float32_t i_am = ((FPGA_Audio_Buffer_I_tmp[i] - FPGA_Audio_Buffer_Q_tmp[i]) + (Processor_selected_RFpower_amplitude)) / 2.0f;
@@ -496,29 +481,24 @@ static void doRX_LPF(void)
 {
 	//IIR LPF
 	if (CurrentVFO()->Filter_Width > 0)
-		for (block = 0; block < numBlocks; block++)
-		{
-			arm_iir_lattice_f32(&IIR_LPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-			arm_iir_lattice_f32(&IIR_LPF_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0] + (block*APROCESSOR_BLOCK_SIZE), APROCESSOR_BLOCK_SIZE);
-		}
+	{
+		arm_iir_lattice_f32(&IIR_LPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_f32(&IIR_LPF_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	}
 }
 
 static void doRX_HPF(void)
 {
 	//IIR HPF
-	for (block = 0; block < numBlocks; block++)
-	{
-		arm_iir_lattice_f32(&IIR_HPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_f32(&IIR_HPF_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[block*APROCESSOR_BLOCK_SIZE], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[block*APROCESSOR_BLOCK_SIZE], APROCESSOR_BLOCK_SIZE);
-	}
+	arm_iir_lattice_f32(&IIR_HPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_iir_lattice_f32(&IIR_HPF_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 }
 
 static void doRX_NOTCH(void)
 {
 	if (TRX.NotchFilter)
 	{
-		for (block = 0; block < numBlocks; block++)
-			arm_biquad_cascade_df2T_f32(&NOTCH_FILTER, (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], (float32_t *)&FPGA_Audio_Buffer_I_tmp[block*APROCESSOR_BLOCK_SIZE], APROCESSOR_BLOCK_SIZE);
+		arm_biquad_cascade_df2T_f32(&NOTCH_FILTER, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 }
 

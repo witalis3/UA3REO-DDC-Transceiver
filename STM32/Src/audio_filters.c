@@ -130,10 +130,10 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 
 void InitAudioFilters(void)
 {
-	arm_fir_init_f32(&FIR_TX_Hilbert_I, IQ_TX_HILBERT_TAPS, (float32_t *)&i_tx_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_I[0], APROCESSOR_BLOCK_SIZE); // +45 degrees phase added
-	arm_fir_init_f32(&FIR_TX_Hilbert_Q, IQ_TX_HILBERT_TAPS, (float32_t *)&q_tx_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_Q[0], APROCESSOR_BLOCK_SIZE); // -45 degrees phase added
+	arm_fir_init_f32(&FIR_TX_Hilbert_I, IQ_TX_HILBERT_TAPS, (float32_t *)&i_tx_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE); // +45 degrees phase added
+	arm_fir_init_f32(&FIR_TX_Hilbert_Q, IQ_TX_HILBERT_TAPS, (float32_t *)&q_tx_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE); // -45 degrees phase added
 
-	arm_iir_lattice_init_f32(&IIR_Squelch_HPF, IIR_HPF_SQL_STAGES, (float32_t *)&IIR_HPF_15k0_PKcoeffs, (float32_t *)&IIR_HPF_15k0_PVcoeffs, (float32_t *)&IIR_HPF_SQL_State[0], APROCESSOR_BLOCK_SIZE);
+	arm_iir_lattice_init_f32(&IIR_Squelch_HPF, IIR_HPF_SQL_STAGES, (float32_t *)&IIR_HPF_15k0_PKcoeffs, (float32_t *)&IIR_HPF_15k0_PVcoeffs, (float32_t *)&IIR_HPF_SQL_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 
 	InitNoiseReduction();
 	InitNotchFilter();
@@ -144,163 +144,163 @@ void ReinitAudioFilters(void)
 	//LPF
 	if (CurrentVFO()->Filter_Width == 300)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_CW_STAGES, (float32_t *)&IIR_LPF_0k3_PKcoeffs, (float32_t *)&IIR_LPF_0k3_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_CW_STAGES, (float32_t *)&IIR_LPF_0k3_PKcoeffs, (float32_t *)&IIR_LPF_0k3_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_CW_STAGES, (float32_t *)&IIR_LPF_0k3_PKcoeffs, (float32_t *)&IIR_LPF_0k3_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_CW_STAGES, (float32_t *)&IIR_LPF_0k3_PKcoeffs, (float32_t *)&IIR_LPF_0k3_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 500)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_CW_STAGES, (float32_t *)&IIR_LPF_0k5_PKcoeffs, (float32_t *)&IIR_LPF_0k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_CW_STAGES, (float32_t *)&IIR_LPF_0k5_PKcoeffs, (float32_t *)&IIR_LPF_0k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_CW_STAGES, (float32_t *)&IIR_LPF_0k5_PKcoeffs, (float32_t *)&IIR_LPF_0k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_CW_STAGES, (float32_t *)&IIR_LPF_0k5_PKcoeffs, (float32_t *)&IIR_LPF_0k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 1400)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k4_PKcoeffs, (float32_t *)&IIR_LPF_1k4_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k4_PKcoeffs, (float32_t *)&IIR_LPF_1k4_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k4_PKcoeffs, (float32_t *)&IIR_LPF_1k4_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k4_PKcoeffs, (float32_t *)&IIR_LPF_1k4_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 1600)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k6_PKcoeffs, (float32_t *)&IIR_LPF_1k6_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k6_PKcoeffs, (float32_t *)&IIR_LPF_1k6_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k6_PKcoeffs, (float32_t *)&IIR_LPF_1k6_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k6_PKcoeffs, (float32_t *)&IIR_LPF_1k6_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 1800)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k8_PKcoeffs, (float32_t *)&IIR_LPF_1k8_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k8_PKcoeffs, (float32_t *)&IIR_LPF_1k8_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k8_PKcoeffs, (float32_t *)&IIR_LPF_1k8_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_1k8_PKcoeffs, (float32_t *)&IIR_LPF_1k8_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 2100)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k1_PKcoeffs, (float32_t *)&IIR_LPF_2k1_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k1_PKcoeffs, (float32_t *)&IIR_LPF_2k1_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k1_PKcoeffs, (float32_t *)&IIR_LPF_2k1_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k1_PKcoeffs, (float32_t *)&IIR_LPF_2k1_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 2300)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k3_PKcoeffs, (float32_t *)&IIR_LPF_2k3_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k3_PKcoeffs, (float32_t *)&IIR_LPF_2k3_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k3_PKcoeffs, (float32_t *)&IIR_LPF_2k3_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k3_PKcoeffs, (float32_t *)&IIR_LPF_2k3_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 2500)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k5_PKcoeffs, (float32_t *)&IIR_LPF_2k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k5_PKcoeffs, (float32_t *)&IIR_LPF_2k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k5_PKcoeffs, (float32_t *)&IIR_LPF_2k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k5_PKcoeffs, (float32_t *)&IIR_LPF_2k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 2700)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k7_PKcoeffs, (float32_t *)&IIR_LPF_2k7_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k7_PKcoeffs, (float32_t *)&IIR_LPF_2k7_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k7_PKcoeffs, (float32_t *)&IIR_LPF_2k7_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k7_PKcoeffs, (float32_t *)&IIR_LPF_2k7_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 2900)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k9_PKcoeffs, (float32_t *)&IIR_LPF_2k9_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k9_PKcoeffs, (float32_t *)&IIR_LPF_2k9_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k9_PKcoeffs, (float32_t *)&IIR_LPF_2k9_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_2k9_PKcoeffs, (float32_t *)&IIR_LPF_2k9_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 3000)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k0_PKcoeffs, (float32_t *)&IIR_LPF_3k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k0_PKcoeffs, (float32_t *)&IIR_LPF_3k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k0_PKcoeffs, (float32_t *)&IIR_LPF_3k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k0_PKcoeffs, (float32_t *)&IIR_LPF_3k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 3200)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k2_PKcoeffs, (float32_t *)&IIR_LPF_3k2_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k2_PKcoeffs, (float32_t *)&IIR_LPF_3k2_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k2_PKcoeffs, (float32_t *)&IIR_LPF_3k2_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k2_PKcoeffs, (float32_t *)&IIR_LPF_3k2_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 3400)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k4_PKcoeffs, (float32_t *)&IIR_LPF_3k4_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k4_PKcoeffs, (float32_t *)&IIR_LPF_3k4_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k4_PKcoeffs, (float32_t *)&IIR_LPF_3k4_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k4_PKcoeffs, (float32_t *)&IIR_LPF_3k4_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 3600)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k6_PKcoeffs, (float32_t *)&IIR_LPF_3k6_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k6_PKcoeffs, (float32_t *)&IIR_LPF_3k6_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k6_PKcoeffs, (float32_t *)&IIR_LPF_3k6_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k6_PKcoeffs, (float32_t *)&IIR_LPF_3k6_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 3800)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k8_PKcoeffs, (float32_t *)&IIR_LPF_3k8_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k8_PKcoeffs, (float32_t *)&IIR_LPF_3k8_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k8_PKcoeffs, (float32_t *)&IIR_LPF_3k8_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_3k8_PKcoeffs, (float32_t *)&IIR_LPF_3k8_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 4000)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k0_PKcoeffs, (float32_t *)&IIR_LPF_4k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k0_PKcoeffs, (float32_t *)&IIR_LPF_4k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k0_PKcoeffs, (float32_t *)&IIR_LPF_4k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k0_PKcoeffs, (float32_t *)&IIR_LPF_4k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 4200)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k2_PKcoeffs, (float32_t *)&IIR_LPF_4k2_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k2_PKcoeffs, (float32_t *)&IIR_LPF_4k2_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k2_PKcoeffs, (float32_t *)&IIR_LPF_4k2_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k2_PKcoeffs, (float32_t *)&IIR_LPF_4k2_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 4400)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k4_PKcoeffs, (float32_t *)&IIR_LPF_4k4_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k4_PKcoeffs, (float32_t *)&IIR_LPF_4k4_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k4_PKcoeffs, (float32_t *)&IIR_LPF_4k4_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k4_PKcoeffs, (float32_t *)&IIR_LPF_4k4_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 4600)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k6_PKcoeffs, (float32_t *)&IIR_LPF_4k6_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k6_PKcoeffs, (float32_t *)&IIR_LPF_4k6_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k6_PKcoeffs, (float32_t *)&IIR_LPF_4k6_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k6_PKcoeffs, (float32_t *)&IIR_LPF_4k6_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 4800)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k8_PKcoeffs, (float32_t *)&IIR_LPF_4k8_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k8_PKcoeffs, (float32_t *)&IIR_LPF_4k8_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k8_PKcoeffs, (float32_t *)&IIR_LPF_4k8_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_4k8_PKcoeffs, (float32_t *)&IIR_LPF_4k8_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 5000)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_5k0_PKcoeffs, (float32_t *)&IIR_LPF_5k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_5k0_PKcoeffs, (float32_t *)&IIR_LPF_5k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_5k0_PKcoeffs, (float32_t *)&IIR_LPF_5k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_5k0_PKcoeffs, (float32_t *)&IIR_LPF_5k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 5500)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_5k5_PKcoeffs, (float32_t *)&IIR_LPF_5k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_5k5_PKcoeffs, (float32_t *)&IIR_LPF_5k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_5k5_PKcoeffs, (float32_t *)&IIR_LPF_5k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_5k5_PKcoeffs, (float32_t *)&IIR_LPF_5k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 6000)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_6k0_PKcoeffs, (float32_t *)&IIR_LPF_6k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_6k0_PKcoeffs, (float32_t *)&IIR_LPF_6k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_6k0_PKcoeffs, (float32_t *)&IIR_LPF_6k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_6k0_PKcoeffs, (float32_t *)&IIR_LPF_6k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 6500)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_6k5_PKcoeffs, (float32_t *)&IIR_LPF_6k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_6k5_PKcoeffs, (float32_t *)&IIR_LPF_6k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_6k5_PKcoeffs, (float32_t *)&IIR_LPF_6k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_6k5_PKcoeffs, (float32_t *)&IIR_LPF_6k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 7000)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_7k0_PKcoeffs, (float32_t *)&IIR_LPF_7k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_7k0_PKcoeffs, (float32_t *)&IIR_LPF_7k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_7k0_PKcoeffs, (float32_t *)&IIR_LPF_7k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_7k0_PKcoeffs, (float32_t *)&IIR_LPF_7k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 7500)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_7k5_PKcoeffs, (float32_t *)&IIR_LPF_7k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_7k5_PKcoeffs, (float32_t *)&IIR_LPF_7k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_7k5_PKcoeffs, (float32_t *)&IIR_LPF_7k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_7k5_PKcoeffs, (float32_t *)&IIR_LPF_7k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 8000)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_8k0_PKcoeffs, (float32_t *)&IIR_LPF_8k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_8k0_PKcoeffs, (float32_t *)&IIR_LPF_8k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_8k0_PKcoeffs, (float32_t *)&IIR_LPF_8k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_8k0_PKcoeffs, (float32_t *)&IIR_LPF_8k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 8500)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_8k5_PKcoeffs, (float32_t *)&IIR_LPF_8k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_8k5_PKcoeffs, (float32_t *)&IIR_LPF_8k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_8k5_PKcoeffs, (float32_t *)&IIR_LPF_8k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_8k5_PKcoeffs, (float32_t *)&IIR_LPF_8k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 9000)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_9k0_PKcoeffs, (float32_t *)&IIR_LPF_9k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_9k0_PKcoeffs, (float32_t *)&IIR_LPF_9k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_9k0_PKcoeffs, (float32_t *)&IIR_LPF_9k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_9k0_PKcoeffs, (float32_t *)&IIR_LPF_9k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 9500)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_9k5_PKcoeffs, (float32_t *)&IIR_LPF_9k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_9k5_PKcoeffs, (float32_t *)&IIR_LPF_9k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_9k5_PKcoeffs, (float32_t *)&IIR_LPF_9k5_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_9k5_PKcoeffs, (float32_t *)&IIR_LPF_9k5_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 10000)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_10k0_PKcoeffs, (float32_t *)&IIR_LPF_10k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_10k0_PKcoeffs, (float32_t *)&IIR_LPF_10k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_10k0_PKcoeffs, (float32_t *)&IIR_LPF_10k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_10k0_PKcoeffs, (float32_t *)&IIR_LPF_10k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	if (CurrentVFO()->Filter_Width == 15000)
 	{
-		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_15k0_PKcoeffs, (float32_t *)&IIR_LPF_15k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_15k0_PKcoeffs, (float32_t *)&IIR_LPF_15k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_I, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_15k0_PKcoeffs, (float32_t *)&IIR_LPF_15k0_PVcoeffs, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_LPF_Q, IIR_LPF_STAGES, (float32_t *)&IIR_LPF_15k0_PKcoeffs, (float32_t *)&IIR_LPF_15k0_PVcoeffs, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 
 	//HPF
@@ -308,34 +308,34 @@ void ReinitAudioFilters(void)
 	{
 		if (TRX.SSB_HPF_pass == 100)
 		{
-			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_100_PKcoeffs, (float32_t *)&IIR_HPF_100_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], APROCESSOR_BLOCK_SIZE);
-			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_100_PKcoeffs, (float32_t *)&IIR_HPF_100_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], APROCESSOR_BLOCK_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_100_PKcoeffs, (float32_t *)&IIR_HPF_100_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_100_PKcoeffs, (float32_t *)&IIR_HPF_100_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		}
 		else if (TRX.SSB_HPF_pass == 200)
 		{
-			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_200_PKcoeffs, (float32_t *)&IIR_HPF_200_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], APROCESSOR_BLOCK_SIZE);
-			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_200_PKcoeffs, (float32_t *)&IIR_HPF_200_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], APROCESSOR_BLOCK_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_200_PKcoeffs, (float32_t *)&IIR_HPF_200_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_200_PKcoeffs, (float32_t *)&IIR_HPF_200_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		}
 		else if (TRX.SSB_HPF_pass == 300)
 		{
-			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_300_PKcoeffs, (float32_t *)&IIR_HPF_300_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], APROCESSOR_BLOCK_SIZE);
-			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_300_PKcoeffs, (float32_t *)&IIR_HPF_300_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], APROCESSOR_BLOCK_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_300_PKcoeffs, (float32_t *)&IIR_HPF_300_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_300_PKcoeffs, (float32_t *)&IIR_HPF_300_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		}
 		else if (TRX.SSB_HPF_pass == 400)
 		{
-			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_400_PKcoeffs, (float32_t *)&IIR_HPF_400_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], APROCESSOR_BLOCK_SIZE);
-			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_400_PKcoeffs, (float32_t *)&IIR_HPF_400_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], APROCESSOR_BLOCK_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_400_PKcoeffs, (float32_t *)&IIR_HPF_400_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_400_PKcoeffs, (float32_t *)&IIR_HPF_400_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		}
 		else if (TRX.SSB_HPF_pass == 500)
 		{
-			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_500_PKcoeffs, (float32_t *)&IIR_HPF_500_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], APROCESSOR_BLOCK_SIZE);
-			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_500_PKcoeffs, (float32_t *)&IIR_HPF_500_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], APROCESSOR_BLOCK_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_500_PKcoeffs, (float32_t *)&IIR_HPF_500_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_500_PKcoeffs, (float32_t *)&IIR_HPF_500_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		}
 	}
 	else
 	{
-		arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_60_PKcoeffs, (float32_t *)&IIR_HPF_60_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], APROCESSOR_BLOCK_SIZE);
-		arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_60_PKcoeffs, (float32_t *)&IIR_HPF_60_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], APROCESSOR_BLOCK_SIZE);
+		arm_iir_lattice_init_f32(&IIR_HPF_I, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_60_PKcoeffs, (float32_t *)&IIR_HPF_60_PVcoeffs, (float32_t *)&IIR_HPF_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_HPF_Q, IIR_HPF_STAGES, (float32_t *)&IIR_HPF_60_PKcoeffs, (float32_t *)&IIR_HPF_60_PVcoeffs, (float32_t *)&IIR_HPF_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 }
 
