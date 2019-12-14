@@ -17,6 +17,7 @@ extern void TRX_DoAutoGain(void);
 extern void TRX_Restart_Mode(void);
 extern void TRX_DBMCalculate(void);
 extern float32_t TRX_GetALC(void);
+extern float32_t TRX_GenerateCWSignal(float32_t power);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_cat;

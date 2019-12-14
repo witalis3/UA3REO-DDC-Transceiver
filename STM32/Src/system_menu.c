@@ -44,6 +44,8 @@ static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
 static void SYSMENU_HANDL_Standby_Time(int8_t direction);
 static void SYSMENU_HANDL_CWDecoder(int8_t direction);
 static void SYSMENU_HANDL_CWSelfHear(int8_t direction);
+static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
+static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_LCD_Brightness(int8_t direction);
 static void SYSMENU_HANDL_Beeping(int8_t direction);
 static void SYSMENU_HANDL_ENCODER_SLOW_RATE(int8_t direction);
@@ -122,6 +124,8 @@ static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 	{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.Key_timeout, SYSMENU_HANDL_Key_timeout},
 	{"CW Generator shift", SYSMENU_UINT16, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
 	{"CW Self Hear", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CWSelfHear},
+	{"CW Keyer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
+	{"CW Keyer WPM", SYSMENU_UINT8, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
 	{"CW Decoder", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CWDecoder},
 };
 static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
@@ -463,6 +467,19 @@ static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction)
 	if (TRX.SSB_HPF_pass < 100) TRX.SSB_HPF_pass = 100;
 	if (TRX.SSB_HPF_pass > 500) TRX.SSB_HPF_pass = 500;
 	ReinitAudioFilters();
+}
+
+static void SYSMENU_HANDL_CW_Keyer(int8_t direction)
+{
+	if (direction > 0) TRX.CW_KEYER = true;
+	if (direction < 0) TRX.CW_KEYER = false;
+}
+
+static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction)
+{
+	TRX.CW_KEYER_WPM += direction;
+	if (TRX.CW_KEYER_WPM < 1) TRX.CW_KEYER_WPM = 1;
+	if (TRX.CW_KEYER_WPM > 500) TRX.CW_KEYER_WPM = 500;
 }
 
 static void SYSMENU_HANDL_CW_LPF_pass(int8_t direction)

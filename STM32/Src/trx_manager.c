@@ -40,7 +40,10 @@ volatile float32_t TRX_SWR_backward = 0;
 volatile float32_t TRX_SWR = 0;
 static uint8_t autogain_wait_reaction = 0; //таймер ожидания реакции от смены режимов ATT/PRE
 static uint8_t autogain_stage = 0; //этап отработки актокорректировщика усиления
+static uint32_t KEYER_symbol_start_time = 0; //время старта символа автоматического ключа
+static bool KEYER_symbol_status = false; //статус (сигнал или период) символа автоматического ключа
 
+static uint8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);
@@ -91,7 +94,8 @@ void TRX_Restart_Mode()
 
 static void TRX_Start_RX()
 {
-	sendToDebug_str("RX MODE\r\n");
+	if(TRX_TXRXMode==1) return;
+	//sendToDebug_str("RX MODE\r\n");
 	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	Processor_NeedRXBuffer = true;
@@ -99,25 +103,30 @@ static void TRX_Start_RX()
 	WM8731_DMA_state = true;
 	WM8731_RX_mode();
 	WM8731_start_i2s_and_dma();
+	TRX_TXRXMode = 1;
 }
 
 static void TRX_Start_TX()
 {
-	sendToDebug_str("TX MODE\r\n");
+	if(TRX_TXRXMode==2) return;
+	//sendToDebug_str("TX MODE\r\n");
 	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	HAL_Delay(10); //задерка перед подачей ВЧ сигнала, чтобы успели сработать реле
 	WM8731_TX_mode();
 	WM8731_start_i2s_and_dma();
+	TRX_TXRXMode = 2;
 }
 
 static void TRX_Start_TXRX()
 {
-	sendToDebug_str("TXRX MODE\r\n");
+	if(TRX_TXRXMode==3) return;
+	//sendToDebug_str("TXRX MODE\r\n");
 	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	WM8731_TXRX_mode();
 	WM8731_start_i2s_and_dma();
+	TRX_TXRXMode = 3;
 }
 
 void TRX_ptt_change(void)
@@ -152,6 +161,8 @@ void TRX_key_change(void)
 		TRX_key_dot_hard = TRX_new_key_dot_hard;
 		if (TRX_key_dot_hard == true) TRX_Key_Timeout_est = TRX.Key_timeout;
 		if (TRX.Key_timeout == 0) TRX_ptt_cat = TRX_key_dot_hard;
+		KEYER_symbol_start_time = 0;
+		KEYER_symbol_status = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
@@ -162,6 +173,8 @@ void TRX_key_change(void)
 		TRX_key_dash_hard = TRX_new_key_dash_hard;
 		if (TRX_key_dash_hard == true) TRX_Key_Timeout_est = TRX.Key_timeout;
 		if (TRX.Key_timeout == 0) TRX_ptt_cat = TRX_key_dash_hard;
+		KEYER_symbol_start_time = 0;
+		KEYER_symbol_status = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
@@ -347,4 +360,36 @@ float32_t TRX_GetALC(void)
 	if (res<0.01f)
 		res = 0.0f;
 	return res;
+}
+
+float32_t TRX_GenerateCWSignal(float32_t power)
+{
+	if(!TRX.CW_KEYER)
+		return power;
+	
+	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
+	uint32_t dash_length_ms = dot_length_ms * 3;
+	uint32_t sim_space_length_ms = dot_length_ms;
+	uint32_t curTime=HAL_GetTick();
+		
+	if(TRX_key_dot_hard && (KEYER_symbol_start_time+dot_length_ms)>curTime) //зажата точка
+	{
+		if(KEYER_symbol_status)
+			return power;
+		else
+			return 0.0f;
+	}
+	else if(TRX_key_dash_hard && (KEYER_symbol_start_time+dash_length_ms)>curTime) //зажато тире
+	{
+		if(KEYER_symbol_status)
+			return power;
+		else
+			return 0.0f;
+	}
+	else if((KEYER_symbol_start_time+sim_space_length_ms)<curTime)
+	{
+		KEYER_symbol_start_time = curTime;
+		KEYER_symbol_status = !KEYER_symbol_status;
+	}
+	return power;
 }

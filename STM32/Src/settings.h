@@ -150,6 +150,8 @@ extern struct TRX_SETTINGS {
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;
 	uint8_t IF_Gain;
+	bool CW_KEYER;
+	uint16_t CW_KEYER_WPM;
 	uint8_t ENDBit;
 } TRX;
 

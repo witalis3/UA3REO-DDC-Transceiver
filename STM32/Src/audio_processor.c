@@ -235,7 +235,7 @@ void processTxAudio(void)
 	Processor_selected_RFpower_amplitude = ((log10f_fast((float32_t)TRX.RF_Power/10)+1)/2.0f) * TRX_MAX_TX_Amplitude;
 	uint8_t mode = TRX_getMode(current_vfo);
 	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || mode==TRX_MODE_CW_L || mode==TRX_MODE_CW_U)
-		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f; // поправка на нулдевые биения
+		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f; // поправка на нулевые биения
 
 	if (TRX.InputType_USB) //USB AUDIO
 	{
@@ -311,10 +311,11 @@ void processTxAudio(void)
 		case TRX_MODE_CW_L:
 		case TRX_MODE_CW_U:
 			if (!TRX_key_serial && !TRX_ptt_hard && !TRX_key_dot_hard && !TRX_key_dash_hard) Processor_selected_RFpower_amplitude = 0;
+			float32_t cw_signal = TRX_GenerateCWSignal(Processor_selected_RFpower_amplitude);
 			for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				FPGA_Audio_Buffer_Q_tmp[i] = Processor_selected_RFpower_amplitude;
-				FPGA_Audio_Buffer_I_tmp[i] = Processor_selected_RFpower_amplitude;
+				FPGA_Audio_Buffer_Q_tmp[i] = cw_signal;
+				FPGA_Audio_Buffer_I_tmp[i] = cw_signal;
 			}
 			break;
 		case TRX_MODE_USB:
@@ -443,8 +444,15 @@ void processTxAudio(void)
 		//CW SelfHear
 		if (TRX.CW_SelfHear && (TRX_key_serial || TRX_key_dot_hard || TRX_key_dash_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U) && !TRX_Tune)
 		{
-			for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
-				CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX.Volume / 100.0f)*2000.0f*arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE)*PI*2.0f*(float32_t)TRX.CW_GENERATOR_SHIFT_HZ);
+			if	(Processor_TX_MAX_amplitude_IN>0)
+			{
+				for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
+					CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX.Volume / 100.0f)*2000.0f*arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE)*PI*2.0f*(float32_t)TRX.CW_GENERATOR_SHIFT_HZ);
+			}
+			else
+			{
+				memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
+			}
 		}
 		//
 		if (FPGA_Audio_Buffer_State) //Send to FPGA DMA

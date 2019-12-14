@@ -166,6 +166,8 @@ void LoadSettings(bool clear)
 		TRX.TXCICFIR_GAINER_val = 32; //Смещение с выхода TX-CIC компенсатора
 		TRX.DAC_GAINER_val = 30; //Смещение DAC корректора
 		TRX.IF_Gain = 60; //Усиление ПЧ, dB (до всех обработок и AGC)
+		TRX.CW_KEYER = true; //Автоматический ключ
+		TRX.CW_KEYER_WPM = 30; //Скорость автоматического ключа
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		SaveSettings();
 	}
