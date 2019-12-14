@@ -237,8 +237,17 @@ static void LCD_displayStatusInfoBar(void) { //S-метра и прочей ин
 		else if (LCD_last_s_meter < s_width) s_width = s_width - ((s_width - LCD_last_s_meter) / 2);
 		if (LCD_last_s_meter != s_width)
 		{
-			LCDDriver_Fill_RectWH(41 + s_width, 101, width - s_width, 13, COLOR_BLACK);
-			LCDDriver_Fill_RectWH(41, 101, s_width, 13, COLOR_WHITE);
+			if(!TRX.S_METER_Style) //полоса
+			{
+				LCDDriver_Fill_RectWH(41 + s_width, 101, LCD_last_s_meter - s_width, 13, COLOR_BLACK);
+				LCDDriver_Fill_RectWH(41, 101, s_width, 13, COLOR_WHITE);
+			}
+			else //линия
+			{
+				LCDDriver_Fill_RectWH(41, 101, width, 13, COLOR_BLACK);
+				LCDDriver_Fill_RectWH(41 + s_width, 101, 1, 13, COLOR_WHITE);
+			}
+			
 			LCD_last_s_meter = s_width;
 		}
 

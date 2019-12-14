@@ -81,7 +81,6 @@ void WM8731_CleanBuffer(void)
 
 void WM8731_Beep(void)
 {
-	if (!TRX.Beeping) return;
 	WM8731_Beeping = true;
 	for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
 		CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX.Volume / 100.0f)*2000.0f*arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE)*PI*2.0f*500.0f);

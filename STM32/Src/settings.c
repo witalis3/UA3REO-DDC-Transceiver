@@ -102,9 +102,9 @@ void LoadSettings(bool clear)
 	}
 	TRX.ENDBit = 100;
 
-	if (TRX.clean_flash != 185 || clear) //code to trace new clean flash
+	if (TRX.clean_flash != 182 || clear) //code to trace new clean flash
 	{
-		TRX.clean_flash = 185; //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		TRX.clean_flash = 182; //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000; //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
 		TRX.VFO_A.Filter_Width = 2700; //сохранённая ширина полосы VFO-A
@@ -130,7 +130,7 @@ void LoadSettings(bool clear)
 		TRX.FM_Filter = 15000; //дефолтное значение ширины фильтра FM
 		TRX.RF_Power = 20; //выходная мощность (%)
 		TRX.FM_SQL_threshold = 1; //FM-шумодав
-		for (uint8_t i = 0; i < BANDS_COUNT; i++) TRX.saved_freq[i] = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
+		for (uint8_t i = 0; i < BANDS_COUNT; i++) TRX.TRX_Saved_freq[i] = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
 		TRX.FFT_Zoom = 1; //приближение спектра FFT
 		TRX.AutoGain = false; //авто-управление предусилителем и аттенюатором
 		TRX.NotchFilter = false; //нотч-фильтр для вырезания помехи
@@ -142,7 +142,6 @@ void LoadSettings(bool clear)
 		TRX.ENCODER_SLOW_RATE = 35; //замедление энкодера для больших разрешений
 		TRX.LCD_Brightness = 60; //яркость экрана
 		TRX.Standby_Time = 180; //время до гашения экрана по бездействию
-		TRX.Beeping = true; //звуки нажатия на кнопки
 		TRX.Key_timeout = 500; //время отпуская передачи после последнего знака на ключе
 		TRX.FFT_Averaging = 4; //усреднение FFT, чтобы сделать его более гладким
 		TRX.SSB_HPF_pass = 300; //частота среза ФВЧ в SSB моде
@@ -169,6 +168,7 @@ void LoadSettings(bool clear)
 		TRX.CW_KEYER = true; //Автоматический ключ
 		TRX.CW_KEYER_WPM = 30; //Скорость автоматического ключа
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
+		TRX.S_METER_Style = false; //Вид S-метра (свечка или полоска)
 		SaveSettings();
 	}
 }

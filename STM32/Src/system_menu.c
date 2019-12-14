@@ -41,13 +41,13 @@ static void SYSMENU_HANDL_ADC_CICCOMP(int8_t direction);
 static void SYSMENU_HANDL_ADC_TXCICCOMP(int8_t direction);
 static void SYSMENU_HANDL_ADC_DAC(int8_t direction);
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
-static void SYSMENU_HANDL_Standby_Time(int8_t direction);
 static void SYSMENU_HANDL_CWDecoder(int8_t direction);
 static void SYSMENU_HANDL_CWSelfHear(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_LCD_Brightness(int8_t direction);
-static void SYSMENU_HANDL_Beeping(int8_t direction);
+static void SYSMENU_HANDL_LCD_SMeter_Style(int8_t direction);
+static void SYSMENU_HANDL_LCD_Standby_Time(int8_t direction);
 static void SYSMENU_HANDL_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Key_timeout(int8_t direction);
@@ -132,9 +132,9 @@ static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysm
 
 static struct sysmenu_item_handler sysmenu_lcd_handlers[] =
 {
-	//{"Touchpad beeping", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Beeping, SYSMENU_HANDL_Beeping},
 	{"LCD Brightness", SYSMENU_UINT8, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_LCD_Brightness},
-	{"LCD Sleep Time", SYSMENU_UINT8, (uint32_t *)&TRX.Standby_Time, SYSMENU_HANDL_Standby_Time},
+	{"LCD Sleep Time", SYSMENU_UINT8, (uint32_t *)&TRX.Standby_Time, SYSMENU_HANDL_LCD_Standby_Time},
+	{"S-METER Line", SYSMENU_BOOLEAN, (uint32_t *)&TRX.S_METER_Style, SYSMENU_HANDL_LCD_SMeter_Style},
 };
 static uint8_t sysmenu_lcd_item_count = sizeof(sysmenu_lcd_handlers) / sizeof(sysmenu_lcd_handlers[0]);
 
@@ -337,6 +337,18 @@ static void SYSMENU_HANDL_LCD_Brightness(int8_t direction)
 	LCDDriver_setBrightness(TRX.LCD_Brightness);
 }
 
+static void SYSMENU_HANDL_LCD_Standby_Time(int8_t direction)
+{
+	if (TRX.Standby_Time > 0 || direction > 0) TRX.Standby_Time += direction;
+	if (TRX.Standby_Time > 250) TRX.Standby_Time = 250;
+}
+
+static void SYSMENU_HANDL_LCD_SMeter_Style(int8_t direction)
+{
+	if (direction > 0) TRX.S_METER_Style = true;
+	if (direction < 0) TRX.S_METER_Style = false;
+}
+
 static void SYSMENU_HANDL_ENCODER_SLOW_RATE(int8_t direction)
 {
 	TRX.ENCODER_SLOW_RATE += direction;
@@ -371,18 +383,6 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 	sprintf(ctmp, "%d", Seconds);
 	addSymbols(ctmp, ctmp, 2, "0", false);
 	LCDDriver_printText(ctmp, 220, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 2 ? COLOR_WHITE : COLOR_BLACK, 3);
-}
-
-static void SYSMENU_HANDL_Standby_Time(int8_t direction)
-{
-	if (TRX.Standby_Time > 0 || direction > 0) TRX.Standby_Time += direction;
-	if (TRX.Standby_Time > 250) TRX.Standby_Time = 250;
-}
-
-static void SYSMENU_HANDL_Beeping(int8_t direction)
-{
-	if (direction > 0) TRX.Beeping = true;
-	if (direction < 0) TRX.Beeping = false;
 }
 
 static void SYSMENU_HANDL_Key_timeout(int8_t direction)

@@ -114,7 +114,7 @@ extern struct TRX_SETTINGS {
 	uint16_t FM_Filter;
 	uint8_t RF_Power;
 	uint8_t	FM_SQL_threshold;
-	uint32_t saved_freq[BANDS_COUNT];
+	uint32_t TRX_Saved_freq[BANDS_COUNT];
 	uint8_t FFT_Zoom;
 	bool AutoGain;
 	bool NotchFilter;
@@ -126,7 +126,6 @@ extern struct TRX_SETTINGS {
 	uint8_t	ENCODER_SLOW_RATE;
 	uint8_t LCD_Brightness;
 	uint8_t Standby_Time;
-	bool Beeping;
 	uint16_t Key_timeout;
 	uint8_t FFT_Averaging;
 	uint16_t SSB_HPF_pass;
@@ -152,6 +151,7 @@ extern struct TRX_SETTINGS {
 	uint8_t IF_Gain;
 	bool CW_KEYER;
 	uint16_t CW_KEYER_WPM;
+	bool S_METER_Style;
 	uint8_t ENDBit;
 } TRX;
 

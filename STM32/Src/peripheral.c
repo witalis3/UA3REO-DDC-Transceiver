@@ -369,7 +369,7 @@ void PERIPH_ProcessFrontPanel(void)
 		band++;
 		if (band >= BANDS_COUNT) band = 0;
 		if (band < 0) band = BANDS_COUNT - 1;
-		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band],CurrentVFO());
+		if (band >= 0) TRX_setFrequency(TRX.TRX_Saved_freq[band],CurrentVFO());
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.FreqInfo = true;
 	}
@@ -381,7 +381,7 @@ void PERIPH_ProcessFrontPanel(void)
 		band--;
 		if (band >= BANDS_COUNT) band = 0;
 		if (band < 0) band = BANDS_COUNT - 1;
-		if (band >= 0) TRX_setFrequency(TRX.saved_freq[band],CurrentVFO());
+		if (band >= 0) TRX_setFrequency(TRX.TRX_Saved_freq[band],CurrentVFO());
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.FreqInfo = true;
 	}
@@ -545,6 +545,7 @@ void PERIPH_ProcessFrontPanel(void)
 	//F3 A=B CLICK
 	if (PERIPH_FrontPanel.key_a_set_b_prev != PERIPH_FrontPanel.key_a_set_b && !PERIPH_FrontPanel.key_a_set_b && (HAL_GetTick()-PERIPH_FrontPanel.key_a_set_b_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_a_set_b_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
 	{
+		sendToDebug_str("C");
 		TRX_Time_InActive = 0;
 		if (TRX.current_vfo)
 		{
