@@ -189,8 +189,10 @@ extern volatile uint32_t cpu_sleep_counter;
 #define RFUNIT_DATA_GPIO_Port GPIOB
 #define KEY_IN_DASH_Pin GPIO_PIN_0
 #define KEY_IN_DASH_GPIO_Port GPIOE
+#define KEY_IN_DASH_EXTI_IRQn EXTI0_IRQn
 #define KEY_IN_DOT_Pin GPIO_PIN_1
 #define KEY_IN_DOT_GPIO_Port GPIOE
+#define KEY_IN_DOT_EXTI_IRQn EXTI1_IRQn
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

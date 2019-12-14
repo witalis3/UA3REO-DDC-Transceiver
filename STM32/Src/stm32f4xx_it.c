@@ -240,6 +240,34 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles EXTI line0 interrupt.
+  */
+void EXTI0_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_IRQn 0 */
+
+  /* USER CODE END EXTI0_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+  /* USER CODE BEGIN EXTI0_IRQn 1 */
+
+  /* USER CODE END EXTI0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line1 interrupt.
+  */
+void EXTI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
+
+  /* USER CODE END EXTI1_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
+
+  /* USER CODE END EXTI1_IRQn 1 */
+}
+
+/**
   * @brief This function handles EXTI line2 interrupt.
   */
 void EXTI2_IRQHandler(void)
@@ -381,7 +409,7 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
 	ms50_counter++;
 
-	if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_hard)
+	if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_dot_hard && !TRX_key_dash_hard)
 	{
 		TRX_Key_Timeout_est -= 50;
 		if (TRX_Key_Timeout_est == 0)
@@ -497,10 +525,8 @@ if (WM8731_Buffer_underrun)
 		TRX_Fan_Timeout += 3; //дуем в 2 раза больше чем работаем на передачу
 		if (TRX_Fan_Timeout > 120) TRX_Fan_Timeout = 120; //но не более 2х минут
 	}
-	if (TRX_ptt_hard == HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin)) TRX_ptt_change();
 	if (TRX_ptt_cat != TRX_old_ptt_cat) TRX_ptt_change();
 	if (TRX_key_serial != TRX_old_key_serial) TRX_key_change();
-	if (TRX_key_hard == HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin)) TRX_key_change();
 	PERIPH_RF_UNIT_UpdateState(false);
 	LCD_doEvents();
 	FFT_printFFT();
@@ -658,6 +684,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		TRX_Time_InActive = 0;
 		if (TRX_Inited && TRX_getMode(CurrentVFO()) != TRX_MODE_NO_TX) 
 			TRX_ptt_change();
+	}
+	else if (GPIO_Pin == GPIO_PIN_1) //KEY DOT
+	{
+		TRX_Time_InActive = 0;
+		TRX_key_change();
+	}
+	else if (GPIO_Pin == GPIO_PIN_0) //KEY DASH
+	{
+		TRX_Time_InActive = 0;
+		TRX_key_change();
 	}
 }
 

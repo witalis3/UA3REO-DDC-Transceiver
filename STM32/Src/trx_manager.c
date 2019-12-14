@@ -18,7 +18,8 @@ volatile bool TRX_ptt_cat = false;
 volatile bool TRX_old_ptt_cat = false;
 volatile bool TRX_key_serial = false;
 volatile bool TRX_old_key_serial = false;
-volatile bool TRX_key_hard = false;
+volatile bool TRX_key_dot_hard = false;
+volatile bool TRX_key_dash_hard = false;
 volatile uint16_t TRX_Key_Timeout_est = 0;
 volatile bool TRX_IQ_swap = false;
 volatile bool TRX_Squelched = false;
@@ -112,7 +113,7 @@ static void TRX_Start_TX()
 
 static void TRX_Start_TXRX()
 {
-	sendToDebug_str("LOOP MODE\r\n");
+	sendToDebug_str("TXRX MODE\r\n");
 	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	WM8731_TXRX_mode();
@@ -125,7 +126,6 @@ void TRX_ptt_change(void)
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
 	if (TRX_ptt_hard != TRX_new_ptt_hard)
 	{
-		TRX_Time_InActive = 0;
 		TRX_ptt_hard = TRX_new_ptt_hard;
 		TRX_ptt_cat = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -145,13 +145,23 @@ void TRX_ptt_change(void)
 void TRX_key_change(void)
 {
 	if (TRX_Tune) return;
-	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
-	if (TRX_key_hard != TRX_new_ptt_hard)
+	if (CurrentVFO()->Mode!=TRX_MODE_CW_L && CurrentVFO()->Mode!=TRX_MODE_CW_U) return;
+	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
+	if (TRX_key_dot_hard != TRX_new_key_dot_hard)
 	{
-		TRX_Time_InActive = 0;
-		TRX_key_hard = TRX_new_ptt_hard;
-		if (TRX_key_hard == true) TRX_Key_Timeout_est = TRX.Key_timeout;
-		if (TRX.Key_timeout == 0) TRX_ptt_cat = TRX_key_hard;
+		TRX_key_dot_hard = TRX_new_key_dot_hard;
+		if (TRX_key_dot_hard == true) TRX_Key_Timeout_est = TRX.Key_timeout;
+		if (TRX.Key_timeout == 0) TRX_ptt_cat = TRX_key_dot_hard;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		FPGA_NeedSendParams = true;
+		TRX_Restart_Mode();
+	}
+	bool TRX_new_key_dash_hard = !HAL_GPIO_ReadPin(KEY_IN_DASH_GPIO_Port, KEY_IN_DASH_Pin);
+	if (TRX_key_dash_hard != TRX_new_key_dash_hard)
+	{
+		TRX_key_dash_hard = TRX_new_key_dash_hard;
+		if (TRX_key_dash_hard == true) TRX_Key_Timeout_est = TRX.Key_timeout;
+		if (TRX.Key_timeout == 0) TRX_ptt_cat = TRX_key_dash_hard;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
@@ -334,5 +344,7 @@ float32_t TRX_GetALC(void)
 	float32_t res = Processor_TX_MAX_amplitude_OUT/Processor_selected_RFpower_amplitude;
 	if (res>0.99f && res<1.0f)
 		res = 1.0f;
+	if (res<0.01f)
+		res = 0.0f;
 	return res;
 }

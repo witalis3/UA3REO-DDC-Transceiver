@@ -17,7 +17,7 @@
 #define AGC_CLIP_THRESHOLD -20.0f //Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
 #define AGC_OPTIMAL_THRESHOLD -30.0f //Рабочий уровень усиления в AGC, dbFS
 #define TUNE_POWER 100 // % от выбранной в настройках мощности при запуске TUNE (100 - полная)
-#define TX_AGC_STEPSIZE 50.0f //Время срабатывания компрессора голосового сигнала на передачу (меньше-быстрее)
+#define TX_AGC_STEPSIZE 25.0f //Время срабатывания компрессора голосового сигнала на передачу (меньше-быстрее)
 #define TX_AGC_MAXGAIN 500.0f //Максимальное усиление микрофона при компрессировании
 #define TX_AGC_NOISEGATE 15.0f //Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
 #define TOUCHPAD_DELAY 200 //Время защиты от анти-дребезга нажания на тачпад
@@ -70,8 +70,8 @@
 #define MAX_WIFIPASS_LENGTH 32
 #define EEPROM_OP_DELAY 30
 
-#define FPGA_BUS_FULL_SCALE powf(2,FPGA_BUS_BITS) //максимальная аплитуда сигнала в шине
-#define FPGA_BUS_FULL_SCALE_POW (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE) //магнитуда максимального сигнала в шине
+#define FPGA_BUS_FULL_SCALE 65536 //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
+#define FPGA_BUS_FULL_SCALE_POW 4294967296 //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
 
 extern struct t_CALIBRATE {
 	uint8_t rf_out_power[32]; 
