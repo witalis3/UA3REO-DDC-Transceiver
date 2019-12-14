@@ -27,18 +27,24 @@ typedef struct {
 	//MCP3008 - 2
 	bool key_agc;
 	bool key_agc_prev;
+	uint32_t key_agc_starttime;
+	bool key_agc_afterhold;
 	bool key_dnr;
 	bool key_dnr_prev;
+	uint32_t key_dnr_starttime;
+	bool key_dnr_afterhold;
 	bool key_a_set_b;
 	bool key_a_set_b_prev;
+	uint32_t key_a_set_b_starttime;
+	bool key_a_set_b_afterhold;
 	bool key_notch;
 	bool key_notch_prev;
 	bool key_clar;
 	bool key_clar_prev;
 	bool key_menu;
+	bool key_menu_prev;
 	uint32_t key_menu_starttime;
 	bool key_menu_afterhold;
-	bool key_menu_prev;
 	uint16_t key_afgain; //10-bit
 	uint16_t key_shift; //10-bit
 	//

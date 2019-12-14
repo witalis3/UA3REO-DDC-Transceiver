@@ -441,7 +441,33 @@ void PERIPH_ProcessFrontPanel(void)
 		TRX_SHIFT = 0;
 	
 	//F1 AGC
-	if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc && !TRX.Locked)
+	if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc)
+	{
+		TRX_Time_InActive = 0;
+		PERIPH_FrontPanel.key_agc_starttime=HAL_GetTick();
+		PERIPH_FrontPanel.key_agc_afterhold=false;
+	}
+	//F1 AGC HOLD - RF-POWER
+	if (PERIPH_FrontPanel.key_agc_prev == PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc && (HAL_GetTick()-PERIPH_FrontPanel.key_agc_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_agc_afterhold)
+	{
+		TRX_Time_InActive = 0;
+		PERIPH_FrontPanel.key_agc_afterhold=true;
+		
+		if(!LCD_systemMenuOpened)
+		{
+			LCD_systemMenuOpened = true;
+			SYSMENU_RFPOWER_HOTKEY();
+			drawSystemMenu(true);
+		}
+		else
+		{
+			eventCloseSystemMenu();
+			eventCloseSystemMenu();
+		}
+		LCD_redraw();
+	}
+	//F1 AGC CLICK
+	if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && !PERIPH_FrontPanel.key_agc && (HAL_GetTick()-PERIPH_FrontPanel.key_agc_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_agc_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
 	{
 		TRX_Time_InActive = 0;
 		TRX.AGC = !TRX.AGC;
@@ -449,9 +475,35 @@ void PERIPH_ProcessFrontPanel(void)
 		LCD_UpdateQuery.TopButtons = true;
 		NeedSaveSettings = true;
 	}
-
+	
 	//F2 DNR
-	if (PERIPH_FrontPanel.key_dnr_prev != PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr && !TRX.Locked)
+	if (PERIPH_FrontPanel.key_dnr_prev != PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr)
+	{
+		TRX_Time_InActive = 0;
+		PERIPH_FrontPanel.key_dnr_starttime=HAL_GetTick();
+		PERIPH_FrontPanel.key_dnr_afterhold=false;
+	}
+	//F2 DNR HOLD - KEY WPM
+	if (PERIPH_FrontPanel.key_dnr_prev == PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr && (HAL_GetTick()-PERIPH_FrontPanel.key_dnr_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_dnr_afterhold)
+	{
+		TRX_Time_InActive = 0;
+		PERIPH_FrontPanel.key_dnr_afterhold=true;
+		
+		if(!LCD_systemMenuOpened)
+		{
+			LCD_systemMenuOpened = true;
+			SYSMENU_CW_WPM_HOTKEY();
+			drawSystemMenu(true);
+		}
+		else
+		{
+			eventCloseSystemMenu();
+			eventCloseSystemMenu();
+		}
+		LCD_redraw();
+	}
+	//F2 DNR CLICK
+	if (PERIPH_FrontPanel.key_dnr_prev != PERIPH_FrontPanel.key_dnr && !PERIPH_FrontPanel.key_dnr && (HAL_GetTick()-PERIPH_FrontPanel.key_dnr_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_dnr_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
 	{
 		TRX_Time_InActive = 0;
 		TRX.DNR = !TRX.DNR;
@@ -460,7 +512,38 @@ void PERIPH_ProcessFrontPanel(void)
 	}
 
 	//F3 A=B
-	if (PERIPH_FrontPanel.key_a_set_b_prev != PERIPH_FrontPanel.key_a_set_b && PERIPH_FrontPanel.key_a_set_b && !TRX.Locked)
+	if (PERIPH_FrontPanel.key_a_set_b_prev != PERIPH_FrontPanel.key_a_set_b && PERIPH_FrontPanel.key_a_set_b)
+	{
+		TRX_Time_InActive = 0;
+		PERIPH_FrontPanel.key_a_set_b_starttime=HAL_GetTick();
+		PERIPH_FrontPanel.key_a_set_b_afterhold=false;
+	}
+	//F3 A=B HOLD - KEY WPM
+	if (PERIPH_FrontPanel.key_a_set_b_prev == PERIPH_FrontPanel.key_a_set_b && PERIPH_FrontPanel.key_a_set_b && (HAL_GetTick()-PERIPH_FrontPanel.key_a_set_b_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_a_set_b_afterhold)
+	{
+		TRX_Time_InActive = 0;
+		PERIPH_FrontPanel.key_a_set_b_afterhold=true;
+		
+		if(!LCD_systemMenuOpened)
+		{
+			LCD_systemMenuOpened = true;
+			if(CurrentVFO()->Mode==TRX_MODE_CW_L || CurrentVFO()->Mode==TRX_MODE_CW_U)
+				SYSMENU_BW_CW_HOTKEY();
+			else if(CurrentVFO()->Mode==TRX_MODE_NFM || CurrentVFO()->Mode==TRX_MODE_WFM)
+				SYSMENU_BW_FM_HOTKEY();
+			else
+				SYSMENU_BW_SSB_HOTKEY();
+			drawSystemMenu(true);
+		}
+		else
+		{
+			eventCloseSystemMenu();
+			eventCloseSystemMenu();
+		}
+		LCD_redraw();
+	}
+	//F3 A=B CLICK
+	if (PERIPH_FrontPanel.key_a_set_b_prev != PERIPH_FrontPanel.key_a_set_b && !PERIPH_FrontPanel.key_a_set_b && (HAL_GetTick()-PERIPH_FrontPanel.key_a_set_b_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_a_set_b_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
 	{
 		TRX_Time_InActive = 0;
 		if (TRX.current_vfo)
@@ -478,7 +561,7 @@ void PERIPH_ProcessFrontPanel(void)
 		LCD_UpdateQuery.TopButtons = true;
 		NeedSaveSettings = true;
 	}
-
+	
 	//F4 NOTCH
 	if (PERIPH_FrontPanel.key_notch_prev != PERIPH_FrontPanel.key_notch && PERIPH_FrontPanel.key_notch && !TRX.Locked)
 	{
@@ -518,7 +601,8 @@ void PERIPH_ProcessFrontPanel(void)
 		TRX_Time_InActive = 0;
 		PERIPH_FrontPanel.key_menu_afterhold=true;
 		
-		TRX.Locked=!TRX.Locked;
+		if(!LCD_systemMenuOpened)
+			TRX.Locked=!TRX.Locked;
 		LCD_UpdateQuery.TopButtons = true;
 		NeedSaveSettings = true;
 	}

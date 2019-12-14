@@ -29,5 +29,10 @@ extern void eventRotateSystemMenu(int8_t direction);
 extern void eventSecRotateSystemMenu(int8_t direction);
 extern void eventCloseSystemMenu(void);
 extern bool sysmenu_spectrum_opened;
+extern void SYSMENU_RFPOWER_HOTKEY(void);
+extern void SYSMENU_CW_WPM_HOTKEY(void);
+extern void SYSMENU_BW_SSB_HOTKEY(void);
+extern void SYSMENU_BW_CW_HOTKEY(void);
+extern void SYSMENU_BW_FM_HOTKEY(void);
 
 #endif

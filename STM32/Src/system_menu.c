@@ -683,6 +683,15 @@ static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
+void SYSMENU_RFPOWER_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_trx_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
 static void SYSMENU_HANDL_BWMENU(int8_t direction)
 {
 	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
@@ -692,12 +701,48 @@ static void SYSMENU_HANDL_BWMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
+void SYSMENU_BW_SSB_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 1;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_BW_CW_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 2;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_BW_FM_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 3;
+	drawSystemMenu(true);
+}
+
 static void SYSMENU_HANDL_CWMENU(int8_t direction)
 {
 	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_CW_WPM_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_cw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 4;
 	drawSystemMenu(true);
 }
 
