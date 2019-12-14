@@ -32,6 +32,7 @@ static float32_t maxValueFFT_rx = 0; //максимальное значение
 static float32_t maxValueFFT_tx = 0; //максимальное значение амплитуды в результирующей АЧХ
 static uint32_t currentFFTFreq = 0;
 static uint16_t color_scale[FFT_MAX_HEIGHT] = { 0 }; //цветовой градиент по высоте FFT
+static uint16_t wtf_line_tmp[FFT_PRINT_SIZE] = {0}; //временный буффер для перемещения водопада
 
 //Дециматор для Zoom FFT
 static arm_fir_decimate_instance_f32	DECIMATE_ZOOM_FFT_I;
@@ -489,49 +490,46 @@ void FFT_printWaterfallDMA(void)
 
 void FFT_moveWaterfall(int16_t freq_diff)
 {
+	if(freq_diff==0) return;
 	int16_t new_x = 0;
-	int16_t fft_new_x = 0;
 	freq_diff = (freq_diff / FFT_HZ_IN_PIXEL) * TRX.FFT_Zoom;
+	freq_diff = freq_diff * 1.4f;
+	//Move mean Buffer
+	if (freq_diff > 0) //freq up
+	{
+		for (int16_t x = 0; x < FFT_PRINT_SIZE; x++)
+		{
+			new_x = x + freq_diff;
+			if (new_x >= FFT_PRINT_SIZE)
+				new_x -= FFT_PRINT_SIZE;
+			FFTOutput_mean[x] = FFTOutput_mean[new_x];
+		}		
+	}
+	else
+	{
+		for (int16_t x = FFT_PRINT_SIZE - 1; x >= 0; x--)
+		{
+			new_x = x + freq_diff;
+			if (new_x < 0)
+				new_x += FFT_PRINT_SIZE;
+			FFTOutput_mean[x] = FFTOutput_mean[new_x];
+		}
+	}
+	//Move Waterfall
+	uint16_t margin_left = 0;
+	if(freq_diff<0)
+		margin_left=-freq_diff;
+	uint16_t margin_right = 0;
+	if(freq_diff>0)
+		margin_right=freq_diff;
+	uint16_t body_width = FFT_PRINT_SIZE-margin_left-margin_right;
+	
 	for (uint8_t y = 0; y < FFT_WTF_HEIGHT; y++)
 	{
-		if (freq_diff > 0) //freq up
-		{
-			for (int16_t x = 0; x < FFT_PRINT_SIZE; x++)
-			{
-				new_x = x + freq_diff;
-				if (y == 0)
-				{
-					fft_new_x = new_x;
-					if (fft_new_x >= FFT_PRINT_SIZE) fft_new_x -= FFT_PRINT_SIZE;
-					FFTOutput_mean[x] = FFTOutput_mean[fft_new_x];
-				}
-				if (new_x < 0 || new_x >= FFT_PRINT_SIZE)
-				{
-					wtf_buffer[y][x] = 0;
-					continue;
-				};
-				wtf_buffer[y][x] = wtf_buffer[y][new_x];
-			}
-		}
-		else if (freq_diff < 0) // freq down
-		{
-			for (int16_t x = FFT_PRINT_SIZE - 1; x >= 0; x--)
-			{
-				new_x = x + freq_diff;
-				if (y == 0)
-				{
-					fft_new_x = new_x;
-					if (fft_new_x < 0) fft_new_x += FFT_PRINT_SIZE;
-					FFTOutput_mean[x] = FFTOutput_mean[fft_new_x];
-				}
-				if (new_x < 0)
-				{
-					wtf_buffer[y][x] = 0;
-					continue;
-				};
-				wtf_buffer[y][x] = wtf_buffer[y][new_x];
-			}
-		}
+		memcpy(wtf_line_tmp, wtf_buffer[y], sizeof(wtf_line_tmp));
+		memset(&wtf_buffer[y][0], 0x00, margin_left*2);
+		memcpy(&wtf_buffer[y][margin_left], &wtf_line_tmp[margin_left + freq_diff], body_width*2);
+		memset(&wtf_buffer[y][(FFT_PRINT_SIZE-margin_right)], 0x00, margin_right*2);
 	}
 }
 
