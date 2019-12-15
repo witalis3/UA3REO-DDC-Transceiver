@@ -528,11 +528,11 @@ void PERIPH_ProcessFrontPanel(void)
 		{
 			LCD_systemMenuOpened = true;
 			if(CurrentVFO()->Mode==TRX_MODE_CW_L || CurrentVFO()->Mode==TRX_MODE_CW_U)
-				SYSMENU_BW_CW_HOTKEY();
+				SYSMENU_AUDIO_CW_HOTKEY();
 			else if(CurrentVFO()->Mode==TRX_MODE_NFM || CurrentVFO()->Mode==TRX_MODE_WFM)
-				SYSMENU_BW_FM_HOTKEY();
+				SYSMENU_AUDIO_FM_HOTKEY();
 			else
-				SYSMENU_BW_SSB_HOTKEY();
+				SYSMENU_AUDIO_SSB_HOTKEY();
 			drawSystemMenu(true);
 		}
 		else

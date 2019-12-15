@@ -66,7 +66,7 @@ static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
-static void SYSMENU_HANDL_BWMENU(int8_t direction);
+static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
 static void SYSMENU_HANDL_FFTMENU(int8_t direction);
@@ -81,7 +81,7 @@ static const uint16_t sysmenu_w = 288;
 static struct sysmenu_item_handler sysmenu_handlers[] =
 {
 	{"TRX Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_TRXMENU},
-	{"BW Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_BWMENU},
+	{"AUDIO Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_AUDIOMENU},
 	{"CW Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_CWMENU},
 	{"LCD Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
 	{"FFT Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_FFTMENU},
@@ -702,7 +702,7 @@ void SYSMENU_RFPOWER_HOTKEY(void)
 	drawSystemMenu(true);
 }
 
-static void SYSMENU_HANDL_BWMENU(int8_t direction)
+static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 {
 	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_bw_item_count;
@@ -711,7 +711,7 @@ static void SYSMENU_HANDL_BWMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
-void SYSMENU_BW_SSB_HOTKEY(void)
+void SYSMENU_AUDIO_SSB_HOTKEY(void)
 {
 	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_bw_item_count;
@@ -720,7 +720,7 @@ void SYSMENU_BW_SSB_HOTKEY(void)
 	drawSystemMenu(true);
 }
 
-void SYSMENU_BW_CW_HOTKEY(void)
+void SYSMENU_AUDIO_CW_HOTKEY(void)
 {
 	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_bw_item_count;
@@ -729,7 +729,7 @@ void SYSMENU_BW_CW_HOTKEY(void)
 	drawSystemMenu(true);
 }
 
-void SYSMENU_BW_FM_HOTKEY(void)
+void SYSMENU_AUDIO_FM_HOTKEY(void)
 {
 	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_bw_item_count;

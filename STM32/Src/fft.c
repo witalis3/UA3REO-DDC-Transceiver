@@ -345,14 +345,12 @@ void FFT_doFFT(void)
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_FIX) maxValueFFT -= FFT_STEP_FIX;
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && diffValue < 0 && diffValue < -FFT_STEP_PRECISION) maxValueFFT += diffValue;
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_PRECISION) maxValueFFT -= FFT_STEP_PRECISION;
+	//Автокалибровка по средней амплитуде
 	if ((meanValue * 4.0f) > maxValueFFT) 
-	{
 		maxValueFFT = (meanValue * 4.0f);
-	}
 	if ((meanValue * 8.0f) < maxValueFFT) 
-	{
 		maxValueFFT = (meanValue * 8.0f);
-	}
+		
 	maxValueErrors = 0;
 	if (maxValueFFT < FFT_MIN) maxValueFFT = FFT_MIN;
 	if (TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK) maxValueFFT = 60000.0f;
