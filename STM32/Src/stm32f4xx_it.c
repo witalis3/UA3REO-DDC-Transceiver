@@ -29,8 +29,9 @@
 //DMA2-1 - отправка буфера аудио-процессора в буффер кодека - B
 //DMA2-2 - получение данных из WiFi по UART
 //DMA2-3 - копирование аудио-буфферов по 32бит
-//DMA2-5 - DMA видео-драйвера, для заливки
-//DMA2-6 - отрисовка водопада
+//DMA2-4 - DMA для копирования 16 битных массивов
+//DMA2-5 - DMA видео-драйвера, для заливки, 16 бит без инкремента
+//DMA2-6 - отрисовка водопада по 16бит, инкремент
 //DMA2-7 - смещение водопада вниз
 
 /* USER CODE END Header */
@@ -103,6 +104,7 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern DMA_HandleTypeDef hdma_i2s3_ext_rx;
 extern DMA_HandleTypeDef hdma_spi3_tx;
 extern TIM_HandleTypeDef htim4;
@@ -360,7 +362,7 @@ void EXTI9_5_IRQHandler(void)
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
-
+	
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
@@ -463,6 +465,7 @@ void TIM6_DAC_IRQHandler(void)
 
 	if (ms50_counter == 20) // every 1 sec
 	{
+		
 		ms50_counter = 0;
 		TRX_DoAutoGain(); //Process AutoGain feature
 
@@ -545,9 +548,9 @@ void TIM6_DAC_IRQHandler(void)
 	if (TRX_ptt_cat != TRX_old_ptt_cat) TRX_ptt_change();
 	if (TRX_key_serial != TRX_old_key_serial) TRX_key_change();
 	PERIPH_RF_UNIT_UpdateState(false);
-	LCD_doEvents();
-	FFT_printFFT();
-	PERIPH_ProcessFrontPanel();
+	LCD_doEvents(); 
+	StartProfilerUs(); FFT_printFFT(); EndProfilerUs(true);
+	PERIPH_ProcessFrontPanel(); 
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 

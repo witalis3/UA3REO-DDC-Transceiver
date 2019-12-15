@@ -87,6 +87,7 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
+DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
@@ -842,6 +843,7 @@ static void MX_USB_OTG_FS_PCD_Init(void)
   *   hdma_memtomem_dma2_stream6
   *   hdma_memtomem_dma2_stream5
   *   hdma_memtomem_dma2_stream3
+  *   hdma_memtomem_dma2_stream4
   */
 static void MX_DMA_Init(void) 
 {
@@ -960,6 +962,25 @@ static void MX_DMA_Init(void)
   hdma_memtomem_dma2_stream3.Init.MemBurst = DMA_MBURST_INC4;
   hdma_memtomem_dma2_stream3.Init.PeriphBurst = DMA_PBURST_INC4;
   if (HAL_DMA_Init(&hdma_memtomem_dma2_stream3) != HAL_OK)
+  {
+    Error_Handler( );
+  }
+
+  /* Configure DMA request hdma_memtomem_dma2_stream4 on DMA2_Stream4 */
+  hdma_memtomem_dma2_stream4.Instance = DMA2_Stream4;
+  hdma_memtomem_dma2_stream4.Init.Channel = DMA_CHANNEL_0;
+  hdma_memtomem_dma2_stream4.Init.Direction = DMA_MEMORY_TO_MEMORY;
+  hdma_memtomem_dma2_stream4.Init.PeriphInc = DMA_PINC_ENABLE;
+  hdma_memtomem_dma2_stream4.Init.MemInc = DMA_MINC_ENABLE;
+  hdma_memtomem_dma2_stream4.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+  hdma_memtomem_dma2_stream4.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+  hdma_memtomem_dma2_stream4.Init.Mode = DMA_NORMAL;
+  hdma_memtomem_dma2_stream4.Init.Priority = DMA_PRIORITY_LOW;
+  hdma_memtomem_dma2_stream4.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
+  hdma_memtomem_dma2_stream4.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
+  hdma_memtomem_dma2_stream4.Init.MemBurst = DMA_MBURST_INC8;
+  hdma_memtomem_dma2_stream4.Init.PeriphBurst = DMA_PBURST_INC8;
+  if (HAL_DMA_Init(&hdma_memtomem_dma2_stream4) != HAL_OK)
   {
     Error_Handler( );
   }

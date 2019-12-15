@@ -289,9 +289,11 @@ void WIFI_GetStatus(void)
 
 void WIFI_GoSleep(void)
 {
+	if(WIFI_State == WIFI_SLEEP) return;
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_DEEPSLEEP;
 	WIFI_SendCommand("AT+GSLP=1000\r\n"); //go sleep
+	WIFI_State = WIFI_SLEEP;
 }
 
 static void WIFI_SendCommand(char* command)

@@ -18,6 +18,7 @@ typedef enum
 	WIFI_PROCESS_COMMAND = 0x05U,
 	WIFI_TIMEOUT = 0x06U,
 	WIFI_FAIL = 0x07U,
+	WIFI_SLEEP = 0x08U,
 } WiFiState;
 
 typedef enum

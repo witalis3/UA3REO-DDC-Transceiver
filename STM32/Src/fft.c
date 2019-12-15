@@ -16,6 +16,8 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
+
 bool NeedFFTInputBuffer = false; //флаг необходимости заполнения буфера с FPGA
 bool FFT_need_fft = true; //необходимо подготовить данные для отображения на экран
 bool FFT_buffer_ready = false; //буффер наполнен, можно обрабатывать
@@ -545,12 +547,20 @@ void FFT_moveWaterfall(int32_t _freq_diff)
 		margin_right = 0;
 	uint16_t body_width = FFT_PRINT_SIZE-margin_left-margin_right;
 	
-	for (uint8_t y = 0; y < FFT_WTF_HEIGHT; y++)
+	for (uint8_t y = 0; y < FFT_WTF_HEIGHT; y++) 
 	{
-		memcpy(wtf_line_tmp, wtf_buffer[y], sizeof(wtf_line_tmp));
-		memset(&wtf_buffer[y][0], 0x00, margin_left*2);
-		memcpy(&wtf_buffer[y][margin_left], &wtf_line_tmp[margin_left + freq_diff], body_width*2);
-		memset(&wtf_buffer[y][(FFT_PRINT_SIZE-margin_right)], 0x00, margin_right*2);
+		//memcpy(wtf_line_tmp, wtf_buffer[y], sizeof(wtf_line_tmp));
+		HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[y], (uint32_t)&wtf_line_tmp, FFT_PRINT_SIZE); //копируем строку до смещения
+		memset(&wtf_buffer[y][0], 0x00, margin_left*2); //заполняем пространство слева
+		memset(&wtf_buffer[y][(FFT_PRINT_SIZE-margin_right)], 0x00, margin_right*2); //заполняем пространство справа
+		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+		
+		//memcpy(&wtf_buffer[y][margin_left], &wtf_line_tmp[margin_left + freq_diff], body_width*2);
+		if(body_width>0)  //рисуем смещенный водопад
+		{
+			HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_line_tmp[margin_left + freq_diff], (uint32_t)&wtf_buffer[y][margin_left], body_width);
+			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+		}
 	}
 }
 
