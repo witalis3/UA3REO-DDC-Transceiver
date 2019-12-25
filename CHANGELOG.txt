@@ -1,3 +1,6 @@
+----Version 1.9 ON DEV----
++HARDW: Схема перенесена в Altium Designer // Thx to BH8CGJ
+
 ----Version 1.8.2----
 +FGPA: Управление настройками CIC-компенсатора и DAC из STM32
 +STM32: Корректный выбор моды при работе в программе JTDX
