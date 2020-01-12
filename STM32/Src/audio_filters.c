@@ -1,5 +1,5 @@
 #include "audio_filters.h"
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

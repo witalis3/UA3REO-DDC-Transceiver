@@ -1,4 +1,4 @@
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include "main.h"
 #include "trx_manager.h"
 #include "functions.h"
@@ -58,7 +58,10 @@ void TRX_Init()
 {
 	CWDecoder_Init();
 	TRX_Start_RX();
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	uint8_t saved_mode = CurrentVFO()->Mode;
+	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
+	TRX_setMode(saved_mode, CurrentVFO());
+	sendToDebug_strln("[OK] TRX inited");
 }
 
 void TRX_Restart_Mode()

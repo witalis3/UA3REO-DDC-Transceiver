@@ -1,7 +1,7 @@
 #ifndef Peripheral_h
 #define Peripheral_h
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
 #define MCP3008_THRESHOLD 100
@@ -56,6 +56,7 @@ extern void PERIPH_ENCODER2_checkSwitch(void);
 extern void PERIPH_RF_UNIT_UpdateState(bool clean);
 extern void PERIPH_ProcessFrontPanel(void);
 extern void PERIPH_ProcessSWRMeter(void);
+extern void PERIPH_InitFrontPanel(void);
 extern bool PERIPH_SPI_Transmit(uint8_t* out_data, uint8_t* in_data, uint8_t count, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN);
 
 volatile extern PERIPH_FrontPanel_Type PERIPH_FrontPanel;

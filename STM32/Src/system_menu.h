@@ -1,7 +1,7 @@
 #ifndef SYSTEM_MENU_H
 #define SYSTEM_MENU_H
 
-#include "stm32f4xx.h"
+#include "stm32h7xx.h"
 #include <stdbool.h>
 
 typedef enum

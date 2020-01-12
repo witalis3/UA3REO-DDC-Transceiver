@@ -3,7 +3,7 @@
 
 //List of includes
 #include <stdbool.h>
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "settings.h"

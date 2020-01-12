@@ -1,7 +1,7 @@
 #ifndef WIFI_H
 #define WIFI_H
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
 #define WIFI_ANSWER_BUFFER_SIZE 512

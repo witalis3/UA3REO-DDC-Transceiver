@@ -1,4 +1,4 @@
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include "wm8731.h"
 #include "functions.h"
 #include <stdlib.h>
@@ -22,7 +22,9 @@ void WM8731_start_i2s_and_dma(void)
 {
 	if (HAL_I2S_GetState(&hi2s3) == HAL_I2S_STATE_READY)
 	{
-		HAL_I2SEx_TransmitReceive_DMA(&hi2s3, (uint16_t*)&CODEC_Audio_Buffer_RX[0], (uint16_t*)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE);
+		HAL_I2S_Receive_DMA(&hi2s3, (uint16_t*)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE);
+		HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t*)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_SIZE);
+		//HAL_I2SEx_TransmitReceive_DMA(&hi2s3, (uint16_t*)&CODEC_Audio_Buffer_RX[0], (uint16_t*)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE);
 		I2SEx_Fix(&hi2s3);
 	}
 }
@@ -166,13 +168,18 @@ void WM8731_TXRX_mode(void) //loopback
 
 void WM8731_Init(void)
 {
-	sendToDebug_str("WM8731 ");
+	bool err = false;
 	FPGA_stop_audio_clock();
 	if (WM8731_SendI2CCommand(B8(00011110), B8(00000000)) != 0) //R15 Reset Chip
+	{
+		sendToDebug_strln("[ERR] Audio codec not found");
 		LCD_showError("Audio codec init error", true);
+		err=true;
+	}
 	WM8731_SendI2CCommand(B8(00001110), B8(00000010)); //R7 Digital Audio Interface Format, Codec Slave, I2S Format, MSB-First left-1 justified , 16bits
 	WM8731_SendI2CCommand(B8(00010000), B8(00000000)); //R8 Sampling Control normal mode, 256fs, SR=0 (MCLK@12.288Mhz, fs=48kHz))
 	WM8731_SendI2CCommand(B8(00010010), B8(00000001)); //R9 reactivate digital audio interface
 	WM8731_RX_mode();
-	sendToDebug_str(" Inited\r\n");
+	if(!err)
+		sendToDebug_strln("[OK] Audio codec inited");
 }

@@ -68,6 +68,6 @@ void SPEC_Draw(void)
 		now_freq = TRX.SPEC_Begin*SPEC_Resolution;
 	}
 	LCD_UpdateQuery.SystemMenu = true;
-	HAL_IWDG_Refresh(&hiwdg);
+	HAL_IWDG_Refresh(&hiwdg1);
 	LCD_busy = false;
 }

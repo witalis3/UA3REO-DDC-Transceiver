@@ -1,7 +1,7 @@
 #ifndef SETTINGS_h
 #define SETTINGS_h
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include "arm_math.h"
@@ -33,7 +33,7 @@
 #define EEPROM_WRITE_INTERVAL 10 //Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
 #define MAX_RF_POWER 7.0f //Максимум мощности (для шкалы измерителя)
 #define SWR_CRITICAL 5.0f //Максимальный КСВ, при котором отключается передатчик
-#define SHOW_LOGO true //Отображать логотип при загрузке (из lcd.h)
+#define SHOW_LOGO false //Отображать логотип при загрузке (из lcd.h)
 
 #define ILI9341 true //выбираем используемый дисплей
 //#define ILI9325 true //другие комментируем
@@ -157,7 +157,6 @@ extern struct TRX_SETTINGS {
 
 extern volatile bool NeedSaveSettings;
 extern volatile bool EEPROM_Busy;
-extern SPI_HandleTypeDef hspi1;
 
 extern void LoadSettings(bool clear);
 extern void SaveSettings(void);

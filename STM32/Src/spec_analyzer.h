@@ -1,7 +1,7 @@
 #ifndef SPEC_ANALYZER_H
 #define SPEC_ANALYZER_H
 
-#include "stm32f4xx.h"
+#include "stm32h7xx.h"
 #include "main.h"
 #include "stdbool.h"
 

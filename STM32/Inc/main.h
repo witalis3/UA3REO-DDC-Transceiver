@@ -7,13 +7,13 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
-  * This software component is licensed by ST under Ultimate Liberty license
-  * SLA0044, the "License"; You may not use this file except in compliance with
-  * the License. You may obtain a copy of the License at:
-  *                             www.st.com/SLA0044
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
   */
@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -37,7 +37,40 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+extern ADC_HandleTypeDef hadc1;
 
+extern I2S_HandleTypeDef hi2s3;
+extern DMA_HandleTypeDef hdma_spi3_rx;
+extern DMA_HandleTypeDef hdma_spi3_tx;
+
+extern IWDG_HandleTypeDef hiwdg1;
+
+extern RTC_HandleTypeDef hrtc;
+
+extern SPI_HandleTypeDef hspi2;
+
+extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim4;
+extern TIM_HandleTypeDef htim5;
+extern TIM_HandleTypeDef htim6;
+extern TIM_HandleTypeDef htim7;
+
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart6;
+extern DMA_HandleTypeDef hdma_usart6_rx;
+
+extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
+extern SRAM_HandleTypeDef hsram1;
+
+extern volatile uint32_t cpu_sleep_counter;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -50,41 +83,11 @@ extern "C" {
 
 /* USER CODE END EM */
 
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-extern I2S_HandleTypeDef hi2s3;
-extern DMA_HandleTypeDef hdma_i2s3_ext_rx;
-extern DMA_HandleTypeDef hdma_spi3_tx;
 
-extern IWDG_HandleTypeDef hiwdg;
-
-extern RTC_HandleTypeDef hrtc;
-
-extern SPI_HandleTypeDef hspi1;
-extern SPI_HandleTypeDef hspi2;
-
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim4;
-extern TIM_HandleTypeDef htim5;
-extern TIM_HandleTypeDef htim6;
-
-extern UART_HandleTypeDef huart1;
-
-extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
-
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream2;
-extern SRAM_HandleTypeDef hsram1;
-
-extern volatile uint32_t cpu_sleep_counter;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -127,28 +130,23 @@ extern volatile uint32_t cpu_sleep_counter;
 #define PTT_IN_Pin GPIO_PIN_4
 #define PTT_IN_GPIO_Port GPIOC
 #define PTT_IN_EXTI_IRQn EXTI4_IRQn
-#define LED_PEN_Pin GPIO_PIN_5
-#define LED_PEN_GPIO_Port GPIOC
-#define LED_PEN_EXTI_IRQn EXTI9_5_IRQn
 #define W26Q16_CS_Pin GPIO_PIN_0
 #define W26Q16_CS_GPIO_Port GPIOB
-#define LCD_BACKLIGT_Pin GPIO_PIN_1
-#define LCD_BACKLIGT_GPIO_Port GPIOB
 #define AUDIO_48K_CLOCK_Pin GPIO_PIN_10
 #define AUDIO_48K_CLOCK_GPIO_Port GPIOB
 #define AUDIO_48K_CLOCK_EXTI_IRQn EXTI15_10_IRQn
-#define TOUCH_CS_Pin GPIO_PIN_12
-#define TOUCH_CS_GPIO_Port GPIOB
+#define SD_CS_Pin GPIO_PIN_12
+#define SD_CS_GPIO_Port GPIOB
 #define PERI_SCK_Pin GPIO_PIN_13
 #define PERI_SCK_GPIO_Port GPIOB
 #define PERI_MISO_Pin GPIO_PIN_14
 #define PERI_MISO_GPIO_Port GPIOB
 #define PERI_MOSI_Pin GPIO_PIN_15
 #define PERI_MOSI_GPIO_Port GPIOB
-#define SD_CS_Pin GPIO_PIN_11
-#define SD_CS_GPIO_Port GPIOD
-#define F_CS_Pin GPIO_PIN_12
-#define F_CS_GPIO_Port GPIOD
+#define PWR_ON_Pin GPIO_PIN_11
+#define PWR_ON_GPIO_Port GPIOD
+#define PWR_HOLD_Pin GPIO_PIN_12
+#define PWR_HOLD_GPIO_Port GPIOD
 #define ESP_1_TX_Pin GPIO_PIN_6
 #define ESP_1_TX_GPIO_Port GPIOC
 #define ESP_1_RX_Pin GPIO_PIN_7
@@ -175,24 +173,18 @@ extern volatile uint32_t cpu_sleep_counter;
 #define WM8731_SCK_GPIO_Port GPIOD
 #define WM8731_SDA_Pin GPIO_PIN_6
 #define WM8731_SDA_GPIO_Port GPIOD
-#define W25Q16_SCK_Pin GPIO_PIN_3
-#define W25Q16_SCK_GPIO_Port GPIOB
-#define W25Q16_MISO_Pin GPIO_PIN_4
-#define W25Q16_MISO_GPIO_Port GPIOB
-#define W25Q16_MOSI_Pin GPIO_PIN_5
-#define W25Q16_MOSI_GPIO_Port GPIOB
 #define RFUNIT_RCLK_Pin GPIO_PIN_6
 #define RFUNIT_RCLK_GPIO_Port GPIOB
 #define RFUNIT_CLK_Pin GPIO_PIN_7
 #define RFUNIT_CLK_GPIO_Port GPIOB
 #define RFUNIT_DATA_Pin GPIO_PIN_8
 #define RFUNIT_DATA_GPIO_Port GPIOB
+#define RFUNIT_OE_Pin GPIO_PIN_9
+#define RFUNIT_OE_GPIO_Port GPIOB
 #define KEY_IN_DASH_Pin GPIO_PIN_0
 #define KEY_IN_DASH_GPIO_Port GPIOE
-#define KEY_IN_DASH_EXTI_IRQn EXTI0_IRQn
 #define KEY_IN_DOT_Pin GPIO_PIN_1
 #define KEY_IN_DOT_GPIO_Port GPIOE
-#define KEY_IN_DOT_EXTI_IRQn EXTI1_IRQn
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -1,5 +1,5 @@
 #include "agc.h"
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include "math.h"
 #include "arm_math.h"
 #include "functions.h"

@@ -1,5 +1,5 @@
 #include "noise_reduction.h"
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include "arm_const_structs.h"
 #include <stdio.h>
 #include <string.h>

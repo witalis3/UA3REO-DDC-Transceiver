@@ -42,7 +42,6 @@ extern "C" {
 #define CDC_DATA_FS_MAX_PACKET_SIZE                 16U  /* Endpoint IN & OUT Packet size */
 #define CDC_CMD_PACKET_SIZE                         8U  /* Control Endpoint Packet size */
 
-//#define USB_CDC_CONFIG_DESC_SIZ                     226U
 #define USB_CDC_CONFIG_DESC_SIZ                     300U
 
 #define CDC_DATA_HS_IN_PACKET_SIZE                  CDC_DATA_HS_MAX_PACKET_SIZE

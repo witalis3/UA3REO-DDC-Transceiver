@@ -1,7 +1,7 @@
 #ifndef LCD_h
 #define LCD_h
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include "trx_manager.h"
 #include "lcd_driver.h"
 
@@ -21,8 +21,6 @@ typedef struct {
 	bool SystemMenu;
 	bool TextBar;
 } DEF_LCD_UpdateQuery;
-
-extern IWDG_HandleTypeDef hiwdg;
 
 extern void LCD_Init(void);
 extern void LCD_doEvents(void);

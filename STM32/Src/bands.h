@@ -1,7 +1,7 @@
 #ifndef BANDS_H
 #define BANDS_H
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <stdbool.h>
 

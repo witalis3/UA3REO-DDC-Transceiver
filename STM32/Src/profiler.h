@@ -1,7 +1,7 @@
 #ifndef PROFILER_h
 #define PROFILER_h
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
 #define PROFILES_COUNT 7

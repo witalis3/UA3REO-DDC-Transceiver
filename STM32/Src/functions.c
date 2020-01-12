@@ -1,5 +1,5 @@
 #include "functions.h"
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -67,6 +67,12 @@ void sendToDebug_str(char* data)
 	HAL_UART_Transmit(&huart1, (uint8_t*)data, strlen(data), 1000);
 }
 
+void sendToDebug_strln(char* data)
+{
+	sendToDebug_str(data);
+	sendToDebug_newline();
+}
+
 void sendToDebug_str2(char* data1, char* data2)
 {
 	sendToDebug_str(data1);
@@ -90,7 +96,7 @@ void sendToDebug_flush(void)
 	uint16_t tryes=0;
 	while (!DEBUG_Transmit_FIFO_Events() && tryes < 100)
 	{
-		HAL_IWDG_Refresh(&hiwdg);
+		HAL_IWDG_Refresh(&hiwdg1);
 		HAL_Delay(1);
 		tryes++;
 	}

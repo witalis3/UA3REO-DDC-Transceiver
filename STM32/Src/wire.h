@@ -1,7 +1,7 @@
 #ifndef WIRE_h
 #define WIRE_h
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
 #define I2C_SDA_PORT WM8731_SCK_GPIO_Port
@@ -21,7 +21,7 @@
 
 #define I2C_WRITE 0
 #define I2C_READ  1
-#define I2C_DELAY for(int wait_i=0;wait_i<100;wait_i++) { __asm("nop"); };
+#define I2C_DELAY for(int wait_i=0;wait_i<200;wait_i++) { __asm("nop"); };
 
 extern void i2c_begin(void);
 extern void i2c_beginTransmission_u8(uint8_t);

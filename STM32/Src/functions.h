@@ -1,7 +1,7 @@
 #ifndef Functions_h
 #define Functions_h
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -61,6 +61,7 @@ extern uint32_t getFrequencyFromPhrase(uint32_t phrase);
 extern uint32_t getPhraseFromFrequency(uint32_t freq);
 extern void addSymbols(char* dest, char* str, uint8_t length, char* symbol, bool toEnd);
 extern void sendToDebug_str(char* str);
+extern void sendToDebug_strln(char* data);
 extern void sendToDebug_str2(char* data1, char* data2);
 extern void sendToDebug_str3(char* data1, char* data2, char* data3);
 extern void sendToDebug_newline(void);

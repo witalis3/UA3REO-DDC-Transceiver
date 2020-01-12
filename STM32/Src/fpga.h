@@ -1,7 +1,7 @@
 #ifndef FPGA_h
 #define FPGA_h
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdbool.h>
 #include "fft.h"
 #include "audio_processor.h"

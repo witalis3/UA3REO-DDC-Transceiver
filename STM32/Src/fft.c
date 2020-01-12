@@ -1,4 +1,5 @@
 #include "fft.h"
+#include "main.h"
 #include "lcd.h"
 #include <stdlib.h>
 #include "arm_math.h"
@@ -15,8 +16,6 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 #if FFT_SIZE==256
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
-
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 
 bool NeedFFTInputBuffer = false; //флаг необходимости заполнения буфера с FPGA
 bool FFT_need_fft = true; //необходимо подготовить данные для отображения на экран
@@ -212,6 +211,7 @@ void FFT_Init(void)
 			FFT_SIZE);
 		zoomed_width = FFT_SIZE / TRX.FFT_Zoom;
 	}
+	sendToDebug_strln("[OK] FFT/Waterfall Inited");
 }
 
 void FFT_doFFT(void)

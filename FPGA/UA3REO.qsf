@@ -81,19 +81,18 @@ set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name FLOW_ENABLE_IO_ASSIGNMENT_ANALYSIS ON
 set_global_assignment -name FLOW_ENABLE_RTL_VIEWER OFF
-set_location_assignment PIN_58 -to ADC_INPUT[11]
-set_location_assignment PIN_59 -to ADC_INPUT[10]
+set_location_assignment PIN_52 -to ADC_INPUT[11]
+set_location_assignment PIN_53 -to ADC_INPUT[10]
 set_location_assignment PIN_54 -to ADC_INPUT[9]
 set_location_assignment PIN_55 -to ADC_INPUT[8]
-set_location_assignment PIN_52 -to ADC_INPUT[7]
-set_location_assignment PIN_53 -to ADC_INPUT[6]
-set_location_assignment PIN_50 -to ADC_INPUT[5]
-set_location_assignment PIN_51 -to ADC_INPUT[4]
-set_location_assignment PIN_46 -to ADC_INPUT[3]
-set_location_assignment PIN_49 -to ADC_INPUT[2]
-set_location_assignment PIN_43 -to ADC_INPUT[1]
-set_location_assignment PIN_44 -to ADC_INPUT[0]
-set_location_assignment PIN_90 -to clk_sys
+set_location_assignment PIN_58 -to ADC_INPUT[7]
+set_location_assignment PIN_59 -to ADC_INPUT[6]
+set_location_assignment PIN_60 -to ADC_INPUT[5]
+set_location_assignment PIN_64 -to ADC_INPUT[4]
+set_location_assignment PIN_65 -to ADC_INPUT[3]
+set_location_assignment PIN_66 -to ADC_INPUT[2]
+set_location_assignment PIN_67 -to ADC_INPUT[1]
+set_location_assignment PIN_68 -to ADC_INPUT[0]
 set_global_assignment -name CONFIGURATION_VCCIO_LEVEL 2.5V
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS OUTPUT DRIVING GROUND"
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[11]
@@ -108,7 +107,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[1]
 set_global_assignment -name ENABLE_DRC_SETTINGS OFF
 set_global_assignment -name AUTO_MERGE_PLLS ON
-set_location_assignment PIN_42 -to PREAMP
+set_location_assignment PIN_69 -to PREAMP
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PREAMP
@@ -117,7 +116,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_OUTPUT[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_OUTPUT[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_OUTPUT[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_OUTPUT[0]
-set_location_assignment PIN_71 -to ADC_OTR
+set_location_assignment PIN_44 -to ADC_OTR
 set_global_assignment -name SAVE_DISK_SPACE OFF
 set_global_assignment -name OCP_HW_EVAL DISABLE
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to STM32_CLK
@@ -155,7 +154,6 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to AUDIO_48K_CLOCK
 
 set_global_assignment -name FLOW_ENABLE_POWER_ANALYZER ON
 set_global_assignment -name POWER_DEFAULT_INPUT_IO_TOGGLE_RATE "12.5 %"
-set_instance_assignment -name IO_STANDARD "2.5 V" -to clk_sys
 set_location_assignment PIN_31 -to STM32_DATA_BUS[0]
 set_location_assignment PIN_30 -to STM32_DATA_BUS[1]
 set_location_assignment PIN_28 -to STM32_DATA_BUS[2]
@@ -176,18 +174,18 @@ set_location_assignment PIN_8 -to FLASH_S
 set_location_assignment PIN_12 -to FLASH_C
 set_location_assignment PIN_13 -to FLASH_MISO
 set_location_assignment PIN_6 -to FLASH_MOSI
-set_location_assignment PIN_72 -to ADC_PGA
-set_location_assignment PIN_69 -to ADC_RAND
-set_location_assignment PIN_67 -to ADC_SHDN
-set_location_assignment PIN_68 -to ADC_DITH
-set_location_assignment PIN_65 -to ADC_INPUT[15]
-set_location_assignment PIN_66 -to ADC_INPUT[14]
-set_location_assignment PIN_60 -to ADC_INPUT[13]
-set_location_assignment PIN_64 -to ADC_INPUT[12]
-set_location_assignment PIN_25 -to ADC_CLK
+set_location_assignment PIN_42 -to ADC_PGA
+set_location_assignment PIN_43 -to ADC_RAND
+set_location_assignment PIN_72 -to ADC_SHDN
+set_location_assignment PIN_71 -to ADC_DITH
+set_location_assignment PIN_46 -to ADC_INPUT[15]
+set_location_assignment PIN_49 -to ADC_INPUT[14]
+set_location_assignment PIN_50 -to ADC_INPUT[13]
+set_location_assignment PIN_51 -to ADC_INPUT[12]
+set_location_assignment PIN_90 -to ADC_CLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[12]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_DITH
-set_instance_assignment -name IO_STANDARD "2.5 V" -to ADC_CLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_CLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[13]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[14]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_INPUT[15]

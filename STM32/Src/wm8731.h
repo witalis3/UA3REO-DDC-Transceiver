@@ -1,7 +1,7 @@
 #ifndef WM8731_h
 #define WM8731_h
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include "wire.h"
 #include "fpga.h"

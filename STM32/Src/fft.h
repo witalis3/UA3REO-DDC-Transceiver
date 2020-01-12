@@ -1,7 +1,7 @@
 #ifndef FFT_h
 #define FFT_h
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdbool.h>
 #include <math.h> 
 #include "arm_math.h"
@@ -35,8 +35,5 @@ extern float32_t FFTInput_I[FFT_SIZE];
 extern float32_t FFTInput_Q[FFT_SIZE];
 extern void FFT_Init(void);
 extern void FFT_Reset(void);
-
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 
 #endif

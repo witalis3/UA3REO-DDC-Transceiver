@@ -1,12 +1,10 @@
 #include "wifi.h"
-#include "stm32f4xx_hal.h"
+#include "main.h"
+#include "stm32h7xx_hal.h"
 #include "functions.h"
 #include "settings.h"
 #include "trx_manager.h"
 #include <stdlib.h>
-
-extern UART_HandleTypeDef huart6;
-extern IWDG_HandleTypeDef hiwdg;
 
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static char WIFI_Answer[WIFI_ANSWER_BUFFER_SIZE] = { 0 };
@@ -68,7 +66,7 @@ void WIFI_ProcessAnswer(void)
 {
 	if (WIFI_State == WIFI_NOTFOUND) return;
 	if (WIFI_State == WIFI_UNDEFINED) WIFI_Init();
-	HAL_IWDG_Refresh(&hiwdg);
+	HAL_IWDG_Refresh(&hiwdg1);
 	char com_t[128] = { 0 };
 	char tz[2] = { 0 };
 	char com[128] = { 0 };
@@ -301,7 +299,7 @@ static void WIFI_SendCommand(char* command)
 	HAL_UART_Transmit_IT(&huart6, (uint8_t*)command, strlen(command));
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
-	HAL_IWDG_Refresh(&hiwdg);
+	HAL_IWDG_Refresh(&hiwdg1);
 
 #if 0	//DEBUG
 	sendToDebug_str2("WIFI_DEBUG_S: ", command);

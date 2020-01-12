@@ -1,7 +1,7 @@
 #ifndef AGC_H
 #define AGC_H
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdbool.h>
 #include "arm_math.h"
 #include "audio_processor.h"

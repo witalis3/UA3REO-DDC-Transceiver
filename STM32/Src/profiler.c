@@ -1,5 +1,5 @@
 #include "profiler.h"
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include "string.h"
 #include <stdbool.h>
 #include "functions.h"
@@ -16,6 +16,7 @@ void InitProfiler()
 		profiles[i].samples = 0;
 		profiles[i].started = false;
 	}
+	sendToDebug_strln("[OK] Profiler inited");
 }
 
 void StartProfiler(uint8_t pid)

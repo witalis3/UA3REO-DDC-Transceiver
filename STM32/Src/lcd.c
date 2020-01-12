@@ -54,6 +54,7 @@ void LCD_Init(void)
 	LCDDriver_setRotation(4);
 #endif
 	LCDDriver_Fill(COLOR_WHITE);
+	sendToDebug_strln("[OK] LCD inited");
 }
 
 static void LCD_displayTopButtons(bool redraw) { //вывод верхних кнопок
@@ -421,10 +422,10 @@ void LCD_showError(char text[], bool redraw)
 	LCD_busy = true;
 	LCDDriver_Fill(COLOR_RED);
 	LCDDriver_printTextFont(text, 5, 110, COLOR_WHITE, COLOR_RED, FreeSans12pt7b);
-	HAL_IWDG_Refresh(&hiwdg);
+	HAL_IWDG_Refresh(&hiwdg1);
 	if (redraw)
-		HAL_Delay(3000);
-	HAL_IWDG_Refresh(&hiwdg);
+		HAL_Delay(2000);
+	HAL_IWDG_Refresh(&hiwdg1);
 	LCD_busy = false;
 	if (redraw)
 		LCD_redraw();

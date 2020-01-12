@@ -24,12 +24,12 @@ void checkBootloaderButton(void)
  */
 void JumpToBootloader(void) {
 	void(*SysMemBootJump)(void);
-
 	/**
 	 * Step: Set system memory address.
 	 *       For STM32F429, system memory is on 0x1FFF 0000
 	 *       For other families, check AN2606 document table 110 with descriptions of memory addresses
 	 */
+	/*
 	volatile uint32_t addr = 0x1FFF0000;
 	if (TRX_Inited)
 		LCD_showError("Flash DFU mode", false);
@@ -53,4 +53,5 @@ void JumpToBootloader(void) {
 	SysMemBootJump = (void(*)(void)) (*((uint32_t *)(addr + 4)));
 	__set_MSP(*(uint32_t *)addr);
 	SysMemBootJump();
+	*/
 }

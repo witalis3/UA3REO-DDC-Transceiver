@@ -1,4 +1,4 @@
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include "main.h"
 #include "fpga.h"
 #include "functions.h"
@@ -56,6 +56,7 @@ void FPGA_Init(void)
 
 void FPGA_test_bus(void) //проверка шины
 {
+	bool err = false;
 	FPGA_busy = true;
 	for (uint8_t b = 0; b < 8; b++)
 	{
@@ -78,13 +79,18 @@ void FPGA_test_bus(void) //проверка шины
 		if (FPGA_readPacket() != b)
 		{
 			char buff[32] = "";
+			sprintf(buff, "[ERR] FPGA BUS Pin%d error", b);
+			sendToDebug_strln(buff);
 			sprintf(buff, "FPGA BUS Pin%d error", b);
 			LCD_showError(buff, true);
+			err = true;
 		}
 		//clock
 		FPGA_clockFall();
 	}
 	FPGA_busy = false;
+	if(!err)
+		sendToDebug_strln("[OK] FPGA inited");
 }
 
 void FPGA_start_audio_clock(void) //запуск PLL для I2S и кодека, при включенном тактовом не программируется i2c
@@ -492,7 +498,7 @@ inline void FPGA_setBusInput(void)
 		{
 			// Configure IO Direction mode (Input)
 			uint32_t temp = GPIOA->MODER;
-			temp &= ~(GPIO_MODER_MODER0 << (position * 2U));
+			temp &= ~(GPIO_MODER_MODE0 << (position * 2U));
 			temp |= ((GPIO_MODE_INPUT & 0x00000003U) << (position * 2U));
 			GPIOA->MODER = temp;
 		}
@@ -509,7 +515,7 @@ inline void FPGA_setBusOutput(void)
 		{
 			// Configure IO Direction mode (Output)
 			uint32_t temp = GPIOA->MODER;
-			temp &= ~(GPIO_MODER_MODER0 << (position * 2U));
+			temp &= ~(GPIO_MODER_MODE0 << (position * 2U));
 			temp |= ((GPIO_MODE_OUTPUT_PP & 0x00000003U) << (position * 2U));
 			GPIOA->MODER = temp;
 		}
@@ -646,10 +652,10 @@ void FPGA_read_flash(void) //чтение flash памяти
 		if (i % 16 == 0)
 		{
 			sendToDebug_str("\r\n");
-			HAL_IWDG_Refresh(&hiwdg);
+			HAL_IWDG_Refresh(&hiwdg1);
 			DEBUG_Transmit_FIFO_Events();
 		}
-		//HAL_IWDG_Refresh(&hiwdg);
+		//HAL_IWDG_Refresh(&hiwdg1);
 		//DEBUG_Transmit_FIFO_Events();
 	}
 	sendToDebug_newline();

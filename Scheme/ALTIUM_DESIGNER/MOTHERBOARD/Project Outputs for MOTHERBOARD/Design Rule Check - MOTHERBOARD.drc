@@ -1,0 +1,81 @@
+Protel Design System Design Rule Check
+PCB File : D:\Dropbox\Develop\Projects\UA3REO\Scheme\EXPERIMENTS\ALTIUM\MOTHERBOARD\MOTHERBOARD.PcbDoc
+Date     : 05.01.2020
+Time     : 19:10:57
+
+Processing Rule : Clearance Constraint (Gap=8mil) (OnLayer('Top Layer')),(All)
+Rule Violations :0
+
+Processing Rule : Clearance Constraint (Gap=7.874mil) (All),(All)
+Rule Violations :0
+
+Processing Rule : Clearance Constraint (Gap=8mil) (OnLayer('Bottom Layer')),(All)
+Rule Violations :0
+
+Processing Rule : Short-Circuit Constraint (Allowed=No) (All),(All)
+Rule Violations :0
+
+Processing Rule : Un-Routed Net Constraint ( (All) )
+Rule Violations :0
+
+Processing Rule : Modified Polygon (Allow modified: No), (Allow shelved: No)
+Rule Violations :0
+
+Processing Rule : Width Constraint (Min=3.5mil) (Max=100mil) (Preferred=15mil) (All)
+Rule Violations :0
+
+Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=20mil) (Conductor Width=10mil) (Air Gap=10mil) (Entries=4) (All)
+Rule Violations :0
+
+Processing Rule : Minimum Annular Ring (Minimum=3mil) (All)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=7.874mil) (Max=248.031mil) (All)
+Rule Violations :0
+
+Processing Rule : Hole To Hole Clearance (Gap=10mil) (All),(All)
+Rule Violations :0
+
+Processing Rule : Minimum Solder Mask Sliver (Gap=0.394mil) (All),(All)
+Rule Violations :0
+
+Processing Rule : Silk To Solder Mask (Clearance=0.394mil) (IsPad),(All)
+Rule Violations :0
+
+Processing Rule : Silk to Silk (Clearance=0.394mil) (All),(All)
+   Violation between Silk To Silk Clearance Constraint: (Collision < 0.394mil) Between Text "DAC_OUT" (732.284mil,-3000mil) on Top Overlay, Top Silk And Track (1045.295mil,-2915.378mil)(1096.437mil,-2915.378mil) on Top Overlay, Top Silk Silk Text to Silk Clearance [0mil]
+   Violation between Silk To Silk Clearance Constraint: (Collision < 0.394mil) Between Text "DAC_OUT" (732.284mil,-3000mil) on Top Overlay, Top Silk And Track (852.382mil,-2915.378mil)(903.524mil,-2915.378mil) on Top Overlay, Top Silk Silk Text to Silk Clearance [0mil]
+Rule Violations :2
+
+Processing Rule : Net Antennae (Tolerance=0mil) (All)
+Rule Violations :0
+
+Processing Rule : Board Clearance Constraint (Gap=0mil) (All)
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7326.772mil,-1188.976mil)(7356.319mil,-1188.976mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7326.772mil,-1320.866mil)(7356.319mil,-1320.866mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7326.772mil,-1675.197mil)(7356.319mil,-1675.197mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7326.772mil,-1807.087mil)(7356.319mil,-1807.087mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7326.772mil,-2161.417mil)(7356.319mil,-2161.417mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7326.772mil,-2291.339mil)(7356.319mil,-2291.339mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7326.772mil,-2645.669mil)(7356.319mil,-2645.669mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7326.772mil,-834.646mil)(7356.319mil,-834.646mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (Collision < 7.874mil) Between Board Edge And Track (7338.602mil,-366.142mil)(7387.795mil,-366.142mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (Collision < 7.874mil) Between Board Edge And Track (7338.602mil,-673.228mil)(7387.795mil,-673.228mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7356.319mil,-1188.976mil)(7356.319mil,-1129.921mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7356.319mil,-1379.921mil)(7356.319mil,-1320.866mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7356.319mil,-1675.197mil)(7356.319mil,-1616.142mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7356.319mil,-1866.142mil)(7356.319mil,-1807.087mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7356.319mil,-2161.417mil)(7356.319mil,-2102.362mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7356.319mil,-2350.394mil)(7356.319mil,-2291.339mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7356.319mil,-2645.669mil)(7356.319mil,-2586.614mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (3.657mil < 7.874mil) Between Board Edge And Track (7356.319mil,-893.701mil)(7356.319mil,-834.646mil) on Top Overlay, Top Silk 
+   Violation between Board Outline Clearance(Outline Edge): (Collision < 7.874mil) Between Board Edge And Track (7387.795mil,-673.228mil)(7387.795mil,-366.142mil) on Top Overlay, Top Silk 
+Rule Violations :19
+
+Processing Rule : Height Constraint (Min=0mil) (Max=1000mil) (Prefered=500mil) (All)
+Rule Violations :0
+
+
+Violations Detected : 21
+Waived Violations : 0
+Time Elapsed        : 00:00:03

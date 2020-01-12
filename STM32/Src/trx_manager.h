@@ -1,7 +1,7 @@
 #ifndef TRX_MANAGER_H
 #define TRX_MANAGER_H
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdbool.h>
 #include "settings.h"
 
