@@ -243,7 +243,9 @@ int main(void)
 	sendToDebug_flush();
 	TRX_Inited = true;
   /* USER CODE END 2 */
-	
+ 
+ 
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -1239,10 +1241,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(W26Q16_CS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB1 PB2 PB11 PB3 
-                           PB4 PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_11|GPIO_PIN_3 
-                          |GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pins : PB1 PB2 PB11 PB4 
+                           PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_11|GPIO_PIN_4 
+                          |GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -1328,16 +1330,20 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+/*
 int _write(int file, char *ptr, int len)
 {
-  /* Implement your write code here, this is used by puts and printf for example */
   int i=0;
   for(i=0 ; i<len ; i++) 
     ITM_SendChar((*ptr++));
   return len;
 }
+*/
 
+int fputc(int ch, FILE *f) {
+  ITM_SendChar(ch);
+  return(ch);
+}
 /* USER CODE END 4 */
 
 /* MPU Configuration */

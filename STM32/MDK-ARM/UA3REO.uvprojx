@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                           ../Drivers/STM32H7xx_HAL_Driver/Inc;                           ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                           ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                           ../Drivers/CMSIS/Include;                           ..\USBDevice;                           ..\Src</IncludePath>
+              <IncludePath>../Inc;                            ../Drivers/STM32H7xx_HAL_Driver/Inc;                            ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                            ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                            ../Drivers/CMSIS/Include;                            ..\USBDevice;                            ..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -658,14 +658,14 @@
               <FilePath>..\Inc\stm32h7xx_hal_conf.h</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Src/main.c</FilePath>
-            </File>
-            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Src/main.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_it.c</FileName>

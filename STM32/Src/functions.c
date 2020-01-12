@@ -63,6 +63,7 @@ void readHalfFromCircleUSBBuffer(int16_t *source, int32_t *dest, uint16_t index,
 
 void sendToDebug_str(char* data)
 {
+	printf("%s", data);
 	DEBUG_Transmit_FIFO((uint8_t*)data, strlen(data));
 	HAL_UART_Transmit(&huart1, (uint8_t*)data, strlen(data), 1000);
 }
