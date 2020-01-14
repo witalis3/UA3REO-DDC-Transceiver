@@ -2,6 +2,18 @@
 FileName = FRONT-UNIT.GBR
 AutoAperture = True
 *************************************************************
+Generating : Mechanical 15
+      File : FRONT-UNIT.GM15
+
+    Adding Layer      : Mechanical 15
+
+
+Used DCodes :
+    D109
+    D110
+*************************************************************
+
+*************************************************************
 Generating : Bottom Solder, Bot Mask
       File : FRONT-UNIT.GBS
 
@@ -35,13 +47,7 @@ Used DCodes :
     D34
     D35
     D36
-    D79
-    D80
-    D81
-    D82
-    D83
-    D84
-    D85
+    D37
     D86
     D87
     D88
@@ -49,82 +55,18 @@ Used DCodes :
     D90
     D91
     D92
-*************************************************************
-
-*************************************************************
-Generating : Bottom Pad Master
-      File : FRONT-UNIT.GPB
-
-    Adding Layer      : Bottom Layer, Bottom
-
-    Adding Layer      : Multi-Layer
-
-
-Used DCodes :
-    D37
-    D38
-    D42
-    D43
-    D44
-    D45
-    D46
-    D47
-    D48
-    D49
-    D50
-    D51
-    D52
-    D53
-    D54
-    D55
-    D56
-    D57
-    D58
-    D64
-    D65
-    D66
-    D67
-    D68
-    D69
-    D70
-    D71
-    D72
-    D73
-    D74
-    D75
-    D76
-    D77
-*************************************************************
-
-*************************************************************
-Generating : Top Pad Master
-      File : FRONT-UNIT.GPT
-
-    Adding Layer      : Top Layer, Top
-
-    Adding Layer      : Multi-Layer
-
-
-Used DCodes :
-    D37
-    D38
-    D42
-    D43
-    D44
-    D45
-    D46
-    D47
-    D48
-    D49
-    D50
-    D51
-    D52
-    D53
-    D54
-    D55
-    D56
-    D57
-    D58
+    D93
+    D94
+    D95
+    D96
+    D97
+    D98
+    D99
+    D100
+    D101
+    D102
+    D103
+    D104
 *************************************************************
 
 *************************************************************
@@ -143,6 +85,49 @@ Used DCodes :
 *************************************************************
 
 *************************************************************
+Generating : Top Pad Master
+      File : FRONT-UNIT.GPT
+
+    Adding Layer      : Top Layer, Top
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D38
+    D39
+    D44
+    D45
+    D46
+    D47
+    D48
+    D49
+    D50
+    D51
+    D52
+    D53
+    D54
+    D55
+    D56
+    D57
+    D58
+    D59
+    D60
+*************************************************************
+
+*************************************************************
+Generating : Mechanical 2, Bot Assy
+      File : FRONT-UNIT.GM2
+
+    Adding Layer      : Mechanical 2, Bot Assy
+
+
+Used DCodes :
+    D10
+    D108
+*************************************************************
+
+*************************************************************
 Generating : Bottom Layer, Bottom
       File : FRONT-UNIT.GBL
 
@@ -153,7 +138,6 @@ Generating : Bottom Layer, Bottom
 
 Used DCodes :
     D10
-    D37
     D38
     D39
     D40
@@ -195,18 +179,28 @@ Used DCodes :
     D76
     D77
     D78
+    D79
+    D80
+    D81
+    D82
+    D83
+    D84
+    D85
 *************************************************************
 
 *************************************************************
-Generating : Mechanical 2, Bot Assy
-      File : FRONT-UNIT.GM2
+Generating : Bottom Overlay, Bot Silk
+      File : FRONT-UNIT.GBO
 
-    Adding Layer      : Mechanical 2, Bot Assy
+    Adding Layer      : Bottom Overlay, Bot Silk
 
 
 Used DCodes :
     D10
-    D96
+    D12
+    D105
+    D106
+    D107
 *************************************************************
 
 *************************************************************
@@ -220,7 +214,6 @@ Generating : Top Layer, Top
 
 Used DCodes :
     D10
-    D37
     D38
     D39
     D40
@@ -247,45 +240,8 @@ Used DCodes :
     D61
     D62
     D63
-*************************************************************
-
-*************************************************************
-Generating : Mechanical 15
-      File : FRONT-UNIT.GM15
-
-    Adding Layer      : Mechanical 15
-
-
-Used DCodes :
-    D97
-    D98
-*************************************************************
-
-*************************************************************
-Generating : Keep-Out Layer, Board
-      File : FRONT-UNIT.GKO
-
-    Adding Layer      : Keep-Out Layer, Board
-
-
-Used DCodes :
-    D99
-    D100
-*************************************************************
-
-*************************************************************
-Generating : Bottom Overlay, Bot Silk
-      File : FRONT-UNIT.GBO
-
-    Adding Layer      : Bottom Overlay, Bot Silk
-
-
-Used DCodes :
-    D10
-    D12
-    D93
-    D94
-    D95
+    D64
+    D65
 *************************************************************
 
 *************************************************************
@@ -296,7 +252,19 @@ Generating : Mechanical 13
 
 
 Used DCodes :
-    D97
+    D109
+*************************************************************
+
+*************************************************************
+Generating : Keep-Out Layer, Board
+      File : FRONT-UNIT.GKO
+
+    Adding Layer      : Keep-Out Layer, Board
+
+
+Used DCodes :
+    D111
+    D112
 *************************************************************
 
 *************************************************************
@@ -333,5 +301,56 @@ Used DCodes :
     D34
     D35
     D36
+    D37
+*************************************************************
+
+*************************************************************
+Generating : Bottom Pad Master
+      File : FRONT-UNIT.GPB
+
+    Adding Layer      : Bottom Layer, Bottom
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D38
+    D39
+    D44
+    D45
+    D46
+    D47
+    D48
+    D49
+    D50
+    D51
+    D52
+    D53
+    D54
+    D55
+    D56
+    D57
+    D58
+    D59
+    D60
+    D66
+    D67
+    D68
+    D69
+    D70
+    D71
+    D72
+    D73
+    D74
+    D75
+    D76
+    D77
+    D78
+    D79
+    D80
+    D81
+    D82
+    D83
+    D84
 *************************************************************
 

@@ -154,7 +154,7 @@
           <Type>0</Type>
           <LineNumber>2174</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134327744</Address>
+          <Address>134336354</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -164,22 +164,6 @@
           <Filename>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\UA3REO\../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.c\2174</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>1</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>startup_stm32h743xx.s</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
