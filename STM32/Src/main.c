@@ -160,10 +160,9 @@ int main(void)
 	ARM_MPU_SetRegion(ARM_MPU_RBAR(0, 0x20000000), ARM_MPU_RASR(0, ARM_MPU_AP_RO, 0, 0, 0, 0, 0, ARM_MPU_REGION_SIZE_32B) | 0x1 | (ARM_MPU_REGION_SIZE_32B << 1)); //protect stack
 	ARM_MPU_SetRegion(ARM_MPU_RBAR(1, 0x20000000+0xD00+0x600-32), ARM_MPU_RASR(0, ARM_MPU_AP_RO, 0, 0, 0, 0, 0, ARM_MPU_REGION_SIZE_32B) | 0x1 | (ARM_MPU_REGION_SIZE_32B << 1)); //protect heap
 	ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
-	
-	MX_GPIO_Init();
-	PERIPH_RF_UNIT_UpdateState(true);
 	*/
+	//MX_GPIO_Init();
+	//PERIPH_RF_UNIT_UpdateState(true);
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -213,9 +212,6 @@ int main(void)
 		LoadSettings(false);
 	PERIPH_RF_UNIT_UpdateState(false);
 	sendToDebug_strln("[OK] RF-Unit updated");
-	HAL_TIM_Base_Start(&htim6);
-	HAL_TIM_Base_Start_IT(&htim6);
-	sendToDebug_strln("[OK] Misc timer TIM6 inited");
 	LCD_Init();
 	if(SHOW_LOGO) LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
 	LCD_busy=true;
@@ -235,6 +231,9 @@ int main(void)
 	if(SHOW_LOGO) HAL_Delay(1000); //logo wait
 	LCD_busy=false;
 	LCD_redraw();
+	HAL_TIM_Base_Start(&htim6);
+	HAL_TIM_Base_Start_IT(&htim6);
+	sendToDebug_strln("[OK] Misc timer TIM6 inited");
 	__HAL_RCC_USB1_OTG_HS_CLK_SLEEP_ENABLE();
 	__HAL_RCC_USB1_OTG_HS_ULPI_CLK_SLEEP_DISABLE();
 	__HAL_RCC_USB2_OTG_FS_CLK_SLEEP_ENABLE();
@@ -1121,21 +1120,21 @@ static void MX_FMC_Init(void)
   hsram1.Init.WriteFifo = FMC_WRITE_FIFO_ENABLE;
   hsram1.Init.PageSize = FMC_PAGE_SIZE_NONE;
   /* Timing */
-  Timing.AddressSetupTime = 2;
+  Timing.AddressSetupTime = 1;
   Timing.AddressHoldTime = 15;
-  Timing.DataSetupTime = 5;
-  Timing.BusTurnAroundDuration = 5;
+  Timing.DataSetupTime = 1;
+  Timing.BusTurnAroundDuration = 0;
   Timing.CLKDivision = 16;
   Timing.DataLatency = 17;
-  Timing.AccessMode = FMC_ACCESS_MODE_A;
+  Timing.AccessMode = FMC_ACCESS_MODE_D;
   /* ExtTiming */
   ExtTiming.AddressSetupTime = 2;
   ExtTiming.AddressHoldTime = 15;
   ExtTiming.DataSetupTime = 5;
-  ExtTiming.BusTurnAroundDuration = 3;
+  ExtTiming.BusTurnAroundDuration = 0;
   ExtTiming.CLKDivision = 16;
   ExtTiming.DataLatency = 17;
-  ExtTiming.AccessMode = FMC_ACCESS_MODE_A;
+  ExtTiming.AccessMode = FMC_ACCESS_MODE_D;
 
   if (HAL_SRAM_Init(&hsram1, &Timing, &ExtTiming) != HAL_OK)
   {
@@ -1340,11 +1339,27 @@ int fputc(int ch, FILE *f) {
 
 void MPU_Config(void)
 {
+  MPU_Region_InitTypeDef MPU_InitStruct = {0};
 
   /* Disables the MPU */
   HAL_MPU_Disable();
+  /** Initializes and configures the Region and the memory to be protected 
+  */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.BaseAddress = 0x60000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_1MB;
+  MPU_InitStruct.SubRegionDisable = 0x0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
   /* Enables the MPU */
-  HAL_MPU_Enable(MPU_HFNMI_PRIVDEF);
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 
 }
 
