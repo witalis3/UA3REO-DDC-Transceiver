@@ -352,33 +352,28 @@ void LCDDriver_DrawPixel(uint16_t x, uint16_t y, uint16_t color) {
 
 //Fill the entire screen with a background color
 void LCDDriver_Fill(uint16_t color) {
-	LCDDriver_SetCursorAreaPosition(0, 0, LCD_WIDTH - 1, LCD_HEIGHT - 1);
-	uint16_t fill_char = color;
-	for(uint32_t i=0 ; i<LCD_WIDTH*LCD_HEIGHT ; i++) LCDDriver_SendData(color);
-	//HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fill_char, LCD_FSMC_DATA_ADDR, LCD_WIDTH*LCD_HEIGHT / 2);
-	//HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-	//HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fill_char, LCD_FSMC_DATA_ADDR, LCD_WIDTH*LCD_HEIGHT / 2);
-	//HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-	
+	LCDDriver_Fill_RectXY(0, 0, LCD_WIDTH, LCD_HEIGHT, color);
 }
+
 //Rectangle drawing functions
+SRAM4 uint16_t fillxy_color;
 void LCDDriver_Fill_RectXY(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, uint16_t color) {
 	if (x1 > (LCD_WIDTH - 1)) x1 = LCD_WIDTH - 1;
 	if (y1 > (LCD_HEIGHT - 1)) y1 = LCD_HEIGHT - 1;
 	uint32_t n = ((x1 + 1) - x0)*((y1 + 1) - y0);
 	if (n > LCD_PIXEL_COUNT) n = LCD_PIXEL_COUNT;
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
-
-	for(uint32_t i=0 ; i<n ; i++)
-		LCDDriver_SendData(color);
 	
-	/*
-	uint16_t fill_char = color;
+	fillxy_color = color;
 	if (n > 50)
 	{
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fill_char, LCD_FSMC_DATA_ADDR, n / 2);
+		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, n / 4 + 1);
 		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fill_char, LCD_FSMC_DATA_ADDR, n / 2 + 1);
+		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, n / 4 + 1);
+		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, n / 4 + 1);
+		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, n / 4 + 1);
 		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 	}
 	else
@@ -386,7 +381,7 @@ void LCDDriver_Fill_RectXY(unsigned int x0, unsigned int y0, unsigned int x1, un
 		while (n--) {
 			LCDDriver_SendData(color);
 		}
-	}*/
+	}
 }
 
 void LCDDriver_Fill_RectWH(unsigned int x, unsigned int y, unsigned int w, unsigned int h, uint16_t color) {

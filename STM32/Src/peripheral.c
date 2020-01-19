@@ -705,7 +705,7 @@ void PERIPH_ProcessSWRMeter(void)
 	if(TRX_SWR>10.0f) TRX_SWR=10.0f;
 	float32_t ref_power = (TRX_SWR_backward * TRX_SWR_backward) / 50.0f;
 	
-	if(TRX_SWR>=SWR_CRITICAL && ref_power>1.0f) //опасный порог КСВ, отключаем передачу
+	if(TRX_SWR>=SWR_CRITICAL && ref_power>1.0f && TRX_getMode(CurrentVFO()) != TRX_MODE_LOOPBACK) //опасный порог КСВ, отключаем передачу
 	{
 		TRX_Time_InActive = 0;
 		TRX_Tune = false;

@@ -210,7 +210,7 @@
             <Ra2Chk>0</Ra2Chk>
             <Ra3Chk>0</Ra3Chk>
             <Im1Chk>1</Im1Chk>
-            <Im2Chk>0</Im2Chk>
+            <Im2Chk>1</Im2Chk>
             <OnChipMemories>
               <Ocm1>
                 <Type>0</Type>
@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                                                            ../Drivers/STM32H7xx_HAL_Driver/Inc;                                                                            ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                                                                            ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                                                                            ../Drivers/CMSIS/Include;                                                                            ..\USBDevice;                                                                            ..\Src</IncludePath>
+              <IncludePath>../Inc;                                                                                 ../Drivers/STM32H7xx_HAL_Driver/Inc;                                                                                 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                                                                                 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                                                                                 ../Drivers/CMSIS/Include;                                                                                 ..\USBDevice;                                                                                 ..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -360,7 +360,7 @@
             </VariousControls>
           </Aads>
           <LDads>
-            <umfTarg>1</umfTarg>
+            <umfTarg>0</umfTarg>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>
@@ -369,7 +369,7 @@
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
+            <ScatterFile>.\UA3REO\UA3REO_custom.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>

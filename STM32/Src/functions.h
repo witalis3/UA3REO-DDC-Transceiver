@@ -22,7 +22,12 @@
 #define TRX_MODE_NO_TX 11
 #define TRX_MODE_COUNT 12
 
-#define IRAM2 __attribute__((section("IRAM2")))
+#define IRAM1 __attribute__((section(".IRAM1")))
+#define IRAM2 __attribute__((section(".IRAM2")))
+#define SRAM1 __attribute__((section(".SRAM1")))
+#define SRAM2 __attribute__((section(".SRAM2")))
+#define SRAM3 __attribute__((section(".SRAM3")))
+#define SRAM4 __attribute__((section(".SRAM4")))
 
 // Internal Macros
 #define HEX__(n) 0x##n##LU

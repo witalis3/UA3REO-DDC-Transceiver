@@ -240,8 +240,8 @@ static void LCD_displayStatusInfoBar(void) { //S-метра и прочей ин
 		{
 			if(!TRX.S_METER_Style) //полоса
 			{
-				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1 + s_width, LAY_STATUS_Y_OFFSET + 1, LCD_last_s_meter - s_width, LAY_STATUS_BAR_HEIGHT - 2, BACKGROUND_COLOR);
-				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1, LAY_STATUS_Y_OFFSET + 1, s_width, LAY_STATUS_BAR_HEIGHT - 2, LAY_STATUS_SMETER_COLOR);
+				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1 + s_width, LAY_STATUS_Y_OFFSET + 1, LCD_last_s_meter - s_width, LAY_STATUS_BAR_HEIGHT - 3, BACKGROUND_COLOR);
+				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1, LAY_STATUS_Y_OFFSET + 1, s_width, LAY_STATUS_BAR_HEIGHT - 3, LAY_STATUS_SMETER_COLOR);
 			}
 			else //линия
 			{
