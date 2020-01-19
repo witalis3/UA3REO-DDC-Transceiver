@@ -1,12 +1,10 @@
 //Header files
 #include "lcd_driver.h"
+#include "main.h"
 #include "fonts.h"
 #include "settings.h"
 #include "functions.h"
 
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
-extern SRAM_HandleTypeDef hsram1;
-//static uint8_t rotationNum = 1;
 static bool _cp437 = false;
 uint32_t LCD_FSMC_COMM_ADDR = 0;
 uint32_t LCD_FSMC_DATA_ADDR = 0;
@@ -365,14 +363,16 @@ void LCDDriver_Fill(uint16_t color) {
 }
 //Rectangle drawing functions
 void LCDDriver_Fill_RectXY(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, uint16_t color) {
+	if (x1 > (LCD_WIDTH - 1)) x1 = LCD_WIDTH - 1;
+	if (y1 > (LCD_HEIGHT - 1)) y1 = LCD_HEIGHT - 1;
 	uint32_t n = ((x1 + 1) - x0)*((y1 + 1) - y0);
 	if (n > LCD_PIXEL_COUNT) n = LCD_PIXEL_COUNT;
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
 
 	for(uint32_t i=0 ; i<n ; i++)
 		LCDDriver_SendData(color);
-	return;
 	
+	/*
 	uint16_t fill_char = color;
 	if (n > 50)
 	{
@@ -386,7 +386,7 @@ void LCDDriver_Fill_RectXY(unsigned int x0, unsigned int y0, unsigned int x1, un
 		while (n--) {
 			LCDDriver_SendData(color);
 		}
-	}
+	}*/
 }
 
 void LCDDriver_Fill_RectWH(unsigned int x, unsigned int y, unsigned int w, unsigned int h, uint16_t color) {
@@ -631,7 +631,7 @@ void LCDDriver_drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, u
 					if (i == 5)
 						line = 0x0;
 					else
-						line = pgm_read_byte(font1 + (c * 5) + i); //read font
+						line = pgm_read_byte(rastr_font + (c * 5) + i); //read font
 					line >>= j;
 					for (int8_t s_x = 0; s_x < size; s_x++) //x size scale
 					{
@@ -652,6 +652,7 @@ void LCDDriver_printText(char text[], int16_t x, int16_t y, uint16_t color, uint
 	for (uint16_t i = 0; i < 40 && text[i] != NULL; i++)
 	{
 		LCDDriver_drawChar(x + (offset*i), y, text[i], color, bg, size);
+		text_cursor_x = x + (offset*(i+1));
 	}
 }
 
@@ -819,21 +820,11 @@ void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_
 	}
 }
 
-uint16_t rgb888torgb565(uint8_t red, uint8_t green, uint8_t blue)
-{
-	uint16_t b = (blue >> 3) & 0x1f;
-	uint16_t g = ((green >> 2) & 0x3f) << 5;
-	uint16_t r = ((red >> 3) & 0x1f) << 11;
-
-	return (uint16_t)(r | g | b);
-}
-
-/*
 inline uint16_t rgb888torgb565(uint8_t r, uint8_t g, uint8_t b)
 {
 	return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
 }
-*/
+
 void LCDDriver_setBrightness(uint8_t percent)
 {
 	uint32_t perc = 65535 - 65535 * percent / 100;

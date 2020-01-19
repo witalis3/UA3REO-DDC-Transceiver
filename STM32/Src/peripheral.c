@@ -665,7 +665,7 @@ void PERIPH_ProcessSWRMeter(void)
 	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
 	HAL_ADC_Start(&hadc1); // запускаем преобразование сигнала АЦП
 	HAL_ADC_PollForConversion(&hadc1, 100); // ожидаем окончания преобразования
-	float32_t forward = (float32_t)HAL_ADC_GetValue(&hadc1)*3.3f/4096.0f; // читаем полученное значение в переменную adc
+	float32_t forward = (float32_t)HAL_ADC_GetValue(&hadc1)*3.3f/65535.0f; // читаем полученное значение в переменную adc
 	HAL_ADC_Stop(&hadc1);
 	forward = forward/(CALIBRATE.swr_meter_Rbottom/(CALIBRATE.swr_meter_Rtop+CALIBRATE.swr_meter_Rbottom)); //корректируем напряжение исходя из делителя
 	forward += CALIBRATE.swr_meter_fwd_diff; //корректируем напряжение по калибровке
@@ -684,7 +684,8 @@ void PERIPH_ProcessSWRMeter(void)
 	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
 	HAL_ADC_Start(&hadc1); // запускаем преобразование сигнала АЦП
 	HAL_ADC_PollForConversion(&hadc1, 100); // ожидаем окончания преобразования
-	float32_t backward = (float32_t)HAL_ADC_GetValue(&hadc1)*3.3f/4096.0f; // читаем полученное значение в переменную adc
+	float32_t backward = (float32_t)HAL_ADC_GetValue(&hadc1)*3.3f/65535.0f; // читаем полученное значение в переменную adc
+
 	HAL_ADC_Stop(&hadc1);
 	backward = backward/(CALIBRATE.swr_meter_Rbottom/(CALIBRATE.swr_meter_Rtop+CALIBRATE.swr_meter_Rbottom));  //корректируем напряжение исходя из делителя
 	backward += CALIBRATE.swr_meter_ref_diff; //корректируем напряжение по калибровке

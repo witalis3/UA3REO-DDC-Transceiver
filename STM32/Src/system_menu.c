@@ -8,6 +8,7 @@
 #include "spec_analyzer.h"
 #include "fonts.h"
 #include "agc.h"
+#include "screen_layout.h"
 
 static void drawSystemMenuElement(char* title, SystemMenuType type, uint32_t *value, bool onlyVal);
 static void redrawCurrentItem(void);
