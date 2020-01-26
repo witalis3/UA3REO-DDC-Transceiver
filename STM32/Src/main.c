@@ -182,10 +182,10 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
-	
+	HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
 	sendToDebug_str("\r\n----------------------------------\r\n");
 	sendToDebug_strln("UA3REO Transceiver Initialization...");
-	
+
 	//MX_USB_DevDisconnect();
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	//GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
@@ -1263,16 +1263,16 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PWR_ON_Pin */
   GPIO_InitStruct.Pin = PWR_ON_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(PWR_ON_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PWR_HOLD_Pin */
-  GPIO_InitStruct.Pin = PWR_HOLD_Pin;
+  /*Configure GPIO pins : PWR_HOLD_Pin WM8731_SCK_Pin WM8731_SDA_Pin */
+  GPIO_InitStruct.Pin = PWR_HOLD_Pin|WM8731_SCK_Pin|WM8731_SDA_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(PWR_HOLD_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pin : AD1_CS_Pin */
   GPIO_InitStruct.Pin = AD1_CS_Pin;
@@ -1300,13 +1300,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = GPIO_PIN_2;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : WM8731_SCK_Pin WM8731_SDA_Pin */
-  GPIO_InitStruct.Pin = WM8731_SCK_Pin|WM8731_SDA_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pins : RFUNIT_RCLK_Pin RFUNIT_CLK_Pin RFUNIT_DATA_Pin RFUNIT_OE_Pin */

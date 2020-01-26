@@ -94,6 +94,7 @@ static uint32_t ms50_counter = 0;
 static uint32_t tim5_counter = 0;
 static uint32_t tim6_delay = 0;
 static uint32_t eeprom_save_delay = 0;
+static uint32_t powerdown_start_delay = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -343,6 +344,7 @@ void EXTI15_10_IRQHandler(void)
 
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
 
@@ -512,6 +514,19 @@ void TIM6_DAC_IRQHandler(void)
 	LCD_doEvents(); 
 	FFT_printFFT(); 
 	PERIPH_ProcessFrontPanel(); 
+	//power off sequence
+	if(HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
+		if(HAL_GetTick()-powerdown_start_delay > POWERDOWN_TIMEOUT)
+		{
+			SaveSettings();
+			HAL_Delay(50);
+			HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+			TRX_Inited = false;
+			LCD_busy = true;
+			LCDDriver_Fill(COLOR_BLACK);
+			LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT/2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
+			while(true) {}
+		}
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
@@ -692,6 +707,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	{
 		TRX_Time_InActive = 0;
 		TRX_key_change();
+	}
+	else if (GPIO_Pin == GPIO_PIN_11) //POWER OFF
+	{
+		sendToDebug_strln("POWER OFF Sequence initialized");
+		powerdown_start_delay = HAL_GetTick();
 	}
 }
 /* USER CODE END 1 */

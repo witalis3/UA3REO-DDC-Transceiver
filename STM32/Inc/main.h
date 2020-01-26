@@ -145,6 +145,7 @@ void Error_Handler(void);
 #define PERI_MOSI_GPIO_Port GPIOB
 #define PWR_ON_Pin GPIO_PIN_11
 #define PWR_ON_GPIO_Port GPIOD
+#define PWR_ON_EXTI_IRQn EXTI15_10_IRQn
 #define PWR_HOLD_Pin GPIO_PIN_12
 #define PWR_HOLD_GPIO_Port GPIOD
 #define ESP_1_TX_Pin GPIO_PIN_6
