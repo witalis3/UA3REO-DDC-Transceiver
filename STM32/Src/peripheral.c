@@ -27,6 +27,7 @@ static void PERIPH_ENCODER2_Rotated(int direction);
 static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN);
 	
 void PERIPH_ENCODER_checkRotate(void) {
+	
 	ENCODER_AVal = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
 	if( ENCODER_ALast != ENCODER_AVal)
 	{

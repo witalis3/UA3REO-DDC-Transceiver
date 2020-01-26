@@ -1185,11 +1185,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(AD2_CS_GPIO_Port, AD2_CS_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pin : ENC_CLK_Pin */
-  GPIO_InitStruct.Pin = ENC_CLK_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  /*Configure GPIO pins : ENC_CLK_Pin KEY_IN_DASH_Pin KEY_IN_DOT_Pin */
+  GPIO_InitStruct.Pin = ENC_CLK_Pin|KEY_IN_DASH_Pin|KEY_IN_DOT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(ENC_CLK_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PE3 */
   GPIO_InitStruct.Pin = GPIO_PIN_3;
@@ -1197,17 +1197,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ENC2_SW_Pin ENC_DT_Pin ENC2_DT_Pin KEY_IN_DASH_Pin 
-                           KEY_IN_DOT_Pin */
-  GPIO_InitStruct.Pin = ENC2_SW_Pin|ENC_DT_Pin|ENC2_DT_Pin|KEY_IN_DASH_Pin 
-                          |KEY_IN_DOT_Pin;
+  /*Configure GPIO pins : ENC2_SW_Pin ENC_DT_Pin ENC2_DT_Pin */
+  GPIO_InitStruct.Pin = ENC2_SW_Pin|ENC_DT_Pin|ENC2_DT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pins : ENC2_CLK_Pin PTT_IN_Pin */
   GPIO_InitStruct.Pin = ENC2_CLK_Pin|PTT_IN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
