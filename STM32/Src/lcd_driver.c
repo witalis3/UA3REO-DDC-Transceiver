@@ -439,14 +439,23 @@ void LCDDriver_Fill_RectXY(unsigned int x0, unsigned int y0, unsigned int x1, un
 	fillxy_color = color;
 	if (n > 50)
 	{
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, n / 4 + 1);
-		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, n / 4 + 1);
-		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, n / 4 + 1);
-		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, n / 4 + 1);
-		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+		const uint32_t part_size = 32000;
+		uint32_t estamated = n;
+		while(estamated>0)
+		{
+			if(estamated>=part_size)
+			{
+				HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, part_size);
+				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+				estamated-=part_size;
+			}
+			else
+			{
+				HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, estamated);
+				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+				estamated=0;
+			}
+		}
 	}
 	else
 	{

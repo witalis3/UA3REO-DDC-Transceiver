@@ -75,10 +75,6 @@ static void SYSMENU_HANDL_ADCMENU(int8_t direction);
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 
-static const uint8_t sysmenu_x1 = 5;
-static const uint8_t sysmenu_x2 = 240;
-static const uint16_t sysmenu_w = 288;
-
 static struct sysmenu_item_handler sysmenu_handlers[] =
 	{
 		{"TRX Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_TRXMENU},
@@ -1015,14 +1011,14 @@ void eventSecRotateSystemMenu(int8_t direction)
 	//other
 	if (direction < 0)
 	{
-		LCDDriver_drawFastHLine(0, (5 + systemMenuIndex * 18) + 17, sysmenu_w, COLOR_BLACK);
+		LCDDriver_drawFastHLine(0, (5 + systemMenuIndex * 18) + 17, LAY_SYSMENU_W, COLOR_BLACK);
 		if (systemMenuIndex > 0)
 			systemMenuIndex--;
 		redrawCurrentItem();
 	}
 	else
 	{
-		LCDDriver_drawFastHLine(0, (5 + systemMenuIndex * 18) + 17, sysmenu_w, COLOR_BLACK);
+		LCDDriver_drawFastHLine(0, (5 + systemMenuIndex * 18) + 17, LAY_SYSMENU_W, COLOR_BLACK);
 		if (systemMenuIndex < (*sysmenu_item_count_selected - 1))
 			systemMenuIndex++;
 		redrawCurrentItem();
@@ -1041,8 +1037,8 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	char ctmp[10];
 	if (!onlyVal)
 	{
-		LCDDriver_Fill_RectXY(0, sysmenu_y, sysmenu_w, sysmenu_y + 17, COLOR_BLACK);
-		LCDDriver_printText(title, sysmenu_x1, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
+		LCDDriver_Fill_RectXY(0, sysmenu_y, LAY_SYSMENU_W, sysmenu_y + 17, COLOR_BLACK);
+		LCDDriver_printText(title, LAY_SYSMENU_X1, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
 	}
 	switch (type)
 	{
@@ -1079,10 +1075,10 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		break;
 	}
 	if (onlyVal)
-		LCDDriver_Fill_RectWH(sysmenu_x2, sysmenu_y, 4 * 12, 13, COLOR_BLACK);
-	LCDDriver_printText(ctmp, sysmenu_x2, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
+		LCDDriver_Fill_RectWH(LAY_SYSMENU_X2, sysmenu_y, 4 * 12, 13, COLOR_BLACK);
+	LCDDriver_printText(ctmp, LAY_SYSMENU_X2, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
 	if (systemMenuIndex == sysmenu_i)
-		LCDDriver_drawFastHLine(0, sysmenu_y + 17, sysmenu_w, COLOR_WHITE);
+		LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAY_SYSMENU_W, COLOR_WHITE);
 	sysmenu_i++;
 	sysmenu_y += 18;
 }
@@ -1095,7 +1091,7 @@ static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
 		LCDDriver_printText("AP Found:", 5, 5, COLOR_WHITE, COLOR_BLACK, 1);
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
 			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 25 + i * 12, COLOR_GREEN, COLOR_BLACK, 1);
-		LCDDriver_drawFastHLine(0, 37 + sysmenu_wifi_selected_ap_index * 12, sysmenu_w, COLOR_WHITE);
+		LCDDriver_drawFastHLine(0, 37 + sysmenu_wifi_selected_ap_index * 12, LAY_SYSMENU_W, COLOR_WHITE);
 		WIFI_ListAP();
 	}
 	sysmenu_wifi_rescan_interval++;

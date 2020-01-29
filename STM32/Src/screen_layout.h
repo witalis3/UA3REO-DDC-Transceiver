@@ -131,4 +131,8 @@
 #define LAY_FFT_PRINT_SIZE 320                                  //указываем размер выводимого FFT
 #define LAY_FFT_CWDECODER_OFFSET 17                             //место под текст CW декодера
 
+#define LAY_SYSMENU_X1 5
+#define LAY_SYSMENU_X2 400
+#define LAY_SYSMENU_W 448
+
 #endif
