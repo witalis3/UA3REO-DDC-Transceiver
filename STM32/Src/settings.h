@@ -7,40 +7,41 @@
 #include "arm_math.h"
 #include "bands.h"
 
-#define ADCDAC_CLOCK 122880000 //Частота генератора АЦП/ЦАП
-#define MAX_FREQ_HZ 750000000 //Максимальная частота приёма (из даташита АЦП)
-#define MAX_TX_FREQ_HZ 60000000 //Максимальная частота передачи (половина от тактового сигнала ЦАП)
-#define ADC_BITS 16 //разрядность АЦП
-#define FPGA_BUS_BITS 16 //разрядность данных из FPGA
-#define TRX_SAMPLERATE 48000 //частота дискретизации аудио-потока
-#define MAX_TX_AMPLITUDE 32700.0f //Максимальный размах при передаче в ЦАП (32767.0f - лимит)
-#define AGC_CLIP_THRESHOLD -20.0f //Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
-#define AGC_OPTIMAL_THRESHOLD -30.0f //Рабочий уровень усиления в AGC, dbFS
-#define TUNE_POWER 100 // % от выбранной в настройках мощности при запуске TUNE (100 - полная)
-#define TX_AGC_MAXGAIN 500.0f //Максимальное усиление микрофона при компрессировании
-#define TX_AGC_NOISEGATE 15.0f //Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
-#define TOUCHPAD_DELAY 200 //Время защиты от анти-дребезга нажания на тачпад
-#define ADC_VREF 2.25f //опорное напряжение АЦП, при подаче на вход которого АЦП отдаёт максимальное значение, вольт
-#define ADC_RF_TRANS_RATIO 4 //коэффициент трансформации трансформатора :) на входе АЦП 
-#define ATT_DB 12 //подавление в аттенюаторе
-#define PREAMP_GAIN_DB 20 //усиление в предусилителе
+#define ADCDAC_CLOCK 122880000			//Частота генератора АЦП/ЦАП
+#define MAX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
+#define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
+#define ADC_BITS 16						//разрядность АЦП
+#define FPGA_BUS_BITS 16				//разрядность данных из FPGA
+#define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока
+#define MAX_TX_AMPLITUDE 32700.0f		//Максимальный размах при передаче в ЦАП (32767.0f - лимит)
+#define AGC_CLIP_THRESHOLD -20.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
+#define AGC_OPTIMAL_THRESHOLD -30.0f	//Рабочий уровень усиления в AGC, dbFS
+#define TUNE_POWER 100					//% от выбранной в настройках мощности при запуске TUNE (100 - полная)
+#define TX_AGC_MAXGAIN 500.0f			//Максимальное усиление микрофона при компрессировании
+#define TX_AGC_NOISEGATE 15.0f			//Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
+#define TOUCHPAD_DELAY 200				//Время защиты от анти-дребезга нажания на тачпад
+#define ADC_VREF 2.25f					//опорное напряжение АЦП, при подаче на вход которого АЦП отдаёт максимальное значение, вольт
+#define ADC_RF_TRANS_RATIO 4			//коэффициент трансформации трансформатора :) на входе АЦП
+#define ATT_DB 12						//подавление в аттенюаторе
+#define PREAMP_GAIN_DB 20				//усиление в предусилителе
 #define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
-#define AUTOGAIN_CORRECTOR_WAITSTEP 7 //ожидание усреднения результатов при работе автокорректора входных цепей
-#define ENCODER_INVERT 1 //инвертировать вращение влево-вправо у основного энкодера
-#define ENCODER2_INVERT 0 //инвертировать вращение влево-вправо у дополнительного энкодера
-#define KEY_HOLD_TIME 500 //время длительного нажатия на кнопку клавиатуры для срабатывания, мс
-#define SHIFT_INTERVAL 400.0f //диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
-#define EEPROM_WRITE_INTERVAL 10 //Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
-#define MAX_RF_POWER 7.0f //Максимум мощности (для шкалы измерителя)
-#define SWR_CRITICAL 5.0f //Максимальный КСВ, при котором отключается передатчик
-#define SHOW_LOGO false //Отображать логотип при загрузке (из lcd.h)
-#define POWERDOWN_TIMEOUT 1000 //время нажатия на кнопку выключения, для срабатывания, мс
+#define AUTOGAIN_CORRECTOR_WAITSTEP 7   //ожидание усреднения результатов при работе автокорректора входных цепей
+#define ENCODER_INVERT 1				//инвертировать вращение влево-вправо у основного энкодера
+#define ENCODER2_INVERT 0				//инвертировать вращение влево-вправо у дополнительного энкодера
+#define KEY_HOLD_TIME 500				//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
+#define SHIFT_INTERVAL 400.0f			//диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
+#define EEPROM_WRITE_INTERVAL 10		//Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
+#define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
+#define SWR_CRITICAL 5.0f				//Максимальный КСВ, при котором отключается передатчик
+#define SHOW_LOGO false					//Отображать логотип при загрузке (из lcd.h)
+#define POWERDOWN_TIMEOUT 1000			//время нажатия на кнопку выключения, для срабатывания, мс
 
 //#define ILI9341 true //выбираем используемый дисплей
 //#define ILI9325 true //другие комментируем
-#define ILI9481 true //он же HX8357B //другие комментируем
+#define ILI9481 true			//он же HX8357B //другие комментируем
+#define FMC_REMAP true		//ремап памяти FMC
 #define FSMC_REGISTER_SELECT 18 //из FSMC настроек в STM32Cube (A18, A6, и т.д.)
-#define SCREEN_ROTATE 0 //перевернуть экран вверх ногами
+#define SCREEN_ROTATE 0			//перевернуть экран вверх ногами
 
 //Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности)
 //Далее выставляются средние пограничные частоты срабатывания
@@ -71,28 +72,31 @@
 #define MAX_WIFIPASS_LENGTH 32
 #define EEPROM_OP_DELAY 30
 
-#define FPGA_BUS_FULL_SCALE 65536 //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
+#define FPGA_BUS_FULL_SCALE 65536		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
 #define FPGA_BUS_FULL_SCALE_POW 4294967296 //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
 
-extern struct t_CALIBRATE {
-	uint8_t rf_out_power[32]; 
-	float32_t adc_calibration; 
-	float32_t swr_meter_Rtop; 
-	float32_t swr_meter_Rbottom; 
-	float32_t swr_meter_fwd_diff; 
-	float32_t swr_meter_ref_diff; 
-	float32_t swr_meter_diode_drop; 
-	float32_t swr_meter_trans_rate; 
-	float32_t swr_meter_ref_sub; 
+extern struct t_CALIBRATE
+{
+	uint8_t rf_out_power[32];
+	float32_t adc_calibration;
+	float32_t swr_meter_Rtop;
+	float32_t swr_meter_Rbottom;
+	float32_t swr_meter_fwd_diff;
+	float32_t swr_meter_ref_diff;
+	float32_t swr_meter_diode_drop;
+	float32_t swr_meter_trans_rate;
+	float32_t swr_meter_ref_sub;
 } CALIBRATE;
 
-typedef struct {
+typedef struct
+{
 	uint32_t Freq;
 	uint8_t Mode;
 	uint16_t Filter_Width;
 } VFO;
 
-extern struct TRX_SETTINGS {
+extern struct TRX_SETTINGS
+{
 	uint8_t clean_flash;
 	bool current_vfo; // false - A; true - B
 	VFO VFO_A;
@@ -114,7 +118,7 @@ extern struct TRX_SETTINGS {
 	uint16_t SSB_Filter;
 	uint16_t FM_Filter;
 	uint8_t RF_Power;
-	uint8_t	FM_SQL_threshold;
+	uint8_t FM_SQL_threshold;
 	uint32_t TRX_Saved_freq[BANDS_COUNT];
 	uint8_t FFT_Zoom;
 	bool AutoGain;
@@ -124,7 +128,7 @@ extern struct TRX_SETTINGS {
 	//system settings
 	bool FFT_Enabled;
 	uint16_t CW_GENERATOR_SHIFT_HZ;
-	uint8_t	ENCODER_SLOW_RATE;
+	uint8_t ENCODER_SLOW_RATE;
 	uint8_t LCD_Brightness;
 	uint8_t Standby_Time;
 	uint16_t Key_timeout;

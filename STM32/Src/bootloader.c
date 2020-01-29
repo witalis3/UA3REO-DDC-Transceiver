@@ -22,8 +22,9 @@ void checkBootloaderButton(void)
  *
  * Call function when you want to jump to system memory
  */
-void JumpToBootloader(void) {
-	void(*SysMemBootJump)(void);
+void JumpToBootloader(void)
+{
+	void (*SysMemBootJump)(void);
 	/**
 	 * Step: Set system memory address.
 	 *       For STM32F429, system memory is on 0x1FFF 0000

@@ -17,11 +17,12 @@ typedef enum
 	SYSMENU_MENU = 0x09U,
 } SystemMenuType;
 
-struct sysmenu_item_handler {
+struct sysmenu_item_handler
+{
 	char *title;
 	SystemMenuType type;
 	uint32_t *value;
-	void(*menuHandler) (int8_t direction);
+	void (*menuHandler)(int8_t direction);
 };
 
 extern void drawSystemMenu(bool draw_background);

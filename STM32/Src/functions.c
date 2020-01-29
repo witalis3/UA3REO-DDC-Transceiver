@@ -61,26 +61,26 @@ void readHalfFromCircleUSBBuffer(int16_t *source, int32_t *dest, uint16_t index,
 	}
 }
 
-void sendToDebug_str(char* data)
+void sendToDebug_str(char *data)
 {
 	printf("%s", data);
-	DEBUG_Transmit_FIFO((uint8_t*)data, strlen(data));
-	HAL_UART_Transmit(&huart1, (uint8_t*)data, strlen(data), 1000);
+	DEBUG_Transmit_FIFO((uint8_t *)data, strlen(data));
+	HAL_UART_Transmit(&huart1, (uint8_t *)data, strlen(data), 1000);
 }
 
-void sendToDebug_strln(char* data)
+void sendToDebug_strln(char *data)
 {
 	sendToDebug_str(data);
 	sendToDebug_newline();
 }
 
-void sendToDebug_str2(char* data1, char* data2)
+void sendToDebug_str2(char *data1, char *data2)
 {
 	sendToDebug_str(data1);
 	sendToDebug_str(data2);
 }
 
-void sendToDebug_str3(char* data1, char* data2, char* data3)
+void sendToDebug_str3(char *data1, char *data2, char *data3)
 {
 	sendToDebug_str(data1);
 	sendToDebug_str(data2);
@@ -94,7 +94,7 @@ void sendToDebug_newline(void)
 
 void sendToDebug_flush(void)
 {
-	uint16_t tryes=0;
+	uint16_t tryes = 0;
 	while (!DEBUG_Transmit_FIFO_Events() && tryes < 100)
 	{
 		HAL_IWDG_Refresh(&hiwdg1);
@@ -193,15 +193,18 @@ void delay_us(uint32_t us)
 	DWT->CYCCNT = 0;
 	//запускаем счётчик
 	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
-	while (DWT->CYCCNT < us_count_tick);
+	while (DWT->CYCCNT < us_count_tick)
+		;
 	//останавливаем счётчик
 	DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;
 }
 
 bool beetween(float32_t a, float32_t b, float32_t val)
 {
-	if (a <= val && val <= b) return true;
-	if (b <= val && val <= a) return true;
+	if (a <= val && val <= b)
+		return true;
+	if (b <= val && val <= a)
+		return true;
 	return false;
 }
 
@@ -234,7 +237,7 @@ uint32_t getPhraseFromFrequency(uint32_t freq) //высчитываем част
 	return res;
 }
 
-void addSymbols(char* dest, char* str, uint8_t length, char* symbol, bool toEnd) //добавляем нули
+void addSymbols(char *dest, char *str, uint8_t length, char *symbol, bool toEnd) //добавляем нули
 {
 	char res[50] = "";
 	strcpy(res, str);
@@ -253,7 +256,8 @@ void addSymbols(char* dest, char* str, uint8_t length, char* symbol, bool toEnd)
 	strcpy(dest, res);
 }
 
-float32_t log10f_fast(float32_t X) {
+float32_t log10f_fast(float32_t X)
+{
 	float32_t Y, F;
 	int E;
 	F = frexpf(fabsf(X), &E);
@@ -265,7 +269,7 @@ float32_t log10f_fast(float32_t X) {
 	Y *= F;
 	Y += -3.13396450166353f;
 	Y += E;
-	return(Y * 0.3010299956639812f);
+	return (Y * 0.3010299956639812f);
 }
 
 float32_t db2rateV(float32_t i) //из децибелл в разы (для напряжения)
@@ -280,30 +284,33 @@ float32_t db2rateP(float32_t i) //из децибелл в разы (для мо
 
 float32_t rate2dbV(float32_t i) //из разов в децибеллы (для напряжения)
 {
-	return 20*log10f_fast(i);
+	return 20 * log10f_fast(i);
 }
 
 float32_t rate2dbP(float32_t i) //из разов в децибеллы (для мощности)
 {
-	return 10*log10f_fast(i);
+	return 10 * log10f_fast(i);
 }
 
 #define VOLUME_LOW_DB (-20.0f)
-#define VOLUME_EPSILON powf(10.0f,(VOLUME_LOW_DB/20.0f))
+#define VOLUME_EPSILON powf(10.0f, (VOLUME_LOW_DB / 20.0f))
 float32_t volume2rate(float32_t i) //из положения ручки громкости в усиление
 {
-	if(i<0.01f) return 0.0f;
-	return powf(VOLUME_EPSILON, (1.0f-i));
+	if (i < 0.01f)
+		return 0.0f;
+	return powf(VOLUME_EPSILON, (1.0f - i));
 }
 
 void shiftTextLeft(char *string, int16_t shiftLength)
 {
 	int16_t i, size = strlen(string);
-	if (shiftLength >= size) {
+	if (shiftLength >= size)
+	{
 		memset(string, '\0', size);
 		return;
 	}
-	for (i = 0; i < size - shiftLength; i++) {
+	for (i = 0; i < size - shiftLength; i++)
+	{
 		string[i] = string[i + shiftLength];
 		string[i + shiftLength] = '\0';
 	}
@@ -311,28 +318,29 @@ void shiftTextLeft(char *string, int16_t shiftLength)
 
 float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 {
-	if(freq>MAX_TX_FREQ_HZ) return 0.0f;
+	if (freq > MAX_TX_FREQ_HZ)
+		return 0.0f;
 	const uint8_t calibration_points = 31;
 	uint8_t mhz_left = 0;
 	uint8_t mhz_right = calibration_points;
-	for(uint8_t i=0;i<=calibration_points;i++)
-		if((i * 1000000) < freq)
-			mhz_left=i;
-	for(uint8_t i=calibration_points;i>0;i--)
-		if((i * 1000000) >= freq)
-			mhz_right=i;
-	
+	for (uint8_t i = 0; i <= calibration_points; i++)
+		if ((i * 1000000) < freq)
+			mhz_left = i;
+	for (uint8_t i = calibration_points; i > 0; i--)
+		if ((i * 1000000) >= freq)
+			mhz_right = i;
+
 	float32_t power_left = (float32_t)CALIBRATE.rf_out_power[mhz_left] / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 	float32_t power_right = (float32_t)CALIBRATE.rf_out_power[mhz_right] / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 	float32_t freq_point = (freq - (mhz_left * 1000000.0f)) / 1000000.0f;
 	float32_t ret = (power_left * (1.0f - freq_point)) + (power_right * (freq_point));
-		
+
 	//sendToDebug_float32(power_left, false);
 	//sendToDebug_float32(power_right, false);
 	//sendToDebug_float32(freq_point, false);
 	//sendToDebug_float32(ret, false);
 	//sendToDebug_newline();
-		
+
 	return ret;
 }
 

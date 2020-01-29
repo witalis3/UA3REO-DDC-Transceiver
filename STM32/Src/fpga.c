@@ -19,12 +19,12 @@ static GPIO_InitTypeDef FPGA_GPIO_InitStruct;
 static bool FPGA_bus_direction = false; //false - OUT; true - in
 uint16_t FPGA_Audio_Buffer_Index = 0;
 bool FPGA_Audio_Buffer_State = true; //true - compleate ; false - half
-float32_t FPGA_Audio_Buffer_SPEC_Q[FPGA_AUDIO_BUFFER_SIZE] = { 0 };
-float32_t FPGA_Audio_Buffer_SPEC_I[FPGA_AUDIO_BUFFER_SIZE] = { 0 };
-float32_t FPGA_Audio_Buffer_VOICE_Q[FPGA_AUDIO_BUFFER_SIZE] = { 0 };
-float32_t FPGA_Audio_Buffer_VOICE_I[FPGA_AUDIO_BUFFER_SIZE] = { 0 };
-float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE] = { 0 };
-float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE] = { 0 };
+float32_t FPGA_Audio_Buffer_SPEC_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
+float32_t FPGA_Audio_Buffer_SPEC_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
+float32_t FPGA_Audio_Buffer_VOICE_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
+float32_t FPGA_Audio_Buffer_VOICE_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
+float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
+float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
 
 uint8_t FPGA_readPacket(void);
 void FPGA_writePacket(uint8_t packet);
@@ -89,7 +89,7 @@ void FPGA_test_bus(void) //проверка шины
 		FPGA_clockFall();
 	}
 	FPGA_busy = false;
-	if(!err)
+	if (!err)
 		sendToDebug_strln("[OK] FPGA inited");
 }
 
@@ -132,8 +132,10 @@ void FPGA_fpgadata_stuffclock(void)
 	//STAGE 1
 	//out
 	FPGA_fpgadata_out_tmp8 = 0;
-	if (FPGA_NeedSendParams) FPGA_fpgadata_out_tmp8 = 1;
-	else if (FPGA_NeedGetParams)  FPGA_fpgadata_out_tmp8 = 2;
+	if (FPGA_NeedSendParams)
+		FPGA_fpgadata_out_tmp8 = 1;
+	else if (FPGA_NeedGetParams)
+		FPGA_fpgadata_out_tmp8 = 2;
 
 	if (FPGA_fpgadata_out_tmp8 != 0)
 	{
@@ -145,8 +147,16 @@ void FPGA_fpgadata_stuffclock(void)
 		//clock
 		GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
 
-		if (FPGA_NeedSendParams) { FPGA_fpgadata_sendparam(); FPGA_NeedSendParams = false; }
-		else if (FPGA_NeedGetParams) { FPGA_fpgadata_getparam(); FPGA_NeedGetParams = false; }
+		if (FPGA_NeedSendParams)
+		{
+			FPGA_fpgadata_sendparam();
+			FPGA_NeedSendParams = false;
+		}
+		else if (FPGA_NeedGetParams)
+		{
+			FPGA_fpgadata_getparam();
+			FPGA_NeedGetParams = false;
+		}
 	}
 	FPGA_busy = false;
 }
@@ -155,13 +165,15 @@ void FPGA_fpgadata_iqclock(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
 	FPGA_busy = true;
-	VFO* current_vfo = CurrentVFO();
+	VFO *current_vfo = CurrentVFO();
 	//обмен данными
 
 	//STAGE 1
 	//out
-	if (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK) FPGA_fpgadata_out_tmp8 = 3;
-	else FPGA_fpgadata_out_tmp8 = 4;
+	if (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK)
+		FPGA_fpgadata_out_tmp8 = 3;
+	else
+		FPGA_fpgadata_out_tmp8 = 4;
 
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	//clock
@@ -171,8 +183,10 @@ void FPGA_fpgadata_iqclock(void)
 	//clock
 	GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
 
-	if (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK) FPGA_fpgadata_sendiq();
-	else FPGA_fpgadata_getiq();
+	if (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK)
+		FPGA_fpgadata_sendiq();
+	else
+		FPGA_fpgadata_getiq();
 
 	FPGA_busy = false;
 }
@@ -180,7 +194,7 @@ void FPGA_fpgadata_iqclock(void)
 inline void FPGA_fpgadata_sendparam(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
-	VFO* current_vfo=CurrentVFO();
+	VFO *current_vfo = CurrentVFO();
 	uint32_t TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT);
 	if (!TRX_on_TX())
 	{
@@ -199,10 +213,12 @@ inline void FPGA_fpgadata_sendparam(void)
 	//STAGE 2
 	//out PTT+PREAMP
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK));
-	if (!TRX_on_TX()) bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX.Preamp);
+	if (!TRX_on_TX())
+		bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX.Preamp);
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_SHDN);
-	if (TRX_on_TX()) bitWrite(FPGA_fpgadata_out_tmp8, 3, true);
+	if (TRX_on_TX())
+		bitWrite(FPGA_fpgadata_out_tmp8, 3, true);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_RAND);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX.ADC_PGA);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
@@ -230,14 +246,14 @@ inline void FPGA_fpgadata_sendparam(void)
 	//clock
 	FPGA_clockRise();
 	FPGA_clockFall();
-	
+
 	//STAGE 6
 	//OUT CIC-GAIN
 	FPGA_writePacket(TRX.CIC_GAINER_val);
 	//clock
 	FPGA_clockRise();
 	FPGA_clockFall();
-	
+
 	//STAGE 7
 	//OUT CICCOMP-GAIN
 	FPGA_writePacket(TRX.CICFIR_GAINER_val);
@@ -251,7 +267,7 @@ inline void FPGA_fpgadata_sendparam(void)
 	//clock
 	FPGA_clockRise();
 	FPGA_clockFall();
-	
+
 	//STAGE 9
 	//OUT DAC-GAIN
 	FPGA_writePacket(TRX.DAC_GAINER_val);
@@ -328,12 +344,14 @@ inline void FPGA_fpgadata_getiq(void)
 
 	if (TRX_IQ_swap)
 	{
-		if (NeedFFTInputBuffer) FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_tmp16;
+		if (NeedFFTInputBuffer)
+			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_tmp16;
 		FPGA_Audio_Buffer_SPEC_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp16;
 	}
 	else
 	{
-		if (NeedFFTInputBuffer) FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_tmp16;
+		if (NeedFFTInputBuffer)
+			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_tmp16;
 		FPGA_Audio_Buffer_SPEC_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp16;
 	}
 	//clock
@@ -355,12 +373,14 @@ inline void FPGA_fpgadata_getiq(void)
 
 	if (TRX_IQ_swap)
 	{
-		if (NeedFFTInputBuffer) FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_tmp16;
+		if (NeedFFTInputBuffer)
+			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_tmp16;
 		FPGA_Audio_Buffer_SPEC_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp16;
 	}
 	else
 	{
-		if (NeedFFTInputBuffer) FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_tmp16;
+		if (NeedFFTInputBuffer)
+			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_tmp16;
 		FPGA_Audio_Buffer_SPEC_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp16;
 	}
 
@@ -409,7 +429,8 @@ inline void FPGA_fpgadata_getiq(void)
 		FPGA_Audio_Buffer_VOICE_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp16;
 
 	FPGA_Audio_Buffer_Index++;
-	if (FPGA_Audio_Buffer_Index == FPGA_AUDIO_BUFFER_SIZE) FPGA_Audio_Buffer_Index = 0;
+	if (FPGA_Audio_Buffer_Index == FPGA_AUDIO_BUFFER_SIZE)
+		FPGA_Audio_Buffer_Index = 0;
 
 	if (NeedFFTInputBuffer)
 	{

@@ -7,7 +7,7 @@
 #include "audio_processor.h"
 #include "settings.h"
 
-#define HALF_TX_AMPLITUDE MAX_TX_AMPLITUDE/2.0f
+#define HALF_TX_AMPLITUDE (MAX_TX_AMPLITUDE / 2.0f)
 
 extern void FPGA_Init(void);
 extern void FPGA_fpgadata_iqclock(void);

@@ -6,10 +6,10 @@
 #include "settings.h"
 
 extern void TRX_Init(void);
-extern void TRX_setFrequency(int32_t _freq, VFO* vfo);
-extern uint32_t TRX_getFrequency(VFO* vfo);
-extern void TRX_setMode(uint8_t _mode, VFO* vfo);
-extern uint8_t TRX_getMode(VFO* vfo);
+extern void TRX_setFrequency(int32_t _freq, VFO *vfo);
+extern uint32_t TRX_getFrequency(VFO *vfo);
+extern void TRX_setMode(uint8_t _mode, VFO *vfo);
+extern uint8_t TRX_getMode(VFO *vfo);
 extern void TRX_ptt_change(void);
 extern void TRX_key_change(void);
 extern bool TRX_on_TX(void);

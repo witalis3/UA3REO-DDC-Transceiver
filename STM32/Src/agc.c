@@ -23,31 +23,33 @@ void DoAGC(float32_t *agcBuffer, int16_t blockSize)
 	float32_t AGC_RX_magnitude = 0;
 	float32_t full_scale_rate = 0;
 	float32_t AGC_RX_dbFS = 0;
-	
+
 	//считаем магнитуду
 	arm_power_f32(agcBuffer, blockSize, &AGC_RX_magnitude);
 	AGC_RX_magnitude = AGC_RX_magnitude / blockSize;
-	if (AGC_RX_magnitude == 0.0f) AGC_RX_magnitude = 0.001f;
-	full_scale_rate = AGC_RX_magnitude / (FPGA_BUS_FULL_SCALE_POW-1.0f);
+	if (AGC_RX_magnitude == 0.0f)
+		AGC_RX_magnitude = 0.001f;
+	full_scale_rate = AGC_RX_magnitude / (FPGA_BUS_FULL_SCALE_POW - 1.0f);
 	AGC_RX_dbFS = rate2dbP(full_scale_rate);
-	
+
 	//двигаем усиление на шаг
-	float32_t diff = (AGC_OPTIMAL_THRESHOLD - (AGC_RX_dbFS+AGC_need_gain_db));
-	if(diff>0)
+	float32_t diff = (AGC_OPTIMAL_THRESHOLD - (AGC_RX_dbFS + AGC_need_gain_db));
+	if (diff > 0)
 		AGC_need_gain_db += diff / RX_AGC_STEPSIZE_UP;
 	else
 		AGC_need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
-	
+
 	//перегрузка (клиппинг), резко снижаем усиление
-	if ((AGC_RX_dbFS+AGC_need_gain_db) > AGC_CLIP_THRESHOLD)
+	if ((AGC_RX_dbFS + AGC_need_gain_db) > AGC_CLIP_THRESHOLD)
 	{
-		AGC_need_gain_db = AGC_OPTIMAL_THRESHOLD-AGC_RX_dbFS;
+		AGC_need_gain_db = AGC_OPTIMAL_THRESHOLD - AGC_RX_dbFS;
 		//sendToDebug_str("C");
 	}
-	
+
 	//AGC выключен, ничего не регулируем
-	if (!TRX.AGC) AGC_need_gain_db = 1.0f;
-		
+	if (!TRX.AGC)
+		AGC_need_gain_db = 1.0f;
+
 	//применяем усиление
 	if (AGC_need_gain_db_old != AGC_need_gain_db) //усиление изменилось
 	{

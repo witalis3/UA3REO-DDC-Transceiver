@@ -6,7 +6,8 @@
 
 #define MCP3008_THRESHOLD 100
 
-typedef struct {
+typedef struct
+{
 	//MCP3008 - 1
 	bool key_ab;
 	bool key_ab_prev;
@@ -46,8 +47,8 @@ typedef struct {
 	uint32_t key_menu_starttime;
 	bool key_menu_afterhold;
 	uint16_t key_afgain; //10-bit
-	uint16_t key_shift; //10-bit
-	//
+	uint16_t key_shift;  //10-bit
+						 //
 } PERIPH_FrontPanel_Type;
 
 extern void PERIPH_ENCODER_checkRotate(void);
@@ -57,7 +58,7 @@ extern void PERIPH_RF_UNIT_UpdateState(bool clean);
 extern void PERIPH_ProcessFrontPanel(void);
 extern void PERIPH_ProcessSWRMeter(void);
 extern void PERIPH_InitFrontPanel(void);
-extern bool PERIPH_SPI_Transmit(uint8_t* out_data, uint8_t* in_data, uint8_t count, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN);
+extern bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN);
 
 volatile extern PERIPH_FrontPanel_Type PERIPH_FrontPanel;
 

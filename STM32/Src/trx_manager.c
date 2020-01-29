@@ -29,7 +29,7 @@ volatile int16_t TRX_RX_dBm = -100;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
 volatile uint8_t TRX_Time_InActive = 0; //секунд бездействия, используется для спящего режима
-volatile uint8_t TRX_Fan_Timeout = 0; //секунд, сколько ещё осталось крутить вентилятор
+volatile uint8_t TRX_Fan_Timeout = 0;   //секунд, сколько ещё осталось крутить вентилятор
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile bool TRX_SNMP_Synced = false;
@@ -38,10 +38,10 @@ volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
 volatile float32_t TRX_SWR_forward = 0;
 volatile float32_t TRX_SWR_backward = 0;
 volatile float32_t TRX_SWR = 0;
-static uint8_t autogain_wait_reaction = 0; //таймер ожидания реакции от смены режимов ATT/PRE
-static uint8_t autogain_stage = 0; //этап отработки актокорректировщика усиления
+static uint8_t autogain_wait_reaction = 0;   //таймер ожидания реакции от смены режимов ATT/PRE
+static uint8_t autogain_stage = 0;			 //этап отработки актокорректировщика усиления
 static uint32_t KEYER_symbol_start_time = 0; //время старта символа автоматического ключа
-static bool KEYER_symbol_status = false; //статус (сигнал или период) символа автоматического ключа
+static bool KEYER_symbol_status = false;	 //статус (сигнал или период) символа автоматического ключа
 
 static uint8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
@@ -50,7 +50,8 @@ static void TRX_Start_TXRX(void);
 
 bool TRX_on_TX(void)
 {
-	if (TRX_ptt_hard || TRX_ptt_cat || TRX_Tune || TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0) return true;
+	if (TRX_ptt_hard || TRX_ptt_cat || TRX_Tune || TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0)
+		return true;
 	return false;
 }
 
@@ -73,7 +74,7 @@ void TRX_Restart_Mode()
 			TRX_Start_TXRX();
 		else
 		{
-			if(TRX.CLAR)
+			if (TRX.CLAR)
 			{
 				TRX.current_vfo = !TRX.current_vfo;
 				LCD_UpdateQuery.FreqInfo = true;
@@ -84,7 +85,7 @@ void TRX_Restart_Mode()
 	}
 	else
 	{
-		if(TRX.CLAR)
+		if (TRX.CLAR)
 		{
 			TRX.current_vfo = !TRX.current_vfo;
 			LCD_UpdateQuery.FreqInfo = true;
@@ -97,7 +98,8 @@ void TRX_Restart_Mode()
 
 static void TRX_Start_RX()
 {
-	if(TRX_TXRXMode==1) return;
+	if (TRX_TXRXMode == 1)
+		return;
 	//sendToDebug_str("RX MODE\r\n");
 	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
@@ -111,7 +113,8 @@ static void TRX_Start_RX()
 
 static void TRX_Start_TX()
 {
-	if(TRX_TXRXMode==2) return;
+	if (TRX_TXRXMode == 2)
+		return;
 	//sendToDebug_str("TX MODE\r\n");
 	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
@@ -123,7 +126,8 @@ static void TRX_Start_TX()
 
 static void TRX_Start_TXRX()
 {
-	if(TRX_TXRXMode==3) return;
+	if (TRX_TXRXMode == 3)
+		return;
 	//sendToDebug_str("TXRX MODE\r\n");
 	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
@@ -134,7 +138,8 @@ static void TRX_Start_TXRX()
 
 void TRX_ptt_change(void)
 {
-	if (TRX_Tune) return;
+	if (TRX_Tune)
+		return;
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
 	if (TRX_ptt_hard != TRX_new_ptt_hard)
 	{
@@ -156,14 +161,18 @@ void TRX_ptt_change(void)
 
 void TRX_key_change(void)
 {
-	if (TRX_Tune) return;
-	if (CurrentVFO()->Mode!=TRX_MODE_CW_L && CurrentVFO()->Mode!=TRX_MODE_CW_U) return;
+	if (TRX_Tune)
+		return;
+	if (CurrentVFO()->Mode != TRX_MODE_CW_L && CurrentVFO()->Mode != TRX_MODE_CW_U)
+		return;
 	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
 	if (TRX_key_dot_hard != TRX_new_key_dot_hard)
 	{
 		TRX_key_dot_hard = TRX_new_key_dot_hard;
-		if (TRX_key_dot_hard == true) TRX_Key_Timeout_est = TRX.Key_timeout;
-		if (TRX.Key_timeout == 0) TRX_ptt_cat = TRX_key_dot_hard;
+		if (TRX_key_dot_hard == true)
+			TRX_Key_Timeout_est = TRX.Key_timeout;
+		if (TRX.Key_timeout == 0)
+			TRX_ptt_cat = TRX_key_dot_hard;
 		KEYER_symbol_start_time = 0;
 		KEYER_symbol_status = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -174,8 +183,10 @@ void TRX_key_change(void)
 	if (TRX_key_dash_hard != TRX_new_key_dash_hard)
 	{
 		TRX_key_dash_hard = TRX_new_key_dash_hard;
-		if (TRX_key_dash_hard == true) TRX_Key_Timeout_est = TRX.Key_timeout;
-		if (TRX.Key_timeout == 0) TRX_ptt_cat = TRX_key_dash_hard;
+		if (TRX_key_dash_hard == true)
+			TRX_Key_Timeout_est = TRX.Key_timeout;
+		if (TRX.Key_timeout == 0)
+			TRX_ptt_cat = TRX_key_dash_hard;
 		KEYER_symbol_start_time = 0;
 		KEYER_symbol_status = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -186,22 +197,27 @@ void TRX_key_change(void)
 	{
 		TRX_Time_InActive = 0;
 		TRX_old_key_serial = TRX_key_serial;
-		if (TRX_key_serial == true) TRX_Key_Timeout_est = TRX.Key_timeout;
-		if (TRX.Key_timeout == 0) TRX_ptt_cat = TRX_key_serial;
+		if (TRX_key_serial == true)
+			TRX_Key_Timeout_est = TRX.Key_timeout;
+		if (TRX.Key_timeout == 0)
+			TRX_ptt_cat = TRX_key_serial;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
 	}
 }
 
-void TRX_setFrequency(int32_t _freq, VFO* vfo)
+void TRX_setFrequency(int32_t _freq, VFO *vfo)
 {
-	if (_freq < 1) return;
-	if (_freq >= MAX_FREQ_HZ) _freq = MAX_FREQ_HZ;
+	if (_freq < 1)
+		return;
+	if (_freq >= MAX_FREQ_HZ)
+		_freq = MAX_FREQ_HZ;
 
 	vfo->Freq = _freq;
 	int8_t bandFromFreq = getBandFromFreq(_freq, false);
-	if (bandFromFreq >= 0) TRX.TRX_Saved_freq[bandFromFreq] = _freq;
+	if (bandFromFreq >= 0)
+		TRX.TRX_Saved_freq[bandFromFreq] = _freq;
 	if (TRX.BandMapEnabled)
 	{
 		uint8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
@@ -216,19 +232,19 @@ void TRX_setFrequency(int32_t _freq, VFO* vfo)
 	NeedFFTInputBuffer = true;
 }
 
-uint32_t TRX_getFrequency(VFO* vfo)
+uint32_t TRX_getFrequency(VFO *vfo)
 {
 	return vfo->Freq;
 }
 
-void TRX_setMode(uint8_t _mode, VFO* vfo)
+void TRX_setMode(uint8_t _mode, VFO *vfo)
 {
-	if(vfo->Mode == TRX_MODE_LOOPBACK || _mode == TRX_MODE_LOOPBACK)
+	if (vfo->Mode == TRX_MODE_LOOPBACK || _mode == TRX_MODE_LOOPBACK)
 		LCD_UpdateQuery.StatusInfoGUI = true;
 	vfo->Mode = _mode;
 	if (vfo->Mode == TRX_MODE_LOOPBACK)
 		TRX_Start_TXRX();
-	
+
 	switch (_mode)
 	{
 	case TRX_MODE_LSB:
@@ -253,7 +269,7 @@ void TRX_setMode(uint8_t _mode, VFO* vfo)
 	NeedSaveSettings = true;
 }
 
-uint8_t TRX_getMode(VFO* vfo)
+uint8_t TRX_getMode(VFO *vfo)
 {
 	return vfo->Mode;
 }
@@ -273,10 +289,10 @@ void TRX_DoAutoGain(void)
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
-		//sendToDebug_str("AUTOGAIN LPF+BPF+ATT\r\n");
+			//sendToDebug_str("AUTOGAIN LPF+BPF+ATT\r\n");
 			break;
-		case 1: //сменили состояние, обрабатываем результаты
-			if ((TRX_ADC_MAXAMPLITUDE*db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
+		case 1:																		 //сменили состояние, обрабатываем результаты
+			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
@@ -292,11 +308,12 @@ void TRX_DoAutoGain(void)
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
-		//sendToDebug_str("AUTOGAIN LPF+BPF\r\n");
+			//sendToDebug_str("AUTOGAIN LPF+BPF\r\n");
 			break;
 		case 3: //сменили состояние, обрабатываем результаты
-			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE) autogain_stage -= 3; //слишком большое усиление, возвращаемся на этап назад
-			if ((TRX_ADC_MAXAMPLITUDE*db2rateV(PREAMP_GAIN_DB) / db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем включить АТТ+PREAMP - переходим на следующий этап (+20dB-12dB)
+			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE)
+				autogain_stage -= 3;																			//слишком большое усиление, возвращаемся на этап назад
+			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(PREAMP_GAIN_DB) / db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем включить АТТ+PREAMP - переходим на следующий этап (+20dB-12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
@@ -312,11 +329,12 @@ void TRX_DoAutoGain(void)
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
-		//sendToDebug_str("AUTOGAIN LPF+BPF+PREAMP+ATT\r\n");
+			//sendToDebug_str("AUTOGAIN LPF+BPF+PREAMP+ATT\r\n");
 			break;
 		case 5: //сменили состояние, обрабатываем результаты
-			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE) autogain_stage -= 3; //слишком большое усиление, возвращаемся на этап назад
-			if ((TRX_ADC_MAXAMPLITUDE*db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
+			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE)
+				autogain_stage -= 3;												 //слишком большое усиление, возвращаемся на этап назад
+			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
@@ -332,10 +350,11 @@ void TRX_DoAutoGain(void)
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
 			autogain_wait_reaction = 0;
-		//sendToDebug_str("AUTOGAIN LPF+BPF+PREAMP\r\n");
+			//sendToDebug_str("AUTOGAIN LPF+BPF+PREAMP\r\n");
 			break;
 		case 7: //сменили состояние, обрабатываем результаты
-			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE) autogain_stage -= 3; //слишком большое усиление, возвращаемся на этап назад
+			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE)
+				autogain_stage -= 3; //слишком большое усиление, возвращаемся на этап назад
 			break;
 		default:
 			autogain_stage = 0;
@@ -349,47 +368,48 @@ void TRX_DBMCalculate(void)
 	float32_t s_meter_power = Processor_RX_Power_value * CALIBRATE.adc_calibration; // калибровка АЦП
 	Processor_RX_Power_value = 0;
 	float32_t s_meter_rate = s_meter_power / (float32_t)FPGA_BUS_FULL_SCALE_POW;
-	float32_t ADC_Vrms_Value = ADC_VREF * s_meter_rate; //получаем значение пик-пик напряжения на входе АЦП в вольтах
+	float32_t ADC_Vrms_Value = ADC_VREF * s_meter_rate;				   //получаем значение пик-пик напряжения на входе АЦП в вольтах
 	float32_t ADC_RF_IN_Value = (ADC_Vrms_Value / ADC_RF_TRANS_RATIO); //Получаем напряжение на антенном входе с учётом трансформатора
-	if (ADC_RF_IN_Value < 0.0000001f) ADC_RF_IN_Value = 0.0000001f;
-	TRX_RX_dBm = 10 * log10f_fast((ADC_RF_IN_Value*ADC_RF_IN_Value) / (50.0f*0.001f)); //получаем значение мощности в dBm для сопротивления 50ом
+	if (ADC_RF_IN_Value < 0.0000001f)
+		ADC_RF_IN_Value = 0.0000001f;
+	TRX_RX_dBm = 10 * log10f_fast((ADC_RF_IN_Value * ADC_RF_IN_Value) / (50.0f * 0.001f)); //получаем значение мощности в dBm для сопротивления 50ом
 }
 
 float32_t TRX_GetALC(void)
 {
-	float32_t res = Processor_TX_MAX_amplitude_OUT/Processor_selected_RFpower_amplitude;
-	if (res>0.99f && res<1.0f)
+	float32_t res = Processor_TX_MAX_amplitude_OUT / Processor_selected_RFpower_amplitude;
+	if (res > 0.99f && res < 1.0f)
 		res = 1.0f;
-	if (res<0.01f)
+	if (res < 0.01f)
 		res = 0.0f;
 	return res;
 }
 
 float32_t TRX_GenerateCWSignal(float32_t power)
 {
-	if(!TRX.CW_KEYER)
+	if (!TRX.CW_KEYER)
 		return power;
-	
+
 	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
 	uint32_t dash_length_ms = dot_length_ms * 3;
 	uint32_t sim_space_length_ms = dot_length_ms;
-	uint32_t curTime=HAL_GetTick();
-		
-	if(TRX_key_dot_hard && (KEYER_symbol_start_time+dot_length_ms)>curTime) //зажата точка
+	uint32_t curTime = HAL_GetTick();
+
+	if (TRX_key_dot_hard && (KEYER_symbol_start_time + dot_length_ms) > curTime) //зажата точка
 	{
-		if(KEYER_symbol_status)
+		if (KEYER_symbol_status)
 			return power;
 		else
 			return 0.0f;
 	}
-	else if(TRX_key_dash_hard && (KEYER_symbol_start_time+dash_length_ms)>curTime) //зажато тире
+	else if (TRX_key_dash_hard && (KEYER_symbol_start_time + dash_length_ms) > curTime) //зажато тире
 	{
-		if(KEYER_symbol_status)
+		if (KEYER_symbol_status)
 			return power;
 		else
 			return 0.0f;
 	}
-	else if((KEYER_symbol_start_time+sim_space_length_ms)<curTime)
+	else if ((KEYER_symbol_start_time + sim_space_length_ms) < curTime)
 	{
 		KEYER_symbol_start_time = curTime;
 		KEYER_symbol_status = !KEYER_symbol_status;

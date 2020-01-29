@@ -154,15 +154,15 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-	/*
+  /*
 	//Enable Memory Protect
 	ARM_MPU_Disable();
 	ARM_MPU_SetRegion(ARM_MPU_RBAR(0, 0x20000000), ARM_MPU_RASR(0, ARM_MPU_AP_RO, 0, 0, 0, 0, 0, ARM_MPU_REGION_SIZE_32B) | 0x1 | (ARM_MPU_REGION_SIZE_32B << 1)); //protect stack
 	ARM_MPU_SetRegion(ARM_MPU_RBAR(1, 0x20000000+0xD00+0x600-32), ARM_MPU_RASR(0, ARM_MPU_AP_RO, 0, 0, 0, 0, 0, ARM_MPU_REGION_SIZE_32B) | 0x1 | (ARM_MPU_REGION_SIZE_32B << 1)); //protect heap
 	ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
 	*/
-	//MX_GPIO_Init();
-	//PERIPH_RF_UNIT_UpdateState(true);
+  //MX_GPIO_Init();
+  //PERIPH_RF_UNIT_UpdateState(true);
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -182,65 +182,66 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
-	HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
-	sendToDebug_str("\r\n----------------------------------\r\n");
-	sendToDebug_strln("UA3REO Transceiver Initialization...");
+  HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
+  sendToDebug_str("\r\n----------------------------------\r\n");
+  sendToDebug_strln("UA3REO Transceiver Initialization...");
 
-	//MX_USB_DevDisconnect();
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	//GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
-	GPIO_InitStruct.Pin = GPIO_PIN_12;
+  //MX_USB_DevDisconnect();
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  //GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
-	HAL_Delay(300);
-	MX_USB_DEVICE_Init();
-	sendToDebug_strln("[OK] USB inited");
-	
-	
-	HAL_TIM_Base_Start(&htim7);
-	HAL_TIM_Base_Start_IT(&htim7);
-	sendToDebug_strln("[OK] FIFO timer TIM7 inited");
-	HAL_RTC_Init(&hrtc);
-	sendToDebug_strln("[OK] Real Time Clock inited");
-	InitProfiler();
-	PERIPH_InitFrontPanel();
-	if(PERIPH_FrontPanel.key_menu) //hard reset
-		LoadSettings(true);
-	else
-		LoadSettings(false);
-	PERIPH_RF_UNIT_UpdateState(false);
-	sendToDebug_strln("[OK] RF-Unit updated");
-	LCD_Init();
-	if(SHOW_LOGO) LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
-	LCD_busy=true;
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
-	sendToDebug_strln("[OK] LCD backlight ON");
-	FFT_Init();
-	HAL_TIM_Base_Start(&htim4);
-	HAL_TIM_Base_Start_IT(&htim4);
-	sendToDebug_strln("[OK] FFT timer TIM4 inited");
-	WM8731_Init();
-	TRX_Init();
-	FPGA_Init();
-	initAudioProcessor();
-	HAL_TIM_Base_Start(&htim5);
-	HAL_TIM_Base_Start_IT(&htim5);
-	sendToDebug_strln("[OK] Audioprocessor timer TIM5 inited");
-	if(SHOW_LOGO) HAL_Delay(1000); //logo wait
-	LCD_busy=false;
-	LCD_redraw();
-	HAL_TIM_Base_Start(&htim6);
-	HAL_TIM_Base_Start_IT(&htim6);
-	sendToDebug_strln("[OK] Misc timer TIM6 inited");
-	__HAL_RCC_USB1_OTG_HS_CLK_SLEEP_ENABLE();
-	__HAL_RCC_USB1_OTG_HS_ULPI_CLK_SLEEP_DISABLE();
-	__HAL_RCC_USB2_OTG_FS_CLK_SLEEP_ENABLE();
+  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
+  HAL_Delay(300);
+  MX_USB_DEVICE_Init();
+  sendToDebug_strln("[OK] USB inited");
+
+  HAL_TIM_Base_Start(&htim7);
+  HAL_TIM_Base_Start_IT(&htim7);
+  sendToDebug_strln("[OK] FIFO timer TIM7 inited");
+  HAL_RTC_Init(&hrtc);
+  sendToDebug_strln("[OK] Real Time Clock inited");
+  InitProfiler();
+  PERIPH_InitFrontPanel();
+  if (PERIPH_FrontPanel.key_menu) //hard reset
+    LoadSettings(true);
+  else
+    LoadSettings(false);
+  PERIPH_RF_UNIT_UpdateState(false);
+  sendToDebug_strln("[OK] RF-Unit updated");
+  LCD_Init();
+  if (SHOW_LOGO)
+    LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
+  LCD_busy = true;
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
+  sendToDebug_strln("[OK] LCD backlight ON");
+  FFT_Init();
+  HAL_TIM_Base_Start(&htim4);
+  HAL_TIM_Base_Start_IT(&htim4);
+  sendToDebug_strln("[OK] FFT timer TIM4 inited");
+  WM8731_Init();
+  TRX_Init();
+  FPGA_Init();
+  initAudioProcessor();
+  HAL_TIM_Base_Start(&htim5);
+  HAL_TIM_Base_Start_IT(&htim5);
+  sendToDebug_strln("[OK] Audioprocessor timer TIM5 inited");
+  if (SHOW_LOGO)
+    HAL_Delay(1000); //logo wait
+  LCD_busy = false;
+  LCD_redraw();
+  HAL_TIM_Base_Start(&htim6);
+  HAL_TIM_Base_Start_IT(&htim6);
+  sendToDebug_strln("[OK] Misc timer TIM6 inited");
+  __HAL_RCC_USB1_OTG_HS_CLK_SLEEP_ENABLE();
+  __HAL_RCC_USB1_OTG_HS_ULPI_CLK_SLEEP_DISABLE();
+  __HAL_RCC_USB2_OTG_FS_CLK_SLEEP_ENABLE();
   __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE();
-	sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
-	sendToDebug_flush();
-	TRX_Inited = true;
+  sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
+  sendToDebug_flush();
+  TRX_Inited = true;
   /* USER CODE END 2 */
  
  
@@ -252,10 +253,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		HAL_IWDG_Refresh(&hiwdg1);
-		cpu_sleep_counter++;
-		__WFI();
-		//__WFE();
+    HAL_IWDG_Refresh(&hiwdg1);
+    cpu_sleep_counter++;
+    __WFI();
+    //__WFE();
   }
   /* USER CODE END 3 */
 }
@@ -1141,6 +1142,8 @@ static void MX_FMC_Init(void)
     Error_Handler( );
   }
 
+  HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
+
   /* USER CODE BEGIN FMC_Init 2 */
 
   /* USER CODE END FMC_Init 2 */
@@ -1320,9 +1323,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-int fputc(int ch, FILE *f) {
+int fputc(int ch, FILE *f)
+{
   ITM_SendChar(ch);
-  return(ch);
+  return (ch);
 }
 /* USER CODE END 4 */
 
@@ -1377,11 +1381,11 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-	/*while (1)
+  /*while (1)
 	{
 		LCD_showError("Error handled", true);
 	}*/
-	//LCD_showError("Error handled", true);
+  //LCD_showError("Error handled", true);
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -1398,7 +1402,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-	printf("Wrong parameters value: file %s on line %d\r\n", file, line);
+  printf("Wrong parameters value: file %s on line %d\r\n", file, line);
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

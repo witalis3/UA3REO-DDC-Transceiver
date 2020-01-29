@@ -3,29 +3,34 @@
 ; *************************************************************
 
 LR_IROM1 0x08000000 0x00200000  {    ; load region size_region
-  ER_IROM1 0x08000000 0x00200000  {  ; load address = execution address
+  ER_IROM1 0x08000000 0x00200000  {  ; load address = execution address ; 2mb FLASH
    *.o (RESET, +First)
    *(InRoot$$Sections)
    .ANY (+RO)
    .ANY (+XO)
   }
-  RW_IRAM1 0x20000000 0x00020000  {  ; RW data
+  ;RO_ITCM 0x00000000 0x00010000  { ;64kb ITCM
+   ;testcode.o (+RO)
+  ;}
+  RW_IRAM1 0x20000000 0x00020000  {  ;128kb DTCM 
    .ANY (+RW +ZI)
   }
-  RW_IRAM2 0x24000000 0x00080000  {
-   .ANY (+RW +ZI)
-  }
-  ;SRAM1 0x30000000 0x30020000  {
-  ; *(.SRAM1)
+  ;RW_IRAM2 0x24000000 0x00080000  { ;512kb AXI SRAM
+   ;.ANY (+RW +ZI)
   ;}
-  ;SRAM2 0x30020000 0x30040000  {
-  ; *(.SRAM2)
+  ;SRAM1 0x30000000 0x00020000  { ;128kb
+   ;*(.SRAM1)
   ;}
-  ;SRAM3 0x30040000 0x30050000  {
-  ; *(.SRAM3)
+  ;SRAM2 0x30020000 0x00020000  { ;128kb
+   ;*(.SRAM2)
   ;}
-  SRAM4 0x38000000 0x30010000  {
+  ;SRAM3 0x30040000 0x00008000  { ;32kb
+   ;*(.SRAM3)
+  ;}
+  SRAM4 0x38000000 0x00010000  { ;64kb D-Cache disabled in MPU
    *(.SRAM4)
   }
+  ;BACKUP_SRAM 0x38800000 0x00001000  { ;4kb Backup SRAM
+   ;*(.BACKUP_SRAM)
+  ;}
 }
-

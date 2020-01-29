@@ -37,7 +37,7 @@ extern DMA_HandleTypeDef hdma_usart6_rx;
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN Define */
- 
+
 /* USER CODE END Define */
 
 /* Private macro -------------------------------------------------------------*/

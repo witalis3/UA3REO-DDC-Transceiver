@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "functions.h"
 
-static PROFILE_INFO profiles[PROFILES_COUNT] = { 0 };
+static PROFILE_INFO profiles[PROFILES_COUNT] = {0};
 
 void InitProfiler()
 {
@@ -21,16 +21,20 @@ void InitProfiler()
 
 void StartProfiler(uint8_t pid)
 {
-	if (pid >= PROFILES_COUNT) return;
-	if (profiles[pid].started) return;
+	if (pid >= PROFILES_COUNT)
+		return;
+	if (profiles[pid].started)
+		return;
 	profiles[pid].started = true;
 	profiles[pid].startTime = HAL_GetTick();
 }
 
 void StartProfilerUs()
 {
-	if (profiles[PROFILES_COUNT - 1].started) return;
-	if (bitRead(DWT->CTRL, DWT_CTRL_CYCCNTENA_Pos)) return;
+	if (profiles[PROFILES_COUNT - 1].started)
+		return;
+	if (bitRead(DWT->CTRL, DWT_CTRL_CYCCNTENA_Pos))
+		return;
 	profiles[PROFILES_COUNT - 1].started = true;
 	profiles[PROFILES_COUNT - 1].startTime = 0;
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
@@ -40,8 +44,10 @@ void StartProfilerUs()
 
 void EndProfiler(uint8_t pid, bool summarize)
 {
-	if (pid >= PROFILES_COUNT) return;
-	if (!profiles[pid].started) return;
+	if (pid >= PROFILES_COUNT)
+		return;
+	if (!profiles[pid].started)
+		return;
 	profiles[pid].endTime = HAL_GetTick();
 	if (summarize)
 		profiles[pid].diff += profiles[pid].endTime - profiles[pid].startTime;
@@ -53,7 +59,8 @@ void EndProfiler(uint8_t pid, bool summarize)
 
 void EndProfilerUs(bool summarize)
 {
-	if (!profiles[PROFILES_COUNT - 1].started) return;
+	if (!profiles[PROFILES_COUNT - 1].started)
+		return;
 	profiles[PROFILES_COUNT - 1].endTime = DWT->CYCCNT / (SystemCoreClock / 1000000);
 	DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;
 	DWT->CYCCNT = 0;
