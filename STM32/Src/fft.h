@@ -8,7 +8,7 @@
 #include "wm8731.h"
 #include "screen_layout.h"
 
-#define FFT_SIZE 512                                          //указываем размер расчитываемого FFT
+#define FFT_SIZE 1024                                          //указываем размер расчитываемого FFT
 #define FFT_DOUBLE_SIZE_BUFFER (FFT_SIZE * 2)                 //Размер буффера для расчёта FFT
 #define FFT_MIN 20.0f                                         //MIN порог сигнала FFT
 #define FFT_STEP_COEFF 10.0f                                  //коэффициент шага автокалибровки сигнала FFT (больше - медленней)

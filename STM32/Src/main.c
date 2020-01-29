@@ -154,15 +154,8 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  /*
-	//Enable Memory Protect
-	ARM_MPU_Disable();
-	ARM_MPU_SetRegion(ARM_MPU_RBAR(0, 0x20000000), ARM_MPU_RASR(0, ARM_MPU_AP_RO, 0, 0, 0, 0, 0, ARM_MPU_REGION_SIZE_32B) | 0x1 | (ARM_MPU_REGION_SIZE_32B << 1)); //protect stack
-	ARM_MPU_SetRegion(ARM_MPU_RBAR(1, 0x20000000+0xD00+0x600-32), ARM_MPU_RASR(0, ARM_MPU_AP_RO, 0, 0, 0, 0, 0, ARM_MPU_REGION_SIZE_32B) | 0x1 | (ARM_MPU_REGION_SIZE_32B << 1)); //protect heap
-	ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
-	*/
-  //MX_GPIO_Init();
-  //PERIPH_RF_UNIT_UpdateState(true);
+  MX_GPIO_Init();
+  PERIPH_RF_UNIT_UpdateState(true);
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -1357,8 +1350,8 @@ void MPU_Config(void)
   */
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER1;
-  MPU_InitStruct.BaseAddress = 0x38000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
+  MPU_InitStruct.BaseAddress = 0x30020000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_128KB;
   MPU_InitStruct.SubRegionDisable = 0x0;
   MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;

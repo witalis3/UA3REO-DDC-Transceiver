@@ -22,15 +22,15 @@
 #define TRX_MODE_NO_TX 11
 #define TRX_MODE_COUNT 12
 
-#define IROM1 __attribute__((section(".ER_IROM1")))          // 2mb FLASH
-#define ITCM __attribute__((section(".RO_ITCM")))            // 64kb ITCM
+//#define IROM1 __attribute__((section(".ER_IROM1")))          // 2mb FLASH
+//#define ITCM __attribute__((section(".RO_ITCM")))            // 64kb ITCM
 #define DTCM __attribute__((section(".IRAM1")))              // 128kb DTCM
 #define IRAM2 __attribute__((section(".IRAM2")))             // 512kb AXI SRAM
-#define SRAM1 __attribute__((section(".SRAM1")))             // 128kb
-#define SRAM2 __attribute__((section(".SRAM2")))             // 128kb
-#define SRAM3 __attribute__((section(".SRAM3")))             // 32kb
-#define SRAM4 __attribute__((section(".SRAM4")))             // 64kb D-Cache disabled in MPU
-#define BACKUP_SRAM __attribute__((section(".BACKUP_SRAM"))) // 4kb Backup SRAM
+//#define SRAM1 __attribute__((section(".SRAM1")))             // 128kb
+#define SRAM2 __attribute__((section(".SRAM2")))             // 128kb D-Cache disabled in MPU
+//#define SRAM3 __attribute__((section(".SRAM3")))             // 32kb
+//#define SRAM4 __attribute__((section(".SRAM4")))             // 64kb
+//#define BACKUP_SRAM __attribute__((section(".BACKUP_SRAM"))) // 4kb Backup SRAM
 
 // Internal Macros
 #define HEX__(n) 0x##n##LU

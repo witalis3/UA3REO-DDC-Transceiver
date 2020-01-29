@@ -36,8 +36,8 @@ static float32_t maxValueFFT_rx = 0;							 //максимальное знач�
 static float32_t maxValueFFT_tx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
 static uint32_t currentFFTFreq = 0;
 static uint16_t color_scale[LAY_FFT_MAX_HEIGHT] = {0};							  //цветовой градиент по высоте FFT
-static SRAM4 uint16_t wtf_buffer[LAY_FFT_WTF_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; //буфер водопада
-static SRAM4 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};					  //временный буффер для перемещения водопада
+static SRAM2 uint16_t wtf_buffer[LAY_FFT_WTF_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; //буфер водопада
+static SRAM2 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};					  //временный буффер для перемещения водопада
 
 //Дециматор для Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;

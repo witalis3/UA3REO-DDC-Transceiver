@@ -128,7 +128,7 @@
 #define LAY_FFT_MAX_HEIGHT 40                                   //указываем максимальную высоту FFT
 #define LAY_FFT_WTF_HEIGHT 70                                   //указываем максимальную высоту водопада
 #define LAY_FFT_BOTTOM_OFFSET (LCD_HEIGHT - LAY_FFT_WTF_HEIGHT) //начало FFT и водопада
-#define LAY_FFT_PRINT_SIZE 320                                  //указываем размер выводимого FFT
+#define LAY_FFT_PRINT_SIZE 480                                  //указываем размер выводимого FFT
 #define LAY_FFT_CWDECODER_OFFSET 17                             //место под текст CW декодера
 
 #define LAY_SYSMENU_X1 5

@@ -3,20 +3,6 @@
 #include "main.h"
 #include "lcd.h"
 
-void checkBootloaderButton(void)
-{
-	/*
-	GPIO_InitTypeDef GPIO_InitStruct;
-	__HAL_RCC_GPIOE_CLK_ENABLE();
-	GPIO_InitStruct.Pin = K1_Pin | K0_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-	//K0 PE4 K1 PE3
-	if (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4) == GPIO_PIN_RESET || HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_3) == GPIO_PIN_RESET) JumpToBootloader(); //Go to bootloader if (K0 PE4) pressed
-	*/
-}
-
 /**
  * Function to perform jump to system memory boot from user application
  *
