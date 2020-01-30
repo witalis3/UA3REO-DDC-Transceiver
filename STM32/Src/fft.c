@@ -21,7 +21,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
-bool NeedFFTInputBuffer = false; //флаг необходимости заполнения буфера с FPGA
+bool NeedFFTInputBuffer = true; //флаг необходимости заполнения буфера с FPGA
 bool FFT_need_fft = true;		 //необходимо подготовить данные для отображения на экран
 bool FFT_buffer_ready = false;   //буффер наполнен, можно обрабатывать
 
