@@ -411,7 +411,7 @@ void FFT_printFFT(void)
 		}
 
 	//разделитель и полоса приёма
-	LCDDriver_drawFastVLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_BOTTOM_OFFSET, -LAY_FFT_MAX_HEIGHT, COLOR_GREEN);
+	//LCDDriver_drawFastVLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_BOTTOM_OFFSET, -LAY_FFT_MAX_HEIGHT, COLOR_GREEN);
 	LCDDriver_drawFastHLine(0, LAY_FFT_BOTTOM_OFFSET - LAY_FFT_MAX_HEIGHT - 2, LAY_FFT_PRINT_SIZE, COLOR_BLACK);
 	uint16_t line_width = 0;
 	line_width = CurrentVFO()->Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom;
