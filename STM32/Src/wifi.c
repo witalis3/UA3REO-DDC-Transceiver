@@ -313,7 +313,7 @@ static void WIFI_SendCommand(char *command)
 	HAL_Delay(WIFI_COMMAND_DELAY);
 	HAL_IWDG_Refresh(&hiwdg1);
 
-#if 0 //DEBUG
+#if 1 //DEBUG
 	sendToDebug_str2("WIFI_DEBUG_S: ", command);
 	sendToDebug_flush();
 #endif
@@ -355,7 +355,7 @@ static bool WIFI_GetLine(void)
 	if (WIFI_Answer_ReadIndex >= WIFI_ANSWER_BUFFER_SIZE)
 		WIFI_Answer_ReadIndex = WIFI_Answer_ReadIndex - WIFI_ANSWER_BUFFER_SIZE;
 
-#if 0 //DEBUG
+#if 1 //DEBUG
 	sendToDebug_str2("WIFI_DEBUG_R: ", WIFI_readed);
 	sendToDebug_flush();
 #endif
