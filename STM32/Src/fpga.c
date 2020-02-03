@@ -19,12 +19,12 @@ static GPIO_InitTypeDef FPGA_GPIO_InitStruct;
 static bool FPGA_bus_direction = false; //false - OUT; true - in
 uint16_t FPGA_Audio_Buffer_Index = 0;
 bool FPGA_Audio_Buffer_State = true; //true - compleate ; false - half
-IRAM2 float32_t FPGA_Audio_Buffer_SPEC_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
-IRAM2 float32_t FPGA_Audio_Buffer_SPEC_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
-IRAM2 float32_t FPGA_Audio_Buffer_VOICE_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
-IRAM2 float32_t FPGA_Audio_Buffer_VOICE_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
-IRAM2 float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
-IRAM2 float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 float32_t FPGA_Audio_Buffer_SPEC_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 float32_t FPGA_Audio_Buffer_SPEC_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 float32_t FPGA_Audio_Buffer_VOICE_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 float32_t FPGA_Audio_Buffer_VOICE_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
 
 uint8_t FPGA_readPacket(void);
 void FPGA_writePacket(uint8_t packet);

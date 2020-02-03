@@ -20,13 +20,13 @@
 volatile uint32_t AUDIOPROC_samples = 0;
 volatile uint32_t AUDIOPROC_TXA_samples = 0;
 volatile uint32_t AUDIOPROC_TXB_samples = 0;
-IRAM2 int32_t Processor_AudioBuffer_A[FPGA_AUDIO_BUFFER_SIZE] = {0};
-IRAM2 int32_t Processor_AudioBuffer_B[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 int32_t Processor_AudioBuffer_A[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 int32_t Processor_AudioBuffer_B[FPGA_AUDIO_BUFFER_SIZE] = {0};
 volatile uint8_t Processor_AudioBuffer_ReadyBuffer = 0;
 volatile bool Processor_NeedRXBuffer = false;
 volatile bool Processor_NeedTXBuffer = false;
-IRAM2 float32_t FPGA_Audio_Buffer_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
-IRAM2 float32_t FPGA_Audio_Buffer_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
+SRAM2 float32_t FPGA_Audio_Buffer_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
+SRAM2 float32_t FPGA_Audio_Buffer_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
 volatile float32_t Processor_AVG_amplitude = 0.0f;		  //средняя амплитуда семплов при прёме
 volatile float32_t Processor_TX_MAX_amplitude_IN = 0.0f;  //средняя амплитуда семплов при передаче (до процессора)
 volatile float32_t Processor_TX_MAX_amplitude_OUT = 0.0f; //средняя амплитуда семплов при передаче (после процессора)
@@ -212,7 +212,6 @@ void processRxAudio(void)
 	//Send to Codec DMA
 	if (TRX_Inited)
 	{
-		SCB_CleanDCache();
 		if (WM8731_DMA_state) //complete
 		{
 			if (Processor_AudioBuffer_ReadyBuffer == 0)
@@ -445,7 +444,6 @@ void processTxAudio(void)
 			Processor_AudioBuffer_A[i * 2 + 1] = Processor_AudioBuffer_A[i * 2]; //right channel
 		}
 
-		SCB_CleanDCache();
 		if (WM8731_DMA_state) //compleate
 		{
 			HAL_DMA_Start(&hdma_memtomem_dma2_stream0, (uint32_t)&Processor_AudioBuffer_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[FPGA_AUDIO_BUFFER_SIZE], FPGA_AUDIO_BUFFER_SIZE);
@@ -458,7 +456,6 @@ void processTxAudio(void)
 			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream1, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			AUDIOPROC_TXB_samples++;
 		}
-		SCB_InvalidateDCache();
 	}
 	else
 	{
@@ -476,7 +473,6 @@ void processTxAudio(void)
 			}
 		}
 		//
-		SCB_CleanDCache();
 		if (FPGA_Audio_Buffer_State) //Send to FPGA DMA
 		{
 			AUDIOPROC_TXA_samples++;
@@ -493,7 +489,6 @@ void processTxAudio(void)
 			HAL_DMA_Start(&hdma_memtomem_dma2_stream1, (uint32_t)&FPGA_Audio_Buffer_Q_tmp[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream1, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
-		SCB_InvalidateDCache();
 	}
 
 	Processor_NeedTXBuffer = false;

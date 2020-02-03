@@ -14,10 +14,8 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 
 void dma_memcpy32(uint32_t dest, uint32_t src, uint32_t len)
 {
-	SCB_CleanDCache();
 	HAL_DMA_Start(&hdma_memtomem_dma2_stream3, src, dest, len);
 	HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3, HAL_DMA_FULL_TRANSFER, 10);
-	SCB_InvalidateDCache();
 }
 
 void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length)

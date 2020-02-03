@@ -575,7 +575,7 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream0);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
-	SCB_InvalidateDCache();
+
   /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 
@@ -589,7 +589,7 @@ void DMA2_Stream1_IRQHandler(void)
   /* USER CODE END DMA2_Stream1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream1);
   /* USER CODE BEGIN DMA2_Stream1_IRQn 1 */
-	SCB_InvalidateDCache();
+
   /* USER CODE END DMA2_Stream1_IRQn 1 */
 }
 
