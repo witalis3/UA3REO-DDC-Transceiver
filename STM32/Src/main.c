@@ -90,7 +90,7 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
-volatile uint32_t cpu_sleep_counter = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -234,6 +234,7 @@ int main(void)
   __HAL_RCC_USB1_OTG_HS_ULPI_CLK_SLEEP_DISABLE();
   __HAL_RCC_USB2_OTG_FS_CLK_SLEEP_ENABLE();
   __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE();
+	CPULOAD_Init();
   sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
   sendToDebug_flush();
   TRX_Inited = true;
@@ -248,11 +249,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_IWDG_Refresh(&hiwdg1);
-		
-    cpu_sleep_counter++;
-		__DSB();
-		__WFI();
+		CPULOAD_GoToSleepMode();
   }
   /* USER CODE END 3 */
 }

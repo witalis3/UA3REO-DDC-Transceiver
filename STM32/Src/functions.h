@@ -56,9 +56,20 @@
         __asm("nop");                            \
     };
 
+typedef struct {
+    float32_t Load;      /*!< CPU load percentage */
+    uint32_t WCNT;   /*!< Number of working cycles in one period. Meant for private use */
+    uint32_t SCNT;   /*!< Number of sleeping cycles in one period. Meant for private use */
+} CPULOAD_t;
+		
 extern uint8_t FPGA_spi_data;
 extern UART_HandleTypeDef huart1;
+extern CPULOAD_t CPU_LOAD;
 
+extern void CPULOAD_Init(void);
+extern void CPULOAD_GoToSleepMode(void);
+extern void CPULOAD_WakeUp(void);
+extern void CPULOAD_Calc(void);
 extern uint32_t getFrequencyFromPhrase(uint32_t phrase);
 extern uint32_t getPhraseFromFrequency(uint32_t freq);
 extern void addSymbols(char *dest, char *str, uint8_t length, char *symbol, bool toEnd);
@@ -76,7 +87,7 @@ extern void sendToDebug_int16(int16_t data, bool _inline);
 extern void sendToDebug_int32(int32_t data, bool _inline);
 extern void sendToDebug_float32(float32_t data, bool _inline);
 extern void sendToDebug_hex(uint8_t data, bool _inline);
-extern void delay_us(uint32_t us);
+//extern void delay_us(uint32_t us);
 extern bool beetween(float32_t a, float32_t b, float32_t val);
 extern float32_t log10f_fast(float32_t X);
 extern void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length);

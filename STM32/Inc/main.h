@@ -29,6 +29,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx_hal.h"
+#include "functions.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -70,7 +71,6 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern SRAM_HandleTypeDef hsram1;
 
-extern volatile uint32_t cpu_sleep_counter;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

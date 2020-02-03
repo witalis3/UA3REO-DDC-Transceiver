@@ -10,7 +10,7 @@
 #include "usbd_debug_if.h"
 #include "usbd_cat_if.h"
 
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
+CPULOAD_t CPU_LOAD = {0};
 
 void dma_memcpy32(uint32_t dest, uint32_t src, uint32_t len)
 {
@@ -179,6 +179,7 @@ void sendToDebug_float32(float32_t data, bool _inline)
 	sendToDebug_str(tmp);
 }
 
+/*
 void delay_us(uint32_t us)
 {
 	if (bitRead(DWT->CTRL, DWT_CTRL_CYCCNTENA_Pos))
@@ -198,6 +199,7 @@ void delay_us(uint32_t us)
 	//останавливаем счётчик
 	DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;
 }
+*/
 
 bool beetween(float32_t a, float32_t b, float32_t val)
 {
@@ -348,4 +350,47 @@ float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, 
 {
 	float32_t ret = amplitude * arm_sin_f32(((float32_t)index / (float32_t)samplerate) * PI * 2.0f * (float32_t)freq);
 	return ret;
+}
+
+void CPULOAD_Init(void)
+{
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+}
+
+static uint32_t CPULOAD_startWorkTime = 0;
+static uint32_t CPULOAD_startSleepTime = 0;
+static uint32_t CPULOAD_WorkingTime = 0;
+static uint32_t CPULOAD_SleepingTime = 0;
+static bool CPULOAD_status = true; // true - wake up ; false - sleep
+void CPULOAD_GoToSleepMode(void) {
+	//if(!CPULOAD_status) return;
+	/* Add to working time */
+	CPULOAD_WorkingTime += DWT->CYCCNT - CPULOAD_startWorkTime;
+	/* Save count cycle time */
+	CPULOAD_startSleepTime = DWT->CYCCNT;
+	CPULOAD_status = false;
+	/* Go to sleep mode Wait for wake up interrupt */
+	__WFI();
+}
+
+void CPULOAD_WakeUp(void)
+{
+	if(CPULOAD_status) return;
+	CPULOAD_status = true;
+	/* Increase number of sleeping time in CPU cycles */
+	CPULOAD_SleepingTime += DWT->CYCCNT - CPULOAD_startSleepTime;
+	/* Save current time to get number of working CPU cycles */
+	CPULOAD_startWorkTime = DWT->CYCCNT;
+}
+
+void CPULOAD_Calc(void)
+{
+	/* Save values */
+	CPU_LOAD.SCNT = CPULOAD_SleepingTime;
+	CPU_LOAD.WCNT = CPULOAD_WorkingTime;
+	CPU_LOAD.Load = ((float)CPULOAD_WorkingTime / (float)(CPULOAD_SleepingTime + CPULOAD_WorkingTime) * 100);
+	
+	/* Reset time */
+	CPULOAD_SleepingTime = 0;
+	CPULOAD_WorkingTime = 0;
 }

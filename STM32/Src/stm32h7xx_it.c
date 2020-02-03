@@ -127,7 +127,7 @@ extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
-
+	
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
 
@@ -204,7 +204,7 @@ void UsageFault_Handler(void)
 void SVC_Handler(void)
 {
   /* USER CODE BEGIN SVCall_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END SVCall_IRQn 0 */
   /* USER CODE BEGIN SVCall_IRQn 1 */
 
@@ -217,7 +217,7 @@ void SVC_Handler(void)
 void DebugMon_Handler(void)
 {
   /* USER CODE BEGIN DebugMonitor_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END DebugMonitor_IRQn 0 */
   /* USER CODE BEGIN DebugMonitor_IRQn 1 */
 
@@ -230,7 +230,7 @@ void DebugMon_Handler(void)
 void PendSV_Handler(void)
 {
   /* USER CODE BEGIN PendSV_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END PendSV_IRQn 0 */
   /* USER CODE BEGIN PendSV_IRQn 1 */
 
@@ -243,7 +243,7 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
@@ -264,7 +264,7 @@ void SysTick_Handler(void)
 void EXTI2_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI2_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END EXTI2_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
   /* USER CODE BEGIN EXTI2_IRQn 1 */
@@ -278,7 +278,7 @@ void EXTI2_IRQHandler(void)
 void EXTI4_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI4_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END EXTI4_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
   /* USER CODE BEGIN EXTI4_IRQn 1 */
@@ -292,7 +292,7 @@ void EXTI4_IRQHandler(void)
 void DMA1_Stream0_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Stream0_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END DMA1_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi3_rx);
   /* USER CODE BEGIN DMA1_Stream0_IRQn 1 */
@@ -306,7 +306,7 @@ void DMA1_Stream0_IRQHandler(void)
 void DMA1_Stream5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Stream5_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END DMA1_Stream5_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi3_tx);
   /* USER CODE BEGIN DMA1_Stream5_IRQn 1 */
@@ -320,7 +320,7 @@ void DMA1_Stream5_IRQHandler(void)
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
@@ -341,7 +341,7 @@ void TIM4_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
@@ -357,7 +357,7 @@ void EXTI15_10_IRQHandler(void)
 void TIM5_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM5_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END TIM5_IRQn 0 */
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
@@ -382,7 +382,8 @@ void TIM5_IRQHandler(void)
 void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
-
+	CPULOAD_WakeUp();
+	HAL_IWDG_Refresh(&hiwdg1);
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
@@ -432,6 +433,8 @@ void TIM6_DAC_IRQHandler(void)
     if (!TRX_SNMP_Synced) //Sync time from internet
       WIFI_GetSNMPTime();
 
+		CPULOAD_Calc(); // Calculate CPU load
+		
     if (true)
     {
       //Save Debug variables
@@ -439,7 +442,6 @@ void TIM6_DAC_IRQHandler(void)
       uint32_t dbg_WM8731_DMA_samples = WM8731_DMA_samples / 2;
       uint32_t dbg_AUDIOPROC_TXA_samples = AUDIOPROC_TXA_samples;
       uint32_t dbg_AUDIOPROC_TXB_samples = AUDIOPROC_TXB_samples;
-      float32_t dbg_cpu_sleep_counter = cpu_sleep_counter / 1000.0f;
       uint32_t dbg_tim5_counter = tim5_counter;
       uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
       float32_t dbg_ALC_need_gain = ALC_need_gain;
@@ -453,6 +455,7 @@ void TIM6_DAC_IRQHandler(void)
       }
       uint32_t dbg_RX_USB_AUDIO_SAMPLES = RX_USB_AUDIO_SAMPLES;
       uint32_t dbg_TX_USB_AUDIO_SAMPLES = TX_USB_AUDIO_SAMPLES;
+			uint32_t cpu_load = CPU_LOAD.Load * 100;
       //Print Debug info
       sendToDebug_str("FPGA Samples: ");
       sendToDebug_uint32(dbg_FPGA_samples, false); //~48000
@@ -462,8 +465,8 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(dbg_AUDIOPROC_TXA_samples, false); //~120
       sendToDebug_str("Audioproc cycles B: ");
       sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples, false); //~120
-      sendToDebug_str("CPU Sleep counter: ");
-      sendToDebug_float32(dbg_cpu_sleep_counter, false);
+			sendToDebug_str("CPU Load: ");
+      sendToDebug_uint32(CPU_LOAD.Load, false);
       sendToDebug_str("TIM6 delay: ");
       sendToDebug_uint32(dbg_tim6_delay, false);
       sendToDebug_str("Audioproc timer counter: ");
@@ -499,7 +502,6 @@ void TIM6_DAC_IRQHandler(void)
     WM8731_DMA_samples = 0;
     RX_USB_AUDIO_SAMPLES = 0;
     TX_USB_AUDIO_SAMPLES = 0;
-    cpu_sleep_counter = 0;
     TRX_Time_InActive++;
     WM8731_Buffer_underrun = false;
     FPGA_Buffer_underrun = false;
@@ -557,7 +559,7 @@ void TIM6_DAC_IRQHandler(void)
 void TIM7_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM7_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
@@ -571,7 +573,7 @@ void TIM7_IRQHandler(void)
 void DMA2_Stream0_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream0);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
@@ -585,7 +587,7 @@ void DMA2_Stream0_IRQHandler(void)
 void DMA2_Stream1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream1_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END DMA2_Stream1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream1);
   /* USER CODE BEGIN DMA2_Stream1_IRQn 1 */
@@ -599,7 +601,7 @@ void DMA2_Stream1_IRQHandler(void)
 void DMA2_Stream2_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream2_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END DMA2_Stream2_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_usart6_rx);
   /* USER CODE BEGIN DMA2_Stream2_IRQn 1 */
@@ -613,7 +615,7 @@ void DMA2_Stream2_IRQHandler(void)
 void DMA2_Stream3_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream3_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END DMA2_Stream3_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream3);
   /* USER CODE BEGIN DMA2_Stream3_IRQn 1 */
@@ -627,7 +629,7 @@ void DMA2_Stream3_IRQHandler(void)
 void DMA2_Stream6_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream6_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END DMA2_Stream6_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream6);
   /* USER CODE BEGIN DMA2_Stream6_IRQn 1 */
@@ -641,7 +643,7 @@ void DMA2_Stream6_IRQHandler(void)
 void USART6_IRQHandler(void)
 {
   /* USER CODE BEGIN USART6_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END USART6_IRQn 0 */
   HAL_UART_IRQHandler(&huart6);
   /* USER CODE BEGIN USART6_IRQn 1 */
@@ -655,7 +657,7 @@ void USART6_IRQHandler(void)
 void OTG_FS_EP1_OUT_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_FS_EP1_OUT_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END OTG_FS_EP1_OUT_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_EP1_OUT_IRQn 1 */
@@ -669,7 +671,7 @@ void OTG_FS_EP1_OUT_IRQHandler(void)
 void OTG_FS_EP1_IN_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_FS_EP1_IN_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END OTG_FS_EP1_IN_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_EP1_IN_IRQn 1 */
@@ -683,7 +685,7 @@ void OTG_FS_EP1_IN_IRQHandler(void)
 void OTG_FS_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_FS_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END OTG_FS_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
