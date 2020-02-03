@@ -432,7 +432,7 @@ void TIM6_DAC_IRQHandler(void)
     if (!TRX_SNMP_Synced) //Sync time from internet
       WIFI_GetSNMPTime();
 
-    if (false)
+    if (true)
     {
       //Save Debug variables
       uint32_t dbg_FPGA_samples = FPGA_samples;
@@ -575,7 +575,7 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream0);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
-
+	SCB_InvalidateDCache();
   /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 
@@ -589,7 +589,7 @@ void DMA2_Stream1_IRQHandler(void)
   /* USER CODE END DMA2_Stream1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream1);
   /* USER CODE BEGIN DMA2_Stream1_IRQn 1 */
-
+	SCB_InvalidateDCache();
   /* USER CODE END DMA2_Stream1_IRQn 1 */
 }
 
