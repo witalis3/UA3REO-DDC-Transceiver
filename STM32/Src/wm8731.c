@@ -15,15 +15,15 @@ volatile bool WM8731_Buffer_underrun = false;
 static bool WM8731_Beeping = false;
 
 static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value);
-HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t Size);
+HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize);
 
 void WM8731_start_i2s_and_dma(void)
 {
 	if (HAL_I2S_GetState(&hi2s3) == HAL_I2S_STATE_READY)
 	{
-		//HAL_I2S_Receive_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE);
-		//HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_SIZE);
-		HAL_I2S_TXRX_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_TX[0], (uint16_t *)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_SIZE);
+		//HAL_I2S_Receive_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2);
+		//HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_SIZE * 2);
+		HAL_I2S_TXRX_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_RX[0], (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2, CODEC_AUDIO_BUFFER_SIZE); // 16bit tx spi, 32bit rx spi
 	}
 }
 
@@ -176,7 +176,7 @@ void WM8731_Init(void)
 		LCD_showError("Audio codec init error", true);
 		err = true;
 	}
-	WM8731_SendI2CCommand(B8(00001110), B8(00000010)); //R7 Digital Audio Interface Format, Codec Slave, I2S Format, MSB-First left-1 justified , 16bits
+	WM8731_SendI2CCommand(B8(00001110), B8(00001110)); //R7 Digital Audio Interface Format, Codec Slave, I2S Format, MSB-First left-1 justified , 32bits
 	WM8731_SendI2CCommand(B8(00010000), B8(00000000)); //R8 Sampling Control normal mode, 256fs, SR=0 (MCLK@12.288Mhz, fs=48kHz))
 	WM8731_SendI2CCommand(B8(00010010), B8(00000001)); //R9 reactivate digital audio interface
 	WM8731_RX_mode();
@@ -226,9 +226,9 @@ static void I2S_DMAError(DMA_HandleTypeDef *hdma)
   HAL_I2S_ErrorCallback(hi2s);
 }
 
-HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t Size)
+HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize)
 {
-  if ((rxData == NULL) || (txData == NULL) || (Size == 0UL))
+  if ((rxData == NULL) || (txData == NULL) || (rxSize == 0UL) || (txSize == 0UL))
   {
     return  HAL_ERROR;
   }
@@ -246,14 +246,15 @@ HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, ui
   hi2s->State       = HAL_I2S_STATE_BUSY;
   hi2s->ErrorCode   = HAL_I2S_ERROR_NONE;
   hi2s->pRxBuffPtr  = rxData;
-  hi2s->RxXferSize  = Size;
-  hi2s->RxXferCount = Size;
+  hi2s->RxXferSize  = rxSize;
+  hi2s->RxXferCount = rxSize;
 	hi2s->pTxBuffPtr  = txData;
-  hi2s->TxXferSize  = Size;
-  hi2s->TxXferCount = Size;
+  hi2s->TxXferSize  = txSize;
+  hi2s->TxXferCount = txSize;
 
   hi2s->hdmarx->XferHalfCpltCallback = I2S_DMARxHalfCplt;
   hi2s->hdmarx->XferCpltCallback = I2S_DMARxCplt;
+	hi2s->hdmarx->XferErrorCallback = I2S_DMAError;
 	hi2s->hdmatx->XferHalfCpltCallback = I2S_DMATxHalfCplt;
   hi2s->hdmatx->XferCpltCallback = I2S_DMATxCplt;
   hi2s->hdmatx->XferErrorCallback = I2S_DMAError;
@@ -261,7 +262,7 @@ HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, ui
   /* Enable the Rx DMA Stream/Channel */
   if (HAL_OK != HAL_DMA_Start_IT(hi2s->hdmarx, (uint32_t)&hi2s->Instance->RXDR, (uint32_t)hi2s->pRxBuffPtr, hi2s->RxXferSize))
   {
-    /* Update SPI error code */
+    // Update SPI error code
     SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
     hi2s->State = HAL_I2S_STATE_READY;
 
@@ -270,7 +271,7 @@ HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, ui
   }
 	if (HAL_OK != HAL_DMA_Start_IT(hi2s->hdmatx, (uint32_t)hi2s->pTxBuffPtr, (uint32_t)&hi2s->Instance->TXDR, hi2s->TxXferSize))
   {
-    /* Update SPI error code */
+    //Update SPI error code
     SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
     hi2s->State = HAL_I2S_STATE_READY;
 
@@ -281,7 +282,7 @@ HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, ui
   /* Check if the I2S Rx request is already enabled */
   if (HAL_IS_BIT_CLR(hi2s->Instance->CFG1, SPI_CFG1_RXDMAEN))
   {
-    /* Enable Rx DMA Request */
+    // Enable Rx DMA Request
     SET_BIT(hi2s->Instance->CFG1, SPI_CFG1_RXDMAEN);
   }
 	/* Check if the I2S Tx request is already enabled */

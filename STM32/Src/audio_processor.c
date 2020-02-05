@@ -253,9 +253,8 @@ void processTxAudio(void)
 	}
 	else //AUDIO CODEC AUDIO
 	{
-		uint16_t dma_index = __HAL_DMA_GET_COUNTER(hi2s3.hdmatx) / 2;
-		if ((dma_index % 2) == 1)
-			dma_index--;
+		uint16_t dma_index = CODEC_AUDIO_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(hi2s3.hdmarx);
+		if ((dma_index % 2) == 1) dma_index--;
 		readHalfFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&Processor_AudioBuffer_A[0], dma_index, CODEC_AUDIO_BUFFER_SIZE);
 	}
 
@@ -294,8 +293,8 @@ void processTxAudio(void)
 	{
 		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			FPGA_Audio_Buffer_I_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2]);
-			FPGA_Audio_Buffer_Q_tmp[i] = (int16_t)(Processor_AudioBuffer_A[i * 2 + 1]);
+			FPGA_Audio_Buffer_I_tmp[i] = Processor_AudioBuffer_A[i * 2];
+			FPGA_Audio_Buffer_Q_tmp[i] = Processor_AudioBuffer_A[i * 2 + 1];
 		}
 	}
 
