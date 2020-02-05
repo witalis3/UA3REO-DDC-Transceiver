@@ -7,6 +7,7 @@ Scheme/ALTIUM_DESIGNER/*/__Previews/*
 STM32/MDK-ARM/UA3REO/UA3REO.build_log.htm
 STM32/MDK-ARM/UA3REO/UA3REO.htm
 Status Report.txt
+Design Rule Check*
 *~*.zip
 *.log
 *.o
