@@ -6,12 +6,13 @@
 #include "wire.h"
 #include "fpga.h"
 #include "audio_processor.h"
+#include "functions.h"
 
 #define I2C_ADDRESS_WM8731 0x34
 
 #define CODEC_AUDIO_BUFFER_SIZE (FPGA_AUDIO_BUFFER_SIZE * 2)
-extern int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE];
-extern int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE];
+extern IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE];
+extern IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE];
 volatile extern bool WM8731_DMA_state;
 volatile extern bool WM8731_Buffer_underrun;
 volatile extern uint32_t WM8731_DMA_samples;

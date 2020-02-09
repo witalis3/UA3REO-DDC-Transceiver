@@ -394,3 +394,8 @@ void CPULOAD_Calc(void)
 	CPULOAD_SleepingTime = 0;
 	CPULOAD_WorkingTime = 0;
 }
+
+inline int32_t convertToSPIBigEndian(int32_t in)
+{
+	return (0xFFFF0000 & in<<16) | (0x0000FFFF & in>>16);
+}

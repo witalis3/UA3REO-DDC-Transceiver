@@ -101,5 +101,6 @@ extern float32_t volume2rate(float32_t i);
 extern void shiftTextLeft(char *string, int16_t shiftLength);
 extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);
-
+extern int32_t convertToSPIBigEndian(int32_t in);
+	
 #endif

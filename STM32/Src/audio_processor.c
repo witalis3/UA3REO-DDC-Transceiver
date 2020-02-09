@@ -201,14 +201,20 @@ void processRxAudio(void)
 	if (Processor_AudioBuffer_ReadyBuffer == 1)
 	{
 		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
+		{
 			Processor_AudioBuffer_B[i] = Processor_AudioBuffer_B[i] * volume_gain;
+			Processor_AudioBuffer_B[i] = convertToSPIBigEndian(Processor_AudioBuffer_B[i]); //for 32bit audio
+		}
 	}
 	else
 	{
 		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
+		{
 			Processor_AudioBuffer_A[i] = Processor_AudioBuffer_A[i] * volume_gain;
+			Processor_AudioBuffer_A[i] = convertToSPIBigEndian(Processor_AudioBuffer_A[i]); //for 32bit audio
+		}
 	}
-
+	
 	//Send to Codec DMA
 	if (TRX_Inited)
 	{
@@ -435,11 +441,13 @@ void processTxAudio(void)
 	if (mode == TRX_MODE_LOOPBACK && !TRX_Tune)
 	{
 		//OUT Volume
-		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, (float32_t)TRX.Volume / 50.0f, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+		doRX_AGC();
+		float32_t volume_gain = volume2rate((float32_t)TRX.Volume / 1023.0f);
+		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, volume_gain, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 
 		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			Processor_AudioBuffer_A[i * 2] = FPGA_Audio_Buffer_I_tmp[i];		 //left channel
+			Processor_AudioBuffer_A[i * 2] = convertToSPIBigEndian(FPGA_Audio_Buffer_I_tmp[i]);		 //left channel
 			Processor_AudioBuffer_A[i * 2 + 1] = Processor_AudioBuffer_A[i * 2]; //right channel
 		}
 

@@ -29,7 +29,7 @@ void DoAGC(float32_t *agcBuffer, int16_t blockSize)
 	AGC_RX_magnitude = AGC_RX_magnitude / blockSize;
 	if (AGC_RX_magnitude == 0.0f)
 		AGC_RX_magnitude = 0.001f;
-	full_scale_rate = AGC_RX_magnitude / (FPGA_BUS_FULL_SCALE_POW - 1.0f);
+	full_scale_rate = AGC_RX_magnitude / (CODEC_BITS_FULL_SCALE_POW - 1.0f);
 	AGC_RX_dbFS = rate2dbP(full_scale_rate);
 
 	//двигаем усиление на шаг

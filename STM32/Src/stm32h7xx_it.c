@@ -435,7 +435,7 @@ void TIM6_DAC_IRQHandler(void)
 
 		CPULOAD_Calc(); // Calculate CPU load
 		
-    if (true)
+    if (false)
     {
       //Save Debug variables
       uint32_t dbg_FPGA_samples = FPGA_samples;
@@ -544,6 +544,7 @@ void TIM6_DAC_IRQHandler(void)
       HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
       TRX_Inited = false;
       LCD_busy = true;
+			WM8731_CleanBuffer();
       LCDDriver_Fill(COLOR_BLACK);
       LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
       while (true)
@@ -691,20 +692,6 @@ void OTG_FS_IRQHandler(void)
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
 
   /* USER CODE END OTG_FS_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMAMUX1 overrun interrupt.
-  */
-void DMAMUX1_OVR_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMAMUX1_OVR_IRQn 0 */
-
-  /* USER CODE END DMAMUX1_OVR_IRQn 0 */
-  
-  /* USER CODE BEGIN DMAMUX1_OVR_IRQn 1 */
-
-  /* USER CODE END DMAMUX1_OVR_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

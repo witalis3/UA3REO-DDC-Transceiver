@@ -12,6 +12,7 @@
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
 #define ADC_BITS 16						//разрядность АЦП
 #define FPGA_BUS_BITS 16				//разрядность данных из FPGA
+#define CODEC_BITS 32				//разрядность данных в аудио-кодеке
 #define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока
 #define MAX_TX_AMPLITUDE 32700.0f		//Максимальный размах при передаче в ЦАП (32767.0f - лимит)
 #define AGC_CLIP_THRESHOLD -20.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
@@ -62,18 +63,20 @@
 #define BPF_6_END 34000000
 #define BPF_7_HPF 34000000
 
+#define FPGA_BUS_FULL_SCALE 65536		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
+#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE*(float64_t)FPGA_BUS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
+#define CODEC_BITS_FULL_SCALE 4294967296		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
+#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE*(float64_t)CODEC_BITS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
+
+#define EEPROM_OP_DELAY 30 // таймаут записи в EEPROM
+#define MAX_WIFIPASS_LENGTH 32
+
 #define W25Q16_COMMAND_Write_Enable 0x06
 #define W25Q16_COMMAND_Erase_Chip 0xC7
 #define W25Q16_COMMAND_Sector_Erase 0x20
 #define W25Q16_COMMAND_Page_Program 0x02
 #define W25Q16_COMMAND_Read_Data 0x03
 #define W25Q16_SECTOR_SIZE 4096
-
-#define MAX_WIFIPASS_LENGTH 32
-#define EEPROM_OP_DELAY 30
-
-#define FPGA_BUS_FULL_SCALE 65536		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
-#define FPGA_BUS_FULL_SCALE_POW 4294967296 //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
 
 extern struct t_CALIBRATE
 {

@@ -324,8 +324,6 @@ void FFT_doFFT(void)
 	maxValueErrors = 0;
 	if (maxValueFFT < FFT_MIN)
 		maxValueFFT = FFT_MIN;
-	if (TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK)
-		maxValueFFT = 60000.0f;
 	if (TRX_on_TX())
 		maxValueFFT_tx = maxValueFFT;
 	else
