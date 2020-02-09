@@ -424,7 +424,7 @@ void TIM6_DAC_IRQHandler(void)
       PERIPH_ProcessSWRMeter();
   }
 
-  if (ms50_counter == 20) // every 1 sec
+  if (ms50_counter == 21) // every 1 sec
   {
 
     ms50_counter = 0;
