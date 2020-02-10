@@ -24,10 +24,10 @@
 //TIM7 - USB FIFO
 
 //DMA1-0 - получение данных с аудио-кодека
+//DMA1-1 - получение данных из WiFi по UART
 //DMA1-5 - отсылка данных в аудио-кодек
 //DMA2-0 - отправка буфера аудио-процессора в буффер кодека - A
 //DMA2-1 - отправка буфера аудио-процессора в буффер кодека - B
-//DMA2-2 - получение данных из WiFi по UART
 //DMA2-3 - копирование аудио-буфферов по 32бит
 //DMA2-4 - DMA для копирования 16 битных массивов
 //DMA2-5 - DMA видео-драйвера, для заливки, 16 бит без инкремента
@@ -107,6 +107,7 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern DMA_HandleTypeDef hdma_spi3_rx;
 extern DMA_HandleTypeDef hdma_spi3_tx;
+extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
 extern TIM_HandleTypeDef htim6;
@@ -301,6 +302,20 @@ void DMA1_Stream0_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles DMA1 stream1 global interrupt.
+  */
+void DMA1_Stream1_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Stream1_IRQn 0 */
+	CPULOAD_WakeUp();
+  /* USER CODE END DMA1_Stream1_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart6_rx);
+  /* USER CODE BEGIN DMA1_Stream1_IRQn 1 */
+
+  /* USER CODE END DMA1_Stream1_IRQn 1 */
+}
+
+/**
   * @brief This function handles DMA1 stream5 global interrupt.
   */
 void DMA1_Stream5_IRQHandler(void)
@@ -312,6 +327,31 @@ void DMA1_Stream5_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Stream5_IRQn 1 */
 
   /* USER CODE END DMA1_Stream5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+	static uint16_t wifi_start_timeout = 0;
+	CPULOAD_WakeUp();
+  /* USER CODE END TIM3_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+	if(wifi_start_timeout<10)
+	{
+		wifi_start_timeout++;
+	}
+	else
+	{
+		if (TRX.WIFI_Enabled)
+			WIFI_Process();
+		else
+			WIFI_GoSleep();
+	}
+  /* USER CODE END TIM3_IRQn 1 */
 }
 
 /**
@@ -413,12 +453,6 @@ void TIM6_DAC_IRQHandler(void)
     //S-Meter Calculate
     TRX_DBMCalculate();
 
-    //WIFI
-    if (TRX.WIFI_Enabled)
-      WIFI_ProcessAnswer();
-    else
-      WIFI_GoSleep();
-
     //Process SWR / Power meter
     if (TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_NO_TX)
       PERIPH_ProcessSWRMeter();
@@ -431,7 +465,7 @@ void TIM6_DAC_IRQHandler(void)
     TRX_DoAutoGain(); //Process AutoGain feature
 
     if (!TRX_SNMP_Synced) //Sync time from internet
-      WIFI_GetSNMPTime();
+      WIFI_GetSNMPTime(NULL);
 
 		CPULOAD_Calc(); // Calculate CPU load
 		
@@ -594,20 +628,6 @@ void DMA2_Stream1_IRQHandler(void)
   /* USER CODE BEGIN DMA2_Stream1_IRQn 1 */
 
   /* USER CODE END DMA2_Stream1_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA2 stream2 global interrupt.
-  */
-void DMA2_Stream2_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA2_Stream2_IRQn 0 */
-	CPULOAD_WakeUp();
-  /* USER CODE END DMA2_Stream2_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart6_rx);
-  /* USER CODE BEGIN DMA2_Stream2_IRQn 1 */
-
-  /* USER CODE END DMA2_Stream2_IRQn 1 */
 }
 
 /**

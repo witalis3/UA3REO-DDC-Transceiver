@@ -18,6 +18,7 @@ static uint8_t ENCODER_AVal = 0;
 static int32_t ENCODER_slowler = 0;
 static uint8_t ENCODER2_ALast = 0;
 static uint8_t ENCODER2_AVal = 0;
+static uint8_t ENCODER2_AValDeb = 0;
 static bool ENCODER2_SWLast = true;
 
 volatile PERIPH_FrontPanel_Type PERIPH_FrontPanel = {0};
@@ -56,7 +57,10 @@ void PERIPH_ENCODER_checkRotate(void)
 
 void PERIPH_ENCODER2_checkRotate(void)
 {
+	ENCODER2_AValDeb = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
+	HAL_Delay(1);
 	ENCODER2_AVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
+	if(ENCODER2_AValDeb!=ENCODER2_AVal) return;
 	if (ENCODER2_ALast != ENCODER2_AVal)
 	{
 		ENCODER2_ALast = ENCODER2_AVal;

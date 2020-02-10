@@ -193,7 +193,6 @@ int main(void)
   MX_USB_DEVICE_Init();
   sendToDebug_strln("[OK] USB inited");
 
-  HAL_TIM_Base_Start(&htim7);
   HAL_TIM_Base_Start_IT(&htim7);
   sendToDebug_strln("[OK] FIFO timer TIM7 inited");
   HAL_RTC_Init(&hrtc);
@@ -210,24 +209,21 @@ int main(void)
   if (SHOW_LOGO)
     LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
   LCD_busy = true;
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //LCD backlight
-  sendToDebug_strln("[OK] LCD backlight ON");
   FFT_Init();
-  HAL_TIM_Base_Start(&htim4);
   HAL_TIM_Base_Start_IT(&htim4);
   sendToDebug_strln("[OK] FFT timer TIM4 inited");
   WM8731_Init();
   TRX_Init();
   FPGA_Init();
   initAudioProcessor();
-  HAL_TIM_Base_Start(&htim5);
   HAL_TIM_Base_Start_IT(&htim5);
   sendToDebug_strln("[OK] Audioprocessor timer TIM5 inited");
   if (SHOW_LOGO)
     HAL_Delay(1000); //logo wait
   LCD_busy = false;
   LCD_redraw();
-  HAL_TIM_Base_Start(&htim6);
+  HAL_TIM_Base_Start_IT(&htim3);
+  sendToDebug_strln("[OK] WIFI timer TIM3 inited");
   HAL_TIM_Base_Start_IT(&htim6);
   sendToDebug_strln("[OK] Misc timer TIM6 inited");
   __HAL_RCC_USB1_OTG_HS_CLK_SLEEP_ENABLE();
@@ -576,9 +572,9 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 999;
+  htim3.Init.Prescaler = 49999;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 199;
+  htim3.Init.Period = 19;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -590,7 +586,7 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
   {
@@ -841,7 +837,9 @@ static void MX_USART6_UART_Init(void)
   huart6.Init.OverSampling = UART_OVERSAMPLING_16;
   huart6.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart6.Init.ClockPrescaler = UART_PRESCALER_DIV1;
-  huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_AUTOBAUDRATE_INIT;
+  huart6.AdvancedInit.AutoBaudRateEnable = UART_ADVFEATURE_AUTOBAUDRATE_ENABLE;
+  huart6.AdvancedInit.AutoBaudRateMode = UART_ADVFEATURE_AUTOBAUDRATE_ONSTARTBIT;
   if (HAL_UART_Init(&huart6) != HAL_OK)
   {
     Error_Handler();
@@ -1055,6 +1053,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+  /* DMA1_Stream1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
   /* DMA1_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
@@ -1064,9 +1065,6 @@ static void MX_DMA_Init(void)
   /* DMA2_Stream1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream1_IRQn, 4, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream1_IRQn);
-  /* DMA2_Stream2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
   /* DMA2_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);

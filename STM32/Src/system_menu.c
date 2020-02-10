@@ -1083,6 +1083,11 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	sysmenu_y += 18;
 }
 
+static void SYSMENU_WIFI_DrawSelectAPMenuCallback(void)
+{
+	sysmenu_wifi_rescan_interval = 0;
+}
+
 static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
 {
 	if (full_redraw || sysmenu_wifi_rescan_interval == 0)
@@ -1092,10 +1097,10 @@ static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
 			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 25 + i * 12, COLOR_GREEN, COLOR_BLACK, 1);
 		LCDDriver_drawFastHLine(0, 37 + sysmenu_wifi_selected_ap_index * 12, LAY_SYSMENU_W, COLOR_WHITE);
-		WIFI_ListAP();
+		WIFI_ListAP(SYSMENU_WIFI_DrawSelectAPMenuCallback);
 	}
 	sysmenu_wifi_rescan_interval++;
-	if (sysmenu_wifi_rescan_interval > 100)
+	if (sysmenu_wifi_rescan_interval > 30)
 		sysmenu_wifi_rescan_interval = 0;
 	LCD_UpdateQuery.SystemMenu = true;
 }
