@@ -581,6 +581,7 @@ void TIM6_DAC_IRQHandler(void)
 			WM8731_CleanBuffer();
       LCDDriver_Fill(COLOR_BLACK);
       LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
+			sendToDebug_flush();
       while (true)
       {
       }

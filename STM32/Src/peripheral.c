@@ -795,7 +795,7 @@ static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT,
 	uint16_t mcp3008_value = 0;
 
 	outData[0] = 0x18 | channel;
-	bool res = PERIPH_SPI_Transmit(outData, inData, 3, CS_PORT, CS_PIN);
+	bool res = PERIPH_SPI_Transmit(outData, inData, 3, CS_PORT, CS_PIN, false);
 	if (res == false)
 		return 65535;
 	mcp3008_value = 0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4);
@@ -803,16 +803,26 @@ static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT,
 	return mcp3008_value;
 }
 
-bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN)
+bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs)
 {
 	if (PERIPH_SPI_busy)
+	{
+		sendToDebug_strln("SPI Conflict");
 		return false;
+	}
 	PERIPH_SPI_busy = true;
 	HAL_IWDG_Refresh(&hiwdg1);
 	memset(in_data, 0x00, count);
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
-	HAL_StatusTypeDef res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, 0x100);
-	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
+	HAL_StatusTypeDef res = 0;
+	if(in_data==NULL)
+		res = HAL_SPI_Transmit(&hspi2, out_data, count, 0x100);
+	else if(out_data==NULL)
+		res = HAL_SPI_Receive(&hspi2, in_data, count, 0x100);
+	else
+		res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, 0x100);
+	if(!hold_cs)
+		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
 	PERIPH_SPI_busy = false;
 	if (res == HAL_TIMEOUT || res == HAL_ERROR)
 		return false;

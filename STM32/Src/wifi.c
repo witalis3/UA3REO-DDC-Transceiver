@@ -110,6 +110,7 @@ void WIFI_Process(void)
 				strcat(com_t, ",\"us.pool.ntp.org\"\r\n");
 				WIFI_SendCommand(com_t); //configure SNMP
 				WIFI_WaitForOk();
+				WIFI_stop_auto_ap_list = false;
 				WIFI_State = WIFI_CONFIGURED;
 		break;
 		case WIFI_CONFIGURED:
@@ -258,6 +259,7 @@ void WIFI_Process(void)
 		default:
 		break;
 	}
+	sendToDebug_flush();
 }
 
 uint32_t WIFI_GetSNMPTime(void* callback)
@@ -360,7 +362,7 @@ static void WIFI_SendCommand(char *command)
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
 	HAL_IWDG_Refresh(&hiwdg1);
-#if 1 //DEBUG
+#if 0 //DEBUG
 	sendToDebug_str2("WIFI_DEBUG_S: ", command);
 	sendToDebug_flush();
 #endif
@@ -407,7 +409,7 @@ static bool WIFI_TryGetLine(void)
 	if (WIFI_Answer_ReadIndex > dma_index)
 		WIFI_Answer_ReadIndex = dma_index;
 
-#if 1 //DEBUG
+#if 0 //DEBUG
 	sendToDebug_str2("WIFI_DEBUG_R: ", WIFI_readedLine);
 	sendToDebug_flush();
 #endif

@@ -8,6 +8,7 @@
 #include "fpga.h"
 #include "main.h"
 #include "bands.h"
+#include "peripheral.h"
 
 //W25Q16
 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -108,9 +109,9 @@ void LoadSettings(bool clear)
 		sendToDebug_strln("[OK] EEPROM data succesfully loaded from BANK 1");
 	TRX.ENDBit = 100;
 
-	if (TRX.clean_flash != 182 || clear) //code to trace new clean flash
+	if (TRX.clean_flash != 190 || clear) //code to trace new clean flash
 	{
-		TRX.clean_flash = 182;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		TRX.clean_flash = 190;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000;	  //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
 		TRX.VFO_A.Filter_Width = 2700; //сохранённая ширина полосы VFO-A
@@ -203,6 +204,7 @@ void SaveSettings(void)
 		eeprom_bank = 0;
 	Flash_Sector_Erase();
 	EEPROM_Busy = false;
+	sendToDebug_strln("EEPROM Saved");
 }
 
 static void Flash_Sector_Erase(void)
@@ -213,15 +215,11 @@ static void Flash_Sector_Erase(void)
 	Address[0] = BigAddress & 0xFF;
 	Address[1] = (BigAddress >> 8) & 0xFF;
 	Address[2] = (BigAddress >> 16) & 0xFF;
-
-	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET); // CS to low
-	HAL_SPI_Transmit(&hspi2, &Write_Enable, 1, HAL_MAX_DELAY);			   // Write Enable Command
-	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);   // CS to high
+	   
+	PERIPH_SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Enable Command
 	HAL_Delay(EEPROM_OP_DELAY);
-	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET); // CS to low
-	HAL_SPI_Transmit(&hspi2, &Sector_Erase, 1, HAL_MAX_DELAY);			   // Erase Chip Command
-	HAL_SPI_Transmit(&hspi2, Address, sizeof(Address), HAL_MAX_DELAY);	 // Write Address ( The first address of flash module is 0x00000000 )
-	HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);   // CS to high
+	PERIPH_SPI_Transmit(&Sector_Erase, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Erase Chip Command
+	PERIPH_SPI_Transmit(Address, NULL, sizeof(Address), W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Address ( The first address of flash module is 0x00000000 )
 	HAL_Delay(EEPROM_OP_DELAY);
 }
 
@@ -231,9 +229,7 @@ static void Flash_Write_Data(void)
 		return;
 	for (uint8_t page = 0; page <= (sizeof(TRX) / 0xFF); page++)
 	{
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET); // CS to low
-		HAL_SPI_Transmit(&hspi2, &Write_Enable, 1, HAL_MAX_DELAY);			   // Write Enable Command
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);   // CS to high
+		PERIPH_SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Enable Command
 
 		uint32_t BigAddress = page + (eeprom_bank * W25Q16_SECTOR_SIZE);
 		Address[0] = BigAddress & 0xFF;
@@ -243,11 +239,9 @@ static void Flash_Write_Data(void)
 		if (size > 0xFF)
 			size = 0xFF;
 
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);					  // CS to low
-		HAL_SPI_Transmit(&hspi2, &Page_Program, 1, HAL_MAX_DELAY);								  // Page Program Command
-		HAL_SPI_Transmit(&hspi2, Address, sizeof(Address), HAL_MAX_DELAY);						  // Write Address ( The first address of flash module is 0x00000000 )
-		HAL_SPI_Transmit(&hspi2, (uint8_t *)((uint32_t)&TRX + 0xFF * page), size, HAL_MAX_DELAY); // Write
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);					  // CS to high
+		PERIPH_SPI_Transmit(&Page_Program, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Enable Command
+		PERIPH_SPI_Transmit(Address, NULL, sizeof(Address), W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Address ( The first address of flash module is 0x00000000 )
+		PERIPH_SPI_Transmit((uint8_t *)((uint32_t)&TRX + 0xFF * page), NULL, size, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Address ( The first address of flash module is 0x00000000 )
 		HAL_Delay(EEPROM_OP_DELAY);
 	}
 }
@@ -266,21 +260,18 @@ static void Flash_Read_Data(void)
 		if (size > 0xFF)
 			size = 0xFF;
 
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_RESET);  // CS to low
-		HAL_StatusTypeDef res = HAL_SPI_Transmit(&hspi2, &Read_Data, 1, 0x100); // Read Command
-		if (res == HAL_TIMEOUT || res == HAL_ERROR)
+		bool res = PERIPH_SPI_Transmit(&Read_Data, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Read Command
+		if (!res)
 		{
 			sendToDebug_uint8(res, false);
 			sendToDebug_uint8(hspi2.ErrorCode, false);
-			HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET); // CS to high
 			EEPROM_Enabled = false;
 			sendToDebug_strln("[ERR] EEPROM not found...");
 			LCD_showError("EEPROM init error", true);
 			return;
 		}
-		HAL_SPI_Transmit(&hspi2, Address, sizeof(Address), HAL_MAX_DELAY);						 // Write Address
-		HAL_SPI_Receive(&hspi2, (uint8_t *)((uint32_t)&TRX + 0xFF * page), size, HAL_MAX_DELAY); // Read
-		HAL_GPIO_WritePin(W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, GPIO_PIN_SET);					 // CS to high
+		PERIPH_SPI_Transmit(Address, NULL, sizeof(Address), W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Address
+		PERIPH_SPI_Transmit(NULL, (uint8_t *)((uint32_t)&TRX + 0xFF * page), size, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Read
 		HAL_Delay(EEPROM_OP_DELAY);
 	}
 }

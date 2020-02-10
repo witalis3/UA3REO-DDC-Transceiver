@@ -68,7 +68,7 @@
 #define CODEC_BITS_FULL_SCALE 4294967296		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
 #define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE*(float64_t)CODEC_BITS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
 
-#define EEPROM_OP_DELAY 30 // таймаут записи в EEPROM
+#define EEPROM_OP_DELAY 30 // задержки при работе с EEPROM
 #define MAX_WIFIPASS_LENGTH 32
 
 #define W25Q16_COMMAND_Write_Enable 0x06

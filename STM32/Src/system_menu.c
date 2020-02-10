@@ -1093,10 +1093,10 @@ static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
 	if (full_redraw || sysmenu_wifi_rescan_interval == 0)
 	{
 		LCDDriver_Fill(COLOR_BLACK);
-		LCDDriver_printText("AP Found:", 5, 5, COLOR_WHITE, COLOR_BLACK, 1);
+		LCDDriver_printText("AP Found:", 5, 5, COLOR_WHITE, COLOR_BLACK, 2);
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 25 + i * 12, COLOR_GREEN, COLOR_BLACK, 1);
-		LCDDriver_drawFastHLine(0, 37 + sysmenu_wifi_selected_ap_index * 12, LAY_SYSMENU_W, COLOR_WHITE);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 33 + i * 24, COLOR_GREEN, COLOR_BLACK, 2);
+		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAY_SYSMENU_W, COLOR_WHITE);
 		WIFI_ListAP(SYSMENU_WIFI_DrawSelectAPMenuCallback);
 	}
 	sysmenu_wifi_rescan_interval++;
@@ -1128,11 +1128,11 @@ static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(COLOR_BLACK);
-		LCDDriver_printText("AP Password:", 5, 5, COLOR_WHITE, COLOR_BLACK, 1);
+		LCDDriver_printText("AP Password:", 5, 5, COLOR_WHITE, COLOR_BLACK, 2);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD, 10, 25, COLOR_GREEN, COLOR_BLACK, 1);
-	LCDDriver_drawFastHLine(10 + sysmenu_wifi_selected_ap_password_char_index * 6, 37, 6, COLOR_RED);
+	LCDDriver_printText(TRX.WIFI_PASSWORD, 10, 37, COLOR_GREEN, COLOR_BLACK, 2);
+	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
 }
 
 static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir)
