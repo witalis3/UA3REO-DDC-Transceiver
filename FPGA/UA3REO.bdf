@@ -3403,6 +3403,33 @@ refer to the applicable agreement for further details.
 	)
 	(flipy_rotate90)
 )
+(symbol
+	(rect -192 -352 -16 -248)
+	(text "DEBUG" (rect 66 -1 120 15)(font "Arial" (font_size 10)))
+	(text "DEBUG1" (rect 8 88 48 105)(font "Intel Clear" ))
+	(port
+		(pt 0 72)
+		(input)
+		(text "probe[15..0]" (rect 0 0 68 14)(font "Arial" (font_size 8)))
+		(text "probe[15..0]" (rect 4 61 72 75)(font "Arial" (font_size 8)))
+		(line (pt 0 72)(pt 64 72)(line_width 3))
+	)
+	(drawing
+		(text "probes" (rect 25 43 71 58)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "probe" (rect 69 67 96 79)(font "Arial" (color 0 0 0)))
+		(text " DEBUG " (rect 139 88 185 100)(font "Arial" ))
+		(line (pt 64 32)(pt 112 32))
+		(line (pt 112 32)(pt 112 88))
+		(line (pt 64 88)(pt 112 88))
+		(line (pt 64 32)(pt 64 88))
+		(line (pt 65 52)(pt 65 76))
+		(line (pt 66 52)(pt 66 76))
+		(line (pt 0 0)(pt 176 0))
+		(line (pt 176 0)(pt 176 104))
+		(line (pt 0 104)(pt 176 104))
+		(line (pt 0 0)(pt 0 104))
+	)
+)
 (connector
 	(pt 528 32)
 	(pt 440 32)
@@ -3606,11 +3633,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt -56 744)
 	(pt -56 792)
-	(bus)
-)
-(connector
-	(pt -232 -32)
-	(pt -232 -16)
 	(bus)
 )
 (connector
@@ -5262,6 +5284,21 @@ refer to the applicable agreement for further details.
 	(pt 6208 280)
 	(pt 6152 280)
 )
+(connector
+	(pt -232 -280)
+	(pt -192 -280)
+	(bus)
+)
+(connector
+	(pt -232 -280)
+	(pt -232 -32)
+	(bus)
+)
+(connector
+	(pt -232 -32)
+	(pt -232 -16)
+	(bus)
+)
 (junction (pt 376 120))
 (junction (pt 440 32))
 (junction (pt 472 504))
@@ -5341,3 +5378,4 @@ refer to the applicable agreement for further details.
 (junction (pt 1728 536))
 (junction (pt 776 536))
 (junction (pt 3952 536))
+(junction (pt -232 -32))

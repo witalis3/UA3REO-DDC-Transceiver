@@ -259,7 +259,6 @@ void WIFI_Process(void)
 		default:
 		break;
 	}
-	sendToDebug_flush();
 }
 
 uint32_t WIFI_GetSNMPTime(void* callback)
