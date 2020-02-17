@@ -716,16 +716,11 @@ void PERIPH_ProcessFrontPanel(void)
 
 void PERIPH_ProcessSWRMeter(void)
 {
-	ADC_ChannelConfTypeDef sConfig = {0};
-	sConfig.Rank = 1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_8CYCLES_5;
+	HAL_ADCEx_InjectedStart(&hadc1); // запускаем опрос инжект. каналов
+  HAL_ADC_PollForConversion(&hadc1,10); // ждём окончания
+	float32_t forward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1) * 3.3f / 65535.0f;
+	float32_t backward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2) * 3.3f / 65535.0f;
 
-	sConfig.Channel = ADC_CHANNEL_11; // Forward PC1
-	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
-	HAL_ADC_Start(&hadc1);													   // запускаем преобразование сигнала АЦП
-	HAL_ADC_PollForConversion(&hadc1, 100);									   // ожидаем окончания преобразования
-	float32_t forward = (float32_t)HAL_ADC_GetValue(&hadc1) * 3.3f / 65535.0f; // читаем полученное значение в переменную adc
-	HAL_ADC_Stop(&hadc1);
 	forward = forward / (CALIBRATE.swr_meter_Rbottom / (CALIBRATE.swr_meter_Rtop + CALIBRATE.swr_meter_Rbottom)); //корректируем напряжение исходя из делителя
 	forward += CALIBRATE.swr_meter_fwd_diff;																	  //корректируем напряжение по калибровке
 	if (forward < 0.001f)																						  //меньше 1mV не измеряем
@@ -739,13 +734,6 @@ void PERIPH_ProcessSWRMeter(void)
 	forward += CALIBRATE.swr_meter_diode_drop;			// падение на диоде
 	forward = forward * CALIBRATE.swr_meter_trans_rate; // падение на трансформаторе
 
-	sConfig.Channel = ADC_CHANNEL_10; // Backward PC0
-	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
-	HAL_ADC_Start(&hadc1);														// запускаем преобразование сигнала АЦП
-	HAL_ADC_PollForConversion(&hadc1, 100);										// ожидаем окончания преобразования
-	float32_t backward = (float32_t)HAL_ADC_GetValue(&hadc1) * 3.3f / 65535.0f; // читаем полученное значение в переменную adc
-
-	HAL_ADC_Stop(&hadc1);
 	backward = backward / (CALIBRATE.swr_meter_Rbottom / (CALIBRATE.swr_meter_Rtop + CALIBRATE.swr_meter_Rbottom)); //корректируем напряжение исходя из делителя
 	backward += CALIBRATE.swr_meter_ref_diff;																		//корректируем напряжение по калибровке
 	backward -= forward * CALIBRATE.swr_meter_ref_sub;																//% вычитаемого FWD из REF
