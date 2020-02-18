@@ -1294,7 +1294,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin : AUDIO_I2S_CLOCK_Pin */
   GPIO_InitStruct.Pin = AUDIO_I2S_CLOCK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
   HAL_GPIO_Init(AUDIO_I2S_CLOCK_GPIO_Port, &GPIO_InitStruct);

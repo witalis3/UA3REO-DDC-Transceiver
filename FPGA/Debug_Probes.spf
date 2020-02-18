@@ -22,6 +22,48 @@
       <probe name="probe[15]"/>
     </probes>
     <view>
+      <view_node expanded="false" group_name="probe[15..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
+      <view_node expanded="true" index="15" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="14" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="13" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="12" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="11" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="10" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="9" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="8" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="7" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="6" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="5" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="4" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="3" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="2" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
+    </view>
+    <log data="" max_size="8" size="0" time="" width="16"/>
+  </instance>
+  <instance enable_logging="true" entity_name="DBG" is_auto_node="true" name="DBG">
+    <node_ip_info instance_id="1" mfg_id="110" node_id="9" version="0"/>
+    <sources/>
+    <probes>
+      <probe name="probe[0]"/>
+      <probe name="probe[1]"/>
+      <probe name="probe[2]"/>
+      <probe name="probe[3]"/>
+      <probe name="probe[4]"/>
+      <probe name="probe[5]"/>
+      <probe name="probe[6]"/>
+      <probe name="probe[7]"/>
+      <probe name="probe[8]"/>
+      <probe name="probe[9]"/>
+      <probe name="probe[10]"/>
+      <probe name="probe[11]"/>
+      <probe name="probe[12]"/>
+      <probe name="probe[13]"/>
+      <probe name="probe[14]"/>
+      <probe name="probe[15]"/>
+    </probes>
+    <view>
       <view_node expanded="true" group_name="probe[15..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
       <view_node expanded="true" index="15" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="14" node_type="probe" view_type="group_member"/>
@@ -40,6 +82,6 @@
       <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
     </view>
-    <log data="299FF99F0C9FBDCFF4CFC1DF61DF8C9F" max_size="8" size="8" time="AC8B54E500000000AC8B54E500000000BC8B54E500000000BC8B54E500000000BC8B54E500000000BC8B54E500000000BC8B54E500000000BC8B54E500000000" width="16"/>
+    <log data="84FF94FF94FFC4FF15FFE4FF05FF84FF" max_size="8" size="8" time="BFA4C4E500000000BFA4C4E500000000BFA4C4E500000000CFA4C4E500000000CFA4C4E500000000CFA4C4E500000000CFA4C4E500000000CFA4C4E500000000" width="16"/>
   </instance>
 </session>
