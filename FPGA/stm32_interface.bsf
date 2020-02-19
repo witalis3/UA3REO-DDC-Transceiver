@@ -20,9 +20,9 @@ refer to the applicable agreement for further details.
 */
 (header "symbol" (version "1.1"))
 (symbol
-	(rect 16 16 304 384)
+	(rect 16 16 304 416)
 	(text "stm32_interface" (rect 5 0 69 12)(font "Arial" ))
-	(text "inst" (rect 8 352 20 364)(font "Arial" ))
+	(text "inst" (rect 8 384 20 396)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
@@ -248,6 +248,13 @@ refer to the applicable agreement for further details.
 		(line (pt 288 336)(pt 272 336)(line_width 3))
 	)
 	(port
+		(pt 288 352)
+		(output)
+		(text "ADC_OFFSET[15..0]" (rect 0 0 89 12)(font "Arial" ))
+		(text "ADC_OFFSET[15..0]" (rect 178 347 267 359)(font "Arial" ))
+		(line (pt 288 352)(pt 272 352)(line_width 3))
+	)
+	(port
 		(pt 288 32)
 		(bidir)
 		(text "DATA_BUS[7..0]" (rect 0 0 74 12)(font "Arial" ))
@@ -255,6 +262,6 @@ refer to the applicable agreement for further details.
 		(line (pt 288 32)(pt 272 32)(line_width 3))
 	)
 	(drawing
-		(rectangle (rect 16 16 272 352)(line_width 1))
+		(rectangle (rect 16 16 272 384)(line_width 1))
 	)
 )

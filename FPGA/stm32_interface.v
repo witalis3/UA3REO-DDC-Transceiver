@@ -32,7 +32,8 @@ ADC_DITH,
 CIC_GAIN,
 CICFIR_GAIN,
 TX_CICFIR_GAIN,
-DAC_GAIN
+DAC_GAIN,
+ADC_OFFSET
 );
 
 input clk_in;
@@ -68,6 +69,7 @@ output reg unsigned [7:0] CIC_GAIN=32;
 output reg unsigned [7:0] CICFIR_GAIN=32;
 output reg unsigned [7:0] TX_CICFIR_GAIN=32;
 output reg unsigned [7:0] DAC_GAIN=32;
+output reg signed [15:0] ADC_OFFSET=0;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -192,6 +194,16 @@ begin
 	else if (k==107)
 	begin
 		DAC_GAIN[7:0]=DATA_BUS[7:0];
+		k=108;
+	end
+	else if (k==108)
+	begin
+		ADC_OFFSET[15:8]=DATA_BUS[7:0];
+		k=109;
+	end
+	else if (k==109)
+	begin
+		ADC_OFFSET[7:0]=DATA_BUS[7:0];
 		k=999;
 	end
 	else if (k==200) //SEND PARAMS

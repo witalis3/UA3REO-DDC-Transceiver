@@ -274,6 +274,20 @@ inline void FPGA_fpgadata_sendparam(void)
 	//clock
 	FPGA_clockRise();
 	FPGA_clockFall();
+	
+	//STAGE 10
+	//OUT ADC OFFSET
+	FPGA_writePacket(((CALIBRATE.adc_offset & (0XFF << 8)) >> 8));
+	//clock
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	//STAGE 11
+	//OUT ADC OFFSET
+	FPGA_writePacket(CALIBRATE.adc_offset & 0XFF);
+	//clock
+	FPGA_clockRise();
+	FPGA_clockFall();
 }
 
 inline void FPGA_fpgadata_getparam(void)

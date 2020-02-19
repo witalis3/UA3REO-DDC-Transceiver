@@ -72,7 +72,7 @@ struct t_CALIBRATE CALIBRATE = {
 	.swr_meter_diode_drop = 0.62f, //Падение напряжения на диодах
 	.swr_meter_trans_rate = 10.0f, //Коэффициент трансформации КСВ метра
 	.swr_meter_ref_sub = 0.0f,	 //% вычитаемого FWD из REF
-	.adc_offset = 0, //Калибровка смещения по входу ADC (ПО DC)
+	.adc_offset = 177, //Калибровка смещения по входу ADC (ПО DC)
 };
 
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
