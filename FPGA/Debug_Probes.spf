@@ -82,6 +82,6 @@
       <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
     </view>
-    <log data="84FF94FF94FFC4FF15FFE4FF05FF84FF" max_size="8" size="8" time="BFA4C4E500000000BFA4C4E500000000BFA4C4E500000000CFA4C4E500000000CFA4C4E500000000CFA4C4E500000000CFA4C4E500000000CFA4C4E500000000" width="16"/>
+    <log data="C6FFD6FF67FF06FF67FFA6FF47FFE6FF" max_size="8" size="8" time="7D68D4E5000000007D68D4E5000000007D68D4E5000000007D68D4E5000000007D68D4E5000000007D68D4E5000000007D68D4E5000000008D68D4E500000000" width="16"/>
   </instance>
 </session>

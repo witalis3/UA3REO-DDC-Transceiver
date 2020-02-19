@@ -292,7 +292,7 @@ void TRX_DoAutoGain(void)
 			//sendToDebug_str("AUTOGAIN LPF+BPF+ATT\r\n");
 			break;
 		case 1:																		 //сменили состояние, обрабатываем результаты
-			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
+			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(-CALIBRATE.att_db)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
@@ -313,7 +313,7 @@ void TRX_DoAutoGain(void)
 		case 3: //сменили состояние, обрабатываем результаты
 			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE)
 				autogain_stage -= 3;																			//слишком большое усиление, возвращаемся на этап назад
-			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(LNA_GAIN_DB) / db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем включить АТТ+PREAMP - переходим на следующий этап (+20dB-12dB)
+			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(CALIBRATE.lna_gain_db) / db2rateV(-CALIBRATE.att_db)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем включить АТТ+PREAMP - переходим на следующий этап (+20dB-12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
@@ -334,7 +334,7 @@ void TRX_DoAutoGain(void)
 		case 5: //сменили состояние, обрабатываем результаты
 			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE)
 				autogain_stage -= 3;												 //слишком большое усиление, возвращаемся на этап назад
-			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
+			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(-CALIBRATE.att_db)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;

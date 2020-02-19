@@ -23,8 +23,6 @@
 #define TOUCHPAD_DELAY 200				//Время защиты от анти-дребезга нажания на тачпад
 #define ADC_VREF 2.25f					//опорное напряжение АЦП, при подаче на вход которого АЦП отдаёт максимальное значение, вольт
 #define ADC_RF_TRANS_RATIO 4			//коэффициент трансформации трансформатора :) на входе АЦП
-#define ATT_DB 12						//подавление в аттенюаторе
-#define LNA_GAIN_DB 20				//усиление в МШУ предусилителе (LNA)
 #define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
 #define AUTOGAIN_CORRECTOR_WAITSTEP 7   //ожидание усреднения результатов при работе автокорректора входных цепей
 #define ENCODER_INVERT 1				//инвертировать вращение влево-вправо у основного энкодера
@@ -43,25 +41,6 @@
 #define FMC_REMAP true		//ремап памяти FMC
 #define FSMC_REGISTER_SELECT 18 //из FSMC настроек в STM32Cube (A18, A6, и т.д.)
 #define SCREEN_ROTATE 0			//перевернуть экран вверх ногами
-
-//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности)
-//Далее выставляются средние пограничные частоты срабатывания
-#define LPF_END 32000000
-#define BPF_0_START 132000000
-#define BPF_0_END 165000000
-#define BPF_1_START 1600000
-#define BPF_1_END 2650000
-#define BPF_2_START 2650000
-#define BPF_2_END 4850000
-#define BPF_3_START 4850000
-#define BPF_3_END 7500000
-#define BPF_4_START 7500000
-#define BPF_4_END 12800000
-#define BPF_5_START 12800000
-#define BPF_5_END 17000000
-#define BPF_6_START 17000000
-#define BPF_6_END 34000000
-#define BPF_7_HPF 34000000
 
 #define FPGA_BUS_FULL_SCALE 65536		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
 #define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE*(float64_t)FPGA_BUS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
@@ -91,6 +70,26 @@ extern struct t_CALIBRATE
 	float32_t swr_meter_trans_rate; //Коэффициент трансформации КСВ метра
 	float32_t swr_meter_ref_sub; //% вычитаемого FWD из REF
 	int16_t adc_offset; //Калибровка смещения по входу ADC (ПО DC)
+	float32_t att_db;						//подавление в аттенюаторе, dB
+	float32_t lna_gain_db;				//усиление в МШУ предусилителе (LNA), dB
+	//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
+	//Далее выставляются средние пограничные частоты срабатывания
+	uint32_t LPF_END;
+	uint32_t BPF_0_START; //UHF
+	uint32_t BPF_0_END; //UHF
+	uint32_t BPF_1_START;
+	uint32_t BPF_1_END;
+	uint32_t BPF_2_START;
+	uint32_t BPF_2_END;
+	uint32_t BPF_3_START;
+	uint32_t BPF_3_END;
+	uint32_t BPF_4_START;
+	uint32_t BPF_4_END;
+	uint32_t BPF_5_START;
+	uint32_t BPF_5_END;
+	uint32_t BPF_6_START;
+	uint32_t BPF_6_END;
+	uint32_t BPF_7_HPF;
 } CALIBRATE;
 
 typedef struct

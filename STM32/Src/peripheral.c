@@ -234,18 +234,18 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 9 && TRX.ATT) //ATT_ON
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			if (registerNumber == 10 && (!TRX.LPF || TRX_getFrequency(CurrentVFO()) > LPF_END)) //LPF_OFF
+			if (registerNumber == 10 && (!TRX.LPF || TRX_getFrequency(CurrentVFO()) > CALIBRATE.LPF_END)) //LPF_OFF
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 11 && (!TRX.BPF || TRX_getFrequency(CurrentVFO()) < BPF_1_START)) //BPF_OFF
+			if (registerNumber == 11 && (!TRX.BPF || TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_1_START)) //BPF_OFF
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 12 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_0_START && TRX_getFrequency(CurrentVFO()) < BPF_0_END) //BPF_0
+			if (registerNumber == 12 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_0_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_0_END) //BPF_0
 			{
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
 				hpf_lock = true;														 //блокируем HPF для выделенного BPF фильтра УКВ
 			}
-			if (registerNumber == 13 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_7_HPF && !hpf_lock)
+			if (registerNumber == 13 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_7_HPF && !hpf_lock)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_7_HPF
-			if (registerNumber == 14 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_6_START && TRX_getFrequency(CurrentVFO()) < BPF_6_END)
+			if (registerNumber == 14 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_6_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_6_END)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_6
 			//if(registerNumber==15) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			
@@ -258,15 +258,15 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 				if (TRX_Fan_Timeout > 0)
 					TRX_Fan_Timeout--;
 			}
-			if (registerNumber == 19 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_1_START && TRX_getFrequency(CurrentVFO()) < BPF_1_END) //BPF_1
+			if (registerNumber == 19 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_1_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_1_END) //BPF_1
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 20 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_2_START && TRX_getFrequency(CurrentVFO()) < BPF_2_END) //BPF_2
+			if (registerNumber == 20 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_2_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_2_END) //BPF_2
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 21 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_3_START && TRX_getFrequency(CurrentVFO()) < BPF_3_END) //BPF_3
+			if (registerNumber == 21 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_3_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_3_END) //BPF_3
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 22 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_4_START && TRX_getFrequency(CurrentVFO()) < BPF_4_END) //BPF_4
+			if (registerNumber == 22 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_4_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_4_END) //BPF_4
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 23 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= BPF_5_START && TRX_getFrequency(CurrentVFO()) < BPF_5_END) //BPF_5
+			if (registerNumber == 23 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_5_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_5_END) //BPF_5
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
 			
 		}
