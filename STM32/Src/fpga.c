@@ -214,7 +214,7 @@ inline void FPGA_fpgadata_sendparam(void)
 	//out PTT+PREAMP
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK));
 	if (!TRX_on_TX())
-		bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX.Preamp);
+		bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX.ADC_Driver);
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_SHDN);
 	if (TRX_on_TX())

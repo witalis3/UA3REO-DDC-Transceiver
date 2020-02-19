@@ -284,7 +284,7 @@ void TRX_DoAutoGain(void)
 		switch (autogain_stage)
 		{
 		case 0: //этап 1 - включаем ДПФ, ЛПФ, Аттенюатор, выключаем предусилитель (-12dB)
-			TRX.Preamp = false;
+			TRX.LNA = false;
 			TRX.ATT = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
@@ -303,7 +303,7 @@ void TRX_DoAutoGain(void)
 			}
 			break;
 		case 2: //этап 1 - включаем ДПФ, ЛПФ, выключаем Аттенюатор, выключаем предусилитель (+0dB)
-			TRX.Preamp = false;
+			TRX.LNA = false;
 			TRX.ATT = false;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
@@ -313,7 +313,7 @@ void TRX_DoAutoGain(void)
 		case 3: //сменили состояние, обрабатываем результаты
 			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE)
 				autogain_stage -= 3;																			//слишком большое усиление, возвращаемся на этап назад
-			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(PREAMP_GAIN_DB) / db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем включить АТТ+PREAMP - переходим на следующий этап (+20dB-12dB)
+			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(LNA_GAIN_DB) / db2rateV(ATT_DB)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем включить АТТ+PREAMP - переходим на следующий этап (+20dB-12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
@@ -324,7 +324,7 @@ void TRX_DoAutoGain(void)
 			}
 			break;
 		case 4: //этап 2 - включаем ДПФ, ЛПФ, Аттенюатор, Предусилитель (+8dB)
-			TRX.Preamp = true;
+			TRX.LNA = true;
 			TRX.ATT = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;
@@ -345,7 +345,7 @@ void TRX_DoAutoGain(void)
 			}
 			break;
 		case 6: //этап 3 - включаем ДПФ, ЛПФ, Предусилитель, выключаем Аттенюатор (+20dB)
-			TRX.Preamp = true;
+			TRX.LNA = true;
 			TRX.ATT = false;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_stage++;

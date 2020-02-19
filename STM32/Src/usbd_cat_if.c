@@ -398,7 +398,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			if (strcmp(arguments, "0") == 0)
 			{
-				if (TRX.Preamp)
+				if (TRX.LNA)
 					CAT_Transmit("PA01;");
 				else
 					CAT_Transmit("PA00;");

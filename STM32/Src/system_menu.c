@@ -10,13 +10,6 @@
 #include "agc.h"
 #include "screen_layout.h"
 
-static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, bool onlyVal);
-static void redrawCurrentItem(void);
-static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw);
-static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir);
-static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
-static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
-
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_IFGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -58,10 +51,11 @@ static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
 static void SYSMENU_HANDL_ADC_SHDN(int8_t direction);
 static void SYSMENU_HANDL_ADC_DITH(int8_t direction);
-static void SYSMENU_HANDL_ADC_CIC(int8_t direction);
-static void SYSMENU_HANDL_ADC_CICCOMP(int8_t direction);
-static void SYSMENU_HANDL_ADC_TXCICCOMP(int8_t direction);
-static void SYSMENU_HANDL_ADC_DAC(int8_t direction);
+static void SYSMENU_HANDL_ADC_CIC_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_ADC_CICCOMP_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_ADC_DAC_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction);
 
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
@@ -158,14 +152,15 @@ static uint8_t sysmenu_fft_item_count = sizeof(sysmenu_fft_handlers) / sizeof(sy
 
 static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 	{
+		{"ADC Driver", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_Driver, SYSMENU_HANDL_ADC_DRIVER},
 		{"ADC Preamp", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},
 		{"ADC Dither", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
 		{"ADC Randomizer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
 		{"ADC Shutdown", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
-		{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CIC_GAINER_val, SYSMENU_HANDL_ADC_CIC},
-		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CICFIR_GAINER_val, SYSMENU_HANDL_ADC_CICCOMP},
-		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.TXCICFIR_GAINER_val, SYSMENU_HANDL_ADC_TXCICCOMP},
-		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.DAC_GAINER_val, SYSMENU_HANDL_ADC_DAC},
+		{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CIC_GAINER_val, SYSMENU_HANDL_ADC_CIC_SHIFT},
+		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CICFIR_GAINER_val, SYSMENU_HANDL_ADC_CICCOMP_SHIFT},
+		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.TXCICFIR_GAINER_val, SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT},
+		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.DAC_GAINER_val, SYSMENU_HANDL_ADC_DAC_SHIFT},
 };
 static uint8_t sysmenu_adc_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
 
@@ -186,7 +181,14 @@ static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 };
 static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
 
-//MENU VARIABLES
+//COMMON MENU
+static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, bool onlyVal);
+static void redrawCurrentItem(void);
+static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw);
+static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir);
+static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
+static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
+
 static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
 static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
 static uint8_t systemMenuIndex = 0;
@@ -701,6 +703,15 @@ static void SYSMENU_HANDL_ADCMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
+static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction)
+{
+	if (direction > 0)
+		TRX.ADC_Driver = true;
+	if (direction < 0)
+		TRX.ADC_Driver = false;
+	FPGA_NeedSendParams = true;
+}
+
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction)
 {
 	if (direction > 0)
@@ -737,7 +748,7 @@ static void SYSMENU_HANDL_ADC_DITH(int8_t direction)
 	FPGA_NeedSendParams = true;
 }
 
-static void SYSMENU_HANDL_ADC_CIC(int8_t direction)
+static void SYSMENU_HANDL_ADC_CIC_SHIFT(int8_t direction)
 {
 	TRX.CIC_GAINER_val += direction;
 	if (TRX.CIC_GAINER_val < 32)
@@ -746,7 +757,7 @@ static void SYSMENU_HANDL_ADC_CIC(int8_t direction)
 		TRX.CIC_GAINER_val = 88;
 }
 
-static void SYSMENU_HANDL_ADC_CICCOMP(int8_t direction)
+static void SYSMENU_HANDL_ADC_CICCOMP_SHIFT(int8_t direction)
 {
 	TRX.CICFIR_GAINER_val += direction;
 	if (TRX.CICFIR_GAINER_val < 16)
@@ -755,7 +766,7 @@ static void SYSMENU_HANDL_ADC_CICCOMP(int8_t direction)
 		TRX.CICFIR_GAINER_val = 64;
 }
 
-static void SYSMENU_HANDL_ADC_TXCICCOMP(int8_t direction)
+static void SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT(int8_t direction)
 {
 	TRX.TXCICFIR_GAINER_val += direction;
 	if (TRX.TXCICFIR_GAINER_val < 16)
@@ -764,7 +775,7 @@ static void SYSMENU_HANDL_ADC_TXCICCOMP(int8_t direction)
 		TRX.TXCICFIR_GAINER_val = 38;
 }
 
-static void SYSMENU_HANDL_ADC_DAC(int8_t direction)
+static void SYSMENU_HANDL_ADC_DAC_SHIFT(int8_t direction)
 {
 	TRX.DAC_GAINER_val += direction;
 	if (TRX.DAC_GAINER_val < 14)

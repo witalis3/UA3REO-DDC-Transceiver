@@ -24,7 +24,7 @@
 #define ADC_VREF 2.25f					//опорное напряжение АЦП, при подаче на вход которого АЦП отдаёт максимальное значение, вольт
 #define ADC_RF_TRANS_RATIO 4			//коэффициент трансформации трансформатора :) на входе АЦП
 #define ATT_DB 12						//подавление в аттенюаторе
-#define PREAMP_GAIN_DB 20				//усиление в предусилителе
+#define LNA_GAIN_DB 20				//усиление в МШУ предусилителе (LNA)
 #define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
 #define AUTOGAIN_CORRECTOR_WAITSTEP 7   //ожидание усреднения результатов при работе автокорректора входных цепей
 #define ENCODER_INVERT 1				//инвертировать вращение влево-вправо у основного энкодера
@@ -70,6 +70,7 @@
 
 #define EEPROM_OP_DELAY 30 // задержки при работе с EEPROM
 #define MAX_WIFIPASS_LENGTH 32
+#define WIFI_DEBUG false //вывод отладки WIFI на экран
 
 #define W25Q16_COMMAND_Write_Enable 0x06
 #define W25Q16_COMMAND_Erase_Chip 0xC7
@@ -106,7 +107,8 @@ extern struct TRX_SETTINGS
 	VFO VFO_A;
 	VFO VFO_B;
 	bool AGC;
-	bool Preamp;
+	bool ADC_Driver;
+	bool LNA;
 	bool ATT;
 	bool LPF;
 	bool BPF;

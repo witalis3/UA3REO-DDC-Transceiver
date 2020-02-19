@@ -220,7 +220,7 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 		{
 			//REGISTER 1
 			//if(registerNumber==0) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
-			//if(registerNumber==1 && !TRX_on_TX()) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // LNA
+			if(registerNumber==1 && !TRX_on_TX() && TRX.LNA) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // LNA
 			//if(registerNumber==2) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==3) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==4) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
@@ -381,24 +381,24 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_preatt_prev != PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
-			if (!TRX.Preamp && !TRX.ATT)
+			if (!TRX.LNA && !TRX.ATT)
 			{
-				TRX.Preamp = true;
+				TRX.LNA = true;
 				TRX.ATT = false;
 			}
-			else if (TRX.Preamp && !TRX.ATT)
+			else if (TRX.LNA && !TRX.ATT)
 			{
-				TRX.Preamp = true;
+				TRX.LNA = true;
 				TRX.ATT = true;
 			}
-			else if (TRX.Preamp && TRX.ATT)
+			else if (TRX.LNA && TRX.ATT)
 			{
-				TRX.Preamp = false;
+				TRX.LNA = false;
 				TRX.ATT = true;
 			}
-			else if (!TRX.Preamp && TRX.ATT)
+			else if (!TRX.LNA && TRX.ATT)
 			{
-				TRX.Preamp = false;
+				TRX.LNA = false;
 				TRX.ATT = false;
 			}
 			LCD_UpdateQuery.TopButtons = true;

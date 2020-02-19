@@ -120,7 +120,8 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.Mode = TRX_MODE_USB; //сохранённая мода VFO-B
 		TRX.VFO_B.Filter_Width = 2700; //сохранённая ширина полосы VFO-B
 		TRX.current_vfo = false;	   // текущая VFO (false - A)
-		TRX.Preamp = false;			   //предусилитель
+		TRX.ADC_Driver = false;			   //предусилитель (драйвер АЦП)
+		TRX.LNA = false;					//LNA (малошумящий усилитель)
 		TRX.AGC = true;				   //AGC
 		TRX.ATT = false;			   //аттенюатор
 		TRX.LPF = true;				   //ФНЧ
