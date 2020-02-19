@@ -469,7 +469,7 @@ void TIM6_DAC_IRQHandler(void)
 
 		CPULOAD_Calc(); // Calculate CPU load
 		
-    if (true)
+    if (TRX.Debug_Console)
     {
       //Save Debug variables
       uint32_t dbg_FPGA_samples = FPGA_samples;

@@ -64,7 +64,7 @@ struct t_CALIBRATE CALIBRATE = {
 		100, // 30 mhz
 		100  // 31+ mhz
 	},
-	.adc_calibration = 0.1f,	   //калибровка АЦП, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
+	.smeter_calibration = 0.1f,	   //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
 	.swr_meter_Rtop = 0.1f,		   //Верхнее плечо делителя напряжения КСВ метра, ом
 	.swr_meter_Rbottom = 510.0f,   //Нижнее плечо делителя напряжения КСВ метра, ом
 	.swr_meter_fwd_diff = 0.0f,	//Разница напряжения FWD получаемым АЦП с реальным, в
@@ -72,6 +72,7 @@ struct t_CALIBRATE CALIBRATE = {
 	.swr_meter_diode_drop = 0.62f, //Падение напряжения на диодах
 	.swr_meter_trans_rate = 10.0f, //Коэффициент трансформации КСВ метра
 	.swr_meter_ref_sub = 0.0f,	 //% вычитаемого FWD из REF
+	.adc_offset = 0, //Калибровка смещения по входу ADC (ПО DC)
 };
 
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
@@ -178,6 +179,7 @@ void LoadSettings(bool clear)
 		TRX.CW_KEYER_WPM = 30;		  //Скорость автоматического ключа
 		TRX.ENDBit = 100;			  //Бит окончания успешной записи в eeprom
 		TRX.S_METER_Style = false;	//Вид S-метра (свечка или полоска)
+		TRX.Debug_Console = false;  //Вывод отладки в DEBUG/UART порт
 		SaveSettings();
 	}
 }

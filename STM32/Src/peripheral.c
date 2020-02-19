@@ -765,15 +765,6 @@ void PERIPH_ProcessSWRMeter(void)
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.TopButtons = true;
 	}
-	/*
-	float32_t power = (TRX_SWR_forward * TRX_SWR_forward) / 50.0f;
-	if(power<0.0f) power=0.0f;
-	sendToDebug_float32(TRX_SWR_forward,false);
-	sendToDebug_float32(TRX_SWR_backward,false);
-	sendToDebug_float32(TRX_SWR,false);
-	sendToDebug_float32(power,false);
-	sendToDebug_newline();
-	*/
 }
 
 static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN)

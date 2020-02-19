@@ -80,15 +80,16 @@
 
 extern struct t_CALIBRATE
 {
-	uint8_t rf_out_power[32];
-	float32_t adc_calibration;
-	float32_t swr_meter_Rtop;
-	float32_t swr_meter_Rbottom;
-	float32_t swr_meter_fwd_diff;
-	float32_t swr_meter_ref_diff;
-	float32_t swr_meter_diode_drop;
-	float32_t swr_meter_trans_rate;
-	float32_t swr_meter_ref_sub;
+	uint8_t rf_out_power[32]; //калибровка выходной мощности на каждый мегагерц
+	float32_t smeter_calibration; //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
+	float32_t swr_meter_Rtop; //Верхнее плечо делителя напряжения КСВ метра, ом
+	float32_t swr_meter_Rbottom; //Нижнее плечо делителя напряжения КСВ метра, ом
+	float32_t swr_meter_fwd_diff; //Разница напряжения FWD получаемым АЦП с реальным, в
+	float32_t swr_meter_ref_diff; //Разница напряжения REF получаемым АЦП с реальным, в
+	float32_t swr_meter_diode_drop; //Падение напряжения на диодах
+	float32_t swr_meter_trans_rate; //Коэффициент трансформации КСВ метра
+	float32_t swr_meter_ref_sub; //% вычитаемого FWD из REF
+	int16_t adc_offset; //Калибровка смещения по входу ADC (ПО DC)
 } CALIBRATE;
 
 typedef struct
@@ -162,6 +163,7 @@ extern struct TRX_SETTINGS
 	bool S_METER_Style;
 	uint8_t TX_AGC_speed;
 	uint8_t ENDBit;
+	bool Debug_Console;
 } TRX;
 
 extern volatile bool NeedSaveSettings;

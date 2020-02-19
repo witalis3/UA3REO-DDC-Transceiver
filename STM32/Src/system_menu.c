@@ -19,9 +19,6 @@ static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_IFGain(int8_t direction);
-static void SYSMENU_HANDL_TRX_RX_AGCSpeed(int8_t direction);
-static void SYSMENU_HANDL_TRX_TX_AGCSpeed(int8_t direction);
-static void SYSMENU_HANDL_TRX_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction);
@@ -30,10 +27,33 @@ static void SYSMENU_HANDL_TRX_BPFFilter(int8_t direction);
 static void SYSMENU_HANDL_TRX_MICIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_USBIN(int8_t direction);
-static void SYSMENU_HANDL_FFTEnabled(int8_t direction);
+static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction);
+static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
+
+static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
+
+static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
+static void SYSMENU_HANDL_CW_Decoder(int8_t direction);
+static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
+static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
+static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
+static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
+
+static void SYSMENU_HANDL_LCD_Brightness(int8_t direction);
+static void SYSMENU_HANDL_LCD_SMeter_Style(int8_t direction);
+static void SYSMENU_HANDL_LCD_Standby_Time(int8_t direction);
+
+static void SYSMENU_HANDL_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_FFT_Window(int8_t direction);
-static void SYSMENU_HANDL_FFTZoom(int8_t direction);
+static void SYSMENU_HANDL_FFT_Zoom(int8_t direction);
+
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
 static void SYSMENU_HANDL_ADC_SHDN(int8_t direction);
@@ -42,26 +62,15 @@ static void SYSMENU_HANDL_ADC_CIC(int8_t direction);
 static void SYSMENU_HANDL_ADC_CICCOMP(int8_t direction);
 static void SYSMENU_HANDL_ADC_TXCICCOMP(int8_t direction);
 static void SYSMENU_HANDL_ADC_DAC(int8_t direction);
-static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
-static void SYSMENU_HANDL_CWDecoder(int8_t direction);
-static void SYSMENU_HANDL_CWSelfHear(int8_t direction);
-static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
-static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
-static void SYSMENU_HANDL_LCD_Brightness(int8_t direction);
-static void SYSMENU_HANDL_LCD_SMeter_Style(int8_t direction);
-static void SYSMENU_HANDL_LCD_Standby_Time(int8_t direction);
-static void SYSMENU_HANDL_ENCODER_SLOW_RATE(int8_t direction);
-static void SYSMENU_HANDL_SETTIME(int8_t direction);
-static void SYSMENU_HANDL_Key_timeout(int8_t direction);
-static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction);
-static void SYSMENU_HANDL_SSB_LPF_pass(int8_t direction);
-static void SYSMENU_HANDL_CW_LPF_pass(int8_t direction);
-static void SYSMENU_HANDL_FM_LPF_pass(int8_t direction);
-static void SYSMENU_HANDL_Bootloader(int8_t direction);
+
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction);
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction);
+
+static void SYSMENU_HANDL_SETTIME(int8_t direction);
+static void SYSMENU_HANDL_Bootloader(int8_t direction);
+
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
@@ -98,8 +107,9 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"AutoGainer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
 		{"LPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.LPF, SYSMENU_HANDL_TRX_LPFFilter},
 		{"BPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BPF, SYSMENU_HANDL_TRX_BPFFilter},
-		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_ENCODER_SLOW_RATE},
+		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE},
 		{"Two Signal TUNE", SYSMENU_BOOLEAN, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
+		{"DEBUG Console", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Debug_Console, SYSMENU_HANDL_TRX_DEBUG_CONSOLE},
 		{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
 		{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
 		{"USB IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_USB, SYSMENU_HANDL_TRX_USBIN},
@@ -108,24 +118,24 @@ static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sy
 
 static struct sysmenu_item_handler sysmenu_bw_handlers[] =
 	{
-		{"SSB HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_HPF_pass, SYSMENU_HANDL_SSB_HPF_pass},
-		{"SSB LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_Filter, SYSMENU_HANDL_SSB_LPF_pass},
-		{"CW LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_Filter, SYSMENU_HANDL_CW_LPF_pass},
-		{"FM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.FM_Filter, SYSMENU_HANDL_FM_LPF_pass},
-		{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_TRX_FMSquelch},
-		{"RX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_speed, SYSMENU_HANDL_TRX_RX_AGCSpeed},
-		{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_TRX_TX_AGCSpeed},
+		{"SSB HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_HPF_pass, SYSMENU_HANDL_AUDIO_SSB_HPF_pass},
+		{"SSB LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_pass},
+		{"CW LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_Filter, SYSMENU_HANDL_AUDIO_CW_LPF_pass},
+		{"FM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.FM_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_pass},
+		{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
+		{"RX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_speed, SYSMENU_HANDL_AUDIO_RX_AGCSpeed},
+		{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_AUDIO_TX_AGCSpeed},
 };
 static uint8_t sysmenu_bw_item_count = sizeof(sysmenu_bw_handlers) / sizeof(sysmenu_bw_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 	{
-		{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.Key_timeout, SYSMENU_HANDL_Key_timeout},
+		{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
 		{"CW Generator shift", SYSMENU_UINT16, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
-		{"CW Self Hear", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CWSelfHear},
+		{"CW Self Hear", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
 		{"CW Keyer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
 		{"CW Keyer WPM", SYSMENU_UINT8, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
-		{"CW Decoder", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CWDecoder},
+		{"CW Decoder", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CW_Decoder},
 };
 static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
 
@@ -139,8 +149,8 @@ static uint8_t sysmenu_lcd_item_count = sizeof(sysmenu_lcd_handlers) / sizeof(sy
 
 static struct sysmenu_item_handler sysmenu_fft_handlers[] =
 	{
-		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_FFTZoom},
-		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_FFTEnabled},
+		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_FFT_Zoom},
+		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_FFT_Enabled},
 		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_FFT_Averaging},
 		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_FFT_Window},
 };
@@ -176,6 +186,7 @@ static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 };
 static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
 
+//MENU VARIABLES
 static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
 static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
 static uint8_t systemMenuIndex = 0;
@@ -189,72 +200,29 @@ static bool sysmenu_wifi_setAPpassword_menu_opened = false;
 uint16_t sysmenu_wifi_rescan_interval = 0;
 uint8_t sysmenu_wifi_selected_ap_index = 0;
 uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
+
 //SPEC analyser
 bool sysmenu_spectrum_opened = false;
 uint32_t sysmenu_spectrum_lastfreq = 0;
-//
-void drawSystemMenu(bool draw_background)
+
+//TRX MENU
+
+static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 {
-	if (LCD_busy)
-	{
-		LCD_UpdateQuery.SystemMenu = true;
-		return;
-	}
-	if (!LCD_systemMenuOpened)
-		return;
-	if (LCD_timeMenuOpened)
-	{
-		SYSMENU_HANDL_SETTIME(0);
-		return;
-	}
-	if (sysmenu_wifi_selectap_menu_opened)
-	{
-		SYSMENU_WIFI_DrawSelectAPMenu(false);
-		return;
-	}
-	if (sysmenu_wifi_setAPpassword_menu_opened)
-	{
-		SYSMENU_WIFI_DrawAPpasswordMenu(false);
-		return;
-	}
-	if (sysmenu_spectrum_opened)
-	{
-		SPEC_Draw();
-		return;
-	}
-	LCD_busy = true;
-
-	sysmenu_i = 0;
-	sysmenu_y = 5;
-
-	if (draw_background)
-		LCDDriver_Fill(COLOR_BLACK);
-
-	for (uint8_t m = 0; m < *sysmenu_item_count_selected; m++)
-		drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
-
-	LCD_UpdateQuery.SystemMenu = false;
-	LCD_busy = false;
+	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_trx_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
 }
 
-static void SYSMENU_HANDL_TRX_RX_AGCSpeed(int8_t direction)
+void SYSMENU_RFPOWER_HOTKEY(void)
 {
-	TRX.RX_AGC_speed += direction;
-	if (TRX.RX_AGC_speed < 1)
-		TRX.RX_AGC_speed = 1;
-	if (TRX.RX_AGC_speed > 20)
-		TRX.RX_AGC_speed = 20;
-	InitAGC();
-}
-
-static void SYSMENU_HANDL_TRX_TX_AGCSpeed(int8_t direction)
-{
-	TRX.TX_AGC_speed += direction;
-	if (TRX.TX_AGC_speed < 1)
-		TRX.TX_AGC_speed = 1;
-	if (TRX.TX_AGC_speed > 50)
-		TRX.TX_AGC_speed = 50;
-	InitAGC();
+	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_trx_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction)
@@ -316,15 +284,6 @@ static void SYSMENU_HANDL_TRX_IFGain(int8_t direction)
 		TRX.IF_Gain = 200;
 }
 
-static void SYSMENU_HANDL_TRX_FMSquelch(int8_t direction)
-{
-	if (direction < 0 && TRX.FM_SQL_threshold == 0)
-		return;
-	TRX.FM_SQL_threshold += direction;
-	if (TRX.FM_SQL_threshold > 10)
-		TRX.FM_SQL_threshold = 10;
-}
-
 static void SYSMENU_HANDL_TRX_MICIN(int8_t direction)
 {
 	if (direction > 0)
@@ -361,20 +320,231 @@ static void SYSMENU_HANDL_TRX_USBIN(int8_t direction)
 	TRX_Restart_Mode();
 }
 
-static void SYSMENU_HANDL_CWDecoder(int8_t direction)
+static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction)
+{
+	TRX.ENCODER_SLOW_RATE += direction;
+	if (TRX.ENCODER_SLOW_RATE < 1)
+		TRX.ENCODER_SLOW_RATE = 1;
+	if (TRX.ENCODER_SLOW_RATE > 100)
+		TRX.ENCODER_SLOW_RATE = 100;
+}
+
+static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Debug_Console = true;
+	if (direction < 0)
+		TRX.Debug_Console = false;
+}
+
+//AUDIO MENU
+
+static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_AUDIO_SSB_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 1;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_AUDIO_CW_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 2;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_AUDIO_FM_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 3;
+	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction)
+{
+	TRX.RX_AGC_speed += direction;
+	if (TRX.RX_AGC_speed < 1)
+		TRX.RX_AGC_speed = 1;
+	if (TRX.RX_AGC_speed > 20)
+		TRX.RX_AGC_speed = 20;
+	InitAGC();
+}
+
+static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction)
+{
+	TRX.TX_AGC_speed += direction;
+	if (TRX.TX_AGC_speed < 1)
+		TRX.TX_AGC_speed = 1;
+	if (TRX.TX_AGC_speed > 50)
+		TRX.TX_AGC_speed = 50;
+	InitAGC();
+}
+
+static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
+{
+	if (direction < 0 && TRX.FM_SQL_threshold == 0)
+		return;
+	TRX.FM_SQL_threshold += direction;
+	if (TRX.FM_SQL_threshold > 10)
+		TRX.FM_SQL_threshold = 10;
+}
+
+static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)
+{
+	TRX.SSB_HPF_pass += direction * 100;
+	if (TRX.SSB_HPF_pass < 100)
+		TRX.SSB_HPF_pass = 100;
+	if (TRX.SSB_HPF_pass > 500)
+		TRX.SSB_HPF_pass = 500;
+	ReinitAudioFilters();
+}
+
+static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
+{
+	if (direction < 0)
+		TRX.CW_Filter = 300;
+	else
+		TRX.CW_Filter = 500;
+
+	ReinitAudioFilters();
+	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
+}
+
+static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction)
+{
+	if (direction > 0)
+	{
+		if (TRX.SSB_Filter == 1400)
+			TRX.SSB_Filter = 1600;
+		else if (TRX.SSB_Filter == 1600)
+			TRX.SSB_Filter = 1800;
+		else if (TRX.SSB_Filter == 1800)
+			TRX.SSB_Filter = 2100;
+		else if (TRX.SSB_Filter == 2100)
+			TRX.SSB_Filter = 2300;
+		else if (TRX.SSB_Filter == 2300)
+			TRX.SSB_Filter = 2500;
+		else if (TRX.SSB_Filter == 2500)
+			TRX.SSB_Filter = 2700;
+		else if (TRX.SSB_Filter == 2700)
+			TRX.SSB_Filter = 2900;
+		else if (TRX.SSB_Filter == 2900)
+			TRX.SSB_Filter = 3000;
+		else if (TRX.SSB_Filter == 3000)
+			TRX.SSB_Filter = 3200;
+		else if (TRX.SSB_Filter == 3200)
+			TRX.SSB_Filter = 3400;
+	}
+	else
+	{
+		if (TRX.SSB_Filter == 1600)
+			TRX.SSB_Filter = 1400;
+		else if (TRX.SSB_Filter == 1800)
+			TRX.SSB_Filter = 1600;
+		else if (TRX.SSB_Filter == 2100)
+			TRX.SSB_Filter = 1800;
+		else if (TRX.SSB_Filter == 2300)
+			TRX.SSB_Filter = 2100;
+		else if (TRX.SSB_Filter == 2500)
+			TRX.SSB_Filter = 2300;
+		else if (TRX.SSB_Filter == 2700)
+			TRX.SSB_Filter = 2500;
+		else if (TRX.SSB_Filter == 2900)
+			TRX.SSB_Filter = 2700;
+		else if (TRX.SSB_Filter == 3000)
+			TRX.SSB_Filter = 2900;
+		else if (TRX.SSB_Filter == 3200)
+			TRX.SSB_Filter = 3000;
+		else if (TRX.SSB_Filter == 3400)
+			TRX.SSB_Filter = 3200;
+	}
+
+	ReinitAudioFilters();
+	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
+}
+
+static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction)
+{
+	if (direction > 0)
+	{
+		if (TRX.FM_Filter == 5000)
+			TRX.FM_Filter = 6000;
+		else if (TRX.FM_Filter == 6000)
+			TRX.FM_Filter = 7000;
+		else if (TRX.FM_Filter == 7000)
+			TRX.FM_Filter = 8000;
+		else if (TRX.FM_Filter == 8000)
+			TRX.FM_Filter = 9000;
+		else if (TRX.FM_Filter == 9000)
+			TRX.FM_Filter = 9500;
+		else if (TRX.FM_Filter == 9500)
+			TRX.FM_Filter = 10000;
+		else if (TRX.FM_Filter == 10000)
+			TRX.FM_Filter = 15000;
+	}
+	else
+	{
+		if (TRX.FM_Filter == 6000)
+			TRX.FM_Filter = 5000;
+		else if (TRX.FM_Filter == 7000)
+			TRX.FM_Filter = 6000;
+		else if (TRX.FM_Filter == 8000)
+			TRX.FM_Filter = 7000;
+		else if (TRX.FM_Filter == 9000)
+			TRX.FM_Filter = 8000;
+		else if (TRX.FM_Filter == 9500)
+			TRX.FM_Filter = 9000;
+		else if (TRX.FM_Filter == 10000)
+			TRX.FM_Filter = 9500;
+		else if (TRX.FM_Filter == 15000)
+			TRX.FM_Filter = 10000;
+	}
+
+	ReinitAudioFilters();
+	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
+}
+
+//CW MENU
+
+static void SYSMENU_HANDL_CWMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_cw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_CW_WPM_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_cw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 4;
+	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_CW_Decoder(int8_t direction)
 {
 	if (direction > 0)
 		TRX.CWDecoder = true;
 	if (direction < 0)
 		TRX.CWDecoder = false;
-}
-
-static void SYSMENU_HANDL_FFTEnabled(int8_t direction)
-{
-	if (direction > 0)
-		TRX.FFT_Enabled = true;
-	if (direction < 0)
-		TRX.FFT_Enabled = false;
 }
 
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction)
@@ -384,6 +554,50 @@ static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction)
 		TRX.CW_GENERATOR_SHIFT_HZ = 100;
 	if (TRX.CW_GENERATOR_SHIFT_HZ > 10000)
 		TRX.CW_GENERATOR_SHIFT_HZ = 10000;
+}
+
+static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction)
+{
+	if (TRX.Key_timeout > 0 || direction > 0)
+		TRX.Key_timeout += direction * 50;
+	if (TRX.Key_timeout > 5000)
+		TRX.Key_timeout = 5000;
+}
+
+static void SYSMENU_HANDL_CW_Keyer(int8_t direction)
+{
+	if (direction > 0)
+		TRX.CW_KEYER = true;
+	if (direction < 0)
+		TRX.CW_KEYER = false;
+}
+
+static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction)
+{
+	TRX.CW_KEYER_WPM += direction;
+	if (TRX.CW_KEYER_WPM < 1)
+		TRX.CW_KEYER_WPM = 1;
+	if (TRX.CW_KEYER_WPM > 500)
+		TRX.CW_KEYER_WPM = 500;
+}
+
+static void SYSMENU_HANDL_CW_SelfHear(int8_t direction)
+{
+	if (direction > 0)
+		TRX.CW_SelfHear = true;
+	if (direction < 0)
+		TRX.CW_SelfHear = false;
+}
+
+//LCD MENU
+
+static void SYSMENU_HANDL_LCDMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_lcd_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_lcd_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_LCD_Brightness(int8_t direction)
@@ -412,51 +626,23 @@ static void SYSMENU_HANDL_LCD_SMeter_Style(int8_t direction)
 		TRX.S_METER_Style = false;
 }
 
-static void SYSMENU_HANDL_ENCODER_SLOW_RATE(int8_t direction)
+//FFT MENU
+
+static void SYSMENU_HANDL_FFTMENU(int8_t direction)
 {
-	TRX.ENCODER_SLOW_RATE += direction;
-	if (TRX.ENCODER_SLOW_RATE < 1)
-		TRX.ENCODER_SLOW_RATE = 1;
-	if (TRX.ENCODER_SLOW_RATE > 100)
-		TRX.ENCODER_SLOW_RATE = 100;
+	sysmenu_handlers_selected = &sysmenu_fft_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_fft_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
 }
 
-static void SYSMENU_HANDL_SETTIME(int8_t direction)
+static void SYSMENU_HANDL_FFT_Enabled(int8_t direction)
 {
-	if (!LCD_timeMenuOpened)
-		LCDDriver_Fill(COLOR_BLACK);
-	LCD_timeMenuOpened = true;
-	static uint8_t Hours;
-	static uint8_t Last_showed_Hours = 255;
-	static uint8_t Minutes;
-	static uint8_t Last_showed_Minutes = 255;
-	static uint8_t Seconds;
-	static uint8_t Last_showed_Seconds = 255;
-	static uint32_t Time;
-	char ctmp[50];
-	Time = RTC->TR;
-	Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
-	Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
-	Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
-	sprintf(ctmp, "%d", Hours);
-	addSymbols(ctmp, ctmp, 2, "0", false);
-	LCDDriver_printText(ctmp, 76, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 0 ? COLOR_WHITE : COLOR_BLACK, 3);
-	LCDDriver_printText(":", 124, 100, COLOR_BUTTON_TEXT, COLOR_BLACK, 3);
-	sprintf(ctmp, "%d", Minutes);
-	addSymbols(ctmp, ctmp, 2, "0", false);
-	LCDDriver_printText(ctmp, 148, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 1 ? COLOR_WHITE : COLOR_BLACK, 3);
-	LCDDriver_printText(":", 194, 100, COLOR_BUTTON_TEXT, COLOR_BLACK, 3);
-	sprintf(ctmp, "%d", Seconds);
-	addSymbols(ctmp, ctmp, 2, "0", false);
-	LCDDriver_printText(ctmp, 220, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 2 ? COLOR_WHITE : COLOR_BLACK, 3);
-}
-
-static void SYSMENU_HANDL_Key_timeout(int8_t direction)
-{
-	if (TRX.Key_timeout > 0 || direction > 0)
-		TRX.Key_timeout += direction * 50;
-	if (TRX.Key_timeout > 5000)
-		TRX.Key_timeout = 5000;
+	if (direction > 0)
+		TRX.FFT_Enabled = true;
+	if (direction < 0)
+		TRX.FFT_Enabled = false;
 }
 
 static void SYSMENU_HANDL_FFT_Averaging(int8_t direction)
@@ -475,6 +661,44 @@ static void SYSMENU_HANDL_FFT_Window(int8_t direction)
 		TRX.FFT_Window = 1;
 	if (TRX.FFT_Window > 3)
 		TRX.FFT_Window = 3;
+}
+
+static void SYSMENU_HANDL_FFT_Zoom(int8_t direction)
+{
+	if (direction > 0)
+	{
+		if (TRX.FFT_Zoom == 1)
+			TRX.FFT_Zoom = 2;
+		else if (TRX.FFT_Zoom == 2)
+			TRX.FFT_Zoom = 4;
+		else if (TRX.FFT_Zoom == 4)
+			TRX.FFT_Zoom = 8;
+		else if (TRX.FFT_Zoom == 8)
+			TRX.FFT_Zoom = 16;
+	}
+	else
+	{
+		if (TRX.FFT_Zoom == 2)
+			TRX.FFT_Zoom = 1;
+		else if (TRX.FFT_Zoom == 4)
+			TRX.FFT_Zoom = 2;
+		else if (TRX.FFT_Zoom == 8)
+			TRX.FFT_Zoom = 4;
+		else if (TRX.FFT_Zoom == 16)
+			TRX.FFT_Zoom = 8;
+	}
+	FFT_Init();
+}
+
+//ADC/DAC MENU
+
+static void SYSMENU_HANDL_ADCMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_adc_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_adc_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction)
@@ -549,169 +773,90 @@ static void SYSMENU_HANDL_ADC_DAC(int8_t direction)
 		TRX.DAC_GAINER_val = 32;
 }
 
-static void SYSMENU_HANDL_SSB_HPF_pass(int8_t direction)
+//WIFI MENU
+
+static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 {
-	TRX.SSB_HPF_pass += direction * 100;
-	if (TRX.SSB_HPF_pass < 100)
-		TRX.SSB_HPF_pass = 100;
-	if (TRX.SSB_HPF_pass > 500)
-		TRX.SSB_HPF_pass = 500;
-	ReinitAudioFilters();
+	sysmenu_handlers_selected = &sysmenu_wifi_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_wifi_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
 }
 
-static void SYSMENU_HANDL_CW_Keyer(int8_t direction)
+static void SYSMENU_WIFI_DrawSelectAPMenuCallback(void)
 {
-	if (direction > 0)
-		TRX.CW_KEYER = true;
-	if (direction < 0)
-		TRX.CW_KEYER = false;
+	sysmenu_wifi_rescan_interval = 0;
 }
 
-static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction)
+static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
 {
-	TRX.CW_KEYER_WPM += direction;
-	if (TRX.CW_KEYER_WPM < 1)
-		TRX.CW_KEYER_WPM = 1;
-	if (TRX.CW_KEYER_WPM > 500)
-		TRX.CW_KEYER_WPM = 500;
+	if (full_redraw || sysmenu_wifi_rescan_interval == 0)
+	{
+		LCDDriver_Fill(COLOR_BLACK);
+		LCDDriver_printText("AP Found:", 5, 5, COLOR_WHITE, COLOR_BLACK, 2);
+		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 33 + i * 24, COLOR_GREEN, COLOR_BLACK, 2);
+		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAY_SYSMENU_W, COLOR_WHITE);
+		WIFI_ListAP(SYSMENU_WIFI_DrawSelectAPMenuCallback);
+	}
+	sysmenu_wifi_rescan_interval++;
+	if (sysmenu_wifi_rescan_interval > 30)
+		sysmenu_wifi_rescan_interval = 0;
+	LCD_UpdateQuery.SystemMenu = true;
 }
 
-static void SYSMENU_HANDL_CW_LPF_pass(int8_t direction)
+static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir)
 {
-	if (direction < 0)
-		TRX.CW_Filter = 300;
+	if (dir < 0 && sysmenu_wifi_selected_ap_index > 0)
+		sysmenu_wifi_selected_ap_index--;
+	if (dir > 0 && sysmenu_wifi_selected_ap_index < WIFI_FOUNDED_AP_MAXCOUNT)
+		sysmenu_wifi_selected_ap_index++;
+	SYSMENU_WIFI_DrawSelectAPMenu(true);
+	if (dir == 0)
+	{
+		strcpy(TRX.WIFI_AP, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
+		WIFI_InitStateIndex = 0;
+		WIFI_State = WIFI_INITED;
+		sysmenu_wifi_selectap_menu_opened = false;
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+	}
+}
+
+static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw)
+{
+	if (full_redraw)
+	{
+		LCDDriver_Fill(COLOR_BLACK);
+		LCDDriver_printText("AP Password:", 5, 5, COLOR_WHITE, COLOR_BLACK, 2);
+	}
+
+	LCDDriver_printText(TRX.WIFI_PASSWORD, 10, 37, COLOR_GREEN, COLOR_BLACK, 2);
+	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
+}
+
+static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir)
+{
+	bool full_redraw = false;
+	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] == 0)
+		full_redraw = true;
+	TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] += dir;
+
+	//не показываем спецсимволы
+	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] = 33;
+	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] == 0)
+		full_redraw = true;
+
+	if (full_redraw)
+		SYSMENU_WIFI_DrawAPpasswordMenu(true);
 	else
-		TRX.CW_Filter = 500;
-
-	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
-}
-
-static void SYSMENU_HANDL_SSB_LPF_pass(int8_t direction)
-{
-	if (direction > 0)
-	{
-		if (TRX.SSB_Filter == 1400)
-			TRX.SSB_Filter = 1600;
-		else if (TRX.SSB_Filter == 1600)
-			TRX.SSB_Filter = 1800;
-		else if (TRX.SSB_Filter == 1800)
-			TRX.SSB_Filter = 2100;
-		else if (TRX.SSB_Filter == 2100)
-			TRX.SSB_Filter = 2300;
-		else if (TRX.SSB_Filter == 2300)
-			TRX.SSB_Filter = 2500;
-		else if (TRX.SSB_Filter == 2500)
-			TRX.SSB_Filter = 2700;
-		else if (TRX.SSB_Filter == 2700)
-			TRX.SSB_Filter = 2900;
-		else if (TRX.SSB_Filter == 2900)
-			TRX.SSB_Filter = 3000;
-		else if (TRX.SSB_Filter == 3000)
-			TRX.SSB_Filter = 3200;
-		else if (TRX.SSB_Filter == 3200)
-			TRX.SSB_Filter = 3400;
-	}
-	else
-	{
-		if (TRX.SSB_Filter == 1600)
-			TRX.SSB_Filter = 1400;
-		else if (TRX.SSB_Filter == 1800)
-			TRX.SSB_Filter = 1600;
-		else if (TRX.SSB_Filter == 2100)
-			TRX.SSB_Filter = 1800;
-		else if (TRX.SSB_Filter == 2300)
-			TRX.SSB_Filter = 2100;
-		else if (TRX.SSB_Filter == 2500)
-			TRX.SSB_Filter = 2300;
-		else if (TRX.SSB_Filter == 2700)
-			TRX.SSB_Filter = 2500;
-		else if (TRX.SSB_Filter == 2900)
-			TRX.SSB_Filter = 2700;
-		else if (TRX.SSB_Filter == 3000)
-			TRX.SSB_Filter = 2900;
-		else if (TRX.SSB_Filter == 3200)
-			TRX.SSB_Filter = 3000;
-		else if (TRX.SSB_Filter == 3400)
-			TRX.SSB_Filter = 3200;
-	}
-
-	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
-}
-
-static void SYSMENU_HANDL_FM_LPF_pass(int8_t direction)
-{
-	if (direction > 0)
-	{
-		if (TRX.FM_Filter == 5000)
-			TRX.FM_Filter = 6000;
-		else if (TRX.FM_Filter == 6000)
-			TRX.FM_Filter = 7000;
-		else if (TRX.FM_Filter == 7000)
-			TRX.FM_Filter = 8000;
-		else if (TRX.FM_Filter == 8000)
-			TRX.FM_Filter = 9000;
-		else if (TRX.FM_Filter == 9000)
-			TRX.FM_Filter = 9500;
-		else if (TRX.FM_Filter == 9500)
-			TRX.FM_Filter = 10000;
-		else if (TRX.FM_Filter == 10000)
-			TRX.FM_Filter = 15000;
-	}
-	else
-	{
-		if (TRX.FM_Filter == 6000)
-			TRX.FM_Filter = 5000;
-		else if (TRX.FM_Filter == 7000)
-			TRX.FM_Filter = 6000;
-		else if (TRX.FM_Filter == 8000)
-			TRX.FM_Filter = 7000;
-		else if (TRX.FM_Filter == 9000)
-			TRX.FM_Filter = 8000;
-		else if (TRX.FM_Filter == 9500)
-			TRX.FM_Filter = 9000;
-		else if (TRX.FM_Filter == 10000)
-			TRX.FM_Filter = 9500;
-		else if (TRX.FM_Filter == 15000)
-			TRX.FM_Filter = 10000;
-	}
-
-	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
-}
-
-static void SYSMENU_HANDL_FFTZoom(int8_t direction)
-{
-	if (direction > 0)
-	{
-		if (TRX.FFT_Zoom == 1)
-			TRX.FFT_Zoom = 2;
-		else if (TRX.FFT_Zoom == 2)
-			TRX.FFT_Zoom = 4;
-		else if (TRX.FFT_Zoom == 4)
-			TRX.FFT_Zoom = 8;
-		else if (TRX.FFT_Zoom == 8)
-			TRX.FFT_Zoom = 16;
-	}
-	else
-	{
-		if (TRX.FFT_Zoom == 2)
-			TRX.FFT_Zoom = 1;
-		else if (TRX.FFT_Zoom == 4)
-			TRX.FFT_Zoom = 2;
-		else if (TRX.FFT_Zoom == 8)
-			TRX.FFT_Zoom = 4;
-		else if (TRX.FFT_Zoom == 16)
-			TRX.FFT_Zoom = 8;
-	}
-	FFT_Init();
-}
-
-static void SYSMENU_HANDL_Bootloader(int8_t direction)
-{
-	WM8731_CleanBuffer();
-	JumpToBootloader();
+		SYSMENU_WIFI_DrawAPpasswordMenu(false);
 }
 
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction)
@@ -746,6 +891,57 @@ static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction)
 	WIFI_State = WIFI_INITED;
 }
 
+//SET TIME MENU
+
+static void SYSMENU_HANDL_SETTIME(int8_t direction)
+{
+	if (!LCD_timeMenuOpened)
+		LCDDriver_Fill(COLOR_BLACK);
+	LCD_timeMenuOpened = true;
+	static uint8_t Hours;
+	static uint8_t Last_showed_Hours = 255;
+	static uint8_t Minutes;
+	static uint8_t Last_showed_Minutes = 255;
+	static uint8_t Seconds;
+	static uint8_t Last_showed_Seconds = 255;
+	static uint32_t Time;
+	char ctmp[50];
+	Time = RTC->TR;
+	Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
+	Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
+	Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+	sprintf(ctmp, "%d", Hours);
+	addSymbols(ctmp, ctmp, 2, "0", false);
+	LCDDriver_printText(ctmp, 76, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 0 ? COLOR_WHITE : COLOR_BLACK, 3);
+	LCDDriver_printText(":", 124, 100, COLOR_BUTTON_TEXT, COLOR_BLACK, 3);
+	sprintf(ctmp, "%d", Minutes);
+	addSymbols(ctmp, ctmp, 2, "0", false);
+	LCDDriver_printText(ctmp, 148, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 1 ? COLOR_WHITE : COLOR_BLACK, 3);
+	LCDDriver_printText(":", 194, 100, COLOR_BUTTON_TEXT, COLOR_BLACK, 3);
+	sprintf(ctmp, "%d", Seconds);
+	addSymbols(ctmp, ctmp, 2, "0", false);
+	LCDDriver_printText(ctmp, 220, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 2 ? COLOR_WHITE : COLOR_BLACK, 3);
+}
+
+//FLASH MENU
+
+static void SYSMENU_HANDL_Bootloader(int8_t direction)
+{
+	WM8731_CleanBuffer();
+	JumpToBootloader();
+}
+
+//SPECTRUM MENU
+
+static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_spectrum_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_spectrum_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction)
 {
 	TRX.SPEC_Begin += direction;
@@ -768,129 +964,49 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 	drawSystemMenu(true);
 }
 
-static void SYSMENU_HANDL_CWSelfHear(int8_t direction)
+//COMMON MENU FUNCTIONS
+void drawSystemMenu(bool draw_background)
 {
-	if (direction > 0)
-		TRX.CW_SelfHear = true;
-	if (direction < 0)
-		TRX.CW_SelfHear = false;
-}
+	if (LCD_busy)
+	{
+		LCD_UpdateQuery.SystemMenu = true;
+		return;
+	}
+	if (!LCD_systemMenuOpened)
+		return;
+	if (LCD_timeMenuOpened)
+	{
+		SYSMENU_HANDL_SETTIME(0);
+		return;
+	}
+	if (sysmenu_wifi_selectap_menu_opened)
+	{
+		SYSMENU_WIFI_DrawSelectAPMenu(false);
+		return;
+	}
+	if (sysmenu_wifi_setAPpassword_menu_opened)
+	{
+		SYSMENU_WIFI_DrawAPpasswordMenu(false);
+		return;
+	}
+	if (sysmenu_spectrum_opened)
+	{
+		SPEC_Draw();
+		return;
+	}
+	LCD_busy = true;
 
-static void SYSMENU_HANDL_TRXMENU(int8_t direction)
-{
-	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_trx_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
-}
+	sysmenu_i = 0;
+	sysmenu_y = 5;
 
-void SYSMENU_RFPOWER_HOTKEY(void)
-{
-	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_trx_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
-}
+	if (draw_background)
+		LCDDriver_Fill(COLOR_BLACK);
 
-static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
-{
-	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_bw_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
-}
+	for (uint8_t m = 0; m < *sysmenu_item_count_selected; m++)
+		drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
 
-void SYSMENU_AUDIO_SSB_HOTKEY(void)
-{
-	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_bw_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 1;
-	drawSystemMenu(true);
-}
-
-void SYSMENU_AUDIO_CW_HOTKEY(void)
-{
-	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_bw_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 2;
-	drawSystemMenu(true);
-}
-
-void SYSMENU_AUDIO_FM_HOTKEY(void)
-{
-	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_bw_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 3;
-	drawSystemMenu(true);
-}
-
-static void SYSMENU_HANDL_CWMENU(int8_t direction)
-{
-	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_cw_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
-}
-
-void SYSMENU_CW_WPM_HOTKEY(void)
-{
-	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_cw_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 4;
-	drawSystemMenu(true);
-}
-
-static void SYSMENU_HANDL_LCDMENU(int8_t direction)
-{
-	sysmenu_handlers_selected = &sysmenu_lcd_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_lcd_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
-}
-
-static void SYSMENU_HANDL_FFTMENU(int8_t direction)
-{
-	sysmenu_handlers_selected = &sysmenu_fft_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_fft_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
-}
-
-static void SYSMENU_HANDL_ADCMENU(int8_t direction)
-{
-	sysmenu_handlers_selected = &sysmenu_adc_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_adc_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
-}
-
-static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
-{
-	sysmenu_handlers_selected = &sysmenu_wifi_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_wifi_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
-}
-
-static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
-{
-	sysmenu_handlers_selected = &sysmenu_spectrum_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_spectrum_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenu = false;
+	LCD_busy = false;
 }
 
 void eventRotateSystemMenu(int8_t direction)
@@ -1081,79 +1197,4 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAY_SYSMENU_W, COLOR_WHITE);
 	sysmenu_i++;
 	sysmenu_y += 18;
-}
-
-static void SYSMENU_WIFI_DrawSelectAPMenuCallback(void)
-{
-	sysmenu_wifi_rescan_interval = 0;
-}
-
-static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
-{
-	if (full_redraw || sysmenu_wifi_rescan_interval == 0)
-	{
-		LCDDriver_Fill(COLOR_BLACK);
-		LCDDriver_printText("AP Found:", 5, 5, COLOR_WHITE, COLOR_BLACK, 2);
-		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 33 + i * 24, COLOR_GREEN, COLOR_BLACK, 2);
-		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAY_SYSMENU_W, COLOR_WHITE);
-		WIFI_ListAP(SYSMENU_WIFI_DrawSelectAPMenuCallback);
-	}
-	sysmenu_wifi_rescan_interval++;
-	if (sysmenu_wifi_rescan_interval > 30)
-		sysmenu_wifi_rescan_interval = 0;
-	LCD_UpdateQuery.SystemMenu = true;
-}
-
-static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir)
-{
-	if (dir < 0 && sysmenu_wifi_selected_ap_index > 0)
-		sysmenu_wifi_selected_ap_index--;
-	if (dir > 0 && sysmenu_wifi_selected_ap_index < WIFI_FOUNDED_AP_MAXCOUNT)
-		sysmenu_wifi_selected_ap_index++;
-	SYSMENU_WIFI_DrawSelectAPMenu(true);
-	if (dir == 0)
-	{
-		strcpy(TRX.WIFI_AP, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
-		sysmenu_wifi_selectap_menu_opened = false;
-		systemMenuIndex = 0;
-		drawSystemMenu(true);
-	}
-}
-
-static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw)
-{
-	if (full_redraw)
-	{
-		LCDDriver_Fill(COLOR_BLACK);
-		LCDDriver_printText("AP Password:", 5, 5, COLOR_WHITE, COLOR_BLACK, 2);
-	}
-
-	LCDDriver_printText(TRX.WIFI_PASSWORD, 10, 37, COLOR_GREEN, COLOR_BLACK, 2);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
-}
-
-static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir)
-{
-	bool full_redraw = false;
-	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] == 0)
-		full_redraw = true;
-	TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] += dir;
-
-	//не показываем спецсимволы
-	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
-		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
-		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] >= 127)
-		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] == 0)
-		full_redraw = true;
-
-	if (full_redraw)
-		SYSMENU_WIFI_DrawAPpasswordMenu(true);
-	else
-		SYSMENU_WIFI_DrawAPpasswordMenu(false);
 }
