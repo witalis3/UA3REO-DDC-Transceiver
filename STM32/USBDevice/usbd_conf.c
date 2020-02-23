@@ -25,6 +25,7 @@
 #include "main.h"
 #include "usbd_def.h"
 #include "usbd_core.h"
+#include "usbd_ua3reo.h"
 #include "functions.h"
 
 /* USER CODE BEGIN Includes */
@@ -275,14 +276,15 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   pdev->pData = &hpcd_USB_OTG_FS;
   
   hpcd_USB_OTG_FS.Instance = USB_OTG_FS;
-	hpcd_USB_OTG_FS.Init.ep0_mps = DEP0CTL_MPS_8;
-  hpcd_USB_OTG_FS.Init.dev_endpoints = 8;
+	//hpcd_USB_OTG_FS.Init.ep0_mps = DEP0CTL_MPS_8;
+  hpcd_USB_OTG_FS.Init.dev_endpoints = 9;
   hpcd_USB_OTG_FS.Init.speed = PCD_SPEED_FULL;
   hpcd_USB_OTG_FS.Init.dma_enable = DISABLE;
   hpcd_USB_OTG_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
-  hpcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
+  hpcd_USB_OTG_FS.Init.Sof_enable = ENABLE;
   hpcd_USB_OTG_FS.Init.low_power_enable = DISABLE;
   hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
+	hpcd_USB_OTG_FS.Init.battery_charging_enable = DISABLE;
   hpcd_USB_OTG_FS.Init.vbus_sensing_enable = DISABLE;
   hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
   if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
@@ -305,12 +307,11 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   HAL_PCD_RegisterIsoOutIncpltCallback(&hpcd_USB_OTG_FS, PCD_ISOOUTIncompleteCallback);
   HAL_PCD_RegisterIsoInIncpltCallback(&hpcd_USB_OTG_FS, PCD_ISOINIncompleteCallback);
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
-		//only 0x140 x 4(=1280bytes) available for USB FIFO in STM32
-		HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, 0xC0); //All RX (C0 - 192b USB RX read)
-		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, 0x10); //EP0
+		HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, AUDIO_OUT_PACKET); //All RX (288 USB RX read)
+		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, 0x40); //EP0
 		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 1, 0x10); //DEBUG
 		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 2, 0x10); //CAT
-		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 3, 0x40); //AUDIO
+		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 3, 0x80); //AUDIO
 		//
   }
   return USBD_OK;

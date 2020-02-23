@@ -33,7 +33,7 @@ void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index
 	}
 }
 
-void readHalfFromCircleUSBBuffer(int16_t *source, int32_t *dest, uint16_t index, uint16_t length)
+void readHalfFromCircleUSBBuffer(int32_t *source, int32_t *dest, uint32_t index, uint32_t length)
 {
 	uint16_t halflen = length / 2;
 	uint16_t readed_index = 0;
@@ -56,6 +56,34 @@ void readHalfFromCircleUSBBuffer(int16_t *source, int32_t *dest, uint16_t index,
 		for (uint16_t i = 0; i < (halflen - prev_part); i++)
 		{
 			dest[readed_index] = source[i];
+			readed_index++;
+		}
+	}
+}
+
+void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length)
+{
+	uint16_t halflen = length / 2;
+	uint16_t readed_index = 0;
+	if (index >= halflen)
+	{
+		for (uint16_t i = (index - halflen); i < index; i++)
+		{
+			dest[readed_index] = (source[i*3+0] << 8) | (source[i*3+1] << 16) | (source[i*3+2] << 24);
+			readed_index++;
+		}
+	}
+	else
+	{
+		uint16_t prev_part = halflen - index;
+		for (uint16_t i = (length - prev_part); i < length; i++)
+		{
+			dest[readed_index] = (source[i*3+0] << 8) | (source[i*3+1] << 16) | (source[i*3+2] << 24);
+			readed_index++;
+		}
+		for (uint16_t i = 0; i < (halflen - prev_part); i++)
+		{
+			dest[readed_index] = (source[i*3+0] << 8) | (source[i*3+1] << 16) | (source[i*3+2] << 24);
 			readed_index++;
 		}
 	}
@@ -362,6 +390,7 @@ static uint32_t CPULOAD_startSleepTime = 0;
 static uint32_t CPULOAD_WorkingTime = 0;
 static uint32_t CPULOAD_SleepingTime = 0;
 static bool CPULOAD_status = true; // true - wake up ; false - sleep
+
 void CPULOAD_GoToSleepMode(void) {
 	//if(!CPULOAD_status) return;
 	/* Add to working time */

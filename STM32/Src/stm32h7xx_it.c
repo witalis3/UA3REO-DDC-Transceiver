@@ -489,7 +489,7 @@ void TIM6_DAC_IRQHandler(void)
       }
       uint32_t dbg_RX_USB_AUDIO_SAMPLES = RX_USB_AUDIO_SAMPLES;
       uint32_t dbg_TX_USB_AUDIO_SAMPLES = TX_USB_AUDIO_SAMPLES;
-			uint32_t cpu_load = CPU_LOAD.Load * 100;
+			uint32_t cpu_load = CPU_LOAD.Load;
       //Print Debug info
       sendToDebug_str("FPGA Samples: ");
       sendToDebug_uint32(dbg_FPGA_samples, false); //~48000
@@ -500,7 +500,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_str("Audioproc cycles B: ");
       sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples, false); //~120
 			sendToDebug_str("CPU Load: ");
-      sendToDebug_uint32(CPU_LOAD.Load, false);
+      sendToDebug_uint32(cpu_load, false);
       sendToDebug_str("TIM6 delay: ");
       sendToDebug_uint32(dbg_tim6_delay, false);
       sendToDebug_str("Audioproc timer counter: ");

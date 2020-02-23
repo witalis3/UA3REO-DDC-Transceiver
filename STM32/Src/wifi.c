@@ -381,6 +381,8 @@ static bool WIFI_WaitForOk(void)
 		{
 			return true;
 		}
+		CPULOAD_GoToSleepMode();
+		CPULOAD_WakeUp();
 	}
 	return false;
 }
