@@ -49,13 +49,13 @@ extern volatile bool NeedReinitNotch;
 extern void InitAudioFilters(void);
 extern void ReinitAudioFilters(void);
 extern void InitNotchFilter(void);
-extern void dc_filter(float32_t *agcBuffer, int16_t blockSize, uint8_t stateNum);
+extern void dc_filter(q31_t *Buffer, int16_t blockSize, uint8_t stateNum);
 
 //сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
 typedef struct
 {
-	float32_t x_prev;
-	float32_t y_prev;
+	q31_t x_prev;
+	q31_t y_prev;
 } dc_filter_state_type;
 
 #endif

@@ -27,8 +27,8 @@ volatile extern uint32_t FFT_buff_index;
 extern bool NeedFFTInputBuffer;
 extern bool FFT_need_fft;
 extern bool FFT_buffer_ready;
-extern float32_t FFTInput_I[FFT_SIZE];
-extern float32_t FFTInput_Q[FFT_SIZE];
+extern q31_t FFTInput_I[FFT_SIZE];
+extern q31_t FFTInput_Q[FFT_SIZE];
 extern void FFT_Init(void);
 extern void FFT_Reset(void);
 

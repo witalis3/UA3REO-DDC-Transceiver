@@ -23,34 +23,12 @@ output reg [(out_width-1):0] data_out_Q=0;
 
 always @ (posedge data_valid_I)
 begin
-	if (distance<out_width)
-	begin
-		data_out_I[(out_width-1):0] = data_in_I[(out_width-1):0];
-	end
-	if (distance>in_width)
-	begin
-		data_out_I[(out_width-1):0] = data_in_I[(in_width-1) -: out_width];
-	end
-	else
-	begin
-		data_out_I[(out_width-1):0] = data_in_I[(distance-1) -: out_width];
-	end
+	data_out_I[(out_width-1):0] = data_in_I[(distance-1) -: out_width];
 end
 
 always @ (posedge data_valid_Q)
 begin
-	if (distance<out_width)
-	begin
-		data_out_Q[(out_width-1):0] = data_in_Q[(out_width-1):0];
-	end
-	if (distance>in_width)
-	begin
-		data_out_Q[(out_width-1):0] = data_in_Q[(in_width-1) -: out_width];
-	end
-	else
-	begin
-		data_out_Q[(out_width-1):0] = data_in_Q[(distance-1) -: out_width];
-	end
+	data_out_Q[(out_width-1):0] = data_in_Q[(distance-1) -: out_width];
 end
 
 endmodule

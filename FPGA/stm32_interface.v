@@ -1,9 +1,9 @@
 module stm32_interface(
 clk_in,
-SPEC_I,
-SPEC_Q,
-VOICE_I,
-VOICE_Q,
+RX1_I,
+RX1_Q,
+RX2_I,
+RX2_Q,
 DATA_SYNC,
 ADC_OTR,
 DAC_OTR,
@@ -14,7 +14,7 @@ FLASH_busy,
 IQ_valid,
 
 DATA_BUS,
-freq_out,
+NCO1_freq,
 preamp_enable,
 rx,
 tx,
@@ -33,14 +33,15 @@ CIC_GAIN,
 CICFIR_GAIN,
 TX_CICFIR_GAIN,
 DAC_GAIN,
-ADC_OFFSET
+ADC_OFFSET,
+NCO2_freq
 );
 
 input clk_in;
-input signed [15:0] SPEC_I;
-input signed [15:0] SPEC_Q;
-input signed [15:0] VOICE_I;
-input signed [15:0] VOICE_Q;
+input signed [31:0] RX1_I;
+input signed [31:0] RX1_Q;
+input signed [31:0] RX2_I;
+input signed [31:0] RX2_Q;
 input DATA_SYNC;
 input ADC_OTR;
 input DAC_OTR;
@@ -50,13 +51,14 @@ input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
 input IQ_valid;
 
-output reg unsigned [21:0] freq_out=242347;
+output reg unsigned [21:0] NCO1_freq=242347;
+output reg unsigned [21:0] NCO2_freq=242347;
 output reg preamp_enable=0;
 output reg rx=1;
 output reg tx=0;
 output reg audio_clk_en=1;
-output reg signed [15:0] TX_I=0;
-output reg signed [15:0] TX_Q=0;
+output reg signed [31:0] TX_I=0;
+output reg signed [31:0] TX_Q=0;
 output reg [15:0] stage_debug=0;
 output reg unsigned [7:0] FLASH_data_out=0;
 output reg FLASH_enable=0;
@@ -77,22 +79,22 @@ reg         DATA_BUS_OE; // 1 - out 0 - in
 assign DATA_BUS = DATA_BUS_OE ? DATA_BUS_OUT : 8'bZ ;
 
 reg signed [15:0] k=1;
-reg signed [15:0] REG_SPEC_I;
-reg signed [15:0] REG_SPEC_Q;
-reg signed [15:0] REG_VOICE_I;
-reg signed [15:0] REG_VOICE_Q;
-reg signed [15:0] I_HOLD;
-reg signed [15:0] Q_HOLD;
+reg signed [31:0] REG_RX1_I;
+reg signed [31:0] REG_RX1_Q;
+reg signed [31:0] REG_RX2_I;
+reg signed [31:0] REG_RX2_Q;
+reg signed [31:0] I_HOLD;
+reg signed [31:0] Q_HOLD;
 reg signed [15:0] ADC_MIN;
 reg signed [15:0] ADC_MAX;
 reg ADC_MINMAX_RESET;
 
 always @ (posedge IQ_valid)
 begin
-	REG_SPEC_I[15:0]=SPEC_I[15:0];
-	REG_SPEC_Q[15:0]=SPEC_Q[15:0];
-	REG_VOICE_I[15:0]=VOICE_I[15:0];
-	REG_VOICE_Q[15:0]=VOICE_Q[15:0];
+	REG_RX1_I[31:0]=RX1_I[31:0];
+	REG_RX1_Q[31:0]=RX1_Q[31:0];
+	REG_RX2_I[31:0]=RX2_I[31:0];
+	REG_RX2_Q[31:0]=RX2_Q[31:0];
 end
 
 always @ (posedge clk_in)
@@ -163,45 +165,60 @@ begin
 	end
 	else if (k==101)
 	begin
-		freq_out[21:16]=DATA_BUS[5:0];
+		NCO1_freq[21:16]=DATA_BUS[5:0];
 		k=102;
 	end
 	else if (k==102)
 	begin
-		freq_out[15:8]=DATA_BUS[7:0];
+		NCO1_freq[15:8]=DATA_BUS[7:0];
 		k=103;
 	end
 	else if (k==103)
 	begin
-		freq_out[7:0]=DATA_BUS[7:0];
+		NCO1_freq[7:0]=DATA_BUS[7:0];
 		k=104;
 	end
 	else if (k==104)
 	begin
-		CIC_GAIN[7:0]=DATA_BUS[7:0];
+		NCO2_freq[21:16]=DATA_BUS[5:0];
 		k=105;
 	end
 	else if (k==105)
 	begin
-		CICFIR_GAIN[7:0]=DATA_BUS[7:0];
+		NCO2_freq[15:8]=DATA_BUS[7:0];
 		k=106;
 	end
 	else if (k==106)
 	begin
-		TX_CICFIR_GAIN[7:0]=DATA_BUS[7:0];
+		NCO2_freq[7:0]=DATA_BUS[7:0];
 		k=107;
 	end
 	else if (k==107)
 	begin
-		DAC_GAIN[7:0]=DATA_BUS[7:0];
+		CIC_GAIN[7:0]=DATA_BUS[7:0];
 		k=108;
 	end
 	else if (k==108)
 	begin
-		ADC_OFFSET[15:8]=DATA_BUS[7:0];
+		CICFIR_GAIN[7:0]=DATA_BUS[7:0];
 		k=109;
 	end
 	else if (k==109)
+	begin
+		TX_CICFIR_GAIN[7:0]=DATA_BUS[7:0];
+		k=110;
+	end
+	else if (k==110)
+	begin
+		DAC_GAIN[7:0]=DATA_BUS[7:0];
+		k=111;
+	end
+	else if (k==111)
+	begin
+		ADC_OFFSET[15:8]=DATA_BUS[7:0];
+		k=112;
+	end
+	else if (k==112)
 	begin
 		ADC_OFFSET[7:0]=DATA_BUS[7:0];
 		k=999;
@@ -235,58 +252,76 @@ begin
 	end
 	else if (k==300) //TX IQ
 	begin
-		Q_HOLD[15:8]=DATA_BUS[7:0];
+		Q_HOLD[31:24]=DATA_BUS[7:0];
 		k=301;
 	end
 	else if (k==301)
 	begin
-		Q_HOLD[7:0]=DATA_BUS[7:0];
+		Q_HOLD[23:16]=DATA_BUS[7:0];
 		k=302;
 	end
 	else if (k==302)
 	begin
-		I_HOLD[15:8]=DATA_BUS[7:0];
+		Q_HOLD[15:8]=DATA_BUS[7:0];
 		k=303;
 	end
 	else if (k==303)
 	begin
+		Q_HOLD[7:0]=DATA_BUS[7:0];
+		k=304;
+	end
+	else if (k==304)
+	begin
+		I_HOLD[31:24]=DATA_BUS[7:0];
+		k=305;
+	end
+	else if (k==305)
+	begin
+		I_HOLD[23:16]=DATA_BUS[7:0];
+		k=306;
+	end
+	else if (k==306)
+	begin
+		I_HOLD[15:8]=DATA_BUS[7:0];
+		k=307;
+	end
+	else if (k==307)
+	begin
 		I_HOLD[7:0]=DATA_BUS[7:0];
-		TX_I[15:0]=I_HOLD[15:0];
-		TX_Q[15:0]=Q_HOLD[15:0];
+		TX_I[31:0]=I_HOLD[31:0];
+		TX_Q[31:0]=Q_HOLD[31:0];
 		k=999;
 	end
-	else if (k==400) //RX IQ SPECTRUM
+	else if (k==400) //RX1 IQ
 	begin
-		I_HOLD=REG_SPEC_I;
-		Q_HOLD=REG_SPEC_Q;
-		DATA_BUS_OUT[7:0]=Q_HOLD[15:8];
+		I_HOLD=REG_RX1_I;
+		Q_HOLD=REG_RX1_Q;
+		DATA_BUS_OUT[7:0]=Q_HOLD[31:24];
 		k=401;
 	end
 	else if (k==401)
 	begin
-		DATA_BUS_OUT[7:0]=Q_HOLD[7:0];
+		DATA_BUS_OUT[7:0]=Q_HOLD[23:16];
 		k=402;
 	end
 	else if (k==402)
 	begin
-		DATA_BUS_OUT[7:0]=I_HOLD[15:8];
+		DATA_BUS_OUT[7:0]=Q_HOLD[15:8];
 		k=403;
 	end
 	else if (k==403)
 	begin
-		DATA_BUS_OUT[7:0]=I_HOLD[7:0];
+		DATA_BUS_OUT[7:0]=Q_HOLD[7:0];
 		k=404;
 	end
-	else if (k==404) //RX IQ VOICE
+	else if (k==404)
 	begin
-		I_HOLD=REG_VOICE_I;
-		Q_HOLD=REG_VOICE_Q;
-		DATA_BUS_OUT[7:0]=Q_HOLD[15:8];
+		DATA_BUS_OUT[7:0]=I_HOLD[31:24];
 		k=405;
 	end
 	else if (k==405)
 	begin
-		DATA_BUS_OUT[7:0]=Q_HOLD[7:0];
+		DATA_BUS_OUT[7:0]=I_HOLD[23:16];
 		k=406;
 	end
 	else if (k==406)
@@ -295,6 +330,48 @@ begin
 		k=407;
 	end
 	else if (k==407)
+	begin
+		DATA_BUS_OUT[7:0]=I_HOLD[7:0];
+		k=408;
+	end
+	else if (k==408) //RX2 IQ
+	begin
+		I_HOLD=REG_RX2_I;
+		Q_HOLD=REG_RX2_Q;
+		DATA_BUS_OUT[7:0]=Q_HOLD[31:24];
+		k=409;
+	end
+	else if (k==409)
+	begin
+		DATA_BUS_OUT[7:0]=Q_HOLD[23:16];
+		k=410;
+	end
+	else if (k==410)
+	begin
+		DATA_BUS_OUT[7:0]=Q_HOLD[15:8];
+		k=411;
+	end
+	else if (k==411)
+	begin
+		DATA_BUS_OUT[7:0]=Q_HOLD[7:0];
+		k=412;
+	end
+	else if (k==412)
+	begin
+		DATA_BUS_OUT[7:0]=I_HOLD[31:24];
+		k=413;
+	end
+	else if (k==413)
+	begin
+		DATA_BUS_OUT[7:0]=I_HOLD[23:16];
+		k=414;
+	end
+	else if (k==414)
+	begin
+		DATA_BUS_OUT[7:0]=I_HOLD[15:8];
+		k=415;
+	end
+	else if (k==415)
 	begin
 		DATA_BUS_OUT[7:0]=I_HOLD[7:0];
 		k=999;

@@ -2,10 +2,10 @@ PhysChanIn : 1
 PhysChanOut : 1 
 ChansPerPhyIn : 1 
 ChansPerPhyOut : 1 
-InWidth : 16 
+InWidth : 32 
 InFracWidth : 0 
-OutWidth : 38 
-OutFullWidth : 38 
+OutWidth : 54 
+OutFullWidth : 54 
 OutFracWidth : 0 
 OutFullFracWidth : 0 
 nChans : 64 

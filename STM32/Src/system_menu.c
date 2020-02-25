@@ -760,8 +760,8 @@ static void SYSMENU_HANDL_ADC_CIC_SHIFT(int8_t direction)
 static void SYSMENU_HANDL_ADC_CICCOMP_SHIFT(int8_t direction)
 {
 	TRX.CICFIR_GAINER_val += direction;
-	if (TRX.CICFIR_GAINER_val < 16)
-		TRX.CICFIR_GAINER_val = 16;
+	if (TRX.CICFIR_GAINER_val < 32)
+		TRX.CICFIR_GAINER_val = 32;
 	if (TRX.CICFIR_GAINER_val > 64)
 		TRX.CICFIR_GAINER_val = 64;
 }
@@ -771,8 +771,8 @@ static void SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT(int8_t direction)
 	TRX.TXCICFIR_GAINER_val += direction;
 	if (TRX.TXCICFIR_GAINER_val < 16)
 		TRX.TXCICFIR_GAINER_val = 16;
-	if (TRX.TXCICFIR_GAINER_val > 38)
-		TRX.TXCICFIR_GAINER_val = 38;
+	if (TRX.TXCICFIR_GAINER_val > 54)
+		TRX.TXCICFIR_GAINER_val = 54;
 }
 
 static void SYSMENU_HANDL_ADC_DAC_SHIFT(int8_t direction)

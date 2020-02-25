@@ -216,10 +216,8 @@ set_instance_assignment -name IO_STANDARD "DIFFERENTIAL LVPECL" -to clk_sys_lvpe
 set_global_assignment -name BDF_FILE UA3REO.bdf
 set_global_assignment -name VERILOG_FILE DAC_corrector.v
 set_global_assignment -name VERILOG_FILE spi_interface.v
-set_global_assignment -name VERILOG_FILE data_delay.v
 set_global_assignment -name VERILOG_FILE stm32_interface.v
 set_global_assignment -name VERILOG_FILE data_shifter.v
-set_global_assignment -name VHDL_FILE rx_hilb.vhd
 set_global_assignment -name SOURCE_FILE Debug_Probes.spf
 set_global_assignment -name QIP_FILE mixer.qip
 set_global_assignment -name SDC_FILE SDC.sdc

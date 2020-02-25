@@ -10,10 +10,10 @@
 %    This Model Only Support FIR_WIDTH to 51 Bits
 
 %FILTER PARAMETER
-%Input Data Width: 16
+%Input Data Width: 32
 %Interpolation Factor: 1
 %Decimation Factor: 1
-%FIR Width (Full Calculation Width Before Output Width Adjust) :38
+%FIR Width (Full Calculation Width Before Output Width Adjust) :54
 %-----------------------------------------------------------------------------------------------------------
 %MegaWizard Scaled Coefficient Values
 
@@ -25,9 +25,9 @@ function  output = tx_ciccomp_mlab(stimulation, bank);
  MSB_TYPE  = 0;
  LSB_RM  = 0;
  LSB_TYPE  = 0;
- FIR_WIDTH  = 38 + MSB_RM + LSB_RM;
- OUT_WIDTH  = 38 ;  %38
- DATA_WIDTH = 16;
+ FIR_WIDTH  = 54 + MSB_RM + LSB_RM;
+ OUT_WIDTH  = 54 ;  %54
+ DATA_WIDTH = 32;
 
   
  % check size of inputs. 

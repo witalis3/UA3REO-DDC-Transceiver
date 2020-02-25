@@ -21,12 +21,12 @@ volatile extern bool FPGA_Buffer_underrun;
 volatile extern bool FPGA_NeedSendParams;
 volatile extern bool FPGA_NeedGetParams;
 
-extern float32_t FPGA_Audio_Buffer_SPEC_Q[FPGA_AUDIO_BUFFER_SIZE];
-extern float32_t FPGA_Audio_Buffer_SPEC_I[FPGA_AUDIO_BUFFER_SIZE];
-extern float32_t FPGA_Audio_Buffer_VOICE_Q[FPGA_AUDIO_BUFFER_SIZE];
-extern float32_t FPGA_Audio_Buffer_VOICE_I[FPGA_AUDIO_BUFFER_SIZE];
-extern float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE];
-extern float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE];
+extern volatile q31_t FPGA_Audio_Buffer_RX1_Q[FPGA_AUDIO_BUFFER_SIZE];
+extern volatile q31_t FPGA_Audio_Buffer_RX1_I[FPGA_AUDIO_BUFFER_SIZE];
+extern volatile q31_t FPGA_Audio_Buffer_RX2_Q[FPGA_AUDIO_BUFFER_SIZE];
+extern volatile q31_t FPGA_Audio_Buffer_RX2_I[FPGA_AUDIO_BUFFER_SIZE];
+extern volatile q31_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE];
+extern volatile q31_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE];
 extern uint16_t FPGA_Audio_Buffer_Index;
 extern bool FPGA_Audio_Buffer_State;
 

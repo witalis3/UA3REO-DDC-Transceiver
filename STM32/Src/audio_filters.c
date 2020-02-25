@@ -343,7 +343,6 @@ void InitNotchFilter(void)
 {
 	NeedReinitNotch = false;
 	calcBiquad(BIQUAD_notch, TRX.NotchFC, TRX_SAMPLERATE, 0.5f, 0);
-	//arm_biquad_cascade_df2T_init_f32(&NOTCH_FILTER, NOTCH_STAGES, NOTCH_Coeffs, NOTCH_State);
 }
 
 static dc_filter_state_type dc_filter_state[6] =
@@ -356,20 +355,20 @@ static dc_filter_state_type dc_filter_state[6] =
 		{0, 0}, //5 FFT Q
 };
 
-void dc_filter(float32_t *agcBuffer, int16_t blockSize, uint8_t stateNum) //удаляет постоянную составлющую сигнала
+void dc_filter(q31_t *Buffer, int16_t blockSize, uint8_t stateNum) //удаляет постоянную составлющую сигнала
 {
-	const float32_t A1 = (1.0f - powf(2.0f, (-11.0f))); // (1-2^(-7)) Q32:1.31
+	static const float32_t A1 = (1.0f - 0.00048828125); // (1-2^(-11))
 
 	for (uint16_t i = 0; i < blockSize; i++)
 	{
-		float32_t sampleIn = agcBuffer[i];
-		float32_t sampleOut = 0;
-		float32_t delta_x = sampleIn - dc_filter_state[stateNum].x_prev;
-		float32_t a1_y_prev = A1 * dc_filter_state[stateNum].y_prev;
+		q31_t sampleIn = Buffer[i];
+		q31_t sampleOut = 0;
+		q31_t delta_x = sampleIn - dc_filter_state[stateNum].x_prev;
+		q31_t a1_y_prev = A1 * dc_filter_state[stateNum].y_prev;
 		sampleOut = delta_x + a1_y_prev;
 		dc_filter_state[stateNum].x_prev = sampleIn;
 		dc_filter_state[stateNum].y_prev = sampleOut;
-		agcBuffer[i] = sampleOut;
+		Buffer[i] = sampleOut;
 	}
 }
 
