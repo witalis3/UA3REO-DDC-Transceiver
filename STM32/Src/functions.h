@@ -23,7 +23,7 @@
 #define TRX_MODE_COUNT 12
 
 //#define IROM1 __attribute__((section(".ER_IROM1")))          // 2mb FLASH
-//#define ITCM __attribute__((section(".RO_ITCM")))            // 64kb ITCM
+//#define ITCM __attribute__((section(".ITCM")))            // 64kb ITCM
 #define DTCM __attribute__((section(".IRAM1")))              // 128kb DTCM
 #define IRAM2 __attribute__((section(".IRAM2")))             // 512kb AXI SRAM
 //#define SRAM1 __attribute__((section(".SRAM1")))             // 128kb
@@ -32,29 +32,19 @@
 //#define SRAM4 __attribute__((section(".SRAM4")))             // 64kb
 //#define BACKUP_SRAM __attribute__((section(".BACKUP_SRAM"))) // 4kb Backup SRAM
 
-// Internal Macros
+//UINT from BINARY STRING
 #define HEX__(n) 0x##n##LU
 #define B8__(x) ((x & 0x0000000FLU) ? 1 : 0) + ((x & 0x000000F0LU) ? 2 : 0) + ((x & 0x00000F00LU) ? 4 : 0) + ((x & 0x0000F000LU) ? 8 : 0) + ((x & 0x000F0000LU) ? 16 : 0) + ((x & 0x00F00000LU) ? 32 : 0) + ((x & 0x0F000000LU) ? 64 : 0) + ((x & 0xF0000000LU) ? 128 : 0)
-
-// User-visible Macros
 #define B8(d) ((unsigned char)B8__(HEX__(d)))
-#define B16(dmsb, dlsb) (((unsigned short)B8(dmsb) << 8) + B8(dlsb))
-#define B32(dmsb, db2, db3, dlsb) \
-    (((unsigned long)B8(dmsb) << 24) + ((unsigned long)B8(db2) << 16) + ((unsigned long)B8(db3) << 8) + B8(dlsb))
 
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
-#define TWOPI 6.28318530717958647692f
 #define SQRT2 1.41421356237f
 
-#define MINI_DELAY                               \
-    for (int wait_i = 0; wait_i < 100; wait_i++) \
-    {                                            \
-        __asm("nop");                            \
-    };
+#define MINI_DELAY for (int wait_i = 0; wait_i < 100; wait_i++) __asm("nop");
 		
 typedef struct {
     float32_t Load;      /*!< CPU load percentage */
