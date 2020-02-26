@@ -12,13 +12,13 @@
 #include "screen_layout.h"
 
 #if FFT_SIZE == 1024
-const static arm_cfft_instance_q31 *FFT_Inst = &arm_cfft_sR_q31_len1024;
+const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len1024;
 #endif
 #if FFT_SIZE == 512
-const static arm_cfft_instance_q31 *FFT_Inst = &arm_cfft_sR_q31_len512;
+const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 #endif
 #if FFT_SIZE == 256
-const static arm_cfft_instance_q31 *FFT_Inst = &arm_cfft_sR_q31_len256;
+const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
 bool NeedFFTInputBuffer = true; //флаг необходимости заполнения буфера с FPGA
@@ -26,24 +26,24 @@ bool FFT_need_fft = true;		 //необходимо подготовить дан
 bool FFT_buffer_ready = false;   //буффер наполнен, можно обрабатывать
 
 volatile uint32_t FFT_buff_index = 0;							 //текущий индекс буфера при его наполнении с FPGA
-q31_t FFTInput_I[FFT_SIZE] = {0};							 //входящий буфер FFT I
-q31_t FFTInput_Q[FFT_SIZE] = {0};							 //входящий буфер FFT Q
-static q31_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};		 //совмещённый буфер FFT I и Q
-static q31_t FFTInput_ZOOMFFT[FFT_DOUBLE_SIZE_BUFFER] = {0}; //совмещённый буфер FFT I и Q для обработки ZoomFFT
+float32_t FFTInput_I[FFT_SIZE] = {0};							 //входящий буфер FFT I
+float32_t FFTInput_Q[FFT_SIZE] = {0};							 //входящий буфер FFT Q
+static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};		 //совмещённый буфер FFT I и Q
+static float32_t FFTInput_ZOOMFFT[FFT_DOUBLE_SIZE_BUFFER] = {0}; //совмещённый буфер FFT I и Q для обработки ZoomFFT
 static float32_t FFTOutput_mean[LAY_FFT_PRINT_SIZE] = {0};		 //усредненный буфер FFT (для вывода)
 static uint16_t maxValueErrors = 0;								 //количество превышений сигнала в FFT
-static q31_t maxValueFFT_rx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
-static q31_t maxValueFFT_tx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
+static float32_t maxValueFFT_rx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
+static float32_t maxValueFFT_tx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
 static uint32_t currentFFTFreq = 0;
 static uint16_t color_scale[LAY_FFT_MAX_HEIGHT] = {0};							  //цветовой градиент по высоте FFT
 static SRAM2 uint16_t wtf_buffer[LAY_FFT_WTF_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; //буфер водопада
 static SRAM2 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};					  //временный буффер для перемещения водопада
 
 //Дециматор для Zoom FFT
-static arm_fir_decimate_instance_q31 DECIMATE_ZOOM_FFT_I;
-static arm_fir_decimate_instance_q31 DECIMATE_ZOOM_FFT_Q;
-static q31_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
-static q31_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
+static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
+static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
+static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
+static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
 static uint16_t zoomed_width = 0;
 
 static uint16_t print_wtf_xindex = 0;
@@ -52,55 +52,55 @@ static uint16_t getFFTColor(uint8_t height);
 static void fft_fill_color_scale(void);
 
 //Коэффициенты для ZoomFFT lowpass filtering / дециматора
-static arm_biquad_casd_df1_inst_q31 IIR_biquad_Zoom_FFT_I =
+static arm_biquad_casd_df1_inst_f32 IIR_biquad_Zoom_FFT_I =
 	{
 		.numStages = 4,
-		.pCoeffs = (q31_t *)(q31_t[]){
-			1073741800,0,0,0,0,1073741800,0,0,0,0
+		.pCoeffs = (float32_t *)(float32_t[]){
+			1, 0, 0, 0, 0, 1, 0, 0, 0, 0
 		},
-		.pState = (q31_t *)(q31_t[]){
+		.pState = (float32_t *)(float32_t[]){
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}
 	};
-static arm_biquad_casd_df1_inst_q31 IIR_biquad_Zoom_FFT_Q =
+static arm_biquad_casd_df1_inst_f32 IIR_biquad_Zoom_FFT_Q =
 	{
 		.numStages = 4,
-		.pCoeffs = (q31_t *)(q31_t[]){
-			1073741800,0,0,0,0,1073741800,0,0,0,0
+		.pCoeffs = (float32_t *)(float32_t[]){
+			1, 0, 0, 0, 0, 1, 0, 0, 0, 0
 		},
-		.pState = (q31_t *)(q31_t[]){
+		.pState = (float32_t *)(float32_t[]){
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}
 	};
 
-static const q31_t *mag_coeffs[17] =
+static const float32_t *mag_coeffs[17] =
 	{
 		NULL, // 0
 		NULL, // 1
-		(q31_t *)(const q31_t[]){
+		(float32_t *)(const float32_t[]){
 			// 2x magnify
 			// 12kHz, sample rate 48k, 60dB stopband, elliptic
 			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
 			// Iowa Hills IIR Filter Designer
-			268124515,91121011,268124515,745892393,-199617424,512634399,272647093,512634399,429419375,-553690258,629043978,653762052,629043978,147575047,-885780047,588132694,1073741800,588132694,16269697,-1092631876
+			0.228454526413293696f, 0.077639329099949764f, 0.228454526413293696f, 0.635534925142242080f, -0.170083307068779194f, 0.436788292542003964f, 0.232307972937606161f, 0.436788292542003964f, 0.365885230717786780f, -0.471769788739400842f, 0.535974654742658707f, 0.557035600464780845f, 0.535974654742658707f, 0.125740787233286133f, -0.754725697183384336f, 0.501116342273565607f, 0.914877831284765408f, 0.501116342273565607f, 0.013862536615004284f, -0.930973052446900984f
 		},
 		NULL, // 3
-		(q31_t *)(const q31_t[]){
+		(float32_t *)(const float32_t[]){
 			// 4x magnify
 			// 6kHz, sample rate 48k, 60dB stopband, elliptic
 			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
 			// Iowa Hills IIR Filter Designer
-			141108549,-172305615,141108549,1026984690,-362462783,261079898,-283715777,261079898,1035458934,-499469564,260335987,-154302880,260335987,1049320598,-641256304,138304666,160518121,138304666,1073741800,-736435865
+			0.182208761527446556f, -0.222492493114674145f, 0.182208761527446556f, 1.326111070880959810f, -0.468036100821178802f, 0.337123762652097259f, -0.366352718812586853f, 0.337123762652097259f, 1.337053579516321200f, -0.644948386007929031f, 0.336163175380826074f, -0.199246162162897811f, 0.336163175380826074f, 1.354952684569386670f, -0.828032873168141115f, 0.178588201750411041f, 0.207271695028067304f, 0.178588201750411041f, 1.386486967455699220f, -0.950935065984588657f
 		},
 		NULL, // 5
 		NULL, // 6
 		NULL, // 7
-		(q31_t *)(const q31_t[]){
+		(float32_t *)(const float32_t[]){
 			// 8x magnify
 			// 3kHz, sample rate 48k, 60dB stopband, elliptic
 			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
 			// Iowa Hills IIR Filter Designer
-			109220847,-195365688,109220847,973484142,-408223308,192691671,-336151011,192691671,1009218330,-470113820,166885359,-259508895,166885359,1046198595,-532123576,46881838,-6608088,46881838,1073741800,-572560548
+			0.185643392652478922f, -0.332064345389014803f, 0.185643392652478922f, 1.654637402827731090f, -0.693859842743674182f, 0.327519300813245984f, -0.571358085216950418f, 0.327519300813245984f, 1.715375037176782860f, -0.799055553586324407f, 0.283656142708241688f, -0.441088976843048652f, 0.283656142708241688f, 1.778230635987093860f, -0.904453944560528522f, 0.079685368654848945f, -0.011231810140649204f, 0.079685368654848945f, 1.825046003243238070f, -0.973184930412286708f
 		},
 		NULL, // 9
 		NULL, // 10
@@ -109,30 +109,30 @@ static const q31_t *mag_coeffs[17] =
 		NULL, // 13
 		NULL, // 14
 		NULL, // 15
-		(q31_t *)(const q31_t[]){
+		(float32_t *)(const float32_t[]){
 			// 16x magnify
 			// 1k5, sample rate 48k, 60dB stopband, elliptic
 			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
 			// Iowa Hills IIR Filter Designer
-			107307954,-208863288,107307954,1005168507,-459973719,184002041,-355970690,184002041,1031314500,-492400484,150355686,-282915761,150355686,1056806257,-523654459,29495181,-38391901,29495181,1073741800,-543392853
+			0.194769868656866380f, -0.379098413160710079f, 0.194769868656866380f, 1.824436402073870810f, -0.834877726226893380f, 0.333973874901496770f, -0.646106479315673776f, 0.333973874901496770f, 1.871892825636887640f, -0.893734096124207178f, 0.272903880596429671f, -0.513507745397738469f, 0.272903880596429671f, 1.918161772571113750f, -0.950461788366234739f, 0.053535383722369843f, -0.069683422367188122f, 0.053535383722369843f, 1.948900719896301760f, -0.986288064973853129f
 		},
 };
 
-static const arm_fir_decimate_instance_q31 FirZoomFFTDecimate[17] =
+static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 	{
 		{NULL}, // 0
 		{NULL}, // 1
 		// 48ksps, 12kHz lowpass
 		{
 			.numTaps = 4,
-			.pCoeffs = (q31_t *)(const q31_t[]){1012401,1073741800,1073741800,1012401},
+			.pCoeffs = (float32_t *)(const float32_t[]){475.1179397144384210E-6f, 0.503905202786044337f, 0.503905202786044337f, 475.1179397144384210E-6f},
 			.pState = NULL
 		},
 		{NULL}, // 3
 		// 48ksps, 6kHz lowpass
 		{
 			.numTaps = 4, 
-			.pCoeffs = (q31_t *)(const q31_t[]){714206263,1073741800,1073741800,714206263}, 
+			.pCoeffs = (float32_t *)(const float32_t[]){0.198273254218889416f, 0.298085149879260325f, 0.298085149879260325f, 0.198273254218889416f}, 
 			.pState = NULL
 		},
 		{NULL}, // 5
@@ -141,7 +141,7 @@ static const arm_fir_decimate_instance_q31 FirZoomFFTDecimate[17] =
 		// 48ksps, 3kHz lowpass
 		{
 			.numTaps = 4, 
-			.pCoeffs = (q31_t *)(const q31_t[]){786560715,1073741800,1073741800,786560715}, 
+			.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f}, 
 			.pState = NULL
 		},
 		{NULL}, // 9
@@ -154,7 +154,7 @@ static const arm_fir_decimate_instance_q31 FirZoomFFTDecimate[17] =
 		// 48ksps, 1.5kHz lowpass
 		{
 			.numTaps = 4, 
-			.pCoeffs = (q31_t *)(const q31_t[]){786560715,1073741800,1073741800,786560715}, 
+			.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f}, 
 			.pState = NULL
 		},
 };
@@ -169,14 +169,14 @@ void FFT_Init(void)
 		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, 4 * 4 * 32);
 		IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[TRX.FFT_Zoom];
 		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, 4 * 4 * 32);
-		arm_fir_decimate_init_q31(&DECIMATE_ZOOM_FFT_I,
+		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_I,
 								  FirZoomFFTDecimate[TRX.FFT_Zoom].numTaps,
 								  TRX.FFT_Zoom, // Decimation factor
 								  FirZoomFFTDecimate[TRX.FFT_Zoom].pCoeffs,
 								  decimZoomFFTIState, // Filter state variables
 								  FFT_SIZE);
 
-		arm_fir_decimate_init_q31(&DECIMATE_ZOOM_FFT_Q,
+		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_Q,
 								  FirZoomFFTDecimate[TRX.FFT_Zoom].numTaps,
 								  TRX.FFT_Zoom, // Decimation factor
 								  FirZoomFFTDecimate[TRX.FFT_Zoom].pCoeffs,
@@ -199,9 +199,9 @@ void FFT_doFFT(void)
 		return;
 
 	uint32_t maxIndex = 0;			 // Индекс элемента массива с максимальной амплитудой в результирующей АЧХ
-	q31_t maxValue = 0;			 // Максимальное значение амплитуды в результирующей АЧХ
-	q31_t meanValue = 0;		 // Среднее значение амплитуды в результирующей АЧХ
-	q31_t diffValue = 0;		 // Разница между максимальным значением в FFT и пороге в водопаде
+	float32_t maxValue = 0;			 // Максимальное значение амплитуды в результирующей АЧХ
+	float32_t meanValue = 0;		 // Среднее значение амплитуды в результирующей АЧХ
+	float32_t diffValue = 0;		 // Разница между максимальным значением в FFT и пороге в водопаде
 	float32_t window_multiplier = 0; //Множитель для вычисления окна к FFT
 
 	//Process DC corrector filter
@@ -214,19 +214,19 @@ void FFT_doFFT(void)
 	//Process Notch filter
 	if (TRX.NotchFilter && !TRX_on_TX())
 	{
-		//arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
-		//arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
+		arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
+		arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
 	}
 
 	//ZoomFFT
 	if (TRX.FFT_Zoom > 1)
 	{
 		//Biquad LPF фильтр
-		arm_biquad_cascade_df1_q31(&IIR_biquad_Zoom_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
-		arm_biquad_cascade_df1_q31(&IIR_biquad_Zoom_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
+		arm_biquad_cascade_df1_f32(&IIR_biquad_Zoom_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
+		arm_biquad_cascade_df1_f32(&IIR_biquad_Zoom_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
 		//Дециматор
-		arm_fir_decimate_q31(&DECIMATE_ZOOM_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
-		arm_fir_decimate_q31(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
+		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
+		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
 		//Смещаем старые данные в  буфере, т.к. будем их использовать (иначе скорость FFT упадёт, ведь для получения большего разрешения необходимо накапливать больше данных)
 		for (uint16_t i = 0; i < FFT_SIZE; i++)
 		{
@@ -274,8 +274,8 @@ void FFT_doFFT(void)
 		FFTInput[i * 2 + 1] = window_multiplier * FFTInput[i * 2 + 1];
 	}
 
-	arm_cfft_q31(FFT_Inst, FFTInput, 0, 1);
-	arm_cmplx_mag_q31(FFTInput, FFTInput, FFT_SIZE);
+	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
+	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
 
 	//Уменьшаем расчитанный FFT до видимого
 	if (FFT_SIZE > LAY_FFT_PRINT_SIZE)
@@ -291,18 +291,18 @@ void FFT_doFFT(void)
 	}
 
 	//Ищем Максимум амплитуды
-	q31_t maxValueFFT = maxValueFFT_rx;
+	float32_t maxValueFFT = maxValueFFT_rx;
 	if (TRX_on_TX())
 		maxValueFFT = maxValueFFT_tx;
-	arm_max_q31(FFTInput, LAY_FFT_PRINT_SIZE, &maxValue, &maxIndex); //ищем максимум в АЧХ
+	arm_max_f32(FFTInput, LAY_FFT_PRINT_SIZE, &maxValue, &maxIndex); //ищем максимум в АЧХ
 
 	//Ищем медиану в АЧХ
-	q31_t median_max = maxValue;
-	q31_t median_min = 0;
+	float32_t median_max = maxValue;
+	float32_t median_min = 0;
 	for (uint16_t f = 0; ((f < LAY_FFT_PRINT_SIZE) && (median_max > median_min)); f++)
 	{
-		q31_t median_max_find = 0;
-		q31_t median_min_find = median_max;
+		float32_t median_max_find = 0;
+		float32_t median_min_find = median_max;
 		for (uint16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
 		{
 			if (FFTInput[i] < median_max && FFTInput[i] > median_max_find)
@@ -330,10 +330,10 @@ void FFT_doFFT(void)
 	//Автокалибровка по средней амплитуде
 	if (!TRX_on_TX())
 	{
-		if ((meanValue * 4) > maxValueFFT)
-			maxValueFFT = (meanValue * 4);
-		if ((meanValue * 8) < maxValueFFT)
-			maxValueFFT = (meanValue * 8);
+		if ((meanValue * 4.0f) > maxValueFFT)
+			maxValueFFT = (meanValue * 4.0f);
+		if ((meanValue * 8.0f) < maxValueFFT)
+			maxValueFFT = (meanValue * 8.0f);
 	}
 	
 	maxValueErrors = 0;
@@ -344,15 +344,15 @@ void FFT_doFFT(void)
 	else
 		maxValueFFT_rx = maxValueFFT;
 
+	//Нормируем АЧХ к единице
+	arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, LAY_FFT_PRINT_SIZE);
+	
 	//Усреднение значений для последующего вывода (от резких всплесков)
 	for (uint16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
-	{
-		float32_t val = FFTInput[i]*(1.0f / (float32_t)maxValueFFT); //Нормируем АЧХ к единице
-		if (FFTOutput_mean[i] < val)
-			FFTOutput_mean[i] += (val - FFTOutput_mean[i]) / TRX.FFT_Averaging;
+		if (FFTOutput_mean[i] < FFTInput[i])
+			FFTOutput_mean[i] += (FFTInput[i] - FFTOutput_mean[i]) / TRX.FFT_Averaging;
 		else
-			FFTOutput_mean[i] -= (FFTOutput_mean[i] - val) / TRX.FFT_Averaging;
-	}
+			FFTOutput_mean[i] -= (FFTOutput_mean[i] - FFTInput[i]) / TRX.FFT_Averaging;
 	
 	FFT_need_fft = false;
 }

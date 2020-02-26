@@ -355,16 +355,16 @@ static dc_filter_state_type dc_filter_state[6] =
 		{0, 0}, //5 FFT Q
 };
 
-void dc_filter(q31_t *Buffer, int16_t blockSize, uint8_t stateNum) //удаляет постоянную составлющую сигнала
+void dc_filter(float32_t *Buffer, int16_t blockSize, uint8_t stateNum) //удаляет постоянную составлющую сигнала
 {
-	static const float32_t A1 = (1.0f - 0.00048828125); // (1-2^(-11))
+	static const float32_t A1 = (1.0f - 0.00048828125f); // (1-2^(-11))
 
 	for (uint16_t i = 0; i < blockSize; i++)
 	{
-		q31_t sampleIn = Buffer[i];
-		q31_t sampleOut = 0;
-		q31_t delta_x = sampleIn - dc_filter_state[stateNum].x_prev;
-		q31_t a1_y_prev = A1 * dc_filter_state[stateNum].y_prev;
+		float32_t sampleIn = Buffer[i];
+		float32_t sampleOut = 0;
+		float32_t delta_x = sampleIn - dc_filter_state[stateNum].x_prev;
+		float32_t a1_y_prev = A1 * dc_filter_state[stateNum].y_prev;
 		sampleOut = delta_x + a1_y_prev;
 		dc_filter_state[stateNum].x_prev = sampleIn;
 		dc_filter_state[stateNum].y_prev = sampleOut;

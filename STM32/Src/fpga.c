@@ -19,12 +19,12 @@ static GPIO_InitTypeDef FPGA_GPIO_InitStruct;
 static bool FPGA_bus_direction = false; //false - OUT; true - in
 uint16_t FPGA_Audio_Buffer_Index = 0;
 bool FPGA_Audio_Buffer_State = true; //true - compleate ; false - half
-SRAM2 volatile q31_t FPGA_Audio_Buffer_RX1_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
-SRAM2 volatile q31_t FPGA_Audio_Buffer_RX1_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
-SRAM2 volatile q31_t FPGA_Audio_Buffer_RX2_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
-SRAM2 volatile q31_t FPGA_Audio_Buffer_RX2_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
-SRAM2 volatile q31_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
-SRAM2 volatile q31_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 volatile float32_t FPGA_Audio_Buffer_RX1_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 volatile float32_t FPGA_Audio_Buffer_RX2_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
+SRAM2 volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
 
 uint8_t FPGA_readPacket(void);
 void FPGA_writePacket(uint8_t packet);
@@ -347,7 +347,8 @@ inline void FPGA_fpgadata_getparam(void)
 
 inline void FPGA_fpgadata_getiq(void)
 {
-	register q31_t FPGA_fpgadata_in_tmp32 = 0;
+	q31_t FPGA_fpgadata_in_tmp32 = 0;
+	float32_t FPGA_fpgadata_in_float32 = 0;
 	FPGA_samples++;
 
 	//STAGE 2 in Q RX1
@@ -369,17 +370,18 @@ inline void FPGA_fpgadata_getiq(void)
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 0;
 
+	arm_q31_to_float(&FPGA_fpgadata_in_tmp32, &FPGA_fpgadata_in_float32, 1);
 	if (TRX_IQ_swap)
 	{
 		if (NeedFFTInputBuffer)
-			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_tmp32;
-		FPGA_Audio_Buffer_RX1_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp32;
+			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_float32;
+		FPGA_Audio_Buffer_RX1_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_float32;
 	}
 	else
 	{
 		if (NeedFFTInputBuffer)
-			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_tmp32;
-		FPGA_Audio_Buffer_RX1_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp32;
+			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_float32;
+		FPGA_Audio_Buffer_RX1_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_float32;
 	}
 	FPGA_clockFall();
 
@@ -402,17 +404,18 @@ inline void FPGA_fpgadata_getiq(void)
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 0;
 
+	arm_q31_to_float(&FPGA_fpgadata_in_tmp32, &FPGA_fpgadata_in_float32, 1);
 	if (TRX_IQ_swap)
 	{
 		if (NeedFFTInputBuffer)
-			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_tmp32;
-		FPGA_Audio_Buffer_RX1_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp32;
+			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_float32;
+		FPGA_Audio_Buffer_RX1_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_float32;
 	}
 	else
 	{
 		if (NeedFFTInputBuffer)
-			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_tmp32;
-		FPGA_Audio_Buffer_RX1_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp32;
+			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_float32;
+		FPGA_Audio_Buffer_RX1_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_float32;
 	}
 	FPGA_clockFall();
 
@@ -435,13 +438,14 @@ inline void FPGA_fpgadata_getiq(void)
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32|= (FPGA_readPacket() & 0XFF) << 0;
 	
+	arm_q31_to_float(&FPGA_fpgadata_in_tmp32, &FPGA_fpgadata_in_float32, 1);
 	if (TRX_IQ_swap)
 	{
-		FPGA_Audio_Buffer_RX2_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp32;
+		FPGA_Audio_Buffer_RX2_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_float32;
 	}
 	else
 	{
-		FPGA_Audio_Buffer_RX2_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp32;
+		FPGA_Audio_Buffer_RX2_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_float32;
 	}
 	FPGA_clockFall();
 
@@ -464,13 +468,14 @@ inline void FPGA_fpgadata_getiq(void)
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 0;
 	
+	arm_q31_to_float(&FPGA_fpgadata_in_tmp32, &FPGA_fpgadata_in_float32, 1);
 	if (TRX_IQ_swap)
 	{
-		FPGA_Audio_Buffer_RX2_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp32;
+		FPGA_Audio_Buffer_RX2_Q[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_float32;
 	}
 	else
 	{
-		FPGA_Audio_Buffer_RX2_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_tmp32;
+		FPGA_Audio_Buffer_RX2_I[FPGA_Audio_Buffer_Index] = FPGA_fpgadata_in_float32;
 	}
 
 	FPGA_Audio_Buffer_Index++;
@@ -492,8 +497,10 @@ inline void FPGA_fpgadata_getiq(void)
 
 inline void FPGA_fpgadata_sendiq(void)
 {
-	q31_t FPGA_fpgadata_out_q_tmp32 = FPGA_Audio_SendBuffer_Q[FPGA_Audio_Buffer_Index];
-	q31_t FPGA_fpgadata_out_i_tmp32 = FPGA_Audio_SendBuffer_I[FPGA_Audio_Buffer_Index];
+	q31_t FPGA_fpgadata_out_q_tmp32 = 0;
+	q31_t FPGA_fpgadata_out_i_tmp32 = 0;
+	arm_float_to_q31((float32_t *)&FPGA_Audio_SendBuffer_Q[FPGA_Audio_Buffer_Index], &FPGA_fpgadata_out_q_tmp32, 1);
+	arm_float_to_q31((float32_t *)&FPGA_Audio_SendBuffer_I[FPGA_Audio_Buffer_Index], &FPGA_fpgadata_out_q_tmp32, 1);
 	FPGA_samples++;
 	
 	//STAGE 2 out Q

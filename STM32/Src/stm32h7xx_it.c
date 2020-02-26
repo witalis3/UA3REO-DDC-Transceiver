@@ -526,7 +526,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_newline();
     }
     //PrintProfilerResult();
-
+		
     tim6_delay = HAL_GetTick();
     tim5_counter = 0;
     FPGA_samples = 0;
