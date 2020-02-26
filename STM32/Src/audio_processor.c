@@ -41,6 +41,7 @@ static float32_t ALC_need_gain_target = 1.0f;
 static uint16_t block = 0;
 static uint32_t two_signal_gen_position = 0;
 
+static void doRX_HILBERT(void);
 static void doRX_LPF(void);
 static void doRX_HPF(void);
 static void doRX_DNR(void);
@@ -89,6 +90,7 @@ void processRxAudio(void)
 	case TRX_MODE_CW_L:
 		doRX_HPF();
 	case TRX_MODE_DIGI_L:
+		doRX_HILBERT();
 		doRX_LPF();
 		arm_sub_f32((float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 		doRX_NOTCH();
@@ -102,6 +104,7 @@ void processRxAudio(void)
 	case TRX_MODE_CW_U:
 		doRX_HPF();
 	case TRX_MODE_DIGI_U:
+		doRX_HILBERT();
 		doRX_LPF();
 		arm_add_f32((float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
 		doRX_NOTCH();
@@ -498,6 +501,13 @@ static void doCW_Decode(void)
 	if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
 		for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
 			CWDecoder_Process((float32_t *)&FPGA_Audio_Buffer_I_tmp[0] + (block * CWDECODER_SAMPLES));
+}
+
+static void doRX_HILBERT(void)
+{
+	//Hilbert fir
+	arm_fir_f32(&FIR_RX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_f32(&FIR_RX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 }
 
 static void doRX_LPF(void)
