@@ -20,14 +20,14 @@ void dma_memcpy32(uint32_t dest, uint32_t src, uint32_t len)
 
 void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length)
 {
-	uint16_t halflen = length / 2;
+	uint_fast16_t halflen = length / 2;
 	if (index >= halflen)
 	{
 		dma_memcpy32((uint32_t)&dest[0], (uint32_t)&source[index - halflen], halflen);
 	}
 	else
 	{
-		uint16_t prev_part = halflen - index;
+		uint_fast16_t prev_part = halflen - index;
 		dma_memcpy32((uint32_t)&dest[0], (uint32_t)&source[length - prev_part], prev_part);
 		dma_memcpy32((uint32_t)&dest[prev_part], (uint32_t)&source[0], (halflen - prev_part));
 	}
@@ -35,11 +35,11 @@ void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index
 
 void readHalfFromCircleUSBBuffer(int32_t *source, int32_t *dest, uint32_t index, uint32_t length)
 {
-	uint16_t halflen = length / 2;
-	uint16_t readed_index = 0;
+	uint_fast16_t halflen = length / 2;
+	uint_fast16_t readed_index = 0;
 	if (index >= halflen)
 	{
-		for (uint16_t i = (index - halflen); i < index; i++)
+		for (uint_fast16_t i = (index - halflen); i < index; i++)
 		{
 			dest[readed_index] = source[i];
 			readed_index++;
@@ -47,13 +47,13 @@ void readHalfFromCircleUSBBuffer(int32_t *source, int32_t *dest, uint32_t index,
 	}
 	else
 	{
-		uint16_t prev_part = halflen - index;
-		for (uint16_t i = (length - prev_part); i < length; i++)
+		uint_fast16_t prev_part = halflen - index;
+		for (uint_fast16_t i = (length - prev_part); i < length; i++)
 		{
 			dest[readed_index] = source[i];
 			readed_index++;
 		}
-		for (uint16_t i = 0; i < (halflen - prev_part); i++)
+		for (uint_fast16_t i = 0; i < (halflen - prev_part); i++)
 		{
 			dest[readed_index] = source[i];
 			readed_index++;
@@ -63,11 +63,11 @@ void readHalfFromCircleUSBBuffer(int32_t *source, int32_t *dest, uint32_t index,
 
 void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length)
 {
-	uint16_t halflen = length / 2;
-	uint16_t readed_index = 0;
+	uint_fast16_t halflen = length / 2;
+	uint_fast16_t readed_index = 0;
 	if (index >= halflen)
 	{
-		for (uint16_t i = (index - halflen); i < index; i++)
+		for (uint_fast16_t i = (index - halflen); i < index; i++)
 		{
 			dest[readed_index] = (source[i*3+0] << 8) | (source[i*3+1] << 16) | (source[i*3+2] << 24);
 			readed_index++;
@@ -75,13 +75,13 @@ void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t i
 	}
 	else
 	{
-		uint16_t prev_part = halflen - index;
-		for (uint16_t i = (length - prev_part); i < length; i++)
+		uint_fast16_t prev_part = halflen - index;
+		for (uint_fast16_t i = (length - prev_part); i < length; i++)
 		{
 			dest[readed_index] = (source[i*3+0] << 8) | (source[i*3+1] << 16) | (source[i*3+2] << 24);
 			readed_index++;
 		}
-		for (uint16_t i = 0; i < (halflen - prev_part); i++)
+		for (uint_fast16_t i = 0; i < (halflen - prev_part); i++)
 		{
 			dest[readed_index] = (source[i*3+0] << 8) | (source[i*3+1] << 16) | (source[i*3+2] << 24);
 			readed_index++;
@@ -122,7 +122,7 @@ void sendToDebug_newline(void)
 
 void sendToDebug_flush(void)
 {
-	uint16_t tryes = 0;
+	uint_fast16_t tryes = 0;
 	while (!DEBUG_Transmit_FIFO_Events() && tryes < 100)
 	{
 		HAL_IWDG_Refresh(&hiwdg1);
@@ -267,7 +267,7 @@ uint32_t getPhraseFromFrequency(uint32_t freq) //высчитываем част
 	return res;
 }
 
-void addSymbols(char *dest, char *str, uint8_t length, char *symbol, bool toEnd) //добавляем нули
+void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd) //добавляем нули
 {
 	char res[50] = "";
 	strcpy(res, str);
@@ -289,7 +289,7 @@ void addSymbols(char *dest, char *str, uint8_t length, char *symbol, bool toEnd)
 float32_t log10f_fast(float32_t X)
 {
 	float32_t Y, F;
-	int E;
+	int32_t E;
 	F = frexpf(fabsf(X), &E);
 	Y = 1.23149591368684f;
 	Y *= F;
@@ -331,9 +331,9 @@ float32_t volume2rate(float32_t i) //из положения ручки гром
 	return powf(VOLUME_EPSILON, (1.0f - i));
 }
 
-void shiftTextLeft(char *string, int16_t shiftLength)
+void shiftTextLeft(char *string, int_fast16_t shiftLength)
 {
-	int16_t i, size = strlen(string);
+	int_fast16_t i, size = strlen(string);
 	if (shiftLength >= size)
 	{
 		memset(string, '\0', size);
@@ -350,13 +350,13 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 {
 	if (freq > MAX_TX_FREQ_HZ)
 		return 0.0f;
-	const uint8_t calibration_points = 31;
-	uint8_t mhz_left = 0;
-	uint8_t mhz_right = calibration_points;
-	for (uint8_t i = 0; i <= calibration_points; i++)
+	const uint_fast8_t calibration_points = 31;
+	uint_fast8_t mhz_left = 0;
+	uint_fast8_t mhz_right = calibration_points;
+	for (uint_fast8_t i = 0; i <= calibration_points; i++)
 		if ((i * 1000000) < freq)
 			mhz_left = i;
-	for (uint8_t i = calibration_points; i > 0; i--)
+	for (uint_fast8_t i = calibration_points; i > 0; i--)
 		if ((i * 1000000) >= freq)
 			mhz_right = i;
 

@@ -31,7 +31,7 @@ extern volatile uint32_t AUDIOPROC_TXA_samples;
 extern volatile uint32_t AUDIOPROC_TXB_samples;
 extern int32_t Processor_AudioBuffer_A[FPGA_AUDIO_BUFFER_SIZE];
 extern int32_t Processor_AudioBuffer_B[FPGA_AUDIO_BUFFER_SIZE];
-extern volatile uint8_t Processor_AudioBuffer_ReadyBuffer;
+extern volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer;
 extern volatile bool Processor_NeedRXBuffer;
 extern volatile bool Processor_NeedTXBuffer;
 extern volatile float32_t Processor_AVG_amplitude;

@@ -956,9 +956,9 @@ void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_
 	}
 }
 
-inline uint16_t rgb888torgb565(uint8_t r, uint8_t g, uint8_t b)
+inline uint16_t rgb888torgb565(uint_fast8_t r, uint_fast8_t g, uint_fast8_t b)
 {
-	return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
+	return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3);
 }
 
 void LCDDriver_setBrightness(uint8_t percent)

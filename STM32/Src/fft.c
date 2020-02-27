@@ -31,7 +31,7 @@ float32_t FFTInput_Q[FFT_SIZE] = {0};							 //входящий буфер FFT Q
 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};		 //совмещённый буфер FFT I и Q
 static float32_t FFTInput_ZOOMFFT[FFT_DOUBLE_SIZE_BUFFER] = {0}; //совмещённый буфер FFT I и Q для обработки ZoomFFT
 static float32_t FFTOutput_mean[LAY_FFT_PRINT_SIZE] = {0};		 //усредненный буфер FFT (для вывода)
-static uint16_t maxValueErrors = 0;								 //количество превышений сигнала в FFT
+static uint_fast16_t maxValueErrors = 0;								 //количество превышений сигнала в FFT
 static float32_t maxValueFFT_rx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
 static float32_t maxValueFFT_tx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
 static uint32_t currentFFTFreq = 0;
@@ -44,11 +44,11 @@ static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
 static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
 static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
-static uint16_t zoomed_width = 0;
+static uint_fast16_t zoomed_width = 0;
 
-static uint16_t print_wtf_xindex = 0;
-static uint16_t print_wtf_yindex = 0;
-static uint16_t getFFTColor(uint8_t height);
+static uint_fast16_t print_wtf_xindex = 0;
+static uint_fast16_t print_wtf_yindex = 0;
+static uint16_t getFFTColor(uint_fast8_t height);
 static void fft_fill_color_scale(void);
 
 //Коэффициенты для ZoomFFT lowpass filtering / дециматора
@@ -228,7 +228,7 @@ void FFT_doFFT(void)
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
 		//Смещаем старые данные в  буфере, т.к. будем их использовать (иначе скорость FFT упадёт, ведь для получения большего разрешения необходимо накапливать больше данных)
-		for (uint16_t i = 0; i < FFT_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 		{
 			if (i < (FFT_SIZE - zoomed_width))
 			{
@@ -248,7 +248,7 @@ void FFT_doFFT(void)
 	else
 	{
 		//делаем совмещённый буфер для расчёта
-		for (uint16_t i = 0; i < FFT_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 		{
 			FFTInput[i * 2] = FFTInput_I[i];
 			FFTInput[i * 2 + 1] = FFTInput_Q[i];
@@ -258,7 +258,7 @@ void FFT_doFFT(void)
 	NeedFFTInputBuffer = true;
 
 	//Окно для FFT
-	for (uint16_t i = 0; i < FFT_SIZE; i++)
+	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 	{
 		//Окно Hamming
 		if (TRX.FFT_Window == 1)
@@ -281,11 +281,11 @@ void FFT_doFFT(void)
 	if (FFT_SIZE > LAY_FFT_PRINT_SIZE)
 	{
 		float32_t fft_compress_rate = (float32_t)FFT_SIZE / (float32_t)LAY_FFT_PRINT_SIZE;
-		for (uint16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
+		for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
 		{
 			float32_t fft_compress_tmp = 0;
-			for (uint8_t c = 0; c < fft_compress_rate; c++)
-				fft_compress_tmp += FFTInput[(uint16_t)(i * fft_compress_rate + c)];
+			for (uint_fast8_t c = 0; c < fft_compress_rate; c++)
+				fft_compress_tmp += FFTInput[(uint_fast16_t)(i * fft_compress_rate + c)];
 			FFTInput[i] = fft_compress_tmp / fft_compress_rate;
 		}
 	}
@@ -299,11 +299,11 @@ void FFT_doFFT(void)
 	//Ищем медиану в АЧХ
 	float32_t median_max = maxValue;
 	float32_t median_min = 0;
-	for (uint16_t f = 0; ((f < LAY_FFT_PRINT_SIZE) && (median_max > median_min)); f++)
+	for (uint_fast16_t f = 0; ((f < LAY_FFT_PRINT_SIZE) && (median_max > median_min)); f++)
 	{
 		float32_t median_max_find = 0;
 		float32_t median_min_find = median_max;
-		for (uint16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
+		for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
 		{
 			if (FFTInput[i] < median_max && FFTInput[i] > median_max_find)
 				median_max_find = FFTInput[i];
@@ -348,7 +348,7 @@ void FFT_doFFT(void)
 	arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, LAY_FFT_PRINT_SIZE);
 	
 	//Усреднение значений для последующего вывода (от резких всплесков)
-	for (uint16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
+	for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
 		if (FFTOutput_mean[i] < FFTInput[i])
 			FFTOutput_mean[i] += (FFTInput[i] - FFTOutput_mean[i]) / TRX.FFT_Averaging;
 		else
@@ -369,8 +369,8 @@ void FFT_printFFT(void)
 		return;
 	LCD_busy = true;
 
-	uint16_t height = 0; //высота столбца в выводе FFT
-	uint16_t tmp = 0;
+	uint_fast16_t height = 0; //высота столбца в выводе FFT
+	uint_fast16_t tmp = 0;
 
 	//смещаем водопад, если нужно
 	if ((CurrentVFO()->Freq - currentFFTFreq) != 0)
@@ -387,7 +387,7 @@ void FFT_printFFT(void)
 	}
 
 	//расчитываем цвета для водопада
-	uint16_t new_x = 0;
+	uint_fast16_t new_x = 0;
 	uint8_t fft_header[LAY_FFT_PRINT_SIZE] = {0};
 	for (uint32_t fft_x = 0; fft_x < LAY_FFT_PRINT_SIZE; fft_x++)
 	{
@@ -395,7 +395,7 @@ void FFT_printFFT(void)
 			new_x = fft_x + (LAY_FFT_PRINT_SIZE / 2);
 		if (fft_x >= (LAY_FFT_PRINT_SIZE / 2))
 			new_x = fft_x - (LAY_FFT_PRINT_SIZE / 2);
-		height = FFTOutput_mean[(uint16_t)fft_x] * LAY_FFT_MAX_HEIGHT;
+		height = FFTOutput_mean[(uint_fast16_t)fft_x] * LAY_FFT_MAX_HEIGHT;
 		if (height > LAY_FFT_MAX_HEIGHT - 1)
 		{
 			height = LAY_FFT_MAX_HEIGHT;
@@ -426,7 +426,7 @@ void FFT_printFFT(void)
 	//разделитель и полоса приёма
 	//LCDDriver_drawFastVLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_BOTTOM_OFFSET, -LAY_FFT_MAX_HEIGHT, COLOR_GREEN);
 	LCDDriver_drawFastHLine(0, LAY_FFT_BOTTOM_OFFSET - LAY_FFT_MAX_HEIGHT - 2, LAY_FFT_PRINT_SIZE, COLOR_BLACK);
-	uint16_t line_width = 0;
+	uint_fast16_t line_width = 0;
 	line_width = CurrentVFO()->Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom;
 	switch (CurrentVFO()->Mode)
 	{
@@ -462,7 +462,7 @@ void FFT_printFFT(void)
 
 void FFT_printWaterfallDMA(void)
 {
-	uint8_t cwdecoder_offset = 0;
+	uint_fast8_t cwdecoder_offset = 0;
 	if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
 		cwdecoder_offset = LAY_FFT_CWDECODER_OFFSET;
 
@@ -501,7 +501,7 @@ void FFT_moveWaterfall(int32_t _freq_diff)
 	//Move mean Buffer
 	if (freq_diff > 0) //freq up
 	{
-		for (int16_t x = 0; x < LAY_FFT_PRINT_SIZE; x++)
+		for (uint_fast16_t x = 0; x < LAY_FFT_PRINT_SIZE; x++)
 		{
 			new_x = x + freq_diff;
 			if (new_x >= LAY_FFT_PRINT_SIZE)
@@ -516,7 +516,7 @@ void FFT_moveWaterfall(int32_t _freq_diff)
 	}
 	else //freq down
 	{
-		for (int16_t x = LAY_FFT_PRINT_SIZE - 1; x >= 0; x--)
+		for (int_fast16_t x = LAY_FFT_PRINT_SIZE - 1; x >= 0; x--)
 		{
 			new_x = x + freq_diff;
 			if (new_x < 0)
@@ -530,21 +530,21 @@ void FFT_moveWaterfall(int32_t _freq_diff)
 		}
 	}
 	//Move Waterfall
-	uint16_t margin_left = 0;
+	uint_fast16_t margin_left = 0;
 	if (freq_diff < 0)
 		margin_left = -freq_diff;
 	if (margin_left > LAY_FFT_PRINT_SIZE)
 		margin_left = LAY_FFT_PRINT_SIZE;
-	uint16_t margin_right = 0;
+	uint_fast16_t margin_right = 0;
 	if (freq_diff > 0)
 		margin_right = freq_diff;
 	if (margin_right > LAY_FFT_PRINT_SIZE)
 		margin_right = LAY_FFT_PRINT_SIZE;
 	if ((margin_left + margin_right) > LAY_FFT_PRINT_SIZE)
 		margin_right = 0;
-	uint16_t body_width = LAY_FFT_PRINT_SIZE - margin_left - margin_right;
+	uint_fast16_t body_width = LAY_FFT_PRINT_SIZE - margin_left - margin_right;
 
-	for (uint8_t y = 0; y < LAY_FFT_WTF_HEIGHT; y++)
+	for (uint_fast8_t y = 0; y < LAY_FFT_WTF_HEIGHT; y++)
 	{
 		//memcpy(wtf_line_tmp, wtf_buffer[y], sizeof(wtf_line_tmp));
 		HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[y], (uint32_t)&wtf_line_tmp, LAY_FFT_PRINT_SIZE); //копируем строку до смещения
@@ -561,7 +561,7 @@ void FFT_moveWaterfall(int32_t _freq_diff)
 	}
 }
 
-static uint16_t getFFTColor(uint8_t height) //получение теплоты цвета FFT (от синего к красному)
+static uint16_t getFFTColor(uint_fast8_t height) //получение теплоты цвета FFT (от синего к красному)
 {
 	//r g b
 	//0 0 0
@@ -569,9 +569,9 @@ static uint16_t getFFTColor(uint8_t height) //получение теплоты 
 	//255 255 0
 	//255 0 0
 
-	uint8_t red = 0;
-	uint8_t green = 0;
-	uint8_t blue = 0;
+	uint_fast8_t red = 0;
+	uint_fast8_t green = 0;
+	uint_fast8_t blue = 0;
 	//контраст каждой из 3-х зон, в сумме должна быть единица
 	const float32_t contrast1 = 0.1f;
 	const float32_t contrast2 = 0.4f;
@@ -598,7 +598,7 @@ static uint16_t getFFTColor(uint8_t height) //получение теплоты 
 
 static void fft_fill_color_scale(void) //заполняем градиент цветов FFT при инициализации
 {
-	for (uint8_t i = 0; i < LAY_FFT_MAX_HEIGHT; i++)
+	for (uint_fast8_t i = 0; i < LAY_FFT_MAX_HEIGHT; i++)
 	{
 		color_scale[i] = getFFTColor(LAY_FFT_MAX_HEIGHT - i);
 	}

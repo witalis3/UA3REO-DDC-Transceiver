@@ -18,7 +18,7 @@ void InitAGC(void)
 	RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.RX_AGC_speed;
 }
 
-void DoAGC(float32_t *agcBuffer, int16_t blockSize)
+void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize)
 {
 	float32_t AGC_RX_magnitude = 0;
 	float32_t full_scale_rate = 0;
@@ -58,7 +58,7 @@ void DoAGC(float32_t *agcBuffer, int16_t blockSize)
 			gainApplyStep = -(AGC_need_gain_db_old - AGC_need_gain_db) / blockSize;
 		if (AGC_need_gain_db_old < AGC_need_gain_db)
 			gainApplyStep = (AGC_need_gain_db - AGC_need_gain_db_old) / blockSize;
-		for (uint16_t i = 0; i < blockSize; i++)
+		for (uint_fast16_t i = 0; i < blockSize; i++)
 		{
 			AGC_need_gain_db_old += gainApplyStep;
 			agcBuffer[i] = agcBuffer[i] * db2rateV(AGC_need_gain_db_old);

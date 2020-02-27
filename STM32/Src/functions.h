@@ -44,7 +44,7 @@
 
 #define SQRT2 1.41421356237f
 
-#define MINI_DELAY for (int wait_i = 0; wait_i < 100; wait_i++) __asm("nop");
+#define MINI_DELAY for(uint_fast16_t wait_i = 0; wait_i < 100; wait_i++) __asm("nop");
 		
 typedef struct {
     float32_t Load;      /*!< CPU load percentage */
@@ -52,7 +52,6 @@ typedef struct {
     uint32_t SCNT;   /*!< Number of sleeping cycles in one period. Meant for private use */
 } CPULOAD_t;
 		
-extern uint8_t FPGA_spi_data;
 extern UART_HandleTypeDef huart1;
 extern CPULOAD_t CPU_LOAD;
 
@@ -62,7 +61,7 @@ extern void CPULOAD_WakeUp(void);
 extern void CPULOAD_Calc(void);
 extern uint32_t getFrequencyFromPhrase(uint32_t phrase);
 extern uint32_t getPhraseFromFrequency(uint32_t freq);
-extern void addSymbols(char *dest, char *str, uint8_t length, char *symbol, bool toEnd);
+extern void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd);
 extern void sendToDebug_str(char *str);
 extern void sendToDebug_strln(char *data);
 extern void sendToDebug_str2(char *data1, char *data2);
@@ -89,7 +88,7 @@ extern float32_t db2rateP(float32_t i);
 extern float32_t rate2dbV(float32_t i);
 extern float32_t rate2dbP(float32_t i);
 extern float32_t volume2rate(float32_t i);
-extern void shiftTextLeft(char *string, int16_t shiftLength);
+extern void shiftTextLeft(char *string, int_fast16_t shiftLength);
 extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);
 extern int32_t convertToSPIBigEndian(int32_t in);

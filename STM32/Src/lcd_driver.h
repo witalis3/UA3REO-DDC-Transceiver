@@ -268,7 +268,7 @@ extern void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 //13. Set screen rotation
 extern void LCDDriver_setRotation(uint8_t rotate);
 
-extern uint16_t rgb888torgb565(uint8_t red, uint8_t green, uint8_t blue);
+extern uint16_t rgb888torgb565(uint_fast8_t red, uint_fast8_t green, uint_fast8_t blue);
 extern void LCDDriver_vertScrollSetup(int16_t top, int16_t scrollines);
 extern void LCDDriver_vertScroll(int16_t offset);
 extern void LCDDriver_setBrightness(uint8_t percent);

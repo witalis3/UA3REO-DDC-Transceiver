@@ -27,7 +27,7 @@ extern volatile float32_t FPGA_Audio_Buffer_RX2_Q[FPGA_AUDIO_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_AUDIO_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE];
-extern uint16_t FPGA_Audio_Buffer_Index;
+extern uint_fast16_t FPGA_Audio_Buffer_Index;
 extern bool FPGA_Audio_Buffer_State;
 
 #endif

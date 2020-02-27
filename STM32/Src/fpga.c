@@ -17,7 +17,7 @@ volatile bool FPGA_Buffer_underrun = false;
 
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct;
 static bool FPGA_bus_direction = false; //false - OUT; true - in
-uint16_t FPGA_Audio_Buffer_Index = 0;
+uint_fast16_t FPGA_Audio_Buffer_Index = 0;
 bool FPGA_Audio_Buffer_State = true; //true - compleate ; false - half
 SRAM2 volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
 SRAM2 volatile float32_t FPGA_Audio_Buffer_RX1_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
@@ -26,8 +26,8 @@ SRAM2 volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
 SRAM2 volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
 SRAM2 volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
 
-uint8_t FPGA_readPacket(void);
-void FPGA_writePacket(uint8_t packet);
+uint_fast8_t FPGA_readPacket(void);
+void FPGA_writePacket(uint_fast8_t packet);
 void FPGA_clockFall(void);
 void FPGA_clockRise(void);
 void FPGA_fpgadata_sendiq(void);
@@ -58,7 +58,7 @@ void FPGA_test_bus(void) //проверка шины
 {
 	bool err = false;
 	FPGA_busy = true;
-	for (uint8_t b = 0; b < 8; b++)
+	for (uint_fast8_t b = 0; b < 8; b++)
 	{
 		//STAGE 1
 		//out
@@ -125,13 +125,12 @@ void FPGA_stop_audio_clock(void) //остановка PLL для I2S и коде
 
 void FPGA_fpgadata_stuffclock(void)
 {
-	uint8_t FPGA_fpgadata_out_tmp8 = 0;
+	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
 	FPGA_busy = true;
 	//обмен данными
 
 	//STAGE 1
 	//out
-	FPGA_fpgadata_out_tmp8 = 0;
 	if (FPGA_NeedSendParams)
 		FPGA_fpgadata_out_tmp8 = 1;
 	else if (FPGA_NeedGetParams)
@@ -163,7 +162,7 @@ void FPGA_fpgadata_stuffclock(void)
 
 void FPGA_fpgadata_iqclock(void)
 {
-	uint8_t FPGA_fpgadata_out_tmp8 = 0;
+	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
 	FPGA_busy = true;
 	VFO *current_vfo = CurrentVFO();
 	//обмен данными
@@ -193,7 +192,7 @@ void FPGA_fpgadata_iqclock(void)
 
 inline void FPGA_fpgadata_sendparam(void)
 {
-	uint8_t FPGA_fpgadata_out_tmp8 = 0;
+	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
 	uint32_t TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT);
 	if (!TRX_on_TX())
@@ -300,7 +299,7 @@ inline void FPGA_fpgadata_sendparam(void)
 
 inline void FPGA_fpgadata_getparam(void)
 {
-	uint8_t FPGA_fpgadata_in_tmp8 = 0;
+	uint_fast8_t FPGA_fpgadata_in_tmp8 = 0;
 
 	//STAGE 2
 	//clock
@@ -635,12 +634,12 @@ inline void FPGA_clockFall(void)
 	FPGA_CLK_GPIO_Port->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U);
 }
 
-inline uint8_t FPGA_readPacket(void)
+inline uint_fast8_t FPGA_readPacket(void)
 {
 	if (!FPGA_bus_direction)
 		FPGA_setBusInput();
 	__asm("nop");
-	return FPGA_BUS_D0_GPIO_Port->IDR;
+	return (FPGA_BUS_D0_GPIO_Port->IDR & 0xFF);
 	/*
 	return  (((FPGA_BUS_D0_GPIO_Port->IDR & FPGA_BUS_D0_Pin) == FPGA_BUS_D0_Pin) << 0)
 				| (((FPGA_BUS_D0_GPIO_Port->IDR & FPGA_BUS_D1_Pin) == FPGA_BUS_D1_Pin) << 1)
@@ -653,12 +652,12 @@ inline uint8_t FPGA_readPacket(void)
 	*/
 }
 
-inline void FPGA_writePacket(uint8_t packet)
+inline void FPGA_writePacket(uint_fast8_t packet)
 {
 	if (FPGA_bus_direction)
 		FPGA_setBusOutput();
 
-	FPGA_BUS_D0_GPIO_Port->BSRR = packet | 0xFF0000;
+	FPGA_BUS_D0_GPIO_Port->BSRR = (packet & 0xFF) | 0xFF0000;
 	/*
 	FPGA_BUS_D0_GPIO_Port->BSRR =
 		(bitRead(packet, 0) << 0 & FPGA_BUS_D0_Pin)
@@ -680,7 +679,7 @@ inline void FPGA_writePacket(uint8_t packet)
 		*/
 }
 
-void FPGA_start_command(uint8_t command) //выполнение команды к SPI flash
+void FPGA_start_command(uint_fast8_t command) //выполнение команды к SPI flash
 {
 	FPGA_busy = true;
 
@@ -698,7 +697,7 @@ void FPGA_start_command(uint8_t command) //выполнение команды �
 	HAL_Delay(1);
 }
 
-uint8_t FPGA_continue_command(uint8_t writedata) //продолжение чтения и записи к SPI flash
+uint_fast8_t FPGA_continue_command(uint_fast8_t writedata) //продолжение чтения и записи к SPI flash
 {
 	//STAGE 3 WRITE
 	FPGA_writePacket(writedata);
@@ -708,7 +707,7 @@ uint8_t FPGA_continue_command(uint8_t writedata) //продолжение чте
 	//STAGE 4 READ
 	FPGA_clockRise();
 	FPGA_clockFall();
-	uint8_t data = FPGA_readPacket();
+	uint_fast8_t data = FPGA_readPacket();
 	HAL_Delay(1);
 
 	return data;
@@ -743,9 +742,9 @@ void FPGA_read_flash(void) //чтение flash памяти
 	//FPGA_continue_command(0x00); //addr 2
 	//FPGA_continue_command(0x00); //addr 3
 
-	for (uint16_t i = 1; i <= 512; i++)
+	for (uint_fast16_t i = 1; i <= 512; i++)
 	{
-		uint8_t data = FPGA_continue_command(0x05);
+		uint_fast8_t data = FPGA_continue_command(0x05);
 		sendToDebug_hex(data, true);
 		sendToDebug_str(" ");
 		if (i % 16 == 0)

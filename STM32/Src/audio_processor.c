@@ -22,7 +22,7 @@ volatile uint32_t AUDIOPROC_TXA_samples = 0;
 volatile uint32_t AUDIOPROC_TXB_samples = 0;
 SRAM2 int32_t Processor_AudioBuffer_A[FPGA_AUDIO_BUFFER_SIZE] = {0};
 SRAM2 int32_t Processor_AudioBuffer_B[FPGA_AUDIO_BUFFER_SIZE] = {0};
-volatile uint8_t Processor_AudioBuffer_ReadyBuffer = 0;
+volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer = 0;
 volatile bool Processor_NeedRXBuffer = false;
 volatile bool Processor_NeedTXBuffer = false;
 SRAM2 float32_t FPGA_Audio_Buffer_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
@@ -38,7 +38,7 @@ volatile float32_t Processor_selected_RFpower_amplitude = 0.0f;
 static float32_t ampl_val_i = 0.0f;
 static float32_t ampl_val_q = 0.0f;
 static float32_t ALC_need_gain_target = 1.0f;
-static uint16_t block = 0;
+static uint_fast16_t block = 0;
 static uint32_t two_signal_gen_position = 0;
 
 static void doRX_HILBERT(void);
@@ -67,7 +67,7 @@ void processRxAudio(void)
 	VFO *current_vfo = CurrentVFO();
 
 	AUDIOPROC_samples++;
-	uint16_t FPGA_Audio_Buffer_Index_tmp = FPGA_Audio_Buffer_Index;
+	uint_fast16_t FPGA_Audio_Buffer_Index_tmp = FPGA_Audio_Buffer_Index;
 	if (FPGA_Audio_Buffer_Index_tmp == 0)
 		FPGA_Audio_Buffer_Index_tmp = FPGA_AUDIO_BUFFER_SIZE;
 	else
@@ -119,7 +119,7 @@ void processRxAudio(void)
 		arm_mult_f32((float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		arm_mult_f32((float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		arm_add_f32((float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-		for (int i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 			arm_sqrt_f32(FPGA_Audio_Buffer_I_tmp[i], &FPGA_Audio_Buffer_I_tmp[i]);
 		doRX_NOTCH();
 		doRX_SMETER();
@@ -145,7 +145,7 @@ void processRxAudio(void)
 	//Prepare data to DMA
 	if (Processor_AudioBuffer_ReadyBuffer == 0)
 	{
-		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			Processor_AudioBuffer_B[i * 2] = FPGA_Audio_Buffer_I_tmp[i];	 //left channel
 			Processor_AudioBuffer_B[i * 2 + 1] = FPGA_Audio_Buffer_Q_tmp[i]; //right channel
@@ -154,7 +154,7 @@ void processRxAudio(void)
 	}
 	else
 	{
-		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			Processor_AudioBuffer_A[i * 2] = FPGA_Audio_Buffer_I_tmp[i];	 //left channel
 			Processor_AudioBuffer_A[i * 2 + 1] = FPGA_Audio_Buffer_Q_tmp[i]; //right channel
@@ -179,7 +179,7 @@ void processRxAudio(void)
 			USB_AUDIO_rx_buffer_current = &USB_AUDIO_rx_buffer_b[0];
 			
 		//drop LSB 32b->24b
-		for (uint16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET); i++)
+		for (uint_fast16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET); i++)
 		{
 			USB_AUDIO_rx_buffer_current[i*BYTES_IN_SAMPLE_AUDIO_OUT_PACKET+0] = (Processor_AudioBuffer_current[i] >> 8) & 0xFF;
 			USB_AUDIO_rx_buffer_current[i*BYTES_IN_SAMPLE_AUDIO_OUT_PACKET+1] = (Processor_AudioBuffer_current[i] >> 16) & 0xFF;
@@ -193,7 +193,7 @@ void processRxAudio(void)
 	float32_t volume_gain = volume2rate((float32_t)TRX.Volume / 1023.0f);
 	if (Processor_AudioBuffer_ReadyBuffer == 1)
 	{
-		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
 		{
 			Processor_AudioBuffer_B[i] = Processor_AudioBuffer_B[i] * volume_gain;
 			Processor_AudioBuffer_B[i] = convertToSPIBigEndian(Processor_AudioBuffer_B[i]); //for 32bit audio
@@ -201,7 +201,7 @@ void processRxAudio(void)
 	}
 	else
 	{
-		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
 		{
 			Processor_AudioBuffer_A[i] = Processor_AudioBuffer_A[i] * volume_gain;
 			Processor_AudioBuffer_A[i] = convertToSPIBigEndian(Processor_AudioBuffer_A[i]); //for 32bit audio
@@ -239,20 +239,20 @@ void processTxAudio(void)
 	VFO *current_vfo = CurrentVFO();
 	AUDIOPROC_samples++;
 	Processor_selected_RFpower_amplitude = ((log10f_fast((float32_t)TRX.RF_Power / 10) + 1) / 2.0f) * TRX_MAX_TX_Amplitude;
-	uint8_t mode = TRX_getMode(current_vfo);
+	uint_fast8_t mode = TRX_getMode(current_vfo);
 	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
 		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f; // поправка на нулевые биения
 
 	if (TRX.InputType_USB) //USB AUDIO
 	{
-		uint16_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() /BYTES_IN_SAMPLE_AUDIO_OUT_PACKET; //buffer 8bit, data 24 bit
+		uint_fast16_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() /BYTES_IN_SAMPLE_AUDIO_OUT_PACKET; //buffer 8bit, data 24 bit
 		if ((buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET) == 1)
 			buffer_index-=(buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET);
 		readHalfFromCircleUSBBuffer24Bit(&USB_AUDIO_tx_buffer[0], &Processor_AudioBuffer_A[0], buffer_index, (USB_AUDIO_TX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET));
 	}
 	else //AUDIO CODEC AUDIO
 	{
-		uint16_t dma_index = CODEC_AUDIO_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(hi2s3.hdmarx);
+		uint_fast16_t dma_index = CODEC_AUDIO_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(hi2s3.hdmarx);
 		if ((dma_index % 2) == 1) dma_index--;
 		readHalfFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&Processor_AudioBuffer_A[0], dma_index, CODEC_AUDIO_BUFFER_SIZE);
 	}
@@ -260,7 +260,7 @@ void processTxAudio(void)
 	//One-signal zero-tune generator
 	if (TRX_Tune && !TRX.TWO_SIGNAL_TUNE)
 	{
-		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			FPGA_Audio_Buffer_I_tmp[i] = (Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER) * 0.7f;
 			FPGA_Audio_Buffer_Q_tmp[i] = (Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER) * 0.7f;
@@ -270,7 +270,7 @@ void processTxAudio(void)
 	//Two-signal tune generator
 	if (TRX_Tune && TRX.TWO_SIGNAL_TUNE)
 	{
-		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			float32_t point = generateSin((Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER) / 2.0f, two_signal_gen_position, TRX_SAMPLERATE, 1000);
 			point += generateSin((Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER) / 2.0f, two_signal_gen_position, TRX_SAMPLERATE, 2000);
@@ -290,7 +290,7 @@ void processTxAudio(void)
 	//Copy and convert buffer
 	if (!TRX_Tune)
 	{
-		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			FPGA_Audio_Buffer_I_tmp[i] = Processor_AudioBuffer_A[i * 2];
 			FPGA_Audio_Buffer_Q_tmp[i] = Processor_AudioBuffer_A[i * 2 + 1];
@@ -320,7 +320,7 @@ void processTxAudio(void)
 			if (!TRX_key_serial && !TRX_ptt_hard && !TRX_key_dot_hard && !TRX_key_dash_hard)
 				Processor_selected_RFpower_amplitude = 0;
 			float32_t cw_signal = TRX_GenerateCWSignal(Processor_selected_RFpower_amplitude);
-			for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+			for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 			{
 				FPGA_Audio_Buffer_Q_tmp[i] = cw_signal;
 				FPGA_Audio_Buffer_I_tmp[i] = cw_signal;
@@ -367,7 +367,7 @@ void processTxAudio(void)
 	//RF PowerControl (Audio Level Control) Compressor
 	Processor_TX_MAX_amplitude_IN = 0;
 	//ищем максимум в амплитуде
-	for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
 		arm_abs_f32(&FPGA_Audio_Buffer_I_tmp[i], &ampl_val_i, 1);
 		arm_abs_f32(&FPGA_Audio_Buffer_Q_tmp[i], &ampl_val_q, 1);
@@ -414,7 +414,7 @@ void processTxAudio(void)
 	//RF PowerControl (Audio Level Control) Compressor END
 
 	//Send TX data to FFT
-	for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
 		if (NeedFFTInputBuffer)
 		{
@@ -438,7 +438,7 @@ void processTxAudio(void)
 		float32_t volume_gain = volume2rate((float32_t)TRX.Volume / 1023.0f);
 		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, volume_gain, FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 
-		for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			Processor_AudioBuffer_A[i * 2] = convertToSPIBigEndian(FPGA_Audio_Buffer_I_tmp[i]);		 //left channel
 			Processor_AudioBuffer_A[i * 2 + 1] = Processor_AudioBuffer_A[i * 2]; //right channel
@@ -464,7 +464,7 @@ void processTxAudio(void)
 		{
 			if (Processor_TX_MAX_amplitude_IN > 0)
 			{
-				for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
+				for (uint_fast16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
 					CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX.Volume / 100.0f) * 2000.0f * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ);
 			}
 			else
@@ -571,9 +571,9 @@ static void DemodulateFM(void)
 	static float lpf_prev, hpf_prev_a, hpf_prev_b; // used in FM detection and low/high pass processing
 	float32_t squelch_buf[FPGA_AUDIO_BUFFER_HALF_SIZE];
 	static float32_t i_prev, q_prev; // used in FM detection and low/high pass processing
-	static uint8_t fm_sql_count = 0; // used for squelch processing and debouncing tone detection, respectively
+	static uint_fast8_t fm_sql_count = 0; // used for squelch processing and debouncing tone detection, respectively
 
-	for (uint16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
 		// first, calculate "x" and "y" for the arctan2, comparing the vectors of present data with previous data
 		y = (FPGA_Audio_Buffer_Q_tmp[i] * i_prev) - (FPGA_Audio_Buffer_I_tmp[i] * q_prev);
@@ -673,7 +673,7 @@ static void ModulateFM(void)
 	if (CurrentVFO()->Filter_Width == 0)
 		modulation_index = 10.0f;
 	// Do differentiating high-pass filter to provide 6dB/octave pre-emphasis - which also removes any DC component!
-	for (int i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
 		float32_t a = FPGA_Audio_Buffer_I_tmp[i];
 		hpf_prev_b = FM_TX_HPF_ALPHA * (hpf_prev_b + a - hpf_prev_a); // do differentiation

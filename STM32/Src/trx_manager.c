@@ -20,30 +20,30 @@ volatile bool TRX_key_serial = false;
 volatile bool TRX_old_key_serial = false;
 volatile bool TRX_key_dot_hard = false;
 volatile bool TRX_key_dash_hard = false;
-volatile uint16_t TRX_Key_Timeout_est = 0;
+volatile uint_fast16_t TRX_Key_Timeout_est = 0;
 volatile bool TRX_IQ_swap = false;
 volatile bool TRX_Squelched = false;
 volatile bool TRX_Tune = false;
 volatile bool TRX_Inited = false;
-volatile int16_t TRX_RX_dBm = -100;
+volatile int_fast16_t TRX_RX_dBm = -100;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
-volatile uint8_t TRX_Time_InActive = 0; //секунд бездействия, используется для спящего режима
-volatile uint8_t TRX_Fan_Timeout = 0;   //секунд, сколько ещё осталось крутить вентилятор
-volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
-volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
+volatile uint_fast8_t TRX_Time_InActive = 0; //секунд бездействия, используется для спящего режима
+volatile uint_fast8_t TRX_Fan_Timeout = 0;   //секунд, сколько ещё осталось крутить вентилятор
+volatile int_fast16_t TRX_ADC_MINAMPLITUDE = 0;
+volatile int_fast16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile bool TRX_SNMP_Synced = false;
-volatile int16_t TRX_SHIFT = 0;
+volatile int_fast16_t TRX_SHIFT = 0;
 volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
 volatile float32_t TRX_SWR_forward = 0;
 volatile float32_t TRX_SWR_backward = 0;
 volatile float32_t TRX_SWR = 0;
-static uint8_t autogain_wait_reaction = 0;   //таймер ожидания реакции от смены режимов ATT/PRE
-static uint8_t autogain_stage = 0;			 //этап отработки актокорректировщика усиления
+static uint_fast8_t autogain_wait_reaction = 0;   //таймер ожидания реакции от смены режимов ATT/PRE
+static uint_fast8_t autogain_stage = 0;			 //этап отработки актокорректировщика усиления
 static uint32_t KEYER_symbol_start_time = 0; //время старта символа автоматического ключа
 static bool KEYER_symbol_status = false;	 //статус (сигнал или период) символа автоматического ключа
 
-static uint8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
+static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);
@@ -59,7 +59,7 @@ void TRX_Init()
 {
 	CWDecoder_Init();
 	TRX_Start_RX();
-	uint8_t saved_mode = CurrentVFO()->Mode;
+	uint_fast8_t saved_mode = CurrentVFO()->Mode;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	TRX_setMode(saved_mode, CurrentVFO());
 	sendToDebug_strln("[OK] TRX inited");
@@ -67,7 +67,7 @@ void TRX_Init()
 
 void TRX_Restart_Mode()
 {
-	uint8_t mode = TRX_getMode(CurrentVFO());
+	uint_fast8_t mode = TRX_getMode(CurrentVFO());
 	if (TRX_on_TX())
 	{
 		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
@@ -215,12 +215,12 @@ void TRX_setFrequency(int32_t _freq, VFO *vfo)
 		_freq = MAX_FREQ_HZ;
 
 	vfo->Freq = _freq;
-	int8_t bandFromFreq = getBandFromFreq(_freq, false);
+	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
 	if (bandFromFreq >= 0)
 		TRX.TRX_Saved_freq[bandFromFreq] = _freq;
 	if (TRX.BandMapEnabled)
 	{
-		uint8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
+		uint_fast8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
 		if (TRX_getMode(vfo) != mode_from_bandmap)
 		{
 			TRX_setMode(mode_from_bandmap, vfo);
@@ -237,7 +237,7 @@ uint32_t TRX_getFrequency(VFO *vfo)
 	return vfo->Freq;
 }
 
-void TRX_setMode(uint8_t _mode, VFO *vfo)
+void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 {
 	if (vfo->Mode == TRX_MODE_LOOPBACK || _mode == TRX_MODE_LOOPBACK)
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -269,7 +269,7 @@ void TRX_setMode(uint8_t _mode, VFO *vfo)
 	NeedSaveSettings = true;
 }
 
-uint8_t TRX_getMode(VFO *vfo)
+uint_fast8_t TRX_getMode(VFO *vfo)
 {
 	return vfo->Mode;
 }

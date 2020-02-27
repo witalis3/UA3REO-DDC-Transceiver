@@ -27,8 +27,8 @@ void processNoiseReduction(float32_t *bufferIn, float32_t *bufferOut)
 {
 	if (!TRX.DNR)
 		return;
-	static uint16_t reference_index_old = 0;
-	static uint16_t reference_index_new = 0;
+	static uint_fast16_t reference_index_old = 0;
+	static uint_fast16_t reference_index_new = 0;
 	arm_copy_f32(bufferIn, &lms2_reference[reference_index_new], NOISE_REDUCTION_BLOCK_SIZE);
 	arm_lms_norm_f32(&lms2_Norm_instance, bufferIn, &lms2_reference[reference_index_old], bufferOut, lms2_errsig2, NOISE_REDUCTION_BLOCK_SIZE);
 	reference_index_old += NOISE_REDUCTION_BLOCK_SIZE;

@@ -178,17 +178,17 @@ const BAND_MAP BANDS[] =
 		//
 };
 
-int8_t getBandFromFreq(uint32_t freq, bool nearest)
+int_fast8_t getBandFromFreq(uint32_t freq, bool nearest)
 {
-	for (uint16_t b = 0; b < BANDS_COUNT; b++)
+	for (uint_fast16_t b = 0; b < BANDS_COUNT; b++)
 		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq)
 			return b;
 
 	if (nearest)
 	{
-		uint16_t near_band = 0;
+		uint_fast16_t near_band = 0;
 		uint32_t near_diff = 999999;
-		for (uint16_t b = 0; b < BANDS_COUNT; b++)
+		for (uint_fast16_t b = 0; b < BANDS_COUNT; b++)
 		{
 			if (abs((int32_t)BANDS[b].startFreq - (int32_t)freq) < near_diff)
 			{
@@ -207,19 +207,19 @@ int8_t getBandFromFreq(uint32_t freq, bool nearest)
 	return -1;
 }
 
-uint8_t getModeFromFreq(uint32_t freq)
+uint_fast8_t getModeFromFreq(uint32_t freq)
 {
-	uint8_t ret = 0;
+	uint_fast8_t ret = 0;
 	if (freq < 10000000)
 		ret = TRX_MODE_LSB;
 	if (freq > 10000000)
 		ret = TRX_MODE_USB;
 	if (freq > 30000000)
 		ret = TRX_MODE_NFM;
-	for (int b = 0; b < BANDS_COUNT; b++)
+	for (uint_fast16_t b = 0; b < BANDS_COUNT; b++)
 	{
 		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq)
-			for (int r = 0; r < BANDS[b].regionsCount; r++)
+			for (uint_fast16_t r = 0; r < BANDS[b].regionsCount; r++)
 			{
 				if (BANDS[b].regions[r].startFreq <= freq && freq < BANDS[b].regions[r].endFreq)
 				{

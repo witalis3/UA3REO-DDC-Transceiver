@@ -11,7 +11,7 @@ typedef struct
 {
 	const uint32_t startFreq;
 	const uint32_t endFreq;
-	const uint8_t mode;
+	const uint_fast8_t mode;
 } REGION_MAP;
 
 typedef struct
@@ -20,11 +20,11 @@ typedef struct
 	const uint32_t startFreq;
 	const uint32_t endFreq;
 	const REGION_MAP *regions;
-	const uint8_t regionsCount;
+	const uint_fast8_t regionsCount;
 } BAND_MAP;
 
 extern const BAND_MAP BANDS[];
-extern uint8_t getModeFromFreq(uint32_t freq);
-extern int8_t getBandFromFreq(uint32_t freq, bool nearest);
+extern uint_fast8_t getModeFromFreq(uint32_t freq);
+extern int_fast8_t getBandFromFreq(uint32_t freq, bool nearest);
 
 #endif
