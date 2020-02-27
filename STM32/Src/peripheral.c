@@ -58,7 +58,6 @@ void PERIPH_ENCODER_checkRotate(void)
 void PERIPH_ENCODER2_checkRotate(void)
 {
 	if((HAL_GetTick() - ENCODER2_AValDeb) < 20) return;
-	ENCODER2_AValDeb = HAL_GetTick();
 	ENCODER2_AVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
 
 	if (ENCODER2_ALast != ENCODER2_AVal)
@@ -72,6 +71,7 @@ void PERIPH_ENCODER2_checkRotate(void)
 		{ // иначе B изменил свое состояние первым - вращение против часовой стрелки
 			PERIPH_ENCODER2_Rotated(ENCODER2_INVERT ? -1 : 1);
 		}
+		ENCODER2_AValDeb = HAL_GetTick();
 	}
 }
 

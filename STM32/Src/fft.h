@@ -10,7 +10,7 @@
 
 #define FFT_SIZE 1024                                          //указываем размер расчитываемого FFT
 #define FFT_DOUBLE_SIZE_BUFFER (FFT_SIZE * 2)                 //Размер буффера для расчёта FFT
-#define FFT_MIN 0.01f                                         //MIN порог сигнала FFT
+#define FFT_MIN 0.0001f                                         //MIN порог сигнала FFT
 #define FFT_STEP_COEFF 10.0f                                  //коэффициент шага автокалибровки сигнала FFT (больше - медленней)
 #define FFT_STEP_FIX 10.0f                                    //шаг снижения коэффициента FFT
 #define FFT_STEP_PRECISION 1.0f                               //шаг снижения коэффициента FFT (для слабых сигналов)
