@@ -47,6 +47,7 @@
 #define CODEC_BITS_FULL_SCALE 4294967296		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
 #define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE*(float64_t)CODEC_BITS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
 #define ADC_FULL_SCALE 65536		   //максимальная аплитуда сигнала в АЦП // powf(2,ADC_BITS)
+#define FLOAT_FULL_SCALE_POW 4
 
 #define EEPROM_OP_DELAY 30 // задержки при работе с EEPROM
 #define MAX_WIFIPASS_LENGTH 32
