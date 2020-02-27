@@ -81,8 +81,11 @@ void processRxAudio(void)
 	dc_filter(FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, 1);
 
 	//Применяем усиление ПЧ IF Gain
-	arm_scale_f32(FPGA_Audio_Buffer_I_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-	arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+	if(TRX_getMode(current_vfo) != TRX_MODE_IQ)
+	{
+		arm_scale_f32(FPGA_Audio_Buffer_I_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_scale_f32(FPGA_Audio_Buffer_Q_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+	}
 
 	switch (TRX_getMode(current_vfo))
 	{
@@ -147,8 +150,8 @@ void processRxAudio(void)
 	{
 		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			Processor_AudioBuffer_B[i * 2] = FPGA_Audio_Buffer_I_tmp[i];	 //left channel
-			Processor_AudioBuffer_B[i * 2 + 1] = FPGA_Audio_Buffer_Q_tmp[i]; //right channel
+			arm_float_to_q31(&FPGA_Audio_Buffer_I_tmp[i], &Processor_AudioBuffer_B[i * 2], 1); //left channel
+			arm_float_to_q31(&FPGA_Audio_Buffer_Q_tmp[i], &Processor_AudioBuffer_B[i * 2 + 1], 1); //right channel
 		}
 		Processor_AudioBuffer_ReadyBuffer = 1;
 	}
@@ -156,8 +159,8 @@ void processRxAudio(void)
 	{
 		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			Processor_AudioBuffer_A[i * 2] = FPGA_Audio_Buffer_I_tmp[i];	 //left channel
-			Processor_AudioBuffer_A[i * 2 + 1] = FPGA_Audio_Buffer_Q_tmp[i]; //right channel
+			arm_float_to_q31(&FPGA_Audio_Buffer_I_tmp[i], &Processor_AudioBuffer_A[i * 2], 1); //left channel
+			arm_float_to_q31(&FPGA_Audio_Buffer_Q_tmp[i], &Processor_AudioBuffer_A[i * 2 + 1], 1); //right channel
 		}
 		Processor_AudioBuffer_ReadyBuffer = 0;
 	}

@@ -72,7 +72,7 @@ struct t_CALIBRATE CALIBRATE = {
 	.swr_meter_diode_drop = 0.62f, //Падение напряжения на диодах
 	.swr_meter_trans_rate = 10.0f, //Коэффициент трансформации КСВ метра
 	.swr_meter_ref_sub = 0.0f,	 //% вычитаемого FWD из REF
-	.adc_offset = 177, //Калибровка смещения по входу ADC (ПО DC)
+	.adc_offset = -595, //Калибровка смещения по входу ADC (ПО DC)
 	.att_db = -12.3f,						//подавление в аттенюаторе, dB
 	.lna_gain_db = 11.0f,				//усиление в МШУ предусилителе (LNA), dB
 	//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
@@ -192,7 +192,7 @@ void LoadSettings(bool clear)
 		TRX.CLAR = false;			  //Режим разноса частот (приём один VFO, передача другой)
 		TRX.TWO_SIGNAL_TUNE = false;  //Двухсигнальный генератор в режиме TUNE (1+2кГц)
 		TRX.CIC_GAINER_val = 88;	  //Смещение с выхода CIC
-		TRX.CICFIR_GAINER_val = 44;   //Смещение с выхода CIC компенсатора
+		TRX.CICFIR_GAINER_val = 52;   //Смещение с выхода CIC компенсатора
 		TRX.TXCICFIR_GAINER_val = 32; //Смещение с выхода TX-CIC компенсатора
 		TRX.DAC_GAINER_val = 30;	  //Смещение DAC корректора
 		TRX.IF_Gain = 60;			  //Усиление ПЧ, dB (до всех обработок и AGC)

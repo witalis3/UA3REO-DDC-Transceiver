@@ -480,8 +480,8 @@ void TIM6_DAC_IRQHandler(void)
       uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
       float32_t dbg_ALC_need_gain = ALC_need_gain;
       float32_t dbg_Processor_TX_MAX_amplitude = Processor_TX_MAX_amplitude_OUT;
-      float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_I_tmp[0];
-      float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_Q_tmp[0];
+      float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I[0];
+      float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_RX1_Q[0];
       if (TRX_on_TX())
       {
         dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_SendBuffer_I[0];
@@ -509,9 +509,9 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_float32(dbg_ALC_need_gain, false);
       sendToDebug_str("Processor TX MAX amplitude: ");
       sendToDebug_float32(dbg_Processor_TX_MAX_amplitude, false);
-      sendToDebug_str("First byte of I: ");
+      sendToDebug_str("First byte of RX-FPGA I: ");
       sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp, false); //first byte of I
-      sendToDebug_str("First byte of Q: ");
+      sendToDebug_str("First byte of RX-FPGA Q: ");
       sendToDebug_float32(dbg_FPGA_Audio_Buffer_Q_tmp, false); //first byte of Q
       sendToDebug_str("USB Audio RX samples: ");
       sendToDebug_uint32(dbg_RX_USB_AUDIO_SAMPLES, false); //~48000

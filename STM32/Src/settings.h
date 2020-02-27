@@ -10,9 +10,6 @@
 #define ADCDAC_CLOCK 122880000			//Частота генератора АЦП/ЦАП
 #define MAX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
-#define ADC_BITS 16						//разрядность АЦП
-#define FPGA_BUS_BITS 16				//разрядность данных из FPGA
-#define CODEC_BITS 32				//разрядность данных в аудио-кодеке
 #define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока
 #define MAX_TX_AMPLITUDE 32700.0f		//Максимальный размах при передаче в ЦАП (32767.0f - лимит)
 #define AGC_CLIP_THRESHOLD -20.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
@@ -42,10 +39,14 @@
 #define FSMC_REGISTER_SELECT 18 //из FSMC настроек в STM32Cube (A18, A6, и т.д.)
 #define SCREEN_ROTATE 0			//перевернуть экран вверх ногами
 
+#define ADC_BITS 16						//разрядность АЦП
+#define FPGA_BUS_BITS 32				//разрядность данных из FPGA
+#define CODEC_BITS 32				//разрядность данных в аудио-кодеке
 #define FPGA_BUS_FULL_SCALE 65536		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
 #define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE*(float64_t)FPGA_BUS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
 #define CODEC_BITS_FULL_SCALE 4294967296		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
 #define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE*(float64_t)CODEC_BITS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
+#define ADC_FULL_SCALE 65536		   //максимальная аплитуда сигнала в АЦП // powf(2,ADC_BITS)
 
 #define EEPROM_OP_DELAY 30 // задержки при работе с EEPROM
 #define MAX_WIFIPASS_LENGTH 32

@@ -1,4 +1,4 @@
---cpu Cortex-M7.fp.dp
+--cpu Cortex-M7.fp.dp --lto
 "ua3reo\startup_stm32h743xx.o"
 "ua3reo\agc.o"
 "ua3reo\audio_filters.o"

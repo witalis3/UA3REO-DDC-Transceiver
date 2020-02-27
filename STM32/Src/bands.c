@@ -178,17 +178,17 @@ const BAND_MAP BANDS[] =
 		//
 };
 
-int_fast8_t getBandFromFreq(uint32_t freq, bool nearest)
+int8_t getBandFromFreq(uint32_t freq, bool nearest)
 {
-	for (uint_fast16_t b = 0; b < BANDS_COUNT; b++)
+	for (uint8_t b = 0; b < BANDS_COUNT; b++)
 		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq)
 			return b;
 
 	if (nearest)
 	{
-		uint_fast16_t near_band = 0;
+		uint8_t near_band = 0;
 		uint32_t near_diff = 999999;
-		for (uint_fast16_t b = 0; b < BANDS_COUNT; b++)
+		for (uint8_t b = 0; b < BANDS_COUNT; b++)
 		{
 			if (abs((int32_t)BANDS[b].startFreq - (int32_t)freq) < near_diff)
 			{
