@@ -180,7 +180,7 @@ void LoadSettings(bool clear)
 		TRX.Standby_Time = 180;						//время до гашения экрана по бездействию
 		TRX.Key_timeout = 500;						//время отпуская передачи после последнего знака на ключе
 		TRX.FFT_Averaging = 4;						//усреднение FFT, чтобы сделать его более гладким
-		TRX.WIFI_Enabled = true;					//активировать WiFi
+		TRX.WIFI_Enabled = false;					//активировать WiFi
 		strcpy(TRX.WIFI_AP, "WIFI-AP");				//точка доступа WiFi
 		strcpy(TRX.WIFI_PASSWORD, "WIFI-PASSWORD"); //пароль к точке WiFi
 		TRX.WIFI_TIMEZONE = 3;						//часовой пояс (для синхронизации времени)
