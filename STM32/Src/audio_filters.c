@@ -381,7 +381,9 @@ IIR_LATTICE_FILTER* getIIRFilter(IIR_LATTICE_FILTER_TYPE type, uint16_t width)
 	for(uint16_t i=0; i<IIR_FILTERS_COUNT; i++)
 		if(IIR_Lattice_Filters[i].type==type && IIR_Lattice_Filters[i].width==width)
 			return (IIR_LATTICE_FILTER*)&IIR_Lattice_Filters[i];
-	LCD_showError("Wrong filter length", true);
+	sendToDebug_strln("Wrong filter length");
+	sendToDebug_uint16(type,false);
+	sendToDebug_uint16(width,false);
 	return NULL;
 }
 

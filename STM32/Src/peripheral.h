@@ -15,6 +15,8 @@ typedef struct
 	bool key_tune_prev;
 	bool key_preatt;
 	bool key_preatt_prev;
+	uint32_t key_preatt_starttime;
+	bool key_preatt_afterhold;
 	bool key_fast;
 	bool key_fast_prev;
 	bool key_modep;

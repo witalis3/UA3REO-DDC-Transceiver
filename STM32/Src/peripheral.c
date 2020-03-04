@@ -378,7 +378,43 @@ void PERIPH_ProcessFrontPanel(void)
 			TRX_Restart_Mode();
 		}
 		//PREATT
-		if (PERIPH_FrontPanel.key_preatt_prev != PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt && !TRX.Locked)
+		if (PERIPH_FrontPanel.key_preatt_prev != PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt)
+		{
+			TRX_Time_InActive = 0;
+			PERIPH_FrontPanel.key_preatt_starttime = HAL_GetTick();
+			PERIPH_FrontPanel.key_preatt_afterhold = false;
+		}
+		//PREATT HOLD - ADC DRIVER AND ADC PREAMP
+		if (PERIPH_FrontPanel.key_preatt_prev == PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt && (HAL_GetTick() - PERIPH_FrontPanel.key_preatt_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_preatt_afterhold)
+		{
+			TRX_Time_InActive = 0;
+			PERIPH_FrontPanel.key_preatt_afterhold = true;
+
+			if (!TRX.ADC_Driver && !TRX.ADC_PGA)
+			{
+				TRX.ADC_Driver = true;
+				TRX.ADC_PGA = false;
+			}
+			else if (TRX.ADC_Driver && !TRX.ADC_PGA)
+			{
+				TRX.ADC_Driver = true;
+				TRX.ADC_PGA = true;
+			}
+			else if (TRX.ADC_Driver && TRX.ADC_PGA)
+			{
+				TRX.ADC_Driver = false;
+				TRX.ADC_PGA = true;
+			}
+			else if (!TRX.ADC_Driver && TRX.ADC_PGA)
+			{
+				TRX.ADC_Driver = false;
+				TRX.ADC_PGA = false;
+			}
+			LCD_UpdateQuery.TopButtons = true;
+			NeedSaveSettings = true;
+		}
+		//PREATT CLICK
+		if (PERIPH_FrontPanel.key_preatt_prev != PERIPH_FrontPanel.key_preatt && !PERIPH_FrontPanel.key_preatt && (HAL_GetTick() - PERIPH_FrontPanel.key_preatt_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_preatt_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
 		{
 			TRX_Time_InActive = 0;
 			if (!TRX.LNA && !TRX.ATT)
@@ -631,7 +667,6 @@ void PERIPH_ProcessFrontPanel(void)
 		//F3 A=B CLICK
 		if (PERIPH_FrontPanel.key_a_set_b_prev != PERIPH_FrontPanel.key_a_set_b && !PERIPH_FrontPanel.key_a_set_b && (HAL_GetTick() - PERIPH_FrontPanel.key_a_set_b_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_a_set_b_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
 		{
-			sendToDebug_str("C");
 			TRX_Time_InActive = 0;
 			if (TRX.current_vfo)
 			{
