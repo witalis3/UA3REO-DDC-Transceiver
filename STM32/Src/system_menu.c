@@ -26,6 +26,9 @@ static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_CW_HPF_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_AM_LPF_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_AM_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction);
@@ -112,10 +115,12 @@ static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sy
 
 static struct sysmenu_item_handler sysmenu_bw_handlers[] =
 	{
-		{"SSB HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_HPF_pass, SYSMENU_HANDL_AUDIO_SSB_HPF_pass},
-		{"SSB LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_pass},
-		{"CW LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_Filter, SYSMENU_HANDL_AUDIO_CW_LPF_pass},
-		{"FM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.FM_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_pass},
+		{"SSB HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_pass},
+		{"SSB LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_LPF_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_pass},
+		{"CW HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_HANDL_AUDIO_CW_HPF_pass},		
+		{"CW LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_HANDL_AUDIO_CW_LPF_pass},
+		{"AM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.AM_LPF_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_pass},		
+		{"FM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.FM_LPF_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_pass},
 		{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
 		{"RX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_speed, SYSMENU_HANDL_AUDIO_RX_AGCSpeed},
 		{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_AUDIO_TX_AGCSpeed},
@@ -408,20 +413,92 @@ static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)
 {
-	TRX.SSB_HPF_pass += direction * 100;
-	if (TRX.SSB_HPF_pass < 100)
-		TRX.SSB_HPF_pass = 100;
-	if (TRX.SSB_HPF_pass > 500)
-		TRX.SSB_HPF_pass = 500;
+	if (direction > 0)
+	{
+		if (TRX.SSB_HPF_Filter == 0)
+			TRX.SSB_HPF_Filter = 60;
+		else if (TRX.SSB_HPF_Filter == 60)
+			TRX.SSB_HPF_Filter = 100;
+		else if (TRX.SSB_HPF_Filter == 100)
+			TRX.SSB_HPF_Filter = 200;
+		else if (TRX.SSB_HPF_Filter == 200)
+			TRX.SSB_HPF_Filter = 300;
+		else if (TRX.SSB_HPF_Filter == 300)
+			TRX.SSB_HPF_Filter = 400;
+		else if (TRX.SSB_HPF_Filter == 400)
+			TRX.SSB_HPF_Filter = 500;
+	}
+	else
+	{
+		if (TRX.SSB_HPF_Filter == 60)
+			TRX.SSB_HPF_Filter = 0;
+		else if (TRX.SSB_HPF_Filter == 100)
+			TRX.SSB_HPF_Filter = 60;
+		else if (TRX.SSB_HPF_Filter == 200)
+			TRX.SSB_HPF_Filter = 100;
+		else if (TRX.SSB_HPF_Filter == 300)
+			TRX.SSB_HPF_Filter = 200;
+		else if (TRX.SSB_HPF_Filter == 400)
+			TRX.SSB_HPF_Filter = 300;
+		else if (TRX.SSB_HPF_Filter == 500)
+			TRX.SSB_HPF_Filter = 400;
+	}
+	ReinitAudioFilters();
+}
+
+static void SYSMENU_HANDL_AUDIO_CW_HPF_pass(int8_t direction)
+{
+	if (direction > 0)
+	{
+		if (TRX.CW_HPF_Filter == 0)
+			TRX.CW_HPF_Filter = 60;
+		else if (TRX.CW_HPF_Filter == 60)
+			TRX.CW_HPF_Filter = 100;
+	}
+	else
+	{
+		if (TRX.CW_HPF_Filter == 60)
+			TRX.CW_HPF_Filter = 0;
+		else if (TRX.CW_HPF_Filter == 100)
+			TRX.CW_HPF_Filter = 60;
+	}
 	ReinitAudioFilters();
 }
 
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 {
-	if (direction < 0)
-		TRX.CW_Filter = 300;
+	if (direction > 0)
+	{
+		if (TRX.CW_LPF_Filter == 300)
+			TRX.CW_LPF_Filter = 500;
+		else if (TRX.CW_LPF_Filter == 500)
+			TRX.CW_LPF_Filter = 700;
+		else if (TRX.CW_LPF_Filter == 700)
+			TRX.CW_LPF_Filter = 1000;
+		else if (TRX.CW_LPF_Filter == 1400)
+			TRX.CW_LPF_Filter = 1600;
+		else if (TRX.CW_LPF_Filter == 1600)
+			TRX.CW_LPF_Filter = 1800;
+		else if (TRX.CW_LPF_Filter == 1800)
+			TRX.CW_LPF_Filter = 2100;
+	}
 	else
-		TRX.CW_Filter = 500;
+	{
+		if (TRX.CW_LPF_Filter == 500)
+			TRX.CW_LPF_Filter = 300;
+		else if (TRX.CW_LPF_Filter == 700)
+			TRX.CW_LPF_Filter = 500;
+		else if (TRX.CW_LPF_Filter == 1000)
+			TRX.CW_LPF_Filter = 700;
+		else if (TRX.CW_LPF_Filter == 1400)
+			TRX.CW_LPF_Filter = 1000;
+		else if (TRX.CW_LPF_Filter == 1600)
+			TRX.CW_LPF_Filter = 1400;
+		else if (TRX.CW_LPF_Filter == 1800)
+			TRX.CW_LPF_Filter = 1600;
+		else if (TRX.CW_LPF_Filter == 2100)
+			TRX.CW_LPF_Filter = 1800;
+	}
 
 	ReinitAudioFilters();
 	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
@@ -431,49 +508,107 @@ static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction)
 {
 	if (direction > 0)
 	{
-		if (TRX.SSB_Filter == 1400)
-			TRX.SSB_Filter = 1600;
-		else if (TRX.SSB_Filter == 1600)
-			TRX.SSB_Filter = 1800;
-		else if (TRX.SSB_Filter == 1800)
-			TRX.SSB_Filter = 2100;
-		else if (TRX.SSB_Filter == 2100)
-			TRX.SSB_Filter = 2300;
-		else if (TRX.SSB_Filter == 2300)
-			TRX.SSB_Filter = 2500;
-		else if (TRX.SSB_Filter == 2500)
-			TRX.SSB_Filter = 2700;
-		else if (TRX.SSB_Filter == 2700)
-			TRX.SSB_Filter = 2900;
-		else if (TRX.SSB_Filter == 2900)
-			TRX.SSB_Filter = 3000;
-		else if (TRX.SSB_Filter == 3000)
-			TRX.SSB_Filter = 3200;
-		else if (TRX.SSB_Filter == 3200)
-			TRX.SSB_Filter = 3400;
+		if (TRX.SSB_LPF_Filter == 0)
+			TRX.SSB_LPF_Filter = 1400;
+		
+		if (TRX.SSB_LPF_Filter == 1400)
+			TRX.SSB_LPF_Filter = 1600;
+		else if (TRX.SSB_LPF_Filter == 1600)
+			TRX.SSB_LPF_Filter = 1800;
+		else if (TRX.SSB_LPF_Filter == 1800)
+			TRX.SSB_LPF_Filter = 2100;
+		else if (TRX.SSB_LPF_Filter == 2100)
+			TRX.SSB_LPF_Filter = 2300;
+		else if (TRX.SSB_LPF_Filter == 2300)
+			TRX.SSB_LPF_Filter = 2500;
+		else if (TRX.SSB_LPF_Filter == 2500)
+			TRX.SSB_LPF_Filter = 2700;
+		else if (TRX.SSB_LPF_Filter == 2700)
+			TRX.SSB_LPF_Filter = 2900;
+		else if (TRX.SSB_LPF_Filter == 2900)
+			TRX.SSB_LPF_Filter = 3000;
+		else if (TRX.SSB_LPF_Filter == 3000)
+			TRX.SSB_LPF_Filter = 3200;
+		else if (TRX.SSB_LPF_Filter == 3200)
+			TRX.SSB_LPF_Filter = 3400;
 	}
 	else
 	{
-		if (TRX.SSB_Filter == 1600)
-			TRX.SSB_Filter = 1400;
-		else if (TRX.SSB_Filter == 1800)
-			TRX.SSB_Filter = 1600;
-		else if (TRX.SSB_Filter == 2100)
-			TRX.SSB_Filter = 1800;
-		else if (TRX.SSB_Filter == 2300)
-			TRX.SSB_Filter = 2100;
-		else if (TRX.SSB_Filter == 2500)
-			TRX.SSB_Filter = 2300;
-		else if (TRX.SSB_Filter == 2700)
-			TRX.SSB_Filter = 2500;
-		else if (TRX.SSB_Filter == 2900)
-			TRX.SSB_Filter = 2700;
-		else if (TRX.SSB_Filter == 3000)
-			TRX.SSB_Filter = 2900;
-		else if (TRX.SSB_Filter == 3200)
-			TRX.SSB_Filter = 3000;
-		else if (TRX.SSB_Filter == 3400)
-			TRX.SSB_Filter = 3200;
+		if (TRX.SSB_LPF_Filter == 1600)
+			TRX.SSB_LPF_Filter = 1400;
+		else if (TRX.SSB_LPF_Filter == 1800)
+			TRX.SSB_LPF_Filter = 1600;
+		else if (TRX.SSB_LPF_Filter == 2100)
+			TRX.SSB_LPF_Filter = 1800;
+		else if (TRX.SSB_LPF_Filter == 2300)
+			TRX.SSB_LPF_Filter = 2100;
+		else if (TRX.SSB_LPF_Filter == 2500)
+			TRX.SSB_LPF_Filter = 2300;
+		else if (TRX.SSB_LPF_Filter == 2700)
+			TRX.SSB_LPF_Filter = 2500;
+		else if (TRX.SSB_LPF_Filter == 2900)
+			TRX.SSB_LPF_Filter = 2700;
+		else if (TRX.SSB_LPF_Filter == 3000)
+			TRX.SSB_LPF_Filter = 2900;
+		else if (TRX.SSB_LPF_Filter == 3200)
+			TRX.SSB_LPF_Filter = 3000;
+		else if (TRX.SSB_LPF_Filter == 3400)
+			TRX.SSB_LPF_Filter = 3200;
+	}
+
+	ReinitAudioFilters();
+	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
+}
+
+static void SYSMENU_HANDL_AUDIO_AM_LPF_pass(int8_t direction)
+{
+	if (direction > 0)
+	{
+		if (TRX.AM_LPF_Filter == 2100)
+			TRX.AM_LPF_Filter = 2300;
+		else if (TRX.AM_LPF_Filter == 2300)
+			TRX.AM_LPF_Filter = 2500;
+		else if (TRX.AM_LPF_Filter == 2500)
+			TRX.AM_LPF_Filter = 2700;
+		else if (TRX.AM_LPF_Filter == 2700)
+			TRX.AM_LPF_Filter = 2900;
+		else if (TRX.AM_LPF_Filter == 2900)
+			TRX.AM_LPF_Filter = 3000;
+		else if (TRX.AM_LPF_Filter == 3000)
+			TRX.AM_LPF_Filter = 3200;
+		else if (TRX.AM_LPF_Filter == 3200)
+			TRX.AM_LPF_Filter = 3400;
+		else if (TRX.AM_LPF_Filter == 3400)
+			TRX.AM_LPF_Filter = 3600;
+		else if (TRX.AM_LPF_Filter == 3600)
+			TRX.AM_LPF_Filter = 3800;
+		else if (TRX.AM_LPF_Filter == 3800)
+			TRX.AM_LPF_Filter = 4000;
+		else if (TRX.AM_LPF_Filter == 4000)
+			TRX.AM_LPF_Filter = 4500;
+	}
+	else
+	{
+		if (TRX.AM_LPF_Filter == 2300)
+			TRX.AM_LPF_Filter = 2100;
+		else if (TRX.AM_LPF_Filter == 2500)
+			TRX.AM_LPF_Filter = 2300;
+		else if (TRX.AM_LPF_Filter == 2700)
+			TRX.AM_LPF_Filter = 2500;
+		else if (TRX.AM_LPF_Filter == 2900)
+			TRX.AM_LPF_Filter = 2700;
+		else if (TRX.AM_LPF_Filter == 3000)
+			TRX.AM_LPF_Filter = 2900;
+		else if (TRX.AM_LPF_Filter == 3200)
+			TRX.AM_LPF_Filter = 3000;
+		else if (TRX.AM_LPF_Filter == 3400)
+			TRX.AM_LPF_Filter = 3200;
+		else if (TRX.AM_LPF_Filter == 3600)
+			TRX.AM_LPF_Filter = 3400;
+		else if (TRX.AM_LPF_Filter == 3800)
+			TRX.AM_LPF_Filter = 3400;
+		else if (TRX.AM_LPF_Filter == 4000)
+			TRX.AM_LPF_Filter = 3800;
 	}
 
 	ReinitAudioFilters();
@@ -484,37 +619,37 @@ static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction)
 {
 	if (direction > 0)
 	{
-		if (TRX.FM_Filter == 5000)
-			TRX.FM_Filter = 6000;
-		else if (TRX.FM_Filter == 6000)
-			TRX.FM_Filter = 7000;
-		else if (TRX.FM_Filter == 7000)
-			TRX.FM_Filter = 8000;
-		else if (TRX.FM_Filter == 8000)
-			TRX.FM_Filter = 9000;
-		else if (TRX.FM_Filter == 9000)
-			TRX.FM_Filter = 9500;
-		else if (TRX.FM_Filter == 9500)
-			TRX.FM_Filter = 10000;
-		else if (TRX.FM_Filter == 10000)
-			TRX.FM_Filter = 15000;
+		if (TRX.FM_LPF_Filter == 5000)
+			TRX.FM_LPF_Filter = 6000;
+		else if (TRX.FM_LPF_Filter == 6000)
+			TRX.FM_LPF_Filter = 7000;
+		else if (TRX.FM_LPF_Filter == 7000)
+			TRX.FM_LPF_Filter = 8000;
+		else if (TRX.FM_LPF_Filter == 8000)
+			TRX.FM_LPF_Filter = 9000;
+		else if (TRX.FM_LPF_Filter == 9000)
+			TRX.FM_LPF_Filter = 10000;
+		else if (TRX.FM_LPF_Filter == 10000)
+			TRX.FM_LPF_Filter = 15000;
+		else if (TRX.FM_LPF_Filter == 15000)
+			TRX.FM_LPF_Filter = 20000;
 	}
 	else
 	{
-		if (TRX.FM_Filter == 6000)
-			TRX.FM_Filter = 5000;
-		else if (TRX.FM_Filter == 7000)
-			TRX.FM_Filter = 6000;
-		else if (TRX.FM_Filter == 8000)
-			TRX.FM_Filter = 7000;
-		else if (TRX.FM_Filter == 9000)
-			TRX.FM_Filter = 8000;
-		else if (TRX.FM_Filter == 9500)
-			TRX.FM_Filter = 9000;
-		else if (TRX.FM_Filter == 10000)
-			TRX.FM_Filter = 9500;
-		else if (TRX.FM_Filter == 15000)
-			TRX.FM_Filter = 10000;
+		if (TRX.FM_LPF_Filter == 6000)
+			TRX.FM_LPF_Filter = 5000;
+		else if (TRX.FM_LPF_Filter == 7000)
+			TRX.FM_LPF_Filter = 6000;
+		else if (TRX.FM_LPF_Filter == 8000)
+			TRX.FM_LPF_Filter = 7000;
+		else if (TRX.FM_LPF_Filter == 9000)
+			TRX.FM_LPF_Filter = 8000;
+		else if (TRX.FM_LPF_Filter == 10000)
+			TRX.FM_LPF_Filter = 9000;
+		else if (TRX.FM_LPF_Filter == 15000)
+			TRX.FM_LPF_Filter = 10000;
+		else if (TRX.FM_LPF_Filter == 20000)
+			TRX.FM_LPF_Filter = 5000;
 	}
 
 	ReinitAudioFilters();
@@ -1202,7 +1337,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		break;
 	}
 	if (onlyVal)
-		LCDDriver_Fill_RectWH(LAY_SYSMENU_X2, sysmenu_y, 4 * 12, 13, COLOR_BLACK);
+		LCDDriver_Fill_RectWH(LAY_SYSMENU_X2, sysmenu_y, 5 * 12, 13, COLOR_BLACK);
 	LCDDriver_printText(ctmp, LAY_SYSMENU_X2, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
 	if (systemMenuIndex == sysmenu_i)
 		LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAY_SYSMENU_W, COLOR_WHITE);

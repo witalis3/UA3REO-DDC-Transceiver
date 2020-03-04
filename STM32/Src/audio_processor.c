@@ -310,9 +310,10 @@ void processTxAudio(void)
 	if (mode != TRX_MODE_IQ && !TRX_Tune)
 	{
 		//IIR HPF
-		arm_iir_lattice_f32(&IIR_HPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		if (current_vfo->HPF_Filter_Width > 0)
+			arm_iir_lattice_f32(&IIR_HPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		//IIR LPF
-		if (current_vfo->Filter_Width > 0)
+		if (current_vfo->LPF_Filter_Width > 0)
 			arm_iir_lattice_f32(&IIR_LPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		memcpy(&FPGA_Audio_Buffer_Q_tmp[0], &FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE * 4); //double left and right channel
 
@@ -516,7 +517,7 @@ static void doRX_HILBERT(void)
 static void doRX_LPF(void)
 {
 	//IIR LPF
-	if (CurrentVFO()->Filter_Width > 0)
+	if (CurrentVFO()->LPF_Filter_Width > 0)
 	{
 		arm_iir_lattice_f32(&IIR_LPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 		arm_iir_lattice_f32(&IIR_LPF_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -526,8 +527,11 @@ static void doRX_LPF(void)
 static void doRX_HPF(void)
 {
 	//IIR HPF
-	arm_iir_lattice_f32(&IIR_HPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-	arm_iir_lattice_f32(&IIR_HPF_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	if (CurrentVFO()->HPF_Filter_Width > 0)
+	{
+		arm_iir_lattice_f32(&IIR_HPF_I, (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_f32(&IIR_HPF_Q, (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	}
 }
 
 static void doRX_NOTCH(void)
@@ -657,23 +661,23 @@ static void ModulateFM(void)
 	static float32_t sin_data = 0;
 	static uint32_t fm_mod_accum = 0;
 	static float32_t modulation_index = 2.0f;
-	if (CurrentVFO()->Filter_Width == 5000)
+	if (CurrentVFO()->LPF_Filter_Width == 5000)
 		modulation_index = 2.0f;
-	if (CurrentVFO()->Filter_Width == 6000)
+	if (CurrentVFO()->LPF_Filter_Width == 6000)
 		modulation_index = 3.0f;
-	if (CurrentVFO()->Filter_Width == 7000)
+	if (CurrentVFO()->LPF_Filter_Width == 7000)
 		modulation_index = 4.0f;
-	if (CurrentVFO()->Filter_Width == 8000)
+	if (CurrentVFO()->LPF_Filter_Width == 8000)
 		modulation_index = 5.0f;
-	if (CurrentVFO()->Filter_Width == 9000)
+	if (CurrentVFO()->LPF_Filter_Width == 9000)
 		modulation_index = 6.0f;
-	if (CurrentVFO()->Filter_Width == 9500)
+	if (CurrentVFO()->LPF_Filter_Width == 10000)
 		modulation_index = 7.0f;
-	if (CurrentVFO()->Filter_Width == 10000)
+	if (CurrentVFO()->LPF_Filter_Width == 15000)
 		modulation_index = 8.0f;
-	if (CurrentVFO()->Filter_Width == 15000)
+	if (CurrentVFO()->LPF_Filter_Width == 20000)
 		modulation_index = 9.0f;
-	if (CurrentVFO()->Filter_Width == 0)
+	if (CurrentVFO()->LPF_Filter_Width == 0)
 		modulation_index = 10.0f;
 	// Do differentiating high-pass filter to provide 6dB/octave pre-emphasis - which also removes any DC component!
 	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)

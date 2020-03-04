@@ -98,7 +98,8 @@ typedef struct
 {
 	uint32_t Freq;
 	uint8_t Mode;
-	uint16_t Filter_Width;
+	uint16_t HPF_Filter_Width;
+	uint16_t LPF_Filter_Width;
 } VFO;
 
 extern struct TRX_SETTINGS
@@ -121,9 +122,12 @@ extern struct TRX_SETTINGS
 	bool InputType_LINE;
 	bool InputType_USB;
 	bool Fast;
-	uint16_t CW_Filter;
-	uint16_t SSB_Filter;
-	uint16_t FM_Filter;
+	uint16_t CW_LPF_Filter;
+	uint16_t CW_HPF_Filter;
+	uint16_t SSB_LPF_Filter;
+	uint16_t SSB_HPF_Filter;
+	uint16_t AM_LPF_Filter;
+	uint16_t FM_LPF_Filter;
 	uint8_t RF_Power;
 	uint8_t FM_SQL_threshold;
 	uint32_t TRX_Saved_freq[BANDS_COUNT];
@@ -140,7 +144,6 @@ extern struct TRX_SETTINGS
 	uint8_t Standby_Time;
 	uint16_t Key_timeout;
 	uint8_t FFT_Averaging;
-	uint16_t SSB_HPF_pass;
 	bool WIFI_Enabled;
 	char WIFI_AP[MAX_WIFIPASS_LENGTH];
 	char WIFI_PASSWORD[MAX_WIFIPASS_LENGTH];

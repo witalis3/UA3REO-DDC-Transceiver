@@ -8,14 +8,18 @@
 #include "arm_math.h"
 #include "fpga.h"
 
+#define IIR_FILTERS_COUNT 35
 #define IQ_RX_HILBERT_TAPS 89
 #define IQ_TX_HILBERT_TAPS 201
-#define IIR_LPF_CW_STAGES 7
-#define IIR_LPF_STAGES 11
-#define IIR_HPF_STAGES 6
-#define IIR_HPF_SQL_STAGES 6
+#define IIR_MAX_STAGES 41
 #define NOTCH_STAGES 1
 #define NOTCH_COEFF_IN_STAGE 5
+
+#define FIR_RX_HILBERT_STATE_SIZE (IQ_RX_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
+#define FIR_TX_HILBERT_STATE_SIZE (IQ_TX_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
+#define IIR_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES + FPGA_AUDIO_BUFFER_HALF_SIZE)
+#define IIR_HPF_Taps_STATE_SIZE (IIR_MAX_STAGES + FPGA_AUDIO_BUFFER_HALF_SIZE)
+#define IIR_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES + FPGA_AUDIO_BUFFER_HALF_SIZE)
 
 typedef enum
 {
@@ -30,11 +34,21 @@ typedef enum
 	BIQUAD_highShelf
 } BIQUAD_TYPE;
 
-#define FIR_RX_HILBERT_STATE_SIZE (IQ_RX_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
-#define FIR_TX_HILBERT_STATE_SIZE (IQ_TX_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
-#define IIR_LPF_Taps_STATE_SIZE (FPGA_AUDIO_BUFFER_SIZE + IIR_LPF_STAGES)
-#define IIR_HPF_Taps_STATE_SIZE (FPGA_AUDIO_BUFFER_SIZE + IIR_LPF_STAGES)
-#define IIR_HPF_SQL_STATE_SIZE (FPGA_AUDIO_BUFFER_SIZE + IIR_HPF_SQL_STAGES)
+typedef enum
+{
+	IIR_LATTICE_HPF,
+	IIR_LATTICE_LPF
+} IIR_LATTICE_FILTER_TYPE;
+
+//Coefficients converted to ARMA in reverse order by MATLAB
+typedef struct
+{
+	const uint16_t width;
+	const IIR_LATTICE_FILTER_TYPE type;
+	const uint32_t stages;
+	const float32_t* coeffsK_lattice;
+	const float32_t* coeffsV_ladder;
+} IIR_LATTICE_FILTER;
 
 extern arm_fir_instance_f32 FIR_RX_Hilbert_I;
 extern arm_fir_instance_f32 FIR_RX_Hilbert_Q;

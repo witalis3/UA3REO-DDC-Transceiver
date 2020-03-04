@@ -418,7 +418,8 @@ void CPULOAD_Calc(void)
 	CPU_LOAD.SCNT = CPULOAD_SleepingTime;
 	CPU_LOAD.WCNT = CPULOAD_WorkingTime;
 	CPU_LOAD.Load = ((float)CPULOAD_WorkingTime / (float)(CPULOAD_SleepingTime + CPULOAD_WorkingTime) * 100);
-	
+	if(CPU_LOAD.SCNT==0)
+		CPU_LOAD.Load = 100;
 	/* Reset time */
 	CPULOAD_SleepingTime = 0;
 	CPULOAD_WorkingTime = 0;

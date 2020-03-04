@@ -135,10 +135,12 @@ void LoadSettings(bool clear)
 		TRX.clean_flash = 190;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000;	  //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
-		TRX.VFO_A.Filter_Width = 2700; //сохранённая ширина полосы VFO-A
+		TRX.VFO_A.LPF_Filter_Width = 2700; //сохранённая ширина полосы VFO-A
+		TRX.VFO_A.HPF_Filter_Width = 300; //сохранённая ширина полосы VFO-A
 		TRX.VFO_B.Freq = 14150000;	 //сохранённая частота VFO-B
 		TRX.VFO_B.Mode = TRX_MODE_USB; //сохранённая мода VFO-B
-		TRX.VFO_B.Filter_Width = 2700; //сохранённая ширина полосы VFO-B
+		TRX.VFO_B.LPF_Filter_Width = 2700; //сохранённая ширина полосы VFO-B
+		TRX.VFO_B.HPF_Filter_Width = 300; //сохранённая ширина полосы VFO-B
 		TRX.current_vfo = false;	   // текущая VFO (false - A)
 		TRX.ADC_Driver = false;			   //предусилитель (драйвер АЦП)
 		TRX.LNA = false;					//LNA (малошумящий усилитель)
@@ -155,9 +157,12 @@ void LoadSettings(bool clear)
 		TRX.InputType_LINE = false;
 		TRX.InputType_USB = false;
 		TRX.Fast = true;		  //ускоренная смена частоты при вращении энкодера
-		TRX.CW_Filter = 500;	  //дефолтное значение ширины фильтра CW
-		TRX.SSB_Filter = 2700;	//дефолтное значение ширины фильтра SSB
-		TRX.FM_Filter = 15000;	//дефолтное значение ширины фильтра FM
+		TRX.CW_LPF_Filter = 500;	  //дефолтное значение ширины фильтра CW
+		TRX.CW_HPF_Filter = 60;	  //дефолтное значение ширины фильтра CW
+		TRX.SSB_LPF_Filter = 2700;	//дефолтное значение ширины фильтра SSB
+		TRX.SSB_HPF_Filter = 300;	//дефолтное значение ширины фильтра SSB
+		TRX.AM_LPF_Filter = 4000;	//дефолтное значение ширины фильтра AM
+		TRX.FM_LPF_Filter = 15000;	//дефолтное значение ширины фильтра FM
 		TRX.RF_Power = 20;		  //выходная мощность (%)
 		TRX.FM_SQL_threshold = 1; //FM-шумодав
 		for (uint8_t i = 0; i < BANDS_COUNT; i++)
@@ -175,7 +180,6 @@ void LoadSettings(bool clear)
 		TRX.Standby_Time = 180;						//время до гашения экрана по бездействию
 		TRX.Key_timeout = 500;						//время отпуская передачи после последнего знака на ключе
 		TRX.FFT_Averaging = 4;						//усреднение FFT, чтобы сделать его более гладким
-		TRX.SSB_HPF_pass = 300;						//частота среза ФВЧ в SSB моде
 		TRX.WIFI_Enabled = true;					//активировать WiFi
 		strcpy(TRX.WIFI_AP, "WIFI-AP");				//точка доступа WiFi
 		strcpy(TRX.WIFI_PASSWORD, "WIFI-PASSWORD"); //пароль к точке WiFi

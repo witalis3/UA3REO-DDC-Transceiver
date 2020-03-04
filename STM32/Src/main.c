@@ -225,8 +225,6 @@ int main(void)
     HAL_Delay(1000); //logo wait
   LCD_busy = false;
   LCD_redraw();
-  HAL_TIM_Base_Start_IT(&htim3);
-  sendToDebug_strln("[OK] WIFI timer TIM3 inited");
 	HAL_TIM_Base_Start(&htim6);
   HAL_TIM_Base_Start_IT(&htim6);
   sendToDebug_strln("[OK] Misc timer TIM6 inited");
@@ -235,9 +233,11 @@ int main(void)
   __HAL_RCC_USB2_OTG_FS_CLK_SLEEP_ENABLE();
   __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE();
 	CPULOAD_Init();
-  sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
-  sendToDebug_flush();
   TRX_Inited = true;
+	HAL_TIM_Base_Start_IT(&htim3);
+  sendToDebug_strln("[OK] WIFI timer TIM3 inited");
+	sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
+  sendToDebug_flush();
   /* USER CODE END 2 */
  
  

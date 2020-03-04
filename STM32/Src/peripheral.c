@@ -165,7 +165,7 @@ static void PERIPH_ENCODER2_Rotated(int direction) //энкодер поверн
 	{
 		if (TRX.NotchFC > 50 && direction < 0)
 			TRX.NotchFC -= 25;
-		else if (TRX.NotchFC < CurrentVFO()->Filter_Width && direction > 0)
+		else if (TRX.NotchFC < CurrentVFO()->LPF_Filter_Width && direction > 0)
 			TRX.NotchFC += 25;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		NeedReinitNotch = true;
@@ -635,13 +635,15 @@ void PERIPH_ProcessFrontPanel(void)
 			TRX_Time_InActive = 0;
 			if (TRX.current_vfo)
 			{
-				TRX.VFO_A.Filter_Width = TRX.VFO_B.Filter_Width;
+				TRX.VFO_A.LPF_Filter_Width = TRX.VFO_B.LPF_Filter_Width;
+				TRX.VFO_A.HPF_Filter_Width = TRX.VFO_B.HPF_Filter_Width;
 				TRX.VFO_A.Freq = TRX.VFO_B.Freq;
 				TRX.VFO_A.Mode = TRX.VFO_B.Mode;
 			}
 			else
 			{
-				TRX.VFO_B.Filter_Width = TRX.VFO_A.Filter_Width;
+				TRX.VFO_B.LPF_Filter_Width = TRX.VFO_A.LPF_Filter_Width;
+				TRX.VFO_B.HPF_Filter_Width = TRX.VFO_A.HPF_Filter_Width;
 				TRX.VFO_B.Freq = TRX.VFO_A.Freq;
 				TRX.VFO_B.Mode = TRX.VFO_A.Mode;
 			}
@@ -653,8 +655,8 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_notch_prev != PERIPH_FrontPanel.key_notch && PERIPH_FrontPanel.key_notch && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
-			if (TRX.NotchFC > CurrentVFO()->Filter_Width)
-				TRX.NotchFC = CurrentVFO()->Filter_Width;
+			if (TRX.NotchFC > CurrentVFO()->LPF_Filter_Width)
+				TRX.NotchFC = CurrentVFO()->LPF_Filter_Width;
 			if (!TRX.NotchFilter)
 				TRX.NotchFilter = true;
 			else

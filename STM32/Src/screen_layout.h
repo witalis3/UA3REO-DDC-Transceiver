@@ -133,6 +133,6 @@
 
 #define LAY_SYSMENU_X1 5
 #define LAY_SYSMENU_X2 400
-#define LAY_SYSMENU_W 448
+#define LAY_SYSMENU_W 458
 
 #endif

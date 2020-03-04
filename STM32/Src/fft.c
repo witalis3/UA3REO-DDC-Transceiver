@@ -427,7 +427,7 @@ void FFT_printFFT(void)
 	//LCDDriver_drawFastVLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_BOTTOM_OFFSET, -LAY_FFT_MAX_HEIGHT, COLOR_GREEN);
 	LCDDriver_drawFastHLine(0, LAY_FFT_BOTTOM_OFFSET - LAY_FFT_MAX_HEIGHT - 2, LAY_FFT_PRINT_SIZE, COLOR_BLACK);
 	uint_fast16_t line_width = 0;
-	line_width = CurrentVFO()->Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom;
+	line_width = CurrentVFO()->LPF_Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom;
 	switch (CurrentVFO()->Mode)
 	{
 	case TRX_MODE_LSB:
