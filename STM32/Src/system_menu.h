@@ -34,6 +34,7 @@ extern void SYSMENU_RFPOWER_HOTKEY(void);
 extern void SYSMENU_CW_WPM_HOTKEY(void);
 extern void SYSMENU_AUDIO_SSB_HOTKEY(void);
 extern void SYSMENU_AUDIO_CW_HOTKEY(void);
+extern void SYSMENU_AUDIO_AM_HOTKEY(void);
 extern void SYSMENU_AUDIO_FM_HOTKEY(void);
 
 #endif

@@ -656,6 +656,8 @@ void PERIPH_ProcessFrontPanel(void)
 					SYSMENU_AUDIO_CW_HOTKEY();
 				else if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM)
 					SYSMENU_AUDIO_FM_HOTKEY();
+				else if (CurrentVFO()->Mode == TRX_MODE_AM)
+					SYSMENU_AUDIO_AM_HOTKEY();
 				else
 					SYSMENU_AUDIO_SSB_HOTKEY();
 				drawSystemMenu(true);

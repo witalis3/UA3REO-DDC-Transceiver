@@ -369,7 +369,16 @@ void SYSMENU_AUDIO_CW_HOTKEY(void)
 	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_bw_item_count;
 	sysmenu_onroot = false;
-	systemMenuIndex = 2;
+	systemMenuIndex = 3;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_AUDIO_AM_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 4;
 	drawSystemMenu(true);
 }
 
@@ -378,7 +387,7 @@ void SYSMENU_AUDIO_FM_HOTKEY(void)
 	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_bw_item_count;
 	sysmenu_onroot = false;
-	systemMenuIndex = 3;
+	systemMenuIndex = 6;
 	drawSystemMenu(true);
 }
 
@@ -586,6 +595,12 @@ static void SYSMENU_HANDL_AUDIO_AM_LPF_pass(int8_t direction)
 			TRX.AM_LPF_Filter = 4000;
 		else if (TRX.AM_LPF_Filter == 4000)
 			TRX.AM_LPF_Filter = 4500;
+		else if (TRX.AM_LPF_Filter == 4500)
+			TRX.AM_LPF_Filter = 5000;
+		else if (TRX.AM_LPF_Filter == 5000)
+			TRX.AM_LPF_Filter = 6000;
+		else if (TRX.AM_LPF_Filter == 6000)
+			TRX.AM_LPF_Filter = 7000;
 	}
 	else
 	{
@@ -609,6 +624,14 @@ static void SYSMENU_HANDL_AUDIO_AM_LPF_pass(int8_t direction)
 			TRX.AM_LPF_Filter = 3400;
 		else if (TRX.AM_LPF_Filter == 4000)
 			TRX.AM_LPF_Filter = 3800;
+		else if (TRX.AM_LPF_Filter == 4500)
+			TRX.AM_LPF_Filter = 3800;
+		else if (TRX.AM_LPF_Filter == 5000)
+			TRX.AM_LPF_Filter = 4500;
+		else if (TRX.AM_LPF_Filter == 6000)
+			TRX.AM_LPF_Filter = 5000;
+		else if (TRX.AM_LPF_Filter == 7000)
+			TRX.AM_LPF_Filter = 6000;
 	}
 
 	ReinitAudioFilters();

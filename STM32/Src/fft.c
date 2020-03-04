@@ -427,12 +427,12 @@ void FFT_printFFT(void)
 	//LCDDriver_drawFastVLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_BOTTOM_OFFSET, -LAY_FFT_MAX_HEIGHT, COLOR_GREEN);
 	LCDDriver_drawFastHLine(0, LAY_FFT_BOTTOM_OFFSET - LAY_FFT_MAX_HEIGHT - 2, LAY_FFT_PRINT_SIZE, COLOR_BLACK);
 	uint_fast16_t line_width = 0;
-	line_width = CurrentVFO()->LPF_Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom;
 	switch (CurrentVFO()->Mode)
 	{
 	case TRX_MODE_LSB:
 	case TRX_MODE_CW_L:
 	case TRX_MODE_DIGI_L:
+		line_width = CurrentVFO()->LPF_Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom;
 		if (line_width > (LAY_FFT_PRINT_SIZE / 2))
 			line_width = LAY_FFT_PRINT_SIZE / 2;
 		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_BOTTOM_OFFSET - LAY_FFT_MAX_HEIGHT - 2, -line_width, COLOR_GREEN);
@@ -440,12 +440,14 @@ void FFT_printFFT(void)
 	case TRX_MODE_USB:
 	case TRX_MODE_CW_U:
 	case TRX_MODE_DIGI_U:
+		line_width = CurrentVFO()->LPF_Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom;
 		if (line_width > (LAY_FFT_PRINT_SIZE / 2))
 			line_width = LAY_FFT_PRINT_SIZE / 2;
 		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_BOTTOM_OFFSET - LAY_FFT_MAX_HEIGHT - 2, line_width, COLOR_GREEN);
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
+		line_width = CurrentVFO()->LPF_Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom * 2;
 		if (line_width > LAY_FFT_PRINT_SIZE)
 			line_width = LAY_FFT_PRINT_SIZE;
 		LCDDriver_drawFastHLine((LAY_FFT_PRINT_SIZE / 2) - (line_width / 2), LAY_FFT_BOTTOM_OFFSET - LAY_FFT_MAX_HEIGHT - 2, line_width, COLOR_GREEN);
