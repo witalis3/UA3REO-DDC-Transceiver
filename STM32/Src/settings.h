@@ -100,7 +100,17 @@ typedef struct
 	uint8_t Mode;
 	uint16_t HPF_Filter_Width;
 	uint16_t LPF_Filter_Width;
+	bool NotchFilter;
+	uint16_t NotchFC;
+	bool DNR;
 } VFO;
+
+typedef enum
+{
+	VFO_SEPARATE,
+	VFO_A_AND_B,
+	VFO_A_PLUS_B,
+} DUAL_RX_TYPE;
 
 extern struct TRX_SETTINGS
 {
@@ -114,7 +124,6 @@ extern struct TRX_SETTINGS
 	bool ATT;
 	bool LPF;
 	bool BPF;
-	bool DNR;
 	uint8_t RX_AGC_speed;
 	bool BandMapEnabled;
 	uint16_t Volume;
@@ -133,8 +142,6 @@ extern struct TRX_SETTINGS
 	uint32_t TRX_Saved_freq[BANDS_COUNT];
 	uint8_t FFT_Zoom;
 	bool AutoGain;
-	bool NotchFilter;
-	uint16_t NotchFC;
 	bool CWDecoder;
 	//system settings
 	bool FFT_Enabled;
@@ -170,6 +177,7 @@ extern struct TRX_SETTINGS
 	uint8_t TX_AGC_speed;
 	uint8_t ENDBit;
 	bool Debug_Console;
+	DUAL_RX_TYPE Dual_RX_Type;
 } TRX;
 
 extern volatile bool NeedSaveSettings;
@@ -178,5 +186,6 @@ extern volatile bool EEPROM_Busy;
 extern void LoadSettings(bool clear);
 extern void SaveSettings(void);
 extern VFO *CurrentVFO(void);
+extern VFO *SecondaryVFO(void);
 
 #endif

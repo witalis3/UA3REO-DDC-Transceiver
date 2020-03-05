@@ -11,6 +11,8 @@ typedef struct
 	//MCP3008 - 1
 	bool key_ab;
 	bool key_ab_prev;
+	uint32_t key_ab_starttime;
+	bool key_ab_afterhold;
 	bool key_tune;
 	bool key_tune_prev;
 	bool key_preatt;

@@ -72,7 +72,24 @@ static void LCD_displayTopButtons(bool redraw)
 		LCDDriver_Fill_RectWH(LAY_TOPBUTTONS_X1, LAY_TOPBUTTONS_Y1, LAY_TOPBUTTONS_X2, LAY_TOPBUTTONS_Y2, BACKGROUND_COLOR);
 
 	//вывод инфо о работе трансивера
-	printInfo(LAY_TOPBUTTONS_VFO_X, LAY_TOPBUTTONS_VFO_Y, LAY_TOPBUTTONS_VFO_W, LAY_TOPBUTTONS_VFO_H, (!TRX.current_vfo) ? "VFOA" : "VFOB", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	if(!TRX.current_vfo) //VFO-A
+	{
+		if(TRX.Dual_RX_Type == VFO_SEPARATE)
+			printInfo(LAY_TOPBUTTONS_VFO_X, LAY_TOPBUTTONS_VFO_Y, LAY_TOPBUTTONS_VFO_W, LAY_TOPBUTTONS_VFO_H, "VFOA", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+		else if(TRX.Dual_RX_Type == VFO_A_AND_B)
+			printInfo(LAY_TOPBUTTONS_VFO_X, LAY_TOPBUTTONS_VFO_Y, LAY_TOPBUTTONS_VFO_W, LAY_TOPBUTTONS_VFO_H, "A&B", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+		else if(TRX.Dual_RX_Type == VFO_A_PLUS_B)
+			printInfo(LAY_TOPBUTTONS_VFO_X, LAY_TOPBUTTONS_VFO_Y, LAY_TOPBUTTONS_VFO_W, LAY_TOPBUTTONS_VFO_H, "A+B", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	}
+	else //VFO-B
+	{
+		if(TRX.Dual_RX_Type == VFO_SEPARATE)
+			printInfo(LAY_TOPBUTTONS_VFO_X, LAY_TOPBUTTONS_VFO_Y, LAY_TOPBUTTONS_VFO_W, LAY_TOPBUTTONS_VFO_H, "VFOB", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+		else if(TRX.Dual_RX_Type == VFO_A_AND_B)
+			printInfo(LAY_TOPBUTTONS_VFO_X, LAY_TOPBUTTONS_VFO_Y, LAY_TOPBUTTONS_VFO_W, LAY_TOPBUTTONS_VFO_H, "B&A", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+		else if(TRX.Dual_RX_Type == VFO_A_PLUS_B)
+			printInfo(LAY_TOPBUTTONS_VFO_X, LAY_TOPBUTTONS_VFO_Y, LAY_TOPBUTTONS_VFO_W, LAY_TOPBUTTONS_VFO_H, "B+A", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	}
 	printInfo(LAY_TOPBUTTONS_MODE_X, LAY_TOPBUTTONS_MODE_Y, LAY_TOPBUTTONS_MODE_W, LAY_TOPBUTTONS_MODE_H, (char *)MODE_DESCR[TRX_getMode(CurrentVFO())], BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
 	printInfo(LAY_TOPBUTTONS_PRE_X, LAY_TOPBUTTONS_PRE_Y, LAY_TOPBUTTONS_PRE_W, LAY_TOPBUTTONS_PRE_H, "PRE", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.LNA);
 	printInfo(LAY_TOPBUTTONS_ATT_X, LAY_TOPBUTTONS_ATT_Y, LAY_TOPBUTTONS_ATT_W, LAY_TOPBUTTONS_ATT_H, "ATT", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ATT);
@@ -87,7 +104,7 @@ static void LCD_displayTopButtons(bool redraw)
 	
 	printInfo(LAY_TOPBUTTONS_FAST_X, LAY_TOPBUTTONS_FAST_Y, LAY_TOPBUTTONS_FAST_W, LAY_TOPBUTTONS_FAST_H, "FAST", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, (TRX.Fast == true));
 	printInfo(LAY_TOPBUTTONS_AGC_X, LAY_TOPBUTTONS_AGC_Y, LAY_TOPBUTTONS_AGC_W, LAY_TOPBUTTONS_AGC_H, "AGC", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.AGC);
-	printInfo(LAY_TOPBUTTONS_DNR_X, LAY_TOPBUTTONS_DNR_Y, LAY_TOPBUTTONS_DNR_W, LAY_TOPBUTTONS_DNR_H, "DNR", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.DNR);
+	printInfo(LAY_TOPBUTTONS_DNR_X, LAY_TOPBUTTONS_DNR_Y, LAY_TOPBUTTONS_DNR_W, LAY_TOPBUTTONS_DNR_H, "DNR", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, CurrentVFO()->DNR);
 	printInfo(LAY_TOPBUTTONS_CLAR_X, LAY_TOPBUTTONS_CLAR_Y, LAY_TOPBUTTONS_CLAR_W, LAY_TOPBUTTONS_CLAR_H, "CLAR", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.CLAR);
 	printInfo(LAY_TOPBUTTONS_LOCK_X, LAY_TOPBUTTONS_LOCK_Y, LAY_TOPBUTTONS_LOCK_W, LAY_TOPBUTTONS_LOCK_H, "LOCK", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Locked);
 
@@ -99,7 +116,7 @@ static void LCD_displayFreqInfo()
 { //вывод частоты на экран
 	if (LCD_systemMenuOpened)
 		return;
-	if (LCD_last_showed_freq == TRX_getFrequency(CurrentVFO()))
+	if (LCD_last_showed_freq == CurrentVFO()->Freq)
 		return;
 	if (LCD_busy)
 	{
@@ -108,19 +125,19 @@ static void LCD_displayFreqInfo()
 	}
 	LCD_busy = true;
 	uint16_t mhz_x_offset = 0;
-	LCD_last_showed_freq = TRX_getFrequency(CurrentVFO());
-	if (TRX_getFrequency(CurrentVFO()) >= 100000000)
+	LCD_last_showed_freq = CurrentVFO()->Freq;
+	if (CurrentVFO()->Freq >= 100000000)
 		mhz_x_offset = LAY_FREQ_X_OFFSET_100;
-	else if (TRX_getFrequency(CurrentVFO()) >= 10000000)
+	else if (CurrentVFO()->Freq >= 10000000)
 		mhz_x_offset = LAY_FREQ_X_OFFSET_10;
 	else
 		mhz_x_offset = LAY_FREQ_X_OFFSET_1;
 	LCDDriver_Fill_RectWH(0, LAY_FREQ_Y - LAY_FREQ_HEIGHT, mhz_x_offset, LAY_FREQ_HEIGHT, BACKGROUND_COLOR);
 
 	//добавляем пробелов для вывода частоты
-	uint16_t hz = ((uint32_t)TRX_getFrequency(CurrentVFO()) % 1000);
-	uint16_t khz = ((uint32_t)(TRX_getFrequency(CurrentVFO()) / 1000) % 1000);
-	uint16_t mhz = ((uint32_t)(TRX_getFrequency(CurrentVFO()) / 1000000) % 1000000);
+	uint16_t hz = (CurrentVFO()->Freq % 1000);
+	uint16_t khz = ((CurrentVFO()->Freq / 1000) % 1000);
+	uint16_t mhz = ((CurrentVFO()->Freq / 1000000) % 1000000);
 	sprintf(LCD_freq_string_hz, "%d", hz);
 	sprintf(LCD_freq_string_khz, "%d", khz);
 	sprintf(LCD_freq_string_mhz, "%d", mhz);
@@ -197,10 +214,10 @@ static void LCD_displayStatusInfoGUI(void)
 		LCDDriver_printText("+40", LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TXRX_X_OFFSET + step * 6, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_BAR_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 		LCDDriver_printText("+60", LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TXRX_X_OFFSET + step * 7, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_BAR_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 
-		if (TRX.NotchFilter)
+		if (CurrentVFO()->NotchFilter)
 		{
 			char buff[10] = "";
-			sprintf(buff, "%dhz", TRX.NotchFC);
+			sprintf(buff, "%dhz", CurrentVFO()->NotchFC);
 			addSymbols(buff, buff, 7, " ", false);
 			LCDDriver_printText(buff, LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_SMETER_WIDTH + LAY_STATUS_LABEL_NOTCH_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_LABELS_NOTCH_COLOR, BACKGROUND_COLOR, 1);
 		}
@@ -247,7 +264,7 @@ static void LCD_displayStatusInfoBar(void)
 	if (!TRX_on_TX())
 	{
 		float32_t TRX_s_meter = (127.0f + TRX_RX_dBm) / 6; //127dbm - S0, 6dBm - 1S div
-		if (TRX_getFrequency(CurrentVFO()) >= 144000000)
+		if (CurrentVFO()->Freq >= 144000000)
 			TRX_s_meter = (127.0f + TRX_RX_dBm) / 6; //147dbm - S0 для частот выше 144мгц
 		if (TRX_s_meter <= 9.0f)
 			TRX_s_meter = TRX_s_meter * ((width / 9.0f) * 5.0f / 9.0f); //первые 9 баллов по 6 дб, первые 5 из 8 рисок (9 участков)

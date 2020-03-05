@@ -302,9 +302,9 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			char answer[30] = {0};
 			strcat(answer, "IF001"); //memory channel
-			if (TRX_getFrequency(CurrentVFO()) < 10000000)
+			if (CurrentVFO()->Freq < 10000000)
 				strcat(answer, "0");
-			sprintf(ctmp, "%d", TRX_getFrequency(CurrentVFO()));
+			sprintf(ctmp, "%d", CurrentVFO()->Freq);
 			strcat(answer, ctmp);	//freq
 			strcat(answer, "+0000"); //clirifier offset
 			strcat(answer, "0");	 //RX clar off

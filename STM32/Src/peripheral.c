@@ -94,15 +94,15 @@ static void PERIPH_ENCODER_Rotated(int direction) //энкодер поверн�
 		VFO *vfo = CurrentVFO();
 		if (TRX.Fast)
 		{
-			TRX_setFrequency(TRX_getFrequency(vfo) + 100 * direction, vfo);
-			if ((TRX_getFrequency(vfo) % 100) > 0)
-				TRX_setFrequency(TRX_getFrequency(vfo) / 100 * 100, vfo);
+			TRX_setFrequency(vfo->Freq + 100 * direction, vfo);
+			if ((vfo->Freq % 100) > 0)
+				TRX_setFrequency(vfo->Freq / 100 * 100, vfo);
 		}
 		else
 		{
-			TRX_setFrequency(TRX_getFrequency(vfo) + 10 * direction, vfo);
-			if ((TRX_getFrequency(vfo) % 10) > 0)
-				TRX_setFrequency(TRX_getFrequency(vfo) / 10 * 10, vfo);
+			TRX_setFrequency(vfo->Freq + 10 * direction, vfo);
+			if ((vfo->Freq % 10) > 0)
+				TRX_setFrequency(vfo->Freq / 10 * 10, vfo);
 		}
 		LCD_UpdateQuery.FreqInfo = true;
 	}
@@ -164,12 +164,12 @@ static void PERIPH_ENCODER2_Rotated(int direction) //энкодер поверн
 	}
 
 	//NOTCH - default action
-	if (TRX.NotchFilter)
+	if (CurrentVFO()->NotchFilter)
 	{
-		if (TRX.NotchFC > 50 && direction < 0)
-			TRX.NotchFC -= 25;
-		else if (TRX.NotchFC < CurrentVFO()->LPF_Filter_Width && direction > 0)
-			TRX.NotchFC += 25;
+		if (CurrentVFO()->NotchFC > 50 && direction < 0)
+			CurrentVFO()->NotchFC -= 25;
+		else if (CurrentVFO()->NotchFC < CurrentVFO()->LPF_Filter_Width && direction > 0)
+			CurrentVFO()->NotchFC += 25;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		NeedReinitNotch = true;
 	}
@@ -178,15 +178,15 @@ static void PERIPH_ENCODER2_Rotated(int direction) //энкодер поверн
 		VFO *vfo = CurrentVFO();
 		if (TRX.Fast)
 		{
-			TRX_setFrequency(TRX_getFrequency(vfo) + 100000 * direction, vfo);
-			if ((TRX_getFrequency(vfo) % 100000) > 0)
-				TRX_setFrequency(TRX_getFrequency(vfo) / 100000 * 100000, vfo);
+			TRX_setFrequency(vfo->Freq + 100000 * direction, vfo);
+			if ((vfo->Freq % 100000) > 0)
+				TRX_setFrequency(vfo->Freq / 100000 * 100000, vfo);
 		}
 		else
 		{
-			TRX_setFrequency(TRX_getFrequency(vfo) + 25000 * direction, vfo);
-			if ((TRX_getFrequency(vfo) % 25000) > 0)
-				TRX_setFrequency(TRX_getFrequency(vfo) / 25000 * 25000, vfo);
+			TRX_setFrequency(vfo->Freq + 25000 * direction, vfo);
+			if ((vfo->Freq % 25000) > 0)
+				TRX_setFrequency(vfo->Freq / 25000 * 25000, vfo);
 		}
 		LCD_UpdateQuery.FreqInfo = true;
 	}
@@ -208,9 +208,30 @@ void PERIPH_ENCODER2_checkSwitch(void)
 	}
 }
 
+uint8_t getBPFByFreq(uint32_t freq)
+{
+	if(freq >= CALIBRATE.BPF_0_START && freq < CALIBRATE.BPF_0_END) return 0;
+	if(freq >= CALIBRATE.BPF_1_START && freq < CALIBRATE.BPF_1_END) return 1;
+	if(freq >= CALIBRATE.BPF_2_START && freq < CALIBRATE.BPF_2_END) return 2;
+	if(freq >= CALIBRATE.BPF_3_START && freq < CALIBRATE.BPF_3_END) return 3;
+	if(freq >= CALIBRATE.BPF_4_START && freq < CALIBRATE.BPF_4_END) return 4;
+	if(freq >= CALIBRATE.BPF_5_START && freq < CALIBRATE.BPF_5_END) return 5;
+	if(freq >= CALIBRATE.BPF_6_START && freq < CALIBRATE.BPF_6_END) return 6;
+	if(freq >= CALIBRATE.BPF_7_HPF) return 7;
+	return 255;
+}
+
 void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения в RF-UNIT
 {
 	bool hpf_lock = false;
+	
+	bool dualrx_lpf_disabled = false;
+	bool dualrx_bpf_disabled = false;
+	if((TRX.Dual_RX_Type != VFO_SEPARATE) && SecondaryVFO()->Freq > CALIBRATE.LPF_END)
+		dualrx_lpf_disabled = true;
+	if(getBPFByFreq(CurrentVFO()->Freq) != getBPFByFreq(SecondaryVFO()->Freq))
+		dualrx_bpf_disabled = true;
+	
 	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //защёлка
 	MINI_DELAY
 	for (uint8_t registerNumber = 0; registerNumber < 24; registerNumber++)
@@ -237,18 +258,18 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 9 && TRX.ATT) //ATT_ON
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			if (registerNumber == 10 && (!TRX.LPF || TRX_getFrequency(CurrentVFO()) > CALIBRATE.LPF_END)) //LPF_OFF
+			if (registerNumber == 10 && (!TRX.LPF || CurrentVFO()->Freq > CALIBRATE.LPF_END || dualrx_lpf_disabled)) //LPF_OFF
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 11 && (!TRX.BPF || TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_1_START)) //BPF_OFF
+			if (registerNumber == 11 && (!TRX.BPF || CurrentVFO()->Freq < CALIBRATE.BPF_1_START || dualrx_bpf_disabled)) //BPF_OFF
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 12 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_0_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_0_END) //BPF_0
+			if (registerNumber == 12 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 0) //BPF_0
 			{
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
 				hpf_lock = true;														 //блокируем HPF для выделенного BPF фильтра УКВ
 			}
-			if (registerNumber == 13 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_7_HPF && !hpf_lock)
+			if (registerNumber == 13 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 7 && !hpf_lock && !dualrx_bpf_disabled)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_7_HPF
-			if (registerNumber == 14 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_6_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_6_END)
+			if (registerNumber == 14 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 6 && !dualrx_bpf_disabled)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_6
 			//if(registerNumber==15) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			
@@ -261,15 +282,15 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 				if (TRX_Fan_Timeout > 0)
 					TRX_Fan_Timeout--;
 			}
-			if (registerNumber == 19 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_1_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_1_END) //BPF_1
+			if (registerNumber == 19 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 1 && !dualrx_bpf_disabled) //BPF_1
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 20 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_2_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_2_END) //BPF_2
+			if (registerNumber == 20 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 2 && !dualrx_bpf_disabled) //BPF_2
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 21 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_3_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_3_END) //BPF_3
+			if (registerNumber == 21 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 3 && !dualrx_bpf_disabled) //BPF_3
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 22 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_4_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_4_END) //BPF_4
+			if (registerNumber == 22 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 4 && !dualrx_bpf_disabled) //BPF_4
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			if (registerNumber == 23 && TRX.BPF && TRX_getFrequency(CurrentVFO()) >= CALIBRATE.BPF_5_START && TRX_getFrequency(CurrentVFO()) < CALIBRATE.BPF_5_END) //BPF_5
+			if (registerNumber == 23 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 5 && !dualrx_bpf_disabled) //BPF_5
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
 			
 		}
@@ -364,7 +385,32 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_ab_prev != PERIPH_FrontPanel.key_ab && PERIPH_FrontPanel.key_ab && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
+			PERIPH_FrontPanel.key_ab_starttime = HAL_GetTick();
+			PERIPH_FrontPanel.key_ab_afterhold = false;
+		}
+		//A/B HOLD - DUAL RX SWITCH
+		if (PERIPH_FrontPanel.key_ab_prev == PERIPH_FrontPanel.key_ab && PERIPH_FrontPanel.key_ab && (HAL_GetTick() - PERIPH_FrontPanel.key_ab_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_ab_afterhold && !TRX.Locked)
+		{
+			TRX_Time_InActive = 0;
+			PERIPH_FrontPanel.key_ab_afterhold = true;
+			if(TRX.Dual_RX_Type == VFO_SEPARATE)
+				TRX.Dual_RX_Type = VFO_A_AND_B;
+			else if(TRX.Dual_RX_Type == VFO_A_AND_B)
+				TRX.Dual_RX_Type = VFO_A_PLUS_B;
+			else if(TRX.Dual_RX_Type == VFO_A_PLUS_B)
+				TRX.Dual_RX_Type = VFO_SEPARATE;
+			LCD_UpdateQuery.TopButtons = true;
+			ReinitAudioFilters();
+		}
+		//A/B CLICK
+		if (PERIPH_FrontPanel.key_ab_prev != PERIPH_FrontPanel.key_ab && !PERIPH_FrontPanel.key_ab && (HAL_GetTick() - PERIPH_FrontPanel.key_ab_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_ab_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
+		{
+			TRX_Time_InActive = 0;
 			TRX.current_vfo = !TRX.current_vfo;
+			TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
+			LCD_UpdateQuery.TopButtons = true;
+			LCD_UpdateQuery.FreqInfo = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
 			NeedSaveSettings = true;
 			ReinitAudioFilters();
 			LCD_redraw();
@@ -381,14 +427,14 @@ void PERIPH_ProcessFrontPanel(void)
 			TRX_Restart_Mode();
 		}
 		//PREATT
-		if (PERIPH_FrontPanel.key_preatt_prev != PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt)
+		if (PERIPH_FrontPanel.key_preatt_prev != PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_preatt_starttime = HAL_GetTick();
 			PERIPH_FrontPanel.key_preatt_afterhold = false;
 		}
 		//PREATT HOLD - ADC DRIVER AND ADC PREAMP
-		if (PERIPH_FrontPanel.key_preatt_prev == PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt && (HAL_GetTick() - PERIPH_FrontPanel.key_preatt_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_preatt_afterhold)
+		if (PERIPH_FrontPanel.key_preatt_prev == PERIPH_FrontPanel.key_preatt && PERIPH_FrontPanel.key_preatt && (HAL_GetTick() - PERIPH_FrontPanel.key_preatt_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_preatt_afterhold && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_preatt_afterhold = true;
@@ -566,14 +612,14 @@ void PERIPH_ProcessFrontPanel(void)
 			TRX_SHIFT = 0;
 
 		//F1 AGC
-		if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc)
+		if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_agc_starttime = HAL_GetTick();
 			PERIPH_FrontPanel.key_agc_afterhold = false;
 		}
 		//F1 AGC HOLD - RF-POWER
-		if (PERIPH_FrontPanel.key_agc_prev == PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc && (HAL_GetTick() - PERIPH_FrontPanel.key_agc_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_agc_afterhold)
+		if (PERIPH_FrontPanel.key_agc_prev == PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc && (HAL_GetTick() - PERIPH_FrontPanel.key_agc_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_agc_afterhold && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_agc_afterhold = true;
@@ -602,14 +648,14 @@ void PERIPH_ProcessFrontPanel(void)
 		}
 
 		//F2 DNR
-		if (PERIPH_FrontPanel.key_dnr_prev != PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr)
+		if (PERIPH_FrontPanel.key_dnr_prev != PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_dnr_starttime = HAL_GetTick();
 			PERIPH_FrontPanel.key_dnr_afterhold = false;
 		}
 		//F2 DNR HOLD - KEY WPM
-		if (PERIPH_FrontPanel.key_dnr_prev == PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr && (HAL_GetTick() - PERIPH_FrontPanel.key_dnr_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_dnr_afterhold)
+		if (PERIPH_FrontPanel.key_dnr_prev == PERIPH_FrontPanel.key_dnr && PERIPH_FrontPanel.key_dnr && (HAL_GetTick() - PERIPH_FrontPanel.key_dnr_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_dnr_afterhold && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_dnr_afterhold = true;
@@ -631,20 +677,20 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_dnr_prev != PERIPH_FrontPanel.key_dnr && !PERIPH_FrontPanel.key_dnr && (HAL_GetTick() - PERIPH_FrontPanel.key_dnr_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_dnr_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
 		{
 			TRX_Time_InActive = 0;
-			TRX.DNR = !TRX.DNR;
+			CurrentVFO()->DNR = !CurrentVFO()->DNR;
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
 		}
 
 		//F3 A=B
-		if (PERIPH_FrontPanel.key_a_set_b_prev != PERIPH_FrontPanel.key_a_set_b && PERIPH_FrontPanel.key_a_set_b)
+		if (PERIPH_FrontPanel.key_a_set_b_prev != PERIPH_FrontPanel.key_a_set_b && PERIPH_FrontPanel.key_a_set_b && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_a_set_b_starttime = HAL_GetTick();
 			PERIPH_FrontPanel.key_a_set_b_afterhold = false;
 		}
 		//F3 A=B HOLD - KEY WPM
-		if (PERIPH_FrontPanel.key_a_set_b_prev == PERIPH_FrontPanel.key_a_set_b && PERIPH_FrontPanel.key_a_set_b && (HAL_GetTick() - PERIPH_FrontPanel.key_a_set_b_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_a_set_b_afterhold)
+		if (PERIPH_FrontPanel.key_a_set_b_prev == PERIPH_FrontPanel.key_a_set_b && PERIPH_FrontPanel.key_a_set_b && (HAL_GetTick() - PERIPH_FrontPanel.key_a_set_b_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_a_set_b_afterhold && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_a_set_b_afterhold = true;
@@ -695,12 +741,12 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_notch_prev != PERIPH_FrontPanel.key_notch && PERIPH_FrontPanel.key_notch && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
-			if (TRX.NotchFC > CurrentVFO()->LPF_Filter_Width)
-				TRX.NotchFC = CurrentVFO()->LPF_Filter_Width;
-			if (!TRX.NotchFilter)
-				TRX.NotchFilter = true;
+			if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
+				CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
+			if (!CurrentVFO()->NotchFilter)
+				CurrentVFO()->NotchFilter = true;
 			else
-				TRX.NotchFilter = false;
+				CurrentVFO()->NotchFilter = false;
 
 			NeedReinitNotch = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
@@ -718,14 +764,14 @@ void PERIPH_ProcessFrontPanel(void)
 		}
 
 		//F6 MENU
-		if (PERIPH_FrontPanel.key_menu_prev != PERIPH_FrontPanel.key_menu && PERIPH_FrontPanel.key_menu)
+		if (PERIPH_FrontPanel.key_menu_prev != PERIPH_FrontPanel.key_menu && PERIPH_FrontPanel.key_menu && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_menu_starttime = HAL_GetTick();
 			PERIPH_FrontPanel.key_menu_afterhold = false;
 		}
 		//F6 MENU HOLD - LOCK
-		if (PERIPH_FrontPanel.key_menu_prev == PERIPH_FrontPanel.key_menu && PERIPH_FrontPanel.key_menu && (HAL_GetTick() - PERIPH_FrontPanel.key_menu_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_menu_afterhold)
+		if (PERIPH_FrontPanel.key_menu_prev == PERIPH_FrontPanel.key_menu && PERIPH_FrontPanel.key_menu && (HAL_GetTick() - PERIPH_FrontPanel.key_menu_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_menu_afterhold && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_menu_afterhold = true;

@@ -22,6 +22,12 @@ extern DMA_HandleTypeDef hdma_spi3_tx;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 
+typedef enum
+{
+	AUDIO_RX1,
+	AUDIO_RX2
+} AUDIO_PROC_RX_NUM;
+
 extern void processRxAudio(void);
 extern void processTxAudio(void);
 extern void initAudioProcessor(void);
@@ -39,8 +45,12 @@ extern volatile float32_t Processor_TX_MAX_amplitude_IN;
 extern volatile float32_t Processor_TX_MAX_amplitude_OUT;
 extern volatile float32_t ALC_need_gain;
 extern volatile float32_t ALC_need_gain_new;
-extern float32_t FPGA_Audio_Buffer_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
-extern float32_t FPGA_Audio_Buffer_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
+extern float32_t FPGA_Audio_Buffer_RX1_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
+extern float32_t FPGA_Audio_Buffer_RX1_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
+extern float32_t FPGA_Audio_Buffer_RX2_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
+extern float32_t FPGA_Audio_Buffer_RX2_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
+extern float32_t FPGA_Audio_Buffer_TX_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
+extern float32_t FPGA_Audio_Buffer_TX_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern volatile float32_t fm_sql_avg;
 extern volatile float32_t Processor_RX_Power_value;
 extern volatile float32_t Processor_selected_RFpower_amplitude;

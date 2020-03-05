@@ -11,36 +11,61 @@
 #include "noise_reduction.h"
 #include "trx_manager.h"
 
-arm_fir_instance_f32 FIR_RX_Hilbert_I;
-arm_fir_instance_f32 FIR_RX_Hilbert_Q;
+arm_fir_instance_f32 FIR_RX1_Hilbert_I;
+arm_fir_instance_f32 FIR_RX1_Hilbert_Q;
+arm_fir_instance_f32 FIR_RX2_Hilbert_I;
+arm_fir_instance_f32 FIR_RX2_Hilbert_Q;
 arm_fir_instance_f32 FIR_TX_Hilbert_I;
 arm_fir_instance_f32 FIR_TX_Hilbert_Q;
-arm_iir_lattice_instance_f32 IIR_LPF_I;
-arm_iir_lattice_instance_f32 IIR_LPF_Q;
-arm_iir_lattice_instance_f32 IIR_HPF_I;
-arm_iir_lattice_instance_f32 IIR_HPF_Q;
-arm_iir_lattice_instance_f32 IIR_Squelch_HPF;
+arm_iir_lattice_instance_f32 IIR_RX1_LPF_I;
+arm_iir_lattice_instance_f32 IIR_RX1_LPF_Q;
+arm_iir_lattice_instance_f32 IIR_RX2_LPF_I;
+arm_iir_lattice_instance_f32 IIR_RX2_LPF_Q;
+arm_iir_lattice_instance_f32 IIR_TX_LPF_I;
+arm_iir_lattice_instance_f32 IIR_TX_LPF_Q;
+arm_iir_lattice_instance_f32 IIR_RX1_HPF_I;
+arm_iir_lattice_instance_f32 IIR_RX1_HPF_Q;
+arm_iir_lattice_instance_f32 IIR_RX2_HPF_I;
+arm_iir_lattice_instance_f32 IIR_RX2_HPF_Q;
+arm_iir_lattice_instance_f32 IIR_TX_HPF_I;
+arm_iir_lattice_instance_f32 IIR_TX_HPF_Q;
+arm_iir_lattice_instance_f32 IIR_RX1_Squelch_HPF;
+arm_iir_lattice_instance_f32 IIR_RX2_Squelch_HPF;
 
 //states
-static float32_t Fir_Rx_Hilbert_State_I[FIR_RX_HILBERT_STATE_SIZE];
-static float32_t Fir_Rx_Hilbert_State_Q[FIR_RX_HILBERT_STATE_SIZE];
+static float32_t Fir_RX1_Hilbert_State_I[FIR_RX1_HILBERT_STATE_SIZE];
+static float32_t Fir_RX1_Hilbert_State_Q[FIR_RX1_HILBERT_STATE_SIZE];
+static float32_t Fir_RX2_Hilbert_State_I[FIR_RX2_HILBERT_STATE_SIZE];
+static float32_t Fir_RX2_Hilbert_State_Q[FIR_RX2_HILBERT_STATE_SIZE];
 static float32_t Fir_Tx_Hilbert_State_I[FIR_TX_HILBERT_STATE_SIZE];
 static float32_t Fir_Tx_Hilbert_State_Q[FIR_TX_HILBERT_STATE_SIZE];
-static float32_t IIR_LPF_I_State[IIR_LPF_Taps_STATE_SIZE];
-static float32_t IIR_LPF_Q_State[IIR_LPF_Taps_STATE_SIZE];
-static float32_t IIR_HPF_I_State[IIR_HPF_Taps_STATE_SIZE];
-static float32_t IIR_HPF_Q_State[IIR_HPF_Taps_STATE_SIZE];
-static float32_t IIR_HPF_SQL_State[IIR_HPF_SQL_STATE_SIZE];
+static float32_t IIR_RX1_LPF_I_State[IIR_RX1_LPF_Taps_STATE_SIZE];
+static float32_t IIR_RX1_LPF_Q_State[IIR_RX1_LPF_Taps_STATE_SIZE];
+static float32_t IIR_RX2_LPF_I_State[IIR_RX2_LPF_Taps_STATE_SIZE];
+static float32_t IIR_RX2_LPF_Q_State[IIR_RX2_LPF_Taps_STATE_SIZE];
+static float32_t IIR_TX_LPF_I_State[IIR_RX2_LPF_Taps_STATE_SIZE];
+static float32_t IIR_TX_LPF_Q_State[IIR_RX2_LPF_Taps_STATE_SIZE];
+static float32_t IIR_RX1_HPF_I_State[IIR_RX1_HPF_Taps_STATE_SIZE];
+static float32_t IIR_RX1_HPF_Q_State[IIR_RX1_HPF_Taps_STATE_SIZE];
+static float32_t IIR_RX2_HPF_I_State[IIR_RX2_HPF_Taps_STATE_SIZE];
+static float32_t IIR_RX2_HPF_Q_State[IIR_RX2_HPF_Taps_STATE_SIZE];
+static float32_t IIR_TX_HPF_I_State[IIR_RX2_HPF_Taps_STATE_SIZE];
+static float32_t IIR_TX_HPF_Q_State[IIR_RX2_HPF_Taps_STATE_SIZE];
+static float32_t IIR_RX1_HPF_SQL_State[IIR_RX1_HPF_SQL_STATE_SIZE];
+static float32_t IIR_RX2_HPF_SQL_State[IIR_RX2_HPF_SQL_STATE_SIZE];
 
 //notch filter
 volatile bool NeedReinitNotch = false;
-static float32_t NOTCH_Coeffs[NOTCH_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
-static float32_t NOTCH_State[2 * NOTCH_STAGES];
-static float32_t NOTCH_State_FFT_I[2 * NOTCH_STAGES];
-static float32_t NOTCH_State_FFT_Q[2 * NOTCH_STAGES];
-arm_biquad_cascade_df2T_instance_f32 NOTCH_FILTER = {NOTCH_STAGES, NOTCH_State, NOTCH_Coeffs};
-arm_biquad_cascade_df2T_instance_f32 NOTCH_FILTER_FFT_I = {NOTCH_STAGES, NOTCH_State_FFT_I, NOTCH_Coeffs};
-arm_biquad_cascade_df2T_instance_f32 NOTCH_FILTER_FFT_Q = {NOTCH_STAGES, NOTCH_State_FFT_Q, NOTCH_Coeffs};
+static float32_t NOTCH_RX1_Coeffs[NOTCH_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
+static float32_t NOTCH_RX2_Coeffs[NOTCH_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
+static float32_t NOTCH_RX1_State[2 * NOTCH_STAGES];
+static float32_t NOTCH_RX2_State[2 * NOTCH_STAGES];
+static float32_t NOTCH_FFT_I_State[2 * NOTCH_STAGES];
+static float32_t NOTCH_FFT_Q_State[2 * NOTCH_STAGES];
+arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER = {NOTCH_STAGES, NOTCH_RX1_State, NOTCH_RX1_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER = {NOTCH_STAGES, NOTCH_RX2_State, NOTCH_RX2_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_I_FILTER = {NOTCH_STAGES, NOTCH_FFT_I_State, NOTCH_RX1_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_Q_FILTER= {NOTCH_STAGES, NOTCH_FFT_Q_State, NOTCH_RX1_Coeffs};
 
 //with (+90 q / -0 i) degrees phase added, narrow 3.6k
 static const float32_t FIR_HILB_RX_I_coeffs[IQ_TX_HILBERT_TAPS] = {-0.000181752008817777,-0.00019812444299558,-0.000173915580313638,-0.000106975730010085,-0.0000174463735378,0.000049667546759971,0.000032561004630231,-0.000127681493947272,-0.000459708207577463,-0.000935771201527816,-0.00145865712043841,-0.00187227346724911,-0.00200036401889901,-0.00170780689629204,-0.000967958368014592,0.000088289293095689,0.001166623215145986,0.001862531622450524,0.001771946721352388,0.000635741675713185,-0.00152451719575799,-0.00433057882661493,-0.00707443210838268,-0.00886614749018614,-0.00888315684570901,-0.00666207782636225,-0.0023460199801576,0.003204723474564544,0.008506335530971061,0.011765956147501436,0.011367103182967093,0.006413424630698947,-0.00282047953175066,-0.0146812039524101,-0.0262751422843746,-0.0339730971952901,-0.0341994964523126,-0.0243347165617545,-0.00350726050818481,0.026942155121425213,0.063476622132557281,0.100898465799951861,0.133312097666693830,0.155307720769003010,0.163093615613067344,0.155307720769004343,0.133312097666696161,0.100898465799954873,0.063476622132560459,0.026942155121428071,-0.00350726050818265,-0.0243347165617533,-0.0341994964523123,-0.0339730971952905,-0.0262751422843754,-0.0146812039524111,-0.00282047953175152,0.006413424630698421,0.011367103182966964,0.011765956147501661,0.008506335530971517,0.003204723474565072,-0.00234601998015715,-0.00666207782636198,-0.00888315684570896,-0.00886614749018627,-0.00707443210838294,-0.00433057882661522,-0.00152451719575822,0.000635741675713052,0.001771946721352369,0.001862531622450603,0.001166623215146122,0.000088289293095838,-0.00096795836801447,-0.00170780689629197,-0.002000364018899,-0.00187227346724914,-0.00145865712043846,-0.000935771201527874,-0.000459708207577509,-0.000127681493947298,0.000032561004630225,0.000049667546759980,-0.000017446373537785,-0.00010697573001007,-0.000173915580313629,-0.000198124442995578,-0.000181752};
@@ -301,13 +326,16 @@ static const IIR_LATTICE_FILTER IIR_Lattice_Filters[IIR_FILTERS_COUNT] = (const 
 	},
 };
 
-static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain);
+static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, AUDIO_PROC_RX_NUM rx_id);
 static IIR_LATTICE_FILTER* getIIRFilter(IIR_LATTICE_FILTER_TYPE type, uint16_t width);
 
 void InitAudioFilters(void)
 {
-	arm_fir_init_f32(&FIR_RX_Hilbert_I, IQ_RX_HILBERT_TAPS, (float32_t *)&FIR_HILB_RX_I_coeffs, (float32_t *)&Fir_Rx_Hilbert_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-	arm_fir_init_f32(&FIR_RX_Hilbert_Q, IQ_RX_HILBERT_TAPS, (float32_t *)&FIR_HILB_RX_Q_coeffs, (float32_t *)&Fir_Rx_Hilbert_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_RX1_Hilbert_I, IQ_RX_HILBERT_TAPS, (float32_t *)&FIR_HILB_RX_I_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_RX1_Hilbert_Q, IQ_RX_HILBERT_TAPS, (float32_t *)&FIR_HILB_RX_Q_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	
+	arm_fir_init_f32(&FIR_RX2_Hilbert_I, IQ_RX_HILBERT_TAPS, (float32_t *)&FIR_HILB_RX_I_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_RX2_Hilbert_Q, IQ_RX_HILBERT_TAPS, (float32_t *)&FIR_HILB_RX_Q_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	
 	arm_fir_init_f32(&FIR_TX_Hilbert_I, IQ_TX_HILBERT_TAPS, (float32_t *)&FIR_HILB_TX_I_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	arm_fir_init_f32(&FIR_TX_Hilbert_Q, IQ_TX_HILBERT_TAPS, (float32_t *)&FIR_HILB_TX_Q_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -322,16 +350,34 @@ void ReinitAudioFilters(void)
 	if(CurrentVFO()->LPF_Filter_Width>0)
 	{
 		IIR_LATTICE_FILTER* lpf_filter = getIIRFilter(IIR_LATTICE_LPF, CurrentVFO()->LPF_Filter_Width);
-		arm_iir_lattice_init_f32(&IIR_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffsK_lattice, (float32_t *)lpf_filter->coeffsV_ladder, (float32_t *)&IIR_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-		arm_iir_lattice_init_f32(&IIR_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffsK_lattice, (float32_t *)lpf_filter->coeffsV_ladder, (float32_t *)&IIR_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_RX1_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffsK_lattice, (float32_t *)lpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX1_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_RX1_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffsK_lattice, (float32_t *)lpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX1_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		
+		arm_iir_lattice_init_f32(&IIR_TX_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffsK_lattice, (float32_t *)lpf_filter->coeffsV_ladder, (float32_t *)&IIR_TX_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_TX_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffsK_lattice, (float32_t *)lpf_filter->coeffsV_ladder, (float32_t *)&IIR_TX_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	}
+	if(SecondaryVFO()->LPF_Filter_Width>0)
+	{
+		IIR_LATTICE_FILTER* lpf_filter = getIIRFilter(IIR_LATTICE_LPF, SecondaryVFO()->LPF_Filter_Width);
+		arm_iir_lattice_init_f32(&IIR_RX2_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffsK_lattice, (float32_t *)lpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX2_LPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_RX2_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffsK_lattice, (float32_t *)lpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX2_LPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	
 	//HPF
 	if(CurrentVFO()->HPF_Filter_Width>0)
 	{
 		IIR_LATTICE_FILTER* hpf_filter = getIIRFilter(IIR_LATTICE_HPF, CurrentVFO()->HPF_Filter_Width);
-		arm_iir_lattice_init_f32(&IIR_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffsK_lattice, (float32_t *)hpf_filter->coeffsV_ladder, (float32_t *)&IIR_HPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-		arm_iir_lattice_init_f32(&IIR_HPF_Q, hpf_filter->stages, (float32_t *)hpf_filter->coeffsK_lattice, (float32_t *)hpf_filter->coeffsV_ladder, (float32_t *)&IIR_HPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_RX1_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffsK_lattice, (float32_t *)hpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX1_HPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_RX1_HPF_Q, hpf_filter->stages, (float32_t *)hpf_filter->coeffsK_lattice, (float32_t *)hpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX1_HPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		
+		arm_iir_lattice_init_f32(&IIR_TX_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffsK_lattice, (float32_t *)hpf_filter->coeffsV_ladder, (float32_t *)&IIR_TX_HPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_TX_HPF_Q, hpf_filter->stages, (float32_t *)hpf_filter->coeffsK_lattice, (float32_t *)hpf_filter->coeffsV_ladder, (float32_t *)&IIR_TX_HPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	}
+	if(SecondaryVFO()->HPF_Filter_Width>0)
+	{
+		IIR_LATTICE_FILTER* hpf_filter = getIIRFilter(IIR_LATTICE_HPF, SecondaryVFO()->HPF_Filter_Width);
+		arm_iir_lattice_init_f32(&IIR_RX2_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffsK_lattice, (float32_t *)hpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX2_HPF_I_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_iir_lattice_init_f32(&IIR_RX2_HPF_Q, hpf_filter->stages, (float32_t *)hpf_filter->coeffsK_lattice, (float32_t *)hpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX2_HPF_Q_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	
 	//FM Squelch
@@ -340,26 +386,34 @@ void ReinitAudioFilters(void)
 		fm_sql_hpf_filter = getIIRFilter(IIR_LATTICE_HPF, 20000);
 	else
 		fm_sql_hpf_filter = getIIRFilter(IIR_LATTICE_HPF, 15000);
-	arm_iir_lattice_init_f32(&IIR_Squelch_HPF, fm_sql_hpf_filter->stages, (float32_t *)fm_sql_hpf_filter->coeffsK_lattice, (float32_t *)fm_sql_hpf_filter->coeffsV_ladder, (float32_t *)&IIR_HPF_SQL_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_iir_lattice_init_f32(&IIR_RX1_Squelch_HPF, fm_sql_hpf_filter->stages, (float32_t *)fm_sql_hpf_filter->coeffsK_lattice, (float32_t *)fm_sql_hpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX1_HPF_SQL_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	if(SecondaryVFO()->LPF_Filter_Width>15000 || SecondaryVFO()->LPF_Filter_Width==0)
+		fm_sql_hpf_filter = getIIRFilter(IIR_LATTICE_HPF, 20000);
+	else
+		fm_sql_hpf_filter = getIIRFilter(IIR_LATTICE_HPF, 15000);
+	arm_iir_lattice_init_f32(&IIR_RX2_Squelch_HPF, fm_sql_hpf_filter->stages, (float32_t *)fm_sql_hpf_filter->coeffsK_lattice, (float32_t *)fm_sql_hpf_filter->coeffsV_ladder, (float32_t *)&IIR_RX2_HPF_SQL_State[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 }
 
 void InitNotchFilter(void)
 {
 	NeedReinitNotch = false;
-	calcBiquad(BIQUAD_notch, TRX.NotchFC, TRX_SAMPLERATE, 0.5f, 0);
+	calcBiquad(BIQUAD_notch, CurrentVFO()->NotchFC, TRX_SAMPLERATE, 0.5f, 0, AUDIO_RX1);
+	calcBiquad(BIQUAD_notch, SecondaryVFO()->NotchFC, TRX_SAMPLERATE, 0.5f, 0, AUDIO_RX2);
 }
 
-static dc_filter_state_type dc_filter_state[6] =
+static dc_filter_state_type dc_filter_state[8] =
 	{
-		{0, 0}, //0 RX I
-		{0, 0}, //1 RX Q
+		{0, 0}, //0 RX1 I
+		{0, 0}, //1 RX1 Q
+		{0, 0}, //0 RX2 I
+		{0, 0}, //1 RX2 Q		
 		{0, 0}, //2 TX I
 		{0, 0}, //3 TX Q
 		{0, 0}, //4 FFT I
 		{0, 0}, //5 FFT Q
 };
 
-void dc_filter(float32_t *Buffer, int16_t blockSize, uint8_t stateNum) //удаляет постоянную составлющую сигнала
+void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum) //удаляет постоянную составлющую сигнала
 {
 	static const float32_t A1 = (1.0f - 0.00048828125f); // (1-2^(-11))
 
@@ -384,10 +438,10 @@ IIR_LATTICE_FILTER* getIIRFilter(IIR_LATTICE_FILTER_TYPE type, uint16_t width)
 	sendToDebug_strln("Wrong filter length");
 	sendToDebug_uint16(type,false);
 	sendToDebug_uint16(width,false);
-	return NULL;
+	return (IIR_LATTICE_FILTER*)&IIR_Lattice_Filters[0];
 }
 
-static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain)
+static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, AUDIO_PROC_RX_NUM rx_id)
 {
 	float32_t a0, a1, a2, b1, b2, norm;
 
@@ -508,9 +562,20 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 	}
 
 	//save coefficients
-	NOTCH_Coeffs[0] = a0;
-	NOTCH_Coeffs[1] = a1;
-	NOTCH_Coeffs[2] = a2;
-	NOTCH_Coeffs[3] = -b1;
-	NOTCH_Coeffs[4] = -b2;
+	if(rx_id==AUDIO_RX1)
+	{
+		NOTCH_RX1_Coeffs[0] = a0;
+		NOTCH_RX1_Coeffs[1] = a1;
+		NOTCH_RX1_Coeffs[2] = a2;
+		NOTCH_RX1_Coeffs[3] = -b1;
+		NOTCH_RX1_Coeffs[4] = -b2;
+	}
+	else if(rx_id==AUDIO_RX2)
+	{
+		NOTCH_RX2_Coeffs[0] = a0;
+		NOTCH_RX2_Coeffs[1] = a1;
+		NOTCH_RX2_Coeffs[2] = a2;
+		NOTCH_RX2_Coeffs[3] = -b1;
+		NOTCH_RX2_Coeffs[4] = -b2;
+	}
 }

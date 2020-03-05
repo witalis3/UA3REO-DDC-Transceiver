@@ -137,10 +137,16 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
 		TRX.VFO_A.LPF_Filter_Width = 2700; //сохранённая ширина полосы VFO-A
 		TRX.VFO_A.HPF_Filter_Width = 300; //сохранённая ширина полосы VFO-A
+		TRX.VFO_A.NotchFilter = false;																	  //нотч-фильтр для вырезания помехи
+		TRX.VFO_A.NotchFC = 1000;																			  //частота среза нотч-фильтра
+		TRX.VFO_A.DNR = false;			   //цифровое шумоподавление
 		TRX.VFO_B.Freq = 14150000;	 //сохранённая частота VFO-B
 		TRX.VFO_B.Mode = TRX_MODE_USB; //сохранённая мода VFO-B
 		TRX.VFO_B.LPF_Filter_Width = 2700; //сохранённая ширина полосы VFO-B
 		TRX.VFO_B.HPF_Filter_Width = 300; //сохранённая ширина полосы VFO-B
+		TRX.VFO_B.NotchFilter = false;																	  //нотч-фильтр для вырезания помехи
+		TRX.VFO_B.NotchFC = 1000;																			  //частота среза нотч-фильтра
+		TRX.VFO_A.DNR = false;			   //цифровое шумоподавление
 		TRX.current_vfo = false;	   // текущая VFO (false - A)
 		TRX.ADC_Driver = false;			   //предусилитель (драйвер АЦП)
 		TRX.LNA = false;					//LNA (малошумящий усилитель)
@@ -148,7 +154,6 @@ void LoadSettings(bool clear)
 		TRX.ATT = false;			   //аттенюатор
 		TRX.LPF = true;				   //ФНЧ
 		TRX.BPF = true;				   //ДПФ
-		TRX.DNR = false;			   //цифровое шумоподавление
 		TRX.RX_AGC_speed = 3;		   //скорость AGC на приём
 		TRX.TX_AGC_speed = 3;		   //скорость AGC на передачу
 		TRX.BandMapEnabled = true;	 //автоматическая смена моды по карте диапазонов
@@ -169,8 +174,6 @@ void LoadSettings(bool clear)
 			TRX.TRX_Saved_freq[i] = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
 		TRX.FFT_Zoom = 1;																			  //приближение спектра FFT
 		TRX.AutoGain = false;																		  //авто-управление предусилителем и аттенюатором
-		TRX.NotchFilter = false;																	  //нотч-фильтр для вырезания помехи
-		TRX.NotchFC = 1000;																			  //частота среза нотч-фильтра
 		TRX.CWDecoder = false;																		  //автоматический декодер телеграфа
 		//system settings
 		TRX.FFT_Enabled = true;						//использовать спектр FFT
@@ -205,6 +208,7 @@ void LoadSettings(bool clear)
 		TRX.ENDBit = 100;			  //Бит окончания успешной записи в eeprom
 		TRX.S_METER_Style = false;	//Вид S-метра (свечка или полоска)
 		TRX.Debug_Console = false;  //Вывод отладки в DEBUG/UART порт
+		TRX.Dual_RX_Type = VFO_SEPARATE; //режим двойного приёмника
 		SaveSettings();
 	}
 }
@@ -215,6 +219,14 @@ VFO *CurrentVFO(void)
 		return &TRX.VFO_A;
 	else
 		return &TRX.VFO_B;
+}
+
+VFO *SecondaryVFO(void)
+{
+	if (!TRX.current_vfo)
+		return &TRX.VFO_B;
+	else
+		return &TRX.VFO_A;
 }
 
 void SaveSettings(void)

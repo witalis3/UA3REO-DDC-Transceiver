@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "arm_math.h"
+#include "audio_processor.h"
 
 #define NOISE_REDUCTION_BLOCK_SIZE 64
 #define NOISE_REDUCTION_TAPS 16
@@ -13,6 +14,6 @@
 #define NOISE_REDUCTION_STEP 0.000001f
 
 extern void InitNoiseReduction(void);
-extern void processNoiseReduction(float32_t *bufferIn, float32_t *bufferOut);
+extern void processNoiseReduction(float32_t *bufferIn, float32_t *bufferOut, AUDIO_PROC_RX_NUM rx_id);
 
 #endif

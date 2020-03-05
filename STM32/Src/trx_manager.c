@@ -232,11 +232,6 @@ void TRX_setFrequency(int32_t _freq, VFO *vfo)
 	//NeedFFTInputBuffer = true;
 }
 
-uint32_t TRX_getFrequency(VFO *vfo)
-{
-	return vfo->Freq;
-}
-
 void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 {
 	if (vfo->Mode == TRX_MODE_LOOPBACK || _mode == TRX_MODE_LOOPBACK)

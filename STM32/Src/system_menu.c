@@ -1127,7 +1127,7 @@ static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction)
 
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 {
-	sysmenu_spectrum_lastfreq = TRX_getFrequency(CurrentVFO());
+	sysmenu_spectrum_lastfreq = CurrentVFO()->Freq;
 	sysmenu_spectrum_opened = true;
 	SPEC_Start();
 	drawSystemMenu(true);

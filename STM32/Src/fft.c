@@ -207,15 +207,15 @@ void FFT_doFFT(void)
 	//Process DC corrector filter
 	if (!TRX_on_TX())
 	{
-		dc_filter(FFTInput_I, FFT_SIZE, 4);
-		dc_filter(FFTInput_Q, FFT_SIZE, 5);
+		dc_filter(FFTInput_I, FFT_SIZE, DC_FILTER_FFT_I);
+		dc_filter(FFTInput_Q, FFT_SIZE, DC_FILTER_FFT_Q);
 	}
 
 	//Process Notch filter
-	if (TRX.NotchFilter && !TRX_on_TX())
+	if (CurrentVFO()->NotchFilter && !TRX_on_TX())
 	{
-		arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
-		arm_biquad_cascade_df2T_f32(&NOTCH_FILTER_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
+		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_I_FILTER, FFTInput_I, FFTInput_I, FFT_SIZE);
+		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_Q_FILTER, FFTInput_Q, FFTInput_Q, FFT_SIZE);
 	}
 
 	//ZoomFFT
