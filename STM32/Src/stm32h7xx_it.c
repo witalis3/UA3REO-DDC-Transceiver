@@ -501,7 +501,8 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples, false); //~120
 			sendToDebug_str("CPU Load: ");
       sendToDebug_uint32(cpu_load, false);
-      sendToDebug_str("TIM6 delay: ");
+      //sendToDebug_str("( "); sendToDebug_uint32(CPU_LOAD.WCNT, true); sendToDebug_str(" / "); sendToDebug_uint32(CPU_LOAD.SCNT, true); sendToDebug_str(" / "); sendToDebug_uint32(CPU_LOAD.SINC/1000, true); sendToDebug_strln(" )");
+			sendToDebug_str("TIM6 delay: ");
       sendToDebug_uint32(dbg_tim6_delay, false);
       sendToDebug_str("Audioproc timer counter: ");
       sendToDebug_uint32(dbg_tim5_counter, false);

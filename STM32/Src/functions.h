@@ -50,6 +50,7 @@ typedef struct {
     float32_t Load;      /*!< CPU load percentage */
     uint32_t WCNT;   /*!< Number of working cycles in one period. Meant for private use */
     uint32_t SCNT;   /*!< Number of sleeping cycles in one period. Meant for private use */
+		uint32_t SINC;
 } CPULOAD_t;
 		
 extern UART_HandleTypeDef huart1;

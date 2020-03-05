@@ -380,22 +380,31 @@ float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, 
 	return ret;
 }
 
-void CPULOAD_Init(void)
-{
-	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-}
-
 static uint32_t CPULOAD_startWorkTime = 0;
 static uint32_t CPULOAD_startSleepTime = 0;
 static uint32_t CPULOAD_WorkingTime = 0;
 static uint32_t CPULOAD_SleepingTime = 0;
+static uint32_t CPULOAD_SleepCounter = 0;
 static bool CPULOAD_status = true; // true - wake up ; false - sleep
+
+void CPULOAD_Init(void)
+{
+	DBGMCU->CR |= (DBGMCU_CR_DBG_SLEEPD1_Msk | DBGMCU_CR_DBG_STOPD1_Msk | DBGMCU_CR_DBG_STANDBYD1_Msk);
+	//разрешаем использовать счётчик
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+	//запускаем счётчик
+	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+	//обнуляем значение счётного регистра
+	DWT->CYCCNT = 0;
+	CPULOAD_status = true;
+}
 
 void CPULOAD_GoToSleepMode(void) {
 	//if(!CPULOAD_status) return;
 	/* Add to working time */
 	CPULOAD_WorkingTime += DWT->CYCCNT - CPULOAD_startWorkTime;
 	/* Save count cycle time */
+	CPULOAD_SleepCounter++;
 	CPULOAD_startSleepTime = DWT->CYCCNT;
 	CPULOAD_status = false;
 	/* Go to sleep mode Wait for wake up interrupt */
@@ -417,12 +426,21 @@ void CPULOAD_Calc(void)
 	/* Save values */
 	CPU_LOAD.SCNT = CPULOAD_SleepingTime;
 	CPU_LOAD.WCNT = CPULOAD_WorkingTime;
+	CPU_LOAD.SINC = CPULOAD_SleepCounter;
 	CPU_LOAD.Load = ((float)CPULOAD_WorkingTime / (float)(CPULOAD_SleepingTime + CPULOAD_WorkingTime) * 100);
 	if(CPU_LOAD.SCNT==0)
+	{
 		CPU_LOAD.Load = 100;
+	}
+	if(CPU_LOAD.SCNT==0 && CPU_LOAD.WCNT==0)
+	{
+		CPU_LOAD.Load = 255;
+		CPULOAD_Init();
+	}
 	/* Reset time */
 	CPULOAD_SleepingTime = 0;
 	CPULOAD_WorkingTime = 0;
+	CPULOAD_SleepCounter = 0;
 }
 
 inline int32_t convertToSPIBigEndian(int32_t in)

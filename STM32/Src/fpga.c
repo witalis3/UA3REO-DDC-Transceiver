@@ -194,7 +194,9 @@ inline void FPGA_fpgadata_sendparam(void)
 {
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
+	VFO *secondary_vfo = SecondaryVFO();
 	uint32_t TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT);
+	uint32_t TRX_freq_phrase2 = getPhraseFromFrequency(secondary_vfo->Freq + TRX_SHIFT);
 	if (!TRX_on_TX())
 	{
 		switch (current_vfo->Mode)
@@ -204,6 +206,17 @@ inline void FPGA_fpgadata_sendparam(void)
 			break;
 		case TRX_MODE_CW_U:
 			TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ);
+			break;
+		default:
+			break;
+		}
+		switch (secondary_vfo->Mode)
+		{
+		case TRX_MODE_CW_L:
+			TRX_freq_phrase2 = getPhraseFromFrequency(secondary_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ);
+			break;
+		case TRX_MODE_CW_U:
+			TRX_freq_phrase2 = getPhraseFromFrequency(secondary_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ);
 			break;
 		default:
 			break;
@@ -244,19 +257,19 @@ inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 6
 	//out RX2-FREQ
-	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 16)) >> 16));
+	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 7
 	//OUT RX2-FREQ
-	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 8)) >> 8));
+	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 8
 	//OUT RX2-FREQ
-	FPGA_writePacket(TRX_freq_phrase & 0XFF);
+	FPGA_writePacket(TRX_freq_phrase2 & 0XFF);
 	FPGA_clockRise();
 	FPGA_clockFall();
 

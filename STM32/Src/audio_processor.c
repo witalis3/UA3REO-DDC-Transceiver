@@ -118,7 +118,7 @@ void processRxAudio(void)
 	case TRX_MODE_DIGI_L:
 		doRX_HILBERT(AUDIO_RX1);
 		doRX_LPF(AUDIO_RX1);
-		arm_sub_f32((float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+		arm_sub_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
 		doRX_DNR(AUDIO_RX1);
@@ -132,7 +132,7 @@ void processRxAudio(void)
 	case TRX_MODE_DIGI_U:
 		doRX_HILBERT(AUDIO_RX1);
 		doRX_LPF(AUDIO_RX1);
-		arm_add_f32((float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
+		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
 		doRX_DNR(AUDIO_RX1);
@@ -142,9 +142,9 @@ void processRxAudio(void)
 		break;
 	case TRX_MODE_AM:
 		doRX_LPF(AUDIO_RX1);
-		arm_mult_f32((float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-		arm_mult_f32((float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-		arm_add_f32((float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_mult_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_mult_f32(FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 			arm_sqrt_f32(FPGA_Audio_Buffer_RX1_I_tmp[i], &FPGA_Audio_Buffer_RX1_I_tmp[i]);
 		doRX_NOTCH(AUDIO_RX1);
@@ -178,7 +178,7 @@ void processRxAudio(void)
 		case TRX_MODE_DIGI_L:
 			doRX_HILBERT(AUDIO_RX2);
 			doRX_LPF(AUDIO_RX2);
-			arm_sub_f32((float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+			arm_sub_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 			doRX_NOTCH(AUDIO_RX2);
 			doRX_DNR(AUDIO_RX2);
 			doRX_AGC(AUDIO_RX2);
@@ -189,16 +189,16 @@ void processRxAudio(void)
 		case TRX_MODE_DIGI_U:
 			doRX_HILBERT(AUDIO_RX2);
 			doRX_LPF(AUDIO_RX2);
-			arm_add_f32((float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
+			arm_add_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
 			doRX_NOTCH(AUDIO_RX2);
 			doRX_DNR(AUDIO_RX2);
 			doRX_AGC(AUDIO_RX2);
 			break;
 		case TRX_MODE_AM:
 			doRX_LPF(AUDIO_RX2);
-			arm_mult_f32((float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-			arm_mult_f32((float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-			arm_add_f32((float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_mult_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_mult_f32(FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_add_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 			for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 				arm_sqrt_f32(FPGA_Audio_Buffer_RX2_I_tmp[i], &FPGA_Audio_Buffer_RX2_I_tmp[i]);
 			doRX_NOTCH(AUDIO_RX2);
@@ -224,6 +224,13 @@ void processRxAudio(void)
 		Processor_AudioBuffer_current = &Processor_AudioBuffer_B[0];
 	else
 		Processor_AudioBuffer_current = &Processor_AudioBuffer_A[0];
+	
+	if(TRX.Dual_RX_Type == VFO_A_PLUS_B)
+	{
+		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.5f, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+	}
+	
 	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
 		if(TRX.Dual_RX_Type == VFO_SEPARATE)
@@ -233,15 +240,21 @@ void processRxAudio(void)
 		}
 		else if(TRX.Dual_RX_Type == VFO_A_AND_B)
 		{
-			arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2], 1); //left channel
-			arm_float_to_q31(&FPGA_Audio_Buffer_RX2_I_tmp[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+			if(!TRX.current_vfo)
+			{
+				arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2], 1); //left channel
+				arm_float_to_q31(&FPGA_Audio_Buffer_RX2_I_tmp[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+			}
+			else
+			{
+				arm_float_to_q31(&FPGA_Audio_Buffer_RX2_I_tmp[i], &Processor_AudioBuffer_current[i * 2], 1); //left channel
+				arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+			}
 		}
 		else if(TRX.Dual_RX_Type == VFO_A_PLUS_B)
 		{
-			arm_add_f32((float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-			arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.5f, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 			arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2], 1); //left channel
-			arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+			Processor_AudioBuffer_current[i * 2 + 1] = Processor_AudioBuffer_current[i * 2]; //right channel
 		}
 	}
 	if (Processor_AudioBuffer_ReadyBuffer == 0)
@@ -346,9 +359,9 @@ void processTxAudio(void)
 		}
 		//hilbert fir
 		// + 45 deg to Q data
-		arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_fir_f32(&FIR_TX_Hilbert_Q, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		// - 45 deg to I data
-		arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_fir_f32(&FIR_TX_Hilbert_I, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 
 	//Copy and convert buffer
@@ -372,10 +385,10 @@ void processTxAudio(void)
 	{
 		//IIR HPF
 		if (current_vfo->HPF_Filter_Width > 0)
-			arm_iir_lattice_f32(&IIR_TX_HPF_I, (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_TX_HPF_I, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		//IIR LPF
 		if (current_vfo->LPF_Filter_Width > 0)
-			arm_iir_lattice_f32(&IIR_TX_LPF_I, (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_TX_LPF_I, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		memcpy(&FPGA_Audio_Buffer_TX_Q_tmp[0], &FPGA_Audio_Buffer_TX_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE * 4); //double left and right channel
 
 		switch (mode)
@@ -395,23 +408,23 @@ void processTxAudio(void)
 		case TRX_MODE_DIGI_U:
 			//hilbert fir
 			// + 45 deg to Q data
-			arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_fir_f32(&FIR_TX_Hilbert_Q, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 			// - 45 deg to I data
-			arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_fir_f32(&FIR_TX_Hilbert_I, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_DIGI_L:
 			//hilbert fir
 			// + 45 deg to I data
-			arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_fir_f32(&FIR_TX_Hilbert_I, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 			// - 45 deg to Q data
-			arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_fir_f32(&FIR_TX_Hilbert_Q, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_AM:
 			// + 45 deg to I data
-			arm_fir_f32(&FIR_TX_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_fir_f32(&FIR_TX_Hilbert_I, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 			// - 45 deg to Q data
-			arm_fir_f32(&FIR_TX_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_fir_f32(&FIR_TX_Hilbert_Q, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 			for (size_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 			{
 				float32_t i_am = ((FPGA_Audio_Buffer_TX_I_tmp[i] - FPGA_Audio_Buffer_TX_Q_tmp[i]) + (Processor_selected_RFpower_amplitude)) / 2.0f;
@@ -567,13 +580,13 @@ static void doCW_Decode(AUDIO_PROC_RX_NUM rx_id)
 	{
 		if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
-				CWDecoder_Process((float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0] + (block * CWDECODER_SAMPLES));
+				CWDecoder_Process(FPGA_Audio_Buffer_RX1_I_tmp + (block * CWDECODER_SAMPLES));
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
 		if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
-				CWDecoder_Process((float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0] + (block * CWDECODER_SAMPLES));
+				CWDecoder_Process(FPGA_Audio_Buffer_RX2_I_tmp + (block * CWDECODER_SAMPLES));
 	}
 }
 
@@ -582,13 +595,13 @@ static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id)
 	//Hilbert fir
 	if(rx_id==AUDIO_RX1)
 	{
-		arm_fir_f32(&FIR_RX1_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-		arm_fir_f32(&FIR_RX1_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_fir_f32(&FIR_RX1_Hilbert_I, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_fir_f32(&FIR_RX1_Hilbert_Q, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
-		arm_fir_f32(&FIR_RX2_Hilbert_I, (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-		arm_fir_f32(&FIR_RX2_Hilbert_Q, (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_fir_f32(&FIR_RX2_Hilbert_I, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+		arm_fir_f32(&FIR_RX2_Hilbert_Q, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 }
 
@@ -599,16 +612,16 @@ static void doRX_LPF(AUDIO_PROC_RX_NUM rx_id)
 	{
 		if (CurrentVFO()->LPF_Filter_Width > 0)
 		{
-			arm_iir_lattice_f32(&IIR_RX1_LPF_I, (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-			arm_iir_lattice_f32(&IIR_RX1_LPF_Q, (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_RX1_LPF_I, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_RX1_LPF_Q, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		}
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
 		if (SecondaryVFO()->LPF_Filter_Width > 0)
 		{
-			arm_iir_lattice_f32(&IIR_RX2_LPF_I, (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-			arm_iir_lattice_f32(&IIR_RX2_LPF_Q, (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_RX2_LPF_I, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_RX2_LPF_Q, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		}
 	}
 }
@@ -620,16 +633,16 @@ static void doRX_HPF(AUDIO_PROC_RX_NUM rx_id)
 	{
 		if (CurrentVFO()->HPF_Filter_Width > 0)
 		{
-			arm_iir_lattice_f32(&IIR_RX1_HPF_I, (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-			arm_iir_lattice_f32(&IIR_RX1_HPF_Q, (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_RX1_HPF_I, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_RX1_HPF_Q, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		}
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
 		if (SecondaryVFO()->HPF_Filter_Width > 0)
 		{
-			arm_iir_lattice_f32(&IIR_RX2_HPF_I, (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-			arm_iir_lattice_f32(&IIR_RX2_HPF_Q, (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_RX2_HPF_I, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_iir_lattice_f32(&IIR_RX2_HPF_Q, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		}
 	}
 }
@@ -640,12 +653,12 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id)
 	if(rx_id==AUDIO_RX1)
 	{
 		if (CurrentVFO()->NotchFilter)
-			arm_biquad_cascade_df2T_f32(&NOTCH_RX1_FILTER, (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_biquad_cascade_df2T_f32(&NOTCH_RX1_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
 		if (SecondaryVFO()->NotchFilter)
-			arm_biquad_cascade_df2T_f32(&NOTCH_RX2_FILTER, (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+			arm_biquad_cascade_df2T_f32(&NOTCH_RX2_FILTER, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 }
 
@@ -657,7 +670,7 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id)
 		if (CurrentVFO()->DNR > 0)
 		{
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				processNoiseReduction((float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0] + (block * NOISE_REDUCTION_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0] + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
+				processNoiseReduction(FPGA_Audio_Buffer_RX1_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), FPGA_Audio_Buffer_RX1_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
 		}
 	}
 	else if(rx_id==AUDIO_RX2)
@@ -665,7 +678,7 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id)
 		if (SecondaryVFO()->DNR > 0)
 		{
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				processNoiseReduction((float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0] + (block * NOISE_REDUCTION_BLOCK_SIZE), (float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0] + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
+				processNoiseReduction(FPGA_Audio_Buffer_RX2_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), FPGA_Audio_Buffer_RX2_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
 		}
 	}
 }
@@ -674,9 +687,9 @@ static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id)
 {
 	//AGC
 	if(rx_id==AUDIO_RX1)
-		DoAGC((float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE, rx_id);
+		DoAGC(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, rx_id);
 	else if(rx_id==AUDIO_RX2)
-		DoAGC((float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE, rx_id);
+		DoAGC(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, rx_id);
 }
 
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id)

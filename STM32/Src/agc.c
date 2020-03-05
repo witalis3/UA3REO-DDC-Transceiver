@@ -66,13 +66,13 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 		*AGC_need_gain_db = 1.0f;
 
 	//применяем усиление
-	if (AGC_need_gain_db_old != AGC_need_gain_db) //усиление изменилось
+	if (*AGC_need_gain_db_old != *AGC_need_gain_db) //усиление изменилось
 	{
 		float32_t gainApplyStep = 0;
-		if (AGC_need_gain_db_old > AGC_need_gain_db)
-			gainApplyStep = -(AGC_need_gain_db_old - AGC_need_gain_db) / blockSize;
-		if (AGC_need_gain_db_old < AGC_need_gain_db)
-			gainApplyStep = (AGC_need_gain_db - AGC_need_gain_db_old) / blockSize;
+		if (*AGC_need_gain_db_old > *AGC_need_gain_db)
+			gainApplyStep = -(*AGC_need_gain_db_old - *AGC_need_gain_db) / blockSize;
+		if (*AGC_need_gain_db_old < *AGC_need_gain_db)
+			gainApplyStep = (*AGC_need_gain_db - *AGC_need_gain_db_old) / blockSize;
 		for (uint_fast16_t i = 0; i < blockSize; i++)
 		{
 			*AGC_need_gain_db_old += gainApplyStep;

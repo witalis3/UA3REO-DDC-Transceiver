@@ -59,6 +59,7 @@
 #define W25Q16_COMMAND_Page_Program 0x02
 #define W25Q16_COMMAND_Read_Data 0x03
 #define W25Q16_SECTOR_SIZE 4096
+#define W25Q16_MARGIN_LEFT 0
 
 extern struct t_CALIBRATE
 {
