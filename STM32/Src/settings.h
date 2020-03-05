@@ -105,12 +105,20 @@ typedef struct
 	bool DNR;
 } VFO;
 
+//режим работы двойного приёмника
 typedef enum
 {
 	VFO_SEPARATE,
 	VFO_A_AND_B,
 	VFO_A_PLUS_B,
 } DUAL_RX_TYPE;
+
+//сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
+typedef struct
+{
+	float32_t x_prev;
+	float32_t y_prev;
+} DC_filter_state_type;
 
 extern struct TRX_SETTINGS
 {
@@ -175,9 +183,11 @@ extern struct TRX_SETTINGS
 	uint16_t CW_KEYER_WPM;
 	bool S_METER_Style;
 	uint8_t TX_AGC_speed;
-	uint8_t ENDBit;
 	bool Debug_Console;
 	DUAL_RX_TYPE Dual_RX_Type;
+	DC_filter_state_type DC_Filter_State[8];
+	
+	uint8_t ENDBit;
 } TRX;
 
 extern volatile bool NeedSaveSettings;

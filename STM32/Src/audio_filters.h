@@ -99,11 +99,4 @@ extern void ReinitAudioFilters(void);
 extern void InitNotchFilter(void);
 extern void dc_filter(float32_t *Buffer, int16_t blockSize, uint8_t stateNum);
 
-//сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
-typedef struct
-{
-	float32_t x_prev;
-	float32_t y_prev;
-} dc_filter_state_type;
-
 #endif

@@ -401,18 +401,6 @@ void InitNotchFilter(void)
 	calcBiquad(BIQUAD_notch, SecondaryVFO()->NotchFC, TRX_SAMPLERATE, 0.5f, 0, AUDIO_RX2);
 }
 
-static dc_filter_state_type dc_filter_state[8] =
-	{
-		{0, 0}, //0 RX1 I
-		{0, 0}, //1 RX1 Q
-		{0, 0}, //0 RX2 I
-		{0, 0}, //1 RX2 Q		
-		{0, 0}, //2 TX I
-		{0, 0}, //3 TX Q
-		{0, 0}, //4 FFT I
-		{0, 0}, //5 FFT Q
-};
-
 void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum) //удаляет постоянную составлющую сигнала
 {
 	static const float32_t A1 = (1.0f - 0.00048828125f); // (1-2^(-11))
@@ -421,11 +409,11 @@ void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum) /
 	{
 		float32_t sampleIn = Buffer[i];
 		float32_t sampleOut = 0;
-		float32_t delta_x = sampleIn - dc_filter_state[stateNum].x_prev;
-		float32_t a1_y_prev = A1 * dc_filter_state[stateNum].y_prev;
+		float32_t delta_x = sampleIn - TRX.DC_Filter_State[stateNum].x_prev;
+		float32_t a1_y_prev = A1 * TRX.DC_Filter_State[stateNum].y_prev;
 		sampleOut = delta_x + a1_y_prev;
-		dc_filter_state[stateNum].x_prev = sampleIn;
-		dc_filter_state[stateNum].y_prev = sampleOut;
+		TRX.DC_Filter_State[stateNum].x_prev = sampleIn;
+		TRX.DC_Filter_State[stateNum].y_prev = sampleOut;
 		Buffer[i] = sampleOut;
 	}
 }

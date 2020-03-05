@@ -205,10 +205,20 @@ void LoadSettings(bool clear)
 		TRX.IF_Gain = 60;			  //Усиление ПЧ, dB (до всех обработок и AGC)
 		TRX.CW_KEYER = true;		  //Автоматический ключ
 		TRX.CW_KEYER_WPM = 30;		  //Скорость автоматического ключа
-		TRX.ENDBit = 100;			  //Бит окончания успешной записи в eeprom
 		TRX.S_METER_Style = false;	//Вид S-метра (свечка или полоска)
 		TRX.Debug_Console = false;  //Вывод отладки в DEBUG/UART порт
 		TRX.Dual_RX_Type = VFO_SEPARATE; //режим двойного приёмника
+		//сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
+		TRX.DC_Filter_State[0] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
+		TRX.DC_Filter_State[1] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
+		TRX.DC_Filter_State[2] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
+		TRX.DC_Filter_State[3] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
+		TRX.DC_Filter_State[4] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
+		TRX.DC_Filter_State[5] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
+		TRX.DC_Filter_State[6] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
+		TRX.DC_Filter_State[7] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
+		
+		TRX.ENDBit = 100;			  //Бит окончания успешной записи в eeprom
 		SaveSettings();
 	}
 }

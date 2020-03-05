@@ -229,7 +229,7 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 	bool dualrx_bpf_disabled = false;
 	if((TRX.Dual_RX_Type != VFO_SEPARATE) && SecondaryVFO()->Freq > CALIBRATE.LPF_END)
 		dualrx_lpf_disabled = true;
-	if(getBPFByFreq(CurrentVFO()->Freq) != getBPFByFreq(SecondaryVFO()->Freq))
+	if((TRX.Dual_RX_Type != VFO_SEPARATE) && getBPFByFreq(CurrentVFO()->Freq) != getBPFByFreq(SecondaryVFO()->Freq))
 		dualrx_bpf_disabled = true;
 	
 	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //защёлка
