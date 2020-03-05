@@ -37,7 +37,7 @@ void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
 			WM8731_Buffer_underrun = true;
 		WM8731_DMA_state = false;
 		Processor_NeedRXBuffer = true;
-		if (TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK)
+		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
 			Processor_NeedTXBuffer = true;
 		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE/2);
 	}
@@ -53,7 +53,7 @@ void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s)
 			WM8731_Buffer_underrun = true;
 		WM8731_DMA_state = true;
 		Processor_NeedRXBuffer = true;
-		if (TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK)
+		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
 			Processor_NeedTXBuffer = true;
 		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE/2);
 	}

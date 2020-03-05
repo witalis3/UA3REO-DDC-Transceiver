@@ -309,7 +309,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			strcat(answer, "+0000"); //clirifier offset
 			strcat(answer, "0");	 //RX clar off
 			strcat(answer, "0");	 //TX clar off
-			sprintf(ctmp, "%d", getFT450Mode(TRX_getMode(CurrentVFO())));
+			sprintf(ctmp, "%d", getFT450Mode(CurrentVFO()->Mode));
 			strcat(answer, ctmp); //mode
 			strcat(answer, "0");  //VFO Memory
 			strcat(answer, "0");  //CTCSS OFF
@@ -448,14 +448,14 @@ void ua3reo_dev_cat_parseCommand(void)
 			{
 				char answer[30] = {0};
 				strcat(answer, "MD0");
-				sprintf(ctmp, "%d", getFT450Mode(TRX_getMode(CurrentVFO())));
+				sprintf(ctmp, "%d", getFT450Mode(CurrentVFO()->Mode));
 				strcat(answer, ctmp); //mode
 				strcat(answer, ";");
 				CAT_Transmit(answer);
 			}
 			else
 			{
-				if (TRX_getMode(CurrentVFO()) != setFT450Mode(arguments))
+				if (CurrentVFO()->Mode != setFT450Mode(arguments))
 				{
 					TRX_setMode(setFT450Mode(arguments), CurrentVFO());
 					LCD_UpdateQuery.TopButtons = true;

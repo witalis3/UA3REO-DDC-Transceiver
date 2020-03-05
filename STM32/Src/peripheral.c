@@ -250,11 +250,11 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 			//if(registerNumber==4) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==5) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==6) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
-			if (registerNumber == 7 && TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_LOOPBACK)
+			if (registerNumber == 7 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_RX
 			
 			//REGISTER 2
-			if (registerNumber == 8 && TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_LOOPBACK) //TX_AMP
+			if (registerNumber == 8 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK) //TX_AMP
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 9 && TRX.ATT) //ATT_ON
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
@@ -276,7 +276,7 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 			//REGISTER 3
 			//if(registerNumber==16) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==17) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
-			if (registerNumber == 18 && ((TRX_on_TX() && TRX_getMode(CurrentVFO()) != TRX_MODE_LOOPBACK) || TRX_Fan_Timeout > 0)) //FAN
+			if (registerNumber == 18 && ((TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK) || TRX_Fan_Timeout > 0)) //FAN
 			{
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
 				if (TRX_Fan_Timeout > 0)
@@ -842,7 +842,7 @@ void PERIPH_ProcessSWRMeter(void)
 		TRX_SWR = 10.0f;
 	float32_t ref_power = (TRX_SWR_backward * TRX_SWR_backward) / 50.0f;
 
-	if (TRX_SWR >= SWR_CRITICAL && ref_power > 1.0f && TRX_getMode(CurrentVFO()) != TRX_MODE_LOOPBACK) //опасный порог КСВ, отключаем передачу
+	if (TRX_SWR >= SWR_CRITICAL && ref_power > 1.0f && CurrentVFO()->Mode != TRX_MODE_LOOPBACK) //опасный порог КСВ, отключаем передачу
 	{
 		TRX_Time_InActive = 0;
 		TRX_Tune = false;

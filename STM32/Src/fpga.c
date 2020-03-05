@@ -169,7 +169,7 @@ void FPGA_fpgadata_iqclock(void)
 
 	//STAGE 1
 	//out
-	if (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK)
+	if (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)
 		FPGA_fpgadata_out_tmp8 = 3;
 	else
 		FPGA_fpgadata_out_tmp8 = 4;
@@ -182,7 +182,7 @@ void FPGA_fpgadata_iqclock(void)
 	//clock
 	GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
 
-	if (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK)
+	if (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)
 		FPGA_fpgadata_sendiq();
 	else
 		FPGA_fpgadata_getiq();
@@ -197,7 +197,7 @@ inline void FPGA_fpgadata_sendparam(void)
 	uint32_t TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT);
 	if (!TRX_on_TX())
 	{
-		switch (TRX_getMode(current_vfo))
+		switch (current_vfo->Mode)
 		{
 		case TRX_MODE_CW_L:
 			TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ);
@@ -211,7 +211,7 @@ inline void FPGA_fpgadata_sendparam(void)
 	}
 	//STAGE 2
 	//out PTT+PREAMP
-	bitWrite(FPGA_fpgadata_out_tmp8, 0, (TRX_on_TX() && TRX_getMode(current_vfo) != TRX_MODE_LOOPBACK));
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));
 	if (!TRX_on_TX())
 		bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX.ADC_Driver);
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, TRX.ADC_DITH);

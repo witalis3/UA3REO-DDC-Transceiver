@@ -465,7 +465,7 @@ void FFT_printFFT(void)
 void FFT_printWaterfallDMA(void)
 {
 	uint_fast8_t cwdecoder_offset = 0;
-	if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 		cwdecoder_offset = LAY_FFT_CWDECODER_OFFSET;
 
 	if (print_wtf_yindex < (LAY_FFT_WTF_HEIGHT - cwdecoder_offset))

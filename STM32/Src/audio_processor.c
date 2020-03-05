@@ -87,16 +87,19 @@ void processRxAudio(void)
 	}
 	
 	//Process DC corrector filter
-	dc_filter(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, DC_FILTER_RX1_I);
-	dc_filter(FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, DC_FILTER_RX1_Q);
-	if(TRX.Dual_RX_Type != VFO_SEPARATE)
+	if(current_vfo->Mode != TRX_MODE_AM && current_vfo->Mode != TRX_MODE_NFM && current_vfo->Mode != TRX_MODE_WFM)
+	{
+		dc_filter(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, DC_FILTER_RX1_I);
+		dc_filter(FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, DC_FILTER_RX1_Q);
+	}
+	if(TRX.Dual_RX_Type != VFO_SEPARATE && secondary_vfo->Mode != TRX_MODE_AM && secondary_vfo->Mode != TRX_MODE_NFM && secondary_vfo->Mode != TRX_MODE_WFM)
 	{
 		dc_filter(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, DC_FILTER_RX2_I);
 		dc_filter(FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, DC_FILTER_RX2_Q);
 	}
 
 	//Применяем усиление ПЧ IF Gain
-	if(TRX_getMode(current_vfo) != TRX_MODE_IQ)
+	if(current_vfo->Mode != TRX_MODE_IQ)
 	{
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_Q_tmp, db2rateV(TRX.IF_Gain), FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -107,7 +110,7 @@ void processRxAudio(void)
 		}
 	}
 
-	switch (TRX_getMode(current_vfo)) //первый приёмник
+	switch (current_vfo->Mode) //первый приёмник
 	{
 	case TRX_MODE_LSB:
 	case TRX_MODE_CW_L:
@@ -167,7 +170,7 @@ void processRxAudio(void)
 	
 	if(TRX.Dual_RX_Type != VFO_SEPARATE)
 	{
-		switch (TRX_getMode(secondary_vfo)) //второй приёмник
+		switch (secondary_vfo->Mode) //второй приёмник
 		{
 		case TRX_MODE_LSB:
 		case TRX_MODE_CW_L:
@@ -300,7 +303,7 @@ void processTxAudio(void)
 	VFO *current_vfo = CurrentVFO();
 	AUDIOPROC_samples++;
 	Processor_selected_RFpower_amplitude = ((log10f_fast((float32_t)TRX.RF_Power / 10) + 1) / 2.0f) * TRX_MAX_TX_Amplitude;
-	uint_fast8_t mode = TRX_getMode(current_vfo);
+	uint_fast8_t mode = current_vfo->Mode;
 	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
 		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f; // поправка на нулевые биения
 
@@ -562,13 +565,13 @@ static void doCW_Decode(AUDIO_PROC_RX_NUM rx_id)
 	//CW Decoder
 	if(rx_id==AUDIO_RX1)
 	{
-		if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
+		if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
 				CWDecoder_Process((float32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0] + (block * CWDECODER_SAMPLES));
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
-		if (TRX.CWDecoder && (TRX_getMode(CurrentVFO()) == TRX_MODE_CW_L || TRX_getMode(CurrentVFO()) == TRX_MODE_CW_U))
+		if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
 				CWDecoder_Process((float32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0] + (block * CWDECODER_SAMPLES));
 	}
@@ -759,7 +762,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id)
 
 		if ((!TRX_Squelched) || (!TRX.FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
 		{
-			if (TRX_getMode(CurrentVFO()) == TRX_MODE_WFM)
+			if (CurrentVFO()->Mode == TRX_MODE_WFM)
 			{
 				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / PI * (1 << 14)); //second way
 			}

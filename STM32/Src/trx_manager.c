@@ -50,7 +50,7 @@ static void TRX_Start_TXRX(void);
 
 bool TRX_on_TX(void)
 {
-	if (TRX_ptt_hard || TRX_ptt_cat || TRX_Tune || TRX_getMode(CurrentVFO()) == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0)
+	if (TRX_ptt_hard || TRX_ptt_cat || TRX_Tune || CurrentVFO()->Mode == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0)
 		return true;
 	return false;
 }
@@ -67,7 +67,7 @@ void TRX_Init()
 
 void TRX_Restart_Mode()
 {
-	uint_fast8_t mode = TRX_getMode(CurrentVFO());
+	uint_fast8_t mode = CurrentVFO()->Mode;
 	if (TRX_on_TX())
 	{
 		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
@@ -221,7 +221,7 @@ void TRX_setFrequency(int32_t _freq, VFO *vfo)
 	if (TRX.BandMapEnabled)
 	{
 		uint_fast8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
-		if (TRX_getMode(vfo) != mode_from_bandmap)
+		if (vfo->Mode != mode_from_bandmap)
 		{
 			TRX_setMode(mode_from_bandmap, vfo);
 			LCD_UpdateQuery.TopButtons = true;
@@ -269,11 +269,6 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	}
 	ReinitAudioFilters();
 	NeedSaveSettings = true;
-}
-
-uint_fast8_t TRX_getMode(VFO *vfo)
-{
-	return vfo->Mode;
 }
 
 void TRX_DoAutoGain(void)

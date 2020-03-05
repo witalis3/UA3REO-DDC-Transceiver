@@ -510,7 +510,8 @@ static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 	}
 
 	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
+	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
+	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction)
@@ -566,7 +567,8 @@ static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction)
 	}
 
 	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
+	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
+	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 static void SYSMENU_HANDL_AUDIO_AM_LPF_pass(int8_t direction)
@@ -635,7 +637,8 @@ static void SYSMENU_HANDL_AUDIO_AM_LPF_pass(int8_t direction)
 	}
 
 	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
+	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
+	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction)
@@ -676,7 +679,8 @@ static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction)
 	}
 
 	ReinitAudioFilters();
-	TRX_setMode(TRX_getMode(CurrentVFO()), CurrentVFO());
+	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
+	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 //CW MENU
