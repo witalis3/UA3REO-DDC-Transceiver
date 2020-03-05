@@ -126,6 +126,7 @@ typedef struct
 typedef struct
 {
 	uint32_t Freq;
+	uint8_t Mode;
 	bool LNA;
 	bool ATT;
 	bool ADC_Driver;

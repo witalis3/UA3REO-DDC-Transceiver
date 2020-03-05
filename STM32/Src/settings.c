@@ -160,13 +160,13 @@ void LoadSettings(bool clear)
 		for (uint8_t i = 0; i < BANDS_COUNT; i++)
 		{
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
-			TRX.BANDS_SAVED_SETTINGS[i].LNA = TRX.LNA;
-			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
-			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
-			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.FM_SQL_threshold;
-			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
-			TRX.BANDS_SAVED_SETTINGS[i].DNR = TRX.VFO_A.DNR;
-			TRX.BANDS_SAVED_SETTINGS[i].AGC = TRX.VFO_A.AGC;
+			TRX.BANDS_SAVED_SETTINGS[i].LNA = false;
+			TRX.BANDS_SAVED_SETTINGS[i].ATT = false;
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = false;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = 1;
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = false;
+			TRX.BANDS_SAVED_SETTINGS[i].DNR = false;
+			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 		}
 		TRX.LPF = true;				   //ФНЧ
 		TRX.BPF = true;				   //ДПФ

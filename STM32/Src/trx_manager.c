@@ -214,19 +214,12 @@ void TRX_setFrequency(int32_t _freq, VFO *vfo)
 		return;
 	if (_freq >= MAX_FREQ_HZ)
 		_freq = MAX_FREQ_HZ;
-
+	
 	vfo->Freq = _freq;
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
 	if (bandFromFreq >= 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
-		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].LNA = TRX.LNA;
-		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT = TRX.ATT;
-		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_Driver = TRX.ADC_Driver;
-		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_PGA = TRX.ADC_PGA;
-		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold = TRX.FM_SQL_threshold;
-		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].DNR = CurrentVFO()->DNR;
-		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].AGC = CurrentVFO()->AGC;
 	}
 	if (TRX.BandMapEnabled)
 	{
