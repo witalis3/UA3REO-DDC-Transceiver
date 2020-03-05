@@ -62,7 +62,7 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 	}
 
 	//AGC выключен, ничего не регулируем
-	if (!TRX.AGC)
+	if ((rx_id==AUDIO_RX1 && !CurrentVFO()->AGC) || (rx_id==AUDIO_RX2 && !SecondaryVFO()->AGC))
 		*AGC_need_gain_db = 1.0f;
 
 	//применяем усиление

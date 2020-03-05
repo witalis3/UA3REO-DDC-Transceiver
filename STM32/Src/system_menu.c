@@ -418,6 +418,10 @@ static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
 	TRX.FM_SQL_threshold += direction;
 	if (TRX.FM_SQL_threshold > 10)
 		TRX.FM_SQL_threshold = 10;
+	
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	if(band>0)
+		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold = TRX.FM_SQL_threshold;
 }
 
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)
@@ -871,6 +875,9 @@ static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction)
 		TRX.ADC_Driver = true;
 	if (direction < 0)
 		TRX.ADC_Driver = false;
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	if(band>0)
+		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
 	FPGA_NeedSendParams = true;
 }
 
@@ -880,6 +887,9 @@ static void SYSMENU_HANDL_ADC_PGA(int8_t direction)
 		TRX.ADC_PGA = true;
 	if (direction < 0)
 		TRX.ADC_PGA = false;
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	if(band>0)
+		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
 	FPGA_NeedSendParams = true;
 }
 

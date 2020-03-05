@@ -84,7 +84,7 @@ void WM8731_Beep(void)
 {
 	WM8731_Beeping = true;
 	for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
-		CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX.Volume / 100.0f) * 2000.0f * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * 500.0f);
+		CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX_Volume / 100.0f) * 2000.0f * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * 500.0f);
 	HAL_Delay(50);
 	WM8731_Beeping = false;
 }

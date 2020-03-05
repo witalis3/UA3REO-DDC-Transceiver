@@ -32,6 +32,7 @@ volatile uint_fast8_t TRX_Time_InActive = 0; //секунд бездействи
 volatile uint_fast8_t TRX_Fan_Timeout = 0;   //секунд, сколько ещё осталось крутить вентилятор
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
+volatile uint32_t TRX_Volume;
 volatile bool TRX_SNMP_Synced = false;
 volatile int_fast16_t TRX_SHIFT = 0;
 volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
@@ -217,7 +218,16 @@ void TRX_setFrequency(int32_t _freq, VFO *vfo)
 	vfo->Freq = _freq;
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
 	if (bandFromFreq >= 0)
-		TRX.TRX_Saved_freq[bandFromFreq] = _freq;
+	{
+		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
+		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].LNA = TRX.LNA;
+		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT = TRX.ATT;
+		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_Driver = TRX.ADC_Driver;
+		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_PGA = TRX.ADC_PGA;
+		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold = TRX.FM_SQL_threshold;
+		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].DNR = CurrentVFO()->DNR;
+		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].AGC = CurrentVFO()->AGC;
+	}
 	if (TRX.BandMapEnabled)
 	{
 		uint_fast8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);

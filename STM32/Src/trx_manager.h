@@ -42,6 +42,7 @@ volatile extern float32_t TRX_MAX_TX_Amplitude;
 volatile extern float32_t TRX_SWR_forward;
 volatile extern float32_t TRX_SWR_backward;
 volatile extern float32_t TRX_SWR;
+volatile extern uint32_t TRX_Volume;
 
 extern const char *MODE_DESCR[];
 extern ADC_HandleTypeDef hadc1;

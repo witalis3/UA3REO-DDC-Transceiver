@@ -140,6 +140,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.NotchFilter = false;																	  //нотч-фильтр для вырезания помехи
 		TRX.VFO_A.NotchFC = 1000;																			  //частота среза нотч-фильтра
 		TRX.VFO_A.DNR = false;			   //цифровое шумоподавление
+		TRX.VFO_A.AGC = true;				   //AGC
 		TRX.VFO_B.Freq = 14150000;	 //сохранённая частота VFO-B
 		TRX.VFO_B.Mode = TRX_MODE_USB; //сохранённая мода VFO-B
 		TRX.VFO_B.LPF_Filter_Width = 2700; //сохранённая ширина полосы VFO-B
@@ -147,21 +148,33 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.NotchFilter = false;																	  //нотч-фильтр для вырезания помехи
 		TRX.VFO_B.NotchFC = 1000;																			  //частота среза нотч-фильтра
 		TRX.VFO_A.DNR = false;			   //цифровое шумоподавление
+		TRX.VFO_A.AGC = true;				   //AGC
 		TRX.current_vfo = false;	   // текущая VFO (false - A)
 		TRX.ADC_Driver = false;			   //предусилитель (драйвер АЦП)
 		TRX.LNA = false;					//LNA (малошумящий усилитель)
-		TRX.AGC = true;				   //AGC
 		TRX.ATT = false;			   //аттенюатор
+		TRX.FM_SQL_threshold = 1; //FM-шумодав
+		TRX.Fast = true;		  //ускоренная смена частоты при вращении энкодера
+		TRX.ADC_PGA = false;						//ADC преамп
+		for (uint8_t i = 0; i < BANDS_COUNT; i++)
+		{
+			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
+			TRX.BANDS_SAVED_SETTINGS[i].LNA = TRX.LNA;
+			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.FM_SQL_threshold;
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
+			TRX.BANDS_SAVED_SETTINGS[i].DNR = TRX.VFO_A.DNR;
+			TRX.BANDS_SAVED_SETTINGS[i].AGC = TRX.VFO_A.AGC;
+		}
 		TRX.LPF = true;				   //ФНЧ
 		TRX.BPF = true;				   //ДПФ
-		TRX.RX_AGC_speed = 3;		   //скорость AGC на приём
-		TRX.TX_AGC_speed = 3;		   //скорость AGC на передачу
-		TRX.BandMapEnabled = true;	 //автоматическая смена моды по карте диапазонов
-		TRX.Volume = 20;			   //громкость
+		TRX.FFT_Zoom = 1;																			  //приближение спектра FFT
+		TRX.AutoGain = false;																		  //авто-управление предусилителем и аттенюатором
+		TRX.CWDecoder = false;																		  //автоматический декодер телеграфа
 		TRX.InputType_MIC = true;	  //тип входа для передачи
 		TRX.InputType_LINE = false;
 		TRX.InputType_USB = false;
-		TRX.Fast = true;		  //ускоренная смена частоты при вращении энкодера
 		TRX.CW_LPF_Filter = 500;	  //дефолтное значение ширины фильтра CW
 		TRX.CW_HPF_Filter = 60;	  //дефолтное значение ширины фильтра CW
 		TRX.SSB_LPF_Filter = 2700;	//дефолтное значение ширины фильтра SSB
@@ -169,13 +182,9 @@ void LoadSettings(bool clear)
 		TRX.AM_LPF_Filter = 4000;	//дефолтное значение ширины фильтра AM
 		TRX.FM_LPF_Filter = 15000;	//дефолтное значение ширины фильтра FM
 		TRX.RF_Power = 20;		  //выходная мощность (%)
-		TRX.FM_SQL_threshold = 1; //FM-шумодав
-		for (uint8_t i = 0; i < BANDS_COUNT; i++)
-			TRX.TRX_Saved_freq[i] = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
-		TRX.FFT_Zoom = 1;																			  //приближение спектра FFT
-		TRX.AutoGain = false;																		  //авто-управление предусилителем и аттенюатором
-		TRX.CWDecoder = false;																		  //автоматический декодер телеграфа
-		//system settings
+		TRX.RX_AGC_speed = 3;		   //скорость AGC на приём
+		TRX.TX_AGC_speed = 3;		   //скорость AGC на передачу
+		TRX.BandMapEnabled = true;	 //автоматическая смена моды по карте диапазонов
 		TRX.FFT_Enabled = true;						//использовать спектр FFT
 		TRX.CW_GENERATOR_SHIFT_HZ = 500;			//смещение гетеродина в CW моде
 		TRX.ENCODER_SLOW_RATE = 35;					//замедление энкодера для больших разрешений
@@ -190,7 +199,6 @@ void LoadSettings(bool clear)
 		TRX.SPEC_Begin = 700;						//старт диапазона анализатора спектра
 		TRX.SPEC_End = 800;							//старт диапазона анализатора спектра
 		TRX.CW_SelfHear = true;						//самоконтоль CW
-		TRX.ADC_PGA = false;						//ADC преамп
 		TRX.ADC_RAND = false;						//ADC шифрование
 		TRX.ADC_SHDN = false;						//ADC отключение
 		TRX.ADC_DITH = false;						//ADC дизеринг

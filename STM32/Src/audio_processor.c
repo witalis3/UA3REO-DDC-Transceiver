@@ -271,7 +271,7 @@ void processRxAudio(void)
 	//
 
 	//OUT Volume
-	float32_t volume_gain = volume2rate((float32_t)TRX.Volume / 1023.0f);
+	float32_t volume_gain = volume2rate((float32_t)TRX_Volume / 1023.0f);
 	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_SIZE; i++)
 	{
 		Processor_AudioBuffer_current[i] = Processor_AudioBuffer_current[i] * volume_gain;
@@ -500,7 +500,7 @@ void processTxAudio(void)
 	{
 		//OUT Volume
 		doRX_AGC(AUDIO_RX1);
-		float32_t volume_gain = volume2rate((float32_t)TRX.Volume / 1023.0f);
+		float32_t volume_gain = volume2rate((float32_t)TRX_Volume / 1023.0f);
 		arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, volume_gain, FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 
 		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
@@ -530,7 +530,7 @@ void processTxAudio(void)
 			if (Processor_TX_MAX_amplitude_IN > 0)
 			{
 				for (uint_fast16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
-					CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX.Volume / 100.0f) * 2000.0f * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ);
+					CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX_Volume / 100.0f) * 2000.0f * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ);
 			}
 			else
 			{

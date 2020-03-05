@@ -419,7 +419,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			if (strcmp(arguments, "0") == 0)
 			{
-				if (TRX.RX_AGC_speed == 0 || !TRX.AGC)
+				if (TRX.RX_AGC_speed == 0 || !CurrentVFO()->AGC)
 					CAT_Transmit("GT00;");
 				else if (TRX.RX_AGC_speed == 1)
 					CAT_Transmit("GT04;");

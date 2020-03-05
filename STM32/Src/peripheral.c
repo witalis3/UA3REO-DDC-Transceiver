@@ -459,6 +459,12 @@ void PERIPH_ProcessFrontPanel(void)
 				TRX.ADC_Driver = false;
 				TRX.ADC_PGA = false;
 			}
+			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+			if(band>0)
+			{
+				TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
+				TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
+			}
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
 		}
@@ -485,6 +491,12 @@ void PERIPH_ProcessFrontPanel(void)
 			{
 				TRX.LNA = false;
 				TRX.ATT = false;
+			}
+			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+			if(band>0)
+			{
+				TRX.BANDS_SAVED_SETTINGS[band].LNA = TRX.LNA;
+				TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
 			}
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
@@ -534,7 +546,16 @@ void PERIPH_ProcessFrontPanel(void)
 			if (band < 0)
 				band = BANDS_COUNT - 1;
 			if (band >= 0)
-				TRX_setFrequency(TRX.TRX_Saved_freq[band], CurrentVFO());
+			{
+				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
+				TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
+				TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
+				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
+				TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+				TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
+				CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+				CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+			}
 			LCD_UpdateQuery.TopButtons = true;
 			LCD_UpdateQuery.FreqInfo = true;
 		}
@@ -549,7 +570,16 @@ void PERIPH_ProcessFrontPanel(void)
 			if (band < 0)
 				band = BANDS_COUNT - 1;
 			if (band >= 0)
-				TRX_setFrequency(TRX.TRX_Saved_freq[band], CurrentVFO());
+			{
+				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
+				TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
+				TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
+				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
+				TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+				TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
+				CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+				CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+			}
 			LCD_UpdateQuery.TopButtons = true;
 			LCD_UpdateQuery.FreqInfo = true;
 		}
@@ -604,7 +634,7 @@ void PERIPH_ProcessFrontPanel(void)
 			PERIPH_FrontPanel.key_agc = false;
 
 		mcp3008_value = PERIPH_ReadMCP3008_Value(6, AD2_CS_GPIO_Port, AD2_CS_Pin); // AF_GAIN
-		TRX.Volume = (1023.0f - mcp3008_value);
+		TRX_Volume = (1023.0f - mcp3008_value);
 
 		mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT
 		TRX_SHIFT = ((1023.0f - mcp3008_value) * SHIFT_INTERVAL / 1023.0f) - SHIFT_INTERVAL / 2.0f;
@@ -641,8 +671,11 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && !PERIPH_FrontPanel.key_agc && (HAL_GetTick() - PERIPH_FrontPanel.key_agc_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_agc_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
 		{
 			TRX_Time_InActive = 0;
-			TRX.AGC = !TRX.AGC;
+			CurrentVFO()->AGC = !CurrentVFO()->AGC;
 			InitAGC();
+			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+			if(band>0)
+				TRX.BANDS_SAVED_SETTINGS[band].AGC = CurrentVFO()->AGC;
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
 		}
@@ -678,6 +711,9 @@ void PERIPH_ProcessFrontPanel(void)
 		{
 			TRX_Time_InActive = 0;
 			CurrentVFO()->DNR = !CurrentVFO()->DNR;
+			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+			if(band>0)
+				TRX.BANDS_SAVED_SETTINGS[band].DNR = CurrentVFO()->DNR;
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
 		}

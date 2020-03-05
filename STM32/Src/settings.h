@@ -103,6 +103,7 @@ typedef struct
 	bool NotchFilter;
 	uint16_t NotchFC;
 	bool DNR;
+	bool AGC;
 } VFO;
 
 //режим работы двойного приёмника
@@ -120,25 +121,37 @@ typedef struct
 	float32_t y_prev;
 } DC_filter_state_type;
 
+//Сохранение настроек по бендам
+typedef struct
+{
+	uint32_t Freq;
+	bool LNA;
+	bool ATT;
+	bool ADC_Driver;
+	bool ADC_PGA;
+	uint8_t FM_SQL_threshold;
+	bool DNR;
+	bool AGC;
+} BAND_SAVED_SETTINGS_TYPE;
+
 extern struct TRX_SETTINGS
 {
 	uint8_t clean_flash;
 	bool current_vfo; // false - A; true - B
 	VFO VFO_A;
 	VFO VFO_B;
-	bool AGC;
-	bool ADC_Driver;
+	bool Fast;
+	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	bool LNA;
 	bool ATT;
 	bool LPF;
 	bool BPF;
+	bool ADC_Driver;
 	uint8_t RX_AGC_speed;
 	bool BandMapEnabled;
-	uint16_t Volume;
 	bool InputType_MIC;
 	bool InputType_LINE;
 	bool InputType_USB;
-	bool Fast;
 	uint16_t CW_LPF_Filter;
 	uint16_t CW_HPF_Filter;
 	uint16_t SSB_LPF_Filter;
@@ -147,11 +160,9 @@ extern struct TRX_SETTINGS
 	uint16_t FM_LPF_Filter;
 	uint8_t RF_Power;
 	uint8_t FM_SQL_threshold;
-	uint32_t TRX_Saved_freq[BANDS_COUNT];
 	uint8_t FFT_Zoom;
 	bool AutoGain;
 	bool CWDecoder;
-	//system settings
 	bool FFT_Enabled;
 	uint16_t CW_GENERATOR_SHIFT_HZ;
 	uint8_t ENCODER_SLOW_RATE;
