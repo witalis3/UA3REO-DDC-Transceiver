@@ -58,7 +58,7 @@ void FPGA_test_bus(void) //проверка шины
 {
 	bool err = false;
 	FPGA_busy = true;
-	for (uint_fast8_t b = 0; b < 8; b++)
+	for (uint_fast8_t b = 0; b <= 8; b++)
 	{
 		//STAGE 1
 		//out
@@ -312,7 +312,7 @@ inline void FPGA_fpgadata_sendparam(void)
 
 inline void FPGA_fpgadata_getparam(void)
 {
-	uint_fast8_t FPGA_fpgadata_in_tmp8 = 0;
+	register uint_fast8_t FPGA_fpgadata_in_tmp8 = 0;
 
 	//STAGE 2
 	//clock
@@ -331,12 +331,11 @@ inline void FPGA_fpgadata_getparam(void)
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket();
 	//clock
 	FPGA_clockFall();
-
 	//STAGE 4
 	//clock
 	FPGA_clockRise();
 	//in
-	TRX_ADC_MINAMPLITUDE = FPGA_fpgadata_in_tmp8 << 8 | (FPGA_readPacket() & 0XFF);
+	TRX_ADC_MINAMPLITUDE = (FPGA_fpgadata_in_tmp8 << 8) | (FPGA_readPacket() & 0xFF);
 	//clock
 	FPGA_clockFall();
 
@@ -347,12 +346,11 @@ inline void FPGA_fpgadata_getparam(void)
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket();
 	//clock
 	FPGA_clockFall();
-
 	//STAGE 6
 	//clock
 	FPGA_clockRise();
 	//in
-	TRX_ADC_MAXAMPLITUDE = FPGA_fpgadata_in_tmp8 << 8 | (FPGA_readPacket() & 0XFF);
+	TRX_ADC_MAXAMPLITUDE = (FPGA_fpgadata_in_tmp8 << 8) | (FPGA_readPacket() & 0xFF);
 	//clock
 	FPGA_clockFall();
 }
@@ -614,7 +612,6 @@ inline void FPGA_setBusInput(void)
 			GPIOA->MODER = temp;
 		}
 	}
-
 	FPGA_bus_direction = true;
 }
 
@@ -631,7 +628,6 @@ inline void FPGA_setBusOutput(void)
 			GPIOA->MODER = temp;
 		}
 	}
-
 	FPGA_bus_direction = false;
 }
 
@@ -669,7 +665,6 @@ inline void FPGA_writePacket(uint_fast8_t packet)
 {
 	if (FPGA_bus_direction)
 		FPGA_setBusOutput();
-
 	FPGA_BUS_D0_GPIO_Port->BSRR = (packet & 0xFF) | 0xFF0000;
 	/*
 	FPGA_BUS_D0_GPIO_Port->BSRR =
@@ -689,7 +684,7 @@ inline void FPGA_writePacket(uint_fast8_t packet)
 		| ((uint32_t)FPGA_BUS_D2_Pin << 16U)
 		| ((uint32_t)FPGA_BUS_D1_Pin << 16U)
 		| ((uint32_t)FPGA_BUS_D0_Pin << 16U);
-		*/
+	*/
 }
 
 void FPGA_start_command(uint_fast8_t command) //выполнение команды к SPI flash

@@ -367,7 +367,7 @@ void TRX_DBMCalculate(void)
 {
 	float32_t s_meter_power = Processor_RX_Power_value * CALIBRATE.smeter_calibration; // калибровка S-метра АЦП
 	Processor_RX_Power_value = 0;
-	float32_t s_meter_rate = s_meter_power / (float32_t)FPGA_BUS_FULL_SCALE_POW;
+	float32_t s_meter_rate = s_meter_power / (float32_t)FLOAT_FULL_SCALE_POW;
 	float32_t ADC_Vrms_Value = ADC_VREF * s_meter_rate;				   //получаем значение пик-пик напряжения на входе АЦП в вольтах
 	float32_t ADC_RF_IN_Value = (ADC_Vrms_Value / ADC_RF_TRANS_RATIO); //Получаем напряжение на антенном входе с учётом трансформатора
 	if (ADC_RF_IN_Value < 0.0000001f)
