@@ -22,10 +22,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 /* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
 extern DMA_HandleTypeDef hdma_spi3_rx;
-
+/* USER CODE END Includes */
 extern DMA_HandleTypeDef hdma_spi3_tx;
 
 extern DMA_HandleTypeDef hdma_usart6_rx;
@@ -172,36 +170,18 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     GPIO_InitStruct.Pin = WM8731_WS_LRC_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
     HAL_GPIO_Init(WM8731_WS_LRC_GPIO_Port, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = WM8731_BCLK_Pin|WM8731_ADC_SD_Pin|WM8731_DAC_SD_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
     /* I2S3 DMA Init */
-    /* SPI3_RX Init */
-    hdma_spi3_rx.Instance = DMA1_Stream0;
-    hdma_spi3_rx.Init.Request = DMA_REQUEST_SPI3_RX;
-    hdma_spi3_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
-    hdma_spi3_rx.Init.PeriphInc = DMA_PINC_DISABLE;
-    hdma_spi3_rx.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_spi3_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-    hdma_spi3_rx.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-    hdma_spi3_rx.Init.Mode = DMA_CIRCULAR;
-    hdma_spi3_rx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
-    hdma_spi3_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-    if (HAL_DMA_Init(&hdma_spi3_rx) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-    __HAL_LINKDMA(hi2s,hdmarx,hdma_spi3_rx);
-
     /* SPI3_TX Init */
     hdma_spi3_tx.Instance = DMA1_Stream5;
     hdma_spi3_tx.Init.Request = DMA_REQUEST_SPI3_TX;
@@ -221,6 +201,23 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     __HAL_LINKDMA(hi2s,hdmatx,hdma_spi3_tx);
 
   /* USER CODE BEGIN SPI3_MspInit 1 */
+
+		/* SPI3_RX Init */
+		hdma_spi3_rx.Instance = DMA1_Stream0;
+		hdma_spi3_rx.Init.Request = DMA_REQUEST_SPI3_RX;
+		hdma_spi3_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+		hdma_spi3_rx.Init.PeriphInc = DMA_PINC_DISABLE;
+		hdma_spi3_rx.Init.MemInc = DMA_MINC_ENABLE;
+		hdma_spi3_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+		hdma_spi3_rx.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+		hdma_spi3_rx.Init.Mode = DMA_CIRCULAR;
+		hdma_spi3_rx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
+		hdma_spi3_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+		if (HAL_DMA_Init(&hdma_spi3_rx) != HAL_OK)
+		{
+		Error_Handler();
+		}
+		__HAL_LINKDMA(hi2s,hdmarx,hdma_spi3_rx);
 
   /* USER CODE END SPI3_MspInit 1 */
   }
@@ -254,10 +251,9 @@ void HAL_I2S_MspDeInit(I2S_HandleTypeDef* hi2s)
     HAL_GPIO_DeInit(GPIOC, WM8731_BCLK_Pin|WM8731_ADC_SD_Pin|WM8731_DAC_SD_Pin);
 
     /* I2S3 DMA DeInit */
-    HAL_DMA_DeInit(hi2s->hdmarx);
     HAL_DMA_DeInit(hi2s->hdmatx);
   /* USER CODE BEGIN SPI3_MspDeInit 1 */
-
+		HAL_DMA_DeInit(hi2s->hdmarx);
   /* USER CODE END SPI3_MspDeInit 1 */
   }
 
@@ -333,7 +329,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     GPIO_InitStruct.Pin = PERI_SCK_Pin|PERI_MISO_Pin|PERI_MOSI_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
@@ -693,7 +689,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd)
     GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF10_OTG1_FS;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 

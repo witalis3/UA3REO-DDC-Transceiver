@@ -58,7 +58,6 @@ void PendSV_Handler(void);
 void SysTick_Handler(void);
 void EXTI2_IRQHandler(void);
 void EXTI4_IRQHandler(void);
-void DMA1_Stream0_IRQHandler(void);
 void DMA1_Stream1_IRQHandler(void);
 void DMA1_Stream5_IRQHandler(void);
 void TIM3_IRQHandler(void);
@@ -76,7 +75,7 @@ void OTG_FS_EP1_OUT_IRQHandler(void);
 void OTG_FS_EP1_IN_IRQHandler(void);
 void OTG_FS_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
+void DMA1_Stream0_IRQHandler(void);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus
