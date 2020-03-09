@@ -211,7 +211,7 @@ void LoadSettings(bool clear)
 		TRX.CICFIR_GAINER_val = 54;   //Смещение с выхода CIC компенсатора
 		TRX.TXCICFIR_GAINER_val = 32; //Смещение с выхода TX-CIC компенсатора
 		TRX.DAC_GAINER_val = 30;	  //Смещение DAC корректора
-		TRX.IF_Gain = 60;			  //Усиление ПЧ, dB (до всех обработок и AGC)
+		TRX.IF_Gain = 70;			  //Усиление ПЧ, dB (до всех обработок и AGC)
 		TRX.CW_KEYER = true;		  //Автоматический ключ
 		TRX.CW_KEYER_WPM = 30;		  //Скорость автоматического ключа
 		TRX.S_METER_Style = false;	//Вид S-метра (свечка или полоска)
@@ -227,6 +227,7 @@ void LoadSettings(bool clear)
 		TRX.DC_Filter_State[6] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
 		TRX.DC_Filter_State[7] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
 		TRX.FFT_Style = 1; //стиль отображения FFT
+		TRX.ShiftEnabled = false; //активация режима SHIFT
 		
 		TRX.ENDBit = 100;			  //Бит окончания успешной записи в eeprom
 		SaveSettings();

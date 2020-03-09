@@ -204,6 +204,17 @@ void PERIPH_ENCODER2_checkSwitch(void)
 		if (!ENCODER2_SWNow)
 		{
 			TRX_Time_InActive = 0;
+			if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
+				CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
+			if (!CurrentVFO()->NotchFilter)
+				CurrentVFO()->NotchFilter = true;
+			else
+				CurrentVFO()->NotchFilter = false;
+
+			NeedReinitNotch = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
+			LCD_UpdateQuery.TopButtons = true;
+			NeedSaveSettings = true;
 		}
 	}
 }
@@ -644,10 +655,18 @@ void PERIPH_ProcessFrontPanel(void)
 		mcp3008_value = PERIPH_ReadMCP3008_Value(6, AD2_CS_GPIO_Port, AD2_CS_Pin); // AF_GAIN
 		TRX_Volume = (1023.0f - mcp3008_value);
 
-		mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT
-		TRX_SHIFT = ((1023.0f - mcp3008_value) * SHIFT_INTERVAL / 1023.0f) - SHIFT_INTERVAL / 2.0f;
-		if (abs(TRX_SHIFT) < (SHIFT_INTERVAL / 10.0f)) //при минимальных отклонениях - игнорируем
+		mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT или IF Gain
+		if(TRX.ShiftEnabled)
+		{
+			TRX_SHIFT = ((1023.0f - mcp3008_value) * SHIFT_INTERVAL / 1023.0f) - SHIFT_INTERVAL / 2.0f;
+			if (abs(TRX_SHIFT) < (SHIFT_INTERVAL / 10.0f)) //при минимальных отклонениях - игнорируем
+				TRX_SHIFT = 0;
+		}
+		else
+		{
 			TRX_SHIFT = 0;
+			TRX.IF_Gain = 30.0f + ((1023.0f - mcp3008_value) * 50.0f / 1023.0f);
+		}
 
 		//F1 AGC
 		if (PERIPH_FrontPanel.key_agc_prev != PERIPH_FrontPanel.key_agc && PERIPH_FrontPanel.key_agc && !TRX.Locked)
@@ -800,6 +819,23 @@ void PERIPH_ProcessFrontPanel(void)
 
 		//F5 CLAR
 		if (PERIPH_FrontPanel.key_clar_prev != PERIPH_FrontPanel.key_clar && PERIPH_FrontPanel.key_clar && !TRX.Locked)
+		{
+			TRX_Time_InActive = 0;
+			PERIPH_FrontPanel.key_clar_starttime = HAL_GetTick();
+			PERIPH_FrontPanel.key_clar_afterhold = false;
+		}
+		//F5 CLAR HOLD - ENABLE SHIFT
+		if (PERIPH_FrontPanel.key_clar_prev == PERIPH_FrontPanel.key_clar && PERIPH_FrontPanel.key_clar && (HAL_GetTick() - PERIPH_FrontPanel.key_clar_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_clar_afterhold && !TRX.Locked)
+		{
+			TRX_Time_InActive = 0;
+			PERIPH_FrontPanel.key_clar_afterhold = true;
+
+			TRX.ShiftEnabled = !TRX.ShiftEnabled;
+			LCD_UpdateQuery.TopButtons = true;
+			NeedSaveSettings = true;
+		}
+		//F5 CLAR CLICK
+		if (PERIPH_FrontPanel.key_clar_prev != PERIPH_FrontPanel.key_clar && !PERIPH_FrontPanel.key_clar && (HAL_GetTick() - PERIPH_FrontPanel.key_clar_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_clar_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
 		{
 			TRX_Time_InActive = 0;
 			TRX.CLAR = !TRX.CLAR;

@@ -12,8 +12,8 @@
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
 #define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока
 #define MAX_TX_AMPLITUDE 0.9f		//Максимальный размах при передаче в ЦАП
-#define AGC_CLIP_THRESHOLD -20.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
-#define AGC_OPTIMAL_THRESHOLD -30.0f	//Рабочий уровень усиления в AGC, dbFS
+#define AGC_CLIP_THRESHOLD -15.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
+#define AGC_OPTIMAL_THRESHOLD -25.0f	//Рабочий уровень усиления в AGC, dbFS
 #define TUNE_POWER 100					//% от выбранной в настройках мощности при запуске TUNE (100 - полная)
 #define TX_AGC_MAXGAIN 500.0f			//Максимальное усиление микрофона при компрессировании
 #define TX_AGC_NOISEGATE 0.00001f			//Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
@@ -198,6 +198,7 @@ extern struct TRX_SETTINGS
 	DUAL_RX_TYPE Dual_RX_Type;
 	DC_filter_state_type DC_Filter_State[8];
 	uint8_t FFT_Style;
+	bool ShiftEnabled;
 	
 	uint8_t ENDBit;
 } TRX;

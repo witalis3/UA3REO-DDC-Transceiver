@@ -11,7 +11,6 @@
 #include "screen_layout.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
-static void SYSMENU_HANDL_TRX_IFGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction);
@@ -23,6 +22,7 @@ static void SYSMENU_HANDL_TRX_USBIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 
+static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
@@ -83,108 +83,108 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 
 static struct sysmenu_item_handler sysmenu_handlers[] =
-	{
-		{"TRX Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_TRXMENU},
-		{"AUDIO Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_AUDIOMENU},
-		{"CW Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_CWMENU},
-		{"LCD Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
-		{"FFT Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_FFTMENU},
-		{"ADC/DAC Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_ADCMENU},
-		{"WIFI Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_WIFIMENU},
-		{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
-		{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
-		{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
+{
+	{"TRX Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_TRXMENU},
+	{"AUDIO Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_AUDIOMENU},
+	{"CW Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_CWMENU},
+	{"LCD Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
+	{"FFT Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_FFTMENU},
+	{"ADC/DAC Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_ADCMENU},
+	{"WIFI Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_WIFIMENU},
+	{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
+	{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
+	{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
 };
 static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_trx_handlers[] =
-	{
-		{"RF Power", SYSMENU_UINT8, (uint32_t *)&TRX.RF_Power, SYSMENU_HANDL_TRX_RFPower},
-		{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_TRX_IFGain},
-		{"Band Map", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
-		{"AutoGainer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
-		{"LPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.LPF, SYSMENU_HANDL_TRX_LPFFilter},
-		{"BPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BPF, SYSMENU_HANDL_TRX_BPFFilter},
-		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE},
-		{"Two Signal TUNE", SYSMENU_BOOLEAN, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
-		{"DEBUG Console", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Debug_Console, SYSMENU_HANDL_TRX_DEBUG_CONSOLE},
-		{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
-		{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
-		{"USB IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_USB, SYSMENU_HANDL_TRX_USBIN},
+{
+	{"RF Power", SYSMENU_UINT8, (uint32_t *)&TRX.RF_Power, SYSMENU_HANDL_TRX_RFPower},
+	{"Band Map", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
+	{"AutoGainer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
+	{"LPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.LPF, SYSMENU_HANDL_TRX_LPFFilter},
+	{"BPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BPF, SYSMENU_HANDL_TRX_BPFFilter},
+	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE},
+	{"Two Signal TUNE", SYSMENU_BOOLEAN, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
+	{"DEBUG Console", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Debug_Console, SYSMENU_HANDL_TRX_DEBUG_CONSOLE},
+	{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
+	{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
+	{"USB IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_USB, SYSMENU_HANDL_TRX_USBIN},
 };
 static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sysmenu_trx_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_bw_handlers[] =
-	{
-		{"SSB HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_pass},
-		{"SSB LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_LPF_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_pass},
-		{"CW HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_HANDL_AUDIO_CW_HPF_pass},		
-		{"CW LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_HANDL_AUDIO_CW_LPF_pass},
-		{"AM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.AM_LPF_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_pass},		
-		{"FM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.FM_LPF_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_pass},
-		{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
-		{"RX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_speed, SYSMENU_HANDL_AUDIO_RX_AGCSpeed},
-		{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_AUDIO_TX_AGCSpeed},
+static struct sysmenu_item_handler sysmenu_audio_handlers[] =
+{
+	{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
+	{"SSB HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_pass},
+	{"SSB LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_LPF_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_pass},
+	{"CW HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_HANDL_AUDIO_CW_HPF_pass},		
+	{"CW LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_HANDL_AUDIO_CW_LPF_pass},
+	{"AM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.AM_LPF_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_pass},		
+	{"FM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.FM_LPF_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_pass},
+	{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
+	{"RX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_speed, SYSMENU_HANDL_AUDIO_RX_AGCSpeed},
+	{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_AUDIO_TX_AGCSpeed},
 };
-static uint8_t sysmenu_bw_item_count = sizeof(sysmenu_bw_handlers) / sizeof(sysmenu_bw_handlers[0]);
+static uint8_t sysmenu_audio_item_count = sizeof(sysmenu_audio_handlers) / sizeof(sysmenu_audio_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_cw_handlers[] =
-	{
-		{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
-		{"CW Generator shift", SYSMENU_UINT16, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
-		{"CW Self Hear", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
-		{"CW Keyer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
-		{"CW Keyer WPM", SYSMENU_UINT8, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
-		{"CW Decoder", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CW_Decoder},
+{
+	{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
+	{"CW Generator shift", SYSMENU_UINT16, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
+	{"CW Self Hear", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
+	{"CW Keyer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
+	{"CW Keyer WPM", SYSMENU_UINT8, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
+	{"CW Decoder", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CW_Decoder},
 };
 static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_lcd_handlers[] =
-	{
-		{"LCD Brightness", SYSMENU_UINT8, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_LCD_Brightness},
-		{"LCD Sleep Time", SYSMENU_UINT8, (uint32_t *)&TRX.Standby_Time, SYSMENU_HANDL_LCD_Standby_Time},
-		{"S-METER Line", SYSMENU_BOOLEAN, (uint32_t *)&TRX.S_METER_Style, SYSMENU_HANDL_LCD_SMeter_Style},
+{
+	{"LCD Brightness", SYSMENU_UINT8, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_LCD_Brightness},
+	{"LCD Sleep Time", SYSMENU_UINT8, (uint32_t *)&TRX.Standby_Time, SYSMENU_HANDL_LCD_Standby_Time},
+	{"S-METER Line", SYSMENU_BOOLEAN, (uint32_t *)&TRX.S_METER_Style, SYSMENU_HANDL_LCD_SMeter_Style},
 };
 static uint8_t sysmenu_lcd_item_count = sizeof(sysmenu_lcd_handlers) / sizeof(sysmenu_lcd_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_fft_handlers[] =
-	{
-		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_FFT_Zoom},
-		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_FFT_Style},
-		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_FFT_Enabled},
-		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_FFT_Averaging},
-		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_FFT_Window},
+{
+	{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_FFT_Zoom},
+	{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_FFT_Style},
+	{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_FFT_Enabled},
+	{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_FFT_Averaging},
+	{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_FFT_Window},
 };
 static uint8_t sysmenu_fft_item_count = sizeof(sysmenu_fft_handlers) / sizeof(sysmenu_fft_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_adc_handlers[] =
-	{
-		{"ADC Driver", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_Driver, SYSMENU_HANDL_ADC_DRIVER},
-		{"ADC Preamp", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},
-		{"ADC Dither", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
-		{"ADC Randomizer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
-		{"ADC Shutdown", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
-		{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CIC_GAINER_val, SYSMENU_HANDL_ADC_CIC_SHIFT},
-		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CICFIR_GAINER_val, SYSMENU_HANDL_ADC_CICCOMP_SHIFT},
-		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.TXCICFIR_GAINER_val, SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT},
-		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.DAC_GAINER_val, SYSMENU_HANDL_ADC_DAC_SHIFT},
+{
+	{"ADC Driver", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_Driver, SYSMENU_HANDL_ADC_DRIVER},
+	{"ADC Preamp", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},
+	{"ADC Dither", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
+	{"ADC Randomizer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
+	{"ADC Shutdown", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
+	{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CIC_GAINER_val, SYSMENU_HANDL_ADC_CIC_SHIFT},
+	{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CICFIR_GAINER_val, SYSMENU_HANDL_ADC_CICCOMP_SHIFT},
+	{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.TXCICFIR_GAINER_val, SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT},
+	{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.DAC_GAINER_val, SYSMENU_HANDL_ADC_DAC_SHIFT},
 };
 static uint8_t sysmenu_adc_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
-	{
-		{"WIFI Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
-		{"WIFI Select AP", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SelectAP},
-		{"WIFI Set AP Pass", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SetAPpassword},
-		{"WIFI Timezone", SYSMENU_INT8, (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_HANDL_WIFI_Timezone},
+{
+	{"WIFI Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
+	{"WIFI Select AP", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SelectAP},
+	{"WIFI Set AP Pass", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SetAPpassword},
+	{"WIFI Timezone", SYSMENU_INT8, (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_HANDL_WIFI_Timezone},
 };
 static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
-	{
-		{"Spectrum START", SYSMENU_RUN, 0, SYSMENU_HANDL_SPECTRUM_Start},
-		{"Begin, 10kHz", SYSMENU_UINT16, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
-		{"End, 10kHz", SYSMENU_UINT16, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
+{
+	{"Spectrum START", SYSMENU_RUN, 0, SYSMENU_HANDL_SPECTRUM_Start},
+	{"Begin, 10kHz", SYSMENU_UINT16, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
+	{"End, 10kHz", SYSMENU_UINT16, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
 };
 static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
 
@@ -285,15 +285,6 @@ static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)
 		TRX.RF_Power = 100;
 }
 
-static void SYSMENU_HANDL_TRX_IFGain(int8_t direction)
-{
-	TRX.IF_Gain += direction;
-	if (TRX.IF_Gain < 1)
-		TRX.IF_Gain = 1;
-	if (TRX.IF_Gain > 200)
-		TRX.IF_Gain = 200;
-}
-
 static void SYSMENU_HANDL_TRX_MICIN(int8_t direction)
 {
 	if (direction > 0)
@@ -351,8 +342,8 @@ static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 {
-	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	drawSystemMenu(true);
@@ -360,8 +351,8 @@ static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 
 void SYSMENU_AUDIO_SSB_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 1;
 	drawSystemMenu(true);
@@ -369,8 +360,8 @@ void SYSMENU_AUDIO_SSB_HOTKEY(void)
 
 void SYSMENU_AUDIO_CW_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 3;
 	drawSystemMenu(true);
@@ -378,8 +369,8 @@ void SYSMENU_AUDIO_CW_HOTKEY(void)
 
 void SYSMENU_AUDIO_AM_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 4;
 	drawSystemMenu(true);
@@ -387,11 +378,20 @@ void SYSMENU_AUDIO_AM_HOTKEY(void)
 
 void SYSMENU_AUDIO_FM_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_bw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_bw_item_count;
+	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 6;
 	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction)
+{
+	TRX.IF_Gain += direction;
+	if (TRX.IF_Gain < 1)
+		TRX.IF_Gain = 1;
+	if (TRX.IF_Gain > 80)
+		TRX.IF_Gain = 80;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction)

@@ -370,6 +370,8 @@ void FFT_printFFT(void)
 		return;
 	if (LCD_systemMenuOpened)
 		return;
+	if (CPU_LOAD.Load>90)
+		return;
 	LCD_busy = true;
 
 	uint_fast16_t height = 0; //высота столбца в выводе FFT
