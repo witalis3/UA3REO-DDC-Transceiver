@@ -365,14 +365,10 @@ void TRX_DoAutoGain(void)
 
 void TRX_DBMCalculate(void)
 {
-	float32_t s_meter_power = Processor_RX_Power_value * CALIBRATE.smeter_calibration; // калибровка S-метра АЦП
+	TRX_RX_dBm = (int16_t)rate2dbP(Processor_RX_Power_value + CALIBRATE.smeter_calibration);
 	Processor_RX_Power_value = 0;
-	float32_t s_meter_rate = s_meter_power / (float32_t)FLOAT_FULL_SCALE_POW;
-	float32_t ADC_Vrms_Value = ADC_VREF * s_meter_rate;				   //получаем значение пик-пик напряжения на входе АЦП в вольтах
-	float32_t ADC_RF_IN_Value = (ADC_Vrms_Value / ADC_RF_TRANS_RATIO); //Получаем напряжение на антенном входе с учётом трансформатора
-	if (ADC_RF_IN_Value < 0.0000001f)
-		ADC_RF_IN_Value = 0.0000001f;
-	TRX_RX_dBm = 10 * log10f_fast((ADC_RF_IN_Value * ADC_RF_IN_Value) / (50.0f * 0.001f)); //получаем значение мощности в dBm для сопротивления 50ом
+	if(CurrentVFO()->Mode != TRX_MODE_IQ)
+		TRX_RX_dBm -= TRX.IF_Gain;
 }
 
 float32_t TRX_GetALC(void)

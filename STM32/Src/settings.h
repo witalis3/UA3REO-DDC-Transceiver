@@ -64,7 +64,7 @@
 extern struct t_CALIBRATE
 {
 	uint8_t rf_out_power[32]; //калибровка выходной мощности на каждый мегагерц
-	float32_t smeter_calibration; //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
+	int16_t smeter_calibration; //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
 	float32_t swr_meter_Rtop; //Верхнее плечо делителя напряжения КСВ метра, ом
 	float32_t swr_meter_Rbottom; //Нижнее плечо делителя напряжения КСВ метра, ом
 	float32_t swr_meter_fwd_diff; //Разница напряжения FWD получаемым АЦП с реальным, в
