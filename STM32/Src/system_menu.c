@@ -49,6 +49,7 @@ static void SYSMENU_HANDL_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_FFT_Zoom(int8_t direction);
+static void SYSMENU_HANDL_FFT_Style(int8_t direction);
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
@@ -149,6 +150,7 @@ static uint8_t sysmenu_lcd_item_count = sizeof(sysmenu_lcd_handlers) / sizeof(sy
 static struct sysmenu_item_handler sysmenu_fft_handlers[] =
 	{
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_FFT_Zoom},
+		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_FFT_Style},
 		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_FFT_Enabled},
 		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_FFT_Averaging},
 		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_FFT_Window},
@@ -197,6 +199,7 @@ static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
 static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
 static uint8_t systemMenuIndex = 0;
+static uint8_t systemMenuRootIndex = 0;
 static uint8_t sysmenu_y = 5;
 static uint8_t sysmenu_i = 0;
 static bool sysmenu_onroot = true;
@@ -858,6 +861,16 @@ static void SYSMENU_HANDL_FFT_Zoom(int8_t direction)
 	FFT_Init();
 }
 
+static void SYSMENU_HANDL_FFT_Style(int8_t direction)
+{
+	TRX.FFT_Style += direction;
+	if (TRX.FFT_Style < 1)
+		TRX.FFT_Style = 1;
+	if (TRX.FFT_Style > 4)
+		TRX.FFT_Style = 4;
+	FFT_Init();
+}
+
 //ADC/DAC MENU
 
 static void SYSMENU_HANDL_ADCMENU(int8_t direction)
@@ -1246,7 +1259,7 @@ void eventCloseSystemMenu(void)
 			sysmenu_handlers_selected = &sysmenu_handlers[0];
 			sysmenu_item_count_selected = &sysmenu_item_count;
 			sysmenu_onroot = true;
-			systemMenuIndex = 0;
+			systemMenuIndex = systemMenuRootIndex;
 			drawSystemMenu(true);
 		}
 	}
@@ -1314,6 +1327,8 @@ void eventSecRotateSystemMenu(int8_t direction)
 		if (systemMenuIndex > 0)
 			systemMenuIndex--;
 		redrawCurrentItem();
+		if(sysmenu_onroot)
+			systemMenuRootIndex = systemMenuIndex;
 	}
 	else
 	{
@@ -1321,6 +1336,8 @@ void eventSecRotateSystemMenu(int8_t direction)
 		if (systemMenuIndex < (*sysmenu_item_count_selected - 1))
 			systemMenuIndex++;
 		redrawCurrentItem();
+		if(sysmenu_onroot)
+			systemMenuRootIndex = systemMenuIndex;
 	}
 }
 

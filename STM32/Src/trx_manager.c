@@ -232,7 +232,6 @@ void TRX_setFrequency(int32_t _freq, VFO *vfo)
 	}
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
 	FPGA_NeedSendParams = true;
-	//NeedFFTInputBuffer = true;
 }
 
 void TRX_setMode(uint_fast8_t _mode, VFO *vfo)

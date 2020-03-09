@@ -9,7 +9,7 @@
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static void(*WIFI_ProcessingCommandCallback) (void);
 
-static SRAM2 char WIFI_AnswerBuffer[WIFI_ANSWER_BUFFER_SIZE] = {0};
+static SRAM1 char WIFI_AnswerBuffer[WIFI_ANSWER_BUFFER_SIZE] = {0};
 static char WIFI_readedLine[WIFI_ANSWER_BUFFER_SIZE] = {0};
 static char tmp[WIFI_ANSWER_BUFFER_SIZE] = {0};
 static uint16_t WIFI_Answer_ReadIndex = 0;

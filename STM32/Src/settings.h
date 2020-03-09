@@ -197,6 +197,7 @@ extern struct TRX_SETTINGS
 	bool Debug_Console;
 	DUAL_RX_TYPE Dual_RX_Type;
 	DC_filter_state_type DC_Filter_State[8];
+	uint8_t FFT_Style;
 	
 	uint8_t ENDBit;
 } TRX;

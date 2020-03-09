@@ -424,7 +424,7 @@ void LCDDriver_Fill(uint16_t color)
 }
 
 //Rectangle drawing functions
-SRAM2 uint16_t fillxy_color;
+SRAM1 uint16_t fillxy_color;
 void LCDDriver_Fill_RectXY(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, uint16_t color)
 {
 	if (x1 > (LCD_WIDTH - 1))

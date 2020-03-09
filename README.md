@@ -140,6 +140,7 @@ I и Q квадратурные сигналы, полученные в ходе
 ### FFT Settings
 
 * **FFT Zoom** - Увеличение (приближение) FFT
+* **FFT Style** - Стиль отображения FFT и водопада
 * **FFT Enabled** - Включение водопада и FFT
 * **FFT Averaging** - Уровень усреднения всплесков FFT
 * **FFT Window** - Выбор окна FFT (Hamming/Blackman-Harris/Hanning)

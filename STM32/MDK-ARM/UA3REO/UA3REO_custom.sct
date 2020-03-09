@@ -19,12 +19,12 @@ LR_IROM1 0x08000000 0x00200000  {    ; load region size_region
    *(.IRAM2)
    ;.ANY (+RW +ZI)
   }
-  ;SRAM1 0x30000000 0x00020000  { ;128kb
-   ;*(.SRAM1)
-  ;}
-  SRAM2 0x30020000 0x00020000  { ;128kb D-Cache disabled in MPU
-   *(.SRAM2)
+  SRAM1 0x30000000 0x00040000  { ;SRAM1+SRAM2 128kb+128kb D-Cache disabled in MPU
+   *(.SRAM1)
   }
+  ;SRAM2 0x30020000 0x00020000  { ;128kb D-Cache disabled in MPU
+   ;*(.SRAM2)
+  ;}
   ;SRAM3 0x30040000 0x00008000  { ;32kb
    ;*(.SRAM3)
   ;}
