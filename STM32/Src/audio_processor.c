@@ -371,8 +371,8 @@ void processTxAudio(void)
 	{
 		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			arm_q31_to_float(&Processor_AudioBuffer_A[i * 2], &FPGA_Audio_Buffer_TX_I_tmp[i], 1);
-			arm_q31_to_float(&Processor_AudioBuffer_A[i * 2 + 1], &FPGA_Audio_Buffer_TX_Q_tmp[i], 1);
+			FPGA_Audio_Buffer_TX_I_tmp[i] = (float32_t)Processor_AudioBuffer_A[i * 2] / 2147483648.0f;
+			FPGA_Audio_Buffer_TX_Q_tmp[i] = (float32_t)Processor_AudioBuffer_A[i * 2 + 1] / 2147483648.0f;
 		}
 	}
 

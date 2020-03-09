@@ -445,7 +445,6 @@ void TIM6_DAC_IRQHandler(void)
 
   if (ms50_counter == 21) // every 1 sec
   {
-
     ms50_counter = 0;
     TRX_DoAutoGain(); //Process AutoGain feature
 
@@ -486,7 +485,6 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples, false); //~120
 			sendToDebug_str("CPU Load: ");
       sendToDebug_uint32(cpu_load, false);
-      //sendToDebug_str("( "); sendToDebug_uint32(CPU_LOAD.WCNT, true); sendToDebug_str(" / "); sendToDebug_uint32(CPU_LOAD.SCNT, true); sendToDebug_str(" / "); sendToDebug_uint32(CPU_LOAD.SINC/1000, true); sendToDebug_strln(" )");
 			sendToDebug_str("TIM6 delay: ");
       sendToDebug_uint32(dbg_tim6_delay, false);
       sendToDebug_str("Audioproc timer counter: ");
@@ -510,8 +508,8 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_str("WIFI State: ");
       sendToDebug_int16(WIFI_State, false);
       sendToDebug_newline();
+			//PrintProfilerResult();
     }
-    //PrintProfilerResult();
 		
     tim6_delay = HAL_GetTick();
     tim5_counter = 0;
@@ -564,6 +562,7 @@ void TIM6_DAC_IRQHandler(void)
       HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
       TRX_Inited = false;
       LCD_busy = true;
+			WM8731_TX_mode(); //mute
 			WM8731_CleanBuffer();
       LCDDriver_Fill(COLOR_BLACK);
       LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
