@@ -32,7 +32,7 @@ volatile uint_fast8_t TRX_Time_InActive = 0; //секунд бездействи
 volatile uint_fast8_t TRX_Fan_Timeout = 0;   //секунд, сколько ещё осталось крутить вентилятор
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
-volatile uint32_t TRX_Volume;
+volatile uint16_t TRX_Volume;
 volatile bool TRX_SNMP_Synced = false;
 volatile int_fast16_t TRX_SHIFT = 0;
 volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
@@ -208,7 +208,7 @@ void TRX_key_change(void)
 	}
 }
 
-void TRX_setFrequency(int32_t _freq, VFO *vfo)
+void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 {
 	if (_freq < 1)
 		return;
@@ -364,7 +364,7 @@ void TRX_DoAutoGain(void)
 
 void TRX_DBMCalculate(void)
 {
-	TRX_RX_dBm = (int16_t)rate2dbP(Processor_RX_Power_value + CALIBRATE.smeter_calibration);
+	TRX_RX_dBm = (int16_t)(rate2dbP(Processor_RX_Power_value + CALIBRATE.smeter_calibration));
 	Processor_RX_Power_value = 0;
 	if(CurrentVFO()->Mode != TRX_MODE_IQ)
 		TRX_RX_dBm -= TRX.IF_Gain;

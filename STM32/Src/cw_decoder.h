@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "arm_math.h"
+#include "functions.h"
 
 #define CWDECODER_TARGET_FREQ 350.0
 #define CWDECODER_SAMPLES 192

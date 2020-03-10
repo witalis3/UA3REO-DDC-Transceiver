@@ -33,34 +33,6 @@ void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index
 	}
 }
 
-void readHalfFromCircleUSBBuffer(int32_t *source, int32_t *dest, uint32_t index, uint32_t length)
-{
-	uint_fast16_t halflen = length / 2;
-	uint_fast16_t readed_index = 0;
-	if (index >= halflen)
-	{
-		for (uint_fast16_t i = (index - halflen); i < index; i++)
-		{
-			dest[readed_index] = source[i];
-			readed_index++;
-		}
-	}
-	else
-	{
-		uint_fast16_t prev_part = halflen - index;
-		for (uint_fast16_t i = (length - prev_part); i < length; i++)
-		{
-			dest[readed_index] = source[i];
-			readed_index++;
-		}
-		for (uint_fast16_t i = 0; i < (halflen - prev_part); i++)
-		{
-			dest[readed_index] = source[i];
-			readed_index++;
-		}
-	}
-}
-
 void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length)
 {
 	uint_fast16_t halflen = length / 2;
@@ -92,8 +64,8 @@ void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t i
 void sendToDebug_str(char *data)
 {
 	printf("%s", data);
-	DEBUG_Transmit_FIFO((uint8_t *)data, strlen(data));
-	HAL_UART_Transmit(&huart1, (uint8_t *)data, strlen(data), 1000);
+	DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
+	HAL_UART_Transmit(&huart1, (uint8_t *)data, (uint16_t)strlen(data), 1000);
 }
 
 void sendToDebug_strln(char *data)
@@ -229,27 +201,11 @@ void delay_us(uint32_t us)
 }
 */
 
-bool beetween(float32_t a, float32_t b, float32_t val)
+uint32_t getPhraseFromFrequency(int32_t freq) //высчитываем частоту из фразы ля FPGA
 {
-	if (a <= val && val <= b)
-		return true;
-	if (b <= val && val <= a)
-		return true;
-	return false;
-}
-
-uint32_t getFrequencyFromPhrase(uint32_t phrase) //высчитываем фазу частоты для FPGA
-{
-	uint32_t res = 0;
-	res = ceil(((double)phrase / 4194304) * ADCDAC_CLOCK / 100) * 100; //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
-	return res;
-}
-
-uint32_t getPhraseFromFrequency(uint32_t freq) //высчитываем частоту из фразы ля FPGA
-{
+	if(freq < 0) return 0;
 	bool inverted = false;
-	uint32_t res = 0;
-	uint32_t _freq = freq;
+	int32_t _freq = freq;
 	if (_freq > ADCDAC_CLOCK / 2) //Go Nyquist
 	{
 		while (_freq > ADCDAC_CLOCK / 2)
@@ -263,8 +219,8 @@ uint32_t getPhraseFromFrequency(uint32_t freq) //высчитываем част
 		}
 	}
 	TRX_IQ_swap = inverted;
-	res = round(((double)_freq / ADCDAC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
-	return res;
+	double res = round(((double)_freq / ADCDAC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
+	return (uint32_t)res;
 }
 
 void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd) //добавляем нули
@@ -331,15 +287,15 @@ float32_t volume2rate(float32_t i) //из положения ручки гром
 	return powf(VOLUME_EPSILON, (1.0f - i));
 }
 
-void shiftTextLeft(char *string, int_fast16_t shiftLength)
+void shiftTextLeft(char *string, uint_fast16_t shiftLength)
 {
-	int_fast16_t i, size = strlen(string);
+	uint_fast16_t size = strlen(string);
 	if (shiftLength >= size)
 	{
 		memset(string, '\0', size);
 		return;
 	}
-	for (i = 0; i < size - shiftLength; i++)
+	for (uint_fast16_t i = 0; i < size - shiftLength; i++)
 	{
 		string[i] = string[i + shiftLength];
 		string[i + shiftLength] = '\0';
@@ -445,5 +401,74 @@ void CPULOAD_Calc(void)
 
 inline int32_t convertToSPIBigEndian(int32_t in)
 {
-	return (0xFFFF0000 & in<<16) | (0x0000FFFF & in>>16);
+	return (int32_t)(0xFFFF0000 & (uint32_t)(in << 16)) | (int32_t)(0x0000FFFF & (uint32_t)(in >> 16));
+}
+
+//Сортировка QuickSort из develop-ветки CMSIS
+static int32_t arm_quick_sort_partition_f32(float32_t *pSrc, int32_t first, int32_t last, uint8_t dir)
+{
+    int32_t i, j, pivot_index;
+    float32_t pivot;
+    float32_t temp;
+    pivot_index = first; 
+    pivot = pSrc[pivot_index];
+    i = first - 1;
+    j = last + 1; 
+
+    while(i < j) 
+    {
+        if(dir)
+        {    
+            do
+            {
+                i++; 
+            } while (pSrc[i] < pivot && i<last);
+            do
+            {
+                j--; 
+            } while (pSrc[j] > pivot);
+        }
+        else
+        {
+            do
+            {
+                i++; 
+            } while (pSrc[i] > pivot && i<last);
+            do
+            {
+                j--; 
+            } while (pSrc[j] < pivot);
+        }
+        if (i < j) 
+        { 
+            temp=pSrc[i];
+            pSrc[i]=pSrc[j];
+            pSrc[j]=temp;
+        }
+    }
+    return j; 
+}
+
+static void arm_quick_sort_core_f32(float32_t *pSrc, int32_t first, int32_t last, uint8_t dir)
+{
+    if(first<last)
+    {
+        int32_t pivot;
+        pivot = arm_quick_sort_partition_f32(pSrc, first, last, dir);
+        arm_quick_sort_core_f32(pSrc, first,   pivot, dir);
+        arm_quick_sort_core_f32(pSrc, pivot+1, last,  dir);
+    }
+}
+
+void arm_quick_sort_f32(float32_t * pSrc, float32_t * pDst, uint32_t blockSize, uint8_t dir)
+{
+    float32_t * pA;
+    if(pSrc != pDst) 
+    {   
+        memcpy(pDst, pSrc, blockSize*sizeof(float32_t) );
+        pA = pDst;
+    }
+    else
+        pA = pSrc;
+    arm_quick_sort_core_f32(pA, 0, (int32_t)blockSize-1, dir);
 }

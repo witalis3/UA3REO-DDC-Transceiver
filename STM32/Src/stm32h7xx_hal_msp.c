@@ -40,7 +40,9 @@ extern DMA_HandleTypeDef hdma_usart6_rx;
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN Macro */
-
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 /* USER CODE END Macro */
 
 /* Private variables ---------------------------------------------------------*/

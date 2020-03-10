@@ -24,13 +24,13 @@ static bool realstatebefore = false;
 static bool filteredstate = false;
 static bool filteredstatebefore = false;
 static bool stop = false;
-static long laststarttime = 0;
-static long starttimehigh = 0;
-static long highduration = 0;
+static uint32_t laststarttime = 0;
+static uint32_t starttimehigh = 0;
+static uint32_t highduration = 0;
 //static long lowtimesavg = 0;
-static long startttimelow = 0;
-static long lowduration = 0;
-static long hightimesavg = 0;
+static uint32_t startttimelow = 0;
+static uint32_t lowduration = 0;
+static uint32_t hightimesavg = 0;
 //static long lasthighduration = 0;
 static char code[20] = {0};
 
@@ -41,7 +41,7 @@ void CWDecoder_Init(void)
 {
 	//Алгоритм Гёрцеля (goertzel calculation)
 	//float32_t bw = (TRX_SAMPLERATE / CWDECODER_SAMPLES);
-	int16_t k = (int)(0.5f + ((CWDECODER_SAMPLES * CWDECODER_TARGET_FREQ) / TRX_SAMPLERATE));
+	int16_t k = (int16_t)(0.5f + (float32_t)(((float32_t)CWDECODER_SAMPLES * (float32_t)CWDECODER_TARGET_FREQ) / (float32_t)TRX_SAMPLERATE));
 	float32_t omega = (2.0f * PI * k) / CWDECODER_SAMPLES;
 	//float32_t sine = arm_sin_f32(omega);
 	float32_t cosine = arm_cos_f32(omega);
@@ -59,7 +59,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 		Q1 = Q0;
 	}
 	float32_t magnitudeSquared = (Q1 * Q1) + (Q2 * Q2) - Q1 * Q2 * coeff; // we do only need the real part //
-	magnitude = sqrt(magnitudeSquared);
+	arm_sqrt_f32(magnitudeSquared, &magnitude);
 	Q2 = 0;
 	Q1 = 0;
 

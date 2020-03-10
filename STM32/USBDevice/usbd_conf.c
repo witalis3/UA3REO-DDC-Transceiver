@@ -582,9 +582,6 @@ USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status)
     case HAL_TIMEOUT :
       usb_status = USBD_FAIL;
     break;
-    default :
-      usb_status = USBD_FAIL;
-    break;
   }
   return usb_status;
 }

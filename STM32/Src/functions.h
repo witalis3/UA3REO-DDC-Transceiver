@@ -5,8 +5,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "arm_math.h"
 #include "profiler.h"
+
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wimplicit-int-conversion"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#include "arm_math.h"
+#pragma GCC diagnostic pop
 
 #define TRX_MODE_LSB 0
 #define TRX_MODE_USB 1
@@ -60,8 +65,7 @@ extern void CPULOAD_Init(void);
 extern void CPULOAD_GoToSleepMode(void);
 extern void CPULOAD_WakeUp(void);
 extern void CPULOAD_Calc(void);
-extern uint32_t getFrequencyFromPhrase(uint32_t phrase);
-extern uint32_t getPhraseFromFrequency(uint32_t freq);
+extern uint32_t getPhraseFromFrequency(int32_t freq);
 extern void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd);
 extern void sendToDebug_str(char *str);
 extern void sendToDebug_strln(char *data);
@@ -78,10 +82,8 @@ extern void sendToDebug_int32(int32_t data, bool _inline);
 extern void sendToDebug_float32(float32_t data, bool _inline);
 extern void sendToDebug_hex(uint8_t data, bool _inline);
 //extern void delay_us(uint32_t us);
-extern bool beetween(float32_t a, float32_t b, float32_t val);
 extern float32_t log10f_fast(float32_t X);
 extern void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length);
-extern void readHalfFromCircleUSBBuffer(int32_t *source, int32_t *dest, uint32_t index, uint32_t length);
 extern void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length);
 extern void dma_memcpy32(uint32_t dest, uint32_t src, uint32_t len);
 extern float32_t db2rateV(float32_t i);
@@ -89,9 +91,10 @@ extern float32_t db2rateP(float32_t i);
 extern float32_t rate2dbV(float32_t i);
 extern float32_t rate2dbP(float32_t i);
 extern float32_t volume2rate(float32_t i);
-extern void shiftTextLeft(char *string, int_fast16_t shiftLength);
+extern void shiftTextLeft(char *string, uint_fast16_t shiftLength);
 extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);
 extern int32_t convertToSPIBigEndian(int32_t in);
+extern void arm_quick_sort_f32(float32_t * pSrc, float32_t * pDst, uint32_t blockSize, uint8_t dir);
 	
 #endif

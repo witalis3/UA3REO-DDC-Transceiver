@@ -6,7 +6,7 @@
 #include "settings.h"
 
 extern void TRX_Init(void);
-extern void TRX_setFrequency(int32_t _freq, VFO *vfo);
+extern void TRX_setFrequency(uint32_t _freq, VFO *vfo);
 extern void TRX_setMode(uint_fast8_t _mode, VFO *vfo);
 extern void TRX_ptt_change(void);
 extern void TRX_key_change(void);
@@ -42,7 +42,7 @@ volatile extern float32_t TRX_MAX_TX_Amplitude;
 volatile extern float32_t TRX_SWR_forward;
 volatile extern float32_t TRX_SWR_backward;
 volatile extern float32_t TRX_SWR;
-volatile extern uint32_t TRX_Volume;
+volatile extern uint16_t TRX_Volume;
 
 extern const char *MODE_DESCR[];
 extern ADC_HandleTypeDef hadc1;

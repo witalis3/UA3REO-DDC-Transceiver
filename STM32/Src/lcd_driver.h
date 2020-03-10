@@ -200,9 +200,9 @@ typedef struct
 } GFXfont;
 
 //Functions defines Macros
-#define swap(a, b)     \
+#define uswap(a, b)     \
 	{                  \
-		int16_t t = a; \
+		uint16_t t = a; \
 		a = b;         \
 		b = t;         \
 	}
@@ -225,52 +225,26 @@ typedef struct
 #endif
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
-//***** Functions prototypes *****//
-//1. Write Command to LCD
-extern void LCDDriver_SendCommand(uint16_t com);
-extern void LCDDriver_Send8Command(uint8_t com);
-//2. Write data to LCD
 extern void LCDDriver_SendData(uint16_t data);
-extern void LCDDriver_Send8Data(uint8_t data);
-//3. Set cursor position
 extern void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
-extern void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y);
 extern uint16_t LCDDriver_GetCurrentXOffset(void);
-//4. Initialise function
 extern void LCDDriver_Init(void);
-//5. Write data to a single pixel
-extern void LCDDriver_DrawPixel(uint16_t x, uint16_t y, uint16_t color); //Draw single pixel to ILI9341
-//6. Fill the entire screen with a background color
-extern void LCDDriver_Fill(uint16_t color); //Fill entire ILI9341 with color
-//7. Rectangle drawing functions
-extern void LCDDriver_Fill_RectXY(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, uint16_t color);
-extern void LCDDriver_Fill_RectWH(unsigned int x, unsigned int y, unsigned int w, unsigned int h, uint16_t color);
-//8. Circle drawing functions
-extern void LCDDriver_drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
-extern void LCDDriver_fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
-//9. Line drawing functions
-extern void LCDDriver_drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-extern void LCDDriver_drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-extern void LCDDriver_drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-extern void LCDDriver_drawRectXY(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, uint16_t color);
-//10. Triangle drawing
-extern void LCDDriver_drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
-extern void LCDDriver_fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
-//11. Text printing functions
-extern void LCDDriver_drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size);
-extern void LCDDriver_drawCharFont(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, GFXfont gfxFont);
-extern void LCDDriver_printText(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size);
-extern void LCDDriver_printTextFont(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, GFXfont gfxFont);
-extern void LCDDriver_charBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, GFXfont gfxFont);
-extern void LCDDriver_getTextBounds(char text[], int16_t x, int16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont gfxFont);
-//12. Image print (RGB 565, 2 bytes per pixel)
+extern void LCDDriver_Fill(uint16_t color);
+extern void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+extern void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
+extern void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+extern void LCDDriver_drawFastHLine(uint16_t x, uint16_t y, int16_t w, uint16_t color);
+extern void LCDDriver_drawFastVLine(uint16_t x, uint16_t y, int16_t h, uint16_t color);
+extern void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+extern void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size);
+extern void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, GFXfont gfxFont);
+extern void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size);
+extern void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, GFXfont gfxFont);
+extern void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont gfxFont);
 extern void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data);
-//13. Set screen rotation
 extern void LCDDriver_setRotation(uint8_t rotate);
 
 extern uint16_t rgb888torgb565(uint_fast8_t red, uint_fast8_t green, uint_fast8_t blue);
-extern void LCDDriver_vertScrollSetup(int16_t top, int16_t scrollines);
-extern void LCDDriver_vertScroll(int16_t offset);
 extern void LCDDriver_setBrightness(uint8_t percent);
 
 #endif

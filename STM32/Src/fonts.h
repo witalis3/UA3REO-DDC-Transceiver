@@ -3396,8 +3396,8 @@ static const GFXglyph FreeSans36pt7bGlyphs[] = {
 };
 
 static const GFXfont FreeSans36pt7b = {
-    (uint8_t *)FreeSans36pt7bBitmaps,
-    (GFXglyph *)FreeSans36pt7bGlyphs,
+    (const uint8_t *)FreeSans36pt7bBitmaps,
+    (const GFXglyph *)FreeSans36pt7bGlyphs,
     0x20, 0x7E, 99};
 
 static const unsigned char rastr_font[] = {

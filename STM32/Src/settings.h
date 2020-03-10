@@ -4,7 +4,7 @@
 #include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <stdbool.h>
-#include "arm_math.h"
+#include "functions.h"
 #include "bands.h"
 
 #define ADCDAC_CLOCK 122880000			//Частота генератора АЦП/ЦАП
@@ -96,11 +96,11 @@ extern struct t_CALIBRATE
 typedef struct
 {
 	uint32_t Freq;
-	uint8_t Mode;
-	uint16_t HPF_Filter_Width;
-	uint16_t LPF_Filter_Width;
+	uint_fast8_t Mode;
+	uint_fast16_t HPF_Filter_Width;
+	uint_fast16_t LPF_Filter_Width;
 	bool NotchFilter;
-	uint16_t NotchFC;
+	uint_fast16_t NotchFC;
 	bool DNR;
 	bool AGC;
 } VFO;

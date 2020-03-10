@@ -26,18 +26,19 @@ SRAM1 volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
 SRAM1 volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE] = {0};
 SRAM1 volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
 
-uint_fast8_t FPGA_readPacket(void);
-void FPGA_writePacket(uint_fast8_t packet);
-void FPGA_clockFall(void);
-void FPGA_clockRise(void);
-void FPGA_fpgadata_sendiq(void);
-void FPGA_fpgadata_getiq(void);
-void FPGA_fpgadata_getparam(void);
-void FPGA_fpgadata_sendparam(void);
-void FPGA_setBusInput(void);
-void FPGA_setBusOutput(void);
-void FPGA_test_bus(void);
-void FPGA_read_flash(void);
+static uint_fast8_t FPGA_readPacket(void);
+static void FPGA_writePacket(uint_fast8_t packet);
+static void FPGA_clockFall(void);
+static void FPGA_clockRise(void);
+static void FPGA_fpgadata_sendiq(void);
+static void FPGA_fpgadata_getiq(void);
+static void FPGA_fpgadata_getparam(void);
+static void FPGA_fpgadata_sendparam(void);
+static void FPGA_setBusInput(void);
+static void FPGA_setBusOutput(void);
+static void FPGA_test_bus(void);
+//static void FPGA_start_command(uint_fast8_t command);
+//static void FPGA_read_flash(void);
 
 void FPGA_Init(void)
 {
@@ -54,7 +55,7 @@ void FPGA_Init(void)
 	//FPGA_read_flash();
 }
 
-void FPGA_test_bus(void) //проверка шины
+static void FPGA_test_bus(void) //проверка шины
 {
 	bool err = false;
 	FPGA_busy = true;
@@ -190,22 +191,22 @@ void FPGA_fpgadata_iqclock(void)
 	FPGA_busy = false;
 }
 
-inline void FPGA_fpgadata_sendparam(void)
+static inline void FPGA_fpgadata_sendparam(void)
 {
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
-	uint32_t TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT);
-	uint32_t TRX_freq_phrase2 = getPhraseFromFrequency(secondary_vfo->Freq + TRX_SHIFT);
+	uint32_t TRX_freq_phrase = getPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT);
+	uint32_t TRX_freq_phrase2 = getPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT);
 	if (!TRX_on_TX())
 	{
 		switch (current_vfo->Mode)
 		{
 		case TRX_MODE_CW_L:
-			TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ);
+			TRX_freq_phrase = getPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ);
 			break;
 		case TRX_MODE_CW_U:
-			TRX_freq_phrase = getPhraseFromFrequency(current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ);
+			TRX_freq_phrase = getPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ);
 			break;
 		default:
 			break;
@@ -213,10 +214,10 @@ inline void FPGA_fpgadata_sendparam(void)
 		switch (secondary_vfo->Mode)
 		{
 		case TRX_MODE_CW_L:
-			TRX_freq_phrase2 = getPhraseFromFrequency(secondary_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ);
+			TRX_freq_phrase2 = getPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ);
 			break;
 		case TRX_MODE_CW_U:
-			TRX_freq_phrase2 = getPhraseFromFrequency(secondary_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ);
+			TRX_freq_phrase2 = getPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ);
 			break;
 		default:
 			break;
@@ -310,7 +311,7 @@ inline void FPGA_fpgadata_sendparam(void)
 	FPGA_clockFall();
 }
 
-inline void FPGA_fpgadata_getparam(void)
+static inline void FPGA_fpgadata_getparam(void)
 {
 	register uint_fast8_t FPGA_fpgadata_in_tmp8 = 0;
 
@@ -335,7 +336,7 @@ inline void FPGA_fpgadata_getparam(void)
 	//clock
 	FPGA_clockRise();
 	//in
-	TRX_ADC_MINAMPLITUDE = (FPGA_fpgadata_in_tmp8 << 8) | (FPGA_readPacket() & 0xFF);
+	TRX_ADC_MINAMPLITUDE = (int16_t)(((FPGA_fpgadata_in_tmp8 << 8) & 0xFF00) | (FPGA_readPacket() & 0xFF));
 	//clock
 	FPGA_clockFall();
 
@@ -350,12 +351,12 @@ inline void FPGA_fpgadata_getparam(void)
 	//clock
 	FPGA_clockRise();
 	//in
-	TRX_ADC_MAXAMPLITUDE = (FPGA_fpgadata_in_tmp8 << 8) | (FPGA_readPacket() & 0xFF);
+	TRX_ADC_MAXAMPLITUDE = (int16_t)(((FPGA_fpgadata_in_tmp8 << 8) & 0xFF00) | (FPGA_readPacket() & 0xFF));
 	//clock
 	FPGA_clockFall();
 }
 
-inline void FPGA_fpgadata_getiq(void)
+static inline void FPGA_fpgadata_getiq(void)
 {
 	q31_t FPGA_fpgadata_in_tmp32 = 0;
 	float32_t FPGA_fpgadata_in_float32 = 0;
@@ -363,22 +364,22 @@ inline void FPGA_fpgadata_getiq(void)
 
 	//STAGE 2 in Q RX1
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket() & 0XFF) << 24;
+	FPGA_fpgadata_in_tmp32 = (q31_t)((FPGA_readPacket() & 0xFF) << 24);
 	FPGA_clockFall();
 
 	//STAGE 3
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 16;
+	FPGA_fpgadata_in_tmp32 |= (q31_t)((FPGA_readPacket() & 0xFF) << 16);
 	FPGA_clockFall();
 
 	//STAGE 4
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 8;
+	FPGA_fpgadata_in_tmp32 |= (q31_t)((FPGA_readPacket() & 0xFF) << 8);
 	FPGA_clockFall();
 	
 	//STAGE 5
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 0;
+	FPGA_fpgadata_in_tmp32 |= (q31_t)((FPGA_readPacket() & 0xFF) << 0);
 
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 	if (TRX_IQ_swap)
@@ -397,22 +398,22 @@ inline void FPGA_fpgadata_getiq(void)
 
 	//STAGE 6 in I RX1
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket() & 0XFF) << 24;
+	FPGA_fpgadata_in_tmp32 = (q31_t)((FPGA_readPacket() & 0xFF) << 24);
 	FPGA_clockFall();
 
 	//STAGE 7
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 16;
+	FPGA_fpgadata_in_tmp32 |= (q31_t)((FPGA_readPacket() & 0xFF) << 16);
 	FPGA_clockFall();
 	
 	//STAGE 8
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 8;
+	FPGA_fpgadata_in_tmp32 |= (q31_t)((FPGA_readPacket() & 0xFF) << 8);
 	FPGA_clockFall();
 	
 	//STAGE 9
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 0;
+	FPGA_fpgadata_in_tmp32 |= (q31_t)((FPGA_readPacket() & 0xFF) << 0);
 
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 	if (TRX_IQ_swap)
@@ -433,22 +434,22 @@ inline void FPGA_fpgadata_getiq(void)
 	{
 		//STAGE 10 in Q RX2
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 = (FPGA_readPacket() & 0XFF) << 24;
+		FPGA_fpgadata_in_tmp32 = (q31_t)((FPGA_readPacket() & 0xFF) << 24);
 		FPGA_clockFall();
 
 		//STAGE 11
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32|= (FPGA_readPacket() & 0XFF) << 16;
+		FPGA_fpgadata_in_tmp32|= (q31_t)((FPGA_readPacket() & 0xFF) << 16);
 		FPGA_clockFall();
 		
 		//STAGE 12
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32|= (FPGA_readPacket() & 0XFF) << 8;
+		FPGA_fpgadata_in_tmp32|= (q31_t)((FPGA_readPacket() & 0xFF) << 8);
 		FPGA_clockFall();
 		
 		//STAGE 13
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32|= (FPGA_readPacket() & 0XFF) << 0;
+		FPGA_fpgadata_in_tmp32|= (q31_t)((FPGA_readPacket() & 0xFF) << 0);
 		
 		FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 		if (TRX_IQ_swap)
@@ -463,22 +464,22 @@ inline void FPGA_fpgadata_getiq(void)
 
 		//STAGE 14 in I RX2
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 = (FPGA_readPacket() & 0XFF) << 24;
+		FPGA_fpgadata_in_tmp32 = (q31_t)((FPGA_readPacket() & 0xFF) << 24);
 		FPGA_clockFall();
 
 		//STAGE 15
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 16;
+		FPGA_fpgadata_in_tmp32 |= (q31_t)((FPGA_readPacket() & 0xFF) << 16);
 		FPGA_clockFall();
 		
 		//STAGE 16
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 8;
+		FPGA_fpgadata_in_tmp32 |= (q31_t)((FPGA_readPacket() & 0xFF) << 8);
 		FPGA_clockFall();
 		
 		//STAGE 17
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket() & 0XFF) << 0;
+		FPGA_fpgadata_in_tmp32 |= (q31_t)((FPGA_readPacket() & 0xFF) << 0);
 		
 		FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 		if (TRX_IQ_swap)
@@ -508,7 +509,7 @@ inline void FPGA_fpgadata_getiq(void)
 	FPGA_clockFall();
 }
 
-inline void FPGA_fpgadata_sendiq(void)
+static inline void FPGA_fpgadata_sendiq(void)
 {
 	q31_t FPGA_fpgadata_out_q_tmp32 = 0;
 	q31_t FPGA_fpgadata_out_i_tmp32 = 0;
@@ -602,7 +603,7 @@ inline void FPGA_fpgadata_sendiq(void)
 	}
 }
 
-inline void FPGA_setBusInput(void)
+static inline void FPGA_setBusInput(void)
 {
 	// Configure IO Direction mode (Input)
 	register uint32_t temp = GPIOA->MODER;
@@ -626,7 +627,7 @@ inline void FPGA_setBusInput(void)
 	FPGA_bus_direction = true;
 }
 
-inline void FPGA_setBusOutput(void)
+static inline void FPGA_setBusOutput(void)
 {
 	// Configure IO Direction mode (Output)
 	register uint32_t temp = GPIOA->MODER;
@@ -650,31 +651,32 @@ inline void FPGA_setBusOutput(void)
 	FPGA_bus_direction = false;
 }
 
-inline void FPGA_clockRise(void)
+static inline void FPGA_clockRise(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin;
 }
 
-inline void FPGA_clockFall(void)
+static inline void FPGA_clockFall(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U);
 }
 
-inline uint_fast8_t FPGA_readPacket(void)
+static inline uint_fast8_t FPGA_readPacket(void)
 {
 	if (!FPGA_bus_direction)
 		FPGA_setBusInput();
 	return (FPGA_BUS_D0_GPIO_Port->IDR & 0xFF);
 }
 
-inline void FPGA_writePacket(uint_fast8_t packet)
+static inline void FPGA_writePacket(uint_fast8_t packet)
 {
 	if (FPGA_bus_direction)
 		FPGA_setBusOutput();
 	FPGA_BUS_D0_GPIO_Port->BSRR = (packet & 0xFF) | 0xFF0000;
 }
 
-void FPGA_start_command(uint_fast8_t command) //выполнение команды к SPI flash
+/*
+static void FPGA_start_command(uint_fast8_t command) //выполнение команды к SPI flash
 {
 	FPGA_busy = true;
 
@@ -692,7 +694,7 @@ void FPGA_start_command(uint_fast8_t command) //выполнение коман�
 	HAL_Delay(1);
 }
 
-uint_fast8_t FPGA_continue_command(uint_fast8_t writedata) //продолжение чтения и записи к SPI flash
+static uint_fast8_t FPGA_continue_command(uint_fast8_t writedata) //продолжение чтения и записи к SPI flash
 {
 	//STAGE 3 WRITE
 	FPGA_writePacket(writedata);
@@ -707,6 +709,7 @@ uint_fast8_t FPGA_continue_command(uint_fast8_t writedata) //продолжен�
 
 	return data;
 }
+*/
 
 /*
 Micron M25P80 Serial Flash COMMANDS:
@@ -724,7 +727,9 @@ C7h - BULK ERASE
 B9h - DEEP POWER-DOWN
 ABh - RELEASE from DEEP POWER-DOWN
 */
-void FPGA_read_flash(void) //чтение flash памяти
+
+/*
+static void FPGA_read_flash(void) //чтение flash памяти
 {
 	FPGA_busy = true;
 	//FPGA_start_command(0xB9);
@@ -740,7 +745,7 @@ void FPGA_read_flash(void) //чтение flash памяти
 	for (uint_fast16_t i = 1; i <= 512; i++)
 	{
 		uint_fast8_t data = FPGA_continue_command(0x05);
-		sendToDebug_hex(data, true);
+		sendToDebug_hex((uint8_t)data, true);
 		sendToDebug_str(" ");
 		if (i % 16 == 0)
 		{
@@ -755,3 +760,4 @@ void FPGA_read_flash(void) //чтение flash памяти
 
 	FPGA_busy = false;
 }
+*/

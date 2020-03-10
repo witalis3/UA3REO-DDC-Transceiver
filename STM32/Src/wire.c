@@ -23,9 +23,9 @@ static void i2c_start(void)
 {
 	HAL_GPIO_WritePin(I2C_SDA_PORT, I2C_SDA_PIN, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(I2C_SCL_PORT, I2C_SCL_PIN, GPIO_PIN_SET);
-	I2C_DELAY;
+	I2C_DELAY
 	HAL_GPIO_WritePin(I2C_SDA_PORT, I2C_SDA_PIN, GPIO_PIN_RESET);
-	I2C_DELAY;
+	I2C_DELAY
 	HAL_GPIO_WritePin(I2C_SCL_PORT, I2C_SCL_PIN, GPIO_PIN_RESET);
 }
 
@@ -40,19 +40,19 @@ static void i2c_stop(void)
 
 	HAL_GPIO_WritePin(I2C_SDA_PORT, I2C_SDA_PIN, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(I2C_SCL_PORT, I2C_SCL_PIN, GPIO_PIN_SET);
-	I2C_DELAY;
-	I2C_DELAY;
-	I2C_DELAY;
-	I2C_DELAY;
+	I2C_DELAY
+	I2C_DELAY
+	I2C_DELAY
+	I2C_DELAY
 	HAL_GPIO_WritePin(I2C_SDA_PORT, I2C_SDA_PIN, GPIO_PIN_SET);
-	I2C_DELAY;
+	I2C_DELAY
 }
 
 static bool i2c_get_ack(void)
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
 	int time = 0;
-	I2C_DELAY;
+	I2C_DELAY
 	HAL_GPIO_WritePin(I2C_SDA_PORT, I2C_SDA_PIN, GPIO_PIN_RESET);
 	GPIO_InitStruct.Pin = I2C_SDA_PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -60,10 +60,10 @@ static bool i2c_get_ack(void)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(I2C_SDA_PORT, &GPIO_InitStruct);
 
-	I2C_DELAY;
+	I2C_DELAY
 	HAL_GPIO_WritePin(I2C_SCL_PORT, I2C_SCL_PIN, GPIO_PIN_SET);
-	I2C_DELAY;
-	I2C_DELAY;
+	I2C_DELAY
+	I2C_DELAY
 
 	while (HAL_GPIO_ReadPin(I2C_SDA_PORT, I2C_SDA_PIN))
 	{
@@ -73,7 +73,7 @@ static bool i2c_get_ack(void)
 			i2c_stop();
 			return false;
 		}
-		I2C_DELAY;
+		I2C_DELAY
 	}
 
 	GPIO_InitStruct.Pin = I2C_SDA_PIN;
@@ -97,7 +97,7 @@ static void i2c_shift_out(uint8_t val)
 	for (i = 0; i < 8; i++)
 	{
 
-		I2C_DELAY;
+		I2C_DELAY
 		HAL_GPIO_WritePin(I2C_SDA_PORT, I2C_SDA_PIN, (GPIO_PinState) !!(val & (1 << (7 - i))));
 		GPIO_InitStruct.Pin = I2C_SDA_PIN;
 		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
@@ -105,11 +105,11 @@ static void i2c_shift_out(uint8_t val)
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 		HAL_GPIO_Init(I2C_SDA_PORT, &GPIO_InitStruct);
 
-		I2C_DELAY;
+		I2C_DELAY
 		HAL_GPIO_WritePin(I2C_SCL_PORT, I2C_SCL_PIN, GPIO_PIN_SET);
 
-		I2C_DELAY;
-		I2C_DELAY;
+		I2C_DELAY
+		I2C_DELAY
 		HAL_GPIO_WritePin(I2C_SCL_PORT, I2C_SCL_PIN, GPIO_PIN_RESET);
 	}
 }
@@ -145,7 +145,7 @@ uint8_t i2c_endTransmission(void)
 	i2c_start();
 
 	//I2C_DELAY;
-	i2c_shift_out((i2c_tx_addr << 1) | I2C_WRITE);
+	i2c_shift_out((uint8_t)((i2c_tx_addr << 1) | I2C_WRITE));
 	if (!i2c_get_ack())
 		return ENACKADDR;
 
@@ -156,8 +156,8 @@ uint8_t i2c_endTransmission(void)
 		if (ret)
 			return ret; // SUCCESS is 0
 	}
-	I2C_DELAY;
-	I2C_DELAY;
+	I2C_DELAY
+	I2C_DELAY
 	i2c_stop();
 
 	i2c_tx_buf_idx = 0;

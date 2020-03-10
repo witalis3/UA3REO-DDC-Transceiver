@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "arm_math.h"
+#include "functions.h"
 
 #define FPGA_AUDIO_BUFFER_SIZE 192 * 2
 #define FPGA_AUDIO_BUFFER_HALF_SIZE FPGA_AUDIO_BUFFER_SIZE / 2
@@ -51,7 +51,6 @@ extern float32_t FPGA_Audio_Buffer_RX2_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern float32_t FPGA_Audio_Buffer_RX2_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern float32_t FPGA_Audio_Buffer_TX_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern float32_t FPGA_Audio_Buffer_TX_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
-extern volatile float32_t fm_sql_avg;
 extern volatile float32_t Processor_RX_Power_value;
 extern volatile float32_t Processor_selected_RFpower_amplitude;
 

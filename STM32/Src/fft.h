@@ -4,7 +4,7 @@
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
 #include <math.h>
-#include "arm_math.h"
+#include "functions.h"
 #include "wm8731.h"
 #include "screen_layout.h"
 

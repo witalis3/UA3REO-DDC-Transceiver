@@ -52,7 +52,9 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-function"
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -1315,7 +1317,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 int fputc(int ch, FILE *f)
 {
-  ITM_SendChar(ch);
+  ITM_SendChar((uint32_t)ch);
   return (ch);
 }
 /* USER CODE END 4 */

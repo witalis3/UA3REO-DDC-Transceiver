@@ -307,7 +307,7 @@ static void Flash_Write_Data(void)
 		
 		PERIPH_SPI_Transmit(&Page_Program, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Enable Command
 		PERIPH_SPI_Transmit(Address, NULL, sizeof(Address), W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Address ( The first address of flash module is 0x00000000 )
-		PERIPH_SPI_Transmit((uint8_t *)((uint32_t)&TRX + 0xFF * page), NULL, size, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Address ( The first address of flash module is 0x00000000 )
+		PERIPH_SPI_Transmit((uint8_t *)((uint32_t)&TRX + 0xFF * page), NULL, (uint8_t)size, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Address ( The first address of flash module is 0x00000000 )
 		HAL_Delay(EEPROM_OP_DELAY);
 	}
 	//sendToDebug_str("EEPROM saved to bank "); sendToDebug_uint8(eeprom_bank, false);
@@ -332,7 +332,7 @@ static void Flash_Read_Data(void)
 		if (!res)
 		{
 			sendToDebug_uint8(res, false);
-			sendToDebug_uint8(hspi2.ErrorCode, false);
+			sendToDebug_uint32(hspi2.ErrorCode, false);
 			EEPROM_Enabled = false;
 			sendToDebug_strln("[ERR] EEPROM not found...");
 			LCD_showError("EEPROM init error", true);
@@ -340,7 +340,7 @@ static void Flash_Read_Data(void)
 		}
 
 		PERIPH_SPI_Transmit(Address, NULL, sizeof(Address), W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Address
-		PERIPH_SPI_Transmit(NULL, (uint8_t *)((uint32_t)&TRX + 0xFF * page), size, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Read
+		PERIPH_SPI_Transmit(NULL, (uint8_t *)((uint32_t)&TRX + 0xFF * page), (uint8_t)size, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Read
 		HAL_Delay(EEPROM_OP_DELAY);
 	}
 	//sendToDebug_str("EEPROM readed from bank "); sendToDebug_uint8(eeprom_bank, false);

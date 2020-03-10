@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "arm_math.h"
 #include "audio_processor.h"
 
 #define NOISE_REDUCTION_BLOCK_SIZE 64

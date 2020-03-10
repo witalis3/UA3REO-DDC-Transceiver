@@ -28,7 +28,6 @@ static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AM_LPF_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_AM_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction);
@@ -207,13 +206,16 @@ static bool sysmenu_onroot = true;
 //WIFI
 static bool sysmenu_wifi_selectap_menu_opened = false;
 static bool sysmenu_wifi_setAPpassword_menu_opened = false;
-uint16_t sysmenu_wifi_rescan_interval = 0;
-uint8_t sysmenu_wifi_selected_ap_index = 0;
-uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
+static uint16_t sysmenu_wifi_rescan_interval = 0;
+static uint8_t sysmenu_wifi_selected_ap_index = 0;
+static uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
 
 //SPEC analyser
 bool sysmenu_spectrum_opened = false;
-uint32_t sysmenu_spectrum_lastfreq = 0;
+static uint32_t sysmenu_spectrum_lastfreq = 0;
+
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 //TRX MENU
 
@@ -1095,11 +1097,8 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 		LCDDriver_Fill(COLOR_BLACK);
 	LCD_timeMenuOpened = true;
 	static uint8_t Hours;
-	static uint8_t Last_showed_Hours = 255;
 	static uint8_t Minutes;
-	static uint8_t Last_showed_Minutes = 255;
 	static uint8_t Seconds;
-	static uint8_t Last_showed_Seconds = 255;
 	static uint32_t Time;
 	char ctmp[50];
 	Time = RTC->TR;

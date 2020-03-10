@@ -40,7 +40,7 @@ static int8_t AUDIO_Init_FS(void)
   return (USBD_OK);
 }
 
-int32_t USB_AUDIO_GetTXBufferIndex_FS(void)
+uint32_t USB_AUDIO_GetTXBufferIndex_FS(void)
 {
   USBD_AUDIO_HandleTypeDef *haudio = (USBD_AUDIO_HandleTypeDef *)hUsbDeviceFS.pClassDataAUDIO;
   return haudio->TxBufferIndex;

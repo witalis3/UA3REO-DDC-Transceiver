@@ -60,7 +60,7 @@ void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint
 #endif
 }
 
-void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
+static void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
 {
 #if defined ILI9341 || defined ILI9481
 	LCDDriver_SendCommand(LCD_COMMAND_COLUMN_ADDR);
@@ -411,7 +411,7 @@ void LCDDriver_setRotation(uint8_t rotate)
 }
 
 //Write data to a single pixel
-void LCDDriver_DrawPixel(uint16_t x, uint16_t y, uint16_t color)
+static void LCDDriver_DrawPixel(uint16_t x, uint16_t y, uint16_t color)
 {
 	LCDDriver_SetCursorPosition(x, y);
 	LCDDriver_SendData(color);
@@ -424,8 +424,8 @@ void LCDDriver_Fill(uint16_t color)
 }
 
 //Rectangle drawing functions
-SRAM1 uint16_t fillxy_color;
-void LCDDriver_Fill_RectXY(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, uint16_t color)
+static SRAM1 uint16_t fillxy_color;
+void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
 	if (x1 > (LCD_WIDTH - 1))
 		x1 = LCD_WIDTH - 1;
@@ -466,105 +466,30 @@ void LCDDriver_Fill_RectXY(unsigned int x0, unsigned int y0, unsigned int x1, un
 	}
 }
 
-void LCDDriver_Fill_RectWH(unsigned int x, unsigned int y, unsigned int w, unsigned int h, uint16_t color)
+void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
 	LCDDriver_Fill_RectXY(x, y, x + w, y + h, color);
 }
 
-//Circle drawing functions
-void LCDDriver_drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color)
-{
-	int16_t f = 1 - r;
-	int16_t ddF_x = 1;
-	int16_t ddF_y = -2 * r;
-	int16_t x = 0;
-	int16_t y = r;
-
-	LCDDriver_DrawPixel(x0, y0 + r, color);
-	LCDDriver_DrawPixel(x0, y0 - r, color);
-	LCDDriver_DrawPixel(x0 + r, y0, color);
-	LCDDriver_DrawPixel(x0 - r, y0, color);
-
-	while (x < y)
-	{
-		if (f >= 0)
-		{
-			y--;
-			ddF_y += 2;
-			f += ddF_y;
-		}
-		x++;
-		ddF_x += 2;
-		f += ddF_x;
-
-		LCDDriver_DrawPixel(x0 + x, y0 + y, color);
-		LCDDriver_DrawPixel(x0 - x, y0 + y, color);
-		LCDDriver_DrawPixel(x0 + x, y0 - y, color);
-		LCDDriver_DrawPixel(x0 - x, y0 - y, color);
-		LCDDriver_DrawPixel(x0 + y, y0 + x, color);
-		LCDDriver_DrawPixel(x0 - y, y0 + x, color);
-		LCDDriver_DrawPixel(x0 + y, y0 - x, color);
-		LCDDriver_DrawPixel(x0 - y, y0 - x, color);
-	}
-}
-
-static void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color)
-{
-	int16_t f = 1 - r;
-	int16_t ddF_x = 1;
-	int16_t ddF_y = -2 * r;
-	int16_t x = 0;
-	int16_t y = r;
-
-	while (x < y)
-	{
-		if (f >= 0)
-		{
-			y--;
-			ddF_y += 2;
-			f += ddF_y;
-		}
-		x++;
-		ddF_x += 2;
-		f += ddF_x;
-
-		if (cornername & 0x1)
-		{
-			LCDDriver_drawFastVLine(x0 + x, y0 - y, 2 * y + 1 + delta, color);
-			LCDDriver_drawFastVLine(x0 + y, y0 - x, 2 * x + 1 + delta, color);
-		}
-		if (cornername & 0x2)
-		{
-			LCDDriver_drawFastVLine(x0 - x, y0 - y, 2 * y + 1 + delta, color);
-			LCDDriver_drawFastVLine(x0 - y, y0 - x, 2 * x + 1 + delta, color);
-		}
-	}
-}
-void LCDDriver_fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color)
-{
-	LCDDriver_drawFastVLine(x0, y0 - r, 2 * r + 1, color);
-	fillCircleHelper(x0, y0, r, 3, 0, color);
-}
-
 //Line drawing functions
-void LCDDriver_drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
 	int16_t steep = abs(y1 - y0) > abs(x1 - x0);
 	if (steep)
 	{
-		swap(x0, y0);
-		swap(x1, y1);
+		uswap(x0, y0)
+		uswap(x1, y1)
 	}
 
 	if (x0 > x1)
 	{
-		swap(x0, x1);
-		swap(y0, y1);
+		uswap(x0, x1)
+		uswap(y0, y1)
 	}
 
 	int16_t dx, dy;
-	dx = x1 - x0;
-	dy = abs(y1 - y0);
+	dx = (int16_t)(x1 - x0);
+	dy = (int16_t)abs(y1 - y0);
 
 	int16_t err = dx / 2;
 	int16_t ystep;
@@ -597,7 +522,7 @@ void LCDDriver_drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
 	}
 }
 
-void LCDDriver_drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color)
+void LCDDriver_drawFastHLine(uint16_t x, uint16_t y, int16_t w, uint16_t color)
 {
 	int16_t x2 = x + w;
 	if (x2 < 0)
@@ -606,12 +531,12 @@ void LCDDriver_drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color)
 		x2 = LCD_WIDTH - 1;
 
 	if (x2 < x)
-		LCDDriver_Fill_RectXY(x2, y, x, y, color);
+		LCDDriver_Fill_RectXY((uint16_t)x2, y, x, y, color);
 	else
-		LCDDriver_Fill_RectXY(x, y, x2, y, color);
+		LCDDriver_Fill_RectXY(x, y, (uint16_t)x2, y, color);
 }
 
-void LCDDriver_drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
+void LCDDriver_drawFastVLine(uint16_t x, uint16_t y, int16_t h, uint16_t color)
 {
 	int16_t y2 = y + h - 1;
 	if (y2 < 0)
@@ -620,113 +545,21 @@ void LCDDriver_drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
 		y2 = LCD_HEIGHT - 1;
 
 	if (y2 < y)
-		LCDDriver_Fill_RectXY(x, y2, x, y, color);
+		LCDDriver_Fill_RectXY(x, (uint16_t)y2, x, y, color);
 	else
-		LCDDriver_Fill_RectXY(x, y, x, y2, color);
+		LCDDriver_Fill_RectXY(x, y, x, (uint16_t)y2, color);
 }
 
-void LCDDriver_drawRectXY(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, uint16_t color)
+void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
-	LCDDriver_drawFastHLine(x0, y0, x1 - x0, color);
-	LCDDriver_drawFastHLine(x0, y1, x1 - x0, color);
-	LCDDriver_drawFastVLine(x0, y0, y1 - y0, color);
-	LCDDriver_drawFastVLine(x1, y0, y1 - y0, color);
-}
-//Triangle drawing
-void LCDDriver_drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
-{
-	LCDDriver_drawLine(x0, y0, x1, y1, color);
-	LCDDriver_drawLine(x1, y1, x2, y2, color);
-	LCDDriver_drawLine(x2, y2, x0, y0, color);
-}
-void LCDDriver_fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
-{
-	int16_t a, b, y, last;
-
-	// Sort coordinates by Y order (y2 >= y1 >= y0)
-	if (y0 > y1)
-	{
-		swap(y0, y1);
-		swap(x0, x1);
-	}
-	if (y1 > y2)
-	{
-		swap(y2, y1);
-		swap(x2, x1);
-	}
-	if (y0 > y1)
-	{
-		swap(y0, y1);
-		swap(x0, x1);
-	}
-
-	if (y0 == y2)
-	{ // Handle awkward all-on-same-line case as its own thing
-		a = b = x0;
-		if (x1 < a)
-			a = x1;
-		else if (x1 > b)
-			b = x1;
-		if (x2 < a)
-			a = x2;
-		else if (x2 > b)
-			b = x2;
-		LCDDriver_drawFastHLine(a, y0, b - a + 1, color);
-		return;
-	}
-
-	int16_t
-		dx01 = x1 - x0,
-		dy01 = y1 - y0,
-		dx02 = x2 - x0,
-		dy02 = y2 - y0,
-		dx12 = x2 - x1,
-		dy12 = y2 - y1,
-		sa = 0,
-		sb = 0;
-
-	// For upper part of triangle, find scanline crossings for segments
-	// 0-1 and 0-2.  If y1=y2 (flat-bottomed triangle), the scanline y1
-	// is included here (and second loop will be skipped, avoiding a /0
-	// error there), otherwise scanline y1 is skipped here and handled
-	// in the second loop...which also avoids a /0 error here if y0=y1
-	// (flat-topped triangle).
-	if (y1 == y2)
-		last = y1; // Include y1 scanline
-	else
-		last = y1 - 1; // Skip it
-
-	for (y = y0; y <= last; y++)
-	{
-		a = x0 + sa / dy01;
-		b = x0 + sb / dy02;
-		sa += dx01;
-		sb += dx02;
-
-		if (a > b)
-			swap(a, b);
-		LCDDriver_drawFastHLine(a, y, b - a + 1, color);
-	}
-
-	// For lower part of triangle, find scanline crossings for segments
-	// 0-2 and 1-2.  This loop is skipped if y1=y2.
-	sa = dx12 * (y - y1);
-	sb = dx02 * (y - y0);
-	for (; y <= y2; y++)
-	{
-		a = x1 + sa / dy12;
-		b = x0 + sb / dy02;
-		sa += dx12;
-		sb += dx02;
-
-		if (a > b)
-			swap(a, b);
-		LCDDriver_drawFastHLine(a, y, b - a + 1, color);
-	}
+	LCDDriver_drawFastHLine(x0, y0, (int16_t)(x1 - x0), color);
+	LCDDriver_drawFastHLine(x0, y1, (int16_t)(x1 - x0), color);
+	LCDDriver_drawFastVLine(x0, y0, (int16_t)(y1 - y0), color);
+	LCDDriver_drawFastVLine(x1, y0, (int16_t)(y1 - y0), color);
 }
 
 //Text printing functions
-void LCDDriver_drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
+void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
 {
 	uint8_t line;
 	if ((x >= LCD_WIDTH) ||			// Clip right
@@ -762,9 +595,9 @@ void LCDDriver_drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, u
 	}
 }
 
-void LCDDriver_printText(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size)
+void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size)
 {
-	int16_t offset;
+	uint16_t offset;
 	offset = size * 6;
 	for (uint16_t i = 0; i < 40 && text[i] != NULL; i++)
 	{
@@ -773,7 +606,7 @@ void LCDDriver_printText(char text[], int16_t x, int16_t y, uint16_t color, uint
 	}
 }
 
-void LCDDriver_drawCharFont(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, GFXfont gfxFont)
+void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, GFXfont gfxFont)
 {
 	c -= (uint8_t)pgm_read_byte(&gfxFont.first);
 	GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(&gfxFont.glyph))[c]);
@@ -781,10 +614,14 @@ void LCDDriver_drawCharFont(int16_t x, int16_t y, unsigned char c, uint16_t colo
 
 	uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
 	uint8_t w = pgm_read_byte(&glyph->width), h = pgm_read_byte(&glyph->height), xa = pgm_read_byte(&glyph->xAdvance);
-	int8_t xo = pgm_read_byte(&glyph->xOffset), yo = pgm_read_byte(&glyph->yOffset);
+	int8_t xo = (int8_t)pgm_read_byte(&glyph->xOffset);
+	int8_t yo = (int8_t)pgm_read_byte(&glyph->yOffset);
 	uint8_t xx, yy, bits = 0, bit = 0;
-
-	LCDDriver_SetCursorAreaPosition(x, y + yo, x + xa - 1, y + yo + h - 1); //char area
+	int16_t ys1 = y + yo;
+	int16_t ys2 = y + yo + h - 1;
+	if(ys1<0) ys1=0;
+	if(ys2<0) ys2=0;
+	LCDDriver_SetCursorAreaPosition(x, (uint16_t)ys1, x + xa - 1, (uint16_t)ys2); //char area
 
 	for (yy = 0; yy < h; yy++)
 	{
@@ -812,7 +649,7 @@ void LCDDriver_drawCharFont(int16_t x, int16_t y, unsigned char c, uint16_t colo
 	}
 }
 
-void LCDDriver_printTextFont(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, GFXfont gfxFont)
+void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, GFXfont gfxFont)
 {
 	uint8_t c = 0;
 	text_cursor_x = x;
@@ -835,8 +672,8 @@ void LCDDriver_printTextFont(char text[], int16_t x, int16_t y, uint16_t color, 
 				uint8_t w = pgm_read_byte(&glyph->width);
 				uint8_t h = pgm_read_byte(&glyph->height);
 				if ((w > 0) && (h > 0))
-				{														 // Is there an associated bitmap?
-					int16_t xo = (int8_t)pgm_read_byte(&glyph->xOffset); // sic
+				{													
+					int16_t xo = (int8_t)pgm_read_byte(&glyph->xOffset); 
 					if (wrap && ((text_cursor_x + (xo + w)) > LCD_WIDTH))
 					{
 						text_cursor_x = 0;
@@ -863,7 +700,7 @@ void LCDDriver_printTextFont(char text[], int16_t x, int16_t y, uint16_t color, 
 	@param    maxy  Maximum clipping value for Y
 */
 /**************************************************************************/
-void LCDDriver_charBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, GFXfont gfxFont)
+static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, uint16_t *minx, uint16_t *miny, uint16_t *maxx, uint16_t *maxy, GFXfont gfxFont)
 {
 	if (c == '\n')
 	{			// Newline?
@@ -881,8 +718,8 @@ void LCDDriver_charBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t
 			uint8_t gw = pgm_read_byte(&glyph->width),
 					gh = pgm_read_byte(&glyph->height),
 					xa = pgm_read_byte(&glyph->xAdvance);
-			int8_t xo = pgm_read_byte(&glyph->xOffset),
-				   yo = pgm_read_byte(&glyph->yOffset);
+			int8_t xo = (int8_t)pgm_read_byte(&glyph->xOffset),
+					yo = (int8_t)pgm_read_byte(&glyph->yOffset);
 			if (wrap && ((*x + (((int16_t)xo + gw))) > LCD_WIDTH))
 			{
 				*x = 0; // Reset x to zero, advance y by one line
@@ -893,13 +730,13 @@ void LCDDriver_charBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t
 					x2 = x1 + gw - 1,
 					y2 = y1 + gh - 1;
 			if (x1 < *minx)
-				*minx = x1;
+				*minx = (uint16_t)x1;
 			if (y1 < *miny)
-				*miny = y1;
+				*miny = (uint16_t)y1;
 			if (x2 > *maxx)
-				*maxx = x2;
+				*maxx = (uint16_t)x2;
 			if (y2 > *maxy)
-				*maxy = y2;
+				*maxy = (uint16_t)y2;
 			*x += xa;
 		}
 	}
@@ -917,7 +754,7 @@ void LCDDriver_charBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t
 	@param    h      The boundary height, set by function
 */
 /**************************************************************************/
-void LCDDriver_getTextBounds(char text[], int16_t x, int16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont gfxFont)
+void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont gfxFont)
 {
 	uint8_t c; // Current character
 
@@ -925,7 +762,7 @@ void LCDDriver_getTextBounds(char text[], int16_t x, int16_t y, uint16_t *x1, ui
 	*y1 = y;
 	*w = *h = 0;
 
-	int16_t minx = LCD_WIDTH, miny = LCD_HEIGHT, maxx = -1, maxy = -1;
+	uint16_t minx = LCD_WIDTH, miny = LCD_HEIGHT, maxx = 0, maxy = 0;
 
 	for (uint16_t i = 0; i < 40 && text[i] != NULL; i++)
 	{
@@ -952,13 +789,13 @@ void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_
 	LCDDriver_SetCursorAreaPosition(x, y, w + x - 1, h + y - 1);
 	for (uint32_t i = 0; i < n; i += 2)
 	{
-		LCDDriver_SendData(((data[i] << 8) | data[i + 1]));
+		LCDDriver_SendData((uint16_t)((data[i] << 8) | data[i + 1]));
 	}
 }
 
 inline uint16_t rgb888torgb565(uint_fast8_t r, uint_fast8_t g, uint_fast8_t b)
 {
-	return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3);
+	return (uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3));
 }
 
 void LCDDriver_setBrightness(uint8_t percent)

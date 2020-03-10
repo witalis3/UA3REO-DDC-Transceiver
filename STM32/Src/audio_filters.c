@@ -323,7 +323,7 @@ static const IIR_LATTICE_FILTER IIR_Lattice_Filters[IIR_FILTERS_COUNT] = (const 
 };
 
 static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, AUDIO_PROC_RX_NUM rx_id);
-static IIR_LATTICE_FILTER* getIIRFilter(IIR_LATTICE_FILTER_TYPE type, uint16_t width);
+static IIR_LATTICE_FILTER* getIIRFilter(IIR_LATTICE_FILTER_TYPE type, uint_fast16_t width);
 
 void InitAudioFilters(void)
 {
@@ -414,14 +414,14 @@ void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum) /
 	}
 }
 
-IIR_LATTICE_FILTER* getIIRFilter(IIR_LATTICE_FILTER_TYPE type, uint16_t width)
+IIR_LATTICE_FILTER* getIIRFilter(IIR_LATTICE_FILTER_TYPE type, uint_fast16_t width)
 {
 	for(uint16_t i=0; i<IIR_FILTERS_COUNT; i++)
 		if(IIR_Lattice_Filters[i].type==type && IIR_Lattice_Filters[i].width==width)
 			return (IIR_LATTICE_FILTER*)&IIR_Lattice_Filters[i];
 	sendToDebug_strln("Wrong filter length");
 	sendToDebug_uint16(type,false);
-	sendToDebug_uint16(width,false);
+	sendToDebug_uint16((uint16_t)width,false);
 	return (IIR_LATTICE_FILTER*)&IIR_Lattice_Filters[0];
 }
 
@@ -430,18 +430,18 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 	float32_t a0, a1, a2, b1, b2, norm;
 
 	float32_t V = powf(10.0f, fabsf(peakGain) / 20.0f);
-	float32_t K = tan(PI * Fc / Fs);
+	float32_t K = tanf(PI * Fc / Fs);
 	switch (type)
 	{
 	case BIQUAD_onepolelp:
-		b1 = exp(-2.0f * PI * (Fc / Fs));
+		b1 = expf(-2.0f * PI * (Fc / Fs));
 		a0 = 1.0f - b1;
 		b1 = -b1;
 		a1 = a2 = b2 = 0.0f;
 		break;
 
 	case BIQUAD_onepolehp:
-		b1 = -exp(-2.0f * PI * (0.5f - Fc / Fs));
+		b1 = -expf(-2.0f * PI * (0.5f - Fc / Fs));
 		a0 = 1.0f + b1;
 		b1 = -b1;
 		a1 = a2 = b2 = 0.0f;
@@ -507,40 +507,40 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 		if (peakGain >= 0.0f)
 		{
 			norm = 1.0f / (1.0f + SQRT2 * K + K * K);
-			a0 = (1.0f + sqrt(2.0f * V) * K + V * K * K) * norm;
+			a0 = (1.0f + sqrtf(2.0f * V) * K + V * K * K) * norm;
 			a1 = 2.0f * (V * K * K - 1.0f) * norm;
-			a2 = (1.0f - sqrt(2.0f * V) * K + V * K * K) * norm;
+			a2 = (1.0f - sqrtf(2.0f * V) * K + V * K * K) * norm;
 			b1 = 2.0f * (K * K - 1.0f) * norm;
 			b2 = (1.0f - SQRT2 * K + K * K) * norm;
 		}
 		else
 		{
-			norm = 1.0f / (1.0f + sqrt(2.0f * V) * K + V * K * K);
+			norm = 1.0f / (1.0f + sqrtf(2.0f * V) * K + V * K * K);
 			a0 = (1.0f + SQRT2 * K + K * K) * norm;
 			a1 = 2.0f * (K * K - 1.0f) * norm;
 			a2 = (1.0f - SQRT2 * K + K * K) * norm;
 			b1 = 2.0f * (V * K * K - 1.0f) * norm;
-			b2 = (1.0f - sqrt(2.0f * V) * K + V * K * K) * norm;
+			b2 = (1.0f - sqrtf(2.0f * V) * K + V * K * K) * norm;
 		}
 		break;
 	case BIQUAD_highShelf:
 		if (peakGain >= 0.0f)
 		{
 			norm = 1.0f / (1.0f + SQRT2 * K + K * K);
-			a0 = (V + sqrt(2.0f * V) * K + K * K) * norm;
+			a0 = (V + sqrtf(2.0f * V) * K + K * K) * norm;
 			a1 = 2.0f * (K * K - V) * norm;
-			a2 = (V - sqrt(2.0f * V) * K + K * K) * norm;
+			a2 = (V - sqrtf(2.0f * V) * K + K * K) * norm;
 			b1 = 2.0f * (K * K - 1.0f) * norm;
 			b2 = (1.0f - SQRT2 * K + K * K) * norm;
 		}
 		else
 		{
-			norm = 1.0f / (V + sqrt(2.0f * V) * K + K * K);
+			norm = 1.0f / (V + sqrtf(2.0f * V) * K + K * K);
 			a0 = (1.0f + SQRT2 * K + K * K) * norm;
 			a1 = 2.0f * (K * K - 1.0f) * norm;
 			a2 = (1.0f - SQRT2 * K + K * K) * norm;
 			b1 = 2.0f * (K * K - V) * norm;
-			b2 = (V - sqrt(2.0f * V) * K + K * K) * norm;
+			b2 = (V - sqrtf(2.0f * V) * K + K * K) * norm;
 		}
 		break;
 	}

@@ -141,7 +141,7 @@
 #define LAY_WTF_HEIGHT_STYLE2 40                                   //указываем максимальную высоту водопада
 #define LAY_FFT_STYLE_3_4_COLOR COLOR_WHITE
 #define LAY_FFT_WTF_MAX_HEIGHT (LAY_FFT_HEIGHT_STYLE1 + LAY_WTF_HEIGHT_STYLE1) //максимально возможная высота FFT+WTF
-#define LAY_FFT_WTF_POS_Y (LCD_HEIGHT - LAY_FFT_WTF_MAX_HEIGHT) //начало FFT и водопада
+#define LAY_FFT_WTF_POS_Y ((uint16_t)(LCD_HEIGHT - LAY_FFT_WTF_MAX_HEIGHT)) //начало FFT и водопада
 #define LAY_FFT_PRINT_SIZE 480                                  //указываем ширину выводимого FFT
 #define LAY_FFT_CWDECODER_OFFSET 17                             //место под текст CW декодера
 

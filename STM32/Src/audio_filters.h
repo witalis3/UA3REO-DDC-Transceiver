@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "arm_math.h"
 #include "fpga.h"
+#include "functions.h"
 
 #define IIR_FILTERS_COUNT 35
 #define IQ_HILBERT_TAPS 201
@@ -62,7 +62,7 @@ typedef struct
 {
 	const uint16_t width;
 	const IIR_LATTICE_FILTER_TYPE type;
-	const uint32_t stages;
+	const uint16_t stages;
 	const float32_t* coeffsK_lattice;
 	const float32_t* coeffsV_ladder;
 } IIR_LATTICE_FILTER;
@@ -85,8 +85,8 @@ extern arm_iir_lattice_instance_f32 IIR_RX2_HPF_I;
 extern arm_iir_lattice_instance_f32 IIR_RX2_HPF_Q;
 extern arm_iir_lattice_instance_f32 IIR_TX_HPF_I;
 extern arm_iir_lattice_instance_f32 IIR_TX_HPF_Q;
-extern arm_iir_lattice_instance_f32 IIR_Squelch_HPF;
-extern arm_iir_lattice_instance_f32 IIR_Squelch_HPF;
+extern arm_iir_lattice_instance_f32 IIR_RX1_Squelch_HPF;
+extern arm_iir_lattice_instance_f32 IIR_RX2_Squelch_HPF;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_I_FILTER;

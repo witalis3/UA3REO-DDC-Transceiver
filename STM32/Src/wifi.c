@@ -16,7 +16,6 @@ static uint16_t WIFI_Answer_ReadIndex = 0;
 static uint32_t commandStartTime = 0;
 static bool WIFI_connected = false;
 static uint8_t WIFI_FoundedAP_Index = 0;
-static uint16_t WIFI_Reconnect_Timeout = 0;
 static bool WIFI_stop_auto_ap_list = false;
 
 static void WIFI_SendCommand(char *command);
@@ -26,7 +25,7 @@ static bool WIFI_ListAP_Sync(void);
 
 volatile uint8_t WIFI_InitStateIndex = 0;
 volatile WiFiState WIFI_State = WIFI_UNDEFINED;
-volatile char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
+static char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
 volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
 
 void WIFI_Init(void)
@@ -228,14 +227,13 @@ void WIFI_Process(void)
 				end = strchr(sec_str, ' ');
 				*end = 0x00;
 				//split strings here
-				int8_t hrs = atoi(hrs_str);
-				int8_t min = atoi(min_str);
-				int8_t sec = atoi(sec_str);
-				int16_t year = atoi(year_str);
+				uint8_t hrs = (uint8_t)atoi(hrs_str);
+				uint8_t min = (uint8_t)atoi(min_str);
+				uint8_t sec = (uint8_t)atoi(sec_str);
+				uint16_t year = (uint16_t)atoi(year_str);
 				//save to RTC clock
 				if (year > 2018)
 				{
-					uint32_t Time = RTC->TR;
 					RTC_TimeTypeDef sTime;
 					sTime.TimeFormat = RTC_HOURFORMAT12_PM;
 					sTime.SubSeconds = 0;
@@ -255,8 +253,11 @@ void WIFI_Process(void)
 			}
 		}
 		break;
-			
-		default:
+		
+		case WIFI_UNDEFINED:
+		case WIFI_NOTFOUND:
+		case WIFI_FAIL:
+		case WIFI_SLEEP:
 		break;
 	}
 }
@@ -361,7 +362,7 @@ static void WIFI_SendCommand(char *command)
 	WIFI_Answer_ReadIndex = 0;
 	HAL_UART_Receive_DMA(&huart6, (uint8_t *)WIFI_AnswerBuffer, WIFI_ANSWER_BUFFER_SIZE);
 	HAL_Delay(100);
-	HAL_UART_Transmit_IT(&huart6, (uint8_t *)command, strlen(command));
+	HAL_UART_Transmit_IT(&huart6, (uint8_t *)command, (uint16_t)strlen(command));
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
 	HAL_IWDG_Refresh(&hiwdg1);
@@ -400,7 +401,7 @@ static bool WIFI_TryGetLine(bool clean_buffer)
 		memset(tmp, 0x00, sizeof(tmp));
 	}
 	
-	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(huart6.hdmarx);
+	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
 	if (WIFI_Answer_ReadIndex == dma_index)
 		return false;
 
@@ -413,7 +414,7 @@ static bool WIFI_TryGetLine(bool clean_buffer)
 	istr = strstr(tmp, sep);
 	if (istr == NULL)
 		return false;
-	uint16_t len = istr - tmp + strlen(sep);
+	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)tmp + (uint32_t)strlen(sep));
 	strncpy(WIFI_readedLine, tmp, len);
 
 	WIFI_Answer_ReadIndex += len;

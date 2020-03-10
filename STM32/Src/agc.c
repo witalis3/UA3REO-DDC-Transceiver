@@ -26,22 +26,17 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 	float32_t full_scale_rate = 0;
 	float32_t AGC_RX_dbFS = 0;
 
-	float32_t* AGC_need_gain_db;
-	float32_t* AGC_need_gain_db_old;
+	float32_t* AGC_need_gain_db = &AGC_RX1_need_gain_db;
+	float32_t* AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
 	
-	if(rx_id==AUDIO_RX1)
-	{
-		AGC_need_gain_db = &AGC_RX1_need_gain_db;
-		AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
-	}
-	else if(rx_id==AUDIO_RX2)
+	if(rx_id==AUDIO_RX2)
 	{
 		AGC_need_gain_db = &AGC_RX2_need_gain_db;
 		AGC_need_gain_db_old = &AGC_RX2_need_gain_db_old;
 	}
 	//считаем магнитуду
 	arm_power_f32(agcBuffer, blockSize, &AGC_RX_magnitude);
-	AGC_RX_magnitude = AGC_RX_magnitude / blockSize;
+	AGC_RX_magnitude = AGC_RX_magnitude / (float32_t)blockSize;
 	if (AGC_RX_magnitude == 0.0f)
 		AGC_RX_magnitude = 0.001f;
 	full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
@@ -70,9 +65,9 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 	{
 		float32_t gainApplyStep = 0;
 		if (*AGC_need_gain_db_old > *AGC_need_gain_db)
-			gainApplyStep = -(*AGC_need_gain_db_old - *AGC_need_gain_db) / blockSize;
+			gainApplyStep = -(*AGC_need_gain_db_old - *AGC_need_gain_db) / (float32_t)blockSize;
 		if (*AGC_need_gain_db_old < *AGC_need_gain_db)
-			gainApplyStep = (*AGC_need_gain_db - *AGC_need_gain_db_old) / blockSize;
+			gainApplyStep = (*AGC_need_gain_db - *AGC_need_gain_db_old) / (float32_t)blockSize;
 		for (uint_fast16_t i = 0; i < blockSize; i++)
 		{
 			*AGC_need_gain_db_old += gainApplyStep;

@@ -6,14 +6,14 @@
 #include "fpga.h"
 #include "lcd.h"
 
-const uint16_t graph_start_x = 20;
-const uint16_t graph_width = LCD_WIDTH - 30;
-const uint16_t graph_start_y = 5;
-const uint16_t graph_height = LCD_HEIGHT - 25;
-uint32_t now_freq;
-uint32_t freq_step;
-uint16_t graph_print_x;
-uint16_t graph_prev_y;
+static const uint16_t graph_start_x = 20;
+static const uint16_t graph_width = LCD_WIDTH - 30;
+static const uint16_t graph_start_y = 5;
+static const uint16_t graph_height = LCD_HEIGHT - 25;
+static uint32_t now_freq;
+static uint32_t freq_step;
+static uint16_t graph_print_x;
+static uint16_t graph_prev_y;
 
 //подготовка спектрального анализатора
 void SPEC_Start(void)
@@ -45,7 +45,7 @@ void SPEC_Draw(void)
 	LCD_busy = true;
 	//S-Meter Calculate
 	//TRX_DBMCalculate();
-	int32_t dbm = TRX_RX_dBm;
+	int16_t dbm = (int16_t)TRX_RX_dBm;
 	dbm += 130;
 	dbm *= 4;
 	now_freq += freq_step;
@@ -59,9 +59,9 @@ void SPEC_Draw(void)
 	if (y > (graph_start_y + graph_height))
 		y = (graph_start_y + graph_height);
 	if (graph_print_x != graph_start_x + 1)
-		LCDDriver_drawLine(graph_print_x - 1, graph_prev_y, graph_print_x, y, COLOR_RED);
+		LCDDriver_drawLine(graph_print_x - 1, graph_prev_y, graph_print_x, (uint16_t)y, COLOR_RED);
 	LCDDriver_drawFastVLine(graph_print_x + 1, graph_start_y, graph_height, COLOR_BLACK);
-	graph_prev_y = y;
+	graph_prev_y = (uint16_t)y;
 	graph_print_x++;
 	HAL_Delay(SPEC_StepDelay);
 	if (now_freq > (TRX.SPEC_End * SPEC_Resolution))

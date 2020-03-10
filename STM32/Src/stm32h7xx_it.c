@@ -473,7 +473,7 @@ void TIM6_DAC_IRQHandler(void)
       }
       uint32_t dbg_RX_USB_AUDIO_SAMPLES = RX_USB_AUDIO_SAMPLES;
       uint32_t dbg_TX_USB_AUDIO_SAMPLES = TX_USB_AUDIO_SAMPLES;
-			uint32_t cpu_load = CPU_LOAD.Load;
+			uint32_t cpu_load = (uint32_t)CPU_LOAD.Load;
       //Print Debug info
       sendToDebug_str("FPGA Samples: ");
       sendToDebug_uint32(dbg_FPGA_samples, false); //~48000

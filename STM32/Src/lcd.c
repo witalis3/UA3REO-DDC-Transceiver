@@ -28,8 +28,7 @@ static uint32_t LCD_last_showed_freq = 0;
 static uint16_t LCD_last_showed_freq_mhz = 9999;
 static uint16_t LCD_last_showed_freq_khz = 9999;
 static uint16_t LCD_last_showed_freq_hz = 9999;
-static int LCD_last_s_meter = 1;
-static bool LCD_pressed = false;
+static int16_t LCD_last_s_meter = 1;
 static uint32_t Time;
 static uint8_t Hours;
 static uint8_t Last_showed_Hours = 255;
@@ -277,7 +276,7 @@ static void LCD_displayStatusInfoBar(void)
 		if (TRX_s_meter < 0.0f)
 			TRX_s_meter = 0.0f;
 
-		int s_width = TRX_s_meter;
+		int16_t s_width = (int16_t)TRX_s_meter;
 		if (LCD_last_s_meter > s_width)
 			s_width = LCD_last_s_meter - ((LCD_last_s_meter - s_width) / 4); //сглаживаем движение с-метра
 		else if (LCD_last_s_meter < s_width)
@@ -286,13 +285,13 @@ static void LCD_displayStatusInfoBar(void)
 		{
 			if (!TRX.S_METER_Style) //полоса
 			{
-				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1 + s_width, LAY_STATUS_Y_OFFSET + 1, LCD_last_s_meter - s_width, LAY_STATUS_BAR_HEIGHT - 3, BACKGROUND_COLOR);
-				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1, LAY_STATUS_Y_OFFSET + 1, s_width, LAY_STATUS_BAR_HEIGHT - 3, LAY_STATUS_SMETER_COLOR);
+				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1 + (uint16_t)s_width, LAY_STATUS_Y_OFFSET + 1, (uint16_t)(LCD_last_s_meter - s_width), LAY_STATUS_BAR_HEIGHT - 3, BACKGROUND_COLOR);
+				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1, LAY_STATUS_Y_OFFSET + 1, (uint16_t)s_width, LAY_STATUS_BAR_HEIGHT - 3, LAY_STATUS_SMETER_COLOR);
 			}
 			else //линия
 			{
 				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1, LAY_STATUS_Y_OFFSET + 1, width, LAY_STATUS_BAR_HEIGHT - 2, BACKGROUND_COLOR);
-				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1 + s_width, LAY_STATUS_Y_OFFSET + 1, 1, LAY_STATUS_BAR_HEIGHT - 2, LAY_STATUS_SMETER_COLOR);
+				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + 1 + (uint16_t)s_width, LAY_STATUS_Y_OFFSET + 1, 1, LAY_STATUS_BAR_HEIGHT - 2, LAY_STATUS_SMETER_COLOR);
 			}
 
 			LCD_last_s_meter = s_width;
@@ -306,7 +305,7 @@ static void LCD_displayStatusInfoBar(void)
 	{
 		//SWR
 		LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TX_LABELS_OFFSET_X + LAY_STATUS_SMETER_TXLABELS_PADDING, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_TX_LABELS_VAL_WIDTH, LAY_STATUS_TX_LABELS_VAL_HEIGHT, BACKGROUND_COLOR);
-		sprintf(ctmp, "%.1f", TRX_SWR);
+		sprintf(ctmp, "%.1f", (double)TRX_SWR);
 		LCDDriver_printText(ctmp, LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TX_LABELS_OFFSET_X + LAY_STATUS_SMETER_TXLABELS_PADDING, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, COLOR_RED, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 
 		//FWD
@@ -314,7 +313,7 @@ static void LCD_displayStatusInfoBar(void)
 		float32_t fwd_power = (TRX_SWR_forward * TRX_SWR_forward) / 50.0f;
 		if (fwd_power < 0.0f)
 			fwd_power = 0.0f;
-		sprintf(ctmp, "%.1fW", fwd_power);
+		sprintf(ctmp, "%.1fW", (double)fwd_power);
 		LCDDriver_printText(ctmp, LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TX_LABELS_OFFSET_X + LAY_STATUS_SMETER_TXLABELS_MARGIN + LAY_STATUS_SMETER_TXLABELS_PADDING, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_BAR_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 
 		//REF
@@ -322,15 +321,15 @@ static void LCD_displayStatusInfoBar(void)
 		float32_t ref_power = (TRX_SWR_backward * TRX_SWR_backward) / 50.0f;
 		if (ref_power < 0.0f)
 			ref_power = 0.0f;
-		sprintf(ctmp, "%.1fW", ref_power);
+		sprintf(ctmp, "%.1fW", (double)ref_power);
 		LCDDriver_printText(ctmp, LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TX_LABELS_OFFSET_X + LAY_STATUS_SMETER_TXLABELS_MARGIN * 2 + LAY_STATUS_SMETER_TXLABELS_PADDING, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_BAR_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 
 		//SWR Meter
 		if (fwd_power > MAX_RF_POWER)
 			fwd_power = MAX_RF_POWER;
-		uint16_t ref_width = ref_power * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER;
-		uint16_t fwd_width = fwd_power * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER;
-		uint16_t est_width = (MAX_RF_POWER - fwd_power) * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER;
+		uint16_t ref_width = (uint16_t)(ref_power * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER);
+		uint16_t fwd_width = (uint16_t)(fwd_power * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER);
+		uint16_t est_width = (uint16_t)((MAX_RF_POWER - fwd_power) * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER);
 		if (ref_width > fwd_width)
 			ref_width = fwd_width;
 		fwd_width -= ref_width;
@@ -472,7 +471,7 @@ static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, c
 	LCDDriver_Fill_RectWH(x, y, width, height, back_color);
 	uint16_t x1, y1, w, h;
 	LCDDriver_getTextBounds(text, x, y, &x1, &y1, &w, &h, FreeSans9pt7b);
-	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2, active ? text_color : inactive_color, back_color, FreeSans9pt7b);
+	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2 + 1, active ? text_color : inactive_color, back_color, FreeSans9pt7b);
 }
 
 void LCD_showError(char text[], bool redraw)

@@ -21,57 +21,8 @@ void WM8731_start_i2s_and_dma(void)
 {
 	if (HAL_I2S_GetState(&hi2s3) == HAL_I2S_STATE_READY)
 	{
-		//HAL_I2S_Receive_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2);
-		//HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_SIZE * 2);
 		HAL_I2S_TXRX_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_RX[0], (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2, CODEC_AUDIO_BUFFER_SIZE); // 16bit tx spi, 32bit rx spi
 	}
-}
-
-void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
-{
-	if (hi2s->Instance == SPI3)
-	{
-		if (WM8731_Beeping)
-			return;
-		if (Processor_NeedRXBuffer)
-			WM8731_Buffer_underrun = true;
-		WM8731_DMA_state = false;
-		Processor_NeedRXBuffer = true;
-		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
-			Processor_NeedTXBuffer = true;
-		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE/2);
-	}
-}
-
-void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s)
-{
-	if (hi2s->Instance == SPI3)
-	{
-		if (WM8731_Beeping)
-			return;
-		if (Processor_NeedRXBuffer)
-			WM8731_Buffer_underrun = true;
-		WM8731_DMA_state = true;
-		Processor_NeedRXBuffer = true;
-		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
-			Processor_NeedTXBuffer = true;
-		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE/2);
-	}
-}
-
-void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
-{
-	
-}
-
-void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
-{
-	
-}
-
-void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s)
-{
-	//sendToDebug_strln("e");
 }
 
 void WM8731_CleanBuffer(void)
@@ -84,7 +35,7 @@ void WM8731_Beep(void)
 {
 	WM8731_Beeping = true;
 	for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
-		CODEC_Audio_Buffer_RX[i] = ((float32_t)TRX_Volume / 100.0f) * 2000.0f * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * 500.0f);
+		CODEC_Audio_Buffer_RX[i] = (int32_t)(((float32_t)TRX_Volume / 100.0f) * 2000.0f * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * 500.0f));
 	HAL_Delay(50);
 	WM8731_Beeping = false;
 }
@@ -186,14 +137,34 @@ void WM8731_Init(void)
 
 static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 {
-  I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
-  HAL_I2S_TxCpltCallback(hi2s);
+  if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
+	{
+		if (WM8731_Beeping)
+			return;
+		if (Processor_NeedRXBuffer)
+			WM8731_Buffer_underrun = true;
+		WM8731_DMA_state = true;
+		Processor_NeedRXBuffer = true;
+		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
+			Processor_NeedTXBuffer = true;
+		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE/2);
+	}
 }
 
 static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 {
-  I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
-  HAL_I2S_TxHalfCpltCallback(hi2s);
+  if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
+	{
+		if (WM8731_Beeping)
+			return;
+		if (Processor_NeedRXBuffer)
+			WM8731_Buffer_underrun = true;
+		WM8731_DMA_state = false;
+		Processor_NeedRXBuffer = true;
+		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
+			Processor_NeedTXBuffer = true;
+		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE/2);
+	}
 }
 
 static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)

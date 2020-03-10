@@ -24,8 +24,8 @@ static bool ENCODER2_SWLast = true;
 
 volatile PERIPH_FrontPanel_Type PERIPH_FrontPanel = {0};
 
-static void PERIPH_ENCODER_Rotated(int direction);
-static void PERIPH_ENCODER2_Rotated(int direction);
+static void PERIPH_ENCODER_Rotated(int8_t direction);
+static void PERIPH_ENCODER2_Rotated(int8_t direction);
 static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN);
 
 void PERIPH_ENCODER_checkRotate(void)
@@ -78,7 +78,7 @@ void PERIPH_ENCODER2_checkRotate(void)
 	}
 }
 
-static void PERIPH_ENCODER_Rotated(int direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
+static void PERIPH_ENCODER_Rotated(int8_t direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
 {
 	TRX_Time_InActive = 0;
 	if (TRX.Locked)
@@ -94,13 +94,13 @@ static void PERIPH_ENCODER_Rotated(int direction) //энкодер поверн�
 		VFO *vfo = CurrentVFO();
 		if (TRX.Fast)
 		{
-			TRX_setFrequency(vfo->Freq + 100 * direction, vfo);
+			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + 100 * direction), vfo);
 			if ((vfo->Freq % 100) > 0)
 				TRX_setFrequency(vfo->Freq / 100 * 100, vfo);
 		}
 		else
 		{
-			TRX_setFrequency(vfo->Freq + 10 * direction, vfo);
+			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + 10 * direction), vfo);
 			if ((vfo->Freq % 10) > 0)
 				TRX_setFrequency(vfo->Freq / 10 * 10, vfo);
 		}
@@ -122,19 +122,19 @@ static void PERIPH_ENCODER_Rotated(int direction) //энкодер поверн�
 		{
 			if (sTime.Hours == 0 && direction < 0)
 				return;
-			sTime.Hours = sTime.Hours + direction;
+			sTime.Hours = (uint8_t)(sTime.Hours + direction);
 		}
 		if (TimeMenuSelection == 1)
 		{
 			if (sTime.Minutes == 0 && direction < 0)
 				return;
-			sTime.Minutes = sTime.Minutes + direction;
+			sTime.Minutes = (uint8_t)(sTime.Minutes + direction);
 		}
 		if (TimeMenuSelection == 2)
 		{
 			if (sTime.Seconds == 0 && direction < 0)
 				return;
-			sTime.Seconds = sTime.Seconds + direction;
+			sTime.Seconds = (uint8_t)(sTime.Seconds + direction);
 		}
 		if (sTime.Hours >= 24)
 			sTime.Hours = 0;
@@ -151,7 +151,7 @@ static void PERIPH_ENCODER_Rotated(int direction) //энкодер поверн�
 	NeedSaveSettings = true;
 }
 
-static void PERIPH_ENCODER2_Rotated(int direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
+static void PERIPH_ENCODER2_Rotated(int8_t direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
 {
 	TRX_Time_InActive = 0;
 	if (TRX.Locked)
@@ -178,15 +178,15 @@ static void PERIPH_ENCODER2_Rotated(int direction) //энкодер поверн
 		VFO *vfo = CurrentVFO();
 		if (TRX.Fast)
 		{
-			TRX_setFrequency(vfo->Freq + 100000 * direction, vfo);
+			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + 100000 * direction), vfo);
 			if ((vfo->Freq % 100000) > 0)
 				TRX_setFrequency(vfo->Freq / 100000 * 100000, vfo);
 		}
 		else
 		{
-			TRX_setFrequency(vfo->Freq + 25000 * direction, vfo);
+			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + 25000 * direction), vfo);
 			if ((vfo->Freq % 25000) > 0)
-				TRX_setFrequency(vfo->Freq / 25000 * 25000, vfo);
+				TRX_setFrequency((uint32_t)((int32_t)vfo->Freq / 25000 * 25000), vfo);
 		}
 		LCD_UpdateQuery.FreqInfo = true;
 	}
@@ -219,7 +219,7 @@ void PERIPH_ENCODER2_checkSwitch(void)
 	}
 }
 
-uint8_t getBPFByFreq(uint32_t freq)
+static uint8_t getBPFByFreq(uint32_t freq)
 {
 	if(freq >= CALIBRATE.BPF_0_START && freq < CALIBRATE.BPF_0_END) return 0;
 	if(freq >= CALIBRATE.BPF_1_START && freq < CALIBRATE.BPF_1_END) return 1;
@@ -524,32 +524,32 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_modep_prev != PERIPH_FrontPanel.key_modep && PERIPH_FrontPanel.key_modep && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
-			int8_t mode = CurrentVFO()->Mode;
+			int8_t mode = (int8_t)CurrentVFO()->Mode;
 			mode++;
 			if (mode < 0)
 				mode = TRX_MODE_COUNT - 2;
 			if (mode >= (TRX_MODE_COUNT - 1))
 				mode = 0;
-			TRX_setMode(mode, CurrentVFO());
+			TRX_setMode((uint8_t)mode, CurrentVFO());
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 			if(band>0)
-				TRX.BANDS_SAVED_SETTINGS[band].Mode = mode;
+				TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 			LCD_UpdateQuery.TopButtons = true;
 		}
 		//MODE-
 		if (PERIPH_FrontPanel.key_moden_prev != PERIPH_FrontPanel.key_moden && PERIPH_FrontPanel.key_moden && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
-			int8_t mode = CurrentVFO()->Mode;
+			int8_t mode = (int8_t)CurrentVFO()->Mode;
 			mode--;
 			if (mode < 0)
 				mode = TRX_MODE_COUNT - 2;
 			if (mode >= (TRX_MODE_COUNT - 1))
 				mode = 0;
-			TRX_setMode(mode, CurrentVFO());
+			TRX_setMode((uint8_t)mode, CurrentVFO());
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 			if(band>0)
-				TRX.BANDS_SAVED_SETTINGS[band].Mode = mode;
+				TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 			LCD_UpdateQuery.TopButtons = true;
 		}
 		//BAND+
@@ -653,19 +653,19 @@ void PERIPH_ProcessFrontPanel(void)
 			PERIPH_FrontPanel.key_agc = false;
 
 		mcp3008_value = PERIPH_ReadMCP3008_Value(6, AD2_CS_GPIO_Port, AD2_CS_Pin); // AF_GAIN
-		TRX_Volume = (1023.0f - mcp3008_value);
+		TRX_Volume = (uint16_t)(1023.0f - mcp3008_value);
 
 		mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT или IF Gain
 		if(TRX.ShiftEnabled)
 		{
-			TRX_SHIFT = ((1023.0f - mcp3008_value) * SHIFT_INTERVAL / 1023.0f) - SHIFT_INTERVAL / 2.0f;
+			TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * SHIFT_INTERVAL / 1023.0f) - SHIFT_INTERVAL / 2.0f);
 			if (abs(TRX_SHIFT) < (SHIFT_INTERVAL / 10.0f)) //при минимальных отклонениях - игнорируем
 				TRX_SHIFT = 0;
 		}
 		else
 		{
 			TRX_SHIFT = 0;
-			TRX.IF_Gain = 30.0f + ((1023.0f - mcp3008_value) * 50.0f / 1023.0f);
+			TRX.IF_Gain = (uint8_t)(30.0f + ((1023.0f - mcp3008_value) * 50.0f / 1023.0f));
 		}
 
 		//F1 AGC
@@ -945,7 +945,7 @@ static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT,
 	bool res = PERIPH_SPI_Transmit(outData, inData, 3, CS_PORT, CS_PIN, false);
 	if (res == false)
 		return 65535;
-	mcp3008_value = 0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4);
+	mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
 
 	return mcp3008_value;
 }
