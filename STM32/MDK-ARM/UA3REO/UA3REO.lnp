@@ -70,7 +70,7 @@
 "ua3reo\usbd_desc.o"
 "ua3reo\usbd_ioreq.o"
 "C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\DSP\Lib\ARM\arm_cortexM7lfdp_math.lib"
---library_type=microlib --strict --scatter ".\UA3REO\UA3REO_custom.sct"
+--strict --scatter ".\UA3REO\UA3REO_custom.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "UA3REO.map" -o UA3REO\UA3REO.axf

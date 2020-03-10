@@ -18,7 +18,7 @@
           <Vendor>STMicroelectronics</Vendor>
           <PackID>Keil.STM32H7xx_DFP.2.4.0</PackID>
           <PackURL>https://www.keil.com/pack/</PackURL>
-          <Cpu>IRAM(0x20000000-0x2001FFFF) IRAM2(0x24000000-0x2407FFFF) IROM(0x8000000-0x81FFFFF)  CLOCK(12000000) FPU3(DFPU) CPUTYPE("Cortex-M7") ELITTLE</Cpu>
+          <Cpu>IRAM(0x20000000-0x2001FFFF) IRAM2(0x24000000-0x2407FFFF) IROM(0x8000000-0x81FFFFF)   CLOCK(12000000) FPU3(DFPU) CPUTYPE("Cortex-M7") ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll></FlashDriverDll>
@@ -188,7 +188,7 @@
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>1</useUlib>
+            <useUlib>0</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
@@ -332,13 +332,13 @@
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>1</v6Lto>
-            <v6WtE>1</v6WtE>
+            <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>-Wno-float-equal -Wno-padded -Wno-implicit-float-conversion -Wno-gnu-compound-literal-initializer -Wno-cast-qual -Wno-implicit-fallthrough -Wno-cast-align -Wno-pedantic -Wno-missing-noreturn</MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                                                                                                                                                                          ../Drivers/STM32H7xx_HAL_Driver/Inc;                                                                                                                                                                                          ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                                                                                                                                                                                          ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                                                                                                                                                                                          ../Drivers/CMSIS/Include;                                                                                                                                                                                          ..\USBDevice;                                                                                                                                                                                          ..\Src</IncludePath>
+              <IncludePath>../Inc;                                                                                                                                                                                           ../Drivers/STM32H7xx_HAL_Driver/Inc;                                                                                                                                                                                           ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                                                                                                                                                                                           ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                                                                                                                                                                                           ../Drivers/CMSIS/Include;                                                                                                                                                                                           ..\USBDevice;                                                                                                                                                                                           ..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -715,7 +715,7 @@
                 <PlainCh>2</PlainCh>
                 <Ropi>2</Ropi>
                 <Rwpi>2</Rwpi>
-                <wLevel>0</wLevel>
+                <wLevel>3</wLevel>
                 <uThumb>2</uThumb>
                 <uSurpInc>2</uSurpInc>
                 <uC99>2</uC99>
@@ -729,7 +729,7 @@
                 <v6WtE>2</v6WtE>
                 <v6Rtti>2</v6Rtti>
                 <VariousControls>
-                  <MiscControls>-Wno-extra-semi-stmt -Wno-covered-switch-default -Wno-shadow -Wno-undef -Wno-bad-function-cast -Wno-switch-enum</MiscControls>
+                  <MiscControls></MiscControls>
                   <Define></Define>
                   <Undefine></Undefine>
                   <IncludePath></IncludePath>
