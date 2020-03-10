@@ -201,6 +201,8 @@ void FFT_doFFT(void)
 		return;
 	if (!FFT_buffer_ready)
 		return;
+	if (CPU_LOAD.Load>90)
+		return;
 
 	uint32_t maxIndex = 0;			 // Индекс элемента массива с максимальной амплитудой в результирующей АЧХ
 	float32_t maxValue = 0;			 // Максимальное значение амплитуды в результирующей АЧХ
