@@ -38,6 +38,7 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc3;
 
 extern I2S_HandleTypeDef hi2s3;
 extern DMA_HandleTypeDef hdma_spi3_rx;

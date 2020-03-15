@@ -487,6 +487,8 @@ void TIM6_DAC_IRQHandler(void)
       WIFI_GetSNMPTime(NULL);
 
 		CPULOAD_Calc(); // Calculate CPU load
+		TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
+		TRX_STM32_VREF = TRX_getSTM32H743vref();
 		
     if (TRX.Debug_Console)
     {
@@ -497,7 +499,6 @@ void TIM6_DAC_IRQHandler(void)
       uint32_t dbg_AUDIOPROC_TXB_samples = AUDIOPROC_TXB_samples;
       uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
       float32_t dbg_ALC_need_gain = ALC_need_gain;
-      float32_t dbg_Processor_TX_MAX_amplitude = Processor_TX_MAX_amplitude_OUT;
       float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I[0];
       float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_RX1_Q[0];
       if (TRX_on_TX())
@@ -519,12 +520,14 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples, false); //~120
 			sendToDebug_str("CPU Load: ");
       sendToDebug_uint32(cpu_load, false);
+			sendToDebug_str("STM32 Temperature: ");
+      sendToDebug_float32(TRX_STM32_TEMPERATURE, false);
+			sendToDebug_str("STM32 Voltage: ");
+      sendToDebug_float32(TRX_STM32_VREF, false);
 			sendToDebug_str("TIM6 delay: ");
       sendToDebug_uint32(dbg_tim6_delay, false);
       sendToDebug_str("TX Autogain: ");
       sendToDebug_float32(dbg_ALC_need_gain, false);
-      sendToDebug_str("Processor TX MAX amplitude: ");
-      sendToDebug_float32(dbg_Processor_TX_MAX_amplitude, false);
       sendToDebug_str("First byte of RX-FPGA I: ");
       sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp, false); //first byte of I
       sendToDebug_str("First byte of RX-FPGA Q: ");

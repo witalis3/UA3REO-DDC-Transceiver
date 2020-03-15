@@ -16,6 +16,8 @@ extern void TRX_Restart_Mode(void);
 extern void TRX_DBMCalculate(void);
 extern float32_t TRX_GetALC(void);
 extern float32_t TRX_GenerateCWSignal(float32_t power);
+extern float32_t TRX_getSTM32H743Temperature(void);
+extern float32_t TRX_getSTM32H743vref(void);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_cat;
@@ -43,6 +45,8 @@ volatile extern float32_t TRX_SWR_forward;
 volatile extern float32_t TRX_SWR_backward;
 volatile extern float32_t TRX_SWR;
 volatile extern uint16_t TRX_Volume;
+volatile extern float32_t TRX_STM32_VREF;
+volatile extern float32_t TRX_STM32_TEMPERATURE;
 
 extern const char *MODE_DESCR[];
 extern ADC_HandleTypeDef hadc1;

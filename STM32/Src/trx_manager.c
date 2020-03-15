@@ -43,6 +43,8 @@ static uint_fast8_t autogain_wait_reaction = 0;   //таймер ожидани�
 static uint_fast8_t autogain_stage = 0;			 //этап отработки актокорректировщика усиления
 static uint32_t KEYER_symbol_start_time = 0; //время старта символа автоматического ключа
 static bool KEYER_symbol_status = false;	 //статус (сигнал или период) символа автоматического ключа
+volatile float32_t TRX_STM32_VREF = 3.3f; //напряжение на STM32
+volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; //температура STM32
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
@@ -63,6 +65,7 @@ void TRX_Init()
 	uint_fast8_t saved_mode = CurrentVFO()->Mode;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	TRX_setMode(saved_mode, CurrentVFO());
+	HAL_ADCEx_InjectedStart(&hadc3); //ADC температуры ЦПУ
 	sendToDebug_strln("[OK] TRX inited");
 }
 
@@ -410,4 +413,21 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 		KEYER_symbol_status = !KEYER_symbol_status;
 	}
 	return power;
+}
+
+float32_t TRX_getSTM32H743Temperature(void)
+{
+	uint16_t TS_CAL1 = *((uint16_t*)0x1FF1E820); // TS_CAL1 Temperature sensor raw data acquired value at 30 °C, VDDA=3.3 V
+	uint16_t TS_CAL2 = *((uint16_t*)0x1FF1E840); // TS_CAL2 Temperature sensor raw data acquired value at 110 °C, VDDA=3.3 V
+	uint32_t TS_DATA = HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_1);
+	float32_t result = ((110.0f - 30.0f)/((float32_t)TS_CAL2 - (float32_t)TS_CAL1))*((float32_t)TS_DATA - (float32_t)TS_CAL1)+30; //from reference
+	return result;
+}
+
+float32_t TRX_getSTM32H743vref(void)
+{
+	uint16_t VREFINT_CAL = *((uint16_t*)0x1FF1E860); // VREFIN_CAL Raw data acquired at temperature of 30 °C, VDDA = 3.3 V
+	uint32_t VREFINT_DATA = HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_2);
+	float32_t result =  3.3f * (float32_t)VREFINT_CAL / (float32_t)VREFINT_DATA; //from reference
+	return result;
 }
