@@ -54,6 +54,9 @@
   <port name="out_valid" internal="out_valid" />
   <port name="out_ready" internal="out_ready" />
  </interface>
+ <interface name="clken" internal="cic_ii_0.clken" type="conduit" dir="end">
+  <port name="clken" internal="clken" />
+ </interface>
  <interface name="clock" internal="cic_ii_0.clock" type="clock" dir="end">
   <port name="clk" internal="clk" />
  </interface>
@@ -67,7 +70,7 @@
    enabled="1"
    autoexport="1">
   <parameter name="CH_PER_INT" value="1" />
-  <parameter name="CLK_EN_PORT" value="false" />
+  <parameter name="CLK_EN_PORT" value="true" />
   <parameter name="D_DELAY" value="1" />
   <parameter name="FILTER_TYPE" value="decimator" />
   <parameter name="INTERFACES" value="1" />

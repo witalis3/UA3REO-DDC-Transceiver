@@ -4,8 +4,8 @@ ChansPerPhyIn : 1
 ChansPerPhyOut : 1 
 InWidth : 32 
 InFracWidth : 0 
-OutWidth : 54 
-OutFullWidth : 54 
+OutWidth : 64 
+OutFullWidth : 64 
 OutFracWidth : 0 
 OutFullFracWidth : 0 
 nChans : 64 
@@ -14,6 +14,6 @@ clockRate : 122.880
 inRate : 0.048 
 interpN : 1 
 decimN : 1 
-busDataWidth : 16 
+busDataWidth : 32 
 bankInWidth : 0 
 modeWidth : 0 

@@ -8,6 +8,7 @@
 			out_error : out std_logic_vector(1 downto 0);                     -- error
 			out_valid : out std_logic;                                        -- valid
 			out_ready : in  std_logic                     := 'X';             -- ready
+			clken     : in  std_logic                     := 'X';             -- clken
 			clk       : in  std_logic                     := 'X';             -- clk
 			reset_n   : in  std_logic                     := 'X'              -- reset_n
 		);

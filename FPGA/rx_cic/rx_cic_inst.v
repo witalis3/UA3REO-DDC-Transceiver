@@ -8,6 +8,7 @@
 		.out_valid (<connected-to-out_valid>), //          .valid
 		.out_ready (<connected-to-out_ready>), //          .ready
 		.clk       (<connected-to-clk>),       //     clock.clk
-		.reset_n   (<connected-to-reset_n>)    //     reset.reset_n
+		.reset_n   (<connected-to-reset_n>),   //     reset.reset_n
+		.clken     (<connected-to-clken>)      //     clken.clken
 	);
 

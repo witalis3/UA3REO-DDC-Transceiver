@@ -225,15 +225,16 @@ static inline void FPGA_fpgadata_sendparam(void)
 	}
 	//STAGE 2
 	//out PTT+PREAMP
-	bitWrite(FPGA_fpgadata_out_tmp8, 0, (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)); //RX1
+	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX_Type != VFO_SEPARATE && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)); //RX2
+	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)); //TX
+	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_DITH);
+	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
+	if (TRX_on_TX()) bitWrite(FPGA_fpgadata_out_tmp8, 4, true); //shutdown ADC on TX
+	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX.ADC_RAND);
+	bitWrite(FPGA_fpgadata_out_tmp8, 6, TRX.ADC_PGA);
 	if (!TRX_on_TX())
-		bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX.ADC_Driver);
-	bitWrite(FPGA_fpgadata_out_tmp8, 2, TRX.ADC_DITH);
-	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_SHDN);
-	if (TRX_on_TX())
-		bitWrite(FPGA_fpgadata_out_tmp8, 3, true);
-	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_RAND);
-	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX.ADC_PGA);
+		bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX.ADC_Driver);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
 	FPGA_clockFall();
@@ -514,7 +515,7 @@ static inline void FPGA_fpgadata_sendiq(void)
 	q31_t FPGA_fpgadata_out_q_tmp32 = 0;
 	q31_t FPGA_fpgadata_out_i_tmp32 = 0;
 	arm_float_to_q31((float32_t *)&FPGA_Audio_SendBuffer_Q[FPGA_Audio_Buffer_Index], &FPGA_fpgadata_out_q_tmp32, 1);
-	arm_float_to_q31((float32_t *)&FPGA_Audio_SendBuffer_I[FPGA_Audio_Buffer_Index], &FPGA_fpgadata_out_q_tmp32, 1);
+	arm_float_to_q31((float32_t *)&FPGA_Audio_SendBuffer_I[FPGA_Audio_Buffer_Index], &FPGA_fpgadata_out_i_tmp32, 1);
 	FPGA_samples++;
 	
 	//STAGE 2 out Q

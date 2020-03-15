@@ -16,7 +16,7 @@ IQ_valid,
 DATA_BUS,
 NCO1_freq,
 preamp_enable,
-rx,
+rx1,
 tx,
 TX_I,
 TX_Q,
@@ -34,7 +34,9 @@ CICFIR_GAIN,
 TX_CICFIR_GAIN,
 DAC_GAIN,
 ADC_OFFSET,
-NCO2_freq
+NCO2_freq,
+rx2,
+tx_iq_valid
 );
 
 input clk_in;
@@ -54,7 +56,8 @@ input IQ_valid;
 output reg unsigned [21:0] NCO1_freq=242347;
 output reg unsigned [21:0] NCO2_freq=242347;
 output reg preamp_enable=0;
-output reg rx=1;
+output reg rx1=1;
+output reg rx2=0;
 output reg tx=0;
 output reg audio_clk_en=1;
 output reg signed [31:0] TX_I=0;
@@ -72,6 +75,7 @@ output reg unsigned [7:0] CICFIR_GAIN=32;
 output reg unsigned [7:0] TX_CICFIR_GAIN=32;
 output reg unsigned [7:0] DAC_GAIN=32;
 output reg signed [15:0] ADC_OFFSET=0;
+output reg tx_iq_valid = 0;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -122,6 +126,7 @@ begin
 		end
 		else if(DATA_BUS[7:0]=='d3) //TX IQ
 		begin
+			tx_iq_valid=0;
 			k=300;
 		end
 		else if(DATA_BUS[7:0]=='d4) //RX IQ
@@ -146,21 +151,14 @@ begin
 	end
 	else if (k==100) //GET PARAMS
 	begin
-		ADC_PGA=DATA_BUS[5:5];
-		ADC_RAND=DATA_BUS[4:4];
-		ADC_SHDN=DATA_BUS[3:3];
-		ADC_DITH=DATA_BUS[2:2];
-		preamp_enable=DATA_BUS[1:1];
-		if(DATA_BUS[0:0]==1)
-		begin
-			tx=1;
-			rx=0;
-		end
-		else
-		begin
-			tx=0;
-			rx=1;
-		end
+		rx1=DATA_BUS[0:0];
+		rx2=DATA_BUS[1:1];
+		tx=DATA_BUS[2:2];
+		ADC_DITH=DATA_BUS[3:3];
+		ADC_SHDN=DATA_BUS[4:4];
+		ADC_RAND=DATA_BUS[5:5];
+		ADC_PGA=DATA_BUS[6:6];
+		preamp_enable=DATA_BUS[7:7];
 		k=101;
 	end
 	else if (k==101)
@@ -290,6 +288,7 @@ begin
 		I_HOLD[7:0]=DATA_BUS[7:0];
 		TX_I[31:0]=I_HOLD[31:0];
 		TX_Q[31:0]=Q_HOLD[31:0];
+		tx_iq_valid=1;
 		k=999;
 	end
 	else if (k==400) //RX1 IQ

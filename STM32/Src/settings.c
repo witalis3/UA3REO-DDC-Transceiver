@@ -209,7 +209,7 @@ void LoadSettings(bool clear)
 		TRX.TWO_SIGNAL_TUNE = false;  //Двухсигнальный генератор в режиме TUNE (1+2кГц)
 		TRX.CIC_GAINER_val = 88;	  //Смещение с выхода CIC
 		TRX.CICFIR_GAINER_val = 54;   //Смещение с выхода CIC компенсатора
-		TRX.TXCICFIR_GAINER_val = 32; //Смещение с выхода TX-CIC компенсатора
+		TRX.TXCICFIR_GAINER_val = 56; //Смещение с выхода TX-CIC компенсатора
 		TRX.DAC_GAINER_val = 30;	  //Смещение DAC корректора
 		TRX.IF_Gain = 70;			  //Усиление ПЧ, dB (до всех обработок и AGC)
 		TRX.CW_KEYER = true;		  //Автоматический ключ

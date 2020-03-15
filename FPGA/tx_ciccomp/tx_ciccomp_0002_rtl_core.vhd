@@ -16,7 +16,7 @@
 -- ---------------------------------------------------------------------------
 
 -- VHDL created from tx_ciccomp_0002_rtl_core
--- VHDL created on Sun Feb 23 20:38:40 2020
+-- VHDL created on Sun Mar 15 00:27:51 2020
 
 
 library IEEE;
@@ -38,7 +38,7 @@ entity tx_ciccomp_0002_rtl_core is
         xIn_0 : in std_logic_vector(31 downto 0);  -- sfix32
         xOut_v : out std_logic_vector(0 downto 0);  -- ufix1
         xOut_c : out std_logic_vector(7 downto 0);  -- ufix8
-        xOut_0 : out std_logic_vector(53 downto 0);  -- sfix54
+        xOut_0 : out std_logic_vector(63 downto 0);  -- sfix64
         clk : in std_logic;
         areset : in std_logic
     );
@@ -61,8 +61,8 @@ architecture normal of tx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_run_ctrl : STD_LOGIC_VECTOR (2 downto 0);
     signal u0_m0_wo0_memread_q : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_compute_q : STD_LOGIC_VECTOR (0 downto 0);
-    signal d_u0_m0_wo0_compute_q_15_q : STD_LOGIC_VECTOR (0 downto 0);
     signal d_u0_m0_wo0_compute_q_16_q : STD_LOGIC_VECTOR (0 downto 0);
+    signal d_u0_m0_wo0_compute_q_17_q : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_wi0_r0_ra0_count0_inner_q : STD_LOGIC_VECTOR (6 downto 0);
     signal u0_m0_wo0_wi0_r0_ra0_count0_inner_i : SIGNED (6 downto 0);
     attribute preserve : boolean;
@@ -86,43 +86,71 @@ architecture normal of tx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_wi0_r0_memr0_ab : STD_LOGIC_VECTOR (5 downto 0);
     signal u0_m0_wo0_wi0_r0_memr0_iq : STD_LOGIC_VECTOR (31 downto 0);
     signal u0_m0_wo0_wi0_r0_memr0_q : STD_LOGIC_VECTOR (31 downto 0);
+    signal d_u0_m0_wo0_wi0_r0_memr0_q_14_q : STD_LOGIC_VECTOR (31 downto 0);
     signal u0_m0_wo0_ca0_q : STD_LOGIC_VECTOR (5 downto 0);
     signal u0_m0_wo0_ca0_i : UNSIGNED (5 downto 0);
     attribute preserve of u0_m0_wo0_ca0_i : signal is true;
-    signal u0_m0_wo0_cm0_q : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_cm0_q : STD_LOGIC_VECTOR (25 downto 0);
     signal u0_m0_wo0_aseq_q : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_aseq_eq : std_logic;
-    signal u0_m0_wo0_accum_a : STD_LOGIC_VECTOR (53 downto 0);
-    signal u0_m0_wo0_accum_b : STD_LOGIC_VECTOR (53 downto 0);
-    signal u0_m0_wo0_accum_i : STD_LOGIC_VECTOR (53 downto 0);
-    signal u0_m0_wo0_accum_o : STD_LOGIC_VECTOR (53 downto 0);
-    signal u0_m0_wo0_accum_q : STD_LOGIC_VECTOR (53 downto 0);
+    signal u0_m0_wo0_accum_a : STD_LOGIC_VECTOR (63 downto 0);
+    signal u0_m0_wo0_accum_b : STD_LOGIC_VECTOR (63 downto 0);
+    signal u0_m0_wo0_accum_i : STD_LOGIC_VECTOR (63 downto 0);
+    signal u0_m0_wo0_accum_o : STD_LOGIC_VECTOR (63 downto 0);
+    signal u0_m0_wo0_accum_q : STD_LOGIC_VECTOR (63 downto 0);
     signal u0_m0_wo0_oseq_q : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_oseq_eq : std_logic;
     signal u0_m0_wo0_oseq_gated_reg_q : STD_LOGIC_VECTOR (0 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im0_a0 : STD_LOGIC_VECTOR (17 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im0_b0 : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_a0 : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_b0 : STD_LOGIC_VECTOR (16 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_im0_s1 : STD_LOGIC_VECTOR (33 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_im0_reset : std_logic;
     signal u0_m0_wo0_mtree_mult1_0_im0_q : STD_LOGIC_VECTOR (33 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im4_a0 : STD_LOGIC_VECTOR (15 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im4_b0 : STD_LOGIC_VECTOR (14 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im4_s1 : STD_LOGIC_VECTOR (30 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im4_reset : std_logic;
-    signal u0_m0_wo0_mtree_mult1_0_im4_q : STD_LOGIC_VECTOR (30 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_a : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_b : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_o : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_q : STD_LOGIC_VECTOR (48 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im3_a0 : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im3_b0 : STD_LOGIC_VECTOR (14 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im3_s1 : STD_LOGIC_VECTOR (32 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im3_reset : std_logic;
+    signal u0_m0_wo0_mtree_mult1_0_im3_q : STD_LOGIC_VECTOR (32 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im7_a0 : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im7_b0 : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im7_s1 : STD_LOGIC_VECTOR (26 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im7_reset : std_logic;
+    signal u0_m0_wo0_mtree_mult1_0_im7_q : STD_LOGIC_VECTOR (26 downto 0);
+    signal d_u0_m0_wo0_mtree_mult1_0_bs8_b_14_q : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im11_a0 : STD_LOGIC_VECTOR (14 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im11_b0 : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im11_s1 : STD_LOGIC_VECTOR (23 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im11_reset : std_logic;
+    signal u0_m0_wo0_mtree_mult1_0_im11_q : STD_LOGIC_VECTOR (23 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_a : STD_LOGIC_VECTOR (58 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_b : STD_LOGIC_VECTOR (58 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_o : STD_LOGIC_VECTOR (58 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_q : STD_LOGIC_VECTOR (58 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_a : STD_LOGIC_VECTOR (59 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_b : STD_LOGIC_VECTOR (59 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_o : STD_LOGIC_VECTOR (59 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_q : STD_LOGIC_VECTOR (59 downto 0);
     signal u0_m0_wo0_wi0_r0_ra0_count0_run_q : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_oseq_gated_q : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_wi0_r0_ra0_resize_in : STD_LOGIC_VECTOR (5 downto 0);
     signal u0_m0_wo0_wi0_r0_ra0_resize_b : STD_LOGIC_VECTOR (5 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c : STD_LOGIC_VECTOR (14 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_align_8_q : STD_LOGIC_VECTOR (47 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_align_8_qint : STD_LOGIC_VECTOR (47 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bjB3_q : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs2_in : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs2_b : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs6_b : STD_LOGIC_VECTOR (14 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs9_in : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs9_b : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs1_in : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs1_b : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs4_in : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs4_b : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs8_b : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_join_14_q : STD_LOGIC_VECTOR (57 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_15_q : STD_LOGIC_VECTOR (49 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_15_qint : STD_LOGIC_VECTOR (49 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_17_q : STD_LOGIC_VECTOR (43 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_17_qint : STD_LOGIC_VECTOR (43 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bjB10_q : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bjA5_q : STD_LOGIC_VECTOR (17 downto 0);
 
 begin
 
@@ -179,12 +207,12 @@ begin
     GENERIC MAP ( width => 1, depth => 2, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_memread_q, xout => u0_m0_wo0_compute_q, clk => clk, aclr => areset );
 
-    -- d_u0_m0_wo0_compute_q_15(DELAY,57)@12 + 3
-    d_u0_m0_wo0_compute_q_15 : dspba_delay
-    GENERIC MAP ( width => 1, depth => 3, reset_kind => "ASYNC" )
-    PORT MAP ( xin => u0_m0_wo0_compute_q, xout => d_u0_m0_wo0_compute_q_15_q, clk => clk, aclr => areset );
+    -- d_u0_m0_wo0_compute_q_16(DELAY,66)@12 + 4
+    d_u0_m0_wo0_compute_q_16 : dspba_delay
+    GENERIC MAP ( width => 1, depth => 4, reset_kind => "ASYNC" )
+    PORT MAP ( xin => u0_m0_wo0_compute_q, xout => d_u0_m0_wo0_compute_q_16_q, clk => clk, aclr => areset );
 
-    -- u0_m0_wo0_aseq(SEQUENCE,33)@15 + 1
+    -- u0_m0_wo0_aseq(SEQUENCE,33)@16 + 1
     u0_m0_wo0_aseq_clkproc: PROCESS (clk, areset)
         variable u0_m0_wo0_aseq_c : SIGNED(8 downto 0);
     BEGIN
@@ -193,7 +221,7 @@ begin
             u0_m0_wo0_aseq_q <= "0";
             u0_m0_wo0_aseq_eq <= '0';
         ELSIF (clk'EVENT AND clk = '1') THEN
-            IF (d_u0_m0_wo0_compute_q_15_q = "1") THEN
+            IF (d_u0_m0_wo0_compute_q_16_q = "1") THEN
                 IF (u0_m0_wo0_aseq_c = "000000000") THEN
                     u0_m0_wo0_aseq_eq <= '1';
                 ELSE
@@ -209,10 +237,109 @@ begin
         END IF;
     END PROCESS;
 
-    -- d_u0_m0_wo0_compute_q_16(DELAY,58)@15 + 1
-    d_u0_m0_wo0_compute_q_16 : dspba_delay
+    -- d_u0_m0_wo0_compute_q_17(DELAY,67)@16 + 1
+    d_u0_m0_wo0_compute_q_17 : dspba_delay
     GENERIC MAP ( width => 1, depth => 1, reset_kind => "ASYNC" )
-    PORT MAP ( xin => d_u0_m0_wo0_compute_q_15_q, xout => d_u0_m0_wo0_compute_q_16_q, clk => clk, aclr => areset );
+    PORT MAP ( xin => d_u0_m0_wo0_compute_q_16_q, xout => d_u0_m0_wo0_compute_q_17_q, clk => clk, aclr => areset );
+
+    -- u0_m0_wo0_ca0(COUNTER,27)@12
+    -- low=0, high=63, step=1, init=0
+    u0_m0_wo0_ca0_clkproc: PROCESS (clk, areset)
+    BEGIN
+        IF (areset = '1') THEN
+            u0_m0_wo0_ca0_i <= TO_UNSIGNED(0, 6);
+        ELSIF (clk'EVENT AND clk = '1') THEN
+            IF (u0_m0_wo0_compute_q = "1") THEN
+                u0_m0_wo0_ca0_i <= u0_m0_wo0_ca0_i + 1;
+            END IF;
+        END IF;
+    END PROCESS;
+    u0_m0_wo0_ca0_q <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR(RESIZE(u0_m0_wo0_ca0_i, 6)));
+
+    -- u0_m0_wo0_cm0(LOOKUP,31)@12 + 1
+    u0_m0_wo0_cm0_clkproc: PROCESS (clk, areset)
+    BEGIN
+        IF (areset = '1') THEN
+            u0_m0_wo0_cm0_q <= "00000000000000000101100111";
+        ELSIF (clk'EVENT AND clk = '1') THEN
+            CASE (u0_m0_wo0_ca0_q) IS
+                WHEN "000000" => u0_m0_wo0_cm0_q <= "00000000000000000101100111";
+                WHEN "000001" => u0_m0_wo0_cm0_q <= "11111111111111110100111000";
+                WHEN "000010" => u0_m0_wo0_cm0_q <= "00000000000000010001101010";
+                WHEN "000011" => u0_m0_wo0_cm0_q <= "11111111111111101000010110";
+                WHEN "000100" => u0_m0_wo0_cm0_q <= "00000000000000011000100100";
+                WHEN "000101" => u0_m0_wo0_cm0_q <= "11111111111111110101101110";
+                WHEN "000110" => u0_m0_wo0_cm0_q <= "11111111111111011001100001";
+                WHEN "000111" => u0_m0_wo0_cm0_q <= "00000000000010011010111001";
+                WHEN "001000" => u0_m0_wo0_cm0_q <= "11111111111001111000011100";
+                WHEN "001001" => u0_m0_wo0_cm0_q <= "00000000001100111011000101";
+                WHEN "001010" => u0_m0_wo0_cm0_q <= "11111111100111011010111001";
+                WHEN "001011" => u0_m0_wo0_cm0_q <= "00000000101011011101010110";
+                WHEN "001100" => u0_m0_wo0_cm0_q <= "11111110110111010101001110";
+                WHEN "001101" => u0_m0_wo0_cm0_q <= "00000001110100001001000110";
+                WHEN "001110" => u0_m0_wo0_cm0_q <= "11111101001101010001100010";
+                WHEN "001111" => u0_m0_wo0_cm0_q <= "00000100001010001101010000";
+                WHEN "010000" => u0_m0_wo0_cm0_q <= "11111001111110101000011011";
+                WHEN "010001" => u0_m0_wo0_cm0_q <= "00001000011111111011110010";
+                WHEN "010010" => u0_m0_wo0_cm0_q <= "11110100010001011001000011";
+                WHEN "010011" => u0_m0_wo0_cm0_q <= "00001111110110111011100100";
+                WHEN "010100" => u0_m0_wo0_cm0_q <= "11101010111100101001101111";
+                WHEN "010101" => u0_m0_wo0_cm0_q <= "00011011011110111100001000";
+                WHEN "010110" => u0_m0_wo0_cm0_q <= "11011100101010011110101001";
+                WHEN "010111" => u0_m0_wo0_cm0_q <= "00101100110010111001111000";
+                WHEN "011000" => u0_m0_wo0_cm0_q <= "11000111111101100110011100";
+                WHEN "011001" => u0_m0_wo0_cm0_q <= "01000101001011011110000111";
+                WHEN "011010" => u0_m0_wo0_cm0_q <= "10101011110100000111011011";
+                WHEN "011011" => u0_m0_wo0_cm0_q <= "01100100100100100101010110";
+                WHEN "011100" => u0_m0_wo0_cm0_q <= "10001011010001110011000111";
+                WHEN "011101" => u0_m0_wo0_cm0_q <= "01111111111111111111111111";
+                WHEN "011110" => u0_m0_wo0_cm0_q <= "10000101101111110101101010";
+                WHEN "011111" => u0_m0_wo0_cm0_q <= "01000110010100101111110110";
+                WHEN "100000" => u0_m0_wo0_cm0_q <= "01000110010100101111110110";
+                WHEN "100001" => u0_m0_wo0_cm0_q <= "10000101101111110101101010";
+                WHEN "100010" => u0_m0_wo0_cm0_q <= "01111111111111111111111111";
+                WHEN "100011" => u0_m0_wo0_cm0_q <= "10001011010001110011000111";
+                WHEN "100100" => u0_m0_wo0_cm0_q <= "01100100100100100101010110";
+                WHEN "100101" => u0_m0_wo0_cm0_q <= "10101011110100000111011011";
+                WHEN "100110" => u0_m0_wo0_cm0_q <= "01000101001011011110000111";
+                WHEN "100111" => u0_m0_wo0_cm0_q <= "11000111111101100110011100";
+                WHEN "101000" => u0_m0_wo0_cm0_q <= "00101100110010111001111000";
+                WHEN "101001" => u0_m0_wo0_cm0_q <= "11011100101010011110101001";
+                WHEN "101010" => u0_m0_wo0_cm0_q <= "00011011011110111100001000";
+                WHEN "101011" => u0_m0_wo0_cm0_q <= "11101010111100101001101111";
+                WHEN "101100" => u0_m0_wo0_cm0_q <= "00001111110110111011100100";
+                WHEN "101101" => u0_m0_wo0_cm0_q <= "11110100010001011001000011";
+                WHEN "101110" => u0_m0_wo0_cm0_q <= "00001000011111111011110010";
+                WHEN "101111" => u0_m0_wo0_cm0_q <= "11111001111110101000011011";
+                WHEN "110000" => u0_m0_wo0_cm0_q <= "00000100001010001101010000";
+                WHEN "110001" => u0_m0_wo0_cm0_q <= "11111101001101010001100010";
+                WHEN "110010" => u0_m0_wo0_cm0_q <= "00000001110100001001000110";
+                WHEN "110011" => u0_m0_wo0_cm0_q <= "11111110110111010101001110";
+                WHEN "110100" => u0_m0_wo0_cm0_q <= "00000000101011011101010110";
+                WHEN "110101" => u0_m0_wo0_cm0_q <= "11111111100111011010111001";
+                WHEN "110110" => u0_m0_wo0_cm0_q <= "00000000001100111011000101";
+                WHEN "110111" => u0_m0_wo0_cm0_q <= "11111111111001111000011100";
+                WHEN "111000" => u0_m0_wo0_cm0_q <= "00000000000010011010111001";
+                WHEN "111001" => u0_m0_wo0_cm0_q <= "11111111111111011001100001";
+                WHEN "111010" => u0_m0_wo0_cm0_q <= "11111111111111110101101110";
+                WHEN "111011" => u0_m0_wo0_cm0_q <= "00000000000000011000100100";
+                WHEN "111100" => u0_m0_wo0_cm0_q <= "11111111111111101000010110";
+                WHEN "111101" => u0_m0_wo0_cm0_q <= "00000000000000010001101010";
+                WHEN "111110" => u0_m0_wo0_cm0_q <= "11111111111111110100111000";
+                WHEN "111111" => u0_m0_wo0_cm0_q <= "00000000000000000101100111";
+                WHEN OTHERS => -- unreachable
+                               u0_m0_wo0_cm0_q <= (others => '-');
+            END CASE;
+        END IF;
+    END PROCESS;
+
+    -- u0_m0_wo0_mtree_mult1_0_bs8(BITSELECT,51)@13
+    u0_m0_wo0_mtree_mult1_0_bs8_b <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_q(25 downto 17));
+
+    -- d_u0_m0_wo0_mtree_mult1_0_bs8_b_14(DELAY,69)@13 + 1
+    d_u0_m0_wo0_mtree_mult1_0_bs8_b_14 : dspba_delay
+    GENERIC MAP ( width => 9, depth => 1, reset_kind => "ASYNC" )
+    PORT MAP ( xin => u0_m0_wo0_mtree_mult1_0_bs8_b, xout => d_u0_m0_wo0_mtree_mult1_0_bs8_b_14_q, clk => clk, aclr => areset );
 
     -- u0_m0_wo0_wi0_r0_ra0_count1(COUNTER,22)@12
     -- low=0, high=63, step=1, init=0
@@ -280,12 +407,12 @@ begin
     u0_m0_wo0_wi0_r0_ra0_resize_in <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra0_add_0_0_q(5 downto 0));
     u0_m0_wo0_wi0_r0_ra0_resize_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra0_resize_in(5 downto 0));
 
-    -- d_xIn_0_13(DELAY,55)@10 + 3
+    -- d_xIn_0_13(DELAY,64)@10 + 3
     d_xIn_0_13 : dspba_delay
     GENERIC MAP ( width => 32, depth => 3, reset_kind => "ASYNC" )
     PORT MAP ( xin => xIn_0, xout => d_xIn_0_13_q, clk => clk, aclr => areset );
 
-    -- d_in0_m0_wi0_wo0_assign_id1_q_13(DELAY,56)@10 + 3
+    -- d_in0_m0_wi0_wo0_assign_id1_q_13(DELAY,65)@10 + 3
     d_in0_m0_wi0_wo0_assign_id1_q_13 : dspba_delay
     GENERIC MAP ( width => 1, depth => 3, reset_kind => "ASYNC" )
     PORT MAP ( xin => xIn_v, xout => d_in0_m0_wi0_wo0_assign_id1_q_13_q, clk => clk, aclr => areset );
@@ -346,110 +473,27 @@ begin
     );
     u0_m0_wo0_wi0_r0_memr0_q <= u0_m0_wo0_wi0_r0_memr0_iq(31 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select(BITSELECT,54)@13
-    u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_memr0_q(16 downto 0));
-    u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_memr0_q(31 downto 17));
+    -- d_u0_m0_wo0_wi0_r0_memr0_q_14(DELAY,68)@13 + 1
+    d_u0_m0_wo0_wi0_r0_memr0_q_14 : dspba_delay
+    GENERIC MAP ( width => 32, depth => 1, reset_kind => "ASYNC" )
+    PORT MAP ( xin => u0_m0_wo0_wi0_r0_memr0_q, xout => d_u0_m0_wo0_wi0_r0_memr0_q_14_q, clk => clk, aclr => areset );
 
-    -- u0_m0_wo0_ca0(COUNTER,27)@12
-    -- low=0, high=63, step=1, init=0
-    u0_m0_wo0_ca0_clkproc: PROCESS (clk, areset)
-    BEGIN
-        IF (areset = '1') THEN
-            u0_m0_wo0_ca0_i <= TO_UNSIGNED(0, 6);
-        ELSIF (clk'EVENT AND clk = '1') THEN
-            IF (u0_m0_wo0_compute_q = "1") THEN
-                u0_m0_wo0_ca0_i <= u0_m0_wo0_ca0_i + 1;
-            END IF;
-        END IF;
-    END PROCESS;
-    u0_m0_wo0_ca0_q <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR(RESIZE(u0_m0_wo0_ca0_i, 6)));
+    -- u0_m0_wo0_mtree_mult1_0_bs9(BITSELECT,52)@14
+    u0_m0_wo0_mtree_mult1_0_bs9_in <= STD_LOGIC_VECTOR(d_u0_m0_wo0_wi0_r0_memr0_q_14_q(16 downto 0));
+    u0_m0_wo0_mtree_mult1_0_bs9_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs9_in(16 downto 0));
 
-    -- u0_m0_wo0_cm0(LOOKUP,31)@12 + 1
-    u0_m0_wo0_cm0_clkproc: PROCESS (clk, areset)
-    BEGIN
-        IF (areset = '1') THEN
-            u0_m0_wo0_cm0_q <= "0000000000000000";
-        ELSIF (clk'EVENT AND clk = '1') THEN
-            CASE (u0_m0_wo0_ca0_q) IS
-                WHEN "000000" => u0_m0_wo0_cm0_q <= "0000000000000000";
-                WHEN "000001" => u0_m0_wo0_cm0_q <= "0000000000000000";
-                WHEN "000010" => u0_m0_wo0_cm0_q <= "0000000000000001";
-                WHEN "000011" => u0_m0_wo0_cm0_q <= "1111111111111111";
-                WHEN "000100" => u0_m0_wo0_cm0_q <= "0000000000000001";
-                WHEN "000101" => u0_m0_wo0_cm0_q <= "1111111111111111";
-                WHEN "000110" => u0_m0_wo0_cm0_q <= "0000000000000000";
-                WHEN "000111" => u0_m0_wo0_cm0_q <= "0000000000000010";
-                WHEN "001000" => u0_m0_wo0_cm0_q <= "1111111111111000";
-                WHEN "001001" => u0_m0_wo0_cm0_q <= "0000000000010011";
-                WHEN "001010" => u0_m0_wo0_cm0_q <= "1111111111011001";
-                WHEN "001011" => u0_m0_wo0_cm0_q <= "0000000001001000";
-                WHEN "001100" => u0_m0_wo0_cm0_q <= "1111111110000100";
-                WHEN "001101" => u0_m0_wo0_cm0_q <= "0000000011001010";
-                WHEN "001110" => u0_m0_wo0_cm0_q <= "1111111011000100";
-                WHEN "001111" => u0_m0_wo0_cm0_q <= "0000000111011110";
-                WHEN "010000" => u0_m0_wo0_cm0_q <= "1111110101000011";
-                WHEN "010001" => u0_m0_wo0_cm0_q <= "0000001111101000";
-                WHEN "010010" => u0_m0_wo0_cm0_q <= "1111101010001100";
-                WHEN "010011" => u0_m0_wo0_cm0_q <= "0000011101110100";
-                WHEN "010100" => u0_m0_wo0_cm0_q <= "1111010111111100";
-                WHEN "010101" => u0_m0_wo0_cm0_q <= "0000110101000000";
-                WHEN "010110" => u0_m0_wo0_cm0_q <= "1110111010110001";
-                WHEN "010111" => u0_m0_wo0_cm0_q <= "0001011001011101";
-                WHEN "011000" => u0_m0_wo0_cm0_q <= "1110001101010100";
-                WHEN "011001" => u0_m0_wo0_cm0_q <= "0010010010010001";
-                WHEN "011010" => u0_m0_wo0_cm0_q <= "1101000101110010";
-                WHEN "011011" => u0_m0_wo0_cm0_q <= "0011101101011100";
-                WHEN "011100" => u0_m0_wo0_cm0_q <= "1011001111101011";
-                WHEN "011101" => u0_m0_wo0_cm0_q <= "0110000111011101";
-                WHEN "011110" => u0_m0_wo0_cm0_q <= "1000010001111101";
-                WHEN "011111" => u0_m0_wo0_cm0_q <= "0111111111111110";
-                WHEN "100000" => u0_m0_wo0_cm0_q <= "0111111111111110";
-                WHEN "100001" => u0_m0_wo0_cm0_q <= "1000010001111101";
-                WHEN "100010" => u0_m0_wo0_cm0_q <= "0110000111011101";
-                WHEN "100011" => u0_m0_wo0_cm0_q <= "1011001111101011";
-                WHEN "100100" => u0_m0_wo0_cm0_q <= "0011101101011100";
-                WHEN "100101" => u0_m0_wo0_cm0_q <= "1101000101110010";
-                WHEN "100110" => u0_m0_wo0_cm0_q <= "0010010010010001";
-                WHEN "100111" => u0_m0_wo0_cm0_q <= "1110001101010100";
-                WHEN "101000" => u0_m0_wo0_cm0_q <= "0001011001011101";
-                WHEN "101001" => u0_m0_wo0_cm0_q <= "1110111010110001";
-                WHEN "101010" => u0_m0_wo0_cm0_q <= "0000110101000000";
-                WHEN "101011" => u0_m0_wo0_cm0_q <= "1111010111111100";
-                WHEN "101100" => u0_m0_wo0_cm0_q <= "0000011101110100";
-                WHEN "101101" => u0_m0_wo0_cm0_q <= "1111101010001100";
-                WHEN "101110" => u0_m0_wo0_cm0_q <= "0000001111101000";
-                WHEN "101111" => u0_m0_wo0_cm0_q <= "1111110101000011";
-                WHEN "110000" => u0_m0_wo0_cm0_q <= "0000000111011110";
-                WHEN "110001" => u0_m0_wo0_cm0_q <= "1111111011000100";
-                WHEN "110010" => u0_m0_wo0_cm0_q <= "0000000011001010";
-                WHEN "110011" => u0_m0_wo0_cm0_q <= "1111111110000100";
-                WHEN "110100" => u0_m0_wo0_cm0_q <= "0000000001001000";
-                WHEN "110101" => u0_m0_wo0_cm0_q <= "1111111111011001";
-                WHEN "110110" => u0_m0_wo0_cm0_q <= "0000000000010011";
-                WHEN "110111" => u0_m0_wo0_cm0_q <= "1111111111111000";
-                WHEN "111000" => u0_m0_wo0_cm0_q <= "0000000000000010";
-                WHEN "111001" => u0_m0_wo0_cm0_q <= "0000000000000000";
-                WHEN "111010" => u0_m0_wo0_cm0_q <= "1111111111111111";
-                WHEN "111011" => u0_m0_wo0_cm0_q <= "0000000000000001";
-                WHEN "111100" => u0_m0_wo0_cm0_q <= "1111111111111111";
-                WHEN "111101" => u0_m0_wo0_cm0_q <= "0000000000000001";
-                WHEN "111110" => u0_m0_wo0_cm0_q <= "0000000000000000";
-                WHEN "111111" => u0_m0_wo0_cm0_q <= "0000000000000000";
-                WHEN OTHERS => -- unreachable
-                               u0_m0_wo0_cm0_q <= (others => '-');
-            END CASE;
-        END IF;
-    END PROCESS;
+    -- u0_m0_wo0_mtree_mult1_0_bjB10(BITJOIN,53)@14
+    u0_m0_wo0_mtree_mult1_0_bjB10_q <= GND_q & u0_m0_wo0_mtree_mult1_0_bs9_b;
 
-    -- u0_m0_wo0_mtree_mult1_0_im4(MULT,47)@13 + 2
-    u0_m0_wo0_mtree_mult1_0_im4_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_q);
-    u0_m0_wo0_mtree_mult1_0_im4_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c);
-    u0_m0_wo0_mtree_mult1_0_im4_reset <= areset;
-    u0_m0_wo0_mtree_mult1_0_im4_component : lpm_mult
+    -- u0_m0_wo0_mtree_mult1_0_im7(MULT,50)@14 + 2
+    u0_m0_wo0_mtree_mult1_0_im7_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bjB10_q);
+    u0_m0_wo0_mtree_mult1_0_im7_b0 <= STD_LOGIC_VECTOR(d_u0_m0_wo0_mtree_mult1_0_bs8_b_14_q);
+    u0_m0_wo0_mtree_mult1_0_im7_reset <= areset;
+    u0_m0_wo0_mtree_mult1_0_im7_component : lpm_mult
     GENERIC MAP (
-        lpm_widtha => 16,
-        lpm_widthb => 15,
-        lpm_widthp => 31,
+        lpm_widtha => 18,
+        lpm_widthb => 9,
+        lpm_widthp => 27,
         lpm_widths => 1,
         lpm_type => "LPM_MULT",
         lpm_representation => "SIGNED",
@@ -457,34 +501,103 @@ begin
         lpm_pipeline => 2
     )
     PORT MAP (
-        dataa => u0_m0_wo0_mtree_mult1_0_im4_a0,
-        datab => u0_m0_wo0_mtree_mult1_0_im4_b0,
+        dataa => u0_m0_wo0_mtree_mult1_0_im7_a0,
+        datab => u0_m0_wo0_mtree_mult1_0_im7_b0,
         clken => VCC_q(0),
-        aclr => u0_m0_wo0_mtree_mult1_0_im4_reset,
+        aclr => u0_m0_wo0_mtree_mult1_0_im7_reset,
         clock => clk,
-        result => u0_m0_wo0_mtree_mult1_0_im4_s1
+        result => u0_m0_wo0_mtree_mult1_0_im7_s1
     );
-    u0_m0_wo0_mtree_mult1_0_im4_q <= u0_m0_wo0_mtree_mult1_0_im4_s1;
+    u0_m0_wo0_mtree_mult1_0_im7_q <= u0_m0_wo0_mtree_mult1_0_im7_s1;
 
-    -- u0_m0_wo0_mtree_mult1_0_align_8(BITSHIFT,51)@15
-    u0_m0_wo0_mtree_mult1_0_align_8_qint <= u0_m0_wo0_mtree_mult1_0_im4_q & "00000000000000000";
-    u0_m0_wo0_mtree_mult1_0_align_8_q <= u0_m0_wo0_mtree_mult1_0_align_8_qint(47 downto 0);
+    -- u0_m0_wo0_mtree_mult1_0_align_17(BITSHIFT,60)@16
+    u0_m0_wo0_mtree_mult1_0_align_17_qint <= u0_m0_wo0_mtree_mult1_0_im7_q & "00000000000000000";
+    u0_m0_wo0_mtree_mult1_0_align_17_q <= u0_m0_wo0_mtree_mult1_0_align_17_qint(43 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_0_bjB3(BITJOIN,46)@13
-    u0_m0_wo0_mtree_mult1_0_bjB3_q <= GND_q & u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b;
+    -- u0_m0_wo0_mtree_mult1_0_bs6(BITSELECT,49)@13
+    u0_m0_wo0_mtree_mult1_0_bs6_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_memr0_q(31 downto 17));
 
-    -- u0_m0_wo0_mtree_mult1_0_im0(MULT,43)@13 + 2
-    u0_m0_wo0_mtree_mult1_0_im0_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bjB3_q);
-    u0_m0_wo0_mtree_mult1_0_im0_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_q);
-    u0_m0_wo0_mtree_mult1_0_im0_reset <= areset;
-    u0_m0_wo0_mtree_mult1_0_im0_component : lpm_mult
+    -- u0_m0_wo0_mtree_mult1_0_bs4(BITSELECT,47)@13
+    u0_m0_wo0_mtree_mult1_0_bs4_in <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_q(16 downto 0));
+    u0_m0_wo0_mtree_mult1_0_bs4_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs4_in(16 downto 0));
+
+    -- u0_m0_wo0_mtree_mult1_0_bjA5(BITJOIN,48)@13
+    u0_m0_wo0_mtree_mult1_0_bjA5_q <= GND_q & u0_m0_wo0_mtree_mult1_0_bs4_b;
+
+    -- u0_m0_wo0_mtree_mult1_0_im3(MULT,46)@13 + 2
+    u0_m0_wo0_mtree_mult1_0_im3_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bjA5_q);
+    u0_m0_wo0_mtree_mult1_0_im3_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs6_b);
+    u0_m0_wo0_mtree_mult1_0_im3_reset <= areset;
+    u0_m0_wo0_mtree_mult1_0_im3_component : lpm_mult
     GENERIC MAP (
         lpm_widtha => 18,
-        lpm_widthb => 16,
-        lpm_widthp => 34,
+        lpm_widthb => 15,
+        lpm_widthp => 33,
         lpm_widths => 1,
         lpm_type => "LPM_MULT",
         lpm_representation => "SIGNED",
+        lpm_hint => "DEDICATED_MULTIPLIER_CIRCUITRY=YES, MAXIMIZE_SPEED=5",
+        lpm_pipeline => 2
+    )
+    PORT MAP (
+        dataa => u0_m0_wo0_mtree_mult1_0_im3_a0,
+        datab => u0_m0_wo0_mtree_mult1_0_im3_b0,
+        clken => VCC_q(0),
+        aclr => u0_m0_wo0_mtree_mult1_0_im3_reset,
+        clock => clk,
+        result => u0_m0_wo0_mtree_mult1_0_im3_s1
+    );
+    u0_m0_wo0_mtree_mult1_0_im3_q <= u0_m0_wo0_mtree_mult1_0_im3_s1;
+
+    -- u0_m0_wo0_mtree_mult1_0_align_15(BITSHIFT,58)@15
+    u0_m0_wo0_mtree_mult1_0_align_15_qint <= u0_m0_wo0_mtree_mult1_0_im3_q & "00000000000000000";
+    u0_m0_wo0_mtree_mult1_0_align_15_q <= u0_m0_wo0_mtree_mult1_0_align_15_qint(49 downto 0);
+
+    -- u0_m0_wo0_mtree_mult1_0_im11(MULT,54)@13 + 2
+    u0_m0_wo0_mtree_mult1_0_im11_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs6_b);
+    u0_m0_wo0_mtree_mult1_0_im11_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs8_b);
+    u0_m0_wo0_mtree_mult1_0_im11_reset <= areset;
+    u0_m0_wo0_mtree_mult1_0_im11_component : lpm_mult
+    GENERIC MAP (
+        lpm_widtha => 15,
+        lpm_widthb => 9,
+        lpm_widthp => 24,
+        lpm_widths => 1,
+        lpm_type => "LPM_MULT",
+        lpm_representation => "SIGNED",
+        lpm_hint => "DEDICATED_MULTIPLIER_CIRCUITRY=YES, MAXIMIZE_SPEED=5",
+        lpm_pipeline => 2
+    )
+    PORT MAP (
+        dataa => u0_m0_wo0_mtree_mult1_0_im11_a0,
+        datab => u0_m0_wo0_mtree_mult1_0_im11_b0,
+        clken => VCC_q(0),
+        aclr => u0_m0_wo0_mtree_mult1_0_im11_reset,
+        clock => clk,
+        result => u0_m0_wo0_mtree_mult1_0_im11_s1
+    );
+    u0_m0_wo0_mtree_mult1_0_im11_q <= u0_m0_wo0_mtree_mult1_0_im11_s1;
+
+    -- u0_m0_wo0_mtree_mult1_0_bs2(BITSELECT,45)@13
+    u0_m0_wo0_mtree_mult1_0_bs2_in <= u0_m0_wo0_wi0_r0_memr0_q(16 downto 0);
+    u0_m0_wo0_mtree_mult1_0_bs2_b <= u0_m0_wo0_mtree_mult1_0_bs2_in(16 downto 0);
+
+    -- u0_m0_wo0_mtree_mult1_0_bs1(BITSELECT,44)@13
+    u0_m0_wo0_mtree_mult1_0_bs1_in <= u0_m0_wo0_cm0_q(16 downto 0);
+    u0_m0_wo0_mtree_mult1_0_bs1_b <= u0_m0_wo0_mtree_mult1_0_bs1_in(16 downto 0);
+
+    -- u0_m0_wo0_mtree_mult1_0_im0(MULT,43)@13 + 2
+    u0_m0_wo0_mtree_mult1_0_im0_a0 <= u0_m0_wo0_mtree_mult1_0_bs1_b;
+    u0_m0_wo0_mtree_mult1_0_im0_b0 <= u0_m0_wo0_mtree_mult1_0_bs2_b;
+    u0_m0_wo0_mtree_mult1_0_im0_reset <= areset;
+    u0_m0_wo0_mtree_mult1_0_im0_component : lpm_mult
+    GENERIC MAP (
+        lpm_widtha => 17,
+        lpm_widthb => 17,
+        lpm_widthp => 34,
+        lpm_widths => 1,
+        lpm_type => "LPM_MULT",
+        lpm_representation => "UNSIGNED",
         lpm_hint => "DEDICATED_MULTIPLIER_CIRCUITRY=YES, MAXIMIZE_SPEED=5",
         lpm_pipeline => 2
     )
@@ -498,9 +611,12 @@ begin
     );
     u0_m0_wo0_mtree_mult1_0_im0_q <= u0_m0_wo0_mtree_mult1_0_im0_s1;
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0(ADD,53)@15 + 1
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((48 downto 34 => u0_m0_wo0_mtree_mult1_0_im0_q(33)) & u0_m0_wo0_mtree_mult1_0_im0_q));
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((48 downto 48 => u0_m0_wo0_mtree_mult1_0_align_8_q(47)) & u0_m0_wo0_mtree_mult1_0_align_8_q));
+    -- u0_m0_wo0_mtree_mult1_0_join_14(BITJOIN,57)@15
+    u0_m0_wo0_mtree_mult1_0_join_14_q <= u0_m0_wo0_mtree_mult1_0_im11_q & u0_m0_wo0_mtree_mult1_0_im0_q;
+
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0(ADD,62)@15 + 1
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((58 downto 58 => u0_m0_wo0_mtree_mult1_0_join_14_q(57)) & u0_m0_wo0_mtree_mult1_0_join_14_q));
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((58 downto 50 => u0_m0_wo0_mtree_mult1_0_align_15_q(49)) & u0_m0_wo0_mtree_mult1_0_align_15_q));
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_clkproc: PROCESS (clk, areset)
     BEGIN
         IF (areset = '1') THEN
@@ -509,10 +625,23 @@ begin
             u0_m0_wo0_mtree_mult1_0_result_add_0_0_o <= STD_LOGIC_VECTOR(SIGNED(u0_m0_wo0_mtree_mult1_0_result_add_0_0_a) + SIGNED(u0_m0_wo0_mtree_mult1_0_result_add_0_0_b));
         END IF;
     END PROCESS;
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_o(48 downto 0);
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_o(58 downto 0);
 
-    -- u0_m0_wo0_accum(ADD,34)@16 + 1
-    u0_m0_wo0_accum_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((53 downto 49 => u0_m0_wo0_mtree_mult1_0_result_add_0_0_q(48)) & u0_m0_wo0_mtree_mult1_0_result_add_0_0_q));
+    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0(ADD,63)@16 + 1
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((59 downto 59 => u0_m0_wo0_mtree_mult1_0_result_add_0_0_q(58)) & u0_m0_wo0_mtree_mult1_0_result_add_0_0_q));
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((59 downto 44 => u0_m0_wo0_mtree_mult1_0_align_17_q(43)) & u0_m0_wo0_mtree_mult1_0_align_17_q));
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_clkproc: PROCESS (clk, areset)
+    BEGIN
+        IF (areset = '1') THEN
+            u0_m0_wo0_mtree_mult1_0_result_add_1_0_o <= (others => '0');
+        ELSIF (clk'EVENT AND clk = '1') THEN
+            u0_m0_wo0_mtree_mult1_0_result_add_1_0_o <= STD_LOGIC_VECTOR(SIGNED(u0_m0_wo0_mtree_mult1_0_result_add_1_0_a) + SIGNED(u0_m0_wo0_mtree_mult1_0_result_add_1_0_b));
+        END IF;
+    END PROCESS;
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_q <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_o(59 downto 0);
+
+    -- u0_m0_wo0_accum(ADD,34)@17 + 1
+    u0_m0_wo0_accum_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((63 downto 60 => u0_m0_wo0_mtree_mult1_0_result_add_1_0_q(59)) & u0_m0_wo0_mtree_mult1_0_result_add_1_0_q));
     u0_m0_wo0_accum_b <= STD_LOGIC_VECTOR(u0_m0_wo0_accum_q);
     u0_m0_wo0_accum_i <= u0_m0_wo0_accum_a;
     u0_m0_wo0_accum_clkproc: PROCESS (clk, areset)
@@ -520,7 +649,7 @@ begin
         IF (areset = '1') THEN
             u0_m0_wo0_accum_o <= (others => '0');
         ELSIF (clk'EVENT AND clk = '1') THEN
-            IF (d_u0_m0_wo0_compute_q_16_q = "1") THEN
+            IF (d_u0_m0_wo0_compute_q_17_q = "1") THEN
                 IF (u0_m0_wo0_aseq_q = "1") THEN
                     u0_m0_wo0_accum_o <= u0_m0_wo0_accum_i;
                 ELSE
@@ -529,12 +658,12 @@ begin
             END IF;
         END IF;
     END PROCESS;
-    u0_m0_wo0_accum_q <= u0_m0_wo0_accum_o(53 downto 0);
+    u0_m0_wo0_accum_q <= u0_m0_wo0_accum_o(63 downto 0);
 
     -- GND(CONSTANT,0)@0
     GND_q <= "0";
 
-    -- u0_m0_wo0_oseq(SEQUENCE,35)@15 + 1
+    -- u0_m0_wo0_oseq(SEQUENCE,35)@16 + 1
     u0_m0_wo0_oseq_clkproc: PROCESS (clk, areset)
         variable u0_m0_wo0_oseq_c : SIGNED(8 downto 0);
     BEGIN
@@ -543,7 +672,7 @@ begin
             u0_m0_wo0_oseq_q <= "0";
             u0_m0_wo0_oseq_eq <= '0';
         ELSIF (clk'EVENT AND clk = '1') THEN
-            IF (d_u0_m0_wo0_compute_q_15_q = "1") THEN
+            IF (d_u0_m0_wo0_compute_q_16_q = "1") THEN
                 IF (u0_m0_wo0_oseq_c = "000000000") THEN
                     u0_m0_wo0_oseq_eq <= '1';
                 ELSE
@@ -559,10 +688,10 @@ begin
         END IF;
     END PROCESS;
 
-    -- u0_m0_wo0_oseq_gated(LOGICAL,36)@16
-    u0_m0_wo0_oseq_gated_q <= u0_m0_wo0_oseq_q and d_u0_m0_wo0_compute_q_16_q;
+    -- u0_m0_wo0_oseq_gated(LOGICAL,36)@17
+    u0_m0_wo0_oseq_gated_q <= u0_m0_wo0_oseq_q and d_u0_m0_wo0_compute_q_17_q;
 
-    -- u0_m0_wo0_oseq_gated_reg(REG,37)@16 + 1
+    -- u0_m0_wo0_oseq_gated_reg(REG,37)@17 + 1
     u0_m0_wo0_oseq_gated_reg_clkproc: PROCESS (clk, areset)
     BEGIN
         IF (areset = '1') THEN
@@ -572,7 +701,7 @@ begin
         END IF;
     END PROCESS;
 
-    -- xOut(PORTOUT,42)@17 + 1
+    -- xOut(PORTOUT,42)@18 + 1
     xOut_v <= u0_m0_wo0_oseq_gated_reg_q;
     xOut_c <= STD_LOGIC_VECTOR("0000000" & GND_q);
     xOut_0 <= u0_m0_wo0_accum_q;

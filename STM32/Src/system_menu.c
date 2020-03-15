@@ -958,8 +958,8 @@ static void SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT(int8_t direction)
 	TRX.TXCICFIR_GAINER_val += direction;
 	if (TRX.TXCICFIR_GAINER_val < 16)
 		TRX.TXCICFIR_GAINER_val = 16;
-	if (TRX.TXCICFIR_GAINER_val > 54)
-		TRX.TXCICFIR_GAINER_val = 54;
+	if (TRX.TXCICFIR_GAINER_val > 64)
+		TRX.TXCICFIR_GAINER_val = 64;
 }
 
 static void SYSMENU_HANDL_ADC_DAC_SHIFT(int8_t direction)
