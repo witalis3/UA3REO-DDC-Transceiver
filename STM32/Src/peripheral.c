@@ -885,8 +885,6 @@ void PERIPH_ProcessFrontPanel(void)
 
 void PERIPH_ProcessSWRMeter(void)
 {
-	HAL_ADCEx_InjectedStart(&hadc1); // запускаем опрос инжект. каналов
-  HAL_ADC_PollForConversion(&hadc1,10); // ждём окончания
 	float32_t forward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / 65535.0f;
 	float32_t backward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / 65535.0f;
 

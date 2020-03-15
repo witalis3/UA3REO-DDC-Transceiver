@@ -65,6 +65,7 @@ void TRX_Init()
 	uint_fast8_t saved_mode = CurrentVFO()->Mode;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	TRX_setMode(saved_mode, CurrentVFO());
+	HAL_ADCEx_InjectedStart(&hadc1); //ADC RF-UNIT'а
 	HAL_ADCEx_InjectedStart(&hadc3); //ADC температуры ЦПУ
 	sendToDebug_strln("[OK] TRX inited");
 }

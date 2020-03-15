@@ -1,8 +1,10 @@
 #MicroXplorer Configuration settings - do not modify
 ADC1.ClockPrescaler=ADC_CLOCK_ASYNC_DIV6
+ADC1.ContinuousConvMode=ENABLE
 ADC1.EnableInjectedConversion=ENABLE
 ADC1.EnableRegularConversion=DISABLE
-ADC1.IPParameters=EnableRegularConversion,EnableInjectedConversion,InjectedRank-1\#ChannelInjectedConversion,InjectedChannel-1\#ChannelInjectedConversion,InjectedSamplingTime-1\#ChannelInjectedConversion,InjectedOffsetNumber-1\#ChannelInjectedConversion,InjectedRank-2\#ChannelInjectedConversion,InjectedChannel-2\#ChannelInjectedConversion,InjectedSamplingTime-2\#ChannelInjectedConversion,InjectedOffsetNumber-2\#ChannelInjectedConversion,InjNumberOfConversion,ClockPrescaler,master
+ADC1.ExternalTrigInjecConv=ADC_EXTERNALTRIGINJEC_T4_TRGO
+ADC1.IPParameters=EnableRegularConversion,EnableInjectedConversion,InjectedRank-1\#ChannelInjectedConversion,InjectedChannel-1\#ChannelInjectedConversion,InjectedSamplingTime-1\#ChannelInjectedConversion,InjectedOffsetNumber-1\#ChannelInjectedConversion,InjectedRank-2\#ChannelInjectedConversion,InjectedChannel-2\#ChannelInjectedConversion,InjectedSamplingTime-2\#ChannelInjectedConversion,InjectedOffsetNumber-2\#ChannelInjectedConversion,InjNumberOfConversion,ClockPrescaler,master,ExternalTrigInjecConv,ContinuousConvMode
 ADC1.InjNumberOfConversion=2
 ADC1.InjectedChannel-1\#ChannelInjectedConversion=ADC_CHANNEL_11
 ADC1.InjectedChannel-2\#ChannelInjectedConversion=ADC_CHANNEL_10
@@ -997,7 +999,7 @@ TIM4.TIM_MasterOutputTrigger=TIM_TRGO_UPDATE
 TIM5.AutoReloadPreload=TIM_AUTORELOAD_PRELOAD_DISABLE
 TIM5.IPParameters=Prescaler,Period,TIM_MasterOutputTrigger,AutoReloadPreload
 TIM5.Period=99
-TIM5.Prescaler=399
+TIM5.Prescaler=99
 TIM5.TIM_MasterOutputTrigger=TIM_TRGO_UPDATE
 TIM6.IPParameters=Prescaler,Period,TIM_MasterOutputTrigger
 TIM6.Period=199
