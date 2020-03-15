@@ -592,7 +592,6 @@ void TIM6_DAC_IRQHandler(void)
     if (HAL_GetTick() - powerdown_start_delay > POWERDOWN_TIMEOUT)
     {
       SaveSettings();
-      HAL_Delay(100);
       HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
       TRX_Inited = false;
       LCD_busy = true;
@@ -618,7 +617,7 @@ void TIM7_IRQHandler(void)
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
-  DEBUG_Transmit_FIFO_Events();
+  while(!DEBUG_Transmit_FIFO_Events()) {}
   /* USER CODE END TIM7_IRQn 1 */
 }
 

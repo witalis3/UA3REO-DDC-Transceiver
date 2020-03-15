@@ -64,7 +64,7 @@ extern void PERIPH_RF_UNIT_UpdateState(bool clean);
 extern void PERIPH_ProcessFrontPanel(void);
 extern void PERIPH_ProcessSWRMeter(void);
 extern void PERIPH_InitFrontPanel(void);
-extern bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint16_t cs_delay);
+extern bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs);
 
 volatile extern PERIPH_FrontPanel_Type PERIPH_FrontPanel;
 
