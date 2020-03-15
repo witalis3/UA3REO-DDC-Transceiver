@@ -77,6 +77,11 @@ output reg unsigned [7:0] DAC_GAIN=32;
 output reg signed [15:0] ADC_OFFSET=0;
 output reg tx_iq_valid = 0;
 
+reg rx1_sync=1;
+reg rx2_sync=0;
+reg tx_sync=0;
+reg ADC_SHDN_sync=0;
+
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
 reg         DATA_BUS_OE; // 1 - out 0 - in
@@ -151,11 +156,11 @@ begin
 	end
 	else if (k==100) //GET PARAMS
 	begin
-		rx1=DATA_BUS[0:0];
-		rx2=DATA_BUS[1:1];
-		tx=DATA_BUS[2:2];
+		rx1_sync=DATA_BUS[0:0];
+		rx2_sync=DATA_BUS[1:1];
+		tx_sync=DATA_BUS[2:2];
 		ADC_DITH=DATA_BUS[3:3];
-		ADC_SHDN=DATA_BUS[4:4];
+		ADC_SHDN_sync=DATA_BUS[4:4];
 		ADC_RAND=DATA_BUS[5:5];
 		ADC_PGA=DATA_BUS[6:6];
 		preamp_enable=DATA_BUS[7:7];
@@ -426,6 +431,15 @@ begin
 	begin
 		ADC_MIN=ADC_IN;
 	end
+end
+
+always @ (negedge adcclk_in)
+begin
+	//signal sync
+	rx1=rx1_sync;
+	rx2=rx2_sync;
+	tx=tx_sync;
+	ADC_SHDN=ADC_SHDN_sync;
 end
 
 endmodule

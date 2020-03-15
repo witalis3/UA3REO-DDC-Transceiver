@@ -565,7 +565,7 @@ void PERIPH_ProcessFrontPanel(void)
 			if (band >= 0)
 			{
 				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
-				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode,CurrentVFO());
+				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
 				TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 				TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
@@ -587,10 +587,11 @@ void PERIPH_ProcessFrontPanel(void)
 				band = 0;
 			if (band < 0)
 				band = BANDS_COUNT - 1;
+			
 			if (band >= 0)
 			{
 				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
-				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode,CurrentVFO());
+				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
 				TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 				TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
