@@ -941,7 +941,7 @@ static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT,
 	uint16_t mcp3008_value = 0;
 
 	outData[0] = 0x18 | channel;
-	bool res = PERIPH_SPI_Transmit(outData, inData, 3, CS_PORT, CS_PIN, false);
+	bool res = PERIPH_SPI_Transmit(outData, inData, 3, CS_PORT, CS_PIN, false, 0);
 	if (res == false)
 		return 65535;
 	mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
@@ -949,7 +949,7 @@ static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT,
 	return mcp3008_value;
 }
 
-bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs)
+bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint16_t cs_delay)
 {
 	if (PERIPH_SPI_busy)
 	{
@@ -960,6 +960,8 @@ bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPI
 	HAL_IWDG_Refresh(&hiwdg1);
 	memset(in_data, 0x00, count);
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
+	if(cs_delay>0)
+			HAL_Delay(cs_delay);
 	HAL_StatusTypeDef res = 0;
 	if(in_data==NULL)
 		res = HAL_SPI_Transmit(&hspi2, out_data, count, 0x100);

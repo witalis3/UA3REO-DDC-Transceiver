@@ -1309,7 +1309,7 @@ uint8_t USBD_AUDIO_StartReceive(USBD_HandleTypeDef *pdev)
 	USBD_AUDIO_HandleTypeDef *haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
 	if (pdev->pClassDataAUDIO != NULL)
 	{
-		sendToDebug_str("Start Receive USB Audio\r\n");
+		sendToDebug_str("[OK] Start Receive USB Audio\r\n");
 		USBD_LL_PrepareReceive(pdev, AUDIO_OUT_EP, haudio->TxBuffer + haudio->TxBufferIndex, AUDIO_OUT_PACKET);
 		return USBD_OK;
 	}

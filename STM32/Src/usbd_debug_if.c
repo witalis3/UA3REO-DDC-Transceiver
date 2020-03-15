@@ -4,7 +4,7 @@
 #include "lcd_driver.h"
 
 #define DEBUG_APP_RX_DATA_SIZE 8
-#define DEBUG_APP_TX_DATA_SIZE 8
+#define DEBUG_APP_TX_DATA_SIZE 1
 #define DEBUG_TX_FIFO_BUFFER_SIZE 2048
 
 static uint8_t DEBUG_UserRxBufferFS[DEBUG_APP_RX_DATA_SIZE];
@@ -186,19 +186,22 @@ void DEBUG_Transmit_FIFO(uint8_t *data, uint16_t length)
 }
 
 static uint8_t temp_buff[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
+static bool FIFO_Events_busy = false;
 bool DEBUG_Transmit_FIFO_Events(void)
 {
+	if(FIFO_Events_busy) return false;
 	if (debug_tx_fifo_head == debug_tx_fifo_tail)
 		return true;
 	USBD_DEBUG_HandleTypeDef *hcdc = (USBD_DEBUG_HandleTypeDef *)hUsbDeviceFS.pClassDataDEBUG;
 	if (hcdc->TxState != 0)
 		return false;
-
+	FIFO_Events_busy = true;
 	uint16_t indx = 0;
-
-	if (debug_tx_fifo_head < debug_tx_fifo_tail)
+	memset(temp_buff, 0x00, DEBUG_TX_FIFO_BUFFER_SIZE);
+	
+	if (debug_tx_fifo_tail > debug_tx_fifo_head)
 	{
-		for (int i = debug_tx_fifo_tail; i < DEBUG_TX_FIFO_BUFFER_SIZE; i++)
+		for (uint16_t i = debug_tx_fifo_tail; i < DEBUG_TX_FIFO_BUFFER_SIZE; i++)
 		{
 			temp_buff[indx] = debug_tx_fifo[i];
 			indx++;
@@ -209,9 +212,9 @@ bool DEBUG_Transmit_FIFO_Events(void)
 		if (debug_tx_fifo_tail == DEBUG_TX_FIFO_BUFFER_SIZE)
 			debug_tx_fifo_tail = 0;
 	}
-	else if (debug_tx_fifo_head > debug_tx_fifo_tail)
+	else if (debug_tx_fifo_tail < debug_tx_fifo_head)
 	{
-		for (int i = debug_tx_fifo_tail; i < debug_tx_fifo_head; i++)
+		for (uint16_t i = debug_tx_fifo_tail; i < debug_tx_fifo_head; i++)
 		{
 			temp_buff[indx] = debug_tx_fifo[i];
 			indx++;
@@ -220,6 +223,8 @@ bool DEBUG_Transmit_FIFO_Events(void)
 				break;
 		}
 	}
+	
 	DEBUG_Transmit_FS(temp_buff, indx);
+	FIFO_Events_busy = false;
 	return false;
 }

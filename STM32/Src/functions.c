@@ -89,7 +89,7 @@ void sendToDebug_str3(char *data1, char *data2, char *data3)
 
 void sendToDebug_newline(void)
 {
-	sendToDebug_str("\r\n");
+	sendToDebug_str("\n");
 }
 
 void sendToDebug_flush(void)
@@ -109,7 +109,7 @@ void sendToDebug_uint8(uint8_t data, bool _inline)
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
-		sprintf(tmp, "%d\r\n", data);
+		sprintf(tmp, "%d\n", data);
 	sendToDebug_str(tmp);
 }
 
@@ -119,7 +119,7 @@ void sendToDebug_hex(uint8_t data, bool _inline)
 	if (_inline)
 		sprintf(tmp, "%02X", data);
 	else
-		sprintf(tmp, "%02X\r\n", data);
+		sprintf(tmp, "%02X\n", data);
 	sendToDebug_str(tmp);
 }
 
@@ -129,7 +129,7 @@ void sendToDebug_uint16(uint16_t data, bool _inline)
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
-		sprintf(tmp, "%d\r\n", data);
+		sprintf(tmp, "%d\n", data);
 	sendToDebug_str(tmp);
 }
 void sendToDebug_uint32(uint32_t data, bool _inline)
@@ -138,7 +138,7 @@ void sendToDebug_uint32(uint32_t data, bool _inline)
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
-		sprintf(tmp, "%d\r\n", data);
+		sprintf(tmp, "%d\n", data);
 	sendToDebug_str(tmp);
 }
 void sendToDebug_int8(int8_t data, bool _inline)
@@ -147,7 +147,7 @@ void sendToDebug_int8(int8_t data, bool _inline)
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
-		sprintf(tmp, "%d\r\n", data);
+		sprintf(tmp, "%d\n", data);
 	sendToDebug_str(tmp);
 }
 void sendToDebug_int16(int16_t data, bool _inline)
@@ -156,7 +156,7 @@ void sendToDebug_int16(int16_t data, bool _inline)
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
-		sprintf(tmp, "%d\r\n", data);
+		sprintf(tmp, "%d\n", data);
 	sendToDebug_str(tmp);
 }
 void sendToDebug_int32(int32_t data, bool _inline)
@@ -165,7 +165,7 @@ void sendToDebug_int32(int32_t data, bool _inline)
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
-		sprintf(tmp, "%d\r\n", data);
+		sprintf(tmp, "%d\n", data);
 	sendToDebug_str(tmp);
 }
 
@@ -175,7 +175,7 @@ void sendToDebug_float32(float32_t data, bool _inline)
 	if (_inline)
 		sprintf(tmp, "%f", (double)data);
 	else
-		sprintf(tmp, "%f\r\n", (double)data);
+		sprintf(tmp, "%f\n", (double)data);
 	sendToDebug_str(tmp);
 }
 
