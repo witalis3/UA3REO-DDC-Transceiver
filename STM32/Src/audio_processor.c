@@ -16,6 +16,7 @@
 #include "usbd_audio_if.h"
 #include "noise_reduction.h"
 #include "cw_decoder.h"
+#include "main.h"
 
 volatile uint32_t AUDIOPROC_samples = 0;
 volatile uint32_t AUDIOPROC_TXA_samples = 0;

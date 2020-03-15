@@ -17,6 +17,14 @@
   ******************************************************************************
   */
 
+//EXTI0 - KEY DASH
+//EXTI1 - KEY DOT
+//EXTI2 - ENC_CLK
+//EXTI4 - PTT_IN
+//EXTI10 - 48K_Clock
+//EXTI11 - PWR_button
+//EXTI13 - ENC2_CLK
+	
 //TIM3 - WIFI
 //TIM4 - расчёт FFT
 //TIM5 - аудио-процессор
@@ -91,7 +99,6 @@
 #include "system_menu.h"
 
 static uint32_t ms50_counter = 0;
-static uint32_t tim5_counter = 0;
 static uint32_t tim6_delay = 0;
 static uint32_t eeprom_save_delay = 0;
 static uint32_t powerdown_start_delay = 0;
@@ -259,6 +266,34 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles EXTI line0 interrupt.
+  */
+void EXTI0_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_IRQn 0 */
+
+  /* USER CODE END EXTI0_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+  /* USER CODE BEGIN EXTI0_IRQn 1 */
+
+  /* USER CODE END EXTI0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line1 interrupt.
+  */
+void EXTI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
+
+  /* USER CODE END EXTI1_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
+
+  /* USER CODE END EXTI1_IRQn 1 */
+}
+
+/**
   * @brief This function handles EXTI line2 interrupt.
   */
 void EXTI2_IRQHandler(void)
@@ -387,7 +422,7 @@ void TIM5_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
   //StartProfilerUs();
-  tim5_counter++;
+	if(!Processor_NeedTXBuffer && !Processor_NeedRXBuffer) return;
   if (TRX_on_TX())
   {
     if (CurrentVFO()->Mode != TRX_MODE_NO_TX)
@@ -460,7 +495,6 @@ void TIM6_DAC_IRQHandler(void)
       uint32_t dbg_WM8731_DMA_samples = WM8731_DMA_samples / 2;
       uint32_t dbg_AUDIOPROC_TXA_samples = AUDIOPROC_TXA_samples;
       uint32_t dbg_AUDIOPROC_TXB_samples = AUDIOPROC_TXB_samples;
-      uint32_t dbg_tim5_counter = tim5_counter;
       uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
       float32_t dbg_ALC_need_gain = ALC_need_gain;
       float32_t dbg_Processor_TX_MAX_amplitude = Processor_TX_MAX_amplitude_OUT;
@@ -487,8 +521,6 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(cpu_load, false);
 			sendToDebug_str("TIM6 delay: ");
       sendToDebug_uint32(dbg_tim6_delay, false);
-      sendToDebug_str("Audioproc timer counter: ");
-      sendToDebug_uint32(dbg_tim5_counter, false);
       sendToDebug_str("TX Autogain: ");
       sendToDebug_float32(dbg_ALC_need_gain, false);
       sendToDebug_str("Processor TX MAX amplitude: ");
@@ -512,7 +544,6 @@ void TIM6_DAC_IRQHandler(void)
     }
 		
     tim6_delay = HAL_GetTick();
-    tim5_counter = 0;
     FPGA_samples = 0;
     AUDIOPROC_samples = 0;
     AUDIOPROC_TXA_samples = 0;
@@ -586,48 +617,6 @@ void TIM7_IRQHandler(void)
   /* USER CODE BEGIN TIM7_IRQn 1 */
   DEBUG_Transmit_FIFO_Events();
   /* USER CODE END TIM7_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA2 stream0 global interrupt.
-  */
-void DMA2_Stream0_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
-	CPULOAD_WakeUp();
-  /* USER CODE END DMA2_Stream0_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream0);
-  /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
-
-  /* USER CODE END DMA2_Stream0_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA2 stream1 global interrupt.
-  */
-void DMA2_Stream1_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA2_Stream1_IRQn 0 */
-	CPULOAD_WakeUp();
-  /* USER CODE END DMA2_Stream1_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream1);
-  /* USER CODE BEGIN DMA2_Stream1_IRQn 1 */
-
-  /* USER CODE END DMA2_Stream1_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA2 stream3 global interrupt.
-  */
-void DMA2_Stream3_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA2_Stream3_IRQn 0 */
-	CPULOAD_WakeUp();
-  /* USER CODE END DMA2_Stream3_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream3);
-  /* USER CODE BEGIN DMA2_Stream3_IRQn 1 */
-
-  /* USER CODE END DMA2_Stream3_IRQn 1 */
 }
 
 /**

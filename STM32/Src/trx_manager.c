@@ -104,7 +104,7 @@ static void TRX_Start_RX()
 	//sendToDebug_str("RX MODE\r\n");
 	PERIPH_RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
-	Processor_NeedRXBuffer = true;
+	Processor_NeedRXBuffer = false;
 	WM8731_Buffer_underrun = false;
 	WM8731_DMA_state = true;
 	WM8731_RX_mode();
