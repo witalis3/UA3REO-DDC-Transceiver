@@ -588,22 +588,25 @@ void TIM6_DAC_IRQHandler(void)
   FFT_printFFT();
   PERIPH_ProcessFrontPanel();
   //power off sequence
-  if (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
-    if (HAL_GetTick() - powerdown_start_delay > POWERDOWN_TIMEOUT)
-    {
-      SaveSettings();
-      HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-      TRX_Inited = false;
-      LCD_busy = true;
-			WM8731_TX_mode(); //mute
-			WM8731_CleanBuffer();
-      LCDDriver_Fill(COLOR_BLACK);
-      LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
-			sendToDebug_flush();
-      while (true)
-      {
-      }
-    }
+  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT))
+	{
+		SaveSettings();
+		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+		TRX_Inited = false;
+		LCD_busy = true;
+		WM8731_TX_mode(); //mute
+		WM8731_CleanBuffer();
+		LCDDriver_Fill(COLOR_BLACK);
+		LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
+		sendToDebug_flush();
+		while (true)
+		{
+		}
+	}
+	//
+	if(TRX_Inited && (USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick())) 
+		USBD_Restart();
+		
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
@@ -617,7 +620,7 @@ void TIM7_IRQHandler(void)
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
-  while(!DEBUG_Transmit_FIFO_Events()) {}
+  sendToDebug_flush();
   /* USER CODE END TIM7_IRQn 1 */
 }
 

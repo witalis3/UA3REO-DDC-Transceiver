@@ -78,6 +78,7 @@ extern "C"
 	extern volatile uint32_t RX_USB_AUDIO_SAMPLES;
 	extern volatile uint32_t TX_USB_AUDIO_SAMPLES;
 	extern volatile bool RX_USB_AUDIO_underrun;
+	extern volatile uint32_t USB_LastActiveTime;
 
 	typedef struct
 	{
@@ -172,6 +173,8 @@ extern "C"
 	} USBD_CAT_HandleTypeDef;
 
 	extern USBD_ClassTypeDef USBD_UA3REO;
+	extern USBD_HandleTypeDef hUsbDeviceFS;
+	
 #define USBD_UA3REO_CLASS &USBD_UA3REO
 
 	extern uint8_t USBD_DEBUG_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_DEBUG_ItfTypeDef *fops);
@@ -189,6 +192,7 @@ extern "C"
 	extern uint8_t USBD_AUDIO_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_AUDIO_ItfTypeDef *fops);
 	extern uint8_t USBD_AUDIO_StartTransmit(USBD_HandleTypeDef *pdev);
 	extern uint8_t USBD_AUDIO_StartReceive(USBD_HandleTypeDef *pdev);
+	extern void USBD_Restart(void);
 
 	/**
 	  * @}

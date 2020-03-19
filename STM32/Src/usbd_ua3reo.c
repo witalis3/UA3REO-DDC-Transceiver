@@ -1,3 +1,4 @@
+#include "usb_device.h"
 #include "usbd_ua3reo.h"
 #include "usbd_audio_if.h"
 #include "usbd_ctlreq.h"
@@ -25,6 +26,7 @@ static uint16_t rx_buffer_step = 0;
 volatile bool RX_USB_AUDIO_underrun = false;
 volatile uint32_t RX_USB_AUDIO_SAMPLES = 0;
 volatile uint32_t TX_USB_AUDIO_SAMPLES = 0;
+volatile uint32_t USB_LastActiveTime = 0;
 
 /* USB Standard Device Descriptor */
 __ALIGN_BEGIN static const uint8_t USBD_UA3REO_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_DESC] __ALIGN_END =
@@ -492,6 +494,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 	  */
 static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 {
+	USB_LastActiveTime = HAL_GetTick();
 	uint8_t ret = 0U;
 	USBD_DEBUG_HandleTypeDef *hcdc_debug;
 	USBD_CAT_HandleTypeDef *hcdc_cat;
@@ -633,6 +636,7 @@ static uint8_t USBD_UA3REO_DeInit(USBD_HandleTypeDef *pdev)
   */
 static uint8_t USBD_DEBUG_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
+	USB_LastActiveTime = HAL_GetTick();
 	USBD_DEBUG_HandleTypeDef *hcdc_debug = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
 	uint8_t ifalt = 0U;
 	uint16_t status_info = 0U;
@@ -891,6 +895,7 @@ static uint8_t USBD_AUDIO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 
 static uint8_t USBD_UA3REO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
+	USB_LastActiveTime = HAL_GetTick();
 	uint8_t ret = 0;
 	// Route requests to MSC interface or its endpoints to MSC class implementaion
 	if (((req->bmRequest & USB_REQ_RECIPIENT_MASK) == USB_REQ_RECIPIENT_INTERFACE && req->wIndex == DEBUG_INTERFACE_IDX) ||
@@ -1021,6 +1026,7 @@ static uint8_t USBD_UA3REO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
   */
 static uint8_t USBD_DEBUG_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
+	USB_LastActiveTime = HAL_GetTick();
 	USBD_DEBUG_HandleTypeDef *hcdc_debug = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
 	/* Get the received data length */
 	hcdc_debug->RxLength = USBD_LL_GetRxDataSize(pdev, epnum);
@@ -1038,6 +1044,7 @@ static uint8_t USBD_DEBUG_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 
 static uint8_t USBD_CAT_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
+	USB_LastActiveTime = HAL_GetTick();
 	USBD_CAT_HandleTypeDef *hcdc_cat = (USBD_CAT_HandleTypeDef *)pdev->pClassDataCAT;
 	/* Get the received data length */
 	hcdc_cat->RxLength = USBD_LL_GetRxDataSize(pdev, epnum);
@@ -1056,6 +1063,7 @@ static uint8_t USBD_CAT_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 
 static uint8_t USBD_AUDIO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
+	USB_LastActiveTime = HAL_GetTick();
 	USBD_AUDIO_HandleTypeDef *haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
 	if (epnum == AUDIO_OUT_EP)
 	{
@@ -1085,8 +1093,10 @@ static uint8_t USBD_UA3REO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
   * @param  pdev: device instance
   * @retval status
   */
+
 static uint8_t USBD_UA3REO_EP0_RxReady(USBD_HandleTypeDef *pdev)
 {
+	USB_LastActiveTime = HAL_GetTick();
 	USBD_DEBUG_HandleTypeDef *hcdc_debug = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
 	USBD_CAT_HandleTypeDef *hcdc_cat = (USBD_CAT_HandleTypeDef *)pdev->pClassDataCAT;
 	//DEBUG
@@ -1395,5 +1405,21 @@ static void AUDIO_REQ_SetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef 
 
 static uint8_t USBD_UA3REO_SOF(void)
 {
+	USB_LastActiveTime = HAL_GetTick();
 	return USBD_OK;
+}
+
+void USBD_Restart(void)
+{
+  //MX_USB_DevDisconnect();
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  //GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
+  //HAL_Delay(300);
+  MX_USB_DEVICE_Init();
+	USB_LastActiveTime = HAL_GetTick();
 }

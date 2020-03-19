@@ -95,12 +95,8 @@ void sendToDebug_newline(void)
 void sendToDebug_flush(void)
 {
 	uint_fast16_t tryes = 0;
-	while (!DEBUG_Transmit_FIFO_Events() && tryes < 100)
-	{
-		HAL_IWDG_Refresh(&hiwdg1);
-		HAL_Delay(1);
+	while (DEBUG_Transmit_FIFO_Events()==USBD_BUSY && tryes < 512)
 		tryes++;
-	}
 }
 
 void sendToDebug_uint8(uint8_t data, bool _inline)

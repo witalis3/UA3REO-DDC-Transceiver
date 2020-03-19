@@ -187,14 +187,14 @@ void DEBUG_Transmit_FIFO(uint8_t *data, uint16_t length)
 
 static uint8_t temp_buff[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
 static bool FIFO_Events_busy = false;
-bool DEBUG_Transmit_FIFO_Events(void)
+uint8_t DEBUG_Transmit_FIFO_Events(void)
 {
-	if(FIFO_Events_busy) return false;
+	if(FIFO_Events_busy) return USBD_FAIL;
 	if (debug_tx_fifo_head == debug_tx_fifo_tail)
-		return true;
+		return USBD_OK;
 	USBD_DEBUG_HandleTypeDef *hcdc = (USBD_DEBUG_HandleTypeDef *)hUsbDeviceFS.pClassDataDEBUG;
 	if (hcdc->TxState != 0)
-		return false;
+		return USBD_FAIL;
 	FIFO_Events_busy = true;
 	uint16_t indx = 0;
 	memset(temp_buff, 0x00, DEBUG_TX_FIFO_BUFFER_SIZE);
@@ -226,5 +226,5 @@ bool DEBUG_Transmit_FIFO_Events(void)
 	
 	DEBUG_Transmit_FS(temp_buff, indx);
 	FIFO_Events_busy = false;
-	return false;
+	return USBD_BUSY;
 }

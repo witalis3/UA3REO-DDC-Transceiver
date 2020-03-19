@@ -184,19 +184,8 @@ int main(void)
   HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("UA3REO Transceiver Initialization...");
-
-  //MX_USB_DevDisconnect();
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  //GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
-  GPIO_InitStruct.Pin = GPIO_PIN_12;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
-  HAL_Delay(300);
-  MX_USB_DEVICE_Init();
+	USBD_Restart();
   sendToDebug_strln("[OK] USB inited");
-
   HAL_TIM_Base_Start_IT(&htim7);
   sendToDebug_strln("[OK] FIFO timer TIM7 inited");
   HAL_RTC_Init(&hrtc);
