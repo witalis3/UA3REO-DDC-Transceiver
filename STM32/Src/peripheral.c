@@ -10,6 +10,7 @@
 #include "audio_filters.h"
 
 static bool PERIPH_SPI_busy = false;
+volatile bool PERIPH_SPI_process = false;
 static bool FRONTPanel_MCP3008_1_Enabled = true;
 static bool FRONTPanel_MCP3008_2_Enabled = true;
 
@@ -337,6 +338,10 @@ void PERIPH_InitFrontPanel(void)
 
 void PERIPH_ProcessFrontPanel(void)
 {
+	if(PERIPH_SPI_process)
+		return;
+	else
+		PERIPH_SPI_process = true;
 	uint16_t mcp3008_value = 0;
 
 	PERIPH_ENCODER2_checkSwitch();
@@ -881,6 +886,7 @@ void PERIPH_ProcessFrontPanel(void)
 		PERIPH_FrontPanel.key_clar_prev = PERIPH_FrontPanel.key_clar;
 		PERIPH_FrontPanel.key_menu_prev = PERIPH_FrontPanel.key_menu;
 	}
+	PERIPH_SPI_process = false;
 }
 
 void PERIPH_ProcessSWRMeter(void)
@@ -953,10 +959,7 @@ static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT,
 bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs)
 {
 	if (PERIPH_SPI_busy)
-	{
-		sendToDebug_strln("SPI Conflict");
 		return false;
-	}
 	PERIPH_SPI_busy = true;
 	HAL_IWDG_Refresh(&hiwdg1);
 	memset(in_data, 0x00, count);

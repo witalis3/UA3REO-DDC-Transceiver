@@ -73,6 +73,7 @@ void USART6_IRQHandler(void);
 void OTG_FS_EP1_OUT_IRQHandler(void);
 void OTG_FS_EP1_IN_IRQHandler(void);
 void OTG_FS_IRQHandler(void);
+void TIM15_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 void DMA1_Stream0_IRQHandler(void);
 /* USER CODE END EFP */

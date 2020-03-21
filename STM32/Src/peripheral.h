@@ -67,6 +67,7 @@ extern void PERIPH_InitFrontPanel(void);
 extern bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs);
 
 volatile extern PERIPH_FrontPanel_Type PERIPH_FrontPanel;
+volatile extern bool PERIPH_SPI_process;
 
 extern RTC_HandleTypeDef hrtc;
 

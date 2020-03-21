@@ -24,7 +24,7 @@
 #define ENCODER2_INVERT 0				//инвертировать вращение влево-вправо у дополнительного энкодера
 #define KEY_HOLD_TIME 500				//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
 #define SHIFT_INTERVAL 400.0f			//диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
-#define EEPROM_WRITE_INTERVAL 10		//Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
+#define EEPROM_WRITE_INTERVAL 10000		//Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
 #define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
 #define SWR_CRITICAL 5.0f				//Максимальный КСВ, при котором отключается передатчик
 #define SHOW_LOGO false					//Отображать логотип при загрузке (из lcd.h)
@@ -47,7 +47,14 @@
 #define ADC_FULL_SCALE 65536		   //максимальная аплитуда сигнала в АЦП // powf(2,ADC_BITS)
 #define FLOAT_FULL_SCALE_POW 4
 
-#define EEPROM_OP_DELAY 30 // задержки при работе с EEPROM
+// задержки при работе с EEPROM
+#define EEPROM_CO_DELAY 5 // command
+#define EEPROM_AD_DELAY 5 // addr
+#define EEPROM_WR_DELAY 10 // write
+#define EEPROM_RD_DELAY 10 // read
+#define EEPROM_ERASE_DELAY 40 // do erase
+#define EEPROM_REPEAT_TRYES 40 // command tryes
+
 #define MAX_WIFIPASS_LENGTH 32
 #define WIFI_DEBUG false //вывод отладки WIFI на экран
 
@@ -57,7 +64,8 @@
 #define W25Q16_COMMAND_Page_Program 0x02
 #define W25Q16_COMMAND_Read_Data 0x03
 #define W25Q16_SECTOR_SIZE 4096
-#define W25Q16_MARGIN_LEFT 0
+#define W25Q16_MARGIN_LEFT_SETTINGS (W25Q16_SECTOR_SIZE*0)
+#define W25Q16_MARGIN_LEFT_CALIBRATION (W25Q16_SECTOR_SIZE*8)
 
 extern struct t_CALIBRATE
 {

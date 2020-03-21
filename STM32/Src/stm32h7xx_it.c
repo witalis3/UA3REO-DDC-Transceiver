@@ -30,6 +30,7 @@
 //TIM5 - аудио-процессор
 //TIM6 - каждые 50мс, различные действия
 //TIM7 - USB FIFO
+//TIM15 - EEPROM / передняя панель
 
 //DMA1-0 - получение данных с аудио-кодека
 //DMA1-1 - получение данных из WiFi по UART
@@ -100,7 +101,7 @@
 
 static uint32_t ms50_counter = 0;
 static uint32_t tim6_delay = 0;
-static uint32_t eeprom_save_delay = 0;
+static uint32_t eeprom_save_timestamp = 0;
 static uint32_t powerdown_start_delay = 0;
 /* USER CODE END 0 */
 
@@ -118,6 +119,7 @@ extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim7;
+extern TIM_HandleTypeDef htim15;
 extern DMA_HandleTypeDef hdma_usart6_rx;
 extern UART_HandleTypeDef huart6;
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
@@ -559,18 +561,6 @@ void TIM6_DAC_IRQHandler(void)
     FPGA_Buffer_underrun = false;
     RX_USB_AUDIO_underrun = false;
     FPGA_NeedSendParams = true;
-    if (NeedSaveSettings)
-    {
-      if (eeprom_save_delay < EEPROM_WRITE_INTERVAL) //Запись в EEPROM не чаще, чем раз в 30 секунд (против износа)
-      {
-        eeprom_save_delay++;
-      }
-      else
-      {
-        SaveSettings();
-        eeprom_save_delay = 0;
-      }
-    }
   }
 
   if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
@@ -586,18 +576,18 @@ void TIM6_DAC_IRQHandler(void)
   PERIPH_RF_UNIT_UpdateState(false);
   LCD_doEvents();
   FFT_printFFT();
-  PERIPH_ProcessFrontPanel();
   //power off sequence
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT))
 	{
-		SaveSettings();
-		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
 		TRX_Inited = false;
 		LCD_busy = true;
-		WM8731_TX_mode(); //mute
-		WM8731_CleanBuffer();
+		HAL_Delay(10);
 		LCDDriver_Fill(COLOR_BLACK);
 		LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
+		SaveSettings();
+		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+		WM8731_TX_mode(); //mute
+		WM8731_CleanBuffer();
 		sendToDebug_flush();
 		while (true)
 		{
@@ -692,6 +682,28 @@ void OTG_FS_IRQHandler(void)
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
 
   /* USER CODE END OTG_FS_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM15 global interrupt.
+  */
+void TIM15_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM15_IRQn 0 */
+
+  /* USER CODE END TIM15_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim15);
+  /* USER CODE BEGIN TIM15_IRQn 1 */
+	PERIPH_ProcessFrontPanel();
+	if (NeedSaveSettings)
+	{
+		if ((HAL_GetTick() - eeprom_save_timestamp) > EEPROM_WRITE_INTERVAL) //Запись в EEPROM не чаще, чем раз в X секунд (против износа)
+		{
+			SaveSettings();
+			eeprom_save_timestamp = HAL_GetTick();
+		}
+	}
+  /* USER CODE END TIM15_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
