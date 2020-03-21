@@ -31,11 +31,11 @@ static void Flash_Read_Data(void);
 struct t_CALIBRATE CALIBRATE = {
 	.rf_out_power = {
 		//калибровка выходной мощности на каждый мегагерц
-		33,  // 0 mhz
-		20,  // 1 mhz
-		24,  // 2 mhz
+		70,  // 0 mhz
+		45,  // 1 mhz
+		30,  // 2 mhz
 		42,  // 3 mhz
-		43,  // 4 mhz
+		45,  // 4 mhz
 		54,  // 5 mhz
 		63,  // 6 mhz
 		72,  // 7 mhz

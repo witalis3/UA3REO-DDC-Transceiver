@@ -885,8 +885,8 @@ void PERIPH_ProcessFrontPanel(void)
 
 void PERIPH_ProcessSWRMeter(void)
 {
-	float32_t forward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / 65535.0f;
-	float32_t backward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / 65535.0f;
+	float32_t forward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / 65535.0f;
+	float32_t backward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / 65535.0f;
 
 	forward = forward / (CALIBRATE.swr_meter_Rbottom / (CALIBRATE.swr_meter_Rtop + CALIBRATE.swr_meter_Rbottom)); //корректируем напряжение исходя из делителя
 	forward += CALIBRATE.swr_meter_fwd_diff;																	  //корректируем напряжение по калибровке
@@ -912,8 +912,8 @@ void PERIPH_ProcessSWRMeter(void)
 	if (backward < 0.001f) //меньше 1mV не измеряем
 		backward = 0.001f;
 
-	TRX_SWR_forward = TRX_SWR_forward + ((forward - TRX_SWR_forward) / 10.0f);
-	TRX_SWR_backward = TRX_SWR_backward + ((backward - TRX_SWR_backward) / 10.0f);
+	TRX_SWR_forward = forward;
+	TRX_SWR_backward = backward;
 	TRX_SWR = (TRX_SWR_forward + TRX_SWR_backward) / (TRX_SWR_forward - TRX_SWR_backward);
 	if (TRX_SWR_backward > TRX_SWR_forward)
 		TRX_SWR = 10.0f;
@@ -921,6 +921,7 @@ void PERIPH_ProcessSWRMeter(void)
 		TRX_SWR = 10.0f;
 	float32_t ref_power = (TRX_SWR_backward * TRX_SWR_backward) / 50.0f;
 
+	LCD_UpdateQuery.StatusInfoBar = true;
 	if (TRX_SWR >= SWR_CRITICAL && ref_power > 1.0f && CurrentVFO()->Mode != TRX_MODE_LOOPBACK) //опасный порог КСВ, отключаем передачу
 	{
 		TRX_Time_InActive = 0;

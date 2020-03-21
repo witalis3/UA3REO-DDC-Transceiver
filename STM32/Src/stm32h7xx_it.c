@@ -466,18 +466,18 @@ void TIM6_DAC_IRQHandler(void)
   if (NeedReinitNotch)
     InitNotchFilter();
 
+	//Process SWR / Power meter
+  if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_NO_TX)
+    PERIPH_ProcessSWRMeter();
+	
   if ((ms50_counter % 2) == 0) // every 100ms
   {
     FPGA_NeedGetParams = true;
 
     //S-Meter Calculate
     TRX_DBMCalculate();
-
-    //Process SWR / Power meter
-    if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_NO_TX)
-      PERIPH_ProcessSWRMeter();
   }
-
+		
   if (ms50_counter == 21) // every 1 sec
   {
     ms50_counter = 0;

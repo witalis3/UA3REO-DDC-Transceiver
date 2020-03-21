@@ -1276,8 +1276,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : SWR_FORW_Pin PC5 */
-  GPIO_InitStruct.Pin = SWR_FORW_Pin|GPIO_PIN_5;
+  /*Configure GPIO pins : SWR_BACKW_Pin PC5 */
+  GPIO_InitStruct.Pin = SWR_BACKW_Pin|GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
