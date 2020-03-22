@@ -20,15 +20,16 @@ static uint8_t Address[3] = {0x00};
 struct TRX_SETTINGS TRX = {0};
 static uint8_t write_clone[W25Q16_SECTOR_SIZE] = {0};
 static uint8_t read_clone[W25Q16_SECTOR_SIZE] = {0};
+static uint8_t verify_clone[W25Q16_SECTOR_SIZE] = {0};
 static uint8_t settings_eeprom_bank = 0;
 
 volatile bool NeedSaveSettings = false;
 volatile bool EEPROM_Busy = false;
 static bool EEPROM_Enabled = true;
 
-static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify);
-static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify);
-static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verif);
+static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify, bool force);
+static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force);
+static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verif, bool force);
 
 struct t_CALIBRATE CALIBRATE = {
 	.rf_out_power = {
@@ -115,7 +116,7 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 void LoadSettings(bool clear)
 {
 	uint8_t tryes=0;
-	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true)) { tryes++; }
+	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Read EEPROM multiple errors");
 	settings_eeprom_bank++;
 
@@ -123,7 +124,7 @@ void LoadSettings(bool clear)
 	if (TRX.ENDBit != 100)
 	{
 		tryes=0;
-		while(tryes < EEPROM_REPEAT_TRYES && !Flash_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true)) { tryes++; }
+		while(tryes < EEPROM_REPEAT_TRYES && !Flash_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
 		if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Read EEPROM multiple errors");
 		settings_eeprom_bank = 0;
 
@@ -270,23 +271,23 @@ void SaveSettings(void)
 	uint8_t tryes=0;
 	NeedSaveSettings = false;
 	EEPROM_Busy = true;
-	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Write_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true)) { tryes++; }
+	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Write_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Write EEPROM multiple errors");
 	settings_eeprom_bank++;
 	if (settings_eeprom_bank >= 2)
 		settings_eeprom_bank = 0;
 	tryes=0;
-	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Sector_Erase(sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true)){ tryes++; }
+	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Sector_Erase(sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)){ tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Erase EEPROM multiple errors");
 	EEPROM_Busy = false;
 	sendToDebug_strln("[OK] EEPROM Saved");
 }
 
-static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify)
+static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify, bool force)
 {
-	if (!EEPROM_Enabled)
+	if (!force && !EEPROM_Enabled)
 		return true;
-	if(verify && PERIPH_SPI_process)
+	if(!force && PERIPH_SPI_process)
 		return false;
 	else
 		PERIPH_SPI_process = true;
@@ -305,26 +306,31 @@ static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ban
 		PERIPH_SPI_Transmit(Address, NULL, sizeof(Address), W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Address ( The first address of flash module is 0x00000000 )
 		HAL_Delay(EEPROM_ERASE_DELAY);
 	}
-	sendToDebug_str("EEPROM erased bank "); sendToDebug_uint8(eeprom_bank, false);
+	
+	//sendToDebug_str("EEPROM erased bank "); sendToDebug_uint8(eeprom_bank, false);
 	//verify
-	Flash_Read_Data(read_clone, size, start, eeprom_bank, false);
-	for(uint16_t i = 0 ; i < size ; i++)
-		if(read_clone[i]!=0xFF)
-		{
-			//sendToDebug_str("[ERR] EEPROM Erase Error: ");
-			//sendToDebug_uint16(i,false);
-			PERIPH_SPI_process = false;
-			return false;
-		}
+	if(verify)
+	{
+		Flash_Read_Data(verify_clone, size, start, eeprom_bank, true, true);
+		for(uint16_t i = 0 ; i < size ; i++)
+			if(verify_clone[i]!=0xFF)
+			{
+				//sendToDebug_str("[ERR] EEPROM Erase Error: ");
+				//sendToDebug_uint16(i,false);
+				//sendToDebug_uint8(verify_clone[i],false);
+				PERIPH_SPI_process = false;
+				return false;
+			}
+	}
 	PERIPH_SPI_process = false;
 	return true;
 }
 
-static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify)
+static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force)
 {
-	if (!EEPROM_Enabled)
+	if (!force && !EEPROM_Enabled)
 		return true;
-	if(verify && PERIPH_SPI_process)
+	if(!force && PERIPH_SPI_process)
 		return false;
 	else
 		PERIPH_SPI_process = true;
@@ -350,27 +356,31 @@ static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_lef
 		PERIPH_SPI_Transmit((uint8_t *)(write_clone + 0xFF * page), NULL, (uint8_t)bsize, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Data
 		HAL_Delay(EEPROM_WR_DELAY);
 	}
+	
 	//verify
-	Flash_Read_Data(read_clone, size, margin_left, eeprom_bank, false);
-	for(uint16_t i = 0 ; i < size ; i++)
-		if(read_clone[i]!=write_clone[i])
-		{
-			//sendToDebug_strln("[ERR] EEPROM Write Error: ");
-			//sendToDebug_uint16(i,false);
-			//sendToDebug_newline();
-			Flash_Sector_Erase(size, margin_left, eeprom_bank, false);
-			PERIPH_SPI_process = false;
-			return false;
-		}
+	if(verify)
+	{
+		Flash_Read_Data(verify_clone, size, margin_left, eeprom_bank, true, true);
+		for(uint16_t i = 0 ; i < size ; i++)
+			if(verify_clone[i]!=write_clone[i])
+			{
+				//sendToDebug_strln("[ERR] EEPROM Write Error: ");
+				//sendToDebug_uint16(i,false);
+				//sendToDebug_newline();
+				Flash_Sector_Erase(size, margin_left, eeprom_bank, true, true);
+				PERIPH_SPI_process = false;
+				return false;
+			}
+	}
 	PERIPH_SPI_process = false;
 	return true;
 }
 
-static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify)
+static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force)
 {
-	if (!EEPROM_Enabled)
+	if (!force && !EEPROM_Enabled)
 		return true;
-	if(verify && PERIPH_SPI_process)
+	if(!force && PERIPH_SPI_process)
 		return false;
 	else
 		PERIPH_SPI_process = true;
@@ -403,15 +413,15 @@ static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left
 		PERIPH_SPI_Transmit(NULL, (uint8_t *)(Buffer + 0xFF * page), (uint8_t)bsize, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Read
 		HAL_Delay(EEPROM_RD_DELAY);
 	}
-	//sendToDebug_str("EEPROM readed from bank "); sendToDebug_uint8(eeprom_bank, false);
 	
+	//sendToDebug_str("EEPROM readed from bank "); sendToDebug_uint8(eeprom_bank, false);
 	//verify
 	if(verify)
 	{
-		memcpy(write_clone, Buffer, size);
-		Flash_Read_Data(read_clone, size, margin_left, eeprom_bank, false);
+		//memcpy(write_clone, Buffer, size);
+		Flash_Read_Data(read_clone, size, margin_left, eeprom_bank, false, true);
 		for(uint16_t i = 0 ; i < size ; i++)
-			if(read_clone[i]!=write_clone[i])
+			if(read_clone[i]!=Buffer[i])
 			{
 				//sendToDebug_strln("[ERR] EEPROM Read Error: ");
 				//sendToDebug_uint16(i,false);

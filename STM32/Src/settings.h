@@ -50,8 +50,8 @@
 // задержки при работе с EEPROM
 #define EEPROM_CO_DELAY 5 // command
 #define EEPROM_AD_DELAY 5 // addr
-#define EEPROM_WR_DELAY 10 // write
-#define EEPROM_RD_DELAY 10 // read
+#define EEPROM_WR_DELAY 30 // write
+#define EEPROM_RD_DELAY 0 // read
 #define EEPROM_ERASE_DELAY 40 // do erase
 #define EEPROM_REPEAT_TRYES 40 // command tryes
 
@@ -63,6 +63,8 @@
 #define W25Q16_COMMAND_Sector_Erase 0x20
 #define W25Q16_COMMAND_Page_Program 0x02
 #define W25Q16_COMMAND_Read_Data 0x03
+#define W25Q16_COMMAND_Power_Down 0xB9
+#define W25Q16_COMMAND_Power_Up 0xAB
 #define W25Q16_SECTOR_SIZE 4096
 #define W25Q16_MARGIN_LEFT_SETTINGS (W25Q16_SECTOR_SIZE*0)
 #define W25Q16_MARGIN_LEFT_CALIBRATION (W25Q16_SECTOR_SIZE*8)

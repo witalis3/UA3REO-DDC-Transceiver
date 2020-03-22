@@ -234,7 +234,7 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim3);
   sendToDebug_strln("[OK] WIFI timer TIM3 inited");
 	HAL_TIM_Base_Start_IT(&htim15);
-  sendToDebug_strln("[OK] EEPROM timer TIM15 inited");
+  sendToDebug_strln("[OK] PERIPHERAL timer TIM15 inited");
 	sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
   /* USER CODE END 2 */
 
@@ -620,7 +620,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;

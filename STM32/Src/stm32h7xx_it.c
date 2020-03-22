@@ -755,7 +755,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
   else if (GPIO_Pin == GPIO_PIN_11) //POWER OFF
   {
-    sendToDebug_strln("POWER OFF Sequence initialized");
     powerdown_start_delay = HAL_GetTick();
   }
 }
