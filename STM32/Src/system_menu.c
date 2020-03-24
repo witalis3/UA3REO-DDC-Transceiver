@@ -54,10 +54,6 @@ static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
 static void SYSMENU_HANDL_ADC_SHDN(int8_t direction);
 static void SYSMENU_HANDL_ADC_DITH(int8_t direction);
-static void SYSMENU_HANDL_ADC_CIC_SHIFT(int8_t direction);
-static void SYSMENU_HANDL_ADC_CICCOMP_SHIFT(int8_t direction);
-static void SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT(int8_t direction);
-static void SYSMENU_HANDL_ADC_DAC_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction);
 
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
@@ -72,6 +68,62 @@ static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
 
+static void SYSMENU_HANDL_CALIB_CIC_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_1(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_2(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_3(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_4(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_5(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_6(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_7(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_8(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_9(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_10(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_11(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_12(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_13(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_14(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_15(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_16(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_17(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_18(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_19(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_20(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_21(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_22(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_23(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_24(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_25(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_26(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_27(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_28(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_29(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_30(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_31(int8_t direction);
+static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ATT_DB(int8_t direction);
+static void SYSMENU_HANDL_CALIB_LNA_GAIN(int8_t direction);
+static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_0_START(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_0_END(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_1_START(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_1_END(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_2_START(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_2_END(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_3_START(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_3_END(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_4_START(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_4_END(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_5_START(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_5_END(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_6_START(int8_t direction);
+static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction);
+static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
+	
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
@@ -80,6 +132,7 @@ static void SYSMENU_HANDL_FFTMENU(int8_t direction);
 static void SYSMENU_HANDL_ADCMENU(int8_t direction);
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
+static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 
 static struct sysmenu_item_handler sysmenu_handlers[] =
 {
@@ -93,6 +146,7 @@ static struct sysmenu_item_handler sysmenu_handlers[] =
 	{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
 	{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
 	{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
+	{"Calibration", SYSMENU_HIDDEN_MENU, 0, SYSMENU_HANDL_CALIBRATIONMENU},
 };
 static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 
@@ -163,10 +217,6 @@ static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 	{"ADC Dither", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
 	{"ADC Randomizer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
 	{"ADC Shutdown", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
-	{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CIC_GAINER_val, SYSMENU_HANDL_ADC_CIC_SHIFT},
-	{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.CICFIR_GAINER_val, SYSMENU_HANDL_ADC_CICCOMP_SHIFT},
-	{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&TRX.TXCICFIR_GAINER_val, SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT},
-	{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&TRX.DAC_GAINER_val, SYSMENU_HANDL_ADC_DAC_SHIFT},
 };
 static uint8_t sysmenu_adc_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
 
@@ -187,6 +237,66 @@ static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 };
 static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
 
+static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
+{
+	{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CIC_GAINER_val, SYSMENU_HANDL_CALIB_CIC_SHIFT},
+	{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_HANDL_CALIB_CICCOMP_SHIFT},
+	{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
+	{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
+	{"RF GAIN 1", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[0], SYSMENU_HANDL_CALIB_RF_GAIN_1},
+	{"RF GAIN 2", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[1], SYSMENU_HANDL_CALIB_RF_GAIN_2},
+	{"RF GAIN 3", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[2], SYSMENU_HANDL_CALIB_RF_GAIN_3},
+	{"RF GAIN 4", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[3], SYSMENU_HANDL_CALIB_RF_GAIN_4},
+	{"RF GAIN 5", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[4], SYSMENU_HANDL_CALIB_RF_GAIN_5},
+	{"RF GAIN 6", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[5], SYSMENU_HANDL_CALIB_RF_GAIN_6},
+	{"RF GAIN 7", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[6], SYSMENU_HANDL_CALIB_RF_GAIN_7},
+	{"RF GAIN 8", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[7], SYSMENU_HANDL_CALIB_RF_GAIN_8},
+	{"RF GAIN 9", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[8], SYSMENU_HANDL_CALIB_RF_GAIN_9},
+	{"RF GAIN 10", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[9], SYSMENU_HANDL_CALIB_RF_GAIN_10},
+	{"RF GAIN 11", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[10], SYSMENU_HANDL_CALIB_RF_GAIN_11},
+	{"RF GAIN 12", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[11], SYSMENU_HANDL_CALIB_RF_GAIN_12},
+	{"RF GAIN 13", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[12], SYSMENU_HANDL_CALIB_RF_GAIN_13},
+	{"RF GAIN 14", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[13], SYSMENU_HANDL_CALIB_RF_GAIN_14},
+	{"RF GAIN 15", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[14], SYSMENU_HANDL_CALIB_RF_GAIN_15},
+	{"RF GAIN 16", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[15], SYSMENU_HANDL_CALIB_RF_GAIN_16},
+	{"RF GAIN 17", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[16], SYSMENU_HANDL_CALIB_RF_GAIN_17},
+	{"RF GAIN 18", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[17], SYSMENU_HANDL_CALIB_RF_GAIN_18},
+	{"RF GAIN 19", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[18], SYSMENU_HANDL_CALIB_RF_GAIN_19},
+	{"RF GAIN 20", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[19], SYSMENU_HANDL_CALIB_RF_GAIN_20},
+	{"RF GAIN 21", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[20], SYSMENU_HANDL_CALIB_RF_GAIN_21},
+	{"RF GAIN 22", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[21], SYSMENU_HANDL_CALIB_RF_GAIN_22},
+	{"RF GAIN 23", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[22], SYSMENU_HANDL_CALIB_RF_GAIN_23},
+	{"RF GAIN 24", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[23], SYSMENU_HANDL_CALIB_RF_GAIN_24},
+	{"RF GAIN 25", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[24], SYSMENU_HANDL_CALIB_RF_GAIN_25},
+	{"RF GAIN 26", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[25], SYSMENU_HANDL_CALIB_RF_GAIN_26},
+	{"RF GAIN 27", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[26], SYSMENU_HANDL_CALIB_RF_GAIN_27},
+	{"RF GAIN 28", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[27], SYSMENU_HANDL_CALIB_RF_GAIN_28},
+	{"RF GAIN 29", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[28], SYSMENU_HANDL_CALIB_RF_GAIN_29},
+	{"RF GAIN 30", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[29], SYSMENU_HANDL_CALIB_RF_GAIN_30},
+	{"RF GAIN 31+", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[30], SYSMENU_HANDL_CALIB_RF_GAIN_31},
+	{"S METER", SYSMENU_INT16, (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_HANDL_CALIB_S_METER},
+	{"ADC OFFSET", SYSMENU_INT16, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
+	{"ATT DB", SYSMENU_INT16, (uint32_t *)&CALIBRATE.att_db, SYSMENU_HANDL_CALIB_ATT_DB},
+	{"LNA GAIN DB", SYSMENU_INT16, (uint32_t *)&CALIBRATE.lna_gain_db, SYSMENU_HANDL_CALIB_LNA_GAIN},
+	{"LPF END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
+	{"BPF 0 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_0_START, SYSMENU_HANDL_CALIB_BPF_0_START},
+	{"BPF 0 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_0_END, SYSMENU_HANDL_CALIB_BPF_0_END},
+	{"BPF 1 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_1_START, SYSMENU_HANDL_CALIB_BPF_1_START},
+	{"BPF 1 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_1_END, SYSMENU_HANDL_CALIB_BPF_1_END},
+	{"BPF 2 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_2_START, SYSMENU_HANDL_CALIB_BPF_2_START},
+	{"BPF 2 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_2_END, SYSMENU_HANDL_CALIB_BPF_2_END},
+	{"BPF 3 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_3_START, SYSMENU_HANDL_CALIB_BPF_3_START},
+	{"BPF 3 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_3_END, SYSMENU_HANDL_CALIB_BPF_3_END},
+	{"BPF 4 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_4_START, SYSMENU_HANDL_CALIB_BPF_4_START},
+	{"BPF 4 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_4_END, SYSMENU_HANDL_CALIB_BPF_4_END},
+	{"BPF 5 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_5_START, SYSMENU_HANDL_CALIB_BPF_5_START},
+	{"BPF 5 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_5_END, SYSMENU_HANDL_CALIB_BPF_5_END},
+	{"BPF 6 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_6_START, SYSMENU_HANDL_CALIB_BPF_6_START},
+	{"BPF 6 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_6_END, SYSMENU_HANDL_CALIB_BPF_6_END},
+	{"HPF START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_7_HPF, SYSMENU_HANDL_CALIB_HPF_START},
+};
+static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
+
 //COMMON MENU
 static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, bool onlyVal);
 static void redrawCurrentItem(void);
@@ -199,9 +309,11 @@ static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handler
 static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
 static uint8_t systemMenuIndex = 0;
 static uint8_t systemMenuRootIndex = 0;
-static uint8_t sysmenu_y = 5;
+static uint16_t sysmenu_y = 5;
 static uint8_t sysmenu_i = 0;
 static bool sysmenu_onroot = true;
+bool sysmenu_hiddenmenu_enabled = false;
+static const uint8_t max_items_on_page = LCD_HEIGHT / LAY_SYSMENU_ITEM_HEIGHT;
 
 //WIFI
 static bool sysmenu_wifi_selectap_menu_opened = false;
@@ -935,42 +1047,6 @@ static void SYSMENU_HANDL_ADC_DITH(int8_t direction)
 	FPGA_NeedSendParams = true;
 }
 
-static void SYSMENU_HANDL_ADC_CIC_SHIFT(int8_t direction)
-{
-	TRX.CIC_GAINER_val += direction;
-	if (TRX.CIC_GAINER_val < 32)
-		TRX.CIC_GAINER_val = 32;
-	if (TRX.CIC_GAINER_val > 88)
-		TRX.CIC_GAINER_val = 88;
-}
-
-static void SYSMENU_HANDL_ADC_CICCOMP_SHIFT(int8_t direction)
-{
-	TRX.CICFIR_GAINER_val += direction;
-	if (TRX.CICFIR_GAINER_val < 32)
-		TRX.CICFIR_GAINER_val = 32;
-	if (TRX.CICFIR_GAINER_val > 64)
-		TRX.CICFIR_GAINER_val = 64;
-}
-
-static void SYSMENU_HANDL_ADC_TXCICCOMP_SHIFT(int8_t direction)
-{
-	TRX.TXCICFIR_GAINER_val += direction;
-	if (TRX.TXCICFIR_GAINER_val < 16)
-		TRX.TXCICFIR_GAINER_val = 16;
-	if (TRX.TXCICFIR_GAINER_val > 64)
-		TRX.TXCICFIR_GAINER_val = 64;
-}
-
-static void SYSMENU_HANDL_ADC_DAC_SHIFT(int8_t direction)
-{
-	TRX.DAC_GAINER_val += direction;
-	if (TRX.DAC_GAINER_val < 14)
-		TRX.DAC_GAINER_val = 14;
-	if (TRX.DAC_GAINER_val > 32)
-		TRX.DAC_GAINER_val = 32;
-}
-
 //WIFI MENU
 
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
@@ -1159,6 +1235,371 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 	drawSystemMenu(true);
 }
 
+//CALIBRATION MENU
+
+static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_calibration_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_calibration_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_CALIB_CIC_SHIFT(int8_t direction)
+{
+	CALIBRATE.CIC_GAINER_val += direction;
+	if (CALIBRATE.CIC_GAINER_val < 32)
+		CALIBRATE.CIC_GAINER_val = 32;
+	if (CALIBRATE.CIC_GAINER_val > 88)
+		CALIBRATE.CIC_GAINER_val = 88;
+}
+
+static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction)
+{
+	CALIBRATE.CICFIR_GAINER_val += direction;
+	if (CALIBRATE.CICFIR_GAINER_val < 32)
+		CALIBRATE.CICFIR_GAINER_val = 32;
+	if (CALIBRATE.CICFIR_GAINER_val > 64)
+		CALIBRATE.CICFIR_GAINER_val = 64;
+}
+
+static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction)
+{
+	CALIBRATE.TXCICFIR_GAINER_val += direction;
+	if (CALIBRATE.TXCICFIR_GAINER_val < 16)
+		CALIBRATE.TXCICFIR_GAINER_val = 16;
+	if (CALIBRATE.TXCICFIR_GAINER_val > 64)
+		CALIBRATE.TXCICFIR_GAINER_val = 64;
+}
+
+static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction)
+{
+	CALIBRATE.DAC_GAINER_val += direction;
+	if (CALIBRATE.DAC_GAINER_val < 14)
+		CALIBRATE.DAC_GAINER_val = 14;
+	if (CALIBRATE.DAC_GAINER_val > 32)
+		CALIBRATE.DAC_GAINER_val = 32;
+}
+
+static void SYSMENU_HANDL_CALIB_RF_GAIN(uint8_t id, int8_t direction)
+{
+	if (CALIBRATE.rf_out_power[id] > 0)
+		CALIBRATE.rf_out_power[id] += direction;
+	if (CALIBRATE.rf_out_power[id] == 0 && direction > 0)
+		CALIBRATE.rf_out_power[id] += direction;
+	if (CALIBRATE.rf_out_power[id] > 100)
+		CALIBRATE.rf_out_power[id] = 100;
+}
+
+static void SYSMENU_HANDL_CALIB_RF_GAIN_1(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(0, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_2(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(1, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_3(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(2, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_4(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(3, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_5(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(4, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_6(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(5, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_7(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(6, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_8(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(7, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_9(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(8, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_10(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(9, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_11(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(10, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_12(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(11, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_13(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(12, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_14(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(13, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_15(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(14, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_16(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(15, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_17(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(16, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_18(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(17, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_19(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(18, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_20(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(19, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_21(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(20, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_22(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(21, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_23(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(22, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_24(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(23, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_25(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(24, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_26(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(25, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_27(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(26, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_28(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(27, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_29(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(28, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_30(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(29, direction);
+}
+static void SYSMENU_HANDL_CALIB_RF_GAIN_31(int8_t direction)
+{
+	SYSMENU_HANDL_CALIB_RF_GAIN(30, direction);
+}
+
+static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction)
+{
+	CALIBRATE.smeter_calibration += direction;
+	if (CALIBRATE.smeter_calibration < -50)
+		CALIBRATE.smeter_calibration = -50;
+	if (CALIBRATE.smeter_calibration > 50)
+		CALIBRATE.smeter_calibration = 50;
+}
+	
+static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction)
+{
+	CALIBRATE.adc_offset += direction;
+	if (CALIBRATE.adc_offset < -500)
+		CALIBRATE.adc_offset = -500;
+	if (CALIBRATE.adc_offset > 500)
+		CALIBRATE.adc_offset = 500;
+}
+
+static void SYSMENU_HANDL_CALIB_ATT_DB(int8_t direction)
+{
+	CALIBRATE.att_db += direction;
+	if (CALIBRATE.att_db < -50)
+		CALIBRATE.att_db = -50;
+	if (CALIBRATE.att_db > 0)
+		CALIBRATE.att_db = 0;
+}
+
+static void SYSMENU_HANDL_CALIB_LNA_GAIN(int8_t direction)
+{
+	CALIBRATE.lna_gain_db += direction;
+	if (CALIBRATE.lna_gain_db < 0)
+		CALIBRATE.lna_gain_db = 0;
+	if (CALIBRATE.lna_gain_db > 100)
+		CALIBRATE.lna_gain_db = 100;
+}
+
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction)
+{
+	CALIBRATE.LPF_END += direction*100000;
+	if (CALIBRATE.LPF_END < 1)
+		CALIBRATE.LPF_END = 1;
+	if (CALIBRATE.LPF_END > 999999999)
+		CALIBRATE.LPF_END = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_0_START(int8_t direction)
+{
+	CALIBRATE.BPF_0_START += direction*100000;
+	if (CALIBRATE.BPF_0_START < 1)
+		CALIBRATE.BPF_0_START = 1;
+	if (CALIBRATE.BPF_0_START > 999999999)
+		CALIBRATE.BPF_0_START = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_0_END(int8_t direction)
+{
+	CALIBRATE.BPF_0_END += direction*100000;
+	if (CALIBRATE.BPF_0_END < 1)
+		CALIBRATE.BPF_0_END = 1;
+	if (CALIBRATE.BPF_0_END > 999999999)
+		CALIBRATE.BPF_0_END = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_1_START(int8_t direction)
+{
+	CALIBRATE.BPF_1_START += direction*100000;
+	if (CALIBRATE.BPF_1_START < 1)
+		CALIBRATE.BPF_1_START = 1;
+	if (CALIBRATE.BPF_1_START > 999999999)
+		CALIBRATE.BPF_1_START = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_1_END(int8_t direction)
+{
+	CALIBRATE.BPF_1_END += direction*100000;
+	if (CALIBRATE.BPF_1_END < 1)
+		CALIBRATE.BPF_1_END = 1;
+	if (CALIBRATE.BPF_1_END > 999999999)
+		CALIBRATE.BPF_1_END = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_2_START(int8_t direction)
+{
+	CALIBRATE.BPF_2_START += direction*100000;
+	if (CALIBRATE.BPF_2_START < 1)
+		CALIBRATE.BPF_2_START = 1;
+	if (CALIBRATE.BPF_2_START > 999999999)
+		CALIBRATE.BPF_2_START = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_2_END(int8_t direction)
+{
+	CALIBRATE.BPF_2_END += direction*100000;
+	if (CALIBRATE.BPF_2_END < 1)
+		CALIBRATE.BPF_2_END = 1;
+	if (CALIBRATE.BPF_2_END > 999999999)
+		CALIBRATE.BPF_2_END = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_3_START(int8_t direction)
+{
+	CALIBRATE.BPF_3_START += direction*100000;
+	if (CALIBRATE.BPF_3_START < 1)
+		CALIBRATE.BPF_3_START = 1;
+	if (CALIBRATE.BPF_3_START > 999999999)
+		CALIBRATE.BPF_3_START = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_3_END(int8_t direction)
+{
+	CALIBRATE.BPF_3_END += direction*100000;
+	if (CALIBRATE.BPF_3_END < 1)
+		CALIBRATE.BPF_3_END = 1;
+	if (CALIBRATE.BPF_3_END > 999999999)
+		CALIBRATE.BPF_3_END = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_4_START(int8_t direction)
+{
+	CALIBRATE.BPF_4_START += direction*100000;
+	if (CALIBRATE.BPF_4_START < 1)
+		CALIBRATE.BPF_4_START = 1;
+	if (CALIBRATE.BPF_4_START > 999999999)
+		CALIBRATE.BPF_4_START = 999999999;
+}
+
+
+static void SYSMENU_HANDL_CALIB_BPF_4_END(int8_t direction)
+{
+	CALIBRATE.BPF_4_END += direction*100000;
+	if (CALIBRATE.BPF_4_END < 1)
+		CALIBRATE.BPF_4_END = 1;
+	if (CALIBRATE.BPF_4_END > 999999999)
+		CALIBRATE.BPF_4_END = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_5_START(int8_t direction)
+{
+	CALIBRATE.BPF_5_START += direction*100000;
+	if (CALIBRATE.BPF_5_START < 1)
+		CALIBRATE.BPF_5_START = 1;
+	if (CALIBRATE.BPF_5_START > 999999999)
+		CALIBRATE.BPF_5_START = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_5_END(int8_t direction)
+{
+	CALIBRATE.BPF_5_END += direction*100000;
+	if (CALIBRATE.BPF_5_END < 1)
+		CALIBRATE.BPF_5_END = 1;
+	if (CALIBRATE.BPF_5_END > 999999999)
+		CALIBRATE.BPF_5_END = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_6_START(int8_t direction)
+{
+	CALIBRATE.BPF_6_START += direction*100000;
+	if (CALIBRATE.BPF_6_START < 1)
+		CALIBRATE.BPF_6_START = 1;
+	if (CALIBRATE.BPF_6_START > 999999999)
+		CALIBRATE.BPF_6_START = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction)
+{
+	CALIBRATE.BPF_6_END += direction*100000;
+	if (CALIBRATE.BPF_6_END < 1)
+		CALIBRATE.BPF_6_END = 1;
+	if (CALIBRATE.BPF_6_END > 999999999)
+		CALIBRATE.BPF_6_END = 999999999;
+}
+
+static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction)
+{
+	CALIBRATE.BPF_7_HPF += direction*100000;
+	if (CALIBRATE.BPF_7_HPF < 1)
+		CALIBRATE.BPF_7_HPF = 1;
+	if (CALIBRATE.BPF_7_HPF > 999999999)
+		CALIBRATE.BPF_7_HPF = 999999999;
+}
+#pragma GCC diagnostic pop
+
 //COMMON MENU FUNCTIONS
 void drawSystemMenu(bool draw_background)
 {
@@ -1197,9 +1638,17 @@ void drawSystemMenu(bool draw_background)
 	if (draw_background)
 		LCDDriver_Fill(COLOR_BLACK);
 
+	uint8_t current_selected_page = systemMenuIndex / max_items_on_page;
+	if(current_selected_page * max_items_on_page > *sysmenu_item_count_selected)
+		current_selected_page = 0;
+	
 	for (uint8_t m = 0; m < *sysmenu_item_count_selected; m++)
-		drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
-
+	{
+		uint8_t current_page = m / max_items_on_page;
+		if(current_selected_page == current_page)
+			drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
+	}
+	
 	LCD_UpdateQuery.SystemMenu = false;
 	LCD_busy = false;
 }
@@ -1320,41 +1769,54 @@ void eventSecRotateSystemMenu(int8_t direction)
 		return;
 	}
 	//other
+	uint8_t current_page = systemMenuIndex / max_items_on_page;
+	LCDDriver_drawFastHLine(0, (5 + (systemMenuIndex - current_page * max_items_on_page) * LAY_SYSMENU_ITEM_HEIGHT) + 17, LAY_SYSMENU_W, COLOR_BLACK);
 	if (direction < 0)
 	{
-		LCDDriver_drawFastHLine(0, (5 + systemMenuIndex * 18) + 17, LAY_SYSMENU_W, COLOR_BLACK);
 		if (systemMenuIndex > 0)
 			systemMenuIndex--;
-		redrawCurrentItem();
-		if(sysmenu_onroot)
-			systemMenuRootIndex = systemMenuIndex;
+		else
+			systemMenuIndex = *sysmenu_item_count_selected - 1;
 	}
 	else
 	{
-		LCDDriver_drawFastHLine(0, (5 + systemMenuIndex * 18) + 17, LAY_SYSMENU_W, COLOR_BLACK);
 		if (systemMenuIndex < (*sysmenu_item_count_selected - 1))
+		{
 			systemMenuIndex++;
-		redrawCurrentItem();
-		if(sysmenu_onroot)
-			systemMenuRootIndex = systemMenuIndex;
+		}
+		else
+			systemMenuIndex = 0;
 	}
+	redrawCurrentItem();
+	if(sysmenu_onroot)
+		systemMenuRootIndex = systemMenuIndex;
+	uint8_t new_page = systemMenuIndex / max_items_on_page;
+
+	if(current_page!=new_page)
+		drawSystemMenu(true);
 }
 
 static void redrawCurrentItem(void)
 {
-	sysmenu_i = systemMenuIndex;
-	sysmenu_y = 5 + systemMenuIndex * 18;
+	uint8_t current_page = systemMenuIndex / max_items_on_page;
+	sysmenu_i = (systemMenuIndex - current_page * max_items_on_page);
+	sysmenu_y = 5 + (systemMenuIndex - current_page * max_items_on_page) * LAY_SYSMENU_ITEM_HEIGHT;
 	drawSystemMenuElement(sysmenu_handlers_selected[systemMenuIndex].title, sysmenu_handlers_selected[systemMenuIndex].type, sysmenu_handlers_selected[systemMenuIndex].value, true);
 }
 
 static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, bool onlyVal)
 {
+	if(!sysmenu_hiddenmenu_enabled && type==SYSMENU_HIDDEN_MENU)
+		return;
+	
 	char ctmp[10];
 	if (!onlyVal)
 	{
 		LCDDriver_Fill_RectXY(0, sysmenu_y, LAY_SYSMENU_W, sysmenu_y + 17, COLOR_BLACK);
 		LCDDriver_printText(title, LAY_SYSMENU_X1, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
 	}
+	
+	uint16_t x_pos = LAY_SYSMENU_X2;
 	switch (type)
 	{
 	case SYSMENU_UINT8:
@@ -1365,6 +1827,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		break;
 	case SYSMENU_UINT32:
 		sprintf(ctmp, "%d", (uint32_t)*value);
+		x_pos = LAY_SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_INT8:
 		sprintf(ctmp, "%d", (int8_t)*value);
@@ -1374,6 +1837,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		break;
 	case SYSMENU_INT32:
 		sprintf(ctmp, "%d", (int32_t)*value);
+		x_pos = LAY_SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_BOOLEAN:
 		sprintf(ctmp, "%d", (int8_t)*value);
@@ -1388,12 +1852,18 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	case SYSMENU_MENU:
 		sprintf(ctmp, "->");
 		break;
+	case SYSMENU_HIDDEN_MENU:
+		sprintf(ctmp, "!!!");
+		break;
 	}
+	
 	if (onlyVal)
-		LCDDriver_Fill_RectWH(LAY_SYSMENU_X2, sysmenu_y, 5 * 12, 13, COLOR_BLACK);
-	LCDDriver_printText(ctmp, LAY_SYSMENU_X2, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
-	if (systemMenuIndex == sysmenu_i)
+		LCDDriver_Fill_RectWH(x_pos, sysmenu_y, 5 * 12, 13, COLOR_BLACK);
+	LCDDriver_printText(ctmp, x_pos, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
+	
+	uint8_t current_selected_page = systemMenuIndex / max_items_on_page;
+	if (systemMenuIndex == sysmenu_i + current_selected_page * max_items_on_page)
 		LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAY_SYSMENU_W, COLOR_WHITE);
 	sysmenu_i++;
-	sysmenu_y += 18;
+	sysmenu_y += LAY_SYSMENU_ITEM_HEIGHT;
 }

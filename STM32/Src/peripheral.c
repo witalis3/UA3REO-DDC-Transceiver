@@ -864,6 +864,11 @@ void PERIPH_ProcessFrontPanel(void)
 
 			if (!LCD_systemMenuOpened)
 				TRX.Locked = !TRX.Locked;
+			else
+			{
+				sysmenu_hiddenmenu_enabled = true;
+				LCD_redraw();
+			}
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
 		}
@@ -894,8 +899,7 @@ void PERIPH_ProcessSWRMeter(void)
 	float32_t forward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / 65535.0f;
 	float32_t backward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / 65535.0f;
 
-	forward = forward / (CALIBRATE.swr_meter_Rbottom / (CALIBRATE.swr_meter_Rtop + CALIBRATE.swr_meter_Rbottom)); //корректируем напряжение исходя из делителя
-	forward += CALIBRATE.swr_meter_fwd_diff;																	  //корректируем напряжение по калибровке
+	forward = forward / (510.0f / (0.1f + 510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
 	if (forward < 0.001f)																						  //меньше 1mV не измеряем
 	{
 		TRX_SWR_forward = 0.0f;
@@ -904,16 +908,14 @@ void PERIPH_ProcessSWRMeter(void)
 		return;
 	}
 
-	forward += CALIBRATE.swr_meter_diode_drop;			// падение на диоде
-	forward = forward * CALIBRATE.swr_meter_trans_rate; // падение на трансформаторе
+	forward += 0.62f;			// падение на диоде
+	forward = forward * 10.0f; // Коэффициент трансформации КСВ метра
 
-	backward = backward / (CALIBRATE.swr_meter_Rbottom / (CALIBRATE.swr_meter_Rtop + CALIBRATE.swr_meter_Rbottom)); //корректируем напряжение исходя из делителя
-	backward += CALIBRATE.swr_meter_ref_diff;																		//корректируем напряжение по калибровке
-	backward -= forward * CALIBRATE.swr_meter_ref_sub;																//% вычитаемого FWD из REF
+	backward = backward / (510.0f / (0.1f + 510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
 	if (backward >= 0.001f)
 	{
-		backward += CALIBRATE.swr_meter_diode_drop;			  // падение на диоде
-		backward = backward * CALIBRATE.swr_meter_trans_rate; // падение на трансформаторе
+		backward += 0.62f;			  // падение на диоде
+		backward = backward * 10.0f; //Коэффициент трансформации КСВ метра
 	}
 	if (backward < 0.001f) //меньше 1mV не измеряем
 		backward = 0.001f;

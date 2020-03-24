@@ -71,18 +71,15 @@
 
 extern struct t_CALIBRATE
 {
+	uint8_t CIC_GAINER_val;
+	uint8_t CICFIR_GAINER_val;
+	uint8_t TXCICFIR_GAINER_val;
+	uint8_t DAC_GAINER_val;
 	uint8_t rf_out_power[32]; //калибровка выходной мощности на каждый мегагерц
 	int16_t smeter_calibration; //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
-	float32_t swr_meter_Rtop; //Верхнее плечо делителя напряжения КСВ метра, ом
-	float32_t swr_meter_Rbottom; //Нижнее плечо делителя напряжения КСВ метра, ом
-	float32_t swr_meter_fwd_diff; //Разница напряжения FWD получаемым АЦП с реальным, в
-	float32_t swr_meter_ref_diff; //Разница напряжения REF получаемым АЦП с реальным, в
-	float32_t swr_meter_diode_drop; //Падение напряжения на диодах
-	float32_t swr_meter_trans_rate; //Коэффициент трансформации КСВ метра
-	float32_t swr_meter_ref_sub; //% вычитаемого FWD из REF
 	int16_t adc_offset; //Калибровка смещения по входу ADC (ПО DC)
-	float32_t att_db;						//подавление в аттенюаторе, dB
-	float32_t lna_gain_db;				//усиление в МШУ предусилителе (LNA), dB
+	int16_t att_db;						//подавление в аттенюаторе, dB
+	int16_t lna_gain_db;				//усиление в МШУ предусилителе (LNA), dB
 	//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
 	//Далее выставляются средние пограничные частоты срабатывания
 	uint32_t LPF_END;
@@ -195,10 +192,6 @@ extern struct TRX_SETTINGS
 	bool Locked;
 	bool CLAR;
 	bool TWO_SIGNAL_TUNE;
-	uint8_t CIC_GAINER_val;
-	uint8_t CICFIR_GAINER_val;
-	uint8_t TXCICFIR_GAINER_val;
-	uint8_t DAC_GAINER_val;
 	uint8_t IF_Gain;
 	bool CW_KEYER;
 	uint16_t CW_KEYER_WPM;

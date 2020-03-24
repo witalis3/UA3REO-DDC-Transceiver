@@ -6,15 +6,16 @@
 
 typedef enum
 {
-	SYSMENU_BOOLEAN = 0x01U,
-	SYSMENU_RUN = 0x02U,
-	SYSMENU_UINT8 = 0x03U,
-	SYSMENU_UINT16 = 0x04U,
-	SYSMENU_UINT32 = 0x05U,
-	SYSMENU_INT8 = 0x06U,
-	SYSMENU_INT16 = 0x07U,
-	SYSMENU_INT32 = 0x08U,
-	SYSMENU_MENU = 0x09U,
+	SYSMENU_BOOLEAN = 0x01,
+	SYSMENU_RUN = 0x02,
+	SYSMENU_UINT8 = 0x03,
+	SYSMENU_UINT16 = 0x04,
+	SYSMENU_UINT32 = 0x05,
+	SYSMENU_INT8 = 0x06,
+	SYSMENU_INT16 = 0x07,
+	SYSMENU_INT32 = 0x08,
+	SYSMENU_MENU = 0x09,
+	SYSMENU_HIDDEN_MENU = 0x0A,
 } SystemMenuType;
 
 struct sysmenu_item_handler
@@ -30,6 +31,7 @@ extern void eventRotateSystemMenu(int8_t direction);
 extern void eventSecRotateSystemMenu(int8_t direction);
 extern void eventCloseSystemMenu(void);
 extern bool sysmenu_spectrum_opened;
+extern bool sysmenu_hiddenmenu_enabled;
 extern void SYSMENU_RFPOWER_HOTKEY(void);
 extern void SYSMENU_CW_WPM_HOTKEY(void);
 extern void SYSMENU_AUDIO_SSB_HOTKEY(void);
