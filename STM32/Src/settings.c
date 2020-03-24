@@ -16,6 +16,9 @@ static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
 static uint8_t Sector_Erase = W25Q16_COMMAND_Sector_Erase;
 static uint8_t Page_Program = W25Q16_COMMAND_Page_Program;
 static uint8_t Read_Data = W25Q16_COMMAND_Read_Data;
+static uint8_t Power_Down = W25Q16_COMMAND_Power_Down;
+static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
+
 static uint8_t Address[3] = {0x00};
 struct TRX_SETTINGS TRX = {0};
 static uint8_t write_clone[W25Q16_SECTOR_SIZE] = {0};
@@ -30,6 +33,8 @@ static bool EEPROM_Enabled = true;
 static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify, bool force);
 static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force);
 static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verif, bool force);
+static void Flash_PowerDown(void);
+static void Flash_PowerUp(void);
 
 struct t_CALIBRATE CALIBRATE = {
 	.rf_out_power = {
@@ -115,6 +120,7 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 
 void LoadSettings(bool clear)
 {
+	Flash_PowerUp();
 	uint8_t tryes=0;
 	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Read EEPROM multiple errors");
@@ -246,6 +252,7 @@ void LoadSettings(bool clear)
 		sendToDebug_strln("[OK] Loaded default settings");
 		SaveSettings();
 	}
+	Flash_PowerDown();
 }
 
 VFO *CurrentVFO(void)
@@ -268,6 +275,7 @@ void SaveSettings(void)
 {
 	if (EEPROM_Busy)
 		return;
+	Flash_PowerUp();
 	uint8_t tryes=0;
 	NeedSaveSettings = false;
 	EEPROM_Busy = true;
@@ -280,6 +288,7 @@ void SaveSettings(void)
 	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Sector_Erase(sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)){ tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Erase EEPROM multiple errors");
 	EEPROM_Busy = false;
+	Flash_PowerDown();
 	sendToDebug_strln("[OK] EEPROM Saved");
 }
 
@@ -432,4 +441,20 @@ static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left
 	}
 	PERIPH_SPI_process = false;
 	return true;
+}
+
+static void Flash_PowerDown(void)
+{
+	if (!EEPROM_Enabled)
+		return;
+	PERIPH_SPI_Transmit(&Power_Down, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Power_Down Command
+	HAL_Delay(EEPROM_CO_DELAY);
+}
+
+static void Flash_PowerUp(void)
+{
+	if (!EEPROM_Enabled)
+		return;
+	PERIPH_SPI_Transmit(&Power_Up, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Power_Up Command
+	HAL_Delay(EEPROM_CO_DELAY);
 }
