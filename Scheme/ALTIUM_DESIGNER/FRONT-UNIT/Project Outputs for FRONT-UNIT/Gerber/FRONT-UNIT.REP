@@ -2,6 +2,47 @@
 FileName = FRONT-UNIT.GBR
 AutoAperture = True
 *************************************************************
+Generating : Top Layer, Top
+      File : FRONT-UNIT.GTL
+
+    Adding Layer      : Top Layer, Top
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D10
+    D38
+    D39
+    D40
+    D41
+    D42
+    D43
+    D44
+    D45
+    D46
+    D47
+    D48
+    D49
+    D50
+    D51
+    D52
+    D53
+    D54
+    D55
+    D56
+    D57
+    D58
+    D59
+    D60
+    D61
+    D62
+    D63
+    D64
+    D65
+*************************************************************
+
+*************************************************************
 Generating : Mechanical 13
       File : FRONT-UNIT.GM13
 
@@ -10,6 +51,21 @@ Generating : Mechanical 13
 
 Used DCodes :
     D109
+*************************************************************
+
+*************************************************************
+Generating : Top Overlay, Top Silk
+      File : FRONT-UNIT.GTO
+
+    Adding Layer      : Top Overlay, Top Silk
+
+
+Used DCodes :
+    D10
+    D11
+    D12
+    D13
+    D14
 *************************************************************
 
 *************************************************************
@@ -50,34 +106,15 @@ Used DCodes :
 *************************************************************
 
 *************************************************************
-Generating : Top Pad Master
-      File : FRONT-UNIT.GPT
+Generating : Mechanical 15
+      File : FRONT-UNIT.GM15
 
-    Adding Layer      : Top Layer, Top
-
-    Adding Layer      : Multi-Layer
+    Adding Layer      : Mechanical 15
 
 
 Used DCodes :
-    D38
-    D39
-    D44
-    D45
-    D46
-    D47
-    D48
-    D49
-    D50
-    D51
-    D52
-    D53
-    D54
-    D55
-    D56
-    D57
-    D58
-    D59
-    D60
+    D109
+    D110
 *************************************************************
 
 *************************************************************
@@ -137,6 +174,21 @@ Used DCodes :
 *************************************************************
 
 *************************************************************
+Generating : Bottom Overlay, Bot Silk
+      File : FRONT-UNIT.GBO
+
+    Adding Layer      : Bottom Overlay, Bot Silk
+
+
+Used DCodes :
+    D10
+    D12
+    D105
+    D106
+    D107
+*************************************************************
+
+*************************************************************
 Generating : Bottom Pad Master
       File : FRONT-UNIT.GPB
 
@@ -187,15 +239,15 @@ Used DCodes :
 *************************************************************
 
 *************************************************************
-Generating : Mechanical 15
-      File : FRONT-UNIT.GM15
+Generating : Mechanical 2, Bot Assy
+      File : FRONT-UNIT.GM2
 
-    Adding Layer      : Mechanical 15
+    Adding Layer      : Mechanical 2, Bot Assy
 
 
 Used DCodes :
-    D109
-    D110
+    D10
+    D108
 *************************************************************
 
 *************************************************************
@@ -211,35 +263,8 @@ Used DCodes :
 *************************************************************
 
 *************************************************************
-Generating : Top Overlay, Top Silk
-      File : FRONT-UNIT.GTO
-
-    Adding Layer      : Top Overlay, Top Silk
-
-
-Used DCodes :
-    D10
-    D11
-    D12
-    D13
-    D14
-*************************************************************
-
-*************************************************************
-Generating : Mechanical 2, Bot Assy
-      File : FRONT-UNIT.GM2
-
-    Adding Layer      : Mechanical 2, Bot Assy
-
-
-Used DCodes :
-    D10
-    D108
-*************************************************************
-
-*************************************************************
-Generating : Top Layer, Top
-      File : FRONT-UNIT.GTL
+Generating : Top Pad Master
+      File : FRONT-UNIT.GPT
 
     Adding Layer      : Top Layer, Top
 
@@ -247,13 +272,8 @@ Generating : Top Layer, Top
 
 
 Used DCodes :
-    D10
     D38
     D39
-    D40
-    D41
-    D42
-    D43
     D44
     D45
     D46
@@ -271,26 +291,6 @@ Used DCodes :
     D58
     D59
     D60
-    D61
-    D62
-    D63
-    D64
-    D65
-*************************************************************
-
-*************************************************************
-Generating : Bottom Overlay, Bot Silk
-      File : FRONT-UNIT.GBO
-
-    Adding Layer      : Bottom Overlay, Bot Silk
-
-
-Used DCodes :
-    D10
-    D12
-    D105
-    D106
-    D107
 *************************************************************
 
 *************************************************************
