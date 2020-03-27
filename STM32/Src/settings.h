@@ -48,9 +48,9 @@
 #define FLOAT_FULL_SCALE_POW 4
 
 // задержки при работе с EEPROM
-#define EEPROM_CO_DELAY 5 // command
-#define EEPROM_AD_DELAY 5 // addr
-#define EEPROM_WR_DELAY 30 // write
+#define EEPROM_CO_DELAY 0 // command
+#define EEPROM_AD_DELAY 0 // addr
+#define EEPROM_WR_DELAY 5 // write
 #define EEPROM_RD_DELAY 0 // read
 #define EEPROM_ERASE_DELAY 40 // do erase
 #define EEPROM_REPEAT_TRYES 40 // command tryes

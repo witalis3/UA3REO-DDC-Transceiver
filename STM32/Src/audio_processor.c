@@ -70,7 +70,7 @@ void processRxAudio(void)
 		return;
 	if (WM8731_Buffer_underrun)
 	{
-		Processor_NeedRXBuffer = false;
+		TRX_Restart_Mode();
 		return;
 	}
 	VFO *current_vfo = CurrentVFO();

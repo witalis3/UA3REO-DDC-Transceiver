@@ -355,7 +355,7 @@ static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ba
 	//verify
 	if(verify)
 	{
-		EEPROM_Read_Data(verify_clone, size, start, eeprom_bank, true, true);
+		EEPROM_Read_Data(verify_clone, size, start, eeprom_bank, false, true);
 		for(uint16_t i = 0 ; i < size ; i++)
 			if(verify_clone[i]!=0xFF)
 			{
@@ -404,7 +404,7 @@ static bool EEPROM_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_le
 	//verify
 	if(verify)
 	{
-		EEPROM_Read_Data(verify_clone, size, margin_left, eeprom_bank, true, true);
+		EEPROM_Read_Data(verify_clone, size, margin_left, eeprom_bank, false, true);
 		for(uint16_t i = 0 ; i < size ; i++)
 			if(verify_clone[i]!=write_clone[i])
 			{
