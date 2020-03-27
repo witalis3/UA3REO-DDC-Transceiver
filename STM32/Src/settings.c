@@ -21,20 +21,23 @@ static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
 
 static uint8_t Address[3] = {0x00};
 struct TRX_SETTINGS TRX = {0};
+struct TRX_CALIBRATE CALIBRATE = {0};
+
 static uint8_t write_clone[W25Q16_SECTOR_SIZE] = {0};
 static uint8_t read_clone[W25Q16_SECTOR_SIZE] = {0};
 static uint8_t verify_clone[W25Q16_SECTOR_SIZE] = {0};
 static uint8_t settings_eeprom_bank = 0;
 
 volatile bool NeedSaveSettings = false;
+volatile bool NeedSaveCalibration = false;
 volatile bool EEPROM_Busy = false;
 static bool EEPROM_Enabled = true;
 
-static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify, bool force);
-static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force);
-static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verif, bool force);
-static void Flash_PowerDown(void);
-static void Flash_PowerUp(void);
+static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify, bool force);
+static bool EEPROM_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force);
+static bool EEPROM_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verif, bool force);
+static void EEPROM_PowerDown(void);
+static void EEPROM_PowerUp(void);
 
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"LSB",
@@ -53,9 +56,9 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 
 void LoadSettings(bool clear)
 {
-	Flash_PowerUp();
+	EEPROM_PowerUp();
 	uint8_t tryes=0;
-	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
+	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Read EEPROM multiple errors");
 	settings_eeprom_bank++;
 
@@ -63,7 +66,7 @@ void LoadSettings(bool clear)
 	if (TRX.ENDBit != 100)
 	{
 		tryes=0;
-		while(tryes < EEPROM_REPEAT_TRYES && !Flash_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
+		while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
 		if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Read EEPROM multiple errors");
 		settings_eeprom_bank = 0;
 
@@ -77,11 +80,11 @@ void LoadSettings(bool clear)
 
 	TRX.ENDBit = 100;
 
-	if (TRX.clean_flash != 191 || clear) //code to trace new clean flash
+	if (TRX.flash_id != 191 || clear) //code to trace new clean flash
 	{
 		sendToDebug_str("[ERR] Flash ID: ");
-		sendToDebug_uint8(TRX.clean_flash,false);
-		TRX.clean_flash = 191;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		sendToDebug_uint8(TRX.flash_id,false);
+		TRX.flash_id = 190;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000;	  //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
 		TRX.VFO_A.LPF_Filter_Width = 2700; //сохранённая ширина полосы VFO-A
@@ -181,71 +184,87 @@ void LoadSettings(bool clear)
 		sendToDebug_strln("[OK] Loaded default settings");
 		SaveSettings();
 	}
-	Flash_PowerDown();
+	EEPROM_PowerDown();
 }
 
-struct t_CALIBRATE CALIBRATE = {
-	.CIC_GAINER_val = 88,	  //Смещение с выхода CIC
-	.CICFIR_GAINER_val = 54,   //Смещение с выхода CIC компенсатора
-	.TXCICFIR_GAINER_val = 56, //Смещение с выхода TX-CIC компенсатора
-	.DAC_GAINER_val = 30,	  //Смещение DAC корректора
-	.rf_out_power = { //Калибровка максимальной выходной мощности на каждый диапазон
-		70,  // 0 mhz
-		45,  // 1 mhz
-		30,  // 2 mhz
-		42,  // 3 mhz
-		45,  // 4 mhz
-		54,  // 5 mhz
-		63,  // 6 mhz
-		72,  // 7 mhz
-		80,  // 8 mhz
-		86,  // 9 mhz
-		94,  // 10 mhz
-		97,  // 11 mhz
-		100, // 12 mhz
-		100, // 13 mhz
-		100, // 14 mhz
-		100, // 15 mhz
-		96,  // 16 mhz
-		90,  // 17 mhz
-		83,  // 18 mhz
-		72,  // 19 mhz
-		61,  // 20 mhz
-		50,  // 21 mhz
-		41,  // 22 mhz
-		38,  // 23 mhz
-		43,  // 24 mhz
-		57,  // 25 mhz
-		72,  // 26 mhz
-		88,  // 27 mhz
-		100, // 28 mhz
-		100, // 29 mhz
-		100, // 30 mhz
-		100  // 31+ mhz
-	},
-	.smeter_calibration = 0,	   //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
-	.adc_offset = 25, //Калибровка смещения по входу ADC (по DC)
-	.att_db = -12,						//подавление в аттенюаторе, dB
-	.lna_gain_db = 11,				//усиление в МШУ предусилителе (LNA), dB
-	//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
-	//Далее выставляются средние пограничные частоты срабатывания
-	.LPF_END = 33000000, //LPH
-	.BPF_0_START = 135000000, //UHF
-	.BPF_0_END = 150000000, //UHF
-	.BPF_1_START = 1500000, //1500000
-	.BPF_1_END = 2900000, //3350000
-	.BPF_2_START = 2900000, //2500000
-	.BPF_2_END = 4800000, //5680000
-	.BPF_3_START = 4800000, //4000000
-	.BPF_3_END = 7300000, //8100000
-	.BPF_4_START = 7300000, //6600000
-	.BPF_4_END = 12000000, //13000000
-	.BPF_5_START = 12000000, //11000000
-	.BPF_5_END = 19000000, //20700000
-	.BPF_6_START = 19000000, //17400000
-	.BPF_6_END = 30000000, //31000000
-	.BPF_7_HPF = 30000000, //HPF
-};
+void LoadCalibration(void)
+{
+	EEPROM_PowerUp();
+	uint8_t tryes=0;
+	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&CALIBRATE, sizeof(CALIBRATE), W25Q16_MARGIN_LEFT_CALIBRATION, 0, true, false)) { tryes++; }
+	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Read EEPROM CALIBRATE multiple errors");
+
+	if (CALIBRATE.flash_id != 190) //code to trace new clean flash
+	{
+		sendToDebug_str("[ERR] CALIBRATE Flash ID: ");
+		sendToDebug_uint8(CALIBRATE.flash_id,false);
+		CALIBRATE.flash_id = 190;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		
+		CALIBRATE.CIC_GAINER_val = 88;	  //Смещение с выхода CIC
+		CALIBRATE.CICFIR_GAINER_val = 54;   //Смещение с выхода CIC компенсатора
+		CALIBRATE.TXCICFIR_GAINER_val = 56; //Смещение с выхода TX-CIC компенсатора
+		CALIBRATE.DAC_GAINER_val = 30;	  //Смещение DAC корректора
+		//Калибровка максимальной выходной мощности на каждый диапазон
+		CALIBRATE.rf_out_power[0] = 100;  // 0 mhz
+		CALIBRATE.rf_out_power[1] = 41;  // 1 mhz
+		CALIBRATE.rf_out_power[2] = 32;  // 2 mhz
+		CALIBRATE.rf_out_power[3] = 36;  // 3 mhz
+		CALIBRATE.rf_out_power[4] = 43;  // 4 mhz
+		CALIBRATE.rf_out_power[5] = 52;  // 5 mhz
+		CALIBRATE.rf_out_power[6] = 61;  // 6 mhz
+		CALIBRATE.rf_out_power[7] = 69;  // 7 mhz
+		CALIBRATE.rf_out_power[8] = 76;  // 8 mhz
+		CALIBRATE.rf_out_power[9] = 84;  // 9 mhz
+		CALIBRATE.rf_out_power[10] = 90;  // 10 mhz
+		CALIBRATE.rf_out_power[11] = 96;  // 11 mhz
+		CALIBRATE.rf_out_power[12] = 100; // 12 mhz
+		CALIBRATE.rf_out_power[13] = 100; // 13 mhz
+		CALIBRATE.rf_out_power[14] = 100; // 14 mhz
+		CALIBRATE.rf_out_power[15] = 100; // 15 mhz
+		CALIBRATE.rf_out_power[16] = 98;  // 16 mhz
+		CALIBRATE.rf_out_power[17] = 93;  // 17 mhz
+		CALIBRATE.rf_out_power[18] = 86;  // 18 mhz
+		CALIBRATE.rf_out_power[19] = 79;  // 19 mhz
+		CALIBRATE.rf_out_power[20] = 72;  // 20 mhz
+		CALIBRATE.rf_out_power[21] = 63;  // 21 mhz
+		CALIBRATE.rf_out_power[22] = 54;  // 22 mhz
+		CALIBRATE.rf_out_power[23] = 45;  // 23 mhz
+		CALIBRATE.rf_out_power[24] = 41;  // 24 mhz
+		CALIBRATE.rf_out_power[25] = 45;  // 25 mhz
+		CALIBRATE.rf_out_power[26] = 52;  // 26 mhz
+		CALIBRATE.rf_out_power[27] = 64;  // 27 mhz
+		CALIBRATE.rf_out_power[28] = 78; // 28 mhz
+		CALIBRATE.rf_out_power[29] = 100; // 29 mhz
+		CALIBRATE.rf_out_power[30] = 100; // 30 mhz
+		CALIBRATE.rf_out_power[31] = 100;  // 31+ mhz
+		CALIBRATE.smeter_calibration = 0;	   //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
+		CALIBRATE.adc_offset = 25; //Калибровка смещения по входу ADC (по DC)
+		CALIBRATE.att_db = -12;						//подавление в аттенюаторе, dB
+		CALIBRATE.lna_gain_db = 11;				//усиление в МШУ предусилителе (LNA), dB
+		//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
+		//Далее выставляются средние пограничные частоты срабатывания
+		CALIBRATE.LPF_END = 33000000; //LPH
+		CALIBRATE.BPF_0_START = 135000000; //UHF
+		CALIBRATE.BPF_0_END = 150000000; //UHF
+		CALIBRATE.BPF_1_START = 1500000; //1500000
+		CALIBRATE.BPF_1_END = 2900000; //3350000
+		CALIBRATE.BPF_2_START = 2900000; //2500000
+		CALIBRATE.BPF_2_END = 4800000; //5680000
+		CALIBRATE.BPF_3_START = 4800000; //4000000
+		CALIBRATE.BPF_3_END = 7300000; //8100000
+		CALIBRATE.BPF_4_START = 7300000; //6600000
+		CALIBRATE.BPF_4_END = 12000000; //13000000
+		CALIBRATE.BPF_5_START = 12000000; //11000000
+		CALIBRATE.BPF_5_END = 19000000; //20700000
+		CALIBRATE.BPF_6_START = 19000000; //17400000
+		CALIBRATE.BPF_6_END = 30000000; //31000000
+		CALIBRATE.BPF_7_HPF = 30000000; //HPF
+		
+		sendToDebug_strln("[OK] Loaded default calibrate settings");
+		SaveCalibration();
+	}
+	EEPROM_PowerDown();
+}
 
 VFO *CurrentVFO(void)
 {
@@ -267,24 +286,48 @@ void SaveSettings(void)
 {
 	if (EEPROM_Busy)
 		return;
-	Flash_PowerUp();
-	uint8_t tryes=0;
+	EEPROM_PowerUp();
 	NeedSaveSettings = false;
 	EEPROM_Busy = true;
-	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Write_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
+	
+	uint8_t tryes=0;
+	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Write EEPROM multiple errors");
+	
 	settings_eeprom_bank++;
 	if (settings_eeprom_bank >= 2)
 		settings_eeprom_bank = 0;
+	
 	tryes=0;
-	while(tryes < EEPROM_REPEAT_TRYES && !Flash_Sector_Erase(sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)){ tryes++; }
+	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)){ tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Erase EEPROM multiple errors");
+	
 	EEPROM_Busy = false;
-	Flash_PowerDown();
+	EEPROM_PowerDown();
 	sendToDebug_strln("[OK] EEPROM Saved");
 }
 
-static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify, bool force)
+void SaveCalibration(void)
+{
+	if (EEPROM_Busy)
+		return;
+	EEPROM_PowerUp();
+	NeedSaveCalibration = false;
+	EEPROM_Busy = true;
+	
+	uint8_t tryes=0;	
+	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(sizeof(CALIBRATE), W25Q16_MARGIN_LEFT_CALIBRATION, 0, true, false)){ tryes++; }
+	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Erase EEPROM calibrate multiple errors");
+	tryes=0;	
+	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&CALIBRATE, sizeof(CALIBRATE), W25Q16_MARGIN_LEFT_CALIBRATION, 0, true, false)) { tryes++; }
+	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Write EEPROM calibrate multiple errors");
+	
+	EEPROM_Busy = false;
+	EEPROM_PowerDown();
+	sendToDebug_strln("[OK] EEPROM Calibrations Saved");
+}
+
+static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify, bool force)
 {
 	if (!force && !EEPROM_Enabled)
 		return true;
@@ -312,7 +355,7 @@ static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ban
 	//verify
 	if(verify)
 	{
-		Flash_Read_Data(verify_clone, size, start, eeprom_bank, true, true);
+		EEPROM_Read_Data(verify_clone, size, start, eeprom_bank, true, true);
 		for(uint16_t i = 0 ; i < size ; i++)
 			if(verify_clone[i]!=0xFF)
 			{
@@ -327,7 +370,7 @@ static bool Flash_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ban
 	return true;
 }
 
-static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force)
+static bool EEPROM_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force)
 {
 	if (!force && !EEPROM_Enabled)
 		return true;
@@ -361,14 +404,14 @@ static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_lef
 	//verify
 	if(verify)
 	{
-		Flash_Read_Data(verify_clone, size, margin_left, eeprom_bank, true, true);
+		EEPROM_Read_Data(verify_clone, size, margin_left, eeprom_bank, true, true);
 		for(uint16_t i = 0 ; i < size ; i++)
 			if(verify_clone[i]!=write_clone[i])
 			{
 				//sendToDebug_strln("[ERR] EEPROM Write Error: ");
 				//sendToDebug_uint16(i,false);
 				//sendToDebug_newline();
-				Flash_Sector_Erase(size, margin_left, eeprom_bank, true, true);
+				EEPROM_Sector_Erase(size, margin_left, eeprom_bank, true, true);
 				PERIPH_SPI_process = false;
 				return false;
 			}
@@ -377,7 +420,7 @@ static bool Flash_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_lef
 	return true;
 }
 
-static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force)
+static bool EEPROM_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force)
 {
 	if (!force && !EEPROM_Enabled)
 		return true;
@@ -420,7 +463,7 @@ static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left
 	if(verify)
 	{
 		//memcpy(write_clone, Buffer, size);
-		Flash_Read_Data(read_clone, size, margin_left, eeprom_bank, false, true);
+		EEPROM_Read_Data(read_clone, size, margin_left, eeprom_bank, false, true);
 		for(uint16_t i = 0 ; i < size ; i++)
 			if(read_clone[i]!=Buffer[i])
 			{
@@ -435,7 +478,7 @@ static bool Flash_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left
 	return true;
 }
 
-static void Flash_PowerDown(void)
+static void EEPROM_PowerDown(void)
 {
 	if (!EEPROM_Enabled)
 		return;
@@ -443,7 +486,7 @@ static void Flash_PowerDown(void)
 	HAL_Delay(EEPROM_CO_DELAY);
 }
 
-static void Flash_PowerUp(void)
+static void EEPROM_PowerUp(void)
 {
 	if (!EEPROM_Enabled)
 		return;

@@ -69,37 +69,6 @@
 #define W25Q16_MARGIN_LEFT_SETTINGS (W25Q16_SECTOR_SIZE*0)
 #define W25Q16_MARGIN_LEFT_CALIBRATION (W25Q16_SECTOR_SIZE*8)
 
-extern struct t_CALIBRATE
-{
-	uint8_t CIC_GAINER_val;
-	uint8_t CICFIR_GAINER_val;
-	uint8_t TXCICFIR_GAINER_val;
-	uint8_t DAC_GAINER_val;
-	uint8_t rf_out_power[32]; //калибровка выходной мощности на каждый мегагерц
-	int16_t smeter_calibration; //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
-	int16_t adc_offset; //Калибровка смещения по входу ADC (ПО DC)
-	int16_t att_db;						//подавление в аттенюаторе, dB
-	int16_t lna_gain_db;				//усиление в МШУ предусилителе (LNA), dB
-	//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
-	//Далее выставляются средние пограничные частоты срабатывания
-	uint32_t LPF_END;
-	uint32_t BPF_0_START; //UHF
-	uint32_t BPF_0_END; //UHF
-	uint32_t BPF_1_START;
-	uint32_t BPF_1_END;
-	uint32_t BPF_2_START;
-	uint32_t BPF_2_END;
-	uint32_t BPF_3_START;
-	uint32_t BPF_3_END;
-	uint32_t BPF_4_START;
-	uint32_t BPF_4_END;
-	uint32_t BPF_5_START;
-	uint32_t BPF_5_END;
-	uint32_t BPF_6_START;
-	uint32_t BPF_6_END;
-	uint32_t BPF_7_HPF;
-} CALIBRATE;
-
 typedef struct
 {
 	uint32_t Freq;
@@ -143,7 +112,7 @@ typedef struct
 
 extern struct TRX_SETTINGS
 {
-	uint8_t clean_flash;
+	uint8_t flash_id;
 	bool current_vfo; // false - A; true - B
 	VFO VFO_A;
 	VFO VFO_B;
@@ -206,11 +175,44 @@ extern struct TRX_SETTINGS
 	uint8_t ENDBit;
 } TRX;
 
+extern struct TRX_CALIBRATE
+{
+	uint8_t flash_id;
+	uint8_t CIC_GAINER_val;
+	uint8_t CICFIR_GAINER_val;
+	uint8_t TXCICFIR_GAINER_val;
+	uint8_t DAC_GAINER_val;
+	uint8_t rf_out_power[32];
+	int16_t smeter_calibration;
+	int16_t adc_offset;
+	int16_t att_db;	
+	int16_t lna_gain_db;
+	uint32_t LPF_END;
+	uint32_t BPF_0_START; //UHF
+	uint32_t BPF_0_END; //UHF
+	uint32_t BPF_1_START;
+	uint32_t BPF_1_END;
+	uint32_t BPF_2_START;
+	uint32_t BPF_2_END;
+	uint32_t BPF_3_START;
+	uint32_t BPF_3_END;
+	uint32_t BPF_4_START;
+	uint32_t BPF_4_END;
+	uint32_t BPF_5_START;
+	uint32_t BPF_5_END;
+	uint32_t BPF_6_START;
+	uint32_t BPF_6_END;
+	uint32_t BPF_7_HPF;
+} CALIBRATE;
+
 extern volatile bool NeedSaveSettings;
+extern volatile bool NeedSaveCalibration;
 extern volatile bool EEPROM_Busy;
 
 extern void LoadSettings(bool clear);
+extern void LoadCalibration(void);
 extern void SaveSettings(void);
+extern void SaveCalibration(void);
 extern VFO *CurrentVFO(void);
 extern VFO *SecondaryVFO(void);
 

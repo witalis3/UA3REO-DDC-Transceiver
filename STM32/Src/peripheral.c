@@ -900,7 +900,7 @@ void PERIPH_ProcessSWRMeter(void)
 	float32_t backward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / 65535.0f;
 
 	forward = forward / (510.0f / (0.1f + 510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
-	if (forward < 0.001f)																						  //меньше 1mV не измеряем
+	if (forward < 0.01f)	 //меньше 10mV не измеряем
 	{
 		TRX_SWR_forward = 0.0f;
 		TRX_SWR_backward = 0.0f;
@@ -912,12 +912,12 @@ void PERIPH_ProcessSWRMeter(void)
 	forward = forward * 10.0f; // Коэффициент трансформации КСВ метра
 
 	backward = backward / (510.0f / (0.1f + 510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
-	if (backward >= 0.001f)
+	if (backward >= 0.01f)	 //меньше 10mV не измеряем
 	{
 		backward += 0.62f;			  // падение на диоде
 		backward = backward * 10.0f; //Коэффициент трансформации КСВ метра
 	}
-	if (backward < 0.001f) //меньше 1mV не измеряем
+	else
 		backward = 0.001f;
 
 	TRX_SWR_forward = forward;

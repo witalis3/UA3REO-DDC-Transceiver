@@ -200,6 +200,8 @@ int main(void)
     LoadSettings(true);
   else
     LoadSettings(false);
+	LoadCalibration();
+	sendToDebug_strln("[OK] Settings loaded");
 	HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
 	HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
 	sendToDebug_strln("[OK] STM32-ADC Calibrated");

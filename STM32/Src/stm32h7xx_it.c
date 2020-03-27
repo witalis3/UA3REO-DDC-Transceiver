@@ -703,6 +703,10 @@ void TIM15_IRQHandler(void)
 			eeprom_save_timestamp = HAL_GetTick();
 		}
 	}
+	if (NeedSaveCalibration)
+	{
+		SaveCalibration();
+	}
   /* USER CODE END TIM15_IRQn 1 */
 }
 
