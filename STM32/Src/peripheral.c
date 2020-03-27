@@ -920,8 +920,8 @@ void PERIPH_ProcessSWRMeter(void)
 	else
 		backward = 0.001f;
 
-	TRX_SWR_forward = forward;
-	TRX_SWR_backward = backward;
+	TRX_SWR_forward = TRX_SWR_forward + (forward - TRX_SWR_forward) / 2;
+	TRX_SWR_backward = TRX_SWR_backward + (backward - TRX_SWR_backward) / 2;
 	TRX_SWR = (TRX_SWR_forward + TRX_SWR_backward) / (TRX_SWR_forward - TRX_SWR_backward);
 	if (TRX_SWR_backward > TRX_SWR_forward)
 		TRX_SWR = 10.0f;

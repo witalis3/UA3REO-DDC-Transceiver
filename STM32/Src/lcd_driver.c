@@ -437,9 +437,9 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
 
 	fillxy_color = color;
-	if (n > 50)
+	/*if (n > 50)
 	{
-		const uint32_t part_size = 32000;
+		const uint32_t part_size = 16000;
 		uint32_t estamated = n;
 		while(estamated>0)
 		{
@@ -456,14 +456,15 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 				estamated=0;
 			}
 		}
+		//while(HAL_DMA_GetState(&hdma_memtomem_dma2_stream5)==HAL_DMA_STATE_BUSY) {}
 	}
 	else
-	{
+	{*/
 		while (n--)
 		{
 			LCDDriver_SendData(color);
 		}
-	}
+	/*}*/
 }
 
 void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
