@@ -14,8 +14,9 @@ typedef enum
 	SYSMENU_INT8 = 0x06,
 	SYSMENU_INT16 = 0x07,
 	SYSMENU_INT32 = 0x08,
-	SYSMENU_MENU = 0x09,
-	SYSMENU_HIDDEN_MENU = 0x0A,
+	SYSMENU_FLOAT32 = 0x09,
+	SYSMENU_MENU = 0x0A,
+	SYSMENU_HIDDEN_MENU = 0x0B,
 } SystemMenuType;
 
 struct sysmenu_item_handler

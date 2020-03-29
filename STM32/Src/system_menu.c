@@ -124,6 +124,7 @@ static void SYSMENU_HANDL_CALIB_BPF_5_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_6_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
+static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction);
 	
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -296,6 +297,7 @@ static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 	{"BPF 6 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_6_START, SYSMENU_HANDL_CALIB_BPF_6_START},
 	{"BPF 6 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_6_END, SYSMENU_HANDL_CALIB_BPF_6_END},
 	{"HPF START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_7_HPF, SYSMENU_HANDL_CALIB_HPF_START},
+	{"SWR TRANS RATE", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.swr_trans_rate_shadow, SYSMENU_HANDL_CALIB_SWR_TRANS_RATE},
 };
 static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 
@@ -1637,6 +1639,17 @@ static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction)
 }
 #pragma GCC diagnostic pop
 
+static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction)
+{
+	CALIBRATE.swr_trans_rate += (float32_t)direction*0.1f;
+	if (CALIBRATE.swr_trans_rate < 1.0f)
+		CALIBRATE.swr_trans_rate = 1.0f;
+	if (CALIBRATE.swr_trans_rate > 50.0f)
+		CALIBRATE.swr_trans_rate = 50.0f;
+	CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f));
+	NeedSaveCalibration = true;
+}
+
 //COMMON MENU FUNCTIONS
 void drawSystemMenu(bool draw_background)
 {
@@ -1874,6 +1887,10 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		break;
 	case SYSMENU_INT32:
 		sprintf(ctmp, "%d", (int32_t)*value);
+		x_pos = LAY_SYSMENU_X2_BIGINT;
+		break;
+	case SYSMENU_FLOAT32:
+		sprintf(ctmp, "%.2f", (double)((float32_t)((int32_t)*value)/100.0f));
 		x_pos = LAY_SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_BOOLEAN:

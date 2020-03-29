@@ -909,13 +909,13 @@ void PERIPH_ProcessSWRMeter(void)
 	}
 
 	forward += 0.62f;			// падение на диоде
-	forward = forward * 10.0f; // Коэффициент трансформации КСВ метра
+	forward = forward * CALIBRATE.swr_trans_rate; // Коэффициент трансформации КСВ метра
 
 	backward = backward / (510.0f / (0.1f + 510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
 	if (backward >= 0.01f)	 //меньше 10mV не измеряем
 	{
 		backward += 0.62f;			  // падение на диоде
-		backward = backward * 10.0f; //Коэффициент трансформации КСВ метра
+		backward = backward * CALIBRATE.swr_trans_rate; //Коэффициент трансформации КСВ метра
 	}
 	else
 		backward = 0.001f;

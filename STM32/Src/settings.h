@@ -203,6 +203,8 @@ extern struct TRX_CALIBRATE
 	uint32_t BPF_6_START;
 	uint32_t BPF_6_END;
 	uint32_t BPF_7_HPF;
+	float32_t swr_trans_rate;
+	int32_t swr_trans_rate_shadow;
 } CALIBRATE;
 
 extern volatile bool NeedSaveSettings;

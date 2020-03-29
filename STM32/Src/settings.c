@@ -259,6 +259,8 @@ void LoadCalibration(void)
 		CALIBRATE.BPF_6_START = 19000000; //17400000
 		CALIBRATE.BPF_6_END = 30000000; //31000000
 		CALIBRATE.BPF_7_HPF = 30000000; //HPF
+		CALIBRATE.swr_trans_rate = 10.0f; //SWR Transormator rate
+		CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f)); //SWR Transormator rate UINT shadow
 		
 		sendToDebug_strln("[OK] Loaded default calibrate settings");
 		SaveCalibration();
