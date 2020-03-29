@@ -6,6 +6,7 @@
 #include "trx_manager.h"
 #include "settings.h"
 #include "lcd.h"
+#include "usbd_audio_if.h"
 
 IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0};
 IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
@@ -29,6 +30,9 @@ void WM8731_CleanBuffer(void)
 {
 	memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
 	memset(CODEC_Audio_Buffer_TX, 0x00, sizeof CODEC_Audio_Buffer_TX);
+	memset(USB_AUDIO_rx_buffer_a, 0x00, sizeof USB_AUDIO_rx_buffer_a);
+	memset(USB_AUDIO_rx_buffer_b, 0x00, sizeof USB_AUDIO_rx_buffer_a);
+	memset(USB_AUDIO_tx_buffer, 0x00, sizeof USB_AUDIO_tx_buffer);
 }
 
 void WM8731_Beep(void)
@@ -60,7 +64,7 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 
 void WM8731_TX_mode(void)
 {
-	FPGA_stop_audio_clock();
+	//FPGA_stop_audio_clock();
 	WM8731_SendI2CCommand(B8(00000100), B8(00000000)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000110), B8(00000000)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00001111)); //R5 Digital Audio Path Control
@@ -78,12 +82,12 @@ void WM8731_TX_mode(void)
 		WM8731_SendI2CCommand(B8(00001000), B8(00000101)); //R4 Analogue Audio Path Control
 		WM8731_SendI2CCommand(B8(00001100), B8(01101001)); //R6 Power Down Control
 	}
-	FPGA_start_audio_clock();
+	//FPGA_start_audio_clock();
 }
 
 void WM8731_RX_mode(void)
 {
-	FPGA_stop_audio_clock();
+	//FPGA_stop_audio_clock();
 	WM8731_SendI2CCommand(B8(00000000), B8(10000000)); //R0 Left Line In
 	WM8731_SendI2CCommand(B8(00000010), B8(10000000)); //R1 Right Line In
 	WM8731_SendI2CCommand(B8(00000100), B8(01111001)); //R2 Left Headphone Out
@@ -91,12 +95,12 @@ void WM8731_RX_mode(void)
 	WM8731_SendI2CCommand(B8(00001000), B8(00010110)); //R4 Analogue Audio Path Control
 	WM8731_SendI2CCommand(B8(00001010), B8(00000111)); //R5 Digital Audio Path Control
 	WM8731_SendI2CCommand(B8(00001100), B8(01100111)); //R6 Power Down Control
-	FPGA_start_audio_clock();
+	//FPGA_start_audio_clock();
 }
 
 void WM8731_TXRX_mode(void) //loopback
 {
-	FPGA_stop_audio_clock();
+	//FPGA_stop_audio_clock();
 	WM8731_SendI2CCommand(B8(00000100), B8(01111001)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000110), B8(01111001)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00000111)); //R5 Digital Audio Path Control
@@ -114,13 +118,13 @@ void WM8731_TXRX_mode(void) //loopback
 		WM8731_SendI2CCommand(B8(00001000), B8(00010101)); //R4 Analogue Audio Path Control
 		WM8731_SendI2CCommand(B8(00001100), B8(01100001)); //R6 Power Down Control, internal crystal
 	}
-	FPGA_start_audio_clock();
+	//FPGA_start_audio_clock();
 }
 
 void WM8731_Init(void)
 {
 	bool err = false;
-	FPGA_stop_audio_clock();
+	//FPGA_stop_audio_clock();
 	if (WM8731_SendI2CCommand(B8(00011110), B8(00000000)) != 0) //R15 Reset Chip
 	{
 		sendToDebug_strln("[ERR] Audio codec not found");

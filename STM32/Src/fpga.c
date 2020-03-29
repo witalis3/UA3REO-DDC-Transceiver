@@ -49,8 +49,7 @@ void FPGA_Init(void)
 	HAL_GPIO_Init(GPIOA, &FPGA_GPIO_InitStruct);
 
 	FPGA_test_bus();
-
-	FPGA_start_audio_clock();
+	//FPGA_start_audio_clock();
 
 	//FPGA_read_flash();
 }
@@ -93,7 +92,7 @@ static void FPGA_test_bus(void) //проверка шины
 	if (!err)
 		sendToDebug_strln("[OK] FPGA inited");
 }
-
+/*
 void FPGA_start_audio_clock(void) //запуск PLL для I2S и кодека, при включенном тактовом не программируется i2c
 {
 	FPGA_busy = true;
@@ -123,7 +122,7 @@ void FPGA_stop_audio_clock(void) //остановка PLL для I2S и коде
 	GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
 	FPGA_busy = false;
 }
-
+*/
 void FPGA_fpgadata_stuffclock(void)
 {
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;

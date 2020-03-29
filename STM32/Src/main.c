@@ -194,7 +194,6 @@ int main(void)
   HAL_RTC_Init(&hrtc);
   sendToDebug_strln("[OK] Real Time Clock inited");
   InitProfiler();
-	FPGA_start_audio_clock();
   PERIPH_InitFrontPanel();
   if (PERIPH_FrontPanel.key_menu) //hard reset
     LoadSettings(true);

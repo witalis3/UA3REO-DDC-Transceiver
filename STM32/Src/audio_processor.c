@@ -68,11 +68,7 @@ void processRxAudio(void)
 {
 	if (!Processor_NeedRXBuffer)
 		return;
-	if (WM8731_Buffer_underrun)
-	{
-		TRX_Restart_Mode();
-		return;
-	}
+
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
 
@@ -305,11 +301,13 @@ void processRxAudio(void)
 		if (WM8731_DMA_state) //complete
 		{
 			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream0, (uint32_t)&Processor_AudioBuffer_current[0], (uint32_t)&CODEC_Audio_Buffer_RX[FPGA_AUDIO_BUFFER_SIZE], FPGA_AUDIO_BUFFER_SIZE);
+			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream0, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			AUDIOPROC_TXA_samples++;
 		}
 		else //half
 		{
 			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream1, (uint32_t)&Processor_AudioBuffer_current[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], FPGA_AUDIO_BUFFER_SIZE);
+			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream1, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			AUDIOPROC_TXB_samples++;
 		}
 	}
@@ -585,6 +583,7 @@ void processTxAudio(void)
 
 	Processor_NeedTXBuffer = false;
 	Processor_NeedRXBuffer = false;
+	USB_AUDIO_need_rx_buffer = false;
 }
 
 static void doCW_Decode(AUDIO_PROC_RX_NUM rx_id)
