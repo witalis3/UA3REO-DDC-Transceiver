@@ -191,7 +191,7 @@ USBD_StatusTypeDef  USBD_StdItfReq (USBD_HandleTypeDef *pdev , USBD_SetupReqType
 
       if (LOBYTE(req->wIndex) <= USBD_MAX_NUM_INTERFACES)
       {
-        ret = (USBD_StatusTypeDef)pdev->pClass->Setup(pdev, req);
+        ret = (USBD_StatusTypeDef)(pdev->pClass->Setup(pdev, req));
 
         if ((req->wLength == 0U) && (ret == USBD_OK))
         {
@@ -245,7 +245,7 @@ USBD_StatusTypeDef  USBD_StdEPReq (USBD_HandleTypeDef *pdev , USBD_SetupReqTyped
     /* Check if it is a class request */
     if ((req->bmRequest & 0x60U) == 0x20U)
     {
-      ret = (USBD_StatusTypeDef)pdev->pClass->Setup (pdev, req);
+      ret = (USBD_StatusTypeDef)(pdev->pClass->Setup (pdev, req));
 
       return ret;
     }
@@ -768,7 +768,8 @@ static void USBD_ClrFeature(USBD_HandleTypeDef *pdev ,
 * @param  req: usb request
 * @retval None
 */
-
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wimplicit-int-conversion"
 void USBD_ParseSetupRequest(USBD_SetupReqTypedef *req, uint8_t *pdata)
 {
   req->bmRequest     = *(uint8_t *)  (pdata);
@@ -776,9 +777,8 @@ void USBD_ParseSetupRequest(USBD_SetupReqTypedef *req, uint8_t *pdata)
   req->wValue        = SWAPBYTE      (pdata +  2);
   req->wIndex        = SWAPBYTE      (pdata +  4);
   req->wLength       = SWAPBYTE      (pdata +  6);
-
 }
-
+#pragma GCC diagnostic pop
 /**
 * @brief  USBD_CtlError
 *         Handle USB low level Error

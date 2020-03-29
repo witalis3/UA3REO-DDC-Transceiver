@@ -1,18 +1,12 @@
-STM32F407VET6 https://ru.aliexpress.com/item/32274403858.html
 ST-LINK/V2 https://www.aliexpress.com/item/1pcs-New-ST-LINK-V2-ST-LINK-V2-CN-ST-LINK-STLINK-Emulator-Download-Manager-STM8/32796459383.html
-LCD ILI9341 https://www.aliexpress.com/item/3-2-inch-TFT-LCD-Touch-Screen-Module-Display-Ultra-HD-320X240-ILI9341-for-3-2/32808968215.html
 EP4CE22E22C8N https://ru.aliexpress.com/item/32995010519.html
 LTC2208 https://ru.aliexpress.com/item/32843811592.html
 DAC904E https://www.aliexpress.com/item/DAC904E-DAC900E-DAC908E-2pcs-lot-SMD/32864490960.html
 WM8731 https://ru.aliexpress.com/item/32850014774.html
 ENCODER https://www.aliexpress.com/item/Free-Shipping-1pc-Incremental-rotary-encoder-600-lines/1280677743.html
-ADT1-1 https://www.aliexpress.com/item/New-original-ADT4-6-ADT4-5WT-ADT4-6T-ADT4-6WT-ADT16-1T-ADTL1-12-ADT1-1/32964585712.html
-ADT1-6T https://www.aliexpress.com/item/ADT1-6T-ADT1-6T-SOP6/32598752899.html
-ADT4-6T https://www.aliexpress.com/item/2pcs-100-new-and-orginal-ADT4-6T-ADT4-6T-SMD-6-RF-Transformer-in-stock/32965002647.html
 LTC6400IUD-20 https://ru.aliexpress.com/item/1000004749151.html
 OPA2674 https://www.aliexpress.com/item/5PCS-OPA2674I-14DR-OPA2674I-OPA2674-SOP-14/32863064043.html
 ST1S10 https://www.aliexpress.com/item/5pcs-ST1S10-ST1S10PHR-sop-8-Chipset-New-original/32895297431.html
-122.88Mhz Generator https://ru.aliexpress.com/item/32842308508.html
 BAP64-03 https://www.aliexpress.com/item/20pcs-lot-BAP64-03-printing-A3-SOD-323-175V-0-1A-SMD-diode-IC-new-original/32963212006.html
 SMD Chip inductor https://www.aliexpress.com/store/group/SMD-Chip-inductor/319544_512811919.html
 IM06 https://ru.aliexpress.com/item/32821506940.html

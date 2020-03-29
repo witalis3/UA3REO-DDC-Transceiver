@@ -1,7 +1,7 @@
 #ifndef WIFI_H
 #define WIFI_H
 
-#include "stm32f4xx_hal.h"
+#include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
 #define WIFI_ANSWER_BUFFER_SIZE 512
@@ -13,12 +13,13 @@ typedef enum
 	WIFI_UNDEFINED = 0x00U,
 	WIFI_NOTFOUND = 0x01U,
 	WIFI_INITED = 0x02U,
-	WIFI_CONNECTING = 0x03U,
-	WIFI_READY = 0x04U,
-	WIFI_PROCESS_COMMAND = 0x05U,
-	WIFI_TIMEOUT = 0x06U,
-	WIFI_FAIL = 0x07U,
-	WIFI_SLEEP = 0x08U,
+	WIFI_CONFIGURED = 0x03U,
+	WIFI_CONNECTING = 0x04U,
+	WIFI_READY = 0x05U,
+	WIFI_PROCESS_COMMAND = 0x06U,
+	WIFI_TIMEOUT = 0x07U,
+	WIFI_FAIL = 0x08U,
+	WIFI_SLEEP = 0x09U,
 } WiFiState;
 
 typedef enum
@@ -38,9 +39,9 @@ extern volatile WiFiState WIFI_State;
 extern volatile char WIFI_FoundedAP[10][32];
 
 extern void WIFI_Init(void);
-extern void WIFI_ProcessAnswer(void);
-extern uint32_t WIFI_GetSNMPTime(void);
-extern void WIFI_ListAP(void);
+extern void WIFI_Process(void);
+extern uint32_t WIFI_GetSNMPTime(void* callback);
+extern void WIFI_ListAP(void* callback);
 extern void WIFI_GetIP(void);
 extern void WIFI_GetStatus(void);
 extern void WIFI_GoSleep(void);

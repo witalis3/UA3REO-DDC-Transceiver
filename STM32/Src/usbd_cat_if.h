@@ -2,10 +2,10 @@
 #define __USBD_CDC_CAT_IF_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-	/* Includes ------------------------------------------------------------------*/
 #include "usbd_ua3reo.h"
 
 	extern USBD_CAT_ItfTypeDef USBD_CAT_fops_FS;
@@ -15,4 +15,4 @@ extern "C" {
 }
 #endif
 
-#endif /* __USBD_CDC_IF_H__ */
+#endif
