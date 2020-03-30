@@ -44,6 +44,8 @@ typedef struct
 	bool key_a_set_b_afterhold;
 	bool key_notch;
 	bool key_notch_prev;
+	uint32_t key_notch_starttime;
+	bool key_notch_afterhold;
 	bool key_clar;
 	bool key_clar_prev;
 	uint32_t key_clar_starttime;

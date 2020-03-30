@@ -218,7 +218,7 @@ void FFT_doFFT(void)
 	}
 
 	//Process Notch filter
-	if (CurrentVFO()->NotchFilter && !TRX_on_TX())
+	if (CurrentVFO()->ManualNotchFilter && !TRX_on_TX())
 	{
 		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_I_FILTER, FFTInput_I, FFTInput_I, FFT_SIZE);
 		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_Q_FILTER, FFTInput_Q, FFTInput_Q, FFT_SIZE);

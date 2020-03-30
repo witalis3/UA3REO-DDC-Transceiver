@@ -423,6 +423,16 @@
               <FilePath>..\Src\audio_processor.h</FilePath>
             </File>
             <File>
+              <FileName>auto_notch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\auto_notch.c</FilePath>
+            </File>
+            <File>
+              <FileName>auto_notch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\auto_notch.h</FilePath>
+            </File>
+            <File>
               <FileName>bands.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\bands.c</FilePath>

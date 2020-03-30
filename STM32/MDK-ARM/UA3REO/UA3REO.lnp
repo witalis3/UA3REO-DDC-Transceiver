@@ -3,6 +3,7 @@
 "ua3reo\agc.o"
 "ua3reo\audio_filters.o"
 "ua3reo\audio_processor.o"
+"ua3reo\auto_notch.o"
 "ua3reo\bands.o"
 "ua3reo\bootloader.o"
 "ua3reo\cw_decoder.o"

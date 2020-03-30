@@ -15,6 +15,7 @@
 #include "profiler.h"
 #include "usbd_audio_if.h"
 #include "noise_reduction.h"
+#include "auto_notch.h"
 #include "cw_decoder.h"
 #include "main.h"
 
@@ -665,13 +666,23 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id)
 	//NOTCH FILTER
 	if(rx_id==AUDIO_RX1)
 	{
-		if (CurrentVFO()->NotchFilter)
+		if (CurrentVFO()->ManualNotchFilter)
 			arm_biquad_cascade_df2T_f32(&NOTCH_RX1_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+		else if (CurrentVFO()->AutoNotchFilter)
+		{
+			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / AUTO_NOTCH_BLOCK_SIZE); block++)
+				processAutoNotchReduction(FPGA_Audio_Buffer_RX1_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), FPGA_Audio_Buffer_RX1_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
+		}
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
-		if (SecondaryVFO()->NotchFilter)
+		if (SecondaryVFO()->ManualNotchFilter)
 			arm_biquad_cascade_df2T_f32(&NOTCH_RX2_FILTER, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
+		else if (SecondaryVFO()->AutoNotchFilter)
+		{
+			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / AUTO_NOTCH_BLOCK_SIZE); block++)
+				processAutoNotchReduction(FPGA_Audio_Buffer_RX2_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), FPGA_Audio_Buffer_RX2_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
+		}
 	}
 }
 

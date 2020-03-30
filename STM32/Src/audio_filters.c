@@ -9,6 +9,7 @@
 #include "wm8731.h"
 #include "settings.h"
 #include "noise_reduction.h"
+#include "auto_notch.h"
 #include "trx_manager.h"
 
 arm_fir_instance_f32 FIR_RX1_Hilbert_I;
@@ -338,6 +339,7 @@ void InitAudioFilters(void)
 
 	InitNoiseReduction();
 	InitNotchFilter();
+	InitAutoNotchReduction();
 }
 
 void ReinitAudioFilters(void)

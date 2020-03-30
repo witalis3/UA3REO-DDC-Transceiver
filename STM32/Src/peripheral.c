@@ -165,7 +165,7 @@ static void PERIPH_ENCODER2_Rotated(int8_t direction) //энкодер пове�
 	}
 
 	//NOTCH - default action
-	if (CurrentVFO()->NotchFilter)
+	if (CurrentVFO()->ManualNotchFilter)
 	{
 		if (CurrentVFO()->NotchFC > 50 && direction < 0)
 			CurrentVFO()->NotchFC -= 25;
@@ -205,13 +205,7 @@ void PERIPH_ENCODER2_checkSwitch(void)
 		if (!ENCODER2_SWNow)
 		{
 			TRX_Time_InActive = 0;
-			if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
-				CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
-			if (!CurrentVFO()->NotchFilter)
-				CurrentVFO()->NotchFilter = true;
-			else
-				CurrentVFO()->NotchFilter = false;
-
+			//ENC2 CLICK
 			NeedReinitNotch = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 			LCD_UpdateQuery.TopButtons = true;
@@ -810,15 +804,41 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_notch_prev != PERIPH_FrontPanel.key_notch && PERIPH_FrontPanel.key_notch && !TRX.Locked)
 		{
 			TRX_Time_InActive = 0;
+			PERIPH_FrontPanel.key_notch_starttime = HAL_GetTick();
+			PERIPH_FrontPanel.key_notch_afterhold = false;
+		}
+		//F4 NOTCH HOLD - ENABLE MENUAL NOTCH
+		if (PERIPH_FrontPanel.key_notch_prev == PERIPH_FrontPanel.key_notch && PERIPH_FrontPanel.key_notch && (HAL_GetTick() - PERIPH_FrontPanel.key_notch_starttime) > KEY_HOLD_TIME && !PERIPH_FrontPanel.key_notch_afterhold && !TRX.Locked)
+		{
+			TRX_Time_InActive = 0;
+			PERIPH_FrontPanel.key_notch_afterhold = true;
+
 			if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
 				CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
-			if (!CurrentVFO()->NotchFilter)
-				CurrentVFO()->NotchFilter = true;
+			CurrentVFO()->AutoNotchFilter = false;
+			if (!CurrentVFO()->ManualNotchFilter)
+				CurrentVFO()->ManualNotchFilter = true;
 			else
-				CurrentVFO()->NotchFilter = false;
+				CurrentVFO()->ManualNotchFilter = false;
 
 			NeedReinitNotch = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
+			LCD_UpdateQuery.TopButtons = true;
+			NeedSaveSettings = true;
+		}
+		//F4 NOTCH CLICK
+		if (PERIPH_FrontPanel.key_notch_prev != PERIPH_FrontPanel.key_notch && !PERIPH_FrontPanel.key_notch && (HAL_GetTick() - PERIPH_FrontPanel.key_notch_starttime) < KEY_HOLD_TIME && !PERIPH_FrontPanel.key_notch_afterhold && !TRX.Locked && !LCD_systemMenuOpened)
+		{
+			TRX_Time_InActive = 0;
+			if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
+				CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
+			CurrentVFO()->ManualNotchFilter = false;
+			if (!CurrentVFO()->AutoNotchFilter)
+				CurrentVFO()->AutoNotchFilter = true;
+			else
+				CurrentVFO()->AutoNotchFilter = false;
+
+			NeedReinitNotch = true;
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
 		}

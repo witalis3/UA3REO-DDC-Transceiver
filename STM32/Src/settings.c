@@ -84,12 +84,13 @@ void LoadSettings(bool clear)
 	{
 		sendToDebug_str("[ERR] Flash ID: ");
 		sendToDebug_uint8(TRX.flash_id,false);
-		TRX.flash_id = 190;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		TRX.flash_id = 191;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000;	  //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
 		TRX.VFO_A.LPF_Filter_Width = 2700; //сохранённая ширина полосы VFO-A
 		TRX.VFO_A.HPF_Filter_Width = 300; //сохранённая ширина полосы VFO-A
-		TRX.VFO_A.NotchFilter = false;																	  //нотч-фильтр для вырезания помехи
+		TRX.VFO_A.ManualNotchFilter = false;																	  //нотч-фильтр для вырезания помехи
+		TRX.VFO_A.AutoNotchFilter = false;																	  //нотч-фильтр для вырезания помехи
 		TRX.VFO_A.NotchFC = 1000;																			  //частота среза нотч-фильтра
 		TRX.VFO_A.DNR = false;			   //цифровое шумоподавление
 		TRX.VFO_A.AGC = true;				   //AGC
@@ -97,7 +98,8 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.Mode = TRX_MODE_USB; //сохранённая мода VFO-B
 		TRX.VFO_B.LPF_Filter_Width = 2700; //сохранённая ширина полосы VFO-B
 		TRX.VFO_B.HPF_Filter_Width = 300; //сохранённая ширина полосы VFO-B
-		TRX.VFO_B.NotchFilter = false;																	  //нотч-фильтр для вырезания помехи
+		TRX.VFO_B.ManualNotchFilter = false;																	  //нотч-фильтр для вырезания помехи
+		TRX.VFO_B.AutoNotchFilter = false;																	  //нотч-фильтр для вырезания помехи
 		TRX.VFO_B.NotchFC = 1000;																			  //частота среза нотч-фильтра
 		TRX.VFO_A.DNR = false;			   //цифровое шумоподавление
 		TRX.VFO_A.AGC = true;				   //AGC

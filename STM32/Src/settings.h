@@ -27,7 +27,7 @@
 #define EEPROM_WRITE_INTERVAL 10000		//Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
 #define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
 #define SWR_CRITICAL 5.0f				//Максимальный КСВ, при котором отключается передатчик
-#define SHOW_LOGO true					//Отображать логотип при загрузке (из lcd.h)
+#define SHOW_LOGO false					//Отображать логотип при загрузке (из lcd.h)
 #define POWERDOWN_TIMEOUT 1000			//время нажатия на кнопку выключения, для срабатывания, мс
 #define USB_RESTART_TIMEOUT 5000		//время, через которое происходит рестарт USB если нет пакетов
 //#define ILI9341 true //выбираем используемый дисплей
@@ -75,7 +75,8 @@ typedef struct
 	uint_fast8_t Mode;
 	uint_fast16_t HPF_Filter_Width;
 	uint_fast16_t LPF_Filter_Width;
-	bool NotchFilter;
+	bool ManualNotchFilter;
+	bool AutoNotchFilter;
 	uint_fast16_t NotchFC;
 	bool DNR;
 	bool AGC;
