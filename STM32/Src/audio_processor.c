@@ -671,7 +671,7 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id)
 		else if (CurrentVFO()->AutoNotchFilter)
 		{
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / AUTO_NOTCH_BLOCK_SIZE); block++)
-				processAutoNotchReduction(FPGA_Audio_Buffer_RX1_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), FPGA_Audio_Buffer_RX1_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
+				processAutoNotchReduction(FPGA_Audio_Buffer_RX1_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
 		}
 	}
 	else if(rx_id==AUDIO_RX2)
@@ -681,7 +681,7 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id)
 		else if (SecondaryVFO()->AutoNotchFilter)
 		{
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / AUTO_NOTCH_BLOCK_SIZE); block++)
-				processAutoNotchReduction(FPGA_Audio_Buffer_RX2_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), FPGA_Audio_Buffer_RX2_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
+				processAutoNotchReduction(FPGA_Audio_Buffer_RX2_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
 		}
 	}
 }
@@ -694,7 +694,7 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id)
 		if (CurrentVFO()->DNR > 0)
 		{
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				processNoiseReduction(FPGA_Audio_Buffer_RX1_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), FPGA_Audio_Buffer_RX1_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
+				processNoiseReduction(FPGA_Audio_Buffer_RX1_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
 		}
 	}
 	else if(rx_id==AUDIO_RX2)
@@ -702,7 +702,7 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id)
 		if (SecondaryVFO()->DNR > 0)
 		{
 			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				processNoiseReduction(FPGA_Audio_Buffer_RX2_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), FPGA_Audio_Buffer_RX2_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
+				processNoiseReduction(FPGA_Audio_Buffer_RX2_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
 		}
 	}
 }

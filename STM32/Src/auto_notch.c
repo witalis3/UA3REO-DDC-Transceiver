@@ -36,12 +36,12 @@ void InitAutoNotchReduction(void)
 	arm_fill_f32(0.0f, RX2_lms2_normCoeff_f32, AUTO_NOTCH_TAPS);
 }
 
-void processAutoNotchReduction(float32_t *bufferIn, float32_t *bufferOut, AUDIO_PROC_RX_NUM rx_id)
+void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 {
 	if(rx_id==AUDIO_RX1)
 	{
-		arm_copy_f32(bufferIn, &RX1_lms2_reference[RX1_reference_index_new], AUTO_NOTCH_BLOCK_SIZE);
-		arm_lms_norm_f32(&RX1_lms2_Norm_instance, bufferIn, &RX1_lms2_reference[RX1_reference_index_old], RX1_lms2_errsig2, bufferOut , AUTO_NOTCH_BLOCK_SIZE);
+		arm_copy_f32(buffer, &RX1_lms2_reference[RX1_reference_index_new], AUTO_NOTCH_BLOCK_SIZE);
+		arm_lms_norm_f32(&RX1_lms2_Norm_instance, buffer, &RX1_lms2_reference[RX1_reference_index_old], RX1_lms2_errsig2, buffer , AUTO_NOTCH_BLOCK_SIZE);
 		RX1_reference_index_old += AUTO_NOTCH_BLOCK_SIZE;
 		if (RX1_reference_index_old >= AUTO_NOTCH_REFERENCE_SIZE)
 			RX1_reference_index_old = 0;
@@ -51,8 +51,8 @@ void processAutoNotchReduction(float32_t *bufferIn, float32_t *bufferOut, AUDIO_
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
-		arm_copy_f32(bufferIn, &RX2_lms2_reference[RX2_reference_index_new], AUTO_NOTCH_BLOCK_SIZE);
-		arm_lms_norm_f32(&RX2_lms2_Norm_instance, bufferIn, &RX2_lms2_reference[RX2_reference_index_old], RX2_lms2_errsig2, bufferOut, AUTO_NOTCH_BLOCK_SIZE);
+		arm_copy_f32(buffer, &RX2_lms2_reference[RX2_reference_index_new], AUTO_NOTCH_BLOCK_SIZE);
+		arm_lms_norm_f32(&RX2_lms2_Norm_instance, buffer, &RX2_lms2_reference[RX2_reference_index_old], RX2_lms2_errsig2, buffer, AUTO_NOTCH_BLOCK_SIZE);
 		RX2_reference_index_old += AUTO_NOTCH_BLOCK_SIZE;
 		if (RX2_reference_index_old >= AUTO_NOTCH_REFERENCE_SIZE)
 			RX2_reference_index_old = 0;

@@ -10,9 +10,9 @@
 #define AUTO_NOTCH_BLOCK_SIZE (FPGA_AUDIO_BUFFER_HALF_SIZE / 3)
 #define AUTO_NOTCH_TAPS AUTO_NOTCH_BLOCK_SIZE
 #define AUTO_NOTCH_REFERENCE_SIZE (AUTO_NOTCH_BLOCK_SIZE * 2)
-#define AUTO_NOTCH_STEP 0.001f
+#define AUTO_NOTCH_STEP 0.0001f
 
 extern void InitAutoNotchReduction(void);
-extern void processAutoNotchReduction(float32_t *bufferIn, float32_t *bufferOut, AUDIO_PROC_RX_NUM rx_id);
+extern void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id);
 
 #endif

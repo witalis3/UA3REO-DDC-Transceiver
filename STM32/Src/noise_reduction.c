@@ -36,12 +36,12 @@ void InitNoiseReduction(void)
 	arm_fill_f32(0.0f, RX2_lms2_normCoeff_f32, NOISE_REDUCTION_TAPS);
 }
 
-void processNoiseReduction(float32_t *bufferIn, float32_t *bufferOut, AUDIO_PROC_RX_NUM rx_id)
+void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 {
 	if(rx_id==AUDIO_RX1)
 	{
-		arm_copy_f32(bufferIn, &RX1_lms2_reference[RX1_reference_index_new], NOISE_REDUCTION_BLOCK_SIZE);
-		arm_lms_norm_f32(&RX1_lms2_Norm_instance, bufferIn, &RX1_lms2_reference[RX1_reference_index_old], bufferOut, RX1_lms2_errsig2, NOISE_REDUCTION_BLOCK_SIZE);
+		arm_copy_f32(buffer, &RX1_lms2_reference[RX1_reference_index_new], NOISE_REDUCTION_BLOCK_SIZE);
+		arm_lms_norm_f32(&RX1_lms2_Norm_instance, buffer, &RX1_lms2_reference[RX1_reference_index_old], buffer, RX1_lms2_errsig2, NOISE_REDUCTION_BLOCK_SIZE);
 		RX1_reference_index_old += NOISE_REDUCTION_BLOCK_SIZE;
 		if (RX1_reference_index_old >= NOISE_REDUCTION_REFERENCE_SIZE)
 			RX1_reference_index_old = 0;
@@ -51,8 +51,8 @@ void processNoiseReduction(float32_t *bufferIn, float32_t *bufferOut, AUDIO_PROC
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
-		arm_copy_f32(bufferIn, &RX2_lms2_reference[RX2_reference_index_new], NOISE_REDUCTION_BLOCK_SIZE);
-		arm_lms_norm_f32(&RX2_lms2_Norm_instance, bufferIn, &RX2_lms2_reference[RX2_reference_index_old], bufferOut, RX2_lms2_errsig2, NOISE_REDUCTION_BLOCK_SIZE);
+		arm_copy_f32(buffer, &RX2_lms2_reference[RX2_reference_index_new], NOISE_REDUCTION_BLOCK_SIZE);
+		arm_lms_norm_f32(&RX2_lms2_Norm_instance, buffer, &RX2_lms2_reference[RX2_reference_index_old], buffer, RX2_lms2_errsig2, NOISE_REDUCTION_BLOCK_SIZE);
 		RX2_reference_index_old += NOISE_REDUCTION_BLOCK_SIZE;
 		if (RX2_reference_index_old >= NOISE_REDUCTION_REFERENCE_SIZE)
 			RX2_reference_index_old = 0;
