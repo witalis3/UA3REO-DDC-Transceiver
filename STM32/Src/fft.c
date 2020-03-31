@@ -162,6 +162,8 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		},
 };
 
+static float32_t window_multipliers[FFT_SIZE] = {0};
+
 void FFT_Init(void)
 {
 	fft_fill_color_scale();
@@ -187,6 +189,20 @@ void FFT_Init(void)
 								  FFT_SIZE);
 		zoomed_width = FFT_SIZE / TRX.FFT_Zoom;
 	}
+	//windowing
+	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
+	{
+		//Окно Hamming
+		if (TRX.FFT_Window == 1)
+			window_multipliers[i] = 0.54f - 0.46f * arm_cos_f32((2.0f * PI * i) / ((float32_t)FFT_SIZE - 1.0f));
+		//Окно Blackman-Harris
+		else if (TRX.FFT_Window == 2)
+			window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f)) + 0.14128f * arm_cos_f32(4.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f)) - 0.01168f * arm_cos_f32(6.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f));
+		//Окно Hanning
+		else if (TRX.FFT_Window == 3)
+			window_multipliers[i] = 0.5f * (1.0f - arm_cos_f32(2.0f * PI * i / (float32_t)FFT_SIZE));
+	}
+	//
 	memset(&wtf_buffer, 0x00, sizeof wtf_buffer);
 	sendToDebug_strln("[OK] FFT/Waterfall Inited");
 }
@@ -208,7 +224,6 @@ void FFT_doFFT(void)
 	float32_t maxValue = 0;			 // Максимальное значение амплитуды в результирующей АЧХ
 	float32_t medianValue = 0;		 // Значение медианы в результирующей АЧХ
 	float32_t diffValue = 0;		 // Разница между максимальным значением в FFT и пороге в водопаде
-	float32_t window_multiplier = 0; //Множитель для вычисления окна к FFT
 
 	//Process DC corrector filter
 	if (!TRX_on_TX())
@@ -266,18 +281,8 @@ void FFT_doFFT(void)
 	//Окно для FFT
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 	{
-		//Окно Hamming
-		if (TRX.FFT_Window == 1)
-			window_multiplier = 0.54f - 0.46f * arm_cos_f32((2.0f * PI * i) / ((float32_t)FFT_SIZE - 1.0f));
-		//Окно Blackman-Harris
-		else if (TRX.FFT_Window == 2)
-			window_multiplier = 0.35875f - 0.48829f * arm_cos_f32(2.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f)) + 0.14128f * arm_cos_f32(4.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f)) - 0.01168f * arm_cos_f32(6.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f));
-		//Окно Hanning
-		else if (TRX.FFT_Window == 3)
-			window_multiplier = 0.5f * (1.0f - arm_cos_f32(2.0f * PI * i / (float32_t)FFT_SIZE * 2));
-
-		FFTInput[i * 2] = window_multiplier * FFTInput[i * 2];
-		FFTInput[i * 2 + 1] = window_multiplier * FFTInput[i * 2 + 1];
+		FFTInput[i * 2] = window_multipliers[i] * FFTInput[i * 2];
+		FFTInput[i * 2 + 1] = window_multipliers[i] * FFTInput[i * 2 + 1];
 	}
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);

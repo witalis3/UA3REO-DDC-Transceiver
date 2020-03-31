@@ -181,6 +181,7 @@ void LoadSettings(bool clear)
 		TRX.DC_Filter_State[7] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
 		TRX.FFT_Style = 1; //стиль отображения FFT
 		TRX.ShiftEnabled = false; //активация режима SHIFT
+		TRX.DNR_SNR_THRESHOLD = 6; //Уровень цифрового шумоподавления
 		
 		TRX.ENDBit = 100;			  //Бит окончания успешной записи в eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

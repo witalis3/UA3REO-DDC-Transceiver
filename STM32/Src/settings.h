@@ -172,6 +172,7 @@ extern struct TRX_SETTINGS
 	DC_filter_state_type DC_Filter_State[8];
 	uint8_t FFT_Style;
 	bool ShiftEnabled;
+	uint8_t DNR_SNR_THRESHOLD;
 	
 	uint8_t ENDBit;
 } TRX;

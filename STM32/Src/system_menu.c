@@ -23,6 +23,7 @@ static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_DNR_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
@@ -171,6 +172,7 @@ static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sy
 static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 {
 	{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
+	{"DNR Threshold", SYSMENU_UINT8, (uint32_t *)&TRX.DNR_SNR_THRESHOLD, SYSMENU_HANDL_AUDIO_DNR_THRES},
 	{"SSB HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_pass},
 	{"SSB LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_LPF_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_pass},
 	{"CW HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_HANDL_AUDIO_CW_HPF_pass},		
@@ -510,6 +512,15 @@ static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction)
 		TRX.IF_Gain = 1;
 	if (TRX.IF_Gain > 80)
 		TRX.IF_Gain = 80;
+}
+
+static void SYSMENU_HANDL_AUDIO_DNR_THRES(int8_t direction)
+{
+	TRX.DNR_SNR_THRESHOLD += direction;
+	if (TRX.DNR_SNR_THRESHOLD < 1)
+		TRX.DNR_SNR_THRESHOLD = 1;
+	if (TRX.DNR_SNR_THRESHOLD > 10)
+		TRX.DNR_SNR_THRESHOLD = 10;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction)
@@ -950,6 +961,7 @@ static void SYSMENU_HANDL_FFT_Window(int8_t direction)
 		TRX.FFT_Window = 1;
 	if (TRX.FFT_Window > 3)
 		TRX.FFT_Window = 3;
+	FFT_Init();
 }
 
 static void SYSMENU_HANDL_FFT_Zoom(int8_t direction)

@@ -124,8 +124,8 @@ void processRxAudio(void)
 		arm_sub_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
-		doRX_DNR(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
+		doRX_DNR(AUDIO_RX1);
 		doCW_Decode(AUDIO_RX1);
 		doRX_COPYCHANNEL(AUDIO_RX1);
 		break;
@@ -138,8 +138,8 @@ void processRxAudio(void)
 		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
-		doRX_DNR(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
+		doRX_DNR(AUDIO_RX1);
 		doCW_Decode(AUDIO_RX1);
 		doRX_COPYCHANNEL(AUDIO_RX1);
 		break;
@@ -153,8 +153,8 @@ void processRxAudio(void)
 			arm_sqrt_f32(FPGA_Audio_Buffer_RX1_I_tmp[i], &FPGA_Audio_Buffer_RX1_I_tmp[i]);
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
-		doRX_DNR(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
+		doRX_DNR(AUDIO_RX1);
 		doRX_COPYCHANNEL(AUDIO_RX1);
 		break;
 	case TRX_MODE_NFM:
@@ -162,8 +162,8 @@ void processRxAudio(void)
 		doRX_LPF(AUDIO_RX1);
 		DemodulateFM(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
-		doRX_DNR(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
+		doRX_DNR(AUDIO_RX1);
 		doRX_COPYCHANNEL(AUDIO_RX1);
 		break;
 	case TRX_MODE_IQ:
@@ -184,8 +184,8 @@ void processRxAudio(void)
 			doRX_LPF(AUDIO_RX2);
 			arm_sub_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 			doRX_NOTCH(AUDIO_RX2);
-			doRX_DNR(AUDIO_RX2);
 			doRX_AGC(AUDIO_RX2);
+			doRX_DNR(AUDIO_RX2);
 			break;
 		case TRX_MODE_USB:
 		case TRX_MODE_CW_U:
@@ -195,8 +195,8 @@ void processRxAudio(void)
 			doRX_LPF(AUDIO_RX2);
 			arm_add_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
 			doRX_NOTCH(AUDIO_RX2);
-			doRX_DNR(AUDIO_RX2);
 			doRX_AGC(AUDIO_RX2);
+			doRX_DNR(AUDIO_RX2);
 			break;
 		case TRX_MODE_AM:
 			doRX_LPF(AUDIO_RX2);
@@ -207,15 +207,15 @@ void processRxAudio(void)
 			for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 				arm_sqrt_f32(FPGA_Audio_Buffer_RX2_I_tmp[i], &FPGA_Audio_Buffer_RX2_I_tmp[i]);
 			doRX_NOTCH(AUDIO_RX2);
-			doRX_DNR(AUDIO_RX2);
 			doRX_AGC(AUDIO_RX2);
+			doRX_DNR(AUDIO_RX2);
 			break;
 		case TRX_MODE_NFM:
 		case TRX_MODE_WFM:
 			doRX_LPF(AUDIO_RX2);
 			DemodulateFM(AUDIO_RX2);
-			doRX_DNR(AUDIO_RX2);
 			doRX_AGC(AUDIO_RX2);
+			doRX_DNR(AUDIO_RX2);
 			break;
 		case TRX_MODE_IQ:
 		default:
