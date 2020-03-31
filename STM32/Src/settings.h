@@ -173,6 +173,8 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_Style;
 	bool ShiftEnabled;
 	uint8_t DNR_SNR_THRESHOLD;
+	uint8_t DNR_AVERAGE;
+	uint8_t DNR_MINIMAL;
 	
 	uint8_t ENDBit;
 } TRX;

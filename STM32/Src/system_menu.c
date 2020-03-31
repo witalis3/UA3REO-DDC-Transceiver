@@ -24,6 +24,8 @@ static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_THRES(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
@@ -173,6 +175,8 @@ static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 {
 	{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
 	{"DNR Threshold", SYSMENU_UINT8, (uint32_t *)&TRX.DNR_SNR_THRESHOLD, SYSMENU_HANDL_AUDIO_DNR_THRES},
+	{"DNR Average", SYSMENU_UINT8, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_AUDIO_DNR_AVERAGE},
+	{"DNR Minimal", SYSMENU_UINT8, (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_HANDL_AUDIO_DNR_MINMAL},
 	{"SSB HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_pass},
 	{"SSB LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.SSB_LPF_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_pass},
 	{"CW HPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_HANDL_AUDIO_CW_HPF_pass},		
@@ -519,8 +523,26 @@ static void SYSMENU_HANDL_AUDIO_DNR_THRES(int8_t direction)
 	TRX.DNR_SNR_THRESHOLD += direction;
 	if (TRX.DNR_SNR_THRESHOLD < 1)
 		TRX.DNR_SNR_THRESHOLD = 1;
-	if (TRX.DNR_SNR_THRESHOLD > 10)
-		TRX.DNR_SNR_THRESHOLD = 10;
+	if (TRX.DNR_SNR_THRESHOLD > 20)
+		TRX.DNR_SNR_THRESHOLD = 20;
+}
+
+static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction)
+{
+	TRX.DNR_AVERAGE += direction;
+	if (TRX.DNR_AVERAGE < 1)
+		TRX.DNR_AVERAGE = 1;
+	if (TRX.DNR_AVERAGE > 200)
+		TRX.DNR_AVERAGE = 200;
+}
+
+static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction)
+{
+	TRX.DNR_MINIMAL += direction;
+	if (TRX.DNR_MINIMAL < 1)
+		TRX.DNR_MINIMAL = 1;
+	if (TRX.DNR_MINIMAL > 200)
+		TRX.DNR_MINIMAL = 200;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction)
