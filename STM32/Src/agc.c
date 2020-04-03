@@ -55,11 +55,19 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 		*AGC_need_gain_db = AGC_OPTIMAL_THRESHOLD - AGC_RX_dbFS;
 		//sendToDebug_str("C");
 	}
-
+	
+	//шумовой порог, ниже него - не усиливаем
+	if(AGC_RX_dbFS < AGC_RX_dbFS)
+		*AGC_need_gain_db = 1.0f;
+	
 	//AGC выключен, ничего не регулируем
 	if ((rx_id==AUDIO_RX1 && !CurrentVFO()->AGC) || (rx_id==AUDIO_RX2 && !SecondaryVFO()->AGC))
 		*AGC_need_gain_db = 1.0f;
 
+	//ограничение по усилению
+	if (*AGC_need_gain_db > AGC_MAX_GAIN)
+		*AGC_need_gain_db = AGC_MAX_GAIN;
+	
 	//применяем усиление
 	if (*AGC_need_gain_db_old != *AGC_need_gain_db) //усиление изменилось
 	{

@@ -184,6 +184,7 @@ void LoadSettings(bool clear)
 		TRX.DNR_SNR_THRESHOLD = 2; //Уровень цифрового шумоподавления
 		TRX.DNR_AVERAGE = 3;
 		TRX.DNR_MINIMAL = 18;
+		TRX.NOISE_BLANKER = true; //подавитель коротких импульсных помех NOISE BLANKER
 		
 		TRX.ENDBit = 100;			  //Бит окончания успешной записи в eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

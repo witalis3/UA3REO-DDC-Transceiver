@@ -518,6 +518,16 @@
               <FilePath>..\Src\lcd_driver.h</FilePath>
             </File>
             <File>
+              <FileName>noise_blanker.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\noise_blanker.c</FilePath>
+            </File>
+            <File>
+              <FileName>noise_blanker.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\noise_blanker.h</FilePath>
+            </File>
+            <File>
               <FileName>noise_reduction.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\noise_reduction.c</FilePath>

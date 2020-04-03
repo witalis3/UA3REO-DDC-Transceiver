@@ -8,34 +8,34 @@
 #include "bands.h"
 
 #define ADCDAC_CLOCK 122880000			//Частота генератора АЦП/ЦАП
-#define MAX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
+#define MAX_FREQ_HZ 750000000				//Максимальная частота приёма (из даташита АЦП)
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
-#define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока
-#define MAX_TX_AMPLITUDE 0.9f		//Максимальный размах при передаче в ЦАП
+#define TRX_SAMPLERATE 48000				//частота дискретизации аудио-потока
+#define MAX_TX_AMPLITUDE 0.9f				//Максимальный размах при передаче в ЦАП
 #define AGC_CLIP_THRESHOLD -15.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
 #define AGC_OPTIMAL_THRESHOLD -25.0f	//Рабочий уровень усиления в AGC, dbFS
-#define TUNE_POWER 100					//% от выбранной в настройках мощности при запуске TUNE (100 - полная)
-#define TX_AGC_MAXGAIN 500.0f			//Максимальное усиление микрофона при компрессировании
-#define TX_AGC_NOISEGATE 0.00001f			//Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
-#define TOUCHPAD_DELAY 200				//Время защиты от анти-дребезга нажания на тачпад
+#define AGC_MAX_GAIN 50.0f					//Максимальное усиление в AGC
+#define AGC_NOISE_GATE -90.0f				//ниже этого уровня - не усиливаем
+#define TUNE_POWER 100							//% от выбранной в настройках мощности при запуске TUNE (100 - полная)
+#define TX_AGC_MAXGAIN 500.0f				//Максимальное усиление микрофона при компрессировании
+#define TX_AGC_NOISEGATE 0.00001f		//Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
+#define TOUCHPAD_DELAY 200					//Время защиты от анти-дребезга нажания на тачпад
 #define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
 #define AUTOGAIN_CORRECTOR_WAITSTEP 7   //ожидание усреднения результатов при работе автокорректора входных цепей
-#define ENCODER_INVERT 1				//инвертировать вращение влево-вправо у основного энкодера
-#define ENCODER2_INVERT 0				//инвертировать вращение влево-вправо у дополнительного энкодера
-#define KEY_HOLD_TIME 500				//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
-#define SHIFT_INTERVAL 400.0f			//диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
-#define EEPROM_WRITE_INTERVAL 10000		//Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
-#define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
-#define SWR_CRITICAL 5.0f				//Максимальный КСВ, при котором отключается передатчик
-#define SHOW_LOGO false					//Отображать логотип при загрузке (из lcd.h)
+#define ENCODER_INVERT 1						//инвертировать вращение влево-вправо у основного энкодера
+#define ENCODER2_INVERT 0						//инвертировать вращение влево-вправо у дополнительного энкодера
+#define KEY_HOLD_TIME 500						//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
+#define SHIFT_INTERVAL 400.0f				//диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
+#define EEPROM_WRITE_INTERVAL 10000	//Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
+#define MAX_RF_POWER 7.0f						//Максимум мощности (для шкалы измерителя)
+#define SWR_CRITICAL 5.0f						//Максимальный КСВ, при котором отключается передатчик
+#define SHOW_LOGO false							//Отображать логотип при загрузке (из lcd.h)
 #define POWERDOWN_TIMEOUT 1000			//время нажатия на кнопку выключения, для срабатывания, мс
 #define USB_RESTART_TIMEOUT 5000		//время, через которое происходит рестарт USB если нет пакетов
-//#define ILI9341 true //выбираем используемый дисплей
-//#define ILI9325 true //другие комментируем
-#define ILI9481 true			//он же HX8357B //другие комментируем
-#define FMC_REMAP true		//ремап памяти FMC
-#define FSMC_REGISTER_SELECT 18 //из FSMC настроек в STM32Cube (A18, A6, и т.д.)
-#define SCREEN_ROTATE 0			//перевернуть экран вверх ногами
+#define ILI9481 true								//он же HX8357B //другие комментируем
+#define FMC_REMAP true							//ремап памяти FMC
+#define FSMC_REGISTER_SELECT 18 		//из FSMC настроек в STM32Cube (A18, A6, и т.д.)
+#define SCREEN_ROTATE 0							//перевернуть экран вверх ногами
 
 #define ADC_BITS 16						//разрядность АЦП
 #define FPGA_BUS_BITS 32				//разрядность данных из FPGA
@@ -175,6 +175,8 @@ extern struct TRX_SETTINGS
 	uint8_t DNR_SNR_THRESHOLD;
 	uint8_t DNR_AVERAGE;
 	uint8_t DNR_MINIMAL;
+	bool NOISE_BLANKER;
+	uint8_t NOISE_BLANKER_THRESHOLD;
 	
 	uint8_t ENDBit;
 } TRX;

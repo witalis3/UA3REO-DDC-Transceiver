@@ -9,6 +9,7 @@
 #include "wm8731.h"
 #include "settings.h"
 #include "noise_reduction.h"
+#include "noise_blanker.h"
 #include "auto_notch.h"
 #include "trx_manager.h"
 

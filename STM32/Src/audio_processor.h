@@ -16,6 +16,8 @@
 #define FM_SQUELCH_HYSTERESIS 0.3f    // Hysteresis for FM squelch
 #define FM_SQUELCH_PROC_DECIMATION 50 // Number of times we go through the FM demod algorithm before we do a squelch calculation
 #define FM_RX_SQL_SMOOTHING 0.005f    // Smoothing factor for IIR squelch noise averaging
+#define AUDIO_RX_NB_DELAY_BUFFER_ITEMS 32 //NoiseBlanker buffer size
+#define AUDIO_RX_NB_DELAY_BUFFER_SIZE (AUDIO_RX_NB_DELAY_BUFFER_ITEMS * 2)
 
 extern DMA_HandleTypeDef hdma_i2s3_ext_rx;
 extern DMA_HandleTypeDef hdma_spi3_tx;

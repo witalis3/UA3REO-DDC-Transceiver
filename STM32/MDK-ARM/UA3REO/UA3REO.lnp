@@ -12,6 +12,7 @@
 "ua3reo\functions.o"
 "ua3reo\lcd.o"
 "ua3reo\lcd_driver.o"
+"ua3reo\noise_blanker.o"
 "ua3reo\noise_reduction.o"
 "ua3reo\peripheral.o"
 "ua3reo\profiler.o"

@@ -12,6 +12,17 @@
 #define AUTO_NOTCH_REFERENCE_SIZE (AUTO_NOTCH_BLOCK_SIZE * 2)
 #define AUTO_NOTCH_STEP 0.0001f
 
+typedef struct
+{
+	arm_lms_norm_instance_f32 lms2_Norm_instance;
+	float32_t lms2_stateF32[AUTO_NOTCH_TAPS + AUTO_NOTCH_BLOCK_SIZE - 1];
+	float32_t lms2_normCoeff_f32[AUTO_NOTCH_TAPS];
+	float32_t lms2_reference[AUTO_NOTCH_REFERENCE_SIZE];
+	float32_t lms2_errsig2[AUTO_NOTCH_BLOCK_SIZE];
+	uint_fast16_t reference_index_old;
+	uint_fast16_t reference_index_new;
+} AN_Instance;
+
 extern void InitAutoNotchReduction(void);
 extern void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id);
 

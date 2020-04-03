@@ -15,6 +15,7 @@
 #include "profiler.h"
 #include "usbd_audio_if.h"
 #include "noise_reduction.h"
+#include "noise_blanker.h"
 #include "auto_notch.h"
 #include "cw_decoder.h"
 #include "main.h"
@@ -52,6 +53,7 @@ static void doRX_HPF(AUDIO_PROC_RX_NUM rx_id);
 static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id);
 static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id);
 static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id);
+static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id);
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id);
 static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id);
 static void doCW_Decode(AUDIO_PROC_RX_NUM rx_id);
@@ -122,6 +124,7 @@ void processRxAudio(void)
 		doRX_HILBERT(AUDIO_RX1);
 		doRX_LPF(AUDIO_RX1);
 		arm_sub_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+		doRX_NoiseBlanker(AUDIO_RX1);
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
@@ -136,6 +139,7 @@ void processRxAudio(void)
 		doRX_HILBERT(AUDIO_RX1);
 		doRX_LPF(AUDIO_RX1);
 		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
+		doRX_NoiseBlanker(AUDIO_RX1);	
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
@@ -151,6 +155,7 @@ void processRxAudio(void)
 		//arm_vsqrt_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 			arm_sqrt_f32(FPGA_Audio_Buffer_RX1_I_tmp[i], &FPGA_Audio_Buffer_RX1_I_tmp[i]);
+		doRX_NoiseBlanker(AUDIO_RX1);
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
@@ -183,6 +188,7 @@ void processRxAudio(void)
 			doRX_HILBERT(AUDIO_RX2);
 			doRX_LPF(AUDIO_RX2);
 			arm_sub_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+			doRX_NoiseBlanker(AUDIO_RX2);
 			doRX_NOTCH(AUDIO_RX2);
 			doRX_AGC(AUDIO_RX2);
 			doRX_DNR(AUDIO_RX2);
@@ -194,6 +200,7 @@ void processRxAudio(void)
 			doRX_HILBERT(AUDIO_RX2);
 			doRX_LPF(AUDIO_RX2);
 			arm_add_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
+			doRX_NoiseBlanker(AUDIO_RX2);
 			doRX_NOTCH(AUDIO_RX2);
 			doRX_AGC(AUDIO_RX2);
 			doRX_DNR(AUDIO_RX2);
@@ -206,6 +213,7 @@ void processRxAudio(void)
 			//arm_vsqrt_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp,FPGA_AUDIO_BUFFER_HALF_SIZE);
 			for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 				arm_sqrt_f32(FPGA_Audio_Buffer_RX2_I_tmp[i], &FPGA_Audio_Buffer_RX2_I_tmp[i]);
+			doRX_NoiseBlanker(AUDIO_RX2);
 			doRX_NOTCH(AUDIO_RX2);
 			doRX_AGC(AUDIO_RX2);
 			doRX_DNR(AUDIO_RX2);
@@ -714,6 +722,21 @@ static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id)
 		DoAGC(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, rx_id);
 	else if(rx_id==AUDIO_RX2)
 		DoAGC(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, rx_id);
+}
+
+static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id)
+{
+	if(!TRX.NOISE_BLANKER) return;
+	if(rx_id==AUDIO_RX1)
+	{
+		for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NB_BLOCK_SIZE); block++)
+			processNoiseBlanking(FPGA_Audio_Buffer_RX1_I_tmp + (block * NB_BLOCK_SIZE), rx_id);
+	}
+	else if(rx_id==AUDIO_RX2)
+	{
+		for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NB_BLOCK_SIZE); block++)
+			processNoiseBlanking(FPGA_Audio_Buffer_RX2_I_tmp + (block * NB_BLOCK_SIZE), rx_id);
+	}
 }
 
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id)

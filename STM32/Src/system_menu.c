@@ -9,6 +9,7 @@
 #include "fonts.h"
 #include "agc.h"
 #include "screen_layout.h"
+#include "noise_blanker.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -23,6 +24,7 @@ static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction);
@@ -174,6 +176,7 @@ static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sy
 static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 {
 	{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
+	{"Noise Blanker", SYSMENU_BOOLEAN, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_AUDIO_NOISE_BLANKER},
 	{"DNR Threshold", SYSMENU_UINT8, (uint32_t *)&TRX.DNR_SNR_THRESHOLD, SYSMENU_HANDL_AUDIO_DNR_THRES},
 	{"DNR Average", SYSMENU_UINT8, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_AUDIO_DNR_AVERAGE},
 	{"DNR Minimal", SYSMENU_UINT8, (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_HANDL_AUDIO_DNR_MINMAL},
@@ -516,6 +519,14 @@ static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction)
 		TRX.IF_Gain = 1;
 	if (TRX.IF_Gain > 80)
 		TRX.IF_Gain = 80;
+}
+
+static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction)
+{
+	if (direction > 0)
+		TRX.NOISE_BLANKER = true;
+	if (direction < 0)
+		TRX.NOISE_BLANKER = false;
 }
 
 static void SYSMENU_HANDL_AUDIO_DNR_THRES(int8_t direction)

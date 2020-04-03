@@ -1,6 +1,7 @@
 ----Version 1.9.1 ON DEV----
 +STM32: Реализован AutoNotch
 +STM32: Новый шумоподавитель DNR на спектральном алгоритме
++STM32: NoiseBlanker из проекта UHSDR
 
 ----Version 1.9----
 +HARDW: Схема перенесена в Altium Designer // Thx to BH8CGJ
