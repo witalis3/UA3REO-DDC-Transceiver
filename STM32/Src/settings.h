@@ -177,6 +177,10 @@ extern struct TRX_SETTINGS
 	uint8_t DNR_MINIMAL;
 	bool NOISE_BLANKER;
 	uint8_t NOISE_BLANKER_THRESHOLD;
+	uint32_t FRQ_STEP;
+	uint32_t FRQ_FAST_STEP;
+	uint32_t FRQ_ENC_STEP;
+	uint32_t FRQ_ENC_FAST_STEP;
 	
 	uint8_t ENDBit;
 } TRX;

@@ -21,6 +21,10 @@ static void SYSMENU_HANDL_TRX_MICIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_USBIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
@@ -164,8 +168,12 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 	{"AutoGainer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
 	{"LPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.LPF, SYSMENU_HANDL_TRX_LPFFilter},
 	{"BPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BPF, SYSMENU_HANDL_TRX_BPFFilter},
-	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE},
 	{"Two Signal TUNE", SYSMENU_BOOLEAN, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
+	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE},
+	{"Freq Step", SYSMENU_UINT32, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
+	{"Freq Step FAST", SYSMENU_UINT32, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
+	{"Freq Step ENC2", SYSMENU_UINT32, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
+	{"Freq Step ENC2 FAST", SYSMENU_UINT32, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
 	{"DEBUG Console", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Debug_Console, SYSMENU_HANDL_TRX_DEBUG_CONSOLE},
 	{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
 	{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
@@ -448,6 +456,14 @@ static void SYSMENU_HANDL_TRX_USBIN(int8_t direction)
 	TRX_Restart_Mode();
 }
 
+static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Debug_Console = true;
+	if (direction < 0)
+		TRX.Debug_Console = false;
+}
+
 static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction)
 {
 	TRX.ENCODER_SLOW_RATE += direction;
@@ -457,12 +473,112 @@ static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction)
 		TRX.ENCODER_SLOW_RATE = 100;
 }
 
-static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction)
+static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction)
 {
-	if (direction > 0)
-		TRX.Debug_Console = true;
-	if (direction < 0)
-		TRX.Debug_Console = false;
+	const uint32_t freq_steps[] = {1, 10, 25, 50, 100};
+	for(uint8_t i = 0; i < ARRLENTH(freq_steps) ; i++)
+		if(TRX.FRQ_STEP == freq_steps[i])
+		{
+			if (direction < 0)
+			{
+				if(i>0)
+					TRX.FRQ_STEP = freq_steps[i-1];
+				else
+					TRX.FRQ_STEP = freq_steps[0];
+				return;
+			}
+			else
+			{
+				if(i<(ARRLENTH(freq_steps)-1))
+					TRX.FRQ_STEP = freq_steps[i+1];
+				else
+					TRX.FRQ_STEP = freq_steps[ARRLENTH(freq_steps)-1];
+				return;
+			}	
+		}
+	TRX.FRQ_STEP = freq_steps[0];
+	return;
+}
+
+static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction)
+{
+	const uint32_t freq_steps[] = {10, 25, 50, 100, 500, 1000};
+	for(uint8_t i = 0; i < ARRLENTH(freq_steps) ; i++)
+		if(TRX.FRQ_FAST_STEP == freq_steps[i])
+		{
+			if (direction < 0)
+			{
+				if(i>0)
+					TRX.FRQ_FAST_STEP = freq_steps[i-1];
+				else
+					TRX.FRQ_FAST_STEP = freq_steps[0];
+				return;
+			}
+			else
+			{
+				if(i<(ARRLENTH(freq_steps)-1))
+					TRX.FRQ_FAST_STEP = freq_steps[i+1];
+				else
+					TRX.FRQ_FAST_STEP = freq_steps[ARRLENTH(freq_steps)-1];
+				return;
+			}	
+		}
+	TRX.FRQ_FAST_STEP = freq_steps[0];
+	return;
+}
+
+static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction)
+{
+	const uint32_t freq_steps[] = {1000, 5000, 25000, 50000};
+	for(uint8_t i = 0; i < ARRLENTH(freq_steps) ; i++)
+		if(TRX.FRQ_ENC_STEP == freq_steps[i])
+		{
+			if (direction < 0)
+			{
+				if(i>0)
+					TRX.FRQ_ENC_STEP = freq_steps[i-1];
+				else
+					TRX.FRQ_ENC_STEP = freq_steps[0];
+				return;
+			}
+			else
+			{
+				if(i<(ARRLENTH(freq_steps)-1))
+					TRX.FRQ_ENC_STEP = freq_steps[i+1];
+				else
+					TRX.FRQ_ENC_STEP = freq_steps[ARRLENTH(freq_steps)-1];
+				return;
+			}	
+		}
+	TRX.FRQ_ENC_STEP = freq_steps[0];
+	return;
+}
+
+static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction)
+{
+	const uint32_t freq_steps[] = {5000, 25000, 50000, 100000, 500000};
+	for(uint8_t i = 0; i < ARRLENTH(freq_steps) ; i++)
+		if(TRX.FRQ_ENC_FAST_STEP == freq_steps[i])
+		{
+			if (direction < 0)
+			{
+				if(i>0)
+					TRX.FRQ_ENC_FAST_STEP = freq_steps[i-1];
+				else
+					TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
+				return;
+			}
+			else
+			{
+				if(i<(ARRLENTH(freq_steps)-1))
+					TRX.FRQ_ENC_FAST_STEP = freq_steps[i+1];
+				else
+					TRX.FRQ_ENC_FAST_STEP = freq_steps[ARRLENTH(freq_steps)-1];
+				return;
+			}	
+		}
+	TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
+	return;
 }
 
 //AUDIO MENU
@@ -1962,7 +2078,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	}
 	
 	if (onlyVal)
-		LCDDriver_Fill_RectWH(x_pos, sysmenu_y, 5 * 12, 13, COLOR_BLACK);
+		LCDDriver_Fill_RectWH(x_pos, sysmenu_y, 6 * 12, 13, COLOR_BLACK);
 	LCDDriver_printText(ctmp, x_pos, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
 	
 	uint8_t current_selected_page = systemMenuIndex / max_items_on_page;

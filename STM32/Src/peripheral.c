@@ -94,15 +94,15 @@ static void PERIPH_ENCODER_Rotated(int8_t direction) //энкодер повер
 		VFO *vfo = CurrentVFO();
 		if (TRX.Fast)
 		{
-			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + 100 * direction), vfo);
-			if ((vfo->Freq % 100) > 0)
-				TRX_setFrequency(vfo->Freq / 100 * 100, vfo);
+			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + ((int32_t)TRX.FRQ_FAST_STEP * direction)), vfo);
+			if ((vfo->Freq % TRX.FRQ_FAST_STEP) > 0)
+				TRX_setFrequency(vfo->Freq / TRX.FRQ_FAST_STEP * TRX.FRQ_FAST_STEP, vfo);
 		}
 		else
 		{
-			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + 10 * direction), vfo);
-			if ((vfo->Freq % 10) > 0)
-				TRX_setFrequency(vfo->Freq / 10 * 10, vfo);
+			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + ((int32_t)TRX.FRQ_STEP * direction)), vfo);
+			if ((vfo->Freq % TRX.FRQ_STEP) > 0)
+				TRX_setFrequency(vfo->Freq / TRX.FRQ_STEP * TRX.FRQ_STEP, vfo);
 		}
 		LCD_UpdateQuery.FreqInfo = true;
 	}
@@ -178,15 +178,15 @@ static void PERIPH_ENCODER2_Rotated(int8_t direction) //энкодер пове�
 		VFO *vfo = CurrentVFO();
 		if (TRX.Fast)
 		{
-			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + 100000 * direction), vfo);
-			if ((vfo->Freq % 100000) > 0)
-				TRX_setFrequency(vfo->Freq / 100000 * 100000, vfo);
+			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + (int32_t)TRX.FRQ_ENC_FAST_STEP * direction), vfo);
+			if ((vfo->Freq % TRX.FRQ_ENC_FAST_STEP) > 0)
+				TRX_setFrequency(vfo->Freq / TRX.FRQ_ENC_FAST_STEP * TRX.FRQ_ENC_FAST_STEP, vfo);
 		}
 		else
 		{
-			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + 25000 * direction), vfo);
-			if ((vfo->Freq % 25000) > 0)
-				TRX_setFrequency((uint32_t)((int32_t)vfo->Freq / 25000 * 25000), vfo);
+			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + (int32_t)TRX.FRQ_ENC_STEP * direction), vfo);
+			if ((vfo->Freq % TRX.FRQ_ENC_STEP) > 0)
+				TRX_setFrequency(vfo->Freq / TRX.FRQ_ENC_STEP * TRX.FRQ_ENC_STEP, vfo);
 		}
 		LCD_UpdateQuery.FreqInfo = true;
 	}

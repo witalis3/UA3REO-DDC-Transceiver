@@ -78,9 +78,7 @@ void LoadSettings(bool clear)
 	else
 		sendToDebug_strln("[OK] EEPROM data succesfully loaded from BANK 1");
 
-	TRX.ENDBit = 100;
-
-	if (TRX.flash_id != 191 || clear) //code to trace new clean flash
+	if (TRX.flash_id != 191 || clear || TRX.ENDBit != 100) //code to trace new clean flash
 	{
 		sendToDebug_str("[ERR] Flash ID: ");
 		sendToDebug_uint8(TRX.flash_id,false);
@@ -185,6 +183,10 @@ void LoadSettings(bool clear)
 		TRX.DNR_AVERAGE = 3;
 		TRX.DNR_MINIMAL = 18;
 		TRX.NOISE_BLANKER = true; //подавитель коротких импульсных помех NOISE BLANKER
+		TRX.FRQ_STEP = 10; //шаг перестройки частоты основным энкодером
+		TRX.FRQ_FAST_STEP = 100; //шаг перестройки частоты основным энкодером в режиме FAST
+		TRX.FRQ_ENC_STEP = 25000; //шаг перестройки частоты основным доп. энкодером
+		TRX.FRQ_ENC_FAST_STEP = 100000; //шаг перестройки частоты основным доп. энкодером в режиме FAST
 		
 		TRX.ENDBit = 100;			  //Бит окончания успешной записи в eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

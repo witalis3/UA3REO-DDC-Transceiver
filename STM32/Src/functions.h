@@ -48,7 +48,7 @@
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
 #define SQRT2 1.41421356237f
-
+#define ARRLENTH(x)  (sizeof(x) / sizeof((x)[0]))
 #define MINI_DELAY for(uint_fast16_t wait_i = 0; wait_i < 100; wait_i++) __asm("nop");
 		
 typedef struct {
