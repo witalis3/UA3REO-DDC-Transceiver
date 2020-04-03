@@ -725,8 +725,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     //StartProfilerUs();
 		if(!WM8731_Buffer_underrun)
+		{
 			FPGA_fpgadata_iqclock();
-		FPGA_fpgadata_stuffclock();
+			FPGA_fpgadata_stuffclock();
+		}
     //EndProfilerUs(true);
   }
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder
