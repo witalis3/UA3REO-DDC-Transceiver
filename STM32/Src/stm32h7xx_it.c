@@ -425,6 +425,7 @@ void TIM5_IRQHandler(void)
   /* USER CODE BEGIN TIM5_IRQn 1 */
   //StartProfilerUs();
 	if(!Processor_NeedTXBuffer && !Processor_NeedRXBuffer) return;
+	
   if (TRX_on_TX())
   {
     if (CurrentVFO()->Mode != TRX_MODE_NO_TX)
@@ -557,9 +558,6 @@ void TIM6_DAC_IRQHandler(void)
     RX_USB_AUDIO_SAMPLES = 0;
     TX_USB_AUDIO_SAMPLES = 0;
     TRX_Time_InActive++;
-    WM8731_Buffer_underrun = false;
-    FPGA_Buffer_underrun = false;
-    RX_USB_AUDIO_underrun = false;
     FPGA_NeedSendParams = true;
   }
 
@@ -576,6 +574,9 @@ void TIM6_DAC_IRQHandler(void)
   PERIPH_RF_UNIT_UpdateState(false);
   LCD_doEvents();
   FFT_printFFT();
+	WM8731_Buffer_underrun = false;
+	FPGA_Buffer_underrun = false;
+	RX_USB_AUDIO_underrun = false;
   //power off sequence
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT))
 	{
@@ -723,10 +724,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
     //StartProfilerUs();
-    if (!FPGA_busy)
-      FPGA_fpgadata_iqclock();
-    if (!FPGA_busy)
-      FPGA_fpgadata_stuffclock();
+		if(!WM8731_Buffer_underrun)
+			FPGA_fpgadata_iqclock();
+		FPGA_fpgadata_stuffclock();
     //EndProfilerUs(true);
   }
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder

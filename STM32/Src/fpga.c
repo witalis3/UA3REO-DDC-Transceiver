@@ -10,7 +10,6 @@
 #include "usbd_debug_if.h"
 
 volatile uint32_t FPGA_samples = 0;
-volatile bool FPGA_busy = false;
 volatile bool FPGA_NeedSendParams = false;
 volatile bool FPGA_NeedGetParams = false;
 volatile bool FPGA_Buffer_underrun = false;
@@ -57,7 +56,6 @@ void FPGA_Init(void)
 static void FPGA_test_bus(void) //проверка шины
 {
 	bool err = false;
-	FPGA_busy = true;
 	for (uint_fast8_t b = 0; b <= 8; b++)
 	{
 		//STAGE 1
@@ -88,45 +86,13 @@ static void FPGA_test_bus(void) //проверка шины
 		//clock
 		FPGA_clockFall();
 	}
-	FPGA_busy = false;
 	if (!err)
 		sendToDebug_strln("[OK] FPGA inited");
 }
-/*
-void FPGA_start_audio_clock(void) //запуск PLL для I2S и кодека, при включенном тактовом не программируется i2c
-{
-	FPGA_busy = true;
-	//STAGE 1
-	//out
-	FPGA_writePacket(5);
-	//clock
-	GPIOC->BSRR = FPGA_SYNC_Pin;
-	FPGA_clockRise();
-	//in
-	//clock
-	GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
-	FPGA_busy = false;
-}
 
-void FPGA_stop_audio_clock(void) //остановка PLL для I2S и кодека, при включенном тактовом не программируется i2c
-{
-	FPGA_busy = true;
-	//STAGE 1
-	//out
-	FPGA_writePacket(6);
-	//clock
-	GPIOC->BSRR = FPGA_SYNC_Pin;
-	FPGA_clockRise();
-	//in
-	//clock
-	GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
-	FPGA_busy = false;
-}
-*/
 void FPGA_fpgadata_stuffclock(void)
 {
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
-	FPGA_busy = true;
 	//обмен данными
 
 	//STAGE 1
@@ -157,13 +123,11 @@ void FPGA_fpgadata_stuffclock(void)
 			FPGA_NeedGetParams = false;
 		}
 	}
-	FPGA_busy = false;
 }
 
 void FPGA_fpgadata_iqclock(void)
 {
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
-	FPGA_busy = true;
 	VFO *current_vfo = CurrentVFO();
 	//обмен данными
 
@@ -186,8 +150,6 @@ void FPGA_fpgadata_iqclock(void)
 		FPGA_fpgadata_sendiq();
 	else
 		FPGA_fpgadata_getiq();
-
-	FPGA_busy = false;
 }
 
 static inline void FPGA_fpgadata_sendparam(void)

@@ -61,7 +61,6 @@ void PERIPH_ENCODER2_checkRotate(void)
 {
 	if((HAL_GetTick() - ENCODER2_AValDeb) < 20) return;
 	ENCODER2_AValDebFirst = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
-	//HAL_Delay(1);
 	ENCODER2_AVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
 	if(ENCODER2_AValDebFirst != ENCODER2_AVal) return;
 	if (ENCODER2_ALast != ENCODER2_AVal)

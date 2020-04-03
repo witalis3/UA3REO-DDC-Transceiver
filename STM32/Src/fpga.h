@@ -12,10 +12,7 @@
 extern void FPGA_Init(void);
 extern void FPGA_fpgadata_iqclock(void);
 extern void FPGA_fpgadata_stuffclock(void);
-//extern void FPGA_start_audio_clock(void);
-//extern void FPGA_stop_audio_clock(void);
 
-volatile extern bool FPGA_busy;
 volatile extern uint32_t FPGA_samples;
 volatile extern bool FPGA_Buffer_underrun;
 volatile extern bool FPGA_NeedSendParams;

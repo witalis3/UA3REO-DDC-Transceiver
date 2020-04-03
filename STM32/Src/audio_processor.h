@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include "functions.h"
 
-#define FPGA_AUDIO_BUFFER_SIZE 192 * 2
+#define FPGA_AUDIO_BUFFER_SIZE (192 * 2)
 #define FPGA_AUDIO_BUFFER_HALF_SIZE FPGA_AUDIO_BUFFER_SIZE / 2
 
 #define FM_RX_LPF_ALPHA 0.05f         // For NFM demodulator:  "Alpha" (low-pass) factor to result in -6dB "knee" at approx. 270 Hz 0.05f

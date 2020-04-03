@@ -1288,6 +1288,8 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 {
+	if(!sysmenu_hiddenmenu_enabled)
+		return;
 	sysmenu_handlers_selected = &sysmenu_calibration_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_calibration_item_count;
 	sysmenu_onroot = false;
@@ -1882,6 +1884,9 @@ void eventSecRotateSystemMenu(int8_t direction)
 		else
 			systemMenuIndex = 0;
 	}
+	if(!sysmenu_hiddenmenu_enabled && sysmenu_handlers_selected[systemMenuIndex].type==SYSMENU_HIDDEN_MENU)
+		systemMenuIndex--;
+	
 	redrawCurrentItem();
 	if(sysmenu_onroot)
 		systemMenuRootIndex = systemMenuIndex;
