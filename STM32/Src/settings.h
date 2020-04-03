@@ -25,7 +25,6 @@
 #define ENCODER_INVERT 1						//инвертировать вращение влево-вправо у основного энкодера
 #define ENCODER2_INVERT 0						//инвертировать вращение влево-вправо у дополнительного энкодера
 #define KEY_HOLD_TIME 500						//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
-#define SHIFT_INTERVAL 400.0f				//диапазон расстройки ручкой SHIFT (400.0f = -200hz / +200hz)
 #define EEPROM_WRITE_INTERVAL 10000	//Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
 #define MAX_RF_POWER 7.0f						//Максимум мощности (для шкалы измерителя)
 #define SWR_CRITICAL 5.0f						//Максимальный КСВ, при котором отключается передатчик
@@ -172,14 +171,15 @@ extern struct TRX_SETTINGS
 	DC_filter_state_type DC_Filter_State[8];
 	uint8_t FFT_Style;
 	bool ShiftEnabled;
+	uint16_t SHIFT_INTERVAL;
 	uint8_t DNR_SNR_THRESHOLD;
 	uint8_t DNR_AVERAGE;
 	uint8_t DNR_MINIMAL;
 	bool NOISE_BLANKER;
 	uint8_t NOISE_BLANKER_THRESHOLD;
-	uint32_t FRQ_STEP;
-	uint32_t FRQ_FAST_STEP;
-	uint32_t FRQ_ENC_STEP;
+	uint16_t FRQ_STEP;
+	uint16_t FRQ_FAST_STEP;
+	uint16_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
 	
 	uint8_t ENDBit;

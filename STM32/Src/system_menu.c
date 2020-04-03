@@ -21,6 +21,7 @@ static void SYSMENU_HANDL_TRX_MICIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_USBIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction);
+static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
@@ -170,10 +171,11 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 	{"BPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BPF, SYSMENU_HANDL_TRX_BPFFilter},
 	{"Two Signal TUNE", SYSMENU_BOOLEAN, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
 	{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE},
-	{"Freq Step", SYSMENU_UINT32, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
-	{"Freq Step FAST", SYSMENU_UINT32, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
-	{"Freq Step ENC2", SYSMENU_UINT32, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
-	{"Freq Step ENC2 FAST", SYSMENU_UINT32, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
+	{"Shift Interval", SYSMENU_UINT16, (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_HANDL_TRX_SHIFT_INTERVAL},
+	{"Freq Step", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
+	{"Freq Step FAST", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
+	{"Freq Step ENC2", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
+	{"Freq Step ENC2 FAST", SYSMENU_UINT32R, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
 	{"DEBUG Console", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Debug_Console, SYSMENU_HANDL_TRX_DEBUG_CONSOLE},
 	{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
 	{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
@@ -473,9 +475,18 @@ static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction)
 		TRX.ENCODER_SLOW_RATE = 100;
 }
 
+static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction)
+{
+	TRX.SHIFT_INTERVAL += direction * 100;
+	if (TRX.SHIFT_INTERVAL < 100)
+		TRX.SHIFT_INTERVAL = 100;
+	if (TRX.SHIFT_INTERVAL > 10000)
+		TRX.SHIFT_INTERVAL = 10000;
+}
+
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction)
 {
-	const uint32_t freq_steps[] = {1, 10, 25, 50, 100};
+	const uint16_t freq_steps[] = {1, 10, 25, 50, 100};
 	for(uint8_t i = 0; i < ARRLENTH(freq_steps) ; i++)
 		if(TRX.FRQ_STEP == freq_steps[i])
 		{
@@ -502,7 +513,7 @@ static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction)
 {
-	const uint32_t freq_steps[] = {10, 25, 50, 100, 500, 1000};
+	const uint16_t freq_steps[] = {10, 25, 50, 100, 500, 1000};
 	for(uint8_t i = 0; i < ARRLENTH(freq_steps) ; i++)
 		if(TRX.FRQ_FAST_STEP == freq_steps[i])
 		{
@@ -529,7 +540,7 @@ static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction)
 {
-	const uint32_t freq_steps[] = {1000, 5000, 25000, 50000};
+	const uint16_t freq_steps[] = {1000, 5000, 25000, 50000};
 	for(uint8_t i = 0; i < ARRLENTH(freq_steps) ; i++)
 		if(TRX.FRQ_ENC_STEP == freq_steps[i])
 		{
@@ -2044,6 +2055,10 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	case SYSMENU_UINT32:
 		sprintf(ctmp, "%d", (uint32_t)*value);
 		x_pos = LAY_SYSMENU_X2_BIGINT;
+		break;
+	case SYSMENU_UINT32R:
+		sprintf(ctmp, "%d", (uint32_t)*value);
+		x_pos = LAY_SYSMENU_X2R_BIGINT;
 		break;
 	case SYSMENU_INT8:
 		sprintf(ctmp, "%d", (int8_t)*value);

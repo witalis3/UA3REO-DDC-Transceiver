@@ -179,6 +179,7 @@ void LoadSettings(bool clear)
 		TRX.DC_Filter_State[7] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
 		TRX.FFT_Style = 1; //стиль отображения FFT
 		TRX.ShiftEnabled = false; //активация режима SHIFT
+		TRX.SHIFT_INTERVAL = 5000;	//Диапазон расстройки ручкой SHIFT (5000 = -5000hz / +5000hz)
 		TRX.DNR_SNR_THRESHOLD = 2; //Уровень цифрового шумоподавления
 		TRX.DNR_AVERAGE = 3;
 		TRX.DNR_MINIMAL = 18;

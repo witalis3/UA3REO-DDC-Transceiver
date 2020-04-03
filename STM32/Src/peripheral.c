@@ -657,9 +657,9 @@ void PERIPH_ProcessFrontPanel(void)
 		mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT или IF Gain
 		if(TRX.ShiftEnabled)
 		{
-			TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * SHIFT_INTERVAL / 1023.0f) - SHIFT_INTERVAL / 2.0f);
-			if (abs(TRX_SHIFT) < (SHIFT_INTERVAL / 10.0f)) //при минимальных отклонениях - игнорируем
-				TRX_SHIFT = 0;
+			TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SHIFT_INTERVAL * 2 / 1023.0f) - TRX.SHIFT_INTERVAL);
+			//if (abs(TRX_SHIFT) < (TRX.SHIFT_INTERVAL / 10.0f)) //при минимальных отклонениях - игнорируем
+				//TRX_SHIFT = 0;
 		}
 		else
 		{
