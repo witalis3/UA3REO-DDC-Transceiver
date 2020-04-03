@@ -38,14 +38,14 @@ const BAND_MAP BANDS[] =
 		{
 			.name = "40m",
 			.startFreq = 7000000,
-			.endFreq = 7300000,
+			.endFreq = 7600000,
 			.regions = (const REGION_MAP[]){
 				{.startFreq = 7000000, .endFreq = 7040000, .mode = TRX_MODE_CW_L},
 				{.startFreq = 7040000, .endFreq = 7060000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 7060000, .endFreq = 7074000, .mode = TRX_MODE_LSB},
 				{.startFreq = 7074000, .endFreq = 7080000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 7080000, .endFreq = 7200000, .mode = TRX_MODE_LSB},
-				{.startFreq = 7200000, .endFreq = 7300000, .mode = TRX_MODE_AM},
+				{.startFreq = 7200000, .endFreq = 7600000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 6,
 		},
