@@ -690,7 +690,6 @@ static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction)
 		TRX.RX_AGC_speed = 1;
 	if (TRX.RX_AGC_speed > 20)
 		TRX.RX_AGC_speed = 20;
-	InitAGC();
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction)
@@ -700,7 +699,6 @@ static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction)
 		TRX.TX_AGC_speed = 1;
 	if (TRX.TX_AGC_speed > 50)
 		TRX.TX_AGC_speed = 50;
-	InitAGC();
 }
 
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)

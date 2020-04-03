@@ -12,8 +12,8 @@
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
 #define TRX_SAMPLERATE 48000				//частота дискретизации аудио-потока
 #define MAX_TX_AMPLITUDE 0.9f				//Максимальный размах при передаче в ЦАП
-#define AGC_CLIP_THRESHOLD -15.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
-#define AGC_OPTIMAL_THRESHOLD -25.0f	//Рабочий уровень усиления в AGC, dbFS
+#define AGC_CLIP_THRESHOLD -12.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
+#define AGC_OPTIMAL_THRESHOLD -22.0f	//Рабочий уровень усиления в AGC, dbFS
 #define AGC_MAX_GAIN 50.0f					//Максимальное усиление в AGC
 #define AGC_NOISE_GATE -90.0f				//ниже этого уровня - не усиливаем
 #define TUNE_POWER 100							//% от выбранной в настройках мощности при запуске TUNE (100 - полная)
@@ -25,7 +25,7 @@
 #define ENCODER_INVERT 1						//инвертировать вращение влево-вправо у основного энкодера
 #define ENCODER2_INVERT 0						//инвертировать вращение влево-вправо у дополнительного энкодера
 #define KEY_HOLD_TIME 500						//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
-#define EEPROM_WRITE_INTERVAL 10000	//Запись в EEPROM не чаще, чем раз в 10 секунд (против износа)
+#define EEPROM_WRITE_INTERVAL 20000	//Запись в EEPROM не чаще, чем раз в 20 секунд (против износа)
 #define MAX_RF_POWER 7.0f						//Максимум мощности (для шкалы измерителя)
 #define SWR_CRITICAL 5.0f						//Максимальный КСВ, при котором отключается передатчик
 #define SHOW_LOGO false							//Отображать логотип при загрузке (из lcd.h)

@@ -10,15 +10,6 @@ static float32_t AGC_RX1_need_gain_db = 0.0f;
 static float32_t AGC_RX2_need_gain_db = 0.0f;
 static float32_t AGC_RX1_need_gain_db_old = 1.0f;
 static float32_t AGC_RX2_need_gain_db_old = 1.0f;
-static float32_t RX_AGC_STEPSIZE_UP = 1.0f;
-static float32_t RX_AGC_STEPSIZE_DOWN = 1.0f;
-
-void InitAGC(void)
-{
-	//выше скорость в настройках - выше скорость отработки AGC
-	RX_AGC_STEPSIZE_UP = 100.0f / (float32_t)TRX.RX_AGC_speed;
-	RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.RX_AGC_speed;
-}
 
 void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id)
 {
@@ -34,6 +25,10 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 		AGC_need_gain_db = &AGC_RX2_need_gain_db;
 		AGC_need_gain_db_old = &AGC_RX2_need_gain_db_old;
 	}
+	
+	//выше скорость в настройках - выше скорость отработки AGC
+	float32_t RX_AGC_STEPSIZE_UP = 100.0f / (float32_t)TRX.RX_AGC_speed;
+	float32_t RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.RX_AGC_speed;
 	//считаем магнитуду
 	arm_power_f32(agcBuffer, blockSize, &AGC_RX_magnitude);
 	AGC_RX_magnitude = AGC_RX_magnitude / (float32_t)blockSize;
@@ -41,6 +36,7 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 		AGC_RX_magnitude = 0.001f;
 	full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
 	AGC_RX_dbFS = rate2dbP(full_scale_rate);
+	sendToDebug_float32(AGC_RX_dbFS, false);
 
 	//двигаем усиление на шаг
 	float32_t diff = (AGC_OPTIMAL_THRESHOLD - (AGC_RX_dbFS + *AGC_need_gain_db));

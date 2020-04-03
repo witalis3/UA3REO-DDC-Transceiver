@@ -63,7 +63,6 @@ static void ModulateFM(void);
 void initAudioProcessor(void)
 {
 	InitAudioFilters();
-	InitAGC();
 	sendToDebug_strln("[OK] Audioprocessor inited");
 }
 

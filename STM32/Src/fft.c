@@ -171,9 +171,9 @@ void FFT_Init(void)
 	if (TRX.FFT_Zoom > 1)
 	{
 		IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[TRX.FFT_Zoom];
-		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, 4 * 4 * 32);
 		IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[TRX.FFT_Zoom];
-		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, 4 * 4 * 32);
+		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, 16 * 4);
+		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, 16 * 4);
 		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_I,
 								  FirZoomFFTDecimate[TRX.FFT_Zoom].numTaps,
 								  TRX.FFT_Zoom, // Decimation factor
@@ -346,11 +346,14 @@ void FFT_doFFT(void)
 	arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, LAY_FFT_PRINT_SIZE);
 	
 	//Усреднение значений для последующего вывода (от резких всплесков)
+	float32_t averaging = (float32_t)TRX.FFT_Averaging / (float32_t)TRX.FFT_Zoom;
+	if(averaging < 1.0f)
+		averaging = 1.0f;
 	for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
 		if (FFTOutput_mean[i] < FFTInput[i])
-			FFTOutput_mean[i] += (FFTInput[i] - FFTOutput_mean[i]) / TRX.FFT_Averaging;
+			FFTOutput_mean[i] += (FFTInput[i] - FFTOutput_mean[i]) / averaging;
 		else
-			FFTOutput_mean[i] -= (FFTOutput_mean[i] - FFTInput[i]) / TRX.FFT_Averaging;
+			FFTOutput_mean[i] -= (FFTOutput_mean[i] - FFTInput[i]) / averaging;
 	
 	FFT_need_fft = false;
 }

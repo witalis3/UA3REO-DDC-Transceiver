@@ -131,7 +131,7 @@ void LoadSettings(bool clear)
 		TRX.InputType_MIC = true;	  //тип входа для передачи
 		TRX.InputType_LINE = false;
 		TRX.InputType_USB = false;
-		TRX.CW_LPF_Filter = 500;	  //дефолтное значение ширины фильтра CW
+		TRX.CW_LPF_Filter = 700;	  //дефолтное значение ширины фильтра CW
 		TRX.CW_HPF_Filter = 0;	  //дефолтное значение ширины фильтра CW
 		TRX.SSB_LPF_Filter = 2700;	//дефолтное значение ширины фильтра SSB
 		TRX.SSB_HPF_Filter = 300;	//дефолтное значение ширины фильтра SSB
@@ -183,7 +183,7 @@ void LoadSettings(bool clear)
 		TRX.DNR_SNR_THRESHOLD = 2; //Уровень цифрового шумоподавления
 		TRX.DNR_AVERAGE = 3;
 		TRX.DNR_MINIMAL = 18;
-		TRX.NOISE_BLANKER = true; //подавитель коротких импульсных помех NOISE BLANKER
+		TRX.NOISE_BLANKER = false; //подавитель коротких импульсных помех NOISE BLANKER
 		TRX.FRQ_STEP = 10; //шаг перестройки частоты основным энкодером
 		TRX.FRQ_FAST_STEP = 100; //шаг перестройки частоты основным энкодером в режиме FAST
 		TRX.FRQ_ENC_STEP = 25000; //шаг перестройки частоты основным доп. энкодером

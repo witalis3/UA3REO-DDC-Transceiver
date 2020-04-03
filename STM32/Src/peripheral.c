@@ -698,7 +698,6 @@ void PERIPH_ProcessFrontPanel(void)
 		{
 			TRX_Time_InActive = 0;
 			CurrentVFO()->AGC = !CurrentVFO()->AGC;
-			InitAGC();
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 			if(band>0)
 				TRX.BANDS_SAVED_SETTINGS[band].AGC = CurrentVFO()->AGC;
