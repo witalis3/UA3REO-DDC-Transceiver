@@ -89,13 +89,6 @@ typedef enum
 	VFO_A_PLUS_B,
 } DUAL_RX_TYPE;
 
-//сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
-typedef struct
-{
-	float32_t x_prev;
-	float32_t y_prev;
-} DC_filter_state_type;
-
 //Сохранение настроек по бендам
 typedef struct
 {
@@ -170,7 +163,6 @@ extern struct TRX_SETTINGS
 	uint8_t TX_AGC_speed;
 	bool Debug_Console;
 	DUAL_RX_TYPE Dual_RX_Type;
-	DC_filter_state_type DC_Filter_State[8];
 	uint8_t FFT_Style;
 	bool ShiftEnabled;
 	uint16_t SHIFT_INTERVAL;

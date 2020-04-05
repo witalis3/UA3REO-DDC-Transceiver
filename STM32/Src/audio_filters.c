@@ -24,13 +24,9 @@ arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_LPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_LPF_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_I;
-arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX1_HPF_I;
-arm_biquad_cascade_df2T_instance_f32 IIR_RX1_HPF_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_HPF_I;
-arm_biquad_cascade_df2T_instance_f32 IIR_RX2_HPF_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_TX_HPF_I;
-arm_biquad_cascade_df2T_instance_f32 IIR_TX_HPF_Q;
 
 //states
 static float32_t Fir_RX1_Hilbert_State_I[FIR_RX1_HILBERT_STATE_SIZE];
@@ -44,13 +40,9 @@ static float32_t IIR_RX1_LPF_Q_State[IIR_RX1_LPF_Taps_STATE_SIZE];
 static float32_t IIR_RX2_LPF_I_State[IIR_RX2_LPF_Taps_STATE_SIZE];
 static float32_t IIR_RX2_LPF_Q_State[IIR_RX2_LPF_Taps_STATE_SIZE];
 static float32_t IIR_TX_LPF_I_State[IIR_RX2_LPF_Taps_STATE_SIZE];
-static float32_t IIR_TX_LPF_Q_State[IIR_RX2_LPF_Taps_STATE_SIZE];
 static float32_t IIR_RX1_HPF_I_State[IIR_RX1_HPF_Taps_STATE_SIZE];
-static float32_t IIR_RX1_HPF_Q_State[IIR_RX1_HPF_Taps_STATE_SIZE];
 static float32_t IIR_RX2_HPF_I_State[IIR_RX2_HPF_Taps_STATE_SIZE];
-static float32_t IIR_RX2_HPF_Q_State[IIR_RX2_HPF_Taps_STATE_SIZE];
 static float32_t IIR_TX_HPF_I_State[IIR_RX2_HPF_Taps_STATE_SIZE];
-static float32_t IIR_TX_HPF_Q_State[IIR_RX2_HPF_Taps_STATE_SIZE];
 
 //notch filter
 volatile bool NeedReinitNotch = false;
@@ -314,7 +306,6 @@ void ReinitAudioFilters(void)
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX1_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_RX1_LPF_Q_State[0]);
 		
 		arm_biquad_cascade_df2T_init_f32(&IIR_TX_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_TX_LPF_I_State[0]);
-		arm_biquad_cascade_df2T_init_f32(&IIR_TX_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_TX_LPF_Q_State[0]);
 	}
 	if(SecondaryVFO()->LPF_Filter_Width>0)
 	{
@@ -328,16 +319,13 @@ void ReinitAudioFilters(void)
 	{
 		IIR_BIQUAD_FILTER* hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, CurrentVFO()->HPF_Filter_Width);
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX1_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_RX1_HPF_I_State[0]);
-		arm_biquad_cascade_df2T_init_f32(&IIR_RX1_HPF_Q, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_RX1_HPF_Q_State[0]);
 		
 		arm_biquad_cascade_df2T_init_f32(&IIR_TX_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_TX_HPF_I_State[0]);
-		arm_biquad_cascade_df2T_init_f32(&IIR_TX_HPF_Q, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_TX_HPF_Q_State[0]);
 	}
 	if(SecondaryVFO()->HPF_Filter_Width>0)
 	{
 		IIR_BIQUAD_FILTER* hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, SecondaryVFO()->HPF_Filter_Width);
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX2_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_RX2_HPF_I_State[0]);
-		arm_biquad_cascade_df2T_init_f32(&IIR_RX2_HPF_Q, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_RX2_HPF_Q_State[0]);
 	}
 }
 
@@ -348,6 +336,7 @@ void InitNotchFilter(void)
 	calcBiquad(BIQUAD_notch, SecondaryVFO()->NotchFC, TRX_SAMPLERATE, 0.5f, 0, AUDIO_RX2);
 }
 
+static DC_filter_state_type DC_Filter_State[8] = {0};
 void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum) //удаляет постоянную составлющую сигнала
 {
 	static const float32_t A1 = (1.0f - 0.00048828125f); // (1-2^(-11))
@@ -356,11 +345,11 @@ void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum) /
 	{
 		float32_t sampleIn = Buffer[i];
 		float32_t sampleOut = 0;
-		float32_t delta_x = sampleIn - TRX.DC_Filter_State[stateNum].x_prev;
-		float32_t a1_y_prev = A1 * TRX.DC_Filter_State[stateNum].y_prev;
+		float32_t delta_x = sampleIn - DC_Filter_State[stateNum].x_prev;
+		float32_t a1_y_prev = A1 * DC_Filter_State[stateNum].y_prev;
 		sampleOut = delta_x + a1_y_prev;
-		TRX.DC_Filter_State[stateNum].x_prev = sampleIn;
-		TRX.DC_Filter_State[stateNum].y_prev = sampleOut;
+		DC_Filter_State[stateNum].x_prev = sampleIn;
+		DC_Filter_State[stateNum].y_prev = sampleOut;
 		Buffer[i] = sampleOut;
 	}
 }

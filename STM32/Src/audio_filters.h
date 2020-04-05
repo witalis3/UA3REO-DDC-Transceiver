@@ -57,6 +57,13 @@ typedef enum
 	DC_FILTER_FFT_Q,
 } DC_FILTER_STATE;
 
+//сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
+typedef struct
+{
+	float32_t x_prev;
+	float32_t y_prev;
+} DC_filter_state_type;
+
 //Coefficients converted to ARMA in reverse order by MATLAB
 typedef struct
 {

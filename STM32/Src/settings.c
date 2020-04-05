@@ -170,15 +170,6 @@ void LoadSettings(bool clear)
 		TRX.S_METER_Style = false;	//Вид S-метра (свечка или полоска)
 		TRX.Debug_Console = false;  //Вывод отладки в DEBUG/UART порт
 		TRX.Dual_RX_Type = VFO_SEPARATE; //режим двойного приёмника
-		//сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
-		TRX.DC_Filter_State[0] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
-		TRX.DC_Filter_State[1] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
-		TRX.DC_Filter_State[2] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
-		TRX.DC_Filter_State[3] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
-		TRX.DC_Filter_State[4] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
-		TRX.DC_Filter_State[5] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
-		TRX.DC_Filter_State[6] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
-		TRX.DC_Filter_State[7] = (DC_filter_state_type){.x_prev = 0, .y_prev = 0};
 		TRX.FFT_Style = 1; //стиль отображения FFT
 		TRX.ShiftEnabled = false; //активация режима SHIFT
 		TRX.SHIFT_INTERVAL = 5000;	//Диапазон расстройки ручкой SHIFT (5000 = -5000hz / +5000hz)
