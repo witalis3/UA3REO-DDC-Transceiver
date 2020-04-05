@@ -12,6 +12,7 @@
 #include "usbd_audio_if.h"
 #include "cw_decoder.h"
 #include "peripheral.h"
+#include "system_menu.h"
 
 volatile bool TRX_ptt_hard = false;
 volatile bool TRX_ptt_cat = false;
@@ -220,6 +221,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 		_freq = MAX_FREQ_HZ;
 	
 	vfo->Freq = _freq;
+	if(sysmenu_spectrum_opened) return;
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
 	if (bandFromFreq >= 0)
 	{

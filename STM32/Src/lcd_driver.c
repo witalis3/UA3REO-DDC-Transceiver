@@ -701,7 +701,7 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 	@param    maxy  Maximum clipping value for Y
 */
 /**************************************************************************/
-static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, uint16_t *minx, uint16_t *miny, uint16_t *maxx, uint16_t *maxy, GFXfont gfxFont)
+static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, GFXfont gfxFont)
 {
 	if (c == '\n')
 	{			// Newline?
@@ -731,13 +731,13 @@ static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, uint16_t *min
 					x2 = x1 + gw - 1,
 					y2 = y1 + gh - 1;
 			if (x1 < *minx)
-				*minx = (uint16_t)x1;
+				*minx = x1;
 			if (y1 < *miny)
-				*miny = (uint16_t)y1;
+				*miny = y1;
 			if (x2 > *maxx)
-				*maxx = (uint16_t)x2;
+				*maxx = x2;
 			if (y2 > *maxy)
-				*maxy = (uint16_t)y2;
+				*maxy = y2;
 			*x += xa;
 		}
 	}
@@ -763,7 +763,7 @@ void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, 
 	*y1 = y;
 	*w = *h = 0;
 
-	uint16_t minx = LCD_WIDTH, miny = LCD_HEIGHT, maxx = 0, maxy = 0;
+	int16_t minx = LCD_WIDTH, miny = LCD_HEIGHT, maxx = 0, maxy = 0;
 
 	for (uint16_t i = 0; i < 40 && text[i] != NULL; i++)
 	{
@@ -773,13 +773,13 @@ void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, 
 
 	if (maxx >= minx)
 	{
-		*x1 = minx;
-		*w = maxx - minx + 1;
+		*x1 = (uint16_t)minx;
+		*w = (uint16_t)(maxx - minx + 1);
 	}
 	if (maxy >= miny)
 	{
-		*y1 = miny;
-		*h = maxy - miny + 1;
+		*y1 = (uint16_t)miny;
+		*h = (uint16_t)(maxy - miny + 1);
 	}
 }
 
@@ -792,6 +792,12 @@ void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_
 	{
 		LCDDriver_SendData((uint16_t)((data[i] << 8) | data[i + 1]));
 	}
+}
+
+void LCDDriver_drawPixel(uint16_t x, uint16_t y, uint16_t color)
+{
+	LCDDriver_SetCursorAreaPosition(x, y, x, y);
+	LCDDriver_SendData(color);
 }
 
 inline uint16_t rgb888torgb565(uint_fast8_t r, uint_fast8_t g, uint_fast8_t b)

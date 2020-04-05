@@ -42,8 +42,8 @@ static void EEPROM_PowerUp(void);
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"LSB",
 	"USB",
-	"CW_L",
-	"CW_U",
+	"CW-L",
+	"CW-U",
 	"NFM",
 	"WFM",
 	"AM",
@@ -62,7 +62,7 @@ void LoadSettings(bool clear)
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Read EEPROM multiple errors");
 	settings_eeprom_bank++;
 
-	//Проверка, что запись в eeprom была успешна, иначе используем второй банк
+	//Проверка, данные в eeprom корректные, иначе используем второй банк
 	if (TRX.ENDBit != 100)
 	{
 		tryes=0;
@@ -152,8 +152,10 @@ void LoadSettings(bool clear)
 		strcpy(TRX.WIFI_AP, "WIFI-AP");				//точка доступа WiFi
 		strcpy(TRX.WIFI_PASSWORD, "WIFI-PASSWORD"); //пароль к точке WiFi
 		TRX.WIFI_TIMEZONE = 3;						//часовой пояс (для синхронизации времени)
-		TRX.SPEC_Begin = 700;						//старт диапазона анализатора спектра
-		TRX.SPEC_End = 800;							//старт диапазона анализатора спектра
+		TRX.SPEC_Begin = 1000;						//старт диапазона анализатора спектра
+		TRX.SPEC_End = 30000;							//конец диапазона анализатора спектра
+		TRX.SPEC_TopDBM = -60;					//пороги графика
+		TRX.SPEC_BottomDBM = -130;						//пороги графика
 		TRX.CW_SelfHear = true;						//самоконтоль CW
 		TRX.ADC_RAND = false;						//ADC шифрование
 		TRX.ADC_SHDN = false;						//ADC отключение

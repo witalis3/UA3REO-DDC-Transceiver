@@ -75,8 +75,10 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
-static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction);
 
 static void SYSMENU_HANDL_CALIB_CIC_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction);
@@ -253,8 +255,10 @@ static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(
 static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 {
 	{"Spectrum START", SYSMENU_RUN, 0, SYSMENU_HANDL_SPECTRUM_Start},
-	{"Begin, 10kHz", SYSMENU_UINT16, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
-	{"End, 10kHz", SYSMENU_UINT16, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
+	{"Begin, kHz", SYSMENU_UINT32, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
+	{"End, kHz", SYSMENU_UINT32, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
+	{"Top, dBm", SYSMENU_INT16, (uint32_t *)&TRX.SPEC_TopDBM, SYSMENU_HANDL_SPECTRUM_TopDBM},
+	{"Bottom, dBm", SYSMENU_INT16, (uint32_t *)&TRX.SPEC_BottomDBM, SYSMENU_HANDL_SPECTRUM_BottomDBM},
 };
 static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
 
@@ -1387,6 +1391,22 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
+{
+	if(sysmenu_spectrum_opened)
+	{
+		SPEC_EncRotate(direction);
+	}
+	else
+	{
+		sysmenu_spectrum_lastfreq = CurrentVFO()->Freq;
+		sysmenu_spectrum_opened = true;
+		SPEC_Start();
+		drawSystemMenu(true);
+	}
+}
+
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction)
 {
 	TRX.SPEC_Begin += direction;
@@ -1401,12 +1421,26 @@ static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction)
 		TRX.SPEC_End = 1;
 }
 
-static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
+static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction)
 {
-	sysmenu_spectrum_lastfreq = CurrentVFO()->Freq;
-	sysmenu_spectrum_opened = true;
-	SPEC_Start();
-	drawSystemMenu(true);
+	TRX.SPEC_TopDBM += direction;
+	if (TRX.SPEC_TopDBM < -140)
+		TRX.SPEC_TopDBM = -140;
+	if (TRX.SPEC_TopDBM > 40)
+		TRX.SPEC_TopDBM = 40;
+	if(TRX.SPEC_TopDBM <= TRX.SPEC_BottomDBM)
+		TRX.SPEC_TopDBM = TRX.SPEC_BottomDBM + 1;
+}
+
+static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction)
+{
+	TRX.SPEC_BottomDBM += direction;
+	if (TRX.SPEC_BottomDBM < -140)
+		TRX.SPEC_BottomDBM = -140;
+	if (TRX.SPEC_BottomDBM > 40)
+		TRX.SPEC_BottomDBM = 40;
+	if(TRX.SPEC_BottomDBM >= TRX.SPEC_TopDBM)
+		TRX.SPEC_BottomDBM = TRX.SPEC_TopDBM - 1;
 }
 
 //CALIBRATION MENU
@@ -1913,6 +1947,7 @@ void eventCloseSystemMenu(void)
 	else if (sysmenu_spectrum_opened)
 	{
 		sysmenu_spectrum_opened = false;
+		TRX_setFrequency(sysmenu_spectrum_lastfreq, CurrentVFO());
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}

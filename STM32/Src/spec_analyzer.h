@@ -5,10 +5,12 @@
 #include "main.h"
 #include "stdbool.h"
 
-#define SPEC_Resolution 10000 //10khz
-#define SPEC_StepDelay 30
+#define SPEC_Resolution 1000 //1khz
+#define SPEC_StepDelay 1
+#define SPEC_VParts 6 //вертикальных подписей
 
 extern void SPEC_Start(void);
 extern void SPEC_Draw(void);
+extern void SPEC_EncRotate(int8_t direction);
 
 #endif

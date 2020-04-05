@@ -25,7 +25,7 @@
 #define ENCODER_INVERT 1						//инвертировать вращение влево-вправо у основного энкодера
 #define ENCODER2_INVERT 0						//инвертировать вращение влево-вправо у дополнительного энкодера
 #define KEY_HOLD_TIME 500						//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
-#define EEPROM_WRITE_INTERVAL 20000	//Запись в EEPROM не чаще, чем раз в 20 секунд (против износа)
+#define EEPROM_WRITE_INTERVAL 60000	//Запись в EEPROM не чаще, чем раз в 60 секунд (против износа)
 #define MAX_RF_POWER 7.0f						//Максимум мощности (для шкалы измерителя)
 #define SWR_CRITICAL 5.0f						//Максимальный КСВ, при котором отключается передатчик
 #define SHOW_LOGO false							//Отображать логотип при загрузке (из lcd.h)
@@ -150,8 +150,10 @@ extern struct TRX_SETTINGS
 	char WIFI_AP[MAX_WIFIPASS_LENGTH];
 	char WIFI_PASSWORD[MAX_WIFIPASS_LENGTH];
 	int8_t WIFI_TIMEZONE;
-	uint16_t SPEC_Begin;
-	uint16_t SPEC_End;
+	uint32_t SPEC_Begin;
+	uint32_t SPEC_End;
+	int16_t SPEC_TopDBM;
+	int16_t SPEC_BottomDBM;
 	uint16_t CW_SelfHear;
 	bool ADC_PGA;
 	bool ADC_RAND;
@@ -176,7 +178,6 @@ extern struct TRX_SETTINGS
 	uint8_t DNR_AVERAGE;
 	uint8_t DNR_MINIMAL;
 	bool NOISE_BLANKER;
-	uint8_t NOISE_BLANKER_THRESHOLD;
 	uint16_t FRQ_STEP;
 	uint16_t FRQ_FAST_STEP;
 	uint16_t FRQ_ENC_STEP;

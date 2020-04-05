@@ -107,6 +107,7 @@ static void LCD_displayTopButtons(bool redraw)
 	printInfo(LAY_TOPBUTTONS_CLAR_X, LAY_TOPBUTTONS_CLAR_Y, LAY_TOPBUTTONS_CLAR_W, LAY_TOPBUTTONS_CLAR_H, "CLAR", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.CLAR);
 	printInfo(LAY_TOPBUTTONS_SHIFT_X, LAY_TOPBUTTONS_SHIFT_Y, LAY_TOPBUTTONS_SHIFT_W, LAY_TOPBUTTONS_SHIFT_H, "SHIFT", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ShiftEnabled);
 	printInfo(LAY_TOPBUTTONS_NOTCH_X, LAY_TOPBUTTONS_NOTCH_Y, LAY_TOPBUTTONS_NOTCH_W, LAY_TOPBUTTONS_NOTCH_H, "NOTCH", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, (CurrentVFO()->ManualNotchFilter || CurrentVFO()->AutoNotchFilter));
+	printInfo(LAY_TOPBUTTONS_NB_X, LAY_TOPBUTTONS_NB_Y, LAY_TOPBUTTONS_NB_W, LAY_TOPBUTTONS_NB_H, "NB", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.NOISE_BLANKER);
 
 	printInfo(LAY_TOPBUTTONS_LOCK_X, LAY_TOPBUTTONS_LOCK_Y, LAY_TOPBUTTONS_LOCK_W, LAY_TOPBUTTONS_LOCK_H, "LOCK", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Locked);
 
@@ -469,10 +470,11 @@ void LCD_doEvents(void)
 
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t inactive_color, bool active)
 {
-	LCDDriver_Fill_RectWH(x, y, width, height, back_color);
 	uint16_t x1, y1, w, h;
+	LCDDriver_Fill_RectWH(x, y, width, height, back_color);
 	LCDDriver_getTextBounds(text, x, y, &x1, &y1, &w, &h, FreeSans9pt7b);
-	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2 + 1, active ? text_color : inactive_color, back_color, FreeSans9pt7b);
+	//sendToDebug_str(text); sendToDebug_str(" "); sendToDebug_uint16(w, false);
+	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2 - 1, active ? text_color : inactive_color, back_color, FreeSans9pt7b);
 }
 
 void LCD_showError(char text[], bool redraw)

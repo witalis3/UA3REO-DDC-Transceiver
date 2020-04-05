@@ -435,6 +435,9 @@ void TIM5_IRQHandler(void)
   {
     processRxAudio();
   }
+	//spectrum analiser
+	if(sysmenu_spectrum_opened)
+		LCD_doEvents();
   //EndProfilerUs(true);
   /* USER CODE END TIM5_IRQn 1 */
 }
