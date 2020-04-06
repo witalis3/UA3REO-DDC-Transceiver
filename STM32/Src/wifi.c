@@ -106,7 +106,7 @@ void WIFI_Process(void)
 				strcat(com_t, "AT+CIPSNTPCFG=1,");
 				sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
 				strcat(com_t, tz);
-				strcat(com_t, ",\"us.pool.ntp.org\"\r\n");
+				strcat(com_t, ",\"pool.ntp.org\"\r\n");
 				WIFI_SendCommand(com_t); //configure SNMP
 				WIFI_WaitForOk();
 				WIFI_stop_auto_ap_list = false;

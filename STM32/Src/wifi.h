@@ -8,6 +8,8 @@
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
 #define WIFI_FOUNDED_AP_MAXCOUNT 10
+#define WIFI_DEBUG false //вывод отладки WIFI в консоль
+	
 typedef enum
 {
 	WIFI_UNDEFINED = 0x00U,

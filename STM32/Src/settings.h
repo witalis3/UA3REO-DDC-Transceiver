@@ -55,7 +55,6 @@
 #define EEPROM_REPEAT_TRYES 40 // command tryes
 
 #define MAX_WIFIPASS_LENGTH 32
-#define WIFI_DEBUG false //вывод отладки WIFI на экран
 
 #define W25Q16_COMMAND_Write_Enable 0x06
 #define W25Q16_COMMAND_Erase_Chip 0xC7
