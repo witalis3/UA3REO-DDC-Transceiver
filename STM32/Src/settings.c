@@ -20,13 +20,12 @@ static uint8_t Power_Down = W25Q16_COMMAND_Power_Down;
 static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
 
 static uint8_t Address[3] = {0x00};
-struct TRX_SETTINGS TRX = {0};
+struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
 
 static uint8_t write_clone[W25Q16_SECTOR_SIZE] = {0};
 static uint8_t read_clone[W25Q16_SECTOR_SIZE] = {0};
 static uint8_t verify_clone[W25Q16_SECTOR_SIZE] = {0};
-static uint8_t settings_eeprom_bank = 0;
 
 volatile bool NeedSaveSettings = false;
 volatile bool NeedSaveCalibration = false;
@@ -56,33 +55,28 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 
 void LoadSettings(bool clear)
 {
-	EEPROM_PowerUp();
-	uint8_t tryes=0;
-	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
-	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Read EEPROM multiple errors");
-	settings_eeprom_bank++;
-
-	//Проверка, данные в eeprom корректные, иначе используем второй банк
+	//__PWR_CLK_ENABLE();
+	//HAL_PWR_EnableBkUpAccess();
+	//HAL_PWREx_EnableBkUpReg(); 
+	//__HAL_RCC_RTC_ENABLE();
+	PWR->CR1 |= PWR_CR1_DBP;
+	while(((PWR->CR1 & PWR_CR1_DBP) == 0));
+	__HAL_RCC_BKPRAM_CLK_ENABLE();
+	SCB->CACR |= 1<<2;
+	
+	memcpy(&TRX, (uint32_t*)BACKUP_SRAM_ADDR, sizeof(TRX));
+	
+	//Проверка, данные в backup sram корректные, иначе используем второй банк
 	if (TRX.ENDBit != 100)
-	{
-		tryes=0;
-		while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
-		if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Read EEPROM multiple errors");
-		settings_eeprom_bank = 0;
-
-		if (TRX.ENDBit != 100)
-			sendToDebug_strln("[ERR] EEPROM data error, loading default...");
-		else
-			sendToDebug_strln("[OK] EEPROM data succesfully loaded from BANK 2");
-	}
+		sendToDebug_strln("[ERR] BACKUP SRAM data error, loading default...");
 	else
-		sendToDebug_strln("[OK] EEPROM data succesfully loaded from BANK 1");
+		sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded");
 
-	if (TRX.flash_id != 191 || clear || TRX.ENDBit != 100) //code to trace new clean flash
+	if (TRX.flash_id != TRX_VERSION || clear || TRX.ENDBit != 100) //code to trace new clean flash
 	{
 		sendToDebug_str("[ERR] Flash ID: ");
 		sendToDebug_uint8(TRX.flash_id,false);
-		TRX.flash_id = 191;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		TRX.flash_id = TRX_VERSION;		   //ID прошивки в eeprom, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000;	  //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB; //сохранённая мода VFO-A
 		TRX.VFO_A.LPF_Filter_Width = 2700; //сохранённая ширина полосы VFO-A
@@ -186,7 +180,7 @@ void LoadSettings(bool clear)
 		sendToDebug_strln("[OK] Loaded default settings");
 		SaveSettings();
 	}
-	EEPROM_PowerDown();
+	SCB_CleanDCache();
 }
 
 void LoadCalibration(void)
@@ -288,27 +282,9 @@ VFO *SecondaryVFO(void)
 
 void SaveSettings(void)
 {
-	if (EEPROM_Busy)
-		return;
-	EEPROM_PowerUp();
+	memcpy((uint32_t*)BACKUP_SRAM_ADDR, &TRX, sizeof(TRX));
 	NeedSaveSettings = false;
-	EEPROM_Busy = true;
-	
-	uint8_t tryes=0;
-	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&TRX, sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)) { tryes++; }
-	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Write EEPROM multiple errors");
-	
-	settings_eeprom_bank++;
-	if (settings_eeprom_bank >= 2)
-		settings_eeprom_bank = 0;
-	
-	tryes=0;
-	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(sizeof(TRX), W25Q16_MARGIN_LEFT_SETTINGS, settings_eeprom_bank, true, false)){ tryes++; }
-	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Erase EEPROM multiple errors");
-	
-	EEPROM_Busy = false;
-	EEPROM_PowerDown();
-	sendToDebug_strln("[OK] EEPROM Saved");
+	//sendToDebug_strln("[OK] Settings Saved");
 }
 
 void SaveCalibration(void)

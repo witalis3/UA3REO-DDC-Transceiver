@@ -15,7 +15,7 @@ WSPR маячок
 Вывод IQ по USB отдельно от звука
 Проверить и доработать драйвера под все версии Windows
 Доработать NoiseBlanker
-Скороть и ошибки работы EEPROM
+CMSIS-Develop
 Работа с SD
 
 ----TODO Ideas HARW----

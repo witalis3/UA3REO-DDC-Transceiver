@@ -101,7 +101,6 @@
 
 static uint32_t ms50_counter = 0;
 static uint32_t tim6_delay = 0;
-static uint32_t eeprom_save_timestamp = 0;
 static uint32_t powerdown_start_delay = 0;
 /* USER CODE END 0 */
 
@@ -552,6 +551,9 @@ void TIM6_DAC_IRQHandler(void)
 			//PrintProfilerResult();
     }
 		
+		if (NeedSaveSettings) //Save Settings to Backup Memory
+			SaveSettings();
+		
     tim6_delay = HAL_GetTick();
     FPGA_samples = 0;
     AUDIOPROC_samples = 0;
@@ -699,18 +701,8 @@ void TIM15_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim15);
   /* USER CODE BEGIN TIM15_IRQn 1 */
 	PERIPH_ProcessFrontPanel();
-	if (NeedSaveSettings)
-	{
-		if ((HAL_GetTick() - eeprom_save_timestamp) > EEPROM_WRITE_INTERVAL) //Запись в EEPROM не чаще, чем раз в X секунд (против износа)
-		{
-			SaveSettings();
-			eeprom_save_timestamp = HAL_GetTick();
-		}
-	}
 	if (NeedSaveCalibration)
-	{
 		SaveCalibration();
-	}
   /* USER CODE END TIM15_IRQn 1 */
 }
 
