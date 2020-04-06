@@ -32,8 +32,6 @@ void WIFI_Init(void)
 {
 	WIFI_SendCommand("AT+UART_CUR=115200,8,1,0,1\r\n"); //uart config
 	WIFI_WaitForOk();
-	WIFI_SendCommand("AT+UART_CUR=115200,8,1,0,1\r\n"); //uart config again (auto rate?)
-	WIFI_WaitForOk();
 	WIFI_SendCommand("ATE0\r\n");						//echo off
 	WIFI_WaitForOk();
 	WIFI_SendCommand("AT+GMR\r\n");						//system info ESP8266
@@ -48,7 +46,7 @@ void WIFI_Init(void)
 	WIFI_WaitForOk();
 	if (strstr(WIFI_readedLine, "OK") != NULL)
 	{
-		sendToDebug_str("[OK] WIFI Module Inited\r\n");
+		sendToDebug_str("[WIFI] WIFI Module Inited\r\n");
 		WIFI_State = WIFI_INITED;
 
 		//проверяем, есть ли активные подключения, если да - новое не создаём
@@ -60,14 +58,15 @@ void WIFI_Init(void)
 				WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); //AUTOCONNECT
 				WIFI_WaitForOk();
 				WIFI_State = WIFI_READY;
+				WIFI_connected = true;
+				sendToDebug_str("[WIFI] Connected\r\n");
 			}
 		}
-		WIFI_WaitForOk();
 	}
 	if (WIFI_State == WIFI_UNDEFINED)
 	{
 		WIFI_State = WIFI_NOTFOUND;
-		sendToDebug_str("[ERR] WIFI Module Not Found\r\n");
+		sendToDebug_str("[WIFI] WIFI Module Not Found\r\n");
 	}
 }
 
@@ -113,6 +112,7 @@ void WIFI_Process(void)
 				WIFI_State = WIFI_CONFIGURED;
 		break;
 		case WIFI_CONFIGURED:
+			sendToDebug_strln("configured");
 				if(WIFI_stop_auto_ap_list) 
 					break;
 				WIFI_ListAP_Sync();
@@ -140,7 +140,7 @@ void WIFI_Process(void)
 		WIFI_TryGetLine();
 		if (strstr(WIFI_readedLine, "GOT IP") != NULL)
 		{
-			sendToDebug_str("WIFI: Connected\r\n");
+			sendToDebug_str("[WIFI] Connected\r\n");
 			WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); //AUTOCONNECT
 			WIFI_WaitForOk();
 			WIFI_State = WIFI_READY;
@@ -148,19 +148,19 @@ void WIFI_Process(void)
 		}
 		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL)
 		{
-			sendToDebug_str("WIFI: Disconnected\r\n");
+			sendToDebug_str("[WIFI] Disconnected\r\n");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 		}
 		if (strstr(WIFI_readedLine, "FAIL") != NULL)
 		{
-			sendToDebug_str("WIFI: Connect failed\r\n");
+			sendToDebug_str("[WIFI] Connect failed\r\n");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 		}
 		if (strstr(WIFI_readedLine, "ERROR") != NULL)
 		{
-			sendToDebug_str("WIFI: Connect error\r\n");
+			sendToDebug_str("[WIFI] Connect error\r\n");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 		}
@@ -247,7 +247,7 @@ void WIFI_Process(void)
 					HAL_RTC_Init(&hrtc);
 					HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 					TRX_SNMP_Synced = true;
-					sendToDebug_str("WIFI: TIME SYNCED\r\n");
+					sendToDebug_str("[WIFI] TIME SYNCED\r\n");
 					if(WIFI_ProcessingCommandCallback!=NULL) WIFI_ProcessingCommandCallback();
 				}
 			}
