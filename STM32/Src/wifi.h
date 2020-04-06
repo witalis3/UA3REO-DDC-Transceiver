@@ -36,6 +36,7 @@ typedef enum
 
 extern RTC_HandleTypeDef hrtc;
 
+extern bool WIFI_connected;
 extern volatile uint8_t WIFI_InitStateIndex;
 extern volatile WiFiState WIFI_State;
 extern volatile char WIFI_FoundedAP[10][32];

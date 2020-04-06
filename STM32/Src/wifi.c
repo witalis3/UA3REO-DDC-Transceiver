@@ -4,6 +4,7 @@
 #include "functions.h"
 #include "settings.h"
 #include "trx_manager.h"
+#include "lcd.h"
 #include <stdlib.h>
 
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
@@ -14,7 +15,6 @@ static char WIFI_readedLine[WIFI_ANSWER_BUFFER_SIZE] = {0};
 static char tmp[WIFI_ANSWER_BUFFER_SIZE] = {0};
 static uint16_t WIFI_Answer_ReadIndex = 0;
 static uint32_t commandStartTime = 0;
-static bool WIFI_connected = false;
 static uint8_t WIFI_FoundedAP_Index = 0;
 static bool WIFI_stop_auto_ap_list = false;
 
@@ -23,6 +23,7 @@ static bool WIFI_WaitForOk(void);
 static bool WIFI_ListAP_Sync(void);
 static bool WIFI_TryGetLine(void);
 
+bool WIFI_connected = false;
 volatile uint8_t WIFI_InitStateIndex = 0;
 volatile WiFiState WIFI_State = WIFI_UNDEFINED;
 static char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
@@ -61,6 +62,7 @@ void WIFI_Init(void)
 				WIFI_WaitForOk();
 				WIFI_State = WIFI_READY;
 				WIFI_connected = true;
+				LCD_UpdateQuery.StatusInfoBar = true;
 				sendToDebug_str("[WIFI] Connected\r\n");
 			}
 		}
@@ -91,7 +93,7 @@ void WIFI_Process(void)
 	switch (WIFI_State)
 	{
 		case WIFI_INITED:
-				sendToDebug_str3("WIFI: Start connecting to AP: ", TRX.WIFI_AP, "\r\n");
+				sendToDebug_str3("[WIFI] Start connecting to AP: ", TRX.WIFI_AP, "\r\n");
 				WIFI_SendCommand("AT+CWAUTOCONN=0\r\n"); //AUTOCONNECT OFF
 				WIFI_WaitForOk();
 				WIFI_SendCommand("AT+RFPOWER=82\r\n"); //rf power
@@ -147,24 +149,28 @@ void WIFI_Process(void)
 			WIFI_WaitForOk();
 			WIFI_State = WIFI_READY;
 			WIFI_connected = true;
+			LCD_UpdateQuery.StatusInfoBar = true;
 		}
 		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL)
 		{
 			sendToDebug_str("[WIFI] Disconnected\r\n");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
+			LCD_UpdateQuery.StatusInfoBar = true;
 		}
 		if (strstr(WIFI_readedLine, "FAIL") != NULL)
 		{
 			sendToDebug_str("[WIFI] Connect failed\r\n");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
+			LCD_UpdateQuery.StatusInfoBar = true;
 		}
 		if (strstr(WIFI_readedLine, "ERROR") != NULL)
 		{
 			sendToDebug_str("[WIFI] Connect error\r\n");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
+			LCD_UpdateQuery.StatusInfoBar = true;
 		}
 		break;
 

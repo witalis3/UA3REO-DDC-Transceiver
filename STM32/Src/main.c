@@ -209,7 +209,7 @@ int main(void)
   sendToDebug_strln("[OK] RF-Unit updated");
   LCD_Init();
 	if (SHOW_LOGO)
-		LCDDriver_printImage_RLECompressed(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint16_t *)IMAGES_Logo, sizeof(IMAGES_Logo));
+		LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo);
   LCD_busy = true;
   FFT_Init();
   HAL_TIM_Base_Start_IT(&htim4);

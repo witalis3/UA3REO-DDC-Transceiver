@@ -14,6 +14,8 @@
 #include "cw_decoder.h"
 #include "peripheral.h"
 #include "screen_layout.h"
+#include "images.h"
+#include "wifi.h"
 
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
@@ -392,6 +394,12 @@ static void LCD_displayStatusInfoBar(void)
 		LCDDriver_printTextFont(ctmp, LAY_CLOCK_POS_SEC_X, LAY_CLOCK_POS_Y, COLOR_WHITE, BACKGROUND_COLOR, LAY_CLOCK_FONT);
 		Last_showed_Seconds = Seconds;
 	}
+	
+	if(WIFI_connected)
+		LCDDriver_printImage_RLECompressed(LAY_STATUS_WIFI_ICON_X, LAY_STATUS_WIFI_ICON_Y, &IMAGES_wifi_active);
+	else
+		LCDDriver_printImage_RLECompressed(LAY_STATUS_WIFI_ICON_X, LAY_STATUS_WIFI_ICON_Y, &IMAGES_wifi_inactive);
+	
 	LCD_UpdateQuery.StatusInfoBar = false;
 	LCD_busy = false;
 }
