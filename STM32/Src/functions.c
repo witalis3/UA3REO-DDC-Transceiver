@@ -63,9 +63,9 @@ void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t i
 
 void sendToDebug_str(char *data)
 {
-	printf("%s", data);
-	DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
-	HAL_UART_Transmit(&huart1, (uint8_t *)data, (uint16_t)strlen(data), 1000);
+	if(SWD_DEBUG_ENABLED) printf("%s", data);
+	if(USB_DEBUG_ENABLED) DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
+	if(UART_DEBUG_ENABLED) HAL_UART_Transmit(&huart1, (uint8_t *)data, (uint16_t)strlen(data), 1000);
 }
 
 void sendToDebug_strln(char *data)

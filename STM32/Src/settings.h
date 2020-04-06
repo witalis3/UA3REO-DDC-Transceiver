@@ -45,6 +45,9 @@
 #define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE*(float64_t)CODEC_BITS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
 #define ADC_FULL_SCALE 65536		   //максимальная аплитуда сигнала в АЦП // powf(2,ADC_BITS)
 #define FLOAT_FULL_SCALE_POW 4
+#define USB_DEBUG_ENABLED true //разрешить использовать USB как консоль
+#define UART_DEBUG_ENABLED false //разрешить использовать UART как консоль
+#define SWD_DEBUG_ENABLED false //разрешить использовать SWD как консоль
 
 // задержки при работе с EEPROM
 #define EEPROM_CO_DELAY 0 // command

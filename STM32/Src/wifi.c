@@ -19,9 +19,9 @@ static uint8_t WIFI_FoundedAP_Index = 0;
 static bool WIFI_stop_auto_ap_list = false;
 
 static void WIFI_SendCommand(char *command);
-static bool WIFI_TryGetLine(bool clean_buffer);
 static bool WIFI_WaitForOk(void);
 static bool WIFI_ListAP_Sync(void);
+static bool WIFI_TryGetLine(void);
 
 volatile uint8_t WIFI_InitStateIndex = 0;
 volatile WiFiState WIFI_State = WIFI_UNDEFINED;
@@ -48,12 +48,12 @@ void WIFI_Init(void)
 	WIFI_WaitForOk();
 	if (strstr(WIFI_readedLine, "OK") != NULL)
 	{
-		sendToDebug_str("WIFI Module Inited\r\n");
+		sendToDebug_str("[OK] WIFI Module Inited\r\n");
 		WIFI_State = WIFI_INITED;
 
 		//проверяем, есть ли активные подключения, если да - новое не создаём
 		WIFI_SendCommand("AT+CIPSTATUS\r\n");
-		while (WIFI_TryGetLine(false))
+		while (WIFI_TryGetLine())
 		{
 			if (strstr(WIFI_readedLine, "STATUS:2") != NULL)
 			{
@@ -67,7 +67,7 @@ void WIFI_Init(void)
 	if (WIFI_State == WIFI_UNDEFINED)
 	{
 		WIFI_State = WIFI_NOTFOUND;
-		sendToDebug_str("WIFI Module Not Found\r\n");
+		sendToDebug_str("[ERR] WIFI Module Not Found\r\n");
 	}
 }
 
@@ -137,7 +137,7 @@ void WIFI_Process(void)
 		break;
 		
 		case WIFI_CONNECTING:
-		WIFI_TryGetLine(true);
+		WIFI_TryGetLine();
 		if (strstr(WIFI_readedLine, "GOT IP") != NULL)
 		{
 			sendToDebug_str("WIFI: Connected\r\n");
@@ -172,7 +172,7 @@ void WIFI_Process(void)
 		break;
 	
 		case WIFI_TIMEOUT:
-			WIFI_TryGetLine(false);
+			WIFI_TryGetLine();
 			if (WIFI_connected)
 				WIFI_State = WIFI_READY;
 			else
@@ -181,7 +181,7 @@ void WIFI_Process(void)
 		break;
 		
 		case WIFI_PROCESS_COMMAND:
-		WIFI_TryGetLine(true);
+		WIFI_TryGetLine();
 
 		if ((HAL_GetTick() - commandStartTime) > WIFI_COMMAND_TIMEOUT)
 		{
@@ -305,7 +305,7 @@ static bool WIFI_ListAP_Sync(void)
 	while((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
 	{
 		HAL_IWDG_Refresh(&hiwdg1);
-		if(!WIFI_TryGetLine(false))
+		if(!WIFI_TryGetLine())
 		{
 			CPULOAD_GoToSleepMode();
 			CPULOAD_WakeUp();
@@ -367,8 +367,7 @@ static void WIFI_SendCommand(char *command)
 	HAL_Delay(WIFI_COMMAND_DELAY);
 	HAL_IWDG_Refresh(&hiwdg1);
 #if WIFI_DEBUG //DEBUG
-	sendToDebug_str2("WIFI_DEBUG_S: ", command);
-	sendToDebug_flush();
+	sendToDebug_str2("WIFI_S: ", command);
 #endif
 }
 
@@ -380,7 +379,7 @@ static bool WIFI_WaitForOk(void)
 	while((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
 	{
 		HAL_IWDG_Refresh(&hiwdg1);
-		if(WIFI_TryGetLine(false))
+		if(WIFI_TryGetLine())
 		{
 			istr = strstr(WIFI_readedLine, sep);
 			if (istr != NULL) 
@@ -393,13 +392,10 @@ static bool WIFI_WaitForOk(void)
 	}
 	return false;
 }
-static bool WIFI_TryGetLine(bool clean_buffer)
+static bool WIFI_TryGetLine(void)
 {
-	if(clean_buffer)
-	{
-		memset(WIFI_readedLine, 0x00, sizeof(WIFI_readedLine));
-		memset(tmp, 0x00, sizeof(tmp));
-	}
+	memset(WIFI_readedLine, 0x00, sizeof(WIFI_readedLine));
+	memset(tmp, 0x00, sizeof(tmp));
 	
 	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
 	if (WIFI_Answer_ReadIndex == dma_index)
@@ -422,8 +418,7 @@ static bool WIFI_TryGetLine(bool clean_buffer)
 		WIFI_Answer_ReadIndex = dma_index;
 
 #if WIFI_DEBUG //DEBUG
-	sendToDebug_str2("WIFI_DEBUG_R: ", WIFI_readedLine);
-	sendToDebug_flush();
+	sendToDebug_str2("WIFI_R: ", WIFI_readedLine);
 #endif
 
 	return true;
