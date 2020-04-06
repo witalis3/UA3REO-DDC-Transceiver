@@ -39,13 +39,15 @@ extern RTC_HandleTypeDef hrtc;
 extern volatile uint8_t WIFI_InitStateIndex;
 extern volatile WiFiState WIFI_State;
 extern volatile char WIFI_FoundedAP[10][32];
+extern bool WIFI_IP_Gotted;
+extern char WIFI_IP[15];
 
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);
-extern uint32_t WIFI_GetSNMPTime(void* callback);
 extern void WIFI_ListAP(void* callback);
-extern void WIFI_GetIP(void);
-extern void WIFI_GetStatus(void);
+extern bool WIFI_GetSNMPTime(void* callback);
+extern bool WIFI_GetIP(void* callback);
+//extern void WIFI_GetStatus(void);
 extern void WIFI_GoSleep(void);
 
 #endif

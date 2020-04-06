@@ -18,6 +18,7 @@ typedef enum
 	SYSMENU_FLOAT32 = 0x0A,
 	SYSMENU_MENU = 0x0B,
 	SYSMENU_HIDDEN_MENU = 0x0C,
+	SYSMENU_INFOLINE = 0x0D,
 } SystemMenuType;
 
 struct sysmenu_item_handler

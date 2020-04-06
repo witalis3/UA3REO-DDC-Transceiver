@@ -249,6 +249,9 @@ static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 	{"WIFI Select AP", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SelectAP},
 	{"WIFI Set AP Pass", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SetAPpassword},
 	{"WIFI Timezone", SYSMENU_INT8, (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_HANDL_WIFI_Timezone},
+	{"", SYSMENU_INFOLINE, 0, 0},
+	{"IP:", SYSMENU_INFOLINE, 0, 0},
+	{WIFI_IP, SYSMENU_INFOLINE, 0, 0},
 };
 static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
 
@@ -1921,7 +1924,8 @@ void eventRotateSystemMenu(int8_t direction)
 		SYSMENU_WIFI_RotatePasswordChar(direction);
 		return;
 	}
-	sysmenu_handlers_selected[systemMenuIndex].menuHandler(direction);
+	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_INFOLINE)
+		sysmenu_handlers_selected[systemMenuIndex].menuHandler(direction);
 	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_RUN)
 		redrawCurrentItem();
 }
@@ -2046,6 +2050,8 @@ void eventSecRotateSystemMenu(int8_t direction)
 	}
 	if(!sysmenu_hiddenmenu_enabled && sysmenu_handlers_selected[systemMenuIndex].type==SYSMENU_HIDDEN_MENU)
 		systemMenuIndex--;
+	while(systemMenuIndex > 0 && sysmenu_handlers_selected[systemMenuIndex].type==SYSMENU_INFOLINE)
+		systemMenuIndex--;
 	
 	redrawCurrentItem();
 	if(sysmenu_onroot)
@@ -2115,6 +2121,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 			sprintf(ctmp, "NO");
 		break;
 	case SYSMENU_RUN:
+		if(*value != 0)
 		sprintf(ctmp, "RUN");
 		break;
 	case SYSMENU_MENU:
@@ -2123,11 +2130,14 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	case SYSMENU_HIDDEN_MENU:
 		sprintf(ctmp, "!!!");
 		break;
+	case SYSMENU_INFOLINE:
+		break;
 	}
 	
 	if (onlyVal)
 		LCDDriver_Fill_RectWH(x_pos, sysmenu_y, 6 * 12, 13, COLOR_BLACK);
-	LCDDriver_printText(ctmp, x_pos, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
+	if (type != SYSMENU_INFOLINE)
+		LCDDriver_printText(ctmp, x_pos, sysmenu_y, COLOR_WHITE, COLOR_BLACK, 2);
 	
 	uint8_t current_selected_page = systemMenuIndex / max_items_on_page;
 	if (systemMenuIndex == sysmenu_i + current_selected_page * max_items_on_page)

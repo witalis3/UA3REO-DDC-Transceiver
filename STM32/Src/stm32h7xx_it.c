@@ -488,9 +488,11 @@ void TIM6_DAC_IRQHandler(void)
     ms50_counter = 0;
     TRX_DoAutoGain(); //Process AutoGain feature
 
+		if(!WIFI_IP_Gotted) //Get resolved IP
+			WIFI_GetIP(NULL);
     if (!TRX_SNMP_Synced) //Sync time from internet
       WIFI_GetSNMPTime(NULL);
-
+		
 		CPULOAD_Calc(); // Calculate CPU load
 		TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
 		TRX_STM32_VREF = TRX_getSTM32H743vref();

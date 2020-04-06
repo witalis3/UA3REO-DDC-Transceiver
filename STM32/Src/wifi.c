@@ -27,6 +27,8 @@ volatile uint8_t WIFI_InitStateIndex = 0;
 volatile WiFiState WIFI_State = WIFI_UNDEFINED;
 static char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
 volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
+bool WIFI_IP_Gotted = false;
+char WIFI_IP[15] = {0};
 
 void WIFI_Init(void)
 {
@@ -109,10 +111,10 @@ void WIFI_Process(void)
 				WIFI_SendCommand(com_t); //configure SNMP
 				WIFI_WaitForOk();
 				WIFI_stop_auto_ap_list = false;
+				WIFI_IP_Gotted = false;
 				WIFI_State = WIFI_CONFIGURED;
 		break;
 		case WIFI_CONFIGURED:
-			sendToDebug_strln("configured");
 				if(WIFI_stop_auto_ap_list) 
 					break;
 				WIFI_ListAP_Sync();
@@ -248,7 +250,21 @@ void WIFI_Process(void)
 					HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 					TRX_SNMP_Synced = true;
 					sendToDebug_str("[WIFI] TIME SYNCED\r\n");
-					if(WIFI_ProcessingCommandCallback!=NULL) WIFI_ProcessingCommandCallback();
+				}
+			}
+			else if (WIFI_ProcessingCommand == WIFI_COMM_GETIP) //GetIP Command process
+			{
+				char *sep = "_CUR:ip";
+				char *istr;
+				istr = strstr(WIFI_readedLine, sep);
+				if (istr != NULL) 
+				{
+					char *start = strchr(WIFI_readedLine, '"') + 1;
+					char *end = strchr(start, '"');
+					*end = 0x00;
+					strcat(WIFI_IP, start);
+					sendToDebug_str3("[WIFI] GOT IP: ", WIFI_IP, "\r\n");
+					WIFI_IP_Gotted = true;
 				}
 			}
 		}
@@ -262,16 +278,26 @@ void WIFI_Process(void)
 	}
 }
 
-uint32_t WIFI_GetSNMPTime(void* callback)
+bool WIFI_GetSNMPTime(void* callback)
 {
 	if (WIFI_State != WIFI_READY)
-		return 0;
-	uint32_t ret = 0;
+		return false;
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_GETSNMP;
 	WIFI_ProcessingCommandCallback = callback;
 	WIFI_SendCommand("AT+CIPSNTPTIME?\r\n"); //get SNMP time
-	return ret;
+	return true;
+}
+
+bool WIFI_GetIP(void* callback)
+{
+	if (WIFI_State != WIFI_READY)
+		return false;
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_GETIP;
+	WIFI_ProcessingCommandCallback = callback;
+	WIFI_SendCommand("AT+CIPSTA_CUR?\r\n"); //get ip
+	return true;
 }
 
 void WIFI_ListAP(void* callback)
@@ -328,14 +354,8 @@ static bool WIFI_ListAP_Sync(void)
 	}
 	return false;
 }
-/*
-void WIFI_GetIP(void)
-{
-	WIFI_State = WIFI_PROCESS_COMMAND;
-	WIFI_ProcessingCommand = WIFI_COMM_GETIP;
-	WIFI_SendCommand("AT+CIPSTA_CUR?\r\n"); //get ip
-}
 
+/*
 void WIFI_GetStatus(void)
 {
 	WIFI_State = WIFI_PROCESS_COMMAND;
