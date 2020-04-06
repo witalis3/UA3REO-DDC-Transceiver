@@ -243,9 +243,10 @@ extern void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t co
 extern void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, GFXfont gfxFont);
 extern void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont gfxFont);
 extern void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data);
+extern void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t *data, uint32_t size);
 extern void LCDDriver_setRotation(uint8_t rotate);
+extern void LCDDriver_setBrightness(uint8_t percent);
 
 extern uint16_t rgb888torgb565(uint_fast8_t red, uint_fast8_t green, uint_fast8_t blue);
-extern void LCDDriver_setBrightness(uint8_t percent);
 
 #endif

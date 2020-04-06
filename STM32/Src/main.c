@@ -39,6 +39,7 @@
 #include "usbd_cat_if.h"
 #include "usbd_debug_if.h"
 #include "wifi.h"
+#include "images.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -207,8 +208,8 @@ int main(void)
   PERIPH_RF_UNIT_UpdateState(false);
   sendToDebug_strln("[OK] RF-Unit updated");
   LCD_Init();
-  if (SHOW_LOGO)
-    LCDDriver_printImage(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint8_t *)TRX_Logo);
+	if (SHOW_LOGO)
+		LCDDriver_printImage_RLECompressed(0, 0, LCD_WIDTH, LCD_HEIGHT, (uint16_t *)IMAGES_Logo, sizeof(IMAGES_Logo));
   LCD_busy = true;
   FFT_Init();
   HAL_TIM_Base_Start_IT(&htim4);

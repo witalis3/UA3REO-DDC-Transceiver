@@ -794,6 +794,42 @@ void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_
 	}
 }
 
+void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t *data, uint32_t size)
+{
+	uint32_t size16bit = size / 2;
+	uint32_t i = 0;
+	uint32_t decoded = 0;
+
+	LCDDriver_SetCursorAreaPosition(x, y, w + x - 1, h + y - 1);
+	while(i < size16bit)
+	{
+		if((int16_t)data[i] < 0) //нет повторов
+		{
+			uint16_t count = (-(int16_t)data[i]);
+			i++;
+			for(uint16_t p = 0 ; p < count ; p++)
+			{
+				LCDDriver_SendData(data[i]);
+				decoded++;
+				i++;
+				if((w*h) <= decoded) return;
+			}
+		}
+		else //повторы
+		{
+			uint16_t count = ((int16_t)data[i]);
+			i++;
+			for(uint16_t p = 0 ; p < count ; p++)
+			{
+				LCDDriver_SendData(data[i]);
+				decoded++;
+				if((w*h) <= decoded) return;
+			}
+			i++;
+		}
+	}
+}
+
 void LCDDriver_drawPixel(uint16_t x, uint16_t y, uint16_t color)
 {
 	LCDDriver_SetCursorAreaPosition(x, y, x, y);
