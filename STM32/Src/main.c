@@ -184,8 +184,17 @@ int main(void)
   MX_ADC3_Init();
   MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
-	
-  HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET); //Latch power
+	//System stabilization
+	while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {HAL_IWDG_Refresh(&hiwdg1);}
+	while((RCC->CR & RCC_CR_HSERDY) == 0) {HAL_IWDG_Refresh(&hiwdg1);}
+	__HAL_RCC_PLL_ENABLE();
+	RCC->CR |= RCC_CR_PLLON;
+	while((RCC->CR & RCC_CR_PLL1RDY) == 0) {HAL_IWDG_Refresh(&hiwdg1);}
+	while((RCC->CR & RCC_CR_PLL2RDY) == 0) {HAL_IWDG_Refresh(&hiwdg1);}
+	//while((RCC->CR & RCC_CR_PLL3RDY) == 0) {HAL_IWDG_Refresh(&hiwdg1);}
+	while((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1) {HAL_IWDG_Refresh(&hiwdg1);}
+	//
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("UA3REO Transceiver Initialization...");
 	USBD_Restart();
@@ -273,7 +282,7 @@ void SystemClock_Config(void)
   /** Configure LSE Drive Capability 
   */
   HAL_PWR_EnableBkUpAccess();
-  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_MEDIUMHIGH);
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_HIGH);
   /** Macro to configure the PLL clock source 
   */
   __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
