@@ -3729,21 +3729,21 @@ refer to the applicable agreement for further details.
 		(pt 256 72)
 		(output)
 		(text "out_data[15..0]" (rect 0 0 84 14)(font "Arial" (font_size 8)))
-		(text "out_data[15..0]" (rect 183 61 254 75)(font "Arial" (font_size 8)))
+		(text "out_data[15..0]" (rect 183 61 267 75)(font "Arial" (font_size 8)))
 		(line (pt 256 72)(pt 176 72)(line_width 3))
 	)
 	(port
 		(pt 256 88)
 		(output)
 		(text "out_error[1..0]" (rect 0 0 81 14)(font "Arial" (font_size 8)))
-		(text "out_error[1..0]" (rect 186 77 254 91)(font "Arial" (font_size 8)))
+		(text "out_error[1..0]" (rect 186 77 267 91)(font "Arial" (font_size 8)))
 		(line (pt 256 88)(pt 176 88)(line_width 3))
 	)
 	(port
 		(pt 256 104)
 		(output)
 		(text "out_valid" (rect 0 0 50 14)(font "Arial" (font_size 8)))
-		(text "out_valid" (rect 210 93 252 107)(font "Arial" (font_size 8)))
+		(text "out_valid" (rect 210 93 260 107)(font "Arial" (font_size 8)))
 		(line (pt 256 104)(pt 176 104))
 	)
 	(drawing
@@ -3837,21 +3837,21 @@ refer to the applicable agreement for further details.
 		(pt 256 72)
 		(output)
 		(text "out_data[15..0]" (rect 0 0 84 14)(font "Arial" (font_size 8)))
-		(text "out_data[15..0]" (rect 183 61 254 75)(font "Arial" (font_size 8)))
+		(text "out_data[15..0]" (rect 183 61 267 75)(font "Arial" (font_size 8)))
 		(line (pt 256 72)(pt 176 72)(line_width 3))
 	)
 	(port
 		(pt 256 88)
 		(output)
 		(text "out_error[1..0]" (rect 0 0 81 14)(font "Arial" (font_size 8)))
-		(text "out_error[1..0]" (rect 186 77 254 91)(font "Arial" (font_size 8)))
+		(text "out_error[1..0]" (rect 186 77 267 91)(font "Arial" (font_size 8)))
 		(line (pt 256 88)(pt 176 88)(line_width 3))
 	)
 	(port
 		(pt 256 104)
 		(output)
 		(text "out_valid" (rect 0 0 50 14)(font "Arial" (font_size 8)))
-		(text "out_valid" (rect 210 93 252 107)(font "Arial" (font_size 8)))
+		(text "out_valid" (rect 210 93 260 107)(font "Arial" (font_size 8)))
 		(line (pt 256 104)(pt 176 104))
 	)
 	(drawing
@@ -3945,21 +3945,21 @@ refer to the applicable agreement for further details.
 		(pt 256 72)
 		(output)
 		(text "out_data[87..0]" (rect 0 0 84 14)(font "Arial" (font_size 8)))
-		(text "out_data[87..0]" (rect 181 61 252 75)(font "Arial" (font_size 8)))
+		(text "out_data[87..0]" (rect 181 61 265 75)(font "Arial" (font_size 8)))
 		(line (pt 256 72)(pt 176 72)(line_width 3))
 	)
 	(port
 		(pt 256 88)
 		(output)
 		(text "out_error[1..0]" (rect 0 0 81 14)(font "Arial" (font_size 8)))
-		(text "out_error[1..0]" (rect 186 77 254 91)(font "Arial" (font_size 8)))
+		(text "out_error[1..0]" (rect 186 77 267 91)(font "Arial" (font_size 8)))
 		(line (pt 256 88)(pt 176 88)(line_width 3))
 	)
 	(port
 		(pt 256 104)
 		(output)
 		(text "out_valid" (rect 0 0 50 14)(font "Arial" (font_size 8)))
-		(text "out_valid" (rect 210 93 252 107)(font "Arial" (font_size 8)))
+		(text "out_valid" (rect 210 93 260 107)(font "Arial" (font_size 8)))
 		(line (pt 256 104)(pt 176 104))
 	)
 	(drawing
@@ -4053,21 +4053,21 @@ refer to the applicable agreement for further details.
 		(pt 256 72)
 		(output)
 		(text "out_data[87..0]" (rect 0 0 84 14)(font "Arial" (font_size 8)))
-		(text "out_data[87..0]" (rect 181 61 252 75)(font "Arial" (font_size 8)))
+		(text "out_data[87..0]" (rect 181 61 265 75)(font "Arial" (font_size 8)))
 		(line (pt 256 72)(pt 176 72)(line_width 3))
 	)
 	(port
 		(pt 256 88)
 		(output)
 		(text "out_error[1..0]" (rect 0 0 81 14)(font "Arial" (font_size 8)))
-		(text "out_error[1..0]" (rect 186 77 254 91)(font "Arial" (font_size 8)))
+		(text "out_error[1..0]" (rect 186 77 267 91)(font "Arial" (font_size 8)))
 		(line (pt 256 88)(pt 176 88)(line_width 3))
 	)
 	(port
 		(pt 256 104)
 		(output)
 		(text "out_valid" (rect 0 0 50 14)(font "Arial" (font_size 8)))
-		(text "out_valid" (rect 210 93 252 107)(font "Arial" (font_size 8)))
+		(text "out_valid" (rect 210 93 260 107)(font "Arial" (font_size 8)))
 		(line (pt 256 104)(pt 176 104))
 	)
 	(drawing
@@ -4161,21 +4161,21 @@ refer to the applicable agreement for further details.
 		(pt 256 72)
 		(output)
 		(text "out_data[87..0]" (rect 0 0 84 14)(font "Arial" (font_size 8)))
-		(text "out_data[87..0]" (rect 181 61 252 75)(font "Arial" (font_size 8)))
+		(text "out_data[87..0]" (rect 181 61 265 75)(font "Arial" (font_size 8)))
 		(line (pt 256 72)(pt 176 72)(line_width 3))
 	)
 	(port
 		(pt 256 88)
 		(output)
 		(text "out_error[1..0]" (rect 0 0 81 14)(font "Arial" (font_size 8)))
-		(text "out_error[1..0]" (rect 186 77 254 91)(font "Arial" (font_size 8)))
+		(text "out_error[1..0]" (rect 186 77 267 91)(font "Arial" (font_size 8)))
 		(line (pt 256 88)(pt 176 88)(line_width 3))
 	)
 	(port
 		(pt 256 104)
 		(output)
 		(text "out_valid" (rect 0 0 50 14)(font "Arial" (font_size 8)))
-		(text "out_valid" (rect 210 93 252 107)(font "Arial" (font_size 8)))
+		(text "out_valid" (rect 210 93 260 107)(font "Arial" (font_size 8)))
 		(line (pt 256 104)(pt 176 104))
 	)
 	(drawing
@@ -4269,21 +4269,21 @@ refer to the applicable agreement for further details.
 		(pt 256 72)
 		(output)
 		(text "out_data[87..0]" (rect 0 0 84 14)(font "Arial" (font_size 8)))
-		(text "out_data[87..0]" (rect 181 61 252 75)(font "Arial" (font_size 8)))
+		(text "out_data[87..0]" (rect 181 61 265 75)(font "Arial" (font_size 8)))
 		(line (pt 256 72)(pt 176 72)(line_width 3))
 	)
 	(port
 		(pt 256 88)
 		(output)
 		(text "out_error[1..0]" (rect 0 0 81 14)(font "Arial" (font_size 8)))
-		(text "out_error[1..0]" (rect 186 77 254 91)(font "Arial" (font_size 8)))
+		(text "out_error[1..0]" (rect 186 77 267 91)(font "Arial" (font_size 8)))
 		(line (pt 256 88)(pt 176 88)(line_width 3))
 	)
 	(port
 		(pt 256 104)
 		(output)
 		(text "out_valid" (rect 0 0 50 14)(font "Arial" (font_size 8)))
-		(text "out_valid" (rect 210 93 252 107)(font "Arial" (font_size 8)))
+		(text "out_valid" (rect 210 93 260 107)(font "Arial" (font_size 8)))
 		(line (pt 256 104)(pt 176 104))
 	)
 	(drawing
@@ -4356,6 +4356,150 @@ refer to the applicable agreement for further details.
 	(rect 1168 -472 1184 -440)
 	(text "VCC" (rect 6 7 16 27)(font "Arial" (font_size 6))(vertical))
 	(text "instvcfgh" (rect -1 3 11 50)(font "Arial" )(vertical)(invisible))
+	(port
+		(pt 0 16)
+		(output)
+		(text "1" (rect 19 7 24 19)(font "Courier New" (bold))(invisible))
+		(text "1" (rect -3 19 9 24)(font "Courier New" (bold))(vertical)(invisible))
+		(line (pt 0 16)(pt 8 16))
+	)
+	(drawing
+		(line (pt 8 8)(pt 8 24))
+	)
+	(rotate270)
+)
+(symbol
+	(rect 480 -480 496 -448)
+	(text "VCC" (rect 0 5 10 25)(font "Arial" (font_size 6))(vertical))
+	(text "inst7" (rect 5 7 22 29)(font "Intel Clear" )(vertical)(invisible))
+	(port
+		(pt 16 16)
+		(output)
+		(text "1" (rect 19 7 24 19)(font "Courier New" (bold))(invisible))
+		(text "1" (rect 7 8 19 13)(font "Courier New" (bold))(vertical)(invisible))
+		(line (pt 16 16)(pt 8 16))
+	)
+	(drawing
+		(line (pt 8 24)(pt 8 8))
+	)
+	(rotate90)
+)
+(symbol
+	(rect 480 -88 496 -56)
+	(text "VCC" (rect 0 5 10 25)(font "Arial" (font_size 6))(vertical))
+	(text "inst8" (rect 5 7 22 29)(font "Intel Clear" )(vertical)(invisible))
+	(port
+		(pt 16 16)
+		(output)
+		(text "1" (rect 19 7 24 19)(font "Courier New" (bold))(invisible))
+		(text "1" (rect 7 8 19 13)(font "Courier New" (bold))(vertical)(invisible))
+		(line (pt 16 16)(pt 8 16))
+	)
+	(drawing
+		(line (pt 8 24)(pt 8 8))
+	)
+	(rotate90)
+)
+(symbol
+	(rect 472 72 488 104)
+	(text "VCC" (rect 0 5 10 25)(font "Arial" (font_size 6))(vertical))
+	(text "inst2" (rect 5 7 22 29)(font "Intel Clear" )(vertical)(invisible))
+	(port
+		(pt 16 16)
+		(output)
+		(text "1" (rect 19 7 24 19)(font "Courier New" (bold))(invisible))
+		(text "1" (rect 7 8 19 13)(font "Courier New" (bold))(vertical)(invisible))
+		(line (pt 16 16)(pt 8 16))
+	)
+	(drawing
+		(line (pt 8 24)(pt 8 8))
+	)
+	(rotate90)
+)
+(symbol
+	(rect 472 488 488 520)
+	(text "VCC" (rect 0 5 10 25)(font "Arial" (font_size 6))(vertical))
+	(text "inst1" (rect 5 7 22 29)(font "Intel Clear" )(vertical)(invisible))
+	(port
+		(pt 16 16)
+		(output)
+		(text "1" (rect 19 7 24 19)(font "Courier New" (bold))(invisible))
+		(text "1" (rect 7 8 19 13)(font "Courier New" (bold))(vertical)(invisible))
+		(line (pt 16 16)(pt 8 16))
+	)
+	(drawing
+		(line (pt 8 24)(pt 8 8))
+	)
+	(rotate90)
+)
+(symbol
+	(rect 5512 248 5528 280)
+	(text "VCC" (rect 0 5 10 25)(font "Arial" (font_size 6))(vertical))
+	(text "inst20" (rect 5 1 22 29)(font "Intel Clear" )(vertical)(invisible))
+	(port
+		(pt 16 16)
+		(output)
+		(text "1" (rect 19 7 24 19)(font "Courier New" (bold))(invisible))
+		(text "1" (rect 7 8 19 13)(font "Courier New" (bold))(vertical)(invisible))
+		(line (pt 16 16)(pt 8 16))
+	)
+	(drawing
+		(line (pt 8 24)(pt 8 8))
+	)
+	(rotate90)
+)
+(symbol
+	(rect 5248 352 5264 384)
+	(text "VCC" (rect 0 5 10 25)(font "Arial" (font_size 6))(vertical))
+	(text "inst19" (rect 5 1 22 29)(font "Intel Clear" )(vertical)(invisible))
+	(port
+		(pt 16 16)
+		(output)
+		(text "1" (rect 19 7 24 19)(font "Courier New" (bold))(invisible))
+		(text "1" (rect 7 8 19 13)(font "Courier New" (bold))(vertical)(invisible))
+		(line (pt 16 16)(pt 8 16))
+	)
+	(drawing
+		(line (pt 8 24)(pt 8 8))
+	)
+	(rotate90)
+)
+(symbol
+	(rect 5192 352 5208 384)
+	(text "VCC" (rect 6 7 16 27)(font "Arial" (font_size 6))(vertical))
+	(text "inst13" (rect -6 3 11 31)(font "Intel Clear" )(vertical)(invisible))
+	(port
+		(pt 0 16)
+		(output)
+		(text "1" (rect 19 7 24 19)(font "Courier New" (bold))(invisible))
+		(text "1" (rect -3 19 9 24)(font "Courier New" (bold))(vertical)(invisible))
+		(line (pt 0 16)(pt 8 16))
+	)
+	(drawing
+		(line (pt 8 8)(pt 8 24))
+	)
+	(rotate270)
+)
+(symbol
+	(rect 5232 152 5248 184)
+	(text "VCC" (rect 0 5 10 25)(font "Arial" (font_size 6))(vertical))
+	(text "inst10" (rect 5 1 22 29)(font "Intel Clear" )(vertical)(invisible))
+	(port
+		(pt 16 16)
+		(output)
+		(text "1" (rect 19 7 24 19)(font "Courier New" (bold))(invisible))
+		(text "1" (rect 7 8 19 13)(font "Courier New" (bold))(vertical)(invisible))
+		(line (pt 16 16)(pt 8 16))
+	)
+	(drawing
+		(line (pt 8 24)(pt 8 8))
+	)
+	(rotate90)
+)
+(symbol
+	(rect 5192 64 5208 96)
+	(text "VCC" (rect 6 7 16 27)(font "Arial" (font_size 6))(vertical))
+	(text "inst5" (rect -6 3 11 25)(font "Intel Clear" )(vertical)(invisible))
 	(port
 		(pt 0 16)
 		(output)
@@ -5168,28 +5312,8 @@ refer to the applicable agreement for further details.
 	(pt 5264 88)
 )
 (connector
-	(text "TX" (rect 5234 152 5246 169)(font "Intel Clear" ))
-	(pt 5272 168)
-	(pt 5224 168)
-)
-(connector
 	(pt 5272 288)
 	(pt 5264 288)
-)
-(connector
-	(text "TX" (rect 5234 352 5246 369)(font "Intel Clear" ))
-	(pt 5272 368)
-	(pt 5224 368)
-)
-(connector
-	(pt 5248 344)
-	(pt 5272 344)
-	(bus)
-)
-(connector
-	(text "TX" (rect 5498 248 5510 265)(font "Intel Clear" ))
-	(pt 5520 264)
-	(pt 5544 264)
 )
 (connector
 	(text "DAC_OTR" (rect 5696 277 5713 325)(font "Intel Clear" )(vertical))
@@ -5242,11 +5366,6 @@ refer to the applicable agreement for further details.
 	(pt 5272 112)
 	(pt 5248 112)
 	(bus)
-)
-(connector
-	(text "TX" (rect 5194 352 5206 369)(font "Intel Clear" ))
-	(pt 5184 368)
-	(pt 5216 368)
 )
 (connector
 	(pt 5464 240)
@@ -5760,26 +5879,6 @@ refer to the applicable agreement for further details.
 	(pt 3560 104)
 )
 (connector
-	(text "RX2" (rect 482 -480 502 -463)(font "Intel Clear" ))
-	(pt 472 -464)
-	(pt 528 -464)
-)
-(connector
-	(text "RX2" (rect 482 -88 502 -71)(font "Intel Clear" ))
-	(pt 472 -72)
-	(pt 528 -72)
-)
-(connector
-	(text "RX1" (rect 482 72 502 89)(font "Intel Clear" ))
-	(pt 528 88)
-	(pt 472 88)
-)
-(connector
-	(text "RX1" (rect 482 488 502 505)(font "Intel Clear" ))
-	(pt 472 504)
-	(pt 520 504)
-)
-(connector
 	(text "ADC_SHDN_N" (rect 3816 400 3883 417)(font "Intel Clear" ))
 	(pt 3800 416)
 	(pt 3848 416)
@@ -5968,16 +6067,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 1152 112)
 	(pt 1168 112)
-)
-(connector
-	(pt 5248 344)
-	(pt 5248 552)
-	(bus)
-)
-(connector
-	(text "TX" (rect 5194 64 5206 81)(font "Intel Clear" ))
-	(pt 5184 80)
-	(pt 5224 80)
 )
 (connector
 	(pt 1664 -336)
@@ -6541,12 +6630,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "TX_NCO_COS[15..0]" (rect 4938 536 5035 553)(font "Intel Clear" ))
-	(pt 5248 552)
-	(pt 4936 552)
-	(bus)
-)
-(connector
 	(text "RX2" (rect 3578 520 3598 537)(font "Intel Clear" ))
 	(pt 3568 528)
 	(pt 3376 528)
@@ -6798,6 +6881,58 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 464 320)
 	(pt 464 328)
+)
+(connector
+	(pt 528 -464)
+	(pt 496 -464)
+)
+(connector
+	(pt 528 -72)
+	(pt 496 -72)
+)
+(connector
+	(pt 528 88)
+	(pt 488 88)
+)
+(connector
+	(pt 520 504)
+	(pt 488 504)
+)
+(connector
+	(pt 5544 264)
+	(pt 5528 264)
+)
+(connector
+	(pt 5272 368)
+	(pt 5264 368)
+)
+(connector
+	(pt 5272 344)
+	(pt 5240 344)
+	(bus)
+)
+(connector
+	(pt 5240 344)
+	(pt 5240 552)
+	(bus)
+)
+(connector
+	(text "TX_NCO_COS[15..0]" (rect 4938 536 5035 553)(font "Intel Clear" ))
+	(pt 4936 552)
+	(pt 5240 552)
+	(bus)
+)
+(connector
+	(pt 5192 368)
+	(pt 5184 368)
+)
+(connector
+	(pt 5272 168)
+	(pt 5248 168)
+)
+(connector
+	(pt 5184 80)
+	(pt 5192 80)
 )
 (junction (pt 376 120))
 (junction (pt 440 32))
