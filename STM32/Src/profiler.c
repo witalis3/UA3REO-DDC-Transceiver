@@ -16,7 +16,6 @@ void InitProfiler()
 		profiles[i].samples = 0;
 		profiles[i].started = false;
 	}
-	sendToDebug_strln("[OK] Profiler inited");
 }
 
 void StartProfiler(uint8_t pid)

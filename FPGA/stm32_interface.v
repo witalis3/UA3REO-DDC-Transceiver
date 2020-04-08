@@ -68,7 +68,7 @@ output reg FLASH_enable=0;
 output reg FLASH_continue_read=0;
 output reg ADC_PGA=0;
 output reg ADC_RAND=0;
-output reg ADC_SHDN=0;
+output reg ADC_SHDN=1;
 output reg ADC_DITH=0;
 output reg unsigned [7:0] CIC_GAIN=32;
 output reg unsigned [7:0] CICFIR_GAIN=32;
@@ -76,11 +76,6 @@ output reg unsigned [7:0] TX_CICFIR_GAIN=32;
 output reg unsigned [7:0] DAC_GAIN=32;
 output reg signed [15:0] ADC_OFFSET=0;
 output reg tx_iq_valid = 0;
-
-reg rx1_sync=1;
-reg rx2_sync=0;
-reg tx_sync=0;
-reg ADC_SHDN_sync=0;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -92,6 +87,10 @@ reg signed [31:0] REG_RX1_I;
 reg signed [31:0] REG_RX1_Q;
 reg signed [31:0] REG_RX2_I;
 reg signed [31:0] REG_RX2_Q;
+reg signed [31:0] VALID_RX1_I;
+reg signed [31:0] VALID_RX1_Q;
+reg signed [31:0] VALID_RX2_I;
+reg signed [31:0] VALID_RX2_Q;
 reg signed [31:0] I_HOLD;
 reg signed [31:0] Q_HOLD;
 reg signed [15:0] ADC_MIN;
@@ -100,14 +99,22 @@ reg ADC_MINMAX_RESET;
 
 always @ (posedge IQ_valid)
 begin
-	REG_RX1_I[31:0]=RX1_I[31:0];
-	REG_RX1_Q[31:0]=RX1_Q[31:0];
-	REG_RX2_I[31:0]=RX2_I[31:0];
-	REG_RX2_Q[31:0]=RX2_Q[31:0];
+	VALID_RX1_I[31:0]=RX1_I[31:0];
+	VALID_RX1_Q[31:0]=RX1_Q[31:0];
+	VALID_RX2_I[31:0]=RX2_I[31:0];
+	VALID_RX2_Q[31:0]=RX2_Q[31:0];
 end
 
 always @ (posedge clk_in)
 begin
+	//синхронизируем значения IQ сигналов
+	if (IQ_valid == 0)
+	begin
+		REG_RX1_I[31:0]=VALID_RX1_I[31:0];
+		REG_RX1_Q[31:0]=VALID_RX1_Q[31:0];
+		REG_RX2_I[31:0]=VALID_RX2_I[31:0];
+		REG_RX2_Q[31:0]=VALID_RX2_Q[31:0];
+	end
 	//начало передачи
 	if (DATA_SYNC==1)
 	begin
@@ -156,11 +163,11 @@ begin
 	end
 	else if (k==100) //GET PARAMS
 	begin
-		rx1_sync=DATA_BUS[0:0];
-		rx2_sync=DATA_BUS[1:1];
-		tx_sync=DATA_BUS[2:2];
+		rx1=DATA_BUS[0:0];
+		rx2=DATA_BUS[1:1];
+		tx=DATA_BUS[2:2];
 		ADC_DITH=DATA_BUS[3:3];
-		ADC_SHDN_sync=DATA_BUS[4:4];
+		ADC_SHDN=DATA_BUS[4:4];
 		ADC_RAND=DATA_BUS[5:5];
 		ADC_PGA=DATA_BUS[6:6];
 		preamp_enable=DATA_BUS[7:7];
@@ -431,15 +438,6 @@ begin
 	begin
 		ADC_MIN=ADC_IN;
 	end
-end
-
-always @ (negedge adcclk_in)
-begin
-	//signal sync
-	rx1=rx1_sync;
-	rx2=rx2_sync;
-	tx=tx_sync;
-	ADC_SHDN=ADC_SHDN_sync;
 end
 
 endmodule

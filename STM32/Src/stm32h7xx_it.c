@@ -500,11 +500,12 @@ void TIM6_DAC_IRQHandler(void)
     if (TRX.Debug_Console)
     {
       //Save Debug variables
-      uint32_t dbg_FPGA_samples = FPGA_samples;
-      uint32_t dbg_WM8731_DMA_samples = WM8731_DMA_samples / 2;
-      uint32_t dbg_AUDIOPROC_TXA_samples = AUDIOPROC_TXA_samples;
-      uint32_t dbg_AUDIOPROC_TXB_samples = AUDIOPROC_TXB_samples;
-      uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
+			uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
+			float32_t dbg_coeff = 1000.0f / (float32_t)dbg_tim6_delay;
+      uint32_t dbg_FPGA_samples = (uint32_t)((float32_t)FPGA_samples * dbg_coeff);
+      uint32_t dbg_WM8731_DMA_samples = (uint32_t)((float32_t)WM8731_DMA_samples / 2.0f * dbg_coeff);
+      uint32_t dbg_AUDIOPROC_TXA_samples = (uint32_t)((float32_t)AUDIOPROC_TXA_samples * dbg_coeff);
+      uint32_t dbg_AUDIOPROC_TXB_samples = (uint32_t)((float32_t)AUDIOPROC_TXB_samples * dbg_coeff);
       float32_t dbg_ALC_need_gain = ALC_need_gain;
       float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I[0];
       float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_RX1_Q[0];
@@ -513,8 +514,8 @@ void TIM6_DAC_IRQHandler(void)
         dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_SendBuffer_I[0];
         dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_SendBuffer_Q[0];
       }
-      uint32_t dbg_RX_USB_AUDIO_SAMPLES = RX_USB_AUDIO_SAMPLES;
-      uint32_t dbg_TX_USB_AUDIO_SAMPLES = TX_USB_AUDIO_SAMPLES;
+      uint32_t dbg_RX_USB_AUDIO_SAMPLES = (uint32_t)((float32_t)RX_USB_AUDIO_SAMPLES * dbg_coeff);
+      uint32_t dbg_TX_USB_AUDIO_SAMPLES = (uint32_t)((float32_t)TX_USB_AUDIO_SAMPLES * dbg_coeff);
 			uint32_t cpu_load = (uint32_t)CPU_LOAD.Load;
       //Print Debug info
       sendToDebug_str("FPGA Samples: ");

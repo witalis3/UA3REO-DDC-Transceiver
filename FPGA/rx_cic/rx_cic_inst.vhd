@@ -9,8 +9,7 @@
 			out_valid : out std_logic;                                        -- valid
 			out_ready : in  std_logic                     := 'X';             -- ready
 			clk       : in  std_logic                     := 'X';             -- clk
-			reset_n   : in  std_logic                     := 'X';             -- reset_n
-			clken     : in  std_logic                     := 'X'              -- clken
+			reset_n   : in  std_logic                     := 'X'              -- reset_n
 		);
 	end component rx_cic;
 
@@ -25,7 +24,6 @@
 			out_valid => CONNECTED_TO_out_valid, --          .valid
 			out_ready => CONNECTED_TO_out_ready, --          .ready
 			clk       => CONNECTED_TO_clk,       --     clock.clk
-			reset_n   => CONNECTED_TO_reset_n,   --     reset.reset_n
-			clken     => CONNECTED_TO_clken      --     clken.clken
+			reset_n   => CONNECTED_TO_reset_n    --     reset.reset_n
 		);
 

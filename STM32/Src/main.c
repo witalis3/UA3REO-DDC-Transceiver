@@ -153,16 +153,17 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	MX_GPIO_Init();
-	HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(RFUNIT_OE_GPIO_Port, RFUNIT_OE_Pin, GPIO_PIN_SET);
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  PERIPH_RF_UNIT_UpdateState(true);
+	//System stabilization
+	while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) || (RCC->CR & RCC_CR_HSERDY) == 0 || (RCC->CR & RCC_CR_PLL1RDY) == 0 || (RCC->CR & RCC_CR_PLL2RDY) == 0 || (RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1) 
+	{
+		SystemClock_Config();
+	}
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -184,51 +185,48 @@ int main(void)
   MX_ADC3_Init();
   MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
-	HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET); //Latch power
-	//System stabilization
-	while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {HAL_IWDG_Refresh(&hiwdg1);}
-	while((RCC->CR & RCC_CR_HSERDY) == 0) {HAL_IWDG_Refresh(&hiwdg1);}
-	__HAL_RCC_PLL_ENABLE();
-	RCC->CR |= RCC_CR_PLLON;
-	while((RCC->CR & RCC_CR_PLL1RDY) == 0) {HAL_IWDG_Refresh(&hiwdg1);}
-	while((RCC->CR & RCC_CR_PLL2RDY) == 0) {HAL_IWDG_Refresh(&hiwdg1);}
-	//while((RCC->CR & RCC_CR_PLL3RDY) == 0) {HAL_IWDG_Refresh(&hiwdg1);}
-	while((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1) {HAL_IWDG_Refresh(&hiwdg1);}
-	//
+	HAL_Delay(1000);
+  LCD_busy = true;
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("UA3REO Transceiver Initialization...");
+	sendToDebug_strln("[OK] USB init");
 	USBD_Restart();
-  sendToDebug_strln("[OK] USB inited");
+	sendToDebug_strln("[OK] FIFO timer TIM7 init");
   HAL_TIM_Base_Start_IT(&htim7);
-  sendToDebug_strln("[OK] FIFO timer TIM7 inited");
-  HAL_RTC_Init(&hrtc);
-  sendToDebug_strln("[OK] Real Time Clock inited");
+	sendToDebug_strln("[OK] LCD init");
+	LCD_Init();
+	if (SHOW_LOGO)
+		LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo);
+	sendToDebug_strln("[OK] Real Time Clock init");
+	HAL_RTC_Init(&hrtc);
+	sendToDebug_strln("[OK] Profiler init");
   InitProfiler();
-  PERIPH_InitFrontPanel();
+  sendToDebug_strln("[OK] Frontpanel init");
+	PERIPH_InitFrontPanel();
+	sendToDebug_strln("[OK] Settings loading");
   if (PERIPH_FrontPanel.key_menu) //hard reset
     LoadSettings(true);
   else
     LoadSettings(false);
+	sendToDebug_strln("[OK] Calibration loading");
 	LoadCalibration();
-	sendToDebug_strln("[OK] Settings loaded");
+	sendToDebug_strln("[OK] STM32-ADC Calibration");
 	HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
 	HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
-	sendToDebug_strln("[OK] STM32-ADC Calibrated");
+	sendToDebug_strln("[OK] RF-Unit init");
   PERIPH_RF_UNIT_UpdateState(false);
-  sendToDebug_strln("[OK] RF-Unit updated");
-  LCD_Init();
-	if (SHOW_LOGO)
-		LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo);
-  LCD_busy = true;
+  sendToDebug_strln("[OK] FFT/Waterfall & TIM4 init");
   FFT_Init();
   HAL_TIM_Base_Start_IT(&htim4);
-  sendToDebug_strln("[OK] FFT timer TIM4 inited");
+  sendToDebug_strln("[OK] AudioCodec init");
   WM8731_Init();
-  TRX_Init();
-  FPGA_Init();
+  sendToDebug_strln("[OK] TRX init");
+	TRX_Init();
+  sendToDebug_strln("[OK] FPGA init");
+	FPGA_Init();
+	sendToDebug_strln("[OK] Audioprocessor & TIM5 init");
   initAudioProcessor();
   HAL_TIM_Base_Start_IT(&htim5);
-  sendToDebug_strln("[OK] Audioprocessor timer TIM5 inited");
   if (SHOW_LOGO)
     HAL_Delay(1000); //logo wait
   LCD_busy = false;
@@ -242,10 +240,10 @@ int main(void)
   __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE();
 	CPULOAD_Init();
   TRX_Inited = true;
+	sendToDebug_strln("[OK] WIFI timer TIM3 init");
 	HAL_TIM_Base_Start_IT(&htim3);
-  sendToDebug_strln("[OK] WIFI timer TIM3 inited");
+  sendToDebug_strln("[OK] PERIPHERAL timer TIM15 init");
 	HAL_TIM_Base_Start_IT(&htim15);
-  sendToDebug_strln("[OK] PERIPHERAL timer TIM15 inited");
 	sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
   /* USER CODE END 2 */
 
@@ -1301,13 +1299,16 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, W26Q16_CS_Pin|SD_CS_Pin|RFUNIT_OE_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, PWR_HOLD_Pin|WM8731_SCK_Pin|WM8731_SDA_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(AD1_CS_GPIO_Port, AD1_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(AD2_CS_GPIO_Port, AD2_CS_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, WM8731_SCK_Pin|WM8731_SDA_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, RFUNIT_RCLK_Pin|RFUNIT_CLK_Pin|RFUNIT_DATA_Pin, GPIO_PIN_RESET);

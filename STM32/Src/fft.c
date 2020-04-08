@@ -204,7 +204,6 @@ void FFT_Init(void)
 	}
 	//
 	memset(&wtf_buffer, 0x00, sizeof wtf_buffer);
-	sendToDebug_strln("[OK] FFT/Waterfall Inited");
 }
 
 void FFT_doFFT(void)

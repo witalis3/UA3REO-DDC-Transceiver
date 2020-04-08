@@ -64,7 +64,6 @@ static void ModulateFM(void);
 void initAudioProcessor(void)
 {
 	InitAudioFilters();
-	sendToDebug_strln("[OK] Audioprocessor inited");
 }
 
 void processRxAudio(void)

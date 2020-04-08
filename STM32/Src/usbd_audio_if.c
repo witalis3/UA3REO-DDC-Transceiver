@@ -14,6 +14,7 @@ uint8_t IRAM2 USB_AUDIO_tx_buffer[USB_AUDIO_TX_BUFFER_SIZE] = {0};
 
 volatile bool USB_AUDIO_current_rx_buffer = false; // a-false b-true
 volatile bool USB_AUDIO_need_rx_buffer = false;    // a-false b-true
+static bool USB_AUDIO_Inited = false;
 
 USBD_AUDIO_ItfTypeDef USBD_AUDIO_fops_FS =
     {
@@ -37,11 +38,14 @@ static int8_t AUDIO_Init_FS(void)
   haudio->TxBufferIndex = 0;
   USBD_AUDIO_StartTransmit(&hUsbDeviceFS);
   USBD_AUDIO_StartReceive(&hUsbDeviceFS);
+	USB_AUDIO_Inited = true;
   return (USBD_OK);
 }
 
 uint32_t USB_AUDIO_GetTXBufferIndex_FS(void)
 {
+	if(!USB_AUDIO_Inited)
+		return 0;
   USBD_AUDIO_HandleTypeDef *haudio = (USBD_AUDIO_HandleTypeDef *)hUsbDeviceFS.pClassDataAUDIO;
   return haudio->TxBufferIndex;
 }

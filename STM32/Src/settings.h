@@ -59,6 +59,7 @@
 
 #define MAX_WIFIPASS_LENGTH 32
 
+#define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
 #define W25Q16_COMMAND_Erase_Chip 0xC7
 #define W25Q16_COMMAND_Sector_Erase 0x20
@@ -67,8 +68,6 @@
 #define W25Q16_COMMAND_Power_Down 0xB9
 #define W25Q16_COMMAND_Power_Up 0xAB
 #define W25Q16_SECTOR_SIZE 4096
-#define W25Q16_MARGIN_LEFT_SETTINGS (W25Q16_SECTOR_SIZE*0)
-#define W25Q16_MARGIN_LEFT_CALIBRATION (W25Q16_SECTOR_SIZE*8)
 
 typedef struct
 {

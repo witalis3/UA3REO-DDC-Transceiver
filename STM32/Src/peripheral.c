@@ -326,7 +326,6 @@ void PERIPH_InitFrontPanel(void)
 		LCD_showError("MCP3008 - 1 init error", true);
 	}
 	PERIPH_ProcessFrontPanel();
-	sendToDebug_strln("[OK] Frontpanel inited");
 }
 
 void PERIPH_ProcessFrontPanel(void)
@@ -979,18 +978,28 @@ static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT,
 bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs)
 {
 	if (PERIPH_SPI_busy)
+	{
+		sendToDebug_strln("SPI Busy");
 		return false;
+	}
+	const int32_t timeout = HAL_MAX_DELAY;
 	PERIPH_SPI_busy = true;
 	HAL_IWDG_Refresh(&hiwdg1);
 	memset(in_data, 0x00, count);
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 	if(in_data==NULL)
-		res = HAL_SPI_Transmit(&hspi2, out_data, count, 0x100);
+	{
+		res = HAL_SPI_Transmit(&hspi2, out_data, count, timeout);
+	}
 	else if(out_data==NULL)
-		res = HAL_SPI_Receive(&hspi2, in_data, count, 0x100);
+	{
+		res = HAL_SPI_Receive(&hspi2, in_data, count, timeout);
+	}
 	else
-		res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, 0x100);
+	{
+		res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, timeout);
+	}
 	if(!hold_cs)
 		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
 	PERIPH_SPI_busy = false;

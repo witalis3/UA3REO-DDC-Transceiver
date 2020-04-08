@@ -123,20 +123,16 @@ void WM8731_TXRX_mode(void) //loopback
 
 void WM8731_Init(void)
 {
-	bool err = false;
 	//FPGA_stop_audio_clock();
 	if (WM8731_SendI2CCommand(B8(00011110), B8(00000000)) != 0) //R15 Reset Chip
 	{
 		sendToDebug_strln("[ERR] Audio codec not found");
 		LCD_showError("Audio codec init error", true);
-		err = true;
 	}
 	WM8731_SendI2CCommand(B8(00001110), B8(00001110)); //R7 Digital Audio Interface Format, Codec Slave, 32bits, I2S Format, MSB-First left-1 justified
 	WM8731_SendI2CCommand(B8(00010000), B8(00000000)); //R8 Sampling Control normal mode, 256fs, SR=0 (MCLK@12.288Mhz, fs=48kHz))
 	WM8731_SendI2CCommand(B8(00010010), B8(00000001)); //R9 reactivate digital audio interface
 	WM8731_RX_mode();
-	if (!err)
-		sendToDebug_strln("[OK] Audio codec inited");
 }
 
 static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)

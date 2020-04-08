@@ -55,7 +55,6 @@ void FPGA_Init(void)
 
 static void FPGA_test_bus(void) //проверка шины
 {
-	bool err = false;
 	for (uint_fast8_t b = 0; b <= 8; b++)
 	{
 		//STAGE 1
@@ -81,13 +80,10 @@ static void FPGA_test_bus(void) //проверка шины
 			sendToDebug_strln(buff);
 			sprintf(buff, "FPGA BUS Pin%d error", b);
 			LCD_showError(buff, true);
-			err = true;
 		}
 		//clock
 		FPGA_clockFall();
 	}
-	if (!err)
-		sendToDebug_strln("[OK] FPGA inited");
 }
 
 void FPGA_fpgadata_stuffclock(void)

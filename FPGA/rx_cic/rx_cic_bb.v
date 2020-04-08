@@ -9,8 +9,7 @@ module rx_cic (
 	out_valid,
 	out_ready,
 	clk,
-	reset_n,
-	clken);	
+	reset_n);	
 
 	input	[1:0]	in_error;
 	input		in_valid;
@@ -22,5 +21,4 @@ module rx_cic (
 	input		out_ready;
 	input		clk;
 	input		reset_n;
-	input		clken;
 endmodule
