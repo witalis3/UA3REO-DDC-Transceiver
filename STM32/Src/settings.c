@@ -69,7 +69,12 @@ void LoadSettings(bool clear)
 	
 	//Проверка, данные в backup sram корректные, иначе используем второй банк
 	if (TRX.ENDBit != 100)
-		sendToDebug_strln("[ERR] BACKUP SRAM data error, loading default...");
+	{
+		sendToDebug_strln("[ERR] BACKUP SRAM bank 1 incorrect, loading from bank 2");
+		memcpy(&TRX, (uint32_t*)BACKUP_SRAM_ADDR + sizeof(TRX), sizeof(TRX));
+		if (TRX.ENDBit != 100)
+			sendToDebug_strln("[ERR] BACKUP SRAM bank 2 incorrect");
+	}
 	else
 		sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded");
 
@@ -284,6 +289,7 @@ void SaveSettings(void)
 {
 	SCB_CleanDCache();
 	memcpy((uint32_t*)BACKUP_SRAM_ADDR, &TRX, sizeof(TRX));
+	memcpy((uint32_t*)BACKUP_SRAM_ADDR+sizeof(TRX), &TRX, sizeof(TRX));
 	SCB_CleanDCache();
 	NeedSaveSettings = false;
 	//sendToDebug_strln("[OK] Settings Saved");

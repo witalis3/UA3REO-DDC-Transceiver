@@ -4,7 +4,7 @@
 #include "lcd_driver.h"
 
 #define DEBUG_APP_RX_DATA_SIZE 8
-#define DEBUG_APP_TX_DATA_SIZE 1
+#define DEBUG_APP_TX_DATA_SIZE 64
 #define DEBUG_TX_FIFO_BUFFER_SIZE 2048
 
 static uint8_t DEBUG_UserRxBufferFS[DEBUG_APP_RX_DATA_SIZE];

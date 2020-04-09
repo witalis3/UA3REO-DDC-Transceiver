@@ -522,9 +522,9 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(dbg_FPGA_samples, false); //~48000
       sendToDebug_str("Audio DMA samples: ");
       sendToDebug_uint32(dbg_WM8731_DMA_samples, false); //~48000
-      sendToDebug_str("Audioproc cycles A: ");
-      sendToDebug_uint32(dbg_AUDIOPROC_TXA_samples, false); //~120
-      sendToDebug_str("Audioproc cycles B: ");
+      sendToDebug_str("Audioproc cycles A/B: ");
+      sendToDebug_uint32(dbg_AUDIOPROC_TXA_samples, true); //~120
+      sendToDebug_str(" / ");
       sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples, false); //~120
 			sendToDebug_str("CPU Load: ");
       sendToDebug_uint32(cpu_load, false);
@@ -536,17 +536,19 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(dbg_tim6_delay, false);
       sendToDebug_str("TX Autogain: ");
       sendToDebug_float32(dbg_ALC_need_gain, false);
-      sendToDebug_str("First byte of RX-FPGA I: ");
-      sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp, false); //first byte of I
-      sendToDebug_str("First byte of RX-FPGA Q: ");
+      sendToDebug_str("First byte of RX-FPGA I/Q: ");
+      sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp, true); //first byte of I
+      sendToDebug_str(" / ");
       sendToDebug_float32(dbg_FPGA_Audio_Buffer_Q_tmp, false); //first byte of Q
-      sendToDebug_str("USB Audio RX samples: ");
-      sendToDebug_uint32(dbg_RX_USB_AUDIO_SAMPLES, false); //~48000
-      sendToDebug_str("USB Audio TX samples: ");
+      sendToDebug_str("IQ Phase error: ");
+      sendToDebug_float32(TRX_IQ_phase_error, false); //first byte of Q
+			sendToDebug_str("USB Audio RX/TX samples: ");
+      sendToDebug_uint32(dbg_RX_USB_AUDIO_SAMPLES, true); //~48000
+      sendToDebug_str(" / ");
       sendToDebug_uint32(dbg_TX_USB_AUDIO_SAMPLES, false); //~48000
-      sendToDebug_str("ADC MIN Amplitude: ");
-      sendToDebug_int16(TRX_ADC_MINAMPLITUDE, false);
-      sendToDebug_str("ADC MAX Amplitude: ");
+      sendToDebug_str("ADC MIN/MAX Amplitude: ");
+      sendToDebug_int16(TRX_ADC_MINAMPLITUDE, true);
+      sendToDebug_str(" / ");
       sendToDebug_int16(TRX_ADC_MAXAMPLITUDE, false);
       sendToDebug_str("WIFI State: ");
       sendToDebug_int16(WIFI_State, false);
