@@ -40,7 +40,7 @@ volatile float32_t Processor_TX_MAX_amplitude_OUT = 0.0f; //средняя ам�
 volatile float32_t Processor_RX_Power_value = 0.0f;		  //максимальное значение силы сигнала
 volatile float32_t ALC_need_gain = 1.0f;
 volatile float32_t Processor_selected_RFpower_amplitude = 0.0f;
-
+	
 static float32_t ampl_val_i = 0.0f;
 static float32_t ampl_val_q = 0.0f;
 static float32_t ALC_need_gain_target = 1.0f;
@@ -102,6 +102,24 @@ void processRxAudio(void)
 		dc_filter(FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, DC_FILTER_RX2_Q);
 	}
 
+	//IQ Phase corrector https://github.com/df8oe/UHSDR/wiki/IQ---correction-and-mirror-frequencies
+	float32_t teta1_new = 0;
+	float32_t teta3_new = 0;
+	static float32_t teta1 = 0;
+	static float32_t teta3 = 0;
+	for(uint16_t i=0 ; i < FPGA_AUDIO_BUFFER_HALF_SIZE ; i++)
+	{
+		
+		teta1_new += FPGA_Audio_Buffer_RX1_Q_tmp[i] * (FPGA_Audio_Buffer_RX1_I_tmp[i] < 0.0f ? -1.0f : 1.0f);
+		teta3_new += FPGA_Audio_Buffer_RX1_Q_tmp[i] * (FPGA_Audio_Buffer_RX1_Q_tmp[i] < 0.0f ? -1.0f : 1.0f);
+	}
+	teta1_new = teta1_new / (float32_t)FPGA_AUDIO_BUFFER_HALF_SIZE;
+	teta3_new = teta3_new / (float32_t)FPGA_AUDIO_BUFFER_HALF_SIZE;
+	teta1 = 0.003f * teta1_new + 0.997f * teta1;
+	teta3 = 0.003f * teta3_new + 0.997f * teta3;
+	if(teta3>0.0f)
+		TRX_IQ_phase_error = asinf(teta1 / teta3);
+	
 	//Применяем усиление ПЧ IF Gain
 	if(current_vfo->Mode != TRX_MODE_IQ)
 	{

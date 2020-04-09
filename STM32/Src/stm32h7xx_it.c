@@ -556,6 +556,11 @@ void TIM6_DAC_IRQHandler(void)
 		
 		if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET)) //Save Settings to Backup Memory
 			SaveSettings();
+		if(TRX_IQ_phase_error > 0.1f) //Detect FPGA IQ phase error
+		{
+			sendToDebug_strln("[ERR] IQ phase error");
+			FPGA_NeedRestart = true;
+		}
 		
     tim6_delay = HAL_GetTick();
     FPGA_samples = 0;

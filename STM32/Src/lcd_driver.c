@@ -287,6 +287,10 @@ void LCDDriver_Init(void)
 #endif
 
 #ifdef ILI9481
+
+	LCDDriver_SendCommand(LCD_COMMAND_SOFT_RESET); //0x01
+	HAL_Delay(20);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_EXIT_SLEEP_MODE); //0x11
 	HAL_Delay(20);
 

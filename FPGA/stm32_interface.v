@@ -20,7 +20,7 @@ rx1,
 tx,
 TX_I,
 TX_Q,
-audio_clk_en,
+reset_n,
 stage_debug,
 FLASH_data_out,
 FLASH_enable,
@@ -59,7 +59,7 @@ output reg preamp_enable=0;
 output reg rx1=1;
 output reg rx2=0;
 output reg tx=0;
-output reg audio_clk_en=1;
+output reg reset_n=1;
 output reg signed [31:0] TX_I=0;
 output reg signed [31:0] TX_Q=0;
 output reg [15:0] stage_debug=0;
@@ -146,14 +146,14 @@ begin
 			DATA_BUS_OE=1;
 			k=400;
 		end
-		else if(DATA_BUS[7:0]=='d5) //AUDIO PLL ON
+		else if(DATA_BUS[7:0]=='d5) //RESET ON
 		begin
-			audio_clk_en=1;
+			reset_n=0;
 			k=999;
 		end
-		else if(DATA_BUS[7:0]=='d6) //AUDIO PLL OFF
+		else if(DATA_BUS[7:0]=='d6) //RESET OFF
 		begin
-			audio_clk_en=0;
+			reset_n=1;
 			k=999;
 		end
 		else if(DATA_BUS[7:0]=='d7) //FPGA FLASH READ

@@ -185,8 +185,6 @@ int main(void)
   MX_ADC3_Init();
   MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
-	HAL_Delay(1000);
-  LCD_busy = true;
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("UA3REO Transceiver Initialization...");
 	sendToDebug_strln("[OK] USB init");
@@ -194,6 +192,7 @@ int main(void)
 	sendToDebug_strln("[OK] FIFO timer TIM7 init");
   HAL_TIM_Base_Start_IT(&htim7);
 	sendToDebug_strln("[OK] LCD init");
+	LCD_busy = true;
 	LCD_Init();
 	if (SHOW_LOGO)
 		LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo);

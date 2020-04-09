@@ -12,6 +12,7 @@
 volatile uint32_t FPGA_samples = 0;
 volatile bool FPGA_NeedSendParams = false;
 volatile bool FPGA_NeedGetParams = false;
+volatile bool FPGA_NeedRestart = false;
 volatile bool FPGA_Buffer_underrun = false;
 
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct;
@@ -50,10 +51,24 @@ void FPGA_Init(void)
 	HAL_GPIO_Init(GPIOA, &FPGA_GPIO_InitStruct);
 
 	//while(true){test_counter++; FPGA_test_bus();}
-	//FPGA_start_audio_clock();
-
 	//FPGA_read_flash();
 }
+
+void FPGA_restart(void) //перезапуск модулей FPGA
+{
+	FPGA_writePacket(5); //RESET ON
+	FPGA_syncRise();
+	FPGA_clockRise();
+	FPGA_syncFall();
+	FPGA_clockFall();
+	//HAL_Delay(1);
+	FPGA_writePacket(6); //RESET OFF
+	FPGA_syncRise();
+	FPGA_clockRise();
+	FPGA_syncFall();
+	FPGA_clockFall();
+}
+
 /*
 static void FPGA_test_bus(void) //проверка шины
 {
@@ -117,6 +132,11 @@ void FPGA_fpgadata_stuffclock(void)
 		{
 			FPGA_fpgadata_sendparam();
 			FPGA_NeedSendParams = false;
+		}
+		else if (FPGA_NeedRestart)
+		{
+			FPGA_restart();
+			FPGA_NeedRestart = false;
 		}
 		else if (FPGA_NeedGetParams)
 		{

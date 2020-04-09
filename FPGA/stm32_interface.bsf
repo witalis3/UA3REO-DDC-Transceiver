@@ -159,8 +159,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 144)
 		(output)
-		(text "audio_clk_en" (rect 0 0 51 12)(font "Arial" ))
-		(text "audio_clk_en" (rect 216 139 267 151)(font "Arial" ))
+		(text "reset_n" (rect 0 0 30 12)(font "Arial" ))
+		(text "reset_n" (rect 237 139 267 151)(font "Arial" ))
 		(line (pt 288 144)(pt 272 144)(line_width 1))
 	)
 	(port

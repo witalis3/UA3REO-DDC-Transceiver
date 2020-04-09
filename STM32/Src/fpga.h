@@ -12,11 +12,13 @@
 extern void FPGA_Init(void);
 extern void FPGA_fpgadata_iqclock(void);
 extern void FPGA_fpgadata_stuffclock(void);
+extern void FPGA_restart(void);
 
 volatile extern uint32_t FPGA_samples;
 volatile extern bool FPGA_Buffer_underrun;
 volatile extern bool FPGA_NeedSendParams;
 volatile extern bool FPGA_NeedGetParams;
+volatile extern bool FPGA_NeedRestart;
 
 extern volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_AUDIO_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_Buffer_RX1_I[FPGA_AUDIO_BUFFER_SIZE];
