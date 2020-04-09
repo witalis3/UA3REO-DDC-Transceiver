@@ -29,13 +29,15 @@ static uint_fast8_t FPGA_readPacket(void);
 static void FPGA_writePacket(uint_fast8_t packet);
 static void FPGA_clockFall(void);
 static void FPGA_clockRise(void);
+static void FPGA_syncRise(void);
+static void FPGA_syncFall(void);
 static void FPGA_fpgadata_sendiq(void);
 static void FPGA_fpgadata_getiq(void);
 static void FPGA_fpgadata_getparam(void);
 static void FPGA_fpgadata_sendparam(void);
 static void FPGA_setBusInput(void);
 static void FPGA_setBusOutput(void);
-static void FPGA_test_bus(void);
+//static void FPGA_test_bus(void);
 //static void FPGA_start_command(uint_fast8_t command);
 //static void FPGA_read_flash(void);
 
@@ -44,28 +46,29 @@ void FPGA_Init(void)
 	FPGA_GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
 	FPGA_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	FPGA_GPIO_InitStruct.Pull = GPIO_PULLUP;
-	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
+	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(GPIOA, &FPGA_GPIO_InitStruct);
 
-	FPGA_test_bus();
+	//while(true){test_counter++; FPGA_test_bus();}
 	//FPGA_start_audio_clock();
 
 	//FPGA_read_flash();
 }
-
+/*
 static void FPGA_test_bus(void) //проверка шины
 {
-	for (uint_fast8_t b = 0; b <= 8; b++)
+	for (uint8_t b = 0; b <= 8; b++)
 	{
 		//STAGE 1
 		//out
 		FPGA_writePacket(0); //PIN test command
 		//clock
-		GPIOC->BSRR = FPGA_SYNC_Pin;
+		FPGA_syncRise();
 		FPGA_clockRise();
 		//in
 		//clock
-		GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
+		FPGA_syncFall();
+		FPGA_clockFall();
 
 		//STAGE 2
 		//out
@@ -78,6 +81,7 @@ static void FPGA_test_bus(void) //проверка шины
 			char buff[32] = "";
 			sprintf(buff, "[ERR] FPGA BUS Pin%d error", b);
 			sendToDebug_strln(buff);
+			sendToDebug_uint32(test_counter, false);
 			sprintf(buff, "FPGA BUS Pin%d error", b);
 			LCD_showError(buff, true);
 		}
@@ -85,7 +89,7 @@ static void FPGA_test_bus(void) //проверка шины
 		FPGA_clockFall();
 	}
 }
-
+*/
 void FPGA_fpgadata_stuffclock(void)
 {
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
@@ -102,11 +106,12 @@ void FPGA_fpgadata_stuffclock(void)
 	{
 		FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 		//clock
-		GPIOC->BSRR = FPGA_SYNC_Pin;
+		FPGA_syncRise();
 		FPGA_clockRise();
 		//in
 		//clock
-		GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
+		FPGA_syncFall();
+		FPGA_clockFall();
 
 		if (FPGA_NeedSendParams)
 		{
@@ -136,11 +141,12 @@ void FPGA_fpgadata_iqclock(void)
 
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	//clock
-	GPIOC->BSRR = FPGA_SYNC_Pin;
+	FPGA_syncRise();
 	FPGA_clockRise();
 	//in
 	//clock
-	GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
+	FPGA_syncFall();
+	FPGA_clockFall();
 
 	if (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)
 		FPGA_fpgadata_sendiq();
@@ -617,6 +623,16 @@ static inline void FPGA_clockRise(void)
 static inline void FPGA_clockFall(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U);
+}
+
+static inline void FPGA_syncRise(void)
+{
+	FPGA_CLK_GPIO_Port->BSRR = FPGA_SYNC_Pin;
+}
+
+static inline void FPGA_syncFall(void)
+{
+	FPGA_CLK_GPIO_Port->BSRR = ((uint32_t)FPGA_SYNC_Pin << 16U);
 }
 
 static inline uint_fast8_t FPGA_readPacket(void)

@@ -282,6 +282,7 @@ VFO *SecondaryVFO(void)
 
 void SaveSettings(void)
 {
+	SCB_CleanDCache();
 	memcpy((uint32_t*)BACKUP_SRAM_ADDR, &TRX, sizeof(TRX));
 	SCB_CleanDCache();
 	NeedSaveSettings = false;
@@ -300,6 +301,7 @@ void SaveCalibration(void)
 	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(sizeof(CALIBRATE), 0, 0, true, false)){ tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Erase EEPROM calibrate multiple errors");
 	tryes=0;	
+	SCB_CleanDCache();
 	while(tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&CALIBRATE, sizeof(CALIBRATE), 0, 0, true, false)) { tryes++; }
 	if(tryes >= EEPROM_REPEAT_TRYES) sendToDebug_strln("[ERR] Write EEPROM calibrate multiple errors");
 	
