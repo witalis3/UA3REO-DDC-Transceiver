@@ -38,7 +38,6 @@ static void FPGA_fpgadata_getparam(void);
 static void FPGA_fpgadata_sendparam(void);
 static void FPGA_setBusInput(void);
 static void FPGA_setBusOutput(void);
-//static void FPGA_test_bus(void);
 //static void FPGA_start_command(uint_fast8_t command);
 //static void FPGA_read_flash(void);
 
@@ -50,7 +49,6 @@ void FPGA_Init(void)
 	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(GPIOA, &FPGA_GPIO_InitStruct);
 
-	//while(true){test_counter++; FPGA_test_bus();}
 	//FPGA_read_flash();
 }
 
@@ -61,7 +59,7 @@ void FPGA_restart(void) //перезапуск модулей FPGA
 	FPGA_clockRise();
 	FPGA_syncFall();
 	FPGA_clockFall();
-	//HAL_Delay(1);
+	HAL_Delay(100);
 	FPGA_writePacket(6); //RESET OFF
 	FPGA_syncRise();
 	FPGA_clockRise();
@@ -69,42 +67,6 @@ void FPGA_restart(void) //перезапуск модулей FPGA
 	FPGA_clockFall();
 }
 
-/*
-static void FPGA_test_bus(void) //проверка шины
-{
-	for (uint8_t b = 0; b <= 8; b++)
-	{
-		//STAGE 1
-		//out
-		FPGA_writePacket(0); //PIN test command
-		//clock
-		FPGA_syncRise();
-		FPGA_clockRise();
-		//in
-		//clock
-		FPGA_syncFall();
-		FPGA_clockFall();
-
-		//STAGE 2
-		//out
-		FPGA_writePacket(b);
-		//clock
-		FPGA_clockRise();
-		//in
-		if (FPGA_readPacket() != b)
-		{
-			char buff[32] = "";
-			sprintf(buff, "[ERR] FPGA BUS Pin%d error", b);
-			sendToDebug_strln(buff);
-			sendToDebug_uint32(test_counter, false);
-			sprintf(buff, "FPGA BUS Pin%d error", b);
-			LCD_showError(buff, true);
-		}
-		//clock
-		FPGA_clockFall();
-	}
-}
-*/
 void FPGA_fpgadata_stuffclock(void)
 {
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;

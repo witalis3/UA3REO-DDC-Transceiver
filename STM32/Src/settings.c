@@ -38,6 +38,8 @@ static bool EEPROM_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_le
 static bool EEPROM_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verif, bool force);
 static void EEPROM_PowerDown(void);
 static void EEPROM_PowerUp(void);
+static void BKPSRAM_Enable(void);
+static void BKPSRAM_Disable(void);
 
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"LSB",
@@ -56,15 +58,7 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 
 void LoadSettings(bool clear)
 {
-	//__PWR_CLK_ENABLE();
-	//HAL_PWR_EnableBkUpAccess();
-	//HAL_PWREx_EnableBkUpReg(); 
-	//__HAL_RCC_RTC_ENABLE();
-	PWR->CR1 |= PWR_CR1_DBP;
-	while(((PWR->CR1 & PWR_CR1_DBP) == 0));
-	__HAL_RCC_BKPRAM_CLK_ENABLE();
-	SCB->CACR |= 1<<2;
-	
+	BKPSRAM_Enable();
 	memcpy(&TRX, (uint32_t*)BACKUP_SRAM_ADDR, sizeof(TRX));
 	
 	//Проверка, данные в backup sram корректные, иначе используем второй банк
@@ -77,7 +71,8 @@ void LoadSettings(bool clear)
 	}
 	else
 		sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded");
-
+	BKPSRAM_Disable();
+	
 	if (TRX.flash_id != TRX_VERSION || clear || TRX.ENDBit != 100) //code to trace new clean flash
 	{
 		sendToDebug_str("[ERR] Flash ID: ");
@@ -287,10 +282,11 @@ VFO *SecondaryVFO(void)
 
 void SaveSettings(void)
 {
-	SCB_CleanDCache();
+	BKPSRAM_Enable();
 	memcpy((uint32_t*)BACKUP_SRAM_ADDR, &TRX, sizeof(TRX));
 	memcpy((uint32_t*)BACKUP_SRAM_ADDR+sizeof(TRX), &TRX, sizeof(TRX));
-	SCB_CleanDCache();
+	SCB_CleanDCache_by_Addr((uint32_t *)BACKUP_SRAM_ADDR, 1024*4);
+	BKPSRAM_Disable();
 	NeedSaveSettings = false;
 	//sendToDebug_strln("[OK] Settings Saved");
 }
@@ -487,4 +483,23 @@ static void EEPROM_PowerUp(void)
 		return;
 	PERIPH_SPI_Transmit(&Power_Up, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Power_Up Command
 	HAL_Delay(EEPROM_CO_DELAY);
+}
+
+static void BKPSRAM_Enable(void)
+{
+	__HAL_RCC_BKPRAM_CLK_ENABLE();
+	HAL_PWREx_EnableBkUpReg(); 
+	HAL_PWR_EnableBkUpAccess();
+	//PWR->CR1 |= PWR_CR1_DBP;
+	//while(((PWR->CR1 & PWR_CR1_DBP) == 0));
+	//SCB->CACR |= 1<<2;
+}
+
+static void BKPSRAM_Disable(void)
+{
+	HAL_PWR_DisableBkUpAccess();
+	//HAL_PWREx_DisableBkUpReg(); 
+	//PWR->CR1 &= ~PWR_CR1_DBP;
+	//while(((PWR->CR1 & PWR_CR1_DBP) == 1));
+	//__HAL_RCC_BKPRAM_CLK_DISABLE();
 }

@@ -8,6 +8,7 @@ module rx_cic (
 	out_error,
 	out_valid,
 	out_ready,
+	clken,
 	clk,
 	reset_n);	
 
@@ -19,6 +20,7 @@ module rx_cic (
 	output	[1:0]	out_error;
 	output		out_valid;
 	input		out_ready;
+	input		clken;
 	input		clk;
 	input		reset_n;
 endmodule

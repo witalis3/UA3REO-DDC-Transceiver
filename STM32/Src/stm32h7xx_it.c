@@ -556,14 +556,18 @@ void TIM6_DAC_IRQHandler(void)
 			//PrintProfilerResult();
     }
 		
-		if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET)) //Save Settings to Backup Memory
+		//Save Settings to Backup Memory
+		if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))
 			SaveSettings();
-		if(TRX_IQ_phase_error > 0.1f) //Detect FPGA IQ phase error
+		
+		//Detect FPGA IQ phase error
+		if(TRX_IQ_phase_error > 0.1f && !TRX_on_TX() && TRX_RX_dBm > -90.0f)
 		{
-			sendToDebug_strln("[ERR] IQ phase error");
+			sendToDebug_strln("[ERR] IQ phase error, restart");
 			FPGA_NeedRestart = true;
 		}
 		
+		//Reset counters
     tim6_delay = HAL_GetTick();
     FPGA_samples = 0;
     AUDIOPROC_samples = 0;
