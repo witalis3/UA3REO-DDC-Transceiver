@@ -5,12 +5,12 @@
 #include "screen_layout.h"
 
 //Public variables
-bool NeedFFTInputBuffer = true; //флаг необходимости заполнения буфера с FPGA
-bool FFT_need_fft = true;		 //необходимо подготовить данные для отображения на экран
-bool FFT_buffer_ready = false;   //буффер наполнен, можно обрабатывать
-volatile uint32_t FFT_buff_index = 0;							 //текущий индекс буфера при его наполнении с FPGA
-float32_t FFTInput_I[FFT_SIZE] = {0};							 //входящий буфер FFT I
-float32_t FFTInput_Q[FFT_SIZE] = {0};							 //входящий буфер FFT Q
+bool NeedFFTInputBuffer = true;		  //флаг необходимости заполнения буфера с FPGA
+bool FFT_need_fft = true;			  //необходимо подготовить данные для отображения на экран
+bool FFT_buffer_ready = false;		  //буффер наполнен, можно обрабатывать
+volatile uint32_t FFT_buff_index = 0; //текущий индекс буфера при его наполнении с FPGA
+float32_t FFTInput_I[FFT_SIZE] = {0}; //входящий буфер FFT I
+float32_t FFTInput_Q[FFT_SIZE] = {0}; //входящий буфер FFT Q
 
 //Private variables
 #if FFT_SIZE == 1024
@@ -23,19 +23,19 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};		 //совмещённый буфер FFT I и Q
-static float32_t FFTInput_sorted[FFT_SIZE] = {0}; //буфер для отсортированных значений (при поиске медианы)
+static float32_t FFTInput_sorted[FFT_SIZE] = {0};				 //буфер для отсортированных значений (при поиске медианы)
 static float32_t FFTInput_ZOOMFFT[FFT_DOUBLE_SIZE_BUFFER] = {0}; //совмещённый буфер FFT I и Q для обработки ZoomFFT
 static float32_t FFTOutput_mean[LAY_FFT_PRINT_SIZE] = {0};		 //усредненный буфер FFT (для вывода)
-static uint_fast16_t maxValueErrors = 0;								 //количество превышений сигнала в FFT
+static uint_fast16_t maxValueErrors = 0;						 //количество превышений сигнала в FFT
 static float32_t maxValueFFT_rx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
 static float32_t maxValueFFT_tx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
 static uint32_t currentFFTFreq = 0;
 static uint16_t color_scale[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  //цветовой градиент по высоте FFT
 static SRAM1 uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; //буфер водопада
-static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};					  //временный буффер для перемещения водопада
-static uint16_t print_wtf_xindex = 0;							//текущая координата вывода водопада через DMA
-static uint16_t print_wtf_yindex = 0;							//текущая координата вывода водопада через DMA
-static float32_t window_multipliers[FFT_SIZE] = {0};	//коэффициенты выбранной оконной функции
+static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  //временный буффер для перемещения водопада
+static uint16_t print_wtf_xindex = 0;												  //текущая координата вывода водопада через DMA
+static uint16_t print_wtf_yindex = 0;												  //текущая координата вывода водопада через DMA
+static float32_t window_multipliers[FFT_SIZE] = {0};								  //коэффициенты выбранной оконной функции
 //Дециматор для Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
@@ -47,22 +47,14 @@ static arm_biquad_casd_df1_inst_f32 IIR_biquad_Zoom_FFT_I =
 	{
 		.numStages = 4,
 		.pCoeffs = (float32_t *)(float32_t[]){
-			1, 0, 0, 0, 0, 1, 0, 0, 0, 0
-		},
-		.pState = (float32_t *)(float32_t[]){
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		}
-	};
+			1, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+		.pState = (float32_t *)(float32_t[]){0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 static arm_biquad_casd_df1_inst_f32 IIR_biquad_Zoom_FFT_Q =
 	{
 		.numStages = 4,
 		.pCoeffs = (float32_t *)(float32_t[]){
-			1, 0, 0, 0, 0, 1, 0, 0, 0, 0
-		},
-		.pState = (float32_t *)(float32_t[]){
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		}
-	};
+			1, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+		.pState = (float32_t *)(float32_t[]){0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
 static const float32_t *mag_coeffs[17] =
 	{
@@ -73,16 +65,14 @@ static const float32_t *mag_coeffs[17] =
 			// 12kHz, sample rate 48k, 60dB stopband, elliptic
 			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
 			// Iowa Hills IIR Filter Designer
-			0.228454526413293696f, 0.077639329099949764f, 0.228454526413293696f, 0.635534925142242080f, -0.170083307068779194f, 0.436788292542003964f, 0.232307972937606161f, 0.436788292542003964f, 0.365885230717786780f, -0.471769788739400842f, 0.535974654742658707f, 0.557035600464780845f, 0.535974654742658707f, 0.125740787233286133f, -0.754725697183384336f, 0.501116342273565607f, 0.914877831284765408f, 0.501116342273565607f, 0.013862536615004284f, -0.930973052446900984f
-		},
+			0.228454526413293696f, 0.077639329099949764f, 0.228454526413293696f, 0.635534925142242080f, -0.170083307068779194f, 0.436788292542003964f, 0.232307972937606161f, 0.436788292542003964f, 0.365885230717786780f, -0.471769788739400842f, 0.535974654742658707f, 0.557035600464780845f, 0.535974654742658707f, 0.125740787233286133f, -0.754725697183384336f, 0.501116342273565607f, 0.914877831284765408f, 0.501116342273565607f, 0.013862536615004284f, -0.930973052446900984f},
 		NULL, // 3
 		(float32_t *)(const float32_t[]){
 			// 4x magnify
 			// 6kHz, sample rate 48k, 60dB stopband, elliptic
 			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
 			// Iowa Hills IIR Filter Designer
-			0.182208761527446556f, -0.222492493114674145f, 0.182208761527446556f, 1.326111070880959810f, -0.468036100821178802f, 0.337123762652097259f, -0.366352718812586853f, 0.337123762652097259f, 1.337053579516321200f, -0.644948386007929031f, 0.336163175380826074f, -0.199246162162897811f, 0.336163175380826074f, 1.354952684569386670f, -0.828032873168141115f, 0.178588201750411041f, 0.207271695028067304f, 0.178588201750411041f, 1.386486967455699220f, -0.950935065984588657f
-		},
+			0.182208761527446556f, -0.222492493114674145f, 0.182208761527446556f, 1.326111070880959810f, -0.468036100821178802f, 0.337123762652097259f, -0.366352718812586853f, 0.337123762652097259f, 1.337053579516321200f, -0.644948386007929031f, 0.336163175380826074f, -0.199246162162897811f, 0.336163175380826074f, 1.354952684569386670f, -0.828032873168141115f, 0.178588201750411041f, 0.207271695028067304f, 0.178588201750411041f, 1.386486967455699220f, -0.950935065984588657f},
 		NULL, // 5
 		NULL, // 6
 		NULL, // 7
@@ -91,8 +81,7 @@ static const float32_t *mag_coeffs[17] =
 			// 3kHz, sample rate 48k, 60dB stopband, elliptic
 			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
 			// Iowa Hills IIR Filter Designer
-			0.185643392652478922f, -0.332064345389014803f, 0.185643392652478922f, 1.654637402827731090f, -0.693859842743674182f, 0.327519300813245984f, -0.571358085216950418f, 0.327519300813245984f, 1.715375037176782860f, -0.799055553586324407f, 0.283656142708241688f, -0.441088976843048652f, 0.283656142708241688f, 1.778230635987093860f, -0.904453944560528522f, 0.079685368654848945f, -0.011231810140649204f, 0.079685368654848945f, 1.825046003243238070f, -0.973184930412286708f
-		},
+			0.185643392652478922f, -0.332064345389014803f, 0.185643392652478922f, 1.654637402827731090f, -0.693859842743674182f, 0.327519300813245984f, -0.571358085216950418f, 0.327519300813245984f, 1.715375037176782860f, -0.799055553586324407f, 0.283656142708241688f, -0.441088976843048652f, 0.283656142708241688f, 1.778230635987093860f, -0.904453944560528522f, 0.079685368654848945f, -0.011231810140649204f, 0.079685368654848945f, 1.825046003243238070f, -0.973184930412286708f},
 		NULL, // 9
 		NULL, // 10
 		NULL, // 11
@@ -105,8 +94,7 @@ static const float32_t *mag_coeffs[17] =
 			// 1k5, sample rate 48k, 60dB stopband, elliptic
 			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
 			// Iowa Hills IIR Filter Designer
-			0.194769868656866380f, -0.379098413160710079f, 0.194769868656866380f, 1.824436402073870810f, -0.834877726226893380f, 0.333973874901496770f, -0.646106479315673776f, 0.333973874901496770f, 1.871892825636887640f, -0.893734096124207178f, 0.272903880596429671f, -0.513507745397738469f, 0.272903880596429671f, 1.918161772571113750f, -0.950461788366234739f, 0.053535383722369843f, -0.069683422367188122f, 0.053535383722369843f, 1.948900719896301760f, -0.986288064973853129f
-		},
+			0.194769868656866380f, -0.379098413160710079f, 0.194769868656866380f, 1.824436402073870810f, -0.834877726226893380f, 0.333973874901496770f, -0.646106479315673776f, 0.333973874901496770f, 1.871892825636887640f, -0.893734096124207178f, 0.272903880596429671f, -0.513507745397738469f, 0.272903880596429671f, 1.918161772571113750f, -0.950461788366234739f, 0.053535383722369843f, -0.069683422367188122f, 0.053535383722369843f, 1.948900719896301760f, -0.986288064973853129f},
 };
 
 static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
@@ -117,24 +105,21 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		{
 			.numTaps = 4,
 			.pCoeffs = (float32_t *)(const float32_t[]){475.1179397144384210E-6f, 0.503905202786044337f, 0.503905202786044337f, 475.1179397144384210E-6f},
-			.pState = NULL
-		},
+			.pState = NULL},
 		{NULL}, // 3
 		// 48ksps, 6kHz lowpass
 		{
-			.numTaps = 4, 
-			.pCoeffs = (float32_t *)(const float32_t[]){0.198273254218889416f, 0.298085149879260325f, 0.298085149879260325f, 0.198273254218889416f}, 
-			.pState = NULL
-		},
+			.numTaps = 4,
+			.pCoeffs = (float32_t *)(const float32_t[]){0.198273254218889416f, 0.298085149879260325f, 0.298085149879260325f, 0.198273254218889416f},
+			.pState = NULL},
 		{NULL}, // 5
 		{NULL}, // 6
 		{NULL}, // 7
 		// 48ksps, 3kHz lowpass
 		{
-			.numTaps = 4, 
-			.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f}, 
-			.pState = NULL
-		},
+			.numTaps = 4,
+			.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
+			.pState = NULL},
 		{NULL}, // 9
 		{NULL}, // 10
 		{NULL}, // 11
@@ -144,17 +129,16 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		{NULL}, // 15
 		// 48ksps, 1.5kHz lowpass
 		{
-			.numTaps = 4, 
-			.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f}, 
-			.pState = NULL
-		},
+			.numTaps = 4,
+			.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
+			.pState = NULL},
 };
 
 //Prototypes
 static uint16_t getFFTColor(uint_fast8_t height); //получить цвет из силы сигнала
-static void fft_fill_color_scale(void); //подготовка цветовой палитры
-static uint16_t getFFTHeight(void); //получение высоты FFT
-static uint16_t getWTFHeight(void); //получение высоты водопада
+static void fft_fill_color_scale(void);			  //подготовка цветовой палитры
+static uint16_t getFFTHeight(void);				  //получение высоты FFT
+static uint16_t getWTFHeight(void);				  //получение высоты водопада
 
 //инициализация FFT
 void FFT_Init(void)
@@ -210,13 +194,13 @@ void FFT_doFFT(void)
 		return;
 	if (!FFT_buffer_ready)
 		return;
-	if (CPU_LOAD.Load>90)
+	if (CPU_LOAD.Load > 90)
 		return;
 
-	uint32_t maxIndex = 0;			 // Индекс элемента массива с максимальной амплитудой в результирующей АЧХ
-	float32_t maxValue = 0;			 // Максимальное значение амплитуды в результирующей АЧХ
-	float32_t medianValue = 0;		 // Значение медианы в результирующей АЧХ
-	float32_t diffValue = 0;		 // Разница между максимальным значением в FFT и пороге в водопаде
+	uint32_t maxIndex = 0;	   // Индекс элемента массива с максимальной амплитудой в результирующей АЧХ
+	float32_t maxValue = 0;	   // Максимальное значение амплитуды в результирующей АЧХ
+	float32_t medianValue = 0; // Значение медианы в результирующей АЧХ
+	float32_t diffValue = 0;   // Разница между максимальным значением в FFT и пороге в водопаде
 
 	//Process DC corrector filter
 	if (!TRX_on_TX())
@@ -302,7 +286,7 @@ void FFT_doFFT(void)
 
 	//Ищем медиану в АЧХ
 	arm_quick_sort_f32(FFTInput, FFTInput_sorted, FFT_SIZE, 1);
-	medianValue = FFTInput_sorted[FFT_SIZE/2];
+	medianValue = FFTInput_sorted[FFT_SIZE / 2];
 
 	//Автокалибровка уровней FFT
 	diffValue = (maxValue - maxValueFFT) / FFT_STEP_COEFF;
@@ -316,7 +300,7 @@ void FFT_doFFT(void)
 		maxValueFFT += diffValue;
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_PRECISION)
 		maxValueFFT -= FFT_STEP_PRECISION;
-	
+
 	//Автокалибровка по медиане
 	if (!TRX_on_TX())
 	{
@@ -325,7 +309,7 @@ void FFT_doFFT(void)
 		if ((medianValue * 8.0f) < maxValueFFT)
 			maxValueFFT = (medianValue * 8.0f);
 	}
-	
+
 	//минимальный порог+сохраняем значения для переключения RX/TX
 	maxValueErrors = 0;
 	if (maxValueFFT < FFT_MIN)
@@ -337,17 +321,17 @@ void FFT_doFFT(void)
 
 	//Нормируем АЧХ к единице
 	arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, LAY_FFT_PRINT_SIZE);
-	
+
 	//Усреднение значений для последующего вывода (от резких всплесков)
 	float32_t averaging = (float32_t)TRX.FFT_Averaging / (float32_t)TRX.FFT_Zoom;
-	if(averaging < 1.0f)
+	if (averaging < 1.0f)
 		averaging = 1.0f;
 	for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
 		if (FFTOutput_mean[i] < FFTInput[i])
 			FFTOutput_mean[i] += (FFTInput[i] - FFTOutput_mean[i]) / averaging;
 		else
 			FFTOutput_mean[i] -= (FFTOutput_mean[i] - FFTInput[i]) / averaging;
-	
+
 	FFT_need_fft = false;
 }
 
@@ -362,13 +346,13 @@ void FFT_printFFT(void)
 		return;
 	if (LCD_systemMenuOpened)
 		return;
-	if (CPU_LOAD.Load>90)
+	if (CPU_LOAD.Load > 90)
 		return;
 	LCD_busy = true;
 
 	uint16_t height = 0; //высота столбца в выводе FFT
 	uint16_t tmp = 0;
-	
+
 	//смещаем водопад, если нужно
 	if (((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq) != 0)
 	{
@@ -418,7 +402,7 @@ void FFT_printFFT(void)
 				LCDDriver_SendData(COLOR_BLACK);
 			else
 			{
-				if(TRX.FFT_Style == 3 || TRX.FFT_Style == 4)
+				if (TRX.FFT_Style == 3 || TRX.FFT_Style == 4)
 					LCDDriver_SendData(LAY_FFT_STYLE_3_4_COLOR);
 				else
 					LCDDriver_SendData(color_scale[fft_y]);
@@ -554,8 +538,8 @@ void FFT_moveWaterfall(int32_t _freq_diff)
 		//memcpy(wtf_line_tmp, wtf_buffer[y], sizeof(wtf_line_tmp));
 		HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[y], (uint32_t)&wtf_line_tmp, LAY_FFT_PRINT_SIZE); //копируем строку до смещения
 		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-		memset(&wtf_buffer[y][0], 0x00, (uint32_t)(margin_left * 2));																   //заполняем пространство слева
-		memset(&wtf_buffer[y][(LAY_FFT_PRINT_SIZE - margin_right)], 0x00, (uint32_t)(margin_right * 2));							   //заполняем пространство справа
+		memset(&wtf_buffer[y][0], 0x00, (uint32_t)(margin_left * 2));									 //заполняем пространство слева
+		memset(&wtf_buffer[y][(LAY_FFT_PRINT_SIZE - margin_right)], 0x00, (uint32_t)(margin_right * 2)); //заполняем пространство справа
 
 		//memcpy(&wtf_buffer[y][margin_left], &wtf_line_tmp[margin_left + freq_diff], body_width*2);
 		if (body_width > 0) //рисуем смещенный водопад
@@ -629,7 +613,7 @@ void FFT_Reset(void) //очищаем FFT
 static uint16_t getFFTHeight(void)
 {
 	uint16_t FFT_HEIGHT = LAY_FFT_HEIGHT_STYLE1;
-	if(TRX.FFT_Style==2 || TRX.FFT_Style==4)
+	if (TRX.FFT_Style == 2 || TRX.FFT_Style == 4)
 		FFT_HEIGHT = LAY_FFT_HEIGHT_STYLE2;
 	return FFT_HEIGHT;
 }
@@ -638,7 +622,7 @@ static uint16_t getFFTHeight(void)
 static uint16_t getWTFHeight(void)
 {
 	uint16_t WTF_HEIGHT = LAY_WTF_HEIGHT_STYLE1;
-	if(TRX.FFT_Style==2 || TRX.FFT_Style==4)
+	if (TRX.FFT_Style == 2 || TRX.FFT_Style == 4)
 		WTF_HEIGHT = LAY_WTF_HEIGHT_STYLE2;
 	return WTF_HEIGHT;
 }

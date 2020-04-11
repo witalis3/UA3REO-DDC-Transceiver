@@ -40,7 +40,7 @@ extern DMA_HandleTypeDef hdma_usart6_rx;
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN Macro */
-#pragma GCC diagnostic push 
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 /* USER CODE END Macro */
@@ -226,23 +226,23 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
 
   /* USER CODE BEGIN SPI3_MspInit 1 */
 
-		//Перевод SPI3 в режим Full-Duplex I2S, STM32CubeMX не умеет
-		/* SPI3_RX Init */
-		hdma_spi3_rx.Instance = DMA1_Stream0;
-		hdma_spi3_rx.Init.Request = DMA_REQUEST_SPI3_RX;
-		hdma_spi3_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
-		hdma_spi3_rx.Init.PeriphInc = DMA_PINC_DISABLE;
-		hdma_spi3_rx.Init.MemInc = DMA_MINC_ENABLE;
-		hdma_spi3_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-		hdma_spi3_rx.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-		hdma_spi3_rx.Init.Mode = DMA_CIRCULAR;
-		hdma_spi3_rx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
-		hdma_spi3_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-		if (HAL_DMA_Init(&hdma_spi3_rx) != HAL_OK)
-		{
-		Error_Handler();
-		}
-		__HAL_LINKDMA(hi2s,hdmarx,hdma_spi3_rx);
+    //Перевод SPI3 в режим Full-Duplex I2S, STM32CubeMX не умеет
+    /* SPI3_RX Init */
+    hdma_spi3_rx.Instance = DMA1_Stream0;
+    hdma_spi3_rx.Init.Request = DMA_REQUEST_SPI3_RX;
+    hdma_spi3_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_spi3_rx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_spi3_rx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_spi3_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+    hdma_spi3_rx.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+    hdma_spi3_rx.Init.Mode = DMA_CIRCULAR;
+    hdma_spi3_rx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
+    hdma_spi3_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    if (HAL_DMA_Init(&hdma_spi3_rx) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    __HAL_LINKDMA(hi2s, hdmarx, hdma_spi3_rx);
 
   /* USER CODE END SPI3_MspInit 1 */
   }
@@ -278,7 +278,7 @@ void HAL_I2S_MspDeInit(I2S_HandleTypeDef* hi2s)
     /* I2S3 DMA DeInit */
     HAL_DMA_DeInit(hi2s->hdmatx);
   /* USER CODE BEGIN SPI3_MspDeInit 1 */
-		HAL_DMA_DeInit(hi2s->hdmarx);
+    HAL_DMA_DeInit(hi2s->hdmarx);
   /* USER CODE END SPI3_MspDeInit 1 */
   }
 

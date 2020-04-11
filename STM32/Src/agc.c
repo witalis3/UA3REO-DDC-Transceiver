@@ -12,18 +12,18 @@ static float32_t AGC_RX2_need_gain_db_old = 1.0f;
 void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id)
 {
 	//определение RX1 или RX2 приёмника
-	float32_t* AGC_need_gain_db = &AGC_RX1_need_gain_db;
-	float32_t* AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
-	if(rx_id==AUDIO_RX2)
+	float32_t *AGC_need_gain_db = &AGC_RX1_need_gain_db;
+	float32_t *AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
+	if (rx_id == AUDIO_RX2)
 	{
 		AGC_need_gain_db = &AGC_RX2_need_gain_db;
 		AGC_need_gain_db_old = &AGC_RX2_need_gain_db_old;
 	}
-	
+
 	//выше скорость в настройках - выше скорость отработки AGC
 	float32_t RX_AGC_STEPSIZE_UP = 100.0f / (float32_t)TRX.RX_AGC_speed;
 	float32_t RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.RX_AGC_speed;
-	
+
 	//считаем магнитуду в dBFS
 	float32_t AGC_RX_magnitude = 0;
 	arm_power_f32(agcBuffer, blockSize, &AGC_RX_magnitude);
@@ -43,19 +43,19 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 	//перегрузка (клиппинг), резко снижаем усиление
 	if ((AGC_RX_dbFS + *AGC_need_gain_db) > AGC_CLIP_THRESHOLD)
 		*AGC_need_gain_db = AGC_OPTIMAL_THRESHOLD - AGC_RX_dbFS;
-	
+
 	//шумовой порог, ниже него - не усиливаем
-	if(AGC_RX_dbFS < AGC_RX_dbFS)
+	if (AGC_RX_dbFS < AGC_RX_dbFS)
 		*AGC_need_gain_db = 1.0f;
-	
+
 	//AGC выключен, ничего не регулируем
-	if ((rx_id==AUDIO_RX1 && !CurrentVFO()->AGC) || (rx_id==AUDIO_RX2 && !SecondaryVFO()->AGC))
+	if ((rx_id == AUDIO_RX1 && !CurrentVFO()->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO()->AGC))
 		*AGC_need_gain_db = 1.0f;
 
 	//ограничение по усилению
 	if (*AGC_need_gain_db > AGC_MAX_GAIN)
 		*AGC_need_gain_db = AGC_MAX_GAIN;
-	
+
 	//применяем усиление
 	if (*AGC_need_gain_db_old != *AGC_need_gain_db) //усиление изменилось
 	{

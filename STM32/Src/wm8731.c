@@ -6,9 +6,9 @@
 #include "usbd_audio_if.h"
 
 //Public variables
-uint32_t WM8731_DMA_samples = 0; //считаем количество семплов, переданных аудио-кодеку
-bool WM8731_DMA_state = true; //с какой частью буфера сейчас работаем, true - compleate; false - half
-bool WM8731_Buffer_underrun = false; //недостаток данных в буфере из аудио-процессора
+uint32_t WM8731_DMA_samples = 0;									//считаем количество семплов, переданных аудио-кодеку
+bool WM8731_DMA_state = true;										//с какой частью буфера сейчас работаем, true - compleate; false - half
+bool WM8731_Buffer_underrun = false;								//недостаток данных в буфере из аудио-процессора
 IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; //кольцевые буфферы аудио-кодека
 IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
 
@@ -16,13 +16,13 @@ IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
 static bool WM8731_Beeping = false; //в данный момент идёт сигнал бипера
 
 //Prototypes
-static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value); //отправить I2C команду в кодек
+static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value);																		  //отправить I2C команду в кодек
 static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize); //Full-duplex реализация запуска I2S
-static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma); //RX Буффер полностью отправлен в кодек
-static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma); //RX Буффер на половину отправлен в кодек
-static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma); //TX Буффер полностью принят из кодека
-static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma); //TX Буффер на половину принят из кодека
-static void I2S_DMAError(DMA_HandleTypeDef *hdma); //Ошибка DMA I2S
+static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma);																						  //RX Буффер полностью отправлен в кодек
+static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma);																					  //RX Буффер на половину отправлен в кодек
+static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma);																						  //TX Буффер полностью принят из кодека
+static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma);																					  //TX Буффер на половину принят из кодека
+static void I2S_DMAError(DMA_HandleTypeDef *hdma);																						  //Ошибка DMA I2S
 
 //запуск шины I2S
 void WM8731_start_i2s_and_dma(void)
@@ -143,7 +143,7 @@ void WM8731_Init(void)
 //RX Буффер полностью отправлен в кодек
 static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 {
-  if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
+	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
 		if (WM8731_Beeping)
 			return;
@@ -153,14 +153,14 @@ static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 		Processor_NeedRXBuffer = true;
 		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
 			Processor_NeedTXBuffer = true;
-		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE/2);
+		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE / 2);
 	}
 }
 
 //RX Буффер на половину отправлен в кодек
 static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 {
-  if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
+	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
 		if (WM8731_Beeping)
 			return;
@@ -170,120 +170,120 @@ static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 		Processor_NeedRXBuffer = true;
 		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
 			Processor_NeedTXBuffer = true;
-		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE/2);
+		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE / 2);
 	}
 }
 
 //TX Буффер полностью принят из кодека
 static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
 {
-  I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
-  HAL_I2S_RxCpltCallback(hi2s);
+	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
+	HAL_I2S_RxCpltCallback(hi2s);
 }
 
 //TX Буффер на половину принят из кодека
 static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
 {
-  I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
-  HAL_I2S_RxHalfCpltCallback(hi2s);
+	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
+	HAL_I2S_RxHalfCpltCallback(hi2s);
 }
 
 //Ошибка DMA I2S
 static void I2S_DMAError(DMA_HandleTypeDef *hdma)
 {
-  I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent; /* Derogation MISRAC2012-Rule-11.5 */
+	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent; /* Derogation MISRAC2012-Rule-11.5 */
 
-  /* Disable Rx and Tx DMA Request */
-  CLEAR_BIT(hi2s->Instance->CFG1, (SPI_CFG1_RXDMAEN | SPI_CFG1_TXDMAEN));
-  hi2s->TxXferCount = (uint16_t) 0UL;
-  hi2s->RxXferCount = (uint16_t) 0UL;
+	/* Disable Rx and Tx DMA Request */
+	CLEAR_BIT(hi2s->Instance->CFG1, (SPI_CFG1_RXDMAEN | SPI_CFG1_TXDMAEN));
+	hi2s->TxXferCount = (uint16_t)0UL;
+	hi2s->RxXferCount = (uint16_t)0UL;
 
-  hi2s->State = HAL_I2S_STATE_READY;
+	hi2s->State = HAL_I2S_STATE_READY;
 
-  /* Set the error code and execute error callback*/
-  SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
-	
-  /* Call user error callback */
-  HAL_I2S_ErrorCallback(hi2s);
+	/* Set the error code and execute error callback*/
+	SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
+
+	/* Call user error callback */
+	HAL_I2S_ErrorCallback(hi2s);
 }
 
 //Full-duplex реализация запуска I2S
 static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize)
 {
-  if ((rxData == NULL) || (txData == NULL) || (rxSize == 0UL) || (txSize == 0UL))
-  {
-    return  HAL_ERROR;
-  }
+	if ((rxData == NULL) || (txData == NULL) || (rxSize == 0UL) || (txSize == 0UL))
+	{
+		return HAL_ERROR;
+	}
 
-  /* Process Locked */
-  __HAL_LOCK(hi2s);
+	/* Process Locked */
+	__HAL_LOCK(hi2s);
 
-  if (hi2s->State != HAL_I2S_STATE_READY)
-  {
-    __HAL_UNLOCK(hi2s);
-    return HAL_BUSY;
-  }
+	if (hi2s->State != HAL_I2S_STATE_READY)
+	{
+		__HAL_UNLOCK(hi2s);
+		return HAL_BUSY;
+	}
 
-  /* Set state and reset error code */
-  hi2s->State       = HAL_I2S_STATE_BUSY;
-  hi2s->ErrorCode   = HAL_I2S_ERROR_NONE;
-  hi2s->pRxBuffPtr  = rxData;
-  hi2s->RxXferSize  = rxSize;
-  hi2s->RxXferCount = rxSize;
-	hi2s->pTxBuffPtr  = txData;
-  hi2s->TxXferSize  = txSize;
-  hi2s->TxXferCount = txSize;
+	/* Set state and reset error code */
+	hi2s->State = HAL_I2S_STATE_BUSY;
+	hi2s->ErrorCode = HAL_I2S_ERROR_NONE;
+	hi2s->pRxBuffPtr = rxData;
+	hi2s->RxXferSize = rxSize;
+	hi2s->RxXferCount = rxSize;
+	hi2s->pTxBuffPtr = txData;
+	hi2s->TxXferSize = txSize;
+	hi2s->TxXferCount = txSize;
 
-  hi2s->hdmarx->XferHalfCpltCallback = I2S_DMARxHalfCplt;
-  hi2s->hdmarx->XferCpltCallback = I2S_DMARxCplt;
+	hi2s->hdmarx->XferHalfCpltCallback = I2S_DMARxHalfCplt;
+	hi2s->hdmarx->XferCpltCallback = I2S_DMARxCplt;
 	hi2s->hdmarx->XferErrorCallback = I2S_DMAError;
 	hi2s->hdmatx->XferHalfCpltCallback = I2S_DMATxHalfCplt;
-  hi2s->hdmatx->XferCpltCallback = I2S_DMATxCplt;
-  hi2s->hdmatx->XferErrorCallback = I2S_DMAError;
+	hi2s->hdmatx->XferCpltCallback = I2S_DMATxCplt;
+	hi2s->hdmatx->XferErrorCallback = I2S_DMAError;
 
-  /* Enable the Rx DMA Stream/Channel */
-  if (HAL_OK != HAL_DMA_Start_IT(hi2s->hdmarx, (uint32_t)&hi2s->Instance->RXDR, (uint32_t)hi2s->pRxBuffPtr, hi2s->RxXferSize))
-  {
-    // Update SPI error code
-    SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
-    hi2s->State = HAL_I2S_STATE_READY;
+	/* Enable the Rx DMA Stream/Channel */
+	if (HAL_OK != HAL_DMA_Start_IT(hi2s->hdmarx, (uint32_t)&hi2s->Instance->RXDR, (uint32_t)hi2s->pRxBuffPtr, hi2s->RxXferSize))
+	{
+		// Update SPI error code
+		SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
+		hi2s->State = HAL_I2S_STATE_READY;
 
-    __HAL_UNLOCK(hi2s);
-    return HAL_ERROR;
-  }
+		__HAL_UNLOCK(hi2s);
+		return HAL_ERROR;
+	}
 	if (HAL_OK != HAL_DMA_Start_IT(hi2s->hdmatx, (uint32_t)hi2s->pTxBuffPtr, (uint32_t)&hi2s->Instance->TXDR, hi2s->TxXferSize))
-  {
-    //Update SPI error code
-    SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
-    hi2s->State = HAL_I2S_STATE_READY;
+	{
+		//Update SPI error code
+		SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
+		hi2s->State = HAL_I2S_STATE_READY;
 
-    __HAL_UNLOCK(hi2s);
-    return HAL_ERROR;
-  }
+		__HAL_UNLOCK(hi2s);
+		return HAL_ERROR;
+	}
 
-  /* Check if the I2S Rx request is already enabled */
-  if (HAL_IS_BIT_CLR(hi2s->Instance->CFG1, SPI_CFG1_RXDMAEN))
-  {
-    // Enable Rx DMA Request
-    SET_BIT(hi2s->Instance->CFG1, SPI_CFG1_RXDMAEN);
-  }
+	/* Check if the I2S Rx request is already enabled */
+	if (HAL_IS_BIT_CLR(hi2s->Instance->CFG1, SPI_CFG1_RXDMAEN))
+	{
+		// Enable Rx DMA Request
+		SET_BIT(hi2s->Instance->CFG1, SPI_CFG1_RXDMAEN);
+	}
 	/* Check if the I2S Tx request is already enabled */
-  if (HAL_IS_BIT_CLR(hi2s->Instance->CFG1, SPI_CFG1_TXDMAEN))
-  {
-    /* Enable Tx DMA Request */
-    SET_BIT(hi2s->Instance->CFG1, SPI_CFG1_TXDMAEN);
-  }
+	if (HAL_IS_BIT_CLR(hi2s->Instance->CFG1, SPI_CFG1_TXDMAEN))
+	{
+		/* Enable Tx DMA Request */
+		SET_BIT(hi2s->Instance->CFG1, SPI_CFG1_TXDMAEN);
+	}
 
-  /* Check if the I2S is already enabled */
-  if (HAL_IS_BIT_CLR(hi2s->Instance->CR1, SPI_CR1_SPE))
-  {
-    /* Enable I2S peripheral */
-    __HAL_I2S_ENABLE(hi2s);
-  }
+	/* Check if the I2S is already enabled */
+	if (HAL_IS_BIT_CLR(hi2s->Instance->CR1, SPI_CR1_SPE))
+	{
+		/* Enable I2S peripheral */
+		__HAL_I2S_ENABLE(hi2s);
+	}
 
-  /* Start the transfer */
-  SET_BIT(hi2s->Instance->CR1, SPI_CR1_CSTART);
+	/* Start the transfer */
+	SET_BIT(hi2s->Instance->CR1, SPI_CR1_CSTART);
 
-  __HAL_UNLOCK(hi2s);
-  return HAL_OK;
+	__HAL_UNLOCK(hi2s);
+	return HAL_OK;
 }

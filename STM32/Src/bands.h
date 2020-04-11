@@ -27,7 +27,7 @@ typedef struct //описание бенда
 extern const BAND_MAP BANDS[BANDS_COUNT];
 
 //Public methods
-extern uint_fast8_t getModeFromFreq(uint32_t freq); //мода из частоты
+extern uint_fast8_t getModeFromFreq(uint32_t freq);			//мода из частоты
 extern int8_t getBandFromFreq(uint32_t freq, bool nearest); //номер бенда из частоты
 
 #endif

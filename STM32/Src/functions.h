@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include "profiler.h"
 
-#pragma GCC diagnostic push 
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wimplicit-int-conversion"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #include "arm_math.h"
@@ -29,9 +29,9 @@
 
 //#define IROM1 __attribute__((section(".ER_IROM1")))          // 2mb FLASH
 //#define ITCM __attribute__((section(".ITCM")))            // 64kb ITCM
-#define DTCM __attribute__((section(".IRAM1")))              // 128kb DTCM
-#define IRAM2 __attribute__((section(".IRAM2")))             // 512kb AXI SRAM
-#define SRAM1 __attribute__((section(".SRAM1")))             // SRAM1+SRAM2 128kb+128kb D-Cache disabled in MPU
+#define DTCM __attribute__((section(".IRAM1")))  // 128kb DTCM
+#define IRAM2 __attribute__((section(".IRAM2"))) // 512kb AXI SRAM
+#define SRAM1 __attribute__((section(".SRAM1"))) // SRAM1+SRAM2 128kb+128kb D-Cache disabled in MPU
 //#define SRAM2 __attribute__((section(".SRAM2")))             // 128kb D-Cache disabled in MPU
 //#define SRAM3 __attribute__((section(".SRAM3")))             // 32kb
 //#define SRAM4 __attribute__((section(".SRAM4")))             // 64kb
@@ -49,16 +49,19 @@
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
 #define SQRT2 1.41421356237f
-#define ARRLENTH(x)  (sizeof(x) / sizeof((x)[0]))
-#define MINI_DELAY for(uint_fast16_t wait_i = 0; wait_i < 100; wait_i++) __asm("nop");
-		
-typedef struct {
-    float32_t Load;      /*!< CPU load percentage */
-    uint32_t WCNT;   /*!< Number of working cycles in one period. Meant for private use */
-    uint32_t SCNT;   /*!< Number of sleeping cycles in one period. Meant for private use */
-		uint32_t SINC;
+#define ARRLENTH(x) (sizeof(x) / sizeof((x)[0]))
+#define MINI_DELAY                                       \
+  for (uint_fast16_t wait_i = 0; wait_i < 100; wait_i++) \
+    __asm("nop");
+
+typedef struct
+{
+  float32_t Load; /*!< CPU load percentage */
+  uint32_t WCNT;  /*!< Number of working cycles in one period. Meant for private use */
+  uint32_t SCNT;  /*!< Number of sleeping cycles in one period. Meant for private use */
+  uint32_t SINC;
 } CPULOAD_t;
-		
+
 extern UART_HandleTypeDef huart1;
 extern CPULOAD_t CPU_LOAD;
 
@@ -96,6 +99,6 @@ extern void shiftTextLeft(char *string, uint_fast16_t shiftLength);
 extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);
 extern int32_t convertToSPIBigEndian(int32_t in);
-extern void arm_quick_sort_f32(float32_t * pSrc, float32_t * pDst, uint32_t blockSize, uint8_t dir);
-	
+extern void arm_quick_sort_f32(float32_t *pSrc, float32_t *pDst, uint32_t blockSize, uint8_t dir);
+
 #endif

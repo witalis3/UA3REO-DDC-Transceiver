@@ -7,54 +7,54 @@
 #include "functions.h"
 #include "bands.h"
 
-#define TRX_VERSION 191							//Версия прошивки
+#define TRX_VERSION 191					//Версия прошивки
 #define ADCDAC_CLOCK 122880000			//Частота генератора АЦП/ЦАП
-#define MAX_FREQ_HZ 750000000				//Максимальная частота приёма (из даташита АЦП)
+#define MAX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
-#define TRX_SAMPLERATE 48000				//частота дискретизации аудио-потока
-#define MAX_TX_AMPLITUDE 0.9f				//Максимальный размах при передаче в ЦАП
+#define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока
+#define MAX_TX_AMPLITUDE 0.9f			//Максимальный размах при передаче в ЦАП
 #define AGC_CLIP_THRESHOLD -12.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
 #define AGC_OPTIMAL_THRESHOLD -22.0f	//Рабочий уровень усиления в AGC, dbFS
-#define AGC_MAX_GAIN 50.0f					//Максимальное усиление в AGC
-#define AGC_NOISE_GATE -90.0f				//ниже этого уровня - не усиливаем
-#define TUNE_POWER 100							//% от выбранной в настройках мощности при запуске TUNE (100 - полная)
-#define TX_AGC_MAXGAIN 500.0f				//Максимальное усиление микрофона при компрессировании
+#define AGC_MAX_GAIN 50.0f				//Максимальное усиление в AGC
+#define AGC_NOISE_GATE -90.0f			//ниже этого уровня - не усиливаем
+#define TUNE_POWER 100					//% от выбранной в настройках мощности при запуске TUNE (100 - полная)
+#define TX_AGC_MAXGAIN 500.0f			//Максимальное усиление микрофона при компрессировании
 #define TX_AGC_NOISEGATE 0.00001f		//Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
-#define TOUCHPAD_DELAY 200					//Время защиты от анти-дребезга нажания на тачпад
+#define TOUCHPAD_DELAY 200				//Время защиты от анти-дребезга нажания на тачпад
 #define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
-#define AUTOGAIN_CORRECTOR_WAITSTEP 7   //ожидание усреднения результатов при работе автокорректора входных цепей
-#define ENCODER_INVERT 1						//инвертировать вращение влево-вправо у основного энкодера
-#define ENCODER2_INVERT 0						//инвертировать вращение влево-вправо у дополнительного энкодера
-#define KEY_HOLD_TIME 500						//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
-#define MAX_RF_POWER 7.0f						//Максимум мощности (для шкалы измерителя)
-#define SWR_CRITICAL 5.0f						//Максимальный КСВ, при котором отключается передатчик
-#define SHOW_LOGO true							//Отображать логотип при загрузке (из шьфпуы.h)
+#define AUTOGAIN_CORRECTOR_WAITSTEP 7	//ожидание усреднения результатов при работе автокорректора входных цепей
+#define ENCODER_INVERT 1				//инвертировать вращение влево-вправо у основного энкодера
+#define ENCODER2_INVERT 0				//инвертировать вращение влево-вправо у дополнительного энкодера
+#define KEY_HOLD_TIME 500				//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
+#define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
+#define SWR_CRITICAL 5.0f				//Максимальный КСВ, при котором отключается передатчик
+#define SHOW_LOGO true					//Отображать логотип при загрузке (из шьфпуы.h)
 #define POWERDOWN_TIMEOUT 1000			//время нажатия на кнопку выключения, для срабатывания, мс
 #define USB_RESTART_TIMEOUT 5000		//время, через которое происходит рестарт USB если нет пакетов
-#define ILI9481 true								//он же HX8357B //другие комментируем
-#define FMC_REMAP true							//ремап памяти FMC
-#define FSMC_REGISTER_SELECT 18 		//из FSMC настроек в STM32Cube (A18, A6, и т.д.)
-#define SCREEN_ROTATE 0							//перевернуть экран вверх ногами
+#define ILI9481 true					//он же HX8357B //другие комментируем
+#define FMC_REMAP true					//ремап памяти FMC
+#define FSMC_REGISTER_SELECT 18			//из FSMC настроек в STM32Cube (A18, A6, и т.д.)
+#define SCREEN_ROTATE 0					//перевернуть экран вверх ногами
 
-#define ADC_BITS 16						//разрядность АЦП
-#define FPGA_BUS_BITS 32				//разрядность данных из FPGA
-#define CODEC_BITS 32				//разрядность данных в аудио-кодеке
-#define FPGA_BUS_FULL_SCALE 65536		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
-#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE*(float64_t)FPGA_BUS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
-#define CODEC_BITS_FULL_SCALE 4294967296		   //максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
-#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE*(float64_t)CODEC_BITS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
-#define ADC_FULL_SCALE 65536		   //максимальная аплитуда сигнала в АЦП // powf(2,ADC_BITS)
+#define ADC_BITS 16																						//разрядность АЦП
+#define FPGA_BUS_BITS 32																				//разрядность данных из FPGA
+#define CODEC_BITS 32																					//разрядность данных в аудио-кодеке
+#define FPGA_BUS_FULL_SCALE 65536																		//максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
+#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		//магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
+#define CODEC_BITS_FULL_SCALE 4294967296																//максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
+#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
+#define ADC_FULL_SCALE 65536																			//максимальная аплитуда сигнала в АЦП // powf(2,ADC_BITS)
 #define FLOAT_FULL_SCALE_POW 4
-#define USB_DEBUG_ENABLED true //разрешить использовать USB как консоль
+#define USB_DEBUG_ENABLED true	 //разрешить использовать USB как консоль
 #define UART_DEBUG_ENABLED false //разрешить использовать UART как консоль
-#define SWD_DEBUG_ENABLED false //разрешить использовать SWD как консоль
+#define SWD_DEBUG_ENABLED false	 //разрешить использовать SWD как консоль
 
 // задержки при работе с EEPROM
-#define EEPROM_CO_DELAY 0 // command
-#define EEPROM_AD_DELAY 0 // addr
-#define EEPROM_WR_DELAY 5 // write
-#define EEPROM_RD_DELAY 0 // read
-#define EEPROM_ERASE_DELAY 40 // do erase
+#define EEPROM_CO_DELAY 0	   // command
+#define EEPROM_AD_DELAY 0	   // addr
+#define EEPROM_WR_DELAY 5	   // write
+#define EEPROM_RD_DELAY 0	   // read
+#define EEPROM_ERASE_DELAY 40  // do erase
 #define EEPROM_REPEAT_TRYES 40 // command tryes
 
 #define MAX_WIFIPASS_LENGTH 32
@@ -175,7 +175,7 @@ extern struct TRX_SETTINGS
 	uint16_t FRQ_FAST_STEP;
 	uint16_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
-	
+
 	uint8_t ENDBit;
 } TRX;
 
@@ -189,11 +189,11 @@ extern struct TRX_CALIBRATE
 	uint8_t rf_out_power[32];
 	int16_t smeter_calibration;
 	int16_t adc_offset;
-	int16_t att_db;	
+	int16_t att_db;
 	int16_t lna_gain_db;
 	uint32_t LPF_END;
 	uint32_t BPF_0_START; //UHF
-	uint32_t BPF_0_END; //UHF
+	uint32_t BPF_0_END;	  //UHF
 	uint32_t BPF_1_START;
 	uint32_t BPF_1_END;
 	uint32_t BPF_2_START;

@@ -16,11 +16,11 @@ typedef struct //структура профайлера
 } PROFILE_INFO;
 
 //Public methods
-extern void InitProfiler(void); //инициализация профайлера
-extern void StartProfiler(uint8_t pid); //запуск профайлера
+extern void InitProfiler(void);						  //инициализация профайлера
+extern void StartProfiler(uint8_t pid);				  //запуск профайлера
 extern void EndProfiler(uint8_t pid, bool summarize); //завершение профайлера
-extern void PrintProfilerResult(void); //вывод результатов профайлера
-extern void StartProfilerUs(void); //запуск профайлера в микросекундах
-extern void EndProfilerUs(bool summarize); //завершение профайлера в микросекундах
+extern void PrintProfilerResult(void);				  //вывод результатов профайлера
+extern void StartProfilerUs(void);					  //запуск профайлера в микросекундах
+extern void EndProfilerUs(bool summarize);			  //завершение профайлера в микросекундах
 
 #endif

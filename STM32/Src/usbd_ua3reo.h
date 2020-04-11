@@ -10,7 +10,7 @@ extern "C"
 #include "audio_processor.h"
 
 #define DEBUG_INTERFACE_IDX 0x0 // Index of DEBUG interface
-#define CAT_INTERFACE_IDX 0x2   // Index of CAT interface
+#define CAT_INTERFACE_IDX 0x2	// Index of CAT interface
 #define AUDIO_INTERFACE_IDX 0x4 // Index of AUDIO interface
 
 #define DEBUG_EP_IDX 0x01
@@ -64,9 +64,9 @@ extern "C"
 
 //AUDIO
 #define USBD_AUDIO_FREQ 48000U
-#define BYTES_IN_SAMPLE_AUDIO_OUT_PACKET 3U //24bit
-#define AUDIO_OUT_PACKET (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 * (USBD_AUDIO_FREQ / 1000)) //3bytes (24bit) * 2 channel * 48 packet per second
-#define USB_AUDIO_RX_BUFFER_SIZE (FPGA_AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET) //24 bit
+#define BYTES_IN_SAMPLE_AUDIO_OUT_PACKET 3U														 //24bit
+#define AUDIO_OUT_PACKET (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 * (USBD_AUDIO_FREQ / 1000))		 //3bytes (24bit) * 2 channel * 48 packet per second
+#define USB_AUDIO_RX_BUFFER_SIZE (FPGA_AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET)	 //24 bit
 #define USB_AUDIO_TX_BUFFER_SIZE (FPGA_AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2) //24 bit x2 size
 
 #define AUDIO_REQ_GET_CUR 0x81U
@@ -174,7 +174,7 @@ extern "C"
 
 	extern USBD_ClassTypeDef USBD_UA3REO;
 	extern USBD_HandleTypeDef hUsbDeviceFS;
-	
+
 #define USBD_UA3REO_CLASS &USBD_UA3REO
 
 	extern uint8_t USBD_DEBUG_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_DEBUG_ItfTypeDef *fops);

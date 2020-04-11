@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
-static void(*WIFI_ProcessingCommandCallback) (void);
+static void (*WIFI_ProcessingCommandCallback)(void);
 
 static SRAM1 char WIFI_AnswerBuffer[WIFI_ANSWER_BUFFER_SIZE] = {0};
 static char WIFI_readedLine[WIFI_ANSWER_BUFFER_SIZE] = {0};
@@ -35,9 +35,9 @@ void WIFI_Init(void)
 {
 	WIFI_SendCommand("AT+UART_CUR=115200,8,1,0,1\r\n"); //uart config
 	WIFI_WaitForOk();
-	WIFI_SendCommand("ATE0\r\n");						//echo off
+	WIFI_SendCommand("ATE0\r\n"); //echo off
 	WIFI_WaitForOk();
-	WIFI_SendCommand("AT+GMR\r\n");						//system info ESP8266
+	WIFI_SendCommand("AT+GMR\r\n"); //system info ESP8266
 	WIFI_WaitForOk();
 	/*
 	AT version:1.6.2.0(Apr 13 2018 11:10:59)
@@ -79,7 +79,7 @@ void WIFI_Process(void)
 	char com_t[128] = {0};
 	char tz[2] = {0};
 	char com[128] = {0};
-	
+
 	if (WIFI_State == WIFI_NOTFOUND)
 		return;
 	if (WIFI_State == WIFI_UNDEFINED)
@@ -87,60 +87,60 @@ void WIFI_Process(void)
 		WIFI_Init();
 		return;
 	}
-	
+
 	/////////
-	
+
 	switch (WIFI_State)
 	{
-		case WIFI_INITED:
-				sendToDebug_str3("[WIFI] Start connecting to AP: ", TRX.WIFI_AP, "\r\n");
-				WIFI_SendCommand("AT+CWAUTOCONN=0\r\n"); //AUTOCONNECT OFF
-				WIFI_WaitForOk();
-				WIFI_SendCommand("AT+RFPOWER=82\r\n"); //rf power
-				WIFI_WaitForOk();
-				WIFI_SendCommand("AT+CWMODE_CUR=1\r\n"); //station mode
-				WIFI_WaitForOk();
-				WIFI_SendCommand("AT+CWDHCP_CUR=1,1\r\n"); //DHCP
-				WIFI_WaitForOk();
-				WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); //Hostname
-				WIFI_WaitForOk();
-				WIFI_SendCommand("AT+CWCOUNTRY_CUR=1,\"RU\",1,13\r\n"); //Country
-				WIFI_WaitForOk();
-				strcat(com_t, "AT+CIPSNTPCFG=1,");
-				sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
-				strcat(com_t, tz);
-				strcat(com_t, ",\"pool.ntp.org\"\r\n");
-				WIFI_SendCommand(com_t); //configure SNMP
-				WIFI_WaitForOk();
-				WIFI_stop_auto_ap_list = false;
-				WIFI_IP_Gotted = false;
-				WIFI_State = WIFI_CONFIGURED;
+	case WIFI_INITED:
+		sendToDebug_str3("[WIFI] Start connecting to AP: ", TRX.WIFI_AP, "\r\n");
+		WIFI_SendCommand("AT+CWAUTOCONN=0\r\n"); //AUTOCONNECT OFF
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+RFPOWER=82\r\n"); //rf power
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CWMODE_CUR=1\r\n"); //station mode
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CWDHCP_CUR=1,1\r\n"); //DHCP
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); //Hostname
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CWCOUNTRY_CUR=1,\"RU\",1,13\r\n"); //Country
+		WIFI_WaitForOk();
+		strcat(com_t, "AT+CIPSNTPCFG=1,");
+		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
+		strcat(com_t, tz);
+		strcat(com_t, ",\"pool.ntp.org\"\r\n");
+		WIFI_SendCommand(com_t); //configure SNMP
+		WIFI_WaitForOk();
+		WIFI_stop_auto_ap_list = false;
+		WIFI_IP_Gotted = false;
+		WIFI_State = WIFI_CONFIGURED;
 		break;
-		case WIFI_CONFIGURED:
-				if(WIFI_stop_auto_ap_list) 
-					break;
-				WIFI_ListAP_Sync();
-				bool AP_exist = false;
-				for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-				{
-					if(strcmp((char *)WIFI_FoundedAP[i],TRX.WIFI_AP)==0)
-						AP_exist = true;
-					//sendToDebug_strln((char *)WIFI_FoundedAP[i]);
-				}
-				if(AP_exist)
-				{
-					strcat(com, "AT+CWJAP_CUR=\"");
-					strcat(com, TRX.WIFI_AP);
-					strcat(com, "\",\"");
-					strcat(com, TRX.WIFI_PASSWORD);
-					strcat(com, "\"\r\n");
-					WIFI_SendCommand(com); //connect to AP
-					WIFI_WaitForOk();
-					WIFI_State = WIFI_CONNECTING;
-				}
+	case WIFI_CONFIGURED:
+		if (WIFI_stop_auto_ap_list)
+			break;
+		WIFI_ListAP_Sync();
+		bool AP_exist = false;
+		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+		{
+			if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP) == 0)
+				AP_exist = true;
+			//sendToDebug_strln((char *)WIFI_FoundedAP[i]);
+		}
+		if (AP_exist)
+		{
+			strcat(com, "AT+CWJAP_CUR=\"");
+			strcat(com, TRX.WIFI_AP);
+			strcat(com, "\",\"");
+			strcat(com, TRX.WIFI_PASSWORD);
+			strcat(com, "\"\r\n");
+			WIFI_SendCommand(com); //connect to AP
+			WIFI_WaitForOk();
+			WIFI_State = WIFI_CONNECTING;
+		}
 		break;
-		
-		case WIFI_CONNECTING:
+
+	case WIFI_CONNECTING:
 		WIFI_TryGetLine();
 		if (strstr(WIFI_readedLine, "GOT IP") != NULL)
 		{
@@ -174,21 +174,21 @@ void WIFI_Process(void)
 		}
 		break;
 
-		case WIFI_READY:
-			WIFI_ProcessingCommandCallback =  0;
-			//sendToDebug_str("WIFI_DEBUG: READY\r\n");
+	case WIFI_READY:
+		WIFI_ProcessingCommandCallback = 0;
+		//sendToDebug_str("WIFI_DEBUG: READY\r\n");
 		break;
-	
-		case WIFI_TIMEOUT:
-			WIFI_TryGetLine();
-			if (WIFI_connected)
-				WIFI_State = WIFI_READY;
-			else
-				WIFI_State = WIFI_CONFIGURED;
-			WIFI_InitStateIndex = 0;
+
+	case WIFI_TIMEOUT:
+		WIFI_TryGetLine();
+		if (WIFI_connected)
+			WIFI_State = WIFI_READY;
+		else
+			WIFI_State = WIFI_CONFIGURED;
+		WIFI_InitStateIndex = 0;
 		break;
-		
-		case WIFI_PROCESS_COMMAND:
+
+	case WIFI_PROCESS_COMMAND:
 		WIFI_TryGetLine();
 
 		if ((HAL_GetTick() - commandStartTime) > WIFI_COMMAND_TIMEOUT)
@@ -201,7 +201,7 @@ void WIFI_Process(void)
 			if (WIFI_ProcessingCommand == WIFI_COMM_LISTAP) //ListAP Command Ended
 				for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
 					strcpy((char *)&WIFI_FoundedAP[i], (char *)&WIFI_FoundedAP_InWork[i]);
-			if(WIFI_ProcessingCommandCallback!=NULL)
+			if (WIFI_ProcessingCommandCallback != NULL)
 			{
 				WIFI_ProcessingCommandCallback();
 			}
@@ -262,7 +262,7 @@ void WIFI_Process(void)
 				char *sep = "_CUR:ip";
 				char *istr;
 				istr = strstr(WIFI_readedLine, sep);
-				if (istr != NULL) 
+				if (istr != NULL)
 				{
 					char *start = strchr(WIFI_readedLine, '"') + 1;
 					char *end = strchr(start, '"');
@@ -274,16 +274,16 @@ void WIFI_Process(void)
 			}
 		}
 		break;
-		
-		case WIFI_UNDEFINED:
-		case WIFI_NOTFOUND:
-		case WIFI_FAIL:
-		case WIFI_SLEEP:
+
+	case WIFI_UNDEFINED:
+	case WIFI_NOTFOUND:
+	case WIFI_FAIL:
+	case WIFI_SLEEP:
 		break;
 	}
 }
 
-bool WIFI_GetSNMPTime(void* callback)
+bool WIFI_GetSNMPTime(void *callback)
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
@@ -294,7 +294,7 @@ bool WIFI_GetSNMPTime(void* callback)
 	return true;
 }
 
-bool WIFI_GetIP(void* callback)
+bool WIFI_GetIP(void *callback)
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
@@ -305,9 +305,10 @@ bool WIFI_GetIP(void* callback)
 	return true;
 }
 
-void WIFI_ListAP(void* callback)
+void WIFI_ListAP(void *callback)
 {
-	if (WIFI_State != WIFI_READY && WIFI_State != WIFI_CONFIGURED) return;
+	if (WIFI_State != WIFI_READY && WIFI_State != WIFI_CONFIGURED)
+		return;
 	if (WIFI_State == WIFI_CONFIGURED && !WIFI_stop_auto_ap_list) //останавливаем авто-подключение при поиске сетей
 	{
 		WIFI_stop_auto_ap_list = true;
@@ -332,19 +333,19 @@ static bool WIFI_ListAP_Sync(void)
 	uint32_t startTime = HAL_GetTick();
 	char *sep = "OK";
 	char *istr;
-	
-	while((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
+
+	while ((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
 	{
 		HAL_IWDG_Refresh(&hiwdg1);
-		if(!WIFI_TryGetLine())
+		if (!WIFI_TryGetLine())
 		{
 			CPULOAD_GoToSleepMode();
 			CPULOAD_WakeUp();
 			continue;
 		}
-		
+
 		istr = strstr(WIFI_readedLine, sep);
-		if (istr != NULL) 
+		if (istr != NULL)
 			return true;
 
 		if (strlen(WIFI_readedLine) > 5)
@@ -401,13 +402,13 @@ static bool WIFI_WaitForOk(void)
 	char *sep = "OK";
 	char *istr;
 	uint32_t startTime = HAL_GetTick();
-	while((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
+	while ((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
 	{
 		HAL_IWDG_Refresh(&hiwdg1);
-		if(WIFI_TryGetLine())
+		if (WIFI_TryGetLine())
 		{
 			istr = strstr(WIFI_readedLine, sep);
-			if (istr != NULL) 
+			if (istr != NULL)
 			{
 				return true;
 			}
@@ -421,7 +422,7 @@ static bool WIFI_TryGetLine(void)
 {
 	memset(WIFI_readedLine, 0x00, sizeof(WIFI_readedLine));
 	memset(tmp, 0x00, sizeof(tmp));
-	
+
 	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
 	if (WIFI_Answer_ReadIndex == dma_index)
 		return false;

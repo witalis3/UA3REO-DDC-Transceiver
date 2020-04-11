@@ -8,11 +8,11 @@
 #include "fpga.h"
 #include "functions.h"
 
-#define IIR_FILTERS_COUNT 35 //Всего фильтров в коллекции
-#define IQ_HILBERT_TAPS 201 //Порядок фильтра гильберта
-#define IIR_MAX_STAGES 15 //Максимальный порядок IIR фильтров
-#define NOTCH_STAGES 1 //порядок ручного Notch фильтра
-#define NOTCH_COEFF_IN_STAGE 5 //коэффициентов в порядке ручного Notch фильтра
+#define IIR_FILTERS_COUNT 35														   //Всего фильтров в коллекции
+#define IQ_HILBERT_TAPS 201															   //Порядок фильтра гильберта
+#define IIR_MAX_STAGES 15															   //Максимальный порядок IIR фильтров
+#define NOTCH_STAGES 1																   //порядок ручного Notch фильтра
+#define NOTCH_COEFF_IN_STAGE 5														   //коэффициентов в порядке ручного Notch фильтра
 #define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1) //размер буфферов состояний
 #define FIR_RX2_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
 #define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
@@ -67,7 +67,7 @@ typedef struct //фильтр в коллекции
 	const uint16_t width;
 	const IIR_BIQUAD_FILTER_TYPE type;
 	const uint8_t stages;
-	const float32_t* coeffs; //Coefficients converted to ARMA in reverse order by MATLAB
+	const float32_t *coeffs; //Coefficients converted to ARMA in reverse order by MATLAB
 } IIR_BIQUAD_FILTER;
 
 //Public variables
@@ -95,9 +95,9 @@ extern arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_I_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_Q_FILTER;
 extern volatile bool NeedReinitNotch; //необходимо переинициализировать ручной Notch-фильтр
 //Public methods
-extern void InitAudioFilters(void); //инифиализация аудио-фильтров
-extern void ReinitAudioFilters(void); //переинициализация аудио-фильтров
-extern void InitNotchFilter(void); //инициализация ручного Notch-фильтра
+extern void InitAudioFilters(void);											   //инифиализация аудио-фильтров
+extern void ReinitAudioFilters(void);										   //переинициализация аудио-фильтров
+extern void InitNotchFilter(void);											   //инициализация ручного Notch-фильтра
 extern void dc_filter(float32_t *Buffer, int16_t blockSize, uint8_t stateNum); //запуск DC-корректора
 
 #endif

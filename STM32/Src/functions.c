@@ -41,7 +41,7 @@ void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t i
 	{
 		for (uint_fast16_t i = (index - halflen); i < index; i++)
 		{
-			dest[readed_index] = (source[i*3+0] << 8) | (source[i*3+1] << 16) | (source[i*3+2] << 24);
+			dest[readed_index] = (source[i * 3 + 0] << 8) | (source[i * 3 + 1] << 16) | (source[i * 3 + 2] << 24);
 			readed_index++;
 		}
 	}
@@ -50,12 +50,12 @@ void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t i
 		uint_fast16_t prev_part = halflen - index;
 		for (uint_fast16_t i = (length - prev_part); i < length; i++)
 		{
-			dest[readed_index] = (source[i*3+0] << 8) | (source[i*3+1] << 16) | (source[i*3+2] << 24);
+			dest[readed_index] = (source[i * 3 + 0] << 8) | (source[i * 3 + 1] << 16) | (source[i * 3 + 2] << 24);
 			readed_index++;
 		}
 		for (uint_fast16_t i = 0; i < (halflen - prev_part); i++)
 		{
-			dest[readed_index] = (source[i*3+0] << 8) | (source[i*3+1] << 16) | (source[i*3+2] << 24);
+			dest[readed_index] = (source[i * 3 + 0] << 8) | (source[i * 3 + 1] << 16) | (source[i * 3 + 2] << 24);
 			readed_index++;
 		}
 	}
@@ -63,9 +63,12 @@ void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t i
 
 void sendToDebug_str(char *data)
 {
-	if(SWD_DEBUG_ENABLED) printf("%s", data);
-	if(USB_DEBUG_ENABLED) DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
-	if(UART_DEBUG_ENABLED) HAL_UART_Transmit(&huart1, (uint8_t *)data, (uint16_t)strlen(data), 1000);
+	if (SWD_DEBUG_ENABLED)
+		printf("%s", data);
+	if (USB_DEBUG_ENABLED)
+		DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
+	if (UART_DEBUG_ENABLED)
+		HAL_UART_Transmit(&huart1, (uint8_t *)data, (uint16_t)strlen(data), 1000);
 }
 
 void sendToDebug_strln(char *data)
@@ -95,7 +98,7 @@ void sendToDebug_newline(void)
 void sendToDebug_flush(void)
 {
 	uint_fast16_t tryes = 0;
-	while (DEBUG_Transmit_FIFO_Events()==USBD_BUSY && tryes < 512)
+	while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512)
 		tryes++;
 }
 
@@ -199,7 +202,8 @@ void delay_us(uint32_t us)
 
 uint32_t getPhraseFromFrequency(int32_t freq) //высчитываем частоту из фразы ля FPGA
 {
-	if(freq < 0) return 0;
+	if (freq < 0)
+		return 0;
 	bool inverted = false;
 	int32_t _freq = freq;
 	if (_freq > ADCDAC_CLOCK / 2) //Go Nyquist
@@ -351,7 +355,8 @@ void CPULOAD_Init(void)
 	CPULOAD_status = true;
 }
 
-void CPULOAD_GoToSleepMode(void) {
+void CPULOAD_GoToSleepMode(void)
+{
 	//if(!CPULOAD_status) return;
 	/* Add to working time */
 	CPULOAD_WorkingTime += DWT->CYCCNT - CPULOAD_startWorkTime;
@@ -365,7 +370,8 @@ void CPULOAD_GoToSleepMode(void) {
 
 void CPULOAD_WakeUp(void)
 {
-	if(CPULOAD_status) return;
+	if (CPULOAD_status)
+		return;
 	CPULOAD_status = true;
 	/* Increase number of sleeping time in CPU cycles */
 	CPULOAD_SleepingTime += DWT->CYCCNT - CPULOAD_startSleepTime;
@@ -380,11 +386,11 @@ void CPULOAD_Calc(void)
 	CPU_LOAD.WCNT = CPULOAD_WorkingTime;
 	CPU_LOAD.SINC = CPULOAD_SleepCounter;
 	CPU_LOAD.Load = ((float)CPULOAD_WorkingTime / (float)(CPULOAD_SleepingTime + CPULOAD_WorkingTime) * 100);
-	if(CPU_LOAD.SCNT==0)
+	if (CPU_LOAD.SCNT == 0)
 	{
 		CPU_LOAD.Load = 100;
 	}
-	if(CPU_LOAD.SCNT==0 && CPU_LOAD.WCNT==0)
+	if (CPU_LOAD.SCNT == 0 && CPU_LOAD.WCNT == 0)
 	{
 		CPU_LOAD.Load = 255;
 		CPULOAD_Init();
@@ -403,68 +409,68 @@ inline int32_t convertToSPIBigEndian(int32_t in)
 //Сортировка QuickSort из develop-ветки CMSIS
 static int32_t arm_quick_sort_partition_f32(float32_t *pSrc, int32_t first, int32_t last, uint8_t dir)
 {
-    int32_t i, j, pivot_index;
-    float32_t pivot;
-    float32_t temp;
-    pivot_index = first; 
-    pivot = pSrc[pivot_index];
-    i = first - 1;
-    j = last + 1; 
+	int32_t i, j, pivot_index;
+	float32_t pivot;
+	float32_t temp;
+	pivot_index = first;
+	pivot = pSrc[pivot_index];
+	i = first - 1;
+	j = last + 1;
 
-    while(i < j) 
-    {
-        if(dir)
-        {    
-            do
-            {
-                i++; 
-            } while (pSrc[i] < pivot && i<last);
-            do
-            {
-                j--; 
-            } while (pSrc[j] > pivot);
-        }
-        else
-        {
-            do
-            {
-                i++; 
-            } while (pSrc[i] > pivot && i<last);
-            do
-            {
-                j--; 
-            } while (pSrc[j] < pivot);
-        }
-        if (i < j) 
-        { 
-            temp=pSrc[i];
-            pSrc[i]=pSrc[j];
-            pSrc[j]=temp;
-        }
-    }
-    return j; 
+	while (i < j)
+	{
+		if (dir)
+		{
+			do
+			{
+				i++;
+			} while (pSrc[i] < pivot && i < last);
+			do
+			{
+				j--;
+			} while (pSrc[j] > pivot);
+		}
+		else
+		{
+			do
+			{
+				i++;
+			} while (pSrc[i] > pivot && i < last);
+			do
+			{
+				j--;
+			} while (pSrc[j] < pivot);
+		}
+		if (i < j)
+		{
+			temp = pSrc[i];
+			pSrc[i] = pSrc[j];
+			pSrc[j] = temp;
+		}
+	}
+	return j;
 }
 
 static void arm_quick_sort_core_f32(float32_t *pSrc, int32_t first, int32_t last, uint8_t dir)
 {
-    if(first<last)
-    {
-        int32_t pivot;
-        pivot = arm_quick_sort_partition_f32(pSrc, first, last, dir);
-        arm_quick_sort_core_f32(pSrc, first,   pivot, dir);
-        arm_quick_sort_core_f32(pSrc, pivot+1, last,  dir);
-    }
+	if (first < last)
+	{
+		int32_t pivot;
+		pivot = arm_quick_sort_partition_f32(pSrc, first, last, dir);
+		arm_quick_sort_core_f32(pSrc, first, pivot, dir);
+		arm_quick_sort_core_f32(pSrc, pivot + 1, last, dir);
+	}
 }
 
-void arm_quick_sort_f32(float32_t * pSrc, float32_t * pDst, uint32_t blockSize, uint8_t dir)
+void arm_quick_sort_f32(float32_t *pSrc, float32_t *pDst, uint32_t blockSize, uint8_t dir)
 {
-    float32_t * pA;
-    if(pSrc != pDst) 
-    {   
-        memcpy(pDst, pSrc, blockSize*sizeof(float32_t) );
-        pA = pDst;
-    }
-    else
-        pA = pSrc;
-    arm_quick_sort_core_f32(pA, 0, (int32_t)blockSize-1, dir);
+	float32_t *pA;
+	if (pSrc != pDst)
+	{
+		memcpy(pDst, pSrc, blockSize * sizeof(float32_t));
+		pA = pDst;
+	}
+	else
+		pA = pSrc;
+	arm_quick_sort_core_f32(pA, 0, (int32_t)blockSize - 1, dir);
 }

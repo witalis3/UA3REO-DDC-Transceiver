@@ -27,11 +27,11 @@ extern float32_t FFTInput_I[FFT_SIZE];
 extern float32_t FFTInput_Q[FFT_SIZE];
 
 //Public methods
-extern void FFT_Init(void); //инициализация FFT
-extern void FFT_Reset(void); //сброс FFT
-extern void FFT_doFFT(void); //расчёт FFT
-extern void FFT_printFFT(void); //вывод FFT
+extern void FFT_Init(void);                        //инициализация FFT
+extern void FFT_Reset(void);                       //сброс FFT
+extern void FFT_doFFT(void);                       //расчёт FFT
+extern void FFT_printFFT(void);                    //вывод FFT
 extern void FFT_moveWaterfall(int32_t _freq_diff); //сдвиг водопада
-extern void FFT_printWaterfallDMA(void); //вывод водопада
+extern void FFT_printWaterfallDMA(void);           //вывод водопада
 
 #endif

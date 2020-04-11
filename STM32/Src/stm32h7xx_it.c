@@ -24,7 +24,7 @@
 //EXTI10 - 48K_Clock
 //EXTI11 - PWR_button
 //EXTI13 - ENC2_CLK
-	
+
 //TIM3 - WIFI
 //TIM4 - расчёт FFT
 //TIM5 - аудио-процессор
@@ -136,7 +136,7 @@ extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
-	
+
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
 
@@ -213,7 +213,7 @@ void UsageFault_Handler(void)
 void SVC_Handler(void)
 {
   /* USER CODE BEGIN SVCall_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END SVCall_IRQn 0 */
   /* USER CODE BEGIN SVCall_IRQn 1 */
 
@@ -226,7 +226,7 @@ void SVC_Handler(void)
 void DebugMon_Handler(void)
 {
   /* USER CODE BEGIN DebugMonitor_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END DebugMonitor_IRQn 0 */
   /* USER CODE BEGIN DebugMonitor_IRQn 1 */
 
@@ -239,7 +239,7 @@ void DebugMon_Handler(void)
 void PendSV_Handler(void)
 {
   /* USER CODE BEGIN PendSV_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END PendSV_IRQn 0 */
   /* USER CODE BEGIN PendSV_IRQn 1 */
 
@@ -252,7 +252,7 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
@@ -301,7 +301,7 @@ void EXTI1_IRQHandler(void)
 void EXTI2_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI2_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END EXTI2_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
   /* USER CODE BEGIN EXTI2_IRQn 1 */
@@ -315,7 +315,7 @@ void EXTI2_IRQHandler(void)
 void EXTI4_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI4_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END EXTI4_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
   /* USER CODE BEGIN EXTI4_IRQn 1 */
@@ -329,7 +329,7 @@ void EXTI4_IRQHandler(void)
 void DMA1_Stream1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Stream1_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END DMA1_Stream1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_usart6_rx);
   /* USER CODE BEGIN DMA1_Stream1_IRQn 1 */
@@ -343,7 +343,7 @@ void DMA1_Stream1_IRQHandler(void)
 void DMA1_Stream5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Stream5_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END DMA1_Stream5_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi3_tx);
   /* USER CODE BEGIN DMA1_Stream5_IRQn 1 */
@@ -357,23 +357,23 @@ void DMA1_Stream5_IRQHandler(void)
 void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
-	static uint16_t wifi_start_timeout = 0;
-	CPULOAD_WakeUp();
+  static uint16_t wifi_start_timeout = 0;
+  CPULOAD_WakeUp();
   /* USER CODE END TIM3_IRQn 0 */
   HAL_TIM_IRQHandler(&htim3);
   /* USER CODE BEGIN TIM3_IRQn 1 */
-	if(wifi_start_timeout<10)
-	{
-		wifi_start_timeout++;
-	}
-	else
-	{
-		//по таймеру работаем с WiFi, или услыпяем его если выключен (для включеняи нужен рестарт)
-		if (TRX.WIFI_Enabled)
-			WIFI_Process();
-		else
-			WIFI_GoSleep();
-	}
+  if (wifi_start_timeout < 10)
+  {
+    wifi_start_timeout++;
+  }
+  else
+  {
+    //по таймеру работаем с WiFi, или услыпяем его если выключен (для включеняи нужен рестарт)
+    if (TRX.WIFI_Enabled)
+      WIFI_Process();
+    else
+      WIFI_GoSleep();
+  }
   /* USER CODE END TIM3_IRQn 1 */
 }
 
@@ -383,7 +383,7 @@ void TIM3_IRQHandler(void)
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
@@ -404,7 +404,7 @@ void TIM4_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
@@ -420,13 +420,14 @@ void EXTI15_10_IRQHandler(void)
 void TIM5_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM5_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END TIM5_IRQn 0 */
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
   //StartProfilerUs();
-	if(!Processor_NeedTXBuffer && !Processor_NeedRXBuffer) return;
-	
+  if (!Processor_NeedTXBuffer && !Processor_NeedRXBuffer)
+    return;
+
   if (TRX_on_TX())
   {
     if (CurrentVFO()->Mode != TRX_MODE_NO_TX)
@@ -436,9 +437,9 @@ void TIM5_IRQHandler(void)
   {
     processRxAudio();
   }
-	//spectrum analiser - в режме анализатора спектра его обработку поднимаем в приоритет, выполняя вместе с аудио-процессором
-	if(sysmenu_spectrum_opened)
-		LCD_doEvents();
+  //spectrum analiser - в режме анализатора спектра его обработку поднимаем в приоритет, выполняя вместе с аудио-процессором
+  if (sysmenu_spectrum_opened)
+    LCD_doEvents();
   //EndProfilerUs(true);
   /* USER CODE END TIM5_IRQn 1 */
 }
@@ -449,13 +450,13 @@ void TIM5_IRQHandler(void)
 void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
-	CPULOAD_WakeUp();
-	HAL_IWDG_Refresh(&hiwdg1);
+  CPULOAD_WakeUp();
+  HAL_IWDG_Refresh(&hiwdg1);
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
   ms50_counter++;
-	//время отпускания передачи после сигнала ключа
+  //время отпускания передачи после сигнала ключа
   if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_dot_hard && !TRX_key_dash_hard)
   {
     TRX_Key_Timeout_est -= 50;
@@ -467,46 +468,46 @@ void TIM6_DAC_IRQHandler(void)
     }
   }
 
-	//если изменились настройки, обновляем параметры в FPGA
+  //если изменились настройки, обновляем параметры в FPGA
   if (NeedSaveSettings)
     FPGA_NeedSendParams = true;
 
-	//поступил запрос на переинициализацию notch-фильтра, выполняем
+  //поступил запрос на переинициализацию notch-фильтра, выполняем
   if (NeedReinitNotch)
     InitNotchFilter();
 
-	//Process SWR / Power meter
+  //Process SWR / Power meter
   if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_NO_TX)
     PERIPH_ProcessSWRMeter();
-	
+
   if ((ms50_counter % 2) == 0) // every 100ms
   {
-		//каждые 100мс получаем данные с FPGA (аплитуду, перегрузку АЦП и др.)
+    //каждые 100мс получаем данные с FPGA (аплитуду, перегрузку АЦП и др.)
     FPGA_NeedGetParams = true;
 
     //S-Meter Calculate
     TRX_DBMCalculate();
   }
-		
+
   if (ms50_counter == 21) // every 1 sec
   {
     ms50_counter = 0;
     TRX_DoAutoGain(); //Process AutoGain feature
 
-		if(!WIFI_IP_Gotted) //Get resolved IP
-			WIFI_GetIP(NULL);
+    if (!WIFI_IP_Gotted) //Get resolved IP
+      WIFI_GetIP(NULL);
     if (!TRX_SNMP_Synced) //Sync time from internet
       WIFI_GetSNMPTime(NULL);
-		
-		CPULOAD_Calc(); // Calculate CPU load
-		TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
-		TRX_STM32_VREF = TRX_getSTM32H743vref();
-		
+
+    CPULOAD_Calc(); // Calculate CPU load
+    TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
+    TRX_STM32_VREF = TRX_getSTM32H743vref();
+
     if (TRX.Debug_Console)
     {
       //Save Debug variables
-			uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
-			float32_t dbg_coeff = 1000.0f / (float32_t)dbg_tim6_delay;
+      uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
+      float32_t dbg_coeff = 1000.0f / (float32_t)dbg_tim6_delay;
       uint32_t dbg_FPGA_samples = (uint32_t)((float32_t)FPGA_samples * dbg_coeff);
       uint32_t dbg_WM8731_DMA_samples = (uint32_t)((float32_t)WM8731_DMA_samples / 2.0f * dbg_coeff);
       uint32_t dbg_AUDIOPROC_samples = (uint32_t)((float32_t)AUDIOPROC_samples * dbg_coeff);
@@ -519,7 +520,7 @@ void TIM6_DAC_IRQHandler(void)
       }
       uint32_t dbg_RX_USB_AUDIO_SAMPLES = (uint32_t)((float32_t)RX_USB_AUDIO_SAMPLES * dbg_coeff);
       uint32_t dbg_TX_USB_AUDIO_SAMPLES = (uint32_t)((float32_t)TX_USB_AUDIO_SAMPLES * dbg_coeff);
-			uint32_t cpu_load = (uint32_t)CPU_LOAD.Load;
+      uint32_t cpu_load = (uint32_t)CPU_LOAD.Load;
       //Print Debug info
       sendToDebug_str("FPGA Samples: ");
       sendToDebug_uint32(dbg_FPGA_samples, false); //~48000
@@ -527,13 +528,13 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(dbg_WM8731_DMA_samples, false); //~48000
       sendToDebug_str("Audioproc blocks: ");
       sendToDebug_uint32(dbg_AUDIOPROC_samples, true);
-			sendToDebug_str("CPU Load: ");
+      sendToDebug_str("CPU Load: ");
       sendToDebug_uint32(cpu_load, false);
-			sendToDebug_str("STM32 Temperature: ");
+      sendToDebug_str("STM32 Temperature: ");
       sendToDebug_float32(TRX_STM32_TEMPERATURE, false);
-			sendToDebug_str("STM32 Voltage: ");
+      sendToDebug_str("STM32 Voltage: ");
       sendToDebug_float32(TRX_STM32_VREF, false);
-			sendToDebug_str("TIM6 delay: ");
+      sendToDebug_str("TIM6 delay: ");
       sendToDebug_uint32(dbg_tim6_delay, false);
       sendToDebug_str("First byte of RX-FPGA I/Q: ");
       sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp, true); //first byte of I
@@ -541,7 +542,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_float32(dbg_FPGA_Audio_Buffer_Q_tmp, false); //first byte of Q
       sendToDebug_str("IQ Phase error: ");
       sendToDebug_float32(TRX_IQ_phase_error, false); //first byte of Q
-			sendToDebug_str("USB Audio RX/TX samples: ");
+      sendToDebug_str("USB Audio RX/TX samples: ");
       sendToDebug_uint32(dbg_RX_USB_AUDIO_SAMPLES, true); //~48000
       sendToDebug_str(" / ");
       sendToDebug_uint32(dbg_TX_USB_AUDIO_SAMPLES, false); //~48000
@@ -552,21 +553,21 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_str("WIFI State: ");
       sendToDebug_int16(WIFI_State, false);
       sendToDebug_newline();
-			//PrintProfilerResult();
+      //PrintProfilerResult();
     }
-		
-		//Save Settings to Backup Memory
-		if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))
-			SaveSettings();
-		
-		//Detect FPGA IQ phase error
-		if(TRX_IQ_phase_error > 0.1f && !TRX_on_TX() && TRX_RX_dBm > -90.0f)
-		{
-			sendToDebug_strln("[ERR] IQ phase error, restart");
-			FPGA_NeedRestart = true;
-		}
-		
-		//Reset counters
+
+    //Save Settings to Backup Memory
+    if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))
+      SaveSettings();
+
+    //Detect FPGA IQ phase error
+    if (TRX_IQ_phase_error > 0.1f && !TRX_on_TX() && TRX_RX_dBm > -90.0f)
+    {
+      sendToDebug_strln("[ERR] IQ phase error, restart");
+      FPGA_NeedRestart = true;
+    }
+
+    //Reset counters
     tim6_delay = HAL_GetTick();
     FPGA_samples = 0;
     AUDIOPROC_samples = 0;
@@ -577,44 +578,46 @@ void TIM6_DAC_IRQHandler(void)
     FPGA_NeedSendParams = true;
   }
 
-	//every 50ms
+  //every 50ms
   if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
   {
     TRX_Fan_Timeout += 3; //дуем после перехода на прём в 2 раза больше чем работаем на передачу
     if (TRX_Fan_Timeout > 120)
       TRX_Fan_Timeout = 120; //но не более 2х минут
   }
-	//эмулируем PTT по CAT
+  //эмулируем PTT по CAT
   if (TRX_ptt_cat != TRX_old_ptt_cat)
     TRX_ptt_change();
-	//эмулируем ключ по COM-порту
+  //эмулируем ключ по COM-порту
   if (TRX_key_serial != TRX_old_key_serial)
     TRX_key_change();
   PERIPH_RF_UNIT_UpdateState(false); //обновляем состояние RF-Unit платы
-  LCD_doEvents(); //обновляем информацию на LCD
-  FFT_printFFT(); //рисуем FFT
-	WM8731_Buffer_underrun = false;
-	FPGA_Buffer_underrun = false;
-	RX_USB_AUDIO_underrun = false;
+  LCD_doEvents();                    //обновляем информацию на LCD
+  FFT_printFFT();                    //рисуем FFT
+  WM8731_Buffer_underrun = false;
+  FPGA_Buffer_underrun = false;
+  RX_USB_AUDIO_underrun = false;
   //power off sequence
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT))
-	{
-		TRX_Inited = false;
-		LCD_busy = true;
-		HAL_Delay(10);
-		LCDDriver_Fill(COLOR_BLACK);
-		LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
-		SaveSettings();
-		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-		WM8731_TX_mode(); //mute
-		WM8731_CleanBuffer();
-		sendToDebug_flush();
-		while(true){}
-	}
-	//перезапускаем USB если нет активности (выключен), чтобы найти новое подключение
-	if(TRX_Inited && (USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick())) 
-		USBD_Restart();
-		
+  {
+    TRX_Inited = false;
+    LCD_busy = true;
+    HAL_Delay(10);
+    LCDDriver_Fill(COLOR_BLACK);
+    LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
+    SaveSettings();
+    HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+    WM8731_TX_mode(); //mute
+    WM8731_CleanBuffer();
+    sendToDebug_flush();
+    while (true)
+    {
+    }
+  }
+  //перезапускаем USB если нет активности (выключен), чтобы найти новое подключение
+  if (TRX_Inited && (USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick()))
+    USBD_Restart();
+
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
@@ -624,7 +627,7 @@ void TIM6_DAC_IRQHandler(void)
 void TIM7_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM7_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
@@ -638,7 +641,7 @@ void TIM7_IRQHandler(void)
 void DMA2_Stream6_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream6_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END DMA2_Stream6_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream6);
   /* USER CODE BEGIN DMA2_Stream6_IRQn 1 */
@@ -652,7 +655,7 @@ void DMA2_Stream6_IRQHandler(void)
 void USART6_IRQHandler(void)
 {
   /* USER CODE BEGIN USART6_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END USART6_IRQn 0 */
   HAL_UART_IRQHandler(&huart6);
   /* USER CODE BEGIN USART6_IRQn 1 */
@@ -666,7 +669,7 @@ void USART6_IRQHandler(void)
 void OTG_FS_EP1_OUT_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_FS_EP1_OUT_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END OTG_FS_EP1_OUT_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_EP1_OUT_IRQn 1 */
@@ -680,7 +683,7 @@ void OTG_FS_EP1_OUT_IRQHandler(void)
 void OTG_FS_EP1_IN_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_FS_EP1_IN_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END OTG_FS_EP1_IN_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_EP1_IN_IRQn 1 */
@@ -694,7 +697,7 @@ void OTG_FS_EP1_IN_IRQHandler(void)
 void OTG_FS_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_FS_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END OTG_FS_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
@@ -712,9 +715,9 @@ void TIM15_IRQHandler(void)
   /* USER CODE END TIM15_IRQn 0 */
   HAL_TIM_IRQHandler(&htim15);
   /* USER CODE BEGIN TIM15_IRQn 1 */
-	PERIPH_ProcessFrontPanel();
-	if (NeedSaveCalibration) //сохраняем данные калибровки в EEPROM
-		SaveCalibration();
+  PERIPH_ProcessFrontPanel();
+  if (NeedSaveCalibration) //сохраняем данные калибровки в EEPROM
+    SaveCalibration();
   /* USER CODE END TIM15_IRQn 1 */
 }
 
@@ -722,8 +725,8 @@ void TIM15_IRQHandler(void)
 
 void DMA1_Stream0_IRQHandler(void)
 {
-	CPULOAD_WakeUp();
-	HAL_DMA_IRQHandler(&hdma_spi3_rx);
+  CPULOAD_WakeUp();
+  HAL_DMA_IRQHandler(&hdma_spi3_rx);
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
@@ -731,11 +734,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
     //StartProfilerUs();
-		if(!WM8731_Buffer_underrun) //пока процессор тормозит, не получаем новых данных
-		{
-			FPGA_fpgadata_iqclock(); //данные IQ
-			FPGA_fpgadata_stuffclock(); //параметры и прочие службы
-		}
+    if (!WM8731_Buffer_underrun) //пока процессор тормозит, не получаем новых данных
+    {
+      FPGA_fpgadata_iqclock();    //данные IQ
+      FPGA_fpgadata_stuffclock(); //параметры и прочие службы
+    }
     //EndProfilerUs(true);
   }
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder

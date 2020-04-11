@@ -9,7 +9,7 @@
 #define WIFI_COMMAND_TIMEOUT 5000
 #define WIFI_FOUNDED_AP_MAXCOUNT 10
 #define WIFI_DEBUG false //вывод отладки WIFI в консоль
-	
+
 typedef enum
 {
 	WIFI_UNDEFINED = 0x00U,
@@ -45,9 +45,9 @@ extern char WIFI_IP[15];
 
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);
-extern void WIFI_ListAP(void* callback);
-extern bool WIFI_GetSNMPTime(void* callback);
-extern bool WIFI_GetIP(void* callback);
+extern void WIFI_ListAP(void *callback);
+extern bool WIFI_GetSNMPTime(void *callback);
+extern bool WIFI_GetIP(void *callback);
 //extern void WIFI_GetStatus(void);
 extern void WIFI_GoSleep(void);
 

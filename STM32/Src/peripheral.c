@@ -59,10 +59,12 @@ void PERIPH_ENCODER_checkRotate(void)
 
 void PERIPH_ENCODER2_checkRotate(void)
 {
-	if((HAL_GetTick() - ENCODER2_AValDeb) < 20) return;
+	if ((HAL_GetTick() - ENCODER2_AValDeb) < 20)
+		return;
 	ENCODER2_AValDebFirst = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
 	ENCODER2_AVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
-	if(ENCODER2_AValDebFirst != ENCODER2_AVal) return;
+	if (ENCODER2_AValDebFirst != ENCODER2_AVal)
+		return;
 	if (ENCODER2_ALast != ENCODER2_AVal)
 	{
 		ENCODER2_ALast = ENCODER2_AVal;
@@ -170,28 +172,36 @@ void PERIPH_ENCODER2_checkSwitch(void)
 
 static uint8_t getBPFByFreq(uint32_t freq)
 {
-	if(freq >= CALIBRATE.BPF_0_START && freq < CALIBRATE.BPF_0_END) return 0;
-	if(freq >= CALIBRATE.BPF_1_START && freq < CALIBRATE.BPF_1_END) return 1;
-	if(freq >= CALIBRATE.BPF_2_START && freq < CALIBRATE.BPF_2_END) return 2;
-	if(freq >= CALIBRATE.BPF_3_START && freq < CALIBRATE.BPF_3_END) return 3;
-	if(freq >= CALIBRATE.BPF_4_START && freq < CALIBRATE.BPF_4_END) return 4;
-	if(freq >= CALIBRATE.BPF_5_START && freq < CALIBRATE.BPF_5_END) return 5;
-	if(freq >= CALIBRATE.BPF_6_START && freq < CALIBRATE.BPF_6_END) return 6;
-	if(freq >= CALIBRATE.BPF_7_HPF) return 7;
+	if (freq >= CALIBRATE.BPF_0_START && freq < CALIBRATE.BPF_0_END)
+		return 0;
+	if (freq >= CALIBRATE.BPF_1_START && freq < CALIBRATE.BPF_1_END)
+		return 1;
+	if (freq >= CALIBRATE.BPF_2_START && freq < CALIBRATE.BPF_2_END)
+		return 2;
+	if (freq >= CALIBRATE.BPF_3_START && freq < CALIBRATE.BPF_3_END)
+		return 3;
+	if (freq >= CALIBRATE.BPF_4_START && freq < CALIBRATE.BPF_4_END)
+		return 4;
+	if (freq >= CALIBRATE.BPF_5_START && freq < CALIBRATE.BPF_5_END)
+		return 5;
+	if (freq >= CALIBRATE.BPF_6_START && freq < CALIBRATE.BPF_6_END)
+		return 6;
+	if (freq >= CALIBRATE.BPF_7_HPF)
+		return 7;
 	return 255;
 }
 
 void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения в RF-UNIT
 {
 	bool hpf_lock = false;
-	
+
 	bool dualrx_lpf_disabled = false;
 	bool dualrx_bpf_disabled = false;
-	if((TRX.Dual_RX_Type != VFO_SEPARATE) && SecondaryVFO()->Freq > CALIBRATE.LPF_END)
+	if ((TRX.Dual_RX_Type != VFO_SEPARATE) && SecondaryVFO()->Freq > CALIBRATE.LPF_END)
 		dualrx_lpf_disabled = true;
-	if((TRX.Dual_RX_Type != VFO_SEPARATE) && getBPFByFreq(CurrentVFO()->Freq) != getBPFByFreq(SecondaryVFO()->Freq))
+	if ((TRX.Dual_RX_Type != VFO_SEPARATE) && getBPFByFreq(CurrentVFO()->Freq) != getBPFByFreq(SecondaryVFO()->Freq))
 		dualrx_bpf_disabled = true;
-	
+
 	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //защёлка
 	MINI_DELAY
 	for (uint8_t registerNumber = 0; registerNumber < 24; registerNumber++)
@@ -204,7 +214,8 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 		{
 			//REGISTER 1
 			//if(registerNumber==0) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
-			if(registerNumber==1 && !TRX_on_TX() && TRX.LNA) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // LNA
+			if (registerNumber == 1 && !TRX_on_TX() && TRX.LNA)
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // LNA
 			//if(registerNumber==2) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==3) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==4) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
@@ -212,47 +223,46 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 			//if(registerNumber==6) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			if (registerNumber == 7 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //TX_RX
-			
+
 			//REGISTER 2
 			if (registerNumber == 8 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK) //TX_AMP
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 9 && TRX.ATT) //ATT_ON
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 10 && (!TRX.LPF || CurrentVFO()->Freq > CALIBRATE.LPF_END || dualrx_lpf_disabled)) //LPF_OFF
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 11 && (!TRX.BPF || CurrentVFO()->Freq < CALIBRATE.BPF_1_START || dualrx_bpf_disabled)) //BPF_OFF
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 12 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 0) //BPF_0
 			{
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-				hpf_lock = true;														 //блокируем HPF для выделенного BPF фильтра УКВ
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+				hpf_lock = true; //блокируем HPF для выделенного BPF фильтра УКВ
 			}
 			if (registerNumber == 13 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 7 && !hpf_lock && !dualrx_bpf_disabled)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_7_HPF
 			if (registerNumber == 14 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 6 && !dualrx_bpf_disabled)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); //BPF_6
 			//if(registerNumber==15) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
-			
+
 			//REGISTER 3
 			//if(registerNumber==16) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			//if(registerNumber==17) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			if (registerNumber == 18 && ((TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK) || TRX_Fan_Timeout > 0)) //FAN
 			{
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				if (TRX_Fan_Timeout > 0)
 					TRX_Fan_Timeout--;
 			}
 			if (registerNumber == 19 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 1 && !dualrx_bpf_disabled) //BPF_1
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 20 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 2 && !dualrx_bpf_disabled) //BPF_2
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 21 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 3 && !dualrx_bpf_disabled) //BPF_3
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 22 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 4 && !dualrx_bpf_disabled) //BPF_4
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			if (registerNumber == 23 && TRX.BPF && getBPFByFreq(CurrentVFO()->Freq) == 5 && !dualrx_bpf_disabled) //BPF_5
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); 
-			
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 		}
 		MINI_DELAY
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_SET);
@@ -285,7 +295,7 @@ void PERIPH_InitFrontPanel(void)
 
 void PERIPH_ProcessFrontPanel(void)
 {
-	if(PERIPH_SPI_process)
+	if (PERIPH_SPI_process)
 		return;
 	else
 		PERIPH_SPI_process = true;
@@ -356,11 +366,11 @@ void PERIPH_ProcessFrontPanel(void)
 		{
 			TRX_Time_InActive = 0;
 			PERIPH_FrontPanel.key_ab_afterhold = true;
-			if(TRX.Dual_RX_Type == VFO_SEPARATE)
+			if (TRX.Dual_RX_Type == VFO_SEPARATE)
 				TRX.Dual_RX_Type = VFO_A_AND_B;
-			else if(TRX.Dual_RX_Type == VFO_A_AND_B)
+			else if (TRX.Dual_RX_Type == VFO_A_AND_B)
 				TRX.Dual_RX_Type = VFO_A_PLUS_B;
-			else if(TRX.Dual_RX_Type == VFO_A_PLUS_B)
+			else if (TRX.Dual_RX_Type == VFO_A_PLUS_B)
 				TRX.Dual_RX_Type = VFO_SEPARATE;
 			LCD_UpdateQuery.TopButtons = true;
 			ReinitAudioFilters();
@@ -423,7 +433,7 @@ void PERIPH_ProcessFrontPanel(void)
 				TRX.ADC_PGA = false;
 			}
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-			if(band>0)
+			if (band > 0)
 			{
 				TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
 				TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
@@ -456,7 +466,7 @@ void PERIPH_ProcessFrontPanel(void)
 				TRX.ATT = false;
 			}
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-			if(band>0)
+			if (band > 0)
 			{
 				TRX.BANDS_SAVED_SETTINGS[band].LNA = TRX.LNA;
 				TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
@@ -484,7 +494,7 @@ void PERIPH_ProcessFrontPanel(void)
 				mode = 0;
 			TRX_setMode((uint8_t)mode, CurrentVFO());
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-			if(band>0)
+			if (band > 0)
 				TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 			LCD_UpdateQuery.TopButtons = true;
 		}
@@ -500,7 +510,7 @@ void PERIPH_ProcessFrontPanel(void)
 				mode = 0;
 			TRX_setMode((uint8_t)mode, CurrentVFO());
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-			if(band>0)
+			if (band > 0)
 				TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 			LCD_UpdateQuery.TopButtons = true;
 		}
@@ -539,7 +549,7 @@ void PERIPH_ProcessFrontPanel(void)
 				band = 0;
 			if (band < 0)
 				band = BANDS_COUNT - 1;
-			
+
 			if (band >= 0)
 			{
 				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
@@ -609,11 +619,11 @@ void PERIPH_ProcessFrontPanel(void)
 		TRX_Volume = (uint16_t)(1023.0f - mcp3008_value);
 
 		mcp3008_value = PERIPH_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin); // SHIFT или IF Gain
-		if(TRX.ShiftEnabled)
+		if (TRX.ShiftEnabled)
 		{
 			TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SHIFT_INTERVAL * 2 / 1023.0f) - TRX.SHIFT_INTERVAL);
 			//if (abs(TRX_SHIFT) < (TRX.SHIFT_INTERVAL / 10.0f)) //при минимальных отклонениях - игнорируем
-				//TRX_SHIFT = 0;
+			//TRX_SHIFT = 0;
 		}
 		else
 		{
@@ -653,7 +663,7 @@ void PERIPH_ProcessFrontPanel(void)
 			TRX_Time_InActive = 0;
 			CurrentVFO()->AGC = !CurrentVFO()->AGC;
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-			if(band>0)
+			if (band > 0)
 				TRX.BANDS_SAVED_SETTINGS[band].AGC = CurrentVFO()->AGC;
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
@@ -691,7 +701,7 @@ void PERIPH_ProcessFrontPanel(void)
 			TRX_Time_InActive = 0;
 			CurrentVFO()->DNR = !CurrentVFO()->DNR;
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-			if(band>0)
+			if (band > 0)
 				TRX.BANDS_SAVED_SETTINGS[band].DNR = CurrentVFO()->DNR;
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
@@ -872,7 +882,7 @@ void PERIPH_ProcessSWRMeter(void)
 	float32_t backward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / 65535.0f;
 
 	forward = forward / (510.0f / (0.1f + 510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
-	if (forward < 0.01f)	 //меньше 10mV не измеряем
+	if (forward < 0.01f)							//меньше 10mV не измеряем
 	{
 		TRX_SWR_forward = 0.0f;
 		TRX_SWR_backward = 0.0f;
@@ -880,13 +890,13 @@ void PERIPH_ProcessSWRMeter(void)
 		return;
 	}
 
-	forward += 0.62f;			// падение на диоде
+	forward += 0.62f;							  // падение на диоде
 	forward = forward * CALIBRATE.swr_trans_rate; // Коэффициент трансформации КСВ метра
 
 	backward = backward / (510.0f / (0.1f + 510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
-	if (backward >= 0.01f)	 //меньше 10mV не измеряем
+	if (backward >= 0.01f)							  //меньше 10mV не измеряем
 	{
-		backward += 0.62f;			  // падение на диоде
+		backward += 0.62f;								// падение на диоде
 		backward = backward * CALIBRATE.swr_trans_rate; //Коэффициент трансформации КСВ метра
 	}
 	else
@@ -943,11 +953,11 @@ bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPI
 	memset(in_data, 0x00, count);
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
-	if(in_data==NULL)
+	if (in_data == NULL)
 	{
 		res = HAL_SPI_Transmit(&hspi2, out_data, count, timeout);
 	}
-	else if(out_data==NULL)
+	else if (out_data == NULL)
 	{
 		res = HAL_SPI_Receive(&hspi2, in_data, count, timeout);
 	}
@@ -955,7 +965,7 @@ bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPI
 	{
 		res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, timeout);
 	}
-	if(!hold_cs)
+	if (!hold_cs)
 		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
 	PERIPH_SPI_busy = false;
 	if (res == HAL_TIMEOUT || res == HAL_ERROR)

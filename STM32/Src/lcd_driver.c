@@ -92,7 +92,7 @@ uint16_t LCDDriver_GetCurrentXOffset(void)
 //Initialise function
 void LCDDriver_Init(void)
 {
-#if FMC_REMAP	
+#if FMC_REMAP
 	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK1)
 		LCD_FSMC_COMM_ADDR = 0xC0000000;
 	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK2)
@@ -137,17 +137,17 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0);
 	LCDDriver_SendData(0x1F);
 	//-------------ddram ----------------------------
-	LCDDriver_SendCommand(LCD_COMMAND_COLUMN_ADDR);	// column set
+	LCDDriver_SendCommand(LCD_COMMAND_COLUMN_ADDR);	   // column set
 	LCDDriver_SendData(0x00);						   // x0_HIGH---0
 	LCDDriver_SendData(0x00);						   // x0_LOW----0
 	LCDDriver_SendData(0x00);						   // x1_HIGH---240
 	LCDDriver_SendData(0xEF);						   // x1_LOW----240
-	LCDDriver_SendCommand(LCD_COMMAND_PAGE_ADDR);	  // page address set
+	LCDDriver_SendCommand(LCD_COMMAND_PAGE_ADDR);	   // page address set
 	LCDDriver_SendData(0x00);						   // y0_HIGH---0
 	LCDDriver_SendData(0x00);						   // y0_LOW----0
 	LCDDriver_SendData(0x01);						   // y1_HIGH---320
 	LCDDriver_SendData(0x3F);						   // y1_LOW----320
-	LCDDriver_SendCommand(LCD_COMMAND_TEARING_OFF);	// tearing effect off
+	LCDDriver_SendCommand(LCD_COMMAND_TEARING_OFF);	   // tearing effect off
 	LCDDriver_SendCommand(LCD_COMMAND_Entry_Mode_Set); // entry mode set
 	// Deep Standby Mode: OFF
 	// Set the output level of gate driver G1-G320: Normal display
@@ -290,7 +290,7 @@ void LCDDriver_Init(void)
 
 	LCDDriver_SendCommand(LCD_COMMAND_SOFT_RESET); //0x01
 	HAL_Delay(20);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_EXIT_SLEEP_MODE); //0x11
 	HAL_Delay(20);
 
@@ -464,10 +464,10 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 	}
 	else
 	{*/
-		while (n--)
-		{
-			LCDDriver_SendData(color);
-		}
+	while (n--)
+	{
+		LCDDriver_SendData(color);
+	}
 	/*}*/
 }
 
@@ -483,13 +483,13 @@ void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint
 	if (steep)
 	{
 		uswap(x0, y0)
-		uswap(x1, y1)
+			uswap(x1, y1)
 	}
 
 	if (x0 > x1)
 	{
 		uswap(x0, x1)
-		uswap(y0, y1)
+			uswap(y0, y1)
 	}
 
 	int16_t dx, dy;
@@ -570,7 +570,7 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 	if ((x >= LCD_WIDTH) ||			// Clip right
 		(y >= LCD_HEIGHT) ||		// Clip bottom
 		((x + 6 * size - 1) < 0) || // Clip left
-		((y + 8 * size - 1) < 0))   // Clip top
+		((y + 8 * size - 1) < 0))	// Clip top
 		return;
 
 	if (!_cp437 && (c >= 176))
@@ -624,8 +624,10 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 	uint8_t xx, yy, bits = 0, bit = 0;
 	int16_t ys1 = y + yo;
 	int16_t ys2 = y + yo + h - 1;
-	if(ys1<0) ys1=0;
-	if(ys2<0) ys2=0;
+	if (ys1 < 0)
+		ys1 = 0;
+	if (ys2 < 0)
+		ys2 = 0;
 	LCDDriver_SetCursorAreaPosition(x, (uint16_t)ys1, x + xa - 1, (uint16_t)ys2); //char area
 
 	for (yy = 0; yy < h; yy++)
@@ -677,8 +679,8 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 				uint8_t w = pgm_read_byte(&glyph->width);
 				uint8_t h = pgm_read_byte(&glyph->height);
 				if ((w > 0) && (h > 0))
-				{													
-					int16_t xo = (int8_t)pgm_read_byte(&glyph->xOffset); 
+				{
+					int16_t xo = (int8_t)pgm_read_byte(&glyph->xOffset);
 					if (wrap && ((text_cursor_x + (xo + w)) > LCD_WIDTH))
 					{
 						text_cursor_x = 0;
@@ -724,7 +726,7 @@ static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx
 					gh = pgm_read_byte(&glyph->height),
 					xa = pgm_read_byte(&glyph->xAdvance);
 			int8_t xo = (int8_t)pgm_read_byte(&glyph->xOffset),
-					yo = (int8_t)pgm_read_byte(&glyph->yOffset);
+				   yo = (int8_t)pgm_read_byte(&glyph->yOffset);
 			if (wrap && ((*x + (((int16_t)xo + gw))) > LCD_WIDTH))
 			{
 				*x = 0; // Reset x to zero, advance y by one line
@@ -798,36 +800,38 @@ void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_
 	}
 }
 
-void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE* image)
+void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image)
 {
 	uint32_t pixels = image->width * image->height;
 	uint32_t i = 0;
 	uint32_t decoded = 0;
 
 	LCDDriver_SetCursorAreaPosition(x, y, image->width + x - 1, image->height + y - 1);
-	while(true)
+	while (true)
 	{
-		if((int16_t)image->data[i] < 0) //нет повторов
+		if ((int16_t)image->data[i] < 0) //нет повторов
 		{
 			uint16_t count = (-(int16_t)image->data[i]);
 			i++;
-			for(uint16_t p = 0 ; p < count ; p++)
+			for (uint16_t p = 0; p < count; p++)
 			{
 				LCDDriver_SendData(image->data[i]);
 				decoded++;
 				i++;
-				if(pixels <= decoded) return;
+				if (pixels <= decoded)
+					return;
 			}
 		}
 		else //повторы
 		{
 			uint16_t count = ((int16_t)image->data[i]);
 			i++;
-			for(uint16_t p = 0 ; p < count ; p++)
+			for (uint16_t p = 0; p < count; p++)
 			{
 				LCDDriver_SendData(image->data[i]);
 				decoded++;
-				if(pixels <= decoded) return;
+				if (pixels <= decoded)
+					return;
 			}
 			i++;
 		}

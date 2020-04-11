@@ -9,10 +9,11 @@
 // RLE compression enabled: yes !!!!!!!
 // bits per pixel: 16
 
-typedef struct { //структура изображения
+typedef struct
+{ //структура изображения
 	const uint16_t width;
 	const uint16_t height;
-	const uint16_t* data;
+	const uint16_t *data;
 } tIMAGE;
 
 //Логотип при запуске

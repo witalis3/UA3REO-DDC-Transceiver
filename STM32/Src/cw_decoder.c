@@ -11,7 +11,7 @@
 #include "fpga.h"
 
 //Public variables
-volatile uint16_t CW_Decoder_WPM = 0; //декодирвоанная скорость, WPM
+volatile uint16_t CW_Decoder_WPM = 0;						//декодирвоанная скорость, WPM
 char CW_Decoder_Text[CWDECODER_STRLEN] = "               "; //декодирвоанная строка
 
 //Private variables
@@ -35,7 +35,7 @@ static uint32_t hightimesavg = 0;
 static char code[20] = {0};
 
 //Prototypes
-static void CWDecoder_Decode(void); //декодирование из морзе в символы
+static void CWDecoder_Decode(void);			//декодирование из морзе в символы
 static void CWDecoder_PrintChar(char *str); //вывод символа в результирующую строку
 
 //инициализация CW декодера

@@ -1399,7 +1399,7 @@ static void AUDIO_REQ_SetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef 
 
 		haudio->control.cmd = AUDIO_REQ_SET_CUR;	 /* Set the request value */
 		haudio->control.len = (uint8_t)req->wLength; /* Set the request data length */
-		haudio->control.unit = HIBYTE(req->wIndex);  /* Set the request target unit */
+		haudio->control.unit = HIBYTE(req->wIndex);	 /* Set the request target unit */
 	}
 }
 
@@ -1411,15 +1411,15 @@ static uint8_t USBD_UA3REO_SOF(void)
 
 void USBD_Restart(void)
 {
-  //MX_USB_DevDisconnect();
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  //GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
-  GPIO_InitStruct.Pin = GPIO_PIN_12;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
-  //HAL_Delay(300);
-  MX_USB_DEVICE_Init();
+	//MX_USB_DevDisconnect();
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	//GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
+	GPIO_InitStruct.Pin = GPIO_PIN_12;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
+	//HAL_Delay(300);
+	MX_USB_DEVICE_Init();
 	USB_LastActiveTime = HAL_GetTick();
 }

@@ -30,7 +30,7 @@ volatile int_fast16_t TRX_RX_dBm = -100;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
 volatile uint_fast8_t TRX_Time_InActive = 0; //секунд бездействия, используется для спящего режима
-volatile uint_fast8_t TRX_Fan_Timeout = 0;   //секунд, сколько ещё осталось крутить вентилятор
+volatile uint_fast8_t TRX_Fan_Timeout = 0;	 //секунд, сколько ещё осталось крутить вентилятор
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile uint16_t TRX_Volume;
@@ -40,11 +40,11 @@ volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
 volatile float32_t TRX_SWR_forward = 0;
 volatile float32_t TRX_SWR_backward = 0;
 volatile float32_t TRX_SWR = 0;
-static uint_fast8_t autogain_wait_reaction = 0;   //таймер ожидания реакции от смены режимов ATT/PRE
-static uint_fast8_t autogain_stage = 0;			 //этап отработки актокорректировщика усиления
-static uint32_t KEYER_symbol_start_time = 0; //время старта символа автоматического ключа
-static bool KEYER_symbol_status = false;	 //статус (сигнал или период) символа автоматического ключа
-volatile float32_t TRX_STM32_VREF = 3.3f; //напряжение на STM32
+static uint_fast8_t autogain_wait_reaction = 0;	  //таймер ожидания реакции от смены режимов ATT/PRE
+static uint_fast8_t autogain_stage = 0;			  //этап отработки актокорректировщика усиления
+static uint32_t KEYER_symbol_start_time = 0;	  //время старта символа автоматического ключа
+static bool KEYER_symbol_status = false;		  //статус (сигнал или период) символа автоматического ключа
+volatile float32_t TRX_STM32_VREF = 3.3f;		  //напряжение на STM32
 volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; //температура STM32
 volatile float32_t TRX_IQ_phase_error = 0.0f;
 volatile bool TRX_NeedGoToBootloader = false;
@@ -220,9 +220,10 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 		return;
 	if (_freq >= MAX_FREQ_HZ)
 		_freq = MAX_FREQ_HZ;
-	
+
 	vfo->Freq = _freq;
-	if(sysmenu_spectrum_opened) return;
+	if (sysmenu_spectrum_opened)
+		return;
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
 	if (bandFromFreq >= 0)
 	{
@@ -297,7 +298,7 @@ void TRX_DoAutoGain(void)
 			autogain_wait_reaction = 0;
 			//sendToDebug_str("AUTOGAIN LPF+BPF+ATT\r\n");
 			break;
-		case 1:																		 //сменили состояние, обрабатываем результаты
+		case 1:																					//сменили состояние, обрабатываем результаты
 			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(-CALIBRATE.att_db)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
 				autogain_wait_reaction++;
 			else
@@ -318,7 +319,7 @@ void TRX_DoAutoGain(void)
 			break;
 		case 3: //сменили состояние, обрабатываем результаты
 			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE)
-				autogain_stage -= 3;																			//слишком большое усиление, возвращаемся на этап назад
+				autogain_stage -= 3;																							  //слишком большое усиление, возвращаемся на этап назад
 			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(CALIBRATE.lna_gain_db) / db2rateV(-CALIBRATE.att_db)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем включить АТТ+PREAMP - переходим на следующий этап (+20dB-12dB)
 				autogain_wait_reaction++;
 			else
@@ -339,7 +340,7 @@ void TRX_DoAutoGain(void)
 			break;
 		case 5: //сменили состояние, обрабатываем результаты
 			if (TRX_ADC_MAXAMPLITUDE > AUTOGAIN_MAX_AMPLITUDE)
-				autogain_stage -= 3;												 //слишком большое усиление, возвращаемся на этап назад
+				autogain_stage -= 3;															//слишком большое усиление, возвращаемся на этап назад
 			if ((TRX_ADC_MAXAMPLITUDE * db2rateV(-CALIBRATE.att_db)) <= AUTOGAIN_MAX_AMPLITUDE) //если можем выключить АТТ - переходим на следующий этап (+12dB)
 				autogain_wait_reaction++;
 			else
@@ -373,7 +374,7 @@ void TRX_DBMCalculate(void)
 {
 	TRX_RX_dBm = (int16_t)(rate2dbP(Processor_RX_Power_value) + CALIBRATE.smeter_calibration);
 	Processor_RX_Power_value = 0;
-	if(CurrentVFO()->Mode != TRX_MODE_IQ)
+	if (CurrentVFO()->Mode != TRX_MODE_IQ)
 		TRX_RX_dBm -= TRX.IF_Gain;
 }
 
@@ -421,17 +422,17 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 
 float32_t TRX_getSTM32H743Temperature(void)
 {
-	uint16_t TS_CAL1 = *((uint16_t*)0x1FF1E820); // TS_CAL1 Temperature sensor raw data acquired value at 30 °C, VDDA=3.3 V
-	uint16_t TS_CAL2 = *((uint16_t*)0x1FF1E840); // TS_CAL2 Temperature sensor raw data acquired value at 110 °C, VDDA=3.3 V
+	uint16_t TS_CAL1 = *((uint16_t *)0x1FF1E820); // TS_CAL1 Temperature sensor raw data acquired value at 30 °C, VDDA=3.3 V
+	uint16_t TS_CAL2 = *((uint16_t *)0x1FF1E840); // TS_CAL2 Temperature sensor raw data acquired value at 110 °C, VDDA=3.3 V
 	uint32_t TS_DATA = HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_1);
-	float32_t result = ((110.0f - 30.0f)/((float32_t)TS_CAL2 - (float32_t)TS_CAL1))*((float32_t)TS_DATA - (float32_t)TS_CAL1)+30; //from reference
+	float32_t result = ((110.0f - 30.0f) / ((float32_t)TS_CAL2 - (float32_t)TS_CAL1)) * ((float32_t)TS_DATA - (float32_t)TS_CAL1) + 30; //from reference
 	return result;
 }
 
 float32_t TRX_getSTM32H743vref(void)
 {
-	uint16_t VREFINT_CAL = *((uint16_t*)0x1FF1E860); // VREFIN_CAL Raw data acquired at temperature of 30 °C, VDDA = 3.3 V
+	uint16_t VREFINT_CAL = *((uint16_t *)0x1FF1E860); // VREFIN_CAL Raw data acquired at temperature of 30 °C, VDDA = 3.3 V
 	uint32_t VREFINT_DATA = HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_2);
-	float32_t result =  3.3f * (float32_t)VREFINT_CAL / (float32_t)VREFINT_DATA; //from reference
+	float32_t result = 3.3f * (float32_t)VREFINT_CAL / (float32_t)VREFINT_DATA; //from reference
 	return result;
 }

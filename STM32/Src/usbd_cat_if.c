@@ -305,7 +305,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			if (CurrentVFO()->Freq < 10000000)
 				strcat(answer, "0");
 			sprintf(ctmp, "%d", CurrentVFO()->Freq);
-			strcat(answer, ctmp);	//freq
+			strcat(answer, ctmp);	 //freq
 			strcat(answer, "+0000"); //clirifier offset
 			strcat(answer, "0");	 //RX clar off
 			strcat(answer, "0");	 //TX clar off

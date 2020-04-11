@@ -15,7 +15,7 @@ extern "C"
 	extern uint8_t IRAM2 USB_AUDIO_rx_buffer_b[USB_AUDIO_RX_BUFFER_SIZE];
 	extern uint8_t IRAM2 USB_AUDIO_tx_buffer[USB_AUDIO_TX_BUFFER_SIZE];
 	extern volatile bool USB_AUDIO_current_rx_buffer; // a-false b-true
-	extern volatile bool USB_AUDIO_need_rx_buffer;	// a-false b-true
+	extern volatile bool USB_AUDIO_need_rx_buffer;	  // a-false b-true
 	extern uint32_t USB_AUDIO_GetTXBufferIndex_FS(void);
 
 	void TransferComplete_CallBack_FS(void);

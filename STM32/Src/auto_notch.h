@@ -8,9 +8,9 @@
 #include "audio_processor.h"
 
 #define AUTO_NOTCH_BLOCK_SIZE (FPGA_AUDIO_BUFFER_HALF_SIZE / 3) //размер блока для обработки
-#define AUTO_NOTCH_TAPS AUTO_NOTCH_BLOCK_SIZE //порядок фильтра
-#define AUTO_NOTCH_REFERENCE_SIZE (AUTO_NOTCH_BLOCK_SIZE * 2) //размер опорного буффера
-#define AUTO_NOTCH_STEP 0.0001f //шаг LMS алгоритма
+#define AUTO_NOTCH_TAPS AUTO_NOTCH_BLOCK_SIZE					//порядок фильтра
+#define AUTO_NOTCH_REFERENCE_SIZE (AUTO_NOTCH_BLOCK_SIZE * 2)	//размер опорного буффера
+#define AUTO_NOTCH_STEP 0.0001f									//шаг LMS алгоритма
 
 typedef struct //инстанс фильтра
 {
@@ -24,7 +24,7 @@ typedef struct //инстанс фильтра
 } AN_Instance;
 
 //Public methods
-extern void InitAutoNotchReduction(void); //инициализация автоматического нотч-фильтра
+extern void InitAutoNotchReduction(void);										   //инициализация автоматического нотч-фильтра
 extern void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id); //запуск автоматического нотч-фильтра
 
 #endif

@@ -5,7 +5,7 @@
 #include "trx_manager.h"
 #include "lcd_driver.h"
 
-typedef struct 
+typedef struct
 {
 	bool Background;
 	bool TopButtons;

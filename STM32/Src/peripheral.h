@@ -55,7 +55,7 @@ typedef struct
 	uint32_t key_menu_starttime;
 	bool key_menu_afterhold;
 	uint16_t key_afgain; //10-bit
-	uint16_t key_shift;  //10-bit
+	uint16_t key_shift;	 //10-bit
 						 //
 } PERIPH_FrontPanel_Type;
 

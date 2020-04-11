@@ -53,7 +53,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#pragma GCC diagnostic push 
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wunused-function"
 /* USER CODE END PM */
@@ -159,11 +159,11 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-	//System stabilization
-	while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) || (RCC->CR & RCC_CR_HSERDY) == 0 || (RCC->CR & RCC_CR_PLL1RDY) == 0 || (RCC->CR & RCC_CR_PLL2RDY) == 0 || (RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1) 
-	{
-		SystemClock_Config();
-	}
+  //System stabilization
+  while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) || (RCC->CR & RCC_CR_HSERDY) == 0 || (RCC->CR & RCC_CR_PLL1RDY) == 0 || (RCC->CR & RCC_CR_PLL2RDY) == 0 || (RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1)
+  {
+    SystemClock_Config();
+  }
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -187,32 +187,32 @@ int main(void)
   /* USER CODE BEGIN 2 */
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("UA3REO Transceiver Initialization...");
-	sendToDebug_strln("[OK] USB init");
-	USBD_Restart();
-	sendToDebug_strln("[OK] FIFO timer TIM7 init");
+  sendToDebug_strln("[OK] USB init");
+  USBD_Restart();
+  sendToDebug_strln("[OK] FIFO timer TIM7 init");
   HAL_TIM_Base_Start_IT(&htim7);
-	sendToDebug_strln("[OK] LCD init");
-	LCD_busy = true;
-	LCD_Init();
-	if (SHOW_LOGO)
-		LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo);
-	sendToDebug_strln("[OK] Real Time Clock init");
-	HAL_RTC_Init(&hrtc);
-	sendToDebug_strln("[OK] Profiler init");
+  sendToDebug_strln("[OK] LCD init");
+  LCD_busy = true;
+  LCD_Init();
+  if (SHOW_LOGO)
+    LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo);
+  sendToDebug_strln("[OK] Real Time Clock init");
+  HAL_RTC_Init(&hrtc);
+  sendToDebug_strln("[OK] Profiler init");
   InitProfiler();
   sendToDebug_strln("[OK] Frontpanel init");
-	PERIPH_InitFrontPanel();
-	sendToDebug_strln("[OK] Settings loading");
+  PERIPH_InitFrontPanel();
+  sendToDebug_strln("[OK] Settings loading");
   if (PERIPH_FrontPanel.key_menu) //hard reset
     LoadSettings(true);
   else
     LoadSettings(false);
-	sendToDebug_strln("[OK] Calibration loading");
-	LoadCalibration();
-	sendToDebug_strln("[OK] STM32-ADC Calibration");
-	HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
-	HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
-	sendToDebug_strln("[OK] RF-Unit init");
+  sendToDebug_strln("[OK] Calibration loading");
+  LoadCalibration();
+  sendToDebug_strln("[OK] STM32-ADC Calibration");
+  HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
+  sendToDebug_strln("[OK] RF-Unit init");
   PERIPH_RF_UNIT_UpdateState(false);
   sendToDebug_strln("[OK] FFT/Waterfall & TIM4 init");
   FFT_Init();
@@ -220,30 +220,30 @@ int main(void)
   sendToDebug_strln("[OK] AudioCodec init");
   WM8731_Init();
   sendToDebug_strln("[OK] TRX init");
-	TRX_Init();
+  TRX_Init();
   sendToDebug_strln("[OK] FPGA init");
-	FPGA_Init();
-	sendToDebug_strln("[OK] Audioprocessor & TIM5 init");
+  FPGA_Init();
+  sendToDebug_strln("[OK] Audioprocessor & TIM5 init");
   initAudioProcessor();
   HAL_TIM_Base_Start_IT(&htim5);
   if (SHOW_LOGO)
     HAL_Delay(1000); //logo wait
   LCD_busy = false;
   LCD_redraw();
-	HAL_TIM_Base_Start(&htim6);
+  HAL_TIM_Base_Start(&htim6);
   HAL_TIM_Base_Start_IT(&htim6);
   sendToDebug_strln("[OK] Misc timer TIM6 inited");
   __HAL_RCC_USB1_OTG_HS_CLK_SLEEP_ENABLE();
   __HAL_RCC_USB1_OTG_HS_ULPI_CLK_SLEEP_DISABLE();
   __HAL_RCC_USB2_OTG_FS_CLK_SLEEP_ENABLE();
   __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE();
-	CPULOAD_Init();
+  CPULOAD_Init();
   TRX_Inited = true;
-	sendToDebug_strln("[OK] WIFI timer TIM3 init");
-	HAL_TIM_Base_Start_IT(&htim3);
+  sendToDebug_strln("[OK] WIFI timer TIM3 init");
+  HAL_TIM_Base_Start_IT(&htim3);
   sendToDebug_strln("[OK] PERIPHERAL timer TIM15 init");
-	HAL_TIM_Base_Start_IT(&htim15);
-	sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
+  HAL_TIM_Base_Start_IT(&htim15);
+  sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -253,9 +253,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		CPULOAD_GoToSleepMode();
-		if(TRX_NeedGoToBootloader)
-			JumpToBootloader();
+    CPULOAD_GoToSleepMode();
+    if (TRX_NeedGoToBootloader)
+      JumpToBootloader();
   }
   /* USER CODE END 3 */
 }
@@ -534,9 +534,9 @@ static void MX_I2S3_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN I2S3_Init 2 */
-	//перевод I2S в режим full-duplex
-	hi2s3.Init.Mode = I2S_MODE_MASTER_FULLDUPLEX;
-	if (HAL_I2S_Init(&hi2s3) != HAL_OK)
+  //перевод I2S в режим full-duplex
+  hi2s3.Init.Mode = I2S_MODE_MASTER_FULLDUPLEX;
+  if (HAL_I2S_Init(&hi2s3) != HAL_OK)
   {
     Error_Handler();
   }

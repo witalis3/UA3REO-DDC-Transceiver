@@ -185,7 +185,7 @@ typedef struct
 	uint16_t bitmapOffset; ///< Pointer into GFXfont->bitmap
 	uint8_t width;		   ///< Bitmap dimensions in pixels
 	uint8_t height;		   ///< Bitmap dimensions in pixels
-	uint8_t xAdvance;	  ///< Distance to advance cursor (x axis)
+	uint8_t xAdvance;	   ///< Distance to advance cursor (x axis)
 	int8_t xOffset;		   ///< X dist from cursor pos to UL corner
 	int8_t yOffset;		   ///< Y dist from cursor pos to UL corner
 } GFXglyph;
@@ -193,8 +193,8 @@ typedef struct
 /// Data stored for FONT AS A WHOLE
 typedef struct
 {
-	const uint8_t *bitmap;  ///< Glyph bitmaps, concatenated
-	const GFXglyph *glyph;  ///< Glyph array
+	const uint8_t *bitmap;	///< Glyph bitmaps, concatenated
+	const GFXglyph *glyph;	///< Glyph array
 	const uint8_t first;	///< ASCII extents (first char)
 	const uint8_t last;		///< ASCII extents (last char)
 	const uint8_t yAdvance; ///< Newline distance (y axis)
@@ -202,10 +202,10 @@ typedef struct
 
 //Functions defines Macros
 #define uswap(a, b)     \
-	{                  \
+	{                   \
 		uint16_t t = a; \
-		a = b;         \
-		b = t;         \
+		a = b;          \
+		b = t;          \
 	}
 #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
 #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
@@ -244,7 +244,7 @@ extern void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t co
 extern void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, GFXfont gfxFont);
 extern void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont gfxFont);
 extern void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data);
-extern void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE* image);
+extern void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image);
 extern void LCDDriver_setRotation(uint8_t rotate);
 extern void LCDDriver_setBrightness(uint8_t percent);
 

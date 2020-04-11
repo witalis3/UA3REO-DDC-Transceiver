@@ -6,8 +6,8 @@
 
 //оформление элементов экрана
 
-#define BACKGROUND_COLOR COLOR_BLACK //фон
-#define COLOR_BUTTON_TEXT COLOR_DGREEN //активный цвет статусной кнопки
+#define BACKGROUND_COLOR COLOR_BLACK                          //фон
+#define COLOR_BUTTON_TEXT COLOR_DGREEN                        //активный цвет статусной кнопки
 #define COLOR_BUTTON_INACTIVE_TEXT rgb888torgb565(50, 50, 50) //неактивный цвет
 
 //часы
@@ -155,15 +155,15 @@
 #define LAY_TEXTBAR_TEXT_X_OFFSET 75
 
 //FFT и водопад
-#define LAY_FFT_HEIGHT_STYLE1 40                                   //указываем максимальную высоту FFT
-#define LAY_WTF_HEIGHT_STYLE1 100                                   //указываем максимальную высоту водопада
-#define LAY_FFT_HEIGHT_STYLE2 100                                   //указываем максимальную высоту FFT
-#define LAY_WTF_HEIGHT_STYLE2 40                                   //указываем максимальную высоту водопада
+#define LAY_FFT_HEIGHT_STYLE1 40  //указываем максимальную высоту FFT
+#define LAY_WTF_HEIGHT_STYLE1 100 //указываем максимальную высоту водопада
+#define LAY_FFT_HEIGHT_STYLE2 100 //указываем максимальную высоту FFT
+#define LAY_WTF_HEIGHT_STYLE2 40  //указываем максимальную высоту водопада
 #define LAY_FFT_STYLE_3_4_COLOR COLOR_WHITE
 #define LAY_FFT_WTF_MAX_HEIGHT (LAY_FFT_HEIGHT_STYLE1 + LAY_WTF_HEIGHT_STYLE1) //максимально возможная высота FFT+WTF
-#define LAY_FFT_WTF_POS_Y ((uint16_t)(LCD_HEIGHT - LAY_FFT_WTF_MAX_HEIGHT)) //начало FFT и водопада
-#define LAY_FFT_PRINT_SIZE 480                                  //указываем ширину выводимого FFT
-#define LAY_FFT_CWDECODER_OFFSET 17                             //место под текст CW декодера
+#define LAY_FFT_WTF_POS_Y ((uint16_t)(LCD_HEIGHT - LAY_FFT_WTF_MAX_HEIGHT))    //начало FFT и водопада
+#define LAY_FFT_PRINT_SIZE 480                                                 //указываем ширину выводимого FFT
+#define LAY_FFT_CWDECODER_OFFSET 17                                            //место под текст CW декодера
 
 //системное меню
 #define LAY_SYSMENU_X1 5
