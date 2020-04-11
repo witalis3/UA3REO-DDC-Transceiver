@@ -35,6 +35,7 @@ static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM
 static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;																						 // used for squelch processing and debouncing tone detection, respectively
 static float32_t DFM_RX1_fm_sql_avg = 0.0f;																													 //среднее значение SQL в FM
 static float32_t DFM_RX2_fm_sql_avg = 0.0f;
+static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 
 //Prototypes
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id);		//фильтр Гильберта для смещения фазы сигналов
@@ -149,7 +150,7 @@ void processRxAudio(void)
 	case TRX_MODE_DIGI_U:
 		doRX_HILBERT(AUDIO_RX1);
 		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); // sum of I and Q - USB
-		if (current_vfo->Mode != TRX_MODE_DIGI_L)
+		if (current_vfo->Mode != TRX_MODE_DIGI_U)
 			doRX_HPF_I(AUDIO_RX1);
 		doRX_LPF_I(AUDIO_RX1);
 		doRX_NoiseBlanker(AUDIO_RX1);
@@ -178,8 +179,8 @@ void processRxAudio(void)
 	case TRX_MODE_NFM:
 	case TRX_MODE_WFM:
 		doRX_LPF_IQ(AUDIO_RX1);
-		DemodulateFM(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
+		DemodulateFM(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
 		doRX_DNR(AUDIO_RX1);
 		doRX_COPYCHANNEL(AUDIO_RX1);
@@ -797,9 +798,6 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id)
 //демодулятор FM
 static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id)
 {
-	float32_t angle, x, y, a, b;
-	float32_t squelch_buf[FPGA_AUDIO_BUFFER_HALF_SIZE];
-
 	float32_t *lpf_prev = &DFM_RX1_lpf_prev;
 	float32_t *hpf_prev_a = &DFM_RX1_hpf_prev_a;
 	float32_t *hpf_prev_b = &DFM_RX1_hpf_prev_b;
@@ -809,7 +807,12 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id)
 	float32_t *FPGA_Audio_Buffer_I_tmp = &FPGA_Audio_Buffer_RX1_I_tmp[0];
 	float32_t *FPGA_Audio_Buffer_Q_tmp = &FPGA_Audio_Buffer_RX1_Q_tmp[0];
 	float32_t *fm_sql_avg = &DFM_RX1_fm_sql_avg;
+	arm_biquad_cascade_df2T_instance_f32 *iir_filter_inst = &IIR_RX1_Squelch_HPF;
+	bool *squelched = &DFM_RX1_Squelched;
 
+	float32_t angle, x, y, a, b;
+	float32_t squelch_buf[FPGA_AUDIO_BUFFER_HALF_SIZE];
+	
 	if (rx_id == AUDIO_RX2)
 	{
 		lpf_prev = &DFM_RX2_lpf_prev;
@@ -819,8 +822,10 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id)
 		q_prev = &DFM_RX2_q_prev;
 		fm_sql_count = &DFM_RX2_fm_sql_count;
 		fm_sql_avg = &DFM_RX2_fm_sql_avg;
+		iir_filter_inst = &IIR_RX2_Squelch_HPF;
 		FPGA_Audio_Buffer_I_tmp = &FPGA_Audio_Buffer_RX2_I_tmp[0];
 		FPGA_Audio_Buffer_Q_tmp = &FPGA_Audio_Buffer_RX2_Q_tmp[0];
+		squelched = &DFM_RX2_Squelched;
 	}
 
 	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
@@ -839,7 +844,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id)
 		*q_prev = FPGA_Audio_Buffer_Q_tmp[i]; // save "previous" value of each channel to allow detection of the change of angle in next go-around
 		*i_prev = FPGA_Audio_Buffer_I_tmp[i];
 
-		if ((!TRX_Squelched) || (!TRX.FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
+		if ((!*squelched) || (!TRX.FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
 		{
 			if (CurrentVFO()->Mode == TRX_MODE_WFM)
 			{
@@ -853,46 +858,46 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id)
 				FPGA_Audio_Buffer_I_tmp[i] = b * 30000.0f; // save demodulated and filtered audio in main audio processing buffer
 			}
 		}
-		else if (TRX_Squelched)				// were we squelched or tone NOT detected?
+		else if (*squelched)				// were we squelched or tone NOT detected?
 			FPGA_Audio_Buffer_I_tmp[i] = 0; // do not filter receive audio - fill buffer with zeroes to mute it
 	}
 
 	// *** Squelch Processing ***
-	//arm_iir_lattice_f32(&IIR_Squelch_HPF, squelch_buf, squelch_buf, FPGA_AUDIO_BUFFER_HALF_SIZE);	// Do IIR high-pass filter on audio so we may detect squelch noise energy
+	arm_biquad_cascade_df2T_f32(iir_filter_inst, squelch_buf, squelch_buf, FPGA_AUDIO_BUFFER_HALF_SIZE);	// Do IIR high-pass filter on audio so we may detect squelch noise energy
 	*fm_sql_avg = ((1.0f - FM_RX_SQL_SMOOTHING) * *fm_sql_avg) + (FM_RX_SQL_SMOOTHING * sqrtf(fabsf(squelch_buf[0]))); // IIR filter squelch energy magnitude:  We need look at only one representative sample
 
-	// Squelch processing
+	*fm_sql_count = *fm_sql_count + 1; // bump count that controls how often the squelch threshold is checked
+	if(*fm_sql_count >= FM_SQUELCH_PROC_DECIMATION)
+		*fm_sql_count = 0; // enforce the count limit
+	
 	// Determine if the (averaged) energy in "ads.fm_sql_avg" is above or below the squelch threshold
 	if (*fm_sql_count == 0) // do the squelch threshold calculation much less often than we are called to process this audio
 	{
 		if (*fm_sql_avg > 0.7f) // limit maximum noise value in averaging to keep it from going out into the weeds under no-signal conditions (higher = noisier)
 			*fm_sql_avg = 0.7f;
 		b = *fm_sql_avg * 10.0f; // scale noise amplitude to range of squelch setting
+
 		// Now evaluate noise power with respect to squelch setting
 		if (!TRX.FM_SQL_threshold) // is squelch set to zero?
-			TRX_Squelched = false; // yes, the we are un-squelched
-		else if (TRX_Squelched)	   // are we squelched?
+			*squelched = false; // yes, the we are un-squelched
+		else if (*squelched)	   // are we squelched?
 		{
 			if (b <= (float)((10 - TRX.FM_SQL_threshold) - FM_SQUELCH_HYSTERESIS)) // yes - is average above threshold plus hysteresis?
-				TRX_Squelched = false;											   //  yes, open the squelch
+				*squelched = false;											   //  yes, open the squelch
 		}
 		else // is the squelch open (e.g. passing audio)?
 		{
 			if ((10.0f - TRX.FM_SQL_threshold) > FM_SQUELCH_HYSTERESIS) // is setting higher than hysteresis?
 			{
 				if (b > (float)((10 - TRX.FM_SQL_threshold) + FM_SQUELCH_HYSTERESIS)) // yes - is average below threshold minus hysteresis?
-					TRX_Squelched = true;											  // yes, close the squelch
+					*squelched = true;											  // yes, close the squelch
 			}
 			else // setting is lower than hysteresis so we can't use it!
 			{
 				if (b > (10.0f - (float)TRX.FM_SQL_threshold)) // yes - is average below threshold?
-					TRX_Squelched = true;					   // yes, close the squelch
+					*squelched = true;					   // yes, close the squelch
 			}
 		}
-		//
-		(*fm_sql_count)++; // bump count that controls how often the squelch threshold is checked
-		if (*fm_sql_count >= FM_SQUELCH_PROC_DECIMATION)
-			*fm_sql_count = 0; // enforce the count limit
 	}
 }
 

@@ -23,7 +23,6 @@ volatile bool TRX_key_dot_hard = false;
 volatile bool TRX_key_dash_hard = false;
 volatile uint_fast16_t TRX_Key_Timeout_est = 0;
 volatile bool TRX_IQ_swap = false;
-volatile bool TRX_Squelched = false;
 volatile bool TRX_Tune = false;
 volatile bool TRX_Inited = false;
 volatile int_fast16_t TRX_RX_dBm = -100;

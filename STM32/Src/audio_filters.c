@@ -28,6 +28,8 @@ static float32_t IIR_TX_LPF_I_State[IIR_RX2_LPF_Taps_STATE_SIZE];
 static float32_t IIR_RX1_HPF_I_State[IIR_RX1_HPF_Taps_STATE_SIZE];
 static float32_t IIR_RX2_HPF_I_State[IIR_RX2_HPF_Taps_STATE_SIZE];
 static float32_t IIR_TX_HPF_I_State[IIR_RX2_HPF_Taps_STATE_SIZE];
+static float32_t IIR_RX1_HPF_SQL_State[IIR_RX1_HPF_SQL_STATE_SIZE];
+static float32_t IIR_RX2_HPF_SQL_State[IIR_RX2_HPF_SQL_STATE_SIZE];
 static float32_t NOTCH_RX1_Coeffs[NOTCH_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX2_Coeffs[NOTCH_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX1_State[2 * NOTCH_STAGES];
@@ -272,6 +274,8 @@ arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX1_HPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_HPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_TX_HPF_I;
+arm_biquad_cascade_df2T_instance_f32 IIR_RX1_Squelch_HPF;
+arm_biquad_cascade_df2T_instance_f32 IIR_RX2_Squelch_HPF;
 arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER = {NOTCH_STAGES, NOTCH_RX1_State, NOTCH_RX1_Coeffs}; //ручной notch filter
 arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER = {NOTCH_STAGES, NOTCH_RX2_State, NOTCH_RX2_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_I_FILTER = {NOTCH_STAGES, NOTCH_FFT_I_State, NOTCH_RX1_Coeffs};
@@ -331,6 +335,19 @@ void ReinitAudioFilters(void)
 		IIR_BIQUAD_FILTER *hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, SecondaryVFO()->HPF_Filter_Width);
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX2_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_RX2_HPF_I_State[0]);
 	}
+	
+	//FM Squelch
+	IIR_BIQUAD_FILTER* fm_sql_hpf_filter;
+	if(CurrentVFO()->LPF_Filter_Width>15000 || CurrentVFO()->LPF_Filter_Width==0)
+		fm_sql_hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, 20000);
+	else
+		fm_sql_hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, 15000);
+	arm_biquad_cascade_df2T_init_f32(&IIR_RX1_Squelch_HPF, fm_sql_hpf_filter->stages, (float32_t *)fm_sql_hpf_filter->coeffs, (float32_t *)&IIR_RX1_HPF_SQL_State[0]);
+	if(SecondaryVFO()->LPF_Filter_Width>15000 || SecondaryVFO()->LPF_Filter_Width==0)
+		fm_sql_hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, 20000);
+	else
+		fm_sql_hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, 15000);
+	arm_biquad_cascade_df2T_init_f32(&IIR_RX2_Squelch_HPF, fm_sql_hpf_filter->stages, (float32_t *)fm_sql_hpf_filter->coeffs, (float32_t *)&IIR_RX2_HPF_SQL_State[0]);
 }
 
 //инициализация ручного Notch-фильтра

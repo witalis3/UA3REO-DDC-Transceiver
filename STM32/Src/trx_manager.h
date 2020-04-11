@@ -28,7 +28,6 @@ volatile extern bool TRX_key_dot_hard;
 volatile extern bool TRX_key_dash_hard;
 volatile extern uint_fast16_t TRX_Key_Timeout_est;
 volatile extern bool TRX_IQ_swap;
-volatile extern bool TRX_Squelched;
 volatile extern bool TRX_Tune;
 volatile extern bool TRX_Inited;
 volatile extern int_fast16_t TRX_RX_dBm;

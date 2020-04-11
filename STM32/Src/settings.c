@@ -98,7 +98,7 @@ void LoadSettings(bool clear)
 		TRX.ADC_Driver = false;				 //предусилитель (драйвер АЦП)
 		TRX.LNA = false;					 //LNA (малошумящий усилитель)
 		TRX.ATT = false;					 //аттенюатор
-		TRX.FM_SQL_threshold = 1;			 //FM-шумодав
+		TRX.FM_SQL_threshold = 4;			 //FM-шумодав
 		TRX.Fast = true;					 //ускоренная смена частоты при вращении энкодера
 		TRX.ADC_PGA = false;				 //ADC преамп
 		for (uint8_t i = 0; i < BANDS_COUNT; i++)
