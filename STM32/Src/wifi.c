@@ -251,8 +251,7 @@ void WIFI_Process(void)
 					sTime.Hours = hrs;
 					sTime.Minutes = min;
 					sTime.Seconds = sec;
-					HAL_RTC_DeInit(&hrtc);
-					HAL_RTC_Init(&hrtc);
+					BKPSRAM_Enable();
 					HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 					TRX_SNMP_Synced = true;
 					sendToDebug_str("[WIFI] TIME SYNCED\r\n");

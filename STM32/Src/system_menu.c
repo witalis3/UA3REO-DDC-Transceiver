@@ -356,6 +356,10 @@ static uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
 bool sysmenu_spectrum_opened = false;
 static uint32_t sysmenu_spectrum_lastfreq = 0;
 
+//Time menu
+static bool sysmenu_timeMenuOpened = false;
+static uint8_t TimeMenuSelection = 0;
+
 #pragma GCC diagnostic push 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
@@ -1350,9 +1354,9 @@ static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction)
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction)
 {
-	if (!LCD_timeMenuOpened)
+	if (!sysmenu_timeMenuOpened)
 		LCDDriver_Fill(COLOR_BLACK);
-	LCD_timeMenuOpened = true;
+	sysmenu_timeMenuOpened = true;
 	static uint8_t Hours;
 	static uint8_t Minutes;
 	static uint8_t Seconds;
@@ -1362,6 +1366,44 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 	Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
 	Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
 	Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+	if(direction!=0)
+	{
+		if (TimeMenuSelection == 0)
+		{
+			if (Hours == 0 && direction < 0)
+				return;
+			Hours = (uint8_t)(Hours + direction);
+		}
+		if (TimeMenuSelection == 1)
+		{
+			if (Minutes == 0 && direction < 0)
+				return;
+			Minutes = (uint8_t)(Minutes + direction);
+		}
+		if (TimeMenuSelection == 2)
+		{
+			if (Seconds == 0 && direction < 0)
+				return;
+			Seconds = (uint8_t)(Seconds + direction);
+		}
+		if (Hours >= 24)
+			Hours = 0;
+		if (Minutes >= 60)
+			Minutes = 0;
+		if (Seconds >= 60)
+			Seconds = 0;
+		RTC_TimeTypeDef sTime;
+		sTime.TimeFormat = RTC_HOURFORMAT12_PM;
+		sTime.SubSeconds = 0;
+		sTime.SecondFraction = 0;
+		sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+		sTime.StoreOperation = RTC_STOREOPERATION_SET;
+		sTime.Hours = Hours;
+		sTime.Minutes = Minutes;
+		sTime.Seconds = Seconds;
+		BKPSRAM_Enable();
+		HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+	}
 	sprintf(ctmp, "%d", Hours);
 	addSymbols(ctmp, ctmp, 2, "0", false);
 	LCDDriver_printText(ctmp, 76, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 0 ? COLOR_WHITE : COLOR_BLACK, 3);
@@ -1869,7 +1911,7 @@ void drawSystemMenu(bool draw_background)
 	}
 	if (!LCD_systemMenuOpened)
 		return;
-	if (LCD_timeMenuOpened)
+	if (sysmenu_timeMenuOpened)
 	{
 		SYSMENU_HANDL_SETTIME(0);
 		return;
@@ -1924,6 +1966,11 @@ void eventRotateSystemMenu(int8_t direction)
 		SYSMENU_WIFI_RotatePasswordChar(direction);
 		return;
 	}
+	if (sysmenu_timeMenuOpened)
+	{
+		SYSMENU_HANDL_SETTIME(direction);
+		return;
+	}
 	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_INFOLINE)
 		sysmenu_handlers_selected[systemMenuIndex].menuHandler(direction);
 	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_RUN)
@@ -1952,6 +1999,12 @@ void eventCloseSystemMenu(void)
 	{
 		sysmenu_spectrum_opened = false;
 		TRX_setFrequency(sysmenu_spectrum_lastfreq, CurrentVFO());
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+	}
+	else if(sysmenu_timeMenuOpened)
+	{
+		sysmenu_timeMenuOpened = false;
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}
@@ -2011,7 +2064,7 @@ void eventSecRotateSystemMenu(int8_t direction)
 		return;
 	}
 	//time menu
-	if (LCD_timeMenuOpened)
+	if (sysmenu_timeMenuOpened)
 	{
 		LCDDriver_Fill(COLOR_BLACK);
 		if (direction < 0)

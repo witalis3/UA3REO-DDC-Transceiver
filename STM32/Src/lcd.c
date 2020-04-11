@@ -19,8 +19,6 @@
 
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
-volatile uint8_t TimeMenuSelection = 0;
-volatile bool LCD_timeMenuOpened = false;
 volatile bool LCD_systemMenuOpened = false;
 
 static char LCD_freq_string_hz[6];

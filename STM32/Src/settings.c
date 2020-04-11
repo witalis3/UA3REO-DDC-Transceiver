@@ -38,8 +38,6 @@ static bool EEPROM_Write_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_le
 static bool EEPROM_Read_Data(uint8_t* Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verif, bool force);
 static void EEPROM_PowerDown(void);
 static void EEPROM_PowerUp(void);
-static void BKPSRAM_Enable(void);
-static void BKPSRAM_Disable(void);
 
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"LSB",
@@ -485,7 +483,7 @@ static void EEPROM_PowerUp(void)
 	HAL_Delay(EEPROM_CO_DELAY);
 }
 
-static void BKPSRAM_Enable(void)
+void BKPSRAM_Enable(void)
 {
 	__HAL_RCC_BKPRAM_CLK_ENABLE();
 	HAL_PWREx_EnableBkUpReg(); 
@@ -495,7 +493,7 @@ static void BKPSRAM_Enable(void)
 	//SCB->CACR |= 1<<2;
 }
 
-static void BKPSRAM_Disable(void)
+void BKPSRAM_Disable(void)
 {
 	HAL_PWR_DisableBkUpAccess();
 	//HAL_PWREx_DisableBkUpReg(); 

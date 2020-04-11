@@ -23,8 +23,6 @@ extern void LCD_redraw(void);
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
 volatile extern bool LCD_busy;
-volatile extern bool LCD_timeMenuOpened;
 volatile extern bool LCD_systemMenuOpened;
-volatile extern uint8_t TimeMenuSelection;
 
 #endif

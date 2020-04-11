@@ -219,6 +219,8 @@ extern void LoadSettings(bool clear);
 extern void LoadCalibration(void);
 extern void SaveSettings(void);
 extern void SaveCalibration(void);
+extern void BKPSRAM_Enable(void);
+extern void BKPSRAM_Disable(void);
 extern VFO *CurrentVFO(void);
 extern VFO *SecondaryVFO(void);
 
