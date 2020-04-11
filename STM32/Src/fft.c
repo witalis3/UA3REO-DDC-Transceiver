@@ -32,6 +32,7 @@ static float32_t maxValueFFT_tx = 0;							 //максимальное знач�
 static uint32_t currentFFTFreq = 0;
 static uint16_t color_scale[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  //цветовой градиент по высоте FFT
 static SRAM1 uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; //буфер водопада
+static SRAM1 uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0}; //частоты для каждой строки водопада
 static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  //временный буффер для перемещения водопада
 static uint16_t print_wtf_xindex = 0;												  //текущая координата вывода водопада через DMA
 static uint16_t print_wtf_yindex = 0;												  //текущая координата вывода водопада через DMA
@@ -139,6 +140,7 @@ static uint16_t getFFTColor(uint_fast8_t height); //получить цвет и
 static void fft_fill_color_scale(void);			  //подготовка цветовой палитры
 static uint16_t getFFTHeight(void);				  //получение высоты FFT
 static uint16_t getWTFHeight(void);				  //получение высоты водопада
+static void FFT_move(int32_t _freq_diff); //сдвиг водопада
 
 //инициализация FFT
 void FFT_Init(void)
@@ -197,8 +199,6 @@ void FFT_doFFT(void)
 	if (CPU_LOAD.Load > 90)
 		return;
 
-	uint32_t maxIndex = 0;	   // Индекс элемента массива с максимальной амплитудой в результирующей АЧХ
-	float32_t maxValue = 0;	   // Максимальное значение амплитуды в результирующей АЧХ
 	float32_t medianValue = 0; // Значение медианы в результирующей АЧХ
 	float32_t diffValue = 0;   // Разница между максимальным значением в FFT и пороге в водопаде
 
@@ -278,15 +278,16 @@ void FFT_doFFT(void)
 		}
 	}
 
-	//Ищем Максимум амплитуды
-	float32_t maxValueFFT = maxValueFFT_rx;
-	if (TRX_on_TX())
-		maxValueFFT = maxValueFFT_tx;
-	arm_max_f32(FFTInput, LAY_FFT_PRINT_SIZE, &maxValue, &maxIndex); //ищем максимум в АЧХ
-
 	//Ищем медиану в АЧХ
 	arm_quick_sort_f32(FFTInput, FFTInput_sorted, FFT_SIZE, 1);
 	medianValue = FFTInput_sorted[FFT_SIZE / 2];
+	
+	//Максимум амплитуды
+	float32_t maxValueFFT = maxValueFFT_rx;
+	if (TRX_on_TX())
+		maxValueFFT = maxValueFFT_tx;
+	float32_t maxValue = (medianValue * 8.0f);
+	float32_t minValue = (medianValue * 4.0f);
 
 	//Автокалибровка уровней FFT
 	diffValue = (maxValue - maxValueFFT) / FFT_STEP_COEFF;
@@ -301,19 +302,16 @@ void FFT_doFFT(void)
 	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_PRECISION)
 		maxValueFFT -= FFT_STEP_PRECISION;
 
-	//Автокалибровка по медиане
-	if (!TRX_on_TX())
-	{
-		if ((medianValue * 4.0f) > maxValueFFT)
-			maxValueFFT = (medianValue * 4.0f);
-		if ((medianValue * 8.0f) < maxValueFFT)
-			maxValueFFT = (medianValue * 8.0f);
-	}
-
-	//минимальный порог+сохраняем значения для переключения RX/TX
+	//минимальный порог
 	maxValueErrors = 0;
 	if (maxValueFFT < FFT_MIN)
 		maxValueFFT = FFT_MIN;
+	if (maxValueFFT < minValue)
+		maxValueFFT = minValue;
+	if (maxValueFFT > maxValue)
+		maxValueFFT = maxValue;
+	
+	//сохраняем значения для переключения RX/TX
 	if (TRX_on_TX())
 		maxValueFFT_tx = maxValueFFT;
 	else
@@ -352,19 +350,22 @@ void FFT_printFFT(void)
 
 	uint16_t height = 0; //высота столбца в выводе FFT
 	uint16_t tmp = 0;
-
+	uint16_t fftHeight = getFFTHeight();
+	uint16_t wtfHeight = getWTFHeight();
+	
 	//смещаем водопад, если нужно
 	if (((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq) != 0)
 	{
-		FFT_moveWaterfall((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq);
+		FFT_move((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq);
 		currentFFTFreq = CurrentVFO()->Freq;
 	}
 
 	//смещаем водопад вниз c помощью DMA
-	for (tmp = getWTFHeight() - 1; tmp > 0; tmp--)
+	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
 	{
 		HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&wtf_buffer[tmp - 1], (uint32_t)&wtf_buffer[tmp], LAY_FFT_PRINT_SIZE / 2);
 		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
 	}
 
 	//расчитываем цвета для водопада
@@ -376,29 +377,30 @@ void FFT_printFFT(void)
 			new_x = fft_x + (LAY_FFT_PRINT_SIZE / 2);
 		if (fft_x >= (LAY_FFT_PRINT_SIZE / 2))
 			new_x = fft_x - (LAY_FFT_PRINT_SIZE / 2);
-		height = (uint16_t)((float32_t)FFTOutput_mean[(uint_fast16_t)fft_x] * getFFTHeight());
-		if (height > getFFTHeight() - 1)
+		height = (uint16_t)((float32_t)FFTOutput_mean[(uint_fast16_t)fft_x] * fftHeight);
+		if (height > fftHeight - 1)
 		{
-			height = getFFTHeight();
+			height = fftHeight;
 			tmp = COLOR_RED;
 			maxValueErrors++;
 		}
 		else
-			tmp = getFFTColor(height);
+			tmp = color_scale[fftHeight-height];
 		wtf_buffer[0][new_x] = tmp;
+		wtf_buffer_freqs[0] = currentFFTFreq;
 		fft_header[new_x] = height;
 		if (new_x == (LAY_FFT_PRINT_SIZE / 2))
 			continue;
 	}
 
 	//выводим FFT над водопадом
-	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + getFFTHeight()));
-	for (uint32_t fft_y = 0; fft_y < getFFTHeight(); fft_y++)
+	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + fftHeight));
+	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 		for (uint32_t fft_x = 0; fft_x < LAY_FFT_PRINT_SIZE; fft_x++)
 		{
 			if (fft_x == (LAY_FFT_PRINT_SIZE / 2))
 				LCDDriver_SendData(COLOR_GREEN);
-			else if (fft_y <= (getFFTHeight() - fft_header[fft_x]))
+			else if (fft_y <= (fftHeight - fft_header[fft_x]))
 				LCDDriver_SendData(COLOR_BLACK);
 			else
 			{
@@ -450,43 +452,103 @@ void FFT_printFFT(void)
 //вывод водопада
 void FFT_printWaterfallDMA(void)
 {
+	uint16_t fftHeight = getFFTHeight();
+	uint16_t wtfHeight = getWTFHeight();
 	uint_fast8_t cwdecoder_offset = 0;
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 		cwdecoder_offset = LAY_FFT_CWDECODER_OFFSET;
 
-	if (print_wtf_yindex < (getWTFHeight() - cwdecoder_offset))
+	if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
 	{
-		SCB_CleanDCache();
-		if (print_wtf_xindex == 0)
+		//расчёт смещения
+		int32_t freq_diff = (int32_t)(((float32_t)((int32_t)currentFFTFreq - (int32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)TRX.FFT_Zoom);
+		
+		if (freq_diff != 0) //есть смещение по частоте
 		{
-			LCDDriver_SetCursorAreaPosition(0, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex, LAY_FFT_PRINT_SIZE / 2, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_buffer[print_wtf_yindex][0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2);
-			print_wtf_xindex = 1;
+			int32_t margin_left = 0;
+			if (freq_diff < 0)
+				margin_left = -freq_diff;
+			if (margin_left > LAY_FFT_PRINT_SIZE)
+				margin_left = LAY_FFT_PRINT_SIZE;
+			int32_t margin_right = 0;
+			if (freq_diff > 0)
+				margin_right = freq_diff;
+			if (margin_right > LAY_FFT_PRINT_SIZE)
+				margin_right = LAY_FFT_PRINT_SIZE;
+			if ((margin_left + margin_right) > LAY_FFT_PRINT_SIZE)
+				margin_right = 0;
+			int32_t body_width = LAY_FFT_PRINT_SIZE - margin_left - margin_right;
+			
+			if (print_wtf_xindex == 0)
+			{
+				//сдвигаем водопад во временную строку
+				if(body_width <= 0)
+					memset(&wtf_line_tmp, 0x00, sizeof(wtf_line_tmp));
+				else
+				{
+					if (margin_right > 0)
+					{
+						HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex][margin_right], (uint32_t)&wtf_line_tmp[0], LAY_FFT_PRINT_SIZE); //копируем строку со смещением
+						HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+					}
+					if (margin_left > 0)
+					{
+						HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex], (uint32_t)&wtf_line_tmp[margin_left], LAY_FFT_PRINT_SIZE - margin_left); //копируем строку со смещением
+						HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+					}
+					if (margin_left > 0)
+						memset(&wtf_line_tmp, 0x00, (uint32_t)(margin_left * 2));									 //заполняем пространство слева
+					if (margin_right > 0)
+						memset(&wtf_line_tmp[(LAY_FFT_PRINT_SIZE - margin_right)], 0x00, (uint32_t)(margin_right * 2)); //заполняем пространство справа
+				}
+				//выводим левую половину
+				LCDDriver_SetCursorAreaPosition(0, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE / 2, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
+				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_line_tmp[0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2);
+				print_wtf_xindex = 1;
+			}
+			else
+			{
+				//выводим правую половину
+				LCDDriver_SetCursorAreaPosition(LAY_FFT_PRINT_SIZE / 2 + 1, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
+				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_line_tmp[LAY_FFT_PRINT_SIZE / 2 + 1], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2 - 1);
+				print_wtf_yindex++;
+				print_wtf_xindex = 0;
+			}
 		}
-		else
+		else //смещения нет, выводим из буфера напрямую
 		{
-			LCDDriver_SetCursorAreaPosition(LAY_FFT_PRINT_SIZE / 2 + 1, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_buffer[print_wtf_yindex][LAY_FFT_PRINT_SIZE / 2 + 1], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2 - 1);
-			print_wtf_yindex++;
-			print_wtf_xindex = 0;
+			if (print_wtf_xindex == 0)
+			{
+				//выводим левую половину
+				LCDDriver_SetCursorAreaPosition(0, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE / 2, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
+				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_buffer[print_wtf_yindex][0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2);
+				print_wtf_xindex = 1;
+			}
+			else
+			{
+				//выводим правую половину
+				LCDDriver_SetCursorAreaPosition(LAY_FFT_PRINT_SIZE / 2 + 1, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
+				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_buffer[print_wtf_yindex][LAY_FFT_PRINT_SIZE / 2 + 1], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2 - 1);
+				print_wtf_yindex++;
+				print_wtf_xindex = 0;
+			}
 		}
 	}
 	else
 	{
-		LCDDriver_drawFastVLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y + getFFTHeight(), (int16_t)(getWTFHeight() - cwdecoder_offset), COLOR_GREEN);
+		LCDDriver_drawFastVLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y + fftHeight, (int16_t)(wtfHeight - cwdecoder_offset), COLOR_GREEN);
 		FFT_need_fft = true;
 		LCD_busy = false;
 	}
 }
 
 //сдвиг водопада
-void FFT_moveWaterfall(int32_t _freq_diff)
+static void FFT_move(int32_t _freq_diff)
 {
 	if (_freq_diff == 0)
 		return;
 	int32_t new_x = 0;
 	int32_t freq_diff = (_freq_diff / FFT_HZ_IN_PIXEL) * TRX.FFT_Zoom;
-	freq_diff = (int32_t)((float32_t)freq_diff * 1.4f);
 	//Move mean Buffer
 	if (freq_diff > 0) //freq up
 	{
@@ -516,36 +578,6 @@ void FFT_moveWaterfall(int32_t _freq_diff)
 				continue;
 			}
 			FFTOutput_mean[x] = FFTOutput_mean[new_x];
-		}
-	}
-	//Move Waterfall
-	int32_t margin_left = 0;
-	if (freq_diff < 0)
-		margin_left = -freq_diff;
-	if (margin_left > LAY_FFT_PRINT_SIZE)
-		margin_left = LAY_FFT_PRINT_SIZE;
-	int32_t margin_right = 0;
-	if (freq_diff > 0)
-		margin_right = freq_diff;
-	if (margin_right > LAY_FFT_PRINT_SIZE)
-		margin_right = LAY_FFT_PRINT_SIZE;
-	if ((margin_left + margin_right) > LAY_FFT_PRINT_SIZE)
-		margin_right = 0;
-	int32_t body_width = LAY_FFT_PRINT_SIZE - margin_left - margin_right;
-
-	for (uint_fast8_t y = 0; y < getWTFHeight(); y++)
-	{
-		//memcpy(wtf_line_tmp, wtf_buffer[y], sizeof(wtf_line_tmp));
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[y], (uint32_t)&wtf_line_tmp, LAY_FFT_PRINT_SIZE); //копируем строку до смещения
-		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-		memset(&wtf_buffer[y][0], 0x00, (uint32_t)(margin_left * 2));									 //заполняем пространство слева
-		memset(&wtf_buffer[y][(LAY_FFT_PRINT_SIZE - margin_right)], 0x00, (uint32_t)(margin_right * 2)); //заполняем пространство справа
-
-		//memcpy(&wtf_buffer[y][margin_left], &wtf_line_tmp[margin_left + freq_diff], body_width*2);
-		if (body_width > 0) //рисуем смещенный водопад
-		{
-			HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_line_tmp[margin_left + freq_diff], (uint32_t)&wtf_buffer[y][margin_left], (uint32_t)body_width);
-			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
 	}
 }

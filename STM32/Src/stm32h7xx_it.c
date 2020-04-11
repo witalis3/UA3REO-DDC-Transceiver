@@ -488,13 +488,6 @@ void TIM6_DAC_IRQHandler(void)
     //S-Meter Calculate
     TRX_DBMCalculate();
 		
-		//Detect FPGA IQ phase error
-    if (TRX_IQ_phase_error > 0.1f && !TRX_on_TX() && TRX_RX_dBm > -90.0f)
-    {
-      sendToDebug_strln("[ERR] IQ phase error, restart");
-      FPGA_NeedRestart = true;
-    }
-		
 		//Detect FPGA stuck error
 		static float32_t old_FPGA_Audio_Buffer_RX1_I = 0;
 		static float32_t old_FPGA_Audio_Buffer_RX1_Q = 0;
@@ -516,6 +509,15 @@ void TIM6_DAC_IRQHandler(void)
   if (ms50_counter == 21) // every 1 sec
   {
     ms50_counter = 0;
+		
+		//Detect FPGA IQ phase error
+    if ((fabsf(TRX_IQ_phase_error) > 0.1f  || fabsf(TRX_IQ_phase_error) < 0.000005f)&& !TRX_on_TX() && TRX_RX_dBm > -90.0f)
+    {
+      sendToDebug_strln("[ERR] IQ phase error, restart");
+			sendToDebug_float32(TRX_IQ_phase_error, false);
+      FPGA_NeedRestart = true;
+    }
+		
     TRX_DoAutoGain(); //Process AutoGain feature
 
     if (!WIFI_IP_Gotted) //Get resolved IP
@@ -551,7 +553,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_str("Audio DMA samples: ");
       sendToDebug_uint32(dbg_WM8731_DMA_samples, false); //~48000
       sendToDebug_str("Audioproc blocks: ");
-      sendToDebug_uint32(dbg_AUDIOPROC_samples, true);
+      sendToDebug_uint32(dbg_AUDIOPROC_samples, false);
       sendToDebug_str("CPU Load: ");
       sendToDebug_uint32(cpu_load, false);
       sendToDebug_str("STM32 Temperature: ");

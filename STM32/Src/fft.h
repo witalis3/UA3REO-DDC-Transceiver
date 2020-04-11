@@ -31,7 +31,6 @@ extern void FFT_Init(void);                        //инициализация 
 extern void FFT_Reset(void);                       //сброс FFT
 extern void FFT_doFFT(void);                       //расчёт FFT
 extern void FFT_printFFT(void);                    //вывод FFT
-extern void FFT_moveWaterfall(int32_t _freq_diff); //сдвиг водопада
 extern void FFT_printWaterfallDMA(void);           //вывод водопада
 
 #endif
