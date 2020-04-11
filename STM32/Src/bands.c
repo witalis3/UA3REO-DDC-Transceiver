@@ -2,7 +2,7 @@
 #include "functions.h"
 #include <stdlib.h>
 
-const BAND_MAP BANDS[] =
+const BAND_MAP BANDS[BANDS_COUNT] =
 	{
 		//160METERS
 		{
@@ -178,6 +178,7 @@ const BAND_MAP BANDS[] =
 		//
 };
 
+//номер бенда из частоты
 int8_t getBandFromFreq(uint32_t freq, bool nearest)
 {
 	for (int8_t b = 0; b < BANDS_COUNT; b++)
@@ -207,6 +208,7 @@ int8_t getBandFromFreq(uint32_t freq, bool nearest)
 	return -1;
 }
 
+//мода из частоты
 uint_fast8_t getModeFromFreq(uint32_t freq)
 {
 	uint_fast8_t ret = 0;

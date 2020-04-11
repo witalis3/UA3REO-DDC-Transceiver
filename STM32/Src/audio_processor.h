@@ -7,9 +7,8 @@
 #include <stdbool.h>
 #include "functions.h"
 
-#define FPGA_AUDIO_BUFFER_SIZE (192 * 2)
-#define FPGA_AUDIO_BUFFER_HALF_SIZE FPGA_AUDIO_BUFFER_SIZE / 2
-
+#define FPGA_AUDIO_BUFFER_SIZE (192 * 2) //размер буффера данных FPGA
+#define FPGA_AUDIO_BUFFER_HALF_SIZE FPGA_AUDIO_BUFFER_SIZE / 2 //половина буфера
 #define FM_RX_LPF_ALPHA 0.05f         // For NFM demodulator:  "Alpha" (low-pass) factor to result in -6dB "knee" at approx. 270 Hz 0.05f
 #define FM_RX_HPF_ALPHA 0.96f         // For NFM demodulator:  "Alpha" (high-pass) factor to result in -6dB "knee" at approx. 180 Hz 0.96f
 #define FM_TX_HPF_ALPHA 0.95f         // For FM modulator:  "Alpha" (high-pass) factor to pre-emphasis
@@ -19,41 +18,33 @@
 #define AUDIO_RX_NB_DELAY_BUFFER_ITEMS 32 //NoiseBlanker buffer size
 #define AUDIO_RX_NB_DELAY_BUFFER_SIZE (AUDIO_RX_NB_DELAY_BUFFER_ITEMS * 2)
 
-extern DMA_HandleTypeDef hdma_i2s3_ext_rx;
-extern DMA_HandleTypeDef hdma_spi3_tx;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
-
-typedef enum
+typedef enum //номер приёмника
 {
 	AUDIO_RX1,
 	AUDIO_RX2
 } AUDIO_PROC_RX_NUM;
 
-extern void processRxAudio(void);
-extern void processTxAudio(void);
-extern void initAudioProcessor(void);
-
-extern volatile uint32_t AUDIOPROC_samples;
-extern volatile uint32_t AUDIOPROC_TXA_samples;
-extern volatile uint32_t AUDIOPROC_TXB_samples;
-extern int32_t Processor_AudioBuffer_A[FPGA_AUDIO_BUFFER_SIZE];
-extern int32_t Processor_AudioBuffer_B[FPGA_AUDIO_BUFFER_SIZE];
-extern volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer;
-extern volatile bool Processor_NeedRXBuffer;
-extern volatile bool Processor_NeedTXBuffer;
-extern volatile float32_t Processor_AVG_amplitude;
-extern volatile float32_t Processor_TX_MAX_amplitude_IN;
-extern volatile float32_t Processor_TX_MAX_amplitude_OUT;
-extern volatile float32_t ALC_need_gain;
-extern volatile float32_t ALC_need_gain_new;
-extern float32_t FPGA_Audio_Buffer_RX1_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
+//Public variables
+extern volatile uint32_t AUDIOPROC_samples; //аудиосемплов обработано в процессоре
+extern int32_t Processor_AudioBuffer_A[FPGA_AUDIO_BUFFER_SIZE]; //буффер A аудио-процессора
+extern int32_t Processor_AudioBuffer_B[FPGA_AUDIO_BUFFER_SIZE]; //буффер B аудио-процессора
+extern volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer; //какой буффер сейчас используется, A или B
+extern volatile bool Processor_NeedRXBuffer; //кодеку нужны данные с процессора для RX
+extern volatile bool Processor_NeedTXBuffer; //кодеку нужны данные с процессора для TX
+extern float32_t FPGA_Audio_Buffer_RX1_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE]; //копия рабочей части буфферов FPGA для обработки
 extern float32_t FPGA_Audio_Buffer_RX1_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern float32_t FPGA_Audio_Buffer_RX2_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern float32_t FPGA_Audio_Buffer_RX2_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern float32_t FPGA_Audio_Buffer_TX_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
 extern float32_t FPGA_Audio_Buffer_TX_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE];
-extern volatile float32_t Processor_RX_Power_value;
-extern volatile float32_t Processor_selected_RFpower_amplitude;
+extern volatile float32_t Processor_TX_MAX_amplitude_OUT; //аплитуда TX после ALC
+extern volatile float32_t Processor_RX_Power_value; //магнитуда RX сигнала
+extern volatile float32_t Processor_selected_RFpower_amplitude; //целевая амплитуда TX сигнала
+
+//Public methods
+extern void processRxAudio(void); //запуск аудио-процессора для RX
+extern void processTxAudio(void); //запуск аудио-процессора для TX
+extern void initAudioProcessor(void); //инициализация аудио-процессора
+
 
 #endif

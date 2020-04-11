@@ -1422,7 +1422,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 static void SYSMENU_HANDL_Bootloader(int8_t direction)
 {
 	WM8731_CleanBuffer();
-	JumpToBootloader();
+	TRX_NeedGoToBootloader = true;
 }
 
 //SPECTRUM MENU

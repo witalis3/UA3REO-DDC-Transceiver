@@ -1,11 +1,10 @@
 #include "profiler.h"
-#include "stm32h7xx_hal.h"
-#include "string.h"
-#include <stdbool.h>
 #include "functions.h"
 
-static PROFILE_INFO profiles[PROFILES_COUNT] = {0};
+//Public variables
+static PROFILE_INFO profiles[PROFILES_COUNT] = {0}; //коллекция профайлеров
 
+//инициализация профайлера
 void InitProfiler()
 {
 	for (uint8_t i = 0; i < PROFILES_COUNT; i++)
@@ -18,6 +17,7 @@ void InitProfiler()
 	}
 }
 
+//запуск профайлера
 void StartProfiler(uint8_t pid)
 {
 	if (pid >= PROFILES_COUNT)
@@ -28,6 +28,7 @@ void StartProfiler(uint8_t pid)
 	profiles[pid].startTime = HAL_GetTick();
 }
 
+//запуск профайлера в микросекундах
 void StartProfilerUs()
 {
 	if (profiles[PROFILES_COUNT - 1].started)
@@ -41,6 +42,7 @@ void StartProfilerUs()
 	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
 
+//завершение профайлера
 void EndProfiler(uint8_t pid, bool summarize)
 {
 	if (pid >= PROFILES_COUNT)
@@ -56,6 +58,7 @@ void EndProfiler(uint8_t pid, bool summarize)
 	profiles[pid].started = false;
 }
 
+//завершение профайлера в микросекундах
 void EndProfilerUs(bool summarize)
 {
 	if (!profiles[PROFILES_COUNT - 1].started)
@@ -71,6 +74,7 @@ void EndProfilerUs(bool summarize)
 	profiles[PROFILES_COUNT - 1].started = false;
 }
 
+//вывод результатов профайлера
 void PrintProfilerResult()
 {
 	bool printed = false;

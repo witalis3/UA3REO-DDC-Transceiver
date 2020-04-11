@@ -1,30 +1,21 @@
 #include "noise_blanker.h"
-#include "stm32h7xx_hal.h"
-#include "arm_const_structs.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
-#include <complex.h>
-#include "arm_math.h"
-#include "settings.h"
-#include "functions.h"
-#include "noise_reduction.h"
 
 //https://github.com/df8oe/UHSDR/wiki/Noise-blanker
 
+//Private variables
 IRAM2 static NB_Instance NB_RX1 = {0};
 IRAM2 static NB_Instance NB_RX2 = {0};
 
+//запуск NB для блока данных
 void processNoiseBlanking(float32_t* buffer, AUDIO_PROC_RX_NUM rx_id)
 {
 	NB_Instance* instance = &NB_RX1;
 	if(rx_id==AUDIO_RX2)
 		instance = &NB_RX2;
 	
-	memcpy(&instance->NR_InputBuffer[instance->NR_InputBuffer_index * NOISE_REDUCTION_BLOCK_SIZE], buffer, NOISE_REDUCTION_BLOCK_SIZE * 4);
+	memcpy(&instance->NR_InputBuffer[instance->NR_InputBuffer_index * NB_BLOCK_SIZE], buffer, NB_BLOCK_SIZE * 4);
 	instance->NR_InputBuffer_index++;
-	if(instance->NR_InputBuffer_index == (NB_FIR_SIZE / NOISE_REDUCTION_BLOCK_SIZE)) //input buffer ready
+	if(instance->NR_InputBuffer_index == (NB_FIR_SIZE / NB_BLOCK_SIZE)) //input buffer ready
 	{
 		instance->NR_InputBuffer_index = 0;
 		instance->NR_OutputBuffer_index = 0;
@@ -151,7 +142,7 @@ void processNoiseBlanking(float32_t* buffer, AUDIO_PROC_RX_NUM rx_id)
 		memcpy(instance->NR_OutputBuffer, &instance->NR_Working_buffer[NB_order+NB_PL],NB_FIR_SIZE * sizeof(float32_t));// copy the samples of the current frame back to the insamp-buffer for output
 		memcpy(instance->NR_Working_buffer,&instance->NR_Working_buffer[NB_FIR_SIZE], (2*NB_order + 2*NB_PL) * sizeof(float32_t)); // copy
 	}
-	if(instance->NR_OutputBuffer_index < (NB_FIR_SIZE / NOISE_REDUCTION_BLOCK_SIZE))
-		memcpy(buffer, &instance->NR_OutputBuffer[instance->NR_OutputBuffer_index * NOISE_REDUCTION_BLOCK_SIZE], NOISE_REDUCTION_BLOCK_SIZE * 4);
+	if(instance->NR_OutputBuffer_index < (NB_FIR_SIZE / NB_BLOCK_SIZE))
+		memcpy(buffer, &instance->NR_OutputBuffer[instance->NR_OutputBuffer_index * NB_BLOCK_SIZE], NB_BLOCK_SIZE * 4);
 	instance->NR_OutputBuffer_index++;
 }

@@ -6,7 +6,7 @@
 #include "stm32h7xx_hal_rcc.h"
 #include "stm32h7xx_hal_gpio.h"
 
-extern void JumpToBootloader(void);
-extern void checkBootloaderButton(void);
+//Public methods
+extern void JumpToBootloader(void); //перехов в DFU-режим булодера
 
 #endif

@@ -47,6 +47,7 @@ static bool KEYER_symbol_status = false;	 //статус (сигнал или п
 volatile float32_t TRX_STM32_VREF = 3.3f; //напряжение на STM32
 volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; //температура STM32
 volatile float32_t TRX_IQ_phase_error = 0.0f;
+volatile bool TRX_NeedGoToBootloader = false;
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);

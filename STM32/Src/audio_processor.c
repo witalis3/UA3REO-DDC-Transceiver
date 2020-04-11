@@ -1,71 +1,63 @@
 #include "audio_processor.h"
-#include "stm32h7xx_hal.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
-#include "arm_math.h"
-#include "fpga.h"
-#include "trx_manager.h"
 #include "wm8731.h"
-#include "functions.h"
 #include "audio_filters.h"
 #include "agc.h"
 #include "settings.h"
-#include "profiler.h"
 #include "usbd_audio_if.h"
 #include "noise_reduction.h"
 #include "noise_blanker.h"
 #include "auto_notch.h"
 #include "cw_decoder.h"
-#include "main.h"
 
-volatile uint32_t AUDIOPROC_samples = 0;
-volatile uint32_t AUDIOPROC_TXA_samples = 0;
-volatile uint32_t AUDIOPROC_TXB_samples = 0;
-SRAM1 int32_t Processor_AudioBuffer_A[FPGA_AUDIO_BUFFER_SIZE] = {0};
-SRAM1 int32_t Processor_AudioBuffer_B[FPGA_AUDIO_BUFFER_SIZE] = {0};
-volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer = 0;
-volatile bool Processor_NeedRXBuffer = false;
-volatile bool Processor_NeedTXBuffer = false;
-SRAM1 float32_t FPGA_Audio_Buffer_RX1_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
+//Public variables
+volatile uint32_t AUDIOPROC_samples = 0; //аудиосемплов обработано в процессоре
+SRAM1 int32_t Processor_AudioBuffer_A[FPGA_AUDIO_BUFFER_SIZE] = {0}; //буффер A аудио-процессора
+SRAM1 int32_t Processor_AudioBuffer_B[FPGA_AUDIO_BUFFER_SIZE] = {0}; //буффер B аудио-процессора
+volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer = 0; //какой буффер сейчас используется, A или B
+volatile bool Processor_NeedRXBuffer = false; //кодеку нужны данные с процессора для RX
+volatile bool Processor_NeedTXBuffer = false; //кодеку нужны данные с процессора для TX
+SRAM1 float32_t FPGA_Audio_Buffer_RX1_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0}; //копия рабочей части буфферов FPGA для обработки
 SRAM1 float32_t FPGA_Audio_Buffer_RX1_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
 SRAM1 float32_t FPGA_Audio_Buffer_RX2_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
 SRAM1 float32_t FPGA_Audio_Buffer_RX2_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
 SRAM1 float32_t FPGA_Audio_Buffer_TX_Q_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
 SRAM1 float32_t FPGA_Audio_Buffer_TX_I_tmp[FPGA_AUDIO_BUFFER_HALF_SIZE] = {0};
-volatile float32_t Processor_AVG_amplitude = 0.0f;		  //средняя амплитуда семплов при прёме
-volatile float32_t Processor_TX_MAX_amplitude_IN = 0.0f;  //средняя амплитуда семплов при передаче (до процессора)
-volatile float32_t Processor_TX_MAX_amplitude_OUT = 0.0f; //средняя амплитуда семплов при передаче (после процессора)
-volatile float32_t Processor_RX_Power_value = 0.0f;		  //максимальное значение силы сигнала
-volatile float32_t ALC_need_gain = 1.0f;
-volatile float32_t Processor_selected_RFpower_amplitude = 0.0f;
-	
-static float32_t ampl_val_i = 0.0f;
-static float32_t ampl_val_q = 0.0f;
-static float32_t ALC_need_gain_target = 1.0f;
-static uint_fast16_t block = 0;
-static uint32_t two_signal_gen_position = 0;
+volatile float32_t Processor_RX_Power_value; //магнитуда RX сигнала
+volatile float32_t Processor_selected_RFpower_amplitude = 0.0f; //целевая амплитуда TX сигнала
+volatile float32_t Processor_TX_MAX_amplitude_OUT; //аплитуда TX после ALC
 
-static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id);
-static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id);
-static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id);
-static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id);
-static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id);
-static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id);
-static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id);
-static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id);
-static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id);
-static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id);
-static void doCW_Decode(AUDIO_PROC_RX_NUM rx_id);
-static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id);
-static void ModulateFM(void);
+//Private variables
+static uint32_t two_signal_gen_position = 0; //позиция сигнала в двухсигнальном генераторе
+static float32_t ALC_need_gain = 1.0f; //текущее усиление ALC и аудио-компрессора
+static float32_t ALC_need_gain_target = 1.0f; //целевое усиление ALC и аудио-компрессора
+static float32_t DFM_RX1_lpf_prev = 0, DFM_RX1_hpf_prev_a = 0, DFM_RX1_hpf_prev_b = 0, DFM_RX2_lpf_prev = 0, DFM_RX2_hpf_prev_a = 0, DFM_RX2_hpf_prev_b = 0; // used in FM detection and low/high pass processing
+static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0; // used in FM detection and low/high pass processing
+static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0; // used for squelch processing and debouncing tone detection, respectively
+static float32_t DFM_RX1_fm_sql_avg = 0.0f; //среднее значение SQL в FM
+static float32_t DFM_RX2_fm_sql_avg = 0.0f;
 
+//Prototypes
+static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id); //фильтр Гильберта для смещения фазы сигналов
+static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id); //ФНЧ фильтр для I и Q
+static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id); //ФНЧ фильтр для I
+static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id); //ФВЧ фильтр для I
+static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id); //цифровой шумоподавитель Digital Noise Reduction
+static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id); //автоматический регулятор усиления
+static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id); //notch-фильтр
+static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id); //подавитель импульсных помех
+static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id); //s-метр
+static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id); //скопировать I в Q канал
+static void doCW_Decode(AUDIO_PROC_RX_NUM rx_id); //декодер CW
+static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id); //демодулятор FM
+static void ModulateFM(void); //модулятор FM
+
+//инициализация аудио-процессора
 void initAudioProcessor(void)
 {
 	InitAudioFilters();
 }
 
+//запуск аудио-процессора для RX
 void processRxAudio(void)
 {
 	if (!Processor_NeedRXBuffer)
@@ -81,6 +73,7 @@ void processRxAudio(void)
 	else
 		FPGA_Audio_Buffer_Index_tmp--;
 
+	//копируем буффер из FPGA
 	readHalfFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX1_Q[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_AUDIO_BUFFER_SIZE);
 	readHalfFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX1_I[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_AUDIO_BUFFER_SIZE);
 
@@ -260,12 +253,14 @@ void processRxAudio(void)
 	else
 		Processor_AudioBuffer_current = &Processor_AudioBuffer_A[0];
 	
+	//сложение сигналов в режиме двойного приёма
 	if(TRX.Dual_RX_Type == VFO_A_PLUS_B)
 	{
 		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.5f, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 	}
 	
+	//формируем буфферы на передачу в кодек
 	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
 		if(TRX.Dual_RX_Type == VFO_SEPARATE)
@@ -316,7 +311,6 @@ void processRxAudio(void)
 		}
 		USB_AUDIO_need_rx_buffer = false;
 	}
-	//
 
 	//OUT Volume
 	float32_t volume_gain = volume2rate((float32_t)TRX_Volume / 1023.0f);
@@ -333,28 +327,28 @@ void processRxAudio(void)
 		{
 			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream0, (uint32_t)&Processor_AudioBuffer_current[0], (uint32_t)&CODEC_Audio_Buffer_RX[FPGA_AUDIO_BUFFER_SIZE], FPGA_AUDIO_BUFFER_SIZE);
 			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream0, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-			AUDIOPROC_TXA_samples++;
 		}
 		else //half
 		{
 			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream1, (uint32_t)&Processor_AudioBuffer_current[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], FPGA_AUDIO_BUFFER_SIZE);
 			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream1, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-			AUDIOPROC_TXB_samples++;
 		}
 	}
 
 	Processor_NeedRXBuffer = false;
 }
 
+//запуск аудио-процессора для TX
 void processTxAudio(void)
 {
 	if (!Processor_NeedTXBuffer)
 		return;
 	VFO *current_vfo = CurrentVFO();
 	AUDIOPROC_samples++;
+	uint_fast8_t mode = current_vfo->Mode;
+	
 	//Processor_selected_RFpower_amplitude = ((log10f_fast((float32_t)TRX.RF_Power / 10.0f) + 1.0f) / 2.0f) * TRX_MAX_TX_Amplitude;
 	Processor_selected_RFpower_amplitude = (float32_t)TRX.RF_Power / 100.0f * TRX_MAX_TX_Amplitude;
-	uint_fast8_t mode = current_vfo->Mode;
 	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
 		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f; // поправка на нулевые биения
 
@@ -483,8 +477,10 @@ void processTxAudio(void)
 	}
 
 	//RF PowerControl (Audio Level Control) Compressor
-	Processor_TX_MAX_amplitude_IN = 0;
+	float32_t Processor_TX_MAX_amplitude_IN = 0;
 	//ищем максимум в амплитуде
+	static float32_t ampl_val_i = 0.0f;
+	static float32_t ampl_val_q = 0.0f;
 	for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 	{
 		arm_abs_f32(&FPGA_Audio_Buffer_TX_I_tmp[i], &ampl_val_i, 1);
@@ -528,7 +524,6 @@ void processTxAudio(void)
 	//применяем усиление
 	arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, ALC_need_gain, FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 	arm_scale_f32(FPGA_Audio_Buffer_TX_Q_tmp, ALC_need_gain, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-	//
 
 	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN * ALC_need_gain;
 	//RF PowerControl (Audio Level Control) Compressor END
@@ -569,13 +564,11 @@ void processTxAudio(void)
 		{
 			HAL_DMA_Start(&hdma_memtomem_dma2_stream0, (uint32_t)&Processor_AudioBuffer_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[FPGA_AUDIO_BUFFER_SIZE], FPGA_AUDIO_BUFFER_SIZE);
 			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream0, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-			AUDIOPROC_TXA_samples++;
 		}
 		else //half
 		{
 			HAL_DMA_Start(&hdma_memtomem_dma2_stream1, (uint32_t)&Processor_AudioBuffer_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], FPGA_AUDIO_BUFFER_SIZE);
 			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream1, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-			AUDIOPROC_TXB_samples++;
 		}
 	}
 	else
@@ -596,7 +589,6 @@ void processTxAudio(void)
 		//
 		if (FPGA_Audio_Buffer_State) //Send to FPGA DMA
 		{
-			AUDIOPROC_TXA_samples++;
 			HAL_DMA_Start(&hdma_memtomem_dma2_stream0, (uint32_t)&FPGA_Audio_Buffer_TX_I_tmp[0], (uint32_t)&FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_HALF_SIZE], FPGA_AUDIO_BUFFER_HALF_SIZE);
 			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream0, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			HAL_DMA_Start(&hdma_memtomem_dma2_stream0, (uint32_t)&FPGA_Audio_Buffer_TX_Q_tmp[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_HALF_SIZE], FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -604,7 +596,6 @@ void processTxAudio(void)
 		}
 		else
 		{
-			AUDIOPROC_TXB_samples++;
 			HAL_DMA_Start(&hdma_memtomem_dma2_stream1, (uint32_t)&FPGA_Audio_Buffer_TX_I_tmp[0], (uint32_t)&FPGA_Audio_SendBuffer_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 			HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream1, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			HAL_DMA_Start(&hdma_memtomem_dma2_stream1, (uint32_t)&FPGA_Audio_Buffer_TX_Q_tmp[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -617,26 +608,26 @@ void processTxAudio(void)
 	USB_AUDIO_need_rx_buffer = false;
 }
 
+//декодер CW
 static void doCW_Decode(AUDIO_PROC_RX_NUM rx_id)
 {
-	//CW Decoder
 	if(rx_id==AUDIO_RX1)
 	{
 		if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
+			for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
 				CWDecoder_Process(FPGA_Audio_Buffer_RX1_I_tmp + (block * CWDECODER_SAMPLES));
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
 		if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
+			for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
 				CWDecoder_Process(FPGA_Audio_Buffer_RX2_I_tmp + (block * CWDECODER_SAMPLES));
 	}
 }
 
+//фильтр Гильберта для смещения фазы сигналов
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id)
 {
-	//Hilbert fir
 	if(rx_id==AUDIO_RX1)
 	{
 		arm_fir_f32(&FIR_RX1_Hilbert_I, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
@@ -649,9 +640,9 @@ static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id)
 	}
 }
 
+//ФНЧ фильтр для I и Q
 static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id)
 {
-	//IIR LPF
 	if(rx_id==AUDIO_RX1)
 	{
 		if (CurrentVFO()->LPF_Filter_Width > 0)
@@ -670,9 +661,9 @@ static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id)
 	}
 }
 
+//ФНЧ фильтр для I
 static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id)
 {
-	//IIR LPF
 	if(rx_id==AUDIO_RX1)
 	{
 		if (CurrentVFO()->LPF_Filter_Width > 0)
@@ -689,30 +680,9 @@ static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id)
 	}
 }
 
-/*static void doRX_HPF_IQ(AUDIO_PROC_RX_NUM rx_id)
-{
-	//IIR HPF
-	if(rx_id==AUDIO_RX1)
-	{
-		if (CurrentVFO()->HPF_Filter_Width > 0)
-		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX1_HPF_I, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-			arm_biquad_cascade_df2T_f32(&IIR_RX1_HPF_Q, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-		}
-	}
-	else if(rx_id==AUDIO_RX2)
-	{
-		if (SecondaryVFO()->HPF_Filter_Width > 0)
-		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX2_HPF_I, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-			arm_biquad_cascade_df2T_f32(&IIR_RX2_HPF_Q, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-		}
-	}
-}*/
-
+//ФВЧ фильтр для I
 static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id)
 {
-	//IIR HPF
 	if(rx_id==AUDIO_RX1)
 	{
 		if (CurrentVFO()->HPF_Filter_Width > 0)
@@ -729,16 +699,16 @@ static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id)
 	}
 }
 
+//notch-фильтр
 static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id)
 {
-	//NOTCH FILTER
 	if(rx_id==AUDIO_RX1)
 	{
-		if (CurrentVFO()->ManualNotchFilter)
+		if (CurrentVFO()->ManualNotchFilter) //ручной фильтр
 			arm_biquad_cascade_df2T_f32(&NOTCH_RX1_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
-		else if (CurrentVFO()->AutoNotchFilter)
+		else if (CurrentVFO()->AutoNotchFilter) //автоматический фильтр
 		{
-			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / AUTO_NOTCH_BLOCK_SIZE); block++)
+			for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / AUTO_NOTCH_BLOCK_SIZE); block++)
 				processAutoNotchReduction(FPGA_Audio_Buffer_RX1_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
 		}
 	}
@@ -748,20 +718,20 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id)
 			arm_biquad_cascade_df2T_f32(&NOTCH_RX2_FILTER, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		else if (SecondaryVFO()->AutoNotchFilter)
 		{
-			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / AUTO_NOTCH_BLOCK_SIZE); block++)
+			for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / AUTO_NOTCH_BLOCK_SIZE); block++)
 				processAutoNotchReduction(FPGA_Audio_Buffer_RX2_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
 		}
 	}
 }
 
+//цифровой шумоподавитель Digital Noise Reduction
 static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id)
 {
-	//Digital Noise Reduction
 	if(rx_id==AUDIO_RX1)
 	{
 		if (CurrentVFO()->DNR > 0)
 		{
-			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NOISE_REDUCTION_BLOCK_SIZE); block++)
+			for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NOISE_REDUCTION_BLOCK_SIZE); block++)
 				processNoiseReduction(FPGA_Audio_Buffer_RX1_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
 		}
 	}
@@ -769,36 +739,38 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id)
 	{
 		if (SecondaryVFO()->DNR > 0)
 		{
-			for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NOISE_REDUCTION_BLOCK_SIZE); block++)
+			for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NOISE_REDUCTION_BLOCK_SIZE); block++)
 				processNoiseReduction(FPGA_Audio_Buffer_RX2_I_tmp + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
 		}
 	}
 }
 
+//автоматический регулятор усиления
 static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id)
 {
-	//AGC
 	if(rx_id==AUDIO_RX1)
 		DoAGC(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, rx_id);
 	else if(rx_id==AUDIO_RX2)
 		DoAGC(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, rx_id);
 }
 
+//подавитель импульсных помех
 static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id)
 {
 	if(!TRX.NOISE_BLANKER) return;
 	if(rx_id==AUDIO_RX1)
 	{
-		for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NB_BLOCK_SIZE); block++)
+		for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NB_BLOCK_SIZE); block++)
 			processNoiseBlanking(FPGA_Audio_Buffer_RX1_I_tmp + (block * NB_BLOCK_SIZE), rx_id);
 	}
 	else if(rx_id==AUDIO_RX2)
 	{
-		for (block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NB_BLOCK_SIZE); block++)
+		for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / NB_BLOCK_SIZE); block++)
 			processNoiseBlanking(FPGA_Audio_Buffer_RX2_I_tmp + (block * NB_BLOCK_SIZE), rx_id);
 	}
 }
 
+//s-метр
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id)
 {
 	//Prepare data to calculate s-meter
@@ -810,6 +782,7 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id)
 	Processor_RX_Power_value = i / (float32_t)FPGA_AUDIO_BUFFER_HALF_SIZE;
 }
 
+//скопировать I в Q канал
 static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id)
 {
 	//Double channel I->Q
@@ -819,12 +792,7 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id)
 		dma_memcpy32((uint32_t)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (uint32_t)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
 }
 
-static float32_t DFM_RX1_lpf_prev = 0, DFM_RX1_hpf_prev_a = 0, DFM_RX1_hpf_prev_b = 0, DFM_RX2_lpf_prev = 0, DFM_RX2_hpf_prev_a = 0, DFM_RX2_hpf_prev_b = 0; // used in FM detection and low/high pass processing
-static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0; // used in FM detection and low/high pass processing
-static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0; // used for squelch processing and debouncing tone detection, respectively
-static float32_t DFM_RX1_fm_sql_avg = 0.0f;
-static float32_t DFM_RX2_fm_sql_avg = 0.0f;
-
+//демодулятор FM
 static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id)
 {
 	float32_t angle, x, y, a, b;
@@ -926,6 +894,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id)
 	}
 }
 
+//модулятор FM
 static void ModulateFM(void)
 {
 	static uint32_t modulation = TRX_SAMPLERATE;

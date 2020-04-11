@@ -6,6 +6,7 @@
 #include "fpga.h"
 #include "lcd.h"
 
+//Private variables
 static const uint16_t graph_start_x = 25;
 static const uint16_t graph_width = LCD_WIDTH - 30;
 static const uint16_t graph_start_y = 5;
@@ -17,9 +18,10 @@ static uint32_t tick_start_time = 0;
 static int16_t graph_selected_x = graph_width / 2;
 static int_fast16_t data[LCD_WIDTH - 30] = {0};
 
-static void SPEC_DrawBottomGUI(void);
-static void SPEC_DrawGraphCol(uint16_t x, bool clear);
-static uint16_t SPEC_getYfromX(uint16_t x);
+//Prototypes
+static void SPEC_DrawBottomGUI(void); //вывод статуса внизу экрана
+static void SPEC_DrawGraphCol(uint16_t x, bool clear); //вывод колонки данных
+static uint16_t SPEC_getYfromX(uint16_t x); //получить высоту из id данных
 
 //подготовка спектрального анализатора
 void SPEC_Start(void)
@@ -106,6 +108,7 @@ void SPEC_Draw(void)
 	LCD_busy = false;
 }
 
+//получить высоту из id данных
 static uint16_t SPEC_getYfromX(uint16_t x)
 {
 	int32_t y = graph_start_y + ((data[x] - TRX.SPEC_TopDBM) * (graph_height - graph_start_y) / (TRX.SPEC_BottomDBM - TRX.SPEC_TopDBM));
@@ -116,6 +119,7 @@ static uint16_t SPEC_getYfromX(uint16_t x)
 	return (uint16_t)y;
 }
 
+//вывод колонки данных
 static void SPEC_DrawGraphCol(uint16_t x, bool clear)
 {
 	if(x >= graph_width)
@@ -137,6 +141,7 @@ static void SPEC_DrawGraphCol(uint16_t x, bool clear)
 		LCDDriver_drawPixel((graph_start_x + x + 1), SPEC_getYfromX(x), COLOR_RED);
 }
 
+//вывод статуса внизу экрана
 static void SPEC_DrawBottomGUI(void)
 {
 	char ctmp[64] = {0};
@@ -147,6 +152,7 @@ static void SPEC_DrawBottomGUI(void)
 	LCDDriver_drawFastVLine(graph_start_x + (uint16_t)graph_selected_x + 1, graph_start_y, graph_height, COLOR_GREEN);
 }
 
+//события анализатора на энкодер
 void SPEC_EncRotate(int8_t direction)
 {
 	//стираем старый маркер

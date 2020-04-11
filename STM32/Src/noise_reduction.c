@@ -1,17 +1,10 @@
 #include "noise_reduction.h"
-#include "stm32h7xx_hal.h"
 #include "arm_const_structs.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
-#include <complex.h>
-#include "arm_math.h"
 #include "settings.h"
-#include "functions.h"
 
 //https://github.com/df8oe/UHSDR/wiki/Noise-reduction
 
+//Private variables
 IRAM2 static NR_Instance NR_RX1 = {
 	.NR_InputBuffer = {0},
 	.NR_InputBuffer_index = 0,
@@ -40,15 +33,16 @@ IRAM2 static NR_Instance NR_RX2 = {
 	.NR_GAIN = {0},
 	.LAST_IFFT_RESULT = {0},
 };
+static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; //коэффициенты для оконной функции
 
-static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0};
-
+//инициализация DNR
 void InitNoiseReduction(void)
 {
 	for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
 		von_Hann[idx] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)));
 }
 
+//запуск DNR для блока данных
 void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 {
 	NR_Instance* instance = &NR_RX1;

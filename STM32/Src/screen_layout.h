@@ -4,16 +4,20 @@
 #include "lcd.h"
 #include "fonts.h"
 
-#define BACKGROUND_COLOR COLOR_BLACK
-#define COLOR_BUTTON_TEXT COLOR_DGREEN
-#define COLOR_BUTTON_INACTIVE_TEXT rgb888torgb565(50, 50, 50)
+//оформление элементов экрана
 
+#define BACKGROUND_COLOR COLOR_BLACK //фон
+#define COLOR_BUTTON_TEXT COLOR_DGREEN //активный цвет статусной кнопки
+#define COLOR_BUTTON_INACTIVE_TEXT rgb888torgb565(50, 50, 50) //неактивный цвет
+
+//часы
 #define LAY_CLOCK_POS_Y 17
 #define LAY_CLOCK_POS_HRS_X 405
 #define LAY_CLOCK_POS_MIN_X 430
 #define LAY_CLOCK_POS_SEC_X 455
 #define LAY_CLOCK_FONT FreeSans9pt7b
 
+//верхний ряд статусных кнопок
 #define LAY_TOPBUTTONS_X1 0
 #define LAY_TOPBUTTONS_X2 (LCD_WIDTH - 1)
 #define LAY_TOPBUTTONS_Y1 0
@@ -85,6 +89,7 @@
 #define LAY_TOPBUTTONS_NB_W (24 + LAY_TOPBUTTONS_LR_MARGIN)
 #define LAY_TOPBUTTONS_NB_H LAY_TOPBUTTONS_VFO_H
 
+//вывод частоты
 #define LAY_FREQ_X_OFFSET_100 29
 #define LAY_FREQ_X_OFFSET_10 66
 #define LAY_FREQ_X_OFFSET_1 106
@@ -100,6 +105,7 @@
 #define LAY_FREQ_DELIMITER_X1_OFFSET 140
 #define LAY_FREQ_DELIMITER_X2_OFFSET 280
 
+//вывод статусов под частотой
 #define LAY_STATUS_Y_OFFSET 140
 #define LAY_STATUS_HEIGHT 30
 #define LAY_STATUS_BAR_X_OFFSET 60
@@ -148,6 +154,7 @@
 #define LAY_TEXTBAR_FONT 2
 #define LAY_TEXTBAR_TEXT_X_OFFSET 75
 
+//FFT и водопад
 #define LAY_FFT_HEIGHT_STYLE1 40                                   //указываем максимальную высоту FFT
 #define LAY_WTF_HEIGHT_STYLE1 100                                   //указываем максимальную высоту водопада
 #define LAY_FFT_HEIGHT_STYLE2 100                                   //указываем максимальную высоту FFT
@@ -158,6 +165,7 @@
 #define LAY_FFT_PRINT_SIZE 480                                  //указываем ширину выводимого FFT
 #define LAY_FFT_CWDECODER_OFFSET 17                             //место под текст CW декодера
 
+//системное меню
 #define LAY_SYSMENU_X1 5
 #define LAY_SYSMENU_X2 400
 #define LAY_SYSMENU_X2_BIGINT 350

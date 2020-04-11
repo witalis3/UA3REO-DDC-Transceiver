@@ -1,16 +1,18 @@
 #include "fft.h"
 #include "main.h"
-#include "lcd.h"
-#include <stdlib.h>
-#include "arm_math.h"
 #include "arm_const_structs.h"
-#include "functions.h"
-#include "audio_processor.h"
-#include "wm8731.h"
-#include "settings.h"
 #include "audio_filters.h"
 #include "screen_layout.h"
 
+//Public variables
+bool NeedFFTInputBuffer = true; //флаг необходимости заполнения буфера с FPGA
+bool FFT_need_fft = true;		 //необходимо подготовить данные для отображения на экран
+bool FFT_buffer_ready = false;   //буффер наполнен, можно обрабатывать
+volatile uint32_t FFT_buff_index = 0;							 //текущий индекс буфера при его наполнении с FPGA
+float32_t FFTInput_I[FFT_SIZE] = {0};							 //входящий буфер FFT I
+float32_t FFTInput_Q[FFT_SIZE] = {0};							 //входящий буфер FFT Q
+
+//Private variables
 #if FFT_SIZE == 1024
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len1024;
 #endif
@@ -20,14 +22,6 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 #if FFT_SIZE == 256
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
-
-bool NeedFFTInputBuffer = true; //флаг необходимости заполнения буфера с FPGA
-bool FFT_need_fft = true;		 //необходимо подготовить данные для отображения на экран
-bool FFT_buffer_ready = false;   //буффер наполнен, можно обрабатывать
-
-volatile uint32_t FFT_buff_index = 0;							 //текущий индекс буфера при его наполнении с FPGA
-float32_t FFTInput_I[FFT_SIZE] = {0};							 //входящий буфер FFT I
-float32_t FFTInput_Q[FFT_SIZE] = {0};							 //входящий буфер FFT Q
 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};		 //совмещённый буфер FFT I и Q
 static float32_t FFTInput_sorted[FFT_SIZE] = {0}; //буфер для отсортированных значений (при поиске медианы)
 static float32_t FFTInput_ZOOMFFT[FFT_DOUBLE_SIZE_BUFFER] = {0}; //совмещённый буфер FFT I и Q для обработки ZoomFFT
@@ -39,21 +33,15 @@ static uint32_t currentFFTFreq = 0;
 static uint16_t color_scale[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  //цветовой градиент по высоте FFT
 static SRAM1 uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; //буфер водопада
 static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};					  //временный буффер для перемещения водопада
-
+static uint16_t print_wtf_xindex = 0;							//текущая координата вывода водопада через DMA
+static uint16_t print_wtf_yindex = 0;							//текущая координата вывода водопада через DMA
+static float32_t window_multipliers[FFT_SIZE] = {0};	//коэффициенты выбранной оконной функции
 //Дециматор для Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
 static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
 static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
 static uint_fast16_t zoomed_width = 0;
-
-static uint16_t print_wtf_xindex = 0;
-static uint16_t print_wtf_yindex = 0;
-static uint16_t getFFTColor(uint_fast8_t height);
-static void fft_fill_color_scale(void);
-static uint16_t getFFTHeight(void);
-static uint16_t getWTFHeight(void);
-
 //Коэффициенты для ZoomFFT lowpass filtering / дециматора
 static arm_biquad_casd_df1_inst_f32 IIR_biquad_Zoom_FFT_I =
 	{
@@ -162,8 +150,13 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		},
 };
 
-static float32_t window_multipliers[FFT_SIZE] = {0};
+//Prototypes
+static uint16_t getFFTColor(uint_fast8_t height); //получить цвет из силы сигнала
+static void fft_fill_color_scale(void); //подготовка цветовой палитры
+static uint16_t getFFTHeight(void); //получение высоты FFT
+static uint16_t getWTFHeight(void); //получение высоты водопада
 
+//инициализация FFT
 void FFT_Init(void)
 {
 	fft_fill_color_scale();
@@ -206,6 +199,7 @@ void FFT_Init(void)
 	memset(&wtf_buffer, 0x00, sizeof wtf_buffer);
 }
 
+//расчёт FFT
 void FFT_doFFT(void)
 {
 	if (!TRX.FFT_Enabled)
@@ -357,6 +351,7 @@ void FFT_doFFT(void)
 	FFT_need_fft = false;
 }
 
+//вывод FFT
 void FFT_printFFT(void)
 {
 	if (LCD_busy)
@@ -468,6 +463,7 @@ void FFT_printFFT(void)
 	FFT_printWaterfallDMA();
 }
 
+//вывод водопада
 void FFT_printWaterfallDMA(void)
 {
 	uint_fast8_t cwdecoder_offset = 0;
@@ -499,6 +495,7 @@ void FFT_printWaterfallDMA(void)
 	}
 }
 
+//сдвиг водопада
 void FFT_moveWaterfall(int32_t _freq_diff)
 {
 	if (_freq_diff == 0)
@@ -569,6 +566,7 @@ void FFT_moveWaterfall(int32_t _freq_diff)
 	}
 }
 
+//получить цвет из силы сигнала
 static uint16_t getFFTColor(uint_fast8_t height) //получение теплоты цвета FFT (от синего к красному)
 {
 	//r g b
@@ -604,6 +602,7 @@ static uint16_t getFFTColor(uint_fast8_t height) //получение тепло
 	return rgb888torgb565(red, green, blue);
 }
 
+//подготовка цветовой палитры
 static void fft_fill_color_scale(void) //заполняем градиент цветов FFT при инициализации
 {
 	for (uint_fast8_t i = 0; i < getFFTHeight(); i++)
@@ -612,6 +611,7 @@ static void fft_fill_color_scale(void) //заполняем градиент ц�
 	}
 }
 
+//сброс FFT
 void FFT_Reset(void) //очищаем FFT
 {
 	NeedFFTInputBuffer = false;
@@ -625,6 +625,7 @@ void FFT_Reset(void) //очищаем FFT
 	NeedFFTInputBuffer = true;
 }
 
+//получение высоты FFT
 static uint16_t getFFTHeight(void)
 {
 	uint16_t FFT_HEIGHT = LAY_FFT_HEIGHT_STYLE1;
@@ -633,6 +634,7 @@ static uint16_t getFFTHeight(void)
 	return FFT_HEIGHT;
 }
 
+//получение высоты водопада
 static uint16_t getWTFHeight(void)
 {
 	uint16_t WTF_HEIGHT = LAY_WTF_HEIGHT_STYLE1;

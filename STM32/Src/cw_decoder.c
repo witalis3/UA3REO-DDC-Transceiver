@@ -10,9 +10,11 @@
 #include "lcd.h"
 #include "fpga.h"
 
-volatile uint16_t CW_Decoder_WPM = 0;
-char CW_Decoder_Text[CWDECODER_STRLEN] = "               ";
+//Public variables
+volatile uint16_t CW_Decoder_WPM = 0; //декодирвоанная скорость, WPM
+char CW_Decoder_Text[CWDECODER_STRLEN] = "               "; //декодирвоанная строка
 
+//Private variables
 static float32_t coeff = 0;
 static float32_t Q1 = 0;
 static float32_t Q2 = 0;
@@ -27,27 +29,26 @@ static bool stop = false;
 static uint32_t laststarttime = 0;
 static uint32_t starttimehigh = 0;
 static uint32_t highduration = 0;
-//static long lowtimesavg = 0;
 static uint32_t startttimelow = 0;
 static uint32_t lowduration = 0;
 static uint32_t hightimesavg = 0;
-//static long lasthighduration = 0;
 static char code[20] = {0};
 
-static void CWDecoder_Decode(void);
-static void CWDecoder_PrintChar(char *str);
+//Prototypes
+static void CWDecoder_Decode(void); //декодирование из морзе в символы
+static void CWDecoder_PrintChar(char *str); //вывод символа в результирующую строку
 
+//инициализация CW декодера
 void CWDecoder_Init(void)
 {
 	//Алгоритм Гёрцеля (goertzel calculation)
-	//float32_t bw = (TRX_SAMPLERATE / CWDECODER_SAMPLES);
 	int16_t k = (int16_t)(0.5f + (float32_t)(((float32_t)CWDECODER_SAMPLES * (float32_t)CWDECODER_TARGET_FREQ) / (float32_t)TRX_SAMPLERATE));
 	float32_t omega = (2.0f * PI * k) / CWDECODER_SAMPLES;
-	//float32_t sine = arm_sin_f32(omega);
 	float32_t cosine = arm_cos_f32(omega);
 	coeff = 2.0f * cosine;
 }
 
+//запуск CW декодера для блока данных
 void CWDecoder_Process(float32_t *bufferIn)
 {
 	// The basic where we get the tone
@@ -175,10 +176,10 @@ void CWDecoder_Process(float32_t *bufferIn)
 
 	// the end of main loop clean up
 	realstatebefore = realstate;
-	//lasthighduration = highduration;
 	filteredstatebefore = filteredstate;
 }
 
+//декодирование из морзе в символы
 static void CWDecoder_Decode(void)
 {
 	if (strcmp(code, ".-") == 0)
@@ -294,6 +295,7 @@ static void CWDecoder_Decode(void)
 	//else if (strcmp(code,".--.-") == 0) CWDecoder_PrintChar(""); ascii(6)
 }
 
+//вывод символа в результирующую строку
 static void CWDecoder_PrintChar(char *str)
 {
 	if (strlen(CW_Decoder_Text) >= CWDECODER_STRLEN)

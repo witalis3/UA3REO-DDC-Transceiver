@@ -226,6 +226,7 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
 
   /* USER CODE BEGIN SPI3_MspInit 1 */
 
+		//Перевод SPI3 в режим Full-Duplex I2S, STM32CubeMX не умеет
 		/* SPI3_RX Init */
 		hdma_spi3_rx.Instance = DMA1_Stream0;
 		hdma_spi3_rx.Init.Request = DMA_REQUEST_SPI3_RX;

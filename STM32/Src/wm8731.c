@@ -1,31 +1,37 @@
 #include "stm32h7xx_hal.h"
 #include "wm8731.h"
-#include "functions.h"
-#include <stdlib.h>
-#include "math.h"
 #include "trx_manager.h"
-#include "settings.h"
+#include "wire.h"
 #include "lcd.h"
 #include "usbd_audio_if.h"
 
-IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0};
+//Public variables
+uint32_t WM8731_DMA_samples = 0; //считаем количество семплов, переданных аудио-кодеку
+bool WM8731_DMA_state = true; //с какой частью буфера сейчас работаем, true - compleate; false - half
+bool WM8731_Buffer_underrun = false; //недостаток данных в буфере из аудио-процессора
+IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; //кольцевые буфферы аудио-кодека
 IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
-volatile uint32_t WM8731_DMA_samples = 0;
-volatile bool WM8731_DMA_state = true; //true - compleate ; false - half
-volatile bool WM8731_Buffer_underrun = false;
-static bool WM8731_Beeping = false;
 
-static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value);
-HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize);
+//Private variables
+static bool WM8731_Beeping = false; //в данный момент идёт сигнал бипера
 
+//Prototypes
+static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value); //отправить I2C команду в кодек
+static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize); //Full-duplex реализация запуска I2S
+static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma); //RX Буффер полностью отправлен в кодек
+static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma); //RX Буффер на половину отправлен в кодек
+static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma); //TX Буффер полностью принят из кодека
+static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma); //TX Буффер на половину принят из кодека
+static void I2S_DMAError(DMA_HandleTypeDef *hdma); //Ошибка DMA I2S
+
+//запуск шины I2S
 void WM8731_start_i2s_and_dma(void)
 {
 	if (HAL_I2S_GetState(&hi2s3) == HAL_I2S_STATE_READY)
-	{
 		HAL_I2S_TXRX_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_RX[0], (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2, CODEC_AUDIO_BUFFER_SIZE); // 16bit tx spi, 32bit rx spi
-	}
 }
 
+//очистка буффера аудио-кодека и USB аудио
 void WM8731_CleanBuffer(void)
 {
 	memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
@@ -35,6 +41,7 @@ void WM8731_CleanBuffer(void)
 	memset(USB_AUDIO_tx_buffer, 0x00, sizeof USB_AUDIO_tx_buffer);
 }
 
+//сигнал бипера
 void WM8731_Beep(void)
 {
 	WM8731_Beeping = true;
@@ -44,6 +51,7 @@ void WM8731_Beep(void)
 	WM8731_Beeping = false;
 }
 
+//отправить I2C команду в кодек
 static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 {
 	uint8_t st = 2;
@@ -62,9 +70,9 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 	return st;
 }
 
+//переход в режим TX (глушим динамик и пр.)
 void WM8731_TX_mode(void)
 {
-	//FPGA_stop_audio_clock();
 	WM8731_SendI2CCommand(B8(00000100), B8(00000000)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000110), B8(00000000)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00001111)); //R5 Digital Audio Path Control
@@ -82,12 +90,11 @@ void WM8731_TX_mode(void)
 		WM8731_SendI2CCommand(B8(00001000), B8(00000101)); //R4 Analogue Audio Path Control
 		WM8731_SendI2CCommand(B8(00001100), B8(01101001)); //R6 Power Down Control
 	}
-	//FPGA_start_audio_clock();
 }
 
+//переход в режим RX (глушим микрофон и пр.)
 void WM8731_RX_mode(void)
 {
-	//FPGA_stop_audio_clock();
 	WM8731_SendI2CCommand(B8(00000000), B8(10000000)); //R0 Left Line In
 	WM8731_SendI2CCommand(B8(00000010), B8(10000000)); //R1 Right Line In
 	WM8731_SendI2CCommand(B8(00000100), B8(01111001)); //R2 Left Headphone Out
@@ -95,12 +102,11 @@ void WM8731_RX_mode(void)
 	WM8731_SendI2CCommand(B8(00001000), B8(00010110)); //R4 Analogue Audio Path Control
 	WM8731_SendI2CCommand(B8(00001010), B8(00000111)); //R5 Digital Audio Path Control
 	WM8731_SendI2CCommand(B8(00001100), B8(01100111)); //R6 Power Down Control
-	//FPGA_start_audio_clock();
 }
 
+//переход в смешанный режим RX-TX (для LOOP)
 void WM8731_TXRX_mode(void) //loopback
 {
-	//FPGA_stop_audio_clock();
 	WM8731_SendI2CCommand(B8(00000100), B8(01111001)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000110), B8(01111001)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00000111)); //R5 Digital Audio Path Control
@@ -118,12 +124,11 @@ void WM8731_TXRX_mode(void) //loopback
 		WM8731_SendI2CCommand(B8(00001000), B8(00010101)); //R4 Analogue Audio Path Control
 		WM8731_SendI2CCommand(B8(00001100), B8(01100001)); //R6 Power Down Control, internal crystal
 	}
-	//FPGA_start_audio_clock();
 }
 
+//инициализация аудио-кодека по I2C
 void WM8731_Init(void)
 {
-	//FPGA_stop_audio_clock();
 	if (WM8731_SendI2CCommand(B8(00011110), B8(00000000)) != 0) //R15 Reset Chip
 	{
 		sendToDebug_strln("[ERR] Audio codec not found");
@@ -135,13 +140,14 @@ void WM8731_Init(void)
 	WM8731_RX_mode();
 }
 
+//RX Буффер полностью отправлен в кодек
 static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 {
   if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
 		if (WM8731_Beeping)
 			return;
-		if (Processor_NeedRXBuffer)
+		if (Processor_NeedRXBuffer) //если аудио-кодек не предоставил данные в буфер - поднимаем флаг ошибки
 			WM8731_Buffer_underrun = true;
 		WM8731_DMA_state = true;
 		Processor_NeedRXBuffer = true;
@@ -151,13 +157,14 @@ static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 	}
 }
 
+//RX Буффер на половину отправлен в кодек
 static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 {
   if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
 		if (WM8731_Beeping)
 			return;
-		if (Processor_NeedRXBuffer)
+		if (Processor_NeedRXBuffer) //если аудио-кодек не предоставил данные в буфер - поднимаем флаг ошибки
 			WM8731_Buffer_underrun = true;
 		WM8731_DMA_state = false;
 		Processor_NeedRXBuffer = true;
@@ -167,18 +174,21 @@ static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 	}
 }
 
+//TX Буффер полностью принят из кодека
 static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
 {
   I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
   HAL_I2S_RxCpltCallback(hi2s);
 }
 
+//TX Буффер на половину принят из кодека
 static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
 {
   I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
   HAL_I2S_RxHalfCpltCallback(hi2s);
 }
 
+//Ошибка DMA I2S
 static void I2S_DMAError(DMA_HandleTypeDef *hdma)
 {
   I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent; /* Derogation MISRAC2012-Rule-11.5 */
@@ -197,7 +207,8 @@ static void I2S_DMAError(DMA_HandleTypeDef *hdma)
   HAL_I2S_ErrorCallback(hi2s);
 }
 
-HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize)
+//Full-duplex реализация запуска I2S
+static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize)
 {
   if ((rxData == NULL) || (txData == NULL) || (rxSize == 0UL) || (txSize == 0UL))
   {

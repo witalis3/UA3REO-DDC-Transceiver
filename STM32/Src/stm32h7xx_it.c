@@ -98,6 +98,7 @@
 #include "audio_filters.h"
 #include "wifi.h"
 #include "system_menu.h"
+#include "bootloader.h"
 
 static uint32_t ms50_counter = 0;
 static uint32_t tim6_delay = 0;
@@ -367,6 +368,7 @@ void TIM3_IRQHandler(void)
 	}
 	else
 	{
+		//по таймеру работаем с WiFi, или услыпяем его если выключен (для включеняи нужен рестарт)
 		if (TRX.WIFI_Enabled)
 			WIFI_Process();
 		else
@@ -434,7 +436,7 @@ void TIM5_IRQHandler(void)
   {
     processRxAudio();
   }
-	//spectrum analiser
+	//spectrum analiser - в режме анализатора спектра его обработку поднимаем в приоритет, выполняя вместе с аудио-процессором
 	if(sysmenu_spectrum_opened)
 		LCD_doEvents();
   //EndProfilerUs(true);
@@ -453,7 +455,7 @@ void TIM6_DAC_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
   ms50_counter++;
-
+	//время отпускания передачи после сигнала ключа
   if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_dot_hard && !TRX_key_dash_hard)
   {
     TRX_Key_Timeout_est -= 50;
@@ -465,9 +467,11 @@ void TIM6_DAC_IRQHandler(void)
     }
   }
 
+	//если изменились настройки, обновляем параметры в FPGA
   if (NeedSaveSettings)
     FPGA_NeedSendParams = true;
 
+	//поступил запрос на переинициализацию notch-фильтра, выполняем
   if (NeedReinitNotch)
     InitNotchFilter();
 
@@ -477,6 +481,7 @@ void TIM6_DAC_IRQHandler(void)
 	
   if ((ms50_counter % 2) == 0) // every 100ms
   {
+		//каждые 100мс получаем данные с FPGA (аплитуду, перегрузку АЦП и др.)
     FPGA_NeedGetParams = true;
 
     //S-Meter Calculate
@@ -504,9 +509,7 @@ void TIM6_DAC_IRQHandler(void)
 			float32_t dbg_coeff = 1000.0f / (float32_t)dbg_tim6_delay;
       uint32_t dbg_FPGA_samples = (uint32_t)((float32_t)FPGA_samples * dbg_coeff);
       uint32_t dbg_WM8731_DMA_samples = (uint32_t)((float32_t)WM8731_DMA_samples / 2.0f * dbg_coeff);
-      uint32_t dbg_AUDIOPROC_TXA_samples = (uint32_t)((float32_t)AUDIOPROC_TXA_samples * dbg_coeff);
-      uint32_t dbg_AUDIOPROC_TXB_samples = (uint32_t)((float32_t)AUDIOPROC_TXB_samples * dbg_coeff);
-      float32_t dbg_ALC_need_gain = ALC_need_gain;
+      uint32_t dbg_AUDIOPROC_samples = (uint32_t)((float32_t)AUDIOPROC_samples * dbg_coeff);
       float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I[0];
       float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_RX1_Q[0];
       if (TRX_on_TX())
@@ -522,10 +525,8 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(dbg_FPGA_samples, false); //~48000
       sendToDebug_str("Audio DMA samples: ");
       sendToDebug_uint32(dbg_WM8731_DMA_samples, false); //~48000
-      sendToDebug_str("Audioproc cycles A/B: ");
-      sendToDebug_uint32(dbg_AUDIOPROC_TXA_samples, true); //~120
-      sendToDebug_str(" / ");
-      sendToDebug_uint32(dbg_AUDIOPROC_TXB_samples, false); //~120
+      sendToDebug_str("Audioproc blocks: ");
+      sendToDebug_uint32(dbg_AUDIOPROC_samples, true);
 			sendToDebug_str("CPU Load: ");
       sendToDebug_uint32(cpu_load, false);
 			sendToDebug_str("STM32 Temperature: ");
@@ -534,8 +535,6 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_float32(TRX_STM32_VREF, false);
 			sendToDebug_str("TIM6 delay: ");
       sendToDebug_uint32(dbg_tim6_delay, false);
-      sendToDebug_str("TX Autogain: ");
-      sendToDebug_float32(dbg_ALC_need_gain, false);
       sendToDebug_str("First byte of RX-FPGA I/Q: ");
       sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp, true); //first byte of I
       sendToDebug_str(" / ");
@@ -571,8 +570,6 @@ void TIM6_DAC_IRQHandler(void)
     tim6_delay = HAL_GetTick();
     FPGA_samples = 0;
     AUDIOPROC_samples = 0;
-    AUDIOPROC_TXA_samples = 0;
-    AUDIOPROC_TXB_samples = 0;
     WM8731_DMA_samples = 0;
     RX_USB_AUDIO_SAMPLES = 0;
     TX_USB_AUDIO_SAMPLES = 0;
@@ -580,19 +577,22 @@ void TIM6_DAC_IRQHandler(void)
     FPGA_NeedSendParams = true;
   }
 
+	//every 50ms
   if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
   {
-    TRX_Fan_Timeout += 3; //дуем в 2 раза больше чем работаем на передачу
+    TRX_Fan_Timeout += 3; //дуем после перехода на прём в 2 раза больше чем работаем на передачу
     if (TRX_Fan_Timeout > 120)
       TRX_Fan_Timeout = 120; //но не более 2х минут
   }
+	//эмулируем PTT по CAT
   if (TRX_ptt_cat != TRX_old_ptt_cat)
     TRX_ptt_change();
+	//эмулируем ключ по COM-порту
   if (TRX_key_serial != TRX_old_key_serial)
     TRX_key_change();
-  PERIPH_RF_UNIT_UpdateState(false);
-  LCD_doEvents();
-  FFT_printFFT();
+  PERIPH_RF_UNIT_UpdateState(false); //обновляем состояние RF-Unit платы
+  LCD_doEvents(); //обновляем информацию на LCD
+  FFT_printFFT(); //рисуем FFT
 	WM8731_Buffer_underrun = false;
 	FPGA_Buffer_underrun = false;
 	RX_USB_AUDIO_underrun = false;
@@ -609,11 +609,9 @@ void TIM6_DAC_IRQHandler(void)
 		WM8731_TX_mode(); //mute
 		WM8731_CleanBuffer();
 		sendToDebug_flush();
-		while (true)
-		{
-		}
+		while(true){}
 	}
-	//
+	//перезапускаем USB если нет активности (выключен), чтобы найти новое подключение
 	if(TRX_Inited && (USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick())) 
 		USBD_Restart();
 		
@@ -630,7 +628,7 @@ void TIM7_IRQHandler(void)
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
-  sendToDebug_flush();
+  sendToDebug_flush(); //отправляем данные в отладку из буффера
   /* USER CODE END TIM7_IRQn 1 */
 }
 
@@ -644,7 +642,7 @@ void DMA2_Stream6_IRQHandler(void)
   /* USER CODE END DMA2_Stream6_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream6);
   /* USER CODE BEGIN DMA2_Stream6_IRQn 1 */
-  FFT_printWaterfallDMA();
+  FFT_printWaterfallDMA(); //выводим водопад
   /* USER CODE END DMA2_Stream6_IRQn 1 */
 }
 
@@ -715,7 +713,7 @@ void TIM15_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim15);
   /* USER CODE BEGIN TIM15_IRQn 1 */
 	PERIPH_ProcessFrontPanel();
-	if (NeedSaveCalibration)
+	if (NeedSaveCalibration) //сохраняем данные калибровки в EEPROM
 		SaveCalibration();
   /* USER CODE END TIM15_IRQn 1 */
 }
@@ -733,10 +731,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
     //StartProfilerUs();
-		if(!WM8731_Buffer_underrun)
+		if(!WM8731_Buffer_underrun) //пока процессор тормозит, не получаем новых данных
 		{
-			FPGA_fpgadata_iqclock();
-			FPGA_fpgadata_stuffclock();
+			FPGA_fpgadata_iqclock(); //данные IQ
+			FPGA_fpgadata_stuffclock(); //параметры и прочие службы
 		}
     //EndProfilerUs(true);
   }

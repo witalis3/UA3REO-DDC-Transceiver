@@ -254,6 +254,8 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		CPULOAD_GoToSleepMode();
+		if(TRX_NeedGoToBootloader)
+			JumpToBootloader();
   }
   /* USER CODE END 3 */
 }
@@ -532,6 +534,7 @@ static void MX_I2S3_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN I2S3_Init 2 */
+	//перевод I2S в режим full-duplex
 	hi2s3.Init.Mode = I2S_MODE_MASTER_FULLDUPLEX;
 	if (HAL_I2S_Init(&hi2s3) != HAL_OK)
   {
@@ -1438,6 +1441,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+//обработка SWD отладки
 FILE __stdout;
 FILE __stdin;
 

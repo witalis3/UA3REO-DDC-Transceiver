@@ -7,12 +7,12 @@
 #include <stdbool.h>
 #include "audio_processor.h"
 
-#define NB_BLOCK_SIZE (FPGA_AUDIO_BUFFER_HALF_SIZE / 3)
+#define NB_BLOCK_SIZE (FPGA_AUDIO_BUFFER_HALF_SIZE / 3) //размер блока обработки NB фильтра
 #define NB_impulse_length 7 // has to be odd!!!! 7 / 3 should be enough // 7
 #define NB_PL             ((NB_impulse_length-1) / 2) // has to be (impulse_length-1)/2 !!!!
 #define NB_order         10 // lpc's order // 10
-#define NB_FIR_SIZE 128
-#define NB_max_inpulse_count	5
+#define NB_FIR_SIZE 128			//размер буффера фильтра
+#define NB_max_inpulse_count	5	//максимум импульсов в блоке для подавления
 
 typedef struct
 {
@@ -26,6 +26,7 @@ typedef struct
 	uint16_t impulse_positions[NB_max_inpulse_count];  //maximum of impulses per frame
 } NB_Instance;
 
-extern void processNoiseBlanking(float32_t* buffer, AUDIO_PROC_RX_NUM rx_id);
+//Public methods
+extern void processNoiseBlanking(float32_t* buffer, AUDIO_PROC_RX_NUM rx_id); //запуск NB для блока данных
 
 #endif

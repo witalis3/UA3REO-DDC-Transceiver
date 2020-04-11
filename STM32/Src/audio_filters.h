@@ -8,13 +8,12 @@
 #include "fpga.h"
 #include "functions.h"
 
-#define IIR_FILTERS_COUNT 35
-#define IQ_HILBERT_TAPS 201
-#define IIR_MAX_STAGES 15
-#define NOTCH_STAGES 1
-#define NOTCH_COEFF_IN_STAGE 5
-
-#define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
+#define IIR_FILTERS_COUNT 35 //Всего фильтров в коллекции
+#define IQ_HILBERT_TAPS 201 //Порядок фильтра гильберта
+#define IIR_MAX_STAGES 15 //Максимальный порядок IIR фильтров
+#define NOTCH_STAGES 1 //порядок ручного Notch фильтра
+#define NOTCH_COEFF_IN_STAGE 5 //коэффициентов в порядке ручного Notch фильтра
+#define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1) //размер буфферов состояний
 #define FIR_RX2_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
 #define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
 #define IIR_RX1_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
@@ -26,7 +25,7 @@
 #define IIR_RX1_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX2_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 
-typedef enum
+typedef enum //тип BiQuad фильтра для автоматического расчёта
 {
 	BIQUAD_onepolelp,
 	BIQUAD_onepolehp,
@@ -39,13 +38,13 @@ typedef enum
 	BIQUAD_highShelf
 } BIQUAD_TYPE;
 
-typedef enum
+typedef enum //тип фильтра в коллекции
 {
 	IIR_BIQUAD_HPF,
 	IIR_BIQUAD_LPF
 } IIR_BIQUAD_FILTER_TYPE;
 
-typedef enum
+typedef enum //состояния DC-корректоров для каждого пользователя
 {
 	DC_FILTER_RX1_I,
 	DC_FILTER_RX1_Q,
@@ -57,23 +56,22 @@ typedef enum
 	DC_FILTER_FFT_Q,
 } DC_FILTER_STATE;
 
-//сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
-typedef struct
+typedef struct //сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
 {
 	float32_t x_prev;
 	float32_t y_prev;
 } DC_filter_state_type;
 
-//Coefficients converted to ARMA in reverse order by MATLAB
-typedef struct
+typedef struct //фильтр в коллекции
 {
 	const uint16_t width;
 	const IIR_BIQUAD_FILTER_TYPE type;
 	const uint8_t stages;
-	const float32_t* coeffs;
+	const float32_t* coeffs; //Coefficients converted to ARMA in reverse order by MATLAB
 } IIR_BIQUAD_FILTER;
 
-extern arm_fir_instance_f32 FIR_RX1_Hilbert_I;
+//Public variables
+extern arm_fir_instance_f32 FIR_RX1_Hilbert_I; //инстансы фильтров
 extern arm_fir_instance_f32 FIR_RX1_Hilbert_Q;
 extern arm_fir_instance_f32 FIR_RX2_Hilbert_I;
 extern arm_fir_instance_f32 FIR_RX2_Hilbert_Q;
@@ -95,11 +93,11 @@ extern arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_I_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_Q_FILTER;
-extern volatile bool NeedReinitNotch;
-
-extern void InitAudioFilters(void);
-extern void ReinitAudioFilters(void);
-extern void InitNotchFilter(void);
-extern void dc_filter(float32_t *Buffer, int16_t blockSize, uint8_t stateNum);
+extern volatile bool NeedReinitNotch; //необходимо переинициализировать ручной Notch-фильтр
+//Public methods
+extern void InitAudioFilters(void); //инифиализация аудио-фильтров
+extern void ReinitAudioFilters(void); //переинициализация аудио-фильтров
+extern void InitNotchFilter(void); //инициализация ручного Notch-фильтра
+extern void dc_filter(float32_t *Buffer, int16_t blockSize, uint8_t stateNum); //запуск DC-корректора
 
 #endif

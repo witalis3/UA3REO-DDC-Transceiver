@@ -4,9 +4,9 @@
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
-#define PROFILES_COUNT 7
+#define PROFILES_COUNT 7 //количество профайлеров
 
-typedef struct
+typedef struct //структура профайлера
 {
 	uint32_t startTime;
 	uint32_t endTime;
@@ -15,11 +15,12 @@ typedef struct
 	uint32_t samples;
 } PROFILE_INFO;
 
-extern void InitProfiler(void);
-extern void StartProfiler(uint8_t pid);
-extern void EndProfiler(uint8_t pid, bool summarize);
-extern void PrintProfilerResult(void);
-extern void StartProfilerUs(void);
-extern void EndProfilerUs(bool summarize);
+//Public methods
+extern void InitProfiler(void); //инициализация профайлера
+extern void StartProfiler(uint8_t pid); //запуск профайлера
+extern void EndProfiler(uint8_t pid, bool summarize); //завершение профайлера
+extern void PrintProfilerResult(void); //вывод результатов профайлера
+extern void StartProfilerUs(void); //запуск профайлера в микросекундах
+extern void EndProfilerUs(bool summarize); //завершение профайлера в микросекундах
 
 #endif

@@ -1,25 +1,19 @@
-#include "agc.h"
 #include "stm32h7xx_hal.h"
-#include "math.h"
-#include "arm_math.h"
-#include "functions.h"
+#include "agc.h"
 #include "settings.h"
-#include "profiler.h"
 
+//Private variables
 static float32_t AGC_RX1_need_gain_db = 0.0f;
 static float32_t AGC_RX2_need_gain_db = 0.0f;
 static float32_t AGC_RX1_need_gain_db_old = 1.0f;
 static float32_t AGC_RX2_need_gain_db_old = 1.0f;
 
+//запуск AGC на блок данных
 void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id)
 {
-	float32_t AGC_RX_magnitude = 0;
-	float32_t full_scale_rate = 0;
-	float32_t AGC_RX_dbFS = 0;
-
+	//определение RX1 или RX2 приёмника
 	float32_t* AGC_need_gain_db = &AGC_RX1_need_gain_db;
 	float32_t* AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
-	
 	if(rx_id==AUDIO_RX2)
 	{
 		AGC_need_gain_db = &AGC_RX2_need_gain_db;
@@ -29,13 +23,15 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 	//выше скорость в настройках - выше скорость отработки AGC
 	float32_t RX_AGC_STEPSIZE_UP = 100.0f / (float32_t)TRX.RX_AGC_speed;
 	float32_t RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.RX_AGC_speed;
-	//считаем магнитуду
+	
+	//считаем магнитуду в dBFS
+	float32_t AGC_RX_magnitude = 0;
 	arm_power_f32(agcBuffer, blockSize, &AGC_RX_magnitude);
 	AGC_RX_magnitude = AGC_RX_magnitude / (float32_t)blockSize;
 	if (AGC_RX_magnitude == 0.0f)
 		AGC_RX_magnitude = 0.001f;
-	full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
-	AGC_RX_dbFS = rate2dbP(full_scale_rate);
+	float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
+	float32_t AGC_RX_dbFS = rate2dbP(full_scale_rate);
 
 	//двигаем усиление на шаг
 	float32_t diff = (AGC_OPTIMAL_THRESHOLD - (AGC_RX_dbFS + *AGC_need_gain_db));
@@ -78,5 +74,4 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 	{
 		arm_scale_f32(agcBuffer, db2rateP(*AGC_need_gain_db), agcBuffer, blockSize);
 	}
-	//sendToDebug_float32(AGC_need_gain_db,false);
 }
