@@ -487,6 +487,30 @@ void TIM6_DAC_IRQHandler(void)
 
     //S-Meter Calculate
     TRX_DBMCalculate();
+		
+		//Detect FPGA IQ phase error
+    if (TRX_IQ_phase_error > 0.1f && !TRX_on_TX() && TRX_RX_dBm > -90.0f)
+    {
+      sendToDebug_strln("[ERR] IQ phase error, restart");
+      FPGA_NeedRestart = true;
+    }
+		
+		//Detect FPGA stuck error
+		static float32_t old_FPGA_Audio_Buffer_RX1_I = 0;
+		static float32_t old_FPGA_Audio_Buffer_RX1_Q = 0;
+		static uint16_t fpga_stuck_errors = 0;
+		if(FPGA_Audio_Buffer_RX1_I[0] == old_FPGA_Audio_Buffer_RX1_I && FPGA_Audio_Buffer_RX1_Q[0] == old_FPGA_Audio_Buffer_RX1_Q)
+			fpga_stuck_errors++;
+		else
+			fpga_stuck_errors=0;
+		if(fpga_stuck_errors>3 && !TRX_on_TX())
+		{
+			sendToDebug_strln("[ERR] IQ stuck error, restart");
+			fpga_stuck_errors=0;
+			FPGA_NeedRestart = true;
+		}
+		old_FPGA_Audio_Buffer_RX1_I = FPGA_Audio_Buffer_RX1_I[0];
+		old_FPGA_Audio_Buffer_RX1_Q = FPGA_Audio_Buffer_RX1_Q[0];
   }
 
   if (ms50_counter == 21) // every 1 sec
@@ -560,13 +584,6 @@ void TIM6_DAC_IRQHandler(void)
     if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))
       SaveSettings();
 
-    //Detect FPGA IQ phase error
-    if (TRX_IQ_phase_error > 0.1f && !TRX_on_TX() && TRX_RX_dBm > -90.0f)
-    {
-      sendToDebug_strln("[ERR] IQ phase error, restart");
-      FPGA_NeedRestart = true;
-    }
-
     //Reset counters
     tim6_delay = HAL_GetTick();
     FPGA_samples = 0;
@@ -598,7 +615,7 @@ void TIM6_DAC_IRQHandler(void)
   FPGA_Buffer_underrun = false;
   RX_USB_AUDIO_underrun = false;
   //power off sequence
-  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT))
+  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && !NeedSaveCalibration)
   {
     TRX_Inited = false;
     LCD_busy = true;

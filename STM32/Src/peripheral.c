@@ -947,7 +947,7 @@ bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPI
 		sendToDebug_strln("SPI Busy");
 		return false;
 	}
-	const int32_t timeout = HAL_MAX_DELAY;
+	const int32_t timeout = 0x200; //HAL_MAX_DELAY
 	PERIPH_SPI_busy = true;
 	HAL_IWDG_Refresh(&hiwdg1);
 	memset(in_data, 0x00, count);

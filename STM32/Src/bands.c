@@ -188,7 +188,7 @@ int8_t getBandFromFreq(uint32_t freq, bool nearest)
 	if (nearest)
 	{
 		int8_t near_band = 0;
-		int32_t near_diff = 999999;
+		int32_t near_diff = 999999999;
 		for (int8_t b = 0; b < BANDS_COUNT; b++)
 		{
 			if (abs((int32_t)BANDS[b].startFreq - (int32_t)freq) < near_diff)

@@ -1508,7 +1508,6 @@ static void SYSMENU_HANDL_CALIB_CIC_SHIFT(int8_t direction)
 		CALIBRATE.CIC_GAINER_val = 32;
 	if (CALIBRATE.CIC_GAINER_val > 88)
 		CALIBRATE.CIC_GAINER_val = 88;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction)
@@ -1518,7 +1517,6 @@ static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction)
 		CALIBRATE.CICFIR_GAINER_val = 32;
 	if (CALIBRATE.CICFIR_GAINER_val > 64)
 		CALIBRATE.CICFIR_GAINER_val = 64;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction)
@@ -1528,7 +1526,6 @@ static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction)
 		CALIBRATE.TXCICFIR_GAINER_val = 16;
 	if (CALIBRATE.TXCICFIR_GAINER_val > 64)
 		CALIBRATE.TXCICFIR_GAINER_val = 64;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction)
@@ -1538,7 +1535,6 @@ static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction)
 		CALIBRATE.DAC_GAINER_val = 14;
 	if (CALIBRATE.DAC_GAINER_val > 32)
 		CALIBRATE.DAC_GAINER_val = 32;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN(uint8_t id, int8_t direction)
@@ -1554,7 +1550,6 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN(uint8_t id, int8_t direction)
 		TRX_setFrequency(500000, CurrentVFO());
 	else
 		TRX_setFrequency(id * 1000000, CurrentVFO());
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_0(int8_t direction)
@@ -1693,7 +1688,6 @@ static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction)
 		CALIBRATE.smeter_calibration = -50;
 	if (CALIBRATE.smeter_calibration > 50)
 		CALIBRATE.smeter_calibration = 50;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction)
@@ -1703,7 +1697,6 @@ static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction)
 		CALIBRATE.adc_offset = -500;
 	if (CALIBRATE.adc_offset > 500)
 		CALIBRATE.adc_offset = 500;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_ATT_DB(int8_t direction)
@@ -1713,7 +1706,6 @@ static void SYSMENU_HANDL_CALIB_ATT_DB(int8_t direction)
 		CALIBRATE.att_db = -50;
 	if (CALIBRATE.att_db > 0)
 		CALIBRATE.att_db = 0;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_LNA_GAIN(int8_t direction)
@@ -1723,7 +1715,6 @@ static void SYSMENU_HANDL_CALIB_LNA_GAIN(int8_t direction)
 		CALIBRATE.lna_gain_db = 0;
 	if (CALIBRATE.lna_gain_db > 100)
 		CALIBRATE.lna_gain_db = 100;
-	NeedSaveCalibration = true;
 }
 
 #pragma GCC diagnostic ignored "-Wsign-conversion"
@@ -1734,7 +1725,6 @@ static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction)
 		CALIBRATE.LPF_END = 1;
 	if (CALIBRATE.LPF_END > 999999999)
 		CALIBRATE.LPF_END = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_0_START(int8_t direction)
@@ -1744,7 +1734,6 @@ static void SYSMENU_HANDL_CALIB_BPF_0_START(int8_t direction)
 		CALIBRATE.BPF_0_START = 1;
 	if (CALIBRATE.BPF_0_START > 999999999)
 		CALIBRATE.BPF_0_START = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_0_END(int8_t direction)
@@ -1754,7 +1743,6 @@ static void SYSMENU_HANDL_CALIB_BPF_0_END(int8_t direction)
 		CALIBRATE.BPF_0_END = 1;
 	if (CALIBRATE.BPF_0_END > 999999999)
 		CALIBRATE.BPF_0_END = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_1_START(int8_t direction)
@@ -1764,7 +1752,6 @@ static void SYSMENU_HANDL_CALIB_BPF_1_START(int8_t direction)
 		CALIBRATE.BPF_1_START = 1;
 	if (CALIBRATE.BPF_1_START > 999999999)
 		CALIBRATE.BPF_1_START = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_1_END(int8_t direction)
@@ -1774,7 +1761,6 @@ static void SYSMENU_HANDL_CALIB_BPF_1_END(int8_t direction)
 		CALIBRATE.BPF_1_END = 1;
 	if (CALIBRATE.BPF_1_END > 999999999)
 		CALIBRATE.BPF_1_END = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_2_START(int8_t direction)
@@ -1784,7 +1770,6 @@ static void SYSMENU_HANDL_CALIB_BPF_2_START(int8_t direction)
 		CALIBRATE.BPF_2_START = 1;
 	if (CALIBRATE.BPF_2_START > 999999999)
 		CALIBRATE.BPF_2_START = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_2_END(int8_t direction)
@@ -1794,7 +1779,6 @@ static void SYSMENU_HANDL_CALIB_BPF_2_END(int8_t direction)
 		CALIBRATE.BPF_2_END = 1;
 	if (CALIBRATE.BPF_2_END > 999999999)
 		CALIBRATE.BPF_2_END = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_3_START(int8_t direction)
@@ -1804,7 +1788,6 @@ static void SYSMENU_HANDL_CALIB_BPF_3_START(int8_t direction)
 		CALIBRATE.BPF_3_START = 1;
 	if (CALIBRATE.BPF_3_START > 999999999)
 		CALIBRATE.BPF_3_START = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_3_END(int8_t direction)
@@ -1814,7 +1797,6 @@ static void SYSMENU_HANDL_CALIB_BPF_3_END(int8_t direction)
 		CALIBRATE.BPF_3_END = 1;
 	if (CALIBRATE.BPF_3_END > 999999999)
 		CALIBRATE.BPF_3_END = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_4_START(int8_t direction)
@@ -1824,7 +1806,6 @@ static void SYSMENU_HANDL_CALIB_BPF_4_START(int8_t direction)
 		CALIBRATE.BPF_4_START = 1;
 	if (CALIBRATE.BPF_4_START > 999999999)
 		CALIBRATE.BPF_4_START = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_4_END(int8_t direction)
@@ -1834,7 +1815,6 @@ static void SYSMENU_HANDL_CALIB_BPF_4_END(int8_t direction)
 		CALIBRATE.BPF_4_END = 1;
 	if (CALIBRATE.BPF_4_END > 999999999)
 		CALIBRATE.BPF_4_END = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_5_START(int8_t direction)
@@ -1844,7 +1824,6 @@ static void SYSMENU_HANDL_CALIB_BPF_5_START(int8_t direction)
 		CALIBRATE.BPF_5_START = 1;
 	if (CALIBRATE.BPF_5_START > 999999999)
 		CALIBRATE.BPF_5_START = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_5_END(int8_t direction)
@@ -1854,7 +1833,6 @@ static void SYSMENU_HANDL_CALIB_BPF_5_END(int8_t direction)
 		CALIBRATE.BPF_5_END = 1;
 	if (CALIBRATE.BPF_5_END > 999999999)
 		CALIBRATE.BPF_5_END = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_6_START(int8_t direction)
@@ -1864,7 +1842,6 @@ static void SYSMENU_HANDL_CALIB_BPF_6_START(int8_t direction)
 		CALIBRATE.BPF_6_START = 1;
 	if (CALIBRATE.BPF_6_START > 999999999)
 		CALIBRATE.BPF_6_START = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction)
@@ -1874,7 +1851,6 @@ static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction)
 		CALIBRATE.BPF_6_END = 1;
 	if (CALIBRATE.BPF_6_END > 999999999)
 		CALIBRATE.BPF_6_END = 999999999;
-	NeedSaveCalibration = true;
 }
 
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction)
@@ -1884,7 +1860,6 @@ static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction)
 		CALIBRATE.BPF_7_HPF = 1;
 	if (CALIBRATE.BPF_7_HPF > 999999999)
 		CALIBRATE.BPF_7_HPF = 999999999;
-	NeedSaveCalibration = true;
 }
 #pragma GCC diagnostic pop
 
@@ -1896,7 +1871,6 @@ static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction)
 	if (CALIBRATE.swr_trans_rate > 50.0f)
 		CALIBRATE.swr_trans_rate = 50.0f;
 	CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f));
-	NeedSaveCalibration = true;
 }
 
 //COMMON MENU FUNCTIONS
@@ -2024,6 +1998,8 @@ void eventCloseSystemMenu(void)
 		}
 	}
 	NeedSaveSettings = true;
+	if(sysmenu_hiddenmenu_enabled)
+		NeedSaveCalibration = true;
 }
 
 void eventSecRotateSystemMenu(int8_t direction)
@@ -2126,7 +2102,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	if (!sysmenu_hiddenmenu_enabled && type == SYSMENU_HIDDEN_MENU)
 		return;
 
-	char ctmp[10];
+	char ctmp[10] = {0};
 	if (!onlyVal)
 	{
 		LCDDriver_Fill_RectXY(0, sysmenu_y, LAY_SYSMENU_W, sysmenu_y + 17, COLOR_BLACK);
@@ -2172,8 +2148,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 			sprintf(ctmp, "NO");
 		break;
 	case SYSMENU_RUN:
-		if (*value != 0)
-			sprintf(ctmp, "RUN");
+		sprintf(ctmp, "RUN");
 		break;
 	case SYSMENU_MENU:
 		sprintf(ctmp, "->");
