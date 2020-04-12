@@ -28,7 +28,7 @@
 //TIM3 - WIFI
 //TIM4 - расчёт FFT
 //TIM5 - аудио-процессор
-//TIM6 - каждые 50мс, различные действия
+//TIM6 - каждые 10мс, различные действия
 //TIM7 - USB FIFO
 //TIM15 - EEPROM / передняя панель
 
@@ -100,7 +100,7 @@
 #include "system_menu.h"
 #include "bootloader.h"
 
-static uint32_t ms50_counter = 0;
+static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
 static uint32_t powerdown_start_delay = 0;
 /* USER CODE END 0 */
@@ -455,11 +455,11 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
-  ms50_counter++;
+  ms10_counter++;
   //время отпускания передачи после сигнала ключа
   if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_dot_hard && !TRX_key_dash_hard)
   {
-    TRX_Key_Timeout_est -= 50;
+    TRX_Key_Timeout_est -= 10;
     if (TRX_Key_Timeout_est == 0)
     {
       LCD_UpdateQuery.StatusInfoGUI = true;
@@ -480,7 +480,7 @@ void TIM6_DAC_IRQHandler(void)
   if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_NO_TX)
     PERIPH_ProcessSWRMeter();
 
-  if ((ms50_counter % 2) == 0) // every 100ms
+  if ((ms10_counter % 10) == 0) // every 100ms
   {
     //каждые 100мс получаем данные с FPGA (аплитуду, перегрузку АЦП и др.)
     FPGA_NeedGetParams = true;
@@ -492,7 +492,7 @@ void TIM6_DAC_IRQHandler(void)
 		static float32_t old_FPGA_Audio_Buffer_RX1_I = 0;
 		static float32_t old_FPGA_Audio_Buffer_RX1_Q = 0;
 		static uint16_t fpga_stuck_errors = 0;
-		if(FPGA_Audio_Buffer_RX1_I[0] == old_FPGA_Audio_Buffer_RX1_I && FPGA_Audio_Buffer_RX1_Q[0] == old_FPGA_Audio_Buffer_RX1_Q)
+		if(FPGA_Audio_Buffer_RX1_I[0] == old_FPGA_Audio_Buffer_RX1_I || FPGA_Audio_Buffer_RX1_Q[0] == old_FPGA_Audio_Buffer_RX1_Q)
 			fpga_stuck_errors++;
 		else
 			fpga_stuck_errors=0;
@@ -506,14 +506,46 @@ void TIM6_DAC_IRQHandler(void)
 		old_FPGA_Audio_Buffer_RX1_Q = FPGA_Audio_Buffer_RX1_Q[0];
   }
 
-  if (ms50_counter == 21) // every 1 sec
+  //every 10ms
+  
+  //эмулируем PTT по CAT
+  if (TRX_ptt_cat != TRX_old_ptt_cat)
+    TRX_ptt_change();
+  //эмулируем ключ по COM-порту
+  if (TRX_key_serial != TRX_old_key_serial)
+    TRX_key_change();
+	
+	if ((ms10_counter % 5) == 0) // every 50 msec
+	{
+		//Вентилятор
+		if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
+		{
+			TRX_Fan_Timeout += 3; //дуем после перехода на приём в 2 раза больше чем работаем на передачу
+			if (TRX_Fan_Timeout > 120)
+				TRX_Fan_Timeout = 120; //но не более 2х минут
+		}
+		//сброс флагов ошибок
+		WM8731_Buffer_underrun = false;
+		FPGA_Buffer_underrun = false;
+		RX_USB_AUDIO_underrun = false;
+		
+		PERIPH_RF_UNIT_UpdateState(false); //обновляем состояние RF-Unit платы
+		LCD_doEvents();                    //обновляем информацию на LCD
+	}
+	
+	if ((ms10_counter % 3) == 0) // every 30 msec
+	{
+		FFT_printFFT();                    //рисуем FFT
+	}
+	
+	if (ms10_counter == 101) // every 1 sec
   {
-    ms50_counter = 0;
+    ms10_counter = 0;
 		
 		//Detect FPGA IQ phase error
     if ((fabsf(TRX_IQ_phase_error) > 0.1f  || fabsf(TRX_IQ_phase_error) < 0.000005f)&& !TRX_on_TX() && TRX_RX_dBm > -90.0f)
     {
-      sendToDebug_strln("[ERR] IQ phase error, restart");
+      sendToDebug_str("[ERR] IQ phase error, restart | ");
 			sendToDebug_float32(TRX_IQ_phase_error, false);
       FPGA_NeedRestart = true;
     }
@@ -596,26 +628,7 @@ void TIM6_DAC_IRQHandler(void)
     TRX_Time_InActive++;
     FPGA_NeedSendParams = true;
   }
-
-  //every 50ms
-  if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
-  {
-    TRX_Fan_Timeout += 3; //дуем после перехода на прём в 2 раза больше чем работаем на передачу
-    if (TRX_Fan_Timeout > 120)
-      TRX_Fan_Timeout = 120; //но не более 2х минут
-  }
-  //эмулируем PTT по CAT
-  if (TRX_ptt_cat != TRX_old_ptt_cat)
-    TRX_ptt_change();
-  //эмулируем ключ по COM-порту
-  if (TRX_key_serial != TRX_old_key_serial)
-    TRX_key_change();
-  PERIPH_RF_UNIT_UpdateState(false); //обновляем состояние RF-Unit платы
-  LCD_doEvents();                    //обновляем информацию на LCD
-  FFT_printFFT();                    //рисуем FFT
-  WM8731_Buffer_underrun = false;
-  FPGA_Buffer_underrun = false;
-  RX_USB_AUDIO_underrun = false;
+	
   //power off sequence
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && !NeedSaveCalibration)
   {
@@ -752,13 +765,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
-    //StartProfilerUs();
-    if (!WM8731_Buffer_underrun) //пока процессор тормозит, не получаем новых данных
-    {
-      FPGA_fpgadata_iqclock();    //данные IQ
-      FPGA_fpgadata_stuffclock(); //параметры и прочие службы
-    }
-    //EndProfilerUs(true);
+		FPGA_fpgadata_iqclock();    //данные IQ
+    FPGA_fpgadata_stuffclock(); //параметры и прочие службы
   }
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder
   {

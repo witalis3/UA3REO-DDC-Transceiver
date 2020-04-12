@@ -22,11 +22,13 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 #if FFT_SIZE == 256
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
+#if FFT_SIZE == 128
+const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
+#endif
 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};		 //совмещённый буфер FFT I и Q
 static float32_t FFTInput_sorted[FFT_SIZE] = {0};				 //буфер для отсортированных значений (при поиске медианы)
 static float32_t FFTInput_ZOOMFFT[FFT_DOUBLE_SIZE_BUFFER] = {0}; //совмещённый буфер FFT I и Q для обработки ZoomFFT
 static float32_t FFTOutput_mean[LAY_FFT_PRINT_SIZE] = {0};		 //усредненный буфер FFT (для вывода)
-static uint_fast16_t maxValueErrors = 0;						 //количество превышений сигнала в FFT
 static float32_t maxValueFFT_rx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
 static float32_t maxValueFFT_tx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
 static uint32_t currentFFTFreq = 0;
@@ -286,30 +288,21 @@ void FFT_doFFT(void)
 	float32_t maxValueFFT = maxValueFFT_rx;
 	if (TRX_on_TX())
 		maxValueFFT = maxValueFFT_tx;
-	float32_t maxValue = (medianValue * 8.0f);
-	float32_t minValue = (medianValue * 4.0f);
+	float32_t maxValue = (medianValue * FFT_MAX);
+	float32_t targetValue = (medianValue * FFT_TARGET);
+	float32_t minValue = (medianValue * FFT_MIN);
 
 	//Автокалибровка уровней FFT
-	diffValue = (maxValue - maxValueFFT) / FFT_STEP_COEFF;
-	if (maxValueErrors >= FFT_MAX_IN_RED_ZONE && diffValue > 0)
-		maxValueFFT += diffValue;
-	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && diffValue < 0 && diffValue < -FFT_STEP_FIX)
-		maxValueFFT += diffValue;
-	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_FIX)
-		maxValueFFT -= FFT_STEP_FIX;
-	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && diffValue < 0 && diffValue < -FFT_STEP_PRECISION)
-		maxValueFFT += diffValue;
-	else if (maxValueErrors <= FFT_MIN_IN_RED_ZONE && maxValueFFT > FFT_STEP_PRECISION)
-		maxValueFFT -= FFT_STEP_PRECISION;
+	diffValue = (targetValue - maxValueFFT) / FFT_STEP_COEFF;
+	maxValueFFT += diffValue;
 
-	//минимальный порог
-	maxValueErrors = 0;
-	if (maxValueFFT < FFT_MIN)
-		maxValueFFT = FFT_MIN;
+	//минимальный-максимальный порог
 	if (maxValueFFT < minValue)
 		maxValueFFT = minValue;
 	if (maxValueFFT > maxValue)
 		maxValueFFT = maxValue;
+	if (maxValueFFT < 0.0000001f)
+		maxValueFFT = 0.0000001f;
 	
 	//сохраняем значения для переключения RX/TX
 	if (TRX_on_TX())
@@ -319,8 +312,8 @@ void FFT_doFFT(void)
 
 	//Нормируем АЧХ к единице
 	arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, LAY_FFT_PRINT_SIZE);
-
-	//Усреднение значений для последующего вывода (от резких всплесков)
+	
+	//Усреднение значений для последующего вывода
 	float32_t averaging = (float32_t)TRX.FFT_Averaging / (float32_t)TRX.FFT_Zoom;
 	if (averaging < 1.0f)
 		averaging = 1.0f;
@@ -329,7 +322,7 @@ void FFT_doFFT(void)
 			FFTOutput_mean[i] += (FFTInput[i] - FFTOutput_mean[i]) / averaging;
 		else
 			FFTOutput_mean[i] -= (FFTOutput_mean[i] - FFTInput[i]) / averaging;
-
+		
 	FFT_need_fft = false;
 }
 
@@ -382,7 +375,6 @@ void FFT_printFFT(void)
 		{
 			height = fftHeight;
 			tmp = COLOR_RED;
-			maxValueErrors++;
 		}
 		else
 			tmp = color_scale[fftHeight-height];
@@ -462,9 +454,12 @@ void FFT_printWaterfallDMA(void)
 	{
 		//расчёт смещения
 		int32_t freq_diff = (int32_t)(((float32_t)((int32_t)currentFFTFreq - (int32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)TRX.FFT_Zoom);
+		uint16_t *wtf_draw_buffer = wtf_buffer[print_wtf_yindex];
 		
 		if (freq_diff != 0) //есть смещение по частоте
 		{
+			wtf_draw_buffer = wtf_line_tmp; //используем модифицированную линию
+			
 			int32_t margin_left = 0;
 			if (freq_diff < 0)
 				margin_left = -freq_diff;
@@ -479,9 +474,8 @@ void FFT_printWaterfallDMA(void)
 				margin_right = 0;
 			int32_t body_width = LAY_FFT_PRINT_SIZE - margin_left - margin_right;
 			
-			if (print_wtf_xindex == 0)
+			if (print_wtf_xindex == 0) //только для новой строки
 			{
-				//сдвигаем водопад во временную строку
 				if(body_width <= 0)
 					memset(&wtf_line_tmp, 0x00, sizeof(wtf_line_tmp));
 				else
@@ -501,37 +495,22 @@ void FFT_printWaterfallDMA(void)
 					if (margin_right > 0)
 						memset(&wtf_line_tmp[(LAY_FFT_PRINT_SIZE - margin_right)], 0x00, (uint32_t)(margin_right * 2)); //заполняем пространство справа
 				}
-				//выводим левую половину
-				LCDDriver_SetCursorAreaPosition(0, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE / 2, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
-				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_line_tmp[0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2);
-				print_wtf_xindex = 1;
-			}
-			else
-			{
-				//выводим правую половину
-				LCDDriver_SetCursorAreaPosition(LAY_FFT_PRINT_SIZE / 2 + 1, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
-				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_line_tmp[LAY_FFT_PRINT_SIZE / 2 + 1], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2 - 1);
-				print_wtf_yindex++;
-				print_wtf_xindex = 0;
 			}
 		}
-		else //смещения нет, выводим из буфера напрямую
+		if (print_wtf_xindex == 0)
 		{
-			if (print_wtf_xindex == 0)
-			{
-				//выводим левую половину
-				LCDDriver_SetCursorAreaPosition(0, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE / 2, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
-				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_buffer[print_wtf_yindex][0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2);
-				print_wtf_xindex = 1;
-			}
-			else
-			{
-				//выводим правую половину
-				LCDDriver_SetCursorAreaPosition(LAY_FFT_PRINT_SIZE / 2 + 1, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
-				HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_buffer[print_wtf_yindex][LAY_FFT_PRINT_SIZE / 2 + 1], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2 - 1);
-				print_wtf_yindex++;
-				print_wtf_xindex = 0;
-			}
+			//выводим левую половину
+			LCDDriver_SetCursorAreaPosition(0, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE / 2, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
+			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_draw_buffer[0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2);
+			print_wtf_xindex = 1;
+		}
+		else
+		{
+			//выводим правую половину
+			LCDDriver_SetCursorAreaPosition(LAY_FFT_PRINT_SIZE / 2 + 1, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
+			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_draw_buffer[LAY_FFT_PRINT_SIZE / 2 + 1], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2 - 1);
+			print_wtf_yindex++;
+			print_wtf_xindex = 0;
 		}
 	}
 	else
