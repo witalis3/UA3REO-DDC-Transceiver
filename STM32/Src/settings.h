@@ -35,6 +35,7 @@
 #define FMC_REMAP true					//ремап памяти FMC
 #define FSMC_REGISTER_SELECT 18			//из FSMC настроек в STM32Cube (A18, A6, и т.д.)
 #define SCREEN_ROTATE 0					//перевернуть экран вверх ногами
+#define FPGA_FLASH_IN_HEX true					//включить прошивку FPGA в прошивку STM32
 
 #define ADC_BITS 16																						//разрядность АЦП
 #define FPGA_BUS_BITS 32																				//разрядность данных из FPGA

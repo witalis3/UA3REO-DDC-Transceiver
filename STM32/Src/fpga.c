@@ -1,6 +1,10 @@
 #include "fpga.h"
 #include "main.h"
 
+#if FPGA_FLASH_IN_HEX
+	#include "fpga_flash.h"
+#endif
+
 //Public variables
 volatile uint32_t FPGA_samples = 0;												//счетчик числа семплов при обмене с FPGA
 volatile bool FPGA_NeedSendParams = false;										//флаг необходимости отправить параметры в FPGA
@@ -34,7 +38,7 @@ static void FPGA_fpgadata_getparam(void);		   //получить парамет�
 static void FPGA_fpgadata_sendparam(void);		   //отправить параметры
 static void FPGA_setBusInput(void);				   //переключить шину на ввод
 static void FPGA_setBusOutput(void);			   //переключить шину на вывод
-static void FPGA_spi_read_flash(void);				//Прочитать содержимое SPI памяти FPGA
+static bool FPGA_spi_flash_verify(bool full);				//Прочитать содержимое SPI памяти FPGA
 
 //инициализация обмена с FPGA
 void FPGA_Init(void)
@@ -45,7 +49,8 @@ void FPGA_Init(void)
 	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(GPIOA, &FPGA_GPIO_InitStruct);
 
-	//FPGA_spi_read_flash();
+	if(FPGA_FLASH_IN_HEX)
+		FPGA_spi_flash_verify(false); //проверяем первые 2048 байт прошивки FPGA
 }
 
 //перезапуск модулей FPGA
@@ -707,7 +712,7 @@ B9h - DEEP POWER-DOWN
 ABh - RELEASE from DEEP POWER-DOWN
 */
 
-static void FPGA_spi_read_flash(void) //чтение flash памяти
+static bool FPGA_spi_flash_verify(bool full) //проверка flash памяти
 {
 	FPGA_bus_stop = true;
 	HAL_Delay(1);
@@ -716,36 +721,84 @@ static void FPGA_spi_read_flash(void) //чтение flash памяти
 	FPGA_spi_start_command(0x03); // READ DATA BYTES
 	FPGA_spi_continue_command(0x00); //addr 1
 	FPGA_spi_continue_command(0x00); //addr 2
-	data = FPGA_spi_continue_command(0x00); //addr 3
-
-	uint32_t bigsum=0;
-	/*for (uint_fast16_t i = 1; i <= (2 * 1024); i++)
-	{
-		bigsum += (uint8_t)data;
-		sendToDebug_hex((uint8_t)(__RBIT(data) >> 24), true);
-		sendToDebug_str(" ");
-		char buff[2] = "";
-		strncpy(buff, (char *)&data, 1);
-		//sendToDebug_str(buff);
-		sendToDebug_flush();
-		
-		if (i % 64 == 0)
-		{
-			sendToDebug_str("\r\n");
-			sendToDebug_flush();
-			HAL_IWDG_Refresh(&hiwdg1);
-		}
-		data = FPGA_spi_continue_command(0xFF);
-	}*/
-	for (uint32_t i = 1; i <= (2 * 1024 * 1024); i++)
-	{
-		bigsum += (uint8_t)data;
-		if (i % 1024 == 0)
-			HAL_IWDG_Refresh(&hiwdg1);
-		data = FPGA_spi_continue_command(0xFF);
-	}
+	FPGA_spi_continue_command(0x00); //addr 3
+	data = FPGA_spi_continue_command(0xFF);
 	
-	sendToDebug_uint32(bigsum, false);
-	sendToDebug_newline();
+	//Uncomress RLE and verify
+	const int32_t file_offset = 0xA0 - 1;
+	const int32_t flash_size = 0x200000;
+	uint32_t errors = 0;
+	uint32_t i = 0;
+	int32_t decoded = 0;
+	while (i < sizeof(FILES_OUTPUT_FILE_JIC))
+	{
+		if ((int8_t)FILES_OUTPUT_FILE_JIC[i] < 0) //нет повторов
+		{
+			uint8_t count = (-(int8_t)FILES_OUTPUT_FILE_JIC[i]);
+			i++;
+			for (uint8_t p = 0; p < count; p++)
+			{
+				if((decoded - file_offset) >=0 )
+				{
+					if((uint8_t)(__RBIT(data) >> 24) != FILES_OUTPUT_FILE_JIC[i])
+					{
+						errors++;
+						sendToDebug_uint32(decoded, true);
+						sendToDebug_str(": ");
+						sendToDebug_hex((uint8_t)(__RBIT(data) >> 24), true);
+						sendToDebug_hex(FILES_OUTPUT_FILE_JIC[i], true);
+						sendToDebug_newline();
+						sendToDebug_flush();
+					}
+					data = FPGA_spi_continue_command(0xFF);
+				}
+				decoded++;
+				i++;
+			}
+		}
+		else //повторы
+		{
+			uint8_t count = ((int8_t)FILES_OUTPUT_FILE_JIC[i]);
+			i++;
+			for (uint8_t p = 0; p < count; p++)
+			{
+				if((decoded - file_offset) >=0 )
+				{
+					if((uint8_t)(__RBIT(data) >> 24) != FILES_OUTPUT_FILE_JIC[i])
+					{
+						errors++;
+						sendToDebug_uint32(decoded, true);
+						sendToDebug_str(": ");
+						sendToDebug_hex((uint8_t)(__RBIT(data) >> 24), true);
+						sendToDebug_hex(FILES_OUTPUT_FILE_JIC[i], true);
+						sendToDebug_newline();
+						sendToDebug_flush();
+					}
+					data = FPGA_spi_continue_command(0xFF);
+				}
+				decoded++;
+			}
+			i++;
+		}
+		HAL_IWDG_Refresh(&hiwdg1);
+		if (!full && decoded > (file_offset + 2048))
+			break;
+		if (decoded >= (flash_size + file_offset))
+			break;
+		if (errors > 3)
+			break;
+	}
+	//
+	
 	FPGA_bus_stop = false;
+	if (errors>0)
+	{
+		sendToDebug_strln("[ERR] FPGA Flash verification failed");
+		return false;
+	}
+	else
+	{
+		sendToDebug_strln("[OK] FPGA Flash verification compleated");
+		return true;
+	}
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Dropbox\\Develop\\Projects\\file2rle\\file2rle.csproj": {}
+    "d:\\Dropbox\\Develop\\Projects\\UA3REO\\STM32\\Stuff\\file2rle\\file2rle.csproj": {}
   },
   "projects": {
-    "d:\\Dropbox\\Develop\\Projects\\file2rle\\file2rle.csproj": {
+    "d:\\Dropbox\\Develop\\Projects\\UA3REO\\STM32\\Stuff\\file2rle\\file2rle.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Dropbox\\Develop\\Projects\\file2rle\\file2rle.csproj",
+        "projectUniqueName": "d:\\Dropbox\\Develop\\Projects\\UA3REO\\STM32\\Stuff\\file2rle\\file2rle.csproj",
         "projectName": "file2rle",
-        "projectPath": "d:\\Dropbox\\Develop\\Projects\\file2rle\\file2rle.csproj",
+        "projectPath": "d:\\Dropbox\\Develop\\Projects\\UA3REO\\STM32\\Stuff\\file2rle\\file2rle.csproj",
         "packagesPath": "C:\\Users\\XGudr\\.nuget\\packages\\",
-        "outputPath": "d:\\Dropbox\\Develop\\Projects\\file2rle\\obj\\",
+        "outputPath": "d:\\Dropbox\\Develop\\Projects\\UA3REO\\STM32\\Stuff\\file2rle\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

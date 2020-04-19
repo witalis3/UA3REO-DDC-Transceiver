@@ -41,8 +41,8 @@ namespace file2rle
                 File.Delete(out_filename);
             out_file = File.OpenWrite(out_filename);
 
-            out_filename = out_filename.Replace(".", "_").ToUpper();
-            in_filename = in_filename.Replace(".", "_").ToUpper();
+            out_filename = out_filename.Substring(out_filename.LastIndexOf("\\")+1).Replace(".", "_").ToUpper();
+            in_filename = in_filename.Substring(in_filename.LastIndexOf("\\")+1).Replace(".", "_").ToUpper();
 
             out_bytes = Encoding.UTF8.GetBytes("#ifndef __" + out_filename + "_H\r\n");
             out_file.Write(out_bytes, 0, out_bytes.Length);
