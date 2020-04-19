@@ -20,7 +20,6 @@ static void SYSMENU_HANDL_TRX_BPFFilter(int8_t direction);
 static void SYSMENU_HANDL_TRX_MICIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_USBIN(int8_t direction);
-static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
@@ -80,6 +79,9 @@ static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction);
 
+static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CIC_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction);
@@ -172,7 +174,6 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"LPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.LPF, SYSMENU_HANDL_TRX_LPFFilter},
 		{"BPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BPF, SYSMENU_HANDL_TRX_BPFFilter},
 		{"Two Signal TUNE", SYSMENU_BOOLEAN, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
-		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&TRX.ENCODER_SLOW_RATE, SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE},
 		{"Shift Interval", SYSMENU_UINT16, (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_HANDL_TRX_SHIFT_INTERVAL},
 		{"Freq Step", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
 		{"Freq Step FAST", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
@@ -267,6 +268,9 @@ static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) /
 
 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 	{
+		{"Encoder invert", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_INVERT, SYSMENU_HANDL_CALIB_ENCODER_INVERT},
+		{"Encoder2 inverte", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_HANDL_CALIB_ENCODER2_INVERT},
+		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
 		{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CIC_GAINER_val, SYSMENU_HANDL_CALIB_CIC_SHIFT},
 		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_HANDL_CALIB_CICCOMP_SHIFT},
 		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
@@ -475,15 +479,6 @@ static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction)
 		TRX.Debug_Console = true;
 	if (direction < 0)
 		TRX.Debug_Console = false;
-}
-
-static void SYSMENU_HANDL_TRX_ENCODER_SLOW_RATE(int8_t direction)
-{
-	TRX.ENCODER_SLOW_RATE += direction;
-	if (TRX.ENCODER_SLOW_RATE < 1)
-		TRX.ENCODER_SLOW_RATE = 1;
-	if (TRX.ENCODER_SLOW_RATE > 100)
-		TRX.ENCODER_SLOW_RATE = 100;
 }
 
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction)
@@ -1489,6 +1484,31 @@ static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction)
 }
 
 //CALIBRATION MENU
+
+static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.ENCODER_INVERT = true;
+	if (direction < 0)
+		CALIBRATE.ENCODER_INVERT = false;
+}
+
+static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.ENCODER2_INVERT = true;
+	if (direction < 0)
+		CALIBRATE.ENCODER2_INVERT = false;
+}
+
+static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction)
+{
+	CALIBRATE.ENCODER_SLOW_RATE += direction;
+	if (CALIBRATE.ENCODER_SLOW_RATE < 1)
+		CALIBRATE.ENCODER_SLOW_RATE = 1;
+	if (CALIBRATE.ENCODER_SLOW_RATE > 100)
+		CALIBRATE.ENCODER_SLOW_RATE = 100;
+}
 
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 {

@@ -7,7 +7,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define TRX_VERSION 191					//Версия прошивки
+#define TRX_VERSION 192					//Версия прошивки
 #define ADCDAC_CLOCK 122880000			//Частота генератора АЦП/ЦАП
 #define MAX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
@@ -23,8 +23,7 @@
 #define TOUCHPAD_DELAY 200				//Время защиты от анти-дребезга нажания на тачпад
 #define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
 #define AUTOGAIN_CORRECTOR_WAITSTEP 7	//ожидание усреднения результатов при работе автокорректора входных цепей
-#define ENCODER_INVERT 1				//инвертировать вращение влево-вправо у основного энкодера
-#define ENCODER2_INVERT 0				//инвертировать вращение влево-вправо у дополнительного энкодера
+#define ENCODER2_DEBOUNCE 50				//время для устранения дребезга контактов у дополнительного энкодера, мс
 #define KEY_HOLD_TIME 500				//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
 #define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
 #define SWR_CRITICAL 5.0f				//Максимальный КСВ, при котором отключается передатчик
@@ -135,7 +134,6 @@ extern struct TRX_SETTINGS
 	bool CWDecoder;
 	bool FFT_Enabled;
 	uint16_t CW_GENERATOR_SHIFT_HZ;
-	uint8_t ENCODER_SLOW_RATE;
 	uint8_t LCD_Brightness;
 	uint8_t Standby_Time;
 	uint16_t Key_timeout;
@@ -181,7 +179,9 @@ extern struct TRX_SETTINGS
 
 extern struct TRX_CALIBRATE
 {
-	uint8_t flash_id;
+	bool ENCODER_INVERT;
+	bool ENCODER2_INVERT;
+	uint8_t ENCODER_SLOW_RATE;
 	uint8_t CIC_GAINER_val;
 	uint8_t CICFIR_GAINER_val;
 	uint8_t TXCICFIR_GAINER_val;
@@ -209,6 +209,8 @@ extern struct TRX_CALIBRATE
 	uint32_t BPF_7_HPF;
 	float32_t swr_trans_rate;
 	int32_t swr_trans_rate_shadow;
+	
+	uint8_t flash_id; //eeprom check
 } CALIBRATE;
 
 extern volatile bool NeedSaveSettings;

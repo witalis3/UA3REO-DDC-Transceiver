@@ -77,6 +77,7 @@ TIM_HandleTypeDef htim5;
 TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim7;
 TIM_HandleTypeDef htim15;
+TIM_HandleTypeDef htim16;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart6;
@@ -119,6 +120,7 @@ static void MX_USART6_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_ADC3_Init(void);
 static void MX_TIM15_Init(void);
+static void MX_TIM16_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -184,6 +186,7 @@ int main(void)
   MX_USART6_UART_Init();
   MX_ADC3_Init();
   MX_TIM15_Init();
+  MX_TIM16_Init();
   /* USER CODE BEGIN 2 */
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("UA3REO Transceiver Initialization...");
@@ -241,6 +244,8 @@ int main(void)
   TRX_Inited = true;
   sendToDebug_strln("[OK] WIFI timer TIM3 init");
   HAL_TIM_Base_Start_IT(&htim3);
+	sendToDebug_strln("[OK] ENC2 timer TIM16 init");
+  HAL_TIM_Base_Start_IT(&htim16);
   sendToDebug_strln("[OK] PERIPHERAL timer TIM15 init");
   HAL_TIM_Base_Start_IT(&htim15);
   sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
@@ -914,6 +919,38 @@ static void MX_TIM15_Init(void)
 }
 
 /**
+  * @brief TIM16 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM16_Init(void)
+{
+
+  /* USER CODE BEGIN TIM16_Init 0 */
+
+  /* USER CODE END TIM16_Init 0 */
+
+  /* USER CODE BEGIN TIM16_Init 1 */
+
+  /* USER CODE END TIM16_Init 1 */
+  htim16.Instance = TIM16;
+  htim16.Init.Prescaler = 999;
+  htim16.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim16.Init.Period = 199;
+  htim16.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim16.Init.RepetitionCounter = 0;
+  htim16.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim16) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM16_Init 2 */
+
+  /* USER CODE END TIM16_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -1198,10 +1235,10 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Stream1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
   /* DMA1_Stream5_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
   /* DMA2_Stream6_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 7, 0);
@@ -1307,11 +1344,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, RFUNIT_RCLK_Pin|RFUNIT_CLK_Pin|RFUNIT_DATA_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : ENC_CLK_Pin KEY_IN_DASH_Pin KEY_IN_DOT_Pin */
-  GPIO_InitStruct.Pin = ENC_CLK_Pin|KEY_IN_DASH_Pin|KEY_IN_DOT_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  /*Configure GPIO pin : ENC_CLK_Pin */
+  GPIO_InitStruct.Pin = ENC_CLK_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+  HAL_GPIO_Init(ENC_CLK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PE3 */
   GPIO_InitStruct.Pin = GPIO_PIN_3;
@@ -1325,11 +1362,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ENC2_CLK_Pin PTT_IN_Pin */
-  GPIO_InitStruct.Pin = ENC2_CLK_Pin|PTT_IN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  /*Configure GPIO pin : ENC2_CLK_Pin */
+  GPIO_InitStruct.Pin = ENC2_CLK_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(ENC2_CLK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : SWR_BACKW_Pin PC5 */
   GPIO_InitStruct.Pin = SWR_BACKW_Pin|GPIO_PIN_5;
@@ -1352,6 +1389,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PTT_IN_Pin */
+  GPIO_InitStruct.Pin = PTT_IN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(PTT_IN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : W26Q16_CS_Pin SD_CS_Pin */
   GPIO_InitStruct.Pin = W26Q16_CS_Pin|SD_CS_Pin;
@@ -1422,6 +1465,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : KEY_IN_DASH_Pin KEY_IN_DOT_Pin */
+  GPIO_InitStruct.Pin = KEY_IN_DASH_Pin|KEY_IN_DOT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 6, 0);
   HAL_NVIC_EnableIRQ(EXTI0_IRQn);
@@ -1429,13 +1478,13 @@ static void MX_GPIO_Init(void)
   HAL_NVIC_SetPriority(EXTI1_IRQn, 6, 0);
   HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI2_IRQn, 3, 0);
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
   HAL_NVIC_SetPriority(EXTI4_IRQn, 6, 0);
   HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 2, 0);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }

@@ -120,6 +120,7 @@ extern TIM_HandleTypeDef htim5;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim7;
 extern TIM_HandleTypeDef htim15;
+extern TIM_HandleTypeDef htim16;
 extern DMA_HandleTypeDef hdma_usart6_rx;
 extern UART_HandleTypeDef huart6;
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
@@ -408,7 +409,6 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
 
   /* USER CODE END EXTI15_10_IRQn 1 */
@@ -613,7 +613,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_newline();
       //PrintProfilerResult();
     }
-
+		
     //Save Settings to Backup Memory
     if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))
       SaveSettings();
@@ -753,6 +753,29 @@ void TIM15_IRQHandler(void)
   /* USER CODE END TIM15_IRQn 1 */
 }
 
+/**
+  * @brief This function handles TIM16 global interrupt.
+  */
+void TIM16_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM16_IRQn 0 */
+
+  /* USER CODE END TIM16_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim16);
+  /* USER CODE BEGIN TIM16_IRQn 1 */
+	//Опрос дополнительного энкодера, т.к. прерывание висит на одной линии с FPGA
+	static uint8_t ENC2lastClkVal = 1;
+	uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
+	if(ENC2lastClkVal != ENCODER2_CLKVal)
+	{
+		TRX_Time_InActive = 0;
+		if (TRX_Inited)
+			PERIPH_ENCODER2_checkRotate();
+	}
+	ENC2lastClkVal = ENCODER2_CLKVal;
+  /* USER CODE END TIM16_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
 
 void DMA1_Stream0_IRQHandler(void)
@@ -773,12 +796,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     TRX_Time_InActive = 0;
     if (TRX_Inited)
       PERIPH_ENCODER_checkRotate();
-  }
-  else if (GPIO_Pin == GPIO_PIN_13) //Secondary encoder
-  {
-    TRX_Time_InActive = 0;
-    if (TRX_Inited)
-      PERIPH_ENCODER2_checkRotate();
   }
   else if (GPIO_Pin == GPIO_PIN_4) //PTT
   {

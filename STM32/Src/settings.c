@@ -136,7 +136,6 @@ void LoadSettings(bool clear)
 		TRX.BandMapEnabled = true;					//автоматическая смена моды по карте диапазонов
 		TRX.FFT_Enabled = true;						//использовать спектр FFT
 		TRX.CW_GENERATOR_SHIFT_HZ = 500;			//смещение гетеродина в CW моде
-		TRX.ENCODER_SLOW_RATE = 35;					//замедление энкодера для больших разрешений
 		TRX.LCD_Brightness = 60;					//яркость экрана
 		TRX.Standby_Time = 180;						//время до гашения экрана по бездействию
 		TRX.Key_timeout = 500;						//время отпуская передачи после последнего знака на ключе
@@ -192,12 +191,15 @@ void LoadCalibration(void)
 	if (tryes >= EEPROM_REPEAT_TRYES)
 		sendToDebug_strln("[ERR] Read EEPROM CALIBRATE multiple errors");
 
-	if (CALIBRATE.flash_id != 190) //code to trace new clean flash
+	if (CALIBRATE.flash_id != 190) //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
 	{
 		sendToDebug_str("[ERR] CALIBRATE Flash ID: ");
 		sendToDebug_uint8(CALIBRATE.flash_id, false);
-		CALIBRATE.flash_id = 190; //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		CALIBRATE.flash_id = 190; //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
 
+		CALIBRATE.ENCODER_INVERT = false; //инвертировать вращение влево-вправо у основного энкодера
+		CALIBRATE.ENCODER2_INVERT = false; //инвертировать вращение влево-вправо у дополнительного энкодера
+		CALIBRATE.ENCODER_SLOW_RATE = 35;					//замедление энкодера для больших разрешений
 		CALIBRATE.CIC_GAINER_val = 88;		//Смещение с выхода CIC
 		CALIBRATE.CICFIR_GAINER_val = 54;	//Смещение с выхода CIC компенсатора
 		CALIBRATE.TXCICFIR_GAINER_val = 56; //Смещение с выхода TX-CIC компенсатора

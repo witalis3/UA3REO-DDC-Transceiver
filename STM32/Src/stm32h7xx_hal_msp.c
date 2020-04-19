@@ -487,6 +487,20 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 
   /* USER CODE END TIM15_MspInit 1 */
   }
+  else if(htim_base->Instance==TIM16)
+  {
+  /* USER CODE BEGIN TIM16_MspInit 0 */
+
+  /* USER CODE END TIM16_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_TIM16_CLK_ENABLE();
+    /* TIM16 interrupt Init */
+    HAL_NVIC_SetPriority(TIM16_IRQn, 2, 0);
+    HAL_NVIC_EnableIRQ(TIM16_IRQn);
+  /* USER CODE BEGIN TIM16_MspInit 1 */
+
+  /* USER CODE END TIM16_MspInit 1 */
+  }
 
 }
 
@@ -582,6 +596,20 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 
   /* USER CODE END TIM15_MspDeInit 1 */
   }
+  else if(htim_base->Instance==TIM16)
+  {
+  /* USER CODE BEGIN TIM16_MspDeInit 0 */
+
+  /* USER CODE END TIM16_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_TIM16_CLK_DISABLE();
+
+    /* TIM16 interrupt DeInit */
+    HAL_NVIC_DisableIRQ(TIM16_IRQn);
+  /* USER CODE BEGIN TIM16_MspDeInit 1 */
+
+  /* USER CODE END TIM16_MspDeInit 1 */
+  }
 
 }
 
@@ -658,7 +686,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     __HAL_LINKDMA(huart,hdmarx,hdma_usart6_rx);
 
     /* USART6 interrupt Init */
-    HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(USART6_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(USART6_IRQn);
   /* USER CODE BEGIN USART6_MspInit 1 */
 
@@ -749,9 +777,9 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd)
     /* Peripheral clock enable */
     __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
     /* USB_OTG_FS interrupt Init */
-    HAL_NVIC_SetPriority(OTG_FS_EP1_OUT_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(OTG_FS_EP1_OUT_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(OTG_FS_EP1_OUT_IRQn);
-    HAL_NVIC_SetPriority(OTG_FS_EP1_IN_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(OTG_FS_EP1_IN_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(OTG_FS_EP1_IN_IRQn);
     HAL_NVIC_SetPriority(OTG_FS_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
