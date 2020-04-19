@@ -9,7 +9,8 @@ data_out,
 MOSI_DQ0,
 SCK_C,
 CS_S,
-busy
+busy,
+spi_stage
 );
 
 input clk_in;
@@ -23,54 +24,49 @@ output reg MOSI_DQ0=1;
 output reg SCK_C=1;
 output reg CS_S=1;
 output reg busy=0;
+output reg unsigned [7:0] spi_stage=0;
 
-reg unsigned [7:0] spi_stage=0;
 reg unsigned [7:0] spi_bit_position=7;
+reg continue_read_prev = 0;
+reg enabled_prev = 0;
 
 always @ (posedge clk_in)
-begin
+begin	
 	if(enabled==1)
 	begin	
-		if(continue_read==1 && busy==0)
+		if(spi_stage==0) //начинаем передачу
 		begin
-			spi_stage=1;
+			busy=1;
+			CS_S=0;
+			SCK_C=0;
 			spi_bit_position=7;
-			busy=0;
+			spi_stage=1;
 		end
-		else
+		else if(spi_stage==1) //отсылаем 1 бит
 		begin
-			if(spi_stage==0) //начинаем передачу
+			busy=1;
+			SCK_C=0;
+			MOSI_DQ0=data_in[spi_bit_position];
+			spi_stage=2;
+			continue_read_prev = 1;
+		end
+		else if(spi_stage==2) //завершена отсылка 1го бита, принимаем ответ
+		begin
+			busy=1;
+			SCK_C=1;
+			data_out[spi_bit_position]=MISO_DQ1;
+			if(spi_bit_position==0)
 			begin
-				busy=1;
-				CS_S=0;
-				SCK_C=0;
-				spi_bit_position=7;
+				spi_stage=99;
+				busy=0;
+			end
+			else
+			begin
+				spi_bit_position=spi_bit_position-8'd1;
 				spi_stage=1;
 			end
-			else if(spi_stage==1) //отсылаем 1 бит
-			begin
-				busy=1;
-				SCK_C=0;
-				MOSI_DQ0=data_in[spi_bit_position];
-				spi_stage=2;
-			end
-			else if(spi_stage==2) //завершена отсылка 1го бита, принимаем ответ
-			begin
-				busy=1;
-				SCK_C=1;
-				data_out[spi_bit_position]=MISO_DQ1;
-				if(spi_bit_position==0)
-				begin
-					spi_stage=99;
-					busy=0;
-				end
-				else
-				begin
-					spi_bit_position=spi_bit_position-8'd1;
-					spi_stage=1;
-				end
-			end
 		end
+		enabled_prev = 1;
 	end
 	else
 	begin	
@@ -80,6 +76,24 @@ begin
 		spi_bit_position=7;
 		spi_stage=0;
 		busy=0;
+		enabled_prev = 0;
+	end
+	
+	//continue read
+	if(continue_read_prev == 0 && continue_read == 1)
+	begin
+		spi_stage=1;
+		spi_bit_position=7;
+	end
+	if(continue_read == 0)
+	begin
+		continue_read_prev = 0;
+	end
+	
+	//reset command
+	if(enabled_prev == 0 && enabled == 1)
+	begin
+		spi_stage=0;
 	end
 end
 

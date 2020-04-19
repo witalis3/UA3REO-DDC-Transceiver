@@ -22,7 +22,7 @@
 #define I2C_WRITE 0
 #define I2C_READ 1
 #define I2C_DELAY                                \
-    for (int wait_i = 0; wait_i < 300; wait_i++) \
+    for (uint16_t wait_i = 0; wait_i < 300; wait_i++) \
     {                                            \
         __asm("nop");                            \
     };

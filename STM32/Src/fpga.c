@@ -18,8 +18,9 @@ SRAM1 volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE] = {0};
 
 //Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; //структура GPIO портов
-static bool FPGA_bus_direction = false;		  //текущзее направление шины обмена false - OUT; true - in
-
+static bool FPGA_bus_direction = false;		  //текущее направление шины обмена false - OUT; true - in
+static bool FPGA_bus_stop = false;					//приостановка работы шины FPGA
+	
 //Prototypes
 static uint_fast8_t FPGA_readPacket(void);		   //чтение пакета
 static void FPGA_writePacket(uint_fast8_t packet); //запись пакета
@@ -33,8 +34,7 @@ static void FPGA_fpgadata_getparam(void);		   //получить парамет�
 static void FPGA_fpgadata_sendparam(void);		   //отправить параметры
 static void FPGA_setBusInput(void);				   //переключить шину на ввод
 static void FPGA_setBusOutput(void);			   //переключить шину на вывод
-//static void FPGA_start_command(uint_fast8_t command);
-//static void FPGA_read_flash(void);
+static void FPGA_spi_read_flash(void);				//Прочитать содержимое SPI памяти FPGA
 
 //инициализация обмена с FPGA
 void FPGA_Init(void)
@@ -45,7 +45,7 @@ void FPGA_Init(void)
 	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(GPIOA, &FPGA_GPIO_InitStruct);
 
-	//FPGA_read_flash();
+	//FPGA_spi_read_flash();
 }
 
 //перезапуск модулей FPGA
@@ -67,6 +67,7 @@ void FPGA_restart(void) //перезапуск модулей FPGA
 //обмен параметрами с FPGA
 void FPGA_fpgadata_stuffclock(void)
 {
+	if(FPGA_bus_stop) return;
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
 	//обмен данными
 
@@ -109,6 +110,7 @@ void FPGA_fpgadata_stuffclock(void)
 //обмен IQ данными с FPGA
 void FPGA_fpgadata_iqclock(void)
 {
+	if(FPGA_bus_stop) return;
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
 	//обмен данными
@@ -643,41 +645,50 @@ static inline void FPGA_writePacket(uint_fast8_t packet)
 	FPGA_BUS_D0_GPIO_Port->BSRR = (packet & 0xFF) | 0xFF0000;
 }
 
-/*
-static void FPGA_start_command(uint_fast8_t command) //выполнение команды к SPI flash
+#define FPGA_FLASH_COMMAND_DELAY for(uint32_t wait = 0; wait < 200; wait++) __asm("nop");
+#define FPGA_FLASH_WRITE_DELAY for(uint32_t wait = 0; wait < 2000; wait++) __asm("nop");
+#define FPGA_FLASH_READ_DELAY for(uint32_t wait = 0; wait < 50; wait++) __asm("nop");
+static uint_fast8_t FPGA_spi_start_command(uint_fast8_t command) //выполнение команды к SPI flash
 {
-	FPGA_busy = true;
-
 	//STAGE 1
 	FPGA_writePacket(7); //FPGA FLASH READ command
-	GPIOC->BSRR = FPGA_SYNC_Pin;
+	FPGA_syncRise();
 	FPGA_clockRise();
-	GPIOC->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U) | ((uint32_t)FPGA_SYNC_Pin << 16U);
-	HAL_Delay(1);
+	FPGA_syncFall();
+	FPGA_clockFall();
+	FPGA_FLASH_COMMAND_DELAY 	
 
-	//STAGE 2
-	FPGA_writePacket(command); //SPI FLASH READ STATUS COMMAND
+	//STAGE 2 WRITE (F700)
+	FPGA_writePacket(command);
 	FPGA_clockRise();
 	FPGA_clockFall();
-	HAL_Delay(1);
-}
+	FPGA_FLASH_WRITE_DELAY
 
-static uint_fast8_t FPGA_continue_command(uint_fast8_t writedata) //продолжение чтения и записи к SPI flash
-{
-	//STAGE 3 WRITE
-	FPGA_writePacket(writedata);
+	//STAGE 3 READ ANSWER (F701)
 	FPGA_clockRise();
-	FPGA_clockFall();
-	HAL_Delay(1);
-	//STAGE 4 READ
-	FPGA_clockRise();
-	FPGA_clockFall();
 	uint_fast8_t data = FPGA_readPacket();
-	HAL_Delay(1);
-
+	FPGA_clockFall();
+	FPGA_FLASH_READ_DELAY
+	
 	return data;
 }
-*/
+
+static uint_fast8_t FPGA_spi_continue_command(uint_fast8_t writedata) //продолжение чтения и записи SPI flash
+{
+	//STAGE 2 WRITE (F700)
+	FPGA_writePacket(writedata); 
+	FPGA_clockRise();
+	FPGA_clockFall();
+	FPGA_FLASH_WRITE_DELAY
+
+	//STAGE 3 READ ANSWER (F701)
+	FPGA_clockRise();
+	uint_fast8_t data = FPGA_readPacket();
+	FPGA_clockFall();
+	FPGA_FLASH_READ_DELAY
+	
+	return data;
+}
 
 /*
 Micron M25P80 Serial Flash COMMANDS:
@@ -696,36 +707,45 @@ B9h - DEEP POWER-DOWN
 ABh - RELEASE from DEEP POWER-DOWN
 */
 
-/*
-static void FPGA_read_flash(void) //чтение flash памяти
+static void FPGA_spi_read_flash(void) //чтение flash памяти
 {
-	FPGA_busy = true;
-	//FPGA_start_command(0xB9);
-	FPGA_start_command(0xAB);
-	//FPGA_start_command(0x04);
-	FPGA_start_command(0x06);
-	FPGA_start_command(0x05);
-	//FPGA_start_command(0x03); // READ DATA BYTES
-	//FPGA_continue_command(0x00); //addr 1
-	//FPGA_continue_command(0x00); //addr 2
-	//FPGA_continue_command(0x00); //addr 3
+	FPGA_bus_stop = true;
+	HAL_Delay(1);
+	uint_fast8_t data = 0;
+	FPGA_spi_start_command(0xAB);
+	FPGA_spi_start_command(0x03); // READ DATA BYTES
+	FPGA_spi_continue_command(0x00); //addr 1
+	FPGA_spi_continue_command(0x00); //addr 2
+	data = FPGA_spi_continue_command(0x00); //addr 3
 
-	for (uint_fast16_t i = 1; i <= 512; i++)
+	uint32_t bigsum=0;
+	/*for (uint_fast16_t i = 1; i <= (2 * 1024); i++)
 	{
-		uint_fast8_t data = FPGA_continue_command(0x05);
-		sendToDebug_hex((uint8_t)data, true);
+		bigsum += (uint8_t)data;
+		sendToDebug_hex((uint8_t)(__RBIT(data) >> 24), true);
 		sendToDebug_str(" ");
-		if (i % 16 == 0)
+		char buff[2] = "";
+		strncpy(buff, (char *)&data, 1);
+		//sendToDebug_str(buff);
+		sendToDebug_flush();
+		
+		if (i % 64 == 0)
 		{
 			sendToDebug_str("\r\n");
+			sendToDebug_flush();
 			HAL_IWDG_Refresh(&hiwdg1);
-			DEBUG_Transmit_FIFO_Events();
 		}
-		//HAL_IWDG_Refresh(&hiwdg1);
-		//DEBUG_Transmit_FIFO_Events();
+		data = FPGA_spi_continue_command(0xFF);
+	}*/
+	for (uint32_t i = 1; i <= (2 * 1024 * 1024); i++)
+	{
+		bigsum += (uint8_t)data;
+		if (i % 1024 == 0)
+			HAL_IWDG_Refresh(&hiwdg1);
+		data = FPGA_spi_continue_command(0xFF);
 	}
+	
+	sendToDebug_uint32(bigsum, false);
 	sendToDebug_newline();
-
-	FPGA_busy = false;
+	FPGA_bus_stop = false;
 }
-*/
