@@ -193,13 +193,14 @@ void LoadCalibration(void)
 
 	if (CALIBRATE.flash_id != 190) //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
 	{
-		sendToDebug_str("[ERR] CALIBRATE Flash ID: ");
+		sendToDebug_str("[ERR] CALIBRATE Flash check CODE: ");
 		sendToDebug_uint8(CALIBRATE.flash_id, false);
 		CALIBRATE.flash_id = 190; //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
 
 		CALIBRATE.ENCODER_INVERT = false; //инвертировать вращение влево-вправо у основного энкодера
 		CALIBRATE.ENCODER2_INVERT = false; //инвертировать вращение влево-вправо у дополнительного энкодера
-		CALIBRATE.ENCODER_SLOW_RATE = 35;					//замедление энкодера для больших разрешений
+		CALIBRATE.ENCODER_SLOW_RATE = 8;					//замедление энкодера для больших разрешений
+		CALIBRATE.ENCODER_ON_FALLING = false;	//энкодер срабатывает только на падение уровня A
 		CALIBRATE.CIC_GAINER_val = 88;		//Смещение с выхода CIC
 		CALIBRATE.CICFIR_GAINER_val = 54;	//Смещение с выхода CIC компенсатора
 		CALIBRATE.TXCICFIR_GAINER_val = 56; //Смещение с выхода TX-CIC компенсатора

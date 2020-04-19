@@ -763,16 +763,22 @@ void TIM16_IRQHandler(void)
   /* USER CODE END TIM16_IRQn 0 */
   HAL_TIM_IRQHandler(&htim16);
   /* USER CODE BEGIN TIM16_IRQn 1 */
-	//Опрос дополнительного энкодера, т.к. прерывание висит на одной линии с FPGA
-	static uint8_t ENC2lastClkVal = 1;
+	//Опрос дополнительного энкодера по таймеру, т.к. прерывание висит на одной линии с FPGA
+	static uint8_t ENC2lastClkVal = 0;
+	static bool ENC2first = true;
 	uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
+	if (ENC2first)
+	{
+		ENC2lastClkVal = ENCODER2_CLKVal;
+		ENC2first = false;
+	}
 	if(ENC2lastClkVal != ENCODER2_CLKVal)
 	{
 		TRX_Time_InActive = 0;
 		if (TRX_Inited)
 			PERIPH_ENCODER2_checkRotate();
+		ENC2lastClkVal = ENCODER2_CLKVal;
 	}
-	ENC2lastClkVal = ENCODER2_CLKVal;
   /* USER CODE END TIM16_IRQn 1 */
 }
 

@@ -15,6 +15,7 @@ static bool FRONTPanel_MCP3008_1_Enabled = true;
 static bool FRONTPanel_MCP3008_2_Enabled = true;
 
 static int32_t ENCODER_slowler = 0;
+static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;
 static bool ENCODER2_SWLast = true;
 
@@ -26,27 +27,44 @@ static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT,
 
 void PERIPH_ENCODER_checkRotate(void)
 {
+	static uint8_t ENClastClkVal = 0;
+	static bool ENCfirst = true;
 	uint8_t ENCODER_DTVal = HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin);
 	uint8_t ENCODER_CLKVal = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
-	if (ENCODER_CLKVal != 0) 
-		return;
-	if (ENCODER_DTVal != 0)
-	{ // Если вывод A изменился первым - вращение по часовой стрелке
-		ENCODER_slowler--;
-		if (ENCODER_slowler <= -CALIBRATE.ENCODER_SLOW_RATE)
-		{
-			PERIPH_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? 1 : -1);
-			ENCODER_slowler = 0;
-		}
+
+	if (ENCfirst)
+	{
+		ENClastClkVal = ENCODER_CLKVal;
+		ENCfirst = false;
 	}
-	else
-	{ // иначе B изменил свое состояние первым - вращение против часовой стрелки
-		ENCODER_slowler++;
-		if (ENCODER_slowler >= CALIBRATE.ENCODER_SLOW_RATE)
+	if ((HAL_GetTick() - ENCODER_AValDeb) < ENCODER_DEBOUNCE)
+		return;
+
+	if(ENClastClkVal != ENCODER_CLKVal)
+	{
+		if (!CALIBRATE.ENCODER_ON_FALLING || (CALIBRATE.ENCODER_ON_FALLING && ENCODER_CLKVal == 0))
 		{
-			PERIPH_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? -1 : 1);
-			ENCODER_slowler = 0;
+			if (ENCODER_DTVal != ENCODER_CLKVal)
+			{ // Если вывод A изменился первым - вращение по часовой стрелке
+				ENCODER_slowler--;
+				if (ENCODER_slowler <= -CALIBRATE.ENCODER_SLOW_RATE)
+				{
+					PERIPH_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? 1 : -1);
+					ENCODER_slowler = 0;
+				}
+			}
+			else
+			{ // иначе B изменил свое состояние первым - вращение против часовой стрелки
+				ENCODER_slowler++;
+				if (ENCODER_slowler >= CALIBRATE.ENCODER_SLOW_RATE)
+				{
+					PERIPH_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? -1 : 1);
+					ENCODER_slowler = 0;
+				}
+			}
 		}
+		ENCODER_AValDeb = HAL_GetTick();
+		ENClastClkVal = ENCODER_CLKVal;
 	}
 }
 
@@ -54,18 +72,20 @@ void PERIPH_ENCODER2_checkRotate(void)
 {
 	uint8_t ENCODER2_DTVal = HAL_GPIO_ReadPin(ENC2_DT_GPIO_Port, ENC2_DT_Pin);
 	uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
-	if (ENCODER2_CLKVal != 0) 
-		return;
+
 	if ((HAL_GetTick() - ENCODER2_AValDeb) < ENCODER2_DEBOUNCE)
 		return;
 
-	if (ENCODER2_DTVal != 0)
-	{ // Если вывод A изменился первым - вращение по часовой стрелке
-		PERIPH_ENCODER2_Rotated(CALIBRATE.ENCODER2_INVERT ? 1 : -1);
-	}
-	else
-	{ // иначе B изменил свое состояние первым - вращение против часовой стрелки
-		PERIPH_ENCODER2_Rotated(CALIBRATE.ENCODER2_INVERT ? -1 : 1);
+	if (!CALIBRATE.ENCODER_ON_FALLING || (CALIBRATE.ENCODER_ON_FALLING && ENCODER2_CLKVal == 0))
+	{
+		if (ENCODER2_DTVal != ENCODER2_CLKVal)
+		{ // Если вывод A изменился первым - вращение по часовой стрелке
+			PERIPH_ENCODER2_Rotated(CALIBRATE.ENCODER2_INVERT ? 1 : -1);
+		}
+		else
+		{ // иначе B изменил свое состояние первым - вращение против часовой стрелки
+			PERIPH_ENCODER2_Rotated(CALIBRATE.ENCODER2_INVERT ? -1 : 1);
+		}
 	}
 	ENCODER2_AValDeb = HAL_GetTick();
 }

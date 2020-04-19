@@ -6,6 +6,7 @@
 //перехов в DFU-режим булодера
 void JumpToBootloader(void)
 {
+	uint32_t i=0;
 	void (*SysMemBootJump)(void);
 
 	volatile uint32_t BootAddr = 0x1FF09800;
@@ -16,21 +17,24 @@ void JumpToBootloader(void)
 	HAL_Delay(1000);
 	//prepare cpu
 	hiwdg1.Init.Reload = 0;
+	SCB_DisableDCache();
+	SCB_DisableICache();
+	HAL_MPU_Disable();
+	HAL_SuspendTick();
 	__disable_irq();				  //Disable all interrupts
 	SysTick->CTRL = 0;				  //Disable Systick timer
-	for (uint8_t i = 0; i < 255; i++) //Disable all interrupts
-		HAL_NVIC_DisableIRQ((IRQn_Type)i);
-	HAL_RCC_DeInit();				//Set the clock to the default state
-	for (uint8_t i = 0; i < 5; i++) //Clear Interrupt Enable Register & Interrupt Pending Register
+	SysTick->VAL = 0;
+	SysTick->LOAD = 0;
+	//HAL_RCC_DeInit();				//Set the clock to the default state
+	for (i = 0; i < 5; i++) //Clear Interrupt Enable Register & Interrupt Pending Register
 	{
 		NVIC->ICER[i] = 0xFFFFFFFF;
 		NVIC->ICPR[i] = 0xFFFFFFFF;
 	}
 	__enable_irq(); //Re-enable all interrupts
 	//go to bootloader
-	SysMemBootJump = (void (*)(void))(*((uint32_t *)(BootAddr + 4)));
+	SysMemBootJump = (void (*)(void)) (*((uint32_t *) ((BootAddr + 4))));
 	__set_MSP(*(uint32_t *)BootAddr);
 	SysMemBootJump();
-	while (true)
-		;
+	while (true) {}
 }

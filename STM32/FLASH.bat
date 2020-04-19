@@ -1,1 +1,2 @@
-"DFU\qmk-dfuse.exe" -d MDK-ARM\UA3REO\UA3REO.hex -r
+"DFU\qmk-dfuse.exe" -d MDK-ARM\UA3REO\UA3REO.hex -r -v
+PAUSE
