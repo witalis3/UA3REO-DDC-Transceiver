@@ -64,10 +64,10 @@ typedef struct //сохранение старых значений семпло
 
 typedef struct //фильтр в коллекции
 {
-	const uint16_t width;
 	const IIR_BIQUAD_FILTER_TYPE type;
-	const uint8_t stages;
 	const float32_t *coeffs; //Coefficients converted to ARMA in reverse order by MATLAB
+    const uint8_t stages;
+    const uint16_t width;
 } IIR_BIQUAD_FILTER;
 
 //Public variables

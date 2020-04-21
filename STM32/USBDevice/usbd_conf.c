@@ -144,7 +144,7 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
   }
   else if ( hpcd->Init.speed == PCD_SPEED_FULL)
   {
-    speed = USBD_SPEED_FULL;
+    //speed = USBD_SPEED_FULL;
   }
   else
   {
@@ -571,16 +571,14 @@ USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status)
   switch (hal_status)
   {
     case HAL_OK :
-      usb_status = USBD_OK;
+      usb_status = USBD_OK; //-V525
     break;
     case HAL_ERROR :
-      usb_status = USBD_FAIL;
+    case HAL_TIMEOUT :    
+        usb_status = USBD_FAIL;
     break;
     case HAL_BUSY :
       usb_status = USBD_BUSY;
-    break;
-    case HAL_TIMEOUT :
-      usb_status = USBD_FAIL;
     break;
   }
   return usb_status;

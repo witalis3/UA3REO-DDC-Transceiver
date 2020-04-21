@@ -125,7 +125,6 @@ void WIFI_Process(void)
 		{
 			if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP) == 0)
 				AP_exist = true;
-			//sendToDebug_strln((char *)WIFI_FoundedAP[i]);
 		}
 		if (AP_exist)
 		{
@@ -176,7 +175,6 @@ void WIFI_Process(void)
 
 	case WIFI_READY:
 		WIFI_ProcessingCommandCallback = 0;
-		//sendToDebug_str("WIFI_DEBUG: READY\r\n");
 		break;
 
 	case WIFI_TIMEOUT:
@@ -190,7 +188,6 @@ void WIFI_Process(void)
 
 	case WIFI_PROCESS_COMMAND:
 		WIFI_TryGetLine();
-
 		if ((HAL_GetTick() - commandStartTime) > WIFI_COMMAND_TIMEOUT)
 		{
 			WIFI_State = WIFI_TIMEOUT;
@@ -212,49 +209,83 @@ void WIFI_Process(void)
 		{
 			if (WIFI_ProcessingCommand == WIFI_COMM_LISTAP) //ListAP Command process
 			{
-				char *start = strchr(WIFI_readedLine, '"') + 1;
-				char *end = strchr(start, '"');
-				*end = 0x00;
-				strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
-				if (WIFI_FoundedAP_Index < WIFI_FOUNDED_AP_MAXCOUNT)
-					WIFI_FoundedAP_Index++;
+				char *start = strchr(WIFI_readedLine, '"');
+				if(start != NULL)     
+				{           
+					start = start + 1;
+					char *end = strchr(start, '"');
+					if(end != NULL)
+					{
+						*end = 0x00;
+						strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
+						if (WIFI_FoundedAP_Index < WIFI_FOUNDED_AP_MAXCOUNT)
+								WIFI_FoundedAP_Index++;
+					}
+				}
 			}
 			else if (WIFI_ProcessingCommand == WIFI_COMM_GETSNMP) //Get and sync SNMP time
 			{
-				char *hrs_str = strchr(WIFI_readedLine, ' ') + 1;
-				hrs_str = strchr(hrs_str, ' ') + 1;
-				hrs_str = strchr(hrs_str, ' ') + 1;
-				//hh:mm:ss here
-				char *min_str = strchr(hrs_str, ':') + 1;
-				char *sec_str = strchr(min_str, ':') + 1;
-				char *year_str = strchr(min_str, ' ') + 1;
-				char *end = strchr(hrs_str, ':');
-				*end = 0x00;
-				end = strchr(min_str, ':');
-				*end = 0x00;
-				end = strchr(sec_str, ' ');
-				*end = 0x00;
-				//split strings here
-				uint8_t hrs = (uint8_t)atoi(hrs_str);
-				uint8_t min = (uint8_t)atoi(min_str);
-				uint8_t sec = (uint8_t)atoi(sec_str);
-				uint16_t year = (uint16_t)atoi(year_str);
-				//save to RTC clock
-				if (year > 2018)
+				char *hrs_str = strchr(WIFI_readedLine, ' ');
+				if(hrs_str != NULL)
 				{
-					RTC_TimeTypeDef sTime;
-					sTime.TimeFormat = RTC_HOURFORMAT12_PM;
-					sTime.SubSeconds = 0;
-					sTime.SecondFraction = 0;
-					sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-					sTime.StoreOperation = RTC_STOREOPERATION_SET;
-					sTime.Hours = hrs;
-					sTime.Minutes = min;
-					sTime.Seconds = sec;
-					BKPSRAM_Enable();
-					HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-					TRX_SNMP_Synced = true;
-					sendToDebug_str("[WIFI] TIME SYNCED\r\n");
+					hrs_str = hrs_str + 1;
+					hrs_str = strchr(hrs_str, ' ');
+					if(hrs_str != NULL)
+					{
+						hrs_str = hrs_str + 1;
+						hrs_str = strchr(hrs_str, ' ');
+						if(hrs_str != NULL)
+						{
+							hrs_str = hrs_str + 1;
+							//hh:mm:ss here
+							char *min_str = strchr(hrs_str, ':');
+							if(min_str != NULL)
+							{
+								min_str = min_str + 1;
+								char *sec_str = strchr(min_str, ':');
+								char *year_str = strchr(min_str, ' ');
+								char *end = strchr(hrs_str, ':');
+								if(sec_str != NULL && year_str != NULL && end != NULL)
+								{
+									sec_str = sec_str + 1;
+									year_str = year_str + 1;
+									*end = 0x00;
+									end = strchr(min_str, ':');
+									if(end != NULL)
+									{
+										*end = 0x00;
+										end = strchr(sec_str, ' ');
+										if(end != NULL)
+										{
+											*end = 0x00;
+											//split strings here
+											uint8_t hrs = (uint8_t)atoi(hrs_str);
+											uint8_t min = (uint8_t)atoi(min_str);
+											uint8_t sec = (uint8_t)atoi(sec_str);
+											uint16_t year = (uint16_t)atoi(year_str);
+											//save to RTC clock
+											if (year > 2018)
+											{
+												RTC_TimeTypeDef sTime;
+												sTime.TimeFormat = RTC_HOURFORMAT12_PM;
+												sTime.SubSeconds = 0;
+												sTime.SecondFraction = 0;
+												sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+												sTime.StoreOperation = RTC_STOREOPERATION_SET;
+												sTime.Hours = hrs;
+												sTime.Minutes = min;
+												sTime.Seconds = sec;
+												BKPSRAM_Enable();
+												HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+												TRX_SNMP_Synced = true;
+												sendToDebug_str("[WIFI] TIME SYNCED\r\n");
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 			else if (WIFI_ProcessingCommand == WIFI_COMM_GETIP) //GetIP Command process
@@ -264,12 +295,19 @@ void WIFI_Process(void)
 				istr = strstr(WIFI_readedLine, sep);
 				if (istr != NULL)
 				{
-					char *start = strchr(WIFI_readedLine, '"') + 1;
-					char *end = strchr(start, '"');
-					*end = 0x00;
-					strcat(WIFI_IP, start);
-					sendToDebug_str3("[WIFI] GOT IP: ", WIFI_IP, "\r\n");
-					WIFI_IP_Gotted = true;
+					char *start = strchr(WIFI_readedLine, '"');
+					if(start != NULL)
+					{
+						start = start + 1;
+						char *end = strchr(start, '"');
+						if(end != NULL)
+						{
+							*end = 0x00;
+							strcat(WIFI_IP, start);
+							sendToDebug_str3("[WIFI] GOT IP: ", WIFI_IP, "\r\n");
+							WIFI_IP_Gotted = true;
+						}
+					}
 				}
 			}
 		}
@@ -348,14 +386,21 @@ static bool WIFI_ListAP_Sync(void)
 		if (istr != NULL)
 			return true;
 
-		if (strlen(WIFI_readedLine) > 5)
+		if (strlen(WIFI_readedLine) > 5) //-V814
 		{
-			char *start = strchr(WIFI_readedLine, '"') + 1;
-			char *end = strchr(start, '"');
-			*end = 0x00;
-			strcat((char *)&WIFI_FoundedAP[WIFI_FoundedAP_Index], start);
-			if (WIFI_FoundedAP_Index < WIFI_FOUNDED_AP_MAXCOUNT)
-				WIFI_FoundedAP_Index++;
+			char *start = strchr(WIFI_readedLine, '"');
+			if(start != NULL)
+			{
+				start = start + 1;
+				char *end = strchr(start, '"');
+				if(end != NULL)
+				{
+					*end = 0x00;
+					strcat((char *)&WIFI_FoundedAP[WIFI_FoundedAP_Index], start);
+					if (WIFI_FoundedAP_Index < WIFI_FOUNDED_AP_MAXCOUNT)
+						WIFI_FoundedAP_Index++;
+				}
+			}
 		}
 	}
 	return false;
@@ -428,15 +473,13 @@ static bool WIFI_TryGetLine(void)
 		return false;
 
 	strncpy(tmp, &WIFI_AnswerBuffer[WIFI_Answer_ReadIndex], dma_index - WIFI_Answer_ReadIndex);
-	if (strlen(tmp) == 0)
+	if (tmp[0] =='\0')
 		return false;
 
-	char *sep = "\n";
-	char *istr;
-	istr = strstr(tmp, sep);
+	char *istr = strchr(tmp, '\n'); //ищем конец строки
 	if (istr == NULL)
 		return false;
-	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)tmp + (uint32_t)strlen(sep));
+	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)tmp + 1);
 	strncpy(WIFI_readedLine, tmp, len);
 
 	WIFI_Answer_ReadIndex += len;

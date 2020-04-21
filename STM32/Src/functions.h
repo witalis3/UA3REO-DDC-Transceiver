@@ -36,7 +36,7 @@
 //#define SRAM3 __attribute__((section(".SRAM3")))             // 32kb
 //#define SRAM4 __attribute__((section(".SRAM4")))             // 64kb
 //#define BACKUP_SRAM __attribute__((section(".BACKUP_SRAM"))) // 4kb Backup SRAM
-#define BACKUP_SRAM_ADDR 0x38800000
+#define BACKUP_SRAM_ADDR (uint32_t *)0x38800000
 
 //UINT from BINARY STRING
 #define HEX__(n) 0x##n##LU

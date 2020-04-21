@@ -219,7 +219,7 @@ static void LCD_displayStatusInfoGUI(void)
 		if (CurrentVFO()->ManualNotchFilter)
 		{
 			char buff[10] = "";
-			sprintf(buff, "%dhz", CurrentVFO()->NotchFC);
+			sprintf(buff, "%uhz", CurrentVFO()->NotchFC);
 			addSymbols(buff, buff, 7, " ", false);
 			LCDDriver_printText(buff, LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_SMETER_WIDTH + LAY_STATUS_LABEL_NOTCH_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_LABELS_NOTCH_COLOR, BACKGROUND_COLOR, 1);
 		}
@@ -417,7 +417,7 @@ static void LCD_displayTextBar(void)
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 	{
 		char ctmp[50];
-		sprintf(ctmp, "WPM:%d", CW_Decoder_WPM);
+		sprintf(ctmp, "WPM:%d ", CW_Decoder_WPM);
 		LCDDriver_printText(ctmp, 0, LCD_HEIGHT - LAY_FFT_CWDECODER_OFFSET + 1, COLOR_WHITE, BACKGROUND_COLOR, LAY_TEXTBAR_FONT);
 		LCDDriver_printText((char *)&CW_Decoder_Text, LAY_TEXTBAR_TEXT_X_OFFSET, LCD_HEIGHT - LAY_FFT_CWDECODER_OFFSET + 1, COLOR_WHITE, BACKGROUND_COLOR, LAY_TEXTBAR_FONT);
 	}
@@ -479,16 +479,16 @@ static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, c
 {
 	uint16_t x1, y1, w, h;
 	LCDDriver_Fill_RectWH(x, y, width, height, back_color);
-	LCDDriver_getTextBounds(text, x, y, &x1, &y1, &w, &h, FreeSans9pt7b);
+	LCDDriver_getTextBounds(text, x, y, &x1, &y1, &w, &h, (GFXfont *)&FreeSans9pt7b);
 	//sendToDebug_str(text); sendToDebug_str(" "); sendToDebug_uint16(w, false);
-	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2 - 1, active ? text_color : inactive_color, back_color, FreeSans9pt7b);
+	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2 - 1, active ? text_color : inactive_color, back_color, (GFXfont *)&FreeSans9pt7b);
 }
 
 void LCD_showError(char text[], bool redraw)
 {
 	LCD_busy = true;
 	LCDDriver_Fill(COLOR_RED);
-	LCDDriver_printTextFont(text, 5, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_RED, FreeSans12pt7b);
+	LCDDriver_printTextFont(text, 5, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_RED, (GFXfont *)&FreeSans12pt7b);
 	HAL_IWDG_Refresh(&hiwdg1);
 	if (redraw)
 		HAL_Delay(2000);

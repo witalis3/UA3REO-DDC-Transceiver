@@ -501,7 +501,7 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	USBD_AUDIO_HandleTypeDef *haudio;
 
 	/* Open EP IN */
-	USBD_LL_OpenEP(pdev, DEBUG_IN_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_IN_PACKET_SIZE);
+	USBD_LL_OpenEP(pdev, DEBUG_IN_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_IN_PACKET_SIZE); //-V525
 	USBD_LL_OpenEP(pdev, CAT_IN_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_IN_PACKET_SIZE);
 	USBD_LL_OpenEP(pdev, AUDIO_IN_EP, USBD_EP_TYPE_ISOC, AUDIO_OUT_PACKET);
 
@@ -510,7 +510,7 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	pdev->ep_in[AUDIO_IN_EP & 0xFU].is_used = 1U;
 
 	/* Open EP OUT */
-	USBD_LL_OpenEP(pdev, DEBUG_OUT_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_OUT_PACKET_SIZE);
+	USBD_LL_OpenEP(pdev, DEBUG_OUT_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_OUT_PACKET_SIZE); //-V525
 	USBD_LL_OpenEP(pdev, CAT_OUT_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_OUT_PACKET_SIZE);
 	USBD_LL_OpenEP(pdev, AUDIO_OUT_EP, USBD_EP_TYPE_ISOC, AUDIO_OUT_PACKET);
 
@@ -995,7 +995,7 @@ static uint8_t USBD_AUDIO_DataIn(USBD_HandleTypeDef *pdev)
 			rx_buffer_head = 0;
 		}
 	}
-	if ((USB_AUDIO_RX_BUFFER_SIZE - rx_buffer_head) >= AUDIO_OUT_PACKET)
+	if ((USB_AUDIO_RX_BUFFER_SIZE - rx_buffer_head) >= AUDIO_OUT_PACKET) //-V658
 		rx_buffer_step = AUDIO_OUT_PACKET;
 	else
 		rx_buffer_step = (USB_AUDIO_RX_BUFFER_SIZE - rx_buffer_head);
@@ -1372,7 +1372,7 @@ static void AUDIO_REQ_GetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef 
 	USBD_AUDIO_HandleTypeDef *haudio;
 	haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
 
-	memset(haudio->control.data, 0, sizeof(USBD_AUDIO_ControlTypeDef));
+	memset(haudio->control.data, 0, sizeof(haudio->control.data));
 
 	/* Send the current mute state */
 	USBD_CtlSendData(pdev, haudio->control.data, req->wLength);

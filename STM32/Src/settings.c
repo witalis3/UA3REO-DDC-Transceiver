@@ -57,13 +57,13 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 void LoadSettings(bool clear)
 {
 	BKPSRAM_Enable();
-	memcpy(&TRX, (uint32_t *)BACKUP_SRAM_ADDR, sizeof(TRX));
+	memcpy(&TRX, BACKUP_SRAM_ADDR, sizeof(TRX));
 
 	//Проверка, данные в backup sram корректные, иначе используем второй банк
 	if (TRX.ENDBit != 100)
 	{
 		sendToDebug_strln("[ERR] BACKUP SRAM bank 1 incorrect, loading from bank 2");
-		memcpy(&TRX, (uint32_t *)BACKUP_SRAM_ADDR + sizeof(TRX), sizeof(TRX));
+		memcpy(&TRX, BACKUP_SRAM_ADDR + sizeof(TRX), sizeof(TRX));
 		if (TRX.ENDBit != 100)
 			sendToDebug_strln("[ERR] BACKUP SRAM bank 2 incorrect");
 	}
@@ -288,9 +288,9 @@ VFO *SecondaryVFO(void)
 void SaveSettings(void)
 {
 	BKPSRAM_Enable();
-	memcpy((uint32_t *)BACKUP_SRAM_ADDR, &TRX, sizeof(TRX));
-	memcpy((uint32_t *)BACKUP_SRAM_ADDR + sizeof(TRX), &TRX, sizeof(TRX));
-	SCB_CleanDCache_by_Addr((uint32_t *)BACKUP_SRAM_ADDR, 1024 * 4);
+	memcpy(BACKUP_SRAM_ADDR, &TRX, sizeof(TRX));
+	memcpy(BACKUP_SRAM_ADDR + sizeof(TRX), &TRX, sizeof(TRX));
+	SCB_CleanDCache_by_Addr(BACKUP_SRAM_ADDR, 1024 * 4);
 	BKPSRAM_Disable();
 	NeedSaveSettings = false;
 	//sendToDebug_strln("[OK] Settings Saved");

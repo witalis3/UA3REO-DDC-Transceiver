@@ -304,7 +304,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			strcat(answer, "IF001"); //memory channel
 			if (CurrentVFO()->Freq < 10000000)
 				strcat(answer, "0");
-			sprintf(ctmp, "%d", CurrentVFO()->Freq);
+			sprintf(ctmp, "%u", CurrentVFO()->Freq);
 			strcat(answer, ctmp);	 //freq
 			strcat(answer, "+0000"); //clirifier offset
 			strcat(answer, "0");	 //RX clar off
@@ -332,7 +332,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			strcat(answer, "FA");
 			if (TRX.VFO_A.Freq < 10000000)
 				strcat(answer, "0");
-			sprintf(ctmp, "%d", TRX.VFO_A.Freq);
+			sprintf(ctmp, "%u", TRX.VFO_A.Freq);
 			strcat(answer, ctmp); //freq
 			strcat(answer, ";");
 			CAT_Transmit(answer);
@@ -356,7 +356,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			strcat(answer, "FA");
 			if (TRX.VFO_B.Freq < 10000000)
 				strcat(answer, "0");
-			sprintf(ctmp, "%d", TRX.VFO_B.Freq);
+			sprintf(ctmp, "%u", TRX.VFO_B.Freq);
 			strcat(answer, ctmp); //freq
 			strcat(answer, ";");
 			CAT_Transmit(answer);

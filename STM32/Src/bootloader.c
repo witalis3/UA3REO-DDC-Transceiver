@@ -33,8 +33,8 @@ void JumpToBootloader(void)
 	}
 	__enable_irq(); //Re-enable all interrupts
 	//go to bootloader
-	SysMemBootJump = (void (*)(void)) (*((uint32_t *) ((BootAddr + 4))));
-	__set_MSP(*(uint32_t *)BootAddr);
+	SysMemBootJump = (void (*)(void)) (*((uint32_t *) ((BootAddr + 4)))); //-V566
+	__set_MSP(*(uint32_t *)BootAddr); //-V566
 	SysMemBootJump();
 	while (true) {}
 }

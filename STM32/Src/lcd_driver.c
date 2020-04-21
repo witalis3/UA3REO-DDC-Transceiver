@@ -64,12 +64,12 @@ static void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
 {
 #if defined ILI9341 || defined ILI9481
 	LCDDriver_SendCommand(LCD_COMMAND_COLUMN_ADDR);
-	LCDDriver_SendData(x >> 8);
+	LCDDriver_SendData(x >> 8); //-V760
 	LCDDriver_SendData(x & 0xFF);
 	LCDDriver_SendData(x >> 8);
 	LCDDriver_SendData(x & 0xFF);
 	LCDDriver_SendCommand(LCD_COMMAND_PAGE_ADDR);
-	LCDDriver_SendData(y >> 8);
+	LCDDriver_SendData(y >> 8); //-V760
 	LCDDriver_SendData(y & 0xFF);
 	LCDDriver_SendData(y >> 8);
 	LCDDriver_SendData(y & 0xFF);
@@ -611,11 +611,11 @@ void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, ui
 	}
 }
 
-void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, GFXfont gfxFont)
+void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, GFXfont *gfxFont)
 {
-	c -= (uint8_t)pgm_read_byte(&gfxFont.first);
-	GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(&gfxFont.glyph))[c]);
-	uint8_t *bitmap = (uint8_t *)pgm_read_pointer(&gfxFont.bitmap);
+	c -= (uint8_t)pgm_read_byte(&gfxFont->first);
+	GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c]);
+	uint8_t *bitmap = (uint8_t *)pgm_read_pointer(&gfxFont->bitmap);
 
 	uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
 	uint8_t w = pgm_read_byte(&glyph->width), h = pgm_read_byte(&glyph->height), xa = pgm_read_byte(&glyph->xAdvance);
@@ -656,7 +656,7 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 	}
 }
 
-void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, GFXfont gfxFont)
+void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, GFXfont *gfxFont)
 {
 	uint8_t c = 0;
 	text_cursor_x = x;
@@ -667,15 +667,15 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 		if (c == '\n')
 		{
 			text_cursor_x = 0;
-			text_cursor_y += (uint8_t)pgm_read_byte(&gfxFont.yAdvance);
+			text_cursor_y += (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
 		}
 		else if (c != '\r')
 		{
-			uint8_t first = pgm_read_byte(&gfxFont.first);
-			uint8_t last = pgm_read_byte(&gfxFont.last);
+			uint8_t first = pgm_read_byte(&gfxFont->first);
+			uint8_t last = pgm_read_byte(&gfxFont->last);
 			if ((c >= first) && (c <= last))
 			{
-				GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(&gfxFont.glyph))[c - first]);
+				GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(&gfxFont->glyph))[c - first]);
 				uint8_t w = pgm_read_byte(&glyph->width);
 				uint8_t h = pgm_read_byte(&glyph->height);
 				if ((w > 0) && (h > 0))
@@ -684,7 +684,7 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 					if (wrap && ((text_cursor_x + (xo + w)) > LCD_WIDTH))
 					{
 						text_cursor_x = 0;
-						text_cursor_y += (uint8_t)pgm_read_byte(&gfxFont.yAdvance);
+						text_cursor_y += (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
 					}
 					LCDDriver_drawCharFont(text_cursor_x, text_cursor_y, c, color, bg, gfxFont);
 				}
@@ -707,21 +707,21 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 	@param    maxy  Maximum clipping value for Y
 */
 /**************************************************************************/
-static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, GFXfont gfxFont)
+static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, GFXfont *gfxFont)
 {
 	if (c == '\n')
 	{			// Newline?
 		*x = 0; // Reset x to zero, advance y by one line
-		*y += (uint8_t)pgm_read_byte(&gfxFont.yAdvance);
+		*y += (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
 	}
 	else if (c != '\r')
 	{ // Not a carriage return; is normal char
-		uint8_t first = pgm_read_byte(&gfxFont.first),
-				last = pgm_read_byte(&gfxFont.last);
+		uint8_t first = pgm_read_byte(&gfxFont->first),
+				last = pgm_read_byte(&gfxFont->last);
 		if ((c >= first) && (c <= last))
 		{ // Char present in this font?
 			GFXglyph *glyph = &(((GFXglyph *)pgm_read_pointer(
-				&gfxFont.glyph))[c - first]);
+				&gfxFont->glyph))[c - first]);
 			uint8_t gw = pgm_read_byte(&glyph->width),
 					gh = pgm_read_byte(&glyph->height),
 					xa = pgm_read_byte(&glyph->xAdvance);
@@ -730,7 +730,7 @@ static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx
 			if (wrap && ((*x + (((int16_t)xo + gw))) > LCD_WIDTH))
 			{
 				*x = 0; // Reset x to zero, advance y by one line
-				*y += (uint8_t)pgm_read_byte(&gfxFont.yAdvance);
+				*y += (uint8_t)pgm_read_byte(&gfxFont->yAdvance);
 			}
 			int16_t x1 = *x + xo,
 					y1 = *y + yo,
@@ -761,7 +761,7 @@ static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx
 	@param    h      The boundary height, set by function
 */
 /**************************************************************************/
-void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont gfxFont)
+void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont *gfxFont)
 {
 	uint8_t c; // Current character
 

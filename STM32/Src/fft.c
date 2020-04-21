@@ -489,9 +489,8 @@ void FFT_printWaterfallDMA(void)
 					{
 						HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex], (uint32_t)&wtf_line_tmp[margin_left], LAY_FFT_PRINT_SIZE - margin_left); //копируем строку со смещением
 						HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-					}
-					if (margin_left > 0)
 						memset(&wtf_line_tmp, 0x00, (uint32_t)(margin_left * 2));									 //заполняем пространство слева
+          }
 					if (margin_right > 0)
 						memset(&wtf_line_tmp[(LAY_FFT_PRINT_SIZE - margin_right)], 0x00, (uint32_t)(margin_right * 2)); //заполняем пространство справа
 				}
@@ -536,7 +535,7 @@ static void FFT_move(int32_t _freq_diff)
 			new_x = x + freq_diff;
 			if (new_x >= LAY_FFT_PRINT_SIZE)
 				new_x -= LAY_FFT_PRINT_SIZE;
-			if (new_x < 0 || new_x >= LAY_FFT_PRINT_SIZE)
+			if (new_x >= LAY_FFT_PRINT_SIZE)
 			{
 				FFTOutput_mean[x] = 0;
 				continue;
@@ -551,7 +550,7 @@ static void FFT_move(int32_t _freq_diff)
 			new_x = x + freq_diff;
 			if (new_x < 0)
 				new_x += LAY_FFT_PRINT_SIZE;
-			if (new_x < 0 || new_x >= LAY_FFT_PRINT_SIZE)
+			if (new_x < 0)
 			{
 				FFTOutput_mean[x] = 0;
 				continue;

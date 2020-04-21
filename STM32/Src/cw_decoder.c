@@ -11,13 +11,13 @@
 #include "fpga.h"
 
 //Public variables
-volatile uint16_t CW_Decoder_WPM = 0;						//декодирвоанная скорость, WPM
-char CW_Decoder_Text[CWDECODER_STRLEN] = "               "; //декодирвоанная строка
+volatile uint16_t CW_Decoder_WPM = 0;						//декодированная скорость, WPM
+char CW_Decoder_Text[CWDECODER_STRLEN + 1] = {0}; //декодирвоанная строка
 
 //Private variables
 static float32_t coeff = 0;
-static float32_t Q1 = 0;
-static float32_t Q2 = 0;
+static float32_t magn_Q1 = 0; //-V707
+static float32_t magn_Q2 = 0; //-V707
 static float32_t magnitude = 0;
 static float32_t magnitudelimit = 50;
 static float32_t magnitudelimit_low = 50;
@@ -54,15 +54,15 @@ void CWDecoder_Process(float32_t *bufferIn)
 	// The basic where we get the tone
 	for (uint16_t index = 0; index < CWDECODER_SAMPLES; index++)
 	{
-		float32_t Q0;
-		Q0 = coeff * Q1 - Q2 + (float32_t)bufferIn[index];
-		Q2 = Q1;
-		Q1 = Q0;
+		float32_t magn_Q0;
+		magn_Q0 = coeff * magn_Q1 - magn_Q2 + (float32_t)bufferIn[index];
+		magn_Q2 = magn_Q1;
+		magn_Q1 = magn_Q0;
 	}
-	float32_t magnitudeSquared = (Q1 * Q1) + (Q2 * Q2) - Q1 * Q2 * coeff; // we do only need the real part //
+	float32_t magnitudeSquared = (magn_Q1 * magn_Q1) + (magn_Q2 * magn_Q2) - magn_Q1 * magn_Q2 * coeff; // we do only need the real part //
 	arm_sqrt_f32(magnitudeSquared, &magnitude);
-	Q2 = 0;
-	Q1 = 0;
+	magn_Q2 = 0;
+	magn_Q1 = 0;
 
 	// here we will try to set the magnitude limit automatic
 	if (magnitude > magnitudelimit_low)

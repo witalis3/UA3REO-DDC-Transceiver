@@ -23,7 +23,7 @@
 #define TOUCHPAD_DELAY 200				//Время защиты от анти-дребезга нажания на тачпад
 #define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
 #define AUTOGAIN_CORRECTOR_WAITSTEP 7	//ожидание усреднения результатов при работе автокорректора входных цепей
-#define ENCODER_DEBOUNCE 5				//время для устранения дребезга контактов у основного энкодера, мс
+#define ENCODER_DEBOUNCE 2				//время для устранения дребезга контактов у основного энкодера, мс
 #define ENCODER2_DEBOUNCE 50				//время для устранения дребезга контактов у дополнительного энкодера, мс
 #define KEY_HOLD_TIME 500				//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
 #define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
@@ -31,11 +31,12 @@
 #define SHOW_LOGO true					//Отображать логотип при загрузке (из шьфпуы.h)
 #define POWERDOWN_TIMEOUT 1000			//время нажатия на кнопку выключения, для срабатывания, мс
 #define USB_RESTART_TIMEOUT 5000		//время, через которое происходит рестарт USB если нет пакетов
+#define FPGA_FLASH_IN_HEX false					//включить прошивку FPGA в прошивку STM32
+	
 #define ILI9481 true					//он же HX8357B //другие комментируем
 #define FMC_REMAP true					//ремап памяти FMC
 #define FSMC_REGISTER_SELECT 18			//из FSMC настроек в STM32Cube (A18, A6, и т.д.)
 #define SCREEN_ROTATE 0					//перевернуть экран вверх ногами
-#define FPGA_FLASH_IN_HEX true					//включить прошивку FPGA в прошивку STM32
 
 #define ADC_BITS 16																						//разрядность АЦП
 #define FPGA_BUS_BITS 32																				//разрядность данных из FPGA

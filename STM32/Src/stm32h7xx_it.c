@@ -636,15 +636,13 @@ void TIM6_DAC_IRQHandler(void)
     LCD_busy = true;
     HAL_Delay(10);
     LCDDriver_Fill(COLOR_BLACK);
-    LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, FreeSans12pt7b);
+    LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, (GFXfont *)&FreeSans12pt7b);
     SaveSettings();
     HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
     WM8731_TX_mode(); //mute
     WM8731_CleanBuffer();
     sendToDebug_flush();
-    while (true)
-    {
-    }
+    while (true); //-V776
   }
   //перезапускаем USB если нет активности (выключен), чтобы найти новое подключение
   if (TRX_Inited && (USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick()))

@@ -35,9 +35,9 @@ void SPEC_Start(void)
 
 	//горизонтальные подписи
 	char ctmp[64] = {0};
-	sprintf(ctmp, "%d", TRX.SPEC_Begin);
+	sprintf(ctmp, "%u", TRX.SPEC_Begin);
 	LCDDriver_printText(ctmp, graph_start_x + 2, graph_start_y + graph_height + 3, COLOR_GREEN, COLOR_BLACK, 1);
-	sprintf(ctmp, "%d", TRX.SPEC_End);
+	sprintf(ctmp, "%u", TRX.SPEC_End);
 	LCDDriver_printText(ctmp, graph_start_x + graph_width - 36, graph_start_y + graph_height + 3, COLOR_GREEN, COLOR_BLACK, 1);
 	SPEC_DrawBottomGUI();
 
@@ -82,7 +82,7 @@ void SPEC_Draw(void)
 		LCD_UpdateQuery.SystemMenu = true;
 		return;
 	}
-	if (Processor_RX_Power_value == 0)
+	if (Processor_RX_Power_value == 0) //-V550
 		return;
 	tick_start_time = HAL_GetTick();
 

@@ -42,7 +42,7 @@ void PERIPH_ENCODER_checkRotate(void)
 
 	if(ENClastClkVal != ENCODER_CLKVal)
 	{
-		if (!CALIBRATE.ENCODER_ON_FALLING || (CALIBRATE.ENCODER_ON_FALLING && ENCODER_CLKVal == 0))
+		if (!CALIBRATE.ENCODER_ON_FALLING || ENCODER_CLKVal == 0)
 		{
 			if (ENCODER_DTVal != ENCODER_CLKVal)
 			{ // Если вывод A изменился первым - вращение по часовой стрелке
@@ -76,7 +76,7 @@ void PERIPH_ENCODER2_checkRotate(void)
 	if ((HAL_GetTick() - ENCODER2_AValDeb) < ENCODER2_DEBOUNCE)
 		return;
 
-	if (!CALIBRATE.ENCODER_ON_FALLING || (CALIBRATE.ENCODER_ON_FALLING && ENCODER2_CLKVal == 0))
+	if (!CALIBRATE.ENCODER_ON_FALLING || ENCODER2_CLKVal == 0)
 	{
 		if (ENCODER2_DTVal != ENCODER2_CLKVal)
 		{ // Если вывод A изменился первым - вращение по часовой стрелке
@@ -534,18 +534,17 @@ void PERIPH_ProcessFrontPanel(void)
 				band = 0;
 			if (band < 0)
 				band = BANDS_COUNT - 1;
-			if (band >= 0)
-			{
-				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
-				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
-				TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-				TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-				TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
-				TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-				CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
-				CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-			}
+
+			TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
+			TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
+			TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
+			TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
+			TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
+			TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+			TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
+			CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+			CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+			
 			LCD_UpdateQuery.TopButtons = true;
 			LCD_UpdateQuery.FreqInfo = true;
 		}
@@ -560,18 +559,16 @@ void PERIPH_ProcessFrontPanel(void)
 			if (band < 0)
 				band = BANDS_COUNT - 1;
 
-			if (band >= 0)
-			{
-				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
-				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
-				TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-				TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-				TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
-				TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-				CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
-				CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-			}
+			TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
+			TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
+			TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
+			TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
+			TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
+			TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+			TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
+			CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+			CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+
 			LCD_UpdateQuery.TopButtons = true;
 			LCD_UpdateQuery.FreqInfo = true;
 		}
@@ -960,7 +957,6 @@ bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPI
 	const int32_t timeout = 0x200; //HAL_MAX_DELAY
 	PERIPH_SPI_busy = true;
 	HAL_IWDG_Refresh(&hiwdg1);
-	memset(in_data, 0x00, count);
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 	if (in_data == NULL)
@@ -969,10 +965,12 @@ bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPI
 	}
 	else if (out_data == NULL)
 	{
+    memset(in_data, 0x00, count);
 		res = HAL_SPI_Receive(&hspi2, in_data, count, timeout);
 	}
 	else
 	{
+    memset(in_data, 0x00, count);
 		res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, timeout);
 	}
 	if (!hold_cs)

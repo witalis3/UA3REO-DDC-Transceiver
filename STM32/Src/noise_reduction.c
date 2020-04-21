@@ -109,7 +109,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 				//time smoothing (exponential averaging) of gain weights
 				instance->NR_GAIN[idx] = NOISE_REDUCTION_ALPHA * instance->NR_GAIN[idx] + (1 - NOISE_REDUCTION_ALPHA) * gain;
 				//frequency smoothing of gain weights
-				if (idx > 0)
+				if (idx > 0 && idx < NOISE_REDUCTION_FFT_SIZE_HALF - 1)
 					instance->NR_GAIN[idx] = NOISE_REDUCTION_BETA * instance->NR_GAIN[idx - 1] + (1 - 2 * NOISE_REDUCTION_BETA) * instance->NR_GAIN[idx] + NOISE_REDUCTION_BETA * instance->NR_GAIN[idx + 1];
 			}
 			//apply gain weighting

@@ -518,7 +518,7 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 		NOTCH_RX1_Coeffs[3] = -b1;
 		NOTCH_RX1_Coeffs[4] = -b2;
 	}
-	else if (rx_id == AUDIO_RX2)
+	else
 	{
 		NOTCH_RX2_Coeffs[0] = a0;
 		NOTCH_RX2_Coeffs[1] = a1;

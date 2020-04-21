@@ -15,7 +15,7 @@
 #define LAY_CLOCK_POS_HRS_X 405
 #define LAY_CLOCK_POS_MIN_X 430
 #define LAY_CLOCK_POS_SEC_X 455
-#define LAY_CLOCK_FONT FreeSans9pt7b
+#define LAY_CLOCK_FONT (GFXfont *)&FreeSans9pt7b
 
 //верхний ряд статусных кнопок
 #define LAY_TOPBUTTONS_X1 0
@@ -97,7 +97,7 @@
 #define LAY_FREQ_X_OFFSET_HZ 300
 #define LAY_FREQ_HEIGHT 51
 #define LAY_FREQ_Y 120
-#define LAY_FREQ_FONT FreeSans36pt7b
+#define LAY_FREQ_FONT (GFXfont *)&FreeSans36pt7b
 #define LAY_FREQ_COLOR_MHZ COLOR_WHITE
 #define LAY_FREQ_COLOR_KHZ COLOR_WHITE
 #define LAY_FREQ_COLOR_HZ rgb888torgb565(110, 110, 110)
@@ -112,7 +112,7 @@
 #define LAY_STATUS_BAR_HEIGHT 15
 #define LAY_STATUS_TXRX_X_OFFSET 20
 #define LAY_STATUS_TXRX_Y_OFFSET 14
-#define LAY_STATUS_TXRX_FONT FreeSans9pt7b
+#define LAY_STATUS_TXRX_FONT (GFXfont *)&FreeSans9pt7b
 #define LAY_STATUS_TX_COLOR COLOR_RED
 #define LAY_STATUS_TX_LABELS_OFFSET_X 5
 #define LAY_STATUS_TX_LABELS_MARGIN_X 55
@@ -152,7 +152,7 @@
 #define LAY_STATUS_ERR_COLOR COLOR_RED
 
 #define LAY_TEXTBAR_FONT 2
-#define LAY_TEXTBAR_TEXT_X_OFFSET 75
+#define LAY_TEXTBAR_TEXT_X_OFFSET 85
 
 //FFT и водопад
 #define LAY_FFT_HEIGHT_STYLE1 40  //указываем максимальную высоту FFT

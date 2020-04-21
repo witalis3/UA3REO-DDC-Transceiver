@@ -104,7 +104,7 @@ void sendToDebug_flush(void)
 
 void sendToDebug_uint8(uint8_t data, bool _inline)
 {
-	char tmp[50] = "";
+	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
@@ -114,7 +114,7 @@ void sendToDebug_uint8(uint8_t data, bool _inline)
 
 void sendToDebug_hex(uint8_t data, bool _inline)
 {
-	char tmp[50] = "";
+	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%02X", data);
 	else
@@ -124,7 +124,7 @@ void sendToDebug_hex(uint8_t data, bool _inline)
 
 void sendToDebug_uint16(uint16_t data, bool _inline)
 {
-	char tmp[50] = "";
+	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
@@ -133,7 +133,7 @@ void sendToDebug_uint16(uint16_t data, bool _inline)
 }
 void sendToDebug_uint32(uint32_t data, bool _inline)
 {
-	char tmp[50] = "";
+	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
@@ -142,7 +142,7 @@ void sendToDebug_uint32(uint32_t data, bool _inline)
 }
 void sendToDebug_int8(int8_t data, bool _inline)
 {
-	char tmp[50] = "";
+	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
@@ -151,7 +151,7 @@ void sendToDebug_int8(int8_t data, bool _inline)
 }
 void sendToDebug_int16(int16_t data, bool _inline)
 {
-	char tmp[50] = "";
+	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
@@ -160,7 +160,7 @@ void sendToDebug_int16(int16_t data, bool _inline)
 }
 void sendToDebug_int32(int32_t data, bool _inline)
 {
-	char tmp[50] = "";
+	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%d", data);
 	else
@@ -170,7 +170,7 @@ void sendToDebug_int32(int32_t data, bool _inline)
 
 void sendToDebug_float32(float32_t data, bool _inline)
 {
-	char tmp[50] = "";
+	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%f", (double)data);
 	else
@@ -424,7 +424,7 @@ static int32_t arm_quick_sort_partition_f32(float32_t *pSrc, int32_t first, int3
 			do
 			{
 				i++;
-			} while (pSrc[i] < pivot && i < last);
+			} while (pSrc[i] < pivot && i < last); //-V781
 			do
 			{
 				j--;
@@ -435,7 +435,7 @@ static int32_t arm_quick_sort_partition_f32(float32_t *pSrc, int32_t first, int3
 			do
 			{
 				i++;
-			} while (pSrc[i] > pivot && i < last);
+			} while (pSrc[i] > pivot && i < last); //-V781
 			do
 			{
 				j--;

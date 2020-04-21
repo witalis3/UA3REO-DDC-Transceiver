@@ -38,7 +38,9 @@ static void FPGA_fpgadata_getparam(void);		   //получить парамет�
 static void FPGA_fpgadata_sendparam(void);		   //отправить параметры
 static void FPGA_setBusInput(void);				   //переключить шину на ввод
 static void FPGA_setBusOutput(void);			   //переключить шину на вывод
+#if FPGA_FLASH_IN_HEX
 static bool FPGA_spi_flash_verify(bool full);				//Прочитать содержимое SPI памяти FPGA
+#endif
 
 //инициализация обмена с FPGA
 void FPGA_Init(void)
@@ -49,8 +51,9 @@ void FPGA_Init(void)
 	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(GPIOA, &FPGA_GPIO_InitStruct);
 
-	if(FPGA_FLASH_IN_HEX)
-		FPGA_spi_flash_verify(false); //проверяем первые 2048 байт прошивки FPGA
+	#if FPGA_FLASH_IN_HEX
+	FPGA_spi_flash_verify(false); //проверяем первые 2048 байт прошивки FPGA
+	#endif
 }
 
 //перезапуск модулей FPGA
@@ -650,6 +653,8 @@ static inline void FPGA_writePacket(uint_fast8_t packet)
 	FPGA_BUS_D0_GPIO_Port->BSRR = (packet & 0xFF) | 0xFF0000;
 }
 
+#if FPGA_FLASH_IN_HEX
+
 #define FPGA_FLASH_COMMAND_DELAY for(uint32_t wait = 0; wait < 200; wait++) __asm("nop");
 #define FPGA_FLASH_WRITE_DELAY for(uint32_t wait = 0; wait < 2000; wait++) __asm("nop");
 #define FPGA_FLASH_READ_DELAY for(uint32_t wait = 0; wait < 50; wait++) __asm("nop");
@@ -764,7 +769,7 @@ static bool FPGA_spi_flash_verify(bool full) //проверка flash памят
 			{
 				if((decoded - file_offset) >=0 )
 				{
-					if((uint8_t)(__RBIT(data) >> 24) != FILES_OUTPUT_FILE_JIC[i])
+					if(i < sizeof(FILES_OUTPUT_FILE_JIC) && (uint8_t)(__RBIT(data) >> 24) != FILES_OUTPUT_FILE_JIC[i])
 					{
 						errors++;
 						sendToDebug_uint32(decoded, true);
@@ -802,3 +807,4 @@ static bool FPGA_spi_flash_verify(bool full) //проверка flash памят
 		return true;
 	}
 }
+#endif
