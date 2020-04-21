@@ -33,13 +33,8 @@ void StartProfilerUs()
 {
 	if (profiles[PROFILES_COUNT - 1].started)
 		return;
-	if (bitRead(DWT->CTRL, DWT_CTRL_CYCCNTENA_Pos))
-		return;
 	profiles[PROFILES_COUNT - 1].started = true;
-	profiles[PROFILES_COUNT - 1].startTime = 0;
-	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-	DWT->CYCCNT = 0;
-	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+	profiles[PROFILES_COUNT - 1].startTime = DWT->CYCCNT;
 }
 
 //завершение профайлера
@@ -63,13 +58,12 @@ void EndProfilerUs(bool summarize)
 {
 	if (!profiles[PROFILES_COUNT - 1].started)
 		return;
-	profiles[PROFILES_COUNT - 1].endTime = DWT->CYCCNT / (SystemCoreClock / 1000000);
-	DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;
-	DWT->CYCCNT = 0;
+	profiles[PROFILES_COUNT - 1].endTime = DWT->CYCCNT;
+	uint32_t diff = (profiles[PROFILES_COUNT - 1].endTime - profiles[PROFILES_COUNT - 1].startTime);
 	if (summarize)
-		profiles[PROFILES_COUNT - 1].diff += profiles[PROFILES_COUNT - 1].endTime;
+		profiles[PROFILES_COUNT - 1].diff += diff;
 	else
-		profiles[PROFILES_COUNT - 1].diff = profiles[PROFILES_COUNT - 1].endTime;
+		profiles[PROFILES_COUNT - 1].diff = diff;
 	profiles[PROFILES_COUNT - 1].samples++;
 	profiles[PROFILES_COUNT - 1].started = false;
 }
@@ -86,10 +80,15 @@ void PrintProfilerResult()
 			sendToDebug_str(" Samples: ");
 			sendToDebug_uint32(profiles[i].samples, true);
 			if (i == PROFILES_COUNT - 1)
+			{
 				sendToDebug_str(" Time, us: ");
+				sendToDebug_uint32(profiles[i].diff / (SystemCoreClock / 1000000), false);
+			}
 			else
+			{
 				sendToDebug_str(" Time, ms: ");
-			sendToDebug_uint32(profiles[i].diff, false);
+				sendToDebug_uint32(profiles[i].diff, false);
+			}
 			profiles[i].diff = 0;
 			profiles[i].samples = 0;
 			printed = true;

@@ -357,14 +357,13 @@ void CPULOAD_Init(void)
 
 void CPULOAD_GoToSleepMode(void)
 {
-	//if(!CPULOAD_status) return;
-	/* Add to working time */
+	// Add to working time
 	CPULOAD_WorkingTime += DWT->CYCCNT - CPULOAD_startWorkTime;
-	/* Save count cycle time */
+	// Save count cycle time
 	CPULOAD_SleepCounter++;
 	CPULOAD_startSleepTime = DWT->CYCCNT;
 	CPULOAD_status = false;
-	/* Go to sleep mode Wait for wake up interrupt */
+	// Go to sleep mode Wait for wake up interrupt
 	__WFI();
 }
 
@@ -373,15 +372,15 @@ void CPULOAD_WakeUp(void)
 	if (CPULOAD_status)
 		return;
 	CPULOAD_status = true;
-	/* Increase number of sleeping time in CPU cycles */
+	// Increase number of sleeping time in CPU cycles
 	CPULOAD_SleepingTime += DWT->CYCCNT - CPULOAD_startSleepTime;
-	/* Save current time to get number of working CPU cycles */
+	// Save current time to get number of working CPU cycles
 	CPULOAD_startWorkTime = DWT->CYCCNT;
 }
 
 void CPULOAD_Calc(void)
 {
-	/* Save values */
+	// Save values
 	CPU_LOAD.SCNT = CPULOAD_SleepingTime;
 	CPU_LOAD.WCNT = CPULOAD_WorkingTime;
 	CPU_LOAD.SINC = CPULOAD_SleepCounter;
@@ -395,7 +394,7 @@ void CPULOAD_Calc(void)
 		CPU_LOAD.Load = 255;
 		CPULOAD_Init();
 	}
-	/* Reset time */
+	// Reset time
 	CPULOAD_SleepingTime = 0;
 	CPULOAD_WorkingTime = 0;
 	CPULOAD_SleepCounter = 0;
@@ -404,73 +403,4 @@ void CPULOAD_Calc(void)
 inline int32_t convertToSPIBigEndian(int32_t in)
 {
 	return (int32_t)(0xFFFF0000 & (uint32_t)(in << 16)) | (int32_t)(0x0000FFFF & (uint32_t)(in >> 16));
-}
-
-//Сортировка QuickSort из develop-ветки CMSIS
-static int32_t arm_quick_sort_partition_f32(float32_t *pSrc, int32_t first, int32_t last, uint8_t dir)
-{
-	int32_t i, j, pivot_index;
-	float32_t pivot;
-	float32_t temp;
-	pivot_index = first;
-	pivot = pSrc[pivot_index];
-	i = first - 1;
-	j = last + 1;
-
-	while (i < j)
-	{
-		if (dir)
-		{
-			do
-			{
-				i++;
-			} while (pSrc[i] < pivot && i < last); //-V781
-			do
-			{
-				j--;
-			} while (pSrc[j] > pivot);
-		}
-		else
-		{
-			do
-			{
-				i++;
-			} while (pSrc[i] > pivot && i < last); //-V781
-			do
-			{
-				j--;
-			} while (pSrc[j] < pivot);
-		}
-		if (i < j)
-		{
-			temp = pSrc[i];
-			pSrc[i] = pSrc[j];
-			pSrc[j] = temp;
-		}
-	}
-	return j;
-}
-
-static void arm_quick_sort_core_f32(float32_t *pSrc, int32_t first, int32_t last, uint8_t dir)
-{
-	if (first < last)
-	{
-		int32_t pivot;
-		pivot = arm_quick_sort_partition_f32(pSrc, first, last, dir);
-		arm_quick_sort_core_f32(pSrc, first, pivot, dir);
-		arm_quick_sort_core_f32(pSrc, pivot + 1, last, dir);
-	}
-}
-
-void arm_quick_sort_f32(float32_t *pSrc, float32_t *pDst, uint32_t blockSize, uint8_t dir)
-{
-	float32_t *pA;
-	if (pSrc != pDst)
-	{
-		memcpy(pDst, pSrc, blockSize * sizeof(float32_t));
-		pA = pDst;
-	}
-	else
-		pA = pSrc;
-	arm_quick_sort_core_f32(pA, 0, (int32_t)blockSize - 1, dir);
 }

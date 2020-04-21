@@ -39,6 +39,7 @@ static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  //врем�
 static uint16_t print_wtf_xindex = 0;												  //текущая координата вывода водопада через DMA
 static uint16_t print_wtf_yindex = 0;												  //текущая координата вывода водопада через DMA
 static float32_t window_multipliers[FFT_SIZE] = {0};								  //коэффициенты выбранной оконной функции
+static arm_sort_instance_f32 FFT_sortInstance = {0};			//инстанс сортировки (для поиска медианы)
 //Дециматор для Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
@@ -183,8 +184,10 @@ void FFT_Init(void)
 		else if (TRX.FFT_Window == 3)
 			window_multipliers[i] = 0.5f * (1.0f - arm_cos_f32(2.0f * PI * i / (float32_t)FFT_SIZE));
 	}
-	//
+	//очищаем буффер
 	memset(&wtf_buffer, 0x00, sizeof wtf_buffer);
+	//инициализация сортировки
+	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_QUICK, ARM_SORT_ASCENDING);
 }
 
 //расчёт FFT
@@ -281,7 +284,7 @@ void FFT_doFFT(void)
 	}
 
 	//Ищем медиану в АЧХ
-	arm_quick_sort_f32(FFTInput, FFTInput_sorted, FFT_SIZE, 1);
+	arm_sort_f32(&FFT_sortInstance, FFTInput, FFTInput_sorted, FFT_SIZE);
 	medianValue = FFTInput_sorted[FFT_SIZE / 2];
 	
 	//Максимум амплитуды

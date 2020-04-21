@@ -611,7 +611,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_str("WIFI State: ");
       sendToDebug_int16(WIFI_State, false);
       sendToDebug_newline();
-      //PrintProfilerResult();
+      PrintProfilerResult();
     }
 		
     //Save Settings to Backup Memory
