@@ -199,7 +199,7 @@ void LoadCalibration(void)
 
 		CALIBRATE.ENCODER_INVERT = false; //инвертировать вращение влево-вправо у основного энкодера
 		CALIBRATE.ENCODER2_INVERT = false; //инвертировать вращение влево-вправо у дополнительного энкодера
-		CALIBRATE.ENCODER_SLOW_RATE = 8;					//замедление энкодера для больших разрешений
+		CALIBRATE.ENCODER_SLOW_RATE = 25;					//замедление энкодера для больших разрешений
 		CALIBRATE.ENCODER_ON_FALLING = false;	//энкодер срабатывает только на падение уровня A
 		CALIBRATE.CIC_GAINER_val = 88;		//Смещение с выхода CIC
 		CALIBRATE.CICFIR_GAINER_val = 54;	//Смещение с выхода CIC компенсатора
@@ -239,7 +239,7 @@ void LoadCalibration(void)
 		CALIBRATE.rf_out_power[30] = 100; // 30 mhz
 		CALIBRATE.rf_out_power[31] = 100; // 31+ mhz
 		CALIBRATE.smeter_calibration = 0; //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
-		CALIBRATE.adc_offset = 25;		  //Калибровка смещения по входу ADC (по DC)
+		CALIBRATE.adc_offset = 0;		  //Калибровка смещения по входу ADC (по DC)
 		CALIBRATE.att_db = -12;			  //подавление в аттенюаторе, dB
 		CALIBRATE.lna_gain_db = 11;		  //усиление в МШУ предусилителе (LNA), dB
 		//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
