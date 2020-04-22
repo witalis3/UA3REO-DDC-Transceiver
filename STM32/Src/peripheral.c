@@ -956,7 +956,6 @@ bool PERIPH_SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPI
 	}
 	const int32_t timeout = 0x200; //HAL_MAX_DELAY
 	PERIPH_SPI_busy = true;
-	HAL_IWDG_Refresh(&hiwdg1);
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 	if (in_data == NULL)

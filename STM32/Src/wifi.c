@@ -374,7 +374,6 @@ static bool WIFI_ListAP_Sync(void)
 
 	while ((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
 	{
-		HAL_IWDG_Refresh(&hiwdg1);
 		if (!WIFI_TryGetLine())
 		{
 			CPULOAD_GoToSleepMode();
@@ -406,15 +405,6 @@ static bool WIFI_ListAP_Sync(void)
 	return false;
 }
 
-/*
-void WIFI_GetStatus(void)
-{
-	WIFI_State = WIFI_PROCESS_COMMAND;
-	WIFI_ProcessingCommand = WIFI_COMM_GETSTATUS;
-	WIFI_SendCommand("AT+CIPSTATUS\r\n"); //connection status
-}
-*/
-
 void WIFI_GoSleep(void)
 {
 	if (WIFI_State == WIFI_SLEEP)
@@ -436,7 +426,6 @@ static void WIFI_SendCommand(char *command)
 	HAL_UART_Transmit_IT(&huart6, (uint8_t *)command, (uint16_t)strlen(command));
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
-	HAL_IWDG_Refresh(&hiwdg1);
 #if WIFI_DEBUG //DEBUG
 	sendToDebug_str2("WIFI_S: ", command);
 #endif
@@ -449,7 +438,6 @@ static bool WIFI_WaitForOk(void)
 	uint32_t startTime = HAL_GetTick();
 	while ((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
 	{
-		HAL_IWDG_Refresh(&hiwdg1);
 		if (WIFI_TryGetLine())
 		{
 			istr = strstr(WIFI_readedLine, sep);

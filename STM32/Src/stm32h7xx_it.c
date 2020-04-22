@@ -451,7 +451,6 @@ void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
   CPULOAD_WakeUp();
-  HAL_IWDG_Refresh(&hiwdg1);
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
@@ -543,7 +542,7 @@ void TIM6_DAC_IRQHandler(void)
     ms10_counter = 0;
 		
 		//Detect FPGA IQ phase error
-    if ((fabsf(TRX_IQ_phase_error) > 0.1f  || fabsf(TRX_IQ_phase_error) < 0.000005f)&& !TRX_on_TX() && TRX_RX_dBm > -90.0f)
+    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && TRX_RX_dBm > -90.0f)
     {
       sendToDebug_str("[ERR] IQ phase error, restart | ");
 			sendToDebug_float32(TRX_IQ_phase_error, false);
@@ -790,6 +789,9 @@ void DMA1_Stream0_IRQHandler(void)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+	if(!TRX_Inited)
+		return;
+	
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
 		FPGA_fpgadata_iqclock();    //данные IQ

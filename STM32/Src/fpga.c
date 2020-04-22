@@ -735,7 +735,6 @@ static void FPGA_spi_flash_wait_WIP(void) //Ожидаем пока законч
 		FPGA_spi_start_command(M25P80_READ_STATUS_REGISTER);
 		status = FPGA_spi_continue_command(0x00);
 		FPGA_spi_stop_command(); 
-		HAL_IWDG_Refresh(&hiwdg1);
 	}
 }
 
@@ -840,7 +839,6 @@ static bool FPGA_spi_flash_verify(bool full) //проверка flash памят
 			}
 			file_pos++;
 		}
-		HAL_IWDG_Refresh(&hiwdg1);
 		progress = (uint8_t)((float32_t)decoded / (float32_t)(FPGA_flash_size + FPGA_flash_file_offset) * 100.0f);
 		if(progress_prev != progress && full && ((progress - progress_prev) >= 5))
 		{
@@ -895,7 +893,6 @@ static void FPGA_spi_flash_erase(void) //очистка flash памяти
 		FPGA_spi_continue_command(pos & 0xFF); //addr 3
 		FPGA_spi_stop_command(); 
 		FPGA_spi_flash_wait_WIP(); //wait write in progress
-		HAL_IWDG_Refresh(&hiwdg1);
 		progress = (uint8_t)((float32_t)pos / (float32_t)FPGA_flash_size * 100.0f);
 		if(progress_prev != progress && ((progress - progress_prev) >= 5))
 		{
@@ -990,7 +987,6 @@ static void FPGA_spi_flash_write(void) //записать новое содер�
 			}
 			file_pos++;
 		}
-		HAL_IWDG_Refresh(&hiwdg1);
 		progress = (uint8_t)((float32_t)decoded / (float32_t)(FPGA_flash_size + FPGA_flash_file_offset) * 100.0f);
 		if(progress_prev != progress && ((progress - progress_prev) >= 5))
 		{

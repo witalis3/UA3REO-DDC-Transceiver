@@ -489,10 +489,8 @@ void LCD_showError(char text[], bool redraw)
 	LCD_busy = true;
 	LCDDriver_Fill(COLOR_RED);
 	LCDDriver_printTextFont(text, 5, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_RED, (GFXfont *)&FreeSans12pt7b);
-	HAL_IWDG_Refresh(&hiwdg1);
 	if (redraw)
 		HAL_Delay(2000);
-	HAL_IWDG_Refresh(&hiwdg1);
 	LCD_busy = false;
 	if (redraw)
 		LCD_redraw();

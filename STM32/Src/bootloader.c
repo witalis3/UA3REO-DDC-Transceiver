@@ -2,6 +2,7 @@
 #include "usb_device.h"
 #include "main.h"
 #include "lcd.h"
+#include "functions.h"
 
 //перехов в DFU-режим булодера
 void JumpToBootloader(void)
@@ -12,11 +13,10 @@ void JumpToBootloader(void)
 	volatile uint32_t BootAddr = 0x1FF09800;
 	LCD_busy = true;
 	TRX_Inited = false;
-	LCD_showError("Flash DFU mode(Hold POWER button)", false);
+	LCD_showError("Flash DFU mode", false);
 	MX_USB_DevDisconnect();
 	HAL_Delay(1000);
 	//prepare cpu
-	hiwdg1.Init.Reload = 0;
 	SCB_DisableDCache();
 	SCB_DisableICache();
 	HAL_MPU_Disable();
@@ -25,7 +25,7 @@ void JumpToBootloader(void)
 	SysTick->CTRL = 0;				  //Disable Systick timer
 	SysTick->VAL = 0;
 	SysTick->LOAD = 0;
-	//HAL_RCC_DeInit();				//Set the clock to the default state
+	HAL_RCC_DeInit();				//Set the clock to the default state
 	for (i = 0; i < 5; i++) //Clear Interrupt Enable Register & Interrupt Pending Register
 	{
 		NVIC->ICER[i] = 0xFFFFFFFF;

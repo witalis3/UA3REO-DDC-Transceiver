@@ -1420,6 +1420,8 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction)
 {
 	WM8731_CleanBuffer();
 	TRX_NeedGoToBootloader = true;
+	TRX_Inited = false;
+	LCD_busy = true;
 }
 
 //SPECTRUM MENU
