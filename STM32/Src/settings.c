@@ -343,9 +343,9 @@ static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ba
 	for (uint8_t page = 0; page <= (size / 0xFF); page++)
 	{
 		uint32_t BigAddress = start + page * 0xFF + eeprom_bank * W25Q16_SECTOR_SIZE;
-		Address[0] = BigAddress & 0xFF;
+		Address[0] = (BigAddress >> 16) & 0xFF;
 		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[2] = (BigAddress >> 16) & 0xFF;
+		Address[2] = BigAddress & 0xFF;
 
 		PERIPH_SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Enable Command
 		HAL_Delay(EEPROM_CO_DELAY);
@@ -357,7 +357,6 @@ static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ba
 		HAL_Delay(EEPROM_CO_DELAY);
 	}
 
-	//sendToDebug_str("EEPROM erased bank "); sendToDebug_uint8(eeprom_bank, false);
 	//verify
 	if (verify)
 	{
@@ -365,9 +364,6 @@ static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ba
 		for (uint16_t i = 0; i < size; i++)
 			if (verify_clone[i] != 0xFF)
 			{
-				//sendToDebug_str("[ERR] EEPROM Erase Error: ");
-				//sendToDebug_uint16(i,false);
-				//sendToDebug_uint8(verify_clone[i],false);
 				PERIPH_SPI_process = false;
 				return false;
 			}
@@ -392,9 +388,9 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_le
 		HAL_Delay(EEPROM_CO_DELAY);
 
 		uint32_t BigAddress = margin_left + page * 0xFF + (eeprom_bank * W25Q16_SECTOR_SIZE);
-		Address[0] = BigAddress & 0xFF;
+		Address[0] = (BigAddress >> 16) & 0xFF;
 		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[2] = (BigAddress >> 16) & 0xFF;
+		Address[2] = BigAddress & 0xFF;
 		uint16_t bsize = size - 0xFF * page;
 		if (bsize > 0xFF)
 			bsize = 0xFF;
@@ -416,11 +412,6 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_le
 		for (uint16_t i = 0; i < size; i++)
 			if (verify_clone[i] != write_clone[i])
 			{
-				//sendToDebug_str("[ERR] EEPROM Write Error: ");
-				//sendToDebug_uint16(i,false);
-				//sendToDebug_uint16(write_clone[i],false);
-				//sendToDebug_uint16(verify_clone[i],false);
-				//sendToDebug_newline();
 				EEPROM_Sector_Erase(size, margin_left, eeprom_bank, true, true);
 				PERIPH_SPI_process = false;
 				return false;
@@ -442,9 +433,9 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_lef
 	for (uint16_t page = 0; page <= (size / 0xFF); page++)
 	{
 		uint32_t BigAddress = margin_left + page * 0xFF + (eeprom_bank * W25Q16_SECTOR_SIZE);
-		Address[0] = BigAddress & 0xFF;
+		Address[0] = (BigAddress >> 16) & 0xFF;
 		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[2] = (BigAddress >> 16) & 0xFF;
+		Address[2] = BigAddress & 0xFF;
 		uint16_t bsize = size - 0xFF * page;
 		if (bsize > 0xFF)
 			bsize = 0xFF;
@@ -453,8 +444,6 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_lef
 		HAL_Delay(EEPROM_CO_DELAY);
 		if (!res)
 		{
-			sendToDebug_uint8(res, false);
-			sendToDebug_uint32(hspi2.ErrorCode, false);
 			EEPROM_Enabled = false;
 			sendToDebug_strln("[ERR] EEPROM not found...");
 			LCD_showError("EEPROM init error", true);
@@ -468,18 +457,13 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_lef
 		HAL_Delay(EEPROM_RD_DELAY);
 	}
 
-	//sendToDebug_str("EEPROM readed from bank "); sendToDebug_uint8(eeprom_bank, false);
 	//verify
 	if (verify)
 	{
-		//memcpy(write_clone, Buffer, size);
 		EEPROM_Read_Data(read_clone, size, margin_left, eeprom_bank, false, true);
 		for (uint16_t i = 0; i < size; i++)
 			if (read_clone[i] != Buffer[i])
 			{
-				//sendToDebug_str("[ERR] EEPROM Read Error: ");
-				//sendToDebug_uint16(i,false);
-				//sendToDebug_newline();
 				PERIPH_SPI_process = false;
 				return false;
 			}
@@ -509,16 +493,9 @@ void BKPSRAM_Enable(void)
 	__HAL_RCC_BKPRAM_CLK_ENABLE();
 	HAL_PWREx_EnableBkUpReg();
 	HAL_PWR_EnableBkUpAccess();
-	//PWR->CR1 |= PWR_CR1_DBP;
-	//while(((PWR->CR1 & PWR_CR1_DBP) == 0));
-	//SCB->CACR |= 1<<2;
 }
 
 void BKPSRAM_Disable(void)
 {
 	HAL_PWR_DisableBkUpAccess();
-	//HAL_PWREx_DisableBkUpReg();
-	//PWR->CR1 &= ~PWR_CR1_DBP;
-	//while(((PWR->CR1 & PWR_CR1_DBP) == 1));
-	//__HAL_RCC_BKPRAM_CLK_DISABLE();
 }

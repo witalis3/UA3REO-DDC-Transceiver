@@ -58,84 +58,69 @@ namespace file2rle
 
             int prev = in_file.ReadByte();
             int replay_count = 0;
-            bool first = true;
-            int prev_p = 0;
-            List<byte> neg_bytes = new List<byte>();
+            List<sbyte> neg_bytes = new List<sbyte>();
             while (in_position < in_file.Length)
             {
                 int current = in_file.ReadByte();
 
                 if (prev == current) //повторы
                 {
-                    if (first)
+                    if (replay_count < 0) //начались повторы, сохраняем накопленные неповторяющиеся
                     {
-                        replay_count++;
-                        first = false;
-                    }
-
-                    if (replay_count < 0)
-                    {
-                        if(debug)
+                        while (replay_count < -127)
+                        {
+                            if (debug)
+                                appendByteN(-127);
+                            else
+                                appendByte((sbyte)-127);
+                            int tcnt = 0;
+                            foreach (byte point in neg_bytes)
+                            {
+                                appendByte((sbyte)point);
+                                tcnt++;
+                                if (tcnt == 127)
+                                    break;
+                            }
+                            neg_bytes.RemoveRange(0, 127);
+                            replay_count += 127;
+                        }
+                        if (debug)
                             appendByteN(replay_count);
                         else
-                            appendByte((byte)replay_count);
+                            appendByte((sbyte)replay_count);
                         foreach (byte point in neg_bytes)
-                            appendByte((byte)point);
+                            appendByte((sbyte)point);
                         neg_bytes.Clear();
-                        replay_count = 1;
-                        prev_p = -1;
+                        replay_count = 0;
                     }
                     
                     replay_count++;
-
-                    if (replay_count == 127 || (in_position == in_file.Length - 1))
-                    {
-                        if (debug)
-                            appendByteP(replay_count);
-                        else
-                            appendByte((byte)replay_count);
-                        appendByte((byte)prev);
-                        replay_count = 0;
-                        if (prev_p == 1)  replay_count++;
-                        prev_p = 0;
-                    }
                 }
                 else //нет повторов
                 {
-                    if (first)
+                    if (replay_count > 0) //сохраняем накопленные повторы
                     {
-                        replay_count = 0;
-                        first = false;
-                    }
-
-                    if (replay_count > 0)
-                    {
-                        if (prev_p == 1) replay_count++;
+                        replay_count++;
+                        while (replay_count > 127)
+                        {
+                            if (debug)
+                                appendByteP(127);
+                            else
+                                appendByte(127);
+                            appendByte((sbyte)prev);
+                            replay_count -= 127;
+                        }
                         if (debug)
                             appendByteP(replay_count);
                         else
-                            appendByte((byte)replay_count);
-                        appendByte((byte)prev);
+                            appendByte((sbyte)replay_count);
+                        appendByte((sbyte)prev);
                         replay_count = 0;
-                        prev_p = 1;
                     }
-                    else
+                    else //иначе накапливаем неповторяющиеся
                     {
-                        neg_bytes.Add((byte)prev);
+                        neg_bytes.Add((sbyte)prev);
                         replay_count--;
-                    }
-
-                    if (replay_count == -127 || (in_position == in_file.Length - 1))
-                    {
-                        if (debug)
-                            appendByteN(replay_count);
-                        else
-                            appendByte((byte)replay_count);
-                        foreach (byte point in neg_bytes)
-                            appendByte((byte)point);
-                        neg_bytes.Clear();
-                        replay_count = 0;
-                        prev_p = 0;
                     }
                 }
 
@@ -179,7 +164,7 @@ namespace file2rle
                 out_file.Write(out_bytes, 0, out_bytes.Length);
             }
         }
-        static void appendByte (byte data)
+        static void appendByte(sbyte data)
         {
             hex.Clear();
             hex.AppendFormat("{0:x2}", data);

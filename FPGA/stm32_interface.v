@@ -409,7 +409,10 @@ begin
 	begin
 		FLASH_continue_read = 0;
 		DATA_BUS_OE = 1;
-		DATA_BUS_OUT[7:0] = FLASH_data_in[7:0];
+		if(FLASH_busy)
+			DATA_BUS_OUT[7:0] = 'd255;
+		else
+			DATA_BUS_OUT[7:0] = FLASH_data_in[7:0];
 		k = 700;
 	end
 	stage_debug=k;

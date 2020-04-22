@@ -28,10 +28,10 @@
 #define KEY_HOLD_TIME 500				//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
 #define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
 #define SWR_CRITICAL 5.0f				//Максимальный КСВ, при котором отключается передатчик
-#define SHOW_LOGO true					//Отображать логотип при загрузке (из шьфпуы.h)
+#define SHOW_LOGO true					//Отображать логотип при загрузке (из images.h)
 #define POWERDOWN_TIMEOUT 1000			//время нажатия на кнопку выключения, для срабатывания, мс
 #define USB_RESTART_TIMEOUT 5000		//время, через которое происходит рестарт USB если нет пакетов
-#define FPGA_FLASH_IN_HEX false					//включить прошивку FPGA в прошивку STM32
+#define FPGA_FLASH_IN_HEX true					//включить прошивку FPGA в прошивку STM32
 	
 #define ILI9481 true					//он же HX8357B //другие комментируем
 #define FMC_REMAP true					//ремап памяти FMC

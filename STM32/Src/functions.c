@@ -404,3 +404,9 @@ inline int32_t convertToSPIBigEndian(int32_t in)
 {
 	return (int32_t)(0xFFFF0000 & (uint32_t)(in << 16)) | (int32_t)(0x0000FFFF & (uint32_t)(in >> 16));
 }
+
+inline uint8_t rev8(uint8_t data)
+{
+	uint32_t tmp = data;
+	return (uint8_t)(__RBIT(tmp) >> 24);
+}

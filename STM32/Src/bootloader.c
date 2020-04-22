@@ -12,7 +12,7 @@ void JumpToBootloader(void)
 	volatile uint32_t BootAddr = 0x1FF09800;
 	LCD_busy = true;
 	TRX_Inited = false;
-	LCD_showError("Flash DFU mode", false);
+	LCD_showError("Flash DFU mode(Hold POWER button)", false);
 	MX_USB_DevDisconnect();
 	HAL_Delay(1000);
 	//prepare cpu

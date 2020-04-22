@@ -99,6 +99,6 @@ extern void shiftTextLeft(char *string, uint_fast16_t shiftLength);
 extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);
 extern int32_t convertToSPIBigEndian(int32_t in);
-extern void arm_quick_sort_f32(float32_t *pSrc, float32_t *pDst, uint32_t blockSize, uint8_t dir);
+extern uint8_t rev8(uint8_t data);
 
 #endif

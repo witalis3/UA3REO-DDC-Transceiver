@@ -7,6 +7,29 @@
 #include "audio_processor.h"
 #include "settings.h"
 
+#define FPGA_flash_size 0x200000
+#define FPGA_flash_file_offset (0xA0 - 1)
+#define FPGA_sector_size (64 * 1024)
+#define FPGA_page_size 256
+#define FPGA_FLASH_COMMAND_DELAY for(uint32_t wait = 0; wait < 50; wait++) __asm("nop"); //50
+#define FPGA_FLASH_WRITE_DELAY for(uint32_t wait = 0; wait < 500; wait++) __asm("nop"); //500
+#define FPGA_FLASH_READ_DELAY for(uint32_t wait = 0; wait < 50; wait++) __asm("nop"); //50
+
+//Micron M25P80 Serial Flash COMMANDS:
+#define M25P80_WRITE_ENABLE 0x06
+#define M25P80_WRITE_DISABLE 0x04
+#define M25P80_READ_IDENTIFICATION 0x9F
+#define M25P80_READ_IDENTIFICATION2 0x9E
+#define M25P80_READ_STATUS_REGISTER 0x05
+#define M25P80_WRITE_STATUS_REGISTER 0x01
+#define M25P80_READ_DATA_BYTES 0x03
+#define M25P80_READ_DATA_BYTES_at_HIGHER_SPEED 0x0B
+#define M25P80_PAGE_PROGRAM 0x02
+#define M25P80_SECTOR_ERASE 0xD8
+#define M25P80_BULK_ERASE 0xC7
+#define M25P80_DEEP_POWER_DOWN 0xB9
+#define M25P80_RELEASE_from_DEEP_POWER_DOWN 0xAB
+
 //Public variables
 extern volatile uint32_t FPGA_samples;                                     //счетчик числа семплов при обмене с FPGA
 extern volatile bool FPGA_Buffer_underrun;                                 //флаг недостатка данных из FPGA

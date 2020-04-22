@@ -39,7 +39,10 @@ static void FPGA_fpgadata_sendparam(void);		   //отправить параме
 static void FPGA_setBusInput(void);				   //переключить шину на ввод
 static void FPGA_setBusOutput(void);			   //переключить шину на вывод
 #if FPGA_FLASH_IN_HEX
-static bool FPGA_spi_flash_verify(bool full);				//Прочитать содержимое SPI памяти FPGA
+static bool FPGA_is_present(void);					 //проверка, что в FPGA есть прошивка
+static bool FPGA_spi_flash_verify(bool full);				//прочитать содержимое SPI памяти FPGA
+static void FPGA_spi_flash_write(void);				//записать новое содержимое SPI памяти FPGA
+static void FPGA_spi_flash_erase(void); 			//очистка flash памяти
 #endif
 
 //инициализация обмена с FPGA
@@ -52,7 +55,24 @@ void FPGA_Init(void)
 	HAL_GPIO_Init(GPIOA, &FPGA_GPIO_InitStruct);
 
 	#if FPGA_FLASH_IN_HEX
-	FPGA_spi_flash_verify(false); //проверяем первые 2048 байт прошивки FPGA
+	if(FPGA_is_present())
+	{
+		if(!FPGA_spi_flash_verify(false)) //проверяем первые 2048 байт прошивки FPGA
+		{
+			FPGA_spi_flash_erase();
+			FPGA_spi_flash_write();
+			if(FPGA_spi_flash_verify(true))
+			{
+				HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+			}
+			else //second try
+			{
+				FPGA_spi_flash_write();
+				if(FPGA_spi_flash_verify(true))
+					HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+			}
+		}
+	}
 	#endif
 }
 
@@ -654,10 +674,6 @@ static inline void FPGA_writePacket(uint_fast8_t packet)
 }
 
 #if FPGA_FLASH_IN_HEX
-
-#define FPGA_FLASH_COMMAND_DELAY for(uint32_t wait = 0; wait < 200; wait++) __asm("nop");
-#define FPGA_FLASH_WRITE_DELAY for(uint32_t wait = 0; wait < 2000; wait++) __asm("nop");
-#define FPGA_FLASH_READ_DELAY for(uint32_t wait = 0; wait < 50; wait++) __asm("nop");
 static uint_fast8_t FPGA_spi_start_command(uint_fast8_t command) //выполнение команды к SPI flash
 {
 	//STAGE 1
@@ -683,6 +699,17 @@ static uint_fast8_t FPGA_spi_start_command(uint_fast8_t command) //выполн�
 	return data;
 }
 
+static void FPGA_spi_stop_command(void) //завершение работы с SPI flash
+{
+	//STAGE 1
+	FPGA_writePacket(7); //FPGA FLASH READ command
+	FPGA_syncRise();
+	FPGA_clockRise();
+	FPGA_syncFall();
+	FPGA_clockFall();
+	FPGA_FLASH_COMMAND_DELAY
+}
+
 static uint_fast8_t FPGA_spi_continue_command(uint_fast8_t writedata) //продолжение чтения и записи SPI flash
 {
 	//STAGE 2 WRITE (F700)
@@ -700,105 +727,144 @@ static uint_fast8_t FPGA_spi_continue_command(uint_fast8_t writedata) //прод
 	return data;
 }
 
-/*
-Micron M25P80 Serial Flash COMMANDS:
-06h - WRITE ENABLE
-04h - WRITE DISABLE
-9Fh - READ IDENTIFICATION
-9Eh - READ IDENTIFICATION
-05h - READ STATUS REGISTER
-01h - WRITE STATUS REGISTER
-03h - READ DATA BYTES
-0Bh - READ DATA BYTES at HIGHER SPEED
-02h - PAGE PROGRAM
-D8h - SECTOR ERASE
-C7h - BULK ERASE
-B9h - DEEP POWER-DOWN
-ABh - RELEASE from DEEP POWER-DOWN
-*/
+static void FPGA_spi_flash_wait_WIP(void) //Ожидаем пока закончится запись во флеш (сброс регистра WIP)
+{
+	uint_fast8_t status = 1;
+	while(bitRead(status, 0) == 1)
+	{
+		FPGA_spi_start_command(M25P80_READ_STATUS_REGISTER);
+		status = FPGA_spi_continue_command(0x00);
+		FPGA_spi_stop_command(); 
+		HAL_IWDG_Refresh(&hiwdg1);
+	}
+}
+
+static bool FPGA_is_present(void) //проверка, что в FPGA есть прошивка
+{
+	FPGA_bus_stop = true;
+	HAL_Delay(1);
+	uint_fast8_t data = 0;
+	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
+	FPGA_spi_start_command(M25P80_READ_DATA_BYTES); //READ DATA BYTES
+	FPGA_spi_continue_command(0x00); //addr 1
+	FPGA_spi_continue_command(0x00); //addr 2
+	FPGA_spi_continue_command(0x00); //addr 3
+	data = FPGA_spi_continue_command(0xFF);
+	FPGA_spi_stop_command();
+	FPGA_spi_start_command(M25P80_DEEP_POWER_DOWN); //Go sleep
+	FPGA_spi_stop_command(); 
+	FPGA_bus_stop = false;
+	if(data!=0xFF)
+	{
+		LCD_showError("FPGA not found", true);
+		sendToDebug_strln("[ERR] FPGA not found");
+		return false;
+	}
+	else
+		return true;
+}
 
 static bool FPGA_spi_flash_verify(bool full) //проверка flash памяти
 {
 	FPGA_bus_stop = true;
 	HAL_Delay(1);
+	if(full)
+		LCD_showError("FPGA Flash Verification...", false);
 	uint_fast8_t data = 0;
-	FPGA_spi_start_command(0xAB);
-	FPGA_spi_start_command(0x03); // READ DATA BYTES
+	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
+	FPGA_spi_stop_command(); 
+	FPGA_spi_start_command(M25P80_READ_DATA_BYTES); //READ DATA BYTES
 	FPGA_spi_continue_command(0x00); //addr 1
 	FPGA_spi_continue_command(0x00); //addr 2
 	FPGA_spi_continue_command(0x00); //addr 3
 	data = FPGA_spi_continue_command(0xFF);
+	uint8_t progress_prev = 0;
+	uint8_t progress = 0;
 	
-	//Uncomress RLE and verify
-	const int32_t file_offset = 0xA0 - 1;
-	const int32_t flash_size = 0x200000;
+	//Decompress RLE and verify
 	uint32_t errors = 0;
-	uint32_t i = 0;
+	uint32_t file_pos = 0;
+	uint32_t flash_pos = 1;
 	int32_t decoded = 0;
-	while (i < sizeof(FILES_OUTPUT_FILE_JIC))
+	while (file_pos < sizeof(FILES_OUTPUT_FILE_JIC))
 	{
-		if ((int8_t)FILES_OUTPUT_FILE_JIC[i] < 0) //нет повторов
+		if ((int8_t)FILES_OUTPUT_FILE_JIC[file_pos] < 0) //нет повторов
 		{
-			uint8_t count = (-(int8_t)FILES_OUTPUT_FILE_JIC[i]);
-			i++;
+			uint8_t count = (-(int8_t)FILES_OUTPUT_FILE_JIC[file_pos]);
+			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
-				if((decoded - file_offset) >=0 )
+				if((decoded - FPGA_flash_file_offset) >= 0)
 				{
-					if((uint8_t)(__RBIT(data) >> 24) != FILES_OUTPUT_FILE_JIC[i])
+					if(file_pos < sizeof(FILES_OUTPUT_FILE_JIC) && rev8((uint8_t)data) != FILES_OUTPUT_FILE_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 					{
 						errors++;
-						sendToDebug_uint32(decoded, true);
-						sendToDebug_str(": ");
-						sendToDebug_hex((uint8_t)(__RBIT(data) >> 24), true);
-						sendToDebug_hex(FILES_OUTPUT_FILE_JIC[i], true);
+						sendToDebug_uint32(flash_pos, true);
+						sendToDebug_str(": FPGA: ");
+						sendToDebug_hex(rev8((uint8_t)data), true);
+						sendToDebug_str(" HEX: ");
+						sendToDebug_hex(FILES_OUTPUT_FILE_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
 					}
 					data = FPGA_spi_continue_command(0xFF);
+					flash_pos++;
 				}
 				decoded++;
-				i++;
+				file_pos++;
 			}
 		}
 		else //повторы
 		{
-			uint8_t count = ((int8_t)FILES_OUTPUT_FILE_JIC[i]);
-			i++;
+			uint8_t count = ((int8_t)FILES_OUTPUT_FILE_JIC[file_pos]);
+			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
-				if((decoded - file_offset) >=0 )
+				if((decoded - FPGA_flash_file_offset) >= 0)
 				{
-					if(i < sizeof(FILES_OUTPUT_FILE_JIC) && (uint8_t)(__RBIT(data) >> 24) != FILES_OUTPUT_FILE_JIC[i])
+					if(file_pos < sizeof(FILES_OUTPUT_FILE_JIC) && rev8((uint8_t)data) != FILES_OUTPUT_FILE_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 					{
 						errors++;
-						sendToDebug_uint32(decoded, true);
-						sendToDebug_str(": ");
-						sendToDebug_hex((uint8_t)(__RBIT(data) >> 24), true);
-						sendToDebug_hex(FILES_OUTPUT_FILE_JIC[i], true);
+						sendToDebug_uint32(flash_pos, true);
+						sendToDebug_str(": FPGA: ");
+						sendToDebug_hex(rev8((uint8_t)data), true);
+						sendToDebug_str(" HEX: ");
+						sendToDebug_hex(FILES_OUTPUT_FILE_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
 					}
 					data = FPGA_spi_continue_command(0xFF);
+					flash_pos++;
 				}
 				decoded++;
 			}
-			i++;
+			file_pos++;
 		}
 		HAL_IWDG_Refresh(&hiwdg1);
-		if (!full && decoded > (file_offset + 2048))
+		progress = (uint8_t)((float32_t)decoded / (float32_t)(FPGA_flash_size + FPGA_flash_file_offset) * 100.0f);
+		if(progress_prev != progress && full && ((progress - progress_prev) >= 5))
+		{
+			char ctmp[50];
+			sprintf(ctmp, "FPGA Flash Verification... %d%%", progress);
+			LCD_showError(ctmp, false);
+			progress_prev = progress;
+		}
+		if (!full && decoded > (FPGA_flash_file_offset + 2048))
 			break;
-		if (decoded >= (flash_size + file_offset))
+		if (decoded >= (FPGA_flash_size + FPGA_flash_file_offset))
 			break;
-		if (errors > 3)
+		if (errors > 10)
 			break;
 	}
+	FPGA_spi_stop_command();
+	FPGA_spi_start_command(M25P80_DEEP_POWER_DOWN); //Go sleep
+	FPGA_spi_stop_command(); 
 	//
-	
 	FPGA_bus_stop = false;
 	if (errors>0)
 	{
 		sendToDebug_strln("[ERR] FPGA Flash verification failed");
+		LCD_showError("FPGA Flash verification failed", true);
 		return false;
 	}
 	else
@@ -807,4 +873,141 @@ static bool FPGA_spi_flash_verify(bool full) //проверка flash памят
 		return true;
 	}
 }
+
+static void FPGA_spi_flash_erase(void) //очистка flash памяти
+{
+	FPGA_bus_stop = true;
+	HAL_Delay(1);
+	uint8_t progress_prev = 0;
+	uint8_t progress = 0;
+	LCD_showError("FPGA Flash Erasing...", false);
+	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
+	FPGA_spi_stop_command(); 
+	
+	FPGA_spi_flash_wait_WIP(); //wait write in progress
+	for(uint32_t pos = 0; pos < FPGA_flash_size; pos += FPGA_sector_size)
+	{
+		FPGA_spi_start_command(M25P80_WRITE_ENABLE); //Write Enable
+		FPGA_spi_stop_command(); 
+		FPGA_spi_start_command(M25P80_SECTOR_ERASE); //SECTOR ERASE
+		FPGA_spi_continue_command((pos >> 16) & 0xFF); //addr 1
+		FPGA_spi_continue_command((pos >> 8) & 0xFF); //addr 2
+		FPGA_spi_continue_command(pos & 0xFF); //addr 3
+		FPGA_spi_stop_command(); 
+		FPGA_spi_flash_wait_WIP(); //wait write in progress
+		HAL_IWDG_Refresh(&hiwdg1);
+		progress = (uint8_t)((float32_t)pos / (float32_t)FPGA_flash_size * 100.0f);
+		if(progress_prev != progress && ((progress - progress_prev) >= 5))
+		{
+			char ctmp[50];
+			sprintf(ctmp, "FPGA Flash Erasing... %d%%", progress);
+			LCD_showError(ctmp, false);
+			progress_prev = progress;
+		}
+	}
+	
+	FPGA_bus_stop = false;
+	sendToDebug_strln("[OK] FPGA Flash erased");
+}
+
+static void FPGA_spi_flash_write(void) //записать новое содержимое SPI памяти FPGA
+{
+	FPGA_bus_stop = true;
+	HAL_Delay(1);
+	LCD_showError("FPGA Flash Programming...", false);
+	uint32_t flash_pos = 0;
+	uint16_t page_pos = 0;
+	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
+	FPGA_spi_stop_command(); 
+	FPGA_spi_flash_wait_WIP(); //wait write in progress
+	FPGA_spi_start_command(M25P80_WRITE_ENABLE); //Write Enable
+	FPGA_spi_stop_command(); 
+	FPGA_spi_start_command(M25P80_PAGE_PROGRAM); //Page programm
+	FPGA_spi_continue_command((flash_pos >> 16) & 0xFF); //addr 1
+	FPGA_spi_continue_command((flash_pos >> 8) & 0xFF); //addr 2
+	FPGA_spi_continue_command(flash_pos & 0xFF); //addr 3
+	uint8_t progress_prev = 0;
+	uint8_t progress = 0;
+	
+	//Decompress RLE and write
+	uint32_t file_pos = 0;
+	int32_t decoded = 0;
+	while (file_pos < sizeof(FILES_OUTPUT_FILE_JIC))
+	{
+		if ((int8_t)FILES_OUTPUT_FILE_JIC[file_pos] < 0) //нет повторов
+		{
+			uint8_t count = (-(int8_t)FILES_OUTPUT_FILE_JIC[file_pos]);
+			file_pos++;
+			for (uint8_t p = 0; p < count; p++)
+			{
+				if((decoded - FPGA_flash_file_offset) >= 0 && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
+				{
+					FPGA_spi_continue_command(rev8((uint8_t)FILES_OUTPUT_FILE_JIC[file_pos]));
+					flash_pos++;
+					page_pos++;
+					if(page_pos >= FPGA_page_size)
+					{
+						FPGA_spi_stop_command(); 
+						FPGA_spi_flash_wait_WIP(); //wait write in progress
+						FPGA_spi_start_command(M25P80_WRITE_ENABLE); //Write Enable
+						FPGA_spi_stop_command(); 
+						FPGA_spi_start_command(M25P80_PAGE_PROGRAM); //Page programm
+						FPGA_spi_continue_command((flash_pos >> 16) & 0xFF); //addr 1
+						FPGA_spi_continue_command((flash_pos >> 8) & 0xFF); //addr 2
+						FPGA_spi_continue_command(flash_pos & 0xFF); //addr 3
+						page_pos = 0;
+					}
+				}
+				decoded++;
+				file_pos++;
+			}
+		}
+		else //повторы
+		{
+			uint8_t count = ((int8_t)FILES_OUTPUT_FILE_JIC[file_pos]);
+			file_pos++;
+			for (uint8_t p = 0; p < count; p++)
+			{
+				if((decoded - FPGA_flash_file_offset) >= 0 && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
+				{
+					FPGA_spi_continue_command(rev8((uint8_t)FILES_OUTPUT_FILE_JIC[file_pos]));
+					flash_pos++;
+					page_pos++;
+					if(page_pos >= FPGA_page_size)
+					{
+						FPGA_spi_stop_command(); 
+						FPGA_spi_flash_wait_WIP(); //wait write in progress
+						FPGA_spi_start_command(M25P80_WRITE_ENABLE); //Write Enable
+						FPGA_spi_stop_command(); 
+						FPGA_spi_start_command(M25P80_PAGE_PROGRAM); //Page programm
+						FPGA_spi_continue_command((flash_pos >> 16) & 0xFF); //addr 1
+						FPGA_spi_continue_command((flash_pos >> 8) & 0xFF); //addr 2
+						FPGA_spi_continue_command(flash_pos & 0xFF); //addr 3
+						page_pos = 0;
+					}
+				}
+				decoded++;
+			}
+			file_pos++;
+		}
+		HAL_IWDG_Refresh(&hiwdg1);
+		progress = (uint8_t)((float32_t)decoded / (float32_t)(FPGA_flash_size + FPGA_flash_file_offset) * 100.0f);
+		if(progress_prev != progress && ((progress - progress_prev) >= 5))
+		{
+			char ctmp[50];
+			sprintf(ctmp, "FPGA Flash Programming... %d%%", progress);
+			LCD_showError(ctmp, false);
+			progress_prev = progress;
+		}
+		if (decoded >= (FPGA_flash_size + FPGA_flash_file_offset))
+			break;
+	}
+	FPGA_spi_stop_command(); 
+	FPGA_spi_flash_wait_WIP(); //wait write in progress
+	FPGA_spi_start_command(M25P80_WRITE_DISABLE); //Write Disable
+	FPGA_spi_stop_command(); 
+	FPGA_bus_stop = false;
+	sendToDebug_strln("[OK] FPGA Flash programming compleated");
+}
+
 #endif

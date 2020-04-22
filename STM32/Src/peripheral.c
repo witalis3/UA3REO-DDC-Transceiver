@@ -290,15 +290,15 @@ void PERIPH_InitFrontPanel(void)
 	if (test_value == 65535)
 	{
 		FRONTPanel_MCP3008_1_Enabled = false;
-		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 1 not found, disabling...");
-		LCD_showError("MCP3008 - 1 init error", true);
+		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 1 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
+		LCD_showError("MCP3008 - 1 init error (FPGA I2S CLK?)", true);
 	}
 	test_value = PERIPH_ReadMCP3008_Value(0, AD2_CS_GPIO_Port, AD2_CS_Pin);
 	if (test_value == 65535)
 	{
 		FRONTPanel_MCP3008_2_Enabled = false;
-		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 2 not found, disabling...");
-		LCD_showError("MCP3008 - 1 init error", true);
+		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
+		LCD_showError("MCP3008 - 2 init error", true);
 	}
 	PERIPH_ProcessFrontPanel();
 }
