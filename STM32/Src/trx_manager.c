@@ -62,7 +62,6 @@ bool TRX_on_TX(void)
 
 void TRX_Init()
 {
-	CWDecoder_Init();
 	TRX_Start_RX();
 	uint_fast8_t saved_mode = CurrentVFO()->Mode;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());

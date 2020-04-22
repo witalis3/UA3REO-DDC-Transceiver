@@ -7,12 +7,16 @@
 #include <stdbool.h>
 #include "functions.h"
 
-#define CWDECODER_TARGET_FREQ 350.0 //частота сигнала для декодирования
-#define CWDECODER_SAMPLES FPGA_AUDIO_BUFFER_HALF_SIZE       //размер блока декодера
-#define CWDECODER_HIGH_AVERAGE 100  //пороговые значения
-#define CWDECODER_LOW_AVERAGE (CWDECODER_HIGH_AVERAGE * 10)
+#define CWDECODER_SAMPLES 64       //размер блока декодера
 #define CWDECODER_NBTIME 6  // ms noise blanker
 #define CWDECODER_STRLEN 30 //длинна декодированной строки
+#define CWDECODER_MAGNIFY 16 //во сколько приближаем FFT
+#define CWDECODER_FFTSIZE 256 //размер FFT для анализа
+#define CWDECODER_FFTSIZE_DOUBLE (CWDECODER_FFTSIZE * 2) //двойной размер FFT
+#define CWDECODER_FFTSIZE_HALF (CWDECODER_FFTSIZE / 2) //половина размера FFT
+#define CWDECODER_ZOOMED_SAMPLES (CWDECODER_SAMPLES / CWDECODER_MAGNIFY)
+#define CWDECODER_NOISEGATE 7.0f //во сколько раз полезный сигнал должен быть больше среднего, чтобы начать работу с ним
+#define CWDECODER_AFC_LATENCY 1000 //время сколько ожидаем сигнал на частоте, если он не появится снова - забываем и ищем новый
 
 //Public variables
 extern volatile uint16_t CW_Decoder_WPM;

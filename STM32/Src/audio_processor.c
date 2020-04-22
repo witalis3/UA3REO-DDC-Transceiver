@@ -48,7 +48,7 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id);		//notch-фильтр
 static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id); //подавитель импульсных помех
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id);		//s-метр
 static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id);	//скопировать I в Q канал
-static void doCW_Decode(AUDIO_PROC_RX_NUM rx_id);		//декодер CW
+static void doCW_Decode(void);		//декодер CW
 static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id);		//демодулятор FM
 static void ModulateFM(void);							//модулятор FM
 
@@ -56,6 +56,7 @@ static void ModulateFM(void);							//модулятор FM
 void initAudioProcessor(void)
 {
 	InitAudioFilters();
+	CWDecoder_Init();
 }
 
 //запуск аудио-процессора для RX
@@ -77,7 +78,6 @@ void processRxAudio(void)
 	//копируем буффер из FPGA
 	readHalfFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX1_Q[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_AUDIO_BUFFER_SIZE);
 	readHalfFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX1_I[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_AUDIO_BUFFER_SIZE);
-
 	if (TRX.Dual_RX_Type != VFO_SEPARATE)
 	{
 		readHalfFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX2_Q[0], (uint32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_AUDIO_BUFFER_SIZE);
@@ -142,7 +142,7 @@ void processRxAudio(void)
 		doRX_SMETER(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
 		doRX_DNR(AUDIO_RX1);
-		doCW_Decode(AUDIO_RX1);
+		doCW_Decode();
 		doRX_COPYCHANNEL(AUDIO_RX1);
 		break;
 	case TRX_MODE_USB:
@@ -158,7 +158,7 @@ void processRxAudio(void)
 		doRX_SMETER(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
 		doRX_DNR(AUDIO_RX1);
-		doCW_Decode(AUDIO_RX1);
+		doCW_Decode();
 		doRX_COPYCHANNEL(AUDIO_RX1);
 		break;
 	case TRX_MODE_AM:
@@ -608,18 +608,11 @@ void processTxAudio(void)
 }
 
 //декодер CW
-static void doCW_Decode(AUDIO_PROC_RX_NUM rx_id)
+static void doCW_Decode(void)
 {
-	if (rx_id == AUDIO_RX1)
-	{
-		if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-            CWDecoder_Process(FPGA_Audio_Buffer_RX1_I_tmp);
-	}
-	else
-	{
-		if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-            CWDecoder_Process(FPGA_Audio_Buffer_RX2_I_tmp);
-	}
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+		for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
+			CWDecoder_Process(FPGA_Audio_Buffer_RX1_I_tmp  + (block * CWDECODER_SAMPLES));
 }
 
 //фильтр Гильберта для смещения фазы сигналов
