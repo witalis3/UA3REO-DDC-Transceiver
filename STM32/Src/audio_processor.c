@@ -139,6 +139,7 @@ void processRxAudio(void)
 		doRX_NoiseBlanker(AUDIO_RX1);
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
+		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); //отправляем данные в цифровой декодер
 		doRX_AGC(AUDIO_RX1);
 		doRX_DNR(AUDIO_RX1);
 		doRX_COPYCHANNEL(AUDIO_RX1);
@@ -154,6 +155,7 @@ void processRxAudio(void)
 		doRX_NoiseBlanker(AUDIO_RX1);
 		doRX_NOTCH(AUDIO_RX1);
 		doRX_SMETER(AUDIO_RX1);
+		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); //отправляем данные в цифровой декодер
 		doRX_AGC(AUDIO_RX1);
 		doRX_DNR(AUDIO_RX1);
 		doRX_COPYCHANNEL(AUDIO_RX1);
@@ -187,8 +189,6 @@ void processRxAudio(void)
 		doRX_SMETER(AUDIO_RX1);
 		break;
 	}
-	
-	DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); //отправляем данные в цифровой декодер
 
 	if (TRX.Dual_RX_Type != VFO_SEPARATE)
 	{

@@ -10,11 +10,13 @@
 #define CWDECODER_NBTIME 6  // ms noise blanker
 #define CWDECODER_STRLEN 30 //длинна декодированной строки
 #define CWDECODER_MAGNIFY 16 //во сколько приближаем FFT
-#define CWDECODER_FFTSIZE 256 //размер FFT для анализа
+#define CWDECODER_FFTSIZE 128 //размер FFT для анализа
 #define CWDECODER_FFTSIZE_HALF (CWDECODER_FFTSIZE / 2) //половина размера FFT
-#define CWDECODER_NOISEGATE 10.0f //во сколько раз полезный сигнал должен быть больше среднего, чтобы начать работу с ним
-#define CWDECODER_AFC_LATENCY 1000 //время сколько ожидаем сигнал на частоте, если он не появится снова - забываем и ищем новый
-#define CWDECODER_SPEC_PART (CWDECODER_FFTSIZE_HALF / 8) //ищем сигнал только в первой части сигнала (полоса CW узкая)
+#define CWDECODER_NOISEGATE 4.0f //во сколько раз полезный сигнал должен быть больше среднего, чтобы начать работу с ним
+#define CWDECODER_MAX_THRES 0.7f //если сигнал ниже этого порога от максимального в спектре, то считаем его неактивным
+#define CWDECODER_AFC_LATENCY 500 //время(ms) сколько ожидаем сигнал на частоте, если он не появится снова - забываем и ищем новый
+#define CWDECODER_ZOOMED_SAMPLES (DECODER_PACKET_SIZE / CWDECODER_MAGNIFY)
+#define CWDECODER_SPEC_PART (CWDECODER_FFTSIZE_HALF * 3 / 4) //ищем сигнал только в первой части сигнала (полоса CW узкая)
 
 //Public variables
 extern volatile uint16_t CW_Decoder_WPM;
