@@ -31,6 +31,8 @@
 //TIM6 - каждые 10мс, различные действия
 //TIM7 - USB FIFO
 //TIM15 - EEPROM / передняя панель
+//TIM16 - Опрос вспомогательного энкодера, т.к. он висит на томже прерывании что и FPGA
+//TIM17 - Цифровое декодирование CW, ...
 
 //DMA1-0 - получение данных с аудио-кодека
 //DMA1-1 - получение данных из WiFi по UART
@@ -99,6 +101,7 @@
 #include "wifi.h"
 #include "system_menu.h"
 #include "bootloader.h"
+#include "decoder.h"
 
 static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
@@ -121,6 +124,7 @@ extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim7;
 extern TIM_HandleTypeDef htim15;
 extern TIM_HandleTypeDef htim16;
+extern TIM_HandleTypeDef htim17;
 extern DMA_HandleTypeDef hdma_usart6_rx;
 extern UART_HandleTypeDef huart6;
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
@@ -779,6 +783,21 @@ void TIM16_IRQHandler(void)
   /* USER CODE END TIM16_IRQn 1 */
 }
 
+/**
+  * @brief This function handles TIM17 global interrupt.
+  */
+void TIM17_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM17_IRQn 0 */
+
+  /* USER CODE END TIM17_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim17);
+  /* USER CODE BEGIN TIM17_IRQn 1 */
+	if(!TRX_on_TX())
+		DECODER_Process();
+  /* USER CODE END TIM17_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
 
 void DMA1_Stream0_IRQHandler(void)
@@ -791,7 +810,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
-		FPGA_fpgadata_iqclock();    //данные IQ
+		if(!WM8731_Buffer_underrun)
+			FPGA_fpgadata_iqclock();    //данные IQ
     FPGA_fpgadata_stuffclock(); //параметры и прочие службы
   }
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder

@@ -7,7 +7,7 @@
 #include "noise_reduction.h"
 #include "noise_blanker.h"
 #include "auto_notch.h"
-#include "cw_decoder.h"
+#include "decoder.h"
 
 //Public variables
 volatile uint32_t AUDIOPROC_samples = 0;										//аудиосемплов обработано в процессоре
@@ -48,7 +48,6 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id);		//notch-фильтр
 static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id); //подавитель импульсных помех
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id);		//s-метр
 static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id);	//скопировать I в Q канал
-static void doCW_Decode(void);		//декодер CW
 static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id);		//демодулятор FM
 static void ModulateFM(void);							//модулятор FM
 
@@ -56,7 +55,7 @@ static void ModulateFM(void);							//модулятор FM
 void initAudioProcessor(void)
 {
 	InitAudioFilters();
-	CWDecoder_Init();
+	DECODER_Init();
 }
 
 //запуск аудио-процессора для RX
@@ -142,7 +141,6 @@ void processRxAudio(void)
 		doRX_SMETER(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
 		doRX_DNR(AUDIO_RX1);
-		doCW_Decode();
 		doRX_COPYCHANNEL(AUDIO_RX1);
 		break;
 	case TRX_MODE_USB:
@@ -158,7 +156,6 @@ void processRxAudio(void)
 		doRX_SMETER(AUDIO_RX1);
 		doRX_AGC(AUDIO_RX1);
 		doRX_DNR(AUDIO_RX1);
-		doCW_Decode();
 		doRX_COPYCHANNEL(AUDIO_RX1);
 		break;
 	case TRX_MODE_AM:
@@ -190,6 +187,8 @@ void processRxAudio(void)
 		doRX_SMETER(AUDIO_RX1);
 		break;
 	}
+	
+	DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); //отправляем данные в цифровой декодер
 
 	if (TRX.Dual_RX_Type != VFO_SEPARATE)
 	{
@@ -605,14 +604,6 @@ void processTxAudio(void)
 	Processor_NeedTXBuffer = false;
 	Processor_NeedRXBuffer = false;
 	USB_AUDIO_need_rx_buffer = false;
-}
-
-//декодер CW
-static void doCW_Decode(void)
-{
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-		for (uint32_t block = 0; block < (FPGA_AUDIO_BUFFER_HALF_SIZE / CWDECODER_SAMPLES); block++)
-			CWDecoder_Process(FPGA_Audio_Buffer_RX1_I_tmp  + (block * CWDECODER_SAMPLES));
 }
 
 //фильтр Гильберта для смещения фазы сигналов

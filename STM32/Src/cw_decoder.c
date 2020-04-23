@@ -11,10 +11,11 @@
 #include "fpga.h"
 #include "audio_filters.h"
 #include "arm_const_structs.h"
+#include "decoder.h"
 
 //Public variables
 volatile uint16_t CW_Decoder_WPM = 0;						//декодированная скорость, WPM
-char CW_Decoder_Text[CWDECODER_STRLEN + 1] = {0}; //декодирвоанная строка
+char CW_Decoder_Text[CWDECODER_STRLEN + 1] = {0}; //декодированная строка
 
 //Private variables
 static bool realstate = false;
@@ -31,22 +32,11 @@ static uint32_t hightimesavg = 0;
 static int32_t signal_freq_index = -1;
 static uint32_t signal_freq_index_lasttime = 0;
 static char code[20] = {0};
-const static arm_cfft_instance_f32 *CWDECODER_FFT_Inst = &arm_cfft_sR_f32_len128;
-static float32_t InputBuffer[CWDECODER_SAMPLES] = {0};
+static arm_rfft_fast_instance_f32 CWDECODER_FFT_Inst;
+static float32_t FFTBuffer[CWDECODER_FFTSIZE] = {0}; //буфер FFT
 static float32_t FFTBufferCharge[CWDECODER_FFTSIZE] = {0}; //накопительный буфер FFT
-static float32_t FFTBuffer[CWDECODER_FFTSIZE_DOUBLE] = {0}; //совмещённый буфер FFT
-static float32_t window_multipliers[CWDECODER_FFTSIZE] = {0};
-static arm_fir_decimate_instance_f32 CWDEC_DECIMATE;
-static float32_t CWDEC_decimState[CWDECODER_SAMPLES + 4 - 1];
+static float32_t window_multipliers[DECODER_PACKET_SIZE] = {0};
 
-//Коэффициенты для дециматора
-static const arm_fir_decimate_instance_f32 CW_DEC_FirDecimate =
-{
-	// 48ksps, 1.5kHz lowpass
-	.numTaps = 4,
-	.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
-	.pState = NULL,
-};
 //Prototypes
 static void CWDecoder_Decode(void);			//декодирование из морзе в символы
 static void CWDecoder_PrintChar(char *str); //вывод символа в результирующую строку
@@ -54,50 +44,64 @@ static void CWDecoder_PrintChar(char *str); //вывод символа в ре�
 //инициализация CW декодера
 void CWDecoder_Init(void)
 {
-	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState, CWDECODER_SAMPLES);
-	//windowing
+	arm_rfft_fast_init_f32(&CWDECODER_FFT_Inst, CWDECODER_FFTSIZE);
+	//Окно Hann
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
-	{
-		//Окно Blackman-Harris
-		window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * PI * i / ((float32_t)CWDECODER_FFTSIZE - 1.0f)) + 0.14128f * arm_cos_f32(4.0f * PI * i / ((float32_t)CWDECODER_FFTSIZE - 1.0f)) - 0.01168f * arm_cos_f32(6.0f * PI * i / ((float32_t)CWDECODER_FFTSIZE - 1.0f));
-	}
+		window_multipliers[i] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * PI * i) / (float32_t)CWDECODER_FFTSIZE)));
 }
 
 //запуск CW декодера для блока данных
 void CWDecoder_Process(float32_t *bufferIn)
 {
-	//копируем входящие данные для проследующей работы
-	memcpy(InputBuffer, bufferIn, sizeof(InputBuffer));
-	//Дециматор
-	arm_fir_decimate_f32(&CWDEC_DECIMATE, InputBuffer, InputBuffer, CWDECODER_SAMPLES);
 	//Смещаем старые данные в  буфере, чтобы собрать необходимый размер
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 	{
-		if (i < (CWDECODER_FFTSIZE - CWDECODER_ZOOMED_SAMPLES))
-			FFTBufferCharge[i] = FFTBufferCharge[(i + CWDECODER_ZOOMED_SAMPLES)];
+		if (i < (CWDECODER_FFTSIZE - DECODER_PACKET_SIZE))
+			FFTBufferCharge[i] = FFTBufferCharge[(i + DECODER_PACKET_SIZE)];
 		else //Добавляем новые данные в буфер FFT для расчёта
-			FFTBufferCharge[i] = InputBuffer[i - (CWDECODER_FFTSIZE - CWDECODER_ZOOMED_SAMPLES)];
+			FFTBufferCharge[i] = bufferIn[i - (CWDECODER_FFTSIZE - DECODER_PACKET_SIZE)];
 	}
 	
 	//Окно для FFT
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
-	{
-		FFTBuffer[i * 2] = window_multipliers[i] * FFTBufferCharge[i];
-		FFTBuffer[i * 2 + 1] = 0.0f;
-	}
+		FFTBuffer[i] = window_multipliers[i] * FFTBufferCharge[i];
+	
+	//Ищем и вычитаем DC составляющую сигнала
+	/*float32_t dcValue = 0;
+	arm_mean_f32(FFTBuffer, CWDECODER_FFTSIZE, &dcValue);
+	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
+		FFTBuffer[i] = FFTBuffer[i] - dcValue;*/
 	
 	//Делаем FFT
-	arm_cfft_f32(CWDECODER_FFT_Inst, FFTBuffer, 0, 1);
-	arm_cmplx_mag_f32(FFTBuffer, FFTBuffer, CWDECODER_FFTSIZE);
+	arm_rfft_fast_f32(&CWDECODER_FFT_Inst, FFTBuffer, FFTBuffer, 0);
+	arm_abs_f32(FFTBuffer, FFTBuffer, CWDECODER_FFTSIZE);
+	arm_mult_f32(FFTBuffer, FFTBuffer, FFTBuffer, CWDECODER_FFTSIZE);
 	
 	//Ищем максимум магнитуды для определения источника сигнала
 	float32_t maxValue = 0;
 	uint32_t maxIndex = 0;
-	arm_max_f32(FFTBuffer, CWDECODER_FFTSIZE_HALF, &maxValue, &maxIndex);
+	arm_max_f32(FFTBuffer, CWDECODER_SPEC_PART, &maxValue, &maxIndex);
 	
 	//Ищем среднее для определения шумового порога
 	float32_t meanValue = 0;
-	arm_mean_f32(FFTBuffer, CWDECODER_FFTSIZE_HALF, &meanValue);
+	arm_mean_f32(FFTBuffer, CWDECODER_SPEC_PART, &meanValue);
+	
+	/*static uint32_t dbg_start = 0;
+	if((HAL_GetTick() - dbg_start) > 1000)
+	{
+		for(uint16_t i=0;i<64;i+=2)
+		{
+			sendToDebug_uint16(i, true);
+			sendToDebug_str(": ");
+			sendToDebug_float32(FFTBuffer[i], false);
+			//sendToDebug_flush();
+		}
+		sendToDebug_uint32(maxIndex, false);
+		sendToDebug_newline();
+		dbg_start = HAL_GetTick();
+	}*/
+	
+	//sendToDebug_uint32(maxIndex, true); sendToDebug_str(" "); sendToDebug_float32(maxValue, true); sendToDebug_str(" "); sendToDebug_float32(meanValue, false);
 	
 	if(signal_freq_index == -1)
 	{
@@ -109,9 +113,10 @@ void CWDecoder_Process(float32_t *bufferIn)
 		}
 	}
 	
-	if(signal_freq_index != -1 && FFTBuffer[signal_freq_index] > meanValue * CWDECODER_NOISEGATE) //сигнал всё ещё активен
+	if(signal_freq_index != -1 && FFTBuffer[signal_freq_index] > (meanValue * CWDECODER_NOISEGATE)) //сигнал всё ещё активен
 	{
-		//sendToDebug_str("s");
+		//sendToDebug_float32(FFTBuffer[signal_freq_index], true); sendToDebug_str(" "); sendToDebug_float32((meanValue * CWDECODER_NOISEGATE), false);
+		sendToDebug_str("s");
 		realstate = true;
 		signal_freq_index_lasttime = HAL_GetTick();
 	}
