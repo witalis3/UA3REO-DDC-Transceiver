@@ -27,7 +27,6 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len128;
 #endif
 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};		 //совмещённый буфер FFT I и Q
 static float32_t FFTInput_sorted[FFT_SIZE] = {0};				 //буфер для отсортированных значений (при поиске медианы)
-static float32_t FFTInput_ZOOMFFT[FFT_DOUBLE_SIZE_BUFFER] = {0}; //совмещённый буфер FFT I и Q для обработки ZoomFFT
 static float32_t FFTOutput_mean[LAY_FFT_PRINT_SIZE] = {0};		 //усредненный буфер FFT (для вывода)
 static float32_t maxValueFFT_rx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
 static float32_t maxValueFFT_tx = 0;							 //максимальное значение амплитуды в результирующей АЧХ
@@ -230,22 +229,19 @@ void FFT_doFFT(void)
 		//Дециматор
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
-		//Смещаем старые данные в  буфере, т.к. будем их использовать (иначе скорость FFT упадёт, ведь для получения большего разрешения необходимо накапливать больше данных)
+		//Заполняем ненужную часть буффера нулями
 		for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 		{
-			if (i < (FFT_SIZE - zoomed_width))
+			if (i < zoomed_width)
 			{
-				FFTInput_ZOOMFFT[i * 2] = FFTInput_ZOOMFFT[(i + zoomed_width) * 2];
-				FFTInput_ZOOMFFT[i * 2 + 1] = FFTInput_ZOOMFFT[(i + zoomed_width) * 2 + 1];
+				FFTInput[i * 2] = FFTInput_I[i];
+				FFTInput[i * 2 + 1] = FFTInput_Q[i];
 			}
-			else //Добавляем новые данные в буфер FFT для расчёта
+			else
 			{
-				FFTInput_ZOOMFFT[i * 2] = FFTInput_I[i - (FFT_SIZE - zoomed_width)];
-				FFTInput_ZOOMFFT[i * 2 + 1] = FFTInput_Q[i - (FFT_SIZE - zoomed_width)];
+				FFTInput[i * 2] = 0.0f;
+				FFTInput[i * 2 + 1] = 0.0f;
 			}
-
-			FFTInput[i * 2] = FFTInput_ZOOMFFT[i * 2];
-			FFTInput[i * 2 + 1] = FFTInput_ZOOMFFT[i * 2 + 1];
 		}
 	}
 	else
@@ -317,7 +313,7 @@ void FFT_doFFT(void)
 	arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, LAY_FFT_PRINT_SIZE);
 	
 	//Усреднение значений для последующего вывода
-	float32_t averaging = (float32_t)TRX.FFT_Averaging / (float32_t)TRX.FFT_Zoom;
+	float32_t averaging = (float32_t)TRX.FFT_Averaging;
 	if (averaging < 1.0f)
 		averaging = 1.0f;
 	for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
@@ -616,7 +612,6 @@ void FFT_Reset(void) //очищаем FFT
 	memset(FFTInput_I, 0x00, sizeof FFTInput_I);
 	memset(FFTInput_Q, 0x00, sizeof FFTInput_Q);
 	memset(FFTInput, 0x00, sizeof FFTInput);
-	memset(FFTInput_ZOOMFFT, 0x00, sizeof FFTInput_ZOOMFFT);
 	memset(FFTOutput_mean, 0x00, sizeof FFTOutput_mean);
 	FFT_buff_index = 0;
 	NeedFFTInputBuffer = true;
