@@ -12,26 +12,25 @@
 
 CPULOAD_t CPU_LOAD = {0};
 
-void dma_memcpy32(uint32_t dest, uint32_t src, uint32_t len)
+void dma_memcpy32(uint32_t *dest, uint32_t *src, uint32_t len)
 {
 	if(len == 0)
 		return;
-	HAL_DMA_Start(&hdma_memtomem_dma2_stream3, src, dest, len);
-	HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3, HAL_DMA_FULL_TRANSFER, 10);
+	HAL_DMA_Start(&hdma_memtomem_dma2_stream3, (uint32_t)src, (uint32_t)dest, len);
+	HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 }
 
-void readHalfFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length)
+void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t bytes_to_read)
 {
-	uint_fast16_t halflen = length / 2;
-	if (index >= halflen)
+	if (index >= bytes_to_read)
 	{
-		dma_memcpy32((uint32_t)&dest[0], (uint32_t)&source[index - halflen], halflen);
+		dma_memcpy32(&dest[0], &source[index - bytes_to_read], bytes_to_read);
 	}
 	else
 	{
-		uint_fast16_t prev_part = halflen - index;
-		dma_memcpy32((uint32_t)&dest[0], (uint32_t)&source[length - prev_part], prev_part);
-		dma_memcpy32((uint32_t)&dest[prev_part], (uint32_t)&source[0], (halflen - prev_part));
+		uint_fast16_t prev_part = bytes_to_read - index;
+		dma_memcpy32(&dest[0], &source[length - prev_part], prev_part);
+		dma_memcpy32(&dest[prev_part], &source[0], (bytes_to_read - prev_part));
 	}
 }
 
