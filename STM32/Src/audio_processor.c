@@ -361,12 +361,12 @@ void processTxAudio(void)
 	}
 	else //AUDIO CODEC AUDIO
 	{
-		uint_fast16_t dma_index = CODEC_AUDIO_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(hi2s3.hdmarx);
+		uint32_t dma_index = CODEC_AUDIO_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(hi2s3.hdmarx);
 		if ((dma_index % 2) == 1)
 			dma_index--;
 		readHalfFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&Processor_AudioBuffer_A[0], dma_index, CODEC_AUDIO_BUFFER_SIZE);
-		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
-			Processor_AudioBuffer_A[i] = convertToSPIBigEndian(Processor_AudioBuffer_A[i]);
+		//for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
+			//Processor_AudioBuffer_A[i] = convertToSPIBigEndian(Processor_AudioBuffer_A[i]);
 	}
 
 	//One-signal zero-tune generator
@@ -387,7 +387,7 @@ void processTxAudio(void)
 			float32_t point = generateSin((Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER) / 2.0f, two_signal_gen_position, TRX_SAMPLERATE, 1000);
 			point += generateSin((Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER) / 2.0f, two_signal_gen_position, TRX_SAMPLERATE, 2000);
 			two_signal_gen_position++;
-			if (two_signal_gen_position > TRX_SAMPLERATE)
+			if (two_signal_gen_position >= TRX_SAMPLERATE)
 				two_signal_gen_position = 0;
 			FPGA_Audio_Buffer_TX_I_tmp[i] = point;
 			FPGA_Audio_Buffer_TX_Q_tmp[i] = point;
@@ -401,14 +401,14 @@ void processTxAudio(void)
 
 	if (!TRX_Tune)
 	{
-        //Copy and convert buffer
+    //Copy and convert buffer
 		for (uint_fast16_t i = 0; i < FPGA_AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			FPGA_Audio_Buffer_TX_I_tmp[i] = (float32_t)Processor_AudioBuffer_A[i * 2] / 2147483648.0f;
 			FPGA_Audio_Buffer_TX_Q_tmp[i] = (float32_t)Processor_AudioBuffer_A[i * 2 + 1] / 2147483648.0f;
 		}
 
-        //Process DC corrector filter
+    //Process DC corrector filter
 		dc_filter(FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, DC_FILTER_TX_I);
 		dc_filter(FPGA_Audio_Buffer_TX_Q_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE, DC_FILTER_TX_Q);
 	}
@@ -468,6 +468,9 @@ void processTxAudio(void)
 		case TRX_MODE_NFM:
 		case TRX_MODE_WFM:
 			ModulateFM();
+			break;
+		case TRX_MODE_LOOPBACK:
+			DECODER_PutSamples(FPGA_Audio_Buffer_TX_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE); //отправляем данные в цифровой декодер
 			break;
 		default:
 			break;

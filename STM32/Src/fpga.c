@@ -141,11 +141,12 @@ void FPGA_fpgadata_iqclock(void)
 	if(FPGA_bus_stop) return;
 	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
+	if(current_vfo->Mode == TRX_MODE_LOOPBACK) return;
 	//обмен данными
 
 	//STAGE 1
 	//out
-	if (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)
+	if (TRX_on_TX())
 		FPGA_fpgadata_out_tmp8 = 3;
 	else
 		FPGA_fpgadata_out_tmp8 = 4;
@@ -158,8 +159,8 @@ void FPGA_fpgadata_iqclock(void)
 	//clock
 	FPGA_syncFall();
 	FPGA_clockFall();
-
-	if (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)
+	
+	if (TRX_on_TX())
 		FPGA_fpgadata_sendiq();
 	else
 		FPGA_fpgadata_getiq();

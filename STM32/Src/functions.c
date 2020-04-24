@@ -14,6 +14,8 @@ CPULOAD_t CPU_LOAD = {0};
 
 void dma_memcpy32(uint32_t dest, uint32_t src, uint32_t len)
 {
+	if(len == 0)
+		return;
 	HAL_DMA_Start(&hdma_memtomem_dma2_stream3, src, dest, len);
 	HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3, HAL_DMA_FULL_TRANSFER, 10);
 }

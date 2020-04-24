@@ -414,7 +414,7 @@ static void LCD_displayTextBar(void)
 	}
 	LCD_busy = true;
 
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 	{
 		char ctmp[50];
 		sprintf(ctmp, "WPM:%d ", CW_Decoder_WPM);

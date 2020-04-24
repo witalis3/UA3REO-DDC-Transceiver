@@ -28,7 +28,7 @@ static void I2S_DMAError(DMA_HandleTypeDef *hdma);																						  //Ош
 void WM8731_start_i2s_and_dma(void)
 {
 	if (HAL_I2S_GetState(&hi2s3) == HAL_I2S_STATE_READY)
-		HAL_I2S_TXRX_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_RX[0], (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2, CODEC_AUDIO_BUFFER_SIZE); // 16bit tx spi, 32bit rx spi
+		HAL_I2S_TXRX_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_RX[0], (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2, CODEC_AUDIO_BUFFER_SIZE); // 32bit rx spi, 16bit tx spi
 }
 
 //очистка буффера аудио-кодека и USB аудио
@@ -75,7 +75,7 @@ void WM8731_TX_mode(void)
 {
 	WM8731_SendI2CCommand(B8(00000100), B8(00000000)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000110), B8(00000000)); //R3 Right Headphone Out
-	WM8731_SendI2CCommand(B8(00001010), B8(00001111)); //R5 Digital Audio Path Control
+	WM8731_SendI2CCommand(B8(00001010), B8(00011110)); //R5 Digital Audio Path Control
 	if (TRX.InputType_LINE)							   //line
 	{
 		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); //R0 Left Line In
@@ -100,7 +100,7 @@ void WM8731_RX_mode(void)
 	WM8731_SendI2CCommand(B8(00000100), B8(01111001)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000110), B8(01111001)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001000), B8(00010110)); //R4 Analogue Audio Path Control
-	WM8731_SendI2CCommand(B8(00001010), B8(00000111)); //R5 Digital Audio Path Control
+	WM8731_SendI2CCommand(B8(00001010), B8(00010110)); //R5 Digital Audio Path Control
 	WM8731_SendI2CCommand(B8(00001100), B8(01100111)); //R6 Power Down Control
 }
 
@@ -109,7 +109,7 @@ void WM8731_TXRX_mode(void) //loopback
 {
 	WM8731_SendI2CCommand(B8(00000100), B8(01111001)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000110), B8(01111001)); //R3 Right Headphone Out
-	WM8731_SendI2CCommand(B8(00001010), B8(00000111)); //R5 Digital Audio Path Control
+	WM8731_SendI2CCommand(B8(00001010), B8(00010110)); //R5 Digital Audio Path Control
 	if (TRX.InputType_LINE)							   //line
 	{
 		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); //R0 Left Line In

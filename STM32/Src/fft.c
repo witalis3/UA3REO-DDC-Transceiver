@@ -253,7 +253,6 @@ void FFT_doFFT(void)
 			FFTInput[i * 2 + 1] = FFTInput_Q[i];
 		}
 	}
-
 	NeedFFTInputBuffer = true;
 
 	//Окно для FFT
@@ -279,9 +278,11 @@ void FFT_doFFT(void)
 		}
 	}
 
-	//Ищем медиану в АЧХ
+	//Ищем медиану и максимум в АЧХ
 	arm_sort_f32(&FFT_sortInstance, FFTInput, FFTInput_sorted, FFT_SIZE);
 	medianValue = FFTInput_sorted[FFT_SIZE / 2];
+	float32_t maxAmplValue = 0;
+	arm_max_no_idx_f32(FFTInput, FFT_SIZE, &maxAmplValue);
 	
 	//Максимум амплитуды
 	float32_t maxValueFFT = maxValueFFT_rx;
@@ -302,7 +303,9 @@ void FFT_doFFT(void)
 		maxValueFFT = maxValue;
 	if (maxValueFFT < 0.0000001f)
 		maxValueFFT = 0.0000001f;
-	
+	if (TRX_on_TX())
+		maxValueFFT = maxAmplValue;
+
 	//сохраняем значения для переключения RX/TX
 	if (TRX_on_TX())
 		maxValueFFT_tx = maxValueFFT;
@@ -446,7 +449,7 @@ void FFT_printWaterfallDMA(void)
 	uint16_t fftHeight = getFFTHeight();
 	uint16_t wtfHeight = getWTFHeight();
 	uint_fast8_t cwdecoder_offset = 0;
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAY_FFT_CWDECODER_OFFSET;
 
 	if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
