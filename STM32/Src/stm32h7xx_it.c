@@ -793,7 +793,7 @@ void TIM17_IRQHandler(void)
   /* USER CODE END TIM17_IRQn 0 */
   HAL_TIM_IRQHandler(&htim17);
   /* USER CODE BEGIN TIM17_IRQn 1 */
-	if(!TRX_on_TX())
+	if(!TRX_on_TX() || CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
 		DECODER_Process();
   /* USER CODE END TIM17_IRQn 1 */
 }

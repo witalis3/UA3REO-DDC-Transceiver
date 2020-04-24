@@ -240,7 +240,7 @@ static void LCD_displayStatusInfoGUI(void)
 	}
 
 	//Redraw CW decoder
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 	{
 		LCDDriver_Fill_RectWH(0, LCD_HEIGHT - LAY_FFT_CWDECODER_OFFSET, LAY_FFT_PRINT_SIZE, LAY_FFT_CWDECODER_OFFSET, BACKGROUND_COLOR);
 		LCD_UpdateQuery.TextBar = true;
