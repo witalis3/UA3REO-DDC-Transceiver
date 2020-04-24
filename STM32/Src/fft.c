@@ -301,10 +301,10 @@ void FFT_doFFT(void)
 		maxValueFFT = minValue;
 	if (maxValueFFT > maxValue)
 		maxValueFFT = maxValue;
-	if (maxValueFFT < 0.0000001f)
-		maxValueFFT = 0.0000001f;
 	if (TRX_on_TX())
 		maxValueFFT = maxAmplValue;
+	if (maxValueFFT < 0.0000001f)
+		maxValueFFT = 0.0000001f;
 
 	//сохраняем значения для переключения RX/TX
 	if (TRX_on_TX())

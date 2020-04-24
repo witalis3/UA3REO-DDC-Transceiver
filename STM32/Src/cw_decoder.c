@@ -28,16 +28,17 @@ static uint32_t starttimehigh = 0; //время начала сигнала
 static uint32_t highduration = 0; //замеренная длительность сигнала
 static uint32_t startttimelow = 0; //время начала отсутствия сигнала
 static uint32_t lowduration = 0; //замеренная длительность отсутствия сигнала
-static uint32_t hightimesavg = 0; //средняя длительность сигнала
-static int32_t signal_freq_index = -1;
-static uint32_t signal_freq_index_lasttime = 0;
+static float32_t dash_time = 0; //длительность сигнала тире
+static float32_t dot_time = 0; //длительность сигнала точки
+static float32_t char_time = 0; //пауза между символами
+static float32_t word_time = 0; //пауза между словами
+static bool last_space = false; //последний символ был пробел
 static char code[20] = {0};
 static arm_rfft_fast_instance_f32 CWDECODER_FFT_Inst;
-static float32_t FFTBuffer[CWDECODER_FFTSIZE] = {0}; //буфер FFT
-static float32_t FFTBufferCharge[CWDECODER_FFTSIZE] = {0}; //накопительный буфер FFT
+static float32_t CWDEC_FFTBuffer[CWDECODER_FFTSIZE] = {0}; //буфер FFT
+static float32_t CWDEC_FFTBufferCharge[CWDECODER_FFTSIZE] = {0}; //накопительный буффер
+//float32_t CWDEC_FFTBuffer_Export[CWDECODER_FFTSIZE] = {0};
 static float32_t window_multipliers[DECODER_PACKET_SIZE] = {0};
-static arm_sort_instance_f32 sortInstance = {0};			//инстанс сортировки (для поиска медианы)
-static float32_t FFTBuffer_sorted[CWDECODER_FFTSIZE_HALF] = {0};				 //буфер для отсортированных значений (при поиске медианы)
 //Дециматор
 static float32_t InputBuffer[DECODER_PACKET_SIZE] = {0};
 static arm_fir_decimate_instance_f32 CWDEC_DECIMATE;
@@ -52,6 +53,7 @@ static const arm_fir_decimate_instance_f32 CW_DEC_FirDecimate =
 
 //Prototypes
 static void CWDecoder_Decode(void);			//декодирование из морзе в символы
+static void CWDecoder_Recognise(void);	//распознать символ
 static void CWDecoder_PrintChar(char *str); //вывод символа в результирующую строку
 
 //инициализация CW декодера
@@ -64,60 +66,60 @@ void CWDecoder_Init(void)
 	//Окнонная функция Blackman
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 		window_multipliers[i] = ((1.0f-0.16f)/2) - 0.5f * arm_cos_f32((2.0f * PI * i) / ((float32_t)CWDECODER_FFTSIZE - 1.0f)) + (0.16f/2) * arm_cos_f32(4.0f * PI * i / ((float32_t)CWDECODER_FFTSIZE - 1.0f));
-	
-	//инициализация сортировки
-	arm_sort_init_f32(&sortInstance, ARM_SORT_QUICK, ARM_SORT_ASCENDING);
 }
 
 //запуск CW декодера для блока данных
 void CWDecoder_Process(float32_t *bufferIn)
 {
+	//очищаем старый буфер FFT
+	memset(CWDEC_FFTBuffer, 0x00, sizeof(CWDEC_FFTBuffer));
 	//копируем входящие данные для проследующей работы
 	memcpy(InputBuffer, bufferIn, sizeof(InputBuffer));
 	//Дециматор
 	arm_fir_decimate_f32(&CWDEC_DECIMATE, InputBuffer, InputBuffer, DECODER_PACKET_SIZE);
-	//Смещаем старые данные в  буфере, чтобы собрать необходимый размер
+	//Заполняем ненужную часть буффера нулями
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 	{
-		if (i < (CWDECODER_FFTSIZE - CWDECODER_ZOOMED_SAMPLES))
-			FFTBufferCharge[i] = FFTBufferCharge[(i + CWDECODER_ZOOMED_SAMPLES)];
-		else //Добавляем новые данные в буфер FFT для расчёта
-			FFTBufferCharge[i] = InputBuffer[i - (CWDECODER_FFTSIZE - CWDECODER_ZOOMED_SAMPLES)];
+		if(i < CWDECODER_FFT_SAMPLES)
+		{
+			if (i < (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)) //смещаем старые данные
+				CWDEC_FFTBufferCharge[i] = CWDEC_FFTBufferCharge[(i + CWDECODER_ZOOMED_SAMPLES)];
+			else //Добавляем новые данные в буфер FFT для расчёта
+				CWDEC_FFTBufferCharge[i] = InputBuffer[i - (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)];
+			CWDEC_FFTBuffer[i] = window_multipliers[i] * CWDEC_FFTBufferCharge[i]; //+Оконная функция для FFT
+		}
+		else
+		{
+			CWDEC_FFTBuffer[i] = 0.0f;
+		}
 	}
-	
-	//Окно для FFT
-	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
-		FFTBuffer[i] = window_multipliers[i] * FFTBufferCharge[i];
-	
-	//Ищем и вычитаем DC составляющую сигнала
-	float32_t dcValue = 0;
-	arm_mean_f32(FFTBuffer, CWDECODER_FFTSIZE, &dcValue);
-	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
-		FFTBuffer[i] = FFTBuffer[i] - dcValue;
+	//for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++) CWDEC_FFTBuffer_Export[i] = CWDEC_FFTBuffer[i];
 	
 	//Делаем FFT
-	arm_rfft_fast_f32(&CWDECODER_FFT_Inst, FFTBuffer, FFTBuffer, 0);
-	arm_cmplx_mag_f32(FFTBuffer, FFTBuffer, CWDECODER_FFTSIZE);
-	
-	//Вычитаем DC составляющую сигнала
-	//for (uint_fast16_t i = 1; i < CWDECODER_SPEC_PART; i++)
-		//FFTBuffer[i] = FFTBuffer[i] - FFTBuffer[0];
+	arm_rfft_fast_f32(&CWDECODER_FFT_Inst, CWDEC_FFTBuffer, CWDEC_FFTBuffer, 0);
+	arm_cmplx_mag_f32(CWDEC_FFTBuffer, CWDEC_FFTBuffer, CWDECODER_FFTSIZE);
 	
 	//Ищем максимум магнитуды для определения источника сигнала
 	float32_t maxValue = 0;
 	uint32_t maxIndex = 0;
-	arm_max_f32(FFTBuffer, CWDECODER_SPEC_PART, &maxValue, &maxIndex);
+	arm_max_f32(&CWDEC_FFTBuffer[1], (CWDECODER_SPEC_PART - 1), &maxValue, &maxIndex);
+	maxIndex++;
 	
-	//Ищем среднее для определения шумового порога
+	//Скользящаа верняя планка
+	static float32_t maxValueAvg = 0;
+	maxValueAvg = maxValueAvg * CWDECODER_MAX_SLIDE + maxValue * (1.0f - CWDECODER_MAX_SLIDE);
+	if(maxValueAvg < maxValue)
+		maxValueAvg = maxValue;
+	
+	//Нормируем АЧХ к единице
+	if(maxValueAvg > 0.0f)
+		arm_scale_f32(&CWDEC_FFTBuffer[1], 1.0f / maxValueAvg, &CWDEC_FFTBuffer[1], (CWDECODER_SPEC_PART - 1));
+	
+	//Среднее для определения шумового порога
 	//float32_t meanValue = 0;
-	//arm_mean_f32(FFTBuffer, CWDECODER_SPEC_PART, &meanValue);
-	
-	//Ищем медиану в АЧХ для определения шумового порога
-	arm_sort_f32(&sortInstance, FFTBuffer, FFTBuffer_sorted, CWDECODER_SPEC_PART);
-	static float32_t medianAvg = 0;
-	float32_t medianValue = FFTBuffer_sorted[CWDECODER_SPEC_PART / 2];
-	medianAvg = medianAvg * 0.99f + medianValue * 0.01f;
-	
+	//arm_mean_f32(&CWDEC_FFTBuffer[1], CWDECODER_SPEC_PART - 1, &meanValue);
+	//static float32_t meanAvg = 0.0001f;
+
 	/*static uint32_t dbg_start = 0;
 	if((HAL_GetTick() - dbg_start) > 1000)
 	{
@@ -128,52 +130,38 @@ void CWDecoder_Process(float32_t *bufferIn)
 				sendToDebug_str("+ ");
 			else
 				sendToDebug_str(": ");
-			sendToDebug_float32(FFTBuffer[i], false);
+			sendToDebug_float32(CWDEC_FFTBuffer[i], false);
 			//sendToDebug_flush();
 		}
 		sendToDebug_uint32(maxIndex, false);
 		sendToDebug_float32(maxValue, false);
-		sendToDebug_float32(medianAvg, false);
+		sendToDebug_float32(meanAvg, false);
 		sendToDebug_newline();
 		if(medianValue>0)
-			sendToDebug_float32(maxValue / medianAvg, false);
+			sendToDebug_float32(slideMaxValue / meanAvg, false);
 		sendToDebug_newline();
 		dbg_start = HAL_GetTick();
-	}*/
-	//return;
-	
-	if(signal_freq_index == -1) //сигнала для слежения нет
-	{
-		if(maxValue > (medianAvg * CWDECODER_NOISEGATE)) //сигнал найден
-		{
-			/*sendToDebug_uint32(maxIndex, true); sendToDebug_str(" "); sendToDebug_float32(maxValue, true); sendToDebug_str(" "); sendToDebug_float32(meanValue, false); */
-			signal_freq_index = maxIndex;
-			//sendToDebug_uint32(signal_freq_index, false);
-		}
 	}
-	
-	if(signal_freq_index != -1) //следим за сигналом
+	return;*/
+	//sendToDebug_float32(meanAvg, false);
+
+	if(CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES) //сигнал активен
 	{
-		if(FFTBuffer[signal_freq_index] > (medianAvg * CWDECODER_NOISEGATE) && FFTBuffer[signal_freq_index] > (CWDECODER_MAX_THRES * maxValue)) //сигнал всё ещё активен
+		//sendToDebug_float32(CWDEC_FFTBuffer[maxIndex],false);
+		//sendToDebug_strln("s");
+		realstate = true;
+	}
+	else //сигнал не активен
+	{
+		if(realstate)
 		{
-			//sendToDebug_float32(FFTBuffer[signal_freq_index], true); sendToDebug_str(" "); sendToDebug_float32((medianValue * CWDECODER_NOISEGATE), false);
-			//sendToDebug_str("s");
-			realstate = true;
-			signal_freq_index_lasttime = HAL_GetTick();
-		}
-		else //сигнал не активен
-		{
-			//if(realstate) sendToDebug_str("-");
-			realstate = false;
-		}
-		if((HAL_GetTick() - signal_freq_index_lasttime) > CWDECODER_AFC_LATENCY) //сигнал потерян, ищем новый
-		{
-			realstate = false;
-			signal_freq_index = -1;
+			//sendToDebug_float32(CWDEC_FFTBuffer[maxIndex],false);
+			//sendToDebug_strln("-");
 			//sendToDebug_newline();
-			//sendToDebug_uint32(signal_freq_index, false);
 		}
+		realstate = false;
 	}
+
 	
 	// here we clean up the state with a noise blanker
 	if (realstate != realstatebefore)
@@ -187,8 +175,8 @@ void CWDecoder_Process(float32_t *bufferIn)
 			filteredstate = realstate;
 		}
 	}
-	//sendToDebug_uint8(filteredstate,true);
-
+	//if(filteredstate) sendToDebug_uint8(filteredstate,true);
+	
 	// Then we do want to have some durations on high and low
 	if (filteredstate != filteredstatebefore)
 	{
@@ -202,69 +190,27 @@ void CWDecoder_Process(float32_t *bufferIn)
 
 		if (filteredstate == false)
 		{
+			//sendToDebug_uint8(filteredstate,true);
+			
 			startttimelow = HAL_GetTick();
-			highduration = (HAL_GetTick() - starttimehigh);
-			if (highduration < (2 * hightimesavg) || hightimesavg == 0)
-			{
-				hightimesavg = (highduration + hightimesavg + hightimesavg) / 3; // now we know avg dit time ( rolling 3 avg)
-			}
-			if (highduration > (5 * hightimesavg))
-			{
-				hightimesavg = highduration + hightimesavg; // if speed decrease fast ..
-			}
-			
-			//// we did end a LOW
-			// now we will check which kind of baud we have - dit or dah
-			// and what kind of pause we do have 1 - 3 or 7 pause
-			// we think that hightimeavg = 1 bit
-			if (highduration < (hightimesavg * 2) && highduration > (hightimesavg * 0.6f)) /// 0.6 filter out false dits
-			{
-				strcat(code, ".");
-				//sendToDebug_str(".");
-			}
-			if (highduration > (hightimesavg * 2)) // && highduration < (hightimesavg * 6.0f)
-			{
-				strcat(code, "-");
-				//sendToDebug_str("-");
-				CW_Decoder_WPM = (CW_Decoder_WPM + (1200 / ((highduration) / 3))) / 2; //// the most precise we can do ;o)
-			}
-			
-			//sendToDebug_uint32(highduration,false);
-			//sendToDebug_uint32(hightimesavg,false);
-			//sendToDebug_newline();
+			highduration = HAL_GetTick() - starttimehigh;
 		}
 		
-		if (filteredstate == true) //// we did end a LOW
-		{
-			float32_t lacktime = 1.0f;
-			if (CW_Decoder_WPM > 25)
-				lacktime = 1.0f; ///  when high speeds we have to have a little more pause before new letter or new word
-			if (CW_Decoder_WPM > 30)
-				lacktime = 1.2f;
-			if (CW_Decoder_WPM > 35)
-				lacktime = 1.5f;
-
-			if (lowduration > (hightimesavg * (2.0f * lacktime)) && lowduration < hightimesavg * (5.0f * lacktime)) // letter space
-			{
-				CWDecoder_Decode();
-				code[0] = '\0';
-				//sendToDebug_str(" ");
-			}
-			if (lowduration >= hightimesavg * (5.0f * lacktime)) // word space
-			{
-				CWDecoder_Decode();
-				code[0] = '\0';
-				CWDecoder_PrintChar(" ");
-				//sendToDebug_newline();
-			}
-		}
+		CWDecoder_Recognise();
 	}
 
 	// write if no more letters
-	if ((HAL_GetTick() - startttimelow) > (highduration * 6.0f) && stop == false)
+	if (!filteredstate && ((HAL_GetTick() - startttimelow) > (word_time * (2.0f - CWDECODER_ERROR_SPACE_DIFF))) && stop == false)
 	{
 		CWDecoder_Decode();
 		code[0] = '\0';
+		if(!last_space)
+		{
+			CWDecoder_PrintChar(" ");
+			last_space = true;
+		}
+		//sendToDebug_strln("s");
+		//sendToDebug_newline();
 		stop = true;
 	}
 
@@ -273,9 +219,82 @@ void CWDecoder_Process(float32_t *bufferIn)
 	filteredstatebefore = filteredstate;
 }
 
+static void CWDecoder_Recognise(void)
+{
+	if (filteredstate == false)
+	{
+		if(dash_time < highduration)
+		{
+			dash_time = dash_time * 0.5f + highduration * 0.5f; //averaging
+			dot_time = dash_time / 3.0f;
+			char_time = dash_time;
+			word_time = dot_time * 7.0f;
+		}
+		
+		if (highduration > (dot_time * CWDECODER_ERROR_DIFF) && highduration < (dot_time * (2.0f - CWDECODER_ERROR_DIFF)))
+		{
+			dot_time = dot_time * 0.7f + highduration * 0.3f; //averaging
+			dash_time = dot_time * 3.0f;
+			char_time = dash_time;
+			word_time = dot_time * 7.0f;
+			strcat(code, ".");
+			//sendToDebug_strln(".");
+		}
+		else if (highduration >= (dash_time * CWDECODER_ERROR_DIFF))
+		{
+			dash_time = dash_time * 0.7f + highduration * 0.3f; //averaging
+			dot_time = dash_time / 3.0f;
+			char_time = dash_time;
+			word_time = dot_time * 7.0f;
+			strcat(code, "-");
+			//sendToDebug_strln("-");
+		}
+		else
+		{
+			dash_time *= CWDECODER_WPM_UP_SPEED;
+			//sendToDebug_strln("e");
+		}
+		CW_Decoder_WPM = (uint16_t)((float32_t)CW_Decoder_WPM * 0.7f + (1200.0f / (float32_t)dot_time) * 0.3f); //// the most precise we can do ;o)
+	}
+	if (filteredstate == true)
+	{
+		float32_t lacktime = 1.0f;
+		if (CW_Decoder_WPM > 30) //  when high speeds we have to have a little more pause before new letter or new word
+			lacktime = 1.2f;
+		if (CW_Decoder_WPM > 35)
+			lacktime = 1.5f;
+
+		if (lowduration > (char_time * CWDECODER_ERROR_SPACE_DIFF * lacktime) && lowduration < (char_time * (2.0f - CWDECODER_ERROR_SPACE_DIFF) * lacktime)) // char space
+		{
+			CWDecoder_Decode();
+			code[0] = '\0';
+			last_space = false;
+			//sendToDebug_strln("c");
+		}
+		else if (lowduration > (word_time * CWDECODER_ERROR_SPACE_DIFF * lacktime)) // word space
+		{
+			CWDecoder_Decode();
+			code[0] = '\0';
+			if(!last_space)
+			{
+				CWDecoder_PrintChar(" ");
+				last_space = true;
+			}
+			//sendToDebug_strln("w");
+			//sendToDebug_newline();
+		}
+		else
+		{
+			//sendToDebug_strln("e");
+		}
+	}
+}
+
 //декодирование из морзе в символы
 static void CWDecoder_Decode(void)
 {
+	if(strlen(code)==0) return;
+	
 	if (strcmp(code, ".-") == 0)
 		CWDecoder_PrintChar("A");
 	else if (strcmp(code, "-...") == 0)
@@ -381,6 +400,8 @@ static void CWDecoder_Decode(void)
 		CWDecoder_PrintChar("<");
 	else if (strcmp(code, "...-.") == 0)
 		CWDecoder_PrintChar("~");
+	else
+		CWDecoder_PrintChar("*");
 	//////////////////
 	// The specials //
 	//////////////////
@@ -392,6 +413,7 @@ static void CWDecoder_Decode(void)
 //вывод символа в результирующую строку
 static void CWDecoder_PrintChar(char *str)
 {
+	//sendToDebug_str(str);
 	if (strlen(CW_Decoder_Text) >= CWDECODER_STRLEN)
 		shiftTextLeft(CW_Decoder_Text, 1);
 	strcat(CW_Decoder_Text, str);
