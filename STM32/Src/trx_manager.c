@@ -265,6 +265,8 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	case TRX_MODE_CW_U:
 		vfo->LPF_Filter_Width = TRX.CW_LPF_Filter;
 		vfo->HPF_Filter_Width = TRX.CW_HPF_Filter;
+		LCD_UpdateQuery.StatusInfoGUI = true;	
+		LCD_UpdateQuery.TextBar = true;
 		break;
 	case TRX_MODE_NFM:
 		vfo->LPF_Filter_Width = TRX.FM_LPF_Filter;

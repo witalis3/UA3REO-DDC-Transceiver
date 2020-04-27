@@ -33,7 +33,7 @@ static float32_t dot_time = 0; //длительность сигнала точ�
 static float32_t char_time = 0; //пауза между символами
 static float32_t word_time = 0; //пауза между словами
 static bool last_space = false; //последний символ был пробел
-static char code[20] = {0};
+static char code[CWDECODER_MAX_CODE_SIZE] = {0};
 static arm_rfft_fast_instance_f32 CWDECODER_FFT_Inst;
 static float32_t CWDEC_FFTBuffer[CWDECODER_FFTSIZE] = {0}; //буфер FFT
 static float32_t CWDEC_FFTBufferCharge[CWDECODER_FFTSIZE] = {0}; //накопительный буффер
@@ -203,10 +203,10 @@ void CWDecoder_Process(float32_t *bufferIn)
 	if (!filteredstate && ((HAL_GetTick() - startttimelow) > (word_time * (2.0f - CWDECODER_ERROR_SPACE_DIFF))) && stop == false)
 	{
 		CWDecoder_Decode();
-		code[0] = '\0';
 		if(!last_space)
 		{
 			CWDecoder_PrintChar(" ");
+			code[0] = '\0';
 			last_space = true;
 		}
 		//sendToDebug_strln("s");
@@ -267,14 +267,12 @@ static void CWDecoder_Recognise(void)
 		if (lowduration > (char_time * CWDECODER_ERROR_SPACE_DIFF * lacktime) && lowduration < (char_time * (2.0f - CWDECODER_ERROR_SPACE_DIFF) * lacktime)) // char space
 		{
 			CWDecoder_Decode();
-			code[0] = '\0';
 			last_space = false;
 			//sendToDebug_strln("c");
 		}
 		else if (lowduration > (word_time * CWDECODER_ERROR_SPACE_DIFF * lacktime)) // word space
 		{
 			CWDecoder_Decode();
-			code[0] = '\0';
 			if(!last_space)
 			{
 				CWDecoder_PrintChar(" ");
@@ -288,6 +286,8 @@ static void CWDecoder_Recognise(void)
 			//sendToDebug_strln("e");
 		}
 	}
+	if(strlen(code)>=(CWDECODER_MAX_CODE_SIZE-1))
+		code[0] = '\0';
 }
 
 //декодирование из морзе в символы
@@ -295,57 +295,57 @@ static void CWDecoder_Decode(void)
 {
 	if(strlen(code)==0) return;
 	
-	if (strcmp(code, ".-") == 0)
+	if (strcmp(code, ".-") == 0) //А
 		CWDecoder_PrintChar("A");
-	else if (strcmp(code, "-...") == 0)
+	else if (strcmp(code, "-...") == 0) //Б
 		CWDecoder_PrintChar("B");
-	else if (strcmp(code, "-.-.") == 0)
+	else if (strcmp(code, "-.-.") == 0) //Ц
 		CWDecoder_PrintChar("C");
-	else if (strcmp(code, "-..") == 0)
+	else if (strcmp(code, "-..") == 0) //Д
 		CWDecoder_PrintChar("D");
-	else if (strcmp(code, ".") == 0)
+	else if (strcmp(code, ".") == 0) //Е
 		CWDecoder_PrintChar("E");
-	else if (strcmp(code, "..-.") == 0)
+	else if (strcmp(code, "..-.") == 0) //Ф
 		CWDecoder_PrintChar("F");
-	else if (strcmp(code, "--.") == 0)
+	else if (strcmp(code, "--.") == 0) //Г
 		CWDecoder_PrintChar("G");
-	else if (strcmp(code, "....") == 0)
+	else if (strcmp(code, "....") == 0) //Х
 		CWDecoder_PrintChar("H");
-	else if (strcmp(code, "..") == 0)
+	else if (strcmp(code, "..") == 0) //И
 		CWDecoder_PrintChar("I");
-	else if (strcmp(code, ".---") == 0)
+	else if (strcmp(code, ".---") == 0) //Й
 		CWDecoder_PrintChar("J");
-	else if (strcmp(code, "-.-") == 0)
+	else if (strcmp(code, "-.-") == 0) //К
 		CWDecoder_PrintChar("K");
-	else if (strcmp(code, ".-..") == 0)
+	else if (strcmp(code, ".-..") == 0) //Л
 		CWDecoder_PrintChar("L");
-	else if (strcmp(code, "--") == 0)
+	else if (strcmp(code, "--") == 0) //М
 		CWDecoder_PrintChar("M");
-	else if (strcmp(code, "-.") == 0)
+	else if (strcmp(code, "-.") == 0) //Н
 		CWDecoder_PrintChar("N");
-	else if (strcmp(code, "---") == 0)
+	else if (strcmp(code, "---") == 0) //О
 		CWDecoder_PrintChar("O");
-	else if (strcmp(code, ".--.") == 0)
+	else if (strcmp(code, ".--.") == 0) //П
 		CWDecoder_PrintChar("P");
-	else if (strcmp(code, "--.-") == 0)
+	else if (strcmp(code, "--.-") == 0) //Щ
 		CWDecoder_PrintChar("Q");
-	else if (strcmp(code, ".-.") == 0)
+	else if (strcmp(code, ".-.") == 0) //Р
 		CWDecoder_PrintChar("R");
-	else if (strcmp(code, "...") == 0)
+	else if (strcmp(code, "...") == 0) //С
 		CWDecoder_PrintChar("S");
-	else if (strcmp(code, "-") == 0)
+	else if (strcmp(code, "-") == 0) //Т
 		CWDecoder_PrintChar("T");
-	else if (strcmp(code, "..-") == 0)
+	else if (strcmp(code, "..-") == 0) //У
 		CWDecoder_PrintChar("U");
-	else if (strcmp(code, "...-") == 0)
+	else if (strcmp(code, "...-") == 0) //Ж
 		CWDecoder_PrintChar("V");
-	else if (strcmp(code, ".--") == 0)
+	else if (strcmp(code, ".--") == 0) //В
 		CWDecoder_PrintChar("W");
-	else if (strcmp(code, "-..-") == 0)
+	else if (strcmp(code, "-..-") == 0) //Ъ,Ь
 		CWDecoder_PrintChar("X");
-	else if (strcmp(code, "-.--") == 0)
+	else if (strcmp(code, "-.--") == 0) //Ы
 		CWDecoder_PrintChar("Y");
-	else if (strcmp(code, "--..") == 0)
+	else if (strcmp(code, "--..") == 0) //З
 		CWDecoder_PrintChar("Z");
 
 	else if (strcmp(code, ".----") == 0)
@@ -400,14 +400,42 @@ static void CWDecoder_Decode(void)
 		CWDecoder_PrintChar("<");
 	else if (strcmp(code, "...-.") == 0)
 		CWDecoder_PrintChar("~");
-	else
+	
+	else if (strcmp(code, "---.") == 0) //Ч
+	{
+		CWDecoder_PrintChar("C");
+		CWDecoder_PrintChar("H");
+	}
+	else if (strcmp(code, "----") == 0) //Ш
+	{
+		CWDecoder_PrintChar("S");
+		CWDecoder_PrintChar("H");
+	}
+	else if (strcmp(code, "..--..") == 0) //Э
+	{
+		CWDecoder_PrintChar("E");
+	}
+	else if (strcmp(code, "..--") == 0) //Ю
+	{
+		CWDecoder_PrintChar("Y");
+		CWDecoder_PrintChar("U");
+	}
+	else if (strcmp(code, ".-.-") == 0) //Я
+	{
+		CWDecoder_PrintChar("Y");
+		CWDecoder_PrintChar("A");
+	}
+	else if (strcmp(code, ".--.-") == 0)
+	{
 		CWDecoder_PrintChar("*");
-	//////////////////
-	// The specials //
-	//////////////////
-	//else if (strcmp(code,".-.-") == 0) CWDecoder_PrintChar(""); ascii(3)
-	//else if (strcmp(code,"---.") == 0) CWDecoder_PrintChar(""); ascii(4)
-	//else if (strcmp(code,".--.-") == 0) CWDecoder_PrintChar(""); ascii(6)
+	}
+	else
+	{
+		CWDecoder_PrintChar("*");
+		dash_time *= CWDECODER_WPM_UP_SPEED;
+	}
+
+	code[0] = '\0';
 }
 
 //вывод символа в результирующую строку
