@@ -23,8 +23,6 @@
 #define TOUCHPAD_DELAY 200				//Время защиты от анти-дребезга нажания на тачпад
 #define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
 #define AUTOGAIN_CORRECTOR_WAITSTEP 7	//ожидание усреднения результатов при работе автокорректора входных цепей
-#define ENCODER_DEBOUNCE 2				//время для устранения дребезга контактов у основного энкодера, мс
-#define ENCODER2_DEBOUNCE 50				//время для устранения дребезга контактов у дополнительного энкодера, мс
 #define KEY_HOLD_TIME 500				//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
 #define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
 #define SWR_CRITICAL 5.0f				//Максимальный КСВ, при котором отключается передатчик
@@ -184,6 +182,8 @@ extern struct TRX_CALIBRATE
 {
 	bool ENCODER_INVERT;
 	bool ENCODER2_INVERT;
+	uint8_t ENCODER_DEBOUNCE;
+	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
 	bool ENCODER_ON_FALLING;
 	uint8_t CIC_GAINER_val;

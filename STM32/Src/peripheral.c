@@ -37,7 +37,7 @@ void PERIPH_ENCODER_checkRotate(void)
 		ENClastClkVal = ENCODER_CLKVal;
 		ENCfirst = false;
 	}
-	if ((HAL_GetTick() - ENCODER_AValDeb) < ENCODER_DEBOUNCE)
+	if ((HAL_GetTick() - ENCODER_AValDeb) < CALIBRATE.ENCODER_DEBOUNCE)
 		return;
 
 	if(ENClastClkVal != ENCODER_CLKVal)
@@ -73,7 +73,7 @@ void PERIPH_ENCODER2_checkRotate(void)
 	uint8_t ENCODER2_DTVal = HAL_GPIO_ReadPin(ENC2_DT_GPIO_Port, ENC2_DT_Pin);
 	uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
 
-	if ((HAL_GetTick() - ENCODER2_AValDeb) < ENCODER2_DEBOUNCE)
+	if ((HAL_GetTick() - ENCODER2_AValDeb) < CALIBRATE.ENCODER2_DEBOUNCE)
 		return;
 
 	if (!CALIBRATE.ENCODER_ON_FALLING || ENCODER2_CLKVal == 0)

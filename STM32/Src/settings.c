@@ -199,6 +199,8 @@ void LoadCalibration(void)
 
 		CALIBRATE.ENCODER_INVERT = false; //инвертировать вращение влево-вправо у основного энкодера
 		CALIBRATE.ENCODER2_INVERT = false; //инвертировать вращение влево-вправо у дополнительного энкодера
+		CALIBRATE.ENCODER_DEBOUNCE = 1; //время для устранения дребезга контактов у основного энкодера, мс
+		CALIBRATE.ENCODER2_DEBOUNCE = 50; //время для устранения дребезга контактов у дополнительного энкодера, мс
 		CALIBRATE.ENCODER_SLOW_RATE = 25;					//замедление энкодера для больших разрешений
 		CALIBRATE.ENCODER_ON_FALLING = false;	//энкодер срабатывает только на падение уровня A
 		CALIBRATE.CIC_GAINER_val = 88;		//Смещение с выхода CIC
