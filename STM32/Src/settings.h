@@ -12,7 +12,7 @@
 #define MAX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
 #define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока
-#define MAX_TX_AMPLITUDE 0.9f			//Максимальный размах при передаче в ЦАП
+#define MAX_TX_AMPLITUDE 1.0f			//Максимальный размах при передаче в ЦАП
 #define AGC_CLIP_THRESHOLD -12.0f		//Максимальный уровень усиления в AGC, выше него происходит клиппинг, dbFS
 #define AGC_OPTIMAL_THRESHOLD -22.0f	//Рабочий уровень усиления в AGC, dbFS
 #define AGC_MAX_GAIN 50.0f				//Максимальное усиление в AGC
