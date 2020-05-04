@@ -15,7 +15,7 @@ LifeCycleDefinitionGUID=
 RevisionNamingSchemeGUID=
 
 [OutputGroup1]
-Name=Job Group
+Name=UA3REO.OutJob
 Description=
 TargetOutputMedium=PDF
 VariantName=[No Variations]
@@ -65,9 +65,9 @@ Configuration2_Name2=General
 Configuration2_Item2=TemplateFilename=BOM Default Template.XLT
 
 [PublishSettings]
-OutputFilePath2=D:\Dropbox\Develop\Projects\UA3REO\Scheme\ALTIUM_DESIGNER\Project Outputs for UA3REO\UA3REO.pdf
-ReleaseManaged2=1
-OutputBasePath2=Project Outputs for UA3REO
+OutputFilePath2=D:\Dropbox\Develop\Projects\UA3REO\Scheme\ALTIUM_DESIGNER\.\UA3REO.pdf
+ReleaseManaged2=0
+OutputBasePath2=.\
 OutputPathMedia2=
 OutputPathMediaValue2=
 OutputPathOutputer2=[Output Type]
@@ -144,7 +144,7 @@ WmvVideoCodecName4=Windows Media Video V7
 WmvQuality4=80
 
 [GeneratedFilesSettings]
-RelativeOutputPath2=D:\Dropbox\Develop\Projects\UA3REO\Scheme\ALTIUM_DESIGNER\Project Outputs for UA3REO\UA3REO.pdf
+RelativeOutputPath2=D:\Dropbox\Develop\Projects\UA3REO\Scheme\ALTIUM_DESIGNER\.\UA3REO.pdf
 OpenOutputs2=1
 RelativeOutputPath3=
 OpenOutputs3=1

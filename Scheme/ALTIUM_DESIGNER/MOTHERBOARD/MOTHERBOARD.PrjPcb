@@ -256,7 +256,11 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=
+DocumentUniqueId=SUPUHQIL
+
+[GeneratedDocument1]
+DocumentPath=Project Outputs for MOTHERBOARD\Design Rule Check - MOTHERBOARD.html
+DItemRevisionGUID=
 
 [Configuration1]
 Name=Sources
