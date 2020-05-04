@@ -347,8 +347,7 @@ void processTxAudio(void)
 	AUDIOPROC_samples++;
 	uint_fast8_t mode = current_vfo->Mode;
 
-	//Processor_selected_RFpower_amplitude = ((log10f_fast((float32_t)TRX.RF_Power / 10.0f) + 1.0f) / 2.0f) * TRX_MAX_TX_Amplitude;
-	Processor_selected_RFpower_amplitude = (float32_t)TRX.RF_Power / 100.0f * TRX_MAX_TX_Amplitude;
+	Processor_selected_RFpower_amplitude = log10f_fast((float32_t)TRX.RF_Power / 10.0f) * TRX_MAX_TX_Amplitude;
 	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
 		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f; // поправка на нулевые биения
 
