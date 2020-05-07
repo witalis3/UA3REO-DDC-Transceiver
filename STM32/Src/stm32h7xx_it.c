@@ -471,6 +471,8 @@ void TIM6_DAC_IRQHandler(void)
     }
   }
 
+	//every 10ms
+	
   //если изменились настройки, обновляем параметры в FPGA
   if (NeedSaveSettings)
     FPGA_NeedSendParams = true;
@@ -482,8 +484,26 @@ void TIM6_DAC_IRQHandler(void)
   //Process SWR / Power meter
   if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_NO_TX)
     PERIPH_ProcessSWRMeter();
-
-  if ((ms10_counter % 10) == 0) // every 100ms
+	
+	//Вентилятор
+	if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
+	{
+		TRX_Fan_Timeout += 3; //дуем после перехода на приём в 2 раза больше чем работали на передачу
+		if (TRX_Fan_Timeout > (120 * 100))
+			TRX_Fan_Timeout = 120 * 100; //но не более 2х минут
+	}
+	
+  //эмулируем PTT по CAT
+  if (TRX_ptt_cat != TRX_old_ptt_cat)
+    TRX_ptt_change();
+	
+  //эмулируем ключ по COM-порту
+  if (TRX_key_serial != TRX_old_key_serial)
+    TRX_key_change();
+	
+	PERIPH_RF_UNIT_UpdateState(false); //обновляем состояние RF-Unit платы
+	
+	if ((ms10_counter % 10) == 0) // every 100ms
   {
     //каждые 100мс получаем данные с FPGA (аплитуду, перегрузку АЦП и др.)
     FPGA_NeedGetParams = true;
@@ -508,31 +528,14 @@ void TIM6_DAC_IRQHandler(void)
 		old_FPGA_Audio_Buffer_RX1_I = FPGA_Audio_Buffer_RX1_I[0];
 		old_FPGA_Audio_Buffer_RX1_Q = FPGA_Audio_Buffer_RX1_Q[0];
   }
-
-  //every 10ms
-  
-  //эмулируем PTT по CAT
-  if (TRX_ptt_cat != TRX_old_ptt_cat)
-    TRX_ptt_change();
-  //эмулируем ключ по COM-порту
-  if (TRX_key_serial != TRX_old_key_serial)
-    TRX_key_change();
 	
 	if ((ms10_counter % 5) == 0) // every 50 msec
 	{
-		//Вентилятор
-		if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
-		{
-			TRX_Fan_Timeout += 3; //дуем после перехода на приём в 2 раза больше чем работаем на передачу
-			if (TRX_Fan_Timeout > 120)
-				TRX_Fan_Timeout = 120; //но не более 2х минут
-		}
 		//сброс флагов ошибок
 		WM8731_Buffer_underrun = false;
 		FPGA_Buffer_underrun = false;
 		RX_USB_AUDIO_underrun = false;
 		
-		PERIPH_RF_UNIT_UpdateState(false); //обновляем состояние RF-Unit платы
 		LCD_doEvents();                    //обновляем информацию на LCD
 	}
 	

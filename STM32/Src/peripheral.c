@@ -259,7 +259,23 @@ void PERIPH_RF_UNIT_UpdateState(bool clean) //передаём значения 
 			//if(registerNumber==17) HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET); // unused
 			if (registerNumber == 18 && ((TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK) || TRX_Fan_Timeout > 0)) //FAN
 			{
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+				if(TRX_Fan_Timeout < (30 * 100)) //PWM
+				{
+					const uint8_t on_ticks = 1;
+					const uint8_t off_ticks = 1;
+					static bool pwm_status = false; //true - on false - off
+					static uint8_t pwm_ticks = 0;
+					pwm_ticks++;
+					if(pwm_status)
+						HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+					if((pwm_status && pwm_ticks==on_ticks) || (!pwm_status && pwm_ticks==off_ticks))
+					{
+						pwm_status = !pwm_status;
+						pwm_ticks = 0;
+					}
+				}
+				else
+					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				if (TRX_Fan_Timeout > 0)
 					TRX_Fan_Timeout--;
 			}

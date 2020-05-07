@@ -28,8 +28,8 @@ volatile bool TRX_Inited = false;
 volatile int_fast16_t TRX_RX_dBm = -100;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
-volatile uint_fast8_t TRX_Time_InActive = 0; //секунд бездействия, используется для спящего режима
-volatile uint_fast8_t TRX_Fan_Timeout = 0;	 //секунд, сколько ещё осталось крутить вентилятор
+volatile uint32_t TRX_Time_InActive = 0; //секунд бездействия, используется для спящего режима
+volatile uint32_t TRX_Fan_Timeout = 0;	 //секунд, сколько ещё осталось крутить вентилятор
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile uint16_t TRX_Volume;
