@@ -209,9 +209,12 @@ void ua3reo_dev_cat_parseCommand(void)
 	if (command_to_parse[0] == 0)
 		return;
 
-	char _command[CAT_BUFFER_SIZE] = {0};
+	char _command_buffer[CAT_BUFFER_SIZE] = {0};
+	char *_command = _command_buffer;
 	memcpy(_command, command_to_parse, CAT_BUFFER_SIZE);
 	memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
+	while(*_command == '\r' || *_command == '\n' || *_command == ' ') //trim
+		_command++;
 	if (strlen(_command) < 2)
 		return;
 	//sendToDebug_str3("New CAT command: |",_command,"|\r\n");
@@ -226,6 +229,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		strncpy(arguments, _command + 2, strlen(_command) - 2);
 		has_args = true;
 	}
+	//sendToDebug_str3("Arguments: |",arguments,"|\r\n");
 
 	if (strcmp(command, "AI") == 0) // AUTO INFORMATION
 	{
@@ -409,6 +413,28 @@ void ua3reo_dev_cat_parseCommand(void)
 		return;
 	}
 
+	if (strcmp(command, "PS") == 0) // POWER-SWITCH
+	{
+		if (!has_args)
+		{
+			CAT_Transmit("PS1;");
+		}
+		else
+		{
+			if (strcmp(arguments, "0") == 0)
+			{
+				//power off
+			}
+			else if (strcmp(arguments, "1") == 0)
+			{
+				//power on
+			}
+			else
+				sendToDebug_str3("Unknown CAT arguments: ", _command, "\r\n");
+		}
+		return;
+	}
+	
 	if (strcmp(command, "GT") == 0) // AGC FUNCTION
 	{
 		if (!has_args)
