@@ -39,6 +39,7 @@ volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
 volatile float32_t TRX_PWR_Forward = 0;
 volatile float32_t TRX_PWR_Backward = 0;
 volatile float32_t TRX_SWR = 0;
+volatile float32_t TRX_ALC = 0;
 static uint_fast8_t autogain_wait_reaction = 0;	  //таймер ожидания реакции от смены режимов ATT/PRE
 static uint_fast8_t autogain_stage = 0;			  //этап отработки актокорректировщика усиления
 static uint32_t KEYER_symbol_start_time = 0;	  //время старта символа автоматического ключа
@@ -376,16 +377,6 @@ void TRX_DBMCalculate(void)
 	Processor_RX_Power_value = 0;
 	if (CurrentVFO()->Mode != TRX_MODE_IQ)
 		TRX_RX_dBm -= TRX.IF_Gain;
-}
-
-float32_t TRX_GetALC(void)
-{
-	float32_t res = Processor_TX_MAX_amplitude_OUT / Processor_selected_RFpower_amplitude;
-	if (res > 0.99f && res < 1.0f)
-		res = 1.0f;
-	if (res < 0.01f)
-		res = 0.0f;
-	return res;
 }
 
 float32_t TRX_GenerateCWSignal(float32_t power)

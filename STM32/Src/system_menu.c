@@ -709,8 +709,8 @@ static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction)
 	TRX.TX_AGC_speed += direction;
 	if (TRX.TX_AGC_speed < 1)
 		TRX.TX_AGC_speed = 1;
-	if (TRX.TX_AGC_speed > 50)
-		TRX.TX_AGC_speed = 50;
+	if (TRX.TX_AGC_speed > 3)
+		TRX.TX_AGC_speed = 10;
 }
 
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
