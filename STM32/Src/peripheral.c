@@ -887,12 +887,14 @@ void PERIPH_ProcessSWRMeter(void)
 {
 	float32_t forward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / 65535.0f;
 	float32_t backward = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / 65535.0f;
-
+	static float32_t TRX_VLT_forward = 0.0f;
+	static float32_t TRX_VLT_backward = 0.0f;
+	
 	forward = forward / (510.0f / (0.1f + 510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
 	if (forward < 0.01f)							//меньше 10mV не измеряем
 	{
-		TRX_SWR_forward = 0.0f;
-		TRX_SWR_backward = 0.0f;
+		TRX_VLT_forward = 0.0f;
+		TRX_VLT_backward = 0.0f;
 		TRX_SWR = 1.0f;
 		return;
 	}
@@ -909,27 +911,23 @@ void PERIPH_ProcessSWRMeter(void)
 	else
 		backward = 0.001f;
 
-	TRX_SWR_forward = TRX_SWR_forward + (forward - TRX_SWR_forward) / 2;
-	TRX_SWR_backward = TRX_SWR_backward + (backward - TRX_SWR_backward) / 2;
-	TRX_SWR = (TRX_SWR_forward + TRX_SWR_backward) / (TRX_SWR_forward - TRX_SWR_backward);
-	if (TRX_SWR_backward > TRX_SWR_forward)
+	TRX_VLT_forward = TRX_VLT_forward + (forward - TRX_VLT_forward) / 2;
+	TRX_VLT_backward = TRX_VLT_backward + (backward - TRX_VLT_backward) / 2;
+	TRX_SWR = (TRX_VLT_forward + TRX_VLT_backward) / (TRX_VLT_forward - TRX_VLT_backward);
+
+	if (TRX_VLT_backward > TRX_VLT_forward)
 		TRX_SWR = 10.0f;
 	if (TRX_SWR > 10.0f)
 		TRX_SWR = 10.0f;
-	float32_t ref_power = (TRX_SWR_backward * TRX_SWR_backward) / 50.0f;
+	
+	TRX_PWR_Forward = (TRX_VLT_forward * TRX_VLT_forward) / 50.0f;
+	if (TRX_PWR_Forward < 0.0f)
+			TRX_PWR_Forward = 0.0f;
+	TRX_PWR_Backward = (TRX_VLT_backward * TRX_VLT_backward) / 50.0f;
+	if (TRX_PWR_Backward < 0.0f)
+			TRX_PWR_Backward = 0.0f;
 
 	LCD_UpdateQuery.StatusInfoBar = true;
-	if (TRX_SWR >= SWR_CRITICAL && ref_power > 1.0f && CurrentVFO()->Mode != TRX_MODE_LOOPBACK) //опасный порог КСВ, отключаем передачу
-	{
-		TRX_Time_InActive = 0;
-		TRX_Tune = false;
-		TRX_ptt_hard = false;
-		TRX_ptt_cat = false;
-		TRX_Restart_Mode();
-		NeedSaveSettings = true;
-		LCD_UpdateQuery.StatusInfoGUI = true;
-		LCD_UpdateQuery.TopButtons = true;
-	}
 }
 
 static uint16_t PERIPH_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN)

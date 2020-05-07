@@ -347,9 +347,21 @@ void processTxAudio(void)
 	AUDIOPROC_samples++;
 	uint_fast8_t mode = current_vfo->Mode;
 
+	//получаем амлитуду для выбранной мощности и диапазона
 	Processor_selected_RFpower_amplitude = log10f_fast((float32_t)TRX.RF_Power / 10.0f) * TRX_MAX_TX_Amplitude;
+	//поправка на КСВ
+	if(TRX_PWR_Forward > 0.0f)
+	{
+		float32_t swr_mult = (TRX_PWR_Forward - TRX_PWR_Backward) / TRX_PWR_Forward;
+		if(swr_mult < 0.3f)
+			swr_mult = 0.3f;
+		Processor_selected_RFpower_amplitude *= swr_mult;
+	}
+	if(Processor_selected_RFpower_amplitude < 0.0f)
+			Processor_selected_RFpower_amplitude = 0.0f;
+	//поправка на нулевые биения
 	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
-		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f; // поправка на нулевые биения
+		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f;
 
 	if (TRX.InputType_USB) //USB AUDIO
 	{

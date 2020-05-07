@@ -36,8 +36,8 @@ volatile uint16_t TRX_Volume;
 volatile bool TRX_SNMP_Synced = false;
 volatile int_fast16_t TRX_SHIFT = 0;
 volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
-volatile float32_t TRX_SWR_forward = 0;
-volatile float32_t TRX_SWR_backward = 0;
+volatile float32_t TRX_PWR_Forward = 0;
+volatile float32_t TRX_PWR_Backward = 0;
 volatile float32_t TRX_SWR = 0;
 static uint_fast8_t autogain_wait_reaction = 0;	  //таймер ожидания реакции от смены режимов ATT/PRE
 static uint_fast8_t autogain_stage = 0;			  //этап отработки актокорректировщика усиления

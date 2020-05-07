@@ -311,24 +311,19 @@ static void LCD_displayStatusInfoBar(void)
 
 		//FWD
 		LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TX_LABELS_OFFSET_X + LAY_STATUS_SMETER_TXLABELS_MARGIN + LAY_STATUS_SMETER_TXLABELS_PADDING, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_TX_LABELS_VAL_WIDTH, LAY_STATUS_TX_LABELS_VAL_HEIGHT, BACKGROUND_COLOR);
-		float32_t fwd_power = (TRX_SWR_forward * TRX_SWR_forward) / 50.0f;
-		if (fwd_power < 0.0f)
-			fwd_power = 0.0f;
-		sprintf(ctmp, "%.1fW", (double)fwd_power);
+		sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward);
 		LCDDriver_printText(ctmp, LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TX_LABELS_OFFSET_X + LAY_STATUS_SMETER_TXLABELS_MARGIN + LAY_STATUS_SMETER_TXLABELS_PADDING, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_BAR_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 
 		//REF
 		LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TX_LABELS_OFFSET_X + LAY_STATUS_SMETER_TXLABELS_MARGIN * 2 + LAY_STATUS_SMETER_TXLABELS_PADDING, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_TX_LABELS_VAL_WIDTH, LAY_STATUS_TX_LABELS_VAL_HEIGHT, BACKGROUND_COLOR);
-		float32_t ref_power = (TRX_SWR_backward * TRX_SWR_backward) / 50.0f;
-		if (ref_power < 0.0f)
-			ref_power = 0.0f;
-		sprintf(ctmp, "%.1fW", (double)ref_power);
+		sprintf(ctmp, "%.1fW", (double)TRX_PWR_Backward);
 		LCDDriver_printText(ctmp, LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_TX_LABELS_OFFSET_X + LAY_STATUS_SMETER_TXLABELS_MARGIN * 2 + LAY_STATUS_SMETER_TXLABELS_PADDING, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABELS_OFFSET_Y, LAY_STATUS_BAR_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 
 		//SWR Meter
+		float32_t fwd_power = TRX_PWR_Forward;
 		if (fwd_power > MAX_RF_POWER)
 			fwd_power = MAX_RF_POWER;
-		uint16_t ref_width = (uint16_t)(ref_power * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER);
+		uint16_t ref_width = (uint16_t)(TRX_PWR_Backward * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER);
 		uint16_t fwd_width = (uint16_t)(fwd_power * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER);
 		uint16_t est_width = (uint16_t)((MAX_RF_POWER - fwd_power) * (LAY_STATUS_PMETER_WIDTH - 2) / MAX_RF_POWER);
 		if (ref_width > fwd_width)
