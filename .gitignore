@@ -3,7 +3,9 @@ FPGA/output_files/*
 FPGA/greybox_tmp/*
 FPGA/incremental_db/*
 Scheme/ALTIUM_DESIGNER/__Previews/*
+Scheme/EXPERIMANTAL/__Previews/*
 Scheme/ALTIUM_DESIGNER/*/__Previews/*
+Scheme/EXPERIMANTAL/*/__Previews/*
 STM32/MDK-ARM/UA3REO/UA3REO.build_log.htm
 STM32/MDK-ARM/UA3REO/UA3REO.htm
 Status Report.txt
