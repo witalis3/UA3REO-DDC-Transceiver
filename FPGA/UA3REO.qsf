@@ -312,4 +312,9 @@ set_global_assignment -name QIP_FILE diffclock_buff.qip
 set_location_assignment PIN_133 -to DCDC_SYNC
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DCDC_SYNC
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to DCDC_SYNC
+set_location_assignment PIN_126 -to TCXO_CLK_IN
+set_location_assignment PIN_132 -to VCXO_CHANGE_PUMP
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to TCXO_CLK_IN
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VCXO_CHANGE_PUMP
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to VCXO_CHANGE_PUMP
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
