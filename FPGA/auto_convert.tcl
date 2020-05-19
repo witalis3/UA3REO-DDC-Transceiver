@@ -1,1 +1,1 @@
-qexec "quartus_cpf -c output_file.cof"
+qexec "quartus_cpf -c UA3REO.cof"
