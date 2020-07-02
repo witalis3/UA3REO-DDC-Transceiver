@@ -3,6 +3,7 @@
 #include "trx_manager.h"
 #include "wire.h"
 #include "lcd.h"
+#include "agc.h"
 #include "usbd_audio_if.h"
 
 //Public variables
@@ -39,6 +40,7 @@ void WM8731_CleanBuffer(void)
 	memset(USB_AUDIO_rx_buffer_a, 0x00, sizeof USB_AUDIO_rx_buffer_a);
 	memset(USB_AUDIO_rx_buffer_b, 0x00, sizeof USB_AUDIO_rx_buffer_a);
 	memset(USB_AUDIO_tx_buffer, 0x00, sizeof USB_AUDIO_tx_buffer);
+	ResetAGC();
 }
 
 //сигнал бипера

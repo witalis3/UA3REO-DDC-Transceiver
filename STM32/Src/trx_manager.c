@@ -8,6 +8,7 @@
 #include "wm8731.h"
 #include "fpga.h"
 #include "bands.h"
+#include "agc.h"
 #include "audio_filters.h"
 #include "usbd_audio_if.h"
 #include "cw_decoder.h"

@@ -5,8 +5,8 @@
 //Private variables
 static float32_t AGC_RX1_need_gain_db = 0.0f;
 static float32_t AGC_RX2_need_gain_db = 0.0f;
-static float32_t AGC_RX1_need_gain_db_old = 1.0f;
-static float32_t AGC_RX2_need_gain_db_old = 1.0f;
+static float32_t AGC_RX1_need_gain_db_old = 0.0f;
+static float32_t AGC_RX2_need_gain_db_old = 0.0f;
 
 //запуск AGC на блок данных
 void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id)
@@ -74,4 +74,10 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 	{
 		arm_scale_f32(agcBuffer, db2rateP(*AGC_need_gain_db), agcBuffer, blockSize);
 	}
+}
+
+void ResetAGC(void)
+{
+	AGC_RX1_need_gain_db = 0.0f;
+	AGC_RX2_need_gain_db = 0.0f;
 }

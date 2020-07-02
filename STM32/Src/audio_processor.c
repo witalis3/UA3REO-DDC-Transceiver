@@ -183,6 +183,7 @@ void processRxAudio(void)
 		//arm_vsqrt_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_AUDIO_BUFFER_HALF_SIZE);
 		for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 			arm_sqrt_f32(FPGA_Audio_Buffer_RX1_I_tmp[i], &FPGA_Audio_Buffer_RX1_I_tmp[i]);
+		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.5f, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
@@ -248,6 +249,7 @@ void processRxAudio(void)
 			//arm_vsqrt_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp,FPGA_AUDIO_BUFFER_HALF_SIZE);
 			for (uint_fast16_t i = 0; i < decimated_block_size_rx2; i++)
 				arm_sqrt_f32(FPGA_Audio_Buffer_RX2_I_tmp[i], &FPGA_Audio_Buffer_RX2_I_tmp[i]);
+			arm_scale_f32(FPGA_Audio_Buffer_RX2_I_tmp, 0.5f, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2);
 			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
@@ -869,14 +871,14 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		{
 			if (CurrentVFO()->Mode == TRX_MODE_WFM)
 			{
-				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / PI * (1 << 14)); //second way
+				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / PI) * 0.2f; //second way
 			}
 			else
 			{
 				b = FM_RX_HPF_ALPHA * (*hpf_prev_b + a - *hpf_prev_a); // do differentiation
 				*hpf_prev_a = a;									   // save "[n-1]" samples for next iteration
 				*hpf_prev_b = b;
-				FPGA_Audio_Buffer_I_tmp[i] = b * 30000.0f; // save demodulated and filtered audio in main audio processing buffer
+				FPGA_Audio_Buffer_I_tmp[i] = b * 0.2f; // save demodulated and filtered audio in main audio processing buffer
 			}
 		}
 		else if (*squelched)				// were we squelched or tone NOT detected?

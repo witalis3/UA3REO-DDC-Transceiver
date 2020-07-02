@@ -3,7 +3,6 @@
 #include "peripheral.h"
 #include "lcd.h"
 #include "trx_manager.h"
-#include "agc.h"
 #include "settings.h"
 #include "system_menu.h"
 #include "functions.h"

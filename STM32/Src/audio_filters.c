@@ -331,6 +331,7 @@ void InitAudioFilters(void)
 	InitNoiseReduction();
 	InitNotchFilter();
 	InitAutoNotchReduction();
+	ReinitAudioFilters();
 }
 
 //переинициализация аудио-фильтров
@@ -342,28 +343,34 @@ void ReinitAudioFilters(void)
 		IIR_BIQUAD_FILTER *lpf_filter = getIIRFilter(IIR_BIQUAD_LPF, CurrentVFO()->LPF_Filter_Width);
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX1_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_RX1_LPF_I_State[0]);
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX1_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_RX1_LPF_Q_State[0]);
-
 		arm_biquad_cascade_df2T_init_f32(&IIR_TX_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_TX_LPF_I_State[0]);
+		memset(IIR_RX1_LPF_I_State, 0x00, sizeof(IIR_RX1_LPF_I_State));
+		memset(IIR_RX1_LPF_Q_State, 0x00, sizeof(IIR_RX1_LPF_Q_State));
+		memset(IIR_TX_LPF_I_State, 0x00, sizeof(IIR_TX_LPF_I_State));
 	}
 	if (SecondaryVFO()->LPF_Filter_Width > 0)
 	{
 		IIR_BIQUAD_FILTER *lpf_filter = getIIRFilter(IIR_BIQUAD_LPF, SecondaryVFO()->LPF_Filter_Width);
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX2_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_RX2_LPF_I_State[0]);
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX2_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_RX2_LPF_Q_State[0]);
+		memset(IIR_RX2_LPF_I_State, 0x00, sizeof(IIR_RX2_LPF_I_State));
+		memset(IIR_RX2_LPF_Q_State, 0x00, sizeof(IIR_RX2_LPF_Q_State));
 	}
-
+	
 	//HPF
 	if (CurrentVFO()->HPF_Filter_Width > 0)
 	{
 		IIR_BIQUAD_FILTER *hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, CurrentVFO()->HPF_Filter_Width);
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX1_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_RX1_HPF_I_State[0]);
-
 		arm_biquad_cascade_df2T_init_f32(&IIR_TX_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_TX_HPF_I_State[0]);
+		memset(IIR_RX1_HPF_I_State, 0x00, sizeof(IIR_RX1_HPF_I_State));
+		memset(IIR_TX_HPF_I_State, 0x00, sizeof(IIR_TX_HPF_I_State));
 	}
 	if (SecondaryVFO()->HPF_Filter_Width > 0)
 	{
 		IIR_BIQUAD_FILTER *hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, SecondaryVFO()->HPF_Filter_Width);
 		arm_biquad_cascade_df2T_init_f32(&IIR_RX2_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_RX2_HPF_I_State[0]);
+		memset(IIR_RX2_HPF_I_State, 0x00, sizeof(IIR_RX2_HPF_I_State));
 	}
 	
 	//FM Squelch
@@ -378,6 +385,8 @@ void ReinitAudioFilters(void)
 	else
 		fm_sql_hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, 15000);
 	arm_biquad_cascade_df2T_init_f32(&IIR_RX2_Squelch_HPF, fm_sql_hpf_filter->stages, (float32_t *)fm_sql_hpf_filter->coeffs, (float32_t *)&IIR_RX2_HPF_SQL_State[0]);
+	memset(IIR_RX1_HPF_SQL_State, 0x00, sizeof(IIR_RX1_HPF_SQL_State));
+	memset(IIR_RX2_HPF_SQL_State, 0x00, sizeof(IIR_RX2_HPF_SQL_State));
 }
 
 //инициализация ручного Notch-фильтра
