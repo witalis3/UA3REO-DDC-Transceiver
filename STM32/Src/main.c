@@ -187,6 +187,7 @@ int main(void)
   MX_TIM16_Init();
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
+	HAL_EnableCompensationCell();
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("UA3REO Transceiver Initialization...");
   sendToDebug_strln("[OK] USB init");
