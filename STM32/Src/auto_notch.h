@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include "audio_processor.h"
 
-#define AUTO_NOTCH_BLOCK_SIZE (FPGA_AUDIO_BUFFER_HALF_SIZE / 3) //размер блока для обработки
+#define AUTO_NOTCH_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3) //размер блока для обработки
 #define AUTO_NOTCH_TAPS AUTO_NOTCH_BLOCK_SIZE					//порядок фильтра
 #define AUTO_NOTCH_REFERENCE_SIZE (AUTO_NOTCH_BLOCK_SIZE * 2)	//размер опорного буффера
 #define AUTO_NOTCH_STEP 0.0001f									//шаг LMS алгоритма

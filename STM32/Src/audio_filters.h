@@ -13,9 +13,9 @@
 #define IIR_MAX_STAGES 15															   //Максимальный порядок IIR фильтров
 #define NOTCH_STAGES 1																   //порядок ручного Notch фильтра
 #define NOTCH_COEFF_IN_STAGE 5														   //коэффициентов в порядке ручного Notch фильтра
-#define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1) //размер буфферов состояний
-#define FIR_RX2_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
-#define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + FPGA_AUDIO_BUFFER_HALF_SIZE - 1)
+#define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) //размер буфферов состояний
+#define FIR_RX2_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
+#define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
 #define IIR_RX1_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX2_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_TX_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
@@ -95,6 +95,10 @@ extern arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_I_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_Q_FILTER;
+extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_Q;
+extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_Q;
 extern volatile bool NeedReinitNotch; //необходимо переинициализировать ручной Notch-фильтр
 //Public methods
 extern void InitAudioFilters(void);											   //инифиализация аудио-фильтров

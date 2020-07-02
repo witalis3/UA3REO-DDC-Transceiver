@@ -36,13 +36,14 @@ extern volatile bool FPGA_Buffer_underrun;                                 //ф�
 extern volatile bool FPGA_NeedSendParams;                                  //флаг необходимости отправить параметры в FPGA
 extern volatile bool FPGA_NeedGetParams;                                   //флаг необходимости получить параметры из FPGA
 extern volatile bool FPGA_NeedRestart;                                     //флаг необходимости рестарта модулей FPGA
-extern volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_AUDIO_BUFFER_SIZE]; //буфферы FPGA
-extern volatile float32_t FPGA_Audio_Buffer_RX1_I[FPGA_AUDIO_BUFFER_SIZE];
-extern volatile float32_t FPGA_Audio_Buffer_RX2_Q[FPGA_AUDIO_BUFFER_SIZE];
-extern volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_AUDIO_BUFFER_SIZE];
-extern volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_AUDIO_BUFFER_SIZE];
-extern volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_AUDIO_BUFFER_SIZE];
-extern uint_fast16_t FPGA_Audio_Buffer_Index; //текущий индекс в буфферах FPGA
+extern volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_SIZE]; //буфферы FPGA
+extern volatile float32_t FPGA_Audio_Buffer_RX1_I[FPGA_RX_IQ_BUFFER_SIZE];
+extern volatile float32_t FPGA_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_SIZE];
+extern volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_SIZE];
+extern volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE];
+extern volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE];
+extern uint_fast16_t FPGA_Audio_RXBuffer_Index; //текущий индекс в буфферах FPGA
+extern uint_fast16_t FPGA_Audio_TXBuffer_Index; //текущий индекс в буфферах FPGA
 extern bool FPGA_Audio_Buffer_State;          //состояние буффера, заполнена половина или целиком true - compleate ; false - half
 
 //Public methods

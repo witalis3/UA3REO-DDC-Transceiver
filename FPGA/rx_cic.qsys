@@ -60,6 +60,7 @@
  <interface name="clock" internal="cic_ii_0.clock" type="clock" dir="end">
   <port name="clk" internal="clk" />
  </interface>
+ <interface name="rate" internal="cic_ii_0.rate" />
  <interface name="reset" internal="cic_ii_0.reset" type="reset" dir="end">
   <port name="reset_n" internal="reset_n" />
  </interface>
@@ -75,7 +76,7 @@
   <parameter name="FILTER_TYPE" value="decimator" />
   <parameter name="INTERFACES" value="1" />
   <parameter name="IN_WIDTH" value="31" />
-  <parameter name="RCF_FIX" value="2560" />
+  <parameter name="RCF_FIX" value="1280" />
   <parameter name="RCF_LB" value="8" />
   <parameter name="RCF_UB" value="21" />
   <parameter name="REQ_DIF_MEM" value="logic_element" />

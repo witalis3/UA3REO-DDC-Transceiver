@@ -118,7 +118,7 @@ void LoadSettings(bool clear)
 		}
 		TRX.LPF = true;			  //ФНЧ
 		TRX.BPF = true;			  //ДПФ
-		TRX.FFT_Zoom = 1;		  //приближение спектра FFT
+		TRX.FFT_Zoom = 2;		  //приближение спектра FFT
 		TRX.AutoGain = false;	  //авто-управление предусилителем и аттенюатором
 		TRX.CWDecoder = false;	  //автоматический декодер телеграфа
 		TRX.InputType_MIC = true; //тип входа для передачи
@@ -202,7 +202,7 @@ void LoadCalibration(void)
 		CALIBRATE.ENCODER2_DEBOUNCE = 50; //время для устранения дребезга контактов у дополнительного энкодера, мс
 		CALIBRATE.ENCODER_SLOW_RATE = 25;					//замедление энкодера для больших разрешений
 		CALIBRATE.ENCODER_ON_FALLING = false;	//энкодер срабатывает только на падение уровня A
-		CALIBRATE.CIC_GAINER_val = 88;		//Смещение с выхода CIC
+		CALIBRATE.CIC_GAINER_val = 83;		//Смещение с выхода CIC
 		CALIBRATE.CICFIR_GAINER_val = 54;	//Смещение с выхода CIC компенсатора
 		CALIBRATE.TXCICFIR_GAINER_val = 56; //Смещение с выхода TX-CIC компенсатора
 		CALIBRATE.DAC_GAINER_val = 30;		//Смещение DAC корректора

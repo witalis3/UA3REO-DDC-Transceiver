@@ -259,6 +259,36 @@ static const IIR_BIQUAD_FILTER IIR_Biquad_Filters[IIR_FILTERS_COUNT] = (const II
 	},
 };
 
+//LPF Decimation FIR, decimate by 2
+arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_I =
+{
+	.M = 2,
+	.numTaps = 4,
+	.pCoeffs = (float32_t *)(const float32_t[]){475.1179397144384210E-6f, 0.503905202786044337f, 0.503905202786044337f, 475.1179397144384210E-6f},
+	.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]) {0}
+};
+arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_Q =
+{
+	.M = 2,
+	.numTaps = 4,
+	.pCoeffs = (float32_t *)(const float32_t[]){475.1179397144384210E-6f, 0.503905202786044337f, 0.503905202786044337f, 475.1179397144384210E-6f},
+	.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]) {0}
+};
+arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_I =
+{
+	.M = 2,
+	.numTaps = 4,
+	.pCoeffs = (float32_t *)(const float32_t[]){475.1179397144384210E-6f, 0.503905202786044337f, 0.503905202786044337f, 475.1179397144384210E-6f},
+	.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]) {0}
+};
+arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_Q =
+{
+	.M = 2,
+	.numTaps = 4,
+	.pCoeffs = (float32_t *)(const float32_t[]){475.1179397144384210E-6f, 0.503905202786044337f, 0.503905202786044337f, 475.1179397144384210E-6f},
+	.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]) {0}
+};
+
 //Public variables
 arm_fir_instance_f32 FIR_RX1_Hilbert_I; //инстансы фильтров
 arm_fir_instance_f32 FIR_RX1_Hilbert_Q;
@@ -289,14 +319,14 @@ static IIR_BIQUAD_FILTER *getIIRFilter(IIR_BIQUAD_FILTER_TYPE type, uint_fast16_
 //инифиализация аудио-фильтров
 void InitAudioFilters(void)
 {
-	arm_fir_init_f32(&FIR_RX1_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-	arm_fir_init_f32(&FIR_RX1_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_RX1_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_RX1_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
 
-	arm_fir_init_f32(&FIR_RX2_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-	arm_fir_init_f32(&FIR_RX2_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_RX2_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_RX2_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
 
-	arm_fir_init_f32(&FIR_TX_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_I[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
-	arm_fir_init_f32(&FIR_TX_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_Q[0], FPGA_AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_TX_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_TX_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
 
 	InitNoiseReduction();
 	InitNotchFilter();

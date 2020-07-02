@@ -11,7 +11,8 @@
 #define ADCDAC_CLOCK 122880000			//Частота генератора АЦП/ЦАП
 #define MAX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
-#define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока
+#define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока во время обработки
+#define IQ_SAMPLERATE 96000			//частота дискретизации аудио-потока с FPGA
 #define MAX_TX_AMPLITUDE 1.0f			//Максимальный размах при передаче в ЦАП
 #define AGC_MAX_GAIN 50.0f				//Максимальное усиление в AGC, dB
 #define AGC_NOISE_GATE -90.0f			//ниже этого уровня - не усиливаем
@@ -45,6 +46,7 @@
 #define USB_DEBUG_ENABLED true	 //разрешить использовать USB как консоль
 #define UART_DEBUG_ENABLED false //разрешить использовать UART как консоль
 #define SWD_DEBUG_ENABLED false	 //разрешить использовать SWD как консоль
+#define AUDIO_DECIM_RATE (IQ_SAMPLERATE / TRX_SAMPLERATE)
 
 // задержки при работе с EEPROM
 #define EEPROM_CO_DELAY 0	   // command

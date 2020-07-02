@@ -7,7 +7,8 @@
 #include "functions.h"
 
 #define I2C_ADDRESS_WM8731 0x34                              //адрес аудио-кодека
-#define CODEC_AUDIO_BUFFER_SIZE (FPGA_AUDIO_BUFFER_SIZE * 2) //размер кольцевого буфера в 2 раза больше буфера FPGA, работаем то в первой половиной, то с другой
+#define CODEC_AUDIO_BUFFER_SIZE (AUDIO_BUFFER_SIZE * 2) //размер кольцевого буфера в 2 раза больше буфера FPGA, работаем то в первой половиной, то с другой
+#define CODEC_AUDIO_BUFFER_HALF_SIZE AUDIO_BUFFER_SIZE //половина буффера
 
 //Public variables
 extern IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE];

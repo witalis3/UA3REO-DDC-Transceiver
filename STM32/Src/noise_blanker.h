@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include "audio_processor.h"
 
-#define NB_BLOCK_SIZE (FPGA_AUDIO_BUFFER_HALF_SIZE / 3) //размер блока обработки NB фильтра
+#define NB_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3) //размер блока обработки NB фильтра
 #define NB_impulse_length 7								// has to be odd!!!! 7 / 3 should be enough // 7
 #define NB_PL ((NB_impulse_length - 1) / 2)				// has to be (impulse_length-1)/2 !!!!
 #define NB_order 10										// lpc's order // 10

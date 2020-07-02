@@ -201,7 +201,7 @@ void delay_us(uint32_t us)
 }
 */
 
-uint32_t getPhraseFromFrequency(int32_t freq) //высчитываем частоту из фразы ля FPGA
+uint32_t getPhraseFromFrequency(int32_t freq, bool set_swap_mode) //высчитываем частоту из фразы ля FPGA
 {
 	if (freq < 0)
 		return 0;
@@ -209,17 +209,18 @@ uint32_t getPhraseFromFrequency(int32_t freq) //высчитываем част�
 	int32_t _freq = freq;
 	if (_freq > ADCDAC_CLOCK / 2) //Go Nyquist
 	{
-		while (_freq > ADCDAC_CLOCK / 2)
+		while (_freq > (ADCDAC_CLOCK / 2))
 		{
-			_freq -= ADCDAC_CLOCK / 2;
+			_freq -= (ADCDAC_CLOCK / 2);
 			inverted = !inverted;
 		}
 		if (inverted)
 		{
-			_freq = ADCDAC_CLOCK / 2 - _freq;
+			_freq = (ADCDAC_CLOCK / 2) - _freq;
 		}
 	}
-	TRX_IQ_swap = inverted;
+	if(set_swap_mode)
+		TRX_IQ_swap = inverted;
 	double res = round(((double)_freq / ADCDAC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
 	return (uint32_t)res;
 }

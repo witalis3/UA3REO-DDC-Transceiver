@@ -14,7 +14,7 @@
 #define FFT_TARGET 6.0f                                       //средний порог сигнала FFT
 #define FFT_MAX 8.0f                                       //MAX порог сигнала FFT
 #define FFT_STEP_COEFF 10.0f                                  //коэффициент шага автокалибровки сигнала FFT (больше - медленней)
-#define FFT_HZ_IN_PIXEL (TRX_SAMPLERATE / LAY_FFT_PRINT_SIZE) //герц в одном пикселе
+#define FFT_HZ_IN_PIXEL (IQ_SAMPLERATE / LAY_FFT_PRINT_SIZE) //герц в одном пикселе
 
 //Public variables
 extern volatile uint32_t FFT_buff_index;
