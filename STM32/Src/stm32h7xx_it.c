@@ -809,6 +809,7 @@ void DMA1_Stream0_IRQHandler(void)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+	CPULOAD_WakeUp();
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
 		if(!WM8731_Buffer_underrun)
