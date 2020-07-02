@@ -501,11 +501,30 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_modep_prev != PERIPH_FrontPanel.key_modep && PERIPH_FrontPanel.key_modep && !TRX.Locked)
 		{
 			int8_t mode = (int8_t)CurrentVFO()->Mode;
-			mode++;
-			if (mode < 0)
-				mode = TRX_MODE_COUNT - 2;
-			if (mode >= (TRX_MODE_COUNT - 1))
-				mode = 0;
+			
+			if(mode == TRX_MODE_LSB)
+				mode = TRX_MODE_USB;
+			else if(mode == TRX_MODE_USB)
+				mode = TRX_MODE_LSB;
+			else if(mode == TRX_MODE_CW_L)
+				mode = TRX_MODE_CW_U;
+			else if(mode == TRX_MODE_CW_U)
+				mode = TRX_MODE_CW_L;
+			else if(mode == TRX_MODE_NFM)
+				mode = TRX_MODE_WFM;
+			else if(mode == TRX_MODE_WFM)
+				mode = TRX_MODE_NFM;
+			else if(mode == TRX_MODE_DIGI_L)
+				mode = TRX_MODE_DIGI_U;
+			else if(mode == TRX_MODE_DIGI_U)
+				mode = TRX_MODE_DIGI_L;
+			else if(mode == TRX_MODE_AM)
+				mode = TRX_MODE_IQ;
+			else if(mode == TRX_MODE_IQ)
+				mode = TRX_MODE_LOOPBACK;
+			else if(mode == TRX_MODE_LOOPBACK)
+				mode = TRX_MODE_AM;
+			
 			TRX_setMode((uint8_t)mode, CurrentVFO());
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 			if (band > 0)
@@ -516,11 +535,25 @@ void PERIPH_ProcessFrontPanel(void)
 		if (PERIPH_FrontPanel.key_moden_prev != PERIPH_FrontPanel.key_moden && PERIPH_FrontPanel.key_moden && !TRX.Locked)
 		{
 			int8_t mode = (int8_t)CurrentVFO()->Mode;
-			mode--;
-			if (mode < 0)
-				mode = TRX_MODE_COUNT - 2;
-			if (mode >= (TRX_MODE_COUNT - 1))
-				mode = 0;
+			
+			if(mode == TRX_MODE_LSB)
+				mode = TRX_MODE_CW_L;
+			else if(mode == TRX_MODE_USB)
+				mode = TRX_MODE_CW_U;
+			else if(mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
+				mode = TRX_MODE_DIGI_U;
+			else if(mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U)
+				mode = TRX_MODE_NFM;
+			else if(mode == TRX_MODE_NFM || mode == TRX_MODE_WFM)
+				mode = TRX_MODE_AM;
+			else
+			{
+				if(CurrentVFO()->Freq < 10000000)
+					mode = TRX_MODE_LSB;
+				else
+					mode = TRX_MODE_USB;
+			}
+			
 			TRX_setMode((uint8_t)mode, CurrentVFO());
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 			if (band > 0)
