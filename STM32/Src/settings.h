@@ -134,8 +134,6 @@ extern struct TRX_SETTINGS
 	bool CWDecoder;
 	bool FFT_Enabled;
 	uint16_t CW_GENERATOR_SHIFT_HZ;
-	uint8_t LCD_Brightness;
-	uint8_t Standby_Time;
 	uint16_t Key_timeout;
 	uint8_t FFT_Averaging;
 	bool WIFI_Enabled;

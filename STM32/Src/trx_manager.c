@@ -28,7 +28,6 @@ volatile bool TRX_Inited = false;
 volatile int_fast16_t TRX_RX_dBm = -100;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
-volatile uint32_t TRX_Time_InActive = 0; //секунд бездействия, используется для спящего режима
 volatile uint32_t TRX_Fan_Timeout = 0;	 //секунд, сколько ещё осталось крутить вентилятор
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
@@ -157,7 +156,6 @@ void TRX_ptt_change(void)
 	}
 	if (TRX_ptt_cat != TRX_old_ptt_cat)
 	{
-		TRX_Time_InActive = 0;
 		TRX_old_ptt_cat = TRX_ptt_cat;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		FPGA_NeedSendParams = true;
@@ -201,7 +199,6 @@ void TRX_key_change(void)
 	}
 	if (TRX_key_serial != TRX_old_key_serial)
 	{
-		TRX_Time_InActive = 0;
 		TRX_old_key_serial = TRX_key_serial;
 		if (TRX_key_serial == true)
 			TRX_Key_Timeout_est = TRX.Key_timeout;

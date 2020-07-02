@@ -631,7 +631,6 @@ void TIM6_DAC_IRQHandler(void)
     WM8731_DMA_samples = 0;
     RX_USB_AUDIO_SAMPLES = 0;
     TX_USB_AUDIO_SAMPLES = 0;
-    TRX_Time_InActive++;
     FPGA_NeedSendParams = true;
   }
 	
@@ -778,7 +777,6 @@ void TIM16_IRQHandler(void)
 	}
 	if(ENC2lastClkVal != ENCODER2_CLKVal)
 	{
-		TRX_Time_InActive = 0;
 		if (TRX_Inited)
 			PERIPH_ENCODER2_checkRotate();
 		ENC2lastClkVal = ENCODER2_CLKVal;
@@ -819,24 +817,20 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder
   {
-    TRX_Time_InActive = 0;
     if (TRX_Inited)
       PERIPH_ENCODER_checkRotate();
   }
   else if (GPIO_Pin == GPIO_PIN_4) //PTT
   {
-    TRX_Time_InActive = 0;
     if (TRX_Inited && CurrentVFO()->Mode != TRX_MODE_NO_TX)
       TRX_ptt_change();
   }
   else if (GPIO_Pin == GPIO_PIN_1) //KEY DOT
   {
-    TRX_Time_InActive = 0;
     TRX_key_change();
   }
   else if (GPIO_Pin == GPIO_PIN_0) //KEY DASH
   {
-    TRX_Time_InActive = 0;
     TRX_key_change();
   }
   else if (GPIO_Pin == GPIO_PIN_11) //POWER OFF

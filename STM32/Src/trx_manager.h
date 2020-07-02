@@ -34,7 +34,6 @@ volatile extern bool TRX_ADC_OTR;
 volatile extern bool TRX_DAC_OTR;
 volatile extern int16_t TRX_ADC_MINAMPLITUDE;
 volatile extern int16_t TRX_ADC_MAXAMPLITUDE;
-volatile extern uint32_t TRX_Time_InActive;
 volatile extern uint32_t TRX_Fan_Timeout;
 volatile extern bool TRX_SNMP_Synced;
 volatile extern int_fast16_t TRX_SHIFT;

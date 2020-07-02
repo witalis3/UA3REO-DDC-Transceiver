@@ -138,14 +138,9 @@ I и Q квадратурные сигналы, полученные в ходе
 * **CW Keyer WPM** - Скорость ключа, WPM
 * **CW Decoder** - Программный декодер CW приёма
 
-### LCD Settings
+### SCREEN Settings
 
-* **LCD Brightness** - Яркость LCD
-* **LCD Sleep Time** - Время до снижения яркости LCD при неактивности
 * **S-METER Marker** - Внешний вид S-Метра (свечка или линия)
-
-### FFT Settings
-
 * **FFT Zoom** - Увеличение (приближение) FFT
 * **FFT Style** - Стиль отображения FFT и водопада
 * **FFT Enabled** - Включение водопада и FFT

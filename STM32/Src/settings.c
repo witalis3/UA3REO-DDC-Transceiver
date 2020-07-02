@@ -136,8 +136,6 @@ void LoadSettings(bool clear)
 		TRX.BandMapEnabled = true;					//автоматическая смена моды по карте диапазонов
 		TRX.FFT_Enabled = true;						//использовать спектр FFT
 		TRX.CW_GENERATOR_SHIFT_HZ = 500;			//смещение гетеродина в CW моде
-		TRX.LCD_Brightness = 60;					//яркость экрана
-		TRX.Standby_Time = 180;						//время до гашения экрана по бездействию
 		TRX.Key_timeout = 500;						//время отпуская передачи после последнего знака на ключе
 		TRX.FFT_Averaging = 4;						//усреднение FFT, чтобы сделать его более гладким
 		TRX.WIFI_Enabled = false;					//активировать WiFi

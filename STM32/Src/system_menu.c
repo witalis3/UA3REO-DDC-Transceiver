@@ -49,15 +49,12 @@ static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
 
-static void SYSMENU_HANDL_LCD_Brightness(int8_t direction);
-static void SYSMENU_HANDL_LCD_SMeter_Style(int8_t direction);
-static void SYSMENU_HANDL_LCD_Standby_Time(int8_t direction);
-
-static void SYSMENU_HANDL_FFT_Enabled(int8_t direction);
-static void SYSMENU_HANDL_FFT_Averaging(int8_t direction);
-static void SYSMENU_HANDL_FFT_Window(int8_t direction);
-static void SYSMENU_HANDL_FFT_Zoom(int8_t direction);
-static void SYSMENU_HANDL_FFT_Style(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_SMeter_Style(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction);
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
@@ -147,7 +144,6 @@ static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
-static void SYSMENU_HANDL_FFTMENU(int8_t direction);
 static void SYSMENU_HANDL_ADCMENU(int8_t direction);
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
@@ -158,8 +154,7 @@ static struct sysmenu_item_handler sysmenu_handlers[] =
 		{"TRX Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_TRXMENU},
 		{"AUDIO Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_AUDIOMENU},
 		{"CW Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_CWMENU},
-		{"LCD Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
-		{"FFT Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_FFTMENU},
+		{"SCREEN Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
 		{"ADC/DAC Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_ADCMENU},
 		{"WIFI Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_WIFIMENU},
 		{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
@@ -219,23 +214,16 @@ static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 };
 static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_lcd_handlers[] =
+static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
-		{"LCD Brightness", SYSMENU_UINT8, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_LCD_Brightness},
-		{"LCD Sleep Time", SYSMENU_UINT8, (uint32_t *)&TRX.Standby_Time, SYSMENU_HANDL_LCD_Standby_Time},
-		{"S-METER Marker", SYSMENU_BOOLEAN, (uint32_t *)&TRX.S_METER_Style, SYSMENU_HANDL_LCD_SMeter_Style},
+		{"S-METER Marker", SYSMENU_BOOLEAN, (uint32_t *)&TRX.S_METER_Style, SYSMENU_HANDL_SCREEN_SMeter_Style},
+		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
+		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style},
+		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_SCREEN_FFT_Enabled},
+		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
+		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window},
 };
-static uint8_t sysmenu_lcd_item_count = sizeof(sysmenu_lcd_handlers) / sizeof(sysmenu_lcd_handlers[0]);
-
-static struct sysmenu_item_handler sysmenu_fft_handlers[] =
-	{
-		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_FFT_Zoom},
-		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_FFT_Style},
-		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_FFT_Enabled},
-		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_FFT_Averaging},
-		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_FFT_Window},
-};
-static uint8_t sysmenu_fft_item_count = sizeof(sysmenu_fft_handlers) / sizeof(sysmenu_fft_handlers[0]);
+static uint8_t sysmenu_screen_item_count = sizeof(sysmenu_screen_handlers) / sizeof(sysmenu_screen_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 	{
@@ -1059,36 +1047,18 @@ static void SYSMENU_HANDL_CW_SelfHear(int8_t direction)
 		TRX.CW_SelfHear = false;
 }
 
-//LCD MENU
+//SCREEN MENU
 
 static void SYSMENU_HANDL_LCDMENU(int8_t direction)
 {
-	sysmenu_handlers_selected = &sysmenu_lcd_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_lcd_item_count;
+	sysmenu_handlers_selected = &sysmenu_screen_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_screen_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	drawSystemMenu(true);
 }
 
-static void SYSMENU_HANDL_LCD_Brightness(int8_t direction)
-{
-	TRX.LCD_Brightness += direction;
-	if (TRX.LCD_Brightness < 1)
-		TRX.LCD_Brightness = 1;
-	if (TRX.LCD_Brightness > 100)
-		TRX.LCD_Brightness = 100;
-	LCDDriver_setBrightness(TRX.LCD_Brightness);
-}
-
-static void SYSMENU_HANDL_LCD_Standby_Time(int8_t direction)
-{
-	if (TRX.Standby_Time > 0 || direction > 0)
-		TRX.Standby_Time += direction;
-	if (TRX.Standby_Time > 250)
-		TRX.Standby_Time = 250;
-}
-
-static void SYSMENU_HANDL_LCD_SMeter_Style(int8_t direction)
+static void SYSMENU_HANDL_SCREEN_SMeter_Style(int8_t direction)
 {
 	if (direction > 0)
 		TRX.S_METER_Style = true;
@@ -1096,18 +1066,7 @@ static void SYSMENU_HANDL_LCD_SMeter_Style(int8_t direction)
 		TRX.S_METER_Style = false;
 }
 
-//FFT MENU
-
-static void SYSMENU_HANDL_FFTMENU(int8_t direction)
-{
-	sysmenu_handlers_selected = &sysmenu_fft_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_fft_item_count;
-	sysmenu_onroot = false;
-	systemMenuIndex = 0;
-	drawSystemMenu(true);
-}
-
-static void SYSMENU_HANDL_FFT_Enabled(int8_t direction)
+static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction)
 {
 	if (direction > 0)
 		TRX.FFT_Enabled = true;
@@ -1115,7 +1074,7 @@ static void SYSMENU_HANDL_FFT_Enabled(int8_t direction)
 		TRX.FFT_Enabled = false;
 }
 
-static void SYSMENU_HANDL_FFT_Averaging(int8_t direction)
+static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction)
 {
 	TRX.FFT_Averaging += direction;
 	if (TRX.FFT_Averaging < 1)
@@ -1124,7 +1083,7 @@ static void SYSMENU_HANDL_FFT_Averaging(int8_t direction)
 		TRX.FFT_Averaging = 10;
 }
 
-static void SYSMENU_HANDL_FFT_Window(int8_t direction)
+static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction)
 {
 	TRX.FFT_Window += direction;
 	if (TRX.FFT_Window < 1)
@@ -1134,7 +1093,7 @@ static void SYSMENU_HANDL_FFT_Window(int8_t direction)
 	FFT_Init();
 }
 
-static void SYSMENU_HANDL_FFT_Zoom(int8_t direction)
+static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction)
 {
 	if (direction > 0)
 	{
@@ -1161,7 +1120,7 @@ static void SYSMENU_HANDL_FFT_Zoom(int8_t direction)
 	FFT_Init();
 }
 
-static void SYSMENU_HANDL_FFT_Style(int8_t direction)
+static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction)
 {
 	TRX.FFT_Style += direction;
 	if (TRX.FFT_Style < 1)

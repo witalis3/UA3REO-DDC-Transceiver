@@ -46,7 +46,6 @@ static void LCD_displayTextBar(void);
 
 void LCD_Init(void)
 {
-	LCDDriver_setBrightness(TRX.LCD_Brightness);
 	LCDDriver_Init();
 #if SCREEN_ROTATE
 	LCDDriver_setRotation(2);
@@ -482,10 +481,6 @@ void LCD_doEvents(void)
 {
 	if (LCD_busy)
 		return;
-	if (TRX_Time_InActive > TRX.Standby_Time && TRX.Standby_Time > 0)
-		LCDDriver_setBrightness(5);
-	else
-		LCDDriver_setBrightness(TRX.LCD_Brightness);
 
 	if (LCD_UpdateQuery.Background)
 	{
