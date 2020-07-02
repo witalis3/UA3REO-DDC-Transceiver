@@ -34,15 +34,15 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 	float32_t AGC_RX_dbFS = rate2dbP(full_scale_rate);
 
 	//двигаем усиление на шаг
-	float32_t diff = (AGC_OPTIMAL_THRESHOLD - (AGC_RX_dbFS + *AGC_need_gain_db));
+	float32_t diff = ((float32_t)TRX.AGC_GAIN_TARGET - (AGC_RX_dbFS + *AGC_need_gain_db));
 	if (diff > 0)
 		*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_UP;
 	else
 		*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
 
 	//перегрузка (клиппинг), резко снижаем усиление
-	if ((AGC_RX_dbFS + *AGC_need_gain_db) > AGC_CLIP_THRESHOLD)
-		*AGC_need_gain_db = AGC_OPTIMAL_THRESHOLD - AGC_RX_dbFS;
+	if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + 10.0f))
+		*AGC_need_gain_db = (float32_t)TRX.AGC_GAIN_TARGET - AGC_RX_dbFS;
 
 	//шумовой порог, ниже него - не усиливаем
 	if (AGC_RX_dbFS < AGC_NOISE_GATE)

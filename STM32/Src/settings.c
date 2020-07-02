@@ -171,6 +171,7 @@ void LoadSettings(bool clear)
 		TRX.FRQ_FAST_STEP = 100;		//шаг перестройки частоты основным энкодером в режиме FAST
 		TRX.FRQ_ENC_STEP = 25000;		//шаг перестройки частоты основным доп. энкодером
 		TRX.FRQ_ENC_FAST_STEP = 100000; //шаг перестройки частоты основным доп. энкодером в режиме FAST
+		TRX.AGC_GAIN_TARGET = -30; //Максимальное (целевое) усиление AGC
 
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		sendToDebug_strln("[OK] Loaded default settings");
