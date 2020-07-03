@@ -426,7 +426,7 @@ void LCDDriver_Fill(uint16_t color)
 }
 
 //Rectangle drawing functions
-static SRAM1 uint16_t fillxy_color;
+static IRAM2 uint16_t fillxy_color;
 void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
 	if (x1 > (LCD_WIDTH - 1))
@@ -439,34 +439,34 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
 
 	fillxy_color = color;
-	/*if (n > 50)
+	if (n > 50)
 	{
-		const uint32_t part_size = 16000;
+		SCB_CleanDCache();
+		const uint32_t part_size = 32000;
 		uint32_t estamated = n;
-		while(estamated>0)
+		while(estamated > 0)
 		{
-			if(estamated>=part_size)
+			if(estamated >= part_size)
 			{
-				HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, part_size);
-				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-				estamated-=part_size;
+				HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, part_size * 2, 1);
+				HAL_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+				estamated -= part_size;
 			}
 			else
 			{
-				HAL_DMA_Start(&hdma_memtomem_dma2_stream5, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, estamated);
-				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream5, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-				estamated=0;
+				HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, estamated * 2, 1);
+				HAL_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+				estamated = 0;
 			}
 		}
-		//while(HAL_DMA_GetState(&hdma_memtomem_dma2_stream5)==HAL_DMA_STATE_BUSY) {}
 	}
 	else
-	{*/
-	while (n--)
 	{
-		LCDDriver_SendData(color);
+		while (n--)
+		{
+			LCDDriver_SendData(color);
+		}
 	}
-	/*}*/
 }
 
 void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
