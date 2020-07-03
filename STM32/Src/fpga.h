@@ -15,6 +15,9 @@
 #define FPGA_FLASH_WRITE_DELAY for(uint32_t wait = 0; wait < 500; wait++) __asm("nop"); //500
 #define FPGA_FLASH_READ_DELAY for(uint32_t wait = 0; wait < 50; wait++) __asm("nop"); //50
 
+#define FPGA_writePacket(value) (FPGA_BUS_D0_GPIO_Port->BSRR = (value) | 0xFF0000)
+#define FPGA_readPacket (FPGA_BUS_D0_GPIO_Port->IDR & 0xFF)
+
 //Micron M25P80 Serial Flash COMMANDS:
 #define M25P80_WRITE_ENABLE 0x06
 #define M25P80_WRITE_DISABLE 0x04
