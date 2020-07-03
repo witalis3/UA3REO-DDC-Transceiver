@@ -37,14 +37,14 @@
 //DMA1-0 - получение данных с аудио-кодека
 //DMA1-1 - получение данных из WiFi по UART
 //DMA1-5 - отсылка данных в аудио-кодек
-//DMA2-0 - отправка буфера аудио-процессора в буффер кодека - A
-//DMA2-1 - отправка буфера аудио-процессора в буффер кодека - B
 //DMA2-4 - DMA для копирования 16 битных массивов
 //DMA2-5 - DMA видео-драйвера, для заливки, 16 бит без инкремента
 //DMA2-6 - отрисовка водопада по 16бит, инкремент
 //DMA2-7 - смещение водопада вниз
 
 //MDMA-0 - копирование аудио-буфферов по 32бит
+//MDMA-1 - отправка буфера аудио-процессора в буффер кодека - A
+//MDMA-2 - отправка буфера аудио-процессора в буффер кодека - B
 
 /* USER CODE END Header */
 
@@ -110,8 +110,6 @@ static uint32_t powerdown_start_delay = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;

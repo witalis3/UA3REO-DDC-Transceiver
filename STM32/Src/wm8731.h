@@ -11,8 +11,8 @@
 #define CODEC_AUDIO_BUFFER_HALF_SIZE AUDIO_BUFFER_SIZE //половина буффера
 
 //Public variables
-extern IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE];
-extern IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE];
+extern int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE];
+extern int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE];
 extern bool WM8731_DMA_state;       //с какой частью буфера сейчас работаем, true - compleate; false - half
 extern bool WM8731_Buffer_underrun; //недостаток данных в буфере из аудио-процессора
 extern uint32_t WM8731_DMA_samples; //считаем количество семплов, переданных аудио-кодеку

@@ -9,8 +9,8 @@ bool NeedFFTInputBuffer = true;		  //флаг необходимости зап�
 bool FFT_need_fft = true;			  //необходимо подготовить данные для отображения на экран
 bool FFT_buffer_ready = false;		  //буффер наполнен, можно обрабатывать
 volatile uint32_t FFT_buff_index = 0; //текущий индекс буфера при его наполнении с FPGA
-float32_t FFTInput_I[FFT_SIZE] = {0}; //входящий буфер FFT I
-float32_t FFTInput_Q[FFT_SIZE] = {0}; //входящий буфер FFT Q
+IRAM2 float32_t FFTInput_I[FFT_SIZE] = {0}; //входящий буфер FFT I
+IRAM2 float32_t FFTInput_Q[FFT_SIZE] = {0}; //входящий буфер FFT Q
 
 //Private variables
 #if FFT_SIZE == 1024
