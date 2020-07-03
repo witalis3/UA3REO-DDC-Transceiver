@@ -589,7 +589,7 @@ static inline void FPGA_fpgadata_sendiq(void)
 static inline void FPGA_setBusInput(void)
 {
 	// Configure IO Direction mode (Input)
-	register uint32_t temp = GPIOA->MODER;
+	/*register uint32_t temp = GPIOA->MODER;
 	temp &= ~(GPIO_MODER_MODE0 << (0 * 2U));
 	temp |= ((GPIO_MODE_INPUT & 0x00000003U) << (0 * 2U));
 	temp &= ~(GPIO_MODER_MODE0 << (1 * 2U));
@@ -606,14 +606,16 @@ static inline void FPGA_setBusInput(void)
 	temp |= ((GPIO_MODE_INPUT & 0x00000003U) << (6 * 2U));
 	temp &= ~(GPIO_MODER_MODE0 << (7 * 2U));
 	temp |= ((GPIO_MODE_INPUT & 0x00000003U) << (7 * 2U));
-	GPIOA->MODER = temp;
+	sendToDebug_uint32(temp,false);
+	GPIOA->MODER = temp;*/
+	GPIOA->MODER = -1431764992;
 }
 
 //переключить шину на вывод
 static inline void FPGA_setBusOutput(void)
 {
 	// Configure IO Direction mode (Output)
-	register uint32_t temp = GPIOA->MODER;
+	/*uint32_t temp = GPIOA->MODER;
 	temp &= ~(GPIO_MODER_MODE0 << (0 * 2U));
 	temp |= ((GPIO_MODE_OUTPUT_PP & 0x00000003U) << (0 * 2U));
 	temp &= ~(GPIO_MODER_MODE0 << (1 * 2U));
@@ -630,7 +632,9 @@ static inline void FPGA_setBusOutput(void)
 	temp |= ((GPIO_MODE_OUTPUT_PP & 0x00000003U) << (6 * 2U));
 	temp &= ~(GPIO_MODER_MODE0 << (7 * 2U));
 	temp |= ((GPIO_MODE_OUTPUT_PP & 0x00000003U) << (7 * 2U));
-	GPIOA->MODER = temp;
+	sendToDebug_uint32(temp,false);
+	GPIOA->MODER = temp;*/
+	GPIOA->MODER = -1431743147;
 }
 
 //поднять сигнал CLK
@@ -642,7 +646,7 @@ static inline void FPGA_clockRise(void)
 //снять сигнал CLK
 static inline void FPGA_clockFall(void)
 {
-	FPGA_CLK_GPIO_Port->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U);
+	FPGA_CLK_GPIO_Port->BSRR = (FPGA_CLK_Pin << 16U);
 }
 
 //поднять сигнал CLK и SYNC, потом опустить
@@ -650,8 +654,7 @@ static inline void FPGA_syncAndClockRiseFall(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_SYNC_Pin;
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin;
-	FPGA_CLK_GPIO_Port->BSRR = ((uint32_t)FPGA_SYNC_Pin << 16U);
-	FPGA_CLK_GPIO_Port->BSRR = ((uint32_t)FPGA_CLK_Pin << 16U);
+	FPGA_CLK_GPIO_Port->BSRR = (FPGA_SYNC_Pin << 16U) | (FPGA_CLK_Pin << 16U);
 }
 
 #if FPGA_FLASH_IN_HEX
