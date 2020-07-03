@@ -118,7 +118,7 @@ void LoadSettings(bool clear)
 		}
 		TRX.LPF = true;			  //ФНЧ
 		TRX.BPF = true;			  //ДПФ
-		TRX.FFT_Zoom = 2;		  //приближение спектра FFT
+		TRX.FFT_Zoom = 1;		  //приближение спектра FFT
 		TRX.AutoGain = false;	  //авто-управление предусилителем и аттенюатором
 		TRX.CWDecoder = false;	  //автоматический декодер телеграфа
 		TRX.InputType_MIC = true; //тип входа для передачи

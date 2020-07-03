@@ -441,7 +441,7 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 	fillxy_color = color;
 	if (n > 50)
 	{
-		SCB_CleanDCache();
+		SCB_CleanDCache_by_Addr((uint32_t *)&fillxy_color, sizeof(fillxy_color));
 		const uint32_t part_size = 32000;
 		uint32_t estamated = n;
 		while(estamated > 0)
