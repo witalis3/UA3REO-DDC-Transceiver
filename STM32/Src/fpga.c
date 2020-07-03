@@ -27,8 +27,8 @@ static bool FPGA_bus_direction = false;		  //текущее направлени
 static bool FPGA_bus_stop = false;					//приостановка работы шины FPGA
 	
 //Prototypes
-static uint_fast8_t FPGA_readPacket(void);		   //чтение пакета
-static void FPGA_writePacket(uint_fast8_t packet); //запись пакета
+static uint8_t FPGA_readPacket(void);		   //чтение пакета
+static void FPGA_writePacket(uint8_t packet); //запись пакета
 static void FPGA_clockFall(void);				   //снять сигнал CLK
 static void FPGA_clockRise(void);				   //поднять сигнал CLK
 static void FPGA_syncRise(void);				   //поднять сигнал SYNC
@@ -105,7 +105,7 @@ void FPGA_fpgadata_stuffclock(void)
 {
 	if(!FPGA_NeedSendParams && !FPGA_NeedGetParams && !FPGA_NeedRestart) return;
 	if(FPGA_bus_stop) return;
-	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
+	uint8_t FPGA_fpgadata_out_tmp8 = 0;
 	//обмен данными
 
 	//STAGE 1
@@ -139,7 +139,7 @@ void FPGA_fpgadata_stuffclock(void)
 void FPGA_fpgadata_iqclock(void)
 {
 	if(FPGA_bus_stop) return;
-	uint_fast8_t FPGA_fpgadata_out_tmp8 = 4; //RX
+	uint8_t FPGA_fpgadata_out_tmp8 = 4; //RX
 	VFO *current_vfo = CurrentVFO();
 	if(current_vfo->Mode == TRX_MODE_LOOPBACK) return;
 	//обмен данными
@@ -165,7 +165,7 @@ void FPGA_fpgadata_iqclock(void)
 //отправить параметры
 static inline void FPGA_fpgadata_sendparam(void)
 {
-	uint_fast8_t FPGA_fpgadata_out_tmp8 = 0;
+	uint8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
 	uint32_t TRX_freq_phrase = getPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, true);
@@ -288,7 +288,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 //получить параметры
 static inline void FPGA_fpgadata_getparam(void)
 {
-	register uint_fast8_t FPGA_fpgadata_in_tmp8 = 0;
+	register uint8_t FPGA_fpgadata_in_tmp8 = 0;
 
 	//STAGE 2
 	//clock
@@ -676,7 +676,7 @@ static inline void FPGA_syncAndClockRiseFall(void)
 
 
 //чтение пакета
-static inline uint_fast8_t FPGA_readPacket(void)
+static inline uint8_t FPGA_readPacket(void)
 {
 	if (!FPGA_bus_direction)
 		FPGA_setBusInput();
@@ -684,15 +684,15 @@ static inline uint_fast8_t FPGA_readPacket(void)
 }
 
 //запись пакета
-static inline void FPGA_writePacket(uint_fast8_t packet)
+static inline void FPGA_writePacket(uint8_t packet)
 {
 	if (FPGA_bus_direction)
 		FPGA_setBusOutput();
-	FPGA_BUS_D0_GPIO_Port->BSRR = (packet & 0xFF) | 0xFF0000;
+	FPGA_BUS_D0_GPIO_Port->BSRR = packet | 0xFF0000;
 }
 
 #if FPGA_FLASH_IN_HEX
-static uint_fast8_t FPGA_spi_start_command(uint_fast8_t command) //выполнение команды к SPI flash
+static uint8_t FPGA_spi_start_command(uint8_t command) //выполнение команды к SPI flash
 {
 	//STAGE 1
 	FPGA_writePacket(7); //FPGA FLASH READ command
@@ -710,7 +710,7 @@ static uint_fast8_t FPGA_spi_start_command(uint_fast8_t command) //выполн�
 
 	//STAGE 3 READ ANSWER (F701)
 	FPGA_clockRise();
-	uint_fast8_t data = FPGA_readPacket();
+	uint8_t data = FPGA_readPacket();
 	FPGA_clockFall();
 	FPGA_FLASH_READ_DELAY
 	
@@ -728,7 +728,7 @@ static void FPGA_spi_stop_command(void) //завершение работы с S
 	FPGA_FLASH_COMMAND_DELAY
 }
 
-static uint_fast8_t FPGA_spi_continue_command(uint_fast8_t writedata) //продолжение чтения и записи SPI flash
+static uint8_t FPGA_spi_continue_command(uint8_t writedata) //продолжение чтения и записи SPI flash
 {
 	//STAGE 2 WRITE (F700)
 	FPGA_writePacket(writedata); 
@@ -738,7 +738,7 @@ static uint_fast8_t FPGA_spi_continue_command(uint_fast8_t writedata) //прод
 
 	//STAGE 3 READ ANSWER (F701)
 	FPGA_clockRise();
-	uint_fast8_t data = FPGA_readPacket();
+	uint8_t data = FPGA_readPacket();
 	FPGA_clockFall();
 	FPGA_FLASH_READ_DELAY
 	
@@ -747,7 +747,7 @@ static uint_fast8_t FPGA_spi_continue_command(uint_fast8_t writedata) //прод
 
 static void FPGA_spi_flash_wait_WIP(void) //Ожидаем пока закончится запись во флеш (сброс регистра WIP)
 {
-	uint_fast8_t status = 1;
+	uint8_t status = 1;
 	while(bitRead(status, 0) == 1)
 	{
 		FPGA_spi_start_command(M25P80_READ_STATUS_REGISTER);
@@ -760,7 +760,7 @@ static bool FPGA_is_present(void) //проверка, что в FPGA есть п
 {
 	FPGA_bus_stop = true;
 	HAL_Delay(1);
-	uint_fast8_t data = 0;
+	uint8_t data = 0;
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
 	FPGA_spi_start_command(M25P80_READ_DATA_BYTES); //READ DATA BYTES
 	FPGA_spi_continue_command(0x00); //addr 1
@@ -787,7 +787,7 @@ static bool FPGA_spi_flash_verify(bool full) //проверка flash памят
 	HAL_Delay(1);
 	if(full)
 		LCD_showError("FPGA Flash Verification...", false);
-	uint_fast8_t data = 0;
+	uint8_t data = 0;
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
 	FPGA_spi_stop_command(); 
 	FPGA_spi_start_command(M25P80_READ_DATA_BYTES); //READ DATA BYTES
