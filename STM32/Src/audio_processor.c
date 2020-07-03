@@ -16,10 +16,10 @@ SRAM1 int32_t Processor_AudioBuffer_B[AUDIO_BUFFER_SIZE] = {0};			//буффер
 volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer = 0;					//какой буффер сейчас используется, A или B
 volatile bool Processor_NeedRXBuffer = false;									//кодеку нужны данные с процессора для RX
 volatile bool Processor_NeedTXBuffer = false;									//кодеку нужны данные с процессора для TX
-SRAM1 float32_t FPGA_Audio_Buffer_RX1_Q_tmp[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; //копия рабочей части буфферов FPGA для обработки
-SRAM1 float32_t FPGA_Audio_Buffer_RX1_I_tmp[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
-SRAM1 float32_t FPGA_Audio_Buffer_RX2_Q_tmp[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
-SRAM1 float32_t FPGA_Audio_Buffer_RX2_I_tmp[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+float32_t FPGA_Audio_Buffer_RX1_Q_tmp[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; //копия рабочей части буфферов FPGA для обработки
+float32_t FPGA_Audio_Buffer_RX1_I_tmp[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+float32_t FPGA_Audio_Buffer_RX2_Q_tmp[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+float32_t FPGA_Audio_Buffer_RX2_I_tmp[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 SRAM1 float32_t FPGA_Audio_Buffer_TX_Q_tmp[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 SRAM1 float32_t FPGA_Audio_Buffer_TX_I_tmp[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t Processor_RX_Power_value;					//магнитуда RX сигнала

@@ -14,10 +14,10 @@ volatile bool FPGA_Buffer_underrun = false;										//флаг недостат
 uint_fast16_t FPGA_Audio_RXBuffer_Index = 0;										//текущий индекс в буфферах FPGA
 uint_fast16_t FPGA_Audio_TXBuffer_Index = 0;										//текущий индекс в буфферах FPGA
 bool FPGA_Audio_Buffer_State = true;											//состояние буффера, заполнена половина или целиком true - compleate ; false - half
-SRAM1 volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_SIZE] = {0}; //буфферы FPGA
-SRAM1 volatile float32_t FPGA_Audio_Buffer_RX1_I[FPGA_RX_IQ_BUFFER_SIZE] = {0};
-SRAM1 volatile float32_t FPGA_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_SIZE] = {0};
-SRAM1 volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_SIZE] = {0};
+volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_SIZE] = {0}; //буфферы FPGA
+volatile float32_t FPGA_Audio_Buffer_RX1_I[FPGA_RX_IQ_BUFFER_SIZE] = {0};
+volatile float32_t FPGA_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_SIZE] = {0};
+volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_SIZE] = {0};
 SRAM1 volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 SRAM1 volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 

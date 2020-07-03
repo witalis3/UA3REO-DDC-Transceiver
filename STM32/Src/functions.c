@@ -16,12 +16,13 @@ void dma_memcpy32(uint32_t *dest, uint32_t *src, uint32_t len)
 {
 	if(len == 0)
 		return;
-	HAL_DMA_Start(&hdma_memtomem_dma2_stream3, (uint32_t)src, (uint32_t)dest, len);
-	HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+	HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, len * 4, 1);
+	HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
 }
 
 void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t bytes_to_read)
 {
+	SCB_CleanDCache();
 	if (index >= bytes_to_read)
 	{
 		dma_memcpy32(&dest[0], &source[index - bytes_to_read], bytes_to_read);
@@ -32,6 +33,7 @@ void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, ui
 		dma_memcpy32(&dest[0], &source[length - prev_part], prev_part);
 		dma_memcpy32(&dest[prev_part], &source[0], (bytes_to_read - prev_part));
 	}
+	SCB_InvalidateDCache();
 }
 
 void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length)

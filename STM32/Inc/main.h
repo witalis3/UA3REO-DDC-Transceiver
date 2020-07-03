@@ -70,6 +70,7 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
+extern MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
 extern SRAM_HandleTypeDef hsram1;
 
 /* USER CODE END ET */

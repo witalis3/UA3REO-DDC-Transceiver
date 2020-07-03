@@ -89,8 +89,8 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
-DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
+MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
@@ -103,6 +103,7 @@ void SystemClock_Config(void);
 static void MPU_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
+static void MX_MDMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_FMC_Init(void);
 static void MX_I2S3_Init(void);
@@ -170,6 +171,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
+  MX_MDMA_Init();
   MX_ADC1_Init();
   MX_FMC_Init();
   MX_I2S3_Init();
@@ -1094,7 +1096,6 @@ static void MX_USB_OTG_FS_PCD_Init(void)
   *   hdma_memtomem_dma2_stream7
   *   hdma_memtomem_dma2_stream6
   *   hdma_memtomem_dma2_stream5
-  *   hdma_memtomem_dma2_stream3
   *   hdma_memtomem_dma2_stream4
   */
 static void MX_DMA_Init(void) 
@@ -1199,25 +1200,6 @@ static void MX_DMA_Init(void)
     Error_Handler( );
   }
 
-  /* Configure DMA request hdma_memtomem_dma2_stream3 on DMA2_Stream3 */
-  hdma_memtomem_dma2_stream3.Instance = DMA2_Stream3;
-  hdma_memtomem_dma2_stream3.Init.Request = DMA_REQUEST_MEM2MEM;
-  hdma_memtomem_dma2_stream3.Init.Direction = DMA_MEMORY_TO_MEMORY;
-  hdma_memtomem_dma2_stream3.Init.PeriphInc = DMA_PINC_ENABLE;
-  hdma_memtomem_dma2_stream3.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_memtomem_dma2_stream3.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-  hdma_memtomem_dma2_stream3.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-  hdma_memtomem_dma2_stream3.Init.Mode = DMA_NORMAL;
-  hdma_memtomem_dma2_stream3.Init.Priority = DMA_PRIORITY_HIGH;
-  hdma_memtomem_dma2_stream3.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
-  hdma_memtomem_dma2_stream3.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
-  hdma_memtomem_dma2_stream3.Init.MemBurst = DMA_MBURST_INC4;
-  hdma_memtomem_dma2_stream3.Init.PeriphBurst = DMA_PBURST_INC4;
-  if (HAL_DMA_Init(&hdma_memtomem_dma2_stream3) != HAL_OK)
-  {
-    Error_Handler( );
-  }
-
   /* Configure DMA request hdma_memtomem_dma2_stream4 on DMA2_Stream4 */
   hdma_memtomem_dma2_stream4.Instance = DMA2_Stream4;
   hdma_memtomem_dma2_stream4.Init.Request = DMA_REQUEST_MEM2MEM;
@@ -1247,6 +1229,42 @@ static void MX_DMA_Init(void)
   /* DMA2_Stream6_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 7, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
+
+}
+
+/** 
+  * Enable MDMA controller clock
+  * Configure MDMA for global transfers
+  *   hmdma_mdma_channel40_sw_0
+  */
+static void MX_MDMA_Init(void) 
+{
+
+  /* MDMA controller clock enable */
+  __HAL_RCC_MDMA_CLK_ENABLE();
+  /* Local variables */
+
+  /* Configure MDMA channel MDMA_Channel0 */
+  /* Configure MDMA request hmdma_mdma_channel40_sw_0 on MDMA_Channel0 */
+  hmdma_mdma_channel40_sw_0.Instance = MDMA_Channel0;
+  hmdma_mdma_channel40_sw_0.Init.Request = MDMA_REQUEST_SW;
+  hmdma_mdma_channel40_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
+  hmdma_mdma_channel40_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
+  hmdma_mdma_channel40_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
+  hmdma_mdma_channel40_sw_0.Init.SourceInc = MDMA_SRC_INC_WORD;
+  hmdma_mdma_channel40_sw_0.Init.DestinationInc = MDMA_DEST_INC_WORD;
+  hmdma_mdma_channel40_sw_0.Init.SourceDataSize = MDMA_SRC_DATASIZE_WORD;
+  hmdma_mdma_channel40_sw_0.Init.DestDataSize = MDMA_DEST_DATASIZE_WORD;
+  hmdma_mdma_channel40_sw_0.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
+  hmdma_mdma_channel40_sw_0.Init.BufferTransferLength = 32;
+  hmdma_mdma_channel40_sw_0.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
+  hmdma_mdma_channel40_sw_0.Init.DestBurst = MDMA_DEST_BURST_SINGLE;
+  hmdma_mdma_channel40_sw_0.Init.SourceBlockAddressOffset = 0;
+  hmdma_mdma_channel40_sw_0.Init.DestBlockAddressOffset = 0;
+  if (HAL_MDMA_Init(&hmdma_mdma_channel40_sw_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
 }
 

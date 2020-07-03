@@ -39,11 +39,12 @@
 //DMA1-5 - отсылка данных в аудио-кодек
 //DMA2-0 - отправка буфера аудио-процессора в буффер кодека - A
 //DMA2-1 - отправка буфера аудио-процессора в буффер кодека - B
-//DMA2-3 - копирование аудио-буфферов по 32бит
 //DMA2-4 - DMA для копирования 16 битных массивов
 //DMA2-5 - DMA видео-драйвера, для заливки, 16 бит без инкремента
 //DMA2-6 - отрисовка водопада по 16бит, инкремент
 //DMA2-7 - смещение водопада вниз
+
+//MDMA-0 - копирование аудио-буфферов по 32бит
 
 /* USER CODE END Header */
 
@@ -114,7 +115,6 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern DMA_HandleTypeDef hdma_spi3_tx;
 extern TIM_HandleTypeDef htim3;
