@@ -32,7 +32,8 @@ typedef enum
 	WIFI_COMM_GETIP = 0x03U,
 	WIFI_COMM_GETSTATUS = 0x04U,
 	WIFI_COMM_DEEPSLEEP = 0x05U,
-	WIFI_COMM_CREATESERVER = 0x05U,
+	WIFI_COMM_CREATESERVER = 0x06U,
+	WIFI_COMM_SENDTCPDATA = 0x07U,
 } WiFiProcessingCommand;
 
 extern RTC_HandleTypeDef hrtc;
@@ -53,5 +54,6 @@ extern bool WIFI_GetIP(void *callback);
 //extern void WIFI_GetStatus(void);
 extern void WIFI_GoSleep(void);
 extern bool WIFI_StartCATServer(void *callback);
+extern bool WIFI_SendCatAnswer(char* data, uint32_t link_id, void *callback);
 
 #endif

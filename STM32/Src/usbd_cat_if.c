@@ -6,6 +6,7 @@
 #include "lcd.h"
 #include "fpga.h"
 #include "audio_filters.h"
+#include "wifi.h"
 
 #define CAT_APP_RX_DATA_SIZE 32
 #define CAT_APP_TX_DATA_SIZE 32
@@ -16,7 +17,9 @@ static uint8_t cat_buffer_head = 0;
 static char command_to_parse[CAT_BUFFER_SIZE] = {0};
 static uint8_t CAT_UserRxBufferFS[CAT_APP_RX_DATA_SIZE];
 static uint8_t CAT_UserTxBufferFS[CAT_APP_TX_DATA_SIZE];
-
+static bool CAT_processingWiFiCommand = false;
+static uint32_t CAT_processingWiFi_link_id = 0;
+	
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
 static uint8_t getFT450Mode(uint8_t VFO_Mode);
@@ -156,6 +159,7 @@ static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
 				cat_buffer[cat_buffer_head] = charBuff[i];
 				if (cat_buffer[cat_buffer_head] == ';')
 				{
+					CAT_processingWiFiCommand = false;
 					memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
 					memcpy(command_to_parse, cat_buffer, cat_buffer_head);
 					cat_buffer_head = 0;
@@ -200,13 +204,24 @@ static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len)
 
 static void CAT_Transmit(char *data)
 {
-	CAT_Transmit_FS((uint8_t *)data, (uint16_t)strlen(data));
+	if(CAT_processingWiFiCommand)
+	{
+		WIFI_SendCatAnswer(data, CAT_processingWiFi_link_id, NULL);
+		CAT_processingWiFiCommand = false;
+	}
+	else
+	{
+		CAT_Transmit_FS((uint8_t *)data, (uint16_t)strlen(data));
+	}
 }
 
-void CAT_SetWIFICommand(char *data, uint32_t length)
+void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id)
 {
+	CAT_processingWiFiCommand = true;
+	CAT_processingWiFi_link_id = link_id;
 	memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
 	memcpy(command_to_parse, data, length);
+	ua3reo_dev_cat_parseCommand();
 }
 
 void ua3reo_dev_cat_parseCommand(void)

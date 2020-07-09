@@ -110,6 +110,8 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPMUX=1\r\n"); //Multiple server connections
 		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CIPSERVER=0\r\n"); //Stop CAT Server
+		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPSERVERMAXCONN=3\r\n"); //Max server connections
 		WIFI_WaitForOk();
 		strcat(com_t, "AT+CIPSNTPCFG=1,");
@@ -200,13 +202,17 @@ void WIFI_Process(void)
 			wifi_incoming_data++;
 			
 			uint32_t wifi_incoming_length_uint = (uint32_t)atoi(wifi_incoming_length);
+			uint32_t wifi_incoming_link_id_uint = (uint32_t)atoi(wifi_incoming_link_id);
 			if(wifi_incoming_length_uint > 64) 
 				wifi_incoming_length_uint = 64;
+			if(wifi_incoming_link_id_uint > 8) 
+				wifi_incoming_link_id_uint = 8;
+			
 			char* wifi_incoming_data_end = wifi_incoming_data + wifi_incoming_length_uint;
 			*wifi_incoming_data_end = 0x00;
 
 			sendToDebug_str3("[WIFI] Command received: ", wifi_incoming_data, "\r\n");
-			CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint);
+			CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
 		}
 		break;
 
@@ -544,5 +550,24 @@ bool WIFI_StartCATServer(void *callback)
 	WIFI_ProcessingCommand = WIFI_COMM_CREATESERVER;
 	WIFI_ProcessingCommandCallback = callback;
 	WIFI_SendCommand("AT+CIPSERVER=1,6784\r\n"); //Start CAT Server
+	return true;
+}
+
+bool WIFI_SendCatAnswer(char* data, uint32_t link_id, void *callback)
+{
+	if (WIFI_State != WIFI_READY)
+		return false;
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_SENDTCPDATA;
+	WIFI_ProcessingCommandCallback = callback;
+	char answer[64] = {0};
+	sprintf(answer, "AT+CIPSEND=%u,%u\r\n", link_id, strlen(data));
+	WIFI_SendCommand(answer); //Send CAT answer
+	char answer_data[64] = {0};
+	strcat(answer_data, data);
+	strcat(answer_data, "\r");
+	WIFI_SendCommand(answer_data); //Send CAT answer data
+	WIFI_ProcessingCommand = WIFI_COMM_NONE;
+	WIFI_State = WIFI_READY;
 	return true;
 }
