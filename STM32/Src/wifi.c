@@ -223,7 +223,7 @@ void WIFI_Process(void)
 					}
 				}
 			}
-			else if (WIFI_ProcessingCommand == WIFI_COMM_GETSNMP) //Get and sync SNMP time
+			else if (WIFI_ProcessingCommand == WIFI_COMM_GETSNTP) //Get and sync SNMP time
 			{
 				char *hrs_str = strchr(WIFI_readedLine, ' ');
 				if(hrs_str != NULL)
@@ -277,7 +277,7 @@ void WIFI_Process(void)
 												sTime.Seconds = sec;
 												BKPSRAM_Enable();
 												HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-												TRX_SNMP_Synced = true;
+												TRX_SNTP_Synced = HAL_GetTick();
 												sendToDebug_str("[WIFI] TIME SYNCED\r\n");
 											}
 										}
@@ -321,12 +321,12 @@ void WIFI_Process(void)
 	}
 }
 
-bool WIFI_GetSNMPTime(void *callback)
+bool WIFI_GetSNTPTime(void *callback)
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
 	WIFI_State = WIFI_PROCESS_COMMAND;
-	WIFI_ProcessingCommand = WIFI_COMM_GETSNMP;
+	WIFI_ProcessingCommand = WIFI_COMM_GETSNTP;
 	WIFI_ProcessingCommandCallback = callback;
 	WIFI_SendCommand("AT+CIPSNTPTIME?\r\n"); //get SNMP time
 	return true;

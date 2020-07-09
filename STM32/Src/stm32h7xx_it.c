@@ -557,8 +557,9 @@ void TIM6_DAC_IRQHandler(void)
 
     if (!WIFI_IP_Gotted) //Get resolved IP
       WIFI_GetIP(NULL);
-    if (!TRX_SNMP_Synced) //Sync time from internet
-      WIFI_GetSNMPTime(NULL);
+		uint32_t mstime = HAL_GetTick();
+    if (TRX_SNTP_Synced == 0 || (mstime > (SNTP_SYNC_INTERVAL * 1000) && TRX_SNTP_Synced < (mstime - SNTP_SYNC_INTERVAL * 1000))) //Sync time from internet
+      WIFI_GetSNTPTime(NULL);
 
     CPULOAD_Calc(); // Calculate CPU load
     TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();

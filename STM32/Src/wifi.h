@@ -8,7 +8,7 @@
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
 #define WIFI_FOUNDED_AP_MAXCOUNT 10
-#define WIFI_DEBUG false //вывод отладки WIFI в консоль
+#define WIFI_DEBUG true //вывод отладки WIFI в консоль
 
 typedef enum
 {
@@ -28,7 +28,7 @@ typedef enum
 {
 	WIFI_COMM_NONE = 0x00U,
 	WIFI_COMM_LISTAP = 0x01U,
-	WIFI_COMM_GETSNMP = 0x02U,
+	WIFI_COMM_GETSNTP = 0x02U,
 	WIFI_COMM_GETIP = 0x03U,
 	WIFI_COMM_GETSTATUS = 0x04U,
 	WIFI_COMM_DEEPSLEEP = 0x05U,
@@ -46,7 +46,7 @@ extern char WIFI_IP[15];
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);
 extern void WIFI_ListAP(void *callback);
-extern bool WIFI_GetSNMPTime(void *callback);
+extern bool WIFI_GetSNTPTime(void *callback);
 extern bool WIFI_GetIP(void *callback);
 //extern void WIFI_GetStatus(void);
 extern void WIFI_GoSleep(void);

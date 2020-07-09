@@ -33,7 +33,7 @@ volatile uint32_t TRX_Fan_Timeout = 0;	 //секунд, сколько ещё о
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile uint16_t TRX_Volume;
-volatile bool TRX_SNMP_Synced = false;
+volatile uint32_t TRX_SNTP_Synced = 0; //время последней синхронизации времени
 volatile int_fast16_t TRX_SHIFT = 0;
 volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
 volatile float32_t TRX_PWR_Forward = 0;
