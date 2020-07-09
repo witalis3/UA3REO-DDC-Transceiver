@@ -67,6 +67,7 @@ static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction);
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction);
+static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction);
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
@@ -243,6 +244,7 @@ static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 		{"WIFI Select AP", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SelectAP},
 		{"WIFI Set AP Pass", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SetAPpassword},
 		{"WIFI Timezone", SYSMENU_INT8, (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_HANDL_WIFI_Timezone},
+		{"WIFI CAT Server", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_HANDL_WIFI_CAT_Server},
 		{"", SYSMENU_INFOLINE, 0, 0},
 		{"IP:", SYSMENU_INFOLINE, 0, 0},
 		{WIFI_IP, SYSMENU_INFOLINE, 0, 0},
@@ -1321,6 +1323,14 @@ static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction)
 	WIFI_State = WIFI_INITED;
 }
 
+static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WIFI_CAT_SERVER = true;
+	if (direction < 0)
+		TRX.WIFI_CAT_SERVER = false;
+}
+
 //SET TIME MENU
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction)
@@ -2086,7 +2096,10 @@ void eventSecRotateSystemMenu(int8_t direction)
 		if (systemMenuIndex > 0)
 			systemMenuIndex--;
 		else
-			systemMenuIndex = *sysmenu_item_count_selected - 1;
+			if(!sysmenu_hiddenmenu_enabled && sysmenu_onroot)
+				systemMenuIndex = *sysmenu_item_count_selected - 2;
+			else
+				systemMenuIndex = *sysmenu_item_count_selected - 1;
 	}
 	else
 	{
@@ -2098,9 +2111,9 @@ void eventSecRotateSystemMenu(int8_t direction)
 			systemMenuIndex = 0;
 	}
 	if (!sysmenu_hiddenmenu_enabled && sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_HIDDEN_MENU)
-		systemMenuIndex--;
+		systemMenuIndex = 0;
 	while (systemMenuIndex > 0 && sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE)
-		systemMenuIndex--;
+		systemMenuIndex = 0;
 
 	redrawCurrentItem();
 	if (sysmenu_onroot)

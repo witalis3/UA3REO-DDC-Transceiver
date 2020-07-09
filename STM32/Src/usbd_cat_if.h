@@ -10,6 +10,7 @@ extern "C"
 
 	extern USBD_CAT_ItfTypeDef USBD_CAT_fops_FS;
 	extern void ua3reo_dev_cat_parseCommand(void);
+	extern void CAT_SetWIFICommand(char *data, uint32_t length);
 
 #ifdef __cplusplus
 }

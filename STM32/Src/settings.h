@@ -173,6 +173,7 @@ extern struct TRX_SETTINGS
 	uint16_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
 	int8_t AGC_GAIN_TARGET;
+	bool WIFI_CAT_SERVER;
 	
 	uint8_t ENDBit;
 } TRX;

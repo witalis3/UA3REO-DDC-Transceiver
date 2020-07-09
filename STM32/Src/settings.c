@@ -138,7 +138,7 @@ void LoadSettings(bool clear)
 		TRX.CW_GENERATOR_SHIFT_HZ = 500;			//смещение гетеродина в CW моде
 		TRX.Key_timeout = 500;						//время отпуская передачи после последнего знака на ключе
 		TRX.FFT_Averaging = 4;						//усреднение FFT, чтобы сделать его более гладким
-		TRX.WIFI_Enabled = false;					//активировать WiFi
+		TRX.WIFI_Enabled = true;					//активировать WiFi
 		strcpy(TRX.WIFI_AP, "WIFI-AP");				//точка доступа WiFi
 		strcpy(TRX.WIFI_PASSWORD, "WIFI-PASSWORD"); //пароль к точке WiFi
 		TRX.WIFI_TIMEZONE = 3;						//часовой пояс (для синхронизации времени)
@@ -172,6 +172,7 @@ void LoadSettings(bool clear)
 		TRX.FRQ_ENC_STEP = 25000;		//шаг перестройки частоты основным доп. энкодером
 		TRX.FRQ_ENC_FAST_STEP = 100000; //шаг перестройки частоты основным доп. энкодером в режиме FAST
 		TRX.AGC_GAIN_TARGET = -30; //Максимальное (целевое) усиление AGC
+		TRX.WIFI_CAT_SERVER = true;	//Сервер для приёма CAT команд по WIFI
 
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

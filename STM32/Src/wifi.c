@@ -6,6 +6,7 @@
 #include "trx_manager.h"
 #include "lcd.h"
 #include <stdlib.h>
+#include "usbd_cat_if.h"
 
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static void (*WIFI_ProcessingCommandCallback)(void);
@@ -24,6 +25,7 @@ static bool WIFI_ListAP_Sync(void);
 static bool WIFI_TryGetLine(void);
 
 bool WIFI_connected = false;
+bool WIFI_CAT_server_started = false;
 volatile uint8_t WIFI_InitStateIndex = 0;
 volatile WiFiState WIFI_State = WIFI_UNDEFINED;
 static char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
@@ -106,6 +108,10 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CWCOUNTRY_CUR=1,\"RU\",1,13\r\n"); //Country
 		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CIPMUX=1\r\n"); //Multiple server connections
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CIPSERVERMAXCONN=3\r\n"); //Max server connections
+		WIFI_WaitForOk();
 		strcat(com_t, "AT+CIPSNTPCFG=1,");
 		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
 		strcat(com_t, tz);
@@ -134,7 +140,7 @@ void WIFI_Process(void)
 			strcat(com, TRX.WIFI_PASSWORD);
 			strcat(com, "\"\r\n");
 			WIFI_SendCommand(com); //connect to AP
-			WIFI_WaitForOk();
+			//WIFI_WaitForOk();
 			WIFI_State = WIFI_CONNECTING;
 		}
 		break;
@@ -153,7 +159,7 @@ void WIFI_Process(void)
 		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL)
 		{
 			sendToDebug_str("[WIFI] Disconnected\r\n");
-			WIFI_State = WIFI_CONFIGURED;
+			//WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 			LCD_UpdateQuery.StatusInfoBar = true;
 		}
@@ -174,7 +180,34 @@ void WIFI_Process(void)
 		break;
 
 	case WIFI_READY:
+		WIFI_TryGetLine();
 		WIFI_ProcessingCommandCallback = 0;
+		//receive commands from WIFI clients
+		if (strstr(WIFI_readedLine, "+IPD") != NULL)
+		{
+			char* wifi_incoming_link_id = strchr(WIFI_readedLine, ',');
+			if(wifi_incoming_link_id == NULL) break;
+			wifi_incoming_link_id++;
+			
+			char* wifi_incoming_length = strchr(wifi_incoming_link_id, ',');
+			if(wifi_incoming_length == NULL) break;
+			*wifi_incoming_length = 0x00;
+			wifi_incoming_length++;
+			
+			char* wifi_incoming_data = strchr(wifi_incoming_length, ':');
+			if(wifi_incoming_data == NULL) break;
+			*wifi_incoming_data = 0x00;
+			wifi_incoming_data++;
+			
+			uint32_t wifi_incoming_length_uint = (uint32_t)atoi(wifi_incoming_length);
+			if(wifi_incoming_length_uint > 64) 
+				wifi_incoming_length_uint = 64;
+			char* wifi_incoming_data_end = wifi_incoming_data + wifi_incoming_length_uint;
+			*wifi_incoming_data_end = 0x00;
+
+			sendToDebug_str3("[WIFI] Command received: ", wifi_incoming_data, "\r\n");
+			CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint);
+		}
 		break;
 
 	case WIFI_TIMEOUT:
@@ -195,17 +228,38 @@ void WIFI_Process(void)
 		}
 		else if (strstr(WIFI_readedLine, "OK") != NULL)
 		{
-			if (WIFI_ProcessingCommand == WIFI_COMM_LISTAP) //ListAP Command Ended
+			//ListAP Command Ended
+			if (WIFI_ProcessingCommand == WIFI_COMM_LISTAP)
 				for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+				{
 					strcpy((char *)&WIFI_FoundedAP[i], (char *)&WIFI_FoundedAP_InWork[i]);
+					WIFI_stop_auto_ap_list = false;
+				}
+			//Create Server Command Ended
+			if (WIFI_ProcessingCommand == WIFI_COMM_CREATESERVER)
+			{
+				WIFI_CAT_server_started = true;
+				sendToDebug_strln("[WIFI] CAT Server started on port 6784");
+				WIFI_State = WIFI_READY;
+			}
+			//SNTP Command Ended
+			if (WIFI_ProcessingCommand == WIFI_COMM_GETSNTP)
+			{
+				WIFI_State = WIFI_READY;
+			}
+			//Get IP Command Ended
+			if (WIFI_ProcessingCommand == WIFI_COMM_GETIP)
+			{
+				WIFI_State = WIFI_READY;
+			}
+			//Some stuff
 			if (WIFI_ProcessingCommandCallback != NULL)
 			{
 				WIFI_ProcessingCommandCallback();
 			}
 			WIFI_ProcessingCommand = WIFI_COMM_NONE;
-			WIFI_stop_auto_ap_list = false;
 		}
-		else if (strlen(WIFI_readedLine) > 5)
+		else if (strlen(WIFI_readedLine) > 5) //read command output
 		{
 			if (WIFI_ProcessingCommand == WIFI_COMM_LISTAP) //ListAP Command process
 			{
@@ -451,6 +505,7 @@ static bool WIFI_WaitForOk(void)
 	}
 	return false;
 }
+
 static bool WIFI_TryGetLine(void)
 {
 	memset(WIFI_readedLine, 0x00, sizeof(WIFI_readedLine));
@@ -478,5 +533,16 @@ static bool WIFI_TryGetLine(void)
 	sendToDebug_str2("WIFI_R: ", WIFI_readedLine);
 #endif
 
+	return true;
+}
+
+bool WIFI_StartCATServer(void *callback)
+{
+	if (WIFI_State != WIFI_READY)
+		return false;
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_CREATESERVER;
+	WIFI_ProcessingCommandCallback = callback;
+	WIFI_SendCommand("AT+CIPSERVER=1,6784\r\n"); //Start CAT Server
 	return true;
 }

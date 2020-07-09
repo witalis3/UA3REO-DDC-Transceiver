@@ -203,6 +203,12 @@ static void CAT_Transmit(char *data)
 	CAT_Transmit_FS((uint8_t *)data, (uint16_t)strlen(data));
 }
 
+void CAT_SetWIFICommand(char *data, uint32_t length)
+{
+	memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
+	memcpy(command_to_parse, data, length);
+}
+
 void ua3reo_dev_cat_parseCommand(void)
 {
 	USBD_CAT_ReceivePacket(&hUsbDeviceFS); //prepare next command
