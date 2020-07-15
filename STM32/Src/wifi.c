@@ -42,10 +42,10 @@ void WIFI_Init(void)
 	WIFI_SendCommand("AT+GMR\r\n"); //system info ESP8266
 	WIFI_WaitForOk();
 	/*
-	AT version:1.6.2.0(Apr 13 2018 11:10:59)
-	SDK version:2.2.1(6ab97e9)
-	compile time:Jun  7 2018 19:34:27
-	Bin version(Wroom 02):1.6.2
+	AT version:1.7.4.0(May 11 2020 19:13:04)
+	SDK version:3.0.4(9532ceb)
+	compile time:May 27 2020 10:12:20
+	Bin version(Wroom 02):1.7.4
 	*/
 	WIFI_SendCommand("AT\r\n");
 	WIFI_WaitForOk();
@@ -100,13 +100,15 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+RFPOWER=82\r\n"); //rf power
 		WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CWMODE_CUR=1\r\n"); //station mode
+		WIFI_SendCommand("AT+CWMODE=1\r\n"); //station mode
 		WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CWDHCP_CUR=1,1\r\n"); //DHCP
+		WIFI_SendCommand("AT+CWDHCP=1,1\r\n"); //DHCP
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CIPDNS_CUR=1,\"8.8.8.8\"\r\n"); //DNS
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); //Hostname
 		WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CWCOUNTRY_CUR=1,\"RU\",1,13\r\n"); //Country
+		WIFI_SendCommand("AT+CWCOUNTRY=1,\"RU\",1,13\r\n"); //Country
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPSERVER=0\r\n"); //Stop CAT Server
 		WIFI_WaitForOk();
@@ -114,13 +116,14 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPSERVERMAXCONN=3\r\n"); //Max server connections
 		WIFI_WaitForOk();
-		
+	
 		strcat(com_t, "AT+CIPSNTPCFG=1,");
 		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
 		strcat(com_t, tz);
-		strcat(com_t, ",\"pool.ntp.org\"\r\n");
+		strcat(com_t, ",\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n");
 		WIFI_SendCommand(com_t); //configure SNMP
 		WIFI_WaitForOk();
+		
 		WIFI_stop_auto_ap_list = false;
 		WIFI_IP_Gotted = false;
 		WIFI_State = WIFI_CONFIGURED;
@@ -186,7 +189,7 @@ void WIFI_Process(void)
 		WIFI_TryGetLine();
 		WIFI_ProcessingCommandCallback = 0;
 		//receive commands from WIFI clients
-		/*if (strstr(WIFI_readedLine, "+IPD") != NULL)
+		if (strstr(WIFI_readedLine, "+IPD") != NULL)
 		{
 			char* wifi_incoming_link_id = strchr(WIFI_readedLine, ',');
 			if(wifi_incoming_link_id == NULL) break;
@@ -214,7 +217,7 @@ void WIFI_Process(void)
 
 			sendToDebug_str3("[WIFI] Command received: ", wifi_incoming_data, "\r\n");
 			CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
-		}*/
+		}
 		break;
 
 	case WIFI_TIMEOUT:
