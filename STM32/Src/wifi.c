@@ -108,12 +108,13 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CWCOUNTRY_CUR=1,\"RU\",1,13\r\n"); //Country
 		WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CIPMUX=1\r\n"); //Multiple server connections
-		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPSERVER=0\r\n"); //Stop CAT Server
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CIPMUX=1\r\n"); //Multiple server connections
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPSERVERMAXCONN=3\r\n"); //Max server connections
 		WIFI_WaitForOk();
+		
 		strcat(com_t, "AT+CIPSNTPCFG=1,");
 		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
 		strcat(com_t, tz);
@@ -185,7 +186,7 @@ void WIFI_Process(void)
 		WIFI_TryGetLine();
 		WIFI_ProcessingCommandCallback = 0;
 		//receive commands from WIFI clients
-		if (strstr(WIFI_readedLine, "+IPD") != NULL)
+		/*if (strstr(WIFI_readedLine, "+IPD") != NULL)
 		{
 			char* wifi_incoming_link_id = strchr(WIFI_readedLine, ',');
 			if(wifi_incoming_link_id == NULL) break;
@@ -213,7 +214,7 @@ void WIFI_Process(void)
 
 			sendToDebug_str3("[WIFI] Command received: ", wifi_incoming_data, "\r\n");
 			CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
-		}
+		}*/
 		break;
 
 	case WIFI_TIMEOUT:
@@ -244,6 +245,8 @@ void WIFI_Process(void)
 			//Create Server Command Ended
 			if (WIFI_ProcessingCommand == WIFI_COMM_CREATESERVER)
 			{
+				WIFI_SendCommand("AT+CIPSTO=5\r\n"); //Connection timeout
+				WIFI_WaitForOk();
 				WIFI_CAT_server_started = true;
 				sendToDebug_strln("[WIFI] CAT Server started on port 6784");
 				WIFI_State = WIFI_READY;
