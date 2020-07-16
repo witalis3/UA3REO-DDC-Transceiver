@@ -108,10 +108,10 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); //Hostname
 		WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CWCOUNTRY=1,\"RU\",1,13\r\n"); //Country
-		WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CIPSERVER=0\r\n"); //Stop CAT Server
-		WIFI_WaitForOk();
+		//WIFI_SendCommand("AT+CWCOUNTRY=1,\"RU\",1,13\r\n"); //Country
+		//WIFI_WaitForOk();
+		//WIFI_SendCommand("AT+CIPSERVER=0\r\n"); //Stop CAT Server
+		//WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPMUX=1\r\n"); //Multiple server connections
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPSERVERMAXCONN=3\r\n"); //Max server connections
@@ -209,14 +209,18 @@ void WIFI_Process(void)
 			uint32_t wifi_incoming_link_id_uint = (uint32_t)atoi(wifi_incoming_link_id);
 			if(wifi_incoming_length_uint > 64) 
 				wifi_incoming_length_uint = 64;
+			if(wifi_incoming_length_uint > 0)
+				wifi_incoming_length_uint--; //del /n char
 			if(wifi_incoming_link_id_uint > 8) 
 				wifi_incoming_link_id_uint = 8;
 			
 			char* wifi_incoming_data_end = wifi_incoming_data + wifi_incoming_length_uint;
 			*wifi_incoming_data_end = 0x00;
 
-			sendToDebug_str3("[WIFI] Command received: ", wifi_incoming_data, "\r\n");
-			CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
+			if(WIFI_DEBUG)
+				sendToDebug_str3("[WIFI] Command received: ", wifi_incoming_data, "\r\n");
+			if(wifi_incoming_length_uint > 0)
+				CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
 		}
 		break;
 
@@ -248,7 +252,7 @@ void WIFI_Process(void)
 			//Create Server Command Ended
 			if (WIFI_ProcessingCommand == WIFI_COMM_CREATESERVER)
 			{
-				WIFI_SendCommand("AT+CIPSTO=5\r\n"); //Connection timeout
+				WIFI_SendCommand("AT+CIPSTO=3600\r\n"); //Connection timeout
 				WIFI_WaitForOk();
 				WIFI_CAT_server_started = true;
 				sendToDebug_strln("[WIFI] CAT Server started on port 6784");
