@@ -486,8 +486,10 @@ void TIM6_DAC_IRQHandler(void)
 	if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
 	{
 		TRX_Fan_Timeout += 2; //дуем после перехода на приём столько, сколько работали на передачу
-		if (TRX_Fan_Timeout > (60 * 100))
-			TRX_Fan_Timeout = 60 * 100; //но не более минуты
+		if(TRX.RF_Power > 60)
+			TRX_Fan_Timeout += 1; //если мощность большая - подольше
+		if (TRX_Fan_Timeout > (40 * 100))
+			TRX_Fan_Timeout = 40 * 100; //но не более 40 сек
 	}
 	
   //эмулируем PTT по CAT

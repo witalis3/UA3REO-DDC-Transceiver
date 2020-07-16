@@ -546,7 +546,12 @@ void processTxAudio(void)
 		if (fabsf(ALC_need_gain_target - ALC_need_gain) > 0.00001f) //гистерезис
 		{
 			if (ALC_need_gain_target > ALC_need_gain)
-				ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_AGC_speed / 1000.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_AGC_speed / 1000.0f));
+			{
+				if (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U) //FAST AGC
+					ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_AGC_speed / 30.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_AGC_speed / 30.0f));
+				else //SLOW AGC
+					ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_AGC_speed / 1000.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_AGC_speed / 1000.0f));
+			}
 		}
 		//на всякий случай
 		if (ALC_need_gain < 0.0f)
@@ -564,7 +569,7 @@ void processTxAudio(void)
 			ALC_need_gain = 0.0f;
 	}
 	//отключаем усиление для некоторых видов мод
-	if ((ALC_need_gain > 1.0f) && (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U))
+	if ((ALC_need_gain > 1.0f) && (mode == TRX_MODE_LOOPBACK))
 		ALC_need_gain = 1.0f;
 	if (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U || mode == TRX_MODE_NFM || mode == TRX_MODE_WFM)
 		ALC_need_gain = 1.0f;
