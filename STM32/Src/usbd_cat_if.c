@@ -204,14 +204,12 @@ static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len)
 
 static void CAT_Transmit(char *data)
 {
+	CAT_Transmit_FS((uint8_t *)data, (uint16_t)strlen(data));
+	//sendToDebug_str3("CAT command answer: |",data,"|\r\n");
 	if(CAT_processingWiFiCommand)
 	{
 		WIFI_SendCatAnswer(data, CAT_processingWiFi_link_id, NULL);
 		CAT_processingWiFiCommand = false;
-	}
-	else
-	{
-		CAT_Transmit_FS((uint8_t *)data, (uint16_t)strlen(data));
 	}
 }
 
