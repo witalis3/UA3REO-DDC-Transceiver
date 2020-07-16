@@ -392,11 +392,9 @@ void processTxAudio(void)
 	}
 	else //AUDIO CODEC AUDIO
 	{
-		uint32_t dma_index = 0;
-		if(WM8731_DMA_state)
-			dma_index = CODEC_AUDIO_BUFFER_SIZE / 2;
-		else
-			dma_index = CODEC_AUDIO_BUFFER_SIZE;
+		uint32_t dma_index = CODEC_AUDIO_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(hi2s3.hdmarx);
+		if ((dma_index % 2) == 1)
+			dma_index--;
 		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&Processor_AudioBuffer_A[0], dma_index, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
 	}
 
@@ -438,7 +436,20 @@ void processTxAudio(void)
 			FPGA_Audio_Buffer_TX_I_tmp[i] = (float32_t)Processor_AudioBuffer_A[i * 2] / 2147483648.0f;
 			FPGA_Audio_Buffer_TX_Q_tmp[i] = (float32_t)Processor_AudioBuffer_A[i * 2 + 1] / 2147483648.0f;
 		}
-
+		
+		//Mic Gain
+		if (!TRX.InputType_USB)
+		{
+			arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, TRX.MIC_GAIN, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
+			arm_scale_f32(FPGA_Audio_Buffer_TX_Q_tmp, TRX.MIC_GAIN, FPGA_Audio_Buffer_TX_Q_tmp, AUDIO_BUFFER_HALF_SIZE);
+		}
+		//USB Gain (24bit)
+		if (TRX.InputType_USB)
+		{
+			arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, 10.0f, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
+			arm_scale_f32(FPGA_Audio_Buffer_TX_Q_tmp, 10.0f, FPGA_Audio_Buffer_TX_Q_tmp, AUDIO_BUFFER_HALF_SIZE);
+		}
+		
     //Process DC corrector filter
 		dc_filter(FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE, DC_FILTER_TX_I);
 		dc_filter(FPGA_Audio_Buffer_TX_Q_tmp, AUDIO_BUFFER_HALF_SIZE, DC_FILTER_TX_Q);
@@ -535,17 +546,17 @@ void processTxAudio(void)
 		if (fabsf(ALC_need_gain_target - ALC_need_gain) > 0.00001f) //гистерезис
 		{
 			if (ALC_need_gain_target > ALC_need_gain)
-				ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_AGC_speed / 30.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_AGC_speed / 30.0f));
+				ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_AGC_speed / 1000.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_AGC_speed / 1000.0f));
 		}
-		//для DIGI мод фиксируем усиление
-		if (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U)
-			ALC_need_gain = 10.0f * (Processor_selected_RFpower_amplitude / TRX_MAX_TX_Amplitude);
 		//на всякий случай
 		if (ALC_need_gain < 0.0f)
 			ALC_need_gain = 0.0f;
 		//перегрузка (клиппинг), резко снижаем усиление
 		if ((ALC_need_gain * Processor_TX_MAX_amplitude_IN) > (Processor_selected_RFpower_amplitude * 1.0f))
+		{
 			ALC_need_gain = ALC_need_gain_target;
+			//sendToDebug_str("MIC_CLIP");
+		}
 		if (ALC_need_gain > TX_AGC_MAXGAIN)
 			ALC_need_gain = TX_AGC_MAXGAIN;
 		//шумовой порог
@@ -553,7 +564,7 @@ void processTxAudio(void)
 			ALC_need_gain = 0.0f;
 	}
 	//отключаем усиление для некоторых видов мод
-	if ((ALC_need_gain > 1.0f) && (mode == TRX_MODE_LOOPBACK))
+	if ((ALC_need_gain > 1.0f) && (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U))
 		ALC_need_gain = 1.0f;
 	if (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U || mode == TRX_MODE_NFM || mode == TRX_MODE_WFM)
 		ALC_need_gain = 1.0f;
@@ -563,7 +574,7 @@ void processTxAudio(void)
 	//применяем усиление
 	arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, ALC_need_gain, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
 	arm_scale_f32(FPGA_Audio_Buffer_TX_Q_tmp, ALC_need_gain, FPGA_Audio_Buffer_TX_Q_tmp, AUDIO_BUFFER_HALF_SIZE);
-
+	
 	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN * ALC_need_gain;
 	if(Processor_selected_RFpower_amplitude > 0.0f)
 		TRX_ALC = Processor_TX_MAX_amplitude_OUT / Processor_selected_RFpower_amplitude;

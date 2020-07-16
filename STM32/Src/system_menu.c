@@ -29,6 +29,7 @@ static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_Gain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
@@ -190,6 +191,7 @@ static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 	{
 		{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
 		{"AGC Gain target, dBFS", SYSMENU_INT8, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
+		{"Mic Gain", SYSMENU_UINT8, (uint32_t *)&TRX.MIC_GAIN, SYSMENU_HANDL_AUDIO_MIC_Gain},
 		{"Noise Blanker", SYSMENU_BOOLEAN, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_AUDIO_NOISE_BLANKER},
 		{"DNR Threshold", SYSMENU_UINT8, (uint32_t *)&TRX.DNR_SNR_THRESHOLD, SYSMENU_HANDL_AUDIO_DNR_THRES},
 		{"DNR Average", SYSMENU_UINT8, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_AUDIO_DNR_AVERAGE},
@@ -661,6 +663,15 @@ static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction)
 		TRX.AGC_GAIN_TARGET = -10;
 }
 
+static void SYSMENU_HANDL_AUDIO_MIC_Gain(int8_t direction)
+{
+	TRX.MIC_GAIN += direction;
+	if (TRX.MIC_GAIN < 1)
+		TRX.MIC_GAIN = 1;
+	if (TRX.MIC_GAIN > 20)
+		TRX.MIC_GAIN = 20;
+}
+
 static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction)
 {
 	if (direction > 0)
@@ -710,7 +721,7 @@ static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction)
 	TRX.TX_AGC_speed += direction;
 	if (TRX.TX_AGC_speed < 1)
 		TRX.TX_AGC_speed = 1;
-	if (TRX.TX_AGC_speed > 3)
+	if (TRX.TX_AGC_speed > 10)
 		TRX.TX_AGC_speed = 10;
 }
 

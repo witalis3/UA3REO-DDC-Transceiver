@@ -173,6 +173,7 @@ void LoadSettings(bool clear)
 		TRX.FRQ_ENC_FAST_STEP = 100000; //шаг перестройки частоты основным доп. энкодером в режиме FAST
 		TRX.AGC_GAIN_TARGET = -35; //Максимальное (целевое) усиление AGC
 		TRX.WIFI_CAT_SERVER = true;	//Сервер для приёма CAT команд по WIFI
+		TRX.MIC_GAIN = 3;			//Усиление микрофона
 
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

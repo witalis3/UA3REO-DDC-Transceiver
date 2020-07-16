@@ -150,6 +150,12 @@ void TRX_ptt_change(void)
 	if (TRX_ptt_hard != TRX_new_ptt_hard)
 	{
 		TRX_ptt_hard = TRX_new_ptt_hard;
+		if(TRX_ptt_hard && (CurrentVFO()->Mode==TRX_MODE_LSB || CurrentVFO()->Mode==TRX_MODE_USB) && TRX.InputType_USB)
+		{
+			TRX.InputType_USB = false;
+			TRX.InputType_MIC = true;
+			TRX.InputType_LINE = false;
+		}
 		TRX_ptt_cat = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		FPGA_NeedSendParams = true;
@@ -158,6 +164,12 @@ void TRX_ptt_change(void)
 	if (TRX_ptt_cat != TRX_old_ptt_cat)
 	{
 		TRX_old_ptt_cat = TRX_ptt_cat;
+		if(TRX_ptt_cat && (CurrentVFO()->Mode==TRX_MODE_DIGI_L || CurrentVFO()->Mode==TRX_MODE_DIGI_U))
+		{
+			TRX.InputType_USB = true;
+			TRX.InputType_MIC = false;
+			TRX.InputType_LINE = false;
+		}
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();

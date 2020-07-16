@@ -17,7 +17,7 @@
 #define AGC_MAX_GAIN 50.0f				//Максимальное усиление в AGC, dB
 #define AGC_NOISE_GATE -90.0f			//ниже этого уровня - не усиливаем
 #define TUNE_POWER 100					//% от выбранной в настройках мощности при запуске TUNE (100 - полная)
-#define TX_AGC_MAXGAIN 500.0f			//Максимальное усиление микрофона при компрессировании
+#define TX_AGC_MAXGAIN 5.0f			//Максимальное усиление микрофона при компрессировании
 #define TX_AGC_NOISEGATE 0.00001f		//Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
 #define TOUCHPAD_DELAY 200				//Время защиты от анти-дребезга нажания на тачпад
 #define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
@@ -27,7 +27,7 @@
 #define SHOW_LOGO true					//Отображать логотип при загрузке (из images.h)
 #define POWERDOWN_TIMEOUT 1000			//время нажатия на кнопку выключения, для срабатывания, мс
 #define USB_RESTART_TIMEOUT 5000		//время, через которое происходит рестарт USB если нет пакетов
-#define FPGA_FLASH_IN_HEX true					//включить прошивку FPGA в прошивку STM32
+#define FPGA_FLASH_IN_HEX false					//включить прошивку FPGA в прошивку STM32
 #define SNTP_SYNC_INTERVAL (60 * 60)					//Интервал синхронизации времени через NTP, сек
 	
 #define ILI9481 true					//он же HX8357B //другие комментируем
@@ -174,6 +174,7 @@ extern struct TRX_SETTINGS
 	uint32_t FRQ_ENC_FAST_STEP;
 	int8_t AGC_GAIN_TARGET;
 	bool WIFI_CAT_SERVER;
+	uint8_t MIC_GAIN;
 	
 	uint8_t ENDBit;
 } TRX;
