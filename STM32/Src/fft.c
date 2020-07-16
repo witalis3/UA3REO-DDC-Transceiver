@@ -408,12 +408,13 @@ void FFT_printFFT(void)
 	//разделитель и полоса приёма
 	LCDDriver_drawFastHLine(0, LAY_FFT_WTF_POS_Y - 2, LAY_FFT_PRINT_SIZE, COLOR_BLACK);
 	int16_t line_width = 0;
+	float32_t hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 	switch (CurrentVFO()->Mode)
 	{
 	case TRX_MODE_LSB:
 	case TRX_MODE_CW_L:
 	case TRX_MODE_DIGI_L:
-		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom);
+		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
 		if (line_width > (LAY_FFT_PRINT_SIZE / 2))
 			line_width = LAY_FFT_PRINT_SIZE / 2;
 		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y - 2, -line_width, COLOR_GREEN);
@@ -421,14 +422,14 @@ void FFT_printFFT(void)
 	case TRX_MODE_USB:
 	case TRX_MODE_CW_U:
 	case TRX_MODE_DIGI_U:
-		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom);
+		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
 		if (line_width > (LAY_FFT_PRINT_SIZE / 2))
 			line_width = LAY_FFT_PRINT_SIZE / 2;
 		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y - 2, line_width, COLOR_GREEN);
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
-		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / FFT_HZ_IN_PIXEL * TRX.FFT_Zoom * 2);
+		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom * 2);
 		if (line_width > LAY_FFT_PRINT_SIZE)
 			line_width = LAY_FFT_PRINT_SIZE;
 		LCDDriver_drawFastHLine((uint16_t)((LAY_FFT_PRINT_SIZE / 2) - (line_width / 2)), (uint16_t)(LAY_FFT_WTF_POS_Y - 2), line_width, COLOR_GREEN);
