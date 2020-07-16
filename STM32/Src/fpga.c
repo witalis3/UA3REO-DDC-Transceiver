@@ -675,7 +675,7 @@ static uint8_t FPGA_spi_start_command(uint8_t command) //выполнение к
 	//STAGE 3 READ ANSWER (F701)
 	FPGA_clockRise();
 	FPGA_setBusInput();
-	uint8_t data = FPGA_readPacket();
+	uint8_t data = FPGA_readPacket;
 	FPGA_clockFall();
 	FPGA_FLASH_READ_DELAY
 	
@@ -703,7 +703,7 @@ static uint8_t FPGA_spi_continue_command(uint8_t writedata) //продолжен
 	//STAGE 3 READ ANSWER (F701)
 	FPGA_clockRise();
 	FPGA_setBusInput();
-	uint8_t data = FPGA_readPacket();
+	uint8_t data = FPGA_readPacket;
 	FPGA_clockFall();
 	FPGA_FLASH_READ_DELAY
 	
@@ -768,24 +768,24 @@ static bool FPGA_spi_flash_verify(bool full) //проверка flash памят
 	uint32_t file_pos = 0;
 	uint32_t flash_pos = 1;
 	int32_t decoded = 0;
-	while (file_pos < sizeof(FILES_OUTPUT_FILE_JIC))
+	while (file_pos < sizeof(FILES_UA3REO_JIC))
 	{
-		if ((int8_t)FILES_OUTPUT_FILE_JIC[file_pos] < 0) //нет повторов
+		if ((int8_t)FILES_UA3REO_JIC[file_pos] < 0) //нет повторов
 		{
-			uint8_t count = (-(int8_t)FILES_OUTPUT_FILE_JIC[file_pos]);
+			uint8_t count = (-(int8_t)FILES_UA3REO_JIC[file_pos]);
 			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
 				if((decoded - FPGA_flash_file_offset) >= 0)
 				{
-					if(file_pos < sizeof(FILES_OUTPUT_FILE_JIC) && rev8((uint8_t)data) != FILES_OUTPUT_FILE_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
+					if(file_pos < sizeof(FILES_UA3REO_JIC) && rev8((uint8_t)data) != FILES_UA3REO_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 					{
 						errors++;
 						sendToDebug_uint32(flash_pos, true);
 						sendToDebug_str(": FPGA: ");
 						sendToDebug_hex(rev8((uint8_t)data), true);
 						sendToDebug_str(" HEX: ");
-						sendToDebug_hex(FILES_OUTPUT_FILE_JIC[file_pos], true);
+						sendToDebug_hex(FILES_UA3REO_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
 					}
@@ -798,20 +798,20 @@ static bool FPGA_spi_flash_verify(bool full) //проверка flash памят
 		}
 		else //повторы
 		{
-			uint8_t count = ((int8_t)FILES_OUTPUT_FILE_JIC[file_pos]);
+			uint8_t count = ((int8_t)FILES_UA3REO_JIC[file_pos]);
 			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
 				if((decoded - FPGA_flash_file_offset) >= 0)
 				{
-					if(file_pos < sizeof(FILES_OUTPUT_FILE_JIC) && rev8((uint8_t)data) != FILES_OUTPUT_FILE_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
+					if(file_pos < sizeof(FILES_UA3REO_JIC) && rev8((uint8_t)data) != FILES_UA3REO_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 					{
 						errors++;
 						sendToDebug_uint32(flash_pos, true);
 						sendToDebug_str(": FPGA: ");
 						sendToDebug_hex(rev8((uint8_t)data), true);
 						sendToDebug_str(" HEX: ");
-						sendToDebug_hex(FILES_OUTPUT_FILE_JIC[file_pos], true);
+						sendToDebug_hex(FILES_UA3REO_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
 					}
@@ -912,17 +912,17 @@ static void FPGA_spi_flash_write(void) //записать новое содер�
 	//Decompress RLE and write
 	uint32_t file_pos = 0;
 	int32_t decoded = 0;
-	while (file_pos < sizeof(FILES_OUTPUT_FILE_JIC))
+	while (file_pos < sizeof(FILES_UA3REO_JIC))
 	{
-		if ((int8_t)FILES_OUTPUT_FILE_JIC[file_pos] < 0) //нет повторов
+		if ((int8_t)FILES_UA3REO_JIC[file_pos] < 0) //нет повторов
 		{
-			uint8_t count = (-(int8_t)FILES_OUTPUT_FILE_JIC[file_pos]);
+			uint8_t count = (-(int8_t)FILES_UA3REO_JIC[file_pos]);
 			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
 				if((decoded - FPGA_flash_file_offset) >= 0 && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 				{
-					FPGA_spi_continue_command(rev8((uint8_t)FILES_OUTPUT_FILE_JIC[file_pos]));
+					FPGA_spi_continue_command(rev8((uint8_t)FILES_UA3REO_JIC[file_pos]));
 					flash_pos++;
 					page_pos++;
 					if(page_pos >= FPGA_page_size)
@@ -944,13 +944,13 @@ static void FPGA_spi_flash_write(void) //записать новое содер�
 		}
 		else //повторы
 		{
-			uint8_t count = ((int8_t)FILES_OUTPUT_FILE_JIC[file_pos]);
+			uint8_t count = ((int8_t)FILES_UA3REO_JIC[file_pos]);
 			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
 				if((decoded - FPGA_flash_file_offset) >= 0 && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 				{
-					FPGA_spi_continue_command(rev8((uint8_t)FILES_OUTPUT_FILE_JIC[file_pos]));
+					FPGA_spi_continue_command(rev8((uint8_t)FILES_UA3REO_JIC[file_pos]));
 					flash_pos++;
 					page_pos++;
 					if(page_pos >= FPGA_page_size)
