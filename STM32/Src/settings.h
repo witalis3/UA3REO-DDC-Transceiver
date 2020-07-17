@@ -27,7 +27,7 @@
 #define SHOW_LOGO true					//Отображать логотип при загрузке (из images.h)
 #define POWERDOWN_TIMEOUT 1000			//время нажатия на кнопку выключения, для срабатывания, мс
 #define USB_RESTART_TIMEOUT 5000		//время, через которое происходит рестарт USB если нет пакетов
-#define FPGA_FLASH_IN_HEX false					//включить прошивку FPGA в прошивку STM32
+#define FPGA_FLASH_IN_HEX true					//включить прошивку FPGA в прошивку STM32
 #define SNTP_SYNC_INTERVAL (60 * 60)					//Интервал синхронизации времени через NTP, сек
 	
 #define ILI9481 true					//он же HX8357B //другие комментируем
