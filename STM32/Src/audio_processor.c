@@ -638,12 +638,19 @@ void processTxAudio(void)
 		{
 			if (Processor_TX_MAX_amplitude_IN > 0)
 			{
-				for (uint_fast16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
-					CODEC_Audio_Buffer_RX[i] = convertToSPIBigEndian((int32_t)(((float32_t)TRX_Volume / 100.0f) * 2000.0f * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ)));
+				float32_t volume_gain = volume2rate((float32_t)TRX_Volume / 1023.0f);
+				float32_t amplitude = (db2rateV(TRX.AGC_GAIN_TARGET) * volume_gain * CODEC_BITS_FULL_SCALE / 2.0f);
+				for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
+				{
+					CODEC_Audio_Buffer_RX[i * 2] = convertToSPIBigEndian((int32_t)(amplitude * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ)));
+					CODEC_Audio_Buffer_RX[i * 2 + 1] = CODEC_Audio_Buffer_RX[i * 2];
+				}
+				SCB_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 			}
 			else
 			{
 				memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
+				SCB_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 			}
 		}
 		//
