@@ -269,7 +269,7 @@ void LoadCalibration(void)
 		sendToDebug_strln("[OK] Loaded default calibrate settings");
 		SaveCalibration();
 	}
-	EEPROM_PowerDown();
+	EEPROM_PowerDown();	
 }
 
 VFO *CurrentVFO(void)
@@ -314,6 +314,7 @@ void SaveCalibration(void)
 	if (tryes >= EEPROM_REPEAT_TRYES)
 	{
 		sendToDebug_strln("[ERR] Erase EEPROM calibrate multiple errors");
+		EEPROM_Busy = false;
 		return;
 	}
 	tryes = 0;
@@ -325,6 +326,7 @@ void SaveCalibration(void)
 	if (tryes >= EEPROM_REPEAT_TRYES)
 	{
 		sendToDebug_strln("[ERR] Write EEPROM calibrate multiple errors");
+		EEPROM_Busy = false;
 		return;
 	}
 
