@@ -69,6 +69,7 @@ static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction);
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction);
 static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction);
+//static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
@@ -247,6 +248,7 @@ static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 		{"WIFI Set AP Pass", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SetAPpassword},
 		{"WIFI Timezone", SYSMENU_INT8, (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_HANDL_WIFI_Timezone},
 		{"WIFI CAT Server", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_HANDL_WIFI_CAT_Server},
+		//{"WIFI Update firmware", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_UpdateFW},
 		{"", SYSMENU_INFOLINE, 0, 0},
 		{"IP:", SYSMENU_INFOLINE, 0, 0},
 		{WIFI_IP, SYSMENU_INFOLINE, 0, 0},
@@ -266,7 +268,7 @@ static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) /
 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 	{
 		{"Encoder invert", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_INVERT, SYSMENU_HANDL_CALIB_ENCODER_INVERT},
-		{"Encoder2 inverte", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_HANDL_CALIB_ENCODER2_INVERT},
+		{"Encoder2 invert", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_HANDL_CALIB_ENCODER2_INVERT},
 		{"Encoder debounce", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE},
 		{"Encoder2 debounce", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE},
 		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
@@ -1341,6 +1343,11 @@ static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction)
 	if (direction < 0)
 		TRX.WIFI_CAT_SERVER = false;
 }
+
+/*static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
+{
+	WIFI_UpdateFW(NULL);
+}*/
 
 //SET TIME MENU
 

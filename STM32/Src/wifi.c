@@ -496,25 +496,28 @@ static void WIFI_SendCommand(char *command)
 	HAL_UART_Transmit_IT(&huart6, (uint8_t *)command, (uint16_t)strlen(command));
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
-#if WIFI_DEBUG //DEBUG
-	sendToDebug_str2("WIFI_S: ", command);
-#endif
+	if(WIFI_DEBUG) //DEBUG
+		sendToDebug_str2("WIFI_S: ", command);
 }
 
 static bool WIFI_WaitForOk(void)
 {
 	char *sep = "OK";
+	char *sep2 = "ERROR";
 	char *istr;
 	uint32_t startTime = HAL_GetTick();
 	while ((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
 	{
 		if (WIFI_TryGetLine())
 		{
+			//OK
 			istr = strstr(WIFI_readedLine, sep);
 			if (istr != NULL)
-			{
 				return true;
-			}
+			//ERROR
+			istr = strstr(WIFI_readedLine, sep2);
+			if (istr != NULL)
+				return false;
 		}
 		CPULOAD_GoToSleepMode();
 		CPULOAD_WakeUp();
@@ -545,9 +548,8 @@ static bool WIFI_TryGetLine(void)
 	if (WIFI_Answer_ReadIndex > dma_index)
 		WIFI_Answer_ReadIndex = dma_index;
 
-#if WIFI_DEBUG //DEBUG
-	sendToDebug_str2("WIFI_R: ", WIFI_readedLine);
-#endif
+	if(WIFI_DEBUG) //DEBUG
+		sendToDebug_str2("WIFI_R: ", WIFI_readedLine);
 
 	return true;
 }
@@ -579,5 +581,17 @@ bool WIFI_SendCatAnswer(char* data, uint32_t link_id, void *callback)
 	WIFI_SendCommand(answer_data); //Send CAT answer data
 	WIFI_ProcessingCommand = WIFI_COMM_NONE;
 	WIFI_State = WIFI_READY;
+	return true;
+}
+
+bool WIFI_UpdateFW(void *callback)
+{
+	if (WIFI_State != WIFI_READY)
+		return false;
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_UPDATEFW;
+	WIFI_ProcessingCommandCallback = callback;
+	WIFI_SendCommand("AT+CIUPDATE\r\n"); //Start Update Firmware
+	WIFI_WaitForOk();
 	return true;
 }

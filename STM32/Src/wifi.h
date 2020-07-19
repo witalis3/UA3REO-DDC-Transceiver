@@ -8,7 +8,7 @@
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
 #define WIFI_FOUNDED_AP_MAXCOUNT 10
-#define WIFI_DEBUG false //вывод отладки WIFI в консоль
+#define WIFI_DEBUG TRX.Debug_Console //вывод отладки WIFI в консоль
 
 typedef enum
 {
@@ -34,6 +34,7 @@ typedef enum
 	WIFI_COMM_DEEPSLEEP = 0x05U,
 	WIFI_COMM_CREATESERVER = 0x06U,
 	WIFI_COMM_SENDTCPDATA = 0x07U,
+	WIFI_COMM_UPDATEFW = 0x08U,
 } WiFiProcessingCommand;
 
 extern RTC_HandleTypeDef hrtc;
@@ -54,6 +55,7 @@ extern bool WIFI_GetIP(void *callback);
 //extern void WIFI_GetStatus(void);
 extern void WIFI_GoSleep(void);
 extern bool WIFI_StartCATServer(void *callback);
+extern bool WIFI_UpdateFW(void *callback);
 extern bool WIFI_SendCatAnswer(char* data, uint32_t link_id, void *callback);
 
 #endif
