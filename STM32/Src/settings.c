@@ -160,9 +160,9 @@ void LoadSettings(bool clear)
 		TRX.FFT_Style = 1;				 //стиль отображения FFT
 		TRX.ShiftEnabled = false;		 //активация режима SHIFT
 		TRX.SHIFT_INTERVAL = 5000;		 //Диапазон расстройки ручкой SHIFT (5000 = -5000hz / +5000hz)
-		TRX.DNR_SNR_THRESHOLD = 2;		 //Уровень цифрового шумоподавления
-		TRX.DNR_AVERAGE = 3;						//DNR усреднение при поиске средней магнитуды
-		TRX.DNR_MINIMAL = 18;						//DNR усреднение при поиске минимальной магнитуды
+		TRX.DNR_SNR_THRESHOLD = 15;		 //Уровень цифрового шумоподавления
+		TRX.DNR_AVERAGE = 5;						//DNR усреднение при поиске средней магнитуды
+		TRX.DNR_MINIMAL = 98;						//DNR усреднение при поиске минимальной магнитуды
 		TRX.NOISE_BLANKER = false;		//подавитель коротких импульсных помех NOISE BLANKER
 		TRX.FRQ_STEP = 10;				//шаг перестройки частоты основным энкодером
 		TRX.FRQ_FAST_STEP = 100;		//шаг перестройки частоты основным энкодером в режиме FAST

@@ -8,8 +8,8 @@
 #include "audio_processor.h"
 
 #define NOISE_REDUCTION_BLOCK_SIZE 64						  //размер блока для обработки в DNR
-#define NOISE_REDUCTION_FFT_SIZE 1024						  //размер FFT для обработки в DNR
-#define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len1024 //инстанс FFT
+#define NOISE_REDUCTION_FFT_SIZE 256						  //размер FFT для обработки в DNR
+#define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len256 //инстанс FFT
 #define NOISE_REDUCTION_FFT_SIZE_HALF (NOISE_REDUCTION_FFT_SIZE / 2)
 #define NOISE_REDUCTION_ALPHA 0.98f //time averaging constant
 #define NOISE_REDUCTION_BETA 0.25f	//frequency averaging constant

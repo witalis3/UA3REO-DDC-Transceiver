@@ -86,31 +86,37 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 				instance->FFT_COMPLEX_MAG[idx] = sqrtf(instance->FFT_Buffer[idx * 2] * instance->FFT_Buffer[idx * 2] + instance->FFT_Buffer[idx * 2 + 1] * instance->FFT_Buffer[idx * 2 + 1]);
 			//average magnitude
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
-				instance->FFT_AVERAGE_MAG[idx] = (instance->FFT_AVERAGE_MAG[idx] + instance->FFT_COMPLEX_MAG[idx]) / (float32_t)TRX.DNR_AVERAGE;
+				instance->FFT_AVERAGE_MAG[idx] = instance->FFT_COMPLEX_MAG[idx] * (1.0f - (float32_t)TRX.DNR_AVERAGE / 500.0f) + instance->FFT_AVERAGE_MAG[idx] * ((float32_t)TRX.DNR_AVERAGE / 500.0f);
 			//minimum magnitude
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				if (instance->FFT_MINIMUM_MAG[idx] > instance->FFT_COMPLEX_MAG[idx])
 					instance->FFT_MINIMUM_MAG[idx] = instance->FFT_COMPLEX_MAG[idx];
 				else
-					instance->FFT_MINIMUM_MAG[idx] += instance->FFT_COMPLEX_MAG[idx] / (float32_t)TRX.DNR_MINIMAL;
+					instance->FFT_MINIMUM_MAG[idx] = instance->FFT_COMPLEX_MAG[idx] * (1.0f - (float32_t)TRX.DNR_MINIMAL / 100.0f) + instance->FFT_MINIMUM_MAG[idx] * ((float32_t)TRX.DNR_MINIMAL / 100.0f);
 			//calculate signal-noise-ratio
+			float32_t threshold = ((float32_t)TRX.DNR_SNR_THRESHOLD + 10.0f) / 10.0f;
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
 				float32_t snr = instance->FFT_COMPLEX_MAG[idx] / instance->FFT_MINIMUM_MAG[idx];
 				float32_t lambda = 0.0f;
-				if (snr > (float32_t)TRX.DNR_SNR_THRESHOLD)
+				if (snr > threshold)
+				{
 					lambda = instance->FFT_MINIMUM_MAG[idx];
+				}
 				else
+				{
 					lambda = instance->FFT_AVERAGE_MAG[idx];
+				}
 				//gain calc
 				float32_t gain = 0.0f;
 				if (instance->FFT_COMPLEX_MAG[idx] > 0.0f)
 					gain = 1.0f - (lambda / instance->FFT_COMPLEX_MAG[idx]);
 				//time smoothing (exponential averaging) of gain weights
-				instance->NR_GAIN[idx] = NOISE_REDUCTION_ALPHA * instance->NR_GAIN[idx] + (1 - NOISE_REDUCTION_ALPHA) * gain;
+				instance->NR_GAIN[idx] = NOISE_REDUCTION_ALPHA * instance->NR_GAIN[idx] + (1.0f - NOISE_REDUCTION_ALPHA) * gain;
 				//frequency smoothing of gain weights
-				if (idx > 0 && idx < NOISE_REDUCTION_FFT_SIZE_HALF - 1)
-					instance->NR_GAIN[idx] = NOISE_REDUCTION_BETA * instance->NR_GAIN[idx - 1] + (1 - 2 * NOISE_REDUCTION_BETA) * instance->NR_GAIN[idx] + NOISE_REDUCTION_BETA * instance->NR_GAIN[idx + 1];
+				if (idx > 0 && idx < NOISE_REDUCTION_FFT_SIZE_HALF)
+					instance->NR_GAIN[idx] = NOISE_REDUCTION_BETA * instance->NR_GAIN[idx - 1] + (1.0f - 2 * NOISE_REDUCTION_BETA) * instance->NR_GAIN[idx] + NOISE_REDUCTION_BETA * instance->NR_GAIN[idx + 1];
+				//if (snr < threshold) instance->NR_GAIN[idx] = 0.0f; //DEBUG
 			}
 			//apply gain weighting
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
