@@ -42,6 +42,12 @@ static float32_t EQ_RX_HIG_FILTER_State[2 * EQ_STAGES];
 static float32_t EQ_RX_LOW_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_RX_MID_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_RX_HIG_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_MIC_LOW_FILTER_State[2 * EQ_STAGES];
+static float32_t EQ_MIC_MID_FILTER_State[2 * EQ_STAGES];
+static float32_t EQ_MIC_HIG_FILTER_State[2 * EQ_STAGES];
+static float32_t EQ_MIC_LOW_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_MIC_MID_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_MIC_HIG_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static DC_filter_state_type DC_Filter_State[8] = {0}; //состояния DC-корректора
 
 //Коллекция фильтров
@@ -319,6 +325,9 @@ arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_Q_FILTER = {NOTCH_STAGES, NOTCH_F
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_LOW_FILTER = {EQ_STAGES, EQ_RX_LOW_FILTER_State, EQ_RX_LOW_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_MID_FILTER = {EQ_STAGES, EQ_RX_MID_FILTER_State, EQ_RX_MID_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_HIG_FILTER = {EQ_STAGES, EQ_RX_HIG_FILTER_State, EQ_RX_HIG_FILTER_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 EQ_MIC_LOW_FILTER = {EQ_STAGES, EQ_MIC_LOW_FILTER_State, EQ_MIC_LOW_FILTER_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 EQ_MIC_MID_FILTER = {EQ_STAGES, EQ_MIC_MID_FILTER_State, EQ_MIC_MID_FILTER_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 EQ_MIC_HIG_FILTER = {EQ_STAGES, EQ_MIC_HIG_FILTER_State, EQ_MIC_HIG_FILTER_Coeffs};
 volatile bool NeedReinitNotch = false; //необходимо переинициализировать ручной Notch-фильтр
 
 //Prototypes
@@ -401,6 +410,11 @@ void ReinitAudioFilters(void)
 	calcBiquad(BIQUAD_peak, 400, TRX_SAMPLERATE, 0.5f, TRX.RX_EQ_LOW, EQ_RX_LOW_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 1000, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_MID, EQ_RX_MID_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 1.5f, TRX.RX_EQ_HIG, EQ_RX_HIG_FILTER_Coeffs);
+	
+	//MIC Equalizer
+	calcBiquad(BIQUAD_peak, 400, TRX_SAMPLERATE, 0.5f, TRX.MIC_EQ_LOW, EQ_MIC_LOW_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 1000, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_MID, EQ_MIC_MID_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 1.5f, TRX.MIC_EQ_HIG, EQ_MIC_HIG_FILTER_Coeffs);
 }
 
 //инициализация ручного Notch-фильтра

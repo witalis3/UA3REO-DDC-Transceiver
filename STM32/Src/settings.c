@@ -174,6 +174,9 @@ void LoadSettings(bool clear)
 		TRX.RX_EQ_LOW = 0;		//Эквалайзер приёмника (низкие)
 		TRX.RX_EQ_MID = 0;		//Эквалайзер приёмника (средние)
 		TRX.RX_EQ_HIG = 0;		//Эквалайзер приёмника (высокие)
+		TRX.MIC_EQ_LOW = 0;		//Эквалайзер микрофона (низкие)
+		TRX.MIC_EQ_MID = 0;		//Эквалайзер микрофона (средние)
+		TRX.MIC_EQ_HIG = 0;		//Эквалайзер микрофона (высокие)
 
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

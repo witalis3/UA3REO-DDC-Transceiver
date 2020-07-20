@@ -51,6 +51,7 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	//скоп
 static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		//демодулятор FM
 static void ModulateFM(uint16_t size);															//модулятор FM
 static void doRX_EQ(uint16_t size);																	//эквалайзер приёмника
+static void doMIC_EQ(uint16_t size);																	//эквалайзер микрофона
 	
 //инициализация аудио-процессора
 void initAudioProcessor(void)
@@ -442,11 +443,14 @@ void processTxAudio(void)
 			FPGA_Audio_Buffer_TX_Q_tmp[i] = (float32_t)Processor_AudioBuffer_A[i * 2 + 1] / 2147483648.0f;
 		}
 		
-		//Mic Gain
-		if (!TRX.InputType_USB)
+		if (TRX.InputType_MIC)
 		{
+			//Mic Gain
 			arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, TRX.MIC_GAIN, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
 			arm_scale_f32(FPGA_Audio_Buffer_TX_Q_tmp, TRX.MIC_GAIN, FPGA_Audio_Buffer_TX_Q_tmp, AUDIO_BUFFER_HALF_SIZE);
+			//Mic Equalizer
+			if (mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U  && mode != TRX_MODE_IQ)
+				doMIC_EQ(AUDIO_BUFFER_HALF_SIZE);
 		}
 		//USB Gain (24bit)
 		if (TRX.InputType_USB)
@@ -791,6 +795,17 @@ static void doRX_EQ(uint16_t size)
 		arm_biquad_cascade_df2T_f32(&EQ_RX_MID_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, size);
 	if(TRX.RX_EQ_HIG != 0)
 		arm_biquad_cascade_df2T_f32(&EQ_RX_HIG_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, size);
+}
+
+//Эквалайзер микрофона
+static void doMIC_EQ(uint16_t size)
+{
+	if(TRX.MIC_EQ_LOW != 0)
+		arm_biquad_cascade_df2T_f32(&EQ_MIC_LOW_FILTER, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
+	if(TRX.MIC_EQ_MID != 0)
+		arm_biquad_cascade_df2T_f32(&EQ_MIC_MID_FILTER, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
+	if(TRX.MIC_EQ_HIG != 0)
+		arm_biquad_cascade_df2T_f32(&EQ_MIC_HIG_FILTER, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
 }
 
 //цифровой шумоподавитель Digital Noise Reduction
