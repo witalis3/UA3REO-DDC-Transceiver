@@ -129,6 +129,8 @@ void WIFI_Process(void)
 		WIFI_State = WIFI_CONFIGURED;
 		break;
 	case WIFI_CONFIGURED:
+		if (strcmp(TRX.WIFI_AP, "WIFI-AP") == 0)
+			break;
 		if (WIFI_stop_auto_ap_list)
 			break;
 		WIFI_ListAP_Sync();

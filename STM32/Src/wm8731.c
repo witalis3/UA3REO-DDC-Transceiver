@@ -14,7 +14,6 @@ IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; //кольц
 IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
 
 //Private variables
-static bool WM8731_Beeping = false; //в данный момент идёт сигнал бипера
 
 //Prototypes
 static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value);																		  //отправить I2C команду в кодек
@@ -68,8 +67,8 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 //переход в режим TX (глушим динамик и пр.)
 void WM8731_TX_mode(void)
 {
-	WM8731_SendI2CCommand(B8(00000100), B8(00000000)); //R2 Left Headphone Out
-	WM8731_SendI2CCommand(B8(00000110), B8(00000000)); //R3 Right Headphone Out
+	WM8731_SendI2CCommand(B8(00000101), B8(10000000)); //R2 Left Headphone Out
+	WM8731_SendI2CCommand(B8(00000111), B8(10000000)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00011110)); //R5 Digital Audio Path Control
 	if (TRX.InputType_LINE)							   //line
 	{
@@ -92,8 +91,8 @@ void WM8731_RX_mode(void)
 {
 	WM8731_SendI2CCommand(B8(00000000), B8(10000000)); //R0 Left Line In
 	WM8731_SendI2CCommand(B8(00000010), B8(10000000)); //R1 Right Line In
-	WM8731_SendI2CCommand(B8(00000100), B8(01111111)); //R2 Left Headphone Out
-	WM8731_SendI2CCommand(B8(00000110), B8(01111111)); //R3 Right Headphone Out
+	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); //R2 Left Headphone Out
+	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001000), B8(00010110)); //R4 Analogue Audio Path Control
 	WM8731_SendI2CCommand(B8(00001010), B8(00010110)); //R5 Digital Audio Path Control
 	WM8731_SendI2CCommand(B8(00001100), B8(01100111)); //R6 Power Down Control
@@ -102,8 +101,8 @@ void WM8731_RX_mode(void)
 //переход в смешанный режим RX-TX (для LOOP)
 void WM8731_TXRX_mode(void) //loopback
 {
-	WM8731_SendI2CCommand(B8(00000100), B8(01111111)); //R2 Left Headphone Out
-	WM8731_SendI2CCommand(B8(00000110), B8(01111111)); //R3 Right Headphone Out
+	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); //R2 Left Headphone Out
+	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00010110)); //R5 Digital Audio Path Control
 	if (TRX.InputType_LINE)							   //line
 	{
@@ -129,6 +128,8 @@ void WM8731_Init(void)
 		sendToDebug_strln("[ERR] Audio codec not found");
 		LCD_showError("Audio codec init error", true);
 	}
+	WM8731_SendI2CCommand(B8(00000101), B8(10000000)); //R2 Left Headphone Out Mute
+	WM8731_SendI2CCommand(B8(00000111), B8(10000000)); //R3 Right Headphone Out Mute
 	WM8731_SendI2CCommand(B8(00001110), B8(00001110)); //R7 Digital Audio Interface Format, Codec Slave, 32bits, I2S Format, MSB-First left-1 justified
 	WM8731_SendI2CCommand(B8(00010000), B8(00000000)); //R8 Sampling Control normal mode, 256fs, SR=0 (MCLK@12.288Mhz, fs=48kHz))
 	WM8731_SendI2CCommand(B8(00010010), B8(00000001)); //R9 reactivate digital audio interface
@@ -140,8 +141,6 @@ static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 {
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
-		if (WM8731_Beeping)
-			return;
 		if (Processor_NeedRXBuffer) //если аудио-кодек не предоставил данные в буфер - поднимаем флаг ошибки
 			WM8731_Buffer_underrun = true;
 		WM8731_DMA_state = true;
@@ -157,8 +156,6 @@ static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 {
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
-		if (WM8731_Beeping)
-			return;
 		if (Processor_NeedRXBuffer) //если аудио-кодек не предоставил данные в буфер - поднимаем флаг ошибки
 			WM8731_Buffer_underrun = true;
 		WM8731_DMA_state = false;
