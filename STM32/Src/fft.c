@@ -38,6 +38,8 @@ static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  //врем�
 static uint16_t print_wtf_xindex = 0;												  //текущая координата вывода водопада через DMA
 static uint16_t print_wtf_yindex = 0;												  //текущая координата вывода водопада через DMA
 static float32_t window_multipliers[FFT_SIZE] = {0};								  //коэффициенты выбранной оконной функции
+static float32_t hz_in_pixel = 1.0f; //текущее значение плотности FFT
+static SRAM1 uint16_t bandmap_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  //временный буффер для перемещения водопада
 static arm_sort_instance_f32 FFT_sortInstance = {0};			//инстанс сортировки (для поиска медианы)
 //Дециматор для Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
@@ -143,6 +145,7 @@ static void fft_fill_color_scale(void);			  //подготовка цветов�
 static uint16_t getFFTHeight(void);				  //получение высоты FFT
 static uint16_t getWTFHeight(void);				  //получение высоты водопада
 static void FFT_move(int32_t _freq_diff); //сдвиг водопада
+static int32_t getFreqPositionOnFFT(uint32_t freq); //получение позиции на FFT для заданной частоты
 
 //инициализация FFT
 void FFT_Init(void)
@@ -405,10 +408,60 @@ void FFT_printFFT(void)
 			}
 		}
 
+	//очистка и вывод части вертикальной полосы
+	LCDDriver_drawFastHLine(0, LAY_FFT_WTF_POS_Y - 1, LAY_FFT_PRINT_SIZE, COLOR_BLACK);
+	LCDDriver_drawPixel(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y, COLOR_GREEN);
+	memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));
+	hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
+		
+	//вывод бендмапов
+	int8_t band_curr = getBandFromFreq(CurrentVFO()->Freq, true);
+	int8_t band_left = band_curr;
+	if(band_curr > 0)
+		band_left = band_curr - 1;
+	int8_t band_right = band_curr;
+	if(band_curr < (BANDS_COUNT - 1))
+		band_right = band_curr + 1;
+	int32_t fft_freq_position_start = 0;
+	int32_t fft_freq_position_stop = 0;
+	for(uint16_t band = band_left; band <= band_right ; band++)
+	{
+		//regions
+		for(uint16_t region = 0; region < BANDS[band].regionsCount ; region++)
+		{
+			uint16_t region_color = LAY_BANDMAP_SSB_COLOR;
+			if(BANDS[band].regions[region].mode==TRX_MODE_CW_L || BANDS[band].regions[region].mode==TRX_MODE_CW_U)
+				region_color = LAY_BANDMAP_CW_COLOR;
+			else if(BANDS[band].regions[region].mode==TRX_MODE_DIGI_L || BANDS[band].regions[region].mode==TRX_MODE_DIGI_U)
+				region_color = LAY_BANDMAP_DIGI_COLOR;
+			else if(BANDS[band].regions[region].mode==TRX_MODE_NFM || BANDS[band].regions[region].mode==TRX_MODE_WFM)
+				region_color = LAY_BANDMAP_FM_COLOR;
+			else if(BANDS[band].regions[region].mode==TRX_MODE_AM)
+				region_color = LAY_BANDMAP_AM_COLOR;
+			
+			fft_freq_position_start = getFreqPositionOnFFT(BANDS[band].regions[region].startFreq);
+			fft_freq_position_stop = getFreqPositionOnFFT(BANDS[band].regions[region].endFreq);
+			if(fft_freq_position_start != -1 && fft_freq_position_stop == -1)
+				fft_freq_position_stop = LAY_FFT_PRINT_SIZE;
+			if(fft_freq_position_start == -1 && fft_freq_position_stop != -1)
+				fft_freq_position_start = 0;
+			if(fft_freq_position_start == -1 && fft_freq_position_stop == -1 && BANDS[band].regions[region].startFreq < CurrentVFO()->Freq && BANDS[band].regions[region].endFreq > CurrentVFO()->Freq)
+			{
+				fft_freq_position_start = 0;
+				fft_freq_position_stop = LAY_FFT_PRINT_SIZE;
+			}
+				
+			if(fft_freq_position_start != -1 && fft_freq_position_stop != -1)
+				for(int32_t pixel_counter = fft_freq_position_start; pixel_counter < fft_freq_position_stop; pixel_counter++)
+					bandmap_line_tmp[(uint16_t)pixel_counter] = region_color;
+		}
+	}
+	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y - 4, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_WTF_POS_Y - 4);
+	for(uint32_t pixel_counter = 0; pixel_counter < LAY_FFT_PRINT_SIZE; pixel_counter++)
+		LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
+	
 	//разделитель и полоса приёма
-	LCDDriver_drawFastHLine(0, LAY_FFT_WTF_POS_Y - 2, LAY_FFT_PRINT_SIZE, COLOR_BLACK);
 	int16_t line_width = 0;
-	float32_t hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 	switch (CurrentVFO()->Mode)
 	{
 	case TRX_MODE_LSB:
@@ -417,7 +470,7 @@ void FFT_printFFT(void)
 		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
 		if (line_width > (LAY_FFT_PRINT_SIZE / 2))
 			line_width = LAY_FFT_PRINT_SIZE / 2;
-		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y - 2, -line_width, COLOR_GREEN);
+		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y - 1, -line_width, COLOR_GREEN);
 		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_CW_U:
@@ -425,14 +478,14 @@ void FFT_printFFT(void)
 		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
 		if (line_width > (LAY_FFT_PRINT_SIZE / 2))
 			line_width = LAY_FFT_PRINT_SIZE / 2;
-		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y - 2, line_width, COLOR_GREEN);
+		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y - 1, line_width, COLOR_GREEN);
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
 		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom * 2);
 		if (line_width > LAY_FFT_PRINT_SIZE)
 			line_width = LAY_FFT_PRINT_SIZE;
-		LCDDriver_drawFastHLine((uint16_t)((LAY_FFT_PRINT_SIZE / 2) - (line_width / 2)), (uint16_t)(LAY_FFT_WTF_POS_Y - 2), line_width, COLOR_GREEN);
+		LCDDriver_drawFastHLine((uint16_t)((LAY_FFT_PRINT_SIZE / 2) - (line_width / 2)), (uint16_t)(LAY_FFT_WTF_POS_Y - 1), line_width, COLOR_GREEN);
 		break;
 	default:
 		break;
@@ -637,4 +690,12 @@ static uint16_t getWTFHeight(void)
 	if (TRX.FFT_Style == 2 || TRX.FFT_Style == 4)
 		WTF_HEIGHT = LAY_WTF_HEIGHT_STYLE2;
 	return WTF_HEIGHT;
+}
+
+static int32_t getFreqPositionOnFFT(uint32_t freq)
+{
+	int32_t pos = (int32_t)((float32_t)LAY_FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO()->Freq) / hz_in_pixel * (float32_t)TRX.FFT_Zoom);
+	if (pos < 0 || pos >= LAY_FFT_PRINT_SIZE)
+		return -1;
+	return pos;
 }

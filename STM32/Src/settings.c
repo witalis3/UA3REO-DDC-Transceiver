@@ -269,7 +269,7 @@ void LoadCalibration(void)
 	EEPROM_PowerDown();	
 }
 
-VFO *CurrentVFO(void)
+inline VFO *CurrentVFO(void)
 {
 	if (!TRX.current_vfo)
 		return &TRX.VFO_A;
@@ -277,7 +277,7 @@ VFO *CurrentVFO(void)
 		return &TRX.VFO_B;
 }
 
-VFO *SecondaryVFO(void)
+inline VFO *SecondaryVFO(void)
 {
 	if (!TRX.current_vfo)
 		return &TRX.VFO_B;

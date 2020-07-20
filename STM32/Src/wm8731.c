@@ -28,6 +28,7 @@ static void I2S_DMAError(DMA_HandleTypeDef *hdma);																						  //Ош
 //запуск шины I2S
 void WM8731_start_i2s_and_dma(void)
 {
+	WM8731_CleanBuffer();
 	if (HAL_I2S_GetState(&hi2s3) == HAL_I2S_STATE_READY)
 		HAL_I2S_TXRX_DMA(&hi2s3, (uint16_t *)&CODEC_Audio_Buffer_RX[0], (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2, CODEC_AUDIO_BUFFER_SIZE); // 32bit rx spi, 16bit tx spi
 }
