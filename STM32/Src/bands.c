@@ -123,10 +123,10 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "60m",
 			.selectable = false,
-			.startFreq = 5351500,
-			.endFreq = 5366500,
+			.startFreq = 5330500,
+			.endFreq = 5403500,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 5351500, .endFreq = 5366500, .mode = TRX_MODE_USB},
+				{.startFreq = 5330500, .endFreq = 5403500, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 1,
 		},
@@ -356,9 +356,15 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 50000000,
 			.endFreq = 54000000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 50000000, .endFreq = 54000000, .mode = TRX_MODE_USB},
+				{.startFreq = 50000000, .endFreq = 50100000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 50100000, .endFreq = 50300000, .mode = TRX_MODE_USB},
+				{.startFreq = 50300000, .endFreq = 50350000, .mode = TRX_MODE_DIGI_U},
+				{.startFreq = 50350000, .endFreq = 50600000, .mode = TRX_MODE_USB},
+				{.startFreq = 50600000, .endFreq = 51000000, .mode = TRX_MODE_DIGI_U},
+				{.startFreq = 51000000, .endFreq = 51100000, .mode = TRX_MODE_USB},
+				{.startFreq = 51100000, .endFreq = 54000000, .mode = TRX_MODE_NFM},
 			},
-			.regionsCount = 1,
+			.regionsCount = 7,
 		},
 		//FM RADIO
 		{
