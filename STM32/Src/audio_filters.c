@@ -30,12 +30,18 @@ static float32_t IIR_RX2_HPF_I_State[IIR_RX2_HPF_Taps_STATE_SIZE];
 static float32_t IIR_TX_HPF_I_State[IIR_RX2_HPF_Taps_STATE_SIZE];
 static float32_t IIR_RX1_HPF_SQL_State[IIR_RX1_HPF_SQL_STATE_SIZE];
 static float32_t IIR_RX2_HPF_SQL_State[IIR_RX2_HPF_SQL_STATE_SIZE];
-static float32_t NOTCH_RX1_Coeffs[NOTCH_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
-static float32_t NOTCH_RX2_Coeffs[NOTCH_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
+static float32_t NOTCH_RX1_Coeffs[BIQUAD_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
+static float32_t NOTCH_RX2_Coeffs[BIQUAD_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX1_State[2 * NOTCH_STAGES];
 static float32_t NOTCH_RX2_State[2 * NOTCH_STAGES];
 static float32_t NOTCH_FFT_I_State[2 * NOTCH_STAGES];
 static float32_t NOTCH_FFT_Q_State[2 * NOTCH_STAGES];
+static float32_t EQ_RX_LOW_FILTER_State[2 * EQ_STAGES];
+static float32_t EQ_RX_MID_FILTER_State[2 * EQ_STAGES];
+static float32_t EQ_RX_HIG_FILTER_State[2 * EQ_STAGES];
+static float32_t EQ_RX_LOW_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_RX_MID_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_RX_HIG_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static DC_filter_state_type DC_Filter_State[8] = {0}; //состояния DC-корректора
 
 //Коллекция фильтров
@@ -310,10 +316,13 @@ arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER = {NOTCH_STAGES, NOTCH_RX1
 arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER = {NOTCH_STAGES, NOTCH_RX2_State, NOTCH_RX2_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_I_FILTER = {NOTCH_STAGES, NOTCH_FFT_I_State, NOTCH_RX1_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_Q_FILTER = {NOTCH_STAGES, NOTCH_FFT_Q_State, NOTCH_RX1_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 EQ_RX_LOW_FILTER = {EQ_STAGES, EQ_RX_LOW_FILTER_State, EQ_RX_LOW_FILTER_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 EQ_RX_MID_FILTER = {EQ_STAGES, EQ_RX_MID_FILTER_State, EQ_RX_MID_FILTER_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 EQ_RX_HIG_FILTER = {EQ_STAGES, EQ_RX_HIG_FILTER_State, EQ_RX_HIG_FILTER_Coeffs};
 volatile bool NeedReinitNotch = false; //необходимо переинициализировать ручной Notch-фильтр
 
 //Prototypes
-static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, AUDIO_PROC_RX_NUM rx_id); //автоматический расчёт Biquad фильтра для Notch
+static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, float32_t* outCoeffs); //автоматический расчёт Biquad фильтра для Notch
 static IIR_BIQUAD_FILTER *getIIRFilter(IIR_BIQUAD_FILTER_TYPE type, uint_fast16_t width);									  //получить фильтр из коллекции
 
 //инифиализация аудио-фильтров
@@ -387,14 +396,19 @@ void ReinitAudioFilters(void)
 	arm_biquad_cascade_df2T_init_f32(&IIR_RX2_Squelch_HPF, fm_sql_hpf_filter->stages, (float32_t *)fm_sql_hpf_filter->coeffs, (float32_t *)&IIR_RX2_HPF_SQL_State[0]);
 	memset(IIR_RX1_HPF_SQL_State, 0x00, sizeof(IIR_RX1_HPF_SQL_State));
 	memset(IIR_RX2_HPF_SQL_State, 0x00, sizeof(IIR_RX2_HPF_SQL_State));
+	
+	//RX Equalizer
+	calcBiquad(BIQUAD_peak, 400, TRX_SAMPLERATE, 0.5f, TRX.RX_EQ_LOW, EQ_RX_LOW_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 1000, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_MID, EQ_RX_MID_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 1.5f, TRX.RX_EQ_HIG, EQ_RX_HIG_FILTER_Coeffs);
 }
 
 //инициализация ручного Notch-фильтра
 void InitNotchFilter(void)
 {
 	NeedReinitNotch = false;
-	calcBiquad(BIQUAD_notch, CurrentVFO()->NotchFC, TRX_SAMPLERATE, 0.5f, 0, AUDIO_RX1);
-	calcBiquad(BIQUAD_notch, SecondaryVFO()->NotchFC, TRX_SAMPLERATE, 0.5f, 0, AUDIO_RX2);
+	calcBiquad(BIQUAD_notch, CurrentVFO()->NotchFC, TRX_SAMPLERATE, 0.5f, 0, NOTCH_RX1_Coeffs);
+	calcBiquad(BIQUAD_notch, SecondaryVFO()->NotchFC, TRX_SAMPLERATE, 0.5f, 0, NOTCH_RX2_Coeffs);
 }
 
 //запуск DC-корректора
@@ -427,8 +441,8 @@ static IIR_BIQUAD_FILTER *getIIRFilter(IIR_BIQUAD_FILTER_TYPE type, uint_fast16_
 	return (IIR_BIQUAD_FILTER *)&IIR_Biquad_Filters[0];
 }
 
-//автоматический расчёт Biquad фильтра для Notch
-static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, AUDIO_PROC_RX_NUM rx_id)
+//автоматический расчёт Biquad фильтра
+static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, float32_t* outCoeffs)
 {
 	float32_t a0, a1, a2, b1, b2, norm;
 
@@ -549,20 +563,9 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 	}
 
 	//save coefficients
-	if (rx_id == AUDIO_RX1)
-	{
-		NOTCH_RX1_Coeffs[0] = a0;
-		NOTCH_RX1_Coeffs[1] = a1;
-		NOTCH_RX1_Coeffs[2] = a2;
-		NOTCH_RX1_Coeffs[3] = -b1;
-		NOTCH_RX1_Coeffs[4] = -b2;
-	}
-	else
-	{
-		NOTCH_RX2_Coeffs[0] = a0;
-		NOTCH_RX2_Coeffs[1] = a1;
-		NOTCH_RX2_Coeffs[2] = a2;
-		NOTCH_RX2_Coeffs[3] = -b1;
-		NOTCH_RX2_Coeffs[4] = -b2;
-	}
+	outCoeffs[0] = a0;
+	outCoeffs[1] = a1;
+	outCoeffs[2] = a2;
+	outCoeffs[3] = -b1;
+	outCoeffs[4] = -b2;
 }

@@ -46,16 +46,6 @@ void WM8731_CleanBuffer(void)
 	ResetAGC();
 }
 
-//сигнал бипера
-void WM8731_Beep(void)
-{
-	WM8731_Beeping = true;
-	for (uint16_t i = 0; i < CODEC_AUDIO_BUFFER_SIZE; i++)
-		CODEC_Audio_Buffer_RX[i] = (int32_t)(((float32_t)TRX_Volume / 100.0f) * 2000.0f * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * 500.0f));
-	HAL_Delay(50);
-	WM8731_Beeping = false;
-}
-
 //отправить I2C команду в кодек
 static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 {

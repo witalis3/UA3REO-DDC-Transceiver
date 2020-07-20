@@ -7,7 +7,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define TRX_VERSION 192					//Версия прошивки
+#define TRX_VERSION 194					//Версия прошивки
 #define ADCDAC_CLOCK 122880000			//Частота генератора АЦП/ЦАП
 #define MAX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
@@ -175,6 +175,9 @@ extern struct TRX_SETTINGS
 	int8_t AGC_GAIN_TARGET;
 	bool WIFI_CAT_SERVER;
 	uint8_t MIC_GAIN;
+	int8_t RX_EQ_LOW;
+	int8_t RX_EQ_MID;
+	int8_t RX_EQ_HIG;
 	
 	uint8_t ENDBit;
 } TRX;

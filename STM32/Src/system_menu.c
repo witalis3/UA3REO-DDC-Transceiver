@@ -40,6 +40,9 @@ static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AM_LPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_LOW(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_MID(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_HIG(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
@@ -204,6 +207,9 @@ static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"AM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.AM_LPF_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_pass},
 		{"FM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.FM_LPF_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_pass},
 		{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
+		{"RX EQ Low", SYSMENU_INT8, (uint32_t *)&TRX.RX_EQ_LOW, SYSMENU_HANDL_AUDIO_RX_EQ_LOW},
+		{"RX EQ Mid", SYSMENU_INT8, (uint32_t *)&TRX.RX_EQ_MID, SYSMENU_HANDL_AUDIO_RX_EQ_MID},
+		{"RX EQ High", SYSMENU_INT8, (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_HANDL_AUDIO_RX_EQ_HIG},
 		{"RX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_speed, SYSMENU_HANDL_AUDIO_RX_AGCSpeed},
 		{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_AUDIO_TX_AGCSpeed},
 };
@@ -707,6 +713,36 @@ static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction)
 		TRX.DNR_MINIMAL = 1;
 	if (TRX.DNR_MINIMAL > 200)
 		TRX.DNR_MINIMAL = 200;
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_EQ_LOW(int8_t direction)
+{
+	TRX.RX_EQ_LOW += direction;
+	if (TRX.RX_EQ_LOW < -10)
+		TRX.RX_EQ_LOW = -10;
+	if (TRX.RX_EQ_LOW > 10)
+		TRX.RX_EQ_LOW = 10;
+	ReinitAudioFilters();
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_EQ_MID(int8_t direction)
+{
+	TRX.RX_EQ_MID += direction;
+	if (TRX.RX_EQ_MID < -10)
+		TRX.RX_EQ_MID = -10;
+	if (TRX.RX_EQ_MID > 10)
+		TRX.RX_EQ_MID = 10;
+	ReinitAudioFilters();
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_EQ_HIG(int8_t direction)
+{
+	TRX.RX_EQ_HIG += direction;
+	if (TRX.RX_EQ_HIG < -10)
+		TRX.RX_EQ_HIG = -10;
+	if (TRX.RX_EQ_HIG > 10)
+		TRX.RX_EQ_HIG = 10;
+	ReinitAudioFilters();
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction)

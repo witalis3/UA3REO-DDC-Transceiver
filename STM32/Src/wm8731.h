@@ -20,7 +20,6 @@ extern uint32_t WM8731_DMA_samples; //считаем количество сем
 //Public methods
 extern void WM8731_Init(void);              //инициализация аудио-кодека по I2C
 extern void WM8731_start_i2s_and_dma(void); //запуск шины I2S
-extern void WM8731_Beep(void);              //сигнал бипера
 extern void WM8731_CleanBuffer(void);       //очистка буффера аудио-кодека и USB аудио
 extern void WM8731_TX_mode(void);           //переход в режим TX (глушим динамик и пр.)
 extern void WM8731_RX_mode(void);           //переход в режим RX (глушим микрофон и пр.)

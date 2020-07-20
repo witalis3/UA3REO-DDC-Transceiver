@@ -49,8 +49,9 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size); //под�
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		//s-метр
 static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	//скопировать I в Q канал
 static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		//демодулятор FM
-static void ModulateFM(uint16_t size);							//модулятор FM
-
+static void ModulateFM(uint16_t size);															//модулятор FM
+static void doRX_EQ(uint16_t size);																	//эквалайзер приёмника
+	
 //инициализация аудио-процессора
 void initAudioProcessor(void)
 {
@@ -286,6 +287,10 @@ void processRxAudio(void)
 		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.5f, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 	}
+	
+	//эквалайзер приёмника
+	if(current_vfo->Mode != TRX_MODE_DIGI_L && current_vfo->Mode != TRX_MODE_DIGI_U  && current_vfo->Mode != TRX_MODE_IQ)
+		doRX_EQ(decimated_block_size_rx1);
 
 	//формируем буфферы на передачу в кодек
 	for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
@@ -608,7 +613,6 @@ void processTxAudio(void)
 	if (mode == TRX_MODE_LOOPBACK && !TRX_Tune)
 	{
 		//OUT Volume
-		doRX_AGC(AUDIO_RX1, AUDIO_BUFFER_HALF_SIZE);
 		float32_t volume_gain = volume2rate((float32_t)TRX_Volume / 1023.0f);
 		arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, volume_gain, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
 
@@ -776,6 +780,17 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 				processAutoNotchReduction(FPGA_Audio_Buffer_RX2_I_tmp + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
 		}
 	}
+}
+
+//RX-эквалайзер
+static void doRX_EQ(uint16_t size)
+{
+	if(TRX.RX_EQ_LOW != 0)
+		arm_biquad_cascade_df2T_f32(&EQ_RX_LOW_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, size);
+	if(TRX.RX_EQ_MID != 0)
+		arm_biquad_cascade_df2T_f32(&EQ_RX_MID_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, size);
+	if(TRX.RX_EQ_HIG != 0)
+		arm_biquad_cascade_df2T_f32(&EQ_RX_HIG_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, size);
 }
 
 //цифровой шумоподавитель Digital Noise Reduction

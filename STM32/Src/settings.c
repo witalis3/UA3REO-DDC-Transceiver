@@ -161,8 +161,8 @@ void LoadSettings(bool clear)
 		TRX.ShiftEnabled = false;		 //активация режима SHIFT
 		TRX.SHIFT_INTERVAL = 5000;		 //Диапазон расстройки ручкой SHIFT (5000 = -5000hz / +5000hz)
 		TRX.DNR_SNR_THRESHOLD = 2;		 //Уровень цифрового шумоподавления
-		TRX.DNR_AVERAGE = 3;
-		TRX.DNR_MINIMAL = 18;
+		TRX.DNR_AVERAGE = 3;						//DNR усреднение при поиске средней магнитуды
+		TRX.DNR_MINIMAL = 18;						//DNR усреднение при поиске минимальной магнитуды
 		TRX.NOISE_BLANKER = false;		//подавитель коротких импульсных помех NOISE BLANKER
 		TRX.FRQ_STEP = 10;				//шаг перестройки частоты основным энкодером
 		TRX.FRQ_FAST_STEP = 100;		//шаг перестройки частоты основным энкодером в режиме FAST
@@ -171,6 +171,9 @@ void LoadSettings(bool clear)
 		TRX.AGC_GAIN_TARGET = -35; //Максимальное (целевое) усиление AGC
 		TRX.WIFI_CAT_SERVER = true;	//Сервер для приёма CAT команд по WIFI
 		TRX.MIC_GAIN = 3;			//Усиление микрофона
+		TRX.RX_EQ_LOW = 0;		//Эквалайзер приёмника (низкие)
+		TRX.RX_EQ_MID = 0;		//Эквалайзер приёмника (средние)
+		TRX.RX_EQ_HIG = 0;		//Эквалайзер приёмника (высокие)
 
 		TRX.ENDBit = 100; //Бит окончания успешной записи в eeprom
 		sendToDebug_strln("[OK] Loaded default settings");
@@ -189,11 +192,11 @@ void LoadCalibration(void)
 	if (tryes >= EEPROM_REPEAT_TRYES)
 		sendToDebug_strln("[ERR] Read EEPROM CALIBRATE multiple errors");
 
-	if (CALIBRATE.flash_id != 190) //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
+	if (CALIBRATE.flash_id != 194) //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
 	{
 		sendToDebug_str("[ERR] CALIBRATE Flash check CODE: ");
 		sendToDebug_uint8(CALIBRATE.flash_id, false);
-		CALIBRATE.flash_id = 190; //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
+		CALIBRATE.flash_id = 194; //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
 
 		CALIBRATE.ENCODER_INVERT = false; //инвертировать вращение влево-вправо у основного энкодера
 		CALIBRATE.ENCODER2_INVERT = false; //инвертировать вращение влево-вправо у дополнительного энкодера
