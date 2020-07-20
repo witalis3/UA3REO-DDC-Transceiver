@@ -528,6 +528,7 @@ void PERIPH_ProcessFrontPanel(void)
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 			if (band > 0)
 				TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
+			TRX_Temporary_Stop_BandMap = true;
 			LCD_UpdateQuery.TopButtons = true;
 		}
 		//MODE-
@@ -557,6 +558,7 @@ void PERIPH_ProcessFrontPanel(void)
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 			if (band > 0)
 				TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
+			TRX_Temporary_Stop_BandMap = true;
 			LCD_UpdateQuery.TopButtons = true;
 		}
 		//BAND+
@@ -582,6 +584,7 @@ void PERIPH_ProcessFrontPanel(void)
 			TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 			CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
 			CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+			TRX_Temporary_Stop_BandMap = false;
 			
 			LCD_UpdateQuery.TopButtons = true;
 			LCD_UpdateQuery.FreqInfo = true;
@@ -609,7 +612,8 @@ void PERIPH_ProcessFrontPanel(void)
 			TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 			CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
 			CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-
+			TRX_Temporary_Stop_BandMap = false;
+			
 			LCD_UpdateQuery.TopButtons = true;
 			LCD_UpdateQuery.FreqInfo = true;
 		}

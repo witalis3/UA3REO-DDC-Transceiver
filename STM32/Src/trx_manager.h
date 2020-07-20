@@ -47,6 +47,7 @@ volatile extern float32_t TRX_STM32_VREF;
 volatile extern float32_t TRX_STM32_TEMPERATURE;
 volatile extern float32_t TRX_IQ_phase_error;
 volatile extern bool TRX_NeedGoToBootloader;
+volatile extern bool TRX_Temporary_Stop_BandMap;
 extern const char *MODE_DESCR[];
 extern ADC_HandleTypeDef hadc1;
 

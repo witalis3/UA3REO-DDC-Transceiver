@@ -1,6 +1,7 @@
 #include "bands.h"
 #include "functions.h"
 #include <stdlib.h>
+#include "settings.h"
 
 const BAND_MAP BANDS[BANDS_COUNT] =
 {
@@ -448,12 +449,8 @@ int8_t getBandFromFreq(uint32_t freq, bool nearest)
 uint_fast8_t getModeFromFreq(uint32_t freq)
 {
 	uint_fast8_t ret = 0;
-	if (freq < 10000000)
-		ret = TRX_MODE_LSB;
-	if (freq > 10000000)
-		ret = TRX_MODE_USB;
-	if (freq > 30000000)
-		ret = TRX_MODE_NFM;
+	ret = CurrentVFO()->Mode;
+	
 	for (uint_fast16_t b = 0; b < BANDS_COUNT; b++)
 	{
 		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq)

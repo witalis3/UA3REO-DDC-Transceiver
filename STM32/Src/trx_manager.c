@@ -48,6 +48,7 @@ volatile float32_t TRX_STM32_VREF = 3.3f;		  //напряжение на STM32
 volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; //температура STM32
 volatile float32_t TRX_IQ_phase_error = 0.0f;
 volatile bool TRX_NeedGoToBootloader = false;
+volatile bool TRX_Temporary_Stop_BandMap = false;
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
@@ -238,7 +239,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	{
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
 	}
-	if (TRX.BandMapEnabled)
+	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap)
 	{
 		uint_fast8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
 		if (vfo->Mode != mode_from_bandmap)
