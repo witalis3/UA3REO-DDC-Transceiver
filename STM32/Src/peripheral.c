@@ -565,9 +565,13 @@ void PERIPH_ProcessFrontPanel(void)
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 			band++;
 			if (band >= BANDS_COUNT)
-				band = 0;
-			if (band < 0)
-				band = BANDS_COUNT - 1;
+					band = 0;
+			while(!BANDS[band].selectable)
+			{
+				band++;
+				if (band >= BANDS_COUNT)
+					band = 0;
+			}
 
 			TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
 			TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
@@ -587,10 +591,14 @@ void PERIPH_ProcessFrontPanel(void)
 		{
 			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 			band--;
-			if (band >= BANDS_COUNT)
-				band = 0;
 			if (band < 0)
 				band = BANDS_COUNT - 1;
+			while(!BANDS[band].selectable)
+			{
+				band--;
+				if (band < 0)
+					band = BANDS_COUNT - 1;
+			}
 
 			TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
 			TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define BANDS_COUNT 13 //число бендов в коллекции
+#define BANDS_COUNT 34 //число бендов в коллекции
 
 typedef struct //описание региона в бенде
 {
@@ -17,6 +17,7 @@ typedef struct //описание региона в бенде
 typedef struct //описание бенда
 {
 	const char *name;
+	const bool selectable;
 	const uint32_t startFreq;
 	const uint32_t endFreq;
 	const REGION_MAP *regions;

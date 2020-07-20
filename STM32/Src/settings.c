@@ -104,10 +104,7 @@ void LoadSettings(bool clear)
 		for (uint8_t i = 0; i < BANDS_COUNT; i++)
 		{
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
-			if (TRX.BANDS_SAVED_SETTINGS[i].Freq < 10000000)
-				TRX.BANDS_SAVED_SETTINGS[i].Mode = TRX_MODE_LSB;
-			else
-				TRX.BANDS_SAVED_SETTINGS[i].Mode = TRX_MODE_USB;
+			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
 			TRX.BANDS_SAVED_SETTINGS[i].LNA = false;
 			TRX.BANDS_SAVED_SETTINGS[i].ATT = false;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = false;
