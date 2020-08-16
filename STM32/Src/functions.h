@@ -62,7 +62,6 @@ typedef struct
   uint32_t SINC;
 } CPULOAD_t;
 
-extern UART_HandleTypeDef huart1;
 extern CPULOAD_t CPU_LOAD;
 
 extern void CPULOAD_Init(void);

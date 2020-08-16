@@ -17,7 +17,6 @@
   ******************************************************************************
   */
 /* USER CODE END Header */
-
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
@@ -78,7 +77,6 @@ TIM_HandleTypeDef htim15;
 TIM_HandleTypeDef htim16;
 TIM_HandleTypeDef htim17;
 
-UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart6;
 DMA_HandleTypeDef hdma_usart6_rx;
 
@@ -114,7 +112,6 @@ static void MX_TIM4_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_TIM7_Init(void);
-static void MX_USART1_UART_Init(void);
 static void MX_USART6_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_ADC3_Init(void);
@@ -182,7 +179,6 @@ int main(void)
   MX_TIM5_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
-  MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   MX_ADC3_Init();
   MX_TIM15_Init();
@@ -279,22 +275,23 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
-  /** Supply configuration update enable 
+  /** Supply configuration update enable
   */
   HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
-  /** Configure the main internal regulator output voltage 
+  /** Configure the main internal regulator output voltage
   */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-  /** Configure LSE Drive Capability 
+  /** Configure LSE Drive Capability
   */
   HAL_PWR_EnableBkUpAccess();
   __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_HIGH);
-  /** Macro to configure the PLL clock source 
+  /** Macro to configure the PLL clock source
   */
   __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_HSE
                               |RCC_OSCILLATORTYPE_LSE;
@@ -315,7 +312,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -333,9 +330,9 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_USART6
-                              |RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_SPI3
-                              |RCC_PERIPHCLK_SPI2|RCC_PERIPHCLK_ADC
-                              |RCC_PERIPHCLK_USB|RCC_PERIPHCLK_FMC;
+                              |RCC_PERIPHCLK_SPI3|RCC_PERIPHCLK_SPI2
+                              |RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_USB
+                              |RCC_PERIPHCLK_FMC;
   PeriphClkInitStruct.PLL2.PLL2M = 8;
   PeriphClkInitStruct.PLL2.PLL2N = 336;
   PeriphClkInitStruct.PLL2.PLL2P = 2;
@@ -354,7 +351,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Enable USB Voltage detector 
+  /** Enable USB Voltage detector
   */
   HAL_PWREx_EnableUSBVoltageDetector();
 }
@@ -377,7 +374,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 1 */
 
   /* USER CODE END ADC1_Init 1 */
-  /** Common config 
+  /** Common config
   */
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV6;
@@ -390,22 +387,23 @@ static void MX_ADC1_Init(void)
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
   hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
   hadc1.Init.OversamplingMode = DISABLE;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
     Error_Handler();
   }
-  /** Configure the ADC multi-mode 
+  /** Configure the ADC multi-mode
   */
   multimode.Mode = ADC_MODE_INDEPENDENT;
   if (HAL_ADCEx_MultiModeConfigChannel(&hadc1, &multimode) != HAL_OK)
   {
     Error_Handler();
   }
-  /** Disable Injected Queue 
+  /** Disable Injected Queue
   */
   HAL_ADCEx_DisableInjectedQueue(&hadc1);
-  /** Configure Injected Channel 
+  /** Configure Injected Channel
   */
   sConfigInjected.InjectedChannel = ADC_CHANNEL_11;
   sConfigInjected.InjectedRank = ADC_INJECTED_RANK_1;
@@ -413,8 +411,7 @@ static void MX_ADC1_Init(void)
   sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
   sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
   sConfigInjected.InjectedOffset = 0;
-  sConfigInjected.InjectedLeftBitShift = ADC_LEFTBITSHIFT_NONE;
-  sConfigInjected.InjectedNbrOfConversion = 2;
+  sConfigInjected.InjectedNbrOfConversion = 4;
   sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
   sConfigInjected.AutoInjectedConv = DISABLE;
   sConfigInjected.QueueInjectedContext = DISABLE;
@@ -425,10 +422,26 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
-  /** Configure Injected Channel 
+  /** Configure Injected Channel
   */
   sConfigInjected.InjectedChannel = ADC_CHANNEL_10;
   sConfigInjected.InjectedRank = ADC_INJECTED_RANK_2;
+  if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Injected Channel
+  */
+  sConfigInjected.InjectedChannel = ADC_CHANNEL_8;
+  sConfigInjected.InjectedRank = ADC_INJECTED_RANK_3;
+  if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Injected Channel
+  */
+  sConfigInjected.InjectedChannel = ADC_CHANNEL_5;
+  sConfigInjected.InjectedRank = ADC_INJECTED_RANK_4;
   if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
   {
     Error_Handler();
@@ -456,7 +469,7 @@ static void MX_ADC3_Init(void)
   /* USER CODE BEGIN ADC3_Init 1 */
 
   /* USER CODE END ADC3_Init 1 */
-  /** Common config 
+  /** Common config
   */
   hadc3.Instance = ADC3;
   hadc3.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV6;
@@ -469,15 +482,16 @@ static void MX_ADC3_Init(void)
   hadc3.Init.DiscontinuousConvMode = DISABLE;
   hadc3.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
   hadc3.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc3.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
   hadc3.Init.OversamplingMode = DISABLE;
   if (HAL_ADC_Init(&hadc3) != HAL_OK)
   {
     Error_Handler();
   }
-  /** Disable Injected Queue 
+  /** Disable Injected Queue
   */
   HAL_ADCEx_DisableInjectedQueue(&hadc3);
-  /** Configure Injected Channel 
+  /** Configure Injected Channel
   */
   sConfigInjected.InjectedChannel = ADC_CHANNEL_TEMPSENSOR;
   sConfigInjected.InjectedRank = ADC_INJECTED_RANK_1;
@@ -485,7 +499,6 @@ static void MX_ADC3_Init(void)
   sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
   sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
   sConfigInjected.InjectedOffset = 0;
-  sConfigInjected.InjectedLeftBitShift = ADC_LEFTBITSHIFT_NONE;
   sConfigInjected.InjectedNbrOfConversion = 2;
   sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
   sConfigInjected.AutoInjectedConv = DISABLE;
@@ -497,7 +510,7 @@ static void MX_ADC3_Init(void)
   {
     Error_Handler();
   }
-  /** Configure Injected Channel 
+  /** Configure Injected Channel
   */
   sConfigInjected.InjectedChannel = ADC_CHANNEL_VREFINT;
   sConfigInjected.InjectedRank = ADC_INJECTED_RANK_2;
@@ -567,7 +580,7 @@ static void MX_RTC_Init(void)
   /* USER CODE BEGIN RTC_Init 1 */
 
   /* USER CODE END RTC_Init 1 */
-  /** Initialize RTC Only 
+  /** Initialize RTC Only
   */
   hrtc.Instance = RTC;
   hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
@@ -957,54 +970,6 @@ static void MX_TIM17_Init(void)
 }
 
 /**
-  * @brief USART1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART1_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART1_Init 0 */
-
-  /* USER CODE END USART1_Init 0 */
-
-  /* USER CODE BEGIN USART1_Init 1 */
-
-  /* USER CODE END USART1_Init 1 */
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
-  huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART1_Init 2 */
-
-  /* USER CODE END USART1_Init 2 */
-
-}
-
-/**
   * @brief USART6 Initialization Function
   * @param None
   * @retval None
@@ -1088,14 +1053,14 @@ static void MX_USB_OTG_FS_PCD_Init(void)
 
 }
 
-/** 
+/**
   * Enable DMA controller clock
   * Configure DMA for memory to memory transfers
   *   hdma_memtomem_dma2_stream7
   *   hdma_memtomem_dma2_stream6
   *   hdma_memtomem_dma2_stream4
   */
-static void MX_DMA_Init(void) 
+static void MX_DMA_Init(void)
 {
 
   /* DMA controller clock enable */
@@ -1172,7 +1137,7 @@ static void MX_DMA_Init(void)
 
 }
 
-/** 
+/**
   * Enable MDMA controller clock
   * Configure MDMA for global transfers
   *   hmdma_mdma_channel40_sw_0
@@ -1180,7 +1145,7 @@ static void MX_DMA_Init(void)
   *   hmdma_mdma_channel42_sw_0
   *   hmdma_mdma_channel43_sw_0
   */
-static void MX_MDMA_Init(void) 
+static void MX_MDMA_Init(void)
 {
 
   /* MDMA controller clock enable */
@@ -1354,11 +1319,11 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, FPGA_CLK_Pin|FPGA_SYNC_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, FPGA_BUS_D0_Pin|FPGA_BUS_D1_Pin|FPGA_BUS_D2_Pin|FPGA_BUS_D3_Pin 
+  HAL_GPIO_WritePin(GPIOA, FPGA_BUS_D0_Pin|FPGA_BUS_D1_Pin|FPGA_BUS_D2_Pin|FPGA_BUS_D3_Pin
                           |FPGA_BUS_D4_Pin|FPGA_BUS_D5_Pin|FPGA_BUS_D6_Pin|FPGA_BUS_D7_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, W26Q16_CS_Pin|SD_CS_Pin|RFUNIT_OE_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, W26Q16_CS_Pin|SD_CS_Pin|AD3_CS_Pin|RFUNIT_OE_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
@@ -1399,11 +1364,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(ENC2_CLK_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : SWR_BACKW_Pin PC5 */
-  GPIO_InitStruct.Pin = SWR_BACKW_Pin|GPIO_PIN_5;
+  /*Configure GPIO pin : SWR_BACKW_Pin */
+  GPIO_InitStruct.Pin = SWR_BACKW_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(SWR_BACKW_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : FPGA_CLK_Pin FPGA_SYNC_Pin */
   GPIO_InitStruct.Pin = FPGA_CLK_Pin|FPGA_SYNC_Pin;
@@ -1412,9 +1377,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : FPGA_BUS_D0_Pin FPGA_BUS_D1_Pin FPGA_BUS_D2_Pin FPGA_BUS_D3_Pin 
+  /*Configure GPIO pins : FPGA_BUS_D0_Pin FPGA_BUS_D1_Pin FPGA_BUS_D2_Pin FPGA_BUS_D3_Pin
                            FPGA_BUS_D4_Pin FPGA_BUS_D5_Pin FPGA_BUS_D6_Pin FPGA_BUS_D7_Pin */
-  GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin|FPGA_BUS_D1_Pin|FPGA_BUS_D2_Pin|FPGA_BUS_D3_Pin 
+  GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin|FPGA_BUS_D1_Pin|FPGA_BUS_D2_Pin|FPGA_BUS_D3_Pin
                           |FPGA_BUS_D4_Pin|FPGA_BUS_D5_Pin|FPGA_BUS_D6_Pin|FPGA_BUS_D7_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
@@ -1427,17 +1392,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(PTT_IN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : W26Q16_CS_Pin SD_CS_Pin */
-  GPIO_InitStruct.Pin = W26Q16_CS_Pin|SD_CS_Pin;
+  /*Configure GPIO pins : W26Q16_CS_Pin SD_CS_Pin AD3_CS_Pin */
+  GPIO_InitStruct.Pin = W26Q16_CS_Pin|SD_CS_Pin|AD3_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB1 PB2 PB11 PB4 
-                           PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_11|GPIO_PIN_4 
-                          |GPIO_PIN_5;
+  /*Configure GPIO pins : PB2 PB4 PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -1482,6 +1445,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(AD2_CS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA9 PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PD2 */
   GPIO_InitStruct.Pin = GPIO_PIN_2;
@@ -1534,7 +1503,7 @@ void MPU_Config(void)
 
   /* Disables the MPU */
   HAL_MPU_Disable();
-  /** Initializes and configures the Region and the memory to be protected 
+  /** Initializes and configures the Region and the memory to be protected
   */
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER0;
@@ -1549,7 +1518,7 @@ void MPU_Config(void)
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
-  /** Initializes and configures the Region and the memory to be protected 
+  /** Initializes and configures the Region and the memory to be protected
   */
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER1;
@@ -1564,7 +1533,7 @@ void MPU_Config(void)
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
-  /** Initializes and configures the Region and the memory to be protected 
+  /** Initializes and configures the Region and the memory to be protected
   */
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER2;
@@ -1609,7 +1578,7 @@ void Error_Handler(void)
   * @retval None
   */
 void assert_failed(uint8_t *file, uint32_t line)
-{ 
+{
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */

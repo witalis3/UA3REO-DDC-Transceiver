@@ -57,7 +57,6 @@ extern TIM_HandleTypeDef htim15;
 extern TIM_HandleTypeDef htim16;
 extern TIM_HandleTypeDef htim17;
 
-extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart6;
 extern DMA_HandleTypeDef hdma_usart6_rx;
 
@@ -131,13 +130,19 @@ void Error_Handler(void);
 #define PTT_IN_Pin GPIO_PIN_4
 #define PTT_IN_GPIO_Port GPIOC
 #define PTT_IN_EXTI_IRQn EXTI4_IRQn
+#define RFUNT_THERM_Pin GPIO_PIN_5
+#define RFUNT_THERM_GPIO_Port GPIOC
 #define W26Q16_CS_Pin GPIO_PIN_0
 #define W26Q16_CS_GPIO_Port GPIOB
+#define RFUNT_ALC_Pin GPIO_PIN_1
+#define RFUNT_ALC_GPIO_Port GPIOB
 #define AUDIO_48K_CLOCK_Pin GPIO_PIN_10
 #define AUDIO_48K_CLOCK_GPIO_Port GPIOB
 #define AUDIO_48K_CLOCK_EXTI_IRQn EXTI15_10_IRQn
-#define SD_CS_Pin GPIO_PIN_12
+#define SD_CS_Pin GPIO_PIN_11
 #define SD_CS_GPIO_Port GPIOB
+#define AD3_CS_Pin GPIO_PIN_12
+#define AD3_CS_GPIO_Port GPIOB
 #define PERI_SCK_Pin GPIO_PIN_13
 #define PERI_SCK_GPIO_Port GPIOB
 #define PERI_MISO_Pin GPIO_PIN_14
@@ -159,10 +164,6 @@ void Error_Handler(void);
 #define AUDIO_I2S_CLOCK_GPIO_Port GPIOC
 #define AD2_CS_Pin GPIO_PIN_8
 #define AD2_CS_GPIO_Port GPIOA
-#define UART_DEBUG_TX_Pin GPIO_PIN_9
-#define UART_DEBUG_TX_GPIO_Port GPIOA
-#define UART_DEBUG_RX_Pin GPIO_PIN_10
-#define UART_DEBUG_RX_GPIO_Port GPIOA
 #define WM8731_WS_LRC_Pin GPIO_PIN_15
 #define WM8731_WS_LRC_GPIO_Port GPIOA
 #define WM8731_BCLK_Pin GPIO_PIN_10
