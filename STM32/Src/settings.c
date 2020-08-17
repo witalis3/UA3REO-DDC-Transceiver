@@ -484,7 +484,7 @@ static void EEPROM_PowerDown(void)
 {
 	if (!EEPROM_Enabled)
 		return;
-	PERIPH_SPI_Transmit(&Power_Down, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Power_Down Command
+	PERIPH_SPI_Transmit(&Power_Down, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Power_Down Command
 	HAL_Delay(EEPROM_CO_DELAY);
 }
 
@@ -492,7 +492,7 @@ static void EEPROM_PowerUp(void)
 {
 	if (!EEPROM_Enabled)
 		return;
-	PERIPH_SPI_Transmit(&Power_Up, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Power_Up Command
+	PERIPH_SPI_Transmit(&Power_Up, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Power_Up Command
 	HAL_Delay(EEPROM_CO_DELAY);
 }
 

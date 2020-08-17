@@ -455,7 +455,7 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
-  ms10_counter++;
+	ms10_counter++;
   //время отпускания передачи после сигнала ключа
   if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_dot_hard && !TRX_key_dash_hard)
   {
@@ -589,7 +589,7 @@ void TIM6_DAC_IRQHandler(void)
       uint32_t cpu_load = (uint32_t)CPU_LOAD.Load;
       //Print Debug info
       sendToDebug_str("FPGA Samples: ");
-      sendToDebug_uint32(dbg_FPGA_samples, false); //~48000
+      sendToDebug_uint32(dbg_FPGA_samples, false); //~96000
       sendToDebug_str("Audio DMA samples: ");
       sendToDebug_uint32(dbg_WM8731_DMA_samples, false); //~48000
       sendToDebug_str("Audioproc blocks: ");

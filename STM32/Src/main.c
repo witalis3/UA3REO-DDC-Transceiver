@@ -231,7 +231,6 @@ int main(void)
     HAL_Delay(1000); //logo wait
   LCD_busy = false;
   LCD_redraw();
-  HAL_TIM_Base_Start(&htim6);
   HAL_TIM_Base_Start_IT(&htim6);
   sendToDebug_strln("[OK] Misc timer TIM6 inited");
   __HAL_RCC_USB1_OTG_HS_CLK_SLEEP_ENABLE();

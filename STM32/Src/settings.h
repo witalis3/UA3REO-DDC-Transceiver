@@ -7,7 +7,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define TRX_VERSION 194					//Версия прошивки
+#define TRX_VERSION 200					//Версия прошивки
 #define ADCDAC_CLOCK 122880000			//Частота генератора АЦП/ЦАП
 #define MAX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
 #define MAX_TX_FREQ_HZ 60000000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
