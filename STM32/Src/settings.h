@@ -47,6 +47,8 @@
 #define USB_DEBUG_ENABLED true	 //разрешить использовать USB как консоль
 #define SWD_DEBUG_ENABLED false	 //разрешить использовать SWD как консоль
 #define AUDIO_DECIM_RATE (IQ_SAMPLERATE / TRX_SAMPLERATE)
+#define DCDC_FREQ_0 1000000
+#define DCDC_FREQ_1 1200000
 
 // задержки при работе с EEPROM
 #define EEPROM_CO_DELAY 0	   // command

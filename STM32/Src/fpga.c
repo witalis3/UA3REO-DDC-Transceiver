@@ -276,9 +276,22 @@ static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_clockRise();
 	FPGA_clockFall();
 	
-	//STAGE 14
+	//STAGE 15
 	//OUT VCXO OFFSET
 	FPGA_writePacket(CALIBRATE.VCXO_correction);
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	//STAGE 16
+	//OUT
+	FPGA_fpgadata_out_tmp8 = 0;
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DIV0);
+	bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX_DAC_DIV1);
+	bitWrite(FPGA_fpgadata_out_tmp8, 2, TRX_DAC_HP1);
+	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX_DAC_HP2);
+	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX_DAC_X4);
+	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX_DCDC_Freq);
+	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
 	FPGA_clockFall();
 }

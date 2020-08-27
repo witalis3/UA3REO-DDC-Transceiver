@@ -41,6 +41,12 @@ volatile float32_t TRX_PWR_Forward = 0;
 volatile float32_t TRX_PWR_Backward = 0;
 volatile float32_t TRX_SWR = 0;
 volatile float32_t TRX_ALC = 0;
+volatile bool TRX_DAC_DIV0 = false;
+volatile bool TRX_DAC_DIV1 = false;
+volatile bool TRX_DAC_HP1 = false;
+volatile bool TRX_DAC_HP2 = false;
+volatile bool TRX_DAC_X4 = false;
+volatile bool TRX_DCDC_Freq = false;
 static uint_fast8_t autogain_wait_reaction = 0;	  //таймер ожидания реакции от смены режимов ATT/PRE
 static uint_fast8_t autogain_stage = 0;			  //этап отработки актокорректировщика усиления
 static uint32_t KEYER_symbol_start_time = 0;	  //время старта символа автоматического ключа
@@ -235,6 +241,16 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	vfo->Freq = _freq;
 	if (sysmenu_spectrum_opened)
 		return;
+	
+	//set DC-DC Sync freq
+	uint32_t dcdc_offset_0 = _freq % DCDC_FREQ_0;
+	uint32_t dcdc_offset_1 = _freq % DCDC_FREQ_1;
+	if(dcdc_offset_0 > dcdc_offset_1)
+		TRX_DCDC_Freq = 0;
+	else
+		TRX_DCDC_Freq = 1;
+	
+	//get band
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
 	if (bandFromFreq >= 0)
 	{
