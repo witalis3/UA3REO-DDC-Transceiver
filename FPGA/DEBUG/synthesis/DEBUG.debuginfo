@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="DEBUG" kind="system" version="18.1" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2020.04.21.20:08:51 -->
+ <!-- 2020.08.27.21:21:12 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1587485330</value>
+  <value>1598548871</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -201,7 +201,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="instance_id">
    <type>java.lang.String</type>
-   <value>DBG</value>
+   <value>ADC</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -334,5 +334,5 @@ parameters are a RESULT of the module parameters. -->
   <version>18.1</version>
  </plugin>
  <reportVersion>18.1 625</reportVersion>
- <uniqueIdentifier>00FF3199AA16000001719D7FCF51</uniqueIdentifier>
+ <uniqueIdentifier>00FF00F878090000017430F00A65</uniqueIdentifier>
 </EnsembleReport>

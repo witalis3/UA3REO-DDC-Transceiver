@@ -275,52 +275,62 @@ static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_writePacket(CALIBRATE.adc_offset & 0XFF);
 	FPGA_clockRise();
 	FPGA_clockFall();
+	
+	//STAGE 14
+	//OUT VCXO OFFSET
+	FPGA_writePacket(CALIBRATE.VCXO_correction);
+	FPGA_clockRise();
+	FPGA_clockFall();
 }
 
 //получить параметры
 static inline void FPGA_fpgadata_getparam(void)
 {
 	register uint8_t FPGA_fpgadata_in_tmp8 = 0;
+	register int32_t FPGA_fpgadata_in_tmp32 = 0;
 	FPGA_setBusInput();
 	
 	//STAGE 2
-	//clock
 	FPGA_clockRise();
-	//in
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket;
 	TRX_ADC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 0);
 	TRX_DAC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 1);
-	//clock
 	FPGA_clockFall();
 
 	//STAGE 3
-	//clock
 	FPGA_clockRise();
-	//in
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket;
-	//clock
 	FPGA_clockFall();
 	//STAGE 4
-	//clock
 	FPGA_clockRise();
-	//in
 	TRX_ADC_MINAMPLITUDE = (int16_t)(((FPGA_fpgadata_in_tmp8 << 8) & 0xFF00) | FPGA_readPacket);
-	//clock
 	FPGA_clockFall();
 
 	//STAGE 5
-	//clock
 	FPGA_clockRise();
-	//in
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket;
-	//clock
 	FPGA_clockFall();
 	//STAGE 6
-	//clock
 	FPGA_clockRise();
-	//in
 	TRX_ADC_MAXAMPLITUDE = (int16_t)(((FPGA_fpgadata_in_tmp8 << 8) & 0xFF00) | FPGA_readPacket);
-	//clock
+	FPGA_clockFall();
+	
+	//STAGE 7 - TCXO ERROR
+	FPGA_clockRise();
+	FPGA_fpgadata_in_tmp8 = FPGA_readPacket;
+	FPGA_fpgadata_in_tmp32 = 0;
+	if(bitRead(FPGA_fpgadata_in_tmp8, 7)==1)
+		FPGA_fpgadata_in_tmp32 = 0xFF000000;
+	FPGA_fpgadata_in_tmp32 |= (FPGA_fpgadata_in_tmp8 << 16);
+	FPGA_clockFall();
+	//STAGE 8
+	FPGA_clockRise();
+	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
+	FPGA_clockFall();
+	//STAGE 9
+	FPGA_clockRise();
+	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
+	TRX_TCXO_ERROR = FPGA_fpgadata_in_tmp32;
 	FPGA_clockFall();
 }
 

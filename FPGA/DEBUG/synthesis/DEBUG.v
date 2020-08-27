@@ -10,7 +10,7 @@ module DEBUG (
 	altsource_probe_top #(
 		.sld_auto_instance_index ("YES"),
 		.sld_instance_index      (0),
-		.instance_id             ("DBG"),
+		.instance_id             ("ADC"),
 		.probe_width             (16),
 		.source_width            (0),
 		.enable_metastability    ("NO")

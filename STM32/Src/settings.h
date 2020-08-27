@@ -219,6 +219,7 @@ extern struct TRX_CALIBRATE
 	uint32_t BPF_7_HPF;
 	float32_t swr_trans_rate;
 	int32_t swr_trans_rate_shadow;
+	int8_t VCXO_correction;
 	
 	uint8_t flash_id; //eeprom check
 } CALIBRATE;

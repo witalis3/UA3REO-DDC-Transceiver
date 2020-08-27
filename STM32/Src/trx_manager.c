@@ -32,6 +32,7 @@ volatile bool TRX_DAC_OTR = false;
 volatile uint32_t TRX_Fan_Timeout = 0;	 //секунд, сколько ещё осталось крутить вентилятор
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
+volatile int32_t TRX_TCXO_ERROR = 0;
 volatile uint16_t TRX_Volume;
 volatile uint32_t TRX_SNTP_Synced = 0; //время последней синхронизации времени
 volatile int_fast16_t TRX_SHIFT = 0;

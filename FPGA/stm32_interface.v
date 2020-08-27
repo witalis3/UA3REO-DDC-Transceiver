@@ -12,6 +12,7 @@ adcclk_in,
 FLASH_data_in,
 FLASH_busy,
 IQ_valid,
+VCXO_error,
 
 DATA_BUS,
 NCO1_freq,
@@ -36,7 +37,14 @@ DAC_GAIN,
 ADC_OFFSET,
 NCO2_freq,
 rx2,
-tx_iq_valid
+tx_iq_valid,
+VCXO_correction,
+DAC_div0,
+DAC_div1,
+DAC_hp1,
+DAC_hp2,
+DAC_x4,
+DCDC_freq
 );
 
 input clk_in;
@@ -52,6 +60,7 @@ input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
 input IQ_valid;
+input signed [23:0] VCXO_error;
 
 output reg unsigned [21:0] NCO1_freq = 242347;
 output reg unsigned [21:0] NCO2_freq = 242347;
@@ -60,8 +69,8 @@ output reg rx1 = 1;
 output reg rx2 = 0;
 output reg tx = 0;
 output reg reset_n = 1;
-output reg signed [31:0] TX_I = 0;
-output reg signed [31:0] TX_Q = 0;
+output reg signed [31:0] TX_I = 'd0;
+output reg signed [31:0] TX_Q = 'd0;
 output reg [15:0] stage_debug = 0;
 output reg unsigned [7:0] FLASH_data_out = 0;
 output reg FLASH_enable = 0;
@@ -74,8 +83,15 @@ output reg unsigned [7:0] CIC_GAIN = 32;
 output reg unsigned [7:0] CICFIR_GAIN = 32;
 output reg unsigned [7:0] TX_CICFIR_GAIN = 32;
 output reg unsigned [7:0] DAC_GAIN = 32;
-output reg signed [15:0] ADC_OFFSET = 0;
+output reg signed [15:0] ADC_OFFSET = 'd0;
 output reg tx_iq_valid = 0;
+output reg signed [7:0] VCXO_correction = 'd0;
+output reg DAC_div0 = 0;
+output reg DAC_div1 = 0;
+output reg DAC_hp1 = 0;
+output reg DAC_hp2 = 0;
+output reg DAC_x4 = 0;
+output reg DCDC_freq = 0;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -231,6 +247,21 @@ begin
 	else if (k == 112)
 	begin
 		ADC_OFFSET[7:0] = DATA_BUS[7:0];
+		k = 113;
+	end
+	else if (k == 113)
+	begin
+		VCXO_correction[7:0] = DATA_BUS[7:0];
+		k = 114;
+	end
+	else if (k == 114)
+	begin
+		DAC_div0 = DATA_BUS[0:0];
+		DAC_div1 = DATA_BUS[1:1];
+		DAC_hp1 = DATA_BUS[2:2];
+		DAC_hp2 = DATA_BUS[3:3];
+		DAC_x4 = DATA_BUS[4:4];
+		DCDC_freq = DATA_BUS[5:5];
 		k = 999;
 	end
 	else if (k == 200) //SEND PARAMS
@@ -258,6 +289,21 @@ begin
 	begin
 		DATA_BUS_OUT[7:0] = ADC_MAX[7:0];
 		ADC_MINMAX_RESET=1;
+		k = 205;
+	end
+	else if (k == 205)
+	begin
+		DATA_BUS_OUT[7:0] = VCXO_error[23:16];
+		k = 206;
+	end
+	else if (k == 206)
+	begin
+		DATA_BUS_OUT[7:0] = VCXO_error[15:8];
+		k = 207;
+	end
+	else if (k == 207)
+	begin
+		DATA_BUS_OUT[7:0] = VCXO_error[7:0];
 		k = 999;
 	end
 	else if (k == 300) //TX IQ

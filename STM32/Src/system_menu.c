@@ -149,6 +149,7 @@ static void SYSMENU_HANDL_CALIB_BPF_6_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction);
+static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -342,6 +343,7 @@ static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"BPF 6 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_6_END, SYSMENU_HANDL_CALIB_BPF_6_END},
 		{"HPF START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_7_HPF, SYSMENU_HANDL_CALIB_HPF_START},
 		{"SWR TRANS RATE", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.swr_trans_rate_shadow, SYSMENU_HANDL_CALIB_SWR_TRANS_RATE},
+		{"VCXO Freq", SYSMENU_INT8, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 };
 static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 
@@ -1993,6 +1995,15 @@ static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction)
 	if (CALIBRATE.swr_trans_rate > 50.0f)
 		CALIBRATE.swr_trans_rate = 50.0f;
 	CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f));
+}
+
+static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)
+{
+	CALIBRATE.VCXO_correction += direction;
+	if (CALIBRATE.VCXO_correction < -100)
+		CALIBRATE.VCXO_correction = -100;
+	if (CALIBRATE.VCXO_correction > 100)
+		CALIBRATE.VCXO_correction = 100;
 }
 
 //COMMON MENU FUNCTIONS

@@ -268,6 +268,7 @@ void LoadCalibration(void)
 		CALIBRATE.BPF_7_HPF = 30000000;															//HPF
 		CALIBRATE.swr_trans_rate = 5.0f;														//SWR Transormator rate
 		CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f)); //SWR Transormator rate UINT shadow
+		CALIBRATE.VCXO_correction = 0;	//VCXO Frequency offset
 
 		sendToDebug_strln("[OK] Loaded default calibrate settings");
 		SaveCalibration();
