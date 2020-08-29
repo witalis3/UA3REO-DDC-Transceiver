@@ -308,6 +308,8 @@ void shiftTextLeft(char *string, uint_fast16_t shiftLength)
 
 float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 {
+	return 1.0f; //TEMPORARY
+	
 	if (freq > MAX_TX_FREQ_HZ)
 		return 0.0f;
 	const uint_fast8_t calibration_points = 31;
