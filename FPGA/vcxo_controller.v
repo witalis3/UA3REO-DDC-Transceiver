@@ -23,22 +23,22 @@ reg signed [31:0] VCXO_counter = 0;
 reg signed [31:0] TCXO_counter = 0;
 reg counter_reset = 0;
 reg counter_resetted = 0;
-reg signed [23:0] freq_error_now = 0;
-reg signed [23:0] PWM_next = 30000;
+reg [7:0] state = 0;
 
 always @ (posedge vcxo_clk_in)
 begin
-	if(counter_reset)
+	if(state != 2 && state != 3)
 	begin
-		VCXO_counter = 0;
-		counter_resetted = 1;
-	end
-	else
-	begin
-		VCXO_counter = VCXO_counter + 1;
-		counter_resetted = 0;
-		if(!tcxo_clk_in)
-			PWM = PWM_next;
+		if(counter_reset)
+		begin
+			VCXO_counter <= 0;
+			counter_resetted <= 1;
+		end
+		else
+		begin
+			VCXO_counter <= VCXO_counter + 1;
+			counter_resetted <= 0;
+		end
 	end
 end
 
@@ -46,34 +46,43 @@ always @ (posedge tcxo_clk_in)
 begin
 	if(counter_reset && !counter_resetted)
 	begin
-		//wait reset
+		//wait VCXO reset
 	end
 	else
 	begin
-		TCXO_counter = TCXO_counter + 1;
-		counter_reset = 0;
-		
-		if(PWM > TCXO_counter)
-			pump = 1;
-		else
-			pump = 0;
-				
-		if(TCXO_counter == TCXO_freq_khz)
+		if(state == 0)
 		begin
-			freq_error_now = VCXO_counter - VCXO_freq_khz + VCXO_correction;
-			
-			if( (freq_error_now > -1000) && (freq_error_now < 1000) && !vcxo_clk_in) //measure bug fix
-			begin
-				freq_error = freq_error_now;
-				
-				if((freq_error_now < 0) && (PWM < TCXO_freq_khz))
-					PWM_next = PWM + 1;
-				else if((freq_error_now > 0) && (PWM > 0))
-					PWM_next = PWM - 1;
-			end
-			
-			counter_reset = 1;
 			TCXO_counter = 0;
+			counter_reset = 0;
+			state = 1;
+		end
+		else if(state == 1)
+		begin
+			TCXO_counter = TCXO_counter + 1;
+			
+			if(PWM > TCXO_counter)
+				pump = 1;
+			else
+				pump = 0;
+			
+			if(TCXO_counter > TCXO_freq_khz)
+				state = 2;
+		end
+		else if(state == 2)
+		begin
+			freq_error = VCXO_counter - VCXO_freq_khz + VCXO_correction;	
+			
+			if((freq_error < 0) && (PWM < TCXO_freq_khz))
+				PWM = PWM + 1;
+			else if((freq_error > 0) && (PWM > 0))
+				PWM = PWM - 1;
+
+			state = 3;
+		end
+		else if(state == 3)
+		begin
+			counter_reset = 1;
+			state = 0;
 		end
 	end
 end
