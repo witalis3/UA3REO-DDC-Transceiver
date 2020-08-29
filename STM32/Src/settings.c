@@ -8,7 +8,7 @@
 #include "fpga.h"
 #include "main.h"
 #include "bands.h"
-#include "peripheral.h"
+#include "front_unit.h"
 
 //W25Q16
 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -344,10 +344,10 @@ static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ba
 {
 	if (!force && !EEPROM_Enabled)
 		return true;
-	if (!force && PERIPH_SPI_process)
+	if (!force && SPI_process)
 		return false;
 	else
-		PERIPH_SPI_process = true;
+		SPI_process = true;
 
 	for (uint8_t page = 0; page <= (size / 0xFF); page++)
 	{
@@ -356,13 +356,13 @@ static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ba
 		Address[1] = (BigAddress >> 8) & 0xFF;
 		Address[2] = BigAddress & 0xFF;
 
-		PERIPH_SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Enable Command
+		SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Enable Command
 		HAL_Delay(EEPROM_CO_DELAY);
-		PERIPH_SPI_Transmit(&Sector_Erase, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Erase Chip Command
+		SPI_Transmit(&Sector_Erase, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Erase Chip Command
 		HAL_Delay(EEPROM_CO_DELAY);
-		PERIPH_SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Address ( The first address of flash module is 0x00000000 )
+		SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Address ( The first address of flash module is 0x00000000 )
 		HAL_Delay(EEPROM_ERASE_DELAY);
-		PERIPH_SPI_Transmit(&Write_Disable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Disable Command
+		SPI_Transmit(&Write_Disable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Disable Command
 		HAL_Delay(EEPROM_CO_DELAY);
 	}
 
@@ -373,11 +373,11 @@ static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ba
 		for (uint16_t i = 0; i < size; i++)
 			if (verify_clone[i] != 0xFF)
 			{
-				PERIPH_SPI_process = false;
+				SPI_process = false;
 				return false;
 			}
 	}
-	PERIPH_SPI_process = false;
+	SPI_process = false;
 	return true;
 }
 
@@ -385,15 +385,15 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_le
 {
 	if (!force && !EEPROM_Enabled)
 		return true;
-	if (!force && PERIPH_SPI_process)
+	if (!force && SPI_process)
 		return false;
 	else
-		PERIPH_SPI_process = true;
+		SPI_process = true;
 
 	memcpy(write_clone, Buffer, size);
 	for (uint16_t page = 0; page <= (size / 0xFF); page++)
 	{
-		PERIPH_SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Enable Command
+		SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Enable Command
 		HAL_Delay(EEPROM_CO_DELAY);
 
 		uint32_t BigAddress = margin_left + page * 0xFF + (eeprom_bank * W25Q16_SECTOR_SIZE);
@@ -404,13 +404,13 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_le
 		if (bsize > 0xFF)
 			bsize = 0xFF;
 
-		PERIPH_SPI_Transmit(&Page_Program, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Command
+		SPI_Transmit(&Page_Program, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Command
 		HAL_Delay(EEPROM_CO_DELAY);
-		PERIPH_SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Address ( The first address of flash module is 0x00000000 )
+		SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Address ( The first address of flash module is 0x00000000 )
 		HAL_Delay(EEPROM_AD_DELAY);
-		PERIPH_SPI_Transmit((uint8_t *)(write_clone + 0xFF * page), NULL, (uint8_t)bsize, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Data
+		SPI_Transmit((uint8_t *)(write_clone + 0xFF * page), NULL, (uint8_t)bsize, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Data
 		HAL_Delay(EEPROM_WR_DELAY);
-		PERIPH_SPI_Transmit(&Write_Disable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Disable Command
+		SPI_Transmit(&Write_Disable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Disable Command
 		HAL_Delay(EEPROM_CO_DELAY);
 	}
 
@@ -422,11 +422,11 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_le
 			if (verify_clone[i] != write_clone[i])
 			{
 				EEPROM_Sector_Erase(size, margin_left, eeprom_bank, true, true);
-				PERIPH_SPI_process = false;
+				SPI_process = false;
 				return false;
 			}
 	}
-	PERIPH_SPI_process = false;
+	SPI_process = false;
 	return true;
 }
 
@@ -434,10 +434,10 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_lef
 {
 	if (!force && !EEPROM_Enabled)
 		return true;
-	if (!force && PERIPH_SPI_process)
+	if (!force && SPI_process)
 		return false;
 	else
-		PERIPH_SPI_process = true;
+		SPI_process = true;
 
 	for (uint16_t page = 0; page <= (size / 0xFF); page++)
 	{
@@ -449,20 +449,20 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_lef
 		if (bsize > 0xFF)
 			bsize = 0xFF;
 
-		bool res = PERIPH_SPI_Transmit(&Read_Data, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Read Command
+		bool res = SPI_Transmit(&Read_Data, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Read Command
 		HAL_Delay(EEPROM_CO_DELAY);
 		if (!res)
 		{
 			EEPROM_Enabled = false;
 			sendToDebug_strln("[ERR] EEPROM not found...");
 			LCD_showError("EEPROM init error", true);
-			PERIPH_SPI_process = false;
+			SPI_process = false;
 			return true;
 		}
 
-		PERIPH_SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Address
+		SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true); // Write Address
 		HAL_Delay(EEPROM_AD_DELAY);
-		PERIPH_SPI_Transmit(NULL, (uint8_t *)(Buffer + 0xFF * page), (uint8_t)bsize, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Read
+		SPI_Transmit(NULL, (uint8_t *)(Buffer + 0xFF * page), (uint8_t)bsize, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Read
 		HAL_Delay(EEPROM_RD_DELAY);
 	}
 
@@ -473,11 +473,11 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_lef
 		for (uint16_t i = 0; i < size; i++)
 			if (read_clone[i] != Buffer[i])
 			{
-				PERIPH_SPI_process = false;
+				SPI_process = false;
 				return false;
 			}
 	}
-	PERIPH_SPI_process = false;
+	SPI_process = false;
 	return true;
 }
 
@@ -485,7 +485,7 @@ static void EEPROM_PowerDown(void)
 {
 	if (!EEPROM_Enabled)
 		return;
-	PERIPH_SPI_Transmit(&Power_Down, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Power_Down Command
+	SPI_Transmit(&Power_Down, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Power_Down Command
 	HAL_Delay(EEPROM_CO_DELAY);
 }
 
@@ -493,7 +493,7 @@ static void EEPROM_PowerUp(void)
 {
 	if (!EEPROM_Enabled)
 		return;
-	PERIPH_SPI_Transmit(&Power_Up, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Power_Up Command
+	SPI_Transmit(&Power_Up, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Power_Up Command
 	HAL_Delay(EEPROM_CO_DELAY);
 }
 

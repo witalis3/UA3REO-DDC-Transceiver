@@ -11,6 +11,8 @@
 #include "usbd_cat_if.h"
 
 CPULOAD_t CPU_LOAD = {0};
+static bool SPI_busy = false;
+volatile bool SPI_process = false;
 
 void dma_memcpy32(uint32_t *dest, uint32_t *src, uint32_t len)
 {
@@ -411,4 +413,38 @@ inline uint8_t rev8(uint8_t data)
 {
 	uint32_t tmp = data;
 	return (uint8_t)(__RBIT(tmp) >> 24);
+}
+
+bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs)
+{
+	if (SPI_busy)
+	{
+		sendToDebug_strln("SPI Busy");
+		return false;
+	}
+	const int32_t timeout = 0x200; //HAL_MAX_DELAY
+	SPI_busy = true;
+	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
+	HAL_StatusTypeDef res = 0;
+	if (in_data == NULL)
+	{
+		res = HAL_SPI_Transmit(&hspi2, out_data, count, timeout);
+	}
+	else if (out_data == NULL)
+	{
+    memset(in_data, 0x00, count);
+		res = HAL_SPI_Receive(&hspi2, in_data, count, timeout);
+	}
+	else
+	{
+    memset(in_data, 0x00, count);
+		res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, timeout);
+	}
+	if (!hold_cs)
+		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
+	SPI_busy = false;
+	if (res == HAL_TIMEOUT || res == HAL_ERROR)
+		return false;
+	else
+		return true;
 }

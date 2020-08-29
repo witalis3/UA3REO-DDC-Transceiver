@@ -63,6 +63,7 @@ typedef struct
 } CPULOAD_t;
 
 extern CPULOAD_t CPU_LOAD;
+volatile extern bool SPI_process;
 
 extern void CPULOAD_Init(void);
 extern void CPULOAD_GoToSleepMode(void);
@@ -99,5 +100,6 @@ extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);
 extern int32_t convertToSPIBigEndian(int32_t in);
 extern uint8_t rev8(uint8_t data);
+extern bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs);
 
 #endif

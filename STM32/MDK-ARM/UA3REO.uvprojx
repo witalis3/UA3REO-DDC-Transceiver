@@ -488,6 +488,16 @@
               <FilePath>..\Src\fonts.h</FilePath>
             </File>
             <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\front_unit.h</FilePath>
+            </File>
+            <File>
               <FileName>fpga.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\fpga.c</FilePath>
@@ -558,16 +568,6 @@
               <FilePath>..\Src\noise_reduction.h</FilePath>
             </File>
             <File>
-              <FileName>peripheral.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\peripheral.c</FilePath>
-            </File>
-            <File>
-              <FileName>peripheral.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\peripheral.h</FilePath>
-            </File>
-            <File>
               <FileName>profiler.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\profiler.c</FilePath>
@@ -576,6 +576,16 @@
               <FileName>profiler.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\profiler.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rf_unit.c</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rf_unit.h</FilePath>
             </File>
             <File>
               <FileName>screen_layout.h</FileName>

@@ -12,7 +12,8 @@
 #include "audio_filters.h"
 #include "usbd_audio_if.h"
 #include "cw_decoder.h"
-#include "peripheral.h"
+#include "front_unit.h"
+#include "rf_unit.h"
 #include "system_menu.h"
 
 volatile bool TRX_ptt_hard = false;
@@ -56,6 +57,7 @@ volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; //температура STM32
 volatile float32_t TRX_IQ_phase_error = 0.0f;
 volatile bool TRX_NeedGoToBootloader = false;
 volatile bool TRX_Temporary_Stop_BandMap = false;
+volatile bool TRX_Mute = false;
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);

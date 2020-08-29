@@ -394,12 +394,23 @@ static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
-void SYSMENU_RFPOWER_HOTKEY(void)
+void SYSMENU_TRX_RFPOWER_HOTKEY(void)
 {
 	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_trx_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_TRX_STEP_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_trx_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 7;
+	if(TRX.Fast)
+		systemMenuIndex = 8;
 	drawSystemMenu(true);
 }
 
@@ -625,39 +636,74 @@ static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
-void SYSMENU_AUDIO_SSB_HOTKEY(void)
+void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 {
 	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
-	systemMenuIndex = 1;
+	systemMenuIndex = 8;
 	drawSystemMenu(true);
 }
 
-void SYSMENU_AUDIO_CW_HOTKEY(void)
+void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
 {
 	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
-	systemMenuIndex = 3;
+	systemMenuIndex = 10;
 	drawSystemMenu(true);
 }
 
-void SYSMENU_AUDIO_AM_HOTKEY(void)
+void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
 {
 	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
-	systemMenuIndex = 4;
+	systemMenuIndex = 11;
 	drawSystemMenu(true);
 }
 
-void SYSMENU_AUDIO_FM_HOTKEY(void)
+void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
 {
 	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
-	systemMenuIndex = 6;
+	systemMenuIndex = 12;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 7;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_AUDIO_HPF_CW_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	systemMenuIndex = 9;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 13;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_AUDIO_AGC_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 20;
 	drawSystemMenu(true);
 }
 
@@ -1094,6 +1140,15 @@ void SYSMENU_CW_WPM_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 4;
+	drawSystemMenu(true);
+}
+
+void SYSMENU_CW_KEYER_HOTKEY(void)
+{
+	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_cw_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 3;
 	drawSystemMenu(true);
 }
 

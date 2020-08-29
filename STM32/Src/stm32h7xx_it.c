@@ -83,7 +83,8 @@
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 #include "functions.h"
-#include "peripheral.h"
+#include "front_unit.h"
+#include "rf_unit.h"
 #include "fpga.h"
 #include "lcd.h"
 #include "wm8731.h"
@@ -754,7 +755,7 @@ void TIM15_IRQHandler(void)
   /* USER CODE END TIM15_IRQn 0 */
   HAL_TIM_IRQHandler(&htim15);
   /* USER CODE BEGIN TIM15_IRQn 1 */
-  PERIPH_ProcessFrontPanel();
+  FRONTPANEL_Process();
   if (NeedSaveCalibration) //сохраняем данные калибровки в EEPROM
     SaveCalibration();
   /* USER CODE END TIM15_IRQn 1 */
@@ -782,7 +783,7 @@ void TIM16_IRQHandler(void)
 	if(ENC2lastClkVal != ENCODER2_CLKVal)
 	{
 		if (TRX_Inited)
-			PERIPH_ENCODER2_checkRotate();
+			FRONTPANEL_ENCODER2_checkRotate();
 		ENC2lastClkVal = ENCODER2_CLKVal;
 	}
   /* USER CODE END TIM16_IRQn 1 */
@@ -823,7 +824,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder
   {
     if (TRX_Inited)
-      PERIPH_ENCODER_checkRotate();
+      FRONTPANEL_ENCODER_checkRotate();
   }
   else if (GPIO_Pin == GPIO_PIN_4) //PTT
   {

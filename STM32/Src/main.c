@@ -27,7 +27,8 @@
 #include "bootloader.h"
 #include "trx_manager.h"
 #include "lcd.h"
-#include "peripheral.h"
+#include "front_unit.h"
+#include "rf_unit.h"
 #include "fpga.h"
 #include "fft.h"
 #include "wm8731.h"
@@ -202,9 +203,9 @@ int main(void)
   sendToDebug_strln("[OK] Profiler init");
   InitProfiler();
   sendToDebug_strln("[OK] Frontpanel init");
-  PERIPH_InitFrontPanel();
+  FRONTPANEL_Init();
   sendToDebug_strln("[OK] Settings loading");
-  if (PERIPH_FrontPanel.key_menu) //hard reset
+  if (PERIPH_FrontPanel_Buttons[13].state) //hard reset
     LoadSettings(true);
   else
     LoadSettings(false);

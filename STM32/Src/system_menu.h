@@ -35,11 +35,17 @@ extern void eventSecRotateSystemMenu(int8_t direction);
 extern void eventCloseSystemMenu(void);
 extern bool sysmenu_spectrum_opened;
 extern bool sysmenu_hiddenmenu_enabled;
-extern void SYSMENU_RFPOWER_HOTKEY(void);
+extern void SYSMENU_TRX_RFPOWER_HOTKEY(void);
+extern void SYSMENU_TRX_STEP_HOTKEY(void);
 extern void SYSMENU_CW_WPM_HOTKEY(void);
-extern void SYSMENU_AUDIO_SSB_HOTKEY(void);
-extern void SYSMENU_AUDIO_CW_HOTKEY(void);
-extern void SYSMENU_AUDIO_AM_HOTKEY(void);
-extern void SYSMENU_AUDIO_FM_HOTKEY(void);
+extern void SYSMENU_CW_KEYER_HOTKEY(void);
+extern void SYSMENU_AUDIO_BW_SSB_HOTKEY(void);
+extern void SYSMENU_AUDIO_BW_CW_HOTKEY(void);
+extern void SYSMENU_AUDIO_BW_AM_HOTKEY(void);
+extern void SYSMENU_AUDIO_BW_FM_HOTKEY(void);
+extern void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void);
+extern void SYSMENU_AUDIO_HPF_CW_HOTKEY(void);
+extern void SYSMENU_AUDIO_SQUELCH_HOTKEY(void);
+extern void SYSMENU_AUDIO_AGC_HOTKEY(void);
 
 #endif
