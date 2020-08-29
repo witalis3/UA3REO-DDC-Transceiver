@@ -4602,21 +4602,21 @@ refer to the applicable agreement for further details.
 		(pt 264 32)
 		(output)
 		(text "freq_error[23..0]" (rect 0 0 80 12)(font "Arial" ))
-		(text "freq_error[23..0]" (rect 176 27 243 39)(font "Arial" ))
+		(text "freq_error[23..0]" (rect 176 27 256 39)(font "Arial" ))
 		(line (pt 264 32)(pt 248 32)(line_width 3))
 	)
 	(port
 		(pt 264 48)
 		(output)
 		(text "pump" (rect 0 0 27 12)(font "Arial" ))
-		(text "pump" (rect 221 43 243 55)(font "Arial" ))
+		(text "pump" (rect 221 43 248 55)(font "Arial" ))
 		(line (pt 264 48)(pt 248 48))
 	)
 	(port
 		(pt 264 64)
 		(output)
 		(text "PWM[23..0]" (rect 0 0 57 12)(font "Arial" ))
-		(text "PWM[23..0]" (rect 195 59 243 71)(font "Arial" ))
+		(text "PWM[23..0]" (rect 195 59 252 71)(font "Arial" ))
 		(line (pt 264 64)(pt 248 64)(line_width 3))
 	)
 	(parameter
@@ -5345,10 +5345,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 2152 328)
 	(pt 2192 328)
-)
-(connector
-	(pt 2192 328)
-	(pt 2528 328)
 )
 (connector
 	(pt 1200 272)
@@ -6966,14 +6962,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 2528 328)
-	(pt 2528 368)
-)
-(connector
-	(pt 2528 368)
-	(pt 3088 368)
-)
-(connector
 	(pt 3088 320)
 	(pt 2840 320)
 )
@@ -7086,10 +7074,6 @@ refer to the applicable agreement for further details.
 	(pt 3936 960)
 )
 (connector
-	(pt 3024 696)
-	(pt 3048 696)
-)
-(connector
 	(pt 3048 728)
 	(pt 3736 728)
 )
@@ -7100,10 +7084,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 3736 704)
 	(pt 3736 728)
-)
-(connector
-	(pt 3048 696)
-	(pt 3048 728)
 )
 (connector
 	(pt 3352 816)
@@ -7137,10 +7117,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 2936 784)
 	(pt 2936 1024)
-)
-(connector
-	(pt 2936 784)
-	(pt 3048 784)
 )
 (connector
 	(pt 3240 1024)
@@ -7183,20 +7159,12 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 2368 784)
-	(pt 2744 784)
-)
-(connector
 	(pt 2744 696)
 	(pt 2744 784)
 )
 (connector
 	(pt 2728 696)
 	(pt 2744 696)
-)
-(connector
-	(pt 2744 696)
-	(pt 2752 696)
 )
 (connector
 	(pt 2336 936)
@@ -7222,6 +7190,30 @@ refer to the applicable agreement for further details.
 	(pt -56 -32)
 	(pt -56 -16)
 	(bus)
+)
+(connector
+	(pt 2552 240)
+	(pt 2584 240)
+)
+(connector
+	(pt 2584 240)
+	(pt 2584 368)
+)
+(connector
+	(pt 2584 368)
+	(pt 3088 368)
+)
+(connector
+	(pt 2368 784)
+	(pt 2744 784)
+)
+(connector
+	(pt 2744 784)
+	(pt 2936 784)
+)
+(connector
+	(pt 2936 784)
+	(pt 3048 784)
 )
 (junction (pt 376 120))
 (junction (pt 440 32))
@@ -7274,7 +7266,6 @@ refer to the applicable agreement for further details.
 (junction (pt 824 256))
 (junction (pt 776 152))
 (junction (pt 1728 312))
-(junction (pt 2192 328))
 (junction (pt 3424 104))
 (junction (pt 3736 384))
 (junction (pt 5512 224))
@@ -7304,6 +7295,6 @@ refer to the applicable agreement for further details.
 (junction (pt 3888 456))
 (junction (pt 3736 704))
 (junction (pt 3048 784))
-(junction (pt 3048 728))
-(junction (pt 2744 696))
 (junction (pt -56 -32))
+(junction (pt 2744 784))
+(junction (pt 2936 784))
