@@ -160,17 +160,17 @@ static inline void FPGA_fpgadata_sendparam(void)
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
-	uint32_t TRX_freq_phrase = getPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, true);
-	uint32_t TRX_freq_phrase2 = getPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, false);
+	uint32_t TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
+	uint32_t TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
 	if (!TRX_on_TX())
 	{
 		switch (current_vfo->Mode)
 		{
 		case TRX_MODE_CW_L:
-			TRX_freq_phrase = getPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, true);
+			TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 1);
 			break;
 		case TRX_MODE_CW_U:
-			TRX_freq_phrase = getPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, true);
+			TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 1);
 			break;
 		default:
 			break;
@@ -178,10 +178,10 @@ static inline void FPGA_fpgadata_sendparam(void)
 		switch (secondary_vfo->Mode)
 		{
 		case TRX_MODE_CW_L:
-			TRX_freq_phrase2 = getPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, false);
+			TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 2);
 			break;
 		case TRX_MODE_CW_U:
-			TRX_freq_phrase2 = getPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, false);
+			TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 2);
 			break;
 		default:
 			break;
@@ -283,7 +283,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_clockFall();
 	
 	//STAGE 16
-	//OUT
+	//OUT DAC/DCDC SETTINGS
 	FPGA_fpgadata_out_tmp8 = 0;
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DIV0);
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX_DAC_DIV1);
@@ -292,6 +292,25 @@ static inline void FPGA_fpgadata_sendparam(void)
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX_DAC_X4);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX_DCDC_Freq);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	//STAGE 17
+	uint32_t TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT);
+	//out TX-FREQ
+	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 16)) >> 16));
+	FPGA_clockRise();
+	FPGA_clockFall();
+
+	//STAGE 18
+	//OUT TX-FREQ
+	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 8)) >> 8));
+	FPGA_clockRise();
+	FPGA_clockFall();
+
+	//STAGE 19
+	//OUT TX-FREQ
+	FPGA_writePacket(TRX_freq_phrase_tx & 0XFF);
 	FPGA_clockRise();
 	FPGA_clockFall();
 }
@@ -375,7 +394,7 @@ static inline void FPGA_fpgadata_getiq(void)
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
-	if (TRX_IQ_swap)
+	if (TRX_RX1_IQ_swap)
 	{
 		if (NeedFFTInputBuffer)
 			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_float32;
@@ -409,7 +428,7 @@ static inline void FPGA_fpgadata_getiq(void)
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
-	if (TRX_IQ_swap)
+	if (TRX_RX1_IQ_swap)
 	{
 		if (NeedFFTInputBuffer)
 			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_float32;
@@ -445,7 +464,7 @@ static inline void FPGA_fpgadata_getiq(void)
 		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 
 		FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
-		if (TRX_IQ_swap)
+		if (TRX_RX2_IQ_swap)
 		{
 			FPGA_Audio_Buffer_RX2_I[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 		}
@@ -475,7 +494,7 @@ static inline void FPGA_fpgadata_getiq(void)
 		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 
 		FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
-		if (TRX_IQ_swap)
+		if (TRX_RX2_IQ_swap)
 		{
 			FPGA_Audio_Buffer_RX2_Q[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 		}
@@ -518,9 +537,17 @@ static inline void FPGA_fpgadata_sendiq(void)
 {
 	q31_t FPGA_fpgadata_out_q_tmp32 = 0;
 	q31_t FPGA_fpgadata_out_i_tmp32 = 0;
+	q31_t FPGA_fpgadata_out_tmp_tmp32 = 0;
 	arm_float_to_q31((float32_t *)&FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index], &FPGA_fpgadata_out_q_tmp32, 1);
 	arm_float_to_q31((float32_t *)&FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index], &FPGA_fpgadata_out_i_tmp32, 1);
 	FPGA_samples++;
+	
+	if(TRX_TX_IQ_swap)
+	{
+		FPGA_fpgadata_out_tmp_tmp32 = FPGA_fpgadata_out_q_tmp32;
+		FPGA_fpgadata_out_i_tmp32 = FPGA_fpgadata_out_q_tmp32;
+		FPGA_fpgadata_out_q_tmp32 = FPGA_fpgadata_out_tmp_tmp32;
+	}
 
 	//STAGE 2 out Q
 	FPGA_writePacket((FPGA_fpgadata_out_q_tmp32 >> 24) & 0xFF);

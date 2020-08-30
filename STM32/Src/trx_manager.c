@@ -24,7 +24,9 @@ volatile bool TRX_old_key_serial = false;
 volatile bool TRX_key_dot_hard = false;
 volatile bool TRX_key_dash_hard = false;
 volatile uint_fast16_t TRX_Key_Timeout_est = 0;
-volatile bool TRX_IQ_swap = false;
+volatile bool TRX_RX1_IQ_swap = false;
+volatile bool TRX_RX2_IQ_swap = false;
+volatile bool TRX_TX_IQ_swap = false;
 volatile bool TRX_Tune = false;
 volatile bool TRX_Inited = false;
 volatile int_fast16_t TRX_RX_dBm = -100;
@@ -46,7 +48,7 @@ volatile bool TRX_DAC_DIV0 = false;
 volatile bool TRX_DAC_DIV1 = false;
 volatile bool TRX_DAC_HP1 = false;
 volatile bool TRX_DAC_HP2 = false;
-volatile bool TRX_DAC_X4 = false;
+volatile bool TRX_DAC_X4 = true;
 volatile bool TRX_DCDC_Freq = false;
 static uint_fast8_t autogain_wait_reaction = 0;	  //таймер ожидания реакции от смены режимов ATT/PRE
 static uint_fast8_t autogain_stage = 0;			  //этап отработки актокорректировщика усиления
@@ -237,8 +239,8 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 {
 	if (_freq < 1)
 		return;
-	if (_freq >= MAX_FREQ_HZ)
-		_freq = MAX_FREQ_HZ;
+	if (_freq >= MAX_RX_FREQ_HZ)
+		_freq = MAX_RX_FREQ_HZ;
 
 	vfo->Freq = _freq;
 	if (sysmenu_spectrum_opened)

@@ -210,7 +210,7 @@ void LoadCalibration(void)
 		CALIBRATE.CIC_GAINER_val = 83;		//Смещение с выхода CIC
 		CALIBRATE.CICFIR_GAINER_val = 54;	//Смещение с выхода CIC компенсатора
 		CALIBRATE.TXCICFIR_GAINER_val = 56; //Смещение с выхода TX-CIC компенсатора
-		CALIBRATE.DAC_GAINER_val = 30;		//Смещение DAC корректора
+		CALIBRATE.DAC_GAINER_val = 31;		//Смещение DAC корректора
 		//Калибровка максимальной выходной мощности на каждый диапазон
 		CALIBRATE.rf_out_power[0] = 100;  // 0 mhz
 		CALIBRATE.rf_out_power[1] = 51;	  // 1 mhz

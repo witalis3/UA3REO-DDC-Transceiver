@@ -203,27 +203,53 @@ void delay_us(uint32_t us)
 }
 */
 
-uint32_t getPhraseFromFrequency(int32_t freq, bool set_swap_mode) //высчитываем частоту из фразы ля FPGA
+uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) //высчитываем частоту из фразы ля FPGA (RX1/RX2)
 {
 	if (freq < 0)
 		return 0;
 	bool inverted = false;
 	int32_t _freq = freq;
-	if (_freq > ADCDAC_CLOCK / 2) //Go Nyquist
+	if (_freq > ADC_CLOCK / 2) //Go Nyquist
 	{
-		while (_freq > (ADCDAC_CLOCK / 2))
+		while (_freq > (ADC_CLOCK / 2))
 		{
-			_freq -= (ADCDAC_CLOCK / 2);
+			_freq -= (ADC_CLOCK / 2);
 			inverted = !inverted;
 		}
 		if (inverted)
 		{
-			_freq = (ADCDAC_CLOCK / 2) - _freq;
+			_freq = (ADC_CLOCK / 2) - _freq;
 		}
 	}
-	if(set_swap_mode)
-		TRX_IQ_swap = inverted;
-	double res = round(((double)_freq / ADCDAC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
+	if(rx_num==1)
+		TRX_RX1_IQ_swap = inverted;
+	if(rx_num==2)
+		TRX_RX2_IQ_swap = inverted;
+	double res = round(((double)_freq / ADC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
+	return (uint32_t)res;
+}
+
+uint32_t getTXPhraseFromFrequency(int32_t freq) //высчитываем частоту из фразы для FPGA (TX)
+{
+	if (freq < 0)
+		return 0;
+	bool inverted = false;
+	int32_t _freq = freq;
+	if (_freq > DAC_CLOCK / 2) //Go Nyquist
+	{
+		while (_freq > (DAC_CLOCK / 2))
+		{
+			_freq -= (DAC_CLOCK / 2);
+			inverted = !inverted;
+		}
+		if (inverted)
+		{
+			_freq = (DAC_CLOCK / 2) - _freq;
+		}
+	}
+	TRX_TX_IQ_swap = inverted;
+	
+	double res = round(((double)_freq / DAC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
 	return (uint32_t)res;
 }
 
@@ -308,10 +334,11 @@ void shiftTextLeft(char *string, uint_fast16_t shiftLength)
 
 float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 {
-	return 1.0f; //TEMPORARY
-	
 	if (freq > MAX_TX_FREQ_HZ)
 		return 0.0f;
+	
+	return 1.0f; //TEMPORARY
+	
 	const uint_fast8_t calibration_points = 31;
 	uint_fast8_t mhz_left = 0;
 	uint_fast8_t mhz_right = calibration_points;
