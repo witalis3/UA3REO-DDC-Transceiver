@@ -237,25 +237,28 @@ uint32_t getTXPhraseFromFrequency(int32_t freq) //высчитываем час�
 	int32_t _freq = freq;
 	
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
-	if(nyquist == 0) // <48mhz
+	if(nyquist == 0) // <43.mhz (good 0mhz - 34.56mhz) 0-0.4 dac freq
 	{
-		TRX_DAC_HP1 = false;
-		TRX_DAC_HP2 = false;
+		TRX_DAC_HP1 = false; //low-pass
+		TRX_DAC_HP2 = false; //low-pass
 	}
-	if(nyquist == 1) // 48-96 mhz
+	//fall in 43.2mhz
+	if(nyquist == 1) // 43.2-86.4 mhz (good 69.12mhz - 51.84) dac frec-(0.2-0.4 dac freq)
 	{
-		TRX_DAC_HP1 = true;
-		TRX_DAC_HP2 = false;
+		TRX_DAC_HP1 = true;  //high-pass
+		TRX_DAC_HP2 = false; //low-pass
 	}
-	if(nyquist == 2) //96-144 mhz
+	//fall in 86.4mhz
+	if(nyquist == 2) //86.4-129.6 mhz (good 103.68mhz -	120.96mhz) dac freq+(0.2-0.4 dac freq)
 	{
-		TRX_DAC_HP1 = true;
-		TRX_DAC_HP2 = true;
+		TRX_DAC_HP1 = true;  //high-pass
+		TRX_DAC_HP2 = true;  //high-pass
 	}
-	if(nyquist == 3) //144-192 mhz
+	//fall in 129.6mhz
+	if(nyquist == 3) //129.6-172.8 mhz (good 172.8mhz - 138.24mhz) 2xdac frec-(0.2-0.4 dac freq)
 	{
-		TRX_DAC_HP1 = false;
-		TRX_DAC_HP2 = true;
+		TRX_DAC_HP1 = false; //low-pass
+		TRX_DAC_HP2 = true;  //high-pass
 	}
 	
 	if (_freq > DAC_CLOCK / 2) //Go Nyquist

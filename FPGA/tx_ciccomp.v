@@ -61,7 +61,7 @@ endmodule
 // Retrieval info: 	<generic name="symmetryMode" value="sym" />
 // Retrieval info: 	<generic name="L_bandsFilter" value="1" />
 // Retrieval info: 	<generic name="inputChannelNum" value="1" />
-// Retrieval info: 	<generic name="clockRate" value="96" />
+// Retrieval info: 	<generic name="clockRate" value="86.4" />
 // Retrieval info: 	<generic name="clockSlack" value="0" />
 // Retrieval info: 	<generic name="inputRate" value="0.048" />
 // Retrieval info: 	<generic name="coeffReload" value="false" />

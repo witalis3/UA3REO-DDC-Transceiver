@@ -681,7 +681,6 @@ static void FRONTPANEL_BUTTONHANDLER_STEP(void)
 
 static void FRONTPANEL_BUTTONHANDLER_DNR(void)
 {
-	TRX_DAC_DIV0=!TRX_DAC_DIV0; sendToDebug_str("DIV0: "); sendToDebug_uint8(TRX_DAC_DIV0,false); return;
 	CurrentVFO()->DNR = !CurrentVFO()->DNR;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
@@ -692,7 +691,6 @@ static void FRONTPANEL_BUTTONHANDLER_DNR(void)
 
 static void FRONTPANEL_BUTTONHANDLER_NB(void)
 {
-	TRX_DAC_HP1=!TRX_DAC_HP1; sendToDebug_str("HP1: "); sendToDebug_uint8(TRX_DAC_HP1,false); return;
 	TRX.NOISE_BLANKER = !TRX.NOISE_BLANKER;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
@@ -762,8 +760,6 @@ static void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
 
 static void FRONTPANEL_BUTTONHANDLER_NOTCH(void)
 {
-	TRX_DAC_DIV1=!TRX_DAC_DIV1; sendToDebug_str("DIV1: "); sendToDebug_uint8(TRX_DAC_DIV1,false); return;
-	
 	if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
 		CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
 	CurrentVFO()->ManualNotchFilter = false;
@@ -779,8 +775,6 @@ static void FRONTPANEL_BUTTONHANDLER_NOTCH(void)
 
 static void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(void)
 {
-	TRX_DAC_HP2=!TRX_DAC_HP2; sendToDebug_str("HP2: "); sendToDebug_uint8(TRX_DAC_HP2,false); return;
-	
 	if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
 		CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
 	CurrentVFO()->AutoNotchFilter = false;
@@ -804,8 +798,6 @@ static void FRONTPANEL_BUTTONHANDLER_SHIFT(void)
 
 static void FRONTPANEL_BUTTONHANDLER_CLAR(void)
 {
-	TRX_DAC_X4=!TRX_DAC_X4; sendToDebug_str("X4: "); sendToDebug_uint8(TRX_DAC_X4,false); return;
-	
 	TRX.CLAR = !TRX.CLAR;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
