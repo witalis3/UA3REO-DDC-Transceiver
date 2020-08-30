@@ -44,7 +44,8 @@ DAC_div1,
 DAC_hp1,
 DAC_hp2,
 DAC_x4,
-DCDC_freq
+DCDC_freq,
+TX_NCO_freq
 );
 
 input clk_in;
@@ -64,6 +65,7 @@ input signed [23:0] VCXO_error;
 
 output reg unsigned [21:0] NCO1_freq = 242347;
 output reg unsigned [21:0] NCO2_freq = 242347;
+output reg unsigned [21:0] TX_NCO_freq = 242347;
 output reg preamp_enable = 0;
 output reg rx1 = 1;
 output reg rx2 = 0;
@@ -262,6 +264,21 @@ begin
 		DAC_hp2 = DATA_BUS[3:3];
 		DAC_x4 = DATA_BUS[4:4];
 		DCDC_freq = DATA_BUS[5:5];
+		k = 115;
+	end
+	else if (k == 115)
+	begin
+		TX_NCO_freq[21:16] = DATA_BUS[5:0];
+		k = 116;
+	end
+	else if (k == 116)
+	begin
+		TX_NCO_freq[15:8] = DATA_BUS[7:0];
+		k = 117;
+	end
+	else if (k == 117)
+	begin
+		TX_NCO_freq[7:0] = DATA_BUS[7:0];
 		k = 999;
 	end
 	else if (k == 200) //SEND PARAMS
