@@ -60,7 +60,10 @@ volatile float32_t TRX_IQ_phase_error = 0.0f;
 volatile bool TRX_NeedGoToBootloader = false;
 volatile bool TRX_Temporary_Stop_BandMap = false;
 volatile bool TRX_Mute = false;
-
+uint32_t TRX_freq_phrase = 0;
+uint32_t TRX_freq_phrase2 = 0;
+uint32_t TRX_freq_phrase_tx = 0;
+	
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
@@ -269,6 +272,40 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 			LCD_UpdateQuery.TopButtons = true;
 		}
 	}
+	
+	//get fpga freq phrase
+	VFO *current_vfo = CurrentVFO();
+	VFO *secondary_vfo = SecondaryVFO();
+	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
+	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
+	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT);
+	if (!TRX_on_TX())
+	{
+		switch (current_vfo->Mode)
+		{
+		case TRX_MODE_CW_L:
+			TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 1);
+			break;
+		case TRX_MODE_CW_U:
+			TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 1);
+			break;
+		default:
+			break;
+		}
+		switch (secondary_vfo->Mode)
+		{
+		case TRX_MODE_CW_L:
+			TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 2);
+			break;
+		case TRX_MODE_CW_U:
+			TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 2);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	//
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
 	FPGA_NeedSendParams = true;
 }

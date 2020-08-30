@@ -159,34 +159,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
-	VFO *secondary_vfo = SecondaryVFO();
-	uint32_t TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
-	uint32_t TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
-	if (!TRX_on_TX())
-	{
-		switch (current_vfo->Mode)
-		{
-		case TRX_MODE_CW_L:
-			TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 1);
-			break;
-		case TRX_MODE_CW_U:
-			TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 1);
-			break;
-		default:
-			break;
-		}
-		switch (secondary_vfo->Mode)
-		{
-		case TRX_MODE_CW_L:
-			TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 2);
-			break;
-		case TRX_MODE_CW_U:
-			TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 2);
-			break;
-		default:
-			break;
-		}
-	}
+	
 	//STAGE 2
 	//out PTT+PREAMP
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));										//RX1
@@ -296,7 +269,6 @@ static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_clockFall();
 	
 	//STAGE 17
-	uint32_t TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT);
 	//out TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 16)) >> 16));
 	FPGA_clockRise();

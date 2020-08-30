@@ -235,6 +235,29 @@ uint32_t getTXPhraseFromFrequency(int32_t freq) //высчитываем час�
 		return 0;
 	bool inverted = false;
 	int32_t _freq = freq;
+	
+	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
+	if(nyquist == 0) // <48mhz
+	{
+		TRX_DAC_HP1 = false;
+		TRX_DAC_HP2 = false;
+	}
+	if(nyquist == 1) // 48-96 mhz
+	{
+		TRX_DAC_HP1 = true;
+		TRX_DAC_HP2 = false;
+	}
+	if(nyquist == 2) //96-144 mhz
+	{
+		TRX_DAC_HP1 = true;
+		TRX_DAC_HP2 = true;
+	}
+	if(nyquist == 3) //144-192 mhz
+	{
+		TRX_DAC_HP1 = false;
+		TRX_DAC_HP2 = true;
+	}
+	
 	if (_freq > DAC_CLOCK / 2) //Go Nyquist
 	{
 		while (_freq > (DAC_CLOCK / 2))
