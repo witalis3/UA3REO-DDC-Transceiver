@@ -7,7 +7,8 @@
 #include "functions.h"
 #include "bands.h"
 
-#define TRX_VERSION 200					//Версия прошивки
+#define SETT_VERSION 200					//Версия конфига настроек
+#define CALIB_VERSION 200					//Версия конфига калибровки
 #define ADC_CLOCK 122880000			//Частота генератора АЦП
 #define DAC_CLOCK 86400000			//Частота генератора ЦАП
 #define MAX_RX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
@@ -98,7 +99,9 @@ typedef struct
 	uint32_t Freq;
 	uint8_t Mode;
 	bool LNA;
+	//float32_t ATT;
 	bool ATT;
+	bool ANT;
 	bool ADC_Driver;
 	bool ADC_PGA;
 	uint8_t FM_SQL_threshold;
@@ -115,8 +118,10 @@ extern struct TRX_SETTINGS
 	bool Fast;
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	bool LNA;
+	//float32_t ATT;
 	bool ATT;
 	bool LPF;
+	bool ANT;
 	bool BPF;
 	bool ADC_Driver;
 	uint8_t RX_AGC_speed;
@@ -219,7 +224,7 @@ extern struct TRX_CALIBRATE
 	uint32_t BPF_5_END;
 	uint32_t BPF_6_START;
 	uint32_t BPF_6_END;
-	uint32_t BPF_7_HPF;
+	uint32_t BPF_HPF;
 	float32_t swr_trans_rate;
 	int32_t swr_trans_rate_shadow;
 	int8_t VCXO_correction;
@@ -227,10 +232,12 @@ extern struct TRX_CALIBRATE
 	uint8_t flash_id; //eeprom check
 } CALIBRATE;
 
+extern char version_string[19]; //1.2.3-yymmdd.hhmmss
 extern volatile bool NeedSaveSettings;
 extern volatile bool NeedSaveCalibration;
 extern volatile bool EEPROM_Busy;
 
+extern void InitSettings(void);
 extern void LoadSettings(bool clear);
 extern void LoadCalibration(void);
 extern void SaveSettings(void);

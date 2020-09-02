@@ -10,6 +10,8 @@
 #include "bands.h"
 #include "front_unit.h"
 
+char version_string[19] = "2.0.0"; //1.2.3-yymmdd.hhmmss (concatinate)
+
 //W25Q16
 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
 static uint8_t Write_Disable = W25Q16_COMMAND_Write_Disable;
@@ -54,11 +56,36 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"NOTX",
 };
 
+void InitSettings(void)
+{
+	/*static bool already_inited = false;
+	if(already_inited) return;
+	
+	//concat build date to version -yymmdd.hhmmss
+	strcat(version_string, "-");
+	strcat(version_string, &BUILD_YEAR_CH2);
+	strcat(version_string, &BUILD_YEAR_CH3);
+	strcat(version_string, BUILD_MONTH_CH0);
+	strcat(version_string, BUILD_MONTH_CH1);
+	strcat(version_string, &BUILD_DAY_CH0);
+	strcat(version_string, &BUILD_DAY_CH1);
+	strcat(version_string, ".");
+	strcat(version_string, &BUILD_HOUR_CH0);
+	strcat(version_string, &BUILD_HOUR_CH1);
+	strcat(version_string, &BUILD_MIN_CH0);
+	strcat(version_string, &BUILD_MIN_CH1);
+	strcat(version_string, &BUILD_SEC_CH0);
+	strcat(version_string, &BUILD_SEC_CH1);
+	
+	already_inited = true;*/
+}
+
 void LoadSettings(bool clear)
 {
 	BKPSRAM_Enable();
 	memcpy(&TRX, BACKUP_SRAM_ADDR, sizeof(TRX));
-
+	if(clear)
+		memset(&TRX, 0x00, sizeof(TRX));
 	//Проверка, данные в backup sram корректные, иначе используем второй банк
 	if (TRX.ENDBit != 100)
 	{
@@ -70,12 +97,12 @@ void LoadSettings(bool clear)
 	else
 		sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded");
 	BKPSRAM_Disable();
-
-	if (TRX.flash_id != TRX_VERSION || clear || TRX.ENDBit != 100) //code to trace new clean flash
+	
+	if (TRX.flash_id != SETT_VERSION || clear || TRX.ENDBit != 100) //code to trace new clean flash
 	{
 		sendToDebug_str("[ERR] Flash ID: ");
 		sendToDebug_uint8(TRX.flash_id, false);
-		TRX.flash_id = TRX_VERSION;			 //ID прошивки в eeprom, если не совпадает - используем дефолтные
+		TRX.flash_id = SETT_VERSION;			 //ID прошивки в SRAM, если не совпадает - используем дефолтные
 		TRX.VFO_A.Freq = 7100000;			 //сохранённая частота VFO-A
 		TRX.VFO_A.Mode = TRX_MODE_LSB;		 //сохранённая мода VFO-A
 		TRX.VFO_A.LPF_Filter_Width = 2700;	 //сохранённая ширина полосы VFO-A
@@ -97,7 +124,7 @@ void LoadSettings(bool clear)
 		TRX.current_vfo = false;			 // текущая VFO (false - A)
 		TRX.ADC_Driver = false;				 //предусилитель (драйвер АЦП)
 		TRX.LNA = false;					 //LNA (малошумящий усилитель)
-		TRX.ATT = false;					 //аттенюатор
+		TRX.ATT = 0.0f;					 //аттенюатор
 		TRX.FM_SQL_threshold = 4;			 //FM-шумодав
 		TRX.Fast = true;					 //ускоренная смена частоты при вращении энкодера
 		TRX.ADC_PGA = false;				 //ADC преамп
@@ -106,7 +133,8 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
 			TRX.BANDS_SAVED_SETTINGS[i].LNA = false;
-			TRX.BANDS_SAVED_SETTINGS[i].ATT = false;
+			TRX.BANDS_SAVED_SETTINGS[i].ATT = 0.0f;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT = false;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = false;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = 1;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = false;
@@ -115,6 +143,7 @@ void LoadSettings(bool clear)
 		}
 		TRX.LPF = true;			  //ФНЧ
 		TRX.BPF = true;			  //ДПФ
+		TRX.ANT = false;			  //ANT-1
 		TRX.FFT_Zoom = 1;		  //приближение спектра FFT
 		TRX.AutoGain = false;	  //авто-управление предусилителем и аттенюатором
 		TRX.CWDecoder = false;	  //автоматический декодер телеграфа
@@ -195,11 +224,11 @@ void LoadCalibration(void)
 	if (tryes >= EEPROM_REPEAT_TRYES)
 		sendToDebug_strln("[ERR] Read EEPROM CALIBRATE multiple errors");
 
-	if (CALIBRATE.flash_id != 194) //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
+	if (CALIBRATE.flash_id != CALIB_VERSION) //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
 	{
 		sendToDebug_str("[ERR] CALIBRATE Flash check CODE: ");
 		sendToDebug_uint8(CALIBRATE.flash_id, false);
-		CALIBRATE.flash_id = 194; //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
+		CALIBRATE.flash_id = CALIB_VERSION; //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
 
 		CALIBRATE.ENCODER_INVERT = false; //инвертировать вращение влево-вправо у основного энкодера
 		CALIBRATE.ENCODER2_INVERT = false; //инвертировать вращение влево-вправо у дополнительного энкодера
@@ -246,26 +275,25 @@ void LoadCalibration(void)
 		CALIBRATE.rf_out_power[31] = 66; // 31+ mhz
 		CALIBRATE.smeter_calibration = 0; //калибровка S-Метра, устанавливается при калибровке трансивера по S9 (LPF, BPF, ATT, PREAMP выключены)
 		CALIBRATE.adc_offset = 0;		  //Калибровка смещения по входу ADC (по DC)
-		CALIBRATE.att_db = -12;			  //подавление в аттенюаторе, dB
 		CALIBRATE.lna_gain_db = 11;		  //усиление в МШУ предусилителе (LNA), dB
 		//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
 		//Далее выставляются средние пограничные частоты срабатывания
 		CALIBRATE.LPF_END = 33000000;															//LPH
-		CALIBRATE.BPF_0_START = 135000000;														//UHF
+		CALIBRATE.BPF_0_START = 135000000;														//UHF U14-RF3
 		CALIBRATE.BPF_0_END = 150000000;														//UHF
-		CALIBRATE.BPF_1_START = 1500000;														//1500000
-		CALIBRATE.BPF_1_END = 2900000;															//3350000
-		CALIBRATE.BPF_2_START = 2900000;														//2500000
-		CALIBRATE.BPF_2_END = 4800000;															//5680000
-		CALIBRATE.BPF_3_START = 4800000;														//4000000
-		CALIBRATE.BPF_3_END = 7300000;															//8100000
-		CALIBRATE.BPF_4_START = 7300000;														//6600000
-		CALIBRATE.BPF_4_END = 12000000;															//13000000
-		CALIBRATE.BPF_5_START = 12000000;														//11000000
-		CALIBRATE.BPF_5_END = 19000000;															//20700000
-		CALIBRATE.BPF_6_START = 19000000;														//17400000
-		CALIBRATE.BPF_6_END = 30000000;															//31000000
-		CALIBRATE.BPF_7_HPF = 30000000;															//HPF
+		CALIBRATE.BPF_1_START = 1500000;														//1400000 U16-RF2
+		CALIBRATE.BPF_1_END = 2900000;															//2800000
+		CALIBRATE.BPF_2_START = 2900000;														//2300000 U16-RF4
+		CALIBRATE.BPF_2_END = 4800000;															//5200000
+		CALIBRATE.BPF_3_START = 4800000;														//4200000 U16-RF1
+		CALIBRATE.BPF_3_END = 7300000;															//9000000
+		CALIBRATE.BPF_4_START = 7300000;														//6500000 U16-RF3
+		CALIBRATE.BPF_4_END = 12000000;															//15000000
+		CALIBRATE.BPF_5_START = 12000000;														//11000000 U14-RF2
+		CALIBRATE.BPF_5_END = 19000000;															//25000000
+		CALIBRATE.BPF_6_START = 19000000;														//21000000 U14-RF4
+		CALIBRATE.BPF_6_END = 30000000;															//60000000
+		CALIBRATE.BPF_HPF = 30000000;															//HPF U14-RF1
 		CALIBRATE.swr_trans_rate = 5.0f;														//SWR Transormator rate
 		CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f)); //SWR Transormator rate UINT shadow
 		CALIBRATE.VCXO_correction = 0;	//VCXO Frequency offset

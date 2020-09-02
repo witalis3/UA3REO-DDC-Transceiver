@@ -186,9 +186,12 @@ int main(void)
   MX_TIM16_Init();
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
+	__HAL_RCC_CSI_ENABLE();
+	__HAL_RCC_SYSCFG_CLK_ENABLE() ;
 	HAL_EnableCompensationCell();
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("UA3REO Transceiver Initialization...");
+	InitSettings();
   sendToDebug_strln("[OK] USB init");
   USBD_Restart();
   sendToDebug_strln("[OK] FIFO timer TIM7 init");
@@ -209,13 +212,13 @@ int main(void)
     LoadSettings(true);
   else
     LoadSettings(false);
-  sendToDebug_strln("[OK] Calibration loading");
+	sendToDebug_strln("[OK] Calibration loading");
   LoadCalibration();
   sendToDebug_strln("[OK] STM32-ADC Calibration");
   HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   sendToDebug_strln("[OK] RF-Unit init");
-  PERIPH_RF_UNIT_UpdateState(false);
+  RF_UNIT_UpdateState(false);
   sendToDebug_strln("[OK] FFT/Waterfall & TIM4 init");
   FFT_Init();
   HAL_TIM_Base_Start_IT(&htim4);
@@ -301,7 +304,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 2;
-  RCC_OscInitStruct.PLL.PLLN = 200;
+  RCC_OscInitStruct.PLL.PLLN = 240;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLQ = 2;
   RCC_OscInitStruct.PLL.PLLR = 2;
@@ -325,7 +328,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     Error_Handler();
   }
@@ -667,7 +670,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 49999;
+  htim3.Init.Prescaler = 59999;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 199;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -712,7 +715,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 9999;
+  htim4.Init.Prescaler = 11999;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 199;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -757,7 +760,7 @@ static void MX_TIM5_Init(void)
 
   /* USER CODE END TIM5_Init 1 */
   htim5.Instance = TIM5;
-  htim5.Init.Prescaler = 99;
+  htim5.Init.Prescaler = 119;
   htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim5.Init.Period = 99;
   htim5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -801,7 +804,7 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 9999;
+  htim6.Init.Prescaler = 11999;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim6.Init.Period = 199;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -839,7 +842,7 @@ static void MX_TIM7_Init(void)
 
   /* USER CODE END TIM7_Init 1 */
   htim7.Instance = TIM7;
-  htim7.Init.Prescaler = 999;
+  htim7.Init.Prescaler = 1199;
   htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim7.Init.Period = 199;
   htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -878,7 +881,7 @@ static void MX_TIM15_Init(void)
 
   /* USER CODE END TIM15_Init 1 */
   htim15.Instance = TIM15;
-  htim15.Init.Prescaler = 499;
+  htim15.Init.Prescaler = 599;
   htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim15.Init.Period = 19999;
   htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -921,7 +924,7 @@ static void MX_TIM16_Init(void)
 
   /* USER CODE END TIM16_Init 1 */
   htim16.Instance = TIM16;
-  htim16.Init.Prescaler = 999;
+  htim16.Init.Prescaler = 1199;
   htim16.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim16.Init.Period = 199;
   htim16.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -953,7 +956,7 @@ static void MX_TIM17_Init(void)
 
   /* USER CODE END TIM17_Init 1 */
   htim17.Instance = TIM17;
-  htim17.Init.Prescaler = 999;
+  htim17.Init.Prescaler = 1199;
   htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim17.Init.Period = 199;
   htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

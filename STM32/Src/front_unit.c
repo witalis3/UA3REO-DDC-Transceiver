@@ -20,6 +20,8 @@ static void FRONTPANEL_BUTTONHANDLER_ArB(void);
 static void FRONTPANEL_BUTTONHANDLER_TUNE(void);
 static void FRONTPANEL_BUTTONHANDLER_PRE(void);
 static void FRONTPANEL_BUTTONHANDLER_ATT(void);
+static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void);
+static void FRONTPANEL_BUTTONHANDLER_ANT(void);
 static void FRONTPANEL_BUTTONHANDLER_PGA(void);
 static void FRONTPANEL_BUTTONHANDLER_FAST(void);
 static void FRONTPANEL_BUTTONHANDLER_MODE_P(void);
@@ -57,10 +59,10 @@ static bool ENCODER2_SWLast = true;
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{ .port = 1, .channel = 7, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PRE, .holdHandler = FRONTPANEL_BUTTONHANDLER_PGA }, //PRE-PGA
-	{ .port = 1, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = NULL }, //ATT-ATTSTEP
+	{ .port = 1, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD }, //ATT-ATTHOLD
 	{ .port = 1, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = NULL }, //MUTE-SCAN
 	{ .port = 1, .channel = 4, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_AGC, .holdHandler = FRONTPANEL_BUTTONHANDLER_AGC_SPEED }, //AGC-AGCSPEED
-	{ .port = 1, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ArB, .holdHandler = NULL }, //A=B-ANT
+	{ .port = 1, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ArB, .holdHandler = FRONTPANEL_BUTTONHANDLER_ANT }, //A=B-ANT
 	{ .port = 1, .channel = 2, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE }, //TUNE
 	{ .port = 1, .channel = 1, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH }, //RFPOWER-SQUELCH
 	{ .port = 1, .channel = 0, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF }, //BW-HPF
@@ -396,7 +398,6 @@ static void FRONTPANEL_BUTTONHANDLER_PRE(void)
 	if (band > 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[band].LNA = TRX.LNA;
-		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
 	}
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
@@ -404,13 +405,41 @@ static void FRONTPANEL_BUTTONHANDLER_PRE(void)
 
 static void FRONTPANEL_BUTTONHANDLER_ATT(void)
 {
-	TRX.ATT = !TRX.ATT;
+	TRX.ATT += 0.5f;
+	if(TRX.ATT > 31.5f)
+		TRX.ATT = 0.0f;
+	
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
-	{
-		TRX.BANDS_SAVED_SETTINGS[band].LNA = TRX.LNA;
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
-	}
+	
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
+static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
+{
+	if(TRX.ATT > 0.0f)
+			TRX.ATT = 0.0f;
+		else
+			TRX.ATT = 10.0f;
+		
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	if (band > 0)
+		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
+	
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
+static void FRONTPANEL_BUTTONHANDLER_ANT(void)
+{
+	TRX.ANT = !TRX.ANT;
+	
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	if (band > 0)
+		TRX.BANDS_SAVED_SETTINGS[band].ANT = TRX.ANT;
+	
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }

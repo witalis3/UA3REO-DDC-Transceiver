@@ -122,7 +122,7 @@ static void TRX_Start_RX()
 	if (TRX_TXRXMode == 1)
 		return;
 	//sendToDebug_str("RX MODE\r\n");
-	PERIPH_RF_UNIT_UpdateState(false);
+	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	Processor_NeedRXBuffer = false;
 	WM8731_Buffer_underrun = false;
@@ -137,7 +137,7 @@ static void TRX_Start_TX()
 	if (TRX_TXRXMode == 2)
 		return;
 	//sendToDebug_str("TX MODE\r\n");
-	PERIPH_RF_UNIT_UpdateState(false);
+	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	HAL_Delay(10); //задерка перед подачей ВЧ сигнала, чтобы успели сработать реле
 	WM8731_TX_mode();
@@ -150,7 +150,7 @@ static void TRX_Start_TXRX()
 	if (TRX_TXRXMode == 3)
 		return;
 	//sendToDebug_str("TXRX MODE\r\n");
-	PERIPH_RF_UNIT_UpdateState(false);
+	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	WM8731_TXRX_mode();
 	WM8731_start_i2s_and_dma();

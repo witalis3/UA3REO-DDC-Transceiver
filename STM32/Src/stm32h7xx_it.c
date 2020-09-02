@@ -479,9 +479,8 @@ void TIM6_DAC_IRQHandler(void)
   if (NeedReinitNotch)
     InitNotchFilter();
 
-  //Process SWR / Power meter
-  if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_NO_TX)
-    PERIPH_ProcessSWRMeter();
+  //Process SWR, Power meter, ALC, Thermal sensors...
+  RF_UNIT_ProcessSensors();
 	
 	//Вентилятор
 	if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
@@ -501,7 +500,7 @@ void TIM6_DAC_IRQHandler(void)
   if (TRX_key_serial != TRX_old_key_serial)
     TRX_key_change();
 	
-	PERIPH_RF_UNIT_UpdateState(false); //обновляем состояние RF-Unit платы
+	RF_UNIT_UpdateState(false); //обновляем состояние RF-Unit платы
 	
 	if ((ms10_counter % 10) == 0) // every 100ms
   {

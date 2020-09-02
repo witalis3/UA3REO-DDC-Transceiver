@@ -5,9 +5,12 @@ BPSK декодер
 WSPR маячок
 Проверить и доработать драйвера под все версии Windows
 Работа с SD
-Сохранять пики FFT
 Вывод версии прошивки
 WIFI Menu
+SWR Graph
+480mhz
+no delays fpga.c
+no delays wifi.c
 
 ----TODO Ideas HARW----
 +[R]Антенный переключатель

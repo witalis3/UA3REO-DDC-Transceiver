@@ -4,7 +4,7 @@
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
-extern void PERIPH_RF_UNIT_UpdateState(bool clean);
-extern void PERIPH_ProcessSWRMeter(void);
+extern void RF_UNIT_UpdateState(bool clean);
+extern void RF_UNIT_ProcessSensors(void);
 
 #endif

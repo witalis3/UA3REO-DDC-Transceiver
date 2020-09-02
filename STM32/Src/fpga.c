@@ -85,7 +85,7 @@ void FPGA_restart(void) //перезапуск модулей FPGA
 	FPGA_setBusOutput();
 	FPGA_writePacket(5); //RESET ON
 	FPGA_syncAndClockRiseFall();
-	HAL_Delay(100);
+	//HAL_Delay(100);
 	FPGA_writePacket(6); //RESET OFF
 	FPGA_syncAndClockRiseFall();
 }
