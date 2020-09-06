@@ -479,18 +479,8 @@ void TIM6_DAC_IRQHandler(void)
   if (NeedReinitNotch)
     InitNotchFilter();
 
-  //Process SWR, Power meter, ALC, Thermal sensors...
+  //Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
   RF_UNIT_ProcessSensors();
-	
-	//Вентилятор
-	if (TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
-	{
-		TRX_Fan_Timeout += 2; //дуем после перехода на приём столько, сколько работали на передачу
-		if(TRX.RF_Power > 60)
-			TRX_Fan_Timeout += 1; //если мощность большая - подольше
-		if (TRX_Fan_Timeout > (40 * 100))
-			TRX_Fan_Timeout = 40 * 100; //но не более 40 сек
-	}
 	
   //эмулируем PTT по CAT
   if (TRX_ptt_cat != TRX_old_ptt_cat)
@@ -567,7 +557,6 @@ void TIM6_DAC_IRQHandler(void)
 
     CPULOAD_Calc(); // Calculate CPU load
     TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
-    TRX_STM32_VREF = TRX_getSTM32H743vref();
 
     if (TRX.Debug_Console)
     {
@@ -596,8 +585,10 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_uint32(dbg_AUDIOPROC_samples, false);
       sendToDebug_str("CPU Load: ");
       sendToDebug_uint32(cpu_load, false);
-      sendToDebug_str("STM32 Temperature: ");
-      sendToDebug_float32(TRX_STM32_TEMPERATURE, false);
+      sendToDebug_str("RF/STM32 Temperature: ");
+      sendToDebug_int16(TRX_RF_Temperature, true);
+			sendToDebug_str(" / ");
+			sendToDebug_int16((int16_t)TRX_STM32_TEMPERATURE, false);
       sendToDebug_str("STM32 Voltage: ");
       sendToDebug_float32(TRX_STM32_VREF, false);
       sendToDebug_str("TIM6 delay: ");

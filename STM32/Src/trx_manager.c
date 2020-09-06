@@ -32,7 +32,6 @@ volatile bool TRX_Inited = false;
 volatile int_fast16_t TRX_RX_dBm = -100;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
-volatile uint32_t TRX_Fan_Timeout = 0;	 //секунд, сколько ещё осталось крутить вентилятор
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile int32_t TRX_TCXO_ERROR = 0;
@@ -63,6 +62,7 @@ volatile bool TRX_Mute = false;
 uint32_t TRX_freq_phrase = 0;
 uint32_t TRX_freq_phrase2 = 0;
 uint32_t TRX_freq_phrase_tx = 0;
+volatile int16_t TRX_RF_Temperature = 0.0f;
 	
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);

@@ -31,7 +31,10 @@
 #define USB_RESTART_TIMEOUT 5000		//время, через которое происходит рестарт USB если нет пакетов
 #define FPGA_FLASH_IN_HEX false					//включить прошивку FPGA в прошивку STM32
 #define SNTP_SYNC_INTERVAL (60 * 60)					//Интервал синхронизации времени через NTP, сек
-	
+#define FAN_MEDIUM_START 60			//Температура, при которой вентилятор запускается на половину мощности
+#define FAN_MEDIUM_STOP 50			//Температура, при которой вентилятор останавливается
+#define FAN_FULL_START 80			//Температура, при которой вентилятор запускается на полную мощность
+
 #define ILI9481 true					//он же HX8357B //другие комментируем
 #define FMC_REMAP true					//ремап памяти FMC
 #define FSMC_REGISTER_SELECT 18			//из FSMC настроек в STM32Cube (A18, A6, и т.д.)
