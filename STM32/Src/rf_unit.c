@@ -230,7 +230,7 @@ void RF_UNIT_UpdateState(bool clean) //передаём значения в RF-U
 				}
 			}
 			//U3-QA ANT1_TX_OUT
-			if (registerNumber == 23 && !TRX.ANT)
+			if (registerNumber == 23 && !TRX.ANT && !TRX_on_TX())
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 		}
 		MINI_DELAY
@@ -249,6 +249,7 @@ void RF_UNIT_ProcessSensors(void)
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / 16383.0f;
 	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / 16383.0f;
 	//float32_t alc = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / 16383.0f;
+	//sendToDebug_float32(forward,false); sendToDebug_float32(backward,false); sendToDebug_newline();
 	
 	//SWR
 	static float32_t TRX_VLT_forward = 0.0f;
