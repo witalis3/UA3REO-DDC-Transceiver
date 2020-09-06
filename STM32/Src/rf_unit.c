@@ -262,13 +262,13 @@ void RF_UNIT_ProcessSensors(void)
 	}
 	else
 	{
-		forward += 0.62f;							  // падение на диоде
+		forward += 0.21f;							  // падение на диоде
 		forward = forward * CALIBRATE.swr_trans_rate; // Коэффициент трансформации КСВ метра
 
 		backward = backward / (1510.0f / (0.1f + 1510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
 		if (backward >= 0.01f)							  //меньше 10mV не измеряем
 		{
-			backward += 0.62f;								// падение на диоде
+			backward += 0.21f;								// падение на диоде
 			backward = backward * CALIBRATE.swr_trans_rate; //Коэффициент трансформации КСВ метра
 		}
 		else
