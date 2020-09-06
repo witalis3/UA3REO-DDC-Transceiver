@@ -88,12 +88,7 @@ void LoadSettings(bool clear)
 		memset(&TRX, 0x00, sizeof(TRX));
 	//Проверка, данные в backup sram корректные, иначе используем второй банк
 	if (TRX.ENDBit != 100)
-	{
-		sendToDebug_strln("[ERR] BACKUP SRAM bank 1 incorrect, loading from bank 2");
-		memcpy(&TRX, BACKUP_SRAM_ADDR + sizeof(TRX), sizeof(TRX));
-		if (TRX.ENDBit != 100)
-			sendToDebug_strln("[ERR] BACKUP SRAM bank 2 incorrect");
-	}
+		sendToDebug_strln("[ERR] BACKUP SRAM incorrect");
 	else
 		sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded");
 	BKPSRAM_Disable();
@@ -124,7 +119,9 @@ void LoadSettings(bool clear)
 		TRX.current_vfo = false;			 // текущая VFO (false - A)
 		TRX.ADC_Driver = false;				 //предусилитель (драйвер АЦП)
 		TRX.LNA = false;					 //LNA (малошумящий усилитель)
-		TRX.ATT = 0.0f;					 //аттенюатор
+		TRX.ATT = false;					 //аттенюатор
+		TRX.ATT_DB = 10.0f;			 //подавление аттенюатора
+		TRX.ATT_STEP = 10.0f;			//шаг перестройки аттенюатора
 		TRX.FM_SQL_threshold = 4;			 //FM-шумодав
 		TRX.Fast = true;					 //ускоренная смена частоты при вращении энкодера
 		TRX.ADC_PGA = false;				 //ADC преамп
@@ -133,7 +130,8 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; //сохранённые частоты по диапазонам
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
 			TRX.BANDS_SAVED_SETTINGS[i].LNA = false;
-			TRX.BANDS_SAVED_SETTINGS[i].ATT = 0.0f;
+			TRX.BANDS_SAVED_SETTINGS[i].ATT = false;
+			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = 10.0f;
 			TRX.BANDS_SAVED_SETTINGS[i].ANT = false;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = false;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = 1;
@@ -278,7 +276,7 @@ void LoadCalibration(void)
 		CALIBRATE.lna_gain_db = 11;		  //усиление в МШУ предусилителе (LNA), dB
 		//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
 		//Далее выставляются средние пограничные частоты срабатывания
-		CALIBRATE.LPF_END = 33000000;															//LPH
+		CALIBRATE.LPF_END = 33000000;															//LPF
 		CALIBRATE.BPF_0_START = 135000000;														//UHF U14-RF3
 		CALIBRATE.BPF_0_END = 150000000;														//UHF
 		CALIBRATE.BPF_1_START = 1500000;														//1400000 U16-RF2
@@ -324,7 +322,7 @@ void SaveSettings(void)
 {
 	BKPSRAM_Enable();
 	memcpy(BACKUP_SRAM_ADDR, &TRX, sizeof(TRX));
-	memcpy(BACKUP_SRAM_ADDR + sizeof(TRX), &TRX, sizeof(TRX));
+	SCB_CleanDCache_by_Addr((uint32_t*)&TRX, sizeof(TRX));
 	SCB_CleanDCache_by_Addr(BACKUP_SRAM_ADDR, 1024 * 4);
 	BKPSRAM_Disable();
 	NeedSaveSettings = false;

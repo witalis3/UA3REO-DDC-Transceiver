@@ -25,6 +25,7 @@ static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction);
+static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
@@ -130,7 +131,6 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_30(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_31(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction);
-static void SYSMENU_HANDL_CALIB_ATT_DB(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LNA_GAIN(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_0_START(int8_t direction);
@@ -188,6 +188,7 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Freq Step FAST", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
 		{"Freq Step ENC2", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
 		{"Freq Step ENC2 FAST", SYSMENU_UINT32R, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
+		{"Att step, dB", SYSMENU_UINT8, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
 		{"DEBUG Console", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Debug_Console, SYSMENU_HANDL_TRX_DEBUG_CONSOLE},
 		{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
 		{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
@@ -324,7 +325,6 @@ static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"RF GAIN 31+", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[31], SYSMENU_HANDL_CALIB_RF_GAIN_31},
 		{"S METER", SYSMENU_INT16, (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_HANDL_CALIB_S_METER},
 		{"ADC OFFSET", SYSMENU_INT16, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
-		{"ATT DB", SYSMENU_INT16, (uint32_t *)&CALIBRATE.att_db, SYSMENU_HANDL_CALIB_ATT_DB},
 		{"LNA GAIN DB", SYSMENU_INT16, (uint32_t *)&CALIBRATE.lna_gain_db, SYSMENU_HANDL_CALIB_LNA_GAIN},
 		{"LPF END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
 		{"BPF 0 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_0_START, SYSMENU_HANDL_CALIB_BPF_0_START},
@@ -622,6 +622,16 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction)
 			}
 		}
 	TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
+	return;
+}
+
+static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction)
+{
+	TRX.ATT_STEP += direction;
+	if (TRX.ATT_STEP < 1)
+		TRX.ATT_STEP = 1;
+	if (TRX.ATT_STEP > 15)
+		TRX.ATT_STEP = 15;
 	return;
 }
 
@@ -1876,15 +1886,6 @@ static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction)
 		CALIBRATE.adc_offset = -500;
 	if (CALIBRATE.adc_offset > 500)
 		CALIBRATE.adc_offset = 500;
-}
-
-static void SYSMENU_HANDL_CALIB_ATT_DB(int8_t direction)
-{
-	CALIBRATE.att_db += direction;
-	if (CALIBRATE.att_db < -50)
-		CALIBRATE.att_db = -50;
-	if (CALIBRATE.att_db > 0)
-		CALIBRATE.att_db = 0;
 }
 
 static void SYSMENU_HANDL_CALIB_LNA_GAIN(int8_t direction)

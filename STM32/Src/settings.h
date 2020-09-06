@@ -99,7 +99,7 @@ typedef struct
 	uint32_t Freq;
 	uint8_t Mode;
 	bool LNA;
-	//float32_t ATT;
+	float32_t ATT_DB;
 	bool ATT;
 	bool ANT;
 	bool ADC_Driver;
@@ -118,7 +118,8 @@ extern struct TRX_SETTINGS
 	bool Fast;
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	bool LNA;
-	//float32_t ATT;
+	float32_t ATT_DB;
+	uint8_t ATT_STEP;
 	bool ATT;
 	bool LPF;
 	bool ANT;

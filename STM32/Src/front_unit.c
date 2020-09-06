@@ -405,13 +405,14 @@ static void FRONTPANEL_BUTTONHANDLER_PRE(void)
 
 static void FRONTPANEL_BUTTONHANDLER_ATT(void)
 {
-	TRX.ATT += 0.5f;
-	if(TRX.ATT > 31.5f)
-		TRX.ATT = 0.0f;
+	TRX.ATT = !TRX.ATT;
 	
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
+	{
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
+		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
+	}
 	
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
@@ -419,14 +420,16 @@ static void FRONTPANEL_BUTTONHANDLER_ATT(void)
 
 static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 {
-	if(TRX.ATT > 0.0f)
-			TRX.ATT = 0.0f;
-		else
-			TRX.ATT = 10.0f;
+	TRX.ATT_DB += TRX.ATT_STEP;
+	if(TRX.ATT_DB > 31.0f)
+		TRX.ATT_DB = 0.0f;
 		
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
+	{
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
+		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
+	}
 	
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
@@ -563,6 +566,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(void)
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
+	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
@@ -591,6 +595,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
+	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;

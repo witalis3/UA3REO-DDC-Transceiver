@@ -8,9 +8,11 @@ WSPR маячок
 Вывод версии прошивки
 WIFI Menu
 SWR Graph
-480mhz
+480mhz?
 no delays fpga.c
 no delays wifi.c
+новый s-meter
+обновить autogainer
 
 ----TODO Ideas HARW----
 +[R]Антенный переключатель
