@@ -121,9 +121,8 @@ extern struct TRX_SETTINGS
 	float32_t ATT_DB;
 	uint8_t ATT_STEP;
 	bool ATT;
-	bool LPF;
+	bool RF_Filters;
 	bool ANT;
-	bool BPF;
 	bool ADC_Driver;
 	uint8_t RX_AGC_speed;
 	bool BandMapEnabled;
@@ -240,7 +239,7 @@ extern volatile bool EEPROM_Busy;
 
 extern void InitSettings(void);
 extern void LoadSettings(bool clear);
-extern void LoadCalibration(void);
+extern void LoadCalibration(bool clear);
 extern void SaveSettings(void);
 extern void SaveCalibration(void);
 extern void BKPSRAM_Enable(void);

@@ -213,7 +213,10 @@ int main(void)
   else
     LoadSettings(false);
 	sendToDebug_strln("[OK] Calibration loading");
-  LoadCalibration();
+	if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset
+    LoadCalibration(true);
+  else
+    LoadCalibration(false);
   sendToDebug_strln("[OK] STM32-ADC Calibration");
   HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);

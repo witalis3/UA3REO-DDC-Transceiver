@@ -15,8 +15,7 @@ static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction);
-static void SYSMENU_HANDL_TRX_LPFFilter(int8_t direction);
-static void SYSMENU_HANDL_TRX_BPFFilter(int8_t direction);
+static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
 static void SYSMENU_HANDL_TRX_MICIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_USBIN(int8_t direction);
@@ -180,8 +179,7 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"RF Power", SYSMENU_UINT8, (uint32_t *)&TRX.RF_Power, SYSMENU_HANDL_TRX_RFPower},
 		{"Band Map", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
 		{"AutoGainer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
-		{"LPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.LPF, SYSMENU_HANDL_TRX_LPFFilter},
-		{"BPF Filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BPF, SYSMENU_HANDL_TRX_BPFFilter},
+		{"RF_Filters", SYSMENU_BOOLEAN, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_TRX_RFFilters},
 		{"Two Signal TUNE", SYSMENU_BOOLEAN, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
 		{"Shift Interval", SYSMENU_UINT16, (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_HANDL_TRX_SHIFT_INTERVAL},
 		{"Freq Step", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
@@ -431,20 +429,12 @@ static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction)
 	FPGA_NeedSendParams = true;
 }
 
-static void SYSMENU_HANDL_TRX_LPFFilter(int8_t direction)
+static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction)
 {
 	if (direction > 0)
-		TRX.LPF = true;
+		TRX.RF_Filters = true;
 	if (direction < 0)
-		TRX.LPF = false;
-}
-
-static void SYSMENU_HANDL_TRX_BPFFilter(int8_t direction)
-{
-	if (direction > 0)
-		TRX.BPF = true;
-	if (direction < 0)
-		TRX.BPF = false;
+		TRX.RF_Filters = false;
 }
 
 static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction)

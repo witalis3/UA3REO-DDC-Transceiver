@@ -356,8 +356,7 @@ void TRX_DoAutoGain(void)
 	//Process AutoGain feature
 	if (TRX.AutoGain)
 	{
-		TRX.LPF = true;
-		TRX.BPF = true;
+		TRX.RF_Filters = true;
 		switch (autogain_stage)
 		{
 		case 0: //этап 1 - включаем ДПФ, ЛПФ, Аттенюатор, выключаем предусилитель (-12dB)

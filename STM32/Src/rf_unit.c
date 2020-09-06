@@ -119,7 +119,7 @@ void RF_UNIT_UpdateState(bool clean) //передаём значения в RF-U
 		if (!clean)
 		{
 			//U7-QH LPF_ON
-			if (registerNumber == 0 && TRX.LPF && (CurrentVFO()->Freq <= CALIBRATE.LPF_END) && !dualrx_lpf_disabled)
+			if (registerNumber == 0 && TRX.RF_Filters && (CurrentVFO()->Freq <= CALIBRATE.LPF_END) && !dualrx_lpf_disabled && bpf == 255)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U7-QG LNA_ON
 			if (registerNumber == 1 && !TRX_on_TX() && TRX.LNA)
@@ -146,25 +146,26 @@ void RF_UNIT_UpdateState(bool clean) //передаём значения в RF-U
 			//U1-QH NOT USED
 			if (registerNumber == 8) {}
 			//U1-QG BPF_2_A0
-			if (registerNumber == 9 && TRX.BPF && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2))
+			sendToDebug_uint8(bpf,false);
+			if (registerNumber == 9 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-QF BPF_2_A1
-			if (registerNumber == 10 && TRX.BPF && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2))
+			if (registerNumber == 10 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-QE BPF_2_!EN
-			if (registerNumber == 11 && (!TRX.BPF || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4)))
+			if (registerNumber == 11 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4)))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-QD BPF_1_A0
-			if (registerNumber == 12 && TRX.BPF && !dualrx_bpf_disabled && (bpf == 5 || bpf == 6))
+			if (registerNumber == 12 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 5 || bpf == 6))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-QC BPF_1_A1
-			if (registerNumber == 13 && TRX.BPF && !dualrx_bpf_disabled && (bpf == 0 || bpf == 6))
+			if (registerNumber == 13 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 0 || bpf == 6))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-QB BPF_1_!EN
-			if (registerNumber == 14 && (!TRX.BPF || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7)))
+			if (registerNumber == 14 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7)))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-QA BPF_ON
-			if (registerNumber == 15 && TRX.BPF && !dualrx_bpf_disabled)
+			if (registerNumber == 15 && TRX.RF_Filters && !dualrx_bpf_disabled && bpf != 255)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			
 			//U3-QH BAND_OUT_0

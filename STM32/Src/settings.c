@@ -139,8 +139,7 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].DNR = false;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 		}
-		TRX.LPF = true;			  //ФНЧ
-		TRX.BPF = true;			  //ДПФ
+		TRX.RF_Filters = true;			  //LPF/HPF/BPF
 		TRX.ANT = false;			  //ANT-1
 		TRX.FFT_Zoom = 1;		  //приближение спектра FFT
 		TRX.AutoGain = false;	  //авто-управление предусилителем и аттенюатором
@@ -211,7 +210,7 @@ void LoadSettings(bool clear)
 	}
 }
 
-void LoadCalibration(void)
+void LoadCalibration(bool clear)
 {
 	EEPROM_PowerUp();
 	uint8_t tryes = 0;
@@ -222,7 +221,7 @@ void LoadCalibration(void)
 	if (tryes >= EEPROM_REPEAT_TRYES)
 		sendToDebug_strln("[ERR] Read EEPROM CALIBRATE multiple errors");
 
-	if (CALIBRATE.flash_id != CALIB_VERSION) //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
+	if (CALIBRATE.flash_id != CALIB_VERSION || clear) //код проверки прошивки в eeprom, если не совпадает - используем дефолтные
 	{
 		sendToDebug_str("[ERR] CALIBRATE Flash check CODE: ");
 		sendToDebug_uint8(CALIBRATE.flash_id, false);
@@ -276,23 +275,23 @@ void LoadCalibration(void)
 		CALIBRATE.lna_gain_db = 11;		  //усиление в МШУ предусилителе (LNA), dB
 		//Данные по пропускной частоте с BPF фильтров (снимаются с помощью ГКЧ или выставляются по чувствительности), гЦ
 		//Далее выставляются средние пограничные частоты срабатывания
-		CALIBRATE.LPF_END = 33000000;															//LPF
-		CALIBRATE.BPF_0_START = 135000000;														//UHF U14-RF3
-		CALIBRATE.BPF_0_END = 150000000;														//UHF
-		CALIBRATE.BPF_1_START = 1500000;														//1400000 U16-RF2
-		CALIBRATE.BPF_1_END = 2900000;															//2800000
-		CALIBRATE.BPF_2_START = 2900000;														//2300000 U16-RF4
-		CALIBRATE.BPF_2_END = 4800000;															//5200000
-		CALIBRATE.BPF_3_START = 4800000;														//4200000 U16-RF1
-		CALIBRATE.BPF_3_END = 7300000;															//9000000
-		CALIBRATE.BPF_4_START = 7300000;														//6500000 U16-RF3
-		CALIBRATE.BPF_4_END = 12000000;															//15000000
-		CALIBRATE.BPF_5_START = 12000000;														//11000000 U14-RF2
-		CALIBRATE.BPF_5_END = 19000000;															//25000000
-		CALIBRATE.BPF_6_START = 19000000;														//21000000 U14-RF4
-		CALIBRATE.BPF_6_END = 30000000;															//60000000
-		CALIBRATE.BPF_HPF = 30000000;															//HPF U14-RF1
-		CALIBRATE.swr_trans_rate = 5.0f;														//SWR Transormator rate
+		CALIBRATE.LPF_END = 60000*1000;															  //LPF
+		CALIBRATE.BPF_0_START = 135*1000*1000;												//2m U14-RF3
+		CALIBRATE.BPF_0_END = 150*1000*1000;													//2m
+		CALIBRATE.BPF_1_START = 1500*1000;														//160m U16-RF2
+		CALIBRATE.BPF_1_END = 2400*1000;															//160m
+		CALIBRATE.BPF_2_START = 2400*1000;														//80m U16-RF4
+		CALIBRATE.BPF_2_END = 4700*1000;															//80m
+		CALIBRATE.BPF_3_START = 4700*1000;														//40m U16-RF1
+		CALIBRATE.BPF_3_END = 7200*1000;															//40m
+		CALIBRATE.BPF_4_START = 7200*1000;														//30m U16-RF3
+		CALIBRATE.BPF_4_END = 11500*1000;															//30m
+		CALIBRATE.BPF_5_START = 11500*1000;														//20,17m U14-RF2
+		CALIBRATE.BPF_5_END = 21000*1000;															//20,17m
+		CALIBRATE.BPF_6_START = 21000*1000;														//15,12,10,6m U14-RF4
+		CALIBRATE.BPF_6_END = 64000*1000;															//15,12,10,6m
+		CALIBRATE.BPF_HPF = 60000*1000;															    //HPF U14-RF1
+		CALIBRATE.swr_trans_rate = 5.0f;	//SWR Transormator rate
 		CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f)); //SWR Transormator rate UINT shadow
 		CALIBRATE.VCXO_correction = 0;	//VCXO Frequency offset
 
