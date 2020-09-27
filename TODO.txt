@@ -8,7 +8,6 @@ WSPR маячок
 Вывод версии прошивки
 WIFI Menu
 SWR Graph
-Убрать задержки в wifi.c
 Новый s-meter
 Обработка внешнего ALC
 

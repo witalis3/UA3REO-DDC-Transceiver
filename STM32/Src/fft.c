@@ -203,8 +203,8 @@ void FFT_doFFT(void)
 		return;
 	if (!FFT_buffer_ready)
 		return;
-	if (CPU_LOAD.Load > 90)
-		return;
+	/*if (CPU_LOAD.Load > 90)
+		return;*/
 
 	float32_t medianValue = 0; // Median value in the resulting frequency response
 	float32_t diffValue = 0;   // Difference Between Maximum FFT And Threshold In Waterfall
@@ -342,8 +342,8 @@ void FFT_printFFT(void)
 		return;
 	if (LCD_systemMenuOpened)
 		return;
-	if (CPU_LOAD.Load > 90)
-		return;
+	/*if (CPU_LOAD.Load > 90)
+		return;*/
 	LCD_busy = true;
 
 	uint16_t height = 0; // column height in FFT output
