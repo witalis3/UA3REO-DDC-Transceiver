@@ -195,6 +195,7 @@ extern struct TRX_SETTINGS
 	int8_t MIC_EQ_LOW;
 	int8_t MIC_EQ_MID;
 	int8_t MIC_EQ_HIG;
+	uint8_t FFT_Speed;
 
 	uint8_t ENDBit;
 } TRX;

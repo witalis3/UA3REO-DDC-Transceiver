@@ -203,6 +203,7 @@ void LoadSettings(bool clear)
 		TRX.MIC_EQ_LOW = 0;				 // Mic EQ (Low)
 		TRX.MIC_EQ_MID = 0;				 // Mic Equalizer (Mids)
 		TRX.MIC_EQ_HIG = 0;				 // Mic EQ (high)
+		TRX.FFT_Speed = 3;				 // FFT Speed
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

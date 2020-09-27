@@ -63,6 +63,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction);
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
@@ -235,6 +236,7 @@ static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
 		{"S-METER Marker", SYSMENU_BOOLEAN, (uint32_t *)&TRX.S_METER_Style, SYSMENU_HANDL_SCREEN_SMeter_Style},
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
+		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
 		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style},
 		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_SCREEN_FFT_Enabled},
 		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
@@ -1281,6 +1283,15 @@ static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction)
 	if (TRX.FFT_Style > 4)
 		TRX.FFT_Style = 4;
 	FFT_Init();
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction)
+{
+	TRX.FFT_Speed += direction;
+	if (TRX.FFT_Speed < 1)
+		TRX.FFT_Speed = 1;
+	if (TRX.FFT_Speed > 5)
+		TRX.FFT_Speed = 5;
 }
 
 //ADC/DAC MENU

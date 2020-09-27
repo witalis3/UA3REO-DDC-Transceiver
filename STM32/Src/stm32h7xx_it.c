@@ -531,7 +531,7 @@ void TIM6_DAC_IRQHandler(void)
 		LCD_doEvents();                    // update information on LCD
 	}
 	
-	if ((ms10_counter % 3) == 0) // every 30 msec
+	if ((ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
 	{
 		FFT_printFFT();                    // draw FFT
 	}
