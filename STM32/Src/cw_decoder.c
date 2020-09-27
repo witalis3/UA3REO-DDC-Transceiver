@@ -38,7 +38,7 @@ static arm_rfft_fast_instance_f32 CWDECODER_FFT_Inst;
 static float32_t CWDEC_FFTBuffer[CWDECODER_FFTSIZE] = {0};		 // FFT buffer
 static float32_t CWDEC_FFTBufferCharge[CWDECODER_FFTSIZE] = {0}; // cumulative buffer
 // float32_t CWDEC_FFTBuffer_Export [CWDECODER_FFTSIZE] = {0};
-static float32_t window_multipliers[DECODER_PACKET_SIZE] = {0};
+static float32_t window_multipliers[CWDECODER_FFTSIZE] = {0};
 // Decimator
 static float32_t InputBuffer[DECODER_PACKET_SIZE] = {0};
 static arm_fir_decimate_instance_f32 CWDEC_DECIMATE;
@@ -64,7 +64,7 @@ void CWDecoder_Init(void)
 	// decimator
 	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState, DECODER_PACKET_SIZE);
 	// Blackman window function
-	for (uint_fast16_t i = 0; i <CWDECODER_FFTSIZE; i ++)
+	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i ++)
 		window_multipliers [i] = ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32 ((2.0f * PI * i) / ((float32_t) CWDECODER_FFTSIZE - 1.0f)) + (0.16f / 2) * arm_cos_f32 (4.0f * PI * i / ((float32_t) CWDECODER_FFTSIZE - 1.0f));
 }
 
@@ -292,7 +292,7 @@ static void CWDecoder_Recognise(void)
 // decode from morse to symbols
 static void CWDecoder_Decode(void)
 {
-	if (strlen(code) == 0)
+	if (code[0] == '\0')
 		return;
 
 	if (strcmp(code, ".-") == 0) //А
@@ -411,7 +411,7 @@ static void CWDecoder_Decode(void)
 		CWDecoder_PrintChar("S");
 		CWDecoder_PrintChar("H");
 	}
-	else if (strcmp(code, "..--..") == 0) //Э
+	else if (strcmp(code, "...--...") == 0) //Э
 	{
 		CWDecoder_PrintChar("E");
 	}

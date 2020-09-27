@@ -528,7 +528,7 @@ static inline void FPGA_fpgadata_sendiq(void)
 
 	if (TRX_TX_IQ_swap)
 	{
-		FPGA_fpgadata_out_tmp_tmp32 = FPGA_fpgadata_out_q_tmp32;
+		FPGA_fpgadata_out_tmp_tmp32 = FPGA_fpgadata_out_i_tmp32;
 		FPGA_fpgadata_out_i_tmp32 = FPGA_fpgadata_out_q_tmp32;
 		FPGA_fpgadata_out_q_tmp32 = FPGA_fpgadata_out_tmp_tmp32;
 	}
