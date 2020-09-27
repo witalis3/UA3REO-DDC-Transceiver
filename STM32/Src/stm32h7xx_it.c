@@ -516,6 +516,9 @@ void TIM6_DAC_IRQHandler(void)
 		}
 		old_FPGA_Audio_Buffer_RX1_I = FPGA_Audio_Buffer_RX1_I[0];
 		old_FPGA_Audio_Buffer_RX1_Q = FPGA_Audio_Buffer_RX1_Q[0];
+		
+		//Process AutoGain feature
+		TRX_DoAutoGain();
   }
 	
 	if ((ms10_counter % 5) == 0) // every 50 msec
@@ -544,8 +547,6 @@ void TIM6_DAC_IRQHandler(void)
 			sendToDebug_float32(TRX_IQ_phase_error, false);
       FPGA_NeedRestart = true;
     }
-		
-    TRX_DoAutoGain(); //Process AutoGain feature
 
     if (!WIFI_IP_Gotted) //Get resolved IP
       WIFI_GetIP(NULL);

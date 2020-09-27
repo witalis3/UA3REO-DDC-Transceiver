@@ -130,7 +130,6 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_30(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_31(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction);
-static void SYSMENU_HANDL_CALIB_LNA_GAIN(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_0_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_0_END(int8_t direction);
@@ -323,7 +322,6 @@ static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"RF GAIN 31+", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[31], SYSMENU_HANDL_CALIB_RF_GAIN_31},
 		{"S METER", SYSMENU_INT16, (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_HANDL_CALIB_S_METER},
 		{"ADC OFFSET", SYSMENU_INT16, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
-		{"LNA GAIN DB", SYSMENU_INT16, (uint32_t *)&CALIBRATE.lna_gain_db, SYSMENU_HANDL_CALIB_LNA_GAIN},
 		{"LPF END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
 		{"BPF 0 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_0_START, SYSMENU_HANDL_CALIB_BPF_0_START},
 		{"BPF 0 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_0_END, SYSMENU_HANDL_CALIB_BPF_0_END},
@@ -1876,15 +1874,6 @@ static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction)
 		CALIBRATE.adc_offset = -500;
 	if (CALIBRATE.adc_offset > 500)
 		CALIBRATE.adc_offset = 500;
-}
-
-static void SYSMENU_HANDL_CALIB_LNA_GAIN(int8_t direction)
-{
-	CALIBRATE.lna_gain_db += direction;
-	if (CALIBRATE.lna_gain_db < 0)
-		CALIBRATE.lna_gain_db = 0;
-	if (CALIBRATE.lna_gain_db > 100)
-		CALIBRATE.lna_gain_db = 100;
 }
 
 #pragma GCC diagnostic ignored "-Wsign-conversion"

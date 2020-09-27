@@ -272,7 +272,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power[31] = 66;														// 31+ mhz
 		CALIBRATE.smeter_calibration = 0;														// S-Meter calibration, set when calibrating the transceiver to S9 (LPF, BPF, ATT, PREAMP off)
 		CALIBRATE.adc_offset = 0;																// Calibrate the offset at the ADC input (DC)
-		CALIBRATE.lna_gain_db = 11;																// gain in the LNA preamplifier (LNA), dB
 																								// Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
 																								// Next, the average border response frequencies are set
 		CALIBRATE.LPF_END = 60000 * 1000;														//LPF

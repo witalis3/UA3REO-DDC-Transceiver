@@ -481,8 +481,6 @@ static inline void FPGA_fpgadata_getiq(void)
 	}
 	else
 	{	//dummy cycle, no dual rx
-		/*FPGA_clockRise();
-		FPGA_clockFall();
 		FPGA_clockRise();
 		FPGA_clockFall();
 		FPGA_clockRise();
@@ -496,7 +494,9 @@ static inline void FPGA_fpgadata_getiq(void)
 		FPGA_clockRise();
 		FPGA_clockFall();
 		FPGA_clockRise();
-		FPGA_clockFall();*/
+		FPGA_clockFall();
+		FPGA_clockRise();
+		FPGA_clockFall();
 	}
 
 	FPGA_Audio_RXBuffer_Index++;

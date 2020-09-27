@@ -22,8 +22,9 @@
 #define TX_AGC_MAXGAIN 5.0f				// Maximum microphone gain during compression
 #define TX_AGC_NOISEGATE 0.00001f		// Minimum signal level for amplification (below - noise, cut off)
 #define TOUCHPAD_DELAY 200				// Anti-bounce time for pressing the touchpad
-#define AUTOGAIN_MAX_AMPLITUDE 16383.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
-#define AUTOGAIN_CORRECTOR_WAITSTEP 7	// waiting for the averaging of the results when the auto-corrector of the input circuits is running
+#define AUTOGAIN_TARGET_AMPLITUDE 20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
+#define AUTOGAIN_MAX_AMPLITUDE 30000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
+#define AUTOGAIN_CORRECTOR_WAITSTEP 10	// waiting for the averaging of the results when the auto-corrector of the input circuits is running
 #define KEY_HOLD_TIME 500				// time of long pressing of the keyboard button for triggering, ms
 #define MAX_RF_POWER 7.0f				// Maximum power (for meter scale)
 #define SHOW_LOGO true					// Show logo on boot (from images.h)
@@ -54,6 +55,9 @@
 #define AUDIO_DECIM_RATE (IQ_SAMPLERATE / TRX_SAMPLERATE)
 #define DCDC_FREQ_0 1000000
 #define DCDC_FREQ_1 1200000
+#define ADC_LNA_GAIN_DB 11.0f
+#define ADC_DRIVER_GAIN_DB 20.0f
+#define ADC_PGA_GAIN_DB 3.522f
 
 // delays when working with EEPROM
 #define EEPROM_CO_DELAY 0	   // command
@@ -210,8 +214,6 @@ extern struct TRX_CALIBRATE
 	uint8_t rf_out_power[32];
 	int16_t smeter_calibration;
 	int16_t adc_offset;
-	int16_t att_db;
-	int16_t lna_gain_db;
 	uint32_t LPF_END;
 	uint32_t BPF_0_START; //UHF
 	uint32_t BPF_0_END;	  //UHF

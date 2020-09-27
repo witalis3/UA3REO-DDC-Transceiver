@@ -197,7 +197,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **RF GAIN xx** - Calibration of the maximum output power for each range
 * **S METER** - S-meter calibration
 * **ADC OFFSET** - ADC offset calibration
-* **LNA GAIN DB** - LNA parameters
 * **LPF END** - LPF filter parameters
 * **BPF x** - Bandpass filter parameters
 * **HPF START** - HPF filter parameters
