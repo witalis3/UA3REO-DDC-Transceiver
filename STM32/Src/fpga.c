@@ -82,12 +82,19 @@ void FPGA_Init(void)
 // restart FPGA modules
 void FPGA_restart(void) // restart FPGA modules
 {
-	FPGA_setBusOutput();
-	FPGA_writePacket(5); // RESET ON
-	FPGA_syncAndClockRiseFall();
-	// HAL_Delay (100);
-	FPGA_writePacket(6); // RESET OFF
-	FPGA_syncAndClockRiseFall();
+	static bool FPGA_restart_state = false;
+	if(!FPGA_restart_state)
+	{
+		FPGA_setBusOutput();
+		FPGA_writePacket(5); // RESET ON
+		FPGA_syncAndClockRiseFall();
+	}
+	else
+	{
+		FPGA_writePacket(6); // RESET OFF
+		FPGA_syncAndClockRiseFall();
+	}
+	FPGA_restart_state = !FPGA_restart_state;
 }
 
 // exchange parameters with FPGA
