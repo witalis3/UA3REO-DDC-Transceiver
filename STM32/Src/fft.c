@@ -390,23 +390,71 @@ void FFT_printFFT(void)
 			continue;
 	}
 
+	// calculate bw bar size
+	int16_t bw_line_start = 0;
+	int16_t bw_line_width = 0;
+	switch (CurrentVFO()->Mode)
+	{
+	case TRX_MODE_LSB:
+	case TRX_MODE_CW_L:
+	case TRX_MODE_DIGI_L:
+		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
+		if (bw_line_width > (LAY_FFT_PRINT_SIZE / 2))
+			bw_line_width = LAY_FFT_PRINT_SIZE / 2;
+		bw_line_start = LAY_FFT_PRINT_SIZE / 2 - bw_line_width;
+		break;
+	case TRX_MODE_USB:
+	case TRX_MODE_CW_U:
+	case TRX_MODE_DIGI_U:
+		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
+		if (bw_line_width > (LAY_FFT_PRINT_SIZE / 2))
+			bw_line_width = LAY_FFT_PRINT_SIZE / 2;
+		bw_line_start = LAY_FFT_PRINT_SIZE / 2;
+		break;
+	case TRX_MODE_NFM:
+	case TRX_MODE_AM:
+		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom * 2);
+		if (bw_line_width > LAY_FFT_PRINT_SIZE)
+			bw_line_width = LAY_FFT_PRINT_SIZE;
+		bw_line_start = LAY_FFT_PRINT_SIZE / 2 - (bw_line_width / 2);
+		break;
+	default:
+		break;
+	}
+	
 	// display FFT over the waterfall
 	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + fftHeight));
+	uint16_t color = 0;
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
+	{
 		for (uint32_t fft_x = 0; fft_x < LAY_FFT_PRINT_SIZE; fft_x++)
 		{
 			if (fft_x == (LAY_FFT_PRINT_SIZE / 2))
-				LCDDriver_SendData(COLOR_GREEN);
+				color = COLOR_GREEN;
 			else if (fft_y <= (fftHeight - fft_header[fft_x]))
-				LCDDriver_SendData(COLOR_BLACK);
+				color = COLOR_BLACK;
 			else
 			{
 				if (TRX.FFT_Style == 3 || TRX.FFT_Style == 4)
-					LCDDriver_SendData(LAY_FFT_STYLE_3_4_COLOR);
+					color = LAY_FFT_STYLE_3_4_COLOR;
 				else
-					LCDDriver_SendData(color_scale[fft_y]);
+					color = color_scale[fft_y];
 			}
+			
+			if(fft_x >= (uint32_t)bw_line_start && fft_x <= (uint32_t)(bw_line_start + bw_line_width)) // add opacity to bandw bar
+			{
+				uint8_t r = ((color >> 11) & 0x1F) + FFT_BW_BRIGHTNESS;
+				uint8_t g = ((color >> 5) & 0x3F) + FFT_BW_BRIGHTNESS;
+				uint8_t b = ((color >> 0) & 0x1F) + FFT_BW_BRIGHTNESS;
+				if(r > 31) r = 31;
+				if(g > 63) g = 63;
+				if(b > 31) b = 31;
+				color = (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
+			}
+			
+			LCDDriver_SendData(color);
 		}
+	}
 
 	// clear and display part of the vertical bar
 	LCDDriver_drawFastHLine(0, LAY_FFT_WTF_POS_Y - 1, LAY_FFT_PRINT_SIZE, COLOR_BLACK);
@@ -461,35 +509,7 @@ void FFT_printFFT(void)
 		LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
 
 	// separator and receive band
-	int16_t line_width = 0;
-	switch (CurrentVFO()->Mode)
-	{
-	case TRX_MODE_LSB:
-	case TRX_MODE_CW_L:
-	case TRX_MODE_DIGI_L:
-		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
-		if (line_width > (LAY_FFT_PRINT_SIZE / 2))
-			line_width = LAY_FFT_PRINT_SIZE / 2;
-		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y - 1, -line_width, COLOR_GREEN);
-		break;
-	case TRX_MODE_USB:
-	case TRX_MODE_CW_U:
-	case TRX_MODE_DIGI_U:
-		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
-		if (line_width > (LAY_FFT_PRINT_SIZE / 2))
-			line_width = LAY_FFT_PRINT_SIZE / 2;
-		LCDDriver_drawFastHLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y - 1, line_width, COLOR_GREEN);
-		break;
-	case TRX_MODE_NFM:
-	case TRX_MODE_AM:
-		line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom * 2);
-		if (line_width > LAY_FFT_PRINT_SIZE)
-			line_width = LAY_FFT_PRINT_SIZE;
-		LCDDriver_drawFastHLine((uint16_t)((LAY_FFT_PRINT_SIZE / 2) - (line_width / 2)), (uint16_t)(LAY_FFT_WTF_POS_Y - 1), line_width, COLOR_GREEN);
-		break;
-	default:
-		break;
-	}
+	LCDDriver_drawFastHLine(bw_line_start, LAY_FFT_WTF_POS_Y - 1, bw_line_width, COLOR_GREEN);
 
 	// display the waterfall using DMA
 	print_wtf_xindex = 0;

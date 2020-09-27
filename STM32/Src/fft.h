@@ -16,6 +16,7 @@
 #define FFT_STEP_COEFF 10.0f                                     // step coefficient for auto-calibration of the FFT signal (more - slower)
 #define FFT_HZ_IN_PIXEL (IQ_SAMPLERATE / LAY_FFT_PRINT_SIZE)     // hertz per pixel
 #define FFT_TX_HZ_IN_PIXEL (TRX_SAMPLERATE / LAY_FFT_PRINT_SIZE) // hertz per pixel
+#define FFT_BW_BRIGHTNESS 5																		 // pixel brightness on bw bar
 
 // Public variables
 extern volatile uint32_t FFT_buff_index;
