@@ -54,7 +54,7 @@ void WIFI_Init(void)
 		sendToDebug_str("[WIFI] WIFI Module Inited\r\n");
 		WIFI_State = WIFI_INITED;
 
-		//проверяем, есть ли активные подключения, если да - новое не создаём
+		// check if there are active connections, if yes - don't create a new one
 		WIFI_SendCommand("AT+CIPSTATUS\r\n");
 		while (WIFI_TryGetLine())
 		{
@@ -116,14 +116,14 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPSERVERMAXCONN=3\r\n"); //Max server connections
 		WIFI_WaitForOk();
-	
+
 		strcat(com_t, "AT+CIPSNTPCFG=1,");
 		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
 		strcat(com_t, tz);
 		strcat(com_t, ",\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n");
 		WIFI_SendCommand(com_t); //configure SNMP
 		WIFI_WaitForOk();
-		
+
 		WIFI_stop_auto_ap_list = false;
 		WIFI_IP_Gotted = false;
 		WIFI_State = WIFI_CONFIGURED;
@@ -193,35 +193,38 @@ void WIFI_Process(void)
 		//receive commands from WIFI clients
 		if (strstr(WIFI_readedLine, "+IPD") != NULL)
 		{
-			char* wifi_incoming_link_id = strchr(WIFI_readedLine, ',');
-			if(wifi_incoming_link_id == NULL) break;
+			char *wifi_incoming_link_id = strchr(WIFI_readedLine, ',');
+			if (wifi_incoming_link_id == NULL)
+				break;
 			wifi_incoming_link_id++;
-			
-			char* wifi_incoming_length = strchr(wifi_incoming_link_id, ',');
-			if(wifi_incoming_length == NULL) break;
+
+			char *wifi_incoming_length = strchr(wifi_incoming_link_id, ',');
+			if (wifi_incoming_length == NULL)
+				break;
 			*wifi_incoming_length = 0x00;
 			wifi_incoming_length++;
-			
-			char* wifi_incoming_data = strchr(wifi_incoming_length, ':');
-			if(wifi_incoming_data == NULL) break;
+
+			char *wifi_incoming_data = strchr(wifi_incoming_length, ':');
+			if (wifi_incoming_data == NULL)
+				break;
 			*wifi_incoming_data = 0x00;
 			wifi_incoming_data++;
-			
+
 			uint32_t wifi_incoming_length_uint = (uint32_t)atoi(wifi_incoming_length);
 			uint32_t wifi_incoming_link_id_uint = (uint32_t)atoi(wifi_incoming_link_id);
-			if(wifi_incoming_length_uint > 64) 
+			if (wifi_incoming_length_uint > 64)
 				wifi_incoming_length_uint = 64;
-			if(wifi_incoming_length_uint > 0)
+			if (wifi_incoming_length_uint > 0)
 				wifi_incoming_length_uint--; //del /n char
-			if(wifi_incoming_link_id_uint > 8) 
+			if (wifi_incoming_link_id_uint > 8)
 				wifi_incoming_link_id_uint = 8;
-			
-			char* wifi_incoming_data_end = wifi_incoming_data + wifi_incoming_length_uint;
+
+			char *wifi_incoming_data_end = wifi_incoming_data + wifi_incoming_length_uint;
 			*wifi_incoming_data_end = 0x00;
 
-			if(WIFI_DEBUG)
+			if (WIFI_DEBUG)
 				sendToDebug_str3("[WIFI] Command received: ", wifi_incoming_data, "\r\n");
-			if(wifi_incoming_length_uint > 0)
+			if (wifi_incoming_length_uint > 0)
 				CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
 		}
 		break;
@@ -282,52 +285,52 @@ void WIFI_Process(void)
 			if (WIFI_ProcessingCommand == WIFI_COMM_LISTAP) //ListAP Command process
 			{
 				char *start = strchr(WIFI_readedLine, '"');
-				if(start != NULL)     
-				{           
+				if (start != NULL)
+				{
 					start = start + 1;
 					char *end = strchr(start, '"');
-					if(end != NULL)
+					if (end != NULL)
 					{
 						*end = 0x00;
 						strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
 						if (WIFI_FoundedAP_Index < WIFI_FOUNDED_AP_MAXCOUNT)
-								WIFI_FoundedAP_Index++;
+							WIFI_FoundedAP_Index++;
 					}
 				}
 			}
 			else if (WIFI_ProcessingCommand == WIFI_COMM_GETSNTP) //Get and sync SNMP time
 			{
 				char *hrs_str = strchr(WIFI_readedLine, ' ');
-				if(hrs_str != NULL)
+				if (hrs_str != NULL)
 				{
 					hrs_str = hrs_str + 1;
 					hrs_str = strchr(hrs_str, ' ');
-					if(hrs_str != NULL)
+					if (hrs_str != NULL)
 					{
 						hrs_str = hrs_str + 1;
 						hrs_str = strchr(hrs_str, ' ');
-						if(hrs_str != NULL)
+						if (hrs_str != NULL)
 						{
 							hrs_str = hrs_str + 1;
 							//hh:mm:ss here
 							char *min_str = strchr(hrs_str, ':');
-							if(min_str != NULL)
+							if (min_str != NULL)
 							{
 								min_str = min_str + 1;
 								char *sec_str = strchr(min_str, ':');
 								char *year_str = strchr(min_str, ' ');
 								char *end = strchr(hrs_str, ':');
-								if(sec_str != NULL && year_str != NULL && end != NULL)
+								if (sec_str != NULL && year_str != NULL && end != NULL)
 								{
 									sec_str = sec_str + 1;
 									year_str = year_str + 1;
 									*end = 0x00;
 									end = strchr(min_str, ':');
-									if(end != NULL)
+									if (end != NULL)
 									{
 										*end = 0x00;
 										end = strchr(sec_str, ' ');
-										if(end != NULL)
+										if (end != NULL)
 										{
 											*end = 0x00;
 											//split strings here
@@ -368,11 +371,11 @@ void WIFI_Process(void)
 				if (istr != NULL)
 				{
 					char *start = strchr(WIFI_readedLine, '"');
-					if(start != NULL)
+					if (start != NULL)
 					{
 						start = start + 1;
 						char *end = strchr(start, '"');
-						if(end != NULL)
+						if (end != NULL)
 						{
 							*end = 0x00;
 							strcat(WIFI_IP, start);
@@ -419,7 +422,7 @@ void WIFI_ListAP(void *callback)
 {
 	if (WIFI_State != WIFI_READY && WIFI_State != WIFI_CONFIGURED)
 		return;
-	if (WIFI_State == WIFI_CONFIGURED && !WIFI_stop_auto_ap_list) //останавливаем авто-подключение при поиске сетей
+	if (WIFI_State == WIFI_CONFIGURED && !WIFI_stop_auto_ap_list) // stop auto-connection when searching for networks
 	{
 		WIFI_stop_auto_ap_list = true;
 		WIFI_WaitForOk();
@@ -460,11 +463,11 @@ static bool WIFI_ListAP_Sync(void)
 		if (strlen(WIFI_readedLine) > 5) //-V814
 		{
 			char *start = strchr(WIFI_readedLine, '"');
-			if(start != NULL)
+			if (start != NULL)
 			{
 				start = start + 1;
 				char *end = strchr(start, '"');
-				if(end != NULL)
+				if (end != NULL)
 				{
 					*end = 0x00;
 					strcat((char *)&WIFI_FoundedAP[WIFI_FoundedAP_Index], start);
@@ -498,7 +501,7 @@ static void WIFI_SendCommand(char *command)
 	HAL_UART_Transmit_IT(&huart6, (uint8_t *)command, (uint16_t)strlen(command));
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
-	if(WIFI_DEBUG) //DEBUG
+	if (WIFI_DEBUG) //DEBUG
 		sendToDebug_str2("WIFI_S: ", command);
 }
 
@@ -537,10 +540,10 @@ static bool WIFI_TryGetLine(void)
 		return false;
 
 	strncpy(tmp, &WIFI_AnswerBuffer[WIFI_Answer_ReadIndex], dma_index - WIFI_Answer_ReadIndex);
-	if (tmp[0] =='\0')
+	if (tmp[0] == '\0')
 		return false;
 
-	char *istr = strchr(tmp, '\n'); //ищем конец строки
+	char *istr = strchr(tmp, '\n'); // look for the end of the line
 	if (istr == NULL)
 		return false;
 	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)tmp + 1);
@@ -550,7 +553,7 @@ static bool WIFI_TryGetLine(void)
 	if (WIFI_Answer_ReadIndex > dma_index)
 		WIFI_Answer_ReadIndex = dma_index;
 
-	if(WIFI_DEBUG) //DEBUG
+	if (WIFI_DEBUG) //DEBUG
 		sendToDebug_str2("WIFI_R: ", WIFI_readedLine);
 
 	return true;
@@ -567,7 +570,7 @@ bool WIFI_StartCATServer(void *callback)
 	return true;
 }
 
-bool WIFI_SendCatAnswer(char* data, uint32_t link_id, void *callback)
+bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void *callback)
 {
 	if (WIFI_State != WIFI_READY)
 		return false;

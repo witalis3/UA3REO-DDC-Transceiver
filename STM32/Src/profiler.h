@@ -3,10 +3,9 @@
 
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
+#define PROFILES_COUNT 7 // number of profilers
 
-#define PROFILES_COUNT 7 //количество профайлеров
-
-typedef struct //структура профайлера
+typedef struct // profiler structure
 {
 	uint32_t startTime;
 	uint32_t endTime;
@@ -15,12 +14,12 @@ typedef struct //структура профайлера
 	uint32_t samples;
 } PROFILE_INFO;
 
-//Public methods
-extern void InitProfiler(void);						  //инициализация профайлера
-extern void StartProfiler(uint8_t pid);				  //запуск профайлера
-extern void EndProfiler(uint8_t pid, bool summarize); //завершение профайлера
-extern void PrintProfilerResult(void);				  //вывод результатов профайлера
-extern void StartProfilerUs(void);					  //запуск профайлера в микросекундах
-extern void EndProfilerUs(bool summarize);			  //завершение профайлера в микросекундах
+// Public methods
+extern void InitProfiler(void);						  // initialize the profiler
+extern void StartProfiler(uint8_t pid);				  // start profiler
+extern void EndProfiler(uint8_t pid, bool summarize); // terminate the profiler
+extern void PrintProfilerResult(void);				  // output the profiler results
+extern void StartProfilerUs(void);					  // run profiler in microseconds
+extern void EndProfilerUs(bool summarize);			  // complete profiler in microseconds
 
 #endif

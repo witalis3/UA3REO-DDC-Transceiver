@@ -8,10 +8,10 @@ static float32_t AGC_RX2_need_gain_db = 0.0f;
 static float32_t AGC_RX1_need_gain_db_old = 0.0f;
 static float32_t AGC_RX2_need_gain_db_old = 0.0f;
 
-//запуск AGC на блок данных
+//Run AGC on data block
 void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id)
 {
-	//определение RX1 или RX2 приёмника
+	//RX1 or RX2
 	float32_t *AGC_need_gain_db = &AGC_RX1_need_gain_db;
 	float32_t *AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
 	if (rx_id == AUDIO_RX2)
@@ -20,11 +20,11 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 		AGC_need_gain_db_old = &AGC_RX2_need_gain_db_old;
 	}
 
-	//выше скорость в настройках - выше скорость отработки AGC
+	//higher speed in settings - higher speed of AGC processing
 	float32_t RX_AGC_STEPSIZE_UP = 100.0f / (float32_t)TRX.RX_AGC_speed;
 	float32_t RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.RX_AGC_speed;
 
-	//считаем магнитуду в dBFS
+	//calculate the magnitude in dBFS
 	float32_t AGC_RX_magnitude = 0;
 	arm_power_f32(agcBuffer, blockSize, &AGC_RX_magnitude);
 	AGC_RX_magnitude = AGC_RX_magnitude / (float32_t)blockSize;
@@ -33,31 +33,31 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 	float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
 	float32_t AGC_RX_dbFS = rate2dbP(full_scale_rate);
 
-	//двигаем усиление на шаг
+	//move the gain one step
 	float32_t diff = ((float32_t)TRX.AGC_GAIN_TARGET - (AGC_RX_dbFS + *AGC_need_gain_db));
 	if (diff > 0)
 		*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_UP;
 	else
 		*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
 
-	//перегрузка (клиппинг), резко снижаем усиление
+	//overload (clipping), sharply reduce the gain
 	if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + 10.0f))
 		*AGC_need_gain_db = (float32_t)TRX.AGC_GAIN_TARGET - AGC_RX_dbFS;
 
-	//шумовой порог, ниже него - не усиливаем
+	//noise threshold, below it - do not amplify
 	if (AGC_RX_dbFS < AGC_NOISE_GATE)
 		*AGC_need_gain_db = 1.0f;
 
-	//AGC выключен, ничего не регулируем
+	//AGC off, not adjustable
 	if ((rx_id == AUDIO_RX1 && !CurrentVFO()->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO()->AGC))
 		*AGC_need_gain_db = 1.0f;
 
-	//ограничение по усилению
+	//gain limitation
 	if (*AGC_need_gain_db > AGC_MAX_GAIN)
 		*AGC_need_gain_db = AGC_MAX_GAIN;
 
-	//применяем усиление
-	if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.00001f) //усиление изменилось
+	//apply gain
+	if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.00001f) //gain changed
 	{
 		float32_t gainApplyStep = 0;
 		if (*AGC_need_gain_db_old > *AGC_need_gain_db)
@@ -70,7 +70,7 @@ void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_i
 			agcBuffer[i] = agcBuffer[i] * db2rateV(*AGC_need_gain_db_old);
 		}
 	}
-	else //усиление не менялось, применяем усиление по всем выборкам
+	else //gain did not change, apply gain across all samples
 	{
 		arm_scale_f32(agcBuffer, db2rateP(*AGC_need_gain_db), agcBuffer, blockSize);
 	}

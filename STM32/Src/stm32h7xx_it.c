@@ -17,34 +17,34 @@
   ******************************************************************************
   */
 
-//EXTI0 - KEY DASH
-//EXTI1 - KEY DOT
-//EXTI2 - ENC_CLK
-//EXTI4 - PTT_IN
-//EXTI10 - 48K_Clock
-//EXTI11 - PWR_button
-//EXTI13 - ENC2_CLK
+// EXTI0 - KEY DASH
+// EXTI1 - KEY DOT
+// EXTI2 - ENC_CLK
+// EXTI4 - PTT_IN
+// EXTI10 - 48K_Clock
+// EXTI11 - PWR_button
+// EXTI13 - ENC2_CLK
 
-//TIM3 - WIFI
-//TIM4 - расчёт FFT
-//TIM5 - аудио-процессор
-//TIM6 - каждые 10мс, различные действия
-//TIM7 - USB FIFO
-//TIM15 - EEPROM / передняя панель
-//TIM16 - Опрос вспомогательного энкодера, т.к. он висит на томже прерывании что и FPGA
-//TIM17 - Цифровое декодирование CW, ...
+// TIM3 - WIFI
+// TIM4 - FFT calculation
+// TIM5 - audio processor
+// TIM6 - every 10ms, different actions
+// TIM7 - USB FIFO
+// TIM15 - EEPROM / front panel
+// TIM16 - Interrogation of the auxiliary encoder, because it hangs on the same interrupt as the FPGA
+// TIM17 - Digital CW decoding, ...
 
-//DMA1-0 - получение данных с аудио-кодека
-//DMA1-1 - получение данных из WiFi по UART
-//DMA1-5 - отсылка данных в аудио-кодек
-//DMA2-4 - DMA для копирования 16 битных массивов
-//DMA2-6 - отрисовка водопада по 16бит, инкремент
-//DMA2-7 - смещение водопада вниз
+// DMA1-0 - receiving data from the audio codec
+// DMA1-1 - receiving data from WiFi via UART
+// DMA1-5 - sending data to audio codec
+// DMA2-4 - DMA for copying 16 bit arrays
+// DMA2-6 - draw the waterfall at 16 bits, increment
+// DMA2-7 - move the waterfall down
 
-//MDMA-0 - копирование аудио-буфферов по 32бит
-//MDMA-1 - отправка буфера аудио-процессора в буффер кодека - A
-//MDMA-2 - отправка буфера аудио-процессора в буффер кодека - B
-//MDMA-3 - DMA видео-драйвера, для заливки, 16 бит без инкремента
+// MDMA-0 - copy audio buffers at 32bit
+// MDMA-1 - send audio processor buffer to codec buffer - A
+// MDMA-2 - send audio processor buffer to codec buffer - B
+// MDMA-3 - DMA video driver, for filling, 16 bits without increment
 
 /* USER CODE END Header */
 
@@ -371,7 +371,7 @@ void TIM3_IRQHandler(void)
   }
   else
   {
-    //по таймеру работаем с WiFi, или услыпяем его если выключен (для включеняи нужен рестарт)
+    // we work with WiFi by timer, or send it if it is turned off (to turn it on, we need a restart)
     if (TRX.WIFI_Enabled)
       WIFI_Process();
     else
@@ -439,7 +439,7 @@ void TIM5_IRQHandler(void)
   {
     processRxAudio();
   }
-  //spectrum analiser - в режме анализатора спектра его обработку поднимаем в приоритет, выполняя вместе с аудио-процессором
+  //in the spectrum analyzer mode, we raise its processing to priority, performing together with the audio processor
   if (sysmenu_spectrum_opened)
     LCD_doEvents();
   //EndProfilerUs(true);
@@ -457,7 +457,7 @@ void TIM6_DAC_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
 	ms10_counter++;
-  //время отпускания передачи после сигнала ключа
+  // transmission release time after key signal
   if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_dot_hard && !TRX_key_dash_hard)
   {
     TRX_Key_Timeout_est -= 10;
@@ -471,30 +471,30 @@ void TIM6_DAC_IRQHandler(void)
 
 	//every 10ms
 	
-  //если изменились настройки, обновляем параметры в FPGA
+  // if the settings have changed, update the parameters in the FPGA
   if (NeedSaveSettings)
     FPGA_NeedSendParams = true;
 
-  //поступил запрос на переинициализацию notch-фильтра, выполняем
+  // there was a request to reinitialize the notch filter, execute
   if (NeedReinitNotch)
     InitNotchFilter();
 
   //Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
   RF_UNIT_ProcessSensors();
 	
-  //эмулируем PTT по CAT
+  // emulate PTT over CAT
   if (TRX_ptt_cat != TRX_old_ptt_cat)
     TRX_ptt_change();
 	
-  //эмулируем ключ по COM-порту
+  // emulate the key via the COM port
   if (TRX_key_serial != TRX_old_key_serial)
     TRX_key_change();
 	
-	RF_UNIT_UpdateState(false); //обновляем состояние RF-Unit платы
+	RF_UNIT_UpdateState(false); // update the state of the RF-Unit board
 	
 	if ((ms10_counter % 10) == 0) // every 100ms
   {
-    //каждые 100мс получаем данные с FPGA (аплитуду, перегрузку АЦП и др.)
+    // every 100ms we receive data from FPGA (amplitude, ADC overload, etc.)
     FPGA_NeedGetParams = true;
 
     //S-Meter Calculate
@@ -520,17 +520,17 @@ void TIM6_DAC_IRQHandler(void)
 	
 	if ((ms10_counter % 5) == 0) // every 50 msec
 	{
-		//сброс флагов ошибок
+		// reset error flags
 		WM8731_Buffer_underrun = false;
 		FPGA_Buffer_underrun = false;
 		RX_USB_AUDIO_underrun = false;
 		
-		LCD_doEvents();                    //обновляем информацию на LCD
+		LCD_doEvents();                    // update information on LCD
 	}
 	
 	if ((ms10_counter % 3) == 0) // every 30 msec
 	{
-		FFT_printFFT();                    //рисуем FFT
+		FFT_printFFT();                    // draw FFT
 	}
 	
 	if (ms10_counter == 101) // every 1 sec
@@ -644,7 +644,8 @@ void TIM6_DAC_IRQHandler(void)
     sendToDebug_flush();
     while (true); //-V776
   }
-  //перезапускаем USB если нет активности (выключен), чтобы найти новое подключение
+	
+  // restart USB if there is no activity (off) to find a new connection
   if (TRX_Inited && (USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick()))
     USBD_Restart();
 
@@ -661,7 +662,7 @@ void TIM7_IRQHandler(void)
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
-  sendToDebug_flush(); //отправляем данные в отладку из буффера
+  sendToDebug_flush(); // send data to debug from the buffer
   /* USER CODE END TIM7_IRQn 1 */
 }
 
@@ -675,7 +676,7 @@ void DMA2_Stream6_IRQHandler(void)
   /* USER CODE END DMA2_Stream6_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream6);
   /* USER CODE BEGIN DMA2_Stream6_IRQn 1 */
-  FFT_printWaterfallDMA(); //выводим водопад
+  FFT_printWaterfallDMA(); // display the waterfall
   /* USER CODE END DMA2_Stream6_IRQn 1 */
 }
 
@@ -746,7 +747,7 @@ void TIM15_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim15);
   /* USER CODE BEGIN TIM15_IRQn 1 */
   FRONTPANEL_Process();
-  if (NeedSaveCalibration) //сохраняем данные калибровки в EEPROM
+  if (NeedSaveCalibration) // save calibration data to EEPROM
     SaveCalibration();
   /* USER CODE END TIM15_IRQn 1 */
 }
@@ -761,7 +762,7 @@ void TIM16_IRQHandler(void)
   /* USER CODE END TIM16_IRQn 0 */
   HAL_TIM_IRQHandler(&htim16);
   /* USER CODE BEGIN TIM16_IRQn 1 */
-	//Опрос дополнительного энкодера по таймеру, т.к. прерывание висит на одной линии с FPGA
+	// Poll an additional encoder by timer, because interrupt hangs in line with FPGA
 	static uint8_t ENC2lastClkVal = 0;
 	static bool ENC2first = true;
 	uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
@@ -808,8 +809,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
 		if(!WM8731_Buffer_underrun)
-			FPGA_fpgadata_iqclock();    //данные IQ
-    FPGA_fpgadata_stuffclock(); //параметры и прочие службы
+			FPGA_fpgadata_iqclock();    // IQ data
+    FPGA_fpgadata_stuffclock(); // parameters and other services
   }
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder
   {

@@ -7,55 +7,55 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 200					//Версия конфига настроек
-#define CALIB_VERSION 200					//Версия конфига калибровки
-#define ADC_CLOCK 122880000			//Частота генератора АЦП
-#define DAC_CLOCK 86400000			//Частота генератора ЦАП
-#define MAX_RX_FREQ_HZ 750000000			//Максимальная частота приёма (из даташита АЦП)
-#define MAX_TX_FREQ_HZ 172800000			//Максимальная частота передачи (половина от тактового сигнала ЦАП)
-#define TRX_SAMPLERATE 48000			//частота дискретизации аудио-потока во время обработки
-#define IQ_SAMPLERATE 96000			//частота дискретизации аудио-потока с FPGA
-#define MAX_TX_AMPLITUDE 1.0f			//Максимальный размах при передаче в ЦАП
-#define AGC_MAX_GAIN 50.0f				//Максимальное усиление в AGC, dB
-#define AGC_NOISE_GATE -90.0f			//ниже этого уровня - не усиливаем
-#define TUNE_POWER 100					//% от выбранной в настройках мощности при запуске TUNE (100 - полная)
-#define TX_AGC_MAXGAIN 5.0f			//Максимальное усиление микрофона при компрессировании
-#define TX_AGC_NOISEGATE 0.00001f		//Минимальный уровень сигнала для усиления (ниже - шум, отрезаем)
-#define TOUCHPAD_DELAY 200				//Время защиты от анти-дребезга нажания на тачпад
-#define AUTOGAIN_MAX_AMPLITUDE 16383.0f //максимальная амлитуда, по достижению которой автокорректировщик входных цепей завершает работу, а при переполнении - снижает усиление
-#define AUTOGAIN_CORRECTOR_WAITSTEP 7	//ожидание усреднения результатов при работе автокорректора входных цепей
-#define KEY_HOLD_TIME 500				//время длительного нажатия на кнопку клавиатуры для срабатывания, мс
-#define MAX_RF_POWER 7.0f				//Максимум мощности (для шкалы измерителя)
-#define SHOW_LOGO true					//Отображать логотип при загрузке (из images.h)
-#define POWERDOWN_TIMEOUT 1000			//время нажатия на кнопку выключения, для срабатывания, мс
-#define USB_RESTART_TIMEOUT 5000		//время, через которое происходит рестарт USB если нет пакетов
-#define FPGA_FLASH_IN_HEX false					//включить прошивку FPGA в прошивку STM32
-#define SNTP_SYNC_INTERVAL (60 * 60)					//Интервал синхронизации времени через NTP, сек
-#define FAN_MEDIUM_START 60			//Температура, при которой вентилятор запускается на половину мощности
-#define FAN_MEDIUM_STOP 50			//Температура, при которой вентилятор останавливается
-#define FAN_FULL_START 80			//Температура, при которой вентилятор запускается на полную мощность
+#define SETT_VERSION 200				// Settings config version
+#define CALIB_VERSION 200				// Calibration config version
+#define ADC_CLOCK 122880000				// ADC generator frequency
+#define DAC_CLOCK 86400000				// DAC generator frequency
+#define MAX_RX_FREQ_HZ 750000000		// Maximum receive frequency (from the ADC datasheet)
+#define MAX_TX_FREQ_HZ 172800000		// Maximum transmission frequency (half of the DAC clock signal)
+#define TRX_SAMPLERATE 48000			// audio stream sampling rate during processing
+#define IQ_SAMPLERATE 96000				// sampling rate of the audio stream from FPGA
+#define MAX_TX_AMPLITUDE 1.0f			// Maximum swing when transmitting to DAC
+#define AGC_MAX_GAIN 50.0f				// Maximum gain in AGC, dB
+#define AGC_NOISE_GATE -90.0f			// below this level - do not strengthen
+#define TUNE_POWER 100					// % of the power selected in the settings when starting TUNE (100 - full)
+#define TX_AGC_MAXGAIN 5.0f				// Maximum microphone gain during compression
+#define TX_AGC_NOISEGATE 0.00001f		// Minimum signal level for amplification (below - noise, cut off)
+#define TOUCHPAD_DELAY 200				// Anti-bounce time for pressing the touchpad
+#define AUTOGAIN_MAX_AMPLITUDE 16383.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
+#define AUTOGAIN_CORRECTOR_WAITSTEP 7	// waiting for the averaging of the results when the auto-corrector of the input circuits is running
+#define KEY_HOLD_TIME 500				// time of long pressing of the keyboard button for triggering, ms
+#define MAX_RF_POWER 7.0f				// Maximum power (for meter scale)
+#define SHOW_LOGO true					// Show logo on boot (from images.h)
+#define POWERDOWN_TIMEOUT 1000			// time of pressing the shutdown button, for operation, ms
+#define USB_RESTART_TIMEOUT 5000		// time after which USB restart occurs if there are no packets
+#define FPGA_FLASH_IN_HEX false			// enable FPGA firmware to STM32 firmware
+#define SNTP_SYNC_INTERVAL (60 * 60)	// Time synchronization interval via NTP, sec
+#define FAN_MEDIUM_START 60				// Temperature at which the fan starts at half power
+#define FAN_MEDIUM_STOP 50				// Temperature at which the fan stops
+#define FAN_FULL_START 80				// Temperature at which the fan starts at full power
 
-#define ILI9481 true					//он же HX8357B //другие комментируем
-#define FMC_REMAP true					//ремап памяти FMC
-#define FSMC_REGISTER_SELECT 18			//из FSMC настроек в STM32Cube (A18, A6, и т.д.)
-#define SCREEN_ROTATE 0					//перевернуть экран вверх ногами
+#define ILI9481 true			// aka HX8357B // comment on others
+#define FMC_REMAP true			// FMC memory remap
+#define FSMC_REGISTER_SELECT 18 // from FSMC settings in STM32Cube (A18, A6, etc.)
+#define SCREEN_ROTATE 0			// turn the screen upside down
 
-#define ADC_BITS 16																						//разрядность АЦП
-#define FPGA_BUS_BITS 32																				//разрядность данных из FPGA
-#define CODEC_BITS 32																					//разрядность данных в аудио-кодеке
-#define FPGA_BUS_FULL_SCALE 65536																		//максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
-#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		//магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
-#define CODEC_BITS_FULL_SCALE 4294967296																//максимальная аплитуда сигнала в шине // powf(2,FPGA_BUS_BITS)
-#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) //магнитуда максимального сигнала в шине // (FPGA_BUS_FULL_SCALE*FPGA_BUS_FULL_SCALE)
-#define ADC_FULL_SCALE 65536																			//максимальная аплитуда сигнала в АЦП // powf(2,ADC_BITS)
+#define ADC_BITS 16																						// ADC bit depth
+#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
+#define CODEC_BITS 32																					// bitness of data in the audio codec
+#define FPGA_BUS_FULL_SCALE 65536																		// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
+#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS_FULL_SCALE)
+#define CODEC_BITS_FULL_SCALE 4294967296																// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
+#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS )_FULL_SCALE
+#define ADC_FULL_SCALE 65536																			// maximum signal amplitude in the ADC // powf (2, ADC_BITS)
 #define FLOAT_FULL_SCALE_POW 4
-#define USB_DEBUG_ENABLED true	 //разрешить использовать USB как консоль
-#define SWD_DEBUG_ENABLED false	 //разрешить использовать SWD как консоль
+#define USB_DEBUG_ENABLED true	// allow using USB as a console
+#define SWD_DEBUG_ENABLED false // enable SWD as a console
 #define AUDIO_DECIM_RATE (IQ_SAMPLERATE / TRX_SAMPLERATE)
 #define DCDC_FREQ_0 1000000
 #define DCDC_FREQ_1 1200000
 
-// задержки при работе с EEPROM
+// delays when working with EEPROM
 #define EEPROM_CO_DELAY 0	   // command
 #define EEPROM_AD_DELAY 0	   // addr
 #define EEPROM_WR_DELAY 5	   // write
@@ -88,7 +88,7 @@ typedef struct
 	bool AGC;
 } VFO;
 
-//режим работы двойного приёмника
+// dual receiver operating mode
 typedef enum
 {
 	VFO_SEPARATE,
@@ -96,7 +96,7 @@ typedef enum
 	VFO_A_PLUS_B,
 } DUAL_RX_TYPE;
 
-//Сохранение настроек по бендам
+// Save settings by band
 typedef struct
 {
 	uint32_t Freq;
@@ -231,7 +231,7 @@ extern struct TRX_CALIBRATE
 	float32_t swr_trans_rate;
 	int32_t swr_trans_rate_shadow;
 	int8_t VCXO_correction;
-	
+
 	uint8_t flash_id; //eeprom check
 } CALIBRATE;
 

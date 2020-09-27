@@ -19,7 +19,7 @@ static uint8_t CAT_UserRxBufferFS[CAT_APP_RX_DATA_SIZE];
 static uint8_t CAT_UserTxBufferFS[CAT_APP_TX_DATA_SIZE];
 static bool CAT_processingWiFiCommand = false;
 static uint32_t CAT_processingWiFi_link_id = 0;
-	
+
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
 static uint8_t getFT450Mode(uint8_t VFO_Mode);
@@ -206,7 +206,7 @@ static void CAT_Transmit(char *data)
 {
 	CAT_Transmit_FS((uint8_t *)data, (uint16_t)strlen(data));
 	//sendToDebug_str3("CAT command answer: |",data,"|\r\n");
-	if(CAT_processingWiFiCommand)
+	if (CAT_processingWiFiCommand)
 	{
 		WIFI_SendCatAnswer(data, CAT_processingWiFi_link_id, NULL);
 		CAT_processingWiFiCommand = false;
@@ -232,7 +232,7 @@ void ua3reo_dev_cat_parseCommand(void)
 	char *_command = _command_buffer;
 	memcpy(_command, command_to_parse, CAT_BUFFER_SIZE);
 	memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
-	while(*_command == '\r' || *_command == '\n' || *_command == ' ') //trim
+	while (*_command == '\r' || *_command == '\n' || *_command == ' ') //trim
 		_command++;
 	if (strlen(_command) < 2)
 		return;
@@ -453,7 +453,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		}
 		return;
 	}
-	
+
 	if (strcmp(command, "GT") == 0) // AGC FUNCTION
 	{
 		if (!has_args)

@@ -186,12 +186,12 @@ int main(void)
   MX_TIM16_Init();
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
-	__HAL_RCC_CSI_ENABLE();
-	__HAL_RCC_SYSCFG_CLK_ENABLE() ;
-	HAL_EnableCompensationCell();
+  __HAL_RCC_CSI_ENABLE();
+  __HAL_RCC_SYSCFG_CLK_ENABLE();
+  HAL_EnableCompensationCell();
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("UA3REO Transceiver Initialization...");
-	InitSettings();
+  InitSettings();
   sendToDebug_strln("[OK] USB init");
   USBD_Restart();
   sendToDebug_strln("[OK] FIFO timer TIM7 init");
@@ -212,8 +212,8 @@ int main(void)
     LoadSettings(true);
   else
     LoadSettings(false);
-	sendToDebug_strln("[OK] Calibration loading");
-	if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset
+  sendToDebug_strln("[OK] Calibration loading");
+  if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset
     LoadCalibration(true);
   else
     LoadCalibration(false);
@@ -248,14 +248,14 @@ int main(void)
   TRX_Inited = true;
   sendToDebug_strln("[OK] WIFI timer TIM3 init");
   HAL_TIM_Base_Start_IT(&htim3);
-	sendToDebug_strln("[OK] ENC2 timer TIM16 init");
+  sendToDebug_strln("[OK] ENC2 timer TIM16 init");
   HAL_TIM_Base_Start_IT(&htim16);
   sendToDebug_strln("[OK] PERIPHERAL timer TIM15 init");
   HAL_TIM_Base_Start_IT(&htim15);
-	sendToDebug_strln("[OK] Digital decoder timer TIM17 init");
+  sendToDebug_strln("[OK] Digital decoder timer TIM17 init");
   HAL_TIM_Base_Start_IT(&htim17);
   sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
-	TRX_STM32_VREF = TRX_getSTM32H743vref();
+  TRX_STM32_VREF = TRX_getSTM32H743vref();
   /* USER CODE END 2 */
 
   /* Infinite loop */

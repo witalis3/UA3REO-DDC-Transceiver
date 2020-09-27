@@ -7,28 +7,28 @@
 #include <stdbool.h>
 #include "functions.h"
 
-#define CWDECODER_NBTIME 6  // ms noise blanker
-#define CWDECODER_STRLEN 30 //длинна декодированной строки
-#define CWDECODER_MAGNIFY 16 //во сколько приближаем FFT
-#define CWDECODER_FFTSIZE 256 //размер FFT для анализа
-#define CWDECODER_FFT_SAMPLES (DECODER_PACKET_SIZE * 4) //количество семплов для анализа
-#define CWDECODER_FFTSIZE_HALF (CWDECODER_FFTSIZE / 2) //половина размера FFT
-#define CWDECODER_MAX_THRES 0.5f //Ниже этой силы сигнала считаем что он не активен
-#define CWDECODER_MAX_SLIDE 0.999f //коэффициент снижения максимального порога FFT
+#define CWDECODER_NBTIME 6                              // ms noise blanker
+#define CWDECODER_STRLEN 30                             // length of decoded string
+#define CWDECODER_MAGNIFY 16                            // what time we approximate FFT
+#define CWDECODER_FFTSIZE 256                           // FFT size for analysis
+#define CWDECODER_FFT_SAMPLES (DECODER_PACKET_SIZE * 4) // number of samples for analysis
+#define CWDECODER_FFTSIZE_HALF (CWDECODER_FFTSIZE / 2)  // half the size of the FFT
+#define CWDECODER_MAX_THRES 0.5f                        // Below this signal strength, we consider that it is not active
+#define CWDECODER_MAX_SLIDE 0.999f                      // reduction factor for the maximum FFT threshold
 #define CWDECODER_ZOOMED_SAMPLES (DECODER_PACKET_SIZE / CWDECODER_MAGNIFY)
-#define CWDECODER_SPEC_PART (CWDECODER_FFTSIZE_HALF * 3 / 4) //ищем сигнал только в первой части сигнала (полоса CW узкая)
-#define CWDECODER_WPM_UP_SPEED 0.80f //коэффициент увеличения скорости при автоподстройке
-#define CWDECODER_ERROR_DIFF 0.5f //коэффициент погрешности при определении точки и тире
-#define CWDECODER_ERROR_SPACE_DIFF 0.6f //коэффициент погрешности при определении символа и пробела
-#define CWDECODER_MAX_CODE_SIZE 10 //максимальный размер кода символа
+#define CWDECODER_SPEC_PART (CWDECODER_FFTSIZE_HALF * 3 / 4) // search for a signal only in the first part of the signal (CW bandwidth is narrow)
+#define CWDECODER_WPM_UP_SPEED 0.80f                         // speed increase factor during auto-tuning
+#define CWDECODER_ERROR_DIFF 0.5f                            // error factor when determining the point and dash
+#define CWDECODER_ERROR_SPACE_DIFF 0.6f                      // error factor when determining the character and space
+#define CWDECODER_MAX_CODE_SIZE 10                           // maximum character code size
 
-//Public variables
-//extern float32_t CWDEC_FFTBuffer_Export[CWDECODER_FFTSIZE];
+// Public variables
+// extern float32_t CWDEC_FFTBuffer_Export [CWDECODER_FFTSIZE];
 extern volatile uint16_t CW_Decoder_WPM;
 extern char CW_Decoder_Text[CWDECODER_STRLEN + 1];
 
-//Public methods
-extern void CWDecoder_Init(void);                   //инициализация CW декодера
-extern void CWDecoder_Process(float32_t *bufferIn); //запуск CW декодера для блока данных
+// Public methods
+extern void CWDecoder_Init(void);                   // initialize the CW decoder
+extern void CWDecoder_Process(float32_t *bufferIn); // start CW decoder for the data block
 
 #endif

@@ -2,9 +2,9 @@
 #include "functions.h"
 
 //Public variables
-static PROFILE_INFO profiles[PROFILES_COUNT] = {0}; //коллекция профайлеров
+static PROFILE_INFO profiles[PROFILES_COUNT] = {0}; // collection of profilers
 
-//инициализация профайлера
+// initialize the profiler
 void InitProfiler()
 {
 	for (uint8_t i = 0; i < PROFILES_COUNT; i++)
@@ -17,7 +17,7 @@ void InitProfiler()
 	}
 }
 
-//запуск профайлера
+// start profiler
 void StartProfiler(uint8_t pid)
 {
 	if (pid >= PROFILES_COUNT)
@@ -28,7 +28,7 @@ void StartProfiler(uint8_t pid)
 	profiles[pid].startTime = HAL_GetTick();
 }
 
-//запуск профайлера в микросекундах
+// run profiler in microseconds
 void StartProfilerUs()
 {
 	if (profiles[PROFILES_COUNT - 1].started)
@@ -37,7 +37,7 @@ void StartProfilerUs()
 	profiles[PROFILES_COUNT - 1].startTime = DWT->CYCCNT;
 }
 
-//завершение профайлера
+// terminate the profiler
 void EndProfiler(uint8_t pid, bool summarize)
 {
 	if (pid >= PROFILES_COUNT)
@@ -53,7 +53,7 @@ void EndProfiler(uint8_t pid, bool summarize)
 	profiles[pid].started = false;
 }
 
-//завершение профайлера в микросекундах
+// complete profiler in microseconds
 void EndProfilerUs(bool summarize)
 {
 	if (!profiles[PROFILES_COUNT - 1].started)
@@ -68,7 +68,7 @@ void EndProfilerUs(bool summarize)
 	profiles[PROFILES_COUNT - 1].started = false;
 }
 
-//вывод результатов профайлера
+// output the profiler results
 void PrintProfilerResult()
 {
 	bool printed = false;

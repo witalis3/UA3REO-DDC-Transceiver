@@ -7,12 +7,12 @@
 #include <stdbool.h>
 #include "audio_processor.h"
 
-#define AUTO_NOTCH_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3) //размер блока для обработки
-#define AUTO_NOTCH_TAPS AUTO_NOTCH_BLOCK_SIZE					//порядок фильтра
-#define AUTO_NOTCH_REFERENCE_SIZE (AUTO_NOTCH_BLOCK_SIZE * 2)	//размер опорного буффера
-#define AUTO_NOTCH_STEP 0.0001f									//шаг LMS алгоритма
+#define AUTO_NOTCH_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3)	  // block size for processing
+#define AUTO_NOTCH_TAPS AUTO_NOTCH_BLOCK_SIZE				  // filter order
+#define AUTO_NOTCH_REFERENCE_SIZE (AUTO_NOTCH_BLOCK_SIZE * 2) // size of the reference buffer
+#define AUTO_NOTCH_STEP 0.0001f								  // LMS algorithm step
 
-typedef struct //инстанс фильтра
+typedef struct // filter instance
 {
 	arm_lms_norm_instance_f32 lms2_Norm_instance;
 	float32_t lms2_stateF32[AUTO_NOTCH_TAPS + AUTO_NOTCH_BLOCK_SIZE - 1];
@@ -23,8 +23,8 @@ typedef struct //инстанс фильтра
 	uint_fast16_t reference_index_new;
 } AN_Instance;
 
-//Public methods
-extern void InitAutoNotchReduction(void);										   //инициализация автоматического нотч-фильтра
-extern void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id); //запуск автоматического нотч-фильтра
+// Public methods
+extern void InitAutoNotchReduction(void);										   // initialize the automatic notch filter
+extern void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id); // start automatic notch filter
 
 #endif

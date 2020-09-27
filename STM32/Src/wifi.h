@@ -8,7 +8,7 @@
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
 #define WIFI_FOUNDED_AP_MAXCOUNT 10
-#define WIFI_DEBUG TRX.Debug_Console //вывод отладки WIFI в консоль
+#define WIFI_DEBUG TRX.Debug_Console //WIFI debug output to console
 
 typedef enum
 {
@@ -56,6 +56,6 @@ extern bool WIFI_GetIP(void *callback);
 extern void WIFI_GoSleep(void);
 extern bool WIFI_StartCATServer(void *callback);
 extern bool WIFI_UpdateFW(void *callback);
-extern bool WIFI_SendCatAnswer(char* data, uint32_t link_id, void *callback);
+extern bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void *callback);
 
 #endif

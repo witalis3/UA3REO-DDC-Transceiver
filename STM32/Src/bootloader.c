@@ -4,10 +4,10 @@
 #include "lcd.h"
 #include "functions.h"
 
-//перехов в DFU-режим булодера
+// switch to DFU-mode buloder
 void JumpToBootloader(void)
 {
-	uint32_t i=0;
+	uint32_t i = 0;
 	void (*SysMemBootJump)(void);
 
 	volatile uint32_t BootAddr = 0x1FF09800;
@@ -21,11 +21,11 @@ void JumpToBootloader(void)
 	SCB_DisableICache();
 	HAL_MPU_Disable();
 	HAL_SuspendTick();
-	__disable_irq();				  //Disable all interrupts
-	SysTick->CTRL = 0;				  //Disable Systick timer
+	__disable_irq();   //Disable all interrupts
+	SysTick->CTRL = 0; //Disable Systick timer
 	SysTick->VAL = 0;
 	SysTick->LOAD = 0;
-	HAL_RCC_DeInit();				//Set the clock to the default state
+	HAL_RCC_DeInit();		//Set the clock to the default state
 	for (i = 0; i < 5; i++) //Clear Interrupt Enable Register & Interrupt Pending Register
 	{
 		NVIC->ICER[i] = 0xFFFFFFFF;
@@ -33,8 +33,10 @@ void JumpToBootloader(void)
 	}
 	__enable_irq(); //Re-enable all interrupts
 	//go to bootloader
-	SysMemBootJump = (void (*)(void)) (*((uint32_t *) ((BootAddr + 4)))); //-V566
-	__set_MSP(*(uint32_t *)BootAddr); //-V566
+	SysMemBootJump = (void (*)(void))(*((uint32_t *)((BootAddr + 4)))); //-V566
+	__set_MSP(*(uint32_t *)BootAddr);									//-V566
 	SysMemBootJump();
-	while (true) {}
+	while (true)
+	{
+	}
 }

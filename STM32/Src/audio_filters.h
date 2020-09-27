@@ -8,13 +8,13 @@
 #include "fpga.h"
 #include "functions.h"
 
-#define IIR_FILTERS_COUNT 35														   //Всего фильтров в коллекции
-#define IQ_HILBERT_TAPS 201															   //Порядок фильтра гильберта
-#define IIR_MAX_STAGES 15															   //Максимальный порядок IIR фильтров
-#define NOTCH_STAGES 1																   //порядок ручного Notch фильтра
-#define EQ_STAGES 1																		   //порядок biquad фильтра эквалайзера
-#define BIQUAD_COEFF_IN_STAGE 5														   //коэффициентов в порядке ручного Notch фильтра
-#define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) //размер буфферов состояний
+#define IIR_FILTERS_COUNT 35													  // Total Filters In The Collection
+#define IQ_HILBERT_TAPS 201														  // Hilbert filter order
+#define IIR_MAX_STAGES 15														  // Maximum order of IIR filters
+#define NOTCH_STAGES 1															  // order of manual Notch filter
+#define EQ_STAGES 1																  // order of the biquad of the equalizer filter
+#define BIQUAD_COEFF_IN_STAGE 5													  // coefficients in manual Notch filter order
+#define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
 #define FIR_RX2_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
 #define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
 #define IIR_RX1_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
@@ -26,7 +26,7 @@
 #define IIR_RX1_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX2_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 
-typedef enum //тип BiQuad фильтра для автоматического расчёта
+typedef enum // BiQuad filter type for automatic calculation
 {
 	BIQUAD_onepolelp,
 	BIQUAD_onepolehp,
@@ -39,13 +39,13 @@ typedef enum //тип BiQuad фильтра для автоматическог�
 	BIQUAD_highShelf
 } BIQUAD_TYPE;
 
-typedef enum //тип фильтра в коллекции
+typedef enum // type of filter in the collection
 {
 	IIR_BIQUAD_HPF,
 	IIR_BIQUAD_LPF
 } IIR_BIQUAD_FILTER_TYPE;
 
-typedef enum //состояния DC-корректоров для каждого пользователя
+typedef enum // states of DC correctors for each user
 {
 	DC_FILTER_RX1_I,
 	DC_FILTER_RX1_Q,
@@ -57,22 +57,22 @@ typedef enum //состояния DC-корректоров для каждог�
 	DC_FILTER_FFT_Q,
 } DC_FILTER_STATE;
 
-typedef struct //сохранение старых значений семплов для DC фильтра. Несколько состояний для разных потребителей
+typedef struct // keep old sample values for DC filter. Multiple states for different consumers
 {
 	float32_t x_prev;
 	float32_t y_prev;
 } DC_filter_state_type;
 
-typedef struct //фильтр в коллекции
+typedef struct // filter in collection
 {
 	const IIR_BIQUAD_FILTER_TYPE type;
-	const float32_t *coeffs; //Coefficients converted to ARMA in reverse order by MATLAB
-    const uint8_t stages;
-    const uint16_t width;
+	const float32_t *coeffs; // Coefficients converted to ARMA in reverse order by MATLAB
+	const uint8_t stages;
+	const uint16_t width;
 } IIR_BIQUAD_FILTER;
 
-//Public variables
-extern arm_fir_instance_f32 FIR_RX1_Hilbert_I; //инстансы фильтров
+// Public variables
+extern arm_fir_instance_f32 FIR_RX1_Hilbert_I; // filter instances
 extern arm_fir_instance_f32 FIR_RX1_Hilbert_Q;
 extern arm_fir_instance_f32 FIR_RX2_Hilbert_I;
 extern arm_fir_instance_f32 FIR_RX2_Hilbert_Q;
@@ -106,11 +106,12 @@ extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_I;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_Q;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_I;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_Q;
-extern volatile bool NeedReinitNotch; //необходимо переинициализировать ручной Notch-фильтр
+extern volatile bool NeedReinitNotch; // need to reinitialize the manual Notch filter
+
 //Public methods
-extern void InitAudioFilters(void);											   //инифиализация аудио-фильтров
-extern void ReinitAudioFilters(void);										   //переинициализация аудио-фильтров
-extern void InitNotchFilter(void);											   //инициализация ручного Notch-фильтра
-extern void dc_filter(float32_t *Buffer, int16_t blockSize, uint8_t stateNum); //запуск DC-корректора
+extern void InitAudioFilters(void);											   // initialize audio filters
+extern void ReinitAudioFilters(void);										   // reinitialize audio filters
+extern void InitNotchFilter(void);											   // initialize the manual Notch filter
+extern void dc_filter(float32_t *Buffer, int16_t blockSize, uint8_t stateNum); // start DC corrector
 
 #endif

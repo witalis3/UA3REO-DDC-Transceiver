@@ -6,7 +6,7 @@
 IRAM2 static NB_Instance NB_RX1 = {0};
 IRAM2 static NB_Instance NB_RX2 = {0};
 
-//запуск NB для блока данных
+// start NB for the data block
 void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 {
 	NB_Instance *instance = &NB_RX1;

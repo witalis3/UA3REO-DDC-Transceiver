@@ -16,7 +16,7 @@ volatile bool SPI_process = false;
 
 void dma_memcpy32(uint32_t *dest, uint32_t *src, uint32_t len)
 {
-	if(len == 0)
+	if (len == 0)
 		return;
 	HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, len * 4, 1);
 	HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
@@ -190,20 +190,19 @@ void delay_us(uint32_t us)
 		return;
 	}
 	unsigned long us_count_tick = us * (SystemCoreClock / 1000000);
-	//разрешаем использовать счётчик
-	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-	//обнуляем значение счётного регистра
+	// allow using the counter
+	CoreDebug->DEMCR | = CoreDebug_DEMCR_TRCENA_Msk;
+	// zero the value of the counting register
 	DWT->CYCCNT = 0;
-	//запускаем счётчик
-	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+	// start the counter
+	DWT->CTRL | = DWT_CTRL_CYCCNTENA_Msk;
 	while (DWT->CYCCNT < us_count_tick)
 		;
-	//останавливаем счётчик
-	DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;
-}
-*/
+	// stop the counter
+	DWT->CTRL & = ~DWT_CTRL_CYCCNTENA_Msk;
+}*/
 
-uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) //высчитываем частоту из фразы ля FPGA (RX1/RX2)
+uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
 {
 	if (freq < 0)
 		return 0;
@@ -221,46 +220,46 @@ uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) //высчиты
 			_freq = (ADC_CLOCK / 2) - _freq;
 		}
 	}
-	if(rx_num==1)
+	if (rx_num == 1)
 		TRX_RX1_IQ_swap = inverted;
-	if(rx_num==2)
+	if (rx_num == 2)
 		TRX_RX2_IQ_swap = inverted;
-	double res = round(((double)_freq / ADC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
+	double res = round(((double)_freq / ADC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits;
 	return (uint32_t)res;
 }
 
-uint32_t getTXPhraseFromFrequency(int32_t freq) //высчитываем частоту из фразы для FPGA (TX)
+uint32_t getTXPhraseFromFrequency(int32_t freq) // calculate the frequency from the phrase for FPGA (TX)
 {
 	if (freq < 0)
 		return 0;
 	bool inverted = false;
 	int32_t _freq = freq;
-	
+
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
-	if(nyquist == 0) // <43.mhz (good 0mhz - 34.56mhz) 0-0.4 dac freq
+	if (nyquist == 0) // <43.mhz (good 0mhz - 34.56mhz) 0-0.4 dac freq
 	{
 		TRX_DAC_HP1 = false; //low-pass
 		TRX_DAC_HP2 = false; //low-pass
 	}
 	//fall in 43.2mhz
-	if(nyquist == 1) // 43.2-86.4 mhz (good 69.12mhz - 51.84) dac frec-(0.2-0.4 dac freq)
+	if (nyquist == 1) // 43.2-86.4 mhz (good 69.12mhz - 51.84) dac frec-(0.2-0.4 dac freq)
 	{
-		TRX_DAC_HP1 = true;  //high-pass
+		TRX_DAC_HP1 = true;	 //high-pass
 		TRX_DAC_HP2 = false; //low-pass
 	}
 	//fall in 86.4mhz
-	if(nyquist == 2) //86.4-129.6 mhz (good 103.68mhz -	120.96mhz) dac freq+(0.2-0.4 dac freq)
+	if (nyquist == 2) //86.4-129.6 mhz (good 103.68mhz -	120.96mhz) dac freq+(0.2-0.4 dac freq)
 	{
-		TRX_DAC_HP1 = true;  //high-pass
-		TRX_DAC_HP2 = true;  //high-pass
+		TRX_DAC_HP1 = true; //high-pass
+		TRX_DAC_HP2 = true; //high-pass
 	}
 	//fall in 129.6mhz
-	if(nyquist == 3) //129.6-172.8 mhz (good 172.8mhz - 138.24mhz) 2xdac frec-(0.2-0.4 dac freq)
+	if (nyquist == 3) //129.6-172.8 mhz (good 172.8mhz - 138.24mhz) 2xdac frec-(0.2-0.4 dac freq)
 	{
 		TRX_DAC_HP1 = false; //low-pass
-		TRX_DAC_HP2 = true;  //high-pass
+		TRX_DAC_HP2 = true;	 //high-pass
 	}
-	
+
 	if (_freq > DAC_CLOCK / 2) //Go Nyquist
 	{
 		while (_freq > (DAC_CLOCK / 2))
@@ -274,12 +273,12 @@ uint32_t getTXPhraseFromFrequency(int32_t freq) //высчитываем час�
 		}
 	}
 	TRX_TX_IQ_swap = inverted;
-	
+
 	double res = round(((double)_freq / DAC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
 	return (uint32_t)res;
 }
 
-void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd) //добавляем нули
+void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd) // add zeroes
 {
 	char res[50] = "";
 	strcpy(res, str);
@@ -314,29 +313,29 @@ float32_t log10f_fast(float32_t X)
 	return (Y * 0.3010299956639812f);
 }
 
-float32_t db2rateV(float32_t i) //из децибелл в разы (для напряжения)
+float32_t db2rateV(float32_t i) // from decibels to times (for voltage)
 {
 	return powf(10.0f, (i / 20.0f));
 }
 
-float32_t db2rateP(float32_t i) //из децибелл в разы (для мощности)
+float32_t db2rateP(float32_t i) // from decibels to times (for power)
 {
 	return powf(10.0f, (i / 10.0f));
 }
 
-float32_t rate2dbV(float32_t i) //из разов в децибеллы (для напряжения)
+float32_t rate2dbV(float32_t i) // times to decibels (for voltage)
 {
 	return 20 * log10f_fast(i);
 }
 
-float32_t rate2dbP(float32_t i) //из разов в децибеллы (для мощности)
+float32_t rate2dbP(float32_t i) // from times to decibels (for power)
 {
 	return 10 * log10f_fast(i);
 }
 
 #define VOLUME_LOW_DB (-20.0f)
 #define VOLUME_EPSILON powf(10.0f, (VOLUME_LOW_DB / 20.0f))
-float32_t volume2rate(float32_t i) //из положения ручки громкости в усиление
+float32_t volume2rate(float32_t i) // from the position of the volume knob to the gain
 {
 	if (i < 0.01f)
 		return 0.0f;
@@ -362,9 +361,9 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 {
 	if (freq > MAX_TX_FREQ_HZ)
 		return 0.0f;
-	
+
 	return 1.0f; //TEMPORARY
-	
+
 	const uint_fast8_t calibration_points = 31;
 	uint_fast8_t mhz_left = 0;
 	uint_fast8_t mhz_right = calibration_points;
@@ -405,11 +404,11 @@ static bool CPULOAD_status = true; // true - wake up ; false - sleep
 void CPULOAD_Init(void)
 {
 	DBGMCU->CR |= (DBGMCU_CR_DBG_SLEEPD1_Msk | DBGMCU_CR_DBG_STOPD1_Msk | DBGMCU_CR_DBG_STANDBYD1_Msk);
-	//разрешаем использовать счётчик
+	// allow using the counter
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-	//запускаем счётчик
+	// start the counter
 	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
-	//обнуляем значение счётного регистра
+	// zero the value of the counting register
 	DWT->CYCCNT = 0;
 	CPULOAD_status = true;
 }
@@ -487,12 +486,12 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeD
 	}
 	else if (out_data == NULL)
 	{
-    memset(in_data, 0x00, count);
+		memset(in_data, 0x00, count);
 		res = HAL_SPI_Receive(&hspi2, in_data, count, timeout);
 	}
 	else
 	{
-    memset(in_data, 0x00, count);
+		memset(in_data, 0x00, count);
 		res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, timeout);
 	}
 	if (!hold_cs)

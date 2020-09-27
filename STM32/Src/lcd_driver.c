@@ -354,8 +354,8 @@ void LCDDriver_Init(void)
 	HAL_Delay(120);
 
 	LCDDriver_SendCommand(LCD_COMMAND_COLOR_INVERSION_ON); //(0x21);
-	LCDDriver_SendCommand(LCD_COMMAND_IDLE_OFF); //(0x38);
-	LCDDriver_SendCommand(LCD_COMMAND_DISPLAY_ON); //(0x29);
+	LCDDriver_SendCommand(LCD_COMMAND_IDLE_OFF);		   //(0x38);
+	LCDDriver_SendCommand(LCD_COMMAND_DISPLAY_ON);		   //(0x29);
 #endif
 }
 
@@ -444,9 +444,9 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 		SCB_CleanDCache_by_Addr((uint32_t *)&fillxy_color, sizeof(fillxy_color));
 		const uint32_t part_size = 32000;
 		uint32_t estamated = n;
-		while(estamated > 0)
+		while (estamated > 0)
 		{
-			if(estamated >= part_size)
+			if (estamated >= part_size)
 			{
 				HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, part_size * 2, 1);
 				HAL_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
@@ -807,7 +807,7 @@ void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *im
 	LCDDriver_SetCursorAreaPosition(x, y, image->width + x - 1, image->height + y - 1);
 	while (true)
 	{
-		if ((int16_t)image->data[i] < 0) //нет повторов
+		if ((int16_t)image->data[i] < 0) // no repeats
 		{
 			uint16_t count = (-(int16_t)image->data[i]);
 			i++;
@@ -820,7 +820,7 @@ void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *im
 					return;
 			}
 		}
-		else //повторы
+		else //repeats
 		{
 			uint16_t count = ((int16_t)image->data[i]);
 			i++;

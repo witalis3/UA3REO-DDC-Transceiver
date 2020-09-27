@@ -8,13 +8,13 @@
 #include "functions.h"
 #include "settings.h"
 
-#define DECODER_FREQ	1000				 //частота срабатывания декодера (1 мсек)
-#define DECODER_PACKET_SIZE	(TRX_SAMPLERATE / DECODER_FREQ)				 //данных в одном пакете (48 байт)
-#define DECODER_BUFF_SIZE (DECODER_PACKET_SIZE * 8 * 2)       //размер буффера декодера
+#define DECODER_FREQ 1000                                   // decoder response frequency (1 msec)
+#define DECODER_PACKET_SIZE (TRX_SAMPLERATE / DECODER_FREQ) // data in one packet (48 bytes)
+#define DECODER_BUFF_SIZE (DECODER_PACKET_SIZE * 8 * 2)     // decoder buffer size
 
-//Public methods
-extern void DECODER_Init(void); //инициализация декодера и его дочерних процессов
-extern void DECODER_Process(void); //запуск подходящего декодера
-extern void DECODER_PutSamples(float32_t *bufferIn, uint32_t size); //добавление в буффер декодера новых данных
+// Public methods
+extern void DECODER_Init(void);                                     // initialization of the decoder and its child processes
+extern void DECODER_Process(void);                                  // launch a suitable decoder
+extern void DECODER_PutSamples(float32_t *bufferIn, uint32_t size); // add new data to the decoder buffer
 
 #endif

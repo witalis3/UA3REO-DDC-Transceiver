@@ -284,21 +284,21 @@ static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"Encoder debounce", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE},
 		{"Encoder2 debounce", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE},
 		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
-		{"Encoder on falling", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},		
+		{"Encoder on falling", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
 		{"CIC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CIC_GAINER_val, SYSMENU_HANDL_CALIB_CIC_SHIFT},
 		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_HANDL_CALIB_CICCOMP_SHIFT},
 		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
 		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
-		{"RF GAIN 0", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[0], SYSMENU_HANDL_CALIB_RF_GAIN_0}, //-V641
-		{"RF GAIN 1", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[1], SYSMENU_HANDL_CALIB_RF_GAIN_1}, //-V641
-		{"RF GAIN 2", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[2], SYSMENU_HANDL_CALIB_RF_GAIN_2}, //-V641
-		{"RF GAIN 3", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[3], SYSMENU_HANDL_CALIB_RF_GAIN_3}, //-V641
-		{"RF GAIN 4", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[4], SYSMENU_HANDL_CALIB_RF_GAIN_4}, //-V641
-		{"RF GAIN 5", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[5], SYSMENU_HANDL_CALIB_RF_GAIN_5}, //-V641
-		{"RF GAIN 6", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[6], SYSMENU_HANDL_CALIB_RF_GAIN_6}, //-V641
-		{"RF GAIN 7", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[7], SYSMENU_HANDL_CALIB_RF_GAIN_7}, //-V641
-		{"RF GAIN 8", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[8], SYSMENU_HANDL_CALIB_RF_GAIN_8}, //-V641
-		{"RF GAIN 9", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[9], SYSMENU_HANDL_CALIB_RF_GAIN_9}, //-V641
+		{"RF GAIN 0", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[0], SYSMENU_HANDL_CALIB_RF_GAIN_0},	//-V641
+		{"RF GAIN 1", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[1], SYSMENU_HANDL_CALIB_RF_GAIN_1},	//-V641
+		{"RF GAIN 2", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[2], SYSMENU_HANDL_CALIB_RF_GAIN_2},	//-V641
+		{"RF GAIN 3", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[3], SYSMENU_HANDL_CALIB_RF_GAIN_3},	//-V641
+		{"RF GAIN 4", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[4], SYSMENU_HANDL_CALIB_RF_GAIN_4},	//-V641
+		{"RF GAIN 5", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[5], SYSMENU_HANDL_CALIB_RF_GAIN_5},	//-V641
+		{"RF GAIN 6", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[6], SYSMENU_HANDL_CALIB_RF_GAIN_6},	//-V641
+		{"RF GAIN 7", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[7], SYSMENU_HANDL_CALIB_RF_GAIN_7},	//-V641
+		{"RF GAIN 8", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[8], SYSMENU_HANDL_CALIB_RF_GAIN_8},	//-V641
+		{"RF GAIN 9", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[9], SYSMENU_HANDL_CALIB_RF_GAIN_9},	//-V641
 		{"RF GAIN 10", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[10], SYSMENU_HANDL_CALIB_RF_GAIN_10}, //-V641
 		{"RF GAIN 11", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[11], SYSMENU_HANDL_CALIB_RF_GAIN_11}, //-V641
 		{"RF GAIN 12", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[12], SYSMENU_HANDL_CALIB_RF_GAIN_12}, //-V641
@@ -407,7 +407,7 @@ void SYSMENU_TRX_STEP_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_trx_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 7;
-	if(TRX.Fast)
+	if (TRX.Fast)
 		systemMenuIndex = 8;
 	drawSystemMenu(true);
 }
@@ -1417,7 +1417,7 @@ static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir)
 		full_redraw = true;
 	TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
-	//не показываем спецсимволы
+	// do not show special characters
 	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
 		TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] = 33;
 	if (TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
@@ -2177,7 +2177,7 @@ void eventCloseSystemMenu(void)
 		}
 	}
 	NeedSaveSettings = true;
-	if(sysmenu_hiddenmenu_enabled)
+	if (sysmenu_hiddenmenu_enabled)
 		NeedSaveCalibration = true;
 }
 
@@ -2242,11 +2242,10 @@ void eventSecRotateSystemMenu(int8_t direction)
 	{
 		if (systemMenuIndex > 0)
 			systemMenuIndex--;
+		else if (!sysmenu_hiddenmenu_enabled && sysmenu_onroot)
+			systemMenuIndex = *sysmenu_item_count_selected - 2;
 		else
-			if(!sysmenu_hiddenmenu_enabled && sysmenu_onroot)
-				systemMenuIndex = *sysmenu_item_count_selected - 2;
-			else
-				systemMenuIndex = *sysmenu_item_count_selected - 1;
+			systemMenuIndex = *sysmenu_item_count_selected - 1;
 	}
 	else
 	{

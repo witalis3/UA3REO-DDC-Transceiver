@@ -5,16 +5,16 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define BANDS_COUNT 34 //число бендов в коллекции
+#define BANDS_COUNT 34 // number of bands in the collection
 
-typedef struct //описание региона в бенде
+typedef struct // description of the region in the band
 {
 	const uint32_t startFreq;
 	const uint32_t endFreq;
 	const uint_fast8_t mode;
 } REGION_MAP;
 
-typedef struct //описание бенда
+typedef struct // description of the band
 {
 	const char *name;
 	const bool selectable;
@@ -24,11 +24,10 @@ typedef struct //описание бенда
 	const uint_fast8_t regionsCount;
 } BAND_MAP;
 
-//Public variables
+// Public variables
 extern const BAND_MAP BANDS[BANDS_COUNT];
 
-//Public methods
-extern uint_fast8_t getModeFromFreq(uint32_t freq);			//мода из частоты
-extern int8_t getBandFromFreq(uint32_t freq, bool nearest); //номер бенда из частоты
-
+// Public methods
+extern uint_fast8_t getModeFromFreq(uint32_t freq);			// mod from frequency
+extern int8_t getBandFromFreq(uint32_t freq, bool nearest); // band number from frequency
 #endif

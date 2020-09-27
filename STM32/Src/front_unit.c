@@ -58,32 +58,32 @@ static uint32_t ENCODER2_AValDeb = 0;
 static bool ENCODER2_SWLast = true;
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
-	{ .port = 1, .channel = 7, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PRE, .holdHandler = FRONTPANEL_BUTTONHANDLER_PGA }, //PRE-PGA
-	{ .port = 1, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD }, //ATT-ATTHOLD
-	{ .port = 1, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = NULL }, //MUTE-SCAN
-	{ .port = 1, .channel = 4, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_AGC, .holdHandler = FRONTPANEL_BUTTONHANDLER_AGC_SPEED }, //AGC-AGCSPEED
-	{ .port = 1, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ArB, .holdHandler = FRONTPANEL_BUTTONHANDLER_ANT }, //A=B-ANT
-	{ .port = 1, .channel = 2, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE }, //TUNE
-	{ .port = 1, .channel = 1, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH }, //RFPOWER-SQUELCH
-	{ .port = 1, .channel = 0, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF }, //BW-HPF
-	
+	{.port = 1, .channel = 7, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PRE, .holdHandler = FRONTPANEL_BUTTONHANDLER_PGA},		  //PRE-PGA
+	{.port = 1, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD},	  //ATT-ATTHOLD
+	{.port = 1, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = NULL},								  //MUTE-SCAN
+	{.port = 1, .channel = 4, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_AGC, .holdHandler = FRONTPANEL_BUTTONHANDLER_AGC_SPEED},	  //AGC-AGCSPEED
+	{.port = 1, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ArB, .holdHandler = FRONTPANEL_BUTTONHANDLER_ANT},		  //A=B-ANT
+	{.port = 1, .channel = 2, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE},		  //TUNE
+	{.port = 1, .channel = 1, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH}, //RFPOWER-SQUELCH
+	{.port = 1, .channel = 0, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF},			  //BW-HPF
+
 	//{ .port = 2, .channel = 7, }, //SHIFT
 	//{ .port = 2, .channel = 6, }, //AF GAIN
-	{ .port = 2, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DNR, .holdHandler = FRONTPANEL_BUTTONHANDLER_NB }, //DNR-NB
-	{ .port = 2, .channel = 4, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_NOTCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL }, //NOTCH-MANUAL
-	{ .port = 2, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT }, //CLAR-SHIFT
-	{ .port = 2, .channel = 2, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL }, //REC-PLAY
-	{ .port = 2, .channel = 1, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL }, //WIFI MENU
-	{ .port = 2, .channel = 0, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK }, //MENU-LOCK
-	
-	{ .port = 3, .channel = 7, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_KEYER }, //WPM-KEYER
-	{ .port = 3, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOUBLE, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOUBLEMODE }, //DOUBLE-&+
-	{ .port = 3, .channel = 5, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_FAST, .holdHandler = FRONTPANEL_BUTTONHANDLER_STEP }, //FAST-FASTSETT
-	{ .port = 3, .channel = 4, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_N }, //BAND-
-	{ .port = 3, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_P }, //BAND+
-	{ .port = 3, .channel = 2, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_P }, //MODE+
-	{ .port = 3, .channel = 1, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N }, //MODE-
-	{ .port = 3, .channel = 0, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AsB, .holdHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP }, //A/B-BANDMAP
+	{.port = 2, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DNR, .holdHandler = FRONTPANEL_BUTTONHANDLER_NB},			 //DNR-NB
+	{.port = 2, .channel = 4, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_NOTCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL}, //NOTCH-MANUAL
+	{.port = 2, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},		 //CLAR-SHIFT
+	{.port = 2, .channel = 2, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL},															 //REC-PLAY
+	{.port = 2, .channel = 1, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL},															 //WIFI MENU
+	{.port = 2, .channel = 0, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},			 //MENU-LOCK
+
+	{.port = 3, .channel = 7, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_KEYER},			//WPM-KEYER
+	{.port = 3, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOUBLE, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOUBLEMODE}, //DOUBLE-&+
+	{.port = 3, .channel = 5, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_FAST, .holdHandler = FRONTPANEL_BUTTONHANDLER_STEP},			//FAST-FASTSETT
+	{.port = 3, .channel = 4, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_N},		//BAND-
+	{.port = 3, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_P},		//BAND+
+	{.port = 3, .channel = 2, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_P},		//MODE+
+	{.port = 3, .channel = 1, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N},		//MODE-
+	{.port = 3, .channel = 0, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AsB, .holdHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP},		//A/B-BANDMAP
 };
 
 void FRONTPANEL_ENCODER_checkRotate(void)
@@ -101,12 +101,12 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 	if ((HAL_GetTick() - ENCODER_AValDeb) < CALIBRATE.ENCODER_DEBOUNCE)
 		return;
 
-	if(ENClastClkVal != ENCODER_CLKVal)
+	if (ENClastClkVal != ENCODER_CLKVal)
 	{
 		if (!CALIBRATE.ENCODER_ON_FALLING || ENCODER_CLKVal == 0)
 		{
 			if (ENCODER_DTVal != ENCODER_CLKVal)
-			{ // Если вывод A изменился первым - вращение по часовой стрелке
+			{ // If pin A changed first - clockwise rotation
 				ENCODER_slowler--;
 				if (ENCODER_slowler <= -CALIBRATE.ENCODER_SLOW_RATE)
 				{
@@ -115,7 +115,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				}
 			}
 			else
-			{ // иначе B изменил свое состояние первым - вращение против часовой стрелки
+			{ // otherwise B changed its state first - counterclockwise rotation
 				ENCODER_slowler++;
 				if (ENCODER_slowler >= CALIBRATE.ENCODER_SLOW_RATE)
 				{
@@ -140,18 +140,18 @@ void FRONTPANEL_ENCODER2_checkRotate(void)
 	if (!CALIBRATE.ENCODER_ON_FALLING || ENCODER2_CLKVal == 0)
 	{
 		if (ENCODER2_DTVal != ENCODER2_CLKVal)
-		{ // Если вывод A изменился первым - вращение по часовой стрелке
+		{ // If pin A changed first - clockwise rotation
 			FRONTPANEL_ENCODER2_Rotated(CALIBRATE.ENCODER2_INVERT ? 1 : -1);
 		}
 		else
-		{ // иначе B изменил свое состояние первым - вращение против часовой стрелки
+		{ // otherwise B changed its state first - counterclockwise rotation
 			FRONTPANEL_ENCODER2_Rotated(CALIBRATE.ENCODER2_INVERT ? -1 : 1);
 		}
 	}
 	ENCODER2_AValDeb = HAL_GetTick();
 }
 
-static void FRONTPANEL_ENCODER_Rotated(int8_t direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
+static void FRONTPANEL_ENCODER_Rotated(int8_t direction) // rotated encoder, handler here, direction -1 - left, 1 - right
 {
 	if (TRX.Locked)
 		return;
@@ -178,7 +178,7 @@ static void FRONTPANEL_ENCODER_Rotated(int8_t direction) //энкодер пов
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) //энкодер повернули, здесь обработчик, direction -1 - влево, 1 - вправо
+static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, handler here, direction -1 - left, 1 - right
 {
 	if (TRX.Locked)
 		return;
@@ -266,13 +266,14 @@ void FRONTPANEL_Init(void)
 
 void FRONTPANEL_Process(void)
 {
-	if (SPI_process) return;
+	if (SPI_process)
+		return;
 	SPI_process = true;
-	
+
 	FRONTPANEL_ENCODER2_checkSwitch();
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
 	uint16_t mcp3008_value = 0;
-	
+
 	//process regulators
 	if (FRONTPanel_MCP3008_2_Enabled)
 	{
@@ -292,54 +293,57 @@ void FRONTPANEL_Process(void)
 			TRX.IF_Gain = (uint8_t)(30.0f + ((1023.0f - mcp3008_value) * 50.0f / 1023.0f));
 		}
 	}
-	
+
 	//process buttons
-	for(uint16_t b = 0; b < buttons_count ; b++)
+	for (uint16_t b = 0; b < buttons_count; b++)
 	{
 		//check disabled ports
-		if(PERIPH_FrontPanel_Buttons[b].port == 1 && !FRONTPanel_MCP3008_1_Enabled) continue;
-		if(PERIPH_FrontPanel_Buttons[b].port == 2 && !FRONTPanel_MCP3008_2_Enabled) continue;
-		if(PERIPH_FrontPanel_Buttons[b].port == 3 && !FRONTPanel_MCP3008_3_Enabled) continue;
-		
+		if (PERIPH_FrontPanel_Buttons[b].port == 1 && !FRONTPanel_MCP3008_1_Enabled)
+			continue;
+		if (PERIPH_FrontPanel_Buttons[b].port == 2 && !FRONTPanel_MCP3008_2_Enabled)
+			continue;
+		if (PERIPH_FrontPanel_Buttons[b].port == 3 && !FRONTPanel_MCP3008_3_Enabled)
+			continue;
+
 		//get state from ADC MCP3008 (10bit - 1024values)
-		if(PERIPH_FrontPanel_Buttons[b].port == 1)
+		if (PERIPH_FrontPanel_Buttons[b].port == 1)
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(PERIPH_FrontPanel_Buttons[b].channel, AD1_CS_GPIO_Port, AD1_CS_Pin);
-		if(PERIPH_FrontPanel_Buttons[b].port == 2)
+		if (PERIPH_FrontPanel_Buttons[b].port == 2)
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(PERIPH_FrontPanel_Buttons[b].channel, AD2_CS_GPIO_Port, AD2_CS_Pin);
-		if(PERIPH_FrontPanel_Buttons[b].port == 3)
+		if (PERIPH_FrontPanel_Buttons[b].port == 3)
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(PERIPH_FrontPanel_Buttons[b].channel, AD3_CS_GPIO_Port, AD3_CS_Pin);
-		
+
 		//set state
 		if (mcp3008_value < MCP3008_THRESHOLD)
 			PERIPH_FrontPanel_Buttons[b].state = true;
 		else
 			PERIPH_FrontPanel_Buttons[b].state = false;
-		
+
 		//check state
 		if ((PERIPH_FrontPanel_Buttons[b].prev_state != PERIPH_FrontPanel_Buttons[b].state) && PERIPH_FrontPanel_Buttons[b].state)
 		{
 			PERIPH_FrontPanel_Buttons[b].start_hold_time = HAL_GetTick();
 			PERIPH_FrontPanel_Buttons[b].afterhold = false;
 		}
-		
+
 		//check hold state
 		if ((PERIPH_FrontPanel_Buttons[b].prev_state == PERIPH_FrontPanel_Buttons[b].state) && PERIPH_FrontPanel_Buttons[b].state && ((HAL_GetTick() - PERIPH_FrontPanel_Buttons[b].start_hold_time) > KEY_HOLD_TIME) && !PERIPH_FrontPanel_Buttons[b].afterhold)
 		{
 			PERIPH_FrontPanel_Buttons[b].afterhold = true;
-			if(!TRX.Locked || (PERIPH_FrontPanel_Buttons[b].port == 2 && PERIPH_FrontPanel_Buttons[b].channel == 0)) //LOCK BUTTON
-				if(!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
-					if(PERIPH_FrontPanel_Buttons[b].holdHandler != NULL)
+			if (!TRX.Locked || (PERIPH_FrontPanel_Buttons[b].port == 2 && PERIPH_FrontPanel_Buttons[b].channel == 0)) //LOCK BUTTON
+				if (!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
+					if (PERIPH_FrontPanel_Buttons[b].holdHandler != NULL)
 						PERIPH_FrontPanel_Buttons[b].holdHandler();
 		}
-		
+
 		//check click state
 		if ((PERIPH_FrontPanel_Buttons[b].prev_state != PERIPH_FrontPanel_Buttons[b].state) && !PERIPH_FrontPanel_Buttons[b].state && ((HAL_GetTick() - PERIPH_FrontPanel_Buttons[b].start_hold_time) < KEY_HOLD_TIME) && !PERIPH_FrontPanel_Buttons[b].afterhold && !TRX.Locked)
 		{
-			if(!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
-				if(PERIPH_FrontPanel_Buttons[b].clickHandler != NULL)
+			if (!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
+				if (PERIPH_FrontPanel_Buttons[b].clickHandler != NULL)
 					PERIPH_FrontPanel_Buttons[b].clickHandler();
 		}
-		
+
 		//save prev state
 		PERIPH_FrontPanel_Buttons[b].prev_state = PERIPH_FrontPanel_Buttons[b].state;
 	}
@@ -350,7 +354,7 @@ static void FRONTPANEL_BUTTONHANDLER_DOUBLE(void)
 {
 	if (TRX.Dual_RX_Type == VFO_SEPARATE)
 		TRX.Dual_RX_Type = VFO_A_AND_B;
-	else 
+	else
 		TRX.Dual_RX_Type = VFO_SEPARATE;
 	LCD_UpdateQuery.TopButtons = true;
 	ReinitAudioFilters();
@@ -360,7 +364,7 @@ static void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(void)
 {
 	if (TRX.Dual_RX_Type == VFO_SEPARATE)
 		return;
-	
+
 	if (TRX.Dual_RX_Type == VFO_A_AND_B)
 		TRX.Dual_RX_Type = VFO_A_PLUS_B;
 	else if (TRX.Dual_RX_Type == VFO_A_PLUS_B)
@@ -406,14 +410,14 @@ static void FRONTPANEL_BUTTONHANDLER_PRE(void)
 static void FRONTPANEL_BUTTONHANDLER_ATT(void)
 {
 	TRX.ATT = !TRX.ATT;
-	
+
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
 		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
 	}
-	
+
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
@@ -421,16 +425,16 @@ static void FRONTPANEL_BUTTONHANDLER_ATT(void)
 static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 {
 	TRX.ATT_DB += TRX.ATT_STEP;
-	if(TRX.ATT_DB > 31.0f)
+	if (TRX.ATT_DB > 31.0f)
 		TRX.ATT_DB = 0.0f;
-		
+
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
 		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
 	}
-	
+
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
@@ -438,11 +442,11 @@ static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 static void FRONTPANEL_BUTTONHANDLER_ANT(void)
 {
 	TRX.ANT = !TRX.ANT;
-	
+
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ANT = TRX.ANT;
-	
+
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
@@ -489,29 +493,29 @@ static void FRONTPANEL_BUTTONHANDLER_FAST(void)
 static void FRONTPANEL_BUTTONHANDLER_MODE_P(void)
 {
 	int8_t mode = (int8_t)CurrentVFO()->Mode;
-	if(mode == TRX_MODE_LSB)
+	if (mode == TRX_MODE_LSB)
 		mode = TRX_MODE_USB;
-	else if(mode == TRX_MODE_USB)
+	else if (mode == TRX_MODE_USB)
 		mode = TRX_MODE_LSB;
-	else if(mode == TRX_MODE_CW_L)
+	else if (mode == TRX_MODE_CW_L)
 		mode = TRX_MODE_CW_U;
-	else if(mode == TRX_MODE_CW_U)
+	else if (mode == TRX_MODE_CW_U)
 		mode = TRX_MODE_CW_L;
-	else if(mode == TRX_MODE_NFM)
+	else if (mode == TRX_MODE_NFM)
 		mode = TRX_MODE_WFM;
-	else if(mode == TRX_MODE_WFM)
+	else if (mode == TRX_MODE_WFM)
 		mode = TRX_MODE_NFM;
-	else if(mode == TRX_MODE_DIGI_L)
+	else if (mode == TRX_MODE_DIGI_L)
 		mode = TRX_MODE_DIGI_U;
-	else if(mode == TRX_MODE_DIGI_U)
+	else if (mode == TRX_MODE_DIGI_U)
 		mode = TRX_MODE_DIGI_L;
-	else if(mode == TRX_MODE_AM)
+	else if (mode == TRX_MODE_AM)
 		mode = TRX_MODE_IQ;
-	else if(mode == TRX_MODE_IQ)
+	else if (mode == TRX_MODE_IQ)
 		mode = TRX_MODE_LOOPBACK;
-	else if(mode == TRX_MODE_LOOPBACK)
+	else if (mode == TRX_MODE_LOOPBACK)
 		mode = TRX_MODE_AM;
-	
+
 	TRX_setMode((uint8_t)mode, CurrentVFO());
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
@@ -523,24 +527,24 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(void)
 static void FRONTPANEL_BUTTONHANDLER_MODE_N(void)
 {
 	int8_t mode = (int8_t)CurrentVFO()->Mode;
-	if(mode == TRX_MODE_LSB)
+	if (mode == TRX_MODE_LSB)
 		mode = TRX_MODE_CW_L;
-	else if(mode == TRX_MODE_USB)
+	else if (mode == TRX_MODE_USB)
 		mode = TRX_MODE_CW_U;
-	else if(mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
+	else if (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
 		mode = TRX_MODE_DIGI_U;
-	else if(mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U)
+	else if (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U)
 		mode = TRX_MODE_NFM;
-	else if(mode == TRX_MODE_NFM || mode == TRX_MODE_WFM)
+	else if (mode == TRX_MODE_NFM || mode == TRX_MODE_WFM)
 		mode = TRX_MODE_AM;
 	else
 	{
-		if(CurrentVFO()->Freq < 10000000)
+		if (CurrentVFO()->Freq < 10000000)
 			mode = TRX_MODE_LSB;
 		else
 			mode = TRX_MODE_USB;
 	}
-	
+
 	TRX_setMode((uint8_t)mode, CurrentVFO());
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
@@ -554,8 +558,8 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(void)
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	band++;
 	if (band >= BANDS_COUNT)
-			band = 0;
-	while(!BANDS[band].selectable)
+		band = 0;
+	while (!BANDS[band].selectable)
 	{
 		band++;
 		if (band >= BANDS_COUNT)
@@ -573,7 +577,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(void)
 	CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
 	CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	TRX_Temporary_Stop_BandMap = false;
-	
+
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
 }
@@ -584,7 +588,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
 	band--;
 	if (band < 0)
 		band = BANDS_COUNT - 1;
-	while(!BANDS[band].selectable)
+	while (!BANDS[band].selectable)
 	{
 		band--;
 		if (band < 0)
@@ -602,7 +606,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
 	CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
 	CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	TRX_Temporary_Stop_BandMap = false;
-	
+
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
 }

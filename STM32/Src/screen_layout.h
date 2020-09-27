@@ -4,20 +4,20 @@
 #include "lcd.h"
 #include "fonts.h"
 
-//оформление элементов экрана
+// decoration of screen elements
 
-#define BACKGROUND_COLOR COLOR_BLACK                          //фон
-#define COLOR_BUTTON_TEXT rgb888torgb565(32, 171, 17)         //активный цвет статусной кнопки
-#define COLOR_BUTTON_INACTIVE_TEXT rgb888torgb565(50, 50, 50) //неактивный цвет
+#define BACKGROUND_COLOR COLOR_BLACK                          // background
+#define COLOR_BUTTON_TEXT rgb888torgb565(32, 171, 17)         // active color of the status button
+#define COLOR_BUTTON_INACTIVE_TEXT rgb888torgb565(50, 50, 50) // inactive color
 
-//часы
+//clock
 #define LAY_CLOCK_POS_Y 17
 #define LAY_CLOCK_POS_HRS_X 405
 #define LAY_CLOCK_POS_MIN_X 430
 #define LAY_CLOCK_POS_SEC_X 455
 #define LAY_CLOCK_FONT (GFXfont *)&FreeSans9pt7b
 
-//верхний ряд статусных кнопок
+// top row of status buttons
 #define LAY_TOPBUTTONS_X1 0
 #define LAY_TOPBUTTONS_X2 (LCD_WIDTH - 1)
 #define LAY_TOPBUTTONS_Y1 0
@@ -64,7 +64,7 @@
 #define LAY_TOPBUTTONS_ANT_W (46 + LAY_TOPBUTTONS_LR_MARGIN)
 #define LAY_TOPBUTTONS_ANT_H LAY_TOPBUTTONS_VFO_H
 
-#define LAY_TOPBUTTONS_FAST_X (LAY_TOPBUTTONS_ANT_X  + LAY_TOPBUTTONS_ANT_W)
+#define LAY_TOPBUTTONS_FAST_X (LAY_TOPBUTTONS_ANT_X + LAY_TOPBUTTONS_ANT_W)
 #define LAY_TOPBUTTONS_FAST_Y LAY_TOPBUTTONS_ANT_Y
 #define LAY_TOPBUTTONS_FAST_W (32 + LAY_TOPBUTTONS_LR_MARGIN)
 #define LAY_TOPBUTTONS_FAST_H LAY_TOPBUTTONS_VFO_H
@@ -99,7 +99,7 @@
 #define LAY_TOPBUTTONS_MUTE_W (48 + LAY_TOPBUTTONS_LR_MARGIN)
 #define LAY_TOPBUTTONS_MUTE_H LAY_TOPBUTTONS_VFO_H
 
-//вывод частоты
+// frequency output
 #define LAY_FREQ_X_OFFSET_100 29
 #define LAY_FREQ_X_OFFSET_10 66
 #define LAY_FREQ_X_OFFSET_1 106
@@ -115,7 +115,7 @@
 #define LAY_FREQ_DELIMITER_X1_OFFSET 140
 #define LAY_FREQ_DELIMITER_X2_OFFSET 280
 
-//вывод статусов под частотой
+// display statuses under frequency
 #define LAY_STATUS_Y_OFFSET 135
 #define LAY_STATUS_HEIGHT 37
 #define LAY_STATUS_BAR_X_OFFSET 60
@@ -169,18 +169,18 @@
 #define LAY_TEXTBAR_FONT 2
 #define LAY_TEXTBAR_TEXT_X_OFFSET 85
 
-//FFT и водопад
-#define LAY_FFT_HEIGHT_STYLE1 40  //указываем максимальную высоту FFT
-#define LAY_WTF_HEIGHT_STYLE1 100 //указываем максимальную высоту водопада
-#define LAY_FFT_HEIGHT_STYLE2 100 //указываем максимальную высоту FFT
-#define LAY_WTF_HEIGHT_STYLE2 40  //указываем максимальную высоту водопада
+// FFT and waterfall
+#define LAY_FFT_HEIGHT_STYLE1 40  // specify the maximum FFT height
+#define LAY_WTF_HEIGHT_STYLE1 100 // specify the maximum height of the waterfall
+#define LAY_FFT_HEIGHT_STYLE2 100 // specify the maximum FFT height
+#define LAY_WTF_HEIGHT_STYLE2 40  // specify the maximum height of the waterfall
 #define LAY_FFT_STYLE_3_4_COLOR COLOR_WHITE
-#define LAY_FFT_WTF_MAX_HEIGHT (LAY_FFT_HEIGHT_STYLE1 + LAY_WTF_HEIGHT_STYLE1) //максимально возможная высота FFT+WTF
-#define LAY_FFT_WTF_POS_Y ((uint16_t)(LCD_HEIGHT - LAY_FFT_WTF_MAX_HEIGHT))    //начало FFT и водопада
-#define LAY_FFT_PRINT_SIZE 480                                                 //указываем ширину выводимого FFT
-#define LAY_FFT_CWDECODER_OFFSET 17                                            //место под текст CW декодера
+#define LAY_FFT_WTF_MAX_HEIGHT (LAY_FFT_HEIGHT_STYLE1 + LAY_WTF_HEIGHT_STYLE1) // maximum possible height FFT + WTF
+#define LAY_FFT_WTF_POS_Y ((uint16_t)(LCD_HEIGHT - LAY_FFT_WTF_MAX_HEIGHT))    // start of FFT and waterfall
+#define LAY_FFT_PRINT_SIZE 480                                                 // specify the width of the displayed FFT
+#define LAY_FFT_CWDECODER_OFFSET 17                                            // space for the text of the CW decoder
 
-//системное меню
+// system menu
 #define LAY_SYSMENU_X1 5
 #define LAY_SYSMENU_X2 400
 #define LAY_SYSMENU_X2_BIGINT 350

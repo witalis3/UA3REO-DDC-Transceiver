@@ -11,9 +11,15 @@
 #define FPGA_flash_file_offset (0xA0 - 1)
 #define FPGA_sector_size (64 * 1024)
 #define FPGA_page_size 256
-#define FPGA_FLASH_COMMAND_DELAY for(uint32_t wait = 0; wait < 50; wait++) __asm("nop"); //50
-#define FPGA_FLASH_WRITE_DELAY for(uint32_t wait = 0; wait < 500; wait++) __asm("nop"); //500
-#define FPGA_FLASH_READ_DELAY for(uint32_t wait = 0; wait < 50; wait++) __asm("nop"); //50
+#define FPGA_FLASH_COMMAND_DELAY               \
+    for (uint32_t wait = 0; wait < 50; wait++) \
+        __asm("nop"); //50
+#define FPGA_FLASH_WRITE_DELAY                  \
+    for (uint32_t wait = 0; wait < 500; wait++) \
+        __asm("nop"); //500
+#define FPGA_FLASH_READ_DELAY                  \
+    for (uint32_t wait = 0; wait < 50; wait++) \
+        __asm("nop"); //50
 
 #define FPGA_writePacket(value) (FPGA_BUS_D0_GPIO_Port->BSRR = (value) | 0xFF0000)
 #define FPGA_readPacket (FPGA_BUS_D0_GPIO_Port->IDR & 0xFF)
@@ -34,25 +40,25 @@
 #define M25P80_RELEASE_from_DEEP_POWER_DOWN 0xAB
 
 //Public variables
-extern volatile uint32_t FPGA_samples;                                     //счетчик числа семплов при обмене с FPGA
-extern volatile bool FPGA_Buffer_underrun;                                 //флаг недостатка данных из FPGA
-extern volatile bool FPGA_NeedSendParams;                                  //флаг необходимости отправить параметры в FPGA
-extern volatile bool FPGA_NeedGetParams;                                   //флаг необходимости получить параметры из FPGA
-extern volatile bool FPGA_NeedRestart;                                     //флаг необходимости рестарта модулей FPGA
-extern volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_SIZE]; //буфферы FPGA
+extern volatile uint32_t FPGA_samples;                                     // counter of the number of samples when exchanging with FPGA
+extern volatile bool FPGA_Buffer_underrun;                                 // flag of lack of data from FPGA
+extern volatile bool FPGA_NeedSendParams;                                  // flag of the need to send parameters to FPGA
+extern volatile bool FPGA_NeedGetParams;                                   // flag of the need to get parameters from FPGA
+extern volatile bool FPGA_NeedRestart;                                     // flag of necessity to restart FPGA modules
+extern volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_SIZE]; // FPGA buffers
 extern volatile float32_t FPGA_Audio_Buffer_RX1_I[FPGA_RX_IQ_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE];
-extern uint_fast16_t FPGA_Audio_RXBuffer_Index; //текущий индекс в буфферах FPGA
-extern uint_fast16_t FPGA_Audio_TXBuffer_Index; //текущий индекс в буфферах FPGA
-extern bool FPGA_Audio_Buffer_State;          //состояние буффера, заполнена половина или целиком true - compleate ; false - half
+extern uint_fast16_t FPGA_Audio_RXBuffer_Index; // current index in FPGA buffers
+extern uint_fast16_t FPGA_Audio_TXBuffer_Index; // current index in FPGA buffers
+extern bool FPGA_Audio_Buffer_State;            // buffer state, half or full full true - compleate; false - half
 
 //Public methods
-extern void FPGA_Init(void);                //инициализация обмена с FPGA
-extern void FPGA_fpgadata_iqclock(void);    //обмен IQ данными с FPGA
-extern void FPGA_fpgadata_stuffclock(void); //обмен параметрами с FPGA
-extern void FPGA_restart(void);             //перезапуск модулей FPGA
+extern void FPGA_Init(void);                // initialize exchange with FPGA
+extern void FPGA_fpgadata_iqclock(void);    // exchange IQ data with FPGA
+extern void FPGA_fpgadata_stuffclock(void); // exchange parameters with FPGA
+extern void FPGA_restart(void);             // restart FPGA modules
 
 #endif

@@ -9,7 +9,6 @@
 #define I2C_SCL_PORT WM8731_SDA_GPIO_Port
 #define I2C_SCL_PIN WM8731_SCK_Pin
 
-/* You must update the online docs if you change this value. */
 #define WIRE_BUFSIZ 101
 
 /* return codes from endTransmission() */
@@ -21,10 +20,10 @@
 
 #define I2C_WRITE 0
 #define I2C_READ 1
-#define I2C_DELAY                                \
+#define I2C_DELAY                                     \
     for (uint16_t wait_i = 0; wait_i < 300; wait_i++) \
-    {                                            \
-        __asm("nop");                            \
+    {                                                 \
+        __asm("nop");                                 \
     };
 
 extern void i2c_begin(void);

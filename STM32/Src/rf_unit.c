@@ -9,12 +9,31 @@
 #include "audio_filters.h"
 
 #define SENS_TABLE_COUNT 24
-static const int16_t KTY81_120_sensTable[SENS_TABLE_COUNT][2] = {  // таблица характеристики датчика
-  {-55, 490}, {-50, 515}, {-40, 567}, {-30, 624}, {-20, 684}, {-10, 747},
-  {0, 815}, {10, 886}, {20, 961}, {25, 1000}, {30,1040}, {40, 1122},
-  {50, 1209}, {60, 1299}, {70, 1392}, {80, 1490}, {90, 1591}, {100, 1696},
-  {110, 1805}, {120, 1915}, {125, 1970}, {130, 2023}, {140, 2124}, {150, 2211}
-};
+static const int16_t KTY81_120_sensTable[SENS_TABLE_COUNT][2] = { // table of sensor characteristics
+	{-55, 490},
+	{-50, 515},
+	{-40, 567},
+	{-30, 624},
+	{-20, 684},
+	{-10, 747},
+	{0, 815},
+	{10, 886},
+	{20, 961},
+	{25, 1000},
+	{30, 1040},
+	{40, 1122},
+	{50, 1209},
+	{60, 1299},
+	{70, 1392},
+	{80, 1490},
+	{90, 1591},
+	{100, 1696},
+	{110, 1805},
+	{120, 1915},
+	{125, 1970},
+	{130, 2023},
+	{140, 2124},
+	{150, 2211}};
 
 static uint8_t getBPFByFreq(uint32_t freq)
 {
@@ -37,7 +56,7 @@ static uint8_t getBPFByFreq(uint32_t freq)
 	return 255;
 }
 
-void RF_UNIT_UpdateState(bool clean) //передаём значения в RF-UNIT
+void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {
 	bool dualrx_lpf_disabled = false;
 	bool dualrx_bpf_disabled = false;
@@ -48,81 +67,81 @@ void RF_UNIT_UpdateState(bool clean) //передаём значения в RF-U
 
 	float32_t att_val = TRX.ATT_DB;
 	bool att_val_16 = false, att_val_8 = false, att_val_4 = false, att_val_2 = false, att_val_1 = false, att_val_05 = false;
-	if(att_val >= 16.0f)
+	if (att_val >= 16.0f)
 	{
 		att_val_16 = true;
 		att_val -= 16.0f;
 	}
-	if(att_val >= 8.0f)
+	if (att_val >= 8.0f)
 	{
 		att_val_8 = true;
 		att_val -= 8.0f;
 	}
-	if(att_val >= 4.0f)
+	if (att_val >= 4.0f)
 	{
 		att_val_4 = true;
 		att_val -= 4.0f;
 	}
-	if(att_val >= 2.0f)
+	if (att_val >= 2.0f)
 	{
 		att_val_2 = true;
 		att_val -= 2.0f;
 	}
-	if(att_val >= 1.0f)
+	if (att_val >= 1.0f)
 	{
 		att_val_1 = true;
 		att_val -= 1.0f;
 	}
-	if(att_val >= 0.5f)
+	if (att_val >= 0.5f)
 	{
 		att_val_05 = true;
 		att_val -= 0.5f;
 	}
-	
+
 	uint8_t bpf = getBPFByFreq(CurrentVFO()->Freq);
-	
+
 	uint8_t band_out = 0;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if(band == 0) //2200m
+	if (band == 0) //2200m
 		band_out = 0;
-	if(band == 3) //160m
+	if (band == 3) //160m
 		band_out = 1;
-	if(band == 6) //80m
+	if (band == 6) //80m
 		band_out = 2;
-	if(band == 10) //60m
+	if (band == 10) //60m
 		band_out = 3;
-	if(band == 12) //40m
+	if (band == 12) //40m
 		band_out = 4;
-	if(band == 15) //30m
+	if (band == 15) //30m
 		band_out = 5;
-	if(band == 18) //20m
+	if (band == 18) //20m
 		band_out = 6;
-	if(band == 21) //17m
+	if (band == 21) //17m
 		band_out = 7;
-	if(band == 23) //15m
+	if (band == 23) //15m
 		band_out = 8;
-	if(band == 25) //12m
+	if (band == 25) //12m
 		band_out = 9;
-	if(band == 27) //CB
+	if (band == 27) //CB
 		band_out = 10;
-	if(band == 28) //10m
+	if (band == 28) //10m
 		band_out = 11;
-	if(band == 29) //6m
+	if (band == 29) //6m
 		band_out = 12;
-	if(band == 30) //FM
+	if (band == 30) //FM
 		band_out = 13;
-	if(band == 32) //2m
+	if (band == 32) //2m
 		band_out = 14;
-	if(band == 33) //70cm
+	if (band == 33) //70cm
 		band_out = 15;
-	
-	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //защёлка
+
+	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
 	MINI_DELAY
 	for (uint8_t registerNumber = 0; registerNumber < 24; registerNumber++)
 	{
-		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); //клок данных
+		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); // data block
 		MINI_DELAY
-		HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); //данные
+		HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); //data
 		MINI_DELAY
 		if (!clean)
 		{
@@ -150,9 +169,11 @@ void RF_UNIT_UpdateState(bool clean) //передаём значения в RF-U
 			//U7-QA ATT_ON_16
 			if (registerNumber == 7 && TRX.ATT && att_val_16)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			
+
 			//U1-QH NOT USED
-			if (registerNumber == 8) {}
+			if (registerNumber == 8)
+			{
+			}
 			//U1-QG BPF_2_A0
 			if (registerNumber == 9 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
@@ -174,7 +195,7 @@ void RF_UNIT_UpdateState(bool clean) //передаём значения в RF-U
 			//U1-QA BPF_ON
 			if (registerNumber == 15 && TRX.RF_Filters && !dualrx_bpf_disabled && bpf != 255)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			
+
 			//U3-QH BAND_OUT_0
 			if (registerNumber == 16 && bitRead(band_out, 0))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
@@ -198,28 +219,28 @@ void RF_UNIT_UpdateState(bool clean) //передаём значения в RF-U
 			{
 				static bool fan_status = false;
 				static bool fan_pwm = false;
-				if(fan_status && TRX_RF_Temperature <= FAN_MEDIUM_STOP) //Температура, при которой вентилятор останавливается
+				if (fan_status && TRX_RF_Temperature <= FAN_MEDIUM_STOP) // Temperature at which the fan stops
 					fan_status = false;
-				if(!fan_status && TRX_RF_Temperature >= FAN_MEDIUM_START) //Температура, при которой вентилятор запускается на половину мощности
+				if (!fan_status &&TRX_RF_Temperature >= FAN_MEDIUM_START) // Temperature at which the fan starts at half power
 				{
 					fan_status = true;
 					fan_pwm = true;
 				}
-				if(TRX_RF_Temperature >= FAN_FULL_START) //Температура, при которой вентилятор запускается на полную мощность
+				if (TRX_RF_Temperature >= FAN_FULL_START) // Temperature at which the fan starts at full power
 					fan_pwm = false;
-				
-				if(fan_status)
+
+				if (fan_status)
 				{
-					if(fan_pwm) //PWM
+					if (fan_pwm) //PWM
 					{
 						const uint8_t on_ticks = 1;
 						const uint8_t off_ticks = 1;
 						static bool pwm_status = false; //true - on false - off
 						static uint8_t pwm_ticks = 0;
 						pwm_ticks++;
-						if(pwm_status)
+						if (pwm_status)
 							HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-						if((pwm_status && pwm_ticks==on_ticks) || (!pwm_status && pwm_ticks==off_ticks))
+						if ((pwm_status && pwm_ticks == on_ticks) || (!pwm_status && pwm_ticks == off_ticks))
 						{
 							pwm_status = !pwm_status;
 							pwm_ticks = 0;
@@ -252,12 +273,12 @@ void RF_UNIT_ProcessSensors(void)
 	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / 16383.0f;
 	//float32_t alc = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / 16383.0f;
 	//sendToDebug_float32(forward,false); sendToDebug_float32(backward,false); sendToDebug_newline();
-	
+
 	//SWR
 	static float32_t TRX_VLT_forward = 0.0f;
 	static float32_t TRX_VLT_backward = 0.0f;
-	forward = forward / (1510.0f / (0.1f + 1510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
-	if (forward < 0.01f)							//меньше 10mV не измеряем
+	forward = forward / (1510.0f / (0.1f + 1510.0f)); // adjust the voltage based on the voltage divider (0.1 ohm and 510 ohm)
+	if (forward < 0.01f)							  // do not measure less than 10mV
 	{
 		TRX_VLT_forward = 0.0f;
 		TRX_VLT_backward = 0.0f;
@@ -265,14 +286,14 @@ void RF_UNIT_ProcessSensors(void)
 	}
 	else
 	{
-		forward += 0.21f;							  // падение на диоде
-		forward = forward * CALIBRATE.swr_trans_rate; // Коэффициент трансформации КСВ метра
+		forward += 0.21f;							  // drop on diode
+		forward = forward * CALIBRATE.swr_trans_rate; // Transformation ratio of the SWR meter
 
-		backward = backward / (1510.0f / (0.1f + 1510.0f)); //корректируем напряжение исходя из делителя напряжения (0.1ом и 510ом)
-		if (backward >= 0.01f)							  //меньше 10mV не измеряем
+		backward = backward / (1510.0f / (0.1f + 1510.0f)); // adjust the voltage based on the voltage divider (0.1 ohm and 510 ohm)
+		if (backward >= 0.01f)								// do not measure less than 10mV
 		{
-			backward += 0.21f;								// падение на диоде
-			backward = backward * CALIBRATE.swr_trans_rate; //Коэффициент трансформации КСВ метра
+			backward += 0.21f;								// drop on diode
+			backward = backward * CALIBRATE.swr_trans_rate; // Transformation ratio of the SWR meter
 		}
 		else
 			backward = 0.001f;
@@ -285,18 +306,18 @@ void RF_UNIT_ProcessSensors(void)
 			TRX_SWR = 10.0f;
 		if (TRX_SWR > 10.0f)
 			TRX_SWR = 10.0f;
-		
+
 		TRX_PWR_Forward = (TRX_VLT_forward * TRX_VLT_forward) / 50.0f;
 		if (TRX_PWR_Forward < 0.0f)
-				TRX_PWR_Forward = 0.0f;
+			TRX_PWR_Forward = 0.0f;
 		TRX_PWR_Backward = (TRX_VLT_backward * TRX_VLT_backward) / 50.0f;
 		if (TRX_PWR_Backward < 0.0f)
-				TRX_PWR_Backward = 0.0f;
+			TRX_PWR_Backward = 0.0f;
 	}
 
 	//THERMAL
 	float32_t therm_resistance = -2000.0f * rf_thermal / (-3.3f + rf_thermal);
-  uint_fast8_t point_left = 0;
+	uint_fast8_t point_left = 0;
 	uint_fast8_t point_right = SENS_TABLE_COUNT - 1;
 	for (uint_fast8_t i = 0; i < SENS_TABLE_COUNT; i++)
 		if (KTY81_120_sensTable[i][1] < therm_resistance)
@@ -310,6 +331,6 @@ void RF_UNIT_ProcessSensors(void)
 	float32_t part_point_right = KTY81_120_sensTable[point_right][1] - therm_resistance;
 	float32_t part_point = part_point_left / (part_point_left + part_point_right);
 	TRX_RF_Temperature = (int16_t)((power_left * (1.0f - part_point)) + (power_right * (part_point)));
-		
+
 	LCD_UpdateQuery.StatusInfoBar = true;
 }

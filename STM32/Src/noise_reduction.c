@@ -33,16 +33,16 @@ IRAM2 static NR_Instance NR_RX2 = {
 	.NR_GAIN = {0},
 	.LAST_IFFT_RESULT = {0},
 };
-static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; //коэффициенты для оконной функции
+static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; // coefficients for the window function
 
-//инициализация DNR
+// initialize DNR
 void InitNoiseReduction(void)
 {
 	for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
 		von_Hann[idx] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)));
 }
 
-//запуск DNR для блока данных
+// run DNR for the data block
 void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 {
 	NR_Instance *instance = &NR_RX1;

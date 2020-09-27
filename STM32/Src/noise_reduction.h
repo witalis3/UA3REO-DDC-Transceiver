@@ -7,12 +7,12 @@
 #include <stdbool.h>
 #include "audio_processor.h"
 
-#define NOISE_REDUCTION_BLOCK_SIZE 64						  //размер блока для обработки в DNR
-#define NOISE_REDUCTION_FFT_SIZE 256						  //размер FFT для обработки в DNR
-#define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len256 //инстанс FFT
+#define NOISE_REDUCTION_BLOCK_SIZE 64						 // block size for processing in DNR
+#define NOISE_REDUCTION_FFT_SIZE 256						 // FFT size for processing in DNR
+#define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len256 // FFT instance
 #define NOISE_REDUCTION_FFT_SIZE_HALF (NOISE_REDUCTION_FFT_SIZE / 2)
-#define NOISE_REDUCTION_ALPHA 0.98f //time averaging constant
-#define NOISE_REDUCTION_BETA 0.25f	//frequency averaging constant
+#define NOISE_REDUCTION_ALPHA 0.98f // time averaging constant
+#define NOISE_REDUCTION_BETA 0.25f	// frequency averaging constant
 
 typedef struct
 {
@@ -31,8 +31,8 @@ typedef struct
 	float32_t LAST_IFFT_RESULT[NOISE_REDUCTION_FFT_SIZE_HALF];
 } NR_Instance;
 
-//Public methods
-extern void InitNoiseReduction(void);										   //инициализация DNR
-extern void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id); //запуск DNR для блока данных
+// Public methods
+extern void InitNoiseReduction(void);										   // initialize DNR
+extern void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id); // run DNR for the data block
 
 #endif

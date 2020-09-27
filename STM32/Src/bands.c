@@ -4,7 +4,7 @@
 #include "settings.h"
 
 const BAND_MAP BANDS[BANDS_COUNT] =
-{
+	{
 		//2200METERS
 		{
 			.name = "2200m",
@@ -421,7 +421,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		//
 };
 
-//номер бенда из частоты
+// band number from frequency
 int8_t getBandFromFreq(uint32_t freq, bool nearest)
 {
 	for (int8_t b = 0; b < BANDS_COUNT; b++)
@@ -451,12 +451,12 @@ int8_t getBandFromFreq(uint32_t freq, bool nearest)
 	return -1;
 }
 
-//мода из частоты
+// mod from frequency
 uint_fast8_t getModeFromFreq(uint32_t freq)
 {
 	uint_fast8_t ret = 0;
 	ret = CurrentVFO()->Mode;
-	
+
 	for (uint_fast16_t b = 0; b < BANDS_COUNT; b++)
 	{
 		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq)
