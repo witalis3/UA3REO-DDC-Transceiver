@@ -541,11 +541,13 @@ void TIM6_DAC_IRQHandler(void)
     ms10_counter = 0;
 		
 		//Detect FPGA IQ phase error
-    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && TRX_RX_dBm > -105.0f && !TRX.ADC_SHDN)
+		static bool phase_restarted = false;
+    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !phase_restarted && !TRX.ADC_SHDN)
     {
       sendToDebug_str("[ERR] IQ phase error, restart | ");
 			sendToDebug_float32(TRX_IQ_phase_error, false);
       FPGA_NeedRestart = true;
+			phase_restarted = true;
     }
 
     if (!WIFI_IP_Gotted) //Get resolved IP
@@ -643,7 +645,9 @@ void TIM6_DAC_IRQHandler(void)
     WM8731_TX_mode(); //mute
     WM8731_CleanBuffer();
     sendToDebug_flush();
-    while (true); //-V776
+    while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET); //-V776
+		HAL_Delay(500);
+		SCB->AIRCR = 0x05FA0004; // software reset
   }
 	
   // restart USB if there is no activity (off) to find a new connection

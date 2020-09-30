@@ -93,6 +93,7 @@ void FPGA_restart(void) // restart FPGA modules
 	{
 		FPGA_writePacket(6); // RESET OFF
 		FPGA_syncAndClockRiseFall();
+		FPGA_NeedRestart = false;
 	}
 	FPGA_restart_state = !FPGA_restart_state;
 }
@@ -126,7 +127,6 @@ void FPGA_fpgadata_stuffclock(void)
 	else if (FPGA_NeedRestart)
 	{
 		FPGA_restart();
-		FPGA_NeedRestart = false;
 	}
 	else if (FPGA_NeedGetParams)
 	{
