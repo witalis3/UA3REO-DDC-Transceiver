@@ -3956,67 +3956,6 @@ refer to the applicable agreement for further details.
 	)
 )
 (symbol
-	(rect 2384 888 2648 1000)
-	(text "vcxo_controller" (rect 5 0 80 12)(font "Arial" ))
-	(text "VCXO_CONTROLLER" (rect 8 96 117 108)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "vcxo_clk_in" (rect 0 0 59 12)(font "Arial" ))
-		(text "vcxo_clk_in" (rect 21 27 80 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "tcxo_clk_in" (rect 0 0 55 12)(font "Arial" ))
-		(text "tcxo_clk_in" (rect 21 43 76 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48))
-	)
-	(port
-		(pt 0 64)
-		(input)
-		(text "VCXO_correction[7..0]" (rect 0 0 109 12)(font "Arial" ))
-		(text "VCXO_correction[7..0]" (rect 21 59 130 71)(font "Arial" ))
-		(line (pt 0 64)(pt 16 64)(line_width 3))
-	)
-	(port
-		(pt 264 32)
-		(output)
-		(text "freq_error[23..0]" (rect 0 0 80 12)(font "Arial" ))
-		(text "freq_error[23..0]" (rect 176 27 256 39)(font "Arial" ))
-		(line (pt 264 32)(pt 248 32)(line_width 3))
-	)
-	(port
-		(pt 264 48)
-		(output)
-		(text "pump" (rect 0 0 27 12)(font "Arial" ))
-		(text "pump" (rect 221 43 248 55)(font "Arial" ))
-		(line (pt 264 48)(pt 248 48))
-	)
-	(port
-		(pt 264 64)
-		(output)
-		(text "PWM[23..0]" (rect 0 0 57 12)(font "Arial" ))
-		(text "PWM[23..0]" (rect 195 59 252 71)(font "Arial" ))
-		(line (pt 264 64)(pt 248 64)(line_width 3))
-	)
-	(parameter
-		"VCXO_freq_khz"
-		"122880"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"TCXO_freq_khz"
-		"49152"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(drawing
-		(rectangle (rect 16 16 248 96))
-	)
-	(annotation_block (parameter)(rect 2408 824 2624 888))
-)
-(symbol
 	(rect 8 -272 184 -168)
 	(text "DEBUG" (rect 66 -1 120 15)(font "Arial" (font_size 10)))
 	(text "DBG_ADC" (rect 8 88 56 105)(font "Intel Clear" ))
@@ -4554,21 +4493,21 @@ refer to the applicable agreement for further details.
 		(pt 384 72)
 		(output)
 		(text "ast_source_data[63..0]" (rect 0 0 132 14)(font "Arial" (font_size 8)))
-		(text "ast_source_data[63..0]" (rect 268 61 379 75)(font "Arial" (font_size 8)))
+		(text "ast_source_data[63..0]" (rect 268 61 400 75)(font "Arial" (font_size 8)))
 		(line (pt 384 72)(pt 224 72)(line_width 3))
 	)
 	(port
 		(pt 384 88)
 		(output)
 		(text "ast_source_valid" (rect 0 0 97 14)(font "Arial" (font_size 8)))
-		(text "ast_source_valid" (rect 297 77 379 91)(font "Arial" (font_size 8)))
+		(text "ast_source_valid" (rect 297 77 394 91)(font "Arial" (font_size 8)))
 		(line (pt 384 88)(pt 224 88))
 	)
 	(port
 		(pt 384 104)
 		(output)
 		(text "ast_source_error[1..0]" (rect 0 0 128 14)(font "Arial" (font_size 8)))
-		(text "ast_source_error[1..0]" (rect 273 93 381 107)(font "Arial" (font_size 8)))
+		(text "ast_source_error[1..0]" (rect 273 93 401 107)(font "Arial" (font_size 8)))
 		(line (pt 384 104)(pt 224 104)(line_width 3))
 	)
 	(drawing
@@ -4646,21 +4585,21 @@ refer to the applicable agreement for further details.
 		(pt 384 72)
 		(output)
 		(text "ast_source_data[63..0]" (rect 0 0 132 14)(font "Arial" (font_size 8)))
-		(text "ast_source_data[63..0]" (rect 268 61 379 75)(font "Arial" (font_size 8)))
+		(text "ast_source_data[63..0]" (rect 268 61 400 75)(font "Arial" (font_size 8)))
 		(line (pt 384 72)(pt 224 72)(line_width 3))
 	)
 	(port
 		(pt 384 88)
 		(output)
 		(text "ast_source_valid" (rect 0 0 97 14)(font "Arial" (font_size 8)))
-		(text "ast_source_valid" (rect 297 77 379 91)(font "Arial" (font_size 8)))
+		(text "ast_source_valid" (rect 297 77 394 91)(font "Arial" (font_size 8)))
 		(line (pt 384 88)(pt 224 88))
 	)
 	(port
 		(pt 384 104)
 		(output)
 		(text "ast_source_error[1..0]" (rect 0 0 128 14)(font "Arial" (font_size 8)))
-		(text "ast_source_error[1..0]" (rect 273 93 381 107)(font "Arial" (font_size 8)))
+		(text "ast_source_error[1..0]" (rect 273 93 401 107)(font "Arial" (font_size 8)))
 		(line (pt 384 104)(pt 224 104)(line_width 3))
 	)
 	(drawing
@@ -4694,6 +4633,67 @@ refer to the applicable agreement for further details.
 		(line (pt 0 216)(pt 384 216))
 		(line (pt 0 0)(pt 0 216))
 	)
+)
+(symbol
+	(rect 2384 888 2648 1000)
+	(text "vcxo_controller" (rect 5 0 80 12)(font "Arial" ))
+	(text "VCXO_CONTROLLER" (rect 8 96 117 108)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "vcxo_clk_in" (rect 0 0 59 12)(font "Arial" ))
+		(text "vcxo_clk_in" (rect 21 27 80 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "tcxo_clk_in" (rect 0 0 55 12)(font "Arial" ))
+		(text "tcxo_clk_in" (rect 21 43 76 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "VCXO_correction[7..0]" (rect 0 0 109 12)(font "Arial" ))
+		(text "VCXO_correction[7..0]" (rect 21 59 130 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64)(line_width 3))
+	)
+	(port
+		(pt 264 32)
+		(output)
+		(text "freq_error[23..0]" (rect 0 0 80 12)(font "Arial" ))
+		(text "freq_error[23..0]" (rect 176 27 256 39)(font "Arial" ))
+		(line (pt 264 32)(pt 248 32)(line_width 3))
+	)
+	(port
+		(pt 264 48)
+		(output)
+		(text "pump" (rect 0 0 27 12)(font "Arial" ))
+		(text "pump" (rect 221 43 248 55)(font "Arial" ))
+		(line (pt 264 48)(pt 248 48))
+	)
+	(port
+		(pt 264 64)
+		(output)
+		(text "PWM[23..0]" (rect 0 0 57 12)(font "Arial" ))
+		(text "PWM[23..0]" (rect 195 59 252 71)(font "Arial" ))
+		(line (pt 264 64)(pt 248 64)(line_width 3))
+	)
+	(parameter
+		"VCXO_freq_khz"
+		"122880"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(parameter
+		"TCXO_freq_khz"
+		"12288"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 248 96))
+	)
+	(annotation_block (parameter)(rect 2408 824 2618 881))
 )
 (connector
 	(pt 528 32)
