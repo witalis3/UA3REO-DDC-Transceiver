@@ -386,6 +386,10 @@ void processTxAudio(void)
 	if (Processor_selected_RFpower_amplitude < 0.0f)
 		Processor_selected_RFpower_amplitude = 0.0f;
 
+	// zero beats
+	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || (TRX_Tune && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)))
+		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f;
+	
 	if (TRX.InputType_USB) //USB AUDIO
 	{
 		uint32_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET; //buffer 8bit, data 24 bit

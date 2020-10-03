@@ -69,7 +69,7 @@ endmodule
 // Retrieval info: 	<generic name="readWriteMode" value="read_write" />
 // Retrieval info: 	<generic name="backPressure" value="false" />
 // Retrieval info: 	<generic name="deviceFamily" value="Cyclone IV E" />
-// Retrieval info: 	<generic name="speedGrade" value="medium" />
+// Retrieval info: 	<generic name="speedGrade" value="slow" />
 // Retrieval info: 	<generic name="delayRAMBlockThreshold" value="20" />
 // Retrieval info: 	<generic name="dualMemDistRAMThreshold" value="1280" />
 // Retrieval info: 	<generic name="mRAMThreshold" value="1000000" />
