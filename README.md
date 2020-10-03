@@ -15,13 +15,13 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Transmission frequencies: 0 MHz - 172.8 MHz
 * TX power: 5W +
 * Modulation types (TX / RX): CW, LSB, USB, AM, FM, WFM, DIGI
-* Preamplifier at 20 + dB
+* LNA, Preamplifier
 * Adjustable attenuator 0-31dB
 * Two antenna inputs
 * Band pass filters
 * ADC dynamic range 100dB
 * Supply voltage: 13.8V (overvoltage and polarity reversal protection)
-* Consumption current when receiving: ~ 0.7A
+* Consumption current when receiving: ~ 0.65A
 * Current consumption during transmission: ~ 1.7A +
 
 ## Transceiver Features

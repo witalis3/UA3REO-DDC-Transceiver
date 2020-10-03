@@ -10,12 +10,11 @@
 #define SETT_VERSION 200				// Settings config version
 #define CALIB_VERSION 200				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
-#define DAC_CLOCK 86400000				// DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		// Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ 172800000		// Maximum transmission frequency (half of the DAC clock signal)
 #define TRX_SAMPLERATE 48000			// audio stream sampling rate during processing
 #define IQ_SAMPLERATE 96000				// sampling rate of the audio stream from FPGA
-#define MAX_TX_AMPLITUDE 1.0f			// Maximum swing when transmitting to DAC
+#define MAX_TX_AMPLITUDE 0.75f			// Maximum amplitude when transmitting to FPGA
 #define AGC_MAX_GAIN 50.0f				// Maximum gain in AGC, dB
 #define AGC_NOISE_GATE -90.0f			// below this level - do not strengthen
 #define TUNE_POWER 100					// % of the power selected in the settings when starting TUNE (100 - full)

@@ -426,7 +426,7 @@ static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 {
 	TRX.ATT_DB += TRX.ATT_STEP;
 	if (TRX.ATT_DB > 31.0f)
-		TRX.ATT_DB = 0.0f;
+		TRX.ATT_DB = TRX.ATT_STEP;
 
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)

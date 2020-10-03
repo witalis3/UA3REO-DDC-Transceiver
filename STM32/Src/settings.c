@@ -237,7 +237,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.CIC_GAINER_val = 83;															// Offset from CIC output
 		CALIBRATE.CICFIR_GAINER_val = 54;														// Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 56;														// Offset from the TX-CIC output of the compensator
-		CALIBRATE.DAC_GAINER_val = 31;															// DAC offset offset
+		CALIBRATE.DAC_GAINER_val = 30;															// DAC offset offset
 																								// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power[0] = 100;														// 0 mhz
 		CALIBRATE.rf_out_power[1] = 51;															// 1 mhz
@@ -291,7 +291,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.BPF_6_START = 21000 * 1000;													//15,12,10,6m U14-RF4
 		CALIBRATE.BPF_6_END = 64000 * 1000;														//15,12,10,6m
 		CALIBRATE.BPF_HPF = 60000 * 1000;														//HPF U14-RF1
-		CALIBRATE.swr_trans_rate = 10.0f;														//SWR Transormator rate
+		CALIBRATE.swr_trans_rate = 11.0f;														//SWR Transormator rate
 		CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f)); //SWR Transormator rate UINT shadow
 		CALIBRATE.VCXO_correction = 0;															//VCXO Frequency offset
 

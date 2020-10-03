@@ -47,7 +47,8 @@ volatile bool TRX_DAC_DIV0 = false;
 volatile bool TRX_DAC_DIV1 = false;
 volatile bool TRX_DAC_HP1 = false;
 volatile bool TRX_DAC_HP2 = false;
-volatile bool TRX_DAC_X4 = true;
+volatile bool TRX_DAC_X4 = false;
+volatile bool TRX_DAC_FreqRate = false;
 volatile bool TRX_DCDC_Freq = false;
 static uint_fast8_t autogain_wait_reaction = 0;	  // timer for waiting for a reaction from changing the ATT / PRE modes
 static uint_fast8_t autogain_stage = 0;			  // stage of working out the amplification act-corrector
@@ -535,7 +536,7 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 		KEYER_symbol_start_time = curTime;
 		KEYER_symbol_status = !KEYER_symbol_status;
 	}
-	return power;
+	return 0.0f;
 }
 
 float32_t TRX_getSTM32H743Temperature(void)

@@ -251,9 +251,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				}
 			}
 			//U3-QA ANT1_TX_OUT
-			if (registerNumber == 23 && !TRX.ANT && !TRX_on_TX()) //ANT1
+			if (registerNumber == 23 && !TRX.ANT && TRX_on_TX()) //ANT1
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			if (registerNumber == 23 && TRX.ANT && TRX_on_TX()) //ANT2
+			if (registerNumber == 23 && TRX.ANT && !TRX_on_TX()) //ANT2
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 		}
 		MINI_DELAY

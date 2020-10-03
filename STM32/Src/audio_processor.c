@@ -386,10 +386,6 @@ void processTxAudio(void)
 	if (Processor_selected_RFpower_amplitude < 0.0f)
 		Processor_selected_RFpower_amplitude = 0.0f;
 
-	// zero beat correction
-	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
-		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f;
-
 	if (TRX.InputType_USB) //USB AUDIO
 	{
 		uint32_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET; //buffer 8bit, data 24 bit
@@ -411,7 +407,7 @@ void processTxAudio(void)
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			FPGA_Audio_Buffer_TX_I_tmp[i] = (Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER);
-			FPGA_Audio_Buffer_TX_Q_tmp[i] = (Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER);
+			FPGA_Audio_Buffer_TX_Q_tmp[i] = 0.0f;
 		}
 	}
 
@@ -484,8 +480,8 @@ void processTxAudio(void)
 			float32_t cw_signal = TRX_GenerateCWSignal(Processor_selected_RFpower_amplitude);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				FPGA_Audio_Buffer_TX_Q_tmp[i] = cw_signal;
 				FPGA_Audio_Buffer_TX_I_tmp[i] = cw_signal;
+				FPGA_Audio_Buffer_TX_Q_tmp[i] = 0.0f;
 			}
 			break;
 		case TRX_MODE_USB:
