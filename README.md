@@ -14,6 +14,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Receiving frequencies: 0 MHz - 750 MHz
 * Transmission frequencies: 0 MHz - 172.8 MHz
 * TX power: 5W +
+* Two antenna inputs
 * Modulation types (TX / RX): CW, LSB, USB, AM, FM, WFM, DIGI
 * LNA, Preamplifier
 * Adjustable attenuator 0-31dB
