@@ -235,52 +235,46 @@ uint32_t getTXPhraseFromFrequency(int32_t freq) // calculate the frequency from 
 	bool inverted = false;
 	int32_t _freq = freq;
 
-	if(freq >= 0 && freq <= 81696000)
+	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
+	if (nyquist == 0) // <43.mhz (good 0mhz - 34.56mhz) 0-0.4 dac freq
 	{
-		TRX_DAC_X4 = false; //x2
 		TRX_DAC_HP1 = false; //low-pass
 		TRX_DAC_HP2 = false; //low-pass
-		TRX_DAC_FreqRate = false; //199.68mhz
 	}
-	if(freq > 81696000 &&	freq <= 115584000)
+	//fall in 43.2mhz
+	if (nyquist == 1) // 43.2-86.4 mhz (good 69.12mhz - 51.84) dac frec-(0.2-0.4 dac freq)
 	{
-		TRX_DAC_X4 = false; //x2
 		TRX_DAC_HP1 = true;	 //high-pass
 		TRX_DAC_HP2 = false; //low-pass
-		TRX_DAC_FreqRate = true; //139.2mhz
 	}
-	if(freq > 115584000 &&	freq <= 163392000)
+	//fall in 86.4mhz
+	if (nyquist == 2) //86.4-129.6 mhz (good 103.68mhz -	120.96mhz) dac freq+(0.2-0.4 dac freq)
 	{
-		TRX_DAC_X4 = false; //x2
-		TRX_DAC_HP1 = true;	 //high-pass
-		TRX_DAC_HP2 = false; //low-pass
-		TRX_DAC_FreqRate = false; //199.68mhz
+		TRX_DAC_HP1 = true; //high-pass
+		TRX_DAC_HP2 = true; //high-pass
 	}
-  if(freq > 163392000 &&	freq <= 200000000)
+	//fall in 129.6mhz
+	if (nyquist == 3) //129.6-172.8 mhz (good 172.8mhz - 138.24mhz) 2xdac frec-(0.2-0.4 dac freq)
 	{
-		TRX_DAC_X4 = false; //x2
-		TRX_DAC_HP1 = true;	 //high-pass
+		TRX_DAC_HP1 = false; //low-pass
 		TRX_DAC_HP2 = true;	 //high-pass
-		TRX_DAC_FreqRate = true; //139.2mhz
 	}
-	
-	const int32_t DAC_NCO_CLOCK = 199680000;
-	
-	if (_freq > DAC_NCO_CLOCK / 2) //Go Nyquist
+
+	if (_freq > DAC_CLOCK / 2) //Go Nyquist
 	{
-		while (_freq > (DAC_NCO_CLOCK / 2))
+		while (_freq > (DAC_CLOCK / 2))
 		{
-			_freq -= (DAC_NCO_CLOCK / 2);
+			_freq -= (DAC_CLOCK / 2);
 			inverted = !inverted;
 		}
 		if (inverted)
 		{
-			_freq = (DAC_NCO_CLOCK / 2) - _freq;
+			_freq = (DAC_CLOCK / 2) - _freq;
 		}
 	}
 	TRX_TX_IQ_swap = inverted;
 
-	double res = round(((double)_freq / DAC_NCO_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
+	double res = round(((double)_freq / DAC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
 	return (uint32_t)res;
 }
 

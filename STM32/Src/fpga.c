@@ -275,7 +275,6 @@ static inline void FPGA_fpgadata_sendparam(void)
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX_DAC_HP2);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX_DAC_X4);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX_DCDC_Freq);
-	bitWrite(FPGA_fpgadata_out_tmp8, 6, TRX_DAC_FreqRate);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
 	FPGA_clockFall();
