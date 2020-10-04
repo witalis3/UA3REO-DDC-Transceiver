@@ -347,30 +347,13 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 	if (freq > MAX_TX_FREQ_HZ)
 		return 0.0f;
 
-	return MAX_TX_AMPLITUDE; //TEMPORARY
+	uint8_t nyquist = freq / (DAC_CLOCK / 2);
+	if (nyquist == 0)
+		return (float32_t)CALIBRATE.rf_out_power_hf / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+	if (nyquist == 1)
+		return (float32_t)CALIBRATE.rf_out_power_vhf / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 
-	const uint_fast8_t calibration_points = 31;
-	uint_fast8_t mhz_left = 0;
-	uint_fast8_t mhz_right = calibration_points;
-	for (uint_fast8_t i = 0; i <= calibration_points; i++)
-		if ((i * 1000000) < freq)
-			mhz_left = i;
-	for (uint_fast8_t i = calibration_points; i > 0; i--)
-		if ((i * 1000000) >= freq)
-			mhz_right = i;
-
-	float32_t power_left = (float32_t)CALIBRATE.rf_out_power[mhz_left] / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	float32_t power_right = (float32_t)CALIBRATE.rf_out_power[mhz_right] / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	float32_t freq_point = (freq - (mhz_left * 1000000.0f)) / 1000000.0f;
-	float32_t ret = (power_left * (1.0f - freq_point)) + (power_right * (freq_point));
-
-	//sendToDebug_float32(power_left, false);
-	//sendToDebug_float32(power_right, false);
-	//sendToDebug_float32(freq_point, false);
-	//sendToDebug_float32(ret, false);
-	//sendToDebug_newline();
-
-	return ret;
+	return 0.0f;
 }
 
 float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq)

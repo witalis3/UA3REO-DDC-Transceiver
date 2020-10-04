@@ -97,38 +97,8 @@ static void SYSMENU_HANDL_CALIB_CIC_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_0(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_1(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_2(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_3(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_4(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_5(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_6(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_7(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_8(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_9(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_10(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_11(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_12(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_13(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_14(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_15(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_16(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_17(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_18(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_19(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_20(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_21(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_22(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_23(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_24(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_25(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_26(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_27(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_28(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_29(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_30(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_31(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction);
@@ -290,38 +260,8 @@ static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_HANDL_CALIB_CICCOMP_SHIFT},
 		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
 		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
-		{"RF GAIN 0", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[0], SYSMENU_HANDL_CALIB_RF_GAIN_0},	//-V641
-		{"RF GAIN 1", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[1], SYSMENU_HANDL_CALIB_RF_GAIN_1},	//-V641
-		{"RF GAIN 2", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[2], SYSMENU_HANDL_CALIB_RF_GAIN_2},	//-V641
-		{"RF GAIN 3", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[3], SYSMENU_HANDL_CALIB_RF_GAIN_3},	//-V641
-		{"RF GAIN 4", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[4], SYSMENU_HANDL_CALIB_RF_GAIN_4},	//-V641
-		{"RF GAIN 5", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[5], SYSMENU_HANDL_CALIB_RF_GAIN_5},	//-V641
-		{"RF GAIN 6", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[6], SYSMENU_HANDL_CALIB_RF_GAIN_6},	//-V641
-		{"RF GAIN 7", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[7], SYSMENU_HANDL_CALIB_RF_GAIN_7},	//-V641
-		{"RF GAIN 8", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[8], SYSMENU_HANDL_CALIB_RF_GAIN_8},	//-V641
-		{"RF GAIN 9", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[9], SYSMENU_HANDL_CALIB_RF_GAIN_9},	//-V641
-		{"RF GAIN 10", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[10], SYSMENU_HANDL_CALIB_RF_GAIN_10}, //-V641
-		{"RF GAIN 11", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[11], SYSMENU_HANDL_CALIB_RF_GAIN_11}, //-V641
-		{"RF GAIN 12", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[12], SYSMENU_HANDL_CALIB_RF_GAIN_12}, //-V641
-		{"RF GAIN 13", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[13], SYSMENU_HANDL_CALIB_RF_GAIN_13}, //-V641
-		{"RF GAIN 14", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[14], SYSMENU_HANDL_CALIB_RF_GAIN_14}, //-V641
-		{"RF GAIN 15", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[15], SYSMENU_HANDL_CALIB_RF_GAIN_15}, //-V641
-		{"RF GAIN 16", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[16], SYSMENU_HANDL_CALIB_RF_GAIN_16}, //-V641
-		{"RF GAIN 17", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[17], SYSMENU_HANDL_CALIB_RF_GAIN_17}, //-V641
-		{"RF GAIN 18", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[18], SYSMENU_HANDL_CALIB_RF_GAIN_18}, //-V641
-		{"RF GAIN 19", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[19], SYSMENU_HANDL_CALIB_RF_GAIN_19}, //-V641
-		{"RF GAIN 20", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[20], SYSMENU_HANDL_CALIB_RF_GAIN_20}, //-V641
-		{"RF GAIN 21", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[21], SYSMENU_HANDL_CALIB_RF_GAIN_21}, //-V641
-		{"RF GAIN 22", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[22], SYSMENU_HANDL_CALIB_RF_GAIN_22}, //-V641
-		{"RF GAIN 23", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[23], SYSMENU_HANDL_CALIB_RF_GAIN_23}, //-V641
-		{"RF GAIN 24", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[24], SYSMENU_HANDL_CALIB_RF_GAIN_24}, //-V641
-		{"RF GAIN 25", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[25], SYSMENU_HANDL_CALIB_RF_GAIN_25}, //-V641
-		{"RF GAIN 26", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[26], SYSMENU_HANDL_CALIB_RF_GAIN_26}, //-V641
-		{"RF GAIN 27", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[27], SYSMENU_HANDL_CALIB_RF_GAIN_27}, //-V641
-		{"RF GAIN 28", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[28], SYSMENU_HANDL_CALIB_RF_GAIN_28}, //-V641
-		{"RF GAIN 29", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[29], SYSMENU_HANDL_CALIB_RF_GAIN_29}, //-V641
-		{"RF GAIN 30", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[30], SYSMENU_HANDL_CALIB_RF_GAIN_30}, //-V641
-		{"RF GAIN 31+", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power[31], SYSMENU_HANDL_CALIB_RF_GAIN_31},
+		{"RF GAIN HF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_hf, SYSMENU_HANDL_CALIB_RF_GAIN_HF},	//-V641
+		{"RF GAIN VHF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_vhf, SYSMENU_HANDL_CALIB_RF_GAIN_VHF},	//-V641
 		{"S METER", SYSMENU_INT16, (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_HANDL_CALIB_S_METER},
 		{"ADC OFFSET", SYSMENU_INT16, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
 		{"LPF END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
@@ -1725,148 +1665,27 @@ static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction)
 		CALIBRATE.DAC_GAINER_val = 32;
 }
 
-static void SYSMENU_HANDL_CALIB_RF_GAIN(uint8_t id, int8_t direction)
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF(int8_t direction)
 {
-	if (CALIBRATE.rf_out_power[id] > 0)
-		CALIBRATE.rf_out_power[id] += direction;
-	if (CALIBRATE.rf_out_power[id] == 0 && direction > 0)
-		CALIBRATE.rf_out_power[id] += direction;
-	if (CALIBRATE.rf_out_power[id] > 100)
-		CALIBRATE.rf_out_power[id] = 100;
-
-	if (id == 0)
-		TRX_setFrequency(500000, CurrentVFO());
-	else
-		TRX_setFrequency(id * 1000000, CurrentVFO());
+	if (CALIBRATE.rf_out_power_hf > 0)
+		CALIBRATE.rf_out_power_hf += direction;
+	if (CALIBRATE.rf_out_power_hf == 0 && direction > 0)
+		CALIBRATE.rf_out_power_hf += direction;
+	if (CALIBRATE.rf_out_power_hf > 100)
+		CALIBRATE.rf_out_power_hf = 100;
+	
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
-
-static void SYSMENU_HANDL_CALIB_RF_GAIN_0(int8_t direction)
+static void SYSMENU_HANDL_CALIB_RF_GAIN_VHF(int8_t direction)
 {
-	SYSMENU_HANDL_CALIB_RF_GAIN(0, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_1(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(1, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_2(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(2, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_3(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(3, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_4(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(4, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_5(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(5, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_6(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(6, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_7(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(7, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_8(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(8, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_9(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(9, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_10(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(10, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_11(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(11, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_12(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(12, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_13(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(13, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_14(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(14, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_15(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(15, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_16(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(16, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_17(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(17, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_18(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(18, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_19(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(19, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_20(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(20, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_21(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(21, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_22(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(22, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_23(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(23, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_24(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(24, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_25(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(25, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_26(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(26, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_27(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(27, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_28(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(28, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_29(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(29, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_30(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(30, direction);
-}
-static void SYSMENU_HANDL_CALIB_RF_GAIN_31(int8_t direction)
-{
-	SYSMENU_HANDL_CALIB_RF_GAIN(31, direction);
+	if (CALIBRATE.rf_out_power_vhf > 0)
+		CALIBRATE.rf_out_power_vhf += direction;
+	if (CALIBRATE.rf_out_power_vhf == 0 && direction > 0)
+		CALIBRATE.rf_out_power_vhf += direction;
+	if (CALIBRATE.rf_out_power_vhf > 100)
+		CALIBRATE.rf_out_power_vhf = 100;
+	
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction)

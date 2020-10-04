@@ -15,7 +15,7 @@
 #define MAX_TX_FREQ_HZ DAC_CLOCK		// Maximum transmission frequency (half of the DAC clock signal)
 #define TRX_SAMPLERATE 48000			// audio stream sampling rate during processing
 #define IQ_SAMPLERATE 96000				// sampling rate of the audio stream from FPGA
-#define MAX_TX_AMPLITUDE 1.0f			// Maximum amplitude when transmitting to FPGA
+#define MAX_TX_AMPLITUDE 0.8f			// Maximum amplitude when transmitting to FPGA
 #define AGC_MAX_GAIN 50.0f				// Maximum gain in AGC, dB
 #define AGC_NOISE_GATE -90.0f			// below this level - do not strengthen
 #define TUNE_POWER 100					// % of the power selected in the settings when starting TUNE (100 - full)
@@ -212,7 +212,8 @@ extern struct TRX_CALIBRATE
 	uint8_t CICFIR_GAINER_val;
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;
-	uint8_t rf_out_power[32];
+	uint8_t rf_out_power_hf;
+	uint8_t rf_out_power_vhf;
 	int16_t smeter_calibration;
 	int16_t adc_offset;
 	uint32_t LPF_END;
