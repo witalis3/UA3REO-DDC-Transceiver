@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "2.0.0"; //1.2.3-yymmdd.hhmmss (concatinate)
+char version_string[19] = "2.0.0"; //1.2.3-yymmdd.hhmm (concatinate)
 
 //W25Q16
 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -58,26 +58,26 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 
 void InitSettings(void)
 {
-	/*static bool already_inited = false;
+	static bool already_inited = false;
 	if(already_inited) return;
+	already_inited = true;
 	
-	//concat build date to version -yymmdd.hhmmss
+	//concat build date to version -yymmdd.hhmm
+	uint8_t cur_len = (uint8_t)strlen(version_string);
 	strcat(version_string, "-");
-	strcat(version_string, &BUILD_YEAR_CH2);
-	strcat(version_string, &BUILD_YEAR_CH3);
-	strcat(version_string, BUILD_MONTH_CH0);
-	strcat(version_string, BUILD_MONTH_CH1);
-	strcat(version_string, &BUILD_DAY_CH0);
-	strcat(version_string, &BUILD_DAY_CH1);
-	strcat(version_string, ".");
-	strcat(version_string, &BUILD_HOUR_CH0);
-	strcat(version_string, &BUILD_HOUR_CH1);
-	strcat(version_string, &BUILD_MIN_CH0);
-	strcat(version_string, &BUILD_MIN_CH1);
-	strcat(version_string, &BUILD_SEC_CH0);
-	strcat(version_string, &BUILD_SEC_CH1);
-	
-	already_inited = true;*/
+	version_string[++cur_len] = BUILD_YEAR_CH2;
+	version_string[++cur_len] = BUILD_YEAR_CH3;
+	version_string[++cur_len] = BUILD_MONTH_CH0;
+	version_string[++cur_len] = BUILD_MONTH_CH1;
+	version_string[++cur_len] = BUILD_DAY_CH0;
+	version_string[++cur_len] = BUILD_DAY_CH1;
+	version_string[++cur_len] = '.';
+	version_string[++cur_len] = BUILD_HOUR_CH0;
+	version_string[++cur_len] = BUILD_HOUR_CH1;
+	version_string[++cur_len] = BUILD_MIN_CH0;
+	version_string[++cur_len] = BUILD_MIN_CH1;
+	version_string[++cur_len] = '\0';
+	sendToDebug_strln(version_string);
 }
 
 void LoadSettings(bool clear)

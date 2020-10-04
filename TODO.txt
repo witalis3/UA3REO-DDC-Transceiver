@@ -4,7 +4,6 @@ RTTY декодер
 BPSK декодер
 WSPR маячок
 Работа с SD
-Вывод версии прошивки
 WIFI Menu
 SWR Graph
 Новый s-meter

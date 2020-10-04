@@ -190,7 +190,7 @@ int main(void)
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   HAL_EnableCompensationCell();
   sendToDebug_str("\r\n----------------------------------\r\n");
-  sendToDebug_strln("UA3REO Transceiver Initialization...");
+  sendToDebug_strln("Wolf Transceiver Initialization...");
   InitSettings();
   sendToDebug_strln("[OK] USB init");
   USBD_Restart();
@@ -200,7 +200,10 @@ int main(void)
   LCD_busy = true;
   LCD_Init();
   if (SHOW_LOGO)
+	{
     LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo);
+		LCDDriver_printText(version_string, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, COLOR_WHITE, 1);
+	}
   sendToDebug_strln("[OK] Real Time Clock init");
   HAL_RTC_Init(&hrtc);
   sendToDebug_strln("[OK] Profiler init");
@@ -235,7 +238,7 @@ int main(void)
   initAudioProcessor();
   HAL_TIM_Base_Start_IT(&htim5);
   if (SHOW_LOGO)
-    HAL_Delay(1000); //logo wait
+    HAL_Delay(1500); //logo wait
   LCD_busy = false;
   LCD_redraw();
   HAL_TIM_Base_Start_IT(&htim6);
