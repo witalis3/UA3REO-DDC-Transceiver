@@ -1,5 +1,5 @@
-# UA3REO-DDC-Transceiver
-DDC SDR Tranceiver project https://ua3reo.ru/
+# Transceiver "Wolf"
+DDC-DUC SDR Tranceiver project https://ua3reo.ru/tag/transiver-ua3reo/
 
 ## Principle of operation
 
