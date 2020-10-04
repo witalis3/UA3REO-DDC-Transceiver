@@ -349,7 +349,16 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 
 	uint8_t nyquist = freq / (DAC_CLOCK / 2);
 	if (nyquist == 0)
-		return (float32_t)CALIBRATE.rf_out_power_hf / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+	{
+		if(freq < 2000000)
+			return (float32_t)CALIBRATE.rf_out_power_lf / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+		if(freq < 5000000)
+			return (float32_t)CALIBRATE.rf_out_power_hf_low / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+		if(freq < 30000000)
+			return (float32_t)CALIBRATE.rf_out_power_hf / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+		
+		return (float32_t)CALIBRATE.rf_out_power_hf_high / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+	}
 	if (nyquist == 1)
 		return (float32_t)CALIBRATE.rf_out_power_vhf / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 

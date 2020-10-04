@@ -212,7 +212,10 @@ extern struct TRX_CALIBRATE
 	uint8_t CICFIR_GAINER_val;
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;
+	uint8_t rf_out_power_lf;
+	uint8_t rf_out_power_hf_low;
 	uint8_t rf_out_power_hf;
+	uint8_t rf_out_power_hf_high;
 	uint8_t rf_out_power_vhf;
 	int16_t smeter_calibration;
 	int16_t adc_offset;

@@ -12,8 +12,8 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 ## Specifications
 
 * Receiving frequencies: 0 MHz - 750 MHz
-* Transmission frequencies: 0 MHz - 172.8 MHz
-* TX power: 5W +
+* Transmission frequencies: 0 MHz - 160 MHz
+* TX power: 6-7W (HF), 1W (VHF)
 * Two antenna inputs
 * Modulation types (TX / RX): CW, LSB, USB, AM, FM, WFM, DIGI
 * LNA, Preamplifier

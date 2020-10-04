@@ -97,7 +97,10 @@ static void SYSMENU_HANDL_CALIB_CIC_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_LF(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_HF(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction);
@@ -260,7 +263,10 @@ static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_HANDL_CALIB_CICCOMP_SHIFT},
 		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
 		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
+		{"RF GAIN LF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_lf, SYSMENU_HANDL_CALIB_RF_GAIN_LF},	//-V641
+		{"RF GAIN HF LOW", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_hf_low, SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW},	//-V641
 		{"RF GAIN HF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_hf, SYSMENU_HANDL_CALIB_RF_GAIN_HF},	//-V641
+		{"RF GAIN HF HIGH", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_hf_high, SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH},	//-V641
 		{"RF GAIN VHF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_vhf, SYSMENU_HANDL_CALIB_RF_GAIN_VHF},	//-V641
 		{"S METER", SYSMENU_INT16, (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_HANDL_CALIB_S_METER},
 		{"ADC OFFSET", SYSMENU_INT16, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
@@ -1665,6 +1671,30 @@ static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction)
 		CALIBRATE.DAC_GAINER_val = 32;
 }
 
+static void SYSMENU_HANDL_CALIB_RF_GAIN_LF(int8_t direction)
+{
+	if (CALIBRATE.rf_out_power_lf > 0)
+		CALIBRATE.rf_out_power_lf += direction;
+	if (CALIBRATE.rf_out_power_lf == 0 && direction > 0)
+		CALIBRATE.rf_out_power_lf += direction;
+	if (CALIBRATE.rf_out_power_lf > 100)
+		CALIBRATE.rf_out_power_lf = 100;
+	
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+}
+
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW(int8_t direction)
+{
+	if (CALIBRATE.rf_out_power_hf_low > 0)
+		CALIBRATE.rf_out_power_hf_low += direction;
+	if (CALIBRATE.rf_out_power_hf_low == 0 && direction > 0)
+		CALIBRATE.rf_out_power_hf_low += direction;
+	if (CALIBRATE.rf_out_power_hf_low > 100)
+		CALIBRATE.rf_out_power_hf_low = 100;
+	
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+}
+
 static void SYSMENU_HANDL_CALIB_RF_GAIN_HF(int8_t direction)
 {
 	if (CALIBRATE.rf_out_power_hf > 0)
@@ -1676,6 +1706,19 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_HF(int8_t direction)
 	
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
+
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH(int8_t direction)
+{
+	if (CALIBRATE.rf_out_power_hf_high > 0)
+		CALIBRATE.rf_out_power_hf_high += direction;
+	if (CALIBRATE.rf_out_power_hf_high == 0 && direction > 0)
+		CALIBRATE.rf_out_power_hf_high += direction;
+	if (CALIBRATE.rf_out_power_hf_high > 100)
+		CALIBRATE.rf_out_power_hf_high = 100;
+	
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+}
+
 static void SYSMENU_HANDL_CALIB_RF_GAIN_VHF(int8_t direction)
 {
 	if (CALIBRATE.rf_out_power_vhf > 0)
