@@ -1,6 +1,8 @@
 # Transceiver "Wolf"
 DDC-DUC SDR Tranceiver project https://ua3reo.ru/tag/transiver-ua3reo/
 
+На русском https://github.com/XGudron/UA3REO-DDC-Transceiver/blob/master/README.ru-RU.md
+
 ## Principle of operation
 
 The RF signal is digitized by a high-speed ADC chip and fed to an FPGA processor. <br>
