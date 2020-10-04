@@ -3,8 +3,8 @@
  * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'UA3REO' 
- * Target:  'UA3REO' 
+ * Project: 'WOLF' 
+ * Target:  'WOLF' 
  */
 
 #ifndef RTE_COMPONENTS_H

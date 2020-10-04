@@ -809,24 +809,24 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 	uint32_t file_pos = 0;
 	uint32_t flash_pos = 1;
 	int32_t decoded = 0;
-	while (file_pos < sizeof(FILES_UA3REO_JIC))
+	while (file_pos < sizeof(FILES_WOLF_JIC))
 	{
-		if ((int8_t)FILES_UA3REO_JIC[file_pos] < 0) // no repeats
+		if ((int8_t)FILES_WOLF_JIC[file_pos] < 0) // no repeats
 		{
-			uint8_t count = (-(int8_t)FILES_UA3REO_JIC[file_pos]);
+			uint8_t count = (-(int8_t)FILES_WOLF_JIC[file_pos]);
 			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
 				if ((decoded - FPGA_flash_file_offset) >= 0)
 				{
-					if (file_pos < sizeof(FILES_UA3REO_JIC) && rev8((uint8_t)data) != FILES_UA3REO_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
+					if (file_pos < sizeof(FILES_WOLF_JIC) && rev8((uint8_t)data) != FILES_WOLF_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 					{
 						errors++;
 						sendToDebug_uint32(flash_pos, true);
 						sendToDebug_str(": FPGA: ");
 						sendToDebug_hex(rev8((uint8_t)data), true);
 						sendToDebug_str(" HEX: ");
-						sendToDebug_hex(FILES_UA3REO_JIC[file_pos], true);
+						sendToDebug_hex(FILES_WOLF_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
 					}
@@ -839,20 +839,20 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 		}
 		else // repeats
 		{
-			uint8_t count = ((int8_t)FILES_UA3REO_JIC[file_pos]);
+			uint8_t count = ((int8_t)FILES_WOLF_JIC[file_pos]);
 			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
 				if ((decoded - FPGA_flash_file_offset) >= 0)
 				{
-					if (file_pos < sizeof(FILES_UA3REO_JIC) && rev8((uint8_t)data) != FILES_UA3REO_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
+					if (file_pos < sizeof(FILES_WOLF_JIC) && rev8((uint8_t)data) != FILES_WOLF_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 					{
 						errors++;
 						sendToDebug_uint32(flash_pos, true);
 						sendToDebug_str(": FPGA: ");
 						sendToDebug_hex(rev8((uint8_t)data), true);
 						sendToDebug_str(" HEX: ");
-						sendToDebug_hex(FILES_UA3REO_JIC[file_pos], true);
+						sendToDebug_hex(FILES_WOLF_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
 					}
@@ -953,17 +953,17 @@ static void FPGA_spi_flash_write(void) // write new contents of FPGA SPI memory
 	//Decompress RLE and write
 	uint32_t file_pos = 0;
 	int32_t decoded = 0;
-	while (file_pos < sizeof(FILES_UA3REO_JIC))
+	while (file_pos < sizeof(FILES_WOLF_JIC))
 	{
-		if ((int8_t)FILES_UA3REO_JIC[file_pos] < 0) //no repeats
+		if ((int8_t)FILES_WOLF_JIC[file_pos] < 0) //no repeats
 		{
-			uint8_t count = (-(int8_t)FILES_UA3REO_JIC[file_pos]);
+			uint8_t count = (-(int8_t)FILES_WOLF_JIC[file_pos]);
 			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
 				if ((decoded - FPGA_flash_file_offset) >= 0 && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 				{
-					FPGA_spi_continue_command(rev8((uint8_t)FILES_UA3REO_JIC[file_pos]));
+					FPGA_spi_continue_command(rev8((uint8_t)FILES_WOLF_JIC[file_pos]));
 					flash_pos++;
 					page_pos++;
 					if (page_pos >= FPGA_page_size)
@@ -985,13 +985,13 @@ static void FPGA_spi_flash_write(void) // write new contents of FPGA SPI memory
 		}
 		else //repeats
 		{
-			uint8_t count = ((int8_t)FILES_UA3REO_JIC[file_pos]);
+			uint8_t count = ((int8_t)FILES_WOLF_JIC[file_pos]);
 			file_pos++;
 			for (uint8_t p = 0; p < count; p++)
 			{
 				if ((decoded - FPGA_flash_file_offset) >= 0 && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 				{
-					FPGA_spi_continue_command(rev8((uint8_t)FILES_UA3REO_JIC[file_pos]));
+					FPGA_spi_continue_command(rev8((uint8_t)FILES_WOLF_JIC[file_pos]));
 					flash_pos++;
 					page_pos++;
 					if (page_pos >= FPGA_page_size)
