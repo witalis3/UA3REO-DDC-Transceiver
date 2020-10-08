@@ -236,11 +236,11 @@ uint32_t getTXPhraseFromFrequency(int32_t freq) // calculate the frequency from 
 	int32_t _freq = freq;
 
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
-	if (nyquist == 0) // <90.24mhz (good 0mhz - 72.192mhz) 0-0.4 dac freq
+	if (nyquist == 0) // <99.84mhz (good 0mhz - 79.872mhz) 0-0.4 dac freq
 	{
 		TRX_DAC_HP2 = false; //low-pass
 	}
-	if (nyquist == 1) // 90.24-180.48mhz (good 108.288mhz - 144.384) dac frec - (0.2-0.4 dac freq)
+	if (nyquist == 1) // 99.84-199.68mhz (good 119.808mhz - 159.744mhz) dac freq - (0.2-0.4 dac freq)
 	{
 		TRX_DAC_HP2 = true; //high-pass
 	}

@@ -52,7 +52,7 @@ clear all;
 %  ---- CIC Filter Parameters
 %  ------------------------------------------------------------------------
 
-R = 3760;         % Decimation factor
+R = 4160;         % Decimation factor
 N = 4;         % Number of stages
 M = 1;         % Differential delay (only 1)
 

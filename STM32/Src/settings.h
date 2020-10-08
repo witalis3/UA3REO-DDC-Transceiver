@@ -10,7 +10,7 @@
 #define SETT_VERSION 200				// Settings config version
 #define CALIB_VERSION 200				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
-#define DAC_CLOCK 180480000				// DAC generator frequency
+#define DAC_CLOCK 199680000				// DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		// Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ DAC_CLOCK		// Maximum transmission frequency (half of the DAC clock signal)
 #define TRX_SAMPLERATE 48000			// audio stream sampling rate during processing
@@ -30,7 +30,7 @@
 #define SHOW_LOGO true					// Show logo on boot (from images.h)
 #define POWERDOWN_TIMEOUT 1000			// time of pressing the shutdown button, for operation, ms
 #define USB_RESTART_TIMEOUT 5000		// time after which USB restart occurs if there are no packets
-#define FPGA_FLASH_IN_HEX true			// enable FPGA firmware to STM32 firmware
+#define FPGA_FLASH_IN_HEX false			// enable FPGA firmware to STM32 firmware
 #define SNTP_SYNC_INTERVAL (60 * 60)	// Time synchronization interval via NTP, sec
 #define FAN_MEDIUM_START 60				// Temperature at which the fan starts at half power
 #define FAN_MEDIUM_STOP 50				// Temperature at which the fan stops

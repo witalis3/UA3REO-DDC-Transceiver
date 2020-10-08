@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="tx_nco" kind="system" version="18.1" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2020.10.04.01:56:09 -->
+ <!-- 2020.10.08.21:04:16 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1601762168</value>
+  <value>1602176656</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -101,7 +101,7 @@
  </parameter>
  <parameter name="projectName">
   <type>java.lang.String</type>
-  <value>UA3REO.qpf</value>
+  <value>WOLF.qpf</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -274,7 +274,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="fsamp">
    <type>double</type>
-   <value>180.48</value>
+   <value>199.68</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -290,7 +290,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="phi_inc">
    <type>long</type>
-   <value>165002</value>
+   <value>149136</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -620,5 +620,5 @@ parameters are a RESULT of the module parameters. -->
   <version>18.1</version>
  </plugin>
  <reportVersion>18.1 625</reportVersion>
- <uniqueIdentifier>00FF00F8780900000174F0771219</uniqueIdentifier>
+ <uniqueIdentifier>00FF00F8780900000175092BA51C</uniqueIdentifier>
 </EnsembleReport>

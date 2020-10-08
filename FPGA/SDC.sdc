@@ -2,7 +2,7 @@ set_time_format -unit ns -decimal_places 3
 
 create_clock -name "clock_crystal" -period 122.880MHz [get_ports {clk_sys_lvpecl_p}]
 create_clock -name "clock_adc" -period 122.880MHz [get_ports {ADC_CLK}]
-create_clock -name "clock_tcxo" -period 49.152MHz [get_ports {TCXO_CLK_IN}]
+create_clock -name "clock_tcxo" -period 12.288MHz [get_ports {TCXO_CLK_IN}]
 create_clock -name "clock_stm32" -period 25MHz [get_ports {STM32_CLK}]
 create_clock -name "iq_valid" -period 96KHz {rx_ciccomp:RX1_CICOMP_Q|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
 

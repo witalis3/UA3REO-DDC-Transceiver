@@ -8,8 +8,8 @@ pump,
 PWM
 );
 
-parameter VCXO_freq_khz = 122880; //khz
-parameter TCXO_freq_khz = 49152; //khz
+parameter VCXO_freq_khz = 1228800; //x100hz
+parameter TCXO_freq_khz = 122880; //x100hz
 
 input vcxo_clk_in;
 input tcxo_clk_in;
@@ -17,8 +17,11 @@ input signed [7:0] VCXO_correction;
 
 output reg signed [23:0] freq_error = 0;
 output reg pump = 0;
-output reg signed [23:0] PWM = 30000;
+output reg signed [23:0] PWM = 60000;
 
+reg signed [23:0] freq_error_now = 0;
+reg signed [23:0] freq_error_prev = 0;
+reg signed [23:0] freq_error_diff = 0;
 reg signed [31:0] VCXO_counter = 0;
 reg signed [31:0] TCXO_counter = 0;
 reg counter_reset = 0;
@@ -65,22 +68,42 @@ begin
 			else
 				pump = 0;
 			
-			if(TCXO_counter > TCXO_freq_khz)
+			if(TCXO_counter >= TCXO_freq_khz)
 				state = 2;
 		end
 		else if(state == 2)
 		begin
-			freq_error = VCXO_counter - VCXO_freq_khz + VCXO_correction;	
+			freq_error_now = VCXO_counter - VCXO_freq_khz + VCXO_correction;	
+			freq_error_diff = freq_error_prev - freq_error_now;
 			
-			if((freq_error < 0) && (PWM < TCXO_freq_khz))
-				PWM = PWM + 1;
-			else if((freq_error > 0) && (PWM > 0))
-				PWM = PWM - 1;
+			if(freq_error_diff > -50 && freq_error_diff < 50) //measure errors
+			if(freq_error_now > -1000 && freq_error_now < 1000) //measure errors
+			begin
+				//save
+				freq_error = freq_error_now;
+				
+				//coarse
+				if(freq_error_now < 0)
+					PWM = PWM + ((-freq_error_now) >>> 1);
+				else if(freq_error_now > 0)
+					PWM = PWM - (freq_error_now >>> 1);
+				
+				//fine
+				if(freq_error_now == -1)
+					PWM = PWM + 1;
+				else if(freq_error_now == 1)
+					PWM = PWM - 1;
+			end
 
 			state = 3;
 		end
 		else if(state == 3)
 		begin
+			freq_error_prev = freq_error_now;
+			if(PWM > TCXO_freq_khz)
+				PWM = TCXO_freq_khz;
+			if(PWM < 0)
+				PWM = 0;
 			counter_reset = 1;
 			state = 0;
 		end

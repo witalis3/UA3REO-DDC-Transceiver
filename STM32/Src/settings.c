@@ -242,8 +242,8 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_lf = 86;														// <2mhz
 		CALIBRATE.rf_out_power_hf_low = 56;														// <5mhz
 		CALIBRATE.rf_out_power_hf = 41;														// <30mhz
-		CALIBRATE.rf_out_power_hf_high = 56;														// <90.24mhz
-		CALIBRATE.rf_out_power_vhf = 85;															// 90.24-180.48mhz
+		CALIBRATE.rf_out_power_hf_high = 56;														// <99.84mhz
+		CALIBRATE.rf_out_power_vhf = 85;															// 99.84-199.68mhz
 		CALIBRATE.smeter_calibration = 0;														// S-Meter calibration, set when calibrating the transceiver to S9 (LPF, BPF, ATT, PREAMP off)
 		CALIBRATE.adc_offset = 0;																// Calibrate the offset at the ADC input (DC)
 																								// Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz

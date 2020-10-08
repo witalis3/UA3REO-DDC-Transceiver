@@ -345,7 +345,7 @@ static inline void FPGA_fpgadata_getparam(void)
 	//STAGE 9
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
-	TRX_TCXO_ERROR = FPGA_fpgadata_in_tmp32;
+	TRX_VCXO_ERROR = FPGA_fpgadata_in_tmp32;
 	FPGA_clockFall();
 }
 
