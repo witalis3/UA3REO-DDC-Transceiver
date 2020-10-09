@@ -17,13 +17,15 @@ input signed [7:0] VCXO_correction;
 
 output reg signed [23:0] freq_error = 0;
 output reg pump = 0;
-output reg signed [23:0] PWM = 60000;
+output reg signed [23:0] PWM = 500;
 
+reg [23:0] PWM_max = 1000;
 reg signed [23:0] freq_error_now = 0;
 reg signed [23:0] freq_error_prev = 0;
 reg signed [23:0] freq_error_diff = 0;
 reg signed [31:0] VCXO_counter = 0;
 reg signed [31:0] TCXO_counter = 0;
+reg [31:0] PWM_counter = 0;
 reg counter_reset = 0;
 reg counter_resetted = 0;
 reg [7:0] state = 0;
@@ -47,6 +49,16 @@ end
 
 always @ (posedge tcxo_clk_in)
 begin
+	//do PWM
+	PWM_counter = PWM_counter + 1;
+	if(PWM_counter >= PWM_max)
+		PWM_counter = 0;
+	
+	if(PWM > PWM_counter)
+		pump = 1;
+	else
+		pump = 0;
+
 	if(counter_reset && !counter_resetted)
 	begin
 		//wait VCXO reset
@@ -63,11 +75,6 @@ begin
 		begin
 			TCXO_counter = TCXO_counter + 1;
 			
-			if(PWM > TCXO_counter)
-				pump = 1;
-			else
-				pump = 0;
-			
 			if(TCXO_counter >= TCXO_freq_khz)
 				state = 2;
 		end
@@ -82,16 +89,10 @@ begin
 				//save
 				freq_error = freq_error_now;
 				
-				//coarse
+				//tune
 				if(freq_error_now < 0)
-					PWM = PWM + ((-freq_error_now) >>> 1);
-				else if(freq_error_now > 0)
-					PWM = PWM - (freq_error_now >>> 1);
-				
-				//fine
-				if(freq_error_now == -1)
 					PWM = PWM + 1;
-				else if(freq_error_now == 1)
+				else if(freq_error_now > 0)
 					PWM = PWM - 1;
 			end
 
@@ -100,8 +101,8 @@ begin
 		else if(state == 3)
 		begin
 			freq_error_prev = freq_error_now;
-			if(PWM > TCXO_freq_khz)
-				PWM = TCXO_freq_khz;
+			if(PWM > PWM_max)
+				PWM = PWM_max;
 			if(PWM < 0)
 				PWM = 0;
 			counter_reset = 1;
