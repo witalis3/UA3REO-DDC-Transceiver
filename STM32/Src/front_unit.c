@@ -43,6 +43,7 @@ static void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(void);
 static void FRONTPANEL_BUTTONHANDLER_SHIFT(void);
 static void FRONTPANEL_BUTTONHANDLER_CLAR(void);
 static void FRONTPANEL_BUTTONHANDLER_LOCK(void);
+static void FRONTPANEL_BUTTONHANDLER_SERVICES(void);
 static void FRONTPANEL_BUTTONHANDLER_MENU(void);
 static void FRONTPANEL_BUTTONHANDLER_MUTE(void);
 static void FRONTPANEL_BUTTONHANDLER_STEP(void);
@@ -73,7 +74,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 2, .channel = 4, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_NOTCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL}, //NOTCH-MANUAL
 	{.port = 2, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},		 //CLAR-SHIFT
 	{.port = 2, .channel = 2, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL},															 //REC-PLAY
-	{.port = 2, .channel = 1, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL},															 //WIFI MENU
+	{.port = 2, .channel = 1, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},															 //SERVICES
 	{.port = 2, .channel = 0, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},			 //MENU-LOCK
 
 	{.port = 3, .channel = 7, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_KEYER},			//WPM-KEYER
@@ -621,8 +622,7 @@ static void FRONTPANEL_BUTTONHANDLER_RF_POWER(void)
 	}
 	else
 	{
-		eventCloseSystemMenu();
-		eventCloseSystemMenu();
+		eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }
@@ -647,8 +647,7 @@ static void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(void)
 	}
 	else
 	{
-		eventCloseSystemMenu();
-		eventCloseSystemMenu();
+		eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }
@@ -663,8 +662,7 @@ static void FRONTPANEL_BUTTONHANDLER_SQUELCH(void)
 	}
 	else
 	{
-		eventCloseSystemMenu();
-		eventCloseSystemMenu();
+		eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }
@@ -679,8 +677,7 @@ static void FRONTPANEL_BUTTONHANDLER_WPM(void)
 	}
 	else
 	{
-		eventCloseSystemMenu();
-		eventCloseSystemMenu();
+		eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }
@@ -695,8 +692,7 @@ static void FRONTPANEL_BUTTONHANDLER_KEYER(void)
 	}
 	else
 	{
-		eventCloseSystemMenu();
-		eventCloseSystemMenu();
+		eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }
@@ -711,8 +707,7 @@ static void FRONTPANEL_BUTTONHANDLER_STEP(void)
 	}
 	else
 	{
-		eventCloseSystemMenu();
-		eventCloseSystemMenu();
+		eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }
@@ -751,8 +746,7 @@ static void FRONTPANEL_BUTTONHANDLER_BW(void)
 	}
 	else
 	{
-		eventCloseSystemMenu();
-		eventCloseSystemMenu();
+		eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }
@@ -770,8 +764,7 @@ static void FRONTPANEL_BUTTONHANDLER_HPF(void)
 	}
 	else
 	{
-		eventCloseSystemMenu();
-		eventCloseSystemMenu();
+		eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }
@@ -890,4 +883,19 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_P
 	mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
 
 	return mcp3008_value;
+}
+
+static void FRONTPANEL_BUTTONHANDLER_SERVICES(void)
+{
+	if (!LCD_systemMenuOpened)
+	{
+		LCD_systemMenuOpened = true;
+		SYSMENU_HANDL_SERVICESMENU(1);
+		drawSystemMenu(true);
+	}
+	else
+	{
+		eventCloseAllSystemMenu();
+	}
+	LCD_redraw();
 }

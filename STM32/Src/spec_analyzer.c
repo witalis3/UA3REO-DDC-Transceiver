@@ -18,6 +18,10 @@ static uint32_t tick_start_time = 0;
 static int16_t graph_selected_x = graph_width / 2;
 static int_fast16_t data[LCD_WIDTH - 30] = {0};
 
+//Public variables
+bool sysmenu_spectrum_opened = false;
+uint32_t sysmenu_spectrum_lastfreq = 0;
+
 //Prototypes
 static void SPEC_DrawBottomGUI(void);				   // display status at the bottom of the screen
 static void SPEC_DrawGraphCol(uint16_t x, bool clear); // display the data column

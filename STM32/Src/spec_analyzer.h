@@ -9,6 +9,10 @@
 #define SPEC_StepDelay 1     //scan delay, msec
 #define SPEC_VParts 6        //vertical signatures
 
+//Public variabled
+extern bool sysmenu_spectrum_opened;
+extern uint32_t sysmenu_spectrum_lastfreq;
+
 //Public methods
 extern void SPEC_Start(void);                 //analyzer launch
 extern void SPEC_Draw(void);                  //drawing analyzer
