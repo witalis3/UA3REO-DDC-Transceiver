@@ -28,6 +28,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len128;
 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};   // combined FFT I and Q buffer
 static float32_t FFTInput_sorted[FFT_SIZE] = {0};		   // buffer for sorted values ​​(when looking for a median)
 static float32_t FFTOutput_mean[LAY_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
+static float32_t FFTOutput_mean_new[LAY_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for moving)
 static float32_t maxValueFFT_rx = 0;					   // maximum value of the amplitude in the resulting frequency response
 static float32_t maxValueFFT_tx = 0;					   // maximum value of the amplitude in the resulting frequency response
 static uint32_t currentFFTFreq = 0;
@@ -601,39 +602,44 @@ static void FFT_move(int32_t _freq_diff)
 {
 	if (_freq_diff == 0)
 		return;
-	int32_t new_x = 0;
-	int32_t freq_diff = (_freq_diff / FFT_HZ_IN_PIXEL) * TRX.FFT_Zoom;
+	float32_t old_x_true = 0.0f;
+	int32_t old_x_l = 0;
+	int32_t old_x_r = 0;
+	float32_t freq_diff = (_freq_diff / FFT_HZ_IN_PIXEL) * TRX.FFT_Zoom;
+	float32_t old_x_part_r = fmodf(freq_diff, 1.0f);
+	float32_t old_x_part_l = 1.0f - old_x_part_r;
+	if(freq_diff < 0.0f)
+	{
+		old_x_part_l = fmodf(-freq_diff, 1.0f);
+		old_x_part_r = 1.0f - old_x_part_l;
+	}
+	
 	//Move mean Buffer
-	if (freq_diff > 0) //freq up
+	for (int32_t x = 0; x < LAY_FFT_PRINT_SIZE; x++)
 	{
-		for (int32_t x = 0; x < LAY_FFT_PRINT_SIZE; x++)
-		{
-			new_x = x + freq_diff;
-			if (new_x >= LAY_FFT_PRINT_SIZE)
-				new_x -= LAY_FFT_PRINT_SIZE;
-			if (new_x >= LAY_FFT_PRINT_SIZE)
-			{
-				FFTOutput_mean[x] = 0;
-				continue;
-			}
-			FFTOutput_mean[x] = FFTOutput_mean[new_x];
-		}
+		old_x_true = (float32_t)x + freq_diff;
+		if (old_x_true >= (float32_t)LAY_FFT_PRINT_SIZE)
+			old_x_true -= (float32_t)LAY_FFT_PRINT_SIZE;
+		if (old_x_true < 0.0f)
+			old_x_true += (float32_t)LAY_FFT_PRINT_SIZE;
+		old_x_l = (int32_t)(floorf(old_x_true));
+		old_x_r = (int32_t)(ceilf(old_x_true));
+		
+		FFTOutput_mean_new[x] = 0;
+		
+		if((old_x_true >= LAY_FFT_PRINT_SIZE) || (old_x_true < 0.0f))
+			continue;
+		if((old_x_l < LAY_FFT_PRINT_SIZE) && (old_x_l >= 0))
+			FFTOutput_mean_new[x] += (FFTOutput_mean[old_x_l] * old_x_part_l);
+		if((old_x_r < LAY_FFT_PRINT_SIZE) && (old_x_r >= 0))
+			FFTOutput_mean_new[x] += (FFTOutput_mean[old_x_r] * old_x_part_r);
+		
+		//sides
+		if(old_x_r >= LAY_FFT_PRINT_SIZE)
+			FFTOutput_mean_new[x] = FFTOutput_mean[old_x_l];
 	}
-	else //freq down
-	{
-		for (int32_t x = LAY_FFT_PRINT_SIZE - 1; x >= 0; x--)
-		{
-			new_x = x + freq_diff;
-			if (new_x < 0)
-				new_x += LAY_FFT_PRINT_SIZE;
-			if (new_x < 0)
-			{
-				FFTOutput_mean[x] = 0;
-				continue;
-			}
-			FFTOutput_mean[x] = FFTOutput_mean[new_x];
-		}
-	}
+	//save results
+	memcpy(&FFTOutput_mean, &FFTOutput_mean_new, sizeof FFTOutput_mean);
 }
 
 // get color from signal strength
