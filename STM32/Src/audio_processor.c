@@ -414,7 +414,7 @@ void processTxAudio(void)
 			FPGA_Audio_Buffer_TX_Q_tmp[i] = 0.0f;
 		}
 	}
-
+	
 	//Two-signal tune generator
 	if (TRX_Tune && TRX.TWO_SIGNAL_TUNE)
 	{
@@ -433,6 +433,33 @@ void processTxAudio(void)
 		arm_fir_f32(&FIR_TX_Hilbert_Q, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
 		// - 45 deg to I data
 		arm_fir_f32(&FIR_TX_Hilbert_I, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_Audio_Buffer_TX_Q_tmp, AUDIO_BUFFER_HALF_SIZE);
+	}
+	
+	//FM tone generator
+	if (TRX_Tune && (mode == TRX_MODE_NFM || mode == TRX_MODE_WFM))
+	{
+		static uint32_t tone_counter = 100;
+		tone_counter++;
+		if(tone_counter >= 400)
+			tone_counter = 0;
+		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+		{
+			float32_t point = 0.0f;
+			if(tone_counter > 300)
+				point = generateSin(1.0f, two_signal_gen_position, TRX_SAMPLERATE, 3500);
+			else if(tone_counter > 200)
+				point = generateSin(1.0f, two_signal_gen_position, TRX_SAMPLERATE, 2000);
+			else if(tone_counter > 100)
+				point = generateSin(1.0f, two_signal_gen_position, TRX_SAMPLERATE, 1000);
+			
+			two_signal_gen_position++;
+			if (two_signal_gen_position >= TRX_SAMPLERATE)
+				two_signal_gen_position = 0;
+
+			FPGA_Audio_Buffer_TX_I_tmp[i] = point;
+			FPGA_Audio_Buffer_TX_Q_tmp[i] = point;
+		}
+		ModulateFM(AUDIO_BUFFER_HALF_SIZE);
 	}
 
 	if (!TRX_Tune)
@@ -989,40 +1016,42 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 // FM modulator
 static void ModulateFM(uint16_t size)
 {
-	static uint32_t modulation = TRX_SAMPLERATE;
+	static float32_t modulation = (float32_t)TRX_SAMPLERATE;
 	static float32_t hpf_prev_a = 0;
 	static float32_t hpf_prev_b = 0;
 	static float32_t sin_data = 0;
-	static uint32_t fm_mod_accum = 0;
-	static float32_t modulation_index = 2.0f;
+	static float32_t fm_mod_accum = 0;
+	static float32_t modulation_index = 15000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 5000)
-		modulation_index = 2.0f;
+		modulation_index = 4000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 6000)
-		modulation_index = 3.0f;
+		modulation_index = 6000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 7000)
-		modulation_index = 4.0f;
+		modulation_index = 8000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 8000)
-		modulation_index = 5.0f;
+		modulation_index = 11000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 9000)
-		modulation_index = 6.0f;
+		modulation_index = 13000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 10000)
-		modulation_index = 7.0f;
+		modulation_index = 15000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 15000)
-		modulation_index = 8.0f;
+		modulation_index = 30000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 20000)
-		modulation_index = 9.0f;
+		modulation_index = 40000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 0)
-		modulation_index = 10.0f;
+		modulation_index = 45000.0f;
+	
 	// Do differentiating high-pass filter to provide 6dB/octave pre-emphasis - which also removes any DC component!
+	float32_t ampl = (Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER);
 	for (uint_fast16_t i = 0; i < size; i++)
 	{
-		float32_t a = FPGA_Audio_Buffer_TX_I_tmp[i];
-		hpf_prev_b = FM_TX_HPF_ALPHA * (hpf_prev_b + a - hpf_prev_a); // do differentiation
-		hpf_prev_a = a;												  // save "[n-1] samples for next iteration
-		fm_mod_accum += (uint32_t)hpf_prev_b;						  // save differentiated data in audio buffer // change frequency using scaled audio
-		fm_mod_accum %= modulation;									  // limit range
-		sin_data = (fm_mod_accum / (float32_t)modulation) * PI * modulation_index;
-		FPGA_Audio_Buffer_TX_I_tmp[i] = Processor_selected_RFpower_amplitude * arm_sin_f32(sin_data);
-		FPGA_Audio_Buffer_TX_Q_tmp[i] = Processor_selected_RFpower_amplitude * arm_cos_f32(sin_data);
+		hpf_prev_b = FM_TX_HPF_ALPHA * (hpf_prev_b +FPGA_Audio_Buffer_TX_I_tmp[i] - hpf_prev_a); // do differentiation
+		hpf_prev_a = FPGA_Audio_Buffer_TX_I_tmp[i];												  // save "[n-1] samples for next iteration
+		fm_mod_accum = (1.0f - 0.999f) * fm_mod_accum + 0.999f * hpf_prev_b;						  // save differentiated data in audio buffer // change frequency using scaled audio
+		while(fm_mod_accum > modulation) fm_mod_accum -= modulation; // limit range
+		while(fm_mod_accum < -modulation) fm_mod_accum += modulation; // limit range
+		sin_data = ((fm_mod_accum * modulation_index) / modulation) * PI;
+		FPGA_Audio_Buffer_TX_I_tmp[i] = ampl * arm_sin_f32(sin_data);
+		FPGA_Audio_Buffer_TX_Q_tmp[i] = ampl * arm_cos_f32(sin_data);
 	}
 }

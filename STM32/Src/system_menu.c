@@ -1061,7 +1061,7 @@ static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction)
 		else if (TRX.FM_LPF_Filter == 15000)
 			TRX.FM_LPF_Filter = 10000;
 		else if (TRX.FM_LPF_Filter == 20000)
-			TRX.FM_LPF_Filter = 5000;
+			TRX.FM_LPF_Filter = 15000;
 	}
 
 	ReinitAudioFilters();
