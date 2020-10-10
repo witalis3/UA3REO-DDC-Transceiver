@@ -146,7 +146,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		if (!clean)
 		{
 			//U7-QH LPF_ON
-			if (registerNumber == 0 && TRX.RF_Filters && (CurrentVFO()->Freq <= CALIBRATE.LPF_END) && !dualrx_lpf_disabled && bpf == 255)
+			if (registerNumber == 0 && TRX.RF_Filters && (CurrentVFO()->Freq <= CALIBRATE.LPF_END) && !dualrx_lpf_disabled)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U7-QG LNA_ON
 			if (registerNumber == 1 && !TRX_on_TX() && TRX.LNA)
@@ -171,9 +171,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 
 			//U1-QH NOT USED
-			if (registerNumber == 8)
-			{
-			}
+			//if (registerNumber == 8)
 			//U1-QG BPF_2_A0
 			if (registerNumber == 9 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
