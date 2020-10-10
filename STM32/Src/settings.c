@@ -182,7 +182,8 @@ void LoadSettings(bool clear)
 		TRX.CW_KEYER_WPM = 30;			 // Automatic key speed
 		TRX.S_METER_Style = false;		 // View of the S-meter (candle or strip)
 		TRX.Debug_Console = false;		 // Debug output to DEBUG / UART port
-		TRX.Dual_RX_Type = VFO_SEPARATE; // dual receiver mode
+		TRX.Dual_RX = false;					//Dual RX feature
+		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
 		TRX.FFT_Style = 1;				 // FFT display style
 		TRX.ShiftEnabled = false;		 // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 5000;		 // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)

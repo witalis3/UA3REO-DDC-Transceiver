@@ -79,7 +79,7 @@ void processRxAudio(void)
 	// copy buffer from FPGA
 	readFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX1_Q[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_RX_IQ_BUFFER_SIZE, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	readFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX1_I[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_RX_IQ_BUFFER_SIZE, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-	if (TRX.Dual_RX_Type != VFO_SEPARATE)
+	if (TRX.Dual_RX)
 	{
 		readFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX2_Q[0], (uint32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_RX_IQ_BUFFER_SIZE, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		readFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX2_I[0], (uint32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], FPGA_Audio_Buffer_Index_tmp, FPGA_RX_IQ_BUFFER_SIZE, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -94,7 +94,7 @@ void processRxAudio(void)
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_Q, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, decimated_block_size_rx1);
 		decimated_block_size_rx1 = AUDIO_BUFFER_HALF_SIZE;
 	}
-	if (TRX.Dual_RX_Type != VFO_SEPARATE && secondary_vfo->Mode != TRX_MODE_WFM)
+	if (TRX.Dual_RX && secondary_vfo->Mode != TRX_MODE_WFM)
 	{
 		arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_I, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2);
 		arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_Q, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, decimated_block_size_rx2);
@@ -107,7 +107,7 @@ void processRxAudio(void)
 		dc_filter(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1, DC_FILTER_RX1_I);
 		dc_filter(FPGA_Audio_Buffer_RX1_Q_tmp, decimated_block_size_rx1, DC_FILTER_RX1_Q);
 	}
-	if (TRX.Dual_RX_Type != VFO_SEPARATE && secondary_vfo->Mode != TRX_MODE_AM && secondary_vfo->Mode != TRX_MODE_NFM && secondary_vfo->Mode != TRX_MODE_WFM)
+	if (TRX.Dual_RX && secondary_vfo->Mode != TRX_MODE_AM && secondary_vfo->Mode != TRX_MODE_NFM && secondary_vfo->Mode != TRX_MODE_WFM)
 	{
 		dc_filter(FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2, DC_FILTER_RX2_I);
 		dc_filter(FPGA_Audio_Buffer_RX2_Q_tmp, decimated_block_size_rx2, DC_FILTER_RX2_Q);
@@ -136,7 +136,7 @@ void processRxAudio(void)
 		float32_t if_gain = db2rateV(TRX.IF_Gain);
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, if_gain, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_Q_tmp, if_gain, FPGA_Audio_Buffer_RX1_Q_tmp, decimated_block_size_rx1);
-		if (TRX.Dual_RX_Type != VFO_SEPARATE)
+		if (TRX.Dual_RX)
 		{
 			arm_scale_f32(FPGA_Audio_Buffer_RX2_I_tmp, if_gain, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2);
 			arm_scale_f32(FPGA_Audio_Buffer_RX2_Q_tmp, if_gain, FPGA_Audio_Buffer_RX2_Q_tmp, decimated_block_size_rx2);
@@ -213,7 +213,7 @@ void processRxAudio(void)
 		break;
 	}
 
-	if (TRX.Dual_RX_Type != VFO_SEPARATE)
+	if (TRX.Dual_RX)
 	{
 		switch (secondary_vfo->Mode) // second receiver
 		{
@@ -296,7 +296,7 @@ void processRxAudio(void)
 	// create buffers for transmission to the codec
 	for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 	{
-		if (TRX.Dual_RX_Type == VFO_SEPARATE)
+		if (!TRX.Dual_RX)
 		{
 			arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2], 1);	 //left channel
 			arm_float_to_q31(&FPGA_Audio_Buffer_RX1_Q_tmp[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel

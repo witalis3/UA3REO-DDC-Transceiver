@@ -60,9 +60,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {
 	bool dualrx_lpf_disabled = false;
 	bool dualrx_bpf_disabled = false;
-	if ((TRX.Dual_RX_Type != VFO_SEPARATE) && SecondaryVFO()->Freq > CALIBRATE.LPF_END)
+	if (TRX.Dual_RX && SecondaryVFO()->Freq > CALIBRATE.LPF_END)
 		dualrx_lpf_disabled = true;
-	if ((TRX.Dual_RX_Type != VFO_SEPARATE) && getBPFByFreq(CurrentVFO()->Freq) != getBPFByFreq(SecondaryVFO()->Freq))
+	if (TRX.Dual_RX && getBPFByFreq(CurrentVFO()->Freq) != getBPFByFreq(SecondaryVFO()->Freq))
 		dualrx_bpf_disabled = true;
 
 	float32_t att_val = TRX.ATT_DB;

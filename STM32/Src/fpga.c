@@ -174,7 +174,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 	//STAGE 2
 	//out PTT+PREAMP
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));										//RX1
-	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX_Type != VFO_SEPARATE && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)); //RX2
+	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)); //RX2
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));														//TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
@@ -425,7 +425,7 @@ static inline void FPGA_fpgadata_getiq(void)
 	}
 	FPGA_clockFall();
 
-	if (TRX.Dual_RX_Type != VFO_SEPARATE)
+	if (TRX.Dual_RX)
 	{
 		//STAGE 10 in Q RX2
 		FPGA_clockRise();

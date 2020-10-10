@@ -353,17 +353,14 @@ void FRONTPANEL_Process(void)
 
 static void FRONTPANEL_BUTTONHANDLER_DOUBLE(void)
 {
-	if (TRX.Dual_RX_Type == VFO_SEPARATE)
-		TRX.Dual_RX_Type = VFO_A_AND_B;
-	else
-		TRX.Dual_RX_Type = VFO_SEPARATE;
+	TRX.Dual_RX = !TRX.Dual_RX;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedReinitAudioFilters = true;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(void)
 {
-	if (TRX.Dual_RX_Type == VFO_SEPARATE)
+	if (!TRX.Dual_RX)
 		return;
 
 	if (TRX.Dual_RX_Type == VFO_A_AND_B)

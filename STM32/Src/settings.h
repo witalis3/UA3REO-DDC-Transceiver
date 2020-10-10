@@ -95,7 +95,6 @@ typedef struct
 // dual receiver operating mode
 typedef enum
 {
-	VFO_SEPARATE,
 	VFO_A_AND_B,
 	VFO_A_PLUS_B,
 } DUAL_RX_TYPE;
@@ -174,6 +173,7 @@ extern struct TRX_SETTINGS
 	bool S_METER_Style;
 	uint8_t TX_AGC_speed;
 	bool Debug_Console;
+	bool Dual_RX;
 	DUAL_RX_TYPE Dual_RX_Type;
 	uint8_t FFT_Style;
 	bool ShiftEnabled;
