@@ -475,9 +475,11 @@ void TIM6_DAC_IRQHandler(void)
   if (NeedSaveSettings)
     FPGA_NeedSendParams = true;
 
-  // there was a request to reinitialize the notch filter, execute
+  // there was a request to reinitialize audio and notch filters
   if (NeedReinitNotch)
     InitNotchFilter();
+	if (NeedReinitAudioFilters)
+		ReinitAudioFilters();
 
   //Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
   RF_UNIT_ProcessSensors();
