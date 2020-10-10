@@ -50,7 +50,7 @@ volatile bool TRX_DAC_HP2 = false;
 volatile bool TRX_DAC_X4 = false;
 volatile bool TRX_DCDC_Freq = false;
 static uint_fast8_t autogain_wait_reaction = 0;	  // timer for waiting for a reaction from changing the ATT / PRE modes
-static uint_fast8_t autogain_stage = 0;			  // stage of working out the amplification act-corrector
+volatile uint_fast8_t TRX_AutoGain_Stage = 0;			  // stage of working out the amplification corrector
 static uint32_t KEYER_symbol_start_time = 0;	  // start time of the automatic key character
 static bool KEYER_symbol_status = false;		  // status (signal or period) of the automatic key symbol
 volatile float32_t TRX_STM32_VREF = 3.3f;		  // voltage on STM32
@@ -354,14 +354,14 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 void TRX_DoAutoGain(void)
 {
 	//Process AutoGain feature
-	if (TRX.AutoGain && !TRX_on_TX())
+	if (TRX.AutoGain)
 	{
 		int32_t max_amplitude = abs(TRX_ADC_MAXAMPLITUDE);
 		if(abs(TRX_ADC_MINAMPLITUDE) > max_amplitude)
 			max_amplitude = abs(TRX_ADC_MINAMPLITUDE);
 		
 		TRX.RF_Filters = true;
-		switch (autogain_stage)
+		switch (TRX_AutoGain_Stage)
 		{
 		case 0: // stage 1 - LPF + BPF + ATT
 			TRX.LNA = false;
@@ -369,7 +369,7 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_Driver = false;
 			TRX.ATT = true;
 			LCD_UpdateQuery.TopButtons = true;
-			autogain_stage++;
+			TRX_AutoGain_Stage++;
 			autogain_wait_reaction = 0;
 			sendToDebug_strln("AUTOGAIN LPF + BPF + ATT");
 			break;
@@ -380,7 +380,7 @@ void TRX_DoAutoGain(void)
 				autogain_wait_reaction = 0;
 			if (autogain_wait_reaction >= AUTOGAIN_CORRECTOR_WAITSTEP)
 			{
-				autogain_stage++;
+				TRX_AutoGain_Stage++;
 				autogain_wait_reaction = 0;
 			}
 			break;
@@ -390,20 +390,20 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_PGA = false;
 			TRX.ADC_Driver = false;
 			LCD_UpdateQuery.TopButtons = true;
-			autogain_stage++;
+			TRX_AutoGain_Stage++;
 			autogain_wait_reaction = 0;
 			sendToDebug_strln("AUTOGAIN LPF + BPF");
 			break;
 		case 3: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
-				autogain_stage -= 3;																							  // too much gain, go back one step
+				TRX_AutoGain_Stage -= 3;																							  // too much gain, go back one step
 			if ((max_amplitude * db2rateV(ADC_LNA_GAIN_DB) / db2rateV(-TRX.ATT_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can enable ATT + PREAMP - go to the next stage
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
 			if (autogain_wait_reaction >= AUTOGAIN_CORRECTOR_WAITSTEP)
 			{
-				autogain_stage++;
+				TRX_AutoGain_Stage++;
 				autogain_wait_reaction = 0;
 			}
 			break;
@@ -413,20 +413,20 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_PGA = false;
 			TRX.ADC_Driver = false;
 			LCD_UpdateQuery.TopButtons = true;
-			autogain_stage++;
+			TRX_AutoGain_Stage++;
 			autogain_wait_reaction = 0;
 			sendToDebug_strln("AUTOGAIN LPF + BPF + LNA + ATT");
 			break;
 		case 5: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
-				autogain_stage -= 3;															// too much gain, go back one step
+				TRX_AutoGain_Stage -= 3;															// too much gain, go back one step
 			if ((max_amplitude * db2rateV(TRX.ATT_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
 			if (autogain_wait_reaction >= AUTOGAIN_CORRECTOR_WAITSTEP)
 			{
-				autogain_stage++;
+				TRX_AutoGain_Stage++;
 				autogain_wait_reaction = 0;
 			}
 			break;
@@ -436,20 +436,20 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_PGA = false;
 			TRX.ADC_Driver = false;
 			LCD_UpdateQuery.TopButtons = true;
-			autogain_stage++;
+			TRX_AutoGain_Stage++;
 			autogain_wait_reaction = 0;
 			sendToDebug_strln("AUTOGAIN LPF + BPF + LNA");
 			break;
 		case 7: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
-				autogain_stage -= 3; // too much gain, go back one step
+				TRX_AutoGain_Stage -= 3; // too much gain, go back one step
 			if ((max_amplitude * db2rateV(ADC_PGA_GAIN_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
 			if (autogain_wait_reaction >= AUTOGAIN_CORRECTOR_WAITSTEP)
 			{
-				autogain_stage++;
+				TRX_AutoGain_Stage++;
 				autogain_wait_reaction = 0;
 			}
 			break;
@@ -459,20 +459,20 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_PGA = true;
 			TRX.ADC_Driver = false;
 			LCD_UpdateQuery.TopButtons = true;
-			autogain_stage++;
+			TRX_AutoGain_Stage++;
 			autogain_wait_reaction = 0;
 			sendToDebug_strln("AUTOGAIN LPF + BPF + LNA + PGA");
 			break;
 		case 9: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
-				autogain_stage -= 3; // too much gain, go back one step
+				TRX_AutoGain_Stage -= 3; // too much gain, go back one step
 			if ((max_amplitude * db2rateV(ADC_DRIVER_GAIN_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
 			if (autogain_wait_reaction >= AUTOGAIN_CORRECTOR_WAITSTEP)
 			{
-				autogain_stage++;
+				TRX_AutoGain_Stage++;
 				autogain_wait_reaction = 0;
 			}
 			break;
@@ -482,17 +482,17 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_PGA = true;
 			TRX.ADC_Driver = true;
 			LCD_UpdateQuery.TopButtons = true;
-			autogain_stage++;
+			TRX_AutoGain_Stage++;
 			autogain_wait_reaction = 0;
 			sendToDebug_strln("AUTOGAIN LPF + BPF + LNA + PGA + DRIVER");
 			break;
 		case 11: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
-				autogain_stage -= 3; // too much gain, go back one step
+				TRX_AutoGain_Stage -= 3; // too much gain, go back one step
 			break;
 			
 		default:
-			autogain_stage = 0;
+			TRX_AutoGain_Stage = 0;
 			break;
 		}
 		//sendToDebug_int32(max_amplitude,false);

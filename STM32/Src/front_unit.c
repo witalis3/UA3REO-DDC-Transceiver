@@ -403,6 +403,7 @@ static void FRONTPANEL_BUTTONHANDLER_PRE(void)
 	}
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
+	TRX_AutoGain_Stage = 0;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_ATT(void)
@@ -418,6 +419,7 @@ static void FRONTPANEL_BUTTONHANDLER_ATT(void)
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
+	TRX_AutoGain_Stage = 0;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
@@ -435,6 +437,7 @@ static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
+	TRX_AutoGain_Stage = 0;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_ANT(void)
@@ -479,6 +482,7 @@ static void FRONTPANEL_BUTTONHANDLER_PGA(void)
 	}
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
+	TRX_AutoGain_Stage = 0;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_FAST(void)
@@ -578,6 +582,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(void)
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
+	TRX_AutoGain_Stage = 0;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
@@ -607,6 +612,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
+	TRX_AutoGain_Stage = 0;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_RF_POWER(void)
@@ -769,19 +775,10 @@ static void FRONTPANEL_BUTTONHANDLER_HPF(void)
 static void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
 {
 	if (TRX.current_vfo)
-	{
-		TRX.VFO_A.LPF_Filter_Width = TRX.VFO_B.LPF_Filter_Width;
-		TRX.VFO_A.HPF_Filter_Width = TRX.VFO_B.HPF_Filter_Width;
-		TRX.VFO_A.Freq = TRX.VFO_B.Freq;
-		TRX.VFO_A.Mode = TRX.VFO_B.Mode;
-	}
+		memcpy(&TRX.VFO_A, &TRX.VFO_B, sizeof TRX.VFO_B);
 	else
-	{
-		TRX.VFO_B.LPF_Filter_Width = TRX.VFO_A.LPF_Filter_Width;
-		TRX.VFO_B.HPF_Filter_Width = TRX.VFO_A.HPF_Filter_Width;
-		TRX.VFO_B.Freq = TRX.VFO_A.Freq;
-		TRX.VFO_B.Mode = TRX.VFO_A.Mode;
-	}
+		memcpy(&TRX.VFO_B, &TRX.VFO_A, sizeof TRX.VFO_B);
+	
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
