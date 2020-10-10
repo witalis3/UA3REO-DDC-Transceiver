@@ -371,7 +371,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 			.name = "FM",
 			.selectable = true,
 			.startFreq = 65900000,
-			.endFreq = 74000000,
+			.endFreq = 108000000,
 			.regions = (const REGION_MAP[]){
 				{.startFreq = 65900000, .endFreq = 108000000, .mode = TRX_MODE_WFM},
 			},
