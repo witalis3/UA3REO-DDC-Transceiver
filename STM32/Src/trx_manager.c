@@ -354,7 +354,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 void TRX_DoAutoGain(void)
 {
 	//Process AutoGain feature
-	if (TRX.AutoGain)
+	if (TRX.AutoGain && !TRX_on_TX())
 	{
 		int32_t max_amplitude = abs(TRX_ADC_MAXAMPLITUDE);
 		if(abs(TRX_ADC_MINAMPLITUDE) > max_amplitude)
