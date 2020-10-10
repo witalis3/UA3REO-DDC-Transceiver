@@ -382,7 +382,7 @@ static void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
 	LCD_UpdateQuery.FreqInfo = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
-	NeedReinitAudioFilters = true;
+	ReinitAudioFilters();
 	LCD_redraw();
 }
 
