@@ -1,32 +1,49 @@
 #include "stm32h7xx_hal.h"
 #include "agc.h"
 #include "settings.h"
+#include "audio_filters.h"
 
 //Private variables
 static float32_t AGC_RX1_need_gain_db = 0.0f;
 static float32_t AGC_RX2_need_gain_db = 0.0f;
 static float32_t AGC_RX1_need_gain_db_old = 0.0f;
 static float32_t AGC_RX2_need_gain_db_old = 0.0f;
+static float32_t AGC_RX1_agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE] = {0};
+static float32_t AGC_RX2_agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE] = {0};
 
 //Run AGC on data block
-void DoAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id)
+void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id)
 {
 	//RX1 or RX2
 	float32_t *AGC_need_gain_db = &AGC_RX1_need_gain_db;
 	float32_t *AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
+	float32_t *agcBuffer_kw = (float32_t*)&AGC_RX1_agcBuffer_kw;
 	if (rx_id == AUDIO_RX2)
 	{
 		AGC_need_gain_db = &AGC_RX2_need_gain_db;
 		AGC_need_gain_db_old = &AGC_RX2_need_gain_db_old;
+		agcBuffer_kw = (float32_t*)&AGC_RX2_agcBuffer_kw;
 	}
 
 	//higher speed in settings - higher speed of AGC processing
 	float32_t RX_AGC_STEPSIZE_UP = 100.0f / (float32_t)TRX.RX_AGC_speed;
 	float32_t RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.RX_AGC_speed;
 
+	//do k-weighting (for LKFS)
+	if (rx_id == AUDIO_RX1)
+	{
+		arm_biquad_cascade_df2T_f32(&AGC_RX1_KW_HSHELF_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32(&AGC_RX1_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+	}
+	else if (rx_id == AUDIO_RX2)
+	{
+		arm_biquad_cascade_df2T_f32(&AGC_RX2_KW_HSHELF_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32(&AGC_RX2_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+	}
+	
 	//calculate the magnitude in dBFS
 	float32_t AGC_RX_magnitude = 0;
-	arm_power_f32(agcBuffer, blockSize, &AGC_RX_magnitude);
+	arm_power_f32(agcBuffer_kw, blockSize, &AGC_RX_magnitude);
 	AGC_RX_magnitude = AGC_RX_magnitude / (float32_t)blockSize;
 	if (AGC_RX_magnitude == 0.0f)
 		AGC_RX_magnitude = 0.001f;

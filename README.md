@@ -40,6 +40,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * USB operation (audio transmission, CAT, KEY, PTT)
 * CW decoder, self-control
 * Spectrum analyzer
+* AGC takes into account the characteristics of human hearing (K-Weighting)
 * TCXO frequency stabilization (it is possible to use an external clock source, such as GPS)
 * WiFi operation: Time synchronization, virtual CAT interface (see Scheme/WIFI-CAT-instruction.txt)
 
@@ -137,7 +138,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### AUDIO Settings
 
 * **IF Gain, dB** - IF gain
-* **AGC Gain target, dBFS** - Maximum AGC gain
+* **AGC Gain target, LKFS** - Maximum AGC gain (Maximum volume with AGC on)
 * **Mic Gain** - Microphone gain
 * **DNR xxx** - Digital squelch adjustment
 * **SSB HPF Pass** - LPF cutoff frequency when operating in SSB
