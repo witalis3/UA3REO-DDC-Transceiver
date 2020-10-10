@@ -283,7 +283,7 @@ void processRxAudio(void)
 		Processor_AudioBuffer_current = &Processor_AudioBuffer_A[0];
 
 	// addition of signals in double receive mode
-	if (TRX.Dual_RX_Type == VFO_A_PLUS_B)
+	if (TRX.Dual_RX && TRX.Dual_RX_Type == VFO_A_PLUS_B)
 	{
 		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.5f, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
