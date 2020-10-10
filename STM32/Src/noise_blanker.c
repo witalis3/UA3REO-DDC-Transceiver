@@ -139,11 +139,15 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 			//finally add the two weighted predictions and insert them into the original signal - thereby eliminating the distortion
 			arm_add_f32(&Rfw[NB_order], &Rbw[0], &instance->NR_Working_buffer[NB_order + instance->impulse_positions[j]], NB_impulse_length);
 		}
-
 		memcpy(instance->NR_OutputBuffer, &instance->NR_Working_buffer[NB_order + NB_PL], NB_FIR_SIZE * sizeof(float32_t));				// copy the samples of the current frame back to the insamp-buffer for output
 		memcpy(instance->NR_Working_buffer, &instance->NR_Working_buffer[NB_FIR_SIZE], (2 * NB_order + 2 * NB_PL) * sizeof(float32_t)); // copy
 	}
 	if (instance->NR_OutputBuffer_index < (NB_FIR_SIZE / NB_BLOCK_SIZE))
 		memcpy(buffer, &instance->NR_OutputBuffer[instance->NR_OutputBuffer_index * NB_BLOCK_SIZE], NB_BLOCK_SIZE * 4);
 	instance->NR_OutputBuffer_index++;
+	
+	//NaNs fix
+	for(uint32_t i = 0; i < NB_BLOCK_SIZE; i++)
+		if (__ARM_isnanf(buffer[i]))
+			buffer[i] = 0.0f;
 }
