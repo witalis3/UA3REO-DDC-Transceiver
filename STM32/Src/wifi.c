@@ -64,7 +64,7 @@ void WIFI_Init(void)
 				WIFI_WaitForOk();
 				WIFI_State = WIFI_READY;
 				WIFI_connected = true;
-				LCD_UpdateQuery.StatusInfoBar = true;
+				LCD_UpdateQuery.StatusInfoGUI = true;
 				sendToDebug_str("[WIFI] Connected\r\n");
 			}
 		}
@@ -162,28 +162,28 @@ void WIFI_Process(void)
 			WIFI_WaitForOk();
 			WIFI_State = WIFI_READY;
 			WIFI_connected = true;
-			LCD_UpdateQuery.StatusInfoBar = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
 		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL)
 		{
 			sendToDebug_str("[WIFI] Disconnected\r\n");
 			//WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
-			LCD_UpdateQuery.StatusInfoBar = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
 		if (strstr(WIFI_readedLine, "FAIL") != NULL)
 		{
 			sendToDebug_str("[WIFI] Connect failed\r\n");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
-			LCD_UpdateQuery.StatusInfoBar = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
 		if (strstr(WIFI_readedLine, "ERROR") != NULL)
 		{
 			sendToDebug_str("[WIFI] Connect error\r\n");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
-			LCD_UpdateQuery.StatusInfoBar = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
 		break;
 

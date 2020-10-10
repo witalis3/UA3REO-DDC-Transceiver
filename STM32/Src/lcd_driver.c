@@ -287,39 +287,46 @@ void LCDDriver_Init(void)
 #endif
 
 #ifdef ILI9481
-
+	#define ILI9481_COMM_DELAY 20
+	
 	LCDDriver_SendCommand(LCD_COMMAND_SOFT_RESET); //0x01
-	HAL_Delay(20);
+	HAL_Delay(ILI9481_COMM_DELAY);
 
 	LCDDriver_SendCommand(LCD_COMMAND_EXIT_SLEEP_MODE); //0x11
-	HAL_Delay(20);
+	HAL_Delay(ILI9481_COMM_DELAY);
 
 	LCDDriver_SendCommand(LCD_COMMAND_NORMAL_MODE_ON); //0x13
-
+	//HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_POWER_SETTING); //(0xD0);
 	LCDDriver_SendData(0x07);
-	LCDDriver_SendData(0x43); //0x43  0x42
-	LCDDriver_SendData(0x15); //0x15  0x18
-
+	LCDDriver_SendData(0x43);
+	LCDDriver_SendData(0x15);
+	//HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_VCOM); //(0xD1);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x07);
 	LCDDriver_SendData(0x10);
-
+	//HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_NORMAL_PWR_WR); //(0xD2);
 	LCDDriver_SendData(0x01);
 	LCDDriver_SendData(0x02);
-
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_PANEL_DRV_CTL); //(0xC0);
 	LCDDriver_SendData(0x10);
 	LCDDriver_SendData(0x3B);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x02);
 	LCDDriver_SendData(0x11);
-
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_FR_INV_CTL); //(0xC5);
 	LCDDriver_SendData(0x03);
-
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_GAMMAWR); //(0xC8);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x32);
@@ -333,29 +340,38 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x54);
 	LCDDriver_SendData(0x0C);
 	LCDDriver_SendData(0x00);
-
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_MADCTL); //(0x36);
 	LCDDriver_SendData(LCD_PARAM_MADCTL_BGR);
-
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_PIXEL_FORMAT); //(0x3A);
 	LCDDriver_SendData(0x55);
-
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_COLUMN_ADDR); //(0x2A);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x01);
 	LCDDriver_SendData(0x3F);
-
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_PAGE_ADDR); //(0x2B);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x01);
 	LCDDriver_SendData(0xDF);
-	HAL_Delay(120);
-
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_COLOR_INVERSION_ON); //(0x21);
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_IDLE_OFF);		   //(0x38);
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
 	LCDDriver_SendCommand(LCD_COMMAND_DISPLAY_ON);		   //(0x29);
+	HAL_Delay(ILI9481_COMM_DELAY);
 #endif
 }
 
