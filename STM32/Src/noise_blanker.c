@@ -21,24 +21,26 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 		instance->NR_OutputBuffer_index = 0;
 
 		arm_fir_instance_f32 LPC;
-		float32_t lpcs[NB_order + 1];		  // we reserve one more than "order" because of a leading "1"
-		float32_t reverse_lpcs[NB_order + 1]; //this takes the reversed order lpc coefficients
-		float32_t sigma2;					  //taking the variance of the inpo
-		float32_t lpc_power;
-		float32_t impulse_threshold;
+		float32_t lpcs[NB_order + 1] = {0};		  // we reserve one more than "order" because of a leading "1"
+		float32_t reverse_lpcs[NB_order + 1] = {0}; //this takes the reversed order lpc coefficients
+		float32_t sigma2 = 0.0f;					  //taking the variance of the inpo
+		float32_t lpc_power = 0.0f;
+		float32_t impulse_threshold = 0.0f;
 		uint16_t search_pos = 0;
 		uint16_t impulse_count = 0;
 
-		float32_t R[NB_order + 1]; // takes the autocorrelation results
-		float32_t k, alfa;
+		float32_t R[NB_order + 1] = {0}; // takes the autocorrelation results
+		float32_t k = 0.0f;
+		float32_t alfa = 0.0f;
 
-		float32_t any[NB_order + 1]; //some internal buffers for the levinson durben algorithm
+		float32_t any[NB_order + 1] = {0}; //some internal buffers for the levinson durben algorithm
 
-		float32_t Rfw[NB_impulse_length + NB_order];			  // takes the forward predicted audio restauration
-		float32_t Rbw[NB_impulse_length + NB_order];			  // takes the backward predicted audio restauration
-		float32_t Wfw[NB_impulse_length], Wbw[NB_impulse_length]; // taking linear windows for the combination of fwd and bwd
+		float32_t Rfw[NB_impulse_length + NB_order] = {0};			  // takes the forward predicted audio restauration
+		float32_t Rbw[NB_impulse_length + NB_order] = {0};			  // takes the backward predicted audio restauration
+		float32_t Wfw[NB_impulse_length] = {0};
+		float32_t Wbw[NB_impulse_length] = {0}; // taking linear windows for the combination of fwd and bwd
 
-		float32_t s;
+		float32_t s = 0.0f;
 
 		//working_buffer //we need 128 + 26 floats to work on -//necessary to watch for impulses as close to the frame boundaries as possible
 		memcpy(&instance->NR_Working_buffer[2 * NB_PL + 2 * NB_order], &instance->NR_InputBuffer, NB_FIR_SIZE * sizeof(float32_t)); // copy incomming samples to the end of our working bufer
@@ -93,7 +95,6 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 		arm_var_f32(instance->tempsamp, NB_FIR_SIZE, &sigma2);												//calculate sigma2 of the original signal ? or tempsignal
 		arm_power_f32(lpcs, NB_order, &lpc_power);															// calculate the sum of the squares (the "power") of the lpc's
 
-		//impulse_threshold = (float32_t)(16.0f - (float32_t)TRX.NOISE_BLANKER_THRESHOLD) * 0.5f * sqrtf(sigma2 * lpc_power);  //set a detection level (3 is not really a final setting)
 		impulse_threshold = (float32_t)(3.0f) * 0.5f * sqrtf(sigma2 * lpc_power); //set a detection level (3 is not really a final setting)
 
 		search_pos = NB_order + NB_PL; // lower boundary problem has been solved! - so here we start from 1 or 0?
@@ -111,6 +112,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 			search_pos++;
 		} while ((search_pos < NB_FIR_SIZE) && (impulse_count < NB_max_inpulse_count));
 		//if(impulse_count>0) sendToDebug_uint16(impulse_count, false);
+	
 		// from here: reconstruction of the impulse-distorted audio part:
 
 		// first we form the forward and backward prediction transfer functions from the lpcs
@@ -133,7 +135,8 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 				arm_dot_prod_f32(&lpcs[1], &Rbw[NB_impulse_length - i], NB_order, &Rbw[NB_impulse_length - i - 1]);
 			}
 
-			arm_mult_f32(&Wfw[0], &Rfw[NB_order], &Rfw[NB_order], NB_impulse_length); // do the windowing, or better: weighing
+			// do the windowing, or better: weighing
+			arm_mult_f32(&Wfw[0], &Rfw[NB_order], &Rfw[NB_order], NB_impulse_length);
 			arm_mult_f32(&Wbw[0], &Rbw[0], &Rbw[0], NB_impulse_length);
 
 			//finally add the two weighted predictions and insert them into the original signal - thereby eliminating the distortion
@@ -142,12 +145,13 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 		memcpy(instance->NR_OutputBuffer, &instance->NR_Working_buffer[NB_order + NB_PL], NB_FIR_SIZE * sizeof(float32_t));				// copy the samples of the current frame back to the insamp-buffer for output
 		memcpy(instance->NR_Working_buffer, &instance->NR_Working_buffer[NB_FIR_SIZE], (2 * NB_order + 2 * NB_PL) * sizeof(float32_t)); // copy
 	}
-	if (instance->NR_OutputBuffer_index < (NB_FIR_SIZE / NB_BLOCK_SIZE))
+	//NaNs fix
+	bool nans = false;
+	for(uint32_t i = (instance->NR_OutputBuffer_index * NB_BLOCK_SIZE); i < (instance->NR_OutputBuffer_index * NB_BLOCK_SIZE + NB_BLOCK_SIZE); i++)
+		if (!nans && __ARM_isnanf(instance->NR_OutputBuffer[i]))
+			nans = true;
+		
+	if (!nans && instance->NR_OutputBuffer_index < (NB_FIR_SIZE / NB_BLOCK_SIZE))
 		memcpy(buffer, &instance->NR_OutputBuffer[instance->NR_OutputBuffer_index * NB_BLOCK_SIZE], NB_BLOCK_SIZE * 4);
 	instance->NR_OutputBuffer_index++;
-	
-	//NaNs fix
-	for(uint32_t i = 0; i < NB_BLOCK_SIZE; i++)
-		if (__ARM_isnanf(buffer[i]))
-			buffer[i] = 0.0f;
 }
