@@ -88,13 +88,13 @@ void processRxAudio(void)
 	//Decimate
 	uint16_t decimated_block_size_rx1 = FPGA_RX_IQ_BUFFER_HALF_SIZE;
 	uint16_t decimated_block_size_rx2 = FPGA_RX_IQ_BUFFER_HALF_SIZE;
-	if (current_vfo->Mode != TRX_MODE_WFM)
+	if (current_vfo->Mode != TRX_MODE_NFM && current_vfo->Mode != TRX_MODE_WFM)
 	{
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_I, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_Q, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, decimated_block_size_rx1);
 		decimated_block_size_rx1 = AUDIO_BUFFER_HALF_SIZE;
 	}
-	if (TRX.Dual_RX && secondary_vfo->Mode != TRX_MODE_WFM)
+	if (TRX.Dual_RX && secondary_vfo->Mode != TRX_MODE_NFM && secondary_vfo->Mode != TRX_MODE_WFM)
 	{
 		arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_I, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2);
 		arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_Q, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, decimated_block_size_rx2);
