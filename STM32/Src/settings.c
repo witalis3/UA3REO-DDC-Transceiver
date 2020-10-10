@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "2.0.0"; //1.2.3-yymmdd.hhmm (concatinate)
+char version_string[19] = "2.0.1"; //1.2.3-yymmdd.hhmm (concatinate)
 
 //W25Q16
 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -186,10 +186,10 @@ void LoadSettings(bool clear)
 		TRX.FFT_Style = 1;				 // FFT display style
 		TRX.ShiftEnabled = false;		 // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 5000;		 // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
-		TRX.DNR_SNR_THRESHOLD = 15;		 // Digital noise reduction level
+		TRX.DNR_SNR_THRESHOLD = 10;		 // Digital noise reduction level
 		TRX.DNR_AVERAGE = 2;			 // DNR averaging when looking for average magnitude
 		TRX.DNR_MINIMAL = 98;			 // DNR averaging when searching for minimum magnitude
-		TRX.NOISE_BLANKER = false;		 // suppressor of short impulse noise NOISE BLANKER
+		TRX.NOISE_BLANKER = true;		 // suppressor of short impulse noise NOISE BLANKER
 		TRX.FRQ_STEP = 10;				 // frequency tuning step by the main encoder
 		TRX.FRQ_FAST_STEP = 100;		 // frequency tuning step by the main encoder in FAST mode
 		TRX.FRQ_ENC_STEP = 25000;		 // frequency tuning step by main add. encoder
