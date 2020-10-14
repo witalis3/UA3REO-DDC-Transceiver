@@ -59,6 +59,7 @@ volatile float32_t TRX_IQ_phase_error = 0.0f;
 volatile bool TRX_NeedGoToBootloader = false;
 volatile bool TRX_Temporary_Stop_BandMap = false;
 volatile bool TRX_Mute = false;
+volatile uint32_t TRX_Temporary_Mute_StartTime = 0;
 uint32_t TRX_freq_phrase = 0;
 uint32_t TRX_freq_phrase2 = 0;
 uint32_t TRX_freq_phrase_tx = 0;
@@ -347,7 +348,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		vfo->HPF_Filter_Width = 0;
 		break;
 	}
-	ReinitAudioFilters();
+	NeedReinitAudioFilters = true;
 	NeedSaveSettings = true;
 }
 
@@ -606,4 +607,10 @@ float32_t TRX_getSTM32H743vref(void)
 	uint32_t VREFINT_DATA = HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_2);
 	float32_t result = 3.3f * (float32_t)VREFINT_CAL / (float32_t)VREFINT_DATA; //from reference
 	return result;
+}
+
+void TRX_TemporaryMute(void)
+{
+	WM8731_Mute();
+	TRX_Temporary_Mute_StartTime = HAL_GetTick();
 }

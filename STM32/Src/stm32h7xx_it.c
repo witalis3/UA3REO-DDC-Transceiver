@@ -492,7 +492,15 @@ void TIM6_DAC_IRQHandler(void)
   if (TRX_key_serial != TRX_old_key_serial)
     TRX_key_change();
 	
-	RF_UNIT_UpdateState(false); // update the state of the RF-Unit board
+	// update the state of the RF-Unit board
+	RF_UNIT_UpdateState(false);
+	
+	// unmute after transition process end
+	if(TRX_Temporary_Mute_StartTime > 0 && (HAL_GetTick() - TRX_Temporary_Mute_StartTime) > 20)
+	{
+		WM8731_UnMute();
+		TRX_Temporary_Mute_StartTime = 0;
+	}
 	
 	if ((ms10_counter % 10) == 0) // every 100ms
   {

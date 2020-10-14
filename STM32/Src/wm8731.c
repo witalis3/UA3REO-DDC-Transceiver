@@ -120,6 +120,18 @@ void WM8731_TXRX_mode(void) //loopback
 	}
 }
 
+void WM8731_Mute(void)
+{
+	WM8731_SendI2CCommand(B8(00000101), B8(10000000)); //R2 Left Headphone Out
+	WM8731_SendI2CCommand(B8(00000111), B8(10000000)); //R3 Right Headphone Out
+}
+
+void WM8731_UnMute(void)
+{
+	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); //R2 Left Headphone Out
+	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); //R3 Right Headphone Out
+}
+
 // initialize the audio codec over I2C
 void WM8731_Init(void)
 {
@@ -134,6 +146,7 @@ void WM8731_Init(void)
 	WM8731_SendI2CCommand(B8(00010000), B8(00000000)); //R8 Sampling Control normal mode, 256fs, SR=0 (MCLK@12.288Mhz, fs=48kHz))
 	WM8731_SendI2CCommand(B8(00010010), B8(00000001)); //R9 reactivate digital audio interface
 	WM8731_RX_mode();
+	TRX_TemporaryMute();
 }
 
 // RX Buffer is fully sent to the codec

@@ -7,6 +7,7 @@
 #include "system_menu.h"
 #include "functions.h"
 #include "audio_filters.h"
+#include "agc.h"
 
 static void FRONTPANEL_ENCODER_Rotated(int8_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
@@ -373,13 +374,15 @@ static void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(void)
 
 static void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
 {
+	TRX_TemporaryMute();
 	TRX.current_vfo = !TRX.current_vfo;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
+	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
-	ReinitAudioFilters();
+	NeedReinitAudioFilters = true;
 	LCD_redraw();
 }
 
