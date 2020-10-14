@@ -264,7 +264,7 @@ void processRxAudio(void)
 			//now decimate output
 			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_I, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2);
 			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_Q, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, decimated_block_size_rx2);
-			decimated_block_size_rx1 = AUDIO_BUFFER_HALF_SIZE;
+			decimated_block_size_rx2 = AUDIO_BUFFER_HALF_SIZE;
 			//end decimate
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
