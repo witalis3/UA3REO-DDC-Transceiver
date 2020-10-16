@@ -290,7 +290,7 @@ void processRxAudio(void)
 	}
 
 	// receiver equalizer
-	if (current_vfo->Mode != TRX_MODE_DIGI_L &&current_vfo->Mode != TRX_MODE_DIGI_U &&current_vfo->Mode != TRX_MODE_IQ)
+	if (current_vfo->Mode != TRX_MODE_DIGI_L && current_vfo->Mode != TRX_MODE_DIGI_U && current_vfo->Mode != TRX_MODE_IQ)
 		doRX_EQ(decimated_block_size_rx1);
 
 	// create buffers for transmission to the codec
@@ -299,7 +299,10 @@ void processRxAudio(void)
 		if (!TRX.Dual_RX)
 		{
 			arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2], 1);	 //left channel
-			arm_float_to_q31(&FPGA_Audio_Buffer_RX1_Q_tmp[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+			if (current_vfo->Mode == TRX_MODE_IQ)
+				arm_float_to_q31(&FPGA_Audio_Buffer_RX1_Q_tmp[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+			else
+				arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
 		}
 		else if (TRX.Dual_RX_Type == VFO_A_AND_B)
 		{

@@ -32,6 +32,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Panorama (spectrum + waterfall) 96 kHz wide
 * Dual receiver (mixing A + B or A&B audio in stereo)
 * Adjustable bandwidth: HPF from 0Hz to 500Hz, LPF from 300Hz to 20kHz
+* Integrated SWR/power meter (HF)
 * Automatic and manual Notch filter
 * Switchable AGC (AGC) with adjustable attack rate
 * Range map, with the ability to automatically switch modes
