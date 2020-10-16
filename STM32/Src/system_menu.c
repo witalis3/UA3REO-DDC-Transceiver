@@ -56,7 +56,6 @@ static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
 
-static void SYSMENU_HANDL_SCREEN_SMeter_Style(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
@@ -205,7 +204,6 @@ static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysm
 
 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
-		{"S-METER Marker", SYSMENU_BOOLEAN, (uint32_t *)&TRX.S_METER_Style, SYSMENU_HANDL_SCREEN_SMeter_Style},
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
 		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style},
@@ -1157,14 +1155,6 @@ static void SYSMENU_HANDL_LCDMENU(int8_t direction)
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	drawSystemMenu(true);
-}
-
-static void SYSMENU_HANDL_SCREEN_SMeter_Style(int8_t direction)
-{
-	if (direction > 0)
-		TRX.S_METER_Style = true;
-	if (direction < 0)
-		TRX.S_METER_Style = false;
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction)

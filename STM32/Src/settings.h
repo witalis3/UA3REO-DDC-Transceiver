@@ -7,7 +7,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 201				// Settings config version
+#define SETT_VERSION 202				// Settings config version
 #define CALIB_VERSION 201				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
 #define DAC_CLOCK 199680000				// DAC generator frequency
@@ -170,7 +170,6 @@ extern struct TRX_SETTINGS
 	uint8_t IF_Gain;
 	bool CW_KEYER;
 	uint16_t CW_KEYER_WPM;
-	bool S_METER_Style;
 	uint8_t TX_AGC_speed;
 	bool Debug_Console;
 	bool Dual_RX;

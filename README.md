@@ -163,7 +163,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 ### SCREEN Settings
 
-* **S-METER Marker** - Appearance of the S-Meter (candle or line)
 * **FFT Zoom** - FFT spectrum approximation (X1 - 96kHz, X2 - 48kHz, X4 - 24kHz, X8 - 12kHz, X16 - 6kHz)
 * **FFT Speed** - FFT and waterfall speed
 * **FFT Style** - FFT and waterfall display style

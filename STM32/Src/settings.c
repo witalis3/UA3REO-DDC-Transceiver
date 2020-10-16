@@ -180,7 +180,6 @@ void LoadSettings(bool clear)
 		TRX.IF_Gain = 70;				 // IF gain, dB (before all processing and AGC)
 		TRX.CW_KEYER = true;			 // Automatic key
 		TRX.CW_KEYER_WPM = 30;			 // Automatic key speed
-		TRX.S_METER_Style = false;		 // View of the S-meter (candle or strip)
 		TRX.Debug_Console = false;		 // Debug output to DEBUG / UART port
 		TRX.Dual_RX = false;					//Dual RX feature
 		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
