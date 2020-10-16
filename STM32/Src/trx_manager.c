@@ -555,7 +555,7 @@ void TRX_DoAutoGain(void)
 
 void TRX_DBMCalculate(void)
 {
-	TRX_RX_dBm = (int16_t)(rate2dbP(Processor_RX_Power_value) + CALIBRATE.smeter_calibration);
+	TRX_RX_dBm = (int16_t)(rate2dbV(Processor_RX_Power_value) + CALIBRATE.smeter_calibration);
 	Processor_RX_Power_value = 0;
 	if (CurrentVFO()->Mode != TRX_MODE_IQ)
 		TRX_RX_dBm -= TRX.IF_Gain;

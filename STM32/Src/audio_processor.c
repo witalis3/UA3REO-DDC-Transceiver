@@ -894,10 +894,10 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	// Prepare data to calculate s-meter
 	float32_t i = 0;
 	if (rx_id == AUDIO_RX1)
-		arm_power_f32(FPGA_Audio_Buffer_RX1_I_tmp, size, &i);
+		arm_rms_f32(FPGA_Audio_Buffer_RX1_I_tmp, size, &i);
 	else
-		arm_power_f32(FPGA_Audio_Buffer_RX2_I_tmp, size, &i);
-	Processor_RX_Power_value = sqrtf(i / (float32_t)size);
+		arm_rms_f32(FPGA_Audio_Buffer_RX2_I_tmp, size, &i);
+	Processor_RX_Power_value = i;
 }
 
 // copy I to Q channel
