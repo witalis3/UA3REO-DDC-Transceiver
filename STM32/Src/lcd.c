@@ -337,16 +337,16 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		if (CurrentVFO()->Freq >= 144000000)
 			TRX_s_meter = (147.0f + TRX_RX_dBm); // 147dbm - S0 for frequencies above 144mhz
 
-		if (TRX_s_meter < 9.01f) // first 9 points of 6 dB
+		if (TRX_s_meter < 54.01f) // first 9 points of meter is 6 dB each
 			TRX_s_meter = (width / 15.0f) * (TRX_s_meter / 6.0f);
-		else // the remaining 3 points, 10 dB each
+		else // the remaining 6 points, 10 dB each
 			TRX_s_meter = ((width / 15.0f) * 9.0f) + ((TRX_s_meter - 54.0f) / 10.0f) * (width / 15.0f);
 
 		TRX_s_meter += 1.0f;
 		if (TRX_s_meter > width)
 			TRX_s_meter = width;
-		if (TRX_s_meter < 0.0f)
-			TRX_s_meter = 0.0f;
+		if (TRX_s_meter < 1.0f)
+			TRX_s_meter = 1.0f;
 
 		float32_t s_width = LCD_last_s_meter * 0.75f + TRX_s_meter * 0.25f; // smooth the movement of the S-meter
 
@@ -368,38 +368,38 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		}
 
 		//print dBm value
-		static float32_t TRX_RX_dBm_averaging = 0.0f;
-		TRX_RX_dBm_averaging = 0.9f * TRX_RX_dBm_averaging + 0.1f * TRX_RX_dBm;
-		sprintf(ctmp, "%ddBm", (int16_t)TRX_RX_dBm_averaging);
+		sprintf(ctmp, "%ddBm", TRX_RX_dBm);
 		addSymbols(ctmp, ctmp, 7, " ", false);
 		LCDDriver_printText(ctmp, LAY_STATUS_LABEL_DBM_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_DBM_Y_OFFSET, COLOR_BUTTON_TEXT, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 		
 		//print s-meter value
-		if(TRX_RX_dBm <= -118)
+		static float32_t TRX_RX_dBm_averaging = -120.0f;
+		TRX_RX_dBm_averaging = 0.9f * TRX_RX_dBm_averaging + 0.1f * TRX_RX_dBm;
+		if(TRX_RX_dBm_averaging <= -118.0f)
 			sprintf(ctmp, "S1");
-		else if(TRX_RX_dBm <= -112)
+		else if(TRX_RX_dBm_averaging <= -112.0f)
 			sprintf(ctmp, "S2");
-		else if(TRX_RX_dBm <= -106)
+		else if(TRX_RX_dBm_averaging <= -106.0f)
 			sprintf(ctmp, "S3");
-		else if(TRX_RX_dBm <= -100)
+		else if(TRX_RX_dBm_averaging <= -100.0f)
 			sprintf(ctmp, "S4");
-		else if(TRX_RX_dBm <= -94)
+		else if(TRX_RX_dBm_averaging <= -94.0f)
 			sprintf(ctmp, "S5");
-		else if(TRX_RX_dBm <= -88)
+		else if(TRX_RX_dBm_averaging <= -88.0f)
 			sprintf(ctmp, "S6");
-		else if(TRX_RX_dBm <= -82)
+		else if(TRX_RX_dBm_averaging <= -82.0f)
 			sprintf(ctmp, "S7");
-		else if(TRX_RX_dBm <= -76)
+		else if(TRX_RX_dBm_averaging <= -76.0f)
 			sprintf(ctmp, "S8");
-		else if(TRX_RX_dBm <= -68)
+		else if(TRX_RX_dBm_averaging <= -68.0f)
 			sprintf(ctmp, "S9");
-		else if(TRX_RX_dBm <= -58)
+		else if(TRX_RX_dBm_averaging <= -58.0f)
 			sprintf(ctmp, "S9+10");
-		else if(TRX_RX_dBm <= -48)
+		else if(TRX_RX_dBm_averaging <= -48.0f)
 			sprintf(ctmp, "S9+20");
-		else if(TRX_RX_dBm <= -38)
+		else if(TRX_RX_dBm_averaging <= -38.0f)
 			sprintf(ctmp, "S9+30");
-		else if(TRX_RX_dBm <= -28)
+		else if(TRX_RX_dBm_averaging <= -28.0f)
 			sprintf(ctmp, "S9+40");
 		else
 			sprintf(ctmp, "S9+60");
