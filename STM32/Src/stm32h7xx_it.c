@@ -538,6 +538,7 @@ void TIM6_DAC_IRQHandler(void)
 		FPGA_Buffer_underrun = false;
 		RX_USB_AUDIO_underrun = false;
 		
+		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_doEvents();                    // update information on LCD
 	}
 	
@@ -640,6 +641,25 @@ void TIM6_DAC_IRQHandler(void)
     RX_USB_AUDIO_SAMPLES = 0;
     TX_USB_AUDIO_SAMPLES = 0;
     FPGA_NeedSendParams = true;
+		
+		//redraw lcd to fix problem
+		#ifdef FIX_HX8357B_BUG
+		static uint8_t HX8357B_BUG_redraw_counter = 0;
+		HX8357B_BUG_redraw_counter++;
+		if(HX8357B_BUG_redraw_counter == 20)
+		{
+			LCD_UpdateQuery.TopButtonsRedraw = true;
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
+		}
+		else if(HX8357B_BUG_redraw_counter == 40)
+			LCD_UpdateQuery.FreqInfoRedraw = true;
+		else if(HX8357B_BUG_redraw_counter >= 60)
+		{
+			LCD_UpdateQuery.StatusInfoGUI = true;
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
+			HX8357B_BUG_redraw_counter = 0;
+		}
+		#endif
   }
 	
   //power off sequence

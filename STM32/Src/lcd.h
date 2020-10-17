@@ -9,9 +9,12 @@ typedef struct
 {
 	bool Background;
 	bool TopButtons;
+	bool TopButtonsRedraw;
 	bool FreqInfo;
+	bool FreqInfoRedraw;
 	bool StatusInfoGUI;
 	bool StatusInfoBar;
+	bool StatusInfoBarRedraw;
 	bool SystemMenu;
 	bool TextBar;
 } DEF_LCD_UpdateQuery;

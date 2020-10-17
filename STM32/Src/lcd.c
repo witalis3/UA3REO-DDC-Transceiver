@@ -38,9 +38,9 @@ static uint8_t Seconds;
 static uint8_t Last_showed_Seconds = 255;
 
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
-static void LCD_displayFreqInfo(void);
+static void LCD_displayFreqInfo(bool redraw);
 static void LCD_displayTopButtons(bool redraw);
-static void LCD_displayStatusInfoBar(void);
+static void LCD_displayStatusInfoBar(bool redraw);
 static void LCD_displayStatusInfoGUI(void);
 static void LCD_displayTextBar(void);
 
@@ -118,15 +118,17 @@ static void LCD_displayTopButtons(bool redraw)
 
 	printInfo(LAY_TOPBUTTONS_LOCK_X, LAY_TOPBUTTONS_LOCK_Y, LAY_TOPBUTTONS_LOCK_W, LAY_TOPBUTTONS_LOCK_H, "LOCK", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Locked);
 
-	LCD_busy = false;
 	LCD_UpdateQuery.TopButtons = false;
+	if(redraw)
+		LCD_UpdateQuery.TopButtonsRedraw = false;
+	LCD_busy = false;
 }
 
-static void LCD_displayFreqInfo()
+static void LCD_displayFreqInfo(bool redraw)
 { // display the frequency on the screen
 	if (LCD_systemMenuOpened)
 		return;
-	if (LCD_last_showed_freq == CurrentVFO()->Freq)
+	if (!redraw && (LCD_last_showed_freq == CurrentVFO()->Freq))
 		return;
 	if (LCD_busy)
 	{
@@ -142,7 +144,11 @@ static void LCD_displayFreqInfo()
 		mhz_x_offset = LAY_FREQ_X_OFFSET_10;
 	else
 		mhz_x_offset = LAY_FREQ_X_OFFSET_1;
-	LCDDriver_Fill_RectWH(0, LAY_FREQ_Y - LAY_FREQ_HEIGHT, mhz_x_offset, LAY_FREQ_HEIGHT, BACKGROUND_COLOR);
+
+	if (redraw)
+		LCDDriver_Fill_RectWH(0, LAY_FREQ_Y_TOP, LCD_WIDTH, LAY_FREQ_BLOCK_HEIGHT, BACKGROUND_COLOR);
+	
+	LCDDriver_Fill_RectWH(0, LAY_FREQ_Y_BASELINE - LAY_FREQ_HEIGHT, mhz_x_offset, LAY_FREQ_HEIGHT, BACKGROUND_COLOR);
 
 	// add spaces to output the frequency
 	uint16_t hz = (CurrentVFO()->Freq % 1000);
@@ -152,27 +158,31 @@ static void LCD_displayFreqInfo()
 	sprintf(LCD_freq_string_khz, "%d", khz);
 	sprintf(LCD_freq_string_mhz, "%d", mhz);
 
-	if (LCD_last_showed_freq_mhz != mhz)
+	if (redraw || (LCD_last_showed_freq_mhz != mhz))
 	{
-		LCDDriver_printTextFont(LCD_freq_string_mhz, mhz_x_offset, LAY_FREQ_Y, LAY_FREQ_COLOR_MHZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
+		LCDDriver_printTextFont(LCD_freq_string_mhz, mhz_x_offset, LAY_FREQ_Y_BASELINE, LAY_FREQ_COLOR_MHZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
 		LCD_last_showed_freq_mhz = mhz;
 	}
 
 	char buff[50] = "";
-	if (LCD_last_showed_freq_khz != khz)
+	if (redraw || (LCD_last_showed_freq_khz != khz))
 	{
 		addSymbols(buff, LCD_freq_string_khz, 3, "0", false);
-		LCDDriver_printTextFont(buff, LAY_FREQ_X_OFFSET_KHZ, LAY_FREQ_Y, LAY_FREQ_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
+		LCDDriver_printTextFont(buff, LAY_FREQ_X_OFFSET_KHZ, LAY_FREQ_Y_BASELINE, LAY_FREQ_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
 		LCD_last_showed_freq_khz = khz;
 	}
-	if (LCD_last_showed_freq_hz != hz)
+	if (redraw || (LCD_last_showed_freq_hz != hz))
 	{
 		addSymbols(buff, LCD_freq_string_hz, 3, "0", false);
-		LCDDriver_printTextFont(buff, LAY_FREQ_X_OFFSET_HZ, LAY_FREQ_Y, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
+		LCDDriver_printTextFont(buff, LAY_FREQ_X_OFFSET_HZ, LAY_FREQ_Y_BASELINE, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
 		LCD_last_showed_freq_hz = hz;
 	}
 	NeedSaveSettings = true;
+	
 	LCD_UpdateQuery.FreqInfo = false;
+	if(redraw)
+		LCD_UpdateQuery.FreqInfoRedraw = false;
+	
 	LCD_busy = false;
 }
 
@@ -263,8 +273,8 @@ static void LCD_displayStatusInfoGUI(void)
 	{
 		LCD_drawSMeter();
 		//LCDDriver_printTextFont("RX", LAY_STATUS_TXRX_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_TXRX_Y_OFFSET), LAY_STATUS_RX_COLOR, BACKGROUND_COLOR, LAY_STATUS_TXRX_FONT);
-		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X1_OFFSET, LAY_FREQ_Y + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_FONT); //Frequency delimiters
-		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X2_OFFSET, LAY_FREQ_Y + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
+		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X1_OFFSET, LAY_FREQ_Y_BASELINE + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_FONT); //Frequency delimiters
+		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X2_OFFSET, LAY_FREQ_Y_BASELINE + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
 
 		char buff[10] = "";
 		if (CurrentVFO()->ManualNotchFilter)
@@ -307,7 +317,7 @@ static void LCD_displayStatusInfoGUI(void)
 	LCD_busy = false;
 }
 
-static void LCD_displayStatusInfoBar(void)
+static void LCD_displayStatusInfoBar(bool redraw)
 {
 	// S-meter and other information
 	if (LCD_systemMenuOpened)
@@ -338,9 +348,9 @@ static void LCD_displayStatusInfoBar(void)
 		if (TRX_s_meter < 0.0f)
 			TRX_s_meter = 0.0f;
 
-		float32_t s_width = LCD_last_s_meter * 0.75f + TRX_s_meter * 0.25f; // smooth the movement of the c-meter
+		float32_t s_width = LCD_last_s_meter * 0.75f + TRX_s_meter * 0.25f; // smooth the movement of the S-meter
 
-		if (LCD_last_s_meter != s_width)
+		if (redraw || (LCD_last_s_meter != s_width))
 		{
 			//clear old bar and stripe
 			if ((LCD_last_s_meter - s_width) > 0)
@@ -459,7 +469,7 @@ static void LCD_displayStatusInfoBar(void)
 	Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
 	Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
 
-	if (Hours != Last_showed_Hours)
+	if (redraw || (Hours != Last_showed_Hours))
 	{
 		sprintf(ctmp, "%d", Hours);
 		addSymbols(ctmp, ctmp, 2, "0", false);
@@ -467,7 +477,7 @@ static void LCD_displayStatusInfoBar(void)
 		LCDDriver_printTextFont(":", LCDDriver_GetCurrentXOffset(), LAY_CLOCK_POS_Y, COLOR_WHITE, COLOR_BLACK, LAY_CLOCK_FONT);
 		Last_showed_Hours = Hours;
 	}
-	if (Minutes != Last_showed_Minutes)
+	if (redraw || (Minutes != Last_showed_Minutes))
 	{
 		sprintf(ctmp, "%d", Minutes);
 		addSymbols(ctmp, ctmp, 2, "0", false);
@@ -475,7 +485,7 @@ static void LCD_displayStatusInfoBar(void)
 		LCDDriver_printTextFont(":", LCDDriver_GetCurrentXOffset(), LAY_CLOCK_POS_Y, COLOR_WHITE, BACKGROUND_COLOR, LAY_CLOCK_FONT);
 		Last_showed_Minutes = Minutes;
 	}
-	if (Seconds != Last_showed_Seconds)
+	if (redraw || (Seconds != Last_showed_Seconds))
 	{
 		sprintf(ctmp, "%d", Seconds);
 		addSymbols(ctmp, ctmp, 2, "0", false);
@@ -484,6 +494,8 @@ static void LCD_displayStatusInfoBar(void)
 	}
 
 	LCD_UpdateQuery.StatusInfoBar = false;
+	if(redraw)
+		LCD_UpdateQuery.StatusInfoBarRedraw = false;
 	LCD_busy = false;
 }
 
@@ -514,10 +526,10 @@ static void LCD_displayTextBar(void)
 void LCD_redraw(void)
 {
 	LCD_UpdateQuery.Background = true;
-	LCD_UpdateQuery.FreqInfo = true;
-	LCD_UpdateQuery.StatusInfoBar = true;
+	LCD_UpdateQuery.FreqInfoRedraw = true;
+	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
-	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.TopButtonsRedraw = true;
 	LCD_UpdateQuery.SystemMenu = true;
 	LCD_UpdateQuery.TextBar = true;
 	LCD_last_s_meter = 0;
@@ -545,11 +557,18 @@ void LCD_doEvents(void)
 	}
 	if (LCD_UpdateQuery.TopButtons)
 		LCD_displayTopButtons(false);
+	if (LCD_UpdateQuery.TopButtonsRedraw)
+		LCD_displayTopButtons(true);
 	if (LCD_UpdateQuery.FreqInfo)
-		LCD_displayFreqInfo();
+		LCD_displayFreqInfo(false);
+	if (LCD_UpdateQuery.FreqInfoRedraw)
+		LCD_displayFreqInfo(true);
 	if (LCD_UpdateQuery.StatusInfoGUI)
 		LCD_displayStatusInfoGUI();
-	LCD_displayStatusInfoBar();
+	if (LCD_UpdateQuery.StatusInfoBar)
+		LCD_displayStatusInfoBar(false);
+	if (LCD_UpdateQuery.StatusInfoBarRedraw)
+		LCD_displayStatusInfoBar(true);
 	if (LCD_UpdateQuery.SystemMenu)
 		drawSystemMenu(false);
 	if (LCD_UpdateQuery.TextBar)

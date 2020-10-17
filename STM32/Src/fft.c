@@ -458,12 +458,10 @@ void FFT_printFFT(void)
 	}
 
 	// clear and display part of the vertical bar
-	LCDDriver_drawFastHLine(0, LAY_FFT_WTF_POS_Y - 1, LAY_FFT_PRINT_SIZE, COLOR_BLACK);
-	LCDDriver_drawPixel(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y, COLOR_GREEN);
 	memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));
 	hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 
-	// output bendmaps
+	// output bandmaps
 	int8_t band_curr = getBandFromFreq(CurrentVFO()->Freq, true);
 	int8_t band_left = band_curr;
 	if (band_curr > 0)
@@ -510,7 +508,9 @@ void FFT_printFFT(void)
 		LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
 
 	// separator and receive band
-	LCDDriver_drawFastHLine(bw_line_start, LAY_FFT_WTF_POS_Y - 1, bw_line_width, COLOR_GREEN);
+	LCDDriver_drawFastHLine(0, (LAY_FFT_WTF_POS_Y - 1), bw_line_start, COLOR_BLACK);
+	LCDDriver_drawFastHLine(bw_line_start, (LAY_FFT_WTF_POS_Y - 1), bw_line_width, COLOR_GREEN);
+	LCDDriver_drawFastHLine((bw_line_start + bw_line_width + 1), LAY_FFT_WTF_POS_Y - 1, (LAY_FFT_PRINT_SIZE - bw_line_start + bw_line_width - 1), COLOR_BLACK);
 
 	// display the waterfall using DMA
 	print_wtf_xindex = 0;

@@ -323,7 +323,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x11);
 	HAL_Delay(ILI9481_COMM_DELAY);
 	
-	LCDDriver_SendCommand(LCD_COMMAND_FR_INV_CTL); //(0xC5);
+	LCDDriver_SendCommand(LCD_COMMAND_FR_SET); //(0xC5);
 	LCDDriver_SendData(0x03);
 	HAL_Delay(ILI9481_COMM_DELAY);
 	
@@ -422,6 +422,7 @@ void LCDDriver_setRotation(uint8_t rotate)
 		break;
 	case 4: // Inverted landscape
 		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_MX | LCD_PARAM_MADCTL_MY);
+		//LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_SS | LCD_PARAM_MADCTL_GS);
 		break;
 	}
 	HAL_Delay(120);
