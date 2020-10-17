@@ -36,7 +36,9 @@ static uint16_t color_scale[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  // color grad
 static SRAM1 uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
 static SRAM1 uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0};				  // frequencies for each row of the waterfall
 static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
-static uint16_t print_wtf_xindex = 0;												  // the current coordinate of the waterfall output via DMA
+static int32_t scale_lines_pos[10] = {-1};										//scale lines positions
+static int16_t bw_line_start = 0;															//BW bar params
+static int16_t bw_line_width = 0;															//BW bar params
 static uint16_t print_wtf_yindex = 0;												  // the current coordinate of the waterfall output via DMA
 static float32_t window_multipliers[FFT_SIZE] = {0};								  // coefficients of the selected window function
 static float32_t hz_in_pixel = 1.0f;												  // current FFT density value
@@ -147,6 +149,7 @@ static uint16_t getFFTHeight(void);					// get FFT height
 static uint16_t getWTFHeight(void);					// get the height of the waterfall
 static void FFT_move(int32_t _freq_diff);			// shift the waterfall
 static int32_t getFreqPositionOnFFT(uint32_t freq); // get the position on the FFT for a given frequency
+static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
 
 // FFT initialization
 void FFT_Init(void)
@@ -392,8 +395,6 @@ void FFT_printFFT(void)
 	}
 
 	// calculate bw bar size
-	int16_t bw_line_start = 0;
-	int16_t bw_line_width = 0;
 	switch (CurrentVFO()->Mode)
 	{
 	case TRX_MODE_LSB:
@@ -423,18 +424,27 @@ void FFT_printFFT(void)
 		break;
 	}
 	
+	//print scale lines
+	for(int8_t i = 0; i < 10; i++)
+	{
+		int32_t pos = 0;
+		if(TRX.FFT_Zoom == 1)
+			pos = getFreqPositionOnFFT(CurrentVFO()->Freq - ((i - 5) * 10000));
+		else
+			pos = getFreqPositionOnFFT(CurrentVFO()->Freq - ((i - 5) * 5000));
+		scale_lines_pos[i] = pos;
+	}
+	
 	// display FFT over the waterfall
 	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + fftHeight));
-	uint16_t color = 0;
+	register uint16_t color = 0;
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 	{
 		for (uint32_t fft_x = 0; fft_x < LAY_FFT_PRINT_SIZE; fft_x++)
 		{
-			if (fft_x == (LAY_FFT_PRINT_SIZE / 2))
-				color = COLOR_GREEN;
-			else if (fft_y <= (fftHeight - fft_header[fft_x]))
-				color = COLOR_BLACK;
-			else
+			//fft data
+			color = COLOR_BLACK;
+			if (fft_y > (fftHeight - fft_header[fft_x]))
 			{
 				if (TRX.FFT_Style == 3 || TRX.FFT_Style == 4)
 					color = LAY_FFT_STYLE_3_4_COLOR;
@@ -442,16 +452,17 @@ void FFT_printFFT(void)
 					color = color_scale[fft_y];
 			}
 			
+			//scale lines
+			for(uint8_t i = 0; i < 10; i++)
+				if ((int32_t)fft_x == scale_lines_pos[i])
+				{
+					color = addColor(color, 0, FFT_SCALE_LINES_BRIGHTNESS, 0);
+					break;
+				}
+			
+			//bw bar
 			if(fft_x >= (uint32_t)bw_line_start && fft_x <= (uint32_t)(bw_line_start + bw_line_width)) // add opacity to bandw bar
-			{
-				uint8_t r = ((color >> 11) & 0x1F) + FFT_BW_BRIGHTNESS;
-				uint8_t g = ((color >> 5) & 0x3F) + FFT_BW_BRIGHTNESS;
-				uint8_t b = ((color >> 0) & 0x1F) + FFT_BW_BRIGHTNESS;
-				if(r > 31) r = 31;
-				if(g > 63) g = 63;
-				if(b > 31) b = 31;
-				color = (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
-			}
+				color = addColor(color, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 			
 			LCDDriver_SendData(color);
 		}
@@ -513,7 +524,6 @@ void FFT_printFFT(void)
 	LCDDriver_drawFastHLine((bw_line_start + bw_line_width + 1), LAY_FFT_WTF_POS_Y - 1, (LAY_FFT_PRINT_SIZE - bw_line_start + bw_line_width - 1), COLOR_BLACK);
 
 	// display the waterfall using DMA
-	print_wtf_xindex = 0;
 	print_wtf_yindex = 0;
 	FFT_printWaterfallDMA();
 }
@@ -527,71 +537,58 @@ void FFT_printWaterfallDMA(void)
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAY_FFT_CWDECODER_OFFSET;
 
+	//print waterfall line
 	if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
 	{
 		// calculate offset
 		int32_t freq_diff = (int32_t)(((float32_t)((int32_t)currentFFTFreq - (int32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)TRX.FFT_Zoom);
-		uint16_t *wtf_draw_buffer = wtf_buffer[print_wtf_yindex];
+		int32_t margin_left = 0;
+		if (freq_diff < 0)
+			margin_left = -freq_diff;
+		if (margin_left > LAY_FFT_PRINT_SIZE)
+			margin_left = LAY_FFT_PRINT_SIZE;
+		int32_t margin_right = 0;
+		if (freq_diff > 0)
+			margin_right = freq_diff;
+		if (margin_right > LAY_FFT_PRINT_SIZE)
+			margin_right = LAY_FFT_PRINT_SIZE;
+		if ((margin_left + margin_right) > LAY_FFT_PRINT_SIZE)
+			margin_right = 0;
+		int32_t body_width = LAY_FFT_PRINT_SIZE - margin_left - margin_right;
 
-		if (freq_diff != 0) // there is a frequency offset
-		{
-			wtf_draw_buffer = wtf_line_tmp; // use the modified line
-
-			int32_t margin_left = 0;
-			if (freq_diff < 0)
-				margin_left = -freq_diff;
-			if (margin_left > LAY_FFT_PRINT_SIZE)
-				margin_left = LAY_FFT_PRINT_SIZE;
-			int32_t margin_right = 0;
-			if (freq_diff > 0)
-				margin_right = freq_diff;
-			if (margin_right > LAY_FFT_PRINT_SIZE)
-				margin_right = LAY_FFT_PRINT_SIZE;
-			if ((margin_left + margin_right) > LAY_FFT_PRINT_SIZE)
-				margin_right = 0;
-			int32_t body_width = LAY_FFT_PRINT_SIZE - margin_left - margin_right;
-
-			if (print_wtf_xindex == 0) // only for a new line
-			{
-				if (body_width <= 0)
-					memset(&wtf_line_tmp, 0x00, sizeof(wtf_line_tmp));
-				else
-				{
-					if (margin_right > 0)
-					{
-						HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex][margin_right], (uint32_t)&wtf_line_tmp[0], LAY_FFT_PRINT_SIZE); // copy the line with the offset
-						HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-					}
-					if (margin_left > 0)
-					{
-						HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex], (uint32_t)&wtf_line_tmp[margin_left], LAY_FFT_PRINT_SIZE - margin_left); // copy the line with the offset
-						HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-						memset(&wtf_line_tmp, 0x00, (uint32_t)(margin_left * 2)); // fill the space to the left
-					}
-					if (margin_right > 0)
-						memset(&wtf_line_tmp[(LAY_FFT_PRINT_SIZE - margin_right)], 0x00, (uint32_t)(margin_right * 2)); // fill the space to the right
-				}
-			}
-		}
-		if (print_wtf_xindex == 0)
-		{
-			// display the left half
-			LCDDriver_SetCursorAreaPosition(0, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE / 2, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_draw_buffer[0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2);
-			print_wtf_xindex = 1;
-		}
+		if (body_width <= 0)
+			memset(&wtf_line_tmp, 0x00, sizeof(wtf_line_tmp));
 		else
 		{
-			// display the right half
-			LCDDriver_SetCursorAreaPosition(LAY_FFT_PRINT_SIZE / 2 + 1, (LAY_FFT_WTF_POS_Y + fftHeight) + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + getFFTHeight()) + print_wtf_yindex + 1);
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_draw_buffer[LAY_FFT_PRINT_SIZE / 2 + 1], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE / 2 - 1);
-			print_wtf_yindex ++;
-			print_wtf_xindex = 0;
+			if (margin_left >= 0)
+			{
+				memset(&wtf_line_tmp, 0x00, (uint32_t)(margin_left * 2)); // fill the space to the left
+				HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex], (uint32_t)&wtf_line_tmp[margin_left], LAY_FFT_PRINT_SIZE - margin_left); // copy the line with the offset
+				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			}
+			if (margin_right > 0)
+			{
+				memset(&wtf_line_tmp[(LAY_FFT_PRINT_SIZE - margin_right)], 0x00, (uint32_t)(margin_right * 2)); // fill the space to the right
+				HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex][margin_right], (uint32_t)&wtf_line_tmp[0], LAY_FFT_PRINT_SIZE - margin_right); // copy the line with the offset
+				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			}
 		}
+		//print scale lines
+		for(int8_t i = 0; i < 10; i++)
+			if(scale_lines_pos[i] > 0 && scale_lines_pos[i] < LAY_FFT_PRINT_SIZE)
+				wtf_line_tmp[scale_lines_pos[i]] = addColor(wtf_line_tmp[scale_lines_pos[i]], 0, FFT_SCALE_LINES_BRIGHTNESS, 0);
+		
+		// add opacity to bandw bar
+		for(int16_t fft_x = bw_line_start; ((fft_x <= (bw_line_start + bw_line_width)) && (fft_x < LAY_FFT_PRINT_SIZE)); fft_x++)
+				wtf_line_tmp[fft_x] = addColor(wtf_line_tmp[fft_x], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
+		
+		// display the line
+		LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y + fftHeight + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_WTF_POS_Y + fftHeight + print_wtf_yindex);
+		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_line_tmp[0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE);
+		print_wtf_yindex++;
 	}
 	else
 	{
-		LCDDriver_drawFastVLine(LAY_FFT_PRINT_SIZE / 2, LAY_FFT_WTF_POS_Y + fftHeight, (int16_t)(wtfHeight - cwdecoder_offset), COLOR_GREEN);
 		FFT_need_fft = true;
 		LCD_busy = false;
 	}
@@ -718,10 +715,22 @@ static uint16_t getWTFHeight(void)
 	return WTF_HEIGHT;
 }
 
-static int32_t getFreqPositionOnFFT(uint32_t freq)
+static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 {
 	int32_t pos = (int32_t)((float32_t)LAY_FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO()->Freq) / hz_in_pixel * (float32_t)TRX.FFT_Zoom);
 	if (pos < 0 || pos >= LAY_FFT_PRINT_SIZE)
 		return -1;
 	return pos;
+}
+
+static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b)
+{
+	uint8_t r = ((color >> 11) & 0x1F) + add_r;
+	uint8_t g = ((color >> 5) & 0x3F) + add_g;
+	uint8_t b = ((color >> 0) & 0x1F) + add_b;
+	if(r > 31) r = 31;
+	if(g > 63) g = 63;
+	if(b > 31) b = 31;
+	color = (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
+	return color;
 }
