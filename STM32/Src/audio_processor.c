@@ -147,11 +147,9 @@ void processRxAudio(void)
 	{
 	case TRX_MODE_LSB:
 	case TRX_MODE_CW_L:
-	case TRX_MODE_DIGI_L:
 		doRX_HILBERT(AUDIO_RX1, decimated_block_size_rx1);
 		arm_sub_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1); // difference of I and Q - LSB
-		if (current_vfo->Mode != TRX_MODE_DIGI_L)
-			doRX_HPF_I(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_HPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
@@ -161,13 +159,20 @@ void processRxAudio(void)
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
+	case TRX_MODE_DIGI_L:
+		doRX_HILBERT(AUDIO_RX1, decimated_block_size_rx1);
+		arm_sub_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1); // difference of I and Q - LSB
+		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
+		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
+		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
+		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_CW_U:
-	case TRX_MODE_DIGI_U:
 		doRX_HILBERT(AUDIO_RX1, decimated_block_size_rx1);
 		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1); // sum of I and Q - USB
-		if (current_vfo->Mode != TRX_MODE_DIGI_U)
-			doRX_HPF_I(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_HPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
@@ -175,6 +180,15 @@ void processRxAudio(void)
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
+		break;
+	case TRX_MODE_DIGI_U:
+		doRX_HILBERT(AUDIO_RX1, decimated_block_size_rx1);
+		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1); // sum of I and Q - USB
+		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
+		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
+		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
 	case TRX_MODE_AM:
@@ -219,29 +233,37 @@ void processRxAudio(void)
 		{
 		case TRX_MODE_LSB:
 		case TRX_MODE_CW_L:
-		case TRX_MODE_DIGI_L:
 			doRX_HILBERT(AUDIO_RX2, decimated_block_size_rx2);
 			arm_sub_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // difference of I and Q - LSB
-			if (secondary_vfo->Mode != TRX_MODE_DIGI_L)
-				doRX_HPF_I(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_HPF_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
 			break;
+		case TRX_MODE_DIGI_L:
+			doRX_HILBERT(AUDIO_RX2, decimated_block_size_rx2);
+			arm_sub_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // difference of I and Q - LSB
+			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
+			break;
 		case TRX_MODE_USB:
 		case TRX_MODE_CW_U:
-		case TRX_MODE_DIGI_U:
 			doRX_HILBERT(AUDIO_RX2, decimated_block_size_rx2);
 			arm_add_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // sum of I and Q - USB
-			if (secondary_vfo->Mode != TRX_MODE_DIGI_U)
-				doRX_HPF_I(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_HPF_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
+			break;
+		case TRX_MODE_DIGI_U:
+			doRX_HILBERT(AUDIO_RX2, decimated_block_size_rx2);
+			arm_add_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // sum of I and Q - USB
+			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
 			break;
 		case TRX_MODE_AM:
 			doRX_LPF_IQ(AUDIO_RX2, decimated_block_size_rx2);

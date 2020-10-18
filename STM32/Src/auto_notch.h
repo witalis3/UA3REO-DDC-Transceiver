@@ -8,7 +8,7 @@
 #include "audio_processor.h"
 
 #define AUTO_NOTCH_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3)	  // block size for processing
-#define AUTO_NOTCH_TAPS AUTO_NOTCH_BLOCK_SIZE				  // filter order
+#define AUTO_NOTCH_TAPS 32				  // filter order
 #define AUTO_NOTCH_REFERENCE_SIZE (AUTO_NOTCH_BLOCK_SIZE * 2) // size of the reference buffer
 #define AUTO_NOTCH_STEP 0.0001f								  // LMS algorithm step
 
