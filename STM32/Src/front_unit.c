@@ -720,6 +720,7 @@ static void FRONTPANEL_BUTTONHANDLER_STEP(void)
 
 static void FRONTPANEL_BUTTONHANDLER_DNR(void)
 {
+	TRX_TemporaryMute();
 	CurrentVFO()->DNR = !CurrentVFO()->DNR;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
