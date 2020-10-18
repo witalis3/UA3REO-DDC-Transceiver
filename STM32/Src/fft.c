@@ -36,13 +36,13 @@ static uint16_t color_scale[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  // color grad
 static SRAM1 uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
 static SRAM1 uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0};				  // frequencies for each row of the waterfall
 static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
-static int32_t scale_lines_pos[10] = {-1};										//scale lines positions
+static int32_t scale_lines_pos[20] = {-1};										//scale lines positions
 static int16_t bw_line_start = 0;															//BW bar params
 static int16_t bw_line_width = 0;															//BW bar params
 static uint16_t print_wtf_yindex = 0;												  // the current coordinate of the waterfall output via DMA
 static float32_t window_multipliers[FFT_SIZE] = {0};								  // coefficients of the selected window function
 static float32_t hz_in_pixel = 1.0f;												  // current FFT density value
-static SRAM1 uint16_t bandmap_line_tmp[LAY_FFT_PRINT_SIZE] = {0};					  // temporary buffer to move the waterfall
+static uint16_t bandmap_line_tmp[LAY_FFT_PRINT_SIZE] = {0};					  // temporary buffer to move the waterfall
 static arm_sort_instance_f32 FFT_sortInstance = {0};								  // sorting instance (to find the median)
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
@@ -354,10 +354,23 @@ void FFT_printFFT(void)
 	uint16_t tmp = 0;
 	uint16_t fftHeight = getFFTHeight();
 	uint16_t wtfHeight = getWTFHeight();
-
-	// offset the waterfall if needed
-	if (((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq) != 0)
+	hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
+	
+	if (CurrentVFO()->Freq != currentFFTFreq)
 	{
+		//calculate scale lines
+		for(int8_t i = 0; i < 13; i++)
+		{
+			int32_t pos = 0;
+			if(TRX.FFT_Zoom == 1)
+				pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 10000 * 10000) - ((i - 6) * 10000));
+			else
+				pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 5000 * 5000) - ((i - 6) * 5000));
+			scale_lines_pos[i] = pos;
+		}
+		scale_lines_pos[12] = LAY_FFT_PRINT_SIZE / 2; //center
+		
+		// offset the waterfall if needed
 		FFT_move((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq);
 		currentFFTFreq = CurrentVFO()->Freq;
 	}
@@ -424,26 +437,15 @@ void FFT_printFFT(void)
 		break;
 	}
 	
-	//print scale lines
-	for(int8_t i = 0; i < 10; i++)
-	{
-		int32_t pos = 0;
-		if(TRX.FFT_Zoom == 1)
-			pos = getFreqPositionOnFFT(CurrentVFO()->Freq - ((i - 5) * 10000));
-		else
-			pos = getFreqPositionOnFFT(CurrentVFO()->Freq - ((i - 5) * 5000));
-		scale_lines_pos[i] = pos;
-	}
-	
 	// display FFT over the waterfall
 	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + fftHeight));
-	register uint16_t color = 0;
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 	{
+		//52cpu
 		for (uint32_t fft_x = 0; fft_x < LAY_FFT_PRINT_SIZE; fft_x++)
 		{
 			//fft data
-			color = COLOR_BLACK;
+			uint16_t color = COLOR_BLACK;
 			if (fft_y > (fftHeight - fft_header[fft_x]))
 			{
 				if (TRX.FFT_Style == 3 || TRX.FFT_Style == 4)
@@ -453,7 +455,7 @@ void FFT_printFFT(void)
 			}
 			
 			//scale lines
-			for(uint8_t i = 0; i < 10; i++)
+			for(uint8_t i = 0; i < 13; i++)
 				if ((int32_t)fft_x == scale_lines_pos[i])
 				{
 					color = addColor(color, 0, FFT_SCALE_LINES_BRIGHTNESS, 0);
@@ -464,13 +466,13 @@ void FFT_printFFT(void)
 			if(fft_x >= (uint32_t)bw_line_start && fft_x <= (uint32_t)(bw_line_start + bw_line_width)) // add opacity to bandw bar
 				color = addColor(color, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 			
+			//send to lcd
 			LCDDriver_SendData(color);
 		}
 	}
-
+	
 	// clear and display part of the vertical bar
 	memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));
-	hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 
 	// output bandmaps
 	int8_t band_curr = getBandFromFreq(CurrentVFO()->Freq, true);
@@ -554,13 +556,19 @@ void FFT_printWaterfallDMA(void)
 			margin_right = LAY_FFT_PRINT_SIZE;
 		if ((margin_left + margin_right) > LAY_FFT_PRINT_SIZE)
 			margin_right = 0;
+		//rounding
 		int32_t body_width = LAY_FFT_PRINT_SIZE - margin_left - margin_right;
 
 		if (body_width <= 0)
 			memset(&wtf_line_tmp, 0x00, sizeof(wtf_line_tmp));
 		else
 		{
-			if (margin_left >= 0)
+			if (margin_left == 0 && margin_right == 0)
+			{
+				HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&wtf_buffer[print_wtf_yindex], (uint32_t)&wtf_line_tmp[0], LAY_FFT_PRINT_SIZE / 2); // copy the line with the offset
+				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			}
+			else if (margin_left >= 0)
 			{
 				memset(&wtf_line_tmp, 0x00, (uint32_t)(margin_left * 2)); // fill the space to the left
 				HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex], (uint32_t)&wtf_line_tmp[margin_left], LAY_FFT_PRINT_SIZE - margin_left); // copy the line with the offset
@@ -574,8 +582,8 @@ void FFT_printWaterfallDMA(void)
 			}
 		}
 		//print scale lines
-		for(int8_t i = 0; i < 10; i++)
-			if(scale_lines_pos[i] > 0 && scale_lines_pos[i] < LAY_FFT_PRINT_SIZE)
+		for(int8_t i = 0; i < 13; i++)
+			if(scale_lines_pos[i] > 0)
 				wtf_line_tmp[scale_lines_pos[i]] = addColor(wtf_line_tmp[scale_lines_pos[i]], 0, FFT_SCALE_LINES_BRIGHTNESS, 0);
 		
 		// add opacity to bandw bar
