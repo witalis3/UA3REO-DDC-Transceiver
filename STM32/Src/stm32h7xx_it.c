@@ -681,7 +681,7 @@ void TIM6_DAC_IRQHandler(void)
   }
 	
   // restart USB if there is no activity (off) to find a new connection
-  if (TRX_Inited && (USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick()))
+  if (TRX_Inited && ((USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick()))) // || (USB_LastActiveTime == 0)
     USBD_Restart();
 
   /* USER CODE END TIM6_DAC_IRQn 1 */
@@ -727,34 +727,6 @@ void USART6_IRQHandler(void)
   /* USER CODE BEGIN USART6_IRQn 1 */
 
   /* USER CODE END USART6_IRQn 1 */
-}
-
-/**
-  * @brief This function handles USB On The Go FS End Point 1 Out global interrupt.
-  */
-void OTG_FS_EP1_OUT_IRQHandler(void)
-{
-  /* USER CODE BEGIN OTG_FS_EP1_OUT_IRQn 0 */
-  CPULOAD_WakeUp();
-  /* USER CODE END OTG_FS_EP1_OUT_IRQn 0 */
-  HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
-  /* USER CODE BEGIN OTG_FS_EP1_OUT_IRQn 1 */
-
-  /* USER CODE END OTG_FS_EP1_OUT_IRQn 1 */
-}
-
-/**
-  * @brief This function handles USB On The Go FS End Point 1 In global interrupt.
-  */
-void OTG_FS_EP1_IN_IRQHandler(void)
-{
-  /* USER CODE BEGIN OTG_FS_EP1_IN_IRQn 0 */
-  CPULOAD_WakeUp();
-  /* USER CODE END OTG_FS_EP1_IN_IRQn 0 */
-  HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
-  /* USER CODE BEGIN OTG_FS_EP1_IN_IRQn 1 */
-
-  /* USER CODE END OTG_FS_EP1_IN_IRQn 1 */
 }
 
 /**

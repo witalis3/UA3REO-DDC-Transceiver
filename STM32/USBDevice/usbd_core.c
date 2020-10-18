@@ -19,7 +19,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_core.h"
+#include <stdbool.h>
 
+static bool USBD_inited = false;
 USBD_StatusTypeDef USBD_Init(USBD_HandleTypeDef *pdev, USBD_DescriptorsTypeDef *pdesc, uint8_t id)
 {
   /* Check whether the USB Host handle is valid */
@@ -49,6 +51,7 @@ USBD_StatusTypeDef USBD_Init(USBD_HandleTypeDef *pdev, USBD_DescriptorsTypeDef *
   /* Initialize low level driver */
   USBD_LL_Init(pdev);
 
+	USBD_inited = true;
   return USBD_OK;
 }
 
@@ -60,6 +63,9 @@ USBD_StatusTypeDef USBD_Init(USBD_HandleTypeDef *pdev, USBD_DescriptorsTypeDef *
 */
 USBD_StatusTypeDef USBD_DeInit(USBD_HandleTypeDef *pdev)
 {
+	if(!USBD_inited)
+			return USBD_FAIL;
+	
   /* Set Default State */
   pdev->dev_state  = USBD_STATE_DEFAULT;
 
@@ -71,7 +77,8 @@ USBD_StatusTypeDef USBD_DeInit(USBD_HandleTypeDef *pdev)
 
   /* Initialize low level driver */
   USBD_LL_DeInit(pdev);
-
+	
+	USBD_inited = false;
   return USBD_OK;
 }
 
