@@ -793,6 +793,8 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd)
 	HAL_Delay(10);
 	//Repeat disabling PCD (else may be error in USB_CoreReset)
 	__HAL_PCD_DISABLE(hpcd);
+	hpcd->Instance->GUSBCFG |= USB_OTG_GUSBCFG_PHYSEL;
+	__HAL_RCC_USB2_OTG_FS_ULPI_CLK_DISABLE();
 	HAL_Delay(10);
 	
   /* USER CODE END USB_OTG_FS_MspInit 1 */
