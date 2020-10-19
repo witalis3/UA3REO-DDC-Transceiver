@@ -188,12 +188,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   __HAL_RCC_CSI_ENABLE();
   __HAL_RCC_SYSCFG_CLK_ENABLE();
-	__HAL_RCC_USB1_OTG_HS_CLK_DISABLE();
-	__HAL_RCC_USB1_OTG_HS_CLK_SLEEP_ENABLE();
-  __HAL_RCC_USB1_OTG_HS_ULPI_CLK_SLEEP_ENABLE();
-	__HAL_RCC_USB2_OTG_FS_CLK_ENABLE();
-  __HAL_RCC_USB2_OTG_FS_CLK_SLEEP_ENABLE();
-  __HAL_RCC_USB2_OTG_FS_ULPI_CLK_SLEEP_DISABLE();
+	__HAL_RCC_BKPRAM_CLK_ENABLE();
   HAL_EnableCompensationCell();
   sendToDebug_str("\r\n----------------------------------\r\n");
   sendToDebug_strln("Wolf Transceiver Initialization...");
@@ -261,6 +256,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim17);
   sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
   TRX_STM32_VREF = TRX_getSTM32H743vref();
+	//while(true){HAL_Delay(3000); SCB->AIRCR = 0x05FA0004; } //debug restart
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -1581,6 +1577,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+	sendToDebug_strln("error handled");
   /*while (1)
 	{
 		LCD_showError("Error handled", true);

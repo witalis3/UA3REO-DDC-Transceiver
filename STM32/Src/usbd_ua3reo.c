@@ -522,7 +522,7 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 
 	pdev->pClassDataDEBUG = USBD_malloc(sizeof(USBD_DEBUG_HandleTypeDef));
 	pdev->pClassDataCAT = USBD_malloc(sizeof(USBD_CAT_HandleTypeDef));
-	pdev->pClassDataAUDIO = malloc(sizeof(USBD_AUDIO_HandleTypeDef));
+	pdev->pClassDataAUDIO = USBD_malloc(sizeof(USBD_AUDIO_HandleTypeDef));
 
 	if (pdev->pClassDataDEBUG == NULL)
 	{
@@ -1414,12 +1414,12 @@ static uint8_t USBD_UA3REO_SOF(void)
 void USBD_Restart(void)
 {
 	MX_USB_DevDisconnect();
-	/*GPIO_InitTypeDef GPIO_InitStruct = {0};
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	//GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
 	GPIO_InitStruct.Pin = GPIO_PIN_12;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);*/
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
 	//HAL_Delay(1000);
 	

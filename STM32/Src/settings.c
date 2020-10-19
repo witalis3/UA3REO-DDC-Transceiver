@@ -497,7 +497,7 @@ static void EEPROM_PowerUp(void)
 
 void BKPSRAM_Enable(void)
 {
-	__HAL_RCC_BKPRAM_CLK_ENABLE();
+	//__HAL_RCC_BKPRAM_CLK_ENABLE();
 	HAL_PWREx_EnableBkUpReg();
 	HAL_PWR_EnableBkUpAccess();
 }

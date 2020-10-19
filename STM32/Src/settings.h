@@ -53,6 +53,7 @@
 #define FLOAT_FULL_SCALE_POW 4
 #define USB_DEBUG_ENABLED true	// allow using USB as a console
 #define SWD_DEBUG_ENABLED false // enable SWD as a console
+#define LCD_DEBUG_ENABLED false // enable LCD as a console
 #define AUDIO_DECIM_RATE (IQ_SAMPLERATE / TRX_SAMPLERATE)
 #define DCDC_FREQ_0 1000000
 #define DCDC_FREQ_1 1200000

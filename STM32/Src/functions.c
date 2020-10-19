@@ -72,6 +72,14 @@ void sendToDebug_str(char *data)
 		printf("%s", data);
 	if (USB_DEBUG_ENABLED)
 		DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
+	if (LCD_DEBUG_ENABLED)
+	{
+		static uint16_t dbg_lcd_y = 10;
+		LCDDriver_printText(data, 0, dbg_lcd_y, COLOR_RED, BACKGROUND_COLOR, 1);
+		dbg_lcd_y += 9;
+		if(dbg_lcd_y >= LCD_HEIGHT)
+			dbg_lcd_y = 0;
+	}
 }
 
 void sendToDebug_strln(char *data)
