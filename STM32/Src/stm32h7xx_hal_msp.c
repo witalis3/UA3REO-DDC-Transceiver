@@ -778,6 +778,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd)
     HAL_NVIC_SetPriority(OTG_FS_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
   /* USER CODE BEGIN USB_OTG_FS_MspInit 1 */
+	
 	//stop PCD, run CLK, set SLEEP, disable ULPI
 	__HAL_PCD_DISABLE(hpcd);
 	__HAL_RCC_USB1_OTG_HS_CLK_SLEEP_ENABLE();
@@ -793,6 +794,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd)
 	//Repeat disabling PCD (else may be error in USB_CoreReset)
 	__HAL_PCD_DISABLE(hpcd);
 	HAL_Delay(10);
+	
   /* USER CODE END USB_OTG_FS_MspInit 1 */
   }
 
