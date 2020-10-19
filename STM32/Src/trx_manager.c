@@ -356,6 +356,7 @@ void TRX_DoAutoGain(void)
 {
 	#define SKIP_CYCLES_DOWNSTAGE 10 //skip cycles on stage downgrade
 	static uint8_t skip_cycles = 0;
+	static bool lna_may_enabled = true;
 	
 	//Process AutoGain feature
 	if (TRX.AutoGain && !TRX_on_TX())
@@ -364,10 +365,42 @@ void TRX_DoAutoGain(void)
 		if(abs(TRX_ADC_MINAMPLITUDE) > max_amplitude)
 			max_amplitude = abs(TRX_ADC_MINAMPLITUDE);
 		
-		TRX.RF_Filters = true;
+		
 		switch (TRX_AutoGain_Stage)
 		{
-		case 0: // stage 1 - LPF + BPF + ATT
+		case 0: // stage 1 - check LNA intermod (overloading)
+			TRX.RF_Filters = false;
+			TRX.LNA = true;
+			TRX.ADC_PGA = false;
+			TRX.ADC_Driver = false;
+			TRX.ATT = false;
+			FPGA_NeedSendParams = true;
+			lna_may_enabled = true;
+			LCD_UpdateQuery.TopButtons = true;
+			autogain_wait_reaction = 0;
+			if(skip_cycles == 0)
+			{
+				sendToDebug_strln("AUTOGAIN LNA overloading check");
+				TRX_AutoGain_Stage++;
+			}
+			else
+				skip_cycles--;
+			break;
+		case 1:																					// changed the state, process the results
+			if (max_amplitude <= AUTOGAIN_LNA_MAX_AMPLITUDE) // if we can turn on LNA without imd
+				lna_may_enabled = true;
+			else
+				lna_may_enabled = false;
+			
+			autogain_wait_reaction++;
+			if (autogain_wait_reaction >= AUTOGAIN_CORRECTOR_WAITSTEP)
+			{
+				TRX_AutoGain_Stage++;
+				autogain_wait_reaction = 0;
+			}
+			break;
+		case 2: // stage 2 - LPF + BPF + ATT
+			TRX.RF_Filters = true;
 			TRX.LNA = false;
 			TRX.ADC_PGA = false;
 			TRX.ADC_Driver = false;
@@ -377,13 +410,15 @@ void TRX_DoAutoGain(void)
 			autogain_wait_reaction = 0;
 			if(skip_cycles == 0)
 			{
+				if(!lna_may_enabled)
+					sendToDebug_strln("AUTOGAIN LNA has imd, signal too strong");
 				sendToDebug_strln("AUTOGAIN LPF + BPF + ATT");
 				TRX_AutoGain_Stage++;
 			}
 			else
 				skip_cycles--;
 			break;
-		case 1:																					// changed the state, process the results
+		case 3:																					// changed the state, process the results
 			if ((max_amplitude * db2rateV(-TRX.ATT_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
 				autogain_wait_reaction++;
 			else
@@ -394,7 +429,8 @@ void TRX_DoAutoGain(void)
 				autogain_wait_reaction = 0;
 			}
 			break;
-		case 2: // stage 2 - LPF + BPF
+		case 4: // stage 3 - LPF + BPF
+			TRX.RF_Filters = true;
 			TRX.LNA = false;
 			TRX.ATT = false;
 			TRX.ADC_PGA = false;
@@ -410,13 +446,13 @@ void TRX_DoAutoGain(void)
 			else
 				skip_cycles--;
 			break;
-		case 3: // changed the state, process the results
+		case 5: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
 			{
 				TRX_AutoGain_Stage -= 3;																							  // too much gain, go back one step
 				skip_cycles = SKIP_CYCLES_DOWNSTAGE;
 			}
-			if ((max_amplitude * db2rateV(ADC_LNA_GAIN_DB) / db2rateV(-TRX.ATT_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can enable ATT + PREAMP - go to the next stage
+			if ((max_amplitude * db2rateV((lna_may_enabled ? ADC_LNA_GAIN_DB : 0)) / db2rateV(-TRX.ATT_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can enable ATT + PREAMP - go to the next stage
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;
@@ -426,8 +462,9 @@ void TRX_DoAutoGain(void)
 				autogain_wait_reaction = 0;
 			}
 			break;
-		case 4: // stage 3 - LPF + BPF + LNA + ATT
-			TRX.LNA = true;
+		case 6: // stage 4 - LPF + BPF + LNA + ATT
+			TRX.RF_Filters = true;
+			TRX.LNA = lna_may_enabled;
 			TRX.ATT = true;
 			TRX.ADC_PGA = false;
 			TRX.ADC_Driver = false;
@@ -442,7 +479,7 @@ void TRX_DoAutoGain(void)
 			else
 				skip_cycles--;
 			break;
-		case 5: // changed the state, process the results
+		case 7: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
 			{
 				TRX_AutoGain_Stage -= 3;															// too much gain, go back one step
@@ -458,8 +495,9 @@ void TRX_DoAutoGain(void)
 				autogain_wait_reaction = 0;
 			}
 			break;
-		case 6: // stage 4 - LPF + BPF + LNA
-			TRX.LNA = true;
+		case 8: // stage 5 - LPF + BPF + LNA
+			TRX.RF_Filters = true;
+			TRX.LNA = lna_may_enabled;
 			TRX.ATT = false;
 			TRX.ADC_PGA = false;
 			TRX.ADC_Driver = false;
@@ -474,7 +512,7 @@ void TRX_DoAutoGain(void)
 			else
 				skip_cycles--;
 			break;
-		case 7: // changed the state, process the results
+		case 9: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
 			{
 				TRX_AutoGain_Stage -= 3; // too much gain, go back one step
@@ -490,8 +528,9 @@ void TRX_DoAutoGain(void)
 				autogain_wait_reaction = 0;
 			}
 			break;
-		case 8: // stage 5 - LPF + BPF + LNA + PGA
-			TRX.LNA = true;
+		case 10: // stage 6 - LPF + BPF + LNA + PGA
+			TRX.RF_Filters = true;
+			TRX.LNA = lna_may_enabled;
 			TRX.ATT = false;
 			TRX.ADC_PGA = true;
 			TRX.ADC_Driver = false;
@@ -506,7 +545,7 @@ void TRX_DoAutoGain(void)
 			else
 				skip_cycles--;
 			break;
-		case 9: // changed the state, process the results
+		case 11: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
 			{
 				TRX_AutoGain_Stage -= 3; // too much gain, go back one step
@@ -522,8 +561,9 @@ void TRX_DoAutoGain(void)
 				autogain_wait_reaction = 0;
 			}
 			break;
-		case 10: // stage 5 - LPF + BPF + LNA + PGA + DRIVER
-			TRX.LNA = true;
+		case 12: // stage 7 - LPF + BPF + LNA + PGA + DRIVER
+			TRX.RF_Filters = true;
+			TRX.LNA = lna_may_enabled;
 			TRX.ATT = false;
 			TRX.ADC_PGA = true;
 			TRX.ADC_Driver = true;
@@ -538,7 +578,7 @@ void TRX_DoAutoGain(void)
 			else
 				skip_cycles--;
 			break;
-		case 11: // changed the state, process the results
+		case 13: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
 			{
 				TRX_AutoGain_Stage -= 3; // too much gain, go back one step

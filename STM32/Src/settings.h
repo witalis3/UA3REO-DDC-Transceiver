@@ -23,6 +23,7 @@
 #define TX_AGC_NOISEGATE 0.00001f		// Minimum signal level for amplification (below - noise, cut off)
 #define TOUCHPAD_DELAY 200				// Anti-bounce time for pressing the touchpad
 #define AUTOGAIN_TARGET_AMPLITUDE 20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
+#define AUTOGAIN_LNA_MAX_AMPLITUDE 25000.0f // maximum amplitude, without imd from LNA
 #define AUTOGAIN_MAX_AMPLITUDE 30000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
 #define AUTOGAIN_CORRECTOR_WAITSTEP 10	// waiting for the averaging of the results when the auto-corrector of the input circuits is running
 #define KEY_HOLD_TIME 500				// time of long pressing of the keyboard button for triggering, ms
