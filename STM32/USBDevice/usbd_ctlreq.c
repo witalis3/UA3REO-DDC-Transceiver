@@ -116,7 +116,7 @@ USBD_StatusTypeDef  USBD_StdDevReq (USBD_HandleTypeDef *pdev , USBD_SetupReqType
   {
   case USB_REQ_TYPE_CLASS:
   case USB_REQ_TYPE_VENDOR:
-    pdev->pClass->Setup(pdev, req);
+    ret = pdev->pClass->Setup(pdev, req);
     break;
 
   case USB_REQ_TYPE_STANDARD:
@@ -215,7 +215,7 @@ USBD_StatusTypeDef  USBD_StdItfReq (USBD_HandleTypeDef *pdev , USBD_SetupReqType
     break;
   }
 
-  return USBD_OK;
+  return ret;
 }
 
 /**
@@ -238,18 +238,10 @@ USBD_StatusTypeDef  USBD_StdEPReq (USBD_HandleTypeDef *pdev , USBD_SetupReqTyped
 
   case USB_REQ_TYPE_CLASS:
   case USB_REQ_TYPE_VENDOR:
-    pdev->pClass->Setup (pdev, req);
+    ret = pdev->pClass->Setup (pdev, req);
     break;
 
   case USB_REQ_TYPE_STANDARD:
-    /* Check if it is a class request */
-    if ((req->bmRequest & 0x60U) == 0x20U)
-    {
-      ret = (USBD_StatusTypeDef)(pdev->pClass->Setup (pdev, req));
-
-      return ret;
-    }
-
     switch (req->bRequest)
     {
 
@@ -278,7 +270,7 @@ USBD_StatusTypeDef  USBD_StdEPReq (USBD_HandleTypeDef *pdev , USBD_SetupReqTyped
           }
         }
         USBD_CtlSendStatus(pdev);
-
+				pdev->pClass->Setup(pdev, req);
         break;
 
       default:
@@ -403,8 +395,8 @@ USBD_StatusTypeDef  USBD_StdEPReq (USBD_HandleTypeDef *pdev , USBD_SetupReqTyped
 static void USBD_GetDescriptor(USBD_HandleTypeDef *pdev ,
                                USBD_SetupReqTypedef *req)
 {
-  uint16_t len;
-  uint8_t *pbuf;
+  uint16_t len = 0U;
+  uint8_t *pbuf = NULL;
 
 
   switch (req->wValue >> 8)
@@ -515,10 +507,22 @@ static void USBD_GetDescriptor(USBD_HandleTypeDef *pdev ,
     USBD_CtlSendData (pdev, pbuf, len);
   }
 
-  if(req->wLength == 0U)
-  {
-   USBD_CtlSendStatus(pdev);
-  }
+    if (req->wLength != 0U)
+    {
+      if (len != 0U)
+      {
+        len = MIN(len, req->wLength);
+        USBD_CtlSendData(pdev, pbuf, len);
+      }
+      else
+      {
+        USBD_CtlError(pdev);
+      }
+    }
+    else
+    {
+      USBD_CtlSendStatus(pdev);
+    }
 }
 
 /**
@@ -772,11 +776,23 @@ static void USBD_ClrFeature(USBD_HandleTypeDef *pdev ,
 #pragma GCC diagnostic ignored "-Wimplicit-int-conversion"
 void USBD_ParseSetupRequest(USBD_SetupReqTypedef *req, uint8_t *pdata)
 {
-  req->bmRequest     = *(uint8_t *)  (pdata);
-  req->bRequest      = *(uint8_t *)  (pdata +  1);
-  req->wValue        = SWAPBYTE      (pdata +  2);
-  req->wIndex        = SWAPBYTE      (pdata +  4);
-  req->wLength       = SWAPBYTE      (pdata +  6);
+  uint8_t *pbuff = pdata;
+
+  req->bmRequest = *(uint8_t *)(pbuff);
+
+  pbuff++;
+  req->bRequest = *(uint8_t *)(pbuff);
+
+  pbuff++;
+  req->wValue = SWAPBYTE(pbuff);
+
+  pbuff++;
+  pbuff++;
+  req->wIndex = SWAPBYTE(pbuff);
+
+  pbuff++;
+  pbuff++;
+  req->wLength = SWAPBYTE(pbuff);
 }
 #pragma GCC diagnostic pop
 /**
@@ -805,18 +821,29 @@ void USBD_CtlError( USBD_HandleTypeDef *pdev)
 void USBD_GetString(uint8_t *desc, uint8_t *unicode, uint16_t *len)
 {
   uint8_t idx = 0U;
+  uint8_t *pdesc;
 
-  if (desc != NULL)
+  if (desc == NULL)
   {
-    *len = (uint16_t)USBD_GetLen(desc) * 2U + 2U;
-    unicode[idx++] = *(uint8_t *)(void *)len;
-    unicode[idx++] = USB_DESC_TYPE_STRING;
+    return;
+  }
 
-    while (*desc != '\0')
-    {
-      unicode[idx++] = *desc++;
-      unicode[idx++] =  0U;
-    }
+  pdesc = desc;
+  *len = ((uint16_t)USBD_GetLen(pdesc) * 2U) + 2U;
+
+  unicode[idx] = *(uint8_t *)len;
+  idx++;
+  unicode[idx] = USB_DESC_TYPE_STRING;
+  idx++;
+
+  while (*pdesc != (uint8_t)'\0')
+  {
+    unicode[idx] = *pdesc;
+    pdesc++;
+    idx++;
+
+    unicode[idx] = 0U;
+    idx++;
   }
 }
 
@@ -828,15 +855,16 @@ void USBD_GetString(uint8_t *desc, uint8_t *unicode, uint16_t *len)
   */
 static uint8_t USBD_GetLen(uint8_t *buf)
 {
-    uint8_t  len = 0U;
+  uint8_t  len = 0U;
+  uint8_t *pbuff = buf;
 
-    while (*buf != '\0')
-    {
-        len++;
-        buf++;
-    }
+  while (*pbuff != (uint8_t)'\0')
+  {
+    len++;
+    pbuff++;
+  }
 
-    return len;
+  return len;
 }
 /**
   * @}

@@ -45,7 +45,6 @@ extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 void Error_Handler(void);
 
 /* External functions --------------------------------------------------------*/
-void SystemClock_Config(void);
 
 /* USER CODE BEGIN 0 */
 
@@ -144,7 +143,7 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
   }
   else if ( hpcd->Init.speed == PCD_SPEED_FULL)
   {
-    //speed = USBD_SPEED_FULL;
+    speed = USBD_SPEED_FULL;
   }
   else
   {

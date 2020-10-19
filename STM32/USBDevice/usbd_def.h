@@ -207,6 +207,7 @@ typedef enum
 typedef enum {
   USBD_OK   = 0U,
   USBD_BUSY,
+	USBD_EMEM,
   USBD_FAIL,
 }USBD_StatusTypeDef;
 
@@ -235,6 +236,7 @@ typedef struct
   uint32_t                total_length;
   uint32_t                rem_length;
   uint32_t                maxpacket;
+	uint32_t bInterval;
 } USBD_EndpointTypeDef;
 
 /* USB Device handle structure */
@@ -280,8 +282,8 @@ typedef struct _USBD_HandleTypeDef
 #define  SWAPBYTE(addr)        (((uint16_t)(*((uint8_t *)(addr)))) + \
                                (((uint16_t)(*(((uint8_t *)(addr)) + 1U))) << 8U))
 
-#define LOBYTE(x)  ((uint8_t)(x & 0x00FFU))
-#define HIBYTE(x)  ((uint8_t)((x & 0xFF00U) >> 8U))
+#define LOBYTE(x)  ((uint8_t)((x) & 0x00FFU))
+#define HIBYTE(x)  ((uint8_t)(((x) & 0xFF00U) >> 8U))
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
@@ -299,22 +301,24 @@ typedef struct _USBD_HandleTypeDef
 /* In HS mode and when the DMA is used, all variables and data structures dealing
    with the DMA during the transaction process should be 4-bytes aligned */
 
-#if defined   (__GNUC__)        /* GNU Compiler */
-  #ifndef __ALIGN_END
-		#define __ALIGN_END    __attribute__ ((aligned (4)))
-	#endif
-	#ifndef __ALIGN_BEGIN
-		#define __ALIGN_BEGIN
-	#endif
+#if defined ( __GNUC__ ) && !defined (__CC_ARM) /* GNU Compiler */
+#ifndef __ALIGN_END
+#define __ALIGN_END    __attribute__ ((aligned (4U)))
+#endif /* __ALIGN_END */
+#ifndef __ALIGN_BEGIN
+#define __ALIGN_BEGIN
+#endif /* __ALIGN_BEGIN */
 #else
-  #define __ALIGN_END
-  #if defined   (__CC_ARM)      /* ARM Compiler */
-    #define __ALIGN_BEGIN    __align(4)
-  #elif defined (__ICCARM__)    /* IAR Compiler */
-    #define __ALIGN_BEGIN
-  #elif defined  (__TASKING__)  /* TASKING Compiler */
-    #define __ALIGN_BEGIN    __align(4)
-  #endif /* __CC_ARM */
+#ifndef __ALIGN_END
+#define __ALIGN_END
+#endif /* __ALIGN_END */
+#ifndef __ALIGN_BEGIN
+#if defined   (__CC_ARM)      /* ARM Compiler */
+#define __ALIGN_BEGIN    __align(4U)
+#elif defined (__ICCARM__)    /* IAR Compiler */
+#define __ALIGN_BEGIN
+#endif /* __CC_ARM */
+#endif /* __ALIGN_BEGIN */
 #endif /* __GNUC__ */
 
 
