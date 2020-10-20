@@ -170,9 +170,9 @@ void LoadSettings(bool clear)
 		TRX.SPEC_TopDBM = -60;						// chart thresholds
 		TRX.SPEC_BottomDBM = -130;					// chart thresholds
 		TRX.CW_SelfHear = true;						// self-control CW
-		TRX.ADC_RAND = false;						// ADC encryption
+		TRX.ADC_RAND = true;						// ADC encryption (xor randomizer)
 		TRX.ADC_SHDN = false;						// ADC disable
-		TRX.ADC_DITH = false;						// ADC dither
+		TRX.ADC_DITH = true;						// ADC dither
 		TRX.FFT_Window = 1;
 		TRX.Locked = false;				 // Lock control
 		TRX.CLAR = false;				 // Split frequency mode (receive one VFO, transmit another)

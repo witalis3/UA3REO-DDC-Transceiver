@@ -652,7 +652,10 @@ void TIM6_DAC_IRQHandler(void)
 			LCD_UpdateQuery.StatusInfoBarRedraw = true;
 		}
 		else if(HX8357B_BUG_redraw_counter == 40)
+		{
 			LCD_UpdateQuery.FreqInfoRedraw = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
+		}
 		else if(HX8357B_BUG_redraw_counter >= 60)
 		{
 			LCD_UpdateQuery.StatusInfoGUI = true;
