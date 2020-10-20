@@ -64,30 +64,6 @@ void LCDDriver_Init(void)
 		LCD_FSMC_COMM_ADDR = 0x6C000000;
 #endif
 	LCD_FSMC_DATA_ADDR = LCD_FSMC_COMM_ADDR + (1 << (FSMC_REGISTER_SELECT + 1));
-
-	//read lcd device info
-	uint16_t tmp = 0;
-	//test HX8357B
-	LCDDriver_SendCommand(0x04);
-	tmp = LCDDriver_ReadCommand();
-	sendToDebug_uint16(tmp,false); //dummy data.
-	tmp = LCDDriver_ReadCommand();
-	sendToDebug_uint16(tmp,false); //LCD module’s manufacturer ID. 
-	tmp = LCDDriver_ReadCommand();
-	sendToDebug_uint16(tmp,false); //LCD module/driver version ID. 
-	tmp = LCDDriver_ReadCommand();
-	sendToDebug_uint16(tmp,false); //LCD module/driver ID. 
-	
-	LCDDriver_SendCommand(0x04);
-	tmp = LCDDriver_ReadData();
-	sendToDebug_uint16(tmp,false); //dummy data.
-	tmp = LCDDriver_ReadData();
-	sendToDebug_uint16(tmp,false); //LCD module’s manufacturer ID. 
-	tmp = LCDDriver_ReadData();
-	sendToDebug_uint16(tmp,false); //LCD module/driver version ID. 
-	tmp = LCDDriver_ReadData();
-	sendToDebug_uint16(tmp,false); //LCD module/driver ID. 
-	//
 	
 #if (defined(LCD_ILI9481) || defined(LCD_HX8357B))
 	#define ILI9481_COMM_DELAY 20
