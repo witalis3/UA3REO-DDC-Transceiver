@@ -37,8 +37,10 @@
 #define FAN_MEDIUM_STOP 50				// Temperature at which the fan stops
 #define FAN_FULL_START 80				// Temperature at which the fan starts at full power
 
-#define ILI9481 true			// aka HX8357B // comment on others
-#define FIX_HX8357B_BUG true 	//fix spurious pixels on HX8357B (silicon problem)
+// select LCD, comment on others
+#define LCD_ILI9481 true
+//#define LCD_HX8357B true
+
 #define FMC_REMAP true			// FMC memory remap
 #define FSMC_REGISTER_SELECT 18 // from FSMC settings in STM32Cube (A18, A6, etc.)
 #define SCREEN_ROTATE 0			// turn the screen upside down

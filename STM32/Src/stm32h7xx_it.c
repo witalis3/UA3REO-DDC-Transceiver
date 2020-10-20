@@ -643,7 +643,7 @@ void TIM6_DAC_IRQHandler(void)
     FPGA_NeedSendParams = true;
 		
 		//redraw lcd to fix problem
-		#ifdef FIX_HX8357B_BUG
+		#ifdef LCD_HX8357B
 		static uint8_t HX8357B_BUG_redraw_counter = 0;
 		HX8357B_BUG_redraw_counter++;
 		if(HX8357B_BUG_redraw_counter == 20)
