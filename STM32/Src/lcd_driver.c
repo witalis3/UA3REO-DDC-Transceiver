@@ -75,25 +75,23 @@ void LCDDriver_Init(void)
 	HAL_Delay(ILI9481_COMM_DELAY);
 
 	LCDDriver_SendCommand(LCD_COMMAND_NORMAL_MODE_ON); //0x13
-	//HAL_Delay(ILI9481_COMM_DELAY);
 	
 	LCDDriver_SendCommand(LCD_COMMAND_POWER_SETTING); //(0xD0);
 	LCDDriver_SendData(0x07);
-	LCDDriver_SendData(0x43);
-	LCDDriver_SendData(0x15);
-	//HAL_Delay(ILI9481_COMM_DELAY);
+	LCDDriver_SendData(0x42);
+	LCDDriver_SendData(0x18);
 	
 	LCDDriver_SendCommand(LCD_COMMAND_VCOM); //(0xD1);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x07);
 	LCDDriver_SendData(0x10);
-	//HAL_Delay(ILI9481_COMM_DELAY);
 	
 	LCDDriver_SendCommand(LCD_COMMAND_NORMAL_PWR_WR); //(0xD2);
 	LCDDriver_SendData(0x01);
 	LCDDriver_SendData(0x02);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
+
+#if defined(LCD_HX8357B)	
 	LCDDriver_SendCommand(LCD_COMMAND_PANEL_DRV_CTL); //(0xC0);
 	LCDDriver_SendData(0x10);
 	LCDDriver_SendData(0x3B);
@@ -101,6 +99,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x02);
 	LCDDriver_SendData(0x11);
 	HAL_Delay(ILI9481_COMM_DELAY);
+#endif
 	
 	LCDDriver_SendCommand(LCD_COMMAND_FR_SET); //(0xC5);
 	LCDDriver_SendData(0x03);
