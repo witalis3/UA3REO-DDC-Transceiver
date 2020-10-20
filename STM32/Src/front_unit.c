@@ -893,7 +893,8 @@ static void FRONTPANEL_BUTTONHANDLER_SERVICES(void)
 	}
 	else
 	{
-		eventCloseAllSystemMenu();
+		eventCloseSystemMenu();
+		//eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }

@@ -1879,16 +1879,16 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction)
 {
-	TRX.SPEC_Begin += direction;
-	if (TRX.SPEC_Begin < 1)
-		TRX.SPEC_Begin = 1;
+	TRX.SPEC_Begin += direction * 100;
+	if (TRX.SPEC_Begin < 100)
+		TRX.SPEC_Begin = 100;
 }
 
 static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction)
 {
-	TRX.SPEC_End += direction;
-	if (TRX.SPEC_End < 1)
-		TRX.SPEC_End = 1;
+	TRX.SPEC_End += direction * 100;
+	if (TRX.SPEC_End < 100)
+		TRX.SPEC_End = 100;
 }
 
 static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction)
