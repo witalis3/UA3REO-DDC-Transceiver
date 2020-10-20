@@ -664,7 +664,7 @@ void TIM6_DAC_IRQHandler(void)
 		}
 		#endif
   }
-	
+
   //power off sequence
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && !NeedSaveCalibration)
   {
