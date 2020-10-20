@@ -1301,7 +1301,7 @@ static void MX_FMC_Init(void)
   Timing.DataLatency = 17;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
   /* ExtTiming */
-
+  
   if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
   {
     Error_Handler( );
@@ -1311,6 +1311,23 @@ static void MX_FMC_Init(void)
 
   /* USER CODE BEGIN FMC_Init 2 */
 
+	//LCD timings
+#if defined(LCD_HX8357B)	
+	Timing.AddressSetupTime = 5;
+  Timing.DataSetupTime = 5;
+  Timing.BusTurnAroundDuration = 3;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
+#endif
+#if defined(LCD_ILI9481)	
+	Timing.AddressSetupTime = 1;
+  Timing.DataSetupTime = 4;
+  Timing.BusTurnAroundDuration = 1;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
+#endif
+	if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
+		Error_Handler();
+  HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
+	
   /* USER CODE END FMC_Init 2 */
 }
 
