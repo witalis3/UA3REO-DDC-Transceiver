@@ -8,7 +8,7 @@
 
 #define BACKGROUND_COLOR COLOR_BLACK                          // background
 #define COLOR_BUTTON_TEXT rgb888torgb565(32, 171, 17)         // active color of the status button
-#define COLOR_BUTTON_INACTIVE_TEXT rgb888torgb565(50, 50, 50) // inactive color
+#define COLOR_BUTTON_INACTIVE_TEXT rgb888torgb565(80, 80, 80) // inactive color
 
 //clock
 #define LAY_CLOCK_POS_Y 17

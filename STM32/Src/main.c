@@ -203,7 +203,7 @@ int main(void)
   if (SHOW_LOGO)
 	{
     LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo);
-		LCDDriver_printText(version_string, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, COLOR_WHITE, 1);
+		LCDDriver_printText(version_string, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
 	}
   sendToDebug_strln("[OK] Real Time Clock init");
   HAL_RTC_Init(&hrtc);
