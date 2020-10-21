@@ -90,29 +90,26 @@ void TRX_Init()
 void TRX_Restart_Mode()
 {
 	uint_fast8_t mode = CurrentVFO()->Mode;
+	//CLAR
+	if (TRX.CLAR)
+	{
+		TRX.current_vfo = !TRX.current_vfo;
+		TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
+		TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+		LCD_UpdateQuery.FreqInfo = true;
+		LCD_UpdateQuery.TopButtons = true;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+	}
+	//
 	if (TRX_on_TX())
 	{
 		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
 			TRX_Start_TXRX();
 		else
-		{
-			if (TRX.CLAR)
-			{
-				TRX.current_vfo = !TRX.current_vfo;
-				LCD_UpdateQuery.FreqInfo = true;
-				LCD_UpdateQuery.TopButtons = true;
-			}
 			TRX_Start_TX();
-		}
 	}
 	else
 	{
-		if (TRX.CLAR)
-		{
-			TRX.current_vfo = !TRX.current_vfo;
-			LCD_UpdateQuery.FreqInfo = true;
-			LCD_UpdateQuery.TopButtons = true;
-		}
 		TRX_Start_RX();
 	}
 	FFT_Reset();
@@ -279,27 +276,16 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	VFO *secondary_vfo = SecondaryVFO();
 	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
 	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
-	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT);
+	TRX_freq_phrase_tx = TRX_freq_phrase;
 	if (!TRX_on_TX())
 	{
 		switch (current_vfo->Mode)
 		{
 		case TRX_MODE_CW_L:
-			TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 1);
+			TRX_freq_phrase_tx = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 1);
 			break;
 		case TRX_MODE_CW_U:
-			TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 1);
-			break;
-		default:
-			break;
-		}
-		switch (secondary_vfo->Mode)
-		{
-		case TRX_MODE_CW_L:
-			TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 2);
-			break;
-		case TRX_MODE_CW_U:
-			TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 2);
+			TRX_freq_phrase_tx = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 1);
 			break;
 		default:
 			break;
