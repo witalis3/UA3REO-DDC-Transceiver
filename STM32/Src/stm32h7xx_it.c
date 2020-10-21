@@ -502,6 +502,10 @@ void TIM6_DAC_IRQHandler(void)
 		TRX_Temporary_Mute_StartTime = 0;
 	}
 	
+	//Redraw freq fast
+	if(LCD_UpdateQuery.FreqInfo)
+		LCD_doEvents();
+	
 	if ((ms10_counter % 10) == 0) // every 100ms
   {
     // every 100ms we receive data from FPGA (amplitude, ADC overload, etc.)

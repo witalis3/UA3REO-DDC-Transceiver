@@ -145,10 +145,10 @@ static void LCD_displayFreqInfo(bool redraw)
 		mhz_x_offset = LAY_FREQ_X_OFFSET_1;
 
 	if (redraw)
-		LCDDriver_Fill_RectWH(30, LAY_FREQ_Y_TOP, LCD_WIDTH - 30, LAY_FREQ_BLOCK_HEIGHT, BACKGROUND_COLOR);
+		LCDDriver_Fill_RectWH(LAY_FREQ_LEFT_MARGIN, LAY_FREQ_Y_TOP, LCD_WIDTH - LAY_FREQ_LEFT_MARGIN, LAY_FREQ_BLOCK_HEIGHT, BACKGROUND_COLOR);
 	
-	if((mhz_x_offset - 30) > 30)
-		LCDDriver_Fill_RectWH(30, LAY_FREQ_Y_BASELINE - LAY_FREQ_HEIGHT, mhz_x_offset - 30, LAY_FREQ_HEIGHT, BACKGROUND_COLOR);
+	if((mhz_x_offset - LAY_FREQ_LEFT_MARGIN) > LAY_FREQ_LEFT_MARGIN)
+		LCDDriver_Fill_RectWH(LAY_FREQ_LEFT_MARGIN, LAY_FREQ_Y_BASELINE - LAY_FREQ_HEIGHT, mhz_x_offset - LAY_FREQ_LEFT_MARGIN, LAY_FREQ_HEIGHT, BACKGROUND_COLOR);
 
 	// add spaces to output the frequency
 	uint16_t hz = (CurrentVFO()->Freq % 1000);
@@ -174,7 +174,7 @@ static void LCD_displayFreqInfo(bool redraw)
 	if (redraw || (LCD_last_showed_freq_hz != hz))
 	{
 		addSymbols(buff, LCD_freq_string_hz, 3, "0", false);
-		LCDDriver_printTextFont(buff, LAY_FREQ_X_OFFSET_HZ, LAY_FREQ_Y_BASELINE, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
+		LCDDriver_printTextFont(buff, LAY_FREQ_X_OFFSET_HZ, LAY_FREQ_Y_BASELINE, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_SMALL_FONT);
 		LCD_last_showed_freq_hz = hz;
 	}
 	NeedSaveSettings = true;
