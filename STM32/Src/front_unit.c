@@ -355,7 +355,7 @@ void FRONTPANEL_Process(void)
 static void FRONTPANEL_BUTTONHANDLER_DOUBLE(void)
 {
 	TRX.Dual_RX = !TRX.Dual_RX;
-	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitAudioFilters = true;
 }
 
@@ -368,7 +368,7 @@ static void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(void)
 		TRX.Dual_RX_Type = VFO_A_PLUS_B;
 	else if (TRX.Dual_RX_Type == VFO_A_PLUS_B)
 		TRX.Dual_RX_Type = VFO_A_AND_B;
-	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitAudioFilters = true;
 }
 

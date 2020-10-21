@@ -13,6 +13,7 @@ FreeSans9pt7b
 FreeSans12pt7b
 FreeSans18pt7b
 FreeSans24pt7b
+FreeSans32pt7b
 FreeSans36pt7b
 */
 
