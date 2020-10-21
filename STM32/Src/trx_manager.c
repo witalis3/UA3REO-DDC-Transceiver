@@ -351,6 +351,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	NeedReinitAudioFilters = true;
 	NeedSaveSettings = true;
 	LCD_UpdateQuery.StatusInfoBar = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 }
 
 void TRX_DoAutoGain(void)

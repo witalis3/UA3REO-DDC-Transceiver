@@ -396,7 +396,7 @@ void ReinitAudioFilters(void)
 	uint32_t hpf2_width = 300; //default settings
 	if (SecondaryVFO()->HPF_Filter_Width > 0)
 		hpf2_width = SecondaryVFO()->HPF_Filter_Width;
-	IIR_BIQUAD_FILTER *hpf_filter2 = getIIRFilter(IIR_BIQUAD_HPF, SecondaryVFO()->HPF_Filter_Width);
+	IIR_BIQUAD_FILTER *hpf_filter2 = getIIRFilter(IIR_BIQUAD_HPF, hpf2_width);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_HPF_I, hpf_filter2->stages, (float32_t *)hpf_filter2->coeffs, (float32_t *)&IIR_RX2_HPF_I_State[0]);
 
 	//FM Squelch

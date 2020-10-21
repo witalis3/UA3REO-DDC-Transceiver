@@ -451,7 +451,7 @@ static void FRONTPANEL_BUTTONHANDLER_ANT(void)
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ANT = TRX.ANT;
 
-	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 }
 
@@ -526,7 +526,6 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(void)
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
-	LCD_UpdateQuery.TopButtons = true;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_MODE_N(void)
@@ -555,7 +554,6 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_N(void)
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
-	LCD_UpdateQuery.TopButtons = true;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_BAND_P(void)
