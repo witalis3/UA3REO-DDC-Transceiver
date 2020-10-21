@@ -798,7 +798,7 @@ static void FRONTPANEL_BUTTONHANDLER_NOTCH(void)
 		CurrentVFO()->AutoNotchFilter = false;
 
 	NeedReinitNotch = true;
-	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 }
 
@@ -813,8 +813,6 @@ static void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(void)
 		CurrentVFO()->ManualNotchFilter = false;
 
 	NeedReinitNotch = true;
-	LCD_UpdateQuery.StatusInfoGUI = true;
-	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
 

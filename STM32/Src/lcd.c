@@ -112,7 +112,6 @@ static void LCD_displayTopButtons(bool redraw)
 	printInfo(LAY_TOPBUTTONS_DNR_X, LAY_TOPBUTTONS_DNR_Y, LAY_TOPBUTTONS_DNR_W, LAY_TOPBUTTONS_DNR_H, "DNR", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, CurrentVFO()->DNR);
 	printInfo(LAY_TOPBUTTONS_CLAR_X, LAY_TOPBUTTONS_CLAR_Y, LAY_TOPBUTTONS_CLAR_W, LAY_TOPBUTTONS_CLAR_H, "CLAR", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.CLAR);
 	printInfo(LAY_TOPBUTTONS_SHIFT_X, LAY_TOPBUTTONS_SHIFT_Y, LAY_TOPBUTTONS_SHIFT_W, LAY_TOPBUTTONS_SHIFT_H, "SHIFT", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ShiftEnabled);
-	printInfo(LAY_TOPBUTTONS_NOTCH_X, LAY_TOPBUTTONS_NOTCH_Y, LAY_TOPBUTTONS_NOTCH_W, LAY_TOPBUTTONS_NOTCH_H, "NOTCH", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, (CurrentVFO()->ManualNotchFilter || CurrentVFO()->AutoNotchFilter));
 	printInfo(LAY_TOPBUTTONS_NB_X, LAY_TOPBUTTONS_NB_Y, LAY_TOPBUTTONS_NB_W, LAY_TOPBUTTONS_NB_H, "NB", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.NOISE_BLANKER);
 	printInfo(LAY_TOPBUTTONS_MUTE_X, LAY_TOPBUTTONS_MUTE_Y, LAY_TOPBUTTONS_MUTE_W, LAY_TOPBUTTONS_MUTE_H, "MUTE", BACKGROUND_COLOR, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX_Mute);
 
@@ -275,30 +274,6 @@ static void LCD_displayStatusInfoGUI(void)
 		//LCDDriver_printTextFont("RX", LAY_STATUS_TXRX_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_TXRX_Y_OFFSET), LAY_STATUS_RX_COLOR, BACKGROUND_COLOR, LAY_STATUS_TXRX_FONT);
 		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X1_OFFSET, LAY_FREQ_Y_BASELINE + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_FONT); //Frequency delimiters
 		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X2_OFFSET, LAY_FREQ_Y_BASELINE + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
-
-		char buff[10] = "";
-		if (CurrentVFO()->ManualNotchFilter)
-		{
-			sprintf(buff, "%uhz", CurrentVFO()->NotchFC);
-			addSymbols(buff, buff, 7, " ", false);
-			LCDDriver_printText(buff, LAY_STATUS_LABEL_NOTCH_BW_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_NOTCH_BW_Y_OFFSET, LAY_STATUS_LABELS_NOTCH_COLOR, BACKGROUND_COLOR, 1);
-		}
-		else
-		{
-			LCDDriver_Fill_RectWH(LAY_STATUS_LABEL_NOTCH_BW_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_NOTCH_BW_Y_OFFSET, LAY_STATUS_LABEL_NOTCH_BW_WIDTH, LAY_STATUS_LABEL_NOTCH_BW_HEIGHT, BACKGROUND_COLOR);
-			if (TRX.FFT_Zoom == 1)
-				sprintf(buff, "96kHz");
-			else if (TRX.FFT_Zoom == 2)
-				sprintf(buff, "48kHz");
-			else if (TRX.FFT_Zoom == 4)
-				sprintf(buff, "24kHz");
-			else if (TRX.FFT_Zoom == 8)
-				sprintf(buff, "12kHz");
-			else if (TRX.FFT_Zoom == 16)
-				sprintf(buff, "6kHz");
-			addSymbols(buff, buff, 7, " ", false);
-			LCDDriver_printText(buff, LAY_STATUS_LABEL_NOTCH_BW_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_NOTCH_BW_Y_OFFSET, LAY_STATUS_LABELS_BW_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
-		}
 	}
 
 	//Redraw CW decoder
@@ -369,7 +344,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 		//print dBm value
 		sprintf(ctmp, "%ddBm", TRX_RX_dBm);
-		addSymbols(ctmp, ctmp, 7, " ", false);
+		addSymbols(ctmp, ctmp, 7, " ", true);
 		LCDDriver_printText(ctmp, LAY_STATUS_LABEL_DBM_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_DBM_Y_OFFSET, COLOR_BUTTON_TEXT, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 		
 		//print s-meter value
@@ -447,9 +422,53 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			alc_level_width = LAY_STATUS_AMETER_WIDTH;
 		LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_PMETER_WIDTH + LAY_STATUS_ALC_BAR_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET + 2, alc_level_width, LAY_STATUS_BAR_HEIGHT - 3, LAY_STATUS_SMETER_COLOR);
 		if (alc_level < 100)
-			LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_PMETER_WIDTH + LAY_STATUS_ALC_BAR_X_OFFSET + alc_level_width, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET + 2, LAY_STATUS_AMETER_WIDTH - alc_level_width, LAY_STATUS_BAR_HEIGHT - 3, LAY_STATUS_LABELS_NOTCH_COLOR);
+			LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + LAY_STATUS_PMETER_WIDTH + LAY_STATUS_ALC_BAR_X_OFFSET + alc_level_width, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET + 2, LAY_STATUS_AMETER_WIDTH - alc_level_width, LAY_STATUS_BAR_HEIGHT - 3, LAY_STATUS_LABEL_NOTCH_COLOR);
 	}
 
+	//Info labels
+	char buff[32] = "";
+	//BW HPF-LPF
+	if ((CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+		sprintf(buff, "BW:%d-%d", TRX.CW_HPF_Filter, TRX.CW_LPF_Filter);
+	else if ((CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U))
+		sprintf(buff, "BW:%d",  TRX.SSB_LPF_Filter);
+	else if ((CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB))
+		sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_Filter, TRX.SSB_LPF_Filter);
+	else if ((CurrentVFO()->Mode == TRX_MODE_AM))
+		sprintf(buff, "BW:%d",  TRX.AM_LPF_Filter);
+	else if ((CurrentVFO()->Mode == TRX_MODE_NFM) || (CurrentVFO()->Mode == TRX_MODE_WFM))
+		sprintf(buff, "BW:%d",  TRX.FM_LPF_Filter);
+	else
+		sprintf(buff, "BW:FULL");
+	addSymbols(buff, buff, 12, " ", true);
+	LCDDriver_printText(buff, LAY_STATUS_LABEL_BW_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_BW_Y_OFFSET, LAY_STATUS_LABEL_BW_COLOR, BACKGROUND_COLOR, 1);
+	//THERMAL
+	sprintf(buff, "RF:%d MB:%d", TRX_RF_Temperature, (int32_t)TRX_STM32_TEMPERATURE);
+	addSymbols(buff, buff, 12, " ", true);
+	LCDDriver_printText(buff, LAY_STATUS_LABEL_THERM_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_THERM_Y_OFFSET, LAY_STATUS_LABEL_THERM_COLOR, BACKGROUND_COLOR, 1);
+	//NOTCH
+	if (CurrentVFO()->AutoNotchFilter)
+		sprintf(buff, "NOTCH:AUTO");
+	else if (CurrentVFO()->ManualNotchFilter)
+		sprintf(buff, "NOTCH:%uhz", CurrentVFO()->NotchFC);
+	else
+		sprintf(buff, "NOTCH:OFF");
+	addSymbols(buff, buff, 12, " ", true);
+	LCDDriver_printText(buff, LAY_STATUS_LABEL_NOTCH_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_NOTCH_Y_OFFSET, LAY_STATUS_LABEL_NOTCH_COLOR, BACKGROUND_COLOR, 1);
+	//FFT BW
+	if (TRX.FFT_Zoom == 1)
+		sprintf(buff, "FFT:96kHz");
+	else if (TRX.FFT_Zoom == 2)
+		sprintf(buff, "FFT:48kHz");
+	else if (TRX.FFT_Zoom == 4)
+		sprintf(buff, "FFT:24kHz");
+	else if (TRX.FFT_Zoom == 8)
+		sprintf(buff, "FFT:12kHz");
+	else if (TRX.FFT_Zoom == 16)
+		sprintf(buff, "FFT:6kHz ");
+	LCDDriver_printText(buff, LAY_STATUS_LABEL_FFT_BW_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_FFT_BW_Y_OFFSET, LAY_STATUS_LABELS_BW_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
+	
+	//ERRORS LABELS
 	LCDDriver_Fill_RectWH(LAY_STATUS_ERR_OFFSET_X, LAY_STATUS_ERR_OFFSET_Y, LAY_STATUS_ERR_WIDTH, LAY_STATUS_ERR_HEIGHT, BACKGROUND_COLOR);
 	if (TRX_ADC_OTR && !TRX_on_TX())
 		LCDDriver_printText("OVR", LAY_STATUS_ERR_OFFSET_X, LAY_STATUS_ERR_OFFSET_Y, LAY_STATUS_ERR_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
