@@ -1321,7 +1321,7 @@ static void MX_FMC_Init(void)
 #if defined(LCD_ILI9481)	
 	Timing.AddressSetupTime = 2;
   Timing.DataSetupTime = 4;
-  Timing.BusTurnAroundDuration = 1;
+  Timing.BusTurnAroundDuration = 2;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 	if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)

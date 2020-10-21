@@ -36,7 +36,7 @@ static uint16_t color_scale[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  // color grad
 static SRAM1 uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
 static SRAM1 uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0};				  // frequencies for each row of the waterfall
 static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
-static int32_t scale_lines_pos[20] = {-1};										//scale lines positions
+static int32_t grid_lines_pos[20] = {-1};										//grid lines positions
 static int16_t bw_line_start = 0;															//BW bar params
 static int16_t bw_line_width = 0;															//BW bar params
 static uint16_t print_wtf_yindex = 0;												  // the current coordinate of the waterfall output via DMA
@@ -362,14 +362,17 @@ void FFT_printFFT(void)
 		//calculate scale lines
 		for(int8_t i = 0; i < 13; i++)
 		{
-			int32_t pos = 0;
-			if(TRX.FFT_Zoom == 1)
-				pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 10000 * 10000) - ((i - 6) * 10000));
-			else
-				pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 5000 * 5000) - ((i - 6) * 5000));
-			scale_lines_pos[i] = pos;
+			int32_t pos = -1;
+			if(TRX.FFT_Grid > 0)
+			{
+				if(TRX.FFT_Zoom == 1)
+					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 10000 * 10000) - ((i - 6) * 10000));
+				else
+					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 5000 * 5000) - ((i - 6) * 5000));
+			}
+			grid_lines_pos[i] = pos;
 		}
-		scale_lines_pos[12] = LAY_FFT_PRINT_SIZE / 2; //center
+		grid_lines_pos[12] = LAY_FFT_PRINT_SIZE / 2; //center
 		
 		// offset the waterfall if needed
 		FFT_move((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq);
@@ -449,13 +452,14 @@ void FFT_printFFT(void)
 			if (fft_y > (fftHeight - fft_header[fft_x]))
 				color = color_scale[fft_y];
 			
-			//scale lines
-			for(uint8_t i = 0; i < 13; i++)
-				if ((int32_t)fft_x == scale_lines_pos[i])
-				{
-					color = mixColors(color, color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
-					break;
-				}
+			//grid lines
+			if(TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
+				for(uint8_t i = 0; i < 13; i++)
+					if ((int32_t)fft_x == grid_lines_pos[i])
+					{
+						color = mixColors(color, color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+						break;
+					}
 			
 			//bw bar
 			if(fft_x >= (uint32_t)bw_line_start && fft_x <= (uint32_t)(bw_line_start + bw_line_width)) // add opacity to bandw bar
@@ -577,9 +581,10 @@ void FFT_printWaterfallDMA(void)
 			}
 		}
 		//print scale lines
-		for(int8_t i = 0; i < 13; i++)
-			if(scale_lines_pos[i] > 0)
-				wtf_line_tmp[scale_lines_pos[i]] = mixColors(wtf_line_tmp[scale_lines_pos[i]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+		if(TRX.FFT_Grid >= 2)
+			for(int8_t i = 0; i < 13; i++)
+				if(grid_lines_pos[i] > 0)
+					wtf_line_tmp[grid_lines_pos[i]] = mixColors(wtf_line_tmp[grid_lines_pos[i]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 		
 		// add opacity to bandw bar
 		for(int16_t fft_x = bw_line_start; ((fft_x <= (bw_line_start + bw_line_width)) && (fft_x < LAY_FFT_PRINT_SIZE)); fft_x++)

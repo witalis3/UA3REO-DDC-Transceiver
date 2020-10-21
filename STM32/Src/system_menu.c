@@ -62,6 +62,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Grid(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction);
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
@@ -209,6 +210,7 @@ static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
 		{"FFT Height", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
 		{"FFT Color", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color},
+		{"FFT Grid", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Grid, SYSMENU_HANDL_SCREEN_FFT_Grid},
 		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_SCREEN_FFT_Enabled},
 		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window},
@@ -1230,6 +1232,16 @@ static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction)
 		TRX.FFT_Color = 1;
 	if (TRX.FFT_Color > 7)
 		TRX.FFT_Color = 7;
+	FFT_Init();
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_Grid(int8_t direction)
+{
+	TRX.FFT_Grid += direction;
+	if (TRX.FFT_Grid < 0)
+		TRX.FFT_Grid = 0;
+	if (TRX.FFT_Grid > 3)
+		TRX.FFT_Grid = 3;
 	FFT_Init();
 }
 

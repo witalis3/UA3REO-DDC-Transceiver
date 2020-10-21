@@ -185,6 +185,7 @@ void LoadSettings(bool clear)
 		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
 		TRX.FFT_Color = 1;				 // FFT display color
 		TRX.FFT_Height = 2;				 // FFT display height
+		TRX.FFT_Grid = 1;					 // FFT grid style
 		TRX.ShiftEnabled = false;		 // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 5000;		 // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
 		TRX.DNR_SNR_THRESHOLD = 50;		 // Digital noise reduction level
