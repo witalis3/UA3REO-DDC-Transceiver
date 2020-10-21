@@ -282,12 +282,13 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 		switch (current_vfo->Mode)
 		{
 		case TRX_MODE_CW_L:
-			TRX_freq_phrase_tx = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT - TRX.CW_GENERATOR_SHIFT_HZ, 1);
+			TRX_freq_phrase_tx = getRXPhraseFromFrequency((int32_t)current_vfo->Freq - TRX.CW_GENERATOR_SHIFT_HZ, 1);
 			break;
 		case TRX_MODE_CW_U:
-			TRX_freq_phrase_tx = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_GENERATOR_SHIFT_HZ, 1);
+			TRX_freq_phrase_tx = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX.CW_GENERATOR_SHIFT_HZ, 1);
 			break;
 		default:
+			TRX_freq_phrase_tx = getRXPhraseFromFrequency((int32_t)current_vfo->Freq, 1);
 			break;
 		}
 	}

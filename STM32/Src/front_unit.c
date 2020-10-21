@@ -287,7 +287,10 @@ void FRONTPANEL_Process(void)
 		mcp3008_value = FRONTPANEL_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin);
 		if (TRX.ShiftEnabled)
 		{
+			int_fast16_t TRX_SHIFT_old = TRX_SHIFT;
 			TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SHIFT_INTERVAL * 2 / 1023.0f) - TRX.SHIFT_INTERVAL);
+			if(TRX_SHIFT_old != TRX_SHIFT)
+				TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 		}
 		else
 		{
