@@ -145,9 +145,10 @@ static void LCD_displayFreqInfo(bool redraw)
 		mhz_x_offset = LAY_FREQ_X_OFFSET_1;
 
 	if (redraw)
-		LCDDriver_Fill_RectWH(0, LAY_FREQ_Y_TOP, LCD_WIDTH, LAY_FREQ_BLOCK_HEIGHT, BACKGROUND_COLOR);
+		LCDDriver_Fill_RectWH(30, LAY_FREQ_Y_TOP, LCD_WIDTH - 30, LAY_FREQ_BLOCK_HEIGHT, BACKGROUND_COLOR);
 	
-	LCDDriver_Fill_RectWH(0, LAY_FREQ_Y_BASELINE - LAY_FREQ_HEIGHT, mhz_x_offset, LAY_FREQ_HEIGHT, BACKGROUND_COLOR);
+	if((mhz_x_offset - 30) > 30)
+		LCDDriver_Fill_RectWH(30, LAY_FREQ_Y_BASELINE - LAY_FREQ_HEIGHT, mhz_x_offset - 30, LAY_FREQ_HEIGHT, BACKGROUND_COLOR);
 
 	// add spaces to output the frequency
 	uint16_t hz = (CurrentVFO()->Freq % 1000);
@@ -236,10 +237,10 @@ static void LCD_displayStatusInfoGUI(void)
 
 	if (TRX_on_TX())
 	{
-		/*if (TRX_Tune)
+		if (TRX_Tune)
 			LCDDriver_printTextFont("TU", LAY_STATUS_TXRX_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_TXRX_Y_OFFSET), LAY_STATUS_TX_COLOR, BACKGROUND_COLOR, LAY_STATUS_TXRX_FONT);
 		else
-			LCDDriver_printTextFont("TX", LAY_STATUS_TXRX_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_TXRX_Y_OFFSET), LAY_STATUS_TX_COLOR, BACKGROUND_COLOR, LAY_STATUS_TXRX_FONT);*/
+			LCDDriver_printTextFont("TX", LAY_STATUS_TXRX_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_TXRX_Y_OFFSET), LAY_STATUS_TX_COLOR, BACKGROUND_COLOR, LAY_STATUS_TXRX_FONT);
 
 		// frame of the SWR meter
 		const float32_t step = LAY_STATUS_PMETER_WIDTH / 16.0f;
@@ -271,7 +272,7 @@ static void LCD_displayStatusInfoGUI(void)
 	else
 	{
 		LCD_drawSMeter();
-		//LCDDriver_printTextFont("RX", LAY_STATUS_TXRX_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_TXRX_Y_OFFSET), LAY_STATUS_RX_COLOR, BACKGROUND_COLOR, LAY_STATUS_TXRX_FONT);
+		LCDDriver_printTextFont("RX", LAY_STATUS_TXRX_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_TXRX_Y_OFFSET), LAY_STATUS_RX_COLOR, BACKGROUND_COLOR, LAY_STATUS_TXRX_FONT);
 		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X1_OFFSET, LAY_FREQ_Y_BASELINE + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_FONT); //Frequency delimiters
 		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X2_OFFSET, LAY_FREQ_Y_BASELINE + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
 	}
@@ -343,7 +344,10 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		}
 
 		//print dBm value
-		sprintf(ctmp, "%ddBm", TRX_RX_dBm);
+		if(TRX_RX_dBm > -999 && TRX_RX_dBm < 999)
+			sprintf(ctmp, "%ddBm", TRX_RX_dBm);
+		else
+			sprintf(ctmp, "-100dBm");
 		addSymbols(ctmp, ctmp, 7, " ", true);
 		LCDDriver_printText(ctmp, LAY_STATUS_LABEL_DBM_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_DBM_Y_OFFSET, COLOR_BUTTON_TEXT, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 		
