@@ -165,7 +165,8 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * **FFT Zoom** - FFT spectrum approximation (X1 - 96kHz, X2 - 48kHz, X4 - 24kHz, X8 - 12kHz, X16 - 6kHz)
 * **FFT Speed** - FFT and waterfall speed
-* **FFT Style** - FFT and waterfall display style
+* **FFT Height** - FFT and waterfall proportional height
+* **FFT Color** - FFT and waterfall colors: 1 (blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
 * **FFT Enabled** - Enable waterfall and FFT
 * **FFT Averaging** - FFT burst averaging level
 * **FFT Window** - Select FFT window (Hamming / Blackman-Harris / Hanning)

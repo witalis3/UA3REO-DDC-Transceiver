@@ -203,8 +203,8 @@ void TRX_key_change(void)
 	{
 		TRX_key_dot_hard = TRX_new_key_dot_hard;
 		if (TRX_key_dot_hard == true)
-			TRX_Key_Timeout_est = TRX.Key_timeout;
-		if (TRX.Key_timeout == 0)
+			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
+		if (TRX.CW_Key_timeout == 0)
 			TRX_ptt_cat = TRX_key_dot_hard;
 		KEYER_symbol_start_time = 0;
 		KEYER_symbol_status = false;
@@ -217,8 +217,8 @@ void TRX_key_change(void)
 	{
 		TRX_key_dash_hard = TRX_new_key_dash_hard;
 		if (TRX_key_dash_hard == true)
-			TRX_Key_Timeout_est = TRX.Key_timeout;
-		if (TRX.Key_timeout == 0)
+			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
+		if (TRX.CW_Key_timeout == 0)
 			TRX_ptt_cat = TRX_key_dash_hard;
 		KEYER_symbol_start_time = 0;
 		KEYER_symbol_status = false;
@@ -230,8 +230,8 @@ void TRX_key_change(void)
 	{
 		TRX_old_key_serial = TRX_key_serial;
 		if (TRX_key_serial == true)
-			TRX_Key_Timeout_est = TRX.Key_timeout;
-		if (TRX.Key_timeout == 0)
+			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
+		if (TRX.CW_Key_timeout == 0)
 			TRX_ptt_cat = TRX_key_serial;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		FPGA_NeedSendParams = true;

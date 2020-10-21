@@ -1301,7 +1301,7 @@ static void MX_FMC_Init(void)
   Timing.DataLatency = 17;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
   /* ExtTiming */
-  
+
   if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
   {
     Error_Handler( );
@@ -1319,7 +1319,7 @@ static void MX_FMC_Init(void)
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 #if defined(LCD_ILI9481)	
-	Timing.AddressSetupTime = 1;
+	Timing.AddressSetupTime = 2;
   Timing.DataSetupTime = 4;
   Timing.BusTurnAroundDuration = 1;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
@@ -1403,20 +1403,22 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(SWR_BACKW_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : FPGA_CLK_Pin FPGA_SYNC_Pin */
-  GPIO_InitStruct.Pin = FPGA_CLK_Pin|FPGA_SYNC_Pin;
+  /*Configure GPIO pins : FPGA_CLK_Pin FPGA_SYNC_Pin AD1_CS_Pin */
+  GPIO_InitStruct.Pin = FPGA_CLK_Pin|FPGA_SYNC_Pin|AD1_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : FPGA_BUS_D0_Pin FPGA_BUS_D1_Pin FPGA_BUS_D2_Pin FPGA_BUS_D3_Pin
-                           FPGA_BUS_D4_Pin FPGA_BUS_D5_Pin FPGA_BUS_D6_Pin FPGA_BUS_D7_Pin */
+                           FPGA_BUS_D4_Pin FPGA_BUS_D5_Pin FPGA_BUS_D6_Pin FPGA_BUS_D7_Pin
+                           AD2_CS_Pin */
   GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin|FPGA_BUS_D1_Pin|FPGA_BUS_D2_Pin|FPGA_BUS_D3_Pin
-                          |FPGA_BUS_D4_Pin|FPGA_BUS_D5_Pin|FPGA_BUS_D6_Pin|FPGA_BUS_D7_Pin;
+                          |FPGA_BUS_D4_Pin|FPGA_BUS_D5_Pin|FPGA_BUS_D6_Pin|FPGA_BUS_D7_Pin
+                          |AD2_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PTT_IN_Pin */
@@ -1425,8 +1427,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(PTT_IN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : W26Q16_CS_Pin SD_CS_Pin AD3_CS_Pin */
-  GPIO_InitStruct.Pin = W26Q16_CS_Pin|SD_CS_Pin|AD3_CS_Pin;
+  /*Configure GPIO pins : W26Q16_CS_Pin SD_CS_Pin AD3_CS_Pin RFUNIT_RCLK_Pin
+                           RFUNIT_CLK_Pin RFUNIT_DATA_Pin RFUNIT_OE_Pin */
+  GPIO_InitStruct.Pin = W26Q16_CS_Pin|SD_CS_Pin|AD3_CS_Pin|RFUNIT_RCLK_Pin
+                          |RFUNIT_CLK_Pin|RFUNIT_DATA_Pin|RFUNIT_OE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -1457,27 +1461,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : AD1_CS_Pin */
-  GPIO_InitStruct.Pin = AD1_CS_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(AD1_CS_GPIO_Port, &GPIO_InitStruct);
-
   /*Configure GPIO pin : AUDIO_I2S_CLOCK_Pin */
   GPIO_InitStruct.Pin = AUDIO_I2S_CLOCK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
   HAL_GPIO_Init(AUDIO_I2S_CLOCK_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : AD2_CS_Pin */
-  GPIO_InitStruct.Pin = AD2_CS_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(AD2_CS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA9 PA10 */
   GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;
@@ -1490,13 +1480,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : RFUNIT_RCLK_Pin RFUNIT_CLK_Pin RFUNIT_DATA_Pin RFUNIT_OE_Pin */
-  GPIO_InitStruct.Pin = RFUNIT_RCLK_Pin|RFUNIT_CLK_Pin|RFUNIT_DATA_Pin|RFUNIT_OE_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 6, 0);

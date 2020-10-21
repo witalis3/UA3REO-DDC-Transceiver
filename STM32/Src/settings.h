@@ -123,6 +123,7 @@ typedef struct
 extern struct TRX_SETTINGS
 {
 	uint8_t flash_id;
+	//TRX
 	bool current_vfo; // false - A; true - B
 	VFO VFO_A;
 	VFO VFO_B;
@@ -134,64 +135,27 @@ extern struct TRX_SETTINGS
 	bool ATT;
 	bool RF_Filters;
 	bool ANT;
-	bool ADC_Driver;
-	uint8_t RX_AGC_speed;
-	bool BandMapEnabled;
-	bool InputType_MIC;
-	bool InputType_LINE;
-	bool InputType_USB;
-	uint16_t CW_LPF_Filter;
-	uint16_t CW_HPF_Filter;
-	uint16_t SSB_LPF_Filter;
-	uint16_t SSB_HPF_Filter;
-	uint16_t AM_LPF_Filter;
-	uint16_t FM_LPF_Filter;
 	uint8_t RF_Power;
-	uint8_t FM_SQL_threshold;
-	uint8_t FFT_Zoom;
-	bool AutoGain;
-	bool CWDecoder;
-	bool FFT_Enabled;
-	uint16_t CW_GENERATOR_SHIFT_HZ;
-	uint16_t Key_timeout;
-	uint8_t FFT_Averaging;
-	bool WIFI_Enabled;
-	char WIFI_AP[MAX_WIFIPASS_LENGTH];
-	char WIFI_PASSWORD[MAX_WIFIPASS_LENGTH];
-	int8_t WIFI_TIMEZONE;
-	uint32_t SPEC_Begin;
-	uint32_t SPEC_End;
-	int16_t SPEC_TopDBM;
-	int16_t SPEC_BottomDBM;
-	uint16_t CW_SelfHear;
-	bool ADC_PGA;
-	bool ADC_RAND;
-	bool ADC_SHDN;
-	bool ADC_DITH;
-	uint8_t FFT_Window;
-	bool Locked;
-	bool CLAR;
-	bool TWO_SIGNAL_TUNE;
-	uint8_t IF_Gain;
-	bool CW_KEYER;
-	uint16_t CW_KEYER_WPM;
-	uint8_t TX_AGC_speed;
-	bool Debug_Console;
-	bool Dual_RX;
-	DUAL_RX_TYPE Dual_RX_Type;
-	uint8_t FFT_Style;
 	bool ShiftEnabled;
 	uint16_t SHIFT_INTERVAL;
-	uint8_t DNR_SNR_THRESHOLD;
-	uint8_t DNR_AVERAGE;
-	uint8_t DNR_MINIMAL;
-	bool NOISE_BLANKER;
+	bool TWO_SIGNAL_TUNE;
 	uint16_t FRQ_STEP;
 	uint16_t FRQ_FAST_STEP;
 	uint16_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
+	bool Debug_Console;
+	bool BandMapEnabled;
+	bool InputType_MIC;
+	bool InputType_LINE;
+	bool InputType_USB;
+	bool AutoGain;
+	bool Locked;
+	bool CLAR;
+	bool Dual_RX;
+	DUAL_RX_TYPE Dual_RX_Type;
+	//AUDIO
+	uint8_t IF_Gain;
 	int8_t AGC_GAIN_TARGET;
-	bool WIFI_CAT_SERVER;
 	uint8_t MIC_GAIN;
 	int8_t RX_EQ_LOW;
 	int8_t RX_EQ_MID;
@@ -199,8 +163,52 @@ extern struct TRX_SETTINGS
 	int8_t MIC_EQ_LOW;
 	int8_t MIC_EQ_MID;
 	int8_t MIC_EQ_HIG;
+	uint8_t DNR_SNR_THRESHOLD;
+	uint8_t DNR_AVERAGE;
+	uint8_t DNR_MINIMAL;
+	bool NOISE_BLANKER;
+	uint8_t RX_AGC_speed;
+	uint8_t TX_AGC_speed;
+	uint16_t CW_LPF_Filter;
+	uint16_t CW_HPF_Filter;
+	uint16_t SSB_LPF_Filter;
+	uint16_t SSB_HPF_Filter;
+	uint16_t AM_LPF_Filter;
+	uint16_t FM_LPF_Filter;
+	uint8_t FM_SQL_threshold;
+	//CW
+	bool CWDecoder;
+	uint16_t CW_GENERATOR_SHIFT_HZ;
+	uint16_t CW_Key_timeout;
+	uint16_t CW_SelfHear;
+	bool CW_KEYER;
+	uint16_t CW_KEYER_WPM;
+	//SCREEN
+	bool FFT_Enabled;
+	uint8_t FFT_Zoom;
 	uint8_t FFT_Speed;
-
+	uint8_t FFT_Averaging;
+	uint8_t FFT_Window;
+	uint8_t FFT_Height;
+	uint8_t FFT_Color;
+	//ADC
+	bool ADC_Driver;
+	bool ADC_PGA;
+	bool ADC_RAND;
+	bool ADC_SHDN;
+	bool ADC_DITH;
+	//WIFI
+	bool WIFI_Enabled;
+	char WIFI_AP[MAX_WIFIPASS_LENGTH];
+	char WIFI_PASSWORD[MAX_WIFIPASS_LENGTH];
+	int8_t WIFI_TIMEZONE;
+	bool WIFI_CAT_SERVER;
+	//SERVICES
+	uint32_t SPEC_Begin;
+	uint32_t SPEC_End;
+	int16_t SPEC_TopDBM;
+	int16_t SPEC_BottomDBM;
+	//
 	uint8_t ENDBit;
 } TRX;
 

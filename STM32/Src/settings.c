@@ -141,7 +141,7 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 		}
 		TRX.RF_Filters = true;	  // LPF / HPF / BPF
-		TRX.FFT_Zoom = 1;		  // approximation of the FFT spectrum
+		TRX.FFT_Zoom = 2;		  // approximation of the FFT spectrum
 		TRX.AutoGain = false;	  // auto-control preamp and attenuator
 		TRX.CWDecoder = false;	  // automatic telegraph decoder
 		TRX.InputType_MIC = true; // type of input to transfer
@@ -159,7 +159,7 @@ void LoadSettings(bool clear)
 		TRX.BandMapEnabled = true;					// automatic change of mode according to the range map
 		TRX.FFT_Enabled = true;						// use FFT spectrum
 		TRX.CW_GENERATOR_SHIFT_HZ = 500;			// LO offset in CW mode
-		TRX.Key_timeout = 500;						// time of releasing transmission after the last character on the key
+		TRX.CW_Key_timeout = 500;						// time of releasing transmission after the last character on the key
 		TRX.FFT_Averaging = 4;						// averaging the FFT to make it smoother
 		TRX.WIFI_Enabled = true;					// activate WiFi
 		strcpy(TRX.WIFI_AP, "WIFI-AP");				// WiFi hotspot
@@ -183,7 +183,8 @@ void LoadSettings(bool clear)
 		TRX.Debug_Console = false;		 // Debug output to DEBUG / UART port
 		TRX.Dual_RX = false;					//Dual RX feature
 		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
-		TRX.FFT_Style = 1;				 // FFT display style
+		TRX.FFT_Color = 1;				 // FFT display color
+		TRX.FFT_Height = 2;				 // FFT display height
 		TRX.ShiftEnabled = false;		 // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 5000;		 // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
 		TRX.DNR_SNR_THRESHOLD = 50;		 // Digital noise reduction level

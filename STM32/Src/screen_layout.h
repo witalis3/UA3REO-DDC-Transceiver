@@ -176,9 +176,10 @@
 // FFT and waterfall
 #define LAY_FFT_HEIGHT_STYLE1 40  // specify the maximum FFT height
 #define LAY_WTF_HEIGHT_STYLE1 100 // specify the maximum height of the waterfall
-#define LAY_FFT_HEIGHT_STYLE2 100 // specify the maximum FFT height
-#define LAY_WTF_HEIGHT_STYLE2 40  // specify the maximum height of the waterfall
-#define LAY_FFT_STYLE_3_4_COLOR COLOR_WHITE
+#define LAY_FFT_HEIGHT_STYLE2 70 // specify the maximum FFT height
+#define LAY_WTF_HEIGHT_STYLE2 70  // specify the maximum height of the waterfall
+#define LAY_FFT_HEIGHT_STYLE3 100 // specify the maximum FFT height
+#define LAY_WTF_HEIGHT_STYLE3 40  // specify the maximum height of the waterfall
 #define LAY_FFT_WTF_MAX_HEIGHT (LAY_FFT_HEIGHT_STYLE1 + LAY_WTF_HEIGHT_STYLE1) // maximum possible height FFT + WTF
 #define LAY_FFT_WTF_POS_Y ((uint16_t)(LCD_HEIGHT - LAY_FFT_WTF_MAX_HEIGHT))    // start of FFT and waterfall
 #define LAY_FFT_PRINT_SIZE 480                                                 // specify the width of the displayed FFT

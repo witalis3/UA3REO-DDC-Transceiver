@@ -150,7 +150,8 @@ static uint16_t getWTFHeight(void);					// get the height of the waterfall
 static void FFT_move(int32_t _freq_diff);			// shift the waterfall
 static int32_t getFreqPositionOnFFT(uint32_t freq); // get the position on the FFT for a given frequency
 static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
-
+static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity); //mix two colors with opacity
+	
 // FFT initialization
 void FFT_Init(void)
 {
@@ -396,7 +397,7 @@ void FFT_printFFT(void)
 		if (height > fftHeight - 1)
 		{
 			height = fftHeight;
-			tmp = COLOR_RED;
+			tmp = color_scale[0];
 		}
 		else
 			tmp = color_scale[fftHeight - height];
@@ -441,24 +442,18 @@ void FFT_printFFT(void)
 	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + fftHeight));
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 	{
-		//52cpu
 		for (uint32_t fft_x = 0; fft_x < LAY_FFT_PRINT_SIZE; fft_x++)
 		{
 			//fft data
 			uint16_t color = COLOR_BLACK;
 			if (fft_y > (fftHeight - fft_header[fft_x]))
-			{
-				if (TRX.FFT_Style == 3 || TRX.FFT_Style == 4)
-					color = LAY_FFT_STYLE_3_4_COLOR;
-				else
-					color = color_scale[fft_y];
-			}
+				color = color_scale[fft_y];
 			
 			//scale lines
 			for(uint8_t i = 0; i < 13; i++)
 				if ((int32_t)fft_x == scale_lines_pos[i])
 				{
-					color = addColor(color, 0, FFT_SCALE_LINES_BRIGHTNESS, 0);
+					color = mixColors(color, color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 					break;
 				}
 			
@@ -584,7 +579,7 @@ void FFT_printWaterfallDMA(void)
 		//print scale lines
 		for(int8_t i = 0; i < 13; i++)
 			if(scale_lines_pos[i] > 0)
-				wtf_line_tmp[scale_lines_pos[i]] = addColor(wtf_line_tmp[scale_lines_pos[i]], 0, FFT_SCALE_LINES_BRIGHTNESS, 0);
+				wtf_line_tmp[scale_lines_pos[i]] = mixColors(wtf_line_tmp[scale_lines_pos[i]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 		
 		// add opacity to bandw bar
 		for(int16_t fft_x = bw_line_start; ((fft_x <= (bw_line_start + bw_line_width)) && (fft_x < LAY_FFT_PRINT_SIZE)); fft_x++)
@@ -650,37 +645,146 @@ static void FFT_move(int32_t _freq_diff)
 // get color from signal strength
 static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue to red)
 {
-	// r g b
-	// 0 0 0
-	// 0 0 255
-	// 255 255 0
-	// 255 0 0
-
 	uint_fast8_t red = 0;
 	uint_fast8_t green = 0;
 	uint_fast8_t blue = 0;
-	// contrast of each of the 3 zones, the total should be one
-	const float32_t contrast1 = 0.1f;
-	const float32_t contrast2 = 0.4f;
-	const float32_t contrast3 = 0.5f;
+	//blue -> yellow -> red
+	if (TRX.FFT_Color == 1)
+	{
+		// r g b
+		// 0 0 0
+		// 0 0 255
+		// 255 255 0
+		// 255 0 0
+		// contrast of each of the 3 zones, the total should be 1.0f
+		const float32_t contrast1 = 0.1f;
+		const float32_t contrast2 = 0.4f;
+		const float32_t contrast3 = 0.5f;
 
-	if (height < getFFTHeight() * contrast1)
-	{
-		blue = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+		if (height < getFFTHeight() * contrast1)
+		{
+			blue = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+		}
+		else if (height < getFFTHeight() * (contrast1 + contrast2))
+		{
+			green = (uint_fast8_t)((height - getFFTHeight() * contrast1) * 255 / ((getFFTHeight() - getFFTHeight() * contrast1) * (contrast1 + contrast2)));
+			red = green;
+			blue = 255 - green;
+		}
+		else
+		{
+			red = 255;
+			blue = 0;
+			green = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1 + contrast2))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1 + contrast2))) * (contrast1 + contrast2 + contrast3)));
+		}
+		return rgb888torgb565(red, green, blue);
 	}
-	else if (height < getFFTHeight() * (contrast1 + contrast2))
+	//black -> yellow -> red
+	if (TRX.FFT_Color == 2)
 	{
-		green = (uint_fast8_t)((height - getFFTHeight() * contrast1) * 255 / ((getFFTHeight() - getFFTHeight() * contrast1) * (contrast1 + contrast2)));
-		red = green;
-		blue = 255 - green;
+		// r g b
+		// 0 0 0
+		// 255 255 0
+		// 255 0 0
+		// contrast of each of the 2 zones, the total should be 1.0f
+		const float32_t contrast1 = 0.5f;
+		const float32_t contrast2 = 0.5f;
+
+		if (height < getFFTHeight() * contrast1)
+		{
+			red = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+			green = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+			blue = 0;
+		}
+		else
+		{
+			red = 255;
+			blue = 0;
+			green = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1))) * (contrast1 + contrast2)));
+		}
+		return rgb888torgb565(red, green, blue);
 	}
-	else
+	//black -> yellow -> green
+	if (TRX.FFT_Color == 3)
 	{
-		red = 255;
-		blue = 0;
-		green = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1 + contrast2))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1 + contrast2))) * (contrast1 + contrast2 + contrast3)));
+		// r g b
+		// 0 0 0
+		// 255 255 0
+		// 0 255 0
+		// contrast of each of the 2 zones, the total should be 1.0f
+		const float32_t contrast1 = 0.5f;
+		const float32_t contrast2 = 0.5f;
+
+		if (height < getFFTHeight() * contrast1)
+		{
+			red = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+			green = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+			blue = 0;
+		}
+		else
+		{
+			green = 255;
+			blue = 0;
+			red = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1))) * (contrast1 + contrast2)));
+		}
+		return rgb888torgb565(red, green, blue);
 	}
-	return rgb888torgb565(red, green, blue);
+	//black -> red
+	if (TRX.FFT_Color == 4)
+	{
+		// r g b
+		// 0 0 0
+		// 255 0 0
+		
+		if (height <= getFFTHeight())
+		{
+			red = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+		}
+		return rgb888torgb565(red, green, blue);
+	}
+	//black -> green
+	if (TRX.FFT_Color == 5)
+	{
+		// r g b
+		// 0 0 0
+		// 0 255 0
+		
+		if (height <= getFFTHeight())
+		{
+			green = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+		}
+		return rgb888torgb565(red, green, blue);
+	}
+	//black -> blue
+	if (TRX.FFT_Color == 6)
+	{
+		// r g b
+		// 0 0 0
+		// 0 0 255
+		
+		if (height <= getFFTHeight())
+		{
+			blue = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+		}
+		return rgb888torgb565(red, green, blue);
+	}
+	//black -> white
+	if (TRX.FFT_Color == 7)
+	{
+		// r g b
+		// 0 0 0
+		// 255 255 255
+		
+		if (height <= getFFTHeight())
+		{
+			red = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			green = red;
+			blue = red;
+		}
+		return rgb888torgb565(red, green, blue);
+	}
+	//unknown
+	return COLOR_WHITE;
 }
 
 // prepare the color palette
@@ -706,21 +810,23 @@ void FFT_Reset(void) // clear the FFT
 }
 
 // get FFT height
-static uint16_t getFFTHeight(void)
+static inline uint16_t getFFTHeight(void)
 {
-	uint16_t FFT_HEIGHT = LAY_FFT_HEIGHT_STYLE1;
-	if (TRX.FFT_Style == 2 || TRX.FFT_Style == 4)
-		FFT_HEIGHT = LAY_FFT_HEIGHT_STYLE2;
-	return FFT_HEIGHT;
+	if (TRX.FFT_Height == 1)
+		return LAY_FFT_HEIGHT_STYLE1;
+	if (TRX.FFT_Height == 2)
+		return LAY_FFT_HEIGHT_STYLE2;
+	return LAY_FFT_HEIGHT_STYLE3;
 }
 
 // get the height of the waterfall
-static uint16_t getWTFHeight(void)
+static inline uint16_t getWTFHeight(void)
 {
-	uint16_t WTF_HEIGHT = LAY_WTF_HEIGHT_STYLE1;
-	if (TRX.FFT_Style == 2 || TRX.FFT_Style == 4)
-		WTF_HEIGHT = LAY_WTF_HEIGHT_STYLE2;
-	return WTF_HEIGHT;
+	if (TRX.FFT_Height == 1)
+		return LAY_WTF_HEIGHT_STYLE1;
+	if (TRX.FFT_Height == 2)
+		return LAY_WTF_HEIGHT_STYLE2;
+	return LAY_WTF_HEIGHT_STYLE3;
 }
 
 static inline int32_t getFreqPositionOnFFT(uint32_t freq)
@@ -734,11 +840,21 @@ static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b)
 {
 	uint8_t r = ((color >> 11) & 0x1F) + add_r;
-	uint8_t g = ((color >> 5) & 0x3F) + add_g;
+	uint8_t g = ((color >> 5) & 0x3F) + (uint8_t)(add_g << 1);
 	uint8_t b = ((color >> 0) & 0x1F) + add_b;
 	if(r > 31) r = 31;
 	if(g > 63) g = 63;
 	if(b > 31) b = 31;
-	color = (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
-	return color;
+	return (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
+}
+
+static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity)
+{
+	uint8_t r = (uint8_t)((float32_t)((color1 >> 11) & 0x1F) + (float32_t)((color2 >> 11) & 0x1F) * opacity);
+	uint8_t g = (uint8_t)((float32_t)((color1 >> 5) & 0x3F) + (float32_t)((color2 >> 5) & 0x3F) * opacity);
+	uint8_t b = (uint8_t)((float32_t)((color1 >> 0) & 0x1F) + (float32_t)((color2 >> 0) & 0x1F) * opacity);
+	if(r > 31) r = 31;
+	if(g > 63) g = 63;
+	if(b > 31) b = 31;
+	return (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
 }

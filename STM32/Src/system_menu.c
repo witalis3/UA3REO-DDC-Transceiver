@@ -60,7 +60,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction);
-static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction);
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
@@ -193,7 +194,7 @@ static uint8_t sysmenu_audio_item_count = sizeof(sysmenu_audio_handlers) / sizeo
 
 static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 	{
-		{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
+		{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
 		{"CW Generator shift", SYSMENU_UINT16, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
 		{"CW Self Hear", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
 		{"CW Keyer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
@@ -206,7 +207,8 @@ static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
-		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style},
+		{"FFT Height", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
+		{"FFT Color", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color},
 		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_SCREEN_FFT_Enabled},
 		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window},
@@ -1115,10 +1117,10 @@ static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction)
 
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction)
 {
-	if (TRX.Key_timeout > 0 || direction > 0)
-		TRX.Key_timeout += direction * 50;
-	if (TRX.Key_timeout > 5000)
-		TRX.Key_timeout = 5000;
+	if (TRX.CW_Key_timeout > 0 || direction > 0)
+		TRX.CW_Key_timeout += direction * 50;
+	if (TRX.CW_Key_timeout > 5000)
+		TRX.CW_Key_timeout = 5000;
 }
 
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction)
@@ -1211,13 +1213,23 @@ static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction)
 	FFT_Init();
 }
 
-static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction)
+static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction)
 {
-	TRX.FFT_Style += direction;
-	if (TRX.FFT_Style < 1)
-		TRX.FFT_Style = 1;
-	if (TRX.FFT_Style > 4)
-		TRX.FFT_Style = 4;
+	TRX.FFT_Height += direction;
+	if (TRX.FFT_Height < 1)
+		TRX.FFT_Height = 1;
+	if (TRX.FFT_Height > 3)
+		TRX.FFT_Height = 3;
+	FFT_Init();
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction)
+{
+	TRX.FFT_Color += direction;
+	if (TRX.FFT_Color < 1)
+		TRX.FFT_Color = 1;
+	if (TRX.FFT_Color > 7)
+		TRX.FFT_Color = 7;
 	FFT_Init();
 }
 
