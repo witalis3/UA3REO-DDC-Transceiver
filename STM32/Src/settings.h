@@ -7,7 +7,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 202				// Settings config version
+#define SETT_VERSION 203				// Settings config version
 #define CALIB_VERSION 201				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
 #define DAC_CLOCK 199680000				// DAC generator frequency
