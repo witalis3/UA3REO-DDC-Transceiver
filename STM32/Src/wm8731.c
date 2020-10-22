@@ -122,12 +122,26 @@ void WM8731_TXRX_mode(void) //loopback
 
 void WM8731_Mute(void)
 {
+	//slowly fade out
+	for(int16_t i = 127; i >= 0; i-= 5)
+	{
+		uint8_t val = 128 + (int8_t)i; //Channel Zero Cross detect  + 0DB
+		WM8731_SendI2CCommand(B8(00000101), val); //R2 Left Headphone Out
+		WM8731_SendI2CCommand(B8(00000111), val); //R3 Right Headphone Out
+	}
 	WM8731_SendI2CCommand(B8(00000101), B8(10000000)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000111), B8(10000000)); //R3 Right Headphone Out
 }
 
 void WM8731_UnMute(void)
 {
+	//slowly fade in
+	for(int16_t i = 0; i <= 127; i+= 5)
+	{
+		uint8_t val = 128 + (int8_t)i; //Channel Zero Cross detect  + 0DB
+		WM8731_SendI2CCommand(B8(00000101), val); //R2 Left Headphone Out
+		WM8731_SendI2CCommand(B8(00000111), val); //R3 Right Headphone Out
+	}
 	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); //R3 Right Headphone Out
 }
@@ -145,8 +159,12 @@ void WM8731_Init(void)
 	WM8731_SendI2CCommand(B8(00001110), B8(00001110)); //R7 Digital Audio Interface Format, Codec Slave, 32bits, I2S Format, MSB-First left-1 justified
 	WM8731_SendI2CCommand(B8(00010000), B8(00000000)); //R8 Sampling Control normal mode, 256fs, SR=0 (MCLK@12.288Mhz, fs=48kHz))
 	WM8731_SendI2CCommand(B8(00010010), B8(00000001)); //R9 reactivate digital audio interface
-	WM8731_RX_mode();
-	TRX_TemporaryMute();
+	WM8731_SendI2CCommand(B8(00000000), B8(10000000)); //R0 Left Line In
+	WM8731_SendI2CCommand(B8(00000010), B8(10000000)); //R1 Right Line In
+	WM8731_SendI2CCommand(B8(00001000), B8(00010110)); //R4 Analogue Audio Path Control
+	WM8731_SendI2CCommand(B8(00001010), B8(00010110)); //R5 Digital Audio Path Control
+	WM8731_SendI2CCommand(B8(00001100), B8(01100111)); //R6 Power Down Control
+	WM8731_UnMute();
 }
 
 // RX Buffer is fully sent to the codec

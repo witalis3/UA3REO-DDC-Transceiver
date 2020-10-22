@@ -790,15 +790,20 @@ static void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
 
 static void FRONTPANEL_BUTTONHANDLER_NOTCH(void)
 {
+	TRX_TemporaryMute();
+	
 	if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
+	{
 		CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
+		NeedReinitNotch = true;
+	}
 	CurrentVFO()->ManualNotchFilter = false;
+	
 	if (!CurrentVFO()->AutoNotchFilter)
 		CurrentVFO()->AutoNotchFilter = true;
 	else
 		CurrentVFO()->AutoNotchFilter = false;
 
-	NeedReinitNotch = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 }

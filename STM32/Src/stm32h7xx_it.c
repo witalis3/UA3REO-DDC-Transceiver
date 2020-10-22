@@ -365,6 +365,8 @@ void TIM3_IRQHandler(void)
   /* USER CODE END TIM3_IRQn 0 */
   HAL_TIM_IRQHandler(&htim3);
   /* USER CODE BEGIN TIM3_IRQn 1 */
+	
+	//process wifi
   if (wifi_start_timeout < 10)
   {
     wifi_start_timeout++;
@@ -494,13 +496,6 @@ void TIM6_DAC_IRQHandler(void)
 	
 	// update the state of the RF-Unit board
 	RF_UNIT_UpdateState(false);
-	
-	// unmute after transition process end
-	if(TRX_Temporary_Mute_StartTime > 0 && (HAL_GetTick() - TRX_Temporary_Mute_StartTime) > 20)
-	{
-		WM8731_UnMute();
-		TRX_Temporary_Mute_StartTime = 0;
-	}
 	
 	//Redraw freq fast
 	if(LCD_UpdateQuery.FreqInfo)
@@ -679,7 +674,7 @@ void TIM6_DAC_IRQHandler(void)
     LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, (GFXfont *)&FreeSans12pt7b);
     SaveSettings();
     HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-    WM8731_TX_mode(); //mute
+    WM8731_Mute();
     WM8731_CleanBuffer();
     sendToDebug_flush();
     while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET); //-V776
@@ -704,7 +699,16 @@ void TIM7_IRQHandler(void)
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
+	
   sendToDebug_flush(); // send data to debug from the buffer
+	
+	// unmute after transition process end
+	if(TRX_Temporary_Mute_StartTime > 0 && (HAL_GetTick() - TRX_Temporary_Mute_StartTime) > 10)
+	{
+		WM8731_UnMute();
+		TRX_Temporary_Mute_StartTime = 0;
+	}
+	
   /* USER CODE END TIM7_IRQn 1 */
 }
 
