@@ -43,12 +43,11 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	
 	//calculate the magnitude in dBFS
 	float32_t AGC_RX_magnitude = 0;
-	arm_power_f32(agcBuffer_kw, blockSize, &AGC_RX_magnitude);
-	AGC_RX_magnitude = AGC_RX_magnitude / (float32_t)blockSize;
+	arm_rms_f32(agcBuffer_kw, blockSize, &AGC_RX_magnitude);
 	if (AGC_RX_magnitude == 0.0f)
 		AGC_RX_magnitude = 0.001f;
 	float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
-	float32_t AGC_RX_dbFS = rate2dbP(full_scale_rate);
+	float32_t AGC_RX_dbFS = rate2dbV(full_scale_rate);
 
 	//move the gain one step
 	float32_t diff = ((float32_t)TRX.AGC_GAIN_TARGET - (AGC_RX_dbFS + *AGC_need_gain_db));
@@ -58,8 +57,10 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 		*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
 
 	//overload (clipping), sharply reduce the gain
-	if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + 10.0f))
+	if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + AGC_CLIPPING))
+	{
 		*AGC_need_gain_db = (float32_t)TRX.AGC_GAIN_TARGET - AGC_RX_dbFS;
+	}
 
 	//noise threshold, below it - do not amplify
 	if (AGC_RX_dbFS < AGC_NOISE_GATE)
@@ -89,7 +90,7 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	}
 	else //gain did not change, apply gain across all samples
 	{
-		arm_scale_f32(agcBuffer, db2rateP(*AGC_need_gain_db), agcBuffer, blockSize);
+		arm_scale_f32(agcBuffer, db2rateV(*AGC_need_gain_db), agcBuffer, blockSize);
 	}
 }
 
