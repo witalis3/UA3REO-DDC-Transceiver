@@ -17,6 +17,7 @@ extern bool WM8731_DMA_state;       //what part of the buffer are we working wit
 extern bool WM8731_Buffer_underrun; //lack of data in the buffer from the audio processor
 extern uint32_t WM8731_DMA_samples; //count the number of samples transmitted to the audio codec
 extern bool WM8731_Beeping; 				//Beeping flag
+extern bool WM8731_Muting; 				//Muting flag
 
 //Public methods
 extern void WM8731_Init(void);              //I2C audio codec initialization
