@@ -803,7 +803,10 @@ static void FRONTPANEL_BUTTONHANDLER_NOTCH(void)
 	CurrentVFO()->ManualNotchFilter = false;
 	
 	if (!CurrentVFO()->AutoNotchFilter)
+	{
+		InitAutoNotchReduction();
 		CurrentVFO()->AutoNotchFilter = true;
+	}
 	else
 		CurrentVFO()->AutoNotchFilter = false;
 

@@ -21,9 +21,7 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 		instance = &RX2_AN_instance;
 	
 	bool nans = false;
-	//for (uint32_t i = 0; i < AUTO_NOTCH_REFERENCE_SIZE; i++)
-		//if (!nans && (__ARM_isnanf(instance->lms2_reference[i]) || __ARM_isinff(instance->lms2_reference[i])))
-	if (__ARM_isnanf(instance->lms2_reference[instance->reference_index_new]) || __ARM_isinff(instance->lms2_reference[instance->reference_index_new]))
+	if (__ARM_isnanf(instance->lms2_reference[instance->reference_index_new]) || __ARM_isinff(instance->lms2_reference[instance->reference_index_new]) || instance->lms2_reference[instance->reference_index_new] > 1.5f)
 		nans = true;
 	
 	if(nans)
