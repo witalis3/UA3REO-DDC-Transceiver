@@ -1,1 +1,1 @@
-fontconvert FreeSans.ttf 32 > font32pt7b.h
+fontconvert FreeSans.ttf 36 > font36pt7b.h

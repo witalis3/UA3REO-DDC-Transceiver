@@ -7,6 +7,7 @@
 #include "system_menu.h"
 #include "functions.h"
 #include "audio_filters.h"
+#include "auto_notch.h"
 #include "agc.h"
 
 static void FRONTPANEL_ENCODER_Rotated(int8_t direction);

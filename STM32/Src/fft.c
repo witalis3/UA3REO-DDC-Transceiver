@@ -321,11 +321,12 @@ void FFT_doFFT(void)
 	float32_t compressTargetValue = (maxValueFFT * FFT_COMPRESS_INTERVAL);
 	float32_t compressSourceInterval = maxAmplValue - compressTargetValue;
 	float32_t compressTargetInterval = maxValueFFT - compressTargetValue;
+	float32_t compressRate = compressTargetInterval / compressSourceInterval;
 	if (!TRX_on_TX())
 	{
 		for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
 			if(FFTInput[i] > compressTargetValue)
-				FFTInput[i] = compressTargetValue + (((FFTInput[i] - compressTargetValue) / compressSourceInterval) * compressTargetInterval);
+				FFTInput[i] = compressTargetValue + ((FFTInput[i] - compressTargetValue) * compressRate);
 	}
 	
 	//limits

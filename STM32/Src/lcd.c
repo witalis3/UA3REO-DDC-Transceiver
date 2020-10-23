@@ -174,12 +174,12 @@ static void LCD_drawSMeter(void)
 			color = LAY_STATUS_BAR_RIGHT_COLOR;
 		if ((i % 2) != 0 || i == 0)
 		{
-			LCDDriver_drawFastVLine(LAY_STATUS_BAR_X_OFFSET + (uint16_t)(step * i) - 1, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET, -8, color);
-			LCDDriver_drawFastVLine(LAY_STATUS_BAR_X_OFFSET + (uint16_t)(step * i), LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET, -10, color);
-			LCDDriver_drawFastVLine(LAY_STATUS_BAR_X_OFFSET + (uint16_t)(step * i) + 1, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET, -8, color);
+			LCDDriver_drawFastVLine(LAY_STATUS_BAR_X_OFFSET + (uint16_t)(step * i) - 1, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET, -4, color);
+			LCDDriver_drawFastVLine(LAY_STATUS_BAR_X_OFFSET + (uint16_t)(step * i), LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET, -6, color);
+			LCDDriver_drawFastVLine(LAY_STATUS_BAR_X_OFFSET + (uint16_t)(step * i) + 1, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET, -4, color);
 		}
 		else
-			LCDDriver_drawFastVLine(LAY_STATUS_BAR_X_OFFSET + (uint16_t)(step * i), LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET, -5, color);
+			LCDDriver_drawFastVLine(LAY_STATUS_BAR_X_OFFSET + (uint16_t)(step * i), LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET, -3, color);
 	}
 
 	// S-meter frame

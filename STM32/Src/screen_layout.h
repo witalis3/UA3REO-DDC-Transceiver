@@ -23,10 +23,10 @@
 #define LAY_TOPBUTTONS_X2 (LCD_WIDTH - 1)
 #define LAY_TOPBUTTONS_Y1 0
 #define LAY_TOPBUTTONS_Y2 55
-#define LAY_TOPBUTTONS_WIDTH 68
-#define LAY_TOPBUTTONS_HEIGHT 23
-#define LAY_TOPBUTTONS_TB_MARGIN 4
-#define LAY_TOPBUTTONS_LR_MARGIN 6
+#define LAY_TOPBUTTONS_WIDTH 72
+#define LAY_TOPBUTTONS_HEIGHT 22
+#define LAY_TOPBUTTONS_TB_MARGIN 2
+#define LAY_TOPBUTTONS_LR_MARGIN 2
 
 #define LAY_TOPBUTTONS_PRE_X (LAY_TOPBUTTONS_X1 + LAY_TOPBUTTONS_LR_MARGIN)
 #define LAY_TOPBUTTONS_PRE_Y LAY_TOPBUTTONS_Y1
@@ -87,19 +87,20 @@
 #define LAY_FREQ_X_OFFSET_KHZ 167
 #define LAY_FREQ_X_OFFSET_HZ 307
 #define LAY_FREQ_HEIGHT 51
-#define LAY_FREQ_TOP_OFFSET 12
+#define LAY_FREQ_TOP_OFFSET 4
 #define LAY_FREQ_LEFT_MARGIN 37
 #define LAY_FREQ_RIGHT_MARGIN 73
-#define LAY_FREQ_BOTTOM_OFFSET 11
+#define LAY_FREQ_BOTTOM_OFFSET 8
 #define LAY_FREQ_BLOCK_HEIGHT (LAY_FREQ_HEIGHT + LAY_FREQ_TOP_OFFSET + LAY_FREQ_BOTTOM_OFFSET)
 #define LAY_FREQ_Y_TOP LAY_TOPBUTTONS_Y2
 #define LAY_FREQ_Y_BASELINE (LAY_TOPBUTTONS_Y2 + LAY_FREQ_HEIGHT + LAY_FREQ_TOP_OFFSET)
+#define LAY_FREQ_Y_BASELINE_SMALL (LAY_FREQ_Y_BASELINE - 2)
 #define LAY_FREQ_FONT (GFXfont *)&FreeSans36pt7b
 #define LAY_FREQ_SMALL_FONT (GFXfont *)&FreeSans32pt7b
 #define LAY_FREQ_COLOR_MHZ COLOR_WHITE
 #define LAY_FREQ_COLOR_KHZ COLOR_WHITE
 #define LAY_FREQ_COLOR_HZ rgb888torgb565(150, 150, 150)
-#define LAY_FREQ_DELIMITER_Y_OFFSET 2
+#define LAY_FREQ_DELIMITER_Y_OFFSET 0
 #define LAY_FREQ_DELIMITER_X1_OFFSET 147
 #define LAY_FREQ_DELIMITER_X2_OFFSET 287
 
@@ -107,19 +108,19 @@
 #define LAY_STATUS_Y_OFFSET (LAY_FREQ_Y_TOP + LAY_FREQ_BLOCK_HEIGHT + 1)
 #define LAY_STATUS_HEIGHT 44
 #define LAY_STATUS_BAR_X_OFFSET 60
-#define LAY_STATUS_BAR_Y_OFFSET 20
+#define LAY_STATUS_BAR_Y_OFFSET 16
 #define LAY_STATUS_BAR_HEIGHT 10
 #define LAY_STATUS_TXRX_X_OFFSET 3
-#define LAY_STATUS_TXRX_Y_OFFSET -52
+#define LAY_STATUS_TXRX_Y_OFFSET -50
 #define LAY_STATUS_TXRX_FONT (GFXfont *)&FreeSans9pt7b
 #define LAY_STATUS_VFO_X_OFFSET 0
-#define LAY_STATUS_VFO_Y_OFFSET -45
+#define LAY_STATUS_VFO_Y_OFFSET -43
 #define LAY_STATUS_VFO_BLOCK_WIDTH 37
 #define LAY_STATUS_VFO_BLOCK_HEIGHT 22
 #define LAY_STATUS_VFO_COLOR COLOR_BLACK
 #define LAY_STATUS_VFO_BGCOLOR COLOR_WHITE
 #define LAY_STATUS_ANT_X_OFFSET 0
-#define LAY_STATUS_ANT_Y_OFFSET -25
+#define LAY_STATUS_ANT_Y_OFFSET -23
 #define LAY_STATUS_ANT_BLOCK_WIDTH 37
 #define LAY_STATUS_ANT_BLOCK_HEIGHT 22
 #define LAY_STATUS_TX_LABELS_OFFSET_X 5
@@ -167,7 +168,7 @@
 #define LAY_STATUS_TX_LABELS_VAL_HEIGHT 8
 #define LAY_STATUS_TX_ALC_X_OFFSET 40
 #define LAY_STATUS_MODE_X_OFFSET (LCD_WIDTH - LAY_FREQ_RIGHT_MARGIN + 10)
-#define LAY_STATUS_MODE_Y_OFFSET -44
+#define LAY_STATUS_MODE_Y_OFFSET -40
 #define LAY_STATUS_MODE_BLOCK_WIDTH 48
 #define LAY_STATUS_MODE_BLOCK_HEIGHT 22
 #define LAY_STATUS_MODE_COLOR rgb888torgb565(249, 205, 46)
@@ -182,15 +183,15 @@
 #define LAY_TEXTBAR_TEXT_X_OFFSET 85
 
 // FFT and waterfall
-#define LAY_FFT_HEIGHT_STYLE1 40  // specify the maximum FFT height
-#define LAY_WTF_HEIGHT_STYLE1 100 // specify the maximum height of the waterfall
-#define LAY_FFT_HEIGHT_STYLE2 70 // specify the maximum FFT height
-#define LAY_WTF_HEIGHT_STYLE2 70  // specify the maximum height of the waterfall
-#define LAY_FFT_HEIGHT_STYLE3 100 // specify the maximum FFT height
-#define LAY_WTF_HEIGHT_STYLE3 40  // specify the maximum height of the waterfall
+#define LAY_FFT_HEIGHT_STYLE1 50  // specify the maximum FFT height
+#define LAY_WTF_HEIGHT_STYLE1 102 // specify the maximum height of the waterfall
+#define LAY_FFT_HEIGHT_STYLE2 76 // specify the maximum FFT height
+#define LAY_WTF_HEIGHT_STYLE2 76  // specify the maximum height of the waterfall
+#define LAY_FFT_HEIGHT_STYLE3 102 // specify the maximum FFT height
+#define LAY_WTF_HEIGHT_STYLE3 50  // specify the maximum height of the waterfall
 #define LAY_FFT_WTF_MAX_HEIGHT (LAY_FFT_HEIGHT_STYLE1 + LAY_WTF_HEIGHT_STYLE1) // maximum possible height FFT + WTF
 #define LAY_FFT_WTF_POS_Y ((uint16_t)(LCD_HEIGHT - LAY_FFT_WTF_MAX_HEIGHT))    // start of FFT and waterfall
-#define LAY_FFT_PRINT_SIZE 480                                                 // specify the width of the displayed FFT
+#define LAY_FFT_PRINT_SIZE LCD_WIDTH                                           // specify the width of the displayed FFT
 #define LAY_FFT_CWDECODER_OFFSET 17                                            // space for the text of the CW decoder
 
 // system menu
