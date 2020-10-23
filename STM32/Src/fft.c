@@ -326,7 +326,6 @@ void FFT_doFFT(void)
 		for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
 			if(FFTInput[i] > compressTargetValue)
 				FFTInput[i] = compressTargetValue + (((FFTInput[i] - compressTargetValue) / compressSourceInterval) * compressTargetInterval);
-		arm_max_no_idx_f32(FFTInput, LAY_FFT_PRINT_SIZE, &maxAmplValue);
 	}
 	
 	//limits
