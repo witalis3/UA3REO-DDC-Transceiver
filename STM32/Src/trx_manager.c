@@ -382,7 +382,7 @@ void TRX_DoAutoGain(void)
 				lna_may_enabled = false;
 			
 			autogain_wait_reaction++;
-			if (autogain_wait_reaction >= AUTOGAIN_CORRECTOR_WAITSTEP)
+			if (autogain_wait_reaction >= 3)
 			{
 				TRX_AutoGain_Stage++;
 				autogain_wait_reaction = 0;

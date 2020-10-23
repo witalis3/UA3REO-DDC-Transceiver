@@ -19,17 +19,17 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	AN_Instance *instance = &RX1_AN_instance;
 	if (rx_id == AUDIO_RX2)
 		instance = &RX2_AN_instance;
-	
-	bool nans = false;
-	if (__ARM_isnanf(instance->lms2_reference[instance->reference_index_new]) || __ARM_isinff(instance->lms2_reference[instance->reference_index_new]) || instance->lms2_reference[instance->reference_index_new] > 1.5f)
-		nans = true;
-	
-	if(nans)
-		InitAutoNotchReduction();
-	else
-		arm_copy_f32(buffer, &instance->lms2_reference[instance->reference_index_new], AUTO_NOTCH_BLOCK_SIZE);																	  // save the data to the reference buffer
+
+	memcpy(&instance->lms2_reference[instance->reference_index_new], buffer, sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);												// save the data to the reference buffer
 	
 	arm_lms_norm_f32(&instance->lms2_Norm_instance, buffer, &instance->lms2_reference[instance->reference_index_old], instance->lms2_errsig2, buffer, AUTO_NOTCH_BLOCK_SIZE); // start LMS filter
+	
+	if (__ARM_isnanf(buffer[0]) || __ARM_isinff(buffer[0]))
+	{
+		memset(buffer, 0x00, sizeof sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);
+		InitAutoNotchReduction();
+	}
+	
 	instance->reference_index_old += AUTO_NOTCH_BLOCK_SIZE;																												  // move along the reference buffer
 	if (instance->reference_index_old >= AUTO_NOTCH_REFERENCE_SIZE)
 		instance->reference_index_old = 0;
