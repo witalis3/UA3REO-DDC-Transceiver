@@ -35,6 +35,9 @@ static void FRONTPANEL_BUTTONHANDLER_AGC(void);
 static void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(void);
 static void FRONTPANEL_BUTTONHANDLER_WPM(void);
 static void FRONTPANEL_BUTTONHANDLER_KEYER(void);
+static void FRONTPANEL_BUTTONHANDLER_SCAN(void);
+static void FRONTPANEL_BUTTONHANDLER_REC(void);
+static void FRONTPANEL_BUTTONHANDLER_PLAY(void);
 static void FRONTPANEL_BUTTONHANDLER_DNR(void);
 static void FRONTPANEL_BUTTONHANDLER_NB(void);
 static void FRONTPANEL_BUTTONHANDLER_BW(void);
@@ -62,7 +65,7 @@ static bool ENCODER2_SWLast = true;
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 7, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PRE, .holdHandler = FRONTPANEL_BUTTONHANDLER_PGA},		  //PRE-PGA
 	{.port = 1, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD},	  //ATT-ATTHOLD
-	{.port = 1, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = NULL},								  //MUTE-SCAN
+	{.port = 1, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = FRONTPANEL_BUTTONHANDLER_SCAN},								  //MUTE-SCAN
 	{.port = 1, .channel = 4, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_AGC, .holdHandler = FRONTPANEL_BUTTONHANDLER_AGC_SPEED},	  //AGC-AGCSPEED
 	{.port = 1, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ArB, .holdHandler = FRONTPANEL_BUTTONHANDLER_ANT},		  //A=B-ANT
 	{.port = 1, .channel = 2, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE},		  //TUNE
@@ -74,7 +77,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 2, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DNR, .holdHandler = FRONTPANEL_BUTTONHANDLER_NB},			 //DNR-NB
 	{.port = 2, .channel = 4, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_NOTCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL}, //NOTCH-MANUAL
 	{.port = 2, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},		 //CLAR-SHIFT
-	{.port = 2, .channel = 2, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL},															 //REC-PLAY
+	{.port = 2, .channel = 2, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC},															 //REC-PLAY
 	{.port = 2, .channel = 1, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},															 //SERVICES
 	{.port = 2, .channel = 0, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},			 //MENU-LOCK
 
@@ -901,4 +904,19 @@ static void FRONTPANEL_BUTTONHANDLER_SERVICES(void)
 		//eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
+}
+
+static void FRONTPANEL_BUTTONHANDLER_SCAN(void)
+{
+	
+}
+
+static void FRONTPANEL_BUTTONHANDLER_PLAY(void)
+{
+
+}
+
+static void FRONTPANEL_BUTTONHANDLER_REC(void)
+{
+	
 }

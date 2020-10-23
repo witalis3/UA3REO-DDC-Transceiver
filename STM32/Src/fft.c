@@ -212,7 +212,6 @@ void FFT_doFFT(void)
 		return;*/
 
 	float32_t medianValue = 0; // Median value in the resulting frequency response
-	float32_t diffValue = 0;   // Difference Between Maximum FFT And Threshold In Waterfall
 
 	//Process DC corrector filter
 	if (!TRX_on_TX())
@@ -286,12 +285,16 @@ void FFT_doFFT(void)
 		}
 	}
 
-	// Looking for the median and maximum in frequency response
-	arm_sort_f32(&FFT_sortInstance, FFTInput, FFTInput_sorted, FFT_SIZE);
-	medianValue = FFTInput_sorted[FFT_SIZE / 2];
-	float32_t maxAmplValue = 0;
-	arm_max_no_idx_f32(FFTInput, FFT_SIZE, &maxAmplValue);
-
+	//Delete noise
+	float32_t minAmplValue = 0;
+	uint32_t minAmplIndex = 0;
+	arm_min_f32(FFTInput, LAY_FFT_PRINT_SIZE, &minAmplValue, &minAmplIndex);
+	arm_offset_f32(FFTInput, -minAmplValue * 0.8f, FFTInput, LAY_FFT_PRINT_SIZE);
+	
+	// Looking for the median in frequency response
+	arm_sort_f32(&FFT_sortInstance, FFTInput, FFTInput_sorted, LAY_FFT_PRINT_SIZE);
+	medianValue = FFTInput_sorted[LAY_FFT_PRINT_SIZE / 2];
+	
 	// Maximum amplitude
 	float32_t maxValueFFT = maxValueFFT_rx;
 	if (TRX_on_TX())
@@ -300,11 +303,22 @@ void FFT_doFFT(void)
 	float32_t targetValue = (medianValue * FFT_TARGET);
 	float32_t minValue = (medianValue * FFT_MIN);
 
+	// Looking for the maximum in frequency response
+	float32_t maxAmplValue = 0;
+	arm_max_no_idx_f32(FFTInput, LAY_FFT_PRINT_SIZE, &maxAmplValue);
+	
 	// Auto-calibrate FFT levels
-	diffValue = (targetValue - maxValueFFT) / FFT_STEP_COEFF;
-	maxValueFFT += diffValue;
-
-	// minimum-maximum threshold
+	maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
+	
+	// Compress peaks
+	float32_t compressSourceInterval = maxAmplValue - targetValue;
+	float32_t compressTargetInterval = maxValueFFT - targetValue;
+	for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
+		if(FFTInput[i] > targetValue)
+			FFTInput[i] = targetValue + (((FFTInput[i] - targetValue) / compressSourceInterval) * compressTargetInterval);
+	arm_max_no_idx_f32(FFTInput, LAY_FFT_PRINT_SIZE, &maxAmplValue);
+		
+	// minimum-maximum threshold for median version
 	if (maxValueFFT < minValue)
 		maxValueFFT = minValue;
 	if (maxValueFFT > maxValue)
@@ -313,7 +327,7 @@ void FFT_doFFT(void)
 		maxValueFFT = maxAmplValue;
 	if (maxValueFFT < 0.0000001f)
 		maxValueFFT = 0.0000001f;
-
+	
 	// save values ​​for switching RX / TX
 	if (TRX_on_TX())
 		maxValueFFT_tx = maxValueFFT;
@@ -321,7 +335,8 @@ void FFT_doFFT(void)
 		maxValueFFT_rx = maxValueFFT;
 
 	// Normalize the frequency response to one
-	arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, LAY_FFT_PRINT_SIZE);
+	if(maxValueFFT > 0)
+		arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, LAY_FFT_PRINT_SIZE);
 
 	// Averaging values ​​for subsequent output
 	float32_t averaging = (float32_t)TRX.FFT_Averaging;
