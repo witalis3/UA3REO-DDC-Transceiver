@@ -142,7 +142,7 @@ static void LCD_displayFreqInfo(bool redraw)
 	if (redraw || (LCD_last_showed_freq_hz != hz))
 	{
 		addSymbols(buff, LCD_freq_string_hz, 3, "0", false);
-		LCDDriver_printTextFont(buff, LAY_FREQ_X_OFFSET_HZ, LAY_FREQ_Y_BASELINE, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_SMALL_FONT);
+		LCDDriver_printTextFont(buff, LAY_FREQ_X_OFFSET_HZ, LAY_FREQ_Y_BASELINE_SMALL, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_SMALL_FONT);
 		LCD_last_showed_freq_hz = hz;
 	}
 	NeedSaveSettings = true;
