@@ -48,6 +48,7 @@ static void SYSMENU_HANDL_AUDIO_RX_EQ_HIG(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
 
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
 static void SYSMENU_HANDL_CW_Decoder(int8_t direction);
@@ -190,6 +191,7 @@ static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"RX EQ High", SYSMENU_INT8, (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_HANDL_AUDIO_RX_EQ_HIG},
 		{"RX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_speed, SYSMENU_HANDL_AUDIO_RX_AGCSpeed},
 		{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_AUDIO_TX_AGCSpeed},
+		{"Beeper", SYSMENU_UINT8, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 };
 static uint8_t sysmenu_audio_item_count = sizeof(sysmenu_audio_handlers) / sizeof(sysmenu_audio_handlers[0]);
 
@@ -1069,6 +1071,14 @@ static void SYSMENU_HANDL_AUDIO_FM_LPF_pass(int8_t direction)
 
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+}
+
+static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Beeper = true;
+	if (direction < 0)
+		TRX.Beeper = false;
 }
 
 //CW MENU

@@ -16,6 +16,7 @@ extern int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE];
 extern bool WM8731_DMA_state;       //what part of the buffer are we working with, true - complete; false - half
 extern bool WM8731_Buffer_underrun; //lack of data in the buffer from the audio processor
 extern uint32_t WM8731_DMA_samples; //count the number of samples transmitted to the audio codec
+extern bool WM8731_Beeping; 				//Beeping flag
 
 //Public methods
 extern void WM8731_Init(void);              //I2C audio codec initialization
@@ -26,4 +27,5 @@ extern void WM8731_RX_mode(void);           //switching to RX mode (mute the mic
 extern void WM8731_TXRX_mode(void);         //switch to mixed mode RX-TX (for LOOP)
 extern void WM8731_Mute(void);							//mute audio out
 extern void WM8731_UnMute(void);						//disable audio mute
+extern void WM8731_Beep(void);							//beep on key press
 #endif

@@ -132,7 +132,7 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
 			TRX.BANDS_SAVED_SETTINGS[i].LNA = TRX.LNA;
 			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
-			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_STEP;
+			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
 			TRX.BANDS_SAVED_SETTINGS[i].ANT = TRX.ANT;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.FM_SQL_threshold;
@@ -206,6 +206,7 @@ void LoadSettings(bool clear)
 		TRX.MIC_EQ_MID = 0;				 // Mic Equalizer (Mids)
 		TRX.MIC_EQ_HIG = 0;				 // Mic EQ (high)
 		TRX.FFT_Speed = 3;				 // FFT Speed
+		TRX.Beeper = true;				 //Keyboard beeper
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

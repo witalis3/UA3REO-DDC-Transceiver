@@ -378,6 +378,21 @@ void processRxAudio(void)
 		Processor_AudioBuffer_current[i] = convertToSPIBigEndian(Processor_AudioBuffer_current[i]); //for 32bit audio
 	}
 
+	//Beep signal
+	if(WM8731_Beeping)
+	{
+		float32_t signal = 0;
+		int32_t out = 0;
+		float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f) * 0.1f;
+		for(uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
+		{
+			signal = generateSin(amplitude, pos, TRX_SAMPLERATE, 1500);
+			arm_float_to_q31(&signal, &out, 1);
+			Processor_AudioBuffer_current[pos * 2] = convertToSPIBigEndian(out); //left channel
+			Processor_AudioBuffer_current[pos * 2 + 1] = Processor_AudioBuffer_current[pos * 2];					//right channel
+		}
+	}
+	
 	//Send to Codec DMA
 	if (TRX_Inited)
 	{

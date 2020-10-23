@@ -12,6 +12,7 @@ bool WM8731_DMA_state = true;										// what part of the buffer we are working
 bool WM8731_Buffer_underrun = false;								// lack of data in the buffer from the audio processor
 IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; // audio codec ring buffers
 IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
+bool WM8731_Beeping;														//Beeping flag
 
 //Private variables
 
@@ -125,7 +126,7 @@ void WM8731_Mute(void)
 	//slowly fade out
 	for(int16_t i = 127; i >= 0; i-= 5)
 	{
-		uint8_t val = 128 + (int8_t)i; //Channel Zero Cross detect  + 0DB
+		uint8_t val = 128 + (int8_t)i; //Channel Zero Cross detect  + 0dB
 		WM8731_SendI2CCommand(B8(00000101), val); //R2 Left Headphone Out
 		WM8731_SendI2CCommand(B8(00000111), val); //R3 Right Headphone Out
 	}
@@ -138,12 +139,22 @@ void WM8731_UnMute(void)
 	//slowly fade in
 	for(int16_t i = 0; i <= 127; i+= 5)
 	{
-		uint8_t val = 128 + (int8_t)i; //Channel Zero Cross detect  + 0DB
+		uint8_t val = 128 + (int8_t)i; //Channel Zero Cross detect  + 0dB
 		WM8731_SendI2CCommand(B8(00000101), val); //R2 Left Headphone Out
 		WM8731_SendI2CCommand(B8(00000111), val); //R3 Right Headphone Out
 	}
 	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); //R3 Right Headphone Out
+}
+
+void WM8731_Beep(void)
+{
+	if(TRX.Beeper)
+	{
+		WM8731_Beeping = true;
+		HAL_Delay(50);
+		WM8731_Beeping = false;
+	}
 }
 
 // initialize the audio codec over I2C

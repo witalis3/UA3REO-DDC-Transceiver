@@ -399,6 +399,8 @@ void FFT_printFFT(void)
 				index++;
 			}
 		}
+		for(int8_t i = index; i < 13; i++)
+			grid_lines_pos[index] = -1;
 		
 		// offset the waterfall if needed
 		FFT_move((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq);

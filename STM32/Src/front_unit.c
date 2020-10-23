@@ -342,7 +342,10 @@ void FRONTPANEL_Process(void)
 			if (!TRX.Locked || (PERIPH_FrontPanel_Buttons[b].port == 2 && PERIPH_FrontPanel_Buttons[b].channel == 0)) //LOCK BUTTON
 				if (!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
 					if (PERIPH_FrontPanel_Buttons[b].holdHandler != NULL)
+					{
+						WM8731_Beep();
 						PERIPH_FrontPanel_Buttons[b].holdHandler();
+					}
 		}
 
 		//check click state
@@ -350,7 +353,10 @@ void FRONTPANEL_Process(void)
 		{
 			if (!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
 				if (PERIPH_FrontPanel_Buttons[b].clickHandler != NULL)
+				{
+					WM8731_Beep();
 					PERIPH_FrontPanel_Buttons[b].clickHandler();
+				}
 		}
 
 		//save prev state

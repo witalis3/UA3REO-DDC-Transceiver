@@ -152,6 +152,7 @@ Supported LCD: ILI9481 and HX8357B
 * **RX EQ xxx** - Receiver equalizer levels
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
 * **TX AGC Speed** - AGC / compressor response speed for transmission (more-faster)
+* **Beeper** - Beep on key press
 
 ### CW Settings
 
@@ -164,7 +165,7 @@ Supported LCD: ILI9481 and HX8357B
 
 ### SCREEN Settings
 
-* **FFT Zoom** - FFT spectrum approximation (X1 - 96kHz, X2 - 48kHz, X4 - 24kHz, X8 - 12kHz, X16 - 6kHz)
+* **FFT Zoom** - FFT spectrum zooming (x1 - 96kHz, x2 - 48kHz, x4 - 24kHz, x8 - 12kHz, x16 - 6kHz)
 * **FFT Speed** - FFT and waterfall speed
 * **FFT Height** - FFT and waterfall proportional height
 * **FFT Color** - FFT and waterfall colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)

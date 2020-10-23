@@ -177,6 +177,7 @@ extern struct TRX_SETTINGS
 	uint16_t AM_LPF_Filter;
 	uint16_t FM_LPF_Filter;
 	uint8_t FM_SQL_threshold;
+	bool Beeper;
 	//CW
 	bool CWDecoder;
 	uint16_t CW_GENERATOR_SHIFT_HZ;
