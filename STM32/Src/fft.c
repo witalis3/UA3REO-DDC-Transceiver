@@ -382,19 +382,23 @@ void FFT_printFFT(void)
 	if (CurrentVFO()->Freq != currentFFTFreq)
 	{
 		//calculate scale lines
+		uint8_t index = 0;
 		for(int8_t i = 0; i < 13; i++)
 		{
 			int32_t pos = -1;
 			if(TRX.FFT_Grid > 0)
 			{
 				if(TRX.FFT_Zoom == 1)
-					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 10000 * 10000) - ((i - 6) * 10000));
+					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 10000 * 10000) + ((i - 6) * 10000));
 				else
-					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 5000 * 5000) - ((i - 6) * 5000));
+					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 5000 * 5000) + ((i - 6) * 5000));
 			}
-			grid_lines_pos[i] = pos;
+			if(pos >= 0)
+			{
+				grid_lines_pos[index] = pos;
+				index++;
+			}
 		}
-		grid_lines_pos[12] = LAY_FFT_PRINT_SIZE / 2; //center
 		
 		// offset the waterfall if needed
 		FFT_move((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq);
@@ -467,6 +471,7 @@ void FFT_printFFT(void)
 	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + fftHeight));
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 	{
+		uint8_t grid_line_index = 0;
 		for (uint32_t fft_x = 0; fft_x < LAY_FFT_PRINT_SIZE; fft_x++)
 		{
 			//fft data
@@ -476,15 +481,14 @@ void FFT_printFFT(void)
 			
 			//grid lines
 			if(TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
-				for(uint8_t i = 0; i < 13; i++)
-					if ((int32_t)fft_x == grid_lines_pos[i])
-					{
-						color = mixColors(color, color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
-						break;
-					}
+				if (((int32_t)fft_x == grid_lines_pos[grid_line_index]) || (fft_x == (LAY_FFT_PRINT_SIZE / 2)))
+				{
+					grid_line_index++;
+					color = mixColors(color, color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+				}
 			
 			//bw bar
-			if(fft_x >= (uint32_t)bw_line_start && fft_x <= (uint32_t)(bw_line_start + bw_line_width)) // add opacity to bandw bar
+			if((fft_x >= (uint32_t)bw_line_start) && (fft_x <= (uint32_t)(bw_line_start + bw_line_width))) // add opacity to bandw bar
 				color = addColor(color, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 			
 			//send to lcd
