@@ -330,9 +330,22 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			// bar
 			LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET + 2, (uint16_t)s_width, LAY_STATUS_BAR_HEIGHT - 3, LAY_STATUS_SMETER_COLOR);
 			
+			// peak
+			static uint16_t smeter_peak_x = 0;
+			static uint32_t smeter_peak_settime = 0;
+			LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + smeter_peak_x, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET + 2, 2, LAY_STATUS_BAR_HEIGHT - 3, BACKGROUND_COLOR); //clear old peak
+			if(smeter_peak_x > 0 && ((HAL_GetTick() - smeter_peak_settime) > LAY_STATUS_SMETER_PEAK_HOLDTIME))
+				smeter_peak_x--;
+			if(s_width > smeter_peak_x)
+			{
+				smeter_peak_x = (uint16_t)s_width;
+				smeter_peak_settime = HAL_GetTick();
+			}
+			LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + smeter_peak_x, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET + 2, 2, LAY_STATUS_BAR_HEIGHT - 3, LAY_STATUS_SMETER_PEAK_COLOR);
+			
 			// stripe
 			LCD_drawSMeter();
-			LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAY_STATUS_Y_OFFSET + 5, 2, LAY_STATUS_SMETER_MARKER_HEIGHT, COLOR_RED);
+			LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAY_STATUS_Y_OFFSET + 5, 2, LAY_STATUS_SMETER_MARKER_HEIGHT, LAY_STATUS_SMETER_STRIPE_COLOR);
 			
 			LCD_last_s_meter = s_width;
 		}
