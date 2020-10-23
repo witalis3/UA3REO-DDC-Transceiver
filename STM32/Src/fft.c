@@ -33,6 +33,7 @@ static float32_t maxValueFFT_rx = 0;					   // maximum value of the amplitude in
 static float32_t maxValueFFT_tx = 0;					   // maximum value of the amplitude in the resulting frequency response
 static uint32_t currentFFTFreq = 0;
 static uint16_t color_scale[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  // color gradient in height FFT
+static uint16_t bg_gradient_color[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  // color gradient on background of FFT
 static SRAM1 uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
 static SRAM1 uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0};				  // frequencies for each row of the waterfall
 static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
@@ -477,7 +478,12 @@ void FFT_printFFT(void)
 		for (uint32_t fft_x = 0; fft_x < LAY_FFT_PRINT_SIZE; fft_x++)
 		{
 			//fft data
-			uint16_t color = COLOR_BLACK;
+			uint16_t color;
+			if(TRX.FFT_Background)
+				color = bg_gradient_color[fft_y];
+			else
+				color = BACKGROUND_COLOR;
+			
 			if (fft_y > (fftHeight - fft_header[fft_x]))
 				color = color_scale[fft_y];
 			
@@ -820,12 +826,34 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 	return COLOR_WHITE;
 }
 
+static uint16_t getBGColor(uint_fast8_t height) // Get FFT background gradient
+{
+	uint_fast8_t start_red = 0;
+	uint_fast8_t start_green = 11;
+	uint_fast8_t start_blue = 40;
+	
+	uint_fast8_t end_red = 46;
+	uint_fast8_t end_green = 77;
+	uint_fast8_t end_blue = 158;
+	
+	float32_t step_red = (end_red - start_red) / getFFTHeight();
+	float32_t step_green = (end_green - start_green) / getFFTHeight();
+	float32_t step_blue = (end_blue - start_blue) / getFFTHeight();
+	
+	uint_fast8_t red = (uint_fast8_t)(start_red + height * step_red);
+	uint_fast8_t green = (uint_fast8_t)(start_green + height * step_green);
+	uint_fast8_t blue = (uint_fast8_t)(start_blue + height * step_blue);
+
+	return rgb888torgb565(red, green, blue);
+}
+
 // prepare the color palette
 static void fft_fill_color_scale(void) // Fill FFT Color Gradient On Initialization
 {
 	for (uint_fast8_t i = 0; i < getFFTHeight(); i++)
 	{
 		color_scale[i] = getFFTColor(getFFTHeight() - i);
+		bg_gradient_color[i] = getBGColor(getFFTHeight() - i);
 	}
 }
 

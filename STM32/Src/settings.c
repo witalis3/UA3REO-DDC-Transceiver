@@ -207,6 +207,7 @@ void LoadSettings(bool clear)
 		TRX.MIC_EQ_HIG = 0;				 // Mic EQ (high)
 		TRX.FFT_Speed = 3;				 // FFT Speed
 		TRX.Beeper = true;				 //Keyboard beeper
+		TRX.FFT_Background = true;	//FFT gradient background
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

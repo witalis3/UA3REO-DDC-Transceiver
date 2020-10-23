@@ -333,7 +333,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			// peak
 			static uint16_t smeter_peak_x = 0;
 			static uint32_t smeter_peak_settime = 0;
-			LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + smeter_peak_x, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET + 2, 2, LAY_STATUS_BAR_HEIGHT - 3, BACKGROUND_COLOR); //clear old peak
+			if(smeter_peak_x > s_width)
+				LCDDriver_Fill_RectWH(LAY_STATUS_BAR_X_OFFSET + smeter_peak_x, LAY_STATUS_Y_OFFSET + LAY_STATUS_BAR_Y_OFFSET + 2, 2, LAY_STATUS_BAR_HEIGHT - 3, BACKGROUND_COLOR); //clear old peak
 			if(smeter_peak_x > 0 && ((HAL_GetTick() - smeter_peak_settime) > LAY_STATUS_SMETER_PEAK_HOLDTIME))
 				smeter_peak_x--;
 			if(s_width > smeter_peak_x)

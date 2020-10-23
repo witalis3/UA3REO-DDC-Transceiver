@@ -170,6 +170,7 @@ Supported LCD: ILI9481 and HX8357B
 * **FFT Height** - FFT and waterfall proportional height
 * **FFT Color** - FFT and waterfall colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
 * **FFT Grid** - FFT and waterfall grids: 1(no grid), 2(fft grid), 3(fft+wtf grids), 4(wtf grid)
+* **FFT Background** - Gradient FFT background
 * **FFT Enabled** - Enable waterfall and FFT
 * **FFT Averaging** - FFT burst averaging level
 * **FFT Window** - Select FFT window (Hamming / Blackman-Harris / Hanning)

@@ -194,6 +194,7 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_Height;
 	uint8_t FFT_Color;
 	int8_t FFT_Grid;
+	bool FFT_Background;
 	//ADC
 	bool ADC_Driver;
 	bool ADC_PGA;
