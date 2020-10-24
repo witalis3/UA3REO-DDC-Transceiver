@@ -145,6 +145,7 @@ void processRxAudio(void)
 		}
 	}
 
+	VAD_Muting = false;
 	switch (current_vfo->Mode) // first receiver
 	{
 	case TRX_MODE_LSB:
@@ -208,6 +209,7 @@ void processRxAudio(void)
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
+		doVAD(decimated_block_size_rx1);
 		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
@@ -398,7 +400,7 @@ void processRxAudio(void)
 	}
 	
 	//Mute codec
-	if(WM8731_Muting)
+	if(WM8731_Muting || VAD_Muting)
 	{
 		for(uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
 		{

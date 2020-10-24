@@ -17,5 +17,8 @@
 // Public methods
 extern void InitVAD(void);										   // initialize VAD
 extern void processVAD(float32_t *buffer); // run VAD for the data block
+extern void resetVAD(void);									//reset VAD status
+
+extern bool VAD_Muting; 				//Muting flag
 
 #endif

@@ -9,6 +9,7 @@
 #include "audio_filters.h"
 #include "auto_notch.h"
 #include "agc.h"
+#include "vad.h"
 
 static void FRONTPANEL_ENCODER_Rotated(int8_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
@@ -396,6 +397,7 @@ static void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 	NeedReinitAudioFilters = true;
+	resetVAD();
 	LCD_redraw();
 }
 
@@ -420,6 +422,7 @@ static void FRONTPANEL_BUTTONHANDLER_PRE(void)
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 	TRX_AutoGain_Stage = 0;
+	resetVAD();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_ATT(void)
@@ -436,6 +439,7 @@ static void FRONTPANEL_BUTTONHANDLER_ATT(void)
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 	TRX_AutoGain_Stage = 0;
+	resetVAD();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
@@ -454,6 +458,7 @@ static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 	TRX_AutoGain_Stage = 0;
+	resetVAD();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_ANT(void)
@@ -499,6 +504,7 @@ static void FRONTPANEL_BUTTONHANDLER_PGA(void)
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 	TRX_AutoGain_Stage = 0;
+	resetVAD();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_FAST(void)
@@ -597,6 +603,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(void)
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
 	TRX_AutoGain_Stage = 0;
+	resetVAD();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
@@ -627,6 +634,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
 	TRX_AutoGain_Stage = 0;
+	resetVAD();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_RF_POWER(void)

@@ -370,6 +370,7 @@ void TRX_DoAutoGain(void)
 			if(skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LNA overloading check");
+				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
 			else
@@ -402,6 +403,7 @@ void TRX_DoAutoGain(void)
 				if(!lna_may_enabled)
 					sendToDebug_strln("AUTOGAIN LNA has imd, signal too strong");
 				sendToDebug_strln("AUTOGAIN LPF + BPF + ATT");
+				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
 			else
@@ -430,6 +432,7 @@ void TRX_DoAutoGain(void)
 			if(skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF");
+				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
 			else
@@ -463,6 +466,7 @@ void TRX_DoAutoGain(void)
 			if(skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF + LNA + ATT");
+				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
 			else
@@ -496,6 +500,7 @@ void TRX_DoAutoGain(void)
 			if(skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF + LNA");
+				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
 			else
@@ -529,6 +534,7 @@ void TRX_DoAutoGain(void)
 			if(skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF + LNA + PGA");
+				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
 			else
@@ -562,6 +568,7 @@ void TRX_DoAutoGain(void)
 			if(skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF + LNA + PGA + DRIVER");
+				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
 			else

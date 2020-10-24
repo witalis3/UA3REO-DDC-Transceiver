@@ -13,13 +13,17 @@ IRAM2 static float32_t InputBuffer[VAD_FFT_SIZE * 2] = {0};		//Input buffer
 static float32_t VAD_decimState[VAD_BLOCK_SIZE + 4 - 1];
 static arm_fir_decimate_instance_f32 VAD_DECIMATE;
 static const arm_fir_decimate_instance_f32 VAD_FirDecimate =
-	{
-		// 48ksps, 3kHz lowpass
-		.numTaps = 4,
-		.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
-		.pState = NULL,
+{
+	// 48ksps, 3kHz lowpass
+	.numTaps = 4,
+	.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
+	.pState = NULL,
 };
-	
+static float32_t Min_E = 999.0f;
+static float32_t Min_MD = 999.0f;
+static uint32_t start_counter = 0;
+bool VAD_Muting; 				//Muting flag
+
 // initialize VAD
 void InitVAD(void)
 {
@@ -32,10 +36,17 @@ void InitVAD(void)
 		window_multipliers [i] = ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32 ((2.0f * PI * i) / ((float32_t) VAD_FFT_SIZE - 1.0f)) + (0.16f / 2) * arm_cos_f32 (4.0f * PI * i / ((float32_t) VAD_FFT_SIZE - 1.0f));
 }
 
+void resetVAD(void)
+{
+	//need reset
+	Min_E = 999.0f;
+	Min_MD = 999.0f;
+	start_counter = 0;
+}
+
 // run VAD for the data block
 void processVAD(float32_t *buffer)
 {
-	return;
 	#define debug false
 		
 	// clear the old FFT buffer
@@ -86,37 +97,20 @@ void processVAD(float32_t *buffer)
 	arm_max_f32(VAD_FFTBuffer, VAD_FFT_SIZE_HALF, &MD, &MD_index);
 		
 	//minimums
-	static uint32_t start_counter = 0;	
-	static uint32_t counter = 0;	
-	static float32_t Min_E = 999.0f;
-	static float32_t Min_SF = -999.0f;
-	static float32_t Min_MD = 999.0f;
-	counter++;
-	if(start_counter < 1000) //skip first packets
+	if(start_counter < 100) //skip first packets
 	{
 		start_counter++;
 		Min_E = 999.0f;
-		Min_SF = -999.0f;
 		Min_MD = 999.0f;
 	}
-	else if(counter > 10000) //reset minimals
-	{
-		Min_E = 999.0f;
-		Min_SF = -999.0f;
-		Min_MD = 999.0f;
-		counter = 0;
-		if(debug) sendToDebug_strln("clean");
-	}
+	
 	if(power < Min_E)
 		Min_E = power;
-	if(SMFdb > Min_SF)
-		Min_SF = SMFdb;
 	if(MD < Min_MD)
 		Min_MD = MD;
 	
 	//calc results
 	float32_t Res_E = power - Min_E;
-	float32_t Res_SF = SMFdb - Min_SF;
 	float32_t Res_MD = MD / Min_MD;
 	float32_t Res_MD_IDX = fabsf(17 - (float32_t)MD_index); //17 - 190hz, voice dominant
 	
@@ -174,7 +168,20 @@ void processVAD(float32_t *buffer)
 		state_no_counter = 0;
 		state = false;
 	}
-	WM8731_Muting = !state;
+	//move min averages
+	if(!state && state_no_counter > 500)
+	{
+		Min_E = 0.9f * Min_E + 0.1f * power;
+		Min_MD = 0.9f * Min_MD + 0.1f * MD;
+		state_no_counter = 0;
+	}
+	if(state && state_yes_counter > 500)
+	{
+		Min_E = 0.99f * Min_E + 0.01f * power;
+		Min_MD = 0.99f * Min_MD + 0.01f * MD;
+		state_yes_counter = 0;
+	}
+	VAD_Muting = !state;
 	
 	//debug
 	if(debug && (HAL_GetTick() - prevPrint) > 100)
@@ -187,14 +194,10 @@ void processVAD(float32_t *buffer)
 		sendToDebug_float32(MD, true);
 		sendToDebug_str(" Min_E: ");
 		sendToDebug_float32(Min_E, true);
-		sendToDebug_str(" Min_SF: ");
-		sendToDebug_float32(Min_SF, true);
 		sendToDebug_str(" Min_MD: ");
 		sendToDebug_float32(Min_MD, true);
 		sendToDebug_str(" Res_E: ");
 		sendToDebug_float32(Res_E, true);
-		sendToDebug_str(" Res_SF: ");
-		sendToDebug_float32(Res_SF, true);
 		sendToDebug_str(" Res_MD: ");
 		sendToDebug_float32(Res_MD, true);
 		sendToDebug_str(" MD_Idx: ");
