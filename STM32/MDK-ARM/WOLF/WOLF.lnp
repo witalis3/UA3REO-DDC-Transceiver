@@ -26,6 +26,7 @@
 "wolf\usbd_cat_if.o"
 "wolf\usbd_debug_if.o"
 "wolf\usbd_ua3reo.o"
+"wolf\vad.o"
 "wolf\wifi.o"
 "wolf\wire.o"
 "wolf\wm8731.o"

@@ -12,6 +12,7 @@
 #include "noise_blanker.h"
 #include "auto_notch.h"
 #include "trx_manager.h"
+#include "vad.h"
 
 //Private variables
 static float32_t Fir_RX1_Hilbert_State_I[FIR_RX1_HILBERT_STATE_SIZE] = {0}; // buffers of filter states
@@ -363,6 +364,7 @@ void InitAudioFilters(void)
 	InitNoiseReduction();
 	InitNotchFilter();
 	InitAutoNotchReduction();
+	InitVAD();
 	ReinitAudioFilters();
 }
 

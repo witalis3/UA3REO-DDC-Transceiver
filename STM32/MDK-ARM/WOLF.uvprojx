@@ -674,6 +674,16 @@
               <FilePath>..\Src\usbd_ua3reo.h</FilePath>
             </File>
             <File>
+              <FileName>vad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\vad.c</FilePath>
+            </File>
+            <File>
+              <FileName>vad.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\vad.h</FilePath>
+            </File>
+            <File>
               <FileName>wifi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\wifi.c</FilePath>

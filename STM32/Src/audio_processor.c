@@ -8,6 +8,7 @@
 #include "noise_blanker.h"
 #include "auto_notch.h"
 #include "decoder.h"
+#include "vad.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;								  // audio samples processed in the processor
@@ -52,6 +53,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // FM demod
 static void ModulateFM(uint16_t size);								   // FM modulator
 static void doRX_EQ(uint16_t size);									   // receiver equalizer
 static void doMIC_EQ(uint16_t size);								   // microphone equalizer
+static void doVAD(uint16_t size);								   // voice activity detector
 
 // initialize audio processor
 void initAudioProcessor(void)
@@ -156,6 +158,7 @@ void processRxAudio(void)
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
+		doVAD(decimated_block_size_rx1);
 		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
@@ -179,6 +182,7 @@ void processRxAudio(void)
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
+		doVAD(decimated_block_size_rx1);
 		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
@@ -314,7 +318,7 @@ void processRxAudio(void)
 	// receiver equalizer
 	if (current_vfo->Mode != TRX_MODE_DIGI_L && current_vfo->Mode != TRX_MODE_DIGI_U && current_vfo->Mode != TRX_MODE_IQ)
 		doRX_EQ(decimated_block_size_rx1);
-
+	
 	// create buffers for transmission to the codec
 	for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 	{
@@ -1104,4 +1108,11 @@ static void ModulateFM(uint16_t size)
 		FPGA_Audio_Buffer_TX_I_tmp[i] = ampl * arm_sin_f32(sin_data);
 		FPGA_Audio_Buffer_TX_Q_tmp[i] = ampl * arm_cos_f32(sin_data);
 	}
+}
+
+// voice activity detector
+static void doVAD(uint16_t size)
+{
+	for (uint32_t block = 0; block < (size / VAD_BLOCK_SIZE); block++)
+		processVAD(FPGA_Audio_Buffer_RX1_I_tmp + (block * VAD_BLOCK_SIZE));
 }
