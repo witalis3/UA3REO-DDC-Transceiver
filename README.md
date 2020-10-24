@@ -30,6 +30,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 ## Transceiver Features
 
 * Panorama (spectrum + waterfall) 96 kHz wide
+* Panorama tweaks and themes
 * Dual receiver (mixing A + B or A&B audio in stereo)
 * Adjustable bandwidth: HPF from 0Hz to 500Hz, LPF from 300Hz to 20kHz
 * Integrated SWR/power meter (HF)
@@ -41,6 +42,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * USB operation (audio transmission, CAT, KEY, PTT)
 * CW decoder, self-control
 * Spectrum analyzer
+* SSB Scanner mode
 * AGC takes into account the characteristics of human hearing (K-Weighting)
 * TCXO frequency stabilization (it is possible to use an external clock source, such as GPS)
 * WiFi operation: Time synchronization, virtual CAT interface (see Scheme/WIFI-CAT-instruction.txt)
@@ -93,6 +95,7 @@ Supported LCD: ILI9481 and HX8357B
 * **PRE [clamp]** - Turn on the driver and / or amplifier ADC
 * **ATT** - Turn on the attenuator
 * **MUTE** - Mute the sound
+* **MUTE [clamp]** - Scanner mode
 * **AGC** - Turn on AGC (automatic gain control)
 * **AGC [clamp]** - AGC settings
 * **A = B** - Setting the second bank of the receiver equal to the current
