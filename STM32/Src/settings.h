@@ -178,6 +178,7 @@ extern struct TRX_SETTINGS
 	uint16_t FM_LPF_Filter;
 	uint8_t FM_SQL_threshold;
 	bool Beeper;
+	bool VAD_Squelch;
 	//CW
 	bool CWDecoder;
 	uint16_t CW_GENERATOR_SHIFT_HZ;
@@ -193,6 +194,7 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_Window;
 	uint8_t FFT_Height;
 	uint8_t FFT_Color;
+	bool FFT_Compressor;
 	int8_t FFT_Grid;
 	bool FFT_Background;
 	//ADC

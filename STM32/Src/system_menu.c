@@ -48,6 +48,7 @@ static void SYSMENU_HANDL_AUDIO_RX_EQ_HIG(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_VAD_Squelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
 
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
@@ -66,6 +67,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Grid(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Compressor(int8_t direction);
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
@@ -184,6 +186,7 @@ static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"AM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.AM_LPF_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_pass},
 		{"FM LPF Pass", SYSMENU_UINT16, (uint32_t *)&TRX.FM_LPF_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_pass},
 		{"FM Squelch", SYSMENU_UINT8, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
+		{"VAD Squelch", SYSMENU_BOOLEAN, (uint32_t *)&TRX.VAD_Squelch, SYSMENU_HANDL_AUDIO_VAD_Squelch},
 		{"MIC EQ Low", SYSMENU_INT8, (uint32_t *)&TRX.MIC_EQ_LOW, SYSMENU_HANDL_AUDIO_MIC_EQ_LOW},
 		{"MIC EQ Mid", SYSMENU_INT8, (uint32_t *)&TRX.MIC_EQ_MID, SYSMENU_HANDL_AUDIO_MIC_EQ_MID},
 		{"MIC EQ High", SYSMENU_INT8, (uint32_t *)&TRX.MIC_EQ_HIG, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG},
@@ -216,6 +219,7 @@ static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Grid", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Grid, SYSMENU_HANDL_SCREEN_FFT_Grid},
 		{"FFT Background", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Background, SYSMENU_HANDL_SCREEN_FFT_Background},
 		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_SCREEN_FFT_Enabled},
+		{"FFT Compressor", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
 		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window},
 };
@@ -655,7 +659,7 @@ void SYSMENU_AUDIO_AGC_HOTKEY(void)
 	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
-	systemMenuIndex = 19;
+	systemMenuIndex = 20;
 	drawSystemMenu(true);
 }
 
@@ -802,6 +806,14 @@ static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold = TRX.FM_SQL_threshold;
+}
+
+static void SYSMENU_HANDL_AUDIO_VAD_Squelch(int8_t direction)
+{
+	if (direction > 0)
+		TRX.VAD_Squelch = true;
+	if (direction < 0)
+		TRX.VAD_Squelch = false;
 }
 
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)
@@ -1179,6 +1191,14 @@ static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction)
 		TRX.FFT_Enabled = true;
 	if (direction < 0)
 		TRX.FFT_Enabled = false;
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_Compressor(int8_t direction)
+{
+	if (direction > 0)
+		TRX.FFT_Compressor = true;
+	if (direction < 0)
+		TRX.FFT_Compressor = false;
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction)

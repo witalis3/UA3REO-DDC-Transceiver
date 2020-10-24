@@ -208,6 +208,8 @@ void LoadSettings(bool clear)
 		TRX.FFT_Speed = 3;				 // FFT Speed
 		TRX.Beeper = true;				 //Keyboard beeper
 		TRX.FFT_Background = true;	//FFT gradient background
+		TRX.VAD_Squelch = false;	//SSB Squelch on VAD technology
+		TRX.FFT_Compressor = true;	//Compress FFT Peaks
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

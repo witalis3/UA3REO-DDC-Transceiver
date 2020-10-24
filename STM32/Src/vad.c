@@ -47,7 +47,9 @@ void resetVAD(void)
 // run VAD for the data block
 void processVAD(float32_t *buffer)
 {
-	#define debug false
+	if(!TRX.VAD_Squelch) return;
+	
+	#define debug true
 		
 	// clear the old FFT buffer
 	memset(VAD_FFTBuffer, 0x00, sizeof(VAD_FFTBuffer));
@@ -143,7 +145,7 @@ void processVAD(float32_t *buffer)
 	static bool state = false;
 	static uint16_t state_no_counter = 0;
 	static uint16_t state_yes_counter = 0;
-	if(points > 1)
+	if(points > 0)
 	{
 		state_yes_counter++;
 		if(state_no_counter > 0)
@@ -162,7 +164,7 @@ void processVAD(float32_t *buffer)
 		state_no_counter = 0;
 		state = true;
 	}
-	if(state && state_no_counter > 500)
+	if(state && state_no_counter > 700)
 	{
 		state_yes_counter = 0;
 		state_no_counter = 0;
@@ -177,8 +179,8 @@ void processVAD(float32_t *buffer)
 	}
 	if(state && state_yes_counter > 500)
 	{
-		Min_E = 0.99f * Min_E + 0.01f * power;
-		Min_MD = 0.99f * Min_MD + 0.01f * MD;
+		Min_E = 0.999f * Min_E + 0.01f * power;
+		Min_MD = 0.999f * Min_MD + 0.01f * MD;
 		state_yes_counter = 0;
 	}
 	VAD_Muting = !state;

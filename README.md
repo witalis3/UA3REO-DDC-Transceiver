@@ -148,6 +148,7 @@ Supported LCD: ILI9481 and HX8357B
 * **CW LPF Pass** - LPF cutoff frequency when working in CW
 * **FM LPF Pass** - LPF cutoff frequency when working in FM
 * **FM Squelch** - FM squelch level
+* **VAD Squelch** - SSB squelch on VAD techonogy
 * **MIC EQ xxx** - Microphone equalizer levels
 * **RX EQ xxx** - Receiver equalizer levels
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
@@ -172,6 +173,7 @@ Supported LCD: ILI9481 and HX8357B
 * **FFT Grid** - FFT and waterfall grids: 1(no grid), 2(fft grid), 3(fft+wtf grids), 4(wtf grid)
 * **FFT Background** - Gradient FFT background
 * **FFT Enabled** - Enable waterfall and FFT
+* **FFT Compressor** - Enable FFT peak comressor
 * **FFT Averaging** - FFT burst averaging level
 * **FFT Window** - Select FFT window (Hamming / Blackman-Harris / Hanning)
 

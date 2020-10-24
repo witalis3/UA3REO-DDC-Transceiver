@@ -323,7 +323,7 @@ void FFT_doFFT(void)
 	float32_t compressSourceInterval = maxAmplValue - compressTargetValue;
 	float32_t compressTargetInterval = maxValueFFT - compressTargetValue;
 	float32_t compressRate = compressTargetInterval / compressSourceInterval;
-	if (!TRX_on_TX())
+	if (!TRX_on_TX() && TRX.FFT_Compressor)
 	{
 		for (uint_fast16_t i = 0; i < LAY_FFT_PRINT_SIZE; i++)
 			if(FFTInput[i] > compressTargetValue)
