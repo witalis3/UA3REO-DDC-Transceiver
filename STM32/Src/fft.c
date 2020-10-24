@@ -620,6 +620,9 @@ void FFT_printWaterfallDMA(void)
 				if(grid_lines_pos[i] > 0)
 					wtf_line_tmp[grid_lines_pos[i]] = mixColors(wtf_line_tmp[grid_lines_pos[i]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 		
+		//center line
+		wtf_line_tmp[LAY_FFT_PRINT_SIZE / 2] = mixColors(wtf_line_tmp[LAY_FFT_PRINT_SIZE / 2], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+		
 		// add opacity to bandw bar
 		for(int16_t fft_x = bw_line_start; ((fft_x <= (bw_line_start + bw_line_width)) && (fft_x < LAY_FFT_PRINT_SIZE)); fft_x++)
 				wtf_line_tmp[fft_x] = addColor(wtf_line_tmp[fft_x], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
