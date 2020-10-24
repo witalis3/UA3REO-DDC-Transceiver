@@ -15,6 +15,7 @@
 #include "front_unit.h"
 #include "rf_unit.h"
 #include "system_menu.h"
+#include "vad.h"
 
 volatile bool TRX_ptt_hard = false;
 volatile bool TRX_ptt_cat = false;
@@ -64,6 +65,7 @@ uint32_t TRX_freq_phrase = 0;
 uint32_t TRX_freq_phrase2 = 0;
 uint32_t TRX_freq_phrase_tx = 0;
 volatile int16_t TRX_RF_Temperature = 0.0f;
+volatile bool TRX_ScanMode = false;
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
@@ -649,4 +651,40 @@ void TRX_TemporaryMute(void)
 {
 	WM8731_Mute();
 	TRX_Temporary_Mute_StartTime = HAL_GetTick();
+}
+
+//process frequency scanner
+void TRX_ProcessScanMode(void)
+{
+	static bool oldState = false;
+	static uint32_t StateChangeTime = 0;
+	if(oldState != VAD_Muting)
+	{
+		oldState = VAD_Muting;
+		StateChangeTime = HAL_GetTick();
+	}
+	bool goSweep = false;
+	if(VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
+		goSweep = true;
+	if(!VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME))
+		goSweep = true;
+	
+	if(goSweep)
+	{
+		int8_t band = getBandFromFreq(CurrentVFO()->Freq, false);
+		for(uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++)
+		{
+			if((BANDS[band].regions[region_id].startFreq <= CurrentVFO()->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO()->Freq))
+			{
+				uint32_t new_freq = (CurrentVFO()->Freq + SCANNER_FREQ_STEP) / SCANNER_FREQ_STEP * SCANNER_FREQ_STEP;
+				if(new_freq >= BANDS[band].regions[region_id].endFreq)
+					new_freq = BANDS[band].regions[region_id].startFreq;
+				
+				TRX_setFrequency(new_freq, CurrentVFO());
+				LCD_UpdateQuery.FreqInfo = true;
+				StateChangeTime = HAL_GetTick();
+				break;
+			}
+		}
+	}
 }

@@ -130,6 +130,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 					ENCODER_slowler = 0;
 				}
 			}
+			TRX_ScanMode = false;
 		}
 		ENCODER_AValDeb = HAL_GetTick();
 		ENClastClkVal = ENCODER_CLKVal;
@@ -154,6 +155,7 @@ void FRONTPANEL_ENCODER2_checkRotate(void)
 		{ // otherwise B changed its state first - counterclockwise rotation
 			FRONTPANEL_ENCODER2_Rotated(CALIBRATE.ENCODER2_INVERT ? -1 : 1);
 		}
+		TRX_ScanMode = false;
 	}
 	ENCODER2_AValDeb = HAL_GetTick();
 }
@@ -398,6 +400,7 @@ static void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
 	NeedSaveSettings = true;
 	NeedReinitAudioFilters = true;
 	resetVAD();
+	TRX_ScanMode = false;
 	LCD_redraw();
 }
 
@@ -545,6 +548,8 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(void)
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
+	resetVAD();
+	TRX_ScanMode = false;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_MODE_N(void)
@@ -573,6 +578,8 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_N(void)
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
+	resetVAD();
+	TRX_ScanMode = false;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_BAND_P(void)
@@ -604,6 +611,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(void)
 	LCD_UpdateQuery.FreqInfo = true;
 	TRX_AutoGain_Stage = 0;
 	resetVAD();
+	TRX_ScanMode = false;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
@@ -635,6 +643,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
 	LCD_UpdateQuery.FreqInfo = true;
 	TRX_AutoGain_Stage = 0;
 	resetVAD();
+	TRX_ScanMode = false;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_RF_POWER(void)
@@ -926,7 +935,7 @@ static void FRONTPANEL_BUTTONHANDLER_SERVICES(void)
 
 static void FRONTPANEL_BUTTONHANDLER_SCAN(void)
 {
-	
+	TRX_ScanMode = !TRX_ScanMode;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_PLAY(void)

@@ -1,7 +1,7 @@
 #include "vad.h"
 #include "arm_const_structs.h"
 #include "settings.h"
-#include "wm8731.h"
+#include "trx_manager.h"
 
 // https://habr.com/ru/post/192954/
 
@@ -47,9 +47,9 @@ void resetVAD(void)
 // run VAD for the data block
 void processVAD(float32_t *buffer)
 {
-	if(!TRX.VAD_Squelch) return;
+	if(!TRX.VAD_Squelch && !TRX_ScanMode) return;
 	
-	#define debug true
+	#define debug false
 		
 	// clear the old FFT buffer
 	memset(VAD_FFTBuffer, 0x00, sizeof(VAD_FFTBuffer));

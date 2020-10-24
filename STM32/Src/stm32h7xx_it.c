@@ -528,6 +528,10 @@ void TIM6_DAC_IRQHandler(void)
 		
 		//Process AutoGain feature
 		TRX_DoAutoGain();
+		
+		//Process Scaner
+		if(TRX_ScanMode)
+			TRX_ProcessScanMode();
   }
 	
 	if ((ms10_counter % 5) == 0) // every 50 msec

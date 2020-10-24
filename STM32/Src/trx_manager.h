@@ -18,6 +18,7 @@ extern float32_t TRX_GenerateCWSignal(float32_t power);
 extern float32_t TRX_getSTM32H743Temperature(void);
 extern float32_t TRX_getSTM32H743vref(void);
 extern void TRX_TemporaryMute(void);
+extern void TRX_ProcessScanMode(void);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_cat;
@@ -66,5 +67,6 @@ extern uint32_t TRX_freq_phrase;
 extern uint32_t TRX_freq_phrase2;
 extern uint32_t TRX_freq_phrase_tx;
 volatile extern uint32_t TRX_Temporary_Mute_StartTime;
+volatile extern bool TRX_ScanMode;
 
 #endif

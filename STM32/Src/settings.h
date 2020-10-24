@@ -37,6 +37,9 @@
 #define FAN_MEDIUM_START 60				// Temperature at which the fan starts at half power
 #define FAN_MEDIUM_STOP 50				// Temperature at which the fan stops
 #define FAN_FULL_START 80				// Temperature at which the fan starts at full power
+#define SCANNER_NOSIGNAL_TIME 50	//time to continue sweeping if signal too low
+#define SCANNER_SIGNAL_TIME 1000	//time to continue sweeping if signal founded
+#define SCANNER_FREQ_STEP	500		//step for freq scanner
 
 // select LCD, comment on others
 #define LCD_ILI9481 true
