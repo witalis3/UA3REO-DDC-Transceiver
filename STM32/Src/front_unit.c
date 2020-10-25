@@ -224,9 +224,9 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	if (CurrentVFO()->ManualNotchFilter)
 	{
 		if (CurrentVFO()->NotchFC > 50 && direction < 0)
-			CurrentVFO()->NotchFC -= 25;
+			CurrentVFO()->NotchFC -= 100;
 		else if (CurrentVFO()->NotchFC < CurrentVFO()->LPF_Filter_Width && direction > 0)
-			CurrentVFO()->NotchFC += 25;
+			CurrentVFO()->NotchFC += 100;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		NeedReinitNotch = true;
 	}
