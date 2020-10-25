@@ -3,6 +3,7 @@
 #include "arm_const_structs.h"
 #include "audio_filters.h"
 #include "screen_layout.h"
+#include "vad.h"
 
 //Public variables
 bool NeedFFTInputBuffer = true;				// flag of the need to fill the buffer with FPGA
@@ -262,7 +263,7 @@ void FFT_doFFT(void)
 		}
 	}
 	NeedFFTInputBuffer = true;
-
+	
 	// Window for FFT
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 	{
@@ -273,6 +274,14 @@ void FFT_doFFT(void)
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
 
+	//Debug VAD
+	/*memset(FFTInput, 0x00, sizeof(FFTInput));
+	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
+	{
+		FFTInput[i] = VAD_FFTBuffer_Export[i];
+	}
+	NeedFFTInputBuffer = true;*/
+	
 	// Reduce the calculated FFT to visible
 	if (FFT_SIZE > LAY_FFT_PRINT_SIZE)
 	{
