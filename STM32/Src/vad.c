@@ -21,11 +21,12 @@ static const arm_fir_decimate_instance_f32 VAD_FirDecimate =
 	.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
 	.pState = NULL,
 };
-static float32_t Min_E = 999.0f;
-static float32_t Min_MD = 999.0f;
+static float32_t Min_E1 = 999.0f;
+static float32_t Min_E2 = 999.0f;
+static float32_t Min_MD1 = 999.0f;
+static float32_t Min_MD2 = 999.0f;
 static uint32_t start_counter = 0;
 bool VAD_Muting = false; 				//Muting flag
-float32_t VAD_Equability = 1.0f;	//Bandwidth Equability
 
 // initialize VAD
 void InitVAD(void)
@@ -40,8 +41,10 @@ void InitVAD(void)
 void resetVAD(void)
 {
 	//need reset
-	Min_E = 999.0f;
-	Min_MD = 999.0f;
+	Min_E1 = 999.0f;
+	Min_E2 = 999.0f;
+	Min_MD1 = 999.0f;
+	Min_MD2 = 999.0f;
 	start_counter = 0;
 }
 
@@ -50,8 +53,7 @@ void processVAD(float32_t *buffer)
 {
 	if(!TRX.VAD_Squelch && !TRX_ScanMode) return;
 	
-	#define debug true
-	#define debug_th true
+	#define debug false
 		
 	// clear the old FFT buffer
 	memset(VAD_FFTBuffer, 0x00, sizeof(VAD_FFTBuffer));
@@ -87,74 +89,173 @@ void processVAD(float32_t *buffer)
 	}
 	return;*/
 	
+	//calc bw
+	uint32_t fft_bw = (TRX_SAMPLERATE / VAD_MAGNIFY / 2);
+	uint32_t fft_bins = VAD_FFT_SIZE / 2;
+	uint32_t trx_hpf = CurrentVFO()->HPF_Filter_Width;
+	uint32_t trx_lpf = CurrentVFO()->LPF_Filter_Width;
+	uint32_t fft_hpf_bin = fft_bins * trx_hpf / fft_bw;
+	uint32_t fft_lpf_bin = fft_bins * trx_lpf / fft_bw;
+	if(fft_hpf_bin > fft_bw)
+		fft_hpf_bin = fft_bw;
+	if(fft_lpf_bin > fft_bw)
+		fft_lpf_bin = fft_bw;
+	uint32_t fft_center_bin = (fft_hpf_bin + fft_lpf_bin) / 2;
+	uint32_t fft_bin_halflen = fft_lpf_bin - fft_center_bin;
+	
 	//calc power
-	float32_t power = 0;
-	arm_power_f32(InputBuffer, VAD_BLOCK_SIZE, &power);
+	float32_t power1 = 0;
+	float32_t power2 = 0;
+	for(uint32_t bin = fft_hpf_bin ; bin < fft_center_bin ; bin++)
+		power1 += VAD_FFTBuffer[bin];
+	for(uint32_t bin = fft_center_bin ; bin < fft_lpf_bin ; bin++)
+		power2 += VAD_FFTBuffer[bin];
 
 	//calc SFM — Spectral Flatness Measure
-	float32_t Amean = 0;
-	arm_mean_f32(VAD_FFTBuffer, VAD_FFT_SIZE_HALF, &Amean);
-	float32_t Gmean = 0;
-	for(uint32_t i = 0; i < VAD_FFT_SIZE_HALF ; i++)
+	float32_t Amean1 = 0;
+	float32_t Amean2 = 0;
+	arm_mean_f32(&VAD_FFTBuffer[fft_hpf_bin], fft_bin_halflen, &Amean1);
+	arm_mean_f32(&VAD_FFTBuffer[fft_center_bin], fft_bin_halflen, &Amean2);
+	float32_t Gmean1 = 0;
+	float32_t Gmean2 = 0;
+	for(uint32_t i = 0; i < fft_center_bin ; i++)
 		if(VAD_FFTBuffer[i] != 0)
-			Gmean += log10f_fast(VAD_FFTBuffer[i]);
-	Gmean = Gmean / VAD_FFT_SIZE_HALF;
-	Gmean = powf(10, Gmean);
-	float32_t SMFdb = 10 * log10f_fast(Gmean / Amean);
+			Gmean1 += log10f_fast(VAD_FFTBuffer[i]);
+	for(uint32_t i = fft_center_bin; i < fft_lpf_bin ; i++)
+		if(VAD_FFTBuffer[i] != 0)
+			Gmean2 += log10f_fast(VAD_FFTBuffer[i]);
+	Gmean1 = Gmean1 / fft_bin_halflen;
+	Gmean1 = powf(10, Gmean1);
+	float32_t SMFdb1 = 10 * log10f_fast(Gmean1 / Amean1);
+	Gmean2 = Gmean2 / fft_bin_halflen;
+	Gmean2 = powf(10, Gmean2);
+	float32_t SMFdb2 = 10 * log10f_fast(Gmean2 / Amean2);
 	
 	//find most dominant frequency component
-	float32_t MD = 0.0f;
-	uint32_t MD_index = 0.0f;
-	arm_max_f32(VAD_FFTBuffer, VAD_FFT_SIZE_HALF, &MD, &MD_index);
+	float32_t MD1 = 0.0f;
+	uint32_t MD1_index = 0.0f;
+	arm_max_f32(&VAD_FFTBuffer[fft_hpf_bin], fft_bin_halflen, &MD1, &MD1_index);
+	float32_t MD2 = 0.0f;
+	uint32_t MD2_index = 0.0f;
+	arm_max_f32(&VAD_FFTBuffer[fft_center_bin], fft_bin_halflen, &MD2, &MD2_index);
 		
 	//minimums
 	if(start_counter < 100) //skip first packets
 	{
 		start_counter++;
-		Min_E = 999.0f;
-		Min_MD = 999.0f;
+		Min_E1 = 999.0f;
+		Min_E2 = 999.0f;
+		Min_MD1 = 999.0f;
+		Min_MD2 = 999.0f;
 	}
 	
-	if(power < Min_E)
-		Min_E = power;
-	if(MD < Min_MD)
-		Min_MD = MD;
+	if(power1 < Min_E1)
+		Min_E1 = power1;
+	if(power2 < Min_E2)
+		Min_E2 = power2;
+	if(MD1 < Min_MD1)
+		Min_MD1 = MD1;
+	if(MD2 < Min_MD2)
+		Min_MD2 = MD2;
 	
 	//calc results
-	float32_t Res_E = power - Min_E;
-	float32_t Res_MD = MD / Min_MD;
-	float32_t Res_MD_IDX = fabsf(8 - (float32_t)MD_index); //8 ~190hz, voice dominant
+	float32_t Res_E1 = power1 / Min_E1;
+	float32_t Res_E2 = power2 / Min_E2;
+	float32_t Res_MD1 = MD1 / Min_MD1;
+	float32_t Res_MD2 = MD2 / Min_MD2;
+	float32_t Res_MD1_IDX = fabsf(8 - (float32_t)MD1_index); //8 - voice dominant bin
+	float32_t Res_MD2_IDX = fabsf(20 - (float32_t)MD2_index); //20 - voice dominant bin
+	float32_t Res_Equation = Res_E1 / Res_E2;
 	
+	//debug
 	static uint32_t prevPrint = 0;
-	
-	uint8_t points = 0;
-	if(Res_MD > 10.0f)
+	if(debug && (HAL_GetTick() - prevPrint) > 100)
 	{
-		points++;
-		if(debug_th && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("m");
-		if(Res_MD_IDX < 10)
+		sendToDebug_str(" SMF1: ");
+		sendToDebug_float32(SMFdb1, true);
+		sendToDebug_str(" SMF2: ");
+		sendToDebug_float32(SMFdb2, true);
+		sendToDebug_str(" Res_E1: ");
+		sendToDebug_float32(Res_E1, true);
+		sendToDebug_str(" Res_E2: ");
+		sendToDebug_float32(Res_E2, true);
+		sendToDebug_str(" Res_MD1: ");
+		sendToDebug_float32(Res_MD1, true);
+		sendToDebug_str(" Res_MD2: ");
+		sendToDebug_float32(Res_MD2, true);
+		sendToDebug_str(" MD1_Idx: ");
+		sendToDebug_float32(MD1_index, true);
+		sendToDebug_str(" MD2_Idx: ");
+		sendToDebug_float32(MD2_index, true);
+		sendToDebug_str(" EQU: ");
+		sendToDebug_float32(Res_Equation, true);
+		sendToDebug_str(" ");
+	}
+	
+	//check thresholds	
+	uint8_t points1 = 0;
+	uint8_t points2 = 0;
+	if(Res_MD1 > 15.0f)
+	{
+		points1++;
+		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("M");
+		if(Res_MD1_IDX < 5)
 		{
-			points++;
-			if(debug_th && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("i");
+			points1++;
+			if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("I");
 		}
 	}
-	if(SMFdb < -13.0f)
+	if(Res_MD2 > 15.0f)
 	{
-		points++;
-		if(debug_th && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("s");
+		points2++;
+		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("m");
+		if(Res_MD2_IDX < 5)
+		{
+			points2++;
+			if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("i");
+		}
 	}
-	if(Res_E > (Min_E * 100.0f))
+	if(SMFdb1 < -23.0f)
 	{
-		points++;
-		if(debug_th && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("e");
+		points1++;
+		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("S");
 	}
-	if(debug_th && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str(" ");
+	if(SMFdb2 < -4.0f)
+	{
+		points2++;
+		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("s");
+	}
+	if(Res_E1 > 15.0f)
+	{
+		points1++;
+		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("E");
+	}
+	if(Res_E2 > 15.0f)
+	{
+		points2++;
+		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("e");
+	}
+	if(Res_Equation > 10.1f)
+	{
+		points1--;
+		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("Q");
+	}
+	if(Res_Equation < 0.1f)
+	{
+		points2--;
+		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("q");
+	}
+	if(debug && (HAL_GetTick() - prevPrint) > 100)
+	{
+		sendToDebug_newline();
+		prevPrint = HAL_GetTick();
+	}
 	
 	//calculate result state
 	static bool state = false;
 	static uint16_t state_no_counter = 0;
 	static uint16_t state_yes_counter = 0;
-	if(points > 1)
+	if(points1 > 1 && points2 > 1)
 	{
 		state_yes_counter++;
 		if(state_no_counter > 0)
@@ -172,84 +273,32 @@ void processVAD(float32_t *buffer)
 		state_yes_counter = 0;
 		state_no_counter = 0;
 		state = true;
-		VAD_Equability = 1.0f;
 	}
 	if(state && state_no_counter > 700)
 	{
 		state_yes_counter = 0;
 		state_no_counter = 0;
 		state = false;
-		VAD_Equability = 1.0f;
 	}
+	
 	//move min averages
 	if(!state && state_no_counter > 500)
 	{
-		Min_E = 0.9f * Min_E + 0.1f * power;
-		Min_MD = 0.9f * Min_MD + 0.1f * MD;
+		Min_E1 = 0.9f * Min_E1 + 0.1f * power1;
+		Min_E2 = 0.9f * Min_E2 + 0.1f * power2;
+		Min_MD1 = 0.9f * Min_MD1 + 0.1f * MD1;
+		Min_MD2 = 0.9f * Min_MD2 + 0.1f * MD2;
 		state_no_counter = 0;
 	}
 	if(state && state_yes_counter > 500)
 	{
-		Min_E = 0.999f * Min_E + 0.01f * power;
-		Min_MD = 0.999f * Min_MD + 0.01f * MD;
+		Min_E1 = 0.999f * Min_E1 + 0.01f * power1;
+		Min_E2 = 0.999f * Min_E2 + 0.01f * power2;
+		Min_MD1 = 0.999f * Min_MD1 + 0.01f * MD1;
+		Min_MD2 = 0.999f * Min_MD2 + 0.01f * MD2;
 		state_yes_counter = 0;
 	}
 	
-	//calc bw equability
-	if(state)
-	{
-		uint32_t fft_bw = (TRX_SAMPLERATE / VAD_MAGNIFY / 2);
-		uint32_t fft_bins = VAD_FFT_SIZE / 2;
-		uint32_t trx_hpf = CurrentVFO()->HPF_Filter_Width;
-		uint32_t trx_lpf = CurrentVFO()->LPF_Filter_Width;
-		uint32_t fft_hpf_bin = fft_bins * trx_hpf / fft_bw;
-		uint32_t fft_lpf_bin = fft_bins * trx_lpf / fft_bw;
-		if(fft_hpf_bin > fft_bw)
-			fft_hpf_bin = fft_bw;
-		if(fft_lpf_bin > fft_bw)
-			fft_lpf_bin = fft_bw;
-		uint32_t fft_center_bin = (fft_hpf_bin + fft_lpf_bin) / 2;
-		float32_t low_sum = 0;
-		float32_t high_sum = 0;
-		for(uint32_t bin = fft_hpf_bin ; bin < fft_center_bin ; bin++)
-			low_sum += VAD_FFTBuffer[bin];
-		for(uint32_t bin = fft_center_bin ; bin < fft_lpf_bin ; bin++)
-			high_sum += VAD_FFTBuffer[bin];
-		VAD_Equability = 0.99f * VAD_Equability + 0.01f * (low_sum / high_sum);
-	}
-	if(VAD_Equability < 0.1f)
-		state = false;
-	
 	//set mute state
 	VAD_Muting = !state;
-	
-	//debug
-	if(debug && (HAL_GetTick() - prevPrint) > 100)
-	{
-		sendToDebug_str(" PWR: ");
-		sendToDebug_float32(power, true);
-		sendToDebug_str(" SMF: ");
-		sendToDebug_float32(SMFdb, true);
-		sendToDebug_str(" MD: ");
-		sendToDebug_float32(MD, true);
-		sendToDebug_str(" Min_E: ");
-		sendToDebug_float32(Min_E, true);
-		sendToDebug_str(" Min_MD: ");
-		sendToDebug_float32(Min_MD, true);
-		sendToDebug_str(" Res_E: ");
-		sendToDebug_float32(Res_E, true);
-		sendToDebug_str(" Res_MD: ");
-		sendToDebug_float32(Res_MD, true);
-		sendToDebug_str(" MD_Idx: ");
-		sendToDebug_float32(MD_index, true);
-		sendToDebug_str(" Points: ");
-		sendToDebug_float32(points, true);
-		sendToDebug_str(" EQU: ");
-		sendToDebug_float32(VAD_Equability, true);
-		sendToDebug_str(" State: ");
-		sendToDebug_float32(state, true);
-		sendToDebug_newline();
-		
-		prevPrint = HAL_GetTick();
-	}
 }
