@@ -12,7 +12,7 @@
 #define FFT_DOUBLE_SIZE_BUFFER (FFT_SIZE * 2)                    // Buffer size for FFT calculation
 #define FFT_MIN 4.0f                                             // MIN threshold of FFT signal
 #define FFT_TARGET 6.0f                                          // average threshold of the FFT signal
-#define FFT_COMPRESS_INTERVAL 0.7f                               // compress interval of the FFT signal
+#define FFT_COMPRESS_INTERVAL 0.9f                               // compress interval of the FFT signal
 #define FFT_MAX 8.0f                                             // MAX FFT signal threshold
 #define FFT_STEP_COEFF 10.0f                                     // step coefficient for auto-calibration of the FFT signal (more - slower)
 #define FFT_HZ_IN_PIXEL (float32_t)((float32_t)IQ_SAMPLERATE / (float32_t)LAY_FFT_PRINT_SIZE)     // hertz per pixel
