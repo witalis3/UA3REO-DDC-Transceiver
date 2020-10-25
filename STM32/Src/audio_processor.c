@@ -398,6 +398,16 @@ void processRxAudio(void)
 			Processor_AudioBuffer_current[pos * 2 + 1] = Processor_AudioBuffer_current[pos * 2];					//right channel
 		}
 	}
+
+	//Mute codec
+	if(WM8731_Muting)
+	{
+		for(uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
+		{
+			Processor_AudioBuffer_current[pos * 2] = 0; //left channel
+			Processor_AudioBuffer_current[pos * 2 + 1] = 0;					//right channel
+		}
+	}
 	
 	//Send to Codec DMA
 	if (TRX_Inited)

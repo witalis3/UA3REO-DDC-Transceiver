@@ -163,8 +163,8 @@ void processVAD(float32_t *buffer)
 	float32_t Res_E2 = power2 / Min_E2;
 	float32_t Res_MD1 = MD1 / Min_MD1;
 	float32_t Res_MD2 = MD2 / Min_MD2;
-	float32_t Res_MD1_IDX = fabsf(8 - (float32_t)MD1_index); //8 - voice dominant bin
-	float32_t Res_MD2_IDX = fabsf(20 - (float32_t)MD2_index); //20 - voice dominant bin
+	float32_t Res_MD1_IDX = fabsf(5 - (float32_t)MD1_index); //8 - voice dominant bin
+	float32_t Res_MD2_IDX = fabsf(17 - (float32_t)MD2_index); //20 - voice dominant bin
 	float32_t Res_Equation = Res_E1 / Res_E2;
 	
 	//debug
@@ -205,11 +205,11 @@ void processVAD(float32_t *buffer)
 			if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("I");
 		}
 	}
-	if(Res_MD2 > 15.0f)
+	if(Res_MD2 > 7.0f)
 	{
 		points2++;
 		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("m");
-		if(Res_MD2_IDX < 5)
+		if(Res_MD2_IDX < 10)
 		{
 			points2++;
 			if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("i");
@@ -225,17 +225,17 @@ void processVAD(float32_t *buffer)
 		points2++;
 		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("s");
 	}
-	if(Res_E1 > 15.0f)
+	if(Res_E1 > 10.0f)
 	{
 		points1++;
 		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("E");
 	}
-	if(Res_E2 > 15.0f)
+	if(Res_E2 > 10.0f)
 	{
 		points2++;
 		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("e");
 	}
-	if(Res_Equation > 10.1f)
+	if(Res_Equation > 20.0f)
 	{
 		points1--;
 		if(debug && (HAL_GetTick() - prevPrint) > 100) sendToDebug_str("Q");
@@ -274,7 +274,7 @@ void processVAD(float32_t *buffer)
 		state_no_counter = 0;
 		state = true;
 	}
-	if(state && state_no_counter > 700)
+	if(state && state_no_counter > 1000)
 	{
 		state_yes_counter = 0;
 		state_no_counter = 0;
