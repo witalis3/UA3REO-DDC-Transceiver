@@ -2,6 +2,7 @@
 #include "agc.h"
 #include "settings.h"
 #include "audio_filters.h"
+#include "vad.h"
 
 //Private variables
 static float32_t AGC_RX1_need_gain_db = 0.0f;
@@ -50,16 +51,19 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	float32_t AGC_RX_dbFS = rate2dbV(full_scale_rate);
 
 	//move the gain one step
-	float32_t diff = ((float32_t)TRX.AGC_GAIN_TARGET - (AGC_RX_dbFS + *AGC_need_gain_db));
-	if (diff > 0)
-		*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_UP;
-	else
-		*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
-
-	//overload (clipping), sharply reduce the gain
-	if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + AGC_CLIPPING))
+	if(!WM8731_Muting && !VAD_Muting)
 	{
-		*AGC_need_gain_db = (float32_t)TRX.AGC_GAIN_TARGET - AGC_RX_dbFS;
+		float32_t diff = ((float32_t)TRX.AGC_GAIN_TARGET - (AGC_RX_dbFS + *AGC_need_gain_db));
+		if (diff > 0)
+			*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_UP;
+		else
+			*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
+
+		//overload (clipping), sharply reduce the gain
+		if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + AGC_CLIPPING))
+		{
+			*AGC_need_gain_db = (float32_t)TRX.AGC_GAIN_TARGET - AGC_RX_dbFS;
+		}
 	}
 
 	//noise threshold, below it - do not amplify
@@ -69,13 +73,17 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	//AGC off, not adjustable
 	if ((rx_id == AUDIO_RX1 && !CurrentVFO()->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO()->AGC))
 		*AGC_need_gain_db = 1.0f;
+	
+	//Muting if need
+	if(WM8731_Muting || VAD_Muting)
+		*AGC_need_gain_db = -200.0f;
 
 	//gain limitation
 	if (*AGC_need_gain_db > AGC_MAX_GAIN)
 		*AGC_need_gain_db = AGC_MAX_GAIN;
 
 	//apply gain
-	if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.00001f) //gain changed
+	if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.0f) //gain changed
 	{
 		float32_t gainApplyStep = 0;
 		if (*AGC_need_gain_db_old > *AGC_need_gain_db)
