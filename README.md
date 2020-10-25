@@ -134,6 +134,7 @@ Supported LCD: ILI9481 and HX8357B
 * **Freq Step FAST** - Frequency step by the main encoder in FAST mode
 * **Freq Step ENC2** - Frequency tuning step by main add. encoder
 * **Freq Step ENC2 FAST** - Frequency step by main add. encoder in FAST mode
+* **Encoder Accelerate** - Accelerate encoder on fast rates
 * **Att step, dB** - Attenuator tuning step
 * **DEBUG Console** - Output of debug and service information to USB / UART ports
 * **MIC IN** - Select the microphone input

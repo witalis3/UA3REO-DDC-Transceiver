@@ -11,7 +11,7 @@
 #include "agc.h"
 #include "vad.h"
 
-static void FRONTPANEL_ENCODER_Rotated(int8_t direction);
+static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
@@ -95,6 +95,9 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 
 void FRONTPANEL_ENCODER_checkRotate(void)
 {
+	static uint32_t ENCstartMeasureTime = 0;
+	static int16_t ENCticksInInterval = 0;
+	static float32_t ENCAcceleration = 0;
 	static uint8_t ENClastClkVal = 0;
 	static bool ENCfirst = true;
 	uint8_t ENCODER_DTVal = HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin);
@@ -117,8 +120,18 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				ENCODER_slowler--;
 				if (ENCODER_slowler <= -CALIBRATE.ENCODER_SLOW_RATE)
 				{
-					FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? 1 : -1);
+					//acceleration
+					ENCticksInInterval++;
+					if((HAL_GetTick() - ENCstartMeasureTime) > ENCODER_ACCELERATION_LEFT)
+					{
+						ENCstartMeasureTime = HAL_GetTick();
+						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
+						ENCticksInInterval = 0;
+					}
+					//do rotate
+					FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? ENCAcceleration : -ENCAcceleration);
 					ENCODER_slowler = 0;
+					TRX_ScanMode = false;
 				}
 			}
 			else
@@ -126,11 +139,20 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				ENCODER_slowler++;
 				if (ENCODER_slowler >= CALIBRATE.ENCODER_SLOW_RATE)
 				{
-					FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? -1 : 1);
+					//acceleration
+					ENCticksInInterval++;
+					if((HAL_GetTick() - ENCstartMeasureTime) > (ENCODER_ACCELERATION_RIGHT * 2)) //right some faster because rounding
+					{
+						ENCstartMeasureTime = HAL_GetTick();
+						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
+						ENCticksInInterval = 0;
+					}
+					//do rotate
+					FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? -ENCAcceleration : ENCAcceleration);
 					ENCODER_slowler = 0;
+					TRX_ScanMode = false;
 				}
 			}
-			TRX_ScanMode = false;
 		}
 		ENCODER_AValDeb = HAL_GetTick();
 		ENClastClkVal = ENCODER_CLKVal;
@@ -160,16 +182,16 @@ void FRONTPANEL_ENCODER2_checkRotate(void)
 	ENCODER2_AValDeb = HAL_GetTick();
 }
 
-static void FRONTPANEL_ENCODER_Rotated(int8_t direction) // rotated encoder, handler here, direction -1 - left, 1 - right
+static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, handler here, direction -1 - left, 1 - right
 {
 	if (TRX.Locked)
 		return;
-
 	if (LCD_systemMenuOpened)
 	{
-		eventRotateSystemMenu(direction);
+		eventRotateSystemMenu((int8_t)direction);
 		return;
 	}
+	
 	VFO *vfo = CurrentVFO();
 	if (TRX.Fast)
 	{

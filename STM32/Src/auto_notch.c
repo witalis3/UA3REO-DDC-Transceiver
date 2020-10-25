@@ -26,8 +26,8 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	
 	if (__ARM_isnanf(buffer[0]) || __ARM_isinff(buffer[0]) || (buffer[0] > 5.0f) || (buffer[0] < -5.0f))
 	{
-		sendToDebug_str("auto notch err ");
-		sendToDebug_float32(buffer[0],false);
+		//sendToDebug_str("auto notch err ");
+		//sendToDebug_float32(buffer[0],false);
 		memset(buffer, 0x00, sizeof sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);
 		InitAutoNotchReduction();
 	}
