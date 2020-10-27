@@ -146,14 +146,14 @@ void processRxAudio(void)
 		while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
 		{
 			if_gain -= 0.1f;
-			TRX_ADC_OTR = true;
+			TRX_DAC_OTR = true;
 		}
 		arm_min_f32(FPGA_Audio_Buffer_RX1_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(FPGA_Audio_Buffer_RX1_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
 		{
 			if_gain -= 0.1f;
-			TRX_ADC_OTR = true;
+			TRX_DAC_OTR = true;
 		}
 		
 		//apply gain
@@ -167,14 +167,14 @@ void processRxAudio(void)
 			while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
 			{
 				if_gain -= 0.1f;
-				TRX_ADC_OTR = true;
+				TRX_DAC_OTR = true;
 			}
 			arm_min_f32(FPGA_Audio_Buffer_RX2_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 			arm_max_no_idx_f32(FPGA_Audio_Buffer_RX2_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 			while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
 			{
 				if_gain -= 0.1f;
-				TRX_ADC_OTR = true;
+				TRX_DAC_OTR = true;
 			}
 		
 			arm_scale_f32(FPGA_Audio_Buffer_RX2_I_tmp, if_gain, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2);
@@ -191,8 +191,8 @@ void processRxAudio(void)
 		arm_sub_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1); // difference of I and Q - LSB
 		doRX_HPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
-		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
@@ -215,8 +215,8 @@ void processRxAudio(void)
 		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1); // sum of I and Q - USB
 		doRX_HPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
-		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
@@ -242,8 +242,8 @@ void processRxAudio(void)
 		for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 			arm_sqrt_f32(FPGA_Audio_Buffer_RX1_I_tmp[i], &FPGA_Audio_Buffer_RX1_I_tmp[i]);
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.5f, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
-		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
 		doVAD(decimated_block_size_rx1);
@@ -280,8 +280,8 @@ void processRxAudio(void)
 			arm_sub_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // difference of I and Q - LSB
 			doRX_HPF_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
-			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
 			break;
@@ -297,8 +297,8 @@ void processRxAudio(void)
 			arm_add_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // sum of I and Q - USB
 			doRX_HPF_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
-			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
 			break;
@@ -317,8 +317,8 @@ void processRxAudio(void)
 			for (uint_fast16_t i = 0; i < decimated_block_size_rx2; i++)
 				arm_sqrt_f32(FPGA_Audio_Buffer_RX2_I_tmp[i], &FPGA_Audio_Buffer_RX2_I_tmp[i]);
 			arm_scale_f32(FPGA_Audio_Buffer_RX2_I_tmp, 0.5f, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2);
-			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
 			break;

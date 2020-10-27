@@ -33,22 +33,28 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	arm_lms_norm_f32(&instance->lms2_Norm_instance, buffer, &instance->lms2_reference[instance->reference_index_old], instance->lms2_errsig2, buffer, AUTO_NOTCH_BLOCK_SIZE); // start LMS filter
 	
 	//overflow protect
-	float32_t minVal = 0;
-	float32_t maxVal = 0;
+	float32_t minValOut = 0;
+	float32_t maxValOut = 0;
 	uint32_t index = 0;
-	arm_min_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
-	arm_max_no_idx_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
-	if(minVal <= -1.0f || maxVal >= 1.0f)
+	arm_min_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &minValOut, &index);
+	arm_max_no_idx_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &maxValOut);
+	if(__ARM_isnanf(minValOut) || __ARM_isinff(minValOut) || __ARM_isnanf(maxValOut) || __ARM_isinff(maxValOut))
 	{
-		sendToDebug_str("auto notch err ");
-		sendToDebug_float32(minVal,true);
+		/*sendToDebug_str("auto notch err ");
+		sendToDebug_float32(minValOut,true);
 		sendToDebug_str(" ");
-		sendToDebug_float32(maxVal,false);
+		sendToDebug_float32(maxValOut,false);*/
 		InitAutoNotchReduction();
 		memset(buffer, 0x00, sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);
 		temporary_stop = 500;
-		TRX_ADC_OTR = true;
-		return;
+	}
+	arm_max_no_idx_f32(instance->lms2_Norm_instance.pCoeffs, AUTO_NOTCH_TAPS, &maxValOut);
+	if(maxValOut > 1.0f)
+	{
+		//sendToDebug_strln("auto notch reset");
+		//sendToDebug_float32(maxValOut,false);
+		InitAutoNotchReduction();
+		temporary_stop = 500;
 	}
 	
 	instance->reference_index_old += AUTO_NOTCH_BLOCK_SIZE;																												  // move along the reference buffer
