@@ -122,7 +122,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				{
 					//acceleration
 					ENCticksInInterval++;
-					if((HAL_GetTick() - ENCstartMeasureTime) > ENCODER_ACCELERATION_LEFT)
+					if((HAL_GetTick() - ENCstartMeasureTime) > ENCODER_ACCELERATION)
 					{
 						ENCstartMeasureTime = HAL_GetTick();
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
@@ -141,7 +141,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				{
 					//acceleration
 					ENCticksInInterval++;
-					if((HAL_GetTick() - ENCstartMeasureTime) > (ENCODER_ACCELERATION_RIGHT * 2)) //right some faster because rounding
+					if((HAL_GetTick() - ENCstartMeasureTime) > ENCODER_ACCELERATION)
 					{
 						ENCstartMeasureTime = HAL_GetTick();
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
@@ -191,20 +191,24 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		eventRotateSystemMenu((int8_t)direction);
 		return;
 	}
+	if(fabsf(direction) <= ENCODER_MIN_RATE_ACCELERATION)
+		direction = (direction < 0.0f)? -1.0f : 1.0f;
 	
 	VFO *vfo = CurrentVFO();
+	uint32_t newfreq = 0;
 	if (TRX.Fast)
 	{
-		TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + ((int32_t)TRX.FRQ_FAST_STEP * direction)), vfo);
-		if ((vfo->Freq % TRX.FRQ_FAST_STEP) > 0)
-			TRX_setFrequency(vfo->Freq / TRX.FRQ_FAST_STEP * TRX.FRQ_FAST_STEP, vfo);
+		newfreq = (uint32_t)((int32_t)vfo->Freq + ((int32_t)TRX.FRQ_FAST_STEP * direction));
+		if ((vfo->Freq % TRX.FRQ_FAST_STEP) > 0 && fabsf(direction) <= 1.0f)
+			newfreq = vfo->Freq / TRX.FRQ_FAST_STEP * TRX.FRQ_FAST_STEP;
 	}
 	else
 	{
-		TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + ((int32_t)TRX.FRQ_STEP * direction)), vfo);
-		if ((vfo->Freq % TRX.FRQ_STEP) > 0)
-			TRX_setFrequency(vfo->Freq / TRX.FRQ_STEP * TRX.FRQ_STEP, vfo);
+		newfreq = (uint32_t)((int32_t)vfo->Freq + ((int32_t)TRX.FRQ_STEP * direction));
+		if ((vfo->Freq % TRX.FRQ_STEP) > 0 && fabsf(direction) <= 1.0f)
+			newfreq = vfo->Freq / TRX.FRQ_STEP * TRX.FRQ_STEP;
 	}
+	TRX_setFrequency(newfreq, vfo);
 	LCD_UpdateQuery.FreqInfo = true;
 	NeedSaveSettings = true;
 }

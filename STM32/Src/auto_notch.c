@@ -1,4 +1,5 @@
 #include "auto_notch.h"
+#include "trx_manager.h"
 
 // Private variables
 static AN_Instance RX1_AN_instance = {0}; // filter instances for two receivers
@@ -16,26 +17,36 @@ void InitAutoNotchReduction(void)
 // start automatic notch filter
 void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 {
+	//overflow protect
+	static uint32_t temporary_stop = 0;
+	if(temporary_stop > 0)
+	{
+		temporary_stop--;
+		return;
+	}
+	float32_t minVal = 0;
+	float32_t maxVal = 0;
+	uint32_t index = 0;
+	arm_min_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
+	arm_max_no_idx_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
+	if(minVal <= -1.0f || maxVal >= 1.0f)
+	{
+		sendToDebug_str("auto notch ovfl ");
+		sendToDebug_float32(minVal,true);
+		sendToDebug_str(" ");
+		sendToDebug_float32(maxVal,false);
+		InitAutoNotchReduction();
+		temporary_stop = 100;
+		TRX_ADC_OTR = true;
+		return;
+	}
+		
 	AN_Instance *instance = &RX1_AN_instance;
 	if (rx_id == AUDIO_RX2)
 		instance = &RX2_AN_instance;
-
+	
 	memcpy(&instance->lms2_reference[instance->reference_index_new], buffer, sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);												// save the data to the reference buffer
-	
 	arm_lms_norm_f32(&instance->lms2_Norm_instance, buffer, &instance->lms2_reference[instance->reference_index_old], instance->lms2_errsig2, buffer, AUTO_NOTCH_BLOCK_SIZE); // start LMS filter
-	
-	//overflow protect
-	bool error = false;
-	for(uint32_t i = 0; i < AUTO_NOTCH_BLOCK_SIZE ; i++)
-		if(!error && (fabsf(buffer[i]) > 5.0f || __ARM_isnanf(buffer[i]) || __ARM_isinff(buffer[i])))
-		{
-			error = true;
-			//sendToDebug_str("auto notch err ");
-			//sendToDebug_float32(buffer[i],false);
-			memset(&instance->lms2_normCoeff_f32, 0x00, sizeof(instance->lms2_normCoeff_f32));
-			memset(&instance->lms2_stateF32, 0x00, sizeof(instance->lms2_stateF32));
-			//InitAutoNotchReduction();
-		}
 	
 	instance->reference_index_old += AUTO_NOTCH_BLOCK_SIZE;																												  // move along the reference buffer
 	if (instance->reference_index_old >= AUTO_NOTCH_REFERENCE_SIZE)

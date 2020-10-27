@@ -40,8 +40,8 @@
 #define SCANNER_NOSIGNAL_TIME 50	//time to continue sweeping if signal too low
 #define SCANNER_SIGNAL_TIME 1000	//time to continue sweeping if signal founded
 #define SCANNER_FREQ_STEP	500		//step for freq scanner
-#define ENCODER_ACCELERATION_LEFT	20		//acceleration rate if rotate left
-#define ENCODER_ACCELERATION_RIGHT	40		//acceleration rate if rotate right
+#define ENCODER_ACCELERATION	50		//acceleration rate if rotate
+#define ENCODER_MIN_RATE_ACCELERATION	1.2f //encoder enable rounding if lower than value
 
 // select LCD, comment on others
 #define LCD_ILI9481 true
