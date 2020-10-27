@@ -33,14 +33,16 @@
 #define USB_RESTART_TIMEOUT 5000		// time after which USB restart occurs if there are no packets
 #define FPGA_FLASH_IN_HEX false			// enable FPGA firmware in STM32 firmware
 #define SNTP_SYNC_INTERVAL (60 * 60)	// Time synchronization interval via NTP, sec
-#define FAN_MEDIUM_START 60				// Temperature at which the fan starts at half power
-#define FAN_MEDIUM_STOP 50				// Temperature at which the fan stops
-#define FAN_FULL_START 80				// Temperature at which the fan starts at full power
+#define FAN_MEDIUM_START 50				// Temperature at which the fan starts at half power
+#define FAN_MEDIUM_STOP 40				// Temperature at which the fan stops
+#define FAN_FULL_START 70				// Temperature at which the fan starts at full power
 #define SCANNER_NOSIGNAL_TIME 50	//time to continue sweeping if signal too low
 #define SCANNER_SIGNAL_TIME 1000	//time to continue sweeping if signal founded
 #define SCANNER_FREQ_STEP	500		//step for freq scanner
 #define ENCODER_ACCELERATION	50		//acceleration rate if rotate
 #define ENCODER_MIN_RATE_ACCELERATION	1.2f //encoder enable rounding if lower than value
+#define TRX_MAX_RF_TEMP	80			//maximum rf unit themperature to enable protect
+#define TRX_MAX_SWR		5				//maximum SWR to enable protect (NOT IN TUNE MODE!)
 
 // select LCD, comment on others
 #define LCD_ILI9481 true

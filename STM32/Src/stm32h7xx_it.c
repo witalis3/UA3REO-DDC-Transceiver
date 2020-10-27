@@ -686,6 +686,33 @@ void TIM6_DAC_IRQHandler(void)
 		SCB->AIRCR = 0x05FA0004; // software reset
   }
 	
+	//TRX protector
+	if(TRX_on_TX())
+	{
+		if(TRX_RF_Temperature > TRX_MAX_RF_TEMP)
+		{
+			TRX_Tune = false;
+			TRX_ptt_hard = false;
+			TRX_ptt_cat = false;
+			LCD_UpdateQuery.StatusInfoGUI = true;
+			LCD_UpdateQuery.TopButtons = true;
+			NeedSaveSettings = true;
+			TRX_Restart_Mode();
+			sendToDebug_strln("RF temperature too HIGH!");
+		}
+		if(TRX_SWR > TRX_MAX_SWR && !TRX_Tune)
+		{
+			TRX_Tune = false;
+			TRX_ptt_hard = false;
+			TRX_ptt_cat = false;
+			LCD_UpdateQuery.StatusInfoGUI = true;
+			LCD_UpdateQuery.TopButtons = true;
+			NeedSaveSettings = true;
+			TRX_Restart_Mode();
+			sendToDebug_strln("SWR too HIGH!");
+		}
+	}
+	
   // restart USB if there is no activity (off) to find a new connection
   if (TRX_Inited && ((USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick()))) // || (USB_LastActiveTime == 0)
     USBD_Restart();
