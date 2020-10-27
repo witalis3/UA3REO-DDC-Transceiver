@@ -358,7 +358,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		
 		//print s-meter value
 		static float32_t TRX_RX_dBm_averaging = -120.0f;
-		TRX_RX_dBm_averaging = 0.9f * TRX_RX_dBm_averaging + 0.1f * TRX_RX_dBm;
+		TRX_RX_dBm_averaging = 0.95f * TRX_RX_dBm_averaging + 0.05f * TRX_RX_dBm;
 		if(TRX_RX_dBm_averaging <= -118.0f)
 			sprintf(ctmp, "S1");
 		else if(TRX_RX_dBm_averaging <= -112.0f)

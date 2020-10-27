@@ -68,5 +68,6 @@ extern uint32_t TRX_freq_phrase2;
 extern uint32_t TRX_freq_phrase_tx;
 volatile extern uint32_t TRX_Temporary_Mute_StartTime;
 volatile extern bool TRX_ScanMode;
+volatile extern bool TRX_LNA_hasIMD; //results of IMD test
 
 #endif

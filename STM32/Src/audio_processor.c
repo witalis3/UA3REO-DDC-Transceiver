@@ -144,17 +144,11 @@ void processRxAudio(void)
 		arm_min_f32(FPGA_Audio_Buffer_RX1_I_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(FPGA_Audio_Buffer_RX1_I_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
-		{
 			if_gain -= 0.1f;
-			TRX_DAC_OTR = true;
-		}
 		arm_min_f32(FPGA_Audio_Buffer_RX1_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(FPGA_Audio_Buffer_RX1_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
-		{
 			if_gain -= 0.1f;
-			TRX_DAC_OTR = true;
-		}
 		
 		//apply gain
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, if_gain, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
@@ -165,17 +159,11 @@ void processRxAudio(void)
 			arm_min_f32(FPGA_Audio_Buffer_RX2_I_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 			arm_max_no_idx_f32(FPGA_Audio_Buffer_RX2_I_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 			while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
-			{
 				if_gain -= 0.1f;
-				TRX_DAC_OTR = true;
-			}
 			arm_min_f32(FPGA_Audio_Buffer_RX2_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 			arm_max_no_idx_f32(FPGA_Audio_Buffer_RX2_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 			while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
-			{
 				if_gain -= 0.1f;
-				TRX_DAC_OTR = true;
-			}
 		
 			arm_scale_f32(FPGA_Audio_Buffer_RX2_I_tmp, if_gain, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2);
 			arm_scale_f32(FPGA_Audio_Buffer_RX2_Q_tmp, if_gain, FPGA_Audio_Buffer_RX2_Q_tmp, decimated_block_size_rx2);

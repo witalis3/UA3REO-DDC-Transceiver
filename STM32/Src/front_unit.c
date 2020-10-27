@@ -442,6 +442,7 @@ static void FRONTPANEL_BUTTONHANDLER_TUNE(void)
 
 static void FRONTPANEL_BUTTONHANDLER_PRE(void)
 {
+	TRX_LNA_hasIMD = false;
 	TRX.LNA = !TRX.LNA;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
@@ -467,7 +468,6 @@ static void FRONTPANEL_BUTTONHANDLER_ATT(void)
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
-	TRX_AutoGain_Stage = 0;
 	resetVAD();
 }
 
@@ -486,18 +486,19 @@ static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
-	TRX_AutoGain_Stage = 0;
 	resetVAD();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_ANT(void)
 {
 	TRX.ANT = !TRX.ANT;
-
+	TRX_LNA_hasIMD = false;
+	TRX_AutoGain_Stage = 0;
+	
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ANT = TRX.ANT;
-
+	
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 }
@@ -532,7 +533,6 @@ static void FRONTPANEL_BUTTONHANDLER_PGA(void)
 	}
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
-	TRX_AutoGain_Stage = 0;
 	resetVAD();
 }
 
@@ -635,7 +635,6 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(void)
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
-	TRX_AutoGain_Stage = 0;
 	resetVAD();
 	TRX_ScanMode = false;
 }
@@ -667,7 +666,6 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
-	TRX_AutoGain_Stage = 0;
 	resetVAD();
 	TRX_ScanMode = false;
 }
