@@ -11,16 +11,28 @@ static const uint16_t graph_start_x = 25;
 static const uint16_t graph_width = LCD_WIDTH - 30;
 static const uint16_t graph_start_y = 5;
 static const uint16_t graph_height = LCD_HEIGHT - 25;
-static uint32_t now_freq;
-static uint32_t freq_step;
+static float32_t now_freq;
+static float32_t freq_step;
 static uint16_t graph_sweep_x = 0;
 static uint32_t tick_start_time = 0;
 static int16_t graph_selected_x = graph_width / 2;
 static int_fast16_t data[LCD_WIDTH - 30] = {0};
 
+//Saved variables
+static uint32_t Lastfreq = 0;
+static uint_fast8_t Lastmode = 0;
+static bool LastAutoGain = false;
+static bool LastBandMapEnabled = false;
+static bool LastRF_Filters = false;
+static bool LastManualNotch = false;
+static bool LastAutoNotch = false;
+static bool LastDNR = false;
+static bool LastShift = false;
+static bool LastNB = false;
+static bool LastMute = false;
+
 //Public variables
 bool sysmenu_spectrum_opened = false;
-uint32_t sysmenu_spectrum_lastfreq = 0;
 
 //Prototypes
 static void SPEC_DrawBottomGUI(void);				   // display status at the bottom of the screen
@@ -32,6 +44,19 @@ void SPEC_Start(void)
 {
 	LCD_busy = true;
 
+	//save settings
+	Lastfreq = CurrentVFO()->Freq;
+	Lastmode = CurrentVFO()->Mode;
+	LastAutoGain = TRX.AutoGain;
+	LastBandMapEnabled = TRX.BandMapEnabled;
+	LastRF_Filters = TRX.RF_Filters;
+	LastManualNotch = CurrentVFO()->ManualNotchFilter;
+	LastAutoNotch = CurrentVFO()->AutoNotchFilter;
+	LastDNR = CurrentVFO()->DNR;
+	LastShift = TRX.ShiftEnabled;
+	LastNB = TRX.NOISE_BLANKER;
+	LastMute = TRX_Mute;
+	
 	// draw the GUI
 	LCDDriver_Fill(COLOR_BLACK);
 	LCDDriver_drawFastVLine(graph_start_x, graph_start_y, graph_height, COLOR_WHITE);
@@ -58,11 +83,16 @@ void SPEC_Start(void)
 
 	// start scanning
 	TRX.BandMapEnabled = false;
+	TRX.AutoGain = false;
+	TRX.RF_Filters = false;
+	TRX.ShiftEnabled = false;
+	TRX.NOISE_BLANKER = false;
 	TRX_setFrequency(TRX.SPEC_Begin * SPEC_Resolution, CurrentVFO());
 	TRX_setMode(TRX_MODE_CW_U, CurrentVFO());
 	CurrentVFO()->ManualNotchFilter = false;
 	CurrentVFO()->AutoNotchFilter = false;
 	CurrentVFO()->DNR = false;
+	TRX_Mute = true;
 	FPGA_NeedSendParams = true;
 	now_freq = TRX.SPEC_Begin * SPEC_Resolution;
 	freq_step = (TRX.SPEC_End * SPEC_Resolution - TRX.SPEC_Begin * SPEC_Resolution) / graph_width;
@@ -72,6 +102,21 @@ void SPEC_Start(void)
 	LCD_busy = false;
 
 	LCD_UpdateQuery.SystemMenu = true;
+}
+
+void SPEC_Stop(void)
+{
+	TRX_setFrequency(Lastfreq, CurrentVFO());
+	TRX_setMode(Lastmode, CurrentVFO());
+	TRX.AutoGain = LastAutoGain;
+	TRX.BandMapEnabled = LastBandMapEnabled;
+	TRX.RF_Filters = LastRF_Filters;
+	CurrentVFO()->ManualNotchFilter = LastManualNotch;
+	CurrentVFO()->AutoNotchFilter = LastAutoNotch;
+	CurrentVFO()->DNR = LastDNR;
+	TRX.ShiftEnabled = LastShift;
+	TRX.NOISE_BLANKER = LastNB;
+	TRX_Mute = LastMute;
 }
 
 // draw the spectrum analyzer
@@ -109,7 +154,7 @@ void SPEC_Draw(void)
 		now_freq = TRX.SPEC_Begin * SPEC_Resolution;
 	}
 	now_freq += freq_step;
-	TRX_setFrequency(now_freq, CurrentVFO());
+	TRX_setFrequency((uint32_t)now_freq, CurrentVFO());
 	FPGA_NeedSendParams = true;
 	LCD_busy = false;
 }

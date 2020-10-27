@@ -11,10 +11,10 @@
 
 //Public variabled
 extern bool sysmenu_spectrum_opened;
-extern uint32_t sysmenu_spectrum_lastfreq;
 
 //Public methods
 extern void SPEC_Start(void);                 //analyzer launch
+extern void SPEC_Stop(void);									//stop session
 extern void SPEC_Draw(void);                  //drawing analyzer
 extern void SPEC_EncRotate(int8_t direction); //analyzer events per encoder
 

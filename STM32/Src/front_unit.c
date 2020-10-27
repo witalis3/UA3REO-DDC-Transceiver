@@ -952,7 +952,6 @@ static void FRONTPANEL_BUTTONHANDLER_SERVICES(void)
 	else
 	{
 		eventCloseSystemMenu();
-		//eventCloseAllSystemMenu();
 	}
 	LCD_redraw();
 }

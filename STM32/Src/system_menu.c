@@ -324,6 +324,7 @@ static uint8_t sysmenu_i = 0;
 static bool sysmenu_onroot = true;
 bool sysmenu_hiddenmenu_enabled = false;
 static const uint8_t max_items_on_page = LCD_HEIGHT / LAY_SYSMENU_ITEM_HEIGHT;
+static bool sysmenu_services_opened = false;
 
 //WIFI
 static bool sysmenu_wifi_selectap_menu_opened = false;
@@ -1919,6 +1920,7 @@ static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)
 //SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 {
+	sysmenu_services_opened = true;
 	sysmenu_handlers_selected = &sysmenu_services_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_services_item_count;
 	sysmenu_onroot = false;
@@ -1944,7 +1946,6 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 	}
 	else
 	{
-		sysmenu_spectrum_lastfreq = CurrentVFO()->Freq;
 		sysmenu_spectrum_opened = true;
 		SPEC_Start();
 		drawSystemMenu(true);
@@ -2084,7 +2085,7 @@ void eventCloseSystemMenu(void)
 	else if (sysmenu_spectrum_opened)
 	{
 		sysmenu_spectrum_opened = false;
-		TRX_setFrequency(sysmenu_spectrum_lastfreq, CurrentVFO());
+		SPEC_Stop();
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}
@@ -2093,6 +2094,13 @@ void eventCloseSystemMenu(void)
 		sysmenu_timeMenuOpened = false;
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
+	}
+	else if (sysmenu_services_opened)
+	{
+		sysmenu_services_opened = false;
+		LCD_systemMenuOpened = false;
+		LCD_UpdateQuery.Background = true;
+		LCD_redraw();
 	}
 	else
 	{
@@ -2156,10 +2164,10 @@ void eventSecRotateSystemMenu(int8_t direction)
 	//spectrum analyzer
 	if (sysmenu_spectrum_opened)
 	{
+		SPEC_Stop();
 		sysmenu_spectrum_opened = false;
 		LCDDriver_Fill(COLOR_BLACK);
 		drawSystemMenu(true);
-		TRX_setFrequency(sysmenu_spectrum_lastfreq, CurrentVFO());
 		return;
 	}
 	//time menu
