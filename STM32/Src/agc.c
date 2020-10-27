@@ -67,8 +67,8 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	}
 
 	//noise threshold, below it - do not amplify
-	if (AGC_RX_dbFS < AGC_NOISE_GATE)
-		*AGC_need_gain_db = 1.0f;
+	/*if (AGC_RX_dbFS < AGC_NOISE_GATE)
+		*AGC_need_gain_db = 1.0f;*/
 
 	//AGC off, not adjustable
 	if ((rx_id == AUDIO_RX1 && !CurrentVFO()->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO()->AGC))

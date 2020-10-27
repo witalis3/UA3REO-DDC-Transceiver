@@ -16,9 +16,8 @@
 #define TRX_SAMPLERATE 48000			// audio stream sampling rate during processing
 #define IQ_SAMPLERATE 96000				// sampling rate of the audio stream from FPGA
 #define MAX_TX_AMPLITUDE 0.8f			// Maximum amplitude when transmitting to FPGA
-#define AGC_MAX_GAIN 50.0f				// Maximum gain in AGC, dB
+#define AGC_MAX_GAIN 30.0f				// Maximum gain in AGC, dB
 #define AGC_CLIPPING 6.0f				 // Limit over target in AGC, dB
-#define AGC_NOISE_GATE -90.0f			// below this level - not run AGC
 #define TUNE_POWER 100					// % of the power selected in the settings when starting TUNE (100 - full)
 #define TX_AGC_MAXGAIN 5.0f				// Maximum microphone gain during compression
 #define TX_AGC_NOISEGATE 0.00001f		// Minimum signal level for amplification (below - noise, cut off)
