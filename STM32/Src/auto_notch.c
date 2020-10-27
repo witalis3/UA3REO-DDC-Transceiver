@@ -24,13 +24,18 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	
 	arm_lms_norm_f32(&instance->lms2_Norm_instance, buffer, &instance->lms2_reference[instance->reference_index_old], instance->lms2_errsig2, buffer, AUTO_NOTCH_BLOCK_SIZE); // start LMS filter
 	
-	if (__ARM_isnanf(buffer[0]) || __ARM_isinff(buffer[0]) || (buffer[0] > 5.0f) || (buffer[0] < -5.0f))
-	{
-		//sendToDebug_str("auto notch err ");
-		//sendToDebug_float32(buffer[0],false);
-		memset(buffer, 0x00, sizeof sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);
-		InitAutoNotchReduction();
-	}
+	//overflow protect
+	bool error = false;
+	for(uint32_t i = 0; i < AUTO_NOTCH_BLOCK_SIZE ; i++)
+		if(!error && (fabsf(buffer[i]) > 5.0f || __ARM_isnanf(buffer[i]) || __ARM_isinff(buffer[i])))
+		{
+			error = true;
+			//sendToDebug_str("auto notch err ");
+			//sendToDebug_float32(buffer[i],false);
+			memset(&instance->lms2_normCoeff_f32, 0x00, sizeof(instance->lms2_normCoeff_f32));
+			memset(&instance->lms2_stateF32, 0x00, sizeof(instance->lms2_stateF32));
+			//InitAutoNotchReduction();
+		}
 	
 	instance->reference_index_old += AUTO_NOTCH_BLOCK_SIZE;																												  // move along the reference buffer
 	if (instance->reference_index_old >= AUTO_NOTCH_REFERENCE_SIZE)
