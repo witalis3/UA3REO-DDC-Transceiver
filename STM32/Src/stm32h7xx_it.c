@@ -104,6 +104,7 @@
 #include "system_menu.h"
 #include "bootloader.h"
 #include "decoder.h"
+#include "swr_analyzer.h"
 
 static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
@@ -392,7 +393,7 @@ void TIM4_IRQHandler(void)
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
-  if (sysmenu_spectrum_opened)
+  if (sysmenu_spectrum_opened || sysmenu_swr_opened)
   {
     drawSystemMenu(false);
     return;

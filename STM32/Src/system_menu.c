@@ -6,10 +6,12 @@
 #include "functions.h"
 #include "wifi.h"
 #include "spec_analyzer.h"
+#include "swr_analyzer.h"
 #include "fonts.h"
 #include "agc.h"
 #include "screen_layout.h"
 #include "noise_blanker.h"
+#include "bands.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -137,6 +139,8 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
+static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction);
+static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
 
 static struct sysmenu_item_handler sysmenu_handlers[] =
 	{
@@ -303,6 +307,8 @@ static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handl
 
 static struct sysmenu_item_handler sysmenu_services_handlers[] =
 {
+	{"Band SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_BAND_START},
+	{"HF SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_HF_START},
 	{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
 };
 static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
@@ -1988,6 +1994,37 @@ static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction)
 		TRX.SPEC_BottomDBM = TRX.SPEC_TopDBM - 1;
 }
 
+//SWR BAND ANALYZER
+static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction)
+{
+	if (sysmenu_swr_opened)
+	{
+		SWR_EncRotate(direction);
+	}
+	else
+	{
+		sysmenu_swr_opened = true;
+		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+		SWR_Start(BANDS[band].startFreq - 100000, BANDS[band].endFreq + 100000);
+		drawSystemMenu(true);
+	}
+}
+
+//SWR HF ANALYZER
+static void SYSMENU_HANDL_SWR_HF_START(int8_t direction)
+{
+	if (sysmenu_swr_opened)
+	{
+		SWR_EncRotate(direction);
+	}
+	else
+	{
+		sysmenu_swr_opened = true;
+		SWR_Start(1000000, 60000000);
+		drawSystemMenu(true);
+	}
+}
+
 //COMMON MENU FUNCTIONS
 void drawSystemMenu(bool draw_background)
 {
@@ -2016,6 +2053,11 @@ void drawSystemMenu(bool draw_background)
 	if (sysmenu_spectrum_opened)
 	{
 		SPEC_Draw();
+		return;
+	}
+	if (sysmenu_swr_opened)
+	{
+		SWR_Draw();
 		return;
 	}
 	LCD_busy = true;
@@ -2095,8 +2137,19 @@ void eventCloseSystemMenu(void)
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}
+	else if (sysmenu_swr_opened)
+	{
+		sysmenu_swr_opened = false;
+		SWR_Stop();
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+	}
 	else if (sysmenu_services_opened)
 	{
+		sysmenu_handlers_selected = &sysmenu_handlers[0];
+		sysmenu_item_count_selected = &sysmenu_item_count;
+		sysmenu_onroot = true;
+		systemMenuIndex = systemMenuRootIndex;
 		sysmenu_services_opened = false;
 		LCD_systemMenuOpened = false;
 		LCD_UpdateQuery.Background = true;
@@ -2170,6 +2223,8 @@ void eventSecRotateSystemMenu(int8_t direction)
 		drawSystemMenu(true);
 		return;
 	}
+	if (sysmenu_swr_opened)
+		return;
 	//time menu
 	if (sysmenu_timeMenuOpened)
 	{

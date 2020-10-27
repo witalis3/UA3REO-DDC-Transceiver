@@ -614,6 +614,16 @@
               <FilePath>..\Src\spec_analyzer.h</FilePath>
             </File>
             <File>
+              <FileName>swr_analyzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\swr_analyzer.c</FilePath>
+            </File>
+            <File>
+              <FileName>swr_analyzer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\swr_analyzer.h</FilePath>
+            </File>
+            <File>
               <FileName>system_menu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\system_menu.c</FilePath>

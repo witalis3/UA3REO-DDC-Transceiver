@@ -41,6 +41,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * CAT / PTT virtual COM ports (FT-450 emulation)
 * USB operation (audio transmission, CAT, KEY, PTT)
 * CW decoder, self-control
+* SWR Graphs
 * Spectrum analyzer
 * SSB Scanner mode
 * AGC takes into account the characteristics of human hearing (K-Weighting)
@@ -226,6 +227,8 @@ Supported LCD: ILI9481 and HX8357B
 
 * Launch STM32 firmware update
 
+## Services
+
 ### Spectrum Analyzer
 
 * **Spectrum START** - Start the spectrum analyzer
@@ -233,3 +236,11 @@ Supported LCD: ILI9481 and HX8357B
 * **End, kHz** - End frequency of the analyzer in 1kHz steps
 * **Top, dBm** - Upper threshold of the graph
 * **Bottom, dBm** - Lower threshold of the graph
+
+### Band SWR
+
+* Run SWR analizer on current band
+
+### HF SWR
+
+* Run SWR analizer on all bands

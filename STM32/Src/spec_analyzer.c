@@ -76,7 +76,7 @@ void SPEC_Start(void)
 	for (uint8_t n = 0; n < SPEC_VParts; n++)
 	{
 		int32_t y = graph_start_y + (partsize * n * graph_height / vres);
-		sprintf(ctmp, "% d", TRX.SPEC_TopDBM + partsize * n);
+		sprintf(ctmp, "%d", TRX.SPEC_TopDBM + partsize * n);
 		LCDDriver_printText(ctmp, 0, (uint16_t)y, COLOR_GREEN, COLOR_BLACK, 1);
 		LCDDriver_drawFastHLine(graph_start_x, (uint16_t)y, graph_width, COLOR_DGRAY);
 	}
@@ -162,7 +162,7 @@ void SPEC_Draw(void)
 // get height from data id
 static uint16_t SPEC_getYfromX(uint16_t x)
 {
-	int32_t y = graph_start_y + ((data[x] - TRX.SPEC_TopDBM) * (graph_height - graph_start_y) / (TRX.SPEC_BottomDBM - TRX.SPEC_TopDBM));
+	int32_t y = graph_start_y + ((data[x] - TRX.SPEC_TopDBM) * (graph_height) / (TRX.SPEC_BottomDBM - TRX.SPEC_TopDBM));
 	if (y < graph_start_y)
 		y = graph_start_y;
 	if (y > ((graph_start_y + graph_height) - 1))
@@ -206,6 +206,9 @@ static void SPEC_DrawBottomGUI(void)
 // analyzer events to the encoder
 void SPEC_EncRotate(int8_t direction)
 {
+	if(LCD_busy)
+		return;
+	LCD_busy = true;
 	// erase the old marker
 	SPEC_DrawGraphCol((uint16_t)graph_selected_x, true);
 	if (direction < 0)
@@ -216,7 +219,6 @@ void SPEC_EncRotate(int8_t direction)
 		graph_selected_x = 0;
 	if (graph_selected_x > (graph_width - 1))
 		graph_selected_x = graph_width - 1;
-	LCD_busy = true;
 	SPEC_DrawBottomGUI();
 	LCD_busy = false;
 }

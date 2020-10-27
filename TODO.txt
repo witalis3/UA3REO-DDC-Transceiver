@@ -4,7 +4,6 @@ BPSK декодер
 WSPR маячок
 Работа с SD
 WIFI Menu
-SWR Graph
 Обработка внешнего ALC
 Трансвертерный режим
 Новый AGC от UR5NKA
