@@ -99,7 +99,7 @@ void FPGA_restart(void) // restart FPGA modules
 }
 
 // exchange parameters with FPGA
-void FPGA_fpgadata_stuffclock(void)
+ITCM void FPGA_fpgadata_stuffclock(void)
 {
 	if (!FPGA_NeedSendParams && !FPGA_NeedGetParams && !FPGA_NeedRestart)
 		return;
@@ -136,7 +136,7 @@ void FPGA_fpgadata_stuffclock(void)
 }
 
 // exchange IQ data with FPGA
-void FPGA_fpgadata_iqclock(void)
+ITCM void FPGA_fpgadata_iqclock(void)
 {
 	if (FPGA_bus_stop)
 		return;
@@ -166,7 +166,7 @@ void FPGA_fpgadata_iqclock(void)
 }
 
 // send parameters
-static inline void FPGA_fpgadata_sendparam(void)
+ITCM static inline void FPGA_fpgadata_sendparam(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
@@ -299,7 +299,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 }
 
 // get parameters
-static inline void FPGA_fpgadata_getparam(void)
+ITCM static inline void FPGA_fpgadata_getparam(void)
 {
 	register uint8_t FPGA_fpgadata_in_tmp8 = 0;
 	register int32_t FPGA_fpgadata_in_tmp32 = 0;
@@ -350,7 +350,7 @@ static inline void FPGA_fpgadata_getparam(void)
 }
 
 // get IQ data
-static inline void FPGA_fpgadata_getiq(void)
+ITCM static inline void FPGA_fpgadata_getiq(void)
 {
 	register int_fast32_t FPGA_fpgadata_in_tmp32 = 0;
 	float32_t FPGA_fpgadata_in_float32 = 0;
@@ -524,7 +524,7 @@ static inline void FPGA_fpgadata_getiq(void)
 }
 
 // send IQ data
-static inline void FPGA_fpgadata_sendiq(void)
+ITCM static inline void FPGA_fpgadata_sendiq(void)
 {
 	q31_t FPGA_fpgadata_out_q_tmp32 = 0;
 	q31_t FPGA_fpgadata_out_i_tmp32 = 0;
@@ -627,7 +627,7 @@ static inline void FPGA_fpgadata_sendiq(void)
 }
 
 // switch the bus to input
-static inline void FPGA_setBusInput(void)
+ITCM static inline void FPGA_setBusInput(void)
 {
 	// Configure IO Direction mode (Input)
 	/*register uint32_t temp = GPIOA->MODER;
@@ -653,7 +653,7 @@ static inline void FPGA_setBusInput(void)
 }
 
 // switch bus to pin
-static inline void FPGA_setBusOutput(void)
+ITCM static inline void FPGA_setBusOutput(void)
 {
 	// Configure IO Direction mode (Output)
 	/*uint32_t temp = GPIOA->MODER;
@@ -679,19 +679,19 @@ static inline void FPGA_setBusOutput(void)
 }
 
 // raise the CLK signal
-static inline void FPGA_clockRise(void)
+ITCM static inline void FPGA_clockRise(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin;
 }
 
 // remove CLK signal
-static inline void FPGA_clockFall(void)
+ITCM static inline void FPGA_clockFall(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = (FPGA_CLK_Pin << 16U);
 }
 
 // raise CLK and SYNC signal, then lower
-static inline void FPGA_syncAndClockRiseFall(void)
+ITCM static inline void FPGA_syncAndClockRiseFall(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_SYNC_Pin;
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin;

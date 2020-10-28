@@ -184,7 +184,7 @@ void WM8731_Init(void)
 }
 
 // RX Buffer is fully sent to the codec
-static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
+ITCM static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 {
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
@@ -199,7 +199,7 @@ static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 }
 
 // RX Buffer half sent to the codec
-static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
+ITCM static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 {
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
@@ -214,21 +214,21 @@ static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 }
 
 // TX Buffer is completely taken from the codec
-static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
+ITCM static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
 {
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
 	HAL_I2S_RxCpltCallback(hi2s);
 }
 
 // TX Buffer half received from the codec
-static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
+ITCM static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
 {
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
 	HAL_I2S_RxHalfCpltCallback(hi2s);
 }
 
 // DMA I2S error
-static void I2S_DMAError(DMA_HandleTypeDef *hdma)
+ITCM static void I2S_DMAError(DMA_HandleTypeDef *hdma)
 {
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent; /* Derogation MISRAC2012-Rule-11.5 */
 
@@ -247,7 +247,7 @@ static void I2S_DMAError(DMA_HandleTypeDef *hdma)
 }
 
 // Full-duplex implementation of I2S startup
-static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize)
+ITCM static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize)
 {
 	if ((rxData == NULL) || (txData == NULL) || (rxSize == 0UL) || (txSize == 0UL))
 	{

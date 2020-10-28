@@ -28,7 +28,7 @@
 #define TRX_MODE_COUNT 12
 
 //#define IROM1 __attribute__((section(".ER_IROM1")))          // 2mb FLASH
-//#define ITCM __attribute__((section(".ITCM")))            // 64kb ITCM
+#define ITCM __attribute__((section(".ITCM")))            // 64kb ITCM
 #define DTCM __attribute__((section(".IRAM1")))  // 128kb DTCM
 #define IRAM2 __attribute__((section(".IRAM2"))) // 512kb AXI SRAM
 #define SRAM1 __attribute__((section(".SRAM1"))) // SRAM1+SRAM2 128kb+128kb D-Cache disabled in MPU

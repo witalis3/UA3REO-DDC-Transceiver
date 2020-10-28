@@ -9,9 +9,83 @@ LR_IROM1 0x08000000 0x00200000  {    ; load region size_region
    .ANY (+RO)
    .ANY (+XO)
   }
-  ;RO_ITCM 0x00000000 0x00010000  { ;64kb ITCM
-   ;*(.ITCM +RO)
-  ;}
+  RO_ITCM 0x00000000 0x00010000  { ;64kb ITCM
+   *(.ITCM +XO)
+   
+   arm_cfft_f32.o
+   arm_cfft_radix8_f32.o
+   arm_fir_f32.o
+   arm_max_f32.o
+   arm_max_no_idx_f32.o
+   arm_min_f32.o
+   arm_rms_f32.o
+   arm_float_to_q31.o
+   arm_biquad_cascade_df1_f32.o
+   arm_biquad_cascade_df2t_f32.o
+   arm_bitreversal2.o
+   arm_cos_f32.o
+   arm_dot_prod_f32.o
+   arm_fir_decimate_f32.o
+   arm_lms_norm_f32.o
+   arm_mean_f32.o
+   arm_mult_f32.o
+   arm_negate_f32.o
+   arm_scale_f32.o
+   arm_sin_f32.o
+   arm_var_f32.o
+   arm_sub_f32.o
+   arm_power_f32.o
+   arm_offset_f32.o
+   arm_cmplx_mag_squared_f32.o
+   arm_cmplx_mag_f32.o
+   arm_add_f32.o
+   
+   strcpy.o
+   h1_alloc.o
+   h1_free.o
+   noretval__2sprintf.o
+   _printf_*
+   atoi.o
+   strchr.o
+   strstr.o
+   memcmp.o
+   strlen.o
+   strcat.o
+   rt_mem*
+   strncpy.o
+   strcmpv7m_pel.o
+   heapauxi.o
+   __printf_flags_ss_wp.o
+   rt_heap_descriptor_intlibspace.o
+   rt_errno_addr_intlibspace.o
+   hguard.o
+   init_alloc.o
+   h1_init.o
+   _rserrno.o
+   _sputc.o
+   strtol.o
+   _c16rtomb.o
+   libspace.o
+   rt_ctype_table.o
+   rt_locale_intlibspace.o
+   maybetermalloc1.o
+   h1_extend.o
+   lludiv10.o
+   _strtoul.o
+   bigflt0.o
+   defsig_rtmem_outer.o
+   use_no_semi.o
+   indicate_semi.o
+   sys_stackheap_outer.o
+   _chval.o
+   exit.o
+   defsig_exit.o
+   defsig_rtmem_inner.o
+   sys_exit.o
+   defsig_general.o
+   sys_wrch.o
+   lludivv7m.o
+  }
   RW_IRAM1 0x20000000 0x00020000  {  ;128kb DTCM 
    .ANY (+RW +ZI)
   }

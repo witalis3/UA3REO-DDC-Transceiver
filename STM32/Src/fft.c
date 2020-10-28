@@ -200,7 +200,7 @@ void FFT_Init(void)
 }
 
 // FFT calculation
-void FFT_doFFT(void)
+ITCM void FFT_doFFT(void)
 {
 	if (!TRX.FFT_Enabled)
 		return;
@@ -369,7 +369,7 @@ void FFT_doFFT(void)
 }
 
 // FFT output
-void FFT_printFFT(void)
+ITCM void FFT_printFFT(void)
 {
 	if (LCD_busy)
 		return;
@@ -573,7 +573,7 @@ void FFT_printFFT(void)
 }
 
 // waterfall output
-void FFT_printWaterfallDMA(void)
+ITCM void FFT_printWaterfallDMA(void)
 {
 	uint16_t fftHeight = getFFTHeight();
 	uint16_t wtfHeight = getWTFHeight();
@@ -649,7 +649,7 @@ void FFT_printWaterfallDMA(void)
 }
 
 // shift the waterfall
-static void FFT_move(int32_t _freq_diff)
+ITCM static void FFT_move(int32_t _freq_diff)
 {
 	if (_freq_diff == 0)
 		return;
@@ -838,7 +838,7 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 	return COLOR_WHITE;
 }
 
-static uint16_t getBGColor(uint_fast8_t height) // Get FFT background gradient
+ITCM static uint16_t getBGColor(uint_fast8_t height) // Get FFT background gradient
 {
 	uint_fast8_t start_red = 0;
 	uint_fast8_t start_green = 11;
@@ -883,7 +883,7 @@ void FFT_Reset(void) // clear the FFT
 }
 
 // get FFT height
-static inline uint16_t getFFTHeight(void)
+ITCM static inline uint16_t getFFTHeight(void)
 {
 	if (TRX.FFT_Height == 1)
 		return LAY_FFT_HEIGHT_STYLE1;
@@ -893,7 +893,7 @@ static inline uint16_t getFFTHeight(void)
 }
 
 // get the height of the waterfall
-static inline uint16_t getWTFHeight(void)
+ITCM static inline uint16_t getWTFHeight(void)
 {
 	if (TRX.FFT_Height == 1)
 		return LAY_WTF_HEIGHT_STYLE1;
@@ -902,7 +902,7 @@ static inline uint16_t getWTFHeight(void)
 	return LAY_WTF_HEIGHT_STYLE3;
 }
 
-static inline int32_t getFreqPositionOnFFT(uint32_t freq)
+ITCM static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 {
 	int32_t pos = (int32_t)((float32_t)LAY_FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO()->Freq) / hz_in_pixel * (float32_t)TRX.FFT_Zoom);
 	if (pos < 0 || pos >= LAY_FFT_PRINT_SIZE)
@@ -910,7 +910,7 @@ static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 	return pos;
 }
 
-static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b)
+ITCM static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b)
 {
 	uint8_t r = ((color >> 11) & 0x1F) + add_r;
 	uint8_t g = ((color >> 5) & 0x3F) + (uint8_t)(add_g << 1);
@@ -921,7 +921,7 @@ static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, ui
 	return (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
 }
 
-static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity)
+ITCM static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity)
 {
 	uint8_t r = (uint8_t)((float32_t)((color1 >> 11) & 0x1F) + (float32_t)((color2 >> 11) & 0x1F) * opacity);
 	uint8_t g = (uint8_t)((float32_t)((color1 >> 5) & 0x3F) + (float32_t)((color2 >> 5) & 0x3F) * opacity);
