@@ -213,8 +213,6 @@ ITCM static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
 	LCDDriver_SendData(y & 0xFF);
 	LCDDriver_SendCommand(LCD_COMMAND_GRAM);
 #endif
-	text_cursor_y = y;
-	text_cursor_x = x;
 }
 
 uint16_t LCDDriver_GetCurrentXOffset(void)
@@ -437,7 +435,7 @@ ITCM void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16
 	if (ys2 < 0)
 		ys2 = 0;
 	LCDDriver_SetCursorAreaPosition(x, (uint16_t)ys1, x + xa - 1, (uint16_t)ys2); //char area
-
+	
 	for (yy = 0; yy < h; yy++)
 	{
 		for (xx = 0; xx < xa; xx++)
