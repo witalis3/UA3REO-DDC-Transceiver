@@ -31,7 +31,7 @@
 #define SHOW_LOGO true					// Show logo on boot (from images.h)
 #define POWERDOWN_TIMEOUT 1000			// time of pressing the shutdown button, for operation, ms
 #define USB_RESTART_TIMEOUT 5000		// time after which USB restart occurs if there are no packets
-#define FPGA_FLASH_IN_HEX false			// enable FPGA firmware in STM32 firmware
+#define FPGA_FLASH_IN_HEX true			// enable FPGA firmware in STM32 firmware
 #define SNTP_SYNC_INTERVAL (60 * 60)	// Time synchronization interval via NTP, sec
 #define FAN_MEDIUM_START 50				// Temperature at which the fan starts at half power
 #define FAN_MEDIUM_STOP 40				// Temperature at which the fan stops
