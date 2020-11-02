@@ -619,6 +619,8 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_float32(TRX_STM32_VREF, false);
       sendToDebug_str("TIM6 delay: ");
       sendToDebug_uint32(dbg_tim6_delay, false);
+			sendToDebug_str("FFT FPS: ");
+      sendToDebug_uint32(FFT_FPS, false);
       sendToDebug_str("First byte of RX-FPGA I/Q: ");
       sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp, true); //first byte of I
       sendToDebug_str(" / ");
@@ -650,6 +652,7 @@ void TIM6_DAC_IRQHandler(void)
     FPGA_samples = 0;
     AUDIOPROC_samples = 0;
     WM8731_DMA_samples = 0;
+		FFT_FPS = 0;
     RX_USB_AUDIO_SAMPLES = 0;
     TX_USB_AUDIO_SAMPLES = 0;
     FPGA_NeedSendParams = true;

@@ -12,6 +12,7 @@ static uint16_t text_cursor_y = 0;
 static uint16_t text_cursor_x = 0;
 static bool wrap = false;
 static bool activeWindowIsFullscreen = true;
+static void LCDDriver_waitBusy(void);
 
 //***** Functions prototypes *****//
 ITCM static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
@@ -37,16 +38,16 @@ ITCM inline void LCDDriver_writeReg(uint16_t reg, uint16_t val) {
 //Read command from LCD
 ITCM inline uint16_t LCDDriver_ReadStatus(void)
 {
-	//return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR));
-	unsigned short data = *(unsigned short *)(LCD_FSMC_COMM_ADDR);
-	return data;
+	return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR));
+	//unsigned short data = *(unsigned short *)(LCD_FSMC_COMM_ADDR);
+	//return data;
 }
 //Read data from LCD
 ITCM inline uint16_t LCDDriver_ReadData(void)
 {
-	//return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR));
-	unsigned short data = * (unsigned short *)(LCD_FSMC_DATA_ADDR);
-	return (unsigned char)data;
+	return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR));
+	//unsigned short data = * (unsigned short *)(LCD_FSMC_DATA_ADDR);
+	//return (unsigned char)data;
 }
 
 
@@ -231,7 +232,7 @@ void LCDDriver_Init(void)
 	//PWM setting
 	LCDDriver_writeReg(LCD_RA8875_P1CR, LCD_RA8875_P1CR_ENABLE | (LCD_RA8875_PWM_CLK_DIV1024 & 0xF));
 	//LCDDriver_writeReg(LCD_RA8875_P1DCR, 0x05);
-	LCDDriver_writeReg(LCD_RA8875_P1DCR, 0xF0);
+	LCDDriver_writeReg(LCD_RA8875_P1DCR, 0xD0);
 	
 	//clear screen
 	LCDDriver_Fill(COLOR_BLACK);
@@ -287,6 +288,7 @@ ITCM inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint1
 #endif
 #if (defined(LCD_RA8875))
 	activeWindowIsFullscreen = false;
+	LCDDriver_waitBusy();
 	LCDDriver_setActiveWindow(x1, y1, x2, y2);
 	LCDDriver_writeReg(LCD_RA8875_CURH0, x1);
   LCDDriver_writeReg(LCD_RA8875_CURH1, x1 >> 8);
@@ -317,6 +319,7 @@ ITCM static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
 		activeWindowIsFullscreen = true;
 		LCDDriver_setActiveWindow(0, 0, (LCD_WIDTH - 1), (LCD_HEIGHT - 1));
 	}
+	LCDDriver_waitBusy();
 	LCDDriver_writeReg(LCD_RA8875_CURH0, x);
   LCDDriver_writeReg(LCD_RA8875_CURH1, x >> 8);
   LCDDriver_writeReg(LCD_RA8875_CURV0, y);
@@ -327,6 +330,7 @@ ITCM static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
 
 ITCM static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
+	LCDDriver_waitBusy();
 	// Set active window X
   LCDDriver_writeReg(LCD_RA8875_HSAW0, x1); // horizontal start point
   LCDDriver_writeReg(LCD_RA8875_HSAW1, x1 >> 8);
@@ -338,6 +342,12 @@ ITCM static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2
   LCDDriver_writeReg(LCD_RA8875_VSAW1, y1 >> 8);
   LCDDriver_writeReg(LCD_RA8875_VEAW0, y2); // vertical end point
   LCDDriver_writeReg(LCD_RA8875_VEAW1, y2 >> 8);
+}
+
+ITCM static void LCDDriver_waitBusy(void)
+{
+	while((LCDDriver_ReadStatus() & 0x80) == 0x80)
+	{__asm("nop");}
 }
 
 ITCM static bool LCDDriver_waitPoll(uint16_t regname, uint8_t waitflag) {
@@ -374,6 +384,7 @@ ITCM void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
 {
 	#if (defined(LCD_RA8875))
 	
+	LCDDriver_waitBusy();
 	if(!activeWindowIsFullscreen)
 	{
 		activeWindowIsFullscreen = true;
@@ -473,6 +484,7 @@ ITCM void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 {
 	#if (defined(LCD_RA8875))
 	
+	LCDDriver_waitBusy();
 	if(!activeWindowIsFullscreen)
 	{
 		activeWindowIsFullscreen = true;
@@ -615,6 +627,7 @@ ITCM void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
 {
 	#if (defined(LCD_RA8875))
 	
+	LCDDriver_waitBusy();
 	if(!activeWindowIsFullscreen)
 	{
 		activeWindowIsFullscreen = true;
@@ -655,6 +668,9 @@ ITCM void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
   /* Draw! */
   LCDDriver_SendCommand(LCD_RA8875_DCR);
 	LCDDriver_SendData(0x90); //not filled rect
+	
+	/* Wait for the command to finish */
+  LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
 	
 	#else
 	

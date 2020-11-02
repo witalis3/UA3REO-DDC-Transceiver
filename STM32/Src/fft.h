@@ -27,6 +27,7 @@ extern bool FFT_need_fft;
 extern bool FFT_buffer_ready;
 extern float32_t FFTInput_I[FFT_SIZE];
 extern float32_t FFTInput_Q[FFT_SIZE];
+extern uint16_t FFT_FPS;
 
 // Public methods
 extern void FFT_Init(void);              // FFT initialization

@@ -2,7 +2,7 @@
 #include "cw_decoder.h"
 
 //Private variables
-static SRAM1 float32_t DECODER_Buffer[DECODER_BUFF_SIZE] = {0};
+static SRAM float32_t DECODER_Buffer[DECODER_BUFF_SIZE] = {0};
 static uint32_t DECODER_head = 0; // index of adding new data to the buffer
 static uint32_t DECODER_tail = 0; // index of reading data from the buffer
 

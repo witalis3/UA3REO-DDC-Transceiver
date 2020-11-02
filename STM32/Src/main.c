@@ -1325,10 +1325,11 @@ static void MX_FMC_Init(void)
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 #if (defined(LCD_RA8875))
-	Timing.AddressSetupTime = 10;
-  Timing.DataSetupTime = 10;
-  Timing.BusTurnAroundDuration = 10;
+	Timing.AddressSetupTime = 18;
+  Timing.DataSetupTime = 18;
+  Timing.BusTurnAroundDuration = 0;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
+	hsram1.Init.WriteFifo = FMC_WRITE_FIFO_ENABLE;
 #endif
 	if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
 		Error_Handler();
@@ -1561,6 +1562,21 @@ void MPU_Config(void)
   MPU_InitStruct.Number = MPU_REGION_NUMBER2;
   MPU_InitStruct.BaseAddress = 0x38800000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_4KB;
+  MPU_InitStruct.SubRegionDisable = 0x0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER3;
+  MPU_InitStruct.BaseAddress = 0x30040000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_32KB;
   MPU_InitStruct.SubRegionDisable = 0x0;
   MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;

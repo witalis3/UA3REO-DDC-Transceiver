@@ -12,6 +12,7 @@ bool FFT_buffer_ready = false;				// buffer is full, can be processed
 volatile uint32_t FFT_buff_index = 0;		// current buffer index when it is filled with FPGA
 IRAM2 float32_t FFTInput_I[FFT_SIZE] = {0}; // incoming buffer FFT I
 IRAM2 float32_t FFTInput_Q[FFT_SIZE] = {0}; // incoming buffer FFT Q
+uint16_t FFT_FPS = 0;
 
 //Private variables
 #if FFT_SIZE == 1024
@@ -35,9 +36,9 @@ static float32_t maxValueFFT_tx = 0;					   // maximum value of the amplitude in
 static uint32_t currentFFTFreq = 0;
 static uint16_t color_scale[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  // color gradient in height FFT
 static uint16_t bg_gradient_color[LAY_FFT_WTF_MAX_HEIGHT] = {0};							  // color gradient on background of FFT
-static SRAM1 uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
-static SRAM1 uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0};				  // frequencies for each row of the waterfall
-static SRAM1 uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
+static SRAM uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
+static SRAM uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0};				  // frequencies for each row of the waterfall
+static SRAM uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
 static int32_t grid_lines_pos[20] = {-1};										//grid lines positions
 static int16_t bw_line_start = 0;															//BW bar params
 static int16_t bw_line_width = 0;															//BW bar params
@@ -643,6 +644,7 @@ ITCM void FFT_printWaterfallDMA(void)
 	}
 	else
 	{
+		FFT_FPS++;
 		FFT_need_fft = true;
 		LCD_busy = false;
 	}

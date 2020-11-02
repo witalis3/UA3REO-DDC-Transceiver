@@ -7,8 +7,8 @@ HeaderPath=..\Drivers\STM32H7xx_HAL_Driver\Inc;..\Drivers\STM32H7xx_HAL_Driver\I
 CDefines=USE_HAL_DRIVER;STM32H743xx;USE_HAL_DRIVER;USE_HAL_DRIVER;
 
 [PreviousGenFiles]
-HeaderPath=D:/Dropbox/Develop/Projects/UA3REO/STM32/Inc
+HeaderPath=D:/Dropbox/Develop/Projects/WOLF/STM32/Inc
 HeaderFiles=stm32h7xx_it.h;stm32h7xx_hal_conf.h;main.h;
-SourcePath=D:/Dropbox/Develop/Projects/UA3REO/STM32/Src
+SourcePath=D:/Dropbox/Develop/Projects/WOLF/STM32/Src
 SourceFiles=stm32h7xx_it.c;stm32h7xx_hal_msp.c;main.c;
 
