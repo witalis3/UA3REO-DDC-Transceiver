@@ -45,8 +45,9 @@
 #define TRX_MAX_SWR		5				//maximum SWR to enable protect (NOT IN TUNE MODE!)
 
 // select LCD, comment on others
-#define LCD_ILI9481 true
+//#define LCD_ILI9481 true
 //#define LCD_HX8357B true
+#define LCD_RA8875 true
 
 #define FMC_REMAP true			// FMC memory remap
 #define FSMC_REGISTER_SELECT 18 // from FSMC settings in STM32Cube (A18, A6, etc.)

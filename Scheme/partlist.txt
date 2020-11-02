@@ -42,3 +42,5 @@ ACP3225-501-2P-T https://www.chipdip.ru/product/acp3225-501-2p-t-2
 ULN2003D https://www.chipdip.ru/product/uln2003d1013tr-2
 PWL-2R https://www.chipdip.ru/product/pwl-2r
 PHU-2 https://www.chipdip.ru/product/phu-2
+
+7'LCD https://aliexpress.ru/item/32609945244.html https://www.waveshare.com/wiki/7inch_Capacitive_Touch_LCD_(C)

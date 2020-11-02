@@ -1324,6 +1324,12 @@ static void MX_FMC_Init(void)
   Timing.BusTurnAroundDuration = 3;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
+#if (defined(LCD_RA8875))
+	Timing.AddressSetupTime = 10;
+  Timing.DataSetupTime = 10;
+  Timing.BusTurnAroundDuration = 10;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
+#endif
 	if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
 		Error_Handler();
   HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
