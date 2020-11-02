@@ -1325,8 +1325,8 @@ static void MX_FMC_Init(void)
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 #if (defined(LCD_RA8875))
-	Timing.AddressSetupTime = 18;
-  Timing.DataSetupTime = 18;
+	Timing.AddressSetupTime = 19;
+  Timing.DataSetupTime = 19;
   Timing.BusTurnAroundDuration = 0;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 	hsram1.Init.WriteFifo = FMC_WRITE_FIFO_ENABLE;
