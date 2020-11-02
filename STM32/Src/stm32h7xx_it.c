@@ -158,7 +158,9 @@ void HardFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
-    LCD_showError("Hard Fault", true);
+    LCD_showError("Hard Fault", false);
+		static uint32_t i = 0; while(i < 99999999) { i++; __asm("nop"); }
+		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
     /* USER CODE END W1_HardFault_IRQn 0 */
   }
 }
@@ -174,7 +176,9 @@ void MemManage_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_MemoryManagement_IRQn 0 */
-    LCD_showError("Memory Fault", true);
+    LCD_showError("Memory Fault", false);
+		static uint32_t i = 0; while(i < 99999999) { i++; __asm("nop"); }
+		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
     /* USER CODE END W1_MemoryManagement_IRQn 0 */
   }
 }
@@ -190,7 +194,9 @@ void BusFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_BusFault_IRQn 0 */
-    LCD_showError("Bus Fault", true);
+    LCD_showError("Bus Fault", false);
+		static uint32_t i = 0; while(i < 99999999) { i++; __asm("nop"); }
+		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
     /* USER CODE END W1_BusFault_IRQn 0 */
   }
 }
@@ -206,7 +212,9 @@ void UsageFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_UsageFault_IRQn 0 */
-    LCD_showError("Usage Fault", true);
+    LCD_showError("Usage Fault", false);
+		static uint32_t i = 0; while(i < 99999999) { i++; __asm("nop"); }
+		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
     /* USER CODE END W1_UsageFault_IRQn 0 */
   }
 }
