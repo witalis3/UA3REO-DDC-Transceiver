@@ -202,7 +202,8 @@ int main(void)
   LCD_Init();
   if (SHOW_LOGO)
 	{
-    LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo);
+		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
+    LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo.width) / 2), ((LCD_HEIGHT - IMAGES_logo.height) / 2), &IMAGES_logo);
 		LCDDriver_printText(version_string, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
 	}
   sendToDebug_strln("[OK] Real Time Clock init");
