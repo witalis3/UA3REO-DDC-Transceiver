@@ -539,6 +539,16 @@
               <FilePath>..\Src\lcd.h</FilePath>
             </File>
             <File>
+              <FileName>lcd_480x320.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\lcd_480x320.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_800x480.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\lcd_800x480.c</FilePath>
+            </File>
+            <File>
               <FileName>lcd_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\lcd_driver.c</FilePath>
@@ -547,6 +557,26 @@
               <FileName>lcd_driver.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\lcd_driver.h</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_driver_ILI9481.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\lcd_driver_ILI9481.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_driver_ILI9481.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\lcd_driver_ILI9481.h</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_driver_RA8875.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\lcd_driver_RA8875.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_driver_RA8875.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\lcd_driver_RA8875.h</FilePath>
             </File>
             <File>
               <FileName>noise_blanker.c</FileName>
@@ -592,6 +622,16 @@
               <FileName>screen_layout.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\screen_layout.h</FilePath>
+            </File>
+            <File>
+              <FileName>screen_layout_480x320.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\screen_layout_480x320.h</FilePath>
+            </File>
+            <File>
+              <FileName>screen_layout_800x480.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\screen_layout_800x480.h</FilePath>
             </File>
             <File>
               <FileName>settings.c</FileName>
