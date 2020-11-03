@@ -5,6 +5,7 @@
 
 #define LCD_WIDTH 800
 #define LCD_HEIGHT 480
+#define HAS_BTE true
 
 // Registers & bits
 #define LCD_RA8875_PWRR 0x01          
@@ -252,7 +253,13 @@
 #define LCD_RA8875_BTE_BECR0 0x50 // BTE Function Control Register 0
 #define LCD_RA8875_BTE_BECR0_BTEON 0x80
 #define LCD_RA8875_BTE_BECR1 0x51 // BTE Function Control Register 1
+#define LCD_RA8875_BTE_BECR1_MVP 0x02 //Move BTE in positive direction with ROP.
+#define LCD_RA8875_BTE_BECR1_MVN 0x03 //Move BTE in negative direction with ROP.
 #define LCD_RA8875_BTE_BECR1_DS 0xC0 //Setting register Destination = source
+#define LCD_RA8875_BTE_HSBE0 0x54 // Horizontal Source Point 0 of BTE
+#define LCD_RA8875_BTE_HSBE1 0x55 // Horizontal Source Point 1 of BTE
+#define LCD_RA8875_BTE_VSBE0 0x56 // Vertical Source Point 0 of BTE
+#define LCD_RA8875_BTE_VSBE1 0x57 // Vertical Source Point 1 of BTE
 #define LCD_RA8875_BTE_HDBE0 0x58 // Horizontal Destination Point 0 of BTE
 #define LCD_RA8875_BTE_HDBE1 0x59 // Horizontal Destination Point 1 of BTE
 #define LCD_RA8875_BTE_VDBE0 0x5A // Vertical Destination Point 0 of BTE

@@ -6,11 +6,13 @@
 #include "main.h"
 #include "fonts.h"
 #include "functions.h"
+#include "trx_manager.h"
 
 uint32_t LCD_FSMC_COMM_ADDR = 0;
 uint32_t LCD_FSMC_DATA_ADDR = 0;
 static bool activeWindowIsFullscreen = true;
-static void LCDDriver_waitBusy(void);
+ITCM static void LCDDriver_waitBusy(void);
+ITCM static void LCDDriver_waitBTE(void);
 
 //***** Functions prototypes *****//
 ITCM static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
@@ -196,7 +198,16 @@ ITCM static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2
 ITCM static void LCDDriver_waitBusy(void)
 {
 	while((LCDDriver_ReadStatus() & 0x80) == 0x80)
-	{__asm("nop");}
+		__asm("nop");
+}
+
+ITCM static void LCDDriver_waitBTE(void)
+{
+	while((LCDDriver_ReadStatus() & 0x40) == 0x40)
+		if(NVIC_GetPriority(((int32_t)__get_IPSR()) - 16) == 8)
+			CPULOAD_GoToSleepMode();
+		else
+			__asm("nop");
 }
 
 ITCM static bool LCDDriver_waitPoll(uint16_t regname, uint8_t waitflag) {
@@ -384,6 +395,49 @@ ITCM void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
 	
 	/* Wait for the command to finish */
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
+}
+
+ITCM void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, uint16_t w, uint16_t h, bool fromEnd)
+{		
+	if(fromEnd)
+	{
+		sx = sx + w;
+		sy = sy + h - 1;
+		dx = dx + w;
+		dy = dy + h - 1;
+	}
+	
+	LCDDriver_waitBusy();
+	
+	//1. Setting source layer and address REG[54h], [55h], [56h], [57h] 
+	LCDDriver_writeReg(LCD_RA8875_BTE_HSBE0, sx & 0xFF);
+	LCDDriver_writeReg(LCD_RA8875_BTE_HSBE1, (sx >> 8) & 0xFF);
+	LCDDriver_writeReg(LCD_RA8875_BTE_VSBE0, sy & 0xFF);
+	LCDDriver_writeReg(LCD_RA8875_BTE_VSBE1, (sy >> 8) & 0xFF);
+	
+	//2. Setting destination layer and address REG[58h], [59h], [5Ah], [5Bh]
+	LCDDriver_writeReg(LCD_RA8875_BTE_HDBE0, dx & 0xFF);
+	LCDDriver_writeReg(LCD_RA8875_BTE_HDBE1, (dx >> 8) & 0xFF);
+	LCDDriver_writeReg(LCD_RA8875_BTE_VDBE0, dy & 0xFF);
+	LCDDriver_writeReg(LCD_RA8875_BTE_VDBE1, (dy >> 8) & 0xFF);
+	
+	//3. Setting BTE width and height REG[5Ch], [5Dh], [5Eh], [5Fh]
+	LCDDriver_writeReg(LCD_RA8875_BTE_BEWR0, w & 0xFF);
+	LCDDriver_writeReg(LCD_RA8875_BTE_BEWR1, (w >> 8) & 0xFF);
+	LCDDriver_writeReg(LCD_RA8875_BTE_BEHR0, h & 0xFF);
+	LCDDriver_writeReg(LCD_RA8875_BTE_BEHR1, (h >> 8) & 0xFF);
+	
+	//4. Setting BTE operation and ROP function REG[51h] Bit[3:0] = 2h
+	if(fromEnd)
+		LCDDriver_writeReg(LCD_RA8875_BTE_BECR1, LCD_RA8875_BTE_BECR1_MVN | LCD_RA8875_BTE_BECR1_DS);
+	else
+		LCDDriver_writeReg(LCD_RA8875_BTE_BECR1, LCD_RA8875_BTE_BECR1_MVP | LCD_RA8875_BTE_BECR1_DS);
+	
+	//5. Enable BTE function REG[50h] Bit7 = 1
+	LCDDriver_writeReg(LCD_RA8875_BTE_BECR0, LCDDriver_readReg(LCD_RA8875_BTE_BECR0) | LCD_RA8875_BTE_BECR0_BTEON);
+	
+	//6. Check STSR REG Bit6 check 2D final
+	LCDDriver_waitBTE();
 }
 
 #endif

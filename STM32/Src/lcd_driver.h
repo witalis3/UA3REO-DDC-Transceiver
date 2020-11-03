@@ -123,4 +123,7 @@ extern void LCDDriver_setRotation(uint8_t rotate);
 extern void LCDDriver_setBrightness(uint8_t percent);
 extern uint16_t rgb888torgb565(uint_fast8_t red, uint_fast8_t green, uint_fast8_t blue);
 
+//BTE functions
+ITCM void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, uint16_t w, uint16_t h, bool fromEnd);
+
 #endif

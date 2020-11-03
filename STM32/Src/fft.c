@@ -34,6 +34,7 @@ static float32_t FFTOutput_mean_new[LAY_FFT_PRINT_SIZE] = {0}; // averaged FFT b
 static float32_t maxValueFFT_rx = 0;					   // maximum value of the amplitude in the resulting frequency response
 static float32_t maxValueFFT_tx = 0;					   // maximum value of the amplitude in the resulting frequency response
 static uint32_t currentFFTFreq = 0;
+static uint32_t lastWTFFreq = 0;								//last WTF printed freq
 static uint16_t color_scale[LAY_FFT_FFT_MAX_HEIGHT] = {0};							  // color gradient in height FFT
 static uint16_t bg_gradient_color[LAY_FFT_FFT_MAX_HEIGHT] = {0};							  // color gradient on background of FFT
 static SRAM uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
@@ -582,8 +583,14 @@ ITCM void FFT_printWaterfallDMA(void)
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAY_FFT_CWDECODER_OFFSET;
 
+	#ifdef HAS_BTE
+		//move exist lines down with BTE
+		if (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq)
+			LCDDriver_BTE_copyArea(0, LAY_FFT_WTF_POS_Y + fftHeight, 0, LAY_FFT_WTF_POS_Y + fftHeight + 1, LAY_FFT_PRINT_SIZE - 1, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+	#endif
+	
 	//print waterfall line
-	if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
+	if ((print_wtf_yindex < (wtfHeight - cwdecoder_offset) && lastWTFFreq != currentFFTFreq) ||  (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq))
 	{
 		// calculate offset
 		int32_t freq_diff = (int32_t)(((float32_t)((int32_t)currentFFTFreq - (int32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)TRX.FFT_Zoom);
@@ -624,6 +631,7 @@ ITCM void FFT_printWaterfallDMA(void)
 				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			}
 		}
+
 		//print scale lines
 		if(TRX.FFT_Grid >= 2)
 			for(int8_t i = 0; i < 13; i++)
@@ -645,6 +653,7 @@ ITCM void FFT_printWaterfallDMA(void)
 	else
 	{
 		FFT_FPS++;
+		lastWTFFreq = currentFFTFreq;
 		FFT_need_fft = true;
 		LCD_busy = false;
 	}
