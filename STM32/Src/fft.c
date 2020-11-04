@@ -719,9 +719,9 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		// 255 255 0
 		// 255 0 0
 		// contrast of each of the 3 zones, the total should be 1.0f
-		const float32_t contrast1 = 0.1f;
-		const float32_t contrast2 = 0.4f;
-		const float32_t contrast3 = 0.5f;
+		const float32_t contrast1 = 0.02f;
+		const float32_t contrast2 = 0.35f;
+		const float32_t contrast3 = 0.63f;
 
 		if (height < getFFTHeight() * contrast1)
 		{

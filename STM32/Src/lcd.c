@@ -21,13 +21,21 @@ volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
 volatile bool LCD_systemMenuOpened = false;
 
-static char LCD_freq_string_hz[6];
-static char LCD_freq_string_khz[6];
-static char LCD_freq_string_mhz[6];
+static char LCD_freq_string_hz[6] = {0};
+static char LCD_freq_string_khz[6] = {0};
+static char LCD_freq_string_mhz[6] = {0};
 static uint32_t LCD_last_showed_freq = 0;
 static uint16_t LCD_last_showed_freq_mhz = 9999;
 static uint16_t LCD_last_showed_freq_khz = 9999;
 static uint16_t LCD_last_showed_freq_hz = 9999;
+static char LCD_freq_string_hz_B[6] = {0};
+static char LCD_freq_string_khz_B[6] = {0};
+static char LCD_freq_string_mhz_B[6] = {0};
+static uint32_t LCD_last_showed_freq_B = 0;
+static uint16_t LCD_last_showed_freq_mhz_B = 9999;
+static uint16_t LCD_last_showed_freq_khz_B = 9999;
+static uint16_t LCD_last_showed_freq_hz_B = 9999;
+
 static float32_t LCD_last_s_meter = 1.0f;
 static uint32_t Time;
 static uint8_t Hours;
@@ -39,6 +47,7 @@ static uint8_t Last_showed_Seconds = 255;
 
 static void printInfoSmall(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
+static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
 static void LCD_displayFreqInfo(bool redraw);
 static void LCD_displayTopButtons(bool redraw);
 static void LCD_displayStatusInfoBar(bool redraw);
@@ -73,24 +82,53 @@ static void LCD_displayTopButtons(bool redraw)
 		LCDDriver_Fill_RectWH(LAY_TOPBUTTONS_X1, LAY_TOPBUTTONS_Y1, LAY_TOPBUTTONS_X2, LAY_TOPBUTTONS_Y2, BACKGROUND_COLOR);
 
 	// display information about the operation of the transceiver
-	printInfo(LAY_TOPBUTTONS_PRE_X, LAY_TOPBUTTONS_PRE_Y, LAY_TOPBUTTONS_PRE_W, LAY_TOPBUTTONS_PRE_H, "PRE", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.LNA);
+	printButton(LAY_TOPBUTTONS_PRE_X, LAY_TOPBUTTONS_PRE_Y, LAY_TOPBUTTONS_PRE_W, LAY_TOPBUTTONS_PRE_H, "PRE", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.LNA);
 	char buff[64] = {0};
 	sprintf(buff, "ATT%d", (uint8_t)TRX.ATT_DB);
 	if (TRX.ATT_DB == 0)
 		sprintf(buff, "ATT");
-	printInfo(LAY_TOPBUTTONS_ATT_X, LAY_TOPBUTTONS_ATT_Y, LAY_TOPBUTTONS_ATT_W, LAY_TOPBUTTONS_ATT_H, buff, COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ATT);
-	printInfo(LAY_TOPBUTTONS_PGA_X, LAY_TOPBUTTONS_PGA_Y, LAY_TOPBUTTONS_PGA_W, LAY_TOPBUTTONS_PGA_H, "PGA", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ADC_PGA);
-	printInfo(LAY_TOPBUTTONS_DRV_X, LAY_TOPBUTTONS_DRV_Y, LAY_TOPBUTTONS_DRV_W, LAY_TOPBUTTONS_DRV_H, "DRV", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ADC_Driver);
-	printInfo(LAY_TOPBUTTONS_FAST_X, LAY_TOPBUTTONS_FAST_Y, LAY_TOPBUTTONS_FAST_W, LAY_TOPBUTTONS_FAST_H, "FAST", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Fast);
-	printInfo(LAY_TOPBUTTONS_AGC_X, LAY_TOPBUTTONS_AGC_Y, LAY_TOPBUTTONS_AGC_W, LAY_TOPBUTTONS_AGC_H, "AGC", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, CurrentVFO()->AGC);
-	printInfo(LAY_TOPBUTTONS_DNR_X, LAY_TOPBUTTONS_DNR_Y, LAY_TOPBUTTONS_DNR_W, LAY_TOPBUTTONS_DNR_H, "DNR", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, CurrentVFO()->DNR);
-	printInfo(LAY_TOPBUTTONS_NB_X, LAY_TOPBUTTONS_NB_Y, LAY_TOPBUTTONS_NB_W, LAY_TOPBUTTONS_NB_H, "NB", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.NOISE_BLANKER);
-	printInfo(LAY_TOPBUTTONS_MUTE_X, LAY_TOPBUTTONS_MUTE_Y, LAY_TOPBUTTONS_MUTE_W, LAY_TOPBUTTONS_MUTE_H, "MUTE", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX_Mute);
-	printInfo(LAY_TOPBUTTONS_LOCK_X, LAY_TOPBUTTONS_LOCK_Y, LAY_TOPBUTTONS_LOCK_W, LAY_TOPBUTTONS_LOCK_H, "LOCK", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Locked);
+	printButton(LAY_TOPBUTTONS_ATT_X, LAY_TOPBUTTONS_ATT_Y, LAY_TOPBUTTONS_ATT_W, LAY_TOPBUTTONS_ATT_H, buff, COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ATT);
+	printButton(LAY_TOPBUTTONS_PGA_X, LAY_TOPBUTTONS_PGA_Y, LAY_TOPBUTTONS_PGA_W, LAY_TOPBUTTONS_PGA_H, "PGA", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ADC_PGA);
+	printButton(LAY_TOPBUTTONS_DRV_X, LAY_TOPBUTTONS_DRV_Y, LAY_TOPBUTTONS_DRV_W, LAY_TOPBUTTONS_DRV_H, "DRV", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.ADC_Driver);
+	printButton(LAY_TOPBUTTONS_FAST_X, LAY_TOPBUTTONS_FAST_Y, LAY_TOPBUTTONS_FAST_W, LAY_TOPBUTTONS_FAST_H, "FAST", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Fast);
+	printButton(LAY_TOPBUTTONS_AGC_X, LAY_TOPBUTTONS_AGC_Y, LAY_TOPBUTTONS_AGC_W, LAY_TOPBUTTONS_AGC_H, "AGC", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, CurrentVFO()->AGC);
+	printButton(LAY_TOPBUTTONS_DNR_X, LAY_TOPBUTTONS_DNR_Y, LAY_TOPBUTTONS_DNR_W, LAY_TOPBUTTONS_DNR_H, "DNR", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, CurrentVFO()->DNR);
+	printButton(LAY_TOPBUTTONS_NB_X, LAY_TOPBUTTONS_NB_Y, LAY_TOPBUTTONS_NB_W, LAY_TOPBUTTONS_NB_H, "NB", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.NOISE_BLANKER);
+	printButton(LAY_TOPBUTTONS_MUTE_X, LAY_TOPBUTTONS_MUTE_Y, LAY_TOPBUTTONS_MUTE_W, LAY_TOPBUTTONS_MUTE_H, "MUTE", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX_Mute);
+	printButton(LAY_TOPBUTTONS_LOCK_X, LAY_TOPBUTTONS_LOCK_Y, LAY_TOPBUTTONS_LOCK_W, LAY_TOPBUTTONS_LOCK_H, "LOCK", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, TRX.Locked);
 
 	LCD_UpdateQuery.TopButtons = false;
 	if(redraw)
 		LCD_UpdateQuery.TopButtonsRedraw = false;
+	LCD_busy = false;
+}
+
+static void LCD_displayBottomButtons(bool redraw)
+{
+	// display the bottom buttons
+	if (LCD_systemMenuOpened)
+		return;
+	if (LCD_busy)
+	{
+		LCD_UpdateQuery.BottomButtons = true;
+		return;
+	}
+	LCD_busy = true;
+	
+	#if (defined(LAY_800x480))
+	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 0, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "FUNC1", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 1, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "FUNC2", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 2, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "FUNC3", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 3, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "FUNC4", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 4, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "FUNC5", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 5, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "FUNC6", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 6, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "FUNC7", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 7, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "FUNC8", COLOR_BUTTON_BACKGROUND, COLOR_BUTTON_TEXT, COLOR_BUTTON_INACTIVE_TEXT, true);
+	#endif
+	
+	LCD_UpdateQuery.BottomButtons = false;
+	if(redraw)
+		LCD_UpdateQuery.BottomButtonsRedraw = false;
 	LCD_busy = false;
 }
 
@@ -148,6 +186,51 @@ static void LCD_displayFreqInfo(bool redraw)
 		LCDDriver_printTextFont(buff, LAY_FREQ_X_OFFSET_HZ, LAY_FREQ_Y_BASELINE_SMALL, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_SMALL_FONT);
 		LCD_last_showed_freq_hz = hz;
 	}
+	
+	#if (defined(LAY_800x480))
+		uint16_t mhz_x_offset_B = 0;
+		LCD_last_showed_freq_B = SecondaryVFO()->Freq;
+		if (SecondaryVFO()->Freq >= 100000000)
+			mhz_x_offset_B = LAY_FREQ_B_X_OFFSET_100;
+		else if (SecondaryVFO()->Freq >= 10000000)
+			mhz_x_offset_B = LAY_FREQ_B_X_OFFSET_10;
+		else
+			mhz_x_offset_B = LAY_FREQ_B_X_OFFSET_1;
+
+		if (redraw)
+			LCDDriver_Fill_RectWH(LAY_FREQ_B_LEFT_MARGIN, LAY_FREQ_B_Y_TOP, LCD_WIDTH - LAY_FREQ_B_LEFT_MARGIN - LAY_FREQ_B_RIGHT_MARGIN, LAY_FREQ_B_BLOCK_HEIGHT, BACKGROUND_COLOR);
+		
+		if((mhz_x_offset_B - LAY_FREQ_B_LEFT_MARGIN) > 0)
+			LCDDriver_Fill_RectWH(LAY_FREQ_B_LEFT_MARGIN, LAY_FREQ_B_Y_BASELINE - LAY_FREQ_B_HEIGHT, mhz_x_offset_B - LAY_FREQ_B_LEFT_MARGIN, LAY_FREQ_B_HEIGHT, BACKGROUND_COLOR);
+
+		// add spaces to output the frequency
+		uint16_t hz_B = (SecondaryVFO()->Freq % 1000);
+		uint16_t khz_B = ((SecondaryVFO()->Freq / 1000) % 1000);
+		uint16_t mhz_B = ((SecondaryVFO()->Freq / 1000000) % 1000000);
+		sprintf(LCD_freq_string_hz_B, "%d", hz_B);
+		sprintf(LCD_freq_string_khz_B, "%d", khz_B);
+		sprintf(LCD_freq_string_mhz_B, "%d", mhz_B);
+
+		if (redraw || (LCD_last_showed_freq_mhz_B != mhz_B))
+		{
+			LCDDriver_printTextFont(LCD_freq_string_mhz_B, mhz_x_offset_B, LAY_FREQ_B_Y_BASELINE, LAY_FREQ_B_COLOR_MHZ, BACKGROUND_COLOR, LAY_FREQ_B_FONT);
+			LCD_last_showed_freq_mhz_B = mhz_B;
+		}
+
+		if (redraw || (LCD_last_showed_freq_khz_B != khz_B))
+		{
+			addSymbols(buff, LCD_freq_string_khz_B, 3, "0", false);
+			LCDDriver_printTextFont(buff, LAY_FREQ_B_X_OFFSET_KHZ, LAY_FREQ_B_Y_BASELINE, LAY_FREQ_B_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_B_FONT);
+			LCD_last_showed_freq_khz_B = khz_B;
+		}
+		if (redraw || (LCD_last_showed_freq_hz_B != hz_B))
+		{
+			addSymbols(buff, LCD_freq_string_hz, 3, "0", false);
+			LCDDriver_printTextFont(buff, LAY_FREQ_B_X_OFFSET_HZ, LAY_FREQ_B_Y_BASELINE_SMALL, LAY_FREQ_B_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_B_SMALL_FONT);
+			LCD_last_showed_freq_hz_B = hz_B;
+		}
+	#endif
+	
 	NeedSaveSettings = true;
 	
 	LCD_UpdateQuery.FreqInfo = false;
@@ -244,8 +327,13 @@ static void LCD_displayStatusInfoGUI(void)
 	{
 		LCD_drawSMeter();
 		LCDDriver_printTextFont("RX", LAY_STATUS_TXRX_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_TXRX_Y_OFFSET), LAY_STATUS_RX_COLOR, BACKGROUND_COLOR, LAY_STATUS_TXRX_FONT);
-		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X1_OFFSET, LAY_FREQ_Y_BASELINE + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_FONT); //Frequency delimiters
+		//Frequency delimiters
+		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X1_OFFSET, LAY_FREQ_Y_BASELINE + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
 		LCDDriver_printTextFont(".", LAY_FREQ_DELIMITER_X2_OFFSET, LAY_FREQ_Y_BASELINE + LAY_FREQ_DELIMITER_Y_OFFSET, LAY_FREQ_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_FONT);
+		#if (defined(LAY_800x480))
+			LCDDriver_printTextFont(".", LAY_FREQ_B_DELIMITER_X1_OFFSET, LAY_FREQ_B_Y_BASELINE + LAY_FREQ_B_DELIMITER_Y_OFFSET, LAY_FREQ_B_COLOR_KHZ, BACKGROUND_COLOR, LAY_FREQ_B_FONT);
+			LCDDriver_printTextFont(".", LAY_FREQ_B_DELIMITER_X2_OFFSET, LAY_FREQ_B_Y_BASELINE + LAY_FREQ_B_DELIMITER_Y_OFFSET, LAY_FREQ_B_COLOR_HZ, BACKGROUND_COLOR, LAY_FREQ_B_FONT);
+		#endif
 	}
 
 	//VFO indicator
@@ -269,8 +357,10 @@ static void LCD_displayStatusInfoGUI(void)
 	}
 	
 	//Mode indicator
-	printInfo(LAY_STATUS_MODE_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_MODE_Y_OFFSET), LAY_STATUS_MODE_BLOCK_WIDTH, LAY_STATUS_MODE_BLOCK_HEIGHT, (char *)MODE_DESCR[CurrentVFO()->Mode], BACKGROUND_COLOR, LAY_STATUS_MODE_COLOR, LAY_STATUS_MODE_COLOR, true);
-	
+	printButton(LAY_STATUS_MODE_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_MODE_Y_OFFSET), LAY_STATUS_MODE_BLOCK_WIDTH, LAY_STATUS_MODE_BLOCK_HEIGHT, (char *)MODE_DESCR[CurrentVFO()->Mode], BACKGROUND_COLOR, LAY_STATUS_MODE_COLOR, LAY_STATUS_MODE_COLOR, true);
+	#if (defined(LAY_800x480))
+		printButton(LAY_STATUS_MODE_B_X_OFFSET, (LAY_STATUS_Y_OFFSET + LAY_STATUS_MODE_B_Y_OFFSET), LAY_STATUS_MODE_BLOCK_WIDTH, LAY_STATUS_MODE_BLOCK_HEIGHT, (char *)MODE_DESCR[SecondaryVFO()->Mode], BACKGROUND_COLOR, LAY_STATUS_MODE_COLOR, LAY_STATUS_MODE_COLOR, true);
+	#endif
 	//Redraw CW decoder
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 	{
@@ -357,7 +447,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		//print dBm value
 		sprintf(ctmp, "%ddBm", TRX_RX_dBm);
 		addSymbols(ctmp, ctmp, 7, " ", true);
-		LCDDriver_printText(ctmp, LAY_STATUS_LABEL_DBM_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_DBM_Y_OFFSET, COLOR_BUTTON_TEXT, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
+		LCDDriver_printText(ctmp, LAY_STATUS_LABEL_DBM_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_DBM_Y_OFFSET, LAY_STATUS_LABEL_DBM_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 		
 		//print s-meter value
 		static float32_t TRX_RX_dBm_averaging = -120.0f;
@@ -570,6 +660,7 @@ void LCD_redraw(void)
 	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	LCD_UpdateQuery.TopButtonsRedraw = true;
+	LCD_UpdateQuery.BottomButtonsRedraw = true;
 	LCD_UpdateQuery.SystemMenu = true;
 	LCD_UpdateQuery.TextBar = true;
 	LCD_last_s_meter = 0;
@@ -599,6 +690,10 @@ void LCD_doEvents(void)
 		LCD_displayTopButtons(false);
 	if (LCD_UpdateQuery.TopButtonsRedraw)
 		LCD_displayTopButtons(true);
+	if (LCD_UpdateQuery.BottomButtons)
+		LCD_displayBottomButtons(false);
+	if (LCD_UpdateQuery.BottomButtonsRedraw)
+		LCD_displayBottomButtons(true);
 	if (LCD_UpdateQuery.FreqInfo)
 		LCD_displayFreqInfo(false);
 	if (LCD_UpdateQuery.FreqInfoRedraw)
@@ -625,6 +720,15 @@ static void printInfoSmall(uint16_t x, uint16_t y, uint16_t width, uint16_t heig
 }
 
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t inactive_color, bool active)
+{
+	uint16_t x1, y1, w, h;
+	LCDDriver_Fill_RectWH(x, y, width, height, back_color);
+	LCDDriver_getTextBounds(text, x, y, &x1, &y1, &w, &h, (GFXfont *)&FreeSans9pt7b);
+	//sendToDebug_str(text); sendToDebug_str(" "); sendToDebug_uint16(w, false);
+	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2 - 1, active ? text_color : inactive_color, back_color, (GFXfont *)&FreeSans9pt7b);
+}
+
+static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t inactive_color, bool active)
 {
 	uint16_t x1, y1, w, h;
 	LCDDriver_Fill_RectWH(x, y, width, height, back_color);

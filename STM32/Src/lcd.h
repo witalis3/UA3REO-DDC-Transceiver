@@ -11,6 +11,8 @@ typedef struct
 	bool Background;
 	bool TopButtons;
 	bool TopButtonsRedraw;
+	bool BottomButtons;
+	bool BottomButtonsRedraw;
 	bool FreqInfo;
 	bool FreqInfoRedraw;
 	bool StatusInfoGUI;
