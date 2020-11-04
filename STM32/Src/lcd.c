@@ -53,9 +53,10 @@ void LCD_Init(void)
 #else
 	LCDDriver_setRotation(4);
 #endif
-	LCDDriver_Fill(BACKGROUND_COLOR);
-	
+#ifdef HAS_TOUCHPAD
 	TOUCHPAD_Init();
+#endif
+	LCDDriver_Fill(BACKGROUND_COLOR);
 }
 
 static void LCD_displayTopButtons(bool redraw)

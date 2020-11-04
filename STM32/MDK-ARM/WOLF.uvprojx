@@ -524,6 +524,16 @@
               <FilePath>..\Src\functions.h</FilePath>
             </File>
             <File>
+              <FileName>i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>i2c.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\i2c.h</FilePath>
+            </File>
+            <File>
               <FileName>images.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\images.h</FilePath>
@@ -762,16 +772,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wire.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\wire.c</FilePath>
-            </File>
-            <File>
-              <FileName>wire.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\wire.h</FilePath>
             </File>
             <File>
               <FileName>wm8731.c</FileName>

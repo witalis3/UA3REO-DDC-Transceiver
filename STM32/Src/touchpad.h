@@ -9,5 +9,6 @@
 
 void TOUCHPAD_Init(void);
 void TOUCHPAD_ProcessInterrupt(void);
+void TOUCHPAD_reserveInterrupt(void);
 
 #endif

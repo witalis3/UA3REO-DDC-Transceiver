@@ -1,7 +1,7 @@
 #include "stm32h7xx_hal.h"
 #include "wm8731.h"
 #include "trx_manager.h"
-#include "wire.h"
+#include "i2c.h"
 #include "lcd.h"
 #include "agc.h"
 #include "usbd_audio_if.h"
@@ -54,7 +54,6 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 	uint8_t repeats = 0;
 	while (st != 0 && repeats < 3)
 	{
-		i2c_begin(&I2C_WM8731);
 		i2c_beginTransmission_u8(&I2C_WM8731, B8(0011010)); //I2C_ADDRESS_WM8731 00110100
 		i2c_write_u8(&I2C_WM8731, reg);					   // MSB
 		i2c_write_u8(&I2C_WM8731, value);				   // MSB

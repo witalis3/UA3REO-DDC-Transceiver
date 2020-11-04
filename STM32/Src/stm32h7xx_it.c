@@ -506,6 +506,9 @@ void TIM6_DAC_IRQHandler(void)
 	// update the state of the RF-Unit board
 	RF_UNIT_UpdateState(false);
 	
+	// check touchpad events
+	TOUCHPAD_ProcessInterrupt();
+	
 	//Redraw freq fast
 	if(LCD_UpdateQuery.FreqInfo)
 		LCD_doEvents();
@@ -825,7 +828,14 @@ void TIM16_IRQHandler(void)
   /* USER CODE BEGIN TIM16_IRQn 1 */
 	// Poll an additional encoder by timer, because interrupt hangs in line with FPGA
 	#ifdef HAS_TOUCHPAD
-		FRONTPANEL_check_ENC2SW_and_Touchpad();
+	static bool TOUCH_Int_Last = true;
+	bool TOUCH_Int_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
+	if (TOUCH_Int_Last != TOUCH_Int_Now)
+	{
+		TOUCH_Int_Last = TOUCH_Int_Now;
+		if (!TOUCH_Int_Now)
+			TOUCHPAD_reserveInterrupt();
+	}
 	#else
 	static uint8_t ENC2lastClkVal = 0;
 	static bool ENC2first = true;

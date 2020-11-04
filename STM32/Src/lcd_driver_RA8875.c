@@ -137,7 +137,7 @@ void LCDDriver_Init(void)
 	LCDDriver_writeReg(LCD_RA8875_P1DCR, 0x05);
 	
 	//clear screen
-	LCDDriver_Fill(COLOR_BLACK);
+	LCDDriver_Fill(COLOR_WHITE);
 	
 	//display ON
 	LCDDriver_writeReg(LCD_RA8875_PWRR, LCD_RA8875_PWRR_NORMAL | LCD_RA8875_PWRR_DISPON);

@@ -263,18 +263,16 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 	if (ENC2SW_AND_TOUCH_Last != ENC2SW_AND_TOUCH_Now)
 	{
 		ENC2SW_AND_TOUCH_Last = ENC2SW_AND_TOUCH_Now;
-		#ifdef HAS_TOUCHPAD
-			TOUCHPAD_ProcessInterrupt();
-		#else
-		if (!ENC2_SW_AND_TOUCH_Now)
+		if (!ENC2SW_AND_TOUCH_Now)
 		{
+			#ifndef HAS_TOUCHPAD
 			//ENC2 CLICK
 			NeedReinitNotch = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
+			#endif
 		}
-		#endif
 	}
 }
 
