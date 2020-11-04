@@ -141,7 +141,11 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 		}
 		TRX.RF_Filters = true;	  // LPF / HPF / BPF
+		#ifdef LAY_800x480
+		TRX.FFT_Zoom = 1;		  // approximation of the FFT spectrum
+		#else
 		TRX.FFT_Zoom = 2;		  // approximation of the FFT spectrum
+		#endif
 		TRX.AutoGain = false;	  // auto-control preamp and attenuator
 		TRX.CWDecoder = false;	  // automatic telegraph decoder
 		TRX.InputType_MIC = true; // type of input to transfer
@@ -205,7 +209,11 @@ void LoadSettings(bool clear)
 		TRX.MIC_EQ_LOW = 0;				 // Mic EQ (Low)
 		TRX.MIC_EQ_MID = 0;				 // Mic Equalizer (Mids)
 		TRX.MIC_EQ_HIG = 0;				 // Mic EQ (high)
+		#ifdef LAY_800x480
+		TRX.FFT_Speed = 5;				 // FFT Speed
+		#else
 		TRX.FFT_Speed = 3;				 // FFT Speed
+		#endif
 		TRX.Beeper = true;				 //Keyboard beeper
 		TRX.FFT_Background = true;	//FFT gradient background
 		TRX.VAD_Squelch = false;	//SSB Squelch on VAD technology

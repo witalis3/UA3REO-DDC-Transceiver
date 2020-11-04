@@ -134,8 +134,7 @@ void LCDDriver_Init(void)
 
 	//PWM setting
 	LCDDriver_writeReg(LCD_RA8875_P1CR, LCD_RA8875_P1CR_ENABLE | (LCD_RA8875_PWM_CLK_DIV1024 & 0xF));
-	//LCDDriver_writeReg(LCD_RA8875_P1DCR, 0x05);
-	LCDDriver_writeReg(LCD_RA8875_P1DCR, 0xA0);
+	LCDDriver_writeReg(LCD_RA8875_P1DCR, 0x05);
 	
 	//clear screen
 	LCDDriver_Fill(COLOR_BLACK);

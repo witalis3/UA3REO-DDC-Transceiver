@@ -23,7 +23,7 @@ extern PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[];
 
 extern void FRONTPANEL_ENCODER_checkRotate(void);
 extern void FRONTPANEL_ENCODER2_checkRotate(void);
-extern void FRONTPANEL_ENCODER2_checkSwitch(void);
+extern void FRONTPANEL_check_ENC2SW_and_Touchpad(void);
 extern void FRONTPANEL_Init(void);
 extern void FRONTPANEL_Process(void);
 

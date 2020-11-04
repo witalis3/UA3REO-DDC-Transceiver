@@ -54,11 +54,11 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 	uint8_t repeats = 0;
 	while (st != 0 && repeats < 3)
 	{
-		i2c_begin();
-		i2c_beginTransmission_u8(B8(0011010)); //I2C_ADDRESS_WM8731 00110100
-		i2c_write_u8(reg);					   // MSB
-		i2c_write_u8(value);				   // MSB
-		st = i2c_endTransmission();
+		i2c_begin(&I2C_WM8731);
+		i2c_beginTransmission_u8(&I2C_WM8731, B8(0011010)); //I2C_ADDRESS_WM8731 00110100
+		i2c_write_u8(&I2C_WM8731, reg);					   // MSB
+		i2c_write_u8(&I2C_WM8731, value);				   // MSB
+		st = i2c_endTransmission(&I2C_WM8731);
 		if (st != 0)
 			repeats++;
 		HAL_Delay(1);

@@ -95,8 +95,8 @@ void Error_Handler(void);
 #define ENC_CLK_Pin GPIO_PIN_2
 #define ENC_CLK_GPIO_Port GPIOE
 #define ENC_CLK_EXTI_IRQn EXTI2_IRQn
-#define ENC2_SW_Pin GPIO_PIN_4
-#define ENC2_SW_GPIO_Port GPIOE
+#define ENC2SW_AND_TOUCHPAD_Pin GPIO_PIN_4
+#define ENC2SW_AND_TOUCHPAD_GPIO_Port GPIOE
 #define ENC_DT_Pin GPIO_PIN_5
 #define ENC_DT_GPIO_Port GPIOE
 #define ENC2_DT_Pin GPIO_PIN_6

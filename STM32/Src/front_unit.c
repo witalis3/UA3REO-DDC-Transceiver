@@ -62,7 +62,6 @@ static bool FRONTPanel_MCP3008_3_Enabled = true;
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;
-static bool ENCODER2_SWLast = true;
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 7, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PRE, .holdHandler = FRONTPANEL_BUTTONHANDLER_PGA},		  //PRE-PGA
@@ -253,16 +252,21 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	}
 }
 
-void FRONTPANEL_ENCODER2_checkSwitch(void)
+void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 {
+	static bool ENC2SW_AND_TOUCH_Last = true;
+	
 	if (TRX.Locked)
 		return;
 
-	bool ENCODER2_SWNow = HAL_GPIO_ReadPin(ENC2_SW_GPIO_Port, ENC2_SW_Pin);
-	if (ENCODER2_SWLast != ENCODER2_SWNow)
+	bool ENC2SW_AND_TOUCH_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
+	if (ENC2SW_AND_TOUCH_Last != ENC2SW_AND_TOUCH_Now)
 	{
-		ENCODER2_SWLast = ENCODER2_SWNow;
-		if (!ENCODER2_SWNow)
+		ENC2SW_AND_TOUCH_Last = ENC2SW_AND_TOUCH_Now;
+		#ifdef HAS_TOUCHPAD
+			TOUCHPAD_ProcessInterrupt();
+		#else
+		if (!ENC2_SW_AND_TOUCH_Now)
 		{
 			//ENC2 CLICK
 			NeedReinitNotch = true;
@@ -270,6 +274,7 @@ void FRONTPANEL_ENCODER2_checkSwitch(void)
 			LCD_UpdateQuery.TopButtons = true;
 			NeedSaveSettings = true;
 		}
+		#endif
 	}
 }
 
@@ -305,7 +310,7 @@ void FRONTPANEL_Process(void)
 		return;
 	SPI_process = true;
 
-	FRONTPANEL_ENCODER2_checkSwitch();
+	FRONTPANEL_check_ENC2SW_and_Touchpad();
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
 	uint16_t mcp3008_value = 0;
 

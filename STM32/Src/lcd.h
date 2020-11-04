@@ -4,6 +4,7 @@
 #include "stm32h7xx_hal.h"
 #include "trx_manager.h"
 #include "lcd_driver.h"
+#include "touchpad.h"
 
 typedef struct
 {

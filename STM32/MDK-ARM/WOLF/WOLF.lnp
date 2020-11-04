@@ -26,6 +26,8 @@
 "wolf\spec_analyzer.o"
 "wolf\swr_analyzer.o"
 "wolf\system_menu.o"
+"wolf\touchpad.o"
+"wolf\touchpad_gt911.o"
 "wolf\trx_manager.o"
 "wolf\usbd_audio_if.o"
 "wolf\usbd_cat_if.o"
