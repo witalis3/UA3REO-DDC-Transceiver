@@ -6,6 +6,7 @@
 
 static bool touched = false;
 static bool hold_touch_handled = false;
+static bool hold_swipe_handled = false;
 static uint32_t touch_startime = 0;
 static uint32_t touch_lasttime = 0;
 static uint16_t touch_start_x = 0;
@@ -31,20 +32,31 @@ void TOUCHPAD_ProcessInterrupt(void)
 	#if (defined(TOUCHPAD_GT911))
 	GT911_Scan();
 	
-	if(touched && (touch_lasttime < (HAL_GetTick() - TOUCHPAD_TIMEOUT)) && ((touch_lasttime - touch_startime) <= TOUCHPAD_CLICK_TIMEOUT))
+	if(touched && !hold_swipe_handled && (touch_lasttime < (HAL_GetTick() - TOUCHPAD_TIMEOUT)) && ((touch_lasttime - touch_startime) <= TOUCHPAD_CLICK_TIMEOUT) && ((touch_lasttime - touch_startime) >= TOUCHPAD_CLICK_THRESHOLD))
 	{
 		LCD_processTouch(touch_end_x, touch_end_y);
 		touched = false;
 	}
-	else if(touched && !hold_touch_handled && (touch_lasttime > (HAL_GetTick() - TOUCHPAD_TIMEOUT)) && ((touch_lasttime - touch_startime) >= TOUCHPAD_HOLD_TIMEOUT))
+	else if(touched && !hold_touch_handled && !hold_swipe_handled && (touch_lasttime > (HAL_GetTick() - TOUCHPAD_TIMEOUT)) && ((touch_lasttime - touch_startime) >= TOUCHPAD_HOLD_TIMEOUT))
 	{
 		hold_touch_handled = true;
 		LCD_processHoldTouch(touch_end_x, touch_end_y);
+	}
+	else if(touched && (touch_lasttime > (HAL_GetTick() - TOUCHPAD_TIMEOUT)))
+	{
+		if(hold_swipe_handled || abs(touch_end_x - touch_start_x) > TOUCHPAD_SWIPE_THRESHOLD_PX || abs(touch_end_y - touch_start_y) > TOUCHPAD_SWIPE_THRESHOLD_PX)
+			if(LCD_processSwipeTouch(touch_start_x, touch_start_y, (touch_end_x - touch_start_x), (touch_end_y - touch_start_y)))
+			{
+				touch_start_x = touch_end_x;
+				touch_start_y = touch_end_y;
+				hold_swipe_handled = true;
+			}
 	}
 	else if(touched && (touch_lasttime < (HAL_GetTick() - TOUCHPAD_TIMEOUT)))
 	{
 		touched = false;
 		hold_touch_handled = false;
+		hold_swipe_handled = false;
 	}
 	#endif
 }

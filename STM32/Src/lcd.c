@@ -833,11 +833,16 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		}
 	}
 	//fft/wtf tap
-	if(((LAY_FFT_FFTWTF_POS_Y + 50) <= y) && (LAY_FFT_PRINT_SIZE >= x) && (LAY_FFT_FFTWTF_HEIGHT >= y))
+	if(((LAY_FFT_FFTWTF_POS_Y + 50) <= y) && (LAY_FFT_PRINT_SIZE >= x) && ((LAY_FFT_FFTWTF_POS_Y + LAY_FFT_FFTWTF_HEIGHT - 50) >= y))
 	{
 		//frequency tap
 		uint32_t newfreq = getFreqOnFFTPosition(x);
+		if (TRX.Fast)
+			newfreq = newfreq / TRX.FRQ_FAST_STEP * TRX.FRQ_FAST_STEP;
+		else
+			newfreq = newfreq / TRX.FRQ_STEP * TRX.FRQ_STEP;
 		TRX_setFrequency(newfreq, CurrentVFO());
+		LCD_UpdateQuery.FreqInfo = true;
 	}
 }
 
@@ -845,6 +850,12 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 {
 	if(TRX.Locked)
 		return;
+	if(LCD_systemMenuOpened)
+	{
+		eventCloseAllSystemMenu();
+		LCD_redraw();
+		return;
+	}
 	for(uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
 		if((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))
@@ -854,4 +865,27 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 			return;
 		}
 	}
+}
+
+bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
+{
+	#pragma unused(dy)
+	if(TRX.Locked)
+		return false;
+	if(LCD_systemMenuOpened)
+		return false;
+	//fft/wtf swipe
+	if(((LAY_FFT_FFTWTF_POS_Y + 50) <= y) && (LAY_FFT_PRINT_SIZE >= x) && ((LAY_FFT_FFTWTF_POS_Y + LAY_FFT_FFTWTF_HEIGHT - 50) >= y))
+	{
+		const uint8_t slowler = 4;
+		uint32_t newfreq = getFreqOnFFTPosition(LAY_FFT_PRINT_SIZE / 2 - dx / slowler);
+		if (TRX.Fast)
+			newfreq = newfreq / TRX.FRQ_FAST_STEP * TRX.FRQ_FAST_STEP;
+		else
+			newfreq = newfreq / TRX.FRQ_STEP * TRX.FRQ_STEP;
+		TRX_setFrequency(newfreq, CurrentVFO());
+		LCD_UpdateQuery.FreqInfo = true;
+		return true;
+	}
+	return false;
 }

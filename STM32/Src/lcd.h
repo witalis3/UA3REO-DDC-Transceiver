@@ -38,6 +38,7 @@ extern void LCD_showError(char text[], bool redraw);
 extern void LCD_redraw(void);
 extern void LCD_processTouch(uint16_t x, uint16_t y);
 extern void LCD_processHoldTouch(uint16_t x, uint16_t y);
+extern bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy);
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
 volatile extern bool LCD_busy;

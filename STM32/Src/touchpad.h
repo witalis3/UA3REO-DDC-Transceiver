@@ -8,8 +8,10 @@
 #endif
 
 #define TOUCHPAD_TIMEOUT 70
+#define TOUCHPAD_CLICK_THRESHOLD 30
 #define TOUCHPAD_CLICK_TIMEOUT 500
 #define TOUCHPAD_HOLD_TIMEOUT 700
+#define TOUCHPAD_SWIPE_THRESHOLD_PX 20
 
 extern void TOUCHPAD_Init(void);
 extern void TOUCHPAD_ProcessInterrupt(void);
