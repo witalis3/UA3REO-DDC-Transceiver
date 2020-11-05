@@ -21,7 +21,7 @@ TargetOutputMedium=Folder Structure
 VariantName=[No Variations]
 VariantScope=1
 CurrentConfigurationName=
-TargetPrinter=Canon LBP2900
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputMedium1=Print Job
 OutputMedium1_Type=Printer
@@ -53,7 +53,7 @@ Configuration2_Name1=OutputConfigurationParameter1
 Configuration2_Item1=BoardEdgeRoutToolDia=2000000|GenerateBoardEdgeRout=False|GenerateDrilledSlotsG85=False|GenerateEIADrillFile=False|GenerateSeparatePlatedNonPlatedFiles=False|NumberOfDecimals=5|NumberOfUnits=2|OptimizeChangeLocationCommands=True|OriginPosition=Relative|Record=DrillView|Units=Imperial|ZeroesMode=SuppressLeadingZeroes
 
 [PublishSettings]
-OutputFilePath2=D:\Dropbox\Develop\Projects\UA3REO\Scheme\EXPERIMENTS\ALTIUM\FRONT-UNIT\Project Outputs for FRONT-UNIT\
+OutputFilePath2=C:\Dropbox\Develop\Projects\WOLF\Scheme\ALTIUM_DESIGNER\FRONT-UNIT\Project Outputs for FRONT-UNIT\
 ReleaseManaged2=1
 OutputBasePath2=Project Outputs for FRONT-UNIT
 OutputPathMedia2=
@@ -68,7 +68,7 @@ OutputFileNameSpecial2=
 OpenOutput2=0
 
 [GeneratedFilesSettings]
-RelativeOutputPath2=D:\Dropbox\Develop\Projects\UA3REO\Scheme\EXPERIMENTS\ALTIUM\FRONT-UNIT\Project Outputs for FRONT-UNIT\
+RelativeOutputPath2=C:\Dropbox\Develop\Projects\WOLF\Scheme\ALTIUM_DESIGNER\FRONT-UNIT\Project Outputs for FRONT-UNIT\
 OpenOutputs2=0
 AddToProject2=1
 TimestampFolder2=0

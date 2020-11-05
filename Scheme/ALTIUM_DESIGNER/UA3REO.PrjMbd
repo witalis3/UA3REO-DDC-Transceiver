@@ -28,7 +28,7 @@ DItemRevisionGUID=
 ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
-OutputPath=
+OutputPath=Project Outputs for UA3REO
 LogFolderPath=
 ManagedProjectGUID=
 IncludeDesignInRelease=0
@@ -426,7 +426,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=ZHWKPHGF
+DocumentUniqueId=NPIILXGI
 
 [Document24]
 DocumentPath=FRONT-UNIT-WIDE\FRONT-UNIT-WIDE.PrjPcb
@@ -461,6 +461,23 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
+
+[Document26]
+DocumentPath=FRONT-UNIT-7INCH\FRONT-UNIT-7INCH.SCHDOC
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=ZHWKPHGF
 
 [Generic_SmartPDF]
 AutoOpenFile=-1
@@ -499,7 +516,7 @@ SCH_HasExpandLogicalToPhysicalSheets=-1
 SaveSettingsToOutJob=-1
 
 [Generic_EDE]
-OutputDir=
+OutputDir=Project Outputs for UA3REO
 
 [OutputGroup1]
 Name=Netlist Outputs
