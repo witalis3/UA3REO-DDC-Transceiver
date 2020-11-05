@@ -482,7 +482,7 @@ ITCM void FFT_printFFT(void)
 	}
 	
 	// display FFT over the waterfall
-	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_WTF_POS_Y + fftHeight));
+	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_FFTWTF_POS_Y, LAY_FFT_PRINT_SIZE - 1, (LAY_FFT_FFTWTF_POS_Y + fftHeight));
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 	{
 		uint8_t grid_line_index = 0;
@@ -560,14 +560,14 @@ ITCM void FFT_printFFT(void)
 					bandmap_line_tmp[(uint16_t)pixel_counter] = region_color;
 		}
 	}
-	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y - 4, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_WTF_POS_Y - 4);
+	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_FFTWTF_POS_Y - 4, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_FFTWTF_POS_Y - 4);
 	for (uint32_t pixel_counter = 0; pixel_counter < LAY_FFT_PRINT_SIZE; pixel_counter++)
 		LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
 
 	// separator and receive band
-	LCDDriver_drawFastHLine(0, (LAY_FFT_WTF_POS_Y - 1), bw_line_start, COLOR_BLACK);
-	LCDDriver_drawFastHLine(bw_line_start, (LAY_FFT_WTF_POS_Y - 1), bw_line_width, COLOR_GREEN);
-	LCDDriver_drawFastHLine((bw_line_start + bw_line_width + 1), LAY_FFT_WTF_POS_Y - 1, (LAY_FFT_PRINT_SIZE - bw_line_start + bw_line_width - 1), COLOR_BLACK);
+	LCDDriver_drawFastHLine(0, (LAY_FFT_FFTWTF_POS_Y - 1), bw_line_start, COLOR_BLACK);
+	LCDDriver_drawFastHLine(bw_line_start, (LAY_FFT_FFTWTF_POS_Y - 1), bw_line_width, COLOR_GREEN);
+	LCDDriver_drawFastHLine((bw_line_start + bw_line_width + 1), LAY_FFT_FFTWTF_POS_Y - 1, (LAY_FFT_PRINT_SIZE - bw_line_start + bw_line_width - 1), COLOR_BLACK);
 
 	// display the waterfall using DMA
 	print_wtf_yindex = 0;
@@ -586,7 +586,7 @@ ITCM void FFT_printWaterfallDMA(void)
 	#ifdef HAS_BTE
 		//move exist lines down with BTE
 		if (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq)
-			LCDDriver_BTE_copyArea(0, LAY_FFT_WTF_POS_Y + fftHeight, 0, LAY_FFT_WTF_POS_Y + fftHeight + 1, LAY_FFT_PRINT_SIZE - 1, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+			LCDDriver_BTE_copyArea(0, LAY_FFT_FFTWTF_POS_Y + fftHeight, 0, LAY_FFT_FFTWTF_POS_Y + fftHeight + 1, LAY_FFT_PRINT_SIZE - 1, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
 	#endif
 	
 	//print waterfall line
@@ -646,7 +646,7 @@ ITCM void FFT_printWaterfallDMA(void)
 				wtf_line_tmp[fft_x] = addColor(wtf_line_tmp[fft_x], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 		
 		// display the line
-		LCDDriver_SetCursorAreaPosition(0, LAY_FFT_WTF_POS_Y + fftHeight + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_WTF_POS_Y + fftHeight + print_wtf_yindex);
+		LCDDriver_SetCursorAreaPosition(0, LAY_FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex);
 		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_line_tmp[0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE);
 		print_wtf_yindex++;
 	}
@@ -720,8 +720,8 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		// 255 0 0
 		// contrast of each of the 3 zones, the total should be 1.0f
 		const float32_t contrast1 = 0.02f;
-		const float32_t contrast2 = 0.35f;
-		const float32_t contrast3 = 0.63f;
+		const float32_t contrast2 = 0.45f;
+		const float32_t contrast3 = 0.53f;
 
 		if (height < getFFTHeight() * contrast1)
 		{
@@ -919,6 +919,11 @@ ITCM static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 	if (pos < 0 || pos >= LAY_FFT_PRINT_SIZE)
 		return -1;
 	return pos;
+}
+
+uint32_t getFreqOnFFTPosition(uint16_t position)
+{
+	return (uint32_t)((int32_t)CurrentVFO()->Freq + (int32_t)(-((float32_t)LAY_FFT_PRINT_SIZE * hz_in_pixel / 2) + (float32_t)position * (hz_in_pixel / (float32_t)TRX.FFT_Zoom)));
 }
 
 ITCM static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b)

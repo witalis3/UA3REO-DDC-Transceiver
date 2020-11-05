@@ -822,13 +822,22 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		LCD_redraw();
 		return;
 	}
+	//buttons
 	for(uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
 		if((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))
 		{
 			if(TouchpadButton_handlers[i].clickHandler != NULL)
 				TouchpadButton_handlers[i].clickHandler();
+			return;
 		}
+	}
+	//fft/wtf tap
+	if(((LAY_FFT_FFTWTF_POS_Y + 50) <= y) && (LAY_FFT_PRINT_SIZE >= x) && (LAY_FFT_FFTWTF_HEIGHT >= y))
+	{
+		//frequency tap
+		uint32_t newfreq = getFreqOnFFTPosition(x);
+		TRX_setFrequency(newfreq, CurrentVFO());
 	}
 }
 
@@ -842,6 +851,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 		{
 			if(TouchpadButton_handlers[i].holdHandler != NULL)
 				TouchpadButton_handlers[i].holdHandler();
+			return;
 		}
 	}
 }
