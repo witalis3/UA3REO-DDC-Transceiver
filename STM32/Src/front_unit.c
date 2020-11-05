@@ -16,42 +16,18 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 
-static void FRONTPANEL_BUTTONHANDLER_DOUBLE(void);
-static void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(void);
-static void FRONTPANEL_BUTTONHANDLER_AsB(void);
-static void FRONTPANEL_BUTTONHANDLER_ArB(void);
-static void FRONTPANEL_BUTTONHANDLER_TUNE(void);
-static void FRONTPANEL_BUTTONHANDLER_PRE(void);
-static void FRONTPANEL_BUTTONHANDLER_ATT(void);
-static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void);
-static void FRONTPANEL_BUTTONHANDLER_ANT(void);
-static void FRONTPANEL_BUTTONHANDLER_PGA(void);
-static void FRONTPANEL_BUTTONHANDLER_FAST(void);
 static void FRONTPANEL_BUTTONHANDLER_MODE_P(void);
 static void FRONTPANEL_BUTTONHANDLER_MODE_N(void);
 static void FRONTPANEL_BUTTONHANDLER_BAND_P(void);
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(void);
-static void FRONTPANEL_BUTTONHANDLER_RF_POWER(void);
 static void FRONTPANEL_BUTTONHANDLER_SQUELCH(void);
-static void FRONTPANEL_BUTTONHANDLER_AGC(void);
-static void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(void);
 static void FRONTPANEL_BUTTONHANDLER_WPM(void);
 static void FRONTPANEL_BUTTONHANDLER_KEYER(void);
 static void FRONTPANEL_BUTTONHANDLER_SCAN(void);
 static void FRONTPANEL_BUTTONHANDLER_REC(void);
 static void FRONTPANEL_BUTTONHANDLER_PLAY(void);
-static void FRONTPANEL_BUTTONHANDLER_DNR(void);
-static void FRONTPANEL_BUTTONHANDLER_NB(void);
-static void FRONTPANEL_BUTTONHANDLER_BW(void);
-static void FRONTPANEL_BUTTONHANDLER_HPF(void);
-static void FRONTPANEL_BUTTONHANDLER_NOTCH(void);
-static void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(void);
 static void FRONTPANEL_BUTTONHANDLER_SHIFT(void);
 static void FRONTPANEL_BUTTONHANDLER_CLAR(void);
-static void FRONTPANEL_BUTTONHANDLER_LOCK(void);
-static void FRONTPANEL_BUTTONHANDLER_SERVICES(void);
-static void FRONTPANEL_BUTTONHANDLER_MENU(void);
-static void FRONTPANEL_BUTTONHANDLER_MUTE(void);
 static void FRONTPANEL_BUTTONHANDLER_STEP(void);
 static void FRONTPANEL_BUTTONHANDLER_BANDMAP(void);
 
@@ -209,6 +185,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	}
 	TRX_setFrequency(newfreq, vfo);
 	LCD_UpdateQuery.FreqInfo = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 }
 
@@ -397,14 +374,14 @@ void FRONTPANEL_Process(void)
 	SPI_process = false;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_DOUBLE(void)
+void FRONTPANEL_BUTTONHANDLER_DOUBLE(void)
 {
 	TRX.Dual_RX = !TRX.Dual_RX;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitAudioFilters = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(void)
+void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(void)
 {
 	if (!TRX.Dual_RX)
 		return;
@@ -417,7 +394,7 @@ static void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(void)
 	NeedReinitAudioFilters = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
+void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
 {
 	TRX_TemporaryMute();
 	TRX.current_vfo = !TRX.current_vfo;
@@ -433,7 +410,7 @@ static void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
 	LCD_redraw();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_TUNE(void)
+void FRONTPANEL_BUTTONHANDLER_TUNE(void)
 {
 	TRX_Tune = !TRX_Tune;
 	TRX_ptt_hard = TRX_Tune;
@@ -443,7 +420,7 @@ static void FRONTPANEL_BUTTONHANDLER_TUNE(void)
 	TRX_Restart_Mode();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_PRE(void)
+void FRONTPANEL_BUTTONHANDLER_PRE(void)
 {
 	TRX_LNA_hasIMD = false;
 	TRX.LNA = !TRX.LNA;
@@ -458,7 +435,7 @@ static void FRONTPANEL_BUTTONHANDLER_PRE(void)
 	resetVAD();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_ATT(void)
+void FRONTPANEL_BUTTONHANDLER_ATT(void)
 {
 	TRX.ATT = !TRX.ATT;
 
@@ -474,7 +451,7 @@ static void FRONTPANEL_BUTTONHANDLER_ATT(void)
 	resetVAD();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
+void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 {
 	TRX.ATT_DB += TRX.ATT_STEP;
 	if (TRX.ATT_DB > 31.0f)
@@ -492,7 +469,7 @@ static void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 	resetVAD();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_ANT(void)
+void FRONTPANEL_BUTTONHANDLER_ANT(void)
 {
 	TRX.ANT = !TRX.ANT;
 	TRX_LNA_hasIMD = false;
@@ -506,7 +483,7 @@ static void FRONTPANEL_BUTTONHANDLER_ANT(void)
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_PGA(void)
+void FRONTPANEL_BUTTONHANDLER_PGA(void)
 {
 	if (!TRX.ADC_Driver && !TRX.ADC_PGA)
 	{
@@ -539,7 +516,29 @@ static void FRONTPANEL_BUTTONHANDLER_PGA(void)
 	resetVAD();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_FAST(void)
+void FRONTPANEL_BUTTONHANDLER_PGA_ONLY(void)
+{
+	TRX.ADC_PGA = !TRX.ADC_PGA;
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	if (band > 0)
+		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+	resetVAD();
+}
+
+void FRONTPANEL_BUTTONHANDLER_DRV_ONLY(void)
+{
+	TRX.ADC_Driver = !TRX.ADC_Driver;
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	if (band > 0)
+		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+	resetVAD();
+}
+
+void FRONTPANEL_BUTTONHANDLER_FAST(void)
 {
 	TRX.Fast = !TRX.Fast;
 	LCD_UpdateQuery.TopButtons = true;
@@ -673,7 +672,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(void)
 	TRX_ScanMode = false;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_RF_POWER(void)
+void FRONTPANEL_BUTTONHANDLER_RF_POWER(void)
 {
 	if (!LCD_systemMenuOpened)
 	{
@@ -688,7 +687,7 @@ static void FRONTPANEL_BUTTONHANDLER_RF_POWER(void)
 	LCD_redraw();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_AGC(void)
+void FRONTPANEL_BUTTONHANDLER_AGC(void)
 {
 	CurrentVFO()->AGC = !CurrentVFO()->AGC;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
@@ -698,7 +697,7 @@ static void FRONTPANEL_BUTTONHANDLER_AGC(void)
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(void)
+void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(void)
 {
 	if (!LCD_systemMenuOpened)
 	{
@@ -773,7 +772,7 @@ static void FRONTPANEL_BUTTONHANDLER_STEP(void)
 	LCD_redraw();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_DNR(void)
+void FRONTPANEL_BUTTONHANDLER_DNR(void)
 {
 	TRX_TemporaryMute();
 	CurrentVFO()->DNR = !CurrentVFO()->DNR;
@@ -784,14 +783,14 @@ static void FRONTPANEL_BUTTONHANDLER_DNR(void)
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_NB(void)
+void FRONTPANEL_BUTTONHANDLER_NB(void)
 {
 	TRX.NOISE_BLANKER = !TRX.NOISE_BLANKER;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_BW(void)
+void FRONTPANEL_BUTTONHANDLER_BW(void)
 {
 	if (!LCD_systemMenuOpened)
 	{
@@ -813,7 +812,7 @@ static void FRONTPANEL_BUTTONHANDLER_BW(void)
 	LCD_redraw();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_HPF(void)
+void FRONTPANEL_BUTTONHANDLER_HPF(void)
 {
 	if (!LCD_systemMenuOpened)
 	{
@@ -831,7 +830,7 @@ static void FRONTPANEL_BUTTONHANDLER_HPF(void)
 	LCD_redraw();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
+void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
 {
 	if (TRX.current_vfo)
 		memcpy(&TRX.VFO_A, &TRX.VFO_B, sizeof TRX.VFO_B);
@@ -839,10 +838,11 @@ static void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
 		memcpy(&TRX.VFO_B, &TRX.VFO_A, sizeof TRX.VFO_B);
 	
 	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.FreqInfo = true;
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_NOTCH(void)
+void FRONTPANEL_BUTTONHANDLER_NOTCH(void)
 {
 	TRX_TemporaryMute();
 	
@@ -862,10 +862,11 @@ static void FRONTPANEL_BUTTONHANDLER_NOTCH(void)
 		CurrentVFO()->AutoNotchFilter = false;
 
 	LCD_UpdateQuery.StatusInfoGUI = true;
+	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(void)
+void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(void)
 {
 	if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
 		CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
@@ -875,6 +876,8 @@ static void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(void)
 	else
 		CurrentVFO()->ManualNotchFilter = false;
 
+	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitNotch = true;
 	NeedSaveSettings = true;
 }
@@ -893,7 +896,7 @@ static void FRONTPANEL_BUTTONHANDLER_CLAR(void)
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_LOCK(void)
+void FRONTPANEL_BUTTONHANDLER_LOCK(void)
 {
 	if (!LCD_systemMenuOpened)
 		TRX.Locked = !TRX.Locked;
@@ -906,7 +909,7 @@ static void FRONTPANEL_BUTTONHANDLER_LOCK(void)
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_MENU(void)
+void FRONTPANEL_BUTTONHANDLER_MENU(void)
 {
 	if (!LCD_systemMenuOpened)
 		LCD_systemMenuOpened = true;
@@ -915,7 +918,7 @@ static void FRONTPANEL_BUTTONHANDLER_MENU(void)
 	LCD_redraw();
 }
 
-static void FRONTPANEL_BUTTONHANDLER_MUTE(void)
+void FRONTPANEL_BUTTONHANDLER_MUTE(void)
 {
 	TRX_Mute = !TRX_Mute;
 	LCD_UpdateQuery.TopButtons = true;
@@ -944,7 +947,7 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_P
 	return mcp3008_value;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_SERVICES(void)
+void FRONTPANEL_BUTTONHANDLER_SERVICES(void)
 {
 	if (!LCD_systemMenuOpened)
 	{

@@ -63,7 +63,6 @@ void GT911_ReadFirmwareVersion(void)
 
 void GT911_Scan(void)
 {
-	char str[64] = {0};
 	uint8_t buf[41] ={0};
   uint8_t Clearbuf = 0;
 	
@@ -100,7 +99,7 @@ void GT911_Scan(void)
 			GT911.X[0] = (uint16_t)((uint16_t)buf[3] << 8) + buf[2];
 			GT911.Y[0] = (uint16_t)(480 - (((uint16_t)buf[5] << 8) + buf[4]));
 			GT911.S[0] = (uint16_t)((uint16_t)buf[7] << 8) + buf[6];
-			/*
+			
 			GT911.Touchkeytrackid[1] = buf[9];
 			GT911.X[1] = (uint16_t)((uint16_t)buf[11] << 8) + buf[10];
 			GT911.Y[1] = (uint16_t)(480 - (((uint16_t)buf[13] << 8) + buf[12]));
@@ -120,16 +119,21 @@ void GT911_Scan(void)
 			GT911.X[4] = (uint16_t)((uint16_t)buf[35] << 8) + buf[34];
 			GT911.Y[4] = (uint16_t)(480 - (((uint16_t)buf[37] << 8) + buf[36]));
 			GT911.S[4] = (uint16_t)((uint16_t)buf[39] << 8) + buf[38];
-			*/
 			
-			if(GT911.Y[0]<10) GT911.Y[0]=10;
-			if(GT911.Y[0]>470) GT911.Y[0]=470;
-			GT911.Y[0] = 480 - GT911.Y[0];
-			if(GT911.X[0]<10) GT911.X[0]=10;
-			if(GT911.X[0]>790) GT911.X[0]=790;	
+			for(uint8_t touch_id = 0; touch_id < GT911.TouchCount; touch_id++)
+			{
+				if(GT911.Y[touch_id]<10) GT911.Y[touch_id]=10;
+				if(GT911.Y[touch_id]>470) GT911.Y[touch_id]=470;
+				GT911.Y[touch_id] = 480 - GT911.Y[touch_id];
+				if(GT911.X[touch_id]<10) GT911.X[touch_id]=10;
+				if(GT911.X[touch_id]>790) GT911.X[touch_id]=790;	
 
-			sprintf(str, "%d,%d ", GT911.X[0],GT911.Y[0]);
-			sendToDebug_strln(str);
+				//char str[64] = {0};
+				//sprintf(str, "%d,%d - %d", GT911.X[touch_id], GT911.Y[touch_id], GT911.Touchkeytrackid[touch_id]);
+				//sendToDebug_strln(str);
+				
+				TOUCHPAD_processTouch(GT911.X[touch_id], GT911.Y[touch_id]);
+			}
 		}
 	}
 }
