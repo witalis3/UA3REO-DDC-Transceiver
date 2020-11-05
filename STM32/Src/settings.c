@@ -209,11 +209,7 @@ void LoadSettings(bool clear)
 		TRX.MIC_EQ_LOW = 0;				 // Mic EQ (Low)
 		TRX.MIC_EQ_MID = 0;				 // Mic Equalizer (Mids)
 		TRX.MIC_EQ_HIG = 0;				 // Mic EQ (high)
-		#ifdef LAY_800x480
-		TRX.FFT_Speed = 5;				 // FFT Speed
-		#else
 		TRX.FFT_Speed = 3;				 // FFT Speed
-		#endif
 		TRX.Beeper = true;				 //Keyboard beeper
 		TRX.FFT_Background = true;	//FFT gradient background
 		TRX.VAD_Squelch = false;	//SSB Squelch on VAD technology

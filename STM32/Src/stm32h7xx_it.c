@@ -544,18 +544,15 @@ void TIM6_DAC_IRQHandler(void)
 		//Process Scaner
 		if(TRX_ScanMode)
 			TRX_ProcessScanMode();
-  }
-	
-	if ((ms10_counter % 5) == 0) // every 50 msec
-	{
+		
 		// reset error flags
 		WM8731_Buffer_underrun = false;
 		FPGA_Buffer_underrun = false;
 		RX_USB_AUDIO_underrun = false;
-		
-		LCD_UpdateQuery.StatusInfoBar = true;
-		LCD_doEvents();                    // update information on LCD
-	}
+  }
+	
+	LCD_UpdateQuery.StatusInfoBar = true;
+	LCD_doEvents();                    // update information on LCD
 	
 	if ((ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
 	{

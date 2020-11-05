@@ -906,6 +906,7 @@ void FRONTPANEL_BUTTONHANDLER_LOCK(void)
 		LCD_redraw();
 	}
 	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.StatusInfoBar = true;
 	NeedSaveSettings = true;
 }
 

@@ -602,6 +602,11 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		sprintf(buff, "FFT:6kHz ");
 	LCDDriver_printText(buff, LAY_STATUS_LABEL_FFT_BW_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_FFT_BW_Y_OFFSET, LAY_STATUS_LABELS_BW_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 	
+	#if (defined(LAY_800x480))
+	//LOCK
+	LCDDriver_printText("LOCK", LAY_STATUS_LABEL_LOCK_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_LOCK_Y_OFFSET, TRX.Locked ? LAY_STATUS_LABEL_ACTIVE_COLOR : LAY_STATUS_LABEL_INACTIVE_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
+	#endif
+	
 	//ERRORS LABELS
 	LCDDriver_Fill_RectWH(LAY_STATUS_ERR_OFFSET_X, LAY_STATUS_ERR_OFFSET_Y, LAY_STATUS_ERR_WIDTH, LAY_STATUS_ERR_HEIGHT, BACKGROUND_COLOR);
 	if (TRX_ADC_OTR && !TRX_on_TX())
@@ -809,6 +814,8 @@ void LCD_showError(char text[], bool redraw)
 
 void LCD_processTouch(uint16_t x, uint16_t y)
 {
+	if(TRX.Locked)
+		return;
 	if(LCD_systemMenuOpened)
 	{
 		eventCloseAllSystemMenu();
@@ -827,6 +834,8 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 
 void LCD_processHoldTouch(uint16_t x, uint16_t y)
 {
+	if(TRX.Locked)
+		return;
 	for(uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
 		if((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))
