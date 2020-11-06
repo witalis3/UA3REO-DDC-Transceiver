@@ -28,6 +28,7 @@ static uint32_t LCD_last_showed_freq = 0;
 static uint16_t LCD_last_showed_freq_mhz = 9999;
 static uint16_t LCD_last_showed_freq_khz = 9999;
 static uint16_t LCD_last_showed_freq_hz = 9999;
+#if (defined(LAY_800x480))
 static char LCD_freq_string_hz_B[6] = {0};
 static char LCD_freq_string_khz_B[6] = {0};
 static char LCD_freq_string_mhz_B[6] = {0};
@@ -35,6 +36,7 @@ static uint32_t LCD_last_showed_freq_B = 0;
 static uint16_t LCD_last_showed_freq_mhz_B = 9999;
 static uint16_t LCD_last_showed_freq_khz_B = 9999;
 static uint16_t LCD_last_showed_freq_hz_B = 9999;
+#endif
 
 static float32_t LCD_last_s_meter = 1.0f;
 static uint32_t Time;
@@ -50,12 +52,14 @@ static uint8_t TouchpadButton_handlers_count = 0;
 
 static void printInfoSmall(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
-static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, void (*clickHandler)(void), void (*holdHandler)(void));
 static void LCD_displayFreqInfo(bool redraw);
 static void LCD_displayTopButtons(bool redraw);
 static void LCD_displayStatusInfoBar(bool redraw);
 static void LCD_displayStatusInfoGUI(void);
 static void LCD_displayTextBar(void);
+#if (defined(LAY_800x480))
+static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, void (*clickHandler)(void), void (*holdHandler)(void));
+#endif
 
 void LCD_Init(void)
 {
@@ -134,10 +138,11 @@ static void LCD_displayBottomButtons(bool redraw)
 		return;
 	}
 	LCD_busy = true;
+	
+	#if (defined(LAY_800x480))
 	if (redraw)
 		LCDDriver_Fill_RectWH(0, BOTTOM_BUTTONS_BLOCK_TOP, LCD_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, BACKGROUND_COLOR);
 	
-	#if (defined(LAY_800x480))
 	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 0, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "A / B", true, false, FRONTPANEL_BUTTONHANDLER_AsB, FRONTPANEL_BUTTONHANDLER_DOUBLE);
 	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 1, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "B=A", true, false, FRONTPANEL_BUTTONHANDLER_ArB, FRONTPANEL_BUTTONHANDLER_DOUBLEMODE);
 	printButton(BOTTOM_BUTTONS_ONE_WIDTH * 2, BOTTOM_BUTTONS_BLOCK_TOP, BOTTOM_BUTTONS_ONE_WIDTH, BOTTOM_BUTTONS_BLOCK_HEIGHT, "TUNE", true, false, FRONTPANEL_BUTTONHANDLER_TUNE, NULL);
@@ -158,7 +163,11 @@ static void LCD_displayFreqInfo(bool redraw)
 { // display the frequency on the screen
 	if (LCD_systemMenuOpened)
 		return;
-	if (!redraw && (LCD_last_showed_freq == CurrentVFO()->Freq) && (LCD_last_showed_freq_B == SecondaryVFO()->Freq))
+	if (!redraw && (LCD_last_showed_freq == CurrentVFO()->Freq)
+#if (defined(LAY_800x480))
+	&& (LCD_last_showed_freq_B == SecondaryVFO()->Freq)
+#endif
+	)
 		return;
 	if (LCD_busy)
 	{
@@ -757,9 +766,9 @@ static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, c
 	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2 - 1, active ? text_color : inactive_color, back_color, (GFXfont *)&FreeSans9pt7b);
 }
 
+#if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, void (*clickHandler)(void), void (*holdHandler)(void))
 {
-	#if (defined(LAY_800x480))
 		uint16_t x1_text, y1_text, w_text, h_text;
 		uint16_t x_act = x + LAY_BUTTON_PADDING;
 		uint16_t y_act = y + LAY_BUTTON_PADDING;
@@ -797,8 +806,8 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 			TouchpadButton_handlers[TouchpadButton_handlers_count].holdHandler = holdHandler;
 			TouchpadButton_handlers_count++;
 		}
-	#endif
 }
+#endif
 
 void LCD_showError(char text[], bool redraw)
 {

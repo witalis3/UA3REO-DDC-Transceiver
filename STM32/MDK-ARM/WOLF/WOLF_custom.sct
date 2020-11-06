@@ -39,52 +39,6 @@ LR_IROM1 0x08000000 0x00200000  {    ; load region size_region
    arm_cmplx_mag_squared_f32.o
    arm_cmplx_mag_f32.o
    arm_add_f32.o
-   
-   strcpy.o
-   h1_alloc.o
-   h1_free.o
-   noretval__2sprintf.o
-   _printf_*
-   atoi.o
-   strchr.o
-   strstr.o
-   memcmp.o
-   strlen.o
-   strcat.o
-   rt_mem*
-   strncpy.o
-   strcmpv7m_pel.o
-   heapauxi.o
-   __printf_flags_ss_wp.o
-   rt_heap_descriptor_intlibspace.o
-   rt_errno_addr_intlibspace.o
-   hguard.o
-   init_alloc.o
-   h1_init.o
-   _rserrno.o
-   _sputc.o
-   strtol.o
-   _c16rtomb.o
-   libspace.o
-   rt_ctype_table.o
-   rt_locale_intlibspace.o
-   maybetermalloc1.o
-   h1_extend.o
-   lludiv10.o
-   _strtoul.o
-   bigflt0.o
-   defsig_rtmem_outer.o
-   use_no_semi.o
-   indicate_semi.o
-   sys_stackheap_outer.o
-   _chval.o
-   exit.o
-   defsig_exit.o
-   defsig_rtmem_inner.o
-   sys_exit.o
-   defsig_general.o
-   sys_wrch.o
-   lludivv7m.o
   }
   RW_IRAM1 0x20000000 0x00020000  {  ;128kb DTCM 
    .ANY (+RW +ZI)

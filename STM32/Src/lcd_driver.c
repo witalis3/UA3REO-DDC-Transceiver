@@ -19,7 +19,7 @@ uint16_t LCDDriver_GetCurrentXOffset(void)
 //Text printing functions
 ITCM void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
 {
-	uint8_t line;
+	uint8_t line = 0;
 	if ((x >= LCD_WIDTH) ||			// Clip right
 		(y >= LCD_HEIGHT) ||		// Clip bottom
 		((x + 6 * size - 1) < 0) || // Clip left
@@ -29,7 +29,6 @@ ITCM void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t c
 	if (!_cp437 && (c >= 176))
 		c++;																   // Handle 'classic' charset behavior
 	LCDDriver_SetCursorAreaPosition(x, y, x + 6 * size - 1, y + 8 * size - 1); //char area
-
 	for (int8_t j = 0; j < 8; j++)
 	{											//y line out
 		for (int8_t s_y = 0; s_y < size; s_y++) //y size scale

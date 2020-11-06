@@ -587,10 +587,18 @@ ITCM void FFT_printWaterfallDMA(void)
 		//move exist lines down with BTE
 		if (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq)
 			LCDDriver_BTE_copyArea(0, LAY_FFT_FFTWTF_POS_Y + fftHeight, 0, LAY_FFT_FFTWTF_POS_Y + fftHeight + 1, LAY_FFT_PRINT_SIZE - 1, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+	#else
+		//wtf area
+		if(print_wtf_yindex == 0)
+			LCDDriver_SetCursorAreaPosition(0, LAY_FFT_FFTWTF_POS_Y + fftHeight, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_FFTWTF_POS_Y + fftHeight + (uint16_t)(wtfHeight - cwdecoder_offset) - 1);
 	#endif
 	
 	//print waterfall line
-	if ((print_wtf_yindex < (wtfHeight - cwdecoder_offset) && lastWTFFreq != currentFFTFreq) ||  (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq))
+	#ifdef HAS_BTE
+		if ((print_wtf_yindex < (wtfHeight - cwdecoder_offset) && lastWTFFreq != currentFFTFreq) ||  (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq))
+	#else
+		if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
+	#endif
 	{
 		// calculate offset
 		int32_t freq_diff = (int32_t)(((float32_t)((int32_t)currentFFTFreq - (int32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)TRX.FFT_Zoom);
@@ -646,7 +654,9 @@ ITCM void FFT_printWaterfallDMA(void)
 				wtf_line_tmp[fft_x] = addColor(wtf_line_tmp[fft_x], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 		
 		// display the line
+		#ifdef HAS_BTE
 		LCDDriver_SetCursorAreaPosition(0, LAY_FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex);
+		#endif
 		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_line_tmp[0], LCD_FSMC_DATA_ADDR, LAY_FFT_PRINT_SIZE);
 		print_wtf_yindex++;
 	}

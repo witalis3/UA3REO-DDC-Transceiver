@@ -185,7 +185,6 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	}
 	TRX_setFrequency(newfreq, vfo);
 	LCD_UpdateQuery.FreqInfo = true;
-	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 }
 

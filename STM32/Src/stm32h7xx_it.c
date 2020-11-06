@@ -507,11 +507,9 @@ void TIM6_DAC_IRQHandler(void)
 	RF_UNIT_UpdateState(false);
 	
 	// check touchpad events
+	#ifdef HAS_TOUCHPAD
 	TOUCHPAD_ProcessInterrupt();
-	
-	//Redraw freq fast
-	if(LCD_UpdateQuery.FreqInfo)
-		LCD_doEvents();
+	#endif
 	
 	if ((ms10_counter % 10) == 0) // every 100ms
   {
@@ -549,10 +547,18 @@ void TIM6_DAC_IRQHandler(void)
 		WM8731_Buffer_underrun = false;
 		FPGA_Buffer_underrun = false;
 		RX_USB_AUDIO_underrun = false;
+		
+		//update info labels
+		LCD_UpdateQuery.StatusInfoBar = true;
   }
 	
-	LCD_UpdateQuery.StatusInfoBar = true;
-	LCD_doEvents();                    // update information on LCD
+	if ((ms10_counter % 3) == 0) // every 30ms
+	{
+		// update information on LCD
+		LCD_doEvents();
+	}
+	else if(LCD_UpdateQuery.FreqInfo) //Redraw freq fast
+		LCD_doEvents();
 	
 	if ((ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
 	{
