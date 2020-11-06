@@ -63,7 +63,7 @@ void initAudioProcessor(void)
 }
 
 // start audio processor for RX
-void processRxAudio(void)
+ITCM void processRxAudio(void)
 {
 	if (!Processor_NeedRXBuffer)
 		return;
@@ -454,7 +454,7 @@ void processRxAudio(void)
 }
 
 // start audio processor for TX
-void processTxAudio(void)
+ITCM void processTxAudio(void)
 {
 	if (!Processor_NeedTXBuffer)
 		return;
@@ -797,7 +797,7 @@ void processTxAudio(void)
 }
 
 // Hilbert filter for phase shift of signals
-static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
@@ -812,7 +812,7 @@ static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // Low-pass filter for I and Q
-static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
@@ -833,7 +833,7 @@ static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // LPF filter for I
-static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
@@ -852,7 +852,7 @@ static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // HPF filter for I
-static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
@@ -871,7 +871,7 @@ static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // notch filter
-static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
@@ -896,7 +896,7 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // RX Equalizer
-static void doRX_EQ(uint16_t size)
+ITCM static void doRX_EQ(uint16_t size)
 {
 	if (TRX.RX_EQ_LOW != 0)
 		arm_biquad_cascade_df2T_f32(&EQ_RX_LOW_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, size);
@@ -909,7 +909,7 @@ static void doRX_EQ(uint16_t size)
 }
 
 // Equalizer microphone
-static void doMIC_EQ(uint16_t size)
+ITCM static void doMIC_EQ(uint16_t size)
 {
 	if (TRX.MIC_EQ_LOW != 0)
 		arm_biquad_cascade_df2T_f32(&EQ_MIC_LOW_FILTER, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
@@ -920,7 +920,7 @@ static void doMIC_EQ(uint16_t size)
 }
 
 // Digital Noise Reduction
-static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
@@ -941,7 +941,7 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // automatic gain control
-static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 		DoRxAGC(FPGA_Audio_Buffer_RX1_I_tmp, size, rx_id);
@@ -950,7 +950,7 @@ static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // impulse noise suppressor
-static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (!TRX.NOISE_BLANKER)
 		return;
@@ -967,7 +967,7 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // s-meter
-static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	// Prepare data to calculate s-meter
 	float32_t i = 0;
@@ -979,7 +979,7 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // copy I to Q channel
-static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	// Double channel I-> Q
 	if (rx_id == AUDIO_RX1)
@@ -989,7 +989,7 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // FM demodulator
-static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	float32_t *lpf_prev = &DFM_RX1_lpf_prev;
 	float32_t *hpf_prev_a = &DFM_RX1_hpf_prev_a;
@@ -1095,7 +1095,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // FM modulator
-static void ModulateFM(uint16_t size)
+ITCM static void ModulateFM(uint16_t size)
 {
 	static float32_t modulation = (float32_t)TRX_SAMPLERATE;
 	static float32_t hpf_prev_a = 0;
@@ -1138,7 +1138,7 @@ static void ModulateFM(uint16_t size)
 }
 
 // voice activity detector
-static void doVAD(uint16_t size)
+ITCM static void doVAD(uint16_t size)
 {
 	for (uint32_t block = 0; block < (size / VAD_BLOCK_SIZE); block++)
 		processVAD(FPGA_Audio_Buffer_RX1_I_tmp + (block * VAD_BLOCK_SIZE));
