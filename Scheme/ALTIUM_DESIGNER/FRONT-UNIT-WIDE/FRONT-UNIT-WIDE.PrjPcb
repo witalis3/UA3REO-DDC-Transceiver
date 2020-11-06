@@ -103,7 +103,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=
+DocumentUniqueId=ZHWKPHGF
 
 [Document5]
 DocumentPath=FRONT-UNIT-WIDE.SchLib
@@ -120,11 +120,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=
-
-[GeneratedDocument1]
-DocumentPath=Project Outputs for FRONT-UNIT-WIDE\Design Rule Check - FRONT-UNIT-WIDE.html
-DItemRevisionGUID=
+DocumentUniqueId=IGTQOATL
 
 [Configuration1]
 Name=Sources
