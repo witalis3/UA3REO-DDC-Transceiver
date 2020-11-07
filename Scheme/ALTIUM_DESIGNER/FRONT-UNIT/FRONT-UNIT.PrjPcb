@@ -120,7 +120,11 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=ZHWKPHGF
+DocumentUniqueId=NPIILXGI
+
+[GeneratedDocument1]
+DocumentPath=Project Outputs for FRONT-UNIT\Design Rule Check - FRONT-UNIT.html
+DItemRevisionGUID=
 
 [Configuration1]
 Name=Sources
