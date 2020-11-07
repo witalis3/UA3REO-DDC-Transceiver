@@ -18,7 +18,7 @@
           <Vendor>STMicroelectronics</Vendor>
           <PackID>Keil.STM32H7xx_DFP.2.6.0</PackID>
           <PackURL>https://www.keil.com/pack/</PackURL>
-          <Cpu>IRAM(0x20000000-0x2001FFFF) IRAM2(0x24000000-0x2407FFFF) IROM(0x8000000-0x81FFFFF)                                                        CLOCK(12000000) FPU3(DFPU) CPUTYPE("Cortex-M7") ELITTLE</Cpu>
+          <Cpu>IRAM(0x20000000-0x2001FFFF) IRAM2(0x24000000-0x2407FFFF) IROM(0x8000000-0x81FFFFF)                                                         CLOCK(12000000) FPU3(DFPU) CPUTYPE("Cortex-M7") ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll></FlashDriverDll>
@@ -339,7 +339,7 @@
               <MiscControls>-Wno-float-equal -Wno-padded -Wno-implicit-float-conversion -Wno-gnu-compound-literal-initializer -Wno-cast-qual -Wno-implicit-fallthrough -Wno-cast-align -Wno-pedantic -Wno-missing-noreturn -Wno-sign-conversion -Wno-date-time</MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                                                                                                                                                                                                                                                                                                                                    ../Drivers/STM32H7xx_HAL_Driver/Inc;                                                                                                                                                                                                                                                                                                                                                    ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                                                                                                                                                                                                                                                                                                                                                    ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                                                                                                                                                                                                                                                                                                                                                    ../Drivers/CMSIS/Include;                                                                                                                                                                                                                                                                                                                                                    ..\USBDevice;                                                                                                                                                                                                                                                                                                                                                    ..\Src</IncludePath>
+              <IncludePath>../Inc;                                                                                                                                                                                                                                                                                                                                                     ../Drivers/STM32H7xx_HAL_Driver/Inc;                                                                                                                                                                                                                                                                                                                                                     ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                                                                                                                                                                                                                                                                                                                                                     ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                                                                                                                                                                                                                                                                                                                                                     ../Drivers/CMSIS/Include;                                                                                                                                                                                                                                                                                                                                                     ..\USBDevice;                                                                                                                                                                                                                                                                                                                                                     ..\Src;../Middlewares/Third_Party/FatFs/src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -472,6 +472,11 @@
               <FileName>decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\decoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>fatfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Src/fatfs.c</FilePath>
             </File>
             <File>
               <FileName>fft.c</FileName>
@@ -752,6 +757,11 @@
               <FileName>usbd_ua3reo.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\usbd_ua3reo.h</FilePath>
+            </File>
+            <File>
+              <FileName>user_diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Src/user_diskio.c</FilePath>
             </File>
             <File>
               <FileName>vad.c</FileName>
@@ -1062,6 +1072,36 @@
               <FileName>usbd_ioreq.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\USBDevice\usbd_ioreq.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Middlewares/FatFs</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Middlewares/Third_Party/FatFs/src/diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Middlewares/Third_Party/FatFs/src/ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff_gen_drv.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Middlewares/Third_Party/FatFs/src/ff_gen_drv.c</FilePath>
+            </File>
+            <File>
+              <FileName>syscall.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Middlewares/Third_Party/FatFs/src/option/syscall.c</FilePath>
+            </File>
+            <File>
+              <FileName>ccsbcs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c</FilePath>
             </File>
           </Files>
         </Group>
