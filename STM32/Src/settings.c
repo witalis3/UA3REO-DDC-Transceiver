@@ -139,6 +139,7 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
 			TRX.BANDS_SAVED_SETTINGS[i].DNR = false;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
+			TRX.BANDS_SAVED_SETTINGS[i].AutoGain_Stage = 6;
 		}
 		TRX.RF_Filters = true;	  // LPF / HPF / BPF
 		#ifdef LAY_800x480

@@ -51,7 +51,7 @@ volatile bool TRX_DAC_HP2 = false;
 volatile bool TRX_DAC_X4 = false;
 volatile bool TRX_DCDC_Freq = false;
 static uint_fast8_t autogain_wait_reaction = 0;	  // timer for waiting for a reaction from changing the ATT / PRE modes
-volatile uint_fast8_t TRX_AutoGain_Stage = 0;			  // stage of working out the amplification corrector
+volatile uint8_t TRX_AutoGain_Stage = 0;			  // stage of working out the amplification corrector
 static uint32_t KEYER_symbol_start_time = 0;	  // start time of the automatic key character
 static bool KEYER_symbol_status = false;		  // status (signal or period) of the automatic key symbol
 volatile float32_t TRX_STM32_VREF = 3.3f;		  // voltage on STM32
@@ -64,7 +64,7 @@ volatile uint32_t TRX_Temporary_Mute_StartTime = 0;
 uint32_t TRX_freq_phrase = 0;
 uint32_t TRX_freq_phrase2 = 0;
 uint32_t TRX_freq_phrase_tx = 0;
-volatile int16_t TRX_RF_Temperature = 0.0f;
+volatile float32_t TRX_RF_Temperature = 0.0f;
 volatile bool TRX_ScanMode = false;
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
@@ -444,7 +444,7 @@ void TRX_DoAutoGain(void)
 				TRX_AutoGain_Stage -= 3; // too much gain, go back one step
 				skip_cycles = SKIP_CYCLES_DOWNSTAGE;
 			}
-			if ((max_amplitude * db2rateV(ADC_DRIVER_GAIN_DB / 2)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
+			if ((max_amplitude * db2rateV(ADC_DRIVER_GAIN_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
 				autogain_wait_reaction++;
 			else
 			{
@@ -490,7 +490,7 @@ void TRX_DoAutoGain(void)
 				autogain_wait_reaction = 0;
 			}
 			break;
-		case 8: // stage 5 - LPF + BPF + LNA
+		case 8: // stage 5 - LPF + BPF + PGA + DRIVER + LNA
 			TRX.RF_Filters = true;
 			TRX.LNA = true;
 			TRX.ATT = false;
@@ -519,6 +519,16 @@ void TRX_DoAutoGain(void)
 		default:
 			TRX_AutoGain_Stage = 0;
 			break;
+		}
+		
+		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+		if (band > 0)
+		{
+			TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
+			TRX.BANDS_SAVED_SETTINGS[band].LNA = TRX.LNA;
+			TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
+			TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
+			TRX.BANDS_SAVED_SETTINGS[band].AutoGain_Stage = TRX_AutoGain_Stage;
 		}
 	}
 }

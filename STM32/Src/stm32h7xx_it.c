@@ -618,7 +618,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_str("CPU Load: ");
       sendToDebug_uint32(cpu_load, false);
       sendToDebug_str("RF/STM32 Temperature: ");
-      sendToDebug_int16(TRX_RF_Temperature, true);
+      sendToDebug_int16((int16_t)TRX_RF_Temperature, true);
 			sendToDebug_str(" / ");
 			sendToDebug_int16((int16_t)TRX_STM32_TEMPERATURE, false);
       sendToDebug_str("STM32 Voltage: ");

@@ -22,7 +22,7 @@
 #define TX_AGC_MAXGAIN 5.0f				// Maximum microphone gain during compression
 #define TX_AGC_NOISEGATE 0.00001f		// Minimum signal level for amplification (below - noise, cut off)
 #define TOUCHPAD_DELAY 200				// Anti-bounce time for pressing the touchpad
-#define AUTOGAIN_TARGET_AMPLITUDE 22000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
+#define AUTOGAIN_TARGET_AMPLITUDE 20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
 #define AUTOGAIN_MAX_AMPLITUDE 30000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
 #define AUTOGAIN_CORRECTOR_WAITSTEP 5	// waiting for the averaging of the results when the auto-corrector of the input circuits is running
 #define KEY_HOLD_TIME 500				// time of long pressing of the keyboard button for triggering, ms
@@ -129,6 +129,7 @@ typedef struct
 	uint8_t FM_SQL_threshold;
 	bool DNR;
 	bool AGC;
+	uint8_t AutoGain_Stage;
 } BAND_SAVED_SETTINGS_TYPE;
 
 extern struct TRX_SETTINGS

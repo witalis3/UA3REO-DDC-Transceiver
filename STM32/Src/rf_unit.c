@@ -328,7 +328,9 @@ void RF_UNIT_ProcessSensors(void)
 	float32_t part_point_left = therm_resistance - KTY81_120_sensTable[point_left][1];
 	float32_t part_point_right = KTY81_120_sensTable[point_right][1] - therm_resistance;
 	float32_t part_point = part_point_left / (part_point_left + part_point_right);
-	TRX_RF_Temperature = (int16_t)((power_left * (1.0f - part_point)) + (power_right * (part_point)));
+	float32_t TRX_RF_Temperature_new = (power_left * (1.0f - part_point)) + (power_right * (part_point));
+	if(fabsf(TRX_RF_Temperature_new - TRX_RF_Temperature) > 0.5f) //hysteresis
+		TRX_RF_Temperature = TRX_RF_Temperature_new;
 
 	LCD_UpdateQuery.StatusInfoBar = true;
 }
