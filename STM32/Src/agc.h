@@ -6,7 +6,7 @@
 #include "audio_processor.h"
 
 //Public methods
-extern void DoRxAGC(float32_t *agcbuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint8_t mode); // start AGC on a data block
+extern void DoRxAGC(float32_t *agcbuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint_fast8_t mode); // start AGC on a data block
 extern void ResetAGC(void);
 
 #endif

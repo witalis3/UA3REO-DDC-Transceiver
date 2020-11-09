@@ -34,7 +34,8 @@
 #define SRAM __attribute__((section(".SRAM"))) // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb D-Cache disabled in MPU
 //#define SRAM4 __attribute__((section(".SRAM4")))             // 64kb
 //#define BACKUP_SRAM __attribute__((section(".BACKUP_SRAM"))) // 4kb Backup SRAM
-#define BACKUP_SRAM_ADDR (uint32_t *)0x38800000
+#define BACKUP_SRAM_BANK1_ADDR (uint32_t *)0x38800000
+#define BACKUP_SRAM_BANK2_ADDR (uint32_t *)0x38800800
 
 //UINT from BINARY STRING
 #define HEX__(n) 0x##n##LU

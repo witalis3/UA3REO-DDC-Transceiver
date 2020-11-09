@@ -25,7 +25,8 @@ static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
 static uint8_t Address[3] = {0x00};
 struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
-
+static uint8_t settings_bank = 1;
+	
 static uint8_t write_clone[W25Q16_SECTOR_SIZE] = {0};
 static uint8_t read_clone[W25Q16_SECTOR_SIZE] = {0};
 static uint8_t verify_clone[W25Q16_SECTOR_SIZE] = {0};
@@ -83,18 +84,29 @@ void InitSettings(void)
 void LoadSettings(bool clear)
 {
 	BKPSRAM_Enable();
-	memcpy(&TRX, BACKUP_SRAM_ADDR, sizeof(TRX));
-	if (clear)
-		memset(&TRX, 0x00, sizeof(TRX));
+	memcpy(&TRX, BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 	// Check, the data in the backup sram is correct, otherwise we use the second bank
 	if (TRX.ENDBit != 100)
-		sendToDebug_strln("[ERR] BACKUP SRAM incorrect");
+	{
+		memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
+		if (TRX.ENDBit != 100)
+		{
+			sendToDebug_strln("[OK] BACKUP SRAM incorrect");
+		}
+		else
+		{
+			sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded from bank 2");
+		}
+	}
 	else
-		sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded");
+	{
+		sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded from bank 1");
+	}
 	BKPSRAM_Disable();
 
 	if (TRX.flash_id != SETT_VERSION || clear || TRX.ENDBit != 100) // code to trace new clean flash
 	{
+		memset(&TRX, 0x00, sizeof(TRX));
 		sendToDebug_str("[ERR] Flash ID:");
 		sendToDebug_uint8(TRX.flash_id, false);
 		TRX.flash_id = SETT_VERSION;		 // Firmware ID in SRAM, if it doesn't match, use the default
@@ -306,12 +318,30 @@ inline VFO *SecondaryVFO(void)
 void SaveSettings(void)
 {
 	BKPSRAM_Enable();
-	memcpy(BACKUP_SRAM_ADDR, &TRX, sizeof(TRX));
 	SCB_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
-	SCB_CleanDCache_by_Addr(BACKUP_SRAM_ADDR, 1024 * 4);
+	if(settings_bank == 1)
+	{
+		memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
+		SCB_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
+		memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
+		SCB_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
+	}
+	else
+	{
+		memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
+		SCB_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
+		memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
+		SCB_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
+	}
 	BKPSRAM_Disable();
 	NeedSaveSettings = false;
-	//sendToDebug_strln("[OK] Settings Saved");
+	//sendToDebug_str("[OK] Settings Saved to bank ");
+	//sendToDebug_uint8(settings_bank, false);
+	//sendToDebug_uint32(sizeof(TRX), false);
+	if(settings_bank == 1)
+		settings_bank = 2;
+	else
+		settings_bank = 1;
 }
 
 void SaveCalibration(void)
