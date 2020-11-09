@@ -480,7 +480,7 @@ void TRX_DoAutoGain(void)
 				TRX_AutoGain_Stage -= 3;															// too much gain, go back one step
 				skip_cycles = SKIP_CYCLES_DOWNSTAGE;
 			}
-			if ((max_amplitude * db2rateV(ADC_LNA_GAIN_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
+			if ((max_amplitude * db2rateV(ADC_LNA_GAIN_DB * 2)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
 				autogain_wait_reaction++;
 			else
 				autogain_wait_reaction = 0;

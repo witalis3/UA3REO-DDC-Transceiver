@@ -71,7 +71,7 @@
 #define ADC_INPUT_IMPEDANCE 800.0f //50ohm -> 1:4 trans = 800ohm
 #define ADC_RANGE 2.25f
 #define ADC_RANGE_PGA 1.5f
-#define ADC_LNA_GAIN_DB 10.0f //on 14mhz
+#define ADC_LNA_GAIN_DB 15.0f //on 14mhz
 #define ADC_DRIVER_GAIN_DB 25.5f //on 14mhz
 #define ADC_PGA_GAIN_DB 3.522f
 
