@@ -95,7 +95,7 @@ SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
 DMA_HandleTypeDef hdma_spi3_rx;
-
+static char greetings_buff[32] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -199,6 +199,13 @@ int main(void)
   USBD_Restart();
   sendToDebug_strln("[OK] FIFO timer TIM7 init");
   HAL_TIM_Base_Start_IT(&htim7);
+	sendToDebug_strln("[OK] Real Time Clock init");
+  HAL_RTC_Init(&hrtc);
+	sendToDebug_strln("[OK] Settings loading");
+  if (PERIPH_FrontPanel_Buttons[13].state) //hard reset
+    LoadSettings(true);
+  else
+    LoadSettings(false);
   sendToDebug_strln("[OK] LCD init");
   LCD_busy = true;
   LCD_Init();
@@ -207,18 +214,18 @@ int main(void)
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
     LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo.width) / 2), ((LCD_HEIGHT - IMAGES_logo.height) / 2), &IMAGES_logo);
 		LCDDriver_printText(version_string, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
+		//show callsign greetings
+		uint16_t x1, y1, w, h;
+		strcat(greetings_buff, "Hello, ");
+		strcat(greetings_buff, TRX.CALLSIGN);
+		strcat(greetings_buff, " !");
+		LCDDriver_getTextBounds(greetings_buff, LAY_GREETINGS_X, LAY_GREETINGS_Y, &x1, &y1, &w, &h, (GFXfont *)&FreeSans9pt7b);
+		LCDDriver_printTextFont(greetings_buff, LAY_GREETINGS_X - (w / 2), LAY_GREETINGS_Y, LAY_GREETINGS_COLOR, rgb888torgb565(243, 243, 243), (GFXfont *)&FreeSans9pt7b);
 	}
-  sendToDebug_strln("[OK] Real Time Clock init");
-  HAL_RTC_Init(&hrtc);
   sendToDebug_strln("[OK] Profiler init");
   InitProfiler();
   sendToDebug_strln("[OK] Frontpanel init");
   FRONTPANEL_Init();
-  sendToDebug_strln("[OK] Settings loading");
-  if (PERIPH_FrontPanel_Buttons[13].state) //hard reset
-    LoadSettings(true);
-  else
-    LoadSettings(false);
   sendToDebug_strln("[OK] Calibration loading");
   if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset
     LoadCalibration(true);
@@ -245,8 +252,9 @@ int main(void)
     HAL_Delay(1500); //logo wait
   LCD_busy = false;
   LCD_redraw();
+	sendToDebug_strln("[OK] Misc timer TIM6 init");
   HAL_TIM_Base_Start_IT(&htim6);
-  sendToDebug_strln("[OK] Misc timer TIM6 inited");
+	sendToDebug_strln("[OK] CPU Load init");
   CPULOAD_Init();
   TRX_Inited = true;
   sendToDebug_strln("[OK] WIFI timer TIM3 init");

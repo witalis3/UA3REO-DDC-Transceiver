@@ -220,5 +220,10 @@
 #define LAY_BANDMAP_AM_COLOR rgb888torgb565(219, 255, 50)
 #define LAY_BANDMAP_FM_COLOR rgb888torgb565(255, 50, 208)
 
+//stuff
+#define LAY_GREETINGS_X (LCD_WIDTH / 2 - 5)
+#define LAY_GREETINGS_Y 25
+#define LAY_GREETINGS_COLOR rgb888torgb565(0, 92, 86)
+
 #endif
 #endif

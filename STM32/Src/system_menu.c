@@ -29,6 +29,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
+static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction);
@@ -175,6 +176,7 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
 		{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
 		{"USB IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_USB, SYSMENU_HANDL_TRX_USBIN},
+		{"Callsign", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetCallsign},
 };
 static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sysmenu_trx_handlers[0]);
 
@@ -322,6 +324,8 @@ static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
 static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
+static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
+static void SYSMENU_TRX_RotatePasswordChar(int8_t dir);
 
 static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
 static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
@@ -337,9 +341,11 @@ static bool sysmenu_services_opened = false;
 //WIFI
 static bool sysmenu_wifi_selectap_menu_opened = false;
 static bool sysmenu_wifi_setAPpassword_menu_opened = false;
+static bool sysmenu_trx_setCallsign_menu_opened = false;
 static uint16_t sysmenu_wifi_rescan_interval = 0;
 static uint8_t sysmenu_wifi_selected_ap_index = 0;
 static uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
+static uint8_t sysmenu_trx_selected_callsign_char_index = 0;
 
 //Time menu
 static bool sysmenu_timeMenuOpened = false;
@@ -598,6 +604,48 @@ static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction)
 	if (TRX.ATT_STEP > 15)
 		TRX.ATT_STEP = 15;
 	return;
+}
+
+static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw)
+{
+	if (full_redraw)
+	{
+		LCDDriver_Fill(COLOR_BLACK);
+		LCDDriver_printText("CALLSIGN:", 5, 5, COLOR_WHITE, COLOR_BLACK, 2);
+	}
+
+	LCDDriver_printText(TRX.CALLSIGN, 10, 37, COLOR_GREEN, COLOR_BLACK, 2);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * 12, 54, 12, COLOR_RED);
+}
+
+static void SYSMENU_TRX_RotatePasswordChar(int8_t dir)
+{
+	bool full_redraw = false;
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] == 0)
+		full_redraw = true;
+	TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] += dir;
+
+	// do not show special characters
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 1 && TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] <= 32 && dir > 0)
+		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 33;
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 1 && TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] <= 32 && dir < 0)
+		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 0;
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 127)
+		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 0;
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] == 0)
+		full_redraw = true;
+
+	if (full_redraw)
+		SYSMENU_TRX_DrawCallsignMenu(true);
+	else
+		SYSMENU_TRX_DrawCallsignMenu(false);
+}
+
+static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
+{
+	sysmenu_trx_setCallsign_menu_opened = true;
+	SYSMENU_TRX_DrawCallsignMenu(true);
+	drawSystemMenu(true);
 }
 
 //AUDIO MENU
@@ -2061,6 +2109,11 @@ void drawSystemMenu(bool draw_background)
 		SYSMENU_WIFI_DrawAPpasswordMenu(false);
 		return;
 	}
+	if (sysmenu_trx_setCallsign_menu_opened)
+	{
+		SYSMENU_TRX_DrawCallsignMenu(false);
+		return;
+	}
 	if (sysmenu_spectrum_opened)
 	{
 		SPEC_Draw();
@@ -2106,6 +2159,11 @@ void eventRotateSystemMenu(int8_t direction)
 		SYSMENU_WIFI_RotatePasswordChar(direction);
 		return;
 	}
+	if (sysmenu_trx_setCallsign_menu_opened)
+	{
+		SYSMENU_TRX_RotatePasswordChar(direction);
+		return;
+	}
 	if (sysmenu_timeMenuOpened)
 	{
 		SYSMENU_HANDL_SETTIME(direction);
@@ -2134,6 +2192,12 @@ void eventCloseSystemMenu(void)
 		drawSystemMenu(true);
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
+	}
+	else if (sysmenu_trx_setCallsign_menu_opened)
+	{
+		sysmenu_trx_setCallsign_menu_opened = false;
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
 	}
 	else if (sysmenu_spectrum_opened)
 	{
@@ -2222,6 +2286,21 @@ void eventSecRotateSystemMenu(int8_t direction)
 		{
 			sysmenu_wifi_selected_ap_password_char_index++;
 			SYSMENU_WIFI_DrawAPpasswordMenu(true);
+		}
+		return;
+	}
+	//Callsign menu
+	if (sysmenu_trx_setCallsign_menu_opened)
+	{
+		if (direction < 0 && sysmenu_trx_selected_callsign_char_index > 0)
+		{
+			sysmenu_trx_selected_callsign_char_index--;
+			SYSMENU_TRX_DrawCallsignMenu(true);
+		}
+		else if (sysmenu_trx_selected_callsign_char_index < (MAX_CALLSIGN_LENGTH - 1))
+		{
+			sysmenu_trx_selected_callsign_char_index++;
+			SYSMENU_TRX_DrawCallsignMenu(true);
 		}
 		return;
 	}

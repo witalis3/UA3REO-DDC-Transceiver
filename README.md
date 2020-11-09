@@ -131,6 +131,7 @@ Supported LCD: ILI9481 and HX8357B
 * **MIC IN** - Select the microphone input
 * **LINE IN** - Line input selection
 * **USB IN** - Select USB audio input
+* **Callsign** - User callsign
 
 ### AUDIO Settings
 

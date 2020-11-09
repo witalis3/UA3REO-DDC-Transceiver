@@ -84,6 +84,7 @@
 #define EEPROM_REPEAT_TRYES 40 // command tryes
 
 #define MAX_WIFIPASS_LENGTH 32
+#define MAX_CALLSIGN_LENGTH 16
 
 #define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
@@ -166,6 +167,7 @@ extern struct TRX_SETTINGS
 	bool Dual_RX;
 	DUAL_RX_TYPE Dual_RX_Type;
 	bool Encoder_Accelerate;
+	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	//AUDIO
 	uint8_t IF_Gain;
 	int8_t AGC_GAIN_TARGET;
