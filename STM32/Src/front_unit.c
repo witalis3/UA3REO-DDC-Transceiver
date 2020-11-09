@@ -212,18 +212,19 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	else
 	{
 		VFO *vfo = CurrentVFO();
+		uint32_t newfreq = 0;
+		float32_t freq_round = 0;
 		if (TRX.Fast)
 		{
-			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + (int32_t)TRX.FRQ_ENC_FAST_STEP * direction), vfo);
-			if ((vfo->Freq % TRX.FRQ_ENC_FAST_STEP) > 0)
-				TRX_setFrequency(vfo->Freq / TRX.FRQ_ENC_FAST_STEP * TRX.FRQ_ENC_FAST_STEP, vfo);
+			freq_round = roundf((float32_t)vfo->Freq / (float32_t)TRX.FRQ_ENC_FAST_STEP) * (float32_t)TRX.FRQ_ENC_FAST_STEP;
+			newfreq = (uint32_t)((int32_t)freq_round + (int32_t)TRX.FRQ_ENC_FAST_STEP * direction);
 		}
 		else
 		{
-			TRX_setFrequency((uint32_t)((int32_t)vfo->Freq + (int32_t)TRX.FRQ_ENC_STEP * direction), vfo);
-			if ((vfo->Freq % TRX.FRQ_ENC_STEP) > 0)
-				TRX_setFrequency(vfo->Freq / TRX.FRQ_ENC_STEP * TRX.FRQ_ENC_STEP, vfo);
+			freq_round = roundf((float32_t)vfo->Freq / (float32_t)TRX.FRQ_ENC_STEP) * (float32_t)TRX.FRQ_ENC_STEP;
+			newfreq = (uint32_t)((int32_t)freq_round + (int32_t)TRX.FRQ_ENC_STEP * direction);
 		}
+		TRX_setFrequency(newfreq, vfo);
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 }
