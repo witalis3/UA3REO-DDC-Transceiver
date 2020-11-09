@@ -13,7 +13,7 @@ static float32_t AGC_RX1_agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE] = {0};
 static float32_t AGC_RX2_agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE] = {0};
 
 //Run AGC on data block
-void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id)
+void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint8_t mode)
 {
 	//RX1 or RX2
 	float32_t *AGC_need_gain_db = &AGC_RX1_need_gain_db;
@@ -27,8 +27,18 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	}
 
 	//higher speed in settings - higher speed of AGC processing
-	float32_t RX_AGC_STEPSIZE_UP = 100.0f / (float32_t)TRX.RX_AGC_speed;
-	float32_t RX_AGC_STEPSIZE_DOWN = 10.0f / (float32_t)TRX.RX_AGC_speed;
+	float32_t RX_AGC_STEPSIZE_UP = 0.0f;
+	float32_t RX_AGC_STEPSIZE_DOWN = 0.0f;
+	if(mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
+	{
+		RX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.RX_AGC_CW_speed;
+		RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_CW_speed;
+	}
+	else
+	{
+		RX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.RX_AGC_SSB_speed;
+		RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_SSB_speed;
+	}
 
 	//do k-weighting (for LKFS)
 	if (rx_id == AUDIO_RX1)
@@ -60,10 +70,10 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 			*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
 
 		//overload (clipping), sharply reduce the gain
-		if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + AGC_CLIPPING))
+		/*if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + AGC_CLIPPING))
 		{
 			*AGC_need_gain_db = (float32_t)TRX.AGC_GAIN_TARGET - AGC_RX_dbFS;
-		}
+		}*/
 	}
 
 	//noise threshold, below it - do not amplify
@@ -90,10 +100,19 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 			gainApplyStep = -(*AGC_need_gain_db_old - *AGC_need_gain_db) / (float32_t)blockSize;
 		if (*AGC_need_gain_db_old < *AGC_need_gain_db)
 			gainApplyStep = (*AGC_need_gain_db - *AGC_need_gain_db_old) / (float32_t)blockSize;
+		float32_t val_prev = 0.0f;
+		bool zero_cross = false;
 		for (uint_fast16_t i = 0; i < blockSize; i++)
 		{
-			*AGC_need_gain_db_old += gainApplyStep;
+			if(val_prev < 0.0f && agcBuffer[i] > 0.0f)
+				zero_cross = true;
+			else if(val_prev > 0.0f && agcBuffer[i] < 0.0f)
+				zero_cross = true;
+			if(zero_cross)
+				*AGC_need_gain_db_old += gainApplyStep;
+			
 			agcBuffer[i] = agcBuffer[i] * db2rateV(*AGC_need_gain_db_old);
+			val_prev = agcBuffer[i];
 		}
 	}
 	else //gain did not change, apply gain across all samples

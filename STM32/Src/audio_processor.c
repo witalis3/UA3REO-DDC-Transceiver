@@ -46,7 +46,7 @@ static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Low-pass 
 static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // LPF filter for I
 static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // HPF filter for I
 static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // Digital Noise Reduction
-static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // automatic gain control
+static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint8_t mode);		   // automatic gain control
 static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // notch filter
 static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size); // impulse noise suppressor
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // s-meter
@@ -153,7 +153,7 @@ ITCM void processRxAudio(void)
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
 		doVAD(decimated_block_size_rx1);
-		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
 	case TRX_MODE_DIGI_L:
@@ -162,7 +162,7 @@ ITCM void processRxAudio(void)
 		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
-		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
 	case TRX_MODE_USB:
@@ -177,7 +177,7 @@ ITCM void processRxAudio(void)
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
 		doVAD(decimated_block_size_rx1);
-		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
 	case TRX_MODE_DIGI_U:
@@ -186,7 +186,7 @@ ITCM void processRxAudio(void)
 		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
-		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
 	case TRX_MODE_AM:
@@ -203,7 +203,7 @@ ITCM void processRxAudio(void)
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
 		doVAD(decimated_block_size_rx1);
-		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
 	case TRX_MODE_NFM:
@@ -217,7 +217,7 @@ ITCM void processRxAudio(void)
 		decimated_block_size_rx1 = AUDIO_BUFFER_HALF_SIZE;
 		//end decimate
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
-		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
 	case TRX_MODE_IQ:
@@ -242,13 +242,13 @@ ITCM void processRxAudio(void)
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
-			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
 		case TRX_MODE_DIGI_L:
 			doRX_HILBERT(AUDIO_RX2, decimated_block_size_rx2);
 			arm_sub_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // difference of I and Q - LSB
 			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
-			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
 		case TRX_MODE_USB:
 		case TRX_MODE_CW_U:
@@ -259,13 +259,13 @@ ITCM void processRxAudio(void)
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
-			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
 		case TRX_MODE_DIGI_U:
 			doRX_HILBERT(AUDIO_RX2, decimated_block_size_rx2);
 			arm_add_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // sum of I and Q - USB
 			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
-			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
 		case TRX_MODE_AM:
 			doRX_LPF_IQ(AUDIO_RX2, decimated_block_size_rx2);
@@ -279,7 +279,7 @@ ITCM void processRxAudio(void)
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
-			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
 		case TRX_MODE_NFM:
 			doRX_LPF_IQ(AUDIO_RX2, decimated_block_size_rx2);
@@ -291,7 +291,7 @@ ITCM void processRxAudio(void)
 			decimated_block_size_rx2 = AUDIO_BUFFER_HALF_SIZE;
 			//end decimate
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
-			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
 		case TRX_MODE_IQ:
 		default:
@@ -913,12 +913,12 @@ ITCM static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // automatic gain control
-ITCM static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+ITCM static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint8_t mode)
 {
 	if (rx_id == AUDIO_RX1)
-		DoRxAGC(FPGA_Audio_Buffer_RX1_I_tmp, size, rx_id);
+		DoRxAGC(FPGA_Audio_Buffer_RX1_I_tmp, size, rx_id, mode);
 	else
-		DoRxAGC(FPGA_Audio_Buffer_RX2_I_tmp, size, rx_id);
+		DoRxAGC(FPGA_Audio_Buffer_RX2_I_tmp, size, rx_id, mode);
 }
 
 // impulse noise suppressor

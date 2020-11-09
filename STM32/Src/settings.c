@@ -159,7 +159,8 @@ void LoadSettings(bool clear)
 		TRX.AM_LPF_Filter = 4000;					// default value of AM filter width
 		TRX.FM_LPF_Filter = 15000;					// default value of the FM filter width
 		TRX.RF_Power = 20;							//output power (%)
-		TRX.RX_AGC_speed = 5;						// AGC receive rate
+		TRX.RX_AGC_SSB_speed = 10;						// AGC receive rate on SSB
+		TRX.RX_AGC_CW_speed = 1;						// AGC receive rate on CW
 		TRX.TX_AGC_speed = 3;						// AGC transfer rate
 		TRX.BandMapEnabled = true;					// automatic change of mode according to the range map
 		TRX.FFT_Enabled = true;						// use FFT spectrum

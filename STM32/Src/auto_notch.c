@@ -40,10 +40,13 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	arm_max_no_idx_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &maxValOut);
 	if(__ARM_isnanf(minValOut) || __ARM_isinff(minValOut) || __ARM_isnanf(maxValOut) || __ARM_isinff(maxValOut))
 	{
-		/*sendToDebug_str("auto notch err ");
-		sendToDebug_float32(minValOut,true);
-		sendToDebug_str(" ");
-		sendToDebug_float32(maxValOut,false);*/
+		if(AUTO_NOTCH_DEBUG)
+		{
+			sendToDebug_str("auto notch err ");
+			sendToDebug_float32(minValOut,true);
+			sendToDebug_str(" ");
+			sendToDebug_float32(maxValOut,false);
+		}
 		InitAutoNotchReduction();
 		memset(buffer, 0x00, sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);
 		temporary_stop = 500;
@@ -51,8 +54,11 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	arm_max_no_idx_f32(instance->lms2_Norm_instance.pCoeffs, AUTO_NOTCH_TAPS, &maxValOut);
 	if(maxValOut > 1.0f)
 	{
-		//sendToDebug_strln("auto notch reset");
-		//sendToDebug_float32(maxValOut,false);
+		if(AUTO_NOTCH_DEBUG)
+		{
+			sendToDebug_strln("auto notch reset");
+			sendToDebug_float32(maxValOut,false);
+		}
 		InitAutoNotchReduction();
 		temporary_stop = 500;
 	}

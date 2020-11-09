@@ -11,6 +11,7 @@
 #define AUTO_NOTCH_TAPS 32				  // filter order
 #define AUTO_NOTCH_REFERENCE_SIZE (AUTO_NOTCH_BLOCK_SIZE * 2) // size of the reference buffer
 #define AUTO_NOTCH_STEP 0.0005f								  // LMS algorithm step
+#define AUTO_NOTCH_DEBUG false
 
 typedef struct // filter instance
 {
