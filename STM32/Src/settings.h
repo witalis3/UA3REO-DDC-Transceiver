@@ -69,11 +69,11 @@
 #define AUDIO_DECIM_RATE (IQ_SAMPLERATE / TRX_SAMPLERATE)
 #define DCDC_FREQ_0 1000000
 #define DCDC_FREQ_1 1200000
-#define ADC_INPUT_IMPEDANCE 200.0f
+#define ADC_INPUT_IMPEDANCE 800.0f //50ohm -> 1:4 trans = 800ohm
 #define ADC_RANGE 2.25f
 #define ADC_RANGE_PGA 1.5f
-#define ADC_LNA_GAIN_DB 11.0f
-#define ADC_DRIVER_GAIN_DB 28.0f
+#define ADC_LNA_GAIN_DB 28.0f //on 14mhz
+#define ADC_DRIVER_GAIN_DB 25.5f //on 14mhz
 #define ADC_PGA_GAIN_DB 3.522f
 
 // delays when working with EEPROM
