@@ -22,8 +22,7 @@
 #define TX_AGC_MAXGAIN 5.0f				// Maximum microphone gain during compression
 #define TX_AGC_NOISEGATE 0.00001f		// Minimum signal level for amplification (below - noise, cut off)
 #define TOUCHPAD_DELAY 200				// Anti-bounce time for pressing the touchpad
-#define AUTOGAIN_TARGET_AMPLITUDE 20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
-#define AUTOGAIN_LNA_MAX_AMPLITUDE 25000.0f // maximum amplitude, without imd from LNA
+#define AUTOGAIN_TARGET_AMPLITUDE 22000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
 #define AUTOGAIN_MAX_AMPLITUDE 30000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
 #define AUTOGAIN_CORRECTOR_WAITSTEP 5	// waiting for the averaging of the results when the auto-corrector of the input circuits is running
 #define KEY_HOLD_TIME 500				// time of long pressing of the keyboard button for triggering, ms
@@ -72,7 +71,7 @@
 #define ADC_INPUT_IMPEDANCE 800.0f //50ohm -> 1:4 trans = 800ohm
 #define ADC_RANGE 2.25f
 #define ADC_RANGE_PGA 1.5f
-#define ADC_LNA_GAIN_DB 28.0f //on 14mhz
+#define ADC_LNA_GAIN_DB 10.0f //on 14mhz
 #define ADC_DRIVER_GAIN_DB 25.5f //on 14mhz
 #define ADC_PGA_GAIN_DB 3.522f
 

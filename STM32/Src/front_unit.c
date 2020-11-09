@@ -422,7 +422,6 @@ void FRONTPANEL_BUTTONHANDLER_TUNE(void)
 
 void FRONTPANEL_BUTTONHANDLER_PRE(void)
 {
-	TRX_LNA_hasIMD = false;
 	TRX.LNA = !TRX.LNA;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
@@ -431,7 +430,6 @@ void FRONTPANEL_BUTTONHANDLER_PRE(void)
 	}
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
-	TRX_AutoGain_Stage = 0;
 	resetVAD();
 }
 
@@ -472,8 +470,6 @@ void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 void FRONTPANEL_BUTTONHANDLER_ANT(void)
 {
 	TRX.ANT = !TRX.ANT;
-	TRX_LNA_hasIMD = false;
-	TRX_AutoGain_Stage = 0;
 	
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
