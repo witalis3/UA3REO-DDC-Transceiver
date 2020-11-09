@@ -228,7 +228,8 @@ extern struct TRX_SETTINGS
 	int16_t SPEC_TopDBM;
 	int16_t SPEC_BottomDBM;
 	//
-	uint8_t ENDBit;
+	uint8_t csum; //check sum
+	uint8_t ENDBit; //end bit
 } TRX;
 
 extern struct TRX_CALIBRATE

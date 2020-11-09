@@ -41,7 +41,8 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_le
 static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verif, bool force);
 static void EEPROM_PowerDown(void);
 static void EEPROM_PowerUp(void);
-
+static uint8_t calculateCSUM(void);
+	
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"LSB",
 	"USB",
@@ -91,7 +92,7 @@ void LoadSettings(bool clear)
 		memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 		if (TRX.ENDBit != 100)
 		{
-			sendToDebug_strln("[OK] BACKUP SRAM incorrect");
+			sendToDebug_strln("[ERR] BACKUP SRAM data incorrect");
 		}
 		else
 		{
@@ -104,6 +105,12 @@ void LoadSettings(bool clear)
 	}
 	BKPSRAM_Disable();
 
+	if(TRX.csum != calculateCSUM())
+	{
+		sendToDebug_strln("[ERR] BACKUP SRAM checksum incorrect");
+		clear = true;
+	}
+	
 	if (TRX.flash_id != SETT_VERSION || clear || TRX.ENDBit != 100) // code to trace new clean flash
 	{
 		memset(&TRX, 0x00, sizeof(TRX));
@@ -318,6 +325,7 @@ inline VFO *SecondaryVFO(void)
 void SaveSettings(void)
 {
 	BKPSRAM_Enable();
+	TRX.csum = calculateCSUM();
 	SCB_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
 	if(settings_bank == 1)
 	{
@@ -548,4 +556,16 @@ void BKPSRAM_Enable(void)
 void BKPSRAM_Disable(void)
 {
 	HAL_PWR_DisableBkUpAccess();
+}
+
+static uint8_t calculateCSUM(void)
+{
+	uint8_t csum_old = TRX.csum;
+	uint8_t csum_new = 
+	TRX.csum = 0;
+	uint8_t* TRX_addr = (uint8_t*)&TRX;
+	for(uint16_t i = 0; i < sizeof(TRX); i++)
+		csum_new += *(TRX_addr + i);
+	TRX.csum = csum_old;
+	return csum_new;
 }
