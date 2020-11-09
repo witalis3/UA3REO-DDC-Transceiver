@@ -38,7 +38,8 @@ static float32_t DFM_RX1_fm_sql_avg = 0.0f;																								   // average
 static float32_t DFM_RX2_fm_sql_avg = 0.0f;
 static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t current_if_gain = 0.0f;
-
+static float32_t volume_gain = 0.0f;
+	
 // Prototypes
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Hilbert filter for phase shift of signals
 static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Low-pass filter for I and Q
@@ -372,7 +373,8 @@ ITCM void processRxAudio(void)
 	}
 
 	//OUT Volume
-	float32_t volume_gain = volume2rate((float32_t)TRX_Volume / 1023.0f);
+	float32_t volume_gain_new = volume2rate((float32_t)TRX_Volume / 1023.0f);
+	volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
 	{
 		Processor_AudioBuffer_current[i] = (int32_t)((float32_t)Processor_AudioBuffer_current[i] * volume_gain);
@@ -696,8 +698,8 @@ ITCM void processTxAudio(void)
 	if (mode == TRX_MODE_LOOPBACK && !TRX_Tune)
 	{
 		//OUT Volume
-		float32_t volume_gain = volume2rate((float32_t)TRX_Volume / 1023.0f);
-		arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, volume_gain, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
+		float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
+		arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, volume_gain_tx, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
 
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
@@ -725,8 +727,8 @@ ITCM void processTxAudio(void)
 		{
 			if (Processor_TX_MAX_amplitude_IN > 0)
 			{
-				float32_t volume_gain = volume2rate((float32_t)TRX_Volume / 1023.0f);
-				float32_t amplitude = (db2rateV(TRX.AGC_GAIN_TARGET) * volume_gain * CODEC_BITS_FULL_SCALE / 2.0f);
+				float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
+				float32_t amplitude = (db2rateV(TRX.AGC_GAIN_TARGET) * volume_gain_tx * CODEC_BITS_FULL_SCALE / 2.0f);
 				for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
 				{
 					CODEC_Audio_Buffer_RX[i * 2] = convertToSPIBigEndian((int32_t)(amplitude * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ)));
