@@ -599,10 +599,13 @@ void TRX_DoAutoGain(void)
 
 void TRX_DBMCalculate(void)
 {
-	TRX_RX_dBm = (int16_t)(rate2dbV(Processor_RX_Power_value) + CALIBRATE.smeter_calibration);
+	if(Processor_RX_Power_value == 0)
+		return;
+	float32_t adc_volts = Processor_RX_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
+	TRX_RX_dBm = (int16_t)(10.0f * log10f_fast((adc_volts * adc_volts) / (ADC_INPUT_IMPEDANCE * 0.001f)));
+	if(TRX.ADC_Driver)
+		TRX_RX_dBm -= (int16_t)ADC_DRIVER_GAIN_DB;
 	Processor_RX_Power_value = 0;
-	if (CurrentVFO()->Mode != TRX_MODE_IQ)
-		TRX_RX_dBm -= TRX.IF_Gain;
 }
 
 float32_t TRX_GenerateCWSignal(float32_t power)

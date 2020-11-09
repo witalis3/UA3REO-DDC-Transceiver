@@ -117,14 +117,14 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.DNR = false;				 // digital noise reduction
 		TRX.VFO_A.AGC = true;				 // AGC
 		TRX.current_vfo = false;			 // current VFO (false - A)
-		TRX.ADC_Driver = false;				 // preamplifier (ADC driver)
+		TRX.ADC_Driver = true;				 // preamplifier (ADC driver)
 		TRX.LNA = false;					 // LNA (Low Noise Amplifier)
 		TRX.ATT = false;					 // attenuator
 		TRX.ATT_DB = 12.0f;					 // suppress the attenuator
 		TRX.ATT_STEP = 6.0f;				 // step of tuning the attenuator
 		TRX.FM_SQL_threshold = 4;			 // FM noise reduction
 		TRX.Fast = true;					 // accelerated frequency change when the encoder rotates
-		TRX.ADC_PGA = false;				 // ADC preamp
+		TRX.ADC_PGA = true;				 // ADC preamp
 		TRX.ANT = false;		  // ANT-1
 		for (uint8_t i = 0; i < BANDS_COUNT; i++)
 		{
