@@ -189,6 +189,10 @@ Supported LCD: ILI9481 and HX8357B
 * **WIFI Timezone** - Time zone (for updating the time via the Internet)
 * **WIFI CAT Server** - Server for receiving CAT commands via WIFI
 
+### SD Card
+
+* **Format SD card** - Format media drive
+
 ### Calibration [appears by long pressing the MENU button in the settings menu]
 
 * **Encoder invert** - Invert the rotation of the main encoder

@@ -813,12 +813,29 @@ void LCD_showError(char text[], bool redraw)
 {
 	LCD_busy = true;
 	LCDDriver_Fill(COLOR_RED);
-	LCDDriver_printTextFont(text, 5, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_RED, (GFXfont *)&FreeSans12pt7b);
+	uint16_t x1, y1, w, h;
+	LCDDriver_getTextBounds(text, 0, 0, &x1, &y1, &w, &h, (GFXfont *)&FreeSans12pt7b);
+	LCDDriver_printTextFont(text, LCD_WIDTH / 2  - w / 2, LCD_HEIGHT / 2 - h / 2, COLOR_WHITE, COLOR_RED, (GFXfont *)&FreeSans12pt7b);
 	if (redraw)
 		HAL_Delay(2000);
 	LCD_busy = false;
 	if (redraw)
 		LCD_redraw();
+}
+
+void LCD_showInfo(char text[], bool autohide)
+{
+	LCD_busy = true;
+	LCDDriver_Fill(BACKGROUND_COLOR);
+	uint16_t x1, y1, w, h;
+	LCDDriver_getTextBounds(text, 0, 0, &x1, &y1, &w, &h, (GFXfont *)&FreeSans12pt7b);
+	LCDDriver_printTextFont(text, LCD_WIDTH / 2  - w / 2, LCD_HEIGHT / 2 - h / 2, COLOR_WHITE, BACKGROUND_COLOR, (GFXfont *)&FreeSans12pt7b);
+	if(autohide)
+	{
+		HAL_Delay(2000);
+		LCD_busy = false;
+		LCD_redraw();
+	}
 }
 
 void LCD_processTouch(uint16_t x, uint16_t y)

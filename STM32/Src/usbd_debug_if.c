@@ -9,7 +9,7 @@
 
 static uint8_t DEBUG_UserRxBufferFS[DEBUG_APP_RX_DATA_SIZE];
 static uint8_t DEBUG_UserTxBufferFS[DEBUG_APP_TX_DATA_SIZE];
-static uint8_t debug_tx_fifo[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
+static IRAM2 uint8_t debug_tx_fifo[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
 static uint16_t debug_tx_fifo_head = 0;
 static uint16_t debug_tx_fifo_tail = 0;
 
@@ -179,7 +179,13 @@ void DEBUG_Transmit_FIFO(uint8_t *data, uint16_t length)
 			debug_tx_fifo[debug_tx_fifo_head] = data[i];
 			debug_tx_fifo_head++;
 			if (debug_tx_fifo_head == debug_tx_fifo_tail)
-				break;
+			{
+				uint_fast16_t tryes = 0;
+				while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512)
+					tryes++;
+				if(DEBUG_Transmit_FIFO_Events() == USBD_BUSY)
+					break;
+			}
 			if (debug_tx_fifo_head >= DEBUG_TX_FIFO_BUFFER_SIZE)
 				debug_tx_fifo_head = 0;
 		}

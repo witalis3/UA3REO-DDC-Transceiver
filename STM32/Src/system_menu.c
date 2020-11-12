@@ -12,6 +12,7 @@
 #include "screen_layout.h"
 #include "noise_blanker.h"
 #include "bands.h"
+#include "sd.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -87,6 +88,8 @@ static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction);
 static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction);
 //static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
 
+static void SYSMENU_HANDL_SD_Format(int8_t direction);
+
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
 
@@ -138,6 +141,7 @@ static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
 static void SYSMENU_HANDL_ADCMENU(int8_t direction);
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
+static void SYSMENU_HANDL_SDMENU(int8_t direction);
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
@@ -152,6 +156,7 @@ static struct sysmenu_item_handler sysmenu_handlers[] =
 		{"SCREEN Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_LCDMENU},
 		{"ADC/DAC Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_ADCMENU},
 		{"WIFI Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_WIFIMENU},
+		{"SD Card", SYSMENU_MENU, 0, SYSMENU_HANDL_SDMENU},
 		{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
 		{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
 		{"Calibration", SYSMENU_HIDDEN_MENU, 0, SYSMENU_HANDL_CALIBRATIONMENU},
@@ -258,6 +263,12 @@ static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 		{WIFI_IP, SYSMENU_INFOLINE, 0, 0},
 };
 static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
+
+static struct sysmenu_item_handler sysmenu_sd_handlers[] =
+	{
+		{"Format SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_Format},
+};
+static uint8_t sysmenu_sd_item_count = sizeof(sysmenu_sd_handlers) / sizeof(sysmenu_sd_handlers[0]);
 
 static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 	{
@@ -1563,7 +1574,26 @@ static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction)
 	WIFI_UpdateFW(NULL);
 }*/
 
+//SD MENU
+
+static void SYSMENU_HANDL_SDMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_sd_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_sd_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
 //SET TIME MENU
+
+static void SYSMENU_HANDL_SD_Format(int8_t direction)
+{
+	if (direction > 0 && SD_isIdle() && !LCD_busy)
+	{
+		SD_doCommand(SDCOMM_FORMAT);
+	}
+}
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction)
 {

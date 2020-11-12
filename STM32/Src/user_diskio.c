@@ -132,15 +132,27 @@ DRESULT USER_read (
 		return RES_PARERR;
 	if (Stat & STA_NOINIT) 
 		return RES_NOTRDY;
-	if (!(sdinfo.type & 4)) 
+	if (!(sdinfo.type & CT_BLOCK))
 		sector *= 512; /* Convert to byte address if needed */
+	
 	if (count == 1) /* Single block read */
 	{
-		SD_Read_Block(buff,sector);
-		count = 0;
+		if ((SD_cmd(CMD17, sector) == 0)	/* READ_SINGLE_BLOCK */
+			&& SD_Read_Block(buff, 512))
+		{
+			count = 0;
+		}
 	}
 	else /* Multiple block read */
 	{
+		if (SD_cmd(CMD18, sector) == 0) {	/* READ_MULTIPLE_BLOCK */
+			do {
+				if (!SD_Read_Block(buff, 512)) 
+					break;
+				buff += 512;
+			} while (--count);
+			SD_cmd(CMD12, 0);				/* STOP_TRANSMISSION */
+		}
 	}
 	SPI_Release();
 	
@@ -172,18 +184,35 @@ DRESULT USER_write (
 		return RES_NOTRDY;
 	if (Stat & STA_PROTECT) 
 		return RES_WRPRT;
-	if (!(sdinfo.type & 4)) 
+	if (!(sdinfo.type & CT_BLOCK))
 		sector *= 512; /* Convert to byte address if needed */
-	if (count == 1) /* Single block read */
+	if (count == 1) /* Single block write */
 	{
-		SD_Write_Block((BYTE*)buff,sector);
-		count = 0;
+		if ((SD_cmd(CMD24, sector) == 0)	/* WRITE_BLOCK */
+			&& SD_Write_Block((BYTE*)buff, 0xFE))
+			count = 0;
 	}
-	else /* Multiple block read */
+	else /* Multiple block write */
 	{
+		if (sdinfo.type & CT_SDC)
+		{
+			SD_cmd(ACMD23, count);	/* Predefine number of sectors */
+		}
+
+		if (SD_cmd(CMD25, sector) == 0) {	/* WRITE_MULTIPLE_BLOCK */
+			do {
+				if (!SD_Write_Block((BYTE*)buff, 0xFC))
+					break;
+				buff += 512;
+			} while (--count);
+			if (!SD_Write_Block(0, 0xFD))	/* STOP_TRAN token */
+			{
+				count = 1;
+			}
+			SPI_wait_ready();	
+		}
 	}
 	SPI_Release();
-	
 	return count ? RES_ERROR : RES_OK;
   /* USER CODE END WRITE */
 }
@@ -218,9 +247,17 @@ DRESULT USER_ioctl (
 			if (SPI_wait_ready() == 0xFF)
 			res = RES_OK;
 			break;
+		case GET_SECTOR_COUNT:
+			*(DWORD*)buff = sdinfo.SECTOR_COUNT;
+			res = RES_OK;
+			break;
 		case GET_SECTOR_SIZE : /* Get sectors on the disk (WORD) */
 			*(WORD*)buff = 512;
 			res = RES_OK;
+			break;
+		case GET_BLOCK_SIZE:
+			*(DWORD*)buff = 512;
+			res= RES_OK;
 			break;
 		default:
 			res = RES_PARERR;

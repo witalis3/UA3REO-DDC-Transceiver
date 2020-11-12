@@ -146,9 +146,9 @@ void sendToDebug_uint32(uint32_t data, bool _inline)
 {
 	char tmp[50] = ""; //-V808
 	if (_inline)
-		sprintf(tmp, "%d", data);
+		sprintf(tmp, "%u", data);
 	else
-		sprintf(tmp, "%d\n", data);
+		sprintf(tmp, "%u\n", data);
 	sendToDebug_str(tmp);
 }
 void sendToDebug_int8(int8_t data, bool _inline)
