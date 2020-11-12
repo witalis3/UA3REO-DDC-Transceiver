@@ -105,6 +105,7 @@
 #include "bootloader.h"
 #include "decoder.h"
 #include "swr_analyzer.h"
+#include "sd.h"
 
 static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
@@ -813,9 +814,17 @@ void TIM15_IRQHandler(void)
   /* USER CODE END TIM15_IRQn 0 */
   HAL_TIM_IRQHandler(&htim15);
   /* USER CODE BEGIN TIM15_IRQn 1 */
-  FRONTPANEL_Process();
+  
+	//FRONT PANEL SPI
+	FRONTPANEL_Process();
+	
+	//EEPROM SPI
   if (NeedSaveCalibration) // save calibration data to EEPROM
     SaveCalibration();
+  
+	//SD-Card SPI
+	SD_Process();
+	
   /* USER CODE END TIM15_IRQn 1 */
 }
 

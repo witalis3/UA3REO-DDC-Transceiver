@@ -36,6 +36,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
 #include "ff_gen_drv.h"
+#include "user_diskio.h"
+#include "sd.h"
+#include "functions.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -82,8 +85,14 @@ DSTATUS USER_initialize (
 )
 {
   /* USER CODE BEGIN INIT */
-    Stat = STA_NOINIT;
-    return Stat;
+	#pragma unused(pdrv)
+  
+	if(sd_ini()==0) 
+		Stat &= ~STA_NOINIT;
+	else
+		Stat |= STA_NOINIT;
+	
+	return Stat;
   /* USER CODE END INIT */
 }
 
@@ -97,8 +106,9 @@ DSTATUS USER_status (
 )
 {
   /* USER CODE BEGIN STATUS */
-    Stat = STA_NOINIT;
-    return Stat;
+  if (pdrv) 
+		return STA_NOINIT;
+	return Stat;
   /* USER CODE END STATUS */
 }
 
@@ -118,7 +128,23 @@ DRESULT USER_read (
 )
 {
   /* USER CODE BEGIN READ */
-    return RES_OK;
+  if (pdrv || !count) 
+		return RES_PARERR;
+	if (Stat & STA_NOINIT) 
+		return RES_NOTRDY;
+	if (!(sdinfo.type & 4)) 
+		sector *= 512; /* Convert to byte address if needed */
+	if (count == 1) /* Single block read */
+	{
+		SD_Read_Block(buff,sector);
+		count = 0;
+	}
+	else /* Multiple block read */
+	{
+	}
+	SPI_Release();
+	
+	return count ? RES_ERROR : RES_OK;
   /* USER CODE END READ */
 }
 
@@ -140,7 +166,25 @@ DRESULT USER_write (
 {
   /* USER CODE BEGIN WRITE */
   /* USER CODE HERE */
-    return RES_OK;
+  if (pdrv || !count) 
+		return RES_PARERR;
+	if (Stat & STA_NOINIT) 
+		return RES_NOTRDY;
+	if (Stat & STA_PROTECT) 
+		return RES_WRPRT;
+	if (!(sdinfo.type & 4)) 
+		sector *= 512; /* Convert to byte address if needed */
+	if (count == 1) /* Single block read */
+	{
+		SD_Write_Block((BYTE*)buff,sector);
+		count = 0;
+	}
+	else /* Multiple block read */
+	{
+	}
+	SPI_Release();
+	
+	return count ? RES_ERROR : RES_OK;
   /* USER CODE END WRITE */
 }
 #endif /* _USE_WRITE == 1 */
@@ -160,8 +204,30 @@ DRESULT USER_ioctl (
 )
 {
   /* USER CODE BEGIN IOCTL */
-    DRESULT res = RES_ERROR;
-    return res;
+  DRESULT res;
+	if (pdrv) 
+		return RES_PARERR;
+	if (Stat & STA_NOINIT) 
+		return RES_NOTRDY;
+	res = RES_ERROR;
+	
+	switch (cmd)
+	{
+		case CTRL_SYNC : /* Flush dirty buffer if present */
+			HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
+			if (SPI_wait_ready() == 0xFF)
+			res = RES_OK;
+			break;
+		case GET_SECTOR_SIZE : /* Get sectors on the disk (WORD) */
+			*(WORD*)buff = 512;
+			res = RES_OK;
+			break;
+		default:
+			res = RES_PARERR;
+	}
+	
+	SPI_Release();
+	return res;
   /* USER CODE END IOCTL */
 }
 #endif /* _USE_IOCTL == 1 */
