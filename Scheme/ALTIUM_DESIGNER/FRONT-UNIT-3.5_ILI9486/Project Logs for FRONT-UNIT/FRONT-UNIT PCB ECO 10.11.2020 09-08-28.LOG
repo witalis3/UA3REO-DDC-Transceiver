@@ -1,0 +1,7 @@
+Change Component DesignItemId : Designator=LCD-MODULE Old DesignItemId=LCD-MODULE_3'2_480х320 New DesignItemId=LCD-MODULE_3'2_480?320
+Change Component Description : Designator=Q1 Old Description=IRFR9024NPBF, Транзистор, Р-канал 55В 11А New Description=IRFR9024NPBF, ??????????, ?-????? 55? 11?
+Change Component Description : Designator=LCD-MODULE Old Description=LCD-MODULE_3'2_480х320 New Description=LCD-MODULE_3'2_480?320
+Change component parameters: Designator = "ENC2"; Footprint = "PEC12"; UniqueID = "\EFSAIEPE"
+Change component parameters. Clean all parameters for all variants
+Change component parameters (AddParameter): Name = "FULLNAME"; Value = "??????????? ?????????? ? ???????? ???????? ??????"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "PEC12"; VariantName = "[No Variations]"
