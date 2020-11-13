@@ -1,5 +1,5 @@
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B))
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))		//Tisho
 
 //Header files
 #include "lcd_driver.h"
@@ -159,7 +159,7 @@ void LCDDriver_Init(void)
 	HAL_Delay(ILI9481_COMM_DELAY);
 	
 #if defined(LCD_HX8357B)	
-	LCDDriver_SendCommand(LCD_COMMAND_COLOR_INVERSION_ON); //(0x21);
+//	LCDDriver_SendCommand(LCD_COMMAND_COLOR_INVERSION_ON); //(0x21);			//Tisho
 	HAL_Delay(ILI9481_COMM_DELAY);
 #endif
 
@@ -168,6 +168,99 @@ void LCDDriver_Init(void)
 	
 	LCDDriver_SendCommand(LCD_COMMAND_DISPLAY_ON);		   //(0x29);
 	HAL_Delay(ILI9481_COMM_DELAY);
+#endif 
+
+//Tisho
+#if	defined(LCD_ILI9486) 
+	#define ILI9481_COMM_DELAY 20
+	
+	LCDDriver_SendCommand(0XF1);
+	LCDDriver_SendData(0x36);
+	LCDDriver_SendData(0x04);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x3C);
+	LCDDriver_SendData(0X0F);
+	LCDDriver_SendData(0x8F);
+	
+	LCDDriver_SendCommand(0XF2);
+	LCDDriver_SendData(0x18);
+	LCDDriver_SendData(0xA3);
+	LCDDriver_SendData(0x12);
+	LCDDriver_SendData(0x02);
+	LCDDriver_SendData(0XB2);
+	LCDDriver_SendData(0x12);
+	LCDDriver_SendData(0xFF);
+	LCDDriver_SendData(0x10);
+	LCDDriver_SendData(0x00);
+	
+	LCDDriver_SendCommand(0XF8);
+	LCDDriver_SendData(0x21);
+	LCDDriver_SendData(0x04);
+	
+	LCDDriver_SendCommand(0XF9);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x08);
+	
+	LCDDriver_SendCommand(0x36);
+	LCDDriver_SendData(0x08);
+	
+	LCDDriver_SendCommand(0xB4);
+	LCDDriver_SendData(0x00);
+	
+	LCDDriver_SendCommand(0xC1);
+	LCDDriver_SendData(0x47); //0x41
+	
+	LCDDriver_SendCommand(0xC5);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0xAF); //0x91
+	LCDDriver_SendData(0x80);
+	LCDDriver_SendData(0x00);
+	
+	LCDDriver_SendCommand(0xE0);
+	LCDDriver_SendData(0x0F);
+	LCDDriver_SendData(0x1F);
+	LCDDriver_SendData(0x1C);
+	LCDDriver_SendData(0x0C);
+	LCDDriver_SendData(0x0F);
+	LCDDriver_SendData(0x08);
+	LCDDriver_SendData(0x48);
+	LCDDriver_SendData(0x98);
+	LCDDriver_SendData(0x37);
+	LCDDriver_SendData(0x0A);
+	LCDDriver_SendData(0x13);
+	LCDDriver_SendData(0x04);
+	LCDDriver_SendData(0x11);
+	LCDDriver_SendData(0x0D);
+	LCDDriver_SendData(0x00);
+	
+	LCDDriver_SendCommand(0xE1);
+	LCDDriver_SendData(0x0F);
+	LCDDriver_SendData(0x32);
+	LCDDriver_SendData(0x2E);
+	LCDDriver_SendData(0x0B);
+	LCDDriver_SendData(0x0D);
+	LCDDriver_SendData(0x05);
+	LCDDriver_SendData(0x47);
+	LCDDriver_SendData(0x75);
+	LCDDriver_SendData(0x37);
+	LCDDriver_SendData(0x06);
+	LCDDriver_SendData(0x10);
+	LCDDriver_SendData(0x03);
+	LCDDriver_SendData(0x24);
+	LCDDriver_SendData(0x20);
+	LCDDriver_SendData(0x00);
+	
+	LCDDriver_SendCommand(0x3A);
+	LCDDriver_SendData(0x55);
+	
+	LCDDriver_SendCommand(0x11);
+	
+	LCDDriver_SendCommand(0x36);
+	
+	LCDDriver_SendData(0x28);
+	HAL_Delay(ILI9481_COMM_DELAY);
+	
+	LCDDriver_SendCommand(0x29);
 #endif
 
 }
