@@ -694,11 +694,9 @@ void TIM6_DAC_IRQHandler(void)
     LCD_busy = true;
     HAL_Delay(10);
     LCDDriver_Fill(COLOR_BLACK);
-    LCDDriver_printTextFont("POWER OFF", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, (GFXfont *)&FreeSans12pt7b);
-    SCB_CleanDCache();
+    LCDDriver_printTextFont("GOOD BYE!", 100, LCD_HEIGHT / 2, COLOR_WHITE, COLOR_BLACK, (GFXfont *)&FreeSans12pt7b);
 		SaveSettings();
 		SaveSettingsToEEPROM();
-		SCB_CleanDCache();
     HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
     WM8731_Mute();
     WM8731_CleanBuffer();

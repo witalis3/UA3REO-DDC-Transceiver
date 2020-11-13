@@ -44,9 +44,9 @@
 #define TRX_MAX_SWR		5				//maximum SWR to enable protect (NOT IN TUNE MODE!)
 
 // select LCD and Touchpad, comment on others
-//#define LCD_ILI9481 true
+#define LCD_ILI9481 true
 //#define LCD_HX8357B true			
-#define LCD_ILI9486 true	//Tisho
+//#define LCD_ILI9486 true
 //#define LCD_RA8875 true
 //#define TOUCHPAD_GT911 true	
 
@@ -77,10 +77,10 @@
 #define ADC_PGA_GAIN_DB 3.522f
 
 // delays when working with EEPROM
-#define EEPROM_CO_DELAY 1	   // command
-#define EEPROM_AD_DELAY 1	   // addr
+#define EEPROM_CO_DELAY 0	   // command
+#define EEPROM_AD_DELAY 0	   // addr
 #define EEPROM_WR_DELAY 5	   // write
-#define EEPROM_RD_DELAY 1	   // read
+#define EEPROM_RD_DELAY 0	   // read
 #define EEPROM_ERASE_DELAY 40  // do erase
 #define EEPROM_REPEAT_TRYES 40 // command tryes
 

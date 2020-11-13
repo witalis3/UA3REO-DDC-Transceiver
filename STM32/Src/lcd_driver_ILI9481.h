@@ -1,6 +1,6 @@
 #ifndef _LCDDRIVER_ILI9481_H_
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))	//Tisho
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))
 #define _LCDDRIVER_ILI9481_H_
 
 //LCD dimensions defines
@@ -8,7 +8,7 @@
 #define LCD_HEIGHT 320
 
 //ILI9481 LCD commands
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486)) //Tisho
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))
 #define LCD_COMMAND_COLUMN_ADDR 0x2A
 #define LCD_COMMAND_PAGE_ADDR 0x2B
 #define LCD_COMMAND_GRAM 0x2C

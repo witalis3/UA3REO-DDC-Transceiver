@@ -1,5 +1,5 @@
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))		//Tisho
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))
 
 //Header files
 #include "lcd_driver.h"
@@ -159,7 +159,7 @@ void LCDDriver_Init(void)
 	HAL_Delay(ILI9481_COMM_DELAY);
 	
 #if defined(LCD_HX8357B)	
-//	LCDDriver_SendCommand(LCD_COMMAND_COLOR_INVERSION_ON); //(0x21);			//Tisho
+	LCDDriver_SendCommand(LCD_COMMAND_COLOR_INVERSION_ON); //(0x21);
 	HAL_Delay(ILI9481_COMM_DELAY);
 #endif
 
@@ -170,7 +170,6 @@ void LCDDriver_Init(void)
 	HAL_Delay(ILI9481_COMM_DELAY);
 #endif 
 
-//Tisho
 #if	defined(LCD_ILI9486) 
 	#define ILI9481_COMM_DELAY 20
 	
