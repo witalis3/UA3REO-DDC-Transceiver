@@ -36,6 +36,7 @@ volatile bool NeedSaveCalibration = false;
 volatile bool EEPROM_Busy = false;
 static bool EEPROM_Enabled = true;
 
+static void LoadSettingsFromEEPROM(void);
 static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_bank, bool verify, bool force);
 static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verify, bool force);
 static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_left, uint8_t eeprom_bank, bool verif, bool force);
@@ -87,35 +88,43 @@ void LoadSettings(bool clear)
 	BKPSRAM_Enable();
 	memcpy(&TRX, BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 	// Check, the data in the backup sram is correct, otherwise we use the second bank
-	if (TRX.ENDBit != 100)
+	if (TRX.ENDBit != 100 && TRX.flash_id != SETT_VERSION)
 	{
 		memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-		if (TRX.ENDBit != 100)
+		if (TRX.ENDBit != 100 && TRX.flash_id != SETT_VERSION)
 		{
 			sendToDebug_strln("[ERR] BACKUP SRAM data incorrect");
+			
+			LoadSettingsFromEEPROM();
+			if (TRX.ENDBit != 100 && TRX.flash_id != SETT_VERSION)
+			{
+				sendToDebug_strln("[ERR] EEPROM Settings data incorrect");
+			}
+			else
+			{
+				sendToDebug_strln("[OK] Settings data succesfully loaded from EEPROM");
+			}
 		}
 		else
 		{
-			sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded from bank 2");
+			sendToDebug_strln("[OK] Settings data succesfully loaded from BACKUP SRAM bank 2");
 		}
 	}
 	else
 	{
-		sendToDebug_strln("[OK] BACKUP SRAM data succesfully loaded from bank 1");
+		sendToDebug_strln("[OK] Settings data succesfully loaded from BACKUP SRAM bank 1");
 	}
 	BKPSRAM_Disable();
 
-	if(TRX.csum != calculateCSUM())
+	if(TRX.csum != calculateCSUM() && TRX.flash_id == SETT_VERSION)
 	{
-		sendToDebug_strln("[ERR] BACKUP SRAM checksum incorrect");
+		sendToDebug_strln("[ERR] Settings checksum incorrect");
 		clear = true;
 	}
 	
 	if (TRX.flash_id != SETT_VERSION || clear || TRX.ENDBit != 100) // code to trace new clean flash
 	{
 		memset(&TRX, 0x00, sizeof(TRX));
-		sendToDebug_str("[ERR] Flash ID:");
-		sendToDebug_uint8(TRX.flash_id, false);
 		TRX.flash_id = SETT_VERSION;		 // Firmware ID in SRAM, if it doesn't match, use the default
 		TRX.VFO_A.Freq = 7100000;			 // stored VFO-A frequency
 		TRX.VFO_A.Mode = TRX_MODE_LSB;		 // saved VFO-A mode
@@ -241,7 +250,21 @@ void LoadSettings(bool clear)
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");
 		SaveSettings();
+		SaveSettingsToEEPROM();
 	}
+}
+
+static void LoadSettingsFromEEPROM(void)
+{
+	EEPROM_PowerUp();
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&TRX, sizeof(TRX), 0, 4, true, false))
+	{
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES)
+		sendToDebug_strln("[ERR] Read EEPROM SETTINGS multiple errors");
+	EEPROM_PowerDown();
 }
 
 void LoadCalibration(bool clear)
@@ -353,6 +376,45 @@ void SaveSettings(void)
 		settings_bank = 1;
 }
 
+void SaveSettingsToEEPROM(void)
+{
+	if (EEPROM_Busy)
+		return;
+	EEPROM_PowerUp();
+	EEPROM_Busy = true;
+	TRX.csum = calculateCSUM();
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(sizeof(TRX), 0, 4, true, false))
+	{
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES)
+	{
+		sendToDebug_strln("[ERR] Erase EEPROM Settings multiple errors");
+		sendToDebug_flush();
+		EEPROM_Busy = false;
+		return;
+	}
+	tryes = 0;
+	SCB_CleanDCache();
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&TRX, sizeof(TRX), 0, 4, true, false))
+	{
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES)
+	{
+		sendToDebug_strln("[ERR] Write EEPROM Settings multiple errors");
+		sendToDebug_flush();
+		EEPROM_Busy = false;
+		return;
+	}
+
+	EEPROM_Busy = false;
+	EEPROM_PowerDown();
+	sendToDebug_strln("[OK] EEPROM Settings Saved");
+	sendToDebug_flush();
+}
+
 void SaveCalibration(void)
 {
 	if (EEPROM_Busy)
@@ -402,9 +464,9 @@ static bool EEPROM_Sector_Erase(uint16_t size, uint32_t start, uint8_t eeprom_ba
 	for (uint8_t page = 0; page <= (size / 0xFF); page++)
 	{
 		uint32_t BigAddress = start + page * 0xFF + eeprom_bank * W25Q16_SECTOR_SIZE;
-		Address[0] = (BigAddress >> 16) & 0xFF;
+		Address[2] = (BigAddress >> 16) & 0xFF;
 		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[2] = BigAddress & 0xFF;
+		Address[0] = BigAddress & 0xFF;
 
 		SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Enable Command
 		HAL_Delay(EEPROM_CO_DELAY);
@@ -439,17 +501,23 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_le
 		return false;
 	else
 		SPI_process = true;
-
+	if(size > sizeof(write_clone))
+	{
+		sendToDebug_strln("EEPROM buffer error");
+		return false;
+	}
 	memcpy(write_clone, Buffer, size);
+	SCB_CleanDCache();
+	
 	for (uint16_t page = 0; page <= (size / 0xFF); page++)
 	{
 		SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false); // Write Enable Command
 		HAL_Delay(EEPROM_CO_DELAY);
 
 		uint32_t BigAddress = margin_left + page * 0xFF + (eeprom_bank * W25Q16_SECTOR_SIZE);
-		Address[0] = (BigAddress >> 16) & 0xFF;
+		Address[2] = (BigAddress >> 16) & 0xFF;
 		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[2] = BigAddress & 0xFF;
+		Address[0] = BigAddress & 0xFF;
 		uint16_t bsize = size - 0xFF * page;
 		if (bsize > 0xFF)
 			bsize = 0xFF;
@@ -492,9 +560,9 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint32_t margin_lef
 	for (uint16_t page = 0; page <= (size / 0xFF); page++)
 	{
 		uint32_t BigAddress = margin_left + page * 0xFF + (eeprom_bank * W25Q16_SECTOR_SIZE);
-		Address[0] = (BigAddress >> 16) & 0xFF;
+		Address[2] = (BigAddress >> 16) & 0xFF;
 		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[2] = BigAddress & 0xFF;
+		Address[0] = BigAddress & 0xFF;
 		uint16_t bsize = size - 0xFF * page;
 		if (bsize > 0xFF)
 			bsize = 0xFF;

@@ -1124,19 +1124,9 @@
               <FilePath>../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c</FilePath>
             </File>
             <File>
-              <FileName>fatfs.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\fatfs.h</FilePath>
-            </File>
-            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\ffconf.h</FilePath>
-            </File>
-            <File>
-              <FileName>user_diskio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\user_diskio.h</FilePath>
             </File>
             <File>
               <FileName>diskio.h</FileName>

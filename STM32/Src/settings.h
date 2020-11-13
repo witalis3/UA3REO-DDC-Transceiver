@@ -76,10 +76,10 @@
 #define ADC_PGA_GAIN_DB 3.522f
 
 // delays when working with EEPROM
-#define EEPROM_CO_DELAY 0	   // command
-#define EEPROM_AD_DELAY 0	   // addr
+#define EEPROM_CO_DELAY 1	   // command
+#define EEPROM_AD_DELAY 1	   // addr
 #define EEPROM_WR_DELAY 5	   // write
-#define EEPROM_RD_DELAY 0	   // read
+#define EEPROM_RD_DELAY 1	   // read
 #define EEPROM_ERASE_DELAY 40  // do erase
 #define EEPROM_REPEAT_TRYES 40 // command tryes
 
@@ -286,6 +286,7 @@ extern void LoadSettings(bool clear);
 extern void LoadCalibration(bool clear);
 extern void SaveSettings(void);
 extern void SaveCalibration(void);
+extern void SaveSettingsToEEPROM(void);
 extern void BKPSRAM_Enable(void);
 extern void BKPSRAM_Disable(void);
 extern VFO *CurrentVFO(void);
