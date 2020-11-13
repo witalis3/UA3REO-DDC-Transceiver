@@ -44,8 +44,9 @@
 #define TRX_MAX_SWR		5				//maximum SWR to enable protect (NOT IN TUNE MODE!)
 
 // select LCD and Touchpad, comment on others
-#define LCD_ILI9481 true
-//#define LCD_HX8357B true
+//#define LCD_ILI9481 true
+//#define LCD_HX8357B true			
+#define LCD_ILI9486 true	//Tisho
 //#define LCD_RA8875 true
 //#define TOUCHPAD_GT911 true	
 
