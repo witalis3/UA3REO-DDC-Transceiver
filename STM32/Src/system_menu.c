@@ -90,6 +90,7 @@ static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction);
 
 static void SYSMENU_HANDL_SD_Format(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction);
+static void SYSMENU_HANDL_SD_ImportSettings(int8_t direction);
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
@@ -268,6 +269,7 @@ static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(
 static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 	{
 		{"Export Settings", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ExportSettings},
+		{"Import Settings", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ImportSettings},
 		{"Format SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_Format},
 };
 static uint8_t sysmenu_sd_item_count = sizeof(sysmenu_sd_handlers) / sizeof(sysmenu_sd_handlers[0]);
@@ -317,7 +319,7 @@ static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"BPF 6 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_6_START, SYSMENU_HANDL_CALIB_BPF_6_START},
 		{"BPF 6 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_6_END, SYSMENU_HANDL_CALIB_BPF_6_END},
 		{"HPF START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_HPF, SYSMENU_HANDL_CALIB_HPF_START},
-		{"SWR TRANS RATE", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.swr_trans_rate_shadow, SYSMENU_HANDL_CALIB_SWR_TRANS_RATE},
+		{"SWR TRANS RATE", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.swr_trans_rate, SYSMENU_HANDL_CALIB_SWR_TRANS_RATE},
 		{"VCXO Freq", SYSMENU_INT8, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 };
 static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
@@ -1595,6 +1597,14 @@ static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction)
 	}
 }
 
+static void SYSMENU_HANDL_SD_ImportSettings(int8_t direction)
+{
+	if (direction > 0 && SD_isIdle() && !LCD_busy)
+	{
+		SD_doCommand(SDCOMM_IMPORT_SETTINGS);
+	}
+}
+
 static void SYSMENU_HANDL_SD_Format(int8_t direction)
 {
 	if (direction > 0 && SD_isIdle() && !LCD_busy)
@@ -2010,7 +2020,6 @@ static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction)
 		CALIBRATE.swr_trans_rate = 1.0f;
 	if (CALIBRATE.swr_trans_rate > 50.0f)
 		CALIBRATE.swr_trans_rate = 50.0f;
-	CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f));
 }
 
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)
@@ -2430,6 +2439,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	}
 
 	uint16_t x_pos = LAY_SYSMENU_X2;
+	float32_t tmp_float = 0;
 	switch (type)
 	{
 	case SYSMENU_UINT8:
@@ -2457,7 +2467,8 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		x_pos = LAY_SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_FLOAT32:
-		sprintf(ctmp, "%.2f", (double)((float32_t)((int32_t)*value) / 100.0f));
+		memcpy(&tmp_float, value, sizeof(float32_t));
+		sprintf(ctmp, "%.2f", (double)tmp_float);
 		x_pos = LAY_SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_BOOLEAN:

@@ -96,7 +96,8 @@ void SD_Process(void)
 				break;
 			case SDCOMM_EXPORT_SETTINGS:
 				SDCOMM_EXPORT_SETT();
-				SDCOMM_LISTROOT();
+				break;
+			case SDCOMM_IMPORT_SETTINGS:
 				SDCOMM_IMPORT_SETT();
 				break;
 		}
@@ -108,6 +109,7 @@ static bool SD_WRITE_SETT_LINE(char* name, uint32_t *value, SystemMenuType type)
 {
 	uint32_t byteswritten;
 	char valbuff[64] = {0};
+	float32_t tmp_float = 0;
 	
 	memset(workbuffer, 0x00, sizeof(workbuffer));
 	
@@ -137,6 +139,9 @@ static bool SD_WRITE_SETT_LINE(char* name, uint32_t *value, SystemMenuType type)
 			sprintf(valbuff, "%d", (int32_t)*value);
 		break;
 		case SYSMENU_FLOAT32:
+			memcpy(&tmp_float, value, sizeof(float32_t));
+			sprintf(valbuff, "%.6f", (double)tmp_float);
+		break;
 		case SYSMENU_RUN:
 		case SYSMENU_UINT32R:
 		case SYSMENU_MENU:
@@ -205,6 +210,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t*)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.LNA", (uint32_t*)&TRX.LNA, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.ATT", (uint32_t*)&TRX.ATT, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.ATT_DB", (uint32_t*)&TRX.ATT_DB, SYSMENU_FLOAT32);
 		if(res) SD_WRITE_SETT_LINE("TRX.ATT_STEP", (uint32_t*)&TRX.ATT_STEP, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.Fast", (uint32_t*)&TRX.Fast, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.ADC_PGA", (uint32_t*)&TRX.ADC_PGA, SYSMENU_BOOLEAN);
@@ -325,7 +331,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.BPF_6_START", (uint32_t*)&CALIBRATE.BPF_6_START, SYSMENU_UINT32);
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.BPF_6_END", (uint32_t*)&CALIBRATE.BPF_6_END, SYSMENU_UINT32);
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.BPF_HPF", (uint32_t*)&CALIBRATE.BPF_HPF, SYSMENU_UINT32);
-		if(res) SD_WRITE_SETT_LINE("CALIBRATE.swr_trans_rate_shadow", (uint32_t*)&CALIBRATE.swr_trans_rate_shadow, SYSMENU_INT32);
+		if(res) SD_WRITE_SETT_LINE("CALIBRATE.swr_trans_rate", (uint32_t*)&CALIBRATE.swr_trans_rate, SYSMENU_FLOAT32);
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.VCXO_correction", (uint32_t*)&CALIBRATE.VCXO_correction, SYSMENU_INT8);
 		
 		if(!res)

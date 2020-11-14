@@ -44,6 +44,7 @@ typedef enum
 	SDCOMM_LIST_ROOT,
 	SDCOMM_FORMAT,
 	SDCOMM_EXPORT_SETTINGS,
+	SDCOMM_IMPORT_SETTINGS,
 } SD_COMMAND;
 
 extern sd_info_ptr sdinfo;

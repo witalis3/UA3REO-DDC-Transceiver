@@ -321,7 +321,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.BPF_6_END = 64000 * 1000;														//15,12,10,6m
 		CALIBRATE.BPF_HPF = 60000 * 1000;														//HPF U14-RF1
 		CALIBRATE.swr_trans_rate = 11.0f;														//SWR Transormator rate
-		CALIBRATE.swr_trans_rate_shadow = (int32_t)(roundf(CALIBRATE.swr_trans_rate * 100.0f)); //SWR Transormator rate UINT shadow
 		CALIBRATE.VCXO_correction = 0;															//VCXO Frequency offset
 
 		sendToDebug_strln("[OK] Loaded default calibrate settings");
