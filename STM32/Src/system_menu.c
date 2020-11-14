@@ -89,6 +89,7 @@ static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction);
 //static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
 
 static void SYSMENU_HANDL_SD_Format(int8_t direction);
+static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction);
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
@@ -266,6 +267,7 @@ static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(
 
 static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 	{
+		{"Export Settings", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ExportSettings},
 		{"Format SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_Format},
 };
 static uint8_t sysmenu_sd_item_count = sizeof(sysmenu_sd_handlers) / sizeof(sysmenu_sd_handlers[0]);
@@ -1585,7 +1587,13 @@ static void SYSMENU_HANDL_SDMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
-//SET TIME MENU
+static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction)
+{
+	if (direction > 0 && SD_isIdle() && !LCD_busy)
+	{
+		SD_doCommand(SDCOMM_EXPORT_SETTINGS);
+	}
+}
 
 static void SYSMENU_HANDL_SD_Format(int8_t direction)
 {
@@ -1594,6 +1602,8 @@ static void SYSMENU_HANDL_SD_Format(int8_t direction)
 		SD_doCommand(SDCOMM_FORMAT);
 	}
 }
+
+//SET TIME MENU
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction)
 {
