@@ -192,6 +192,7 @@ Supported LCD: ILI9481, ILI9486 and HX8357B
 ### SD Card
 
 * **Export Settings** - Export settings and calibration data to SD card
+* **Import Settings** - Import settings and calibration data from SD card
 * **Format SD card** - Format media drive
 
 ### Calibration [appears by long pressing the MENU button in the settings menu]

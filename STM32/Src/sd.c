@@ -27,6 +27,7 @@ static void SDCOMM_EXPORT_SETT(void);
 static void SDCOMM_IMPORT_SETT(void);
 static bool SD_WRITE_SETT_LINE(char* name, uint32_t *value, SystemMenuType type);
 static bool SD_WRITE_SETT_STRING(char* name, char *value);
+static void SDCOMM_PARSE_SETT_LINE(char* line);
 
 bool SD_isIdle(void)
 {
@@ -118,7 +119,7 @@ static bool SD_WRITE_SETT_LINE(char* name, uint32_t *value, SystemMenuType type)
 	switch(type)
 	{
 		case SYSMENU_BOOLEAN:
-			sprintf(valbuff, "%u", (bool)*value);
+			sprintf(valbuff, "%u", (uint8_t)*value);
 		break;
 		case SYSMENU_UINT8:
 			sprintf(valbuff, "%u", (uint8_t)*value);
@@ -230,7 +231,6 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.InputType_LINE", (uint32_t*)&TRX.InputType_LINE, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.InputType_USB", (uint32_t*)&TRX.InputType_USB, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.AutoGain", (uint32_t*)&TRX.AutoGain, SYSMENU_BOOLEAN);
-		if(res) SD_WRITE_SETT_LINE("TRX.Locked", (uint32_t*)&TRX.Locked, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.CLAR", (uint32_t*)&TRX.CLAR, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint32_t*)&TRX.Dual_RX, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.Encoder_Accelerate", (uint32_t*)&TRX.Encoder_Accelerate, SYSMENU_BOOLEAN);
@@ -347,8 +347,206 @@ static void SDCOMM_EXPORT_SETT(void)
 	f_close(&File);
 }
 
+static void SDCOMM_PARSE_SETT_LINE(char* line)
+{
+	static IRAM2 char name[64] = {0};
+	static IRAM2 char value[64] = {0};
+	char *istr = strstr((char*)line, " = ");
+	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)line);
+	memset(name, 0x00, sizeof(name));
+	memset(value, 0x00, sizeof(value));
+	strncpy(name, (char*)line, len);
+	strncpy(value, (char*)line + len + 3, len);
+	
+	uint32_t uintval = atol(value);
+	int32_t intval = atol(value);
+	float32_t floatval = atof(value);
+	bool bval = false;
+	if(uintval > 0)
+		bval = true;
+	
+	/*sendToDebug_strln(name);
+	sendToDebug_strln(value);
+	sendToDebug_uint8(bval, false);
+	sendToDebug_uint32(uintval, false);
+	sendToDebug_int32(intval, false);
+	sendToDebug_float32(floatval, false);
+	sendToDebug_newline();
+	sendToDebug_flush();*/
+	
+	//TRX
+	if (strcmp(name, "TRX.VFO_A.Freq") == 0) TRX.VFO_A.Freq = uintval;
+	if (strcmp(name, "TRX.VFO_A.Mode") == 0) TRX.VFO_A.Mode = uintval;
+	if (strcmp(name, "TRX.VFO_A.LPF_Filter_Width") == 0) TRX.VFO_A.LPF_Filter_Width = uintval;
+	if (strcmp(name, "TRX.VFO_A.HPF_Filter_Width") == 0) TRX.VFO_A.HPF_Filter_Width = uintval;
+	if (strcmp(name, "TRX.VFO_A.ManualNotchFilter") == 0) TRX.VFO_A.ManualNotchFilter = bval;
+	if (strcmp(name, "TRX.VFO_A.AutoNotchFilter") == 0) TRX.VFO_A.AutoNotchFilter = bval;
+	if (strcmp(name, "TRX.VFO_A.NotchFC") == 0) TRX.VFO_A.NotchFC = uintval;
+	if (strcmp(name, "TRX.VFO_A.DNR") == 0) TRX.VFO_A.DNR = bval;
+	if (strcmp(name, "TRX.VFO_A.AGC") == 0) TRX.VFO_A.AGC = bval;
+	if (strcmp(name, "TRX.VFO_B.Freq") == 0) TRX.VFO_B.Freq = uintval;
+	if (strcmp(name, "TRX.VFO_B.Mode") == 0) TRX.VFO_B.Mode = uintval;
+	if (strcmp(name, "TRX.VFO_B.LPF_Filter_Width") == 0) TRX.VFO_B.LPF_Filter_Width = uintval;
+	if (strcmp(name, "TRX.VFO_B.HPF_Filter_Width") == 0) TRX.VFO_B.HPF_Filter_Width = uintval;
+	if (strcmp(name, "TRX.VFO_B.ManualNotchFilter") == 0) TRX.VFO_B.ManualNotchFilter = bval;
+	if (strcmp(name, "TRX.VFO_B.AutoNotchFilter") == 0) TRX.VFO_B.AutoNotchFilter = bval;
+	if (strcmp(name, "TRX.VFO_B.NotchFC") == 0) TRX.VFO_B.NotchFC = uintval;
+	if (strcmp(name, "TRX.VFO_A.DNR") == 0) TRX.VFO_A.DNR = bval;
+	if (strcmp(name, "TRX.VFO_A.AGC") == 0) TRX.VFO_A.AGC = bval;
+	if (strcmp(name, "TRX.current_vfo") == 0) TRX.current_vfo = bval;
+	if (strcmp(name, "TRX.LNA") == 0) TRX.LNA = bval;
+	if (strcmp(name, "TRX.ATT") == 0) TRX.ATT = bval;
+	if (strcmp(name, "TRX.ATT_DB") == 0) TRX.ATT_DB = floatval;
+	if (strcmp(name, "TRX.ATT_STEP") == 0) TRX.ATT_STEP = (uint8_t)uintval;
+	if (strcmp(name, "TRX.Fast") == 0) TRX.Fast = bval;
+	if (strcmp(name, "TRX.ANT") == 0) TRX.ANT = bval;
+	if (strcmp(name, "TRX.RF_Filters") == 0) TRX.RF_Filters = bval;
+	if (strcmp(name, "TRX.RF_Power") == 0) TRX.RF_Power = (uint8_t)uintval;
+	if (strcmp(name, "TRX.ShiftEnabled") == 0) TRX.ShiftEnabled = bval;
+	if (strcmp(name, "TRX.SHIFT_INTERVAL") == 0) TRX.SHIFT_INTERVAL = (uint16_t)uintval;
+	if (strcmp(name, "TRX.TWO_SIGNAL_TUNE") == 0) TRX.TWO_SIGNAL_TUNE = bval;
+	if (strcmp(name, "TRX.FRQ_STEP") == 0) TRX.FRQ_STEP = (uint16_t)uintval;
+	if (strcmp(name, "TRX.FRQ_FAST_STEP") == 0) TRX.FRQ_FAST_STEP = (uint16_t)uintval;
+	if (strcmp(name, "TRX.FRQ_ENC_STEP") == 0) TRX.FRQ_ENC_STEP = (uint16_t)uintval;
+	if (strcmp(name, "TRX.FRQ_ENC_FAST_STEP") == 0) TRX.FRQ_ENC_FAST_STEP = uintval;
+	if (strcmp(name, "TRX.Debug_Console") == 0) TRX.Debug_Console = bval;
+	if (strcmp(name, "TRX.BandMapEnabled") == 0) TRX.BandMapEnabled = bval;
+	if (strcmp(name, "TRX.InputType_MIC") == 0) TRX.InputType_MIC = bval;
+	if (strcmp(name, "TRX.InputType_LINE") == 0) TRX.InputType_LINE = bval;
+	if (strcmp(name, "TRX.InputType_USB") == 0) TRX.InputType_USB = bval;
+	if (strcmp(name, "TRX.AutoGain") == 0) TRX.AutoGain = bval;
+	if (strcmp(name, "TRX.CLAR") == 0) TRX.CLAR = bval;
+	if (strcmp(name, "TRX.Dual_RX") == 0) TRX.Dual_RX = bval;
+	if (strcmp(name, "TRX.Encoder_Accelerate") == 0) TRX.Encoder_Accelerate = bval;
+	if (strcmp(name, "TRX.Dual_RX_Type") == 0) TRX.Dual_RX_Type = (DUAL_RX_TYPE)uintval;
+	if (strcmp(name, "TRX.CALLSIGN") == 0)
+	{
+		memset(TRX.CALLSIGN, 0x00, sizeof(TRX.CALLSIGN));
+		uint32_t lens = strlen(value);
+		if(lens > sizeof(TRX.CALLSIGN))
+			lens = sizeof(TRX.CALLSIGN);
+		strncpy(TRX.CALLSIGN, value, lens);
+		sendToDebug_strln(line);
+		sendToDebug_strln(name);
+		sendToDebug_strln(value);
+		sendToDebug_strln(TRX.CALLSIGN);
+	}
+	//AUDIO
+	if (strcmp(name, "TRX.FM_SQL_threshold") == 0) TRX.FM_SQL_threshold = (uint8_t)uintval;
+	if (strcmp(name, "TRX.IF_Gain") == 0) TRX.IF_Gain = (uint8_t)uintval;
+	if (strcmp(name, "TRX.AGC_GAIN_TARGET") == 0) TRX.AGC_GAIN_TARGET = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_GAIN") == 0) TRX.MIC_GAIN = (uint8_t)uintval;
+	if (strcmp(name, "TRX.RX_EQ_LOW") == 0) TRX.RX_EQ_LOW = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_MID") == 0) TRX.RX_EQ_MID = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_HIG") == 0) TRX.RX_EQ_HIG = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_LOW") == 0) TRX.MIC_EQ_LOW = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_MID") == 0) TRX.MIC_EQ_MID = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_HIG") == 0) TRX.MIC_EQ_HIG = (int8_t)intval;
+	if (strcmp(name, "TRX.DNR_SNR_THRESHOLD") == 0) TRX.DNR_SNR_THRESHOLD = (uint8_t)uintval;
+	if (strcmp(name, "TRX.DNR_AVERAGE") == 0) TRX.DNR_AVERAGE = (uint8_t)uintval;
+	if (strcmp(name, "TRX.DNR_MINIMAL") == 0) TRX.DNR_MINIMAL = (uint8_t)uintval;
+	if (strcmp(name, "TRX.NOISE_BLANKER") == 0) TRX.NOISE_BLANKER = uintval;
+	if (strcmp(name, "TRX.RX_AGC_SSB_speed") == 0) TRX.RX_AGC_SSB_speed = (uint8_t)uintval;
+	if (strcmp(name, "TRX.RX_AGC_CW_speed") == 0) TRX.RX_AGC_CW_speed = (uint8_t)uintval;
+	if (strcmp(name, "TRX.TX_AGC_speed") == 0) TRX.TX_AGC_speed = (uint8_t)uintval;
+	if (strcmp(name, "TRX.CW_LPF_Filter") == 0) TRX.CW_LPF_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.CW_HPF_Filter") == 0) TRX.CW_HPF_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.SSB_LPF_Filter") == 0) TRX.SSB_LPF_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.SSB_HPF_Filter") == 0) TRX.SSB_HPF_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.AM_LPF_Filter") == 0) TRX.AM_LPF_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.FM_LPF_Filter") == 0) TRX.FM_LPF_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.Beeper") == 0) TRX.Beeper = uintval;
+	if (strcmp(name, "TRX.VAD_Squelch") == 0) TRX.VAD_Squelch = uintval;
+	//CW
+	if (strcmp(name, "TRX.CWDecoder") == 0) TRX.CWDecoder = uintval;
+	if (strcmp(name, "TRX.CW_GENERATOR_SHIFT_HZ") == 0) TRX.CW_GENERATOR_SHIFT_HZ = (uint16_t)uintval;
+	if (strcmp(name, "TRX.CW_Key_timeout") == 0) TRX.CW_Key_timeout = (uint16_t)uintval;
+	if (strcmp(name, "TRX.CW_SelfHear") == 0) TRX.CW_SelfHear = (uint16_t)uintval;
+	if (strcmp(name, "TRX.CW_KEYER") == 0) TRX.CW_KEYER = uintval;
+	if (strcmp(name, "TRX.CW_KEYER_WPM") == 0) TRX.CW_KEYER_WPM = (uint16_t)uintval;
+	//SCREEN
+	if (strcmp(name, "TRX.FFT_Enabled") == 0) TRX.FFT_Enabled = uintval;
+	if (strcmp(name, "TRX.FFT_Zoom") == 0) TRX.FFT_Zoom = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_Speed") == 0) TRX.FFT_Speed = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_Averaging") == 0) TRX.FFT_Averaging = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_Window") == 0) TRX.FFT_Window = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_Height") == 0) TRX.FFT_Height = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_Color") == 0) TRX.FFT_Color = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_Compressor") == 0) TRX.FFT_Compressor = uintval;
+	if (strcmp(name, "TRX.FFT_Grid") == 0) TRX.FFT_Grid = (int8_t)intval;
+	if (strcmp(name, "TRX.FFT_Background") == 0) TRX.FFT_Background = uintval;
+	//ADC
+	if (strcmp(name, "TRX.ADC_Driver") == 0) TRX.ADC_Driver = uintval;
+	if (strcmp(name, "TRX.ADC_PGA") == 0) TRX.ADC_PGA = uintval;
+	if (strcmp(name, "TRX.ADC_RAND") == 0) TRX.ADC_RAND = uintval;
+	if (strcmp(name, "TRX.ADC_SHDN") == 0) TRX.ADC_SHDN = uintval;
+	if (strcmp(name, "TRX.ADC_DITH") == 0) TRX.ADC_DITH = uintval;
+	//WIFI
+	if (strcmp(name, "TRX.WIFI_Enabled") == 0) TRX.WIFI_Enabled = uintval;
+	if (strcmp(name, "TRX.WIFI_TIMEZONE") == 0) TRX.WIFI_TIMEZONE = (int8_t)intval;
+	if (strcmp(name, "TRX.WIFI_CAT_SERVER") == 0) TRX.WIFI_CAT_SERVER = uintval;
+	if (strcmp(name, "TRX.WIFI_AP") == 0)
+	{
+		memset(TRX.WIFI_AP, 0x00, sizeof(TRX.WIFI_AP));
+		uint32_t lens = strlen(value);
+		if(lens > sizeof(TRX.WIFI_AP))
+			lens = sizeof(TRX.WIFI_AP);
+		strncpy(TRX.WIFI_AP, value, lens);
+	}
+	if (strcmp(name, "TRX.WIFI_PASSWORD") == 0)
+	{
+		memset(TRX.WIFI_PASSWORD, 0x00, sizeof(TRX.WIFI_PASSWORD));
+		uint32_t lens = strlen(value);
+		if(lens > sizeof(TRX.WIFI_PASSWORD))
+			lens = sizeof(TRX.WIFI_PASSWORD);
+		strncpy(TRX.WIFI_PASSWORD, value, lens);
+	}
+	//SERVICES
+	if (strcmp(name, "TRX.SPEC_Begin") == 0) TRX.SPEC_Begin = uintval;
+	if (strcmp(name, "TRX.SPEC_End") == 0) TRX.SPEC_End = uintval;
+	if (strcmp(name, "TRX.SPEC_TopDBM") == 0) TRX.SPEC_TopDBM = (int16_t)intval;
+	if (strcmp(name, "TRX.SPEC_BottomDBM") == 0) TRX.SPEC_BottomDBM = (int16_t)intval;
+	//CALIBRATION
+	if (strcmp(name, "CALIBRATE.ENCODER_INVERT") == 0) CALIBRATE.ENCODER_INVERT = uintval;
+	if (strcmp(name, "CALIBRATE.ENCODER2_INVERT") == 0) CALIBRATE.ENCODER2_INVERT = uintval;
+	if (strcmp(name, "CALIBRATE.ENCODER_DEBOUNCE") == 0) CALIBRATE.ENCODER_DEBOUNCE = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.ENCODER2_DEBOUNCE") == 0) CALIBRATE.ENCODER2_DEBOUNCE = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.ENCODER_SLOW_RATE") == 0) CALIBRATE.ENCODER_SLOW_RATE = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.ENCODER_ON_FALLING") == 0) CALIBRATE.ENCODER_ON_FALLING = uintval;
+	if (strcmp(name, "CALIBRATE.CIC_GAINER_val") == 0) CALIBRATE.CIC_GAINER_val = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_val") == 0) CALIBRATE.CICFIR_GAINER_val = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.TXCICFIR_GAINER_val") == 0) CALIBRATE.TXCICFIR_GAINER_val = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.DAC_GAINER_val") == 0) CALIBRATE.DAC_GAINER_val = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_lf") == 0) CALIBRATE.rf_out_power_lf = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_hf_low") == 0) CALIBRATE.rf_out_power_hf_low = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_hf") == 0) CALIBRATE.rf_out_power_hf = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_hf_high") == 0) CALIBRATE.rf_out_power_hf_high = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_vhf") == 0) CALIBRATE.rf_out_power_vhf = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.smeter_calibration") == 0) CALIBRATE.smeter_calibration = (int16_t)intval;
+	if (strcmp(name, "CALIBRATE.adc_offset") == 0) CALIBRATE.adc_offset = (int16_t)intval;
+	if (strcmp(name, "CALIBRATE.LPF_END") == 0) CALIBRATE.LPF_END = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_0_START") == 0) CALIBRATE.BPF_0_START = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_0_END") == 0) CALIBRATE.BPF_0_END = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_1_START") == 0) CALIBRATE.BPF_1_START = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_1_END") == 0) CALIBRATE.BPF_1_END = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_2_START") == 0) CALIBRATE.BPF_2_START = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_2_END") == 0) CALIBRATE.BPF_2_END = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_3_START") == 0) CALIBRATE.BPF_3_START = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_3_END") == 0) CALIBRATE.BPF_3_END = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_4_START") == 0) CALIBRATE.BPF_4_START = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_4_END") == 0) CALIBRATE.BPF_4_END = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_5_START") == 0) CALIBRATE.BPF_5_START = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_5_END") == 0) CALIBRATE.BPF_5_END = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_6_START") == 0) CALIBRATE.BPF_6_START = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_6_END") == 0) CALIBRATE.BPF_6_END = uintval;
+	if (strcmp(name, "CALIBRATE.BPF_HPF") == 0) CALIBRATE.BPF_HPF = uintval;
+	if (strcmp(name, "CALIBRATE.swr_trans_rate") == 0) CALIBRATE.swr_trans_rate = floatval;
+	if (strcmp(name, "CALIBRATE.VCXO_correction") == 0) CALIBRATE.VCXO_correction = (int8_t)intval;
+}
+
 static void SDCOMM_IMPORT_SETT(void)
 {
+	char readedLine[64] = {0};
 	LCD_showInfo("Importing...", false);
 	if(f_open(&File, "wolf.ini", FA_READ) == FR_OK)
 	{
@@ -356,10 +554,26 @@ static void SDCOMM_IMPORT_SETT(void)
 		while(bytesread != 0)
 		{
 			FRESULT res = f_read(&File, workbuffer, sizeof(workbuffer), (void *)&bytesread);
-
-			if(res == FR_OK)
+			uint16_t start_index = 0;
+			if(res == FR_OK && bytesread != 0)
 			{
-				sendToDebug_str((char*)workbuffer);
+				//sendToDebug_str((char*)workbuffer);
+				char *istr = strstr((char*)workbuffer + start_index, "\r\n"); // look for the end of the line
+				while(istr != NULL && start_index < sizeof(workbuffer))
+				{
+					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)workbuffer + start_index));
+					if(len <= 64)
+					{
+						memset(readedLine, 0x00, sizeof(readedLine));
+						strncpy(readedLine, (char*)workbuffer + start_index, len);
+						start_index += len + 2;
+						istr = strstr((char*)workbuffer + start_index, "\r\n"); // look for the end of the line
+						//sendToDebug_str3("!",readedLine,"!\r\n");
+						SDCOMM_PARSE_SETT_LINE(readedLine);
+					}
+					else
+						break;
+				}
 			}
 		}
 	}
@@ -371,6 +585,7 @@ static void SDCOMM_IMPORT_SETT(void)
 		return;
 	}
 	f_close(&File);
+	NeedSaveSettings = true;
 	LCD_showInfo("Settings import complete", true);
 }
 

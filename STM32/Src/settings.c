@@ -88,15 +88,15 @@ void LoadSettings(bool clear)
 	BKPSRAM_Enable();
 	memcpy(&TRX, BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 	// Check, the data in the backup sram is correct, otherwise we use the second bank
-	if (TRX.ENDBit != 100 && TRX.flash_id != SETT_VERSION)
+	if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 	{
 		memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-		if (TRX.ENDBit != 100 && TRX.flash_id != SETT_VERSION)
+		if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 		{
 			sendToDebug_strln("[ERR] BACKUP SRAM data incorrect");
 			
 			LoadSettingsFromEEPROM();
-			if (TRX.ENDBit != 100 && TRX.flash_id != SETT_VERSION)
+			if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 			{
 				sendToDebug_strln("[ERR] EEPROM Settings data incorrect");
 			}
@@ -115,15 +115,11 @@ void LoadSettings(bool clear)
 		sendToDebug_strln("[OK] Settings data succesfully loaded from BACKUP SRAM bank 1");
 	}
 	BKPSRAM_Disable();
-
-	if(TRX.csum != calculateCSUM() && TRX.flash_id == SETT_VERSION)
-	{
-		sendToDebug_strln("[ERR] Settings checksum incorrect");
-		clear = true;
-	}
 	
 	if (TRX.flash_id != SETT_VERSION || clear || TRX.ENDBit != 100) // code to trace new clean flash
 	{
+		if(clear)
+			sendToDebug_strln("[OK] Soft reset TRX");
 		memset(&TRX, 0x00, sizeof(TRX));
 		TRX.flash_id = SETT_VERSION;		 // Firmware ID in SRAM, if it doesn't match, use the default
 		TRX.VFO_A.Freq = 7100000;			 // stored VFO-A frequency

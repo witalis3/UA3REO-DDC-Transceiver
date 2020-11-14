@@ -82,7 +82,7 @@
 #define EEPROM_WR_DELAY 5	   // write
 #define EEPROM_RD_DELAY 0	   // read
 #define EEPROM_ERASE_DELAY 40  // do erase
-#define EEPROM_REPEAT_TRYES 40 // command tryes
+#define EEPROM_REPEAT_TRYES 5 // command tryes
 
 #define MAX_WIFIPASS_LENGTH 32
 #define MAX_CALLSIGN_LENGTH 16

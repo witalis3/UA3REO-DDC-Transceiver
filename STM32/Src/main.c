@@ -201,8 +201,10 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim7);
 	sendToDebug_strln("[OK] Real Time Clock init");
   HAL_RTC_Init(&hrtc);
+	sendToDebug_strln("[OK] Frontpanel init");
+  FRONTPANEL_Init();
 	sendToDebug_strln("[OK] Settings loading");
-  if (PERIPH_FrontPanel_Buttons[13].state) //hard reset
+  if (PERIPH_FrontPanel_Buttons[13].state) //soft reset
     LoadSettings(true);
   else
     LoadSettings(false);
@@ -224,8 +226,6 @@ int main(void)
 	}
   sendToDebug_strln("[OK] Profiler init");
   InitProfiler();
-  sendToDebug_strln("[OK] Frontpanel init");
-  FRONTPANEL_Init();
   sendToDebug_strln("[OK] Calibration loading");
   if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset
     LoadCalibration(true);
