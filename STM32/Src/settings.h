@@ -76,14 +76,6 @@
 #define ADC_DRIVER_GAIN_DB 25.5f //on 14mhz
 #define ADC_PGA_GAIN_DB 3.522f
 
-// delays when working with EEPROM
-#define EEPROM_CO_DELAY 0	   // command
-#define EEPROM_AD_DELAY 0	   // addr
-#define EEPROM_WR_DELAY 5	   // write
-#define EEPROM_RD_DELAY 0	   // read
-#define EEPROM_ERASE_DELAY 40  // do erase
-#define EEPROM_REPEAT_TRYES 5 // command tryes
-
 #define MAX_WIFIPASS_LENGTH 32
 #define MAX_CALLSIGN_LENGTH 16
 
@@ -91,11 +83,14 @@
 #define W25Q16_COMMAND_Write_Enable 0x06
 #define W25Q16_COMMAND_Erase_Chip 0xC7
 #define W25Q16_COMMAND_Sector_Erase 0x20
+#define W25Q16_COMMAND_32KBlock_Erase 0x52
 #define W25Q16_COMMAND_Page_Program 0x02
 #define W25Q16_COMMAND_Read_Data 0x03
 #define W25Q16_COMMAND_Power_Down 0xB9
 #define W25Q16_COMMAND_Power_Up 0xAB
+#define W25Q16_COMMAND_GetStatus 0x05
 #define W25Q16_SECTOR_SIZE 4096
+#define EEPROM_REPEAT_TRYES 5 // command tryes
 
 typedef struct
 {

@@ -688,19 +688,19 @@ void TIM6_DAC_IRQHandler(void)
   }
 
   //power off sequence
-  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && !NeedSaveCalibration)
+  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && !NeedSaveCalibration && !SPI_process && !EEPROM_Busy)
   {
     TRX_Inited = false;
     LCD_busy = true;
     HAL_Delay(10);
+		WM8731_Mute();
+    WM8731_CleanBuffer();
     LCDDriver_Fill(COLOR_BLACK);
     LCD_showInfo("GOOD BYE!", false);
 		SaveSettings();
 		SaveSettingsToEEPROM();
+		sendToDebug_flush();
     HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-    WM8731_Mute();
-    WM8731_CleanBuffer();
-    sendToDebug_flush();
     while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET); //-V776
 		HAL_Delay(500);
 		SCB->AIRCR = 0x05FA0004; // software reset

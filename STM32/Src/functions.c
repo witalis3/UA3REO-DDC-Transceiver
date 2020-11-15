@@ -454,7 +454,7 @@ inline uint8_t rev8(uint8_t data)
 	return (uint8_t)(__RBIT(tmp) >> 24);
 }
 
-bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint8_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs)
+bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs)
 {
 	if (SPI_busy)
 	{
