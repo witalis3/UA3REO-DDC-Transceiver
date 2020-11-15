@@ -317,6 +317,10 @@ ITCM void processRxAudio(void)
 	if (current_vfo->Mode != TRX_MODE_DIGI_L && current_vfo->Mode != TRX_MODE_DIGI_U && current_vfo->Mode != TRX_MODE_IQ)
 		doRX_EQ(decimated_block_size_rx1);
 	
+	// muting
+	if (TRX_Mute)
+		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.0f, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
+	
 	// create buffers for transmission to the codec
 	for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 	{
@@ -876,8 +880,6 @@ ITCM static void doRX_EQ(uint16_t size)
 		arm_biquad_cascade_df2T_f32(&EQ_RX_MID_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, size);
 	if (TRX.RX_EQ_HIG != 0)
 		arm_biquad_cascade_df2T_f32(&EQ_RX_HIG_FILTER, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, size);
-	if (TRX_Mute)
-		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.0f, FPGA_Audio_Buffer_RX1_I_tmp, size);
 }
 
 // Equalizer microphone
