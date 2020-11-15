@@ -645,8 +645,7 @@ static void SDCOMM_LISTROOT(void)
 static uint8_t SPIx_WriteRead(uint8_t Byte)
 {
   uint8_t receivedbyte = 0;
-  //if(HAL_SPI_TransmitReceive(&hspi2,(uint8_t*) &Byte,(uint8_t*) &receivedbyte,1,0x1000)!=HAL_OK)
-	if(!SPI_Transmit((uint8_t*) &Byte, (uint8_t*) &receivedbyte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false))
+	if(!SPI_Transmit((uint8_t*) &Byte, (uint8_t*) &receivedbyte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER))
     sendToDebug_strln("sd spi err");
 	
   return receivedbyte;
@@ -775,7 +774,7 @@ uint8_t sd_ini(void)
 	uint8_t ocr[4];
 	uint8_t csd[16];
 	temp = hspi2.Init.BaudRatePrescaler;
-	hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; //156.25 kbbs
+	hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; //156.25 kbbs (96 kbps)
 	HAL_SPI_Init(&hspi2);
 	HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
 	for(i=0;i<10;i++) //80 импульсов (не менее 74) Даташит стр 91

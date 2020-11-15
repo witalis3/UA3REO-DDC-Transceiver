@@ -821,7 +821,7 @@ void TIM15_IRQHandler(void)
 	
 	//EEPROM SPI
   if (NeedSaveCalibration) // save calibration data to EEPROM
-    SaveCalibration();
+		SaveCalibration();
   
 	//SD-Card SPI
 	SD_Process();

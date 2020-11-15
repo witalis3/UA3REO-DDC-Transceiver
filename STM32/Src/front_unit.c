@@ -938,7 +938,7 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_P
 	uint16_t mcp3008_value = 0;
 
 	outData[0] = 0x18 | channel;
-	bool res = SPI_Transmit(outData, inData, 3, CS_PORT, CS_PIN, false);
+	bool res = SPI_Transmit(outData, inData, 3, CS_PORT, CS_PIN, false, SPI_FRONT_UNIT_PRESCALER);
 	if (res == false)
 		return 65535;
 	mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));

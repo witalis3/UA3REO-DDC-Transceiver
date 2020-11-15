@@ -50,6 +50,11 @@
 //#define LCD_RA8875 true
 //#define TOUCHPAD_GT911 true	
 
+//SPI Speed
+#define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_2
+#define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_2
+#define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_2
+
 #define FMC_REMAP true			// FMC memory remap
 #define FSMC_REGISTER_SELECT 18 // from FSMC settings in STM32Cube (A18, A6, etc.)
 #define SCREEN_ROTATE 0			// turn the screen upside down
@@ -86,6 +91,7 @@
 #define W25Q16_COMMAND_32KBlock_Erase 0x52
 #define W25Q16_COMMAND_Page_Program 0x02
 #define W25Q16_COMMAND_Read_Data 0x03
+#define W25Q16_COMMAND_FastRead_Data 0x0B
 #define W25Q16_COMMAND_Power_Down 0xB9
 #define W25Q16_COMMAND_Power_Up 0xAB
 #define W25Q16_COMMAND_GetStatus 0x05

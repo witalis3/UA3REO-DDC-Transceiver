@@ -454,13 +454,21 @@ inline uint8_t rev8(uint8_t data)
 	return (uint8_t)(__RBIT(tmp) >> 24);
 }
 
-bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs)
+bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler)
 {
 	if (SPI_busy)
 	{
 		sendToDebug_strln("SPI Busy");
 		return false;
 	}
+	
+	//SPI speed
+	if(hspi2.Init.BaudRatePrescaler != prescaler)
+	{
+		hspi2.Init.BaudRatePrescaler = prescaler;
+		HAL_SPI_Init(&hspi2);
+	}
+	
 	const int32_t timeout = 0x200; //HAL_MAX_DELAY
 	SPI_busy = true;
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
