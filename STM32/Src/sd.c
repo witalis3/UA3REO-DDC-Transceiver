@@ -426,10 +426,6 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 		if(lens > sizeof(TRX.CALLSIGN))
 			lens = sizeof(TRX.CALLSIGN);
 		strncpy(TRX.CALLSIGN, value, lens);
-		sendToDebug_strln(line);
-		sendToDebug_strln(name);
-		sendToDebug_strln(value);
-		sendToDebug_strln(TRX.CALLSIGN);
 	}
 	//AUDIO
 	if (strcmp(name, "TRX.FM_SQL_threshold") == 0) TRX.FM_SQL_threshold = (uint8_t)uintval;
