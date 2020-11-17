@@ -114,6 +114,7 @@ void TRX_Restart_Mode()
 	{
 		TRX_Start_RX();
 	}
+	NeedReinitReverber = true;
 	FFT_Reset();
 }
 
