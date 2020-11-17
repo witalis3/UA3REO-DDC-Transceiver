@@ -75,7 +75,8 @@ Supported LCD: ILI9481, ILI9486 and HX8357B
 * **AF GAIN** - Volume
 * **SHIFT / GAIN** - When the SHIFT function is active - smooth offset from the selected transceiver frequency. Inactive - IF gain control
 * **ENC MAIN** - Main encoder for frequency control and menu settings
-* **ENC 2** - Auxiliary encoder for menu operation. In normal mode, quickly switches the frequency
+* **ENC 2** - Auxiliary encoder for menu operation. In normal mode, quickly switches the frequency, in CW fast change WPM
+* **ENC 2[click]** - In CW mode, toggles between fast step and WPM selection, in other modes it opens the bandwidth properties.
 * **BAND -** - Switch to the band below
 * **BAND +** - Switch to higher band
 * **MODE -** - Mode group switching SSB-> CW-> DIGI-> FM-> AM

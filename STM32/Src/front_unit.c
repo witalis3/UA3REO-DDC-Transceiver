@@ -39,6 +39,8 @@ static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;
 
+static bool enc2_func_mode = false; //false - fast-step, true - func mode (WPM, etc...)
+
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 7, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PRE, .holdHandler = FRONTPANEL_BUTTONHANDLER_PGA},		  //PRE-PGA
 	{.port = 1, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD},	  //ATT-ATTHOLD
@@ -211,21 +213,36 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	}
 	else
 	{
-		VFO *vfo = CurrentVFO();
-		uint32_t newfreq = 0;
-		float32_t freq_round = 0;
-		if (TRX.Fast)
+		if(!enc2_func_mode || ((CurrentVFO()->Mode != TRX_MODE_CW_L && CurrentVFO()->Mode != TRX_MODE_CW_U)))
 		{
-			freq_round = roundf((float32_t)vfo->Freq / (float32_t)TRX.FRQ_ENC_FAST_STEP) * (float32_t)TRX.FRQ_ENC_FAST_STEP;
-			newfreq = (uint32_t)((int32_t)freq_round + (int32_t)TRX.FRQ_ENC_FAST_STEP * direction);
+			VFO *vfo = CurrentVFO();
+			uint32_t newfreq = 0;
+			float32_t freq_round = 0;
+			if (TRX.Fast)
+			{
+				freq_round = roundf((float32_t)vfo->Freq / (float32_t)TRX.FRQ_ENC_FAST_STEP) * (float32_t)TRX.FRQ_ENC_FAST_STEP;
+				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)TRX.FRQ_ENC_FAST_STEP * direction);
+			}
+			else
+			{
+				freq_round = roundf((float32_t)vfo->Freq / (float32_t)TRX.FRQ_ENC_STEP) * (float32_t)TRX.FRQ_ENC_STEP;
+				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)TRX.FRQ_ENC_STEP * direction);
+			}
+			TRX_setFrequency(newfreq, vfo);
+			LCD_UpdateQuery.FreqInfo = true;
 		}
 		else
 		{
-			freq_round = roundf((float32_t)vfo->Freq / (float32_t)TRX.FRQ_ENC_STEP) * (float32_t)TRX.FRQ_ENC_STEP;
-			newfreq = (uint32_t)((int32_t)freq_round + (int32_t)TRX.FRQ_ENC_STEP * direction);
+			//ENC2 Func mode (WPM)
+			TRX.CW_KEYER_WPM += direction;
+			if (TRX.CW_KEYER_WPM < 1)
+				TRX.CW_KEYER_WPM = 1;
+			if (TRX.CW_KEYER_WPM > 200)
+				TRX.CW_KEYER_WPM = 200;
+			char sbuff[32] = {0};
+			sprintf(sbuff, "WPM: %u", TRX.CW_KEYER_WPM);
+			LCD_showTooltip(sbuff);
 		}
-		TRX_setFrequency(newfreq, vfo);
-		LCD_UpdateQuery.FreqInfo = true;
 	}
 }
 
@@ -244,10 +261,20 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 		{
 			#ifndef HAS_TOUCHPAD
 			//ENC2 CLICK
-			NeedReinitNotch = true;
-			LCD_UpdateQuery.StatusInfoGUI = true;
-			LCD_UpdateQuery.TopButtons = true;
-			NeedSaveSettings = true;
+			
+			if(CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+			{
+				enc2_func_mode = !enc2_func_mode; //enc2 rotary mode
+				
+				if(!enc2_func_mode)
+					LCD_showTooltip("FAST STEP");
+				else
+					LCD_showTooltip("SET WPM");
+			}
+			else
+			{
+				FRONTPANEL_BUTTONHANDLER_BW();
+			}
 			#endif
 		}
 	}

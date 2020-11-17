@@ -1264,8 +1264,8 @@ static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction)
 	TRX.CW_KEYER_WPM += direction;
 	if (TRX.CW_KEYER_WPM < 1)
 		TRX.CW_KEYER_WPM = 1;
-	if (TRX.CW_KEYER_WPM > 500)
-		TRX.CW_KEYER_WPM = 500;
+	if (TRX.CW_KEYER_WPM > 200)
+		TRX.CW_KEYER_WPM = 200;
 }
 
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction)

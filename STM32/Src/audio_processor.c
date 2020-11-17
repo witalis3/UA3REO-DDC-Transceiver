@@ -1050,14 +1050,14 @@ ITCM static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		{
 			if (CurrentVFO()->Mode == TRX_MODE_WFM)
 			{
-				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / PI) * 0.2f; //second way
+				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / PI) * 0.1f; //second way
 			}
 			else
 			{
 				b = FM_RX_HPF_ALPHA * (*hpf_prev_b + a - *hpf_prev_a); // do differentiation
 				*hpf_prev_a = a;									   // save "[n-1]" samples for next iteration
 				*hpf_prev_b = b;
-				FPGA_Audio_Buffer_I_tmp[i] = b * 0.2f; // save demodulated and filtered audio in main audio processing buffer
+				FPGA_Audio_Buffer_I_tmp[i] = b * 0.1f; // save demodulated and filtered audio in main audio processing buffer
 			}
 		}
 		else if (*squelched)				// were we squelched or tone NOT detected?

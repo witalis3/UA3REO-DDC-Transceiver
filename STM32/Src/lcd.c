@@ -47,6 +47,10 @@ static uint8_t Last_showed_Minutes = 255;
 static uint8_t Seconds;
 static uint8_t Last_showed_Seconds = 255;
 
+static uint32_t Tooltip_DiplayStartTime = 0;
+static bool Tooltip_first_draw = true;
+static char Tooltip_string[64] = {0};
+	
 static TouchpadButton_handler TouchpadButton_handlers[64] = {0};
 static uint8_t TouchpadButton_handlers_count = 0;
 
@@ -57,6 +61,7 @@ static void LCD_displayTopButtons(bool redraw);
 static void LCD_displayStatusInfoBar(bool redraw);
 static void LCD_displayStatusInfoGUI(void);
 static void LCD_displayTextBar(void);
+static void LCD_printTooltip(void);
 #if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, void (*clickHandler)(void), void (*holdHandler)(void));
 #endif
@@ -483,7 +488,10 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		
 		//print s-meter value
 		static float32_t TRX_RX_dBm_averaging = -120.0f;
-		TRX_RX_dBm_averaging = 0.95f * TRX_RX_dBm_averaging + 0.05f * TRX_RX_dBm;
+		TRX_RX_dBm_averaging = 0.97f * TRX_RX_dBm_averaging + 0.03f * TRX_RX_dBm;
+		if(TRX_RX_dBm > TRX_RX_dBm_averaging)
+			TRX_RX_dBm_averaging = TRX_RX_dBm;
+		
 		if(TRX_RX_dBm_averaging <= -118.0f)
 			sprintf(ctmp, "S1");
 		else if(TRX_RX_dBm_averaging <= -112.0f)
@@ -746,6 +754,8 @@ void LCD_doEvents(void)
 		drawSystemMenu(false);
 	if (LCD_UpdateQuery.TextBar)
 		LCD_displayTextBar();
+	if (LCD_UpdateQuery.Tooltip)
+		LCD_printTooltip();
 }
 
 static void printInfoSmall(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t inactive_color, bool active)
@@ -914,4 +924,39 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 		return true;
 	}
 	return false;
+}
+
+void LCD_showTooltip(char text[])
+{
+	Tooltip_DiplayStartTime = HAL_GetTick();
+	strcpy(Tooltip_string, text);
+	Tooltip_first_draw = true;
+	if(LCD_UpdateQuery.Tooltip) //redraw old tooltip
+		LCD_UpdateQuery.FreqInfo = true;
+	LCD_UpdateQuery.Tooltip = true;
+}
+
+static void LCD_printTooltip(void)
+{
+	LCD_UpdateQuery.Tooltip = true;
+	if(LCD_busy)
+		return;
+	LCD_busy = true;
+		
+	uint16_t x1, y1, w, h;	
+	LCDDriver_getTextBounds(Tooltip_string, LAY_TOOLTIP_POS_X, LAY_TOOLTIP_POS_Y, &x1, &y1, &w, &h, (GFXfont *)&FreeSans12pt7b);	
+	if(Tooltip_first_draw)
+	{
+		LCDDriver_Fill_RectWH(LAY_TOOLTIP_POS_X - w / 2, LAY_TOOLTIP_POS_Y, w + LAY_TOOLTIP_MARGIN * 2, h + LAY_TOOLTIP_MARGIN * 2, LAY_TOOLTIP_BACK_COLOR);
+		LCDDriver_drawRectXY(LAY_TOOLTIP_POS_X - w / 2, LAY_TOOLTIP_POS_Y, LAY_TOOLTIP_POS_X - w / 2 + w + LAY_TOOLTIP_MARGIN * 2, LAY_TOOLTIP_POS_Y + h + LAY_TOOLTIP_MARGIN * 2, LAY_TOOLTIP_BORD_COLOR);
+		Tooltip_first_draw = false;
+	}
+	LCDDriver_printTextFont(Tooltip_string, LAY_TOOLTIP_POS_X - w / 2 + LAY_TOOLTIP_MARGIN, LAY_TOOLTIP_POS_Y + LAY_TOOLTIP_MARGIN + h, LAY_TOOLTIP_FORE_COLOR, LAY_TOOLTIP_BACK_COLOR, (GFXfont *)&FreeSans12pt7b);
+	
+	LCD_busy = false;
+	if((HAL_GetTick() - Tooltip_DiplayStartTime) > LAY_TOOLTIP_TIMEOUT)
+	{
+		LCD_UpdateQuery.Tooltip = false;
+		LCD_redraw();
+	}
 }
