@@ -15,7 +15,7 @@ static float32_t now_freq;
 static float32_t freq_step;
 static uint16_t graph_sweep_x = 0;
 static uint32_t tick_start_time = 0;
-static int16_t graph_selected_x = graph_width / 2;
+static int16_t graph_selected_x = (LCD_WIDTH - 30) / 2;
 static int_fast16_t data[LCD_WIDTH - 30] = {0};
 
 //Saved variables

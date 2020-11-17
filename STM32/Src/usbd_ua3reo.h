@@ -20,13 +20,13 @@ extern "C"
 #define IN_EP_DIR 0x80 // Adds a direction bit
 
 #define DEBUG_OUT_EP DEBUG_EP_IDX
-#define DEBUG_IN_EP DEBUG_EP_IDX | IN_EP_DIR
+#define DEBUG_IN_EP (DEBUG_EP_IDX | IN_EP_DIR)
 
 #define CAT_OUT_EP CAT_EP_IDX
-#define CAT_IN_EP CAT_EP_IDX | IN_EP_DIR
+#define CAT_IN_EP (CAT_EP_IDX | IN_EP_DIR)
 
 #define AUDIO_OUT_EP AUDIO_EP_IDX
-#define AUDIO_IN_EP AUDIO_EP_IDX | IN_EP_DIR
+#define AUDIO_IN_EP (AUDIO_EP_IDX | IN_EP_DIR)
 
 #ifndef CDC_HS_BINTERVAL
 #define CDC_HS_BINTERVAL 0x10U

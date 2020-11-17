@@ -148,7 +148,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	//NaNs fix
 	bool nans = false;
 	for(uint32_t i = (instance->NR_OutputBuffer_index * NB_BLOCK_SIZE); i < (instance->NR_OutputBuffer_index * NB_BLOCK_SIZE + NB_BLOCK_SIZE); i++)
-		if (!nans && __ARM_isnanf(instance->NR_OutputBuffer[i]))
+		if (!nans && isnanf(instance->NR_OutputBuffer[i]))
 			nans = true;
 		
 	if (!nans && instance->NR_OutputBuffer_index < (NB_FIR_SIZE / NB_BLOCK_SIZE))

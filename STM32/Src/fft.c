@@ -111,34 +111,34 @@ static const float32_t *mag_coeffs[17] =
 
 static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 	{
-		{NULL}, // 0
-		{NULL}, // 1
+		{0}, // 0
+		{0}, // 1
 		// 48ksps, 12kHz lowpass
 		{
 			.numTaps = 4,
 			.pCoeffs = (float32_t *)(const float32_t[]){475.1179397144384210E-6f, 0.503905202786044337f, 0.503905202786044337f, 475.1179397144384210E-6f},
 			.pState = NULL},
-		{NULL}, // 3
+		{0}, // 3
 		// 48ksps, 6kHz lowpass
 		{
 			.numTaps = 4,
 			.pCoeffs = (float32_t *)(const float32_t[]){0.198273254218889416f, 0.298085149879260325f, 0.298085149879260325f, 0.198273254218889416f},
 			.pState = NULL},
-		{NULL}, // 5
-		{NULL}, // 6
-		{NULL}, // 7
+		{0}, // 5
+		{0}, // 6
+		{0}, // 7
 		// 48ksps, 3kHz lowpass
 		{
 			.numTaps = 4,
 			.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
 			.pState = NULL},
-		{NULL}, // 9
-		{NULL}, // 10
-		{NULL}, // 11
-		{NULL}, // 12
-		{NULL}, // 13
-		{NULL}, // 14
-		{NULL}, // 15
+		{0}, // 9
+		{0}, // 10
+		{0}, // 11
+		{0}, // 12
+		{0}, // 13
+		{0}, // 14
+		{0}, // 15
 		// 48ksps, 1.5kHz lowpass
 		{
 			.numTaps = 4,

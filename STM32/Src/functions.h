@@ -47,6 +47,11 @@
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
+#ifndef isnanf
+ #define isnanf __ARM_isnanf
+ #define isinff __ARM_isinff
+#endif
+
 #define SQRT2 1.41421356237f
 #define ARRLENTH(x) (sizeof(x) / sizeof((x)[0]))
 #define MINI_DELAY                                       \

@@ -8,6 +8,30 @@
  * - always start with i2c_delay rather than end
  */
 
+I2C_DEVICE I2C_WM8731 = {
+	.SDA_PORT = WM8731_SDA_GPIO_Port,
+	.SDA_PIN = WM8731_SDA_Pin,
+	.SCK_PORT = WM8731_SCK_GPIO_Port,
+	.SCK_PIN = WM8731_SCK_Pin,
+	.i2c_tx_addr = 0,
+	.i2c_tx_buf = {0},
+	.i2c_tx_buf_idx = 0,
+	.i2c_tx_buf_overflow = false,
+};
+
+#ifdef HAS_TOUCHPAD
+I2C_DEVICE I2C_TOUCHPAD = {
+	.SDA_PORT = ENC2_CLK_GPIO_Port,
+	.SDA_PIN = ENC2_CLK_Pin,
+	.SCK_PORT = ENC2_DT_GPIO_Port,
+	.SCK_PIN = ENC2_DT_Pin,
+	.i2c_tx_addr = 0,
+	.i2c_tx_buf = {0},
+	.i2c_tx_buf_idx = 0,
+	.i2c_tx_buf_overflow = false,
+};
+#endif
+
 static uint8_t i2c_writeOneByte(I2C_DEVICE *dev, uint8_t);
 
 static void SDA_OUT(I2C_DEVICE *dev)

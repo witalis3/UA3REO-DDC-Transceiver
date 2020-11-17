@@ -670,7 +670,7 @@ uint8_t SPI_wait_ready(void)
   uint8_t res;
   uint16_t cnt;
   cnt=0;
-  do { //Ждем окончания состояния BUSY
+  do { //BUSY
     res=SPI_ReceiveByte();
     cnt++;
   } while ( (res!=0xFF)&&(cnt<0xFFFF) );
@@ -722,7 +722,7 @@ uint8_t SD_Read_Block (uint8_t *buff, uint32_t btr)
   uint16_t cnt;
 	SPI_Release(); //FF token
   cnt=0;
-  do{ //Ждем начала блока
+  do{
     result=SPI_ReceiveByte();
     cnt++;
   } while ( (result!=0xFE)&&(cnt<0xFFFF) );
@@ -731,8 +731,8 @@ uint8_t SD_Read_Block (uint8_t *buff, uint32_t btr)
 	
 	memset(buff, 0xFF, btr);
   for (cnt=0;cnt<btr;cnt++) 
-		buff[cnt]=SPI_ReceiveByte(); //получаем байты блока из шины в буфер
-  SPI_Release(); //Пропускаем контрольную сумму
+		buff[cnt]=SPI_ReceiveByte();
+  SPI_Release();
   SPI_Release();
   return 1;
 }
@@ -742,16 +742,16 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token)
   uint8_t result;
   uint16_t cnt;
 	SPI_wait_ready();		/* Wait for card ready */
-  SPI_SendByte(token); //Начало буфера
+  SPI_SendByte(token);
 	if (token != 0xFD) { /* Send data if token is other than StopTran */
-		for (cnt=0;cnt<512;cnt++) SPI_SendByte(buff[cnt]); //Данные
-		SPI_Release(); //Пропустим котрольную сумму
+		for (cnt=0;cnt<512;cnt++) SPI_SendByte(buff[cnt]);
+		SPI_Release();
 		SPI_Release();
 		result=SPI_ReceiveByte();
 		if ((result&0x05)!=0x05) 
-			return 0; //Выйти, если результат не 0x05 (Даташит стр 111)
+			return 0;
 		cnt=0;
-		do { //Ждем окончания состояния BUSY
+		do { //BUSY
 			result=SPI_ReceiveByte();
 			cnt++;
 		} while ( (result!=0xFF)&&(cnt<0xFFFF) );
@@ -775,7 +775,7 @@ uint8_t sd_ini(void)
 	hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; //156.25 kbbs (96 kbps)
 	HAL_SPI_Init(&hspi2);
 	HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
-	for(i=0;i<10;i++) //80 импульсов (не менее 74) Даташит стр 91
+	for(i=0;i<10;i++)
 		SPI_Release();
 	hspi2.Init.BaudRatePrescaler = temp;
 	HAL_SPI_Init(&hspi2);

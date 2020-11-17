@@ -80,24 +80,6 @@ typedef struct
 		a = b;          \
 		b = t;          \
 	}
-#define pgm_read_byte(addr) (*(const unsigned char *)(addr))
-#define pgm_read_byte(addr) (*(const unsigned char *)(addr))
-#ifndef pgm_read_byte
-#define pgm_read_byte(addr) (*(const unsigned char *)(addr))
-#endif
-#ifndef pgm_read_word
-#define pgm_read_word(addr) (*(const unsigned short *)(addr))
-#endif
-#ifndef pgm_read_dword
-#define pgm_read_dword(addr) (*(const unsigned long *)(addr))
-#endif
-
-#if !defined(__INT_MAX__) || (__INT_MAX__ > 0xFFFF)
-#define pgm_read_pointer(addr) ((void *)pgm_read_dword(addr))
-#else
-#define pgm_read_pointer(addr) ((void *)pgm_read_word(addr))
-#endif
-#define min(a, b) (((a) < (b)) ? (a) : (b))
 
 extern void LCDDriver_SendData(uint16_t data);
 extern uint16_t LCDDriver_readReg(uint16_t reg);

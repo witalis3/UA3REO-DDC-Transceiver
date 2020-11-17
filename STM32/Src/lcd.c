@@ -594,7 +594,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAY_STATUS_LABEL_RIT_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_RIT_Y_OFFSET, LAY_STATUS_LABEL_RIT_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 	//THERMAL
-	sprintf(buff, "RF:%d MB:%d", (int16_t)TRX_RF_Temperature, (int32_t)TRX_STM32_TEMPERATURE);
+	sprintf(buff, "RF:%d MB:%d", (int16_t)TRX_RF_Temperature, (int16_t)TRX_STM32_TEMPERATURE);
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAY_STATUS_LABEL_THERM_X_OFFSET, LAY_STATUS_Y_OFFSET + LAY_STATUS_LABEL_THERM_Y_OFFSET, LAY_STATUS_LABEL_THERM_COLOR, BACKGROUND_COLOR, LAY_STATUS_LABELS_FONT_SIZE);
 	//NOTCH
