@@ -27,6 +27,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #if FFT_SIZE == 128
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len128;
 #endif
+
 IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};   // combined FFT I and Q buffer
 static float32_t FFTInput_sorted[FFT_SIZE] = {0};		   // buffer for sorted values ​​(when looking for a median)
 static float32_t FFTOutput_mean[LAY_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
@@ -37,9 +38,9 @@ static uint32_t currentFFTFreq = 0;
 static uint32_t lastWTFFreq = 0;								//last WTF printed freq
 static uint16_t color_scale[LAY_FFT_FFT_MAX_HEIGHT] = {0};							  // color gradient in height FFT
 static uint16_t bg_gradient_color[LAY_FFT_FFT_MAX_HEIGHT] = {0};							  // color gradient on background of FFT
-static SRAM uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
+static SRAM uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{BACKGROUND_COLOR}}; // waterfall buffer
 static IRAM2 uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0};				  // frequencies for each row of the waterfall
-static SRAM uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
+static SRAM uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {BACKGROUND_COLOR};						  // temporary buffer to move the waterfall
 static int32_t grid_lines_pos[20] = {-1};										//grid lines positions
 static int16_t bw_line_start = 0;															//BW bar params
 static int16_t bw_line_width = 0;															//BW bar params
@@ -502,7 +503,8 @@ ITCM void FFT_printFFT(void)
 			if(TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
 				if (((int32_t)fft_x == grid_lines_pos[grid_line_index]) || (fft_x == (LAY_FFT_PRINT_SIZE / 2)))
 				{
-					grid_line_index++;
+					if(fft_x != (LAY_FFT_PRINT_SIZE / 2))
+						grid_line_index++;
 					color = mixColors(color, color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 				}
 			
@@ -560,14 +562,15 @@ ITCM void FFT_printFFT(void)
 					bandmap_line_tmp[(uint16_t)pixel_counter] = region_color;
 		}
 	}
-	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_FFTWTF_POS_Y - 4, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_FFTWTF_POS_Y - 4);
-	for (uint32_t pixel_counter = 0; pixel_counter < LAY_FFT_PRINT_SIZE; pixel_counter++)
-		LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
+	LCDDriver_SetCursorAreaPosition(0, LAY_FFT_FFTWTF_POS_Y - 4, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_FFTWTF_POS_Y - 3);
+	for(uint8_t r =0; r < 2; r++)
+		for (uint32_t pixel_counter = 0; pixel_counter < LAY_FFT_PRINT_SIZE; pixel_counter++)
+			LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
 
 	// separator and receive band
-	LCDDriver_drawFastHLine(0, (LAY_FFT_FFTWTF_POS_Y - 1), bw_line_start, COLOR_BLACK);
+	/*LCDDriver_drawFastHLine(0, (LAY_FFT_FFTWTF_POS_Y - 1), bw_line_start, COLOR_BLACK);
 	LCDDriver_drawFastHLine(bw_line_start, (LAY_FFT_FFTWTF_POS_Y - 1), bw_line_width, COLOR_GREEN);
-	LCDDriver_drawFastHLine((bw_line_start + bw_line_width + 1), LAY_FFT_FFTWTF_POS_Y - 1, (LAY_FFT_PRINT_SIZE - bw_line_start + bw_line_width - 1), COLOR_BLACK);
+	LCDDriver_drawFastHLine((bw_line_start + bw_line_width + 1), LAY_FFT_FFTWTF_POS_Y - 1, (LAY_FFT_PRINT_SIZE - bw_line_start + bw_line_width - 1), COLOR_BLACK);*/
 
 	// display the waterfall using DMA
 	print_wtf_yindex = 0;
@@ -618,7 +621,7 @@ ITCM void FFT_printWaterfallDMA(void)
 		int32_t body_width = LAY_FFT_PRINT_SIZE - margin_left - margin_right;
 
 		if (body_width <= 0)
-			memset(&wtf_line_tmp, 0x00, sizeof(wtf_line_tmp));
+			memset(&wtf_line_tmp, BACKGROUND_COLOR, sizeof(wtf_line_tmp));
 		else
 		{
 			if (margin_left == 0 && margin_right == 0)
@@ -628,13 +631,13 @@ ITCM void FFT_printWaterfallDMA(void)
 			}
 			else if (margin_left >= 0)
 			{
-				memset(&wtf_line_tmp, 0x00, (uint32_t)(margin_left * 2)); // fill the space to the left
+				memset(&wtf_line_tmp, BACKGROUND_COLOR, (uint32_t)(margin_left * 2)); // fill the space to the left
 				HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex], (uint32_t)&wtf_line_tmp[margin_left], LAY_FFT_PRINT_SIZE - margin_left); // copy the line with the offset
 				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			}
 			if (margin_right > 0)
 			{
-				memset(&wtf_line_tmp[(LAY_FFT_PRINT_SIZE - margin_right)], 0x00, (uint32_t)(margin_right * 2)); // fill the space to the right
+				memset(&wtf_line_tmp[(LAY_FFT_PRINT_SIZE - margin_right)], BACKGROUND_COLOR, (uint32_t)(margin_right * 2)); // fill the space to the right
 				HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex][margin_right], (uint32_t)&wtf_line_tmp[0], LAY_FFT_PRINT_SIZE - margin_right); // copy the line with the offset
 				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			}
@@ -720,6 +723,12 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 	uint_fast8_t red = 0;
 	uint_fast8_t green = 0;
 	uint_fast8_t blue = 0;
+	if(LAY_WTF_BG_WHITE)
+	{
+		red = 255;
+		green = 255;
+		blue = 255;
+	}
 	//blue -> yellow -> red
 	if (TRX.FFT_Color == 1)
 	{
@@ -736,6 +745,11 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		if (height < getFFTHeight() * contrast1)
 		{
 			blue = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+			if(LAY_WTF_BG_WHITE)
+			{
+				red -= blue;
+				green -= blue;
+			}
 		}
 		else if (height < getFFTHeight() * (contrast1 + contrast2))
 		{
@@ -764,15 +778,26 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 
 		if (height < getFFTHeight() * contrast1)
 		{
-			red = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
-			green = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
-			blue = 0;
+			if(!LAY_WTF_BG_WHITE)
+			{
+				red = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+				green = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+				blue = 0;
+			}
+			else
+			{
+				red = 255;
+				green = 255;
+				blue = 255 - (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+			}
 		}
 		else
 		{
 			red = 255;
 			blue = 0;
 			green = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1))) * (contrast1 + contrast2)));
+			if(LAY_WTF_BG_WHITE)
+				blue = green;
 		}
 		return rgb888torgb565(red, green, blue);
 	}
@@ -789,9 +814,18 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 
 		if (height < getFFTHeight() * contrast1)
 		{
-			red = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
-			green = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
-			blue = 0;
+			if(!LAY_WTF_BG_WHITE)
+			{
+				red = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+				green = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+				blue = 0;
+			}
+			else
+			{
+				red = 255;
+				green = 255;
+				blue = 255 - (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+			}
 		}
 		else
 		{
@@ -811,6 +845,12 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		if (height <= getFFTHeight())
 		{
 			red = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			if(LAY_WTF_BG_WHITE)
+			{
+				green -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+				blue -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+				red = 255;
+			}
 		}
 		return rgb888torgb565(red, green, blue);
 	}
@@ -824,6 +864,12 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		if (height <= getFFTHeight())
 		{
 			green = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			if(LAY_WTF_BG_WHITE)
+			{
+				green = 255;
+				blue -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+				red -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			}
 		}
 		return rgb888torgb565(red, green, blue);
 	}
@@ -837,6 +883,12 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		if (height <= getFFTHeight())
 		{
 			blue = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			if(LAY_WTF_BG_WHITE)
+			{
+				green -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+				blue = 255;
+				red -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			}
 		}
 		return rgb888torgb565(red, green, blue);
 	}
@@ -852,6 +904,12 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 			red = (uint_fast8_t)(height * 255 / (getFFTHeight()));
 			green = red;
 			blue = red;
+			if(LAY_WTF_BG_WHITE)
+			{
+				red = 255 - red;
+				green = 255 - green;
+				blue = 255 - blue;
+			}
 		}
 		return rgb888torgb565(red, green, blue);
 	}
@@ -861,21 +919,14 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 
 ITCM static uint16_t getBGColor(uint_fast8_t height) // Get FFT background gradient
 {
-	uint_fast8_t start_red = 0;
-	uint_fast8_t start_green = 11;
-	uint_fast8_t start_blue = 40;
+	float32_t fftheight = getFFTHeight();
+	float32_t step_red = (float32_t)(LAY_FFT_GRADIENT_END_R - LAY_FFT_GRADIENT_START_R) / fftheight;
+	float32_t step_green = (float32_t)(LAY_FFT_GRADIENT_END_G - LAY_FFT_GRADIENT_START_G) / fftheight;
+	float32_t step_blue = (float32_t)(LAY_FFT_GRADIENT_END_B - LAY_FFT_GRADIENT_START_B) / fftheight;
 	
-	uint_fast8_t end_red = 46;
-	uint_fast8_t end_green = 77;
-	uint_fast8_t end_blue = 158;
-	
-	float32_t step_red = (end_red - start_red) / getFFTHeight();
-	float32_t step_green = (end_green - start_green) / getFFTHeight();
-	float32_t step_blue = (end_blue - start_blue) / getFFTHeight();
-	
-	uint_fast8_t red = (uint_fast8_t)(start_red + height * step_red);
-	uint_fast8_t green = (uint_fast8_t)(start_green + height * step_green);
-	uint_fast8_t blue = (uint_fast8_t)(start_blue + height * step_blue);
+	uint_fast8_t red = (uint_fast8_t)(LAY_FFT_GRADIENT_START_R + (float32_t)height * step_red);
+	uint_fast8_t green = (uint_fast8_t)(LAY_FFT_GRADIENT_START_G + (float32_t)height * step_green);
+	uint_fast8_t blue = (uint_fast8_t)(LAY_FFT_GRADIENT_START_B + (float32_t)height * step_blue);
 
 	return rgb888torgb565(red, green, blue);
 }

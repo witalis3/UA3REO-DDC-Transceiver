@@ -50,6 +50,10 @@
 //#define LCD_RA8875 true
 //#define TOUCHPAD_GT911 true	
 
+//Colors theme
+//#define LAY_COLORS_BLACK true
+#define LAY_COLORS_WHITE true
+
 //SPI Speed
 #define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_2
 #define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_2

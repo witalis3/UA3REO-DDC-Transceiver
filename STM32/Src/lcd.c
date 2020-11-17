@@ -409,9 +409,9 @@ static void LCD_displayStatusInfoGUI(void)
 	
 	//WIFI indicator
 	if (WIFI_connected)
-		LCDDriver_printImage_RLECompressed(LAY_STATUS_WIFI_ICON_X, LAY_STATUS_WIFI_ICON_Y, &IMAGES_wifi_active);
+		LCDDriver_printImage_RLECompressed(LAY_STATUS_WIFI_ICON_X, LAY_STATUS_WIFI_ICON_Y, &IMAGES_wifi_active, COLOR_BLACK, BACKGROUND_COLOR);
 	else
-		LCDDriver_printImage_RLECompressed(LAY_STATUS_WIFI_ICON_X, LAY_STATUS_WIFI_ICON_Y, &IMAGES_wifi_inactive);
+		LCDDriver_printImage_RLECompressed(LAY_STATUS_WIFI_ICON_X, LAY_STATUS_WIFI_ICON_Y, &IMAGES_wifi_inactive, COLOR_BLACK, BACKGROUND_COLOR);
 	
 	LCD_UpdateQuery.StatusInfoGUI = false;
 	LCD_busy = false;
@@ -648,23 +648,23 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	{
 		sprintf(ctmp, "%d", Hours);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printTextFont(ctmp, LAY_CLOCK_POS_HRS_X, LAY_CLOCK_POS_Y, COLOR_WHITE, BACKGROUND_COLOR, LAY_CLOCK_FONT);
-		LCDDriver_printTextFont(":", LCDDriver_GetCurrentXOffset(), LAY_CLOCK_POS_Y, COLOR_WHITE, COLOR_BLACK, LAY_CLOCK_FONT);
+		LCDDriver_printTextFont(ctmp, LAY_CLOCK_POS_HRS_X, LAY_CLOCK_POS_Y, LAY_CLOCK_COLOR, BACKGROUND_COLOR, LAY_CLOCK_FONT);
+		LCDDriver_printTextFont(":", LCDDriver_GetCurrentXOffset(), LAY_CLOCK_POS_Y, LAY_CLOCK_COLOR, BACKGROUND_COLOR, LAY_CLOCK_FONT);
 		Last_showed_Hours = Hours;
 	}
 	if (redraw || (Minutes != Last_showed_Minutes))
 	{
 		sprintf(ctmp, "%d", Minutes);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printTextFont(ctmp, LAY_CLOCK_POS_MIN_X, LAY_CLOCK_POS_Y, COLOR_WHITE, BACKGROUND_COLOR, LAY_CLOCK_FONT);
-		LCDDriver_printTextFont(":", LCDDriver_GetCurrentXOffset(), LAY_CLOCK_POS_Y, COLOR_WHITE, BACKGROUND_COLOR, LAY_CLOCK_FONT);
+		LCDDriver_printTextFont(ctmp, LAY_CLOCK_POS_MIN_X, LAY_CLOCK_POS_Y, LAY_CLOCK_COLOR, BACKGROUND_COLOR, LAY_CLOCK_FONT);
+		LCDDriver_printTextFont(":", LCDDriver_GetCurrentXOffset(), LAY_CLOCK_POS_Y, LAY_CLOCK_COLOR, BACKGROUND_COLOR, LAY_CLOCK_FONT);
 		Last_showed_Minutes = Minutes;
 	}
 	if (redraw || (Seconds != Last_showed_Seconds))
 	{
 		sprintf(ctmp, "%d", Seconds);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printTextFont(ctmp, LAY_CLOCK_POS_SEC_X, LAY_CLOCK_POS_Y, COLOR_WHITE, BACKGROUND_COLOR, LAY_CLOCK_FONT);
+		LCDDriver_printTextFont(ctmp, LAY_CLOCK_POS_SEC_X, LAY_CLOCK_POS_Y, LAY_CLOCK_COLOR, BACKGROUND_COLOR, LAY_CLOCK_FONT);
 		Last_showed_Seconds = Seconds;
 	}
 
@@ -690,8 +690,8 @@ static void LCD_displayTextBar(void)
 	{
 		char ctmp[50];
 		sprintf(ctmp, "WPM:%d ", CW_Decoder_WPM);
-		LCDDriver_printText(ctmp, 0, LCD_HEIGHT - LAY_FFT_CWDECODER_OFFSET + 1, COLOR_WHITE, BACKGROUND_COLOR, LAY_TEXTBAR_FONT);
-		LCDDriver_printText((char *)&CW_Decoder_Text, LAY_TEXTBAR_TEXT_X_OFFSET, LCD_HEIGHT - LAY_FFT_CWDECODER_OFFSET + 1, COLOR_WHITE, BACKGROUND_COLOR, LAY_TEXTBAR_FONT);
+		LCDDriver_printText(ctmp, 0, LCD_HEIGHT - LAY_FFT_CWDECODER_OFFSET + 1, LAY_CLOCK_COLOR, BACKGROUND_COLOR, LAY_TEXTBAR_FONT);
+		LCDDriver_printText((char *)&CW_Decoder_Text, LAY_TEXTBAR_TEXT_X_OFFSET, LCD_HEIGHT - LAY_FFT_CWDECODER_OFFSET + 1, LAY_CLOCK_COLOR, BACKGROUND_COLOR, LAY_TEXTBAR_FONT);
 	}
 
 	LCD_UpdateQuery.TextBar = false;
@@ -839,7 +839,7 @@ void LCD_showInfo(char text[], bool autohide)
 	LCDDriver_Fill(BACKGROUND_COLOR);
 	uint16_t x1, y1, w, h;
 	LCDDriver_getTextBounds(text, 0, 0, &x1, &y1, &w, &h, (GFXfont *)&FreeSans12pt7b);
-	LCDDriver_printTextFont(text, LCD_WIDTH / 2  - w / 2, LCD_HEIGHT / 2 - h / 2, COLOR_WHITE, BACKGROUND_COLOR, (GFXfont *)&FreeSans12pt7b);
+	LCDDriver_printTextFont(text, LCD_WIDTH / 2  - w / 2, LCD_HEIGHT / 2 - h / 2, LAY_CLOCK_COLOR, BACKGROUND_COLOR, (GFXfont *)&FreeSans12pt7b);
 	if(autohide)
 	{
 		HAL_Delay(2000);

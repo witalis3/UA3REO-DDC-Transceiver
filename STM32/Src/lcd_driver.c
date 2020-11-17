@@ -236,7 +236,7 @@ ITCM void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, u
 	}
 }
 
-ITCM void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image)
+ITCM void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image, uint16_t transparent_color, uint16_t bg_color)
 {
 	uint32_t pixels = image->width * image->height;
 	uint32_t i = 0;
@@ -251,7 +251,10 @@ ITCM void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAG
 			i++;
 			for (uint16_t p = 0; p < count; p++)
 			{
-				LCDDriver_SendData(image->data[i]);
+				if(image->data[i] == transparent_color)
+					LCDDriver_SendData(bg_color);
+				else
+					LCDDriver_SendData(image->data[i]);
 				decoded++;
 				i++;
 				if (pixels <= decoded)
@@ -264,7 +267,10 @@ ITCM void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAG
 			i++;
 			for (uint16_t p = 0; p < count; p++)
 			{
-				LCDDriver_SendData(image->data[i]);
+				if(image->data[i] == transparent_color)
+					LCDDriver_SendData(bg_color);
+				else
+					LCDDriver_SendData(image->data[i]);
 				decoded++;
 				if (pixels <= decoded)
 					return;
