@@ -17,12 +17,11 @@
   */
 
 #include "fatfs.h"
-#include "functions.h"
 
 uint8_t retUSER;    /* Return value for USER */
 char USERPath[4];   /* USER logical drive path */
-IRAM2 FATFS USERFatFS;    /* File system object for USER logical drive */
-IRAM2 FIL USERFile;       /* File object for USER */
+FATFS USERFatFS;    /* File system object for USER logical drive */
+FIL USERFile;       /* File object for USER */
 
 /* USER CODE BEGIN Variables */
 
