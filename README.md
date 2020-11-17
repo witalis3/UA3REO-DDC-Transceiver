@@ -146,6 +146,7 @@ Supported LCD: ILI9481, ILI9486 and HX8357B
 * **FM Squelch** - FM squelch level
 * **VAD Squelch** - SSB squelch on VAD techonogy
 * **MIC EQ xxx** - Microphone equalizer levels
+* **MIC Reverber** - Microphone reverberator level
 * **RX EQ xxx** - Receiver equalizer levels
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
 * **TX AGC Speed** - AGC / compressor response speed for transmission (more-faster)

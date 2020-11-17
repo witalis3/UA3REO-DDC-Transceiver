@@ -235,6 +235,7 @@ void LoadSettings(bool clear)
 		TRX.MIC_EQ_LOW = 0;				 // Mic EQ (Low)
 		TRX.MIC_EQ_MID = 0;				 // Mic Equalizer (Mids)
 		TRX.MIC_EQ_HIG = 0;				 // Mic EQ (high)
+		TRX.MIC_REVERBER = 0;			 // Mic Reveerber
 		TRX.FFT_Speed = 3;				 // FFT Speed
 		TRX.Beeper = true;				 //Keyboard beeper
 		TRX.FFT_Background = true;	//FFT gradient background

@@ -23,6 +23,7 @@
 #define FM_RX_SQL_SMOOTHING 0.005f		  // Smoothing factor for IIR squelch noise averaging
 #define AUDIO_RX_NB_DELAY_BUFFER_ITEMS 32 // NoiseBlanker buffer size
 #define AUDIO_RX_NB_DELAY_BUFFER_SIZE (AUDIO_RX_NB_DELAY_BUFFER_ITEMS * 2)
+#define AUDIO_MAX_REVERBER_TAPS 10
 
 typedef enum // receiver number
 {
@@ -46,6 +47,7 @@ extern float32_t FPGA_Audio_Buffer_TX_I_tmp[FPGA_TX_IQ_BUFFER_HALF_SIZE];
 extern volatile float32_t Processor_TX_MAX_amplitude_OUT;		// TX uplift after ALC
 extern volatile float32_t Processor_RX_Power_value;				// RX signal magnitude
 extern volatile float32_t Processor_selected_RFpower_amplitude; // target TX signal amplitude
+extern bool NeedReinitReverber;
 
 // Public methods
 extern void processRxAudio(void);	  // start audio processor for RX

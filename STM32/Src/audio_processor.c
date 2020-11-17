@@ -26,6 +26,7 @@ float32_t FPGA_Audio_Buffer_TX_I_tmp[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t Processor_RX_Power_value;					// RX signal magnitude
 volatile float32_t Processor_selected_RFpower_amplitude = 0.0f; // target TX signal amplitude
 volatile float32_t Processor_TX_MAX_amplitude_OUT;				// TX uplift after ALC
+bool NeedReinitReverber = false;
 
 // Private variables
 static uint32_t two_signal_gen_position = 0;																							   // signal position in a two-signal generator
@@ -39,7 +40,8 @@ static float32_t DFM_RX2_fm_sql_avg = 0.0f;
 static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
-	
+IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
+
 // Prototypes
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Hilbert filter for phase shift of signals
 static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Low-pass filter for I and Q
@@ -63,6 +65,7 @@ void initAudioProcessor(void)
 {
 	InitAudioFilters();
 	DECODER_Init();
+	NeedReinitReverber = true;
 }
 
 // start audio processor for RX
@@ -891,6 +894,31 @@ ITCM static void doMIC_EQ(uint16_t size)
 		arm_biquad_cascade_df2T_f32(&EQ_MIC_MID_FILTER, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
 	if (TRX.MIC_EQ_HIG != 0)
 		arm_biquad_cascade_df2T_f32(&EQ_MIC_HIG_FILTER, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
+	
+	//Reverber
+	if(TRX.MIC_REVERBER > 0)
+	{
+		//reset
+		static uint32_t reverber_position = 0;
+		if(NeedReinitReverber)
+		{
+			reverber_position = 0;
+			memset(Processor_Reverber_Buffer, 0x00, sizeof(Processor_Reverber_Buffer));
+			NeedReinitReverber = false;
+		}
+
+		//save
+		memcpy(&Processor_Reverber_Buffer[reverber_position * size], FPGA_Audio_Buffer_TX_I_tmp, sizeof(float32_t) * size);
+		
+		//move
+		reverber_position++;
+		if(reverber_position > TRX.MIC_REVERBER)
+			reverber_position = 0;
+		
+		//apply
+		arm_add_f32(&Processor_Reverber_Buffer[reverber_position * size], FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
+		arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, 0.5f, FPGA_Audio_Buffer_TX_I_tmp, size);
+	}
 }
 
 // Digital Noise Reduction

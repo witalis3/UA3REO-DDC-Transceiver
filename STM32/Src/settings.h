@@ -180,6 +180,7 @@ extern struct TRX_SETTINGS
 	int8_t MIC_EQ_LOW;
 	int8_t MIC_EQ_MID;
 	int8_t MIC_EQ_HIG;
+	uint8_t MIC_REVERBER;
 	uint8_t DNR_SNR_THRESHOLD;
 	uint8_t DNR_AVERAGE;
 	uint8_t DNR_MINIMAL;

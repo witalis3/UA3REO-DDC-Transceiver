@@ -247,6 +247,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.MIC_EQ_LOW", (uint32_t*)&TRX.MIC_EQ_LOW, SYSMENU_INT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID", (uint32_t*)&TRX.MIC_EQ_MID, SYSMENU_INT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG", (uint32_t*)&TRX.MIC_EQ_HIG, SYSMENU_INT8);
+		if(res) SD_WRITE_SETT_LINE("TRX.MIC_REVERBER", (uint32_t*)&TRX.MIC_REVERBER, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.DNR_SNR_THRESHOLD", (uint32_t*)&TRX.DNR_SNR_THRESHOLD, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.DNR_AVERAGE", (uint32_t*)&TRX.DNR_AVERAGE, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.DNR_MINIMAL", (uint32_t*)&TRX.DNR_MINIMAL, SYSMENU_UINT8);
@@ -438,6 +439,7 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 	if (strcmp(name, "TRX.MIC_EQ_LOW") == 0) TRX.MIC_EQ_LOW = (int8_t)intval;
 	if (strcmp(name, "TRX.MIC_EQ_MID") == 0) TRX.MIC_EQ_MID = (int8_t)intval;
 	if (strcmp(name, "TRX.MIC_EQ_HIG") == 0) TRX.MIC_EQ_HIG = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_REVERBER") == 0) TRX.MIC_REVERBER = (uint8_t)uintval;
 	if (strcmp(name, "TRX.DNR_SNR_THRESHOLD") == 0) TRX.DNR_SNR_THRESHOLD = (uint8_t)uintval;
 	if (strcmp(name, "TRX.DNR_AVERAGE") == 0) TRX.DNR_AVERAGE = (uint8_t)uintval;
 	if (strcmp(name, "TRX.DNR_MINIMAL") == 0) TRX.DNR_MINIMAL = (uint8_t)uintval;
