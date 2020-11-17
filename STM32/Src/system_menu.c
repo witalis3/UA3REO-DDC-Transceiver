@@ -151,7 +151,7 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction);
 static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
 
-static struct sysmenu_item_handler sysmenu_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_handlers[] =
 	{
 		{"TRX Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_TRXMENU},
 		{"AUDIO Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_AUDIOMENU},
@@ -166,7 +166,7 @@ static struct sysmenu_item_handler sysmenu_handlers[] =
 };
 static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_trx_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 	{
 		{"RF Power", SYSMENU_UINT8, (uint32_t *)&TRX.RF_Power, SYSMENU_HANDL_TRX_RFPower},
 		{"Band Map", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
@@ -188,7 +188,7 @@ static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 };
 static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sysmenu_trx_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_audio_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 	{
 		{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
 		{"AGC Gain target, LKFS", SYSMENU_INT8, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
@@ -218,7 +218,7 @@ static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 };
 static uint8_t sysmenu_audio_item_count = sizeof(sysmenu_audio_handlers) / sizeof(sysmenu_audio_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_cw_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 	{
 		{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
 		{"CW Generator shift", SYSMENU_UINT16, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
@@ -229,7 +229,7 @@ static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 };
 static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_screen_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
@@ -244,7 +244,7 @@ static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 };
 static uint8_t sysmenu_screen_item_count = sizeof(sysmenu_screen_handlers) / sizeof(sysmenu_screen_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_adc_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 	{
 		{"ADC Driver", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_Driver, SYSMENU_HANDL_ADC_DRIVER},
 		{"ADC Preamp", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},
@@ -254,7 +254,7 @@ static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 };
 static uint8_t sysmenu_adc_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 	{
 		{"WIFI Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
 		{"WIFI Select AP", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SelectAP},
@@ -268,7 +268,7 @@ static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 };
 static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_sd_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 	{
 		{"Export Settings", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ExportSettings},
 		{"Import Settings", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ImportSettings},
@@ -276,7 +276,7 @@ static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 };
 static uint8_t sysmenu_sd_item_count = sizeof(sysmenu_sd_handlers) / sizeof(sysmenu_sd_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 	{
 		{"Spectrum START", SYSMENU_RUN, 0, SYSMENU_HANDL_SPECTRUM_Start},
 		{"Begin, kHz", SYSMENU_UINT32, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
@@ -286,7 +286,7 @@ static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 };
 static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 	{
 		{"Encoder invert", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_INVERT, SYSMENU_HANDL_CALIB_ENCODER_INVERT},
 		{"Encoder2 invert", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_HANDL_CALIB_ENCODER2_INVERT},
@@ -326,7 +326,7 @@ static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 };
 static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 
-static struct sysmenu_item_handler sysmenu_services_handlers[] =
+IRAM2 static struct sysmenu_item_handler sysmenu_services_handlers[] =
 {
 	{"Band SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_BAND_START},
 	{"HF SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_HF_START},

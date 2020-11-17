@@ -38,7 +38,7 @@ static uint32_t lastWTFFreq = 0;								//last WTF printed freq
 static uint16_t color_scale[LAY_FFT_FFT_MAX_HEIGHT] = {0};							  // color gradient in height FFT
 static uint16_t bg_gradient_color[LAY_FFT_FFT_MAX_HEIGHT] = {0};							  // color gradient on background of FFT
 static SRAM uint16_t wtf_buffer[LAY_FFT_WTF_MAX_HEIGHT][LAY_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
-static SRAM uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0};				  // frequencies for each row of the waterfall
+static IRAM2 uint32_t wtf_buffer_freqs[LAY_FFT_WTF_MAX_HEIGHT] = {0};				  // frequencies for each row of the waterfall
 static SRAM uint16_t wtf_line_tmp[LAY_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
 static int32_t grid_lines_pos[20] = {-1};										//grid lines positions
 static int16_t bw_line_start = 0;															//BW bar params
@@ -429,7 +429,7 @@ ITCM void FFT_printFFT(void)
 
 	// calculate the colors for the waterfall
 	uint_fast16_t new_x = 0;
-	uint16_t fft_header[LAY_FFT_PRINT_SIZE] = {0};
+	static uint16_t fft_header[LAY_FFT_PRINT_SIZE] = {0};
 	for (uint32_t fft_x = 0; fft_x < LAY_FFT_PRINT_SIZE; fft_x++)
 	{
 		if (fft_x < (LAY_FFT_PRINT_SIZE / 2))

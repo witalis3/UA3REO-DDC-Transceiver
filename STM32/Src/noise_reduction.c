@@ -5,7 +5,7 @@
 //https://github.com/df8oe/UHSDR/wiki/Noise-reduction
 
 //Private variables
-IRAM2 static NR_Instance NR_RX1 = {
+static NR_Instance NR_RX1 = {
 	.NR_InputBuffer = {0},
 	.NR_InputBuffer_index = 0,
 	.NR_OutputBuffer = {0},

@@ -663,7 +663,7 @@ void TIM6_DAC_IRQHandler(void)
     RX_USB_AUDIO_SAMPLES = 0;
     TX_USB_AUDIO_SAMPLES = 0;
     FPGA_NeedSendParams = true;
-		
+
 		//redraw lcd to fix problem
 		#ifdef LCD_HX8357B
 		static uint8_t HX8357B_BUG_redraw_counter = 0;

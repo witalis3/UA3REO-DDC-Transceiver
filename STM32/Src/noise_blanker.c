@@ -3,7 +3,7 @@
 //https://github.com/df8oe/UHSDR/wiki/Noise-blanker
 
 //Private variables
-IRAM2 static NB_Instance NB_RX1 = {0};
+static NB_Instance NB_RX1 = {0};
 IRAM2 static NB_Instance NB_RX2 = {0};
 
 // start NB for the data block

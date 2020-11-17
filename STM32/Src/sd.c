@@ -7,7 +7,7 @@
 #include "user_diskio.h"
 #include "system_menu.h"
 
-FATFS SDFatFs;
+IRAM2 FATFS SDFatFs;
 sd_info_ptr sdinfo;
 extern Disk_drvTypeDef  disk;
 

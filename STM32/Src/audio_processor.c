@@ -1013,7 +1013,7 @@ ITCM static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	bool *squelched = &DFM_RX1_Squelched;
 
 	float32_t angle, x, y, a, b;
-	float32_t squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+	static float32_t squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 
 	if (rx_id == AUDIO_RX2)
 	{

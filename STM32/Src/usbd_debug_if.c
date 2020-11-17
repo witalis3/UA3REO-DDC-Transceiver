@@ -191,7 +191,7 @@ void DEBUG_Transmit_FIFO(uint8_t *data, uint16_t length)
 		}
 }
 
-static uint8_t temp_buff[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
+IRAM2 static uint8_t temp_buff[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
 static bool FIFO_Events_busy = false;
 uint8_t DEBUG_Transmit_FIFO_Events(void)
 {

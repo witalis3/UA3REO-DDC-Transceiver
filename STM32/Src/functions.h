@@ -29,7 +29,7 @@
 
 //#define IROM1 __attribute__((section(".ER_IROM1")))          // 2mb FLASH
 #define ITCM __attribute__((section(".ITCM")))            // 64kb ITCM
-#define DTCM __attribute__((section(".IRAM1")))  // 128kb DTCM
+//#define DTCM __attribute__((section(".IRAM1")))  // 128kb DTCM
 #define IRAM2 __attribute__((section(".IRAM2"))) // 512kb AXI SRAM
 #define SRAM __attribute__((section(".SRAM"))) // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb D-Cache disabled in MPU
 //#define SRAM4 __attribute__((section(".SRAM4")))             // 64kb
@@ -47,7 +47,7 @@
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
-#ifndef isnanf
+#ifdef __clang__
  #define isnanf __ARM_isnanf
  #define isinff __ARM_isinff
 #endif

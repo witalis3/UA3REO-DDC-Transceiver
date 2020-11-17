@@ -26,9 +26,9 @@ struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
 static uint8_t settings_bank = 1;
 	
-static uint8_t write_clone[W25Q16_SECTOR_SIZE] = {0};
-static uint8_t read_clone[W25Q16_SECTOR_SIZE] = {0};
-static uint8_t verify_clone[W25Q16_SECTOR_SIZE] = {0};
+IRAM2 static uint8_t write_clone[W25Q16_SECTOR_SIZE] = {0};
+IRAM2 static uint8_t read_clone[W25Q16_SECTOR_SIZE] = {0};
+IRAM2 static uint8_t verify_clone[W25Q16_SECTOR_SIZE] = {0};
 
 volatile bool NeedSaveSettings = false;
 volatile bool NeedSaveCalibration = false;
@@ -255,7 +255,7 @@ static void LoadSettingsFromEEPROM(void)
 {
 	EEPROM_PowerUp();
 	uint8_t tryes = 0;
-	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&TRX, sizeof(TRX), 4, true, false))
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&TRX, sizeof(TRX), EEPROM_SECTOR_SETTINGS, true, false))
 	{
 		tryes++;
 	}
@@ -268,7 +268,7 @@ void LoadCalibration(bool clear)
 {
 	EEPROM_PowerUp();
 	uint8_t tryes = 0;
-	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&CALIBRATE, sizeof(CALIBRATE), 0, true, false))
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&CALIBRATE, sizeof(CALIBRATE), EEPROM_SECTOR_CALIBRATION, true, false))
 	{
 		tryes++;
 	}
@@ -380,7 +380,7 @@ void SaveSettingsToEEPROM(void)
 	EEPROM_Busy = true;
 	TRX.csum = calculateCSUM();
 	uint8_t tryes = 0;
-	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(4, false))
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(EEPROM_SECTOR_SETTINGS, false))
 	{
 		tryes++;
 	}
@@ -392,7 +392,7 @@ void SaveSettingsToEEPROM(void)
 		return;
 	}
 	tryes = 0;
-	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&TRX, sizeof(TRX), 4, true, false))
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&TRX, sizeof(TRX), EEPROM_SECTOR_SETTINGS, true, false))
 	{
 		tryes++;
 	}
@@ -418,7 +418,7 @@ void SaveCalibration(void)
 	EEPROM_Busy = true;
 
 	uint8_t tryes = 0;
-	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(0, false))
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(EEPROM_SECTOR_CALIBRATION, false))
 	{
 		tryes++;
 	}
@@ -429,7 +429,7 @@ void SaveCalibration(void)
 		return;
 	}
 	tryes = 0;
-	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&CALIBRATE, sizeof(CALIBRATE), 0, true, false))
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&CALIBRATE, sizeof(CALIBRATE), EEPROM_SECTOR_CALIBRATION, true, false))
 	{
 		tryes++;
 	}
@@ -546,7 +546,6 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Address
 	SPI_Transmit(NULL, (uint8_t *)(Buffer), size, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Read
 
-	SCB_InvalidateDCache_by_Addr((uint32_t *)Buffer, sizeof(Buffer));
 	//verify
 	if (verify)
 	{
@@ -554,6 +553,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		for (uint16_t i = 0; i < size; i++)
 			if (read_clone[i] != Buffer[i])
 			{
+				sendToDebug_uint8(read_clone[i],false);
 				SPI_process = false;
 				return false;
 			}

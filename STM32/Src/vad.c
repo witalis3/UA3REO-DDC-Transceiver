@@ -7,10 +7,10 @@
 // https://habr.com/ru/post/192954/
 
 const static arm_cfft_instance_f32 *VAD_FFT_Inst = &arm_cfft_sR_f32_len128;
-IRAM2 static float32_t window_multipliers[VAD_FFT_SIZE] = {0}; // coefficients for the window function
-IRAM2 static float32_t VAD_FFTBuffer[VAD_FFT_SIZE * 2] = {0};		 
-IRAM2 static float32_t VAD_FFTBufferCharge[VAD_FFT_SIZE * 2] = {0}; // cumulative buffer
-IRAM2 static float32_t InputBuffer[VAD_BLOCK_SIZE] = {0};		//Input buffer
+static float32_t window_multipliers[VAD_FFT_SIZE] = {0}; // coefficients for the window function
+static float32_t VAD_FFTBuffer[VAD_FFT_SIZE * 2] = {0};
+static float32_t VAD_FFTBufferCharge[VAD_FFT_SIZE * 2] = {0}; // cumulative buffer
+static float32_t InputBuffer[VAD_BLOCK_SIZE] = {0};		//Input buffer
 //IRAM2 float32_t VAD_FFTBuffer_Export [VAD_FFT_SIZE] = {0};
 static float32_t VAD_decimState[VAD_BLOCK_SIZE + 4 - 1];
 static arm_fir_decimate_instance_f32 VAD_DECIMATE;

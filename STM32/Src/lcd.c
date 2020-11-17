@@ -717,7 +717,7 @@ void LCD_redraw(void)
 	LCD_last_showed_freq_mhz = 9999;
 	LCD_last_showed_freq_khz = 9999;
 	LCD_last_showed_freq_hz = 9999;
-	LCD_doEvents();
+	//LCD_doEvents();
 }
 
 void LCD_doEvents(void)
