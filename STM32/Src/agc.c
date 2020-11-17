@@ -11,6 +11,8 @@ static float32_t AGC_RX1_need_gain_db_old = 0.0f;
 static float32_t AGC_RX2_need_gain_db_old = 0.0f;
 static float32_t AGC_RX1_agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE] = {0};
 static float32_t AGC_RX2_agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE] = {0};
+IRAM2 static float32_t AGC_RX1_ringbuffer[AGC_RINGBUFFER_TAPS_SIZE * AUDIO_BUFFER_HALF_SIZE] = {0};
+IRAM2 static float32_t AGC_RX2_ringbuffer[AGC_RINGBUFFER_TAPS_SIZE * AUDIO_BUFFER_HALF_SIZE] = {0};
 
 //Run AGC on data block
 void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint_fast8_t mode)
@@ -19,11 +21,13 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	float32_t *AGC_need_gain_db = &AGC_RX1_need_gain_db;
 	float32_t *AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
 	float32_t *agcBuffer_kw = (float32_t*)&AGC_RX1_agcBuffer_kw;
+	float32_t *agc_ringbuffer = (float32_t*)&AGC_RX1_ringbuffer;
 	if (rx_id == AUDIO_RX2)
 	{
 		AGC_need_gain_db = &AGC_RX2_need_gain_db;
 		AGC_need_gain_db_old = &AGC_RX2_need_gain_db_old;
 		agcBuffer_kw = (float32_t*)&AGC_RX2_agcBuffer_kw;
+		agc_ringbuffer = (float32_t*)&AGC_RX2_ringbuffer;
 	}
 
 	//higher speed in settings - higher speed of AGC processing
@@ -52,6 +56,17 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 		arm_biquad_cascade_df2T_f32(&AGC_RX2_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
 	}
 	
+	//do ring buffer
+	static uint32_t ring_position = 0;
+	//save new data to ring buffer
+	memcpy(&agc_ringbuffer[ring_position * blockSize], agcBuffer, sizeof(float32_t) * blockSize);
+	//move ring buffer index
+	ring_position++; 
+	if(ring_position >= AGC_RINGBUFFER_TAPS_SIZE)
+		ring_position = 0;
+	//get old data to process
+	memcpy(agcBuffer, &agc_ringbuffer[ring_position * blockSize], sizeof(float32_t) * blockSize);
+	
 	//calculate the magnitude in dBFS
 	float32_t AGC_RX_magnitude = 0;
 	arm_rms_f32(agcBuffer_kw, blockSize, &AGC_RX_magnitude);
@@ -70,10 +85,11 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 			*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
 
 		//overload (clipping), sharply reduce the gain
-		/*if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + AGC_CLIPPING))
+		if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + AGC_CLIPPING))
 		{
 			*AGC_need_gain_db = (float32_t)TRX.AGC_GAIN_TARGET - AGC_RX_dbFS;
-		}*/
+			//sendToDebug_float32(diff,false);
+		}
 	}
 
 	//noise threshold, below it - do not amplify
@@ -125,4 +141,6 @@ void ResetAGC(void)
 {
 	AGC_RX1_need_gain_db = 0.0f;
 	AGC_RX2_need_gain_db = 0.0f;
+	memset(AGC_RX1_ringbuffer, 0x00, sizeof(AGC_RX1_ringbuffer));
+	memset(AGC_RX2_ringbuffer, 0x00, sizeof(AGC_RX2_ringbuffer));
 }
