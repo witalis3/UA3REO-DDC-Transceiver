@@ -969,8 +969,6 @@ void FFT_Reset(void) // clear the FFT
 	memset(FFTInput_Q, 0x00, sizeof FFTInput_Q);
 	memset(FFTInput, 0x00, sizeof FFTInput);
 	memset(FFTOutput_mean, 0x00, sizeof FFTOutput_mean);
-	memset(wtf_buffer, BG_COLOR, sizeof(wtf_buffer));
-	memset(wtf_line_tmp, BG_COLOR, sizeof(wtf_line_tmp));
 	FFT_buff_index = 0;
 	NeedFFTInputBuffer = true;
 }

@@ -20,6 +20,7 @@
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
 volatile bool LCD_systemMenuOpened = false;
+STRUCT_COLOR_THEME* COLOR_THEME = &COLOR_THEMES[0];
 
 static char LCD_freq_string_hz[6] = {0};
 static char LCD_freq_string_khz[6] = {0};
@@ -68,6 +69,8 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 
 void LCD_Init(void)
 {
+	COLOR_THEME = &COLOR_THEMES[TRX.ColorThemeId];
+	
 	LCDDriver_Init();
 #if SCREEN_ROTATE
 	LCDDriver_setRotation(2);

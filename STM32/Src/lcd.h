@@ -5,6 +5,7 @@
 #include "trx_manager.h"
 #include "lcd_driver.h"
 #include "touchpad.h"
+#include "screen_layout.h"
 
 typedef struct
 {
@@ -46,5 +47,6 @@ extern void LCD_showTooltip(char text[]);
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
 volatile extern bool LCD_busy;
 volatile extern bool LCD_systemMenuOpened;
+extern STRUCT_COLOR_THEME* COLOR_THEME;
 
 #endif

@@ -243,6 +243,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Compressor = true;	//Compress FFT Peaks
 		TRX.Encoder_Accelerate = true;	//Accelerate Encoder on fast rate
 		strcpy(TRX.CALLSIGN, "HamRad");				// Callsign
+		TRX.ColorThemeId = 0;			//Selected Color Theme
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

@@ -271,6 +271,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.CW_KEYER", (uint32_t*)&TRX.CW_KEYER, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.CW_KEYER_WPM", (uint32_t*)&TRX.CW_KEYER_WPM, SYSMENU_UINT16);
 		//SCREEN
+		if(res) SD_WRITE_SETT_LINE("TRX.ColorThemeId", (uint32_t*)&TRX.ColorThemeId, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.FFT_Enabled", (uint32_t*)&TRX.FFT_Enabled, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.FFT_Zoom", (uint32_t*)&TRX.FFT_Zoom, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.FFT_Speed", (uint32_t*)&TRX.FFT_Speed, SYSMENU_UINT8);
@@ -463,6 +464,7 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 	if (strcmp(name, "TRX.CW_KEYER") == 0) TRX.CW_KEYER = uintval;
 	if (strcmp(name, "TRX.CW_KEYER_WPM") == 0) TRX.CW_KEYER_WPM = (uint16_t)uintval;
 	//SCREEN
+	if (strcmp(name, "TRX.ColorThemeId") == 0) TRX.ColorThemeId = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Enabled") == 0) TRX.FFT_Enabled = uintval;
 	if (strcmp(name, "TRX.FFT_Zoom") == 0) TRX.FFT_Zoom = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Speed") == 0) TRX.FFT_Speed = (uint8_t)uintval;

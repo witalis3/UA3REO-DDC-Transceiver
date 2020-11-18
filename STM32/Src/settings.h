@@ -207,6 +207,7 @@ extern struct TRX_SETTINGS
 	bool CW_KEYER;
 	uint16_t CW_KEYER_WPM;
 	//SCREEN
+	uint8_t ColorThemeId;
 	bool FFT_Enabled;
 	uint8_t FFT_Zoom;
 	uint8_t FFT_Speed;

@@ -66,6 +66,7 @@ static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction);
@@ -232,6 +233,7 @@ static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysm
 IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
+		{"Color Theme", SYSMENU_UINT8, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
 		{"FFT Height", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
 		{"FFT Color", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color},
@@ -1293,6 +1295,18 @@ static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction)
 		TRX.FFT_Enabled = true;
 	if (direction < 0)
 		TRX.FFT_Enabled = false;
+}
+
+static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction)
+{
+	if(direction > 0 || TRX.ColorThemeId > 0)
+		TRX.ColorThemeId += direction;
+	if (TRX.ColorThemeId > (COLOR_THEMES_COUNT - 1))
+		TRX.ColorThemeId = (COLOR_THEMES_COUNT - 1);
+	
+	COLOR_THEME = &COLOR_THEMES[TRX.ColorThemeId];
+	FFT_Init();
+	LCD_redraw();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Compressor(int8_t direction)
