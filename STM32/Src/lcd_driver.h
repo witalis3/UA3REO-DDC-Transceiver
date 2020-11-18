@@ -80,7 +80,8 @@ typedef struct
 		a = b;          \
 		b = t;          \
 	}
-
+#define rgb888torgb565(r, g, b) ((uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3)))
+	
 extern void LCDDriver_SendData(uint16_t data);
 extern uint16_t LCDDriver_readReg(uint16_t reg);
 extern void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
@@ -103,7 +104,6 @@ extern void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 extern void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image, uint16_t transparent_color, uint16_t bg_color);
 extern void LCDDriver_setRotation(uint8_t rotate);
 extern void LCDDriver_setBrightness(uint8_t percent);
-extern uint16_t rgb888torgb565(uint_fast8_t red, uint_fast8_t green, uint_fast8_t blue);
 
 //BTE functions
 ITCM void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, uint16_t w, uint16_t h, bool fromEnd);

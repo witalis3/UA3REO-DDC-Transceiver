@@ -75,7 +75,7 @@ void sendToDebug_str(char *data)
 	if (LCD_DEBUG_ENABLED)
 	{
 		static uint16_t dbg_lcd_y = 10;
-		LCDDriver_printText(data, 0, dbg_lcd_y, COLOR_RED, BACKGROUND_COLOR, 1);
+		LCDDriver_printText(data, 0, dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
 		dbg_lcd_y += 9;
 		if(dbg_lcd_y >= LCD_HEIGHT)
 			dbg_lcd_y = 0;
@@ -188,27 +188,6 @@ void sendToDebug_float32(float32_t data, bool _inline)
 		sprintf(tmp, "%f\n", (double)data);
 	sendToDebug_str(tmp);
 }
-
-/*
-void delay_us(uint32_t us)
-{
-	if (bitRead(DWT->CTRL, DWT_CTRL_CYCCNTENA_Pos))
-	{
-		HAL_Delay(1);
-		return;
-	}
-	unsigned long us_count_tick = us * (SystemCoreClock / 1000000);
-	// allow using the counter
-	CoreDebug->DEMCR | = CoreDebug_DEMCR_TRCENA_Msk;
-	// zero the value of the counting register
-	DWT->CYCCNT = 0;
-	// start the counter
-	DWT->CTRL | = DWT_CTRL_CYCCNTENA_Msk;
-	while (DWT->CYCCNT < us_count_tick)
-		;
-	// stop the counter
-	DWT->CTRL & = ~DWT_CTRL_CYCCNTENA_Msk;
-}*/
 
 uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
 {

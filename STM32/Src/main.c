@@ -215,7 +215,7 @@ int main(void)
   if (SHOW_LOGO)
 	{
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
-    LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo.width) / 2), ((LCD_HEIGHT - IMAGES_logo.height) / 2), &IMAGES_logo, BACKGROUND_COLOR, BACKGROUND_COLOR);
+    LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo.width) / 2), ((LCD_HEIGHT - IMAGES_logo.height) / 2), &IMAGES_logo, BG_COLOR, BG_COLOR);
 		LCDDriver_printText(version_string, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
 		//show callsign greetings
 		uint16_t x1, y1, w, h;
@@ -223,7 +223,7 @@ int main(void)
 		strcat(greetings_buff, TRX.CALLSIGN);
 		strcat(greetings_buff, " !");
 		LCDDriver_getTextBounds(greetings_buff, LAY_GREETINGS_X, LAY_GREETINGS_Y, &x1, &y1, &w, &h, (GFXfont *)&FreeSans9pt7b);
-		LCDDriver_printTextFont(greetings_buff, LAY_GREETINGS_X - (w / 2), LAY_GREETINGS_Y, LAY_GREETINGS_COLOR, rgb888torgb565(243, 243, 243), (GFXfont *)&FreeSans9pt7b);
+		LCDDriver_printTextFont(greetings_buff, LAY_GREETINGS_X - (w / 2), LAY_GREETINGS_Y, COLOR_THEME->LAY_GREETINGS_COLOR, rgb888torgb565(243, 243, 243), (GFXfont *)&FreeSans9pt7b);
 	}
   sendToDebug_strln("[OK] Profiler init");
   InitProfiler();

@@ -279,8 +279,3 @@ ITCM void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAG
 		}
 	}
 }
-
-ITCM inline uint16_t rgb888torgb565(uint_fast8_t r, uint_fast8_t g, uint_fast8_t b)
-{
-	return (uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3));
-}

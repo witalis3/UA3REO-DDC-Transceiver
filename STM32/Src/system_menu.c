@@ -627,11 +627,11 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw)
 {
 	if (full_redraw)
 	{
-		LCDDriver_Fill(BACKGROUND_COLOR);
-		LCDDriver_printText("CALLSIGN:", 5, 5, FOREGROUND_COLOR, BACKGROUND_COLOR, 2);
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("CALLSIGN:", 5, 5, FG_COLOR, BG_COLOR, 2);
 	}
 
-	LCDDriver_printText(TRX.CALLSIGN, 10, 37, COLOR_GREEN, BACKGROUND_COLOR, 2);
+	LCDDriver_printText(TRX.CALLSIGN, 10, 37, COLOR_GREEN, BG_COLOR, 2);
 	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * 12, 54, 12, COLOR_RED);
 }
 
@@ -1478,11 +1478,11 @@ static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
 {
 	if (full_redraw || sysmenu_wifi_rescan_interval == 0)
 	{
-		LCDDriver_Fill(BACKGROUND_COLOR);
-		LCDDriver_printText("AP Found:", 5, 5, FOREGROUND_COLOR, BACKGROUND_COLOR, 2);
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("AP Found:", 5, 5, FG_COLOR, BG_COLOR, 2);
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 33 + i * 24, COLOR_GREEN, BACKGROUND_COLOR, 2);
-		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAY_SYSMENU_W, FOREGROUND_COLOR);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 33 + i * 24, COLOR_GREEN, BG_COLOR, 2);
+		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAY_SYSMENU_W, FG_COLOR);
 		WIFI_ListAP(SYSMENU_WIFI_DrawSelectAPMenuCallback);
 	}
 	sysmenu_wifi_rescan_interval++;
@@ -1513,11 +1513,11 @@ static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw)
 {
 	if (full_redraw)
 	{
-		LCDDriver_Fill(BACKGROUND_COLOR);
-		LCDDriver_printText("AP Password:", 5, 5, FOREGROUND_COLOR, BACKGROUND_COLOR, 2);
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("AP Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD, 10, 37, COLOR_GREEN, BACKGROUND_COLOR, 2);
+	LCDDriver_printText(TRX.WIFI_PASSWORD, 10, 37, COLOR_GREEN, BG_COLOR, 2);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
 }
 
@@ -1629,7 +1629,7 @@ static void SYSMENU_HANDL_SD_Format(int8_t direction)
 static void SYSMENU_HANDL_SETTIME(int8_t direction)
 {
 	if (!sysmenu_timeMenuOpened)
-		LCDDriver_Fill(BACKGROUND_COLOR);
+		LCDDriver_Fill(BG_COLOR);
 	sysmenu_timeMenuOpened = true;
 	static uint8_t Hours;
 	static uint8_t Minutes;
@@ -1680,15 +1680,15 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 	}
 	sprintf(ctmp, "%d", Hours);
 	addSymbols(ctmp, ctmp, 2, "0", false);
-	LCDDriver_printText(ctmp, 76, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 0 ? FOREGROUND_COLOR : BACKGROUND_COLOR, 3);
-	LCDDriver_printText(":", 124, 100, COLOR_BUTTON_TEXT, BACKGROUND_COLOR, 3);
+	LCDDriver_printText(ctmp, 76, 100, COLOR_THEME->COLOR_BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, 3);
+	LCDDriver_printText(":", 124, 100, COLOR_THEME->COLOR_BUTTON_TEXT, BG_COLOR, 3);
 	sprintf(ctmp, "%d", Minutes);
 	addSymbols(ctmp, ctmp, 2, "0", false);
-	LCDDriver_printText(ctmp, 148, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 1 ? FOREGROUND_COLOR : BACKGROUND_COLOR, 3);
-	LCDDriver_printText(":", 194, 100, COLOR_BUTTON_TEXT, BACKGROUND_COLOR, 3);
+	LCDDriver_printText(ctmp, 148, 100, COLOR_THEME->COLOR_BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, 3);
+	LCDDriver_printText(":", 194, 100, COLOR_THEME->COLOR_BUTTON_TEXT, BG_COLOR, 3);
 	sprintf(ctmp, "%d", Seconds);
 	addSymbols(ctmp, ctmp, 2, "0", false);
-	LCDDriver_printText(ctmp, 220, 100, COLOR_BUTTON_TEXT, TimeMenuSelection == 2 ? FOREGROUND_COLOR : BACKGROUND_COLOR, 3);
+	LCDDriver_printText(ctmp, 220, 100, COLOR_THEME->COLOR_BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, 3);
 }
 
 //FLASH MENU
@@ -2190,7 +2190,7 @@ void drawSystemMenu(bool draw_background)
 	sysmenu_y = 5;
 
 	if (draw_background)
-		LCDDriver_Fill(BACKGROUND_COLOR);
+		LCDDriver_Fill(BG_COLOR);
 
 	uint8_t current_selected_page = systemMenuIndex / max_items_on_page;
 	if (current_selected_page * max_items_on_page > *sysmenu_item_count_selected)
@@ -2369,7 +2369,7 @@ void eventSecRotateSystemMenu(int8_t direction)
 	{
 		SPEC_Stop();
 		sysmenu_spectrum_opened = false;
-		LCDDriver_Fill(BACKGROUND_COLOR);
+		LCDDriver_Fill(BG_COLOR);
 		drawSystemMenu(true);
 		return;
 	}
@@ -2378,7 +2378,7 @@ void eventSecRotateSystemMenu(int8_t direction)
 	//time menu
 	if (sysmenu_timeMenuOpened)
 	{
-		LCDDriver_Fill(BACKGROUND_COLOR);
+		LCDDriver_Fill(BG_COLOR);
 		if (direction < 0)
 		{
 			TimeMenuSelection--;
@@ -2396,7 +2396,7 @@ void eventSecRotateSystemMenu(int8_t direction)
 	}
 	//other
 	uint8_t current_page = systemMenuIndex / max_items_on_page;
-	LCDDriver_drawFastHLine(0, (5 + (systemMenuIndex - current_page * max_items_on_page) * LAY_SYSMENU_ITEM_HEIGHT) + 17, LAY_SYSMENU_W, BACKGROUND_COLOR);
+	LCDDriver_drawFastHLine(0, (5 + (systemMenuIndex - current_page * max_items_on_page) * LAY_SYSMENU_ITEM_HEIGHT) + 17, LAY_SYSMENU_W, BG_COLOR);
 	if (direction < 0)
 	{
 		if (systemMenuIndex > 0)
@@ -2445,8 +2445,8 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	char ctmp[10] = {0};
 	if (!onlyVal)
 	{
-		LCDDriver_Fill_RectXY(0, sysmenu_y, LAY_SYSMENU_W, sysmenu_y + 17, BACKGROUND_COLOR);
-		LCDDriver_printText(title, LAY_SYSMENU_X1, sysmenu_y, FOREGROUND_COLOR, BACKGROUND_COLOR, 2);
+		LCDDriver_Fill_RectXY(0, sysmenu_y, LAY_SYSMENU_W, sysmenu_y + 17, BG_COLOR);
+		LCDDriver_printText(title, LAY_SYSMENU_X1, sysmenu_y, FG_COLOR, BG_COLOR, 2);
 	}
 
 	uint16_t x_pos = LAY_SYSMENU_X2;
@@ -2503,13 +2503,13 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	}
 
 	if (onlyVal)
-		LCDDriver_Fill_RectWH(x_pos, sysmenu_y, 6 * 12, 13, BACKGROUND_COLOR);
+		LCDDriver_Fill_RectWH(x_pos, sysmenu_y, 6 * 12, 13, BG_COLOR);
 	if (type != SYSMENU_INFOLINE)
-		LCDDriver_printText(ctmp, x_pos, sysmenu_y, FOREGROUND_COLOR, BACKGROUND_COLOR, 2);
+		LCDDriver_printText(ctmp, x_pos, sysmenu_y, FG_COLOR, BG_COLOR, 2);
 
 	uint8_t current_selected_page = systemMenuIndex / max_items_on_page;
 	if (systemMenuIndex == sysmenu_i + current_selected_page * max_items_on_page)
-		LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAY_SYSMENU_W, FOREGROUND_COLOR);
+		LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAY_SYSMENU_W, FG_COLOR);
 	sysmenu_i++;
 	sysmenu_y += LAY_SYSMENU_ITEM_HEIGHT;
 }
