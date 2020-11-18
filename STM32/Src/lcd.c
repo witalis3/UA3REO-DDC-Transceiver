@@ -183,11 +183,18 @@ static void LCD_displayFreqInfo(bool redraw)
 		return;
 	}
 	LCD_busy = true;
+	
+	uint32_t display_freq = CurrentVFO()->Freq;
+	if(TRX.Transverter_Enabled)
+		display_freq += TRX.Transverter_Offset_Mhz * 1000 * 1000;
+	if(display_freq > 999999999)
+		display_freq = 999999999;
+	LCD_last_showed_freq = display_freq;
+	
 	uint16_t mhz_x_offset = 0;
-	LCD_last_showed_freq = CurrentVFO()->Freq;
-	if (CurrentVFO()->Freq >= 100000000)
+	if (display_freq>= 100000000)
 		mhz_x_offset = LAY_FREQ_X_OFFSET_100;
-	else if (CurrentVFO()->Freq >= 10000000)
+	else if (display_freq >= 10000000)
 		mhz_x_offset = LAY_FREQ_X_OFFSET_10;
 	else
 		mhz_x_offset = LAY_FREQ_X_OFFSET_1;
@@ -199,9 +206,9 @@ static void LCD_displayFreqInfo(bool redraw)
 		LCDDriver_Fill_RectWH(LAY_FREQ_LEFT_MARGIN, LAY_FREQ_Y_BASELINE - LAY_FREQ_HEIGHT, mhz_x_offset - LAY_FREQ_LEFT_MARGIN, LAY_FREQ_HEIGHT, BG_COLOR);
 
 	// add spaces to output the frequency
-	uint16_t hz = (CurrentVFO()->Freq % 1000);
-	uint16_t khz = ((CurrentVFO()->Freq / 1000) % 1000);
-	uint16_t mhz = ((CurrentVFO()->Freq / 1000000) % 1000000);
+	uint16_t hz = (display_freq % 1000);
+	uint16_t khz = ((display_freq / 1000) % 1000);
+	uint16_t mhz = ((display_freq / 1000000) % 1000000);
 	sprintf(LCD_freq_string_hz, "%d", hz);
 	sprintf(LCD_freq_string_khz, "%d", khz);
 	sprintf(LCD_freq_string_mhz, "%d", mhz);

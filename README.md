@@ -133,6 +133,8 @@ Supported LCD: ILI9481, ILI9486 and HX8357B
 * **LINE IN** - Line input selection
 * **USB IN** - Select USB audio input
 * **Callsign** - User callsign
+* **Transverter Enable** - Enable external transverter
+* **Transverter Offset, mHz** - External transverter frequency offset, mHz
 
 ### AUDIO Settings
 

@@ -236,6 +236,8 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.Encoder_Accelerate", (uint32_t*)&TRX.Encoder_Accelerate, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint32_t*)&TRX.Dual_RX_Type, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_STRING("TRX.CALLSIGN", TRX.CALLSIGN);
+		if(res) SD_WRITE_SETT_LINE("TRX.Transverter_Enabled", (uint32_t*)&TRX.Transverter_Enabled, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.Transverter_Offset_Mhz", (uint32_t*)&TRX.Transverter_Offset_Mhz, SYSMENU_UINT16);
 		//AUDIO
 		if(res) SD_WRITE_SETT_LINE("TRX.FM_SQL_threshold", (uint32_t*)&TRX.FM_SQL_threshold, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint32_t*)&TRX.IF_Gain, SYSMENU_UINT8);
@@ -429,6 +431,8 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 			lens = sizeof(TRX.CALLSIGN);
 		strncpy(TRX.CALLSIGN, value, lens);
 	}
+	if (strcmp(name, "TRX.Transverter_Enabled") == 0) TRX.Transverter_Enabled = bval;
+	if (strcmp(name, "TRX.Transverter_Offset_Mhz") == 0) TRX.Transverter_Offset_Mhz = (uint16_t)uintval;
 	//AUDIO
 	if (strcmp(name, "TRX.FM_SQL_threshold") == 0) TRX.FM_SQL_threshold = (uint8_t)uintval;
 	if (strcmp(name, "TRX.IF_Gain") == 0) TRX.IF_Gain = (uint8_t)uintval;

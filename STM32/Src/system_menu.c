@@ -31,6 +31,8 @@ static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction);
+static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction);
+static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction);
@@ -186,6 +188,8 @@ IRAM2 static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
 		{"USB IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_USB, SYSMENU_HANDL_TRX_USBIN},
 		{"Callsign", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetCallsign},
+		{"Transverter Enable", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
+		{"Transverter Offset, mHz", SYSMENU_UINT16, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
 };
 static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sysmenu_trx_handlers[0]);
 
@@ -344,7 +348,7 @@ static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
 static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
-static void SYSMENU_TRX_RotatePasswordChar(int8_t dir);
+static void SYSMENU_TRX_RotateCallsignChar(int8_t dir);
 
 static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
 static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
@@ -523,7 +527,6 @@ static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction)
 			}
 		}
 	TRX.FRQ_STEP = freq_steps[0];
-	return;
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction)
@@ -550,7 +553,6 @@ static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction)
 			}
 		}
 	TRX.FRQ_FAST_STEP = freq_steps[0];
-	return;
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction)
@@ -577,7 +579,6 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction)
 			}
 		}
 	TRX.FRQ_ENC_STEP = freq_steps[0];
-	return;
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction)
@@ -604,7 +605,6 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction)
 			}
 		}
 	TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
-	return;
 }
 
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction)
@@ -622,7 +622,6 @@ static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction)
 		TRX.ATT_STEP = 1;
 	if (TRX.ATT_STEP > 15)
 		TRX.ATT_STEP = 15;
-	return;
 }
 
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw)
@@ -637,7 +636,7 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw)
 	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * 12, 54, 12, COLOR_RED);
 }
 
-static void SYSMENU_TRX_RotatePasswordChar(int8_t dir)
+static void SYSMENU_TRX_RotateCallsignChar(int8_t dir)
 {
 	bool full_redraw = false;
 	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] == 0)
@@ -665,6 +664,23 @@ static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
 	sysmenu_trx_setCallsign_menu_opened = true;
 	SYSMENU_TRX_DrawCallsignMenu(true);
 	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Transverter_Enabled = true;
+	if (direction < 0)
+		TRX.Transverter_Enabled = false;
+}
+
+static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction)
+{
+	TRX.Transverter_Offset_Mhz += direction;
+	if (TRX.Transverter_Offset_Mhz < 1)
+		TRX.Transverter_Offset_Mhz = 1;
+	if (TRX.Transverter_Offset_Mhz > 500)
+		TRX.Transverter_Offset_Mhz = 500;
 }
 
 //AUDIO MENU
@@ -2235,7 +2251,7 @@ void eventRotateSystemMenu(int8_t direction)
 	}
 	if (sysmenu_trx_setCallsign_menu_opened)
 	{
-		SYSMENU_TRX_RotatePasswordChar(direction);
+		SYSMENU_TRX_RotateCallsignChar(direction);
 		return;
 	}
 	if (sysmenu_timeMenuOpened)

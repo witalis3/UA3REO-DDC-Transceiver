@@ -244,6 +244,8 @@ void LoadSettings(bool clear)
 		TRX.Encoder_Accelerate = true;	//Accelerate Encoder on fast rate
 		strcpy(TRX.CALLSIGN, "HamRad");				// Callsign
 		TRX.ColorThemeId = 0;			//Selected Color Theme
+		TRX.Transverter_Enabled = false;	//Enable transverter mode
+		TRX.Transverter_Offset_Mhz = 120;	//Offset from VFO
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

@@ -7,7 +7,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 204				// Settings config version
+#define SETT_VERSION 205				// Settings config version
 #define CALIB_VERSION 201				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
 #define DAC_CLOCK 199680000				// DAC generator frequency
@@ -172,6 +172,8 @@ extern struct TRX_SETTINGS
 	DUAL_RX_TYPE Dual_RX_Type;
 	bool Encoder_Accelerate;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
+	bool Transverter_Enabled;
+	uint16_t Transverter_Offset_Mhz;
 	//AUDIO
 	uint8_t IF_Gain;
 	int8_t AGC_GAIN_TARGET;
