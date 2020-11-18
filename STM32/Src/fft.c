@@ -773,9 +773,14 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		// 255 255 0
 		// 255 0 0
 		// contrast of each of the 2 zones, the total should be 1.0f
-		const float32_t contrast1 = 0.5f;
-		const float32_t contrast2 = 0.5f;
-
+		float32_t contrast1 = 0.5f;
+		float32_t contrast2 = 0.5f;
+		if(LAY_WTF_BG_WHITE)
+		{
+			contrast1 = 0.2f;
+			contrast2 = 0.8f;
+		}
+		
 		if (height < getFFTHeight() * contrast1)
 		{
 			if(!LAY_WTF_BG_WHITE)
@@ -797,7 +802,9 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 			blue = 0;
 			green = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1))) * (contrast1 + contrast2)));
 			if(LAY_WTF_BG_WHITE)
+			{
 				blue = green;
+			}
 		}
 		return rgb888torgb565(red, green, blue);
 	}
@@ -809,9 +816,14 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		// 255 255 0
 		// 0 255 0
 		// contrast of each of the 2 zones, the total should be 1.0f
-		const float32_t contrast1 = 0.5f;
-		const float32_t contrast2 = 0.5f;
-
+		float32_t contrast1 = 0.5f;
+		float32_t contrast2 = 0.5f;
+		if(LAY_WTF_BG_WHITE)
+		{
+			contrast1 = 0.2f;
+			contrast2 = 0.8f;
+		}
+		
 		if (height < getFFTHeight() * contrast1)
 		{
 			if(!LAY_WTF_BG_WHITE)
@@ -832,6 +844,10 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 			green = 255;
 			blue = 0;
 			red = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1))) * (contrast1 + contrast2)));
+			if(LAY_WTF_BG_WHITE)
+			{
+				green = red;
+			}
 		}
 		return rgb888torgb565(red, green, blue);
 	}
