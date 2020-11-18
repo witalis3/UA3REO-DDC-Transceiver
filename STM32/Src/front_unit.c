@@ -322,6 +322,8 @@ void FRONTPANEL_Process(void)
 		// AF_GAIN
 		mcp3008_value = FRONTPANEL_ReadMCP3008_Value(6, AD2_CS_GPIO_Port, AD2_CS_Pin);
 		TRX_Volume = (uint16_t)(1023.0f - mcp3008_value);
+		if(TRX_Volume < 50)
+			TRX_Volume = 0;
 
 		// SHIFT or IF Gain
 		mcp3008_value = FRONTPANEL_ReadMCP3008_Value(7, AD2_CS_GPIO_Port, AD2_CS_Pin);
