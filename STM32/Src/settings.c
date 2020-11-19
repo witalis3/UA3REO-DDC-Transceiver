@@ -295,11 +295,11 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TXCICFIR_GAINER_val = 58;														// Offset from the TX-CIC output of the compensator
 		CALIBRATE.DAC_GAINER_val = 26;															// DAC offset offset
 																								// Calibrate the maximum output power for each band
-		CALIBRATE.rf_out_power_lf = 86;														// <2mhz
-		CALIBRATE.rf_out_power_hf_low = 56;														// <5mhz
-		CALIBRATE.rf_out_power_hf = 41;														// <30mhz
-		CALIBRATE.rf_out_power_hf_high = 56;														// <99.84mhz
-		CALIBRATE.rf_out_power_vhf = 85;															// 99.84-199.68mhz
+		CALIBRATE.rf_out_power_lf = 70;														// <2mhz
+		CALIBRATE.rf_out_power_hf_low = 38;														// <5mhz
+		CALIBRATE.rf_out_power_hf = 26;														// <30mhz
+		CALIBRATE.rf_out_power_hf_high = 40;														// <99.84mhz
+		CALIBRATE.rf_out_power_vhf = 100;															// 99.84-199.68mhz
 		CALIBRATE.smeter_calibration = 4;														// S-Meter calibration, set when calibrating the transceiver to S9 (LPF, BPF, ATT, PREAMP off)
 		CALIBRATE.adc_offset = 0;																// Calibrate the offset at the ADC input (DC)
 																								// Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz

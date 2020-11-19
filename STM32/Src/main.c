@@ -136,7 +136,7 @@ static void MX_TIM17_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	MX_GPIO_Init(); // pwr hold
   /* USER CODE END 1 */
 
   /* MPU Configuration--------------------------------------------------------*/
@@ -161,7 +161,6 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
   //System stabilization
-	MX_GPIO_Init(); // pwr hold
   while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) || (RCC->CR & RCC_CR_HSERDY) == 0 || (RCC->CR & RCC_CR_PLL1RDY) == 0 || (RCC->CR & RCC_CR_PLL2RDY) == 0 || (RCC->CR & RCC_CR_PLL3RDY) == 0 || (RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1)
   {
     SystemClock_Config();
