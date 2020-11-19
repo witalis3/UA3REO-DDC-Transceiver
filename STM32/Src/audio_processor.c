@@ -448,7 +448,7 @@ ITCM void processTxAudio(void)
 
 	// zero beats
 	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || (TRX_Tune && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)))
-		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 0.7f;
+		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 1.0f;
 	
 	if (TRX.InputType_USB) //USB AUDIO
 	{

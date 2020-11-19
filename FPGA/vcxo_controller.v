@@ -17,9 +17,9 @@ input signed [7:0] VCXO_correction;
 
 output reg signed [23:0] freq_error = 0;
 output reg pump = 0;
-output reg signed [23:0] PWM = 500;
+output reg signed [23:0] PWM = 250;
 
-reg [23:0] PWM_max = 1000;
+reg [23:0] PWM_max = 500;
 reg signed [23:0] freq_error_now = 0;
 reg signed [23:0] freq_error_prev = 0;
 reg signed [23:0] freq_error_diff = 0;
