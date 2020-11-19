@@ -1827,8 +1827,8 @@ static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction)
 	CALIBRATE.DAC_GAINER_val += direction;
 	if (CALIBRATE.DAC_GAINER_val < 14)
 		CALIBRATE.DAC_GAINER_val = 14;
-	if (CALIBRATE.DAC_GAINER_val > 32)
-		CALIBRATE.DAC_GAINER_val = 32;
+	if (CALIBRATE.DAC_GAINER_val > 28)
+		CALIBRATE.DAC_GAINER_val = 28;
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_LF(int8_t direction)

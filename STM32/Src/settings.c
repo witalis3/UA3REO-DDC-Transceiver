@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "2.0.5"; //1.2.3-yymmdd.hhmm (concatinate)
+char version_string[19] = "2.0.6"; //1.2.3-yymmdd.hhmm (concatinate)
 
 //W25Q16
 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -293,7 +293,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.CIC_GAINER_val = 83;															// Offset from CIC output
 		CALIBRATE.CICFIR_GAINER_val = 54;														// Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 57;														// Offset from the TX-CIC output of the compensator
-		CALIBRATE.DAC_GAINER_val = 30;															// DAC offset offset
+		CALIBRATE.DAC_GAINER_val = 26;															// DAC offset offset
 																								// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_lf = 86;														// <2mhz
 		CALIBRATE.rf_out_power_hf_low = 56;														// <5mhz

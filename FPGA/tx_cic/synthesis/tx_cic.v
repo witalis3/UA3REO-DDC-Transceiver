@@ -8,7 +8,7 @@ module tx_cic (
 		input  wire        in_valid,  //          .valid
 		output wire        in_ready,  //          .ready
 		input  wire [15:0] in_data,   //          .in_data
-		output wire [15:0] out_data,  // av_st_out.out_data
+		output wire [13:0] out_data,  // av_st_out.out_data
 		output wire [1:0]  out_error, //          .error
 		output wire        out_valid, //          .valid
 		input  wire        out_ready, //          .ready

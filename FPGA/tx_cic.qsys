@@ -73,12 +73,12 @@
   <parameter name="FILTER_TYPE" value="interpolator" />
   <parameter name="INTERFACES" value="1" />
   <parameter name="IN_WIDTH" value="16" />
-  <parameter name="RCF_FIX" value="4160" />
+  <parameter name="RCF_FIX" value="3920" />
   <parameter name="RCF_LB" value="8" />
   <parameter name="RCF_UB" value="21" />
   <parameter name="REQ_DIF_MEM" value="logic_element" />
   <parameter name="REQ_INT_MEM" value="logic_element" />
-  <parameter name="REQ_OUT_WIDTH" value="16" />
+  <parameter name="REQ_OUT_WIDTH" value="14" />
   <parameter name="REQ_PIPELINE" value="0" />
   <parameter name="ROUND_TYPE" value="TRUNCATE" />
   <parameter name="STAGES" value="4" />

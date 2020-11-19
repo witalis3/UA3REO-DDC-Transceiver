@@ -8,9 +8,9 @@
 #include "bands.h"
 
 #define SETT_VERSION 205				// Settings config version
-#define CALIB_VERSION 201				// Calibration config version
+#define CALIB_VERSION 206				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
-#define DAC_CLOCK 199680000				// DAC generator frequency
+#define DAC_CLOCK 188160000				// DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		// Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ DAC_CLOCK		// Maximum transmission frequency (half of the DAC clock signal)
 #define TRX_SAMPLERATE 48000			// audio stream sampling rate during processing

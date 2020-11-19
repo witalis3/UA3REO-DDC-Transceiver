@@ -15,7 +15,7 @@ module tx_cic (
 	input		in_valid;
 	output		in_ready;
 	input	[15:0]	in_data;
-	output	[15:0]	out_data;
+	output	[13:0]	out_data;
 	output	[1:0]	out_error;
 	output		out_valid;
 	input		out_ready;

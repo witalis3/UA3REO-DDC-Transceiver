@@ -6,11 +6,11 @@ distance,
 DATA_OUT
 );
 
-parameter in_width = 32;
+parameter in_width = 27;
 parameter out_width = 14;
 
 input clk_in;
-input signed [31:0] DATA_IN;
+input signed [27:0] DATA_IN;
 input unsigned [7:0] distance;
 
 output reg unsigned [13:0] DATA_OUT;

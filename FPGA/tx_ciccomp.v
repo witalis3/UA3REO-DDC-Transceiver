@@ -61,8 +61,8 @@ endmodule
 // Retrieval info: 	<generic name="symmetryMode" value="sym" />
 // Retrieval info: 	<generic name="L_bandsFilter" value="1" />
 // Retrieval info: 	<generic name="inputChannelNum" value="1" />
-// Retrieval info: 	<generic name="clockRate" value="199.68" />
-// Retrieval info: 	<generic name="clockSlack" value="45" />
+// Retrieval info: 	<generic name="clockRate" value="188.16" />
+// Retrieval info: 	<generic name="clockSlack" value="16" />
 // Retrieval info: 	<generic name="inputRate" value="0.048" />
 // Retrieval info: 	<generic name="coeffReload" value="false" />
 // Retrieval info: 	<generic name="baseAddress" value="0" />
@@ -82,7 +82,7 @@ endmodule
 // Retrieval info: 	<generic name="inputType" value="int" />
 // Retrieval info: 	<generic name="inputBitWidth" value="32" />
 // Retrieval info: 	<generic name="inputFracBitWidth" value="0" />
-// Retrieval info: 	<generic name="coeffSetRealValue" value="4903.0,-10097.0,16975.0,-25118.0,32310.0,-32816.0,14789.0,42895.0,-174976.0,434161.0,-897113.0,1668899.0,-2890372.0,4740812.0,-7447061.0,1.1281946E7,-1.6577693E7,2.3717971E7,-3.3162956E7,4.5434393E7,-6.1170118E7,8.1106382E7,-1.06203594E8,1.37648428E8,-1.77157976E8,2.27097084E8,-2.91289022E8,3.75634535E8,-4.90472088E8,6.52074553E8,-8.79469793E8,1.0737418E9,1.0737418E9,-8.79469793E8,6.52074553E8,-4.90472088E8,3.75634535E8,-2.91289022E8,2.27097084E8,-1.77157976E8,1.37648428E8,-1.06203594E8,8.1106382E7,-6.1170118E7,4.5434393E7,-3.3162956E7,2.3717971E7,-1.6577693E7,1.1281946E7,-7447061.0,4740812.0,-2890372.0,1668899.0,-897113.0,434161.0,-174976.0,42895.0,14789.0,-32816.0,32310.0,-25118.0,16975.0,-10097.0,4903.0" />
+// Retrieval info: 	<generic name="coeffSetRealValue" value="4903.0,-10097.0,16975.0,-25118.0,32310.0,-32816.0,14789.0,42895.0,-174976.0,434160.0,-897112.0,1668895.0,-2890368.0,4740808.0,-7447055.0,1.1281938E7,-1.6577688E7,2.3717951E7,-3.3162948E7,4.5434382E7,-6.1170088E7,8.1106361E7,-1.06203567E8,1.37648393E8,-1.77157931E8,2.27097026E8,-2.91289085E8,3.75634439E8,-4.904721E8,6.52074523E8,-8.79469843E8,1.0737418E9,1.0737418E9,-8.79469843E8,6.52074523E8,-4.904721E8,3.75634439E8,-2.91289085E8,2.27097026E8,-1.77157931E8,1.37648393E8,-1.06203567E8,8.1106361E7,-6.1170088E7,4.5434382E7,-3.3162948E7,2.3717951E7,-1.6577688E7,1.1281938E7,-7447055.0,4740808.0,-2890368.0,1668895.0,-897112.0,434160.0,-174976.0,42895.0,14789.0,-32816.0,32310.0,-25118.0,16975.0,-10097.0,4903.0" />
 // Retrieval info: 	<generic name="coeffSetRealValueImag" value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.0530093, -0.04498, 0.0, 0.0749693, 0.159034, 0.224907, 0.249809, 0.224907, 0.159034, 0.0749693, 0.0, -0.04498, -0.0530093, -0.0321283, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0" />
 // Retrieval info: 	<generic name="coeffScaling" value="auto" />
 // Retrieval info: 	<generic name="coeffType" value="int" />
