@@ -442,7 +442,7 @@ ITCM void processTxAudio(void)
 	uint_fast8_t mode = current_vfo->Mode;
 
 	// get the amplitude for the selected power and range
-	Processor_selected_RFpower_amplitude = log10f_fast((float32_t)TRX.RF_Power / 10.0f) * TRX_MAX_TX_Amplitude;
+	Processor_selected_RFpower_amplitude = log10f_fast(((float32_t)TRX.RF_Power * 0.9f + 10.0f) / 10.0f) * TRX_MAX_TX_Amplitude;
 	if (Processor_selected_RFpower_amplitude < 0.0f)
 		Processor_selected_RFpower_amplitude = 0.0f;
 
