@@ -506,7 +506,7 @@ ITCM void FFT_printFFT(void)
 			if(TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
 				if (((int32_t)fft_x == grid_lines_pos[grid_line_index]) || (fft_x == (LAY_FFT_PRINT_SIZE / 2)))
 				{
-					if(fft_x != (LAY_FFT_PRINT_SIZE / 2))
+					if((int32_t)fft_x == grid_lines_pos[grid_line_index])
 						grid_line_index++;
 					color = mixColors(color, color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 				}

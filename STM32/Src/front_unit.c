@@ -771,17 +771,11 @@ static void FRONTPANEL_BUTTONHANDLER_WPM(void)
 
 static void FRONTPANEL_BUTTONHANDLER_KEYER(void)
 {
-	if (!LCD_systemMenuOpened)
-	{
-		LCD_systemMenuOpened = true;
-		SYSMENU_CW_KEYER_HOTKEY();
-		drawSystemMenu(true);
-	}
+	TRX.CW_KEYER = !TRX.CW_KEYER;
+	if(TRX.CW_KEYER)
+		LCD_showTooltip("KEYER ON");
 	else
-	{
-		eventCloseAllSystemMenu();
-	}
-	LCD_redraw();
+		LCD_showTooltip("KEYER OFF");
 }
 
 static void FRONTPANEL_BUTTONHANDLER_STEP(void)
@@ -863,6 +857,8 @@ void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
 		memcpy(&TRX.VFO_A, &TRX.VFO_B, sizeof TRX.VFO_B);
 	else
 		memcpy(&TRX.VFO_B, &TRX.VFO_A, sizeof TRX.VFO_B);
+	
+	LCD_showTooltip("VFO COPIED");
 	
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
@@ -956,6 +952,12 @@ void FRONTPANEL_BUTTONHANDLER_MUTE(void)
 static void FRONTPANEL_BUTTONHANDLER_BANDMAP(void)
 {
 	TRX.BandMapEnabled = !TRX.BandMapEnabled;
+	
+	if(TRX.BandMapEnabled)
+		LCD_showTooltip("BANDMAP ON");
+	else
+		LCD_showTooltip("BANDMAP OFF");
+	
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
