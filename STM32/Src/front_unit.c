@@ -175,13 +175,13 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	uint32_t newfreq = 0;
 	if (TRX.Fast)
 	{
-		newfreq = (uint32_t)((int32_t)vfo->Freq + ((int32_t)TRX.FRQ_FAST_STEP * direction));
+		newfreq = (uint32_t)((int32_t)vfo->Freq + (int32_t)((float32_t)TRX.FRQ_FAST_STEP * direction));
 		if ((vfo->Freq % TRX.FRQ_FAST_STEP) > 0 && fabsf(direction) <= 1.0f)
 			newfreq = vfo->Freq / TRX.FRQ_FAST_STEP * TRX.FRQ_FAST_STEP;
 	}
 	else
 	{
-		newfreq = (uint32_t)((int32_t)vfo->Freq + ((int32_t)TRX.FRQ_STEP * direction));
+		newfreq = (uint32_t)((int32_t)vfo->Freq + (int32_t)((float32_t)TRX.FRQ_STEP * direction));
 		if ((vfo->Freq % TRX.FRQ_STEP) > 0 && fabsf(direction) <= 1.0f)
 			newfreq = vfo->Freq / TRX.FRQ_STEP * TRX.FRQ_STEP;
 	}

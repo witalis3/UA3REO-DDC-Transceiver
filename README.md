@@ -43,6 +43,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * CW decoder, self-control
 * SWR Graphs
 * Spectrum analyzer
+* Equalizer TX/RX, reverber
 * SSB Scanner mode
 * AGC takes into account the characteristics of human hearing (K-Weighting)
 * TCXO frequency stabilization (it is possible to use an external clock source, such as GPS)
@@ -212,7 +213,7 @@ Supported LCD: ILI9481, ILI9486 and HX8357B
 * **CICCOMP Shift** - Bit shift after CIC compensator
 * **TX CICCOMP Shift** - Bit shift after TX CIC compensator
 * **DAC Shift** - Bit shift of the output to the DAC
-* **RF GAIN xx** - Calibration of the maximum output power for each range
+* **RF GAIN xx** - Calibration of the maximum output power for each range (<2mhz LF, <5mhz HF_LOW, <30mhz HF, <94mhz HF_HIGH, >94mhz VHF)
 * **S METER** - S-meter calibration
 * **ADC OFFSET** - ADC offset calibration
 * **LPF END** - LPF filter parameters
