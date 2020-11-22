@@ -161,10 +161,18 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
   //System stabilization
-  while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) || (RCC->CR & RCC_CR_HSERDY) == 0 || (RCC->CR & RCC_CR_PLL1RDY) == 0 || (RCC->CR & RCC_CR_PLL2RDY) == 0 || (RCC->CR & RCC_CR_PLL3RDY) == 0 || (RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1)
+  uint8_t tryes = 0;
+	while (tryes < 3 && (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) || (RCC->CR & RCC_CR_HSERDY) == 0 || (RCC->CR & RCC_CR_PLL1RDY) == 0 || (RCC->CR & RCC_CR_PLL2RDY) == 0 || (RCC->CR & RCC_CR_PLL3RDY) == 0 || (RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1))
   {
     SystemClock_Config();
+		tryes++;
   }
+	if(tryes == 3)
+	{
+		MX_FMC_Init();
+		LCD_Init();
+		LCD_showError("STM32 crystals error", false);
+	}
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -174,7 +182,7 @@ int main(void)
   MX_ADC1_Init();
   MX_FMC_Init();
   MX_I2S3_Init();
-  MX_RTC_Init();
+  //MX_RTC_Init();
   MX_SPI2_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
@@ -1323,15 +1331,39 @@ static void MX_FMC_Init(void)
   /* USER CODE BEGIN FMC_Init 2 */
 
 	//LCD timings
-#if defined(LCD_HX8357B)	
+#if (defined(LCD_HX8357B))
+	Timing.AddressSetupTime = 5;
+  Timing.DataSetupTime = 5;
+  Timing.BusTurnAroundDuration = 3;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
+#endif
+#if (defined(LCD_HX8357C))
+	Timing.AddressSetupTime = 7;
+  Timing.DataSetupTime = 7;
+  Timing.BusTurnAroundDuration = 5;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
+#endif
+#if (defined(LCD_SSD1963))
+	Timing.AddressSetupTime = 5;
+  Timing.DataSetupTime = 5;
+  Timing.BusTurnAroundDuration = 3;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
+#endif
+#if (defined(LCD_ILI9486))
+	Timing.AddressSetupTime = 5;
+  Timing.DataSetupTime = 5;
+  Timing.BusTurnAroundDuration = 3;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
+#endif
+#if (defined(LCD_R61581))
 	Timing.AddressSetupTime = 5;
   Timing.DataSetupTime = 5;
   Timing.BusTurnAroundDuration = 3;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 #if defined(LCD_ILI9481)	
-	Timing.AddressSetupTime = 3;
-  Timing.DataSetupTime = 4;
+	Timing.AddressSetupTime = 5;
+  Timing.DataSetupTime = 5;
   Timing.BusTurnAroundDuration = 3;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif

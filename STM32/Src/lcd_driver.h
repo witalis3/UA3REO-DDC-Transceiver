@@ -13,7 +13,7 @@ extern uint32_t LCD_FSMC_COMM_ADDR;
 extern uint32_t LCD_FSMC_DATA_ADDR;
 
 //LCD dimensions defines
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))			//Tisho
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined (LCD_SSD1963) || defined(LCD_R61581))
 	#include "lcd_driver_ILI9481.h"
 #endif
 #if (defined(LCD_RA8875))

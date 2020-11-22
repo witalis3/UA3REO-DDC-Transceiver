@@ -1,6 +1,6 @@
 #ifndef _LCDDRIVER_ILI9481_H_
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_SSD1963) || defined(LCD_R61581))
 #define _LCDDRIVER_ILI9481_H_
 
 //LCD dimensions defines
@@ -8,7 +8,6 @@
 #define LCD_HEIGHT 320
 
 //ILI9481 LCD commands
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))
 #define LCD_COMMAND_COLUMN_ADDR 0x2A
 #define LCD_COMMAND_PAGE_ADDR 0x2B
 #define LCD_COMMAND_GRAM 0x2C
@@ -38,7 +37,6 @@
 #define LCD_PARAM_MADCTL_BGR 0x08
 #define LCD_PARAM_MADCTL_SS 0x02
 #define LCD_PARAM_MADCTL_GS 0x01
-#endif
 
 #endif
 #endif

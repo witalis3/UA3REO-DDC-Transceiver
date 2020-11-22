@@ -46,6 +46,9 @@
 // select LCD and Touchpad, comment on others
 #define LCD_ILI9481 true
 //#define LCD_HX8357B true			
+//#define LCD_HX8357C true //not fully tested
+//#define LCD_SSD1963 true //untested
+//#define LCD_R61581 true //untested
 //#define LCD_ILI9486 true
 //#define LCD_RA8875 true
 //#define TOUCHPAD_GT911 true	

@@ -1,16 +1,19 @@
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486))
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_SSD1963) || defined(LCD_R61581))
 
 //Header files
 #include "lcd_driver.h"
 #include "main.h"
 #include "fonts.h"
 #include "functions.h"
+#include "lcd_driver_ILI9481.h"
 
 uint32_t LCD_FSMC_COMM_ADDR = 0;
 uint32_t LCD_FSMC_DATA_ADDR = 0;
 
 //***** Functions prototypes *****//
+ITCM static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y);
+ITCM inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 //Write command to LCD
 ITCM inline void LCDDriver_SendCommand(uint16_t com)
@@ -74,13 +77,6 @@ void LCDDriver_Init(void)
 #endif
 	LCD_FSMC_DATA_ADDR = LCD_FSMC_COMM_ADDR + (1 << (FSMC_REGISTER_SELECT + 1));
 	
-#if (defined(LCD_RA8875))
-	//swap addr
-	uint32_t temp_addr = LCD_FSMC_COMM_ADDR;
-	LCD_FSMC_COMM_ADDR = LCD_FSMC_DATA_ADDR;
-	LCD_FSMC_DATA_ADDR = temp_addr;
-#endif
-	
 #if (defined(LCD_ILI9481) || defined(LCD_HX8357B))
 	#define ILI9481_COMM_DELAY 20
 	
@@ -96,7 +92,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x07);
 	LCDDriver_SendData(0x42);
 	LCDDriver_SendData(0x18);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_VCOM); //(0xD1);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x07);
@@ -169,6 +165,71 @@ void LCDDriver_Init(void)
 	LCDDriver_SendCommand(LCD_COMMAND_DISPLAY_ON);		   //(0x29);
 	HAL_Delay(ILI9481_COMM_DELAY);
 #endif 
+
+#if defined(LCD_HX8357C)
+	LCDDriver_SendCommand(0x11);
+	HAL_Delay(20);
+	LCDDriver_SendCommand(0xD0);
+	LCDDriver_SendData(0x07);
+	LCDDriver_SendData(0x42);
+	LCDDriver_SendData(0x18);
+
+	LCDDriver_SendCommand(0xD1);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x07);
+	LCDDriver_SendData(0x10);
+
+	LCDDriver_SendCommand(0xD2);
+	LCDDriver_SendData(0x01);
+	LCDDriver_SendData(0x02);
+
+	LCDDriver_SendCommand(0xC0);
+	LCDDriver_SendData(0x10);
+	LCDDriver_SendData(0x3B);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x02);
+	LCDDriver_SendData(0x11);
+
+	LCDDriver_SendCommand(0xC5);
+	LCDDriver_SendData(0x03);
+
+	LCDDriver_SendCommand(0xC8);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x32);
+	LCDDriver_SendData(0x36);
+	LCDDriver_SendData(0x45);
+	LCDDriver_SendData(0x06);
+	LCDDriver_SendData(0x16);
+	LCDDriver_SendData(0x37);
+	LCDDriver_SendData(0x75);
+	LCDDriver_SendData(0x77);
+	LCDDriver_SendData(0x54);
+	LCDDriver_SendData(0x0C);
+	LCDDriver_SendData(0x00);
+
+	LCDDriver_SendCommand(0x36);
+	LCDDriver_SendData(0x8A);
+	
+	LCDDriver_SendCommand(0x35); // Tearing effect on
+  LCDDriver_SendData(0x00);    // Added parameter
+
+	LCDDriver_SendCommand(0x3A);
+	LCDDriver_SendData(0x55);
+
+	LCDDriver_SendCommand(0x2A);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x01);
+	LCDDriver_SendData(0x3F);
+
+	LCDDriver_SendCommand(0x2B);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x01);
+	LCDDriver_SendData(0xE0);
+	HAL_Delay(120);
+	LCDDriver_SendCommand(0x29);
+#endif
 
 #if	defined(LCD_ILI9486) 
 	#define ILI9481_COMM_DELAY 20
@@ -262,29 +323,237 @@ void LCDDriver_Init(void)
 	LCDDriver_SendCommand(0x29);
 #endif
 
+#if defined(LCD_SSD1963)
+	LCDDriver_SendCommand(0xE2);		//PLL multiplier, set PLL clock to 120M
+	LCDDriver_SendData(0x23);	    //N=0x36 for 6.5M, 0x23 for 10M crystal
+	LCDDriver_SendData(0x02);
+	LCDDriver_SendData(0x54);
+	LCDDriver_SendCommand(0xE0);		// PLL enable
+	LCDDriver_SendData(0x01);
+	HAL_Delay(10);
+	LCDDriver_SendCommand(0xE0);
+	LCDDriver_SendData(0x03);
+	HAL_Delay(10);
+	LCDDriver_SendCommand(0x01);		// software reset
+	HAL_Delay(100);
+	LCDDriver_SendCommand(0xE6);		//PLL setting for PCLK, depends on resolution
+	LCDDriver_SendData(0x01);
+	LCDDriver_SendData(0x1F);
+	LCDDriver_SendData(0xFF);
+
+	LCDDriver_SendCommand(0xB0);		//LCD SPECIFICATION
+	LCDDriver_SendData(0x20);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x01);		//Set HDP	479
+	LCDDriver_SendData(0xDF);
+	LCDDriver_SendData(0x01);		//Set VDP	271
+	LCDDriver_SendData(0x0F);
+	LCDDriver_SendData(0x00);
+
+	LCDDriver_SendCommand(0xB4);		//HSYNC
+	LCDDriver_SendData(0x02);		//Set HT	531
+	LCDDriver_SendData(0x13);
+	LCDDriver_SendData(0x00);		//Set HPS	8
+	LCDDriver_SendData(0x08);
+	LCDDriver_SendData(0x2B);		//Set HPW	43
+	LCDDriver_SendData(0x00);		//Set LPS	2
+	LCDDriver_SendData(0x02);
+	LCDDriver_SendData(0x00);
+
+	LCDDriver_SendCommand(0xB6);		//VSYNC
+	LCDDriver_SendData(0x01);		//Set VT	288
+	LCDDriver_SendData(0x20);
+	LCDDriver_SendData(0x00);		//Set VPS	4
+	LCDDriver_SendData(0x04);
+	LCDDriver_SendData(0x0c);		//Set VPW	12
+	LCDDriver_SendData(0x00);		//Set FPS	2
+	LCDDriver_SendData(0x02);
+
+	LCDDriver_SendCommand(0xBA);
+	LCDDriver_SendData(0x0F);		//GPIO[3:0] out 1
+
+	LCDDriver_SendCommand(0xB8);
+	LCDDriver_SendData(0x07);	    //GPIO3=input, GPIO[2:0]=output
+	LCDDriver_SendData(0x01);		//GPIO0 normal
+
+	LCDDriver_SendCommand(0x36);		//rotation
+	LCDDriver_SendData(0x22);
+
+	LCDDriver_SendCommand(0xF0);		//pixel data interface
+	LCDDriver_SendData(0x03);
+	HAL_Delay(1);
+
+	LCDDriver_SetCursorAreaPosition(0, 0, 479, 271);
+	LCDDriver_SendCommand(0x29);		//display on
+
+	LCDDriver_SendCommand(0xBE);		//set PWM for B/L
+	LCDDriver_SendData(0x06);
+	LCDDriver_SendData(0xf0);
+	LCDDriver_SendData(0x01);
+	LCDDriver_SendData(0xf0);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x00);
+
+	LCDDriver_SendCommand(0xd0); 
+	LCDDriver_SendData(0x0d);	
+
+	LCDDriver_SendCommand(0x2C); 
+#endif
+
+#if defined(LCD_R61581)
+	LCDDriver_SendCommand(0xB0);		
+	LCDDriver_SendData(0x1E);	    
+
+	LCDDriver_SendCommand(0xB0);
+	LCDDriver_SendData(0x00);
+
+	LCDDriver_SendCommand(0xB3);
+	LCDDriver_SendData(0x02);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x10);
+
+	LCDDriver_SendCommand(0xB4);
+	LCDDriver_SendData(0x00);//0X10
+
+// 		LCDDriver_SendCommand(0xB9); //PWM Settings for Brightness Control
+// 		LCDDriver_SendData(0x01);// Disabled by default. 
+// 		LCDDriver_SendData(0xFF); //0xFF = Max brightness
+// 		LCDDriver_SendData(0xFF);
+// 		LCDDriver_SendData(0x18);
+
+	LCDDriver_SendCommand(0xC0);
+	LCDDriver_SendData(0x03);
+	LCDDriver_SendData(0x3B);//
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x01);
+	LCDDriver_SendData(0x00);//NW
+	LCDDriver_SendData(0x43);
+
+	LCDDriver_SendCommand(0xC1);
+	LCDDriver_SendData(0x08);
+	LCDDriver_SendData(0x15);//CLOCK
+	LCDDriver_SendData(0x08);
+	LCDDriver_SendData(0x08);
+
+	LCDDriver_SendCommand(0xC4);
+	LCDDriver_SendData(0x15);
+	LCDDriver_SendData(0x03);
+	LCDDriver_SendData(0x03);
+	LCDDriver_SendData(0x01);
+
+	LCDDriver_SendCommand(0xC6);
+	LCDDriver_SendData(0x02);
+
+	LCDDriver_SendCommand(0xC8);
+	LCDDriver_SendData(0x0c);
+	LCDDriver_SendData(0x05);
+	LCDDriver_SendData(0x0A);//0X12
+	LCDDriver_SendData(0x6B);//0x7D
+	LCDDriver_SendData(0x04);
+	LCDDriver_SendData(0x06);//0x08
+	LCDDriver_SendData(0x15);//0x0A
+	LCDDriver_SendData(0x10);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x60);//0x23
+
+	LCDDriver_SendCommand(0x36);
+	LCDDriver_SendData(0x0A);
+
+	LCDDriver_SendCommand(0x0C);
+	LCDDriver_SendData(0x55);
+
+	LCDDriver_SendCommand(0x3A);
+	LCDDriver_SendData(0x55);
+
+	LCDDriver_SendCommand(0x38);
+
+	LCDDriver_SendCommand(0xD0);
+	LCDDriver_SendData(0x07);
+	LCDDriver_SendData(0x07);//VCI1
+	LCDDriver_SendData(0x14);//VRH 0x1D
+	LCDDriver_SendData(0xA2);//BT 0x06
+
+	LCDDriver_SendCommand(0xD1);
+	LCDDriver_SendData(0x03);
+	LCDDriver_SendData(0x5A);//VCM  0x5A
+	LCDDriver_SendData(0x10);//VDV
+
+	LCDDriver_SendCommand(0xD2);
+	LCDDriver_SendData(0x03);
+	LCDDriver_SendData(0x04);//0x24
+	LCDDriver_SendData(0x04);
+
+	LCDDriver_SendCommand(0x11);
+	HAL_Delay(150);
+
+	LCDDriver_SendCommand(0x2A);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x01);
+	LCDDriver_SendData(0xDF);//320
+
+	LCDDriver_SendCommand(0x2B);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x00);
+	LCDDriver_SendData(0x01);
+	LCDDriver_SendData(0x3F);//480
+
+
+	HAL_Delay(100);
+
+	LCDDriver_SendCommand(0x29);
+	HAL_Delay(30);
+
+	LCDDriver_SendCommand(0x2C);
+	HAL_Delay(30);
+#endif
 }
 
 //Set screen rotation
 void LCDDriver_setRotation(uint8_t rotate)
 {
-	LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
-	switch (rotate)
-	{
-	case 1: // Portrait
-		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
-		break;
-	case 2: // Landscape (Portrait + 90)
-		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV);
-		break;
-	case 3: // Inverter portrait
-		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MY);
-		break;
-	case 4: // Inverted landscape
-		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_MX | LCD_PARAM_MADCTL_MY);
-		//LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_SS | LCD_PARAM_MADCTL_GS);
-		break;
-	}
-	HAL_Delay(120);
+	#if defined(LCD_ILI9481) || defined(LCD_HX8357B)  || defined(LCD_ILI9486)
+		LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
+		switch (rotate)
+		{
+		case 1: // Portrait
+			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
+			break;
+		case 2: // Landscape (Portrait + 90)
+			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV);
+			break;
+		case 3: // Inverter portrait
+			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MY);
+			break;
+		case 4: // Inverted landscape
+			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_MX | LCD_PARAM_MADCTL_MY);
+			//LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_SS | LCD_PARAM_MADCTL_GS);
+			break;
+		}
+		HAL_Delay(120);
+	#endif
+	#if defined(LCD_HX8357C)
+		LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
+		switch (rotate)
+		{
+		case 1: // Portrait
+			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
+			break;
+		case 2: // Landscape (Portrait + 90)
+			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV);
+			break;
+		case 3: // Inverter portrait
+			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MY);
+			break;
+		case 4: // Inverted landscape
+			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_GS | LCD_PARAM_MADCTL_ML | LCD_PARAM_MADCTL_SS);
+			break;
+		}
+		HAL_Delay(120);
+	#endif
 }
 
 //Set cursor position
