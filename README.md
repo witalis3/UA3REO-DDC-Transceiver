@@ -240,10 +240,8 @@ Supported LCD: ILI9481, ILI9486 and HX8357B
 * **Top, dBm** - Upper threshold of the graph
 * **Bottom, dBm** - Lower threshold of the graph
 
-### Band SWR
+### Band SWR - Run SWR analizer on current band
 
-* Run SWR analizer on current band
+### HF SWR - Run SWR analizer on all bands
 
-### HF SWR
-
-* Run SWR analizer on all bands
+### RDA Statistics - Print statistics from RDA award

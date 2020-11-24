@@ -23,6 +23,8 @@ static void WIFI_SendCommand(char *command);
 static bool WIFI_WaitForOk(void);
 static bool WIFI_ListAP_Sync(void);
 static bool WIFI_TryGetLine(void);
+static void WIFI_sendHTTPRequest(void);
+static void WIFI_getHTTPResponse(void);
 
 bool WIFI_connected = false;
 bool WIFI_CAT_server_started = false;
@@ -32,6 +34,11 @@ static char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
 volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
 bool WIFI_IP_Gotted = false;
 char WIFI_IP[15] = {0};
+static uint16_t WIFI_HTTP_Response_Status = 0;
+IRAM2 static char WIFI_HOSTuri[128] = {0};
+IRAM2 static char WIFI_GETuri[128] = {0};
+IRAM2 static char WIFI_HTTRequest[128] = {0};
+IRAM2 static char WIFI_HTTResponseHTML[WIFI_ANSWER_BUFFER_SIZE] = {0};
 
 void WIFI_Init(void)
 {
@@ -116,7 +123,13 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPSERVERMAXCONN=3\r\n"); //Max server connections
 		WIFI_WaitForOk();
-
+		WIFI_SendCommand("AT+CIPSSLSIZE=4096\r\n"); //SSL size
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CIPSSLCCONF=2\r\n"); //SSL config
+		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CIPRECVMODE=0\r\n"); //TCP receive passive mode
+		WIFI_WaitForOk();
+		
 		strcat(com_t, "AT+CIPSNTPCFG=1,");
 		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
 		strcat(com_t, tz);
@@ -191,7 +204,7 @@ void WIFI_Process(void)
 		WIFI_TryGetLine();
 		WIFI_ProcessingCommandCallback = 0;
 		//receive commands from WIFI clients
-		if (strstr(WIFI_readedLine, "+IPD") != NULL)
+		if (strstr(WIFI_readedLine, "+IPD") != NULL && WIFI_ProcessingCommand != WIFI_COMM_TCP_GET_RESPONSE)
 		{
 			char *wifi_incoming_link_id = strchr(WIFI_readedLine, ',');
 			if (wifi_incoming_link_id == NULL)
@@ -272,6 +285,17 @@ void WIFI_Process(void)
 			if (WIFI_ProcessingCommand == WIFI_COMM_GETIP)
 			{
 				WIFI_State = WIFI_READY;
+			}
+			//TCP connect
+			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_CONNECT)
+			{
+				WIFI_sendHTTPRequest();
+				return;
+			}
+			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE)
+			{
+				WIFI_getHTTPResponse();
+				return;
 			}
 			//Some stuff
 			if (WIFI_ProcessingCommandCallback != NULL)
@@ -384,6 +408,13 @@ void WIFI_Process(void)
 						}
 					}
 				}
+			}
+			else if (WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE) //GetIP Command process
+			{
+				char *istr;
+				istr = strstr(WIFI_readedLine, "+IPD");
+				if (istr != NULL)
+					WIFI_getHTTPResponse();
 			}
 		}
 		break;
@@ -599,4 +630,131 @@ bool WIFI_UpdateFW(void *callback)
 	WIFI_SendCommand("AT+CIUPDATE\r\n"); //Start Update Firmware
 	WIFI_WaitForOk();
 	return true;
+}
+
+static void WIFI_getHTTPResponse(void)
+{
+	char *istr;
+	istr = strstr(WIFI_readedLine, "+IPD");
+	if (istr != NULL)
+	{
+		istr += 7;
+		char *istr2 = strstr(WIFI_readedLine, ":");
+		if (istr2 != NULL)
+		{
+			*istr2 = 0;
+			uint32_t response_length = atoi(istr);
+			istr2++;
+			strcpy(WIFI_HTTResponseHTML, istr2);
+			
+			uint32_t start_time = HAL_GetTick();
+			while(strlen(WIFI_HTTResponseHTML) < response_length && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 5000)
+			{
+				if(WIFI_TryGetLine())
+					strcat(WIFI_HTTResponseHTML, WIFI_readedLine);
+			}
+			char *istr3 = WIFI_HTTResponseHTML;
+			istr3 += response_length;
+			*istr3 = 0;
+			
+			//get status
+			char *istr4 = strstr(WIFI_HTTResponseHTML, " ");
+			if (istr4 != NULL)
+			{
+				char *istr5 = istr4 + 4;
+				*istr5 = 0;
+				WIFI_HTTP_Response_Status = (uint16_t)(atoi(istr4));
+				*istr5 = ' ';
+			}
+			
+			//cut html
+			char *istr6 = strstr(WIFI_HTTResponseHTML, "\r\n\r\n");
+			if (istr6 != NULL)
+			{
+				istr6 += 4;
+				strcpy(WIFI_HTTResponseHTML , istr6);
+			}
+			
+			if (WIFI_ProcessingCommandCallback != NULL)
+				WIFI_ProcessingCommandCallback();
+			
+			WIFI_ProcessingCommand = WIFI_COMM_NONE;
+		}
+	}
+}
+
+static void WIFI_sendHTTPRequest(void)
+{
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_TCP_GET_RESPONSE;
+	memset(WIFI_HTTRequest, 0x00, sizeof(WIFI_HTTRequest));
+	strcat(WIFI_HTTRequest, "GET ");
+	strcat(WIFI_HTTRequest, WIFI_GETuri);
+	strcat(WIFI_HTTRequest, " HTTP/1.1\r\n");
+	strcat(WIFI_HTTRequest, "Host: ");
+	strcat(WIFI_HTTRequest, WIFI_HOSTuri);
+	strcat(WIFI_HTTRequest, "\r\nConnection: close\r\n\r\n");
+	char comm_line[64] = {0};
+	sprintf(comm_line, "AT+CIPSEND=0,%d\r\n", strlen(WIFI_HTTRequest));
+	WIFI_SendCommand(comm_line);
+	WIFI_SendCommand(WIFI_HTTRequest);
+}
+
+bool WIFI_getHTTPpage(char* host, char* url, void *callback, bool https)
+{
+	if (WIFI_State != WIFI_READY)
+		return false;
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_TCP_CONNECT;
+	WIFI_ProcessingCommandCallback = callback;
+	WIFI_HTTP_Response_Status = 0;
+	
+	memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
+	strcat(WIFI_HOSTuri, "AT+CIPSTART=0,");
+	if(!https)
+		strcat(WIFI_HOSTuri, "\"TCP\"");
+	else
+		strcat(WIFI_HOSTuri, "\"SSL\"");
+	strcat(WIFI_HOSTuri, ",\"");
+	strcat(WIFI_HOSTuri, host);
+	
+	if(!https)
+		strcat(WIFI_HOSTuri, "\",80\r\n");
+	else
+		strcat(WIFI_HOSTuri, "\",443\r\n");
+	
+	memset(WIFI_GETuri, 0x00, sizeof(WIFI_GETuri));
+	strcat(WIFI_GETuri, url);
+	
+	WIFI_SendCommand(WIFI_HOSTuri);
+	
+	memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
+	strcat(WIFI_HOSTuri, host);
+	return true;
+}
+
+static void WIFI_printText_callback(void)
+{
+	LCDDriver_Fill(BG_COLOR);
+	if(WIFI_HTTP_Response_Status == 200)
+		LCDDriver_printTextFont(WIFI_HTTResponseHTML, 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	else
+		LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+}
+
+void WIFI_getRDA(void)
+{
+	LCDDriver_Fill(BG_COLOR);
+	if(WIFI_connected && WIFI_State == WIFI_READY)
+	{
+		LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	}
+	else
+	{
+		LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+		return;
+	}
+	char url[64] = "/trx_services/rda.php?callsign=";
+	strcat(url, TRX.CALLSIGN);
+	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false);
 }

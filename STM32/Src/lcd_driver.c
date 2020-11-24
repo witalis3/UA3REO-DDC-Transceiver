@@ -63,7 +63,7 @@ ITCM void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t colo
 	}
 }
 
-ITCM void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, GFXfont *gfxFont)
+ITCM void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, const GFXfont *gfxFont)
 {
 	c -= gfxFont->first;
 	GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c];
@@ -105,12 +105,12 @@ ITCM void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16
 	}
 }
 
-ITCM void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, GFXfont *gfxFont)
+ITCM void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, const GFXfont *gfxFont)
 {
 	uint8_t c = 0;
 	text_cursor_x = x;
 	text_cursor_y = y;
-	for (uint16_t i = 0; i < 40 && text[i] != NULL; i++)
+	for (uint16_t i = 0; i < 256 && text[i] != NULL; i++)
 	{
 		c = text[i];
 		if (c == '\n')

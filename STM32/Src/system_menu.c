@@ -153,6 +153,7 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction);
 static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
+static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 
 IRAM2 static struct sysmenu_item_handler sysmenu_handlers[] =
 	{
@@ -336,6 +337,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_services_handlers[] =
 {
 	{"Band SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_BAND_START},
 	{"HF SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_HF_START},
+	{"RDA Statistics", SYSMENU_RUN, 0, SYSMENU_HANDL_RDA_STATS},
 	{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
 };
 static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
@@ -360,6 +362,7 @@ static bool sysmenu_onroot = true;
 bool sysmenu_hiddenmenu_enabled = false;
 static const uint8_t max_items_on_page = LCD_HEIGHT / LAY_SYSMENU_ITEM_HEIGHT;
 static bool sysmenu_services_opened = false;
+static bool sysmenu_infowindow_opened = false;
 
 //WIFI
 static bool sysmenu_wifi_selectap_menu_opened = false;
@@ -2174,6 +2177,14 @@ static void SYSMENU_HANDL_SWR_HF_START(int8_t direction)
 	}
 }
 
+//RDA STATS
+static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
+{
+	sysmenu_infowindow_opened = true;
+	drawSystemMenu(true);
+	WIFI_getRDA();
+}
+
 //COMMON MENU FUNCTIONS
 void drawSystemMenu(bool draw_background)
 {
@@ -2214,6 +2225,8 @@ void drawSystemMenu(bool draw_background)
 		SWR_Draw();
 		return;
 	}
+	if(sysmenu_infowindow_opened)
+		return;
 	LCD_busy = true;
 
 	sysmenu_i = 0;
@@ -2306,6 +2319,12 @@ void eventCloseSystemMenu(void)
 	{
 		sysmenu_swr_opened = false;
 		SWR_Stop();
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+	}
+	else if (sysmenu_infowindow_opened)
+	{
+		sysmenu_infowindow_opened = false;
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}
@@ -2404,6 +2423,8 @@ void eventSecRotateSystemMenu(int8_t direction)
 		return;
 	}
 	if (sysmenu_swr_opened)
+		return;
+	if (sysmenu_infowindow_opened)
 		return;
 	//time menu
 	if (sysmenu_timeMenuOpened)
