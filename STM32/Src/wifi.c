@@ -12,9 +12,12 @@ static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static void (*WIFI_ProcessingCommandCallback)(void);
 
 static SRAM char WIFI_AnswerBuffer[WIFI_ANSWER_BUFFER_SIZE] = {0};
-static IRAM2 char WIFI_readedLine[WIFI_ANSWER_BUFFER_SIZE] = {0};
-static IRAM2 char tmp[WIFI_ANSWER_BUFFER_SIZE] = {0};
-static uint16_t WIFI_Answer_ReadIndex = 0;
+static IRAM2 char WIFI_readedLine[WIFI_LINE_BUFFER_SIZE] = {0};
+static IRAM2 char tmp[WIFI_LINE_BUFFER_SIZE] = {0};
+static IRAM2 int16_t WIFI_RLEStreamBuffer[WIFI_RLE_BUFFER_SIZE] = {0};
+static IRAM2 uint16_t WIFI_RLEStreamBuffer_index = 0;
+static IRAM2 uint16_t WIFI_RLEStreamBuffer_part = 0;
+static uint32_t WIFI_Answer_ReadIndex = 0;
 static uint32_t commandStartTime = 0;
 static uint8_t WIFI_FoundedAP_Index = 0;
 static bool WIFI_stop_auto_ap_list = false;
@@ -25,6 +28,8 @@ static bool WIFI_ListAP_Sync(void);
 static bool WIFI_TryGetLine(void);
 static void WIFI_sendHTTPRequest(void);
 static void WIFI_getHTTPResponse(void);
+static void WIFI_printImage_stream_callback(void);
+static void WIFI_printImage_stream_partial_callback(void);
 
 bool WIFI_connected = false;
 bool WIFI_CAT_server_started = false;
@@ -39,11 +44,11 @@ static uint32_t WIFI_HTTP_Response_ContentLength = 0;
 IRAM2 static char WIFI_HOSTuri[128] = {0};
 IRAM2 static char WIFI_GETuri[128] = {0};
 IRAM2 static char WIFI_HTTRequest[128] = {0};
-IRAM2 static char WIFI_HTTResponseHTML[WIFI_ANSWER_BUFFER_SIZE] = {0};
+IRAM2 static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
 
 void WIFI_Init(void)
 {
-	//wifi uart speed = 115200 * 8 = 921600
+	//wifi uart speed = 115200 * 8 = 921600  / * 16 = 1843200
 	WIFI_SendCommand("AT+UART_CUR=921600,8,1,0,1\r\n"); //uart config
 	WIFI_WaitForOk();
 	huart6.Init.BaudRate = 921600;
@@ -574,7 +579,13 @@ static bool WIFI_TryGetLine(void)
 	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
 	if (WIFI_Answer_ReadIndex == dma_index)
 		return false;
-
+	
+	if(WIFI_LINE_BUFFER_SIZE < (dma_index - WIFI_Answer_ReadIndex))
+	{
+		sendToDebug_strln("[ERR] WiFi buffer overloaded");
+		return false;
+	}
+	
 	strncpy(tmp, &WIFI_AnswerBuffer[WIFI_Answer_ReadIndex], dma_index - WIFI_Answer_ReadIndex);
 	if (tmp[0] == '\0')
 		return false;
@@ -582,12 +593,16 @@ static bool WIFI_TryGetLine(void)
 	char *istr = strchr(tmp, '\n'); // look for the end of the line
 	if (istr == NULL)
 		return false;
-	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)tmp + 1);
+	
+	uint32_t len = (uint16_t)((uint32_t)istr - (uint32_t)tmp + 1);
 	strncpy(WIFI_readedLine, tmp, len);
-
+	
 	WIFI_Answer_ReadIndex += len;
-	if (WIFI_Answer_ReadIndex > dma_index)
-		WIFI_Answer_ReadIndex = dma_index;
+	if (WIFI_Answer_ReadIndex > WIFI_ANSWER_BUFFER_SIZE)
+	{
+		WIFI_Answer_ReadIndex = WIFI_ANSWER_BUFFER_SIZE - WIFI_Answer_ReadIndex;
+		sendToDebug_strln("b");
+	}
 
 	if (WIFI_DEBUG) //DEBUG
 		sendToDebug_str2("WIFI_R: ", WIFI_readedLine);
@@ -639,6 +654,7 @@ bool WIFI_UpdateFW(void *callback)
 
 static void WIFI_getHTTPResponse(void)
 {
+	uint32_t readed_body_length = 0;
 	char *istr;
 	istr = strstr(WIFI_readedLine, "+IPD");
 	if (istr != NULL)
@@ -692,14 +708,20 @@ static void WIFI_getHTTPResponse(void)
 				strcpy(WIFI_HTTResponseHTML , istr6);
 			}
 			
+			//partial callback for image printing
+			readed_body_length += strlen(WIFI_HTTResponseHTML);
+			if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback)
+				WIFI_printImage_stream_partial_callback();
+			
 			//may be partial content? continue downloading
 			start_time = HAL_GetTick();
-			if(strlen(WIFI_HTTResponseHTML) < WIFI_HTTP_Response_ContentLength && (HAL_GetTick() - start_time) < 2000)
+			if(readed_body_length < WIFI_HTTP_Response_ContentLength && (HAL_GetTick() - start_time) < 3000)
 			{
 				//sendToDebug_strln("PARTIAL CONTENT");
 				//sendToDebug_uint32(strlen(WIFI_HTTResponseHTML),false);
-				while(strlen(WIFI_HTTResponseHTML) < WIFI_HTTP_Response_ContentLength && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 2000)
+				while(readed_body_length < WIFI_HTTP_Response_ContentLength && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 3000)
 				{
+					//sendToDebug_strln("t");
 					if(WIFI_TryGetLine())
 					{
 						istr = strstr(WIFI_readedLine, "+IPD");
@@ -715,7 +737,12 @@ static void WIFI_getHTTPResponse(void)
 								istr2++;
 								strncat(WIFI_HTTResponseHTML, istr2, response_length);
 								
-								//sendToDebug_str("\r\nadd");
+								//partial callback for image printing
+								readed_body_length += strlen(WIFI_HTTResponseHTML);
+								if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback)
+									WIFI_printImage_stream_partial_callback();
+								
+								//sendToDebug_str("\r\nadd:");
 								//sendToDebug_uint32(response_length,false);
 							}
 						}
@@ -728,7 +755,7 @@ static void WIFI_getHTTPResponse(void)
 			//cut body on content-length
 			if(strlen(WIFI_HTTResponseHTML) > WIFI_HTTP_Response_ContentLength)
 				WIFI_HTTResponseHTML[WIFI_HTTP_Response_ContentLength] = 0;
-			sendToDebug_uint32(strlen(WIFI_HTTResponseHTML),false);
+			//sendToDebug_uint32(strlen(WIFI_HTTResponseHTML),false);
 			
 			WIFI_ProcessingCommand = WIFI_COMM_NONE;
 			WIFI_State = WIFI_READY;
@@ -774,9 +801,9 @@ bool WIFI_getHTTPpage(char* host, char* url, void *callback, bool https)
 	strcat(WIFI_HOSTuri, host);
 	
 	if(!https)
-		strcat(WIFI_HOSTuri, "\",80,10\r\n");
+		strcat(WIFI_HOSTuri, "\",80,30\r\n");
 	else
-		strcat(WIFI_HOSTuri, "\",443,10\r\n");
+		strcat(WIFI_HOSTuri, "\",443,30\r\n");
 	
 	memset(WIFI_GETuri, 0x00, sizeof(WIFI_GETuri));
 	strcat(WIFI_GETuri, url);
@@ -801,32 +828,46 @@ static void WIFI_printText_callback(void)
 		LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 }
 
-IRAM2 static int16_t WIFI_RLEStreamBuffer[1024] = {0};
-static uint16_t WIFI_RLEStreamBuffer_part = 0;
-static void WIFI_printImage_stream_callback(void)
+static void WIFI_printImage_stream_partial_callback(void)
 {
 	memset(WIFI_RLEStreamBuffer, 0x00, sizeof(WIFI_RLEStreamBuffer));
 	//parse hex output from server (convert to bin)
 	char *istr = WIFI_HTTResponseHTML;
 	char hex[5] = {0};
-	uint16_t index = 0;
+	WIFI_RLEStreamBuffer_index = 0;
 	int16_t val =0;
-	while(*istr != 0 && (strlen(WIFI_HTTResponseHTML) > (index * 4)))
+	while(*istr != 0 && (strlen(WIFI_HTTResponseHTML) >= ((WIFI_RLEStreamBuffer_index * 4) + 4)))
 	{
 		//Get hex
 		strncpy(hex, istr , 4);
 		val = (int16_t)(strtol(hex, NULL, 16));
 		istr += 4;
 		//Save
-		WIFI_RLEStreamBuffer[index] = val;
-		index++;
+		WIFI_RLEStreamBuffer[WIFI_RLEStreamBuffer_index] = val;
+		WIFI_RLEStreamBuffer_index++;
 	}
-	WIFI_HTTResponseHTML[index] = 0;
-	sendToDebug_uint32(index,false);
+	sendToDebug_uint32(WIFI_RLEStreamBuffer_index,false);
 	//send to LCD RLE stream decoder
-	LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, index);
+	LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, WIFI_RLEStreamBuffer_index);
+	
+	//clean answer
+	//sendToDebug_uint32(strlen(WIFI_HTTResponseHTML), false);
+	//sendToDebug_uint32((WIFI_RLEStreamBuffer_index * 4), false);
+	if(strlen(WIFI_HTTResponseHTML) > (WIFI_RLEStreamBuffer_index * 4)) //part buffer preceed, move to begin
+	{
+		istr = &WIFI_HTTResponseHTML[(WIFI_RLEStreamBuffer_index * 4)];
+		//sendToDebug_str("diff:");
+		//sendToDebug_uint32(strlen(istr), false);
+		strcpy(WIFI_HTTResponseHTML, istr);
+	}
+	else
+		memset(WIFI_HTTResponseHTML, 0x00, sizeof(WIFI_HTTResponseHTML));
+}
+
+static void WIFI_printImage_stream_callback(void)
+{
 	WIFI_RLEStreamBuffer_part++;
-	if(index >= 128 && LCD_systemMenuOpened)
+	if(WIFI_RLEStreamBuffer_index > 0 && LCD_systemMenuOpened)
 	{
 		char url[64] = {0};
 		sprintf(url, "/trx_services/propagination.php?part=%d", WIFI_RLEStreamBuffer_part);

@@ -351,5 +351,7 @@ void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t l
 			processed++;
 			RLEStream_state = 0;
 		}
+		else
+			processed++;
 	}
 }
