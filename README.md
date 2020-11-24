@@ -250,4 +250,8 @@ Supported LCD: ILI9481, ILI9486 and HX8357B
 
 ### RDA Statistics 
 
-* Print statistics from RDA award
+* Print statistics from RDA award (from internet)
+
+### Propagination 
+
+* Show propagination statistics (from internet)

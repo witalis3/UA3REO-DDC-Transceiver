@@ -4,14 +4,14 @@
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
-#define WIFI_ANSWER_BUFFER_SIZE (512*16)
-#define WIFI_LINE_BUFFER_SIZE (512*4)
+#define WIFI_ANSWER_BUFFER_SIZE (512*8)
+#define WIFI_LINE_BUFFER_SIZE WIFI_ANSWER_BUFFER_SIZE
 #define WIFI_HTML_RESP_BUFFER_SIZE (512*4)
 #define WIFI_RLE_BUFFER_SIZE (512)
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
 #define WIFI_FOUNDED_AP_MAXCOUNT 10
-#define WIFI_DEBUG (true || TRX.Debug_Console) //WIFI debug output to console
+#define WIFI_DEBUG (false || TRX.Debug_Console) //WIFI debug output to console
 
 typedef enum
 {
