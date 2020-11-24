@@ -128,7 +128,34 @@ namespace file2rle
                 prev = current;
             }
 
-            out_bytes = Encoding.UTF8.GetBytes("\r\n};\r\n");
+            //сохраняем накопленные неповторяющиеся
+            while (replay_count < -127)
+            {
+                if (debug)
+                    appendByteN(-127);
+                else
+                    appendByte((sbyte)-127);
+                int tcnt = 0;
+                foreach (byte point in neg_bytes)
+                {
+                    appendByte((sbyte)point);
+                    tcnt++;
+                    if (tcnt == 127)
+                        break;
+                }
+                neg_bytes.RemoveRange(0, 127);
+                replay_count += 127;
+            }
+            if (debug)
+                appendByteN(replay_count);
+            else
+                appendByte((sbyte)replay_count);
+            foreach (byte point in neg_bytes)
+                appendByte((sbyte)point);
+            neg_bytes.Clear();
+            replay_count = 0;
+
+                out_bytes = Encoding.UTF8.GetBytes("\r\n};\r\n");
             out_file.Write(out_bytes, 0, out_bytes.Length);
 
             out_bytes = Encoding.UTF8.GetBytes("\r\n#endif\r\n");
