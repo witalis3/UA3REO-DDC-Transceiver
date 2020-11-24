@@ -279,3 +279,77 @@ ITCM void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAG
 		}
 	}
 }
+
+static uint32_t RLEStream_pixels = 0;
+static uint32_t RLEStream_decoded = 0;
+static uint8_t RLEStream_state = 0;
+void LCDDriver_printImage_RLECompressed_StartStream(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+{
+	RLEStream_pixels = width * height;
+	RLEStream_decoded = 0;
+	RLEStream_state = 0;
+	
+	LCDDriver_SetCursorAreaPosition(x, y, width + x - 1, height + y - 1);
+}
+
+void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t len)
+{
+	static uint16_t nr_count = 0;
+	static uint16_t nr_count_p = 0;
+	static uint16_t r_count = 0;
+	static uint16_t r_count_p = 0;
+	uint32_t processed = 0;
+	while (processed < len)
+	{
+		if ((((int16_t)data[processed] < 0) && (RLEStream_state == 0)) || (RLEStream_state == 1)) // no repeats
+		{
+			if(RLEStream_state == 0)
+			{
+				nr_count = (-(int16_t)data[processed]);
+				nr_count_p = 0;
+				processed++;
+			}
+			RLEStream_state = 1;
+			
+			if(processed >= len)
+				return;
+			
+			for (; nr_count_p < nr_count;)
+			{
+				LCDDriver_SendData(data[processed]);
+				RLEStream_decoded++;
+				nr_count_p++;
+				processed++;
+				if (RLEStream_pixels <= RLEStream_decoded)
+					return;
+				if(processed >= len)
+					return;
+			}
+			RLEStream_state = 0;
+		}
+		else if ((((int16_t)data[processed] > 0) && (RLEStream_state == 0)) || (RLEStream_state == 2)) //repeats
+		{
+			if(RLEStream_state == 0)
+			{
+				r_count = ((int16_t)data[processed]);
+				r_count_p = 0;
+				processed++;
+			}
+			RLEStream_state = 2;
+			
+			if(processed >= len)
+				return;
+			
+			for (; r_count_p < r_count;)
+			{
+				LCDDriver_SendData(data[processed]);
+				r_count_p++;
+				RLEStream_decoded++;
+				if (RLEStream_pixels <= RLEStream_decoded)
+					return;
+			}
+			processed++;
+			RLEStream_state = 0;
+		}
+	}
+}

@@ -104,6 +104,8 @@ extern void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 extern void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image, uint16_t transparent_color, uint16_t bg_color);
 extern void LCDDriver_setRotation(uint8_t rotate);
 extern void LCDDriver_setBrightness(uint8_t percent);
+extern void LCDDriver_printImage_RLECompressed_StartStream(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
+extern void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t len);
 
 //BTE functions
 ITCM void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, uint16_t w, uint16_t h, bool fromEnd);

@@ -23,6 +23,7 @@ static void WIFI_SendCommand(char *command);
 static bool WIFI_WaitForOk(void);
 static bool WIFI_ListAP_Sync(void);
 static bool WIFI_TryGetLine(void);
+static bool WIFI_TryGetRAWData(void);
 static void WIFI_sendHTTPRequest(void);
 static void WIFI_getHTTPResponse(void);
 
@@ -590,6 +591,31 @@ static bool WIFI_TryGetLine(void)
 	return true;
 }
 
+static bool WIFI_TryGetRAWData(void)
+{
+	memset(WIFI_readedLine, 0x00, sizeof(WIFI_readedLine));
+	memset(tmp, 0x00, sizeof(tmp));
+
+	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
+	if (WIFI_Answer_ReadIndex == dma_index)
+		return false;
+
+	strncpy(tmp, &WIFI_AnswerBuffer[WIFI_Answer_ReadIndex], dma_index - WIFI_Answer_ReadIndex);
+	if (tmp[0] == '\0')
+		return false;
+
+	strcpy(WIFI_readedLine, tmp);
+
+	WIFI_Answer_ReadIndex += strlen(tmp);
+	if (WIFI_Answer_ReadIndex > dma_index)
+		WIFI_Answer_ReadIndex = dma_index;
+
+	//if (WIFI_DEBUG) //DEBUG
+		//sendToDebug_str2("WIFI_R: ", WIFI_readedLine);
+
+	return true;
+}
+
 bool WIFI_StartCATServer(void *callback)
 {
 	if (WIFI_State != WIFI_READY)
@@ -650,7 +676,7 @@ static void WIFI_getHTTPResponse(void)
 			uint32_t start_time = HAL_GetTick();
 			while(strlen(WIFI_HTTResponseHTML) < response_length && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 5000)
 			{
-				if(WIFI_TryGetLine())
+				if(WIFI_TryGetRAWData())
 					strcat(WIFI_HTTResponseHTML, WIFI_readedLine);
 			}
 			char *istr3 = WIFI_HTTResponseHTML;
@@ -675,10 +701,10 @@ static void WIFI_getHTTPResponse(void)
 				strcpy(WIFI_HTTResponseHTML , istr6);
 			}
 			
+			WIFI_ProcessingCommand = WIFI_COMM_NONE;
+			WIFI_State = WIFI_READY;
 			if (WIFI_ProcessingCommandCallback != NULL)
 				WIFI_ProcessingCommandCallback();
-			
-			WIFI_ProcessingCommand = WIFI_COMM_NONE;
 		}
 	}
 }
@@ -737,7 +763,81 @@ static void WIFI_printText_callback(void)
 {
 	LCDDriver_Fill(BG_COLOR);
 	if(WIFI_HTTP_Response_Status == 200)
+	{
 		LCDDriver_printTextFont(WIFI_HTTResponseHTML, 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+		//sendToDebug_uint32(strlen(WIFI_HTTResponseHTML),false);
+		//sendToDebug_strln(WIFI_HTTResponseHTML);
+	}
+	else
+		LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+}
+
+IRAM2 static int16_t WIFI_RLEStreamBuffer[256] = {0};
+static uint16_t WIFI_RLEStreamBuffer_part = 0;
+static void WIFI_printImage_stream_callback(void)
+{
+	memset(WIFI_RLEStreamBuffer, 0x00, sizeof(WIFI_RLEStreamBuffer));
+	//parse hex output from server (convert to bin)
+	char *istr = WIFI_HTTResponseHTML;
+	char hex[5] = {0};
+	uint16_t index = 0;
+	int16_t val =0;
+	while(*istr != 0)
+	{
+		//Get hex
+		strncpy(hex, istr , 4);
+		val = (int16_t)(strtol(hex, NULL, 16));
+		istr += 4;
+		//Save
+		WIFI_RLEStreamBuffer[index] = val;
+		index++;
+	}
+	WIFI_HTTResponseHTML[index] = 0;
+	sendToDebug_uint32(index,false);
+	
+	//send to LCD RLE stream decoder
+	LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, index);
+	WIFI_RLEStreamBuffer_part++;
+	if(index >= 128 && LCD_systemMenuOpened)
+	{
+		char url[64] = {0};
+		sprintf(url, "/trx_services/propagination.php?part=%d", WIFI_RLEStreamBuffer_part);
+		WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printImage_stream_callback, false);
+	}
+}
+
+static void WIFI_printImage_callback(void)
+{
+	LCDDriver_Fill(BG_COLOR);
+	if(WIFI_HTTP_Response_Status == 200)
+	{
+		char *istr1 = strstr(WIFI_HTTResponseHTML, ",");
+		if (istr1 != NULL)
+		{
+			*istr1 = 0;
+			uint32_t filesize = atoi(WIFI_HTTResponseHTML);
+			istr1++;
+			char *istr2 = strstr(istr1, ",");
+			if (istr2 != NULL)
+			{
+				*istr2 = 0;
+				uint16_t width = (uint16_t)(atoi(istr1));
+				istr2++;
+				
+				uint16_t height = (uint16_t)(atoi(istr2));
+				
+				//sendToDebug_uint32(filesize, false);
+				//sendToDebug_uint32(width, false);
+				//sendToDebug_uint32(height, false);
+				if(filesize > 0 && width > 0  && height > 0)
+				{
+					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
+					WIFI_RLEStreamBuffer_part = 0;
+					WIFI_getHTTPpage("ua3reo.ru", "/trx_services/propagination.php?part=0", WIFI_printImage_stream_callback, false);
+				}
+			}
+		}
+	}
 	else
 		LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 }
@@ -746,9 +846,7 @@ void WIFI_getRDA(void)
 {
 	LCDDriver_Fill(BG_COLOR);
 	if(WIFI_connected && WIFI_State == WIFI_READY)
-	{
 		LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
-	}
 	else
 	{
 		LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
@@ -757,4 +855,17 @@ void WIFI_getRDA(void)
 	char url[64] = "/trx_services/rda.php?callsign=";
 	strcat(url, TRX.CALLSIGN);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false);
+}
+
+void WIFI_getPropagination(void)
+{
+	LCDDriver_Fill(BG_COLOR);
+	if(WIFI_connected && WIFI_State == WIFI_READY)
+		LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	else
+	{
+		LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+		return;
+	}
+	WIFI_getHTTPpage("ua3reo.ru", "/trx_services/propagination.php", WIFI_printImage_callback, false);
 }

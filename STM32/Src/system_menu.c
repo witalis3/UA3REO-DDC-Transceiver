@@ -154,6 +154,7 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction);
 static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
+static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
 
 IRAM2 static struct sysmenu_item_handler sysmenu_handlers[] =
 	{
@@ -337,8 +338,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_services_handlers[] =
 {
 	{"Band SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_BAND_START},
 	{"HF SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_HF_START},
-	{"RDA Statistics", SYSMENU_RUN, 0, SYSMENU_HANDL_RDA_STATS},
 	{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
+	{"RDA Statistics", SYSMENU_RUN, 0, SYSMENU_HANDL_RDA_STATS},
+	{"Propagination", SYSMENU_RUN, 0, SYSMENU_HANDL_PROPAGINATION},
 };
 static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
 
@@ -2183,6 +2185,14 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 	sysmenu_infowindow_opened = true;
 	drawSystemMenu(true);
 	WIFI_getRDA();
+}
+
+//PROPAGINATION
+static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
+{
+	sysmenu_infowindow_opened = true;
+	drawSystemMenu(true);
+	WIFI_getPropagination();
 }
 
 //COMMON MENU FUNCTIONS
