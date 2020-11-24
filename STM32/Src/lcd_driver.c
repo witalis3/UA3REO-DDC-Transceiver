@@ -322,7 +322,7 @@ void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t l
 				processed++;
 				if (RLEStream_pixels <= RLEStream_decoded)
 					return;
-				if(processed >= len)
+				if(processed >= len && nr_count_p < nr_count)
 					return;
 			}
 			RLEStream_state = 0;
