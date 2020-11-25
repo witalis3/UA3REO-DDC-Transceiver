@@ -72,6 +72,7 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 void LCD_Init(void)
 {
 	COLOR = &COLOR_THEMES[TRX.ColorThemeId];
+	LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
 	
 	LCDDriver_Init();
 #if SCREEN_ROTATE

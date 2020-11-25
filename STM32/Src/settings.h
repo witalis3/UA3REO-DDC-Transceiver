@@ -7,7 +7,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 205				// Settings config version
+#define SETT_VERSION 207				// Settings config version
 #define CALIB_VERSION 206				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
 #define DAC_CLOCK 188160000				// DAC generator frequency
@@ -212,6 +212,7 @@ extern struct TRX_SETTINGS
 	uint16_t CW_KEYER_WPM;
 	//SCREEN
 	uint8_t ColorThemeId;
+	uint8_t LayoutThemeId;
 	bool FFT_Enabled;
 	uint8_t FFT_Zoom;
 	uint8_t FFT_Speed;

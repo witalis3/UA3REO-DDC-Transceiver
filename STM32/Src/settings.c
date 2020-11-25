@@ -243,7 +243,8 @@ void LoadSettings(bool clear)
 		TRX.FFT_Compressor = true;	//Compress FFT Peaks
 		TRX.Encoder_Accelerate = true;	//Accelerate Encoder on fast rate
 		strcpy(TRX.CALLSIGN, "HamRad");				// Callsign
-		TRX.ColorThemeId = 0;			//Selected Color Theme
+		TRX.ColorThemeId = 0;			//Selected Color theme
+		TRX.LayoutThemeId = 0;		//Selected Layout theme
 		TRX.Transverter_Enabled = false;	//Enable transverter mode
 		TRX.Transverter_Offset_Mhz = 120;	//Offset from VFO
 
