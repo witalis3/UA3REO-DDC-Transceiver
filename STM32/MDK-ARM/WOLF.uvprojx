@@ -454,6 +454,11 @@
               <FilePath>..\Src\bootloader.h</FilePath>
             </File>
             <File>
+              <FileName>color_themes.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\color_themes.h</FilePath>
+            </File>
+            <File>
               <FileName>cw_decoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\cw_decoder.c</FilePath>

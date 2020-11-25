@@ -1516,7 +1516,7 @@ static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw)
 		LCDDriver_printText("AP Found:", 5, 5, FG_COLOR, BG_COLOR, 2);
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
 			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 33 + i * 24, COLOR_GREEN, BG_COLOR, 2);
-		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->LAY_SYSMENU_W, FG_COLOR);
+		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
 		WIFI_ListAP(SYSMENU_WIFI_DrawSelectAPMenuCallback);
 	}
 	sysmenu_wifi_rescan_interval++;
@@ -2244,13 +2244,13 @@ void drawSystemMenu(bool draw_background)
 	if (draw_background)
 		LCDDriver_Fill(BG_COLOR);
 
-	uint8_t current_selected_page = systemMenuIndex / LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE;
-	if (current_selected_page * LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE > *sysmenu_item_count_selected)
+	uint8_t current_selected_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
+	if (current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE > *sysmenu_item_count_selected)
 		current_selected_page = 0;
 
 	for (uint8_t m = 0; m < *sysmenu_item_count_selected; m++)
 	{
-		uint8_t current_page = m / LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE;
+		uint8_t current_page = m / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 		if (current_selected_page == current_page)
 			drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
 	}
@@ -2455,8 +2455,8 @@ void eventSecRotateSystemMenu(int8_t direction)
 		return;
 	}
 	//other
-	uint8_t current_page = systemMenuIndex / LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE;
-	LCDDriver_drawFastHLine(0, (5 + (systemMenuIndex - current_page * LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE) * LAYOUT->LAY_SYSMENU_ITEM_HEIGHT) + 17, LAYOUT->LAY_SYSMENU_W, BG_COLOR);
+	uint8_t current_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
+	LCDDriver_drawFastHLine(0, (5 + (systemMenuIndex - current_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE) * LAYOUT->SYSMENU_ITEM_HEIGHT) + 17, LAYOUT->SYSMENU_W, BG_COLOR);
 	if (direction < 0)
 	{
 		if (systemMenuIndex > 0)
@@ -2483,7 +2483,7 @@ void eventSecRotateSystemMenu(int8_t direction)
 	redrawCurrentItem();
 	if (sysmenu_onroot)
 		systemMenuRootIndex = systemMenuIndex;
-	uint8_t new_page = systemMenuIndex / LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE;
+	uint8_t new_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 
 	if (current_page != new_page)
 		drawSystemMenu(true);
@@ -2491,9 +2491,9 @@ void eventSecRotateSystemMenu(int8_t direction)
 
 static void redrawCurrentItem(void)
 {
-	uint8_t current_page = systemMenuIndex / LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE;
-	sysmenu_i = (uint8_t)(systemMenuIndex - current_page * LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE);
-	sysmenu_y = 5 + (systemMenuIndex - current_page * LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE) * LAYOUT->LAY_SYSMENU_ITEM_HEIGHT;
+	uint8_t current_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
+	sysmenu_i = (uint8_t)(systemMenuIndex - current_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE);
+	sysmenu_y = 5 + (systemMenuIndex - current_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE) * LAYOUT->SYSMENU_ITEM_HEIGHT;
 	drawSystemMenuElement(sysmenu_handlers_selected[systemMenuIndex].title, sysmenu_handlers_selected[systemMenuIndex].type, sysmenu_handlers_selected[systemMenuIndex].value, true);
 }
 
@@ -2505,11 +2505,11 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	char ctmp[10] = {0};
 	if (!onlyVal)
 	{
-		LCDDriver_Fill_RectXY(0, sysmenu_y, LAYOUT->LAY_SYSMENU_W, sysmenu_y + 17, BG_COLOR);
-		LCDDriver_printText(title, LAYOUT->LAY_SYSMENU_X1, sysmenu_y, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_Fill_RectXY(0, sysmenu_y, LAYOUT->SYSMENU_W, sysmenu_y + 17, BG_COLOR);
+		LCDDriver_printText(title, LAYOUT->SYSMENU_X1, sysmenu_y, FG_COLOR, BG_COLOR, 2);
 	}
 
-	uint16_t x_pos = LAYOUT->LAY_SYSMENU_X2;
+	uint16_t x_pos = LAYOUT->SYSMENU_X2;
 	float32_t tmp_float = 0;
 	switch (type)
 	{
@@ -2521,11 +2521,11 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		break;
 	case SYSMENU_UINT32:
 		sprintf(ctmp, "%u", (uint32_t)*value);
-		x_pos = LAYOUT->LAY_SYSMENU_X2_BIGINT;
+		x_pos = LAYOUT->SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_UINT32R:
 		sprintf(ctmp, "%u", (uint32_t)*value);
-		x_pos = LAYOUT->LAY_SYSMENU_X2R_BIGINT; //-V1048
+		x_pos = LAYOUT->SYSMENU_X2R_BIGINT; //-V1048
 		break;
 	case SYSMENU_INT8:
 		sprintf(ctmp, "%d", (int8_t)*value);
@@ -2535,12 +2535,12 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		break;
 	case SYSMENU_INT32:
 		sprintf(ctmp, "%d", (int32_t)*value);
-		x_pos = LAYOUT->LAY_SYSMENU_X2_BIGINT;
+		x_pos = LAYOUT->SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_FLOAT32:
 		memcpy(&tmp_float, value, sizeof(float32_t));
 		sprintf(ctmp, "%.2f", (double)tmp_float);
-		x_pos = LAYOUT->LAY_SYSMENU_X2_BIGINT;
+		x_pos = LAYOUT->SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_BOOLEAN:
 		sprintf(ctmp, "%d", (int8_t)*value);
@@ -2567,9 +2567,9 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	if (type != SYSMENU_INFOLINE)
 		LCDDriver_printText(ctmp, x_pos, sysmenu_y, FG_COLOR, BG_COLOR, 2);
 
-	uint8_t current_selected_page = systemMenuIndex / LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE;
-	if (systemMenuIndex == sysmenu_i + current_selected_page * LAYOUT->LAY_SYSMENU_MAX_ITEMS_ON_PAGE)
-		LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->LAY_SYSMENU_W, FG_COLOR);
+	uint8_t current_selected_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
+	if (systemMenuIndex == sysmenu_i + current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
+		LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, FG_COLOR);
 	sysmenu_i++;
-	sysmenu_y += LAYOUT->LAY_SYSMENU_ITEM_HEIGHT;
+	sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
 }
