@@ -151,8 +151,6 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 //Prototypes
 static uint16_t getFFTColor(uint_fast8_t height);	// get color from signal strength
 static void fft_fill_color_scale(void);				// prepare the color palette
-static uint16_t getFFTHeight(void);					// get FFT height
-static uint16_t getWTFHeight(void);					// get the height of the waterfall
 static void FFT_move(int32_t _freq_diff);			// shift the waterfall
 static int32_t getFreqPositionOnFFT(uint32_t freq); // get the position on the FFT for a given frequency
 static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
@@ -392,8 +390,8 @@ ITCM void FFT_printFFT(void)
 
 	uint16_t height = 0; // column height in FFT output
 	uint16_t tmp = 0;
-	uint16_t fftHeight = getFFTHeight();
-	uint16_t wtfHeight = getWTFHeight();
+	uint16_t fftHeight = GET_FFTHeight;
+	uint16_t wtfHeight = GET_WTFHeight;
 	hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 	
 	if (CurrentVFO()->Freq != currentFFTFreq)
@@ -584,8 +582,8 @@ ITCM void FFT_printFFT(void)
 // waterfall output
 ITCM void FFT_printWaterfallDMA(void)
 {
-	uint16_t fftHeight = getFFTHeight();
-	uint16_t wtfHeight = getWTFHeight();
+	uint16_t fftHeight = GET_FFTHeight;
+	uint16_t wtfHeight = GET_WTFHeight;
 	uint_fast8_t cwdecoder_offset = 0;
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
@@ -746,18 +744,18 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		const float32_t contrast2 = 0.45f;
 		const float32_t contrast3 = 0.53f;
 
-		if (height < getFFTHeight() * contrast1)
+		if (height < GET_FFTHeight * contrast1)
 		{
-			blue = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+			blue = (uint_fast8_t)(height * 255 / (GET_FFTHeight * contrast1));
 			if(COLOR->WTF_BG_WHITE)
 			{
 				red -= blue;
 				green -= blue;
 			}
 		}
-		else if (height < getFFTHeight() * (contrast1 + contrast2))
+		else if (height < GET_FFTHeight * (contrast1 + contrast2))
 		{
-			green = (uint_fast8_t)((height - getFFTHeight() * contrast1) * 255 / ((getFFTHeight() - getFFTHeight() * contrast1) * (contrast1 + contrast2)));
+			green = (uint_fast8_t)((height - GET_FFTHeight * contrast1) * 255 / ((GET_FFTHeight - GET_FFTHeight * contrast1) * (contrast1 + contrast2)));
 			red = green;
 			blue = 255 - green;
 		}
@@ -765,7 +763,7 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		{
 			red = 255;
 			blue = 0;
-			green = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1 + contrast2))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1 + contrast2))) * (contrast1 + contrast2 + contrast3)));
+			green = (uint_fast8_t)(255 - (height - (GET_FFTHeight * (contrast1 + contrast2))) * 255 / ((GET_FFTHeight - (GET_FFTHeight * (contrast1 + contrast2))) * (contrast1 + contrast2 + contrast3)));
 		}
 		return rgb888torgb565(red, green, blue);
 	}
@@ -785,26 +783,26 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 			contrast2 = 0.8f;
 		}
 		
-		if (height < getFFTHeight() * contrast1)
+		if (height < GET_FFTHeight * contrast1)
 		{
 			if(!COLOR->WTF_BG_WHITE)
 			{
-				red = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
-				green = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+				red = (uint_fast8_t)(height * 255 / (GET_FFTHeight * contrast1));
+				green = (uint_fast8_t)(height * 255 / (GET_FFTHeight * contrast1));
 				blue = 0;
 			}
 			else
 			{
 				red = 255;
 				green = 255;
-				blue = 255 - (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+				blue = 255 - (uint_fast8_t)(height * 255 / (GET_FFTHeight * contrast1));
 			}
 		}
 		else
 		{
 			red = 255;
 			blue = 0;
-			green = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1))) * (contrast1 + contrast2)));
+			green = (uint_fast8_t)(255 - (height - (GET_FFTHeight * (contrast1))) * 255 / ((GET_FFTHeight - (GET_FFTHeight * (contrast1))) * (contrast1 + contrast2)));
 			if(COLOR->WTF_BG_WHITE)
 			{
 				blue = green;
@@ -828,26 +826,26 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 			contrast2 = 0.8f;
 		}
 		
-		if (height < getFFTHeight() * contrast1)
+		if (height < GET_FFTHeight * contrast1)
 		{
 			if(!COLOR->WTF_BG_WHITE)
 			{
-				red = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
-				green = (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+				red = (uint_fast8_t)(height * 255 / (GET_FFTHeight * contrast1));
+				green = (uint_fast8_t)(height * 255 / (GET_FFTHeight * contrast1));
 				blue = 0;
 			}
 			else
 			{
 				red = 255;
 				green = 255;
-				blue = 255 - (uint_fast8_t)(height * 255 / (getFFTHeight() * contrast1));
+				blue = 255 - (uint_fast8_t)(height * 255 / (GET_FFTHeight * contrast1));
 			}
 		}
 		else
 		{
 			green = 255;
 			blue = 0;
-			red = (uint_fast8_t)(255 - (height - (getFFTHeight() * (contrast1))) * 255 / ((getFFTHeight() - (getFFTHeight() * (contrast1))) * (contrast1 + contrast2)));
+			red = (uint_fast8_t)(255 - (height - (GET_FFTHeight * (contrast1))) * 255 / ((GET_FFTHeight - (GET_FFTHeight * (contrast1))) * (contrast1 + contrast2)));
 			if(COLOR->WTF_BG_WHITE)
 			{
 				green = red;
@@ -862,13 +860,13 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		// 0 0 0
 		// 255 0 0
 		
-		if (height <= getFFTHeight())
+		if (height <= GET_FFTHeight)
 		{
-			red = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			red = (uint_fast8_t)(height * 255 / (GET_FFTHeight));
 			if(COLOR->WTF_BG_WHITE)
 			{
-				green -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
-				blue -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+				green -= (uint_fast8_t)(height * 255 / (GET_FFTHeight));
+				blue -= (uint_fast8_t)(height * 255 / (GET_FFTHeight));
 				red = 255;
 			}
 		}
@@ -881,14 +879,14 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		// 0 0 0
 		// 0 255 0
 		
-		if (height <= getFFTHeight())
+		if (height <= GET_FFTHeight)
 		{
-			green = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			green = (uint_fast8_t)(height * 255 / (GET_FFTHeight));
 			if(COLOR->WTF_BG_WHITE)
 			{
 				green = 255;
-				blue -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
-				red -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+				blue -= (uint_fast8_t)(height * 255 / (GET_FFTHeight));
+				red -= (uint_fast8_t)(height * 255 / (GET_FFTHeight));
 			}
 		}
 		return rgb888torgb565(red, green, blue);
@@ -900,14 +898,14 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		// 0 0 0
 		// 0 0 255
 		
-		if (height <= getFFTHeight())
+		if (height <= GET_FFTHeight)
 		{
-			blue = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			blue = (uint_fast8_t)(height * 255 / (GET_FFTHeight));
 			if(COLOR->WTF_BG_WHITE)
 			{
-				green -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+				green -= (uint_fast8_t)(height * 255 / (GET_FFTHeight));
 				blue = 255;
-				red -= (uint_fast8_t)(height * 255 / (getFFTHeight()));
+				red -= (uint_fast8_t)(height * 255 / (GET_FFTHeight));
 			}
 		}
 		return rgb888torgb565(red, green, blue);
@@ -919,9 +917,9 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 		// 0 0 0
 		// 255 255 255
 		
-		if (height <= getFFTHeight())
+		if (height <= GET_FFTHeight)
 		{
-			red = (uint_fast8_t)(height * 255 / (getFFTHeight()));
+			red = (uint_fast8_t)(height * 255 / (GET_FFTHeight));
 			green = red;
 			blue = red;
 			if(COLOR->WTF_BG_WHITE)
@@ -939,7 +937,7 @@ static uint16_t getFFTColor(uint_fast8_t height) // Get FFT color warmth (blue t
 
 ITCM static uint16_t getBGColor(uint_fast8_t height) // Get FFT background gradient
 {
-	float32_t fftheight = getFFTHeight();
+	float32_t fftheight = GET_FFTHeight;
 	float32_t step_red = (float32_t)(COLOR->FFT_GRADIENT_END_R - COLOR->FFT_GRADIENT_START_R) / fftheight;
 	float32_t step_green = (float32_t)(COLOR->FFT_GRADIENT_END_G - COLOR->FFT_GRADIENT_START_G) / fftheight;
 	float32_t step_blue = (float32_t)(COLOR->FFT_GRADIENT_END_B - COLOR->FFT_GRADIENT_START_B) / fftheight;
@@ -954,10 +952,10 @@ ITCM static uint16_t getBGColor(uint_fast8_t height) // Get FFT background gradi
 // prepare the color palette
 static void fft_fill_color_scale(void) // Fill FFT Color Gradient On Initialization
 {
-	for (uint_fast8_t i = 0; i < getFFTHeight(); i++)
+	for (uint_fast8_t i = 0; i < GET_FFTHeight; i++)
 	{
-		color_scale[i] = getFFTColor(getFFTHeight() - i);
-		bg_gradient_color[i] = getBGColor(getFFTHeight() - i);
+		color_scale[i] = getFFTColor(GET_FFTHeight - i);
+		bg_gradient_color[i] = getBGColor(GET_FFTHeight - i);
 	}
 }
 
@@ -972,26 +970,6 @@ void FFT_Reset(void) // clear the FFT
 	memset(FFTOutput_mean, 0x00, sizeof FFTOutput_mean);
 	FFT_buff_index = 0;
 	NeedFFTInputBuffer = true;
-}
-
-// get FFT height
-ITCM static inline uint16_t getFFTHeight(void)
-{
-	if (TRX.FFT_Height == 1)
-		return LAYOUT->FFT_HEIGHT_STYLE1;
-	if (TRX.FFT_Height == 2)
-		return LAYOUT->FFT_HEIGHT_STYLE2;
-	return LAYOUT->FFT_HEIGHT_STYLE3;
-}
-
-// get the height of the waterfall
-ITCM static inline uint16_t getWTFHeight(void)
-{
-	if (TRX.FFT_Height == 1)
-		return LAYOUT->WTF_HEIGHT_STYLE1;
-	if (TRX.FFT_Height == 2)
-		return LAYOUT->WTF_HEIGHT_STYLE2;
-	return LAYOUT->WTF_HEIGHT_STYLE3;
 }
 
 ITCM static inline int32_t getFreqPositionOnFFT(uint32_t freq)

@@ -20,6 +20,9 @@
 #define FFT_BW_BRIGHTNESS 10																		 // pixel brightness on bw bar
 #define FFT_SCALE_LINES_BRIGHTNESS 0.4f													 // pixel brightness on scale lines
 
+#define GET_FFTHeight ((TRX.FFT_Height == 1) ? LAYOUT->FFT_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->FFT_HEIGHT_STYLE2 : LAYOUT->FFT_HEIGHT_STYLE3))
+#define GET_WTFHeight ((TRX.FFT_Height == 1) ? LAYOUT->WTF_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2 : LAYOUT->WTF_HEIGHT_STYLE3))
+
 // Public variables
 extern volatile uint32_t FFT_buff_index;
 extern bool NeedFFTInputBuffer;

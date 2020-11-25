@@ -151,7 +151,7 @@ ITCM void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t 
 	@param    maxy  Maximum clipping value for Y
 */
 /**************************************************************************/
-ITCM static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, GFXfont *gfxFont)
+ITCM static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, const GFXfont *gfxFont)
 {
 	if (c == '\n')
 	{			// Newline?
@@ -197,7 +197,7 @@ ITCM static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t 
 	@param    h      The boundary height, set by function
 */
 /**************************************************************************/
-ITCM void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, GFXfont *gfxFont)
+ITCM void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, const GFXfont *gfxFont)
 {
 	uint8_t c; // Current character
 

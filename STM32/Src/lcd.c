@@ -16,6 +16,7 @@
 #include "screen_layout.h"
 #include "images.h"
 #include "wifi.h"
+#include "fft.h"
 
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
