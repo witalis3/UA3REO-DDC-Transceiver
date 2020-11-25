@@ -1,5 +1,5 @@
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_SSD1963) || defined(LCD_R61581))
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581))
 
 //Header files
 #include "lcd_driver.h"
@@ -321,83 +321,6 @@ void LCDDriver_Init(void)
 	HAL_Delay(ILI9481_COMM_DELAY);
 	
 	LCDDriver_SendCommand(0x29);
-#endif
-
-#if defined(LCD_SSD1963)
-	LCDDriver_SendCommand(0xE2);		//PLL multiplier, set PLL clock to 120M
-	LCDDriver_SendData(0x23);	    //N=0x36 for 6.5M, 0x23 for 10M crystal
-	LCDDriver_SendData(0x02);
-	LCDDriver_SendData(0x54);
-	LCDDriver_SendCommand(0xE0);		// PLL enable
-	LCDDriver_SendData(0x01);
-	HAL_Delay(10);
-	LCDDriver_SendCommand(0xE0);
-	LCDDriver_SendData(0x03);
-	HAL_Delay(10);
-	LCDDriver_SendCommand(0x01);		// software reset
-	HAL_Delay(100);
-	LCDDriver_SendCommand(0xE6);		//PLL setting for PCLK, depends on resolution
-	LCDDriver_SendData(0x01);
-	LCDDriver_SendData(0x1F);
-	LCDDriver_SendData(0xFF);
-
-	LCDDriver_SendCommand(0xB0);		//LCD SPECIFICATION
-	LCDDriver_SendData(0x20);
-	LCDDriver_SendData(0x00);
-	LCDDriver_SendData(0x01);		//Set HDP	479
-	LCDDriver_SendData(0xDF);
-	LCDDriver_SendData(0x01);		//Set VDP	271
-	LCDDriver_SendData(0x0F);
-	LCDDriver_SendData(0x00);
-
-	LCDDriver_SendCommand(0xB4);		//HSYNC
-	LCDDriver_SendData(0x02);		//Set HT	531
-	LCDDriver_SendData(0x13);
-	LCDDriver_SendData(0x00);		//Set HPS	8
-	LCDDriver_SendData(0x08);
-	LCDDriver_SendData(0x2B);		//Set HPW	43
-	LCDDriver_SendData(0x00);		//Set LPS	2
-	LCDDriver_SendData(0x02);
-	LCDDriver_SendData(0x00);
-
-	LCDDriver_SendCommand(0xB6);		//VSYNC
-	LCDDriver_SendData(0x01);		//Set VT	288
-	LCDDriver_SendData(0x20);
-	LCDDriver_SendData(0x00);		//Set VPS	4
-	LCDDriver_SendData(0x04);
-	LCDDriver_SendData(0x0c);		//Set VPW	12
-	LCDDriver_SendData(0x00);		//Set FPS	2
-	LCDDriver_SendData(0x02);
-
-	LCDDriver_SendCommand(0xBA);
-	LCDDriver_SendData(0x0F);		//GPIO[3:0] out 1
-
-	LCDDriver_SendCommand(0xB8);
-	LCDDriver_SendData(0x07);	    //GPIO3=input, GPIO[2:0]=output
-	LCDDriver_SendData(0x01);		//GPIO0 normal
-
-	LCDDriver_SendCommand(0x36);		//rotation
-	LCDDriver_SendData(0x22);
-
-	LCDDriver_SendCommand(0xF0);		//pixel data interface
-	LCDDriver_SendData(0x03);
-	HAL_Delay(1);
-
-	LCDDriver_SetCursorAreaPosition(0, 0, 479, 271);
-	LCDDriver_SendCommand(0x29);		//display on
-
-	LCDDriver_SendCommand(0xBE);		//set PWM for B/L
-	LCDDriver_SendData(0x06);
-	LCDDriver_SendData(0xf0);
-	LCDDriver_SendData(0x01);
-	LCDDriver_SendData(0xf0);
-	LCDDriver_SendData(0x00);
-	LCDDriver_SendData(0x00);
-
-	LCDDriver_SendCommand(0xd0); 
-	LCDDriver_SendData(0x0d);	
-
-	LCDDriver_SendCommand(0x2C); 
 #endif
 
 #if defined(LCD_R61581)

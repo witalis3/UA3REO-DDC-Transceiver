@@ -591,7 +591,7 @@ ITCM void FFT_printWaterfallDMA(void)
 	#ifdef HAS_BTE
 		//move exist lines down with BTE
 		if (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq)
-			LCDDriver_BTE_copyArea(0, LAY_FFT_FFTWTF_POS_Y + fftHeight, 0, LAY_FFT_FFTWTF_POS_Y + fftHeight + 1, LAY_FFT_PRINT_SIZE - 1, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE - 1, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
 	#else
 		//wtf area
 		if(print_wtf_yindex == 0)
@@ -660,7 +660,7 @@ ITCM void FFT_printWaterfallDMA(void)
 		
 		// display the line
 		#ifdef HAS_BTE
-		LCDDriver_SetCursorAreaPosition(0, LAY_FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex, LAY_FFT_PRINT_SIZE - 1, LAY_FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex);
+		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex);
 		#endif
 		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_line_tmp[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
 		print_wtf_yindex++;

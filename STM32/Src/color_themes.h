@@ -50,11 +50,22 @@ typedef const struct
 	const uint16_t FFT_GRADIENT_END_G;
 	const uint16_t FFT_GRADIENT_END_B;
 	const bool WTF_BG_WHITE;
+	//7inch
+	const uint16_t FREQ_B_MHZ;
+	const uint16_t FREQ_B_KHZ;
+	const uint16_t FREQ_B_HZ;
+	const uint16_t STATUS_LABEL_ACTIVE;
+	const uint16_t STATUS_LABEL_INACTIVE;
+	const uint16_t BUTTON_BACK;
+	const uint16_t BUTTON_BORDER;
+	const uint16_t BUTTON_LIGHTER_ACTIVE;
+	const uint16_t BUTTON_LIGHTER_INACTIVE;
 } STRUCT_COLOR_THEME;
 
 static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 	//0 - black
 	{
+		//3'2 inch
 		.BACKGROUND = COLOR_BLACK,
 		.FOREGROUND = COLOR_WHITE,
 		.BUTTON_TEXT = rgb888torgb565(32, 191, 17),
@@ -100,9 +111,20 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 		.FFT_GRADIENT_END_G = 77,
 		.FFT_GRADIENT_END_B = 158,
 		.WTF_BG_WHITE = false,
+		//7inch
+		.FREQ_B_MHZ = rgb888torgb565(120, 120, 120),
+		.FREQ_B_KHZ = rgb888torgb565(120, 120, 120),
+		.FREQ_B_HZ = rgb888torgb565(120, 120, 120),
+		.STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
+		.STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
+		.BUTTON_BACK = rgb888torgb565(60, 60, 60),
+		.BUTTON_BORDER = rgb888torgb565(105, 105, 105),
+		.BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
+		.BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
 	},
 	//1 - white
 	{
+		//3'2 inch
 		.BACKGROUND = COLOR_WHITE,
 		.FOREGROUND = COLOR_BLACK,
 		.BUTTON_TEXT = rgb888torgb565(150, 130, 50),
@@ -148,6 +170,16 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 		.FFT_GRADIENT_END_G = 255,
 		.FFT_GRADIENT_END_B = 255,
 		.WTF_BG_WHITE = true,
+		//7inch
+		.FREQ_B_MHZ = rgb888torgb565(120, 120, 120),
+		.FREQ_B_KHZ = rgb888torgb565(120, 120, 120),
+		.FREQ_B_HZ = rgb888torgb565(120, 120, 120),
+		.STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
+		.STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
+		.BUTTON_BACK = rgb888torgb565(60, 60, 60),
+		.BUTTON_BORDER = rgb888torgb565(105, 105, 105),
+		.BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
+		.BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
 	},
 };
 
