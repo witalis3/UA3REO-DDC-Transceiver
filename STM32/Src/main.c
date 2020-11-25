@@ -229,8 +229,8 @@ int main(void)
 		strcat(greetings_buff, "Hello, ");
 		strcat(greetings_buff, TRX.CALLSIGN);
 		strcat(greetings_buff, " !");
-		LCDDriver_getTextBounds(greetings_buff, LAY_GREETINGS_X, LAY_GREETINGS_Y, &x1, &y1, &w, &h, (GFXfont *)&FreeSans9pt7b);
-		LCDDriver_printTextFont(greetings_buff, LAY_GREETINGS_X - (w / 2), LAY_GREETINGS_Y, COLOR_THEME->LAY_GREETINGS_COLOR, rgb888torgb565(243, 243, 243), (GFXfont *)&FreeSans9pt7b);
+		LCDDriver_getTextBounds(greetings_buff, LAYOUT->LAY_GREETINGS_X, LAYOUT->LAY_GREETINGS_Y, &x1, &y1, &w, &h, (GFXfont *)&FreeSans9pt7b);
+		LCDDriver_printTextFont(greetings_buff, LAYOUT->LAY_GREETINGS_X - (w / 2), LAYOUT->LAY_GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), (GFXfont *)&FreeSans9pt7b);
 	}
   sendToDebug_strln("[OK] Profiler init");
   InitProfiler();

@@ -9,6 +9,7 @@
 #include "auto_notch.h"
 #include "decoder.h"
 #include "vad.h"
+#include "trx_manager.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;								  // audio samples processed in the processor

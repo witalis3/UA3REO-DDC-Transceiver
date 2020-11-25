@@ -1,5 +1,6 @@
 #include "fpga.h"
 #include "main.h"
+#include "trx_manager.h"
 
 #if FPGA_FLASH_IN_HEX
 #include "fpga_flash.h"

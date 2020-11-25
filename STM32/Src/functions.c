@@ -9,6 +9,7 @@
 #include "trx_manager.h"
 #include "usbd_debug_if.h"
 #include "usbd_cat_if.h"
+#include "lcd.h"
 
 CPULOAD_t CPU_LOAD = {0};
 static bool SPI_busy = false;
