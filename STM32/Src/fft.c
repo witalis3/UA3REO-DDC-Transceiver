@@ -40,6 +40,7 @@ static uint32_t lastWTFFreq = 0;								//last WTF printed freq
 static uint16_t color_scale[MAX_FFT_HEIGHT] = {0};							  // color gradient in height FFT
 static uint16_t bg_gradient_color[MAX_FFT_HEIGHT] = {0};							  // color gradient on background of FFT
 static SRAM uint16_t wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
+static SRAM uint16_t fft_print_buffer[MAX_FFT_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // fft print buffer
 static IRAM2 uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};				  // frequencies for each row of the waterfall
 static SRAM uint16_t wtf_line_tmp[MAX_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
 static int32_t grid_lines_pos[20] = {-1};										//grid lines positions
@@ -485,18 +486,17 @@ ITCM void FFT_printFFT(void)
 	}
 	
 	// display FFT over the waterfall
-	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
+	uint16_t background = BG_COLOR;
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 	{
+		if(TRX.FFT_Background)
+				background = bg_gradient_color[fft_y];
+			
 		uint8_t grid_line_index = 0;
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
 			//fft data
-			uint16_t color;
-			if(TRX.FFT_Background)
-				color = bg_gradient_color[fft_y];
-			else
-				color = BG_COLOR;
+			uint16_t color = background;
 			
 			if (fft_y > (fftHeight - fft_header[fft_x]))
 				color = color_scale[fft_y];
@@ -514,11 +514,19 @@ ITCM void FFT_printFFT(void)
 			if((fft_x >= (uint32_t)bw_line_start) && (fft_x <= (uint32_t)(bw_line_start + bw_line_width))) // add opacity to bandw bar
 				color = addColor(color, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 			
-			//send to lcd
-			LCDDriver_SendData(color);
+			//save to print buffer
+			fft_print_buffer[fft_y][fft_x] = color;
 		}
 	}
 	
+	//Print FFT
+	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
+	HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_print_buffer[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE * fftHeight);
+}
+
+//actions after FFT_printFFT
+ITCM void FFT_afterPrintFFT(void)
+{
 	// clear and display part of the vertical bar
 	memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));
 
@@ -568,11 +576,6 @@ ITCM void FFT_printFFT(void)
 	for(uint8_t r =0; r < 2; r++)
 		for (uint32_t pixel_counter = 0; pixel_counter < LAYOUT->FFT_PRINT_SIZE; pixel_counter++)
 			LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
-
-	// separator and receive band
-	/*LCDDriver_drawFastHLine(0, (LAY_FFT_FFTWTF_POS_Y - 1), bw_line_start, COLOR_BLACK);
-	LCDDriver_drawFastHLine(bw_line_start, (LAY_FFT_FFTWTF_POS_Y - 1), bw_line_width, COLOR_GREEN);
-	LCDDriver_drawFastHLine((bw_line_start + bw_line_width + 1), LAY_FFT_FFTWTF_POS_Y - 1, (LAY_FFT_PRINT_SIZE - bw_line_start + bw_line_width - 1), COLOR_BLACK);*/
 
 	// display the waterfall using DMA
 	print_wtf_yindex = 0;

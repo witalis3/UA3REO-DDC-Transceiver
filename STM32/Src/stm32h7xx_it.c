@@ -38,6 +38,7 @@
 // DMA1-1 - receiving data from WiFi via UART
 // DMA1-5 - sending data to audio codec
 // DMA2-4 - DMA for copying 16 bit arrays
+// DMA2-5 - draw the fft at 16 bits, increment
 // DMA2-6 - draw the waterfall at 16 bits, increment
 // DMA2-7 - move the waterfall down
 
@@ -116,6 +117,7 @@ static uint32_t powerdown_start_delay = 0;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern DMA_HandleTypeDef hdma_spi3_tx;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
@@ -761,6 +763,20 @@ void TIM7_IRQHandler(void)
 	}
 	
   /* USER CODE END TIM7_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 stream5 global interrupt.
+  */
+void DMA2_Stream5_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Stream5_IRQn 0 */
+	CPULOAD_WakeUp();
+  /* USER CODE END DMA2_Stream5_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream5);
+  /* USER CODE BEGIN DMA2_Stream5_IRQn 1 */
+	FFT_afterPrintFFT();
+  /* USER CODE END DMA2_Stream5_IRQn 1 */
 }
 
 /**
