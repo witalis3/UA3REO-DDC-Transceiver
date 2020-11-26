@@ -23,6 +23,8 @@
 "wolf\noise_reduction.o"
 "wolf\profiler.o"
 "wolf\rf_unit.o"
+"wolf\screen_layout_480x320.o"
+"wolf\screen_layout_800x480.o"
 "wolf\sd.o"
 "wolf\settings.o"
 "wolf\spec_analyzer.o"

@@ -846,24 +846,24 @@
     <File>
       <GroupNumber>2</GroupNumber>
       <FileNumber>51</FileNumber>
-      <FileType>5</FileType>
+      <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Src\screen_layout_480x320.h</PathWithFileName>
-      <FilenameWithoutPath>screen_layout_480x320.h</FilenameWithoutPath>
+      <PathWithFileName>..\Src\screen_layout_480x320.cpp</PathWithFileName>
+      <FilenameWithoutPath>screen_layout_480x320.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>2</GroupNumber>
       <FileNumber>52</FileNumber>
-      <FileType>5</FileType>
+      <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Src\screen_layout_800x480.h</PathWithFileName>
-      <FilenameWithoutPath>screen_layout_800x480.h</FilenameWithoutPath>
+      <PathWithFileName>..\Src\screen_layout_800x480.cpp</PathWithFileName>
+      <FilenameWithoutPath>screen_layout_800x480.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

@@ -188,11 +188,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 #define FG_COLOR COLOR->FOREGROUND
 
 //LCD dimensions defines
-#if (defined(LAY_480x320))
-	#include "screen_layout_480x320.h"
-#endif
-#if (defined(LAY_800x480))
-	#include "screen_layout_800x480.h"
-#endif
+#include "screen_layout.h"
 
 #endif

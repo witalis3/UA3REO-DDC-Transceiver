@@ -322,7 +322,7 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>2</wLevel>
+            <wLevel>3</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
@@ -639,14 +639,14 @@
               <FilePath>..\Src\screen_layout.h</FilePath>
             </File>
             <File>
-              <FileName>screen_layout_480x320.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\screen_layout_480x320.h</FilePath>
+              <FileName>screen_layout_480x320.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Src\screen_layout_480x320.cpp</FilePath>
             </File>
             <File>
-              <FileName>screen_layout_800x480.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\screen_layout_800x480.h</FilePath>
+              <FileName>screen_layout_800x480.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Src\screen_layout_800x480.cpp</FilePath>
             </File>
             <File>
               <FileName>sd.c</FileName>
