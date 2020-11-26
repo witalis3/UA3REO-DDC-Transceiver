@@ -399,7 +399,7 @@ ITCM void FFT_printFFT(void)
 	{
 		//calculate scale lines
 		uint8_t index = 0;
-		for(int8_t i = 0; i < 13; i++)
+		for(int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 		{
 			int32_t pos = -1;
 			if(TRX.FFT_Grid > 0)
@@ -485,7 +485,7 @@ ITCM void FFT_printFFT(void)
 		break;
 	}
 	
-	// display FFT over the waterfall
+	// prepare FFT print over the waterfall
 	uint16_t background = BG_COLOR;
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 	{
@@ -496,28 +496,30 @@ ITCM void FFT_printFFT(void)
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
 			//fft data
-			uint16_t color = background;
-			
 			if (fft_y > (fftHeight - fft_header[fft_x]))
-				color = color_scale[fft_y];
-			
-			//grid lines
-			if(TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
-				if (((int32_t)fft_x == grid_lines_pos[grid_line_index]) || (fft_x == (LAYOUT->FFT_PRINT_SIZE / 2)))
-				{
-					if((int32_t)fft_x == grid_lines_pos[grid_line_index])
-						grid_line_index++;
-					color = mixColors(color, color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
-				}
-			
-			//bw bar
-			if((fft_x >= (uint32_t)bw_line_start) && (fft_x <= (uint32_t)(bw_line_start + bw_line_width))) // add opacity to bandw bar
-				color = addColor(color, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
-			
-			//save to print buffer
-			fft_print_buffer[fft_y][fft_x] = color;
+				fft_print_buffer[fft_y][fft_x] = color_scale[fft_y];
+			else
+				fft_print_buffer[fft_y][fft_x] = background;
 		}
 	}
+	
+	//draw grids
+	if(TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
+	{
+		for(int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER ; grid_line_index++)
+			if(grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
+				for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
+					fft_print_buffer[fft_y][grid_lines_pos[grid_line_index]] = mixColors(fft_print_buffer[fft_y][grid_lines_pos[grid_line_index]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+	}
+	
+	//draw center line
+	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
+		fft_print_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = mixColors(fft_print_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+	
+	//add opacity to bandw bar
+	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
+		for(int32_t fft_x = bw_line_start; fft_x <= (bw_line_start + bw_line_width) ; fft_x++)
+			fft_print_buffer[fft_y][fft_x] = addColor(fft_print_buffer[fft_y][fft_x], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 	
 	//Print FFT
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
@@ -572,6 +574,7 @@ ITCM void FFT_afterPrintFFT(void)
 					bandmap_line_tmp[(uint16_t)pixel_counter] = region_color;
 		}
 	}
+	
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y - 4, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y - 3);
 	for(uint8_t r =0; r < 2; r++)
 		for (uint32_t pixel_counter = 0; pixel_counter < LAYOUT->FFT_PRINT_SIZE; pixel_counter++)
@@ -650,7 +653,7 @@ ITCM void FFT_printWaterfallDMA(void)
 
 		//print scale lines
 		if(TRX.FFT_Grid >= 2)
-			for(int8_t i = 0; i < 13; i++)
+			for(int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 				if(grid_lines_pos[i] > 0)
 					wtf_line_tmp[grid_lines_pos[i]] = mixColors(wtf_line_tmp[grid_lines_pos[i]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 		
