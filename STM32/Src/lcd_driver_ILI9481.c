@@ -524,6 +524,7 @@ ITCM void LCDDriver_Fill(uint16_t color)
 }
 
 //Rectangle drawing functions
+static SRAM uint16_t fillxy_color;
 ITCM void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
 	if (x1 > (LCD_WIDTH - 1))
@@ -534,12 +535,10 @@ ITCM void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
 	if (n > LCD_PIXEL_COUNT)
 		n = LCD_PIXEL_COUNT;
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
-
-	static IRAM2 uint16_t fillxy_color;
 	fillxy_color = color;
+	
 	if (n > 50)
 	{
-		SCB_CleanDCache_by_Addr((uint32_t *)&fillxy_color, sizeof(fillxy_color));
 		const uint32_t part_size = 32000;
 		uint32_t estamated = n;
 		while (estamated > 0)

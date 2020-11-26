@@ -550,13 +550,11 @@ void TIM6_DAC_IRQHandler(void)
 		WM8731_Buffer_underrun = false;
 		FPGA_Buffer_underrun = false;
 		RX_USB_AUDIO_underrun = false;
-		
-		//update info labels
-		LCD_UpdateQuery.StatusInfoBar = true;
   }
 	
 	if ((ms10_counter % 3) == 0) // every 30ms
 	{
+		LCD_UpdateQuery.StatusInfoBar = true;
 		// update information on LCD
 		LCD_doEvents();
 	}
@@ -721,6 +719,7 @@ void TIM6_DAC_IRQHandler(void)
 			NeedSaveSettings = true;
 			TRX_Restart_Mode();
 			sendToDebug_strln("RF temperature too HIGH!");
+			LCD_showTooltip("RF temperature too HIGH!");
 		}
 		if(TRX_SWR > TRX_MAX_SWR && !TRX_Tune)
 		{
@@ -732,6 +731,7 @@ void TIM6_DAC_IRQHandler(void)
 			NeedSaveSettings = true;
 			TRX_Restart_Mode();
 			sendToDebug_strln("SWR too HIGH!");
+			LCD_showTooltip("SWR too HIGH!");
 		}
 	}
 	

@@ -266,13 +266,33 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 void RF_UNIT_ProcessSensors(void)
 {
+	//THERMAL
+	
+	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / 16383.0f;
+	
+	float32_t therm_resistance = -2000.0f * rf_thermal / (-3.3f + rf_thermal);
+	uint_fast8_t point_left = 0;
+	uint_fast8_t point_right = SENS_TABLE_COUNT - 1;
+	for (uint_fast8_t i = 0; i < SENS_TABLE_COUNT; i++)
+		if (KTY81_120_sensTable[i][1] < therm_resistance)
+			point_left = i;
+	for (uint_fast8_t i = (SENS_TABLE_COUNT - 1); i > 0; i--)
+		if (KTY81_120_sensTable[i][1] >= therm_resistance)
+			point_right = i;
+	float32_t power_left = (float32_t)KTY81_120_sensTable[point_left][0];
+	float32_t power_right = (float32_t)KTY81_120_sensTable[point_right][0];
+	float32_t part_point_left = therm_resistance - KTY81_120_sensTable[point_left][1];
+	float32_t part_point_right = KTY81_120_sensTable[point_right][1] - therm_resistance;
+	float32_t part_point = part_point_left / (part_point_left + part_point_right);
+	float32_t TRX_RF_Temperature_new = (power_left * (1.0f - part_point)) + (power_right * (part_point));
+	if(fabsf(TRX_RF_Temperature_new - TRX_RF_Temperature) > 0.5f) //hysteresis
+		TRX_RF_Temperature = TRX_RF_Temperature_new;
+	
+	//SWR
 	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / 16383.0f;
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / 16383.0f;
-	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / 16383.0f;
 	//float32_t alc = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / 16383.0f;
-	//sendToDebug_float32(forward,false); sendToDebug_float32(backward,false); sendToDebug_newline();
-
-	//SWR
+	
 	static float32_t TRX_VLT_forward = 0.0f;
 	static float32_t TRX_VLT_backward = 0.0f;
 	forward = forward / (1510.0f / (0.1f + 1510.0f)); // adjust the voltage based on the voltage divider (0.1 ohm and 510 ohm)
@@ -312,25 +332,4 @@ void RF_UNIT_ProcessSensors(void)
 		if (TRX_PWR_Backward < 0.0f)
 			TRX_PWR_Backward = 0.0f;
 	}
-
-	//THERMAL
-	float32_t therm_resistance = -2000.0f * rf_thermal / (-3.3f + rf_thermal);
-	uint_fast8_t point_left = 0;
-	uint_fast8_t point_right = SENS_TABLE_COUNT - 1;
-	for (uint_fast8_t i = 0; i < SENS_TABLE_COUNT; i++)
-		if (KTY81_120_sensTable[i][1] < therm_resistance)
-			point_left = i;
-	for (uint_fast8_t i = (SENS_TABLE_COUNT - 1); i > 0; i--)
-		if (KTY81_120_sensTable[i][1] >= therm_resistance)
-			point_right = i;
-	float32_t power_left = (float32_t)KTY81_120_sensTable[point_left][0];
-	float32_t power_right = (float32_t)KTY81_120_sensTable[point_right][0];
-	float32_t part_point_left = therm_resistance - KTY81_120_sensTable[point_left][1];
-	float32_t part_point_right = KTY81_120_sensTable[point_right][1] - therm_resistance;
-	float32_t part_point = part_point_left / (part_point_left + part_point_right);
-	float32_t TRX_RF_Temperature_new = (power_left * (1.0f - part_point)) + (power_right * (part_point));
-	if(fabsf(TRX_RF_Temperature_new - TRX_RF_Temperature) > 0.5f) //hysteresis
-		TRX_RF_Temperature = TRX_RF_Temperature_new;
-
-	LCD_UpdateQuery.StatusInfoBar = true;
 }
