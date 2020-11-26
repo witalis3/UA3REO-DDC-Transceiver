@@ -43,6 +43,7 @@ static SRAM uint16_t wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // 
 static SRAM uint16_t fft_print_buffer[MAX_FFT_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // fft print buffer
 static IRAM2 uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};				  // frequencies for each row of the waterfall
 static SRAM uint16_t wtf_line_tmp[MAX_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
+static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};				//buffer with fft colors output
 static int32_t grid_lines_pos[20] = {-1};										//grid lines positions
 static int16_t bw_line_start = 0;															//BW bar params
 static int16_t bw_line_width = 0;															//BW bar params
@@ -433,7 +434,6 @@ ITCM void FFT_printFFT(void)
 
 	// calculate the colors for the waterfall
 	uint_fast16_t new_x = 0;
-	static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};
 	for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 	{
 		if (fft_x < (LAYOUT->FFT_PRINT_SIZE / 2))
