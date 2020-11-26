@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="rx_cic" kind="system" version="18.1" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2020.07.02.16:48:46 -->
+ <!-- 2020.11.26.23:42:34 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1593694125</value>
+  <value>1606419753</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -101,7 +101,7 @@
  </parameter>
  <parameter name="projectName">
   <type>java.lang.String</type>
-  <value>UA3REO.qpf</value>
+  <value>WOLF.qpf</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -274,7 +274,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="ROUND_TYPE">
    <type>java.lang.String</type>
-   <value>NONE</value>
+   <value>CONV_ROUND</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -282,18 +282,18 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="REQ_OUT_WIDTH">
    <type>int</type>
-   <value>24</value>
+   <value>32</value>
    <derived>false</derived>
    <enabled>true</enabled>
-   <visible>false</visible>
+   <visible>true</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="OUT_WIDTH">
    <type>int</type>
-   <value>83</value>
+   <value>32</value>
    <derived>true</derived>
    <enabled>false</enabled>
-   <visible>true</visible>
+   <visible>false</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="INT_USE_MEM">
@@ -843,7 +843,7 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>out_data</name>
     <direction>Output</direction>
-    <width>83</width>
+    <width>32</width>
     <role>out_data</role>
    </port>
    <port>
@@ -899,5 +899,5 @@ parameters are a RESULT of the module parameters. -->
   <version>18.1</version>
  </plugin>
  <reportVersion>18.1 625</reportVersion>
- <uniqueIdentifier>00FF3199AA16000001730F928098</uniqueIdentifier>
+ <uniqueIdentifier>00FF00F878090000017606142BA7</uniqueIdentifier>
 </EnsembleReport>

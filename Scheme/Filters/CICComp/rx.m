@@ -52,8 +52,8 @@ clear all;
 %  ---- CIC Filter Parameters
 %  ------------------------------------------------------------------------
 
-R = 3920;         % Decimation factor
-N = 4;         % Number of stages
+R = 1280;         % Decimation factor
+N = 5;         % Number of stages
 M = 1;         % Differential delay (only 1)
 
 %% ------------------------------------------------------------------------
@@ -222,7 +222,7 @@ end
 %  ---- Save coe data to files
 %  ------------------------------------------------------------------------  
 if (IS_COE == 'Y') 
-  fid = fopen ('fir_filter.coe', 'w');
+  fid = fopen ('rx.coe', 'w');
   fprintf(fid, 'Radix = 10;\n');
   fprintf(fid, 'Coefficient_Width = %d;\n', Bc);
   fprintf(fid, 'Coefdata =\n');

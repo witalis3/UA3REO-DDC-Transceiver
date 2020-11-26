@@ -227,7 +227,7 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 9
 	//OUT CIC-GAIN
-	FPGA_writePacket(CALIBRATE.CIC_GAINER_val);
+	FPGA_writePacket(0);
 	FPGA_clockRise();
 	FPGA_clockFall();
 

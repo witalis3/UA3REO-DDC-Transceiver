@@ -210,7 +210,6 @@ Supported LCD: ILI9481, ILI9486 and HX8357B
 * **Encoder2 debounce** - Time of debouncing contacts of the additional encoder
 * **Encoder slow rate** - Deceleration rate of the main encoder
 * **Encoder on falling** - The encoder is triggered only when level A falls
-* **CIC Shift** - Bit shift after CIC decimator output
 * **CICCOMP Shift** - Bit shift after CIC compensator
 * **TX CICCOMP Shift** - Bit shift after TX CIC compensator
 * **DAC Shift** - Bit shift of the output to the DAC

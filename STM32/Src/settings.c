@@ -291,7 +291,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENCODER2_DEBOUNCE = 50;														// time to eliminate contact bounce at the additional encoder, ms
 		CALIBRATE.ENCODER_SLOW_RATE = 25;														// slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ON_FALLING = false;													// encoder only triggers when level A falls
-		CALIBRATE.CIC_GAINER_val = 83;															// Offset from CIC output
 		CALIBRATE.CICFIR_GAINER_val = 54;														// Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 58;														// Offset from the TX-CIC output of the compensator
 		CALIBRATE.DAC_GAINER_val = 26;															// DAC offset offset

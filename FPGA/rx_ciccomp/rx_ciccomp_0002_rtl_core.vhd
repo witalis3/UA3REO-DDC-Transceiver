@@ -16,7 +16,7 @@
 -- ---------------------------------------------------------------------------
 
 -- VHDL created from rx_ciccomp_0002_rtl_core
--- VHDL created on Sat Oct 03 23:48:18 2020
+-- VHDL created on Thu Nov 26 22:43:20 2020
 
 
 library IEEE;
