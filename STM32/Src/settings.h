@@ -57,8 +57,6 @@
 #define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_2
 #define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_2
 
-#define FMC_REMAP true			// FMC memory remap
-#define FSMC_REGISTER_SELECT 18 // from FSMC settings in STM32Cube (A18, A6, etc.)
 #define SCREEN_ROTATE 0			// turn the screen upside down
 
 #define ADC_BITS 16																						// ADC bit depth

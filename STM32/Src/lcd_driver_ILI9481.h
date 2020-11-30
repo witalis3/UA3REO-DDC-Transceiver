@@ -3,6 +3,9 @@
 #if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581))
 #define _LCDDRIVER_ILI9481_H_
 
+#define LCD_FSMC_COMM_ADDR 0xC0000000 //remapped
+#define LCD_FSMC_DATA_ADDR 0xC0080000
+
 //LCD dimensions defines
 #define LCD_WIDTH 480
 #define LCD_HEIGHT 320

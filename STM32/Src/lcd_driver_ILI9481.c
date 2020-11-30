@@ -8,9 +8,6 @@
 #include "functions.h"
 #include "lcd_driver_ILI9481.h"
 
-uint32_t LCD_FSMC_COMM_ADDR = 0;
-uint32_t LCD_FSMC_DATA_ADDR = 0;
-
 //***** Functions prototypes *****//
 ITCM static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y);
 ITCM inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
@@ -55,28 +52,6 @@ ITCM inline uint16_t LCDDriver_readReg(uint16_t reg)
 //Initialise function
 void LCDDriver_Init(void)
 {
-	//init remap
-#if FMC_REMAP
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK1)
-		LCD_FSMC_COMM_ADDR = 0xC0000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK2)
-		LCD_FSMC_COMM_ADDR = 0xCA000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK3)
-		LCD_FSMC_COMM_ADDR = 0xCB000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK4)
-		LCD_FSMC_COMM_ADDR = 0xCC000000;
-#else
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK1)
-		LCD_FSMC_COMM_ADDR = 0x60000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK2)
-		LCD_FSMC_COMM_ADDR = 0x6A000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK3)
-		LCD_FSMC_COMM_ADDR = 0x6B000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK4)
-		LCD_FSMC_COMM_ADDR = 0x6C000000;
-#endif
-	LCD_FSMC_DATA_ADDR = LCD_FSMC_COMM_ADDR + (1 << (FSMC_REGISTER_SELECT + 1));
-	
 #if (defined(LCD_ILI9481) || defined(LCD_HX8357B))
 	#define ILI9481_COMM_DELAY 20
 	

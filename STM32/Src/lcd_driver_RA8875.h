@@ -3,6 +3,9 @@
 #if (defined(LCD_RA8875))
 #define _LCDDRIVER_RA8875_H_
 
+#define LCD_FSMC_COMM_ADDR 0xC0080000 //remapped
+#define LCD_FSMC_DATA_ADDR 0xC0000000
+
 #define LCD_WIDTH 800
 #define LCD_HEIGHT 480
 #define HAS_BTE true

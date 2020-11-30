@@ -8,8 +8,6 @@
 #include "functions.h"
 #include "trx_manager.h"
 
-uint32_t LCD_FSMC_COMM_ADDR = 0;
-uint32_t LCD_FSMC_DATA_ADDR = 0;
 static bool activeWindowIsFullscreen = true;
 ITCM static void LCDDriver_waitBusy(void);
 ITCM static void LCDDriver_waitBTE(void);
@@ -57,33 +55,6 @@ ITCM inline uint16_t LCDDriver_readReg(uint16_t reg)
 //Initialise function
 void LCDDriver_Init(void)
 {
-	//init remap
-#if FMC_REMAP
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK1)
-		LCD_FSMC_COMM_ADDR = 0xC0000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK2)
-		LCD_FSMC_COMM_ADDR = 0xCA000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK3)
-		LCD_FSMC_COMM_ADDR = 0xCB000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK4)
-		LCD_FSMC_COMM_ADDR = 0xCC000000;
-#else
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK1)
-		LCD_FSMC_COMM_ADDR = 0x60000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK2)
-		LCD_FSMC_COMM_ADDR = 0x6A000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK3)
-		LCD_FSMC_COMM_ADDR = 0x6B000000;
-	if (hsram1.Init.NSBank == FMC_NORSRAM_BANK4)
-		LCD_FSMC_COMM_ADDR = 0x6C000000;
-#endif
-	LCD_FSMC_DATA_ADDR = LCD_FSMC_COMM_ADDR + (1 << (FSMC_REGISTER_SELECT + 1));
-	
-	//swap addr
-	uint32_t temp_addr = LCD_FSMC_COMM_ADDR;
-	LCD_FSMC_COMM_ADDR = LCD_FSMC_DATA_ADDR;
-	LCD_FSMC_DATA_ADDR = temp_addr;
-
 	//PLL Init
 	LCDDriver_writeReg(LCD_RA8875_PLLC1, LCD_RA8875_PLLC1_PLLDIV1 + 11);
 	HAL_Delay(1);
