@@ -39,10 +39,9 @@ static uint32_t currentFFTFreq = 0;
 static uint32_t lastWTFFreq = 0;								//last WTF printed freq
 static uint16_t color_scale[MAX_FFT_HEIGHT] = {0};							  // color gradient in height FFT
 static uint16_t bg_gradient_color[MAX_FFT_HEIGHT] = {0};							  // color gradient on background of FFT
-static SRAM uint16_t wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // waterfall buffer
-static SRAM uint16_t fft_print_buffer[MAX_FFT_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // fft print buffer
-static IRAM2 uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};				  // frequencies for each row of the waterfall
-static SRAM uint16_t wtf_line_tmp[MAX_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
+SRAM static uint16_t fft_and_wtf_buffer[MAX_FFT_PLUS_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};	//union buffer with fft and wtf
+IRAM2 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};				  // frequencies for each row of the waterfall
+SRAM static uint16_t wtf_line_tmp[MAX_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};				//buffer with fft colors output
 static int32_t grid_lines_pos[20] = {-1};										//grid lines positions
 static int16_t bw_line_start = 0;															//BW bar params
@@ -161,9 +160,6 @@ static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opa
 // FFT initialization
 void FFT_Init(void)
 {
-	memset(wtf_buffer, BG_COLOR, sizeof(wtf_buffer));
-	memset(wtf_line_tmp, BG_COLOR, sizeof(wtf_line_tmp));
-
 	fft_fill_color_scale();
 	//ZoomFFT
 	if (TRX.FFT_Zoom > 1)
@@ -201,7 +197,7 @@ void FFT_Init(void)
 			window_multipliers[i] = 0.5f * (1.0f - arm_cos_f32(2.0f * PI * i / (float32_t)FFT_SIZE));
 	}
 	// clear the buffer
-	memset(&wtf_buffer, 0x00, sizeof wtf_buffer);
+	memset(&fft_and_wtf_buffer, BG_COLOR, sizeof(fft_and_wtf_buffer));
 	// initialize sort
 	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_QUICK, ARM_SORT_ASCENDING);
 }
@@ -427,7 +423,7 @@ ITCM void FFT_printFFT(void)
 	// move the waterfall down using DMA
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
 	{
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&wtf_buffer[tmp - 1], (uint32_t)&wtf_buffer[tmp], LAYOUT->FFT_PRINT_SIZE / 2);
+		HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&fft_and_wtf_buffer[fftHeight + tmp - 1], (uint32_t)&fft_and_wtf_buffer[fftHeight + tmp], LAYOUT->FFT_PRINT_SIZE / 2);
 		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
 	}
@@ -448,7 +444,7 @@ ITCM void FFT_printFFT(void)
 		}
 		else
 			tmp = color_scale[fftHeight - height];
-		wtf_buffer[0][new_x] = tmp;
+		fft_and_wtf_buffer[fftHeight][new_x] = tmp;
 		wtf_buffer_freqs[0] = currentFFTFreq;
 		fft_header[new_x] = height;
 		if (new_x == (LAYOUT->FFT_PRINT_SIZE / 2))
@@ -497,9 +493,9 @@ ITCM void FFT_printFFT(void)
 		{
 			//fft data
 			if (fft_y > (fftHeight - fft_header[fft_x]))
-				fft_print_buffer[fft_y][fft_x] = color_scale[fft_y];
+				fft_and_wtf_buffer[fft_y][fft_x] = color_scale[fft_y];
 			else
-				fft_print_buffer[fft_y][fft_x] = background;
+				fft_and_wtf_buffer[fft_y][fft_x] = background;
 		}
 	}
 	
@@ -509,21 +505,21 @@ ITCM void FFT_printFFT(void)
 		for(int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER ; grid_line_index++)
 			if(grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
 				for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-					fft_print_buffer[fft_y][grid_lines_pos[grid_line_index]] = mixColors(fft_print_buffer[fft_y][grid_lines_pos[grid_line_index]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+					fft_and_wtf_buffer[fft_y][grid_lines_pos[grid_line_index]] = mixColors(fft_and_wtf_buffer[fft_y][grid_lines_pos[grid_line_index]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	}
 	
 	//draw center line
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-		fft_print_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = mixColors(fft_print_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+		fft_and_wtf_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = mixColors(fft_and_wtf_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	
 	//add opacity to bandw bar
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 		for(int32_t fft_x = bw_line_start; fft_x <= (bw_line_start + bw_line_width) ; fft_x++)
-			fft_print_buffer[fft_y][fft_x] = addColor(fft_print_buffer[fft_y][fft_x], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
+			fft_and_wtf_buffer[fft_y][fft_x] = addColor(fft_and_wtf_buffer[fft_y][fft_x], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 	
 	//Print FFT
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
-	HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_print_buffer[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE * fftHeight);
+	HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_and_wtf_buffer[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE * fftHeight);
 }
 
 //actions after FFT_printFFT
@@ -634,19 +630,19 @@ ITCM void FFT_printWaterfallDMA(void)
 		{
 			if (margin_left == 0 && margin_right == 0)
 			{
-				HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&wtf_buffer[print_wtf_yindex], (uint32_t)&wtf_line_tmp[0], LAYOUT->FFT_PRINT_SIZE / 2); // copy the line with the offset
+				HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&fft_and_wtf_buffer[fftHeight + print_wtf_yindex], (uint32_t)&wtf_line_tmp[0], LAYOUT->FFT_PRINT_SIZE / 2); // copy the line with the offset
 				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			}
 			else if (margin_left >= 0)
 			{
 				memset(&wtf_line_tmp, BG_COLOR, (uint32_t)(margin_left * 2)); // fill the space to the left
-				HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex], (uint32_t)&wtf_line_tmp[margin_left], LAYOUT->FFT_PRINT_SIZE - margin_left); // copy the line with the offset
+				HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&fft_and_wtf_buffer[fftHeight + print_wtf_yindex], (uint32_t)&wtf_line_tmp[margin_left], LAYOUT->FFT_PRINT_SIZE - margin_left); // copy the line with the offset
 				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			}
 			if (margin_right > 0)
 			{
 				memset(&wtf_line_tmp[(LAYOUT->FFT_PRINT_SIZE - margin_right)], BG_COLOR, (uint32_t)(margin_right * 2)); // fill the space to the right
-				HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&wtf_buffer[print_wtf_yindex][margin_right], (uint32_t)&wtf_line_tmp[0], LAYOUT->FFT_PRINT_SIZE - margin_right); // copy the line with the offset
+				HAL_DMA_Start(&hdma_memtomem_dma2_stream4, (uint32_t)&fft_and_wtf_buffer[fftHeight + print_wtf_yindex][margin_right], (uint32_t)&wtf_line_tmp[0], LAYOUT->FFT_PRINT_SIZE - margin_right); // copy the line with the offset
 				HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream4, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 			}
 		}

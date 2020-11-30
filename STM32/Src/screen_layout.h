@@ -143,7 +143,7 @@ extern "C" {
 		const uint16_t FFT_FFT_MAX_HEIGHT;
 		const uint16_t FFT_WTF_MAX_HEIGHT;
 		const uint16_t FFT_FFTWTF_POS_Y;
-		const uint16_t FFT_FFTWTF_HEIGHT;
+		const uint16_t FFT_FFTWTF_BOTTOM;
 		//System menu
 		const uint16_t SYSMENU_X1;
 		const uint16_t SYSMENU_X2;
@@ -165,6 +165,7 @@ extern "C" {
 
 	#define LAYOUT_THEMES_COUNT 1
 	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
+	#define MAX_FFT_PLUS_WTF_HEIGHT 152
 	#define MAX_FFT_HEIGHT 102
 	#define MAX_WTF_HEIGHT 102
 #endif
@@ -345,7 +346,7 @@ extern "C" {
 		const uint16_t FFT_FFT_MAX_HEIGHT;
 		const uint16_t FFT_WTF_MAX_HEIGHT;
 		const uint16_t FFT_FFTWTF_POS_Y;
-		const uint16_t FFT_FFTWTF_HEIGHT;
+		const uint16_t FFT_FFTWTF_BOTTOM;
 		//Touch buttons layout
 		const uint16_t BUTTON_PADDING;
 		const float32_t BUTTON_LIGHTER_WIDTH;
@@ -362,6 +363,7 @@ extern "C" {
 
 	#define LAYOUT_THEMES_COUNT 1
 	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
+	#define MAX_FFT_PLUS_WTF_HEIGHT 320
 	#define MAX_FFT_HEIGHT 220
 	#define MAX_WTF_HEIGHT 180
 #endif
