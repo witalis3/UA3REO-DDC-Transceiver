@@ -13,6 +13,7 @@ void DECODER_Init(void)
 
 void DECODER_PutSamples(float32_t *bufferIn, uint32_t size)
 {
+	SCB_CleanDCache_by_Addr((uint32_t *)bufferIn, size * 4);
 	if ((DECODER_head + size) <= DECODER_BUFF_SIZE)
 	{
 		dma_memcpy32((uint32_t *)&DECODER_Buffer[DECODER_head], (uint32_t *)bufferIn, size);
