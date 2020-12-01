@@ -63,6 +63,8 @@
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc3;
 
+DMA2D_HandleTypeDef hdma2d;
+
 I2S_HandleTypeDef hi2s3;
 DMA_HandleTypeDef hdma_spi3_tx;
 
@@ -91,7 +93,6 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
 MDMA_HandleTypeDef hmdma_mdma_channel41_sw_0;
 MDMA_HandleTypeDef hmdma_mdma_channel42_sw_0;
-MDMA_HandleTypeDef hmdma_mdma_channel43_sw_0;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
@@ -121,6 +122,7 @@ static void MX_ADC3_Init(void);
 static void MX_TIM15_Init(void);
 static void MX_TIM16_Init(void);
 static void MX_TIM17_Init(void);
+static void MX_DMA2D_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -196,6 +198,7 @@ int main(void)
   MX_TIM16_Init();
   MX_TIM17_Init();
   MX_FATFS_Init();
+  MX_DMA2D_Init();
   /* USER CODE BEGIN 2 */
   __HAL_RCC_CSI_ENABLE();
   __HAL_RCC_SYSCFG_CLK_ENABLE();
@@ -557,6 +560,48 @@ static void MX_ADC3_Init(void)
   /* USER CODE BEGIN ADC3_Init 2 */
 
   /* USER CODE END ADC3_Init 2 */
+
+}
+
+/**
+  * @brief DMA2D Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_DMA2D_Init(void)
+{
+
+  /* USER CODE BEGIN DMA2D_Init 0 */
+
+  /* USER CODE END DMA2D_Init 0 */
+
+  /* USER CODE BEGIN DMA2D_Init 1 */
+
+  /* USER CODE END DMA2D_Init 1 */
+  hdma2d.Instance = DMA2D;
+  hdma2d.Init.Mode = DMA2D_M2M;
+  hdma2d.Init.ColorMode = DMA2D_OUTPUT_RGB565;
+  hdma2d.Init.OutputOffset = 0;
+  hdma2d.Init.BytesSwap = DMA2D_BYTES_REGULAR;
+  hdma2d.Init.LineOffsetMode = DMA2D_LOM_PIXELS;
+  hdma2d.LayerCfg[1].InputOffset = 0;
+  hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_RGB565;
+  hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+  hdma2d.LayerCfg[1].InputAlpha = 0;
+  hdma2d.LayerCfg[1].AlphaInverted = DMA2D_REGULAR_ALPHA;
+  hdma2d.LayerCfg[1].RedBlueSwap = DMA2D_RB_REGULAR;
+  hdma2d.LayerCfg[1].ChromaSubSampling = DMA2D_NO_CSS;
+  if (HAL_DMA2D_Init(&hdma2d) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_DMA2D_ConfigLayer(&hdma2d, 1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN DMA2D_Init 2 */
+
+  /* USER CODE END DMA2D_Init 2 */
 
 }
 
@@ -1202,7 +1247,6 @@ static void MX_DMA_Init(void)
   *   hmdma_mdma_channel40_sw_0
   *   hmdma_mdma_channel41_sw_0
   *   hmdma_mdma_channel42_sw_0
-  *   hmdma_mdma_channel43_sw_0
   */
 static void MX_MDMA_Init(void)
 {
@@ -1273,28 +1317,6 @@ static void MX_MDMA_Init(void)
   hmdma_mdma_channel42_sw_0.Init.SourceBlockAddressOffset = 0;
   hmdma_mdma_channel42_sw_0.Init.DestBlockAddressOffset = 0;
   if (HAL_MDMA_Init(&hmdma_mdma_channel42_sw_0) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /* Configure MDMA channel MDMA_Channel3 */
-  /* Configure MDMA request hmdma_mdma_channel43_sw_0 on MDMA_Channel3 */
-  hmdma_mdma_channel43_sw_0.Instance = MDMA_Channel3;
-  hmdma_mdma_channel43_sw_0.Init.Request = MDMA_REQUEST_SW;
-  hmdma_mdma_channel43_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
-  hmdma_mdma_channel43_sw_0.Init.Priority = MDMA_PRIORITY_LOW;
-  hmdma_mdma_channel43_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
-  hmdma_mdma_channel43_sw_0.Init.SourceInc = MDMA_SRC_INC_DISABLE;
-  hmdma_mdma_channel43_sw_0.Init.DestinationInc = MDMA_DEST_INC_DISABLE;
-  hmdma_mdma_channel43_sw_0.Init.SourceDataSize = MDMA_SRC_DATASIZE_HALFWORD;
-  hmdma_mdma_channel43_sw_0.Init.DestDataSize = MDMA_DEST_DATASIZE_HALFWORD;
-  hmdma_mdma_channel43_sw_0.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
-  hmdma_mdma_channel43_sw_0.Init.BufferTransferLength = 2;
-  hmdma_mdma_channel43_sw_0.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
-  hmdma_mdma_channel43_sw_0.Init.DestBurst = MDMA_DEST_BURST_SINGLE;
-  hmdma_mdma_channel43_sw_0.Init.SourceBlockAddressOffset = 0;
-  hmdma_mdma_channel43_sw_0.Init.DestBlockAddressOffset = 0;
-  if (HAL_MDMA_Init(&hmdma_mdma_channel43_sw_0) != HAL_OK)
   {
     Error_Handler();
   }

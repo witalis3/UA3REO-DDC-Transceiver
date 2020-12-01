@@ -45,7 +45,6 @@
 // MDMA-0 - copy audio buffers at 32bit
 // MDMA-1 - send audio processor buffer to codec buffer - A
 // MDMA-2 - send audio processor buffer to codec buffer - B
-// MDMA-3 - DMA video driver, for filling, 16 bits without increment
 
 /* USER CODE END Header */
 
@@ -118,6 +117,7 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
+extern DMA2D_HandleTypeDef hdma2d;
 extern DMA_HandleTypeDef hdma_spi3_tx;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
@@ -806,6 +806,20 @@ void USART6_IRQHandler(void)
   /* USER CODE BEGIN USART6_IRQn 1 */
 
   /* USER CODE END USART6_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2D global interrupt.
+  */
+void DMA2D_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2D_IRQn 0 */
+	CPULOAD_WakeUp();
+  /* USER CODE END DMA2D_IRQn 0 */
+  HAL_DMA2D_IRQHandler(&hdma2d);
+  /* USER CODE BEGIN DMA2D_IRQn 1 */
+
+  /* USER CODE END DMA2D_IRQn 1 */
 }
 
 /**

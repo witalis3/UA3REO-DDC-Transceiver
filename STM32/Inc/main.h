@@ -40,6 +40,8 @@ extern "C" {
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc3;
 
+extern DMA2D_HandleTypeDef hdma2d;
+	
 extern I2S_HandleTypeDef hi2s3;
 extern DMA_HandleTypeDef hdma_spi3_rx;
 extern DMA_HandleTypeDef hdma_spi3_tx;
@@ -69,7 +71,6 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
 extern MDMA_HandleTypeDef hmdma_mdma_channel41_sw_0;
 extern MDMA_HandleTypeDef hmdma_mdma_channel42_sw_0;
-extern MDMA_HandleTypeDef hmdma_mdma_channel43_sw_0;
 extern SRAM_HandleTypeDef hsram1;
 
 /* USER CODE END ET */

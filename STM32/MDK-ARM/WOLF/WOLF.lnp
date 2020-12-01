@@ -63,6 +63,7 @@
 "wolf\stm32h7xx_hal_i2c.o"
 "wolf\stm32h7xx_hal_i2c_ex.o"
 "wolf\stm32h7xx_hal_exti.o"
+"wolf\stm32h7xx_hal_dma2d.o"
 "wolf\stm32h7xx_ll_fmc.o"
 "wolf\stm32h7xx_hal_sram.o"
 "wolf\stm32h7xx_hal_i2s.o"

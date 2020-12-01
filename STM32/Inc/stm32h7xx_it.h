@@ -71,6 +71,7 @@ void TIM7_IRQHandler(void);
 void DMA2_Stream5_IRQHandler(void);
 void DMA2_Stream6_IRQHandler(void);
 void USART6_IRQHandler(void);
+void DMA2D_IRQHandler(void);
 void OTG_FS_IRQHandler(void);
 void TIM15_IRQHandler(void);
 void TIM16_IRQHandler(void);

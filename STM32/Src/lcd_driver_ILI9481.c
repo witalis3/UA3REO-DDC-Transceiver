@@ -502,43 +502,24 @@ ITCM void LCDDriver_Fill(uint16_t color)
 static SRAM uint16_t fillxy_color;
 ITCM void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
-	if (x1 > (LCD_WIDTH - 1))
-		x1 = LCD_WIDTH - 1;
-	if (y1 > (LCD_HEIGHT - 1))
-		y1 = LCD_HEIGHT - 1;
-	uint32_t n = ((x1 + 1) - x0) * ((y1 + 1) - y0);
-	if (n > LCD_PIXEL_COUNT)
-		n = LCD_PIXEL_COUNT;
+	//Set fill area
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
-	fillxy_color = color;
 	
-	if (n > 50)
-	{
-		const uint32_t part_size = 32000;
-		uint32_t estamated = n;
-		while (estamated > 0)
-		{
-			if (estamated >= part_size)
-			{
-				HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, part_size * 2, 1);
-				HAL_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
-				estamated -= part_size;
-			}
-			else
-			{
-				HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)&fillxy_color, LCD_FSMC_DATA_ADDR, estamated * 2, 1);
-				HAL_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
-				estamated = 0;
-			}
-		}
-	}
+	//DMA2D Set color in 32bit format
+	WRITE_REG(hdma2d.Instance->OCOLR, (color << 16) | color);
+	//DMA2D Set width and 32bit align
+	uint32_t w = x1 - x0 + 1;
+	if(w & 0x1)
+		MODIFY_REG(hdma2d.Instance->NLR, (DMA2D_NLR_NL|DMA2D_NLR_PL), ((y1 - y0 + 1) | ((w + 1) << DMA2D_NLR_PL_Pos)));
 	else
-	{
-		while (n--)
-		{
-			LCDDriver_SendData(color);
-		}
-	}
+		MODIFY_REG(hdma2d.Instance->NLR, (DMA2D_NLR_NL|DMA2D_NLR_PL), ((y1 - y0 + 1) | (w << DMA2D_NLR_PL_Pos)));
+	//DMA2D Start
+	hdma2d.Instance->CR |= DMA2D_CR_START;
+	//DMA2D Polling
+	while((hdma2d.Instance->ISR & DMA2D_FLAG_TC) == 0U)
+		CPULOAD_GoToSleepMode();
+	//DMA2D clean flags
+	hdma2d.Instance->IFCR = DMA2D_FLAG_TC|DMA2D_FLAG_CTC;
 }
 
 ITCM void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
