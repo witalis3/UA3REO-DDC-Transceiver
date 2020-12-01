@@ -16,6 +16,9 @@ IRAM2 float32_t FFTInput_Q[FFT_SIZE] = {0}; // incoming buffer FFT Q
 uint16_t FFT_FPS = 0;
 
 //Private variables
+#if FFT_SIZE == 2048
+const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len2048;
+#endif
 #if FFT_SIZE == 1024
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len1024;
 #endif
@@ -30,7 +33,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len128;
 #endif
 
 IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};   // combined FFT I and Q buffer
-static float32_t FFTInput_sorted[FFT_SIZE] = {0};		   // buffer for sorted values ​​(when looking for a median)
+static float32_t FFTInput_sorted[MAX_FFT_PRINT_SIZE] = {0};		   // buffer for sorted values ​​(when looking for a median)
 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
 static float32_t FFTOutput_mean_new[MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for moving)
 static float32_t maxValueFFT_rx = 0;					   // maximum value of the amplitude in the resulting frequency response
