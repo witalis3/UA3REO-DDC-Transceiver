@@ -480,6 +480,10 @@ ITCM void FFT_printFFT(void)
 			bw_line_width = LAYOUT->FFT_PRINT_SIZE;
 		bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_line_width / 2);
 		break;
+	case TRX_MODE_WFM:
+			bw_line_width = LAYOUT->FFT_PRINT_SIZE;
+			bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_line_width / 2);
+		break;
 	default:
 		break;
 	}
