@@ -112,12 +112,14 @@ static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_LF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW(int8_t direction);
-static void SYSMENU_HANDL_CALIB_RF_GAIN_HF(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF1(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF2(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction);
@@ -303,13 +305,15 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"Encoder2 debounce", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE},
 		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
 		{"Encoder on falling", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
+		{"Encoder acceleration", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
 		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_HANDL_CALIB_CICCOMP_SHIFT},
 		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
 		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
-		{"RF GAIN LF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_lf, SYSMENU_HANDL_CALIB_RF_GAIN_LF},	//-V641
-		{"RF GAIN HF LOW", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_hf_low, SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW},	//-V641
-		{"RF GAIN HF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_hf, SYSMENU_HANDL_CALIB_RF_GAIN_HF},	//-V641
-		{"RF GAIN HF HIGH", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_hf_high, SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH},	//-V641
+		{"RF GAIN <2mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up2mhz, SYSMENU_HANDL_CALIB_RF_GAIN_LF},	//-V641
+		{"RF GAIN <5mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up5mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW},	//-V641
+		{"RF GAIN <15mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up15mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF2},	//-V641
+		{"RF GAIN <30mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up30mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF2},	//-V641
+		{"RF GAIN <60mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up60mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH},	//-V641
 		{"RF GAIN VHF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_vhf, SYSMENU_HANDL_CALIB_RF_GAIN_VHF},	//-V641
 		{"S METER", SYSMENU_INT16, (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_HANDL_CALIB_S_METER},
 		{"ADC OFFSET", SYSMENU_INT16, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
@@ -1800,6 +1804,15 @@ static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction)
 		CALIBRATE.ENCODER_ON_FALLING = false;
 }
 
+static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction)
+{
+	CALIBRATE.ENCODER_ACCELERATION += direction;
+	if (CALIBRATE.ENCODER_ACCELERATION < 1)
+		CALIBRATE.ENCODER_ACCELERATION = 1;
+	if (CALIBRATE.ENCODER_ACCELERATION > 250)
+		CALIBRATE.ENCODER_ACCELERATION = 250;
+}
+
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 {
 	if (!sysmenu_hiddenmenu_enabled)
@@ -1840,48 +1853,60 @@ static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction)
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_LF(int8_t direction)
 {
-	if (CALIBRATE.rf_out_power_lf > 0)
-		CALIBRATE.rf_out_power_lf += direction;
-	if (CALIBRATE.rf_out_power_lf == 0 && direction > 0)
-		CALIBRATE.rf_out_power_lf += direction;
-	if (CALIBRATE.rf_out_power_lf > 100)
-		CALIBRATE.rf_out_power_lf = 100;
+	if (CALIBRATE.rf_out_power_up2mhz > 0)
+		CALIBRATE.rf_out_power_up2mhz += direction;
+	if (CALIBRATE.rf_out_power_up2mhz == 0 && direction > 0)
+		CALIBRATE.rf_out_power_up2mhz += direction;
+	if (CALIBRATE.rf_out_power_up2mhz > 100)
+		CALIBRATE.rf_out_power_up2mhz = 100;
 	
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW(int8_t direction)
 {
-	if (CALIBRATE.rf_out_power_hf_low > 0)
-		CALIBRATE.rf_out_power_hf_low += direction;
-	if (CALIBRATE.rf_out_power_hf_low == 0 && direction > 0)
-		CALIBRATE.rf_out_power_hf_low += direction;
-	if (CALIBRATE.rf_out_power_hf_low > 100)
-		CALIBRATE.rf_out_power_hf_low = 100;
+	if (CALIBRATE.rf_out_power_up5mhz > 0)
+		CALIBRATE.rf_out_power_up5mhz += direction;
+	if (CALIBRATE.rf_out_power_up5mhz == 0 && direction > 0)
+		CALIBRATE.rf_out_power_up5mhz += direction;
+	if (CALIBRATE.rf_out_power_up5mhz > 100)
+		CALIBRATE.rf_out_power_up5mhz = 100;
 	
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
-static void SYSMENU_HANDL_CALIB_RF_GAIN_HF(int8_t direction)
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF1(int8_t direction)
 {
-	if (CALIBRATE.rf_out_power_hf > 0)
-		CALIBRATE.rf_out_power_hf += direction;
-	if (CALIBRATE.rf_out_power_hf == 0 && direction > 0)
-		CALIBRATE.rf_out_power_hf += direction;
-	if (CALIBRATE.rf_out_power_hf > 100)
-		CALIBRATE.rf_out_power_hf = 100;
+	if (CALIBRATE.rf_out_power_up15mhz > 0)
+		CALIBRATE.rf_out_power_up15mhz += direction;
+	if (CALIBRATE.rf_out_power_up15mhz == 0 && direction > 0)
+		CALIBRATE.rf_out_power_up15mhz += direction;
+	if (CALIBRATE.rf_out_power_up15mhz > 100)
+		CALIBRATE.rf_out_power_up15mhz = 100;
+	
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+}
+
+static void SYSMENU_HANDL_CALIB_RF_GAIN_HF2(int8_t direction)
+{
+	if (CALIBRATE.rf_out_power_up30mhz > 0)
+		CALIBRATE.rf_out_power_up30mhz += direction;
+	if (CALIBRATE.rf_out_power_up30mhz == 0 && direction > 0)
+		CALIBRATE.rf_out_power_up30mhz += direction;
+	if (CALIBRATE.rf_out_power_up30mhz > 100)
+		CALIBRATE.rf_out_power_up30mhz = 100;
 	
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH(int8_t direction)
 {
-	if (CALIBRATE.rf_out_power_hf_high > 0)
-		CALIBRATE.rf_out_power_hf_high += direction;
-	if (CALIBRATE.rf_out_power_hf_high == 0 && direction > 0)
-		CALIBRATE.rf_out_power_hf_high += direction;
-	if (CALIBRATE.rf_out_power_hf_high > 100)
-		CALIBRATE.rf_out_power_hf_high = 100;
+	if (CALIBRATE.rf_out_power_up60mhz > 0)
+		CALIBRATE.rf_out_power_up60mhz += direction;
+	if (CALIBRATE.rf_out_power_up60mhz == 0 && direction > 0)
+		CALIBRATE.rf_out_power_up60mhz += direction;
+	if (CALIBRATE.rf_out_power_up60mhz > 100)
+		CALIBRATE.rf_out_power_up60mhz = 100;
 	
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }

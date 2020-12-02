@@ -99,7 +99,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				{
 					//acceleration
 					ENCticksInInterval++;
-					if((HAL_GetTick() - ENCstartMeasureTime) > ENCODER_ACCELERATION)
+					if((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION)
 					{
 						ENCstartMeasureTime = HAL_GetTick();
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
@@ -118,7 +118,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				{
 					//acceleration
 					ENCticksInInterval++;
-					if((HAL_GetTick() - ENCstartMeasureTime) > ENCODER_ACCELERATION)
+					if((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION)
 					{
 						ENCstartMeasureTime = HAL_GetTick();
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;

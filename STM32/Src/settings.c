@@ -43,7 +43,8 @@ static void EEPROM_PowerDown(void);
 static void EEPROM_PowerUp(void);
 static void EEPROM_WaitWrite(void);
 static uint8_t calculateCSUM(void);
-	
+static uint8_t calculateCSUM_EEPROM(void);
+
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"LSB",
 	"USB",
@@ -278,8 +279,8 @@ void LoadCalibration(bool clear)
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
 		sendToDebug_strln("[ERR] Read EEPROM CALIBRATE multiple errors");
-
-	if (CALIBRATE.flash_id != CALIB_VERSION || clear) // code for checking the firmware in the eeprom, if it does not match, we use the default
+		
+	if (CALIBRATE.ENDBit != 100 || CALIBRATE.flash_id != CALIB_VERSION || clear || CALIBRATE.csum != calculateCSUM_EEPROM()) // code for checking the firmware in the eeprom, if it does not match, we use the default
 	{
 		sendToDebug_str("[ERR] CALIBRATE Flash check CODE:");
 		sendToDebug_uint8(CALIBRATE.flash_id, false);
@@ -294,12 +295,13 @@ void LoadCalibration(bool clear)
 		CALIBRATE.CICFIR_GAINER_val = 54;														// Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 58;														// Offset from the TX-CIC output of the compensator
 		CALIBRATE.DAC_GAINER_val = 26;															// DAC offset offset
-																								// Calibrate the maximum output power for each band
-		CALIBRATE.rf_out_power_lf = 70;														// <2mhz
-		CALIBRATE.rf_out_power_hf_low = 38;														// <5mhz
-		CALIBRATE.rf_out_power_hf = 26;														// <30mhz
-		CALIBRATE.rf_out_power_hf_high = 40;														// <94.08mhz
-		CALIBRATE.rf_out_power_vhf = 100;															// >94.08mhz
+		// Calibrate the maximum output power for each band
+		CALIBRATE.rf_out_power_up2mhz = 70;
+		CALIBRATE.rf_out_power_up5mhz = 38;
+		CALIBRATE.rf_out_power_up15mhz = 26;
+		CALIBRATE.rf_out_power_up30mhz = 26;
+		CALIBRATE.rf_out_power_up60mhz = 40;
+		CALIBRATE.rf_out_power_vhf = 100;
 		CALIBRATE.smeter_calibration = 4;														// S-Meter calibration, set when calibrating the transceiver to S9 (LPF, BPF, ATT, PREAMP off)
 		CALIBRATE.adc_offset = 0;																// Calibrate the offset at the ADC input (DC)
 																								// Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
@@ -322,7 +324,8 @@ void LoadCalibration(bool clear)
 		CALIBRATE.BPF_HPF = 60000 * 1000;														//HPF U14-RF1
 		CALIBRATE.swr_trans_rate = 11.0f;														//SWR Transormator rate
 		CALIBRATE.VCXO_correction = 0;															//VCXO Frequency offset
-
+		CALIBRATE.ENCODER_ACCELERATION = 50;  											//acceleration rate if rotate
+		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default calibrate settings");
 		SaveCalibration();
 	}
@@ -420,6 +423,7 @@ void SaveCalibration(void)
 	EEPROM_PowerUp();
 	EEPROM_Busy = true;
 
+	CALIBRATE.csum = calculateCSUM_EEPROM();
 	uint8_t tryes = 0;
 	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(EEPROM_SECTOR_CALIBRATION, false))
 	{
@@ -619,5 +623,17 @@ static uint8_t calculateCSUM(void)
 	for(uint16_t i = 0; i < sizeof(TRX); i++)
 		csum_new += *(TRX_addr + i);
 	TRX.csum = csum_old;
+	return csum_new;
+}
+
+static uint8_t calculateCSUM_EEPROM(void)
+{
+	uint8_t csum_old = CALIBRATE.csum;
+	uint8_t csum_new = 
+	CALIBRATE.csum = 0;
+	uint8_t* CALIBRATE_addr = (uint8_t*)&CALIBRATE;
+	for(uint16_t i = 0; i < sizeof(CALIBRATE); i++)
+		csum_new += *(CALIBRATE_addr + i);
+	CALIBRATE.csum = csum_old;
 	return csum_new;
 }

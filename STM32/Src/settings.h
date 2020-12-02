@@ -8,7 +8,7 @@
 #include "bands.h"
 
 #define SETT_VERSION 207				// Settings config version
-#define CALIB_VERSION 206				// Calibration config version
+#define CALIB_VERSION 207				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
 #define DAC_CLOCK 188160000				// DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		// Maximum receive frequency (from the ADC datasheet)
@@ -38,7 +38,6 @@
 #define SCANNER_NOSIGNAL_TIME 50	//time to continue sweeping if signal too low
 #define SCANNER_SIGNAL_TIME 1000	//time to continue sweeping if signal founded
 #define SCANNER_FREQ_STEP	500		//step for freq scanner
-#define ENCODER_ACCELERATION	50		//acceleration rate if rotate
 #define ENCODER_MIN_RATE_ACCELERATION	1.2f //encoder enable rounding if lower than value
 #define TRX_MAX_RF_TEMP	80			//maximum rf unit themperature to enable protect
 #define TRX_MAX_SWR		5				//maximum SWR to enable protect (NOT IN TUNE MODE!)
@@ -59,14 +58,14 @@
 
 #define SCREEN_ROTATE 0			// turn the screen upside down
 
-#define ADC_BITS 16																						// ADC bit depth
-#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
-#define CODEC_BITS 32																					// bitness of data in the audio codec
-#define FPGA_BUS_FULL_SCALE 65536																		// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
-#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS_FULL_SCALE)
+//#define ADC_BITS 16																						// ADC bit depth
+//#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
+//#define CODEC_BITS 32																					// bitness of data in the audio codec
+//#define FPGA_BUS_FULL_SCALE 65536																		// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
+//#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS_FULL_SCALE)
 #define CODEC_BITS_FULL_SCALE 4294967296																// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
-#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS )_FULL_SCALE
-#define ADC_FULL_SCALE 65536																			// maximum signal amplitude in the ADC // powf (2, ADC_BITS)
+//#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS )_FULL_SCALE
+//#define ADC_FULL_SCALE 65536																			// maximum signal amplitude in the ADC // powf (2, ADC_BITS)
 #define FLOAT_FULL_SCALE_POW 4
 #define USB_DEBUG_ENABLED true	// allow using USB as a console
 #define SWD_DEBUG_ENABLED false // enable SWD as a console
@@ -139,7 +138,7 @@ typedef struct
 
 extern struct TRX_SETTINGS
 {
-	uint8_t flash_id;
+	uint8_t flash_id; //version check
 	//TRX
 	bool current_vfo; // false - A; true - B
 	VFO VFO_A;
@@ -245,6 +244,7 @@ extern struct TRX_SETTINGS
 
 extern struct TRX_CALIBRATE
 {
+	uint8_t flash_id; //version check
 	bool ENCODER_INVERT;
 	bool ENCODER2_INVERT;
 	uint8_t ENCODER_DEBOUNCE;
@@ -255,10 +255,11 @@ extern struct TRX_CALIBRATE
 	uint8_t CICFIR_GAINER_val;
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;
-	uint8_t rf_out_power_lf;
-	uint8_t rf_out_power_hf_low;
-	uint8_t rf_out_power_hf;
-	uint8_t rf_out_power_hf_high;
+	uint8_t rf_out_power_up2mhz;
+	uint8_t rf_out_power_up5mhz;
+	uint8_t rf_out_power_up15mhz;
+	uint8_t rf_out_power_up30mhz;
+	uint8_t rf_out_power_up60mhz;
 	uint8_t rf_out_power_vhf;
 	int16_t smeter_calibration;
 	int16_t adc_offset;
@@ -280,8 +281,10 @@ extern struct TRX_CALIBRATE
 	uint32_t BPF_HPF;
 	float32_t swr_trans_rate;
 	int8_t VCXO_correction;
+	uint8_t ENCODER_ACCELERATION;
 
-	uint8_t flash_id; //eeprom check
+	uint8_t csum; //check sum
+	uint8_t ENDBit; //end bit
 } CALIBRATE;
 
 extern char version_string[19]; //1.2.3-yymmdd.hhmmss
