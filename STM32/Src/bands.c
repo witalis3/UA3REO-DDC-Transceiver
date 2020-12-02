@@ -81,8 +81,8 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 			.endFreq = 3800000,
 			.regions = (const REGION_MAP[]){
 				{.startFreq = 3500000, .endFreq = 3570000, .mode = TRX_MODE_CW_L},
-				{.startFreq = 3570000, .endFreq = 3620000, .mode = TRX_MODE_DIGI_U},
-				{.startFreq = 3620000, .endFreq = 3800000, .mode = TRX_MODE_LSB},
+				{.startFreq = 3570000, .endFreq = 3600000, .mode = TRX_MODE_DIGI_U},
+				{.startFreq = 3600000, .endFreq = 3800000, .mode = TRX_MODE_LSB},
 			},
 			.regionsCount = 3,
 		},
