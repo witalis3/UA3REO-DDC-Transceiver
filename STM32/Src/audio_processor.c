@@ -994,9 +994,9 @@ ITCM static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	// Double channel I-> Q
 	if (rx_id == AUDIO_RX1)
 	{
-		SCB_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], size * 4);
+		SCB_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], size * 4);
 		dma_memcpy32((uint32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], size);
-		SCB_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], size * 4);
+		SCB_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], size * 4);
 	}
 	else
 	{

@@ -502,6 +502,11 @@ ITCM void LCDDriver_Fill(uint16_t color)
 static SRAM uint16_t fillxy_color;
 ITCM void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
+	if (x1 > (LCD_WIDTH - 1))		//Set fill area
+		x1 = LCD_WIDTH - 1;	
+	if (y1 > (LCD_HEIGHT - 1))	
+		y1 = LCD_HEIGHT - 1;
+	
 	//Set fill area
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
 	
