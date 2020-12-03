@@ -52,6 +52,7 @@
  #define isinff __ARM_isinff
 #endif
 
+#define F_PI 3.141592653589793238463f
 #define SQRT2 1.41421356237f
 #define ARRLENTH(x) (sizeof(x) / sizeof((x)[0]))
 #define MINI_DELAY                                       \

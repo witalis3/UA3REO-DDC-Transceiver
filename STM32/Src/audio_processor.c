@@ -33,7 +33,6 @@ bool NeedReinitReverber = false;
 static uint32_t two_signal_gen_position = 0;																							   // signal position in a two-signal generator
 static float32_t ALC_need_gain = 1.0f;																									   // current gain of ALC and audio compressor
 static float32_t ALC_need_gain_target = 1.0f;																							   // Target Gain Of ALC And Audio Compressor
-static float32_t DFM_RX1_lpf_prev = 0, DFM_RX1_hpf_prev_a = 0, DFM_RX1_hpf_prev_b = 0, DFM_RX2_lpf_prev = 0, DFM_RX2_hpf_prev_a = 0, DFM_RX2_hpf_prev_b = 0; // used in FM detection and low / high pass processing
 static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0;									   // used in FM detection and low / high pass processing
 static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;																	   // used for squelch processing and debouncing tone detection, respectively
 static float32_t DFM_RX1_fm_sql_avg = 0.0f;																								   // average SQL in FM
@@ -42,6 +41,7 @@ static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
+static float32_t deemph_a = 0.0f;	//deemphasis coeff
 
 // Prototypes
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Hilbert filter for phase shift of signals
@@ -64,6 +64,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	//IF gain
 // initialize audio processor
 void initAudioProcessor(void)
 {
+	deemph_a = roundf(1.0f/((1.0f-expf(-1.0f/((float32_t)IQ_SAMPLERATE * 75e-6)))));
 	InitAudioFilters();
 	DECODER_Init();
 	NeedReinitReverber = true;
@@ -1009,9 +1010,6 @@ ITCM static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 // FM demodulator
 ITCM static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
-	float32_t *lpf_prev = &DFM_RX1_lpf_prev;
-	float32_t *hpf_prev_a = &DFM_RX1_hpf_prev_a;
-	float32_t *hpf_prev_b = &DFM_RX1_hpf_prev_b;
 	float32_t *i_prev = &DFM_RX1_i_prev;
 	float32_t *q_prev = &DFM_RX1_q_prev;
 	uint_fast8_t *fm_sql_count = &DFM_RX1_fm_sql_count;
@@ -1026,9 +1024,6 @@ ITCM static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 
 	if (rx_id == AUDIO_RX2)
 	{
-		lpf_prev = &DFM_RX2_lpf_prev;
-		hpf_prev_a = &DFM_RX2_hpf_prev_a;
-		hpf_prev_b = &DFM_RX2_hpf_prev_b;
 		i_prev = &DFM_RX2_i_prev;
 		q_prev = &DFM_RX2_q_prev;
 		fm_sql_count = &DFM_RX2_fm_sql_count;
@@ -1039,7 +1034,6 @@ ITCM static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		squelched = &DFM_RX2_Squelched;
 	}
 	
-	float32_t angle_old = 0.0f;
 	for (uint_fast16_t i = 0; i < size; i++)
 	{
 		// first, calculate "x" and "y" for the arctan2, comparing the vectors of present data with previous data
@@ -1057,20 +1051,21 @@ ITCM static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		{
 			if (CurrentVFO()->Mode == TRX_MODE_WFM)
 			{
-				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / PI) * 0.1f; //second way
+				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
 			}
 			else
 			{
-				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / PI) * 0.1f; //second way
-				/*
-				a = *lpf_prev + (FM_RX_LPF_ALPHA * (angle - *lpf_prev)); // Now do integrating low-pass filter to do FM de-emphasis
-				*lpf_prev = a;											 // save "[n-1]" sample for next iteration
-				
-				b = FM_RX_HPF_ALPHA * (*hpf_prev_b + a - *hpf_prev_a); // do differentiation
-				*hpf_prev_a = a;									   // save "[n-1]" samples for next iteration
-				*hpf_prev_b = b;
-				FPGA_Audio_Buffer_I_tmp[i] = b * 0.1f; // save demodulated and filtered audio in main audio processing buffer*/
+				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
 			}
+			//fm de emphasis
+			static float32_t avg = 0.0f;
+			float32_t d = FPGA_Audio_Buffer_I_tmp[i] - avg;
+			if (d > 0) {
+				avg += (d + deemph_a/2) / deemph_a;
+			} else {
+				avg += (d - deemph_a/2) / deemph_a;
+			}
+			FPGA_Audio_Buffer_I_tmp[i] = avg;
 		}
 		else if (*squelched)				// were we squelched or tone NOT detected?
 			FPGA_Audio_Buffer_I_tmp[i] = 0; // do not filter receive audio - fill buffer with zeroes to mute it

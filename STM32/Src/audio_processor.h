@@ -15,8 +15,6 @@
 #define FPGA_RX_IQ_BUFFER_SIZE (FPGA_TX_IQ_BUFFER_SIZE * AUDIO_DECIM_RATE) // size of the RX data buffer from the PGA
 #define FPGA_RX_IQ_BUFFER_HALF_SIZE (FPGA_RX_IQ_BUFFER_SIZE / 2)		   // half the size of the RX data buffer from the PGA
 
-#define FM_RX_LPF_ALPHA 0.05f			  // For NFM demodulator: "Alpha" (low-pass) factor to result in -6dB "knee" at approx. 270 Hz 0.05f
-#define FM_RX_HPF_ALPHA 0.96f			  // For NFM demodulator: "Alpha" (high-pass) factor to result in -6dB "knee" at approx. 180 Hz 0.96f
 #define FM_TX_HPF_ALPHA 0.95f			  // For FM modulator: "Alpha" (high-pass) factor to pre-emphasis
 #define FM_SQUELCH_HYSTERESIS 0.3f		  // Hysteresis for FM squelch
 #define FM_SQUELCH_PROC_DECIMATION 50	  // Number of times we go through the FM demod algorithm before we do a squelch calculation
