@@ -213,6 +213,8 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim7);
 	sendToDebug_strln("[OK] Real Time Clock init");
   HAL_RTC_Init(&hrtc);
+	sendToDebug_strln("[OK] LCD init");
+  LCD_Init();
 	sendToDebug_strln("[OK] Frontpanel init");
   FRONTPANEL_Init();
 	sendToDebug_strln("[OK] Settings loading");
@@ -220,7 +222,7 @@ int main(void)
     LoadSettings(true);
   else
     LoadSettings(false);
-  sendToDebug_strln("[OK] LCD init");
+  sendToDebug_strln("[OK] Show logo");
   LCD_busy = true;
   LCD_Init();
   if (SHOW_LOGO)

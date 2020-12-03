@@ -285,6 +285,8 @@ void RF_UNIT_ProcessSensors(void)
 	float32_t part_point_right = KTY81_120_sensTable[point_right][1] - therm_resistance;
 	float32_t part_point = part_point_left / (part_point_left + part_point_right);
 	float32_t TRX_RF_Temperature_new = (power_left * (1.0f - part_point)) + (power_right * (part_point));
+	if(TRX_RF_Temperature_new < 0.0f)
+		TRX_RF_Temperature_new = 0.0f;
 	if(fabsf(TRX_RF_Temperature_new - TRX_RF_Temperature) > 0.5f) //hysteresis
 		TRX_RF_Temperature = TRX_RF_Temperature_new;
 	

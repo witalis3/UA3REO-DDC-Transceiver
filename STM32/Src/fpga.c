@@ -62,19 +62,16 @@ void FPGA_Init(void)
 #if FPGA_FLASH_IN_HEX
 	if (FPGA_is_present())
 	{
-		if (!FPGA_spi_flash_verify(false)) // check the first 2048 bytes of FPGA firmware
+		while (!FPGA_spi_flash_verify(false)) // check the first 2048 bytes of FPGA firmware
 		{
 			FPGA_spi_flash_erase();
 			FPGA_spi_flash_write();
 			if (FPGA_spi_flash_verify(true))
 			{
+				LCD_showError("Flash update complete!", false);
+				HAL_Delay(1000);
 				HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-			}
-			else //second try
-			{
-				FPGA_spi_flash_write();
-				if (FPGA_spi_flash_verify(true))
-					HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+				while(true) {};
 			}
 		}
 	}
@@ -907,9 +904,15 @@ static void FPGA_spi_flash_erase(void) // clear flash memory
 	LCD_showError("FPGA Flash Erasing...", false);
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
 	FPGA_spi_stop_command();
-
 	FPGA_spi_flash_wait_WIP(); //wait write in progress
-	for (uint32_t pos = 0; pos < FPGA_flash_size; pos += FPGA_sector_size)
+	
+	FPGA_spi_start_command(M25P80_WRITE_ENABLE); //Write Enable
+	FPGA_spi_stop_command();
+	FPGA_spi_start_command(M25P80_BULK_ERASE);   //BULK FULL CHIP ERASE
+	FPGA_spi_stop_command();
+	FPGA_spi_flash_wait_WIP(); //wait write in progress
+	
+	/*for (uint32_t pos = 0; pos < FPGA_flash_size; pos += FPGA_sector_size)
 	{
 		FPGA_spi_start_command(M25P80_WRITE_ENABLE); //Write Enable
 		FPGA_spi_stop_command();
@@ -927,7 +930,7 @@ static void FPGA_spi_flash_erase(void) // clear flash memory
 			LCD_showError(ctmp, false);
 			progress_prev = progress;
 		}
-	}
+	}*/
 
 	FPGA_bus_stop = false;
 	sendToDebug_strln("[OK] FPGA Flash erased");
