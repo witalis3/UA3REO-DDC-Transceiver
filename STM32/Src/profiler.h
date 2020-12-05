@@ -3,6 +3,7 @@
 
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
+#include <stdint.h>
 #define PROFILES_COUNT 7 // number of profilers
 
 typedef struct // profiler structure

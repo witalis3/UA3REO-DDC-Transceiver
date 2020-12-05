@@ -3,6 +3,7 @@
 
 #include "stm32h7xx.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef enum
 {
@@ -31,6 +32,7 @@ struct sysmenu_item_handler
 
 extern void drawSystemMenu(bool draw_background);
 extern void eventRotateSystemMenu(int8_t direction);
+extern void eventSecEncoderClickSystemMenu(void);
 extern void eventSecRotateSystemMenu(int8_t direction);
 extern void eventCloseSystemMenu(void);
 extern void eventCloseAllSystemMenu(void);

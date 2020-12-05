@@ -272,7 +272,7 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 	}
 	if (!ENC2SW_AND_TOUCH_Now && ENC2SW_hold_start)
 	{
-		if((HAL_GetTick() - menu_enc2_click_starttime) > 1000)
+		if((HAL_GetTick() - menu_enc2_click_starttime) > KEY_HOLD_TIME)
 		{
 			ENC2SW_holded = true;
 			ENC2SW_hold_start = false;
@@ -314,12 +314,7 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 			if(LCD_systemMenuOpened)
 			{
 				//navigate in menu
-				
-			}
-			//else
-			{
-				//default action
-				FRONTPANEL_BUTTONHANDLER_BW();
+				eventSecEncoderClickSystemMenu();
 			}
 		}
 		#endif

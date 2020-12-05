@@ -368,6 +368,7 @@ static bool sysmenu_onroot = true;
 bool sysmenu_hiddenmenu_enabled = false;
 static bool sysmenu_services_opened = false;
 static bool sysmenu_infowindow_opened = false;
+static bool sysmenu_item_selected_by_enc2 = false;
 
 //WIFI
 static bool sysmenu_wifi_selectap_menu_opened = false;
@@ -2393,6 +2394,7 @@ void eventCloseSystemMenu(void)
 			drawSystemMenu(true);
 		}
 	}
+	sysmenu_item_selected_by_enc2 = false;
 	NeedSaveSettings = true;
 	if (sysmenu_hiddenmenu_enabled)
 		NeedSaveCalibration = true;
@@ -2404,11 +2406,28 @@ void eventCloseAllSystemMenu(void)
 	sysmenu_item_count_selected = &sysmenu_item_count;
 	sysmenu_onroot = true;
 	systemMenuIndex = systemMenuRootIndex;
+	sysmenu_item_selected_by_enc2 = false;
 	LCD_systemMenuOpened = false;
 	LCD_UpdateQuery.Background = true;
 	LCD_redraw();
 }
 
+//secondary encoder click
+void eventSecEncoderClickSystemMenu(void)
+{
+	if(sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_MENU || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_HIDDEN_MENU || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_RUN || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE)
+	{
+		sysmenu_item_selected_by_enc2 = false;
+		eventRotateSystemMenu(1);
+	}
+	else
+	{
+		sysmenu_item_selected_by_enc2 = !sysmenu_item_selected_by_enc2;
+		redrawCurrentItem();
+	}
+}
+
+//secondary encoder rotate
 void eventSecRotateSystemMenu(int8_t direction)
 {
 	//wifi select AP menu
@@ -2483,6 +2502,12 @@ void eventSecRotateSystemMenu(int8_t direction)
 		return;
 	}
 	//other
+	if(sysmenu_item_selected_by_enc2) //selected by secondary encoder
+	{
+		eventRotateSystemMenu(direction);
+		return;
+	}
+	
 	uint8_t current_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 	LCDDriver_drawFastHLine(0, (5 + (systemMenuIndex - current_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE) * LAYOUT->SYSMENU_ITEM_HEIGHT) + 17, LAYOUT->SYSMENU_W, BG_COLOR);
 	if (direction < 0)
@@ -2597,7 +2622,12 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 
 	uint8_t current_selected_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 	if (systemMenuIndex == sysmenu_i + current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
-		LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, FG_COLOR);
+	{
+		if(sysmenu_item_selected_by_enc2)
+			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
+		else
+			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, FG_COLOR);
+	}
 	sysmenu_i++;
 	sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
 }
