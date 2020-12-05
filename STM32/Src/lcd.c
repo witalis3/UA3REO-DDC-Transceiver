@@ -41,6 +41,7 @@ static uint16_t LCD_last_showed_freq_khz_B = 9999;
 static uint16_t LCD_last_showed_freq_hz_B = 9999;
 #endif
 
+static bool LCD_inited = false;
 static float32_t LCD_last_s_meter = 1.0f;
 static uint32_t Time;
 static uint8_t Hours;
@@ -91,6 +92,8 @@ void LCD_Init(void)
 	TOUCHPAD_Init();
 #endif
 	LCDDriver_Fill(BG_COLOR);
+	
+	LCD_inited = true;
 }
 
 static void LCD_displayTopButtons(bool redraw)
@@ -842,6 +845,9 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 void LCD_showError(char text[], bool redraw)
 {
 	LCD_busy = true;
+	if(!LCD_inited)
+		LCD_Init();
+	
 	LCDDriver_Fill(COLOR_RED);
 	uint16_t x1, y1, w, h;
 	LCDDriver_getTextBounds(text, 0, 0, &x1, &y1, &w, &h, (GFXfont *)&FreeSans12pt7b);
@@ -856,6 +862,9 @@ void LCD_showError(char text[], bool redraw)
 void LCD_showInfo(char text[], bool autohide)
 {
 	LCD_busy = true;
+	if(!LCD_inited)
+		LCD_Init();
+	
 	LCDDriver_Fill(BG_COLOR);
 	uint16_t x1, y1, w, h;
 	LCDDriver_getTextBounds(text, 0, 0, &x1, &y1, &w, &h, (GFXfont *)&FreeSans12pt7b);

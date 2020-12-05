@@ -76,6 +76,15 @@ void FPGA_Init(void)
 		}
 	}
 #endif
+	
+	//pre-reset FPGA to sync IQ data
+	FPGA_setBusOutput();
+	FPGA_writePacket(5); // RESET ON
+	FPGA_syncAndClockRiseFall();
+	HAL_Delay(100);
+	FPGA_writePacket(6); // RESET OFF
+	FPGA_syncAndClockRiseFall();
+	FPGA_NeedRestart = false;
 }
 
 // restart FPGA modules
