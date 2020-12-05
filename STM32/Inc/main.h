@@ -133,8 +133,8 @@ void Error_Handler(void);
 #define PTT_IN_EXTI_IRQn EXTI4_IRQn
 #define RFUNT_THERM_Pin GPIO_PIN_5
 #define RFUNT_THERM_GPIO_Port GPIOC
-#define W26Q16_CS_Pin GPIO_PIN_0
-#define W26Q16_CS_GPIO_Port GPIOB
+#define W25Q16_CS_Pin GPIO_PIN_0
+#define W25Q16_CS_GPIO_Port GPIOB
 #define RFUNT_ALC_Pin GPIO_PIN_1
 #define RFUNT_ALC_GPIO_Port GPIOB
 #define AUDIO_48K_CLOCK_Pin GPIO_PIN_10

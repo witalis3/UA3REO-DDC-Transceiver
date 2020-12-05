@@ -270,6 +270,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 		if (vfo->Mode != mode_from_bandmap)
 		{
 			TRX_setMode(mode_from_bandmap, vfo);
+			TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Mode = mode_from_bandmap;
 			LCD_UpdateQuery.TopButtons = true;
 		}
 	}

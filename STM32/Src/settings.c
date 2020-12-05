@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "2.0.8"; //1.2.3-yymmdd.hhmm (concatinate)
+char version_string[19] = "2.0.9"; //1.2.3-yymmdd.hhmm (concatinate)
 
 //W25Q16
 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -26,9 +26,9 @@ struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
 static uint8_t settings_bank = 1;
 	
-IRAM2 static uint8_t write_clone[W25Q16_SECTOR_SIZE] = {0};
-IRAM2 static uint8_t read_clone[W25Q16_SECTOR_SIZE] = {0};
-IRAM2 static uint8_t verify_clone[W25Q16_SECTOR_SIZE] = {0};
+IRAM2 static uint8_t write_clone[sizeof(TRX)] = {0};
+IRAM2 static uint8_t read_clone[sizeof(TRX)] = {0};
+IRAM2 static uint8_t verify_clone[sizeof(TRX)] = {0};
 
 volatile bool NeedSaveSettings = false;
 volatile bool NeedSaveCalibration = false;
@@ -467,9 +467,9 @@ static bool EEPROM_Sector_Erase(uint8_t sector, bool force)
 	Address[1] = (BigAddress >> 8) & 0xFF;
 	Address[0] = BigAddress & 0xFF;
 
-	SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Enable Command
-	SPI_Transmit(&Sector_Erase, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Erase Command
-	SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Address ( The first address of flash module is 0x00000000 )
+	SPI_Transmit(&Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Enable Command
+	SPI_Transmit(&Sector_Erase, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Erase Command
+	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Address ( The first address of flash module is 0x00000000 )
 	EEPROM_WaitWrite();
 
 	SPI_process = false;
@@ -503,10 +503,10 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		if (bsize > page_size)
 			bsize = page_size;
 
-		SPI_Transmit(&Write_Enable, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Enable Command
-		SPI_Transmit(&Page_Program, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Command
-		SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Address ( The first address of flash module is 0x00000000 )
-		SPI_Transmit((uint8_t *)(write_clone + page_size * page), NULL, bsize, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Data
+		SPI_Transmit(&Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Enable Command
+		SPI_Transmit(&Page_Program, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Command
+		SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Address ( The first address of flash module is 0x00000000 )
+		SPI_Transmit((uint8_t *)(write_clone + page_size * page), NULL, bsize, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Data
 		EEPROM_WaitWrite();
 	}
 
@@ -540,7 +540,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	Address[1] = (BigAddress >> 8) & 0xFF;
 	Address[0] = BigAddress & 0xFF;
 
-	bool res = SPI_Transmit(&Read_Data, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Read Command
+	bool res = SPI_Transmit(&Read_Data, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Read Command
 	if (!res)
 	{
 		EEPROM_Enabled = false;
@@ -550,8 +550,8 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		return true;
 	}
 
-	SPI_Transmit(Address, NULL, 3, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Address
-	SPI_Transmit(NULL, (uint8_t *)(Buffer), size, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Read
+	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Address
+	SPI_Transmit(NULL, (uint8_t *)(Buffer), size, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Read
 
 	//verify
 	if (verify)
@@ -578,8 +578,8 @@ static void EEPROM_WaitWrite(void)
 	do
 	{
 		tryes++;
-		SPI_Transmit(&Get_Status, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Get Status command
-		SPI_Transmit(NULL, &status, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Read data
+		SPI_Transmit(&Get_Status, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Get Status command
+		SPI_Transmit(NULL, &status, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Read data
 		if((status & 0x01) == 0x01)
 			HAL_Delay(1);
 	}
@@ -592,14 +592,14 @@ static void EEPROM_PowerDown(void)
 {
 	if (!EEPROM_Enabled)
 		return;
-	SPI_Transmit(&Power_Down, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Power_Down Command
+	SPI_Transmit(&Power_Down, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Power_Down Command
 }
 
 static void EEPROM_PowerUp(void)
 {
 	if (!EEPROM_Enabled)
 		return;
-	SPI_Transmit(&Power_Up, NULL, 1, W26Q16_CS_GPIO_Port, W26Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Power_Up Command
+	SPI_Transmit(&Power_Up, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Power_Up Command
 }
 
 void BKPSRAM_Enable(void)
