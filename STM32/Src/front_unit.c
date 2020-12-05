@@ -248,35 +248,81 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 {
-	static bool ENC2SW_AND_TOUCH_Last = true;
+	static uint32_t menu_enc2_click_starttime = 0;
+	static bool ENC2SW_Last = true;
+	static bool ENC2SW_clicked = false;
+	static bool ENC2SW_hold_start = false;
+	static bool ENC2SW_holded = false;
+	ENC2SW_clicked = false;
+	ENC2SW_holded = false;
 	
 	if (TRX.Locked)
 		return;
 
 	bool ENC2SW_AND_TOUCH_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
-	if (ENC2SW_AND_TOUCH_Last != ENC2SW_AND_TOUCH_Now)
+	//check hold and click
+	if (ENC2SW_Last != ENC2SW_AND_TOUCH_Now)
 	{
-		ENC2SW_AND_TOUCH_Last = ENC2SW_AND_TOUCH_Now;
+		ENC2SW_Last = ENC2SW_AND_TOUCH_Now;
 		if (!ENC2SW_AND_TOUCH_Now)
 		{
-			#ifndef HAS_TOUCHPAD
-			//ENC2 CLICK
+			menu_enc2_click_starttime = HAL_GetTick();
+			ENC2SW_hold_start = true;
+		}
+	}
+	if (!ENC2SW_AND_TOUCH_Now && ENC2SW_hold_start)
+	{
+		if((HAL_GetTick() - menu_enc2_click_starttime) > 1000)
+		{
+			ENC2SW_holded = true;
+			ENC2SW_hold_start = false;
+		}
+	}
+	if (ENC2SW_AND_TOUCH_Now && ENC2SW_hold_start)
+	{
+		if((HAL_GetTick() - menu_enc2_click_starttime) > 1)
+		{
+			ENC2SW_clicked = true;
+			ENC2SW_hold_start = false;
+		}
+	}
+	
+	//ENC2 Button hold
+	if (ENC2SW_holded)
+	{
+		FRONTPANEL_BUTTONHANDLER_MENU();
+	}
+	
+	//ENC2 Button click
+	if (ENC2SW_clicked)
+	{
+		menu_enc2_click_starttime = HAL_GetTick();
+		
+		#ifndef HAS_TOUCHPAD
+		//ENC2 CLICK
+		if(CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		{
+			enc2_func_mode = !enc2_func_mode; //enc2 rotary mode
 			
-			if(CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
-			{
-				enc2_func_mode = !enc2_func_mode; //enc2 rotary mode
-				
-				if(!enc2_func_mode)
-					LCD_showTooltip("FAST STEP");
-				else
-					LCD_showTooltip("SET WPM");
-			}
+			if(!enc2_func_mode)
+				LCD_showTooltip("FAST STEP");
 			else
+				LCD_showTooltip("SET WPM");
+		}
+		else
+		{
+			if(LCD_systemMenuOpened)
 			{
+				//navigate in menu
+				
+			}
+			//else
+			{
+				//default action
 				FRONTPANEL_BUTTONHANDLER_BW();
 			}
-			#endif
 		}
+		#endif
 	}
 }
 
@@ -705,13 +751,11 @@ void FRONTPANEL_BUTTONHANDLER_RF_POWER(void)
 	{
 		LCD_systemMenuOpened = true;
 		SYSMENU_TRX_RFPOWER_HOTKEY();
-		drawSystemMenu(true);
 	}
 	else
 	{
 		eventCloseAllSystemMenu();
 	}
-	LCD_redraw();
 }
 
 void FRONTPANEL_BUTTONHANDLER_AGC(void)
@@ -730,13 +774,11 @@ void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(void)
 	{
 		LCD_systemMenuOpened = true;
 		SYSMENU_AUDIO_AGC_HOTKEY();
-		drawSystemMenu(true);
 	}
 	else
 	{
 		eventCloseAllSystemMenu();
 	}
-	LCD_redraw();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_SQUELCH(void)
@@ -745,13 +787,11 @@ static void FRONTPANEL_BUTTONHANDLER_SQUELCH(void)
 	{
 		LCD_systemMenuOpened = true;
 		SYSMENU_AUDIO_SQUELCH_HOTKEY();
-		drawSystemMenu(true);
 	}
 	else
 	{
 		eventCloseAllSystemMenu();
 	}
-	LCD_redraw();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_WPM(void)
@@ -760,13 +800,11 @@ static void FRONTPANEL_BUTTONHANDLER_WPM(void)
 	{
 		LCD_systemMenuOpened = true;
 		SYSMENU_CW_WPM_HOTKEY();
-		drawSystemMenu(true);
 	}
 	else
 	{
 		eventCloseAllSystemMenu();
 	}
-	LCD_redraw();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_KEYER(void)
@@ -784,13 +822,11 @@ static void FRONTPANEL_BUTTONHANDLER_STEP(void)
 	{
 		LCD_systemMenuOpened = true;
 		SYSMENU_TRX_STEP_HOTKEY();
-		drawSystemMenu(true);
 	}
 	else
 	{
 		eventCloseAllSystemMenu();
 	}
-	LCD_redraw();
 }
 
 void FRONTPANEL_BUTTONHANDLER_DNR(void)
@@ -824,13 +860,11 @@ void FRONTPANEL_BUTTONHANDLER_BW(void)
 			SYSMENU_AUDIO_BW_AM_HOTKEY();
 		else
 			SYSMENU_AUDIO_BW_SSB_HOTKEY();
-		drawSystemMenu(true);
 	}
 	else
 	{
 		eventCloseAllSystemMenu();
 	}
-	LCD_redraw();
 }
 
 void FRONTPANEL_BUTTONHANDLER_HPF(void)
@@ -842,13 +876,11 @@ void FRONTPANEL_BUTTONHANDLER_HPF(void)
 			SYSMENU_AUDIO_HPF_CW_HOTKEY();
 		else
 			SYSMENU_AUDIO_HPF_SSB_HOTKEY();
-		drawSystemMenu(true);
 	}
 	else
 	{
 		eventCloseAllSystemMenu();
 	}
-	LCD_redraw();
 }
 
 void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
@@ -983,13 +1015,11 @@ void FRONTPANEL_BUTTONHANDLER_SERVICES(void)
 	{
 		LCD_systemMenuOpened = true;
 		SYSMENU_HANDL_SERVICESMENU(1);
-		drawSystemMenu(true);
 	}
 	else
 	{
 		eventCloseSystemMenu();
 	}
-	LCD_redraw();
 }
 
 static void FRONTPANEL_BUTTONHANDLER_SCAN(void)

@@ -402,7 +402,7 @@ void SYSMENU_TRX_RFPOWER_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_trx_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_TRX_STEP_HOTKEY(void)
@@ -413,7 +413,7 @@ void SYSMENU_TRX_STEP_HOTKEY(void)
 	systemMenuIndex = 7;
 	if (TRX.Fast)
 		systemMenuIndex = 8;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction)
@@ -708,7 +708,7 @@ void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 7;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
@@ -717,7 +717,7 @@ void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 9;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
@@ -726,7 +726,7 @@ void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 10;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
@@ -735,7 +735,7 @@ void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 11;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
@@ -744,7 +744,7 @@ void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 6;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_AUDIO_HPF_CW_HOTKEY(void)
@@ -752,7 +752,7 @@ void SYSMENU_AUDIO_HPF_CW_HOTKEY(void)
 	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	systemMenuIndex = 8;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
@@ -761,7 +761,7 @@ void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 12;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_AUDIO_AGC_HOTKEY(void)
@@ -770,7 +770,7 @@ void SYSMENU_AUDIO_AGC_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 20;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction)
@@ -1231,7 +1231,7 @@ static void SYSMENU_HANDL_CWMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_CW_WPM_HOTKEY(void)
@@ -1240,7 +1240,7 @@ void SYSMENU_CW_WPM_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 4;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 void SYSMENU_CW_KEYER_HOTKEY(void)
@@ -1249,7 +1249,7 @@ void SYSMENU_CW_KEYER_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 3;
-	drawSystemMenu(true);
+	LCD_redraw();
 }
 
 static void SYSMENU_HANDL_CW_Decoder(int8_t direction)
