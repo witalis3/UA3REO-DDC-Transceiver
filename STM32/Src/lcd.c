@@ -63,7 +63,7 @@ static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, c
 static void LCD_displayFreqInfo(bool redraw);
 static void LCD_displayTopButtons(bool redraw);
 static void LCD_displayStatusInfoBar(bool redraw);
-static void LCD_displayStatusInfoGUI(void);
+static void LCD_displayStatusInfoGUI(bool redraw);
 static void LCD_displayTextBar(void);
 static void LCD_printTooltip(void);
 #if (defined(LAY_800x480))
@@ -334,19 +334,23 @@ static void LCD_drawSMeter(void)
 	LCDDriver_drawRectXY(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)(step * 9.0f) - 1, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + LAYOUT->STATUS_BAR_HEIGHT, LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_SMETER_WIDTH, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + LAYOUT->STATUS_BAR_HEIGHT + 1, COLOR->STATUS_BAR_RIGHT);
 }
 
-static void LCD_displayStatusInfoGUI(void)
+static void LCD_displayStatusInfoGUI(bool redraw)
 {
 	// display RX / TX and s-meter
 	if (LCD_systemMenuOpened)
 		return;
 	if (LCD_busy)
 	{
-		LCD_UpdateQuery.StatusInfoGUI = true;
+		if(redraw)
+			LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+		else
+			LCD_UpdateQuery.StatusInfoGUI = true;
 		return;
 	}
 	LCD_busy = true;
 
-	LCDDriver_Fill_RectWH(0, LAYOUT->STATUS_Y_OFFSET, LCD_WIDTH, LAYOUT->STATUS_HEIGHT, BG_COLOR);
+	if(redraw)
+		LCDDriver_Fill_RectWH(0, LAYOUT->STATUS_Y_OFFSET, LCD_WIDTH, LAYOUT->STATUS_HEIGHT, BG_COLOR);
 
 	if (TRX_on_TX())
 	{
@@ -384,7 +388,7 @@ static void LCD_displayStatusInfoGUI(void)
 	}
 	else
 	{
-		LCD_drawSMeter();
+		LCD_UpdateQuery.StatusInfoBar = true;
 		LCDDriver_printTextFont("RX", LAYOUT->STATUS_TXRX_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_TXRX_Y_OFFSET), COLOR->STATUS_RX, BG_COLOR, LAYOUT->STATUS_TXRX_FONT);
 		//Frequency delimiters
 		LCDDriver_printTextFont(".", LAYOUT->FREQ_DELIMITER_X1_OFFSET, LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET, COLOR->FREQ_KHZ, BG_COLOR, LAYOUT->FREQ_FONT);
@@ -437,6 +441,8 @@ static void LCD_displayStatusInfoGUI(void)
 		LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_WIFI_ICON_X, LAYOUT->STATUS_WIFI_ICON_Y, &IMAGES_wifi_inactive, COLOR_BLACK, BG_COLOR);
 	
 	LCD_UpdateQuery.StatusInfoGUI = false;
+	if(redraw)
+		LCD_UpdateQuery.StatusInfoGUIRedraw = false;
 	LCD_busy = false;
 }
 
@@ -475,10 +481,12 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 		if (redraw || (LCD_last_s_meter != s_width))
 		{
-			//clear old bar and stripe
+			//clear old bar
 			if ((LCD_last_s_meter - s_width) > 0)
 				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)(LCD_last_s_meter - s_width + 1), LAYOUT->STATUS_BAR_HEIGHT - 3, BG_COLOR);
+			//and stripe
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)LCD_last_s_meter, LAYOUT->STATUS_Y_OFFSET + 5, 2, LAYOUT->STATUS_SMETER_MARKER_HEIGHT, BG_COLOR);
+			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + 5, 2, LAYOUT->STATUS_SMETER_MARKER_HEIGHT, COLOR->STATUS_SMETER_STRIPE);
 			
 			// bar
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)s_width, LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
@@ -497,7 +505,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			}
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + smeter_peak_x, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, 2, LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER_PEAK);
 			
-			// stripe
+			// redraw s-meter gui and stripe
 			LCD_drawSMeter();
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + 5, 2, LAYOUT->STATUS_SMETER_MARKER_HEIGHT, COLOR->STATUS_SMETER_STRIPE);
 			
@@ -730,7 +738,7 @@ void LCD_redraw(void)
 	LCD_UpdateQuery.Background = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
 	LCD_UpdateQuery.StatusInfoBarRedraw = true;
-	LCD_UpdateQuery.StatusInfoGUI = true;
+	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	LCD_UpdateQuery.TopButtonsRedraw = true;
 	LCD_UpdateQuery.BottomButtonsRedraw = true;
 	LCD_UpdateQuery.SystemMenu = true;
@@ -770,8 +778,10 @@ void LCD_doEvents(void)
 		LCD_displayFreqInfo(false);
 	if (LCD_UpdateQuery.FreqInfoRedraw)
 		LCD_displayFreqInfo(true);
+	if (LCD_UpdateQuery.StatusInfoGUIRedraw)
+		LCD_displayStatusInfoGUI(true);
 	if (LCD_UpdateQuery.StatusInfoGUI)
-		LCD_displayStatusInfoGUI();
+		LCD_displayStatusInfoGUI(false);
 	if (LCD_UpdateQuery.StatusInfoBar)
 		LCD_displayStatusInfoBar(false);
 	if (LCD_UpdateQuery.StatusInfoBarRedraw)

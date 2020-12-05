@@ -17,6 +17,7 @@ typedef struct
 	bool FreqInfo;
 	bool FreqInfoRedraw;
 	bool StatusInfoGUI;
+	bool StatusInfoGUIRedraw;
 	bool StatusInfoBar;
 	bool StatusInfoBarRedraw;
 	bool SystemMenu;
