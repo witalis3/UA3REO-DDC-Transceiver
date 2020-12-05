@@ -1052,20 +1052,20 @@ ITCM static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			if (CurrentVFO()->Mode == TRX_MODE_WFM)
 			{
 				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
+				//fm de emphasis
+				static float32_t avg = 0.0f;
+				float32_t d = FPGA_Audio_Buffer_I_tmp[i] - avg;
+				if (d > 0) {
+					avg += (d + deemph_a/2) / deemph_a;
+				} else {
+					avg += (d - deemph_a/2) / deemph_a;
+				}
+				FPGA_Audio_Buffer_I_tmp[i] = avg;
 			}
 			else
 			{
 				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
 			}
-			//fm de emphasis
-			static float32_t avg = 0.0f;
-			float32_t d = FPGA_Audio_Buffer_I_tmp[i] - avg;
-			if (d > 0) {
-				avg += (d + deemph_a/2) / deemph_a;
-			} else {
-				avg += (d - deemph_a/2) / deemph_a;
-			}
-			FPGA_Audio_Buffer_I_tmp[i] = avg;
 		}
 		else if (*squelched)				// were we squelched or tone NOT detected?
 			FPGA_Audio_Buffer_I_tmp[i] = 0; // do not filter receive audio - fill buffer with zeroes to mute it
