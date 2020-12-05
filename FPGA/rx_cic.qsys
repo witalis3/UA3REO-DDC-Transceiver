@@ -76,7 +76,7 @@
   <parameter name="FILTER_TYPE" value="decimator" />
   <parameter name="INTERFACES" value="1" />
   <parameter name="IN_WIDTH" value="31" />
-  <parameter name="RCF_FIX" value="1280" />
+  <parameter name="RCF_FIX" value="640" />
   <parameter name="RCF_LB" value="8" />
   <parameter name="RCF_UB" value="21" />
   <parameter name="REQ_DIF_MEM" value="logic_element" />
@@ -84,7 +84,7 @@
   <parameter name="REQ_OUT_WIDTH" value="32" />
   <parameter name="REQ_PIPELINE" value="0" />
   <parameter name="ROUND_TYPE" value="CONV_ROUND" />
-  <parameter name="STAGES" value="5" />
+  <parameter name="STAGES" value="7" />
   <parameter name="VRC_EN" value="0" />
   <parameter name="design_env" value="NATIVE" />
   <parameter name="hyper_opt_select" value="0" />

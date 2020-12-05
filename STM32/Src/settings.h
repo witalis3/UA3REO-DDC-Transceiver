@@ -3,12 +3,13 @@
 
 #include "stm32h7xx_hal.h"
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include "functions.h"
 #include "bands.h"
 
 #define SETT_VERSION 207				// Settings config version
-#define CALIB_VERSION 207				// Calibration config version
+#define CALIB_VERSION 209				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
 #define DAC_CLOCK 188160000				// DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		// Maximum receive frequency (from the ADC datasheet)
@@ -30,7 +31,7 @@
 #define SHOW_LOGO true					// Show logo on boot (from images.h)
 #define POWERDOWN_TIMEOUT 1000			// time of pressing the shutdown button, for operation, ms
 #define USB_RESTART_TIMEOUT 5000		// time after which USB restart occurs if there are no packets
-#define FPGA_FLASH_IN_HEX false			// enable FPGA firmware in STM32 firmware
+#define FPGA_FLASH_IN_HEX true			// enable FPGA firmware in STM32 firmware
 #define SNTP_SYNC_INTERVAL (60 * 60)	// Time synchronization interval via NTP, sec
 #define FAN_MEDIUM_START 50				// Temperature at which the fan starts at half power
 #define FAN_MEDIUM_STOP 40				// Temperature at which the fan stops
@@ -73,7 +74,7 @@
 #define AUDIO_DECIM_RATE (IQ_SAMPLERATE / TRX_SAMPLERATE)
 #define DCDC_FREQ_0 1000000
 #define DCDC_FREQ_1 1200000
-#define ADC_INPUT_IMPEDANCE 800.0f //50ohm -> 1:4 trans = 800ohm
+#define ADC_INPUT_IMPEDANCE 200.0f //50ohm -> 1:4 trans
 #define ADC_RANGE 2.25f
 #define ADC_RANGE_PGA 1.5f
 #define ADC_LNA_GAIN_DB 15.0f //on 14mhz

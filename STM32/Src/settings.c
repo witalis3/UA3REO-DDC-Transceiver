@@ -292,8 +292,9 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENCODER2_DEBOUNCE = 50;														// time to eliminate contact bounce at the additional encoder, ms
 		CALIBRATE.ENCODER_SLOW_RATE = 25;														// slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ON_FALLING = false;													// encoder only triggers when level A falls
-		CALIBRATE.CICFIR_GAINER_val = 54;														// Offset from the output of the CIC compensator
-		CALIBRATE.TXCICFIR_GAINER_val = 58;														// Offset from the TX-CIC output of the compensator
+		CALIBRATE.ENCODER_ACCELERATION = 75;  											//acceleration rate if rotate
+		CALIBRATE.CICFIR_GAINER_val = 47;														// Offset from the output of the CIC compensator
+		CALIBRATE.TXCICFIR_GAINER_val = 42;														// Offset from the TX-CIC output of the compensator
 		CALIBRATE.DAC_GAINER_val = 26;															// DAC offset offset
 		// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_up2mhz = 70;
@@ -324,7 +325,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.BPF_HPF = 60000 * 1000;														//HPF U14-RF1
 		CALIBRATE.swr_trans_rate = 11.0f;														//SWR Transormator rate
 		CALIBRATE.VCXO_correction = 0;															//VCXO Frequency offset
-		CALIBRATE.ENCODER_ACCELERATION = 50;  											//acceleration rate if rotate
+		
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default calibrate settings");
 		SaveCalibration();

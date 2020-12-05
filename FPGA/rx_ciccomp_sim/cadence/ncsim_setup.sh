@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 18.1 625 win32 2020.11.26.23:43:22
+# ACDS 18.1 625 win32 2020.12.06.01:01:45
 
 # ----------------------------------------
 # ncsim - auto-generated simulation script
@@ -106,7 +106,7 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 18.1 625 win32 2020.11.26.23:43:22
+# ACDS 18.1 625 win32 2020.12.06.01:01:45
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="rx_ciccomp"
@@ -160,6 +160,9 @@ mkdir -p ./libraries/cycloneive/
 
 # ----------------------------------------
 # copy RAM/ROM files to simulation directory
+if [ $SKIP_FILE_COPY -eq 0 ]; then
+  cp -f $QSYS_SIMDIR/rx_ciccomp_rtl_core_u0_m0_wo0_cm0_lutmem.hex ./
+fi
 
 # ----------------------------------------
 # compile device library files

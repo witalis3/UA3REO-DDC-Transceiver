@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
+#include <arm_math.h>
 #include "profiler.h"
 
 #pragma GCC diagnostic push

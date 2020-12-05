@@ -62,7 +62,7 @@ M = 1;         % Differential delay (only 1)
 
 NFIR  = 64;     % Filter order, must be odd when Fo = 0.5 !!!
 Bc    = 32;     % Coef. Bit-width
-Fo    = 0.49;    % Normalized Cutoff: 0.2 < Fo < 0.5;
+Fo    = 0.45;    % Normalized Cutoff: 0.2 < Fo < 0.5;
 BETA  = 8;      % BETA parameter for Kaiser window (if IS_WIND = 'Y') 
 
 %% ------------------------------------------------------------------------

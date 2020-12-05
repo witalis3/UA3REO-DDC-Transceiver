@@ -11,7 +11,7 @@ module tx_ciccomp (
 		input  wire [31:0] ast_sink_data,    //   avalon_streaming_sink.data
 		input  wire        ast_sink_valid,   //                        .valid
 		input  wire [1:0]  ast_sink_error,   //                        .error
-		output wire [63:0] ast_source_data,  // avalon_streaming_source.data
+		output wire [47:0] ast_source_data,  // avalon_streaming_source.data
 		output wire        ast_source_valid, //                        .valid
 		output wire [1:0]  ast_source_error  //                        .error
 	);
@@ -82,11 +82,11 @@ endmodule
 // Retrieval info: 	<generic name="inputType" value="int" />
 // Retrieval info: 	<generic name="inputBitWidth" value="32" />
 // Retrieval info: 	<generic name="inputFracBitWidth" value="0" />
-// Retrieval info: 	<generic name="coeffSetRealValue" value="4903.0,-10097.0,16975.0,-25118.0,32310.0,-32816.0,14789.0,42895.0,-174976.0,434160.0,-897112.0,1668895.0,-2890368.0,4740808.0,-7447055.0,1.1281938E7,-1.6577688E7,2.3717951E7,-3.3162948E7,4.5434382E7,-6.1170088E7,8.1106361E7,-1.06203567E8,1.37648393E8,-1.77157931E8,2.27097026E8,-2.91289085E8,3.75634439E8,-4.904721E8,6.52074523E8,-8.79469843E8,1.0737418E9,1.0737418E9,-8.79469843E8,6.52074523E8,-4.904721E8,3.75634439E8,-2.91289085E8,2.27097026E8,-1.77157931E8,1.37648393E8,-1.06203567E8,8.1106361E7,-6.1170088E7,4.5434382E7,-3.3162948E7,2.3717951E7,-1.6577688E7,1.1281938E7,-7447055.0,4740808.0,-2890368.0,1668895.0,-897112.0,434160.0,-174976.0,42895.0,14789.0,-32816.0,32310.0,-25118.0,16975.0,-10097.0,4903.0" />
+// Retrieval info: 	<generic name="coeffSetRealValue" value="597.8367,-1618.516,3338.849,-5771.081,8375.748,-9474.736,5594.927,8904.076,-41494.9,99871.48,-188896.8,306000.4,-436107.4,546914.3,-587261.8,489319.3,-178095.6,-413963.8,1324230.0,-2537363.0,3959080.0,-5402190.0,6573608.0,-7086078.0,6463395.0,-4173850.0,-380384.5,7858885.0,-1.911932E7,3.53056E7,-5.760579E7,7.81476E7,7.81476E7,-5.760579E7,3.53056E7,-1.911932E7,7858885.0,-380384.5,-4173850.0,6463395.0,-7086078.0,6573608.0,-5402190.0,3959080.0,-2537363.0,1324230.0,-413963.8,-178095.6,489319.3,-587261.8,546914.3,-436107.4,306000.4,-188896.8,99871.48,-41494.9,8904.076,5594.927,-9474.736,8375.748,-5771.081,3338.849,-1618.516,597.8367" />
 // Retrieval info: 	<generic name="coeffSetRealValueImag" value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.0530093, -0.04498, 0.0, 0.0749693, 0.159034, 0.224907, 0.249809, 0.224907, 0.159034, 0.0749693, 0.0, -0.04498, -0.0530093, -0.0321283, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0" />
 // Retrieval info: 	<generic name="coeffScaling" value="auto" />
 // Retrieval info: 	<generic name="coeffType" value="int" />
-// Retrieval info: 	<generic name="coeffBitWidth" value="26" />
+// Retrieval info: 	<generic name="coeffBitWidth" value="10" />
 // Retrieval info: 	<generic name="coeffFracBitWidth" value="0" />
 // Retrieval info: 	<generic name="coeffComplex" value="false" />
 // Retrieval info: 	<generic name="karatsuba" value="false" />

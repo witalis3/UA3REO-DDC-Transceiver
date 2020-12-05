@@ -310,9 +310,9 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_SLOW_RATE", (uint32_t*)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ON_FALLING", (uint32_t*)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ACCELERATION", (uint32_t*)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_UINT8);
-		if(res) SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER", (uint32_t*)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_UINT8);
-		if(res) SD_WRITE_SETT_LINE("CALIBRATE.TXCICFIR_GAINER", (uint32_t*)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_UINT8);
-		if(res) SD_WRITE_SETT_LINE("CALIBRATE.DAC_GAINER", (uint32_t*)&CALIBRATE.DAC_GAINER_val, SYSMENU_UINT8);
+		if(res) SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER2", (uint32_t*)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_UINT8);
+		if(res) SD_WRITE_SETT_LINE("CALIBRATE.TXCICFIR_GAINER2", (uint32_t*)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_UINT8);
+		if(res) SD_WRITE_SETT_LINE("CALIBRATE.DAC_GAINER2", (uint32_t*)&CALIBRATE.DAC_GAINER_val, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_up2mhz", (uint32_t*)&CALIBRATE.rf_out_power_up2mhz, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_up5mhz", (uint32_t*)&CALIBRATE.rf_out_power_up5mhz, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_up15mhz", (uint32_t*)&CALIBRATE.rf_out_power_up15mhz, SYSMENU_UINT8);
@@ -521,9 +521,9 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 	if (strcmp(name, "CALIBRATE.ENCODER_SLOW_RATE") == 0) CALIBRATE.ENCODER_SLOW_RATE = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.ENCODER_ON_FALLING") == 0) CALIBRATE.ENCODER_ON_FALLING = uintval;
 	if (strcmp(name, "CALIBRATE.ENCODER_ACCELERATION") == 0) CALIBRATE.ENCODER_ACCELERATION = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.CICFIR_GAINER") == 0) CALIBRATE.CICFIR_GAINER_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.TXCICFIR_GAINER") == 0) CALIBRATE.TXCICFIR_GAINER_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.DAC_GAINER") == 0) CALIBRATE.DAC_GAINER_val = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.CICFIR_GAINER2") == 0) CALIBRATE.CICFIR_GAINER_val = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.TXCICFIR_GAINER2") == 0) CALIBRATE.TXCICFIR_GAINER_val = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.DAC_GAINER2") == 0) CALIBRATE.DAC_GAINER_val = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_up2mhz") == 0) CALIBRATE.rf_out_power_up2mhz = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_up5mhz") == 0) CALIBRATE.rf_out_power_up5mhz = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_up15mhz") == 0) CALIBRATE.rf_out_power_up15mhz = (uint8_t)uintval;
