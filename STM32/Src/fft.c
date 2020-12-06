@@ -653,7 +653,7 @@ ITCM void FFT_printWaterfallDMA(void)
 			{
 				memset(&wtf_output_line, BG_COLOR, (uint32_t)(margin_left * 2)); // fill the space to the left
 				for(uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++)
-					if((margin_left + wtf_x) >= bw_line_start && wtf_x <= bw_line_end) //print bw bar
+					if((margin_left + wtf_x) >= bw_line_start && (margin_left + wtf_x) <= bw_line_end) //print bw bar
 						wtf_output_line[margin_left + wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[print_wtf_yindex][wtf_x]];
 					else
 						wtf_output_line[margin_left + wtf_x] = palette_fft[indexed_wtf_buffer[print_wtf_yindex][wtf_x]];
