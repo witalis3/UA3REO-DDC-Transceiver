@@ -100,7 +100,7 @@ void TRX_Restart_Mode()
 		TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 		LCD_UpdateQuery.FreqInfo = true;
 		LCD_UpdateQuery.TopButtons = true;
-		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	}
 	//
 	if (TRX_on_TX())
@@ -173,7 +173,7 @@ void TRX_ptt_change(void)
 			TRX.InputType_LINE = false;
 		}
 		TRX_ptt_cat = false;
-		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
 	}
@@ -186,7 +186,7 @@ void TRX_ptt_change(void)
 			TRX.InputType_MIC = false;
 			TRX.InputType_LINE = false;
 		}
-		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
 	}
@@ -208,7 +208,7 @@ void TRX_key_change(void)
 			TRX_ptt_cat = TRX_key_dot_hard;
 		KEYER_symbol_start_time = 0;
 		KEYER_symbol_status = false;
-		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
 	}
@@ -222,7 +222,7 @@ void TRX_key_change(void)
 			TRX_ptt_cat = TRX_key_dash_hard;
 		KEYER_symbol_start_time = 0;
 		KEYER_symbol_status = false;
-		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
 	}
@@ -233,7 +233,7 @@ void TRX_key_change(void)
 			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
 		if (TRX.CW_Key_timeout == 0)
 			TRX_ptt_cat = TRX_key_serial;
-		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
 	}
@@ -304,8 +304,6 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 
 void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 {
-	if (vfo->Mode == TRX_MODE_LOOPBACK || _mode == TRX_MODE_LOOPBACK)
-		LCD_UpdateQuery.StatusInfoGUI = true;
 	vfo->Mode = _mode;
 	if (vfo->Mode == TRX_MODE_LOOPBACK)
 		TRX_Start_TXRX();
@@ -327,7 +325,6 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	case TRX_MODE_CW_U:
 		vfo->LPF_Filter_Width = TRX.CW_LPF_Filter;
 		vfo->HPF_Filter_Width = TRX.CW_HPF_Filter;
-		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.TextBar = true;
 		break;
 	case TRX_MODE_NFM:
