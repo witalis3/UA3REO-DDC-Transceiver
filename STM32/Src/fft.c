@@ -40,8 +40,8 @@ static float32_t maxValueFFT_rx = 0;					   // maximum value of the amplitude in
 static float32_t maxValueFFT_tx = 0;					   // maximum value of the amplitude in the resulting frequency response
 static uint32_t currentFFTFreq = 0;
 static uint32_t lastWTFFreq = 0;								//last WTF printed freq
-static uint16_t color_scale[MAX_FFT_HEIGHT] = {0};							  // color gradient in height FFT
-static uint16_t bg_gradient_color[MAX_FFT_HEIGHT] = {0};							  // color gradient on background of FFT
+static uint16_t pallete_fft[MAX_FFT_HEIGHT] = {0};							  // color gradient in height FFT
+static uint16_t pallete_bg_gradient[MAX_FFT_HEIGHT] = {0};							  // color gradient on background of FFT
 SRAM static uint16_t fft_and_wtf_buffer[MAX_FFT_PLUS_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};	//union buffer with fft and wtf
 IRAM2 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};				  // frequencies for each row of the waterfall
 SRAM static uint16_t wtf_line_tmp[MAX_FFT_PRINT_SIZE] = {0};						  // temporary buffer to move the waterfall
@@ -154,7 +154,7 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 
 //Prototypes
 static uint16_t getFFTColor(uint_fast8_t height);	// get color from signal strength
-static void fft_fill_color_scale(void);				// prepare the color palette
+static void FFT_fill_color_pallete(void);				// prepare the color palette
 static void FFT_move(int32_t _freq_diff);			// shift the waterfall
 static int32_t getFreqPositionOnFFT(uint32_t freq); // get the position on the FFT for a given frequency
 static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
@@ -163,7 +163,7 @@ static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opa
 // FFT initialization
 void FFT_Init(void)
 {
-	fft_fill_color_scale();
+	FFT_fill_color_pallete();
 	//ZoomFFT
 	if (TRX.FFT_Zoom > 1)
 	{
@@ -443,11 +443,11 @@ ITCM void FFT_printFFT(void)
 		if (height > fftHeight - 1)
 		{
 			height = fftHeight;
-			tmp = color_scale[0];
+			fft_and_wtf_buffer[fftHeight][new_x] = pallete_fft[0];
 		}
 		else
-			tmp = color_scale[fftHeight - height];
-		fft_and_wtf_buffer[fftHeight][new_x] = tmp;
+			fft_and_wtf_buffer[fftHeight][new_x] = pallete_fft[fftHeight - height];
+
 		wtf_buffer_freqs[0] = currentFFTFreq;
 		fft_header[new_x] = height;
 		if (new_x == (LAYOUT->FFT_PRINT_SIZE / 2))
@@ -493,14 +493,14 @@ ITCM void FFT_printFFT(void)
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 	{
 		if(TRX.FFT_Background)
-				background = bg_gradient_color[fft_y];
+				background = pallete_bg_gradient[fft_y];
 			
 		uint8_t grid_line_index = 0;
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
 			//fft data
 			if (fft_y > (fftHeight - fft_header[fft_x]))
-				fft_and_wtf_buffer[fft_y][fft_x] = color_scale[fft_y];
+				fft_and_wtf_buffer[fft_y][fft_x] = pallete_fft[fft_y];
 			else
 				fft_and_wtf_buffer[fft_y][fft_x] = background;
 		}
@@ -512,12 +512,12 @@ ITCM void FFT_printFFT(void)
 		for(int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER ; grid_line_index++)
 			if(grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
 				for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-					fft_and_wtf_buffer[fft_y][grid_lines_pos[grid_line_index]] = mixColors(fft_and_wtf_buffer[fft_y][grid_lines_pos[grid_line_index]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+					fft_and_wtf_buffer[fft_y][grid_lines_pos[grid_line_index]] = mixColors(fft_and_wtf_buffer[fft_y][grid_lines_pos[grid_line_index]], pallete_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	}
 	
 	//draw center line
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-		fft_and_wtf_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = mixColors(fft_and_wtf_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+		fft_and_wtf_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = mixColors(fft_and_wtf_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], pallete_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	
 	//add opacity to bandw bar
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
@@ -658,10 +658,10 @@ ITCM void FFT_printWaterfallDMA(void)
 		if(TRX.FFT_Grid >= 2)
 			for(int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 				if(grid_lines_pos[i] > 0)
-					wtf_line_tmp[grid_lines_pos[i]] = mixColors(wtf_line_tmp[grid_lines_pos[i]], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+					wtf_line_tmp[grid_lines_pos[i]] = mixColors(wtf_line_tmp[grid_lines_pos[i]], pallete_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 		
 		//center line
-		wtf_line_tmp[LAYOUT->FFT_PRINT_SIZE / 2] = mixColors(wtf_line_tmp[LAYOUT->FFT_PRINT_SIZE / 2], color_scale[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+		wtf_line_tmp[LAYOUT->FFT_PRINT_SIZE / 2] = mixColors(wtf_line_tmp[LAYOUT->FFT_PRINT_SIZE / 2], pallete_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 		
 		// add opacity to bandw bar
 		for(int16_t fft_x = bw_line_start; ((fft_x <= (bw_line_start + bw_line_width)) && (fft_x < LAYOUT->FFT_PRINT_SIZE)); fft_x++)
@@ -959,12 +959,12 @@ ITCM static uint16_t getBGColor(uint_fast8_t height) // Get FFT background gradi
 }
 
 // prepare the color palette
-static void fft_fill_color_scale(void) // Fill FFT Color Gradient On Initialization
+static void FFT_fill_color_pallete(void) // Fill FFT Color Gradient On Initialization
 {
 	for (uint_fast8_t i = 0; i < GET_FFTHeight; i++)
 	{
-		color_scale[i] = getFFTColor(GET_FFTHeight - i);
-		bg_gradient_color[i] = getBGColor(GET_FFTHeight - i);
+		pallete_fft[i] = getFFTColor(GET_FFTHeight - i);
+		pallete_bg_gradient[i] = getBGColor(GET_FFTHeight - i);
 	}
 }
 
@@ -1002,7 +1002,7 @@ ITCM static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_
 	if(r > 31) r = 31;
 	if(g > 63) g = 63;
 	if(b > 31) b = 31;
-	return (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
+	return (uint16_t)((r << 11) | (g << 5) | b);
 }
 
 ITCM static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity)
