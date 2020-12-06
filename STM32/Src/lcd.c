@@ -21,6 +21,7 @@
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
 volatile bool LCD_systemMenuOpened = false;
+uint16_t LCD_bw_trapez_stripe_pos = 0;
 STRUCT_COLOR_THEME* COLOR = &COLOR_THEMES[0];
 STRUCT_LAYOUT_THEME* LAYOUT = &LAYOUT_THEMES[0];
 
@@ -50,6 +51,7 @@ static uint8_t Minutes;
 static uint8_t Last_showed_Minutes = 255;
 static uint8_t Seconds;
 static uint8_t Last_showed_Seconds = 255;
+static bool LCD_BWtrapez_disabled = false;
 
 static uint32_t Tooltip_DiplayStartTime = 0;
 static bool Tooltip_first_draw = true;
@@ -440,6 +442,82 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	else
 		LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_WIFI_ICON_X, LAYOUT->STATUS_WIFI_ICON_Y, &IMAGES_wifi_inactive, COLOR_BLACK, BG_COLOR);
 	
+	//BW trapezoid
+	LCDDriver_Fill_RectWH(LAYOUT->BW_TRAPEZ_POS_X, LAYOUT->BW_TRAPEZ_POS_Y, LAYOUT->BW_TRAPEZ_WIDTH, LAYOUT->BW_TRAPEZ_HEIGHT, BG_COLOR); //clear back
+	if(!LCD_BWtrapez_disabled)
+	{
+		#define bw_trapez_margin 10
+		uint16_t bw_trapez_top_line_width = LAYOUT->BW_TRAPEZ_WIDTH  * 0.8f - bw_trapez_margin * 2;
+		//border
+		LCDDriver_drawFastHLine(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_top_line_width / 2, LAYOUT->BW_TRAPEZ_POS_Y, bw_trapez_top_line_width, COLOR->BW_TRAPEZ_BORDER); //top
+		LCDDriver_drawFastHLine(LAYOUT->BW_TRAPEZ_POS_X, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT, LAYOUT->BW_TRAPEZ_WIDTH, COLOR->BW_TRAPEZ_BORDER); //bottom
+		LCDDriver_drawLine(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_top_line_width / 2 - bw_trapez_margin, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_top_line_width / 2, LAYOUT->BW_TRAPEZ_POS_Y, COLOR->BW_TRAPEZ_BORDER); //left
+		LCDDriver_drawLine(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_top_line_width / 2 + bw_trapez_margin, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_top_line_width / 2, LAYOUT->BW_TRAPEZ_POS_Y, COLOR->BW_TRAPEZ_BORDER); //right
+		//bw fill
+		float32_t bw_trapez_bw_left_width = 1.0f;
+		float32_t bw_trapez_bw_right_width = 1.0f;
+		float32_t bw_trapez_bw_hpf_margin = 0.0f;
+		switch (CurrentVFO()->Mode)
+		{
+			case TRX_MODE_LSB:
+				bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_Filter;
+			case TRX_MODE_DIGI_L:
+				bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_Filter;
+				bw_trapez_bw_right_width = 0.0f;
+				break;
+			case TRX_MODE_CW_L:
+				bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.CW_HPF_Filter * 4.0f;
+				bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_CW * TRX.CW_LPF_Filter;
+				bw_trapez_bw_right_width = 0.0f;
+				break;
+			case TRX_MODE_USB:
+				bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_Filter;
+			case TRX_MODE_DIGI_U:
+				bw_trapez_bw_left_width = 0.0f;
+				bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_Filter;
+				break;
+			case TRX_MODE_CW_U:
+				bw_trapez_bw_left_width = 0.0f;
+				bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_CW * TRX.CW_LPF_Filter;
+				bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.CW_HPF_Filter * 4.0f;
+				break;
+			case TRX_MODE_NFM:
+				bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_NFM * TRX.FM_LPF_Filter;
+				bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_NFM * TRX.FM_LPF_Filter;
+				break;
+			case TRX_MODE_AM:
+				bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * TRX.AM_LPF_Filter;
+				bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * TRX.AM_LPF_Filter;
+				break;
+			case TRX_MODE_WFM:
+				bw_trapez_bw_left_width = 1.0f;
+				bw_trapez_bw_right_width = 1.0f;
+				break;
+		}
+		uint16_t bw_trapez_left_width = bw_trapez_top_line_width / 2 * bw_trapez_bw_left_width;
+		uint16_t bw_trapez_right_width = bw_trapez_top_line_width / 2 * bw_trapez_bw_right_width;
+		uint16_t bw_trapez_bw_hpf_margin_width = bw_trapez_top_line_width / 2 * bw_trapez_bw_hpf_margin;
+		if(bw_trapez_left_width > 0) //left wing
+		{
+			LCDDriver_Fill_RectWH(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_left_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, bw_trapez_left_width - bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_HEIGHT - 2, COLOR->BW_TRAPEZ_FILL);
+			LCDDriver_Fill_Triangle(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_left_width - bw_trapez_margin + 1, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_left_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_left_width, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, COLOR->BW_TRAPEZ_FILL);
+			if(bw_trapez_bw_hpf_margin_width > 0)
+				LCDDriver_Fill_Triangle(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, COLOR->BW_TRAPEZ_FILL);
+		}
+		if(bw_trapez_bw_right_width > 0) //right wing
+		{
+			LCDDriver_Fill_RectWH(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, bw_trapez_right_width - bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_HEIGHT - 2, COLOR->BW_TRAPEZ_FILL);
+			LCDDriver_Fill_Triangle(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_right_width + bw_trapez_margin - 1, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_right_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_right_width, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, COLOR->BW_TRAPEZ_FILL);
+			if(bw_trapez_bw_hpf_margin_width > 0)
+				LCDDriver_Fill_Triangle(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, COLOR->BW_TRAPEZ_FILL);
+		}
+		//shift stripe
+		if(!TRX.ShiftEnabled)
+			LCD_bw_trapez_stripe_pos = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
+		
+		LCDDriver_Fill_RectWH(LCD_bw_trapez_stripe_pos - 1, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT / 2, 3, LAYOUT->BW_TRAPEZ_HEIGHT / 2, COLOR->BW_TRAPEZ_STRIPE);
+	}
+	
 	LCD_UpdateQuery.StatusInfoGUI = false;
 	if(redraw)
 		LCD_UpdateQuery.StatusInfoGUIRedraw = false;
@@ -656,23 +734,49 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	#endif
 	
 	//ERRORS LABELS
-	LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
+	bool LCD_BWtrapez_disabled_now = false;
 	if (TRX_ADC_OTR && !TRX_on_TX())
+	{
+		LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
 		LCDDriver_printText("OVR", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		LCD_BWtrapez_disabled_now = true;
+	}
 	else if (TRX_ADC_MAXAMPLITUDE > (ADC_FULL_SCALE * 0.499f) || TRX_ADC_MINAMPLITUDE < -(ADC_FULL_SCALE * 0.499f))
 	{
+		LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
 		LCDDriver_printText("OVR", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 		TRX_ADC_OTR = true;
+		LCD_BWtrapez_disabled_now = true;
 	}
 	if (TRX_DAC_OTR)
+	{
+		LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
 		LCDDriver_printText("OVR", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		LCD_BWtrapez_disabled_now = true;
+	}
 	if (WM8731_Buffer_underrun && !TRX_on_TX())
+	{
+		LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
 		LCDDriver_printText("WBF", LAYOUT->STATUS_ERR_OFFSET_X + LAYOUT->STATUS_ERR2_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		LCD_BWtrapez_disabled_now = true;
+	}
 	if (FPGA_Buffer_underrun && TRX_on_TX())
+	{
+		LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
 		LCDDriver_printText("FBF", LAYOUT->STATUS_ERR_OFFSET_X + LAYOUT->STATUS_ERR2_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		LCD_BWtrapez_disabled_now = true;
+	}
 	if (RX_USB_AUDIO_underrun)
+	{
+		LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
 		LCDDriver_printText("UBF", LAYOUT->STATUS_ERR_OFFSET_X + LAYOUT->STATUS_ERR2_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-
+		LCD_BWtrapez_disabled_now = true;
+	}
+	
+	if(LCD_BWtrapez_disabled != LCD_BWtrapez_disabled_now)
+		LCD_UpdateQuery.StatusInfoGUI = true;
+	LCD_BWtrapez_disabled = LCD_BWtrapez_disabled_now;
+	
 	Time = RTC->TR;
 	Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
 	Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);

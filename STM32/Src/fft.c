@@ -205,7 +205,7 @@ void FFT_Init(void)
 	}
 	// clear the buffer
 	memset(&fft_output_buffer, BG_COLOR, sizeof(fft_output_buffer));
-	memset(&indexed_wtf_buffer, 0x00, sizeof(indexed_wtf_buffer));
+	memset(&indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
 	// initialize sort
 	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_QUICK, ARM_SORT_ASCENDING);
 }

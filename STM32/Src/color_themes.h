@@ -50,6 +50,9 @@ typedef const struct
 	const uint16_t FFT_GRADIENT_END_G;
 	const uint16_t FFT_GRADIENT_END_B;
 	const bool WTF_BG_WHITE;
+	const uint16_t BW_TRAPEZ_BORDER;
+	const uint16_t BW_TRAPEZ_STRIPE;
+	const uint16_t BW_TRAPEZ_FILL;
 	//7inch
 	const uint16_t FREQ_B_MHZ;
 	const uint16_t FREQ_B_KHZ;
@@ -111,6 +114,9 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 		.FFT_GRADIENT_END_G = 77,
 		.FFT_GRADIENT_END_B = 158,
 		.WTF_BG_WHITE = false,
+		.BW_TRAPEZ_BORDER = rgb888torgb565(120, 120, 120),
+		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
+		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
 		//7inch
 		.FREQ_B_MHZ = rgb888torgb565(120, 120, 120),
 		.FREQ_B_KHZ = rgb888torgb565(120, 120, 120),
@@ -170,6 +176,9 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 		.FFT_GRADIENT_END_G = 255,
 		.FFT_GRADIENT_END_B = 255,
 		.WTF_BG_WHITE = true,
+		.BW_TRAPEZ_BORDER = rgb888torgb565(120, 120, 120),
+		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
+		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
 		//7inch
 		.FREQ_B_MHZ = rgb888torgb565(120, 120, 120),
 		.FREQ_B_KHZ = rgb888torgb565(120, 120, 120),

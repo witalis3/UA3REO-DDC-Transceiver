@@ -26,6 +26,13 @@
 #define IIR_RX1_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX2_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 
+#define MAX_HPF_WIDTH_CW 100
+#define MAX_HPF_WIDTH_SSB 500
+#define MAX_LPF_WIDTH_CW 2100
+#define MAX_LPF_WIDTH_SSB 3400
+#define MAX_LPF_WIDTH_AM 10000
+#define MAX_LPF_WIDTH_NFM 20000
+
 typedef enum // BiQuad filter type for automatic calculation
 {
 	BIQUAD_onepolelp,

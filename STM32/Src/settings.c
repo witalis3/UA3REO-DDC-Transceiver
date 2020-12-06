@@ -218,7 +218,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Height = 2;				 // FFT display height
 		TRX.FFT_Grid = 1;					 // FFT grid style
 		TRX.ShiftEnabled = false;		 // activate the SHIFT mode
-		TRX.SHIFT_INTERVAL = 5000;		 // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
+		TRX.SHIFT_INTERVAL = 1000;		 // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
 		TRX.DNR_SNR_THRESHOLD = 50;		 // Digital noise reduction level
 		TRX.DNR_AVERAGE = 2;			 // DNR averaging when looking for average magnitude
 		TRX.DNR_MINIMAL = 99;			 // DNR averaging when searching for minimum magnitude

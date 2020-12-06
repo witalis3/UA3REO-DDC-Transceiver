@@ -151,6 +151,11 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[1] =
 		.TOOLTIP_MARGIN = 5,
 		.TOOLTIP_POS_X = (LCD_WIDTH / 2),
 		.TOOLTIP_POS_Y = 70,
+		//BW Trapezoid
+		.BW_TRAPEZ_POS_X = 380,
+		.BW_TRAPEZ_POS_Y = 25,
+		.BW_TRAPEZ_HEIGHT = 25,
+		.BW_TRAPEZ_WIDTH = 96,
 	},
 };
 

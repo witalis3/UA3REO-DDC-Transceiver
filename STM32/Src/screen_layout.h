@@ -160,6 +160,11 @@ extern "C" {
 		const uint16_t TOOLTIP_MARGIN;
 		const uint16_t TOOLTIP_POS_X;
 		const uint16_t TOOLTIP_POS_Y;
+		//BW Trapezoid
+		const uint16_t BW_TRAPEZ_POS_X;
+		const uint16_t BW_TRAPEZ_POS_Y;
+		const uint16_t BW_TRAPEZ_HEIGHT;
+		const uint16_t BW_TRAPEZ_WIDTH;
 	} STRUCT_LAYOUT_THEME;
 
 

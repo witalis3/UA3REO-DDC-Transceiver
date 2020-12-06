@@ -373,7 +373,16 @@ void FRONTPANEL_Process(void)
 			int_fast16_t TRX_SHIFT_old = TRX_SHIFT;
 			TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SHIFT_INTERVAL * 2 / 1023.0f) - TRX.SHIFT_INTERVAL);
 			if(TRX_SHIFT_old != TRX_SHIFT)
+			{
 				TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
+				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
+				LCD_bw_trapez_stripe_pos_new = LCD_bw_trapez_stripe_pos_new + (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.8f) / 2.0f * ((float32_t)TRX_SHIFT / (float32_t)TRX.SHIFT_INTERVAL));
+				if(abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
+				{
+					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
+					LCD_UpdateQuery.StatusInfoGUI = true;
+				}
+			}
 		}
 		else
 		{
@@ -936,6 +945,7 @@ static void FRONTPANEL_BUTTONHANDLER_SHIFT(void)
 {
 	TRX.ShiftEnabled = !TRX.ShiftEnabled;
 	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 }
 

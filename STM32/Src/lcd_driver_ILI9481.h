@@ -41,5 +41,14 @@
 #define LCD_PARAM_MADCTL_SS 0x02
 #define LCD_PARAM_MADCTL_GS 0x01
 
+#ifndef _swap_int16_t
+#define _swap_int16_t(a, b)                                                    \
+  {                                                                            \
+    int16_t t = a;                                                             \
+    a = b;                                                                     \
+    b = t;                                                                     \
+  }
+#endif
+
 #endif
 #endif
