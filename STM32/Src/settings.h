@@ -9,7 +9,7 @@
 #include "bands.h"
 
 #define SETT_VERSION 207				// Settings config version
-#define CALIB_VERSION 209				// Calibration config version
+#define CALIB_VERSION 210				// Calibration config version
 #define ADC_CLOCK 122880000				// ADC generator frequency
 #define DAC_CLOCK 188160000				// DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		// Maximum receive frequency (from the ADC datasheet)
@@ -44,16 +44,16 @@
 #define TRX_MAX_SWR		5				//maximum SWR to enable protect (NOT IN TUNE MODE!)
 
 // select LCD and Touchpad, comment on others
-//#define LCD_ILI9481 true
+#define LCD_ILI9481 true
 //#define LCD_HX8357B true
 //#define LCD_HX8357C true
 //#define LCD_R61581 true //untested
-#define LCD_ILI9486 true
+//#define LCD_ILI9486 true
 //#define LCD_RA8875 true
 //#define TOUCHPAD_GT911 true	
 
 //select how the SWR and the power is measured
-#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
+//#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 //SPI Speed
 #define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_2
