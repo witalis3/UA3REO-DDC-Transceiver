@@ -325,6 +325,10 @@ void LoadCalibration(bool clear)
 		CALIBRATE.BPF_HPF = 60000 * 1000;														//HPF U14-RF1
 		CALIBRATE.swr_trans_rate = 11.0f;														//SWR Transormator rate
 		CALIBRATE.VCXO_correction = 0;															//VCXO Frequency offset
+		CALIBRATE.FW_AD8307_SLP = 25.5f;														//Slope for the log amp used to mreasure the FW power (mV/dB)
+		CALIBRATE.FW_AD8307_OFFS = 1150.0f;													//Offset to back calculate the output voltage to dBm (mV)
+		CALIBRATE.BW_AD8307_SLP = 25.5f;														//Slope for the log amp used to mreasure the BW power (mV/dB)
+		CALIBRATE.BW_AD8307_OFFS = 1150.0f;													//Offset to back calculate the output voltage to dBm (mV)
 		
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default calibrate settings");
