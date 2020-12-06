@@ -668,17 +668,18 @@ void TIM6_DAC_IRQHandler(void)
 		#ifdef LCD_HX8357B
 		static uint8_t HX8357B_BUG_redraw_counter = 0;
 		HX8357B_BUG_redraw_counter++;
-		if(HX8357B_BUG_redraw_counter == 20)
+		if(HX8357B_BUG_redraw_counter == 60)
 		{
 			LCD_UpdateQuery.TopButtonsRedraw = true;
 			LCD_UpdateQuery.StatusInfoBarRedraw = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
-		else if(HX8357B_BUG_redraw_counter == 40)
+		else if(HX8357B_BUG_redraw_counter == 120)
 		{
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
-		else if(HX8357B_BUG_redraw_counter >= 60)
+		else if(HX8357B_BUG_redraw_counter >= 180)
 		{
 			LCD_UpdateQuery.StatusInfoGUI = true;
 			LCD_UpdateQuery.StatusInfoBarRedraw = true;
