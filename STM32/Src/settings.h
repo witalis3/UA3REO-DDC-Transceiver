@@ -44,13 +44,16 @@
 #define TRX_MAX_SWR		5				//maximum SWR to enable protect (NOT IN TUNE MODE!)
 
 // select LCD and Touchpad, comment on others
-#define LCD_ILI9481 true
+//#define LCD_ILI9481 true
 //#define LCD_HX8357B true
 //#define LCD_HX8357C true
 //#define LCD_R61581 true //untested
-//#define LCD_ILI9486 true
+#define LCD_ILI9486 true
 //#define LCD_RA8875 true
 //#define TOUCHPAD_GT911 true	
+
+//select how the SWR and the power is measured
+#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 //SPI Speed
 #define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_2
@@ -283,6 +286,11 @@ extern struct TRX_CALIBRATE
 	float32_t swr_trans_rate;
 	int8_t VCXO_correction;
 	uint8_t ENCODER_ACCELERATION;
+	float32_t FW_AD8307_SLP; 
+	float32_t FW_AD8307_OFFS;
+	float32_t BW_AD8307_SLP;
+	float32_t BW_AD8307_OFFS;
+	
 
 	uint8_t csum; //check sum
 	uint8_t ENDBit; //end bit

@@ -142,6 +142,10 @@ static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
+static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction);	//Tisho	  
+static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction);	//Tisho
+static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction);	//Tisho
+static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction);	//Tisho
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -157,6 +161,7 @@ static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction);
 static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
+static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction);		//Tisho
 
 IRAM2 static struct sysmenu_item_handler sysmenu_handlers[] =
 	{
@@ -335,6 +340,10 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"HPF START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_HPF, SYSMENU_HANDL_CALIB_HPF_START},
 		{"SWR TRANS RATE", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.swr_trans_rate, SYSMENU_HANDL_CALIB_SWR_TRANS_RATE},
 		{"VCXO Freq", SYSMENU_INT8, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
+		{"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
+		{"FW_AD8307_Offset (mV)", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.FW_AD8307_OFFS, SYSMENU_HANDL_CALIB_FW_AD8307_OFFS},
+		{"BW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.BW_AD8307_SLP, SYSMENU_HANDL_CALIB_BW_AD8307_SLP},
+		{"BW_AD8307_Offset (mV)", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.BW_AD8307_OFFS, SYSMENU_HANDL_CALIB_BW_AD8307_OFFS},
 };
 static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 
@@ -345,6 +354,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_services_handlers[] =
 	{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
 	{"RDA Statistics", SYSMENU_RUN, 0, SYSMENU_HANDL_RDA_STATS},
 	{"Propagination", SYSMENU_RUN, 0, SYSMENU_HANDL_PROPAGINATION},
+	{"SWR Tandem Match Contr.", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl},		//Tisho
 };
 static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
 
@@ -1825,6 +1835,21 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
+static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction)			//Tisho
+{
+	
+	if (sysmenu_TDM_CTRL_opened)
+	{
+		
+	}
+	else
+	{
+		sysmenu_TDM_CTRL_opened = true;
+		TDM_Voltages_Start();
+//		drawSystemMenu(true);
+	}
+}
+
 static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction)
 {
 	CALIBRATE.CICFIR_GAINER_val += direction;
@@ -2104,6 +2129,43 @@ static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)
 	if (CALIBRATE.VCXO_correction > 100)
 		CALIBRATE.VCXO_correction = 100;
 }
+//Tisho
+static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction)
+{
+	CALIBRATE.FW_AD8307_SLP += (float32_t)direction * 0.1f;
+	if (CALIBRATE.FW_AD8307_SLP < 20.0f)
+		CALIBRATE.FW_AD8307_SLP = 20.0f;
+	if (CALIBRATE.FW_AD8307_SLP > 30.0f)
+		CALIBRATE.FW_AD8307_SLP = 30.0f;
+}
+
+static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction)
+{
+	CALIBRATE.FW_AD8307_OFFS += (float32_t)direction;
+	if (CALIBRATE.FW_AD8307_OFFS < 0.1f)
+		CALIBRATE.FW_AD8307_OFFS = 0.1f;
+	if (CALIBRATE.FW_AD8307_OFFS > 4000.0f)
+		CALIBRATE.FW_AD8307_OFFS = 4000.0f;
+}
+
+static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction)
+{
+	CALIBRATE.BW_AD8307_SLP += (float32_t)direction * 0.1f;
+	if (CALIBRATE.BW_AD8307_SLP < 20.0f)
+		CALIBRATE.BW_AD8307_SLP = 20.0f;
+	if (CALIBRATE.BW_AD8307_SLP > 30.0f)
+		CALIBRATE.BW_AD8307_SLP = 30.0f;
+}
+
+static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction)
+{
+	CALIBRATE.BW_AD8307_OFFS += (float32_t)direction;
+	if (CALIBRATE.BW_AD8307_OFFS < 0.1f)
+		CALIBRATE.BW_AD8307_OFFS = 0.1f;
+	if (CALIBRATE.BW_AD8307_OFFS > 4000.0f)
+		CALIBRATE.BW_AD8307_OFFS = 4000.0f;
+}
+//end Tisho
 
 //SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
@@ -2258,6 +2320,11 @@ void drawSystemMenu(bool draw_background)
 		SPEC_Draw();
 		return;
 	}
+	if (sysmenu_TDM_CTRL_opened)				//Tisho
+	{
+		TDM_Voltages();									
+		return;
+	}
 	if (sysmenu_swr_opened)
 	{
 		SWR_Draw();
@@ -2357,6 +2424,12 @@ void eventCloseSystemMenu(void)
 	{
 		sysmenu_swr_opened = false;
 		SWR_Stop();
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+	}
+	else if (sysmenu_TDM_CTRL_opened)			//Tisho
+	{
+		sysmenu_TDM_CTRL_opened = false;
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}
