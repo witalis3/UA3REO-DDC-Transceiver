@@ -165,7 +165,6 @@ extern "C" {
 
 	#define LAYOUT_THEMES_COUNT 1
 	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
-	#define MAX_FFT_PLUS_WTF_HEIGHT 152
 	#define MAX_FFT_HEIGHT 102
 	#define MAX_WTF_HEIGHT 102
 #endif
@@ -363,7 +362,6 @@ extern "C" {
 
 	#define LAYOUT_THEMES_COUNT 1
 	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
-	#define MAX_FFT_PLUS_WTF_HEIGHT 320
 	#define MAX_FFT_HEIGHT 220
 	#define MAX_WTF_HEIGHT 180
 #endif
