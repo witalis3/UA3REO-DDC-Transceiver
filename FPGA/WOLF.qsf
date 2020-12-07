@@ -309,7 +309,6 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to STM32_DATA_BUS[1]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to STM32_DATA_BUS[0]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to STM32_SYNC
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DCDC_SYNC
-set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to DCDC_SYNC
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_HP2
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_HP1
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to TCXO_CLK_IN
