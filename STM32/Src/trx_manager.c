@@ -253,12 +253,12 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 		return;
 
 	//set DC-DC Sync freq
-	uint32_t dcdc_offset_0 = _freq % DCDC_FREQ_0;
-	uint32_t dcdc_offset_1 = _freq % DCDC_FREQ_1;
+	uint32_t dcdc_offset_0 = abs((int32_t)DCDC_FREQ_0 / 2 - (int32_t)_freq % (int32_t)DCDC_FREQ_0);
+	uint32_t dcdc_offset_1 = abs((int32_t)DCDC_FREQ_1 / 2 - (int32_t)_freq % (int32_t)DCDC_FREQ_1);
 	if (dcdc_offset_0 > dcdc_offset_1)
-		TRX_DCDC_Freq = 0;
-	else
 		TRX_DCDC_Freq = 1;
+	else
+		TRX_DCDC_Freq = 0;
 
 	//get band
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
