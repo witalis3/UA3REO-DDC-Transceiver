@@ -2175,7 +2175,8 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_services_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	//drawSystemMenu(true);
+	LCD_redraw();
 }
 
 //SPECTRUM ANALIZER
