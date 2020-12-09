@@ -642,9 +642,15 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(void)
 	else if (mode == TRX_MODE_AM)
 		mode = TRX_MODE_IQ;
 	else if (mode == TRX_MODE_IQ)
+	{
 		mode = TRX_MODE_LOOPBACK;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+	}
 	else if (mode == TRX_MODE_LOOPBACK)
+	{
 		mode = TRX_MODE_AM;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+	}
 
 	TRX_setMode((uint8_t)mode, CurrentVFO());
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
