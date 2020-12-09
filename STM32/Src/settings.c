@@ -357,20 +357,20 @@ void SaveSettings(void)
 {
 	BKPSRAM_Enable();
 	TRX.csum = calculateCSUM();
-	SCB_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
+	Aligned_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
 	if(settings_bank == 1)
 	{
 		memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
-		SCB_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
+		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 		memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
-		SCB_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
+		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 	}
 	else
 	{
 		memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
-		SCB_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
+		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 		memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
-		SCB_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
+		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 	}
 	BKPSRAM_Disable();
 	NeedSaveSettings = false;
@@ -495,7 +495,7 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		return false;
 	}
 	memcpy(write_clone, Buffer, size);
-	SCB_CleanDCache_by_Addr((uint32_t *)write_clone, sizeof(write_clone));
+	Aligned_CleanDCache_by_Addr((uint32_t *)write_clone, sizeof(write_clone));
 	
 	const uint16_t page_size = 256;
 	for (uint16_t page = 0; page <= (size / page_size); page++)

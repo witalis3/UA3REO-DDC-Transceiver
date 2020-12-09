@@ -13,8 +13,6 @@
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;								  // audio samples processed in the processor
-int32_t Processor_AudioBuffer_A[AUDIO_BUFFER_SIZE] = {0};				  // buffer A of the audio processor
-int32_t Processor_AudioBuffer_B[AUDIO_BUFFER_SIZE] = {0};				  // buffer B of the audio processor
 volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer = 0;			  // which buffer is currently in use, A or B
 volatile bool Processor_NeedRXBuffer = false;							  // codec needs data from processor for RX
 volatile bool Processor_NeedTXBuffer = false;							  // codec needs data from processor for TX
@@ -30,6 +28,8 @@ volatile float32_t Processor_TX_MAX_amplitude_OUT;				// TX uplift after ALC
 bool NeedReinitReverber = false;
 
 // Private variables
+static int32_t Processor_AudioBuffer_A[AUDIO_BUFFER_SIZE] = {0};				  // buffer A of the audio processor
+static int32_t Processor_AudioBuffer_B[AUDIO_BUFFER_SIZE] = {0};				  // buffer B of the audio processor
 static uint32_t two_signal_gen_position = 0;																							   // signal position in a two-signal generator
 static float32_t ALC_need_gain = 1.0f;																									   // current gain of ALC and audio compressor
 static float32_t ALC_need_gain_target = 1.0f;																							   // Target Gain Of ALC And Audio Compressor
@@ -203,6 +203,7 @@ ITCM void processRxAudio(void)
 		for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 			arm_sqrt_f32(FPGA_Audio_Buffer_RX1_I_tmp[i], &FPGA_Audio_Buffer_RX1_I_tmp[i]);
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.5f, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
+		dc_filter(FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1, DC_FILTER_RX1_I);
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
@@ -281,6 +282,7 @@ ITCM void processRxAudio(void)
 			for (uint_fast16_t i = 0; i < decimated_block_size_rx2; i++)
 				arm_sqrt_f32(FPGA_Audio_Buffer_RX2_I_tmp[i], &FPGA_Audio_Buffer_RX2_I_tmp[i]);
 			arm_scale_f32(FPGA_Audio_Buffer_RX2_I_tmp, 0.5f, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2);
+			dc_filter(FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2, DC_FILTER_RX2_I);
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
@@ -305,11 +307,9 @@ ITCM void processRxAudio(void)
 	}
 
 	//Prepare data to DMA
-	int32_t *Processor_AudioBuffer_current;
+	int32_t *Processor_AudioBuffer_current = Processor_AudioBuffer_A;
 	if (Processor_AudioBuffer_ReadyBuffer == 0)
-		Processor_AudioBuffer_current = &Processor_AudioBuffer_B[0];
-	else
-		Processor_AudioBuffer_current = &Processor_AudioBuffer_A[0];
+		Processor_AudioBuffer_current = Processor_AudioBuffer_B;
 
 	// addition of signals in double receive mode
 	if (TRX.Dual_RX && TRX.Dual_RX_Type == VFO_A_PLUS_B)
@@ -364,12 +364,9 @@ ITCM void processRxAudio(void)
 	//Send to USB Audio
 	if (USB_AUDIO_need_rx_buffer && TRX_Inited)
 	{
-		uint8_t *USB_AUDIO_rx_buffer_current;
-
+		uint8_t *USB_AUDIO_rx_buffer_current = USB_AUDIO_rx_buffer_b;
 		if (!USB_AUDIO_current_rx_buffer)
-			USB_AUDIO_rx_buffer_current = &USB_AUDIO_rx_buffer_a[0];
-		else
-			USB_AUDIO_rx_buffer_current = &USB_AUDIO_rx_buffer_b[0];
+			USB_AUDIO_rx_buffer_current = USB_AUDIO_rx_buffer_a;
 
 		//drop LSB 32b->24b
 		for (uint_fast16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET); i++)
@@ -414,11 +411,11 @@ ITCM void processRxAudio(void)
 			Processor_AudioBuffer_current[pos * 2 + 1] = 0;					//right channel
 		}
 	}
-	
+
 	//Send to Codec DMA
 	if (TRX_Inited)
 	{
-		SCB_CleanDCache_by_Addr((uint32_t *)&Processor_AudioBuffer_current[0], sizeof(Processor_AudioBuffer_A));
+		Aligned_CleanDCache_by_Addr((uint32_t *)&Processor_AudioBuffer_current[0], sizeof(Processor_AudioBuffer_A));
 		if (WM8731_DMA_state) //complete
 		{
 			HAL_MDMA_Start_IT(&hmdma_mdma_channel41_sw_0, (uint32_t)&Processor_AudioBuffer_current[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
@@ -717,7 +714,7 @@ ITCM void processTxAudio(void)
 			Processor_AudioBuffer_A[i * 2 + 1] = Processor_AudioBuffer_A[i * 2];					//right channel
 		}
 
-		SCB_CleanDCache_by_Addr((uint32_t *)&Processor_AudioBuffer_A[0], sizeof(Processor_AudioBuffer_A));
+		Aligned_CleanDCache_by_Addr((uint32_t *)&Processor_AudioBuffer_A[0], sizeof(Processor_AudioBuffer_A));
 		if (WM8731_DMA_state) //compleate
 		{
 			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&Processor_AudioBuffer_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
@@ -743,17 +740,17 @@ ITCM void processTxAudio(void)
 					CODEC_Audio_Buffer_RX[i * 2] = convertToSPIBigEndian((int32_t)(amplitude * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ)));
 					CODEC_Audio_Buffer_RX[i * 2 + 1] = CODEC_Audio_Buffer_RX[i * 2];
 				}
-				SCB_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
+				Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 			}
 			else
 			{
 				memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
-				SCB_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
+				Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 			}
 		}
 		//
-		SCB_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], sizeof(FPGA_Audio_Buffer_TX_I_tmp));
-		SCB_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], sizeof(FPGA_Audio_Buffer_TX_Q_tmp));
+		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], sizeof(FPGA_Audio_Buffer_TX_I_tmp));
+		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_TX_Q_tmp[0], sizeof(FPGA_Audio_Buffer_TX_Q_tmp));
 		if (FPGA_Audio_Buffer_State) //Send to FPGA DMA
 		{
 			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&FPGA_Audio_Buffer_TX_I_tmp[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
@@ -768,8 +765,8 @@ ITCM void processTxAudio(void)
 			HAL_MDMA_Start(&hmdma_mdma_channel42_sw_0, (uint32_t)&FPGA_Audio_Buffer_TX_Q_tmp[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
-		SCB_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_I[0], sizeof(FPGA_Audio_SendBuffer_I));
-		SCB_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));
+		Aligned_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_I[0], sizeof(FPGA_Audio_SendBuffer_I));
+		Aligned_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));
 	}
 
 	Processor_NeedTXBuffer = false;
@@ -976,11 +973,12 @@ ITCM static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	if(Processor_RX_Power_value != 0)
 		return;
 	// Prepare data to calculate s-meter
-	float32_t i = 0;
+	static float32_t i = 0;
 	if (rx_id == AUDIO_RX1)
 	{
 		arm_rms_f32(FPGA_Audio_Buffer_RX1_I_tmp, size, &i);
-		i *= 1.0f / current_if_gain;
+		if(current_if_gain != 0.0f)
+			i *= 1.0f / current_if_gain;
 	}
 	else
 	{
@@ -995,15 +993,15 @@ ITCM static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	// Double channel I-> Q
 	if (rx_id == AUDIO_RX1)
 	{
-		SCB_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], size * 4);
+		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], size * 4);
 		dma_memcpy32((uint32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_I_tmp[0], size);
-		SCB_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], size * 4);
+		Aligned_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX1_Q_tmp[0], size * 4);
 	}
 	else
 	{
-		SCB_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], size * 4);
+		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], size * 4);
 		dma_memcpy32((uint32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], (uint32_t *)&FPGA_Audio_Buffer_RX2_I_tmp[0], size);
-		SCB_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], size * 4);
+		Aligned_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_RX2_Q_tmp[0], size * 4);
 	}
 }
 

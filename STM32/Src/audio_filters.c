@@ -431,9 +431,9 @@ void ReinitAudioFilters(void)
 // initialize the manual Notch filter
 void InitNotchFilter(void)
 {
-	NeedReinitNotch = false;
 	calcBiquad(BIQUAD_notch, CurrentVFO()->NotchFC / 2, TRX_SAMPLERATE, 0.5f, 0, NOTCH_RX1_Coeffs);
 	calcBiquad(BIQUAD_notch, SecondaryVFO()->NotchFC / 2, TRX_SAMPLERATE, 0.5f, 0, NOTCH_RX2_Coeffs);
+	NeedReinitNotch = false;
 }
 
 // start DC corrector

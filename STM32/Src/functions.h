@@ -49,6 +49,9 @@
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
+#define Aligned_CleanDCache_by_Addr(buff, size) (SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)buff) & ~(uint32_t)0x1F), (size)+32))
+#define Aligned_InvalidateDCache_by_Addr(buff, size) (SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)buff) & ~(uint32_t)0x1F), (size)+32))
+
 #ifdef __clang__
  #define isnanf __ARM_isnanf
  #define isinff __ARM_isinff

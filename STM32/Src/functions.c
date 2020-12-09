@@ -25,7 +25,7 @@ void dma_memcpy32(uint32_t *dest, uint32_t *src, uint32_t len)
 
 void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read)
 {
-	SCB_CleanDCache_by_Addr(source, length * 4);
+	Aligned_CleanDCache_by_Addr(source, length * 4);
 	if (index >= words_to_read)
 	{
 		dma_memcpy32(&dest[0], &source[index - words_to_read], words_to_read);
@@ -36,7 +36,7 @@ void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, ui
 		dma_memcpy32(&dest[0], &source[length - prev_part], prev_part);
 		dma_memcpy32(&dest[prev_part], &source[0], (words_to_read - prev_part));
 	}
-	SCB_InvalidateDCache_by_Addr(dest, words_to_read * 4);
+	Aligned_InvalidateDCache_by_Addr(dest, words_to_read * 4);
 }
 
 void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length)
