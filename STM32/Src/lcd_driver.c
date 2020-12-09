@@ -54,12 +54,22 @@ ITCM void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t c
 
 ITCM void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size)
 {
-	uint16_t offset;
-	offset = size * 6;
+	uint16_t offset = size * 6;
+	uint16_t skipped = 0;
 	for (uint16_t i = 0; i < 40 && text[i] != 0; i++)
 	{
-		LCDDriver_drawChar(x + (offset * i), y, text[i], color, bg, size);
-		text_cursor_x = x + (offset * (i + 1));
+		if(text[i] == '^' && text[i+1] == 'o') //celsius
+		{
+			i++;
+			skipped++;
+			LCDDriver_drawChar(x + (offset * (i - skipped)), y - 3, text[i], color, bg, size);
+			text_cursor_x = x + (offset * (i + 1 - skipped));
+		}
+		else
+		{
+			LCDDriver_drawChar(x + (offset * (i - skipped)), y, text[i], color, bg, size);
+			text_cursor_x = x + (offset * (i + 1 - skipped));
+		}
 	}
 }
 

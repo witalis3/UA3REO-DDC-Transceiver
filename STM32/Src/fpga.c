@@ -84,7 +84,6 @@ void FPGA_Init(void)
 	HAL_Delay(100);
 	FPGA_writePacket(6); // RESET OFF
 	FPGA_syncAndClockRiseFall();
-	FPGA_NeedRestart = false;
 }
 
 // restart FPGA modules

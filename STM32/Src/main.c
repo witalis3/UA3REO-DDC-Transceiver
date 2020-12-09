@@ -243,7 +243,9 @@ int main(void)
     LoadCalibration(true);
   else
     LoadCalibration(false);
-  sendToDebug_strln("[OK] STM32-ADC Calibration");
+  sendToDebug_strln("[OK] FPGA init");
+  FPGA_Init();
+	sendToDebug_strln("[OK] STM32-ADC Calibration");
   HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   sendToDebug_strln("[OK] RF-Unit init");
@@ -255,8 +257,6 @@ int main(void)
   WM8731_Init();
   sendToDebug_strln("[OK] TRX init");
   TRX_Init();
-  sendToDebug_strln("[OK] FPGA init");
-  FPGA_Init();
   sendToDebug_strln("[OK] Audioprocessor & TIM5 init");
   initAudioProcessor();
   HAL_TIM_Base_Start_IT(&htim5);
