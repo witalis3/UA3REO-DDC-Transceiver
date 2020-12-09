@@ -415,7 +415,10 @@ begin
 	else if (k == 407)
 	begin
 		DATA_BUS_OUT[7:0] = I_HOLD[7:0];
-		k = 408;
+		if(rx2 == 1)
+			k = 408;
+		else
+			k = 400;
 	end
 	else if (k == 408) //RX2 IQ
 	begin

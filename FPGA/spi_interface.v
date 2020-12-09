@@ -39,7 +39,7 @@ begin
 		begin
 			busy <= 1;
 			CS_S <= 0;
-			SCK_C <= 0; //1
+			SCK_C <= 0;
 			spi_bit_position <= 7;
 			spi_stage <= 1;
 		end

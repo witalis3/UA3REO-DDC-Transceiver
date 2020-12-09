@@ -168,13 +168,6 @@ ITCM void FPGA_fpgadata_iqclock(void)
 		
 		//2 blocks (48*2=96khz)
 		FPGA_fpgadata_getiq();
-		if (!TRX.Dual_RX)
-		{
-			//skip RX2 block
-			FPGA_setBusOutput();
-			FPGA_writePacket(4); //RX GET IQ
-			FPGA_syncAndClockRiseFall();
-		}
 		FPGA_fpgadata_getiq();
 	}
 }
@@ -389,7 +382,8 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 	//STAGE 5
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
-
+	FPGA_clockFall();
+	
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 	if (TRX_RX1_IQ_swap)
 	{
@@ -403,7 +397,6 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_float32;
 		FPGA_Audio_Buffer_RX1_Q[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 	}
-	FPGA_clockFall();
 
 	//STAGE 6 in I RX1
 	FPGA_clockRise();
@@ -423,7 +416,8 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 	//STAGE 9
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
-
+	FPGA_clockFall();
+	
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 	if (TRX_RX1_IQ_swap)
 	{
@@ -437,7 +431,6 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_float32;
 		FPGA_Audio_Buffer_RX1_I[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 	}
-	FPGA_clockFall();
 
 	if (TRX.Dual_RX)
 	{
@@ -459,7 +452,8 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 		//STAGE 13
 		FPGA_clockRise();
 		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
-
+		FPGA_clockFall();
+		
 		FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 		if (TRX_RX2_IQ_swap)
 		{
@@ -469,7 +463,6 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 		{
 			FPGA_Audio_Buffer_RX2_Q[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 		}
-		FPGA_clockFall();
 
 		//STAGE 14 in I RX2
 		FPGA_clockRise();
@@ -489,7 +482,8 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 		//STAGE 17
 		FPGA_clockRise();
 		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
-
+		FPGA_clockFall();
+		
 		FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 		if (TRX_RX2_IQ_swap)
 		{
@@ -515,7 +509,6 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 			FFT_buffer_ready = true;
 		}
 	}
-	FPGA_clockFall();
 }
 
 // send IQ data
@@ -709,8 +702,8 @@ static uint8_t FPGA_spi_start_command(uint8_t command) // execute command to SPI
 	FPGA_FLASH_WRITE_DELAY
 
 	//STAGE 3 READ ANSWER (F701)
-	FPGA_clockRise();
 	FPGA_setBusInput();
+	FPGA_clockRise();
 	uint8_t data = FPGA_readPacket;
 	FPGA_clockFall();
 	FPGA_FLASH_READ_DELAY
@@ -737,8 +730,8 @@ static uint8_t FPGA_spi_continue_command(uint8_t writedata) // Continue reading 
 	FPGA_FLASH_WRITE_DELAY
 
 	//STAGE 3 READ ANSWER (F701)
-	FPGA_clockRise();
 	FPGA_setBusInput();
+	FPGA_clockRise();
 	uint8_t data = FPGA_readPacket;
 	FPGA_clockFall();
 	FPGA_FLASH_READ_DELAY
@@ -752,7 +745,7 @@ static void FPGA_spi_flash_wait_WIP(void) // We are waiting for the end of writi
 	while (bitRead(status, 0) == 1)
 	{
 		FPGA_spi_start_command(M25P80_READ_STATUS_REGISTER);
-		status = FPGA_spi_continue_command(0x00);
+		status = FPGA_spi_continue_command(M25P80_READ_STATUS_REGISTER);
 		FPGA_spi_stop_command();
 	}
 }
@@ -763,6 +756,8 @@ static bool FPGA_is_present(void) // check that the FPGA has firmware
 	HAL_Delay(1);
 	uint8_t data = 0;
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
+	FPGA_spi_stop_command();
+	FPGA_spi_flash_wait_WIP();
 	FPGA_spi_start_command(M25P80_READ_DATA_BYTES);				 //READ DATA BYTES
 	FPGA_spi_continue_command(0x00);							 //addr 1
 	FPGA_spi_continue_command(0x00);							 //addr 2
@@ -791,6 +786,7 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 	uint8_t data = 0;
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
 	FPGA_spi_stop_command();
+	FPGA_spi_flash_wait_WIP();
 	FPGA_spi_start_command(M25P80_READ_DATA_BYTES); //READ DATA BYTES
 	FPGA_spi_continue_command(0x00);				//addr 1
 	FPGA_spi_continue_command(0x00);				//addr 2
@@ -895,8 +891,6 @@ static void FPGA_spi_flash_erase(void) // clear flash memory
 {
 	FPGA_bus_stop = true;
 	HAL_Delay(1);
-	uint8_t progress_prev = 0;
-	uint8_t progress = 0;
 	LCD_showError("FPGA Flash Erasing...", false);
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
 	FPGA_spi_stop_command();
@@ -907,26 +901,6 @@ static void FPGA_spi_flash_erase(void) // clear flash memory
 	FPGA_spi_start_command(M25P80_BULK_ERASE);   //BULK FULL CHIP ERASE
 	FPGA_spi_stop_command();
 	FPGA_spi_flash_wait_WIP(); //wait write in progress
-	
-	/*for (uint32_t pos = 0; pos < FPGA_flash_size; pos += FPGA_sector_size)
-	{
-		FPGA_spi_start_command(M25P80_WRITE_ENABLE); //Write Enable
-		FPGA_spi_stop_command();
-		FPGA_spi_start_command(M25P80_SECTOR_ERASE);   //SECTOR ERASE
-		FPGA_spi_continue_command((pos >> 16) & 0xFF); //addr 1
-		FPGA_spi_continue_command((pos >> 8) & 0xFF);  //addr 2
-		FPGA_spi_continue_command(pos & 0xFF);		   //addr 3
-		FPGA_spi_stop_command();
-		FPGA_spi_flash_wait_WIP(); //wait write in progress
-		progress = (uint8_t)((float32_t)pos / (float32_t)FPGA_flash_size * 100.0f);
-		if (progress_prev != progress && ((progress - progress_prev) >= 5))
-		{
-			char ctmp[50];
-			sprintf(ctmp, "FPGA Flash Erasing... %d%%", progress);
-			LCD_showError(ctmp, false);
-			progress_prev = progress;
-		}
-	}*/
 
 	FPGA_bus_stop = false;
 	sendToDebug_strln("[OK] FPGA Flash erased");

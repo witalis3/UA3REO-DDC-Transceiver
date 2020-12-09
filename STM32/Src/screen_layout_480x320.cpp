@@ -1,4 +1,5 @@
 #include "screen_layout.h"
+#include "lcd_driver.h"
 #include "fonts.h"
 
 #if (defined(LAY_480x320))
