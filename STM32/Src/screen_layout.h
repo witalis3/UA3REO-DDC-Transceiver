@@ -128,7 +128,6 @@ extern "C" {
 		const uint16_t STATUS_ERR_OFFSET_Y;
 		const uint16_t STATUS_ERR_WIDTH;
 		const uint16_t STATUS_ERR_HEIGHT;
-		const uint16_t STATUS_ERR2_OFFSET_X;
 		const uint8_t TEXTBAR_FONT;
 		const uint16_t TEXTBAR_TEXT_X_OFFSET;
 		//FFT and waterfall
