@@ -147,7 +147,6 @@ ITCM void FPGA_fpgadata_iqclock(void)
 {
 	if (FPGA_bus_stop)
 		return;
-	uint8_t FPGA_fpgadata_out_tmp8 = 4; //RX
 	VFO *current_vfo = CurrentVFO();
 	if (current_vfo->Mode == TRX_MODE_LOOPBACK)
 		return;
@@ -155,19 +154,27 @@ ITCM void FPGA_fpgadata_iqclock(void)
 
 	//STAGE 1
 	//out
-	if (TRX_on_TX())
-		FPGA_fpgadata_out_tmp8 = 3; //TX
-
 	FPGA_setBusOutput();
-	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
-	FPGA_syncAndClockRiseFall();
-
 	if (TRX_on_TX())
+	{
+		FPGA_writePacket(3); //TX SEND IQ
+		FPGA_syncAndClockRiseFall();
 		FPGA_fpgadata_sendiq();
+	}
 	else
 	{
+		FPGA_writePacket(4); //RX GET IQ
+		FPGA_syncAndClockRiseFall();
+		
 		//2 blocks (48*2=96khz)
 		FPGA_fpgadata_getiq();
+		if (!TRX.Dual_RX)
+		{
+			//skip RX2 block
+			FPGA_setBusOutput();
+			FPGA_writePacket(4); //RX GET IQ
+			FPGA_syncAndClockRiseFall();
+		}
 		FPGA_fpgadata_getiq();
 	}
 }
@@ -492,25 +499,6 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 		{
 			FPGA_Audio_Buffer_RX2_I[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 		}
-	}
-	else
-	{	//dummy cycle, no dual rx
-		FPGA_clockRise();
-		FPGA_clockFall();
-		FPGA_clockRise();
-		FPGA_clockFall();
-		FPGA_clockRise();
-		FPGA_clockFall();
-		FPGA_clockRise();
-		FPGA_clockFall();
-		FPGA_clockRise();
-		FPGA_clockFall();
-		FPGA_clockRise();
-		FPGA_clockFall();
-		FPGA_clockRise();
-		FPGA_clockFall();
-		FPGA_clockRise();
-		FPGA_clockFall();
 	}
 
 	FPGA_Audio_RXBuffer_Index++;
