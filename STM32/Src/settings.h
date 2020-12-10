@@ -244,6 +244,7 @@ extern struct TRX_SETTINGS
 	uint32_t SPEC_End;
 	int16_t SPEC_TopDBM;
 	int16_t SPEC_BottomDBM;
+	int16_t WSPR_FREQ_OFFSET;
 	bool WSPR_BANDS_160;
 	bool WSPR_BANDS_80;
 	bool WSPR_BANDS_40;

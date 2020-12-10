@@ -305,6 +305,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.SPEC_End", (uint32_t*)&TRX.SPEC_End, SYSMENU_UINT32);
 		if(res) SD_WRITE_SETT_LINE("TRX.SPEC_TopDBM", (uint32_t*)&TRX.SPEC_TopDBM, SYSMENU_INT16);
 		if(res) SD_WRITE_SETT_LINE("TRX.SPEC_BottomDBM", (uint32_t*)&TRX.SPEC_BottomDBM, SYSMENU_INT16);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_FREQ_OFFSET", (uint32_t*)&TRX.WSPR_FREQ_OFFSET, SYSMENU_INT16);
 		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_160", (uint32_t*)&TRX.WSPR_BANDS_160, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_80", (uint32_t*)&TRX.WSPR_BANDS_80, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_40", (uint32_t*)&TRX.WSPR_BANDS_40, SYSMENU_BOOLEAN);
@@ -537,6 +538,7 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 	if (strcmp(name, "TRX.SPEC_End") == 0) TRX.SPEC_End = uintval;
 	if (strcmp(name, "TRX.SPEC_TopDBM") == 0) TRX.SPEC_TopDBM = (int16_t)intval;
 	if (strcmp(name, "TRX.SPEC_BottomDBM") == 0) TRX.SPEC_BottomDBM = (int16_t)intval;
+	if (strcmp(name, "TRX.WSPR_FREQ_OFFSET") == 0) TRX.WSPR_FREQ_OFFSET = (int16_t)intval;
 	if (strcmp(name, "TRX.WSPR_BANDS_160") == 0) TRX.WSPR_BANDS_160 = uintval;
 	if (strcmp(name, "TRX.WSPR_BANDS_80") == 0) TRX.WSPR_BANDS_80 = uintval;
 	if (strcmp(name, "TRX.WSPR_BANDS_40") == 0) TRX.WSPR_BANDS_40 = uintval;

@@ -246,6 +246,12 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
 * **Top, dBm** - Upper threshold of the graph
 * **Bottom, dBm** - Lower threshold of the graph
 
+### WSPR Beacon
+
+* **WSPR Beacon START** - Start WSPR beacon
+* **Freq offset** - Offset from center of WSPR band
+* **WSPR Band xxx** - Select bands to WSPR beacon
+
 ### Band SWR
 
 * Run SWR analizer on current band

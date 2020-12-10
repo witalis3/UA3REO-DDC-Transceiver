@@ -152,6 +152,7 @@ static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction);
 
 static void SYSMENU_HANDL_WSPR_Start(int8_t direction);
+static void SYSMENU_HANDL_WSPR_FREQ_OFFSET(int8_t direction);
 static void SYSMENU_HANDL_WSPR_BAND160(int8_t direction);
 static void SYSMENU_HANDL_WSPR_BAND80(int8_t direction);
 static void SYSMENU_HANDL_WSPR_BAND40(int8_t direction);
@@ -371,6 +372,7 @@ static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) /
 IRAM2 static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 	{
 		{"WSPR Beacon START", SYSMENU_RUN, 0, SYSMENU_HANDL_WSPR_Start},
+		{"Freq offset", SYSMENU_INT16, (uint32_t *)&TRX.WSPR_FREQ_OFFSET, SYSMENU_HANDL_WSPR_FREQ_OFFSET},
 		{"BAND 160m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_160, SYSMENU_HANDL_WSPR_BAND160},
 		{"BAND 80m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_80, SYSMENU_HANDL_WSPR_BAND80},
 		{"BAND 40m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_40, SYSMENU_HANDL_WSPR_BAND40},
@@ -2384,6 +2386,15 @@ static void SYSMENU_HANDL_WSPR_Start(int8_t direction)
 		WSPR_Start();
 		drawSystemMenu(true);
 	}
+}
+
+static void SYSMENU_HANDL_WSPR_FREQ_OFFSET(int8_t direction)
+{
+	TRX.WSPR_FREQ_OFFSET += direction;
+	if (TRX.WSPR_FREQ_OFFSET < -2000)
+		TRX.WSPR_FREQ_OFFSET = -2000;
+	if (TRX.WSPR_FREQ_OFFSET > 2000)
+		TRX.WSPR_FREQ_OFFSET = 2000;
 }
 
 static void SYSMENU_HANDL_WSPR_BAND160(int8_t direction)

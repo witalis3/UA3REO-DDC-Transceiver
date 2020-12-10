@@ -22,6 +22,9 @@ static const uint8_t WSPR2_SyncVec[162] = {
 1,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,1,1,0,0,0
 };
 
+static uint32_t WSPR_bands_freq[11] = {0};
+
+
 //Saved variables
 static uint32_t Lastfreq = 0;
 static uint_fast8_t Lastmode = 0;
@@ -40,12 +43,13 @@ bool sysmenu_wspr_opened = false;
 
 //Prototypes
 static uint8_t WSPR_GetNextBand(void);
+static uint32_t WSPR_GetFreqFromBand(uint8_t band);
 static void WSPR_Encode(void);
 static void WSPR_Encode_call(void);
 static char WSPR_chr_normf(char bc);
 static void WSPR_Encode_locator(void);
 static void WSPR_Encode_conv(void);
-static uint8_t WSPR_parity(unsigned long li);
+static uint8_t WSPR_parity(uint32_t li);
 static void WSPR_Interleave_sync(void);
 
 // start
@@ -71,6 +75,19 @@ void WSPR_Start(void)
 	TRX.TWO_SIGNAL_TUNE = false;
 	wspr_band = WSPR_GetNextBand();
 	WSPR_Encode();
+	
+	//prepare bands
+	WSPR_bands_freq[0] = 1838100 + TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[1] = 3570100 + TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[2] = 7040100 + TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[3] = 10140200 + TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[4] = 14097100 + TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[5] = 18106100 + TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[6] = 21096100 + TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[7] = 24926100 + TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[8] = 28126100 + TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[9] = 50294500 + TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[10] = 144489000 + TRX.WSPR_FREQ_OFFSET;
 	
 	// draw the GUI
 	LCDDriver_Fill(BG_COLOR);
@@ -140,12 +157,12 @@ void WSPR_DoEvents(void)
 	y += y_step;
 	
 	//Band
-	sprintf(tmp_buff, "Current band: % 2dm", wspr_band);
+	sprintf(tmp_buff, "Current band: % 2dm (%dhz)", wspr_band, WSPR_GetFreqFromBand(wspr_band));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 	
 	//Next band
-	sprintf(tmp_buff, "Next band: % 2dm", WSPR_GetNextBand());
+	sprintf(tmp_buff, "Next band: % 2dm (%dhz)", WSPR_GetNextBand(), WSPR_GetFreqFromBand(WSPR_GetNextBand()));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 	
@@ -187,6 +204,22 @@ static uint8_t WSPR_GetNextBand(void)
 	if(wspr_band >= 2 && TRX.WSPR_BANDS_160)
 		return 160;
 	return 20;
+}
+
+static uint32_t WSPR_GetFreqFromBand(uint8_t band)
+{
+	if(band == 160) return WSPR_bands_freq[0];
+	if(band == 80) return WSPR_bands_freq[1];
+	if(band == 40) return WSPR_bands_freq[2];
+	if(band == 30) return WSPR_bands_freq[3];
+	if(band == 20) return WSPR_bands_freq[4];
+	if(band == 17) return WSPR_bands_freq[5];
+	if(band == 15) return WSPR_bands_freq[6];
+	if(band == 12) return WSPR_bands_freq[7];
+	if(band == 10) return WSPR_bands_freq[8];
+	if(band == 6) return WSPR_bands_freq[9];
+	if(band == 2) return WSPR_bands_freq[10];
+	return WSPR_bands_freq[4];
 }
 
 static void WSPR_Encode(void)
@@ -267,7 +300,7 @@ static void WSPR_Encode_locator(void)
   WSPR2_encMessage[6] = t1 << 6;
 }
 
-static uint8_t WSPR_parity(unsigned long li)
+static uint8_t WSPR_parity(uint32_t li)
 {
   uint8_t po = 0;
   while (li != 0)
