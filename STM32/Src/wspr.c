@@ -183,7 +183,7 @@ void WSPR_DoEvents(void)
 	y += y_step;
 	
 	//TX parameters
-	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW, TEMP: % 2d", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward), (int16_t)TRX_RF_Temperature);
+	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW, TEMP: % 2d     ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward), (int16_t)TRX_RF_Temperature);
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 	
@@ -350,7 +350,13 @@ static void WSPR_Encode_call(void)
 static void WSPR_Encode_locator(void)
 {
 	// Min = 0 dBm, Max = 43 dBm, steps 0,3,7,10,13,17,20,23,27,30,33,37,40,43
-	const uint8_t power = 37;
+	uint8_t power = 20;
+	//from 7w out max
+	if(TRX.RF_Power >= 3) power = 23;
+	if(TRX.RF_Power >= 7) power = 27;
+	if(TRX.RF_Power >= 14) power = 30;
+	if(TRX.RF_Power >= 28) power = 33;
+	if(TRX.RF_Power >= 71) power = 37;
 	
   // coding of locator
   unsigned long m1 = 179 - 10 * (WSPR_chr_normf(TRX.LOCATOR[0]) - 10) - WSPR_chr_normf(TRX.LOCATOR[2]);

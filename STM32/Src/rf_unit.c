@@ -353,17 +353,19 @@ void RF_UNIT_ProcessSensors(void)
 		TRX_SWR = (TRX_VLT_forward + TRX_VLT_backward) / (TRX_VLT_forward - TRX_VLT_backward);
 
 		if (TRX_VLT_backward > TRX_VLT_forward)
-			TRX_SWR = 10.0f;
-		if (TRX_SWR > 10.0f)
-			TRX_SWR = 10.0f;
+			TRX_SWR = 9.9f;
+		if (TRX_SWR > 9.9f)
+			TRX_SWR = 9.9f;
 
 		TRX_PWR_Forward = (TRX_VLT_forward * TRX_VLT_forward) / 50.0f;
 		if (TRX_PWR_Forward < 0.0f)
 			TRX_PWR_Forward = 0.0f;
 		TRX_PWR_Backward = (TRX_VLT_backward * TRX_VLT_backward) / 50.0f;
 		if (TRX_PWR_Backward < 0.0f)
-	
-		TRX_PWR_Backward = 0.0f;
+			TRX_PWR_Backward = 0.0f;
+		
+		if(TRX_PWR_Forward < TRX_PWR_Backward)
+			TRX_PWR_Backward = TRX_PWR_Forward;
 	}
 	#endif
 }
