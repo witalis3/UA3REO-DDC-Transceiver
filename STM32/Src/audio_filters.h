@@ -8,7 +8,7 @@
 #include "fpga.h"
 #include "functions.h"
 
-#define IIR_FILTERS_COUNT 35													  // Total Filters In The Collection
+#define IIR_FILTERS_COUNT 41													  // Total Filters In The Collection
 #define IQ_HILBERT_TAPS 201														  // Hilbert filter order
 #define IIR_MAX_STAGES 15														  // Maximum order of IIR filters
 #define NOTCH_STAGES 1															  // order of manual Notch filter
@@ -19,6 +19,8 @@
 #define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
 #define IIR_RX1_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX2_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
+#define IIR_RX1_GAUSS_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
+#define IIR_RX2_GAUSS_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_TX_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX1_HPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX2_HPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
@@ -49,7 +51,8 @@ typedef enum // BiQuad filter type for automatic calculation
 typedef enum // type of filter in the collection
 {
 	IIR_BIQUAD_HPF,
-	IIR_BIQUAD_LPF
+	IIR_BIQUAD_LPF,
+	IIR_BIQUAD_LPF_GAUSS
 } IIR_BIQUAD_FILTER_TYPE;
 
 typedef enum // states of DC correctors for each user
@@ -87,8 +90,10 @@ extern arm_fir_instance_f32 FIR_TX_Hilbert_I;
 extern arm_fir_instance_f32 FIR_TX_Hilbert_Q;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF_I;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF_Q;
+extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_GAUSS;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX2_LPF_I;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX2_LPF_Q;
+extern arm_biquad_cascade_df2T_instance_f32 IIR_RX2_GAUSS;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_I;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_Q;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_HPF_I;

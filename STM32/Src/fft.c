@@ -526,6 +526,14 @@ ITCM void FFT_printFFT(void)
 					fft_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = mixColors(fft_output_buffer[fft_y][grid_lines_pos[grid_line_index]], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	}
 	
+	//Gauss filter center
+	if(TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+	{
+		uint16_t bw_line_center = bw_line_start + bw_line_width / 2;
+		for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
+			fft_output_buffer[fft_y][bw_line_center] = mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+	}
+	
 	//draw center line
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 		fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = mixColors(fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);

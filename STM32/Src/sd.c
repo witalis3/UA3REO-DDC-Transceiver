@@ -272,6 +272,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.CW_SelfHear", (uint32_t*)&TRX.CW_SelfHear, SYSMENU_UINT16);
 		if(res) SD_WRITE_SETT_LINE("TRX.CW_KEYER", (uint32_t*)&TRX.CW_KEYER, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.CW_KEYER_WPM", (uint32_t*)&TRX.CW_KEYER_WPM, SYSMENU_UINT16);
+		if(res) SD_WRITE_SETT_LINE("TRX.CW_GaussFilter", (uint32_t*)&TRX.CW_GaussFilter, SYSMENU_BOOLEAN);
 		//SCREEN
 		if(res) SD_WRITE_SETT_LINE("TRX.ColorThemeId", (uint32_t*)&TRX.ColorThemeId, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.LayoutThemeId", (uint32_t*)&TRX.LayoutThemeId, SYSMENU_UINT8);
@@ -469,6 +470,7 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 	if (strcmp(name, "TRX.CW_SelfHear") == 0) TRX.CW_SelfHear = (uint16_t)uintval;
 	if (strcmp(name, "TRX.CW_KEYER") == 0) TRX.CW_KEYER = uintval;
 	if (strcmp(name, "TRX.CW_KEYER_WPM") == 0) TRX.CW_KEYER_WPM = (uint16_t)uintval;
+	if (strcmp(name, "TRX.CW_GaussFilter") == 0) TRX.CW_GaussFilter = uintval;
 	//SCREEN
 	if (strcmp(name, "TRX.ColorThemeId") == 0) TRX.ColorThemeId = (uint8_t)uintval;
 	if (strcmp(name, "TRX.LayoutThemeId") == 0) TRX.LayoutThemeId = (uint8_t)uintval;

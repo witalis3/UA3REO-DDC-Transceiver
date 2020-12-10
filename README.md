@@ -164,6 +164,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
 * **CW Self Hear** - Self-control CW (key press is heard)
 * **CW Keyer** - Automatic Key
 * **CW Keyer WPM** - Key Speed, WPM
+* **CW Gauss filter** - Gauss responce LPF filter
 * **CW Decoder** - Software CW receive decoder
 
 ### SCREEN Settings

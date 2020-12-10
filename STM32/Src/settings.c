@@ -177,7 +177,7 @@ void LoadSettings(bool clear)
 		TRX.InputType_MIC = true; // type of input to transfer
 		TRX.InputType_LINE = false;
 		TRX.InputType_USB = false;
-		TRX.CW_LPF_Filter = 700;					// default value of CW filter width
+		TRX.CW_LPF_Filter = 1000;					// default value of CW filter width
 		TRX.CW_HPF_Filter = 0;						// default value of CW filter width
 		TRX.SSB_LPF_Filter = 2700;					// default value of SSB filter width
 		TRX.SSB_HPF_Filter = 300;					// default value of SSB filter width
@@ -248,6 +248,7 @@ void LoadSettings(bool clear)
 		TRX.LayoutThemeId = 0;		//Selected Layout theme
 		TRX.Transverter_Enabled = false;	//Enable transverter mode
 		TRX.Transverter_Offset_Mhz = 120;	//Offset from VFO
+		TRX.CW_GaussFilter = true;	//Gauss responce LPF filter
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

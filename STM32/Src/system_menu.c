@@ -66,6 +66,7 @@ static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
+static void SYSMENU_HANDL_CW_GaussFilter(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
@@ -239,6 +240,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 		{"CW Self Hear", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
 		{"CW Keyer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
 		{"CW Keyer WPM", SYSMENU_UINT8, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
+		{"CW Gauss filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_GaussFilter, SYSMENU_HANDL_CW_GaussFilter},
 		{"CW Decoder", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CW_Decoder},
 };
 static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
@@ -1013,12 +1015,12 @@ static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 {
 	if (direction > 0)
 	{
-		if (TRX.CW_LPF_Filter == 300)
-			TRX.CW_LPF_Filter = 500;
-		else if (TRX.CW_LPF_Filter == 500)
+		if (TRX.CW_LPF_Filter == 500)
 			TRX.CW_LPF_Filter = 700;
 		else if (TRX.CW_LPF_Filter == 700)
 			TRX.CW_LPF_Filter = 1000;
+		else if (TRX.CW_LPF_Filter == 1000)
+			TRX.CW_LPF_Filter = 1400;
 		else if (TRX.CW_LPF_Filter == 1400)
 			TRX.CW_LPF_Filter = 1600;
 		else if (TRX.CW_LPF_Filter == 1600)
@@ -1028,9 +1030,7 @@ static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 	}
 	else
 	{
-		if (TRX.CW_LPF_Filter == 500)
-			TRX.CW_LPF_Filter = 300;
-		else if (TRX.CW_LPF_Filter == 700)
+		if (TRX.CW_LPF_Filter == 700)
 			TRX.CW_LPF_Filter = 500;
 		else if (TRX.CW_LPF_Filter == 1000)
 			TRX.CW_LPF_Filter = 700;
@@ -1294,6 +1294,15 @@ static void SYSMENU_HANDL_CW_Keyer(int8_t direction)
 		TRX.CW_KEYER = true;
 	if (direction < 0)
 		TRX.CW_KEYER = false;
+}
+
+static void SYSMENU_HANDL_CW_GaussFilter(int8_t direction)
+{
+	if (direction > 0)
+		TRX.CW_GaussFilter = true;
+	if (direction < 0)
+		TRX.CW_GaussFilter = false;
+	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction)

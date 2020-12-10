@@ -47,6 +47,7 @@ static float32_t deemph_a = 0.0f;	//deemphasis coeff
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Hilbert filter for phase shift of signals
 static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Low-pass filter for I and Q
 static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // LPF filter for I
+static void doRX_GAUSS_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // Gauss filter for I
 static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // HPF filter for I
 static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // Digital Noise Reduction
 static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode);		   // automatic gain control
@@ -152,6 +153,7 @@ ITCM void processRxAudio(void)
 		arm_sub_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1); // difference of I and Q - LSB
 		doRX_HPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_GAUSS_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
@@ -176,6 +178,7 @@ ITCM void processRxAudio(void)
 		arm_add_f32(FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_Q_tmp, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1); // sum of I and Q - USB
 		doRX_HPF_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_LPF_I(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_GAUSS_I(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NOTCH(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_NoiseBlanker(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
@@ -245,6 +248,7 @@ ITCM void processRxAudio(void)
 			arm_sub_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // difference of I and Q - LSB
 			doRX_HPF_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_GAUSS_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
@@ -262,6 +266,7 @@ ITCM void processRxAudio(void)
 			arm_add_f32(FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_Q_tmp, FPGA_Audio_Buffer_RX2_I_tmp, decimated_block_size_rx2); // sum of I and Q - USB
 			doRX_HPF_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_LPF_I(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_GAUSS_I(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NOTCH(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_NoiseBlanker(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
@@ -825,6 +830,27 @@ ITCM static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		if (SecondaryVFO()->LPF_Filter_Width > 0)
 		{
 			arm_biquad_cascade_df2T_f32(&IIR_RX2_LPF_I, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, size);
+		}
+	}
+}
+
+// Gauss filter for I
+ITCM static void doRX_GAUSS_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+{
+	if(!TRX.CW_GaussFilter)
+		return;
+	if (rx_id == AUDIO_RX1)
+	{
+		if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		{
+			arm_biquad_cascade_df2T_f32(&IIR_RX1_GAUSS, FPGA_Audio_Buffer_RX1_I_tmp, FPGA_Audio_Buffer_RX1_I_tmp, size);
+		}
+	}
+	else
+	{
+		if (SecondaryVFO()->Mode == TRX_MODE_CW_L || SecondaryVFO()->Mode == TRX_MODE_CW_U)
+		{
+			arm_biquad_cascade_df2T_f32(&IIR_RX2_GAUSS, FPGA_Audio_Buffer_RX2_I_tmp, FPGA_Audio_Buffer_RX2_I_tmp, size);
 		}
 	}
 }
