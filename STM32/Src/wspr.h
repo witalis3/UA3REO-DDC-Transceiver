@@ -19,6 +19,7 @@ extern bool sysmenu_wspr_opened;
 extern void WSPR_Start(void);                 //launch
 extern void WSPR_Stop(void);									//stop session
 extern void WSPR_DoEvents(void);                  //drawing
+extern void WSPR_DoFastEvents(void);					//transmitting
 extern void WSPR_EncRotate(int8_t direction); //events per encoder tick
 
 #endif

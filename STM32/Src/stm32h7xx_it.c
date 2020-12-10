@@ -106,6 +106,7 @@
 #include "decoder.h"
 #include "swr_analyzer.h"
 #include "sd.h"
+#include "wspr.h"
 
 static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
@@ -119,6 +120,7 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern DMA2D_HandleTypeDef hdma2d;
 extern DMA_HandleTypeDef hdma_spi3_tx;
+extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
@@ -367,6 +369,21 @@ void DMA1_Stream5_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM2 global interrupt.
+  */
+void TIM2_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM2_IRQn 0 */
+	CPULOAD_WakeUp();
+  /* USER CODE END TIM2_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim2);
+  /* USER CODE BEGIN TIM2_IRQn 1 */
+	if (sysmenu_wspr_opened)
+		WSPR_DoFastEvents();
+  /* USER CODE END TIM2_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM3 global interrupt.
   */
 void TIM3_IRQHandler(void)
@@ -456,7 +473,7 @@ void TIM5_IRQHandler(void)
   //in the spectrum analyzer mode, we raise its processing to priority, performing together with the audio processor
   if (sysmenu_spectrum_opened)
     LCD_doEvents();
-  //EndProfilerUs(true);
+	//EndProfilerUs(true);
   /* USER CODE END TIM5_IRQn 1 */
 }
 

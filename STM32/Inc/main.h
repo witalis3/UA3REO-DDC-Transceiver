@@ -50,6 +50,7 @@ extern RTC_HandleTypeDef hrtc;
 
 extern SPI_HandleTypeDef hspi2;
 
+extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;

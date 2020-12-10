@@ -23,8 +23,8 @@ static const uint8_t WSPR2_SyncVec[162] = {
 };
 
 static uint32_t WSPR_bands_freq[11] = {0};
-
-
+static uint8_t WSPR2_count = 0;
+static uint8_t WSPR2_BeginDelay = 0;
 //Saved variables
 static uint32_t Lastfreq = 0;
 static uint_fast8_t Lastmode = 0;
@@ -51,6 +51,8 @@ static void WSPR_Encode_locator(void);
 static void WSPR_Encode_conv(void);
 static uint8_t WSPR_parity(uint32_t li);
 static void WSPR_Interleave_sync(void);
+static void WSPR_StartTransmit(void);
+static void WSPR_StopTransmit(void);
 
 // start
 void WSPR_Start(void)
@@ -73,6 +75,7 @@ void WSPR_Start(void)
 	//prepare trx
 	TRX_Mute = true;
 	TRX.TWO_SIGNAL_TUNE = false;
+	TRX.BandMapEnabled = false;
 	wspr_band = WSPR_GetNextBand();
 	WSPR_Encode();
 	
@@ -100,6 +103,8 @@ void WSPR_Start(void)
 // stop
 void WSPR_Stop(void)
 {
+	WSPR_StopTransmit();
+	
 	TRX_setFrequency(Lastfreq, CurrentVFO());
 	TRX_setMode(Lastmode, CurrentVFO());
 	TRX.AutoGain = LastAutoGain;
@@ -122,12 +127,22 @@ void WSPR_DoEvents(void)
 	
 	uint16_t y = 50;
 	const uint16_t y_step = 20;
-	
-	//show time
 	uint32_t Time = RTC->TR;
 	uint8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
 	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
 	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+	static uint8_t OLD_Seconds = 0;
+	
+	//Start timeslot
+	if (bitRead(Minutes, 0) == 0 && Seconds == 0 && OLD_Seconds != Seconds)
+  { 
+		wspr_band = WSPR_GetNextBand();
+		TRX_setFrequency(WSPR_GetFreqFromBand(wspr_band), CurrentVFO());
+    WSPR_StartTransmit();
+  }
+	OLD_Seconds = Seconds;
+	
+	//show time
 	sprintf(tmp_buff, "Time: %02d:%02d:%02d", Hours, Minutes, Seconds);
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
@@ -167,6 +182,52 @@ void WSPR_DoEvents(void)
 	y += y_step;
 	
 	LCD_busy = false;
+}
+
+//Transmit
+void WSPR_DoFastEvents(void)
+{
+	if (WSPR2_BeginDelay < 1) { // Begin delay - actually 0.682mSec
+		TRX_setFrequency(WSPR_GetFreqFromBand(wspr_band), CurrentVFO());
+		WSPR2_BeginDelay++;
+	}
+	else
+	{
+		// Begin 162 WSPR symbol transmission
+		if (WSPR2_count < 162)
+		{
+			TRX_setFrequency(WSPR_GetFreqFromBand(wspr_band) + WSPR2_OffsetFreq[WSPR2_symTable[WSPR2_count]], CurrentVFO());
+			WSPR2_count++;             //Increments the interrupt counter
+		}
+		else
+		{
+			WSPR_StopTransmit();
+		}
+	}
+}
+
+static void WSPR_StartTransmit(void)
+{
+  // Start WSPR transmit process
+	TRX_Tune = 1;
+	TRX_ptt_hard = TRX_Tune;
+	TRX_Restart_Mode();
+	wspr_status = WSPR_TRANSMIT;
+	WSPR2_BeginDelay = 0;
+	WSPR2_count = 0;
+	HAL_TIM_Base_Start_IT(&htim2);
+}
+
+static void WSPR_StopTransmit(void)
+{
+  // Stop WSPR transmit process
+	TRX_Tune = 0;
+	TRX_ptt_hard = TRX_Tune;
+	TRX_Restart_Mode();
+	wspr_status = WSPR_WAIT;
+	WSPR2_BeginDelay = 0;
+	WSPR2_count = 0;
+	HAL_TIM_Base_Stop_IT(&htim2);
 }
 
 // events to the encoder
