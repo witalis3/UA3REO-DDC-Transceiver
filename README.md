@@ -170,6 +170,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
 ### SCREEN Settings
 
 * **FFT Zoom** - FFT spectrum zooming (x1 - 96kHz, x2 - 48kHz, x4 - 24kHz, x8 - 12kHz, x16 - 6kHz)
+* **FFT Zoom CW** - FFT spectrum zooming for CW Mode
 * **Color Theme** - Select colors theme (0 - black, 1 - white)
 * **Layout Theme** - Select interface theme (0 - default)
 * **FFT Speed** - FFT and waterfall speed

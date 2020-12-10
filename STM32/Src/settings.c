@@ -169,8 +169,10 @@ void LoadSettings(bool clear)
 		TRX.RF_Filters = true;	  // LPF / HPF / BPF
 		#ifdef LAY_800x480
 		TRX.FFT_Zoom = 1;		  // approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 8;		// zoomfft for cw mode
 		#else
 		TRX.FFT_Zoom = 2;		  // approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 16;		// zoomfft for cw mode
 		#endif
 		TRX.AutoGain = false;	  // auto-control preamp and attenuator
 		TRX.CWDecoder = false;	  // automatic telegraph decoder

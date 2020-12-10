@@ -278,6 +278,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.LayoutThemeId", (uint32_t*)&TRX.LayoutThemeId, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.FFT_Enabled", (uint32_t*)&TRX.FFT_Enabled, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.FFT_Zoom", (uint32_t*)&TRX.FFT_Zoom, SYSMENU_UINT8);
+		if(res) SD_WRITE_SETT_LINE("TRX.FFT_ZoomCW", (uint32_t*)&TRX.FFT_ZoomCW, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.FFT_Speed", (uint32_t*)&TRX.FFT_Speed, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.FFT_Averaging", (uint32_t*)&TRX.FFT_Averaging, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_LINE("TRX.FFT_Window", (uint32_t*)&TRX.FFT_Window, SYSMENU_UINT8);
@@ -476,6 +477,7 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 	if (strcmp(name, "TRX.LayoutThemeId") == 0) TRX.LayoutThemeId = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Enabled") == 0) TRX.FFT_Enabled = uintval;
 	if (strcmp(name, "TRX.FFT_Zoom") == 0) TRX.FFT_Zoom = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_ZoomCW") == 0) TRX.FFT_ZoomCW = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Speed") == 0) TRX.FFT_Speed = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Averaging") == 0) TRX.FFT_Averaging = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Window") == 0) TRX.FFT_Window = (uint8_t)uintval;

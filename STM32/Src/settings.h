@@ -217,6 +217,7 @@ extern struct TRX_SETTINGS
 	uint8_t LayoutThemeId;
 	bool FFT_Enabled;
 	uint8_t FFT_Zoom;
+	uint8_t FFT_ZoomCW;
 	uint8_t FFT_Speed;
 	uint8_t FFT_Averaging;
 	uint8_t FFT_Window;

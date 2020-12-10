@@ -712,15 +712,18 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_NOTCH_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_NOTCH_Y_OFFSET, COLOR->STATUS_LABEL_NOTCH, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	//FFT BW
-	if (TRX.FFT_Zoom == 1)
+	uint8_t fft_zoom = TRX.FFT_Zoom;
+	if(CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		fft_zoom = TRX.FFT_ZoomCW;
+	if (fft_zoom == 1)
 		sprintf(buff, "FFT:96kHz");
-	else if (TRX.FFT_Zoom == 2)
+	else if (fft_zoom == 2)
 		sprintf(buff, "FFT:48kHz");
-	else if (TRX.FFT_Zoom == 4)
+	else if (fft_zoom == 4)
 		sprintf(buff, "FFT:24kHz");
-	else if (TRX.FFT_Zoom == 8)
+	else if (fft_zoom == 8)
 		sprintf(buff, "FFT:12kHz");
-	else if (TRX.FFT_Zoom == 16)
+	else if (fft_zoom == 16)
 		sprintf(buff, "FFT:6kHz ");
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	

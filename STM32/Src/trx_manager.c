@@ -306,6 +306,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 
 void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 {
+	uint_fast8_t old_mode = vfo->Mode;
 	vfo->Mode = _mode;
 	if (vfo->Mode == TRX_MODE_LOOPBACK)
 		TRX_Start_TXRX();
@@ -338,6 +339,16 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		vfo->HPF_Filter_Width = 0;
 		break;
 	}
+	
+	//FFT Zoom change
+	if(TRX.FFT_Zoom != TRX.FFT_ZoomCW)
+	{
+		if((old_mode == TRX_MODE_CW_L || old_mode == TRX_MODE_CW_U) && (_mode != TRX_MODE_CW_L && _mode != TRX_MODE_CW_U))
+			FFT_Init();
+		if((old_mode != TRX_MODE_CW_L && old_mode != TRX_MODE_CW_U) && (_mode == TRX_MODE_CW_L || _mode == TRX_MODE_CW_U))
+			FFT_Init();
+	}
+	
 	NeedReinitAudioFilters = true;
 	NeedSaveSettings = true;
 	LCD_UpdateQuery.StatusInfoBar = true;

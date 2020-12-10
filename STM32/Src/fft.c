@@ -63,6 +63,7 @@ static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
 static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
 static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
+static uint8_t fft_zoom = 1;
 static uint_fast16_t zoomed_width = 0;
 //Коэффициенты для ZoomFFT lowpass filtering / дециматора
 static arm_biquad_casd_df1_inst_f32 IIR_biquad_Zoom_FFT_I =
@@ -169,26 +170,29 @@ void FFT_Init(void)
 {
 	FFT_fill_color_palette();
 	//ZoomFFT
-	if (TRX.FFT_Zoom > 1)
+	fft_zoom = TRX.FFT_Zoom;
+	if(CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		fft_zoom = TRX.FFT_ZoomCW;
+	if (fft_zoom > 1)
 	{
-		IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[TRX.FFT_Zoom];
-		IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[TRX.FFT_Zoom];
+		IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[fft_zoom];
+		IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[fft_zoom];
 		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, 16 * 4);
 		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, 16 * 4);
 		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_I,
-								  FirZoomFFTDecimate[TRX.FFT_Zoom].numTaps,
-								  TRX.FFT_Zoom, // Decimation factor
-								  FirZoomFFTDecimate[TRX.FFT_Zoom].pCoeffs,
+								  FirZoomFFTDecimate[fft_zoom].numTaps,
+								  fft_zoom, // Decimation factor
+								  FirZoomFFTDecimate[fft_zoom].pCoeffs,
 								  decimZoomFFTIState, // Filter state variables
 								  FFT_SIZE);
 
 		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_Q,
-								  FirZoomFFTDecimate[TRX.FFT_Zoom].numTaps,
-								  TRX.FFT_Zoom, // Decimation factor
-								  FirZoomFFTDecimate[TRX.FFT_Zoom].pCoeffs,
+								  FirZoomFFTDecimate[fft_zoom].numTaps,
+								  fft_zoom, // Decimation factor
+								  FirZoomFFTDecimate[fft_zoom].pCoeffs,
 								  decimZoomFFTQState, // Filter state variables
 								  FFT_SIZE);
-		zoomed_width = FFT_SIZE / TRX.FFT_Zoom;
+		zoomed_width = FFT_SIZE / fft_zoom;
 	}
 	//windowing
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
@@ -241,7 +245,7 @@ ITCM void FFT_doFFT(void)
 	}
 
 	//ZoomFFT
-	if (TRX.FFT_Zoom > 1)
+	if (fft_zoom > 1)
 	{
 		//Biquad LPF фильтр
 		arm_biquad_cascade_df1_f32(&IIR_biquad_Zoom_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
@@ -409,7 +413,7 @@ ITCM void FFT_printFFT(void)
 			int32_t pos = -1;
 			if(TRX.FFT_Grid > 0)
 			{
-				if(TRX.FFT_Zoom == 1)
+				if(fft_zoom == 1)
 					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 10000 * 10000) + ((i - 6) * 10000));
 				else
 					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 5000 * 5000) + ((i - 6) * 5000));
@@ -461,7 +465,7 @@ ITCM void FFT_printFFT(void)
 	case TRX_MODE_LSB:
 	case TRX_MODE_CW_L:
 	case TRX_MODE_DIGI_L:
-		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
+		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * fft_zoom);
 		if (bw_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
 			bw_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - bw_line_width;
@@ -469,14 +473,14 @@ ITCM void FFT_printFFT(void)
 	case TRX_MODE_USB:
 	case TRX_MODE_CW_U:
 	case TRX_MODE_DIGI_U:
-		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom);
+		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * fft_zoom);
 		if (bw_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
 			bw_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2;
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
-		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * TRX.FFT_Zoom * 2);
+		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * fft_zoom * 2);
 		if (bw_line_width > LAYOUT->FFT_PRINT_SIZE)
 			bw_line_width = LAYOUT->FFT_PRINT_SIZE;
 		bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_line_width / 2);
@@ -629,7 +633,7 @@ ITCM void FFT_printWaterfallDMA(void)
 	#endif
 	{
 		// calculate offset
-		int32_t freq_diff = (int32_t)(((float32_t)((int32_t)currentFFTFreq - (int32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)TRX.FFT_Zoom);
+		int32_t freq_diff = (int32_t)(((float32_t)((int32_t)currentFFTFreq - (int32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom);
 		int32_t margin_left = 0;
 		if (freq_diff < 0)
 			margin_left = -freq_diff;
@@ -710,7 +714,7 @@ ITCM static void FFT_move(int32_t _freq_diff)
 	float32_t old_x_true = 0.0f;
 	int32_t old_x_l = 0;
 	int32_t old_x_r = 0;
-	float32_t freq_diff = (_freq_diff / FFT_HZ_IN_PIXEL) * TRX.FFT_Zoom;
+	float32_t freq_diff = (_freq_diff / FFT_HZ_IN_PIXEL) * fft_zoom;
 	float32_t old_x_part_r = fmodf(freq_diff, 1.0f);
 	float32_t old_x_part_l = 1.0f - old_x_part_r;
 	if(freq_diff < 0.0f)
@@ -1004,7 +1008,7 @@ void FFT_Reset(void) // clear the FFT
 
 ITCM static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 {
-	int32_t pos = (int32_t)((float32_t)LAYOUT->FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO()->Freq) / hz_in_pixel * (float32_t)TRX.FFT_Zoom);
+	int32_t pos = (int32_t)((float32_t)LAYOUT->FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO()->Freq) / hz_in_pixel * (float32_t)fft_zoom);
 	if (pos < 0 || pos >= LAYOUT->FFT_PRINT_SIZE)
 		return -1;
 	return pos;
@@ -1012,7 +1016,7 @@ ITCM static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 
 uint32_t getFreqOnFFTPosition(uint16_t position)
 {
-	return (uint32_t)((int32_t)CurrentVFO()->Freq + (int32_t)(-((float32_t)LAYOUT->FFT_PRINT_SIZE * hz_in_pixel / 2) + (float32_t)position * (hz_in_pixel / (float32_t)TRX.FFT_Zoom)));
+	return (uint32_t)((int32_t)CurrentVFO()->Freq + (int32_t)(-((float32_t)LAYOUT->FFT_PRINT_SIZE * hz_in_pixel / 2) + (float32_t)position * (hz_in_pixel / (float32_t)fft_zoom)));
 }
 
 ITCM static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b)
