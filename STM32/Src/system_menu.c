@@ -103,12 +103,6 @@ static void SYSMENU_HANDL_SD_ImportSettings(int8_t direction);
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
 
-static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
-static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
-static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
-static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction);
-static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction);
-
 static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction);
@@ -150,6 +144,25 @@ static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction);	//Tisho
 static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction);	//Tisho
 static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction);	//Tisho
 
+static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction);
+
+static void SYSMENU_HANDL_WSPR_Start(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND160(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND80(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND40(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND30(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND20(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND17(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND15(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND12(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND10(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND6(int8_t direction);
+static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction);
+
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
@@ -164,6 +177,7 @@ static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction);
 static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
+static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction);		//Tisho
 
 IRAM2 static struct sysmenu_item_handler sysmenu_handlers[] =
@@ -298,16 +312,6 @@ IRAM2 static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 };
 static uint8_t sysmenu_sd_item_count = sizeof(sysmenu_sd_handlers) / sizeof(sysmenu_sd_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
-	{
-		{"Spectrum START", SYSMENU_RUN, 0, SYSMENU_HANDL_SPECTRUM_Start},
-		{"Begin, kHz", SYSMENU_UINT32, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
-		{"End, kHz", SYSMENU_UINT32, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
-		{"Top, dBm", SYSMENU_INT16, (uint32_t *)&TRX.SPEC_TopDBM, SYSMENU_HANDL_SPECTRUM_TopDBM},
-		{"Bottom, dBm", SYSMENU_INT16, (uint32_t *)&TRX.SPEC_BottomDBM, SYSMENU_HANDL_SPECTRUM_BottomDBM},
-};
-static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
-
 IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 	{
 		{"Encoder invert", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_INVERT, SYSMENU_HANDL_CALIB_ENCODER_INVERT},
@@ -353,6 +357,33 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 };
 static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 
+IRAM2 static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
+	{
+		{"Spectrum START", SYSMENU_RUN, 0, SYSMENU_HANDL_SPECTRUM_Start},
+		{"Begin, kHz", SYSMENU_UINT32, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
+		{"End, kHz", SYSMENU_UINT32, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
+		{"Top, dBm", SYSMENU_INT16, (uint32_t *)&TRX.SPEC_TopDBM, SYSMENU_HANDL_SPECTRUM_TopDBM},
+		{"Bottom, dBm", SYSMENU_INT16, (uint32_t *)&TRX.SPEC_BottomDBM, SYSMENU_HANDL_SPECTRUM_BottomDBM},
+};
+static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
+
+IRAM2 static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
+	{
+		{"WSPR Beacon START", SYSMENU_RUN, 0, SYSMENU_HANDL_WSPR_Start},
+		{"BAND 160m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_160, SYSMENU_HANDL_WSPR_BAND160},
+		{"BAND 80m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_80, SYSMENU_HANDL_WSPR_BAND80},
+		{"BAND 40m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_40, SYSMENU_HANDL_WSPR_BAND40},
+		{"BAND 30m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_30, SYSMENU_HANDL_WSPR_BAND30},
+		{"BAND 20m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_20, SYSMENU_HANDL_WSPR_BAND20},
+		{"BAND 17m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_17, SYSMENU_HANDL_WSPR_BAND17},
+		{"BAND 15m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_15, SYSMENU_HANDL_WSPR_BAND15},
+		{"BAND 12m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_12, SYSMENU_HANDL_WSPR_BAND12},
+		{"BAND 10m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_10, SYSMENU_HANDL_WSPR_BAND10},
+		{"BAND 6m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_6, SYSMENU_HANDL_WSPR_BAND6},
+		{"BAND 2m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_2, SYSMENU_HANDL_WSPR_BAND2},
+};
+static uint8_t sysmenu_wspr_item_count = sizeof(sysmenu_wspr_handlers) / sizeof(sysmenu_wspr_handlers[0]);
+
 IRAM2 static struct sysmenu_item_handler sysmenu_services_handlers[] =
 {
 	{"Band SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_BAND_START},
@@ -360,6 +391,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_services_handlers[] =
 	{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
 	{"RDA Statistics", SYSMENU_RUN, 0, SYSMENU_HANDL_RDA_STATS},
 	{"Propagination", SYSMENU_RUN, 0, SYSMENU_HANDL_PROPAGINATION},
+	{"WSPR Beacon", SYSMENU_MENU, 0, SYSMENU_HANDL_WSPRMENU},
 	{"SWR Tandem Match Contr.", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl},		//Tisho
 };
 static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
@@ -2327,6 +2359,109 @@ static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction)
 		TRX.SPEC_BottomDBM = 40;
 	if (TRX.SPEC_BottomDBM >= TRX.SPEC_TopDBM)
 		TRX.SPEC_BottomDBM = TRX.SPEC_TopDBM - 1;
+}
+
+//WSPR Beacon
+static void SYSMENU_HANDL_WSPRMENU(int8_t direction)
+{
+	sysmenu_handlers_selected = &sysmenu_wspr_handlers[0];
+	sysmenu_item_count_selected = &sysmenu_wspr_item_count;
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_WSPR_Start(int8_t direction)
+{
+	
+}
+
+static void SYSMENU_HANDL_WSPR_BAND160(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_160 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_160 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND80(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_80 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_80 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND40(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_40 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_40 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND30(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_30 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_30 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND20(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_20 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_20 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND17(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_17 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_17 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND15(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_15 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_15 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND12(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_12 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_12 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND10(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_10 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_10 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND6(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_6 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_6 = false;
+}
+
+static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WSPR_BANDS_2 = true;
+	if (direction < 0)
+		TRX.WSPR_BANDS_2 = false;
 }
 
 //SWR BAND ANALYZER
