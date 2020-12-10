@@ -59,7 +59,7 @@
    version="18.1"
    enabled="1"
    autoexport="1">
-  <parameter name="apr" value="22" />
+  <parameter name="apr" value="32" />
   <parameter name="aprf" value="32" />
   <parameter name="apri" value="22" />
   <parameter name="aprp" value="16" />

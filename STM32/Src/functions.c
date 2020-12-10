@@ -190,6 +190,16 @@ void sendToDebug_float32(float32_t data, bool _inline)
 	sendToDebug_str(tmp);
 }
 
+void sendToDebug_float64(float64_t data, bool _inline)
+{
+	char tmp[50] = ""; //-V808
+	if (_inline)
+		sprintf(tmp, "%f", (double)data);
+	else
+		sprintf(tmp, "%f\n", (double)data);
+	sendToDebug_str(tmp);
+}
+
 uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
 {
 	if (freq < 0)
@@ -212,11 +222,11 @@ uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the
 		TRX_RX1_IQ_swap = inverted;
 	if (rx_num == 2)
 		TRX_RX2_IQ_swap = inverted;
-	double res = round(((double)_freq / ADC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits;
+	float64_t res = round(((float64_t)_freq / (float64_t)ADC_CLOCK) * (float64_t)4294967296); //freq in hz/oscil in hz*2^bits (32 now);
 	return (uint32_t)res;
 }
 
-uint32_t getTXPhraseFromFrequency(int32_t freq) // calculate the frequency from the phrase for FPGA (TX)
+uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency from the phrase for FPGA (TX)
 {
 	if (freq < 0)
 		return 0;
@@ -247,7 +257,7 @@ uint32_t getTXPhraseFromFrequency(int32_t freq) // calculate the frequency from 
 	}
 	TRX_TX_IQ_swap = inverted;
 
-	double res = round(((double)_freq / DAC_CLOCK) * 4194304); //freq in hz/oscil in hz*2^bits = (freq/48000000)*4194304;
+	float64_t res = round((float64_t)_freq / (float64_t)DAC_CLOCK * (float64_t)4294967296); //freq in hz/oscil in hz*2^NCO phase bits (32 now)
 	return (uint32_t)res;
 }
 

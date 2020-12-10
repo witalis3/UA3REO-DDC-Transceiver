@@ -10,8 +10,8 @@
 //Private variables
 static char tmp_buff[64] = {0};
 static WSPRState wspr_status = WSPR_WAIT;
-static uint8_t wspr_band = 30;
-static float32_t WSPR2_OffsetFreq[4] = {0, 1.4648f, 2.9296f, 4.3944f};
+static uint8_t wspr_band = 160;
+static float64_t WSPR2_OffsetFreq[4] = {0, 1.4648f, 2.9296f, 4.3944f};
 static uint8_t WSPR2_encMessage[11];
 static uint8_t WSPR2_symTable[170];             // symbol table 162
 static uint8_t WSPR2_symTableTemp[170];            // symbol table temp
@@ -22,7 +22,7 @@ static const uint8_t WSPR2_SyncVec[162] = {
 1,1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,1,1,0,0,0
 };
 
-static uint32_t WSPR_bands_freq[11] = {0};
+static float64_t WSPR_bands_freq[11] = {0};
 static uint8_t WSPR2_count = 0;
 static uint8_t WSPR2_BeginDelay = 0;
 //Saved variables
@@ -43,7 +43,7 @@ bool sysmenu_wspr_opened = false;
 
 //Prototypes
 static uint8_t WSPR_GetNextBand(void);
-static uint32_t WSPR_GetFreqFromBand(uint8_t band);
+static float64_t WSPR_GetFreqFromBand(uint8_t band);
 static void WSPR_Encode(void);
 static void WSPR_Encode_call(void);
 static char WSPR_chr_normf(char bc);
@@ -76,21 +76,22 @@ void WSPR_Start(void)
 	TRX_Mute = true;
 	TRX.TWO_SIGNAL_TUNE = false;
 	TRX.BandMapEnabled = false;
+	TRX_setMode(TRX_MODE_CW_U, CurrentVFO());
 	wspr_band = WSPR_GetNextBand();
 	WSPR_Encode();
 	
 	//prepare bands
-	WSPR_bands_freq[0] = 1838100 + TRX.WSPR_FREQ_OFFSET;
-  WSPR_bands_freq[1] = 3570100 + TRX.WSPR_FREQ_OFFSET;
-  WSPR_bands_freq[2] = 7040100 + TRX.WSPR_FREQ_OFFSET;
-  WSPR_bands_freq[3] = 10140200 + TRX.WSPR_FREQ_OFFSET;
-  WSPR_bands_freq[4] = 14097100 + TRX.WSPR_FREQ_OFFSET;
-  WSPR_bands_freq[5] = 18106100 + TRX.WSPR_FREQ_OFFSET;
-  WSPR_bands_freq[6] = 21096100 + TRX.WSPR_FREQ_OFFSET;
-  WSPR_bands_freq[7] = 24926100 + TRX.WSPR_FREQ_OFFSET;
-  WSPR_bands_freq[8] = 28126100 + TRX.WSPR_FREQ_OFFSET;
-  WSPR_bands_freq[9] = 50294500 + TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[10] = 144489000 + TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[0] = 1838100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[1] = 3570100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[2] = 7040100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[3] = 10140200.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[4] = 14097100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[5] = 18106100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[6] = 21096100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[7] = 24926100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[8] = 28126100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+  WSPR_bands_freq[9] = 50294500.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[10] = 144489000.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
 	
 	// draw the GUI
 	LCDDriver_Fill(BG_COLOR);
@@ -137,7 +138,7 @@ void WSPR_DoEvents(void)
 	if (bitRead(Minutes, 0) == 0 && Seconds == 0 && OLD_Seconds != Seconds)
   { 
 		wspr_band = WSPR_GetNextBand();
-		TRX_setFrequency(WSPR_GetFreqFromBand(wspr_band), CurrentVFO());
+		TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band), CurrentVFO());
     WSPR_StartTransmit();
   }
 	OLD_Seconds = Seconds;
@@ -172,12 +173,12 @@ void WSPR_DoEvents(void)
 	y += y_step;
 	
 	//Band
-	sprintf(tmp_buff, "Current band: % 2dm (%dhz)", wspr_band, WSPR_GetFreqFromBand(wspr_band));
+	sprintf(tmp_buff, "Current band: % 2dm (%dhz)", wspr_band, (uint32_t)WSPR_GetFreqFromBand(wspr_band));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 	
 	//Next band
-	sprintf(tmp_buff, "Next band: % 2dm (%dhz)", WSPR_GetNextBand(), WSPR_GetFreqFromBand(WSPR_GetNextBand()));
+	sprintf(tmp_buff, "Next band: % 2dm (%dhz)", WSPR_GetNextBand(), (uint32_t)WSPR_GetFreqFromBand(WSPR_GetNextBand()));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 	
@@ -188,7 +189,7 @@ void WSPR_DoEvents(void)
 void WSPR_DoFastEvents(void)
 {
 	if (WSPR2_BeginDelay < 1) { // Begin delay - actually 0.682mSec
-		TRX_setFrequency(WSPR_GetFreqFromBand(wspr_band), CurrentVFO());
+		TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band), CurrentVFO());
 		WSPR2_BeginDelay++;
 	}
 	else
@@ -196,7 +197,7 @@ void WSPR_DoFastEvents(void)
 		// Begin 162 WSPR symbol transmission
 		if (WSPR2_count < 162)
 		{
-			TRX_setFrequency(WSPR_GetFreqFromBand(wspr_band) + WSPR2_OffsetFreq[WSPR2_symTable[WSPR2_count]], CurrentVFO());
+			TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band) + WSPR2_OffsetFreq[WSPR2_symTable[WSPR2_count]], CurrentVFO());
 			WSPR2_count++;             //Increments the interrupt counter
 		}
 		else
@@ -267,7 +268,7 @@ static uint8_t WSPR_GetNextBand(void)
 	return 20;
 }
 
-static uint32_t WSPR_GetFreqFromBand(uint8_t band)
+static float64_t WSPR_GetFreqFromBand(uint8_t band)
 {
 	if(band == 160) return WSPR_bands_freq[0];
 	if(band == 80) return WSPR_bands_freq[1];

@@ -31,7 +31,7 @@
  <parameter name="hideFromIPCatalog" value="true" />
  <parameter name="lockedInterfaceDefinition" value="" />
  <parameter name="maxAdditionalLatency" value="1" />
- <parameter name="projectName" value="UA3REO.qpf" />
+ <parameter name="projectName" value="WOLF.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="0" />
  <parameter name="testBenchDutName" value="" />
@@ -59,7 +59,7 @@
    version="18.1"
    enabled="1"
    autoexport="1">
-  <parameter name="apr" value="22" />
+  <parameter name="apr" value="32" />
   <parameter name="aprf" value="32" />
   <parameter name="apri" value="22" />
   <parameter name="aprp" value="16" />

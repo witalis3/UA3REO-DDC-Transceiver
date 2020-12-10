@@ -124,8 +124,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 48)
 		(output)
-		(text "NCO1_freq[21..0]" (rect 0 0 70 12)(font "Arial" ))
-		(text "NCO1_freq[21..0]" (rect 197 43 267 55)(font "Arial" ))
+		(text "NCO1_freq[31..0]" (rect 0 0 70 12)(font "Arial" ))
+		(text "NCO1_freq[31..0]" (rect 197 43 267 55)(font "Arial" ))
 		(line (pt 288 48)(pt 272 48)(line_width 3))
 	)
 	(port
@@ -264,8 +264,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 368)
 		(output)
-		(text "NCO2_freq[21..0]" (rect 0 0 71 12)(font "Arial" ))
-		(text "NCO2_freq[21..0]" (rect 196 363 267 375)(font "Arial" ))
+		(text "NCO2_freq[31..0]" (rect 0 0 71 12)(font "Arial" ))
+		(text "NCO2_freq[31..0]" (rect 196 363 267 375)(font "Arial" ))
 		(line (pt 288 368)(pt 272 368)(line_width 3))
 	)
 	(port
@@ -334,8 +334,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 528)
 		(output)
-		(text "TX_NCO_freq[21..0]" (rect 0 0 84 12)(font "Arial" ))
-		(text "TX_NCO_freq[21..0]" (rect 183 523 267 535)(font "Arial" ))
+		(text "TX_NCO_freq[31..0]" (rect 0 0 84 12)(font "Arial" ))
+		(text "TX_NCO_freq[31..0]" (rect 183 523 267 535)(font "Arial" ))
 		(line (pt 288 528)(pt 272 528)(line_width 3))
 	)
 	(port

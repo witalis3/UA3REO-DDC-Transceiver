@@ -10,7 +10,7 @@ module tx_nco (
 
 	input		clk;
 	input		clken;
-	input	[21:0]	phi_inc_i;
+	input	[31:0]	phi_inc_i;
 	output	[13:0]	fsin_o;
 	output	[13:0]	fcos_o;
 	output		out_valid;

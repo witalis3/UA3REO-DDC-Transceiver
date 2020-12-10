@@ -197,83 +197,89 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 3
 	//out RX1-FREQ
-	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 16)) >> 16));
+	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
-
+	
 	//STAGE 4
-	//OUT RX1-FREQ
-	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 8)) >> 8));
+	//out RX1-FREQ
+	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 5
 	//OUT RX1-FREQ
-	FPGA_writePacket(TRX_freq_phrase & 0XFF);
+	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 6
+	//OUT RX1-FREQ
+	FPGA_writePacket(TRX_freq_phrase & 0XFF);
+	FPGA_clockRise();
+	FPGA_clockFall();
+
+	//STAGE 7
+	//out RX2-FREQ
+	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 24)) >> 24));
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	//STAGE 8
 	//out RX2-FREQ
 	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 7
+	//STAGE 9
 	//OUT RX2-FREQ
 	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 8
+	//STAGE 10
 	//OUT RX2-FREQ
 	FPGA_writePacket(TRX_freq_phrase2 & 0XFF);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 9
-	//OUT CIC-GAIN
-	FPGA_writePacket(0);
-	FPGA_clockRise();
-	FPGA_clockFall();
-
-	//STAGE 10
+	//STAGE 11
 	//OUT CICCOMP-GAIN
 	FPGA_writePacket(CALIBRATE.CICFIR_GAINER_val);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 11
+	//STAGE 12
 	//OUT TX-CICCOMP-GAIN
 	FPGA_writePacket(CALIBRATE.TXCICFIR_GAINER_val);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 12
+	//STAGE 13
 	//OUT DAC-GAIN
 	FPGA_writePacket(CALIBRATE.DAC_GAINER_val);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 13
+	//STAGE 14
 	//OUT ADC OFFSET
 	FPGA_writePacket(((CALIBRATE.adc_offset & (0XFF << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 14
+	//STAGE 15
 	//OUT ADC OFFSET
 	FPGA_writePacket(CALIBRATE.adc_offset & 0XFF);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 15
+	//STAGE 16
 	//OUT VCXO OFFSET
 	FPGA_writePacket(CALIBRATE.VCXO_correction);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 16
+	//STAGE 17
 	//OUT DAC/DCDC SETTINGS
 	FPGA_fpgadata_out_tmp8 = 0;
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DIV0);
@@ -286,19 +292,25 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 17
+	//STAGE 18
+	//out TX-FREQ
+	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 24)) >> 24));
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	//STAGE 19
 	//out TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 18
+	//STAGE 20
 	//OUT TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	//STAGE 19
+	//STAGE 21
 	//OUT TX-FREQ
 	FPGA_writePacket(TRX_freq_phrase_tx & 0XFF);
 	FPGA_clockRise();

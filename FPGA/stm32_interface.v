@@ -63,9 +63,9 @@ input FLASH_busy;
 input IQ_valid;
 input signed [23:0] VCXO_error;
 
-output reg unsigned [21:0] NCO1_freq = 242347;
-output reg unsigned [21:0] NCO2_freq = 242347;
-output reg unsigned [21:0] TX_NCO_freq = 242347;
+output reg unsigned [31:0] NCO1_freq = 242347;
+output reg unsigned [31:0] NCO2_freq = 242347;
+output reg unsigned [31:0] TX_NCO_freq = 242347;
 output reg preamp_enable = 0;
 output reg rx1 = 1;
 output reg rx2 = 0;
@@ -193,70 +193,80 @@ begin
 	end
 	else if (k == 101)
 	begin
-		NCO1_freq[21:16] = DATA_BUS[5:0];
+		NCO1_freq[31:24] = DATA_BUS[7:0];
 		k = 102;
 	end
 	else if (k == 102)
 	begin
-		NCO1_freq[15:8] = DATA_BUS[7:0];
+		NCO1_freq[23:16] = DATA_BUS[7:0];
 		k = 103;
 	end
 	else if (k == 103)
 	begin
-		NCO1_freq[7:0] = DATA_BUS[7:0];
+		NCO1_freq[15:8] = DATA_BUS[7:0];
 		k = 104;
 	end
 	else if (k == 104)
 	begin
-		NCO2_freq[21:16] = DATA_BUS[5:0];
+		NCO1_freq[7:0] = DATA_BUS[7:0];
 		k = 105;
 	end
 	else if (k == 105)
 	begin
-		NCO2_freq[15:8] = DATA_BUS[7:0];
+		NCO2_freq[31:24] = DATA_BUS[7:0];
 		k = 106;
 	end
 	else if (k == 106)
 	begin
-		NCO2_freq[7:0] = DATA_BUS[7:0];
+		NCO2_freq[23:16] = DATA_BUS[7:0];
 		k = 107;
 	end
 	else if (k == 107)
 	begin
-		CIC_GAIN[7:0] = DATA_BUS[7:0];
+		NCO2_freq[15:8] = DATA_BUS[7:0];
 		k = 108;
 	end
 	else if (k == 108)
 	begin
-		CICFIR_GAIN[7:0] = DATA_BUS[7:0];
+		NCO2_freq[7:0] = DATA_BUS[7:0];
 		k = 109;
 	end
+	/*else if (k == 109)
+	begin
+		CIC_GAIN[7:0] = DATA_BUS[7:0];
+		k = 110;
+	end*/
 	else if (k == 109)
 	begin
-		TX_CICFIR_GAIN[7:0] = DATA_BUS[7:0];
+		CICFIR_GAIN[7:0] = DATA_BUS[7:0];
 		k = 110;
 	end
 	else if (k == 110)
 	begin
-		DAC_GAIN[7:0] = DATA_BUS[7:0];
+		TX_CICFIR_GAIN[7:0] = DATA_BUS[7:0];
 		k = 111;
 	end
 	else if (k == 111)
 	begin
-		ADC_OFFSET[15:8] = DATA_BUS[7:0];
+		DAC_GAIN[7:0] = DATA_BUS[7:0];
 		k = 112;
 	end
 	else if (k == 112)
 	begin
-		ADC_OFFSET[7:0] = DATA_BUS[7:0];
+		ADC_OFFSET[15:8] = DATA_BUS[7:0];
 		k = 113;
 	end
 	else if (k == 113)
 	begin
-		VCXO_correction[7:0] = DATA_BUS[7:0];
+		ADC_OFFSET[7:0] = DATA_BUS[7:0];
 		k = 114;
 	end
 	else if (k == 114)
+	begin
+		VCXO_correction[7:0] = DATA_BUS[7:0];
+		k = 115;
+	end
+	else if (k == 115)
 	begin
 		DAC_div0 = DATA_BUS[0:0];
 		DAC_div1 = DATA_BUS[1:1];
@@ -264,19 +274,24 @@ begin
 		DAC_hp2 = DATA_BUS[3:3];
 		DAC_x4 = DATA_BUS[4:4];
 		DCDC_freq = DATA_BUS[5:5];
-		k = 115;
-	end
-	else if (k == 115)
-	begin
-		TX_NCO_freq[21:16] = DATA_BUS[5:0];
 		k = 116;
 	end
 	else if (k == 116)
 	begin
-		TX_NCO_freq[15:8] = DATA_BUS[7:0];
+		TX_NCO_freq[31:24] = DATA_BUS[7:0];
 		k = 117;
 	end
 	else if (k == 117)
+	begin
+		TX_NCO_freq[23:16] = DATA_BUS[7:0];
+		k = 118;
+	end
+	else if (k == 118)
+	begin
+		TX_NCO_freq[15:8] = DATA_BUS[7:0];
+		k = 119;
+	end
+	else if (k == 119)
 	begin
 		TX_NCO_freq[7:0] = DATA_BUS[7:0];
 		k = 999;

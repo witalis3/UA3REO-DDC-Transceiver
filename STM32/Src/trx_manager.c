@@ -304,6 +304,13 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	FPGA_NeedSendParams = true;
 }
 
+void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo)
+{
+	TRX_setFrequency(_freq, vfo);
+	TRX_freq_phrase_tx = getTXPhraseFromFrequency(_freq);
+	FPGA_NeedSendParams = true;
+}
+
 void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 {
 	uint_fast8_t old_mode = vfo->Mode;

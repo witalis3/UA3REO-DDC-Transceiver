@@ -7,6 +7,7 @@
 
 extern void TRX_Init(void);
 extern void TRX_setFrequency(uint32_t _freq, VFO *vfo);
+extern void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo); //for WSPR and other
 extern void TRX_setMode(uint_fast8_t _mode, VFO *vfo);
 extern void TRX_ptt_change(void);
 extern void TRX_key_change(void);

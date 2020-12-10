@@ -24,7 +24,7 @@ module tx_nco_nco_ii_0(clk, reset_n, clken, phi_inc_i, fsin_o, fcos_o, out_valid
 
 parameter mpr = 14;
 parameter opr = 28;
-parameter apr = 22;
+parameter apr = 32;
 parameter apri= 22;
 parameter aprf= 32;
 parameter aprp= 16;

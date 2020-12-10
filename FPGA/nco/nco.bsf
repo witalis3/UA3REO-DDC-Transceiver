@@ -40,8 +40,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 0 128)
 		(input)
-		(text "phi_inc_i[21..0]" (rect 0 0 57 12)(font "Arial" (font_size 8)))
-		(text "phi_inc_i[21..0]" (rect 4 117 100 128)(font "Arial" (font_size 8)))
+		(text "phi_inc_i[31..0]" (rect 0 0 57 12)(font "Arial" (font_size 8)))
+		(text "phi_inc_i[31..0]" (rect 4 117 100 128)(font "Arial" (font_size 8)))
 		(line (pt 0 128)(pt 80 128)(line_width 3))
 	)
 	(port
