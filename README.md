@@ -43,6 +43,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * CW decoder, self-control, gauss filter
 * SWR Graphs
 * Spectrum analyzer
+* WSPR Beacon
 * Equalizer TX/RX, reverber
 * SSB Scanner mode
 * AGC takes into account the characteristics of human hearing (K-Weighting)

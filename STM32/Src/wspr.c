@@ -203,6 +203,7 @@ void WSPR_DoFastEvents(void)
 		else
 		{
 			WSPR_StopTransmit();
+			TRX_SNTP_Synced = 0; //request time sync
 		}
 	}
 }
