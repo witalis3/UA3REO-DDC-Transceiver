@@ -31,6 +31,7 @@ static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction);
+static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction);
 
@@ -93,7 +94,7 @@ static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction);
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction);
 static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction);
-//static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
+static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
 
 static void SYSMENU_HANDL_SD_Format(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction);
@@ -199,6 +200,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
 		{"USB IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_USB, SYSMENU_HANDL_TRX_USBIN},
 		{"Callsign", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetCallsign},
+		{"Locator", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetLocator},
 		{"Transverter Enable", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
 		{"Transverter Offset, mHz", SYSMENU_UINT16, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
 };
@@ -281,7 +283,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 		{"WIFI Set AP Pass", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SetAPpassword},
 		{"WIFI Timezone", SYSMENU_INT8, (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_HANDL_WIFI_Timezone},
 		{"WIFI CAT Server", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_HANDL_WIFI_CAT_Server},
-		//{"WIFI Update firmware", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_UpdateFW},
+		{"WIFI Update firmware", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_UpdateFW},
 		{"", SYSMENU_INFOLINE, 0, 0},
 		{"IP:", SYSMENU_INFOLINE, 0, 0},
 		{WIFI_IP, SYSMENU_INFOLINE, 0, 0},
@@ -371,6 +373,8 @@ static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
 static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir);
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateCallsignChar(int8_t dir);
+static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
+static void SYSMENU_TRX_RotateLocatorChar(int8_t dir);
 
 static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
 static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
@@ -388,10 +392,12 @@ static bool sysmenu_item_selected_by_enc2 = false;
 static bool sysmenu_wifi_selectap_menu_opened = false;
 static bool sysmenu_wifi_setAPpassword_menu_opened = false;
 static bool sysmenu_trx_setCallsign_menu_opened = false;
+static bool sysmenu_trx_setLocator_menu_opened = false;
 static uint16_t sysmenu_wifi_rescan_interval = 0;
 static uint8_t sysmenu_wifi_selected_ap_index = 0;
 static uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
 static uint8_t sysmenu_trx_selected_callsign_char_index = 0;
+static uint8_t sysmenu_trx_selected_locator_char_index = 0;
 
 //Time menu
 static bool sysmenu_timeMenuOpened = false;
@@ -659,6 +665,18 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw)
 	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * 12, 54, 12, COLOR_RED);
 }
 
+static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw)
+{
+	if (full_redraw)
+	{
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("LOCATOR:", 5, 5, FG_COLOR, BG_COLOR, 2);
+	}
+
+	LCDDriver_printText(TRX.LOCATOR, 10, 37, COLOR_GREEN, BG_COLOR, 2);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_locator_char_index * 12, 54, 12, COLOR_RED);
+}
+
 static void SYSMENU_TRX_RotateCallsignChar(int8_t dir)
 {
 	bool full_redraw = false;
@@ -682,10 +700,40 @@ static void SYSMENU_TRX_RotateCallsignChar(int8_t dir)
 		SYSMENU_TRX_DrawCallsignMenu(false);
 }
 
+static void SYSMENU_TRX_RotateLocatorChar(int8_t dir)
+{
+	bool full_redraw = false;
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] == 0)
+		full_redraw = true;
+	TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] += dir;
+
+	// do not show special characters
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 1 && TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] <= 32 && dir > 0)
+		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 33;
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 1 && TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] <= 32 && dir < 0)
+		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 0;
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 127)
+		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 0;
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] == 0)
+		full_redraw = true;
+
+	if (full_redraw)
+		SYSMENU_TRX_DrawLocatorMenu(true);
+	else
+		SYSMENU_TRX_DrawLocatorMenu(false);
+}
+
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
 {
 	sysmenu_trx_setCallsign_menu_opened = true;
 	SYSMENU_TRX_DrawCallsignMenu(true);
+	drawSystemMenu(true);
+}
+
+static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction)
+{
+	sysmenu_trx_setLocator_menu_opened = true;
+	SYSMENU_TRX_DrawLocatorMenu(true);
 	drawSystemMenu(true);
 }
 
@@ -1683,10 +1731,14 @@ static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction)
 		TRX.WIFI_CAT_SERVER = false;
 }
 
-/*static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
+static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
 {
+	LCD_systemMenuOpened = false;
+	LCD_redraw();
+	LCD_doEvents();
 	WIFI_UpdateFW(NULL);
-}*/
+	LCD_showTooltip("Started, see console");
+}
 
 //SD MENU
 
@@ -2354,6 +2406,11 @@ void drawSystemMenu(bool draw_background)
 		SYSMENU_TRX_DrawCallsignMenu(false);
 		return;
 	}
+		if (sysmenu_trx_setLocator_menu_opened)
+	{
+		SYSMENU_TRX_DrawLocatorMenu(false);
+		return;
+	}
 	if (sysmenu_spectrum_opened)
 	{
 		SPEC_Draw();
@@ -2411,6 +2468,11 @@ void eventRotateSystemMenu(int8_t direction)
 		SYSMENU_TRX_RotateCallsignChar(direction);
 		return;
 	}
+	if (sysmenu_trx_setLocator_menu_opened)
+	{
+		SYSMENU_TRX_RotateLocatorChar(direction);
+		return;
+	}
 	if (sysmenu_timeMenuOpened)
 	{
 		SYSMENU_HANDL_SETTIME(direction);
@@ -2443,6 +2505,12 @@ void eventCloseSystemMenu(void)
 	else if (sysmenu_trx_setCallsign_menu_opened)
 	{
 		sysmenu_trx_setCallsign_menu_opened = false;
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+	}
+	else if (sysmenu_trx_setLocator_menu_opened)
+	{
+		sysmenu_trx_setLocator_menu_opened = false;
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}
@@ -2578,6 +2646,21 @@ void eventSecRotateSystemMenu(int8_t direction)
 		{
 			sysmenu_trx_selected_callsign_char_index++;
 			SYSMENU_TRX_DrawCallsignMenu(true);
+		}
+		return;
+	}
+	//Locator menu
+	if (sysmenu_trx_setLocator_menu_opened)
+	{
+		if (direction < 0 && sysmenu_trx_selected_locator_char_index > 0)
+		{
+			sysmenu_trx_selected_locator_char_index--;
+			SYSMENU_TRX_DrawLocatorMenu(true);
+		}
+		else if (sysmenu_trx_selected_locator_char_index < (MAX_CALLSIGN_LENGTH - 1))
+		{
+			sysmenu_trx_selected_locator_char_index++;
+			SYSMENU_TRX_DrawLocatorMenu(true);
 		}
 		return;
 	}

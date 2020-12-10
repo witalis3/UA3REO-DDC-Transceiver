@@ -175,6 +175,7 @@ extern struct TRX_SETTINGS
 	DUAL_RX_TYPE Dual_RX_Type;
 	bool Encoder_Accelerate;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
+	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	bool Transverter_Enabled;
 	uint16_t Transverter_Offset_Mhz;
 	//AUDIO
@@ -243,6 +244,17 @@ extern struct TRX_SETTINGS
 	uint32_t SPEC_End;
 	int16_t SPEC_TopDBM;
 	int16_t SPEC_BottomDBM;
+	bool WSPR_BANDS_160;
+	bool WSPR_BANDS_80;
+	bool WSPR_BANDS_40;
+	bool WSPR_BANDS_30;
+	bool WSPR_BANDS_20;
+	bool WSPR_BANDS_17;
+	bool WSPR_BANDS_15;
+	bool WSPR_BANDS_12;
+	bool WSPR_BANDS_10;
+	bool WSPR_BANDS_6;
+	bool WSPR_BANDS_2;
 	//
 	uint8_t csum; //check sum
 	uint8_t ENDBit; //end bit

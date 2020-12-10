@@ -655,7 +655,7 @@ bool WIFI_UpdateFW(void *callback)
 	WIFI_ProcessingCommand = WIFI_COMM_UPDATEFW;
 	WIFI_ProcessingCommandCallback = callback;
 	WIFI_SendCommand("AT+CIUPDATE\r\n"); //Start Update Firmware
-	WIFI_WaitForOk();
+	//WIFI_WaitForOk();
 	return true;
 }
 

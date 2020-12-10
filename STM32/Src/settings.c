@@ -246,11 +246,23 @@ void LoadSettings(bool clear)
 		TRX.FFT_Compressor = true;	//Compress FFT Peaks
 		TRX.Encoder_Accelerate = true;	//Accelerate Encoder on fast rate
 		strcpy(TRX.CALLSIGN, "HamRad");				// Callsign
+		strcpy(TRX.LOCATOR, "LO02RR");				// Locator
 		TRX.ColorThemeId = 0;			//Selected Color theme
 		TRX.LayoutThemeId = 0;		//Selected Layout theme
 		TRX.Transverter_Enabled = false;	//Enable transverter mode
 		TRX.Transverter_Offset_Mhz = 120;	//Offset from VFO
 		TRX.CW_GaussFilter = true;	//Gauss responce LPF filter
+		TRX.WSPR_BANDS_160 = false; //enabled WSPR bands
+		TRX.WSPR_BANDS_80 = true;
+		TRX.WSPR_BANDS_40 = true;
+		TRX.WSPR_BANDS_30 = true;
+		TRX.WSPR_BANDS_20 = true;
+		TRX.WSPR_BANDS_17 = true;
+		TRX.WSPR_BANDS_15 = true;
+		TRX.WSPR_BANDS_12 = true;
+		TRX.WSPR_BANDS_10 = true;
+		TRX.WSPR_BANDS_6 = false;
+		TRX.WSPR_BANDS_2 = false;
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

@@ -236,6 +236,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.Encoder_Accelerate", (uint32_t*)&TRX.Encoder_Accelerate, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint32_t*)&TRX.Dual_RX_Type, SYSMENU_UINT8);
 		if(res) SD_WRITE_SETT_STRING("TRX.CALLSIGN", TRX.CALLSIGN);
+		if(res) SD_WRITE_SETT_STRING("TRX.LOCATOR", TRX.LOCATOR);
 		if(res) SD_WRITE_SETT_LINE("TRX.Transverter_Enabled", (uint32_t*)&TRX.Transverter_Enabled, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("TRX.Transverter_Offset_Mhz", (uint32_t*)&TRX.Transverter_Offset_Mhz, SYSMENU_UINT16);
 		//AUDIO
@@ -304,6 +305,17 @@ static void SDCOMM_EXPORT_SETT(void)
 		if(res) SD_WRITE_SETT_LINE("TRX.SPEC_End", (uint32_t*)&TRX.SPEC_End, SYSMENU_UINT32);
 		if(res) SD_WRITE_SETT_LINE("TRX.SPEC_TopDBM", (uint32_t*)&TRX.SPEC_TopDBM, SYSMENU_INT16);
 		if(res) SD_WRITE_SETT_LINE("TRX.SPEC_BottomDBM", (uint32_t*)&TRX.SPEC_BottomDBM, SYSMENU_INT16);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_160", (uint32_t*)&TRX.WSPR_BANDS_160, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_80", (uint32_t*)&TRX.WSPR_BANDS_80, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_40", (uint32_t*)&TRX.WSPR_BANDS_40, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_30", (uint32_t*)&TRX.WSPR_BANDS_30, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_20", (uint32_t*)&TRX.WSPR_BANDS_20, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_17", (uint32_t*)&TRX.WSPR_BANDS_17, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_15", (uint32_t*)&TRX.WSPR_BANDS_15, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_12", (uint32_t*)&TRX.WSPR_BANDS_12, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_10", (uint32_t*)&TRX.WSPR_BANDS_10, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_6", (uint32_t*)&TRX.WSPR_BANDS_6, SYSMENU_BOOLEAN);
+		if(res) SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_2", (uint32_t*)&TRX.WSPR_BANDS_2, SYSMENU_BOOLEAN);
 		//CALIBRATION
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_INVERT", (uint32_t*)&CALIBRATE.ENCODER_INVERT, SYSMENU_BOOLEAN);
 		if(res) SD_WRITE_SETT_LINE("CALIBRATE.ENCODER2_INVERT", (uint32_t*)&CALIBRATE.ENCODER2_INVERT, SYSMENU_BOOLEAN);
@@ -435,6 +447,14 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 			lens = sizeof(TRX.CALLSIGN);
 		strncpy(TRX.CALLSIGN, value, lens);
 	}
+	if (strcmp(name, "TRX.LOCATOR") == 0)
+	{
+		memset(TRX.LOCATOR, 0x00, sizeof(TRX.LOCATOR));
+		uint32_t lens = strlen(value);
+		if(lens > sizeof(TRX.LOCATOR))
+			lens = sizeof(TRX.LOCATOR);
+		strncpy(TRX.LOCATOR, value, lens);
+	}
 	if (strcmp(name, "TRX.Transverter_Enabled") == 0) TRX.Transverter_Enabled = bval;
 	if (strcmp(name, "TRX.Transverter_Offset_Mhz") == 0) TRX.Transverter_Offset_Mhz = (uint16_t)uintval;
 	//AUDIO
@@ -517,6 +537,17 @@ static void SDCOMM_PARSE_SETT_LINE(char* line)
 	if (strcmp(name, "TRX.SPEC_End") == 0) TRX.SPEC_End = uintval;
 	if (strcmp(name, "TRX.SPEC_TopDBM") == 0) TRX.SPEC_TopDBM = (int16_t)intval;
 	if (strcmp(name, "TRX.SPEC_BottomDBM") == 0) TRX.SPEC_BottomDBM = (int16_t)intval;
+	if (strcmp(name, "TRX.WSPR_BANDS_160") == 0) TRX.WSPR_BANDS_160 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_80") == 0) TRX.WSPR_BANDS_80 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_40") == 0) TRX.WSPR_BANDS_40 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_30") == 0) TRX.WSPR_BANDS_30 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_20") == 0) TRX.WSPR_BANDS_20 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_17") == 0) TRX.WSPR_BANDS_17 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_15") == 0) TRX.WSPR_BANDS_15 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_12") == 0) TRX.WSPR_BANDS_12 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_10") == 0) TRX.WSPR_BANDS_10 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_6") == 0) TRX.WSPR_BANDS_6 = uintval;
+	if (strcmp(name, "TRX.WSPR_BANDS_2") == 0) TRX.WSPR_BANDS_2 = uintval;
 	//CALIBRATION
 	if (strcmp(name, "CALIBRATE.ENCODER_INVERT") == 0) CALIBRATE.ENCODER_INVERT = uintval;
 	if (strcmp(name, "CALIBRATE.ENCODER2_INVERT") == 0) CALIBRATE.ENCODER2_INVERT = uintval;

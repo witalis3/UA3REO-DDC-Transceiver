@@ -40,7 +40,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Digital Noise Reduction (DNR), Pulse Noise Reduction (NB)
 * CAT / PTT virtual COM ports (FT-450 emulation)
 * USB operation (audio transmission, CAT, KEY, PTT)
-* CW decoder, self-control
+* CW decoder, self-control, gauss filter
 * SWR Graphs
 * Spectrum analyzer
 * Equalizer TX/RX, reverber
@@ -135,6 +135,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
 * **LINE IN** - Line input selection
 * **USB IN** - Select USB audio input
 * **Callsign** - User callsign
+* **Locator** - User QTH locator
 * **Transverter Enable** - Enable external transverter
 * **Transverter Offset, mHz** - External transverter frequency offset, mHz
 
@@ -198,6 +199,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
 * **WIFI Set AP Pass** - Set password for WiFi hotspot
 * **WIFI Timezone** - Time zone (for updating the time via the Internet)
 * **WIFI CAT Server** - Server for receiving CAT commands via WIFI
+* **WIFI Update firmware** - Start cloud autoupdate firmware for ESP-01 (if present)
 
 ### SD Card
 
