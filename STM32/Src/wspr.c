@@ -271,6 +271,28 @@ static uint8_t WSPR_GetNextBand(void)
 		return 2;
 	if(wspr_band >= 2 && TRX.WSPR_BANDS_160)
 		return 160;
+	if(TRX.WSPR_BANDS_160)
+		return 160;
+	if(TRX.WSPR_BANDS_80)
+		return 80;
+	if(TRX.WSPR_BANDS_40)
+		return 40;
+	if(TRX.WSPR_BANDS_30)
+		return 30;
+	if(TRX.WSPR_BANDS_20)
+		return 20;
+	if(TRX.WSPR_BANDS_17)
+		return 17;
+	if(TRX.WSPR_BANDS_15)
+		return 15;
+	if(TRX.WSPR_BANDS_12)
+		return 12;
+	if(TRX.WSPR_BANDS_10)
+		return 10;
+	if(TRX.WSPR_BANDS_6)
+		return 6;
+	if(TRX.WSPR_BANDS_2)
+		return 2;
 	return 20;
 }
 
