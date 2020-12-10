@@ -13,6 +13,7 @@
 #include "noise_blanker.h"
 #include "bands.h"
 #include "sd.h"
+#include "wspr.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -2373,7 +2374,16 @@ static void SYSMENU_HANDL_WSPRMENU(int8_t direction)
 
 static void SYSMENU_HANDL_WSPR_Start(int8_t direction)
 {
-	
+	if (sysmenu_wspr_opened)
+	{
+		WSPR_EncRotate(direction);
+	}
+	else
+	{
+		sysmenu_wspr_opened = true;
+		WSPR_Start();
+		drawSystemMenu(true);
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND160(int8_t direction)
@@ -2551,6 +2561,11 @@ void drawSystemMenu(bool draw_background)
 		SPEC_Draw();
 		return;
 	}
+	if (sysmenu_wspr_opened)
+	{
+		WSPR_DoEvents();
+		return;
+	}
 	if (sysmenu_TDM_CTRL_opened)				//Tisho
 	{
 		TDM_Voltages();									
@@ -2653,6 +2668,13 @@ void eventCloseSystemMenu(void)
 	{
 		sysmenu_spectrum_opened = false;
 		SPEC_Stop();
+		systemMenuIndex = 0;
+		drawSystemMenu(true);
+	}
+	else if (sysmenu_wspr_opened)
+	{
+		sysmenu_wspr_opened = false;
+		WSPR_Stop();
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}
@@ -2799,11 +2821,18 @@ void eventSecRotateSystemMenu(int8_t direction)
 		}
 		return;
 	}
-	//spectrum analyzer
 	if (sysmenu_spectrum_opened)
 	{
 		SPEC_Stop();
 		sysmenu_spectrum_opened = false;
+		LCDDriver_Fill(BG_COLOR);
+		drawSystemMenu(true);
+		return;
+	}
+	if (sysmenu_wspr_opened)
+	{
+		WSPR_Stop();
+		sysmenu_wspr_opened = false;
 		LCDDriver_Fill(BG_COLOR);
 		drawSystemMenu(true);
 		return;

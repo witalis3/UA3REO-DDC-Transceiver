@@ -39,6 +39,7 @@
 "wolf\usbd_ua3reo.o"
 "wolf\vad.o"
 "wolf\wifi.o"
+"wolf\wspr.o"
 "wolf\wm8731.o"
 "wolf\main.o"
 "wolf\user_diskio.o"

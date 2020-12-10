@@ -789,6 +789,16 @@
               <FilePath>..\Src\wifi.h</FilePath>
             </File>
             <File>
+              <FileName>wspr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\wspr.c</FilePath>
+            </File>
+            <File>
+              <FileName>wspr.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\wspr.h</FilePath>
+            </File>
+            <File>
               <FileName>wm8731.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\wm8731.c</FilePath>
