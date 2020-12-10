@@ -182,6 +182,11 @@ void WSPR_DoEvents(void)
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 	
+	//TX parameters
+	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW, TEMP: % 2d", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward), (int16_t)TRX_RF_Temperature);
+	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
+	y += y_step;
+	
 	LCD_busy = false;
 }
 
