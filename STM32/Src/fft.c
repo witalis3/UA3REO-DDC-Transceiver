@@ -656,7 +656,7 @@ void FFT_printWaterfallDMA(void)
 #endif
 	{
 		// calculate offset
-		int32_t freq_diff = (int32_t)(((float32_t)((int32_t)currentFFTFreq - (int32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom);
+		int32_t freq_diff = roundf(((float32_t)((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom);
 		int32_t margin_left = 0;
 		if (freq_diff < 0)
 			margin_left = -freq_diff;
