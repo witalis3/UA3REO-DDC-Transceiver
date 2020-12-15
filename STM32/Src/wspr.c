@@ -11,7 +11,7 @@
 static char tmp_buff[64] = {0};
 static WSPRState wspr_status = WSPR_WAIT;
 static uint8_t wspr_band = 160;
-static float64_t WSPR2_OffsetFreq[4] = {0, 1.4648f, 2.9296f, 4.3944f};
+static float64_t WSPR2_OffsetFreq[4] = {0, 1.4648, 2.9296, 4.3944};
 static uint8_t WSPR2_encMessage[11];
 static uint8_t WSPR2_symTable[170];		// symbol table 162
 static uint8_t WSPR2_symTableTemp[170]; // symbol table temp
@@ -80,17 +80,17 @@ void WSPR_Start(void)
 	WSPR_Encode();
 
 	//prepare bands
-	WSPR_bands_freq[0] = 1838100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[1] = 3570100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[2] = 7040100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[3] = 10140200.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[4] = 14097100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[5] = 18106100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[6] = 21096100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[7] = 24926100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[8] = 28126100.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[9] = 50294500.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
-	WSPR_bands_freq[10] = 144489000.0f + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[0] = 1838100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[1] = 3570100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[2] = 7040100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[3] = 10140200.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[4] = 14097100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[5] = 18106100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[6] = 21096100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[7] = 24926100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[8] = 28126100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[9] = 50294500.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
+	WSPR_bands_freq[10] = 144489000.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
 
 	// draw the GUI
 	LCDDriver_Fill(BG_COLOR);
@@ -172,12 +172,12 @@ void WSPR_DoEvents(void)
 	y += y_step;
 
 	//Band
-	sprintf(tmp_buff, "Current band: % 2dm (%dhz)", wspr_band, (uint32_t)WSPR_GetFreqFromBand(wspr_band));
+	sprintf(tmp_buff, "Current band: % 2dm (%dhz)", wspr_band, (uint32_t)(WSPR_GetFreqFromBand(wspr_band)));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 
 	//Next band
-	sprintf(tmp_buff, "Next band: % 2dm (%dhz)", WSPR_GetNextBand(), (uint32_t)WSPR_GetFreqFromBand(WSPR_GetNextBand()));
+	sprintf(tmp_buff, "Next band: % 2dm (%dhz)", WSPR_GetNextBand(), (uint32_t)(WSPR_GetFreqFromBand(WSPR_GetNextBand())));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 
@@ -240,6 +240,7 @@ static void WSPR_StopTransmit(void)
 // events to the encoder
 void WSPR_EncRotate(int8_t direction)
 {
+	#pragma unused(direction)
 	if (LCD_busy)
 		return;
 	LCD_busy = true;

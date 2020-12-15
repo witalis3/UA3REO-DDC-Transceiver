@@ -77,11 +77,12 @@ extern void TDM_Voltages_Start(void) //Tisho
 extern void TDM_Voltages(void) //Tisho
 {
 	char ctmp[64] = {0};
+
+#if (defined(SWR_AD8307_LOG))
 	float32_t P_FW_dBm, P_BW_dBm;
 	float32_t V_FW_Scaled, V_BW_Scaled;
 	float32_t P_FW_W, P_BW_W;
-
-#if (defined(SWR_AD8307_LOG))
+	
 	// Read the signals (Voltages - raw data)
 	RF_UNIT_MeasureVoltage();
 
@@ -142,7 +143,6 @@ extern void TDM_Voltages(void) //Tisho
 
 	sprintf(ctmp, "%.2f ", (double)TRX_PWR_Backward);
 	LCDDriver_printText(ctmp, 150, 80, COLOR_GREEN, COLOR_BLACK, 2);
-
 #endif
 }
 

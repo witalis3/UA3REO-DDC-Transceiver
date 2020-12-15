@@ -199,43 +199,43 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 3
 	//out RX1-FREQ
-	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 24)) >> 24));
+	FPGA_writePacket(((TRX_freq_phrase & (0xFFU << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 4
 	//out RX1-FREQ
-	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 16)) >> 16));
+	FPGA_writePacket(((TRX_freq_phrase & (0XFFU << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 5
 	//OUT RX1-FREQ
-	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 8)) >> 8));
+	FPGA_writePacket(((TRX_freq_phrase & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 6
 	//OUT RX1-FREQ
-	FPGA_writePacket(TRX_freq_phrase & 0XFF);
+	FPGA_writePacket(TRX_freq_phrase & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 7
 	//out RX2-FREQ
-	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 24)) >> 24));
+	FPGA_writePacket(((TRX_freq_phrase2 & (0XFFU << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 8
 	//out RX2-FREQ
-	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 16)) >> 16));
+	FPGA_writePacket(((TRX_freq_phrase2 & (0XFFU << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 9
 	//OUT RX2-FREQ
-	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 8)) >> 8));
+	FPGA_writePacket(((TRX_freq_phrase2 & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
@@ -265,13 +265,13 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 14
 	//OUT ADC OFFSET
-	FPGA_writePacket(((CALIBRATE.adc_offset & (0XFF << 8)) >> 8));
+	FPGA_writePacket(((CALIBRATE.adc_offset & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 15
 	//OUT ADC OFFSET
-	FPGA_writePacket(CALIBRATE.adc_offset & 0XFF);
+	FPGA_writePacket(CALIBRATE.adc_offset & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
@@ -296,25 +296,25 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 18
 	//out TX-FREQ
-	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 24)) >> 24));
+	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 19
 	//out TX-FREQ
-	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 16)) >> 16));
+	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 20
 	//OUT TX-FREQ
-	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 8)) >> 8));
+	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 21
 	//OUT TX-FREQ
-	FPGA_writePacket(TRX_freq_phrase_tx & 0XFF);
+	FPGA_writePacket(TRX_freq_phrase_tx & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
 }

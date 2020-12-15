@@ -444,7 +444,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	/////BW trapezoid
 	LCDDriver_Fill_RectWH(LAYOUT->BW_TRAPEZ_POS_X, LAYOUT->BW_TRAPEZ_POS_Y, LAYOUT->BW_TRAPEZ_WIDTH, LAYOUT->BW_TRAPEZ_HEIGHT, BG_COLOR); //clear back
 #define bw_trapez_margin 10
-	uint16_t bw_trapez_top_line_width = LAYOUT->BW_TRAPEZ_WIDTH * 0.9f - bw_trapez_margin * 2;
+	uint16_t bw_trapez_top_line_width = (uint16_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f - bw_trapez_margin * 2);
 	//border
 	LCDDriver_drawFastHLine(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_top_line_width / 2, LAYOUT->BW_TRAPEZ_POS_Y, bw_trapez_top_line_width, COLOR->BW_TRAPEZ_BORDER);																																 //top
 	LCDDriver_drawFastHLine(LAYOUT->BW_TRAPEZ_POS_X, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT, LAYOUT->BW_TRAPEZ_WIDTH, COLOR->BW_TRAPEZ_BORDER);																																									 //bottom
@@ -491,9 +491,9 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 		bw_trapez_bw_right_width = 1.0f;
 		break;
 	}
-	uint16_t bw_trapez_left_width = bw_trapez_top_line_width / 2 * bw_trapez_bw_left_width;
-	uint16_t bw_trapez_right_width = bw_trapez_top_line_width / 2 * bw_trapez_bw_right_width;
-	uint16_t bw_trapez_bw_hpf_margin_width = bw_trapez_top_line_width / 2 * bw_trapez_bw_hpf_margin;
+	uint16_t bw_trapez_left_width = (uint16_t)(bw_trapez_top_line_width / 2 * bw_trapez_bw_left_width);
+	uint16_t bw_trapez_right_width = (uint16_t)(bw_trapez_top_line_width / 2 * bw_trapez_bw_right_width);
+	uint16_t bw_trapez_bw_hpf_margin_width = (uint16_t)(bw_trapez_top_line_width / 2 * bw_trapez_bw_hpf_margin);
 	if (bw_trapez_left_width > 0) //left wing
 	{
 		LCDDriver_Fill_RectWH(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_left_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, bw_trapez_left_width - bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_HEIGHT - 2, COLOR->BW_TRAPEZ_FILL);
@@ -1024,7 +1024,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 
 bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 {
-#pragma unused(dy)
+	#pragma unused(dy)
 	if (TRX.Locked)
 		return false;
 	if (LCD_systemMenuOpened)

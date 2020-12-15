@@ -231,7 +231,7 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	if (freq < 0)
 		return 0;
 	bool inverted = false;
-	int32_t _freq = freq;
+	int32_t _freq = (int32_t)freq;
 
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
 	if (nyquist == 0) // <99.84mhz (good 0mhz - 79.872mhz) 0-0.4 dac freq

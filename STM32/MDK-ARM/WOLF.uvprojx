@@ -328,18 +328,18 @@
             <uC99>0</uC99>
             <uGnu>1</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6Lang>6</v6Lang>
+            <v6LangP>7</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>1</v6Lto>
-            <v6WtE>0</v6WtE>
+            <v6WtE>1</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls>-Wno-float-equal -Wno-padded -Wno-implicit-float-conversion -Wno-gnu-compound-literal-initializer -Wno-cast-qual -Wno-implicit-fallthrough -Wno-cast-align -Wno-pedantic -Wno-missing-noreturn -Wno-sign-conversion -Wno-date-time</MiscControls>
+              <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions</MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;          ../Drivers/STM32H7xx_HAL_Driver/Inc;          ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;          ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;          ../Drivers/CMSIS/Include;          ..\USBDevice;          ..\Src;          ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;           ../Drivers/STM32H7xx_HAL_Driver/Inc;           ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;           ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;           ../Drivers/CMSIS/Include;           ..\USBDevice;           ..\Src;           ../Middlewares/Third_Party/FatFs/src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1195,6 +1195,7 @@
         <targetInfos>
           <targetInfo name="WOLF">
             <c>
+              <MiscControls>-Wno-everything</MiscControls>
               <Optim>5</Optim>
             </c>
           </targetInfo>

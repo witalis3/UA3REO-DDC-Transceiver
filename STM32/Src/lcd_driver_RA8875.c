@@ -116,7 +116,7 @@ void LCDDriver_Init(void)
 
 //Set screen rotation
 void LCDDriver_setRotation(uint8_t rotate){
-#pragma unused(rotate)
+
 }
 
 //Set cursor position

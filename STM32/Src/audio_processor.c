@@ -65,7 +65,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 //IF gain
 // initialize audio processor
 void initAudioProcessor(void)
 {
-	deemph_a = roundf(1.0f / ((1.0f - expf(-1.0f / ((float32_t)IQ_SAMPLERATE * 75e-6)))));
+	deemph_a = roundf(1.0f / ((1.0f - expf(-1.0 / ((float64_t)IQ_SAMPLERATE * 75e-6)))));
 	InitAudioFilters();
 	DECODER_Init();
 	NeedReinitReverber = true;

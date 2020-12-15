@@ -5,7 +5,7 @@
 #include "functions.h"
 
 // switch to DFU-mode buloder
-void JumpToBootloader(void)
+_Noreturn void JumpToBootloader(void)
 {
 	uint32_t i = 0;
 	void (*SysMemBootJump)(void);

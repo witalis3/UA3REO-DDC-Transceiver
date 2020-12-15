@@ -54,15 +54,15 @@ extern char WIFI_IP[15];
 
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);
-extern void WIFI_ListAP(void *callback);
-extern bool WIFI_GetSNTPTime(void *callback);
-extern bool WIFI_GetIP(void *callback);
+extern void WIFI_ListAP(void (*callback)(void));
+extern bool WIFI_GetSNTPTime(void (*callback)(void));
+extern bool WIFI_GetIP(void (*callback)(void));
 //extern void WIFI_GetStatus(void);
 extern void WIFI_GoSleep(void);
-extern bool WIFI_StartCATServer(void *callback);
-extern bool WIFI_UpdateFW(void *callback);
-extern bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void *callback);
-extern bool WIFI_getHTTPpage(char *host, char *url, void *callback, bool https);
+extern bool WIFI_StartCATServer(void (*callback)(void));
+extern bool WIFI_UpdateFW(void (*callback)(void));
+extern bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void (*callback)(void));
+extern bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https);
 extern void WIFI_getRDA(void);
 extern void WIFI_getPropagination(void);
 

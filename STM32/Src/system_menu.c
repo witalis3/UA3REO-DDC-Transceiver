@@ -438,13 +438,11 @@ static uint8_t sysmenu_trx_selected_locator_char_index = 0;
 static bool sysmenu_timeMenuOpened = false;
 static uint8_t TimeMenuSelection = 0;
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-
 //TRX MENU
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_trx_item_count;
 	sysmenu_onroot = false;
@@ -760,6 +758,7 @@ static void SYSMENU_TRX_RotateLocatorChar(int8_t dir)
 
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_trx_setCallsign_menu_opened = true;
 	SYSMENU_TRX_DrawCallsignMenu(true);
 	drawSystemMenu(true);
@@ -767,6 +766,7 @@ static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_trx_setLocator_menu_opened = true;
 	SYSMENU_TRX_DrawLocatorMenu(true);
 	drawSystemMenu(true);
@@ -793,6 +793,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
@@ -1323,6 +1324,7 @@ static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction)
 
 static void SYSMENU_HANDL_CWMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
@@ -1411,6 +1413,7 @@ static void SYSMENU_HANDL_CW_SelfHear(int8_t direction)
 
 static void SYSMENU_HANDL_LCDMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_screen_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_screen_item_count;
 	sysmenu_onroot = false;
@@ -1582,6 +1585,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction)
 
 static void SYSMENU_HANDL_ADCMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_adc_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_adc_item_count;
 	sysmenu_onroot = false;
@@ -1644,6 +1648,7 @@ static void SYSMENU_HANDL_ADC_DITH(int8_t direction)
 
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_wifi_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_wifi_item_count;
 	sysmenu_onroot = false;
@@ -1736,6 +1741,7 @@ static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_wifi_selectap_menu_opened = true;
 	SYSMENU_WIFI_DrawSelectAPMenu(true);
 	drawSystemMenu(true);
@@ -1743,6 +1749,7 @@ static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_wifi_setAPpassword_menu_opened = true;
 	SYSMENU_WIFI_DrawAPpasswordMenu(true);
 	drawSystemMenu(true);
@@ -1768,6 +1775,7 @@ static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
 {
+	#pragma unused(direction)
 	LCD_systemMenuOpened = false;
 	LCD_redraw();
 	LCD_doEvents();
@@ -1779,6 +1787,7 @@ static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
 
 static void SYSMENU_HANDL_SDMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_sd_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_sd_item_count;
 	sysmenu_onroot = false;
@@ -1881,13 +1890,13 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 
 static void SYSMENU_HANDL_Bootloader(int8_t direction)
 {
+	#pragma unused(direction)
 	WM8731_CleanBuffer();
 	TRX_NeedGoToBootloader = true;
 	TRX_Inited = false;
 	LCD_busy = true;
 }
 
-#pragma GCC diagnostic ignored "-Wsign-conversion"
 
 //CALIBRATION MENU
 
@@ -1951,6 +1960,7 @@ static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction)
 
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	if (!sysmenu_hiddenmenu_enabled)
 		return;
 	sysmenu_handlers_selected = &sysmenu_calibration_handlers[0];
@@ -1962,7 +1972,7 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction) //Tisho
 {
-
+	#pragma unused(direction)
 	if (sysmenu_TDM_CTRL_opened)
 	{
 	}
@@ -2091,7 +2101,6 @@ static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction)
 		CALIBRATE.adc_offset = 500;
 }
 
-#pragma GCC diagnostic ignored "-Wsign-conversion"
 static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction)
 {
 	CALIBRATE.LPF_END += direction * 100000;
@@ -2294,6 +2303,7 @@ static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction)
 //SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_services_opened = true;
 	sysmenu_handlers_selected = &sysmenu_services_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_services_item_count;
@@ -2306,6 +2316,7 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 //SPECTRUM ANALIZER
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_spectrum_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_spectrum_item_count;
 	sysmenu_onroot = false;
@@ -2366,6 +2377,7 @@ static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction)
 //WSPR Beacon
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_wspr_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_wspr_item_count;
 	sysmenu_onroot = false;
@@ -2518,6 +2530,7 @@ static void SYSMENU_HANDL_SWR_HF_START(int8_t direction)
 //RDA STATS
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_infowindow_opened = true;
 	drawSystemMenu(true);
 	WIFI_getRDA();
@@ -2526,6 +2539,7 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 //PROPAGINATION
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
 {
+	#pragma unused(direction)
 	sysmenu_infowindow_opened = true;
 	drawSystemMenu(true);
 	WIFI_getPropagination();

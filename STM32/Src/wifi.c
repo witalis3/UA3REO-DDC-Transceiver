@@ -437,7 +437,7 @@ void WIFI_Process(void)
 	}
 }
 
-bool WIFI_GetSNTPTime(void *callback)
+bool WIFI_GetSNTPTime(void (*callback)(void))
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
@@ -448,7 +448,7 @@ bool WIFI_GetSNTPTime(void *callback)
 	return true;
 }
 
-bool WIFI_GetIP(void *callback)
+bool WIFI_GetIP(void (*callback)(void))
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
@@ -459,7 +459,7 @@ bool WIFI_GetIP(void *callback)
 	return true;
 }
 
-void WIFI_ListAP(void *callback)
+void WIFI_ListAP(void (*callback)(void))
 {
 	if (WIFI_State != WIFI_READY && WIFI_State != WIFI_CONFIGURED)
 		return;
@@ -617,7 +617,7 @@ static bool WIFI_TryGetLine(void)
 	return true;
 }
 
-bool WIFI_StartCATServer(void *callback)
+bool WIFI_StartCATServer(void (*callback)(void))
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
@@ -628,7 +628,7 @@ bool WIFI_StartCATServer(void *callback)
 	return true;
 }
 
-bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void *callback)
+bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void (*callback)(void))
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
@@ -647,7 +647,7 @@ bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void *callback)
 	return true;
 }
 
-bool WIFI_UpdateFW(void *callback)
+bool WIFI_UpdateFW(void (*callback)(void))
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
@@ -779,7 +779,7 @@ static void WIFI_sendHTTPRequest(void)
 	WIFI_SendCommand(WIFI_HTTRequest);
 }
 
-bool WIFI_getHTTPpage(char *host, char *url, void *callback, bool https)
+bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https)
 {
 	if (WIFI_State != WIFI_READY)
 		return false;

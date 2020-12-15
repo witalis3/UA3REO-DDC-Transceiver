@@ -624,18 +624,18 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 	// Sort coordinates by Y order (y2 >= y1 >= y0)
 	if (y0 > y1)
 	{
-		_swap_int16_t(y0, y1);
-		_swap_int16_t(x0, x1);
+		_swap_int16_t(y0, y1)
+		_swap_int16_t(x0, x1)
 	}
 	if (y1 > y2)
 	{
-		_swap_int16_t(y2, y1);
-		_swap_int16_t(x2, x1);
+		_swap_int16_t(y2, y1)
+		_swap_int16_t(x2, x1)
 	}
 	if (y0 > y1)
 	{
-		_swap_int16_t(y0, y1);
-		_swap_int16_t(x0, x1);
+		_swap_int16_t(y0, y1)
+		_swap_int16_t(x0, x1)
 	}
 
 	if (y0 == y2)
@@ -679,7 +679,7 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
     b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
     */
 		if (a > b)
-			_swap_int16_t(a, b);
+			_swap_int16_t(a, b)
 		LCDDriver_drawFastHLine(a, y, b - a + 1, color);
 	}
 
@@ -698,7 +698,7 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
     b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
     */
 		if (a > b)
-			_swap_int16_t(a, b);
+			_swap_int16_t(a, b)
 		LCDDriver_drawFastHLine(a, y, b - a + 1, color);
 	}
 }
