@@ -299,7 +299,8 @@ void FFT_doFFT(void)
 	memcpy(&FFTInput[FFT_SIZE / 2], &FFTInput[FFT_SIZE], sizeof(float32_t) * (FFT_SIZE / 2)); //tmp - > right
 	
 	// Compress the calculated FFT to visible
-	float32_t fft_compress_rate = (float32_t)FFT_SIZE / (float32_t)LAYOUT->FFT_PRINT_SIZE;
+	memcpy(&FFTInput[0], &FFTInput[FFT_SIZE / 2 - FFT_USEFUL_SIZE / 2], sizeof(float32_t) * FFT_USEFUL_SIZE); //useful fft part
+	float32_t fft_compress_rate = (float32_t)FFT_USEFUL_SIZE / (float32_t)LAYOUT->FFT_PRINT_SIZE;
 	float32_t fft_compress_rate_half = floorf(fft_compress_rate / 2.0f); //full points
 	float32_t fft_compress_rate_parts = fmodf(fft_compress_rate / 2.0f, 1.0f); //partial points
 	
@@ -309,8 +310,8 @@ void FFT_doFFT(void)
 		if(left_index < 0)
 			left_index = 0;
 		int32_t right_index = (uint32_t)((float32_t)i * fft_compress_rate + fft_compress_rate_half);
-		if(right_index >= FFT_SIZE)
-			right_index = FFT_SIZE - 1;
+		if(right_index >= FFT_USEFUL_SIZE)
+			right_index = FFT_USEFUL_SIZE - 1;
 		
 		float32_t points = 0;
 		float32_t accum = 0.0f;
@@ -328,7 +329,7 @@ void FFT_doFFT(void)
 				accum += FFTInput[left_index - 1] * fft_compress_rate_parts;
 				points += fft_compress_rate_parts;
 			}
-			if(right_index < (FFT_SIZE - 1))
+			if(right_index < (FFT_USEFUL_SIZE - 1))
 			{
 				accum += FFTInput[right_index + 1] * fft_compress_rate_parts;
 				points += fft_compress_rate_parts;
@@ -750,10 +751,6 @@ static void FFT_move(int32_t _freq_diff)
 	for (int32_t x = 0; x < LAYOUT->FFT_PRINT_SIZE; x++)
 	{
 		old_x_true = (float32_t)x + freq_diff;
-		if (old_x_true >= (float32_t)LAYOUT->FFT_PRINT_SIZE)
-			old_x_true -= (float32_t)LAYOUT->FFT_PRINT_SIZE;
-		if (old_x_true < 0.0f)
-			old_x_true += (float32_t)LAYOUT->FFT_PRINT_SIZE;
 		old_x_l = (int32_t)(floorf(old_x_true));
 		old_x_r = (int32_t)(ceilf(old_x_true));
 
