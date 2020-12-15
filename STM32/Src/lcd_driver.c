@@ -17,7 +17,7 @@ uint16_t LCDDriver_GetCurrentXOffset(void)
 }
 
 //Text printing functions
-ITCM void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
+void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
 {
 	uint8_t line = 0;
 	if ((x >= LCD_WIDTH) ||			// Clip right
@@ -52,7 +52,7 @@ ITCM void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t c
 	}
 }
 
-ITCM void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size)
+void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size)
 {
 	uint16_t offset = size * 6;
 	uint16_t skipped = 0;
@@ -73,7 +73,7 @@ ITCM void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t colo
 	}
 }
 
-ITCM void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, const GFXfont *gfxFont)
+void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, const GFXfont *gfxFont)
 {
 	c -= gfxFont->first;
 	GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c];
@@ -115,7 +115,7 @@ ITCM void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16
 	}
 }
 
-ITCM void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, const GFXfont *gfxFont)
+void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, const GFXfont *gfxFont)
 {
 	uint8_t c = 0;
 	text_cursor_x = x;
@@ -161,7 +161,7 @@ ITCM void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t 
 	@param    maxy  Maximum clipping value for Y
 */
 /**************************************************************************/
-ITCM static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, const GFXfont *gfxFont)
+static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, const GFXfont *gfxFont)
 {
 	if (c == '\n')
 	{			// Newline?
@@ -207,7 +207,7 @@ ITCM static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t 
 	@param    h      The boundary height, set by function
 */
 /**************************************************************************/
-ITCM void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, const GFXfont *gfxFont)
+void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, const GFXfont *gfxFont)
 {
 	uint8_t c; // Current character
 
@@ -236,7 +236,7 @@ ITCM void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t 
 }
 
 //Image print (RGB 565, 2 bytes per pixel)
-ITCM void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data)
+void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data)
 {
 	uint32_t n = w * h * 2;
 	LCDDriver_SetCursorAreaPosition(x, y, w + x - 1, h + y - 1);
@@ -246,7 +246,7 @@ ITCM void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, u
 	}
 }
 
-ITCM void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image, uint16_t transparent_color, uint16_t bg_color)
+void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image, uint16_t transparent_color, uint16_t bg_color)
 {
 	uint32_t pixels = image->width * image->height;
 	uint32_t i = 0;

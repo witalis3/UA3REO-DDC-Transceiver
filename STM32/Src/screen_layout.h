@@ -139,8 +139,6 @@ extern "C" {
 		const uint16_t WTF_HEIGHT_STYLE3;
 		const uint16_t FFT_PRINT_SIZE;
 		const uint16_t FFT_CWDECODER_OFFSET;
-		const uint16_t FFT_FFT_MAX_HEIGHT;
-		const uint16_t FFT_WTF_MAX_HEIGHT;
 		const uint16_t FFT_FFTWTF_POS_Y;
 		const uint16_t FFT_FFTWTF_BOTTOM;
 		//System menu
@@ -346,8 +344,6 @@ extern "C" {
 		const uint16_t WTF_HEIGHT_STYLE3;
 		const uint16_t FFT_PRINT_SIZE;
 		const uint16_t FFT_CWDECODER_OFFSET;
-		const uint16_t FFT_FFT_MAX_HEIGHT;
-		const uint16_t FFT_WTF_MAX_HEIGHT;
 		const uint16_t FFT_FFTWTF_POS_Y;
 		const uint16_t FFT_FFTWTF_BOTTOM;
 		//Touch buttons layout

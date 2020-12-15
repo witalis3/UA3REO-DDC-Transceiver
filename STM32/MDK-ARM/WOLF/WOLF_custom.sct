@@ -16,7 +16,7 @@ LR_IROM1 0x08000000 0x00200000  {    ; load region size_region
    .ANY (+RW +ZI)
   }
   RW_IRAM2 0x24000000 0x00080000  { ;512kb AXI SRAM
-   *(.IRAM2)
+   *(.IRAM)
    ;.ANY (+RW +ZI)
   }
   SRAM 0x30000000 0x00048000  { ;SRAM1+SRAM2+SRAM3 128kb+128kb+32kb D-Cache disabled in MPU

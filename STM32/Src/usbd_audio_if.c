@@ -8,9 +8,9 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 static int8_t AUDIO_Init_FS(void);
 static int8_t AUDIO_DeInit_FS(void);
 
-uint8_t IRAM2 USB_AUDIO_rx_buffer_a[USB_AUDIO_RX_BUFFER_SIZE] = {0};
-uint8_t IRAM2 USB_AUDIO_rx_buffer_b[USB_AUDIO_RX_BUFFER_SIZE] = {0};
-uint8_t IRAM2 USB_AUDIO_tx_buffer[USB_AUDIO_TX_BUFFER_SIZE] = {0};
+IRAM2 uint8_t USB_AUDIO_rx_buffer_a[USB_AUDIO_RX_BUFFER_SIZE] = {0};
+IRAM2 uint8_t USB_AUDIO_rx_buffer_b[USB_AUDIO_RX_BUFFER_SIZE] = {0};
+IRAM2 uint8_t USB_AUDIO_tx_buffer[USB_AUDIO_TX_BUFFER_SIZE] = {0};
 
 volatile bool USB_AUDIO_current_rx_buffer = false; // a-false b-true
 volatile bool USB_AUDIO_need_rx_buffer = false;    // a-false b-true
@@ -34,6 +34,7 @@ USBD_AUDIO_ItfTypeDef USBD_AUDIO_fops_FS =
 static int8_t AUDIO_Init_FS(void)
 {
   USBD_AUDIO_HandleTypeDef *haudio = (USBD_AUDIO_HandleTypeDef *)hUsbDeviceFS.pClassDataAUDIO;
+  haudio->RxBuffer = (uint8_t *)&USB_AUDIO_rx_buffer_a;
   haudio->TxBuffer = (uint8_t *)&USB_AUDIO_tx_buffer;
   haudio->TxBufferIndex = 0;
   USBD_AUDIO_StartTransmit(&hUsbDeviceFS);
