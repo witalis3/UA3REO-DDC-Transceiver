@@ -738,7 +738,7 @@ static void FFT_move(int32_t _freq_diff)
 	float32_t old_x_true = 0.0f;
 	int32_t old_x_l = 0;
 	int32_t old_x_r = 0;
-	float32_t freq_diff = (_freq_diff / FFT_HZ_IN_PIXEL) * fft_zoom;
+	float32_t freq_diff = ((float32_t)_freq_diff / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom;
 	float32_t old_x_part_r = fmodf(freq_diff, 1.0f);
 	float32_t old_x_part_l = 1.0f - old_x_part_r;
 	if (freq_diff < 0.0f)
