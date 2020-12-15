@@ -2,13 +2,14 @@
 #define LCD_Layout_h
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include "lcd_driver.h"
 #include "color_themes.h"
 #include "fonts.h"
-	
+
 //LCD dimensions defines
 #if (defined(LAY_480x320))
 	typedef const struct
@@ -164,11 +165,10 @@ extern "C" {
 		const uint16_t BW_TRAPEZ_WIDTH;
 	} STRUCT_LAYOUT_THEME;
 
-
-	#define LAYOUT_THEMES_COUNT 1
-	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
-	#define MAX_FFT_HEIGHT 102
-	#define MAX_WTF_HEIGHT 102
+#define LAYOUT_THEMES_COUNT 1
+#define MAX_FFT_PRINT_SIZE LCD_WIDTH
+#define MAX_FFT_HEIGHT 102
+#define MAX_WTF_HEIGHT 102
 #endif
 
 #if (defined(LAY_800x480))
@@ -360,13 +360,13 @@ extern "C" {
 		const uint16_t SYSMENU_MAX_ITEMS_ON_PAGE;
 	} STRUCT_LAYOUT_THEME;
 
-	#define LAYOUT_THEMES_COUNT 1
-	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
-	#define MAX_FFT_HEIGHT 220
-	#define MAX_WTF_HEIGHT 180
+#define LAYOUT_THEMES_COUNT 1
+#define MAX_FFT_PRINT_SIZE LCD_WIDTH
+#define MAX_FFT_HEIGHT 220
+#define MAX_WTF_HEIGHT 180
 #endif
 
-extern const STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT];
+	extern const STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT];
 
 #ifdef __cplusplus
 }

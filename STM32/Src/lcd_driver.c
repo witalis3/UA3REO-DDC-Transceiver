@@ -58,7 +58,7 @@ void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, ui
 	uint16_t skipped = 0;
 	for (uint16_t i = 0; i < 40 && text[i] != 0; i++)
 	{
-		if(text[i] == '^' && text[i+1] == 'o') //celsius
+		if (text[i] == '^' && text[i + 1] == 'o') //celsius
 		{
 			i++;
 			skipped++;
@@ -88,7 +88,7 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 	if (ys2 < 0)
 		ys2 = 0;
 	LCDDriver_SetCursorAreaPosition(x, (uint16_t)ys1, x + glyph->xAdvance - 1, (uint16_t)ys2); //char area
-	
+
 	for (uint8_t yy = 0; yy < glyph->height; yy++)
 	{
 		for (uint8_t xx = 0; xx < glyph->xAdvance; xx++)
@@ -169,7 +169,7 @@ static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx
 		*y += gfxFont->yAdvance;
 	}
 	else if (c != '\r')
-	{ 
+	{
 		if ((c >= gfxFont->first) && (c <= gfxFont->last))
 		{ // Char present in this font?
 			GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c - gfxFont->first];
@@ -261,7 +261,7 @@ void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *im
 			i++;
 			for (uint16_t p = 0; p < count; p++)
 			{
-				if(image->data[i] == transparent_color)
+				if (image->data[i] == transparent_color)
 					LCDDriver_SendData(bg_color);
 				else
 					LCDDriver_SendData(image->data[i]);
@@ -277,7 +277,7 @@ void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *im
 			i++;
 			for (uint16_t p = 0; p < count; p++)
 			{
-				if(image->data[i] == transparent_color)
+				if (image->data[i] == transparent_color)
 					LCDDriver_SendData(bg_color);
 				else
 					LCDDriver_SendData(image->data[i]);
@@ -298,7 +298,7 @@ void LCDDriver_printImage_RLECompressed_StartStream(uint16_t x, uint16_t y, uint
 	RLEStream_pixels = width * height;
 	RLEStream_decoded = 0;
 	RLEStream_state = 0;
-	
+
 	LCDDriver_SetCursorAreaPosition(x, y, width + x - 1, height + y - 1);
 }
 
@@ -313,17 +313,17 @@ void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t l
 	{
 		if ((((int16_t)data[processed] < 0) && (RLEStream_state == 0)) || (RLEStream_state == 1)) // no repeats
 		{
-			if(RLEStream_state == 0)
+			if (RLEStream_state == 0)
 			{
 				nr_count = (-(int16_t)data[processed]);
 				nr_count_p = 0;
 				processed++;
 			}
 			RLEStream_state = 1;
-			
-			if(processed >= len)
+
+			if (processed >= len)
 				return;
-			
+
 			for (; nr_count_p < nr_count;)
 			{
 				LCDDriver_SendData(data[processed]);
@@ -332,24 +332,24 @@ void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t l
 				processed++;
 				if (RLEStream_pixels <= RLEStream_decoded)
 					return;
-				if(processed >= len && nr_count_p < nr_count)
+				if (processed >= len && nr_count_p < nr_count)
 					return;
 			}
 			RLEStream_state = 0;
 		}
 		else if ((((int16_t)data[processed] > 0) && (RLEStream_state == 0)) || (RLEStream_state == 2)) //repeats
 		{
-			if(RLEStream_state == 0)
+			if (RLEStream_state == 0)
 			{
 				r_count = ((int16_t)data[processed]);
 				r_count_p = 0;
 				processed++;
 			}
 			RLEStream_state = 2;
-			
-			if(processed >= len)
+
+			if (processed >= len)
 				return;
-			
+
 			for (; r_count_p < r_count;)
 			{
 				LCDDriver_SendData(data[processed]);

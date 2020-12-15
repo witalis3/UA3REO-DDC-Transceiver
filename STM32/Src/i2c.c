@@ -223,20 +223,20 @@ static uint8_t i2c_writeOneByte(I2C_DEVICE *dev, uint8_t byte)
 
 uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 {
-	unsigned char i,receive=0;
+	unsigned char i, receive = 0;
 	SDA_IN(dev);
-	
-  for(i=0;i<8;i++ )
+
+	for (i = 0; i < 8; i++)
 	{
-    SCK_CLR;
+		SCK_CLR;
 		I2C_DELAY
 		I2C_DELAY
 		SCK_SET;
-    receive<<=1;
+		receive <<= 1;
 		I2C_DELAY
 		I2C_DELAY
-    if(HAL_GPIO_ReadPin(dev->SDA_PORT,dev->SDA_PIN))
-			receive++;   
+		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
+			receive++;
 	}
 	if (!ack)
 	{
@@ -251,7 +251,7 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 		I2C_DELAY
 		SCK_CLR;
 	}
-	else 
+	else
 	{
 		//Ack
 		SCK_CLR;
@@ -264,5 +264,5 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 		I2C_DELAY
 		SCK_CLR;
 	}
- 	return receive;
+	return receive;
 }

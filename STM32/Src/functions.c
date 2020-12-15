@@ -78,7 +78,7 @@ void sendToDebug_str(char *data)
 		static uint16_t dbg_lcd_y = 10;
 		LCDDriver_printText(data, 0, dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
 		dbg_lcd_y += 9;
-		if(dbg_lcd_y >= LCD_HEIGHT)
+		if (dbg_lcd_y >= LCD_HEIGHT)
 			dbg_lcd_y = 0;
 	}
 }
@@ -347,15 +347,15 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 
 	//uint8_t nyquist = freq / (DAC_CLOCK / 2);
 
-	if(freq < 2000000)
+	if (freq < 2000000)
 		return (float32_t)CALIBRATE.rf_out_power_up2mhz / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if(freq < 5000000)
+	if (freq < 5000000)
 		return (float32_t)CALIBRATE.rf_out_power_up5mhz / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if(freq < 15000000)
+	if (freq < 15000000)
 		return (float32_t)CALIBRATE.rf_out_power_up15mhz / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if(freq < 30000000)
+	if (freq < 30000000)
 		return (float32_t)CALIBRATE.rf_out_power_up30mhz / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if(freq < 60000000)
+	if (freq < 60000000)
 		return (float32_t)CALIBRATE.rf_out_power_up60mhz / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 
 	return (float32_t)CALIBRATE.rf_out_power_vhf / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
@@ -449,14 +449,14 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		sendToDebug_strln("SPI Busy");
 		return false;
 	}
-	
+
 	//SPI speed
-	if(hspi2.Init.BaudRatePrescaler != prescaler)
+	if (hspi2.Init.BaudRatePrescaler != prescaler)
 	{
 		hspi2.Init.BaudRatePrescaler = prescaler;
 		HAL_SPI_Init(&hspi2);
 	}
-	
+
 	const int32_t timeout = 0x200; //HAL_MAX_DELAY
 	SPI_busy = true;
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);

@@ -20,20 +20,20 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	//RX1 or RX2
 	float32_t *AGC_need_gain_db = &AGC_RX1_need_gain_db;
 	float32_t *AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
-	float32_t *agcBuffer_kw = (float32_t*)&AGC_RX1_agcBuffer_kw;
-	float32_t *agc_ringbuffer = (float32_t*)&AGC_RX1_ringbuffer;
+	float32_t *agcBuffer_kw = (float32_t *)&AGC_RX1_agcBuffer_kw;
+	float32_t *agc_ringbuffer = (float32_t *)&AGC_RX1_ringbuffer;
 	if (rx_id == AUDIO_RX2)
 	{
 		AGC_need_gain_db = &AGC_RX2_need_gain_db;
 		AGC_need_gain_db_old = &AGC_RX2_need_gain_db_old;
-		agcBuffer_kw = (float32_t*)&AGC_RX2_agcBuffer_kw;
-		agc_ringbuffer = (float32_t*)&AGC_RX2_ringbuffer;
+		agcBuffer_kw = (float32_t *)&AGC_RX2_agcBuffer_kw;
+		agc_ringbuffer = (float32_t *)&AGC_RX2_ringbuffer;
 	}
 
 	//higher speed in settings - higher speed of AGC processing
 	float32_t RX_AGC_STEPSIZE_UP = 0.0f;
 	float32_t RX_AGC_STEPSIZE_DOWN = 0.0f;
-	if(mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
+	if (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
 	{
 		RX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.RX_AGC_CW_speed;
 		RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_CW_speed;
@@ -55,18 +55,18 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 		arm_biquad_cascade_df2T_f32(&AGC_RX2_KW_HSHELF_FILTER, agcBuffer, agcBuffer_kw, blockSize);
 		arm_biquad_cascade_df2T_f32(&AGC_RX2_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
 	}
-	
+
 	//do ring buffer
 	static uint32_t ring_position = 0;
 	//save new data to ring buffer
 	memcpy(&agc_ringbuffer[ring_position * blockSize], agcBuffer, sizeof(float32_t) * blockSize);
 	//move ring buffer index
-	ring_position++; 
-	if(ring_position >= AGC_RINGBUFFER_TAPS_SIZE)
+	ring_position++;
+	if (ring_position >= AGC_RINGBUFFER_TAPS_SIZE)
 		ring_position = 0;
 	//get old data to process
 	memcpy(agcBuffer, &agc_ringbuffer[ring_position * blockSize], sizeof(float32_t) * blockSize);
-	
+
 	//calculate the magnitude in dBFS
 	float32_t AGC_RX_magnitude = 0;
 	arm_rms_f32(agcBuffer_kw, blockSize, &AGC_RX_magnitude);
@@ -76,7 +76,7 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	float32_t AGC_RX_dbFS = rate2dbV(full_scale_rate);
 
 	//move the gain one step
-	if(!WM8731_Muting && !VAD_Muting)
+	if (!WM8731_Muting && !VAD_Muting)
 	{
 		float32_t diff = ((float32_t)TRX.AGC_GAIN_TARGET - (AGC_RX_dbFS + *AGC_need_gain_db));
 		if (diff > 0)
@@ -99,9 +99,9 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	//AGC off, not adjustable
 	if ((rx_id == AUDIO_RX1 && !CurrentVFO()->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO()->AGC))
 		*AGC_need_gain_db = 1.0f;
-	
+
 	//Muting if need
-	if(WM8731_Muting || VAD_Muting)
+	if (WM8731_Muting || VAD_Muting)
 		*AGC_need_gain_db = -200.0f;
 
 	//gain limitation
@@ -120,13 +120,13 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 		bool zero_cross = false;
 		for (uint_fast16_t i = 0; i < blockSize; i++)
 		{
-			if(val_prev < 0.0f && agcBuffer[i] > 0.0f)
+			if (val_prev < 0.0f && agcBuffer[i] > 0.0f)
 				zero_cross = true;
-			else if(val_prev > 0.0f && agcBuffer[i] < 0.0f)
+			else if (val_prev > 0.0f && agcBuffer[i] < 0.0f)
 				zero_cross = true;
-			if(zero_cross)
+			if (zero_cross)
 				*AGC_need_gain_db_old += gainApplyStep;
-			
+
 			agcBuffer[i] = agcBuffer[i] * db2rateV(*AGC_need_gain_db_old);
 			val_prev = agcBuffer[i];
 		}

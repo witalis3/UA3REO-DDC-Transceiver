@@ -44,7 +44,7 @@ static bool enc2_func_mode = false; //false - fast-step, true - func mode (WPM, 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 7, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PRE, .holdHandler = FRONTPANEL_BUTTONHANDLER_PGA},		  //PRE-PGA
 	{.port = 1, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD},	  //ATT-ATTHOLD
-	{.port = 1, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = FRONTPANEL_BUTTONHANDLER_SCAN},								  //MUTE-SCAN
+	{.port = 1, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = FRONTPANEL_BUTTONHANDLER_SCAN},		  //MUTE-SCAN
 	{.port = 1, .channel = 4, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_AGC, .holdHandler = FRONTPANEL_BUTTONHANDLER_AGC_SPEED},	  //AGC-AGCSPEED
 	{.port = 1, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ArB, .holdHandler = FRONTPANEL_BUTTONHANDLER_ANT},		  //A=B-ANT
 	{.port = 1, .channel = 2, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE},		  //TUNE
@@ -56,8 +56,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 2, .channel = 5, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DNR, .holdHandler = FRONTPANEL_BUTTONHANDLER_NB},			 //DNR-NB
 	{.port = 2, .channel = 4, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_NOTCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL}, //NOTCH-MANUAL
 	{.port = 2, .channel = 3, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},		 //CLAR-SHIFT
-	{.port = 2, .channel = 2, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC},															 //REC-PLAY
-	{.port = 2, .channel = 1, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},															 //SERVICES
+	{.port = 2, .channel = 2, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC},			 //REC-PLAY
+	{.port = 2, .channel = 1, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},	 //SERVICES
 	{.port = 2, .channel = 0, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},			 //MENU-LOCK
 
 	{.port = 3, .channel = 7, .state = false, .prev_state = false, .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_KEYER},			//WPM-KEYER
@@ -99,7 +99,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				{
 					//acceleration
 					ENCticksInInterval++;
-					if((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION)
+					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION)
 					{
 						ENCstartMeasureTime = HAL_GetTick();
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
@@ -118,7 +118,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				{
 					//acceleration
 					ENCticksInInterval++;
-					if((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION)
+					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION)
 					{
 						ENCstartMeasureTime = HAL_GetTick();
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
@@ -168,9 +168,9 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		eventRotateSystemMenu((int8_t)direction);
 		return;
 	}
-	if(fabsf(direction) <= ENCODER_MIN_RATE_ACCELERATION)
-		direction = (direction < 0.0f)? -1.0f : 1.0f;
-	
+	if (fabsf(direction) <= ENCODER_MIN_RATE_ACCELERATION)
+		direction = (direction < 0.0f) ? -1.0f : 1.0f;
+
 	VFO *vfo = CurrentVFO();
 	uint32_t newfreq = 0;
 	if (TRX.Fast)
@@ -213,7 +213,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	}
 	else
 	{
-		if(!enc2_func_mode || ((CurrentVFO()->Mode != TRX_MODE_CW_L && CurrentVFO()->Mode != TRX_MODE_CW_U)))
+		if (!enc2_func_mode || ((CurrentVFO()->Mode != TRX_MODE_CW_L && CurrentVFO()->Mode != TRX_MODE_CW_U)))
 		{
 			VFO *vfo = CurrentVFO();
 			uint32_t newfreq = 0;
@@ -255,7 +255,7 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 	static bool ENC2SW_holded = false;
 	ENC2SW_clicked = false;
 	ENC2SW_holded = false;
-	
+
 	if (TRX.Locked)
 		return;
 
@@ -272,7 +272,7 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 	}
 	if (!ENC2SW_AND_TOUCH_Now && ENC2SW_hold_start)
 	{
-		if((HAL_GetTick() - menu_enc2_click_starttime) > KEY_HOLD_TIME)
+		if ((HAL_GetTick() - menu_enc2_click_starttime) > KEY_HOLD_TIME)
 		{
 			ENC2SW_holded = true;
 			ENC2SW_hold_start = false;
@@ -280,44 +280,44 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 	}
 	if (ENC2SW_AND_TOUCH_Now && ENC2SW_hold_start)
 	{
-		if((HAL_GetTick() - menu_enc2_click_starttime) > 1)
+		if ((HAL_GetTick() - menu_enc2_click_starttime) > 1)
 		{
 			ENC2SW_clicked = true;
 			ENC2SW_hold_start = false;
 		}
 	}
-	
+
 	//ENC2 Button hold
 	if (ENC2SW_holded)
 	{
 		FRONTPANEL_BUTTONHANDLER_MENU();
 	}
-	
+
 	//ENC2 Button click
 	if (ENC2SW_clicked)
 	{
 		menu_enc2_click_starttime = HAL_GetTick();
-		
-		#ifndef HAS_TOUCHPAD
+
+#ifndef HAS_TOUCHPAD
 		//ENC2 CLICK
-		if(CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
 		{
 			enc2_func_mode = !enc2_func_mode; //enc2 rotary mode
-			
-			if(!enc2_func_mode)
+
+			if (!enc2_func_mode)
 				LCD_showTooltip("FAST STEP");
 			else
 				LCD_showTooltip("SET WPM");
 		}
 		else
 		{
-			if(LCD_systemMenuOpened)
+			if (LCD_systemMenuOpened)
 			{
 				//navigate in menu
 				eventSecEncoderClickSystemMenu();
 			}
 		}
-		#endif
+#endif
 	}
 }
 
@@ -363,7 +363,7 @@ void FRONTPANEL_Process(void)
 		// AF_GAIN
 		mcp3008_value = FRONTPANEL_ReadMCP3008_Value(6, AD2_CS_GPIO_Port, AD2_CS_Pin);
 		TRX_Volume = (uint16_t)(1023.0f - mcp3008_value);
-		if(TRX_Volume < 50)
+		if (TRX_Volume < 50)
 			TRX_Volume = 0;
 
 		// SHIFT or IF Gain
@@ -372,12 +372,12 @@ void FRONTPANEL_Process(void)
 		{
 			int_fast16_t TRX_SHIFT_old = TRX_SHIFT;
 			TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SHIFT_INTERVAL * 2 / 1023.0f) - TRX.SHIFT_INTERVAL);
-			if(TRX_SHIFT_old != TRX_SHIFT)
+			if (TRX_SHIFT_old != TRX_SHIFT)
 			{
 				TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
 				LCD_bw_trapez_stripe_pos_new = LCD_bw_trapez_stripe_pos_new + (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_SHIFT / (float32_t)TRX.SHIFT_INTERVAL));
-				if(abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
+				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
 				{
 					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
 					LCD_UpdateQuery.StatusInfoGUI = true;
@@ -549,11 +549,11 @@ void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void)
 void FRONTPANEL_BUTTONHANDLER_ANT(void)
 {
 	TRX.ANT = !TRX.ANT;
-	
+
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ANT = TRX.ANT;
-	
+
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
 }
@@ -820,7 +820,7 @@ static void FRONTPANEL_BUTTONHANDLER_WPM(void)
 static void FRONTPANEL_BUTTONHANDLER_KEYER(void)
 {
 	TRX.CW_KEYER = !TRX.CW_KEYER;
-	if(TRX.CW_KEYER)
+	if (TRX.CW_KEYER)
 		LCD_showTooltip("KEYER ON");
 	else
 		LCD_showTooltip("KEYER OFF");
@@ -899,9 +899,9 @@ void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
 		memcpy(&TRX.VFO_A, &TRX.VFO_B, sizeof TRX.VFO_B);
 	else
 		memcpy(&TRX.VFO_B, &TRX.VFO_A, sizeof TRX.VFO_B);
-	
+
 	LCD_showTooltip("VFO COPIED");
-	
+
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfo = true;
 	NeedSaveSettings = true;
@@ -910,14 +910,14 @@ void FRONTPANEL_BUTTONHANDLER_ArB(void) //A=B
 void FRONTPANEL_BUTTONHANDLER_NOTCH(void)
 {
 	TRX_TemporaryMute();
-	
+
 	if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
 	{
 		CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
 		NeedReinitNotch = true;
 	}
 	CurrentVFO()->ManualNotchFilter = false;
-	
+
 	if (!CurrentVFO()->AutoNotchFilter)
 	{
 		InitAutoNotchReduction();
@@ -995,12 +995,12 @@ void FRONTPANEL_BUTTONHANDLER_MUTE(void)
 static void FRONTPANEL_BUTTONHANDLER_BANDMAP(void)
 {
 	TRX.BandMapEnabled = !TRX.BandMapEnabled;
-	
-	if(TRX.BandMapEnabled)
+
+	if (TRX.BandMapEnabled)
 		LCD_showTooltip("BANDMAP ON");
 	else
 		LCD_showTooltip("BANDMAP OFF");
-	
+
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
@@ -1040,10 +1040,8 @@ static void FRONTPANEL_BUTTONHANDLER_SCAN(void)
 
 static void FRONTPANEL_BUTTONHANDLER_PLAY(void)
 {
-
 }
 
 static void FRONTPANEL_BUTTONHANDLER_REC(void)
 {
-	
 }

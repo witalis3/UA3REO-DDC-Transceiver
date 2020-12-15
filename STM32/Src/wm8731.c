@@ -12,8 +12,8 @@ bool WM8731_DMA_state = true;										// what part of the buffer we are working
 bool WM8731_Buffer_underrun = false;								// lack of data in the buffer from the audio processor
 IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; // audio codec ring buffers
 IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
-bool WM8731_Beeping;														//Beeping flag
-bool WM8731_Muting; 														//Muting flag
+bool WM8731_Beeping; //Beeping flag
+bool WM8731_Muting;	 //Muting flag
 
 //Private variables
 
@@ -55,8 +55,8 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 	while (st != 0 && repeats < 3)
 	{
 		i2c_beginTransmission_u8(&I2C_WM8731, B8(0011010)); //I2C_ADDRESS_WM8731 00110100
-		i2c_write_u8(&I2C_WM8731, reg);					   // MSB
-		i2c_write_u8(&I2C_WM8731, value);				   // MSB
+		i2c_write_u8(&I2C_WM8731, reg);						// MSB
+		i2c_write_u8(&I2C_WM8731, value);					// MSB
 		st = i2c_endTransmission(&I2C_WM8731);
 		if (st != 0)
 			repeats++;
@@ -124,7 +124,7 @@ void WM8731_TXRX_mode(void) //loopback
 void WM8731_Mute(void)
 {
 	WM8731_Muting = true;
-	
+
 	//hardware mute
 	/*for(int16_t i = 127; i >= 0; i-= 5)
 	{
@@ -139,7 +139,7 @@ void WM8731_Mute(void)
 void WM8731_UnMute(void)
 {
 	WM8731_Muting = false;
-	
+
 	//hardware unmute
 	/*for(int16_t i = 0; i <= 127; i+= 5)
 	{
@@ -153,7 +153,7 @@ void WM8731_UnMute(void)
 
 void WM8731_Beep(void)
 {
-	if(TRX.Beeper)
+	if (TRX.Beeper)
 	{
 		WM8731_Beeping = true;
 		HAL_Delay(50);

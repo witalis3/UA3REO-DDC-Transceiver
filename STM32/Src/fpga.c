@@ -71,12 +71,14 @@ void FPGA_Init(void)
 				LCD_showError("Flash update complete!", false);
 				HAL_Delay(1000);
 				HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-				while(true) {};
+				while (true)
+				{
+				};
 			}
 		}
 	}
 #endif
-	
+
 	//pre-reset FPGA to sync IQ data
 	FPGA_setBusOutput();
 	FPGA_writePacket(5); // RESET ON
@@ -90,7 +92,7 @@ void FPGA_Init(void)
 void FPGA_restart(void) // restart FPGA modules
 {
 	static bool FPGA_restart_state = false;
-	if(!FPGA_restart_state)
+	if (!FPGA_restart_state)
 	{
 		FPGA_setBusOutput();
 		FPGA_writePacket(5); // RESET ON
@@ -165,7 +167,7 @@ ITCM void FPGA_fpgadata_iqclock(void)
 	{
 		FPGA_writePacket(4); //RX GET IQ
 		FPGA_syncAndClockRiseFall();
-		
+
 		//2 blocks (48*2=96khz)
 		FPGA_fpgadata_getiq();
 		FPGA_fpgadata_getiq();
@@ -180,9 +182,9 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 2
 	//out PTT+PREAMP
-	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));										//RX1
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));				   //RX1
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)); //RX2
-	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));														//TX
+	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));								   //TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
 	if (TRX_on_TX())
@@ -200,7 +202,7 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
-	
+
 	//STAGE 4
 	//out RX1-FREQ
 	FPGA_writePacket(((TRX_freq_phrase & (0XFF << 16)) >> 16));
@@ -224,7 +226,7 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
-	
+
 	//STAGE 8
 	//out RX2-FREQ
 	FPGA_writePacket(((TRX_freq_phrase2 & (0XFF << 16)) >> 16));
@@ -297,7 +299,7 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
-	
+
 	//STAGE 19
 	//out TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFF << 16)) >> 16));
@@ -395,7 +397,7 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 	FPGA_clockFall();
-	
+
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 	if (TRX_RX1_IQ_swap)
 	{
@@ -429,7 +431,7 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 	FPGA_clockFall();
-	
+
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 	if (TRX_RX1_IQ_swap)
 	{
@@ -465,7 +467,7 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 		FPGA_clockRise();
 		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 		FPGA_clockFall();
-		
+
 		FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 		if (TRX_RX2_IQ_swap)
 		{
@@ -495,7 +497,7 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 		FPGA_clockRise();
 		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 		FPGA_clockFall();
-		
+
 		FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 		if (TRX_RX2_IQ_swap)
 		{
@@ -770,10 +772,10 @@ static bool FPGA_is_present(void) // check that the FPGA has firmware
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
 	FPGA_spi_stop_command();
 	FPGA_spi_flash_wait_WIP();
-	FPGA_spi_start_command(M25P80_READ_DATA_BYTES);				 //READ DATA BYTES
-	FPGA_spi_continue_command(0x00);							 //addr 1
-	FPGA_spi_continue_command(0x00);							 //addr 2
-	FPGA_spi_continue_command(0x00);							 //addr 3
+	FPGA_spi_start_command(M25P80_READ_DATA_BYTES); //READ DATA BYTES
+	FPGA_spi_continue_command(0x00);				//addr 1
+	FPGA_spi_continue_command(0x00);				//addr 2
+	FPGA_spi_continue_command(0x00);				//addr 3
 	data = FPGA_spi_continue_command(0xFF);
 	FPGA_spi_stop_command();
 	FPGA_spi_start_command(M25P80_DEEP_POWER_DOWN); //Go sleep
@@ -907,10 +909,10 @@ static void FPGA_spi_flash_erase(void) // clear flash memory
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
 	FPGA_spi_stop_command();
 	FPGA_spi_flash_wait_WIP(); //wait write in progress
-	
+
 	FPGA_spi_start_command(M25P80_WRITE_ENABLE); //Write Enable
 	FPGA_spi_stop_command();
-	FPGA_spi_start_command(M25P80_BULK_ERASE);   //BULK FULL CHIP ERASE
+	FPGA_spi_start_command(M25P80_BULK_ERASE); //BULK FULL CHIP ERASE
 	FPGA_spi_stop_command();
 	FPGA_spi_flash_wait_WIP(); //wait write in progress
 

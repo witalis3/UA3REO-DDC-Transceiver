@@ -122,13 +122,13 @@ extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_I;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_Q;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_I;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_Q;
-extern volatile bool NeedReinitNotch; // need to reinitialize the manual Notch filter
+extern volatile bool NeedReinitNotch;		 // need to reinitialize the manual Notch filter
 extern volatile bool NeedReinitAudioFilters; // need to reinitialize the Audio filters
 
 //Public methods
-extern void InitAudioFilters(void);											   // initialize audio filters
-extern void ReinitAudioFilters(void);										   // reinitialize audio filters
-extern void InitNotchFilter(void);											   // initialize the manual Notch filter
+extern void InitAudioFilters(void);													   // initialize audio filters
+extern void ReinitAudioFilters(void);												   // reinitialize audio filters
+extern void InitNotchFilter(void);													   // initialize the manual Notch filter
 extern void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum); // start DC corrector
 
 #endif

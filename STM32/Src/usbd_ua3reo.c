@@ -1422,7 +1422,7 @@ void USBD_Restart(void)
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
 	//HAL_Delay(1000);
-	
+
 	MX_USB_DEVICE_Init();
 	USB_LastActiveTime = HAL_GetTick();
 }

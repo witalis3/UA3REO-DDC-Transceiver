@@ -8,40 +8,40 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 210				// Settings config version
-#define CALIB_VERSION 210				// Calibration config version
-#define ADC_CLOCK 122880000				// ADC generator frequency
-#define DAC_CLOCK 188160000				// DAC generator frequency
-#define MAX_RX_FREQ_HZ 750000000		// Maximum receive frequency (from the ADC datasheet)
-#define MAX_TX_FREQ_HZ DAC_CLOCK		// Maximum transmission frequency
-#define TRX_SAMPLERATE 48000			// audio stream sampling rate during processing
-#define IQ_SAMPLERATE 96000				// sampling rate of the audio stream from FPGA
-#define MAX_TX_AMPLITUDE 1.0f			// Maximum amplitude when transmitting to FPGA
-#define AGC_MAX_GAIN 30.0f				// Maximum gain in AGC, dB
-#define AGC_CLIPPING 6.0f				 // Limit over target in AGC, dB
-#define TUNE_POWER 100					// % of the power selected in the settings when starting TUNE (100 - full)
-#define TX_AGC_MAXGAIN 5.0f				// Maximum microphone gain during compression
-#define TX_AGC_NOISEGATE 0.00001f		// Minimum signal level for amplification (below - noise, cut off)
-#define TOUCHPAD_DELAY 200				// Anti-bounce time for pressing the touchpad
+#define SETT_VERSION 210				   // Settings config version
+#define CALIB_VERSION 210				   // Calibration config version
+#define ADC_CLOCK 122880000				   // ADC generator frequency
+#define DAC_CLOCK 188160000				   // DAC generator frequency
+#define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
+#define MAX_TX_FREQ_HZ DAC_CLOCK		   // Maximum transmission frequency
+#define TRX_SAMPLERATE 48000			   // audio stream sampling rate during processing
+#define IQ_SAMPLERATE 96000				   // sampling rate of the audio stream from FPGA
+#define MAX_TX_AMPLITUDE 1.0f			   // Maximum amplitude when transmitting to FPGA
+#define AGC_MAX_GAIN 30.0f				   // Maximum gain in AGC, dB
+#define AGC_CLIPPING 6.0f				   // Limit over target in AGC, dB
+#define TUNE_POWER 100					   // % of the power selected in the settings when starting TUNE (100 - full)
+#define TX_AGC_MAXGAIN 5.0f				   // Maximum microphone gain during compression
+#define TX_AGC_NOISEGATE 0.00001f		   // Minimum signal level for amplification (below - noise, cut off)
+#define TOUCHPAD_DELAY 200				   // Anti-bounce time for pressing the touchpad
 #define AUTOGAIN_TARGET_AMPLITUDE 20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
-#define AUTOGAIN_MAX_AMPLITUDE 30000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
-#define AUTOGAIN_CORRECTOR_WAITSTEP 5	// waiting for the averaging of the results when the auto-corrector of the input circuits is running
-#define KEY_HOLD_TIME 500				// time of long pressing of the keyboard button for triggering, ms
-#define MAX_RF_POWER 7.0f				// Maximum power (for meter scale)
-#define SHOW_LOGO true					// Show logo on boot (from images.h)
-#define POWERDOWN_TIMEOUT 1000			// time of pressing the shutdown button, for operation, ms
-#define USB_RESTART_TIMEOUT 5000		// time after which USB restart occurs if there are no packets
-#define FPGA_FLASH_IN_HEX false			// enable FPGA firmware in STM32 firmware
-#define SNTP_SYNC_INTERVAL (60 * 60)	// Time synchronization interval via NTP, sec
-#define FAN_MEDIUM_START 50				// Temperature at which the fan starts at half power
-#define FAN_MEDIUM_STOP 40				// Temperature at which the fan stops
-#define FAN_FULL_START 70				// Temperature at which the fan starts at full power
-#define SCANNER_NOSIGNAL_TIME 50	//time to continue sweeping if signal too low
-#define SCANNER_SIGNAL_TIME 1000	//time to continue sweeping if signal founded
-#define SCANNER_FREQ_STEP	500		//step for freq scanner
-#define ENCODER_MIN_RATE_ACCELERATION	1.2f //encoder enable rounding if lower than value
-#define TRX_MAX_RF_TEMP	80			//maximum rf unit themperature to enable protect
-#define TRX_MAX_SWR		5				//maximum SWR to enable protect (NOT IN TUNE MODE!)
+#define AUTOGAIN_MAX_AMPLITUDE 30000.0f	   // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
+#define AUTOGAIN_CORRECTOR_WAITSTEP 5	   // waiting for the averaging of the results when the auto-corrector of the input circuits is running
+#define KEY_HOLD_TIME 500				   // time of long pressing of the keyboard button for triggering, ms
+#define MAX_RF_POWER 7.0f				   // Maximum power (for meter scale)
+#define SHOW_LOGO true					   // Show logo on boot (from images.h)
+#define POWERDOWN_TIMEOUT 1000			   // time of pressing the shutdown button, for operation, ms
+#define USB_RESTART_TIMEOUT 5000		   // time after which USB restart occurs if there are no packets
+#define FPGA_FLASH_IN_HEX false			   // enable FPGA firmware in STM32 firmware
+#define SNTP_SYNC_INTERVAL (60 * 60)	   // Time synchronization interval via NTP, sec
+#define FAN_MEDIUM_START 50				   // Temperature at which the fan starts at half power
+#define FAN_MEDIUM_STOP 40				   // Temperature at which the fan stops
+#define FAN_FULL_START 70				   // Temperature at which the fan starts at full power
+#define SCANNER_NOSIGNAL_TIME 50		   //time to continue sweeping if signal too low
+#define SCANNER_SIGNAL_TIME 1000		   //time to continue sweeping if signal founded
+#define SCANNER_FREQ_STEP 500			   //step for freq scanner
+#define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
+#define TRX_MAX_RF_TEMP 80				   //maximum rf unit themperature to enable protect
+#define TRX_MAX_SWR 5					   //maximum SWR to enable protect (NOT IN TUNE MODE!)
 
 // select LCD and Touchpad, comment on others
 #define LCD_ILI9481 true
@@ -50,7 +50,7 @@
 //#define LCD_R61581 true //untested
 //#define LCD_ILI9486 true
 //#define LCD_RA8875 true
-//#define TOUCHPAD_GT911 true	
+//#define TOUCHPAD_GT911 true
 
 //select how the SWR and the power is measured
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
@@ -60,16 +60,16 @@
 #define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_2
 #define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_2
 
-#define SCREEN_ROTATE 0			// turn the screen upside down
+#define SCREEN_ROTATE 0 // turn the screen upside down
 
 //#define ADC_BITS 16																						// ADC bit depth
 //#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
 //#define CODEC_BITS 32																					// bitness of data in the audio codec
 //#define FPGA_BUS_FULL_SCALE 65536																		// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
 //#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS_FULL_SCALE)
-#define CODEC_BITS_FULL_SCALE 4294967296																// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
+#define CODEC_BITS_FULL_SCALE 4294967296 // maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
 //#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS )_FULL_SCALE
-#define ADC_FULL_SCALE 65536																			// maximum signal amplitude in the ADC // powf (2, ADC_BITS)
+#define ADC_FULL_SCALE 65536 // maximum signal amplitude in the ADC // powf (2, ADC_BITS)
 #define FLOAT_FULL_SCALE_POW 4
 #define USB_DEBUG_ENABLED true	// allow using USB as a console
 #define SWD_DEBUG_ENABLED false // enable SWD as a console
@@ -80,7 +80,7 @@
 #define ADC_INPUT_IMPEDANCE 200.0f //50ohm -> 1:4 trans
 #define ADC_RANGE 2.25f
 #define ADC_RANGE_PGA 1.5f
-#define ADC_LNA_GAIN_DB 15.0f //on 14mhz
+#define ADC_LNA_GAIN_DB 15.0f	 //on 14mhz
 #define ADC_DRIVER_GAIN_DB 25.5f //on 14mhz
 #define ADC_PGA_GAIN_DB 3.522f
 
@@ -257,7 +257,7 @@ extern struct TRX_SETTINGS
 	bool WSPR_BANDS_6;
 	bool WSPR_BANDS_2;
 	//
-	uint8_t csum; //check sum
+	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit
 } TRX;
 
@@ -301,13 +301,12 @@ extern struct TRX_CALIBRATE
 	float32_t swr_trans_rate;
 	int8_t VCXO_correction;
 	uint8_t ENCODER_ACCELERATION;
-	float32_t FW_AD8307_SLP; 
+	float32_t FW_AD8307_SLP;
 	float32_t FW_AD8307_OFFS;
 	float32_t BW_AD8307_SLP;
 	float32_t BW_AD8307_OFFS;
-	
 
-	uint8_t csum; //check sum
+	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit
 } CALIBRATE;
 

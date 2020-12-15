@@ -23,9 +23,9 @@
 #define TRX_MODE_NO_TX 11
 #define TRX_MODE_COUNT 12
 
-#define ITCM __attribute__((section(".ITCM")))            // 64kb ITCM
+#define ITCM __attribute__((section(".ITCM")))  // 64kb ITCM
 #define IRAM2 __attribute__((section(".IRAM"))) // 512kb AXI SRAM
-#define SRAM __attribute__((section(".SRAM"))) // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb D-Cache disabled in MPU
+#define SRAM __attribute__((section(".SRAM")))  // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb D-Cache disabled in MPU
 //#define SRAM4 __attribute__((section(".SRAM4")))             // 64kb
 #define BACKUP_SRAM_BANK1_ADDR (uint32_t *)0x38800000
 #define BACKUP_SRAM_BANK2_ADDR (uint32_t *)0x38800800
@@ -40,8 +40,8 @@
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
-#define Aligned_CleanDCache_by_Addr(buff, size) (SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)buff) & ~(uint32_t)0x1F), (size)+32))
-#define Aligned_InvalidateDCache_by_Addr(buff, size) (SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)buff) & ~(uint32_t)0x1F), (size)+32))
+#define Aligned_CleanDCache_by_Addr(buff, size) (SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
+#define Aligned_InvalidateDCache_by_Addr(buff, size) (SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
 
 #define isnanf __ARM_isnanf
 #define isinff __ARM_isinff
@@ -76,7 +76,7 @@
 #define BUILD_MONTH_CH1 \
   (                     \
       (BUILD_MONTH_IS_JAN) ? '1' : (BUILD_MONTH_IS_FEB) ? '2' : (BUILD_MONTH_IS_MAR) ? '3' : (BUILD_MONTH_IS_APR) ? '4' : (BUILD_MONTH_IS_MAY) ? '5' : (BUILD_MONTH_IS_JUN) ? '6' : (BUILD_MONTH_IS_JUL) ? '7' : (BUILD_MONTH_IS_AUG) ? '8' : (BUILD_MONTH_IS_SEP) ? '9' : (BUILD_MONTH_IS_OCT) ? '0' : (BUILD_MONTH_IS_NOV) ? '1' : (BUILD_MONTH_IS_DEC) ? '2' : /* error default */ '?')
-#define BUILD_DAY_CH0 (__DATE__[4] == ' ' ? '0' : __DATE__[4] )
+#define BUILD_DAY_CH0 (__DATE__[4] == ' ' ? '0' : __DATE__[4])
 #define BUILD_DAY_CH1 (__DATE__[5])
 
 // Example of __TIME__ string: "21:06:19"

@@ -28,44 +28,44 @@ volatile float32_t Processor_TX_MAX_amplitude_OUT;				// TX uplift after ALC
 bool NeedReinitReverber = false;
 
 // Private variables
-static int32_t Processor_AudioBuffer_A[AUDIO_BUFFER_SIZE] = {0};				  // buffer A of the audio processor
-static int32_t Processor_AudioBuffer_B[AUDIO_BUFFER_SIZE] = {0};				  // buffer B of the audio processor
-static uint32_t two_signal_gen_position = 0;																							   // signal position in a two-signal generator
-static float32_t ALC_need_gain = 1.0f;																									   // current gain of ALC and audio compressor
-static float32_t ALC_need_gain_target = 1.0f;																							   // Target Gain Of ALC And Audio Compressor
-static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0;									   // used in FM detection and low / high pass processing
-static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;																	   // used for squelch processing and debouncing tone detection, respectively
-static float32_t DFM_RX1_fm_sql_avg = 0.0f;																								   // average SQL in FM
+static int32_t Processor_AudioBuffer_A[AUDIO_BUFFER_SIZE] = {0};								 // buffer A of the audio processor
+static int32_t Processor_AudioBuffer_B[AUDIO_BUFFER_SIZE] = {0};								 // buffer B of the audio processor
+static uint32_t two_signal_gen_position = 0;													 // signal position in a two-signal generator
+static float32_t ALC_need_gain = 1.0f;															 // current gain of ALC and audio compressor
+static float32_t ALC_need_gain_target = 1.0f;													 // Target Gain Of ALC And Audio Compressor
+static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0; // used in FM detection and low / high pass processing
+static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;							 // used for squelch processing and debouncing tone detection, respectively
+static float32_t DFM_RX1_fm_sql_avg = 0.0f;														 // average SQL in FM
 static float32_t DFM_RX2_fm_sql_avg = 0.0f;
 static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
-static float32_t deemph_a = 0.0f;	//deemphasis coeff
+static float32_t deemph_a = 0.0f; //deemphasis coeff
 
 // Prototypes
-static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Hilbert filter for phase shift of signals
-static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // Low-pass filter for I and Q
-static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // LPF filter for I
-static void doRX_GAUSS_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // Gauss filter for I
-static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // HPF filter for I
-static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // Digital Noise Reduction
-static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode);		   // automatic gain control
-static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size);		   // notch filter
-static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size); // impulse noise suppressor
-static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // s-meter
-static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);  // copy I to Q channel
-static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	   // FM demodulator
-static void ModulateFM(uint16_t size);								   // FM modulator
-static void doRX_EQ(uint16_t size);									   // receiver equalizer
-static void doMIC_EQ(uint16_t size);								   // microphone equalizer
-static void doVAD(uint16_t size);								   // voice activity detector
-static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);	//IF gain
+static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // Hilbert filter for phase shift of signals
+static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // Low-pass filter for I and Q
+static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);					 // LPF filter for I
+static void doRX_GAUSS_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // Gauss filter for I
+static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);					 // HPF filter for I
+static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size);					 // Digital Noise Reduction
+static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode); // automatic gain control
+static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size);					 // notch filter
+static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size);			 // impulse noise suppressor
+static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // s-meter
+static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);			 // copy I to Q channel
+static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // FM demodulator
+static void ModulateFM(uint16_t size);											 // FM modulator
+static void doRX_EQ(uint16_t size);												 // receiver equalizer
+static void doMIC_EQ(uint16_t size);											 // microphone equalizer
+static void doVAD(uint16_t size);												 // voice activity detector
+static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 //IF gain
 
 // initialize audio processor
 void initAudioProcessor(void)
 {
-	deemph_a = roundf(1.0f/((1.0f-expf(-1.0f/((float32_t)IQ_SAMPLERATE * 75e-6)))));
+	deemph_a = roundf(1.0f / ((1.0f - expf(-1.0f / ((float32_t)IQ_SAMPLERATE * 75e-6)))));
 	InitAudioFilters();
 	DECODER_Init();
 	NeedReinitReverber = true;
@@ -142,9 +142,9 @@ void processRxAudio(void)
 		TRX_IQ_phase_error = asinf(teta1 / teta3);
 
 	VAD_Muting = false;
-	if(current_vfo->Mode != TRX_MODE_IQ)
+	if (current_vfo->Mode != TRX_MODE_IQ)
 		doRX_IFGain(AUDIO_RX1, decimated_block_size_rx1);
-	
+
 	switch (current_vfo->Mode) // first receiver
 	{
 	case TRX_MODE_LSB:
@@ -237,9 +237,9 @@ void processRxAudio(void)
 
 	if (TRX.Dual_RX)
 	{
-		if(secondary_vfo->Mode != TRX_MODE_IQ)
+		if (secondary_vfo->Mode != TRX_MODE_IQ)
 			doRX_IFGain(AUDIO_RX2, decimated_block_size_rx2);
-		
+
 		switch (secondary_vfo->Mode) // second receiver
 		{
 		case TRX_MODE_LSB:
@@ -326,17 +326,17 @@ void processRxAudio(void)
 	// receiver equalizer
 	if (current_vfo->Mode != TRX_MODE_DIGI_L && current_vfo->Mode != TRX_MODE_DIGI_U && current_vfo->Mode != TRX_MODE_IQ)
 		doRX_EQ(decimated_block_size_rx1);
-	
+
 	// muting
 	if (TRX_Mute)
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, 0.0f, FPGA_Audio_Buffer_RX1_I_tmp, decimated_block_size_rx1);
-	
+
 	// create buffers for transmission to the codec
 	for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 	{
 		if (!TRX.Dual_RX)
 		{
-			arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2], 1);	 //left channel
+			arm_float_to_q31(&FPGA_Audio_Buffer_RX1_I_tmp[i], &Processor_AudioBuffer_current[i * 2], 1); //left channel
 			if (current_vfo->Mode == TRX_MODE_IQ)
 				arm_float_to_q31(&FPGA_Audio_Buffer_RX1_Q_tmp[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
 			else
@@ -393,27 +393,27 @@ void processRxAudio(void)
 	}
 
 	//Beep signal
-	if(WM8731_Beeping)
+	if (WM8731_Beeping)
 	{
 		float32_t signal = 0;
 		int32_t out = 0;
 		float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f) * 0.1f;
-		for(uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
+		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
 		{
 			signal = generateSin(amplitude, pos, TRX_SAMPLERATE, 1500);
 			arm_float_to_q31(&signal, &out, 1);
-			Processor_AudioBuffer_current[pos * 2] = convertToSPIBigEndian(out); //left channel
-			Processor_AudioBuffer_current[pos * 2 + 1] = Processor_AudioBuffer_current[pos * 2];					//right channel
+			Processor_AudioBuffer_current[pos * 2] = convertToSPIBigEndian(out);				 //left channel
+			Processor_AudioBuffer_current[pos * 2 + 1] = Processor_AudioBuffer_current[pos * 2]; //right channel
 		}
 	}
 
 	//Mute codec
-	if(WM8731_Muting)
+	if (WM8731_Muting)
 	{
-		for(uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
+		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
 		{
-			Processor_AudioBuffer_current[pos * 2] = 0; //left channel
-			Processor_AudioBuffer_current[pos * 2 + 1] = 0;					//right channel
+			Processor_AudioBuffer_current[pos * 2] = 0;		//left channel
+			Processor_AudioBuffer_current[pos * 2 + 1] = 0; //right channel
 		}
 	}
 
@@ -453,7 +453,7 @@ void processTxAudio(void)
 	// zero beats
 	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || (TRX_Tune && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)))
 		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 1.0f;
-	
+
 	if (TRX.InputType_USB) //USB AUDIO
 	{
 		uint32_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET; //buffer 8bit, data 24 bit
@@ -478,7 +478,7 @@ void processTxAudio(void)
 			FPGA_Audio_Buffer_TX_Q_tmp[i] = 0.0f;
 		}
 	}
-	
+
 	//Two-signal tune generator
 	if (TRX_Tune && TRX.TWO_SIGNAL_TUNE)
 	{
@@ -498,24 +498,24 @@ void processTxAudio(void)
 		// - 45 deg to I data
 		arm_fir_f32(&FIR_TX_Hilbert_I, FPGA_Audio_Buffer_TX_Q_tmp, FPGA_Audio_Buffer_TX_Q_tmp, AUDIO_BUFFER_HALF_SIZE);
 	}
-	
+
 	//FM tone generator
 	if (TRX_Tune && (mode == TRX_MODE_NFM || mode == TRX_MODE_WFM))
 	{
 		static uint32_t tone_counter = 100;
 		tone_counter++;
-		if(tone_counter >= 400)
+		if (tone_counter >= 400)
 			tone_counter = 0;
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			float32_t point = 0.0f;
-			if(tone_counter > 300)
+			if (tone_counter > 300)
 				point = generateSin(1.0f, two_signal_gen_position, TRX_SAMPLERATE, 3500);
-			else if(tone_counter > 200)
+			else if (tone_counter > 200)
 				point = generateSin(1.0f, two_signal_gen_position, TRX_SAMPLERATE, 2000);
-			else if(tone_counter > 100)
+			else if (tone_counter > 100)
 				point = generateSin(1.0f, two_signal_gen_position, TRX_SAMPLERATE, 1000);
-			
+
 			two_signal_gen_position++;
 			if (two_signal_gen_position >= TRX_SAMPLERATE)
 				two_signal_gen_position = 0;
@@ -837,7 +837,7 @@ static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 // Gauss filter for I
 static void doRX_GAUSS_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
-	if(!TRX.CW_GaussFilter)
+	if (!TRX.CW_GaussFilter)
 		return;
 	if (rx_id == AUDIO_RX1)
 	{
@@ -919,13 +919,13 @@ static void doMIC_EQ(uint16_t size)
 		arm_biquad_cascade_df2T_f32(&EQ_MIC_MID_FILTER, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
 	if (TRX.MIC_EQ_HIG != 0)
 		arm_biquad_cascade_df2T_f32(&EQ_MIC_HIG_FILTER, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
-	
+
 	//Reverber
-	if(TRX.MIC_REVERBER > 0)
+	if (TRX.MIC_REVERBER > 0)
 	{
 		//reset
 		static uint32_t reverber_position = 0;
-		if(NeedReinitReverber)
+		if (NeedReinitReverber)
 		{
 			reverber_position = 0;
 			memset(Processor_Reverber_Buffer, 0x00, sizeof(Processor_Reverber_Buffer));
@@ -934,12 +934,12 @@ static void doMIC_EQ(uint16_t size)
 
 		//save
 		memcpy(&Processor_Reverber_Buffer[reverber_position * size], FPGA_Audio_Buffer_TX_I_tmp, sizeof(float32_t) * size);
-		
+
 		//move
 		reverber_position++;
-		if(reverber_position > TRX.MIC_REVERBER)
+		if (reverber_position > TRX.MIC_REVERBER)
 			reverber_position = 0;
-		
+
 		//apply
 		arm_add_f32(&Processor_Reverber_Buffer[reverber_position * size], FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, size);
 		arm_scale_f32(FPGA_Audio_Buffer_TX_I_tmp, 0.5f, FPGA_Audio_Buffer_TX_I_tmp, size);
@@ -996,14 +996,14 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 // s-meter
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
-	if(Processor_RX_Power_value != 0)
+	if (Processor_RX_Power_value != 0)
 		return;
 	// Prepare data to calculate s-meter
 	static float32_t i = 0;
 	if (rx_id == AUDIO_RX1)
 	{
 		arm_rms_f32(FPGA_Audio_Buffer_RX1_I_tmp, size, &i);
-		if(current_if_gain != 0.0f)
+		if (current_if_gain != 0.0f)
 			i *= 1.0f / current_if_gain;
 	}
 	else
@@ -1057,7 +1057,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		FPGA_Audio_Buffer_Q_tmp = &FPGA_Audio_Buffer_RX2_Q_tmp[0];
 		squelched = &DFM_RX2_Squelched;
 	}
-	
+
 	for (uint_fast16_t i = 0; i < size; i++)
 	{
 		// first, calculate "x" and "y" for the arctan2, comparing the vectors of present data with previous data
@@ -1079,10 +1079,13 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 				//fm de emphasis
 				static float32_t avg = 0.0f;
 				float32_t d = FPGA_Audio_Buffer_I_tmp[i] - avg;
-				if (d > 0) {
-					avg += (d + deemph_a/2) / deemph_a;
-				} else {
-					avg += (d - deemph_a/2) / deemph_a;
+				if (d > 0)
+				{
+					avg += (d + deemph_a / 2) / deemph_a;
+				}
+				else
+				{
+					avg += (d - deemph_a / 2) / deemph_a;
 				}
 				FPGA_Audio_Buffer_I_tmp[i] = avg;
 			}
@@ -1161,16 +1164,18 @@ static void ModulateFM(uint16_t size)
 		modulation_index = 40000.0f;
 	if (CurrentVFO()->LPF_Filter_Width == 0)
 		modulation_index = 45000.0f;
-	
+
 	// Do differentiating high-pass filter to provide 6dB/octave pre-emphasis - which also removes any DC component!
 	float32_t ampl = (Processor_selected_RFpower_amplitude / 100.0f * TUNE_POWER);
 	for (uint_fast16_t i = 0; i < size; i++)
 	{
-		hpf_prev_b = FM_TX_HPF_ALPHA * (hpf_prev_b +FPGA_Audio_Buffer_TX_I_tmp[i] - hpf_prev_a); // do differentiation
+		hpf_prev_b = FM_TX_HPF_ALPHA * (hpf_prev_b + FPGA_Audio_Buffer_TX_I_tmp[i] - hpf_prev_a); // do differentiation
 		hpf_prev_a = FPGA_Audio_Buffer_TX_I_tmp[i];												  // save "[n-1] samples for next iteration
-		fm_mod_accum = (1.0f - 0.999f) * fm_mod_accum + 0.999f * hpf_prev_b;						  // save differentiated data in audio buffer // change frequency using scaled audio
-		while(fm_mod_accum > modulation) fm_mod_accum -= modulation; // limit range
-		while(fm_mod_accum < -modulation) fm_mod_accum += modulation; // limit range
+		fm_mod_accum = (1.0f - 0.999f) * fm_mod_accum + 0.999f * hpf_prev_b;					  // save differentiated data in audio buffer // change frequency using scaled audio
+		while (fm_mod_accum > modulation)
+			fm_mod_accum -= modulation; // limit range
+		while (fm_mod_accum < -modulation)
+			fm_mod_accum += modulation; // limit range
 		sin_data = ((fm_mod_accum * modulation_index) / modulation) * PI;
 		FPGA_Audio_Buffer_TX_I_tmp[i] = ampl * arm_sin_f32(sin_data);
 		FPGA_Audio_Buffer_TX_Q_tmp[i] = ampl * arm_cos_f32(sin_data);
@@ -1191,19 +1196,19 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	float32_t minVal = 0;
 	float32_t maxVal = 0;
 	uint32_t index = 0;
-	
+
 	if (rx_id == AUDIO_RX1)
 	{
 		//overflow protect
 		arm_min_f32(FPGA_Audio_Buffer_RX1_I_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(FPGA_Audio_Buffer_RX1_I_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
-		while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
+		while ((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
 			if_gain -= 0.1f;
 		arm_min_f32(FPGA_Audio_Buffer_RX1_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(FPGA_Audio_Buffer_RX1_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
-		while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
+		while ((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
 			if_gain -= 0.1f;
-		
+
 		//apply gain
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_I_tmp, if_gain, FPGA_Audio_Buffer_RX1_I_tmp, size);
 		arm_scale_f32(FPGA_Audio_Buffer_RX1_Q_tmp, if_gain, FPGA_Audio_Buffer_RX1_Q_tmp, size);
@@ -1214,13 +1219,13 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		//overflow protect RX2
 		arm_min_f32(FPGA_Audio_Buffer_RX2_I_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(FPGA_Audio_Buffer_RX2_I_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
-		while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
+		while ((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
 			if_gain -= 0.1f;
 		arm_min_f32(FPGA_Audio_Buffer_RX2_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(FPGA_Audio_Buffer_RX2_Q_tmp, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
-		while((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
+		while ((minVal * if_gain) < -1.0f || (maxVal * if_gain) > 1.0f)
 			if_gain -= 0.1f;
-		
+
 		//apply gain
 		arm_scale_f32(FPGA_Audio_Buffer_RX2_I_tmp, if_gain, FPGA_Audio_Buffer_RX2_I_tmp, size);
 		arm_scale_f32(FPGA_Audio_Buffer_RX2_Q_tmp, if_gain, FPGA_Audio_Buffer_RX2_Q_tmp, size);

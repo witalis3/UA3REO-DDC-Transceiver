@@ -140,10 +140,10 @@ static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
-static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction);	//Tisho	  
-static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction);	//Tisho
-static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction);	//Tisho
-static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction);	//Tisho
+static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction);  //Tisho
+static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction); //Tisho
+static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction);  //Tisho
+static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction); //Tisho
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
@@ -180,7 +180,7 @@ static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
-static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction);		//Tisho
+static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); //Tisho
 
 IRAM2 static struct sysmenu_item_handler sysmenu_handlers[] =
 	{
@@ -326,12 +326,12 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_HANDL_CALIB_CICCOMP_SHIFT},
 		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
 		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
-		{"RF GAIN <2mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up2mhz, SYSMENU_HANDL_CALIB_RF_GAIN_LF},	//-V641
-		{"RF GAIN <5mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up5mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW},	//-V641
-		{"RF GAIN <15mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up15mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF1},	//-V641
-		{"RF GAIN <30mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up30mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF2},	//-V641
-		{"RF GAIN <60mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up60mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH},	//-V641
-		{"RF GAIN VHF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_vhf, SYSMENU_HANDL_CALIB_RF_GAIN_VHF},	//-V641
+		{"RF GAIN <2mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up2mhz, SYSMENU_HANDL_CALIB_RF_GAIN_LF},		 //-V641
+		{"RF GAIN <5mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up5mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW},	 //-V641
+		{"RF GAIN <15mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up15mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF1},	 //-V641
+		{"RF GAIN <30mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up30mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF2},	 //-V641
+		{"RF GAIN <60mhz", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_up60mhz, SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH}, //-V641
+		{"RF GAIN VHF", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_vhf, SYSMENU_HANDL_CALIB_RF_GAIN_VHF},			 //-V641
 		{"S METER", SYSMENU_INT16, (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_HANDL_CALIB_S_METER},
 		{"ADC OFFSET", SYSMENU_INT16, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
 		{"LPF END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
@@ -388,14 +388,14 @@ IRAM2 static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 static uint8_t sysmenu_wspr_item_count = sizeof(sysmenu_wspr_handlers) / sizeof(sysmenu_wspr_handlers[0]);
 
 IRAM2 static struct sysmenu_item_handler sysmenu_services_handlers[] =
-{
-	{"Band SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_BAND_START},
-	{"HF SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_HF_START},
-	{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
-	{"RDA Statistics", SYSMENU_RUN, 0, SYSMENU_HANDL_RDA_STATS},
-	{"Propagination", SYSMENU_RUN, 0, SYSMENU_HANDL_PROPAGINATION},
-	{"WSPR Beacon", SYSMENU_MENU, 0, SYSMENU_HANDL_WSPRMENU},
-	{"SWR Tandem Match Contr.", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl},		//Tisho
+	{
+		{"Band SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_BAND_START},
+		{"HF SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_HF_START},
+		{"Spectrum Analyzer", SYSMENU_MENU, 0, SYSMENU_HANDL_SPECTRUMMENU},
+		{"RDA Statistics", SYSMENU_RUN, 0, SYSMENU_HANDL_RDA_STATS},
+		{"Propagination", SYSMENU_RUN, 0, SYSMENU_HANDL_PROPAGINATION},
+		{"WSPR Beacon", SYSMENU_MENU, 0, SYSMENU_HANDL_WSPRMENU},
+		{"SWR Tandem Match Contr.", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl}, //Tisho
 };
 static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
 
@@ -957,7 +957,7 @@ static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_MIC_REVERBER(int8_t direction)
 {
-	if(direction > 0 || TRX.MIC_REVERBER > 0)
+	if (direction > 0 || TRX.MIC_REVERBER > 0)
 		TRX.MIC_REVERBER += direction;
 	if (TRX.MIC_REVERBER > (AUDIO_MAX_REVERBER_TAPS - 1))
 		TRX.MIC_REVERBER = (AUDIO_MAX_REVERBER_TAPS - 1);
@@ -1428,11 +1428,11 @@ static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction)
 
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction)
 {
-	if(direction > 0 || TRX.ColorThemeId > 0)
+	if (direction > 0 || TRX.ColorThemeId > 0)
 		TRX.ColorThemeId += direction;
 	if (TRX.ColorThemeId > (COLOR_THEMES_COUNT - 1))
 		TRX.ColorThemeId = (COLOR_THEMES_COUNT - 1);
-	
+
 	COLOR = &COLOR_THEMES[TRX.ColorThemeId];
 	FFT_Init();
 	LCD_redraw();
@@ -1440,11 +1440,11 @@ static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction)
 
 static void SYSMENU_HANDL_SCREEN_LAYOUT_THEME(int8_t direction)
 {
-	if(direction > 0 || TRX.LayoutThemeId > 0)
+	if (direction > 0 || TRX.LayoutThemeId > 0)
 		TRX.LayoutThemeId += direction;
 	if (TRX.LayoutThemeId > (LAYOUT_THEMES_COUNT - 1))
 		TRX.LayoutThemeId = (LAYOUT_THEMES_COUNT - 1);
-	
+
 	LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
 	FFT_Init();
 	LCD_redraw();
@@ -1960,18 +1960,17 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 	drawSystemMenu(true);
 }
 
-static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction)			//Tisho
+static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction) //Tisho
 {
-	
+
 	if (sysmenu_TDM_CTRL_opened)
 	{
-		
 	}
 	else
 	{
 		sysmenu_TDM_CTRL_opened = true;
 		TDM_Voltages_Start();
-//		drawSystemMenu(true);
+		//		drawSystemMenu(true);
 	}
 }
 
@@ -2010,7 +2009,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_LF(int8_t direction)
 		CALIBRATE.rf_out_power_up2mhz += direction;
 	if (CALIBRATE.rf_out_power_up2mhz > 100)
 		CALIBRATE.rf_out_power_up2mhz = 100;
-	
+
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
@@ -2022,7 +2021,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_LOW(int8_t direction)
 		CALIBRATE.rf_out_power_up5mhz += direction;
 	if (CALIBRATE.rf_out_power_up5mhz > 100)
 		CALIBRATE.rf_out_power_up5mhz = 100;
-	
+
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
@@ -2034,7 +2033,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_HF1(int8_t direction)
 		CALIBRATE.rf_out_power_up15mhz += direction;
 	if (CALIBRATE.rf_out_power_up15mhz > 100)
 		CALIBRATE.rf_out_power_up15mhz = 100;
-	
+
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
@@ -2046,7 +2045,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_HF2(int8_t direction)
 		CALIBRATE.rf_out_power_up30mhz += direction;
 	if (CALIBRATE.rf_out_power_up30mhz > 100)
 		CALIBRATE.rf_out_power_up30mhz = 100;
-	
+
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
@@ -2058,7 +2057,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_HF_HIGH(int8_t direction)
 		CALIBRATE.rf_out_power_up60mhz += direction;
 	if (CALIBRATE.rf_out_power_up60mhz > 100)
 		CALIBRATE.rf_out_power_up60mhz = 100;
-	
+
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
@@ -2070,7 +2069,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_VHF(int8_t direction)
 		CALIBRATE.rf_out_power_vhf += direction;
 	if (CALIBRATE.rf_out_power_vhf > 100)
 		CALIBRATE.rf_out_power_vhf = 100;
-	
+
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
@@ -2562,7 +2561,7 @@ void drawSystemMenu(bool draw_background)
 		SYSMENU_TRX_DrawCallsignMenu(false);
 		return;
 	}
-		if (sysmenu_trx_setLocator_menu_opened)
+	if (sysmenu_trx_setLocator_menu_opened)
 	{
 		SYSMENU_TRX_DrawLocatorMenu(false);
 		return;
@@ -2577,9 +2576,9 @@ void drawSystemMenu(bool draw_background)
 		WSPR_DoEvents();
 		return;
 	}
-	if (sysmenu_TDM_CTRL_opened)				//Tisho
+	if (sysmenu_TDM_CTRL_opened) //Tisho
 	{
-		TDM_Voltages();									
+		TDM_Voltages();
 		return;
 	}
 	if (sysmenu_swr_opened)
@@ -2587,7 +2586,7 @@ void drawSystemMenu(bool draw_background)
 		SWR_Draw();
 		return;
 	}
-	if(sysmenu_infowindow_opened)
+	if (sysmenu_infowindow_opened)
 		return;
 	LCD_busy = true;
 
@@ -2702,7 +2701,7 @@ void eventCloseSystemMenu(void)
 		systemMenuIndex = 0;
 		drawSystemMenu(true);
 	}
-	else if (sysmenu_TDM_CTRL_opened)			//Tisho
+	else if (sysmenu_TDM_CTRL_opened) //Tisho
 	{
 		sysmenu_TDM_CTRL_opened = false;
 		systemMenuIndex = 0;
@@ -2763,7 +2762,7 @@ void eventCloseAllSystemMenu(void)
 //secondary encoder click
 void eventSecEncoderClickSystemMenu(void)
 {
-	if(sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_MENU || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_HIDDEN_MENU || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_RUN || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE)
+	if (sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_MENU || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_HIDDEN_MENU || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_RUN || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE)
 	{
 		sysmenu_item_selected_by_enc2 = false;
 		eventRotateSystemMenu(1);
@@ -2872,12 +2871,12 @@ void eventSecRotateSystemMenu(int8_t direction)
 		return;
 	}
 	//other
-	if(sysmenu_item_selected_by_enc2) //selected by secondary encoder
+	if (sysmenu_item_selected_by_enc2) //selected by secondary encoder
 	{
 		eventRotateSystemMenu(direction);
 		return;
 	}
-	
+
 	uint8_t current_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 	LCDDriver_drawFastHLine(0, (5 + (systemMenuIndex - current_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE) * LAYOUT->SYSMENU_ITEM_HEIGHT) + 17, LAYOUT->SYSMENU_W, BG_COLOR);
 	if (direction < 0)
@@ -2993,7 +2992,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	uint8_t current_selected_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 	if (systemMenuIndex == sysmenu_i + current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
 	{
-		if(sysmenu_item_selected_by_enc2)
+		if (sysmenu_item_selected_by_enc2)
 			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
 		else
 			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, FG_COLOR);

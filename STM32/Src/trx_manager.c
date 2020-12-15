@@ -43,8 +43,8 @@ volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
 volatile float32_t TRX_PWR_Forward = 0;
 volatile float32_t TRX_PWR_Backward = 0;
 volatile float32_t TRX_SWR = 0;
-volatile float32_t TRX_VLT_forward = 0;				//Tisho
-volatile float32_t TRX_VLT_backward = 0;			//Tisho
+volatile float32_t TRX_VLT_forward = 0;	 //Tisho
+volatile float32_t TRX_VLT_backward = 0; //Tisho
 volatile float32_t TRX_ALC = 0;
 volatile bool TRX_DAC_DIV0 = false;
 volatile bool TRX_DAC_DIV1 = false;
@@ -53,7 +53,7 @@ volatile bool TRX_DAC_HP2 = false;
 volatile bool TRX_DAC_X4 = false;
 volatile bool TRX_DCDC_Freq = false;
 static uint_fast8_t autogain_wait_reaction = 0;	  // timer for waiting for a reaction from changing the ATT / PRE modes
-volatile uint8_t TRX_AutoGain_Stage = 0;			  // stage of working out the amplification corrector
+volatile uint8_t TRX_AutoGain_Stage = 0;		  // stage of working out the amplification corrector
 static uint32_t KEYER_symbol_start_time = 0;	  // start time of the automatic key character
 static bool KEYER_symbol_status = false;		  // status (signal or period) of the automatic key symbol
 volatile float32_t TRX_STM32_VREF = 3.3f;		  // voltage on STM32
@@ -346,16 +346,16 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		vfo->HPF_Filter_Width = 0;
 		break;
 	}
-	
+
 	//FFT Zoom change
-	if(TRX.FFT_Zoom != TRX.FFT_ZoomCW)
+	if (TRX.FFT_Zoom != TRX.FFT_ZoomCW)
 	{
-		if((old_mode == TRX_MODE_CW_L || old_mode == TRX_MODE_CW_U) && (_mode != TRX_MODE_CW_L && _mode != TRX_MODE_CW_U))
+		if ((old_mode == TRX_MODE_CW_L || old_mode == TRX_MODE_CW_U) && (_mode != TRX_MODE_CW_L && _mode != TRX_MODE_CW_U))
 			FFT_Init();
-		if((old_mode != TRX_MODE_CW_L && old_mode != TRX_MODE_CW_U) && (_mode == TRX_MODE_CW_L || _mode == TRX_MODE_CW_U))
+		if ((old_mode != TRX_MODE_CW_L && old_mode != TRX_MODE_CW_U) && (_mode == TRX_MODE_CW_L || _mode == TRX_MODE_CW_U))
 			FFT_Init();
 	}
-	
+
 	NeedReinitAudioFilters = true;
 	NeedSaveSettings = true;
 	LCD_UpdateQuery.StatusInfoBar = true;
@@ -364,16 +364,16 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 
 void TRX_DoAutoGain(void)
 {
-	#define SKIP_CYCLES_DOWNSTAGE 10 //skip cycles on stage downgrade
+#define SKIP_CYCLES_DOWNSTAGE 10 //skip cycles on stage downgrade
 	static uint8_t skip_cycles = 0;
-	
+
 	//Process AutoGain feature
 	if (TRX.AutoGain && !TRX_on_TX())
 	{
 		int32_t max_amplitude = abs(TRX_ADC_MAXAMPLITUDE);
-		if(abs(TRX_ADC_MINAMPLITUDE) > max_amplitude)
+		if (abs(TRX_ADC_MINAMPLITUDE) > max_amplitude)
 			max_amplitude = abs(TRX_ADC_MINAMPLITUDE);
-		
+
 		switch (TRX_AutoGain_Stage)
 		{
 		case 0: // stage 1 - LPF + BPF + ATT
@@ -385,7 +385,7 @@ void TRX_DoAutoGain(void)
 			FPGA_NeedSendParams = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
-			if(skip_cycles == 0)
+			if (skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF + ATT");
 				resetVAD();
@@ -394,7 +394,7 @@ void TRX_DoAutoGain(void)
 			else
 				skip_cycles--;
 			break;
-		case 1:																					// changed the state, process the results
+		case 1:																		  // changed the state, process the results
 			if ((max_amplitude * db2rateV(-TRX.ATT_DB)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
 				autogain_wait_reaction++;
 			else
@@ -414,7 +414,7 @@ void TRX_DoAutoGain(void)
 			FPGA_NeedSendParams = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
-			if(skip_cycles == 0)
+			if (skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF");
 				resetVAD();
@@ -448,7 +448,7 @@ void TRX_DoAutoGain(void)
 			FPGA_NeedSendParams = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
-			if(skip_cycles == 0)
+			if (skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF + PGA");
 				resetVAD();
@@ -484,7 +484,7 @@ void TRX_DoAutoGain(void)
 			FPGA_NeedSendParams = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
-			if(skip_cycles == 0)
+			if (skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF + PGA + DRIVER");
 				resetVAD();
@@ -496,7 +496,7 @@ void TRX_DoAutoGain(void)
 		case 7: // changed the state, process the results
 			if (max_amplitude > AUTOGAIN_MAX_AMPLITUDE || TRX_ADC_OTR)
 			{
-				TRX_AutoGain_Stage -= 3;															// too much gain, go back one step
+				TRX_AutoGain_Stage -= 3; // too much gain, go back one step
 				skip_cycles = SKIP_CYCLES_DOWNSTAGE;
 			}
 			if ((max_amplitude * db2rateV(ADC_LNA_GAIN_DB * 2)) <= AUTOGAIN_TARGET_AMPLITUDE) // if we can turn off ATT - go to the next stage (+ 12dB)
@@ -518,7 +518,7 @@ void TRX_DoAutoGain(void)
 			FPGA_NeedSendParams = true;
 			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
-			if(skip_cycles == 0)
+			if (skip_cycles == 0)
 			{
 				sendToDebug_strln("AUTOGAIN LPF + BPF + PGA + DRIVER + LNA");
 				resetVAD();
@@ -534,12 +534,12 @@ void TRX_DoAutoGain(void)
 				skip_cycles = SKIP_CYCLES_DOWNSTAGE;
 			}
 			break;
-			
+
 		default:
 			TRX_AutoGain_Stage = 0;
 			break;
 		}
-		
+
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 		if (band > 0)
 		{
@@ -554,15 +554,15 @@ void TRX_DoAutoGain(void)
 
 void TRX_DBMCalculate(void)
 {
-	if(Processor_RX_Power_value == 0)
+	if (Processor_RX_Power_value == 0)
 		return;
-	
+
 	float32_t adc_volts = Processor_RX_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
-	if(TRX.ADC_Driver)
+	if (TRX.ADC_Driver)
 		adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
 	TRX_RX_dBm = (int16_t)(10.0f * log10f_fast((adc_volts * adc_volts) / (ADC_INPUT_IMPEDANCE * 0.001f)));
 	TRX_RX_dBm += CALIBRATE.smeter_calibration;
-	
+
 	Processor_RX_Power_value = 0;
 }
 
@@ -625,28 +625,28 @@ void TRX_ProcessScanMode(void)
 {
 	static bool oldState = false;
 	static uint32_t StateChangeTime = 0;
-	if(oldState != VAD_Muting)
+	if (oldState != VAD_Muting)
 	{
 		oldState = VAD_Muting;
 		StateChangeTime = HAL_GetTick();
 	}
 	bool goSweep = false;
-	if(VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
+	if (VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
 		goSweep = true;
-	if(!VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME))
+	if (!VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME))
 		goSweep = true;
-	
-	if(goSweep)
+
+	if (goSweep)
 	{
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq, false);
-		for(uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++)
+		for (uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++)
 		{
-			if((BANDS[band].regions[region_id].startFreq <= CurrentVFO()->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO()->Freq))
+			if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO()->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO()->Freq))
 			{
 				uint32_t new_freq = (CurrentVFO()->Freq + SCANNER_FREQ_STEP) / SCANNER_FREQ_STEP * SCANNER_FREQ_STEP;
-				if(new_freq >= BANDS[band].regions[region_id].endFreq)
+				if (new_freq >= BANDS[band].regions[region_id].endFreq)
 					new_freq = BANDS[band].regions[region_id].startFreq;
-				
+
 				TRX_setFrequency(new_freq, CurrentVFO());
 				LCD_UpdateQuery.FreqInfo = true;
 				StateChangeTime = HAL_GetTick();

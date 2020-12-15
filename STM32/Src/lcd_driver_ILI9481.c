@@ -25,9 +25,10 @@ inline void LCDDriver_SendData(uint16_t data)
 }
 
 //Write pair command-data
-inline void LCDDriver_writeReg(uint16_t reg, uint16_t val) {
-  LCDDriver_SendCommand(reg);
-  LCDDriver_SendData(val);
+inline void LCDDriver_writeReg(uint16_t reg, uint16_t val)
+{
+	LCDDriver_SendCommand(reg);
+	LCDDriver_SendData(val);
 }
 
 //Read command from LCD
@@ -41,20 +42,19 @@ inline uint16_t LCDDriver_ReadData(void)
 	return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR));
 }
 
-
 //Read Register
 inline uint16_t LCDDriver_readReg(uint16_t reg)
 {
-  LCDDriver_SendCommand(reg);
-  return LCDDriver_ReadData();
+	LCDDriver_SendCommand(reg);
+	return LCDDriver_ReadData();
 }
 
 //Initialise function
 void LCDDriver_Init(void)
 {
 #if (defined(LCD_ILI9481) || defined(LCD_HX8357B))
-	#define ILI9481_COMM_DELAY 20
-	
+#define ILI9481_COMM_DELAY 20
+
 	LCDDriver_SendCommand(LCD_COMMAND_SOFT_RESET); //0x01
 	HAL_Delay(ILI9481_COMM_DELAY);
 
@@ -62,7 +62,7 @@ void LCDDriver_Init(void)
 	HAL_Delay(ILI9481_COMM_DELAY);
 
 	LCDDriver_SendCommand(LCD_COMMAND_NORMAL_MODE_ON); //0x13
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_POWER_SETTING); //(0xD0);
 	LCDDriver_SendData(0x07);
 	LCDDriver_SendData(0x42);
@@ -72,13 +72,13 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x07);
 	LCDDriver_SendData(0x10);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_NORMAL_PWR_WR); //(0xD2);
 	LCDDriver_SendData(0x01);
 	LCDDriver_SendData(0x02);
 	HAL_Delay(ILI9481_COMM_DELAY);
 
-#if defined(LCD_HX8357B)	
+#if defined(LCD_HX8357B)
 	LCDDriver_SendCommand(LCD_COMMAND_PANEL_DRV_CTL); //(0xC0);
 	LCDDriver_SendData(0x10);
 	LCDDriver_SendData(0x3B);
@@ -87,11 +87,11 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x11);
 	HAL_Delay(ILI9481_COMM_DELAY);
 #endif
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_FR_SET); //(0xC5);
 	LCDDriver_SendData(0x03);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_GAMMAWR); //(0xC8);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x32);
@@ -106,40 +106,40 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x0C);
 	LCDDriver_SendData(0x00);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_MADCTL); //(0x36);
 	LCDDriver_SendData(LCD_PARAM_MADCTL_BGR);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_PIXEL_FORMAT); //(0x3A);
 	LCDDriver_SendData(0x55);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_COLUMN_ADDR); //(0x2A);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x01);
 	LCDDriver_SendData(0x3F);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_PAGE_ADDR); //(0x2B);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x01);
 	LCDDriver_SendData(0xDF);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
-#if defined(LCD_HX8357B)	
+
+#if defined(LCD_HX8357B)
 	LCDDriver_SendCommand(LCD_COMMAND_COLOR_INVERSION_ON); //(0x21);
 	HAL_Delay(ILI9481_COMM_DELAY);
 #endif
 
-	LCDDriver_SendCommand(LCD_COMMAND_IDLE_OFF);		   //(0x38);
+	LCDDriver_SendCommand(LCD_COMMAND_IDLE_OFF); //(0x38);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
-	LCDDriver_SendCommand(LCD_COMMAND_DISPLAY_ON);		   //(0x29);
+
+	LCDDriver_SendCommand(LCD_COMMAND_DISPLAY_ON); //(0x29);
 	HAL_Delay(ILI9481_COMM_DELAY);
-#endif 
+#endif
 
 #if defined(LCD_HX8357C)
 	LCDDriver_SendCommand(0x11);
@@ -184,9 +184,9 @@ void LCDDriver_Init(void)
 
 	LCDDriver_SendCommand(0x36);
 	LCDDriver_SendData(0x8A);
-	
+
 	LCDDriver_SendCommand(0x35); // Tearing effect on
-  LCDDriver_SendData(0x00);    // Added parameter
+	LCDDriver_SendData(0x00);	 // Added parameter
 
 	LCDDriver_SendCommand(0x3A);
 	LCDDriver_SendData(0x55);
@@ -206,9 +206,9 @@ void LCDDriver_Init(void)
 	LCDDriver_SendCommand(0x29);
 #endif
 
-#if	defined(LCD_ILI9486) 
-	#define ILI9481_COMM_DELAY 20
-	
+#if defined(LCD_ILI9486)
+#define ILI9481_COMM_DELAY 20
+
 	LCDDriver_SendCommand(0XF1);
 	LCDDriver_SendData(0x36);
 	LCDDriver_SendData(0x04);
@@ -216,7 +216,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x3C);
 	LCDDriver_SendData(0X0F);
 	LCDDriver_SendData(0x8F);
-	
+
 	LCDDriver_SendCommand(0XF2);
 	LCDDriver_SendData(0x18);
 	LCDDriver_SendData(0xA3);
@@ -227,30 +227,30 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0xFF);
 	LCDDriver_SendData(0x10);
 	LCDDriver_SendData(0x00);
-	
+
 	LCDDriver_SendCommand(0XF8);
 	LCDDriver_SendData(0x21);
 	LCDDriver_SendData(0x04);
-	
+
 	LCDDriver_SendCommand(0XF9);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x08);
-	
+
 	LCDDriver_SendCommand(0x36);
 	LCDDriver_SendData(0x08);
-	
+
 	LCDDriver_SendCommand(0xB4);
 	LCDDriver_SendData(0x00);
-	
+
 	LCDDriver_SendCommand(0xC1);
 	LCDDriver_SendData(0x47); //0x41
-	
+
 	LCDDriver_SendCommand(0xC5);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0xAF); //0x91
 	LCDDriver_SendData(0x80);
 	LCDDriver_SendData(0x00);
-	
+
 	LCDDriver_SendCommand(0xE0);
 	LCDDriver_SendData(0x0F);
 	LCDDriver_SendData(0x1F);
@@ -267,7 +267,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x11);
 	LCDDriver_SendData(0x0D);
 	LCDDriver_SendData(0x00);
-	
+
 	LCDDriver_SendCommand(0xE1);
 	LCDDriver_SendData(0x0F);
 	LCDDriver_SendData(0x32);
@@ -284,23 +284,23 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x24);
 	LCDDriver_SendData(0x20);
 	LCDDriver_SendData(0x00);
-	
+
 	LCDDriver_SendCommand(0x3A);
 	LCDDriver_SendData(0x55);
-	
+
 	LCDDriver_SendCommand(0x11);
-	
+
 	LCDDriver_SendCommand(0x36);
-	
+
 	LCDDriver_SendData(0x28);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
+
 	LCDDriver_SendCommand(0x29);
 #endif
 
 #if defined(LCD_R61581)
-	LCDDriver_SendCommand(0xB0);		
-	LCDDriver_SendData(0x1E);	    
+	LCDDriver_SendCommand(0xB0);
+	LCDDriver_SendData(0x1E);
 
 	LCDDriver_SendCommand(0xB0);
 	LCDDriver_SendData(0x00);
@@ -312,27 +312,27 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x10);
 
 	LCDDriver_SendCommand(0xB4);
-	LCDDriver_SendData(0x00);//0X10
+	LCDDriver_SendData(0x00); //0X10
 
-// 		LCDDriver_SendCommand(0xB9); //PWM Settings for Brightness Control
-// 		LCDDriver_SendData(0x01);// Disabled by default. 
-// 		LCDDriver_SendData(0xFF); //0xFF = Max brightness
-// 		LCDDriver_SendData(0xFF);
-// 		LCDDriver_SendData(0x18);
+	// 		LCDDriver_SendCommand(0xB9); //PWM Settings for Brightness Control
+	// 		LCDDriver_SendData(0x01);// Disabled by default.
+	// 		LCDDriver_SendData(0xFF); //0xFF = Max brightness
+	// 		LCDDriver_SendData(0xFF);
+	// 		LCDDriver_SendData(0x18);
 
 	LCDDriver_SendCommand(0xC0);
 	LCDDriver_SendData(0x03);
-	LCDDriver_SendData(0x3B);//
+	LCDDriver_SendData(0x3B); //
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x01);
-	LCDDriver_SendData(0x00);//NW
+	LCDDriver_SendData(0x00); //NW
 	LCDDriver_SendData(0x43);
 
 	LCDDriver_SendCommand(0xC1);
 	LCDDriver_SendData(0x08);
-	LCDDriver_SendData(0x15);//CLOCK
+	LCDDriver_SendData(0x15); //CLOCK
 	LCDDriver_SendData(0x08);
 	LCDDriver_SendData(0x08);
 
@@ -348,14 +348,14 @@ void LCDDriver_Init(void)
 	LCDDriver_SendCommand(0xC8);
 	LCDDriver_SendData(0x0c);
 	LCDDriver_SendData(0x05);
-	LCDDriver_SendData(0x0A);//0X12
-	LCDDriver_SendData(0x6B);//0x7D
+	LCDDriver_SendData(0x0A); //0X12
+	LCDDriver_SendData(0x6B); //0x7D
 	LCDDriver_SendData(0x04);
-	LCDDriver_SendData(0x06);//0x08
-	LCDDriver_SendData(0x15);//0x0A
+	LCDDriver_SendData(0x06); //0x08
+	LCDDriver_SendData(0x15); //0x0A
 	LCDDriver_SendData(0x10);
 	LCDDriver_SendData(0x00);
-	LCDDriver_SendData(0x60);//0x23
+	LCDDriver_SendData(0x60); //0x23
 
 	LCDDriver_SendCommand(0x36);
 	LCDDriver_SendData(0x0A);
@@ -370,18 +370,18 @@ void LCDDriver_Init(void)
 
 	LCDDriver_SendCommand(0xD0);
 	LCDDriver_SendData(0x07);
-	LCDDriver_SendData(0x07);//VCI1
-	LCDDriver_SendData(0x14);//VRH 0x1D
-	LCDDriver_SendData(0xA2);//BT 0x06
+	LCDDriver_SendData(0x07); //VCI1
+	LCDDriver_SendData(0x14); //VRH 0x1D
+	LCDDriver_SendData(0xA2); //BT 0x06
 
 	LCDDriver_SendCommand(0xD1);
 	LCDDriver_SendData(0x03);
-	LCDDriver_SendData(0x5A);//VCM  0x5A
-	LCDDriver_SendData(0x10);//VDV
+	LCDDriver_SendData(0x5A); //VCM  0x5A
+	LCDDriver_SendData(0x10); //VDV
 
 	LCDDriver_SendCommand(0xD2);
 	LCDDriver_SendData(0x03);
-	LCDDriver_SendData(0x04);//0x24
+	LCDDriver_SendData(0x04); //0x24
 	LCDDriver_SendData(0x04);
 
 	LCDDriver_SendCommand(0x11);
@@ -391,14 +391,13 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x01);
-	LCDDriver_SendData(0xDF);//320
+	LCDDriver_SendData(0xDF); //320
 
 	LCDDriver_SendCommand(0x2B);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x01);
-	LCDDriver_SendData(0x3F);//480
-
+	LCDDriver_SendData(0x3F); //480
 
 	HAL_Delay(100);
 
@@ -413,45 +412,45 @@ void LCDDriver_Init(void)
 //Set screen rotation
 void LCDDriver_setRotation(uint8_t rotate)
 {
-	#if defined(LCD_ILI9481) || defined(LCD_HX8357B)  || defined(LCD_ILI9486)
-		LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
-		switch (rotate)
-		{
-		case 1: // Portrait
-			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
-			break;
-		case 2: // Landscape (Portrait + 90)
-			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV);
-			break;
-		case 3: // Inverter portrait
-			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MY);
-			break;
-		case 4: // Inverted landscape
-			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_MX | LCD_PARAM_MADCTL_MY);
-			//LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_SS | LCD_PARAM_MADCTL_GS);
-			break;
-		}
-		HAL_Delay(120);
-	#endif
-	#if defined(LCD_HX8357C)
-		LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
-		switch (rotate)
-		{
-		case 1: // Portrait
-			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
-			break;
-		case 2: // Landscape (Portrait + 90)
-			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV);
-			break;
-		case 3: // Inverter portrait
-			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MY);
-			break;
-		case 4: // Inverted landscape
-			LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_GS | LCD_PARAM_MADCTL_ML | LCD_PARAM_MADCTL_SS);
-			break;
-		}
-		HAL_Delay(120);
-	#endif
+#if defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486)
+	LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
+	switch (rotate)
+	{
+	case 1: // Portrait
+		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
+		break;
+	case 2: // Landscape (Portrait + 90)
+		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV);
+		break;
+	case 3: // Inverter portrait
+		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MY);
+		break;
+	case 4: // Inverted landscape
+		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_MX | LCD_PARAM_MADCTL_MY);
+		//LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_SS | LCD_PARAM_MADCTL_GS);
+		break;
+	}
+	HAL_Delay(120);
+#endif
+#if defined(LCD_HX8357C)
+	LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
+	switch (rotate)
+	{
+	case 1: // Portrait
+		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
+		break;
+	case 2: // Landscape (Portrait + 90)
+		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV);
+		break;
+	case 3: // Inverter portrait
+		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MY);
+		break;
+	case 4: // Inverted landscape
+		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MV | LCD_PARAM_MADCTL_GS | LCD_PARAM_MADCTL_ML | LCD_PARAM_MADCTL_SS);
+		break;
+	}
+	HAL_Delay(120);
+#endif
 }
 
 //Set cursor position
@@ -501,29 +500,29 @@ void LCDDriver_Fill(uint16_t color)
 //Rectangle drawing functions
 void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
-	if (x1 > (LCD_WIDTH - 1))		//Set fill area
-		x1 = LCD_WIDTH - 1;	
-	if (y1 > (LCD_HEIGHT - 1))	
+	if (x1 > (LCD_WIDTH - 1)) //Set fill area
+		x1 = LCD_WIDTH - 1;
+	if (y1 > (LCD_HEIGHT - 1))
 		y1 = LCD_HEIGHT - 1;
-	
+
 	//Set fill area
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
-	
+
 	//DMA2D Set color in 32bit format
 	WRITE_REG(hdma2d.Instance->OCOLR, (color << 16) | color);
 	//DMA2D Set width and 32bit align
 	uint32_t w = x1 - x0 + 1;
-	if(w & 0x1)
-		MODIFY_REG(hdma2d.Instance->NLR, (DMA2D_NLR_NL|DMA2D_NLR_PL), ((y1 - y0 + 1) | ((w + 1) << DMA2D_NLR_PL_Pos)));
+	if (w & 0x1)
+		MODIFY_REG(hdma2d.Instance->NLR, (DMA2D_NLR_NL | DMA2D_NLR_PL), ((y1 - y0 + 1) | ((w + 1) << DMA2D_NLR_PL_Pos)));
 	else
-		MODIFY_REG(hdma2d.Instance->NLR, (DMA2D_NLR_NL|DMA2D_NLR_PL), ((y1 - y0 + 1) | (w << DMA2D_NLR_PL_Pos)));
+		MODIFY_REG(hdma2d.Instance->NLR, (DMA2D_NLR_NL | DMA2D_NLR_PL), ((y1 - y0 + 1) | (w << DMA2D_NLR_PL_Pos)));
 	//DMA2D Start
 	hdma2d.Instance->CR |= DMA2D_CR_START;
 	//DMA2D Polling
-	while((hdma2d.Instance->ISR & DMA2D_FLAG_TC) == 0U)
+	while ((hdma2d.Instance->ISR & DMA2D_FLAG_TC) == 0U)
 		CPULOAD_GoToSleepMode();
 	//DMA2D clean flags
-	hdma2d.Instance->IFCR = DMA2D_FLAG_TC|DMA2D_FLAG_CTC;
+	hdma2d.Instance->IFCR = DMA2D_FLAG_TC | DMA2D_FLAG_CTC;
 }
 
 void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
@@ -538,13 +537,13 @@ void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint
 	if (steep)
 	{
 		uswap(x0, y0)
-		uswap(x1, y1)
+			uswap(x1, y1)
 	}
 
 	if (x0 > x1)
 	{
 		uswap(x0, x1)
-		uswap(y0, y1)
+			uswap(y0, y1)
 	}
 
 	int16_t dx, dy;
@@ -622,80 +621,86 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 {
 	int16_t a, b, y, last;
 
-  // Sort coordinates by Y order (y2 >= y1 >= y0)
-  if (y0 > y1) {
-    _swap_int16_t(y0, y1);
-    _swap_int16_t(x0, x1);
-  }
-  if (y1 > y2) {
-    _swap_int16_t(y2, y1);
-    _swap_int16_t(x2, x1);
-  }
-  if (y0 > y1) {
-    _swap_int16_t(y0, y1);
-    _swap_int16_t(x0, x1);
-  }
+	// Sort coordinates by Y order (y2 >= y1 >= y0)
+	if (y0 > y1)
+	{
+		_swap_int16_t(y0, y1);
+		_swap_int16_t(x0, x1);
+	}
+	if (y1 > y2)
+	{
+		_swap_int16_t(y2, y1);
+		_swap_int16_t(x2, x1);
+	}
+	if (y0 > y1)
+	{
+		_swap_int16_t(y0, y1);
+		_swap_int16_t(x0, x1);
+	}
 
-  if (y0 == y2) { // Handle awkward all-on-same-line case as its own thing
-    a = b = x0;
-    if (x1 < a)
-      a = x1;
-    else if (x1 > b)
-      b = x1;
-    if (x2 < a)
-      a = x2;
-    else if (x2 > b)
-      b = x2;
-    LCDDriver_drawFastHLine(a, y0, b - a + 1, color);
-    return;
-  }
+	if (y0 == y2)
+	{ // Handle awkward all-on-same-line case as its own thing
+		a = b = x0;
+		if (x1 < a)
+			a = x1;
+		else if (x1 > b)
+			b = x1;
+		if (x2 < a)
+			a = x2;
+		else if (x2 > b)
+			b = x2;
+		LCDDriver_drawFastHLine(a, y0, b - a + 1, color);
+		return;
+	}
 
-  int16_t dx01 = x1 - x0, dy01 = y1 - y0, dx02 = x2 - x0, dy02 = y2 - y0,
-          dx12 = x2 - x1, dy12 = y2 - y1;
-  int32_t sa = 0, sb = 0;
+	int16_t dx01 = x1 - x0, dy01 = y1 - y0, dx02 = x2 - x0, dy02 = y2 - y0,
+			dx12 = x2 - x1, dy12 = y2 - y1;
+	int32_t sa = 0, sb = 0;
 
-  // For upper part of triangle, find scanline crossings for segments
-  // 0-1 and 0-2.  If y1=y2 (flat-bottomed triangle), the scanline y1
-  // is included here (and second loop will be skipped, avoiding a /0
-  // error there), otherwise scanline y1 is skipped here and handled
-  // in the second loop...which also avoids a /0 error here if y0=y1
-  // (flat-topped triangle).
-  if (y1 == y2)
-    last = y1; // Include y1 scanline
-  else
-    last = y1 - 1; // Skip it
+	// For upper part of triangle, find scanline crossings for segments
+	// 0-1 and 0-2.  If y1=y2 (flat-bottomed triangle), the scanline y1
+	// is included here (and second loop will be skipped, avoiding a /0
+	// error there), otherwise scanline y1 is skipped here and handled
+	// in the second loop...which also avoids a /0 error here if y0=y1
+	// (flat-topped triangle).
+	if (y1 == y2)
+		last = y1; // Include y1 scanline
+	else
+		last = y1 - 1; // Skip it
 
-  for (y = y0; y <= last; y++) {
-    a = x0 + sa / dy01;
-    b = x0 + sb / dy02;
-    sa += dx01;
-    sb += dx02;
-    /* longhand:
+	for (y = y0; y <= last; y++)
+	{
+		a = x0 + sa / dy01;
+		b = x0 + sb / dy02;
+		sa += dx01;
+		sb += dx02;
+		/* longhand:
     a = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
     b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
     */
-    if (a > b)
-      _swap_int16_t(a, b);
-    LCDDriver_drawFastHLine(a, y, b - a + 1, color);
-  }
+		if (a > b)
+			_swap_int16_t(a, b);
+		LCDDriver_drawFastHLine(a, y, b - a + 1, color);
+	}
 
-  // For lower part of triangle, find scanline crossings for segments
-  // 0-2 and 1-2.  This loop is skipped if y1=y2.
-  sa = (int32_t)dx12 * (y - y1);
-  sb = (int32_t)dx02 * (y - y0);
-  for (; y <= y2; y++) {
-    a = x1 + sa / dy12;
-    b = x0 + sb / dy02;
-    sa += dx12;
-    sb += dx02;
-    /* longhand:
+	// For lower part of triangle, find scanline crossings for segments
+	// 0-2 and 1-2.  This loop is skipped if y1=y2.
+	sa = (int32_t)dx12 * (y - y1);
+	sb = (int32_t)dx02 * (y - y0);
+	for (; y <= y2; y++)
+	{
+		a = x1 + sa / dy12;
+		b = x0 + sb / dy02;
+		sa += dx12;
+		sb += dx02;
+		/* longhand:
     a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
     b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
     */
-    if (a > b)
-      _swap_int16_t(a, b);
-    LCDDriver_drawFastHLine(a, y, b - a + 1, color);
-  }
+		if (a > b)
+			_swap_int16_t(a, b);
+		LCDDriver_drawFastHLine(a, y, b - a + 1, color);
+	}
 }
 
 #endif

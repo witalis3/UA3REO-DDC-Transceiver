@@ -4,9 +4,9 @@
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
-#define WIFI_ANSWER_BUFFER_SIZE (512*8)
+#define WIFI_ANSWER_BUFFER_SIZE (512 * 8)
 #define WIFI_LINE_BUFFER_SIZE WIFI_ANSWER_BUFFER_SIZE
-#define WIFI_HTML_RESP_BUFFER_SIZE (512*4)
+#define WIFI_HTML_RESP_BUFFER_SIZE (512 * 4)
 #define WIFI_RLE_BUFFER_SIZE (512)
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
@@ -62,7 +62,7 @@ extern void WIFI_GoSleep(void);
 extern bool WIFI_StartCATServer(void *callback);
 extern bool WIFI_UpdateFW(void *callback);
 extern bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void *callback);
-extern bool WIFI_getHTTPpage(char* host, char* url, void *callback, bool https);
+extern bool WIFI_getHTTPpage(char *host, char *url, void *callback, bool https);
 extern void WIFI_getRDA(void);
 extern void WIFI_getPropagination(void);
 

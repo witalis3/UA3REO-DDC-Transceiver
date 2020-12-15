@@ -112,7 +112,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 				if (instance->FFT_COMPLEX_MAG[idx] > 0.0f)
 					gain = 1.0f - (lambda / instance->FFT_COMPLEX_MAG[idx]);
 				//delete noise
-				if (snr < threshold) 
+				if (snr < threshold)
 					gain = 0.0f;
 				//else gain = 1.0f;
 				//time smoothing (exponential averaging) of gain weights

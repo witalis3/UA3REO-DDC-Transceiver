@@ -53,7 +53,7 @@ void WIFI_Init(void)
 	WIFI_WaitForOk();
 	huart6.Init.BaudRate = 921600;
 	HAL_UART_Init(&huart6);
-	
+
 	WIFI_SendCommand("ATE0\r\n"); //echo off
 	WIFI_WaitForOk();
 	WIFI_SendCommand("AT+GMR\r\n"); //system info ESP8266
@@ -139,7 +139,7 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPRECVMODE=0\r\n"); //TCP receive passive mode
 		WIFI_WaitForOk();
-		
+
 		strcat(com_t, "AT+CIPSNTPCFG=1,");
 		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
 		strcat(com_t, tz);
@@ -578,8 +578,8 @@ static bool WIFI_TryGetLine(void)
 	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
 	if (WIFI_Answer_ReadIndex == dma_index)
 		return false;
-	
-	if(dma_index < WIFI_Answer_ReadIndex)
+
+	if (dma_index < WIFI_Answer_ReadIndex)
 	{
 		//tail
 		uint32_t len = WIFI_ANSWER_BUFFER_SIZE - WIFI_Answer_ReadIndex;
@@ -592,19 +592,19 @@ static bool WIFI_TryGetLine(void)
 		//head
 		strncpy(tmp, &WIFI_AnswerBuffer[WIFI_Answer_ReadIndex], dma_index - WIFI_Answer_ReadIndex);
 	}
-	
+
 	if (tmp[0] == '\0')
 		return false;
 
 	char *istr = strchr(tmp, '\n'); // look for the end of the line
 	if (istr == NULL)
 		return false;
-	
+
 	uint32_t len = (uint16_t)((uint32_t)istr - (uint32_t)tmp + 1);
-	if(len > WIFI_LINE_BUFFER_SIZE)
+	if (len > WIFI_LINE_BUFFER_SIZE)
 		return false;
 	strncpy(WIFI_readedLine, tmp, len);
-	
+
 	WIFI_Answer_ReadIndex += len;
 	if (WIFI_Answer_ReadIndex >= WIFI_ANSWER_BUFFER_SIZE)
 	{
@@ -675,17 +675,17 @@ static void WIFI_getHTTPResponse(void)
 			istr2++;
 			strcpy(WIFI_HTTResponseHTML, istr2);
 			commandStartTime = HAL_GetTick();
-			
+
 			uint32_t start_time = HAL_GetTick();
-			while(strlen(WIFI_HTTResponseHTML) < response_length && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 5000)
+			while (strlen(WIFI_HTTResponseHTML) < response_length && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 5000)
 			{
-				if(WIFI_TryGetLine())
+				if (WIFI_TryGetLine())
 					strcat(WIFI_HTTResponseHTML, WIFI_readedLine);
 			}
 			char *istr3 = WIFI_HTTResponseHTML;
 			istr3 += response_length;
 			*istr3 = 0;
-			
+
 			//get status
 			char *istr4 = strstr(WIFI_HTTResponseHTML, " ");
 			if (istr4 != NULL)
@@ -695,7 +695,7 @@ static void WIFI_getHTTPResponse(void)
 				WIFI_HTTP_Response_Status = (uint16_t)(atoi(istr4));
 				*istr5 = ' ';
 			}
-			
+
 			//get content length
 			istr4 = strstr(WIFI_HTTResponseHTML, "Content-Length: ");
 			if (istr4 != NULL)
@@ -706,27 +706,27 @@ static void WIFI_getHTTPResponse(void)
 				WIFI_HTTP_Response_ContentLength = (uint32_t)(atoi(istr4));
 				*istr5 = ' ';
 			}
-			
+
 			//get response body
 			char *istr6 = strstr(WIFI_HTTResponseHTML, "\r\n\r\n");
 			if (istr6 != NULL)
 			{
 				istr6 += 4;
-				strcpy(WIFI_HTTResponseHTML , istr6);
+				strcpy(WIFI_HTTResponseHTML, istr6);
 			}
-			
+
 			//partial callback for image printing
 			readed_body_length += strlen(WIFI_HTTResponseHTML);
 			if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback)
 				WIFI_printImage_stream_partial_callback();
-			
+
 			//may be partial content? continue downloading
 			start_time = HAL_GetTick();
-			if(readed_body_length < WIFI_HTTP_Response_ContentLength && (HAL_GetTick() - start_time) < 3000)
+			if (readed_body_length < WIFI_HTTP_Response_ContentLength && (HAL_GetTick() - start_time) < 3000)
 			{
-				while(readed_body_length < WIFI_HTTP_Response_ContentLength && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 3000)
+				while (readed_body_length < WIFI_HTTP_Response_ContentLength && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 3000)
 				{
-					if(WIFI_TryGetLine())
+					if (WIFI_TryGetLine())
 					{
 						istr = strstr(WIFI_readedLine, "+IPD");
 						if (istr != NULL)
@@ -739,7 +739,7 @@ static void WIFI_getHTTPResponse(void)
 								response_length = atoi(istr);
 								istr2++;
 								strncat(WIFI_HTTResponseHTML, istr2, response_length);
-								
+
 								//partial callback for image printing
 								readed_body_length += strlen(WIFI_HTTResponseHTML);
 								if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback)
@@ -749,11 +749,11 @@ static void WIFI_getHTTPResponse(void)
 					}
 				}
 			}
-			
+
 			//cut body on content-length
-			if(strlen(WIFI_HTTResponseHTML) > WIFI_HTTP_Response_ContentLength)
+			if (strlen(WIFI_HTTResponseHTML) > WIFI_HTTP_Response_ContentLength)
 				WIFI_HTTResponseHTML[WIFI_HTTP_Response_ContentLength] = 0;
-			
+
 			WIFI_ProcessingCommand = WIFI_COMM_NONE;
 			WIFI_State = WIFI_READY;
 			if (WIFI_ProcessingCommandCallback != NULL)
@@ -779,7 +779,7 @@ static void WIFI_sendHTTPRequest(void)
 	WIFI_SendCommand(WIFI_HTTRequest);
 }
 
-bool WIFI_getHTTPpage(char* host, char* url, void *callback, bool https)
+bool WIFI_getHTTPpage(char *host, char *url, void *callback, bool https)
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
@@ -787,26 +787,26 @@ bool WIFI_getHTTPpage(char* host, char* url, void *callback, bool https)
 	WIFI_ProcessingCommand = WIFI_COMM_TCP_CONNECT;
 	WIFI_ProcessingCommandCallback = callback;
 	WIFI_HTTP_Response_Status = 0;
-	
+
 	memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
 	strcat(WIFI_HOSTuri, "AT+CIPSTART=0,");
-	if(!https)
+	if (!https)
 		strcat(WIFI_HOSTuri, "\"TCP\"");
 	else
 		strcat(WIFI_HOSTuri, "\"SSL\"");
 	strcat(WIFI_HOSTuri, ",\"");
 	strcat(WIFI_HOSTuri, host);
-	
-	if(!https)
+
+	if (!https)
 		strcat(WIFI_HOSTuri, "\",80,10\r\n");
 	else
 		strcat(WIFI_HOSTuri, "\",443,10\r\n");
-	
+
 	memset(WIFI_GETuri, 0x00, sizeof(WIFI_GETuri));
 	strcat(WIFI_GETuri, url);
-	
+
 	WIFI_SendCommand(WIFI_HOSTuri);
-	
+
 	memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
 	strcat(WIFI_HOSTuri, host);
 	return true;
@@ -815,7 +815,7 @@ bool WIFI_getHTTPpage(char* host, char* url, void *callback, bool https)
 static void WIFI_printText_callback(void)
 {
 	LCDDriver_Fill(BG_COLOR);
-	if(WIFI_HTTP_Response_Status == 200)
+	if (WIFI_HTTP_Response_Status == 200)
 	{
 		LCDDriver_printTextFont(WIFI_HTTResponseHTML, 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 	}
@@ -830,11 +830,11 @@ static void WIFI_printImage_stream_partial_callback(void)
 	char *istr = WIFI_HTTResponseHTML;
 	char hex[5] = {0};
 	WIFI_RLEStreamBuffer_index = 0;
-	int16_t val =0;
-	while(*istr != 0 && (strlen(WIFI_HTTResponseHTML) >= ((WIFI_RLEStreamBuffer_index * 4) + 4)))
+	int16_t val = 0;
+	while (*istr != 0 && (strlen(WIFI_HTTResponseHTML) >= ((WIFI_RLEStreamBuffer_index * 4) + 4)))
 	{
 		//Get hex
-		strncpy(hex, istr , 4);
+		strncpy(hex, istr, 4);
 		val = (int16_t)(strtol(hex, NULL, 16));
 		istr += 4;
 		//Save
@@ -843,9 +843,9 @@ static void WIFI_printImage_stream_partial_callback(void)
 	}
 	//send to LCD RLE stream decoder
 	LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, WIFI_RLEStreamBuffer_index);
-	
+
 	//clean answer
-	if(strlen(WIFI_HTTResponseHTML) > (WIFI_RLEStreamBuffer_index * 4)) //part buffer preceed, move to begin
+	if (strlen(WIFI_HTTResponseHTML) > (WIFI_RLEStreamBuffer_index * 4)) //part buffer preceed, move to begin
 	{
 		istr = &WIFI_HTTResponseHTML[(WIFI_RLEStreamBuffer_index * 4)];
 		strcpy(WIFI_HTTResponseHTML, istr);
@@ -862,7 +862,7 @@ static void WIFI_printImage_stream_callback(void)
 static void WIFI_printImage_callback(void)
 {
 	LCDDriver_Fill(BG_COLOR);
-	if(WIFI_HTTP_Response_Status == 200)
+	if (WIFI_HTTP_Response_Status == 200)
 	{
 		char *istr1 = strstr(WIFI_HTTResponseHTML, ",");
 		if (istr1 != NULL)
@@ -876,10 +876,10 @@ static void WIFI_printImage_callback(void)
 				*istr2 = 0;
 				uint16_t width = (uint16_t)(atoi(istr1));
 				istr2++;
-				
+
 				uint16_t height = (uint16_t)(atoi(istr2));
 
-				if(filesize > 0 && width > 0  && height > 0)
+				if (filesize > 0 && width > 0 && height > 0)
 				{
 					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
 					WIFI_RLEStreamBuffer_part = 0;
@@ -895,7 +895,7 @@ static void WIFI_printImage_callback(void)
 void WIFI_getRDA(void)
 {
 	LCDDriver_Fill(BG_COLOR);
-	if(WIFI_connected && WIFI_State == WIFI_READY)
+	if (WIFI_connected && WIFI_State == WIFI_READY)
 		LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 	else
 	{
@@ -910,7 +910,7 @@ void WIFI_getRDA(void)
 void WIFI_getPropagination(void)
 {
 	LCDDriver_Fill(BG_COLOR);
-	if(WIFI_connected && WIFI_State == WIFI_READY)
+	if (WIFI_connected && WIFI_State == WIFI_READY)
 		LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 	else
 	{

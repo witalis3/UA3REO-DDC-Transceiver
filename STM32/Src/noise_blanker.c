@@ -21,9 +21,9 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 		instance->NR_OutputBuffer_index = 0;
 
 		arm_fir_instance_f32 LPC;
-		float32_t lpcs[NB_order + 1] = {0};		  // we reserve one more than "order" because of a leading "1"
+		float32_t lpcs[NB_order + 1] = {0};			// we reserve one more than "order" because of a leading "1"
 		float32_t reverse_lpcs[NB_order + 1] = {0}; //this takes the reversed order lpc coefficients
-		float32_t sigma2 = 0.0f;					  //taking the variance of the inpo
+		float32_t sigma2 = 0.0f;					//taking the variance of the inpo
 		float32_t lpc_power = 0.0f;
 		float32_t impulse_threshold = 0.0f;
 		uint16_t search_pos = 0;
@@ -35,8 +35,8 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 
 		float32_t any[NB_order + 1] = {0}; //some internal buffers for the levinson durben algorithm
 
-		float32_t Rfw[NB_impulse_length + NB_order] = {0};			  // takes the forward predicted audio restauration
-		float32_t Rbw[NB_impulse_length + NB_order] = {0};			  // takes the backward predicted audio restauration
+		float32_t Rfw[NB_impulse_length + NB_order] = {0}; // takes the forward predicted audio restauration
+		float32_t Rbw[NB_impulse_length + NB_order] = {0}; // takes the backward predicted audio restauration
 		float32_t Wfw[NB_impulse_length] = {0};
 		float32_t Wbw[NB_impulse_length] = {0}; // taking linear windows for the combination of fwd and bwd
 
@@ -112,7 +112,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 			search_pos++;
 		} while ((search_pos < NB_FIR_SIZE) && (impulse_count < NB_max_inpulse_count));
 		//if(impulse_count>0) sendToDebug_uint16(impulse_count, false);
-	
+
 		// from here: reconstruction of the impulse-distorted audio part:
 
 		// first we form the forward and backward prediction transfer functions from the lpcs
@@ -147,10 +147,10 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	}
 	//NaNs fix
 	bool nans = false;
-	for(uint32_t i = (instance->NR_OutputBuffer_index * NB_BLOCK_SIZE); i < (instance->NR_OutputBuffer_index * NB_BLOCK_SIZE + NB_BLOCK_SIZE); i++)
+	for (uint32_t i = (instance->NR_OutputBuffer_index * NB_BLOCK_SIZE); i < (instance->NR_OutputBuffer_index * NB_BLOCK_SIZE + NB_BLOCK_SIZE); i++)
 		if (!nans && isnanf(instance->NR_OutputBuffer[i]))
 			nans = true;
-		
+
 	if (!nans && instance->NR_OutputBuffer_index < (NB_FIR_SIZE / NB_BLOCK_SIZE))
 		memcpy(buffer, &instance->NR_OutputBuffer[instance->NR_OutputBuffer_index * NB_BLOCK_SIZE], NB_BLOCK_SIZE * 4);
 	instance->NR_OutputBuffer_index++;

@@ -183,7 +183,7 @@ void DEBUG_Transmit_FIFO(uint8_t *data, uint16_t length)
 				uint_fast16_t tryes = 0;
 				while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512)
 					tryes++;
-				if(DEBUG_Transmit_FIFO_Events() == USBD_BUSY)
+				if (DEBUG_Transmit_FIFO_Events() == USBD_BUSY)
 					break;
 			}
 			if (debug_tx_fifo_head >= DEBUG_TX_FIFO_BUFFER_SIZE)

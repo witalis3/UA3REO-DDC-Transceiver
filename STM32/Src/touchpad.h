@@ -4,7 +4,7 @@
 #include "settings.h"
 
 #if (defined(TOUCHPAD_GT911))
-	#include "touchpad_GT911.h"
+#include "touchpad_GT911.h"
 #endif
 
 #define TOUCHPAD_TIMEOUT 70

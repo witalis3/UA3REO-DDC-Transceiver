@@ -54,5 +54,4 @@ extern void FRONTPANEL_BUTTONHANDLER_SERVICES(void);
 extern void FRONTPANEL_BUTTONHANDLER_MENU(void);
 extern void FRONTPANEL_BUTTONHANDLER_LOCK(void);
 
-
 #endif

@@ -10,29 +10,29 @@
 #define WIRE_BUFSIZ 101
 
 /* return codes from endTransmission() */
-#define SUCCESS 0   /* transmission was successful */
-#define EDATA 1     /* too much data */
+#define SUCCESS 0	/* transmission was successful */
+#define EDATA 1		/* too much data */
 #define ENACKADDR 2 /* received nack on transmit of address */
 #define ENACKTRNS 3 /* received nack on transmit of data */
-#define EOTHER 4    /* other error */
+#define EOTHER 4	/* other error */
 
 #define I2C_WRITE 0
 #define I2C_READ 1
 #define I2C_DELAY                                     \
-    for (uint32_t wait_i = 0; wait_i < 300; wait_i++) \
-    {                                                 \
-        __asm("nop");                                 \
-    };
-		
+	for (uint32_t wait_i = 0; wait_i < 300; wait_i++) \
+	{                                                 \
+		__asm("nop");                                 \
+	};
+
 typedef struct
 {
 	GPIO_TypeDef *SDA_PORT;
 	uint16_t SDA_PIN;
 	GPIO_TypeDef *SCK_PORT;
 	uint16_t SCK_PIN;
-	uint8_t i2c_tx_addr;				  /* address transmitting to */
+	uint8_t i2c_tx_addr;			 /* address transmitting to */
 	uint8_t i2c_tx_buf[WIRE_BUFSIZ]; /* transmit buffer */
-	uint8_t i2c_tx_buf_idx;			  /* next idx available in tx_buf, -1 overflow */
+	uint8_t i2c_tx_buf_idx;			 /* next idx available in tx_buf, -1 overflow */
 	bool i2c_tx_buf_overflow;
 } I2C_DEVICE;
 

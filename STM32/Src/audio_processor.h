@@ -30,7 +30,7 @@ typedef enum // receiver number
 } AUDIO_PROC_RX_NUM;
 
 // Public variables
-extern volatile uint32_t AUDIOPROC_samples;								   // audio samples processed in the processor
+extern volatile uint32_t AUDIOPROC_samples; // audio samples processed in the processor
 //extern int32_t Processor_AudioBuffer_A[AUDIO_BUFFER_SIZE];				   // buffer A of the audio processor
 //extern int32_t Processor_AudioBuffer_B[AUDIO_BUFFER_SIZE];				   // buffer B of the audio processor
 extern volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer;			   // which buffer is currently in use, A or B

@@ -127,7 +127,7 @@ static const IIR_BIQUAD_FILTER IIR_Biquad_Filters[IIR_FILTERS_COUNT] = (const II
 		.width = 500, //230 - 270 pass
 		.type = IIR_BIQUAD_LPF_GAUSS,
 		.stages = 7,
-		.coeffs = (float32_t[]){0.002614570675095,0,0,0,0,1,0,-1,1.995983398621,-0.9972043217285,0.002614570675095,0,0,0,0,1,0,-1,1.996641808624,-0.9975665832556,0.00261116383261,0,0,0,0,1,0,-1,1.993716475742,-0.9947776723348,1,0,0,0,0},
+		.coeffs = (float32_t[]){0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.995983398621, -0.9972043217285, 0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.996641808624, -0.9975665832556, 0.00261116383261, 0, 0, 0, 0, 1, 0, -1, 1.993716475742, -0.9947776723348, 1, 0, 0, 0, 0},
 	},
 	{
 		.width = 700,
@@ -139,7 +139,7 @@ static const IIR_BIQUAD_FILTER IIR_Biquad_Filters[IIR_FILTERS_COUNT] = (const II
 		.width = 700, //330 - 370 pass
 		.type = IIR_BIQUAD_LPF_GAUSS,
 		.stages = 7,
-		.coeffs = (float32_t[]){0.002614570675095,0,0,0,0,1,0,-1,1.994949635242,-0.9972562108491,0.002614570675095,0,0,0,0,1,0,-1,1.995622638318,-0.9975146779858,0.00261116383261,0,0,0,0,1,0,-1,1.99269134378,-0.9947776723348,1,0,0,0,0},
+		.coeffs = (float32_t[]){0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.994949635242, -0.9972562108491, 0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.995622638318, -0.9975146779858, 0.00261116383261, 0, 0, 0, 0, 1, 0, -1, 1.99269134378, -0.9947776723348, 1, 0, 0, 0, 0},
 	},
 	{
 		.width = 1000,
@@ -151,7 +151,7 @@ static const IIR_BIQUAD_FILTER IIR_Biquad_Filters[IIR_FILTERS_COUNT] = (const II
 		.width = 1000, //480 - 520 pass
 		.type = IIR_BIQUAD_LPF_GAUSS,
 		.stages = 7,
-		.coeffs = (float32_t[]){0.002614570675095,0,0,0,0,1,0,-1,1.992719129459,-0.9972950801908,0.002614570675095,0,0,0,0,1,0,-1,1.993491828006,-0.9974758000854,0.00261116383261,0,0,0,0,1,0,-1,1.990513521595,-0.9947776723348,1,0,0,0,0},
+		.coeffs = (float32_t[]){0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.992719129459, -0.9972950801908, 0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.993491828006, -0.9974758000854, 0.00261116383261, 0, 0, 0, 0, 1, 0, -1, 1.990513521595, -0.9947776723348, 1, 0, 0, 0, 0},
 	},
 	{
 		.width = 1400,
@@ -163,7 +163,7 @@ static const IIR_BIQUAD_FILTER IIR_Biquad_Filters[IIR_FILTERS_COUNT] = (const II
 		.width = 1400, //680 - 720 pass
 		.type = IIR_BIQUAD_LPF_GAUSS,
 		.stages = 7,
-		.coeffs = (float32_t[]){0.002614570675097,0,0,0,0,1,0,-1,1.988524321829,-0.9973209966079,0.002614570675097,0,0,0,0,1,0,-1,1.98948140759,-0.9974498796455,0.002611163832612,0,0,0,0,1,0,-1,1.986416242864,-0.9947776723348,1,0,0,0,0},
+		.coeffs = (float32_t[]){0.002614570675097, 0, 0, 0, 0, 1, 0, -1, 1.988524321829, -0.9973209966079, 0.002614570675097, 0, 0, 0, 0, 1, 0, -1, 1.98948140759, -0.9974498796455, 0.002611163832612, 0, 0, 0, 0, 1, 0, -1, 1.986416242864, -0.9947776723348, 1, 0, 0, 0, 0},
 	},
 	{
 		.width = 1600,
@@ -175,7 +175,7 @@ static const IIR_BIQUAD_FILTER IIR_Biquad_Filters[IIR_FILTERS_COUNT] = (const II
 		.width = 1600, //780 - 820 pass
 		.type = IIR_BIQUAD_LPF_GAUSS,
 		.stages = 7,
-		.coeffs = (float32_t[]){0.002614570675095,0,0,0,0,1,0,-1,1.985910768003,-0.9973291025077,0.002614570675095,0,0,0,0,1,0,-1,1.986969550479,-0.9974417727641,0.00261116383261,0,0,0,0,1,0,-1,1.983856870095,-0.9947776723348,1,0,0,0,0},
+		.coeffs = (float32_t[]){0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.985910768003, -0.9973291025077, 0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.986969550479, -0.9974417727641, 0.00261116383261, 0, 0, 0, 0, 1, 0, -1, 1.983856870095, -0.9947776723348, 1, 0, 0, 0, 0},
 	},
 	{
 		.width = 1800,
@@ -187,7 +187,7 @@ static const IIR_BIQUAD_FILTER IIR_Biquad_Filters[IIR_FILTERS_COUNT] = (const II
 		.width = 1800, //880 - 920 pass
 		.type = IIR_BIQUAD_LPF_GAUSS,
 		.stages = 7,
-		.coeffs = (float32_t[]){0.002614570675097,0,0,0,0,1,0,-1,1.982955132449,-0.9973354121509,0.002614570675097,0,0,0,0,1,0,-1,1.984119042504,-0.997435462448,0.002611163832612,0,0,0,0,1,0,-1,1.980957573664,-0.9947776723348,1,0,0,0,0},
+		.coeffs = (float32_t[]){0.002614570675097, 0, 0, 0, 0, 1, 0, -1, 1.982955132449, -0.9973354121509, 0.002614570675097, 0, 0, 0, 0, 1, 0, -1, 1.984119042504, -0.997435462448, 0.002611163832612, 0, 0, 0, 0, 1, 0, -1, 1.980957573664, -0.9947776723348, 1, 0, 0, 0, 0},
 	},
 	{
 		.width = 2100,
@@ -199,7 +199,7 @@ static const IIR_BIQUAD_FILTER IIR_Biquad_Filters[IIR_FILTERS_COUNT] = (const II
 		.width = 2100, //1030 - 1070 pass
 		.type = IIR_BIQUAD_LPF_GAUSS,
 		.stages = 7,
-		.coeffs = (float32_t[]){0.002614570675095,0,0,0,0,1,0,-1,1.977882525237,-0.9973426317923,0.002614570675095,0,0,0,0,1,0,-1,1.97920826891,-0.9974282421346,0.00261116383261,0,0,0,0,1,0,-1,1.975972374763,-0.9947776723348,1,0,0,0,0},
+		.coeffs = (float32_t[]){0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.977882525237, -0.9973426317923, 0.002614570675095, 0, 0, 0, 0, 1, 0, -1, 1.97920826891, -0.9974282421346, 0.00261116383261, 0, 0, 0, 0, 1, 0, -1, 1.975972374763, -0.9947776723348, 1, 0, 0, 0, 0},
 	},
 	{
 		.width = 2300,
@@ -376,13 +376,13 @@ arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HSHELF_FILTER = {EQ_STAGES, AGC_
 arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HPASS_FILTER = {EQ_STAGES, AGC_RX1_KW_HPASS_FILTER_State, AGC_RX_KW_HPASS_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HSHELF_FILTER = {EQ_STAGES, AGC_RX2_KW_HSHELF_FILTER_State, AGC_RX_KW_HSHELF_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HPASS_FILTER = {EQ_STAGES, AGC_RX2_KW_HPASS_FILTER_State, AGC_RX_KW_HPASS_FILTER_Coeffs};
-volatile bool NeedReinitNotch = false; // need to re-initialize the manual Notch filter
+volatile bool NeedReinitNotch = false;		  // need to re-initialize the manual Notch filter
 volatile bool NeedReinitAudioFilters = false; // need to re-initialize Audio filters
 
 // Prototypes
-static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, float32_t *outCoeffs); // automatic calculation of the Biquad filter for Notch
-static IIR_BIQUAD_FILTER *getIIRFilter(IIR_BIQUAD_FILTER_TYPE type, uint_fast16_t width);								   // get filter from collection
-static void arm_biquad_cascade_df2T_initNoClean_f32(arm_biquad_cascade_df2T_instance_f32 * S, uint8_t numStages, const float32_t * pCoeffs, float32_t * pState); //init without state-clean version
+static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, float32_t *outCoeffs);									  // automatic calculation of the Biquad filter for Notch
+static IIR_BIQUAD_FILTER *getIIRFilter(IIR_BIQUAD_FILTER_TYPE type, uint_fast16_t width);																	  // get filter from collection
+static void arm_biquad_cascade_df2T_initNoClean_f32(arm_biquad_cascade_df2T_instance_f32 *S, uint8_t numStages, const float32_t *pCoeffs, float32_t *pState); //init without state-clean version
 
 // initialize audio filters
 void InitAudioFilters(void)
@@ -397,9 +397,9 @@ void InitAudioFilters(void)
 	arm_fir_init_f32(&FIR_TX_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
 
 	//AGC K-Weight LKFS BS.1770
-	calcBiquad(BIQUAD_highShelf, 1500, TRX_SAMPLERATE, 1.0f/sqrtf(2), 4.0f, AGC_RX_KW_HSHELF_FILTER_Coeffs);
+	calcBiquad(BIQUAD_highShelf, 1500, TRX_SAMPLERATE, 1.0f / sqrtf(2), 4.0f, AGC_RX_KW_HSHELF_FILTER_Coeffs);
 	calcBiquad(BIQUAD_highpass, 38, TRX_SAMPLERATE, 0.5f, 0.0f, AGC_RX_KW_HPASS_FILTER_Coeffs);
-	
+
 	//Other
 	InitNoiseReduction();
 	InitNotchFilter();
@@ -419,13 +419,13 @@ void ReinitAudioFilters(void)
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_RX1_LPF_I_State[0]);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_RX1_LPF_Q_State[0]);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_TX_LPF_I_State[0]);
-	
+
 	//RX1 GAUSS
 	IIR_BIQUAD_FILTER *gauss_filter = getIIRFilter(IIR_BIQUAD_LPF_GAUSS, 2100);
 	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
 		gauss_filter = getIIRFilter(IIR_BIQUAD_LPF_GAUSS, lpf1_width);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_GAUSS, gauss_filter->stages, (float32_t *)gauss_filter->coeffs, (float32_t *)&IIR_RX1_GAUSS_State[0]);
-	
+
 	//LPF RX2
 	uint32_t lpf2_width = 2700; //default settings
 	if (SecondaryVFO()->LPF_Filter_Width > 0)
@@ -438,7 +438,7 @@ void ReinitAudioFilters(void)
 	if (SecondaryVFO()->Mode == TRX_MODE_CW_L || SecondaryVFO()->Mode == TRX_MODE_CW_U)
 		gauss_filter = getIIRFilter(IIR_BIQUAD_LPF_GAUSS, lpf2_width);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_GAUSS, gauss_filter->stages, (float32_t *)gauss_filter->coeffs, (float32_t *)&IIR_RX2_GAUSS_State[0]);
-	
+
 	//HPF
 	uint32_t hpf1_width = 300; //default settings
 	if (CurrentVFO()->HPF_Filter_Width > 0)
@@ -446,7 +446,7 @@ void ReinitAudioFilters(void)
 	IIR_BIQUAD_FILTER *hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, hpf1_width);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_RX1_HPF_I_State[0]);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_HPF_I, hpf_filter->stages, (float32_t *)hpf_filter->coeffs, (float32_t *)&IIR_TX_HPF_I_State[0]);
-	
+
 	uint32_t hpf2_width = 300; //default settings
 	if (SecondaryVFO()->HPF_Filter_Width > 0)
 		hpf2_width = SecondaryVFO()->HPF_Filter_Width;
@@ -475,7 +475,7 @@ void ReinitAudioFilters(void)
 	calcBiquad(BIQUAD_peak, 400, TRX_SAMPLERATE, 0.5f, TRX.MIC_EQ_LOW, EQ_MIC_LOW_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 1000, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_MID, EQ_MIC_MID_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 1.5f, TRX.MIC_EQ_HIG, EQ_MIC_HIG_FILTER_Coeffs);
-	
+
 	//All done
 	NeedReinitAudioFilters = false;
 }
@@ -647,14 +647,14 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 	outCoeffs[4] = -b2;
 }
 
-static void arm_biquad_cascade_df2T_initNoClean_f32(arm_biquad_cascade_df2T_instance_f32 * S, uint8_t numStages, const float32_t * pCoeffs, float32_t * pState)
+static void arm_biquad_cascade_df2T_initNoClean_f32(arm_biquad_cascade_df2T_instance_f32 *S, uint8_t numStages, const float32_t *pCoeffs, float32_t *pState)
 {
-  /* Assign filter stages */
-  S->numStages = numStages;
+	/* Assign filter stages */
+	S->numStages = numStages;
 
-  /* Assign coefficient pointer */
-  S->pCoeffs = pCoeffs;
+	/* Assign coefficient pointer */
+	S->pCoeffs = pCoeffs;
 
-  /* Assign state pointer */
-  S->pState = pState;
+	/* Assign state pointer */
+	S->pState = pState;
 }

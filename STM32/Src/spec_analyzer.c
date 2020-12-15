@@ -56,7 +56,7 @@ void SPEC_Start(void)
 	LastShift = TRX.ShiftEnabled;
 	LastNB = TRX.NOISE_BLANKER;
 	LastMute = TRX_Mute;
-	
+
 	// draw the GUI
 	LCDDriver_Fill(COLOR_BLACK);
 	LCDDriver_drawFastVLine(graph_start_x, graph_start_y, graph_height, COLOR_WHITE);
@@ -206,7 +206,7 @@ static void SPEC_DrawBottomGUI(void)
 // analyzer events to the encoder
 void SPEC_EncRotate(int8_t direction)
 {
-	if(LCD_busy)
+	if (LCD_busy)
 		return;
 	LCD_busy = true;
 	// erase the old marker

@@ -25,7 +25,7 @@ static uint8_t Address[3] = {0x00};
 struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
 static uint8_t settings_bank = 1;
-	
+
 IRAM2 static uint8_t write_clone[sizeof(TRX)] = {0};
 IRAM2 static uint8_t read_clone[sizeof(TRX)] = {0};
 IRAM2 static uint8_t verify_clone[sizeof(TRX)] = {0};
@@ -63,9 +63,10 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 void InitSettings(void)
 {
 	static bool already_inited = false;
-	if(already_inited) return;
+	if (already_inited)
+		return;
 	already_inited = true;
-	
+
 	//concat build date to version -yymmdd.hhmm
 	uint8_t cur_len = (uint8_t)strlen(version_string);
 	strcat(version_string, "-");
@@ -95,7 +96,7 @@ void LoadSettings(bool clear)
 		if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 		{
 			sendToDebug_strln("[ERR] BACKUP SRAM data incorrect");
-			
+
 			LoadSettingsFromEEPROM();
 			if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 			{
@@ -116,10 +117,10 @@ void LoadSettings(bool clear)
 		sendToDebug_strln("[OK] Settings data succesfully loaded from BACKUP SRAM bank 1");
 	}
 	BKPSRAM_Disable();
-	
+
 	if (TRX.flash_id != SETT_VERSION || clear || TRX.ENDBit != 100) // code to trace new clean flash
 	{
-		if(clear)
+		if (clear)
 			sendToDebug_strln("[OK] Soft reset TRX");
 		memset(&TRX, 0x00, sizeof(TRX));
 		TRX.flash_id = SETT_VERSION;		 // Firmware ID in SRAM, if it doesn't match, use the default
@@ -149,8 +150,8 @@ void LoadSettings(bool clear)
 		TRX.ATT_STEP = 6.0f;				 // step of tuning the attenuator
 		TRX.FM_SQL_threshold = 4;			 // FM noise reduction
 		TRX.Fast = true;					 // accelerated frequency change when the encoder rotates
-		TRX.ADC_PGA = true;				 // ADC preamp
-		TRX.ANT = false;		  // ANT-1
+		TRX.ADC_PGA = true;					 // ADC preamp
+		TRX.ANT = false;					 // ANT-1
 		for (uint8_t i = 0; i < BANDS_COUNT; i++)
 		{
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
@@ -166,14 +167,14 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 			TRX.BANDS_SAVED_SETTINGS[i].AutoGain_Stage = 6;
 		}
-		TRX.RF_Filters = true;	  // LPF / HPF / BPF
-		#ifdef LAY_800x480
-		TRX.FFT_Zoom = 1;		  // approximation of the FFT spectrum
-		TRX.FFT_ZoomCW = 8;		// zoomfft for cw mode
-		#else
-		TRX.FFT_Zoom = 2;		  // approximation of the FFT spectrum
-		TRX.FFT_ZoomCW = 16;		// zoomfft for cw mode
-		#endif
+		TRX.RF_Filters = true; // LPF / HPF / BPF
+#ifdef LAY_800x480
+		TRX.FFT_Zoom = 1;	// approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
+#else
+		TRX.FFT_Zoom = 2;	 // approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 16; // zoomfft for cw mode
+#endif
 		TRX.AutoGain = false;	  // auto-control preamp and attenuator
 		TRX.CWDecoder = false;	  // automatic telegraph decoder
 		TRX.InputType_MIC = true; // type of input to transfer
@@ -186,13 +187,13 @@ void LoadSettings(bool clear)
 		TRX.AM_LPF_Filter = 4000;					// default value of AM filter width
 		TRX.FM_LPF_Filter = 15000;					// default value of the FM filter width
 		TRX.RF_Power = 20;							//output power (%)
-		TRX.RX_AGC_SSB_speed = 10;						// AGC receive rate on SSB
-		TRX.RX_AGC_CW_speed = 1;						// AGC receive rate on CW
+		TRX.RX_AGC_SSB_speed = 10;					// AGC receive rate on SSB
+		TRX.RX_AGC_CW_speed = 1;					// AGC receive rate on CW
 		TRX.TX_AGC_speed = 3;						// AGC transfer rate
 		TRX.BandMapEnabled = true;					// automatic change of mode according to the range map
 		TRX.FFT_Enabled = true;						// use FFT spectrum
 		TRX.CW_GENERATOR_SHIFT_HZ = 500;			// LO offset in CW mode
-		TRX.CW_Key_timeout = 500;						// time of releasing transmission after the last character on the key
+		TRX.CW_Key_timeout = 500;					// time of releasing transmission after the last character on the key
 		TRX.FFT_Averaging = 4;						// averaging the FFT to make it smoother
 		TRX.WIFI_Enabled = true;					// activate WiFi
 		strcpy(TRX.WIFI_AP, "WIFI-AP");				// WiFi hotspot
@@ -207,53 +208,53 @@ void LoadSettings(bool clear)
 		TRX.ADC_SHDN = false;						// ADC disable
 		TRX.ADC_DITH = true;						// ADC dither
 		TRX.FFT_Window = 1;
-		TRX.Locked = false;				 // Lock control
-		TRX.CLAR = false;				 // Split frequency mode (receive one VFO, transmit another)
-		TRX.TWO_SIGNAL_TUNE = false;	 // Two-signal generator in TUNE mode (1 + 2kHz)
-		TRX.IF_Gain = 70;				 // IF gain, dB (before all processing and AGC)
-		TRX.CW_KEYER = true;			 // Automatic key
-		TRX.CW_KEYER_WPM = 30;			 // Automatic key speed
-		TRX.Debug_Console = false;		 // Debug output to DEBUG / UART port
-		TRX.Dual_RX = false;					//Dual RX feature
-		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
-		TRX.FFT_Color = 1;				 // FFT display color
-		TRX.FFT_Height = 2;				 // FFT display height
-		TRX.FFT_Grid = 1;					 // FFT grid style
-		TRX.ShiftEnabled = false;		 // activate the SHIFT mode
-		TRX.SHIFT_INTERVAL = 1000;		 // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
-		TRX.DNR_SNR_THRESHOLD = 50;		 // Digital noise reduction level
-		TRX.DNR_AVERAGE = 2;			 // DNR averaging when looking for average magnitude
-		TRX.DNR_MINIMAL = 99;			 // DNR averaging when searching for minimum magnitude
-		TRX.NOISE_BLANKER = true;		 // suppressor of short impulse noise NOISE BLANKER
-		TRX.FRQ_STEP = 10;				 // frequency tuning step by the main encoder
-		TRX.FRQ_FAST_STEP = 100;		 // frequency tuning step by the main encoder in FAST mode
-		TRX.FRQ_ENC_STEP = 25000;		 // frequency tuning step by main add. encoder
-		TRX.FRQ_ENC_FAST_STEP = 50000;	 // frequency tuning step by main add. encoder in FAST mode
-		TRX.AGC_GAIN_TARGET = -35;		 // Maximum (target) AGC gain
-		TRX.WIFI_CAT_SERVER = true;		 // Server for receiving CAT commands via WIFI
-		TRX.MIC_GAIN = 3;				 // Microphone gain
-		TRX.RX_EQ_LOW = 0;				 // Receiver Equalizer (Low)
-		TRX.RX_EQ_MID = 0;				 // Receiver EQ (mids)
-		TRX.RX_EQ_HIG = 0;				 // Receiver EQ (high)
-		TRX.MIC_EQ_LOW = 0;				 // Mic EQ (Low)
-		TRX.MIC_EQ_MID = 0;				 // Mic Equalizer (Mids)
-		TRX.MIC_EQ_HIG = 0;				 // Mic EQ (high)
-		TRX.MIC_REVERBER = 0;			 // Mic Reveerber
-		TRX.FFT_Speed = 3;				 // FFT Speed
-		TRX.Beeper = true;				 //Keyboard beeper
-		TRX.FFT_Background = true;	//FFT gradient background
-		TRX.VAD_Squelch = false;	//SSB Squelch on VAD technology
-		TRX.FFT_Compressor = true;	//Compress FFT Peaks
-		TRX.Encoder_Accelerate = true;	//Accelerate Encoder on fast rate
-		strcpy(TRX.CALLSIGN, "HamRad");				// Callsign
-		strcpy(TRX.LOCATOR, "LO02RR");				// Locator
-		TRX.ColorThemeId = 0;			//Selected Color theme
-		TRX.LayoutThemeId = 0;		//Selected Layout theme
-		TRX.Transverter_Enabled = false;	//Enable transverter mode
-		TRX.Transverter_Offset_Mhz = 120;	//Offset from VFO
-		TRX.CW_GaussFilter = true;	//Gauss responce LPF filter
-		TRX.WSPR_FREQ_OFFSET = 0;	//offset beacon from creq center
-		TRX.WSPR_BANDS_160 = false; //enabled WSPR bands
+		TRX.Locked = false;				  // Lock control
+		TRX.CLAR = false;				  // Split frequency mode (receive one VFO, transmit another)
+		TRX.TWO_SIGNAL_TUNE = false;	  // Two-signal generator in TUNE mode (1 + 2kHz)
+		TRX.IF_Gain = 70;				  // IF gain, dB (before all processing and AGC)
+		TRX.CW_KEYER = true;			  // Automatic key
+		TRX.CW_KEYER_WPM = 30;			  // Automatic key speed
+		TRX.Debug_Console = false;		  // Debug output to DEBUG / UART port
+		TRX.Dual_RX = false;			  //Dual RX feature
+		TRX.Dual_RX_Type = VFO_A_PLUS_B;  // dual receiver mode
+		TRX.FFT_Color = 1;				  // FFT display color
+		TRX.FFT_Height = 2;				  // FFT display height
+		TRX.FFT_Grid = 1;				  // FFT grid style
+		TRX.ShiftEnabled = false;		  // activate the SHIFT mode
+		TRX.SHIFT_INTERVAL = 1000;		  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
+		TRX.DNR_SNR_THRESHOLD = 50;		  // Digital noise reduction level
+		TRX.DNR_AVERAGE = 2;			  // DNR averaging when looking for average magnitude
+		TRX.DNR_MINIMAL = 99;			  // DNR averaging when searching for minimum magnitude
+		TRX.NOISE_BLANKER = true;		  // suppressor of short impulse noise NOISE BLANKER
+		TRX.FRQ_STEP = 10;				  // frequency tuning step by the main encoder
+		TRX.FRQ_FAST_STEP = 100;		  // frequency tuning step by the main encoder in FAST mode
+		TRX.FRQ_ENC_STEP = 25000;		  // frequency tuning step by main add. encoder
+		TRX.FRQ_ENC_FAST_STEP = 50000;	  // frequency tuning step by main add. encoder in FAST mode
+		TRX.AGC_GAIN_TARGET = -35;		  // Maximum (target) AGC gain
+		TRX.WIFI_CAT_SERVER = true;		  // Server for receiving CAT commands via WIFI
+		TRX.MIC_GAIN = 3;				  // Microphone gain
+		TRX.RX_EQ_LOW = 0;				  // Receiver Equalizer (Low)
+		TRX.RX_EQ_MID = 0;				  // Receiver EQ (mids)
+		TRX.RX_EQ_HIG = 0;				  // Receiver EQ (high)
+		TRX.MIC_EQ_LOW = 0;				  // Mic EQ (Low)
+		TRX.MIC_EQ_MID = 0;				  // Mic Equalizer (Mids)
+		TRX.MIC_EQ_HIG = 0;				  // Mic EQ (high)
+		TRX.MIC_REVERBER = 0;			  // Mic Reveerber
+		TRX.FFT_Speed = 3;				  // FFT Speed
+		TRX.Beeper = true;				  //Keyboard beeper
+		TRX.FFT_Background = true;		  //FFT gradient background
+		TRX.VAD_Squelch = false;		  //SSB Squelch on VAD technology
+		TRX.FFT_Compressor = true;		  //Compress FFT Peaks
+		TRX.Encoder_Accelerate = true;	  //Accelerate Encoder on fast rate
+		strcpy(TRX.CALLSIGN, "HamRad");	  // Callsign
+		strcpy(TRX.LOCATOR, "LO02RR");	  // Locator
+		TRX.ColorThemeId = 0;			  //Selected Color theme
+		TRX.LayoutThemeId = 0;			  //Selected Layout theme
+		TRX.Transverter_Enabled = false;  //Enable transverter mode
+		TRX.Transverter_Offset_Mhz = 120; //Offset from VFO
+		TRX.CW_GaussFilter = true;		  //Gauss responce LPF filter
+		TRX.WSPR_FREQ_OFFSET = 0;		  //offset beacon from creq center
+		TRX.WSPR_BANDS_160 = false;		  //enabled WSPR bands
 		TRX.WSPR_BANDS_80 = true;
 		TRX.WSPR_BANDS_40 = true;
 		TRX.WSPR_BANDS_30 = true;
@@ -295,23 +296,23 @@ void LoadCalibration(bool clear)
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
 		sendToDebug_strln("[ERR] Read EEPROM CALIBRATE multiple errors");
-		
+
 	if (CALIBRATE.ENDBit != 100 || CALIBRATE.flash_id != CALIB_VERSION || clear || CALIBRATE.csum != calculateCSUM_EEPROM()) // code for checking the firmware in the eeprom, if it does not match, we use the default
 	{
 		sendToDebug_str("[ERR] CALIBRATE Flash check CODE:");
 		sendToDebug_uint8(CALIBRATE.flash_id, false);
 		CALIBRATE.flash_id = CALIB_VERSION; // code for checking the firmware in the eeprom, if it does not match, we use the default
 
-		CALIBRATE.ENCODER_INVERT = false;														// invert left-right rotation of the main encoder
-		CALIBRATE.ENCODER2_INVERT = false;														// invert left-right rotation of the optional encoder
-		CALIBRATE.ENCODER_DEBOUNCE = 0;															// time to eliminate contact bounce at the main encoder, ms
-		CALIBRATE.ENCODER2_DEBOUNCE = 50;														// time to eliminate contact bounce at the additional encoder, ms
-		CALIBRATE.ENCODER_SLOW_RATE = 25;														// slow down the encoder for high resolutions
-		CALIBRATE.ENCODER_ON_FALLING = false;													// encoder only triggers when level A falls
-		CALIBRATE.ENCODER_ACCELERATION = 75;  											//acceleration rate if rotate
-		CALIBRATE.CICFIR_GAINER_val = 47;														// Offset from the output of the CIC compensator
-		CALIBRATE.TXCICFIR_GAINER_val = 42;														// Offset from the TX-CIC output of the compensator
-		CALIBRATE.DAC_GAINER_val = 26;															// DAC offset offset
+		CALIBRATE.ENCODER_INVERT = false;	  // invert left-right rotation of the main encoder
+		CALIBRATE.ENCODER2_INVERT = false;	  // invert left-right rotation of the optional encoder
+		CALIBRATE.ENCODER_DEBOUNCE = 0;		  // time to eliminate contact bounce at the main encoder, ms
+		CALIBRATE.ENCODER2_DEBOUNCE = 50;	  // time to eliminate contact bounce at the additional encoder, ms
+		CALIBRATE.ENCODER_SLOW_RATE = 25;	  // slow down the encoder for high resolutions
+		CALIBRATE.ENCODER_ON_FALLING = false; // encoder only triggers when level A falls
+		CALIBRATE.ENCODER_ACCELERATION = 75;  //acceleration rate if rotate
+		CALIBRATE.CICFIR_GAINER_val = 47;	  // Offset from the output of the CIC compensator
+		CALIBRATE.TXCICFIR_GAINER_val = 42;	  // Offset from the TX-CIC output of the compensator
+		CALIBRATE.DAC_GAINER_val = 26;		  // DAC offset offset
 		// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_up2mhz = 70;
 		CALIBRATE.rf_out_power_up5mhz = 38;
@@ -319,33 +320,33 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_up30mhz = 26;
 		CALIBRATE.rf_out_power_up60mhz = 40;
 		CALIBRATE.rf_out_power_vhf = 100;
-		CALIBRATE.smeter_calibration = 4;														// S-Meter calibration, set when calibrating the transceiver to S9 (LPF, BPF, ATT, PREAMP off)
-		CALIBRATE.adc_offset = 0;																// Calibrate the offset at the ADC input (DC)
-																								// Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
-																								// Next, the average border response frequencies are set
-		CALIBRATE.LPF_END = 60000 * 1000;														//LPF
-		CALIBRATE.BPF_0_START = 135 * 1000 * 1000;												//2m U14-RF3
-		CALIBRATE.BPF_0_END = 150 * 1000 * 1000;												//2m
-		CALIBRATE.BPF_1_START = 1500 * 1000;													//160m U16-RF2
-		CALIBRATE.BPF_1_END = 2400 * 1000;														//160m
-		CALIBRATE.BPF_2_START = 2400 * 1000;													//80m U16-RF4
-		CALIBRATE.BPF_2_END = 4700 * 1000;														//80m
-		CALIBRATE.BPF_3_START = 4700 * 1000;													//40m U16-RF1
-		CALIBRATE.BPF_3_END = 7200 * 1000;														//40m
-		CALIBRATE.BPF_4_START = 7200 * 1000;													//30m U16-RF3
-		CALIBRATE.BPF_4_END = 11500 * 1000;														//30m
-		CALIBRATE.BPF_5_START = 11500 * 1000;													//20,17m U14-RF2
-		CALIBRATE.BPF_5_END = 21000 * 1000;														//20,17m
-		CALIBRATE.BPF_6_START = 21000 * 1000;													//15,12,10,6m U14-RF4
-		CALIBRATE.BPF_6_END = 64000 * 1000;														//15,12,10,6m
-		CALIBRATE.BPF_HPF = 60000 * 1000;														//HPF U14-RF1
-		CALIBRATE.swr_trans_rate = 11.0f;														//SWR Transormator rate
-		CALIBRATE.VCXO_correction = 0;															//VCXO Frequency offset
-		CALIBRATE.FW_AD8307_SLP = 25.5f;														//Slope for the log amp used to mreasure the FW power (mV/dB)
-		CALIBRATE.FW_AD8307_OFFS = 1150.0f;													//Offset to back calculate the output voltage to dBm (mV)
-		CALIBRATE.BW_AD8307_SLP = 25.5f;														//Slope for the log amp used to mreasure the BW power (mV/dB)
-		CALIBRATE.BW_AD8307_OFFS = 1150.0f;													//Offset to back calculate the output voltage to dBm (mV)
-		
+		CALIBRATE.smeter_calibration = 4;		   // S-Meter calibration, set when calibrating the transceiver to S9 (LPF, BPF, ATT, PREAMP off)
+		CALIBRATE.adc_offset = 0;				   // Calibrate the offset at the ADC input (DC)
+												   // Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
+												   // Next, the average border response frequencies are set
+		CALIBRATE.LPF_END = 60000 * 1000;		   //LPF
+		CALIBRATE.BPF_0_START = 135 * 1000 * 1000; //2m U14-RF3
+		CALIBRATE.BPF_0_END = 150 * 1000 * 1000;   //2m
+		CALIBRATE.BPF_1_START = 1500 * 1000;	   //160m U16-RF2
+		CALIBRATE.BPF_1_END = 2400 * 1000;		   //160m
+		CALIBRATE.BPF_2_START = 2400 * 1000;	   //80m U16-RF4
+		CALIBRATE.BPF_2_END = 4700 * 1000;		   //80m
+		CALIBRATE.BPF_3_START = 4700 * 1000;	   //40m U16-RF1
+		CALIBRATE.BPF_3_END = 7200 * 1000;		   //40m
+		CALIBRATE.BPF_4_START = 7200 * 1000;	   //30m U16-RF3
+		CALIBRATE.BPF_4_END = 11500 * 1000;		   //30m
+		CALIBRATE.BPF_5_START = 11500 * 1000;	   //20,17m U14-RF2
+		CALIBRATE.BPF_5_END = 21000 * 1000;		   //20,17m
+		CALIBRATE.BPF_6_START = 21000 * 1000;	   //15,12,10,6m U14-RF4
+		CALIBRATE.BPF_6_END = 64000 * 1000;		   //15,12,10,6m
+		CALIBRATE.BPF_HPF = 60000 * 1000;		   //HPF U14-RF1
+		CALIBRATE.swr_trans_rate = 11.0f;		   //SWR Transormator rate
+		CALIBRATE.VCXO_correction = 0;			   //VCXO Frequency offset
+		CALIBRATE.FW_AD8307_SLP = 25.5f;		   //Slope for the log amp used to mreasure the FW power (mV/dB)
+		CALIBRATE.FW_AD8307_OFFS = 1150.0f;		   //Offset to back calculate the output voltage to dBm (mV)
+		CALIBRATE.BW_AD8307_SLP = 25.5f;		   //Slope for the log amp used to mreasure the BW power (mV/dB)
+		CALIBRATE.BW_AD8307_OFFS = 1150.0f;		   //Offset to back calculate the output voltage to dBm (mV)
+
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default calibrate settings");
 		SaveCalibration();
@@ -374,7 +375,7 @@ void SaveSettings(void)
 	BKPSRAM_Enable();
 	TRX.csum = calculateCSUM();
 	Aligned_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
-	if(settings_bank == 1)
+	if (settings_bank == 1)
 	{
 		memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
@@ -393,7 +394,7 @@ void SaveSettings(void)
 	//sendToDebug_str("[OK] Settings Saved to bank ");
 	//sendToDebug_uint8(settings_bank, false);
 	//sendToDebug_uint32(sizeof(TRX), false);
-	if(settings_bank == 1)
+	if (settings_bank == 1)
 		settings_bank = 2;
 	else
 		settings_bank = 1;
@@ -489,8 +490,8 @@ static bool EEPROM_Sector_Erase(uint8_t sector, bool force)
 	Address[0] = BigAddress & 0xFF;
 
 	SPI_Transmit(&Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Enable Command
-	SPI_Transmit(&Sector_Erase, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Erase Command
-	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Address ( The first address of flash module is 0x00000000 )
+	SPI_Transmit(&Sector_Erase, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER);  // Erase Command
+	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER);	   // Write Address ( The first address of flash module is 0x00000000 )
 	EEPROM_WaitWrite();
 
 	SPI_process = false;
@@ -505,14 +506,14 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		return false;
 	else
 		SPI_process = true;
-	if(size > sizeof(write_clone))
+	if (size > sizeof(write_clone))
 	{
 		sendToDebug_strln("EEPROM buffer error");
 		return false;
 	}
 	memcpy(write_clone, Buffer, size);
 	Aligned_CleanDCache_by_Addr((uint32_t *)write_clone, sizeof(write_clone));
-	
+
 	const uint16_t page_size = 256;
 	for (uint16_t page = 0; page <= (size / page_size); page++)
 	{
@@ -524,9 +525,9 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		if (bsize > page_size)
 			bsize = page_size;
 
-		SPI_Transmit(&Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Enable Command
-		SPI_Transmit(&Page_Program, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Command
-		SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Address ( The first address of flash module is 0x00000000 )
+		SPI_Transmit(&Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER);									 // Write Enable Command
+		SPI_Transmit(&Page_Program, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER);									 // Write Command
+		SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER);											 // Write Address ( The first address of flash module is 0x00000000 )
 		SPI_Transmit((uint8_t *)(write_clone + page_size * page), NULL, bsize, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Write Data
 		EEPROM_WaitWrite();
 	}
@@ -571,7 +572,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		return true;
 	}
 
-	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Write Address
+	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER);					// Write Address
 	SPI_Transmit(NULL, (uint8_t *)(Buffer), size, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Read
 
 	//verify
@@ -581,7 +582,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		for (uint16_t i = 0; i < size; i++)
 			if (read_clone[i] != Buffer[i])
 			{
-				sendToDebug_uint8(read_clone[i],false);
+				sendToDebug_uint8(read_clone[i], false);
 				SPI_process = false;
 				return false;
 			}
@@ -600,12 +601,11 @@ static void EEPROM_WaitWrite(void)
 	{
 		tryes++;
 		SPI_Transmit(&Get_Status, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER); // Get Status command
-		SPI_Transmit(NULL, &status, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER); // Read data
-		if((status & 0x01) == 0x01)
+		SPI_Transmit(NULL, &status, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER);	// Read data
+		if ((status & 0x01) == 0x01)
 			HAL_Delay(1);
-	}
-	while((status & 0x01) == 0x01 && (tryes < 200));
-	if(tryes == 200)
+	} while ((status & 0x01) == 0x01 && (tryes < 200));
+	if (tryes == 200)
 		sendToDebug_strln("[ERR]EEPROM Lock wait error");
 }
 
@@ -638,10 +638,10 @@ void BKPSRAM_Disable(void)
 static uint8_t calculateCSUM(void)
 {
 	uint8_t csum_old = TRX.csum;
-	uint8_t csum_new = 
-	TRX.csum = 0;
-	uint8_t* TRX_addr = (uint8_t*)&TRX;
-	for(uint16_t i = 0; i < sizeof(TRX); i++)
+	uint8_t csum_new =
+		TRX.csum = 0;
+	uint8_t *TRX_addr = (uint8_t *)&TRX;
+	for (uint16_t i = 0; i < sizeof(TRX); i++)
 		csum_new += *(TRX_addr + i);
 	TRX.csum = csum_old;
 	return csum_new;
@@ -650,10 +650,10 @@ static uint8_t calculateCSUM(void)
 static uint8_t calculateCSUM_EEPROM(void)
 {
 	uint8_t csum_old = CALIBRATE.csum;
-	uint8_t csum_new = 
-	CALIBRATE.csum = 0;
-	uint8_t* CALIBRATE_addr = (uint8_t*)&CALIBRATE;
-	for(uint16_t i = 0; i < sizeof(CALIBRATE); i++)
+	uint8_t csum_new =
+		CALIBRATE.csum = 0;
+	uint8_t *CALIBRATE_addr = (uint8_t *)&CALIBRATE;
+	for (uint16_t i = 0; i < sizeof(CALIBRATE); i++)
 		csum_new += *(CALIBRATE_addr + i);
 	CALIBRATE.csum = csum_old;
 	return csum_new;

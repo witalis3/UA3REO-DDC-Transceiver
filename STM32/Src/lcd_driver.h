@@ -13,18 +13,18 @@ extern uint32_t LCD_FSMC_COMM_ADDR;
 extern uint32_t LCD_FSMC_DATA_ADDR;
 
 //LCD dimensions defines
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined (LCD_SSD1963) || defined(LCD_R61581))
-	#include "lcd_driver_ILI9481.h"
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_SSD1963) || defined(LCD_R61581))
+#include "lcd_driver_ILI9481.h"
 #endif
 #if (defined(LCD_RA8875))
-	#include "lcd_driver_RA8875.h"
+#include "lcd_driver_RA8875.h"
 #endif
 
 #if (LCD_WIDTH == 480 && LCD_HEIGHT == 320)
-	#define LAY_480x320
+#define LAY_480x320
 #endif
 #if (LCD_WIDTH == 800 && LCD_HEIGHT == 480)
-	#define LAY_800x480
+#define LAY_800x480
 #endif
 #define LCD_PIXEL_COUNT (LCD_WIDTH * LCD_HEIGHT)
 
@@ -81,7 +81,7 @@ typedef struct
 		b = t;          \
 	}
 #define rgb888torgb565(r, g, b) ((uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3)))
-	
+
 extern void LCDDriver_SendData(uint16_t data);
 extern uint16_t LCDDriver_readReg(uint16_t reg);
 extern void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
