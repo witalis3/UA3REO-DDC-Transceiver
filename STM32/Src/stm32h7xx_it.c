@@ -738,15 +738,11 @@ void TIM6_DAC_IRQHandler(void)
     SaveSettings();
     SaveSettingsToEEPROM();
     sendToDebug_flush();
-    HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-    while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
-    {
-    } //-V776
+    while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) { }
     HAL_Delay(500);
+		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
     //SCB->AIRCR = 0x05FA0004; // software resetw
-    while (true)
-    {
-    }
+    while (true) { }
   }
 
   //TRX protector
