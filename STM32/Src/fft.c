@@ -30,9 +30,8 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
 IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0}; // combined FFT I and Q buffer
-static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};	   // temporary buffer for sorted values ​​(when looking for a median) and fft compressing
+static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};	   // temporary buffer for sorting, moving and fft compressing
 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};	   // averaged FFT buffer (for output)
-static float32_t FFTOutput_mean_new[MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for moving)
 static float32_t maxValueFFT_rx = 0;						   // maximum value of the amplitude in the resulting frequency response
 static float32_t maxValueFFT_tx = 0;						   // maximum value of the amplitude in the resulting frequency response
 static uint32_t currentFFTFreq = 0;
@@ -758,21 +757,21 @@ static void FFT_move(int32_t _freq_diff)
 		old_x_l = (int32_t)(floorf(old_x_true));
 		old_x_r = (int32_t)(ceilf(old_x_true));
 
-		FFTOutput_mean_new[x] = 0;
+		FFTInput_tmp[x] = 0;
 
 		if ((old_x_true >= LAYOUT->FFT_PRINT_SIZE) || (old_x_true < 0.0f))
 			continue;
 		if ((old_x_l < LAYOUT->FFT_PRINT_SIZE) && (old_x_l >= 0))
-			FFTOutput_mean_new[x] += (FFTOutput_mean[old_x_l] * old_x_part_l);
+			FFTInput_tmp[x] += (FFTOutput_mean[old_x_l] * old_x_part_l);
 		if ((old_x_r < LAYOUT->FFT_PRINT_SIZE) && (old_x_r >= 0))
-			FFTOutput_mean_new[x] += (FFTOutput_mean[old_x_r] * old_x_part_r);
+			FFTInput_tmp[x] += (FFTOutput_mean[old_x_r] * old_x_part_r);
 
 		//sides
 		if (old_x_r >= LAYOUT->FFT_PRINT_SIZE)
-			FFTOutput_mean_new[x] = FFTOutput_mean[old_x_l];
+			FFTInput_tmp[x] = FFTOutput_mean[old_x_l];
 	}
 	//save results
-	memcpy(&FFTOutput_mean, &FFTOutput_mean_new, sizeof FFTOutput_mean);
+	memcpy(&FFTOutput_mean, &FFTInput_tmp, sizeof FFTOutput_mean);
 }
 
 // get color from signal strength
