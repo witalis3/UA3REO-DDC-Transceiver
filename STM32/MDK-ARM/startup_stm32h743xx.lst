@@ -1282,7 +1282,7 @@ ers\XGudr\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include -IC:\Users
 \XGudr\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include -IC:\Users\XGu
 dr\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\PrivateInclude -IC:\Users\
 XGudr\AppData\Local\Arm\Packs\Keil\STM32H7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\
-STM32H7xx\Include --predefine="__UVISION_VERSION SETA 531" --predefine="_RTE_ S
+STM32H7xx\Include --predefine="__UVISION_VERSION SETA 533" --predefine="_RTE_ S
 ETA 1" --predefine="STM32H743xx SETA 1" --predefine="_RTE_ SETA 1" --list=start
 up_stm32h743xx.lst startup_stm32h743xx.s
 

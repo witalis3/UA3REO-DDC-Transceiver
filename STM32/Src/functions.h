@@ -9,12 +9,6 @@
 #include <arm_math.h>
 #include "profiler.h"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wimplicit-int-conversion"
-#pragma GCC diagnostic ignored "-Wsign-conversion"
-#include "arm_math.h"
-#pragma GCC diagnostic pop
-
 #define TRX_MODE_LSB 0
 #define TRX_MODE_USB 1
 #define TRX_MODE_CW_L 2
@@ -29,13 +23,10 @@
 #define TRX_MODE_NO_TX 11
 #define TRX_MODE_COUNT 12
 
-//#define IROM1 __attribute__((section(".ER_IROM1")))          // 2mb FLASH
 #define ITCM __attribute__((section(".ITCM")))            // 64kb ITCM
-//#define DTCM __attribute__((section(".IRAM1")))  // 128kb DTCM
-#define IRAM2 __attribute__((section(".IRAM2"))) // 512kb AXI SRAM
+#define IRAM2 __attribute__((section(".IRAM"))) // 512kb AXI SRAM
 #define SRAM __attribute__((section(".SRAM"))) // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb D-Cache disabled in MPU
 //#define SRAM4 __attribute__((section(".SRAM4")))             // 64kb
-//#define BACKUP_SRAM __attribute__((section(".BACKUP_SRAM"))) // 4kb Backup SRAM
 #define BACKUP_SRAM_BANK1_ADDR (uint32_t *)0x38800000
 #define BACKUP_SRAM_BANK2_ADDR (uint32_t *)0x38800800
 
@@ -52,10 +43,8 @@
 #define Aligned_CleanDCache_by_Addr(buff, size) (SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)buff) & ~(uint32_t)0x1F), (size)+32))
 #define Aligned_InvalidateDCache_by_Addr(buff, size) (SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)buff) & ~(uint32_t)0x1F), (size)+32))
 
-#ifdef __clang__
- #define isnanf __ARM_isnanf
- #define isinff __ARM_isinff
-#endif
+#define isnanf __ARM_isnanf
+#define isinff __ARM_isinff
 
 #define F_PI 3.141592653589793238463f
 #define SQRT2 1.41421356237f

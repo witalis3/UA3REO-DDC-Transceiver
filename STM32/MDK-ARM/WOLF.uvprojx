@@ -10,7 +10,7 @@
       <TargetName>WOLF</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6140000::V6.14::ARMCLANG</pCCUsed>
+      <pCCUsed>6150000::V6.15::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -339,7 +339,7 @@
               <MiscControls>-Wno-float-equal -Wno-padded -Wno-implicit-float-conversion -Wno-gnu-compound-literal-initializer -Wno-cast-qual -Wno-implicit-fallthrough -Wno-cast-align -Wno-pedantic -Wno-missing-noreturn -Wno-sign-conversion -Wno-date-time</MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;         ../Drivers/STM32H7xx_HAL_Driver/Inc;         ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;         ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;         ../Drivers/CMSIS/Include;         ..\USBDevice;         ..\Src;         ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;          ../Drivers/STM32H7xx_HAL_Driver/Inc;          ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;          ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;          ../Drivers/CMSIS/Include;          ..\USBDevice;          ..\Src;          ../Middlewares/Third_Party/FatFs/src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1208,11 +1208,6 @@
     <Layers>
       <Layer>
         <LayName>&lt;Project Info&gt;</LayName>
-        <LayDesc></LayDesc>
-        <LayUrl></LayUrl>
-        <LayKeys></LayKeys>
-        <LayCat></LayCat>
-        <LayLic></LayLic>
         <LayTarg>0</LayTarg>
         <LayPrjMark>1</LayPrjMark>
       </Layer>
