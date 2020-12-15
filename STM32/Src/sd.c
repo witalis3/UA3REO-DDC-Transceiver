@@ -383,6 +383,8 @@ static void SDCOMM_EXPORT_SETT(void)
 			SD_WRITE_SETT_LINE("TRX.FFT_Grid", (uint32_t *)&TRX.FFT_Grid, SYSMENU_INT8);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Background", (uint32_t *)&TRX.FFT_Background, SYSMENU_BOOLEAN);
+		if (res)
+			SD_WRITE_SETT_LINE("TRX.FFT_Lens", (uint32_t *)&TRX.FFT_Lens, SYSMENU_BOOLEAN);
 		//ADC
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
@@ -756,6 +758,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FFT_Grid = (int8_t)intval;
 	if (strcmp(name, "TRX.FFT_Background") == 0)
 		TRX.FFT_Background = uintval;
+	if (strcmp(name, "TRX.FFT_Lens") == 0)
+		TRX.FFT_Lens = uintval;
 	//ADC
 	if (strcmp(name, "TRX.ADC_Driver") == 0)
 		TRX.ADC_Driver = uintval;

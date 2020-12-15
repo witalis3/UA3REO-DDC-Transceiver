@@ -227,6 +227,7 @@ extern struct TRX_SETTINGS
 	bool FFT_Compressor;
 	int8_t FFT_Grid;
 	bool FFT_Background;
+	bool FFT_Lens;
 	//ADC
 	bool ADC_Driver;
 	bool ADC_PGA;

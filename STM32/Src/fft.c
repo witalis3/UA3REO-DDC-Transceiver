@@ -49,6 +49,7 @@ static int32_t grid_lines_pos[20] = {-1};											 //grid lines positions
 static int16_t bw_line_start = 0;													 //BW bar params
 static int16_t bw_line_width = 0;													 //BW bar params
 static int16_t bw_line_end = 0;														 //BW bar params
+static int16_t bw_line_center = 0;														 //BW bar params
 static uint16_t print_wtf_yindex = 0;												 // the current coordinate of the waterfall output via DMA
 static float32_t window_multipliers[FFT_SIZE] = {0};								 // coefficients of the selected window function
 static float32_t hz_in_pixel = 1.0f;												 // current FFT density value
@@ -160,6 +161,7 @@ static void FFT_move(int32_t _freq_diff);													  // shift the waterfall
 static int32_t getFreqPositionOnFFT(uint32_t freq);											  // get the position on the FFT for a given frequency
 static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
 static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);		  //mix two colors with opacity
+static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center);
 
 // FFT initialization
 void FFT_Init(void)
@@ -304,38 +306,66 @@ void FFT_doFFT(void)
 	float32_t fft_compress_rate_half = floorf(fft_compress_rate / 2.0f); //full points
 	float32_t fft_compress_rate_parts = fmodf(fft_compress_rate / 2.0f, 1.0f); //partial points
 	
-	for (uint32_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
+	if(!TRX.FFT_Lens) //normal compress
 	{
-		int32_t left_index = (uint32_t)((float32_t)i * fft_compress_rate - fft_compress_rate_half);
-		if(left_index < 0)
-			left_index = 0;
-		int32_t right_index = (uint32_t)((float32_t)i * fft_compress_rate + fft_compress_rate_half);
-		if(right_index >= FFT_USEFUL_SIZE)
-			right_index = FFT_USEFUL_SIZE - 1;
-		
-		float32_t points = 0;
-		float32_t accum = 0.0f;
-		//full points
-		for(uint32_t index = left_index; index <= right_index ; index++)
+		for (uint32_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 		{
-			accum += FFTInput[index];
-			points += 1.0f;
+			int32_t left_index = (uint32_t)((float32_t)i * fft_compress_rate - fft_compress_rate_half);
+			if(left_index < 0)
+				left_index = 0;
+			int32_t right_index = (uint32_t)((float32_t)i * fft_compress_rate + fft_compress_rate_half);
+			if(right_index >= FFT_USEFUL_SIZE)
+				right_index = FFT_USEFUL_SIZE - 1;
+			
+			float32_t points = 0;
+			float32_t accum = 0.0f;
+			//full points
+			for(uint32_t index = left_index; index <= right_index ; index++)
+			{
+				accum += FFTInput[index];
+				points += 1.0f;
+			}
+			//partial points
+			if(fft_compress_rate_parts > 0.0f)
+			{
+				if(left_index > 0)
+				{
+					accum += FFTInput[left_index - 1] * fft_compress_rate_parts;
+					points += fft_compress_rate_parts;
+				}
+				if(right_index < (FFT_USEFUL_SIZE - 1))
+				{
+					accum += FFTInput[right_index + 1] * fft_compress_rate_parts;
+					points += fft_compress_rate_parts;
+				}
+			}
+			FFTInput_tmp[i] = accum / points;
 		}
-		//partial points
-		if(fft_compress_rate_parts > 0.0f)
+	}
+	else //lens compress
+	{
+		float32_t step_now = FFT_LENS_STEP_START;
+		float32_t index1 = (float32_t)FFT_USEFUL_SIZE / 2.0f;
+		float32_t index2 = index1;
+		for (uint32_t i = 0; i <= (LAYOUT->FFT_PRINT_SIZE / 2); i++)
 		{
-			if(left_index > 0)
-			{
-				accum += FFTInput[left_index - 1] * fft_compress_rate_parts;
-				points += fft_compress_rate_parts;
-			}
-			if(right_index < (FFT_USEFUL_SIZE - 1))
-			{
-				accum += FFTInput[right_index + 1] * fft_compress_rate_parts;
-				points += fft_compress_rate_parts;
-			}
+			FFTInput_tmp[(LAYOUT->FFT_PRINT_SIZE / 2) - i] = FFTInput[(uint32_t)roundf(index1)];
+			if(i != (LAYOUT->FFT_PRINT_SIZE / 2))
+				FFTInput_tmp[(LAYOUT->FFT_PRINT_SIZE / 2) + i] = FFTInput[(uint32_t)roundf(index2)];
+			
+			step_now += FFT_LENS_STEP;
+			index1 -= step_now;
+			index2 += step_now;
+
+			if(index1 >= FFT_USEFUL_SIZE)
+				index1 = FFT_USEFUL_SIZE - 1;
+			if(index1 < 0)
+				index1 = 0;
+			if(index2 >= FFT_USEFUL_SIZE)
+				index2 = FFT_USEFUL_SIZE - 1;
+			if(index2 < 0)
+				index2 = 0;
 		}
-		FFTInput_tmp[i] = accum / points;
 	}
 	memcpy(&FFTInput, FFTInput_tmp, sizeof(FFTInput_tmp));
 	
@@ -436,6 +466,7 @@ void FFT_printFFT(void)
 	if (CurrentVFO()->Freq != currentFFTFreq)
 	{
 		//calculate scale lines
+		memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
 		uint8_t index = 0;
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 		{
@@ -453,10 +484,8 @@ void FFT_printFFT(void)
 				index++;
 			}
 		}
-		for (int8_t i = index; i < 13; i++)
-			grid_lines_pos[index] = -1;
 
-		// offset the waterfall if needed
+		// offset the fft if needed
 		FFT_move((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq);
 		currentFFTFreq = CurrentVFO()->Freq;
 	}
@@ -516,7 +545,14 @@ void FFT_printFFT(void)
 	default:
 		break;
 	}
+	bw_line_center = bw_line_start + bw_line_width / 2;
 	bw_line_end = bw_line_start + bw_line_width;
+	if(TRX.FFT_Lens) //lens correction
+	{
+		bw_line_start = FFT_getLensCorrection(bw_line_start);
+		bw_line_center = FFT_getLensCorrection(bw_line_center);
+		bw_line_end = FFT_getLensCorrection(bw_line_end);
+	}
 
 	// prepare FFT print over the waterfall
 	uint16_t background = BG_COLOR;
@@ -556,7 +592,6 @@ void FFT_printFFT(void)
 	//Gauss filter center
 	if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 	{
-		uint16_t bw_line_center = bw_line_start + bw_line_width / 2;
 		for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 			fft_output_buffer[fft_y][bw_line_center] = mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	}
@@ -1031,6 +1066,8 @@ static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 	int32_t pos = (int32_t)((float32_t)LAYOUT->FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO()->Freq) / hz_in_pixel * (float32_t)fft_zoom);
 	if (pos < 0 || pos >= LAYOUT->FFT_PRINT_SIZE)
 		return -1;
+	if(TRX.FFT_Lens) //lens correction
+		pos = FFT_getLensCorrection(pos);
 	return pos;
 }
 
@@ -1065,4 +1102,47 @@ static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opa
 	if (b > 31)
 		b = 31;
 	return (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
+}
+
+static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center)
+{
+	float32_t fft_normal_compress_rate = (float32_t)FFT_USEFUL_SIZE / (float32_t)LAYOUT->FFT_PRINT_SIZE;
+	float32_t normal_distance_from_center_converted = (float32_t)normal_distance_from_center * fft_normal_compress_rate;
+	float32_t step_now = FFT_LENS_STEP_START;
+	float32_t index1 = (float32_t)FFT_USEFUL_SIZE / 2.0f;
+	float32_t index2 = index1;
+	for (uint32_t i = 0; i <= (LAYOUT->FFT_PRINT_SIZE / 2); i++)
+	{
+		if(normal_distance_from_center < (LAYOUT->FFT_PRINT_SIZE / 2))
+		{
+			if(normal_distance_from_center_converted > index1)
+			{
+				return (LAYOUT->FFT_PRINT_SIZE / 2 - i);
+			}
+		}
+		else
+		{
+			if(normal_distance_from_center_converted < index2)
+			{
+				if(i != (LAYOUT->FFT_PRINT_SIZE / 2))
+					return (LAYOUT->FFT_PRINT_SIZE / 2 + i);
+				else
+					return (LAYOUT->FFT_PRINT_SIZE - 1);
+			}
+		}
+		
+		step_now += FFT_LENS_STEP;
+		index1 -= step_now;
+		index2 += step_now;
+
+		if(index1 >= FFT_USEFUL_SIZE)
+			index1 = FFT_USEFUL_SIZE - 1;
+		if(index1 < 0)
+			index1 = 0;
+		if(index2 >= FFT_USEFUL_SIZE)
+			index2 = FFT_USEFUL_SIZE - 1;
+		if(index2 < 0)
+			index2 = 0;
+	}
+	return normal_distance_from_center;
 }
