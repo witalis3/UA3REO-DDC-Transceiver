@@ -294,6 +294,11 @@ void FFT_doFFT(void)
 	}
 	NeedFFTInputBuffer = true;*/
 
+	// Swap fft parts
+	memcpy(&FFTInput[FFT_SIZE], &FFTInput[0], sizeof(float32_t) * (FFT_SIZE / 2)); //left - > tmp
+	memcpy(&FFTInput[0], &FFTInput[FFT_SIZE / 2], sizeof(float32_t) * (FFT_SIZE / 2)); //right - > left
+	memcpy(&FFTInput[FFT_SIZE / 2], &FFTInput[FFT_SIZE], sizeof(float32_t) * (FFT_SIZE / 2)); //tmp - > right
+	
 	// Compress the calculated FFT to visible
 	float32_t fft_compress_rate = (float32_t)FFT_SIZE / (float32_t)LAYOUT->FFT_PRINT_SIZE;
 	float32_t fft_compress_rate_half = fft_compress_rate / 2.0f;
@@ -448,21 +453,16 @@ void FFT_printFFT(void)
 	}
 
 	// calculate the colors for the waterfall
-	uint_fast16_t new_x = 0;
 	for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 	{
-		if (fft_x < (LAYOUT->FFT_PRINT_SIZE / 2))
-			new_x = fft_x + (LAYOUT->FFT_PRINT_SIZE / 2);
-		if (fft_x >= (LAYOUT->FFT_PRINT_SIZE / 2))
-			new_x = fft_x - (LAYOUT->FFT_PRINT_SIZE / 2);
 		height = (uint16_t)((float32_t)FFTOutput_mean[(uint_fast16_t)fft_x] * fftHeight);
 		if (height > fftHeight - 1)
 			height = fftHeight;
 
 		wtf_buffer_freqs[0] = currentFFTFreq;
-		fft_header[new_x] = height;
-		indexed_wtf_buffer[0][new_x] = fftHeight - height;
-		if (new_x == (LAYOUT->FFT_PRINT_SIZE / 2))
+		fft_header[fft_x] = height;
+		indexed_wtf_buffer[0][fft_x] = fftHeight - height;
+		if (fft_x == (LAYOUT->FFT_PRINT_SIZE / 2))
 			continue;
 	}
 
