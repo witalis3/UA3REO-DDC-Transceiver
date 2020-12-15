@@ -654,17 +654,18 @@ void FFT_printWaterfallDMA(void)
 #else
 	if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
 #endif
-	{
+	{	
 		// calculate offset
-		int32_t freq_diff = roundf(((float32_t)((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom);
+		float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom;
+		float32_t freq_diff_part = fmodf(freq_diff, 1.0f);
 		int32_t margin_left = 0;
 		if (freq_diff < 0)
-			margin_left = -freq_diff;
+			margin_left = -floorf(freq_diff);
 		if (margin_left > LAYOUT->FFT_PRINT_SIZE)
 			margin_left = LAYOUT->FFT_PRINT_SIZE;
 		int32_t margin_right = 0;
 		if (freq_diff > 0)
-			margin_right = freq_diff;
+			margin_right = ceilf(freq_diff);
 		if (margin_right > LAYOUT->FFT_PRINT_SIZE)
 			margin_right = LAYOUT->FFT_PRINT_SIZE;
 		if ((margin_left + margin_right) > LAYOUT->FFT_PRINT_SIZE)
