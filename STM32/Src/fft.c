@@ -28,12 +28,9 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 #if FFT_SIZE == 256
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
-#if FFT_SIZE == 128
-const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len128;
-#endif
 
 IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0}; // combined FFT I and Q buffer
-static float32_t FFTInput_sorted[MAX_FFT_PRINT_SIZE] = {0};	   // buffer for sorted values ​​(when looking for a median)
+static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};	   // temporary buffer for sorted values ​​(when looking for a median) and fft compressing
 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};	   // averaged FFT buffer (for output)
 static float32_t FFTOutput_mean_new[MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for moving)
 static float32_t maxValueFFT_rx = 0;						   // maximum value of the amplitude in the resulting frequency response
@@ -297,19 +294,29 @@ void FFT_doFFT(void)
 	}
 	NeedFFTInputBuffer = true;*/
 
-	// Reduce the calculated FFT to visible
-	if (FFT_SIZE > LAYOUT->FFT_PRINT_SIZE)
+	// Compress the calculated FFT to visible
+	float32_t fft_compress_rate = (float32_t)FFT_SIZE / (float32_t)LAYOUT->FFT_PRINT_SIZE;
+	float32_t fft_compress_rate_half = fft_compress_rate / 2.0f;
+	for (uint32_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 	{
-		float32_t fft_compress_rate = (float32_t)FFT_SIZE / (float32_t)LAYOUT->FFT_PRINT_SIZE;
-		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
+		int32_t left_index = (uint32_t)((float32_t)i * fft_compress_rate - fft_compress_rate_half);
+		if(left_index < 0)
+			left_index = 0;
+		int32_t right_index = (uint32_t)((float32_t)i * fft_compress_rate + fft_compress_rate_half);
+		if(right_index > FFT_SIZE)
+			right_index = FFT_SIZE;
+		
+		uint32_t points = 0;
+		float32_t accum = 0.0f;
+		for(uint32_t index = left_index; index <= right_index ; index++)
 		{
-			float32_t fft_compress_tmp = 0;
-			for (uint_fast8_t c = 0; c < fft_compress_rate; c++)
-				fft_compress_tmp += FFTInput[(uint_fast16_t)(i * fft_compress_rate + c)];
-			FFTInput[i] = fft_compress_tmp / fft_compress_rate;
+			accum += FFTInput[index];
+			points++;
 		}
+		FFTInput_tmp[i] = accum / (float32_t)points;
 	}
-
+	memcpy(&FFTInput, FFTInput_tmp, sizeof(FFTInput_tmp));
+	
 	//Delete noise
 	float32_t minAmplValue = 0;
 	uint32_t minAmplIndex = 0;
@@ -318,8 +325,8 @@ void FFT_doFFT(void)
 		arm_offset_f32(FFTInput, -minAmplValue * 0.8f, FFTInput, LAYOUT->FFT_PRINT_SIZE);
 
 	// Looking for the median in frequency response
-	arm_sort_f32(&FFT_sortInstance, FFTInput, FFTInput_sorted, LAYOUT->FFT_PRINT_SIZE);
-	medianValue = FFTInput_sorted[LAYOUT->FFT_PRINT_SIZE / 2];
+	arm_sort_f32(&FFT_sortInstance, FFTInput, FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
+	medianValue = FFTInput_tmp[LAYOUT->FFT_PRINT_SIZE / 2];
 
 	// Maximum amplitude
 	float32_t maxValueFFT = maxValueFFT_rx;
