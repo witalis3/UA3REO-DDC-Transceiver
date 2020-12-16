@@ -698,7 +698,7 @@ static void FFT_3DPrintFFT(void)
 		{
 			//calc bin perspective
 			uint32_t print_bin_height = print_y - (fftHeight - indexed_wtf_buffer[wtf_yindex][wtf_x]);
-			if(print_bin_height > wtfHeight + fftHeight)
+			if(print_bin_height > wtfHeight + fftHeight - cwdecoder_offset)
 				continue;
 			uint32_t print_x = x_left_offset + (uint32_t)roundf((float32_t)wtf_x * x_compress);
 			if(prev_x == print_x)
@@ -744,7 +744,7 @@ void FFT_printWaterfallDMA(void)
 		if (print_wtf_yindex == 0)
 			LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + (uint16_t)(wtfHeight - cwdecoder_offset) - 1);
 		
-		if (print_wtf_yindex < (fftHeight + wtfHeight))
+		if (print_wtf_yindex < (fftHeight + wtfHeight - cwdecoder_offset))
 		{
 			for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
 				wtf_output_line[wtf_x] = palette_fft[indexed_3d_fft_buffer[print_wtf_yindex][wtf_x]];
