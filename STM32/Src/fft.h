@@ -23,6 +23,9 @@
 #define FFT_MAX_GRID_NUMBER 13																																				// max grid lines
 #define FFT_LENS_STEP_START 0.4f																																			// start lens step
 #define FFT_LENS_STEP 0.013f																																					// each lens step
+#define FFT_3D_SLIDES 40																																							// 3D FFT parameters
+#define FFT_Y_OFFSET 2
+#define FFT_X_OFFSET 5
 
 #define GET_FFTHeight ((TRX.FFT_Height == 1) ? LAYOUT->FFT_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->FFT_HEIGHT_STYLE2 : LAYOUT->FFT_HEIGHT_STYLE3))
 #define GET_WTFHeight ((TRX.FFT_Height == 1) ? LAYOUT->WTF_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2 : LAYOUT->WTF_HEIGHT_STYLE3))

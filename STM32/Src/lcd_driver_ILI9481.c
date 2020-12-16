@@ -508,6 +508,14 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 	//Set fill area
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
 
+	uint32_t n = ((x1 + 1) - x0) * ((y1 + 1) - y0);
+	if(n < 100)
+	{
+		while(n--)
+			LCDDriver_SendData(color);
+		return;
+	}
+	
 	//DMA2D Set color in 32bit format
 	WRITE_REG(hdma2d.Instance->OCOLR, (color << 16) | color);
 	//DMA2D Set width and 32bit align

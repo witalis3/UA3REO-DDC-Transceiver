@@ -169,6 +169,7 @@ extern "C"
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
 #define MAX_FFT_HEIGHT 102
 #define MAX_WTF_HEIGHT 102
+#define FFT_AND_WTF_HEIGHT 152
 #endif
 
 #if (defined(LAY_800x480))
@@ -364,6 +365,7 @@ extern "C"
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
 #define MAX_FFT_HEIGHT 220
 #define MAX_WTF_HEIGHT 180
+#define FFT_AND_WTF_HEIGHT 320
 #endif
 
 	extern const STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT];

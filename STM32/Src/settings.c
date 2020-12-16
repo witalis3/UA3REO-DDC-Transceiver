@@ -221,6 +221,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Height = 2;				  // FFT display height
 		TRX.FFT_Grid = 1;				  // FFT grid style
 		TRX.FFT_Lens = false;			//FFT lens effect
+		TRX.FFT_3D = 0;						//FFT 3D mode
 		TRX.ShiftEnabled = false;		  // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 1000;		  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
 		TRX.DNR_SNR_THRESHOLD = 50;		  // Digital noise reduction level

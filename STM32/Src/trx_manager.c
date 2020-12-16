@@ -383,10 +383,10 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_Driver = false;
 			TRX.ATT = true;
 			FPGA_NeedSendParams = true;
-			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
 			if (skip_cycles == 0)
 			{
+				LCD_UpdateQuery.TopButtons = true;
 				sendToDebug_strln("AUTOGAIN LPF + BPF + ATT");
 				resetVAD();
 				TRX_AutoGain_Stage++;
@@ -412,10 +412,10 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_PGA = false;
 			TRX.ADC_Driver = false;
 			FPGA_NeedSendParams = true;
-			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
 			if (skip_cycles == 0)
 			{
+				LCD_UpdateQuery.TopButtons = true;
 				sendToDebug_strln("AUTOGAIN LPF + BPF");
 				resetVAD();
 				TRX_AutoGain_Stage++;
@@ -446,10 +446,10 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_PGA = true;
 			TRX.ADC_Driver = false;
 			FPGA_NeedSendParams = true;
-			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
 			if (skip_cycles == 0)
 			{
+				LCD_UpdateQuery.TopButtons = true;
 				sendToDebug_strln("AUTOGAIN LPF + BPF + PGA");
 				resetVAD();
 				TRX_AutoGain_Stage++;
@@ -482,10 +482,10 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_PGA = true;
 			TRX.ADC_Driver = true;
 			FPGA_NeedSendParams = true;
-			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
 			if (skip_cycles == 0)
 			{
+				LCD_UpdateQuery.TopButtons = true;
 				sendToDebug_strln("AUTOGAIN LPF + BPF + PGA + DRIVER");
 				resetVAD();
 				TRX_AutoGain_Stage++;
@@ -516,10 +516,10 @@ void TRX_DoAutoGain(void)
 			TRX.ADC_PGA = true;
 			TRX.ADC_Driver = true;
 			FPGA_NeedSendParams = true;
-			LCD_UpdateQuery.TopButtons = true;
 			autogain_wait_reaction = 0;
 			if (skip_cycles == 0)
 			{
+				LCD_UpdateQuery.TopButtons = true;
 				sendToDebug_strln("AUTOGAIN LPF + BPF + PGA + DRIVER + LNA");
 				resetVAD();
 				TRX_AutoGain_Stage++;

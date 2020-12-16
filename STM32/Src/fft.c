@@ -44,6 +44,7 @@ SRAM static uint16_t fft_output_buffer[MAX_FFT_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0
 IRAM2 static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
 IRAM2 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};						 // frequencies for each row of the waterfall
 SRAM static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
+IRAM2 static uint8_t indexed_3d_fft_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with 3d WTF output
 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};								 //buffer with fft colors output
 static int32_t grid_lines_pos[20] = {-1};											 //grid lines positions
 static int16_t bw_line_start = 0;													 //BW bar params
@@ -162,6 +163,7 @@ static int32_t getFreqPositionOnFFT(uint32_t freq);											  // get the posit
 static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
 static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);		  //mix two colors with opacity
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center);
+static void FFT_3DPrintFFT(void);
 
 // FFT initialization
 void FFT_Init(void)
@@ -554,6 +556,12 @@ void FFT_printFFT(void)
 		bw_line_end = FFT_getLensCorrection(bw_line_end);
 	}
 
+	if(TRX.FFT_3D > 0)
+	{
+		FFT_3DPrintFFT();
+		return;
+	}
+	
 	// prepare FFT print over the waterfall
 	uint16_t background = BG_COLOR;
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
@@ -664,6 +672,58 @@ void FFT_afterPrintFFT(void)
 	FFT_printWaterfallDMA();
 }
 
+//3D mode print
+static void FFT_3DPrintFFT(void)
+{
+	uint16_t wtfHeight = GET_WTFHeight;
+	uint16_t fftHeight = GET_FFTHeight;
+	uint_fast8_t cwdecoder_offset = 0;
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
+		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
+	
+	//clear old data
+	memset(indexed_3d_fft_buffer, fftHeight, sizeof(indexed_3d_fft_buffer));
+	
+	//draw 3D WTF
+	for(int32_t wtf_yindex = FFT_3D_SLIDES; wtf_yindex >= 0; wtf_yindex--) //each slides
+	{
+		//calc perspective parameters
+		uint32_t print_y = fftHeight + wtfHeight - cwdecoder_offset - wtf_yindex * FFT_Y_OFFSET;
+		float32_t x_compress = (float32_t)(LAYOUT->FFT_PRINT_SIZE - FFT_X_OFFSET * wtf_yindex) / (float32_t)LAYOUT->FFT_PRINT_SIZE;
+		uint32_t x_left_offset = (uint32_t)roundf(((float32_t)LAYOUT->FFT_PRINT_SIZE - (float32_t)LAYOUT->FFT_PRINT_SIZE * x_compress) / 2.0f);
+		int16_t prev_x = -1;
+		
+		//each bin
+		for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
+		{
+			//calc bin perspective
+			uint32_t print_bin_height = print_y - (fftHeight - indexed_wtf_buffer[wtf_yindex][wtf_x]);
+			if(print_bin_height > wtfHeight + fftHeight)
+				continue;
+			uint32_t print_x = x_left_offset + (uint32_t)roundf((float32_t)wtf_x * x_compress);
+			if(prev_x == print_x)
+				continue;
+			prev_x = print_x;
+			
+			if(TRX.FFT_3D == 1) //pixel mode
+				indexed_3d_fft_buffer[print_bin_height][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x];
+		}
+	}
+	
+	//draw front fft
+	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
+	{
+		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+		{
+			if (fft_y > (fftHeight - fft_header[fft_x]))
+				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset + fft_y][fft_x] = fft_y;
+		}
+	}
+	
+	//do after events
+	FFT_afterPrintFFT();
+}
+
 // waterfall output
 void FFT_printWaterfallDMA(void)
 {
@@ -673,6 +733,53 @@ void FFT_printWaterfallDMA(void)
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 
+	//3D version printout
+	if(TRX.FFT_3D > 0)
+	{
+		if (print_wtf_yindex == 0)
+			LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + (uint16_t)(wtfHeight - cwdecoder_offset) - 1);
+		
+		if (print_wtf_yindex < (fftHeight + wtfHeight))
+		{
+			for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
+				wtf_output_line[wtf_x] = palette_fft[indexed_3d_fft_buffer[print_wtf_yindex][wtf_x]];
+			
+			//bw bar highlight
+			if (print_wtf_yindex > wtfHeight)
+			{
+				uint16_t fft_y = print_wtf_yindex - wtfHeight + cwdecoder_offset;
+				for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+				{
+					if (fft_x >= bw_line_start && fft_x <= bw_line_end)
+					{
+						if (fft_y > (fftHeight - fft_header[fft_x]))
+							wtf_output_line[fft_x] = palette_bw_fft_colors[indexed_3d_fft_buffer[print_wtf_yindex][fft_x]];
+					}
+				}
+			}
+			
+			//Gauss filter center
+			if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+				wtf_output_line[bw_line_center] = mixColors(wtf_output_line[bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+			
+			//Сenter line
+			wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2];
+				
+			//Send To DMA
+			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
+			print_wtf_yindex++;
+		}
+		else
+		{
+			FFT_FPS++;
+			lastWTFFreq = currentFFTFreq;
+			FFT_need_fft = true;
+			LCD_busy = false;
+		}
+		return;
+	}
+	//
+	
 #ifdef HAS_BTE
 	//move exist lines down with BTE
 	if (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq)
@@ -689,7 +796,7 @@ void FFT_printWaterfallDMA(void)
 #else
 	if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
 #endif
-	{	
+	{
 		// calculate offset
 		float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom;
 		float32_t freq_diff_part = fmodf(freq_diff, 1.0f);
