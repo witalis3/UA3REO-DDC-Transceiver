@@ -705,7 +705,12 @@ static void FFT_3DPrintFFT(void)
 				continue;
 			prev_x = print_x;
 			
-			if(TRX.FFT_3D == 1) //pixel mode
+			if(TRX.FFT_3D == 1) //line mode
+			{
+				for(uint16_t h = 0; h < (fftHeight - indexed_wtf_buffer[wtf_yindex][wtf_x]); h++)
+					indexed_3d_fft_buffer[print_bin_height + h][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x] + h;
+			}
+			if(TRX.FFT_3D == 2) //pixel mode
 				indexed_3d_fft_buffer[print_bin_height][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x];
 		}
 	}

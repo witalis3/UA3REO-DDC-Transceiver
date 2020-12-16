@@ -182,6 +182,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
 * **FFT Background** - Gradient FFT background
 * **FFT Enabled** - Enable waterfall and FFT
 * **FFT Lens** - Enable FFT lens mode (magnify center of spectrum)
+* **FFT 3D Mode** - Enable FFT 3D mode (0 - disabled, 1 - lines, 2 - pixels)
 * **FFT Compressor** - Enable FFT peak comressor
 * **FFT Averaging** - FFT burst averaging level
 * **FFT Window** - Select FFT window (Hamming / Blackman-Harris / Hanning)
