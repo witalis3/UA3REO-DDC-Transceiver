@@ -509,9 +509,8 @@ static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)
 {
-	TRX.RF_Power += direction;
-	if (TRX.RF_Power < 1)
-		TRX.RF_Power = 1;
+	if(direction > 0 || TRX.RF_Power > 0)
+		TRX.RF_Power += direction;
 	if (TRX.RF_Power > 100)
 		TRX.RF_Power = 100;
 }
