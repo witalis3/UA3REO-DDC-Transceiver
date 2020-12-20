@@ -361,6 +361,11 @@ void RF_UNIT_ProcessSensors(void)
 		if (TRX_PWR_Forward < 0.0f)
 			TRX_PWR_Forward = 0.0f;
 		TRX_PWR_Backward = (TRX_VLT_backward * TRX_VLT_backward) / 50.0f;
+		
+		//VHF SWR tandem match capacity fix
+		if(CurrentVFO()->Freq > 80000000)
+			TRX_PWR_Backward -= TRX_PWR_Forward / 3.0f;
+		
 		if (TRX_PWR_Backward < 0.0f)
 			TRX_PWR_Backward = 0.0f;
 
