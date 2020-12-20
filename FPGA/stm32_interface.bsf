@@ -229,8 +229,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 288)
 		(output)
-		(text "CIC_GAIN[7..0]" (rect 0 0 67 12)(font "Arial" ))
-		(text "CIC_GAIN[7..0]" (rect 200 283 267 295)(font "Arial" ))
+		(text "unused[7..0]" (rect 0 0 48 12)(font "Arial" ))
+		(text "unused[7..0]" (rect 219 283 267 295)(font "Arial" ))
 		(line (pt 288 288)(pt 272 288)(line_width 3))
 	)
 	(port

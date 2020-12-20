@@ -38,6 +38,13 @@ refer to the applicable agreement for further details.
 		(line (pt 0 72)(pt 64 72)(line_width 3))
 	)
 	(port
+		(pt 0 56)
+		(input)
+		(text "clock" (rect 0 0 29 14)(font "Arial" (font_size 8)))
+		(text "clock" (rect 4 42 27 55)(font "Arial" (font_size 8)))
+		(line (pt 0 56)(pt 64 56))
+	)
+	(port
 		(pt 160 56)
 		(output)
 		(text "result[27..0]" (rect 0 0 67 14)(font "Arial" (font_size 8)))
@@ -64,5 +71,7 @@ refer to the applicable agreement for further details.
 		(line (pt 162 0)(pt 162 114))
 		(line (pt 0 114)(pt 162 114))
 		(line (pt 0 0)(pt 0 114))
+		(line (pt 64 50)(pt 70 56))
+		(line (pt 70 56)(pt 64 62))
 	)
 )

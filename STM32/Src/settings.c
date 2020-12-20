@@ -314,7 +314,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENCODER_ACCELERATION = 75;  //acceleration rate if rotate
 		CALIBRATE.CICFIR_GAINER_val = 47;	  // Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 42;	  // Offset from the TX-CIC output of the compensator
-		CALIBRATE.DAC_GAINER_val = 26;		  // DAC offset offset
+		CALIBRATE.DAC_GAINER_val = 26;		  // DAC shift
 		// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_up2mhz = 29; //160m - 7w
 		CALIBRATE.rf_out_power_up5mhz = 27; //80m - 7w

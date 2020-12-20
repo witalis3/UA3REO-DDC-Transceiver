@@ -272,7 +272,6 @@ extern struct TRX_CALIBRATE
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
 	bool ENCODER_ON_FALLING;
-	uint8_t CIC_GAINER_val;
 	uint8_t CICFIR_GAINER_val;
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;

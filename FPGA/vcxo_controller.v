@@ -47,7 +47,7 @@ begin
 	end
 	
 	//do PWM
-	PWM_counter = PWM_counter + 1;
+	PWM_counter = PWM_counter + 16'd1;
 	if(PWM_counter >= PWM_max)
 		PWM_counter = 0;
 	
@@ -91,9 +91,9 @@ begin
 				
 				//tune
 				if(freq_error_now < 0)
-					PWM = PWM + 1;
+					PWM = PWM + 16'd1;
 				else if(freq_error_now > 0)
-					PWM = PWM - 1;
+					PWM = PWM - 16'd1;
 			end
 
 			state = 3;

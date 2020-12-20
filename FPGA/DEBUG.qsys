@@ -31,7 +31,7 @@
  <parameter name="hideFromIPCatalog" value="true" />
  <parameter name="lockedInterfaceDefinition" value="" />
  <parameter name="maxAdditionalLatency" value="1" />
- <parameter name="projectName" value="UA3REO.qpf" />
+ <parameter name="projectName" value="WOLF.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="0" />
  <parameter name="testBenchDutName" value="" />
@@ -57,7 +57,7 @@
   <parameter name="device_family" value="Cyclone IV E" />
   <parameter name="gui_use_auto_index" value="true" />
   <parameter name="instance_id" value="ADC" />
-  <parameter name="probe_width" value="16" />
+  <parameter name="probe_width" value="14" />
   <parameter name="sld_instance_index" value="0" />
   <parameter name="source_initial_value" value="0" />
   <parameter name="source_width" value="0" />

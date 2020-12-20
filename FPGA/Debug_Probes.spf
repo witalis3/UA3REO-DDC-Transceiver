@@ -22,7 +22,7 @@
       <probe name="probe[15]"/>
     </probes>
     <view>
-      <view_node expanded="true" group_name="probe[15..0]" index="0" lsb_to_msb="false" node_type="probe" radix="unsigned" view_type="group_header"/>
+      <view_node expanded="false" group_name="probe[15..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
       <view_node expanded="true" index="15" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="14" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="13" node_type="probe" view_type="group_member"/>
@@ -40,7 +40,7 @@
       <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
     </view>
-    <log data="18402840184028401840284018402840" max_size="8" size="8" time="2C1AFBF5000000003C1AFBF5000000003C1AFBF5000000003C1AFBF5000000003C1AFBF5000000003C1AFBF5000000003C1AFBF5000000003C1AFBF500000000" width="16"/>
+    <log data="2590BE4060504C30000001000000D3FF" max_size="8" size="8" time="6AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF500000000" width="16"/>
   </instance>
   <instance enable_logging="true" entity_name="ADC" is_auto_node="true" name="ADC">
     <node_ip_info instance_id="1" mfg_id="110" node_id="9" version="0"/>
@@ -60,13 +60,9 @@
       <probe name="probe[11]"/>
       <probe name="probe[12]"/>
       <probe name="probe[13]"/>
-      <probe name="probe[14]"/>
-      <probe name="probe[15]"/>
     </probes>
     <view>
-      <view_node expanded="false" group_name="probe[15..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
-      <view_node expanded="true" index="15" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="14" node_type="probe" view_type="group_member"/>
+      <view_node expanded="false" group_name="probe[13..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
       <view_node expanded="true" index="13" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="12" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="11" node_type="probe" view_type="group_member"/>
@@ -82,6 +78,6 @@
       <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
     </view>
-    <log data="" max_size="8" size="0" time="" width="16"/>
+    <log data="0000000000000000000000000000" max_size="8" size="8" time="6AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF5000000007AD8EDF500000000" width="14"/>
   </instance>
 </session>

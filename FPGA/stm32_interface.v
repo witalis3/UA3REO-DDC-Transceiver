@@ -30,7 +30,7 @@ ADC_PGA,
 ADC_RAND,
 ADC_SHDN,
 ADC_DITH,
-CIC_GAIN,
+unused,
 CICFIR_GAIN,
 TX_CICFIR_GAIN,
 DAC_GAIN,
@@ -81,7 +81,7 @@ output reg ADC_PGA = 0;
 output reg ADC_RAND = 0;
 output reg ADC_SHDN = 1;
 output reg ADC_DITH = 0;
-output reg unsigned [7:0] CIC_GAIN = 32;
+output reg unsigned [7:0] unused = 0;
 output reg unsigned [7:0] CICFIR_GAIN = 32;
 output reg unsigned [7:0] TX_CICFIR_GAIN = 32;
 output reg unsigned [7:0] DAC_GAIN = 32;
@@ -128,7 +128,7 @@ begin
 	if(BUFFER_RX_head >= rx_buffer_length)
 		BUFFER_RX_head = 0;
 	else
-		BUFFER_RX_head = BUFFER_RX_head + 'd1;
+		BUFFER_RX_head = BUFFER_RX_head + 16'd1;
 end
 
 always @ (posedge clk_in)
@@ -231,11 +231,6 @@ begin
 		NCO2_freq[7:0] = DATA_BUS[7:0];
 		k = 109;
 	end
-	/*else if (k == 109)
-	begin
-		CIC_GAIN[7:0] = DATA_BUS[7:0];
-		k = 110;
-	end*/
 	else if (k == 109)
 	begin
 		CICFIR_GAIN[7:0] = DATA_BUS[7:0];
@@ -390,7 +385,7 @@ begin
 		if(BUFFER_RX_tail >= rx_buffer_length || BUFFER_RX_tail == BUFFER_RX_head) //догнал буффер
 			BUFFER_RX_tail = 'd0;
 		else
-			BUFFER_RX_tail = BUFFER_RX_tail + 'd1;
+			BUFFER_RX_tail = BUFFER_RX_tail + 16'd1;
 		
 		I_HOLD = REG_RX1_I;
 		Q_HOLD = REG_RX1_Q;

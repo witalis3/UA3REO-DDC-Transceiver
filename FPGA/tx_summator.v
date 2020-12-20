@@ -37,11 +37,13 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module tx_summator (
+	clock,
 	dataa,
 	datab,
 	overflow,
 	result);
 
+	input	  clock;
 	input	[27:0]  dataa;
 	input	[27:0]  datab;
 	output	  overflow;
@@ -53,6 +55,7 @@ module tx_summator (
 	wire [27:0] result = sub_wire1[27:0];
 
 	lpm_add_sub	LPM_ADD_SUB_component (
+				.clock (clock),
 				.dataa (dataa),
 				.datab (datab),
 				.overflow (sub_wire0),
@@ -63,13 +66,13 @@ module tx_summator (
 				.add_sub (),
 				.cin (),
 				.clken (),
-				.clock (),
 				.cout ()
 				// synopsys translate_on
 				);
 	defparam
 		LPM_ADD_SUB_component.lpm_direction = "ADD",
 		LPM_ADD_SUB_component.lpm_hint = "ONE_INPUT_IS_CONSTANT=NO,CIN_USED=NO",
+		LPM_ADD_SUB_component.lpm_pipeline = 1,
 		LPM_ADD_SUB_component.lpm_representation = "SIGNED",
 		LPM_ADD_SUB_component.lpm_type = "LPM_ADD_SUB",
 		LPM_ADD_SUB_component.lpm_width = 28;
@@ -87,7 +90,7 @@ endmodule
 // Retrieval info: PRIVATE: Function NUMERIC "0"
 // Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone IV E"
 // Retrieval info: PRIVATE: LPM_PIPELINE NUMERIC "1"
-// Retrieval info: PRIVATE: Latency NUMERIC "0"
+// Retrieval info: PRIVATE: Latency NUMERIC "1"
 // Retrieval info: PRIVATE: Overflow NUMERIC "1"
 // Retrieval info: PRIVATE: RadixA NUMERIC "10"
 // Retrieval info: PRIVATE: RadixB NUMERIC "10"
@@ -97,19 +100,22 @@ endmodule
 // Retrieval info: PRIVATE: ValidCtB NUMERIC "0"
 // Retrieval info: PRIVATE: WhichConstant NUMERIC "0"
 // Retrieval info: PRIVATE: aclr NUMERIC "0"
-// Retrieval info: PRIVATE: clken NUMERIC "1"
+// Retrieval info: PRIVATE: clken NUMERIC "0"
 // Retrieval info: PRIVATE: nBit NUMERIC "28"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
 // Retrieval info: LIBRARY: lpm lpm.lpm_components.all
 // Retrieval info: CONSTANT: LPM_DIRECTION STRING "ADD"
 // Retrieval info: CONSTANT: LPM_HINT STRING "ONE_INPUT_IS_CONSTANT=NO,CIN_USED=NO"
+// Retrieval info: CONSTANT: LPM_PIPELINE NUMERIC "1"
 // Retrieval info: CONSTANT: LPM_REPRESENTATION STRING "SIGNED"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_ADD_SUB"
 // Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "28"
+// Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: dataa 0 0 28 0 INPUT NODEFVAL "dataa[27..0]"
 // Retrieval info: USED_PORT: datab 0 0 28 0 INPUT NODEFVAL "datab[27..0]"
 // Retrieval info: USED_PORT: overflow 0 0 0 0 OUTPUT NODEFVAL "overflow"
 // Retrieval info: USED_PORT: result 0 0 28 0 OUTPUT NODEFVAL "result[27..0]"
+// Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @dataa 0 0 28 0 dataa 0 0 28 0
 // Retrieval info: CONNECT: @datab 0 0 28 0 datab 0 0 28 0
 // Retrieval info: CONNECT: overflow 0 0 0 0 @overflow 0 0 0 0

@@ -37,11 +37,13 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module mux14 (
+	clock,
 	data0x,
 	data1x,
 	sel,
 	result);
 
+	input	  clock;
 	input	[13:0]  data0x;
 	input	[13:0]  data1x;
 	input	  sel;
@@ -56,17 +58,18 @@ module mux14 (
 	wire [13:0] result = sub_wire5[13:0];
 
 	lpm_mux	LPM_MUX_component (
+				.clock (clock),
 				.data (sub_wire1),
 				.sel (sub_wire4),
 				.result (sub_wire5)
 				// synopsys translate_off
 				,
 				.aclr (),
-				.clken (),
-				.clock ()
+				.clken ()
 				// synopsys translate_on
 				);
 	defparam
+		LPM_MUX_component.lpm_pipeline = 1,
 		LPM_MUX_component.lpm_size = 2,
 		LPM_MUX_component.lpm_type = "LPM_MUX",
 		LPM_MUX_component.lpm_width = 14,
@@ -82,14 +85,17 @@ endmodule
 // Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
 // Retrieval info: LIBRARY: lpm lpm.lpm_components.all
+// Retrieval info: CONSTANT: LPM_PIPELINE NUMERIC "1"
 // Retrieval info: CONSTANT: LPM_SIZE NUMERIC "2"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_MUX"
 // Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "14"
 // Retrieval info: CONSTANT: LPM_WIDTHS NUMERIC "1"
+// Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: data0x 0 0 14 0 INPUT NODEFVAL "data0x[13..0]"
 // Retrieval info: USED_PORT: data1x 0 0 14 0 INPUT NODEFVAL "data1x[13..0]"
 // Retrieval info: USED_PORT: result 0 0 14 0 OUTPUT NODEFVAL "result[13..0]"
 // Retrieval info: USED_PORT: sel 0 0 0 0 INPUT NODEFVAL "sel"
+// Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @data 0 0 14 0 data0x 0 0 14 0
 // Retrieval info: CONNECT: @data 0 0 14 14 data1x 0 0 14 0
 // Retrieval info: CONNECT: @sel 0 0 1 0 sel 0 0 0 0
