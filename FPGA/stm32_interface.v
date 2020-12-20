@@ -189,6 +189,16 @@ begin
 		ADC_RAND = DATA_BUS[5:5];
 		ADC_PGA = DATA_BUS[6:6];
 		preamp_enable = DATA_BUS[7:7];
+		//clear TX chain
+		if(tx == 0)
+		begin
+			I_HOLD[7:0] = 8'd0;
+			Q_HOLD[7:0] = 8'd0;
+			TX_I[31:0] = 32'd0;
+			TX_Q[31:0] = 32'd0;
+			tx_iq_valid = 1;
+		end
+		//
 		k = 101;
 	end
 	else if (k == 101)

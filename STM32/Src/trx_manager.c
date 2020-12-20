@@ -133,6 +133,9 @@ static void TRX_Start_RX()
 	WM8731_RX_mode();
 	WM8731_start_i2s_and_dma();
 	TRX_TXRXMode = 1;
+	//clean TX buffer
+	memset((void *)&FPGA_Audio_SendBuffer_Q[0], 0x00, sizeof(FPGA_Audio_SendBuffer_Q));
+	memset((void *)&FPGA_Audio_SendBuffer_I[0], 0x00, sizeof(FPGA_Audio_SendBuffer_I));
 }
 
 static void TRX_Start_TX()
