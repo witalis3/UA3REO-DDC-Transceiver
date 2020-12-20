@@ -258,6 +258,70 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=SUPUHQIL
 
+[GeneratedDocument1]
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-RoundHoles.TXT
+DItemRevisionGUID=
+
+[GeneratedDocument2]
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-SlotHoles.TXT
+DItemRevisionGUID=
+
+[GeneratedDocument3]
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.DRR
+DItemRevisionGUID=
+
+[GeneratedDocument4]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.EXTREP
+DItemRevisionGUID=
+
+[GeneratedDocument5]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G1
+DItemRevisionGUID=
+
+[GeneratedDocument6]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G2
+DItemRevisionGUID=
+
+[GeneratedDocument7]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBL
+DItemRevisionGUID=
+
+[GeneratedDocument8]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBO
+DItemRevisionGUID=
+
+[GeneratedDocument9]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBS
+DItemRevisionGUID=
+
+[GeneratedDocument10]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GKO
+DItemRevisionGUID=
+
+[GeneratedDocument11]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTL
+DItemRevisionGUID=
+
+[GeneratedDocument12]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTO
+DItemRevisionGUID=
+
+[GeneratedDocument13]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTS
+DItemRevisionGUID=
+
+[GeneratedDocument14]
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.LDP
+DItemRevisionGUID=
+
+[GeneratedDocument15]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.REP
+DItemRevisionGUID=
+
+[GeneratedDocument16]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.RUL
+DItemRevisionGUID=
+
 [Configuration1]
 Name=Sources
 ParameterCount=0
@@ -377,7 +441,7 @@ OutputDefault20=0
 [OutputGroup2]
 Name=Simulator Outputs
 Description=
-TargetPrinter=Microsoft Print to PDF
+TargetPrinter=Canon LBP2900
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 
 [OutputGroup3]
