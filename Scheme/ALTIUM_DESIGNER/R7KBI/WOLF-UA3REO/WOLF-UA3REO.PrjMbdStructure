@@ -1,0 +1,6 @@
+Record=DiagramHierarchy|SourceDocument=WOLF.MbsDoc|Kind=Multi-board Schematic Module|Designator=3|Source=..\Front\WL-FRONT.PrjPCB
+Record=SubProject|SourceDocument=WOLF.MbsDoc|ProjectPath=..\Front\WL-FRONT.PrjPCB
+Record=DiagramHierarchy|SourceDocument=WOLF.MbsDoc|Kind=Multi-board Schematic Module|Designator=2|Source=..\RF-UNIT\WOLF-RF_UNIT.PrjPCB
+Record=SubProject|SourceDocument=WOLF.MbsDoc|ProjectPath=..\RF-UNIT\WOLF-RF_UNIT.PrjPCB
+Record=DiagramHierarchy|SourceDocument=WOLF.MbsDoc|Kind=Multi-board Schematic Module|Designator=1|Source=..\Main\WOLF\WOLF.PrjPcb
+Record=SubProject|SourceDocument=WOLF.MbsDoc|ProjectPath=..\Main\WOLF\WOLF.PrjPcb
