@@ -271,7 +271,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
 		{"FFT Zoom CW", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_HANDL_SCREEN_FFT_ZoomCW},
 		{"Color Theme", SYSMENU_UINT8, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME},
-		{"Layout Theme", SYSMENU_UINT8, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME},
+		//{"Layout Theme", SYSMENU_UINT8, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
 		{"FFT Height", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
 		{"FFT Color", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color},
@@ -1077,7 +1077,8 @@ static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)
 		else if (TRX.SSB_HPF_Filter == 500)
 			TRX.SSB_HPF_Filter = 400;
 	}
-	NeedReinitAudioFilters = true;
+	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
+	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 static void SYSMENU_HANDL_AUDIO_CW_HPF_pass(int8_t direction)
@@ -1096,7 +1097,8 @@ static void SYSMENU_HANDL_AUDIO_CW_HPF_pass(int8_t direction)
 		else if (TRX.CW_HPF_Filter == 100)
 			TRX.CW_HPF_Filter = 60;
 	}
-	NeedReinitAudioFilters = true;
+	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
+	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
