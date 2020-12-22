@@ -300,7 +300,7 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 
 #ifndef HAS_TOUCHPAD
 		//ENC2 CLICK
-		if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		if ((CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U) && !LCD_systemMenuOpened)
 		{
 			enc2_func_mode = !enc2_func_mode; //enc2 rotary mode
 
