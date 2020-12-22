@@ -21,6 +21,7 @@ typedef struct
 	bool StatusInfoBar;
 	bool StatusInfoBarRedraw;
 	bool SystemMenu;
+	bool SystemMenuCurrent;
 	bool TextBar;
 	bool Tooltip;
 } DEF_LCD_UpdateQuery;

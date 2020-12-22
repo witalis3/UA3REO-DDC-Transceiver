@@ -26,8 +26,8 @@ static uint32_t Lastfreq = 0;
 static bool LastMute = false;
 
 //Public variables
-bool sysmenu_swr_opened = false;
-bool sysmenu_TDM_CTRL_opened = false; //Tisho
+bool SYSMENU_swr_opened = false;
+bool SYSMENU_TDM_CTRL_opened = false; //Tisho
 
 //Prototypes
 static void SWR_DrawBottomGUI(void);				  // display status at the bottom of the screen

@@ -10,7 +10,7 @@
 #define SPEC_VParts 6        //vertical signatures
 
 //Public variabled
-extern bool sysmenu_spectrum_opened;
+extern bool SYSMENU_spectrum_opened;
 
 //Public methods
 extern void SPEC_Start(void);                 //analyzer launch

@@ -13,7 +13,7 @@ typedef enum
 } WSPRState;
 
 //Public variabled
-extern bool sysmenu_wspr_opened;
+extern bool SYSMENU_wspr_opened;
 
 //Public methods
 extern void WSPR_Start(void);				  //launch

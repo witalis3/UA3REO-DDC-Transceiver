@@ -398,7 +398,7 @@ void TIM2_IRQHandler(void)
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
-  if (sysmenu_wspr_opened)
+  if (SYSMENU_wspr_opened)
     WSPR_DoFastEvents();
   /* USER CODE END TIM2_IRQn 1 */
 }
@@ -441,9 +441,9 @@ void TIM4_IRQHandler(void)
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
-  if (sysmenu_spectrum_opened || sysmenu_swr_opened)
+  if (SYSMENU_spectrum_opened || SYSMENU_swr_opened)
   {
-    drawSystemMenu(false);
+    SYSMENU_drawSystemMenu(false);
     return;
   }
   ua3reo_dev_cat_parseCommand();
@@ -491,7 +491,7 @@ void TIM5_IRQHandler(void)
     processRxAudio();
   }
   //in the spectrum analyzer mode, we raise its processing to priority, performing together with the audio processor
-  if (sysmenu_spectrum_opened)
+  if (SYSMENU_spectrum_opened)
     LCD_doEvents();
   //EndProfilerUs(true);
   /* USER CODE END TIM5_IRQn 1 */

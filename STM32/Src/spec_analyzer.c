@@ -32,7 +32,7 @@ static bool LastNB = false;
 static bool LastMute = false;
 
 //Public variables
-bool sysmenu_spectrum_opened = false;
+bool SYSMENU_spectrum_opened = false;
 
 //Prototypes
 static void SPEC_DrawBottomGUI(void);				   // display status at the bottom of the screen

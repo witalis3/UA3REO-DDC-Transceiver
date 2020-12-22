@@ -10,8 +10,8 @@
 #define SWR_TopSWR 10.0f
 
 //Public variabled
-extern bool sysmenu_swr_opened;
-extern bool sysmenu_TDM_CTRL_opened; //Tisho
+extern bool SYSMENU_swr_opened;
+extern bool SYSMENU_TDM_CTRL_opened; //Tisho
 
 //Public methods
 extern void SWR_Start(uint32_t start, uint32_t end); //analyzer launch

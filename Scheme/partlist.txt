@@ -29,7 +29,6 @@ DAC5674IPHPR https://aliexpress.ru/item/32905997216.html
 SM6T15A https://aliexpress.ru/item/4001080821383.html
 ADG918 https://aliexpress.ru/item/32963229856.html
 PE4302 https://aliexpress.ru/item/32978623497.html
-SN74HC74 https://aliexpress.ru/item/33045066810.html
 32.768 Crystal https://aliexpress.ru/item/1994878414.html
 OPA2673 https://aliexpress.ru/item/4000797939958.html
 

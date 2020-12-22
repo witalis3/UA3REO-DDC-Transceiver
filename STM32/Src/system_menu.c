@@ -405,7 +405,6 @@ static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) /
 
 //COMMON MENU
 static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, bool onlyVal);
-static void redrawCurrentItem(void);
 static void SYSMENU_WIFI_DrawSelectAPMenu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAPpasswordMenu(bool full_redraw);
@@ -422,7 +421,7 @@ static uint8_t systemMenuRootIndex = 0;
 static uint16_t sysmenu_y = 5;
 static uint8_t sysmenu_i = 0;
 static bool sysmenu_onroot = true;
-bool sysmenu_hiddenmenu_enabled = false;
+bool SYSMENU_hiddenmenu_enabled = false;
 static bool sysmenu_services_opened = false;
 static bool sysmenu_infowindow_opened = false;
 static bool sysmenu_item_selected_by_enc2 = false;
@@ -451,7 +450,7 @@ static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_trx_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 void SYSMENU_TRX_RFPOWER_HOTKEY(void)
@@ -523,7 +522,7 @@ static void SYSMENU_HANDL_TRX_MICIN(int8_t direction)
 		TRX.InputType_MIC = false;
 	TRX.InputType_LINE = false;
 	TRX.InputType_USB = false;
-	drawSystemMenu(false);
+	SYSMENU_drawSystemMenu(false);
 	TRX_Restart_Mode();
 }
 
@@ -535,7 +534,7 @@ static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction)
 		TRX.InputType_LINE = false;
 	TRX.InputType_MIC = false;
 	TRX.InputType_USB = false;
-	drawSystemMenu(false);
+	SYSMENU_drawSystemMenu(false);
 	TRX_Restart_Mode();
 }
 
@@ -547,7 +546,7 @@ static void SYSMENU_HANDL_TRX_USBIN(int8_t direction)
 		TRX.InputType_USB = false;
 	TRX.InputType_MIC = false;
 	TRX.InputType_LINE = false;
-	drawSystemMenu(false);
+	SYSMENU_drawSystemMenu(false);
 	TRX_Restart_Mode();
 }
 
@@ -764,7 +763,7 @@ static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
 	#pragma unused(direction)
 	sysmenu_trx_setCallsign_menu_opened = true;
 	SYSMENU_TRX_DrawCallsignMenu(true);
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction)
@@ -772,7 +771,7 @@ static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction)
 	#pragma unused(direction)
 	sysmenu_trx_setLocator_menu_opened = true;
 	SYSMENU_TRX_DrawLocatorMenu(true);
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction)
@@ -801,7 +800,7 @@ static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
@@ -1421,7 +1420,7 @@ static void SYSMENU_HANDL_LCDMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_screen_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction)
@@ -1610,7 +1609,7 @@ static void SYSMENU_HANDL_ADCMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_adc_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction)
@@ -1673,7 +1672,7 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_wifi_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_WIFI_DrawSelectAPMenuCallback(void)
@@ -1712,7 +1711,7 @@ static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir)
 		WIFI_State = WIFI_INITED;
 		sysmenu_wifi_selectap_menu_opened = false;
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
 }
 
@@ -1764,7 +1763,7 @@ static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction)
 	#pragma unused(direction)
 	sysmenu_wifi_selectap_menu_opened = true;
 	SYSMENU_WIFI_DrawSelectAPMenu(true);
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction)
@@ -1772,7 +1771,7 @@ static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction)
 	#pragma unused(direction)
 	sysmenu_wifi_setAPpassword_menu_opened = true;
 	SYSMENU_WIFI_DrawAPpasswordMenu(true);
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction)
@@ -1812,7 +1811,7 @@ static void SYSMENU_HANDL_SDMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_sd_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction)
@@ -1981,24 +1980,24 @@ static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction)
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 {
 	#pragma unused(direction)
-	if (!sysmenu_hiddenmenu_enabled)
+	if (!SYSMENU_hiddenmenu_enabled)
 		return;
 	sysmenu_handlers_selected = &sysmenu_calibration_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_calibration_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction) //Tisho
 {
 	#pragma unused(direction)
-	if (sysmenu_TDM_CTRL_opened)
+	if (SYSMENU_TDM_CTRL_opened)
 	{
 	}
 	else
 	{
-		sysmenu_TDM_CTRL_opened = true;
+		SYSMENU_TDM_CTRL_opened = true;
 		TDM_Voltages_Start();
 		//		drawSystemMenu(true);
 	}
@@ -2341,20 +2340,20 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_spectrum_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 {
-	if (sysmenu_spectrum_opened)
+	if (SYSMENU_spectrum_opened)
 	{
 		SPEC_EncRotate(direction);
 	}
 	else
 	{
-		sysmenu_spectrum_opened = true;
+		SYSMENU_spectrum_opened = true;
 		SPEC_Start();
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
 }
 
@@ -2402,20 +2401,20 @@ static void SYSMENU_HANDL_WSPRMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_wspr_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 }
 
 static void SYSMENU_HANDL_WSPR_Start(int8_t direction)
 {
-	if (sysmenu_wspr_opened)
+	if (SYSMENU_wspr_opened)
 	{
 		WSPR_EncRotate(direction);
 	}
 	else
 	{
-		sysmenu_wspr_opened = true;
+		SYSMENU_wspr_opened = true;
 		WSPR_Start();
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
 }
 
@@ -2519,31 +2518,31 @@ static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction)
 //SWR BAND ANALYZER
 static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction)
 {
-	if (sysmenu_swr_opened)
+	if (SYSMENU_swr_opened)
 	{
 		SWR_EncRotate(direction);
 	}
 	else
 	{
-		sysmenu_swr_opened = true;
+		SYSMENU_swr_opened = true;
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 		SWR_Start(BANDS[band].startFreq - 100000, BANDS[band].endFreq + 100000);
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
 }
 
 //SWR HF ANALYZER
 static void SYSMENU_HANDL_SWR_HF_START(int8_t direction)
 {
-	if (sysmenu_swr_opened)
+	if (SYSMENU_swr_opened)
 	{
 		SWR_EncRotate(direction);
 	}
 	else
 	{
-		sysmenu_swr_opened = true;
+		SYSMENU_swr_opened = true;
 		SWR_Start(1000000, 60000000);
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
 }
 
@@ -2552,7 +2551,7 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 {
 	#pragma unused(direction)
 	sysmenu_infowindow_opened = true;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 	WIFI_getRDA();
 }
 
@@ -2561,12 +2560,12 @@ static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
 {
 	#pragma unused(direction)
 	sysmenu_infowindow_opened = true;
-	drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true);
 	WIFI_getPropagination();
 }
 
 //COMMON MENU FUNCTIONS
-void drawSystemMenu(bool draw_background)
+void SYSMENU_drawSystemMenu(bool draw_background)
 {
 	if (LCD_busy)
 	{
@@ -2600,22 +2599,22 @@ void drawSystemMenu(bool draw_background)
 		SYSMENU_TRX_DrawLocatorMenu(false);
 		return;
 	}
-	if (sysmenu_spectrum_opened)
+	if (SYSMENU_spectrum_opened)
 	{
 		SPEC_Draw();
 		return;
 	}
-	if (sysmenu_wspr_opened)
+	if (SYSMENU_wspr_opened)
 	{
 		WSPR_DoEvents();
 		return;
 	}
-	if (sysmenu_TDM_CTRL_opened) //Tisho
+	if (SYSMENU_TDM_CTRL_opened) //Tisho
 	{
 		TDM_Voltages();
 		return;
 	}
-	if (sysmenu_swr_opened)
+	if (SYSMENU_swr_opened)
 	{
 		SWR_Draw();
 		return;
@@ -2645,7 +2644,7 @@ void drawSystemMenu(bool draw_background)
 	LCD_busy = false;
 }
 
-void eventRotateSystemMenu(int8_t direction)
+void SYSMENU_eventRotateSystemMenu(int8_t direction)
 {
 	if (sysmenu_wifi_selectap_menu_opened)
 	{
@@ -2675,16 +2674,16 @@ void eventRotateSystemMenu(int8_t direction)
 	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_INFOLINE)
 		sysmenu_handlers_selected[systemMenuIndex].menuHandler(direction);
 	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_RUN)
-		redrawCurrentItem();
+		LCD_UpdateQuery.SystemMenuCurrent = true;
 }
 
-void eventCloseSystemMenu(void)
+void SYSMENU_eventCloseSystemMenu(void)
 {
 	if (sysmenu_wifi_selectap_menu_opened)
 	{
 		sysmenu_wifi_selectap_menu_opened = false;
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
 	}
@@ -2692,7 +2691,7 @@ void eventCloseSystemMenu(void)
 	{
 		sysmenu_wifi_setAPpassword_menu_opened = false;
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
 	}
@@ -2700,52 +2699,52 @@ void eventCloseSystemMenu(void)
 	{
 		sysmenu_trx_setCallsign_menu_opened = false;
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
 	else if (sysmenu_trx_setLocator_menu_opened)
 	{
 		sysmenu_trx_setLocator_menu_opened = false;
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
-	else if (sysmenu_spectrum_opened)
+	else if (SYSMENU_spectrum_opened)
 	{
-		sysmenu_spectrum_opened = false;
+		SYSMENU_spectrum_opened = false;
 		SPEC_Stop();
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
-	else if (sysmenu_wspr_opened)
+	else if (SYSMENU_wspr_opened)
 	{
-		sysmenu_wspr_opened = false;
+		SYSMENU_wspr_opened = false;
 		WSPR_Stop();
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
 	else if (sysmenu_timeMenuOpened)
 	{
 		sysmenu_timeMenuOpened = false;
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
-	else if (sysmenu_swr_opened)
+	else if (SYSMENU_swr_opened)
 	{
-		sysmenu_swr_opened = false;
+		SYSMENU_swr_opened = false;
 		SWR_Stop();
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
-	else if (sysmenu_TDM_CTRL_opened) //Tisho
+	else if (SYSMENU_TDM_CTRL_opened) //Tisho
 	{
-		sysmenu_TDM_CTRL_opened = false;
+		SYSMENU_TDM_CTRL_opened = false;
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
 	else if (sysmenu_infowindow_opened)
 	{
 		sysmenu_infowindow_opened = false;
 		systemMenuIndex = 0;
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 	}
 	else if (sysmenu_services_opened)
 	{
@@ -2772,16 +2771,16 @@ void eventCloseSystemMenu(void)
 			sysmenu_item_count_selected = &sysmenu_item_count;
 			sysmenu_onroot = true;
 			systemMenuIndex = systemMenuRootIndex;
-			drawSystemMenu(true);
+			SYSMENU_drawSystemMenu(true);
 		}
 	}
 	sysmenu_item_selected_by_enc2 = false;
 	NeedSaveSettings = true;
-	if (sysmenu_hiddenmenu_enabled)
+	if (SYSMENU_hiddenmenu_enabled)
 		NeedSaveCalibration = true;
 }
 
-void eventCloseAllSystemMenu(void)
+void SYSMENU_eventCloseAllSystemMenu(void)
 {
 	sysmenu_handlers_selected = &sysmenu_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_item_count;
@@ -2794,22 +2793,22 @@ void eventCloseAllSystemMenu(void)
 }
 
 //secondary encoder click
-void eventSecEncoderClickSystemMenu(void)
+void SYSMENU_eventSecEncoderClickSystemMenu(void)
 {
 	if (sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_MENU || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_HIDDEN_MENU || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_RUN || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE)
 	{
 		sysmenu_item_selected_by_enc2 = false;
-		eventRotateSystemMenu(1);
+		SYSMENU_eventRotateSystemMenu(1);
 	}
 	else
 	{
 		sysmenu_item_selected_by_enc2 = !sysmenu_item_selected_by_enc2;
-		redrawCurrentItem();
+		SYSMENU_redrawCurrentItem();
 	}
 }
 
 //secondary encoder rotate
-void eventSecRotateSystemMenu(int8_t direction)
+void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 {
 	//wifi select AP menu
 	if (sysmenu_wifi_selectap_menu_opened)
@@ -2865,23 +2864,23 @@ void eventSecRotateSystemMenu(int8_t direction)
 		}
 		return;
 	}
-	if (sysmenu_spectrum_opened)
+	if (SYSMENU_spectrum_opened)
 	{
 		SPEC_Stop();
-		sysmenu_spectrum_opened = false;
+		SYSMENU_spectrum_opened = false;
 		LCDDriver_Fill(BG_COLOR);
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 		return;
 	}
-	if (sysmenu_wspr_opened)
+	if (SYSMENU_wspr_opened)
 	{
 		WSPR_Stop();
-		sysmenu_wspr_opened = false;
+		SYSMENU_wspr_opened = false;
 		LCDDriver_Fill(BG_COLOR);
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 		return;
 	}
-	if (sysmenu_swr_opened)
+	if (SYSMENU_swr_opened)
 		return;
 	if (sysmenu_infowindow_opened)
 		return;
@@ -2907,7 +2906,7 @@ void eventSecRotateSystemMenu(int8_t direction)
 	//other
 	if (sysmenu_item_selected_by_enc2) //selected by secondary encoder
 	{
-		eventRotateSystemMenu(direction);
+		SYSMENU_eventRotateSystemMenu(direction);
 		return;
 	}
 
@@ -2917,7 +2916,7 @@ void eventSecRotateSystemMenu(int8_t direction)
 	{
 		if (systemMenuIndex > 0)
 			systemMenuIndex--;
-		else if (!sysmenu_hiddenmenu_enabled && sysmenu_onroot)
+		else if (!SYSMENU_hiddenmenu_enabled && sysmenu_onroot)
 			systemMenuIndex = *sysmenu_item_count_selected - 2;
 		else
 			systemMenuIndex = *sysmenu_item_count_selected - 1;
@@ -2931,21 +2930,21 @@ void eventSecRotateSystemMenu(int8_t direction)
 		else
 			systemMenuIndex = 0;
 	}
-	if (!sysmenu_hiddenmenu_enabled && sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_HIDDEN_MENU)
+	if (!SYSMENU_hiddenmenu_enabled && sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_HIDDEN_MENU)
 		systemMenuIndex = 0;
 	while (systemMenuIndex > 0 && sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE)
 		systemMenuIndex = 0;
 
-	redrawCurrentItem();
+	SYSMENU_redrawCurrentItem();
 	if (sysmenu_onroot)
 		systemMenuRootIndex = systemMenuIndex;
 	uint8_t new_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 
 	if (current_page != new_page)
-		drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true);
 }
 
-static void redrawCurrentItem(void)
+void SYSMENU_redrawCurrentItem(void)
 {
 	uint8_t current_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 	sysmenu_i = (uint8_t)(systemMenuIndex - current_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE);
@@ -2955,7 +2954,7 @@ static void redrawCurrentItem(void)
 
 static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, bool onlyVal)
 {
-	if (!sysmenu_hiddenmenu_enabled && type == SYSMENU_HIDDEN_MENU)
+	if (!SYSMENU_hiddenmenu_enabled && type == SYSMENU_HIDDEN_MENU)
 		return;
 
 	char ctmp[10] = {0};

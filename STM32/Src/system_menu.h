@@ -30,14 +30,15 @@ struct sysmenu_item_handler
 	void (*menuHandler)(int8_t direction);
 };
 
-extern void drawSystemMenu(bool draw_background);
-extern void eventRotateSystemMenu(int8_t direction);
-extern void eventSecEncoderClickSystemMenu(void);
-extern void eventSecRotateSystemMenu(int8_t direction);
-extern void eventCloseSystemMenu(void);
-extern void eventCloseAllSystemMenu(void);
-extern bool sysmenu_spectrum_opened;
-extern bool sysmenu_hiddenmenu_enabled;
+extern void SYSMENU_drawSystemMenu(bool draw_background);
+extern void SYSMENU_redrawCurrentItem(void);
+extern void SYSMENU_eventRotateSystemMenu(int8_t direction);
+extern void SYSMENU_eventSecEncoderClickSystemMenu(void);
+extern void SYSMENU_eventSecRotateSystemMenu(int8_t direction);
+extern void SYSMENU_eventCloseSystemMenu(void);
+extern void SYSMENU_eventCloseAllSystemMenu(void);
+extern bool SYSMENU_spectrum_opened;
+extern bool SYSMENU_hiddenmenu_enabled;
 extern void SYSMENU_TRX_RFPOWER_HOTKEY(void);
 extern void SYSMENU_TRX_STEP_HOTKEY(void);
 extern void SYSMENU_CW_WPM_HOTKEY(void);

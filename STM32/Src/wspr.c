@@ -38,7 +38,7 @@ static bool LastNB = false;
 static bool LastMute = false;
 
 //Public variables
-bool sysmenu_wspr_opened = false;
+bool SYSMENU_wspr_opened = false;
 
 //Prototypes
 static uint8_t WSPR_GetNextBand(void);

@@ -252,7 +252,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 		_freq = MAX_RX_FREQ_HZ;
 
 	vfo->Freq = _freq;
-	if (sysmenu_spectrum_opened)
+	if (SYSMENU_spectrum_opened)
 		return;
 
 	//set DC-DC Sync freq

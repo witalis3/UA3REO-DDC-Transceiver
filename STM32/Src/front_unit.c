@@ -165,7 +165,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		return;
 	if (LCD_systemMenuOpened)
 	{
-		eventRotateSystemMenu((int8_t)direction);
+		SYSMENU_eventRotateSystemMenu((int8_t)direction);
 		return;
 	}
 	if (fabsf(direction) <= ENCODER_MIN_RATE_ACCELERATION)
@@ -197,7 +197,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 	if (LCD_systemMenuOpened)
 	{
-		eventSecRotateSystemMenu(direction);
+		SYSMENU_eventSecRotateSystemMenu(direction);
 		return;
 	}
 
@@ -314,7 +314,7 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 			if (LCD_systemMenuOpened)
 			{
 				//navigate in menu
-				eventSecEncoderClickSystemMenu();
+				SYSMENU_eventSecEncoderClickSystemMenu();
 			}
 		}
 #endif
@@ -764,7 +764,7 @@ void FRONTPANEL_BUTTONHANDLER_RF_POWER(void)
 	}
 	else
 	{
-		eventCloseAllSystemMenu();
+		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
@@ -787,7 +787,7 @@ void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(void)
 	}
 	else
 	{
-		eventCloseAllSystemMenu();
+		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
@@ -800,7 +800,7 @@ static void FRONTPANEL_BUTTONHANDLER_SQUELCH(void)
 	}
 	else
 	{
-		eventCloseAllSystemMenu();
+		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
@@ -813,7 +813,7 @@ static void FRONTPANEL_BUTTONHANDLER_WPM(void)
 	}
 	else
 	{
-		eventCloseAllSystemMenu();
+		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
@@ -835,7 +835,7 @@ static void FRONTPANEL_BUTTONHANDLER_STEP(void)
 	}
 	else
 	{
-		eventCloseAllSystemMenu();
+		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
@@ -873,7 +873,7 @@ void FRONTPANEL_BUTTONHANDLER_BW(void)
 	}
 	else
 	{
-		eventCloseAllSystemMenu();
+		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
@@ -889,7 +889,7 @@ void FRONTPANEL_BUTTONHANDLER_HPF(void)
 	}
 	else
 	{
-		eventCloseAllSystemMenu();
+		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
@@ -968,7 +968,7 @@ void FRONTPANEL_BUTTONHANDLER_LOCK(void)
 		TRX.Locked = !TRX.Locked;
 	else
 	{
-		sysmenu_hiddenmenu_enabled = true;
+		SYSMENU_hiddenmenu_enabled = true;
 		LCD_redraw();
 	}
 	LCD_UpdateQuery.TopButtons = true;
@@ -981,7 +981,7 @@ void FRONTPANEL_BUTTONHANDLER_MENU(void)
 	if (!LCD_systemMenuOpened)
 		LCD_systemMenuOpened = true;
 	else
-		eventCloseSystemMenu();
+		SYSMENU_eventCloseSystemMenu();
 	LCD_redraw();
 }
 
@@ -1029,7 +1029,7 @@ void FRONTPANEL_BUTTONHANDLER_SERVICES(void)
 	}
 	else
 	{
-		eventCloseSystemMenu();
+		SYSMENU_eventCloseSystemMenu();
 	}
 }
 

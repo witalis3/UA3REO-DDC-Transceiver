@@ -864,7 +864,12 @@ void LCD_doEvents(void)
 	if (LCD_UpdateQuery.StatusInfoBarRedraw)
 		LCD_displayStatusInfoBar(true);
 	if (LCD_UpdateQuery.SystemMenu)
-		drawSystemMenu(false);
+		SYSMENU_drawSystemMenu(false);
+	if (LCD_UpdateQuery.SystemMenuCurrent)
+	{
+		SYSMENU_redrawCurrentItem();
+		LCD_UpdateQuery.SystemMenuCurrent = false;
+	}
 	if (LCD_UpdateQuery.TextBar)
 		LCD_displayTextBar();
 	if (LCD_UpdateQuery.Tooltip)
@@ -973,7 +978,7 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		return;
 	if (LCD_systemMenuOpened)
 	{
-		eventCloseAllSystemMenu();
+		SYSMENU_eventCloseAllSystemMenu();
 		LCD_redraw();
 		return;
 	}
@@ -1007,7 +1012,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 		return;
 	if (LCD_systemMenuOpened)
 	{
-		eventCloseAllSystemMenu();
+		SYSMENU_eventCloseAllSystemMenu();
 		LCD_redraw();
 		return;
 	}
