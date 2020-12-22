@@ -229,7 +229,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
 * **BPF x** - Bandpass filter parameters
 * **HPF START** - HPF filter parameters
 * **SWR TRANS RATE** - Adjustment of the transformation ratio of the SWR meter
-* **VCXO Freq** - Frequency adjustment of the reference oscillator
+* **VCXO Correction** - Frequency adjustment of the reference oscillator
 
 ### Set Clock Time
 
