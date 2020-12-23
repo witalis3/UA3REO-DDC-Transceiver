@@ -893,7 +893,7 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 	//Decompress RLE and verify
 	uint32_t errors = 0;
 	uint32_t file_pos = 0;
-	uint32_t flash_pos = 1;
+	uint32_t flash_pos = 0;
 	int32_t decoded = 0;
 	while (file_pos < sizeof(FILES_WOLF_JIC))
 	{
@@ -915,6 +915,13 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 						sendToDebug_hex(FILES_WOLF_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
+						
+						if(full)
+						{
+							char ctmp[50];
+							sprintf(ctmp, "Error in pos: %d", flash_pos);
+							LCD_showError(ctmp, true);
+						}
 					}
 					data = FPGA_spi_continue_command(0xFF);
 					flash_pos++;
@@ -941,6 +948,13 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 						sendToDebug_hex(FILES_WOLF_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
+						
+						if(full)
+						{
+							char ctmp[50];
+							sprintf(ctmp, "Error in pos: %d", flash_pos);
+							LCD_showError(ctmp, true);
+						}
 					}
 					data = FPGA_spi_continue_command(0xFF);
 					flash_pos++;

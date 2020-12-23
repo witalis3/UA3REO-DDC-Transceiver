@@ -7,7 +7,7 @@
 #include "audio_processor.h"
 #include "settings.h"
 
-#define FPGA_flash_size 0x200000
+#define FPGA_flash_size 0x100000
 #define FPGA_flash_file_offset (0xA0 - 1)
 #define FPGA_sector_size (64 * 1024)
 #define FPGA_page_size 256

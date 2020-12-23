@@ -116,6 +116,7 @@ void WSPR_Stop(void)
 	TRX.ShiftEnabled = LastShift;
 	TRX.NOISE_BLANKER = LastNB;
 	TRX_Mute = LastMute;
+	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 }
 
 // draw

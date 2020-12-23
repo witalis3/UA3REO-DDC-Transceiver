@@ -312,8 +312,8 @@ static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(
 
 IRAM2 static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 	{
-		{"Export Settings", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ExportSettings},
-		{"Import Settings", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ImportSettings},
+		{"Export Settings to SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ExportSettings},
+		{"Import Settings from SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ImportSettings},
 		{"Format SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_Format},
 };
 static uint8_t sysmenu_sd_item_count = sizeof(sysmenu_sd_handlers) / sizeof(sysmenu_sd_handlers[0]);
