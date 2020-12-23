@@ -118,6 +118,7 @@ reg signed [15:0] ADC_MIN;
 reg signed [15:0] ADC_MAX;
 reg ADC_MINMAX_RESET;
 reg sync_reset_n = 1;
+reg unsigned [7:0] BUS_TEST;
 
 always @ (posedge IQ_valid)
 begin
@@ -484,10 +485,14 @@ begin
 	end
 	else if (k == 500) //BUS TEST
 	begin
-		Q_HOLD[7:0] = DATA_BUS[7:0];
+		BUS_TEST[7:0] = DATA_BUS[7:0];
+		k = 501;
+	end
+	else if (k == 501)
+	begin
 		DATA_BUS_OE = 1;
-		DATA_BUS_OUT[7:0] = Q_HOLD[7:0];
-		k = 999;
+		DATA_BUS_OUT[7:0] = BUS_TEST[7:0];
+		k = 500;
 	end
 	else if (k == 700) //FPGA FLASH READ - SEND COMMAND
 	begin

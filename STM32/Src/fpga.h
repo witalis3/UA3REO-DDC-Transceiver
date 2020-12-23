@@ -56,7 +56,7 @@ extern uint_fast16_t FPGA_Audio_TXBuffer_Index; // current index in FPGA buffers
 extern bool FPGA_Audio_Buffer_State;            // buffer state, half or full full true - compleate; false - half
 
 //Public methods
-extern void FPGA_Init(void);                // initialize exchange with FPGA
+extern void FPGA_Init(bool bus_test, bool firmware_test);                // initialize exchange with FPGA
 extern void FPGA_fpgadata_iqclock(void);    // exchange IQ data with FPGA
 extern void FPGA_fpgadata_stuffclock(void); // exchange parameters with FPGA
 extern void FPGA_restart(void);             // restart FPGA modules

@@ -45,7 +45,7 @@ static void FPGA_spi_flash_erase(void);		  // clear flash memory
 #endif
 
 // initialize exchange with FPGA
-void FPGA_Init(void)
+void FPGA_Init(bool bus_test, bool firmware_test)
 {
 	FPGA_GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
 	FPGA_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -59,24 +59,106 @@ void FPGA_Init(void)
 	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(FPGA_CLK_GPIO_Port, &FPGA_GPIO_InitStruct);
 
-#if FPGA_FLASH_IN_HEX
-	if (FPGA_is_present())
+	//BUS TEST
+	FPGA_bus_stop = true;
+	for(uint16_t i = 0; i < 256; i++)
 	{
-		while (!FPGA_spi_flash_verify(false)) // check the first 2048 bytes of FPGA firmware
+		FPGA_setBusOutput();
+		FPGA_writePacket(0);
+		FPGA_syncAndClockRiseFall();
+		
+		FPGA_writePacket(i);
+		FPGA_clockRise();
+		FPGA_clockFall();
+		
+		FPGA_setBusInput();
+		FPGA_clockRise();
+		uint8_t ret = FPGA_readPacket;
+		FPGA_clockFall();
+		
+		if(ret != i)
 		{
-			FPGA_spi_flash_erase();
-			FPGA_spi_flash_write();
+			char buff[64];
+			sprintf(buff, "BUS Error: %d -> %d", i, ret);
+			LCD_showError(buff, false);
+			HAL_Delay(1000);
+		}
+	}
+	FPGA_bus_stop = false;
+	
+	if(bus_test) //BUS STRESS TEST MODE
+	{
+		LCD_showError("Check FPGA BUS...", false);
+		HAL_Delay(1000);
+		
+		while(bus_test)
+		{
+			FPGA_bus_stop = true;
+			for(uint16_t i = 0; i < 256; i++)
+			{
+				FPGA_setBusOutput();
+				FPGA_writePacket(0);
+				FPGA_syncAndClockRiseFall();
+				
+				FPGA_writePacket(i);
+				FPGA_clockRise();
+				FPGA_clockFall();
+				
+				FPGA_setBusInput();
+				FPGA_clockRise();
+				uint8_t ret = FPGA_readPacket;
+				FPGA_clockFall();
+				
+				if(ret != i)
+				{
+					char buff[64];
+					sprintf(buff, "BUS Error: %d -> %d", i, ret);
+					LCD_showError(buff, false);
+					HAL_Delay(1000);
+				}
+			}
+			LCD_showError("Check compleate!", false);
+		}
+	}
+	
+	if(firmware_test) //FIRMWARE VERIFICATION MODE
+	{
+		FPGA_bus_stop = true;
+		LCD_showError("Check FPGA FIRMWARE...", false);
+		HAL_Delay(1000);
+		#if FPGA_FLASH_IN_HEX
 			if (FPGA_spi_flash_verify(true))
 			{
-				LCD_showError("Flash update complete!", false);
+				LCD_showError("FPGA flash verification complete!", false);
 				HAL_Delay(1000);
-				HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-				while (true)
+			}		
+		#endif
+		FPGA_bus_stop = false;
+	}
+	
+#if FPGA_FLASH_IN_HEX
+	FPGA_bus_stop = true;
+	if (FPGA_is_present())
+	{
+		if(!FPGA_spi_flash_verify(false)) // check the first 2048 bytes of FPGA firmware
+		{
+			while (!FPGA_spi_flash_verify(true))
+			{
+				FPGA_spi_flash_erase();
+				FPGA_spi_flash_write();
+				if (FPGA_spi_flash_verify(true))
 				{
-				};
+					LCD_showError("Flash update complete!", false);
+					HAL_Delay(1000);
+					HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+					while (true)
+					{
+					};
+				}
 			}
 		}
 	}
+	FPGA_bus_stop = false;
 #endif
 
 	//pre-reset FPGA to sync IQ data
@@ -108,7 +190,7 @@ void FPGA_restart(void) // restart FPGA modules
 }
 
 // exchange parameters with FPGA
-ITCM void FPGA_fpgadata_stuffclock(void)
+void FPGA_fpgadata_stuffclock(void)
 {
 	if (!FPGA_NeedSendParams && !FPGA_NeedGetParams && !FPGA_NeedRestart)
 		return;
@@ -145,7 +227,7 @@ ITCM void FPGA_fpgadata_stuffclock(void)
 }
 
 // exchange IQ data with FPGA
-ITCM void FPGA_fpgadata_iqclock(void)
+void FPGA_fpgadata_iqclock(void)
 {
 	if (FPGA_bus_stop)
 		return;
@@ -175,7 +257,7 @@ ITCM void FPGA_fpgadata_iqclock(void)
 }
 
 // send parameters
-ITCM static inline void FPGA_fpgadata_sendparam(void)
+static inline void FPGA_fpgadata_sendparam(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
 	VFO *current_vfo = CurrentVFO();
@@ -320,7 +402,7 @@ ITCM static inline void FPGA_fpgadata_sendparam(void)
 }
 
 // get parameters
-ITCM static inline void FPGA_fpgadata_getparam(void)
+static inline void FPGA_fpgadata_getparam(void)
 {
 	register uint8_t FPGA_fpgadata_in_tmp8 = 0;
 	register int32_t FPGA_fpgadata_in_tmp32 = 0;
@@ -371,7 +453,7 @@ ITCM static inline void FPGA_fpgadata_getparam(void)
 }
 
 // get IQ data
-ITCM static inline void FPGA_fpgadata_getiq(void)
+static inline void FPGA_fpgadata_getiq(void)
 {
 	register int_fast32_t FPGA_fpgadata_in_tmp32 = 0;
 	float32_t FPGA_fpgadata_in_float32 = 0;
@@ -526,7 +608,7 @@ ITCM static inline void FPGA_fpgadata_getiq(void)
 }
 
 // send IQ data
-ITCM static inline void FPGA_fpgadata_sendiq(void)
+static inline void FPGA_fpgadata_sendiq(void)
 {
 	q31_t FPGA_fpgadata_out_q_tmp32 = 0;
 	q31_t FPGA_fpgadata_out_i_tmp32 = 0;
@@ -629,7 +711,7 @@ ITCM static inline void FPGA_fpgadata_sendiq(void)
 }
 
 // switch the bus to input
-ITCM static inline void FPGA_setBusInput(void)
+static inline void FPGA_setBusInput(void)
 {
 	// Configure IO Direction mode (Input)
 	/*register uint32_t temp = GPIOA->MODER;
@@ -649,13 +731,14 @@ ITCM static inline void FPGA_setBusInput(void)
 	temp |= ((GPIO_MODE_INPUT & 0x00000003U) << (6 * 2U));
 	temp &= ~(GPIO_MODER_MODE0 << (7 * 2U));
 	temp |= ((GPIO_MODE_INPUT & 0x00000003U) << (7 * 2U));
-	sendToDebug_uint32(temp,false);
+	//sendToDebug_uint32(temp,false);
 	GPIOA->MODER = temp;*/
+	
 	GPIOA->MODER = -1431764992;
 }
 
 // switch bus to pin
-ITCM static inline void FPGA_setBusOutput(void)
+static inline void FPGA_setBusOutput(void)
 {
 	// Configure IO Direction mode (Output)
 	/*uint32_t temp = GPIOA->MODER;
@@ -675,25 +758,26 @@ ITCM static inline void FPGA_setBusOutput(void)
 	temp |= ((GPIO_MODE_OUTPUT_PP & 0x00000003U) << (6 * 2U));
 	temp &= ~(GPIO_MODER_MODE0 << (7 * 2U));
 	temp |= ((GPIO_MODE_OUTPUT_PP & 0x00000003U) << (7 * 2U));
-	sendToDebug_uint32(temp,false);
+	//sendToDebug_uint32(temp,false);
 	GPIOA->MODER = temp;*/
+	
 	GPIOA->MODER = -1431743147;
 }
 
 // raise the CLK signal
-ITCM static inline void FPGA_clockRise(void)
+static inline void FPGA_clockRise(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin;
 }
 
 // remove CLK signal
-ITCM static inline void FPGA_clockFall(void)
+static inline void FPGA_clockFall(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = (FPGA_CLK_Pin << 16U);
 }
 
 // raise CLK and SYNC signal, then lower
-ITCM static inline void FPGA_syncAndClockRiseFall(void)
+static inline void FPGA_syncAndClockRiseFall(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_SYNC_Pin;
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin;
@@ -766,7 +850,6 @@ static void FPGA_spi_flash_wait_WIP(void) // We are waiting for the end of writi
 
 static bool FPGA_is_present(void) // check that the FPGA has firmware
 {
-	FPGA_bus_stop = true;
 	HAL_Delay(1);
 	uint8_t data = 0;
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
@@ -780,7 +863,6 @@ static bool FPGA_is_present(void) // check that the FPGA has firmware
 	FPGA_spi_stop_command();
 	FPGA_spi_start_command(M25P80_DEEP_POWER_DOWN); //Go sleep
 	FPGA_spi_stop_command();
-	FPGA_bus_stop = false;
 	if (data != 0xFF)
 	{
 		LCD_showError("FPGA not found", true);
@@ -793,7 +875,6 @@ static bool FPGA_is_present(void) // check that the FPGA has firmware
 
 static bool FPGA_spi_flash_verify(bool full) // check flash memory
 {
-	FPGA_bus_stop = true;
 	HAL_Delay(1);
 	if (full)
 		LCD_showError("FPGA Flash Verification...", false);
@@ -887,7 +968,6 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 	FPGA_spi_start_command(M25P80_DEEP_POWER_DOWN); //Go sleep
 	FPGA_spi_stop_command();
 	//
-	FPGA_bus_stop = false;
 	if (errors > 0)
 	{
 		sendToDebug_strln("[ERR] FPGA Flash verification failed");
@@ -903,7 +983,6 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 
 static void FPGA_spi_flash_erase(void) // clear flash memory
 {
-	FPGA_bus_stop = true;
 	HAL_Delay(1);
 	LCD_showError("FPGA Flash Erasing...", false);
 	FPGA_spi_start_command(M25P80_RELEASE_from_DEEP_POWER_DOWN); //Wake-Up
@@ -916,13 +995,11 @@ static void FPGA_spi_flash_erase(void) // clear flash memory
 	FPGA_spi_stop_command();
 	FPGA_spi_flash_wait_WIP(); //wait write in progress
 
-	FPGA_bus_stop = false;
 	sendToDebug_strln("[OK] FPGA Flash erased");
 }
 
 static void FPGA_spi_flash_write(void) // write new contents of FPGA SPI memory
 {
-	FPGA_bus_stop = true;
 	HAL_Delay(1);
 	LCD_showError("FPGA Flash Programming...", false);
 	uint32_t flash_pos = 0;
@@ -1015,7 +1092,6 @@ static void FPGA_spi_flash_write(void) // write new contents of FPGA SPI memory
 	FPGA_spi_flash_wait_WIP();					  //wait write in progress
 	FPGA_spi_start_command(M25P80_WRITE_DISABLE); //Write Disable
 	FPGA_spi_stop_command();
-	FPGA_bus_stop = false;
 	sendToDebug_strln("[OK] FPGA Flash programming compleated");
 }
 
