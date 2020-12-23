@@ -59,7 +59,11 @@ namespace file2rle
             int prev = in_file.ReadByte();
             int replay_count = 0;
             List<sbyte> neg_bytes = new List<sbyte>();
-            while (in_position < in_file.Length)
+            long filesize = in_file.Length;
+            if (filesize > 0x1000FF)
+                filesize = 0x1000FF; //trim for 1mb flash
+
+            while (in_position < filesize)
             {
                 int current = in_file.ReadByte();
 
@@ -126,6 +130,26 @@ namespace file2rle
 
                 in_position++;
                 prev = current;
+            }
+
+            if (replay_count > 0) //сохраняем накопленные повторы
+            {
+                replay_count++;
+                while (replay_count > 127)
+                {
+                    if (debug)
+                        appendByteP(127);
+                    else
+                        appendByte(127);
+                    appendByte((sbyte)prev);
+                    replay_count -= 127;
+                }
+                if (debug)
+                    appendByteP(replay_count);
+                else
+                    appendByte((sbyte)replay_count);
+                appendByte((sbyte)prev);
+                replay_count = 0;
             }
 
             //сохраняем накопленные неповторяющиеся
