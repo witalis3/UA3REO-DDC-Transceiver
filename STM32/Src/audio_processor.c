@@ -568,13 +568,12 @@ void processTxAudio(void)
 			arm_biquad_cascade_df2T_f32(&IIR_TX_LPF_I, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
 		memcpy(&FPGA_Audio_Buffer_TX_Q_tmp[0], &FPGA_Audio_Buffer_TX_I_tmp[0], AUDIO_BUFFER_HALF_SIZE * 4); //double left and right channel
 
+		float32_t cw_signal = 0;
 		switch (mode)
 		{
 		case TRX_MODE_CW_L:
 		case TRX_MODE_CW_U:
-			if (!TRX_key_serial && !TRX_ptt_hard && !TRX_key_dot_hard && !TRX_key_dash_hard)
-				Processor_selected_RFpower_amplitude = 0;
-			float32_t cw_signal = TRX_GenerateCWSignal(Processor_selected_RFpower_amplitude);
+			cw_signal = TRX_GenerateCWSignal(Processor_selected_RFpower_amplitude);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
 				FPGA_Audio_Buffer_TX_I_tmp[i] = cw_signal;
@@ -736,7 +735,7 @@ void processTxAudio(void)
 	else
 	{
 		//CW SelfHear
-		if (TRX.CW_SelfHear && (TRX_key_serial || TRX_key_dot_hard || TRX_key_dash_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U) && !TRX_Tune)
+		if (TRX.CW_SelfHear && (TRX.CW_KEYER || TRX_key_serial || TRX_key_dot_hard || TRX_key_dash_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U) && !TRX_Tune)
 		{
 			if (Processor_TX_MAX_amplitude_IN > 0)
 			{
@@ -754,6 +753,11 @@ void processTxAudio(void)
 				memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
 				Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 			}
+		}
+		else if (TRX.CW_SelfHear)
+		{
+			memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
+			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 		}
 		//
 		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_Buffer_TX_I_tmp[0], sizeof(FPGA_Audio_Buffer_TX_I_tmp));

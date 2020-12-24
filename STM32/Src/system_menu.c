@@ -1425,8 +1425,9 @@ static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction)
 
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction)
 {
-	if (TRX.CW_Key_timeout > 0 || direction > 0)
-		TRX.CW_Key_timeout += direction * 50;
+	TRX.CW_Key_timeout += direction * 50;
+	if (TRX.CW_Key_timeout < 50)
+		TRX.CW_Key_timeout = 50;
 	if (TRX.CW_Key_timeout > 5000)
 		TRX.CW_Key_timeout = 5000;
 }

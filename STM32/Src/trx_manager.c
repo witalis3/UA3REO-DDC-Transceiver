@@ -55,7 +55,7 @@ volatile bool TRX_DCDC_Freq = false;
 static uint_fast8_t autogain_wait_reaction = 0;	  // timer for waiting for a reaction from changing the ATT / PRE modes
 volatile uint8_t TRX_AutoGain_Stage = 0;		  // stage of working out the amplification corrector
 static uint32_t KEYER_symbol_start_time = 0;	  // start time of the automatic key character
-static bool KEYER_symbol_status = false;		  // status (signal or period) of the automatic key symbol
+static uint_fast8_t KEYER_symbol_status = 0;		  // status (signal or period) of the automatic key symbol
 volatile float32_t TRX_STM32_VREF = 3.3f;		  // voltage on STM32
 volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; // STM32 temperature
 volatile float32_t TRX_IQ_phase_error = 0.0f;
@@ -207,37 +207,31 @@ void TRX_key_change(void)
 	if (TRX_key_dot_hard != TRX_new_key_dot_hard)
 	{
 		TRX_key_dot_hard = TRX_new_key_dot_hard;
-		if (TRX_key_dot_hard == true)
+		if (TRX_key_dot_hard == true && (KEYER_symbol_status == 0 || !TRX.CW_KEYER))
+		{
 			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		if (TRX.CW_Key_timeout == 0)
-			TRX_ptt_cat = TRX_key_dot_hard;
-		KEYER_symbol_start_time = 0;
-		KEYER_symbol_status = false;
-		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
-		FPGA_NeedSendParams = true;
-		TRX_Restart_Mode();
+			LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+			FPGA_NeedSendParams = true;
+			TRX_Restart_Mode();
+		}
 	}
 	bool TRX_new_key_dash_hard = !HAL_GPIO_ReadPin(KEY_IN_DASH_GPIO_Port, KEY_IN_DASH_Pin);
 	if (TRX_key_dash_hard != TRX_new_key_dash_hard)
 	{
 		TRX_key_dash_hard = TRX_new_key_dash_hard;
-		if (TRX_key_dash_hard == true)
+		if (TRX_key_dash_hard == true && (KEYER_symbol_status == 0 || !TRX.CW_KEYER))
+		{
 			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		if (TRX.CW_Key_timeout == 0)
-			TRX_ptt_cat = TRX_key_dash_hard;
-		KEYER_symbol_start_time = 0;
-		KEYER_symbol_status = false;
-		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
-		FPGA_NeedSendParams = true;
-		TRX_Restart_Mode();
+			LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+			FPGA_NeedSendParams = true;
+			TRX_Restart_Mode();
+		}
 	}
 	if (TRX_key_serial != TRX_old_key_serial)
 	{
 		TRX_old_key_serial = TRX_key_serial;
 		if (TRX_key_serial == true)
 			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		if (TRX.CW_Key_timeout == 0)
-			TRX_ptt_cat = TRX_key_serial;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
@@ -574,31 +568,61 @@ void TRX_DBMCalculate(void)
 float32_t TRX_GenerateCWSignal(float32_t power)
 {
 	if (!TRX.CW_KEYER)
+	{
+		if (!TRX_key_serial && !TRX_ptt_hard && !TRX_key_dot_hard && !TRX_key_dash_hard)
+				return 0.0f;
 		return power;
+	}
 
 	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
 	uint32_t dash_length_ms = dot_length_ms * 3;
 	uint32_t sim_space_length_ms = dot_length_ms;
 	uint32_t curTime = HAL_GetTick();
-	if (TRX_key_dot_hard && (KEYER_symbol_start_time + dot_length_ms) > curTime) // point is clamped
-	{
-		if (KEYER_symbol_status)
-			return power;
-		else
-			return 0.0f;
-	}
-	else if (TRX_key_dash_hard && (KEYER_symbol_start_time + dash_length_ms) > curTime) // dash pressed
-	{
-		if (KEYER_symbol_status)
-			return power;
-		else
-			return 0.0f;
-	}
-	else if ((KEYER_symbol_start_time + sim_space_length_ms) < curTime)
+	//dot
+	if (KEYER_symbol_status == 0 && TRX_key_dot_hard)
 	{
 		KEYER_symbol_start_time = curTime;
-		KEYER_symbol_status = !KEYER_symbol_status;
+		KEYER_symbol_status = 1;
 	}
+	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) > curTime)
+	{
+		TRX_Key_Timeout_est = TRX.CW_Key_timeout;
+		return power;
+	}
+	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) < curTime)
+	{
+		KEYER_symbol_start_time = curTime;
+		KEYER_symbol_status = 3;
+	}
+	
+	//dash
+	if (KEYER_symbol_status == 0 && TRX_key_dash_hard)
+	{
+		KEYER_symbol_start_time = curTime;
+		KEYER_symbol_status = 2;
+	}
+	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) > curTime)
+	{
+		TRX_Key_Timeout_est = TRX.CW_Key_timeout;
+		return power;
+	}
+	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) < curTime)
+	{
+		KEYER_symbol_start_time = curTime;
+		KEYER_symbol_status = 3;
+	}
+	
+	//space
+	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) > curTime)
+	{
+		TRX_Key_Timeout_est = TRX.CW_Key_timeout;
+		return 0.0f;
+	}
+	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) < curTime)
+	{
+		KEYER_symbol_status = 0;
+	}
+	
 	return 0.0f;
 }
 

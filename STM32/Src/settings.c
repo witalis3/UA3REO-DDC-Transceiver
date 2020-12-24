@@ -193,7 +193,7 @@ void LoadSettings(bool clear)
 		TRX.BandMapEnabled = true;					// automatic change of mode according to the range map
 		TRX.FFT_Enabled = true;						// use FFT spectrum
 		TRX.CW_GENERATOR_SHIFT_HZ = 500;			// LO offset in CW mode
-		TRX.CW_Key_timeout = 500;					// time of releasing transmission after the last character on the key
+		TRX.CW_Key_timeout = 200;					// time of releasing transmission after the last character on the key
 		TRX.FFT_Averaging = 4;						// averaging the FFT to make it smoother
 		TRX.WIFI_Enabled = true;					// activate WiFi
 		strcpy(TRX.WIFI_AP, "WIFI-AP");				// WiFi hotspot
