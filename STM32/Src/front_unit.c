@@ -485,6 +485,7 @@ void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
 	NeedSaveSettings = true;
 	NeedReinitAudioFilters = true;
 	resetVAD();
+	FFT_Init();
 	TRX_ScanMode = false;
 	LCD_redraw();
 }
