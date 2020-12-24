@@ -565,13 +565,31 @@ void TRX_DBMCalculate(void)
 	Processor_RX_Power_value = 0;
 }
 
+float32_t current_cw_power = 0.0f;
+static float32_t TRX_generateRiseSignal(float32_t power)
+{
+	if(current_cw_power < power)
+		current_cw_power += power * 0.01f;
+	if(current_cw_power > power)
+		current_cw_power = power;
+	return current_cw_power;
+}
+static float32_t TRX_generateFallSignal(float32_t power)
+{
+	if(current_cw_power > 0.0f)
+		current_cw_power -= power * 0.01f;
+	if(current_cw_power < 0.0f)
+		current_cw_power = 0.0f;
+	return current_cw_power;
+}
+
 float32_t TRX_GenerateCWSignal(float32_t power)
 {
 	if (!TRX.CW_KEYER)
 	{
 		if (!TRX_key_serial && !TRX_ptt_hard && !TRX_key_dot_hard && !TRX_key_dash_hard)
-				return 0.0f;
-		return power;
+				return TRX_generateFallSignal(power);
+		return TRX_generateRiseSignal(power);
 	}
 
 	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
@@ -587,7 +605,7 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) > curTime)
 	{
 		TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		return power;
+		return TRX_generateRiseSignal(power);
 	}
 	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) < curTime)
 	{
@@ -604,7 +622,7 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) > curTime)
 	{
 		TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		return power;
+		return TRX_generateRiseSignal(power);
 	}
 	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) < curTime)
 	{
@@ -616,14 +634,14 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) > curTime)
 	{
 		TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		return 0.0f;
+		return TRX_generateFallSignal(power);
 	}
 	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) < curTime)
 	{
 		KEYER_symbol_status = 0;
 	}
 	
-	return 0.0f;
+	return TRX_generateFallSignal(power);
 }
 
 float32_t TRX_getSTM32H743Temperature(void)

@@ -568,17 +568,16 @@ void processTxAudio(void)
 			arm_biquad_cascade_df2T_f32(&IIR_TX_LPF_I, FPGA_Audio_Buffer_TX_I_tmp, FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE);
 		memcpy(&FPGA_Audio_Buffer_TX_Q_tmp[0], &FPGA_Audio_Buffer_TX_I_tmp[0], AUDIO_BUFFER_HALF_SIZE * 4); //double left and right channel
 
-		float32_t cw_signal = 0;
 		switch (mode)
 		{
 		case TRX_MODE_CW_L:
 		case TRX_MODE_CW_U:
-			cw_signal = TRX_GenerateCWSignal(Processor_selected_RFpower_amplitude);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				FPGA_Audio_Buffer_TX_I_tmp[i] = cw_signal;
+				FPGA_Audio_Buffer_TX_I_tmp[i] = TRX_GenerateCWSignal(Processor_selected_RFpower_amplitude);
 				FPGA_Audio_Buffer_TX_Q_tmp[i] = 0.0f;
 			}
+			DECODER_PutSamples(FPGA_Audio_Buffer_TX_I_tmp, AUDIO_BUFFER_HALF_SIZE); //отправляем данные в цифровой декодер
 			break;
 		case TRX_MODE_USB:
 		case TRX_MODE_DIGI_U:
@@ -737,22 +736,23 @@ void processTxAudio(void)
 		//CW SelfHear
 		if (TRX.CW_SelfHear && (TRX.CW_KEYER || TRX_key_serial || TRX_key_dot_hard || TRX_key_dash_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U) && !TRX_Tune)
 		{
-			if (Processor_TX_MAX_amplitude_IN > 0)
+			float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
+			float32_t amplitude = (db2rateV(TRX.AGC_GAIN_TARGET) * volume_gain_tx * CODEC_BITS_FULL_SCALE / 2.0f);
+			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
-				float32_t amplitude = (db2rateV(TRX.AGC_GAIN_TARGET) * volume_gain_tx * CODEC_BITS_FULL_SCALE / 2.0f);
-				for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
+				int32_t data = convertToSPIBigEndian((int32_t)(amplitude  * ( FPGA_Audio_Buffer_TX_I_tmp[i] / Processor_selected_RFpower_amplitude) * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ)));
+				if (WM8731_DMA_state)
 				{
-					CODEC_Audio_Buffer_RX[i * 2] = convertToSPIBigEndian((int32_t)(amplitude * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ)));
-					CODEC_Audio_Buffer_RX[i * 2 + 1] = CODEC_Audio_Buffer_RX[i * 2];
+					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
+					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2 + 1] = data;
 				}
-				Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
+				else
+				{
+					CODEC_Audio_Buffer_RX[i * 2] = data;
+					CODEC_Audio_Buffer_RX[i * 2 + 1] = data;
+				}
 			}
-			else
-			{
-				memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
-				Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
-			}
+			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 		}
 		else if (TRX.CW_SelfHear)
 		{

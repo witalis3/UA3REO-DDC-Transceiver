@@ -515,7 +515,7 @@ void TIM6_DAC_IRQHandler(void)
     TRX_Key_Timeout_est -= 10;
     if (TRX_Key_Timeout_est == 0)
     {
-      LCD_UpdateQuery.StatusInfoGUI = true;
+      LCD_UpdateQuery.StatusInfoGUIRedraw = true;
       FPGA_NeedSendParams = true;
       TRX_Restart_Mode();
     }
@@ -949,7 +949,7 @@ void TIM17_IRQHandler(void)
   /* USER CODE END TIM17_IRQn 0 */
   HAL_TIM_IRQHandler(&htim17);
   /* USER CODE BEGIN TIM17_IRQn 1 */
-  if (!TRX_on_TX() || CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
+  if (TRX.CWDecoder)
     DECODER_Process();
   /* USER CODE END TIM17_IRQn 1 */
 }
