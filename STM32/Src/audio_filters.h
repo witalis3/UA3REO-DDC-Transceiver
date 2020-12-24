@@ -8,7 +8,7 @@
 #include "fpga.h"
 #include "functions.h"
 
-#define IIR_FILTERS_COUNT 59													  // Total Filters In The Collection
+#define IIR_FILTERS_COUNT 69													  // Total Filters In The Collection
 #define IQ_HILBERT_TAPS 201														  // Hilbert filter order
 #define IIR_MAX_STAGES 15														  // Maximum order of IIR filters
 #define NOTCH_STAGES 1															  // order of manual Notch filter

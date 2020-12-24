@@ -180,7 +180,7 @@ void LoadSettings(bool clear)
 		TRX.InputType_MIC = true; // type of input to transfer
 		TRX.InputType_LINE = false;
 		TRX.InputType_USB = false;
-		TRX.CW_LPF_Filter = 700;					// default value of CW filter width
+		TRX.CW_LPF_Filter = 1000;					// default value of CW filter width
 		TRX.CW_HPF_Filter = 0;						// default value of CW filter width
 		TRX.SSB_LPF_Filter = 2700;					// default value of SSB filter width
 		TRX.SSB_HPF_Filter = 300;					// default value of SSB filter width
