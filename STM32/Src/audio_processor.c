@@ -386,6 +386,8 @@ void processRxAudio(void)
 	//OUT Volume
 	float32_t volume_gain_new = volume2rate((float32_t)TRX_Volume / 1023.0f);
 	volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
+	
+	//Gain and SPI convert
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
 	{
 		Processor_AudioBuffer_current[i] = (int32_t)((float32_t)Processor_AudioBuffer_current[i] * volume_gain);
