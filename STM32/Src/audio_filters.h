@@ -8,7 +8,7 @@
 #include "fpga.h"
 #include "functions.h"
 
-#define IIR_FILTERS_COUNT 41													  // Total Filters In The Collection
+#define IIR_FILTERS_COUNT 59													  // Total Filters In The Collection
 #define IQ_HILBERT_TAPS 201														  // Hilbert filter order
 #define IIR_MAX_STAGES 15														  // Maximum order of IIR filters
 #define NOTCH_STAGES 1															  // order of manual Notch filter
@@ -30,7 +30,7 @@
 
 #define MAX_HPF_WIDTH_CW 100
 #define MAX_HPF_WIDTH_SSB 500
-#define MAX_LPF_WIDTH_CW 2100
+#define MAX_LPF_WIDTH_CW 1000
 #define MAX_LPF_WIDTH_SSB 3400
 #define MAX_LPF_WIDTH_AM 10000
 #define MAX_LPF_WIDTH_NFM 20000
