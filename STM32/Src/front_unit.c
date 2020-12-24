@@ -483,6 +483,7 @@ void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
 	LCD_UpdateQuery.FreqInfo = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
+	NeedReinitAudioFiltersClean = true;
 	NeedReinitAudioFilters = true;
 	resetVAD();
 	FFT_Init();

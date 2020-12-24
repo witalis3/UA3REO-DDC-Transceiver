@@ -358,7 +358,9 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		if ((old_mode != TRX_MODE_CW_L && old_mode != TRX_MODE_CW_U) && (_mode == TRX_MODE_CW_L || _mode == TRX_MODE_CW_U))
 			FFT_Init();
 	}
-
+	
+	if(old_mode != _mode)
+		NeedReinitAudioFiltersClean = true;
 	NeedReinitAudioFilters = true;
 	NeedSaveSettings = true;
 	LCD_UpdateQuery.StatusInfoBar = true;

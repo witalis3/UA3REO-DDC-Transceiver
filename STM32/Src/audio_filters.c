@@ -486,6 +486,7 @@ arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HSHELF_FILTER = {EQ_STAGES, AGC_
 arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HPASS_FILTER = {EQ_STAGES, AGC_RX2_KW_HPASS_FILTER_State, AGC_RX_KW_HPASS_FILTER_Coeffs};
 volatile bool NeedReinitNotch = false;		  // need to re-initialize the manual Notch filter
 volatile bool NeedReinitAudioFilters = false; // need to re-initialize Audio filters
+volatile bool NeedReinitAudioFiltersClean = false; //also clean state
 
 // Prototypes
 static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, float32_t *outCoeffs);									  // automatic calculation of the Biquad filter for Notch
@@ -586,6 +587,7 @@ void ReinitAudioFilters(void)
 
 	//All done
 	NeedReinitAudioFilters = false;
+	NeedReinitAudioFiltersClean = false;
 }
 
 // initialize the manual Notch filter
@@ -757,6 +759,12 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 
 static void arm_biquad_cascade_df2T_initNoClean_f32(arm_biquad_cascade_df2T_instance_f32 *S, uint8_t numStages, const float32_t *pCoeffs, float32_t *pState)
 {
+	if(NeedReinitAudioFiltersClean) //original func
+	{
+		arm_biquad_cascade_df2T_init_f32(S, numStages, pCoeffs, pState);
+		return;
+	}
+	
 	/* Assign filter stages */
 	S->numStages = numStages;
 

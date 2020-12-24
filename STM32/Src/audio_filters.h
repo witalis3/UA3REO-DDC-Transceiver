@@ -124,6 +124,7 @@ extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_I;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_Q;
 extern volatile bool NeedReinitNotch;		 // need to reinitialize the manual Notch filter
 extern volatile bool NeedReinitAudioFilters; // need to reinitialize the Audio filters
+extern volatile bool NeedReinitAudioFiltersClean; //also clean state
 
 //Public methods
 extern void InitAudioFilters(void);													   // initialize audio filters
