@@ -111,6 +111,7 @@
 static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
 static uint32_t powerdown_start_delay = 0;
+uint32_t dbg_FPGA_samples = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -627,13 +628,14 @@ void TIM6_DAC_IRQHandler(void)
 
     CPULOAD_Calc(); // Calculate CPU load
     TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
-
+		TRX_STM32_VREF = TRX_getSTM32H743vref();
+		
     if (TRX.Debug_Console)
     {
       //Save Debug variables
       uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
       float32_t dbg_coeff = 1000.0f / (float32_t)dbg_tim6_delay;
-      uint32_t dbg_FPGA_samples = (uint32_t)((float32_t)FPGA_samples * dbg_coeff);
+      dbg_FPGA_samples = (uint32_t)((float32_t)FPGA_samples * dbg_coeff);
       uint32_t dbg_WM8731_DMA_samples = (uint32_t)((float32_t)WM8731_DMA_samples / 2.0f * dbg_coeff);
       uint32_t dbg_AUDIOPROC_samples = (uint32_t)((float32_t)AUDIOPROC_samples * dbg_coeff);
       float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I[0];

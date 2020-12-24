@@ -283,7 +283,6 @@ int main(void)
   sendToDebug_strln("[OK] Digital decoder timer TIM17 init");
   HAL_TIM_Base_Start_IT(&htim17);
   sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
-  TRX_STM32_VREF = TRX_getSTM32H743vref();
   //while(true){HAL_Delay(3000); SCB->AIRCR = 0x05FA0004; } //debug restart
   /* USER CODE END 2 */
 

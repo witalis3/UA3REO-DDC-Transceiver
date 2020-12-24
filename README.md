@@ -239,6 +239,10 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
 
 * Launch STM32 firmware update
 
+### System info
+
+* Show info about TRX
+
 ## Services
 
 ### Spectrum Analyzer

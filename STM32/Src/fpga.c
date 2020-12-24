@@ -22,6 +22,7 @@ volatile float32_t FPGA_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_SIZE] = {0};
 volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_SIZE] = {0};
 volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE] = {0};
+uint16_t FPGA_FW_Version[3] = {0};
 
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
@@ -84,6 +85,26 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 			HAL_Delay(1000);
 		}
 	}
+	FPGA_bus_stop = false;
+	
+	//GET FW VERSION
+	FPGA_bus_stop = true;
+
+	FPGA_setBusOutput();
+	FPGA_writePacket(8);
+	FPGA_syncAndClockRiseFall();
+	
+	FPGA_setBusInput();
+	FPGA_clockRise();
+	FPGA_FW_Version[2] = FPGA_readPacket;
+	FPGA_clockFall();
+	FPGA_clockRise();
+	FPGA_FW_Version[1] = FPGA_readPacket;
+	FPGA_clockFall();
+	FPGA_clockRise();
+	FPGA_FW_Version[0] = FPGA_readPacket;
+	FPGA_clockFall();
+	
 	FPGA_bus_stop = false;
 	
 	if(bus_test) //BUS STRESS TEST MODE
@@ -916,12 +937,12 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 						sendToDebug_newline();
 						sendToDebug_flush();
 						
-						if(full)
+						/*if(full)
 						{
 							char ctmp[50];
 							sprintf(ctmp, "Error in pos: %d", flash_pos);
 							LCD_showError(ctmp, true);
-						}
+						}*/
 					}
 					data = FPGA_spi_continue_command(0xFF);
 					flash_pos++;
@@ -949,12 +970,12 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 						sendToDebug_newline();
 						sendToDebug_flush();
 						
-						if(full)
+						/*if(full)
 						{
 							char ctmp[50];
 							sprintf(ctmp, "Error in pos: %d", flash_pos);
 							LCD_showError(ctmp, true);
-						}
+						}*/
 					}
 					data = FPGA_spi_continue_command(0xFF);
 					flash_pos++;

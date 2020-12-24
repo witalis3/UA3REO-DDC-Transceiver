@@ -179,6 +179,11 @@ begin
 			FLASH_enable = 0;
 			k = 700;
 		end
+		else if(DATA_BUS[7:0] == 'd8) //GET INFO
+		begin
+			DATA_BUS_OE = 1;
+			k = 800;
+		end
 	end
 	else if (k == 100) //GET PARAMS
 	begin
@@ -513,6 +518,21 @@ begin
 		else
 			DATA_BUS_OUT[7:0] = FLASH_data_in[7:0];
 		k = 700;
+	end
+	else if (k == 800) //GET INFO
+	begin
+		DATA_BUS_OUT[7:0] = 'd2; //flash id 1
+		k = 801;
+	end
+	else if (k == 801)
+	begin
+		DATA_BUS_OUT[7:0] = 'd1; //flash id 2
+		k = 802;
+	end
+	else if (k == 802)
+	begin
+		DATA_BUS_OUT[7:0] = 'd2; //flash id 3
+		k = 999;
 	end
 	stage_debug=k;
 end

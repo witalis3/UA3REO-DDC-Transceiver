@@ -14,6 +14,7 @@
 #include "bands.h"
 #include "sd.h"
 #include "wspr.h"
+#include "stm32h7xx_it.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -105,6 +106,7 @@ static void SYSMENU_HANDL_SD_ImportSettings(int8_t direction);
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
+static void SYSMENU_HANDL_SYSINFO(int8_t direction);
 
 static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction);
@@ -195,6 +197,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_handlers[] =
 		{"SD Card", SYSMENU_MENU, 0, SYSMENU_HANDL_SDMENU},
 		{"Set Clock Time", SYSMENU_RUN, 0, SYSMENU_HANDL_SETTIME},
 		{"Flash update", SYSMENU_RUN, 0, SYSMENU_HANDL_Bootloader},
+		{"System info", SYSMENU_RUN, 0, SYSMENU_HANDL_SYSINFO},
 		{"Calibration", SYSMENU_HIDDEN_MENU, 0, SYSMENU_HANDL_CALIBRATIONMENU},
 };
 static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
@@ -424,6 +427,7 @@ static bool sysmenu_onroot = true;
 bool SYSMENU_hiddenmenu_enabled = false;
 static bool sysmenu_services_opened = false;
 static bool sysmenu_infowindow_opened = false;
+static bool sysmenu_sysinfo_opened = false;
 static bool sysmenu_item_selected_by_enc2 = false;
 
 //WIFI
@@ -1918,6 +1922,43 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction)
 	LCD_busy = true;
 }
 
+//SYSTEM INFO
+static void SYSMENU_HANDL_SYSINFO(int8_t direction)
+{
+	sysmenu_infowindow_opened = true;
+	sysmenu_sysinfo_opened = true;
+	if(direction != 0)
+		LCDDriver_Fill(BG_COLOR);
+	#define y_offs 20
+	uint16_t y = 10;
+	char out[80];
+	sprintf(out, "STM32 FW ver: %s", version_string);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	y += y_offs;
+	sprintf(out, "FPGA FW ver: %d.%d.%d", FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	y += y_offs;
+	sprintf(out, "WIFI IP: %s", WIFI_IP);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	y += y_offs;
+	sprintf(out, "FPGA SAMPLES: %d     ", dbg_FPGA_samples);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	y += y_offs;
+	sprintf(out, "STM32 VOLTAGE: %f     ", TRX_STM32_VREF);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	y += y_offs;
+	sprintf(out, "IQ PHASE: %f     ", TRX_IQ_phase_error);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	y += y_offs;
+	sprintf(out, "ADC MIN/MAX: %d/%d     ", TRX_ADC_MINAMPLITUDE, TRX_ADC_MAXAMPLITUDE);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	y += y_offs;
+	sprintf(out, "VCXO ERROR: %d     ", TRX_VCXO_ERROR);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	y += y_offs;
+	
+	LCD_UpdateQuery.SystemMenu = true;
+}
 
 //CALIBRATION MENU
 
@@ -2621,6 +2662,10 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 		SWR_Draw();
 		return;
 	}
+	if (sysmenu_sysinfo_opened)
+	{
+		SYSMENU_HANDL_SYSINFO(0);
+	}
 	if (sysmenu_infowindow_opened)
 		return;
 	LCD_busy = true;
@@ -2745,6 +2790,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 	else if (sysmenu_infowindow_opened)
 	{
 		sysmenu_infowindow_opened = false;
+		sysmenu_sysinfo_opened = false;
 		systemMenuIndex = 0;
 		SYSMENU_drawSystemMenu(true);
 	}

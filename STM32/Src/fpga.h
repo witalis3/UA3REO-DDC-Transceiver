@@ -54,6 +54,7 @@ extern volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE];
 extern uint_fast16_t FPGA_Audio_RXBuffer_Index; // current index in FPGA buffers
 extern uint_fast16_t FPGA_Audio_TXBuffer_Index; // current index in FPGA buffers
 extern bool FPGA_Audio_Buffer_State;            // buffer state, half or full full true - compleate; false - half
+extern uint16_t FPGA_FW_Version[3];								// version from fpga
 
 //Public methods
 extern void FPGA_Init(bool bus_test, bool firmware_test);                // initialize exchange with FPGA
