@@ -194,18 +194,63 @@ void FFT_Init(void)
 								  FFT_SIZE);
 		zoomed_width = FFT_SIZE / fft_zoom;
 	}
-	//windowing
+	
+	//Windowing
+	
+	//Dolph–Chebyshev
+	if (TRX.FFT_Window == 1)
+	{
+		const float64_t atten = 100.0;
+		float64_t max = 0.0;
+		float64_t tg = pow(10.0, atten / 20.0);
+		float64_t x0 = cosh((1.0 / ((float64_t)FFT_SIZE - 1.0)) * acosh(tg));
+		float64_t M = (FFT_SIZE - 1) / 2;
+		if((FFT_SIZE % 2) == 0) 
+			M = M + 0.5; /* handle even length windows */
+		for(uint32_t nn=0; nn < ((FFT_SIZE / 2) + 1); nn++)
+		{
+			float64_t n = nn - M;
+			float64_t sum = 0.0;
+			for(uint32_t i = 1; i <= M; i++)
+			{
+				float64_t cheby_poly = 0.0;
+				float64_t cp_x = x0 * cos(F_PI * i / (float64_t)FFT_SIZE);
+				float64_t cp_n = FFT_SIZE - 1;
+				if (fabs(cp_x) <= 1) 
+					cheby_poly = cos(cp_n * acos(cp_x));
+				else 
+					cheby_poly = cosh(cp_n * acosh(cp_x));
+				
+				sum += cheby_poly * cos(2.0 * n * F_PI * (float64_t)i / (float64_t)FFT_SIZE);
+			}
+			window_multipliers[nn] = tg + 2 * sum;
+			window_multipliers[FFT_SIZE - nn - 1] = window_multipliers[nn];
+			if(window_multipliers[nn] > max)
+				max = window_multipliers[nn];
+		}
+		for(uint32_t nn=0; nn < FFT_SIZE; nn++) 
+			window_multipliers[nn] /= max; /* normalise everything */
+	}
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 	{
-		//Hamming
-		if (TRX.FFT_Window == 1)
-			window_multipliers[i] = 0.54f - 0.46f * arm_cos_f32((2.0f * PI * i) / ((float32_t)FFT_SIZE - 1.0f));
 		//Blackman-Harris
-		else if (TRX.FFT_Window == 2)
-			window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f)) + 0.14128f * arm_cos_f32(4.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f)) - 0.01168f * arm_cos_f32(6.0f * PI * i / ((float32_t)FFT_SIZE - 1.0f));
-		//Hanning
+		if (TRX.FFT_Window == 2)
+			window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) + 0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) - 0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+		//Nutall
 		else if (TRX.FFT_Window == 3)
-			window_multipliers[i] = 0.5f * (1.0f - arm_cos_f32(2.0f * PI * i / (float32_t)FFT_SIZE));
+			window_multipliers[i] = 0.355768f - 0.487396f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) + 0.144232f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) - 0.012604 * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+		//Blackman-Nutall
+		else if (TRX.FFT_Window == 4)
+			window_multipliers[i] = 0.3635819f - 0.4891775f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) + 0.1365995f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) - 0.0106411f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+		//Hann
+		else if (TRX.FFT_Window == 5)
+			window_multipliers[i] = 0.5f * (1.0f - arm_cos_f32(2.0f * F_PI * (float32_t)i / (float32_t)FFT_SIZE));
+		//Hamming
+		else if (TRX.FFT_Window == 6)
+			window_multipliers[i] = 0.54f - 0.46f * arm_cos_f32((2.0f * F_PI * (float32_t)i) / ((float32_t)FFT_SIZE - 1.0f));
+		//No window
+		else if (TRX.FFT_Window == 7)
+			window_multipliers[i] = 1.0f;
 	}
 	// clear the buffer
 	memset(&fft_output_buffer, BG_COLOR, sizeof(fft_output_buffer));

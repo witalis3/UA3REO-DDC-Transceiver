@@ -185,7 +185,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
 * **FFT 3D Mode** - Enable FFT 3D mode (0 - disabled, 1 - lines, 2 - pixels)
 * **FFT Compressor** - Enable FFT peak comressor
 * **FFT Averaging** - FFT burst averaging level
-* **FFT Window** - Select FFT window (Hamming / Blackman-Harris / Hanning)
+* **FFT Window** - Select FFT window (1-Dolph–Chebyshev 2-Blackman-Harris 3-Nutall 4-Blackman-Nutall 5-Hann 6-Hamming 7-No window)
 
 ### ADC / DAC Settings
 

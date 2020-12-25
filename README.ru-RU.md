@@ -184,7 +184,7 @@ WiFi модуль ESP-01 должен иметь свежую прошивку �
 * **FFT Enabled** - Включение водопада и FFT
 * **FFT Compressor** - Сжимать пики при перегрузке FFT
 * **FFT Averaging** - Уровень усреднения всплесков FFT
-* **FFT Window** - Выбор окна FFT (Hamming/Blackman-Harris/Hanning)
+* **FFT Window** - Выбор окна FFT (1-Dolph–Chebyshev 2-Blackman-Harris 3-Nutall 4-Blackman-Nutall 5-Hann 6-Hamming 7-No window)
 
 ### ADC/DAC Settings
 

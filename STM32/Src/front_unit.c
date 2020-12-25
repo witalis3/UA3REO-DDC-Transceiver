@@ -1042,8 +1042,10 @@ static void FRONTPANEL_BUTTONHANDLER_SCAN(void)
 
 static void FRONTPANEL_BUTTONHANDLER_PLAY(void)
 {
+	
 }
 
 static void FRONTPANEL_BUTTONHANDLER_REC(void)
 {
+	
 }

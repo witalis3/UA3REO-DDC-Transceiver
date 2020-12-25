@@ -1532,8 +1532,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction)
 	TRX.FFT_Window += direction;
 	if (TRX.FFT_Window < 1)
 		TRX.FFT_Window = 1;
-	if (TRX.FFT_Window > 3)
-		TRX.FFT_Window = 3;
+	if (TRX.FFT_Window > 7)
+		TRX.FFT_Window = 7;
 	FFT_Init();
 }
 
