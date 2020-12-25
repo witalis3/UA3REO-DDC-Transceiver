@@ -41,6 +41,7 @@ extern uint16_t FFT_FPS;
 
 // Public methods
 extern void FFT_Init(void);                              // FFT initialization
+extern void FFT_PreInit(void);													 // FFT precalculation
 extern void FFT_Reset(void);                             // reset FFT
 extern void FFT_doFFT(void);                             // FFT calculation
 extern void FFT_printFFT(void);                          // FFT output

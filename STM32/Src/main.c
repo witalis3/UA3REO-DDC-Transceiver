@@ -256,6 +256,7 @@ int main(void)
   sendToDebug_strln("[OK] RF-Unit init");
   RF_UNIT_UpdateState(false);
   sendToDebug_strln("[OK] FFT/Waterfall & TIM4 init");
+	FFT_PreInit();
   FFT_Init();
   HAL_TIM_Base_Start_IT(&htim4);
   sendToDebug_strln("[OK] AudioCodec init");

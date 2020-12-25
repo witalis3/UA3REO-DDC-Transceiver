@@ -166,37 +166,9 @@ static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center);
 static void FFT_3DPrintFFT(void);
 
 // FFT initialization
-void FFT_Init(void)
+void FFT_PreInit(void)
 {
-	FFT_fill_color_palette();
-	//ZoomFFT
-	fft_zoom = TRX.FFT_Zoom;
-	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
-		fft_zoom = TRX.FFT_ZoomCW;
-	if (fft_zoom > 1)
-	{
-		IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[fft_zoom];
-		IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[fft_zoom];
-		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, 16 * 4);
-		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, 16 * 4);
-		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_I,
-								  FirZoomFFTDecimate[fft_zoom].numTaps,
-								  fft_zoom, // Decimation factor
-								  FirZoomFFTDecimate[fft_zoom].pCoeffs,
-								  decimZoomFFTIState, // Filter state variables
-								  FFT_SIZE);
-
-		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_Q,
-								  FirZoomFFTDecimate[fft_zoom].numTaps,
-								  fft_zoom, // Decimation factor
-								  FirZoomFFTDecimate[fft_zoom].pCoeffs,
-								  decimZoomFFTQState, // Filter state variables
-								  FFT_SIZE);
-		zoomed_width = FFT_SIZE / fft_zoom;
-	}
-	
 	//Windowing
-	
 	//Dolph–Chebyshev
 	if (TRX.FFT_Window == 1)
 	{
@@ -252,11 +224,43 @@ void FFT_Init(void)
 		else if (TRX.FFT_Window == 7)
 			window_multipliers[i] = 1.0f;
 	}
+	
+	// initialize sort
+	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_QUICK, ARM_SORT_ASCENDING);
+}
+
+void FFT_Init(void)
+{
+	FFT_fill_color_palette();
+	//ZoomFFT
+	fft_zoom = TRX.FFT_Zoom;
+	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		fft_zoom = TRX.FFT_ZoomCW;
+	if (fft_zoom > 1)
+	{
+		IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[fft_zoom];
+		IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[fft_zoom];
+		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, 16 * 4);
+		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, 16 * 4);
+		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_I,
+								  FirZoomFFTDecimate[fft_zoom].numTaps,
+								  fft_zoom, // Decimation factor
+								  FirZoomFFTDecimate[fft_zoom].pCoeffs,
+								  decimZoomFFTIState, // Filter state variables
+								  FFT_SIZE);
+
+		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_Q,
+								  FirZoomFFTDecimate[fft_zoom].numTaps,
+								  fft_zoom, // Decimation factor
+								  FirZoomFFTDecimate[fft_zoom].pCoeffs,
+								  decimZoomFFTQState, // Filter state variables
+								  FFT_SIZE);
+		zoomed_width = FFT_SIZE / fft_zoom;
+	}
+	
 	// clear the buffer
 	memset(&fft_output_buffer, BG_COLOR, sizeof(fft_output_buffer));
 	memset(&indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
-	// initialize sort
-	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_QUICK, ARM_SORT_ASCENDING);
 }
 
 // FFT calculation
