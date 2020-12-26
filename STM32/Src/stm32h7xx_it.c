@@ -447,9 +447,13 @@ void TIM4_IRQHandler(void)
     SYSMENU_drawSystemMenu(false);
     return;
   }
-  ua3reo_dev_cat_parseCommand();
+  
+	if (FFT_buffer_ready)
+    FFT_bufferPrepare();
   if (FFT_need_fft)
     FFT_doFFT();
+	
+	ua3reo_dev_cat_parseCommand();
   /* USER CODE END TIM4_IRQn 1 */
 }
 

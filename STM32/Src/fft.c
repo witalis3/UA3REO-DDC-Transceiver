@@ -29,6 +29,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
+IRAM2 static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0}; // charge FFT I and Q buffer
 IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0}; // combined FFT I and Q buffer
 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};	   // temporary buffer for sorting, moving and fft compressing
 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};	   // averaged FFT buffer (for output)
@@ -53,6 +54,7 @@ static int16_t bw_line_end = 0;														 //BW bar params
 static int16_t bw_line_center = 0;														 //BW bar params
 static uint16_t print_wtf_yindex = 0;												 // the current coordinate of the waterfall output via DMA
 static float32_t window_multipliers[FFT_SIZE] = {0};								 // coefficients of the selected window function
+static float32_t von_Hann[FFT_SIZE] = {0}; // coefficients for the overlap window function
 static float32_t hz_in_pixel = 1.0f;												 // current FFT density value
 static uint16_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0};							 // temporary buffer to move the waterfall
 static arm_sort_instance_f32 FFT_sortInstance = {0};								 // sorting instance (to find the median)
@@ -257,18 +259,23 @@ void FFT_Init(void)
 								  FFT_SIZE);
 		zoomed_width = FFT_SIZE / fft_zoom;
 	}
+	else
+		zoomed_width = FFT_SIZE;
 	
-	// clear the buffer
+	//window for overlap
+	for (uint16_t idx = 0; idx < zoomed_width; idx++)
+		von_Hann[idx] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * PI * idx) / (float32_t)zoomed_width)));
+	
+	// clear the buffers
 	memset(&fft_output_buffer, BG_COLOR, sizeof(fft_output_buffer));
 	memset(&indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
+	memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 }
 
 // FFT calculation
-void FFT_doFFT(void)
+void FFT_bufferPrepare(void)
 {
 	if (!TRX.FFT_Enabled)
-		return;
-	if (!FFT_need_fft)
 		return;
 	if (NeedFFTInputBuffer)
 		return;
@@ -276,8 +283,6 @@ void FFT_doFFT(void)
 		return;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
-
-	float32_t medianValue = 0; // Median value in the resulting frequency response
 
 	//Process DC corrector filter
 	if (!TRX_on_TX())
@@ -296,25 +301,24 @@ void FFT_doFFT(void)
 	//ZoomFFT
 	if (fft_zoom > 1)
 	{
-		//Biquad LPF фильтр
+		//Biquad LPF filter
 		arm_biquad_cascade_df1_f32(&IIR_biquad_Zoom_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
 		arm_biquad_cascade_df1_f32(&IIR_biquad_Zoom_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
 		// Decimator
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I, FFTInput_I, FFT_SIZE);
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q, FFTInput_Q, FFT_SIZE);
-		// Fill the unnecessary part of the buffer with zeros
-		for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
+		// Shift old data
+		memcpy(&FFTInputCharge[0], &FFTInputCharge[(zoomed_width / 2) * 2], sizeof(float32_t) * (FFT_SIZE - zoomed_width / 2) * 2);
+		// Add new data with overlap
+		for (uint_fast16_t i = 0; i < (zoomed_width / 2); i++)
 		{
-			if (i < zoomed_width)
-			{
-				FFTInput[i * 2] = FFTInput_I[i];
-				FFTInput[i * 2 + 1] = FFTInput_Q[i];
-			}
-			else
-			{
-				FFTInput[i * 2] = 0.0f;
-				FFTInput[i * 2 + 1] = 0.0f;
-			}
+			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2] += FFTInput_I[i] * von_Hann[i];
+			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2 + 1] += FFTInput_Q[i] * von_Hann[i];
+		}
+		for (uint_fast16_t i = (zoomed_width / 2); i < zoomed_width; i++)
+		{
+			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2] = FFTInput_I[i] * von_Hann[i];
+			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2 + 1] = FFTInput_Q[i] * von_Hann[i];
 		}
 	}
 	else
@@ -322,18 +326,27 @@ void FFT_doFFT(void)
 		// make a combined buffer for calculation
 		for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 		{
-			FFTInput[i * 2] = FFTInput_I[i];
-			FFTInput[i * 2 + 1] = FFTInput_Q[i];
+			FFTInputCharge[i * 2] = FFTInput_I[i] * window_multipliers[i];
+			FFTInputCharge[i * 2 + 1] = FFTInput_Q[i] * window_multipliers[i];
 		}
 	}
+	FFT_buffer_ready = false;
 	NeedFFTInputBuffer = true;
+}
 
-	// Window for FFT
-	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
-	{
-		FFTInput[i * 2] = window_multipliers[i] * FFTInput[i * 2];
-		FFTInput[i * 2 + 1] = window_multipliers[i] * FFTInput[i * 2 + 1];
-	}
+// FFT calculation
+void FFT_doFFT(void)
+{
+	if (!TRX.FFT_Enabled)
+		return;
+	if (!FFT_need_fft)
+		return;
+	/*if (CPU_LOAD.Load > 90)
+		return;*/
+
+	// Get charge buffer
+	memcpy(&FFTInput, &FFTInputCharge, sizeof(FFTInput));
+	memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
@@ -429,7 +442,7 @@ void FFT_doFFT(void)
 
 	// Looking for the median in frequency response
 	arm_sort_f32(&FFT_sortInstance, FFTInput, FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
-	medianValue = FFTInput_tmp[LAYOUT->FFT_PRINT_SIZE / 2];
+	float32_t medianValue = FFTInput_tmp[LAYOUT->FFT_PRINT_SIZE / 2];
 
 	// Maximum amplitude
 	float32_t maxValueFFT = maxValueFFT_rx;

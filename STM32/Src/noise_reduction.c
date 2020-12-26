@@ -39,7 +39,7 @@ static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; // coefficients for t
 void InitNoiseReduction(void)
 {
 	for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
-		von_Hann[idx] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)));
+		von_Hann[idx] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * F_PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)));
 }
 
 // run DNR for the data block
