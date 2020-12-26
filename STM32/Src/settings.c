@@ -206,7 +206,7 @@ void LoadSettings(bool clear)
 		TRX.CW_SelfHear = true;						// self-control CW
 		TRX.ADC_RAND = true;						// ADC encryption (xor randomizer)
 		TRX.ADC_SHDN = false;						// ADC disable
-		TRX.ADC_DITH = true;						// ADC dither
+		TRX.ADC_DITH = false;						// ADC dither
 		TRX.FFT_Window = 1;
 		TRX.Locked = false;				  // Lock control
 		TRX.CLAR = false;				  // Split frequency mode (receive one VFO, transmit another)
@@ -312,7 +312,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENCODER_SLOW_RATE = 25;	  // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ON_FALLING = false; // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;  //acceleration rate if rotate
-		CALIBRATE.CICFIR_GAINER_val = 47;	  // Offset from the output of the CIC compensator
+		CALIBRATE.CICFIR_GAINER_val = 48;	  // Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 42;	  // Offset from the TX-CIC output of the compensator
 		CALIBRATE.DAC_GAINER_val = 26;		  // DAC shift
 		// Calibrate the maximum output power for each band
@@ -322,7 +322,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_up30mhz = 24; //17m - 7w, 15m - 7w, 12m - 7w, 10m - 8w
 		CALIBRATE.rf_out_power_up60mhz = 13; //6m - 7w
 		CALIBRATE.rf_out_power_vhf = 100; //2m - 5.5w
-		CALIBRATE.smeter_calibration = 4;		   // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off)
+		CALIBRATE.smeter_calibration = 10;		   // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off)
 		CALIBRATE.adc_offset = 0;				   // Calibrate the offset at the ADC input (DC)
 												   // Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
 												   // Next, the average border response frequencies are set
