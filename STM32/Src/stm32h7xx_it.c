@@ -448,7 +448,7 @@ void TIM4_IRQHandler(void)
     return;
   }
   
-	if (FFT_buffer_ready)
+	if (FFT_new_buffer_ready)
     FFT_bufferPrepare();
   if (FFT_need_fft)
     FFT_doFFT();

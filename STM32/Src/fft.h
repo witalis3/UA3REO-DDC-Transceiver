@@ -31,12 +31,14 @@
 #define GET_WTFHeight ((TRX.FFT_Height == 1) ? LAYOUT->WTF_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2 : LAYOUT->WTF_HEIGHT_STYLE3))
 
 // Public variables
-extern volatile uint32_t FFT_buff_index;
-extern bool NeedFFTInputBuffer;
+extern uint32_t FFT_buff_index;
+extern bool FFT_buff_current;
 extern bool FFT_need_fft;
-extern bool FFT_buffer_ready;
-extern float32_t FFTInput_I[FFT_SIZE];
-extern float32_t FFTInput_Q[FFT_SIZE];
+extern bool FFT_new_buffer_ready;
+extern float32_t FFTInput_I_A[FFT_SIZE];
+extern float32_t FFTInput_Q_A[FFT_SIZE];
+extern float32_t FFTInput_I_B[FFT_SIZE];
+extern float32_t FFTInput_Q_B[FFT_SIZE];
 extern uint16_t FFT_FPS;
 
 // Public methods

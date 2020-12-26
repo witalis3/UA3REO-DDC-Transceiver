@@ -477,6 +477,8 @@ static inline void FPGA_fpgadata_getparam(void)
 static inline void FPGA_fpgadata_getiq(void)
 {
 	register int_fast32_t FPGA_fpgadata_in_tmp32 = 0;
+	float32_t* FFTInput_I_current = FFT_buff_current ? (float32_t*)&FFTInput_I_B : (float32_t*)&FFTInput_I_A;
+	float32_t* FFTInput_Q_current = FFT_buff_current ? (float32_t*)&FFTInput_Q_B : (float32_t*)&FFTInput_Q_A;
 	float32_t FPGA_fpgadata_in_float32 = 0;
 	FPGA_samples++;
 	FPGA_setBusInput();
@@ -504,14 +506,12 @@ static inline void FPGA_fpgadata_getiq(void)
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 	if (TRX_RX1_IQ_swap)
 	{
-		if (NeedFFTInputBuffer)
-			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_float32;
+		FFTInput_I_current[FFT_buff_index] = FPGA_fpgadata_in_float32;
 		FPGA_Audio_Buffer_RX1_I[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 	}
 	else
 	{
-		if (NeedFFTInputBuffer)
-			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_float32;
+		FFTInput_Q_current[FFT_buff_index] = FPGA_fpgadata_in_float32;
 		FPGA_Audio_Buffer_RX1_Q[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 	}
 
@@ -538,14 +538,12 @@ static inline void FPGA_fpgadata_getiq(void)
 	FPGA_fpgadata_in_float32 = (float32_t)FPGA_fpgadata_in_tmp32 / 2147483648.0f;
 	if (TRX_RX1_IQ_swap)
 	{
-		if (NeedFFTInputBuffer)
-			FFTInput_Q[FFT_buff_index] = FPGA_fpgadata_in_float32;
+		FFTInput_Q_current[FFT_buff_index] = FPGA_fpgadata_in_float32;
 		FPGA_Audio_Buffer_RX1_Q[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 	}
 	else
 	{
-		if (NeedFFTInputBuffer)
-			FFTInput_I[FFT_buff_index] = FPGA_fpgadata_in_float32;
+		FFTInput_I_current[FFT_buff_index] = FPGA_fpgadata_in_float32;
 		FPGA_Audio_Buffer_RX1_I[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32;
 	}
 
@@ -616,16 +614,13 @@ static inline void FPGA_fpgadata_getiq(void)
 	if (FPGA_Audio_RXBuffer_Index == FPGA_RX_IQ_BUFFER_SIZE)
 		FPGA_Audio_RXBuffer_Index = 0;
 
-	if (NeedFFTInputBuffer)
+
+	FFT_buff_index++;
+	if (FFT_buff_index == FFT_SIZE)
 	{
-		FFT_buff_index++;
-		if (FFT_buff_index == FFT_SIZE)
-		{
-			FFT_buff_index = 0;
-			NeedFFTInputBuffer = false;
-			FFT_buffer_ready = true;
-			//FFT_bufferPrepare();
-		}
+		FFT_buff_index = 0;
+		FFT_new_buffer_ready = true;
+		FFT_buff_current = !FFT_buff_current;
 	}
 }
 
