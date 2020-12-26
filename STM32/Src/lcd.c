@@ -597,34 +597,69 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		if (TRX_RX_dBm > TRX_RX_dBm_averaging)
 			TRX_RX_dBm_averaging = TRX_RX_dBm;
 
-		if (TRX_RX_dBm_averaging <= -118.0f)
-			sprintf(ctmp, "S1");
-		else if (TRX_RX_dBm_averaging <= -112.0f)
-			sprintf(ctmp, "S2");
-		else if (TRX_RX_dBm_averaging <= -106.0f)
-			sprintf(ctmp, "S3");
-		else if (TRX_RX_dBm_averaging <= -100.0f)
-			sprintf(ctmp, "S4");
-		else if (TRX_RX_dBm_averaging <= -94.0f)
-			sprintf(ctmp, "S5");
-		else if (TRX_RX_dBm_averaging <= -88.0f)
-			sprintf(ctmp, "S6");
-		else if (TRX_RX_dBm_averaging <= -82.0f)
-			sprintf(ctmp, "S7");
-		else if (TRX_RX_dBm_averaging <= -76.0f)
-			sprintf(ctmp, "S8");
-		else if (TRX_RX_dBm_averaging <= -68.0f)
-			sprintf(ctmp, "S9");
-		else if (TRX_RX_dBm_averaging <= -58.0f)
-			sprintf(ctmp, "S9+10");
-		else if (TRX_RX_dBm_averaging <= -48.0f)
-			sprintf(ctmp, "S9+20");
-		else if (TRX_RX_dBm_averaging <= -38.0f)
-			sprintf(ctmp, "S9+30");
-		else if (TRX_RX_dBm_averaging <= -28.0f)
-			sprintf(ctmp, "S9+40");
+		if (CurrentVFO()->Freq < 144000000)
+		{
+			if (TRX_RX_dBm_averaging <= -118.0f)
+				sprintf(ctmp, "S1");
+			else if (TRX_RX_dBm_averaging <= -112.0f)
+				sprintf(ctmp, "S2");
+			else if (TRX_RX_dBm_averaging <= -106.0f)
+				sprintf(ctmp, "S3");
+			else if (TRX_RX_dBm_averaging <= -100.0f)
+				sprintf(ctmp, "S4");
+			else if (TRX_RX_dBm_averaging <= -94.0f)
+				sprintf(ctmp, "S5");
+			else if (TRX_RX_dBm_averaging <= -88.0f)
+				sprintf(ctmp, "S6");
+			else if (TRX_RX_dBm_averaging <= -82.0f)
+				sprintf(ctmp, "S7");
+			else if (TRX_RX_dBm_averaging <= -76.0f)
+				sprintf(ctmp, "S8");
+			else if (TRX_RX_dBm_averaging <= -68.0f)
+				sprintf(ctmp, "S9");
+			else if (TRX_RX_dBm_averaging <= -58.0f)
+				sprintf(ctmp, "S9+10");
+			else if (TRX_RX_dBm_averaging <= -48.0f)
+				sprintf(ctmp, "S9+20");
+			else if (TRX_RX_dBm_averaging <= -38.0f)
+				sprintf(ctmp, "S9+30");
+			else if (TRX_RX_dBm_averaging <= -28.0f)
+				sprintf(ctmp, "S9+40");
+			else
+				sprintf(ctmp, "S9+60");
+		}
 		else
-			sprintf(ctmp, "S9+60");
+		{
+			if (TRX_RX_dBm_averaging <= -138.0f)
+				sprintf(ctmp, "S1");
+			else if (TRX_RX_dBm_averaging <= -132.0f)
+				sprintf(ctmp, "S2");
+			else if (TRX_RX_dBm_averaging <= -126.0f)
+				sprintf(ctmp, "S3");
+			else if (TRX_RX_dBm_averaging <= -120.0f)
+				sprintf(ctmp, "S4");
+			else if (TRX_RX_dBm_averaging <= -114.0f)
+				sprintf(ctmp, "S5");
+			else if (TRX_RX_dBm_averaging <= -108.0f)
+				sprintf(ctmp, "S6");
+			else if (TRX_RX_dBm_averaging <= -102.0f)
+				sprintf(ctmp, "S7");
+			else if (TRX_RX_dBm_averaging <= -96.0f)
+				sprintf(ctmp, "S8");
+			else if (TRX_RX_dBm_averaging <= -88.0f)
+				sprintf(ctmp, "S9");
+			else if (TRX_RX_dBm_averaging <= -78.0f)
+				sprintf(ctmp, "S9+10");
+			else if (TRX_RX_dBm_averaging <= -68.0f)
+				sprintf(ctmp, "S9+20");
+			else if (TRX_RX_dBm_averaging <= -58.0f)
+				sprintf(ctmp, "S9+30");
+			else if (TRX_RX_dBm_averaging <= -48.0f)
+				sprintf(ctmp, "S9+40");
+			else
+				sprintf(ctmp, "S9+60");
+		}
+		
 		addSymbols(ctmp, ctmp, 6, " ", true);
 		LCDDriver_printTextFont(ctmp, LAYOUT->STATUS_LABEL_S_VAL_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_S_VAL_Y_OFFSET, COLOR->STATUS_LABEL_S_VAL, BG_COLOR, LAYOUT->STATUS_LABEL_S_VAL_FONT);
 	}
