@@ -124,7 +124,7 @@ static void TRX_Start_RX()
 {
 	if (TRX_TXRXMode == 1)
 		return;
-	//sendToDebug_str("RX MODE\r\n");
+	sendToDebug_str("RX MODE\r\n");
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	Processor_NeedRXBuffer = false;
@@ -142,7 +142,7 @@ static void TRX_Start_TX()
 {
 	if (TRX_TXRXMode == 2)
 		return;
-	//sendToDebug_str("TX MODE\r\n");
+	sendToDebug_str("TX MODE\r\n");
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	HAL_Delay(10); // delay before the RF signal is applied, so that the relay has time to trigger
@@ -155,7 +155,7 @@ static void TRX_Start_TXRX()
 {
 	if (TRX_TXRXMode == 3)
 		return;
-	//sendToDebug_str("TXRX MODE\r\n");
+	sendToDebug_str("TXRX MODE\r\n");
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	WM8731_TXRX_mode();

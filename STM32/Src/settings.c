@@ -173,7 +173,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #else
 		TRX.FFT_Zoom = 2;	 // approximation of the FFT spectrum
-		TRX.FFT_ZoomCW = 16; // zoomfft for cw mode
+		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
 		TRX.AutoGain = false;	  // auto-control preamp and attenuator
 		TRX.CWDecoder = false;	  // automatic telegraph decoder

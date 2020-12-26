@@ -5,6 +5,7 @@
 #include "screen_layout.h"
 #include "vad.h"
 #include "lcd.h"
+#include "cw_decoder.h"
 
 //Public variables
 bool FFT_need_fft = true;					// need to prepare data for display on the screen
@@ -360,6 +361,13 @@ void FFT_doFFT(void)
 		FFTInput[i] = VAD_FFTBuffer_Export[i];
 	}
 	NeedFFTInputBuffer = true;*/
+	
+	//Debug CW Decoder
+	/*memset(FFTInput, 0x00, sizeof(FFTInput));
+	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
+	{
+		FFTInput[i] = CWDEC_FFTBuffer_Export[i];
+	}*/
 
 	// Swap fft parts
 	memcpy(&FFTInput[FFT_SIZE], &FFTInput[0], sizeof(float32_t) * (FFT_SIZE / 2)); //left - > tmp

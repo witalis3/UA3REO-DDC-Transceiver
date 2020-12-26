@@ -666,6 +666,8 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(void)
 static void FRONTPANEL_BUTTONHANDLER_MODE_N(void)
 {
 	int8_t mode = (int8_t)CurrentVFO()->Mode;
+	if(mode == TRX_MODE_LOOPBACK)
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	if (mode == TRX_MODE_LSB)
 		mode = TRX_MODE_CW_L;
 	else if (mode == TRX_MODE_USB)
