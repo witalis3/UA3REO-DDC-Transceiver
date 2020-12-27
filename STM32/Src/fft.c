@@ -57,7 +57,6 @@ static int16_t bw_line_end = 0;														 //BW bar params
 static int16_t bw_line_center = 0;														 //BW bar params
 static uint16_t print_wtf_yindex = 0;												 // the current coordinate of the waterfall output via DMA
 static float32_t window_multipliers[FFT_SIZE] = {0};								 // coefficients of the selected window function
-static float32_t von_Hann[FFT_SIZE] = {0}; // coefficients for the overlap window function
 static float32_t hz_in_pixel = 1.0f;												 // current FFT density value
 static uint16_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0};							 // temporary buffer to move the waterfall
 static arm_sort_instance_f32 FFT_sortInstance = {0};								 // sorting instance (to find the median)
@@ -265,10 +264,6 @@ void FFT_Init(void)
 	else
 		zoomed_width = FFT_SIZE;
 	
-	//window for overlap
-	for (uint16_t idx = 0; idx < zoomed_width; idx++)
-		von_Hann[idx] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * PI * idx) / (float32_t)zoomed_width)));
-	
 	// clear the buffers
 	memset(&fft_output_buffer, BG_COLOR, sizeof(fft_output_buffer));
 	memset(&indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
@@ -312,17 +307,12 @@ void FFT_bufferPrepare(void)
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_SIZE);
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_SIZE);
 		// Shift old data
-		memcpy(&FFTInputCharge[0], &FFTInputCharge[(zoomed_width / 2) * 2], sizeof(float32_t) * (FFT_SIZE - zoomed_width / 2) * 2);
-		// Add new data with overlap
-		for (uint_fast16_t i = 0; i < (zoomed_width / 2); i++)
+		memcpy(&FFTInputCharge[0], &FFTInputCharge[(zoomed_width) * 2], sizeof(float32_t) * (FFT_SIZE - zoomed_width) * 2);
+		// Add new data
+		for (uint_fast16_t i = 0; i < zoomed_width; i++)
 		{
-			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2] += FFTInput_I_current[i] * von_Hann[i];
-			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2 + 1] += FFTInput_Q_current[i] * von_Hann[i];
-		}
-		for (uint_fast16_t i = (zoomed_width / 2); i < zoomed_width; i++)
-		{
-			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2] = FFTInput_I_current[i] * von_Hann[i];
-			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2 + 1] = FFTInput_Q_current[i] * von_Hann[i];
+			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2] = FFTInput_I_current[i];
+			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2 + 1] = FFTInput_Q_current[i];
 		}
 	}
 	else
@@ -988,6 +978,10 @@ static void FFT_move(int32_t _freq_diff)
 	}
 	//save results
 	memcpy(&FFTOutput_mean, &FFTInput_tmp, sizeof FFTOutput_mean);
+	
+	//clean charge buffer
+	if(fft_zoom > 1)
+		memset(&FFTInputCharge[0], 0x00, sizeof(float32_t) * (FFT_SIZE - zoomed_width) * 2);
 }
 
 // get color from signal strength
