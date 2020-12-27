@@ -19,7 +19,7 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 
 static int8_t DEBUG_Init_FS(void);
 static int8_t DEBUG_DeInit_FS(void);
-static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf);
+static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len);
 static int8_t DEBUG_Receive_FS(uint8_t *pbuf);
 
 USBD_DEBUG_ItfTypeDef USBD_DEBUG_fops_FS =
@@ -40,7 +40,6 @@ static int8_t DEBUG_Init_FS(void)
 	/* Set Application Buffers */
 	USBD_DEBUG_SetTxBuffer(&hUsbDeviceFS, DEBUG_UserTxBufferFS, 0);
 	USBD_DEBUG_SetRxBuffer(&hUsbDeviceFS, DEBUG_UserRxBufferFS);
-	DEBUG_Receive_FS(DEBUG_UserRxBufferFS);
 	return (USBD_OK);
 	/* USER CODE END 3 */
 }
@@ -63,10 +62,9 @@ static int8_t DEBUG_DeInit_FS(void)
   * @param  length: Number of data to be sent (in bytes)
   * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
   */
-static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf)
+static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 {
 	/* USER CODE BEGIN 5 */
-
 	switch (cmd)
 	{
 	case CDC_SEND_ENCAPSULATED_COMMAND:
@@ -121,7 +119,6 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf)
 	default:
 		break;
 	}
-
 	return (USBD_OK);
 	/* USER CODE END 5 */
 }
@@ -234,7 +231,7 @@ uint8_t DEBUG_Transmit_FIFO_Events(void)
 				break;
 		}
 	}
-
+	
 	DEBUG_Transmit_FS(temp_buff, indx);
 	FIFO_Events_busy = false;
 	return USBD_BUSY;

@@ -16,13 +16,17 @@ extern "C"
 #define DEBUG_EP_IDX 0x01
 #define CAT_EP_IDX 0x02
 #define AUDIO_EP_IDX 0x03
-
+#define DEBUG_CMD_IDX 0x04
+#define CAT_CMD_IDX 0x04
+	
 #define IN_EP_DIR 0x80 // Adds a direction bit
 
 #define DEBUG_OUT_EP DEBUG_EP_IDX
+#define DEBUG_CMD_EP (DEBUG_CMD_IDX | IN_EP_DIR)
 #define DEBUG_IN_EP (DEBUG_EP_IDX | IN_EP_DIR)
 
 #define CAT_OUT_EP CAT_EP_IDX
+#define CAT_CMD_EP (CAT_CMD_IDX | IN_EP_DIR)
 #define CAT_IN_EP (CAT_EP_IDX | IN_EP_DIR)
 
 #define AUDIO_OUT_EP AUDIO_EP_IDX
@@ -39,9 +43,9 @@ extern "C"
 /* CDC Endpoints parameters: you can fine tune these values depending on the needed baudrates and performance. */
 #define CDC_DATA_HS_MAX_PACKET_SIZE 16U /* Endpoint IN & OUT Packet size */
 #define CDC_DATA_FS_MAX_PACKET_SIZE 16U /* Endpoint IN & OUT Packet size */
-#define CDC_CMD_PACKET_SIZE 8U			/* Control Endpoint Packet size */
+#define CDC_CMD_PACKET_SIZE 16U			/* Control Endpoint Packet size */
 
-#define USB_CDC_CONFIG_DESC_SIZ 300U
+#define USB_CDC_CONFIG_DESC_SIZ 314U
 
 #define CDC_DATA_HS_IN_PACKET_SIZE CDC_DATA_HS_MAX_PACKET_SIZE
 #define CDC_DATA_HS_OUT_PACKET_SIZE CDC_DATA_HS_MAX_PACKET_SIZE
@@ -115,7 +119,7 @@ extern "C"
 	{
 		int8_t (*Init)(void);
 		int8_t (*DeInit)(void);
-		int8_t (*Control)(uint8_t cmd, uint8_t *pbuf);
+		int8_t (*Control)(uint8_t cmd, uint8_t *pbuf, uint32_t len);
 		int8_t (*Receive)(uint8_t *Buf);
 
 	} USBD_DEBUG_ItfTypeDef;

@@ -24,7 +24,7 @@ void LCDDriver_SetCurrentXOffset(uint16_t x)
 //Text printing functions
 void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
 {
-	if(c < 40) //non-printable
+	if(c < 32) //non-printable
 		return;
 	
 	uint8_t line = 0;

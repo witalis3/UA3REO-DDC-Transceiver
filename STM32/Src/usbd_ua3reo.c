@@ -97,7 +97,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		/* Interface descriptor type */
 		0x00,					 /* bInterfaceNumber: Number of Interface */
 		0x00,					 /* bAlternateSetting: Alternate setting */
-		0x00,					 /* bNumEndpoints: One endpoints used */
+		0x01,					 /* bNumEndpoints: One endpoints used */
 		0x02,					 /* bInterfaceClass: Communication Interface Class */
 		0x02,					 /* bInterfaceSubClass: Abstract Control Model */
 		0x01,					 /* bInterfaceProtocol: Common AT commands */
@@ -132,6 +132,15 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 
 		//---------------------------------------------------------------------------
 
+		/*Endpoint CMD Descriptor*/
+		0x07,                           /* bLength: Endpoint Descriptor size */
+		USB_DESC_TYPE_ENDPOINT,   /* bDescriptorType: Endpoint */
+		DEBUG_CMD_EP,                     /* bEndpointAddress */
+		0x03,                           /* bmAttributes: Interrupt */
+		LOBYTE(CDC_CMD_PACKET_SIZE),     /* wMaxPacketSize: */
+		HIBYTE(CDC_CMD_PACKET_SIZE),
+		0x10,                           /* bInterval: */
+ 
 		/*Data class interface descriptor*/
 		0x09,					 /* bLength: Endpoint Descriptor size */
 		USB_DESC_TYPE_INTERFACE, /* bDescriptorType: */
@@ -181,7 +190,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		/* Interface descriptor type */
 		0x02,					 /* bInterfaceNumber: Number of Interface */
 		0x00,					 /* bAlternateSetting: Alternate setting */
-		0x00,					 /* bNumEndpoints: One endpoints used */
+		0x01,					 /* bNumEndpoints: One endpoints used */
 		0x02,					 /* bInterfaceClass: Communication Interface Class */
 		0x02,					 /* bInterfaceSubClass: Abstract Control Model */
 		0x01,					 /* bInterfaceProtocol: Common AT commands */
@@ -215,6 +224,15 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x03, /* bSlaveInterface0: Data Class Interface */
 
 		//---------------------------------------------------------------------------
+
+		/*Endpoint CMD Descriptor*/
+		0x07,                           /* bLength: Endpoint Descriptor size */
+		USB_DESC_TYPE_ENDPOINT,   /* bDescriptorType: Endpoint */
+		CAT_CMD_EP,                     /* bEndpointAddress */
+		0x03,                           /* bmAttributes: Interrupt */
+		LOBYTE(CDC_CMD_PACKET_SIZE),     /* wMaxPacketSize: */
+		HIBYTE(CDC_CMD_PACKET_SIZE),
+		0x10,                           /* bInterval: */
 
 		/*Data class interface descriptor*/
 		0x09,					 /* bLength: Endpoint Descriptor size */
@@ -503,7 +521,7 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	USBD_AUDIO_HandleTypeDef *haudio;
 
 	/* Open EP IN */
-	USBD_LL_OpenEP(pdev, DEBUG_IN_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_IN_PACKET_SIZE); //-V525
+	USBD_LL_OpenEP(pdev, DEBUG_IN_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_IN_PACKET_SIZE);
 	USBD_LL_OpenEP(pdev, CAT_IN_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_IN_PACKET_SIZE);
 	USBD_LL_OpenEP(pdev, AUDIO_IN_EP, USBD_EP_TYPE_ISOC, AUDIO_OUT_PACKET);
 
@@ -512,17 +530,26 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	pdev->ep_in[AUDIO_IN_EP & 0xFU].is_used = 1U;
 
 	/* Open EP OUT */
-	USBD_LL_OpenEP(pdev, DEBUG_OUT_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_OUT_PACKET_SIZE); //-V525
+	USBD_LL_OpenEP(pdev, DEBUG_OUT_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_OUT_PACKET_SIZE);
 	USBD_LL_OpenEP(pdev, CAT_OUT_EP, USBD_EP_TYPE_BULK, CDC_DATA_FS_OUT_PACKET_SIZE);
 	USBD_LL_OpenEP(pdev, AUDIO_OUT_EP, USBD_EP_TYPE_ISOC, AUDIO_OUT_PACKET);
-
+	
 	pdev->ep_out[DEBUG_OUT_EP & 0xFU].is_used = 1U;
 	pdev->ep_out[CAT_OUT_EP & 0xFU].is_used = 1U;
 	pdev->ep_out[AUDIO_OUT_EP & 0xFU].is_used = 1U;
 
+	//INT EP
+	USBD_LL_OpenEP(pdev, DEBUG_CMD_EP, USBD_EP_TYPE_INTR, CDC_CMD_PACKET_SIZE);
+	USBD_LL_OpenEP(pdev, CAT_CMD_EP, USBD_EP_TYPE_INTR, CDC_CMD_PACKET_SIZE);
+	pdev->ep_in[DEBUG_CMD_EP & 0xFU].is_used = 1U;
+	pdev->ep_in[CAT_CMD_EP & 0xFU].is_used = 1U;
+
 	pdev->pClassDataDEBUG = USBD_malloc(sizeof(USBD_DEBUG_HandleTypeDef));
+	memset(pdev->pClassDataDEBUG,0,sizeof(USBD_DEBUG_HandleTypeDef));
 	pdev->pClassDataCAT = USBD_malloc(sizeof(USBD_CAT_HandleTypeDef));
+	memset(pdev->pClassDataCAT,0,sizeof(USBD_CAT_HandleTypeDef));
 	pdev->pClassDataAUDIO = USBD_malloc(sizeof(USBD_AUDIO_HandleTypeDef));
+	memset(pdev->pClassDataAUDIO,0,sizeof(USBD_AUDIO_HandleTypeDef));
 
 	if (pdev->pClassDataDEBUG == NULL)
 	{
@@ -607,6 +634,12 @@ static uint8_t USBD_UA3REO_DeInit(USBD_HandleTypeDef *pdev)
 	pdev->ep_out[CAT_OUT_EP & 0xFU].is_used = 0U;
 	pdev->ep_out[AUDIO_OUT_EP & 0xFU].is_used = 0U;
 
+	//CLOSE INT EP
+	USBD_LL_CloseEP(pdev, DEBUG_CMD_EP);
+	USBD_LL_CloseEP(pdev, CAT_CMD_EP);
+	pdev->ep_in[DEBUG_CMD_EP & 0xFU].is_used = 0U;
+	pdev->ep_in[CAT_CMD_EP & 0xFU].is_used = 0U;
+	
 	/* DeInit  physical Interface components */
 	if (pdev->pClassDataDEBUG != NULL)
 	{
@@ -651,7 +684,7 @@ static uint8_t USBD_DEBUG_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 		{
 			if (req->bmRequest & 0x80U)
 			{
-				((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(req->bRequest, (uint8_t *)(void *)hcdc_debug->data);
+				((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(req->bRequest, (uint8_t *)(void *)hcdc_debug->data, req->wLength);
 				USBD_CtlSendData(pdev, (uint8_t *)(void *)hcdc_debug->data, req->wLength);
 			}
 			else
@@ -663,7 +696,7 @@ static uint8_t USBD_DEBUG_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 		}
 		else
 		{
-			((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(req->bRequest, (uint8_t *)(void *)req);
+			((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(req->bRequest, (uint8_t *)(void *)req, req->wLength);
 		}
 		break;
 
@@ -1104,7 +1137,7 @@ static uint8_t USBD_UA3REO_EP0_RxReady(USBD_HandleTypeDef *pdev)
 	//DEBUG
 	if ((pdev->pUserDataDEBUG != NULL) && (hcdc_debug->CmdOpCode != 0xFFU))
 	{
-		((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(hcdc_debug->CmdOpCode, (uint8_t *)(void *)hcdc_debug->data);
+		((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(hcdc_debug->CmdOpCode, (uint8_t *)(void *)hcdc_debug->data, 0);
 		hcdc_debug->CmdOpCode = 0xFFU;
 	}
 	//CAT

@@ -75,20 +75,40 @@ void sendToDebug_str(char *data)
 		DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
 	if (LCD_DEBUG_ENABLED)
 	{
-		static uint16_t dbg_lcd_y = 10;
+		sendToDebug_str_LCDOnly(data);
+	}
+}
+
+static uint16_t dbg_lcd_y = 10;
+void sendToDebug_str_LCDOnly(char *data)
+{
+	if (LCD_DEBUG_ENABLED)
+	{
 		LCDDriver_printText(data, LCDDriver_GetCurrentXOffset(), dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
 		
 		if(strchr(data, '\n') != NULL)
 		{
 			dbg_lcd_y += 9;
+			LCDDriver_printText("     ", 0, dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
 			LCDDriver_SetCurrentXOffset(0);
 		}
 		if (dbg_lcd_y >= LCD_HEIGHT)
 		{
 			dbg_lcd_y = 0;
+			LCDDriver_printText("     ", 0, dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
 			LCDDriver_SetCurrentXOffset(0);
 		}
 	}
+}
+
+void sendToDebug_uint8_LCDOnly(uint8_t data, bool _inline)
+{
+	char tmp[50] = ""; //-V808
+	if (_inline)
+		sprintf(tmp, "%d", data);
+	else
+		sprintf(tmp, "%d\n", data);
+	sendToDebug_str_LCDOnly(tmp);
 }
 
 void sendToDebug_strln(char *data)
