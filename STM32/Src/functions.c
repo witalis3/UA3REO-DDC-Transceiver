@@ -76,10 +76,18 @@ void sendToDebug_str(char *data)
 	if (LCD_DEBUG_ENABLED)
 	{
 		static uint16_t dbg_lcd_y = 10;
-		LCDDriver_printText(data, 0, dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
-		dbg_lcd_y += 9;
+		LCDDriver_printText(data, LCDDriver_GetCurrentXOffset(), dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
+		
+		if(strchr(data, '\n') != NULL)
+		{
+			dbg_lcd_y += 9;
+			LCDDriver_SetCurrentXOffset(0);
+		}
 		if (dbg_lcd_y >= LCD_HEIGHT)
+		{
 			dbg_lcd_y = 0;
+			LCDDriver_SetCurrentXOffset(0);
+		}
 	}
 }
 

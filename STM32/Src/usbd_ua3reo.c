@@ -730,7 +730,7 @@ static uint8_t USBD_CAT_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *re
 		{
 			if (req->bmRequest & 0x80U)
 			{
-				((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(req->bRequest);
+				((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(req->bRequest, (uint8_t *)(void *)hcdc_cat->data);
 				USBD_CtlSendData(pdev, (uint8_t *)(void *)hcdc_cat->data, req->wLength);
 			}
 			else
@@ -742,7 +742,7 @@ static uint8_t USBD_CAT_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *re
 		}
 		else
 		{
-			((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(req->bRequest);
+			((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(req->bRequest, (uint8_t *)(void *)req);
 		}
 		break;
 
@@ -1110,7 +1110,7 @@ static uint8_t USBD_UA3REO_EP0_RxReady(USBD_HandleTypeDef *pdev)
 	//CAT
 	if ((pdev->pUserDataCAT != NULL) && (hcdc_cat->CmdOpCode != 0xFFU))
 	{
-		((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(hcdc_cat->CmdOpCode);
+		((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(hcdc_cat->CmdOpCode, (uint8_t *)(void *)hcdc_cat->data);
 		hcdc_cat->CmdOpCode = 0xFFU;
 	}
 	//AUDIO

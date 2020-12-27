@@ -16,9 +16,17 @@ uint16_t LCDDriver_GetCurrentXOffset(void)
 	return text_cursor_x;
 }
 
+void LCDDriver_SetCurrentXOffset(uint16_t x)
+{
+	text_cursor_x = x;
+}
+
 //Text printing functions
 void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
 {
+	if(c < 40) //non-printable
+		return;
+	
 	uint8_t line = 0;
 	if ((x >= LCD_WIDTH) ||			// Clip right
 		(y >= LCD_HEIGHT) ||		// Clip bottom

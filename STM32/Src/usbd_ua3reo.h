@@ -124,7 +124,7 @@ extern "C"
 	{
 		int8_t (*Init)(void);
 		int8_t (*DeInit)(void);
-		int8_t (*Control)(uint8_t cmd);
+		int8_t (*Control)(uint8_t cmd, uint8_t *pbuf);
 		int8_t (*Receive)(uint8_t *Buf, uint32_t *Len);
 
 	} USBD_CAT_ItfTypeDef;

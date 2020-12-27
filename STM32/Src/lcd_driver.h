@@ -86,6 +86,7 @@ extern void LCDDriver_SendData(uint16_t data);
 extern uint16_t LCDDriver_readReg(uint16_t reg);
 extern void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 extern uint16_t LCDDriver_GetCurrentXOffset(void);
+extern void LCDDriver_SetCurrentXOffset(uint16_t x);
 extern void LCDDriver_Init(void);
 extern void LCDDriver_Fill(uint16_t color);
 extern void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);

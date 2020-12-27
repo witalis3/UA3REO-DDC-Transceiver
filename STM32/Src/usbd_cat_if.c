@@ -19,6 +19,7 @@ static uint8_t CAT_UserRxBufferFS[CAT_APP_RX_DATA_SIZE];
 static uint8_t CAT_UserTxBufferFS[CAT_APP_TX_DATA_SIZE];
 static bool CAT_processingWiFiCommand = false;
 static uint32_t CAT_processingWiFi_link_id = 0;
+static uint8_t lineCoding[7] = {0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08}; // 115200bps, 1stop, no parity, 8bit
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
@@ -26,7 +27,7 @@ static uint8_t getFT450Mode(uint8_t VFO_Mode);
 static uint8_t setFT450Mode(char *FT450_Mode);
 static int8_t CAT_Init_FS(void);
 static int8_t CAT_DeInit_FS(void);
-static int8_t CAT_Control_FS(uint8_t cmd);
+static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf);
 static int8_t CAT_Receive_FS(uint8_t *pbuf, uint32_t *Len);
 static void CAT_Transmit(char *data);
 static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len);
@@ -66,7 +67,7 @@ static int8_t CAT_DeInit_FS(void)
   * @param  length: Number of data to be sent (in bytes)
   * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
   */
-static int8_t CAT_Control_FS(uint8_t cmd)
+static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf)
 {
 	/* USER CODE BEGIN 5 */
 	switch (cmd)
@@ -109,11 +110,11 @@ static int8_t CAT_Control_FS(uint8_t cmd)
 		/* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
 		/*******************************************************************************/
 	case CDC_SET_LINE_CODING:
-
+		memcpy(lineCoding, pbuf, sizeof(lineCoding));
 		break;
 
 	case CDC_GET_LINE_CODING:
-
+		memcpy(pbuf, lineCoding, sizeof(lineCoding));
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:

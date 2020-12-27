@@ -5,6 +5,7 @@
 
 #define DEBUG_APP_RX_DATA_SIZE 8
 #define DEBUG_APP_TX_DATA_SIZE 64
+#define DEBUG_RX_FIFO_BUFFER_SIZE 128
 #define DEBUG_TX_FIFO_BUFFER_SIZE 4096
 
 static uint8_t DEBUG_UserRxBufferFS[DEBUG_APP_RX_DATA_SIZE];
@@ -12,6 +13,7 @@ static uint8_t DEBUG_UserTxBufferFS[DEBUG_APP_TX_DATA_SIZE];
 static IRAM2 uint8_t debug_tx_fifo[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
 static uint16_t debug_tx_fifo_head = 0;
 static uint16_t debug_tx_fifo_tail = 0;
+static uint8_t lineCoding[7] = {0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08}; // 115200bps, 1stop, no parity, 8bit
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
@@ -38,6 +40,7 @@ static int8_t DEBUG_Init_FS(void)
 	/* Set Application Buffers */
 	USBD_DEBUG_SetTxBuffer(&hUsbDeviceFS, DEBUG_UserTxBufferFS, 0);
 	USBD_DEBUG_SetRxBuffer(&hUsbDeviceFS, DEBUG_UserRxBufferFS);
+	DEBUG_Receive_FS(DEBUG_UserRxBufferFS);
 	return (USBD_OK);
 	/* USER CODE END 3 */
 }
@@ -99,9 +102,11 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf)
 		/* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
 		/*******************************************************************************/
 	case CDC_SET_LINE_CODING:
+		memcpy(lineCoding, pbuf, sizeof(lineCoding));
 		break;
 
 	case CDC_GET_LINE_CODING:
+		memcpy(pbuf, lineCoding, sizeof(lineCoding));
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:
@@ -113,7 +118,6 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf)
 
 	case CDC_SEND_BREAK:
 		break;
-
 	default:
 		break;
 	}
