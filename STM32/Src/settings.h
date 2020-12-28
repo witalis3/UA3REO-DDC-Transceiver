@@ -43,12 +43,15 @@
 #define TRX_MAX_RF_TEMP 80				   //maximum rf unit themperature to enable protect
 #define TRX_MAX_SWR 5					   //maximum SWR to enable protect (NOT IN TUNE MODE!)
 
-// select LCD and Touchpad, comment on others
+//FRONT-PANEL AND LCD TYPE
+//#define FRONTPANEL_SMALL_V1 true
 //#define LCD_ILI9481 true //3'2
 //#define LCD_HX8357B true //3'2
 //#define LCD_HX8357C true //3'2
 //#define LCD_R61581 true //untested
 //#define LCD_ILI9486 true //3'5
+
+#define FRONTPANEL_BIG_V1 true
 #define LCD_RA8875 true
 //#define TOUCHPAD_GT911 true
 
@@ -327,5 +330,14 @@ extern void BKPSRAM_Enable(void);
 extern void BKPSRAM_Disable(void);
 extern VFO *CurrentVFO(void);
 extern VFO *SecondaryVFO(void);
+
+#ifdef FRONTPANEL_SMALL_V1
+#define HRDW_MCP3008_1 true
+#define HRDW_MCP3008_2 true
+#define HRDW_MCP3008_3 true
+#endif
+#ifdef FRONTPANEL_BIG_V1
+#define HRDW_MCP3008_1 true
+#endif
 
 #endif

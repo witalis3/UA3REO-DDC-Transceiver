@@ -216,10 +216,12 @@ int main(void)
   sendToDebug_strln("[OK] Frontpanel init");
   FRONTPANEL_Init();
   sendToDebug_strln("[OK] Settings loading");
-  if (PERIPH_FrontPanel_Buttons[13].state) //soft reset (MENU)
+  #ifdef FRONTPANEL_SMALL_V1
+	if (PERIPH_FrontPanel_Buttons[13].state) //soft reset (MENU)
     LoadSettings(true);
   else
-    LoadSettings(false);
+  #endif
+		LoadSettings(false);
   sendToDebug_strln("[OK] LCD init");
   LCD_busy = true;
   LCD_Init();
@@ -239,16 +241,20 @@ int main(void)
   sendToDebug_strln("[OK] Profiler init");
   InitProfiler();
   sendToDebug_strln("[OK] Calibration loading");
+	#ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
     LoadCalibration(true);
   else
+	#endif
     LoadCalibration(false);
   sendToDebug_strln("[OK] FPGA init");
+	#ifdef FRONTPANEL_SMALL_V1
 	if (PERIPH_FrontPanel_Buttons[19].state) //fpga bus test (MODE+)
 		FPGA_Init(true, false);
 	if (PERIPH_FrontPanel_Buttons[20].state) //fpga firmware test (MODE-)
 		FPGA_Init(false, true);
 	else
+	#endif
 		FPGA_Init(false, false);
   sendToDebug_strln("[OK] STM32-ADC Calibration");
   HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);

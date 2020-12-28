@@ -31,9 +31,15 @@ static void FRONTPANEL_BUTTONHANDLER_CLAR(void);
 static void FRONTPANEL_BUTTONHANDLER_STEP(void);
 static void FRONTPANEL_BUTTONHANDLER_BANDMAP(void);
 
+#ifdef HRDW_MCP3008_1
 static bool FRONTPanel_MCP3008_1_Enabled = true;
+#endif
+#ifdef HRDW_MCP3008_2
 static bool FRONTPanel_MCP3008_2_Enabled = true;
+#endif
+#ifdef HRDW_MCP3008_3
 static bool FRONTPanel_MCP3008_3_Enabled = true;
+#endif
 
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
@@ -41,6 +47,7 @@ static uint32_t ENCODER2_AValDeb = 0;
 
 static bool enc2_func_mode = false; //false - fast-step, true - func mode (WPM, etc...)
 
+#ifdef FRONTPANEL_SMALL_V1
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 7, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PRE, .holdHandler = FRONTPANEL_BUTTONHANDLER_PGA},		  //PRE-PGA
 	{.port = 1, .channel = 6, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD},	  //ATT-ATTHOLD
@@ -69,6 +76,13 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 3, .channel = 1, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N},		//MODE-
 	{.port = 3, .channel = 0, .state = false, .prev_state = false, .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AsB, .holdHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP},		//A/B-BANDMAP
 };
+#endif
+
+#ifdef FRONTPANEL_BIG_V1
+PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
+	//buttons
+};
+#endif
 
 void FRONTPANEL_ENCODER_checkRotate(void)
 {
@@ -248,6 +262,9 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 {
+	sendToDebug_strln("enc2sw");
+	return;
+	
 	static uint32_t menu_enc2_click_starttime = 0;
 	static bool ENC2SW_Last = true;
 	static bool ENC2SW_clicked = false;
@@ -323,13 +340,17 @@ void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 
 void FRONTPANEL_Init(void)
 {
-	uint16_t test_value = FRONTPANEL_ReadMCP3008_Value(0, AD1_CS_GPIO_Port, AD1_CS_Pin);
+	uint16_t test_value = 0;
+	#ifdef HRDW_MCP3008_1
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, AD1_CS_GPIO_Port, AD1_CS_Pin);
 	if (test_value == 65535)
 	{
 		FRONTPanel_MCP3008_1_Enabled = false;
 		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 1 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 1 init error (FPGA I2S CLK?)", true);
 	}
+	#endif
+	#ifdef HRDW_MCP3008_2
 	test_value = FRONTPANEL_ReadMCP3008_Value(0, AD2_CS_GPIO_Port, AD2_CS_Pin);
 	if (test_value == 65535)
 	{
@@ -337,6 +358,8 @@ void FRONTPANEL_Init(void)
 		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 2 init error", true);
 	}
+	#endif
+	#ifdef HRDW_MCP3008_3
 	test_value = FRONTPANEL_ReadMCP3008_Value(0, AD3_CS_GPIO_Port, AD3_CS_Pin);
 	if (test_value == 65535)
 	{
@@ -344,6 +367,7 @@ void FRONTPANEL_Init(void)
 		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 3 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 3 init error", true);
 	}
+	#endif
 	FRONTPANEL_Process();
 }
 
@@ -357,6 +381,7 @@ void FRONTPANEL_Process(void)
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
 	uint16_t mcp3008_value = 0;
 
+	#ifdef HRDW_MCP3008_2
 	//process regulators
 	if (FRONTPanel_MCP3008_2_Enabled)
 	{
@@ -390,25 +415,42 @@ void FRONTPANEL_Process(void)
 			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 50.0f / 1023.0f));
 		}
 	}
+	#endif
 
 	//process buttons
 	for (uint16_t b = 0; b < buttons_count; b++)
 	{
 		//check disabled ports
+		#ifdef HRDW_MCP3008_1
 		if (PERIPH_FrontPanel_Buttons[b].port == 1 && !FRONTPanel_MCP3008_1_Enabled)
 			continue;
+		#endif
+		#ifdef HRDW_MCP3008_2
 		if (PERIPH_FrontPanel_Buttons[b].port == 2 && !FRONTPanel_MCP3008_2_Enabled)
 			continue;
+		#endif
+		#ifdef HRDW_MCP3008_3
 		if (PERIPH_FrontPanel_Buttons[b].port == 3 && !FRONTPanel_MCP3008_3_Enabled)
 			continue;
+		#endif
 
 		//get state from ADC MCP3008 (10bit - 1024values)
+		#ifdef HRDW_MCP3008_1
 		if (PERIPH_FrontPanel_Buttons[b].port == 1)
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(PERIPH_FrontPanel_Buttons[b].channel, AD1_CS_GPIO_Port, AD1_CS_Pin);
+		else 
+		#endif
+		#ifdef HRDW_MCP3008_2
 		if (PERIPH_FrontPanel_Buttons[b].port == 2)
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(PERIPH_FrontPanel_Buttons[b].channel, AD2_CS_GPIO_Port, AD2_CS_Pin);
+		else 
+		#endif
+		#ifdef HRDW_MCP3008_3
 		if (PERIPH_FrontPanel_Buttons[b].port == 3)
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(PERIPH_FrontPanel_Buttons[b].channel, AD3_CS_GPIO_Port, AD3_CS_Pin);
+		else 
+		#endif
+			continue;
 
 		//set state
 		if (mcp3008_value < MCP3008_THRESHOLD)
