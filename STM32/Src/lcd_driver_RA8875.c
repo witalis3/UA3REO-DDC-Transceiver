@@ -410,4 +410,10 @@ ITCM void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t
   LCDDriver_waitBTE();
 }
 
+void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+{
+	//IMPLEMENT ME!
+	sendToDebug_strln("implement triangle");
+}
+
 #endif
