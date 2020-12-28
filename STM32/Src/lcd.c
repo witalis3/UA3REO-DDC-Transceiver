@@ -900,6 +900,8 @@ void LCD_doEvents(void)
 		LCD_displayStatusInfoBar(true);
 	if (LCD_UpdateQuery.SystemMenu)
 		SYSMENU_drawSystemMenu(false);
+	if (LCD_UpdateQuery.SystemMenuRedraw)
+		SYSMENU_drawSystemMenu(true);
 	if (LCD_UpdateQuery.SystemMenuCurrent)
 	{
 		SYSMENU_redrawCurrentItem();

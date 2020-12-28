@@ -21,6 +21,7 @@ typedef struct
 	bool StatusInfoBar;
 	bool StatusInfoBarRedraw;
 	bool SystemMenu;
+	bool SystemMenuRedraw;
 	bool SystemMenuCurrent;
 	bool TextBar;
 	bool Tooltip;

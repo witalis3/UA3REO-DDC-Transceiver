@@ -454,7 +454,7 @@ static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_trx_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void SYSMENU_TRX_RFPOWER_HOTKEY(void)
@@ -526,7 +526,7 @@ static void SYSMENU_HANDL_TRX_MICIN(int8_t direction)
 		TRX.InputType_MIC = false;
 	TRX.InputType_LINE = false;
 	TRX.InputType_USB = false;
-	SYSMENU_drawSystemMenu(false);
+	LCD_UpdateQuery.SystemMenu = true;
 	TRX_Restart_Mode();
 }
 
@@ -538,7 +538,7 @@ static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction)
 		TRX.InputType_LINE = false;
 	TRX.InputType_MIC = false;
 	TRX.InputType_USB = false;
-	SYSMENU_drawSystemMenu(false);
+	LCD_UpdateQuery.SystemMenu = true;
 	TRX_Restart_Mode();
 }
 
@@ -550,7 +550,7 @@ static void SYSMENU_HANDL_TRX_USBIN(int8_t direction)
 		TRX.InputType_USB = false;
 	TRX.InputType_MIC = false;
 	TRX.InputType_LINE = false;
-	SYSMENU_drawSystemMenu(false);
+	LCD_UpdateQuery.SystemMenu = true;
 	TRX_Restart_Mode();
 }
 
@@ -767,7 +767,7 @@ static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
 	#pragma unused(direction)
 	sysmenu_trx_setCallsign_menu_opened = true;
 	SYSMENU_TRX_DrawCallsignMenu(true);
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction)
@@ -775,7 +775,7 @@ static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction)
 	#pragma unused(direction)
 	sysmenu_trx_setLocator_menu_opened = true;
 	SYSMENU_TRX_DrawLocatorMenu(true);
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction)
@@ -804,7 +804,7 @@ static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
@@ -1475,7 +1475,7 @@ static void SYSMENU_HANDL_LCDMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_screen_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction)
@@ -1665,7 +1665,7 @@ static void SYSMENU_HANDL_ADCMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_adc_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction)
@@ -1728,7 +1728,7 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_wifi_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_WIFI_DrawSelectAPMenuCallback(void)
@@ -1767,7 +1767,7 @@ static void SYSMENU_WIFI_SelectAPMenuMove(int8_t dir)
 		WIFI_State = WIFI_INITED;
 		sysmenu_wifi_selectap_menu_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 }
 
@@ -1819,7 +1819,7 @@ static void SYSMENU_HANDL_WIFI_SelectAP(int8_t direction)
 	#pragma unused(direction)
 	sysmenu_wifi_selectap_menu_opened = true;
 	SYSMENU_WIFI_DrawSelectAPMenu(true);
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction)
@@ -1827,7 +1827,7 @@ static void SYSMENU_HANDL_WIFI_SetAPpassword(int8_t direction)
 	#pragma unused(direction)
 	sysmenu_wifi_setAPpassword_menu_opened = true;
 	SYSMENU_WIFI_DrawAPpasswordMenu(true);
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction)
@@ -1867,7 +1867,7 @@ static void SYSMENU_HANDL_SDMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_sd_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction)
@@ -2079,7 +2079,7 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_calibration_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction) //Tisho
@@ -2433,7 +2433,7 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_spectrum_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
@@ -2446,7 +2446,7 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 	{
 		SYSMENU_spectrum_opened = true;
 		SPEC_Start();
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 }
 
@@ -2494,7 +2494,7 @@ static void SYSMENU_HANDL_WSPRMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_wspr_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	SYSMENU_drawSystemMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WSPR_Start(int8_t direction)
@@ -2507,7 +2507,7 @@ static void SYSMENU_HANDL_WSPR_Start(int8_t direction)
 	{
 		SYSMENU_wspr_opened = true;
 		WSPR_Start();
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 }
 
@@ -2620,7 +2620,7 @@ static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction)
 		SYSMENU_swr_opened = true;
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 		SWR_Start(BANDS[band].startFreq - 100000, BANDS[band].endFreq + 100000);
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 }
 
@@ -2635,7 +2635,7 @@ static void SYSMENU_HANDL_SWR_HF_START(int8_t direction)
 	{
 		SYSMENU_swr_opened = true;
 		SWR_Start(1000000, 60000000);
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 }
 
@@ -2738,6 +2738,8 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	}
 
 	LCD_UpdateQuery.SystemMenu = false;
+	if(draw_background)
+		LCD_UpdateQuery.SystemMenuRedraw = false;
 	LCD_busy = false;
 }
 
