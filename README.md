@@ -22,7 +22,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Adjustable attenuator 0-31dB
 * Two antenna inputs
 * Band pass filters
-* ADC dynamic range ~100dB
+* ADC dynamic range (16 bit) ~100dB
 * Supply voltage: 13.8V (overvoltage and polarity reversal protection)
 * Consumption current when receiving: ~ 0.7A
 * Current consumption during transmission: ~ 2.5A+
