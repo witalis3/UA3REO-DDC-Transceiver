@@ -294,7 +294,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint32_t *)&TRX.IF_Gain, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET", (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.MIC_GAIN", (uint32_t *)&TRX.MIC_GAIN, SYSMENU_UINT8);
 		if (res)
@@ -326,9 +326,9 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.TX_AGC_speed", (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("TRX.CW_LPF_Filter", (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.CW_LPF_Filter2", (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_UINT16);
 		if (res)
-			SD_WRITE_SETT_LINE("TRX.CW_HPF_Filter", (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.CW_HPF_Filter2", (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_UINT16);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.SSB_LPF_Filter", (uint32_t *)&TRX.SSB_LPF_Filter, SYSMENU_UINT16);
 		if (res)
@@ -458,7 +458,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ACCELERATION", (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER2", (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER3", (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.TXCICFIR_GAINER2", (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_UINT8);
 		if (res)
@@ -476,7 +476,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_vhf_211", (uint32_t *)&CALIBRATE.rf_out_power_vhf, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration", (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_INT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration2", (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_INT16);
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.adc_offset", (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_INT16);
 		if (res)
@@ -670,7 +670,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FM_SQL_threshold = (uint8_t)uintval;
 	if (strcmp(name, "TRX.IF_Gain") == 0)
 		TRX.IF_Gain = (uint8_t)uintval;
-	if (strcmp(name, "TRX.AGC_GAIN_TARGET") == 0)
+	if (strcmp(name, "TRX.AGC_GAIN_TARGET2") == 0)
 		TRX.AGC_GAIN_TARGET = (int8_t)intval;
 	if (strcmp(name, "TRX.MIC_GAIN") == 0)
 		TRX.MIC_GAIN = (uint8_t)uintval;
@@ -702,9 +702,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.RX_AGC_CW_speed = (uint8_t)uintval;
 	if (strcmp(name, "TRX.TX_AGC_speed") == 0)
 		TRX.TX_AGC_speed = (uint8_t)uintval;
-	if (strcmp(name, "TRX.CW_LPF_Filter") == 0)
+	if (strcmp(name, "TRX.CW_LPF_Filter2") == 0)
 		TRX.CW_LPF_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.CW_HPF_Filter") == 0)
+	if (strcmp(name, "TRX.CW_HPF_Filter2") == 0)
 		TRX.CW_HPF_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.SSB_LPF_Filter") == 0)
 		TRX.SSB_LPF_Filter = (uint16_t)uintval;
@@ -846,7 +846,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.ENCODER_ON_FALLING = uintval;
 	if (strcmp(name, "CALIBRATE.ENCODER_ACCELERATION") == 0)
 		CALIBRATE.ENCODER_ACCELERATION = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.CICFIR_GAINER2") == 0)
+	if (strcmp(name, "CALIBRATE.CICFIR_GAINER3") == 0)
 		CALIBRATE.CICFIR_GAINER_val = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.TXCICFIR_GAINER2") == 0)
 		CALIBRATE.TXCICFIR_GAINER_val = (uint8_t)uintval;
@@ -864,7 +864,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.rf_out_power_up60mhz = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_vhf_211") == 0)
 		CALIBRATE.rf_out_power_vhf = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.smeter_calibration") == 0)
+	if (strcmp(name, "CALIBRATE.smeter_calibration2") == 0)
 		CALIBRATE.smeter_calibration = (int16_t)intval;
 	if (strcmp(name, "CALIBRATE.adc_offset") == 0)
 		CALIBRATE.adc_offset = (int16_t)intval;
