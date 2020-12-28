@@ -217,6 +217,7 @@ void LoadSettings(bool clear)
 		TRX.Debug_Console = false;		  // Debug output to DEBUG / UART port
 		TRX.Dual_RX = false;			  //Dual RX feature
 		TRX.Dual_RX_Type = VFO_A_PLUS_B;  // dual receiver mode
+		TRX.FFT_Style = 1;					// FFT style
 		TRX.FFT_Color = 1;				  // FFT display color
 		TRX.FFT_Height = 2;				  // FFT display height
 		TRX.FFT_Grid = 1;				  // FFT grid style

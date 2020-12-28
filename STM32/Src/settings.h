@@ -8,8 +8,8 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 211				   // Settings config version
-#define CALIB_VERSION 211				   // Calibration config version
+#define SETT_VERSION 212				   // Settings config version
+#define CALIB_VERSION 212				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
@@ -223,6 +223,7 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_Averaging;
 	uint8_t FFT_Window;
 	uint8_t FFT_Height;
+	uint8_t FFT_Style;
 	uint8_t FFT_Color;
 	bool FFT_Compressor;
 	int8_t FFT_Grid;

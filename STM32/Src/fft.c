@@ -631,22 +631,97 @@ void FFT_printFFT(void)
 		if (TRX.FFT_Background)
 			background = palette_bg_gradient[fft_y];
 
-		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+		if(TRX.FFT_Style == 1) //gradient
 		{
-			if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
+			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 			{
-				if (fft_y > (fftHeight - fft_header[fft_x]))
-					fft_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fft_y];
-				else
-					fft_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
+				{
+					if (fft_y >= (fftHeight - fft_header[fft_x]))
+						fft_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fft_y];
+					else
+						fft_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+				}
+				else //other fft data
+				{
+					if (fft_y >= (fftHeight - fft_header[fft_x]))
+						fft_output_buffer[fft_y][fft_x] = palette_fft[fft_y];
+					else
+						fft_output_buffer[fft_y][fft_x] = background;
+				}
 			}
-			else //other fft data
+		}
+		if(TRX.FFT_Style == 2) //fill
+		{
+			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 			{
-				if (fft_y > (fftHeight - fft_header[fft_x]))
-					fft_output_buffer[fft_y][fft_x] = palette_fft[fft_y];
-				else
+				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
+				{
+					if (fft_y >= (fftHeight - fft_header[fft_x]))
+						fft_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
+					else
+						fft_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+				}
+				else //other fft data
+				{
+					if (fft_y >= (fftHeight - fft_header[fft_x]))
+						fft_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
+					else
+						fft_output_buffer[fft_y][fft_x] = background;
+				}
+			}
+		}
+		if(TRX.FFT_Style == 3) //dots
+		{
+			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+			{
+				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
+				{
+					if (fft_y == (fftHeight - fft_header[fft_x]))
+						fft_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
+					else
+						fft_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+				}
+				else //other fft data
+				{
+					if (fft_y == (fftHeight - fft_header[fft_x]))
+						fft_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
+					else
+						fft_output_buffer[fft_y][fft_x] = background;
+				}
+			}
+		}
+		if(TRX.FFT_Style == 4) //contour (prepare background)
+		{
+			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+			{
+				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
+					fft_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+				else //other fft data
 					fft_output_buffer[fft_y][fft_x] = background;
 			}
+		}
+	}
+	if(TRX.FFT_Style == 4) //contour
+	{
+		uint32_t fft_y_prev = 0;
+		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+		{
+			uint32_t fft_y = fftHeight - fft_header[fft_x];
+			int32_t y_diff = (int32_t)fft_y - (int32_t)fft_y_prev;
+			if(fft_x == 0 || (y_diff <= 1 && y_diff >= -1))
+			{
+				fft_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
+			}
+			else
+			{
+				for(uint32_t l = 1; l < (abs(y_diff / 2) + 1); l++) //draw line
+				{
+					fft_output_buffer[fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = palette_fft[fftHeight / 2];
+					fft_output_buffer[fft_y + ((y_diff > 0) ? -l : l)][fft_x] = palette_fft[fftHeight / 2];
+				}
+			}
+			fft_y_prev = fft_y;
 		}
 	}
 

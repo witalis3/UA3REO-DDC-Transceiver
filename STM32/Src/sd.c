@@ -376,6 +376,8 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Height", (uint32_t *)&TRX.FFT_Height, SYSMENU_UINT8);
 		if (res)
+			SD_WRITE_SETT_LINE("TRX.FFT_Style", (uint32_t *)&TRX.FFT_Style, SYSMENU_UINT8);
+		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Color", (uint32_t *)&TRX.FFT_Color, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Compressor", (uint32_t *)&TRX.FFT_Compressor, SYSMENU_BOOLEAN);
@@ -752,6 +754,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FFT_Window = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Height") == 0)
 		TRX.FFT_Height = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_Style") == 0)
+		TRX.FFT_Style = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Color") == 0)
 		TRX.FFT_Color = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Compressor") == 0)
