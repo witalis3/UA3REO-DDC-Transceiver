@@ -733,19 +733,19 @@ void FFT_printFFT(void)
 		for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
 			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
 				for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-					fft_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = mixColors(fft_output_buffer[fft_y][grid_lines_pos[grid_line_index]], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+					fft_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = palette_fft[fftHeight * 3 / 4]; //mixColors(fft_output_buffer[fft_y][grid_lines_pos[grid_line_index]], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	}
 
 	//Gauss filter center
 	if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 	{
 		for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-			fft_output_buffer[fft_y][bw_line_center] = mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+			fft_output_buffer[fft_y][bw_line_center] = palette_fft[fftHeight * 3 / 4]; //mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	}
 
 	//draw center line
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-		fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = mixColors(fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+		fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 
 	//Print FFT
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
@@ -934,7 +934,7 @@ void FFT_printWaterfallDMA(void)
 			
 			//Gauss filter center
 			if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-				wtf_output_line[bw_line_center] = mixColors(wtf_output_line[bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+				wtf_output_line[bw_line_center] = palette_fft[fftHeight * 3 / 4]; //mixColors(wtf_output_line[bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 			
 			//Сenter line
 			wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2];
@@ -988,9 +988,11 @@ void FFT_printWaterfallDMA(void)
 			margin_right = 0;
 		//rounding
 		int32_t body_width = LAYOUT->FFT_PRINT_SIZE - margin_left - margin_right;
-
+		
 		if (body_width <= 0)
+		{
 			memset(&wtf_output_line, BG_COLOR, sizeof(wtf_output_line));
+		}
 		else
 		{
 			if (margin_left == 0 && margin_right == 0)
@@ -1001,7 +1003,7 @@ void FFT_printWaterfallDMA(void)
 					else
 						wtf_output_line[wtf_x] = palette_fft[indexed_wtf_buffer[print_wtf_yindex][wtf_x]];
 			}
-			else if (margin_left >= 0)
+			else if (margin_left > 0)
 			{
 				memset(&wtf_output_line, BG_COLOR, (uint32_t)(margin_left * 2)); // fill the space to the left
 				for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++)
@@ -1025,10 +1027,10 @@ void FFT_printWaterfallDMA(void)
 		if (TRX.FFT_Grid >= 2)
 			for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 				if (grid_lines_pos[i] > 0)
-					wtf_output_line[grid_lines_pos[i]] = mixColors(wtf_output_line[grid_lines_pos[i]], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+					wtf_output_line[grid_lines_pos[i]] = palette_fft[fftHeight * 3 / 4]; //mixColors(wtf_output_line[grid_lines_pos[i]], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 
 		//center line
-		wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = mixColors(wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+		wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2]; //mixColors(wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 
 // display the line
 #ifdef HAS_BTE
