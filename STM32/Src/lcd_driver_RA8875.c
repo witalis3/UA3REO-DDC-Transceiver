@@ -56,11 +56,13 @@ ITCM inline uint16_t LCDDriver_readReg(uint16_t reg)
 void LCDDriver_Init(void)
 {
   //PLL Init
-  LCDDriver_writeReg(LCD_RA8875_PLLC1, LCD_RA8875_PLLC1_PLLDIV1 + 11);
+  LCDDriver_writeReg(LCD_RA8875_PLLC1, LCD_RA8875_PLLC1_PLLDIV1 + 11); //divider + multiplier
   HAL_Delay(1);
-  LCDDriver_writeReg(LCD_RA8875_PLLC2, LCD_RA8875_PLLC2_DIV4);
+  LCDDriver_writeReg(LCD_RA8875_PLLC2, LCD_RA8875_PLLC2_DIV2); //divider2
   HAL_Delay(1);
-
+	//SYS_CLK = FIN(25mhz) * ( LCD_RA8875_PLLC1_PLLDIV1[4:0] + 1 ) / (( LCD_RA8875_PLLC1_PLLDIV1[7:7] + 1 ) * ( 2 ^ LCD_RA8875_PLLC2[2:0] ))
+	HAL_Delay(200); //for pll stability
+	
   //Software reset
   LCDDriver_writeReg(LCD_RA8875_PWRR, LCD_RA8875_PWRR_SOFTRESET);
   HAL_Delay(1);
@@ -111,7 +113,19 @@ void LCDDriver_Init(void)
 
   //display ON
   LCDDriver_writeReg(LCD_RA8875_PWRR, LCD_RA8875_PWRR_NORMAL | LCD_RA8875_PWRR_DISPON);
-  HAL_Delay(10);
+  HAL_Delay(100);
+	
+	FMC_NORSRAM_TimingTypeDef Timing = {0};
+	Timing.AddressSetupTime = 4;
+  Timing.AddressHoldTime = 4;
+	Timing.BusTurnAroundDuration = 1;
+	
+  Timing.DataSetupTime = 5;
+  Timing.CLKDivision = 16;
+  Timing.DataLatency = 17;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
+	HAL_SRAM_Init(&hsram1, &Timing, NULL);
+	HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
 }
 
 //Set screen rotation

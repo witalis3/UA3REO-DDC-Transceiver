@@ -1477,11 +1477,11 @@ static void MX_FMC_Init(void)
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 #if (defined(LCD_RA8875))
-  Timing.AddressSetupTime = 19;
-  Timing.DataSetupTime = 19;
-  Timing.BusTurnAroundDuration = 0;
+  Timing.AddressSetupTime = 20;
+  Timing.DataSetupTime = 20;
+  Timing.BusTurnAroundDuration = 10;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
-  hsram1.Init.WriteFifo = FMC_WRITE_FIFO_ENABLE;
+	//fast timings in lcd_driver_RA8875.c
 #endif
   if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
     Error_Handler();
