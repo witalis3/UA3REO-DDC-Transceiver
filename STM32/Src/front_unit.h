@@ -4,12 +4,22 @@
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
-#define MCP3008_THRESHOLD 100
+#define MCP3008_SINGLE_THRESHOLD 500
+
+typedef enum
+{
+	FUNIT_CTRL_BUTTON,
+	FUNIT_CTRL_AF_GAIN,
+	FUNIT_CTRL_SHIFT,
+} FRONT_UNIT_CONTROL_TYPE;
 
 typedef struct
 {
 	uint8_t port;
 	uint8_t channel;
+	FRONT_UNIT_CONTROL_TYPE type;
+	uint16_t tres_min;
+	uint16_t tres_max;
 	bool state;
 	bool prev_state;
 	uint32_t start_hold_time;
@@ -23,7 +33,7 @@ extern PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[];
 
 extern void FRONTPANEL_ENCODER_checkRotate(void);
 extern void FRONTPANEL_ENCODER2_checkRotate(void);
-extern void FRONTPANEL_check_ENC2SW_and_Touchpad(void);
+extern void FRONTPANEL_check_ENC2SW(void);
 extern void FRONTPANEL_Init(void);
 extern void FRONTPANEL_Process(void);
 
