@@ -60,6 +60,8 @@ static float32_t window_multipliers[FFT_SIZE] = {0};								 // coefficients of 
 static float32_t hz_in_pixel = 1.0f;												 // current FFT density value
 static uint16_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0};							 // temporary buffer to move the waterfall
 static arm_sort_instance_f32 FFT_sortInstance = {0};								 // sorting instance (to find the median)
+static uint32_t print_fft_dma_estimated_size = 0;			//block size for dma
+static uint32_t print_fft_dma_position = 0;			//positior for dma fft print
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
@@ -747,12 +749,42 @@ void FFT_printFFT(void)
 
 	//Print FFT
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
-	HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE * fftHeight);
+	print_fft_dma_estimated_size = LAYOUT->FFT_PRINT_SIZE * fftHeight;
+	print_fft_dma_position = 0;
+	if(print_fft_dma_estimated_size <= FFT_DMA_MAX_BLOCK)
+	{
+		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0], LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
+		print_fft_dma_estimated_size = 0;
+	}
+	else
+	{
+		print_fft_dma_estimated_size -= FFT_DMA_MAX_BLOCK;
+		print_fft_dma_position = FFT_DMA_MAX_BLOCK;
+		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0], LCD_FSMC_DATA_ADDR, FFT_DMA_MAX_BLOCK);
+	}
 }
 
 //actions after FFT_printFFT
 void FFT_afterPrintFFT(void)
 {
+	//continue DMA draw?
+	if(print_fft_dma_estimated_size > 0)
+	{
+		if(print_fft_dma_estimated_size <= FFT_DMA_MAX_BLOCK)
+		{
+			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
+			print_fft_dma_estimated_size = 0;
+			print_fft_dma_position = 0;
+		}
+		else
+		{
+			print_fft_dma_estimated_size -= FFT_DMA_MAX_BLOCK;
+			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, FFT_DMA_MAX_BLOCK);
+			print_fft_dma_position += FFT_DMA_MAX_BLOCK;
+		}
+		return;
+	}
+	
 	// clear and display part of the vertical bar
 	memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));
 
