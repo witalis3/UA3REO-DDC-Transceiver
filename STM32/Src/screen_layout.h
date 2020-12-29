@@ -222,9 +222,9 @@ typedef const struct
 #if (defined(LAY_800x480))
 	#define LAYOUT_THEMES_COUNT 1
 	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
-	#define MAX_FFT_HEIGHT 150 //220
-	#define MAX_WTF_HEIGHT 150 //180
-	#define FFT_AND_WTF_HEIGHT 300 //320
+	#define MAX_FFT_HEIGHT 170
+	#define MAX_WTF_HEIGHT 170
+	#define FFT_AND_WTF_HEIGHT 300
 #endif
 
 extern const STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT];
