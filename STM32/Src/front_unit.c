@@ -262,8 +262,10 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 void FRONTPANEL_check_ENC2SW_and_Touchpad(void)
 {
-	sendToDebug_strln("enc2sw");
+	// check touchpad events
+	#ifdef HAS_TOUCHPAD
 	return;
+	#endif
 	
 	static uint32_t menu_enc2_click_starttime = 0;
 	static bool ENC2SW_Last = true;

@@ -20,6 +20,7 @@ void TOUCHPAD_Init(void)
 	//read touchpad info
 	GT911_ReadStatus();
 	GT911_ReadFirmwareVersion();
+	GT911_Init();
 
 	//calibrate
 	uint8_t send = 3;

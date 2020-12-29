@@ -914,17 +914,7 @@ void TIM16_IRQHandler(void)
   /* USER CODE END TIM16_IRQn 0 */
   HAL_TIM_IRQHandler(&htim16);
   /* USER CODE BEGIN TIM16_IRQn 1 */
-// Poll an additional encoder by timer, because interrupt hangs in line with FPGA
-#ifdef HAS_TOUCHPAD
-  static bool TOUCH_Int_Last = true;
-  bool TOUCH_Int_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
-  if (TOUCH_Int_Last != TOUCH_Int_Now)
-  {
-    TOUCH_Int_Last = TOUCH_Int_Now;
-    if (!TOUCH_Int_Now)
-      TOUCHPAD_reserveInterrupt();
-  }
-#else
+	// Poll an additional encoder by timer, because interrupt hangs in line with FPGA
   static uint8_t ENC2lastClkVal = 0;
   static bool ENC2first = true;
   uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
@@ -939,7 +929,17 @@ void TIM16_IRQHandler(void)
       FRONTPANEL_ENCODER2_checkRotate();
     ENC2lastClkVal = ENCODER2_CLKVal;
   }
-#endif
+	#ifdef HAS_TOUCHPAD
+	static bool TOUCH_Int_Last = true;
+  bool TOUCH_Int_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
+  if (TOUCH_Int_Last != TOUCH_Int_Now)
+  {
+    TOUCH_Int_Last = TOUCH_Int_Now;
+		if (TOUCH_Int_Now)
+			TOUCHPAD_reserveInterrupt();
+	}
+	return;
+	#endif
   /* USER CODE END TIM16_IRQn 1 */
 }
 

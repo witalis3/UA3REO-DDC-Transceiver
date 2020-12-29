@@ -53,7 +53,7 @@
 
 #define FRONTPANEL_BIG_V1 true
 #define LCD_RA8875 true
-//#define TOUCHPAD_GT911 true
+#define TOUCHPAD_GT911 true
 
 //select how the SWR and the power is measured
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement

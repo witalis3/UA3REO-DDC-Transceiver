@@ -200,6 +200,13 @@ int main(void)
   MX_DMA2D_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+	#ifdef HAS_TOUCHPAD
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitStruct.Pin = ENC2SW_AND_TOUCHPAD_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+	#endif
   __HAL_RCC_CSI_ENABLE();
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   __HAL_RCC_BKPRAM_CLK_ENABLE();
