@@ -740,7 +740,7 @@ void FFT_printFFT(void)
 	if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 	{
 		for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-			fft_output_buffer[fft_y][bw_line_center] = palette_fft[fftHeight * 3 / 4]; //mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+			fft_output_buffer[fft_y][bw_line_center] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	}
 
 	//draw center line
