@@ -359,6 +359,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	NeedSaveSettings = true;
 	LCD_UpdateQuery.StatusInfoBar = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
+	NeedWTFRedraw = true;
 }
 
 void TRX_DoAutoGain(void)

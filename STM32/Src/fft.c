@@ -17,6 +17,7 @@ IRAM2 float32_t FFTInput_Q_A[FFT_SIZE] = {0}; // incoming buffer FFT Q
 IRAM2 float32_t FFTInput_I_B[FFT_SIZE] = {0}; // incoming buffer FFT I
 IRAM2 float32_t FFTInput_Q_B[FFT_SIZE] = {0}; // incoming buffer FFT Q
 uint16_t FFT_FPS = 0;
+bool NeedWTFRedraw = false;
 
 //Private variables
 #if FFT_SIZE == 2048
@@ -62,6 +63,7 @@ static uint16_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0};							 // temporary 
 static arm_sort_instance_f32 FFT_sortInstance = {0};								 // sorting instance (to find the median)
 static uint32_t print_fft_dma_estimated_size = 0;			//block size for dma
 static uint32_t print_fft_dma_position = 0;			//positior for dma fft print
+static uint8_t needredraw_wtf_counter = 3;		//redraw cycles after event
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
@@ -906,7 +908,7 @@ void FFT_printWaterfallDMA(void)
 	uint_fast8_t cwdecoder_offset = 0;
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
-
+	
 	//3D version printout
 	if(TRX.FFT_3D > 0)
 	{
@@ -956,8 +958,18 @@ void FFT_printWaterfallDMA(void)
 	
 #ifdef HAS_BTE
 	//move exist lines down with BTE
-	if (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq)
+	if (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq && !NeedWTFRedraw)
+	{
 		LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE - 1, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+		//1 line
+		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex);
+	}
+	else if (print_wtf_yindex == 0 && (lastWTFFreq != currentFFTFreq || NeedWTFRedraw))
+	{
+		//full draw
+		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + (uint16_t)(wtfHeight - cwdecoder_offset) - 1);
+	}
+	
 #else
 	//wtf area
 	if (print_wtf_yindex == 0)
@@ -966,7 +978,7 @@ void FFT_printWaterfallDMA(void)
 
 //print waterfall line
 #ifdef HAS_BTE
-	if ((print_wtf_yindex < (wtfHeight - cwdecoder_offset) && lastWTFFreq != currentFFTFreq) || (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq))
+	if ((print_wtf_yindex < (wtfHeight - cwdecoder_offset) && (lastWTFFreq != currentFFTFreq || NeedWTFRedraw)) || (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq && !NeedWTFRedraw))
 #else
 	if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
 #endif
@@ -1032,10 +1044,7 @@ void FFT_printWaterfallDMA(void)
 		//center line
 		wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2]; //mixColors(wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 
-// display the line
-#ifdef HAS_BTE
-		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex);
-#endif
+		//draw the line
 		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
 		print_wtf_yindex++;
 	}
@@ -1043,6 +1052,18 @@ void FFT_printWaterfallDMA(void)
 	{
 		FFT_FPS++;
 		lastWTFFreq = currentFFTFreq;
+		if(NeedWTFRedraw) //redraw cycles counter
+		{
+			if(needredraw_wtf_counter == 0)
+			{
+				needredraw_wtf_counter = 3;
+				NeedWTFRedraw = false;
+			}
+			else
+			{
+				needredraw_wtf_counter--;
+			}
+		}
 		FFT_need_fft = true;
 		LCD_busy = false;
 	}
