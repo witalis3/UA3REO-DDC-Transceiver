@@ -9,44 +9,45 @@
 #include "trx_manager.h"
 
 static bool activeWindowIsFullscreen = true;
-ITCM static void LCDDriver_waitBusy(void);
-ITCM static void LCDDriver_waitBTE(void);
-
+static void LCDDriver_waitBusy(void);
+static void LCDDriver_waitBTE(void);
+static uint16_t LCDDriver_currentFGColor = 0;
+	
 //***** Functions prototypes *****//
-ITCM static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 //Write command to LCD
-ITCM inline void LCDDriver_SendCommand(uint16_t com)
+inline void LCDDriver_SendCommand(uint16_t com)
 {
   *(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR)) = com;
 }
 
 //Write data to LCD
-ITCM inline void LCDDriver_SendData(uint16_t data)
+inline void LCDDriver_SendData(uint16_t data)
 {
   *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)) = data;
 }
 
 //Write pair command-data
-ITCM inline void LCDDriver_writeReg(uint16_t reg, uint16_t val)
+inline void LCDDriver_writeReg(uint16_t reg, uint16_t val)
 {
   LCDDriver_SendCommand(reg);
   LCDDriver_SendData(val);
 }
 
 //Read command from LCD
-ITCM inline uint16_t LCDDriver_ReadStatus(void)
+inline uint16_t LCDDriver_ReadStatus(void)
 {
   return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR));
 }
 //Read data from LCD
-ITCM inline uint16_t LCDDriver_ReadData(void)
+inline uint16_t LCDDriver_ReadData(void)
 {
   return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR));
 }
 
 //Read Register
-ITCM inline uint16_t LCDDriver_readReg(uint16_t reg)
+inline uint16_t LCDDriver_readReg(uint16_t reg)
 {
   LCDDriver_SendCommand(reg);
   return LCDDriver_ReadData();
@@ -134,7 +135,7 @@ void LCDDriver_setRotation(uint8_t rotate){
 }
 
 //Set cursor position
-ITCM inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
   activeWindowIsFullscreen = false;
   LCDDriver_waitBusy();
@@ -146,7 +147,7 @@ ITCM inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint1
   LCDDriver_SendCommand(LCD_RA8875_MRWC);
 }
 
-ITCM static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
+static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
 {
   if (!activeWindowIsFullscreen)
   {
@@ -161,7 +162,7 @@ ITCM static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
   LCDDriver_SendCommand(LCD_RA8875_MRWC);
 }
 
-ITCM static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
   LCDDriver_waitBusy();
   // Set active window X
@@ -177,22 +178,23 @@ ITCM static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2
   LCDDriver_writeReg(LCD_RA8875_VEAW1, y2 >> 8);
 }
 
-ITCM static void LCDDriver_waitBusy(void)
+static void LCDDriver_waitBusy(void)
 {
   while ((LCDDriver_ReadStatus() & 0x80) == 0x80)
-    __asm("nop");
+    //__asm("nop");
+		CPULOAD_GoToSleepMode();
 }
 
-ITCM static void LCDDriver_waitBTE(void)
+static void LCDDriver_waitBTE(void)
 {
   while ((LCDDriver_ReadStatus() & 0x40) == 0x40)
-    if (NVIC_GetPriority(((int32_t)__get_IPSR()) - 16) == 8)
+    //if (NVIC_GetPriority(((int32_t)__get_IPSR()) - 16) == 8)
       CPULOAD_GoToSleepMode();
-    else
-      __asm("nop");
+    //else
+      //__asm("nop");
 }
 
-ITCM static bool LCDDriver_waitPoll(uint16_t regname, uint8_t waitflag)
+static bool LCDDriver_waitPoll(uint16_t regname, uint8_t waitflag)
 {
   uint32_t t = 300000;
   while (t > 0)
@@ -206,20 +208,20 @@ ITCM static bool LCDDriver_waitPoll(uint16_t regname, uint8_t waitflag)
 }
 
 //Write data to a single pixel
-ITCM void LCDDriver_drawPixel(uint16_t x, uint16_t y, uint16_t color)
+void LCDDriver_drawPixel(uint16_t x, uint16_t y, uint16_t color)
 {
   LCDDriver_SetCursorPosition(x, y);
   LCDDriver_SendData(color);
 }
 
 //Fill the entire screen with a background color
-ITCM void LCDDriver_Fill(uint16_t color)
+void LCDDriver_Fill(uint16_t color)
 {
   LCDDriver_Fill_RectXY(0, 0, LCD_WIDTH, LCD_HEIGHT, color);
 }
 
 //Rectangle drawing functions
-ITCM void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
   LCDDriver_waitBusy();
   if (!activeWindowIsFullscreen)
@@ -253,12 +255,16 @@ ITCM void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
   LCDDriver_SendData(y1 >> 8);
 
   /* Set Color */
-  LCDDriver_SendCommand(LCD_RA8875_FGCR0);
-  LCDDriver_SendData((color & 0xf800) >> 11);
-  LCDDriver_SendCommand(LCD_RA8875_FGCR1);
-  LCDDriver_SendData((color & 0x07e0) >> 5);
-  LCDDriver_SendCommand(LCD_RA8875_FGCR2);
-  LCDDriver_SendData((color & 0x001f));
+	if(color != LCDDriver_currentFGColor)
+	{
+		LCDDriver_SendCommand(LCD_RA8875_FGCR0);
+		LCDDriver_SendData((color & 0xf800) >> 11);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR1);
+		LCDDriver_SendData((color & 0x07e0) >> 5);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR2);
+		LCDDriver_SendData((color & 0x001f));
+		LCDDriver_currentFGColor = color;
+	}
 
   /* Draw! */
   LCDDriver_SendCommand(LCD_RA8875_DCR);
@@ -268,13 +274,13 @@ ITCM void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
 }
 
-ITCM void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
+void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
   LCDDriver_Fill_RectXY(x, y, x + w, y + h, color);
 }
 
 //Line drawing functions
-ITCM void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
   LCDDriver_waitBusy();
   if (!activeWindowIsFullscreen)
@@ -308,12 +314,16 @@ ITCM void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
   LCDDriver_SendData(y1 >> 8);
 
   /* Set Color */
-  LCDDriver_SendCommand(LCD_RA8875_FGCR0);
-  LCDDriver_SendData((color & 0xf800) >> 11);
-  LCDDriver_SendCommand(LCD_RA8875_FGCR1);
-  LCDDriver_SendData((color & 0x07e0) >> 5);
-  LCDDriver_SendCommand(LCD_RA8875_FGCR2);
-  LCDDriver_SendData((color & 0x001f));
+	if(color != LCDDriver_currentFGColor)
+	{
+		LCDDriver_SendCommand(LCD_RA8875_FGCR0);
+		LCDDriver_SendData((color & 0xf800) >> 11);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR1);
+		LCDDriver_SendData((color & 0x07e0) >> 5);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR2);
+		LCDDriver_SendData((color & 0x001f));
+		LCDDriver_currentFGColor = color;
+	}
 
   /* Draw! */
   LCDDriver_SendCommand(LCD_RA8875_DCR);
@@ -323,17 +333,17 @@ ITCM void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
 }
 
-ITCM void LCDDriver_drawFastHLine(uint16_t x, uint16_t y, int16_t w, uint16_t color)
+void LCDDriver_drawFastHLine(uint16_t x, uint16_t y, int16_t w, uint16_t color)
 {
   LCDDriver_drawLine(x, y, x + w, y, color);
 }
 
-ITCM void LCDDriver_drawFastVLine(uint16_t x, uint16_t y, int16_t h, uint16_t color)
+void LCDDriver_drawFastVLine(uint16_t x, uint16_t y, int16_t h, uint16_t color)
 {
   LCDDriver_drawLine(x, y, x, y + h, color);
 }
 
-ITCM void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
   LCDDriver_waitBusy();
   if (!activeWindowIsFullscreen)
@@ -366,12 +376,16 @@ ITCM void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
   LCDDriver_SendData(y1 >> 8);
 
   /* Set Color */
-  LCDDriver_SendCommand(LCD_RA8875_FGCR0);
-  LCDDriver_SendData((color & 0xf800) >> 11);
-  LCDDriver_SendCommand(LCD_RA8875_FGCR1);
-  LCDDriver_SendData((color & 0x07e0) >> 5);
-  LCDDriver_SendCommand(LCD_RA8875_FGCR2);
-  LCDDriver_SendData((color & 0x001f));
+	if(color != LCDDriver_currentFGColor)
+	{
+		LCDDriver_SendCommand(LCD_RA8875_FGCR0);
+		LCDDriver_SendData((color & 0xf800) >> 11);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR1);
+		LCDDriver_SendData((color & 0x07e0) >> 5);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR2);
+		LCDDriver_SendData((color & 0x001f));
+		LCDDriver_currentFGColor = color;
+	}
 
   /* Draw! */
   LCDDriver_SendCommand(LCD_RA8875_DCR);
@@ -381,7 +395,7 @@ ITCM void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
 }
 
-ITCM void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, uint16_t w, uint16_t h, bool fromEnd)
+void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, uint16_t w, uint16_t h, bool fromEnd)
 {
   if (fromEnd)
   {
@@ -426,8 +440,67 @@ ITCM void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t
 
 void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 {
-	//IMPLEMENT ME!
-	sendToDebug_strln("implement triangle");
+	LCDDriver_waitBusy();
+  if (!activeWindowIsFullscreen)
+  {
+    activeWindowIsFullscreen = true;
+    LCDDriver_setActiveWindow(0, 0, (LCD_WIDTH - 1), (LCD_HEIGHT - 1));
+  }
+
+  /* Set X0 */
+  LCDDriver_SendCommand(LCD_RA8875_DLHSR0);
+  LCDDriver_SendData(x0);
+  LCDDriver_SendCommand(LCD_RA8875_DLHSR1);
+  LCDDriver_SendData(x0 >> 8);
+
+  /* Set Y0 */
+  LCDDriver_SendCommand(LCD_RA8875_DLVSR0);
+  LCDDriver_SendData(y0);
+  LCDDriver_SendCommand(LCD_RA8875_DLVSR1);
+  LCDDriver_SendData(y0 >> 8);
+
+  /* Set X1 */
+  LCDDriver_SendCommand(LCD_RA8875_DLHER0);
+  LCDDriver_SendData(x1);
+  LCDDriver_SendCommand(LCD_RA8875_DLHER1);
+  LCDDriver_SendData(x1 >> 8);
+
+  /* Set Y1 */
+  LCDDriver_SendCommand(LCD_RA8875_DLVER0);
+  LCDDriver_SendData(y1);
+  LCDDriver_SendCommand(LCD_RA8875_DLVER1);
+  LCDDriver_SendData(y1 >> 8);
+	
+	/* Set X2 */
+  LCDDriver_SendCommand(LCD_RA8875_DTPH0);
+  LCDDriver_SendData(x2);
+  LCDDriver_SendCommand(LCD_RA8875_DTPH1);
+  LCDDriver_SendData(x2 >> 8);
+
+  /* Set Y2 */
+  LCDDriver_SendCommand(LCD_RA8875_DTPV0);
+  LCDDriver_SendData(y2);
+  LCDDriver_SendCommand(LCD_RA8875_DTPV1);
+  LCDDriver_SendData(y2 >> 8);
+
+  /* Set Color */
+	if(color != LCDDriver_currentFGColor)
+	{
+		LCDDriver_SendCommand(LCD_RA8875_FGCR0);
+		LCDDriver_SendData((color & 0xf800) >> 11);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR1);
+		LCDDriver_SendData((color & 0x07e0) >> 5);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR2);
+		LCDDriver_SendData((color & 0x001f));
+		LCDDriver_currentFGColor = color;
+	}
+
+  /* Draw! */
+  LCDDriver_SendCommand(LCD_RA8875_DCR);
+  LCDDriver_SendData(LCD_RA8875_DCR_DRAWTRIANGLE | LCD_RA8875_DCR_FILL | LCD_RA8875_DCR_LINESQUTRI_START); //filled triangle
+
+  /* Wait for the command to finish */
+  LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
 }
 
 #endif
