@@ -338,6 +338,8 @@ void FFT_doFFT(void)
 		return;
 	if (!FFT_need_fft)
 		return;
+	if (!TRX_Inited)
+		return;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
 

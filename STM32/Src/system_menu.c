@@ -2675,6 +2675,8 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	if (LCD_busy)
 	{
 		LCD_UpdateQuery.SystemMenu = true;
+		if(draw_background)
+			LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
 	if (!LCD_systemMenuOpened)
