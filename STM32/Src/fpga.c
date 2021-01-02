@@ -182,8 +182,6 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 	FPGA_bus_stop = false;
 #endif
 
-	FPGA_fpgadata_stuffclock();
-	
 	//pre-reset FPGA to sync IQ data
 	FPGA_setBusOutput();
 	FPGA_writePacket(5); // RESET ON

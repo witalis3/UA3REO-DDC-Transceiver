@@ -229,6 +229,7 @@ int main(void)
   else
   #endif
 		LoadSettings(false);
+	TRX.Locked = false;
   sendToDebug_strln("[OK] LCD init");
   LCD_busy = true;
   LCD_Init();
