@@ -42,10 +42,10 @@ static float32_t maxValueFFT_rx = 0;						   // maximum value of the amplitude i
 static float32_t maxValueFFT_tx = 0;						   // maximum value of the amplitude in the resulting frequency response
 static uint32_t currentFFTFreq = 0;
 static uint32_t lastWTFFreq = 0;													 //last WTF printed freq
-static uint16_t palette_fft[MAX_FFT_HEIGHT] = {0};									 // color palette with FFT colors
-static uint16_t palette_bg_gradient[MAX_FFT_HEIGHT] = {0};							 // color palette with gradient background of FFT
-static uint16_t palette_bw_fft_colors[MAX_FFT_HEIGHT] = {0};						 // color palette with bw highlighted FFT colors
-static uint16_t palette_bw_bg_colors[MAX_FFT_HEIGHT] = {0};							 // color palette with bw highlighted background colors
+static uint16_t palette_fft[MAX_FFT_HEIGHT + 1] = {0};									 // color palette with FFT colors
+static uint16_t palette_bg_gradient[MAX_FFT_HEIGHT + 1] = {0};							 // color palette with gradient background of FFT
+static uint16_t palette_bw_fft_colors[MAX_FFT_HEIGHT + 1] = {0};						 // color palette with bw highlighted FFT colors
+static uint16_t palette_bw_bg_colors[MAX_FFT_HEIGHT + 1] = {0};							 // color palette with bw highlighted background colors
 SRAM static uint16_t fft_output_buffer[MAX_FFT_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};	 //buffer with fft print data
 IRAM2 static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
 IRAM2 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};						 // frequencies for each row of the waterfall
@@ -270,9 +270,10 @@ void FFT_Init(void)
 		zoomed_width = FFT_SIZE;
 	
 	// clear the buffers
-	memset(&fft_output_buffer, BG_COLOR, sizeof(fft_output_buffer));
+	memset(&fft_output_buffer, 0x00, sizeof(fft_output_buffer));
 	memset(&indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
 	memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
+	NeedWTFRedraw = true;
 }
 
 // FFT calculation
@@ -575,7 +576,7 @@ bool FFT_printFFT(void)
 	for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 	{
 		height = (uint16_t)((float32_t)FFTOutput_mean[(uint_fast16_t)fft_x] * fftHeight);
-		if (height > fftHeight - 1)
+		if (height > fftHeight)
 			height = fftHeight;
 
 		wtf_buffer_freqs[0] = currentFFTFreq;
@@ -1039,9 +1040,7 @@ void FFT_printWaterfallDMA(void)
 
 		//Gauss filter center
 		if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-		{
-				wtf_output_line[bw_line_center] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
-		}
+			wtf_output_line[bw_line_center] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 				
 		//center line
 		wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2]; //mixColors(wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
@@ -1349,7 +1348,7 @@ static uint16_t getBGColor(uint_fast8_t height) // Get FFT background gradient
 // prepare the color palette
 static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initialization
 {
-	for (uint_fast8_t i = 0; i < GET_FFTHeight; i++)
+	for (uint_fast8_t i = 0; i <= GET_FFTHeight; i++)
 	{
 		palette_fft[i] = getFFTColor(GET_FFTHeight - i);
 		palette_bg_gradient[i] = getBGColor(GET_FFTHeight - i);
