@@ -169,8 +169,6 @@ static uint16_t getFFTColor(uint_fast8_t height);											  // get color from 
 static void FFT_fill_color_palette(void);													  // prepare the color palette
 static void FFT_move(int32_t _freq_diff);													  // shift the waterfall
 static int32_t getFreqPositionOnFFT(uint32_t freq);											  // get the position on the FFT for a given frequency
-static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
-static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);		  //mix two colors with opacity
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center);
 static void FFT_3DPrintFFT(void);
 
@@ -526,7 +524,7 @@ bool FFT_printFFT(void)
 		return false;
 	if (FFT_need_fft)
 		return false;
-	if (LCD_systemMenuOpened)
+	if (LCD_systemMenuOpened || LCD_windowOpened)
 		return false;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
@@ -1385,34 +1383,6 @@ static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 uint32_t getFreqOnFFTPosition(uint16_t position)
 {
 	return (uint32_t)((int32_t)CurrentVFO()->Freq + (int32_t)(-((float32_t)LAYOUT->FFT_PRINT_SIZE * hz_in_pixel / 2) + (float32_t)position * (hz_in_pixel / (float32_t)fft_zoom)));
-}
-
-static inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b)
-{
-	uint8_t r = ((color >> 11) & 0x1F) + add_r;
-	uint8_t g = ((color >> 5) & 0x3F) + (uint8_t)(add_g << 1);
-	uint8_t b = ((color >> 0) & 0x1F) + add_b;
-	if (r > 31)
-		r = 31;
-	if (g > 63)
-		g = 63;
-	if (b > 31)
-		b = 31;
-	return (uint16_t)((r << 11) | (g << 5) | b);
-}
-
-static inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity)
-{
-	uint8_t r = (uint8_t)((float32_t)((color1 >> 11) & 0x1F) + (float32_t)((color2 >> 11) & 0x1F) * opacity);
-	uint8_t g = (uint8_t)((float32_t)((color1 >> 5) & 0x3F) + (float32_t)((color2 >> 5) & 0x3F) * opacity);
-	uint8_t b = (uint8_t)((float32_t)((color1 >> 0) & 0x1F) + (float32_t)((color2 >> 0) & 0x1F) * opacity);
-	if (r > 31)
-		r = 31;
-	if (g > 63)
-		g = 63;
-	if (b > 31)
-		b = 31;
-	return (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
 }
 
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center)

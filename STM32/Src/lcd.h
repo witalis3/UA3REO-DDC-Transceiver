@@ -49,6 +49,7 @@ extern void LCD_showTooltip(char text[]);
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
 volatile extern bool LCD_busy;
+volatile extern bool LCD_windowOpened;
 volatile extern bool LCD_systemMenuOpened;
 extern uint16_t LCD_bw_trapez_stripe_pos;
 extern STRUCT_COLOR_THEME *COLOR;

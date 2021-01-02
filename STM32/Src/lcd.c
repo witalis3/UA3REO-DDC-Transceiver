@@ -21,6 +21,7 @@
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
 volatile bool LCD_systemMenuOpened = false;
+volatile bool LCD_windowOpened = false;
 uint16_t LCD_bw_trapez_stripe_pos = 0;
 STRUCT_COLOR_THEME *COLOR = &COLOR_THEMES[0];
 STRUCT_LAYOUT_THEME *LAYOUT = &LAYOUT_THEMES[0];
@@ -67,6 +68,7 @@ static void LCD_displayStatusInfoBar(bool redraw);
 static void LCD_displayStatusInfoGUI(bool redraw);
 static void LCD_displayTextBar(void);
 static void LCD_printTooltip(void);
+static void LCD_showBandWindow(void);
 #if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, void (*clickHandler)(void), void (*holdHandler)(void));
 #endif
@@ -99,7 +101,7 @@ void LCD_Init(void)
 
 static void LCD_displayTopButtons(bool redraw)
 { // display the top buttons
-	if (LCD_systemMenuOpened)
+	if (LCD_systemMenuOpened || LCD_windowOpened)
 		return;
 	if (LCD_busy)
 	{
@@ -152,7 +154,7 @@ static void LCD_displayTopButtons(bool redraw)
 static void LCD_displayBottomButtons(bool redraw)
 {
 	// display the bottom buttons
-	if (LCD_systemMenuOpened)
+	if (LCD_systemMenuOpened || LCD_windowOpened)
 		return;
 	if (LCD_busy)
 	{
@@ -183,7 +185,7 @@ static void LCD_displayBottomButtons(bool redraw)
 
 static void LCD_displayFreqInfo(bool redraw)
 { // display the frequency on the screen
-	if (LCD_systemMenuOpened)
+	if (LCD_systemMenuOpened || LCD_windowOpened)
 		return;
 	if (!redraw && (LCD_last_showed_freq == CurrentVFO()->Freq)
 #if (defined(LAY_800x480))
@@ -340,7 +342,7 @@ static void LCD_drawSMeter(void)
 static void LCD_displayStatusInfoGUI(bool redraw)
 {
 	// display RX / TX and s-meter
-	if (LCD_systemMenuOpened)
+	if (LCD_systemMenuOpened || LCD_windowOpened)
 		return;
 	if (LCD_busy)
 	{
@@ -525,7 +527,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 static void LCD_displayStatusInfoBar(bool redraw)
 {
 	// S-meter and other information
-	if (LCD_systemMenuOpened)
+	if (LCD_systemMenuOpened || LCD_windowOpened)
 		return;
 	if (LCD_busy)
 	{
@@ -834,7 +836,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 static void LCD_displayTextBar(void)
 {
 	// display the text under the waterfall
-	if (LCD_systemMenuOpened)
+	if (LCD_systemMenuOpened || LCD_windowOpened)
 		return;
 	if (LCD_busy)
 	{
@@ -1032,6 +1034,15 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		LCD_redraw(false);
 		return;
 	}
+	//windows
+	//mainfreq click
+	if (y >= LAYOUT->FREQ_Y_TOP && y <= LAYOUT->FREQ_Y_TOP + LAYOUT->FREQ_BLOCK_HEIGHT && x >= LAYOUT->FREQ_LEFT_MARGIN && x <= LAYOUT->FREQ_LEFT_MARGIN + LAYOUT->FREQ_WIDTH)
+	{
+		LCD_showBandWindow();
+		return;
+	}
+	if(LCD_windowOpened)
+		return;
 	//buttons
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
@@ -1050,12 +1061,13 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		newfreq = newfreq / 500 * 500;
 		TRX_setFrequency(newfreq, CurrentVFO());
 		LCD_UpdateQuery.FreqInfo = true;
+		return;
 	}
 }
 
 void LCD_processHoldTouch(uint16_t x, uint16_t y)
 {
-	if (TRX.Locked)
+	if (TRX.Locked || LCD_windowOpened)
 		return;
 	if (LCD_systemMenuOpened)
 	{
@@ -1079,7 +1091,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 	#pragma unused(dy)
 	if (TRX.Locked)
 		return false;
-	if (LCD_systemMenuOpened)
+	if (LCD_systemMenuOpened || LCD_windowOpened)
 		return false;
 	//fft/wtf swipe
 	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y))
@@ -1130,7 +1142,7 @@ static void LCD_printTooltip(void)
 	LCD_UpdateQuery.Tooltip = true;
 	if (LCD_busy)
 		return;
-	if (LCD_systemMenuOpened)
+	if (LCD_systemMenuOpened || LCD_windowOpened)
 	{
 		LCD_UpdateQuery.Tooltip = false;
 		return;
@@ -1153,4 +1165,19 @@ static void LCD_printTooltip(void)
 		LCD_UpdateQuery.Tooltip = false;
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 	}
+}
+
+static void LCD_showBandWindow(void)
+{
+	#if (defined(HAS_TOUCHPAD))
+	LCD_busy = true;
+	LCD_windowOpened = !LCD_windowOpened;
+	if(LCD_windowOpened)
+	{
+		LCDDriver_fadeScreen(0.8f);
+	}
+	else
+		LCD_redraw(false);
+	LCD_busy = false;
+	#endif
 }

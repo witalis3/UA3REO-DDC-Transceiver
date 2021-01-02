@@ -82,6 +82,9 @@ typedef struct
 	}
 #define rgb888torgb565(r, g, b) ((uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3)))
 
+extern uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
+extern uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);		  //mix two colors with opacity
+	
 extern void LCDDriver_SendData(uint16_t data);
 extern uint16_t LCDDriver_readReg(uint16_t reg);
 extern void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
@@ -108,6 +111,7 @@ extern void LCDDriver_setRotation(uint8_t rotate);
 extern void LCDDriver_setBrightness(uint8_t percent);
 extern void LCDDriver_printImage_RLECompressed_StartStream(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 extern void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t len);
+extern void LCDDriver_fadeScreen(float32_t opacity);
 
 //BTE functions
 void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, uint16_t w, uint16_t h, bool fromEnd);

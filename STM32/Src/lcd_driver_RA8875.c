@@ -7,6 +7,7 @@
 #include "fonts.h"
 #include "functions.h"
 #include "trx_manager.h"
+#include "lcd.h"
 
 static bool activeWindowIsFullscreen = true;
 static void LCDDriver_waitBusy(void);
@@ -501,6 +502,24 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 
   /* Wait for the command to finish */
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
+}
+
+void LCDDriver_fadeScreen(float32_t opacity)
+{
+	uint16_t color = 0;
+	LCDDriver_SetCursorPosition(0, 0);
+	for(uint16_t y = 0; y < LCD_HEIGHT; y++)
+	{
+		for(uint16_t x = 0; x < LCD_WIDTH; x++)
+		{
+			//get current pixel
+			color = LCDDriver_ReadData();
+			//transform
+			color = mixColors(color, BG_COLOR, opacity);
+			//write pixel back
+			LCDDriver_SendData(color);
+		}
+	}
 }
 
 #endif
