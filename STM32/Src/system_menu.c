@@ -465,7 +465,7 @@ void SYSMENU_TRX_RFPOWER_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_trx_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_TRX_STEP_HOTKEY(void)
@@ -476,7 +476,7 @@ void SYSMENU_TRX_STEP_HOTKEY(void)
 	systemMenuIndex = 7;
 	if (TRX.Fast)
 		systemMenuIndex = 8;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction)
@@ -815,7 +815,7 @@ void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 7;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
@@ -824,7 +824,7 @@ void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 9;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
@@ -833,7 +833,7 @@ void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 10;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
@@ -842,7 +842,7 @@ void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 11;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
@@ -851,7 +851,7 @@ void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 6;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_HPF_CW_HOTKEY(void)
@@ -859,7 +859,7 @@ void SYSMENU_AUDIO_HPF_CW_HOTKEY(void)
 	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	systemMenuIndex = 8;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
@@ -868,7 +868,7 @@ void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 12;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_AGC_HOTKEY(void)
@@ -877,7 +877,7 @@ void SYSMENU_AUDIO_AGC_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 20;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction)
@@ -1387,7 +1387,7 @@ static void SYSMENU_HANDL_CWMENU(int8_t direction)
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_CW_WPM_HOTKEY(void)
@@ -1396,7 +1396,7 @@ void SYSMENU_CW_WPM_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 4;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void SYSMENU_CW_KEYER_HOTKEY(void)
@@ -1405,7 +1405,7 @@ void SYSMENU_CW_KEYER_HOTKEY(void)
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 3;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 static void SYSMENU_HANDL_CW_Decoder(int8_t direction)
@@ -1497,7 +1497,7 @@ static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction)
 
 	COLOR = &COLOR_THEMES[TRX.ColorThemeId];
 	FFT_Init();
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 static void SYSMENU_HANDL_SCREEN_LAYOUT_THEME(int8_t direction)
@@ -1509,7 +1509,7 @@ static void SYSMENU_HANDL_SCREEN_LAYOUT_THEME(int8_t direction)
 
 	LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
 	FFT_Init();
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Compressor(int8_t direction)
@@ -1864,7 +1864,7 @@ static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
 {
 	#pragma unused(direction)
 	LCD_systemMenuOpened = false;
-	LCD_redraw();
+	LCD_redraw(false);
 	LCD_doEvents();
 	WIFI_UpdateFW(NULL);
 	LCD_showTooltip("Started, see console");
@@ -2434,7 +2434,7 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	//drawSystemMenu(true);
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 //SPECTRUM ANALIZER
@@ -2869,7 +2869,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 		sysmenu_services_opened = false;
 		LCD_systemMenuOpened = false;
 		LCD_UpdateQuery.Background = true;
-		LCD_redraw();
+		LCD_redraw(false);
 	}
 	else
 	{
@@ -2877,7 +2877,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 		{
 			LCD_systemMenuOpened = false;
 			LCD_UpdateQuery.Background = true;
-			LCD_redraw();
+			LCD_redraw(false);
 		}
 		else
 		{
@@ -2903,7 +2903,7 @@ void SYSMENU_eventCloseAllSystemMenu(void)
 	sysmenu_item_selected_by_enc2 = false;
 	LCD_systemMenuOpened = false;
 	LCD_UpdateQuery.Background = true;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 //secondary encoder click

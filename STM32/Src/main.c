@@ -282,7 +282,7 @@ int main(void)
   if (SHOW_LOGO)
     HAL_Delay(1500); //logo wait
   LCD_busy = false;
-  LCD_redraw();
+  LCD_redraw(true);
   sendToDebug_strln("[OK] Misc timer TIM6 init");
   HAL_TIM_Base_Start_IT(&htim6);
   sendToDebug_strln("[OK] CPU Load init");

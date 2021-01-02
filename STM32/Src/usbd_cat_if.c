@@ -314,7 +314,7 @@ void ua3reo_dev_cat_parseCommand(void)
 				TRX.current_vfo = 1;
 			NeedSaveSettings = true;
 			NeedReinitAudioFilters = true;
-			LCD_redraw();
+			LCD_redraw(false);
 			sendToDebug_str3("CAT arguments: ", _command, "\r\n");
 		}
 		return;

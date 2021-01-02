@@ -855,7 +855,7 @@ static void LCD_displayTextBar(void)
 	LCD_busy = false;
 }
 
-void LCD_redraw(void)
+void LCD_redraw(bool do_now)
 {
 	TouchpadButton_handlers_count = 0;
 	LCD_UpdateQuery.Background = true;
@@ -874,7 +874,9 @@ void LCD_redraw(void)
 	LCD_last_showed_freq_mhz = 9999;
 	LCD_last_showed_freq_khz = 9999;
 	LCD_last_showed_freq_hz = 9999;
-	//LCD_doEvents();
+	NeedWTFRedraw = true;
+	if(do_now)
+		LCD_doEvents();
 }
 
 void LCD_doEvents(void)
@@ -999,7 +1001,7 @@ void LCD_showError(char text[], bool redraw)
 		HAL_Delay(2000);
 	LCD_busy = false;
 	if (redraw)
-		LCD_redraw();
+		LCD_redraw(false);
 }
 
 void LCD_showInfo(char text[], bool autohide)
@@ -1016,7 +1018,7 @@ void LCD_showInfo(char text[], bool autohide)
 	{
 		HAL_Delay(2000);
 		LCD_busy = false;
-		LCD_redraw();
+		LCD_redraw(false);
 	}
 }
 
@@ -1027,7 +1029,7 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 	if (LCD_systemMenuOpened)
 	{
 		SYSMENU_eventCloseAllSystemMenu();
-		LCD_redraw();
+		LCD_redraw(false);
 		return;
 	}
 	//buttons
@@ -1058,7 +1060,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 	if (LCD_systemMenuOpened)
 	{
 		SYSMENU_eventCloseAllSystemMenu();
-		LCD_redraw();
+		LCD_redraw(false);
 		return;
 	}
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)

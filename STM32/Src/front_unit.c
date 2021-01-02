@@ -606,7 +606,7 @@ void FRONTPANEL_BUTTONHANDLER_AsB(void) // A/B
 	resetVAD();
 	FFT_Init();
 	TRX_ScanMode = false;
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void FRONTPANEL_BUTTONHANDLER_TUNE(void)
@@ -1091,7 +1091,7 @@ void FRONTPANEL_BUTTONHANDLER_LOCK(void)
 	else
 	{
 		SYSMENU_hiddenmenu_enabled = true;
-		LCD_redraw();
+		LCD_redraw(false);
 	}
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.StatusInfoBar = true;
@@ -1104,7 +1104,7 @@ void FRONTPANEL_BUTTONHANDLER_MENU(void)
 		LCD_systemMenuOpened = true;
 	else
 		SYSMENU_eventCloseSystemMenu();
-	LCD_redraw();
+	LCD_redraw(false);
 }
 
 void FRONTPANEL_BUTTONHANDLER_MUTE(void)
@@ -1211,7 +1211,7 @@ static void FRONTPANEL_BUTTONHANDLER_FUNC8(void)
 	if (LCD_systemMenuOpened)
 	{
 		SYSMENU_hiddenmenu_enabled = true;
-		LCD_redraw();
+		LCD_redraw(false);
 	}
 }
 
