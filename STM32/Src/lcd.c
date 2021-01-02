@@ -891,14 +891,14 @@ void LCD_doEvents(void)
 		LCD_UpdateQuery.Background = false;
 		LCD_busy = false;
 	}
-	if (LCD_UpdateQuery.TopButtons)
-		LCD_displayTopButtons(false);
-	if (LCD_UpdateQuery.TopButtonsRedraw)
-		LCD_displayTopButtons(true);
 	if (LCD_UpdateQuery.BottomButtons)
 		LCD_displayBottomButtons(false);
 	if (LCD_UpdateQuery.BottomButtonsRedraw)
 		LCD_displayBottomButtons(true);
+	if (LCD_UpdateQuery.TopButtons)
+		LCD_displayTopButtons(false);
+	if (LCD_UpdateQuery.TopButtonsRedraw)
+		LCD_displayTopButtons(true);
 	if (LCD_UpdateQuery.FreqInfo)
 		LCD_displayFreqInfo(false);
 	if (LCD_UpdateQuery.FreqInfoRedraw)
@@ -1101,12 +1101,14 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 		{
 			FRONTPANEL_funcbuttons_page++;
 			LCD_UpdateQuery.BottomButtons = true;
+			LCD_UpdateQuery.TopButtons = true;
 			return true; //stop
 		}
 		if(dx > 100 && FRONTPANEL_funcbuttons_page > 0)
 		{
 			FRONTPANEL_funcbuttons_page--;
 			LCD_UpdateQuery.BottomButtons = true;
+			LCD_UpdateQuery.TopButtons = true;
 			return true; //stop
 		}
 	}
