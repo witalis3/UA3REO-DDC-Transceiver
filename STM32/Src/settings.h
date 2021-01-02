@@ -343,6 +343,7 @@ extern VFO *SecondaryVFO(void);
 #endif
 #ifdef FRONTPANEL_BIG_V1
 #define HRDW_MCP3008_1 true
+#define HRDW_HAS_FUNCBUTTONS true
 #endif
 
 #endif
