@@ -313,12 +313,13 @@ void FFT_bufferPrepare(void)
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_SIZE);
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_SIZE);
 		// Shift old data
-		memcpy(&FFTInputCharge[0], &FFTInputCharge[(zoomed_width) * 2], sizeof(float32_t) * (FFT_SIZE - zoomed_width) * 2);
+		memcpy(&FFTInputCharge[0], &FFTInputCharge[zoomed_width], sizeof(float32_t) * (FFT_SIZE - zoomed_width));
 		// Add new data
 		for (uint_fast16_t i = 0; i < zoomed_width; i++)
 		{
-			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2] = FFTInput_I_current[i];
-			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2 + 1] = FFTInput_Q_current[i];
+			uint16_t wind_pos = i * (FFT_SIZE / zoomed_width);
+			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2] = FFTInput_I_current[i] * window_multipliers[wind_pos];
+			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2 + 1] = FFTInput_Q_current[i] * window_multipliers[wind_pos];
 		}
 	}
 	else
