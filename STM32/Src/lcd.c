@@ -164,15 +164,15 @@ static void LCD_displayBottomButtons(bool redraw)
 #if (defined(LAY_800x480))
 	if (redraw)
 		LCDDriver_Fill_RectWH(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LCD_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, BG_COLOR);
-
-	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[0]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[0]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[0]].holdHandler);
-	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 1, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[1]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[1]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[1]].holdHandler);
-	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 2, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[2]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[2]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[2]].holdHandler);
-	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 3, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[3]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[3]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[3]].holdHandler);
-	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 4, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[4]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[4]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[4]].holdHandler);
-	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 5, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[5]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[5]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[5]].holdHandler);
-	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 6, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[6]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[6]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[6]].holdHandler);
-	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 7, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[7]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[7]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[7]].holdHandler);
+	TouchpadButton_handlers_count = 0;
+	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 0]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 0]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 0]].holdHandler);
+	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 1, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 1]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 1]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 1]].holdHandler);
+	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 2, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 2]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 2]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 2]].holdHandler);
+	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 3, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 3]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 3]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 3]].holdHandler);
+	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 4, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 4]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 4]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 4]].holdHandler);
+	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 5, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 5]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 5]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 5]].holdHandler);
+	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 6, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 6]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 6]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 6]].holdHandler);
+	printButton(LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH * 7, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 7]].name, true, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 7]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + 7]].holdHandler);
 #endif
 
 	LCD_UpdateQuery.BottomButtons = false;
@@ -511,7 +511,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 			LCDDriver_Fill_Triangle(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, COLOR->BW_TRAPEZ_FILL);
 	}
 	//shift stripe
-	if (!TRX.ShiftEnabled)
+	if (!TRX.ShiftEnabled || LCD_bw_trapez_stripe_pos == 0)
 		LCD_bw_trapez_stripe_pos = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
 	LCDDriver_Fill_RectWH(LCD_bw_trapez_stripe_pos - 1, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT / 2, 3, LAYOUT->BW_TRAPEZ_HEIGHT / 2, COLOR->BW_TRAPEZ_STRIPE);
 	/////END BW trapezoid
@@ -1082,7 +1082,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 	if (LCD_systemMenuOpened)
 		return false;
 	//fft/wtf swipe
-	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + LAYOUT->FFT_FFTWTF_BOTTOM - 50) >= y))
+	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y))
 	{
 		const uint8_t slowler = 4;
 		uint32_t newfreq = getFreqOnFFTPosition(LAYOUT->FFT_PRINT_SIZE / 2 - dx / slowler);
@@ -1093,6 +1093,22 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 		TRX_setFrequency(newfreq, CurrentVFO());
 		LCD_UpdateQuery.FreqInfo = true;
 		return true;
+	}
+	//bottom buttons
+	if ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) < y)
+	{
+		if(dx < -100 && FRONTPANEL_funcbuttons_page < (FUNCBUTTONS_PAGES - 1))
+		{
+			FRONTPANEL_funcbuttons_page++;
+			LCD_UpdateQuery.BottomButtons = true;
+			return true; //stop
+		}
+		if(dx > 100 && FRONTPANEL_funcbuttons_page > 0)
+		{
+			FRONTPANEL_funcbuttons_page--;
+			LCD_UpdateQuery.BottomButtons = true;
+			return true; //stop
+		}
 	}
 	return false;
 }

@@ -6,6 +6,8 @@
 
 #define MCP3008_SINGLE_THRESHOLD 500
 #define FUNCBUTTONS_COUNT 24
+#define FUNCBUTTONS_ON_PAGE 8
+#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
 
 typedef enum
 {
@@ -42,6 +44,7 @@ typedef struct
 
 extern PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[];
 extern const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT];
+extern uint8_t FRONTPANEL_funcbuttons_page;
 
 extern void FRONTPANEL_ENCODER_checkRotate(void);
 extern void FRONTPANEL_ENCODER2_checkRotate(void);
