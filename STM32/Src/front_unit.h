@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #define MCP3008_SINGLE_THRESHOLD 500
+#define FUNCBUTTONS_COUNT 24
 
 typedef enum
 {
@@ -13,6 +14,14 @@ typedef enum
 	FUNIT_CTRL_SHIFT,
 	FUNIT_CTRL_PTT,
 } FRONT_UNIT_CONTROL_TYPE;
+
+typedef struct
+{
+	bool work_in_menu;
+	char name[16];
+	void (*clickHandler)(void);
+	void (*holdHandler)(void);
+} PERIPH_FrontPanel_FuncButton;
 
 typedef struct
 {
@@ -26,11 +35,13 @@ typedef struct
 	uint32_t start_hold_time;
 	bool afterhold;
 	bool work_in_menu;
+	char name[16];
 	void (*clickHandler)(void);
 	void (*holdHandler)(void);
 } PERIPH_FrontPanel_Button;
 
 extern PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[];
+extern const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT];
 
 extern void FRONTPANEL_ENCODER_checkRotate(void);
 extern void FRONTPANEL_ENCODER2_checkRotate(void);

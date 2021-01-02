@@ -7,8 +7,9 @@
 #include <stdbool.h>
 #include "functions.h"
 #include "bands.h"
+#include "front_unit.h"
 
-#define SETT_VERSION 212				   // Settings config version
+#define SETT_VERSION 220				   // Settings config version
 #define CALIB_VERSION 212				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -236,6 +237,7 @@ extern struct TRX_SETTINGS
 	bool FFT_Background;
 	bool FFT_Lens;
 	uint8_t FFT_3D;
+	uint8_t FuncButtons[FUNCBUTTONS_COUNT];
 	//ADC
 	bool ADC_Driver;
 	bool ADC_PGA;

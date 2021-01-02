@@ -268,6 +268,8 @@ void LoadSettings(bool clear)
 		TRX.WSPR_BANDS_10 = true;
 		TRX.WSPR_BANDS_6 = false;
 		TRX.WSPR_BANDS_2 = false;
+		for(uint8_t i = 0; i < FUNCBUTTONS_COUNT ; i++)
+			TRX.FuncButtons[i] = i;
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");
