@@ -145,6 +145,14 @@ typedef const struct
 	const uint16_t STATUS_LABEL_NOTCH_Y_OFFSET;
 	const uint16_t STATUS_LABEL_FFT_BW_X_OFFSET;
 	const uint16_t STATUS_LABEL_FFT_BW_Y_OFFSET;
+	#if (defined(LAY_800x480))
+	const uint16_t STATUS_LABEL_CPU_X_OFFSET;
+	const uint16_t STATUS_LABEL_CPU_Y_OFFSET;
+	const uint16_t STATUS_LABEL_AUTOGAIN_X_OFFSET;
+	const uint16_t STATUS_LABEL_AUTOGAIN_Y_OFFSET;
+	const uint16_t STATUS_LABEL_LOCK_X_OFFSET;
+	const uint16_t STATUS_LABEL_LOCK_Y_OFFSET;
+	#endif
 	const uint16_t STATUS_SMETER_PEAK_HOLDTIME;
 	const uint16_t STATUS_SMETER_TXLABELS_MARGIN;
 	const uint16_t STATUS_SMETER_TXLABELS_PADDING;
@@ -158,8 +166,6 @@ typedef const struct
 	#if (defined(LAY_800x480))
 	const uint16_t STATUS_MODE_B_X_OFFSET;
 	const int16_t STATUS_MODE_B_Y_OFFSET;
-	const uint16_t STATUS_LABEL_LOCK_X_OFFSET;
-	const uint16_t STATUS_LABEL_LOCK_Y_OFFSET;
 	#endif
 	const uint16_t STATUS_ERR_OFFSET_X;
 	const uint16_t STATUS_ERR_OFFSET_Y;

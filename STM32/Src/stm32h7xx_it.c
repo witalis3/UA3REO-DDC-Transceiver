@@ -607,7 +607,7 @@ void TIM6_DAC_IRQHandler(void)
   if ((ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
 		needPrintFFT = true;
   
-	if(FFT_printFFT()) // draw FFT
+	if(needPrintFFT && FFT_printFFT()) // draw FFT
 		needPrintFFT = false;
 
   if (ms10_counter == 101) // every 1 sec
@@ -704,6 +704,7 @@ void TIM6_DAC_IRQHandler(void)
     FPGA_samples = 0;
     AUDIOPROC_samples = 0;
     WM8731_DMA_samples = 0;
+		FFT_FPS_Last = FFT_FPS;
     FFT_FPS = 0;
     RX_USB_AUDIO_SAMPLES = 0;
     TX_USB_AUDIO_SAMPLES = 0;

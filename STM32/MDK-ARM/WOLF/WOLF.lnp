@@ -14,8 +14,6 @@
 "wolf\functions.o"
 "wolf\i2c.o"
 "wolf\lcd.o"
-"wolf\lcd_480x320.o"
-"wolf\lcd_800x480.o"
 "wolf\lcd_driver.o"
 "wolf\lcd_driver_ili9481.o"
 "wolf\lcd_driver_ra8875.o"

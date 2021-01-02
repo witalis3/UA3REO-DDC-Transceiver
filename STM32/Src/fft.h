@@ -41,6 +41,7 @@ extern float32_t FFTInput_Q_A[FFT_SIZE];
 extern float32_t FFTInput_I_B[FFT_SIZE];
 extern float32_t FFTInput_Q_B[FFT_SIZE];
 extern uint16_t FFT_FPS;
+extern uint16_t FFT_FPS_Last;
 extern bool NeedWTFRedraw;
 
 // Public methods

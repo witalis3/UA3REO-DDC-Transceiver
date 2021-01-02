@@ -17,6 +17,7 @@ IRAM2 float32_t FFTInput_Q_A[FFT_SIZE] = {0}; // incoming buffer FFT Q
 IRAM2 float32_t FFTInput_I_B[FFT_SIZE] = {0}; // incoming buffer FFT I
 IRAM2 float32_t FFTInput_Q_B[FFT_SIZE] = {0}; // incoming buffer FFT Q
 uint16_t FFT_FPS = 0;
+uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
 
 //Private variables

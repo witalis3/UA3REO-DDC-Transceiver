@@ -554,16 +554,6 @@
               <FilePath>..\Src\lcd.h</FilePath>
             </File>
             <File>
-              <FileName>lcd_480x320.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\lcd_480x320.c</FilePath>
-            </File>
-            <File>
-              <FileName>lcd_800x480.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\lcd_800x480.c</FilePath>
-            </File>
-            <File>
               <FileName>lcd_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\lcd_driver.c</FilePath>
