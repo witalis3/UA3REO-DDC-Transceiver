@@ -603,10 +603,12 @@ void TIM6_DAC_IRQHandler(void)
   else if (LCD_UpdateQuery.FreqInfo) //Redraw freq fast
     LCD_doEvents();
 
+	static bool needPrintFFT = false;
   if ((ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
-  {
-    FFT_printFFT(); // draw FFT
-  }
+		needPrintFFT = true;
+  
+	if(FFT_printFFT()) // draw FFT
+		needPrintFFT = false;
 
   if (ms10_counter == 101) // every 1 sec
   {
