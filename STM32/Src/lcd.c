@@ -1110,6 +1110,11 @@ static void LCD_printTooltip(void)
 	LCD_UpdateQuery.Tooltip = true;
 	if (LCD_busy)
 		return;
+	if (LCD_systemMenuOpened)
+	{
+		LCD_UpdateQuery.Tooltip = false;
+		return;
+	}
 	LCD_busy = true;
 
 	uint16_t x1, y1, w, h;
