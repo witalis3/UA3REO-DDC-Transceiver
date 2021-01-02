@@ -314,30 +314,30 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window},
 		#ifdef HRDW_HAS_FUNCBUTTONS
 			#if FUNCBUTTONS_COUNT == 24
-			{"Func button 1", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[0], SYSMENU_HANDL_SCREEN_FUNC_BUTTON1},
-			{"Func button 2", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[1], SYSMENU_HANDL_SCREEN_FUNC_BUTTON2},
-			{"Func button 3", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[2], SYSMENU_HANDL_SCREEN_FUNC_BUTTON3},
-			{"Func button 4", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[3], SYSMENU_HANDL_SCREEN_FUNC_BUTTON4},
-			{"Func button 5", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[4], SYSMENU_HANDL_SCREEN_FUNC_BUTTON5},
-			{"Func button 6", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[5], SYSMENU_HANDL_SCREEN_FUNC_BUTTON6},
-			{"Func button 7", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[6], SYSMENU_HANDL_SCREEN_FUNC_BUTTON7},
-			{"Func button 8", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[7], SYSMENU_HANDL_SCREEN_FUNC_BUTTON8},
-			{"Func button 9", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[8], SYSMENU_HANDL_SCREEN_FUNC_BUTTON9},
-			{"Func button 10", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[9], SYSMENU_HANDL_SCREEN_FUNC_BUTTON10},
-			{"Func button 11", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[10], SYSMENU_HANDL_SCREEN_FUNC_BUTTON11},
-			{"Func button 12", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[11], SYSMENU_HANDL_SCREEN_FUNC_BUTTON12},
-			{"Func button 13", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[12], SYSMENU_HANDL_SCREEN_FUNC_BUTTON13},
-			{"Func button 14", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[13], SYSMENU_HANDL_SCREEN_FUNC_BUTTON14},
-			{"Func button 15", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[14], SYSMENU_HANDL_SCREEN_FUNC_BUTTON15},
-			{"Func button 16", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[15], SYSMENU_HANDL_SCREEN_FUNC_BUTTON16},
-			{"Func button 17", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[16], SYSMENU_HANDL_SCREEN_FUNC_BUTTON17},
-			{"Func button 18", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[17], SYSMENU_HANDL_SCREEN_FUNC_BUTTON18},
-			{"Func button 19", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[18], SYSMENU_HANDL_SCREEN_FUNC_BUTTON19},
-			{"Func button 20", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[19], SYSMENU_HANDL_SCREEN_FUNC_BUTTON20},
-			{"Func button 21", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[20], SYSMENU_HANDL_SCREEN_FUNC_BUTTON21},
-			{"Func button 22", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[21], SYSMENU_HANDL_SCREEN_FUNC_BUTTON22},
-			{"Func button 23", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[22], SYSMENU_HANDL_SCREEN_FUNC_BUTTON23},
-			{"Func button 24", SYSMENU_UINT8, (uint32_t *)&TRX.FuncButtons[23], SYSMENU_HANDL_SCREEN_FUNC_BUTTON24},
+			{"Func button 1", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[0], SYSMENU_HANDL_SCREEN_FUNC_BUTTON1},
+			{"Func button 2", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[1], SYSMENU_HANDL_SCREEN_FUNC_BUTTON2},
+			{"Func button 3", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[2], SYSMENU_HANDL_SCREEN_FUNC_BUTTON3},
+			{"Func button 4", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[3], SYSMENU_HANDL_SCREEN_FUNC_BUTTON4},
+			{"Func button 5", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[4], SYSMENU_HANDL_SCREEN_FUNC_BUTTON5},
+			{"Func button 6", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[5], SYSMENU_HANDL_SCREEN_FUNC_BUTTON6},
+			{"Func button 7", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[6], SYSMENU_HANDL_SCREEN_FUNC_BUTTON7},
+			{"Func button 8", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[7], SYSMENU_HANDL_SCREEN_FUNC_BUTTON8},
+			{"Func button 9", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[8], SYSMENU_HANDL_SCREEN_FUNC_BUTTON9},
+			{"Func button 10", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[9], SYSMENU_HANDL_SCREEN_FUNC_BUTTON10},
+			{"Func button 11", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[10], SYSMENU_HANDL_SCREEN_FUNC_BUTTON11},
+			{"Func button 12", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[11], SYSMENU_HANDL_SCREEN_FUNC_BUTTON12},
+			{"Func button 13", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[12], SYSMENU_HANDL_SCREEN_FUNC_BUTTON13},
+			{"Func button 14", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[13], SYSMENU_HANDL_SCREEN_FUNC_BUTTON14},
+			{"Func button 15", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[14], SYSMENU_HANDL_SCREEN_FUNC_BUTTON15},
+			{"Func button 16", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[15], SYSMENU_HANDL_SCREEN_FUNC_BUTTON16},
+			{"Func button 17", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[16], SYSMENU_HANDL_SCREEN_FUNC_BUTTON17},
+			{"Func button 18", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[17], SYSMENU_HANDL_SCREEN_FUNC_BUTTON18},
+			{"Func button 19", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[18], SYSMENU_HANDL_SCREEN_FUNC_BUTTON19},
+			{"Func button 20", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[19], SYSMENU_HANDL_SCREEN_FUNC_BUTTON20},
+			{"Func button 21", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[20], SYSMENU_HANDL_SCREEN_FUNC_BUTTON21},
+			{"Func button 22", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[21], SYSMENU_HANDL_SCREEN_FUNC_BUTTON22},
+			{"Func button 23", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[22], SYSMENU_HANDL_SCREEN_FUNC_BUTTON23},
+			{"Func button 24", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[23], SYSMENU_HANDL_SCREEN_FUNC_BUTTON24},
 			#endif
 		#endif
 };
@@ -3372,6 +3372,9 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		sprintf(ctmp, "!!!");
 		break;
 	case SYSMENU_INFOLINE:
+		break;
+	case SYSMENU_FUNCBUTTON:
+		sprintf(ctmp, "%s    ", (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[(uint8_t)*value]].name);
 		break;
 	}
 

@@ -143,6 +143,9 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 		memcpy(&tmp_float, value, sizeof(float32_t));
 		sprintf(valbuff, "%.6f", (double)tmp_float);
 		break;
+	case SYSMENU_FUNCBUTTON:
+		sprintf(valbuff, "%u", (uint8_t)*value);
+		break;
 	case SYSMENU_RUN:
 	case SYSMENU_UINT32R:
 	case SYSMENU_MENU:
