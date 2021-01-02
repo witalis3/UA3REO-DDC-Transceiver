@@ -223,7 +223,7 @@ typedef const struct
 	#define LAYOUT_THEMES_COUNT 1
 	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
 	#define MAX_FFT_HEIGHT 170
-	#define MAX_WTF_HEIGHT 170
+	#define MAX_WTF_HEIGHT 200
 	#define FFT_AND_WTF_HEIGHT 300
 #endif
 

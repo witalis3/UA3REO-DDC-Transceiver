@@ -513,16 +513,18 @@ void FFT_doFFT(void)
 }
 
 // FFT output
-void FFT_printFFT(void)
+bool FFT_printFFT(void)
 {
 	if (LCD_busy)
-		return;
+		return false;
 	if (!TRX.FFT_Enabled)
-		return;
+		return false;
+	if (!TRX_Inited)
+		return false;
 	if (FFT_need_fft)
-		return;
+		return false;
 	if (LCD_systemMenuOpened)
-		return;
+		return false;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
 	LCD_busy = true;
@@ -627,7 +629,7 @@ void FFT_printFFT(void)
 	if(TRX.FFT_3D > 0)
 	{
 		FFT_3DPrintFFT();
-		return;
+		return true;
 	}
 	
 	// prepare FFT print over the waterfall
@@ -755,17 +757,8 @@ void FFT_printFFT(void)
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
 	print_fft_dma_estimated_size = LAYOUT->FFT_PRINT_SIZE * fftHeight;
 	print_fft_dma_position = 0;
-	if(print_fft_dma_estimated_size <= FFT_DMA_MAX_BLOCK)
-	{
-		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0], LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
-		print_fft_dma_estimated_size = 0;
-	}
-	else
-	{
-		print_fft_dma_estimated_size -= FFT_DMA_MAX_BLOCK;
-		print_fft_dma_position = FFT_DMA_MAX_BLOCK;
-		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0], LCD_FSMC_DATA_ADDR, FFT_DMA_MAX_BLOCK);
-	}
+	FFT_afterPrintFFT();
+	return true;
 }
 
 //actions after FFT_printFFT
@@ -1043,6 +1036,12 @@ void FFT_printWaterfallDMA(void)
 				if (grid_lines_pos[i] > 0)
 					wtf_output_line[grid_lines_pos[i]] = palette_fft[fftHeight * 3 / 4]; //mixColors(wtf_output_line[grid_lines_pos[i]], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 
+		//Gauss filter center
+		if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+		{
+				wtf_output_line[bw_line_center] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+		}
+				
 		//center line
 		wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2]; //mixColors(wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 
