@@ -711,7 +711,7 @@ void ua3reo_dev_cat_parseCommand(void)
 	{
 		if (!has_args)
 		{
-			if (TRX_ptt_cat)
+			if (TRX_ptt_soft)
 				CAT_Transmit("TX1;");
 			else if (TRX_ptt_hard)
 				CAT_Transmit("TX2;");
@@ -722,11 +722,11 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			if (strcmp(arguments, "0") == 0)
 			{
-				TRX_ptt_cat = false;
+				TRX_ptt_soft = false;
 			}
 			if (strcmp(arguments, "1") == 0)
 			{
-				TRX_ptt_cat = true;
+				TRX_ptt_soft = true;
 			}
 		}
 		return;

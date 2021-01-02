@@ -540,8 +540,8 @@ void TIM6_DAC_IRQHandler(void)
   //Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
   RF_UNIT_ProcessSensors();
 
-  // emulate PTT over CAT
-  if (TRX_ptt_cat != TRX_old_ptt_cat)
+  // emulate PTT over CAT/Software
+  if (TRX_ptt_soft != TRX_old_ptt_soft)
     TRX_ptt_change();
 
   // emulate the key via the COM port
@@ -758,7 +758,7 @@ void TIM6_DAC_IRQHandler(void)
     {
       TRX_Tune = false;
       TRX_ptt_hard = false;
-      TRX_ptt_cat = false;
+      TRX_ptt_soft = false;
       LCD_UpdateQuery.StatusInfoGUI = true;
       LCD_UpdateQuery.TopButtons = true;
       NeedSaveSettings = true;
@@ -770,7 +770,7 @@ void TIM6_DAC_IRQHandler(void)
     {
       TRX_Tune = false;
       TRX_ptt_hard = false;
-      TRX_ptt_cat = false;
+      TRX_ptt_soft = false;
       LCD_UpdateQuery.StatusInfoGUI = true;
       LCD_UpdateQuery.TopButtons = true;
       NeedSaveSettings = true;

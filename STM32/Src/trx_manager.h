@@ -22,8 +22,8 @@ extern void TRX_TemporaryMute(void);
 extern void TRX_ProcessScanMode(void);
 
 volatile extern bool TRX_ptt_hard;
-volatile extern bool TRX_ptt_cat;
-volatile extern bool TRX_old_ptt_cat;
+volatile extern bool TRX_ptt_soft;
+volatile extern bool TRX_old_ptt_soft;
 volatile extern bool TRX_key_serial;
 volatile extern bool TRX_old_key_serial;
 volatile extern bool TRX_key_dot_hard;

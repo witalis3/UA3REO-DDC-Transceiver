@@ -18,8 +18,8 @@
 #include "vad.h"
 
 volatile bool TRX_ptt_hard = false;
-volatile bool TRX_ptt_cat = false;
-volatile bool TRX_old_ptt_cat = false;
+volatile bool TRX_ptt_soft = false;
+volatile bool TRX_old_ptt_soft = false;
 volatile bool TRX_key_serial = false;
 volatile bool TRX_old_key_serial = false;
 volatile bool TRX_key_dot_hard = false;
@@ -76,7 +76,7 @@ static void TRX_Start_TXRX(void);
 
 bool TRX_on_TX(void)
 {
-	if (TRX_ptt_hard || TRX_ptt_cat || TRX_Tune || CurrentVFO()->Mode == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0)
+	if (TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO()->Mode == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0)
 		return true;
 	return false;
 }
@@ -171,26 +171,14 @@ void TRX_ptt_change(void)
 	if (TRX_ptt_hard != TRX_new_ptt_hard)
 	{
 		TRX_ptt_hard = TRX_new_ptt_hard;
-		if (TRX_ptt_hard && (CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB) && TRX.InputType_USB)
-		{
-			TRX.InputType_USB = false;
-			TRX.InputType_MIC = true;
-			TRX.InputType_LINE = false;
-		}
-		TRX_ptt_cat = false;
+		TRX_ptt_soft = false;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
 	}
-	if (TRX_ptt_cat != TRX_old_ptt_cat)
+	if (TRX_ptt_soft != TRX_old_ptt_soft)
 	{
-		TRX_old_ptt_cat = TRX_ptt_cat;
-		if (TRX_ptt_cat && (CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U))
-		{
-			TRX.InputType_USB = true;
-			TRX.InputType_MIC = false;
-			TRX.InputType_LINE = false;
-		}
+		TRX_old_ptt_soft = TRX_ptt_soft;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();

@@ -205,7 +205,7 @@ void SWR_Stop(void)
 	TRX_Mute = LastMute;
 	TRX_Tune = false;
 	TRX_ptt_hard = false;
-	TRX_ptt_cat = false;
+	TRX_ptt_soft = false;
 	TRX_Restart_Mode();
 }
 
