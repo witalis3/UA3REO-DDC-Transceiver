@@ -504,7 +504,7 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
 }
 
-void LCDDriver_fadeScreen(float32_t opacity)
+void LCDDriver_fadeScreen(float32_t brightness)
 {
 	uint16_t color = 0;
 	LCDDriver_SetCursorPosition(0, 0);
@@ -515,7 +515,10 @@ void LCDDriver_fadeScreen(float32_t opacity)
 			//get current pixel
 			color = LCDDriver_ReadData();
 			//transform
-			color = mixColors(color, BG_COLOR, opacity);
+			uint8_t r = (uint8_t)((float32_t)((color >> 11) & 0x1F) * brightness);
+			uint8_t g = (uint8_t)((float32_t)((color >> 5) & 0x3F) * brightness);
+			uint8_t b = (uint8_t)((float32_t)((color >> 0) & 0x1F) * brightness);
+			color = (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
 			//write pixel back
 			LCDDriver_SendData(color);
 		}

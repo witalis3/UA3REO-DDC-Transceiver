@@ -1174,7 +1174,7 @@ static void LCD_showBandWindow(void)
 	LCD_windowOpened = !LCD_windowOpened;
 	if(LCD_windowOpened)
 	{
-		LCDDriver_fadeScreen(0.8f);
+		LCDDriver_fadeScreen(0.2f);
 	}
 	else
 		LCD_redraw(false);
