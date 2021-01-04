@@ -1266,3 +1266,20 @@ void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter)
 	TRX_ScanMode = false;
 	LCD_closeWindow();
 }
+
+void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter)
+{
+	int8_t band = parameter;
+	if (band >= BANDS_COUNT)
+		band = 0;
+
+	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, SecondaryVFO());
+	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, SecondaryVFO());
+	SecondaryVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+	SecondaryVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+	TRX_Temporary_Stop_BandMap = false;
+	
+	resetVAD();
+	TRX_ScanMode = false;
+	LCD_closeWindow();
+}
