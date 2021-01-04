@@ -788,9 +788,9 @@ static void SYSMENU_TRX_RotateCallsignChar(int8_t dir)
 		full_redraw = true;
 
 	if (full_redraw)
-		SYSMENU_TRX_DrawCallsignMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	else
-		SYSMENU_TRX_DrawCallsignMenu(false);
+		LCD_UpdateQuery.SystemMenu = true;
 }
 
 static void SYSMENU_TRX_RotateLocatorChar(int8_t dir)
@@ -811,9 +811,9 @@ static void SYSMENU_TRX_RotateLocatorChar(int8_t dir)
 		full_redraw = true;
 
 	if (full_redraw)
-		SYSMENU_TRX_DrawLocatorMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	else
-		SYSMENU_TRX_DrawLocatorMenu(false);
+		LCD_UpdateQuery.SystemMenu = true;
 }
 
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
@@ -2057,9 +2057,9 @@ static void SYSMENU_WIFI_RotatePasswordChar(int8_t dir)
 		full_redraw = true;
 
 	if (full_redraw)
-		SYSMENU_WIFI_DrawAPpasswordMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	else
-		SYSMENU_WIFI_DrawAPpasswordMenu(false);
+		LCD_UpdateQuery.SystemMenu = true;
 }
 
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction)
@@ -2928,77 +2928,75 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	if (sysmenu_timeMenuOpened)
 	{
 		SYSMENU_HANDL_SETTIME(0);
-		return;
 	}
-	if (sysmenu_wifi_selectap_menu_opened)
+	else if (sysmenu_wifi_selectap_menu_opened)
 	{
-		SYSMENU_WIFI_DrawSelectAPMenu(false);
+		SYSMENU_WIFI_DrawSelectAPMenu(0);
 		return;
 	}
-	if (sysmenu_wifi_setAPpassword_menu_opened)
+	else if (sysmenu_wifi_setAPpassword_menu_opened)
 	{
-		SYSMENU_WIFI_DrawAPpasswordMenu(false);
-		return;
+		SYSMENU_WIFI_DrawAPpasswordMenu(draw_background);
 	}
-	if (sysmenu_trx_setCallsign_menu_opened)
+	else if (sysmenu_trx_setCallsign_menu_opened)
 	{
-		SYSMENU_TRX_DrawCallsignMenu(false);
-		return;
+		SYSMENU_TRX_DrawCallsignMenu(draw_background);
 	}
-	if (sysmenu_trx_setLocator_menu_opened)
+	else if (sysmenu_trx_setLocator_menu_opened)
 	{
-		SYSMENU_TRX_DrawLocatorMenu(false);
-		return;
+		SYSMENU_TRX_DrawLocatorMenu(draw_background);
 	}
-	if (SYSMENU_spectrum_opened)
+	else if (SYSMENU_spectrum_opened)
 	{
 		SPEC_Draw();
-		return;
 	}
-	if (SYSMENU_wspr_opened)
+	else if (SYSMENU_wspr_opened)
 	{
 		WSPR_DoEvents();
-		return;
 	}
-	if (SYSMENU_TDM_CTRL_opened) //Tisho
+	else if (SYSMENU_TDM_CTRL_opened) //Tisho
 	{
 		TDM_Voltages();
-		return;
 	}
-	if (SYSMENU_swr_opened)
+	else if (SYSMENU_swr_opened)
 	{
 		SWR_Draw();
-		return;
 	}
-	if (sysmenu_sysinfo_opened)
+	else if (sysmenu_sysinfo_opened)
 	{
 		SYSMENU_HANDL_SYSINFO(0);
 	}
-	if (sysmenu_infowindow_opened)
-		return;
-	LCD_busy = true;
-
-	sysmenu_i = 0;
-	sysmenu_y = 5;
-
-	if (draw_background)
-		LCDDriver_Fill(BG_COLOR);
-
-	uint8_t current_selected_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
-	if (current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE > *sysmenu_item_count_selected)
-		current_selected_page = 0;
-
-	for (uint8_t m = 0; m < *sysmenu_item_count_selected; m++)
+	else if (sysmenu_infowindow_opened)
 	{
-		uint8_t current_page = m / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
-		if (current_selected_page == current_page)
-			drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
+		
+	}
+	else
+	{
+		LCD_busy = true;
+
+		sysmenu_i = 0;
+		sysmenu_y = 5;
+
+		if (draw_background)
+			LCDDriver_Fill(BG_COLOR);
+
+		uint8_t current_selected_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
+		if (current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE > *sysmenu_item_count_selected)
+			current_selected_page = 0;
+
+		for (uint8_t m = 0; m < *sysmenu_item_count_selected; m++)
+		{
+			uint8_t current_page = m / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
+			if (current_selected_page == current_page)
+				drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
+		}
+		
+		LCD_busy = false;
 	}
 
 	LCD_UpdateQuery.SystemMenu = false;
 	if(draw_background)
 		LCD_UpdateQuery.SystemMenuRedraw = false;
-	LCD_busy = false;
 }
 
 void SYSMENU_eventRotateSystemMenu(int8_t direction)
