@@ -247,7 +247,7 @@ void FRONTPANEL_ENCODER2_checkRotate(void)
 
 static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, handler here, direction -1 - left, 1 - right
 {
-	if (TRX.Locked || LCD_windowOpened)
+	if (TRX.Locked || LCD_window.opened)
 		return;
 	if (LCD_systemMenuOpened)
 	{
@@ -278,7 +278,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, handler here, direction -1 - left, 1 - right
 {
-	if (TRX.Locked || LCD_windowOpened)
+	if (TRX.Locked || LCD_window.opened)
 		return;
 
 	if (LCD_systemMenuOpened)
@@ -395,7 +395,7 @@ void FRONTPANEL_check_ENC2SW(void)
 static void FRONTPANEL_ENC2SW_click_handler(void)
 {
 	//ENC2 CLICK
-	if ((CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U) && !LCD_systemMenuOpened && !LCD_windowOpened)
+	if ((CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U) && !LCD_systemMenuOpened && !LCD_window.opened)
 	{
 		enc2_func_mode = !enc2_func_mode; //enc2 rotary mode
 
@@ -582,7 +582,7 @@ void FRONTPANEL_Process(void)
 			{
 				PERIPH_FrontPanel_Buttons[b].afterhold = true;
 				if (!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
-					if (!LCD_windowOpened)
+					if (!LCD_window.opened)
 					if (PERIPH_FrontPanel_Buttons[b].holdHandler != NULL)
 					{
 						WM8731_Beep();
@@ -594,7 +594,7 @@ void FRONTPANEL_Process(void)
 			if ((PERIPH_FrontPanel_Buttons[b].prev_state != PERIPH_FrontPanel_Buttons[b].state) && !PERIPH_FrontPanel_Buttons[b].state && ((HAL_GetTick() - PERIPH_FrontPanel_Buttons[b].start_hold_time) < KEY_HOLD_TIME) && !PERIPH_FrontPanel_Buttons[b].afterhold && !TRX.Locked)
 			{
 				if (!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
-					if (!LCD_windowOpened)
+					if (!LCD_window.opened)
 					if (PERIPH_FrontPanel_Buttons[b].clickHandler != NULL)
 					{
 						WM8731_Beep();

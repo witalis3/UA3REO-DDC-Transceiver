@@ -524,7 +524,7 @@ bool FFT_printFFT(void)
 		return false;
 	if (FFT_need_fft)
 		return false;
-	if (LCD_systemMenuOpened || LCD_windowOpened)
+	if (LCD_systemMenuOpened || LCD_window.opened)
 		return false;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/

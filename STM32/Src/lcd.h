@@ -37,6 +37,15 @@ typedef struct
 	void (*holdHandler)(void);
 } TouchpadButton_handler;
 
+typedef struct
+{
+	uint16_t x;
+	uint16_t y;
+	uint16_t w;
+	uint16_t h;
+	bool opened;
+} WindowType;
+
 extern void LCD_Init(void);
 extern void LCD_doEvents(void);
 extern void LCD_showError(char text[], bool redraw);
@@ -46,12 +55,14 @@ extern void LCD_processTouch(uint16_t x, uint16_t y);
 extern void LCD_processHoldTouch(uint16_t x, uint16_t y);
 extern bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy);
 extern void LCD_showTooltip(char text[]);
+extern void LCD_openWindow(uint16_t w, uint16_t h);
+extern void LCD_closeWindow(void);
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
 volatile extern bool LCD_busy;
-volatile extern bool LCD_windowOpened;
 volatile extern bool LCD_systemMenuOpened;
 extern uint16_t LCD_bw_trapez_stripe_pos;
+extern WindowType LCD_window;
 extern STRUCT_COLOR_THEME *COLOR;
 extern STRUCT_LAYOUT_THEME *LAYOUT;
 

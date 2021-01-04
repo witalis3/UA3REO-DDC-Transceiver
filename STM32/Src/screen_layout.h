@@ -215,6 +215,10 @@ typedef const struct
 	const uint16_t BUTTON_PADDING;
 	const float32_t BUTTON_LIGHTER_WIDTH;
 	const uint16_t BUTTON_LIGHTER_HEIGHT;
+	//Windows
+	const uint16_t WINDOWS_BUTTON_WIDTH;
+	const uint16_t WINDOWS_BUTTON_HEIGHT;
+	const uint16_t WINDOWS_BUTTON_MARGIN;
 	#endif
 } STRUCT_LAYOUT_THEME;
 

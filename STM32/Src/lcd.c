@@ -21,8 +21,8 @@
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
 volatile bool LCD_systemMenuOpened = false;
-volatile bool LCD_windowOpened = false;
 uint16_t LCD_bw_trapez_stripe_pos = 0;
+WindowType LCD_window = {0};
 STRUCT_COLOR_THEME *COLOR = &COLOR_THEMES[0];
 STRUCT_LAYOUT_THEME *LAYOUT = &LAYOUT_THEMES[0];
 
@@ -101,7 +101,7 @@ void LCD_Init(void)
 
 static void LCD_displayTopButtons(bool redraw)
 { // display the top buttons
-	if (LCD_systemMenuOpened || LCD_windowOpened)
+	if (LCD_systemMenuOpened || LCD_window.opened)
 		return;
 	if (LCD_busy)
 	{
@@ -154,7 +154,7 @@ static void LCD_displayTopButtons(bool redraw)
 static void LCD_displayBottomButtons(bool redraw)
 {
 	// display the bottom buttons
-	if (LCD_systemMenuOpened || LCD_windowOpened)
+	if (LCD_systemMenuOpened || LCD_window.opened)
 		return;
 	if (LCD_busy)
 	{
@@ -185,7 +185,7 @@ static void LCD_displayBottomButtons(bool redraw)
 
 static void LCD_displayFreqInfo(bool redraw)
 { // display the frequency on the screen
-	if (LCD_systemMenuOpened || LCD_windowOpened)
+	if (LCD_systemMenuOpened || LCD_window.opened)
 		return;
 	if (!redraw && (LCD_last_showed_freq == CurrentVFO()->Freq)
 #if (defined(LAY_800x480))
@@ -342,7 +342,7 @@ static void LCD_drawSMeter(void)
 static void LCD_displayStatusInfoGUI(bool redraw)
 {
 	// display RX / TX and s-meter
-	if (LCD_systemMenuOpened || LCD_windowOpened)
+	if (LCD_systemMenuOpened || LCD_window.opened)
 		return;
 	if (LCD_busy)
 	{
@@ -527,7 +527,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 static void LCD_displayStatusInfoBar(bool redraw)
 {
 	// S-meter and other information
-	if (LCD_systemMenuOpened || LCD_windowOpened)
+	if (LCD_systemMenuOpened || LCD_window.opened)
 		return;
 	if (LCD_busy)
 	{
@@ -836,7 +836,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 static void LCD_displayTextBar(void)
 {
 	// display the text under the waterfall
-	if (LCD_systemMenuOpened || LCD_windowOpened)
+	if (LCD_systemMenuOpened || LCD_window.opened)
 		return;
 	if (LCD_busy)
 	{
@@ -1035,14 +1035,19 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		return;
 	}
 	//windows
+	if (LCD_window.opened && (y <= LCD_window.y || y >= (LCD_window.y + LCD_window.h) || x <= LCD_window.x || x >= (LCD_window.x + LCD_window.w))) //outline touch
+	{
+		LCD_closeWindow();
+		return;
+	}
+	if(LCD_window.opened)
+		return;
 	//mainfreq click
 	if (y >= LAYOUT->FREQ_Y_TOP && y <= LAYOUT->FREQ_Y_TOP + LAYOUT->FREQ_BLOCK_HEIGHT && x >= LAYOUT->FREQ_LEFT_MARGIN && x <= LAYOUT->FREQ_LEFT_MARGIN + LAYOUT->FREQ_WIDTH)
 	{
 		LCD_showBandWindow();
 		return;
 	}
-	if(LCD_windowOpened)
-		return;
 	//buttons
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
@@ -1067,7 +1072,7 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 
 void LCD_processHoldTouch(uint16_t x, uint16_t y)
 {
-	if (TRX.Locked || LCD_windowOpened)
+	if (TRX.Locked || LCD_window.opened)
 		return;
 	if (LCD_systemMenuOpened)
 	{
@@ -1091,7 +1096,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 	#pragma unused(dy)
 	if (TRX.Locked)
 		return false;
-	if (LCD_systemMenuOpened || LCD_windowOpened)
+	if (LCD_systemMenuOpened || LCD_window.opened)
 		return false;
 	//fft/wtf swipe
 	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y))
@@ -1142,7 +1147,7 @@ static void LCD_printTooltip(void)
 	LCD_UpdateQuery.Tooltip = true;
 	if (LCD_busy)
 		return;
-	if (LCD_systemMenuOpened || LCD_windowOpened)
+	if (LCD_systemMenuOpened || LCD_window.opened)
 	{
 		LCD_UpdateQuery.Tooltip = false;
 		return;
@@ -1167,19 +1172,35 @@ static void LCD_printTooltip(void)
 	}
 }
 
+void LCD_openWindow(uint16_t w, uint16_t h)
+{
+	LCD_busy = true;
+	LCD_window.opened = true;
+	LCDDriver_fadeScreen(0.2f);
+	uint16_t x = LCD_WIDTH / 2 - w / 2;
+	uint16_t y = LCD_HEIGHT / 2 - h / 2;
+	LCD_window.y = y;
+	LCD_window.x = x;
+	LCD_window.w = w;
+	LCD_window.h = h;
+	LCDDriver_drawRoundedRectWH(x, y, w, h, COLOR->WINDOWS_BORDER, 5, false);
+	LCDDriver_drawRoundedRectWH(x + 1, y + 1, w - 2, h - 2, COLOR->WINDOWS_BG, 5, true);
+	LCD_busy = false;
+}
+
+void LCD_closeWindow(void)
+{
+	LCD_window.opened = false;
+	LCD_redraw(false);
+}
+
 static void LCD_showBandWindow(void)
 {
 	#if (defined(HAS_TOUCHPAD))
-	LCD_busy = true;
-	LCD_windowOpened = !LCD_windowOpened;
-	if(LCD_windowOpened)
-	{
-		LCDDriver_fadeScreen(0.2f);
-		LCDDriver_drawRoundedRectWH(100, 100, 200, 100, COLOR_RED, 5, false);
-		LCDDriver_drawRoundedRectWH(120, 120, 100, 50, COLOR_RED, 5, true);
-	}
-	else
-		LCD_redraw(false);
-	LCD_busy = false;
+	const uint8_t buttons_in_line = 6;
+	const uint8_t buttons_lines = ceil(BANDS_COUNT / buttons_in_line);
+	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
+	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
+	LCD_openWindow(window_width, window_height);
 	#endif
 }
