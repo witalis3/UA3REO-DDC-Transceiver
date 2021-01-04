@@ -1175,6 +1175,8 @@ static void LCD_showBandWindow(void)
 	if(LCD_windowOpened)
 	{
 		LCDDriver_fadeScreen(0.2f);
+		LCDDriver_drawRoundedRectWH(100, 100, 200, 100, COLOR_RED, 5, false);
+		LCDDriver_drawRoundedRectWH(120, 120, 100, 50, COLOR_RED, 5, true);
 	}
 	else
 		LCD_redraw(false);

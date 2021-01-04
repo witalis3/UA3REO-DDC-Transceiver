@@ -390,7 +390,7 @@ void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
 
   /* Draw! */
   LCDDriver_SendCommand(LCD_RA8875_DCR);
-  LCDDriver_SendData(0x90); //not filled rect
+  LCDDriver_SendData(LCD_RA8875_DCR_LINESQUTRI_START | LCD_RA8875_DCR_DRAWSQUARE); //not filled rect
 
   /* Wait for the command to finish */
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
@@ -515,9 +515,12 @@ void LCDDriver_fadeScreen(float32_t brightness)
 			//get current pixel
 			color = LCDDriver_ReadData();
 			//transform
-			uint8_t r = (uint8_t)((float32_t)((color >> 11) & 0x1F) * brightness);
-			uint8_t g = (uint8_t)((float32_t)((color >> 5) & 0x3F) * brightness);
-			uint8_t b = (uint8_t)((float32_t)((color >> 0) & 0x1F) * brightness);
+			//uint8_t r = (uint8_t)((float32_t)((color >> 11) & 0x1F) * brightness);
+			//uint8_t g = (uint8_t)((float32_t)((color >> 5) & 0x3F) * brightness);
+			//uint8_t b = (uint8_t)((float32_t)((color >> 0) & 0x1F) * brightness);
+			uint8_t r = ((color >> 11) & 0x1F) >> 2;
+			uint8_t g = ((color >> 5) & 0x3F) >> 2;
+			uint8_t b = ((color >> 0) & 0x1F) >> 2;
 			color = (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
 			//write pixel back
 			LCDDriver_SendData(color);
@@ -525,7 +528,7 @@ void LCDDriver_fadeScreen(float32_t brightness)
 	}
 }
 
-void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t color, bool filled)
+void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t color, uint16_t radius, bool filled)
 {
   LCDDriver_waitBusy();
   if (!activeWindowIsFullscreen)
@@ -557,6 +560,16 @@ void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t 
   LCDDriver_SendCommand(LCD_RA8875_DLVER1);
   LCDDriver_SendData((y0 + h) >> 8);
 
+	//set circle
+	LCDDriver_SendCommand(LCD_RA8875_ELL_A0);
+  LCDDriver_SendData(radius);
+  LCDDriver_SendCommand(LCD_RA8875_ELL_A1);
+  LCDDriver_SendData(radius >> 8);
+	LCDDriver_SendCommand(LCD_RA8875_ELL_B0);
+  LCDDriver_SendData(radius);
+  LCDDriver_SendCommand(LCD_RA8875_ELL_B1);
+  LCDDriver_SendData(radius >> 8);
+
   /* Set Color */
 	if(color != LCDDriver_currentFGColor)
 	{
@@ -570,11 +583,11 @@ void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t 
 	}
 
   /* Draw! */
-  LCDDriver_SendCommand(LCD_RA8875_DCR);
+  LCDDriver_SendCommand(LCD_RA8875_ELLCR);
 	if(filled)
-		LCDDriver_SendData(LCD_RA8875_DCR_DRAWSQUARE | LCD_RA8875_DCR_FILL);
+		LCDDriver_SendData(0x80 | 0x40 | 0x20);
 	else
-		LCDDriver_SendData(LCD_RA8875_DCR_DRAWSQUARE | LCD_RA8875_DCR_NOFILL);
+		LCDDriver_SendData(0x80 | 0x00 | 0x20);
 
   /* Wait for the command to finish */
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
