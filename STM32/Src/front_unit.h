@@ -81,5 +81,7 @@ extern void FRONTPANEL_BUTTONHANDLER_MENU(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_LOCK(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_SETMODE(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_SETSECMODE(uint32_t parameter);
 
 #endif
