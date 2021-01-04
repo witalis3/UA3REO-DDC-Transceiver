@@ -3,7 +3,7 @@
 
 // Private variables
 static AN_Instance RX1_AN_instance = {0}; // filter instances for two receivers
-static AN_Instance RX2_AN_instance = {0};
+IRAM2 static AN_Instance RX2_AN_instance = {0};
 
 // initialize the automatic notch filter
 void InitAutoNotchReduction(void)

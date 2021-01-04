@@ -47,7 +47,7 @@ static uint16_t palette_bg_gradient[MAX_FFT_HEIGHT + 1] = {0};							 // color p
 static uint16_t palette_bw_fft_colors[MAX_FFT_HEIGHT + 1] = {0};						 // color palette with bw highlighted FFT colors
 static uint16_t palette_bw_bg_colors[MAX_FFT_HEIGHT + 1] = {0};							 // color palette with bw highlighted background colors
 SRAM static uint16_t fft_output_buffer[MAX_FFT_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};	 //buffer with fft print data
-IRAM2 static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
+IRAM2 __attribute__((aligned(32))) static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
 IRAM2 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};						 // frequencies for each row of the waterfall
 SRAM static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
 IRAM2 static uint8_t indexed_3d_fft_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with 3d WTF output
@@ -68,8 +68,8 @@ static uint8_t needredraw_wtf_counter = 3;		//redraw cycles after event
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
-static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
-static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
+static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1] = {0};
+static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1] = {0};
 static uint8_t fft_zoom = 1;
 static uint_fast16_t zoomed_width = 0;
 //Коэффициенты для ZoomFFT lowpass filtering / дециматора
@@ -556,7 +556,7 @@ bool FFT_printFFT(void)
 	// move the waterfall down using DMA
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
 	{
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&indexed_wtf_buffer[tmp - 1], (uint32_t)&indexed_wtf_buffer[tmp], LAYOUT->FFT_PRINT_SIZE / 4); //32bit dma, 8dit index data
+		HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&indexed_wtf_buffer[tmp - 1], (uint32_t)&indexed_wtf_buffer[tmp], LAYOUT->FFT_PRINT_SIZE / 4); //32bit dma, 8bit index data
 		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
 	}
