@@ -72,6 +72,7 @@ static void LCD_showBandWindow(void);
 static void LCD_showSecBandWindow(void);
 static void LCD_showModeWindow(void);
 static void LCD_showSecModeWindow(void);
+static void LCD_showBWWindow(void);
 #if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, bool in_window, uint32_t parameter, void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter));
 #endif
@@ -1100,6 +1101,12 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		LCD_showSecModeWindow();
 		return;
 	}
+	//bw click
+	if (y >= LAYOUT->BW_TRAPEZ_POS_Y && y <= LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT && x >= LAYOUT->BW_TRAPEZ_POS_X && x <= LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH)
+	{
+		LCD_showBWWindow();
+		return;
+	}
 	//buttons
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
@@ -1335,6 +1342,53 @@ static void LCD_showSecModeWindow(void)
 			uint8_t index = yi * buttons_in_line + xi;
 			if(index < TRX_MODE_COUNT)
 				printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)MODE_DESCR[index], (curmode == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETSECMODE, FRONTPANEL_BUTTONHANDLER_SETSECMODE);
+		}
+	}
+	LCD_busy = false;
+	#endif
+}
+
+static void LCD_showBWWindow(void)
+{
+	#if (defined(HAS_TOUCHPAD))
+	
+	uint8_t filters_count = 0;
+	uint32_t cur_width = CurrentVFO()->LPF_Filter_Width;
+	if(CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		filters_count = CW_LPF_COUNT;
+	if(CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB || CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U)
+		filters_count = SSB_LPF_COUNT;
+	if(CurrentVFO()->Mode == TRX_MODE_AM)
+		filters_count = AM_LPF_COUNT;
+	if(CurrentVFO()->Mode == TRX_MODE_NFM)
+		filters_count = NFM_LPF_COUNT;
+	if(filters_count == 0)
+		return;
+	
+	const uint8_t buttons_in_line = 6;
+	const uint8_t buttons_lines = ceil((float32_t)filters_count / (float32_t)buttons_in_line);
+	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
+	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
+	LCD_openWindow(window_width, window_height);
+	LCD_busy = true;
+	for(uint8_t yi = 0; yi < buttons_lines; yi++)
+	{
+		for(uint8_t xi = 0; xi < buttons_in_line; xi++)
+		{
+			uint8_t index = yi * buttons_in_line + xi;
+			uint32_t width = 0;
+			if(CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+				width = AUTIO_FILTERS_LPF_CW_LIST[index];
+			if(CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB || CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U)
+				width = AUTIO_FILTERS_LPF_SSB_LIST[index];
+			if(CurrentVFO()->Mode == TRX_MODE_AM)
+				width = AUTIO_FILTERS_LPF_AM_LIST[index];
+			if(CurrentVFO()->Mode == TRX_MODE_NFM)
+				width = AUTIO_FILTERS_LPF_NFM_LIST[index];
+			char str[16];
+			sprintf(str, "%d", width);
+			if(index < filters_count)
+				printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (width == cur_width), true, true, width, FRONTPANEL_BUTTONHANDLER_SETBW, FRONTPANEL_BUTTONHANDLER_SETBW);
 		}
 	}
 	LCD_busy = false;

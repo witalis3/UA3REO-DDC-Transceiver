@@ -28,6 +28,13 @@
 #define IIR_RX1_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX2_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 
+#define CW_HPF_COUNT 3
+#define SSB_HPF_COUNT 7
+#define CW_LPF_COUNT 19
+#define SSB_LPF_COUNT 11
+#define AM_LPF_COUNT 18
+#define NFM_LPF_COUNT 8
+
 #define MAX_HPF_WIDTH_CW 100
 #define MAX_HPF_WIDTH_SSB 500
 #define MAX_LPF_WIDTH_CW 1000
@@ -125,6 +132,12 @@ extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_Q;
 extern volatile bool NeedReinitNotch;		 // need to reinitialize the manual Notch filter
 extern volatile bool NeedReinitAudioFilters; // need to reinitialize the Audio filters
 extern volatile bool NeedReinitAudioFiltersClean; //also clean state
+extern const uint32_t AUTIO_FILTERS_HPF_CW_LIST[CW_HPF_COUNT];
+extern const uint32_t AUTIO_FILTERS_HPF_SSB_LIST[SSB_HPF_COUNT];
+extern const uint32_t AUTIO_FILTERS_LPF_CW_LIST[CW_LPF_COUNT];
+extern const uint32_t AUTIO_FILTERS_LPF_SSB_LIST[SSB_LPF_COUNT];
+extern const uint32_t AUTIO_FILTERS_LPF_AM_LIST[AM_LPF_COUNT];
+extern const uint32_t AUTIO_FILTERS_LPF_NFM_LIST[NFM_LPF_COUNT];
 
 //Public methods
 extern void InitAudioFilters(void);													   // initialize audio filters
