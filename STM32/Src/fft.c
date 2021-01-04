@@ -68,50 +68,36 @@ static uint8_t needredraw_wtf_counter = 3;		//redraw cycles after event
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
-static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
-static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
+IRAM2 static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
+IRAM2 static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
 static uint8_t fft_zoom = 1;
 static uint_fast16_t zoomed_width = 0;
 //Коэффициенты для ZoomFFT lowpass filtering / дециматора
-static arm_biquad_casd_df1_inst_f32 IIR_biquad_Zoom_FFT_I =
+static arm_biquad_cascade_df2T_instance_f32 IIR_biquad_Zoom_FFT_I =
 	{
-		.numStages = 4,
-		.pCoeffs = (float32_t *)(float32_t[]){
-			1, 0, 0, 0, 0, 1, 0, 0, 0, 0},
-		.pState = (float32_t *)(float32_t[]){0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-static arm_biquad_casd_df1_inst_f32 IIR_biquad_Zoom_FFT_Q =
+		.numStages = ZOOMFFT_DECIM_STAGES,
+		.pCoeffs = (float32_t *)(float32_t[ZOOMFFT_DECIM_STAGES * 5]){0},
+		.pState = (float32_t *)(float32_t[ZOOMFFT_DECIM_STAGES * 2]){0}};
+static arm_biquad_cascade_df2T_instance_f32 IIR_biquad_Zoom_FFT_Q =
 	{
-		.numStages = 4,
-		.pCoeffs = (float32_t *)(float32_t[]){
-			1, 0, 0, 0, 0, 1, 0, 0, 0, 0},
-		.pState = (float32_t *)(float32_t[]){0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+		.numStages = ZOOMFFT_DECIM_STAGES,
+		.pCoeffs = (float32_t *)(float32_t[ZOOMFFT_DECIM_STAGES * 5]){0},
+		.pState = (float32_t *)(float32_t[ZOOMFFT_DECIM_STAGES * 2]){0}};
 
 static const float32_t *mag_coeffs[17] =
 	{
 		NULL, // 0
 		NULL, // 1
-		(float32_t *)(const float32_t[]){
-			// 2x magnify
-			// 12kHz, sample rate 48k, 60dB stopband, elliptic
-			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
-			// Iowa Hills IIR Filter Designer
-			0.228454526413293696f, 0.077639329099949764f, 0.228454526413293696f, 0.635534925142242080f, -0.170083307068779194f, 0.436788292542003964f, 0.232307972937606161f, 0.436788292542003964f, 0.365885230717786780f, -0.471769788739400842f, 0.535974654742658707f, 0.557035600464780845f, 0.535974654742658707f, 0.125740787233286133f, -0.754725697183384336f, 0.501116342273565607f, 0.914877831284765408f, 0.501116342273565607f, 0.013862536615004284f, -0.930973052446900984f},
+		// 2x magnify, 24kHz, sample rate 96k, 60dB stopband
+		(float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES * 5]){2.484242790213,0,0,0,0,1,1.898288195851,1,0.6974136319001,-0.3065583381015,0.02825209609289,0,0,0,0,1,1.500253906972,1,0.008112054577326,-0.7721086004364,1,0,0,0,0},
 		NULL, // 3
-		(float32_t *)(const float32_t[]){
-			// 4x magnify
-			// 6kHz, sample rate 48k, 60dB stopband, elliptic
-			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
-			// Iowa Hills IIR Filter Designer
-			0.182208761527446556f, -0.222492493114674145f, 0.182208761527446556f, 1.326111070880959810f, -0.468036100821178802f, 0.337123762652097259f, -0.366352718812586853f, 0.337123762652097259f, 1.337053579516321200f, -0.644948386007929031f, 0.336163175380826074f, -0.199246162162897811f, 0.336163175380826074f, 1.354952684569386670f, -0.828032873168141115f, 0.178588201750411041f, 0.207271695028067304f, 0.178588201750411041f, 1.386486967455699220f, -0.950935065984588657f},
+		// 4x magnify, 12kHz, sample rate 96k, 60dB stopband
+		(float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES * 5]){0.7134827863049,0,0,0,0,1,1.472005720002,1,1.415948015621,-0.5717655848516,0.01368406787431,0,0,0,0,1,0.1832282425444,1,1.300866126796,-0.8337859400983,1,0,0,0,0},
 		NULL, // 5
 		NULL, // 6
 		NULL, // 7
-		(float32_t *)(const float32_t[]){
-			// 8x magnify
-			// 3kHz, sample rate 48k, 60dB stopband, elliptic
-			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
-			// Iowa Hills IIR Filter Designer
-			0.185643392652478922f, -0.332064345389014803f, 0.185643392652478922f, 1.654637402827731090f, -0.693859842743674182f, 0.327519300813245984f, -0.571358085216950418f, 0.327519300813245984f, 1.715375037176782860f, -0.799055553586324407f, 0.283656142708241688f, -0.441088976843048652f, 0.283656142708241688f, 1.778230635987093860f, -0.904453944560528522f, 0.079685368654848945f, -0.011231810140649204f, 0.079685368654848945f, 1.825046003243238070f, -0.973184930412286708f},
+		// 8x magnify, 6kHz, sample rate 96k, 60dB stopband
+		(float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES * 5]){0.2759821831997,0,0,0,0,1,0.4104549042334,1,1.718681040914,-0.7605249789395,0.009291375667003,0,0,0,0,1,-1.132037961389,1,1.762711686353,-0.9065677781814,1,0,0,0,0},
 		NULL, // 9
 		NULL, // 10
 		NULL, // 11
@@ -119,12 +105,8 @@ static const float32_t *mag_coeffs[17] =
 		NULL, // 13
 		NULL, // 14
 		NULL, // 15
-		(float32_t *)(const float32_t[]){
-			// 16x magnify
-			// 1k5, sample rate 48k, 60dB stopband, elliptic
-			// a1 and coeffs[A2] negated! order: coeffs[B0], coeffs[B1], coeffs[B2], a1, coeffs[A2]
-			// Iowa Hills IIR Filter Designer
-			0.194769868656866380f, -0.379098413160710079f, 0.194769868656866380f, 1.824436402073870810f, -0.834877726226893380f, 0.333973874901496770f, -0.646106479315673776f, 0.333973874901496770f, 1.871892825636887640f, -0.893734096124207178f, 0.272903880596429671f, -0.513507745397738469f, 0.272903880596429671f, 1.918161772571113750f, -0.950461788366234739f, 0.053535383722369843f, -0.069683422367188122f, 0.053535383722369843f, 1.948900719896301760f, -0.986288064973853129f},
+		// 16x magnify, 3kHz, sample rate 96k, 60dB stopband
+		(float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES * 5]){0.1614831396677,0,0,0,0,1,-0.9158954187733,1,1.861713716539,-0.8727253274572,0.008184762202728,0,0,0,0,1,-1.745517115598,1,1.914110094101,-0.9512646565581,1,0,0,0,0},
 };
 
 static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
@@ -247,8 +229,8 @@ void FFT_Init(void)
 	{
 		IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[fft_zoom];
 		IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[fft_zoom];
-		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, 16 * 4);
-		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, 16 * 4);
+		memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, sizeof(float32_t) * ZOOMFFT_DECIM_STAGES * 2);
+		memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, sizeof(float32_t) * ZOOMFFT_DECIM_STAGES * 2);
 		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_I,
 								  FirZoomFFTDecimate[fft_zoom].numTaps,
 								  fft_zoom, // Decimation factor
@@ -305,8 +287,8 @@ void FFT_bufferPrepare(void)
 	if (fft_zoom > 1)
 	{
 		//Biquad LPF filter
-		arm_biquad_cascade_df1_f32(&IIR_biquad_Zoom_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_SIZE);
-		arm_biquad_cascade_df1_f32(&IIR_biquad_Zoom_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_SIZE);
+		arm_biquad_cascade_df2T_f32(&IIR_biquad_Zoom_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_SIZE);
+		arm_biquad_cascade_df2T_f32(&IIR_biquad_Zoom_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_SIZE);
 		// Decimator
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_SIZE);
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_SIZE);

@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "lcd.h"
 
-#define CWDECODER_NBTIME 1                              // ms noise blanker
+#define CWDECODER_NBTIME 2                              // ms noise blanker
 #if (defined(LAY_800x480))
 	#define CWDECODER_STRLEN 57                             // length of decoded string
 #else
