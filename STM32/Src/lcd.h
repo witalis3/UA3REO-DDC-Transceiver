@@ -33,6 +33,7 @@ typedef struct
 	uint16_t y1;
 	uint16_t x2;
 	uint16_t y2;
+	uint32_t parameter;
 	void (*clickHandler)(uint32_t parameter);
 	void (*holdHandler)(uint32_t parameter);
 } TouchpadButton_handler;

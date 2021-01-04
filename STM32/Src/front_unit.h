@@ -38,6 +38,7 @@ typedef struct
 	bool afterhold;
 	bool work_in_menu;
 	char name[16];
+	uint32_t parameter;
 	void (*clickHandler)(uint32_t parameter);
 	void (*holdHandler)(uint32_t parameter);
 } PERIPH_FrontPanel_Button;
@@ -78,5 +79,6 @@ extern void FRONTPANEL_BUTTONHANDLER_HPF(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SERVICES(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_MENU(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_LOCK(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter);
 
 #endif
