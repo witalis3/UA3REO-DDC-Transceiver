@@ -361,9 +361,12 @@ void FFT_doFFT(void)
 	
 	//Debug CW Decoder
 	/*memset(FFTInput, 0x00, sizeof(FFTInput));
-	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
+	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 	{
 		FFTInput[i] = CWDEC_FFTBuffer_Export[i];
+		FFTInput[i + CWDECODER_FFTSIZE] = CWDEC_FFTBuffer_Export[i];
+		FFTInput[i + CWDECODER_FFTSIZE * 2] = CWDEC_FFTBuffer_Export[i];
+		FFTInput[i + CWDECODER_FFTSIZE * 3] = CWDEC_FFTBuffer_Export[i];
 	}*/
 
 	// Swap fft parts
@@ -465,6 +468,11 @@ void FFT_doFFT(void)
 
 	// Auto-calibrate FFT levels
 	maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
+	
+	//DEBUG CW DECODER
+	/*maxValueFFT = maxValueFFT * 0.999f + maxAmplValue * 0.001f;
+	if(maxValueFFT < maxAmplValue)
+		maxValueFFT = maxAmplValue;*/
 
 	// minimum-maximum threshold for median
 	if (maxValueFFT < minValue)
