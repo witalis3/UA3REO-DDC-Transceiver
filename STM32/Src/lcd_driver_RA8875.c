@@ -525,4 +525,59 @@ void LCDDriver_fadeScreen(float32_t brightness)
 	}
 }
 
+void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t color, bool filled)
+{
+  LCDDriver_waitBusy();
+  if (!activeWindowIsFullscreen)
+  {
+    activeWindowIsFullscreen = true;
+    LCDDriver_setActiveWindow(0, 0, (LCD_WIDTH - 1), (LCD_HEIGHT - 1));
+  }
+
+  LCDDriver_SendCommand(LCD_RA8875_DLHSR0);
+  LCDDriver_SendData(x0);
+  LCDDriver_SendCommand(LCD_RA8875_DLHSR1);
+  LCDDriver_SendData(x0 >> 8);
+
+  /* Set Y */
+  LCDDriver_SendCommand(LCD_RA8875_DLVSR0);
+  LCDDriver_SendData(y0);
+  LCDDriver_SendCommand(LCD_RA8875_DLVSR1);
+  LCDDriver_SendData(y0 >> 8);
+
+  /* Set X1 */
+  LCDDriver_SendCommand(LCD_RA8875_DLHER0);
+  LCDDriver_SendData(x0 + w);
+  LCDDriver_SendCommand(LCD_RA8875_DLHER1);
+  LCDDriver_SendData((x0 + w) >> 8);
+
+  /* Set Y1 */
+  LCDDriver_SendCommand(LCD_RA8875_DLVER0);
+  LCDDriver_SendData(y0 + h);
+  LCDDriver_SendCommand(LCD_RA8875_DLVER1);
+  LCDDriver_SendData((y0 + h) >> 8);
+
+  /* Set Color */
+	if(color != LCDDriver_currentFGColor)
+	{
+		LCDDriver_SendCommand(LCD_RA8875_FGCR0);
+		LCDDriver_SendData((color & 0xf800) >> 11);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR1);
+		LCDDriver_SendData((color & 0x07e0) >> 5);
+		LCDDriver_SendCommand(LCD_RA8875_FGCR2);
+		LCDDriver_SendData((color & 0x001f));
+		LCDDriver_currentFGColor = color;
+	}
+
+  /* Draw! */
+  LCDDriver_SendCommand(LCD_RA8875_DCR);
+	if(filled)
+		LCDDriver_SendData(LCD_RA8875_DCR_DRAWSQUARE | LCD_RA8875_DCR_FILL);
+	else
+		LCDDriver_SendData(LCD_RA8875_DCR_DRAWSQUARE | LCD_RA8875_DCR_NOFILL);
+
+  /* Wait for the command to finish */
+  LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
+}
+
 #endif
