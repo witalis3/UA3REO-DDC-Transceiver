@@ -68,8 +68,8 @@ static uint8_t needredraw_wtf_counter = 3;		//redraw cycles after event
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
-IRAM2 static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
-IRAM2 static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
+static float32_t decimZoomFFTIState[FFT_SIZE + 4 - 1];
+static float32_t decimZoomFFTQState[FFT_SIZE + 4 - 1];
 static uint8_t fft_zoom = 1;
 static uint_fast16_t zoomed_width = 0;
 //Коэффициенты для ZoomFFT lowpass filtering / дециматора
