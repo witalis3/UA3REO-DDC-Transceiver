@@ -6,9 +6,14 @@
 #include <string.h>
 #include <stdbool.h>
 #include "functions.h"
+#include "lcd.h"
 
 #define CWDECODER_NBTIME 6                              // ms noise blanker
-#define CWDECODER_STRLEN 30                             // length of decoded string
+#if (defined(LAY_800x480))
+	#define CWDECODER_STRLEN 57                             // length of decoded string
+#else
+	#define CWDECODER_STRLEN 30                             // length of decoded string
+#endif
 #define CWDECODER_MAGNIFY 16                            // what time we approximate FFT
 #define CWDECODER_FFTSIZE 256                           // FFT size for analysis
 #define CWDECODER_FFT_SAMPLES (DECODER_PACKET_SIZE * 2) // number of samples for analysis

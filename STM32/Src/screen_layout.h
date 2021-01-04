@@ -172,7 +172,6 @@ typedef const struct
 	const uint16_t STATUS_ERR_WIDTH;
 	const uint16_t STATUS_ERR_HEIGHT;
 	const uint8_t TEXTBAR_FONT;
-	const uint16_t TEXTBAR_TEXT_X_OFFSET;
 	//bottom buttons
 	const uint16_t BOTTOM_BUTTONS_BLOCK_HEIGHT;
 	const uint16_t BOTTOM_BUTTONS_BLOCK_TOP;

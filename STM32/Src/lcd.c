@@ -436,7 +436,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	//Redraw CW decoder
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 	{
-		LCDDriver_Fill_RectWH(0, LCD_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET, LAYOUT->FFT_PRINT_SIZE, LAYOUT->FFT_CWDECODER_OFFSET, BG_COLOR);
+		LCDDriver_Fill_RectWH(0, LCD_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, LAYOUT->FFT_PRINT_SIZE, LAYOUT->FFT_CWDECODER_OFFSET, BG_COLOR);
 		LCD_UpdateQuery.TextBar = true;
 	}
 
@@ -851,10 +851,9 @@ static void LCD_displayTextBar(void)
 
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 	{
-		char ctmp[50];
-		sprintf(ctmp, "WPM:%d ", CW_Decoder_WPM);
-		LCDDriver_printText(ctmp, 0, LCD_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET + 1, COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
-		LCDDriver_printText((char *)&CW_Decoder_Text, LAYOUT->TEXTBAR_TEXT_X_OFFSET, LCD_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET + 1, COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
+		char ctmp[70];
+		sprintf(ctmp, "WPM:%d %s", CW_Decoder_WPM, (char *)&CW_Decoder_Text);
+		LCDDriver_printText(ctmp, 2, (LCD_HEIGHT - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET + 1), COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
 	}
 
 	LCD_UpdateQuery.TextBar = false;

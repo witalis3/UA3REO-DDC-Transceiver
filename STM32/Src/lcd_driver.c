@@ -64,7 +64,7 @@ void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, ui
 {
 	uint16_t offset = size * 6;
 	uint16_t skipped = 0;
-	for (uint16_t i = 0; i < 40 && text[i] != 0; i++)
+	for (uint16_t i = 0; i < 128 && text[i] != 0; i++)
 	{
 		if (text[i] == '^' && text[i + 1] == 'o') //celsius
 		{
