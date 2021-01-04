@@ -21,8 +21,8 @@ typedef struct
 {
 	bool work_in_menu;
 	char name[16];
-	void (*clickHandler)(void);
-	void (*holdHandler)(void);
+	void (*clickHandler)(uint32_t parameter);
+	void (*holdHandler)(uint32_t parameter);
 } PERIPH_FrontPanel_FuncButton;
 
 typedef struct
@@ -38,8 +38,8 @@ typedef struct
 	bool afterhold;
 	bool work_in_menu;
 	char name[16];
-	void (*clickHandler)(void);
-	void (*holdHandler)(void);
+	void (*clickHandler)(uint32_t parameter);
+	void (*holdHandler)(uint32_t parameter);
 } PERIPH_FrontPanel_Button;
 
 extern PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[];
@@ -52,31 +52,31 @@ extern void FRONTPANEL_check_ENC2SW(void);
 extern void FRONTPANEL_Init(void);
 extern void FRONTPANEL_Process(void);
 
-extern void FRONTPANEL_BUTTONHANDLER_DOUBLE(void);
-extern void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(void);
-extern void FRONTPANEL_BUTTONHANDLER_PRE(void);
-extern void FRONTPANEL_BUTTONHANDLER_ATT(void);
-extern void FRONTPANEL_BUTTONHANDLER_ATTHOLD(void);
-extern void FRONTPANEL_BUTTONHANDLER_PGA(void);
-extern void FRONTPANEL_BUTTONHANDLER_PGA_ONLY(void);
-extern void FRONTPANEL_BUTTONHANDLER_DRV_ONLY(void);
-extern void FRONTPANEL_BUTTONHANDLER_AGC(void);
-extern void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(void);
-extern void FRONTPANEL_BUTTONHANDLER_DNR(void);
-extern void FRONTPANEL_BUTTONHANDLER_NB(void);
-extern void FRONTPANEL_BUTTONHANDLER_NOTCH(void);
-extern void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(void);
-extern void FRONTPANEL_BUTTONHANDLER_FAST(void);
-extern void FRONTPANEL_BUTTONHANDLER_MUTE(void);
-extern void FRONTPANEL_BUTTONHANDLER_AsB(void);
-extern void FRONTPANEL_BUTTONHANDLER_ArB(void);
-extern void FRONTPANEL_BUTTONHANDLER_TUNE(void);
-extern void FRONTPANEL_BUTTONHANDLER_RF_POWER(void);
-extern void FRONTPANEL_BUTTONHANDLER_ANT(void);
-extern void FRONTPANEL_BUTTONHANDLER_BW(void);
-extern void FRONTPANEL_BUTTONHANDLER_HPF(void);
-extern void FRONTPANEL_BUTTONHANDLER_SERVICES(void);
-extern void FRONTPANEL_BUTTONHANDLER_MENU(void);
-extern void FRONTPANEL_BUTTONHANDLER_LOCK(void);
+extern void FRONTPANEL_BUTTONHANDLER_DOUBLE(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_PRE(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_ATT(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_ATTHOLD(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_PGA(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_PGA_ONLY(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_DRV_ONLY(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_AGC(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_DNR(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_NB(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_NOTCH(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_FAST(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_MUTE(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_ArB(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_TUNE(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_RF_POWER(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_ANT(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_BW(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_HPF(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_SERVICES(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_MENU(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_LOCK(uint32_t parameter);
 
 #endif

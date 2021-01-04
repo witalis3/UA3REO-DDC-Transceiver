@@ -33,8 +33,8 @@ typedef struct
 	uint16_t y1;
 	uint16_t x2;
 	uint16_t y2;
-	void (*clickHandler)(void);
-	void (*holdHandler)(void);
+	void (*clickHandler)(uint32_t parameter);
+	void (*holdHandler)(uint32_t parameter);
 } TouchpadButton_handler;
 
 typedef struct
@@ -44,6 +44,8 @@ typedef struct
 	uint16_t w;
 	uint16_t h;
 	bool opened;
+	TouchpadButton_handler buttons[64];
+	uint16_t buttons_count;
 } WindowType;
 
 extern void LCD_Init(void);
