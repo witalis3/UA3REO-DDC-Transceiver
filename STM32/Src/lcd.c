@@ -1049,6 +1049,7 @@ void LCD_showInfo(char text[], bool autohide)
 
 void LCD_processTouch(uint16_t x, uint16_t y)
 {
+	#if (defined(HAS_TOUCHPAD))
 	if (TRX.Locked)
 		return;
 	if (LCD_systemMenuOpened)
@@ -1126,10 +1127,12 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		LCD_UpdateQuery.FreqInfo = true;
 		return;
 	}
+	#endif
 }
 
 void LCD_processHoldTouch(uint16_t x, uint16_t y)
 {
+	#if (defined(HAS_TOUCHPAD))
 	if (TRX.Locked || LCD_window.opened)
 		return;
 	if (LCD_systemMenuOpened)
@@ -1147,11 +1150,13 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 			return;
 		}
 	}
+	#endif
 }
 
 bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 {
 	#pragma unused(dy)
+	#if (defined(HAS_TOUCHPAD))
 	if (TRX.Locked)
 		return false;
 	if (LCD_systemMenuOpened || LCD_window.opened)
@@ -1187,6 +1192,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 			return true; //stop
 		}
 	}
+	#endif
 	return false;
 }
 
@@ -1232,6 +1238,7 @@ static void LCD_printTooltip(void)
 
 void LCD_openWindow(uint16_t w, uint16_t h)
 {
+	#if (defined(HAS_TOUCHPAD))
 	LCD_busy = true;
 	LCD_window.opened = true;
 	LCDDriver_fadeScreen(0.2f);
@@ -1246,13 +1253,16 @@ void LCD_openWindow(uint16_t w, uint16_t h)
 	LCD_busy = false;
 	
 	LCD_window.buttons_count = 0;
+	#endif
 }
 
 void LCD_closeWindow(void)
 {
+	#if (defined(HAS_TOUCHPAD))
 	LCD_window.opened = false;
 	LCD_window.buttons_count = 0;
 	LCD_redraw(false);
+	#endif
 }
 
 static void LCD_showBandWindow(void)

@@ -207,7 +207,9 @@ void LCDDriver_Init(void)
 #endif
 
 #if defined(LCD_ILI9486)
-#define ILI9481_COMM_DELAY 20
+#define ILI9481_COMM_DELAY 100
+
+	HAL_Delay(ILI9481_COMM_DELAY);
 
 	LCDDriver_SendCommand(0XF1);
 	LCDDriver_SendData(0x36);
