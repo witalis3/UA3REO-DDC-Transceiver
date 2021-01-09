@@ -65,6 +65,7 @@ static arm_sort_instance_f32 FFT_sortInstance = {0};								 // sorting instance
 static uint32_t print_fft_dma_estimated_size = 0;			//block size for dma
 static uint32_t print_fft_dma_position = 0;			//positior for dma fft print
 static uint8_t needredraw_wtf_counter = 3;		//redraw cycles after event
+static bool fft_charge_ready = false;
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
@@ -265,6 +266,7 @@ void FFT_bufferPrepare(void)
 		return;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
+	fft_charge_ready = false;
 	
 	float32_t* FFTInput_I_current = !FFT_buff_current ? (float32_t*)&FFTInput_I_A : (float32_t*)&FFTInput_I_B; //inverted
 	float32_t* FFTInput_Q_current = !FFT_buff_current ? (float32_t*)&FFTInput_Q_A : (float32_t*)&FFTInput_Q_B;
@@ -312,6 +314,7 @@ void FFT_bufferPrepare(void)
 		}
 	}
 	FFT_new_buffer_ready = false;
+	fft_charge_ready = true;
 }
 
 // FFT calculation
@@ -322,6 +325,8 @@ void FFT_doFFT(void)
 	if (!FFT_need_fft)
 		return;
 	if (!TRX_Inited)
+		return;
+	if (!fft_charge_ready)
 		return;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
