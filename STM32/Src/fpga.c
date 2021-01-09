@@ -618,11 +618,18 @@ static inline void FPGA_fpgadata_getiq(void)
 
 
 	FFT_buff_index++;
-	if (FFT_buff_index >= FFT_SIZE)
+	if (FFT_buff_index >= FFT_HALF_SIZE)
 	{
 		FFT_buff_index = 0;
-		FFT_new_buffer_ready = true;
-		FFT_buff_current = !FFT_buff_current;
+		if(FFT_new_buffer_ready)
+		{
+			//sendToDebug_str("fft overrun");
+		}
+		else
+		{
+			FFT_new_buffer_ready = true;
+			FFT_buff_current = !FFT_buff_current;
+		}
 	}
 }
 

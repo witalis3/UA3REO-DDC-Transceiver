@@ -12,10 +12,10 @@ bool FFT_need_fft = true;					// need to prepare data for display on the screen
 bool FFT_new_buffer_ready = false;				// buffer is full, can be processed
 uint32_t FFT_buff_index = 0;		// current buffer index when it is filled with FPGA
 bool FFT_buff_current = 0;		// current FFT Input buffer A - false, B - true
-IRAM2 float32_t FFTInput_I_A[FFT_SIZE] = {0}; // incoming buffer FFT I
-IRAM2 float32_t FFTInput_Q_A[FFT_SIZE] = {0}; // incoming buffer FFT Q
-IRAM2 float32_t FFTInput_I_B[FFT_SIZE] = {0}; // incoming buffer FFT I
-IRAM2 float32_t FFTInput_Q_B[FFT_SIZE] = {0}; // incoming buffer FFT Q
+IRAM2 float32_t FFTInput_I_A[FFT_HALF_SIZE] = {0}; // incoming buffer FFT I
+IRAM2 float32_t FFTInput_Q_A[FFT_HALF_SIZE] = {0}; // incoming buffer FFT Q
+IRAM2 float32_t FFTInput_I_B[FFT_HALF_SIZE] = {0}; // incoming buffer FFT I
+IRAM2 float32_t FFTInput_Q_B[FFT_HALF_SIZE] = {0}; // incoming buffer FFT Q
 uint16_t FFT_FPS = 0;
 uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
@@ -274,43 +274,44 @@ void FFT_bufferPrepare(void)
 	//Process DC corrector filter
 	if (!TRX_on_TX())
 	{
-		dc_filter(FFTInput_I_current, FFT_SIZE, DC_FILTER_FFT_I);
-		dc_filter(FFTInput_Q_current, FFT_SIZE, DC_FILTER_FFT_Q);
+		dc_filter(FFTInput_I_current, FFT_HALF_SIZE, DC_FILTER_FFT_I);
+		dc_filter(FFTInput_Q_current, FFT_HALF_SIZE, DC_FILTER_FFT_Q);
 	}
 
 	//Process Notch filter
 	if (CurrentVFO()->ManualNotchFilter && !TRX_on_TX())
 	{
-		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_I_FILTER, FFTInput_I_current, FFTInput_I_current, FFT_SIZE);
-		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_Q_FILTER, FFTInput_Q_current, FFTInput_Q_current, FFT_SIZE);
+		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_I_FILTER, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
+		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_Q_FILTER, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
 	}
 
 	//ZoomFFT
 	if (fft_zoom > 1)
 	{
+		uint32_t zoomed_width_half = zoomed_width / 2;
 		//Biquad LPF filter
-		arm_biquad_cascade_df2T_f32(&IIR_biquad_Zoom_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_SIZE);
-		arm_biquad_cascade_df2T_f32(&IIR_biquad_Zoom_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_SIZE);
+		arm_biquad_cascade_df2T_f32(&IIR_biquad_Zoom_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
+		arm_biquad_cascade_df2T_f32(&IIR_biquad_Zoom_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
 		// Decimator
-		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_SIZE);
-		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_SIZE);
+		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
+		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
 		// Shift old data
-		memcpy(&FFTInputCharge[0], &FFTInputCharge[zoomed_width], sizeof(float32_t) * (FFT_SIZE - zoomed_width));
-		// Add new data
-		for (uint_fast16_t i = 0; i < zoomed_width; i++)
+		memcpy(&FFTInputCharge[0], &FFTInputCharge[zoomed_width_half * 2], sizeof(float32_t) * (FFT_SIZE - zoomed_width_half) * 2);  //*2 - >i+q
+		// Add new data with 50% overlap
+		for (uint_fast16_t i = 0; i < zoomed_width_half; i++)
 		{
-			uint16_t wind_pos = i * (FFT_SIZE / zoomed_width);
-			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2] = FFTInput_I_current[i] * window_multipliers[wind_pos];
-			FFTInputCharge[(FFT_SIZE - zoomed_width + i) * 2 + 1] = FFTInput_Q_current[i] * window_multipliers[wind_pos];
+			FFTInputCharge[(FFT_SIZE - zoomed_width_half + i) * 2] = FFTInput_I_current[i];
+			FFTInputCharge[(FFT_SIZE - zoomed_width_half + i) * 2 + 1] = FFTInput_Q_current[i];
 		}
 	}
 	else
 	{
-		// make a combined buffer for calculation
-		for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
+		// make a combined buffer for calculation with 50% overlap
+		memcpy(&FFTInputCharge[0], &FFTInputCharge[FFT_HALF_SIZE * 2], sizeof(float32_t) * FFT_HALF_SIZE * 2); //*2 - >i+q
+		for (uint_fast16_t i = 0; i < FFT_HALF_SIZE; i++)
 		{
-			FFTInputCharge[i * 2] = FFTInput_I_current[i] * window_multipliers[i];
-			FFTInputCharge[i * 2 + 1] = FFTInput_Q_current[i] * window_multipliers[i];
+			FFTInputCharge[(FFT_HALF_SIZE + i) * 2] = FFTInput_I_current[i];
+			FFTInputCharge[(FFT_HALF_SIZE + i) * 2 + 1] = FFTInput_Q_current[i];
 		}
 	}
 	FFT_new_buffer_ready = false;
@@ -334,6 +335,13 @@ void FFT_doFFT(void)
 	// Get charge buffer
 	memcpy(&FFTInput, &FFTInputCharge, sizeof(FFTInput));
 	memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
+	
+	//Do windowing
+	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
+	{
+		FFTInput[i * 2] = FFTInput[i * 2] * window_multipliers[i];
+		FFTInput[i * 2 + 1] = FFTInput[i * 2 + 1] * window_multipliers[i];
+	}
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);

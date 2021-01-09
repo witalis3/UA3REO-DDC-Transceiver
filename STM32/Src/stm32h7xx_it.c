@@ -448,8 +448,6 @@ void TIM4_IRQHandler(void)
     return;
   }
   
-	if (FFT_new_buffer_ready)
-    FFT_bufferPrepare();
   if (FFT_need_fft)
     FFT_doFFT();
 	
@@ -956,6 +954,9 @@ void TIM17_IRQHandler(void)
   /* USER CODE END TIM17_IRQn 0 */
   HAL_TIM_IRQHandler(&htim17);
   /* USER CODE BEGIN TIM17_IRQn 1 */
+	if (FFT_new_buffer_ready)
+    FFT_bufferPrepare();
+	
   if (TRX.CWDecoder)
     DECODER_Process();
   /* USER CODE END TIM17_IRQn 1 */

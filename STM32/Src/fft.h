@@ -10,6 +10,7 @@
 
 #define FFT_SIZE 1024                                                                                 // specify the size of the calculated FFT
 #define FFT_USEFUL_SIZE 960                                                                           // size after FFT cropping
+#define FFT_HALF_SIZE (FFT_SIZE / 2)     
 #define FFT_DOUBLE_SIZE_BUFFER (FFT_SIZE * 2)                                                         // Buffer size for FFT calculation
 #define FFT_MIN 4.0f                                                                                  // MIN threshold of FFT signal
 #define FFT_TARGET 6.0f                                                                               // average threshold of the FFT signal
@@ -38,10 +39,10 @@ extern uint32_t FFT_buff_index;
 extern bool FFT_buff_current;
 extern bool FFT_need_fft;
 extern bool FFT_new_buffer_ready;
-extern float32_t FFTInput_I_A[FFT_SIZE];
-extern float32_t FFTInput_Q_A[FFT_SIZE];
-extern float32_t FFTInput_I_B[FFT_SIZE];
-extern float32_t FFTInput_Q_B[FFT_SIZE];
+extern float32_t FFTInput_I_A[FFT_HALF_SIZE];
+extern float32_t FFTInput_Q_A[FFT_HALF_SIZE];
+extern float32_t FFTInput_I_B[FFT_HALF_SIZE];
+extern float32_t FFTInput_Q_B[FFT_HALF_SIZE];
 extern uint16_t FFT_FPS;
 extern uint16_t FFT_FPS_Last;
 extern bool NeedWTFRedraw;
