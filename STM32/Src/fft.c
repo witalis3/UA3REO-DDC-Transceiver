@@ -47,7 +47,7 @@ static uint16_t palette_bg_gradient[MAX_FFT_HEIGHT + 1] = {0};							 // color p
 static uint16_t palette_bw_fft_colors[MAX_FFT_HEIGHT + 1] = {0};						 // color palette with bw highlighted FFT colors
 static uint16_t palette_bw_bg_colors[MAX_FFT_HEIGHT + 1] = {0};							 // color palette with bw highlighted background colors
 SRAM static uint16_t fft_output_buffer[MAX_FFT_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};	 //buffer with fft print data
-IRAM2 __attribute__((aligned(32))) static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
+IRAM2 static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
 IRAM2 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};						 // frequencies for each row of the waterfall
 SRAM static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
 IRAM2 static uint8_t indexed_3d_fft_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with 3d WTF output
@@ -857,6 +857,8 @@ static void FFT_3DPrintFFT(void)
 			uint32_t print_bin_height = print_y - (fftHeight - indexed_wtf_buffer[wtf_yindex][wtf_x]);
 			if(print_bin_height > wtfHeight + fftHeight - cwdecoder_offset)
 				continue;
+			if(print_bin_height >= FFT_AND_WTF_HEIGHT)
+				continue;
 			uint32_t print_x = x_left_offset + (uint32_t)roundf((float32_t)wtf_x * x_compress);
 			if(prev_x == print_x)
 				continue;
@@ -865,7 +867,8 @@ static void FFT_3DPrintFFT(void)
 			if(TRX.FFT_3D == 1) //line mode
 			{
 				for(uint16_t h = 0; h < (fftHeight - indexed_wtf_buffer[wtf_yindex][wtf_x]); h++)
-					indexed_3d_fft_buffer[print_bin_height + h][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x] + h;
+					if((print_bin_height + h) < FFT_AND_WTF_HEIGHT)
+						indexed_3d_fft_buffer[print_bin_height + h][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x] + h;
 			}
 			if(TRX.FFT_3D == 2) //pixel mode
 				indexed_3d_fft_buffer[print_bin_height][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x];

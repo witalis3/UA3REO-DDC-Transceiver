@@ -31,6 +31,8 @@ void TOUCHPAD_Init(void)
 void TOUCHPAD_ProcessInterrupt(void)
 {
 #if (defined(TOUCHPAD_GT911))
+	if(LCD_busy)
+		return;
 	GT911_Scan();
 
 	if (touched && !hold_swipe_handled && (touch_lasttime < (HAL_GetTick() - TOUCHPAD_TIMEOUT)) && ((touch_lasttime - touch_startime) <= TOUCHPAD_CLICK_TIMEOUT) && ((touch_lasttime - touch_startime) >= TOUCHPAD_CLICK_THRESHOLD))
