@@ -334,7 +334,8 @@ void FFT_doFFT(void)
 
 	// Get charge buffer
 	memcpy(&FFTInput, &FFTInputCharge, sizeof(FFTInput));
-	memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
+	if(!TRX.FFT_HiRes)
+		memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 	
 	//Do windowing
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
@@ -1003,13 +1004,20 @@ void FFT_printWaterfallDMA(void)
 		//rounding
 		int32_t body_width = LAYOUT->FFT_PRINT_SIZE - margin_left - margin_right;
 		
+		if(!TRX.WTF_Moving) //skip WTF moving
+		{
+			body_width = LAYOUT->FFT_PRINT_SIZE;
+			margin_left = 0;
+			margin_right = 0;
+		}
+		
 		if (body_width <= 0)
 		{
 			memset(&wtf_output_line, BG_COLOR, sizeof(wtf_output_line));
 		}
 		else
 		{
-			if (margin_left == 0 && margin_right == 0)
+			if (margin_left == 0 && margin_right == 0) //print full line
 			{
 				for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
 					if (wtf_x >= bw_line_start && wtf_x <= bw_line_end) //print bw bar
@@ -1079,6 +1087,8 @@ void FFT_printWaterfallDMA(void)
 static void FFT_move(int32_t _freq_diff)
 {
 	if (_freq_diff == 0)
+		return;
+	if(!TRX.WTF_Moving) //skip WTF moving
 		return;
 	float32_t old_x_true = 0.0f;
 	int32_t old_x_l = 0;

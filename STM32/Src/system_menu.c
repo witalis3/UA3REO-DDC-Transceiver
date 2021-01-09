@@ -78,6 +78,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ZoomCW(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_HiRes(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction);
@@ -298,6 +300,8 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
 		{"FFT Zoom CW", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_HANDL_SCREEN_FFT_ZoomCW},
+		{"FFT HiRes", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_HiRes, SYSMENU_HANDL_SCREEN_FFT_HiRes},
+		{"WTF Moving", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WTF_Moving, SYSMENU_HANDL_SCREEN_WTF_Moving},
 		{"Color Theme", SYSMENU_UINT8, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME},
 		//{"Layout Theme", SYSMENU_UINT8, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
@@ -1684,6 +1688,22 @@ static void SYSMENU_HANDL_SCREEN_FFT_Grid(int8_t direction)
 	if (TRX.FFT_Grid > 3)
 		TRX.FFT_Grid = 3;
 	FFT_Init();
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_HiRes(int8_t direction)
+{
+	if (direction > 0)
+		TRX.FFT_HiRes = true;
+	if (direction < 0)
+		TRX.FFT_HiRes = false;
+}
+
+static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction)
+{
+	if (direction > 0)
+		TRX.WTF_Moving = true;
+	if (direction < 0)
+		TRX.WTF_Moving = false;
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction)
