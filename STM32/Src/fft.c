@@ -338,11 +338,7 @@ void FFT_doFFT(void)
 		memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 	
 	//Do windowing
-	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
-	{
-		FFTInput[i * 2] = FFTInput[i * 2] * window_multipliers[i];
-		FFTInput[i * 2 + 1] = FFTInput[i * 2 + 1] * window_multipliers[i];
-	}
+	arm_cmplx_mult_real_f32(FFTInput, window_multipliers, FFTInput, FFT_SIZE);
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);

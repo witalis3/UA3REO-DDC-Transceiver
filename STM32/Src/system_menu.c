@@ -280,7 +280,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"RX AGC SSB Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed},
 		{"RX AGC CW Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed},
 		{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_AUDIO_TX_AGCSpeed},
-		{"Beeper", SYSMENU_UINT8, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
+		{"Beeper", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 };
 static uint8_t sysmenu_audio_item_count = sizeof(sysmenu_audio_handlers) / sizeof(sysmenu_audio_handlers[0]);
 
