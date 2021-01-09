@@ -257,7 +257,7 @@ void LoadSettings(bool clear)
 		TRX.LayoutThemeId = 0;			  //Selected Layout theme
 		TRX.Transverter_Enabled = false;  //Enable transverter mode
 		TRX.Transverter_Offset_Mhz = 120; //Offset from VFO
-		TRX.CW_GaussFilter = true;		  //Gauss responce LPF filter
+		TRX.CW_GaussFilter = false;		  //Gauss responce LPF filter
 		TRX.WSPR_FREQ_OFFSET = 0;		  //offset beacon from creq center
 		TRX.WSPR_BANDS_160 = false;		  //enabled WSPR bands
 		TRX.WSPR_BANDS_80 = true;
