@@ -51,6 +51,7 @@
 //#define LCD_HX8357C true //3'2
 //#define LCD_R61581 true //untested
 //#define LCD_ILI9486 true //3'5
+//#define LCD_ST7796S //3'95
 
 #define FRONTPANEL_BIG_V1 true
 #define LCD_RA8875 true

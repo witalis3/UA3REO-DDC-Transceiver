@@ -1,6 +1,6 @@
 #ifndef _LCDDRIVER_ILI9481_H_
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581))
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581) || defined(LCD_ST7796S))
 #define _LCDDRIVER_ILI9481_H_
 
 #define LCD_FSMC_COMM_ADDR 0xC0000000 //remapped

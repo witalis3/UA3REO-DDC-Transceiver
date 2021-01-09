@@ -1,5 +1,5 @@
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581))
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581) || defined(LCD_ST7796S))
 
 //Header files
 #include "lcd_driver.h"
@@ -52,7 +52,7 @@ inline uint16_t LCDDriver_readReg(uint16_t reg)
 //Initialise function
 void LCDDriver_Init(void)
 {
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B))
+#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ST7796S))
 #define ILI9481_COMM_DELAY 20
 
 	LCDDriver_SendCommand(LCD_COMMAND_SOFT_RESET); //0x01
@@ -78,7 +78,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x02);
 	HAL_Delay(ILI9481_COMM_DELAY);
 
-#if defined(LCD_HX8357B)
+#if (defined(LCD_HX8357B) || defined(LCD_ST7796S))
 	LCDDriver_SendCommand(LCD_COMMAND_PANEL_DRV_CTL); //(0xC0);
 	LCDDriver_SendData(0x10);
 	LCDDriver_SendData(0x3B);
@@ -129,7 +129,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0xDF);
 	HAL_Delay(ILI9481_COMM_DELAY);
 
-#if defined(LCD_HX8357B)
+#if (defined(LCD_HX8357B) || defined(LCD_ST7796S))
 	LCDDriver_SendCommand(LCD_COMMAND_COLOR_INVERSION_ON); //(0x21);
 	HAL_Delay(ILI9481_COMM_DELAY);
 #endif
@@ -414,7 +414,7 @@ void LCDDriver_Init(void)
 //Set screen rotation
 void LCDDriver_setRotation(uint8_t rotate)
 {
-#if defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486)
+#if defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486) || defined(LCD_ST7796S)
 	LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
 	switch (rotate)
 	{

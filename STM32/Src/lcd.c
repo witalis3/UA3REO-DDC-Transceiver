@@ -91,9 +91,17 @@ void LCD_Init(void)
 
 	LCDDriver_Init();
 #if SCREEN_ROTATE
-	LCDDriver_setRotation(2);
+	#ifdef LCD_ST7796S
+		LCDDriver_setRotation(4);
+	#else
+		LCDDriver_setRotation(2);
+	#endif
 #else
-	LCDDriver_setRotation(4);
+	#ifdef LCD_ST7796S
+		LCDDriver_setRotation(2);
+	#else
+		LCDDriver_setRotation(4);
+	#endif
 #endif
 #ifdef HAS_TOUCHPAD
 	TOUCHPAD_Init();
@@ -1398,6 +1406,29 @@ static void LCD_showBWWindow(void)
 			sprintf(str, "%d", width);
 			if(index < filters_count)
 				printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (width == cur_width), true, true, width, FRONTPANEL_BUTTONHANDLER_SETBW, FRONTPANEL_BUTTONHANDLER_SETBW);
+		}
+	}
+	LCD_busy = false;
+	#endif
+}
+
+void LCD_showRFPowerWindow(void)
+{
+	#if (defined(HAS_TOUCHPAD))
+	const uint8_t buttons_in_line = 5;
+	const uint8_t buttons_lines = 2;
+	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
+	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
+	LCD_openWindow(window_width, window_height);
+	LCD_busy = true;
+	for(uint8_t yi = 0; yi < buttons_lines; yi++)
+	{
+		for(uint8_t xi = 0; xi < buttons_in_line; xi++)
+		{
+			uint8_t index = 10 + (yi * buttons_in_line + xi) * 10;
+			char str[8];
+			sprintf(str, "%d%%", index);
+			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (TRX.RF_Power == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETSECMODE, FRONTPANEL_BUTTONHANDLER_SETRF_POWER);
 		}
 	}
 	LCD_busy = false;

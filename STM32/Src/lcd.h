@@ -60,6 +60,7 @@ extern bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy
 extern void LCD_showTooltip(char text[]);
 extern void LCD_openWindow(uint16_t w, uint16_t h);
 extern void LCD_closeWindow(void);
+extern void LCD_showRFPowerWindow(void);
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
 volatile extern bool LCD_busy;

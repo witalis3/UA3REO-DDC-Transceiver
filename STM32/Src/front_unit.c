@@ -576,24 +576,40 @@ void FRONTPANEL_Process(void)
 			{
 				PERIPH_FrontPanel_Buttons[b].afterhold = true;
 				if (!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
+				{
 					if (!LCD_window.opened)
-					if (PERIPH_FrontPanel_Buttons[b].holdHandler != NULL)
 					{
-						WM8731_Beep();
-						PERIPH_FrontPanel_Buttons[b].holdHandler(PERIPH_FrontPanel_Buttons[b].parameter);
+						if (PERIPH_FrontPanel_Buttons[b].holdHandler != NULL)
+						{
+							WM8731_Beep();
+							PERIPH_FrontPanel_Buttons[b].holdHandler(PERIPH_FrontPanel_Buttons[b].parameter);
+						}
 					}
+					else
+					{
+						LCD_closeWindow();
+					}
+				}
 			}
 
 			//check click state
 			if ((PERIPH_FrontPanel_Buttons[b].prev_state != PERIPH_FrontPanel_Buttons[b].state) && !PERIPH_FrontPanel_Buttons[b].state && ((HAL_GetTick() - PERIPH_FrontPanel_Buttons[b].start_hold_time) < KEY_HOLD_TIME) && !PERIPH_FrontPanel_Buttons[b].afterhold && !TRX.Locked)
 			{
 				if (!LCD_systemMenuOpened || PERIPH_FrontPanel_Buttons[b].work_in_menu)
+				{
 					if (!LCD_window.opened)
-					if (PERIPH_FrontPanel_Buttons[b].clickHandler != NULL)
 					{
-						WM8731_Beep();
-						PERIPH_FrontPanel_Buttons[b].clickHandler(PERIPH_FrontPanel_Buttons[b].parameter);
+						if (PERIPH_FrontPanel_Buttons[b].clickHandler != NULL)
+						{
+							WM8731_Beep();
+							PERIPH_FrontPanel_Buttons[b].clickHandler(PERIPH_FrontPanel_Buttons[b].parameter);
+						}
 					}
+					else
+					{
+						LCD_closeWindow();
+					}
+				}
 			}
 
 			//save prev state
@@ -920,6 +936,9 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
 
 void FRONTPANEL_BUTTONHANDLER_RF_POWER(uint32_t parameter)
 {
+	#ifdef HAS_TOUCHPAD
+	LCD_showRFPowerWindow();
+	#else
 	if (!LCD_systemMenuOpened)
 	{
 		LCD_systemMenuOpened = true;
@@ -929,6 +948,7 @@ void FRONTPANEL_BUTTONHANDLER_RF_POWER(uint32_t parameter)
 	{
 		SYSMENU_eventCloseAllSystemMenu();
 	}
+	#endif
 }
 
 void FRONTPANEL_BUTTONHANDLER_AGC(uint32_t parameter)
@@ -1340,6 +1360,13 @@ void FRONTPANEL_BUTTONHANDLER_SETBW(uint32_t parameter)
 	
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	
+	LCD_closeWindow();
+}
+
+void FRONTPANEL_BUTTONHANDLER_SETRF_POWER(uint32_t parameter)
+{
+	TRX.RF_Power = parameter;
 	
 	LCD_closeWindow();
 }
