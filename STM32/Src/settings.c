@@ -223,7 +223,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Grid = 1;				  // FFT grid style
 		TRX.FFT_Lens = false;			//FFT lens effect
 		TRX.FFT_3D = 0;						//FFT 3D mode
-		TRX.FFT_HiRes = false;		//move WTF with frequency encoder
+		TRX.FFT_HiRes = true;		//FFT High resolution
 		TRX.WTF_Moving = true;		//move WTF with frequency encoder
 		TRX.ShiftEnabled = false;		  // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 1000;		  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
