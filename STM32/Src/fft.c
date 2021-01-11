@@ -341,7 +341,7 @@ void FFT_doFFT(void)
 	
 	//Do windowing
 	if (fft_zoom == 1 || TRX.FFT_HiRes)
-	arm_cmplx_mult_real_f32(FFTInput, window_multipliers, FFTInput, FFT_SIZE);
+		arm_cmplx_mult_real_f32(FFTInput, window_multipliers, FFTInput, FFT_SIZE);
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
@@ -438,71 +438,6 @@ void FFT_doFFT(void)
 	}
 	memcpy(&FFTInput, FFTInput_tmp, sizeof(FFTInput_tmp));
 	
-	//Delete noise
-	float32_t minAmplValue = 0;
-	uint32_t minAmplIndex = 0;
-	arm_min_f32(FFTInput, LAYOUT->FFT_PRINT_SIZE, &minAmplValue, &minAmplIndex);
-	if (!TRX_on_TX())
-		arm_offset_f32(FFTInput, -minAmplValue * 0.8f, FFTInput, LAYOUT->FFT_PRINT_SIZE);
-
-	// Looking for the median in frequency response
-	arm_sort_f32(&FFT_sortInstance, FFTInput, FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
-	float32_t medianValue = FFTInput_tmp[LAYOUT->FFT_PRINT_SIZE / 2];
-
-	// Maximum amplitude
-	float32_t maxValueFFT = maxValueFFT_rx;
-	if (TRX_on_TX())
-		maxValueFFT = maxValueFFT_tx;
-	float32_t maxValue = (medianValue * FFT_MAX);
-	float32_t targetValue = (medianValue * FFT_TARGET);
-	float32_t minValue = (medianValue * FFT_MIN);
-
-	// Looking for the maximum in frequency response
-	float32_t maxAmplValue = 0;
-	arm_max_no_idx_f32(FFTInput, LAYOUT->FFT_PRINT_SIZE, &maxAmplValue);
-
-	// Auto-calibrate FFT levels
-	maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
-	
-	//DEBUG CW DECODER
-	/*maxValueFFT = maxValueFFT * 0.999999f + maxAmplValue * 0.000001f;
-	if(maxValueFFT < maxAmplValue)
-		maxValueFFT = maxAmplValue;*/
-
-	// minimum-maximum threshold for median
-	if (maxValueFFT < minValue)
-		maxValueFFT = minValue;
-	if (maxValueFFT > maxValue)
-		maxValueFFT = maxValue;
-
-	// Compress peaks
-	float32_t compressTargetValue = (maxValueFFT * FFT_COMPRESS_INTERVAL);
-	float32_t compressSourceInterval = maxAmplValue - compressTargetValue;
-	float32_t compressTargetInterval = maxValueFFT - compressTargetValue;
-	float32_t compressRate = compressTargetInterval / compressSourceInterval;
-	if (!TRX_on_TX() && TRX.FFT_Compressor)
-	{
-		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
-			if (FFTInput[i] > compressTargetValue)
-				FFTInput[i] = compressTargetValue + ((FFTInput[i] - compressTargetValue) * compressRate);
-	}
-
-	//limits
-	if (TRX_on_TX())
-		maxValueFFT = maxAmplValue;
-	if (maxValueFFT < 0.0000001f)
-		maxValueFFT = 0.0000001f;
-
-	// save values ​​for switching RX / TX
-	if (TRX_on_TX())
-		maxValueFFT_tx = maxValueFFT;
-	else
-		maxValueFFT_rx = maxValueFFT;
-
-	// Normalize the frequency response to one
-	if (maxValueFFT > 0)
-		arm_scale_f32(FFTInput, 1.0f / maxValueFFT, FFTInput, LAYOUT->FFT_PRINT_SIZE);
-
 	// Averaging values ​​for subsequent output
 	float32_t averaging = (float32_t)TRX.FFT_Averaging;
 	if (averaging < 1.0f)
@@ -574,10 +509,64 @@ bool FFT_printFFT(void)
 		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
 	}
 
+	// Looking for the median in frequency response
+	arm_sort_f32(&FFT_sortInstance, FFTOutput_mean, FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
+	float32_t medianValue = FFTInput_tmp[LAYOUT->FFT_PRINT_SIZE / 2];
+
+	// Maximum amplitude
+	float32_t maxValueFFT = maxValueFFT_rx;
+	if (TRX_on_TX())
+		maxValueFFT = maxValueFFT_tx;
+	float32_t maxValue = (medianValue * FFT_MAX);
+	float32_t targetValue = (medianValue * FFT_TARGET);
+	float32_t minValue = (medianValue * FFT_MIN);
+
+	// Looking for the maximum in frequency response
+	float32_t maxAmplValue = 0;
+	arm_max_no_idx_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &maxAmplValue);
+
+	// Auto-calibrate FFT levels
+	maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
+	
+	//DEBUG CW DECODER
+	/*maxValueFFT = maxValueFFT * 0.999999f + maxAmplValue * 0.000001f;
+	if(maxValueFFT < maxAmplValue)
+		maxValueFFT = maxAmplValue;*/
+
+	// minimum-maximum threshold for median
+	if (maxValueFFT < minValue)
+		maxValueFFT = minValue;
+	if (maxValueFFT > maxValue)
+		maxValueFFT = maxValue;
+
+	// Compress peaks
+	float32_t compressTargetValue = (maxValueFFT * FFT_COMPRESS_INTERVAL);
+	float32_t compressSourceInterval = maxAmplValue - compressTargetValue;
+	float32_t compressTargetInterval = maxValueFFT - compressTargetValue;
+	float32_t compressRate = compressTargetInterval / compressSourceInterval;
+	if (!TRX_on_TX() && TRX.FFT_Compressor)
+	{
+		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
+			if (FFTOutput_mean[i] > compressTargetValue)
+				FFTOutput_mean[i] = compressTargetValue + ((FFTOutput_mean[i] - compressTargetValue) * compressRate);
+	}
+
+	//limits
+	if (TRX_on_TX())
+		maxValueFFT = maxAmplValue;
+	if (maxValueFFT < 0.0000001f)
+		maxValueFFT = 0.0000001f;
+
+	// save values ​​for switching RX / TX
+	if (TRX_on_TX())
+		maxValueFFT_tx = maxValueFFT;
+	else
+		maxValueFFT_rx = maxValueFFT;
+	
 	// calculate the colors for the waterfall
 	for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 	{
-		height = (uint16_t)((float32_t)FFTOutput_mean[(uint_fast16_t)fft_x] * fftHeight);
+		height = (uint16_t)((float32_t)FFTOutput_mean[(uint_fast16_t)fft_x] * (1.0f / maxValueFFT) * fftHeight);
 		if (height > fftHeight)
 			height = fftHeight;
 
