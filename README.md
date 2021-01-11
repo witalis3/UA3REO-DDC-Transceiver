@@ -70,7 +70,7 @@ A properly assembled device does not require debugging, but if problems arise, t
 90 FGPA pin and ADC clock input - 122.88 MHz, PC9 STM32 pin - 12.288 MHz, PB10 STM32 pin - 48 kHz. <br>
 If necessary, calibrate the transceiver through the appropriate menu <br>
 WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT commands 1.7.4 and higher <br>
-Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C
+Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 
 ## Management
 

@@ -91,17 +91,9 @@ void LCD_Init(void)
 
 	LCDDriver_Init();
 #if SCREEN_ROTATE
-	#ifdef LCD_ST7796S
-		LCDDriver_setRotation(4);
-	#else
 		LCDDriver_setRotation(2);
-	#endif
 #else
-	#ifdef LCD_ST7796S
-		LCDDriver_setRotation(2);
-	#else
 		LCDDriver_setRotation(4);
-	#endif
 #endif
 #ifdef HAS_TOUCHPAD
 	TOUCHPAD_Init();

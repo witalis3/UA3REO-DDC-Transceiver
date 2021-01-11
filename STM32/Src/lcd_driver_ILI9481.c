@@ -78,7 +78,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x02);
 	HAL_Delay(ILI9481_COMM_DELAY);
 
-#if (defined(LCD_HX8357B) || defined(LCD_ST7796S))
+#if (defined(LCD_HX8357B))
 	LCDDriver_SendCommand(LCD_COMMAND_PANEL_DRV_CTL); //(0xC0);
 	LCDDriver_SendData(0x10);
 	LCDDriver_SendData(0x3B);
@@ -129,7 +129,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0xDF);
 	HAL_Delay(ILI9481_COMM_DELAY);
 
-#if (defined(LCD_HX8357B) || defined(LCD_ST7796S))
+#if (defined(LCD_HX8357B))
 	LCDDriver_SendCommand(LCD_COMMAND_COLOR_INVERSION_ON); //(0x21);
 	HAL_Delay(ILI9481_COMM_DELAY);
 #endif
