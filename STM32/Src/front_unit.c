@@ -559,7 +559,7 @@ void FRONTPANEL_Process(void)
 		if(PERIPH_FrontPanel_Buttons[b].type == FUNIT_CTRL_BUTTON)
 		{
 			//set state
-			if (mcp3008_value > PERIPH_FrontPanel_Buttons[b].tres_min && mcp3008_value < PERIPH_FrontPanel_Buttons[b].tres_max)
+			if (mcp3008_value >= PERIPH_FrontPanel_Buttons[b].tres_min && mcp3008_value < PERIPH_FrontPanel_Buttons[b].tres_max)
 				PERIPH_FrontPanel_Buttons[b].state = true;
 			else
 				PERIPH_FrontPanel_Buttons[b].state = false;
