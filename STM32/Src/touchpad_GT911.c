@@ -1,5 +1,6 @@
 #include "touchpad.h"
 #include "i2c.h"
+#include "lcd.h"
 #if (defined(TOUCHPAD_GT911))
 
 GT911_Dev GT911 = {0};
@@ -224,6 +225,11 @@ void GT911_Scan(void)
 					GT911.X[touch_id] = 10;
 				if (GT911.X[touch_id] > 790)
 					GT911.X[touch_id] = 790;
+				
+				#if SCREEN_ROTATE
+				GT911.X[touch_id] = LCD_WIDTH - GT911.X[touch_id];
+				GT911.Y[touch_id] = LCD_HEIGHT - GT911.Y[touch_id];
+				#endif
 
 				//sprintf(str, "%d,%d - %d / %d", GT911.X[touch_id], GT911.Y[touch_id], GT911.Touchkeytrackid[touch_id], GT911.TouchCount);
 				//sendToDebug_strln(str);

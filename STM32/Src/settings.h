@@ -68,7 +68,7 @@
 #define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_2
 #define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_2
 
-#define SCREEN_ROTATE 0 // turn the screen upside down
+#define SCREEN_ROTATE false // turn the screen upside down
 
 //#define ADC_BITS 16																						// ADC bit depth
 //#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
