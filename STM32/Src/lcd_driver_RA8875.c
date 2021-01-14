@@ -132,7 +132,9 @@ void LCDDriver_Init(void)
 
 //Set screen rotation
 void LCDDriver_setRotation(uint8_t rotate){
-
+	#if SCREEN_ROTATE
+	LCDDriver_writeReg(LCD_RA8875_DPCR, LCD_RA8875_DPCR_HDIR | LCD_RA8875_DPCR_VDIR);
+	#endif
 }
 
 //Set cursor position
