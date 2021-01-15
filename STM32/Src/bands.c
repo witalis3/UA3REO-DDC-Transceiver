@@ -53,7 +53,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR1",
+			.name = "BR 2.4",
 			.selectable = false,
 			.startFreq = 2300000,
 			.endFreq = 2468000,
@@ -64,7 +64,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR2",
+			.name = "BR 3.3",
 			.selectable = false,
 			.startFreq = 3200000,
 			.endFreq = 3400000,
@@ -88,7 +88,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR3",
+			.name = "BR 4.0",
 			.selectable = false,
 			.startFreq = 3950000,
 			.endFreq = 4000000,
@@ -99,7 +99,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR4",
+			.name = "BR 4.8",
 			.selectable = false,
 			.startFreq = 4750000,
 			.endFreq = 4995000,
@@ -110,7 +110,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR5",
+			.name = "BR 5.0",
 			.selectable = false,
 			.startFreq = 5005000,
 			.endFreq = 5060000,
@@ -132,7 +132,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR6",
+			.name = "BR 6.0",
 			.selectable = false,
 			.startFreq = 5900000,
 			.endFreq = 6200000,
@@ -158,7 +158,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR7",
+			.name = "BR 7.3",
 			.selectable = false,
 			.startFreq = 7200000,
 			.endFreq = 7450000,
@@ -169,7 +169,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR8",
+			.name = "BR 9.6",
 			.selectable = false,
 			.startFreq = 9400000,
 			.endFreq = 9900000,
@@ -192,7 +192,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR9",
+			.name = "BR 11.9",
 			.selectable = false,
 			.startFreq = 11600000,
 			.endFreq = 12100000,
@@ -203,7 +203,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR10",
+			.name = "BR 13.7",
 			.selectable = false,
 			.startFreq = 13570000,
 			.endFreq = 13870000,
@@ -227,7 +227,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR11",
+			.name = "BR 15.5",
 			.selectable = false,
 			.startFreq = 15100000,
 			.endFreq = 15800000,
@@ -238,7 +238,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR12",
+			.name = "BR 17.7",
 			.selectable = false,
 			.startFreq = 17480000,
 			.endFreq = 17900000,
@@ -262,7 +262,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR13",
+			.name = "BR 19.0",
 			.selectable = false,
 			.startFreq = 18900000,
 			.endFreq = 19020000,
@@ -286,7 +286,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR14",
+			.name = "BR 21.6",
 			.selectable = false,
 			.startFreq = 21450000,
 			.endFreq = 21850000,
@@ -310,7 +310,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//Shortwave Wave Broadcast
 		{
-			.name = "SBR15",
+			.name = "BR 25.8",
 			.selectable = false,
 			.startFreq = 25670000,
 			.endFreq = 26100000,
@@ -390,7 +390,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//2 meter
 		{
-			.name = "VHF",
+			.name = "2m",
 			.selectable = true,
 			.startFreq = 144000000,
 			.endFreq = 146000000,
@@ -403,7 +403,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 		},
 		//70cm
 		{
-			.name = "UHF",
+			.name = "70cm",
 			.selectable = true,
 			.startFreq = 430000000,
 			.endFreq = 440000000,

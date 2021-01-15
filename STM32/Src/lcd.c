@@ -1262,28 +1262,67 @@ static void LCD_showBandWindow(bool secondary_vfo)
 {
 	#if (defined(HAS_TOUCHPAD))
 	const uint8_t buttons_in_line = 6;
-	const uint8_t buttons_lines = ceil((float32_t)BANDS_COUNT / (float32_t)buttons_in_line);
+	uint8_t selectable_bands_count = 0;
+	uint8_t unselectable_bands_count = 0;
+	for(uint8_t i = 0; i < BANDS_COUNT; i++)
+		if(BANDS[i].selectable)
+			selectable_bands_count++;
+		else
+			unselectable_bands_count++;
+	const uint8_t buttons_lines_selectable = ceil((float32_t)selectable_bands_count / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines_unselectable = ceil((float32_t)unselectable_bands_count / (float32_t)buttons_in_line);
+	const uint8_t divider_height = 30;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
+	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * (buttons_lines_selectable + buttons_lines_unselectable) + divider_height + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines_selectable + buttons_lines_unselectable + 1);
 	LCD_openWindow(window_width, window_height);
 	LCD_busy = true;
 	int8_t curband = getBandFromFreq(CurrentVFO()->Freq, true);
 	if(secondary_vfo)
 		curband = getBandFromFreq(SecondaryVFO()->Freq, true);
-	for(uint8_t yi = 0; yi < buttons_lines; yi++)
+	
+	//selectable bands first
+	uint8_t yi = 0;
+	uint8_t xi = 0;
+	for(uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++)
 	{
-		for(uint8_t xi = 0; xi < buttons_in_line; xi++)
+		if(!BANDS[bindx].selectable)
+			continue;
+		
+		if(!secondary_vfo)
+			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, FRONTPANEL_BUTTONHANDLER_SETBAND, FRONTPANEL_BUTTONHANDLER_SETBAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);	
+		else
+			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, FRONTPANEL_BUTTONHANDLER_SETSECBAND, FRONTPANEL_BUTTONHANDLER_SETSECBAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+					
+		xi++;
+		if(xi >= buttons_in_line)
 		{
-			uint8_t index = yi * buttons_in_line + xi;
-			if(index < BANDS_COUNT)
-			{
-				if(!secondary_vfo)
-					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[index].name, (curband == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETBAND, FRONTPANEL_BUTTONHANDLER_SETBAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);	
-				else
-					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[index].name, (curband == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETSECBAND, FRONTPANEL_BUTTONHANDLER_SETSECBAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-			}
+			yi++;
+			xi = 0;
 		}
 	}
+	//divider
+	yi++;
+	LCDDriver_drawFastHLine(LCD_WIDTH / 2 - window_width / 2, LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height / 2 + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), window_width, COLOR->WINDOWS_BORDER);
+	//unselectable bands next (broadcast)
+	xi = 0;
+	for(uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++)
+	{
+		if(BANDS[bindx].selectable)
+			continue;
+		
+		if(!secondary_vfo)
+			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, FRONTPANEL_BUTTONHANDLER_SETBAND, FRONTPANEL_BUTTONHANDLER_SETBAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);	
+		else
+			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, FRONTPANEL_BUTTONHANDLER_SETSECBAND, FRONTPANEL_BUTTONHANDLER_SETSECBAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+					
+		xi++;
+		if(xi >= buttons_in_line)
+		{
+			yi++;
+			xi = 0;
+		}
+	}
+	
 	LCD_busy = false;
 	#endif
 }
