@@ -35,6 +35,8 @@ static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM
 static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;							 // used for squelch processing and debouncing tone detection, respectively
 static float32_t DFM_RX1_fm_sql_avg = 0.0f;														 // average SQL in FM
 static float32_t DFM_RX2_fm_sql_avg = 0.0f;
+static float32_t DFM_RX1_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+static float32_t DFM_RX2_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
@@ -1049,9 +1051,9 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	float32_t *fm_sql_avg = &DFM_RX1_fm_sql_avg;
 	arm_biquad_cascade_df2T_instance_f32 *iir_filter_inst = &IIR_RX1_Squelch_HPF;
 	bool *squelched = &DFM_RX1_Squelched;
+	float32_t *squelch_buf = DFM_RX1_squelch_buf;
 
 	float32_t angle, x, y, b;
-	static float32_t squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 
 	if (rx_id == AUDIO_RX2)
 	{
@@ -1063,6 +1065,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		FPGA_Audio_Buffer_I_tmp = &APROC_Audio_Buffer_RX2_I[0];
 		FPGA_Audio_Buffer_Q_tmp = &APROC_Audio_Buffer_RX2_Q[0];
 		squelched = &DFM_RX2_Squelched;
+		float32_t *squelch_buf = DFM_RX2_squelch_buf;
 	}
 
 	for (uint_fast16_t i = 0; i < size; i++)
