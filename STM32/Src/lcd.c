@@ -1233,6 +1233,7 @@ static void LCD_printTooltip(void)
 	{
 		LCD_UpdateQuery.Tooltip = false;
 		LCD_UpdateQuery.FreqInfoRedraw = true;
+		LCD_UpdateQuery.StatusInfoGUI = true;
 	}
 }
 
