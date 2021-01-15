@@ -371,6 +371,8 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_ZoomCW", (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_UINT8);
 		if (res)
+			SD_WRITE_SETT_LINE("TRX.LCD_Brightness", (uint32_t *)&TRX.LCD_Brightness, SYSMENU_UINT8);
+		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Speed", (uint32_t *)&TRX.FFT_Speed, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Averaging", (uint32_t *)&TRX.FFT_Averaging, SYSMENU_UINT8);
@@ -753,6 +755,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FFT_Zoom = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_ZoomCW") == 0)
 		TRX.FFT_ZoomCW = (uint8_t)uintval;
+	if (strcmp(name, "TRX.LCD_Brightness") == 0)
+		TRX.LCD_Brightness = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Speed") == 0)
 		TRX.FFT_Speed = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Averaging") == 0)

@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "2.2.0"; //1.2.3-yymmdd.hhmm (concatinate)
+char version_string[19] = "2.2.1"; //1.2.3-yymmdd.hhmm (concatinate)
 
 //W25Q16
 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -272,6 +272,7 @@ void LoadSettings(bool clear)
 		TRX.WSPR_BANDS_2 = false;
 		for(uint8_t i = 0; i < FUNCBUTTONS_COUNT ; i++)
 			TRX.FuncButtons[i] = i;
+		TRX.LCD_Brightness = 60; //LCD Brightness
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");

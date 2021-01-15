@@ -9,6 +9,7 @@
 #define LCD_WIDTH 800
 #define LCD_HEIGHT 480
 #define HAS_BTE true
+#define HAS_BRIGHTNESS_CONTROL true
 
 // Registers & bits
 #define LCD_RA8875_PWRR 0x01

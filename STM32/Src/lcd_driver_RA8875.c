@@ -107,8 +107,7 @@ void LCDDriver_Init(void)
   LCDDriver_setActiveWindow(0, 0, (LCD_WIDTH - 1), (LCD_HEIGHT - 1));
 
   //PWM setting
-  LCDDriver_writeReg(LCD_RA8875_P1CR, LCD_RA8875_P1CR_ENABLE | (LCD_RA8875_PWM_CLK_DIV1024 & 0xF));
-  LCDDriver_writeReg(LCD_RA8875_P1DCR, 0x05);
+	LCDDriver_setBrightness(60);
 
   //clear screen
   LCDDriver_Fill(COLOR_WHITE);
@@ -128,6 +127,13 @@ void LCDDriver_Init(void)
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 	HAL_SRAM_Init(&hsram1, &Timing, NULL);
 	HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
+}
+
+//Set diplay brightness
+void LCDDriver_setBrightness(uint8_t percent)
+{
+	LCDDriver_writeReg(LCD_RA8875_P1CR, LCD_RA8875_P1CR_ENABLE | (LCD_RA8875_PWM_CLK_DIV1024 & 0xF));
+  LCDDriver_writeReg(LCD_RA8875_P1DCR, (uint16_t)(255.0f * ((100.f - (float32_t)percent) / 100.f)));
 }
 
 //Set screen rotation

@@ -78,6 +78,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ZoomCW(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_LCD_Brightness(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_HiRes(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction);
@@ -300,8 +301,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
 		{"FFT Zoom CW", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_HANDL_SCREEN_FFT_ZoomCW},
-		{"FFT HiRes", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_HiRes, SYSMENU_HANDL_SCREEN_FFT_HiRes},
-		{"WTF Moving", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WTF_Moving, SYSMENU_HANDL_SCREEN_WTF_Moving},
+		#ifdef HAS_BRIGHTNESS_CONTROL
+		{"LCD Brightness", SYSMENU_UINT8, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_SCREEN_LCD_Brightness},
+		#endif
 		{"Color Theme", SYSMENU_UINT8, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME},
 		//{"Layout Theme", SYSMENU_UINT8, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
@@ -313,6 +315,8 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Lens", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Lens, SYSMENU_HANDL_SCREEN_FFT_Lens},
 		{"FFT 3D Mode", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_3D, SYSMENU_HANDL_SCREEN_FFT_3D},
 		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_SCREEN_FFT_Enabled},
+		{"FFT HiRes", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_HiRes, SYSMENU_HANDL_SCREEN_FFT_HiRes},
+		{"WTF Moving", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WTF_Moving, SYSMENU_HANDL_SCREEN_WTF_Moving},
 		{"FFT Compressor", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
 		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window},
@@ -1720,6 +1724,16 @@ static void SYSMENU_HANDL_SCREEN_FFT_Lens(int8_t direction)
 		TRX.FFT_Lens = true;
 	if (direction < 0)
 		TRX.FFT_Lens = false;
+}
+
+static void SYSMENU_HANDL_SCREEN_LCD_Brightness(int8_t direction)
+{
+	TRX.LCD_Brightness += direction;
+	if (TRX.LCD_Brightness < 1)
+		TRX.LCD_Brightness = 1;
+	if (TRX.LCD_Brightness > 100)
+		TRX.LCD_Brightness = 100;
+	LCDDriver_setBrightness(TRX.LCD_Brightness);
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction)

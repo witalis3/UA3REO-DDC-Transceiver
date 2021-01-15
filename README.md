@@ -173,8 +173,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 
 * **FFT Zoom** - FFT spectrum zooming (x1 - 96kHz, x2 - 48kHz, x4 - 24kHz, x8 - 12kHz, x16 - 6kHz)
 * **FFT Zoom CW** - FFT spectrum zooming for CW Mode
-* **FFT HiRes** - Hi resolution ZoomFFT version (high latency)
-* **WTF Moving** - Mowe waterfall with frequency changing
+* **LCD Brightness** - Set LCD brightness (not all lcd support)
 * **Color Theme** - Select colors theme (0 - black, 1 - white)
 * **Layout Theme** - Select interface theme (0 - default)
 * **FFT Speed** - FFT and waterfall speed
@@ -184,6 +183,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FFT Grid** - FFT and waterfall grids: 1(no grid), 2(fft grid), 3(fft+wtf grids), 4(wtf grid)
 * **FFT Background** - Gradient FFT background
 * **FFT Enabled** - Enable waterfall and FFT
+* **FFT HiRes** - Hi resolution ZoomFFT version (high latency)
+* **WTF Moving** - Mowe waterfall with frequency changing
 * **FFT Lens** - Enable FFT lens mode (magnify center of spectrum)
 * **FFT 3D Mode** - Enable FFT 3D mode (0 - disabled, 1 - lines, 2 - pixels)
 * **FFT Compressor** - Enable FFT peak comressor
