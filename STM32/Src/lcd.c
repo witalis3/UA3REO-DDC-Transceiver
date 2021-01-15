@@ -1384,10 +1384,12 @@ void LCD_showRFPowerWindow(void)
 	{
 		for(uint8_t xi = 0; xi < buttons_in_line; xi++)
 		{
-			uint8_t index = 10 + (yi * buttons_in_line + xi) * 10;
+			uint8_t index = 0 + (yi * buttons_in_line + xi) * 10;
+			if(index > 50)
+				index += 10;
 			char str[8];
 			sprintf(str, "%d%%", index);
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (TRX.RF_Power == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETSECMODE, FRONTPANEL_BUTTONHANDLER_SETRF_POWER);
+			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (TRX.RF_Power == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETRF_POWER, FRONTPANEL_BUTTONHANDLER_SETRF_POWER);
 		}
 	}
 	LCD_busy = false;
