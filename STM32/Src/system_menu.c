@@ -2985,6 +2985,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	else if (sysmenu_sysinfo_opened)
 	{
 		SYSMENU_HANDL_SYSINFO(0);
+		return;
 	}
 	else if (sysmenu_infowindow_opened)
 	{
