@@ -37,6 +37,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 IRAM2 static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0}; // charge FFT I and Q buffer
 IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0}; // combined FFT I and Q buffer
 IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};	   // temporary buffer for sorting, moving and fft compressing
+IRAM2 static float32_t FFT_meanBuffer[FFT_MAX_MEANS][MAX_FFT_PRINT_SIZE] = {0};	   // averaged FFT buffer (for output)
 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};	   // averaged FFT buffer (for output)
 static float32_t maxValueFFT_rx = 0;						   // maximum value of the amplitude in the resulting frequency response
 static float32_t maxValueFFT_tx = 0;						   // maximum value of the amplitude in the resulting frequency response
@@ -49,6 +50,7 @@ static uint16_t palette_bw_bg_colors[MAX_FFT_HEIGHT + 1] = {0};							 // color 
 SRAM static uint16_t fft_output_buffer[MAX_FFT_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};	 //buffer with fft print data
 IRAM2 static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
 IRAM2 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};						 // frequencies for each row of the waterfall
+IRAM2 static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};						 // frequencies for each row of the fft mean buffer
 SRAM static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
 IRAM2 static uint8_t indexed_3d_fft_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with 3d WTF output
 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};								 //buffer with fft colors output
@@ -67,6 +69,8 @@ static uint32_t print_fft_dma_position = 0;			//positior for dma fft print
 static uint8_t needredraw_wtf_counter = 3;		//redraw cycles after event
 static bool fft_charge_ready = false;
 static bool fft_charge_copying = false;
+static uint8_t FFT_meanBuffer_index = 0;
+static uint32_t FFT_ChargeBuffer_collected = 0;
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
@@ -151,7 +155,6 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 //Prototypes
 static uint16_t getFFTColor(uint_fast8_t height);											  // get color from signal strength
 static void FFT_fill_color_palette(void);													  // prepare the color palette
-static void FFT_move(int32_t _freq_diff);													  // shift the waterfall
 static int32_t getFreqPositionOnFFT(uint32_t freq);											  // get the position on the FFT for a given frequency
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center);
 static void FFT_3DPrintFFT(void);
@@ -308,6 +311,7 @@ void FFT_bufferPrepare(void)
 			FFTInputCharge[(FFT_SIZE - zoomed_width_half + i) * 2] = FFTInput_I_current[i];
 			FFTInputCharge[(FFT_SIZE - zoomed_width_half + i) * 2 + 1] = FFTInput_Q_current[i];
 		}
+		FFT_ChargeBuffer_collected += zoomed_width_half;
 	}
 	else
 	{
@@ -318,6 +322,7 @@ void FFT_bufferPrepare(void)
 			FFTInputCharge[(FFT_HALF_SIZE + i) * 2] = FFTInput_I_current[i];
 			FFTInputCharge[(FFT_HALF_SIZE + i) * 2 + 1] = FFTInput_Q_current[i];
 		}
+		FFT_ChargeBuffer_collected += FFT_HALF_SIZE;
 	}
 	FFT_new_buffer_ready = false;
 	fft_charge_ready = true;
@@ -346,7 +351,21 @@ void FFT_doFFT(void)
 	
 	//Do windowing
 	if (fft_zoom == 1 || TRX.FFT_HiRes)
+	{
 		arm_cmplx_mult_real_f32(FFTInput, window_multipliers, FFTInput, FFT_SIZE);
+	}
+	else //partial windowing
+	{
+		if(FFT_ChargeBuffer_collected > FFT_SIZE)
+			FFT_ChargeBuffer_collected = FFT_SIZE;
+		for(uint16_t i = (FFT_SIZE - FFT_ChargeBuffer_collected); i < FFT_SIZE ; i++)
+		{
+			uint16_t coeff_idx = (FFT_SIZE / FFT_ChargeBuffer_collected) * (FFT_SIZE - i);
+			FFTInput[i * 2] = FFTInput[i * 2] * window_multipliers[coeff_idx];
+			FFTInput[i * 2 + 1] = FFTInput[i * 2 + 1] * window_multipliers[coeff_idx];
+		}
+	}
+	FFT_ChargeBuffer_collected = 0;
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
@@ -443,14 +462,35 @@ void FFT_doFFT(void)
 	}
 	memcpy(&FFTInput, FFTInput_tmp, sizeof(FFTInput_tmp));
 	
-	// Averaging values ​​for subsequent output
-	float32_t averaging = (float32_t)TRX.FFT_Averaging;
-	if (averaging < 1.0f)
-		averaging = 1.0f;
-	float32_t beta = 1.0f / averaging;
-	float32_t alpha = 1.0f - beta;
+	//Averaging
+	if(TRX.FFT_Averaging > FFT_MAX_MEANS)
+		TRX.FFT_Averaging = FFT_MAX_MEANS;
+	
+	//Store old FFT for averaging
 	for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
-		FFTOutput_mean[i] = FFTOutput_mean[i] * alpha + FFTInput[i] * beta;
+		FFT_meanBuffer[FFT_meanBuffer_index][i] = FFTInput[i];
+	fft_meanbuffer_freqs[FFT_meanBuffer_index] = CurrentVFO()->Freq;
+	
+	FFT_meanBuffer_index++;
+	if(FFT_meanBuffer_index >= TRX.FFT_Averaging)
+		FFT_meanBuffer_index = 0;
+	
+	// Averaging values
+	memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean));
+	
+	for (uint_fast16_t avg_idx = 0; avg_idx < TRX.FFT_Averaging; avg_idx++)
+	{
+		int32_t freq_diff = roundf(((float32_t)((float32_t)fft_meanbuffer_freqs[avg_idx] - (float32_t)CurrentVFO()->Freq) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom);
+		
+		if(!TRX.WTF_Moving)
+			freq_diff = 0;
+		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
+		{
+			int32_t new_x = (int32_t)i - (int32_t)freq_diff;
+			if(new_x > -1 && new_x < LAYOUT->FFT_PRINT_SIZE)
+				FFTOutput_mean[i] += FFT_meanBuffer[avg_idx][new_x];
+		}
+	}
 
 	FFT_need_fft = false;
 }
@@ -501,7 +541,6 @@ bool FFT_printFFT(void)
 		}
 
 		// offset the fft if needed
-		FFT_move((int32_t)CurrentVFO()->Freq - (int32_t)currentFFTFreq);
 		currentFFTFreq = CurrentVFO()->Freq;
 	}
 
@@ -1073,53 +1112,6 @@ void FFT_printWaterfallDMA(void)
 		FFT_need_fft = true;
 		LCD_busy = false;
 	}
-}
-
-// shift the waterfall
-static void FFT_move(int32_t _freq_diff)
-{
-	if (_freq_diff == 0)
-		return;
-	if(!TRX.WTF_Moving) //skip WTF moving
-		return;
-	float32_t old_x_true = 0.0f;
-	int32_t old_x_l = 0;
-	int32_t old_x_r = 0;
-	float32_t freq_diff = ((float32_t)_freq_diff / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom;
-	float32_t old_x_part_r = fmodf(freq_diff, 1.0f);
-	float32_t old_x_part_l = 1.0f - old_x_part_r;
-	if (freq_diff < 0.0f)
-	{
-		old_x_part_l = fmodf(-freq_diff, 1.0f);
-		old_x_part_r = 1.0f - old_x_part_l;
-	}
-
-	//Move mean Buffer
-	for (int32_t x = 0; x < LAYOUT->FFT_PRINT_SIZE; x++)
-	{
-		old_x_true = (float32_t)x + freq_diff;
-		old_x_l = (int32_t)(floorf(old_x_true));
-		old_x_r = (int32_t)(ceilf(old_x_true));
-
-		FFTInput_tmp[x] = 0;
-
-		if ((old_x_true >= LAYOUT->FFT_PRINT_SIZE) || (old_x_true < 0.0f))
-			continue;
-		if ((old_x_l < LAYOUT->FFT_PRINT_SIZE) && (old_x_l >= 0))
-			FFTInput_tmp[x] += (FFTOutput_mean[old_x_l] * old_x_part_l);
-		if ((old_x_r < LAYOUT->FFT_PRINT_SIZE) && (old_x_r >= 0))
-			FFTInput_tmp[x] += (FFTOutput_mean[old_x_r] * old_x_part_r);
-
-		//sides
-		if (old_x_r >= LAYOUT->FFT_PRINT_SIZE)
-			FFTInput_tmp[x] = FFTOutput_mean[old_x_l];
-	}
-	//save results
-	memcpy(&FFTOutput_mean, &FFTInput_tmp, sizeof FFTOutput_mean);
-	
-	//clean charge buffer
-	if(fft_zoom > 1)
-		memset(&FFTInputCharge[0], 0x00, sizeof(float32_t) * (FFT_SIZE - zoomed_width) * 2);
 }
 
 // get color from signal strength

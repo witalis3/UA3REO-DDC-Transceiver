@@ -1585,8 +1585,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction)
 	TRX.FFT_Averaging += direction;
 	if (TRX.FFT_Averaging < 1)
 		TRX.FFT_Averaging = 1;
-	if (TRX.FFT_Averaging > 10)
-		TRX.FFT_Averaging = 10;
+	if (TRX.FFT_Averaging > FFT_MAX_MEANS)
+		TRX.FFT_Averaging = FFT_MAX_MEANS;
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction)
