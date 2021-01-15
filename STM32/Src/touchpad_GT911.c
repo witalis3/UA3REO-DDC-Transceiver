@@ -216,15 +216,17 @@ void GT911_Scan(void)
 
 			for (uint8_t touch_id = 0; touch_id < GT911.TouchCount; touch_id++)
 			{
-				if (GT911.Y[touch_id] < 10)
-					GT911.Y[touch_id] = 10;
-				if (GT911.Y[touch_id] > 470)
-					GT911.Y[touch_id] = 470;
 				GT911.Y[touch_id] = 480 - GT911.Y[touch_id];
-				if (GT911.X[touch_id] < 10)
-					GT911.X[touch_id] = 10;
-				if (GT911.X[touch_id] > 790)
-					GT911.X[touch_id] = 790;
+				
+				if (GT911.Y[touch_id] < 5)
+					GT911.Y[touch_id] = 5;
+				if (GT911.Y[touch_id] > 475)
+					GT911.Y[touch_id] = 475;
+				
+				if (GT911.X[touch_id] < 5)
+					GT911.X[touch_id] = 5;
+				if (GT911.X[touch_id] > 795)
+					GT911.X[touch_id] = 795;
 				
 				#if SCREEN_ROTATE
 				GT911.X[touch_id] = LCD_WIDTH - GT911.X[touch_id];

@@ -68,10 +68,8 @@ static void LCD_displayStatusInfoBar(bool redraw);
 static void LCD_displayStatusInfoGUI(bool redraw);
 static void LCD_displayTextBar(void);
 static void LCD_printTooltip(void);
-static void LCD_showBandWindow(void);
-static void LCD_showSecBandWindow(void);
-static void LCD_showModeWindow(void);
-static void LCD_showSecModeWindow(void);
+static void LCD_showBandWindow(bool secondary_vfo);
+static void LCD_showModeWindow(bool secondary_vfo);
 static void LCD_showBWWindow(void);
 #if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, bool in_window, uint32_t parameter, void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter));
@@ -1080,25 +1078,25 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 	//main freq click
 	if (y >= LAYOUT->FREQ_Y_TOP && y <= LAYOUT->FREQ_Y_TOP + LAYOUT->FREQ_BLOCK_HEIGHT && x >= LAYOUT->FREQ_LEFT_MARGIN && x <= LAYOUT->FREQ_LEFT_MARGIN + LAYOUT->FREQ_WIDTH)
 	{
-		LCD_showBandWindow();
+		LCD_showBandWindow(false);
 		return;
 	}
 	//sec freq click
 	if (y >= LAYOUT->FREQ_B_Y_TOP && y <= LAYOUT->FREQ_B_Y_TOP + LAYOUT->FREQ_B_BLOCK_HEIGHT && x >= LAYOUT->FREQ_B_LEFT_MARGIN && x <= LAYOUT->FREQ_B_LEFT_MARGIN + LAYOUT->FREQ_B_WIDTH)
 	{
-		LCD_showSecBandWindow();
+		LCD_showBandWindow(true);
 		return;
 	}
 	//main mode click
 	if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT) && x >= LAYOUT->STATUS_MODE_X_OFFSET && x <= LAYOUT->STATUS_MODE_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH)
 	{
-		LCD_showModeWindow();
+		LCD_showModeWindow(false);
 		return;
 	}
 	//sec mode click
 	if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT + 20) && x >= (LAYOUT->STATUS_MODE_B_X_OFFSET - 20) && x <= (LAYOUT->STATUS_MODE_B_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH + 20))
 	{
-		LCD_showSecModeWindow();
+		LCD_showModeWindow(true);
 		return;
 	}
 	//bw click
@@ -1266,7 +1264,7 @@ void LCD_closeWindow(void)
 	#endif
 }
 
-static void LCD_showBandWindow(void)
+static void LCD_showBandWindow(bool secondary_vfo)
 {
 	#if (defined(HAS_TOUCHPAD))
 	const uint8_t buttons_in_line = 6;
@@ -1276,43 +1274,27 @@ static void LCD_showBandWindow(void)
 	LCD_openWindow(window_width, window_height);
 	LCD_busy = true;
 	int8_t curband = getBandFromFreq(CurrentVFO()->Freq, true);
+	if(secondary_vfo)
+		curband = getBandFromFreq(SecondaryVFO()->Freq, true);
 	for(uint8_t yi = 0; yi < buttons_lines; yi++)
 	{
 		for(uint8_t xi = 0; xi < buttons_in_line; xi++)
 		{
 			uint8_t index = yi * buttons_in_line + xi;
 			if(index < BANDS_COUNT)
-				printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[index].name, (curband == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETBAND, FRONTPANEL_BUTTONHANDLER_SETBAND);
+			{
+				if(!secondary_vfo)
+					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[index].name, (curband == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETBAND, FRONTPANEL_BUTTONHANDLER_SETBAND);	
+				else
+					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[index].name, (curband == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETSECBAND, FRONTPANEL_BUTTONHANDLER_SETSECBAND);
+			}
 		}
 	}
 	LCD_busy = false;
 	#endif
 }
 
-static void LCD_showSecBandWindow(void)
-{
-	#if (defined(HAS_TOUCHPAD))
-	const uint8_t buttons_in_line = 6;
-	const uint8_t buttons_lines = ceil((float32_t)BANDS_COUNT / (float32_t)buttons_in_line);
-	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
-	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
-	int8_t curband = getBandFromFreq(SecondaryVFO()->Freq, true);
-	for(uint8_t yi = 0; yi < buttons_lines; yi++)
-	{
-		for(uint8_t xi = 0; xi < buttons_in_line; xi++)
-		{
-			uint8_t index = yi * buttons_in_line + xi;
-			if(index < BANDS_COUNT)
-				printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[index].name, (curband == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETSECBAND, FRONTPANEL_BUTTONHANDLER_SETSECBAND);
-		}
-	}
-	LCD_busy = false;
-	#endif
-}
-
-static void LCD_showModeWindow(void)
+static void LCD_showModeWindow(bool secondary_vfo)
 {
 	#if (defined(HAS_TOUCHPAD))
 	const uint8_t buttons_in_line = 4;
@@ -1322,36 +1304,20 @@ static void LCD_showModeWindow(void)
 	LCD_openWindow(window_width, window_height);
 	LCD_busy = true;
 	int8_t curmode = CurrentVFO()->Mode;
+	if(secondary_vfo)
+		curmode = SecondaryVFO()->Mode;
 	for(uint8_t yi = 0; yi < buttons_lines; yi++)
 	{
 		for(uint8_t xi = 0; xi < buttons_in_line; xi++)
 		{
 			uint8_t index = yi * buttons_in_line + xi;
 			if(index < TRX_MODE_COUNT)
-				printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)MODE_DESCR[index], (curmode == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETMODE, FRONTPANEL_BUTTONHANDLER_SETMODE);
-		}
-	}
-	LCD_busy = false;
-	#endif
-}
-
-static void LCD_showSecModeWindow(void)
-{
-	#if (defined(HAS_TOUCHPAD))
-	const uint8_t buttons_in_line = 4;
-	const uint8_t buttons_lines = ceil((float32_t)TRX_MODE_COUNT / (float32_t)buttons_in_line);
-	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
-	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
-	int8_t curmode = SecondaryVFO()->Mode;
-	for(uint8_t yi = 0; yi < buttons_lines; yi++)
-	{
-		for(uint8_t xi = 0; xi < buttons_in_line; xi++)
-		{
-			uint8_t index = yi * buttons_in_line + xi;
-			if(index < TRX_MODE_COUNT)
-				printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)MODE_DESCR[index], (curmode == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETSECMODE, FRONTPANEL_BUTTONHANDLER_SETSECMODE);
+			{
+				if(!secondary_vfo)
+					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)MODE_DESCR[index], (curmode == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETMODE, FRONTPANEL_BUTTONHANDLER_SETMODE);
+				else
+					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)MODE_DESCR[index], (curmode == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETSECMODE, FRONTPANEL_BUTTONHANDLER_SETSECMODE);
+			}
 		}
 	}
 	LCD_busy = false;
