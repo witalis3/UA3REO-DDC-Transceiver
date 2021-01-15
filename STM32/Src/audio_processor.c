@@ -698,12 +698,20 @@ void processTxAudio(void)
 	{
 		FFTInput_I_current[FFT_buff_index] = FPGA_Audio_Buffer_TX_I_tmp[i];
 		FFTInput_Q_current[FFT_buff_index] = FPGA_Audio_Buffer_TX_Q_tmp[i];
+
 		FFT_buff_index++;
-		if (FFT_buff_index >= FFT_SIZE)
+		if (FFT_buff_index >= FFT_HALF_SIZE)
 		{
 			FFT_buff_index = 0;
-			FFT_new_buffer_ready = true;
-			FFT_buff_current = !FFT_buff_current;
+			if(FFT_new_buffer_ready)
+			{
+				//sendToDebug_str("fft overrun");
+			}
+			else
+			{
+				FFT_new_buffer_ready = true;
+				FFT_buff_current = !FFT_buff_current;
+			}
 		}
 	}
 
