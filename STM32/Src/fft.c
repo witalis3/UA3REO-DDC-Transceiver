@@ -66,6 +66,7 @@ static uint32_t print_fft_dma_estimated_size = 0;			//block size for dma
 static uint32_t print_fft_dma_position = 0;			//positior for dma fft print
 static uint8_t needredraw_wtf_counter = 3;		//redraw cycles after event
 static bool fft_charge_ready = false;
+static bool fft_charge_copying = false;
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
@@ -266,6 +267,8 @@ void FFT_bufferPrepare(void)
 		return;
 	if (!FFT_new_buffer_ready)
 		return;
+	if(fft_charge_copying)
+		return;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
 	fft_charge_ready = false;
@@ -335,9 +338,11 @@ void FFT_doFFT(void)
 		return;*/
 
 	// Get charge buffer
+	fft_charge_copying = true;
 	memcpy(&FFTInput, &FFTInputCharge, sizeof(FFTInput));
 	if(!TRX.FFT_HiRes)
 		memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
+	fft_charge_copying = false;
 	
 	//Do windowing
 	if (fft_zoom == 1 || TRX.FFT_HiRes)
@@ -442,11 +447,10 @@ void FFT_doFFT(void)
 	float32_t averaging = (float32_t)TRX.FFT_Averaging;
 	if (averaging < 1.0f)
 		averaging = 1.0f;
+	float32_t beta = 1.0f / averaging;
+	float32_t alpha = 1.0f - beta;
 	for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
-		if (FFTOutput_mean[i] < FFTInput[i])
-			FFTOutput_mean[i] += (FFTInput[i] - FFTOutput_mean[i]) / averaging;
-		else
-			FFTOutput_mean[i] -= (FFTOutput_mean[i] - FFTInput[i]) / averaging;
+		FFTOutput_mean[i] = FFTOutput_mean[i] * alpha + FFTInput[i] * beta;
 
 	FFT_need_fft = false;
 }
