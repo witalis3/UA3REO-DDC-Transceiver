@@ -412,6 +412,7 @@ void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, 
     sy = sy + h - 1;
     dx = dx + w;
     dy = dy + h - 1;
+		w++;
   }
 
   LCDDriver_waitBusy();
