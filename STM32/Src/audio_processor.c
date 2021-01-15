@@ -13,7 +13,6 @@
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;								  // audio samples processed in the processor
-volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer = 0;			  // which buffer is currently in use, A or B
 volatile bool Processor_NeedRXBuffer = false;							  // codec needs data from processor for RX
 volatile bool Processor_NeedTXBuffer = false;							  // codec needs data from processor for TX
 float32_t APROC_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // copy of the working part of the FPGA buffers for processing
@@ -28,8 +27,7 @@ volatile float32_t Processor_TX_MAX_amplitude_OUT;				// TX uplift after ALC
 bool NeedReinitReverber = false;
 
 // Private variables
-static int32_t APROC_AudioBuffer_out_A[AUDIO_BUFFER_SIZE] = {0};								 // buffer A of the audio processor
-static int32_t APROC_AudioBuffer_out_B[AUDIO_BUFFER_SIZE] = {0};								 // buffer B of the audio processor
+static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};								 // output buffer of the audio processor
 static uint32_t two_signal_gen_position = 0;													 // signal position in a two-signal generator
 static float32_t ALC_need_gain = 1.0f;															 // current gain of ALC and audio compressor
 static float32_t ALC_need_gain_target = 1.0f;													 // Target Gain Of ALC And Audio Compressor
@@ -312,9 +310,6 @@ void processRxAudio(void)
 	}
 
 	//Prepare data to DMA
-	int32_t *Processor_AudioBuffer_current = APROC_AudioBuffer_out_A;
-	if (Processor_AudioBuffer_ReadyBuffer == 0)
-		Processor_AudioBuffer_current = APROC_AudioBuffer_out_B;
 
 	// addition of signals in double receive mode
 	if (TRX.Dual_RX && TRX.Dual_RX_Type == VFO_A_PLUS_B)
@@ -336,35 +331,31 @@ void processRxAudio(void)
 	{
 		if (!TRX.Dual_RX)
 		{
-			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &Processor_AudioBuffer_current[i * 2], 1); //left channel
+			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1); //left channel
 			if (current_vfo->Mode == TRX_MODE_IQ)
-				arm_float_to_q31(&APROC_Audio_Buffer_RX1_Q[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX1_Q[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
 			else
-				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
 		}
 		else if (TRX.Dual_RX_Type == VFO_A_AND_B)
 		{
 			if (!TRX.current_vfo)
 			{
-				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &Processor_AudioBuffer_current[i * 2], 1);	 //left channel
-				arm_float_to_q31(&APROC_Audio_Buffer_RX2_I[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1);	 //left channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX2_I[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
 			}
 			else
 			{
-				arm_float_to_q31(&APROC_Audio_Buffer_RX2_I[i], &Processor_AudioBuffer_current[i * 2], 1);	 //left channel
-				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &Processor_AudioBuffer_current[i * 2 + 1], 1); //right channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX2_I[i], &APROC_AudioBuffer_out[i * 2], 1);	 //left channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
 			}
 		}
 		else if (TRX.Dual_RX_Type == VFO_A_PLUS_B)
 		{
-			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &Processor_AudioBuffer_current[i * 2], 1); //left channel
-			Processor_AudioBuffer_current[i * 2 + 1] = Processor_AudioBuffer_current[i * 2];			 //right channel
+			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1); //left channel
+			APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];			 //right channel
 		}
 	}
-	if (Processor_AudioBuffer_ReadyBuffer == 0)
-		Processor_AudioBuffer_ReadyBuffer = 1;
-	else
-		Processor_AudioBuffer_ReadyBuffer = 0;
 
 	//Send to USB Audio
 	if (USB_AUDIO_need_rx_buffer && TRX_Inited)
@@ -376,9 +367,9 @@ void processRxAudio(void)
 		//drop LSB 32b->24b
 		for (uint_fast16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET); i++)
 		{
-			USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 0] = (Processor_AudioBuffer_current[i] >> 8) & 0xFF;
-			USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 1] = (Processor_AudioBuffer_current[i] >> 16) & 0xFF;
-			USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 2] = (Processor_AudioBuffer_current[i] >> 24) & 0xFF;
+			USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 0] = (APROC_AudioBuffer_out[i] >> 8) & 0xFF;
+			USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 1] = (APROC_AudioBuffer_out[i] >> 16) & 0xFF;
+			USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 2] = (APROC_AudioBuffer_out[i] >> 24) & 0xFF;
 		}
 		USB_AUDIO_need_rx_buffer = false;
 	}
@@ -390,8 +381,8 @@ void processRxAudio(void)
 	//Gain and SPI convert
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
 	{
-		Processor_AudioBuffer_current[i] = (int32_t)((float32_t)Processor_AudioBuffer_current[i] * volume_gain);
-		Processor_AudioBuffer_current[i] = convertToSPIBigEndian(Processor_AudioBuffer_current[i]); //for 32bit audio
+		APROC_AudioBuffer_out[i] = (int32_t)((float32_t)APROC_AudioBuffer_out[i] * volume_gain);
+		APROC_AudioBuffer_out[i] = convertToSPIBigEndian(APROC_AudioBuffer_out[i]); //for 32bit audio
 	}
 
 	//Beep signal
@@ -404,8 +395,8 @@ void processRxAudio(void)
 		{
 			signal = generateSin(amplitude, pos, TRX_SAMPLERATE, 1500);
 			arm_float_to_q31(&signal, &out, 1);
-			Processor_AudioBuffer_current[pos * 2] = convertToSPIBigEndian(out);				 //left channel
-			Processor_AudioBuffer_current[pos * 2 + 1] = Processor_AudioBuffer_current[pos * 2]; //right channel
+			APROC_AudioBuffer_out[pos * 2] = convertToSPIBigEndian(out);				 //left channel
+			APROC_AudioBuffer_out[pos * 2 + 1] = APROC_AudioBuffer_out[pos * 2]; //right channel
 		}
 	}
 
@@ -414,23 +405,23 @@ void processRxAudio(void)
 	{
 		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
 		{
-			Processor_AudioBuffer_current[pos * 2] = 0;		//left channel
-			Processor_AudioBuffer_current[pos * 2 + 1] = 0; //right channel
+			APROC_AudioBuffer_out[pos * 2] = 0;		//left channel
+			APROC_AudioBuffer_out[pos * 2 + 1] = 0; //right channel
 		}
 	}
 
 	//Send to Codec DMA
 	if (TRX_Inited)
 	{
-		Aligned_CleanDCache_by_Addr((uint32_t *)&Processor_AudioBuffer_current[0], sizeof(APROC_AudioBuffer_out_A));
+		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
 		if (WM8731_DMA_state) //complete
 		{
-			HAL_MDMA_Start_IT(&hmdma_mdma_channel41_sw_0, (uint32_t)&Processor_AudioBuffer_current[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
+			HAL_MDMA_Start_IT(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
 		else //half
 		{
-			HAL_MDMA_Start_IT(&hmdma_mdma_channel42_sw_0, (uint32_t)&Processor_AudioBuffer_current[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
+			HAL_MDMA_Start_IT(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
 	}
@@ -464,14 +455,14 @@ void processTxAudio(void)
 		uint32_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET; //buffer 8bit, data 24 bit
 		if ((buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET) == 1)
 			buffer_index -= (buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET);
-		readHalfFromCircleUSBBuffer24Bit(&USB_AUDIO_tx_buffer[0], &APROC_AudioBuffer_out_A[0], buffer_index, (USB_AUDIO_TX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET));
+		readHalfFromCircleUSBBuffer24Bit(&USB_AUDIO_tx_buffer[0], &APROC_AudioBuffer_out[0], buffer_index, (USB_AUDIO_TX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET));
 	}
 	else //AUDIO CODEC AUDIO
 	{
 		uint32_t dma_index = CODEC_AUDIO_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(hi2s3.hdmarx);
 		if ((dma_index % 2) == 1)
 			dma_index--;
-		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out_A[0], dma_index, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
+		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
 	}
 
 	//One-signal zero-tune generator
@@ -536,8 +527,8 @@ void processTxAudio(void)
 		//Copy and convert buffer
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			APROC_Audio_Buffer_TX_I[i] = (float32_t)APROC_AudioBuffer_out_A[i * 2] / 2147483648.0f;
-			APROC_Audio_Buffer_TX_Q[i] = (float32_t)APROC_AudioBuffer_out_A[i * 2 + 1] / 2147483648.0f;
+			APROC_Audio_Buffer_TX_I[i] = (float32_t)APROC_AudioBuffer_out[i * 2] / 2147483648.0f;
+			APROC_Audio_Buffer_TX_Q[i] = (float32_t)APROC_AudioBuffer_out[i * 2 + 1] / 2147483648.0f;
 		}
 
 		if (TRX.InputType_MIC)
@@ -724,20 +715,20 @@ void processTxAudio(void)
 
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			arm_float_to_q31(&APROC_Audio_Buffer_TX_I[i], &APROC_AudioBuffer_out_A[i * 2], 1);
-			APROC_AudioBuffer_out_A[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out_A[i * 2]); //left channel
-			APROC_AudioBuffer_out_A[i * 2 + 1] = APROC_AudioBuffer_out_A[i * 2];					//right channel
+			arm_float_to_q31(&APROC_Audio_Buffer_TX_I[i], &APROC_AudioBuffer_out[i * 2], 1);
+			APROC_AudioBuffer_out[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]); //left channel
+			APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];					//right channel
 		}
 
-		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out_A[0], sizeof(APROC_AudioBuffer_out_A));
+		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
 		if (WM8731_DMA_state) //compleate
 		{
-			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_AudioBuffer_out_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
+			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
 			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
 		else //half
 		{
-			HAL_MDMA_Start(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out_A[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], AUDIO_BUFFER_SIZE * 4, 1);
+			HAL_MDMA_Start(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], AUDIO_BUFFER_SIZE * 4, 1);
 			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
 	}

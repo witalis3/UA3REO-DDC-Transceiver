@@ -31,7 +31,6 @@ typedef enum // receiver number
 
 // Public variables
 extern volatile uint32_t AUDIOPROC_samples; // audio samples processed in the processor
-extern volatile uint_fast8_t Processor_AudioBuffer_ReadyBuffer;			   // which buffer is currently in use, A or B
 extern volatile bool Processor_NeedRXBuffer;							   // codec needs data from processor for RX
 extern volatile bool Processor_NeedTXBuffer;							   // codec needs data from processor for TX
 extern float32_t APROC_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE]; // copy of the working part of the FPGA buffers for processing
