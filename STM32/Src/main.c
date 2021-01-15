@@ -23,6 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "settings.h"
 #include "lcd_driver.h"
 #include "functions.h"
 #include "bootloader.h"
@@ -34,7 +35,6 @@
 #include "fft.h"
 #include "wm8731.h"
 #include "audio_processor.h"
-#include "settings.h"
 #include "profiler.h"
 #include "usb_device.h"
 #include "usbd_cat_if.h"
@@ -225,6 +225,11 @@ int main(void)
   sendToDebug_strln("[OK] Settings loading");
   #ifdef FRONTPANEL_SMALL_V1
 	if (PERIPH_FrontPanel_Buttons[13].state) //soft reset (MENU)
+    LoadSettings(true);
+  else
+	#endif
+  #if FRONTPANEL_BIG_V1
+	if (PERIPH_FrontPanel_Buttons[20].state) //soft reset (MENU)
     LoadSettings(true);
   else
   #endif

@@ -494,7 +494,7 @@ void FRONTPANEL_Process(void)
 
 		#ifdef FRONT_UNIT_DEBUG
 		static uint8_t fu_gebug_lastchannel = 255;
-		if(HAL_GetTick() - fu_debug_lasttime > 500 && fu_gebug_lastchannel != PERIPH_FrontPanel_Buttons[b].channel)
+		if((HAL_GetTick() - fu_debug_lasttime > 500 && fu_gebug_lastchannel != PERIPH_FrontPanel_Buttons[b].channel) || fu_debug_lasttime == 0)
 		{
 			sendToDebug_str("F_UNIT: port ");
 			sendToDebug_uint8(PERIPH_FrontPanel_Buttons[b].port, true);
@@ -560,7 +560,10 @@ void FRONTPANEL_Process(void)
 		{
 			//set state
 			if (mcp3008_value >= PERIPH_FrontPanel_Buttons[b].tres_min && mcp3008_value < PERIPH_FrontPanel_Buttons[b].tres_max)
+			{
+				//sendToDebug_uint16(b,false);
 				PERIPH_FrontPanel_Buttons[b].state = true;
+			}
 			else
 				PERIPH_FrontPanel_Buttons[b].state = false;
 
