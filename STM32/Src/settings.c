@@ -196,8 +196,12 @@ void LoadSettings(bool clear)
 		TRX.CW_Key_timeout = 200;					// time of releasing transmission after the last character on the key
 		TRX.FFT_Averaging = 4;						// averaging the FFT to make it smoother
 		TRX.WIFI_Enabled = true;					// activate WiFi
-		strcpy(TRX.WIFI_AP, "WIFI-AP");				// WiFi hotspot
-		strcpy(TRX.WIFI_PASSWORD, "WIFI-PASSWORD"); // password to the WiFi point
+		strcpy(TRX.WIFI_AP1, "WIFI-AP");				// WiFi hotspot
+		strcpy(TRX.WIFI_PASSWORD1, "WIFI-PASSWORD"); // password to the WiFi point 1
+		strcpy(TRX.WIFI_AP2, "WIFI-AP");				// WiFi hotspot
+		strcpy(TRX.WIFI_PASSWORD2, "WIFI-PASSWORD"); // password to the WiFi point 2
+		strcpy(TRX.WIFI_AP3, "WIFI-AP");				// WiFi hotspot
+		strcpy(TRX.WIFI_PASSWORD3, "WIFI-PASSWORD"); // password to the WiFi point 3
 		TRX.WIFI_TIMEZONE = 3;						// time zone (for time synchronization)
 		TRX.SPEC_Begin = 1000;						// start spectrum analyzer range
 		TRX.SPEC_End = 30000;						// end of spectrum analyzer range

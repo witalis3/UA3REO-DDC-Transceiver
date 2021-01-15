@@ -112,7 +112,7 @@ void WIFI_Process(void)
 	switch (WIFI_State)
 	{
 	case WIFI_INITED:
-		sendToDebug_str3("[WIFI] Start connecting to AP: ", TRX.WIFI_AP, "\r\n");
+		//sendToDebug_str3("[WIFI] Start connecting to AP: ", TRX.WIFI_AP, "\r\n");
 		WIFI_SendCommand("AT+CWAUTOCONN=0\r\n"); //AUTOCONNECT OFF
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+RFPOWER=82\r\n"); //rf power
@@ -152,23 +152,55 @@ void WIFI_Process(void)
 		WIFI_State = WIFI_CONFIGURED;
 		break;
 	case WIFI_CONFIGURED:
-		if (strcmp(TRX.WIFI_AP, "WIFI-AP") == 0)
+		if (strcmp(TRX.WIFI_AP1, "WIFI-AP") == 0 && strcmp(TRX.WIFI_AP2, "WIFI-AP") == 0 && strcmp(TRX.WIFI_AP3, "WIFI-AP") == 0 &&
+			  strcmp(TRX.WIFI_PASSWORD1, "WIFI-PASSWORD") == 0 && strcmp(TRX.WIFI_PASSWORD2, "WIFI-PASSWORD") == 0 && strcmp(TRX.WIFI_PASSWORD3, "WIFI-PASSWORD") == 0)
 			break;
 		if (WIFI_stop_auto_ap_list)
 			break;
 		WIFI_ListAP_Sync();
-		bool AP_exist = false;
+		bool AP1_exist = false;
+		bool AP2_exist = false;
+		bool AP3_exist = false;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
 		{
-			if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP) == 0)
-				AP_exist = true;
+			if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP1) == 0)
+				AP1_exist = true;
+			else if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP2) == 0)
+				AP2_exist = true;
+			else if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP3) == 0)
+				AP3_exist = true;
 		}
-		if (AP_exist)
+		if (AP1_exist)
 		{
+			sendToDebug_str3("[WIFI] Start connecting to AP1: ", TRX.WIFI_AP1, "\r\n");
 			strcat(com, "AT+CWJAP_CUR=\"");
-			strcat(com, TRX.WIFI_AP);
+			strcat(com, TRX.WIFI_AP1);
 			strcat(com, "\",\"");
-			strcat(com, TRX.WIFI_PASSWORD);
+			strcat(com, TRX.WIFI_PASSWORD1);
+			strcat(com, "\"\r\n");
+			WIFI_SendCommand(com); //connect to AP
+			//WIFI_WaitForOk();
+			WIFI_State = WIFI_CONNECTING;
+		}
+		if (AP2_exist)
+		{
+			sendToDebug_str3("[WIFI] Start connecting to AP2: ", TRX.WIFI_AP2, "\r\n");
+			strcat(com, "AT+CWJAP_CUR=\"");
+			strcat(com, TRX.WIFI_AP2);
+			strcat(com, "\",\"");
+			strcat(com, TRX.WIFI_PASSWORD2);
+			strcat(com, "\"\r\n");
+			WIFI_SendCommand(com); //connect to AP
+			//WIFI_WaitForOk();
+			WIFI_State = WIFI_CONNECTING;
+		}
+		if (AP3_exist)
+		{
+			sendToDebug_str3("[WIFI] Start connecting to AP: ", TRX.WIFI_AP3, "\r\n");
+			strcat(com, "AT+CWJAP_CUR=\"");
+			strcat(com, TRX.WIFI_AP3);
+			strcat(com, "\",\"");
+			strcat(com, TRX.WIFI_PASSWORD3);
 			strcat(com, "\"\r\n");
 			WIFI_SendCommand(com); //connect to AP
 			//WIFI_WaitForOk();
@@ -249,6 +281,14 @@ void WIFI_Process(void)
 				sendToDebug_str3("[WIFI] Command received: ", wifi_incoming_data, "\r\n");
 			if (wifi_incoming_length_uint > 0)
 				CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
+		}
+		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL)
+		{
+			sendToDebug_str("[WIFI] Disconnected\r\n");
+			WIFI_State = WIFI_CONFIGURED;
+			WIFI_connected = false;
+			WIFI_IP_Gotted = false;
+			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
 		break;
 
