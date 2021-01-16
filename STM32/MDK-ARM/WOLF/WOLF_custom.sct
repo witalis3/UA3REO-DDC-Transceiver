@@ -15,7 +15,7 @@ LR_IROM1 0x08000000 0x00200000  {    ; load region size_region
   REGION_HEAP (0x20000000 + 0x00020000 - 0x000) { ; heap size
     *(HEAP)
   }
-  RW_IRAM1 ImageLimit(REGION_STACK) (0x00020000 - ImageLimit(REGION_STACK) - ImageLimit(REGION_HEAP))  {  ;128kb DTCM 
+  RW_IRAM1 ImageLimit(REGION_STACK) (0x00020000 - ImageLength(REGION_STACK) - ImageLength(REGION_HEAP))  {  ;128kb DTCM 
    *(+RW +ZI)
   }
   

@@ -38,9 +38,9 @@ static arm_rfft_fast_instance_f32 CWDECODER_FFT_Inst;
 IRAM2 static float32_t CWDEC_FFTBuffer[CWDECODER_FFTSIZE * 2] = {0};	   // FFT buffer
 IRAM2 static float32_t CWDEC_FFTBufferCharge[CWDECODER_FFTSIZE * 2] = {0}; // cumulative buffer
 //IRAM2 float32_t CWDEC_FFTBuffer_Export[CWDECODER_FFTSIZE] = {0};
-IRAM2 static float32_t window_multipliers[CWDECODER_FFT_SAMPLES] = {0};
+IRAM2 static float32_t CWDEC_window_multipliers[CWDECODER_FFT_SAMPLES] = {0};
 // Decimator
-IRAM2 static float32_t InputBuffer[DECODER_PACKET_SIZE] = {0};
+IRAM2 static float32_t CWDEC_InputBuffer[DECODER_PACKET_SIZE] = {0};
 static arm_fir_decimate_instance_f32 CWDEC_DECIMATE;
 static float32_t CWDEC_decimState[DECODER_PACKET_SIZE + 4 - 1];
 static const arm_fir_decimate_instance_f32 CW_DEC_FirDecimate =
@@ -65,7 +65,7 @@ void CWDecoder_Init(void)
 	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState, DECODER_PACKET_SIZE);
 	//Blackman-Harris window function
 	for (uint_fast16_t i = 0; i < CWDECODER_FFT_SAMPLES; i ++)
-		window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) + 0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) - 0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f));
+		CWDEC_window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) + 0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) - 0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f));
 }
 
 // start CW decoder for the data block
@@ -74,9 +74,9 @@ void CWDecoder_Process(float32_t *bufferIn)
 	// clear the old FFT buffer
 	memset(CWDEC_FFTBuffer, 0x00, sizeof(CWDEC_FFTBuffer));
 	// copy the incoming data for the next work
-	memcpy(InputBuffer, bufferIn, sizeof(InputBuffer));
+	memcpy(CWDEC_InputBuffer, bufferIn, sizeof(CWDEC_InputBuffer));
 	// Decimator
-	arm_fir_decimate_f32(&CWDEC_DECIMATE, InputBuffer, InputBuffer, DECODER_PACKET_SIZE);
+	arm_fir_decimate_f32(&CWDEC_DECIMATE, CWDEC_InputBuffer, CWDEC_InputBuffer, DECODER_PACKET_SIZE);
 	// Fill the unnecessary part of the buffer with zeros
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 	{
@@ -85,9 +85,9 @@ void CWDecoder_Process(float32_t *bufferIn)
 			if (i < (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)) // offset old data
 				CWDEC_FFTBufferCharge[i] = CWDEC_FFTBufferCharge[(i + CWDECODER_ZOOMED_SAMPLES)];
 			else // Add new data to the FFT buffer for calculation
-				CWDEC_FFTBufferCharge[i] = InputBuffer[i - (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)];
+				CWDEC_FFTBufferCharge[i] = CWDEC_InputBuffer[i - (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)];
 			
-			CWDEC_FFTBuffer[i * 2] = window_multipliers[i] * CWDEC_FFTBufferCharge[i]; // + Window function for FFT
+			CWDEC_FFTBuffer[i * 2] = CWDEC_window_multipliers[i] * CWDEC_FFTBufferCharge[i]; // + Window function for FFT
 			CWDEC_FFTBuffer[i * 2 + 1] = 0.0f;
 		}
 		else
