@@ -569,6 +569,8 @@ void WIFI_GoSleep(void)
 	WIFI_ProcessingCommand = WIFI_COMM_DEEPSLEEP;
 	WIFI_SendCommand("AT+GSLP=1000\r\n"); //go sleep
 	WIFI_State = WIFI_SLEEP;
+	WIFI_connected = false;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 }
 
 static void WIFI_SendCommand(char *command)
