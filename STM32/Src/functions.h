@@ -1,6 +1,8 @@
 #ifndef Functions_h
 #define Functions_h
 
+__asm(".global __use_no_heap\n\t");
+
 #include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <stdint.h>
