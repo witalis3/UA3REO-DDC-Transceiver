@@ -164,6 +164,7 @@ void HardFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
+		HAL_MPU_Disable();
     LCD_showError("Hard Fault", false);
     static uint32_t i = 0;
     while (i < 99999999)
@@ -187,6 +188,7 @@ void MemManage_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_MemoryManagement_IRQn 0 */
+		HAL_MPU_Disable();
     LCD_showError("Memory Fault", false);
     static uint32_t i = 0;
     while (i < 99999999)
