@@ -381,13 +381,47 @@ void processRxAudio(void)
 	float32_t volume_gain_new = volume2rate((float32_t)TRX_Volume / 1023.0f);
 	volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
 	
-	//Gain and SPI convert
+	//Volume Gain
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
 	{
 		APROC_AudioBuffer_out[i] = (int32_t)((float32_t)APROC_AudioBuffer_out[i] * volume_gain);
+	}
+	
+	//SD card send
+	if(SD_RecordInProcess)
+	{
+		SD_RecordPacketSize = (decimated_block_size_rx1 * 2);
+		
+		for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
+		{
+			if(SD_RecordBuffer)
+			{
+				SD_workbuffer[SD_RecordBufferIndex] = APROC_AudioBuffer_out[i * 2] >> 24;
+				SD_workbuffer[SD_RecordBufferIndex + 1] = APROC_AudioBuffer_out[i * 2] >> 16;
+			}
+			else
+			{
+				SD_workbuffer_2[SD_RecordBufferIndex] = APROC_AudioBuffer_out[i * 2] >> 24;
+				SD_workbuffer_2[SD_RecordBufferIndex + 1] = APROC_AudioBuffer_out[i * 2] >> 16;
+			}
+			SD_RecordBufferIndex += 2;
+			if(SD_RecordBufferIndex >= _MAX_SS)
+			{
+				SD_RecordBufferIndex = 0;
+				SD_RecordBuffer = !SD_RecordBuffer;
+				SD_doCommand(SDCOMM_PROCESS_RECORD, false);
+			}
+		}
+		
+	}
+	
+	//SPI convert
+	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
+	{
+		//Codec SPI
 		APROC_AudioBuffer_out[i] = convertToSPIBigEndian(APROC_AudioBuffer_out[i]); //for 32bit audio
 	}
-
+	
 	//Beep signal
 	if (WM8731_Beeping)
 	{
@@ -427,13 +461,6 @@ void processRxAudio(void)
 			HAL_MDMA_Start_IT(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
-	}
-	
-	//Send to SD card if recording
-	if(SD_RecordInProcess)
-	{
-		SD_doCommand(SDCOMM_PROCESS_RECORD, false);
-		SD_Process();
 	}
 
 	Processor_NeedRXBuffer = false;

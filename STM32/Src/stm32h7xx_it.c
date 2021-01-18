@@ -903,8 +903,7 @@ void TIM15_IRQHandler(void)
     SaveCalibration();
 
   //SD-Card SPI
-	if(!SD_RecordInProcess) //record processing directly from aurioproc
-		SD_Process();
+	SD_Process();
 
   /* USER CODE END TIM15_IRQn 1 */
 }

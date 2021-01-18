@@ -6,6 +6,7 @@
 #include "ff_gen_drv.h"
 #include "user_diskio.h"
 #include "system_menu.h"
+#include "codecs.h"
 
 IRAM2 FATFS SDFatFs;
 sd_info_ptr sdinfo;
@@ -13,6 +14,9 @@ extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
 bool SD_CommandInProcess = false;
 bool SD_underrun = false;
+uint32_t SD_RecordPacketSize = 0;
+bool SD_RecordBuffer = false; // 1 - false; 2 - true
+uint32_t SD_RecordBufferIndex = 0;
 
 static bool SD_Present = false;
 static bool SD_Mounted = false;
@@ -22,7 +26,8 @@ static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 IRAM2 static FIL File;
 IRAM2 static FILINFO fileInfo = {0};
 IRAM2 static DIR dir = {0};
-IRAM2 static BYTE SD_workbuffer[_MAX_SS];
+IRAM2 BYTE SD_workbuffer[_MAX_SS];
+IRAM2 BYTE SD_workbuffer_2[_MAX_SS];
 
 static void SDCOMM_LISTROOT(void);
 static void SDCOMM_MKFS(void);
@@ -145,6 +150,28 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
 		memset(SD_workbuffer, 0x00, sizeof(SD_workbuffer));
+		WAV_header wav_hdr = {0};
+		// RIFF header
+		wav_hdr.riffsig		= 0x46464952;
+		wav_hdr.filesize		= sizeof(wav_hdr);
+		wav_hdr.wavesig		= 0x45564157;
+
+		// format chunk
+		wav_hdr.fmtsig		= 0x20746D66;
+		wav_hdr.fmtsize		= 16;
+		wav_hdr.type			= 1;
+		wav_hdr.nch			= 1;
+		wav_hdr.freq			= 48000;
+		wav_hdr.rate			= 96000;
+		wav_hdr.block			= 2;
+		wav_hdr.bits			= 16;
+
+		// data chunk
+		wav_hdr.datasig		= 0x61746164;
+		wav_hdr.datasize		= 1000000;
+		
+		uint32_t byteswritten;
+		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
 		
 		SD_RecordInProcess = true;
 		LCD_showTooltip("Start recording");
@@ -169,15 +196,19 @@ static bool SDCOMM_CLOSE_RECORD_FILE(void)
 
 static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 {
-	/*uint32_t byteswritten;
-	FRESULT res = f_write(&File, workbuffer, strlen((char *)workbuffer), (void *)&byteswritten);
+	uint32_t byteswritten;
+	FRESULT res = 0;
+	if(!SD_RecordBuffer)
+		res = f_write(&File, SD_workbuffer, SD_RecordPacketSize, (void *)&byteswritten);
+	if(SD_RecordBuffer)
+		res = f_write(&File, SD_workbuffer_2, SD_RecordPacketSize, (void *)&byteswritten);
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
 		SD_RecordInProcess = false;
 		LCD_showTooltip("SD error");
 		return false;
-	}*/
+	}
 	return true;
 }
 
@@ -1146,7 +1177,7 @@ static uint8_t SPIx_WriteRead(uint8_t Byte)
 {
 	uint8_t receivedbyte = 0;
 	if (!SPI_Transmit((uint8_t *)&Byte, (uint8_t *)&receivedbyte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER))
-		sendToDebug_strln("sd spi err");
+		sendToDebug_strln("SD SPI Err");
 
 	return receivedbyte;
 }

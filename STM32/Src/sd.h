@@ -34,7 +34,7 @@
 //--------------------------------------------------
 typedef struct sd_info
 {
-	volatile uint8_t type; //��� �����
+	volatile uint8_t type;
 	DWORD SECTOR_COUNT;
 	uint32_t capacity;
 } sd_info_ptr;
@@ -56,6 +56,11 @@ extern FATFS SDFatFs;
 extern bool SD_RecordInProcess;
 extern bool SD_CommandInProcess;
 extern bool SD_underrun;
+extern BYTE SD_workbuffer[_MAX_SS];
+extern BYTE SD_workbuffer_2[_MAX_SS];
+extern uint32_t SD_RecordPacketSize;
+extern bool SD_RecordBuffer;
+extern uint32_t SD_RecordBufferIndex;
 
 //--------------------------------------------------
 extern void SD_PowerOn(void);
