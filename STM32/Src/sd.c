@@ -1187,18 +1187,22 @@ static uint8_t SPIx_WriteRead(uint8_t Byte)
 
 static void SPI_SendByte(uint8_t bt)
 {
-	SPIx_WriteRead(bt);
+	SPIx_sendByte = bt;
+	if (!SPI_Transmit(&SPIx_sendByte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+		sendToDebug_strln("SD SPI Err");
 }
 
 static uint8_t SPI_ReceiveByte(void)
 {
-	uint8_t bt = SPIx_WriteRead(0xFF);
-	return bt;
+	SPIx_sendByte = 0xFF;
+	if (!SPI_Transmit(&SPIx_sendByte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+		sendToDebug_strln("SD SPI Err");
+	return SPIx_receivedByte;
 }
 
 void SPI_Release(void)
 {
-	SPIx_WriteRead(0xFF);
+	SPI_SendByte(0xFF);
 }
 
 uint8_t SPI_wait_ready(void)
