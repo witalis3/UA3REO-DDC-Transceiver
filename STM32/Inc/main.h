@@ -45,6 +45,8 @@ extern DMA2D_HandleTypeDef hdma2d;
 extern I2S_HandleTypeDef hi2s3;
 extern DMA_HandleTypeDef hdma_spi3_rx;
 extern DMA_HandleTypeDef hdma_spi3_tx;
+extern DMA_HandleTypeDef hdma_spi2_rx;
+extern DMA_HandleTypeDef hdma_spi2_tx;
 
 extern RTC_HandleTypeDef hrtc;
 

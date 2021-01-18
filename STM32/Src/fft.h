@@ -24,7 +24,7 @@
 #define FFT_MAX_GRID_NUMBER 13																																				// max grid lines
 #define FFT_LENS_STEP_START 0.4f																																			// start lens step
 #define FFT_LENS_STEP 0.013f																																					// each lens step
-#define FFT_3D_enabled false
+#define FFT_3D_enabled true
 #define FFT_3D_SLIDES 40																																							// 3D FFT parameters
 #define FFT_Y_OFFSET 2
 #define FFT_X_OFFSET 5

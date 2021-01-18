@@ -1174,13 +1174,15 @@ static void SDCOMM_LISTROOT(void)
 }
 
 //-----------------------------------------------
+SRAM uint8_t SPIx_receivedByte = 0;
+SRAM uint8_t SPIx_sendByte = 0;
 static uint8_t SPIx_WriteRead(uint8_t Byte)
 {
-	uint8_t receivedbyte = 0;
-	if (!SPI_Transmit((uint8_t *)&Byte, (uint8_t *)&receivedbyte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER))
+	SPIx_sendByte = Byte;
+	if (!SPI_Transmit(&SPIx_sendByte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
 		sendToDebug_strln("SD SPI Err");
 
-	return receivedbyte;
+	return SPIx_receivedByte;
 }
 
 static void SPI_SendByte(uint8_t bt)
