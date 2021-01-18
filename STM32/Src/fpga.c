@@ -26,7 +26,7 @@ uint16_t FPGA_FW_Version[3] = {0};
 
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
-static bool FPGA_bus_stop = false;			  // suspend the FPGA bus
+bool FPGA_bus_stop = false;			  // suspend the FPGA bus
 
 // Prototypes
 static inline void FPGA_clockFall(void);			// remove CLK signal
