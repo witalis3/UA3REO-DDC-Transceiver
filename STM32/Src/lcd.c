@@ -17,6 +17,7 @@
 #include "images.h"
 #include "wifi.h"
 #include "fft.h"
+#include "sd.h"
 
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
@@ -793,6 +794,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		LCDDriver_printText("FBF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	if (RX_USB_AUDIO_underrun)
 		LCDDriver_printText("UBF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+	if (SD_underrun)
+		LCDDriver_printText("SDF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 	Time = RTC->TR;
 	Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
@@ -1196,6 +1199,7 @@ void LCD_showTooltip(char text[])
 	if (LCD_UpdateQuery.Tooltip) //redraw old tooltip
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 	LCD_UpdateQuery.Tooltip = true;
+	sendToDebug_strln(text);
 }
 
 static void LCD_printTooltip(void)

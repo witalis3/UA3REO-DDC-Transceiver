@@ -2377,7 +2377,7 @@ static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction)
 {
 	if (direction > 0 && SD_isIdle() && !LCD_busy)
 	{
-		SD_doCommand(SDCOMM_EXPORT_SETTINGS);
+		SD_doCommand(SDCOMM_EXPORT_SETTINGS, false);
 	}
 }
 
@@ -2385,7 +2385,7 @@ static void SYSMENU_HANDL_SD_ImportSettings(int8_t direction)
 {
 	if (direction > 0 && SD_isIdle() && !LCD_busy)
 	{
-		SD_doCommand(SDCOMM_IMPORT_SETTINGS);
+		SD_doCommand(SDCOMM_IMPORT_SETTINGS, false);
 	}
 }
 
@@ -2393,7 +2393,7 @@ static void SYSMENU_HANDL_SD_Format(int8_t direction)
 {
 	if (direction > 0 && SD_isIdle() && !LCD_busy)
 	{
-		SD_doCommand(SDCOMM_FORMAT);
+		SD_doCommand(SDCOMM_FORMAT, false);
 	}
 }
 

@@ -592,6 +592,7 @@ void TIM6_DAC_IRQHandler(void)
     WM8731_Buffer_underrun = false;
     FPGA_Buffer_underrun = false;
     RX_USB_AUDIO_underrun = false;
+		SD_underrun = false;
   }
 
   if ((ms10_counter % 3) == 0) // every 30ms
@@ -902,7 +903,8 @@ void TIM15_IRQHandler(void)
     SaveCalibration();
 
   //SD-Card SPI
-  SD_Process();
+	if(!SD_RecordInProcess) //record processing directly from aurioproc
+		SD_Process();
 
   /* USER CODE END TIM15_IRQn 1 */
 }

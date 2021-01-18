@@ -10,6 +10,7 @@
 #include "decoder.h"
 #include "vad.h"
 #include "trx_manager.h"
+#include "sd.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;								  // audio samples processed in the processor
@@ -426,6 +427,13 @@ void processRxAudio(void)
 			HAL_MDMA_Start_IT(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		}
+	}
+	
+	//Send to SD card if recording
+	if(SD_RecordInProcess)
+	{
+		SD_doCommand(SDCOMM_PROCESS_RECORD, false);
+		SD_Process();
 	}
 
 	Processor_NeedRXBuffer = false;

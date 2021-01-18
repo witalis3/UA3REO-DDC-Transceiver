@@ -11,6 +11,8 @@ IRAM2 FATFS SDFatFs;
 sd_info_ptr sdinfo;
 extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
+bool SD_CommandInProcess = false;
+bool SD_underrun = false;
 
 static bool SD_Present = false;
 static bool SD_Mounted = false;
@@ -20,7 +22,7 @@ static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 IRAM2 static FIL File;
 IRAM2 static FILINFO fileInfo = {0};
 IRAM2 static DIR dir = {0};
-IRAM2 static BYTE workbuffer[_MAX_SS];
+IRAM2 static BYTE SD_workbuffer[_MAX_SS];
 
 static void SDCOMM_LISTROOT(void);
 static void SDCOMM_MKFS(void);
@@ -31,6 +33,7 @@ static bool SD_WRITE_SETT_STRING(char *name, char *value);
 static void SDCOMM_PARSE_SETT_LINE(char *line);
 static bool SDCOMM_CREATE_RECORD_FILE(void);
 static bool SDCOMM_CLOSE_RECORD_FILE(void);
+static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void);
 
 bool SD_isIdle(void)
 {
@@ -40,15 +43,26 @@ bool SD_isIdle(void)
 		return false;
 }
 
-void SD_doCommand(SD_COMMAND command)
+void SD_doCommand(SD_COMMAND command, bool force)
 {
-	if (SD_Mounted && SD_currentCommand == SDCOMM_IDLE)
+	if (SD_Mounted)
 	{
-		SD_currentCommand = command;
+		if(SD_CommandInProcess && !force)
+		{
+			SD_underrun = true;
+		}
+		else
+		{
+			SD_CommandInProcess = true;
+			SD_currentCommand = command;
+		}
 	}
 	else if (!SD_Mounted)
 	{
-		LCD_showInfo("SD card not found", true);
+		if(LCD_systemMenuOpened)
+			LCD_showInfo("SD card not found", true);
+		else
+			LCD_showTooltip("SD card not found");
 	}
 }
 
@@ -110,7 +124,11 @@ void SD_Process(void)
 		case SDCOMM_STOP_RECORD:
 			SDCOMM_CLOSE_RECORD_FILE();
 		break;
+		case SDCOMM_PROCESS_RECORD:
+			SDCOMM_WRITE_PACKET_RECORD_FILE();
+		break;
 		}
+		SD_CommandInProcess = false;
 		SD_currentCommand = SDCOMM_IDLE;
 	}
 }
@@ -126,8 +144,10 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 	sendToDebug_strln(filename);
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
+		memset(SD_workbuffer, 0x00, sizeof(SD_workbuffer));
+		
 		SD_RecordInProcess = true;
-		LCD_showTooltip("Start recording...");
+		LCD_showTooltip("Start recording");
 		return true;
 	}
 	else
@@ -147,16 +167,30 @@ static bool SDCOMM_CLOSE_RECORD_FILE(void)
 	return true;
 }
 
+static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
+{
+	/*uint32_t byteswritten;
+	FRESULT res = f_write(&File, workbuffer, strlen((char *)workbuffer), (void *)&byteswritten);
+	if ((byteswritten == 0) || (res != FR_OK))
+	{
+		SD_Present = false;
+		SD_RecordInProcess = false;
+		LCD_showTooltip("SD error");
+		return false;
+	}*/
+	return true;
+}
+
 static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 {
 	uint32_t byteswritten;
 	char valbuff[64] = {0};
 	float32_t tmp_float = 0;
 
-	memset(workbuffer, 0x00, sizeof(workbuffer));
+	memset(SD_workbuffer, 0x00, sizeof(SD_workbuffer));
 
-	strcat((char *)workbuffer, name);
-	strcat((char *)workbuffer, " = ");
+	strcat((char *)SD_workbuffer, name);
+	strcat((char *)SD_workbuffer, " = ");
 	switch (type)
 	{
 	case SYSMENU_BOOLEAN:
@@ -194,10 +228,10 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 	case SYSMENU_INFOLINE:
 		break;
 	}
-	strcat((char *)workbuffer, valbuff);
-	strcat((char *)workbuffer, "\r\n");
+	strcat((char *)SD_workbuffer, valbuff);
+	strcat((char *)SD_workbuffer, "\r\n");
 
-	FRESULT res = f_write(&File, workbuffer, strlen((char *)workbuffer), (void *)&byteswritten);
+	FRESULT res = f_write(&File, SD_workbuffer, strlen((char *)SD_workbuffer), (void *)&byteswritten);
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
@@ -210,14 +244,14 @@ static bool SD_WRITE_SETT_STRING(char *name, char *value)
 {
 	uint32_t byteswritten;
 
-	memset(workbuffer, 0x00, sizeof(workbuffer));
+	memset(SD_workbuffer, 0x00, sizeof(SD_workbuffer));
 
-	strcat((char *)workbuffer, name);
-	strcat((char *)workbuffer, " = ");
-	strcat((char *)workbuffer, value);
-	strcat((char *)workbuffer, "\r\n");
+	strcat((char *)SD_workbuffer, name);
+	strcat((char *)SD_workbuffer, " = ");
+	strcat((char *)SD_workbuffer, value);
+	strcat((char *)SD_workbuffer, "\r\n");
 
-	FRESULT res = f_write(&File, workbuffer, strlen((char *)workbuffer), (void *)&byteswritten);
+	FRESULT res = f_write(&File, SD_workbuffer, strlen((char *)SD_workbuffer), (void *)&byteswritten);
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
@@ -1019,21 +1053,21 @@ static void SDCOMM_IMPORT_SETT(void)
 		uint32_t bytesread = 1;
 		while (bytesread != 0)
 		{
-			FRESULT res = f_read(&File, workbuffer, sizeof(workbuffer), (void *)&bytesread);
+			FRESULT res = f_read(&File, SD_workbuffer, sizeof(SD_workbuffer), (void *)&bytesread);
 			uint16_t start_index = 0;
 			if (res == FR_OK && bytesread != 0)
 			{
 				//sendToDebug_str((char*)workbuffer);
-				char *istr = strstr((char *)workbuffer + start_index, "\r\n"); // look for the end of the line
-				while (istr != NULL && start_index < sizeof(workbuffer))
+				char *istr = strstr((char *)SD_workbuffer + start_index, "\r\n"); // look for the end of the line
+				while (istr != NULL && start_index < sizeof(SD_workbuffer))
 				{
-					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)workbuffer + start_index));
+					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)SD_workbuffer + start_index));
 					if (len <= 64)
 					{
 						memset(readedLine, 0x00, sizeof(readedLine));
-						strncpy(readedLine, (char *)workbuffer + start_index, len);
+						strncpy(readedLine, (char *)SD_workbuffer + start_index, len);
 						start_index += len + 2;
-						istr = strstr((char *)workbuffer + start_index, "\r\n"); // look for the end of the line
+						istr = strstr((char *)SD_workbuffer + start_index, "\r\n"); // look for the end of the line
 						//sendToDebug_str3("!",readedLine,"!\r\n");
 						SDCOMM_PARSE_SETT_LINE(readedLine);
 					}
@@ -1058,7 +1092,7 @@ static void SDCOMM_IMPORT_SETT(void)
 static void SDCOMM_MKFS(void)
 {
 	LCD_showInfo("Start formatting...", false);
-	FRESULT res = f_mkfs((TCHAR const *)USERPath, FM_FAT32, 0, workbuffer, sizeof workbuffer);
+	FRESULT res = f_mkfs((TCHAR const *)USERPath, FM_FAT32, 0, SD_workbuffer, sizeof SD_workbuffer);
 	if (res == FR_OK)
 	{
 		LCD_showInfo("SD Format complete", true);
