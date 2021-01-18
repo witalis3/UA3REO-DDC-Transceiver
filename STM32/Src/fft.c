@@ -52,7 +52,9 @@ IRAM2 static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{
 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};						 // frequencies for each row of the waterfall
 static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};						 // frequencies for each row of the fft mean buffer
 SRAM static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
+#if FFT_3D_enabled
 IRAM2 static uint8_t indexed_3d_fft_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with 3d WTF output
+#endif
 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};								 //buffer with fft colors output
 static int32_t grid_lines_pos[20] = {-1};											 //grid lines positions
 static int16_t bw_line_start = 0;													 //BW bar params
@@ -877,6 +879,7 @@ void FFT_afterPrintFFT(void)
 //3D mode print
 static void FFT_3DPrintFFT(void)
 {
+	#if FFT_3D_enabled
 	uint16_t wtfHeight = GET_WTFHeight;
 	uint16_t fftHeight = GET_FFTHeight;
 	uint_fast8_t cwdecoder_offset = 0;
@@ -932,6 +935,10 @@ static void FFT_3DPrintFFT(void)
 	
 	//do after events
 	FFT_afterPrintFFT();
+	#else
+	FFT_need_fft = true;
+	LCD_busy = false;
+	#endif
 }
 
 // waterfall output
@@ -944,6 +951,7 @@ void FFT_printWaterfallDMA(void)
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 	
 	//3D version printout
+	#if FFT_3D_enabled
 	if(TRX.FFT_3D > 0)
 	{
 		if (print_wtf_yindex == 0)
@@ -988,6 +996,7 @@ void FFT_printWaterfallDMA(void)
 		}
 		return;
 	}
+	#endif
 	//
 	
 #ifdef HAS_BTE
