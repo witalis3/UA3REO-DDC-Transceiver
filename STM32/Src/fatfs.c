@@ -53,7 +53,7 @@ DWORD get_fattime(void)
     // get time
     return ((DWORD)(sDate.Year - 1980) << 25)
             | ((DWORD)sDate.Month << 21)
-            | ((DWORD)sDate.Year << 16)
+            | ((DWORD)sDate.Date << 16)
             | ((DWORD)sTime.Hours << 11)
             | ((DWORD)sTime.Minutes << 5)
             | ((DWORD)sTime.Seconds >> 1);

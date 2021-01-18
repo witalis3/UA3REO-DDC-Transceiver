@@ -373,27 +373,31 @@ void WIFI_Process(void)
 				}
 			}
 			else if (WIFI_ProcessingCommand == WIFI_COMM_GETSNTP) //Get and sync SNMP time
-			{
-				char *hrs_str = strchr(WIFI_readedLine, ' ');
-				if (hrs_str != NULL)
+			{ //Mon Jan 18 20:17:56 2021
+				char *sntp_str = strchr(WIFI_readedLine, ' ');
+				if (sntp_str != NULL)
 				{
-					hrs_str = hrs_str + 1;
-					hrs_str = strchr(hrs_str, ' ');
-					if (hrs_str != NULL)
+					sntp_str = sntp_str + 1;
+					char *month_str = sntp_str;
+					sntp_str = strchr(sntp_str, ' ');
+					if (sntp_str != NULL)
 					{
-						hrs_str = hrs_str + 1;
-						hrs_str = strchr(hrs_str, ' ');
-						if (hrs_str != NULL)
+						*sntp_str = 0x00;
+						sntp_str = sntp_str + 1;
+						char *day_str = sntp_str;
+						sntp_str = strchr(sntp_str, ' ');
+						if (sntp_str != NULL)
 						{
-							hrs_str = hrs_str + 1;
+							*sntp_str = 0x00;
+							sntp_str = sntp_str + 1;
 							//hh:mm:ss here
-							char *min_str = strchr(hrs_str, ':');
+							char *min_str = strchr(sntp_str, ':');
 							if (min_str != NULL)
 							{
 								min_str = min_str + 1;
 								char *sec_str = strchr(min_str, ':');
 								char *year_str = strchr(min_str, ' ');
-								char *end = strchr(hrs_str, ':');
+								char *end = strchr(sntp_str, ':');
 								if (sec_str != NULL && year_str != NULL && end != NULL)
 								{
 									sec_str = sec_str + 1;
@@ -408,10 +412,28 @@ void WIFI_Process(void)
 										{
 											*end = 0x00;
 											//split strings here
-											uint8_t hrs = (uint8_t)atoi(hrs_str);
+											uint8_t hrs = (uint8_t)atoi(sntp_str);
 											uint8_t min = (uint8_t)atoi(min_str);
 											uint8_t sec = (uint8_t)atoi(sec_str);
 											uint16_t year = (uint16_t)atoi(year_str);
+											uint16_t year_short = (uint16_t)atoi(year_str + 2);
+											uint16_t month = 1;
+											if(strstr(month_str, "Jan") != NULL) month = 1;
+											if(strstr(month_str, "Feb") != NULL) month = 2;
+											if(strstr(month_str, "Mar") != NULL) month = 3;
+											if(strstr(month_str, "Apr") != NULL) month = 4;
+											if(strstr(month_str, "May") != NULL) month = 5;
+											if(strstr(month_str, "Jun") != NULL) month = 6;
+											if(strstr(month_str, "Jul") != NULL) month = 7;
+											if(strstr(month_str, "Aug") != NULL) month = 8;
+											if(strstr(month_str, "Sep") != NULL) month = 9;
+											if(strstr(month_str, "Oct") != NULL) month = 10;
+											if(strstr(month_str, "Nov") != NULL) month = 11;
+											if(strstr(month_str, "Dec") != NULL) month = 12;
+											uint16_t day = (uint16_t)atoi(day_str);
+											sendToDebug_strln(year_str);
+											sendToDebug_strln(month_str);
+											sendToDebug_strln(day_str);
 											//save to RTC clock
 											if (year > 2018)
 											{
@@ -424,8 +446,13 @@ void WIFI_Process(void)
 												sTime.Hours = hrs;
 												sTime.Minutes = min;
 												sTime.Seconds = sec;
+												RTC_DateTypeDef sDate;
+												sDate.Date = day;
+												sDate.Month = month;
+												sDate.Year = year_short;
 												BKPSRAM_Enable();
 												HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+												HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 												TRX_SNTP_Synced = HAL_GetTick();
 												sendToDebug_str("[WIFI] TIME SYNCED\r\n");
 											}
