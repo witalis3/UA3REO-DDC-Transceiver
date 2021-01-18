@@ -390,19 +390,17 @@ void processRxAudio(void)
 	//SD card send
 	if(SD_RecordInProcess)
 	{
-		SD_RecordPacketSize = (decimated_block_size_rx1 * 2);
-		
 		for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 		{
 			if(SD_RecordBuffer)
 			{
-				SD_workbuffer[SD_RecordBufferIndex] = APROC_AudioBuffer_out[i * 2] >> 24;
-				SD_workbuffer[SD_RecordBufferIndex + 1] = APROC_AudioBuffer_out[i * 2] >> 16;
+				SD_workbuffer[SD_RecordBufferIndex] = (APROC_AudioBuffer_out[i * 2] >> 8) & 0xFF;
+				SD_workbuffer[SD_RecordBufferIndex + 1] = (APROC_AudioBuffer_out[i * 2] >> 16) & 0xFF;
 			}
 			else
 			{
-				SD_workbuffer_2[SD_RecordBufferIndex] = APROC_AudioBuffer_out[i * 2] >> 24;
-				SD_workbuffer_2[SD_RecordBufferIndex + 1] = APROC_AudioBuffer_out[i * 2] >> 16;
+				SD_workbuffer_2[SD_RecordBufferIndex] = (APROC_AudioBuffer_out[i * 2] >> 8) & 0xFF;
+				SD_workbuffer_2[SD_RecordBufferIndex + 1] = (APROC_AudioBuffer_out[i * 2] >> 16) & 0xFF;
 			}
 			SD_RecordBufferIndex += 2;
 			if(SD_RecordBufferIndex >= _MAX_SS)

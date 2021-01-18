@@ -14,7 +14,6 @@ extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
 bool SD_CommandInProcess = false;
 bool SD_underrun = false;
-uint32_t SD_RecordPacketSize = 0;
 bool SD_RecordBuffer = false; // 1 - false; 2 - true
 uint32_t SD_RecordBufferIndex = 0;
 
@@ -54,6 +53,7 @@ void SD_doCommand(SD_COMMAND command, bool force)
 	{
 		if(SD_CommandInProcess && !force)
 		{
+			sendToDebug_str("s");
 			SD_underrun = true;
 		}
 		else
@@ -199,9 +199,10 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 	uint32_t byteswritten;
 	FRESULT res = 0;
 	if(!SD_RecordBuffer)
-		res = f_write(&File, SD_workbuffer, SD_RecordPacketSize, (void *)&byteswritten);
+		res = f_write(&File, SD_workbuffer, sizeof(SD_workbuffer), (void *)&byteswritten);
 	if(SD_RecordBuffer)
-		res = f_write(&File, SD_workbuffer_2, SD_RecordPacketSize, (void *)&byteswritten);
+		res = f_write(&File, SD_workbuffer_2, sizeof(SD_workbuffer_2), (void *)&byteswritten);
+	sendToDebug_uint32(byteswritten, false);
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
