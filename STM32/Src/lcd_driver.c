@@ -24,9 +24,6 @@ void LCDDriver_SetCurrentXOffset(uint16_t x)
 //Text printing functions
 void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
 {
-	if(c < 32) //non-printable
-		return;
-	
 	uint8_t line = 0;
 	if ((x >= LCD_WIDTH) ||			// Clip right
 		(y >= LCD_HEIGHT) ||		// Clip bottom
@@ -34,12 +31,16 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 		((y + 8 * size - 1) < 0))	// Clip top
 		return;
 
+	if(c < 32) //non-printable
+		return;
 	if (!_cp437 && (c >= 176))
 		c++;																   // Handle 'classic' charset behavior
+	
 	LCDDriver_SetCursorAreaPosition(x, y, x + 6 * size - 1, y + 8 * size - 1); //char area
-	for (int8_t j = 0; j < 8; j++)
-	{											//y line out
+	for (int8_t j = 0; j < 8; j++) //y line out
+	{
 		for (int8_t s_y = 0; s_y < size; s_y++) //y size scale
+		{
 			for (int8_t i = 0; i < 6; i++)
 			{ //x line out
 				{
@@ -57,14 +58,16 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 					}
 				}
 			}
+		}
 	}
 }
 
 void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size)
 {
+	uint16_t i = 0;
 	uint16_t offset = size * 6;
 	uint16_t skipped = 0;
-	for (uint16_t i = 0; i < 128 && text[i] != 0; i++)
+	for (i = 0; i < 128 && text[i] != 0; i++)
 	{
 		if (text[i] == '^' && text[i + 1] == 'o') //celsius
 		{
