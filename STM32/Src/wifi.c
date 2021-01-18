@@ -431,9 +431,6 @@ void WIFI_Process(void)
 											if(strstr(month_str, "Nov") != NULL) month = 11;
 											if(strstr(month_str, "Dec") != NULL) month = 12;
 											uint16_t day = (uint16_t)atoi(day_str);
-											sendToDebug_strln(year_str);
-											sendToDebug_strln(month_str);
-											sendToDebug_strln(day_str);
 											//save to RTC clock
 											if (year > 2018)
 											{

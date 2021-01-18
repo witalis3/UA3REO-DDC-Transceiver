@@ -10,6 +10,7 @@
 IRAM2 FATFS SDFatFs;
 sd_info_ptr sdinfo;
 extern Disk_drvTypeDef disk;
+bool SD_RecordInProcess = false;
 
 static bool SD_Present = false;
 static bool SD_Mounted = false;
@@ -28,6 +29,8 @@ static void SDCOMM_IMPORT_SETT(void);
 static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type);
 static bool SD_WRITE_SETT_STRING(char *name, char *value);
 static void SDCOMM_PARSE_SETT_LINE(char *line);
+static bool SDCOMM_CREATE_RECORD_FILE(void);
+static bool SDCOMM_CLOSE_RECORD_FILE(void);
 
 bool SD_isIdle(void)
 {
@@ -101,9 +104,47 @@ void SD_Process(void)
 		case SDCOMM_IMPORT_SETTINGS:
 			SDCOMM_IMPORT_SETT();
 			break;
+		case SDCOMM_START_RECORD:
+			SDCOMM_CREATE_RECORD_FILE();
+		break;
+		case SDCOMM_STOP_RECORD:
+			SDCOMM_CLOSE_RECORD_FILE();
+		break;
 		}
 		SD_currentCommand = SDCOMM_IDLE;
 	}
+}
+
+static bool SDCOMM_CREATE_RECORD_FILE(void)
+{
+	char filename[32] = {0};
+	RTC_TimeTypeDef sTime = {0};
+	RTC_DateTypeDef sDate = {0};
+	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d.wav", sDate.Year, sDate.Month, sDate.Date, sTime.Hours, sTime.Minutes, sTime.Seconds);
+	sendToDebug_strln(filename);
+	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
+	{
+		SD_RecordInProcess = true;
+		LCD_showTooltip("Start recording...");
+		return true;
+	}
+	else
+	{
+		LCD_showTooltip("SD error");
+		SD_RecordInProcess = false;
+		SD_Present = false;
+	}
+	return false;
+}
+
+static bool SDCOMM_CLOSE_RECORD_FILE(void)
+{
+	f_close(&File);
+	SD_RecordInProcess = false;
+	LCD_showTooltip("Stop recording");
+	return true;
 }
 
 static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)

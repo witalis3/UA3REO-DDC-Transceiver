@@ -51,7 +51,7 @@ DWORD get_fattime(void)
 	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 	
     // get time
-    return ((DWORD)(sDate.Year - 1980) << 25)
+    return ((DWORD)(2000 + sDate.Year - 1980) << 25)
             | ((DWORD)sDate.Month << 21)
             | ((DWORD)sDate.Date << 16)
             | ((DWORD)sTime.Hours << 11)

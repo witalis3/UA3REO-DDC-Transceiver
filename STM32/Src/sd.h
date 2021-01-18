@@ -46,10 +46,13 @@ typedef enum
 	SDCOMM_FORMAT,
 	SDCOMM_EXPORT_SETTINGS,
 	SDCOMM_IMPORT_SETTINGS,
+	SDCOMM_START_RECORD,
+	SDCOMM_STOP_RECORD,
 } SD_COMMAND;
 
 extern sd_info_ptr sdinfo;
 extern FATFS SDFatFs;
+extern bool SD_RecordInProcess;
 
 //--------------------------------------------------
 extern void SD_PowerOn(void);
