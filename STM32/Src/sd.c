@@ -202,7 +202,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 		res = f_write(&File, SD_workbuffer, sizeof(SD_workbuffer), (void *)&byteswritten);
 	if(SD_RecordBuffer)
 		res = f_write(&File, SD_workbuffer_2, sizeof(SD_workbuffer_2), (void *)&byteswritten);
-	sendToDebug_uint32(byteswritten, false);
+	//sendToDebug_uint32(byteswritten, false);
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
@@ -1188,14 +1188,13 @@ static uint8_t SPIx_WriteRead(uint8_t Byte)
 static void SPI_SendByte(uint8_t bt)
 {
 	SPIx_sendByte = bt;
-	if (!SPI_Transmit(&SPIx_sendByte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+	if (!SPI_Transmit(&SPIx_sendByte, NULL, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
 		sendToDebug_strln("SD SPI Err");
 }
 
 static uint8_t SPI_ReceiveByte(void)
 {
-	SPIx_sendByte = 0xFF;
-	if (!SPI_Transmit(&SPIx_sendByte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+	if (!SPI_Transmit(NULL, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
 		sendToDebug_strln("SD SPI Err");
 	return SPIx_receivedByte;
 }
@@ -1288,6 +1287,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 	return 1;
 }
 
+SRAM uint8_t SD_Write_Block_tmp[512] = {0};
 uint8_t SD_Write_Block(uint8_t *buff, uint8_t token)
 {
 	uint8_t result;
@@ -1296,8 +1296,14 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token)
 	SPI_SendByte(token);
 	if (token != 0xFD)
 	{ /* Send data if token is other than StopTran */
-		for (cnt = 0; cnt < 512; cnt++)
-			SPI_SendByte(buff[cnt]);
+		//for (cnt = 0; cnt < 512; cnt++)
+			//SPI_SendByte(buff[cnt]);
+
+		memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
+		//Aligned_CleanDCache_by_Addr(&SD_Write_Block_tmp, 512 / 4);
+		if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+			sendToDebug_strln("SD SPI Err");
+		
 		SPI_Release();
 		SPI_Release();
 		result = SPI_ReceiveByte();

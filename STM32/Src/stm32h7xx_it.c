@@ -392,7 +392,7 @@ void DMA1_Stream2_IRQHandler(void)
   /* USER CODE END DMA1_Stream2_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi2_rx);
   /* USER CODE BEGIN DMA1_Stream2_IRQn 1 */
-	SPI_RX_ready = true;
+
   /* USER CODE END DMA1_Stream2_IRQn 1 */
 }
 
@@ -406,7 +406,7 @@ void DMA1_Stream3_IRQHandler(void)
   /* USER CODE END DMA1_Stream3_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi2_tx);
   /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
-	SPI_TX_ready = true;
+
   /* USER CODE END DMA1_Stream3_IRQn 1 */
 }
 
@@ -1018,6 +1018,12 @@ void DMA1_Stream0_IRQHandler(void)
 {
   CPULOAD_WakeUp();
   HAL_DMA_IRQHandler(&hdma_spi3_rx);
+}
+
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	CPULOAD_WakeUp();
+	SPI_TXRX_ready = true;
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)

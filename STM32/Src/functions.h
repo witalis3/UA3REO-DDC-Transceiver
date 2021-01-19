@@ -102,8 +102,7 @@ typedef struct
 
 extern CPULOAD_t CPU_LOAD;
 volatile extern bool SPI_process;
-volatile extern bool SPI_RX_ready;
-volatile extern bool SPI_TX_ready;
+volatile extern bool SPI_TXRX_ready;
 
 extern void CPULOAD_Init(void);
 extern void CPULOAD_GoToSleepMode(void);

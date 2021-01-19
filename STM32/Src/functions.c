@@ -14,8 +14,7 @@
 CPULOAD_t CPU_LOAD = {0};
 static bool SPI_busy = false;
 volatile bool SPI_process = false;
-volatile bool SPI_RX_ready = false;
-volatile bool SPI_TX_ready = false;
+volatile bool SPI_TXRX_ready = false;
 
 void dma_memcpy32(uint32_t *dest, uint32_t *src, uint32_t len)
 {
@@ -472,6 +471,7 @@ inline uint8_t rev8(uint8_t data)
 	return (uint8_t)(__RBIT(tmp) >> 24);
 }
 
+IRAM2 uint8_t SPI_tmp_buff[8] = {0};
 bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma)
 {
 	if (SPI_busy)
@@ -492,13 +492,53 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 	
-	if(dma && in_data != NULL && out_data != NULL)
+	if(dma)
 	{
-		SPI_RX_ready = false;
-		SPI_TX_ready = false;
-		res = HAL_SPI_TransmitReceive_DMA(&hspi2, out_data, in_data, count);
-		while(!SPI_RX_ready || !SPI_TX_ready)
-			CPULOAD_GoToSleepMode();
+		SPI_TXRX_ready = false;
+		if (in_data == NULL)
+		{
+			if(hdma_spi2_rx.Init.MemInc != DMA_MINC_DISABLE)
+			{
+				hdma_spi2_rx.Init.MemInc = DMA_MINC_DISABLE;
+				HAL_DMA_Init(&hdma_spi2_rx);
+			}
+			if(hdma_spi2_tx.Init.MemInc != DMA_MINC_ENABLE)
+			{
+				hdma_spi2_tx.Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(&hdma_spi2_tx);
+			}
+			res = HAL_SPI_TransmitReceive_DMA(&hspi2, out_data, SPI_tmp_buff, count);
+		}
+		else if (out_data == NULL)
+		{
+			if(hdma_spi2_rx.Init.MemInc != DMA_MINC_ENABLE)
+			{
+				hdma_spi2_rx.Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(&hdma_spi2_rx);
+			}
+			if(hdma_spi2_tx.Init.MemInc != DMA_MINC_DISABLE)
+			{
+				hdma_spi2_tx.Init.MemInc = DMA_MINC_DISABLE;
+				HAL_DMA_Init(&hdma_spi2_tx);
+			}
+			res = HAL_SPI_TransmitReceive_DMA(&hspi2, SPI_tmp_buff, in_data, count);
+		}
+		else
+		{
+			if(hdma_spi2_rx.Init.MemInc != DMA_MINC_ENABLE)
+			{
+				hdma_spi2_rx.Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(&hdma_spi2_rx);
+			}
+			if(hdma_spi2_tx.Init.MemInc != DMA_MINC_ENABLE)
+			{
+				hdma_spi2_tx.Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(&hdma_spi2_tx);
+			}
+			res = HAL_SPI_TransmitReceive_DMA(&hspi2, out_data, in_data, count);
+		}
+		while(!SPI_TXRX_ready)
+				CPULOAD_GoToSleepMode();
 	}
 	else
 	{
