@@ -494,6 +494,7 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 	
 	if(dma)
 	{
+		uint32_t starttime = HAL_GetTick();
 		SPI_TXRX_ready = false;
 		if (in_data == NULL)
 		{
@@ -537,7 +538,7 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 			}
 			res = HAL_SPI_TransmitReceive_DMA(&hspi2, out_data, in_data, count);
 		}
-		while(!SPI_TXRX_ready)
+		while(!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < 1000))
 				CPULOAD_GoToSleepMode();
 	}
 	else

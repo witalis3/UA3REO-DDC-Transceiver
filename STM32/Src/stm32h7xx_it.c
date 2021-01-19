@@ -943,7 +943,13 @@ void TIM15_IRQHandler(void)
   /* USER CODE BEGIN TIM15_IRQn 1 */
 
   //FRONT PANEL SPI
-  FRONTPANEL_Process();
+	static uint16_t front_slowler = 0;
+	front_slowler++;
+	if(front_slowler > 20)
+	{
+		FRONTPANEL_Process();
+		front_slowler = 0;
+	}
 
   //EEPROM SPI
   if (NeedSaveCalibration) // save calibration data to EEPROM
