@@ -25,7 +25,9 @@ static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 IRAM2 static FIL File;
 IRAM2 static FILINFO fileInfo = {0};
 IRAM2 static DIR dir = {0};
-IRAM2 BYTE SD_workbuffer[_MAX_SS];
+IRAM2 BYTE SD_workbuffer_A[_MAX_SS];
+IRAM2 BYTE SD_workbuffer_B[_MAX_SS];
+IRAM2 BYTE SD_workbuffer_current = false; //false - fill A save B, true - fill B save A
 
 static void SDCOMM_LISTROOT(void);
 static void SDCOMM_MKFS(void);
@@ -51,7 +53,6 @@ void SD_doCommand(SD_COMMAND command, bool force)
 	{
 		if(SD_CommandInProcess && !force)
 		{
-			sendToDebug_str("s");
 			SD_underrun = true;
 		}
 		else
@@ -144,7 +145,7 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 	sendToDebug_strln(filename);
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
-		memset(SD_workbuffer, 0x00, sizeof(SD_workbuffer));
+		memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		WAV_header wav_hdr = {0};
 		// RIFF header
 		wav_hdr.riffsig		= 0x46464952;
@@ -194,7 +195,11 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 {
 	//write to SD
 	uint32_t byteswritten;
-	FRESULT res = f_write(&File, SD_workbuffer, sizeof(SD_workbuffer), (void *)&byteswritten);
+	FRESULT res;
+	if(SD_workbuffer_current)
+		res = f_write(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&byteswritten);
+	else
+		res = f_write(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&byteswritten);
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
@@ -223,10 +228,10 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 	char valbuff[64] = {0};
 	float32_t tmp_float = 0;
 
-	memset(SD_workbuffer, 0x00, sizeof(SD_workbuffer));
+	memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 
-	strcat((char *)SD_workbuffer, name);
-	strcat((char *)SD_workbuffer, " = ");
+	strcat((char *)SD_workbuffer_A, name);
+	strcat((char *)SD_workbuffer_A, " = ");
 	switch (type)
 	{
 	case SYSMENU_BOOLEAN:
@@ -264,10 +269,10 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 	case SYSMENU_INFOLINE:
 		break;
 	}
-	strcat((char *)SD_workbuffer, valbuff);
-	strcat((char *)SD_workbuffer, "\r\n");
+	strcat((char *)SD_workbuffer_A, valbuff);
+	strcat((char *)SD_workbuffer_A, "\r\n");
 
-	FRESULT res = f_write(&File, SD_workbuffer, strlen((char *)SD_workbuffer), (void *)&byteswritten);
+	FRESULT res = f_write(&File, SD_workbuffer_A, strlen((char *)SD_workbuffer_A), (void *)&byteswritten);
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
@@ -280,14 +285,14 @@ static bool SD_WRITE_SETT_STRING(char *name, char *value)
 {
 	uint32_t byteswritten;
 
-	memset(SD_workbuffer, 0x00, sizeof(SD_workbuffer));
+	memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 
-	strcat((char *)SD_workbuffer, name);
-	strcat((char *)SD_workbuffer, " = ");
-	strcat((char *)SD_workbuffer, value);
-	strcat((char *)SD_workbuffer, "\r\n");
+	strcat((char *)SD_workbuffer_A, name);
+	strcat((char *)SD_workbuffer_A, " = ");
+	strcat((char *)SD_workbuffer_A, value);
+	strcat((char *)SD_workbuffer_A, "\r\n");
 
-	FRESULT res = f_write(&File, SD_workbuffer, strlen((char *)SD_workbuffer), (void *)&byteswritten);
+	FRESULT res = f_write(&File, SD_workbuffer_A, strlen((char *)SD_workbuffer_A), (void *)&byteswritten);
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
@@ -1089,21 +1094,21 @@ static void SDCOMM_IMPORT_SETT(void)
 		uint32_t bytesread = 1;
 		while (bytesread != 0)
 		{
-			FRESULT res = f_read(&File, SD_workbuffer, sizeof(SD_workbuffer), (void *)&bytesread);
+			FRESULT res = f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesread);
 			uint16_t start_index = 0;
 			if (res == FR_OK && bytesread != 0)
 			{
 				//sendToDebug_str((char*)workbuffer);
-				char *istr = strstr((char *)SD_workbuffer + start_index, "\r\n"); // look for the end of the line
-				while (istr != NULL && start_index < sizeof(SD_workbuffer))
+				char *istr = strstr((char *)SD_workbuffer_A + start_index, "\r\n"); // look for the end of the line
+				while (istr != NULL && start_index < sizeof(SD_workbuffer_A))
 				{
-					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)SD_workbuffer + start_index));
+					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)SD_workbuffer_A + start_index));
 					if (len <= 64)
 					{
 						memset(readedLine, 0x00, sizeof(readedLine));
-						strncpy(readedLine, (char *)SD_workbuffer + start_index, len);
+						strncpy(readedLine, (char *)SD_workbuffer_A + start_index, len);
 						start_index += len + 2;
-						istr = strstr((char *)SD_workbuffer + start_index, "\r\n"); // look for the end of the line
+						istr = strstr((char *)SD_workbuffer_A + start_index, "\r\n"); // look for the end of the line
 						//sendToDebug_str3("!",readedLine,"!\r\n");
 						SDCOMM_PARSE_SETT_LINE(readedLine);
 					}
@@ -1128,7 +1133,7 @@ static void SDCOMM_IMPORT_SETT(void)
 static void SDCOMM_MKFS(void)
 {
 	LCD_showInfo("Start formatting...", false);
-	FRESULT res = f_mkfs((TCHAR const *)USERPath, FM_FAT32, 0, SD_workbuffer, sizeof SD_workbuffer);
+	FRESULT res = f_mkfs((TCHAR const *)USERPath, FM_FAT32, 0, SD_workbuffer_A, sizeof SD_workbuffer_A);
 	if (res == FR_OK)
 	{
 		LCD_showInfo("SD Format complete", true);

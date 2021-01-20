@@ -88,6 +88,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **PRE** - Turn on the preamplifier (LNA)
 * **PRE [clamp]** - Turn on the driver and / or amplifier ADC
 * **ATT** - Turn on the attenuator
+* **REC** - Save audio to SD card
 * **MUTE** - Mute the sound
 * **MUTE [clamp]** - Scanner mode
 * **AGC** - Turn on AGC (automatic gain control)
