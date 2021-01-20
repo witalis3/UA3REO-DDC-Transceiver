@@ -394,14 +394,26 @@ begin
 	end
 	else if (k == 400) //RX1 IQ
 	begin
-		REG_RX1_I[31:0] = BUFFER_RX1_I[BUFFER_RX_tail][31:0];
-		REG_RX1_Q[31:0] = BUFFER_RX1_Q[BUFFER_RX_tail][31:0];
-		REG_RX2_I[31:0] = BUFFER_RX2_I[BUFFER_RX_tail][31:0];
-		REG_RX2_Q[31:0] = BUFFER_RX2_Q[BUFFER_RX_tail][31:0];
-		if(BUFFER_RX_tail >= rx_buffer_length || BUFFER_RX_tail == BUFFER_RX_head) //догнал буффер
-			BUFFER_RX_tail = 'd0;
+		
+		if(BUFFER_RX_tail == BUFFER_RX_head) //догнал буффер
+		begin	
+			REG_RX1_I[31:0] = 'd0;
+			REG_RX1_Q[31:0] = 'd0;
+			REG_RX2_I[31:0] = 'd0;
+			REG_RX2_Q[31:0] = 'd0;
+		end
 		else
-			BUFFER_RX_tail = BUFFER_RX_tail + 16'd1;
+		begin
+			REG_RX1_I[31:0] = BUFFER_RX1_I[BUFFER_RX_tail][31:0];
+			REG_RX1_Q[31:0] = BUFFER_RX1_Q[BUFFER_RX_tail][31:0];
+			REG_RX2_I[31:0] = BUFFER_RX2_I[BUFFER_RX_tail][31:0];
+			REG_RX2_Q[31:0] = BUFFER_RX2_Q[BUFFER_RX_tail][31:0];
+			
+			if(BUFFER_RX_tail >= rx_buffer_length)
+				BUFFER_RX_tail = 0;
+			else
+				BUFFER_RX_tail = BUFFER_RX_tail + 16'd1;
+		end
 		
 		I_HOLD = REG_RX1_I;
 		Q_HOLD = REG_RX1_Q;
@@ -526,12 +538,12 @@ begin
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd1; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd2; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)
 	begin
-		DATA_BUS_OUT[7:0] = 'd2; //flash id 3
+		DATA_BUS_OUT[7:0] = 'd1; //flash id 3
 		k = 999;
 	end
 	stage_debug=k;

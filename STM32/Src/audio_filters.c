@@ -669,7 +669,7 @@ void InitNotchFilter(void)
 }
 
 // start DC corrector
-void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum) // removes the constant component of the signal
+void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum) // removes the DC component of the signal
 {
 	static const float32_t A1 = (1.0f - 0.00048828125f); // (1-2^(-11))
 
