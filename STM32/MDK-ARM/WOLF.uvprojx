@@ -394,6 +394,16 @@
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
+              <FileName>adpcm-lib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\adpcm-lib.c</FilePath>
+            </File>
+            <File>
+              <FileName>adpcm-lib.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\adpcm-lib.h</FilePath>
+            </File>
+            <File>
               <FileName>agc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\agc.c</FilePath>
@@ -452,11 +462,6 @@
               <FileName>bootloader.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\bootloader.h</FilePath>
-            </File>
-            <File>
-              <FileName>codecs.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\codecs.h</FilePath>
             </File>
             <File>
               <FileName>color_themes.h</FileName>
@@ -772,6 +777,16 @@
               <FileName>vad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\vad.h</FilePath>
+            </File>
+            <File>
+              <FileName>vocoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\vocoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>vocoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\vocoder.h</FilePath>
             </File>
             <File>
               <FileName>wifi.c</FileName>

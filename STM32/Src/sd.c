@@ -6,7 +6,7 @@
 #include "ff_gen_drv.h"
 #include "user_diskio.h"
 #include "system_menu.h"
-#include "codecs.h"
+#include "vocoder.h"
 
 IRAM2 FATFS SDFatFs;
 sd_info_ptr sdinfo;
@@ -14,7 +14,7 @@ extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
 bool SD_CommandInProcess = false;
 bool SD_underrun = false;
-bool SD_RecordBuffer = false; // 1 - false; 2 - true
+bool SD_NeedStopRecord = false;
 uint32_t SD_RecordBufferIndex = 0;
 
 static bool SD_Present = false;
@@ -26,7 +26,6 @@ IRAM2 static FIL File;
 IRAM2 static FILINFO fileInfo = {0};
 IRAM2 static DIR dir = {0};
 IRAM2 BYTE SD_workbuffer[_MAX_SS];
-IRAM2 BYTE SD_workbuffer_2[_MAX_SS];
 
 static void SDCOMM_LISTROOT(void);
 static void SDCOMM_MKFS(void);
@@ -36,7 +35,6 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 static bool SD_WRITE_SETT_STRING(char *name, char *value);
 static void SDCOMM_PARSE_SETT_LINE(char *line);
 static bool SDCOMM_CREATE_RECORD_FILE(void);
-static bool SDCOMM_CLOSE_RECORD_FILE(void);
 static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void);
 
 bool SD_isIdle(void)
@@ -126,9 +124,6 @@ void SD_Process(void)
 		case SDCOMM_START_RECORD:
 			SDCOMM_CREATE_RECORD_FILE();
 		break;
-		case SDCOMM_STOP_RECORD:
-			SDCOMM_CLOSE_RECORD_FILE();
-		break;
 		case SDCOMM_PROCESS_RECORD:
 			SDCOMM_WRITE_PACKET_RECORD_FILE();
 		break;
@@ -158,13 +153,20 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 
 		// format chunk
 		wav_hdr.fmtsig		= 0x20746D66;
-		wav_hdr.fmtsize		= 16;
-		wav_hdr.type			= 1;
-		wav_hdr.nch			= 1;
+		//wav_hdr.fmtsize		= 16;  //PCM
+		wav_hdr.fmtsize		= 0x14;  //IMA-ADPCM
+		//wav_hdr.type			= 1; //PCM
+		wav_hdr.type			= 0x11; //IMA-ADPCM
+		wav_hdr.nch			= 1; //Mono
 		wav_hdr.freq			= 48000;
-		wav_hdr.rate			= 96000;
-		wav_hdr.block			= 2;
-		wav_hdr.bits			= 16;
+		//wav_hdr.rate			= 96000; //PCM 16bit
+		wav_hdr.rate			= (wav_hdr.freq * wav_hdr.nch * 256 / 505); //IMA-ADPCM byte rate, 48000 * Nch * 256 / 505
+		//wav_hdr.block			= 2; //PCM
+		wav_hdr.block			= 256; //IMA-ADPCM block align, mono 256, stereo 512 */
+		//wav_hdr.bits			= 16; //PCM
+		wav_hdr.bits			= 4; //IMA-ADPCM
+		wav_hdr.bytes_extra_data = 2; //IMA-ADPCM bytes extra data
+		wav_hdr.extra_data = 505; //IMA-ADPCM extra data
 
 		// data chunk
 		wav_hdr.datasig		= 0x61746164;
@@ -174,6 +176,7 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
 		
 		SD_RecordInProcess = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_showTooltip("Start recording");
 		return true;
 	}
@@ -182,33 +185,34 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 		LCD_showTooltip("SD error");
 		SD_RecordInProcess = false;
 		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 	return false;
 }
 
-static bool SDCOMM_CLOSE_RECORD_FILE(void)
-{
-	f_close(&File);
-	SD_RecordInProcess = false;
-	LCD_showTooltip("Stop recording");
-	return true;
-}
-
 static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 {
+	//write to SD
 	uint32_t byteswritten;
-	FRESULT res = 0;
-	if(!SD_RecordBuffer)
-		res = f_write(&File, SD_workbuffer, sizeof(SD_workbuffer), (void *)&byteswritten);
-	if(SD_RecordBuffer)
-		res = f_write(&File, SD_workbuffer_2, sizeof(SD_workbuffer_2), (void *)&byteswritten);
-	//sendToDebug_uint32(byteswritten, false);
+	FRESULT res = f_write(&File, SD_workbuffer, sizeof(SD_workbuffer), (void *)&byteswritten);
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
 		SD_RecordInProcess = false;
+		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_showTooltip("SD error");
 		return false;
+	}
+	
+	//stop record
+	if(SD_NeedStopRecord)
+	{
+		SD_RecordInProcess = false;
+		LCD_UpdateQuery.StatusInfoBar = true;
+		LCD_showTooltip("Stop recording");
+		f_close(&File);
+		SD_NeedStopRecord = false;
+		return true;
 	}
 	return true;
 }
@@ -1300,7 +1304,6 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token)
 			//SPI_SendByte(buff[cnt]);
 
 		memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
-		//Aligned_CleanDCache_by_Addr(&SD_Write_Block_tmp, 512 / 4);
 		if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
 			sendToDebug_strln("SD SPI Err");
 		

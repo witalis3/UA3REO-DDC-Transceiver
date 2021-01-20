@@ -153,6 +153,8 @@ typedef const struct
 	const uint16_t STATUS_LABEL_LOCK_X_OFFSET;
 	const uint16_t STATUS_LABEL_LOCK_Y_OFFSET;
 	#endif
+	const uint16_t STATUS_LABEL_REC_X_OFFSET;
+	const uint16_t STATUS_LABEL_REC_Y_OFFSET;
 	const uint16_t STATUS_SMETER_PEAK_HOLDTIME;
 	const uint16_t STATUS_SMETER_TXLABELS_MARGIN;
 	const uint16_t STATUS_SMETER_TXLABELS_PADDING;

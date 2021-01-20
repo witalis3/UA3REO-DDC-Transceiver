@@ -103,6 +103,7 @@
 #include "trx_manager.h"
 #include "audio_filters.h"
 #include "wifi.h"
+#include "vocoder.h"
 #include "system_menu.h"
 #include "bootloader.h"
 #include "decoder.h"
@@ -482,7 +483,7 @@ void TIM4_IRQHandler(void)
     SYSMENU_drawSystemMenu(false);
     return;
   }
-  
+	
   if (FFT_need_fft)
     FFT_doFFT();
 	

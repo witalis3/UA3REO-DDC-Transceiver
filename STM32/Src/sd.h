@@ -47,7 +47,6 @@ typedef enum
 	SDCOMM_EXPORT_SETTINGS,
 	SDCOMM_IMPORT_SETTINGS,
 	SDCOMM_START_RECORD,
-	SDCOMM_STOP_RECORD,
 	SDCOMM_PROCESS_RECORD,
 } SD_COMMAND;
 
@@ -56,10 +55,9 @@ extern FATFS SDFatFs;
 extern bool SD_RecordInProcess;
 extern bool SD_CommandInProcess;
 extern bool SD_underrun;
-extern BYTE SD_workbuffer[_MAX_SS];
-extern BYTE SD_workbuffer_2[_MAX_SS];
-extern bool SD_RecordBuffer;
+extern bool SD_NeedStopRecord;
 extern uint32_t SD_RecordBufferIndex;
+extern BYTE SD_workbuffer[_MAX_SS];
 
 //--------------------------------------------------
 extern void SD_PowerOn(void);

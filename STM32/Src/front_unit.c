@@ -1241,7 +1241,7 @@ static void FRONTPANEL_BUTTONHANDLER_SCAN(uint32_t parameter)
 static void FRONTPANEL_BUTTONHANDLER_PLAY(uint32_t parameter)
 {
 	if(SD_RecordInProcess)
-		SD_doCommand(SDCOMM_STOP_RECORD, true);
+		SD_NeedStopRecord = true;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_REC(uint32_t parameter)
@@ -1249,7 +1249,7 @@ static void FRONTPANEL_BUTTONHANDLER_REC(uint32_t parameter)
 	if(!SD_RecordInProcess)
 		SD_doCommand(SDCOMM_START_RECORD, false);
 	else
-		SD_doCommand(SDCOMM_STOP_RECORD, true);
+		SD_NeedStopRecord = true;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_FUNC(uint32_t parameter)

@@ -1,5 +1,6 @@
 --cpu Cortex-M7.fp.dp --lto
 "wolf\startup_stm32h743xx.o"
+"wolf\adpcm-lib.o"
 "wolf\agc.o"
 "wolf\audio_filters.o"
 "wolf\audio_processor.o"
@@ -36,6 +37,7 @@
 "wolf\usbd_debug_if.o"
 "wolf\usbd_ua3reo.o"
 "wolf\vad.o"
+"wolf\vocoder.o"
 "wolf\wifi.o"
 "wolf\wspr.o"
 "wolf\wm8731.o"

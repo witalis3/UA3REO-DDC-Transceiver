@@ -11,6 +11,7 @@
 #include "vad.h"
 #include "trx_manager.h"
 #include "sd.h"
+#include "vocoder.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;								  // audio samples processed in the processor
@@ -70,6 +71,7 @@ void initAudioProcessor(void)
 	InitAudioFilters();
 	DECODER_Init();
 	NeedReinitReverber = true;
+	ADPCM_Init();
 }
 
 // start audio processor for RX
@@ -381,41 +383,27 @@ void processRxAudio(void)
 	float32_t volume_gain_new = volume2rate((float32_t)TRX_Volume / 1023.0f);
 	volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
 	
-	//Volume Gain
-	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
-	{
-		APROC_AudioBuffer_out[i] = (int32_t)((float32_t)APROC_AudioBuffer_out[i] * volume_gain);
-	}
-	
 	//SD card send
 	if(SD_RecordInProcess)
 	{
+		//decimated_block_size_rx1 - 192
 		for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 		{
-			if(SD_RecordBuffer)
+			arm_float_to_q15(&APROC_Audio_Buffer_RX1_I[i], &VOCODER_InBuffer[VOCODER_InBuffer_Index], 1); //left channel
+			VOCODER_InBuffer_Index++;
+			if(VOCODER_InBuffer_Index == SIZE_ADPCM_BLOCK)
 			{
-				SD_workbuffer[SD_RecordBufferIndex] = (APROC_AudioBuffer_out[i * 2] >> 8) & 0xFF;
-				SD_workbuffer[SD_RecordBufferIndex + 1] = (APROC_AudioBuffer_out[i * 2] >> 16) & 0xFF;
-			}
-			else
-			{
-				SD_workbuffer_2[SD_RecordBufferIndex] = (APROC_AudioBuffer_out[i * 2] >> 8) & 0xFF;
-				SD_workbuffer_2[SD_RecordBufferIndex + 1] = (APROC_AudioBuffer_out[i * 2] >> 16) & 0xFF;
-			}
-			SD_RecordBufferIndex += 2;
-			if(SD_RecordBufferIndex >= _MAX_SS)
-			{
-				SD_RecordBufferIndex = 0;
-				SD_RecordBuffer = !SD_RecordBuffer;
-				SD_doCommand(SDCOMM_PROCESS_RECORD, false);
+				VOCODER_InBuffer_Index = 0;
+				VOCODER_Process();
 			}
 		}
-		
 	}
 	
-	//SPI convert
+	//Volume Gain and SPI convert
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
 	{
+		//Gain
+		APROC_AudioBuffer_out[i] = (int32_t)((float32_t)APROC_AudioBuffer_out[i] * volume_gain);
 		//Codec SPI
 		APROC_AudioBuffer_out[i] = convertToSPIBigEndian(APROC_AudioBuffer_out[i]); //for 32bit audio
 	}
