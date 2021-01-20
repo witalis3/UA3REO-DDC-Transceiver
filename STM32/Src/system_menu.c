@@ -1781,8 +1781,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Top(int8_t direction)
 	TRX.FFT_Top += direction;
 	if (TRX.FFT_Top < FFT_MIN + 1)
 		TRX.FFT_Top = FFT_MIN + 1;
-	if (TRX.FFT_Top > 100)
-		TRX.FFT_Top = 100;
+	if (TRX.FFT_Top > FFT_MAX_TOP_SCALE)
+		TRX.FFT_Top = FFT_MAX_TOP_SCALE;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction)

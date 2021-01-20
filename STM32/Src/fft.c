@@ -571,31 +571,38 @@ bool FFT_printFFT(void)
 	arm_max_no_idx_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &maxAmplValue);
 
 	// Auto-calibrate FFT levels
-	maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
-	
-	//DEBUG CW DECODER
-	/*maxValueFFT = maxValueFFT * 0.999999f + maxAmplValue * 0.000001f;
-	if(maxValueFFT < maxAmplValue)
-		maxValueFFT = maxAmplValue;*/
-
-	// minimum-maximum threshold for median
-	if (maxValueFFT < minValue)
-		maxValueFFT = minValue;
-	if (maxValueFFT > maxValue)
-		maxValueFFT = maxValue;
-
-	// Compress peaks
-	float32_t compressTargetValue = (maxValueFFT * FFT_COMPRESS_INTERVAL);
-	float32_t compressSourceInterval = maxAmplValue - compressTargetValue;
-	float32_t compressTargetInterval = maxValueFFT - compressTargetValue;
-	float32_t compressRate = compressTargetInterval / compressSourceInterval;
-	if (!TRX_on_TX() && TRX.FFT_Compressor)
-	{
-		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
-			if (FFTOutput_mean[i] > compressTargetValue)
-				FFTOutput_mean[i] = compressTargetValue + ((FFTOutput_mean[i] - compressTargetValue) * compressRate);
+	if(TRX.FFT_Top == FFT_MAX_TOP_SCALE) //Fit FFT to MAX
+	{ 
+		maxValueFFT = maxValueFFT * 0.95f + maxAmplValue * 0.05f;
+		if(maxValueFFT < maxAmplValue)
+			maxValueFFT = maxAmplValue;
+		minValue = (medianValue * 6.0f);
+		if (maxValueFFT < minValue)
+			maxValueFFT = minValue;
 	}
-
+	else //Fit by median
+	{
+		maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
+		
+		// minimum-maximum threshold for median
+		if (maxValueFFT < minValue)
+			maxValueFFT = minValue;
+		if (maxValueFFT > maxValue)
+			maxValueFFT = maxValue;
+		
+		// Compress peaks
+		float32_t compressTargetValue = (maxValueFFT * FFT_COMPRESS_INTERVAL);
+		float32_t compressSourceInterval = maxAmplValue - compressTargetValue;
+		float32_t compressTargetInterval = maxValueFFT - compressTargetValue;
+		float32_t compressRate = compressTargetInterval / compressSourceInterval;
+		if (!TRX_on_TX() && TRX.FFT_Compressor && TRX.FFT_Top < 50)
+		{
+			for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
+				if (FFTOutput_mean[i] > compressTargetValue)
+					FFTOutput_mean[i] = compressTargetValue + ((FFTOutput_mean[i] - compressTargetValue) * compressRate);
+		}
+	}
+	
 	//limits
 	if (TRX_on_TX())
 		maxValueFFT = maxAmplValue;
