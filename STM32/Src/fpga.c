@@ -479,8 +479,8 @@ static inline void FPGA_fpgadata_getparam(void)
 static inline void FPGA_fpgadata_getiq(void)
 {
 	register int_fast32_t FPGA_fpgadata_in_tmp32 = 0;
-	float32_t* FFTInput_I_current = FFT_buff_current ? (float32_t*)&FFTInput_I_B : (float32_t*)&FFTInput_I_A;
-	float32_t* FFTInput_Q_current = FFT_buff_current ? (float32_t*)&FFTInput_Q_B : (float32_t*)&FFTInput_Q_A;
+	float32_t* FFTInput_I_current = FFT_buff_current ? (float32_t*)&FFTInput_I_A : (float32_t*)&FFTInput_I_B;
+	float32_t* FFTInput_Q_current = FFT_buff_current ? (float32_t*)&FFTInput_Q_A : (float32_t*)&FFTInput_Q_B;
 	float32_t FPGA_fpgadata_in_float32 = 0;
 	FPGA_samples++;
 	FPGA_setBusInput();

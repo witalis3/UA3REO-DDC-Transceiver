@@ -706,8 +706,8 @@ void processTxAudio(void)
 	//RF PowerControl (Audio Level Control) Compressor END
 
 	//Send TX data to FFT
-	float32_t* FFTInput_I_current = FFT_buff_current ? (float32_t*)&FFTInput_I_B : (float32_t*)&FFTInput_I_A;
-	float32_t* FFTInput_Q_current = FFT_buff_current ? (float32_t*)&FFTInput_Q_B : (float32_t*)&FFTInput_Q_A;
+	float32_t* FFTInput_I_current = FFT_buff_current ? (float32_t*)&FFTInput_I_A : (float32_t*)&FFTInput_I_B;
+	float32_t* FFTInput_Q_current = FFT_buff_current ? (float32_t*)&FFTInput_Q_A : (float32_t*)&FFTInput_Q_B;
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 	{
 		FFTInput_I_current[FFT_buff_index] = APROC_Audio_Buffer_TX_I[i];

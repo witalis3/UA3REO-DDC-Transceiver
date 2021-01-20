@@ -274,12 +274,13 @@ void FFT_bufferPrepare(void)
 		return;
 	if(fft_charge_copying)
 		return;
+	
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
 	fft_charge_ready = false;
 	
-	float32_t* FFTInput_I_current = !FFT_buff_current ? (float32_t*)&FFTInput_I_A : (float32_t*)&FFTInput_I_B; //inverted
-	float32_t* FFTInput_Q_current = !FFT_buff_current ? (float32_t*)&FFTInput_Q_A : (float32_t*)&FFTInput_Q_B;
+	float32_t* FFTInput_I_current = FFT_buff_current ? (float32_t*)&FFTInput_I_B : (float32_t*)&FFTInput_I_A; //inverted
+	float32_t* FFTInput_Q_current = FFT_buff_current ? (float32_t*)&FFTInput_Q_B : (float32_t*)&FFTInput_Q_A;
 	
 	//Process DC corrector filter
 	if (!TRX_on_TX())
@@ -326,6 +327,7 @@ void FFT_bufferPrepare(void)
 		}
 		FFT_ChargeBuffer_collected += FFT_HALF_SIZE;
 	}
+	
 	FFT_new_buffer_ready = false;
 	fft_charge_ready = true;
 }
@@ -346,9 +348,9 @@ void FFT_doFFT(void)
 
 	// Get charge buffer
 	fft_charge_copying = true;
-	memcpy(&FFTInput, &FFTInputCharge, sizeof(FFTInput));
+	memcpy(FFTInput, FFTInputCharge, sizeof(FFTInput));
 	if(!TRX.FFT_HiRes)
-		memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
+		memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 	fft_charge_copying = false;
 	
 	//Do windowing
