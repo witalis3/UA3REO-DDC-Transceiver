@@ -471,8 +471,7 @@ void FFT_doFFT(void)
 		TRX.FFT_Averaging = FFT_MAX_MEANS;
 	
 	//Store old FFT for averaging
-	for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
-		FFT_meanBuffer[FFT_meanBuffer_index][i] = FFTInput[i];
+	memcpy(&FFT_meanBuffer[FFT_meanBuffer_index][0], FFTInput, sizeof(float32_t) * LAYOUT->FFT_PRINT_SIZE);
 	fft_meanbuffer_freqs[FFT_meanBuffer_index] = CurrentVFO()->Freq;
 	
 	FFT_meanBuffer_index++;
