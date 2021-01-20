@@ -558,7 +558,7 @@ float32_t current_cw_power = 0.0f;
 static float32_t TRX_generateRiseSignal(float32_t power)
 {
 	if(current_cw_power < power)
-		current_cw_power += power * 0.01f;
+		current_cw_power += power * 0.007f;
 	if(current_cw_power > power)
 		current_cw_power = power;
 	return current_cw_power;
@@ -566,7 +566,7 @@ static float32_t TRX_generateRiseSignal(float32_t power)
 static float32_t TRX_generateFallSignal(float32_t power)
 {
 	if(current_cw_power > 0.0f)
-		current_cw_power -= power * 0.01f;
+		current_cw_power -= power * 0.007f;
 	if(current_cw_power < 0.0f)
 		current_cw_power = 0.0f;
 	return current_cw_power;
