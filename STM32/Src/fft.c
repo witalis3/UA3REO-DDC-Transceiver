@@ -901,8 +901,8 @@ static void FFT_3DPrintFFT(void)
 	for(int32_t wtf_yindex = FFT_3D_SLIDES; wtf_yindex >= 0; wtf_yindex--) //each slides
 	{
 		//calc perspective parameters
-		uint32_t print_y = fftHeight + wtfHeight - cwdecoder_offset - wtf_yindex * FFT_Y_OFFSET;
-		float32_t x_compress = (float32_t)(LAYOUT->FFT_PRINT_SIZE - FFT_X_OFFSET * wtf_yindex) / (float32_t)LAYOUT->FFT_PRINT_SIZE;
+		uint32_t print_y = fftHeight + wtfHeight - cwdecoder_offset - wtf_yindex * FFT_3D_Y_OFFSET;
+		float32_t x_compress = (float32_t)(LAYOUT->FFT_PRINT_SIZE - FFT_3D_X_OFFSET * wtf_yindex) / (float32_t)LAYOUT->FFT_PRINT_SIZE;
 		uint32_t x_left_offset = (uint32_t)roundf(((float32_t)LAYOUT->FFT_PRINT_SIZE - (float32_t)LAYOUT->FFT_PRINT_SIZE * x_compress) / 2.0f);
 		int16_t prev_x = -1;
 		
@@ -922,9 +922,12 @@ static void FFT_3DPrintFFT(void)
 			
 			if(TRX.FFT_3D == 1) //line mode
 			{
-				for(uint16_t h = 0; h < (fftHeight - indexed_wtf_buffer[wtf_yindex][wtf_x]); h++)
-					if((print_bin_height + h) < FFT_AND_WTF_HEIGHT)
-						indexed_3d_fft_buffer[print_bin_height + h][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x] + h;
+				int32_t line_max = (fftHeight - indexed_wtf_buffer[wtf_yindex][wtf_x] - 1);
+				if((print_bin_height + line_max) >= FFT_AND_WTF_HEIGHT)
+					line_max = FFT_AND_WTF_HEIGHT - print_bin_height - 1;
+				
+				for(uint16_t h = 0; h < line_max; h++)
+					indexed_3d_fft_buffer[print_bin_height + h][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x] + h;
 			}
 			if(TRX.FFT_3D == 2) //pixel mode
 				indexed_3d_fft_buffer[print_bin_height][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x];
@@ -936,9 +939,31 @@ static void FFT_3DPrintFFT(void)
 	{
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
+			//bg
 			if (fft_y > (fftHeight - fft_header[fft_x]))
 				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset + fft_y][fft_x] = fft_y;
 		}
+	}
+	
+	//draw contour
+	uint32_t fft_y_prev = 0;
+	for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+	{
+		uint32_t fft_y = fftHeight - fft_header[fft_x];
+		int32_t y_diff = (int32_t)fft_y - (int32_t)fft_y_prev;
+		if(fft_x == 0 || (y_diff <= 1 && y_diff >= -1))
+		{
+			fft_output_buffer[fft_y][fft_x] = fftHeight / 2;
+		}
+		else
+		{
+			for(uint32_t l = 0; l < (abs(y_diff / 2) + 1); l++) //draw line
+			{
+				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset + fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = fftHeight / 2;
+				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset + fft_y + ((y_diff > 0) ? -l : l)][fft_x] = fftHeight / 2;
+			}
+		}
+		fft_y_prev = fft_y;
 	}
 	
 	//do after events

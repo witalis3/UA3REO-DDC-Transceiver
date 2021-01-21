@@ -26,8 +26,8 @@
 #define FFT_LENS_STEP 0.013f																																					// each lens step
 #define FFT_3D_enabled true
 #define FFT_3D_SLIDES 40																																							// 3D FFT parameters
-#define FFT_Y_OFFSET 2
-#define FFT_X_OFFSET 5
+#define FFT_3D_Y_OFFSET 2
+#define FFT_3D_X_OFFSET 5
 #define FFT_DMA_MAX_BLOCK 65000																																				//max block for fft print in oneshot
 #define FFT_MAX_MEANS 5																																								//store old fft data for averaging
 #define FFT_MAX_TOP_SCALE 30																																					//maximum scale parameter
