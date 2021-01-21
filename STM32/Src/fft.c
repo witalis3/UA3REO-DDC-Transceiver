@@ -769,7 +769,7 @@ bool FFT_printFFT(void)
 			}
 			else
 			{
-				for(uint32_t l = 1; l < (abs(y_diff / 2) + 1); l++) //draw line
+				for(uint32_t l = 0; l < (abs(y_diff / 2) + 1); l++) //draw line
 				{
 					fft_output_buffer[fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = palette_fft[fftHeight / 2];
 					fft_output_buffer[fft_y + ((y_diff > 0) ? -l : l)][fft_x] = palette_fft[fftHeight / 2];
