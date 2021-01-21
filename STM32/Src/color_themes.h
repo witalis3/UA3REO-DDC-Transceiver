@@ -57,6 +57,8 @@ typedef const struct
 	const uint16_t FREQ_B_MHZ;
 	const uint16_t FREQ_B_KHZ;
 	const uint16_t FREQ_B_HZ;
+	const uint16_t FREQ_A_INACTIVE;
+	const uint16_t FREQ_B_INACTIVE;
 	const uint16_t STATUS_LABEL_ACTIVE;
 	const uint16_t STATUS_LABEL_INACTIVE;
 	const uint16_t BUTTON_BACK;
@@ -120,9 +122,11 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
 		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
 		//7inch
-		.FREQ_B_MHZ = rgb888torgb565(120, 120, 120),
-		.FREQ_B_KHZ = rgb888torgb565(120, 120, 120),
-		.FREQ_B_HZ = rgb888torgb565(120, 120, 120),
+		.FREQ_B_MHZ = COLOR_WHITE,
+		.FREQ_B_KHZ = COLOR_WHITE,
+		.FREQ_B_HZ = rgb888torgb565(150, 150, 150),
+		.FREQ_A_INACTIVE = rgb888torgb565(100, 100, 100),
+		.FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
 		.STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
 		.STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
 		.BUTTON_BACK = rgb888torgb565(60, 60, 60),
@@ -184,9 +188,11 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
 		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
 		//7inch
-		.FREQ_B_MHZ = rgb888torgb565(120, 120, 120),
-		.FREQ_B_KHZ = rgb888torgb565(120, 120, 120),
-		.FREQ_B_HZ = rgb888torgb565(120, 120, 120),
+		.FREQ_B_MHZ = COLOR_BLACK,
+		.FREQ_B_KHZ = COLOR_BLACK,
+		.FREQ_B_HZ = rgb888torgb565(130, 130, 130),
+		.FREQ_A_INACTIVE = rgb888torgb565(100, 100, 100),
+		.FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
 		.STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
 		.STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
 		.BUTTON_BACK = rgb888torgb565(60, 60, 60),

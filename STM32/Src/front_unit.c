@@ -659,15 +659,16 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 	LCD_UpdateQuery.TopButtons = true;
-	LCD_UpdateQuery.FreqInfo = true;
+	LCD_UpdateQuery.BottomButtons = true;
+	LCD_UpdateQuery.FreqInfoRedraw = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
+	LCD_UpdateQuery.StatusInfoBar = true;
 	NeedSaveSettings = true;
 	NeedReinitAudioFiltersClean = true;
 	NeedReinitAudioFilters = true;
 	resetVAD();
 	FFT_Init();
 	TRX_ScanMode = false;
-	LCD_redraw(false);
 }
 
 void FRONTPANEL_BUTTONHANDLER_TUNE(uint32_t parameter)
@@ -1294,8 +1295,8 @@ void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter)
 	if (band >= BANDS_COUNT)
 		band = 0;
 
-	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
-	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
+	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_A);
+	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_A);
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
@@ -1303,8 +1304,8 @@ void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter)
 	TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 	TRX_AutoGain_Stage = TRX.BANDS_SAVED_SETTINGS[band].AutoGain_Stage;
-	CurrentVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
-	CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+	TRX.VFO_A.DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+	TRX.VFO_A.AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	TRX_Temporary_Stop_BandMap = false;
 	
 	resetVAD();
@@ -1318,10 +1319,10 @@ void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter)
 	if (band >= BANDS_COUNT)
 		band = 0;
 
-	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, SecondaryVFO());
-	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, SecondaryVFO());
-	SecondaryVFO()->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
-	SecondaryVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_B);
+	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_B);
+	TRX.VFO_B.DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+	TRX.VFO_B.AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	TRX_Temporary_Stop_BandMap = false;
 	
 	resetVAD();
@@ -1332,8 +1333,8 @@ void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter)
 void FRONTPANEL_BUTTONHANDLER_SETMODE(uint32_t parameter)
 {
 	int8_t mode = parameter;
-	TRX_setMode((uint8_t)mode, CurrentVFO());
-	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	TRX_setMode((uint8_t)mode, &TRX.VFO_A);
+	int8_t band = getBandFromFreq(TRX.VFO_A.Freq, true);
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
@@ -1345,8 +1346,8 @@ void FRONTPANEL_BUTTONHANDLER_SETMODE(uint32_t parameter)
 void FRONTPANEL_BUTTONHANDLER_SETSECMODE(uint32_t parameter)
 {
 	int8_t mode = parameter;
-	TRX_setMode((uint8_t)mode, SecondaryVFO());
-	int8_t band = getBandFromFreq(SecondaryVFO()->Freq, true);
+	TRX_setMode((uint8_t)mode, &TRX.VFO_B);
+	int8_t band = getBandFromFreq(TRX.VFO_B.Freq, true);
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;

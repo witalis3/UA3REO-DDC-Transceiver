@@ -262,6 +262,15 @@ void FFT_Init(void)
 	memset(&fft_output_buffer, 0x00, sizeof(fft_output_buffer));
 	memset(&indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
 	memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
+	memset(&fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
+	memset(&wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
+	memset(&FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer));
+	memset(&FFTInput_tmp, 0x00, sizeof(FFTInput_tmp));
+	memset(&FFTInput, 0x00, sizeof(FFTInput));
+	memset(&FFTInput_I_A, 0x00, sizeof(FFTInput_I_A));
+	memset(&FFTInput_Q_A, 0x00, sizeof(FFTInput_Q_A));
+	memset(&FFTInput_I_B, 0x00, sizeof(FFTInput_I_B));
+	memset(&FFTInput_Q_B, 0x00, sizeof(FFTInput_Q_B));
 	NeedWTFRedraw = true;
 }
 
