@@ -190,6 +190,7 @@ typedef const struct
 	const uint16_t FFT_CWDECODER_OFFSET;
 	const uint16_t FFT_FFTWTF_POS_Y;
 	const uint16_t FFT_FFTWTF_BOTTOM;
+	const uint16_t FFT_FREQLABELS_HEIGHT;
 	//System menu
 	const uint16_t SYSMENU_X1;
 	const uint16_t SYSMENU_X2;
@@ -233,9 +234,9 @@ typedef const struct
 #if (defined(LAY_800x480))
 	#define LAYOUT_THEMES_COUNT 1
 	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
-	#define MAX_FFT_HEIGHT 170
-	#define MAX_WTF_HEIGHT 200
-	#define FFT_AND_WTF_HEIGHT 300
+	#define MAX_FFT_HEIGHT 165
+	#define MAX_WTF_HEIGHT 192
+	#define FFT_AND_WTF_HEIGHT 290
 #endif
 
 extern const STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT];

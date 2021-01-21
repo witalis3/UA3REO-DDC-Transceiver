@@ -57,6 +57,7 @@ IRAM2 static uint8_t indexed_3d_fft_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZ
 #endif
 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};								 //buffer with fft colors output
 static int32_t grid_lines_pos[20] = {-1};											 //grid lines positions
+static uint32_t grid_lines_freq[20] = {-1};											 //grid lines frequencies
 static int16_t bw_line_start = 0;													 //BW bar params
 static int16_t bw_line_width = 0;													 //BW bar params
 static int16_t bw_line_end = 0;														 //BW bar params
@@ -538,16 +539,16 @@ bool FFT_printFFT(void)
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 		{
 			int32_t pos = -1;
-			if (TRX.FFT_Grid > 0)
-			{
-				if (fft_zoom == 1)
-					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 10000 * 10000) + ((i - 6) * 10000));
-				else
-					pos = getFreqPositionOnFFT((CurrentVFO()->Freq / 5000 * 5000) + ((i - 6) * 5000));
-			}
+			uint32_t grid_freq = 0;
+			if (fft_zoom == 1)
+				grid_freq = (CurrentVFO()->Freq / 10000 * 10000) + ((i - 6) * 10000);
+			else
+				grid_freq = (CurrentVFO()->Freq / 5000 * 5000) + ((i - 6) * 5000);
+			pos = getFreqPositionOnFFT(grid_freq);
 			if (pos >= 0)
 			{
 				grid_lines_pos[index] = pos;
+				grid_lines_freq[index] = grid_freq;
 				index++;
 			}
 		}
@@ -883,11 +884,36 @@ void FFT_afterPrintFFT(void)
 		}
 	}
 
-	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y - 4, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y - 3);
+	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT - 4, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y - 3);
 	for (uint8_t r = 0; r < 2; r++)
 		for (uint32_t pixel_counter = 0; pixel_counter < LAYOUT->FFT_PRINT_SIZE; pixel_counter++)
 			LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
 
+	// Print FFT frequency labels
+	if(LAYOUT->FFT_FREQLABELS_HEIGHT > 0 && lastWTFFreq != currentFFTFreq)
+	{
+		bool first = true;
+		char str[32] = {0};
+		for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
+			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE)
+			{
+				if(first)
+				{
+					LCDDriver_Fill_RectWH(0, LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT, grid_lines_pos[grid_line_index], LAYOUT->FFT_FREQLABELS_HEIGHT - 1, BG_COLOR);
+					first = false;
+				}
+				if(grid_lines_pos[grid_line_index + 1] > 0)
+					LCDDriver_Fill_RectWH(grid_lines_pos[grid_line_index], LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT, grid_lines_pos[grid_line_index + 1] - grid_lines_pos[grid_line_index], LAYOUT->FFT_FREQLABELS_HEIGHT - 1, BG_COLOR);
+				else
+					LCDDriver_Fill_RectWH(grid_lines_pos[grid_line_index], LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT, LAYOUT->FFT_PRINT_SIZE - grid_lines_pos[grid_line_index], LAYOUT->FFT_FREQLABELS_HEIGHT - 1, BG_COLOR);
+				uint32_t freq = grid_lines_freq[grid_line_index] / 1000;
+				float32_t freq2 = (float32_t)freq / 1000.f;
+				sprintf(str, "%.3f", freq2);
+				int32_t x = grid_lines_pos[grid_line_index] - (strlen(str) * 6 / 2);
+				LCDDriver_printText(str, x, LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT, FG_COLOR, BG_COLOR, 1);
+			}
+	}
+	
 	// display the waterfall using DMA
 	print_wtf_yindex = 0;
 	FFT_printWaterfallDMA();
