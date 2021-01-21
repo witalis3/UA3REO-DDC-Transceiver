@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include "settings.h"
 
+#define TRX_SLOW_SETFREQ_MIN_STEPSIZE 100 //step in hz for slowly touchpad tuning
+
 extern void TRX_Init(void);
 extern void TRX_setFrequency(uint32_t _freq, VFO *vfo);
 extern void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo); //for WSPR and other
@@ -20,6 +22,8 @@ extern float32_t TRX_getSTM32H743Temperature(void);
 extern float32_t TRX_getSTM32H743vref(void);
 extern void TRX_TemporaryMute(void);
 extern void TRX_ProcessScanMode(void);
+extern void TRX_setFrequencySlowly(uint32_t target_freq);
+extern void TRX_setFrequencySlowly_Process(void);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;

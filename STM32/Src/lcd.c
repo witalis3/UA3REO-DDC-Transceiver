@@ -1129,7 +1129,7 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		//frequency tap
 		uint32_t newfreq = getFreqOnFFTPosition(x);
 		newfreq = newfreq / 500 * 500;
-		TRX_setFrequency(newfreq, CurrentVFO());
+		TRX_setFrequencySlowly(newfreq);
 		LCD_UpdateQuery.FreqInfo = true;
 		return;
 	}

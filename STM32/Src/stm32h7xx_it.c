@@ -588,6 +588,9 @@ void TIM6_DAC_IRQHandler(void)
   //Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
   RF_UNIT_ProcessSensors();
 
+	//Process touchpad frequency changing
+	TRX_setFrequencySlowly_Process();
+	
   // emulate PTT over CAT/Software
   if (TRX_ptt_soft != TRX_old_ptt_soft)
     TRX_ptt_change();
