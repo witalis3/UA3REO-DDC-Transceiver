@@ -235,12 +235,8 @@ void FFT_Init(void)
 		fft_zoom = TRX.FFT_ZoomCW;
 	if (fft_zoom > 1)
 	{
-		//IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[fft_zoom];
-		//IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[fft_zoom];
 		arm_biquad_cascade_df2T_init_f32(&IIR_biquad_Zoom_FFT_I, ZOOMFFT_DECIM_STAGES_IIR, mag_coeffs[fft_zoom], IIR_biquad_Zoom_FFT_I.pState);
 		arm_biquad_cascade_df2T_init_f32(&IIR_biquad_Zoom_FFT_Q, ZOOMFFT_DECIM_STAGES_IIR, mag_coeffs[fft_zoom], IIR_biquad_Zoom_FFT_Q.pState);
-		//memset(IIR_biquad_Zoom_FFT_I.pState, 0x00, sizeof(float32_t) * ZOOMFFT_DECIM_STAGES_IIR * 2);
-		//memset(IIR_biquad_Zoom_FFT_Q.pState, 0x00, sizeof(float32_t) * ZOOMFFT_DECIM_STAGES_IIR * 2);
 		arm_fir_decimate_init_f32(&DECIMATE_ZOOM_FFT_I,
 								  FirZoomFFTDecimate[fft_zoom].numTaps,
 								  fft_zoom, // Decimation factor
@@ -890,7 +886,7 @@ void FFT_afterPrintFFT(void)
 			LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
 
 	// Print FFT frequency labels
-	if(LAYOUT->FFT_FREQLABELS_HEIGHT > 0 && lastWTFFreq != currentFFTFreq)
+	if(LAYOUT->FFT_FREQLABELS_HEIGHT > 0 && (lastWTFFreq != currentFFTFreq || NeedWTFRedraw))
 	{
 		bool first = true;
 		char str[32] = {0};
