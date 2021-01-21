@@ -662,7 +662,7 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	LCD_UpdateQuery.BottomButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
-	LCD_UpdateQuery.StatusInfoBar = true;
+	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	NeedSaveSettings = true;
 	NeedReinitAudioFiltersClean = true;
 	NeedReinitAudioFilters = true;
