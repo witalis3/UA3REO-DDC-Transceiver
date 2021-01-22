@@ -306,6 +306,13 @@ static void LCD_displayFreqInfo(bool redraw)
 
 static void LCD_drawSMeter(void)
 {
+	//analog version
+	if(LAYOUT->STATUS_SMETER_ANALOG)
+	{
+		LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_BAR_X_OFFSET - 2, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET, &image_data_meter, COLOR_BLACK, BG_COLOR);
+		return;
+	}
+	
 	// Labels on the scale
 	const float32_t step = LAYOUT->STATUS_SMETER_WIDTH / 15.0f;
 	LCDDriver_printText("S", LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)(step * 0.0f) - 2, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, COLOR->STATUS_BAR_LABELS, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
@@ -358,7 +365,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	{
 		LCDDriver_Fill_RectWH(0, LAYOUT->STATUS_Y_OFFSET, LCD_WIDTH, LAYOUT->STATUS_HEIGHT, BG_COLOR);
 		if(LAYOUT->STATUS_SMETER_ANALOG)
-			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET - 2, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET, LAYOUT->STATUS_SMETER_WIDTH + 8, LAYOUT->STATUS_SMETER_ANALOG_HEIGHT, BG_COLOR);
+			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET - 2, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET, LAYOUT->STATUS_SMETER_WIDTH + 12, LAYOUT->STATUS_SMETER_ANALOG_HEIGHT, BG_COLOR);
 	}
 
 	if (TRX_on_TX())
@@ -563,7 +570,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 		float32_t s_width = LCD_last_s_meter * 0.75f + TRX_s_meter * 0.25f; // smooth the movement of the S-meter
 
-		if (redraw || (LCD_last_s_meter != s_width))
+		//digital s-meter version
+		if ((redraw || (LCD_last_s_meter != s_width)) && !LAYOUT->STATUS_SMETER_ANALOG)
 		{
 			//clear old bar
 			if ((LCD_last_s_meter - s_width) > 0)
@@ -595,7 +603,17 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 			LCD_last_s_meter = s_width;
 		}
+		
+		//analog s-meter version
+		if ((redraw || (LCD_last_s_meter != s_width)) && LAYOUT->STATUS_SMETER_ANALOG)
+		{
+			// redraw s-meter gui and line
+			LCD_drawSMeter();
+			LCDDriver_drawLine(LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_SMETER_WIDTH / 2, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_SMETER_ANALOG_HEIGHT, LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 10, COLOR->STATUS_SMETER_STRIPE);
 
+			LCD_last_s_meter = s_width;
+		}
+		
 		//print dBm value
 		sprintf(ctmp, "%ddBm", TRX_RX_dBm);
 		addSymbols(ctmp, ctmp, 7, " ", true);
