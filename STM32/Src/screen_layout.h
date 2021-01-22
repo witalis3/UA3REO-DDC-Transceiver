@@ -60,6 +60,7 @@ typedef const struct
 	const uint16_t STATUS_WIFI_ICON_X;
 	const uint16_t STATUS_WIFI_ICON_Y;
 	//Frequency output
+	const uint16_t FREQ_A_LEFT;
 	const uint16_t FREQ_X_OFFSET_100;
 	const uint16_t FREQ_X_OFFSET_10;
 	const uint16_t FREQ_X_OFFSET_1;
@@ -123,6 +124,9 @@ typedef const struct
 	const uint16_t STATUS_ANT_BLOCK_HEIGHT;
 	const uint16_t STATUS_TX_LABELS_OFFSET_X;
 	const uint16_t STATUS_TX_LABELS_MARGIN_X;
+	bool STATUS_SMETER_ANALOG;
+	const int16_t STATUS_SMETER_TOP_OFFSET;
+	const uint16_t STATUS_SMETER_ANALOG_HEIGHT;
 	const uint16_t STATUS_SMETER_WIDTH;
 	const uint16_t STATUS_SMETER_MARKER_HEIGHT;
 	const uint16_t STATUS_PMETER_WIDTH;
@@ -232,7 +236,7 @@ typedef const struct
 	#define FFT_AND_WTF_HEIGHT 152
 #endif
 #if (defined(LAY_800x480))
-	#define LAYOUT_THEMES_COUNT 1
+	#define LAYOUT_THEMES_COUNT 2
 	#define MAX_FFT_PRINT_SIZE LCD_WIDTH
 	#define MAX_FFT_HEIGHT 165
 	#define MAX_WTF_HEIGHT 192
