@@ -105,7 +105,6 @@ bool i2c_get_ack(I2C_DEVICE *dev)
 	SCK_SET;
 	I2C_DELAY
 	I2C_DELAY
-	
 
 	while (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
 	{

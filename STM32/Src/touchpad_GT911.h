@@ -14,17 +14,17 @@
 
 /* Commands for GT911_COMMAND_REG */
 //0: read coordinate state
-#define GOODIX_CMD_READ         0x00
+#define GOODIX_CMD_READ 0x00
 // 1: difference value original value
-#define GOODIX_CMD_DIFFVAL      0x01
+#define GOODIX_CMD_DIFFVAL 0x01
 // 2: software reset
-#define GOODIX_CMD_SOFTRESET    0x02
+#define GOODIX_CMD_SOFTRESET 0x02
 // 3: Baseline update
-#define GOODIX_CMD_BASEUPDATE   0x03
+#define GOODIX_CMD_BASEUPDATE 0x03
 // 4: Benchmark calibration
-#define GOODIX_CMD_CALIBRATE    0x04
+#define GOODIX_CMD_CALIBRATE 0x04
 // 5: Off screen (send other invalid)
-#define GOODIX_CMD_SCREEN_OFF   0x05
+#define GOODIX_CMD_SCREEN_OFF 0x05
 
 typedef struct
 {

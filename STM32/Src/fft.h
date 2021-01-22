@@ -8,29 +8,29 @@
 #include "wm8731.h"
 #include "screen_layout.h"
 
-#define FFT_SIZE 1024                                                                                 // specify the size of the calculated FFT
-#define FFT_USEFUL_SIZE 960                                                                           // size after FFT cropping
-#define FFT_HALF_SIZE (FFT_SIZE / 2)     
-#define FFT_DOUBLE_SIZE_BUFFER (FFT_SIZE * 2)                                                         // Buffer size for FFT calculation
-#define FFT_MIN ((float32_t)TRX.FFT_Top * 0.5f)                                                       // MIN threshold of FFT signal
-#define FFT_TARGET ((float32_t)TRX.FFT_Top)                                                           // average threshold of the FFT signal
-#define FFT_COMPRESS_INTERVAL 0.9f                                                                    // compress interval of the FFT signal
-#define FFT_MAX ((float32_t)TRX.FFT_Top * 1.5f)                                                       // MAX FFT signal threshold
-#define FFT_STEP_COEFF 10.0f                                                                          // step coefficient for auto-calibration of the FFT signal (more - slower)
+#define FFT_SIZE 1024       // specify the size of the calculated FFT
+#define FFT_USEFUL_SIZE 960 // size after FFT cropping
+#define FFT_HALF_SIZE (FFT_SIZE / 2)
+#define FFT_DOUBLE_SIZE_BUFFER (FFT_SIZE * 2)                                                                                                              // Buffer size for FFT calculation
+#define FFT_MIN ((float32_t)TRX.FFT_Top * 0.5f)                                                                                                            // MIN threshold of FFT signal
+#define FFT_TARGET ((float32_t)TRX.FFT_Top)                                                                                                                // average threshold of the FFT signal
+#define FFT_COMPRESS_INTERVAL 0.9f                                                                                                                         // compress interval of the FFT signal
+#define FFT_MAX ((float32_t)TRX.FFT_Top * 1.5f)                                                                                                            // MAX FFT signal threshold
+#define FFT_STEP_COEFF 10.0f                                                                                                                               // step coefficient for auto-calibration of the FFT signal (more - slower)
 #define FFT_HZ_IN_PIXEL (float32_t)((float32_t)IQ_SAMPLERATE * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / (float32_t)LAYOUT->FFT_PRINT_SIZE)     // hertz per FFT pixel RX
 #define FFT_TX_HZ_IN_PIXEL (float32_t)((float32_t)TRX_SAMPLERATE * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / (float32_t)LAYOUT->FFT_PRINT_SIZE) // hertz per FFT pixel TX
-#define FFT_BW_BRIGHTNESS 10                                                                          // pixel brightness on bw bar
-#define FFT_SCALE_LINES_BRIGHTNESS 0.4f                                                               // pixel brightness on scale lines
-#define FFT_MAX_GRID_NUMBER 13																																				// max grid lines
-#define FFT_LENS_STEP_START 0.4f																																			// start lens step
-#define FFT_LENS_STEP 0.013f																																					// each lens step
+#define FFT_BW_BRIGHTNESS 10                                                                                                                               // pixel brightness on bw bar
+#define FFT_SCALE_LINES_BRIGHTNESS 0.4f                                                                                                                    // pixel brightness on scale lines
+#define FFT_MAX_GRID_NUMBER 13                                                                                                                             // max grid lines
+#define FFT_LENS_STEP_START 0.4f                                                                                                                           // start lens step
+#define FFT_LENS_STEP 0.013f                                                                                                                               // each lens step
 #define FFT_3D_enabled true
-#define FFT_3D_SLIDES 40																																							// 3D FFT parameters
+#define FFT_3D_SLIDES 40 // 3D FFT parameters
 #define FFT_3D_Y_OFFSET 2
 #define FFT_3D_X_OFFSET 5
-#define FFT_DMA_MAX_BLOCK 65000																																				//max block for fft print in oneshot
-#define FFT_MAX_MEANS 5																																								//store old fft data for averaging
-#define FFT_MAX_TOP_SCALE 30																																					//maximum scale parameter
+#define FFT_DMA_MAX_BLOCK 65000 //max block for fft print in oneshot
+#define FFT_MAX_MEANS 5         //store old fft data for averaging
+#define FFT_MAX_TOP_SCALE 30    //maximum scale parameter
 
 #define GET_FFTHeight ((TRX.FFT_Height == 1) ? LAYOUT->FFT_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->FFT_HEIGHT_STYLE2 : LAYOUT->FFT_HEIGHT_STYLE3))
 #define GET_WTFHeight ((TRX.FFT_Height == 1) ? LAYOUT->WTF_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2 : LAYOUT->WTF_HEIGHT_STYLE3))
@@ -53,9 +53,9 @@ extern bool NeedWTFRedraw;
 
 // Public methods
 extern void FFT_Init(void);                              // FFT initialization
-extern void FFT_PreInit(void);													 // FFT precalculation
+extern void FFT_PreInit(void);                           // FFT precalculation
 extern void FFT_Reset(void);                             // reset FFT
-extern void FFT_bufferPrepare(void);										 // FFT Buffer process
+extern void FFT_bufferPrepare(void);                     // FFT Buffer process
 extern void FFT_doFFT(void);                             // FFT calculation
 extern bool FFT_printFFT(void);                          // FFT output
 extern void FFT_afterPrintFFT(void);                     // FFT output after callback

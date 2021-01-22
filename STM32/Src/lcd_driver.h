@@ -83,8 +83,8 @@ typedef struct
 #define rgb888torgb565(r, g, b) ((uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3)))
 
 extern uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
-extern uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);		  //mix two colors with opacity
-	
+extern uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);		   //mix two colors with opacity
+
 extern void LCDDriver_SendData(uint16_t data);
 extern uint16_t LCDDriver_readReg(uint16_t reg);
 extern void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);

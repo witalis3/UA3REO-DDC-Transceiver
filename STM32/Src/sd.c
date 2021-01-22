@@ -51,7 +51,7 @@ void SD_doCommand(SD_COMMAND command, bool force)
 {
 	if (SD_Mounted)
 	{
-		if(SD_CommandInProcess && !force)
+		if (SD_CommandInProcess && !force)
 		{
 			SD_underrun = true;
 		}
@@ -63,7 +63,7 @@ void SD_doCommand(SD_COMMAND command, bool force)
 	}
 	else if (!SD_Mounted)
 	{
-		if(LCD_systemMenuOpened)
+		if (LCD_systemMenuOpened)
 			LCD_showInfo("SD card not found", true);
 		else
 			LCD_showTooltip("SD card not found");
@@ -124,10 +124,10 @@ void SD_Process(void)
 			break;
 		case SDCOMM_START_RECORD:
 			SDCOMM_CREATE_RECORD_FILE();
-		break;
+			break;
 		case SDCOMM_PROCESS_RECORD:
 			SDCOMM_WRITE_PACKET_RECORD_FILE();
-		break;
+			break;
 		}
 		SD_CommandInProcess = false;
 		SD_currentCommand = SDCOMM_IDLE;
@@ -148,34 +148,34 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 		memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		WAV_header wav_hdr = {0};
 		// RIFF header
-		wav_hdr.riffsig		= 0x46464952;
-		wav_hdr.filesize		= sizeof(wav_hdr);
-		wav_hdr.wavesig		= 0x45564157;
+		wav_hdr.riffsig = 0x46464952;
+		wav_hdr.filesize = sizeof(wav_hdr);
+		wav_hdr.wavesig = 0x45564157;
 
 		// format chunk
-		wav_hdr.fmtsig		= 0x20746D66;
+		wav_hdr.fmtsig = 0x20746D66;
 		//wav_hdr.fmtsize		= 16;  //PCM
-		wav_hdr.fmtsize		= 0x14;  //IMA-ADPCM
+		wav_hdr.fmtsize = 0x14; //IMA-ADPCM
 		//wav_hdr.type			= 1; //PCM
-		wav_hdr.type			= 0x11; //IMA-ADPCM
-		wav_hdr.nch			= 1; //Mono
-		wav_hdr.freq			= 48000;
+		wav_hdr.type = 0x11; //IMA-ADPCM
+		wav_hdr.nch = 1;	 //Mono
+		wav_hdr.freq = 48000;
 		//wav_hdr.rate			= 96000; //PCM 16bit
-		wav_hdr.rate			= (wav_hdr.freq * wav_hdr.nch * 256 / 505); //IMA-ADPCM byte rate, 48000 * Nch * 256 / 505
+		wav_hdr.rate = (wav_hdr.freq * wav_hdr.nch * 256 / 505); //IMA-ADPCM byte rate, 48000 * Nch * 256 / 505
 		//wav_hdr.block			= 2; //PCM
-		wav_hdr.block			= 256; //IMA-ADPCM block align, mono 256, stereo 512 */
+		wav_hdr.block = 256; //IMA-ADPCM block align, mono 256, stereo 512 */
 		//wav_hdr.bits			= 16; //PCM
-		wav_hdr.bits			= 4; //IMA-ADPCM
+		wav_hdr.bits = 4;			  //IMA-ADPCM
 		wav_hdr.bytes_extra_data = 2; //IMA-ADPCM bytes extra data
-		wav_hdr.extra_data = 505; //IMA-ADPCM extra data
+		wav_hdr.extra_data = 505;	  //IMA-ADPCM extra data
 
 		// data chunk
-		wav_hdr.datasig		= 0x61746164;
-		wav_hdr.datasize		= 1000000;
-		
+		wav_hdr.datasig = 0x61746164;
+		wav_hdr.datasize = 1000000;
+
 		uint32_t byteswritten;
 		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
-		
+
 		SD_RecordInProcess = true;
 		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_showTooltip("Start recording");
@@ -196,7 +196,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 	//write to SD
 	uint32_t byteswritten;
 	FRESULT res;
-	if(SD_workbuffer_current)
+	if (SD_workbuffer_current)
 		res = f_write(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&byteswritten);
 	else
 		res = f_write(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&byteswritten);
@@ -208,9 +208,9 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 		LCD_showTooltip("SD error");
 		return false;
 	}
-	
+
 	//stop record
-	if(SD_NeedStopRecord)
+	if (SD_NeedStopRecord)
 	{
 		SD_RecordInProcess = false;
 		LCD_UpdateQuery.StatusInfoBar = true;
@@ -1306,12 +1306,12 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token)
 	if (token != 0xFD)
 	{ /* Send data if token is other than StopTran */
 		//for (cnt = 0; cnt < 512; cnt++)
-			//SPI_SendByte(buff[cnt]);
+		//SPI_SendByte(buff[cnt]);
 
 		memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
 		if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
 			sendToDebug_strln("SD SPI Err");
-		
+
 		SPI_Release();
 		SPI_Release();
 		result = SPI_ReceiveByte();
@@ -1387,7 +1387,7 @@ uint8_t sd_ini(void)
 			{
 				sdinfo.type = CT_MMC;
 				cmd = CMD1; // MMCv3
-							//sendToDebug_strln("MMCv3");
+					//sendToDebug_strln("MMCv3");
 			}
 			for (tmr = 25000; tmr && SD_cmd(cmd, 0); tmr--)
 				;								 // Wait for leaving idle state

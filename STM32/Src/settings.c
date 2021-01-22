@@ -172,7 +172,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Zoom = 1;	// approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #else
-		TRX.FFT_Zoom = 2;	 // approximation of the FFT spectrum
+		TRX.FFT_Zoom = 2;	// approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
 		TRX.AutoGain = false;	  // auto-control preamp and attenuator
@@ -180,37 +180,37 @@ void LoadSettings(bool clear)
 		TRX.InputType_MIC = true; // type of input to transfer
 		TRX.InputType_LINE = false;
 		TRX.InputType_USB = false;
-		TRX.CW_LPF_Filter = 1000;					// default value of CW filter width
-		TRX.CW_HPF_Filter = 0;						// default value of CW filter width
-		TRX.SSB_LPF_Filter = 2700;					// default value of SSB filter width
-		TRX.SSB_HPF_Filter = 300;					// default value of SSB filter width
-		TRX.AM_LPF_Filter = 4000;					// default value of AM filter width
-		TRX.FM_LPF_Filter = 15000;					// default value of the FM filter width
-		TRX.RF_Power = 20;							//output power (%)
-		TRX.RX_AGC_SSB_speed = 10;					// AGC receive rate on SSB
-		TRX.RX_AGC_CW_speed = 1;					// AGC receive rate on CW
-		TRX.TX_AGC_speed = 3;						// AGC transfer rate
-		TRX.BandMapEnabled = true;					// automatic change of mode according to the range map
-		TRX.FFT_Enabled = true;						// use FFT spectrum
-		TRX.CW_GENERATOR_SHIFT_HZ = 500;			// LO offset in CW mode
-		TRX.CW_Key_timeout = 200;					// time of releasing transmission after the last character on the key
-		TRX.FFT_Averaging = 4;						// averaging the FFT to make it smoother
-		TRX.WIFI_Enabled = true;					// activate WiFi
-		strcpy(TRX.WIFI_AP1, "WIFI-AP");				// WiFi hotspot
+		TRX.CW_LPF_Filter = 1000;					 // default value of CW filter width
+		TRX.CW_HPF_Filter = 0;						 // default value of CW filter width
+		TRX.SSB_LPF_Filter = 2700;					 // default value of SSB filter width
+		TRX.SSB_HPF_Filter = 300;					 // default value of SSB filter width
+		TRX.AM_LPF_Filter = 4000;					 // default value of AM filter width
+		TRX.FM_LPF_Filter = 15000;					 // default value of the FM filter width
+		TRX.RF_Power = 20;							 //output power (%)
+		TRX.RX_AGC_SSB_speed = 10;					 // AGC receive rate on SSB
+		TRX.RX_AGC_CW_speed = 1;					 // AGC receive rate on CW
+		TRX.TX_AGC_speed = 3;						 // AGC transfer rate
+		TRX.BandMapEnabled = true;					 // automatic change of mode according to the range map
+		TRX.FFT_Enabled = true;						 // use FFT spectrum
+		TRX.CW_GENERATOR_SHIFT_HZ = 500;			 // LO offset in CW mode
+		TRX.CW_Key_timeout = 200;					 // time of releasing transmission after the last character on the key
+		TRX.FFT_Averaging = 4;						 // averaging the FFT to make it smoother
+		TRX.WIFI_Enabled = true;					 // activate WiFi
+		strcpy(TRX.WIFI_AP1, "WIFI-AP");			 // WiFi hotspot
 		strcpy(TRX.WIFI_PASSWORD1, "WIFI-PASSWORD"); // password to the WiFi point 1
-		strcpy(TRX.WIFI_AP2, "WIFI-AP");				// WiFi hotspot
+		strcpy(TRX.WIFI_AP2, "WIFI-AP");			 // WiFi hotspot
 		strcpy(TRX.WIFI_PASSWORD2, "WIFI-PASSWORD"); // password to the WiFi point 2
-		strcpy(TRX.WIFI_AP3, "WIFI-AP");				// WiFi hotspot
+		strcpy(TRX.WIFI_AP3, "WIFI-AP");			 // WiFi hotspot
 		strcpy(TRX.WIFI_PASSWORD3, "WIFI-PASSWORD"); // password to the WiFi point 3
-		TRX.WIFI_TIMEZONE = 3;						// time zone (for time synchronization)
-		TRX.SPEC_Begin = 1000;						// start spectrum analyzer range
-		TRX.SPEC_End = 30000;						// end of spectrum analyzer range
-		TRX.SPEC_TopDBM = -60;						// chart thresholds
-		TRX.SPEC_BottomDBM = -130;					// chart thresholds
-		TRX.CW_SelfHear = true;						// self-control CW
-		TRX.ADC_RAND = true;						// ADC encryption (xor randomizer)
-		TRX.ADC_SHDN = false;						// ADC disable
-		TRX.ADC_DITH = false;						// ADC dither
+		TRX.WIFI_TIMEZONE = 3;						 // time zone (for time synchronization)
+		TRX.SPEC_Begin = 1000;						 // start spectrum analyzer range
+		TRX.SPEC_End = 30000;						 // end of spectrum analyzer range
+		TRX.SPEC_TopDBM = -60;						 // chart thresholds
+		TRX.SPEC_BottomDBM = -130;					 // chart thresholds
+		TRX.CW_SelfHear = true;						 // self-control CW
+		TRX.ADC_RAND = true;						 // ADC encryption (xor randomizer)
+		TRX.ADC_SHDN = false;						 // ADC disable
+		TRX.ADC_DITH = false;						 // ADC dither
 		TRX.FFT_Window = 1;
 		TRX.Locked = false;				  // Lock control
 		TRX.CLAR = false;				  // Split frequency mode (receive one VFO, transmit another)
@@ -221,15 +221,15 @@ void LoadSettings(bool clear)
 		TRX.Debug_Console = false;		  // Debug output to DEBUG / UART port
 		TRX.Dual_RX = false;			  //Dual RX feature
 		TRX.Dual_RX_Type = VFO_A_PLUS_B;  // dual receiver mode
-		TRX.FFT_Style = 1;					// FFT style
+		TRX.FFT_Style = 1;				  // FFT style
 		TRX.FFT_Color = 1;				  // FFT display color
 		TRX.FFT_Height = 2;				  // FFT display height
 		TRX.FFT_Grid = 1;				  // FFT grid style
-		TRX.FFT_Lens = false;			//FFT lens effect
-		TRX.FFT_3D = 0;						//FFT 3D mode
-		TRX.FFT_HiRes = true;		//FFT High resolution
-		TRX.FFT_Top = 8;				//Threshold of FFT autocalibrate
-		TRX.WTF_Moving = true;		//move WTF with frequency encoder
+		TRX.FFT_Lens = false;			  //FFT lens effect
+		TRX.FFT_3D = 0;					  //FFT 3D mode
+		TRX.FFT_HiRes = true;			  //FFT High resolution
+		TRX.FFT_Top = 8;				  //Threshold of FFT autocalibrate
+		TRX.WTF_Moving = true;			  //move WTF with frequency encoder
 		TRX.ShiftEnabled = false;		  // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 1000;		  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
 		TRX.DNR_SNR_THRESHOLD = 50;		  // Digital noise reduction level
@@ -275,7 +275,7 @@ void LoadSettings(bool clear)
 		TRX.WSPR_BANDS_10 = true;
 		TRX.WSPR_BANDS_6 = false;
 		TRX.WSPR_BANDS_2 = false;
-		for(uint8_t i = 0; i < FUNCBUTTONS_COUNT ; i++)
+		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)
 			TRX.FuncButtons[i] = i;
 		TRX.LCD_Brightness = 60; //LCD Brightness
 
@@ -327,12 +327,12 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TXCICFIR_GAINER_val = 42;	  // Offset from the TX-CIC output of the compensator
 		CALIBRATE.DAC_GAINER_val = 26;		  // DAC shift
 		// Calibrate the maximum output power for each band
-		CALIBRATE.rf_out_power_up2mhz = 29; //160m - 7w
-		CALIBRATE.rf_out_power_up5mhz = 27; //80m - 7w
-		CALIBRATE.rf_out_power_up15mhz = 26; //40m - 7w, 30m - 7w, 20m - 8w
-		CALIBRATE.rf_out_power_up30mhz = 24; //17m - 7w, 15m - 7w, 12m - 7w, 10m - 8w
-		CALIBRATE.rf_out_power_up60mhz = 13; //6m - 7w
-		CALIBRATE.rf_out_power_vhf = 100; //2m - 5.5w
+		CALIBRATE.rf_out_power_up2mhz = 29;		   //160m - 7w
+		CALIBRATE.rf_out_power_up5mhz = 27;		   //80m - 7w
+		CALIBRATE.rf_out_power_up15mhz = 26;	   //40m - 7w, 30m - 7w, 20m - 8w
+		CALIBRATE.rf_out_power_up30mhz = 24;	   //17m - 7w, 15m - 7w, 12m - 7w, 10m - 8w
+		CALIBRATE.rf_out_power_up60mhz = 13;	   //6m - 7w
+		CALIBRATE.rf_out_power_vhf = 100;		   //2m - 5.5w
 		CALIBRATE.smeter_calibration = 10;		   // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off)
 		CALIBRATE.adc_offset = 0;				   // Calibrate the offset at the ADC input (DC)
 												   // Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
@@ -504,7 +504,7 @@ static bool EEPROM_Sector_Erase(uint8_t sector, bool force)
 
 	SPI_Transmit(&Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Write Enable Command
 	SPI_Transmit(&Sector_Erase, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);  // Erase Command
-	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false);	   // Write Address ( The first address of flash module is 0x00000000 )
+	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false);		  // Write Address ( The first address of flash module is 0x00000000 )
 	EEPROM_WaitWrite();
 
 	SPI_process = false;
@@ -538,9 +538,9 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		if (bsize > page_size)
 			bsize = page_size;
 
-		SPI_Transmit(&Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false);									 // Write Enable Command
-		SPI_Transmit(&Page_Program, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);									 // Write Command
-		SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);											 // Write Address ( The first address of flash module is 0x00000000 )
+		SPI_Transmit(&Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false);									// Write Enable Command
+		SPI_Transmit(&Page_Program, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);									// Write Command
+		SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);											// Write Address ( The first address of flash module is 0x00000000 )
 		SPI_Transmit((uint8_t *)(write_clone + page_size * page), NULL, bsize, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Write Data
 		EEPROM_WaitWrite();
 	}
@@ -585,7 +585,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		return true;
 	}
 
-	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);					// Write Address
+	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);				   // Write Address
 	SPI_Transmit(NULL, (uint8_t *)(Buffer), size, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Read
 
 	//verify
@@ -614,7 +614,7 @@ static void EEPROM_WaitWrite(void)
 	{
 		tryes++;
 		SPI_Transmit(&Get_Status, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false); // Get Status command
-		SPI_Transmit(NULL, &status, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false);	// Read data
+		SPI_Transmit(NULL, &status, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false);	   // Read data
 		if ((status & 0x01) == 0x01)
 			HAL_Delay(1);
 	} while ((status & 0x01) == 0x01 && (tryes < 200));

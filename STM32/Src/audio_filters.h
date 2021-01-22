@@ -129,8 +129,8 @@ extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_I;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_Q;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_I;
 extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_Q;
-extern volatile bool NeedReinitNotch;		 // need to reinitialize the manual Notch filter
-extern volatile bool NeedReinitAudioFilters; // need to reinitialize the Audio filters
+extern volatile bool NeedReinitNotch;			  // need to reinitialize the manual Notch filter
+extern volatile bool NeedReinitAudioFilters;	  // need to reinitialize the Audio filters
 extern volatile bool NeedReinitAudioFiltersClean; //also clean state
 extern const uint32_t AUTIO_FILTERS_HPF_CW_LIST[CW_HPF_COUNT];
 extern const uint32_t AUTIO_FILTERS_HPF_SSB_LIST[SSB_HPF_COUNT];

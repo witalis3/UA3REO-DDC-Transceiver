@@ -64,7 +64,7 @@ void CWDecoder_Init(void)
 	// decimator
 	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState, DECODER_PACKET_SIZE);
 	//Blackman-Harris window function
-	for (uint_fast16_t i = 0; i < CWDECODER_FFT_SAMPLES; i ++)
+	for (uint_fast16_t i = 0; i < CWDECODER_FFT_SAMPLES; i++)
 		CWDEC_window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) + 0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) - 0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f));
 }
 
@@ -86,7 +86,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 				CWDEC_FFTBufferCharge[i] = CWDEC_FFTBufferCharge[(i + CWDECODER_ZOOMED_SAMPLES)];
 			else // Add new data to the FFT buffer for calculation
 				CWDEC_FFTBufferCharge[i] = CWDEC_InputBuffer[i - (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)];
-			
+
 			CWDEC_FFTBuffer[i * 2] = CWDEC_window_multipliers[i] * CWDEC_FFTBufferCharge[i]; // + Window function for FFT
 			CWDEC_FFTBuffer[i * 2 + 1] = 0.0f;
 		}
@@ -96,7 +96,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 			CWDEC_FFTBuffer[i * 2 + 1] = 0.0f;
 		}
 	}
-	
+
 	// Do FFT
 	arm_rfft_fast_f32(&CWDECODER_FFT_Inst, CWDEC_FFTBuffer, CWDEC_FFTBuffer, 0);
 	arm_cmplx_mag_f32(CWDEC_FFTBuffer, CWDEC_FFTBuffer, CWDECODER_FFTSIZE);
@@ -107,7 +107,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 		CWDEC_FFTBuffer_Export[i] = CWDEC_FFTBuffer[i];
 		CWDEC_FFTBuffer_Export[i + CWDECODER_FFTSIZE_HALF] = CWDEC_FFTBuffer[i];
 	}*/
-	
+
 	// Looking for the maximum and minimum magnitude to determine the signal source
 	float32_t maxValue = 0;
 	uint32_t maxIndex = 0;
@@ -129,7 +129,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 	//sendToDebug_float32(maxValueAvg, true);
 	//sendToDebug_str(" ");
 	//sendToDebug_float32(CWDEC_FFTBuffer[maxIndex], false);
-	
+
 	if (CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES && (maxValue > meanValue * CWDECODER_MEAN_THRES)) // signal is active
 	{
 		//sendToDebug_float32(CWDEC_FFTBuffer [maxIndex], false);
@@ -195,7 +195,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 			code[0] = '\0';
 			last_space = true;
 		}
-		if(CWDECODER_DEBUG)
+		if (CWDECODER_DEBUG)
 			sendToDebug_str("s");
 		stop = true;
 	}
@@ -224,7 +224,7 @@ static void CWDecoder_Recognise(void)
 			char_time = dash_time;
 			word_time = dot_time * 7.0f;
 			strcat(code, ".");
-			if(CWDECODER_DEBUG)
+			if (CWDECODER_DEBUG)
 				sendToDebug_str(".");
 		}
 		else if (highduration >= (dash_time * CWDECODER_ERROR_DIFF))
@@ -234,17 +234,17 @@ static void CWDecoder_Recognise(void)
 			char_time = dash_time;
 			word_time = dot_time * 7.0f;
 			strcat(code, "-");
-			if(CWDECODER_DEBUG)
+			if (CWDECODER_DEBUG)
 				sendToDebug_str("-");
 		}
 		else
 		{
 			dash_time *= CWDECODER_WPM_UP_SPEED;
 			//if(CWDECODER_DEBUG)
-				//sendToDebug_strln("e");
+			//sendToDebug_strln("e");
 		}
 		CW_Decoder_WPM = (uint16_t)((float32_t)CW_Decoder_WPM * 0.7f + (1200.0f / (float32_t)dot_time) * 0.3f); //// the most precise we can do ;o)
-		if(CW_Decoder_WPM > CWDECODER_MAX_WPM)
+		if (CW_Decoder_WPM > CWDECODER_MAX_WPM)
 			CW_Decoder_WPM = CWDECODER_MAX_WPM;
 	}
 	if (filteredstate == true)
@@ -259,7 +259,7 @@ static void CWDecoder_Recognise(void)
 		{
 			CWDecoder_Decode();
 			last_space = false;
-			if(CWDECODER_DEBUG)
+			if (CWDECODER_DEBUG)
 				sendToDebug_str("c");
 		}
 		else if (lowduration > (word_time * CWDECODER_ERROR_SPACE_DIFF * lacktime)) // word space
@@ -270,13 +270,13 @@ static void CWDecoder_Recognise(void)
 				CWDecoder_PrintChar(" ");
 				last_space = true;
 			}
-			if(CWDECODER_DEBUG)
+			if (CWDECODER_DEBUG)
 				sendToDebug_strln("w");
 		}
 		else
 		{
 			//if(CWDECODER_DEBUG)
-				//sendToDebug_strln("e");
+			//sendToDebug_strln("e");
 		}
 	}
 	if (strlen(code) >= (CWDECODER_MAX_CODE_SIZE - 1))

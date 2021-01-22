@@ -153,7 +153,7 @@ void WIFI_Process(void)
 		break;
 	case WIFI_CONFIGURED:
 		if (strcmp(TRX.WIFI_AP1, "WIFI-AP") == 0 && strcmp(TRX.WIFI_AP2, "WIFI-AP") == 0 && strcmp(TRX.WIFI_AP3, "WIFI-AP") == 0 &&
-			  strcmp(TRX.WIFI_PASSWORD1, "WIFI-PASSWORD") == 0 && strcmp(TRX.WIFI_PASSWORD2, "WIFI-PASSWORD") == 0 && strcmp(TRX.WIFI_PASSWORD3, "WIFI-PASSWORD") == 0)
+			strcmp(TRX.WIFI_PASSWORD1, "WIFI-PASSWORD") == 0 && strcmp(TRX.WIFI_PASSWORD2, "WIFI-PASSWORD") == 0 && strcmp(TRX.WIFI_PASSWORD3, "WIFI-PASSWORD") == 0)
 			break;
 		if (WIFI_stop_auto_ap_list)
 			break;
@@ -373,7 +373,7 @@ void WIFI_Process(void)
 				}
 			}
 			else if (WIFI_ProcessingCommand == WIFI_COMM_GETSNTP) //Get and sync SNMP time
-			{ //Mon Jan 18 20:17:56 2021
+			{													  //Mon Jan 18 20:17:56 2021
 				char *sntp_str = strchr(WIFI_readedLine, ' ');
 				if (sntp_str != NULL)
 				{
@@ -418,18 +418,30 @@ void WIFI_Process(void)
 											uint16_t year = (uint16_t)atoi(year_str);
 											uint16_t year_short = (uint16_t)atoi(year_str + 2);
 											uint16_t month = 1;
-											if(strstr(month_str, "Jan") != NULL) month = 1;
-											if(strstr(month_str, "Feb") != NULL) month = 2;
-											if(strstr(month_str, "Mar") != NULL) month = 3;
-											if(strstr(month_str, "Apr") != NULL) month = 4;
-											if(strstr(month_str, "May") != NULL) month = 5;
-											if(strstr(month_str, "Jun") != NULL) month = 6;
-											if(strstr(month_str, "Jul") != NULL) month = 7;
-											if(strstr(month_str, "Aug") != NULL) month = 8;
-											if(strstr(month_str, "Sep") != NULL) month = 9;
-											if(strstr(month_str, "Oct") != NULL) month = 10;
-											if(strstr(month_str, "Nov") != NULL) month = 11;
-											if(strstr(month_str, "Dec") != NULL) month = 12;
+											if (strstr(month_str, "Jan") != NULL)
+												month = 1;
+											if (strstr(month_str, "Feb") != NULL)
+												month = 2;
+											if (strstr(month_str, "Mar") != NULL)
+												month = 3;
+											if (strstr(month_str, "Apr") != NULL)
+												month = 4;
+											if (strstr(month_str, "May") != NULL)
+												month = 5;
+											if (strstr(month_str, "Jun") != NULL)
+												month = 6;
+											if (strstr(month_str, "Jul") != NULL)
+												month = 7;
+											if (strstr(month_str, "Aug") != NULL)
+												month = 8;
+											if (strstr(month_str, "Sep") != NULL)
+												month = 9;
+											if (strstr(month_str, "Oct") != NULL)
+												month = 10;
+											if (strstr(month_str, "Nov") != NULL)
+												month = 11;
+											if (strstr(month_str, "Dec") != NULL)
+												month = 12;
 											uint16_t day = (uint16_t)atoi(day_str);
 											//save to RTC clock
 											if (year > 2018)

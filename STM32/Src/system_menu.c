@@ -306,15 +306,15 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
 		{"FFT Zoom CW", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_HANDL_SCREEN_FFT_ZoomCW},
-		#ifdef HAS_BRIGHTNESS_CONTROL
+#ifdef HAS_BRIGHTNESS_CONTROL
 		{"LCD Brightness", SYSMENU_UINT8, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_SCREEN_LCD_Brightness},
-		#endif
+#endif
 		{"Color Theme", SYSMENU_UINT8, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME},
 		{"Layout Theme", SYSMENU_UINT8, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
 		{"FFT Top", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Top, SYSMENU_HANDL_SCREEN_FFT_Top},
 		{"FFT Height", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
-		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style},		
+		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style},
 		{"FFT Color", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color},
 		{"FFT Grid", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Grid, SYSMENU_HANDL_SCREEN_FFT_Grid},
 		{"FFT Background", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Background, SYSMENU_HANDL_SCREEN_FFT_Background},
@@ -326,34 +326,34 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Compressor", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
 		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 		{"FFT Window", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window},
-		#ifdef HRDW_HAS_FUNCBUTTONS
-			#if FUNCBUTTONS_COUNT == 24
-			{"Func button 1", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[0], SYSMENU_HANDL_SCREEN_FUNC_BUTTON1},
-			{"Func button 2", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[1], SYSMENU_HANDL_SCREEN_FUNC_BUTTON2},
-			{"Func button 3", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[2], SYSMENU_HANDL_SCREEN_FUNC_BUTTON3},
-			{"Func button 4", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[3], SYSMENU_HANDL_SCREEN_FUNC_BUTTON4},
-			{"Func button 5", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[4], SYSMENU_HANDL_SCREEN_FUNC_BUTTON5},
-			{"Func button 6", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[5], SYSMENU_HANDL_SCREEN_FUNC_BUTTON6},
-			{"Func button 7", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[6], SYSMENU_HANDL_SCREEN_FUNC_BUTTON7},
-			{"Func button 8", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[7], SYSMENU_HANDL_SCREEN_FUNC_BUTTON8},
-			{"Func button 9", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[8], SYSMENU_HANDL_SCREEN_FUNC_BUTTON9},
-			{"Func button 10", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[9], SYSMENU_HANDL_SCREEN_FUNC_BUTTON10},
-			{"Func button 11", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[10], SYSMENU_HANDL_SCREEN_FUNC_BUTTON11},
-			{"Func button 12", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[11], SYSMENU_HANDL_SCREEN_FUNC_BUTTON12},
-			{"Func button 13", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[12], SYSMENU_HANDL_SCREEN_FUNC_BUTTON13},
-			{"Func button 14", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[13], SYSMENU_HANDL_SCREEN_FUNC_BUTTON14},
-			{"Func button 15", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[14], SYSMENU_HANDL_SCREEN_FUNC_BUTTON15},
-			{"Func button 16", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[15], SYSMENU_HANDL_SCREEN_FUNC_BUTTON16},
-			{"Func button 17", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[16], SYSMENU_HANDL_SCREEN_FUNC_BUTTON17},
-			{"Func button 18", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[17], SYSMENU_HANDL_SCREEN_FUNC_BUTTON18},
-			{"Func button 19", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[18], SYSMENU_HANDL_SCREEN_FUNC_BUTTON19},
-			{"Func button 20", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[19], SYSMENU_HANDL_SCREEN_FUNC_BUTTON20},
-			{"Func button 21", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[20], SYSMENU_HANDL_SCREEN_FUNC_BUTTON21},
-			{"Func button 22", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[21], SYSMENU_HANDL_SCREEN_FUNC_BUTTON22},
-			{"Func button 23", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[22], SYSMENU_HANDL_SCREEN_FUNC_BUTTON23},
-			{"Func button 24", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[23], SYSMENU_HANDL_SCREEN_FUNC_BUTTON24},
-			#endif
-		#endif
+#ifdef HRDW_HAS_FUNCBUTTONS
+#if FUNCBUTTONS_COUNT == 24
+		{"Func button 1", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[0], SYSMENU_HANDL_SCREEN_FUNC_BUTTON1},
+		{"Func button 2", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[1], SYSMENU_HANDL_SCREEN_FUNC_BUTTON2},
+		{"Func button 3", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[2], SYSMENU_HANDL_SCREEN_FUNC_BUTTON3},
+		{"Func button 4", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[3], SYSMENU_HANDL_SCREEN_FUNC_BUTTON4},
+		{"Func button 5", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[4], SYSMENU_HANDL_SCREEN_FUNC_BUTTON5},
+		{"Func button 6", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[5], SYSMENU_HANDL_SCREEN_FUNC_BUTTON6},
+		{"Func button 7", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[6], SYSMENU_HANDL_SCREEN_FUNC_BUTTON7},
+		{"Func button 8", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[7], SYSMENU_HANDL_SCREEN_FUNC_BUTTON8},
+		{"Func button 9", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[8], SYSMENU_HANDL_SCREEN_FUNC_BUTTON9},
+		{"Func button 10", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[9], SYSMENU_HANDL_SCREEN_FUNC_BUTTON10},
+		{"Func button 11", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[10], SYSMENU_HANDL_SCREEN_FUNC_BUTTON11},
+		{"Func button 12", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[11], SYSMENU_HANDL_SCREEN_FUNC_BUTTON12},
+		{"Func button 13", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[12], SYSMENU_HANDL_SCREEN_FUNC_BUTTON13},
+		{"Func button 14", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[13], SYSMENU_HANDL_SCREEN_FUNC_BUTTON14},
+		{"Func button 15", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[14], SYSMENU_HANDL_SCREEN_FUNC_BUTTON15},
+		{"Func button 16", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[15], SYSMENU_HANDL_SCREEN_FUNC_BUTTON16},
+		{"Func button 17", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[16], SYSMENU_HANDL_SCREEN_FUNC_BUTTON17},
+		{"Func button 18", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[17], SYSMENU_HANDL_SCREEN_FUNC_BUTTON18},
+		{"Func button 19", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[18], SYSMENU_HANDL_SCREEN_FUNC_BUTTON19},
+		{"Func button 20", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[19], SYSMENU_HANDL_SCREEN_FUNC_BUTTON20},
+		{"Func button 21", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[20], SYSMENU_HANDL_SCREEN_FUNC_BUTTON21},
+		{"Func button 22", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[21], SYSMENU_HANDL_SCREEN_FUNC_BUTTON22},
+		{"Func button 23", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[22], SYSMENU_HANDL_SCREEN_FUNC_BUTTON23},
+		{"Func button 24", SYSMENU_FUNCBUTTON, (uint32_t *)&TRX.FuncButtons[23], SYSMENU_HANDL_SCREEN_FUNC_BUTTON24},
+#endif
+#endif
 };
 static uint8_t sysmenu_screen_item_count = sizeof(sysmenu_screen_handlers) / sizeof(sysmenu_screen_handlers[0]);
 
@@ -533,7 +533,7 @@ static uint8_t TimeMenuSelection = 0;
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_trx_item_count;
 	sysmenu_onroot = false;
@@ -596,7 +596,7 @@ static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)
 {
-	if(direction > 0 || TRX.RF_Power > 0)
+	if (direction > 0 || TRX.RF_Power > 0)
 		TRX.RF_Power += direction;
 	if (TRX.RF_Power > 100)
 		TRX.RF_Power = 100;
@@ -848,7 +848,7 @@ static void SYSMENU_TRX_RotateLocatorChar(int8_t dir)
 
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_trx_setCallsign_menu_opened = true;
 	SYSMENU_TRX_DrawCallsignMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -856,7 +856,7 @@ static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_trx_setLocator_menu_opened = true;
 	SYSMENU_TRX_DrawLocatorMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -883,7 +883,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_audio_item_count;
 	sysmenu_onroot = false;
@@ -1464,7 +1464,7 @@ static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction)
 
 static void SYSMENU_HANDL_CWMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_cw_item_count;
 	sysmenu_onroot = false;
@@ -1554,7 +1554,7 @@ static void SYSMENU_HANDL_CW_SelfHear(int8_t direction)
 
 static void SYSMENU_HANDL_LCDMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_screen_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_screen_item_count;
 	sysmenu_onroot = false;
@@ -1787,193 +1787,193 @@ static void SYSMENU_HANDL_SCREEN_FFT_Top(int8_t direction)
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction)
 {
-	if(TRX.FuncButtons[0] > 0 || direction > 0)
+	if (TRX.FuncButtons[0] > 0 || direction > 0)
 		TRX.FuncButtons[0] += direction;
-	if(TRX.FuncButtons[0] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[0] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[0] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON2(int8_t direction)
 {
-	if(TRX.FuncButtons[1] > 0 || direction > 0)
+	if (TRX.FuncButtons[1] > 0 || direction > 0)
 		TRX.FuncButtons[1] += direction;
-	if(TRX.FuncButtons[1] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[1] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[1] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON3(int8_t direction)
 {
-	if(TRX.FuncButtons[2] > 0 || direction > 0)
+	if (TRX.FuncButtons[2] > 0 || direction > 0)
 		TRX.FuncButtons[2] += direction;
-	if(TRX.FuncButtons[2] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[2] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[2] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON4(int8_t direction)
 {
-	if(TRX.FuncButtons[3] > 0 || direction > 0)
+	if (TRX.FuncButtons[3] > 0 || direction > 0)
 		TRX.FuncButtons[3] += direction;
-	if(TRX.FuncButtons[3] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[3] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[3] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON5(int8_t direction)
 {
-	if(TRX.FuncButtons[4] > 0 || direction > 0)
+	if (TRX.FuncButtons[4] > 0 || direction > 0)
 		TRX.FuncButtons[4] += direction;
-	if(TRX.FuncButtons[4] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[4] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[4] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON6(int8_t direction)
 {
-	if(TRX.FuncButtons[5] > 0 || direction > 0)
+	if (TRX.FuncButtons[5] > 0 || direction > 0)
 		TRX.FuncButtons[5] += direction;
-	if(TRX.FuncButtons[5] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[5] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[5] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON7(int8_t direction)
 {
-	if(TRX.FuncButtons[6] > 0 || direction > 0)
+	if (TRX.FuncButtons[6] > 0 || direction > 0)
 		TRX.FuncButtons[6] += direction;
-	if(TRX.FuncButtons[6] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[6] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[6] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON8(int8_t direction)
 {
-	if(TRX.FuncButtons[7] > 0 || direction > 0)
+	if (TRX.FuncButtons[7] > 0 || direction > 0)
 		TRX.FuncButtons[7] += direction;
-	if(TRX.FuncButtons[7] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[7] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[7] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON9(int8_t direction)
 {
-	if(TRX.FuncButtons[8] > 0 || direction > 0)
+	if (TRX.FuncButtons[8] > 0 || direction > 0)
 		TRX.FuncButtons[8] += direction;
-	if(TRX.FuncButtons[8] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[8] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[8] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON10(int8_t direction)
 {
-	if(TRX.FuncButtons[9] > 0 || direction > 0)
+	if (TRX.FuncButtons[9] > 0 || direction > 0)
 		TRX.FuncButtons[9] += direction;
-	if(TRX.FuncButtons[9] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[9] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[9] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON11(int8_t direction)
 {
-	if(TRX.FuncButtons[10] > 0 || direction > 0)
+	if (TRX.FuncButtons[10] > 0 || direction > 0)
 		TRX.FuncButtons[10] += direction;
-	if(TRX.FuncButtons[10] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[10] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[10] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON12(int8_t direction)
 {
-	if(TRX.FuncButtons[11] > 0 || direction > 0)
+	if (TRX.FuncButtons[11] > 0 || direction > 0)
 		TRX.FuncButtons[11] += direction;
-	if(TRX.FuncButtons[11] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[11] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[11] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON13(int8_t direction)
 {
-	if(TRX.FuncButtons[12] > 0 || direction > 0)
+	if (TRX.FuncButtons[12] > 0 || direction > 0)
 		TRX.FuncButtons[12] += direction;
-	if(TRX.FuncButtons[12] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[12] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[12] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON14(int8_t direction)
 {
-	if(TRX.FuncButtons[13] > 0 || direction > 0)
+	if (TRX.FuncButtons[13] > 0 || direction > 0)
 		TRX.FuncButtons[13] += direction;
-	if(TRX.FuncButtons[13] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[13] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[13] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON15(int8_t direction)
 {
-	if(TRX.FuncButtons[14] > 0 || direction > 0)
+	if (TRX.FuncButtons[14] > 0 || direction > 0)
 		TRX.FuncButtons[14] += direction;
-	if(TRX.FuncButtons[14] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[14] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[14] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON16(int8_t direction)
 {
-	if(TRX.FuncButtons[15] > 0 || direction > 0)
+	if (TRX.FuncButtons[15] > 0 || direction > 0)
 		TRX.FuncButtons[15] += direction;
-	if(TRX.FuncButtons[15] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[15] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[15] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON17(int8_t direction)
 {
-	if(TRX.FuncButtons[16] > 0 || direction > 0)
+	if (TRX.FuncButtons[16] > 0 || direction > 0)
 		TRX.FuncButtons[16] += direction;
-	if(TRX.FuncButtons[16] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[16] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[16] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON18(int8_t direction)
 {
-	if(TRX.FuncButtons[17] > 0 || direction > 0)
+	if (TRX.FuncButtons[17] > 0 || direction > 0)
 		TRX.FuncButtons[17] += direction;
-	if(TRX.FuncButtons[17] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[17] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[17] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON19(int8_t direction)
 {
-	if(TRX.FuncButtons[18] > 0 || direction > 0)
+	if (TRX.FuncButtons[18] > 0 || direction > 0)
 		TRX.FuncButtons[18] += direction;
-	if(TRX.FuncButtons[18] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[18] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[18] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON20(int8_t direction)
 {
-	if(TRX.FuncButtons[19] > 0 || direction > 0)
+	if (TRX.FuncButtons[19] > 0 || direction > 0)
 		TRX.FuncButtons[19] += direction;
-	if(TRX.FuncButtons[19] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[19] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[19] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON21(int8_t direction)
 {
-	if(TRX.FuncButtons[20] > 0 || direction > 0)
+	if (TRX.FuncButtons[20] > 0 || direction > 0)
 		TRX.FuncButtons[20] += direction;
-	if(TRX.FuncButtons[20] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[20] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[20] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON22(int8_t direction)
 {
-	if(TRX.FuncButtons[21] > 0 || direction > 0)
+	if (TRX.FuncButtons[21] > 0 || direction > 0)
 		TRX.FuncButtons[21] += direction;
-	if(TRX.FuncButtons[21] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[21] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[21] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON23(int8_t direction)
 {
-	if(TRX.FuncButtons[22] > 0 || direction > 0)
+	if (TRX.FuncButtons[22] > 0 || direction > 0)
 		TRX.FuncButtons[22] += direction;
-	if(TRX.FuncButtons[22] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[22] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[22] = FUNCBUTTONS_COUNT - 1;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON24(int8_t direction)
 {
-	if(TRX.FuncButtons[23] > 0 || direction > 0)
+	if (TRX.FuncButtons[23] > 0 || direction > 0)
 		TRX.FuncButtons[23] += direction;
-	if(TRX.FuncButtons[23] >= FUNCBUTTONS_COUNT)
+	if (TRX.FuncButtons[23] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[23] = FUNCBUTTONS_COUNT - 1;
 }
 
@@ -1981,7 +1981,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON24(int8_t direction)
 
 static void SYSMENU_HANDL_ADCMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_adc_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_adc_item_count;
 	sysmenu_onroot = false;
@@ -2044,7 +2044,7 @@ static void SYSMENU_HANDL_ADC_DITH(int8_t direction)
 
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_wifi_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_wifi_item_count;
 	sysmenu_onroot = false;
@@ -2287,7 +2287,7 @@ static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_SelectAP1(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_wifi_selectap1_menu_opened = true;
 	SYSMENU_WIFI_DrawSelectAP1Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2295,7 +2295,7 @@ static void SYSMENU_HANDL_WIFI_SelectAP1(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_SelectAP2(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_wifi_selectap2_menu_opened = true;
 	SYSMENU_WIFI_DrawSelectAP2Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2303,7 +2303,7 @@ static void SYSMENU_HANDL_WIFI_SelectAP2(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_SelectAP3(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_wifi_selectap3_menu_opened = true;
 	SYSMENU_WIFI_DrawSelectAP3Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2311,7 +2311,7 @@ static void SYSMENU_HANDL_WIFI_SelectAP3(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_SetAP1password(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_wifi_setAP1password_menu_opened = true;
 	SYSMENU_WIFI_DrawAP1passwordMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2319,7 +2319,7 @@ static void SYSMENU_HANDL_WIFI_SetAP1password(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_SetAP2password(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_wifi_setAP2password_menu_opened = true;
 	SYSMENU_WIFI_DrawAP2passwordMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2327,7 +2327,7 @@ static void SYSMENU_HANDL_WIFI_SetAP2password(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_SetAP3password(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_wifi_setAP3password_menu_opened = true;
 	SYSMENU_WIFI_DrawAP3passwordMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2353,7 +2353,7 @@ static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	LCD_systemMenuOpened = false;
 	LCD_redraw(false);
 	LCD_doEvents();
@@ -2365,7 +2365,7 @@ static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
 
 static void SYSMENU_HANDL_SDMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_sd_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_sd_item_count;
 	sysmenu_onroot = false;
@@ -2468,7 +2468,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 
 static void SYSMENU_HANDL_Bootloader(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	WM8731_CleanBuffer();
 	TRX_NeedGoToBootloader = true;
 	TRX_Inited = false;
@@ -2480,9 +2480,9 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 {
 	sysmenu_infowindow_opened = true;
 	sysmenu_sysinfo_opened = true;
-	if(direction != 0)
+	if (direction != 0)
 		LCDDriver_Fill(BG_COLOR);
-	#define y_offs 20
+#define y_offs 20
 	uint16_t y = 10;
 	char out[80];
 	sprintf(out, "STM32 FW ver: %s", version_string);
@@ -2509,7 +2509,7 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 	sprintf(out, "VCXO ERROR: %d     ", TRX_VCXO_ERROR);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
 	y += y_offs;
-	
+
 	LCD_UpdateQuery.SystemMenu = true;
 }
 
@@ -2575,7 +2575,7 @@ static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction)
 
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	if (!SYSMENU_hiddenmenu_enabled)
 		return;
 	sysmenu_handlers_selected = &sysmenu_calibration_handlers[0];
@@ -2587,7 +2587,7 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction) //Tisho
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	if (SYSMENU_TDM_CTRL_opened)
 	{
 	}
@@ -2918,7 +2918,7 @@ static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction)
 //SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_services_opened = true;
 	sysmenu_handlers_selected = &sysmenu_services_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_services_item_count;
@@ -2931,7 +2931,7 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 //SPECTRUM ANALIZER
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_spectrum_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_spectrum_item_count;
 	sysmenu_onroot = false;
@@ -2992,7 +2992,7 @@ static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction)
 //WSPR Beacon
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_handlers_selected = &sysmenu_wspr_handlers[0];
 	sysmenu_item_count_selected = &sysmenu_wspr_item_count;
 	sysmenu_onroot = false;
@@ -3145,7 +3145,7 @@ static void SYSMENU_HANDL_SWR_HF_START(int8_t direction)
 //RDA STATS
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true);
 	WIFI_getRDA();
@@ -3154,7 +3154,7 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 //PROPAGINATION
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
 {
-	#pragma unused(direction)
+#pragma unused(direction)
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true);
 	WIFI_getPropagination();
@@ -3166,7 +3166,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	if (LCD_busy)
 	{
 		LCD_UpdateQuery.SystemMenu = true;
-		if(draw_background)
+		if (draw_background)
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
@@ -3234,7 +3234,6 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	}
 	else if (sysmenu_infowindow_opened)
 	{
-		
 	}
 	else
 	{
@@ -3256,12 +3255,12 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 			if (current_selected_page == current_page)
 				drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
 		}
-		
+
 		LCD_busy = false;
 	}
 
 	LCD_UpdateQuery.SystemMenu = false;
-	if(draw_background)
+	if (draw_background)
 		LCD_UpdateQuery.SystemMenuRedraw = false;
 }
 

@@ -26,7 +26,7 @@ uint16_t FPGA_FW_Version[3] = {0};
 
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
-bool FPGA_bus_stop = false;			  // suspend the FPGA bus
+bool FPGA_bus_stop = false;					  // suspend the FPGA bus
 
 // Prototypes
 static inline void FPGA_clockFall(void);			// remove CLK signal
@@ -62,22 +62,22 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 
 	//BUS TEST
 	FPGA_bus_stop = true;
-	for(uint16_t i = 0; i < 256; i++)
+	for (uint16_t i = 0; i < 256; i++)
 	{
 		FPGA_setBusOutput();
 		FPGA_writePacket(0);
 		FPGA_syncAndClockRiseFall();
-		
+
 		FPGA_writePacket(i);
 		FPGA_clockRise();
 		FPGA_clockFall();
-		
+
 		FPGA_setBusInput();
 		FPGA_clockRise();
 		uint8_t ret = FPGA_readPacket;
 		FPGA_clockFall();
-		
-		if(ret != i)
+
+		if (ret != i)
 		{
 			char buff[64];
 			sprintf(buff, "BUS Error: %d -> %d", i, ret);
@@ -86,14 +86,14 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 		}
 	}
 	FPGA_bus_stop = false;
-	
+
 	//GET FW VERSION
 	FPGA_bus_stop = true;
 
 	FPGA_setBusOutput();
 	FPGA_writePacket(8);
 	FPGA_syncAndClockRiseFall();
-	
+
 	FPGA_setBusInput();
 	FPGA_clockRise();
 	FPGA_FW_Version[2] = FPGA_readPacket;
@@ -104,33 +104,33 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 	FPGA_clockRise();
 	FPGA_FW_Version[0] = FPGA_readPacket;
 	FPGA_clockFall();
-	
+
 	FPGA_bus_stop = false;
-	
-	if(bus_test) //BUS STRESS TEST MODE
+
+	if (bus_test) //BUS STRESS TEST MODE
 	{
 		LCD_showError("Check FPGA BUS...", false);
 		HAL_Delay(1000);
-		
-		while(bus_test)
+
+		while (bus_test)
 		{
 			FPGA_bus_stop = true;
-			for(uint16_t i = 0; i < 256; i++)
+			for (uint16_t i = 0; i < 256; i++)
 			{
 				FPGA_setBusOutput();
 				FPGA_writePacket(0);
 				FPGA_syncAndClockRiseFall();
-				
+
 				FPGA_writePacket(i);
 				FPGA_clockRise();
 				FPGA_clockFall();
-				
+
 				FPGA_setBusInput();
 				FPGA_clockRise();
 				uint8_t ret = FPGA_readPacket;
 				FPGA_clockFall();
-				
-				if(ret != i)
+
+				if (ret != i)
 				{
 					char buff[64];
 					sprintf(buff, "BUS Error: %d -> %d", i, ret);
@@ -141,27 +141,27 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 			LCD_showError("Check compleate!", false);
 		}
 	}
-	
-	if(firmware_test) //FIRMWARE VERIFICATION MODE
+
+	if (firmware_test) //FIRMWARE VERIFICATION MODE
 	{
 		FPGA_bus_stop = true;
 		LCD_showError("Check FPGA FIRMWARE...", false);
 		HAL_Delay(1000);
-		#if FPGA_FLASH_IN_HEX
-			if (FPGA_spi_flash_verify(true))
-			{
-				LCD_showError("FPGA flash verification complete!", false);
-				HAL_Delay(1000);
-			}		
-		#endif
+#if FPGA_FLASH_IN_HEX
+		if (FPGA_spi_flash_verify(true))
+		{
+			LCD_showError("FPGA flash verification complete!", false);
+			HAL_Delay(1000);
+		}
+#endif
 		FPGA_bus_stop = false;
 	}
-	
+
 #if FPGA_FLASH_IN_HEX
 	FPGA_bus_stop = true;
 	if (FPGA_is_present())
 	{
-		if(!FPGA_spi_flash_verify(false)) // check the first 2048 bytes of FPGA firmware
+		if (!FPGA_spi_flash_verify(false)) // check the first 2048 bytes of FPGA firmware
 		{
 			while (!FPGA_spi_flash_verify(true))
 			{
@@ -479,8 +479,8 @@ static inline void FPGA_fpgadata_getparam(void)
 static inline void FPGA_fpgadata_getiq(void)
 {
 	register int_fast32_t FPGA_fpgadata_in_tmp32 = 0;
-	float32_t* FFTInput_I_current = FFT_buff_current ? (float32_t*)&FFTInput_I_A : (float32_t*)&FFTInput_I_B;
-	float32_t* FFTInput_Q_current = FFT_buff_current ? (float32_t*)&FFTInput_Q_A : (float32_t*)&FFTInput_Q_B;
+	float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
+	float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
 	float32_t FPGA_fpgadata_in_float32 = 0;
 	FPGA_samples++;
 	FPGA_setBusInput();
@@ -616,12 +616,11 @@ static inline void FPGA_fpgadata_getiq(void)
 	if (FPGA_Audio_RXBuffer_Index == FPGA_RX_IQ_BUFFER_SIZE)
 		FPGA_Audio_RXBuffer_Index = 0;
 
-
 	FFT_buff_index++;
 	if (FFT_buff_index >= FFT_HALF_SIZE)
 	{
 		FFT_buff_index = 0;
-		if(FFT_new_buffer_ready)
+		if (FFT_new_buffer_ready)
 		{
 			//sendToDebug_str("fft overrun");
 		}
@@ -759,7 +758,7 @@ static inline void FPGA_setBusInput(void)
 	temp |= ((GPIO_MODE_INPUT & 0x00000003U) << (7 * 2U));
 	//sendToDebug_uint32(temp,false);
 	GPIOA->MODER = temp;*/
-	
+
 	GPIOA->MODER = -1431764992;
 }
 
@@ -786,7 +785,7 @@ static inline void FPGA_setBusOutput(void)
 	temp |= ((GPIO_MODE_OUTPUT_PP & 0x00000003U) << (7 * 2U));
 	//sendToDebug_uint32(temp,false);
 	GPIOA->MODER = temp;*/
-	
+
 	GPIOA->MODER = -1431743147;
 }
 
@@ -941,7 +940,7 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 						sendToDebug_hex(FILES_WOLF_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
-						
+
 						/*if(full)
 						{
 							char ctmp[50];
@@ -974,7 +973,7 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 						sendToDebug_hex(FILES_WOLF_JIC[file_pos], true);
 						sendToDebug_newline();
 						sendToDebug_flush();
-						
+
 						/*if(full)
 						{
 							char ctmp[50];

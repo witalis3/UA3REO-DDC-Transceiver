@@ -170,7 +170,7 @@ void HardFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
-		HAL_MPU_Disable();
+    HAL_MPU_Disable();
     LCD_showError("Hard Fault", false);
     static uint32_t i = 0;
     while (i < 99999999)
@@ -194,7 +194,7 @@ void MemManage_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_MemoryManagement_IRQn 0 */
-		HAL_MPU_Disable();
+    HAL_MPU_Disable();
     LCD_showError("Memory Fault", false);
     static uint32_t i = 0;
     while (i < 99999999)
@@ -389,7 +389,7 @@ void DMA1_Stream1_IRQHandler(void)
 void DMA1_Stream2_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Stream2_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END DMA1_Stream2_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi2_rx);
   /* USER CODE BEGIN DMA1_Stream2_IRQn 1 */
@@ -403,7 +403,7 @@ void DMA1_Stream2_IRQHandler(void)
 void DMA1_Stream3_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Stream3_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END DMA1_Stream3_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi2_tx);
   /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
@@ -483,11 +483,11 @@ void TIM4_IRQHandler(void)
     SYSMENU_drawSystemMenu(false);
     return;
   }
-	
+
   if (FFT_need_fft)
     FFT_doFFT();
-	
-	ua3reo_dev_cat_parseCommand();
+
+  ua3reo_dev_cat_parseCommand();
   /* USER CODE END TIM4_IRQn 1 */
 }
 
@@ -497,7 +497,7 @@ void TIM4_IRQHandler(void)
 void SPI2_IRQHandler(void)
 {
   /* USER CODE BEGIN SPI2_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END SPI2_IRQn 0 */
   HAL_SPI_IRQHandler(&hspi2);
   /* USER CODE BEGIN SPI2_IRQn 1 */
@@ -588,9 +588,9 @@ void TIM6_DAC_IRQHandler(void)
   //Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
   RF_UNIT_ProcessSensors();
 
-	//Process touchpad frequency changing
-	TRX_setFrequencySlowly_Process();
-	
+  //Process touchpad frequency changing
+  TRX_setFrequencySlowly_Process();
+
   // emulate PTT over CAT/Software
   if (TRX_ptt_soft != TRX_old_ptt_soft)
     TRX_ptt_change();
@@ -643,7 +643,7 @@ void TIM6_DAC_IRQHandler(void)
     WM8731_Buffer_underrun = false;
     FPGA_Buffer_underrun = false;
     RX_USB_AUDIO_underrun = false;
-		SD_underrun = false;
+    SD_underrun = false;
   }
 
   if ((ms10_counter % 3) == 0) // every 30ms
@@ -655,12 +655,12 @@ void TIM6_DAC_IRQHandler(void)
   else if (LCD_UpdateQuery.FreqInfo) //Redraw freq fast
     LCD_doEvents();
 
-	static bool needPrintFFT = false;
+  static bool needPrintFFT = false;
   if ((ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
-		needPrintFFT = true;
-  
-	if(needPrintFFT && !LCD_UpdateQuery.Background && FFT_printFFT()) // draw FFT
-		needPrintFFT = false;
+    needPrintFFT = true;
+
+  if (needPrintFFT && !LCD_UpdateQuery.Background && FFT_printFFT()) // draw FFT
+    needPrintFFT = false;
 
   if (ms10_counter == 101) // every 1 sec
   {
@@ -686,8 +686,8 @@ void TIM6_DAC_IRQHandler(void)
 
     CPULOAD_Calc(); // Calculate CPU load
     TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
-		TRX_STM32_VREF = TRX_getSTM32H743vref();
-		
+    TRX_STM32_VREF = TRX_getSTM32H743vref();
+
     if (TRX.Debug_Console)
     {
       //Save Debug variables
@@ -756,7 +756,7 @@ void TIM6_DAC_IRQHandler(void)
     FPGA_samples = 0;
     AUDIOPROC_samples = 0;
     WM8731_DMA_samples = 0;
-		FFT_FPS_Last = FFT_FPS;
+    FFT_FPS_Last = FFT_FPS;
     FFT_FPS = 0;
     RX_USB_AUDIO_SAMPLES = 0;
     TX_USB_AUDIO_SAMPLES = 0;
@@ -799,11 +799,15 @@ void TIM6_DAC_IRQHandler(void)
     SaveSettings();
     SaveSettingsToEEPROM();
     sendToDebug_flush();
-    while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) { }
+    while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
+    {
+    }
     HAL_Delay(500);
-		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
     //SCB->AIRCR = 0x05FA0004; // software resetw
-    while (true) { }
+    while (true)
+    {
+    }
   }
 
   //TRX protector
@@ -947,20 +951,20 @@ void TIM15_IRQHandler(void)
   /* USER CODE BEGIN TIM15_IRQn 1 */
 
   //FRONT PANEL SPI
-	static uint16_t front_slowler = 0;
-	front_slowler++;
-	if(front_slowler > 20)
-	{
-		FRONTPANEL_Process();
-		front_slowler = 0;
-	}
+  static uint16_t front_slowler = 0;
+  front_slowler++;
+  if (front_slowler > 20)
+  {
+    FRONTPANEL_Process();
+    front_slowler = 0;
+  }
 
   //EEPROM SPI
   if (NeedSaveCalibration) // save calibration data to EEPROM
     SaveCalibration();
 
   //SD-Card SPI
-	SD_Process();
+  SD_Process();
 
   /* USER CODE END TIM15_IRQn 1 */
 }
@@ -975,7 +979,7 @@ void TIM16_IRQHandler(void)
   /* USER CODE END TIM16_IRQn 0 */
   HAL_TIM_IRQHandler(&htim16);
   /* USER CODE BEGIN TIM16_IRQn 1 */
-	// Poll an additional encoder by timer, because interrupt hangs in line with FPGA
+  // Poll an additional encoder by timer, because interrupt hangs in line with FPGA
   static uint8_t ENC2lastClkVal = 0;
   static bool ENC2first = true;
   uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
@@ -990,17 +994,17 @@ void TIM16_IRQHandler(void)
       FRONTPANEL_ENCODER2_checkRotate();
     ENC2lastClkVal = ENCODER2_CLKVal;
   }
-	#ifdef HAS_TOUCHPAD
-	static bool TOUCH_Int_Last = true;
+#ifdef HAS_TOUCHPAD
+  static bool TOUCH_Int_Last = true;
   bool TOUCH_Int_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
   if (TOUCH_Int_Last != TOUCH_Int_Now)
   {
     TOUCH_Int_Last = TOUCH_Int_Now;
-		if (TOUCH_Int_Now)
-			TOUCHPAD_reserveInterrupt();
-	}
-	return;
-	#endif
+    if (TOUCH_Int_Now)
+      TOUCHPAD_reserveInterrupt();
+  }
+  return;
+#endif
   /* USER CODE END TIM16_IRQn 1 */
 }
 
@@ -1014,9 +1018,9 @@ void TIM17_IRQHandler(void)
   /* USER CODE END TIM17_IRQn 0 */
   HAL_TIM_IRQHandler(&htim17);
   /* USER CODE BEGIN TIM17_IRQn 1 */
-	if (FFT_new_buffer_ready)
+  if (FFT_new_buffer_ready)
     FFT_bufferPrepare();
-	
+
   if (TRX.CWDecoder)
     DECODER_Process();
   /* USER CODE END TIM17_IRQn 1 */
@@ -1032,8 +1036,8 @@ void DMA1_Stream0_IRQHandler(void)
 
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-	CPULOAD_WakeUp();
-	SPI_TXRX_ready = true;
+  CPULOAD_WakeUp();
+  SPI_TXRX_ready = true;
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)

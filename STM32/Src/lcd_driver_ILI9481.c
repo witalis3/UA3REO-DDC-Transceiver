@@ -511,13 +511,13 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
 
 	uint32_t n = ((x1 + 1) - x0) * ((y1 + 1) - y0);
-	if(n < 100)
+	if (n < 100)
 	{
-		while(n--)
+		while (n--)
 			LCDDriver_SendData(color);
 		return;
 	}
-	
+
 	//DMA2D Set color in 32bit format
 	WRITE_REG(hdma2d.Instance->OCOLR, (color << 16) | color);
 	//DMA2D Set width and 32bit align
@@ -635,17 +635,17 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 	if (y0 > y1)
 	{
 		_swap_int16_t(y0, y1)
-		_swap_int16_t(x0, x1)
+			_swap_int16_t(x0, x1)
 	}
 	if (y1 > y2)
 	{
 		_swap_int16_t(y2, y1)
-		_swap_int16_t(x2, x1)
+			_swap_int16_t(x2, x1)
 	}
 	if (y0 > y1)
 	{
 		_swap_int16_t(y0, y1)
-		_swap_int16_t(x0, x1)
+			_swap_int16_t(x0, x1)
 	}
 
 	if (y0 == y2)
@@ -690,7 +690,7 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
     */
 		if (a > b)
 			_swap_int16_t(a, b)
-		LCDDriver_drawFastHLine(a, y, b - a + 1, color);
+				LCDDriver_drawFastHLine(a, y, b - a + 1, color);
 	}
 
 	// For lower part of triangle, find scanline crossings for segments
@@ -709,7 +709,7 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
     */
 		if (a > b)
 			_swap_int16_t(a, b)
-		LCDDriver_drawFastHLine(a, y, b - a + 1, color);
+				LCDDriver_drawFastHLine(a, y, b - a + 1, color);
 	}
 }
 

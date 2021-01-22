@@ -86,8 +86,8 @@ void sendToDebug_str_LCDOnly(char *data)
 	if (LCD_DEBUG_ENABLED)
 	{
 		LCDDriver_printText(data, LCDDriver_GetCurrentXOffset(), dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
-		
-		if(strchr(data, '\n') != NULL)
+
+		if (strchr(data, '\n') != NULL)
 		{
 			dbg_lcd_y += 9;
 			LCDDriver_printText("     ", 0, dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
@@ -491,19 +491,19 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 	SPI_busy = true;
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
-	
-	if(dma)
+
+	if (dma)
 	{
 		uint32_t starttime = HAL_GetTick();
 		SPI_TXRX_ready = false;
 		if (in_data == NULL)
 		{
-			if(hdma_spi2_rx.Init.MemInc != DMA_MINC_DISABLE)
+			if (hdma_spi2_rx.Init.MemInc != DMA_MINC_DISABLE)
 			{
 				hdma_spi2_rx.Init.MemInc = DMA_MINC_DISABLE;
 				HAL_DMA_Init(&hdma_spi2_rx);
 			}
-			if(hdma_spi2_tx.Init.MemInc != DMA_MINC_ENABLE)
+			if (hdma_spi2_tx.Init.MemInc != DMA_MINC_ENABLE)
 			{
 				hdma_spi2_tx.Init.MemInc = DMA_MINC_ENABLE;
 				HAL_DMA_Init(&hdma_spi2_tx);
@@ -512,12 +512,12 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		}
 		else if (out_data == NULL)
 		{
-			if(hdma_spi2_rx.Init.MemInc != DMA_MINC_ENABLE)
+			if (hdma_spi2_rx.Init.MemInc != DMA_MINC_ENABLE)
 			{
 				hdma_spi2_rx.Init.MemInc = DMA_MINC_ENABLE;
 				HAL_DMA_Init(&hdma_spi2_rx);
 			}
-			if(hdma_spi2_tx.Init.MemInc != DMA_MINC_DISABLE)
+			if (hdma_spi2_tx.Init.MemInc != DMA_MINC_DISABLE)
 			{
 				hdma_spi2_tx.Init.MemInc = DMA_MINC_DISABLE;
 				HAL_DMA_Init(&hdma_spi2_tx);
@@ -526,20 +526,20 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		}
 		else
 		{
-			if(hdma_spi2_rx.Init.MemInc != DMA_MINC_ENABLE)
+			if (hdma_spi2_rx.Init.MemInc != DMA_MINC_ENABLE)
 			{
 				hdma_spi2_rx.Init.MemInc = DMA_MINC_ENABLE;
 				HAL_DMA_Init(&hdma_spi2_rx);
 			}
-			if(hdma_spi2_tx.Init.MemInc != DMA_MINC_ENABLE)
+			if (hdma_spi2_tx.Init.MemInc != DMA_MINC_ENABLE)
 			{
 				hdma_spi2_tx.Init.MemInc = DMA_MINC_ENABLE;
 				HAL_DMA_Init(&hdma_spi2_tx);
 			}
 			res = HAL_SPI_TransmitReceive_DMA(&hspi2, out_data, in_data, count);
 		}
-		while(!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < 1000))
-				CPULOAD_GoToSleepMode();
+		while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < 1000))
+			CPULOAD_GoToSleepMode();
 	}
 	else
 	{
@@ -558,7 +558,7 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 			res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, timeout);
 		}
 	}
-	
+
 	if (!hold_cs)
 		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
 	SPI_busy = false;

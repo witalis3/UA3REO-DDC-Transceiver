@@ -231,7 +231,7 @@ uint8_t DEBUG_Transmit_FIFO_Events(void)
 				break;
 		}
 	}
-	
+
 	DEBUG_Transmit_FS(temp_buff, indx);
 	FIFO_Events_busy = false;
 	return USBD_BUSY;

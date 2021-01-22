@@ -177,10 +177,10 @@ int main(void)
     LCD_Init();
     LCD_showError("STM32 crystals error", false);
   }
-	
-	//Stack protection
-	#define stack_addr 0x20000000
-	MPU_Region_InitTypeDef MPU_InitStruct = {0};
+
+//Stack protection
+#define stack_addr 0x20000000
+  MPU_Region_InitTypeDef MPU_InitStruct = {0};
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER4;
   MPU_InitStruct.BaseAddress = stack_addr + 64; //growning down
@@ -193,9 +193,9 @@ int main(void)
   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
-	
-	//Heap protection
-	#define heap_addr 0x20020000
+
+//Heap protection
+#define heap_addr 0x20020000
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER5;
   MPU_InitStruct.BaseAddress = stack_addr - 32; //growning up
@@ -208,7 +208,7 @@ int main(void)
   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
-	
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -234,13 +234,13 @@ int main(void)
   MX_DMA2D_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-	#ifdef HAS_TOUCHPAD
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
+#ifdef HAS_TOUCHPAD
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
   GPIO_InitStruct.Pin = ENC2SW_AND_TOUCHPAD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-	#endif
+#endif
   __HAL_RCC_CSI_ENABLE();
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   __HAL_RCC_BKPRAM_CLK_ENABLE();
@@ -257,18 +257,18 @@ int main(void)
   sendToDebug_strln("[OK] Frontpanel init");
   FRONTPANEL_Init();
   sendToDebug_strln("[OK] Settings loading");
-  #ifdef FRONTPANEL_SMALL_V1
-	if (PERIPH_FrontPanel_Buttons[13].state) //soft reset (MENU)
+#ifdef FRONTPANEL_SMALL_V1
+  if (PERIPH_FrontPanel_Buttons[13].state) //soft reset (MENU)
     LoadSettings(true);
   else
-	#endif
-  #if FRONTPANEL_BIG_V1
-	if (PERIPH_FrontPanel_Buttons[20].state) //soft reset (MENU)
+#endif
+#if FRONTPANEL_BIG_V1
+      if (PERIPH_FrontPanel_Buttons[20].state) //soft reset (MENU)
     LoadSettings(true);
   else
-  #endif
-		LoadSettings(false);
-	TRX.Locked = false;
+#endif
+    LoadSettings(false);
+  TRX.Locked = false;
   sendToDebug_strln("[OK] LCD init");
   LCD_busy = true;
   LCD_Init();
@@ -288,28 +288,28 @@ int main(void)
   sendToDebug_strln("[OK] Profiler init");
   InitProfiler();
   sendToDebug_strln("[OK] Calibration loading");
-	#ifdef FRONTPANEL_SMALL_V1
+#ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
     LoadCalibration(true);
   else
-	#endif
+#endif
     LoadCalibration(false);
   sendToDebug_strln("[OK] FPGA init");
-	#ifdef FRONTPANEL_SMALL_V1
-	if (PERIPH_FrontPanel_Buttons[19].state) //fpga bus test (MODE+)
-		FPGA_Init(true, false);
-	if (PERIPH_FrontPanel_Buttons[20].state) //fpga firmware test (MODE-)
-		FPGA_Init(false, true);
-	else
-	#endif
-		FPGA_Init(false, false);
+#ifdef FRONTPANEL_SMALL_V1
+  if (PERIPH_FrontPanel_Buttons[19].state) //fpga bus test (MODE+)
+    FPGA_Init(true, false);
+  if (PERIPH_FrontPanel_Buttons[20].state) //fpga firmware test (MODE-)
+    FPGA_Init(false, true);
+  else
+#endif
+    FPGA_Init(false, false);
   sendToDebug_strln("[OK] STM32-ADC Calibration");
   HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   sendToDebug_strln("[OK] RF-Unit init");
   RF_UNIT_UpdateState(false);
   sendToDebug_strln("[OK] FFT/Waterfall & TIM4 init");
-	FFT_PreInit();
+  FFT_PreInit();
   FFT_Init();
   HAL_TIM_Base_Start_IT(&htim4);
   sendToDebug_strln("[OK] AudioCodec init");
@@ -1533,7 +1533,7 @@ static void MX_FMC_Init(void)
   Timing.DataSetupTime = 20;
   Timing.BusTurnAroundDuration = 10;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
-	//fast timings in lcd_driver_RA8875.c
+  //fast timings in lcd_driver_RA8875.c
 #endif
   if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
     Error_Handler();
@@ -1717,7 +1717,7 @@ static void MX_GPIO_Init(void)
 
 int fputc(int ch, FILE *f)
 {
-	#pragma unused(f)
+#pragma unused(f)
   ITM_SendChar((uint32_t)ch);
   return (ch);
 }

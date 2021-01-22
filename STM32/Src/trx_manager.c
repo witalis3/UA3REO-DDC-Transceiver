@@ -55,7 +55,7 @@ volatile bool TRX_DCDC_Freq = false;
 static uint_fast8_t autogain_wait_reaction = 0;	  // timer for waiting for a reaction from changing the ATT / PRE modes
 volatile uint8_t TRX_AutoGain_Stage = 0;		  // stage of working out the amplification corrector
 static uint32_t KEYER_symbol_start_time = 0;	  // start time of the automatic key character
-static uint_fast8_t KEYER_symbol_status = 0;		  // status (signal or period) of the automatic key symbol
+static uint_fast8_t KEYER_symbol_status = 0;	  // status (signal or period) of the automatic key symbol
 volatile float32_t TRX_STM32_VREF = 3.3f;		  // voltage on STM32
 volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; // STM32 temperature
 volatile float32_t TRX_IQ_phase_error = 0.0f;
@@ -340,8 +340,8 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		if ((old_mode != TRX_MODE_CW_L && old_mode != TRX_MODE_CW_U) && (_mode == TRX_MODE_CW_L || _mode == TRX_MODE_CW_U))
 			FFT_Init();
 	}
-	
-	if(old_mode != _mode)
+
+	if (old_mode != _mode)
 		NeedReinitAudioFiltersClean = true;
 	NeedReinitAudioFilters = true;
 	NeedSaveSettings = true;
@@ -557,17 +557,17 @@ void TRX_DBMCalculate(void)
 float32_t current_cw_power = 0.0f;
 static float32_t TRX_generateRiseSignal(float32_t power)
 {
-	if(current_cw_power < power)
+	if (current_cw_power < power)
 		current_cw_power += power * 0.007f;
-	if(current_cw_power > power)
+	if (current_cw_power > power)
 		current_cw_power = power;
 	return current_cw_power;
 }
 static float32_t TRX_generateFallSignal(float32_t power)
 {
-	if(current_cw_power > 0.0f)
+	if (current_cw_power > 0.0f)
 		current_cw_power -= power * 0.007f;
-	if(current_cw_power < 0.0f)
+	if (current_cw_power < 0.0f)
 		current_cw_power = 0.0f;
 	return current_cw_power;
 }
@@ -577,7 +577,7 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 	if (!TRX.CW_KEYER)
 	{
 		if (!TRX_key_serial && !TRX_ptt_hard && !TRX_key_dot_hard && !TRX_key_dash_hard)
-				return TRX_generateFallSignal(power);
+			return TRX_generateFallSignal(power);
 		return TRX_generateRiseSignal(power);
 	}
 
@@ -601,7 +601,7 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 		KEYER_symbol_start_time = curTime;
 		KEYER_symbol_status = 3;
 	}
-	
+
 	//dash
 	if (KEYER_symbol_status == 0 && TRX_key_dash_hard)
 	{
@@ -618,7 +618,7 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 		KEYER_symbol_start_time = curTime;
 		KEYER_symbol_status = 3;
 	}
-	
+
 	//space
 	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) > curTime)
 	{
@@ -629,7 +629,7 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 	{
 		KEYER_symbol_status = 0;
 	}
-	
+
 	return TRX_generateFallSignal(power);
 }
 
@@ -702,10 +702,10 @@ void TRX_setFrequencySlowly(uint32_t target_freq)
 
 void TRX_setFrequencySlowly_Process(void)
 {
-	if(!setFreqSlowly_processing)
+	if (!setFreqSlowly_processing)
 		return;
 	int32_t diff = CurrentVFO()->Freq - setFreqSlowly_target;
-	if(diff > TRX_SLOW_SETFREQ_MIN_STEPSIZE || diff < -TRX_SLOW_SETFREQ_MIN_STEPSIZE)
+	if (diff > TRX_SLOW_SETFREQ_MIN_STEPSIZE || diff < -TRX_SLOW_SETFREQ_MIN_STEPSIZE)
 	{
 		TRX_setFrequency(CurrentVFO()->Freq - diff / 4, CurrentVFO());
 		LCD_UpdateQuery.FreqInfo = true;

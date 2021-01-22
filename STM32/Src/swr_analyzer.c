@@ -82,7 +82,7 @@ extern void TDM_Voltages(void) //Tisho
 	float32_t P_FW_dBm, P_BW_dBm;
 	float32_t V_FW_Scaled, V_BW_Scaled;
 	float32_t P_FW_W, P_BW_W;
-	
+
 	// Read the signals (Voltages - raw data)
 	RF_UNIT_MeasureVoltage();
 

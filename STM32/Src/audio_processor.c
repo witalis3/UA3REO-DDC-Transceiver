@@ -14,9 +14,9 @@
 #include "vocoder.h"
 
 // Public variables
-volatile uint32_t AUDIOPROC_samples = 0;								  // audio samples processed in the processor
-volatile bool Processor_NeedRXBuffer = false;							  // codec needs data from processor for RX
-volatile bool Processor_NeedTXBuffer = false;							  // codec needs data from processor for TX
+volatile uint32_t AUDIOPROC_samples = 0;							   // audio samples processed in the processor
+volatile bool Processor_NeedRXBuffer = false;						   // codec needs data from processor for RX
+volatile bool Processor_NeedTXBuffer = false;						   // codec needs data from processor for TX
 float32_t APROC_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // copy of the working part of the FPGA buffers for processing
 float32_t APROC_Audio_Buffer_RX1_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
@@ -29,7 +29,7 @@ volatile float32_t Processor_TX_MAX_amplitude_OUT;				// TX uplift after ALC
 bool NeedReinitReverber = false;
 
 // Private variables
-static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};								 // output buffer of the audio processor
+static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};									 // output buffer of the audio processor
 static uint32_t two_signal_gen_position = 0;													 // signal position in a two-signal generator
 static float32_t ALC_need_gain = 1.0f;															 // current gain of ALC and audio compressor
 static float32_t ALC_need_gain_target = 1.0f;													 // Target Gain Of ALC And Audio Compressor
@@ -346,19 +346,19 @@ void processRxAudio(void)
 		{
 			if (!TRX.current_vfo)
 			{
-				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1);	 //left channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1);	  //left channel
 				arm_float_to_q31(&APROC_Audio_Buffer_RX2_I[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
 			}
 			else
 			{
-				arm_float_to_q31(&APROC_Audio_Buffer_RX2_I[i], &APROC_AudioBuffer_out[i * 2], 1);	 //left channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX2_I[i], &APROC_AudioBuffer_out[i * 2], 1);	  //left channel
 				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
 			}
 		}
 		else if (TRX.Dual_RX_Type == VFO_A_PLUS_B)
 		{
 			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1); //left channel
-			APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];			 //right channel
+			APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];				  //right channel
 		}
 	}
 
@@ -382,23 +382,23 @@ void processRxAudio(void)
 	//OUT Volume
 	float32_t volume_gain_new = volume2rate((float32_t)TRX_Volume / 1023.0f);
 	volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
-	
+
 	//SD card send
-	if(SD_RecordInProcess)
+	if (SD_RecordInProcess)
 	{
 		//decimated_block_size_rx1 - 192
 		for (uint_fast16_t i = 0; i < decimated_block_size_rx1; i++)
 		{
 			arm_float_to_q15(&APROC_Audio_Buffer_RX1_I[i], &VOCODER_InBuffer[VOCODER_InBuffer_Index], 1); //left channel
 			VOCODER_InBuffer_Index++;
-			if(VOCODER_InBuffer_Index == SIZE_ADPCM_BLOCK)
+			if (VOCODER_InBuffer_Index == SIZE_ADPCM_BLOCK)
 			{
 				VOCODER_InBuffer_Index = 0;
 				VOCODER_Process();
 			}
 		}
 	}
-	
+
 	//Volume Gain and SPI convert
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
 	{
@@ -407,7 +407,7 @@ void processRxAudio(void)
 		//Codec SPI
 		APROC_AudioBuffer_out[i] = convertToSPIBigEndian(APROC_AudioBuffer_out[i]); //for 32bit audio
 	}
-	
+
 	//Beep signal
 	if (WM8731_Beeping)
 	{
@@ -418,7 +418,7 @@ void processRxAudio(void)
 		{
 			signal = generateSin(amplitude, pos, TRX_SAMPLERATE, 1500);
 			arm_float_to_q31(&signal, &out, 1);
-			APROC_AudioBuffer_out[pos * 2] = convertToSPIBigEndian(out);				 //left channel
+			APROC_AudioBuffer_out[pos * 2] = convertToSPIBigEndian(out);		 //left channel
 			APROC_AudioBuffer_out[pos * 2 + 1] = APROC_AudioBuffer_out[pos * 2]; //right channel
 		}
 	}
@@ -468,7 +468,7 @@ void processTxAudio(void)
 
 	if (mode == TRX_MODE_LOOPBACK && !TRX_Tune)
 		Processor_selected_RFpower_amplitude = 0.5f;
-	
+
 	// zero beats
 	if ((TRX_Tune && !TRX.TWO_SIGNAL_TUNE) || (TRX_Tune && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)))
 		Processor_selected_RFpower_amplitude = Processor_selected_RFpower_amplitude * 1.0f;
@@ -706,8 +706,8 @@ void processTxAudio(void)
 	//RF PowerControl (Audio Level Control) Compressor END
 
 	//Send TX data to FFT
-	float32_t* FFTInput_I_current = FFT_buff_current ? (float32_t*)&FFTInput_I_A : (float32_t*)&FFTInput_I_B;
-	float32_t* FFTInput_Q_current = FFT_buff_current ? (float32_t*)&FFTInput_Q_A : (float32_t*)&FFTInput_Q_B;
+	float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
+	float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 	{
 		FFTInput_I_current[FFT_buff_index] = APROC_Audio_Buffer_TX_I[i];
@@ -717,7 +717,7 @@ void processTxAudio(void)
 		if (FFT_buff_index >= FFT_HALF_SIZE)
 		{
 			FFT_buff_index = 0;
-			if(FFT_new_buffer_ready)
+			if (FFT_new_buffer_ready)
 			{
 				//sendToDebug_str("fft overrun");
 			}
@@ -764,7 +764,7 @@ void processTxAudio(void)
 			float32_t amplitude = (db2rateV(TRX.AGC_GAIN_TARGET) * volume_gain_tx * CODEC_BITS_FULL_SCALE / 2.0f);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				int32_t data = convertToSPIBigEndian((int32_t)(amplitude  * ( APROC_Audio_Buffer_TX_I[i] / Processor_selected_RFpower_amplitude) * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ)));
+				int32_t data = convertToSPIBigEndian((int32_t)(amplitude * (APROC_Audio_Buffer_TX_I[i] / Processor_selected_RFpower_amplitude) * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ)));
 				if (WM8731_DMA_state)
 				{
 					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
@@ -1201,8 +1201,8 @@ static void ModulateFM(uint16_t size)
 	for (uint_fast16_t i = 0; i < size; i++)
 	{
 		hpf_prev_b = FM_TX_HPF_ALPHA * (hpf_prev_b + APROC_Audio_Buffer_TX_I[i] - hpf_prev_a); // do differentiation
-		hpf_prev_a = APROC_Audio_Buffer_TX_I[i];												  // save "[n-1] samples for next iteration
-		fm_mod_accum = (1.0f - 0.999f) * fm_mod_accum + 0.999f * hpf_prev_b;					  // save differentiated data in audio buffer // change frequency using scaled audio
+		hpf_prev_a = APROC_Audio_Buffer_TX_I[i];											   // save "[n-1] samples for next iteration
+		fm_mod_accum = (1.0f - 0.999f) * fm_mod_accum + 0.999f * hpf_prev_b;				   // save differentiated data in audio buffer // change frequency using scaled audio
 		while (fm_mod_accum > modulation)
 			fm_mod_accum -= modulation; // limit range
 		while (fm_mod_accum < -modulation)
