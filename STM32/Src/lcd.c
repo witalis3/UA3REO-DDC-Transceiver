@@ -537,6 +537,128 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	LCD_busy = false;
 }
 
+static int32_t LCD_GetSMeterValPosition(float32_t dbm)
+{
+	int32_t width = LAYOUT->STATUS_SMETER_WIDTH - 2;
+	float32_t TRX_s_meter = 0;
+	if(!LAYOUT->STATUS_SMETER_ANALOG) //digital version
+	{
+		TRX_s_meter = (127.0f + dbm); // 127dbm - S0, 6dBm - 1S div
+		if (CurrentVFO()->Freq >= 144000000)
+			TRX_s_meter = (147.0f + dbm); // 147dbm - S0 for frequencies above 144mhz
+
+		if (TRX_s_meter < 54.01f) // first 9 points of meter is 6 dB each
+			TRX_s_meter = (width / 15.0f) * (TRX_s_meter / 6.0f);
+		else // the remaining 6 points, 10 dB each
+			TRX_s_meter = ((width / 15.0f) * 9.0f) + ((TRX_s_meter - 54.0f) / 10.0f) * (width / 15.0f);
+
+		TRX_s_meter += 1.0f;
+		if (TRX_s_meter > width)
+			TRX_s_meter = width;
+		if (TRX_s_meter < 1.0f)
+			TRX_s_meter = 1.0f;
+	}
+	else //analog meter version
+	{
+		TRX_s_meter = (127.0f + dbm); // 127dbm - S0, 6dBm - 1S div
+		if (CurrentVFO()->Freq >= 144000000)
+			TRX_s_meter = (147.0f + dbm); // 147dbm - S0 for frequencies above 144mhz
+
+		if (TRX_s_meter < 54.01f) // first 9 points of meter is 6 dB each
+			TRX_s_meter = (width / 17.0f) * (TRX_s_meter / 6.0f);
+		else // the remaining points, 10 dB each
+			TRX_s_meter = ((width / 17.0f) * 9.0f) + ((TRX_s_meter - 54.0f) / 10.0f) * (width / 14.0f);
+		
+		//ugly corrections :/
+		if(dbm > -5.0f) // > S9+60
+			TRX_s_meter -= 2.0f;
+		if(dbm > -15.0f) // > S9+50
+			TRX_s_meter += 3.0f;
+		if(dbm > -25.0f)  // > S9+40
+			TRX_s_meter += 2.0f;
+		if(dbm > -35.0f)  // > S9+30
+			TRX_s_meter += 2.0f;
+		if(dbm > -45.0f) // > S9+20
+			TRX_s_meter += 2.0f;
+		if(dbm > -75.0f) // > S8
+			TRX_s_meter -= 2.0f;
+		if(dbm < -87.0f) // < S7
+			TRX_s_meter += 2.0f;
+		if(dbm < -100.0f) // < S5
+			TRX_s_meter += 2.0f;
+		if(dbm < -104.0f) // < S4
+			TRX_s_meter += 2.0f;
+		/*if(dbm < -117.0f) // < S2
+			TRX_s_meter -= 7.0f;*/
+		if(dbm < -122.0f) // < S1
+			TRX_s_meter += 2.0f;
+		
+		if (TRX_s_meter > width + 60.0f)
+			TRX_s_meter = width + 60.0f;
+		if (TRX_s_meter < -30.0f)
+			TRX_s_meter = -30.0f;
+	}
+	return TRX_s_meter;
+}
+
+static void LCD_PrintMeterArrow(int16_t target_pixel_x)
+{
+	float32_t x0 = LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_SMETER_WIDTH / 2 + 2;
+	float32_t y0 = LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_SMETER_ANALOG_HEIGHT + 140;
+	float32_t x1 = LAYOUT->STATUS_BAR_X_OFFSET + target_pixel_x;
+	float32_t y1 = LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 1;
+	
+	//length cut
+	const uint32_t max_length = 220;
+	float32_t x_diff = 0;
+	float32_t y_diff = 0;
+	float32_t length = sqrtf((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+	if(length > max_length)
+	{
+		float32_t coeff = (float32_t)max_length / length;
+		x_diff = (x1 - x0) * coeff;
+		y_diff = (y1 - y0) * coeff;
+		x1 = x0 + x_diff;
+		y1 = y0 + y_diff;
+	}
+	//right cut
+	while(x1 > LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_SMETER_WIDTH)
+	{
+		x_diff = (x1 - x0) * 0.99f;
+		y_diff = (y1 - y0) * 0.99f;
+		x1 = x0 + x_diff;
+		y1 = y0 + y_diff;
+	}
+	//left cut
+	while(x1 < LAYOUT->STATUS_BAR_X_OFFSET)
+	{
+		x_diff = (x1 - x0) * 0.99f;
+		y_diff = (y1 - y0) * 0.99f;
+		x1 = x0 + x_diff;
+		y1 = y0 + y_diff;
+	}
+	//start cut
+	while(y0 > LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_SMETER_ANALOG_HEIGHT)
+	{
+		x_diff = (x1 - x0) * 0.99f;
+		y_diff = (y1 - y0) * 0.99f;
+		x0 = x1 - x_diff;
+		y0 = y1 - y_diff;
+	}
+	
+	//draw
+	if(x1 < x0)
+	{
+		LCDDriver_drawLine(x0, y0, x1, y1, COLOR->STATUS_SMETER_STRIPE);
+		LCDDriver_drawLine(x0 + 1, y0, x1 + 1, y1, COLOR->STATUS_SMETER_STRIPE);
+	}
+	else
+	{
+		LCDDriver_drawLine(x0, y0, x1, y1, COLOR->STATUS_SMETER_STRIPE);
+		LCDDriver_drawLine(x0 - 1, y0, x1 - 1, y1, COLOR->STATUS_SMETER_STRIPE);
+	}
+}
+
 static void LCD_displayStatusInfoBar(bool redraw)
 {
 	// S-meter and other information
@@ -549,26 +671,10 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	}
 	LCD_busy = true;
 	char ctmp[50];
-	const int width = LAYOUT->STATUS_SMETER_WIDTH - 2;
 
 	if (!TRX_on_TX())
 	{
-		float32_t TRX_s_meter = (127.0f + TRX_RX_dBm); // 127dbm - S0, 6dBm - 1S div
-		if (CurrentVFO()->Freq >= 144000000)
-			TRX_s_meter = (147.0f + TRX_RX_dBm); // 147dbm - S0 for frequencies above 144mhz
-
-		if (TRX_s_meter < 54.01f) // first 9 points of meter is 6 dB each
-			TRX_s_meter = (width / 15.0f) * (TRX_s_meter / 6.0f);
-		else // the remaining 6 points, 10 dB each
-			TRX_s_meter = ((width / 15.0f) * 9.0f) + ((TRX_s_meter - 54.0f) / 10.0f) * (width / 15.0f);
-
-		TRX_s_meter += 1.0f;
-		if (TRX_s_meter > width)
-			TRX_s_meter = width;
-		if (TRX_s_meter < 1.0f)
-			TRX_s_meter = 1.0f;
-
-		float32_t s_width = LCD_last_s_meter * 0.75f + TRX_s_meter * 0.25f; // smooth the movement of the S-meter
+		float32_t s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX_dBm) * 0.25f; // smooth the movement of the S-meter
 
 		//digital s-meter version
 		if ((redraw || (LCD_last_s_meter != s_width)) && !LAYOUT->STATUS_SMETER_ANALOG)
@@ -609,8 +715,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		{
 			// redraw s-meter gui and line
 			LCD_drawSMeter();
-			LCDDriver_drawLine(LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_SMETER_WIDTH / 2, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_SMETER_ANALOG_HEIGHT, LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 10, COLOR->STATUS_SMETER_STRIPE);
-
+			LCD_PrintMeterArrow(s_width);
+			
 			LCD_last_s_meter = s_width;
 		}
 
