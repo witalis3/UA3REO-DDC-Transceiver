@@ -164,6 +164,9 @@ extern "C"
 		const uint16_t STATUS_SMETER_TXLABELS_PADDING;
 		const uint16_t STATUS_TX_LABELS_VAL_WIDTH;
 		const uint16_t STATUS_TX_LABELS_VAL_HEIGHT;
+		const uint16_t STATUS_TX_LABELS_SWR_X;
+		const uint16_t STATUS_TX_LABELS_FWD_X;
+		const uint16_t STATUS_TX_LABELS_REF_X;
 		const uint16_t STATUS_TX_ALC_X_OFFSET;
 		const uint16_t STATUS_MODE_X_OFFSET;
 		const int16_t STATUS_MODE_Y_OFFSET;
