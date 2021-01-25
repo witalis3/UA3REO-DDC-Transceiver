@@ -322,7 +322,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.NotchFC", (uint32_t *)&TRX.VFO_A.NotchFC, SYSMENU_UINT32);
 		if (res)
-			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR", (uint32_t *)&TRX.VFO_A.DNR, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint32_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 		if (res)
@@ -340,7 +340,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.NotchFC", (uint32_t *)&TRX.VFO_B.NotchFC, SYSMENU_UINT32);
 		if (res)
-			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR", (uint32_t *)&TRX.VFO_A.DNR, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint32_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 		if (res)
@@ -708,8 +708,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_A.AutoNotchFilter = bval;
 	if (strcmp(name, "TRX.VFO_A.NotchFC") == 0)
 		TRX.VFO_A.NotchFC = uintval;
-	if (strcmp(name, "TRX.VFO_A.DNR") == 0)
-		TRX.VFO_A.DNR = bval;
+	if (strcmp(name, "TRX.VFO_A.DNR_Type") == 0)
+		TRX.VFO_A.DNR_Type = uintval;
 	if (strcmp(name, "TRX.VFO_A.AGC") == 0)
 		TRX.VFO_A.AGC = bval;
 	if (strcmp(name, "TRX.VFO_B.Freq") == 0)
@@ -726,8 +726,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_B.AutoNotchFilter = bval;
 	if (strcmp(name, "TRX.VFO_B.NotchFC") == 0)
 		TRX.VFO_B.NotchFC = uintval;
-	if (strcmp(name, "TRX.VFO_A.DNR") == 0)
-		TRX.VFO_A.DNR = bval;
+	if (strcmp(name, "TRX.VFO_A.DNR_Type") == 0)
+		TRX.VFO_A.DNR_Type = uintval;
 	if (strcmp(name, "TRX.VFO_A.AGC") == 0)
 		TRX.VFO_A.AGC = bval;
 	if (strcmp(name, "TRX.current_vfo") == 0)

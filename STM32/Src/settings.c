@@ -131,7 +131,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.ManualNotchFilter = false; // notch filter to cut out noise
 		TRX.VFO_A.AutoNotchFilter = false;	 // notch filter to cut out noise
 		TRX.VFO_A.NotchFC = 1000;			 // cutoff frequency of the notch filter
-		TRX.VFO_A.DNR = false;				 // digital noise reduction
+		TRX.VFO_A.DNR_Type = 0;				 // digital noise reduction
 		TRX.VFO_A.AGC = true;				 // AGC
 		TRX.VFO_B.Freq = 14150000;			 // stored VFO-B frequency
 		TRX.VFO_B.Mode = TRX_MODE_USB;		 // saved VFO-B mode
@@ -140,7 +140,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.ManualNotchFilter = false; // notch filter to cut out noise
 		TRX.VFO_B.AutoNotchFilter = false;	 // notch filter to cut out noise
 		TRX.VFO_B.NotchFC = 1000;			 // cutoff frequency of the notch filter
-		TRX.VFO_A.DNR = false;				 // digital noise reduction
+		TRX.VFO_A.DNR_Type = 0;				 // digital noise reduction
 		TRX.VFO_A.AGC = true;				 // AGC
 		TRX.current_vfo = false;			 // current VFO (false - A)
 		TRX.ADC_Driver = true;				 // preamplifier (ADC driver)
@@ -163,7 +163,7 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.FM_SQL_threshold;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
-			TRX.BANDS_SAVED_SETTINGS[i].DNR = false;
+			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 			TRX.BANDS_SAVED_SETTINGS[i].AutoGain_Stage = 6;
 		}

@@ -120,7 +120,7 @@ typedef struct
 	bool ManualNotchFilter;
 	bool AutoNotchFilter;
 	uint_fast16_t NotchFC;
-	bool DNR;
+	uint8_t DNR_Type; //0-disabled 1-dnr 2-dnr2
 	bool AGC;
 } VFO;
 
@@ -143,7 +143,7 @@ typedef struct
 	bool ADC_Driver;
 	bool ADC_PGA;
 	uint8_t FM_SQL_threshold;
-	bool DNR;
+	uint8_t DNR_Type;
 	bool AGC;
 	uint8_t AutoGain_Stage;
 } BAND_SAVED_SETTINGS_TYPE;

@@ -981,18 +981,24 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
-		if (CurrentVFO()->DNR > 0)
+		if (CurrentVFO()->DNR_Type > 0)
 		{
 			for (uint32_t block = 0; block < (size / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				processNoiseReduction(APROC_Audio_Buffer_RX1_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
+				if(CurrentVFO()->DNR_Type == 2)
+					processNoiseReduction(APROC_Audio_Buffer_RX1_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 2);
+				else
+					processNoiseReduction(APROC_Audio_Buffer_RX1_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 1);
 		}
 	}
 	else
 	{
-		if (SecondaryVFO()->DNR > 0)
+		if (SecondaryVFO()->DNR_Type > 0)
 		{
 			for (uint32_t block = 0; block < (size / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				processNoiseReduction(APROC_Audio_Buffer_RX2_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
+				if(SecondaryVFO()->DNR_Type == 2)
+					processNoiseReduction(APROC_Audio_Buffer_RX2_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 2);
+				else
+					processNoiseReduction(APROC_Audio_Buffer_RX2_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 1);
 		}
 	}
 }
@@ -1009,7 +1015,7 @@ static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode)
 // impulse noise suppressor
 static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
-	if (!TRX.NOISE_BLANKER)
+	/*if (!TRX.NOISE_BLANKER)
 		return;
 	if (rx_id == AUDIO_RX1)
 	{
@@ -1020,7 +1026,7 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	{
 		for (uint32_t block = 0; block < (size / NB_BLOCK_SIZE); block++)
 			processNoiseBlanking(APROC_Audio_Buffer_RX2_I + (block * NB_BLOCK_SIZE), rx_id);
-	}
+	}*/
 }
 
 // s-meter

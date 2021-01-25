@@ -2,10 +2,10 @@
 #include "arm_const_structs.h"
 #include "settings.h"
 
-//https://github.com/df8oe/UHSDR/wiki/Noise-reduction
+// useful info https://github.com/df8oe/UHSDR/wiki/Noise-reduction
 
 //Private variables
-static NR_Instance NR_RX1 = {
+IRAM2 static NR_Instance NR_RX1 = {
 	.NR_InputBuffer = {0},
 	.NR_InputBuffer_index = 0,
 	.NR_OutputBuffer = {0},
@@ -18,8 +18,12 @@ static NR_Instance NR_RX1 = {
 	.FFT_MINIMUM_MAG = {0},
 	.NR_GAIN = {0},
 	.LAST_IFFT_RESULT = {0},
+	
+	.NR_GAIN_old = {0},
+	.SNR_post = {0},
+	.SNR_prio = {0},
 };
-IRAM2 static NR_Instance NR_RX2 = {
+SRAM static NR_Instance NR_RX2 = {
 	.NR_InputBuffer = {0},
 	.NR_InputBuffer_index = 0,
 	.NR_OutputBuffer = {0},
@@ -32,6 +36,10 @@ IRAM2 static NR_Instance NR_RX2 = {
 	.FFT_MINIMUM_MAG = {0},
 	.NR_GAIN = {0},
 	.LAST_IFFT_RESULT = {0},
+	
+	.NR_GAIN_old = {0},
+	.SNR_post = {0},
+	.SNR_prio = {0},
 };
 static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; // coefficients for the window function
 
@@ -40,14 +48,29 @@ void InitNoiseReduction(void)
 {
 	for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
 		von_Hann[idx] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * F_PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)));
+	
+	for (uint16_t bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
+	{
+		NR_RX1.NR_Prev_Buffer[bindx] = 0.0;
+		NR_RX1.NR_GAIN[bindx] = 1.0;
+		NR_RX1.NR_GAIN_old[bindx] = 1.0;
+		
+		NR_RX2.NR_Prev_Buffer[bindx] = 0.0;
+		NR_RX2.NR_GAIN[bindx] = 1.0;
+		NR_RX2.NR_GAIN_old[bindx] = 1.0;
+	}
 }
 
 // run DNR for the data block
-void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
+void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t nr_type)
 {
 	NR_Instance *instance = &NR_RX1;
 	if (rx_id == AUDIO_RX2)
 		instance = &NR_RX2;
+	
+	const float32_t snr_prio_min = 0.001; //range should be down to -30dB min
+	const float32_t alpha = 0.94;
+	
 	//fill input buffer
 	memcpy(&instance->NR_InputBuffer[instance->NR_InputBuffer_index * NOISE_REDUCTION_BLOCK_SIZE], buffer, NOISE_REDUCTION_BLOCK_SIZE * 4);
 	instance->NR_InputBuffer_index++;
@@ -55,6 +78,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	{
 		instance->NR_InputBuffer_index = 0;
 		instance->NR_OutputBuffer_index = 0;
+		
 		//overlap is 50%
 		for (uint8_t loop = 0; loop < 2; loop++)
 		{
@@ -93,34 +117,58 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 					instance->FFT_MINIMUM_MAG[idx] = instance->FFT_COMPLEX_MAG[idx];
 				else
 					instance->FFT_MINIMUM_MAG[idx] = instance->FFT_COMPLEX_MAG[idx] * (1.0f - (float32_t)TRX.DNR_MINIMAL / 100.0f) + instance->FFT_MINIMUM_MAG[idx] * ((float32_t)TRX.DNR_MINIMAL / 100.0f);
-			//calculate signal-noise-ratio
-			float32_t threshold = ((float32_t)TRX.DNR_SNR_THRESHOLD + 10.0f) / 10.0f;
-			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
+			
+			if(nr_type == 1)
 			{
-				float32_t snr = instance->FFT_COMPLEX_MAG[idx] / instance->FFT_MINIMUM_MAG[idx];
-				float32_t lambda = 0.0f;
-				if (snr > threshold)
+				//calculate signal-noise-ratio
+				float32_t threshold = ((float32_t)TRX.DNR_SNR_THRESHOLD + 10.0f) / 10.0f;
+				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				{
-					lambda = instance->FFT_MINIMUM_MAG[idx];
+					float32_t snr = instance->FFT_COMPLEX_MAG[idx] / instance->FFT_MINIMUM_MAG[idx];
+					float32_t lambda = 0.0f;
+					if (snr > threshold)
+					{
+						lambda = instance->FFT_MINIMUM_MAG[idx];
+					}
+					else
+					{
+						lambda = instance->FFT_AVERAGE_MAG[idx];
+					}
+					//gain calc
+					float32_t gain = 0.0f;
+					if (instance->FFT_COMPLEX_MAG[idx] > 0.0f)
+						gain = 1.0f - (lambda / instance->FFT_COMPLEX_MAG[idx]);
+					//delete noise
+					if (snr < threshold)
+						gain = 0.0f;
+					//else gain = 1.0f;
+					//time smoothing (exponential averaging) of gain weights
+					instance->NR_GAIN[idx] = NOISE_REDUCTION_ALPHA * instance->NR_GAIN[idx] + (1.0f - NOISE_REDUCTION_ALPHA) * gain;
+					//frequency smoothing of gain weights
+					if (idx > 0 && (idx < NOISE_REDUCTION_FFT_SIZE_HALF - 1))
+						instance->NR_GAIN[idx] = NOISE_REDUCTION_BETA * instance->NR_GAIN[idx - 1] + (1.0f - 2 * NOISE_REDUCTION_BETA) * instance->NR_GAIN[idx] + NOISE_REDUCTION_BETA * instance->NR_GAIN[idx + 1];
 				}
-				else
-				{
-					lambda = instance->FFT_AVERAGE_MAG[idx];
-				}
-				//gain calc
-				float32_t gain = 0.0f;
-				if (instance->FFT_COMPLEX_MAG[idx] > 0.0f)
-					gain = 1.0f - (lambda / instance->FFT_COMPLEX_MAG[idx]);
-				//delete noise
-				if (snr < threshold)
-					gain = 0.0f;
-				//else gain = 1.0f;
-				//time smoothing (exponential averaging) of gain weights
-				instance->NR_GAIN[idx] = NOISE_REDUCTION_ALPHA * instance->NR_GAIN[idx] + (1.0f - NOISE_REDUCTION_ALPHA) * gain;
-				//frequency smoothing of gain weights
-				if (idx > 0 && (idx < NOISE_REDUCTION_FFT_SIZE_HALF - 1))
-					instance->NR_GAIN[idx] = NOISE_REDUCTION_BETA * instance->NR_GAIN[idx - 1] + (1.0f - 2 * NOISE_REDUCTION_BETA) * instance->NR_GAIN[idx] + NOISE_REDUCTION_BETA * instance->NR_GAIN[idx + 1];
 			}
+			
+			if(nr_type == 2)
+			{
+				//new noise estimate MMSE based
+				for (int bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++) // 1. Step of NR - calculate the SNR's
+				{
+					float32_t xt_coeff = 0.5; //????
+					instance->SNR_post[bindx] = fmax(fmin(instance->FFT_COMPLEX_MAG[bindx] / xt_coeff, 1000.0), snr_prio_min); // limited to +30 /-15 dB, might be still too much of reduction, let's try it?
+					instance->SNR_prio[bindx] = fmax(alpha * instance->NR_GAIN_old[bindx] + (1.0 - alpha) * fmax(instance->SNR_post[bindx] - 1.0, 0.0), 0.0);
+				}
+
+				//calculate v = SNRprio(n, bin[i]) / (SNRprio(n, bin[i]) + 1) * SNRpost(n, bin[i]) (eq. 12 of Schmitt et al. 2002, eq. 9 of Romanin et al. 2009)  and calculate the HK's
+				for (int bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
+				{
+					float32_t v = instance->SNR_prio[bindx] / (instance->SNR_prio[bindx] + 1.0) * instance->SNR_post[bindx];
+					instance->NR_GAIN[bindx] = fmax(1.0 / instance->SNR_post[bindx] * sqrtf((0.7212 * v + v * v)), 0.001); //limit HK's to 0.001
+					instance->NR_GAIN_old[bindx] = instance->SNR_post[bindx] * instance->NR_GAIN[bindx] * instance->NR_GAIN[bindx];
+				}
+			}
+			
 			//apply gain weighting
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
