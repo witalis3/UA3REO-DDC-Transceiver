@@ -659,10 +659,10 @@ static void LCD_PrintMeterArrow(int16_t target_pixel_x)
 	}
 	//start cut
 	tryes = 0;
-	while((y0 > LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_SMETER_ANALOG_HEIGHT) && tryes < 100)
+	while((y0 > LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_SMETER_ANALOG_HEIGHT) && tryes < 150)
 	{
-		x_diff = (x1 - x0) * 0.95f;
-		y_diff = (y1 - y0) * 0.95f;
+		x_diff = (x1 - x0) * 0.99f;
+		y_diff = (y1 - y0) * 0.99f;
 		x0 = x1 - x_diff;
 		y0 = y1 - y_diff;
 		tryes++;
