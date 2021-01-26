@@ -1073,12 +1073,32 @@ void FFT_printWaterfallDMA(void)
 #endif
 	//
 
+	static uint8_t line_repeats_need = 1;
 #ifdef HAS_BTE
 	//move exist lines down with BTE
 	if (print_wtf_yindex == 0 && lastWTFFreq == currentFFTFreq && !NeedWTFRedraw)
 	{
-		LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
-		//1 line
+		if(TRX.FFT_Speed <= 3)
+		{
+			//1 line
+			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+			line_repeats_need = 1;
+		}
+		if(TRX.FFT_Speed == 4 && FFT_FPS_Last < 44)
+		{
+			//2 line
+			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+			line_repeats_need = 2;
+		}
+		if(TRX.FFT_Speed == 5 && FFT_FPS_Last < 55)
+		{
+			//3 line
+			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
+			line_repeats_need = 3;
+		}
 		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + print_wtf_yindex);
 	}
 	else if (print_wtf_yindex == 0 && (lastWTFFreq != currentFFTFreq || NeedWTFRedraw))
@@ -1100,8 +1120,9 @@ void FFT_printWaterfallDMA(void)
 	if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
 #endif
 	{
+		uint16_t corr_print_wtf_yindex = print_wtf_yindex / line_repeats_need;
 		// calculate offset
-		float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom;
+		float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[corr_print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom;
 		float32_t freq_diff_part = fmodf(freq_diff, 1.0f);
 		int32_t margin_left = 0;
 		if (freq_diff < 0)
@@ -1135,27 +1156,27 @@ void FFT_printWaterfallDMA(void)
 			{
 				for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
 					if (wtf_x >= bw_line_start && wtf_x <= bw_line_end) //print bw bar
-						wtf_output_line[wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[print_wtf_yindex][wtf_x]];
+						wtf_output_line[wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x]];
 					else
-						wtf_output_line[wtf_x] = palette_fft[indexed_wtf_buffer[print_wtf_yindex][wtf_x]];
+						wtf_output_line[wtf_x] = palette_fft[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x]];
 			}
 			else if (margin_left > 0)
 			{
 				memset(&wtf_output_line, BG_COLOR, (uint32_t)(margin_left * 2)); // fill the space to the left
 				for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++)
 					if ((margin_left + wtf_x) >= bw_line_start && (margin_left + wtf_x) <= bw_line_end) //print bw bar
-						wtf_output_line[margin_left + wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[print_wtf_yindex][wtf_x]];
+						wtf_output_line[margin_left + wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x]];
 					else
-						wtf_output_line[margin_left + wtf_x] = palette_fft[indexed_wtf_buffer[print_wtf_yindex][wtf_x]];
+						wtf_output_line[margin_left + wtf_x] = palette_fft[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x]];
 			}
 			if (margin_right > 0)
 			{
 				memset(&wtf_output_line[(LAYOUT->FFT_PRINT_SIZE - margin_right)], BG_COLOR, (uint32_t)(margin_right * 2)); // fill the space to the right
 				for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_right); wtf_x++)
 					if (wtf_x >= bw_line_start && wtf_x <= bw_line_end) //print bw bar
-						wtf_output_line[wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[print_wtf_yindex][wtf_x + margin_right]];
+						wtf_output_line[wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x + margin_right]];
 					else
-						wtf_output_line[wtf_x] = palette_fft[indexed_wtf_buffer[print_wtf_yindex][wtf_x + margin_right]];
+						wtf_output_line[wtf_x] = palette_fft[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x + margin_right]];
 			}
 		}
 
@@ -1174,6 +1195,8 @@ void FFT_printWaterfallDMA(void)
 
 		//draw the line
 		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
+		
+		//go to next line
 		print_wtf_yindex++;
 	}
 	else
