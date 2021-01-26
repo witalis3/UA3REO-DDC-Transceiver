@@ -227,7 +227,6 @@ void LoadSettings(bool clear)
 		TRX.FFT_Grid = 1;				  // FFT grid style
 		TRX.FFT_Lens = false;			  //FFT lens effect
 		TRX.FFT_3D = 0;					  //FFT 3D mode
-		TRX.FFT_HiRes = true;			  //FFT High resolution
 		TRX.FFT_Top = 8;				  //Threshold of FFT autocalibrate
 		TRX.WTF_Moving = true;			  //move WTF with frequency encoder
 		TRX.ShiftEnabled = false;		  // activate the SHIFT mode

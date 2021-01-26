@@ -79,7 +79,6 @@ static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ZoomCW(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_LCD_Brightness(int8_t direction);
-static void SYSMENU_HANDL_SCREEN_FFT_HiRes(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction);
@@ -321,7 +320,6 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Lens", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Lens, SYSMENU_HANDL_SCREEN_FFT_Lens},
 		{"FFT 3D Mode", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_3D, SYSMENU_HANDL_SCREEN_FFT_3D},
 		{"FFT Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_SCREEN_FFT_Enabled},
-		{"FFT HiRes", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_HiRes, SYSMENU_HANDL_SCREEN_FFT_HiRes},
 		{"WTF Moving", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WTF_Moving, SYSMENU_HANDL_SCREEN_WTF_Moving},
 		{"FFT Compressor", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
 		{"FFT Averaging", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
@@ -1714,14 +1712,6 @@ static void SYSMENU_HANDL_SCREEN_FFT_Grid(int8_t direction)
 	if (TRX.FFT_Grid > 3)
 		TRX.FFT_Grid = 3;
 	FFT_Init();
-}
-
-static void SYSMENU_HANDL_SCREEN_FFT_HiRes(int8_t direction)
-{
-	if (direction > 0)
-		TRX.FFT_HiRes = true;
-	if (direction < 0)
-		TRX.FFT_HiRes = false;
 }
 
 static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction)

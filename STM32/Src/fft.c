@@ -74,6 +74,7 @@ static bool fft_charge_ready = false;
 static bool fft_charge_copying = false;
 static uint8_t FFT_meanBuffer_index = 0;
 static uint32_t FFT_ChargeBuffer_collected = 0;
+static uint32_t FFT_lastFFTChargeBufferFreq = 0;
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
@@ -302,6 +303,15 @@ void FFT_bufferPrepare(void)
 		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_Q_FILTER, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
 	}
 
+	//Reset old samples if frequency changed
+	uint32_t nowFFTChargeBufferFreq = CurrentVFO()->Freq;
+	if(TRX.WTF_Moving && FFT_lastFFTChargeBufferFreq != nowFFTChargeBufferFreq)
+	{
+		memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
+		FFT_ChargeBuffer_collected = 0;
+	}
+	FFT_lastFFTChargeBufferFreq = nowFFTChargeBufferFreq;
+	
 	//ZoomFFT
 	if (fft_zoom > 1)
 	{
@@ -324,7 +334,7 @@ void FFT_bufferPrepare(void)
 	}
 	else
 	{
-		// make a combined buffer for calculation with 50% overlap
+		//Make a combined buffer for calculation with 50% overlap
 		memcpy(&FFTInputCharge[0], &FFTInputCharge[FFT_HALF_SIZE * 2], sizeof(float32_t) * FFT_HALF_SIZE * 2); //*2 - >i+q
 		for (uint_fast16_t i = 0; i < FFT_HALF_SIZE; i++)
 		{
@@ -355,12 +365,9 @@ void FFT_doFFT(void)
 	// Get charge buffer
 	fft_charge_copying = true;
 	memcpy(FFTInput, FFTInputCharge, sizeof(FFTInput));
-	if (!TRX.FFT_HiRes)
-		memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
-	fft_charge_copying = false;
 
-	//Do windowing
-	if (fft_zoom == 1 || TRX.FFT_HiRes)
+	//Do full windowing
+	if (FFT_ChargeBuffer_collected >= FFT_SIZE)
 	{
 		arm_cmplx_mult_real_f32(FFTInput, window_multipliers, FFTInput, FFT_SIZE);
 	}
@@ -374,8 +381,12 @@ void FFT_doFFT(void)
 			FFTInput[i * 2] = FFTInput[i * 2] * window_multipliers[coeff_idx];
 			FFTInput[i * 2 + 1] = FFTInput[i * 2 + 1] * window_multipliers[coeff_idx];
 		}
+		
+		//Gain signal if partial buffer (for normalize)
+		arm_scale_f32(FFTInput, ((float32_t)FFT_SIZE / (float32_t)FFT_ChargeBuffer_collected), FFTInput, FFT_DOUBLE_SIZE_BUFFER);
 	}
 	FFT_ChargeBuffer_collected = 0;
+	fft_charge_copying = false;
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
@@ -478,7 +489,7 @@ void FFT_doFFT(void)
 
 	//Store old FFT for averaging
 	memcpy(&FFT_meanBuffer[FFT_meanBuffer_index][0], FFTInput, sizeof(float32_t) * LAYOUT->FFT_PRINT_SIZE);
-	fft_meanbuffer_freqs[FFT_meanBuffer_index] = CurrentVFO()->Freq;
+	fft_meanbuffer_freqs[FFT_meanBuffer_index] = FFT_lastFFTChargeBufferFreq;
 
 	FFT_meanBuffer_index++;
 	if (FFT_meanBuffer_index >= TRX.FFT_Averaging)
@@ -486,7 +497,6 @@ void FFT_doFFT(void)
 
 	// Averaging values
 	memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean));
-
 	for (uint_fast16_t avg_idx = 0; avg_idx < TRX.FFT_Averaging; avg_idx++)
 	{
 		int32_t freq_diff = roundf(((float32_t)((float32_t)fft_meanbuffer_freqs[avg_idx] - (float32_t)CurrentVFO()->Freq) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom);

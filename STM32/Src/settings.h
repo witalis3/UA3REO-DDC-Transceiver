@@ -9,7 +9,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-#define SETT_VERSION 221				   // Settings config version
+#define SETT_VERSION 222				   // Settings config version
 #define CALIB_VERSION 212				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -228,7 +228,6 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_Zoom;
 	uint8_t FFT_ZoomCW;
 	uint8_t LCD_Brightness;
-	bool FFT_HiRes;
 	bool WTF_Moving;
 	uint8_t FFT_Top;
 	uint8_t FFT_Speed;

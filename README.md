@@ -185,7 +185,6 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FFT Grid** - FFT and waterfall grids: 1(no grid), 2(fft grid), 3(fft+wtf grids), 4(wtf grid)
 * **FFT Background** - Gradient FFT background
 * **FFT Enabled** - Enable waterfall and FFT
-* **FFT HiRes** - Hi resolution ZoomFFT version (high latency)
 * **WTF Moving** - Mowe waterfall with frequency changing
 * **FFT Lens** - Enable FFT lens mode (magnify center of spectrum)
 * **FFT 3D Mode** - Enable FFT 3D mode (0 - disabled, 1 - lines, 2 - pixels)

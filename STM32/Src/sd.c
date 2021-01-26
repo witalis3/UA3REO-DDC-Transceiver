@@ -524,8 +524,6 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Compressor", (uint32_t *)&TRX.FFT_Compressor, SYSMENU_BOOLEAN);
 		if (res)
-			SD_WRITE_SETT_LINE("TRX.FFT_HiRes", (uint32_t *)&TRX.FFT_HiRes, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WTF_Moving", (uint32_t *)&TRX.WTF_Moving, SYSMENU_BOOLEAN);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Grid", (uint32_t *)&TRX.FFT_Grid, SYSMENU_INT8);
@@ -918,8 +916,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FFT_Color = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Compressor") == 0)
 		TRX.FFT_Compressor = uintval;
-	if (strcmp(name, "TRX.FFT_HiRes") == 0)
-		TRX.FFT_HiRes = uintval;
 	if (strcmp(name, "TRX.WTF_Moving") == 0)
 		TRX.WTF_Moving = uintval;
 	if (strcmp(name, "TRX.FFT_Grid") == 0)
