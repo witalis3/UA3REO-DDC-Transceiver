@@ -56,6 +56,7 @@ extern bool SD_RecordInProcess;
 extern bool SD_CommandInProcess;
 extern bool SD_underrun;
 extern bool SD_NeedStopRecord;
+extern bool SD_Present;
 extern uint32_t SD_RecordBufferIndex;
 extern BYTE SD_workbuffer_A[_MAX_SS];
 extern BYTE SD_workbuffer_B[_MAX_SS];

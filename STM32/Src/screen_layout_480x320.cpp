@@ -44,8 +44,11 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[1] =
 			.CLOCK_POS_SEC_X = (uint16_t)(LAYOUT_THEMES[0].CLOCK_POS_MIN_X + 25),
 			.CLOCK_FONT = &FreeSans9pt7b,
 			//WIFI
-			.STATUS_WIFI_ICON_X = (LCD_WIDTH - 98),
+			.STATUS_WIFI_ICON_X = (LCD_WIDTH - 93),
 			.STATUS_WIFI_ICON_Y = 3,
+			//SD
+			.STATUS_SD_ICON_X = (LCD_WIDTH - 93 - 16),
+			.STATUS_SD_ICON_Y = 3,
 			//Frequency output
 			.FREQ_A_LEFT = 0,
 			.FREQ_X_OFFSET_100 = 37,

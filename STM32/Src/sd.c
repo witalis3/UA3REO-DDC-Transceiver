@@ -16,8 +16,8 @@ bool SD_CommandInProcess = false;
 bool SD_underrun = false;
 bool SD_NeedStopRecord = false;
 uint32_t SD_RecordBufferIndex = 0;
+bool SD_Present = false;
 
-static bool SD_Present = false;
 static bool SD_Mounted = false;
 static uint32_t SD_Present_tryTime = 0;
 static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
@@ -85,10 +85,12 @@ void SD_Process(void)
 			sendToDebug_uint32(sdinfo.capacity / 1024 / 1024, true);
 			sendToDebug_strln("Mb");
 			SD_Present = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
 		else
 		{
 			SD_Present = false;
+			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
 	}
 	//Mount volume
@@ -106,9 +108,24 @@ void SD_Process(void)
 	//Do actions
 	if (SD_Mounted)
 	{
+		if(SD_currentCommand != SDCOMM_IDLE)
+			SD_Present_tryTime = HAL_GetTick();
 		switch (SD_currentCommand)
 		{
 		case SDCOMM_IDLE:
+			//check SD card inserted if idle
+			if((HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL && !SD_RecordInProcess)
+			{
+				SD_Present_tryTime = HAL_GetTick();
+				disk.is_initialized[SDFatFs.drv] = false;
+				if(disk_initialize(SDFatFs.drv) != RES_OK)
+				{
+					SD_Mounted = false;
+					SD_Present = false;
+					LCD_UpdateQuery.StatusInfoGUI = true;
+				}
+			}
+			//
 			break;
 		case SDCOMM_LIST_ROOT:
 			SDCOMM_LISTROOT();
@@ -186,6 +203,7 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 		LCD_showTooltip("SD error");
 		SD_RecordInProcess = false;
 		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 	return false;
@@ -204,6 +222,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 	{
 		SD_Present = false;
 		SD_RecordInProcess = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_showTooltip("SD error");
 		return false;
