@@ -39,6 +39,33 @@ __asm(".global __use_no_heap\n\t");
 #define B8__(x) ((x & 0x0000000FLU) ? 1 : 0) + ((x & 0x000000F0LU) ? 2 : 0) + ((x & 0x00000F00LU) ? 4 : 0) + ((x & 0x0000F000LU) ? 8 : 0) + ((x & 0x000F0000LU) ? 16 : 0) + ((x & 0x00F00000LU) ? 32 : 0) + ((x & 0x0F000000LU) ? 64 : 0) + ((x & 0xF0000000LU) ? 128 : 0)
 #define B8(d) ((unsigned char)B8__(HEX__(d)))
 
+#define BYTE_TO_BINARY(byte)  \
+  (byte & 0x80 ? '1' : '0'), \
+  (byte & 0x40 ? '1' : '0'), \
+  (byte & 0x20 ? '1' : '0'), \
+  (byte & 0x10 ? '1' : '0'), \
+  (byte & 0x08 ? '1' : '0'), \
+  (byte & 0x04 ? '1' : '0'), \
+  (byte & 0x02 ? '1' : '0'), \
+  (byte & 0x01 ? '1' : '0') 
+#define BIT16_TO_BINARY(byte)  \
+  (byte & 0x8000 ? '1' : '0'), \
+  (byte & 0x4000 ? '1' : '0'), \
+  (byte & 0x2000 ? '1' : '0'), \
+  (byte & 0x1000 ? '1' : '0'), \
+  (byte & 0x0800 ? '1' : '0'), \
+  (byte & 0x0400 ? '1' : '0'), \
+  (byte & 0x0200 ? '1' : '0'), \
+  (byte & 0x0100 ? '1' : '0'), \
+	(byte & 0x0080 ? '1' : '0'), \
+  (byte & 0x0040 ? '1' : '0'), \
+  (byte & 0x0020 ? '1' : '0'), \
+  (byte & 0x0010 ? '1' : '0'), \
+  (byte & 0x0008 ? '1' : '0'), \
+  (byte & 0x0004 ? '1' : '0'), \
+  (byte & 0x0002 ? '1' : '0'), \
+  (byte & 0x0001 ? '1' : '0') 
+
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
@@ -139,6 +166,8 @@ extern void sendToDebug_int32(int32_t data, bool _inline);
 extern void sendToDebug_float32(float32_t data, bool _inline);
 extern void sendToDebug_float64(float64_t data, bool _inline);
 extern void sendToDebug_hex(uint8_t data, bool _inline);
+extern void sendToDebug_bin8(uint8_t data, bool _inline);
+extern void sendToDebug_bin16(uint16_t data, bool _inline);
 //extern void delay_us(uint32_t us);
 extern float32_t log10f_fast(float32_t X);
 extern void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read);

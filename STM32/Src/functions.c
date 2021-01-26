@@ -163,6 +163,26 @@ void sendToDebug_hex(uint8_t data, bool _inline)
 	sendToDebug_str(tmp);
 }
 
+void sendToDebug_bin8(uint8_t data, bool _inline)
+{
+	char tmp[50] = ""; //-V808
+	if (_inline)
+		sprintf(tmp, "%c%c%c%c%c%c%c%c", BYTE_TO_BINARY(data));
+	else
+		sprintf(tmp, "%c%c%c%c%c%c%c%c\n", BYTE_TO_BINARY(data));
+	sendToDebug_str(tmp);
+}
+
+void sendToDebug_bin16(uint16_t data, bool _inline)
+{
+	char tmp[50] = ""; //-V808
+	if (_inline)
+		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", BIT16_TO_BINARY(data));
+	else
+		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", BIT16_TO_BINARY(data));
+	sendToDebug_str(tmp);
+}
+
 void sendToDebug_uint16(uint16_t data, bool _inline)
 {
 	char tmp[50] = ""; //-V808

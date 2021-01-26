@@ -740,6 +740,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_int16(TRX_ADC_MINAMPLITUDE, true);
       sendToDebug_str(" / ");
       sendToDebug_int16(TRX_ADC_MAXAMPLITUDE, false);
+			//sendToDebug_bin16(TRX_ADC_MINAMPLITUDE, true); sendToDebug_str(" / "); sendToDebug_bin16(TRX_ADC_MAXAMPLITUDE, false);
       sendToDebug_str("VCXO Error: ");
       sendToDebug_int32(TRX_VCXO_ERROR, false);
       sendToDebug_str("WIFI State: ");
