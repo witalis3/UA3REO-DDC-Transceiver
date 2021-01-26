@@ -10,7 +10,7 @@
 #include "front_unit.h"
 
 #define SETT_VERSION 222				   // Settings config version
-#define CALIB_VERSION 212				   // Calibration config version
+#define CALIB_VERSION 222				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
@@ -292,12 +292,18 @@ extern struct TRX_CALIBRATE
 	uint8_t CICFIR_GAINER_val;
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;
-	uint8_t rf_out_power_up2mhz;
-	uint8_t rf_out_power_up5mhz;
-	uint8_t rf_out_power_up15mhz;
-	uint8_t rf_out_power_up30mhz;
-	uint8_t rf_out_power_up60mhz;
-	uint8_t rf_out_power_vhf;
+	uint8_t rf_out_power_2200m;
+	uint8_t rf_out_power_160m;
+	uint8_t rf_out_power_80m;
+	uint8_t rf_out_power_40m;
+	uint8_t rf_out_power_30m;
+	uint8_t rf_out_power_20m;
+	uint8_t rf_out_power_17m;
+	uint8_t rf_out_power_15m;
+	uint8_t rf_out_power_12m;
+	uint8_t rf_out_power_10m;
+	uint8_t rf_out_power_6m;
+	uint8_t rf_out_power_2m;
 	int16_t smeter_calibration;
 	int16_t adc_offset;
 	uint32_t LPF_END;

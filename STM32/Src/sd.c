@@ -618,17 +618,29 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.DAC_GAINER2", (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_up2mhz_211", (uint32_t *)&CALIBRATE.rf_out_power_up2mhz, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2200m", (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_up5mhz_211", (uint32_t *)&CALIBRATE.rf_out_power_up5mhz, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_160m", (uint32_t *)&CALIBRATE.rf_out_power_160m, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_up15mhz_211", (uint32_t *)&CALIBRATE.rf_out_power_up15mhz, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_80m", (uint32_t *)&CALIBRATE.rf_out_power_80m, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_up30mhz_211", (uint32_t *)&CALIBRATE.rf_out_power_up30mhz, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_40m", (uint32_t *)&CALIBRATE.rf_out_power_40m, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_up60mhz_211", (uint32_t *)&CALIBRATE.rf_out_power_up60mhz, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_30m", (uint32_t *)&CALIBRATE.rf_out_power_30m, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_vhf_211", (uint32_t *)&CALIBRATE.rf_out_power_vhf, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_20m", (uint32_t *)&CALIBRATE.rf_out_power_20m, SYSMENU_UINT8);
+		if (res)
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_17m", (uint32_t *)&CALIBRATE.rf_out_power_17m, SYSMENU_UINT8);
+		if (res)
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_15m", (uint32_t *)&CALIBRATE.rf_out_power_15m, SYSMENU_UINT8);
+		if (res)
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_12m", (uint32_t *)&CALIBRATE.rf_out_power_12m, SYSMENU_UINT8);
+		if (res)
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_10m", (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_UINT8);
+		if (res)
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_6m", (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_UINT8);
+		if (res)
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2m", (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration2", (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_INT16);
 		if (res)
@@ -1046,18 +1058,30 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.TXCICFIR_GAINER_val = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.DAC_GAINER2") == 0)
 		CALIBRATE.DAC_GAINER_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_up2mhz_211") == 0)
-		CALIBRATE.rf_out_power_up2mhz = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_up5mhz_211") == 0)
-		CALIBRATE.rf_out_power_up5mhz = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_up15mhz_211") == 0)
-		CALIBRATE.rf_out_power_up15mhz = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_up30mhz_211") == 0)
-		CALIBRATE.rf_out_power_up30mhz = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_up60mhz_211") == 0)
-		CALIBRATE.rf_out_power_up60mhz = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_vhf_211") == 0)
-		CALIBRATE.rf_out_power_vhf = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_2200m") == 0)
+		CALIBRATE.rf_out_power_2200m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_160m") == 0)
+		CALIBRATE.rf_out_power_160m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_80m") == 0)
+		CALIBRATE.rf_out_power_80m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_40m") == 0)
+		CALIBRATE.rf_out_power_40m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_30m") == 0)
+		CALIBRATE.rf_out_power_30m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_20m") == 0)
+		CALIBRATE.rf_out_power_20m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_17m") == 0)
+		CALIBRATE.rf_out_power_17m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_15m") == 0)
+		CALIBRATE.rf_out_power_15m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_12m") == 0)
+		CALIBRATE.rf_out_power_12m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_10m") == 0)
+		CALIBRATE.rf_out_power_10m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_6m") == 0)
+		CALIBRATE.rf_out_power_6m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_2m") == 0)
+		CALIBRATE.rf_out_power_2m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.smeter_calibration2") == 0)
 		CALIBRATE.smeter_calibration = (int16_t)intval;
 	if (strcmp(name, "CALIBRATE.adc_offset") == 0)
