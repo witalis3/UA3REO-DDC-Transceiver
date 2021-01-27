@@ -3397,7 +3397,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		sysmenu_wifi_selectap1_menu_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
 	}
@@ -3405,7 +3405,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		sysmenu_wifi_selectap2_menu_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
 	}
@@ -3413,7 +3413,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		sysmenu_wifi_selectap3_menu_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
 	}
@@ -3421,7 +3421,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		sysmenu_wifi_setAP1password_menu_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
 	}
@@ -3429,7 +3429,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		sysmenu_wifi_setAP2password_menu_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
 	}
@@ -3437,7 +3437,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		sysmenu_wifi_setAP3password_menu_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_InitStateIndex = 0;
 		WIFI_State = WIFI_INITED;
 	}
@@ -3445,53 +3445,53 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		sysmenu_trx_setCallsign_menu_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (sysmenu_trx_setLocator_menu_opened)
 	{
 		sysmenu_trx_setLocator_menu_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_spectrum_opened)
 	{
 		SYSMENU_spectrum_opened = false;
 		SPEC_Stop();
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_wspr_opened)
 	{
 		SYSMENU_wspr_opened = false;
 		WSPR_Stop();
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (sysmenu_timeMenuOpened)
 	{
 		sysmenu_timeMenuOpened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_swr_opened)
 	{
 		SYSMENU_swr_opened = false;
 		SWR_Stop();
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_TDM_CTRL_opened) //Tisho
 	{
 		SYSMENU_TDM_CTRL_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (sysmenu_infowindow_opened)
 	{
 		sysmenu_infowindow_opened = false;
 		sysmenu_sysinfo_opened = false;
 		systemMenuIndex = 0;
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (sysmenu_services_opened)
 	{
@@ -3550,7 +3550,7 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void)
 	else
 	{
 		sysmenu_item_selected_by_enc2 = !sysmenu_item_selected_by_enc2;
-		SYSMENU_redrawCurrentItem();
+		LCD_UpdateQuery.SystemMenuCurrent = true;
 	}
 }
 
@@ -3659,16 +3659,14 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	{
 		SPEC_Stop();
 		SYSMENU_spectrum_opened = false;
-		LCDDriver_Fill(BG_COLOR);
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
 	if (SYSMENU_wspr_opened)
 	{
 		WSPR_Stop();
 		SYSMENU_wspr_opened = false;
-		LCDDriver_Fill(BG_COLOR);
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
 	if (SYSMENU_swr_opened)
