@@ -87,11 +87,6 @@ void SD_Process(void)
 			SD_Present = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
-		else
-		{
-			SD_Present = false;
-			LCD_UpdateQuery.StatusInfoGUI = true;
-		}
 	}
 	//Mount volume
 	if (SD_Present && !SD_Mounted)
