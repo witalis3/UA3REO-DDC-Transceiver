@@ -240,7 +240,7 @@ void LoadSettings(bool clear)
 		TRX.FRQ_ENC_STEP = 25000;		  // frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;	  // frequency tuning step by main add. encoder in FAST mode
 		TRX.AGC_GAIN_TARGET = -30;		  // Maximum (target) AGC gain
-		TRX.WIFI_CAT_SERVER = true;		  // Server for receiving CAT commands via WIFI
+		TRX.WIFI_CAT_SERVER = false;		  // Server for receiving CAT commands via WIFI
 		TRX.MIC_GAIN = 3;				  // Microphone gain
 		TRX.RX_EQ_LOW = 0;				  // Receiver Equalizer (Low)
 		TRX.RX_EQ_MID = 0;				  // Receiver EQ (mids)
