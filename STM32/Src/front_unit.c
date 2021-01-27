@@ -538,7 +538,7 @@ void FRONTPANEL_Process(void)
 			else
 			{
 				TRX_SHIFT = 0;
-				TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 60.0f / 1023.0f));
+				TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 70.0f / 1023.0f));
 			}
 		}
 
