@@ -14,6 +14,7 @@
 #include "noise_reduction.h"
 
 uint8_t FRONTPANEL_funcbuttons_page = 0;
+int8_t FRONTPANEL_ProcessEncoder2 = 0;
 
 static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
@@ -224,11 +225,11 @@ void FRONTPANEL_ENCODER2_checkRotate(void)
 	{
 		if (ENCODER2_DTVal != ENCODER2_CLKVal)
 		{ // If pin A changed first - clockwise rotation
-			FRONTPANEL_ENCODER2_Rotated(CALIBRATE.ENCODER2_INVERT ? 1 : -1);
+			FRONTPANEL_ProcessEncoder2 = CALIBRATE.ENCODER2_INVERT ? 1 : -1;
 		}
 		else
 		{ // otherwise B changed its state first - counterclockwise rotation
-			FRONTPANEL_ENCODER2_Rotated(CALIBRATE.ENCODER2_INVERT ? -1 : 1);
+			FRONTPANEL_ProcessEncoder2 = CALIBRATE.ENCODER2_INVERT ? -1 : 1;
 		}
 		TRX_ScanMode = false;
 	}
@@ -448,6 +449,12 @@ void FRONTPANEL_Process(void)
 		return;
 	SPI_process = true;
 
+	if(FRONTPANEL_ProcessEncoder2 != 0)
+	{
+		FRONTPANEL_ENCODER2_Rotated(FRONTPANEL_ProcessEncoder2);
+		FRONTPANEL_ProcessEncoder2 = 0;
+	}
+	
 #ifndef HAS_TOUCHPAD
 	FRONTPANEL_check_ENC2SW();
 #endif

@@ -3700,7 +3700,9 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	}
 
 	uint8_t current_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
+	LCD_busy = true;
 	LCDDriver_drawFastHLine(0, (5 + (systemMenuIndex - current_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE) * LAYOUT->SYSMENU_ITEM_HEIGHT) + 17, LAYOUT->SYSMENU_W, BG_COLOR);
+	LCD_busy = false;
 	if (direction < 0)
 	{
 		if (systemMenuIndex > 0)
