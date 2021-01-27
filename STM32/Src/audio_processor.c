@@ -79,25 +79,28 @@ void processRxAudio(void)
 {
 	if (!Processor_NeedRXBuffer)
 		return;
+	if (!FPGA_RX_buffer_ready)
+		return;
 
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
 
 	AUDIOPROC_samples++;
-	uint_fast16_t FPGA_Audio_Buffer_Index_tmp = FPGA_Audio_RXBuffer_Index;
-	if (FPGA_Audio_Buffer_Index_tmp == 0)
-		FPGA_Audio_Buffer_Index_tmp = FPGA_RX_IQ_BUFFER_SIZE;
-	else
-		FPGA_Audio_Buffer_Index_tmp--;
 
 	// copy buffer from FPGA
-	readFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX1_Q[0], (uint32_t *)&APROC_Audio_Buffer_RX1_Q[0], FPGA_Audio_Buffer_Index_tmp, FPGA_RX_IQ_BUFFER_SIZE, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-	readFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX1_I[0], (uint32_t *)&APROC_Audio_Buffer_RX1_I[0], FPGA_Audio_Buffer_Index_tmp, FPGA_RX_IQ_BUFFER_SIZE, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+	float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
+	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+	float32_t *FPGA_Audio_Buffer_RX2_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_I_A : (float32_t *)&FPGA_Audio_Buffer_RX2_I_B;
+	float32_t *FPGA_Audio_Buffer_RX2_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B;
+		
+	dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX1_I[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_I_current[0], FPGA_RX_IQ_BUFFER_HALF_SIZE);
+	dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX1_Q[0], (uint32_t *)&FPGA_Audio_Buffer_RX1_Q_current[0], FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	if (TRX.Dual_RX)
 	{
-		readFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX2_Q[0], (uint32_t *)&APROC_Audio_Buffer_RX2_Q[0], FPGA_Audio_Buffer_Index_tmp, FPGA_RX_IQ_BUFFER_SIZE, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		readFromCircleBuffer32((uint32_t *)&FPGA_Audio_Buffer_RX2_I[0], (uint32_t *)&APROC_Audio_Buffer_RX2_I[0], FPGA_Audio_Buffer_Index_tmp, FPGA_RX_IQ_BUFFER_SIZE, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX2_I[0], (uint32_t *)&FPGA_Audio_Buffer_RX2_I_current[0], FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX2_Q[0], (uint32_t *)&FPGA_Audio_Buffer_RX2_Q_current[0], FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	}
+	FPGA_RX_buffer_ready = false;
 
 	//Decimate
 	uint16_t decimated_block_size_rx1 = FPGA_RX_IQ_BUFFER_HALF_SIZE;

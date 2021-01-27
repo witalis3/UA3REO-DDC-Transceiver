@@ -45,12 +45,18 @@ extern volatile bool FPGA_Buffer_underrun;                                 // fl
 extern volatile bool FPGA_NeedSendParams;                                  // flag of the need to send parameters to FPGA
 extern volatile bool FPGA_NeedGetParams;                                   // flag of the need to get parameters from FPGA
 extern volatile bool FPGA_NeedRestart;                                     // flag of necessity to restart FPGA modules
-extern volatile float32_t FPGA_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_SIZE]; // FPGA buffers
-extern volatile float32_t FPGA_Audio_Buffer_RX1_I[FPGA_RX_IQ_BUFFER_SIZE];
-extern volatile float32_t FPGA_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_SIZE];
-extern volatile float32_t FPGA_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_SIZE];
+extern volatile float32_t FPGA_Audio_Buffer_RX1_Q_A[FPGA_RX_IQ_BUFFER_HALF_SIZE]; // FPGA buffers
+extern volatile float32_t FPGA_Audio_Buffer_RX1_I_A[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+extern volatile float32_t FPGA_Audio_Buffer_RX1_Q_B[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+extern volatile float32_t FPGA_Audio_Buffer_RX1_I_B[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+extern volatile float32_t FPGA_Audio_Buffer_RX2_Q_A[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+extern volatile float32_t FPGA_Audio_Buffer_RX2_I_A[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+extern volatile float32_t FPGA_Audio_Buffer_RX2_Q_B[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+extern volatile float32_t FPGA_Audio_Buffer_RX2_I_B[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 extern volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE];
+extern bool FPGA_RX_Buffer_Current;
+extern bool FPGA_RX_buffer_ready;
 extern uint_fast16_t FPGA_Audio_RXBuffer_Index; // current index in FPGA buffers
 extern uint_fast16_t FPGA_Audio_TXBuffer_Index; // current index in FPGA buffers
 extern bool FPGA_Audio_Buffer_State;            // buffer state, half or full full true - compleate; false - half

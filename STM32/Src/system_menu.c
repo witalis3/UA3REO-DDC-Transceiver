@@ -3726,13 +3726,13 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	while (systemMenuIndex > 0 && sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE)
 		systemMenuIndex = 0;
 
-	SYSMENU_redrawCurrentItem();
+	LCD_UpdateQuery.SystemMenuCurrent = true;
 	if (sysmenu_onroot)
 		systemMenuRootIndex = systemMenuIndex;
 	uint8_t new_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 
 	if (current_page != new_page)
-		SYSMENU_drawSystemMenu(true);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void SYSMENU_redrawCurrentItem(void)

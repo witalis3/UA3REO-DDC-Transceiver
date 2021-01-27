@@ -607,6 +607,9 @@ void TIM6_DAC_IRQHandler(void)
   TOUCHPAD_ProcessInterrupt();
 #endif
 
+	float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
+	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+	
   if ((ms10_counter % 10) == 0) // every 100ms
   {
     // every 100ms we receive data from FPGA (amplitude, ADC overload, etc.)
@@ -619,18 +622,18 @@ void TIM6_DAC_IRQHandler(void)
     static float32_t old_FPGA_Audio_Buffer_RX1_I = 0;
     static float32_t old_FPGA_Audio_Buffer_RX1_Q = 0;
     static uint16_t fpga_stuck_errors = 0;
-    if (FPGA_Audio_Buffer_RX1_I[0] == old_FPGA_Audio_Buffer_RX1_I || FPGA_Audio_Buffer_RX1_Q[0] == old_FPGA_Audio_Buffer_RX1_Q)
+    if (FPGA_Audio_Buffer_RX1_I_current[0] == old_FPGA_Audio_Buffer_RX1_I || FPGA_Audio_Buffer_RX1_Q_current[0] == old_FPGA_Audio_Buffer_RX1_Q)
       fpga_stuck_errors++;
     else
       fpga_stuck_errors = 0;
-    if (fpga_stuck_errors > 3 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop)
+    if (fpga_stuck_errors > 5 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop)
     {
       sendToDebug_strln("[ERR] IQ stuck error, restart");
       fpga_stuck_errors = 0;
       FPGA_NeedRestart = true;
     }
-    old_FPGA_Audio_Buffer_RX1_I = FPGA_Audio_Buffer_RX1_I[0];
-    old_FPGA_Audio_Buffer_RX1_Q = FPGA_Audio_Buffer_RX1_Q[0];
+    old_FPGA_Audio_Buffer_RX1_I = FPGA_Audio_Buffer_RX1_I_current[0];
+    old_FPGA_Audio_Buffer_RX1_Q = FPGA_Audio_Buffer_RX1_Q_current[0];
 
     //Process AutoGain feature
     TRX_DoAutoGain();
@@ -697,8 +700,8 @@ void TIM6_DAC_IRQHandler(void)
       //Print debug
       uint32_t dbg_WM8731_DMA_samples = (uint32_t)((float32_t)WM8731_DMA_samples / 2.0f * dbg_coeff);
       uint32_t dbg_AUDIOPROC_samples = (uint32_t)((float32_t)AUDIOPROC_samples * dbg_coeff);
-      float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I[0];
-      float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_RX1_Q[0];
+      float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I_current[0];
+      float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_RX1_Q_current[0];
       if (TRX_on_TX())
       {
         dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_SendBuffer_I[0];
