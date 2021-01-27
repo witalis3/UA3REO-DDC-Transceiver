@@ -305,7 +305,7 @@ void FFT_bufferPrepare(void)
 
 	//Reset old samples if frequency changed
 	uint32_t nowFFTChargeBufferFreq = CurrentVFO()->Freq;
-	if(TRX.WTF_Moving && fabsf((float32_t)FFT_lastFFTChargeBufferFreq - (float32_t)nowFFTChargeBufferFreq) > 50 * fft_zoom) //zeroing threshold
+	if(TRX.WTF_Moving && fabsf((float32_t)FFT_lastFFTChargeBufferFreq - (float32_t)nowFFTChargeBufferFreq) > (500 / fft_zoom)) //zeroing threshold
 	{
 		memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 		FFT_ChargeBuffer_collected = 0;
