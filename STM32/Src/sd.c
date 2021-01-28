@@ -1222,7 +1222,7 @@ SRAM uint8_t SPIx_sendByte = 0;
 static uint8_t SPIx_WriteRead(uint8_t Byte)
 {
 	SPIx_sendByte = Byte;
-	if (!SPI_Transmit(&SPIx_sendByte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+	if (!SPI_Transmit(&SPIx_sendByte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
 		sendToDebug_strln("SD SPI Err");
 
 	return SPIx_receivedByte;
@@ -1230,21 +1230,17 @@ static uint8_t SPIx_WriteRead(uint8_t Byte)
 
 static void SPI_SendByte(uint8_t bt)
 {
-	SPIx_sendByte = bt;
-	if (!SPI_Transmit(&SPIx_sendByte, NULL, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
-		sendToDebug_strln("SD SPI Err");
+	SPIx_WriteRead(bt);
 }
 
 static uint8_t SPI_ReceiveByte(void)
 {
-	if (!SPI_Transmit(NULL, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
-		sendToDebug_strln("SD SPI Err");
-	return SPIx_receivedByte;
+	return SPIx_WriteRead(0xFF);
 }
 
 void SPI_Release(void)
 {
-	SPI_SendByte(0xFF);
+	SPIx_WriteRead(0xFF);
 }
 
 uint8_t SPI_wait_ready(void)
@@ -1340,11 +1336,14 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token)
 	if (token != 0xFD)
 	{ /* Send data if token is other than StopTran */
 		//for (cnt = 0; cnt < 512; cnt++)
-		//SPI_SendByte(buff[cnt]);
+			//SPI_SendByte(buff[cnt]);
 
 		memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
 		if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+		{
 			sendToDebug_strln("SD SPI Err");
+			return 0;
+		}
 
 		SPI_Release();
 		SPI_Release();
