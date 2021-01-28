@@ -666,6 +666,20 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX.current_vfo = !TRX.current_vfo;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
+	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
+	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
+	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
+	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
+	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
+	TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
+	TRX_AutoGain_Stage = TRX.BANDS_SAVED_SETTINGS[band].AutoGain_Stage;
+	CurrentVFO()->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
+	CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+	
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.BottomButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
