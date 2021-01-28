@@ -224,9 +224,20 @@ void processRxAudio(void)
 		break;
 	case TRX_MODE_NFM:
 		doRX_LPF_IQ(AUDIO_RX1, decimated_block_size_rx1);
+		//now decimate output
+		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, decimated_block_size_rx1);
+		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, decimated_block_size_rx1);
+		decimated_block_size_rx1 = AUDIO_BUFFER_HALF_SIZE;
+		//end decimate
+		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
+		DemodulateFM(AUDIO_RX1, decimated_block_size_rx1); //48khz iq
+		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
+		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
+		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
+		break;
 	case TRX_MODE_WFM:
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
-		DemodulateFM(AUDIO_RX1, decimated_block_size_rx1);
+		DemodulateFM(AUDIO_RX1, decimated_block_size_rx1); //96khz iq
 		//now decimate output
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, decimated_block_size_rx1);
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, decimated_block_size_rx1);
@@ -302,8 +313,17 @@ void processRxAudio(void)
 			break;
 		case TRX_MODE_NFM:
 			doRX_LPF_IQ(AUDIO_RX2, decimated_block_size_rx2);
+			//now decimate output
+			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, decimated_block_size_rx2);
+			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, decimated_block_size_rx2);
+			decimated_block_size_rx2 = AUDIO_BUFFER_HALF_SIZE;
+			//end decimate
+			DemodulateFM(AUDIO_RX2, decimated_block_size_rx2); //48khz
+			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
+			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
+			break;
 		case TRX_MODE_WFM:
-			DemodulateFM(AUDIO_RX2, decimated_block_size_rx2);
+			DemodulateFM(AUDIO_RX2, decimated_block_size_rx2); //96khz
 			//now decimate output
 			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, decimated_block_size_rx2);
 			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, decimated_block_size_rx2);
@@ -1114,26 +1134,19 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 
 		if ((!*squelched) || (!TRX.FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
 		{
-			if (CurrentVFO()->Mode == TRX_MODE_WFM)
+			FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
+			//fm de emphasis
+			static float32_t avg = 0.0f;
+			float32_t d = FPGA_Audio_Buffer_I_tmp[i] - avg;
+			if (d > 0)
 			{
-				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
-				//fm de emphasis
-				static float32_t avg = 0.0f;
-				float32_t d = FPGA_Audio_Buffer_I_tmp[i] - avg;
-				if (d > 0)
-				{
-					avg += (d + deemph_a / 2) / deemph_a;
-				}
-				else
-				{
-					avg += (d - deemph_a / 2) / deemph_a;
-				}
-				FPGA_Audio_Buffer_I_tmp[i] = avg;
+				avg += (d + deemph_a / 2) / deemph_a;
 			}
 			else
 			{
-				FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
+				avg += (d - deemph_a / 2) / deemph_a;
 			}
+			FPGA_Audio_Buffer_I_tmp[i] = avg;
 		}
 		else if (*squelched)				// were we squelched or tone NOT detected?
 			FPGA_Audio_Buffer_I_tmp[i] = 0; // do not filter receive audio - fill buffer with zeroes to mute it
