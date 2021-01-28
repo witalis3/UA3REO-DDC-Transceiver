@@ -340,6 +340,8 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 		if (res)
+			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold", (uint32_t *)&TRX.VFO_A.FM_SQL_threshold, SYSMENU_UINT8);
+		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Freq", (uint32_t *)&TRX.VFO_B.Freq, SYSMENU_UINT32);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Mode", (uint32_t *)&TRX.VFO_B.Mode, SYSMENU_UINT32);
@@ -354,9 +356,11 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.NotchFC", (uint32_t *)&TRX.VFO_B.NotchFC, SYSMENU_UINT32);
 		if (res)
-			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint32_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR_Type", (uint32_t *)&TRX.VFO_B.DNR_Type, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint32_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
+		if (res)
+			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold", (uint32_t *)&TRX.VFO_B.FM_SQL_threshold, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.current_vfo", (uint32_t *)&TRX.current_vfo, SYSMENU_BOOLEAN);
 		if (res)
@@ -422,8 +426,6 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.Transverter_Offset_Mhz", (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_UINT16);
 		//AUDIO
-		if (res)
-			SD_WRITE_SETT_LINE("TRX.FM_SQL_threshold", (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint32_t *)&TRX.IF_Gain, SYSMENU_UINT8);
 		if (res)
@@ -698,6 +700,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)line);
 	memset(name, 0x00, sizeof(name));
 	memset(value, 0x00, sizeof(value));
+	if(len > 63) return;
 	strncpy(name, (char *)line, len);
 	strncpy(value, (char *)line + len + 3, len);
 
@@ -733,9 +736,11 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (strcmp(name, "TRX.VFO_A.NotchFC") == 0)
 		TRX.VFO_A.NotchFC = uintval;
 	if (strcmp(name, "TRX.VFO_A.DNR_Type") == 0)
-		TRX.VFO_A.DNR_Type = uintval;
+		TRX.VFO_A.DNR_Type = (uint8_t)uintval;
 	if (strcmp(name, "TRX.VFO_A.AGC") == 0)
 		TRX.VFO_A.AGC = bval;
+	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold") == 0)
+		TRX.VFO_A.FM_SQL_threshold = (uint8_t)uintval;
 	if (strcmp(name, "TRX.VFO_B.Freq") == 0)
 		TRX.VFO_B.Freq = uintval;
 	if (strcmp(name, "TRX.VFO_B.Mode") == 0)
@@ -750,10 +755,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_B.AutoNotchFilter = bval;
 	if (strcmp(name, "TRX.VFO_B.NotchFC") == 0)
 		TRX.VFO_B.NotchFC = uintval;
-	if (strcmp(name, "TRX.VFO_A.DNR_Type") == 0)
-		TRX.VFO_A.DNR_Type = uintval;
-	if (strcmp(name, "TRX.VFO_A.AGC") == 0)
-		TRX.VFO_A.AGC = bval;
+	if (strcmp(name, "TRX.VFO_B.DNR_Type") == 0)
+		TRX.VFO_B.DNR_Type = (uint8_t)uintval;
+	if (strcmp(name, "TRX.VFO_B.AGC") == 0)
+		TRX.VFO_B.AGC = bval;
+	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold") == 0)
+		TRX.VFO_B.FM_SQL_threshold = (uint8_t)uintval;
 	if (strcmp(name, "TRX.current_vfo") == 0)
 		TRX.current_vfo = bval;
 	if (strcmp(name, "TRX.LNA") == 0)
@@ -827,8 +834,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (strcmp(name, "TRX.Transverter_Offset_Mhz") == 0)
 		TRX.Transverter_Offset_Mhz = (uint16_t)uintval;
 	//AUDIO
-	if (strcmp(name, "TRX.FM_SQL_threshold") == 0)
-		TRX.FM_SQL_threshold = (uint8_t)uintval;
 	if (strcmp(name, "TRX.IF_Gain") == 0)
 		TRX.IF_Gain = (uint8_t)uintval;
 	if (strcmp(name, "TRX.AGC_GAIN_TARGET2") == 0)
@@ -1143,7 +1148,6 @@ static void SDCOMM_IMPORT_SETT(void)
 						strncpy(readedLine, (char *)SD_workbuffer_A + start_index, len);
 						start_index += len + 2;
 						istr = strstr((char *)SD_workbuffer_A + start_index, "\r\n"); // look for the end of the line
-						//sendToDebug_str3("!",readedLine,"!\r\n");
 						SDCOMM_PARSE_SETT_LINE(readedLine);
 					}
 					else

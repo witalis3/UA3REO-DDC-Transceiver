@@ -1124,15 +1124,16 @@ static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
 {
-	if (direction < 0 && TRX.FM_SQL_threshold == 0)
+	if (direction < 0 && CurrentVFO()->FM_SQL_threshold == 0)
 		return;
-	TRX.FM_SQL_threshold += direction;
-	if (TRX.FM_SQL_threshold > 10)
-		TRX.FM_SQL_threshold = 10;
-
+	CurrentVFO()->FM_SQL_threshold += direction;
+	if (CurrentVFO()->FM_SQL_threshold > 10)
+		CurrentVFO()->FM_SQL_threshold = 10;
+	TRX.FM_SQL_threshold = CurrentVFO()->FM_SQL_threshold;
+	
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if (band > 0)
-		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold = TRX.FM_SQL_threshold;
+		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold = CurrentVFO()->FM_SQL_threshold;
 }
 
 static void SYSMENU_HANDL_AUDIO_VAD_Squelch(int8_t direction)

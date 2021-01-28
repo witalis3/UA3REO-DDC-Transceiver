@@ -107,6 +107,7 @@ typedef struct
 	bool AutoNotchFilter;
 	uint_fast16_t NotchFC;
 	uint8_t DNR_Type; //0-disabled 1-dnr 2-dnr2
+	uint8_t FM_SQL_threshold;
 	bool AGC;
 } VFO;
 
@@ -128,9 +129,9 @@ typedef struct
 	bool ANT;
 	bool ADC_Driver;
 	bool ADC_PGA;
-	uint8_t FM_SQL_threshold;
 	uint8_t DNR_Type;
 	bool AGC;
+	uint8_t FM_SQL_threshold;
 	uint8_t AutoGain_Stage;
 } BAND_SAVED_SETTINGS_TYPE;
 
@@ -157,6 +158,7 @@ extern struct TRX_SETTINGS
 	uint16_t FRQ_FAST_STEP;
 	uint16_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
+	uint8_t FM_SQL_threshold;
 	bool Debug_Console;
 	bool BandMapEnabled;
 	bool InputType_MIC;
@@ -196,7 +198,6 @@ extern struct TRX_SETTINGS
 	uint16_t SSB_HPF_Filter;
 	uint16_t AM_LPF_Filter;
 	uint16_t FM_LPF_Filter;
-	uint8_t FM_SQL_threshold;
 	bool Beeper;
 	bool VAD_Squelch;
 	//CW

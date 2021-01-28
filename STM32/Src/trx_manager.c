@@ -87,6 +87,7 @@ void TRX_Init()
 	uint_fast8_t saved_mode = CurrentVFO()->Mode;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	TRX_setMode(saved_mode, CurrentVFO());
+	TRX.FM_SQL_threshold = CurrentVFO()->FM_SQL_threshold;
 	HAL_ADCEx_InjectedStart(&hadc1); //ADC RF-UNIT'а
 	HAL_ADCEx_InjectedStart(&hadc3); //ADC CPU temperature
 }

@@ -133,6 +133,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.NotchFC = 1000;			 // cutoff frequency of the notch filter
 		TRX.VFO_A.DNR_Type = 0;				 // digital noise reduction
 		TRX.VFO_A.AGC = true;				 // AGC
+		TRX.VFO_A.FM_SQL_threshold = 4;			 // FM noise reduction
 		TRX.VFO_B.Freq = 14150000;			 // stored VFO-B frequency
 		TRX.VFO_B.Mode = TRX_MODE_USB;		 // saved VFO-B mode
 		TRX.VFO_B.LPF_Filter_Width = 2700;	 // saved bandwidth for VFO-B
@@ -142,16 +143,17 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.NotchFC = 1000;			 // cutoff frequency of the notch filter
 		TRX.VFO_A.DNR_Type = 0;				 // digital noise reduction
 		TRX.VFO_A.AGC = true;				 // AGC
+		TRX.VFO_B.FM_SQL_threshold = 4;			 // FM noise reduction
 		TRX.current_vfo = false;			 // current VFO (false - A)
 		TRX.ADC_Driver = true;				 // preamplifier (ADC driver)
 		TRX.LNA = false;					 // LNA (Low Noise Amplifier)
 		TRX.ATT = false;					 // attenuator
 		TRX.ATT_DB = 12.0f;					 // suppress the attenuator
 		TRX.ATT_STEP = 6.0f;				 // step of tuning the attenuator
-		TRX.FM_SQL_threshold = 4;			 // FM noise reduction
 		TRX.Fast = true;					 // accelerated frequency change when the encoder rotates
 		TRX.ADC_PGA = true;					 // ADC preamp
 		TRX.ANT = false;					 // ANT-1
+		TRX.FM_SQL_threshold = 4;
 		for (uint8_t i = 0; i < BANDS_COUNT; i++)
 		{
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
@@ -161,7 +163,7 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
 			TRX.BANDS_SAVED_SETTINGS[i].ANT = TRX.ANT;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
-			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.FM_SQL_threshold;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.VFO_A.FM_SQL_threshold;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
 			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
@@ -185,7 +187,7 @@ void LoadSettings(bool clear)
 		TRX.SSB_LPF_Filter = 2700;					 // default value of SSB filter width
 		TRX.SSB_HPF_Filter = 300;					 // default value of SSB filter width
 		TRX.AM_LPF_Filter = 4000;					 // default value of AM filter width
-		TRX.FM_LPF_Filter = 15000;					 // default value of the FM filter width
+		TRX.FM_LPF_Filter = 8000;					 // default value of the FM filter width
 		TRX.RF_Power = 20;							 //output power (%)
 		TRX.RX_AGC_SSB_speed = 10;					 // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;					 // AGC receive rate on CW

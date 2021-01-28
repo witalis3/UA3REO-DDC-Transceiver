@@ -39,7 +39,7 @@ static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;							 /
 static float32_t DFM_RX1_fm_sql_avg = 0.0f;														 // average SQL in FM
 static float32_t DFM_RX2_fm_sql_avg = 0.0f;
 static float32_t DFM_RX1_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
-static float32_t DFM_RX2_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+IRAM2 static float32_t DFM_RX2_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
@@ -1103,6 +1103,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 	bool *squelched = &DFM_RX1_Squelched;
 	float32_t *squelch_buf = DFM_RX1_squelch_buf;
 
+	uint8_t FM_SQL_threshold = CurrentVFO()->FM_SQL_threshold;
 	float32_t angle, x, y, b;
 
 	if (rx_id == AUDIO_RX2)
@@ -1116,7 +1117,8 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 		FPGA_Audio_Buffer_I_tmp = &APROC_Audio_Buffer_RX2_I[0];
 		FPGA_Audio_Buffer_Q_tmp = &APROC_Audio_Buffer_RX2_Q[0];
 		squelched = &DFM_RX2_Squelched;
-		float32_t *squelch_buf = DFM_RX2_squelch_buf;
+		squelch_buf = DFM_RX2_squelch_buf;
+		FM_SQL_threshold = SecondaryVFO()->FM_SQL_threshold;
 	}
 
 	for (uint_fast16_t i = 0; i < size; i++)
@@ -1132,11 +1134,11 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 		*q_prev = FPGA_Audio_Buffer_Q_tmp[i]; // save "previous" value of each channel to allow detection of the change of angle in next go-around
 		*i_prev = FPGA_Audio_Buffer_I_tmp[i];
 
-		if ((!*squelched) || (!TRX.FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
+		if ((!*squelched) || (!FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
 		{
 			FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
 			//fm de emphasis
-			const float32_t alpha = 0.1f;
+			const float32_t alpha = 0.15f;
 			FPGA_Audio_Buffer_I_tmp[i] = FPGA_Audio_Buffer_I_tmp[i] * (1.0f - alpha) + *emph_prev * alpha;
 			*emph_prev = FPGA_Audio_Buffer_I_tmp[i];
 		}
@@ -1161,23 +1163,23 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 		//sendToDebug_float32(b,false);
 		
 		// Now evaluate noise power with respect to squelch setting
-		if (!TRX.FM_SQL_threshold) // is squelch set to zero?
+		if (!FM_SQL_threshold) // is squelch set to zero?
 			*squelched = false;	   // yes, the we are un-squelched
 		else if (*squelched)	   // are we squelched?
 		{
-			if (b <= (float)((float32_t)(10 - TRX.FM_SQL_threshold) - FM_SQUELCH_HYSTERESIS)) // yes - is average above threshold plus hysteresis?
+			if (b <= (float)((float32_t)(10.0f - FM_SQL_threshold) - FM_SQUELCH_HYSTERESIS)) // yes - is average above threshold plus hysteresis?
 				*squelched = false;												   //  yes, open the squelch
 		}
 		else // is the squelch open (e.g. passing audio)?
 		{
-			if ((float32_t)(10.0f - TRX.FM_SQL_threshold) > FM_SQUELCH_HYSTERESIS) // is setting higher than hysteresis?
+			if ((float32_t)(10.0f - FM_SQL_threshold) > FM_SQUELCH_HYSTERESIS) // is setting higher than hysteresis?
 			{
-				if (b > (float)((float32_t)(10 - TRX.FM_SQL_threshold) + FM_SQUELCH_HYSTERESIS)) // yes - is average below threshold minus hysteresis?
+				if (b > (float)((float32_t)(10 - FM_SQL_threshold) + FM_SQUELCH_HYSTERESIS)) // yes - is average below threshold minus hysteresis?
 					*squelched = true;												  // yes, close the squelch
 			}
 			else // setting is lower than hysteresis so we can't use it!
 			{
-				if (b > (10.0f - (float)TRX.FM_SQL_threshold)) // yes - is average below threshold?
+				if (b > (10.0f - (float)FM_SQL_threshold)) // yes - is average below threshold?
 					*squelched = true;						   // yes, close the squelch
 			}
 		}
