@@ -44,7 +44,6 @@ static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
-static float32_t deemph_a = 0.0f; //deemphasis coeff
 
 // Prototypes
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // Hilbert filter for phase shift of signals
@@ -58,7 +57,7 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size);					 // notch fi
 static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size);			 // impulse noise suppressor
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // s-meter
 static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);			 // copy I to Q channel
-static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // FM demodulator
+static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm);				 // FM demodulator
 static void ModulateFM(uint16_t size);											 // FM modulator
 static void doRX_EQ(uint16_t size);												 // receiver equalizer
 static void doMIC_EQ(uint16_t size);											 // microphone equalizer
@@ -68,7 +67,6 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 //IF gain
 // initialize audio processor
 void initAudioProcessor(void)
 {
-	deemph_a = roundf(1.0f / ((1.0f - expf(-1.0 / ((float64_t)IQ_SAMPLERATE * 75e-6)))));
 	InitAudioFilters();
 	DECODER_Init();
 	NeedReinitReverber = true;
@@ -223,21 +221,21 @@ void processRxAudio(void)
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
 	case TRX_MODE_NFM:
-		doRX_LPF_IQ(AUDIO_RX1, decimated_block_size_rx1);
 		//now decimate output
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, decimated_block_size_rx1);
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, decimated_block_size_rx1);
 		decimated_block_size_rx1 = AUDIO_BUFFER_HALF_SIZE;
 		//end decimate
+		doRX_LPF_IQ(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
-		DemodulateFM(AUDIO_RX1, decimated_block_size_rx1); //48khz iq
+		DemodulateFM(AUDIO_RX1, decimated_block_size_rx1, false); //48khz iq
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
 		break;
 	case TRX_MODE_WFM:
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
-		DemodulateFM(AUDIO_RX1, decimated_block_size_rx1); //96khz iq
+		DemodulateFM(AUDIO_RX1, decimated_block_size_rx1, true); //96khz iq
 		//now decimate output
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, decimated_block_size_rx1);
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, decimated_block_size_rx1);
@@ -312,18 +310,18 @@ void processRxAudio(void)
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
 		case TRX_MODE_NFM:
-			doRX_LPF_IQ(AUDIO_RX2, decimated_block_size_rx2);
 			//now decimate output
 			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, decimated_block_size_rx2);
 			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, decimated_block_size_rx2);
 			decimated_block_size_rx2 = AUDIO_BUFFER_HALF_SIZE;
 			//end decimate
-			DemodulateFM(AUDIO_RX2, decimated_block_size_rx2); //48khz
+			doRX_LPF_IQ(AUDIO_RX2, decimated_block_size_rx2);
+			DemodulateFM(AUDIO_RX2, decimated_block_size_rx2, false); //48khz
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
 		case TRX_MODE_WFM:
-			DemodulateFM(AUDIO_RX2, decimated_block_size_rx2); //96khz
+			DemodulateFM(AUDIO_RX2, decimated_block_size_rx2, true); //96khz
 			//now decimate output
 			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, decimated_block_size_rx2);
 			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, decimated_block_size_rx2);
@@ -1092,7 +1090,7 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // FM demodulator
-static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 {
 	float32_t *i_prev = &DFM_RX1_i_prev;
 	float32_t *q_prev = &DFM_RX1_q_prev;
@@ -1136,17 +1134,10 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		{
 			FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
 			//fm de emphasis
-			static float32_t avg = 0.0f;
-			float32_t d = FPGA_Audio_Buffer_I_tmp[i] - avg;
-			if (d > 0)
-			{
-				avg += (d + deemph_a / 2) / deemph_a;
-			}
-			else
-			{
-				avg += (d - deemph_a / 2) / deemph_a;
-			}
-			FPGA_Audio_Buffer_I_tmp[i] = avg;
+			static float32_t emph_prev = 0.0f;
+			const float32_t alpha = 0.05f;
+			FPGA_Audio_Buffer_I_tmp[i] = FPGA_Audio_Buffer_I_tmp[i] * (1.0f - alpha) + emph_prev * alpha;
+			emph_prev = FPGA_Audio_Buffer_I_tmp[i];
 		}
 		else if (*squelched)				// were we squelched or tone NOT detected?
 			FPGA_Audio_Buffer_I_tmp[i] = 0; // do not filter receive audio - fill buffer with zeroes to mute it
