@@ -1166,20 +1166,21 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		if (*fm_sql_avg > 0.7f) // limit maximum noise value in averaging to keep it from going out into the weeds under no-signal conditions (higher = noisier)
 			*fm_sql_avg = 0.7f;
 		b = *fm_sql_avg * 10.0f; // scale noise amplitude to range of squelch setting
-
+		//sendToDebug_float32(b,false);
+		
 		// Now evaluate noise power with respect to squelch setting
 		if (!TRX.FM_SQL_threshold) // is squelch set to zero?
 			*squelched = false;	   // yes, the we are un-squelched
 		else if (*squelched)	   // are we squelched?
 		{
-			if (b <= (float)((10 - TRX.FM_SQL_threshold) - FM_SQUELCH_HYSTERESIS)) // yes - is average above threshold plus hysteresis?
+			if (b <= (float)((float32_t)(10 - TRX.FM_SQL_threshold) - FM_SQUELCH_HYSTERESIS)) // yes - is average above threshold plus hysteresis?
 				*squelched = false;												   //  yes, open the squelch
 		}
 		else // is the squelch open (e.g. passing audio)?
 		{
-			if ((10.0f - TRX.FM_SQL_threshold) > FM_SQUELCH_HYSTERESIS) // is setting higher than hysteresis?
+			if ((float32_t)(10.0f - TRX.FM_SQL_threshold) > FM_SQUELCH_HYSTERESIS) // is setting higher than hysteresis?
 			{
-				if (b > (float)((10 - TRX.FM_SQL_threshold) + FM_SQUELCH_HYSTERESIS)) // yes - is average below threshold minus hysteresis?
+				if (b > (float)((float32_t)(10 - TRX.FM_SQL_threshold) + FM_SQUELCH_HYSTERESIS)) // yes - is average below threshold minus hysteresis?
 					*squelched = true;												  // yes, close the squelch
 			}
 			else // setting is lower than hysteresis so we can't use it!
