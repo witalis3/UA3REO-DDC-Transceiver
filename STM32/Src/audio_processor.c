@@ -1245,24 +1245,24 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_I, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
 		{
-			if_gain = 1.0f / minVal;
+			//if_gain = 1.0f / minVal;
 			APROC_IFGain_Overflow = true;
 		}
 		if((maxVal * if_gain) > 1.0f)
 		{
-			if_gain = 1.0f / maxVal;
+			//if_gain = 1.0f / maxVal;
 			APROC_IFGain_Overflow = true;
 		}
 		arm_min_f32(APROC_Audio_Buffer_RX1_Q, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_Q, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
 		{
-			if_gain = 1.0f / minVal;
+			//if_gain = 1.0f / minVal;
 			APROC_IFGain_Overflow = true;
 		}
 		if((maxVal * if_gain) > 1.0f)
 		{
-			if_gain = 1.0f / maxVal;
+			//if_gain = 1.0f / maxVal;
 			APROC_IFGain_Overflow = true;
 		}
 
@@ -1277,15 +1277,27 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		arm_min_f32(APROC_Audio_Buffer_RX2_I, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX2_I, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
-			if_gain = 1.0f / minVal;
+		{
+			//if_gain = 1.0f / minVal;
+			APROC_IFGain_Overflow = true;
+		}
 		if((maxVal * if_gain) > 1.0f)
-			if_gain = 1.0f / maxVal;
+		{
+			//if_gain = 1.0f / maxVal;
+			APROC_IFGain_Overflow = true;
+		}
 		arm_min_f32(APROC_Audio_Buffer_RX2_Q, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX2_Q, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
-			if_gain = 1.0f / minVal;
+		{
+			//if_gain = 1.0f / minVal;
+			APROC_IFGain_Overflow = true;
+		}
 		if((maxVal * if_gain) > 1.0f)
-			if_gain = 1.0f / maxVal;
+		{
+			//if_gain = 1.0f / maxVal;
+			APROC_IFGain_Overflow = true;
+		}
 
 		//apply gain
 		arm_scale_f32(APROC_Audio_Buffer_RX2_I, if_gain, APROC_Audio_Buffer_RX2_I, size);
