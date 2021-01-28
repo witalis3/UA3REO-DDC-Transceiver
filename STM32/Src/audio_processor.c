@@ -27,6 +27,7 @@ volatile float32_t Processor_RX_Power_value;					// RX signal magnitude
 volatile float32_t Processor_selected_RFpower_amplitude = 0.0f; // target TX signal amplitude
 volatile float32_t Processor_TX_MAX_amplitude_OUT;				// TX uplift after ALC
 bool NeedReinitReverber = false;
+bool APROC_IFGain_Overflow = false;
 
 // Private variables
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};									 // output buffer of the audio processor
@@ -1243,15 +1244,27 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		arm_min_f32(APROC_Audio_Buffer_RX1_I, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_I, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
+		{
 			if_gain = 1.0f / minVal;
+			APROC_IFGain_Overflow = true;
+		}
 		if((maxVal * if_gain) > 1.0f)
+		{
 			if_gain = 1.0f / maxVal;
+			APROC_IFGain_Overflow = true;
+		}
 		arm_min_f32(APROC_Audio_Buffer_RX1_Q, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_Q, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
+		{
 			if_gain = 1.0f / minVal;
+			APROC_IFGain_Overflow = true;
+		}
 		if((maxVal * if_gain) > 1.0f)
+		{
 			if_gain = 1.0f / maxVal;
+			APROC_IFGain_Overflow = true;
+		}
 
 		//apply gain
 		arm_scale_f32(APROC_Audio_Buffer_RX1_I, if_gain, APROC_Audio_Buffer_RX1_I, size);

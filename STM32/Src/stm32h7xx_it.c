@@ -646,6 +646,7 @@ void TIM6_DAC_IRQHandler(void)
     WM8731_Buffer_underrun = false;
     FPGA_Buffer_underrun = false;
     RX_USB_AUDIO_underrun = false;
+		APROC_IFGain_Overflow = false;
     SD_underrun = false;
   }
 

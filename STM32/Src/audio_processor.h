@@ -43,6 +43,7 @@ extern volatile float32_t Processor_TX_MAX_amplitude_OUT;		// TX uplift after AL
 extern volatile float32_t Processor_RX_Power_value;				// RX signal magnitude
 extern volatile float32_t Processor_selected_RFpower_amplitude; // target TX signal amplitude
 extern bool NeedReinitReverber;
+extern bool APROC_IFGain_Overflow;
 
 // Public methods
 extern void processRxAudio(void);	  // start audio processor for RX
