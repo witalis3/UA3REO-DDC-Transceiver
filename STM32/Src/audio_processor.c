@@ -34,7 +34,7 @@ static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};									 // outpu
 static uint32_t two_signal_gen_position = 0;													 // signal position in a two-signal generator
 static float32_t ALC_need_gain = 1.0f;															 // current gain of ALC and audio compressor
 static float32_t ALC_need_gain_target = 1.0f;													 // Target Gain Of ALC And Audio Compressor
-static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0; // used in FM detection and low / high pass processing
+static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0, DFM_RX1_emph_prev = 0, DFM_RX2_emph_prev = 0; // used in FM detection and low / high pass processing
 static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;							 // used for squelch processing and debouncing tone detection, respectively
 static float32_t DFM_RX1_fm_sql_avg = 0.0f;														 // average SQL in FM
 static float32_t DFM_RX2_fm_sql_avg = 0.0f;
@@ -1094,6 +1094,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 {
 	float32_t *i_prev = &DFM_RX1_i_prev;
 	float32_t *q_prev = &DFM_RX1_q_prev;
+	float32_t *emph_prev = &DFM_RX1_emph_prev;
 	uint_fast8_t *fm_sql_count = &DFM_RX1_fm_sql_count;
 	float32_t *FPGA_Audio_Buffer_I_tmp = &APROC_Audio_Buffer_RX1_I[0];
 	float32_t *FPGA_Audio_Buffer_Q_tmp = &APROC_Audio_Buffer_RX1_Q[0];
@@ -1108,6 +1109,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 	{
 		i_prev = &DFM_RX2_i_prev;
 		q_prev = &DFM_RX2_q_prev;
+		emph_prev = &DFM_RX2_emph_prev;
 		fm_sql_count = &DFM_RX2_fm_sql_count;
 		fm_sql_avg = &DFM_RX2_fm_sql_avg;
 		iir_filter_inst = &IIR_RX2_Squelch_HPF;
@@ -1134,10 +1136,9 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 		{
 			FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
 			//fm de emphasis
-			static float32_t emph_prev = 0.0f;
-			const float32_t alpha = 0.05f;
-			FPGA_Audio_Buffer_I_tmp[i] = FPGA_Audio_Buffer_I_tmp[i] * (1.0f - alpha) + emph_prev * alpha;
-			emph_prev = FPGA_Audio_Buffer_I_tmp[i];
+			const float32_t alpha = 0.1f;
+			FPGA_Audio_Buffer_I_tmp[i] = FPGA_Audio_Buffer_I_tmp[i] * (1.0f - alpha) + *emph_prev * alpha;
+			*emph_prev = FPGA_Audio_Buffer_I_tmp[i];
 		}
 		else if (*squelched)				// were we squelched or tone NOT detected?
 			FPGA_Audio_Buffer_I_tmp[i] = 0; // do not filter receive audio - fill buffer with zeroes to mute it

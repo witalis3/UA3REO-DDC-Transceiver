@@ -1296,8 +1296,8 @@ static void FRONTPANEL_BUTTONHANDLER_FUNCH(uint32_t parameter)
 		LCD_redraw(false);
 	}
 	else if (!TRX.Locked || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler == FRONTPANEL_BUTTONHANDLER_LOCK) //LOCK BUTTON
-		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[parameter]].work_in_menu)
-			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[parameter]].holdHandler(0);
+		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu)
+			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler(0);
 }
 
 static void FRONTPANEL_BUTTONHANDLER_UP(uint32_t parameter)

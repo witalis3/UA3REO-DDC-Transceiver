@@ -906,7 +906,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_Filter, TRX.SSB_LPF_Filter);
 	else if ((CurrentVFO()->Mode == TRX_MODE_AM))
 		sprintf(buff, "BW:%d", TRX.AM_LPF_Filter);
-	else if ((CurrentVFO()->Mode == TRX_MODE_NFM) || (CurrentVFO()->Mode == TRX_MODE_WFM))
+	else if (CurrentVFO()->Mode == TRX_MODE_NFM)
 		sprintf(buff, "BW:%d", TRX.FM_LPF_Filter);
 	else
 		sprintf(buff, "BW:FULL");
