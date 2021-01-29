@@ -148,12 +148,12 @@ void SD_Process(void)
 
 static bool SDCOMM_CREATE_RECORD_FILE(void)
 {
-	char filename[32] = {0};
+	char filename[64] = {0};
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
 	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d.wav", sDate.Year, sDate.Month, sDate.Date, sTime.Hours, sTime.Minutes, sTime.Seconds);
+	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%d.wav", sDate.Year, sDate.Month, sDate.Date, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO()->Freq);
 	sendToDebug_strln(filename);
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
