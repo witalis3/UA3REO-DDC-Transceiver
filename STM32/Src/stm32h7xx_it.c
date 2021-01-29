@@ -560,7 +560,62 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
+	
   ms10_counter++;
+	
+	//power off sequence
+  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && ((!NeedSaveCalibration && !SPI_process && !EEPROM_Busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
+  {
+    TRX_Inited = false;
+    LCD_busy = true;
+    HAL_Delay(10);
+    WM8731_Mute();
+    WM8731_CleanBuffer();
+    LCDDriver_Fill(COLOR_BLACK);
+    LCD_showInfo("GOOD BYE!", false);
+    SaveSettings();
+    SaveSettingsToEEPROM();
+    sendToDebug_flush();
+    while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
+    {
+    }
+    HAL_Delay(500);
+    HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+    //SCB->AIRCR = 0x05FA0004; // software resetw
+    while (true)
+    {
+    }
+  }
+
+  //TRX protector
+  if (TRX_on_TX())
+  {
+    if (TRX_RF_Temperature > TRX_MAX_RF_TEMP)
+    {
+      TRX_Tune = false;
+      TRX_ptt_hard = false;
+      TRX_ptt_soft = false;
+      LCD_UpdateQuery.StatusInfoGUI = true;
+      LCD_UpdateQuery.TopButtons = true;
+      NeedSaveSettings = true;
+      TRX_Restart_Mode();
+      sendToDebug_strln("RF temperature too HIGH!");
+      LCD_showTooltip("RF temperature too HIGH!");
+    }
+    if (TRX_SWR > TRX_MAX_SWR && !TRX_Tune)
+    {
+      TRX_Tune = false;
+      TRX_ptt_hard = false;
+      TRX_ptt_soft = false;
+      LCD_UpdateQuery.StatusInfoGUI = true;
+      LCD_UpdateQuery.TopButtons = true;
+      NeedSaveSettings = true;
+      TRX_Restart_Mode();
+      sendToDebug_strln("SWR too HIGH!");
+      LCD_showTooltip("SWR too HIGH!");
+    }
+  }
+	
   // transmission release time after key signal
   if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_dot_hard && !TRX_key_dash_hard)
   {
@@ -790,59 +845,6 @@ void TIM6_DAC_IRQHandler(void)
       HX8357B_BUG_redraw_counter = 0;
     }
 #endif
-  }
-
-  //power off sequence
-  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && ((!NeedSaveCalibration && !SPI_process && !EEPROM_Busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
-  {
-    TRX_Inited = false;
-    LCD_busy = true;
-    HAL_Delay(10);
-    WM8731_Mute();
-    WM8731_CleanBuffer();
-    LCDDriver_Fill(COLOR_BLACK);
-    LCD_showInfo("GOOD BYE!", false);
-    SaveSettings();
-    SaveSettingsToEEPROM();
-    sendToDebug_flush();
-    while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
-    {
-    }
-    HAL_Delay(500);
-    HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-    //SCB->AIRCR = 0x05FA0004; // software resetw
-    while (true)
-    {
-    }
-  }
-
-  //TRX protector
-  if (TRX_on_TX())
-  {
-    if (TRX_RF_Temperature > TRX_MAX_RF_TEMP)
-    {
-      TRX_Tune = false;
-      TRX_ptt_hard = false;
-      TRX_ptt_soft = false;
-      LCD_UpdateQuery.StatusInfoGUI = true;
-      LCD_UpdateQuery.TopButtons = true;
-      NeedSaveSettings = true;
-      TRX_Restart_Mode();
-      sendToDebug_strln("RF temperature too HIGH!");
-      LCD_showTooltip("RF temperature too HIGH!");
-    }
-    if (TRX_SWR > TRX_MAX_SWR && !TRX_Tune)
-    {
-      TRX_Tune = false;
-      TRX_ptt_hard = false;
-      TRX_ptt_soft = false;
-      LCD_UpdateQuery.StatusInfoGUI = true;
-      LCD_UpdateQuery.TopButtons = true;
-      NeedSaveSettings = true;
-      TRX_Restart_Mode();
-      sendToDebug_strln("SWR too HIGH!");
-      LCD_showTooltip("SWR too HIGH!");
-    }
   }
 
   // restart USB if there is no activity (off) to find a new connection

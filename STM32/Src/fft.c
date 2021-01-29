@@ -19,7 +19,6 @@ IRAM2 float32_t FFTInput_Q_B[FFT_HALF_SIZE] = {0}; // incoming buffer FFT Q
 uint16_t FFT_FPS = 0;
 uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
-bool FFT_Need_Reset = false;
 
 //Private variables
 #if FFT_SIZE == 2048
@@ -36,7 +35,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
 static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0};			// charge FFT I and Q buffer
-IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};					// combined FFT I and Q buffer
+static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};					// combined FFT I and Q buffer
 IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};						// temporary buffer for sorting, moving and fft compressing
 IRAM2 static float32_t FFT_meanBuffer[FFT_MAX_MEANS][MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
 IRAM2 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};						// averaged FFT buffer (for output)
@@ -225,7 +224,7 @@ void FFT_PreInit(void)
 	}
 
 	// initialize sort
-	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_QUICK, ARM_SORT_ASCENDING);
+	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_SELECTION, ARM_SORT_ASCENDING);
 }
 
 void FFT_Init(void)
@@ -271,7 +270,6 @@ void FFT_Init(void)
 	memset(&FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer));
 	memset(&FFTInput_tmp, 0x00, sizeof(FFTInput_tmp));
 	NeedWTFRedraw = true;
-	FFT_Need_Reset = true;
 }
 
 // FFT calculation
@@ -363,21 +361,6 @@ void FFT_doFFT(void)
 		return;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
-
-	//Reset FFT
-	if(FFT_Need_Reset)
-	{
-		FFT_new_buffer_ready = false;
-		memset(FFTInput_I_A, 0x00, sizeof FFTInput_I_A);
-		memset(FFTInput_Q_A, 0x00, sizeof FFTInput_Q_A);
-		memset(FFTInput_I_B, 0x00, sizeof FFTInput_I_B);
-		memset(FFTInput_Q_B, 0x00, sizeof FFTInput_Q_B);
-		memset(FFTInputCharge, 0x00, sizeof FFTInputCharge);
-		memset(FFTInput, 0x00, sizeof FFTInput);
-		memset(FFTOutput_mean, 0x00, sizeof FFTOutput_mean);
-		FFT_buff_index = 0;
-		FFT_Need_Reset = false;
-	}
 	
 	// Get charge buffer
 	fft_charge_copying = true;
@@ -837,6 +820,7 @@ bool FFT_printFFT(void)
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
 	print_fft_dma_estimated_size = LAYOUT->FFT_PRINT_SIZE * fftHeight;
 	print_fft_dma_position = 0;
+	
 	FFT_afterPrintFFT();
 	return true;
 }
@@ -1483,7 +1467,15 @@ static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initializ
 // reset FFT
 void FFT_Reset(void) // clear the FFT
 {
-	FFT_Need_Reset = true;
+	FFT_new_buffer_ready = false;
+	memset(FFTInput_I_A, 0x00, sizeof FFTInput_I_A);
+	memset(FFTInput_Q_A, 0x00, sizeof FFTInput_Q_A);
+	memset(FFTInput_I_B, 0x00, sizeof FFTInput_I_B);
+	memset(FFTInput_Q_B, 0x00, sizeof FFTInput_Q_B);
+	memset(FFTInputCharge, 0x00, sizeof FFTInputCharge);
+	memset(FFTInput, 0x00, sizeof FFTInput);
+	memset(FFTOutput_mean, 0x00, sizeof FFTOutput_mean);
+	FFT_buff_index = 0;
 }
 
 static inline int32_t getFreqPositionOnFFT(uint32_t freq)
