@@ -118,7 +118,7 @@ void LoadSettings(bool clear)
 	}
 	BKPSRAM_Disable();
 
-	if (TRX.flash_id != SETT_VERSION || clear || TRX.ENDBit != 100) // code to trace new clean flash
+	if (TRX.flash_id != SETT_VERSION || clear || TRX.ENDBit != 100 || TRX.csum != calculateCSUM()) // code to trace new clean flash
 	{
 		if (clear)
 			sendToDebug_strln("[OK] Soft reset TRX");
