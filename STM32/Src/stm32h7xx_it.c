@@ -564,6 +564,13 @@ void TIM6_DAC_IRQHandler(void)
   ms10_counter++;
 	
 	//power off sequence
+	static bool prev_pwr_state = true;
+	if(prev_pwr_state == true && HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
+	{
+		powerdown_start_delay = HAL_GetTick();
+	}
+	prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
+	
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && ((!NeedSaveCalibration && !SPI_process && !EEPROM_Busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
   {
     TRX_Inited = false;
@@ -587,6 +594,9 @@ void TIM6_DAC_IRQHandler(void)
     }
   }
 
+	//Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
+  RF_UNIT_ProcessSensors();
+	
   //TRX protector
   if (TRX_on_TX())
   {
@@ -639,9 +649,6 @@ void TIM6_DAC_IRQHandler(void)
     InitNotchFilter();
   if (NeedReinitAudioFilters)
     ReinitAudioFilters();
-
-  //Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
-  RF_UNIT_ProcessSensors();
 
   //Process touchpad frequency changing
   TRX_setFrequencySlowly_Process();
@@ -1074,10 +1081,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   else if (GPIO_Pin == GPIO_PIN_0) //KEY DASH
   {
     TRX_key_change();
-  }
-  else if (GPIO_Pin == GPIO_PIN_11) //POWER OFF
-  {
-    powerdown_start_delay = HAL_GetTick();
   }
 }
 /* USER CODE END 1 */
