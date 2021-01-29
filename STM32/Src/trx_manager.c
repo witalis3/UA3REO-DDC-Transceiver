@@ -87,7 +87,6 @@ void TRX_Init()
 	uint_fast8_t saved_mode = CurrentVFO()->Mode;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	TRX_setMode(saved_mode, CurrentVFO());
-	TRX.FM_SQL_threshold = CurrentVFO()->FM_SQL_threshold;
 	HAL_ADCEx_InjectedStart(&hadc1); //ADC RF-UNIT'а
 	HAL_ADCEx_InjectedStart(&hadc3); //ADC CPU temperature
 }
@@ -287,6 +286,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 
 	//
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
+	TRX.FM_SQL_threshold = current_vfo->FM_SQL_threshold;
 	FPGA_NeedSendParams = true;
 }
 
