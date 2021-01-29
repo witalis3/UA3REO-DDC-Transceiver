@@ -229,6 +229,7 @@ void processRxAudio(void)
 		doRX_LPF_IQ(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_SMETER(AUDIO_RX1, decimated_block_size_rx1);
 		DemodulateFM(AUDIO_RX1, decimated_block_size_rx1, false); //48khz iq
+		doRX_IFGain(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
@@ -241,6 +242,7 @@ void processRxAudio(void)
 		arm_fir_decimate_f32(&DECIMATE_RX1_AUDIO_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, decimated_block_size_rx1);
 		decimated_block_size_rx1 = AUDIO_BUFFER_HALF_SIZE;
 		//end decimate
+		doRX_IFGain(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_DNR(AUDIO_RX1, decimated_block_size_rx1);
 		doRX_AGC(AUDIO_RX1, decimated_block_size_rx1, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, decimated_block_size_rx1);
@@ -317,6 +319,7 @@ void processRxAudio(void)
 			//end decimate
 			doRX_LPF_IQ(AUDIO_RX2, decimated_block_size_rx2);
 			DemodulateFM(AUDIO_RX2, decimated_block_size_rx2, false); //48khz
+			doRX_IFGain(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
@@ -327,6 +330,7 @@ void processRxAudio(void)
 			arm_fir_decimate_f32(&DECIMATE_RX2_AUDIO_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, decimated_block_size_rx2);
 			decimated_block_size_rx2 = AUDIO_BUFFER_HALF_SIZE;
 			//end decimate
+			doRX_IFGain(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_DNR(AUDIO_RX2, decimated_block_size_rx2);
 			doRX_AGC(AUDIO_RX2, decimated_block_size_rx2, secondary_vfo->Mode);
 			break;
@@ -1136,7 +1140,7 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 
 		if ((!*squelched) || (!FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
 		{
-			FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.1f; //second way
+			FPGA_Audio_Buffer_I_tmp[i] = (float32_t)(angle / F_PI) * 0.01f;
 			//fm de emphasis
 			const float32_t alpha = 0.15f;
 			FPGA_Audio_Buffer_I_tmp[i] = FPGA_Audio_Buffer_I_tmp[i] * (1.0f - alpha) + *emph_prev * alpha;
@@ -1160,7 +1164,6 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 		if (*fm_sql_avg > 0.7f) // limit maximum noise value in averaging to keep it from going out into the weeds under no-signal conditions (higher = noisier)
 			*fm_sql_avg = 0.7f;
 		b = *fm_sql_avg * 10.0f; // scale noise amplitude to range of squelch setting
-		//sendToDebug_float32(b,false);
 		
 		// Now evaluate noise power with respect to squelch setting
 		if (!FM_SQL_threshold) // is squelch set to zero?
@@ -1253,25 +1256,25 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_I, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
 		{
-			//if_gain = 1.0f / minVal;
-			APROC_IFGain_Overflow = true;
+			if(!CurrentVFO()->AGC)
+				APROC_IFGain_Overflow = true;
 		}
 		if((maxVal * if_gain) > 1.0f)
 		{
-			//if_gain = 1.0f / maxVal;
-			APROC_IFGain_Overflow = true;
+			if(!CurrentVFO()->AGC)
+				APROC_IFGain_Overflow = true;
 		}
 		arm_min_f32(APROC_Audio_Buffer_RX1_Q, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_Q, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
 		{
-			//if_gain = 1.0f / minVal;
-			APROC_IFGain_Overflow = true;
+			if(!CurrentVFO()->AGC)
+				APROC_IFGain_Overflow = true;
 		}
 		if((maxVal * if_gain) > 1.0f)
 		{
-			//if_gain = 1.0f / maxVal;
-			APROC_IFGain_Overflow = true;
+			if(!CurrentVFO()->AGC)
+				APROC_IFGain_Overflow = true;
 		}
 
 		//apply gain
@@ -1286,25 +1289,25 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX2_I, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
 		{
-			//if_gain = 1.0f / minVal;
-			APROC_IFGain_Overflow = true;
+			if(!SecondaryVFO()->AGC)
+				APROC_IFGain_Overflow = true;
 		}
 		if((maxVal * if_gain) > 1.0f)
 		{
-			//if_gain = 1.0f / maxVal;
-			APROC_IFGain_Overflow = true;
+			if(!SecondaryVFO()->AGC)
+				APROC_IFGain_Overflow = true;
 		}
 		arm_min_f32(APROC_Audio_Buffer_RX2_Q, AUTO_NOTCH_BLOCK_SIZE, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX2_Q, AUTO_NOTCH_BLOCK_SIZE, &maxVal);
 		if((minVal * if_gain) < -1.0f)
 		{
-			//if_gain = 1.0f / minVal;
-			APROC_IFGain_Overflow = true;
+			if(!SecondaryVFO()->AGC)
+				APROC_IFGain_Overflow = true;
 		}
 		if((maxVal * if_gain) > 1.0f)
 		{
-			//if_gain = 1.0f / maxVal;
-			APROC_IFGain_Overflow = true;
+			if(!SecondaryVFO()->AGC)
+				APROC_IFGain_Overflow = true;
 		}
 
 		//apply gain
