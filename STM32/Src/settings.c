@@ -187,7 +187,7 @@ void LoadSettings(bool clear)
 		TRX.SSB_LPF_Filter = 2700;					 // default value of SSB filter width
 		TRX.SSB_HPF_Filter = 300;					 // default value of SSB filter width
 		TRX.AM_LPF_Filter = 4000;					 // default value of AM filter width
-		TRX.FM_LPF_Filter = 8000;					 // default value of the FM filter width
+		TRX.FM_LPF_Filter = 10000;					 // default value of the FM filter width
 		TRX.RF_Power = 20;							 //output power (%)
 		TRX.RX_AGC_SSB_speed = 10;					 // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;					 // AGC receive rate on CW
