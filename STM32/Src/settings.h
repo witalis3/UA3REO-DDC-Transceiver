@@ -31,6 +31,7 @@
 #define MAX_RF_POWER 7.0f				   // Maximum power (for meter scale)
 #define SHOW_LOGO true					   // Show logo on boot (from images.h)
 #define POWERDOWN_TIMEOUT 1000			   // time of pressing the shutdown button, for operation, ms
+#define POWERDOWN_FORCE_TIMEOUT 2000			   // force time
 #define USB_RESTART_TIMEOUT 5000		   // time after which USB restart occurs if there are no packets
 #define FPGA_FLASH_IN_HEX false			   // enable FPGA firmware in STM32 firmware
 #define SNTP_SYNC_INTERVAL (60 * 60)	   // Time synchronization interval via NTP, sec

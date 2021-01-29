@@ -793,7 +793,7 @@ void TIM6_DAC_IRQHandler(void)
   }
 
   //power off sequence
-  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && !NeedSaveCalibration && !SPI_process && !EEPROM_Busy)
+  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && ((!NeedSaveCalibration && !SPI_process && !EEPROM_Busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
   {
     TRX_Inited = false;
     LCD_busy = true;
