@@ -547,13 +547,10 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	static USBD_DEBUG_HandleTypeDef pClassDataDEBUG = {0};
 	static USBD_DEBUG_HandleTypeDef pClassDataCAT = {0};
 	static USBD_DEBUG_HandleTypeDef pClassDataAUDIO = {0};
-	//pdev->pClassDataDEBUG = USBD_malloc(sizeof(USBD_DEBUG_HandleTypeDef));
 	pdev->pClassDataDEBUG = &pClassDataDEBUG;
 	memset(pdev->pClassDataDEBUG, 0, sizeof(USBD_DEBUG_HandleTypeDef));
-	//pdev->pClassDataCAT = USBD_malloc(sizeof(USBD_CAT_HandleTypeDef));
 	pdev->pClassDataCAT = &pClassDataCAT;
 	memset(pdev->pClassDataCAT, 0, sizeof(USBD_CAT_HandleTypeDef));
-	//pdev->pClassDataAUDIO = USBD_malloc(sizeof(USBD_AUDIO_HandleTypeDef));
 	pdev->pClassDataAUDIO = &pClassDataAUDIO;
 	memset(pdev->pClassDataAUDIO, 0, sizeof(USBD_AUDIO_HandleTypeDef));
 

@@ -7,6 +7,7 @@
 #include "fpga.h"
 #include "audio_filters.h"
 #include "wifi.h"
+#include "vad.h"
 
 #define CAT_APP_RX_DATA_SIZE 32
 #define CAT_APP_TX_DATA_SIZE 32
@@ -312,9 +313,17 @@ void ua3reo_dev_cat_parseCommand(void)
 				TRX.current_vfo = 0;
 			else if (strcmp(arguments, "1") == 0)
 				TRX.current_vfo = 1;
+			LCD_UpdateQuery.TopButtons = true;
+			LCD_UpdateQuery.BottomButtons = true;
+			LCD_UpdateQuery.FreqInfoRedraw = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
 			NeedSaveSettings = true;
+			NeedReinitAudioFiltersClean = true;
 			NeedReinitAudioFilters = true;
-			LCD_redraw(false);
+			resetVAD();
+			FFT_Init();
+			TRX_ScanMode = false;
 			sendToDebug_str3("CAT arguments: ", _command, "\r\n");
 		}
 		return;

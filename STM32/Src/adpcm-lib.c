@@ -72,7 +72,6 @@ struct adpcm_context
 static struct adpcm_context pcnxt;
 void *adpcm_create_context(int num_channels, int lookahead, int noise_shaping, int32_t initial_deltas[2])
 {
-    //struct adpcm_context *pcnxt = malloc (sizeof (struct adpcm_context));
     int ch, i;
 
     memset(&pcnxt, 0, sizeof(struct adpcm_context));

@@ -87,7 +87,7 @@ void GT911_ReadStatus(void)
 	GT911_RD_Reg(GT911_PRODUCT_ID_REG, (uint8_t *)&buf[0], 3);
 	GT911_RD_Reg(GT911_CONFIG_REG, (uint8_t *)&buf[3], 1);
 
-	char str[64] = {0};
+	static IRAM2 char str[64] = {0};
 	sprintf(str, "TouchPad_ID:%d,%d,%d\r\nTouchPad_Config_Version:%2x", buf[0], buf[1], buf[2], buf[3]);
 	sendToDebug_strln(str);
 }
@@ -97,7 +97,7 @@ void GT911_ReadFirmwareVersion(void)
 	uint8_t buf[2] = {0};
 	GT911_RD_Reg(GT911_FIRMWARE_VERSION_REG, buf, 2);
 
-	char str[128] = {0};
+	static IRAM2 char str[128] = {0};
 	sprintf(str, "FirmwareVersion:%2x", (((uint16_t)buf[1] << 8) + buf[0]));
 	sendToDebug_strln(str);
 }

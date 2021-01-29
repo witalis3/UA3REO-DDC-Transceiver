@@ -95,9 +95,9 @@ void WIFI_Init(void)
 
 void WIFI_Process(void)
 {
-	char com_t[128] = {0};
-	char tz[2] = {0};
-	char com[128] = {0};
+	static IRAM2 char com_t[128] = {0};
+	static IRAM2 char tz[2] = {0};
+	static IRAM2 char com[128] = {0};
 
 	if (WIFI_State == WIFI_NOTFOUND)
 		return;

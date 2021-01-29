@@ -19,6 +19,7 @@ IRAM2 float32_t FFTInput_Q_B[FFT_HALF_SIZE] = {0}; // incoming buffer FFT Q
 uint16_t FFT_FPS = 0;
 uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
+bool FFT_Need_Reset = false;
 
 //Private variables
 #if FFT_SIZE == 2048
@@ -35,10 +36,10 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
 static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0};			// charge FFT I and Q buffer
-static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};					// combined FFT I and Q buffer
-static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};						// temporary buffer for sorting, moving and fft compressing
+IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};					// combined FFT I and Q buffer
+IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};						// temporary buffer for sorting, moving and fft compressing
 IRAM2 static float32_t FFT_meanBuffer[FFT_MAX_MEANS][MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
-static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};						// averaged FFT buffer (for output)
+IRAM2 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};						// averaged FFT buffer (for output)
 static float32_t maxValueFFT_rx = 0;											// maximum value of the amplitude in the resulting frequency response
 static float32_t maxValueFFT_tx = 0;											// maximum value of the amplitude in the resulting frequency response
 static uint32_t currentFFTFreq = 0;
@@ -262,14 +263,15 @@ void FFT_Init(void)
 	memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 	memset(&fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
 	memset(&wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
-	memset(&FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer));
-	memset(&FFTInput_tmp, 0x00, sizeof(FFTInput_tmp));
 	memset(&FFTInput, 0x00, sizeof(FFTInput));
 	memset(&FFTInput_I_A, 0x00, sizeof(FFTInput_I_A));
 	memset(&FFTInput_Q_A, 0x00, sizeof(FFTInput_Q_A));
 	memset(&FFTInput_I_B, 0x00, sizeof(FFTInput_I_B));
 	memset(&FFTInput_Q_B, 0x00, sizeof(FFTInput_Q_B));
+	memset(&FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer));
+	memset(&FFTInput_tmp, 0x00, sizeof(FFTInput_tmp));
 	NeedWTFRedraw = true;
+	FFT_Need_Reset = true;
 }
 
 // FFT calculation
@@ -362,6 +364,21 @@ void FFT_doFFT(void)
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
 
+	//Reset FFT
+	if(FFT_Need_Reset)
+	{
+		FFT_new_buffer_ready = false;
+		memset(FFTInput_I_A, 0x00, sizeof FFTInput_I_A);
+		memset(FFTInput_Q_A, 0x00, sizeof FFTInput_Q_A);
+		memset(FFTInput_I_B, 0x00, sizeof FFTInput_I_B);
+		memset(FFTInput_Q_B, 0x00, sizeof FFTInput_Q_B);
+		memset(FFTInputCharge, 0x00, sizeof FFTInputCharge);
+		memset(FFTInput, 0x00, sizeof FFTInput);
+		memset(FFTOutput_mean, 0x00, sizeof FFTOutput_mean);
+		FFT_buff_index = 0;
+		FFT_Need_Reset = false;
+	}
+	
 	// Get charge buffer
 	fft_charge_copying = true;
 	memcpy(FFTInput, FFTInputCharge, sizeof(FFTInput));
@@ -1466,15 +1483,7 @@ static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initializ
 // reset FFT
 void FFT_Reset(void) // clear the FFT
 {
-	FFT_new_buffer_ready = false;
-	memset(FFTInput_I_A, 0x00, sizeof FFTInput_I_A);
-	memset(FFTInput_Q_A, 0x00, sizeof FFTInput_Q_A);
-	memset(FFTInput_I_B, 0x00, sizeof FFTInput_I_B);
-	memset(FFTInput_Q_B, 0x00, sizeof FFTInput_Q_B);
-	memset(FFTInputCharge, 0x00, sizeof FFTInputCharge);
-	memset(FFTInput, 0x00, sizeof FFTInput);
-	memset(FFTOutput_mean, 0x00, sizeof FFTOutput_mean);
-	FFT_buff_index = 0;
+	FFT_Need_Reset = true;
 }
 
 static inline int32_t getFreqPositionOnFFT(uint32_t freq)

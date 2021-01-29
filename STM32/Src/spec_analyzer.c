@@ -63,7 +63,7 @@ void SPEC_Start(void)
 	LCDDriver_drawFastHLine(graph_start_x, graph_start_y + graph_height, graph_width, COLOR_WHITE);
 
 	// horizontal labels
-	char ctmp[64] = {0};
+	static IRAM2 char ctmp[64] = {0};
 	sprintf(ctmp, "%u", TRX.SPEC_Begin);
 	LCDDriver_printText(ctmp, graph_start_x + 2, graph_start_y + graph_height + 3, COLOR_GREEN, COLOR_BLACK, 1);
 	sprintf(ctmp, "%u", TRX.SPEC_End);
@@ -195,7 +195,7 @@ static void SPEC_DrawGraphCol(uint16_t x, bool clear)
 // display status at the bottom of the screen
 static void SPEC_DrawBottomGUI(void)
 {
-	char ctmp[64] = {0};
+	static IRAM2 char ctmp[64] = {0};
 	int32_t freq = (int32_t)TRX.SPEC_Begin + (graph_selected_x * (int32_t)(TRX.SPEC_End - TRX.SPEC_Begin) / (graph_width - 1));
 	sprintf(ctmp, "Freq=%dkHz DBM=%d", freq, data[graph_selected_x]);
 	LCDDriver_Fill_RectWH(170, graph_start_y + graph_height + 3, 200, 6, COLOR_BLACK);

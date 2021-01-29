@@ -598,7 +598,24 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	//verify
 	if (verify)
 	{
-		EEPROM_Read_Data(read_clone, size, sector, false, true);
+		uint32_t BigAddress = sector * W25Q16_SECTOR_SIZE;
+		Address[2] = (BigAddress >> 16) & 0xFF;
+		Address[1] = (BigAddress >> 8) & 0xFF;
+		Address[0] = BigAddress & 0xFF;
+
+		bool res = SPI_Transmit(&Read_Data, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false); // Read Command
+		if (!res)
+		{
+			EEPROM_Enabled = false;
+			sendToDebug_strln("[ERR] EEPROM not found...");
+			LCD_showError("EEPROM init error", true);
+			SPI_process = false;
+			return true;
+		}
+
+		SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);				   // Write Address
+		SPI_Transmit(NULL, (uint8_t *)(read_clone), size, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Read
+	
 		for (uint16_t i = 0; i < size; i++)
 			if (read_clone[i] != Buffer[i])
 			{

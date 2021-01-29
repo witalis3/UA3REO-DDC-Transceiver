@@ -68,8 +68,8 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 	if (rx_id == AUDIO_RX2)
 		instance = &NR_RX2;
 	
-	const float32_t snr_prio_min = 0.001; //range should be down to -30dB min
-	const float32_t alpha = 0.94;
+	#define snr_prio_min 0.001 //range should be down to -30dB min
+	#define alpha 0.94
 	
 	//fill input buffer
 	memcpy(&instance->NR_InputBuffer[instance->NR_InputBuffer_index * NOISE_REDUCTION_BLOCK_SIZE], buffer, NOISE_REDUCTION_BLOCK_SIZE * 4);
