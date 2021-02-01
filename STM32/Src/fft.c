@@ -224,8 +224,8 @@ void FFT_PreInit(void)
 	}
 
 	// initialize sort
-	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_BITONIC, ARM_SORT_ASCENDING);
-	//ARM_SORT_BITONIC - 45
+	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_HEAP, ARM_SORT_ASCENDING);
+	//ARM_SORT_BITONIC - 45 (no float?)
 	//ARM_SORT_BUBBLE - 63
 	//ARM_SORT_HEAP - 47
 	//ARM_SORT_INSERTION - 59
