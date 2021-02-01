@@ -20,6 +20,7 @@ typedef const struct
 	const uint16_t STATUS_BAR_LABELS;
 	const uint16_t STATUS_RX;
 	const uint16_t STATUS_TX;
+	const uint16_t STATUS_TU;
 	const uint16_t STATUS_LABELS_BW;
 	const uint16_t STATUS_LABELS_TX;
 	const uint16_t STATUS_LABEL_S_VAL;
@@ -88,6 +89,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 		.STATUS_BAR_LABELS = rgb888torgb565(32, 171, 17),
 		.STATUS_RX = COLOR_WHITE,
 		.STATUS_TX = COLOR_RED,
+		.STATUS_TU = rgb888torgb565(249, 205, 46),
 		.STATUS_LABELS_BW = COLOR_WHITE,
 		.STATUS_LABELS_TX = rgb888torgb565(32, 171, 17),
 		.STATUS_LABEL_S_VAL = rgb888torgb565(249, 205, 46),
@@ -154,6 +156,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[2] = {
 		.STATUS_BAR_LABELS = rgb888torgb565(32, 171, 17),
 		.STATUS_RX = COLOR_BLACK,
 		.STATUS_TX = COLOR_RED,
+		.STATUS_TU = rgb888torgb565(249, 205, 46),
 		.STATUS_LABELS_BW = COLOR_BLACK,
 		.STATUS_LABELS_TX = rgb888torgb565(32, 171, 17),
 		.STATUS_LABEL_S_VAL = rgb888torgb565(150, 130, 50),
