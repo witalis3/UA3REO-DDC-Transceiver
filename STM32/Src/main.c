@@ -1478,9 +1478,9 @@ static void MX_FMC_Init(void)
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 #if (defined(LCD_HX8357C))
-  Timing.AddressSetupTime = 8;
-  Timing.DataSetupTime = 8;
-  Timing.BusTurnAroundDuration = 6;
+  Timing.AddressSetupTime = 10;
+  Timing.DataSetupTime = 10;
+  Timing.BusTurnAroundDuration = 8;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 #if (defined(LCD_SSD1963))
