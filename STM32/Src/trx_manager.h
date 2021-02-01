@@ -38,7 +38,7 @@ volatile extern bool TRX_RX2_IQ_swap;
 volatile extern bool TRX_TX_IQ_swap;
 volatile extern bool TRX_Tune;
 volatile extern bool TRX_Inited;
-volatile extern int_fast16_t TRX_RX_dBm;
+volatile extern float32_t TRX_RX_dBm;
 volatile extern bool TRX_ADC_OTR;
 volatile extern bool TRX_DAC_OTR;
 volatile extern int16_t TRX_ADC_MINAMPLITUDE;

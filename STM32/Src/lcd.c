@@ -716,8 +716,13 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 	if (!TRX_on_TX())
 	{
-		float32_t s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX_dBm) * 0.25f; // smooth the movement of the S-meter
-
+		float32_t s_width = 0.0f;
+			
+		if(CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX_dBm) * 0.5f; // smooth CW faster!
+		else
+			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX_dBm) * 0.25f; // smooth the movement of the S-meter
+		
 		//digital s-meter version
 		if ((redraw || (LCD_last_s_meter != s_width)) && !LAYOUT->STATUS_SMETER_ANALOG)
 		{
@@ -763,7 +768,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		}
 
 		//print dBm value
-		sprintf(ctmp, "%ddBm", TRX_RX_dBm);
+		sprintf(ctmp, "%ddBm", (int16_t)TRX_RX_dBm);
 		addSymbols(ctmp, ctmp, 7, " ", true);
 		LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 

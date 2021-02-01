@@ -30,7 +30,7 @@ volatile bool TRX_RX2_IQ_swap = false;
 volatile bool TRX_TX_IQ_swap = false;
 volatile bool TRX_Tune = false;
 volatile bool TRX_Inited = false;
-volatile int_fast16_t TRX_RX_dBm = -100;
+volatile float32_t TRX_RX_dBm = -100.0f;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
@@ -548,7 +548,7 @@ void TRX_DBMCalculate(void)
 	float32_t adc_volts = Processor_RX_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
 	if (TRX.ADC_Driver)
 		adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
-	TRX_RX_dBm = (int16_t)(10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f));
+	TRX_RX_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
 	TRX_RX_dBm += CALIBRATE.smeter_calibration;
 
 	Processor_RX_Power_value = 0;
