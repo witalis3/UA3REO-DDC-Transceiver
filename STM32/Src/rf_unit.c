@@ -337,13 +337,13 @@ void RF_UNIT_ProcessSensors(void)
 	else
 	{
 		forward += 0.21f;							  // drop on diode
-		forward = forward * CALIBRATE.swr_trans_rate; // Transformation ratio of the SWR meter
+		forward = forward * CALIBRATE.SWR_FWD_Calibration; // Transformation ratio of the SWR meter
 
 		backward = backward / (1510.0f / (0.1f + 1510.0f)); // adjust the voltage based on the voltage divider (0.1 ohm and 510 ohm)
 		if (backward >= 0.01f)								// do not measure less than 10mV
 		{
 			backward += 0.21f;								// drop on diode
-			backward = backward * CALIBRATE.swr_trans_rate; // Transformation ratio of the SWR meter
+			backward = backward * CALIBRATE.SWR_REF_Calibration; // Transformation ratio of the SWR meter
 		}
 		else
 			backward = 0.001f;

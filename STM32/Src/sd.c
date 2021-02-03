@@ -675,7 +675,9 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_HPF", (uint32_t *)&CALIBRATE.BPF_HPF, SYSMENU_UINT32);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.swr_trans_rate", (uint32_t *)&CALIBRATE.swr_trans_rate, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.SWR_FWD_Calibration", (uint32_t *)&CALIBRATE.SWR_FWD_Calibration, SYSMENU_FLOAT32);
+		if (res)
+			SD_WRITE_SETT_LINE("CALIBRATE.SWR_REF_Calibration", (uint32_t *)&CALIBRATE.SWR_REF_Calibration, SYSMENU_FLOAT32);
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.VCXO_correction", (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_INT8);
 
@@ -1118,8 +1120,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.BPF_6_END = uintval;
 	if (strcmp(name, "CALIBRATE.BPF_HPF") == 0)
 		CALIBRATE.BPF_HPF = uintval;
-	if (strcmp(name, "CALIBRATE.swr_trans_rate") == 0)
-		CALIBRATE.swr_trans_rate = floatval;
+	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration") == 0)
+		CALIBRATE.SWR_FWD_Calibration = floatval;
+	if (strcmp(name, "CALIBRATE.SWR_REF_Calibration") == 0)
+		CALIBRATE.SWR_REF_Calibration = floatval;
 	if (strcmp(name, "CALIBRATE.VCXO_correction") == 0)
 		CALIBRATE.VCXO_correction = (int8_t)intval;
 }

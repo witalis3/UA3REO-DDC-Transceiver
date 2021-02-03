@@ -180,7 +180,8 @@ static void SYSMENU_HANDL_CALIB_BPF_5_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_6_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
-static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction);
+static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE(int8_t direction);
+static void SYSMENU_HANDL_CALIB_SWR_REF_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction);  //Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction); //Tisho
@@ -439,7 +440,8 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"BPF 6 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_6_START, SYSMENU_HANDL_CALIB_BPF_6_START},
 		{"BPF 6 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_6_END, SYSMENU_HANDL_CALIB_BPF_6_END},
 		{"HPF START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_HPF, SYSMENU_HANDL_CALIB_HPF_START},
-		{"SWR TRANS RATE", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.swr_trans_rate, SYSMENU_HANDL_CALIB_SWR_TRANS_RATE},
+		{"SWR FWD RATE", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration, SYSMENU_HANDL_CALIB_SWR_FWD_RATE},
+		{"SWR REF RATE", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.SWR_REF_Calibration, SYSMENU_HANDL_CALIB_SWR_REF_RATE},
 		{"VCXO Correction", SYSMENU_INT8, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 		{"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
 		{"FW_AD8307_Offset (mV)", SYSMENU_FLOAT32, (uint32_t *)&CALIBRATE.FW_AD8307_OFFS, SYSMENU_HANDL_CALIB_FW_AD8307_OFFS},
@@ -2935,13 +2937,22 @@ static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction)
 		CALIBRATE.BPF_HPF = 999999999;
 }
 
-static void SYSMENU_HANDL_CALIB_SWR_TRANS_RATE(int8_t direction)
+static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE(int8_t direction)
 {
-	CALIBRATE.swr_trans_rate += (float32_t)direction * 0.1f;
-	if (CALIBRATE.swr_trans_rate < 1.0f)
-		CALIBRATE.swr_trans_rate = 1.0f;
-	if (CALIBRATE.swr_trans_rate > 50.0f)
-		CALIBRATE.swr_trans_rate = 50.0f;
+	CALIBRATE.SWR_FWD_Calibration += (float32_t)direction * 0.1f;
+	if (CALIBRATE.SWR_FWD_Calibration < 1.0f)
+		CALIBRATE.SWR_FWD_Calibration = 1.0f;
+	if (CALIBRATE.SWR_FWD_Calibration > 50.0f)
+		CALIBRATE.SWR_FWD_Calibration = 50.0f;
+}
+
+static void SYSMENU_HANDL_CALIB_SWR_REF_RATE(int8_t direction)
+{
+	CALIBRATE.SWR_REF_Calibration += (float32_t)direction * 0.1f;
+	if (CALIBRATE.SWR_REF_Calibration < 1.0f)
+		CALIBRATE.SWR_REF_Calibration = 1.0f;
+	if (CALIBRATE.SWR_REF_Calibration > 50.0f)
+		CALIBRATE.SWR_REF_Calibration = 50.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)
