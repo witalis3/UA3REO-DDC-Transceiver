@@ -50,11 +50,11 @@ extern float32_t FFTInput_Q_B[FFT_HALF_SIZE];
 extern uint16_t FFT_FPS;
 extern uint16_t FFT_FPS_Last;
 extern bool NeedWTFRedraw;
+extern bool NeedFFTReinit;
 
 // Public methods
 extern void FFT_Init(void);                              // FFT initialization
 extern void FFT_PreInit(void);                           // FFT precalculation
-extern void FFT_Reset(void);                             // reset FFT
 extern void FFT_bufferPrepare(void);                     // FFT Buffer process
 extern void FFT_doFFT(void);                             // FFT calculation
 extern bool FFT_printFFT(void);                          // FFT output

@@ -117,7 +117,7 @@ void TRX_Restart_Mode()
 		TRX_Start_RX();
 	}
 	NeedReinitReverber = true;
-	FFT_Reset();
+	NeedFFTReinit = true;
 }
 
 static void TRX_Start_RX()
@@ -336,9 +336,9 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	if (TRX.FFT_Zoom != TRX.FFT_ZoomCW)
 	{
 		if ((old_mode == TRX_MODE_CW_L || old_mode == TRX_MODE_CW_U) && (_mode != TRX_MODE_CW_L && _mode != TRX_MODE_CW_U))
-			FFT_Init();
+			NeedFFTReinit = true;
 		if ((old_mode != TRX_MODE_CW_L && old_mode != TRX_MODE_CW_U) && (_mode == TRX_MODE_CW_L || _mode == TRX_MODE_CW_U))
-			FFT_Init();
+			NeedFFTReinit = true;
 	}
 
 	if (old_mode != _mode)
