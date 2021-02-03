@@ -708,7 +708,7 @@ void FRONTPANEL_BUTTONHANDLER_PRE(uint32_t parameter)
 {
 	TRX.LNA = !TRX.LNA;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[band].LNA = TRX.LNA;
 	}
@@ -722,7 +722,7 @@ void FRONTPANEL_BUTTONHANDLER_ATT(uint32_t parameter)
 	TRX.ATT = !TRX.ATT;
 
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
 		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
@@ -740,7 +740,7 @@ void FRONTPANEL_BUTTONHANDLER_ATTHOLD(uint32_t parameter)
 		TRX.ATT_DB = TRX.ATT_STEP;
 
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
 		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
@@ -756,7 +756,7 @@ void FRONTPANEL_BUTTONHANDLER_ANT(uint32_t parameter)
 	TRX.ANT = !TRX.ANT;
 
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ANT = TRX.ANT;
 
 	LCD_UpdateQuery.StatusInfoGUI = true;
@@ -786,7 +786,7 @@ void FRONTPANEL_BUTTONHANDLER_PGA(uint32_t parameter)
 		TRX.ADC_PGA = false;
 	}
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
@@ -800,7 +800,7 @@ void FRONTPANEL_BUTTONHANDLER_PGA_ONLY(uint32_t parameter)
 {
 	TRX.ADC_PGA = !TRX.ADC_PGA;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
@@ -811,7 +811,7 @@ void FRONTPANEL_BUTTONHANDLER_DRV_ONLY(uint32_t parameter)
 {
 	TRX.ADC_Driver = !TRX.ADC_Driver;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
@@ -859,7 +859,7 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(uint32_t parameter)
 
 	TRX_setMode((uint8_t)mode, CurrentVFO());
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
 	resetVAD();
@@ -891,7 +891,7 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_N(uint32_t parameter)
 
 	TRX_setMode((uint8_t)mode, CurrentVFO());
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
 	resetVAD();
@@ -985,7 +985,7 @@ void FRONTPANEL_BUTTONHANDLER_AGC(uint32_t parameter)
 {
 	CurrentVFO()->AGC = !CurrentVFO()->AGC;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].AGC = CurrentVFO()->AGC;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
@@ -1063,7 +1063,7 @@ void FRONTPANEL_BUTTONHANDLER_DNR(uint32_t parameter)
 	else
 		CurrentVFO()->DNR_Type = 0;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].DNR_Type = CurrentVFO()->DNR_Type;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
@@ -1367,7 +1367,7 @@ void FRONTPANEL_BUTTONHANDLER_SETMODE(uint32_t parameter)
 	int8_t mode = parameter;
 	TRX_setMode((uint8_t)mode, &TRX.VFO_A);
 	int8_t band = getBandFromFreq(TRX.VFO_A.Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
 	resetVAD();
@@ -1380,7 +1380,7 @@ void FRONTPANEL_BUTTONHANDLER_SETSECMODE(uint32_t parameter)
 	int8_t mode = parameter;
 	TRX_setMode((uint8_t)mode, &TRX.VFO_B);
 	int8_t band = getBandFromFreq(TRX.VFO_B.Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
 	resetVAD();
