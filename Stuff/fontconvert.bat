@@ -1,1 +1,1 @@
-fontconvert Quito.ttf 32 > font32pt7b.h
+fontconvert DS-DIGI.TTF 18 > font18pt7b.h
