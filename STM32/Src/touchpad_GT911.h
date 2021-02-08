@@ -4,7 +4,8 @@
 #if (defined(TOUCHPAD_GT911))
 #define HAS_TOUCHPAD true
 
-#define GT911_I2C_ADDR 93 //20/93 is shifted >> 1 touch addr
+#define GT911_I2C_ADDR_1 93 //20/93 is shifted >> 1 touch addr
+#define GT911_I2C_ADDR_2 20
 #define GT911_MAX_TOUCH 5
 #define GT911_COMMAND_REG 0x8040
 #define GT911_CONFIG_REG 0x8047

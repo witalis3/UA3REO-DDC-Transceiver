@@ -4,6 +4,7 @@
 #if (defined(TOUCHPAD_GT911))
 
 GT911_Dev GT911 = {0};
+static uint8_t gt911_i2c_addr = GT911_I2C_ADDR_1;
 
 static uint8_t GT911_Config[] = {
 	0x81, 0x00, 0x04, 0x58, 0x02, 0x0A, 0x0C, 0x20, 0x01, 0x08, 0x28, 0x05, 0x50, // 0x8047 - 0x8053
@@ -26,7 +27,7 @@ uint8_t GT911_WR_Reg(uint16_t reg, uint8_t *buf, uint8_t len)
 {
 	uint8_t i;
 	uint8_t ret = 0;
-	i2c_beginTransmission_u8(&I2C_TOUCHPAD, GT911_I2C_ADDR);
+	i2c_beginTransmission_u8(&I2C_TOUCHPAD, gt911_i2c_addr);
 	i2c_write_u8(&I2C_TOUCHPAD, (reg >> 8) & 0xFF);
 	i2c_write_u8(&I2C_TOUCHPAD, reg & 0xFF);
 	for (i = 0; i < len; i++)
@@ -40,20 +41,28 @@ uint8_t GT911_WR_Reg(uint16_t reg, uint8_t *buf, uint8_t len)
 void GT911_RD_RegOneByte(uint16_t reg, uint8_t *buf)
 {
 	uint8_t i;
-	i2c_beginTransmission_u8(&I2C_TOUCHPAD, GT911_I2C_ADDR);
+	i2c_beginTransmission_u8(&I2C_TOUCHPAD, gt911_i2c_addr);
 	i2c_write_u8(&I2C_TOUCHPAD, (reg >> 8) & 0xFF);
 	i2c_write_u8(&I2C_TOUCHPAD, reg & 0xFF);
 	uint8_t res = i2c_endTransmission(&I2C_TOUCHPAD);
 	if (res == 0)
 	{
-		if (i2c_beginReceive_u8(&I2C_TOUCHPAD, GT911_I2C_ADDR))
+		if (i2c_beginReceive_u8(&I2C_TOUCHPAD, gt911_i2c_addr))
 		{
 			*buf = i2c_Read_Byte(&I2C_TOUCHPAD, 0);
 			i2c_stop(&I2C_TOUCHPAD);
 		}
 	}
 	else
-		sendToDebug_str("no dev");
+	{
+		sendToDebug_str("no touchpad found on i2c bus");
+		
+		//try new i2c addr if failed
+		if(gt911_i2c_addr == GT911_I2C_ADDR_1)
+			gt911_i2c_addr = GT911_I2C_ADDR_2;
+		else
+			gt911_i2c_addr = GT911_I2C_ADDR_1;
+	}
 }
 
 void GT911_RD_Reg(uint16_t reg, uint8_t *buf, uint8_t len)

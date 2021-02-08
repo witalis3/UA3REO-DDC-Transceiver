@@ -112,7 +112,7 @@ bool i2c_get_ack(I2C_DEVICE *dev)
 		if (time > 50)
 		{
 			i2c_stop(dev);
-			sendToDebug_strln("no get ack");
+			//sendToDebug_strln("no get ack");
 			return false;
 		}
 		I2C_DELAY
@@ -173,7 +173,7 @@ bool i2c_beginReceive_u8(I2C_DEVICE *dev, uint8_t slave_address)
 	i2c_shift_out(dev, (uint8_t)((dev->i2c_tx_addr << 1) | I2C_READ));
 	if (!i2c_get_ack(dev))
 	{
-		sendToDebug_strln("no ack");
+		//sendToDebug_strln("no ack");
 		return false;
 	}
 	return true;
