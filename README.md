@@ -224,12 +224,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **Encoder slow rate** - Deceleration rate of the main encoder
 * **Encoder on falling** - The encoder is triggered only when level A falls
 * **Encoder acceleration** - The encoder acceleration on faster rotation speeds
-* **CICCOMP Shift** - Bit shift after CIC compensator
-* **TX CICCOMP Shift** - Bit shift after TX CIC compensator
-* **DAC Shift** - Bit shift of the output to the DAC
 * **RF GAIN xx** - Calibration of the maximum output power for each range
 * **S METER** - S-meter calibration
-* **ADC OFFSET** - ADC offset calibration
 * **LPF END** - LPF filter parameters
 * **BPF x** - Bandpass filter parameters
 * **HPF START** - HPF filter parameters

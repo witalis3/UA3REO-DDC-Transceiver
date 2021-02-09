@@ -324,8 +324,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENCODER_SLOW_RATE = 25;	  // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ON_FALLING = false; // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;  //acceleration rate if rotate
-		CALIBRATE.TXCICFIR_GAINER_val = 42;	  // Offset from the TX-CIC output of the compensator
-		CALIBRATE.DAC_GAINER_val = 26;		  // DAC shift
 		// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_2200m = 29;		   //2200m
 		CALIBRATE.rf_out_power_160m = 29;		   //160m
@@ -340,7 +338,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_6m = 13;	   //6m
 		CALIBRATE.rf_out_power_2m = 100;		   //2m
 		CALIBRATE.smeter_calibration = 0;		   // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off)
-		CALIBRATE.adc_offset = 0;				   // Calibrate the offset at the ADC input (DC)
 												   // Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
 												   // Next, the average border response frequencies are set
 		CALIBRATE.LPF_END = 60000 * 1000;		   //LPF

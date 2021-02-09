@@ -609,10 +609,6 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ACCELERATION", (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.TXCICFIR_GAINER2", (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_UINT8);
-		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.DAC_GAINER2", (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2200m", (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_160m", (uint32_t *)&CALIBRATE.rf_out_power_160m, SYSMENU_UINT8);
@@ -638,8 +634,6 @@ static void SDCOMM_EXPORT_SETT(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2m", (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration2", (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_INT16);
-		if (res)
-			SD_WRITE_SETT_LINE("CALIBRATE.adc_offset", (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_INT16);
 		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.LPF_END", (uint32_t *)&CALIBRATE.LPF_END, SYSMENU_UINT32);
 		if (res)
@@ -1052,10 +1046,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.ENCODER_ON_FALLING = uintval;
 	if (strcmp(name, "CALIBRATE.ENCODER_ACCELERATION") == 0)
 		CALIBRATE.ENCODER_ACCELERATION = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.TXCICFIR_GAINER2") == 0)
-		CALIBRATE.TXCICFIR_GAINER_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.DAC_GAINER2") == 0)
-		CALIBRATE.DAC_GAINER_val = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_2200m") == 0)
 		CALIBRATE.rf_out_power_2200m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_160m") == 0)
@@ -1082,8 +1072,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.rf_out_power_2m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.smeter_calibration2") == 0)
 		CALIBRATE.smeter_calibration = (int16_t)intval;
-	if (strcmp(name, "CALIBRATE.adc_offset") == 0)
-		CALIBRATE.adc_offset = (int16_t)intval;
 	if (strcmp(name, "CALIBRATE.LPF_END") == 0)
 		CALIBRATE.LPF_END = uintval;
 	if (strcmp(name, "CALIBRATE.BPF_0_START") == 0)

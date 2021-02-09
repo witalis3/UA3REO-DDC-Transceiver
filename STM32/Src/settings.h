@@ -277,8 +277,6 @@ extern struct TRX_CALIBRATE
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
 	bool ENCODER_ON_FALLING;
-	uint8_t TXCICFIR_GAINER_val;
-	uint8_t DAC_GAINER_val;
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;
 	uint8_t rf_out_power_80m;
@@ -292,7 +290,6 @@ extern struct TRX_CALIBRATE
 	uint8_t rf_out_power_6m;
 	uint8_t rf_out_power_2m;
 	int16_t smeter_calibration;
-	int16_t adc_offset;
 	uint32_t LPF_END;
 	uint32_t BPF_0_START; //UHF
 	uint32_t BPF_0_END;	  //UHF

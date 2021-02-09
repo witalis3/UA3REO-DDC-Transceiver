@@ -147,8 +147,6 @@ static void SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction);
-static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction);
-static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2200M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_160M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_80M(int8_t direction);
@@ -162,7 +160,6 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_10M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction);
-static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_0_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_0_END(int8_t direction);
@@ -406,8 +403,6 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
 		{"Encoder on falling", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
 		{"Encoder acceleration", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
-		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
-		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
 		{"RF GAIN 2200m", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_HANDL_CALIB_RF_GAIN_2200M},
 		{"RF GAIN 160m", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_160m, SYSMENU_HANDL_CALIB_RF_GAIN_160M},
 		{"RF GAIN 80m", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_80m, SYSMENU_HANDL_CALIB_RF_GAIN_80M},
@@ -421,7 +416,6 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"RF GAIN 6m", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_HANDL_CALIB_RF_GAIN_6M},
 		{"RF GAIN 2m", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_HANDL_CALIB_RF_GAIN_2M},
 		{"S METER", SYSMENU_INT16, (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_HANDL_CALIB_S_METER},
-		{"ADC OFFSET", SYSMENU_INT16, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
 		{"LPF END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
 		{"BPF 0 START", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_0_START, SYSMENU_HANDL_CALIB_BPF_0_START},
 		{"BPF 0 END", SYSMENU_UINT32, (uint32_t *)&CALIBRATE.BPF_0_END, SYSMENU_HANDL_CALIB_BPF_0_END},
@@ -2602,24 +2596,6 @@ static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction) //Tisho
 	}
 }
 
-static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction)
-{
-	CALIBRATE.TXCICFIR_GAINER_val += direction;
-	if (CALIBRATE.TXCICFIR_GAINER_val < 16)
-		CALIBRATE.TXCICFIR_GAINER_val = 16;
-	if (CALIBRATE.TXCICFIR_GAINER_val > 48)
-		CALIBRATE.TXCICFIR_GAINER_val = 48;
-}
-
-static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction)
-{
-	CALIBRATE.DAC_GAINER_val += direction;
-	if (CALIBRATE.DAC_GAINER_val < 14)
-		CALIBRATE.DAC_GAINER_val = 14;
-	if (CALIBRATE.DAC_GAINER_val > 28)
-		CALIBRATE.DAC_GAINER_val = 28;
-}
-
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2200M(int8_t direction)
 {
 	if (CALIBRATE.rf_out_power_2200m > 0)
@@ -2771,15 +2747,6 @@ static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction)
 		CALIBRATE.smeter_calibration = -50;
 	if (CALIBRATE.smeter_calibration > 50)
 		CALIBRATE.smeter_calibration = 50;
-}
-
-static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction)
-{
-	CALIBRATE.adc_offset += direction;
-	if (CALIBRATE.adc_offset < -500)
-		CALIBRATE.adc_offset = -500;
-	if (CALIBRATE.adc_offset > 500)
-		CALIBRATE.adc_offset = 500;
 }
 
 static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction)

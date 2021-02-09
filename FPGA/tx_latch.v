@@ -4,7 +4,7 @@
 // MODULE: LPM_ADD_SUB 
 
 // ============================================================
-// File Name: tx_summator.v
+// File Name: tx_latch.v
 // Megafunction Name(s):
 // 			LPM_ADD_SUB
 //
@@ -36,37 +36,33 @@
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
-module tx_summator (
+module tx_latch (
 	clock,
 	dataa,
 	datab,
-	overflow,
 	result);
 
 	input	  clock;
-	input	[26:0]  dataa;
-	input	[26:0]  datab;
-	output	  overflow;
-	output	[26:0]  result;
+	input	[15:0]  dataa;
+	input	[15:0]  datab;
+	output	[15:0]  result;
 
-	wire  sub_wire0;
-	wire [26:0] sub_wire1;
-	wire  overflow = sub_wire0;
-	wire [26:0] result = sub_wire1[26:0];
+	wire [15:0] sub_wire0;
+	wire [15:0] result = sub_wire0[15:0];
 
 	lpm_add_sub	LPM_ADD_SUB_component (
 				.clock (clock),
 				.dataa (dataa),
 				.datab (datab),
-				.overflow (sub_wire0),
-				.result (sub_wire1)
+				.result (sub_wire0)
 				// synopsys translate_off
 				,
 				.aclr (),
 				.add_sub (),
 				.cin (),
 				.clken (),
-				.cout ()
+				.cout (),
+				.overflow ()
 				// synopsys translate_on
 				);
 	defparam
@@ -75,7 +71,7 @@ module tx_summator (
 		LPM_ADD_SUB_component.lpm_pipeline = 1,
 		LPM_ADD_SUB_component.lpm_representation = "SIGNED",
 		LPM_ADD_SUB_component.lpm_type = "LPM_ADD_SUB",
-		LPM_ADD_SUB_component.lpm_width = 27;
+		LPM_ADD_SUB_component.lpm_width = 16;
 
 
 endmodule
@@ -91,17 +87,17 @@ endmodule
 // Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone IV E"
 // Retrieval info: PRIVATE: LPM_PIPELINE NUMERIC "1"
 // Retrieval info: PRIVATE: Latency NUMERIC "1"
-// Retrieval info: PRIVATE: Overflow NUMERIC "1"
+// Retrieval info: PRIVATE: Overflow NUMERIC "0"
 // Retrieval info: PRIVATE: RadixA NUMERIC "10"
 // Retrieval info: PRIVATE: RadixB NUMERIC "10"
 // Retrieval info: PRIVATE: Representation NUMERIC "0"
 // Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
 // Retrieval info: PRIVATE: ValidCtA NUMERIC "0"
-// Retrieval info: PRIVATE: ValidCtB NUMERIC "0"
+// Retrieval info: PRIVATE: ValidCtB NUMERIC "1"
 // Retrieval info: PRIVATE: WhichConstant NUMERIC "0"
 // Retrieval info: PRIVATE: aclr NUMERIC "0"
 // Retrieval info: PRIVATE: clken NUMERIC "0"
-// Retrieval info: PRIVATE: nBit NUMERIC "27"
+// Retrieval info: PRIVATE: nBit NUMERIC "16"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
 // Retrieval info: LIBRARY: lpm lpm.lpm_components.all
 // Retrieval info: CONSTANT: LPM_DIRECTION STRING "ADD"
@@ -109,21 +105,19 @@ endmodule
 // Retrieval info: CONSTANT: LPM_PIPELINE NUMERIC "1"
 // Retrieval info: CONSTANT: LPM_REPRESENTATION STRING "SIGNED"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_ADD_SUB"
-// Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "27"
+// Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "16"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
-// Retrieval info: USED_PORT: dataa 0 0 27 0 INPUT NODEFVAL "dataa[26..0]"
-// Retrieval info: USED_PORT: datab 0 0 27 0 INPUT NODEFVAL "datab[26..0]"
-// Retrieval info: USED_PORT: overflow 0 0 0 0 OUTPUT NODEFVAL "overflow"
-// Retrieval info: USED_PORT: result 0 0 27 0 OUTPUT NODEFVAL "result[26..0]"
+// Retrieval info: USED_PORT: dataa 0 0 16 0 INPUT NODEFVAL "dataa[15..0]"
+// Retrieval info: USED_PORT: datab 0 0 16 0 INPUT NODEFVAL "datab[15..0]"
+// Retrieval info: USED_PORT: result 0 0 16 0 OUTPUT NODEFVAL "result[15..0]"
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
-// Retrieval info: CONNECT: @dataa 0 0 27 0 dataa 0 0 27 0
-// Retrieval info: CONNECT: @datab 0 0 27 0 datab 0 0 27 0
-// Retrieval info: CONNECT: overflow 0 0 0 0 @overflow 0 0 0 0
-// Retrieval info: CONNECT: result 0 0 27 0 @result 0 0 27 0
-// Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator.v TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator.inc FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator.cmp FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator.bsf TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator_inst.v FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator_bb.v FALSE
+// Retrieval info: CONNECT: @dataa 0 0 16 0 dataa 0 0 16 0
+// Retrieval info: CONNECT: @datab 0 0 16 0 datab 0 0 16 0
+// Retrieval info: CONNECT: result 0 0 16 0 @result 0 0 16 0
+// Retrieval info: GEN_FILE: TYPE_NORMAL tx_latch.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL tx_latch.inc FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL tx_latch.cmp FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL tx_latch.bsf TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL tx_latch_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL tx_latch_bb.v FALSE
 // Retrieval info: LIB_FILE: lpm

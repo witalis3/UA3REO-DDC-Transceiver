@@ -303,6 +303,8 @@ set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON
 set_global_assignment -name MUX_RESTRUCTURE OFF
 set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING ON
 set_global_assignment -name PLACEMENT_EFFORT_MULTIPLIER 1
+set_global_assignment -name QSYS_FILE DEBUG2.qsys
+set_global_assignment -name QSYS_FILE DEBUG.qsys
 set_global_assignment -name BDF_FILE WOLF.bdf
 set_global_assignment -name VERILOG_FILE DAC_corrector.v
 set_global_assignment -name VERILOG_FILE spi_interface.v
@@ -312,6 +314,7 @@ set_global_assignment -name VERILOG_FILE vcxo_controller.v -hdl_version Verilog_
 set_global_assignment -name VHDL_FILE rx_cic.vhd
 set_global_assignment -name VHDL_FILE rx_ciccomp.vhd
 set_global_assignment -name VHDL_FILE tx_cic.vhd
+set_global_assignment -name VHDL_FILE tx_ciccomp.vhd
 set_global_assignment -name SOURCE_FILE Debug_Probes.spf
 set_global_assignment -name QIP_FILE mixer.qip
 set_global_assignment -name SDC_FILE SDC.sdc
@@ -319,8 +322,6 @@ set_global_assignment -name QSYS_FILE clock_buffer.qsys
 set_global_assignment -name QSYS_FILE tx_cic.qsys
 set_global_assignment -name QSYS_FILE tx_nco.qsys
 set_global_assignment -name QSYS_FILE nco.qsys
-set_global_assignment -name SOURCE_FILE rx_ciccomp.cmp
-set_global_assignment -name SOURCE_FILE tx_ciccomp.cmp
 set_global_assignment -name QIP_FILE mux16.qip
 set_global_assignment -name QIP_FILE MAIN_PLL.qip
 set_global_assignment -name QIP_FILE mux14.qip
@@ -329,10 +330,9 @@ set_global_assignment -name QIP_FILE tx_mixer.qip
 set_global_assignment -name QIP_FILE tx_summator.qip
 set_global_assignment -name QIP_FILE ADC_Latch.qip
 set_global_assignment -name QIP_FILE dac_null.qip
-set_global_assignment -name QIP_FILE tx_ciccomp.qip
-set_global_assignment -name SIP_FILE tx_ciccomp.sip
 set_global_assignment -name QIP_FILE diffclock_buff.qip
 set_global_assignment -name QIP_FILE dcdc_pll.qip
 set_global_assignment -name QIP_FILE tx_pll.qip
 set_global_assignment -name QIP_FILE fir_pll.qip
+set_global_assignment -name QIP_FILE tx_latch.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
