@@ -147,7 +147,6 @@ static void SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction);
-static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2200M(int8_t direction);
@@ -407,7 +406,6 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"Encoder slow rate", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
 		{"Encoder on falling", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
 		{"Encoder acceleration", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
-		{"CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_HANDL_CALIB_CICCOMP_SHIFT},
 		{"TX CICCOMP Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
 		{"DAC Shift", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
 		{"RF GAIN 2200m", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_HANDL_CALIB_RF_GAIN_2200M},
@@ -2602,15 +2600,6 @@ static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction) //Tisho
 		TDM_Voltages_Start();
 		//		drawSystemMenu(true);
 	}
-}
-
-static void SYSMENU_HANDL_CALIB_CICCOMP_SHIFT(int8_t direction)
-{
-	CALIBRATE.CICFIR_GAINER_val += direction;
-	if (CALIBRATE.CICFIR_GAINER_val < 32)
-		CALIBRATE.CICFIR_GAINER_val = 32;
-	if (CALIBRATE.CICFIR_GAINER_val > 57)
-		CALIBRATE.CICFIR_GAINER_val = 57;
 }
 
 static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction)

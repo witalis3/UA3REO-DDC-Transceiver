@@ -10,7 +10,7 @@
 #include "front_unit.h"
 
 #define SETT_VERSION 22				   // Settings config version
-#define CALIB_VERSION 23				   // Calibration config version
+#define CALIB_VERSION 24				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
@@ -277,7 +277,6 @@ extern struct TRX_CALIBRATE
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
 	bool ENCODER_ON_FALLING;
-	uint8_t CICFIR_GAINER_val;
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;
 	uint8_t rf_out_power_2200m;

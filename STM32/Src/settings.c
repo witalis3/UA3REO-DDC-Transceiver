@@ -324,7 +324,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENCODER_SLOW_RATE = 25;	  // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ON_FALLING = false; // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;  //acceleration rate if rotate
-		CALIBRATE.CICFIR_GAINER_val = 48;	  // Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 42;	  // Offset from the TX-CIC output of the compensator
 		CALIBRATE.DAC_GAINER_val = 26;		  // DAC shift
 		// Calibrate the maximum output power for each band
