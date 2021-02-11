@@ -55,8 +55,8 @@ https://fpgasoftware.intel.com/eula.
 	(port
 		(pt 216 32)
 		(output)
-		(text "filter_out[92..0]" (rect 0 0 59 12)(font "Arial" ))
-		(text "filter_out[92..0]" (rect 136 27 195 39)(font "Arial" ))
+		(text "filter_out[82..0]" (rect 0 0 59 12)(font "Arial" ))
+		(text "filter_out[82..0]" (rect 136 27 195 39)(font "Arial" ))
 		(line (pt 216 32)(pt 200 32)(line_width 3))
 	)
 	(port
