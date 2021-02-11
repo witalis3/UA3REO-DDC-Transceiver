@@ -191,8 +191,8 @@ begin
 		begin
 			TX_I_HOLD[7:0] = 8'd0;
 			TX_Q_HOLD[7:0] = 8'd0;
-			TX_I[15:0] = 32'd0;
-			TX_Q[15:0] = 32'd0;
+			TX_I[15:0] = 16'd0;
+			TX_Q[15:0] = 16'd0;
 			tx_iq_valid = 1;
 		end
 		//
