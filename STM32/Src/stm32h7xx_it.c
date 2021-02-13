@@ -712,21 +712,28 @@ void TIM6_DAC_IRQHandler(void)
     SD_underrun = false;
   }
 
+	static bool needLCDDoEvents = true;
   if ((ms10_counter % 3) == 0) // every 30ms
   {
     LCD_UpdateQuery.StatusInfoBar = true;
     // update information on LCD
-    LCD_doEvents();
+    needLCDDoEvents = true;
   }
   else if (LCD_UpdateQuery.FreqInfo) //Redraw freq fast
-    LCD_doEvents();
+    needLCDDoEvents = true;
+	
+	if(needLCDDoEvents && !LCD_busy)
+	{
+		LCD_doEvents();
+		needLCDDoEvents = false;
+	}
 
-  static bool needPrintFFT = false;
-  if ((ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
-    needPrintFFT = true;
+  static uint8_t needPrintFFT = 0;
+  if (needPrintFFT < 10 && (ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
+    needPrintFFT++;
 
-  if (needPrintFFT && !LCD_UpdateQuery.Background && FFT_printFFT()) // draw FFT
-    needPrintFFT = false;
+  if (needPrintFFT > 0 && !LCD_UpdateQuery.Background && FFT_printFFT()) // draw FFT
+    needPrintFFT--;
 
   if (ms10_counter == 101) // every 1 sec
   {

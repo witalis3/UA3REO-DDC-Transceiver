@@ -863,49 +863,53 @@ void FFT_afterPrintFFT(void)
 		return;
 	}
 
-	// clear and display part of the vertical bar
-	memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));
-
-	// output bandmaps
-	int8_t band_curr = getBandFromFreq(CurrentVFO()->Freq, true);
-	int8_t band_left = band_curr;
-	if (band_curr > 0)
-		band_left = band_curr - 1;
-	int8_t band_right = band_curr;
-	if (band_curr < (BANDS_COUNT - 1))
-		band_right = band_curr + 1;
-	int32_t fft_freq_position_start = 0;
-	int32_t fft_freq_position_stop = 0;
-	for (uint16_t band = band_left; band <= band_right; band++)
+	// calc bandmap
+	if(lastWTFFreq != currentFFTFreq || NeedWTFRedraw)
 	{
-		//regions
-		for (uint16_t region = 0; region < BANDS[band].regionsCount; region++)
+		// clear and display part of the vertical bar
+		memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));
+
+		// output bandmaps
+		int8_t band_curr = getBandFromFreq(CurrentVFO()->Freq, true);
+		int8_t band_left = band_curr;
+		if (band_curr > 0)
+			band_left = band_curr - 1;
+		int8_t band_right = band_curr;
+		if (band_curr < (BANDS_COUNT - 1))
+			band_right = band_curr + 1;
+		int32_t fft_freq_position_start = 0;
+		int32_t fft_freq_position_stop = 0;
+		for (uint16_t band = band_left; band <= band_right; band++)
 		{
-			uint16_t region_color = COLOR->BANDMAP_SSB;
-			if (BANDS[band].regions[region].mode == TRX_MODE_CW_L || BANDS[band].regions[region].mode == TRX_MODE_CW_U)
-				region_color = COLOR->BANDMAP_CW;
-			else if (BANDS[band].regions[region].mode == TRX_MODE_DIGI_L || BANDS[band].regions[region].mode == TRX_MODE_DIGI_U)
-				region_color = COLOR->BANDMAP_DIGI;
-			else if (BANDS[band].regions[region].mode == TRX_MODE_NFM || BANDS[band].regions[region].mode == TRX_MODE_WFM)
-				region_color = COLOR->BANDMAP_FM;
-			else if (BANDS[band].regions[region].mode == TRX_MODE_AM)
-				region_color = COLOR->BANDMAP_AM;
-
-			fft_freq_position_start = getFreqPositionOnFFT(BANDS[band].regions[region].startFreq);
-			fft_freq_position_stop = getFreqPositionOnFFT(BANDS[band].regions[region].endFreq);
-			if (fft_freq_position_start != -1 && fft_freq_position_stop == -1)
-				fft_freq_position_stop = LAYOUT->FFT_PRINT_SIZE;
-			if (fft_freq_position_start == -1 && fft_freq_position_stop != -1)
-				fft_freq_position_start = 0;
-			if (fft_freq_position_start == -1 && fft_freq_position_stop == -1 && BANDS[band].regions[region].startFreq < CurrentVFO()->Freq && BANDS[band].regions[region].endFreq > CurrentVFO()->Freq)
+			//regions
+			for (uint16_t region = 0; region < BANDS[band].regionsCount; region++)
 			{
-				fft_freq_position_start = 0;
-				fft_freq_position_stop = LAYOUT->FFT_PRINT_SIZE;
-			}
+				uint16_t region_color = COLOR->BANDMAP_SSB;
+				if (BANDS[band].regions[region].mode == TRX_MODE_CW_L || BANDS[band].regions[region].mode == TRX_MODE_CW_U)
+					region_color = COLOR->BANDMAP_CW;
+				else if (BANDS[band].regions[region].mode == TRX_MODE_DIGI_L || BANDS[band].regions[region].mode == TRX_MODE_DIGI_U)
+					region_color = COLOR->BANDMAP_DIGI;
+				else if (BANDS[band].regions[region].mode == TRX_MODE_NFM || BANDS[band].regions[region].mode == TRX_MODE_WFM)
+					region_color = COLOR->BANDMAP_FM;
+				else if (BANDS[band].regions[region].mode == TRX_MODE_AM)
+					region_color = COLOR->BANDMAP_AM;
 
-			if (fft_freq_position_start != -1 && fft_freq_position_stop != -1)
-				for (int32_t pixel_counter = fft_freq_position_start; pixel_counter < fft_freq_position_stop; pixel_counter++)
-					bandmap_line_tmp[(uint16_t)pixel_counter] = region_color;
+				fft_freq_position_start = getFreqPositionOnFFT(BANDS[band].regions[region].startFreq);
+				fft_freq_position_stop = getFreqPositionOnFFT(BANDS[band].regions[region].endFreq);
+				if (fft_freq_position_start != -1 && fft_freq_position_stop == -1)
+					fft_freq_position_stop = LAYOUT->FFT_PRINT_SIZE;
+				if (fft_freq_position_start == -1 && fft_freq_position_stop != -1)
+					fft_freq_position_start = 0;
+				if (fft_freq_position_start == -1 && fft_freq_position_stop == -1 && BANDS[band].regions[region].startFreq < CurrentVFO()->Freq && BANDS[band].regions[region].endFreq > CurrentVFO()->Freq)
+				{
+					fft_freq_position_start = 0;
+					fft_freq_position_stop = LAYOUT->FFT_PRINT_SIZE;
+				}
+
+				if (fft_freq_position_start != -1 && fft_freq_position_stop != -1)
+					for (int32_t pixel_counter = fft_freq_position_start; pixel_counter < fft_freq_position_stop; pixel_counter++)
+						bandmap_line_tmp[(uint16_t)pixel_counter] = region_color;
+			}
 		}
 	}
 
@@ -1018,7 +1022,7 @@ static void FFT_3DPrintFFT(void)
 		int32_t y_diff = (int32_t)fft_y - (int32_t)fft_y_prev;
 		if (fft_x == 0 || (y_diff <= 1 && y_diff >= -1))
 		{
-			fft_output_buffer[fft_y][fft_x] = fftHeight / 2;
+			indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset + fft_y][fft_x] = fftHeight / 2;
 		}
 		else
 		{
@@ -1058,7 +1062,9 @@ void FFT_printWaterfallDMA(void)
 		if (print_wtf_yindex < (fftHeight + wtfHeight - cwdecoder_offset))
 		{
 			for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
+			{
 				wtf_output_line[wtf_x] = palette_fft[indexed_3d_fft_buffer[print_wtf_yindex][wtf_x]];
+			}
 
 			//bw bar highlight
 			if (print_wtf_yindex > wtfHeight)
