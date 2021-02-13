@@ -20,9 +20,9 @@ refer to the applicable agreement for further details.
 */
 (header "symbol" (version "1.1"))
 (symbol
-	(rect 16 16 328 96)
+	(rect 16 16 328 128)
 	(text "DAC_corrector" (rect 5 0 69 12)(font "Arial" ))
-	(text "inst" (rect 8 64 20 76)(font "Arial" ))
+	(text "inst" (rect 8 96 20 108)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
@@ -36,6 +36,13 @@ refer to the applicable agreement for further details.
 		(text "DATA_IN[in_width-1..0]" (rect 0 0 96 12)(font "Arial" ))
 		(text "DATA_IN[in_width-1..0]" (rect 21 43 117 55)(font "Arial" ))
 		(line (pt 0 48)(pt 16 48)(line_width 3))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "shift[7..0]" (rect 0 0 36 12)(font "Arial" ))
+		(text "shift[7..0]" (rect 21 59 57 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64)(line_width 3))
 	)
 	(port
 		(pt 312 32)
@@ -54,13 +61,8 @@ refer to the applicable agreement for further details.
 		"14"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"shift"
-		"27"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
 	(drawing
-		(rectangle (rect 16 16 296 64)(line_width 1))
+		(rectangle (rect 16 16 296 96)(line_width 1))
 	)
 	(annotation_block (parameter)(rect 328 -64 428 16))
 )

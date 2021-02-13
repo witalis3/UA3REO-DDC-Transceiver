@@ -44,15 +44,15 @@ module tx_summator (
 	result);
 
 	input	  clock;
-	input	[26:0]  dataa;
-	input	[26:0]  datab;
+	input	[27:0]  dataa;
+	input	[27:0]  datab;
 	output	  overflow;
-	output	[26:0]  result;
+	output	[27:0]  result;
 
 	wire  sub_wire0;
-	wire [26:0] sub_wire1;
+	wire [27:0] sub_wire1;
 	wire  overflow = sub_wire0;
-	wire [26:0] result = sub_wire1[26:0];
+	wire [27:0] result = sub_wire1[27:0];
 
 	lpm_add_sub	LPM_ADD_SUB_component (
 				.clock (clock),
@@ -75,7 +75,7 @@ module tx_summator (
 		LPM_ADD_SUB_component.lpm_pipeline = 1,
 		LPM_ADD_SUB_component.lpm_representation = "SIGNED",
 		LPM_ADD_SUB_component.lpm_type = "LPM_ADD_SUB",
-		LPM_ADD_SUB_component.lpm_width = 27;
+		LPM_ADD_SUB_component.lpm_width = 28;
 
 
 endmodule
@@ -101,7 +101,7 @@ endmodule
 // Retrieval info: PRIVATE: WhichConstant NUMERIC "0"
 // Retrieval info: PRIVATE: aclr NUMERIC "0"
 // Retrieval info: PRIVATE: clken NUMERIC "0"
-// Retrieval info: PRIVATE: nBit NUMERIC "27"
+// Retrieval info: PRIVATE: nBit NUMERIC "28"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
 // Retrieval info: LIBRARY: lpm lpm.lpm_components.all
 // Retrieval info: CONSTANT: LPM_DIRECTION STRING "ADD"
@@ -109,17 +109,17 @@ endmodule
 // Retrieval info: CONSTANT: LPM_PIPELINE NUMERIC "1"
 // Retrieval info: CONSTANT: LPM_REPRESENTATION STRING "SIGNED"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_ADD_SUB"
-// Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "27"
+// Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "28"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
-// Retrieval info: USED_PORT: dataa 0 0 27 0 INPUT NODEFVAL "dataa[26..0]"
-// Retrieval info: USED_PORT: datab 0 0 27 0 INPUT NODEFVAL "datab[26..0]"
+// Retrieval info: USED_PORT: dataa 0 0 28 0 INPUT NODEFVAL "dataa[27..0]"
+// Retrieval info: USED_PORT: datab 0 0 28 0 INPUT NODEFVAL "datab[27..0]"
 // Retrieval info: USED_PORT: overflow 0 0 0 0 OUTPUT NODEFVAL "overflow"
-// Retrieval info: USED_PORT: result 0 0 27 0 OUTPUT NODEFVAL "result[26..0]"
+// Retrieval info: USED_PORT: result 0 0 28 0 OUTPUT NODEFVAL "result[27..0]"
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
-// Retrieval info: CONNECT: @dataa 0 0 27 0 dataa 0 0 27 0
-// Retrieval info: CONNECT: @datab 0 0 27 0 datab 0 0 27 0
+// Retrieval info: CONNECT: @dataa 0 0 28 0 dataa 0 0 28 0
+// Retrieval info: CONNECT: @datab 0 0 28 0 datab 0 0 28 0
 // Retrieval info: CONNECT: overflow 0 0 0 0 @overflow 0 0 0 0
-// Retrieval info: CONNECT: result 0 0 27 0 @result 0 0 27 0
+// Retrieval info: CONNECT: result 0 0 28 0 @result 0 0 28 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator.cmp FALSE

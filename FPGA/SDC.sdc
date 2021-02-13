@@ -4,6 +4,7 @@ create_clock -name "clock_crystal" -period 122.880MHz [get_ports {clk_sys_lvpecl
 create_clock -name "clock_adc" -period 122.880MHz [get_ports {ADC_CLK}]
 create_clock -name "clock_tcxo" -period 12.288MHz [get_ports {TCXO_CLK_IN}]
 create_clock -name "clock_stm32" -period 25MHz [get_ports {STM32_CLK}]
+create_clock -name "RX1_CICOMP_Q_clk" -period 96KHz {rx_ciccomp:RX1_CICOMP_Q|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
 
 set_clock_groups -asynchronous -group clock_crystal -group clock_adc -group clock_tcxo -group clock_stm32
 
@@ -30,3 +31,5 @@ set_false_path -from [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|cl
 set_false_path -from [get_clocks {clock_stm32}] -to [get_clocks {MAIN_PLL|altpll_component|auto_generated|pll1|clk[2]}]
 set_false_path -from [get_clocks {clock_stm32}] -to [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path -from [get_clocks {MAIN_PLL|altpll_component|auto_generated|pll1|clk[2]}] -to [get_clocks {clock_stm32}]
+set_false_path -from [get_clocks {clock_stm32}] -to [get_clocks {RX1_CICOMP_Q_clk}]
+set_false_path -from [get_clocks {RX1_CICOMP_Q_clk}] -to [get_clocks {clock_stm32}]
