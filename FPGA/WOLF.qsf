@@ -42,7 +42,7 @@ set_global_assignment -name DEVICE EP4CE22E22C8
 set_global_assignment -name TOP_LEVEL_ENTITY WOLF
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 17.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "17:58:56  MARCH 31, 2018"
-set_global_assignment -name LAST_QUARTUS_VERSION "20.1.1 Lite Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "18.1.0 Standard Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -314,15 +314,14 @@ set_global_assignment -name VERILOG_FILE vcxo_controller.v -hdl_version Verilog_
 set_global_assignment -name VHDL_FILE rx_cic.vhd
 set_global_assignment -name VHDL_FILE rx_ciccomp.vhd
 set_global_assignment -name VHDL_FILE tx_cic.vhd
-set_global_assignment -name VHDL_FILE nco16.vhd
-set_global_assignment -name VHDL_FILE nco16_pkg.vhd
-set_global_assignment -name VHDL_FILE LookUpTableGen.vhd
-set_global_assignment -name VHDL_FILE WaveformGen.vhd
-set_global_assignment -name VHDL_FILE NCO_HDL_Optimized.vhd
+set_global_assignment -name VHDL_FILE tx_ciccomp.vhd
 set_global_assignment -name SOURCE_FILE Debug_Probes.spf
 set_global_assignment -name QIP_FILE mixer.qip
 set_global_assignment -name SDC_FILE SDC.sdc
 set_global_assignment -name QSYS_FILE clock_buffer.qsys
+set_global_assignment -name QSYS_FILE tx_cic.qsys
+set_global_assignment -name QSYS_FILE tx_nco.qsys
+set_global_assignment -name QSYS_FILE nco.qsys
 set_global_assignment -name QIP_FILE mux16.qip
 set_global_assignment -name QIP_FILE MAIN_PLL.qip
 set_global_assignment -name QIP_FILE mux14.qip
