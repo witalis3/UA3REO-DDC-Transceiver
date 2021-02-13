@@ -1616,6 +1616,7 @@ void LCD_showRFPowerWindow(void)
 	const uint8_t buttons_lines = 2;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
+	while(LCD_busy);
 	LCD_openWindow(window_width, window_height);
 	LCD_busy = true;
 	for (uint8_t yi = 0; yi < buttons_lines; yi++)

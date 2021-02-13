@@ -570,7 +570,6 @@ void FRONTPANEL_Process(void)
 			//set state
 			if (mcp3008_value >= PERIPH_FrontPanel_Buttons[b].tres_min && mcp3008_value < PERIPH_FrontPanel_Buttons[b].tres_max)
 			{
-				//sendToDebug_uint16(b,false);
 				PERIPH_FrontPanel_Buttons[b].state = true;
 			}
 			else
