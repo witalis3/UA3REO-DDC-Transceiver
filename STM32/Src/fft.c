@@ -958,7 +958,7 @@ static void FFT_3DPrintFFT(void)
 	memset(indexed_3d_fft_buffer, fftHeight, sizeof(indexed_3d_fft_buffer));
 
 	//draw 3D WTF
-	for (int32_t wtf_yindex = FFT_3D_SLIDES; wtf_yindex >= 0; wtf_yindex--) //each slides
+	for (int32_t wtf_yindex = 0; wtf_yindex <= FFT_3D_SLIDES; wtf_yindex++) //each slides
 	{
 		//calc perspective parameters
 		uint32_t print_y = fftHeight + wtfHeight - cwdecoder_offset - wtf_yindex * FFT_3D_Y_OFFSET;
@@ -987,10 +987,15 @@ static void FFT_3DPrintFFT(void)
 					line_max = FFT_AND_WTF_HEIGHT - print_bin_height - 1;
 
 				for (uint16_t h = 0; h < line_max; h++)
+				{
+					if(indexed_3d_fft_buffer[print_bin_height + h][print_x] != fftHeight)
+						break;
 					indexed_3d_fft_buffer[print_bin_height + h][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x] + h;
+				}
 			}
 			if (TRX.FFT_3D == 2) //pixel mode
-				indexed_3d_fft_buffer[print_bin_height][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x];
+				if(indexed_3d_fft_buffer[print_bin_height][print_x] == fftHeight)
+					indexed_3d_fft_buffer[print_bin_height][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x];
 		}
 	}
 
