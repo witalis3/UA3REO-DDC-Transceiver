@@ -358,7 +358,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 11
 	//OUT CICCOMP-GAIN
-	FPGA_writePacket(0); //CALIBRATE.CICFIR_GAINER_val
+	FPGA_writePacket(CALIBRATE.CICFIR_GAINER_val);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
