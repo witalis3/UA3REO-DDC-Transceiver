@@ -217,7 +217,7 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_ZoomCW;
 	uint8_t LCD_Brightness;
 	bool WTF_Moving;
-	uint8_t FFT_Top;
+	uint8_t FFT_Sensitivity;
 	uint8_t FFT_Speed;
 	uint8_t FFT_Averaging;
 	uint8_t FFT_Window;

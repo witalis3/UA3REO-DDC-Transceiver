@@ -507,7 +507,7 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Speed", (uint32_t *)&TRX.FFT_Speed, SYSMENU_UINT8);
 		if (res)
-			SD_WRITE_SETT_LINE("TRX.FFT_Top", (uint32_t *)&TRX.FFT_Top, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.FFT_Sensitivity", (uint32_t *)&TRX.FFT_Sensitivity, SYSMENU_UINT8);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Averaging", (uint32_t *)&TRX.FFT_Averaging, SYSMENU_UINT8);
 		if (res)
@@ -916,8 +916,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.LCD_Brightness = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Speed") == 0)
 		TRX.FFT_Speed = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Top") == 0)
-		TRX.FFT_Top = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_Sensitivity") == 0)
+		TRX.FFT_Sensitivity = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Averaging") == 0)
 		TRX.FFT_Averaging = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Window") == 0)

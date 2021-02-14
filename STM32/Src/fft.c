@@ -606,7 +606,7 @@ bool FFT_printFFT(void)
 	arm_max_no_idx_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &maxAmplValue);
 
 	// Auto-calibrate FFT levels
-	if (TRX.FFT_Top == FFT_MAX_TOP_SCALE) //Fit FFT to MAX
+	if (TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE) //Fit FFT to MAX
 	{
 		maxValueFFT = maxValueFFT * 0.95f + maxAmplValue * 0.05f;
 		if (maxValueFFT < maxAmplValue)
@@ -630,7 +630,7 @@ bool FFT_printFFT(void)
 		float32_t compressSourceInterval = maxAmplValue - compressTargetValue;
 		float32_t compressTargetInterval = maxValueFFT - compressTargetValue;
 		float32_t compressRate = compressTargetInterval / compressSourceInterval;
-		if (!TRX_on_TX() && TRX.FFT_Compressor && TRX.FFT_Top < 50)
+		if (!TRX_on_TX() && TRX.FFT_Compressor && TRX.FFT_Sensitivity < 50)
 		{
 			for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 				if (FFTOutput_mean[i] > compressTargetValue)
@@ -714,6 +714,7 @@ bool FFT_printFFT(void)
 
 	// prepare FFT print over the waterfall
 	uint16_t background = BG_COLOR;
+	uint16_t y_palette = BG_COLOR;
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 	{
 		if (TRX.FFT_Background)
@@ -721,6 +722,8 @@ bool FFT_printFFT(void)
 
 		if (TRX.FFT_Style == 1) //gradient
 		{
+			y_palette = palette_fft[fft_y];
+			
 			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 			{
 				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
@@ -733,7 +736,7 @@ bool FFT_printFFT(void)
 				else //other fft data
 				{
 					if (fft_y >= (fftHeight - fft_header[fft_x]))
-						fft_output_buffer[fft_y][fft_x] = palette_fft[fft_y];
+						fft_output_buffer[fft_y][fft_x] = y_palette;
 					else
 						fft_output_buffer[fft_y][fft_x] = background;
 				}
@@ -741,6 +744,8 @@ bool FFT_printFFT(void)
 		}
 		if (TRX.FFT_Style == 2) //fill
 		{
+			y_palette = palette_fft[fftHeight / 2];
+			
 			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 			{
 				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
@@ -753,7 +758,7 @@ bool FFT_printFFT(void)
 				else //other fft data
 				{
 					if (fft_y >= (fftHeight - fft_header[fft_x]))
-						fft_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
+						fft_output_buffer[fft_y][fft_x] = y_palette;
 					else
 						fft_output_buffer[fft_y][fft_x] = background;
 				}
@@ -761,6 +766,8 @@ bool FFT_printFFT(void)
 		}
 		if (TRX.FFT_Style == 3) //dots
 		{
+			y_palette = palette_fft[fftHeight / 2];
+			
 			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 			{
 				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
@@ -773,7 +780,7 @@ bool FFT_printFFT(void)
 				else //other fft data
 				{
 					if (fft_y == (fftHeight - fft_header[fft_x]))
-						fft_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
+						fft_output_buffer[fft_y][fft_x] = y_palette;
 					else
 						fft_output_buffer[fft_y][fft_x] = background;
 				}

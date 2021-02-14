@@ -86,7 +86,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Grid(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction);
-static void SYSMENU_HANDL_SCREEN_FFT_Top(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Sensitivity(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Compressor(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Lens(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction);
@@ -318,7 +318,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"Color Theme", SYSMENU_UINT8, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME},
 		{"Layout Theme", SYSMENU_UINT8, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
-		{"FFT Top", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Top, SYSMENU_HANDL_SCREEN_FFT_Top},
+		{"FFT Sensitivity", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Sensitivity, SYSMENU_HANDL_SCREEN_FFT_Sensitivity},
 		{"FFT Height", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
 		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style},
 		{"FFT Color", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color},
@@ -1781,13 +1781,13 @@ static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction)
 		TRX.FFT_Speed = 5;
 }
 
-static void SYSMENU_HANDL_SCREEN_FFT_Top(int8_t direction)
+static void SYSMENU_HANDL_SCREEN_FFT_Sensitivity(int8_t direction)
 {
-	TRX.FFT_Top += direction;
-	if (TRX.FFT_Top < FFT_MIN + 1)
-		TRX.FFT_Top = FFT_MIN + 1;
-	if (TRX.FFT_Top > FFT_MAX_TOP_SCALE)
-		TRX.FFT_Top = FFT_MAX_TOP_SCALE;
+	TRX.FFT_Sensitivity += direction;
+	if (TRX.FFT_Sensitivity < FFT_MIN + 1)
+		TRX.FFT_Sensitivity = FFT_MIN + 1;
+	if (TRX.FFT_Sensitivity > FFT_MAX_TOP_SCALE)
+		TRX.FFT_Sensitivity = FFT_MAX_TOP_SCALE;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction)
