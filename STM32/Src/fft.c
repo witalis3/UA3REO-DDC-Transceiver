@@ -571,12 +571,19 @@ bool FFT_printFFT(void)
 	}
 
 	// move the waterfall down using DMA
-	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
+	uint32_t move_est = wtfHeight - 1;
+	while(move_est > 0)
 	{
-		HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&indexed_wtf_buffer[tmp - 1], (uint32_t)&indexed_wtf_buffer[tmp], LAYOUT->FFT_PRINT_SIZE / 4); //32bit dma, 8bit index data
-		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
-		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
+		uint8_t length = move_est;
+		if(length > 64)
+			length = 64;
+		HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)&indexed_wtf_buffer[move_est - 1][LAYOUT->FFT_PRINT_SIZE], (uint32_t)&indexed_wtf_buffer[move_est][LAYOUT->FFT_PRINT_SIZE], LAYOUT->FFT_PRINT_SIZE * length + 4, 1);
+		HAL_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+		move_est -= length;
 	}
+	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
+		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
+	
 
 	// Looking for the median in frequency response
 	memcpy(FFTInput_tmp, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE * 4);

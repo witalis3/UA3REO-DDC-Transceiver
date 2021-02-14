@@ -86,7 +86,6 @@ DMA_HandleTypeDef hdma_usart6_rx;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
-DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
@@ -94,6 +93,7 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
 MDMA_HandleTypeDef hmdma_mdma_channel41_sw_0;
 MDMA_HandleTypeDef hmdma_mdma_channel42_sw_0;
+MDMA_HandleTypeDef hmdma_mdma_channel43_sw_0;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
@@ -1226,7 +1226,6 @@ static void MX_USB_OTG_FS_PCD_Init(void)
 /**
   * Enable DMA controller clock
   * Configure DMA for memory to memory transfers
-  *   hdma_memtomem_dma2_stream7
   *   hdma_memtomem_dma2_stream6
   *   hdma_memtomem_dma2_stream4
   *   hdma_memtomem_dma2_stream5
@@ -1238,25 +1237,6 @@ static void MX_DMA_Init(void)
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
   __HAL_RCC_DMA2_CLK_ENABLE();
-
-  /* Configure DMA request hdma_memtomem_dma2_stream7 on DMA2_Stream7 */
-  hdma_memtomem_dma2_stream7.Instance = DMA2_Stream7;
-  hdma_memtomem_dma2_stream7.Init.Request = DMA_REQUEST_MEM2MEM;
-  hdma_memtomem_dma2_stream7.Init.Direction = DMA_MEMORY_TO_MEMORY;
-  hdma_memtomem_dma2_stream7.Init.PeriphInc = DMA_PINC_ENABLE;
-  hdma_memtomem_dma2_stream7.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_memtomem_dma2_stream7.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-  hdma_memtomem_dma2_stream7.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-  hdma_memtomem_dma2_stream7.Init.Mode = DMA_NORMAL;
-  hdma_memtomem_dma2_stream7.Init.Priority = DMA_PRIORITY_LOW;
-  hdma_memtomem_dma2_stream7.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
-  hdma_memtomem_dma2_stream7.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
-  hdma_memtomem_dma2_stream7.Init.MemBurst = DMA_MBURST_INC4;
-  hdma_memtomem_dma2_stream7.Init.PeriphBurst = DMA_PBURST_INC4;
-  if (HAL_DMA_Init(&hdma_memtomem_dma2_stream7) != HAL_OK)
-  {
-    Error_Handler( );
-  }
 
   /* Configure DMA request hdma_memtomem_dma2_stream6 on DMA2_Stream6 */
   hdma_memtomem_dma2_stream6.Instance = DMA2_Stream6;
@@ -1362,6 +1342,7 @@ static void MX_DMA_Init(void)
   *   hmdma_mdma_channel40_sw_0
   *   hmdma_mdma_channel41_sw_0
   *   hmdma_mdma_channel42_sw_0
+  *   hmdma_mdma_channel43_sw_0
   */
 static void MX_MDMA_Init(void)
 {
@@ -1432,6 +1413,28 @@ static void MX_MDMA_Init(void)
   hmdma_mdma_channel42_sw_0.Init.SourceBlockAddressOffset = 0;
   hmdma_mdma_channel42_sw_0.Init.DestBlockAddressOffset = 0;
   if (HAL_MDMA_Init(&hmdma_mdma_channel42_sw_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Configure MDMA channel MDMA_Channel3 */
+  /* Configure MDMA request hmdma_mdma_channel43_sw_0 on MDMA_Channel3 */
+  hmdma_mdma_channel43_sw_0.Instance = MDMA_Channel3;
+  hmdma_mdma_channel43_sw_0.Init.Request = MDMA_REQUEST_SW;
+  hmdma_mdma_channel43_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
+  hmdma_mdma_channel43_sw_0.Init.Priority = MDMA_PRIORITY_LOW;
+  hmdma_mdma_channel43_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
+  hmdma_mdma_channel43_sw_0.Init.SourceInc = MDMA_SRC_DEC_WORD;
+  hmdma_mdma_channel43_sw_0.Init.DestinationInc = MDMA_DEST_DEC_WORD;
+  hmdma_mdma_channel43_sw_0.Init.SourceDataSize = MDMA_SRC_DATASIZE_WORD;
+  hmdma_mdma_channel43_sw_0.Init.DestDataSize = MDMA_DEST_DATASIZE_WORD;
+  hmdma_mdma_channel43_sw_0.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
+  hmdma_mdma_channel43_sw_0.Init.BufferTransferLength = 32;
+  hmdma_mdma_channel43_sw_0.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
+  hmdma_mdma_channel43_sw_0.Init.DestBurst = MDMA_DEST_BURST_SINGLE;
+  hmdma_mdma_channel43_sw_0.Init.SourceBlockAddressOffset = 0;
+  hmdma_mdma_channel43_sw_0.Init.DestBlockAddressOffset = 0;
+  if (HAL_MDMA_Init(&hmdma_mdma_channel43_sw_0) != HAL_OK)
   {
     Error_Handler();
   }

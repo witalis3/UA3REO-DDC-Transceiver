@@ -67,7 +67,6 @@ extern DMA_HandleTypeDef hdma_usart6_rx;
 
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
@@ -75,6 +74,7 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 extern MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
 extern MDMA_HandleTypeDef hmdma_mdma_channel41_sw_0;
 extern MDMA_HandleTypeDef hmdma_mdma_channel42_sw_0;
+extern MDMA_HandleTypeDef hmdma_mdma_channel43_sw_0;
 extern SRAM_HandleTypeDef hsram1;
 
 /* USER CODE END ET */
