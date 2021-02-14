@@ -242,6 +242,7 @@ int main(void)
   HAL_RTC_Init(&hrtc);
   sendToDebug_strln("[OK] Frontpanel init");
   FRONTPANEL_Init();
+	
   sendToDebug_strln("[OK] Settings loading");
 #ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[13].state) //soft reset (MENU)
@@ -249,11 +250,12 @@ int main(void)
   else
 #endif
 #if FRONTPANEL_BIG_V1
-      if (PERIPH_FrontPanel_Buttons[20].state) //soft reset (MENU)
+      if (PERIPH_FrontPanel_Buttons[20].state) //soft reset (F1)
     LoadSettings(true);
   else
 #endif
     LoadSettings(false);
+	
   TRX.Locked = false;
   sendToDebug_strln("[OK] LCD init");
   LCD_busy = true;
@@ -273,13 +275,20 @@ int main(void)
   }
   sendToDebug_strln("[OK] Profiler init");
   InitProfiler();
+	
   sendToDebug_strln("[OK] Calibration loading");
 #ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
     LoadCalibration(true);
   else
 #endif
+#ifdef FRONTPANEL_BIG_V1
+  if (PERIPH_FrontPanel_Buttons[20].state && PERIPH_FrontPanel_Buttons[10].state) //Very hard reset (F1+F8)
+    LoadCalibration(true);
+  else
+#endif
     LoadCalibration(false);
+	
   sendToDebug_strln("[OK] FPGA init");
 #ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[19].state) //fpga bus test (MODE+)

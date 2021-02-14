@@ -282,6 +282,7 @@ void LoadSettings(bool clear)
 
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");
+		LCD_showError("Loaded default settings", true);
 		SaveSettings();
 		SaveSettingsToEEPROM();
 	}
@@ -370,6 +371,7 @@ void LoadCalibration(bool clear)
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default calibrate settings");
+		LCD_showError("Loaded default calibrations", true);
 		SaveCalibration();
 	}
 	EEPROM_PowerDown();
