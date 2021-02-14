@@ -16,12 +16,17 @@ static bool SPI_busy = false;
 volatile bool SPI_process = false;
 volatile bool SPI_TXRX_ready = false;
 
-void dma_memcpy32(uint32_t *dest, uint32_t *src, uint32_t len)
+void dma_memcpy32(void *dest, void *src, uint32_t len)
 {
 	if (len == 0)
 		return;
+	static bool dma_busy = false;
+	if(dma_busy) //for async calls
+		HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+	dma_busy = true;
 	HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, len * 4, 1);
 	HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+	dma_busy = false;
 }
 
 void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read)
@@ -652,4 +657,12 @@ float32_t quick_median_select(float32_t* arr, int n)
         if (hh >= median)
         high = hh - 1;
     }
+}
+
+SRAM static uint32_t dma_memset32_reg = 0;
+void dma_memset32(void * dst, uint32_t val, uint32_t size)
+{
+	dma_memset32_reg = val;
+	HAL_DMA_Start(&hdma_memtomem_dma2_stream3, (uint32_t)&dma_memset32_reg, (uint32_t)dst, size);
+	HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 }

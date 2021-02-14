@@ -573,7 +573,6 @@ bool FFT_printFFT(void)
 	// move the waterfall down using DMA
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
 	{
-		//memcpy(&indexed_wtf_buffer[tmp], &indexed_wtf_buffer[tmp - 1], LAYOUT->FFT_PRINT_SIZE);
 		HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&indexed_wtf_buffer[tmp - 1], (uint32_t)&indexed_wtf_buffer[tmp], LAYOUT->FFT_PRINT_SIZE / 4); //32bit dma, 8bit index data
 		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
 		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
@@ -709,7 +708,7 @@ bool FFT_printFFT(void)
 	{
 		if (TRX.FFT_Background)
 			background = palette_bg_gradient[fft_y];
-
+		
 		if (TRX.FFT_Style == 1) //gradient
 		{
 			y_palette = palette_fft[fft_y];
