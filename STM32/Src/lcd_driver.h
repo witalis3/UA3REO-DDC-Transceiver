@@ -76,7 +76,7 @@ typedef struct
 //Functions defines Macros
 #define uswap(a, b)     \
 	{                   \
-		uint16_t t = a; \
+		register uint16_t t = a; \
 		a = b;          \
 		b = t;          \
 	}

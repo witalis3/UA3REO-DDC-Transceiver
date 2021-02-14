@@ -67,7 +67,6 @@ static uint16_t print_wtf_yindex = 0;						// the current coordinate of the wate
 static float32_t window_multipliers[FFT_SIZE] = {0};		// coefficients of the selected window function
 static float32_t hz_in_pixel = 1.0f;						// current FFT density value
 static uint16_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0}; // temporary buffer to move the waterfall
-static arm_sort_instance_f32 FFT_sortInstance = {0};		// sorting instance (to find the median)
 static uint32_t print_fft_dma_estimated_size = 0;			//block size for dma
 static uint32_t print_fft_dma_position = 0;					//positior for dma fft print
 static uint8_t needredraw_wtf_counter = 3;					//redraw cycles after event
@@ -223,15 +222,6 @@ void FFT_PreInit(void)
 		else if (TRX.FFT_Window == 7)
 			window_multipliers[i] = 1.0f;
 	}
-
-	// initialize sort
-	arm_sort_init_f32(&FFT_sortInstance, ARM_SORT_HEAP, ARM_SORT_ASCENDING);
-	//ARM_SORT_BITONIC - 45 (no float?)
-	//ARM_SORT_BUBBLE - 63
-	//ARM_SORT_HEAP - 47
-	//ARM_SORT_INSERTION - 59
-	//ARM_SORT_QUICK - 46 + large memory
-	//ARM_SORT_SELECTION - 65
 }
 
 void FFT_Init(void)
@@ -590,8 +580,8 @@ bool FFT_printFFT(void)
 	}
 
 	// Looking for the median in frequency response
-	arm_sort_f32(&FFT_sortInstance, FFTOutput_mean, FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
-	float32_t medianValue = FFTInput_tmp[LAYOUT->FFT_PRINT_SIZE / 2];
+	memcpy(FFTInput_tmp, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE * 4);
+	float32_t medianValue = quick_median_select(FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
 
 	// Maximum amplitude
 	float32_t maxValueFFT = maxValueFFT_rx;

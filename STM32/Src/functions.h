@@ -129,6 +129,8 @@ __asm(".global __use_no_heap\n\t");
 #define BUILD_SEC_CH0 (__TIME__[6])
 #define BUILD_SEC_CH1 (__TIME__[7])
 
+#define ELEM_SWAP_F32(a,b) { register float32_t t=(a);(a)=(b);(b)=t; }
+
 typedef struct
 {
   float32_t Load; /*!< CPU load percentage */
@@ -183,5 +185,6 @@ extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t sampl
 extern int32_t convertToSPIBigEndian(int32_t in);
 extern uint8_t rev8(uint8_t data);
 extern bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma);
+extern float32_t quick_median_select(float32_t* arr, int n);
 
 #endif
