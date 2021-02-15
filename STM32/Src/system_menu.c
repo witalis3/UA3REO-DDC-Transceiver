@@ -91,6 +91,9 @@ static void SYSMENU_HANDL_SCREEN_FFT_Sensitivity(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Compressor(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Lens(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_ManualBottom(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_ManualTop(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON2(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON3(int8_t direction);
@@ -320,7 +323,10 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"Color Theme", SYSMENU_UINT8, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME},
 		{"Layout Theme", SYSMENU_UINT8, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME},
 		{"FFT Speed", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
+		{"FFT Automatic", SYSMENU_BOOLEAN, (uint32_t *)&TRX.FFT_Automatic, SYSMENU_HANDL_SCREEN_FFT_Automatic},
 		{"FFT Sensitivity", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Sensitivity, SYSMENU_HANDL_SCREEN_FFT_Sensitivity},
+		{"FFT Manual Bottom, dBm", SYSMENU_INT16, (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_HANDL_SCREEN_FFT_ManualBottom},
+		{"FFT Manual Top, dBm", SYSMENU_INT16, (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_HANDL_SCREEN_FFT_ManualTop},
 		{"FFT Height", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
 		{"FFT Style", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style},
 		{"FFT Color", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color},
@@ -1781,6 +1787,32 @@ static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction)
 		TRX.FFT_3D = 0;
 	if (TRX.FFT_3D > 2)
 		TRX.FFT_3D = 2;
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction)
+{
+	if (direction > 0)
+		TRX.FFT_Automatic = true;
+	if (direction < 0)
+		TRX.FFT_Automatic = false;
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_ManualBottom(int8_t direction)
+{
+	TRX.FFT_ManualBottom += direction;
+	if (TRX.FFT_ManualBottom < -150)
+		TRX.FFT_ManualBottom = -150;
+	if (TRX.FFT_ManualBottom > 50)
+		TRX.FFT_ManualBottom = 50;
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_ManualTop(int8_t direction)
+{
+	TRX.FFT_ManualTop += direction;
+	if (TRX.FFT_ManualTop < -150)
+		TRX.FFT_ManualTop = -150;
+	if (TRX.FFT_ManualTop > 50)
+		TRX.FFT_ManualTop = 50;
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction)

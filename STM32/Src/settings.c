@@ -231,6 +231,9 @@ void LoadSettings(bool clear)
 		TRX.FFT_Lens = false;			  //FFT lens effect
 		TRX.FFT_3D = 0;					  //FFT 3D mode
 		TRX.FFT_Sensitivity = 8;				  //Threshold of FFT autocalibrate
+		TRX.FFT_Automatic = true;		//Automatic FFT Scale
+		TRX.FFT_ManualBottom = -100;	//Minimal threshold for manual FFT scale
+		TRX.FFT_ManualTop = -75;	//Maximum threshold for manual FFT scale
 		TRX.WTF_Moving = true;			  //move WTF with frequency encoder
 		TRX.ShiftEnabled = false;		  // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 1000;		  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)

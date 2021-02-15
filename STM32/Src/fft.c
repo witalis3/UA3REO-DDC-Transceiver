@@ -602,7 +602,7 @@ bool FFT_printFFT(void)
 	arm_max_no_idx_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &maxAmplValue);
 
 	// Auto-calibrate FFT levels
-	if (TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE) //Fit FFT to MAX
+	if (TRX.FFT_Automatic && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE) //Fit FFT to MAX
 	{
 		maxValueFFT = maxValueFFT * 0.95f + maxAmplValue * 0.05f;
 		if (maxValueFFT < maxAmplValue)
@@ -611,7 +611,7 @@ bool FFT_printFFT(void)
 		if (maxValueFFT < minValue)
 			maxValueFFT = minValue;
 	}
-	else //Fit by median
+	else if(TRX.FFT_Automatic) //Fit by median (automatic)
 	{
 		maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
 
@@ -632,6 +632,34 @@ bool FFT_printFFT(void)
 				if (FFTOutput_mean[i] > compressTargetValue)
 					FFTOutput_mean[i] = compressTargetValue + ((FFTOutput_mean[i] - compressTargetValue) * compressRate);
 		}
+	}
+	else //Manual Scale
+	{
+		// debug
+		/*float32_t minAmplValue = 0;
+		uint32_t minAmplValueIndex = 0;
+		arm_min_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &minAmplValue, &minAmplValueIndex);
+		float32_t debug_min = minAmplValue / (float32_t)TRX.FFT_Averaging / (float32_t)FFT_SIZE;
+		debug_min = debug_min * debug_min;
+		float32_t debug_max = maxAmplValue / (float32_t)TRX.FFT_Averaging / (float32_t)FFT_SIZE;
+		debug_max = debug_max * debug_max;
+		sendToDebug_str("min: ");
+		sendToDebug_float32(debug_min, true);
+		sendToDebug_str(" (");
+		sendToDebug_float32(rate2dbP(debug_min), true);
+		sendToDebug_str(") max: ");
+		sendToDebug_float32(debug_max, true);
+		sendToDebug_str(" (");
+		sendToDebug_float32(rate2dbP(debug_max), true);
+		sendToDebug_strln(")");*/
+		
+		float32_t minManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualBottom)) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
+		float32_t maxManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualTop)) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
+		arm_offset_f32(FFTOutput_mean, -minManualAmplitude, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
+		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
+				if (FFTOutput_mean[i] < 0)
+					FFTOutput_mean[i] = 0;
+		maxValueFFT = maxManualAmplitude - minManualAmplitude;
 	}
 
 	//limits

@@ -179,7 +179,10 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **Color Theme** - Select colors theme (0 - black, 1 - white)
 * **Layout Theme** - Select interface theme (0 - default)
 * **FFT Speed** - FFT and waterfall speed
-* **FFT Sensitivity** - Top threshold of FFT sensitivity (30 - scale to strongest signal)
+* **FFT Automatic** - Automatic FFT scale
+* **FFT Sensitivity** - Top threshold of FFT sensitivity in automatic mode (30 - scale to strongest signal)
+* **FFT Manual Bottom, dBm** - Bottom FFT threshold in manual mode
+* **FFT Manual Top, dBm** - Top FFT threshold in manual mode
 * **FFT Height** - FFT and waterfall proportional height
 * **FFT Style** - FFT style: 1(gradient), 2(fill), 3(dots), 4(contour)
 * **FFT Color** - FFT and waterfall colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)

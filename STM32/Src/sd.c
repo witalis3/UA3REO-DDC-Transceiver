@@ -532,6 +532,12 @@ static void SDCOMM_EXPORT_SETT(void)
 			SD_WRITE_SETT_LINE("TRX.FFT_Lens", (uint32_t *)&TRX.FFT_Lens, SYSMENU_BOOLEAN);
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_3D", (uint32_t *)&TRX.FFT_3D, SYSMENU_UINT8);
+		if (res)
+			SD_WRITE_SETT_LINE("TRX.FFT_Automatic", (uint32_t *)&TRX.FFT_Automatic, SYSMENU_BOOLEAN);
+		if (res)
+			SD_WRITE_SETT_LINE("TRX.FFT_ManualBottom", (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_INT16);
+		if (res)
+			SD_WRITE_SETT_LINE("TRX.FFT_ManualTop", (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_INT16);
 		//ADC
 		if (res)
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
@@ -944,6 +950,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FFT_Lens = uintval;
 	if (strcmp(name, "TRX.FFT_3D") == 0)
 		TRX.FFT_3D = (uint8_t)uintval;
+	if (strcmp(name, "TRX.FFT_Automatic") == 0)
+		TRX.FFT_Automatic = uintval;
+	if (strcmp(name, "TRX.FFT_ManualBottom") == 0)
+		TRX.FFT_ManualBottom = (int16_t)intval;
+	if (strcmp(name, "TRX.FFT_ManualTop") == 0)
+		TRX.FFT_ManualTop = (int16_t)intval;
 	//ADC
 	if (strcmp(name, "TRX.ADC_Driver") == 0)
 		TRX.ADC_Driver = uintval;

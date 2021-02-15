@@ -217,6 +217,7 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_ZoomCW;
 	uint8_t LCD_Brightness;
 	bool WTF_Moving;
+	bool FFT_Automatic;
 	uint8_t FFT_Sensitivity;
 	uint8_t FFT_Speed;
 	uint8_t FFT_Averaging;
@@ -229,6 +230,8 @@ extern struct TRX_SETTINGS
 	bool FFT_Background;
 	bool FFT_Lens;
 	uint8_t FFT_3D;
+	int16_t FFT_ManualBottom;
+	int16_t FFT_ManualTop;
 	uint8_t FuncButtons[FUNCBUTTONS_COUNT];
 	//ADC
 	bool ADC_Driver;
