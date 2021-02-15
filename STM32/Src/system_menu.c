@@ -58,7 +58,8 @@ static void SYSMENU_HANDL_AUDIO_RX_EQ_MID(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_EQ_HIG(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VAD_Squelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
@@ -291,7 +292,8 @@ IRAM2 static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"RX EQ High", SYSMENU_INT8, (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_HANDL_AUDIO_RX_EQ_HIG},
 		{"RX AGC SSB Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed},
 		{"RX AGC CW Speed", SYSMENU_UINT8, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed},
-		{"TX AGC Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_AGC_speed, SYSMENU_HANDL_AUDIO_TX_AGCSpeed},
+		{"TX Compressor Speed", SYSMENU_UINT8, (uint32_t *)&TRX.TX_Compressor_speed, SYSMENU_HANDL_AUDIO_TX_CompressorSpeed},
+		{"TX Compressor MaxGain", SYSMENU_UINT8, (uint32_t *)&TRX.TX_Compressor_maxgain, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain},
 		{"Beeper", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 };
 static uint8_t sysmenu_audio_item_count = sizeof(sysmenu_audio_handlers) / sizeof(sysmenu_audio_handlers[0]);
@@ -1115,13 +1117,22 @@ static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction)
 		TRX.RX_AGC_CW_speed = 20;
 }
 
-static void SYSMENU_HANDL_AUDIO_TX_AGCSpeed(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed(int8_t direction)
 {
-	TRX.TX_AGC_speed += direction;
-	if (TRX.TX_AGC_speed < 1)
-		TRX.TX_AGC_speed = 1;
-	if (TRX.TX_AGC_speed > 10)
-		TRX.TX_AGC_speed = 10;
+	TRX.TX_Compressor_speed += direction;
+	if (TRX.TX_Compressor_speed < 1)
+		TRX.TX_Compressor_speed = 1;
+	if (TRX.TX_Compressor_speed > 10)
+		TRX.TX_Compressor_speed = 10;
+}
+
+static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain(int8_t direction)
+{
+	TRX.TX_Compressor_maxgain += direction;
+	if (TRX.TX_Compressor_maxgain < 1)
+		TRX.TX_Compressor_maxgain = 1;
+	if (TRX.TX_Compressor_maxgain > 10)
+		TRX.TX_Compressor_maxgain = 10;
 }
 
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)

@@ -191,7 +191,8 @@ void LoadSettings(bool clear)
 		TRX.RF_Power = 20;							 //output power (%)
 		TRX.RX_AGC_SSB_speed = 10;					 // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;					 // AGC receive rate on CW
-		TRX.TX_AGC_speed = 3;						 // AGC transfer rate
+		TRX.TX_Compressor_speed = 3;						 // TX compressor speed
+		TRX.TX_Compressor_maxgain = 5;				//TX compressor max gain
 		TRX.BandMapEnabled = true;					 // automatic change of mode according to the range map
 		TRX.FFT_Enabled = true;						 // use FFT spectrum
 		TRX.CW_GENERATOR_SHIFT_HZ = 500;			 // LO offset in CW mode

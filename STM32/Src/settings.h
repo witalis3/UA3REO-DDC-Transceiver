@@ -10,7 +10,7 @@
 #include "front_unit.h"
 
 #define SETT_VERSION 22				   // Settings config version
-#define CALIB_VERSION 23				   // Calibration config version
+#define CALIB_VERSION 24				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
@@ -21,7 +21,6 @@
 #define AGC_MAX_GAIN 30.0f				   // Maximum gain in AGC, dB
 #define AGC_CLIPPING 6.0f				   // Limit over target in AGC, dB
 #define TUNE_POWER 100					   // % of the power selected in the settings when starting TUNE (100 - full)
-#define TX_AGC_MAXGAIN 5.0f				   // Maximum microphone gain during compression
 #define TX_AGC_NOISEGATE 0.00001f		   // Minimum signal level for amplification (below - noise, cut off)
 #define TOUCHPAD_DELAY 200				   // Anti-bounce time for pressing the touchpad
 #define AUTOGAIN_TARGET_AMPLITUDE 20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
@@ -192,7 +191,8 @@ extern struct TRX_SETTINGS
 	bool NOISE_BLANKER;
 	uint8_t RX_AGC_SSB_speed;
 	uint8_t RX_AGC_CW_speed;
-	uint8_t TX_AGC_speed;
+	uint8_t TX_Compressor_speed;
+	uint8_t TX_Compressor_maxgain;
 	uint16_t CW_LPF_Filter;
 	uint16_t CW_HPF_Filter;
 	uint16_t SSB_LPF_Filter;

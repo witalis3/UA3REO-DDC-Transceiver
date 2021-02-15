@@ -157,7 +157,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **MIC Reverber** - Microphone reverberator level
 * **RX EQ xxx** - Receiver equalizer levels
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
-* **TX AGC Speed** - AGC / compressor response speed for transmission (more-faster)
+* **TX Compressor Speed** - TX compressor response speed for transmission (more-faster)
+* **TX Compressor MaxGain** - Maximum comressor gain
 * **Beeper** - Beep on key press
 
 ### CW Settings

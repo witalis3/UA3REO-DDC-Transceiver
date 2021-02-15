@@ -691,10 +691,10 @@ void processTxAudio(void)
 		{
 			if (ALC_need_gain_target > ALC_need_gain)
 			{
-				if (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U) // FAST AGC
-					ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_AGC_speed / 30.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_AGC_speed / 30.0f));
+				if (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U) // FAST AGC
+					ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_Compressor_speed / 30.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_Compressor_speed / 30.0f));
 				else // SLOW AGC
-					ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_AGC_speed / 1000.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_AGC_speed / 1000.0f));
+					ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_Compressor_speed / 1000.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_Compressor_speed / 1000.0f));
 			}
 		}
 		//just in case
@@ -706,8 +706,8 @@ void processTxAudio(void)
 			ALC_need_gain = ALC_need_gain_target;
 			// sendToDebug_str ("MIC_CLIP");
 		}
-		if (ALC_need_gain > TX_AGC_MAXGAIN)
-			ALC_need_gain = TX_AGC_MAXGAIN;
+		if (ALC_need_gain > (float32_t)TRX.TX_Compressor_maxgain)
+			ALC_need_gain = (float32_t)TRX.TX_Compressor_maxgain;
 		// noise threshold
 		if (Processor_TX_MAX_amplitude_IN < TX_AGC_NOISEGATE)
 			ALC_need_gain = 0.0f;
