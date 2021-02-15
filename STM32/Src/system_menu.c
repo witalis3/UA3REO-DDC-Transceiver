@@ -2176,8 +2176,7 @@ static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir)
 	if (dir == 0)
 	{
 		strcpy(TRX.WIFI_AP1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
+		WIFI_State = WIFI_CONFIGURED;
 		sysmenu_wifi_selectap1_menu_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2194,8 +2193,7 @@ static void SYSMENU_WIFI_SelectAP2MenuMove(int8_t dir)
 	if (dir == 0)
 	{
 		strcpy(TRX.WIFI_AP2, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
+		WIFI_State = WIFI_CONFIGURED;
 		sysmenu_wifi_selectap2_menu_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2212,8 +2210,7 @@ static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir)
 	if (dir == 0)
 	{
 		strcpy(TRX.WIFI_AP3, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
+		WIFI_State = WIFI_CONFIGURED;
 		sysmenu_wifi_selectap3_menu_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3453,48 +3450,42 @@ void SYSMENU_eventCloseSystemMenu(void)
 		sysmenu_wifi_selectap1_menu_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
+		WIFI_State = WIFI_CONFIGURED;
 	}
 	if (sysmenu_wifi_selectap2_menu_opened)
 	{
 		sysmenu_wifi_selectap2_menu_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
+		WIFI_State = WIFI_CONFIGURED;
 	}
 	if (sysmenu_wifi_selectap3_menu_opened)
 	{
 		sysmenu_wifi_selectap3_menu_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
+		WIFI_State = WIFI_CONFIGURED;
 	}
 	else if (sysmenu_wifi_setAP1password_menu_opened)
 	{
 		sysmenu_wifi_setAP1password_menu_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
+		WIFI_State = WIFI_CONFIGURED;
 	}
 	else if (sysmenu_wifi_setAP2password_menu_opened)
 	{
 		sysmenu_wifi_setAP2password_menu_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
+		WIFI_State = WIFI_CONFIGURED;
 	}
 	else if (sysmenu_wifi_setAP3password_menu_opened)
 	{
 		sysmenu_wifi_setAP3password_menu_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-		WIFI_InitStateIndex = 0;
-		WIFI_State = WIFI_INITED;
+		WIFI_State = WIFI_CONFIGURED;
 	}
 	else if (sysmenu_trx_setCallsign_menu_opened)
 	{

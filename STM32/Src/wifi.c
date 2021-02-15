@@ -33,7 +33,6 @@ static void WIFI_printImage_stream_partial_callback(void);
 
 bool WIFI_connected = false;
 bool WIFI_CAT_server_started = false;
-volatile uint8_t WIFI_InitStateIndex = 0;
 volatile WiFiState WIFI_State = WIFI_UNDEFINED;
 static char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
 volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
@@ -98,7 +97,10 @@ void WIFI_Process(void)
 	static IRAM2 char com_t[128] = {0};
 	static IRAM2 char tz[2] = {0};
 	static IRAM2 char com[128] = {0};
-
+	memset(com_t, 0x00, sizeof(com_t));
+	memset(tz, 0x00, sizeof(tz));
+	memset(com, 0x00, sizeof(com));
+	
 	if (WIFI_State == WIFI_NOTFOUND)
 		return;
 	if (WIFI_State == WIFI_UNDEFINED)
@@ -298,7 +300,6 @@ void WIFI_Process(void)
 			WIFI_State = WIFI_READY;
 		else
 			WIFI_State = WIFI_CONFIGURED;
-		WIFI_InitStateIndex = 0;
 		break;
 
 	case WIFI_PROCESS_COMMAND:

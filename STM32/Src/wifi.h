@@ -46,7 +46,6 @@ extern RTC_HandleTypeDef hrtc;
 
 extern bool WIFI_connected;
 extern bool WIFI_CAT_server_started;
-extern volatile uint8_t WIFI_InitStateIndex;
 extern volatile WiFiState WIFI_State;
 extern volatile char WIFI_FoundedAP[10][32];
 extern bool WIFI_IP_Gotted;
