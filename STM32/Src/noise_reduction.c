@@ -23,7 +23,7 @@ IRAM2 static NR_Instance NR_RX1 = {
 	.SNR_post = {0},
 	.SNR_prio = {0},
 };
-SRAM static NR_Instance NR_RX2 = {
+SRAM4 static NR_Instance NR_RX2 = {
 	.NR_InputBuffer = {0},
 	.NR_InputBuffer_index = 0,
 	.NR_OutputBuffer = {0},
@@ -72,8 +72,11 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 	#define alpha 0.94
 	
 	//fill input buffer
+	if(instance->NR_InputBuffer_index >= (NOISE_REDUCTION_FFT_SIZE / NOISE_REDUCTION_BLOCK_SIZE))
+		instance->NR_InputBuffer_index = 0;
 	memcpy(&instance->NR_InputBuffer[instance->NR_InputBuffer_index * NOISE_REDUCTION_BLOCK_SIZE], buffer, NOISE_REDUCTION_BLOCK_SIZE * 4);
 	instance->NR_InputBuffer_index++;
+	
 	if (instance->NR_InputBuffer_index == (NOISE_REDUCTION_FFT_SIZE / NOISE_REDUCTION_BLOCK_SIZE)) //input buffer ready
 	{
 		instance->NR_InputBuffer_index = 0;
