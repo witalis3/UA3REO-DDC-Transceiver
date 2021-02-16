@@ -5,6 +5,7 @@
 +HARDW: Экспериментальная Motherboard-rev28: На разъём MIC выведен контакт PTT
 +HARDW: Экспериментальная Motherboard-rev28: Добавлен стерео выход с УНЧ
 +HARDW: Экспериментальная Motherboard-rev28: Добавлен USB изолятор ADuM4160
++HARDW: Экспериментальная Motherboard-rev28: Подключены выводы USB VBUS/ID
 
 ----Version 2.2.4----
 +HARDW: Выложена раскладка кнопок 7 дюймовой панели (Front-Panel.xlsx)
