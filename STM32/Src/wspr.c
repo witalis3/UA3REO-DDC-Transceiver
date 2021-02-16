@@ -378,11 +378,8 @@ static void WSPR_Encode_call(void)
 	// merge coded callsign into message array c[]
 	unsigned long t1 = n1;
 	WSPR2_encMessage[0] = t1 >> 20;
-	t1 = n1;
 	WSPR2_encMessage[1] = t1 >> 12;
-	t1 = n1;
 	WSPR2_encMessage[2] = t1 >> 4;
-	t1 = n1;
 	WSPR2_encMessage[3] = t1 << 4;
 }
 

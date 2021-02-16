@@ -746,7 +746,7 @@ static void WIFI_getHTTPResponse(void)
 	if (istr != NULL)
 	{
 		istr += 7;
-		char *istr2 = strstr(WIFI_readedLine, ":");
+		char *istr2 = strchr(WIFI_readedLine, ':');
 		if (istr2 != NULL)
 		{
 			*istr2 = 0;
@@ -756,17 +756,19 @@ static void WIFI_getHTTPResponse(void)
 			commandStartTime = HAL_GetTick();
 
 			uint32_t start_time = HAL_GetTick();
-			while (strlen(WIFI_HTTResponseHTML) < response_length && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 5000)
+      uint32_t len = strlen(WIFI_HTTResponseHTML);
+			while (len < response_length && len < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 5000)
 			{
 				if (WIFI_TryGetLine())
 					strcat(WIFI_HTTResponseHTML, WIFI_readedLine);
+        len = strlen(WIFI_HTTResponseHTML);
 			}
 			char *istr3 = WIFI_HTTResponseHTML;
 			istr3 += response_length;
 			*istr3 = 0;
 
 			//get status
-			char *istr4 = strstr(WIFI_HTTResponseHTML, " ");
+			char *istr4 = strchr(WIFI_HTTResponseHTML, ' ');
 			if (istr4 != NULL)
 			{
 				char *istr5 = istr4 + 4;
@@ -780,10 +782,13 @@ static void WIFI_getHTTPResponse(void)
 			if (istr4 != NULL)
 			{
 				istr4 += 16;
-				char *istr5 = strstr(istr4, "\r");
-				*istr5 = 0;
-				WIFI_HTTP_Response_ContentLength = (uint32_t)(atoi(istr4));
-				*istr5 = ' ';
+				char *istr5 = strchr(istr4, '\r');
+                if (istr5 != NULL)
+                {
+                    *istr5 = 0;
+                    WIFI_HTTP_Response_ContentLength = (uint32_t)(atoi(istr4));
+                    *istr5 = ' ';
+                }
 			}
 
 			//get response body
@@ -811,7 +816,7 @@ static void WIFI_getHTTPResponse(void)
 						if (istr != NULL)
 						{
 							istr += 7;
-							istr2 = strstr(WIFI_readedLine, ":");
+							istr2 = strchr(WIFI_readedLine, ':');
 							if (istr2 != NULL)
 							{
 								*istr2 = 0;
@@ -910,7 +915,8 @@ static void WIFI_printImage_stream_partial_callback(void)
 	char hex[5] = {0};
 	WIFI_RLEStreamBuffer_index = 0;
 	int16_t val = 0;
-	while (*istr != 0 && (strlen(WIFI_HTTResponseHTML) >= ((WIFI_RLEStreamBuffer_index * 4) + 4)))
+    uint32_t len = strlen(WIFI_HTTResponseHTML);
+	while (*istr != 0 && (len >= ((WIFI_RLEStreamBuffer_index * 4) + 4)))
 	{
 		//Get hex
 		strncpy(hex, istr, 4);
@@ -943,13 +949,13 @@ static void WIFI_printImage_callback(void)
 	LCDDriver_Fill(BG_COLOR);
 	if (WIFI_HTTP_Response_Status == 200)
 	{
-		char *istr1 = strstr(WIFI_HTTResponseHTML, ",");
+		char *istr1 = strchr(WIFI_HTTResponseHTML, ',');
 		if (istr1 != NULL)
 		{
 			*istr1 = 0;
 			uint32_t filesize = atoi(WIFI_HTTResponseHTML);
 			istr1++;
-			char *istr2 = strstr(istr1, ",");
+			char *istr2 = strchr(istr1, ',');
 			if (istr2 != NULL)
 			{
 				*istr2 = 0;

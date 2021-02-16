@@ -166,7 +166,7 @@ void GT911_Init(void)
 
 void GT911_Scan(void)
 {
-	char str[64] = {0};
+	//char str[64] = {0};
 	uint8_t buf[41] = {0};
 	uint8_t Clearbuf = 0;
 

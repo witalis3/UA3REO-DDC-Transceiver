@@ -1783,8 +1783,6 @@ static void SYSMENU_HANDL_SCREEN_LCD_Brightness(int8_t direction)
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction)
 {
 	TRX.FFT_3D += direction;
-	if (TRX.FFT_3D < 0)
-		TRX.FFT_3D = 0;
 	if (TRX.FFT_3D > 2)
 		TRX.FFT_3D = 2;
 }
@@ -3794,7 +3792,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	if (!SYSMENU_hiddenmenu_enabled && type == SYSMENU_HIDDEN_MENU)
 		return;
 
-	char ctmp[10] = {0};
+	char ctmp[32] = {0};
 	if (!onlyVal)
 	{
 		LCDDriver_Fill_RectXY(0, sysmenu_y, LAYOUT->SYSMENU_W, sysmenu_y + 17, BG_COLOR);

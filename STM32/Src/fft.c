@@ -380,8 +380,7 @@ void FFT_doFFT(void)
 	}
 	else //partial windowing
 	{
-		if (FFT_ChargeBuffer_collected > FFT_SIZE)
-			FFT_ChargeBuffer_collected = FFT_SIZE;
+		FFT_ChargeBuffer_collected = FFT_SIZE;
 		for (uint16_t i = (FFT_SIZE - FFT_ChargeBuffer_collected); i < FFT_SIZE; i++)
 		{
 			uint16_t coeff_idx = (FFT_SIZE / FFT_ChargeBuffer_collected) * (FFT_SIZE - i);

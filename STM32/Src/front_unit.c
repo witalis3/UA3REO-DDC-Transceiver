@@ -653,7 +653,7 @@ void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(uint32_t parameter)
 
 	if (TRX.Dual_RX_Type == VFO_A_AND_B)
 		TRX.Dual_RX_Type = VFO_A_PLUS_B;
-	else if (TRX.Dual_RX_Type == VFO_A_PLUS_B)
+	else
 		TRX.Dual_RX_Type = VFO_A_AND_B;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitAudioFilters = true;

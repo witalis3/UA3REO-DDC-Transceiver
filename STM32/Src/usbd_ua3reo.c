@@ -545,8 +545,8 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	pdev->ep_in[CAT_CMD_EP & 0xFU].is_used = 1U;
 
 	static USBD_DEBUG_HandleTypeDef pClassDataDEBUG = {0};
-	static USBD_DEBUG_HandleTypeDef pClassDataCAT = {0};
-	static USBD_DEBUG_HandleTypeDef pClassDataAUDIO = {0};
+	static USBD_CAT_HandleTypeDef pClassDataCAT = {0};
+	static USBD_AUDIO_HandleTypeDef pClassDataAUDIO = {0};
 	pdev->pClassDataDEBUG = &pClassDataDEBUG;
 	memset(pdev->pClassDataDEBUG, 0, sizeof(USBD_DEBUG_HandleTypeDef));
 	pdev->pClassDataCAT = &pClassDataCAT;
@@ -554,59 +554,37 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	pdev->pClassDataAUDIO = &pClassDataAUDIO;
 	memset(pdev->pClassDataAUDIO, 0, sizeof(USBD_AUDIO_HandleTypeDef));
 
-	if (pdev->pClassDataDEBUG == NULL)
-	{
-		ret = 1U;
-		return ret;
-	}
-	else
-	{
-		hcdc_debug = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
+    hcdc_debug = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
 
-		/* Init  physical Interface components */
-		((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Init();
+    /* Init  physical Interface components */
+    ((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Init();
 
-		/* Init Xfer states */
-		hcdc_debug->TxState = 0U;
-		hcdc_debug->RxState = 0U;
+    /* Init Xfer states */
+    hcdc_debug->TxState = 0U;
+    hcdc_debug->RxState = 0U;
 
-		/* Prepare Out endpoint to receive next packet */
-		USBD_LL_PrepareReceive(pdev, DEBUG_OUT_EP, hcdc_debug->RxBuffer, CDC_DATA_FS_OUT_PACKET_SIZE);
-	}
+    /* Prepare Out endpoint to receive next packet */
+    USBD_LL_PrepareReceive(pdev, DEBUG_OUT_EP, hcdc_debug->RxBuffer, CDC_DATA_FS_OUT_PACKET_SIZE);
 
-	if (pdev->pClassDataCAT == NULL)
-	{
-		ret = 1U;
-		return ret;
-	}
-	else
-	{
-		hcdc_cat = (USBD_CAT_HandleTypeDef *)pdev->pClassDataCAT;
 
-		((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Init();
+    hcdc_cat = (USBD_CAT_HandleTypeDef *)pdev->pClassDataCAT;
 
-		hcdc_cat->TxState = 0U;
-		hcdc_cat->RxState = 0U;
+    ((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Init();
 
-		USBD_LL_PrepareReceive(pdev, CAT_OUT_EP, hcdc_cat->RxBuffer, CDC_DATA_FS_OUT_PACKET_SIZE);
-	}
+    hcdc_cat->TxState = 0U;
+    hcdc_cat->RxState = 0U;
 
-	if (pdev->pClassDataAUDIO == NULL)
-	{
-		ret = 1U;
-		return ret;
-	}
-	else
-	{
-		haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
-		haudio->alt_setting = 0U;
+    USBD_LL_PrepareReceive(pdev, CAT_OUT_EP, hcdc_cat->RxBuffer, CDC_DATA_FS_OUT_PACKET_SIZE);
 
-		// Initialize the Audio output Hardware layer
-		if (((USBD_AUDIO_ItfTypeDef *)pdev->pUserDataAUDIO)->Init() != 0)
-		{
-			return USBD_FAIL;
-		}
-	}
+
+    haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
+    haudio->alt_setting = 0U;
+
+    // Initialize the Audio output Hardware layer
+    if (((USBD_AUDIO_ItfTypeDef *)pdev->pUserDataAUDIO)->Init() != 0)
+    {
+        return USBD_FAIL;
+    }
 	return ret;
 }
 

@@ -320,374 +320,197 @@ static void SDCOMM_EXPORT_SETT(void)
 	LCD_showInfo("Exporting...", false);
 	if (f_open(&File, "wolf.ini", FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
-		bool res = true;
 		//TRX
-		res = SD_WRITE_SETT_LINE("TRX.VFO_A.Freq", (uint32_t *)&TRX.VFO_A.Freq, SYSMENU_UINT32);
+		bool res = SD_WRITE_SETT_LINE("TRX.VFO_A.Freq", (uint32_t *)&TRX.VFO_A.Freq, SYSMENU_UINT32);
 		if (res)
+        {
 			SD_WRITE_SETT_LINE("TRX.VFO_A.Mode", (uint32_t *)&TRX.VFO_A.Mode, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.LPF_Filter_Width", (uint32_t *)&TRX.VFO_A.LPF_Filter_Width, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.HPF_Filter_Width", (uint32_t *)&TRX.VFO_A.HPF_Filter_Width, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.ManualNotchFilter", (uint32_t *)&TRX.VFO_A.ManualNotchFilter, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AutoNotchFilter", (uint32_t *)&TRX.VFO_A.AutoNotchFilter, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.NotchFC", (uint32_t *)&TRX.VFO_A.NotchFC, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint32_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold", (uint32_t *)&TRX.VFO_A.FM_SQL_threshold, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Freq", (uint32_t *)&TRX.VFO_B.Freq, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Mode", (uint32_t *)&TRX.VFO_B.Mode, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.LPF_Filter_Width", (uint32_t *)&TRX.VFO_B.LPF_Filter_Width, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.HPF_Filter_Width", (uint32_t *)&TRX.VFO_B.HPF_Filter_Width, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.ManualNotchFilter", (uint32_t *)&TRX.VFO_B.ManualNotchFilter, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AutoNotchFilter", (uint32_t *)&TRX.VFO_B.AutoNotchFilter, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.NotchFC", (uint32_t *)&TRX.VFO_B.NotchFC, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR_Type", (uint32_t *)&TRX.VFO_B.DNR_Type, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint32_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold", (uint32_t *)&TRX.VFO_B.FM_SQL_threshold, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.current_vfo", (uint32_t *)&TRX.current_vfo, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.LNA", (uint32_t *)&TRX.LNA, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ATT", (uint32_t *)&TRX.ATT, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ATT_DB", (uint32_t *)&TRX.ATT_DB, SYSMENU_FLOAT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ATT_STEP", (uint32_t *)&TRX.ATT_STEP, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.Fast", (uint32_t *)&TRX.Fast, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ADC_PGA", (uint32_t *)&TRX.ADC_PGA, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ANT", (uint32_t *)&TRX.ANT, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.RF_Filters", (uint32_t *)&TRX.RF_Filters, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.RF_Power", (uint32_t *)&TRX.RF_Power, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ShiftEnabled", (uint32_t *)&TRX.ShiftEnabled, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.SHIFT_INTERVAL", (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.TWO_SIGNAL_TUNE", (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FRQ_STEP", (uint32_t *)&TRX.FRQ_STEP, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FRQ_FAST_STEP", (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_STEP", (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FAST_STEP", (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.Debug_Console", (uint32_t *)&TRX.Debug_Console, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.BandMapEnabled", (uint32_t *)&TRX.BandMapEnabled, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.InputType_MIC", (uint32_t *)&TRX.InputType_MIC, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.InputType_LINE", (uint32_t *)&TRX.InputType_LINE, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.InputType_USB", (uint32_t *)&TRX.InputType_USB, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.AutoGain", (uint32_t *)&TRX.AutoGain, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.CLAR", (uint32_t *)&TRX.CLAR, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint32_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.Encoder_Accelerate", (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint32_t *)&TRX.Dual_RX_Type, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_STRING("TRX.CALLSIGN", TRX.CALLSIGN);
-		if (res)
 			SD_WRITE_SETT_STRING("TRX.LOCATOR", TRX.LOCATOR);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.Transverter_Enabled", (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.Transverter_Offset_Mhz", (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_UINT16);
-		//AUDIO
-		if (res)
+            //AUDIO
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint32_t *)&TRX.IF_Gain, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.MIC_GAIN", (uint32_t *)&TRX.MIC_GAIN, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_LOW", (uint32_t *)&TRX.RX_EQ_LOW, SYSMENU_INT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_MID", (uint32_t *)&TRX.RX_EQ_MID, SYSMENU_INT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_HIG", (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_INT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.MIC_EQ_LOW", (uint32_t *)&TRX.MIC_EQ_LOW, SYSMENU_INT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID", (uint32_t *)&TRX.MIC_EQ_MID, SYSMENU_INT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG", (uint32_t *)&TRX.MIC_EQ_HIG, SYSMENU_INT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.MIC_REVERBER", (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.DNR_SNR_THRESHOLD", (uint32_t *)&TRX.DNR_SNR_THRESHOLD, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.DNR_AVERAGE", (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.DNR_MINIMAL", (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.NOISE_BLANKER", (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_SSB_speed", (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_CW_speed", (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_speed", (uint32_t *)&TRX.TX_Compressor_speed, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_maxgain", (uint32_t *)&TRX.TX_Compressor_maxgain, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.CW_LPF_Filter2", (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.CW_HPF_Filter2", (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.SSB_LPF_Filter", (uint32_t *)&TRX.SSB_LPF_Filter, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.SSB_HPF_Filter", (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.AM_LPF_Filter", (uint32_t *)&TRX.AM_LPF_Filter, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FM_LPF_Filter", (uint32_t *)&TRX.FM_LPF_Filter, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.Beeper", (uint32_t *)&TRX.Beeper, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.VAD_Squelch", (uint32_t *)&TRX.VAD_Squelch, SYSMENU_BOOLEAN);
-		//CW
-		if (res)
+            //CW
 			SD_WRITE_SETT_LINE("TRX.CWDecoder", (uint32_t *)&TRX.CWDecoder, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.CW_GENERATOR_SHIFT_HZ", (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.CW_Key_timeout", (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.CW_SelfHear", (uint32_t *)&TRX.CW_SelfHear, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.CW_KEYER", (uint32_t *)&TRX.CW_KEYER, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.CW_KEYER_WPM", (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_UINT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.CW_GaussFilter", (uint32_t *)&TRX.CW_GaussFilter, SYSMENU_BOOLEAN);
-		//SCREEN
-		if (res)
+            //SCREEN
 			SD_WRITE_SETT_LINE("TRX.ColorThemeId", (uint32_t *)&TRX.ColorThemeId, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.LayoutThemeId", (uint32_t *)&TRX.LayoutThemeId, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Enabled", (uint32_t *)&TRX.FFT_Enabled, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Zoom", (uint32_t *)&TRX.FFT_Zoom, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_ZoomCW", (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.LCD_Brightness", (uint32_t *)&TRX.LCD_Brightness, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Speed", (uint32_t *)&TRX.FFT_Speed, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Sensitivity", (uint32_t *)&TRX.FFT_Sensitivity, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Averaging", (uint32_t *)&TRX.FFT_Averaging, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Window", (uint32_t *)&TRX.FFT_Window, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Height", (uint32_t *)&TRX.FFT_Height, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Style", (uint32_t *)&TRX.FFT_Style, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Color", (uint32_t *)&TRX.FFT_Color, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Compressor", (uint32_t *)&TRX.FFT_Compressor, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WTF_Moving", (uint32_t *)&TRX.WTF_Moving, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Grid", (uint32_t *)&TRX.FFT_Grid, SYSMENU_INT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Background", (uint32_t *)&TRX.FFT_Background, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Lens", (uint32_t *)&TRX.FFT_Lens, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_3D", (uint32_t *)&TRX.FFT_3D, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_Automatic", (uint32_t *)&TRX.FFT_Automatic, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualBottom", (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_INT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualTop", (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_INT16);
-		//ADC
-		if (res)
+            //ADC
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ADC_PGA", (uint32_t *)&TRX.ADC_PGA, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ADC_RAND", (uint32_t *)&TRX.ADC_RAND, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ADC_SHDN", (uint32_t *)&TRX.ADC_SHDN, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.ADC_DITH", (uint32_t *)&TRX.ADC_DITH, SYSMENU_BOOLEAN);
-		//WIFI
-		if (res)
+            //WIFI
 			SD_WRITE_SETT_LINE("TRX.WIFI_Enabled", (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WIFI_TIMEZONE", (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_INT8);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WIFI_CAT_SERVER", (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_STRING("TRX.WIFI_AP1", TRX.WIFI_AP1);
-		if (res)
 			SD_WRITE_SETT_STRING("TRX.WIFI_AP2", TRX.WIFI_AP2);
-		if (res)
 			SD_WRITE_SETT_STRING("TRX.WIFI_AP3", TRX.WIFI_AP3);
-		if (res)
 			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD1", TRX.WIFI_PASSWORD1);
-		if (res)
 			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD2", TRX.WIFI_PASSWORD2);
-		if (res)
 			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD3", TRX.WIFI_PASSWORD3);
-		//SERVICES
-		if (res)
+            //SERVICES
 			SD_WRITE_SETT_LINE("TRX.SPEC_Begin", (uint32_t *)&TRX.SPEC_Begin, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.SPEC_End", (uint32_t *)&TRX.SPEC_End, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.SPEC_TopDBM", (uint32_t *)&TRX.SPEC_TopDBM, SYSMENU_INT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.SPEC_BottomDBM", (uint32_t *)&TRX.SPEC_BottomDBM, SYSMENU_INT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_FREQ_OFFSET", (uint32_t *)&TRX.WSPR_FREQ_OFFSET, SYSMENU_INT16);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_160", (uint32_t *)&TRX.WSPR_BANDS_160, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_80", (uint32_t *)&TRX.WSPR_BANDS_80, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_40", (uint32_t *)&TRX.WSPR_BANDS_40, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_30", (uint32_t *)&TRX.WSPR_BANDS_30, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_20", (uint32_t *)&TRX.WSPR_BANDS_20, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_17", (uint32_t *)&TRX.WSPR_BANDS_17, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_15", (uint32_t *)&TRX.WSPR_BANDS_15, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_12", (uint32_t *)&TRX.WSPR_BANDS_12, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_10", (uint32_t *)&TRX.WSPR_BANDS_10, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_6", (uint32_t *)&TRX.WSPR_BANDS_6, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_2", (uint32_t *)&TRX.WSPR_BANDS_2, SYSMENU_BOOLEAN);
-		//CALIBRATION
-		if (res)
+            //CALIBRATION
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_INVERT", (uint32_t *)&CALIBRATE.ENCODER_INVERT, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER2_INVERT", (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_DEBOUNCE", (uint32_t *)&CALIBRATE.ENCODER_DEBOUNCE, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER2_DEBOUNCE", (uint32_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_SLOW_RATE", (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ON_FALLING", (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_BOOLEAN);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ACCELERATION", (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER3", (uint32_t *)&CALIBRATE.CICFIR_GAINER_val, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.TXCICFIR_GAINER2", (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.DAC_GAINER2", (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2200m", (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_160m", (uint32_t *)&CALIBRATE.rf_out_power_160m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_80m", (uint32_t *)&CALIBRATE.rf_out_power_80m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_40m", (uint32_t *)&CALIBRATE.rf_out_power_40m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_30m", (uint32_t *)&CALIBRATE.rf_out_power_30m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_20m", (uint32_t *)&CALIBRATE.rf_out_power_20m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_17m", (uint32_t *)&CALIBRATE.rf_out_power_17m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_15m", (uint32_t *)&CALIBRATE.rf_out_power_15m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_12m", (uint32_t *)&CALIBRATE.rf_out_power_12m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_10m", (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_6m", (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2m", (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_UINT8);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration2", (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_INT16);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.adc_offset", (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_INT16);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.LPF_END", (uint32_t *)&CALIBRATE.LPF_END, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_0_START", (uint32_t *)&CALIBRATE.BPF_0_START, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_0_END", (uint32_t *)&CALIBRATE.BPF_0_END, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_1_START", (uint32_t *)&CALIBRATE.BPF_1_START, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_1_END", (uint32_t *)&CALIBRATE.BPF_1_END, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_2_START", (uint32_t *)&CALIBRATE.BPF_2_START, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_2_END", (uint32_t *)&CALIBRATE.BPF_2_END, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_3_START", (uint32_t *)&CALIBRATE.BPF_3_START, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_3_END", (uint32_t *)&CALIBRATE.BPF_3_END, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_4_START", (uint32_t *)&CALIBRATE.BPF_4_START, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_4_END", (uint32_t *)&CALIBRATE.BPF_4_END, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_5_START", (uint32_t *)&CALIBRATE.BPF_5_START, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_5_END", (uint32_t *)&CALIBRATE.BPF_5_END, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_6_START", (uint32_t *)&CALIBRATE.BPF_6_START, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_6_END", (uint32_t *)&CALIBRATE.BPF_6_END, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.BPF_HPF", (uint32_t *)&CALIBRATE.BPF_HPF, SYSMENU_UINT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.SWR_FWD_Calibration", (uint32_t *)&CALIBRATE.SWR_FWD_Calibration, SYSMENU_FLOAT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.SWR_REF_Calibration", (uint32_t *)&CALIBRATE.SWR_REF_Calibration, SYSMENU_FLOAT32);
-		if (res)
 			SD_WRITE_SETT_LINE("CALIBRATE.VCXO_correction", (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_INT8);
+        }
 
 		if (!res)
 			LCD_showInfo("SD error", true);

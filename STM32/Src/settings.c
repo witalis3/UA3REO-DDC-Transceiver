@@ -141,8 +141,8 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.ManualNotchFilter = false; // notch filter to cut out noise
 		TRX.VFO_B.AutoNotchFilter = false;	 // notch filter to cut out noise
 		TRX.VFO_B.NotchFC = 1000;			 // cutoff frequency of the notch filter
-		TRX.VFO_A.DNR_Type = 0;				 // digital noise reduction
-		TRX.VFO_A.AGC = true;				 // AGC
+		TRX.VFO_B.DNR_Type = 0;				 // digital noise reduction
+		TRX.VFO_B.AGC = true;				 // AGC
 		TRX.VFO_B.FM_SQL_threshold = 4;			 // FM noise reduction
 		TRX.current_vfo = false;			 // current VFO (false - A)
 		TRX.ADC_Driver = true;				 // preamplifier (ADC driver)
