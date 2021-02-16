@@ -1585,7 +1585,8 @@ static void MX_GPIO_Init(void)
                           |FPGA_BUS_D4_Pin|FPGA_BUS_D5_Pin|FPGA_BUS_D6_Pin|FPGA_BUS_D7_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, W25Q16_CS_Pin|SD_CS_Pin|AD3_CS_Pin|RFUNIT_OE_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, W25Q16_CS_Pin|SD_CS_Pin|AD3_CS_Pin|AF_AMP_MUTE_Pin
+                          |RFUNIT_OE_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
@@ -1656,17 +1657,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(PTT_IN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : W25Q16_CS_Pin SD_CS_Pin AD3_CS_Pin RFUNIT_RCLK_Pin
-                           RFUNIT_CLK_Pin RFUNIT_DATA_Pin RFUNIT_OE_Pin */
-  GPIO_InitStruct.Pin = W25Q16_CS_Pin|SD_CS_Pin|AD3_CS_Pin|RFUNIT_RCLK_Pin
-                          |RFUNIT_CLK_Pin|RFUNIT_DATA_Pin|RFUNIT_OE_Pin;
+  /*Configure GPIO pins : W25Q16_CS_Pin SD_CS_Pin AD3_CS_Pin AF_AMP_MUTE_Pin
+                           RFUNIT_RCLK_Pin RFUNIT_CLK_Pin RFUNIT_DATA_Pin RFUNIT_OE_Pin */
+  GPIO_InitStruct.Pin = W25Q16_CS_Pin|SD_CS_Pin|AD3_CS_Pin|AF_AMP_MUTE_Pin
+                          |RFUNIT_RCLK_Pin|RFUNIT_CLK_Pin|RFUNIT_DATA_Pin|RFUNIT_OE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB2 PB4 PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pins : PB2 PB4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_4;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);

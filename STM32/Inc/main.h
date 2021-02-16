@@ -181,6 +181,8 @@ void Error_Handler(void);
 #define WM8731_SCK_GPIO_Port GPIOD
 #define WM8731_SDA_Pin GPIO_PIN_6
 #define WM8731_SDA_GPIO_Port GPIOD
+#define AF_AMP_MUTE_Pin GPIO_PIN_5
+#define AF_AMP_MUTE_GPIO_Port GPIOB
 #define RFUNIT_RCLK_Pin GPIO_PIN_6
 #define RFUNIT_RCLK_GPIO_Port GPIOB
 #define RFUNIT_CLK_Pin GPIO_PIN_7
