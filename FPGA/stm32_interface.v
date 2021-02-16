@@ -538,12 +538,12 @@ begin
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd2; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd3; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)
 	begin
-		DATA_BUS_OUT[7:0] = 'd4; //flash id 3
+		DATA_BUS_OUT[7:0] = 'd0; //flash id 3
 		k = 999;
 	end
 	stage_debug=k;
