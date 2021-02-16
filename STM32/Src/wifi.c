@@ -760,7 +760,12 @@ static void WIFI_getHTTPResponse(void)
 			while (len < response_length && len < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 5000)
 			{
 				if (WIFI_TryGetLine())
-					strcat(WIFI_HTTResponseHTML, WIFI_readedLine);
+				{
+					if(len + strlen(WIFI_readedLine) < sizeof(WIFI_HTTResponseHTML))
+						strcat(WIFI_HTTResponseHTML, WIFI_readedLine);
+					else
+						break;
+				}
         len = strlen(WIFI_HTTResponseHTML);
 			}
 			char *istr3 = WIFI_HTTResponseHTML;
@@ -915,7 +920,7 @@ static void WIFI_printImage_stream_partial_callback(void)
 	char hex[5] = {0};
 	WIFI_RLEStreamBuffer_index = 0;
 	int16_t val = 0;
-    uint32_t len = strlen(WIFI_HTTResponseHTML);
+  uint32_t len = strlen(WIFI_HTTResponseHTML);
 	while (*istr != 0 && (len >= ((WIFI_RLEStreamBuffer_index * 4) + 4)))
 	{
 		//Get hex
@@ -926,6 +931,7 @@ static void WIFI_printImage_stream_partial_callback(void)
 		WIFI_RLEStreamBuffer[WIFI_RLEStreamBuffer_index] = val;
 		WIFI_RLEStreamBuffer_index++;
 	}
+	
 	//send to LCD RLE stream decoder
 	LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, WIFI_RLEStreamBuffer_index);
 

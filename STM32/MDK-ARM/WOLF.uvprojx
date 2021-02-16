@@ -6498,7 +6498,7 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <uGnu>1</uGnu>
-            <useXO>0</useXO>
+            <useXO>1</useXO>
             <v6Lang>6</v6Lang>
             <v6LangP>7</v6LangP>
             <vShortEn>1</vShortEn>

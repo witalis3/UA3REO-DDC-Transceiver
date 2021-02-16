@@ -1052,14 +1052,14 @@ static void FFT_3DPrintFFT(void)
 		int32_t y_diff = (int32_t)fft_y - (int32_t)fft_y_prev;
 		if (fft_x == 0 || (y_diff <= 1 && y_diff >= -1))
 		{
-			indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset + fft_y][fft_x] = fftHeight / 2;
+			indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset - 1 + fft_y][fft_x] = fftHeight / 2;
 		}
 		else
 		{
 			for (uint32_t l = 0; l < (abs(y_diff / 2) + 1); l++) //draw line
 			{
-				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset + fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = fftHeight / 2;
-				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset + fft_y + ((y_diff > 0) ? -l : l)][fft_x] = fftHeight / 2;
+				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset - 1 + fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = fftHeight / 2;
+				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset - 1 + fft_y + ((y_diff > 0) ? -l : l)][fft_x] = fftHeight / 2;
 			}
 		}
 		fft_y_prev = fft_y;
