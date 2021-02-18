@@ -224,6 +224,10 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=EELJMCFY
 
+[GeneratedDocument1]
+DocumentPath=Project Outputs for RF-UNIT\Design Rule Check - RF-UNIT.html
+DItemRevisionGUID=
+
 [SearchPath1]
 Path=C:\Users\Public\Documents\Altium\AD19\Library\ExportIntLib\*.*
 IncludeSubFolders=1
