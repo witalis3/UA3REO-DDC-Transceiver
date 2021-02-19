@@ -12,7 +12,7 @@ AMS1117 https://ru.aliexpress.com/item/32944301946.html
 STM32H743VIT6 (order rev.V) https://aliexpress.ru/item/33000333393.html
 AUDIOCONN https://aliexpress.ru/item/32694891007.html
 122.88Mhz Crystal https://aliexpress.ru/item/32842308508.html
-PAM8403 https://aliexpress.ru/item/33052199402.html
+PAM8406 https://aliexpress.ru/item/33020857483.html
 PINS https://aliexpress.ru/item/32864438850.html
 LTC2208 https://ru.aliexpress.com/item/32843811592.html
 CR1220 https://aliexpress.ru/item/32830699713.html

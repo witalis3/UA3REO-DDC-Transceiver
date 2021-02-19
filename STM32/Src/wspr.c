@@ -123,7 +123,10 @@ void WSPR_Stop(void)
 void WSPR_DoEvents(void)
 {
 	if (LCD_busy)
+	{
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
+	}
 	LCD_busy = true;
 
 	uint16_t y = 50;
@@ -188,6 +191,7 @@ void WSPR_DoEvents(void)
 	y += y_step;
 
 	LCD_busy = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 //Transmit
