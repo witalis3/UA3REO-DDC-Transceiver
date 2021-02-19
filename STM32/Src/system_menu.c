@@ -2461,13 +2461,19 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 		if (TimeMenuSelection == 0)
 		{
 			if (Hours == 0 && direction < 0)
+			{
+				LCD_UpdateQuery.SystemMenuRedraw = true;
 				return;
+			}
 			Hours = (uint8_t)(Hours + direction);
 		}
 		if (TimeMenuSelection == 1)
 		{
 			if (Minutes == 0 && direction < 0)
+			{
+				LCD_UpdateQuery.SystemMenuRedraw = true;
 				return;
+			}
 			Minutes = (uint8_t)(Minutes + direction);
 		}
 		if (TimeMenuSelection == 2)
@@ -2493,18 +2499,22 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 		sTime.Seconds = Seconds;
 		BKPSRAM_Enable();
 		HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
-	sprintf(ctmp, "%d", Hours);
-	addSymbols(ctmp, ctmp, 2, "0", false);
-	LCDDriver_printText(ctmp, 76, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, 3);
-	LCDDriver_printText(":", 124, 100, COLOR->BUTTON_TEXT, BG_COLOR, 3);
-	sprintf(ctmp, "%d", Minutes);
-	addSymbols(ctmp, ctmp, 2, "0", false);
-	LCDDriver_printText(ctmp, 148, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, 3);
-	LCDDriver_printText(":", 194, 100, COLOR->BUTTON_TEXT, BG_COLOR, 3);
-	sprintf(ctmp, "%d", Seconds);
-	addSymbols(ctmp, ctmp, 2, "0", false);
-	LCDDriver_printText(ctmp, 220, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, 3);
+	if(direction == 0)
+	{
+		sprintf(ctmp, "%d", Hours);
+		addSymbols(ctmp, ctmp, 2, "0", false);
+		LCDDriver_printText(ctmp, 76, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, 3);
+		LCDDriver_printText(":", 124, 100, COLOR->BUTTON_TEXT, BG_COLOR, 3);
+		sprintf(ctmp, "%d", Minutes);
+		addSymbols(ctmp, ctmp, 2, "0", false);
+		LCDDriver_printText(ctmp, 148, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, 3);
+		LCDDriver_printText(":", 194, 100, COLOR->BUTTON_TEXT, BG_COLOR, 3);
+		sprintf(ctmp, "%d", Seconds);
+		addSymbols(ctmp, ctmp, 2, "0", false);
+		LCDDriver_printText(ctmp, 220, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, 3);
+	}
 }
 
 //FLASH MENU
@@ -3300,6 +3310,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	if (sysmenu_timeMenuOpened)
 	{
 		SYSMENU_HANDL_SETTIME(0);
+		return;
 	}
 	else if (sysmenu_wifi_selectap1_menu_opened)
 	{
@@ -3435,6 +3446,7 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 	if (sysmenu_timeMenuOpened)
 	{
 		SYSMENU_HANDL_SETTIME(direction);
+		LCD_UpdateQuery.SystemMenu = true;
 		return;
 	}
 	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_INFOLINE)
