@@ -885,9 +885,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.WSPR_BANDS_2 = uintval;
 	//CALIBRATION
 	if (strcmp(name, "CALIBRATE.ENCODER_INVERT") == 0)
-		CALIBRATE.ENCODER_INVERT = uintval;
+		CALIBRATE.ENCODER_INVERT = bval;
 	if (strcmp(name, "CALIBRATE.ENCODER2_INVERT") == 0)
-		CALIBRATE.ENCODER2_INVERT = uintval;
+		CALIBRATE.ENCODER2_INVERT = bval;
 	if (strcmp(name, "CALIBRATE.ENCODER_DEBOUNCE") == 0)
 		CALIBRATE.ENCODER_DEBOUNCE = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.ENCODER2_DEBOUNCE") == 0)
@@ -895,7 +895,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (strcmp(name, "CALIBRATE.ENCODER_SLOW_RATE") == 0)
 		CALIBRATE.ENCODER_SLOW_RATE = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.ENCODER_ON_FALLING") == 0)
-		CALIBRATE.ENCODER_ON_FALLING = uintval;
+		CALIBRATE.ENCODER_ON_FALLING = bval;
 	if (strcmp(name, "CALIBRATE.ENCODER_ACCELERATION") == 0)
 		CALIBRATE.ENCODER_ACCELERATION = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.CICFIR_GAINER3") == 0)
