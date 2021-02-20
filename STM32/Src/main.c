@@ -1515,6 +1515,12 @@ static void MX_FMC_Init(void)
   Timing.DataSetupTime = 10;
   Timing.BusTurnAroundDuration = 8;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
+	#if (defined(LCD_SLOW))
+	Timing.AddressSetupTime = 20;
+  Timing.DataSetupTime = 20;
+  Timing.BusTurnAroundDuration = 16;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
+	#endif
 #endif
 #if (defined(LCD_SSD1963))
   Timing.AddressSetupTime = 5;
