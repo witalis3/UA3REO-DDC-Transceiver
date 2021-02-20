@@ -1276,14 +1276,14 @@ ARM Macro Assembler    Page 20
               00002000 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M7.fp.dp --depen
-d=wolf\startup_stm32h743xx.d -owolf\startup_stm32h743xx.o -I.\RTE\_HX8357C-SLOW
- -IC:\Users\XGudr\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include -I
-C:\Users\XGudr\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include -IC:\U
-sers\XGudr\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\PrivateInclude -IC
-:\Users\XGudr\AppData\Local\Arm\Packs\Keil\STM32H7xx_DFP\2.7.0\Drivers\CMSIS\De
-vice\ST\STM32H7xx\Include --predefine="__UVISION_VERSION SETA 533" --predefine=
-"_RTE_ SETA 1" --predefine="STM32H743xx SETA 1" --predefine="_RTE_ SETA 1" --li
-st=startup_stm32h743xx.lst startup_stm32h743xx.s
+d=wolf\startup_stm32h743xx.d -owolf\startup_stm32h743xx.o -I.\RTE\_RA8875_GT911
+_MH36 -IC:\Users\XGudr\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Inclu
+de -IC:\Users\XGudr\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include -
+IC:\Users\XGudr\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\PrivateInclud
+e -IC:\Users\XGudr\AppData\Local\Arm\Packs\Keil\STM32H7xx_DFP\2.7.0\Drivers\CMS
+IS\Device\ST\STM32H7xx\Include --predefine="__UVISION_VERSION SETA 533" --prede
+fine="_RTE_ SETA 1" --predefine="STM32H743xx SETA 1" --predefine="_RTE_ SETA 1"
+ --list=startup_stm32h743xx.lst startup_stm32h743xx.s
 
 
 

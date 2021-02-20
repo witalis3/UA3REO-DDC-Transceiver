@@ -14,6 +14,7 @@
 #include "noise_reduction.h"
 
 uint8_t FRONTPANEL_funcbuttons_page = 0;
+int8_t FRONTPANEL_ProcessEncoder1 = 0;
 int8_t FRONTPANEL_ProcessEncoder2 = 0;
 
 static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
@@ -242,7 +243,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		return;
 	if (LCD_systemMenuOpened)
 	{
-		SYSMENU_eventRotateSystemMenu((int8_t)direction);
+		FRONTPANEL_ProcessEncoder1 = (int8_t)direction;
 		return;
 	}
 	if (fabsf(direction) <= ENCODER_MIN_RATE_ACCELERATION)
@@ -449,6 +450,12 @@ void FRONTPANEL_Process(void)
 		return;
 	SPI_process = true;
 
+	if (LCD_systemMenuOpened && !LCD_busy && FRONTPANEL_ProcessEncoder1 != 0)
+	{
+		SYSMENU_eventRotateSystemMenu(FRONTPANEL_ProcessEncoder1);
+		FRONTPANEL_ProcessEncoder1 = 0;
+	}
+	
 	if(FRONTPANEL_ProcessEncoder2 != 0)
 	{
 		FRONTPANEL_ENCODER2_Rotated(FRONTPANEL_ProcessEncoder2);
