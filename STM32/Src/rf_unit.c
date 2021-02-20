@@ -217,14 +217,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			{
 				static bool fan_status = false;
 				static bool fan_pwm = false;
-				if (fan_status && TRX_RF_Temperature <= FAN_MEDIUM_STOP) // Temperature at which the fan stops
+				if (fan_status && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
 					fan_status = false;
-				if (!fan_status && TRX_RF_Temperature >= FAN_MEDIUM_START) // Temperature at which the fan starts at half power
+				if (!fan_status && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
 				{
 					fan_status = true;
 					fan_pwm = true;
 				}
-				if (TRX_RF_Temperature >= FAN_FULL_START) // Temperature at which the fan starts at full power
+				if (TRX_RF_Temperature >= CALIBRATE.FAN_FULL_START) // Temperature at which the fan starts at full power
 					fan_pwm = false;
 
 				if (fan_status)

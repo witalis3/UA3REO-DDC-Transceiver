@@ -239,6 +239,11 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **HPF START** - HPF filter parameters
 * **SWR FWD/REF RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
 * **VCXO Correction** - Frequency adjustment of the reference oscillator
+* **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
+* **FAN Medium stop** - Temperature of the PA for stopping the fan
+* **FAN Full start** - Temperature of the PA for starting the fan at full speed
+* **MAX RF Temp** - Maximum temperature of the PA before the protection operation
+* **MAX SWR** - Maximum VSWR before protection operation
 
 ### Set Clock Time
 

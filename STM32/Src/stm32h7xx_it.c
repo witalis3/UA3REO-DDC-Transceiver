@@ -602,7 +602,7 @@ void TIM6_DAC_IRQHandler(void)
   //TRX protector
   if (TRX_on_TX())
   {
-    if (TRX_RF_Temperature > TRX_MAX_RF_TEMP)
+    if (TRX_RF_Temperature > CALIBRATE.TRX_MAX_RF_TEMP)
     {
       TRX_Tune = false;
       TRX_ptt_hard = false;
@@ -614,7 +614,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_strln("RF temperature too HIGH!");
       LCD_showTooltip("RF temperature too HIGH!");
     }
-    if (TRX_SWR > TRX_MAX_SWR && !TRX_Tune)
+    if (TRX_SWR > CALIBRATE.TRX_MAX_SWR && !TRX_Tune)
     {
       TRX_Tune = false;
       TRX_ptt_hard = false;
