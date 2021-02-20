@@ -649,6 +649,7 @@ void FRONTPANEL_Process(void)
 void FRONTPANEL_BUTTONHANDLER_DOUBLE(uint32_t parameter)
 {
 	TRX.Dual_RX = !TRX.Dual_RX;
+	FPGA_NeedSendParams = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitAudioFilters = true;
 }
@@ -719,6 +720,7 @@ void FRONTPANEL_BUTTONHANDLER_PRE(uint32_t parameter)
 		TRX.BANDS_SAVED_SETTINGS[band].LNA = TRX.LNA;
 	}
 	LCD_UpdateQuery.TopButtons = true;
+	FPGA_NeedSendParams = true;
 	NeedSaveSettings = true;
 	resetVAD();
 }
@@ -798,6 +800,7 @@ void FRONTPANEL_BUTTONHANDLER_PGA(uint32_t parameter)
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
 	}
 	LCD_UpdateQuery.TopButtons = true;
+	FPGA_NeedSendParams = true;
 	NeedSaveSettings = true;
 	resetVAD();
 }
@@ -809,6 +812,7 @@ void FRONTPANEL_BUTTONHANDLER_PGA_ONLY(uint32_t parameter)
 	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
 	LCD_UpdateQuery.TopButtons = true;
+	FPGA_NeedSendParams = true;
 	NeedSaveSettings = true;
 	resetVAD();
 }
@@ -820,6 +824,7 @@ void FRONTPANEL_BUTTONHANDLER_DRV_ONLY(uint32_t parameter)
 	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
 	LCD_UpdateQuery.TopButtons = true;
+	FPGA_NeedSendParams = true;
 	NeedSaveSettings = true;
 	resetVAD();
 }
