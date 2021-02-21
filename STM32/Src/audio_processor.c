@@ -512,10 +512,10 @@ void processTxAudio(void)
 	//Two-signal tune generator
 	if (TRX_Tune && TRX.TWO_SIGNAL_TUNE)
 	{
+		static float32_t two_signal_gen_index1 = 0;
+		static float32_t two_signal_gen_index2 = 0;
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			static float32_t two_signal_gen_index1 = 0;
-			static float32_t two_signal_gen_index2 = 0;
 			float32_t point = generateSin(0.5f, &two_signal_gen_index1, TRX_SAMPLERATE, 1000);
 			point += generateSin(0.5f, &two_signal_gen_index2, TRX_SAMPLERATE, 2000);
 			APROC_Audio_Buffer_TX_I[i] = point;
@@ -683,6 +683,8 @@ void processTxAudio(void)
 			{
 				FFT_new_buffer_ready = true;
 				FFT_buff_current = !FFT_buff_current;
+				FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
+				FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
 			}
 		}
 	}
@@ -725,7 +727,7 @@ void processTxAudio(void)
 		if (Processor_TX_MAX_amplitude_IN > RFpower_amplitude * 1.00f)
 		{
 			float32_t ALC_need_gain_target = (RFpower_amplitude * 0.99f) / Processor_TX_MAX_amplitude_IN;
-			sendToDebug_str("ALC_CLIP "); sendToDebug_float32(Processor_TX_MAX_amplitude_IN / RFpower_amplitude, false);
+			//sendToDebug_str("ALC_CLIP "); sendToDebug_float32(Processor_TX_MAX_amplitude_IN / RFpower_amplitude, false);
 			// apply gain
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, ALC_need_gain_target, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 			arm_scale_f32(APROC_Audio_Buffer_TX_Q, ALC_need_gain_target, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);

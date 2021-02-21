@@ -427,10 +427,10 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 
 float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq)
 {
-	float32_t ret = amplitude * arm_sin_f32(*index);
-	*index += ((float32_t)freq / (float32_t)samplerate) * (2.0f * F_PI);
-	while(*index >= (2.0f * F_PI))
-		*index -= (2.0f * F_PI);
+	float32_t ret = amplitude * arm_sin_f32(*index * (2.0f * F_PI));
+	*index += ((float32_t)freq / (float32_t)samplerate);
+	while(*index >= 1.0f)
+		*index -= 1.0f;
 	return ret;
 }
 
