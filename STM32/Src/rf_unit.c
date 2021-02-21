@@ -332,6 +332,8 @@ void RF_UNIT_ProcessSensors(void)
 	{
 		TRX_VLT_forward = 0.0f;
 		TRX_VLT_backward = 0.0f;
+		TRX_PWR_Forward = 0.0f;
+		TRX_PWR_Backward = 0.0f;
 		TRX_SWR = 1.0f;
 	}
 	else
