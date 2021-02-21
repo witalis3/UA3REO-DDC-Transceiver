@@ -1,10 +1,7 @@
 #include "usbd_storage_if.h"
 #include "sd.h"
 
-#define STORAGE_LUN_NBR                  1
-
 const int8_t STORAGE_Inquirydata_FS[] = {/* 36 */
-
   /* LUN 0 */
   0x00,
   0x80,
@@ -49,9 +46,9 @@ int8_t STORAGE_Init_FS(uint8_t lun)
 
 int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
+	return (USBD_OK);
 	if(!SD_Present)
 		return (USBD_FAIL);
-	
   *block_num  = sdinfo.SECTOR_COUNT;
   *block_size = sdinfo.capacity / sdinfo.SECTOR_COUNT;
   return (USBD_OK);
@@ -69,7 +66,7 @@ int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
 {
 	if(!SD_Present)
 		return (USBD_FAIL);
-	
+	return (USBD_FAIL);
   return (USBD_OK);
 }
 
@@ -154,8 +151,5 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 
 int8_t STORAGE_GetMaxLun_FS(void)
 {
-	if(!SD_Present)
-		return (USBD_FAIL);
-	
-  return (STORAGE_LUN_NBR - 1);
+	return 0;
 }
