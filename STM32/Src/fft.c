@@ -36,7 +36,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
 static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0};			// charge FFT I and Q buffer
-static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};					// combined FFT I and Q buffer
+IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};					// combined FFT I and Q buffer
 IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};						// temporary buffer for sorting, moving and fft compressing
 IRAM2 static float32_t FFT_meanBuffer[FFT_MAX_MEANS][MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
 IRAM2 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};						// averaged FFT buffer (for output)

@@ -429,7 +429,7 @@ float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate
 {
 	float32_t ret = amplitude * arm_sin_f32(*index);
 	*index += ((float32_t)freq / (float32_t)samplerate) * (2.0f * F_PI);
-	while(*index > (2.0f * F_PI))
+	while(*index >= (2.0f * F_PI))
 		*index -= (2.0f * F_PI);
 	return ret;
 }

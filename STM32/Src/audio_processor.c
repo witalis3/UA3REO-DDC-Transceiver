@@ -1025,7 +1025,7 @@ static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode)
 // impulse noise suppressor
 static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
-	/*if (!TRX.NOISE_BLANKER)
+	if (!TRX.NOISE_BLANKER)
 		return;
 	if (rx_id == AUDIO_RX1)
 	{
@@ -1036,7 +1036,7 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	{
 		for (uint32_t block = 0; block < (size / NB_BLOCK_SIZE); block++)
 			processNoiseBlanking(APROC_Audio_Buffer_RX2_I + (block * NB_BLOCK_SIZE), rx_id);
-	}*/
+	}
 }
 
 // s-meter
