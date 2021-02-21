@@ -156,7 +156,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 		SD_Mounted = false;
 		SD_Present = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
-		sendToDebug_str("we");
+		//sendToDebug_str("we");
 	}
 	
 	return blk_len ? USBD_FAIL : USBD_OK;

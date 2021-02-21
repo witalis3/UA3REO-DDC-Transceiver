@@ -113,7 +113,7 @@ void SD_Process(void)
 		{
 		case SDCOMM_IDLE:
 			//check SD card inserted if idle
-			/*if((HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL && !SD_RecordInProcess)
+			if((SD_Present_tryTime < HAL_GetTick()) && (HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL && !SD_RecordInProcess)
 			{
 				SD_Present_tryTime = HAL_GetTick();
 				disk.is_initialized[SDFatFs.drv] = false;
@@ -123,7 +123,7 @@ void SD_Process(void)
 					SD_Present = false;
 					LCD_UpdateQuery.StatusInfoGUI = true;
 				}
-			}*/
+			}
 			//
 			break;
 		case SDCOMM_LIST_ROOT:
@@ -1225,6 +1225,8 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 		//for (cnt = 0; cnt < 512; cnt++)
 			//SPI_SendByte(buff[cnt]);
 
+		if(buff == 0)
+			dma = false;
 		memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
 		if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 		{
