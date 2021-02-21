@@ -18,9 +18,9 @@ bool SD_NeedStopRecord = false;
 uint32_t SD_RecordBufferIndex = 0;
 bool SD_Present = false;
 bool SD_BusyByUSB = false;
+uint32_t SD_Present_tryTime = 0;
+bool SD_Mounted = false;
 
-static bool SD_Mounted = false;
-static uint32_t SD_Present_tryTime = 0;
 static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 
 IRAM2 static FIL File;
@@ -113,7 +113,7 @@ void SD_Process(void)
 		{
 		case SDCOMM_IDLE:
 			//check SD card inserted if idle
-			if((HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL && !SD_RecordInProcess)
+			/*if((HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL && !SD_RecordInProcess)
 			{
 				SD_Present_tryTime = HAL_GetTick();
 				disk.is_initialized[SDFatFs.drv] = false;
@@ -123,7 +123,7 @@ void SD_Process(void)
 					SD_Present = false;
 					LCD_UpdateQuery.StatusInfoGUI = true;
 				}
-			}
+			}*/
 			//
 			break;
 		case SDCOMM_LIST_ROOT:
@@ -1214,7 +1214,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 }
 
 SRAM uint8_t SD_Write_Block_tmp[512] = {0};
-uint8_t SD_Write_Block(uint8_t *buff, uint8_t token)
+uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 {
 	uint8_t result;
 	uint16_t cnt;
@@ -1226,7 +1226,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token)
 			//SPI_SendByte(buff[cnt]);
 
 		memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
-		if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+		if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 		{
 			sendToDebug_strln("SD SPI Err");
 			return 0;

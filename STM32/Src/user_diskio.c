@@ -190,7 +190,7 @@ DRESULT USER_write (
 	if (count == 1)	   /* Single block write */
 	{
 		if ((SD_cmd(CMD24, sector) == 0) /* WRITE_BLOCK */
-			&& SD_Write_Block((BYTE *)buff, 0xFE))
+			&& SD_Write_Block((BYTE *)buff, 0xFE, true))
 			count = 0;
 	}
 	else /* Multiple block write */
@@ -204,11 +204,11 @@ DRESULT USER_write (
 		{ /* WRITE_MULTIPLE_BLOCK */
 			do
 			{
-				if (!SD_Write_Block((BYTE *)buff, 0xFC))
+				if (!SD_Write_Block((BYTE *)buff, 0xFC, true))
 					break;
 				buff += 512;
 			} while (--count);
-			if (!SD_Write_Block(0, 0xFD)) /* STOP_TRAN token */
+			if (!SD_Write_Block(0, 0xFD, true)) /* STOP_TRAN token */
 			{
 				count = 1;
 			}

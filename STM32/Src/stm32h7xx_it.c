@@ -974,8 +974,11 @@ void TIM15_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim15);
   /* USER CODE BEGIN TIM15_IRQn 1 */
 
+	if(SD_BusyByUSB) 
+		return;
+	
   //FRONT PANEL SPI
-  static uint16_t front_slowler = 0;
+  /*static uint16_t front_slowler = 0;
   front_slowler++;
   if (front_slowler > 20)
   {
@@ -985,7 +988,7 @@ void TIM15_IRQHandler(void)
 
   //EEPROM SPI
   if (NeedSaveCalibration) // save calibration data to EEPROM
-    SaveCalibration();
+    SaveCalibration();*/
 
   //SD-Card SPI
   SD_Process();
