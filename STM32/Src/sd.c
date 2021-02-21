@@ -325,7 +325,8 @@ static void SDCOMM_EXPORT_SETT(void)
 		if (res)
     {
 			SD_WRITE_SETT_LINE("TRX.VFO_A.Mode", (uint32_t *)&TRX.VFO_A.Mode, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.VFO_A.LPF_Filter_Width", (uint32_t *)&TRX.VFO_A.LPF_Filter_Width, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.LPF_RX_Filter_Width", (uint32_t *)&TRX.VFO_A.LPF_RX_Filter_Width, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.LPF_TX_Filter_Width", (uint32_t *)&TRX.VFO_A.LPF_TX_Filter_Width, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.HPF_Filter_Width", (uint32_t *)&TRX.VFO_A.HPF_Filter_Width, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.ManualNotchFilter", (uint32_t *)&TRX.VFO_A.ManualNotchFilter, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AutoNotchFilter", (uint32_t *)&TRX.VFO_A.AutoNotchFilter, SYSMENU_BOOLEAN);
@@ -335,7 +336,8 @@ static void SDCOMM_EXPORT_SETT(void)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold", (uint32_t *)&TRX.VFO_A.FM_SQL_threshold, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Freq", (uint32_t *)&TRX.VFO_B.Freq, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Mode", (uint32_t *)&TRX.VFO_B.Mode, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.VFO_B.LPF_Filter_Width", (uint32_t *)&TRX.VFO_B.LPF_Filter_Width, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.LPF_RX_Filter_Width", (uint32_t *)&TRX.VFO_B.LPF_RX_Filter_Width, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.LPF_TX_Filter_Width", (uint32_t *)&TRX.VFO_B.LPF_TX_Filter_Width, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.HPF_Filter_Width", (uint32_t *)&TRX.VFO_B.HPF_Filter_Width, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.ManualNotchFilter", (uint32_t *)&TRX.VFO_B.ManualNotchFilter, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AutoNotchFilter", (uint32_t *)&TRX.VFO_B.AutoNotchFilter, SYSMENU_BOOLEAN);
@@ -396,10 +398,13 @@ static void SDCOMM_EXPORT_SETT(void)
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_maxgain", (uint32_t *)&TRX.TX_Compressor_maxgain, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.CW_LPF_Filter2", (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_HPF_Filter2", (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("TRX.SSB_LPF_Filter", (uint32_t *)&TRX.SSB_LPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.SSB_LPF_RX_Filter", (uint32_t *)&TRX.SSB_LPF_RX_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.SSB_LPF_TX_Filter", (uint32_t *)&TRX.SSB_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.SSB_HPF_Filter", (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("TRX.AM_LPF_Filter", (uint32_t *)&TRX.AM_LPF_Filter, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("TRX.FM_LPF_Filter", (uint32_t *)&TRX.FM_LPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.AM_LPF_RX_Filter", (uint32_t *)&TRX.AM_LPF_RX_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.AM_LPF_TX_Filter", (uint32_t *)&TRX.AM_LPF_TX_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.FM_LPF_RX_Filter", (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.FM_LPF_TX_Filter", (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.Beeper", (uint32_t *)&TRX.Beeper, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VAD_Squelch", (uint32_t *)&TRX.VAD_Squelch, SYSMENU_BOOLEAN);
       //CW
@@ -563,8 +568,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_A.Freq = uintval;
 	if (strcmp(name, "TRX.VFO_A.Mode") == 0)
 		TRX.VFO_A.Mode = uintval;
-	if (strcmp(name, "TRX.VFO_A.LPF_Filter_Width") == 0)
-		TRX.VFO_A.LPF_Filter_Width = uintval;
+	if (strcmp(name, "TRX.VFO_A.LPF_RX_Filter_Width") == 0)
+		TRX.VFO_A.LPF_RX_Filter_Width = uintval;
+	if (strcmp(name, "TRX.VFO_A.LPF_TX_Filter_Width") == 0)
+		TRX.VFO_A.LPF_TX_Filter_Width = uintval;
 	if (strcmp(name, "TRX.VFO_A.HPF_Filter_Width") == 0)
 		TRX.VFO_A.HPF_Filter_Width = uintval;
 	if (strcmp(name, "TRX.VFO_A.ManualNotchFilter") == 0)
@@ -583,8 +590,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_B.Freq = uintval;
 	if (strcmp(name, "TRX.VFO_B.Mode") == 0)
 		TRX.VFO_B.Mode = uintval;
-	if (strcmp(name, "TRX.VFO_B.LPF_Filter_Width") == 0)
-		TRX.VFO_B.LPF_Filter_Width = uintval;
+	if (strcmp(name, "TRX.VFO_B.LPF_RX_Filter_Width") == 0)
+		TRX.VFO_B.LPF_RX_Filter_Width = uintval;
+	if (strcmp(name, "TRX.VFO_B.LPF_TX_Filter_Width") == 0)
+		TRX.VFO_B.LPF_TX_Filter_Width = uintval;
 	if (strcmp(name, "TRX.VFO_B.HPF_Filter_Width") == 0)
 		TRX.VFO_B.HPF_Filter_Width = uintval;
 	if (strcmp(name, "TRX.VFO_B.ManualNotchFilter") == 0)
@@ -712,14 +721,20 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.CW_LPF_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.CW_HPF_Filter2") == 0)
 		TRX.CW_HPF_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.SSB_LPF_Filter") == 0)
-		TRX.SSB_LPF_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.SSB_LPF_RX_Filter") == 0)
+		TRX.SSB_LPF_RX_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.SSB_LPF_TX_Filter") == 0)
+		TRX.SSB_LPF_TX_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.SSB_HPF_Filter") == 0)
 		TRX.SSB_HPF_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.AM_LPF_Filter") == 0)
-		TRX.AM_LPF_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.FM_LPF_Filter") == 0)
-		TRX.FM_LPF_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.AM_LPF_RX_Filter") == 0)
+		TRX.AM_LPF_RX_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.AM_LPF_TX_Filter") == 0)
+		TRX.AM_LPF_TX_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.FM_LPF_RX_Filter") == 0)
+		TRX.FM_LPF_RX_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.FM_LPF_TX_Filter") == 0)
+		TRX.FM_LPF_TX_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.Beeper") == 0)
 		TRX.Beeper = uintval;
 	if (strcmp(name, "TRX.VAD_Squelch") == 0)

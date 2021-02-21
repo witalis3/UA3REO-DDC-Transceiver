@@ -85,7 +85,8 @@ extern void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SETMODE(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SETSECMODE(uint32_t parameter);
-extern void FRONTPANEL_BUTTONHANDLER_SETBW(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_SET_RX_BW(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_SET_TX_BW(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SETRF_POWER(uint32_t parameter);
 
 #endif

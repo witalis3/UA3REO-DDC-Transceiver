@@ -94,7 +94,7 @@ void processVAD(float32_t *buffer)
 	uint32_t fft_bw = (TRX_SAMPLERATE / VAD_MAGNIFY / 2);
 	uint32_t fft_bins = VAD_FFT_SIZE / 2;
 	uint32_t trx_hpf = CurrentVFO()->HPF_Filter_Width;
-	uint32_t trx_lpf = CurrentVFO()->LPF_Filter_Width;
+	uint32_t trx_lpf = CurrentVFO()->LPF_RX_Filter_Width;
 	uint32_t fft_hpf_bin = fft_bins * trx_hpf / fft_bw;
 	uint32_t fft_lpf_bin = fft_bins * trx_lpf / fft_bw;
 	if (fft_hpf_bin > fft_bw)

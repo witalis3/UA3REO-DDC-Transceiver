@@ -492,7 +492,10 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	case TRX_MODE_LSB:
 		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_Filter;
 	case TRX_MODE_DIGI_L:
-		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_Filter;
+		if(TRX_on_TX())
+			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_TX_Filter;
+		else
+			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_RX_Filter;
 		bw_trapez_bw_right_width = 0.0f;
 		break;
 	case TRX_MODE_CW_L:
@@ -504,7 +507,10 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_Filter;
 	case TRX_MODE_DIGI_U:
 		bw_trapez_bw_left_width = 0.0f;
-		bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_Filter;
+		if(TRX_on_TX())
+			bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_TX_Filter;
+		else
+			bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_RX_Filter;
 		break;
 	case TRX_MODE_CW_U:
 		bw_trapez_bw_left_width = 0.0f;
@@ -512,12 +518,18 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.CW_HPF_Filter * 4.0f;
 		break;
 	case TRX_MODE_NFM:
-		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_NFM * TRX.FM_LPF_Filter;
-		bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_NFM * TRX.FM_LPF_Filter;
+		if(TRX_on_TX())
+			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_NFM * TRX.FM_LPF_TX_Filter;
+		else
+			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_NFM * TRX.FM_LPF_RX_Filter;
+		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
 	case TRX_MODE_AM:
-		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * TRX.AM_LPF_Filter;
-		bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * TRX.AM_LPF_Filter;
+		if(TRX_on_TX())
+			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * TRX.AM_LPF_TX_Filter;
+		else
+			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * TRX.AM_LPF_RX_Filter;
+		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
 	case TRX_MODE_WFM:
 		bw_trapez_bw_left_width = 1.0f;
@@ -906,13 +918,33 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	if ((CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 		sprintf(buff, "BW:%d-%d", TRX.CW_HPF_Filter, TRX.CW_LPF_Filter);
 	else if ((CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U))
-		sprintf(buff, "BW:%d", TRX.SSB_LPF_Filter);
+	{
+		if(TRX_on_TX())
+			sprintf(buff, "BW:%d", TRX.SSB_LPF_TX_Filter);
+		else
+			sprintf(buff, "BW:%d", TRX.SSB_LPF_RX_Filter);
+	}
 	else if ((CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB))
-		sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_Filter, TRX.SSB_LPF_Filter);
+	{
+		if(TRX_on_TX())
+			sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_Filter, TRX.SSB_LPF_TX_Filter);
+		else
+			sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_Filter, TRX.SSB_LPF_RX_Filter);
+	}
 	else if ((CurrentVFO()->Mode == TRX_MODE_AM))
-		sprintf(buff, "BW:%d", TRX.AM_LPF_Filter);
+	{
+		if(TRX_on_TX())
+			sprintf(buff, "BW:%d", TRX.AM_LPF_TX_Filter);
+		else
+			sprintf(buff, "BW:%d", TRX.AM_LPF_RX_Filter);
+	}
 	else if (CurrentVFO()->Mode == TRX_MODE_NFM)
-		sprintf(buff, "BW:%d", TRX.FM_LPF_Filter);
+	{
+		if(TRX_on_TX())
+			sprintf(buff, "BW:%d", TRX.FM_LPF_TX_Filter);
+		else
+			sprintf(buff, "BW:%d", TRX.FM_LPF_RX_Filter);
+	}
 	else
 		sprintf(buff, "BW:FULL");
 	addSymbols(buff, buff, 12, " ", true);
@@ -947,16 +979,33 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	uint8_t fft_zoom = TRX.FFT_Zoom;
 	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
 		fft_zoom = TRX.FFT_ZoomCW;
-	if (fft_zoom == 1)
-		sprintf(buff, "FFT:96kHz");
-	else if (fft_zoom == 2)
-		sprintf(buff, "FFT:48kHz");
-	else if (fft_zoom == 4)
-		sprintf(buff, "FFT:24kHz");
-	else if (fft_zoom == 8)
-		sprintf(buff, "FFT:12kHz");
-	else if (fft_zoom == 16)
-		sprintf(buff, "FFT:6kHz ");
+	
+	if(!TRX_on_TX())
+	{
+		if (fft_zoom == 1)
+			sprintf(buff, "FFT:96kHz");
+		else if (fft_zoom == 2)
+			sprintf(buff, "FFT:48kHz");
+		else if (fft_zoom == 4)
+			sprintf(buff, "FFT:24kHz");
+		else if (fft_zoom == 8)
+			sprintf(buff, "FFT:12kHz");
+		else if (fft_zoom == 16)
+			sprintf(buff, "FFT:6kHz ");
+	}
+	else
+	{
+		if (fft_zoom == 1)
+			sprintf(buff, "FFT:48kHz");
+		else if (fft_zoom == 2)
+			sprintf(buff, "FFT:24kHz");
+		else if (fft_zoom == 4)
+			sprintf(buff, "FFT:12kHz");
+		else if (fft_zoom == 8)
+			sprintf(buff, "FFT:6kHz");
+		else if (fft_zoom == 16)
+			sprintf(buff, "FFT:3kHz ");
+	}
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 #if (defined(LAY_800x480))
@@ -1567,7 +1616,9 @@ static void LCD_showBWWindow(void)
 #if (defined(HAS_TOUCHPAD))
 
 	uint8_t filters_count = 0;
-	uint32_t cur_width = CurrentVFO()->LPF_Filter_Width;
+	uint32_t cur_width = CurrentVFO()->LPF_RX_Filter_Width;
+	if(TRX_on_TX())
+		cur_width = CurrentVFO()->LPF_TX_Filter_Width;
 	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
 		filters_count = CW_LPF_COUNT;
 	if (CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB || CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U)
@@ -1602,7 +1653,12 @@ static void LCD_showBWWindow(void)
 			char str[16];
 			sprintf(str, "%d", width);
 			if (index < filters_count)
-				printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (width == cur_width), true, true, width, FRONTPANEL_BUTTONHANDLER_SETBW, FRONTPANEL_BUTTONHANDLER_SETBW, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			{
+				if(TRX_on_TX())
+					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (width == cur_width), true, true, width, FRONTPANEL_BUTTONHANDLER_SET_TX_BW, FRONTPANEL_BUTTONHANDLER_SET_TX_BW, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+				else
+					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (width == cur_width), true, true, width, FRONTPANEL_BUTTONHANDLER_SET_RX_BW, FRONTPANEL_BUTTONHANDLER_SET_RX_BW, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			}
 		}
 	}
 	LCD_busy = false;

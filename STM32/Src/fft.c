@@ -688,12 +688,15 @@ bool FFT_printFFT(void)
 	}
 
 	// calculate bw bar size
+	uint16_t curwidth = CurrentVFO()->LPF_RX_Filter_Width;
+	if(TRX_on_TX())
+		curwidth = CurrentVFO()->LPF_TX_Filter_Width;
 	switch (CurrentVFO()->Mode)
 	{
 	case TRX_MODE_LSB:
 	case TRX_MODE_CW_L:
 	case TRX_MODE_DIGI_L:
-		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * fft_zoom);
+		bw_line_width = (int16_t)(curwidth / hz_in_pixel * fft_zoom);
 		if (bw_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
 			bw_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - bw_line_width;
@@ -701,14 +704,14 @@ bool FFT_printFFT(void)
 	case TRX_MODE_USB:
 	case TRX_MODE_CW_U:
 	case TRX_MODE_DIGI_U:
-		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * fft_zoom);
+		bw_line_width = (int16_t)(curwidth / hz_in_pixel * fft_zoom);
 		if (bw_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
 			bw_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2;
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
-		bw_line_width = (int16_t)(CurrentVFO()->LPF_Filter_Width / hz_in_pixel * fft_zoom * 2);
+		bw_line_width = (int16_t)(curwidth / hz_in_pixel * fft_zoom * 2);
 		if (bw_line_width > LAYOUT->FFT_PRINT_SIZE)
 			bw_line_width = LAYOUT->FFT_PRINT_SIZE;
 		bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_line_width / 2);

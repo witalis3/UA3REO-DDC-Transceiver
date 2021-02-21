@@ -284,7 +284,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	{
 		if (CurrentVFO()->NotchFC > 50 && direction < 0)
 			CurrentVFO()->NotchFC -= 50;
-		else if (CurrentVFO()->NotchFC < CurrentVFO()->LPF_Filter_Width && direction > 0)
+		else if (CurrentVFO()->NotchFC < CurrentVFO()->LPF_RX_Filter_Width && direction > 0)
 			CurrentVFO()->NotchFC += 50;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		NeedReinitNotch = true;
@@ -1141,9 +1141,9 @@ void FRONTPANEL_BUTTONHANDLER_NOTCH(uint32_t parameter)
 {
 	TRX_TemporaryMute();
 
-	if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
+	if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_RX_Filter_Width)
 	{
-		CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
+		CurrentVFO()->NotchFC = CurrentVFO()->LPF_RX_Filter_Width;
 		NeedReinitNotch = true;
 	}
 	CurrentVFO()->ManualNotchFilter = false;
@@ -1163,8 +1163,8 @@ void FRONTPANEL_BUTTONHANDLER_NOTCH(uint32_t parameter)
 
 void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter)
 {
-	if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_Filter_Width)
-		CurrentVFO()->NotchFC = CurrentVFO()->LPF_Filter_Width;
+	if (CurrentVFO()->NotchFC > CurrentVFO()->LPF_RX_Filter_Width)
+		CurrentVFO()->NotchFC = CurrentVFO()->LPF_RX_Filter_Width;
 	CurrentVFO()->AutoNotchFilter = false;
 	if (!CurrentVFO()->ManualNotchFilter)
 		CurrentVFO()->ManualNotchFilter = true;
@@ -1399,16 +1399,33 @@ void FRONTPANEL_BUTTONHANDLER_SETSECMODE(uint32_t parameter)
 	LCD_closeWindow();
 }
 
-void FRONTPANEL_BUTTONHANDLER_SETBW(uint32_t parameter)
+void FRONTPANEL_BUTTONHANDLER_SET_RX_BW(uint32_t parameter)
 {
 	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
 		TRX.CW_LPF_Filter = parameter;
 	if (CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB || CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U)
-		TRX.SSB_LPF_Filter = parameter;
+		TRX.SSB_LPF_RX_Filter = parameter;
 	if (CurrentVFO()->Mode == TRX_MODE_AM)
-		TRX.AM_LPF_Filter = parameter;
+		TRX.AM_LPF_RX_Filter = parameter;
 	if (CurrentVFO()->Mode == TRX_MODE_NFM)
-		TRX.FM_LPF_Filter = parameter;
+		TRX.FM_LPF_RX_Filter = parameter;
+
+	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
+	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+
+	LCD_closeWindow();
+}
+
+void FRONTPANEL_BUTTONHANDLER_SET_TX_BW(uint32_t parameter)
+{
+	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		TRX.CW_LPF_Filter = parameter;
+	if (CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB || CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U)
+		TRX.SSB_LPF_TX_Filter = parameter;
+	if (CurrentVFO()->Mode == TRX_MODE_AM)
+		TRX.AM_LPF_TX_Filter = parameter;
+	if (CurrentVFO()->Mode == TRX_MODE_NFM)
+		TRX.FM_LPF_TX_Filter = parameter;
 
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());

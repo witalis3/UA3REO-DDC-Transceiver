@@ -607,7 +607,7 @@ void processTxAudio(void)
 		if (current_vfo->HPF_Filter_Width > 0)
 			arm_biquad_cascade_df2T_f32(&IIR_TX_HPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		//IIR LPF
-		if (current_vfo->LPF_Filter_Width > 0)
+		if (current_vfo->LPF_TX_Filter_Width > 0)
 			arm_biquad_cascade_df2T_f32(&IIR_TX_LPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], AUDIO_BUFFER_HALF_SIZE * 4); //double left and right channel
 
@@ -855,7 +855,7 @@ static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
-		if (CurrentVFO()->LPF_Filter_Width > 0)
+		if (CurrentVFO()->LPF_RX_Filter_Width > 0)
 		{
 			arm_biquad_cascade_df2T_f32(&IIR_RX1_LPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 			arm_biquad_cascade_df2T_f32(&IIR_RX1_LPF_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
@@ -863,7 +863,7 @@ static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	}
 	else
 	{
-		if (SecondaryVFO()->LPF_Filter_Width > 0)
+		if (SecondaryVFO()->LPF_RX_Filter_Width > 0)
 		{
 			arm_biquad_cascade_df2T_f32(&IIR_RX2_LPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 			arm_biquad_cascade_df2T_f32(&IIR_RX2_LPF_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, size);
@@ -876,14 +876,14 @@ static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
-		if (CurrentVFO()->LPF_Filter_Width > 0)
+		if (CurrentVFO()->LPF_RX_Filter_Width > 0)
 		{
 			arm_biquad_cascade_df2T_f32(&IIR_RX1_LPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		}
 	}
 	else
 	{
-		if (SecondaryVFO()->LPF_Filter_Width > 0)
+		if (SecondaryVFO()->LPF_RX_Filter_Width > 0)
 		{
 			arm_biquad_cascade_df2T_f32(&IIR_RX2_LPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		}
@@ -1198,23 +1198,23 @@ static void ModulateFM(uint16_t size)
 	static float32_t sin_data = 0;
 	static float32_t fm_mod_accum = 0;
 	static float32_t modulation_index = 15000.0f;
-	if (CurrentVFO()->LPF_Filter_Width == 5000)
+	if (CurrentVFO()->LPF_TX_Filter_Width == 5000)
 		modulation_index = 4000.0f;
-	if (CurrentVFO()->LPF_Filter_Width == 6000)
+	if (CurrentVFO()->LPF_TX_Filter_Width == 6000)
 		modulation_index = 6000.0f;
-	if (CurrentVFO()->LPF_Filter_Width == 7000)
+	if (CurrentVFO()->LPF_TX_Filter_Width == 7000)
 		modulation_index = 8000.0f;
-	if (CurrentVFO()->LPF_Filter_Width == 8000)
+	if (CurrentVFO()->LPF_TX_Filter_Width == 8000)
 		modulation_index = 11000.0f;
-	if (CurrentVFO()->LPF_Filter_Width == 9000)
+	if (CurrentVFO()->LPF_TX_Filter_Width == 9000)
 		modulation_index = 13000.0f;
-	if (CurrentVFO()->LPF_Filter_Width == 10000)
+	if (CurrentVFO()->LPF_TX_Filter_Width == 10000)
 		modulation_index = 15000.0f;
-	if (CurrentVFO()->LPF_Filter_Width == 15000)
+	if (CurrentVFO()->LPF_TX_Filter_Width == 15000)
 		modulation_index = 30000.0f;
-	if (CurrentVFO()->LPF_Filter_Width == 20000)
+	if (CurrentVFO()->LPF_TX_Filter_Width == 20000)
 		modulation_index = 40000.0f;
-	if (CurrentVFO()->LPF_Filter_Width == 0)
+	if (CurrentVFO()->LPF_TX_Filter_Width == 0)
 		modulation_index = 45000.0f;
 
 	// Do differentiating high-pass filter to provide 6dB/octave pre-emphasis - which also removes any DC component!

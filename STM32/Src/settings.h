@@ -9,7 +9,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-#define SETT_VERSION 22				   // Settings config version
+#define SETT_VERSION 23				   // Settings config version
 #define CALIB_VERSION 24				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -97,7 +97,8 @@ typedef struct
 	uint32_t Freq;
 	uint_fast8_t Mode;
 	uint_fast16_t HPF_Filter_Width;
-	uint_fast16_t LPF_Filter_Width;
+	uint_fast16_t LPF_RX_Filter_Width;
+	uint_fast16_t LPF_TX_Filter_Width;
 	bool ManualNotchFilter;
 	bool AutoNotchFilter;
 	uint_fast16_t NotchFC;
@@ -190,10 +191,13 @@ extern struct TRX_SETTINGS
 	uint8_t TX_Compressor_maxgain;
 	uint16_t CW_LPF_Filter;
 	uint16_t CW_HPF_Filter;
-	uint16_t SSB_LPF_Filter;
+	uint16_t SSB_LPF_RX_Filter;
+	uint16_t SSB_LPF_TX_Filter;
 	uint16_t SSB_HPF_Filter;
-	uint16_t AM_LPF_Filter;
-	uint16_t FM_LPF_Filter;
+	uint16_t AM_LPF_RX_Filter;
+	uint16_t AM_LPF_TX_Filter;
+	uint16_t FM_LPF_RX_Filter;
+	uint16_t FM_LPF_TX_Filter;
 	bool Beeper;
 	bool VAD_Squelch;
 	//CW

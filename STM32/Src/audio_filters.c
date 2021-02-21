@@ -592,11 +592,14 @@ void ReinitAudioFilters(void)
 {
 	//LPF RX1
 	uint32_t lpf1_width = 2700; //default settings
-	if (CurrentVFO()->LPF_Filter_Width > 0)
-		lpf1_width = CurrentVFO()->LPF_Filter_Width;
+	if (CurrentVFO()->LPF_RX_Filter_Width > 0)
+		lpf1_width = CurrentVFO()->LPF_RX_Filter_Width;
 	IIR_BIQUAD_FILTER *lpf_filter = getIIRFilter(IIR_BIQUAD_LPF, lpf1_width);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_RX1_LPF_I_State[0]);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_LPF_Q, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_RX1_LPF_Q_State[0]);
+	if (CurrentVFO()->LPF_TX_Filter_Width > 0)
+		lpf1_width = CurrentVFO()->LPF_TX_Filter_Width;
+	lpf_filter = getIIRFilter(IIR_BIQUAD_LPF, lpf1_width);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_LPF_I, lpf_filter->stages, (float32_t *)lpf_filter->coeffs, (float32_t *)&IIR_TX_LPF_I_State[0]);
 
 	//RX1 GAUSS
@@ -607,8 +610,8 @@ void ReinitAudioFilters(void)
 
 	//LPF RX2
 	uint32_t lpf2_width = 2700; //default settings
-	if (SecondaryVFO()->LPF_Filter_Width > 0)
-		lpf2_width = SecondaryVFO()->LPF_Filter_Width;
+	if (SecondaryVFO()->LPF_RX_Filter_Width > 0)
+		lpf2_width = SecondaryVFO()->LPF_RX_Filter_Width;
 	IIR_BIQUAD_FILTER *lpf_filter2 = getIIRFilter(IIR_BIQUAD_LPF, lpf2_width);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_LPF_I, lpf_filter2->stages, (float32_t *)lpf_filter2->coeffs, (float32_t *)&IIR_RX2_LPF_I_State[0]);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_LPF_Q, lpf_filter2->stages, (float32_t *)lpf_filter2->coeffs, (float32_t *)&IIR_RX2_LPF_Q_State[0]);
@@ -634,12 +637,12 @@ void ReinitAudioFilters(void)
 
 	//FM Squelch
 	IIR_BIQUAD_FILTER *fm_sql_hpf_filter;
-	if (CurrentVFO()->LPF_Filter_Width > 15000 || CurrentVFO()->LPF_Filter_Width == 0)
+	if (CurrentVFO()->LPF_RX_Filter_Width > 15000 || CurrentVFO()->LPF_RX_Filter_Width == 0)
 		fm_sql_hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, 20000);
 	else
 		fm_sql_hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, 15000);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_Squelch_HPF, fm_sql_hpf_filter->stages, (float32_t *)fm_sql_hpf_filter->coeffs, (float32_t *)&IIR_RX1_HPF_SQL_State[0]);
-	if (SecondaryVFO()->LPF_Filter_Width > 15000 || SecondaryVFO()->LPF_Filter_Width == 0)
+	if (SecondaryVFO()->LPF_RX_Filter_Width > 15000 || SecondaryVFO()->LPF_RX_Filter_Width == 0)
 		fm_sql_hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, 20000);
 	else
 		fm_sql_hpf_filter = getIIRFilter(IIR_BIQUAD_HPF, 15000);
