@@ -182,7 +182,7 @@ extern float32_t rate2dbP(float32_t i);
 extern float32_t volume2rate(float32_t i);
 extern void shiftTextLeft(char *string, uint_fast16_t shiftLength);
 extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
-extern float32_t generateSin(float32_t amplitude, uint32_t index, uint32_t samplerate, uint32_t freq);
+extern float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq);
 extern int32_t convertToSPIBigEndian(int32_t in);
 extern uint8_t rev8(uint8_t data);
 extern bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma);

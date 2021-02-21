@@ -30,7 +30,6 @@ bool APROC_IFGain_Overflow = false;
 
 // Private variables
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};									 // output buffer of the audio processor
-static uint32_t two_signal_gen_position = 0;													 // signal position in a two-signal generator
 static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0, DFM_RX1_emph_prev = 0, DFM_RX2_emph_prev = 0; // used in FM detection and low / high pass processing
 static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;							 // used for squelch processing and debouncing tone detection, respectively
 static float32_t DFM_RX1_fm_sql_avg = 0.0f;														 // average SQL in FM
@@ -439,7 +438,8 @@ void processRxAudio(void)
 		float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f) * 0.1f;
 		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
 		{
-			signal = generateSin(amplitude, pos, TRX_SAMPLERATE, 1500);
+			static float32_t beep_index = 0;
+			signal = generateSin(amplitude, &beep_index, TRX_SAMPLERATE, 1500);
 			arm_float_to_q31(&signal, &out, 1);
 			APROC_AudioBuffer_out[pos * 2] = convertToSPIBigEndian(out);		 //left channel
 			APROC_AudioBuffer_out[pos * 2 + 1] = APROC_AudioBuffer_out[pos * 2]; //right channel
@@ -514,11 +514,10 @@ void processTxAudio(void)
 	{
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			float32_t point = generateSin(0.5f, two_signal_gen_position, TRX_SAMPLERATE, 1000);
-			point += generateSin(0.5f, two_signal_gen_position, TRX_SAMPLERATE, 2000);
-			two_signal_gen_position++;
-			if (two_signal_gen_position >= TRX_SAMPLERATE)
-				two_signal_gen_position = 0;
+			static float32_t two_signal_gen_index1 = 0;
+			static float32_t two_signal_gen_index2 = 0;
+			float32_t point = generateSin(0.5f, &two_signal_gen_index1, TRX_SAMPLERATE, 1000);
+			point += generateSin(0.5f, &two_signal_gen_index2, TRX_SAMPLERATE, 2000);
 			APROC_Audio_Buffer_TX_I[i] = point;
 			APROC_Audio_Buffer_TX_Q[i] = point;
 		}
@@ -548,17 +547,14 @@ void processTxAudio(void)
 			tone_counter = 0;
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
+			static float32_t fm_signal_gen_index = 0;
 			float32_t point = 0.0f;
 			if (tone_counter > 300)
-				point = generateSin(1.0f, two_signal_gen_position, TRX_SAMPLERATE, 3500);
+				point = generateSin(1.0f, &fm_signal_gen_index, TRX_SAMPLERATE, 3500);
 			else if (tone_counter > 200)
-				point = generateSin(1.0f, two_signal_gen_position, TRX_SAMPLERATE, 2000);
+				point = generateSin(1.0f, &fm_signal_gen_index, TRX_SAMPLERATE, 2000);
 			else if (tone_counter > 100)
-				point = generateSin(1.0f, two_signal_gen_position, TRX_SAMPLERATE, 1000);
-
-			two_signal_gen_position++;
-			if (two_signal_gen_position >= TRX_SAMPLERATE)
-				two_signal_gen_position = 0;
+				point = generateSin(1.0f, &fm_signal_gen_index, TRX_SAMPLERATE, 1000);
 
 			APROC_Audio_Buffer_TX_I[i] = point;
 			APROC_Audio_Buffer_TX_Q[i] = point;
