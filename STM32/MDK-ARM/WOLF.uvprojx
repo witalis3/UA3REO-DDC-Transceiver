@@ -499,6 +499,11 @@
               <FilePath>..\Src\fft.h</FilePath>
             </File>
             <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fonts.c</FilePath>
+            </File>
+            <File>
               <FileName>fonts.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fonts.h</FilePath>
@@ -1676,6 +1681,11 @@
               <FileName>fft.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fft.h</FilePath>
+            </File>
+            <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fonts.c</FilePath>
             </File>
             <File>
               <FileName>fonts.h</FileName>
@@ -2926,6 +2936,11 @@
               <FilePath>..\Src\fft.h</FilePath>
             </File>
             <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fonts.c</FilePath>
+            </File>
+            <File>
               <FileName>fonts.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fonts.h</FilePath>
@@ -4172,6 +4187,11 @@
               <FileName>fft.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fft.h</FilePath>
+            </File>
+            <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fonts.c</FilePath>
             </File>
             <File>
               <FileName>fonts.h</FileName>
@@ -5422,6 +5442,11 @@
               <FilePath>..\Src\fft.h</FilePath>
             </File>
             <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fonts.c</FilePath>
+            </File>
+            <File>
               <FileName>fonts.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fonts.h</FilePath>
@@ -6670,6 +6695,11 @@
               <FilePath>..\Src\fft.h</FilePath>
             </File>
             <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fonts.c</FilePath>
+            </File>
+            <File>
               <FileName>fonts.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fonts.h</FilePath>
@@ -7916,6 +7946,11 @@
               <FileName>fft.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fft.h</FilePath>
+            </File>
+            <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fonts.c</FilePath>
             </File>
             <File>
               <FileName>fonts.h</FileName>
