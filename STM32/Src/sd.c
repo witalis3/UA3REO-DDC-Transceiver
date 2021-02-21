@@ -17,6 +17,7 @@ bool SD_underrun = false;
 bool SD_NeedStopRecord = false;
 uint32_t SD_RecordBufferIndex = 0;
 bool SD_Present = false;
+bool SD_BusyByUSB = false;
 
 static bool SD_Mounted = false;
 static uint32_t SD_Present_tryTime = 0;
@@ -72,6 +73,9 @@ void SD_doCommand(SD_COMMAND command, bool force)
 
 void SD_Process(void)
 {
+	if(SD_BusyByUSB)
+		return;
+	
 	//Init card
 	if (!SD_Present && (HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL)
 	{

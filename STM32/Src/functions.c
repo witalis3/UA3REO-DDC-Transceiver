@@ -12,7 +12,7 @@
 #include "lcd.h"
 
 CPULOAD_t CPU_LOAD = {0};
-static bool SPI_busy = false;
+volatile bool SPI_busy = false;
 volatile bool SPI_process = false;
 volatile bool SPI_TXRX_ready = false;
 

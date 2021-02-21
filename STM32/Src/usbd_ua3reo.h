@@ -15,14 +15,14 @@ extern "C"
 #define DEBUG_INTERFACE_IDX 0x0 // Index of DEBUG interface
 #define CAT_INTERFACE_IDX 0x2	// Index of CAT interface
 #define AUDIO_INTERFACE_IDX 0x4 // Index of AUDIO interface
-#define STORAGE_INTERFACE_IDX 0x5 // Index of STORAGE interface
+#define STORAGE_INTERFACE_IDX 0x7 // Index of STORAGE interface
 
 #define DEBUG_EP_IDX 0x01
 #define CAT_EP_IDX 0x02
 #define AUDIO_EP_IDX 0x03
-#define DEBUG_CMD_IDX 0x04
-#define CAT_CMD_IDX 0x05
-#define STORAGE_EP_IDX 0x06
+#define STORAGE_EP_IDX 0x04
+#define DEBUG_CMD_IDX 0x05
+#define CAT_CMD_IDX 0x06
 
 #define IN_EP_DIR 0x80 // Adds a direction bit
 
@@ -51,14 +51,10 @@ extern "C"
 #endif /* CDC_FS_BINTERVAL */
 
 /* CDC Endpoints parameters: you can fine tune these values depending on the needed baudrates and performance. */
-#define CDC_DATA_HS_MAX_PACKET_SIZE 16U /* Endpoint IN & OUT Packet size */
 #define CDC_DATA_FS_MAX_PACKET_SIZE 16U /* Endpoint IN & OUT Packet size */
 #define CDC_CMD_PACKET_SIZE 16U			/* Control Endpoint Packet size */
 
-#define USB_CDC_CONFIG_DESC_SIZ 314U
-
-#define CDC_DATA_HS_IN_PACKET_SIZE CDC_DATA_HS_MAX_PACKET_SIZE
-#define CDC_DATA_HS_OUT_PACKET_SIZE CDC_DATA_HS_MAX_PACKET_SIZE
+#define USB_CDC_CONFIG_DESC_SIZ 337U
 
 #define CDC_DATA_FS_IN_PACKET_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
 #define CDC_DATA_FS_OUT_PACKET_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
@@ -160,7 +156,7 @@ extern "C"
 
 	typedef struct
 	{
-		uint32_t data[CDC_DATA_HS_MAX_PACKET_SIZE / 4U]; /* Force 32bits alignment */
+		uint32_t data[CDC_DATA_FS_MAX_PACKET_SIZE / 4U]; /* Force 32bits alignment */
 		uint8_t CmdOpCode;
 		uint8_t CmdLength;
 		uint8_t *RxBuffer;
@@ -174,7 +170,7 @@ extern "C"
 
 	typedef struct
 	{
-		uint32_t data[CDC_DATA_HS_MAX_PACKET_SIZE / 4U]; /* Force 32bits alignment */
+		uint32_t data[CDC_DATA_FS_MAX_PACKET_SIZE / 4U]; /* Force 32bits alignment */
 		uint8_t CmdOpCode;
 		uint8_t CmdLength;
 		uint8_t *RxBuffer;

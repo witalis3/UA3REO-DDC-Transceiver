@@ -140,6 +140,7 @@ typedef struct
 } CPULOAD_t;
 
 extern CPULOAD_t CPU_LOAD;
+volatile extern bool SPI_busy;
 volatile extern bool SPI_process;
 volatile extern bool SPI_TXRX_ready;
 
