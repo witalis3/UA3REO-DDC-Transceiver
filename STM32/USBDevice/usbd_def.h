@@ -127,6 +127,9 @@
 #define USB_FS_MAX_PACKET_SIZE                          16U
 #define USB_MAX_EP0_SIZE                                16U
 
+#define BOT_GET_MAX_LUN              0xFE
+#define BOT_RESET                    0xFF
+
 /*  Device Status */
 #define USBD_STATE_DEFAULT                              0x01U
 #define USBD_STATE_ADDRESSED                            0x02U
@@ -264,9 +267,11 @@ typedef struct _USBD_HandleTypeDef
   void                    *pClassDataDEBUG;
 	void                    *pClassDataCAT;
 	void                    *pClassDataAUDIO;
+	void                    *pClassDataSTORAGE;
   void                    *pUserDataDEBUG;
 	void                    *pUserDataCAT;
 	void                    *pUserDataAUDIO;
+	void                    *pUserDataSTORAGE;
   void                    *pData;
 } USBD_HandleTypeDef;
 
