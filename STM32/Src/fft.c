@@ -601,7 +601,7 @@ bool FFT_printFFT(void)
 	arm_max_no_idx_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &maxAmplValue);
 
 	// Auto-calibrate FFT levels
-	if (TRX.FFT_Automatic && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE) //Fit FFT to MAX
+	if (TRX_on_TX() || (TRX.FFT_Automatic && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE)) //Fit FFT to MAX
 	{
 		maxValueFFT = maxValueFFT * 0.95f + maxAmplValue * 0.05f;
 		if (maxValueFFT < maxAmplValue)
@@ -625,7 +625,7 @@ bool FFT_printFFT(void)
 		float32_t compressSourceInterval = maxAmplValue - compressTargetValue;
 		float32_t compressTargetInterval = maxValueFFT - compressTargetValue;
 		float32_t compressRate = compressTargetInterval / compressSourceInterval;
-		if (!TRX_on_TX() && TRX.FFT_Compressor && TRX.FFT_Sensitivity < 50)
+		if (TRX.FFT_Compressor && TRX.FFT_Sensitivity < 50)
 		{
 			for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 				if (FFTOutput_mean[i] > compressTargetValue)
@@ -662,8 +662,6 @@ bool FFT_printFFT(void)
 	}
 
 	//limits
-	if (TRX_on_TX())
-		maxValueFFT = maxAmplValue;
 	if (maxValueFFT < 0.0000001f)
 		maxValueFFT = 0.0000001f;
 

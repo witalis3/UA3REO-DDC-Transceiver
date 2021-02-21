@@ -523,10 +523,20 @@ void processTxAudio(void)
 			APROC_Audio_Buffer_TX_Q[i] = point;
 		}
 		//hilbert fir
-		// + 45 deg to Q data
-		arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-		// - 45 deg to I data
-		arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+		if(mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_CW_L)
+		{
+			// + 45 deg to I data
+			arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+			// - 45 deg to Q data
+			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+		}
+		else
+		{
+			// + 45 deg to Q data
+			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+			// - 45 deg to I data
+			arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+		}
 	}
 
 	//FM tone generator
@@ -657,6 +667,30 @@ void processTxAudio(void)
 		}
 	}
 
+	//Send TX data to FFT
+	float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
+	float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
+	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+	{
+		FFTInput_I_current[FFT_buff_index] = APROC_Audio_Buffer_TX_I[i];
+		FFTInput_Q_current[FFT_buff_index] = APROC_Audio_Buffer_TX_Q[i];
+
+		FFT_buff_index++;
+		if (FFT_buff_index >= FFT_HALF_SIZE)
+		{
+			FFT_buff_index = 0;
+			if (FFT_new_buffer_ready)
+			{
+				//sendToDebug_str("fft overrun");
+			}
+			else
+			{
+				FFT_new_buffer_ready = true;
+				FFT_buff_current = !FFT_buff_current;
+			}
+		}
+	}
+	
 	//// RF PowerControl (Audio Level Control)
 	
 	// amplitude for the selected power and range
@@ -708,30 +742,6 @@ void processTxAudio(void)
 	else
 		TRX_ALC = 0.0f;
 	//RF PowerControl (Audio Level Control) Compressor END
-
-	//Send TX data to FFT
-	float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
-	float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
-	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
-	{
-		FFTInput_I_current[FFT_buff_index] = APROC_Audio_Buffer_TX_I[i];
-		FFTInput_Q_current[FFT_buff_index] = APROC_Audio_Buffer_TX_Q[i];
-
-		FFT_buff_index++;
-		if (FFT_buff_index >= FFT_HALF_SIZE)
-		{
-			FFT_buff_index = 0;
-			if (FFT_new_buffer_ready)
-			{
-				//sendToDebug_str("fft overrun");
-			}
-			else
-			{
-				FFT_new_buffer_ready = true;
-				FFT_buff_current = !FFT_buff_current;
-			}
-		}
-	}
 
 	//Loopback mode
 	if (mode == TRX_MODE_LOOPBACK && !TRX_Tune)
