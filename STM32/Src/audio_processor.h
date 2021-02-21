@@ -41,7 +41,6 @@ extern float32_t APROC_Audio_Buffer_TX_Q[FPGA_TX_IQ_BUFFER_HALF_SIZE];
 extern float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE];
 extern volatile float32_t Processor_TX_MAX_amplitude_OUT;		// TX uplift after ALC
 extern volatile float32_t Processor_RX_Power_value;				// RX signal magnitude
-extern volatile float32_t Processor_selected_RFpower_amplitude; // target TX signal amplitude
 extern bool NeedReinitReverber;
 extern bool APROC_IFGain_Overflow;
 
