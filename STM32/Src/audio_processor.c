@@ -697,6 +697,28 @@ void processTxAudio(void)
 		RFpower_amplitude = 0.0f;
 	if (mode == TRX_MODE_LOOPBACK)
 		RFpower_amplitude = 0.5f;
+	
+	//Tune power regulator
+	if(TRX_Tune)
+	{
+		static float32_t tune_power = 0;
+		float32_t full_power = TRX_PWR_Forward + TRX_PWR_Backward;
+		
+		if(fabsf(full_power - (float32_t)CALIBRATE.TUNE_MAX_POWER) > 0.1f) //histeresis
+		{
+			if(full_power < CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
+				tune_power = 0.995f * tune_power + 0.005f * RFpower_amplitude;
+			if((TRX_PWR_Forward + TRX_PWR_Backward) > CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
+				tune_power = 0.995f * tune_power;
+		}
+		
+		if(tune_power > RFpower_amplitude * 1.05f)
+			tune_power = RFpower_amplitude;
+		
+		RFpower_amplitude = tune_power;
+	}
+	
+	//Apply gain
 	arm_scale_f32(APROC_Audio_Buffer_TX_I, RFpower_amplitude, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 	arm_scale_f32(APROC_Audio_Buffer_TX_Q, RFpower_amplitude, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 	

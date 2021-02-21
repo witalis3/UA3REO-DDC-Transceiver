@@ -200,6 +200,7 @@ static void SYSMENU_HANDL_CALIB_FAN_FULL_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TRX_MAX_RF_TEMP(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TRX_MAX_SWR(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TUNE_MAX_POWER(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
@@ -473,6 +474,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"MAX RF Temp", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TRX_MAX_RF_TEMP, SYSMENU_HANDL_CALIB_TRX_MAX_RF_TEMP},
 		{"MAX SWR", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TRX_MAX_SWR, SYSMENU_HANDL_CALIB_TRX_MAX_SWR},
 		{"FM Deviation Scale", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.FM_DEVIATION_SCALE, SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE},
+		{"TUNE Max Power", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},
 };
 static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 
@@ -3296,6 +3298,15 @@ static void SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE(int8_t direction)
 		CALIBRATE.FM_DEVIATION_SCALE = 1;
 	if (CALIBRATE.FM_DEVIATION_SCALE > 20)
 		CALIBRATE.FM_DEVIATION_SCALE = 20;
+}
+
+static void SYSMENU_HANDL_CALIB_TUNE_MAX_POWER(int8_t direction)
+{
+	CALIBRATE.TUNE_MAX_POWER += direction;
+	if (CALIBRATE.TUNE_MAX_POWER < 1)
+		CALIBRATE.TUNE_MAX_POWER = 1;
+	if (CALIBRATE.TUNE_MAX_POWER > 20)
+		CALIBRATE.TUNE_MAX_POWER = 20;
 }
 
 //SERVICES
