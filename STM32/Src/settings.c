@@ -382,6 +382,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.FAN_FULL_START = 70;				// Temperature at which the fan starts at full power
 		CALIBRATE.TRX_MAX_RF_TEMP = 80;				// Maximum RF unit themperature to enable protect
 		CALIBRATE.TRX_MAX_SWR = 5;						// Maximum SWR to enable protect on TX (NOT IN TUNE MODE!)
+		CALIBRATE.FM_DEVIATION_SCALE = 10;			// FM Deviation scale
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default calibrate settings");

@@ -244,6 +244,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FAN Full start** - Temperature of the PA for starting the fan at full speed
 * **MAX RF Temp** - Maximum temperature of the PA before the protection operation
 * **MAX SWR** - Maximum VSWR before protection operation
+* **FM Deviation Scale** - Set TX FM Deviation Scale
 
 ### Set Clock Time
 

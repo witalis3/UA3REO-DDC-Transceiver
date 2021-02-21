@@ -323,6 +323,7 @@ extern struct TRX_CALIBRATE
 	uint8_t FAN_FULL_START;
 	uint8_t TRX_MAX_RF_TEMP;
 	uint8_t TRX_MAX_SWR;
+	uint8_t FM_DEVIATION_SCALE;
 	
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit
