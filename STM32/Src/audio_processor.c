@@ -1170,44 +1170,23 @@ static void DemodulateFM(AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
 // FM modulator
 static void ModulateFM(uint16_t size, float32_t amplitude)
 {
-	static float32_t modulation = (float32_t)TRX_SAMPLERATE;
 	static float32_t hpf_prev_a = 0;
 	static float32_t hpf_prev_b = 0;
-	static float32_t sin_data = 0;
 	static float32_t fm_mod_accum = 0;
-	static float32_t modulation_index = 15000.0f;
-	if (CurrentVFO()->LPF_TX_Filter_Width == 5000)
-		modulation_index = 4000.0f;
-	if (CurrentVFO()->LPF_TX_Filter_Width == 6000)
-		modulation_index = 6000.0f;
-	if (CurrentVFO()->LPF_TX_Filter_Width == 7000)
-		modulation_index = 8000.0f;
-	if (CurrentVFO()->LPF_TX_Filter_Width == 8000)
-		modulation_index = 11000.0f;
-	if (CurrentVFO()->LPF_TX_Filter_Width == 9000)
-		modulation_index = 13000.0f;
-	if (CurrentVFO()->LPF_TX_Filter_Width == 10000)
-		modulation_index = 15000.0f;
-	if (CurrentVFO()->LPF_TX_Filter_Width == 15000)
-		modulation_index = 30000.0f;
-	if (CurrentVFO()->LPF_TX_Filter_Width == 20000)
-		modulation_index = 40000.0f;
-	if (CurrentVFO()->LPF_TX_Filter_Width == 0)
-		modulation_index = 45000.0f;
+	static float32_t modulation_index = 0;
+	modulation_index = CurrentVFO()->LPF_TX_Filter_Width / (float32_t)TRX_SAMPLERATE * 5.0f;
 
-	// Do differentiating high-pass filter to provide 6dB/octave pre-emphasis - which also removes any DC component!
 	for (uint_fast16_t i = 0; i < size; i++)
 	{
 		hpf_prev_b = FM_TX_HPF_ALPHA * (hpf_prev_b + APROC_Audio_Buffer_TX_I[i] - hpf_prev_a); // do differentiation
 		hpf_prev_a = APROC_Audio_Buffer_TX_I[i];											   // save "[n-1] samples for next iteration
-		fm_mod_accum = (1.0f - 0.999f) * fm_mod_accum + 0.999f * hpf_prev_b;				   // save differentiated data in audio buffer // change frequency using scaled audio
-		while (fm_mod_accum > modulation)
-			fm_mod_accum -= modulation; // limit range
-		while (fm_mod_accum < -modulation)
-			fm_mod_accum += modulation; // limit range
-		sin_data = ((fm_mod_accum * modulation_index) / modulation) * PI;
-		APROC_Audio_Buffer_TX_I[i] = amplitude * arm_sin_f32(sin_data);
-		APROC_Audio_Buffer_TX_Q[i] = amplitude * arm_cos_f32(sin_data);
+		fm_mod_accum += hpf_prev_b * modulation_index;				   // save differentiated data in audio buffer
+		while (fm_mod_accum > (2.0f * PI))
+			fm_mod_accum -= (2.0f * PI); // limit range
+		while (fm_mod_accum < -(2.0f * PI))
+			fm_mod_accum += (2.0f * PI); // limit range
+		APROC_Audio_Buffer_TX_I[i] = amplitude * arm_sin_f32(fm_mod_accum);
+		APROC_Audio_Buffer_TX_Q[i] = amplitude * arm_cos_f32(fm_mod_accum);
 	}
 }
 
