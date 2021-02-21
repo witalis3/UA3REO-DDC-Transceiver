@@ -84,6 +84,8 @@ bool TRX_on_TX(void)
 void TRX_Init()
 {
 	TRX_Start_RX();
+	WM8731_TXRX_mode();
+	WM8731_start_i2s_and_dma();
 	uint_fast8_t saved_mode = CurrentVFO()->Mode;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	TRX_setMode(saved_mode, CurrentVFO());
@@ -130,8 +132,6 @@ static void TRX_Start_RX()
 	Processor_NeedRXBuffer = false;
 	WM8731_Buffer_underrun = false;
 	WM8731_DMA_state = true;
-	WM8731_RX_mode();
-	WM8731_start_i2s_and_dma();
 	TRX_TXRXMode = 1;
 	//clean TX buffer
 	memset((void *)&FPGA_Audio_SendBuffer_Q[0], 0x00, sizeof(FPGA_Audio_SendBuffer_Q));
@@ -146,8 +146,6 @@ static void TRX_Start_TX()
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	HAL_Delay(10); // delay before the RF signal is applied, so that the relay has time to trigger
-	WM8731_TX_mode();
-	WM8731_start_i2s_and_dma();
 	TRX_TXRXMode = 2;
 }
 
@@ -158,8 +156,6 @@ static void TRX_Start_TXRX()
 	sendToDebug_str("TXRX MODE\r\n");
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
-	WM8731_TXRX_mode();
-	WM8731_start_i2s_and_dma();
 	TRX_TXRXMode = 3;
 }
 
