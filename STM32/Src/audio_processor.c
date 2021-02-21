@@ -32,8 +32,6 @@ bool APROC_IFGain_Overflow = false;
 // Private variables
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};									 // output buffer of the audio processor
 static uint32_t two_signal_gen_position = 0;													 // signal position in a two-signal generator
-static float32_t ALC_need_gain = 1.0f;															 // current gain of ALC and audio compressor
-static float32_t ALC_need_gain_target = 1.0f;													 // Target Gain Of ALC And Audio Compressor
 static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0, DFM_RX1_emph_prev = 0, DFM_RX2_emph_prev = 0; // used in FM detection and low / high pass processing
 static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;							 // used for squelch processing and debouncing tone detection, respectively
 static float32_t DFM_RX1_fm_sql_avg = 0.0f;														 // average SQL in FM
@@ -513,7 +511,7 @@ void processTxAudio(void)
 			dma_index--;
 		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
 	}
-
+	
 	//One-signal zero-tune generator
 	if (TRX_Tune && !TRX.TWO_SIGNAL_TUNE)
 	{
@@ -609,7 +607,12 @@ void processTxAudio(void)
 		//IIR LPF
 		if (current_vfo->LPF_TX_Filter_Width > 0)
 			arm_biquad_cascade_df2T_f32(&IIR_TX_LPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-		memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], AUDIO_BUFFER_HALF_SIZE * 4); //double left and right channel
+		
+		//TX AGC (compressor)
+		DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, rate2dbV(Processor_selected_RFpower_amplitude * 0.70f));
+		
+		//double left and right channel
+		memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], AUDIO_BUFFER_HALF_SIZE * 4);
 
 		switch (mode)
 		{
@@ -670,8 +673,8 @@ void processTxAudio(void)
 	float32_t ampl_min_i = 0.0f;
 	float32_t ampl_min_q = 0.0f;
 	uint32_t tmp_index;
-	arm_max_f32(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, &ampl_max_i, &tmp_index);
-	arm_max_f32(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, &ampl_max_q, &tmp_index);
+	arm_max_no_idx_f32(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, &ampl_max_i);
+	arm_max_no_idx_f32(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, &ampl_max_q);
 	arm_min_f32(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, &ampl_min_i, &tmp_index);
 	arm_min_f32(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, &ampl_min_q, &tmp_index);
 	float32_t Processor_TX_MAX_amplitude_IN = ampl_max_i;
@@ -683,50 +686,23 @@ void processTxAudio(void)
 		Processor_TX_MAX_amplitude_IN = -ampl_min_q;
 
 	// calculate the target gain
+	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN;
 	if (Processor_TX_MAX_amplitude_IN > 0.0f)
 	{
-		ALC_need_gain_target = (Processor_selected_RFpower_amplitude * 0.99f) / Processor_TX_MAX_amplitude_IN;
-		// move the gain one step
-		if (fabsf(ALC_need_gain_target - ALC_need_gain) > 0.00001f) // hysteresis
-		{
-			if (ALC_need_gain_target > ALC_need_gain)
-			{
-				if (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U) // FAST AGC
-					ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_Compressor_speed / 30.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_Compressor_speed / 30.0f));
-				else // SLOW AGC
-					ALC_need_gain = (ALC_need_gain * (1.0f - (float32_t)TRX.TX_Compressor_speed / 1000.0f)) + (ALC_need_gain_target * ((float32_t)TRX.TX_Compressor_speed / 1000.0f));
-			}
-		}
-		//just in case
-		if (ALC_need_gain < 0.0f)
-			ALC_need_gain = 0.0f;
 		// overload (clipping), sharply reduce the gain
-		if ((ALC_need_gain * Processor_TX_MAX_amplitude_IN) > (Processor_selected_RFpower_amplitude * 1.0f))
+		if (Processor_TX_MAX_amplitude_IN > Processor_selected_RFpower_amplitude * 1.00f)
 		{
-			ALC_need_gain = ALC_need_gain_target;
-			// sendToDebug_str ("MIC_CLIP");
+			float32_t ALC_need_gain_target = (Processor_selected_RFpower_amplitude * 0.99f) / Processor_TX_MAX_amplitude_IN;
+			//sendToDebug_str("ALC_CLIP "); sendToDebug_float32(Processor_TX_MAX_amplitude_IN / Processor_selected_RFpower_amplitude, false);
+			// apply gain
+			arm_scale_f32(APROC_Audio_Buffer_TX_I, ALC_need_gain_target, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+			arm_scale_f32(APROC_Audio_Buffer_TX_Q, ALC_need_gain_target, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN * ALC_need_gain_target;
 		}
-		if (ALC_need_gain > (float32_t)TRX.TX_Compressor_maxgain)
-			ALC_need_gain = (float32_t)TRX.TX_Compressor_maxgain;
-		// noise threshold
-		if (Processor_TX_MAX_amplitude_IN < TX_AGC_NOISEGATE)
-			ALC_need_gain = 0.0f;
 	}
-	// disable gain for some types of mod
-	if ((ALC_need_gain > 1.0f) && (mode == TRX_MODE_LOOPBACK))
-		ALC_need_gain = 1.0f;
-	if (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U || mode == TRX_MODE_NFM || mode == TRX_MODE_WFM)
-		ALC_need_gain = 1.0f;
-	if (TRX_Tune)
-		ALC_need_gain = 1.0f;
-
-	// apply gain
-	arm_scale_f32(APROC_Audio_Buffer_TX_I, ALC_need_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-	arm_scale_f32(APROC_Audio_Buffer_TX_Q, ALC_need_gain, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
-
-	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN * ALC_need_gain;
+	
 	if (Processor_selected_RFpower_amplitude > 0.0f)
-		TRX_ALC = Processor_TX_MAX_amplitude_OUT / Processor_selected_RFpower_amplitude;
+		TRX_ALC = TRX_ALC * 0.9f + (Processor_TX_MAX_amplitude_OUT / Processor_selected_RFpower_amplitude) * 0.1f; //smooth
 	else
 		TRX_ALC = 0.0f;
 	//RF PowerControl (Audio Level Control) Compressor END

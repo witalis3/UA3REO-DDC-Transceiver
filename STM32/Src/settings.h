@@ -21,7 +21,6 @@
 #define AGC_MAX_GAIN 30.0f				   // Maximum gain in AGC, dB
 #define AGC_CLIPPING 6.0f				   // Limit over target in AGC, dB
 #define TUNE_POWER 100					   // % of the power selected in the settings when starting TUNE (100 - full)
-#define TX_AGC_NOISEGATE 0.00001f		   // Minimum signal level for amplification (below - noise, cut off)
 #define TOUCHPAD_DELAY 200				   // Anti-bounce time for pressing the touchpad
 #define AUTOGAIN_TARGET_AMPLITUDE 20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
 #define AUTOGAIN_MAX_AMPLITUDE 30000.0f	   // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain

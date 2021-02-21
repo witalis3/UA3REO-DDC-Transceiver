@@ -614,7 +614,7 @@ void TIM6_DAC_IRQHandler(void)
       sendToDebug_strln("RF temperature too HIGH!");
       LCD_showTooltip("RF temperature too HIGH!");
     }
-    if (TRX_SWR > CALIBRATE.TRX_MAX_SWR && !TRX_Tune)
+    if (TRX_SWR > CALIBRATE.TRX_MAX_SWR && !TRX_Tune && TRX_PWR_Forward > 1.0f)
     {
       TRX_Tune = false;
       TRX_ptt_hard = false;
