@@ -18,6 +18,7 @@ bool SD_NeedStopRecord = false;
 uint32_t SD_RecordBufferIndex = 0;
 bool SD_Present = false;
 bool SD_BusyByUSB = false;
+bool SD_USBCardReader = false;
 uint32_t SD_Present_tryTime = 0;
 bool SD_Mounted = false;
 

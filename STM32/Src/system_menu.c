@@ -15,6 +15,7 @@
 #include "sd.h"
 #include "wspr.h"
 #include "stm32h7xx_it.h"
+#include "usbd_ua3reo.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -142,6 +143,7 @@ static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
 static void SYSMENU_HANDL_SD_Format(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettings(int8_t direction);
+static void SYSMENU_HANDL_SD_USB(int8_t direction);
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
@@ -413,6 +415,7 @@ static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(
 
 IRAM2 static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 	{
+		{"USB SD Card Reader", SYSMENU_BOOLEAN, (uint32_t *)&SD_USBCardReader, SYSMENU_HANDL_SD_USB},
 		{"Export Settings to SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ExportSettings},
 		{"Import Settings from SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ImportSettings},
 		{"Format SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_Format},
@@ -2614,6 +2617,18 @@ static void SYSMENU_HANDL_SDMENU(int8_t direction)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+static void SYSMENU_HANDL_SD_USB(int8_t direction)
+{
+	if (direction > 0 && SD_isIdle() && !LCD_busy)
+	{
+		SD_USBCardReader = true;
+	}
+	else
+		SD_USBCardReader = false;
+	
+	USBD_Restart();
+}
+
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction)
 {
 	if (direction > 0 && SD_isIdle() && !LCD_busy)
@@ -3843,6 +3858,12 @@ void SYSMENU_eventCloseSystemMenu(void)
 	NeedSaveSettings = true;
 	if (SYSMENU_hiddenmenu_enabled)
 		NeedSaveCalibration = true;
+	
+	if(SD_USBCardReader)
+	{
+		SD_USBCardReader = false;
+		USBD_Restart();
+	}
 }
 
 void SYSMENU_eventCloseAllSystemMenu(void)

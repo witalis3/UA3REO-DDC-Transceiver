@@ -59,6 +59,7 @@ extern bool SD_underrun;
 extern bool SD_NeedStopRecord;
 extern bool SD_Present;
 extern bool SD_BusyByUSB;
+extern bool SD_USBCardReader;
 extern uint32_t SD_Present_tryTime;
 extern bool SD_Mounted;
 extern uint32_t SD_RecordBufferIndex;
