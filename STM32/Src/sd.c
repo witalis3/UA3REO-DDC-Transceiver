@@ -30,6 +30,7 @@ IRAM2 BYTE SD_workbuffer_A[_MAX_SS];
 IRAM2 BYTE SD_workbuffer_B[_MAX_SS];
 IRAM2 BYTE SD_workbuffer_current = false; //false - fill A save B, true - fill B save A
 
+static void SDCOMM_CHECKSD(void);
 static void SDCOMM_LISTROOT(void);
 static void SDCOMM_MKFS(void);
 static void SDCOMM_EXPORT_SETT(void);
@@ -115,16 +116,13 @@ void SD_Process(void)
 			//check SD card inserted if idle
 			if((SD_Present_tryTime < HAL_GetTick()) && (HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL && !SD_RecordInProcess)
 			{
-				SD_Present_tryTime = HAL_GetTick();
-				disk.is_initialized[SDFatFs.drv] = false;
-				if(disk_initialize(SDFatFs.drv) != RES_OK)
-				{
-					SD_Mounted = false;
-					SD_Present = false;
-					LCD_UpdateQuery.StatusInfoGUI = true;
-				}
+				SD_doCommand(SDCOMM_CHECK_SD, false);
+				return;
 			}
 			//
+			break;
+		case SDCOMM_CHECK_SD:
+			SDCOMM_CHECKSD();
 			break;
 		case SDCOMM_LIST_ROOT:
 			SDCOMM_LISTROOT();
@@ -147,6 +145,20 @@ void SD_Process(void)
 		}
 		SD_CommandInProcess = false;
 		SD_currentCommand = SDCOMM_IDLE;
+	}
+}
+
+static void SDCOMM_CHECKSD(void)
+{
+	if (f_mount(&SDFatFs, (TCHAR const *)USERPath, 1) == FR_OK)
+	{
+		//sendToDebug_str("sd chk ok");
+	}
+	else
+	{
+		SD_RecordInProcess = false;
+		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
 	}
 }
 

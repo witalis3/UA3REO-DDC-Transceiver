@@ -42,6 +42,7 @@ typedef struct sd_info
 typedef enum
 {
 	SDCOMM_IDLE,
+	SDCOMM_CHECK_SD,
 	SDCOMM_LIST_ROOT,
 	SDCOMM_FORMAT,
 	SDCOMM_EXPORT_SETTINGS,
