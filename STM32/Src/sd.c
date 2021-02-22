@@ -1116,13 +1116,12 @@ static void SDCOMM_LISTROOT(void)
 }
 
 //-----------------------------------------------
-SRAM uint8_t SPIx_receivedByte = 0;
-SRAM uint8_t SPIx_sendByte = 0;
 static uint8_t SPIx_WriteRead(uint8_t Byte)
 {
-	SPIx_sendByte = Byte;
-	if (!SPI_Transmit(&SPIx_sendByte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
-		sendToDebug_strln("SD SPI Err");
+	uint8_t SPIx_receivedByte = 0;
+	
+	if (!SPI_Transmit(&Byte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
+		sendToDebug_strln("SD SPI R Err");
 
 	return SPIx_receivedByte;
 }
@@ -1203,6 +1202,7 @@ void SD_PowerOn(void)
 	HAL_Delay(20);
 }
 
+SRAM uint8_t SD_Read_Block_tmp[512] = {0};
 uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 {
 	uint8_t result;
@@ -1218,8 +1218,12 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 		return 0;
 
 	memset(buff, 0xFF, btr);
-	for (cnt = 0; cnt < btr; cnt++)
-		buff[cnt] = SPI_ReceiveByte();
+	//for (cnt = 0; cnt < btr; cnt++)
+		//buff[cnt] = SPI_ReceiveByte();
+	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+		sendToDebug_strln("SD SPI R Err");
+	memcpy(buff, SD_Read_Block_tmp, btr);
+	
 	SPI_Release();
 	SPI_Release();
 	return 1;
@@ -1242,7 +1246,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 			memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
 			if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 			{
-				sendToDebug_strln("SD SPI Err");
+				sendToDebug_strln("SD SPI W Err");
 				return 0;
 			}
 		}
@@ -1250,7 +1254,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 		{
 			if (!SPI_Transmit(buff, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 			{
-				sendToDebug_strln("SD SPI Err");
+				sendToDebug_strln("SD SPI W Err");
 				return 0;
 			}
 		}
