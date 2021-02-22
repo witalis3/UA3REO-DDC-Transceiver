@@ -1237,13 +1237,22 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 		//for (cnt = 0; cnt < 512; cnt++)
 			//SPI_SendByte(buff[cnt]);
 
-		if(buff == 0)
-			dma = false;
-		memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
-		if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
+		if(dma)
 		{
-			sendToDebug_strln("SD SPI Err");
-			return 0;
+			memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
+			if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
+			{
+				sendToDebug_strln("SD SPI Err");
+				return 0;
+			}
+		}
+		else
+		{
+			if (!SPI_Transmit(buff, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
+			{
+				sendToDebug_strln("SD SPI Err");
+				return 0;
+			}
 		}
 
 		SPI_Release();

@@ -121,7 +121,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 	if (blk_len == 1)	   /* Single block write */
 	{
 		if ((SD_cmd(CMD24, blk_addr) == 0) /* WRITE_BLOCK */
-			&& SD_Write_Block((BYTE *)buf, 0xFE, false))
+			&& SD_Write_Block((BYTE *)buf, 0xFE, true))
 			blk_len = 0;
 	}
 	else /* Multiple block write */
@@ -135,11 +135,11 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 		{ /* WRITE_MULTIPLE_BLOCK */
 			do
 			{
-				if (!SD_Write_Block((BYTE *)buf, 0xFC, false))
+				if (!SD_Write_Block((BYTE *)buf, 0xFC, true))
 					break;
 				buf += 512;
 			} while (--blk_len);
-			if (!SD_Write_Block(0, 0xFD, false)) /* STOP_TRAN token */
+			if (!SD_Write_Block(0, 0xFD, true)) /* STOP_TRAN token */
 			{
 				blk_len = 1;
 			}
@@ -156,7 +156,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 		SD_Mounted = false;
 		SD_Present = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
-		//sendToDebug_str("we");
+		sendToDebug_str("we");
 	}
 	
 	return blk_len ? USBD_FAIL : USBD_OK;
