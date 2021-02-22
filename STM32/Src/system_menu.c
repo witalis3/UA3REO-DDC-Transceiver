@@ -2621,12 +2621,16 @@ static void SYSMENU_HANDL_SD_USB(int8_t direction)
 {
 	if (direction > 0 && SD_isIdle() && !LCD_busy)
 	{
+		TRX_Mute = true;
 		SD_USBCardReader = true;
+		USBD_Restart();
 	}
 	else
+	{
 		SD_USBCardReader = false;
-	
-	USBD_Restart();
+		USBD_Restart();
+		TRX_Mute = false;
+	}
 }
 
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction)
@@ -3863,6 +3867,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		SD_USBCardReader = false;
 		USBD_Restart();
+		TRX_Mute = false;
 	}
 }
 
