@@ -968,8 +968,7 @@ uint8_t USBD_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
     switch (req->bRequest)
     {
     case BOT_GET_MAX_LUN:
-      if ((req->wValue  == 0U) && (req->wLength == 1U) &&
-          ((req->bmRequest & 0x80U) == 0x80U))
+      if ((req->wValue  == 0U) && (req->wLength == 1U) && ((req->bmRequest & 0x80U) == 0x80U))
       {
         hmsc->max_lun = (uint32_t)((USBD_StorageTypeDef *)pdev->pUserDataSTORAGE)->GetMaxLun();
         (void)USBD_CtlSendData(pdev, (uint8_t *)&hmsc->max_lun, 1U);
@@ -982,8 +981,7 @@ uint8_t USBD_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
       break;
 
     case BOT_RESET:
-      if ((req->wValue  == 0U) && (req->wLength == 0U) &&
-          ((req->bmRequest & 0x80U) != 0x80U))
+      if ((req->wValue  == 0U) && (req->wLength == 0U) && ((req->bmRequest & 0x80U) != 0x80U))
       {
         MSC_BOT_Reset(pdev);
       }

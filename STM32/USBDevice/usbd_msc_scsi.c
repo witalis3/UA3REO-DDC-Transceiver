@@ -122,66 +122,71 @@ int8_t SCSI_ProcessCmd(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *cmd)
 {
   int8_t ret;
   USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
-
+//sendToDebug_uint8(cmd[0],false);
   switch (cmd[0])
   {
-  case SCSI_TEST_UNIT_READY:
+  case SCSI_TEST_UNIT_READY: //0
     ret = SCSI_TestUnitReady(pdev, lun, cmd);
     break;
 
-  case SCSI_REQUEST_SENSE:
+  case SCSI_REQUEST_SENSE: //3
     ret = SCSI_RequestSense(pdev, lun, cmd);
     break;
 
-  case SCSI_INQUIRY:
+  case SCSI_INQUIRY: //18
     ret = SCSI_Inquiry(pdev, lun, cmd);
     break;
 
-  case SCSI_START_STOP_UNIT:
+  case SCSI_START_STOP_UNIT: //27
     ret = SCSI_StartStopUnit(pdev, lun, cmd);
     break;
 
-  case SCSI_ALLOW_MEDIUM_REMOVAL:
+  case SCSI_ALLOW_MEDIUM_REMOVAL: //30
     ret = SCSI_AllowPreventRemovable(pdev, lun, cmd);
     break;
 
-  case SCSI_MODE_SENSE6:
+  case SCSI_MODE_SENSE6: //26
     ret = SCSI_ModeSense6(pdev, lun, cmd);
     break;
 
-  case SCSI_MODE_SENSE10:
+  case SCSI_MODE_SENSE10: //90
     ret = SCSI_ModeSense10(pdev, lun, cmd);
     break;
 
-  case SCSI_READ_FORMAT_CAPACITIES:
+  case SCSI_READ_FORMAT_CAPACITIES: //35
     ret = SCSI_ReadFormatCapacity(pdev, lun, cmd);
     break;
 
-  case SCSI_READ_CAPACITY10:
+  case SCSI_READ_CAPACITY10: //37
     ret = SCSI_ReadCapacity10(pdev, lun, cmd);
     break;
 
-  case SCSI_READ_CAPACITY16:
+  case SCSI_READ_CAPACITY16: //158
     ret = SCSI_ReadCapacity16(pdev, lun, cmd);
     break;
 
-  case SCSI_READ10:
+  case SCSI_READ10: //40
     ret = SCSI_Read10(pdev, lun, cmd);
     break;
 
-  case SCSI_READ12:
+  case SCSI_READ12: //168
     ret = SCSI_Read12(pdev, lun, cmd);
     break;
+	
+	case SCSI_READ16: //136 HACK!
+    ret = SCSI_Read12(pdev, lun, cmd);
+		ret = 0;
+    break;
 
-  case SCSI_WRITE10:
+  case SCSI_WRITE10: //42
     ret = SCSI_Write10(pdev, lun, cmd);
     break;
 
-  case SCSI_WRITE12:
+  case SCSI_WRITE12: //170
     ret = SCSI_Write12(pdev, lun, cmd);
     break;
 
-  case SCSI_VERIFY10:
+  case SCSI_VERIFY10: //47
     ret = SCSI_Verify10(pdev, lun, cmd);
     break;
 
@@ -191,6 +196,8 @@ int8_t SCSI_ProcessCmd(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *cmd)
     ret = -1;
     break;
   }
+//sendToDebug_uint8(ret,false);
+//sendToDebug_newline();
 
   return ret;
 }
