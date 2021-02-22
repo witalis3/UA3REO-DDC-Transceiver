@@ -30,6 +30,7 @@ IRAM2 static DIR dir = {0};
 IRAM2 BYTE SD_workbuffer_A[_MAX_SS];
 IRAM2 BYTE SD_workbuffer_B[_MAX_SS];
 IRAM2 BYTE SD_workbuffer_current = false; //false - fill A save B, true - fill B save A
+IRAM2 static WAV_header wav_hdr = {0};
 
 static void SDCOMM_CHECKSD(void);
 static void SDCOMM_LISTROOT(void);
@@ -175,7 +176,7 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
 		memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
-		WAV_header wav_hdr = {0};
+		memset(&wav_hdr, 0x00, sizeof(wav_hdr));
 		// RIFF header
 		wav_hdr.riffsig = 0x46464952;
 		wav_hdr.filesize = sizeof(wav_hdr);
@@ -200,7 +201,7 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 
 		// data chunk
 		wav_hdr.datasig = 0x61746164;
-		wav_hdr.datasize = 1000000;
+		wav_hdr.datasize = 0;
 
 		uint32_t byteswritten;
 		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
@@ -239,6 +240,11 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 		LCD_showTooltip("SD error");
 		return false;
 	}
+	else
+	{
+		//store size
+		wav_hdr.datasize += byteswritten;
+	}
 
 	//stop record
 	if (SD_NeedStopRecord)
@@ -246,6 +252,11 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
 		SD_RecordInProcess = false;
 		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_showTooltip("Stop recording");
+		
+		//update wav length
+		f_lseek(&File, 0);
+		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
+		
 		f_close(&File);
 		SD_NeedStopRecord = false;
 		return true;
