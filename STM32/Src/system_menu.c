@@ -239,7 +239,7 @@ static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); //Tisho
 
-IRAM2 static struct sysmenu_item_handler sysmenu_handlers[] =
+const static struct sysmenu_item_handler sysmenu_handlers[] =
 	{
 		{"TRX Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_TRXMENU},
 		{"AUDIO Settings", SYSMENU_MENU, 0, SYSMENU_HANDL_AUDIOMENU},
@@ -253,9 +253,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_handlers[] =
 		{"System info", SYSMENU_RUN, 0, SYSMENU_HANDL_SYSINFO},
 		{"Calibration", SYSMENU_HIDDEN_MENU, 0, SYSMENU_HANDL_CALIBRATIONMENU},
 };
-static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
+const static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_trx_handlers[] =
+const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 	{
 		{"RF Power", SYSMENU_UINT8, (uint32_t *)&TRX.RF_Power, SYSMENU_HANDL_TRX_RFPower},
 		{"Band Map", SYSMENU_BOOLEAN, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
@@ -270,15 +270,15 @@ IRAM2 static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 		{"Att step, dB", SYSMENU_UINT8, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
 		{"DEBUG Console", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Debug_Console, SYSMENU_HANDL_TRX_DEBUG_CONSOLE},
-		{"Input Type", SYSMENU_UINT8, (uint32_t *)&TRX.InputType, SYSMENU_HANDL_TRX_INPUT_TYPE},
+		{"Input Type", SYSMENU_UINT8, (uint32_t *)&TRX.InputType, SYSMENU_HANDL_TRX_INPUT_TYPE, {"MIC", "LINE", "USB"}},
 		{"Callsign", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetCallsign},
 		{"Locator", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetLocator},
 		{"Transverter Enable", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
 		{"Transverter Offset, mHz", SYSMENU_UINT16, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
 };
-static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sysmenu_trx_handlers[0]);
+const static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sysmenu_trx_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_audio_handlers[] =
+const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 	{
 		{"IF Gain, dB", SYSMENU_UINT8, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
 		{"AGC Gain target, LKFS", SYSMENU_INT8, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
@@ -310,9 +310,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"TX Compressor MaxGain", SYSMENU_UINT8, (uint32_t *)&TRX.TX_Compressor_maxgain, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain},
 		{"Beeper", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 };
-static uint8_t sysmenu_audio_item_count = sizeof(sysmenu_audio_handlers) / sizeof(sysmenu_audio_handlers[0]);
+const static uint8_t sysmenu_audio_item_count = sizeof(sysmenu_audio_handlers) / sizeof(sysmenu_audio_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_cw_handlers[] =
+const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 	{
 		{"CW Key timeout", SYSMENU_UINT16, (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
 		{"CW Generator shift", SYSMENU_UINT16, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
@@ -322,9 +322,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 		{"CW Gauss filter", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CW_GaussFilter, SYSMENU_HANDL_CW_GaussFilter},
 		{"CW Decoder", SYSMENU_BOOLEAN, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CW_Decoder},
 };
-static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
+const static uint8_t sysmenu_cw_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
+const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 	{
 		{"FFT Zoom", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
 		{"FFT Zoom CW", SYSMENU_UINT8, (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_HANDL_SCREEN_FFT_ZoomCW},
@@ -379,9 +379,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 #endif
 #endif
 };
-static uint8_t sysmenu_screen_item_count = sizeof(sysmenu_screen_handlers) / sizeof(sysmenu_screen_handlers[0]);
+const static uint8_t sysmenu_screen_item_count = sizeof(sysmenu_screen_handlers) / sizeof(sysmenu_screen_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_adc_handlers[] =
+const static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 	{
 		{"ADC Driver", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_Driver, SYSMENU_HANDL_ADC_DRIVER},
 		{"ADC Preamp", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},
@@ -389,9 +389,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 		{"ADC Randomizer", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
 		{"ADC Shutdown", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
 };
-static uint8_t sysmenu_adc_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
+const static uint8_t sysmenu_adc_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
+const static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 	{
 		{"WIFI Enabled", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
 		{"WIFI Select AP1", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_SelectAP1},
@@ -407,18 +407,18 @@ IRAM2 static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 		{"IP:", SYSMENU_INFOLINE, 0, 0},
 		{WIFI_IP, SYSMENU_INFOLINE, 0, 0},
 };
-static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
+const static uint8_t sysmenu_wifi_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_sd_handlers[] =
+const static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 	{
 		{"USB SD Card Reader", SYSMENU_BOOLEAN, (uint32_t *)&SD_USBCardReader, SYSMENU_HANDL_SD_USB},
 		{"Export Settings to SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ExportSettings},
 		{"Import Settings from SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_ImportSettings},
 		{"Format SD card", SYSMENU_RUN, 0, SYSMENU_HANDL_SD_Format},
 };
-static uint8_t sysmenu_sd_item_count = sizeof(sysmenu_sd_handlers) / sizeof(sysmenu_sd_handlers[0]);
+const static uint8_t sysmenu_sd_item_count = sizeof(sysmenu_sd_handlers) / sizeof(sysmenu_sd_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
+const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 	{
 		{"Encoder invert", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER_INVERT, SYSMENU_HANDL_CALIB_ENCODER_INVERT},
 		{"Encoder2 invert", SYSMENU_BOOLEAN, (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_HANDL_CALIB_ENCODER2_INVERT},
@@ -475,9 +475,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"FM Deviation Scale", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.FM_DEVIATION_SCALE, SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE},
 		{"TUNE Max Power", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},
 };
-static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
+const static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
+const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 	{
 		{"Spectrum START", SYSMENU_RUN, 0, SYSMENU_HANDL_SPECTRUM_Start},
 		{"Begin, kHz", SYSMENU_UINT32, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
@@ -485,9 +485,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 		{"Top, dBm", SYSMENU_INT16, (uint32_t *)&TRX.SPEC_TopDBM, SYSMENU_HANDL_SPECTRUM_TopDBM},
 		{"Bottom, dBm", SYSMENU_INT16, (uint32_t *)&TRX.SPEC_BottomDBM, SYSMENU_HANDL_SPECTRUM_BottomDBM},
 };
-static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
+const static uint8_t sysmenu_spectrum_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
+const static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 	{
 		{"WSPR Beacon START", SYSMENU_RUN, 0, SYSMENU_HANDL_WSPR_Start},
 		{"Freq offset", SYSMENU_INT16, (uint32_t *)&TRX.WSPR_FREQ_OFFSET, SYSMENU_HANDL_WSPR_FREQ_OFFSET},
@@ -503,9 +503,9 @@ IRAM2 static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 		{"BAND 6m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_6, SYSMENU_HANDL_WSPR_BAND6},
 		{"BAND 2m", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WSPR_BANDS_2, SYSMENU_HANDL_WSPR_BAND2},
 };
-static uint8_t sysmenu_wspr_item_count = sizeof(sysmenu_wspr_handlers) / sizeof(sysmenu_wspr_handlers[0]);
+const static uint8_t sysmenu_wspr_item_count = sizeof(sysmenu_wspr_handlers) / sizeof(sysmenu_wspr_handlers[0]);
 
-IRAM2 static struct sysmenu_item_handler sysmenu_services_handlers[] =
+const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 	{
 		{"Band SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_BAND_START},
 		{"HF SWR", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_HF_START},
@@ -515,7 +515,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_services_handlers[] =
 		{"WSPR Beacon", SYSMENU_MENU, 0, SYSMENU_HANDL_WSPRMENU},
 		{"SWR Tandem Match Contr.", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl}, //Tisho
 };
-static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
+const static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
 
 //COMMON MENU
 static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, bool onlyVal);
@@ -536,8 +536,8 @@ static void SYSMENU_TRX_RotateCallsignChar(int8_t dir);
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateLocatorChar(int8_t dir);
 
-static struct sysmenu_item_handler *sysmenu_handlers_selected = &sysmenu_handlers[0];
-static uint8_t *sysmenu_item_count_selected = &sysmenu_item_count;
+static struct sysmenu_item_handler *sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_handlers[0];
+static uint8_t *sysmenu_item_count_selected = (uint8_t*)&sysmenu_item_count;
 static uint8_t systemMenuIndex = 0;
 static uint8_t systemMenuRootIndex = 0;
 static uint16_t sysmenu_y = 5;
@@ -573,8 +573,8 @@ static uint8_t TimeMenuSelection = 0;
 static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 {
 #pragma unused(direction)
-	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_trx_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_trx_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_trx_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -582,8 +582,8 @@ static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 
 void SYSMENU_TRX_RFPOWER_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_trx_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_trx_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_trx_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_redraw(false);
@@ -591,8 +591,8 @@ void SYSMENU_TRX_RFPOWER_HOTKEY(void)
 
 void SYSMENU_TRX_STEP_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_trx_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_trx_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_trx_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_trx_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 7;
 	if (TRX.Fast)
@@ -896,8 +896,8 @@ static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction)
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 {
 #pragma unused(direction)
-	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -905,8 +905,8 @@ static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 
 void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 7;
 	LCD_redraw(false);
@@ -914,8 +914,8 @@ void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 
 void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 10;
 	LCD_redraw(false);
@@ -923,8 +923,8 @@ void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
 
 void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 11;
 	LCD_redraw(false);
@@ -932,8 +932,8 @@ void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
 
 void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 13;
 	LCD_redraw(false);
@@ -941,8 +941,8 @@ void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
 
 void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 6;
 	LCD_redraw(false);
@@ -950,16 +950,16 @@ void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
 
 void SYSMENU_AUDIO_HPF_CW_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_audio_item_count;
 	systemMenuIndex = 9;
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 15;
 	LCD_redraw(false);
@@ -967,8 +967,8 @@ void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 
 void SYSMENU_AUDIO_AGC_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_audio_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_audio_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_audio_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_audio_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 24;
 	LCD_redraw(false);
@@ -1665,8 +1665,8 @@ static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction)
 static void SYSMENU_HANDL_CWMENU(int8_t direction)
 {
 #pragma unused(direction)
-	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_cw_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_cw_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_redraw(false);
@@ -1674,8 +1674,8 @@ static void SYSMENU_HANDL_CWMENU(int8_t direction)
 
 void SYSMENU_CW_WPM_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_cw_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_cw_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 4;
 	LCD_redraw(false);
@@ -1683,8 +1683,8 @@ void SYSMENU_CW_WPM_HOTKEY(void)
 
 void SYSMENU_CW_KEYER_HOTKEY(void)
 {
-	sysmenu_handlers_selected = &sysmenu_cw_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_cw_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_cw_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_cw_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 3;
 	LCD_redraw(false);
@@ -1755,8 +1755,8 @@ static void SYSMENU_HANDL_CW_SelfHear(int8_t direction)
 static void SYSMENU_HANDL_LCDMENU(int8_t direction)
 {
 #pragma unused(direction)
-	sysmenu_handlers_selected = &sysmenu_screen_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_screen_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_screen_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_screen_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2198,8 +2198,8 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON24(int8_t direction)
 static void SYSMENU_HANDL_ADCMENU(int8_t direction)
 {
 #pragma unused(direction)
-	sysmenu_handlers_selected = &sysmenu_adc_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_adc_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_adc_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_adc_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2261,8 +2261,8 @@ static void SYSMENU_HANDL_ADC_DITH(int8_t direction)
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 {
 #pragma unused(direction)
-	sysmenu_handlers_selected = &sysmenu_wifi_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_wifi_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_wifi_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_wifi_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2579,8 +2579,8 @@ static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
 static void SYSMENU_HANDL_SDMENU(int8_t direction)
 {
 #pragma unused(direction)
-	sysmenu_handlers_selected = &sysmenu_sd_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_sd_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_sd_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_sd_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2817,8 +2817,8 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 #pragma unused(direction)
 	if (!SYSMENU_hiddenmenu_enabled)
 		return;
-	sysmenu_handlers_selected = &sysmenu_calibration_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_calibration_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_calibration_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_calibration_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3302,8 +3302,8 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 {
 #pragma unused(direction)
 	sysmenu_services_opened = true;
-	sysmenu_handlers_selected = &sysmenu_services_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_services_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_services_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_services_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	//drawSystemMenu(true);
@@ -3314,8 +3314,8 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
 {
 #pragma unused(direction)
-	sysmenu_handlers_selected = &sysmenu_spectrum_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_spectrum_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_spectrum_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_spectrum_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3375,8 +3375,8 @@ static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction)
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction)
 {
 #pragma unused(direction)
-	sysmenu_handlers_selected = &sysmenu_wspr_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_wspr_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_wspr_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_wspr_item_count;
 	sysmenu_onroot = false;
 	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3801,8 +3801,8 @@ void SYSMENU_eventCloseSystemMenu(void)
 	}
 	else if (sysmenu_services_opened)
 	{
-		sysmenu_handlers_selected = &sysmenu_handlers[0];
-		sysmenu_item_count_selected = &sysmenu_item_count;
+		sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_handlers[0];
+		sysmenu_item_count_selected = (uint8_t*)&sysmenu_item_count;
 		sysmenu_onroot = true;
 		systemMenuIndex = systemMenuRootIndex;
 		sysmenu_services_opened = false;
@@ -3820,8 +3820,8 @@ void SYSMENU_eventCloseSystemMenu(void)
 		}
 		else
 		{
-			sysmenu_handlers_selected = &sysmenu_handlers[0];
-			sysmenu_item_count_selected = &sysmenu_item_count;
+			sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_handlers[0];
+			sysmenu_item_count_selected = (uint8_t*)&sysmenu_item_count;
 			sysmenu_onroot = true;
 			systemMenuIndex = systemMenuRootIndex;
 			SYSMENU_drawSystemMenu(true);
@@ -3842,8 +3842,8 @@ void SYSMENU_eventCloseSystemMenu(void)
 
 void SYSMENU_eventCloseAllSystemMenu(void)
 {
-	sysmenu_handlers_selected = &sysmenu_handlers[0];
-	sysmenu_item_count_selected = &sysmenu_item_count;
+	sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_handlers[0];
+	sysmenu_item_count_selected = (uint8_t*)&sysmenu_item_count;
 	sysmenu_onroot = true;
 	systemMenuIndex = systemMenuRootIndex;
 	sysmenu_item_selected_by_enc2 = false;
