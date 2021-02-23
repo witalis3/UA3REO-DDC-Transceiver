@@ -522,7 +522,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 const static uint8_t sysmenu_services_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
 
 //COMMON MENU
-static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, bool onlyVal);
+static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, char enumerate[ENUM_MAX_COUNT][ENUM_MAX_LENGTH], bool onlyVal);
 static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw);
@@ -3642,7 +3642,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 		{
 			uint8_t current_page = m / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 			if (current_selected_page == current_page)
-				drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, false);
+				drawSystemMenuElement(sysmenu_handlers_selected[m].title, sysmenu_handlers_selected[m].type, sysmenu_handlers_selected[m].value, sysmenu_handlers_selected[m].enumerate, false);
 		}
 
 		LCD_busy = false;
@@ -4057,10 +4057,10 @@ void SYSMENU_redrawCurrentItem(void)
 	uint8_t current_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 	sysmenu_i = (uint8_t)(systemMenuIndex - current_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE);
 	sysmenu_y = 5 + (systemMenuIndex - current_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE) * LAYOUT->SYSMENU_ITEM_HEIGHT;
-	drawSystemMenuElement(sysmenu_handlers_selected[systemMenuIndex].title, sysmenu_handlers_selected[systemMenuIndex].type, sysmenu_handlers_selected[systemMenuIndex].value, true);
+	drawSystemMenuElement(sysmenu_handlers_selected[systemMenuIndex].title, sysmenu_handlers_selected[systemMenuIndex].type, sysmenu_handlers_selected[systemMenuIndex].value, sysmenu_handlers_selected[systemMenuIndex].enumerate, true);
 }
 
-static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, bool onlyVal)
+static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *value, char enumerate[ENUM_MAX_COUNT][ENUM_MAX_LENGTH], bool onlyVal)
 {
 	if (!SYSMENU_hiddenmenu_enabled && type == SYSMENU_HIDDEN_MENU)
 		return;
@@ -4078,6 +4078,9 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	{
 	case SYSMENU_UINT8:
 		sprintf(ctmp, "%d", (uint8_t)*value);
+		//ENUMS
+		if(enumerate != NULL)
+			sprintf(ctmp, "%s    ", enumerate[(uint8_t)*value]);	
 		break;
 	case SYSMENU_UINT16:
 		sprintf(ctmp, "%d", (uint16_t)*value);
