@@ -133,9 +133,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **Encoder Accelerate** - Accelerate encoder on fast rates
 * **Att step, dB** - Attenuator tuning step
 * **DEBUG Console** - Output of debug and service information to USB / UART ports
-* **MIC IN** - Select the microphone input
-* **LINE IN** - Line input selection
-* **USB IN** - Select USB audio input
+* **Input Type** - Select audio input (microphone, line in, USB)
 * **Callsign** - User callsign
 * **Locator** - User QTH locator
 * **Transverter Enable** - Enable external transverter

@@ -112,6 +112,14 @@ typedef enum
 	VFO_A_PLUS_B,
 } DUAL_RX_TYPE;
 
+// trx input
+typedef enum
+{
+	TRX_INPUT_MIC,
+	TRX_INPUT_LINE,
+	TRX_INPUT_USB,
+} TRX_INPUT_TYPE;
+
 // Save settings by band
 typedef struct
 {
@@ -139,9 +147,9 @@ extern struct TRX_SETTINGS
 	bool Fast;
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	bool LNA;
+	bool ATT;
 	float32_t ATT_DB;
 	uint8_t ATT_STEP;
-	bool ATT;
 	bool RF_Filters;
 	bool ANT;
 	uint8_t RF_Power;
@@ -152,12 +160,9 @@ extern struct TRX_SETTINGS
 	uint16_t FRQ_FAST_STEP;
 	uint16_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
-	uint8_t FM_SQL_threshold;
 	bool Debug_Console;
 	bool BandMapEnabled;
-	bool InputType_MIC;
-	bool InputType_LINE;
-	bool InputType_USB;
+	TRX_INPUT_TYPE InputType;
 	bool AutoGain;
 	bool Locked;
 	bool CLAR;
@@ -170,6 +175,7 @@ extern struct TRX_SETTINGS
 	uint16_t Transverter_Offset_Mhz;
 	//AUDIO
 	uint8_t IF_Gain;
+	uint8_t FM_SQL_threshold;
 	int8_t AGC_GAIN_TARGET;
 	uint8_t MIC_GAIN;
 	int8_t RX_EQ_LOW;

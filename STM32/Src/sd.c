@@ -393,9 +393,7 @@ static void SDCOMM_EXPORT_SETT(void)
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FAST_STEP", (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.Debug_Console", (uint32_t *)&TRX.Debug_Console, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.BandMapEnabled", (uint32_t *)&TRX.BandMapEnabled, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.InputType_MIC", (uint32_t *)&TRX.InputType_MIC, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.InputType_LINE", (uint32_t *)&TRX.InputType_LINE, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.InputType_USB", (uint32_t *)&TRX.InputType_USB, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.InputType", (uint32_t *)&TRX.InputType, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AutoGain", (uint32_t *)&TRX.AutoGain, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CLAR", (uint32_t *)&TRX.CLAR, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint32_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
@@ -674,12 +672,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.Debug_Console = bval;
 	if (strcmp(name, "TRX.BandMapEnabled") == 0)
 		TRX.BandMapEnabled = bval;
-	if (strcmp(name, "TRX.InputType_MIC") == 0)
-		TRX.InputType_MIC = bval;
-	if (strcmp(name, "TRX.InputType_LINE") == 0)
-		TRX.InputType_LINE = bval;
-	if (strcmp(name, "TRX.InputType_USB") == 0)
-		TRX.InputType_USB = bval;
+	if (strcmp(name, "TRX.InputType") == 0)
+		TRX.InputType = (uint8_t)uintval;
 	if (strcmp(name, "TRX.AutoGain") == 0)
 		TRX.AutoGain = bval;
 	if (strcmp(name, "TRX.CLAR") == 0)

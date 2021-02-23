@@ -105,14 +105,14 @@ void WM8731_TXRX_mode(void) //loopback
 	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00010000)); //R5 Digital Audio Path Control
-	if (TRX.InputType_LINE)							   //line
+	if (TRX.InputType == TRX_INPUT_USB)							   //line
 	{
 		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); //R0 Left Line In
 		WM8731_SendI2CCommand(B8(00000010), B8(00010111)); //R1 Right Line In
 		WM8731_SendI2CCommand(B8(00001000), B8(00010010)); //R4 Analogue Audio Path Control
 		WM8731_SendI2CCommand(B8(00001100), B8(01100010)); //R6 Power Down Control, internal crystal
 	}
-	if (TRX.InputType_MIC) //mic
+	if (TRX.InputType == TRX_INPUT_MIC) //mic
 	{
 		WM8731_SendI2CCommand(B8(00000001), B8(10000000)); //R0 Left Line In
 		WM8731_SendI2CCommand(B8(00000011), B8(10000000)); //R1 Right Line In

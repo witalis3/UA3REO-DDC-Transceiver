@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define ENUM_MAX_LENGTH 10
+
 typedef enum
 {
 	SYSMENU_BOOLEAN,
@@ -29,6 +31,11 @@ struct sysmenu_item_handler
 	SystemMenuType type;
 	uint32_t *value;
 	void (*menuHandler)(int8_t direction);
+	char *enumerate[][ENUM_MAX_LENGTH];
+};
+
+static char SYSMENU_ENUM_INPUT_TYPE[][ENUM_MAX_LENGTH] = {
+	"MIC", "LINE", "USB",
 };
 
 extern void SYSMENU_drawSystemMenu(bool draw_background);

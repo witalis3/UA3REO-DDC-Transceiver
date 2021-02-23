@@ -22,9 +22,7 @@ static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
-static void SYSMENU_HANDL_TRX_MICIN(int8_t direction);
-static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction);
-static void SYSMENU_HANDL_TRX_USBIN(int8_t direction);
+static void SYSMENU_HANDL_TRX_INPUT_TYPE(int8_t direction);
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
@@ -272,9 +270,7 @@ IRAM2 static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 		{"Att step, dB", SYSMENU_UINT8, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
 		{"DEBUG Console", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Debug_Console, SYSMENU_HANDL_TRX_DEBUG_CONSOLE},
-		{"MIC IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_MIC, SYSMENU_HANDL_TRX_MICIN},
-		{"LINE IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_LINE, SYSMENU_HANDL_TRX_LINEIN},
-		{"USB IN", SYSMENU_BOOLEAN, (uint32_t *)&TRX.InputType_USB, SYSMENU_HANDL_TRX_USBIN},
+		{"Input Type", SYSMENU_UINT8, (uint32_t *)&TRX.InputType, SYSMENU_HANDL_TRX_INPUT_TYPE},
 		{"Callsign", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetCallsign},
 		{"Locator", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetLocator},
 		{"Transverter Enable", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
@@ -645,40 +641,13 @@ static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)
 		TRX.RF_Power = 100;
 }
 
-static void SYSMENU_HANDL_TRX_MICIN(int8_t direction)
+static void SYSMENU_HANDL_TRX_INPUT_TYPE(int8_t direction)
 {
-	if (direction > 0)
-		TRX.InputType_MIC = true;
-	if (direction < 0)
-		TRX.InputType_MIC = false;
-	TRX.InputType_LINE = false;
-	TRX.InputType_USB = false;
-	LCD_UpdateQuery.SystemMenu = true;
-	TRX_Restart_Mode();
-}
-
-static void SYSMENU_HANDL_TRX_LINEIN(int8_t direction)
-{
-	if (direction > 0)
-		TRX.InputType_LINE = true;
-	if (direction < 0)
-		TRX.InputType_LINE = false;
-	TRX.InputType_MIC = false;
-	TRX.InputType_USB = false;
-	LCD_UpdateQuery.SystemMenu = true;
-	TRX_Restart_Mode();
-}
-
-static void SYSMENU_HANDL_TRX_USBIN(int8_t direction)
-{
-	if (direction > 0)
-		TRX.InputType_USB = true;
-	if (direction < 0)
-		TRX.InputType_USB = false;
-	TRX.InputType_MIC = false;
-	TRX.InputType_LINE = false;
-	LCD_UpdateQuery.SystemMenu = true;
-	TRX_Restart_Mode();
+	if (direction > 0 || TRX.InputType > 0)
+		TRX.InputType += direction;
+	if (TRX.InputType > 2)
+		TRX.InputType = 2;
+	WM8731_TXRX_mode();
 }
 
 static void SYSMENU_HANDL_TRX_DEBUG_CONSOLE(int8_t direction)

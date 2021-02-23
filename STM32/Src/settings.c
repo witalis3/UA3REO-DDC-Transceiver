@@ -123,7 +123,10 @@ void LoadSettings(bool clear)
 		if (clear)
 			sendToDebug_strln("[OK] Soft reset TRX");
 		memset(&TRX, 0x00, sizeof(TRX));
+		//
 		TRX.flash_id = SETT_VERSION;		 // Firmware ID in SRAM, if it doesn't match, use the default
+		//TRX
+		TRX.current_vfo = false;			 // current VFO (false - A)
 		TRX.VFO_A.Freq = 7100000;			 // stored VFO-A frequency
 		TRX.VFO_A.Mode = TRX_MODE_LSB;		 // saved VFO-A mode
 		TRX.VFO_A.LPF_RX_Filter_Width = 2700;	 // saved bandwidth for VFO-A
@@ -146,16 +149,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.DNR_Type = 0;				 // digital noise reduction
 		TRX.VFO_B.AGC = true;				 // AGC
 		TRX.VFO_B.FM_SQL_threshold = 4;			 // FM noise reduction
-		TRX.current_vfo = false;			 // current VFO (false - A)
-		TRX.ADC_Driver = true;				 // preamplifier (ADC driver)
-		TRX.LNA = false;					 // LNA (Low Noise Amplifier)
-		TRX.ATT = false;					 // attenuator
-		TRX.ATT_DB = 12.0f;					 // suppress the attenuator
-		TRX.ATT_STEP = 6.0f;				 // step of tuning the attenuator
 		TRX.Fast = true;					 // accelerated frequency change when the encoder rotates
-		TRX.ADC_PGA = true;					 // ADC preamp
-		TRX.ANT = false;					 // ANT-1
-		TRX.FM_SQL_threshold = 4;
 		for (uint8_t i = 0; i < BANDS_COUNT; i++)
 		{
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
@@ -171,19 +165,54 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 			TRX.BANDS_SAVED_SETTINGS[i].AutoGain_Stage = 6;
 		}
+		TRX.LNA = false;					 // LNA (Low Noise Amplifier)
+		TRX.ATT = false;					 // attenuator
+		TRX.ATT_DB = 12.0f;					 // suppress the attenuator
+		TRX.ATT_STEP = 6.0f;				 // step of tuning the attenuator
 		TRX.RF_Filters = true; // LPF / HPF / BPF
-#ifdef LAY_800x480
-		TRX.FFT_Zoom = 1;	// approximation of the FFT spectrum
-		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
-#else
-		TRX.FFT_Zoom = 2;	// approximation of the FFT spectrum
-		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
-#endif
+		TRX.ANT = false;					 // ANT-1
+		TRX.FM_SQL_threshold = 4;
+		TRX.RF_Power = 20;							 //output power (%)
+		TRX.ShiftEnabled = false;		  // activate the SHIFT mode
+		TRX.SHIFT_INTERVAL = 1000;		  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
+		TRX.TWO_SIGNAL_TUNE = false;	  // Two-signal generator in TUNE mode (1 + 2kHz)
+		TRX.FRQ_STEP = 10;				  // frequency tuning step by the main encoder
+		TRX.FRQ_FAST_STEP = 100;		  // frequency tuning step by the main encoder in FAST mode
+		TRX.FRQ_ENC_STEP = 25000;		  // frequency tuning step by main add. encoder
+		TRX.FRQ_ENC_FAST_STEP = 50000;	  // frequency tuning step by main add. encoder in FAST mode
+		TRX.Debug_Console = false;		  // Debug output to DEBUG / UART port
+		TRX.BandMapEnabled = true;					 // automatic change of mode according to the range map
+		TRX.InputType = TRX_INPUT_MIC; // type of input to transfer
 		TRX.AutoGain = false;	  // auto-control preamp and attenuator
-		TRX.CWDecoder = false;	  // automatic telegraph decoder
-		TRX.InputType_MIC = true; // type of input to transfer
-		TRX.InputType_LINE = false;
-		TRX.InputType_USB = false;
+		TRX.Locked = false;				  // Lock control
+		TRX.CLAR = false;				  // Split frequency mode (receive one VFO, transmit another)
+		TRX.Dual_RX = false;			  //Dual RX feature
+		TRX.Dual_RX_Type = VFO_A_PLUS_B;  // dual receiver mode
+		TRX.Encoder_Accelerate = true;	  //Accelerate Encoder on fast rate
+		strcpy(TRX.CALLSIGN, "HamRad");	  // Callsign
+		strcpy(TRX.LOCATOR, "LO02RR");	  // Locator
+		TRX.Transverter_Enabled = false;  //Enable transverter mode
+		TRX.Transverter_Offset_Mhz = 120; //Offset from VFO
+		//AUDIO
+		TRX.IF_Gain = 70;				  // IF gain, dB (before all processing and AGC)
+		TRX.FM_SQL_threshold = TRX.VFO_A.FM_SQL_threshold; //shadow variable
+		TRX.AGC_GAIN_TARGET = -30;		  // Maximum (target) AGC gain
+		TRX.MIC_GAIN = 1;				  // Microphone gain
+		TRX.RX_EQ_LOW = 0;				  // Receiver Equalizer (Low)
+		TRX.RX_EQ_MID = 0;				  // Receiver EQ (mids)
+		TRX.RX_EQ_HIG = 0;				  // Receiver EQ (high)
+		TRX.MIC_EQ_LOW = 0;				  // Mic EQ (Low)
+		TRX.MIC_EQ_MID = 0;				  // Mic Equalizer (Mids)
+		TRX.MIC_EQ_HIG = 0;				  // Mic EQ (high)
+		TRX.MIC_REVERBER = 0;			  // Mic Reveerber
+		TRX.DNR_SNR_THRESHOLD = 50;		  // Digital noise reduction level
+		TRX.DNR_AVERAGE = 2;			  // DNR averaging when looking for average magnitude
+		TRX.DNR_MINIMAL = 99;			  // DNR averaging when searching for minimum magnitude
+		TRX.NOISE_BLANKER = true;		  // suppressor of short impulse noise NOISE BLANKER		
+		TRX.RX_AGC_SSB_speed = 10;					 // AGC receive rate on SSB
+		TRX.RX_AGC_CW_speed = 1;					 // AGC receive rate on CW
+		TRX.TX_Compressor_speed = 3;						 // TX compressor speed
+		TRX.TX_Compressor_maxgain = 10;				//TX compressor max gain
 		TRX.CW_LPF_Filter = 1000;					 // default value of CW filter width
 		TRX.CW_HPF_Filter = 0;						 // default value of CW filter width
 		TRX.SSB_LPF_RX_Filter = 2700;					 // default value of SSB filter width
@@ -193,16 +222,53 @@ void LoadSettings(bool clear)
 		TRX.AM_LPF_TX_Filter = 4000;					 // default value of AM filter width
 		TRX.FM_LPF_RX_Filter = 10000;					 // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 10000;					 // default value of the FM filter width
-		TRX.RF_Power = 20;							 //output power (%)
-		TRX.RX_AGC_SSB_speed = 10;					 // AGC receive rate on SSB
-		TRX.RX_AGC_CW_speed = 1;					 // AGC receive rate on CW
-		TRX.TX_Compressor_speed = 3;						 // TX compressor speed
-		TRX.TX_Compressor_maxgain = 10;				//TX compressor max gain
-		TRX.BandMapEnabled = true;					 // automatic change of mode according to the range map
-		TRX.FFT_Enabled = true;						 // use FFT spectrum
+		TRX.Beeper = true;				  //Keyboard beeper
+		TRX.VAD_Squelch = false;		  //SSB Squelch on VAD technology
+		//CW
+		TRX.CWDecoder = false;	  // automatic telegraph decoder
 		TRX.CW_GENERATOR_SHIFT_HZ = 500;			 // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;					 // time of releasing transmission after the last character on the key
+		TRX.CW_SelfHear = true;						 // self-control CW
+		TRX.CW_KEYER = true;			  // Automatic key
+		TRX.CW_KEYER_WPM = 30;			  // Automatic key speed
+		TRX.CW_GaussFilter = false;		  //Gauss responce LPF filter
+		//SCREEN
+		TRX.ColorThemeId = 0;			  //Selected Color theme
+		TRX.LayoutThemeId = 0;			  //Selected Layout theme
+		TRX.FFT_Enabled = true;						 // use FFT spectrum
+#ifdef LAY_800x480
+		TRX.FFT_Zoom = 1;	// approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
+#else
+		TRX.FFT_Zoom = 2;	// approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
+#endif
+		TRX.LCD_Brightness = 60; //LCD Brightness
+		TRX.WTF_Moving = true;			  //move WTF with frequency encoder
+		TRX.FFT_Automatic = true;		//Automatic FFT Scale
+		TRX.FFT_Sensitivity = 8;				  //Threshold of FFT autocalibrate
+		TRX.FFT_Speed = 3;				  // FFT Speed
 		TRX.FFT_Averaging = 4;						 // averaging the FFT to make it smoother
+		TRX.FFT_Window = 1;
+		TRX.FFT_Height = 2;				  // FFT display height
+		TRX.FFT_Style = 1;				  // FFT style
+		TRX.FFT_Color = 1;				  // FFT display color
+		TRX.FFT_Compressor = true;		  //Compress FFT Peaks
+		TRX.FFT_Grid = 1;				  // FFT grid style
+		TRX.FFT_Background = true;		  //FFT gradient background
+		TRX.FFT_Lens = false;			  //FFT lens effect
+		TRX.FFT_3D = 0;					  //FFT 3D mode
+		TRX.FFT_ManualBottom = -100;	//Minimal threshold for manual FFT scale
+		TRX.FFT_ManualTop = -75;	//Maximum threshold for manual FFT scale
+		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)
+			TRX.FuncButtons[i] = i;
+		//ADC
+		TRX.ADC_Driver = true;				 // preamplifier (ADC driver)
+		TRX.ADC_PGA = true;					 // ADC preamp
+		TRX.ADC_RAND = true;						 // ADC encryption (xor randomizer)
+		TRX.ADC_SHDN = false;						 // ADC disable
+		TRX.ADC_DITH = false;						 // ADC dither
+		//WIFI
 		TRX.WIFI_Enabled = true;					 // activate WiFi
 		strcpy(TRX.WIFI_AP1, "WIFI-AP");			 // WiFi hotspot
 		strcpy(TRX.WIFI_PASSWORD1, "WIFI-PASSWORD"); // password to the WiFi point 1
@@ -211,68 +277,12 @@ void LoadSettings(bool clear)
 		strcpy(TRX.WIFI_AP3, "WIFI-AP");			 // WiFi hotspot
 		strcpy(TRX.WIFI_PASSWORD3, "WIFI-PASSWORD"); // password to the WiFi point 3
 		TRX.WIFI_TIMEZONE = 3;						 // time zone (for time synchronization)
+		TRX.WIFI_CAT_SERVER = false;		  // Server for receiving CAT commands via WIFI
+		//SERVICES
 		TRX.SPEC_Begin = 1000;						 // start spectrum analyzer range
 		TRX.SPEC_End = 30000;						 // end of spectrum analyzer range
 		TRX.SPEC_TopDBM = -60;						 // chart thresholds
 		TRX.SPEC_BottomDBM = -130;					 // chart thresholds
-		TRX.CW_SelfHear = true;						 // self-control CW
-		TRX.ADC_RAND = true;						 // ADC encryption (xor randomizer)
-		TRX.ADC_SHDN = false;						 // ADC disable
-		TRX.ADC_DITH = false;						 // ADC dither
-		TRX.FFT_Window = 1;
-		TRX.Locked = false;				  // Lock control
-		TRX.CLAR = false;				  // Split frequency mode (receive one VFO, transmit another)
-		TRX.TWO_SIGNAL_TUNE = false;	  // Two-signal generator in TUNE mode (1 + 2kHz)
-		TRX.IF_Gain = 70;				  // IF gain, dB (before all processing and AGC)
-		TRX.CW_KEYER = true;			  // Automatic key
-		TRX.CW_KEYER_WPM = 30;			  // Automatic key speed
-		TRX.Debug_Console = false;		  // Debug output to DEBUG / UART port
-		TRX.Dual_RX = false;			  //Dual RX feature
-		TRX.Dual_RX_Type = VFO_A_PLUS_B;  // dual receiver mode
-		TRX.FFT_Style = 1;				  // FFT style
-		TRX.FFT_Color = 1;				  // FFT display color
-		TRX.FFT_Height = 2;				  // FFT display height
-		TRX.FFT_Grid = 1;				  // FFT grid style
-		TRX.FFT_Lens = false;			  //FFT lens effect
-		TRX.FFT_3D = 0;					  //FFT 3D mode
-		TRX.FFT_Sensitivity = 8;				  //Threshold of FFT autocalibrate
-		TRX.FFT_Automatic = true;		//Automatic FFT Scale
-		TRX.FFT_ManualBottom = -100;	//Minimal threshold for manual FFT scale
-		TRX.FFT_ManualTop = -75;	//Maximum threshold for manual FFT scale
-		TRX.WTF_Moving = true;			  //move WTF with frequency encoder
-		TRX.ShiftEnabled = false;		  // activate the SHIFT mode
-		TRX.SHIFT_INTERVAL = 1000;		  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
-		TRX.DNR_SNR_THRESHOLD = 50;		  // Digital noise reduction level
-		TRX.DNR_AVERAGE = 2;			  // DNR averaging when looking for average magnitude
-		TRX.DNR_MINIMAL = 99;			  // DNR averaging when searching for minimum magnitude
-		TRX.NOISE_BLANKER = true;		  // suppressor of short impulse noise NOISE BLANKER
-		TRX.FRQ_STEP = 10;				  // frequency tuning step by the main encoder
-		TRX.FRQ_FAST_STEP = 100;		  // frequency tuning step by the main encoder in FAST mode
-		TRX.FRQ_ENC_STEP = 25000;		  // frequency tuning step by main add. encoder
-		TRX.FRQ_ENC_FAST_STEP = 50000;	  // frequency tuning step by main add. encoder in FAST mode
-		TRX.AGC_GAIN_TARGET = -30;		  // Maximum (target) AGC gain
-		TRX.WIFI_CAT_SERVER = false;		  // Server for receiving CAT commands via WIFI
-		TRX.MIC_GAIN = 1;				  // Microphone gain
-		TRX.RX_EQ_LOW = 0;				  // Receiver Equalizer (Low)
-		TRX.RX_EQ_MID = 0;				  // Receiver EQ (mids)
-		TRX.RX_EQ_HIG = 0;				  // Receiver EQ (high)
-		TRX.MIC_EQ_LOW = 0;				  // Mic EQ (Low)
-		TRX.MIC_EQ_MID = 0;				  // Mic Equalizer (Mids)
-		TRX.MIC_EQ_HIG = 0;				  // Mic EQ (high)
-		TRX.MIC_REVERBER = 0;			  // Mic Reveerber
-		TRX.FFT_Speed = 3;				  // FFT Speed
-		TRX.Beeper = true;				  //Keyboard beeper
-		TRX.FFT_Background = true;		  //FFT gradient background
-		TRX.VAD_Squelch = false;		  //SSB Squelch on VAD technology
-		TRX.FFT_Compressor = true;		  //Compress FFT Peaks
-		TRX.Encoder_Accelerate = true;	  //Accelerate Encoder on fast rate
-		strcpy(TRX.CALLSIGN, "HamRad");	  // Callsign
-		strcpy(TRX.LOCATOR, "LO02RR");	  // Locator
-		TRX.ColorThemeId = 0;			  //Selected Color theme
-		TRX.LayoutThemeId = 0;			  //Selected Layout theme
-		TRX.Transverter_Enabled = false;  //Enable transverter mode
-		TRX.Transverter_Offset_Mhz = 120; //Offset from VFO
-		TRX.CW_GaussFilter = false;		  //Gauss responce LPF filter
 		TRX.WSPR_FREQ_OFFSET = 0;		  //offset beacon from creq center
 		TRX.WSPR_BANDS_160 = false;		  //enabled WSPR bands
 		TRX.WSPR_BANDS_80 = true;
@@ -285,10 +295,7 @@ void LoadSettings(bool clear)
 		TRX.WSPR_BANDS_10 = true;
 		TRX.WSPR_BANDS_6 = false;
 		TRX.WSPR_BANDS_2 = false;
-		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)
-			TRX.FuncButtons[i] = i;
-		TRX.LCD_Brightness = 60; //LCD Brightness
-
+		//
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		sendToDebug_strln("[OK] Loaded default settings");
 		LCD_showError("Loaded default settings", true);
