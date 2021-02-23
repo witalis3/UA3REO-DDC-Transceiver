@@ -171,7 +171,6 @@ void LoadSettings(bool clear)
 		TRX.ATT_STEP = 6.0f;				 // step of tuning the attenuator
 		TRX.RF_Filters = true; // LPF / HPF / BPF
 		TRX.ANT = false;					 // ANT-1
-		TRX.FM_SQL_threshold = 4;
 		TRX.RF_Power = 20;							 //output power (%)
 		TRX.ShiftEnabled = false;		  // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 1000;		  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
@@ -249,7 +248,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Sensitivity = 8;				  //Threshold of FFT autocalibrate
 		TRX.FFT_Speed = 3;				  // FFT Speed
 		TRX.FFT_Averaging = 4;						 // averaging the FFT to make it smoother
-		TRX.FFT_Window = 1;
+		TRX.FFT_Window = 1;					//FFT Window 
 		TRX.FFT_Height = 2;				  // FFT display height
 		TRX.FFT_Style = 1;				  // FFT style
 		TRX.FFT_Color = 1;				  // FFT display color

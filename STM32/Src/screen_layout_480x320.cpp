@@ -6,6 +6,7 @@
 
 extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] =
 	{
+		//Default
 		{
 			//Top row of status buttons
 			.TOPBUTTONS_X1 = 0,

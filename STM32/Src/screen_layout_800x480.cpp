@@ -6,6 +6,7 @@
 
 extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] =
 	{
+		//Default
 		{
 			.TOPBUTTONS_X1 = 0,
 			.TOPBUTTONS_X2 = (LCD_WIDTH - 1),

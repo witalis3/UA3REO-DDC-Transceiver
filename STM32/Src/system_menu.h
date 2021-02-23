@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define ENUM_MAX_COUNT 3
-#define ENUM_MAX_LENGTH 4
+#define ENUM_MAX_COUNT 8
+#define ENUM_MAX_LENGTH 10
 
 typedef enum
 {
