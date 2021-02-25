@@ -466,6 +466,7 @@ static void SDCOMM_EXPORT_SETT(void)
 			SD_WRITE_SETT_LINE("TRX.FFT_Grid", (uint32_t *)&TRX.FFT_Grid, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Background", (uint32_t *)&TRX.FFT_Background, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_Lens", (uint32_t *)&TRX.FFT_Lens, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.FFT_HoldPeaks", (uint32_t *)&TRX.FFT_HoldPeaks, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_3D", (uint32_t *)&TRX.FFT_3D, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Automatic", (uint32_t *)&TRX.FFT_Automatic, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualBottom", (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_INT16);
@@ -821,6 +822,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FFT_Background = uintval;
 	if (strcmp(name, "TRX.FFT_Lens") == 0)
 		TRX.FFT_Lens = uintval;
+	if (strcmp(name, "TRX.FFT_HoldPeaks") == 0)
+		TRX.FFT_HoldPeaks = uintval;
 	if (strcmp(name, "TRX.FFT_3D") == 0)
 		TRX.FFT_3D = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FFT_Automatic") == 0)

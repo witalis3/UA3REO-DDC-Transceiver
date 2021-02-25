@@ -256,6 +256,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Grid = 1;				  // FFT grid style
 		TRX.FFT_Background = true;		  //FFT gradient background
 		TRX.FFT_Lens = false;			  //FFT lens effect
+		TRX.FFT_HoldPeaks = false;		// Show FFT Peaks
 		TRX.FFT_3D = 0;					  //FFT 3D mode
 		TRX.FFT_ManualBottom = -100;	//Minimal threshold for manual FFT scale
 		TRX.FFT_ManualTop = -75;	//Maximum threshold for manual FFT scale

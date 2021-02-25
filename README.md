@@ -189,6 +189,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FFT Enabled** - Enable waterfall and FFT
 * **WTF Moving** - Mowe waterfall with frequency changing
 * **FFT Lens** - Enable FFT lens mode (magnify center of spectrum)
+* **FFT Hold Peaks** - Show peaks on FFT spectrum
 * **FFT 3D Mode** - Enable FFT 3D mode (0 - disabled, 1 - lines, 2 - pixels)
 * **FFT Compressor** - Enable FFT peak comressor
 * **FFT Averaging** - FFT burst averaging level

@@ -232,6 +232,7 @@ extern struct TRX_SETTINGS
 	int8_t FFT_Grid;
 	bool FFT_Background;
 	bool FFT_Lens;
+	bool FFT_HoldPeaks;
 	uint8_t FFT_3D;
 	int16_t FFT_ManualBottom;
 	int16_t FFT_ManualTop;
