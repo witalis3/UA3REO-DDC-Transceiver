@@ -911,9 +911,13 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		}
 		else //analog meter version
 		{
+			//SWR
+			sprintf(ctmp, "%.1f", (double)TRX_SWR);
+			LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET - 5, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+			
 			//FWD
 			sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward);
-			LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+			LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 5, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 			
 			LCD_drawSMeter();
 			LCD_PrintMeterArrow(LCD_GetSMeterValPosition(LCD_SWR2DBM_meter(TRX_SWR)));
