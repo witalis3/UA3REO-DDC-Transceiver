@@ -144,8 +144,8 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "BAND+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_P},
 	{.name = "BAND-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_N},
 	{.name = "PLAY", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_PLAY},
-	{.name = "BANDMAP", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP, .holdHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP},
-	{.name = "AUTOGAIN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER, .holdHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER},
+	{.name = "BANDMP", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP, .holdHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP},
+	{.name = "AUTOGN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER, .holdHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER},
 };
 
 void FRONTPANEL_ENCODER_checkRotate(void)
@@ -1438,4 +1438,26 @@ void FRONTPANEL_BUTTONHANDLER_SETRF_POWER(uint32_t parameter)
 	TRX.RF_Power = parameter;
 
 	LCD_closeWindow();
+}
+
+void FRONTPANEL_BUTTONHANDLER_LEFT_ARR(uint32_t parameter)
+{
+	if(FRONTPANEL_funcbuttons_page == 0)
+		FRONTPANEL_funcbuttons_page = (FUNCBUTTONS_PAGES - 1);
+	else
+		FRONTPANEL_funcbuttons_page--;
+	
+	LCD_UpdateQuery.BottomButtons = true;
+	LCD_UpdateQuery.TopButtons = true;
+}
+
+void FRONTPANEL_BUTTONHANDLER_RIGHT_ARR(uint32_t parameter)
+{
+	if(FRONTPANEL_funcbuttons_page >= (FUNCBUTTONS_PAGES - 1))
+		FRONTPANEL_funcbuttons_page = 0;
+	else
+		FRONTPANEL_funcbuttons_page++;
+	
+	LCD_UpdateQuery.BottomButtons = true;
+	LCD_UpdateQuery.TopButtons = true;
 }
