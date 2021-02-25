@@ -282,6 +282,12 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 	case SYSMENU_UINT8:
 		sprintf(valbuff, "%u", (uint8_t)*value);
 		break;
+	case SYSMENU_ENUM:
+		sprintf(valbuff, "%u", (uint8_t)*value);
+		break;
+	case SYSMENU_ENUMR:
+		sprintf(valbuff, "%u", (uint8_t)*value);
+		break;
 	case SYSMENU_UINT16:
 		sprintf(valbuff, "%u", (uint16_t)*value);
 		break;
