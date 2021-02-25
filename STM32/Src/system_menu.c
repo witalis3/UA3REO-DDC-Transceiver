@@ -4075,7 +4075,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		LCDDriver_printText(title, LAYOUT->SYSMENU_X1, sysmenu_y, FG_COLOR, BG_COLOR, 2);
 	}
 
-	uint16_t x_pos = LAYOUT->SYSMENU_X2;
+	uint16_t x_pos = LAYOUT->SYSMENU_X2 - 5 * 12;
 	float32_t tmp_float = 0;
 	switch (type)
 	{
@@ -4083,22 +4083,19 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		sprintf(ctmp, "%d", (uint8_t)*value);
 		break;
 	case SYSMENU_ENUM:
-		sprintf(ctmp, "%s    ", enumerate[(uint8_t)*value]);	
+		sprintf(ctmp, "%s", enumerate[(uint8_t)*value]);	
 		break;
 	case SYSMENU_ENUMR:
-		sprintf(ctmp, "%s    ", enumerate[(uint8_t)*value]);
-		x_pos = LAYOUT->SYSMENU_X2_BIGINT;
+		sprintf(ctmp, "%s", enumerate[(uint8_t)*value]);
 		break;
 	case SYSMENU_UINT16:
 		sprintf(ctmp, "%d", (uint16_t)*value);
 		break;
 	case SYSMENU_UINT32:
 		sprintf(ctmp, "%u", (uint32_t)*value);
-		x_pos = LAYOUT->SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_UINT32R:
 		sprintf(ctmp, "%u", (uint32_t)*value);
-		x_pos = LAYOUT->SYSMENU_X2R_BIGINT; //-V1048
 		break;
 	case SYSMENU_INT8:
 		sprintf(ctmp, "%d", (int8_t)*value);
@@ -4108,12 +4105,10 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		break;
 	case SYSMENU_INT32:
 		sprintf(ctmp, "%d", (int32_t)*value);
-		x_pos = LAYOUT->SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_FLOAT32:
 		memcpy(&tmp_float, value, sizeof(float32_t));
 		sprintf(ctmp, "%.2f", (double)tmp_float);
-		x_pos = LAYOUT->SYSMENU_X2_BIGINT;
 		break;
 	case SYSMENU_BOOLEAN:
 		sprintf(ctmp, "%d", (int8_t)*value);
@@ -4134,14 +4129,17 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 	case SYSMENU_INFOLINE:
 		break;
 	case SYSMENU_FUNCBUTTON:
-		sprintf(ctmp, "%s    ", (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[(uint8_t)*value]].name);
+		sprintf(ctmp, "%s", (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[(uint8_t)*value]].name);
 		break;
 	}
-
-	if (onlyVal)
-		LCDDriver_Fill_RectWH(x_pos, sysmenu_y, 6 * 12, 13, BG_COLOR);
+	
+	//if (onlyVal)
+		//LCDDriver_Fill_RectWH(x_pos, sysmenu_y, ENUM_MAX_LENGTH * 12, 13, BG_COLOR);
 	if (type != SYSMENU_INFOLINE)
+	{
+		addSymbols(ctmp, ctmp, ENUM_MAX_LENGTH, " ", false);
 		LCDDriver_printText(ctmp, x_pos, sysmenu_y, FG_COLOR, BG_COLOR, 2);
+	}
 
 	uint8_t current_selected_page = systemMenuIndex / LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE;
 	if (systemMenuIndex == sysmenu_i + current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)

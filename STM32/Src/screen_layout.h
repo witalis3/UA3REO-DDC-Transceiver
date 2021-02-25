@@ -204,8 +204,6 @@ extern "C"
 		//System menu
 		const uint16_t SYSMENU_X1;
 		const uint16_t SYSMENU_X2;
-		const uint16_t SYSMENU_X2_BIGINT;
-		const uint16_t SYSMENU_X2R_BIGINT;
 		const uint16_t SYSMENU_W;
 		const uint16_t SYSMENU_ITEM_HEIGHT;
 		const uint16_t SYSMENU_MAX_ITEMS_ON_PAGE;
