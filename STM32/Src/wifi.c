@@ -34,8 +34,8 @@ static void WIFI_printImage_stream_partial_callback(void);
 bool WIFI_connected = false;
 bool WIFI_CAT_server_started = false;
 volatile WiFiState WIFI_State = WIFI_UNDEFINED;
-static char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
-volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][32] = {0};
+static char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][MAX_WIFIPASS_LENGTH] = {0};
+volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][MAX_WIFIPASS_LENGTH] = {0};
 bool WIFI_IP_Gotted = false;
 char WIFI_IP[15] = {0};
 static uint16_t WIFI_HTTP_Response_Status = 0;
@@ -172,7 +172,7 @@ void WIFI_Process(void)
 			else if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP3) == 0)
 				AP3_exist = true;
 		}
-		if (AP1_exist)
+		if (AP1_exist && strlen(TRX.WIFI_PASSWORD1) > 5)
 		{
 			sendToDebug_str3("[WIFI] Start connecting to AP1: ", TRX.WIFI_AP1, "\r\n");
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -184,7 +184,7 @@ void WIFI_Process(void)
 			//WIFI_WaitForOk();
 			WIFI_State = WIFI_CONNECTING;
 		}
-		if (AP2_exist)
+		if (AP2_exist && strlen(TRX.WIFI_PASSWORD2) > 5)
 		{
 			sendToDebug_str3("[WIFI] Start connecting to AP2: ", TRX.WIFI_AP2, "\r\n");
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -196,7 +196,7 @@ void WIFI_Process(void)
 			//WIFI_WaitForOk();
 			WIFI_State = WIFI_CONNECTING;
 		}
-		if (AP3_exist)
+		if (AP3_exist && strlen(TRX.WIFI_PASSWORD3) > 5)
 		{
 			sendToDebug_str3("[WIFI] Start connecting to AP: ", TRX.WIFI_AP3, "\r\n");
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -368,7 +368,7 @@ void WIFI_Process(void)
 					{
 						*end = 0x00;
 						strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
-						if (WIFI_FoundedAP_Index < WIFI_FOUNDED_AP_MAXCOUNT)
+						if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
 							WIFI_FoundedAP_Index++;
 					}
 				}
@@ -589,7 +589,7 @@ static bool WIFI_ListAP_Sync(void)
 				{
 					*end = 0x00;
 					strcat((char *)&WIFI_FoundedAP[WIFI_FoundedAP_Index], start);
-					if (WIFI_FoundedAP_Index < WIFI_FOUNDED_AP_MAXCOUNT)
+					if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
 						WIFI_FoundedAP_Index++;
 				}
 			}

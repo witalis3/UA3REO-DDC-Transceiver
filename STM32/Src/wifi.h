@@ -3,6 +3,7 @@
 
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
+#include "settings.h"
 
 #define WIFI_ANSWER_BUFFER_SIZE (512 * 8)
 #define WIFI_LINE_BUFFER_SIZE WIFI_ANSWER_BUFFER_SIZE
@@ -10,7 +11,7 @@
 #define WIFI_RLE_BUFFER_SIZE (512)
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
-#define WIFI_FOUNDED_AP_MAXCOUNT 10
+#define WIFI_FOUNDED_AP_MAXCOUNT 16
 #define WIFI_DEBUG (false || TRX.Debug_Console) //WIFI debug output to console
 
 typedef enum
@@ -47,7 +48,7 @@ extern RTC_HandleTypeDef hrtc;
 extern bool WIFI_connected;
 extern bool WIFI_CAT_server_started;
 extern volatile WiFiState WIFI_State;
-extern volatile char WIFI_FoundedAP[10][32];
+extern volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][MAX_WIFIPASS_LENGTH];
 extern bool WIFI_IP_Gotted;
 extern char WIFI_IP[15];
 
