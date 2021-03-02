@@ -10,6 +10,7 @@ __asm(".global __use_no_heap\n\t");
 #include <stdbool.h>
 #include <arm_math.h>
 #include "profiler.h"
+#include "print.h"
 
 #define TRX_MODE_LSB 0
 #define TRX_MODE_USB 1

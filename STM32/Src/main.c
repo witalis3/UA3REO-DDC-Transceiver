@@ -1730,14 +1730,25 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-//обработка SWD отладки
-//FILE __stdout;
-//FILE __stdin;
+//обработка вывода отладки
+FILE __stdout;
+FILE __stdin;
 
 int fputc(int ch, FILE *f)
 {
-#pragma unused(f)
-  ITM_SendChar((uint32_t)ch);
+	#pragma unused(f)
+	
+	//SWD
+	if (SWD_DEBUG_ENABLED)
+		ITM_SendChar((uint32_t)ch);
+	
+	//USB
+	if (USB_DEBUG_ENABLED)
+	{
+		char usb_char = (char)ch;
+		DEBUG_Transmit_FIFO((uint8_t *)&usb_char, 1);
+	}
+	
   return (ch);
 }
 /* USER CODE END 4 */

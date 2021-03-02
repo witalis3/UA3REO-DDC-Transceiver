@@ -75,14 +75,12 @@ void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t i
 
 void sendToDebug_str(char *data)
 {
-	if (SWD_DEBUG_ENABLED)
+	//if (SWD_DEBUG_ENABLED)
 		printf("%s", data);
-	if (USB_DEBUG_ENABLED)
-		DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
+	//if (USB_DEBUG_ENABLED)
+		//DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
 	if (LCD_DEBUG_ENABLED)
-	{
 		sendToDebug_str_LCDOnly(data);
-	}
 }
 
 static uint16_t dbg_lcd_y = 10;
