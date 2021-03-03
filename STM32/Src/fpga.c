@@ -920,7 +920,7 @@ static bool FPGA_is_present(void) // check that the FPGA has firmware
 	if (data != 0xFF)
 	{
 		LCD_showError("FPGA not found", true);
-		sendToDebug_strln("[ERR] FPGA not found");
+		println("[ERR] FPGA not found");
 		return false;
 	}
 	else
@@ -962,13 +962,10 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 					if (file_pos < sizeof(FILES_WOLF_JIC) && rev8((uint8_t)data) != FILES_WOLF_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 					{
 						errors++;
-						sendToDebug_uint32(flash_pos, true);
-						sendToDebug_str(": FPGA: ");
-						sendToDebug_hex(rev8((uint8_t)data), true);
-						sendToDebug_str(" HEX: ");
-						sendToDebug_hex(FILES_WOLF_JIC[file_pos], true);
-						sendToDebug_newline();
-						sendToDebug_flush();
+						print(flash_pos, ": FPGA: ");
+						print_hex(rev8((uint8_t)data), true);
+						println(" HEX: ", FILES_WOLF_JIC[file_pos]);
+						print_flush();
 
 						/*if(full)
 						{
@@ -995,13 +992,10 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 					if (file_pos < sizeof(FILES_WOLF_JIC) && rev8((uint8_t)data) != FILES_WOLF_JIC[file_pos] && ((decoded - FPGA_flash_file_offset) < FPGA_flash_size))
 					{
 						errors++;
-						sendToDebug_uint32(flash_pos, true);
-						sendToDebug_str(": FPGA: ");
-						sendToDebug_hex(rev8((uint8_t)data), true);
-						sendToDebug_str(" HEX: ");
-						sendToDebug_hex(FILES_WOLF_JIC[file_pos], true);
-						sendToDebug_newline();
-						sendToDebug_flush();
+						print(flash_pos, ": FPGA: ");
+						print_hex(rev8((uint8_t)data), true);
+						println(" HEX: ", FILES_WOLF_JIC[file_pos]);
+						print_flush();
 
 						/*if(full)
 						{
@@ -1038,13 +1032,13 @@ static bool FPGA_spi_flash_verify(bool full) // check flash memory
 	//
 	if (errors > 0)
 	{
-		sendToDebug_strln("[ERR] FPGA Flash verification failed");
+		println("[ERR] FPGA Flash verification failed");
 		LCD_showError("FPGA Flash verification failed", true);
 		return false;
 	}
 	else
 	{
-		sendToDebug_strln("[OK] FPGA Flash verification compleated");
+		println("[OK] FPGA Flash verification compleated");
 		return true;
 	}
 }
@@ -1063,7 +1057,7 @@ static void FPGA_spi_flash_erase(void) // clear flash memory
 	FPGA_spi_stop_command();
 	FPGA_spi_flash_wait_WIP(); //wait write in progress
 
-	sendToDebug_strln("[OK] FPGA Flash erased");
+	println("[OK] FPGA Flash erased");
 }
 
 static void FPGA_spi_flash_write(void) // write new contents of FPGA SPI memory
@@ -1160,7 +1154,7 @@ static void FPGA_spi_flash_write(void) // write new contents of FPGA SPI memory
 	FPGA_spi_flash_wait_WIP();					  //wait write in progress
 	FPGA_spi_start_command(M25P80_WRITE_DISABLE); //Write Disable
 	FPGA_spi_stop_command();
-	sendToDebug_strln("[OK] FPGA Flash programming compleated");
+	println("[OK] FPGA Flash programming compleated");
 }
 
 #endif
