@@ -73,183 +73,67 @@ void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t i
 	}
 }
 
-void sendToDebug_str(char *data)
-{
-	//if (SWD_DEBUG_ENABLED)
-		printf("%s", data);
-	//if (USB_DEBUG_ENABLED)
-		//DEBUG_Transmit_FIFO((uint8_t *)data, (uint16_t)strlen(data));
-	if (LCD_DEBUG_ENABLED)
-		sendToDebug_str_LCDOnly(data);
-}
-
-static uint16_t dbg_lcd_y = 10;
-void sendToDebug_str_LCDOnly(char *data)
+static uint16_t dbg_lcd_y = 0;
+static uint16_t dbg_lcd_x = 0;
+void print_chr_LCDOnly(char chr)
 {
 	if (LCD_DEBUG_ENABLED)
 	{
-		LCDDriver_printText(data, LCDDriver_GetCurrentXOffset(), dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
-
-		if (strchr(data, '\n') != NULL)
+		if(chr == '\r')
+			return;
+		
+		if(chr == '\n')
 		{
 			dbg_lcd_y += 9;
-			LCDDriver_printText("     ", 0, dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
-			LCDDriver_SetCurrentXOffset(0);
+			dbg_lcd_x = 0;
+			if (dbg_lcd_y >= LCD_HEIGHT)
+			{
+				dbg_lcd_y = 0;
+				LCDDriver_Fill(BG_COLOR);
+			}
+			return;
 		}
-		if (dbg_lcd_y >= LCD_HEIGHT)
-		{
-			dbg_lcd_y = 0;
-			LCDDriver_printText("     ", 0, dbg_lcd_y, COLOR_RED, BG_COLOR, 1);
-			LCDDriver_SetCurrentXOffset(0);
-		}
+		
+		LCDDriver_drawChar(dbg_lcd_x, dbg_lcd_y, chr, COLOR_RED, BG_COLOR, 1);
+		dbg_lcd_x += 6;
 	}
 }
 
-void sendToDebug_uint8_LCDOnly(uint8_t data, bool _inline)
-{
-	char tmp[50] = ""; //-V808
-	if (_inline)
-		sprintf(tmp, "%d", data);
-	else
-		sprintf(tmp, "%d\n", data);
-	sendToDebug_str_LCDOnly(tmp);
-}
-
-void sendToDebug_strln(char *data)
-{
-	sendToDebug_str(data);
-	sendToDebug_newline();
-}
-
-void sendToDebug_str2(char *data1, char *data2)
-{
-	sendToDebug_str(data1);
-	sendToDebug_str(data2);
-}
-
-void sendToDebug_str3(char *data1, char *data2, char *data3)
-{
-	sendToDebug_str(data1);
-	sendToDebug_str(data2);
-	sendToDebug_str(data3);
-}
-
-void sendToDebug_newline(void)
-{
-	sendToDebug_str("\n");
-}
-
-void sendToDebug_flush(void)
+void print_flush(void)
 {
 	uint_fast16_t tryes = 0;
 	while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512)
 		tryes++;
 }
 
-void sendToDebug_uint8(uint8_t data, bool _inline)
-{
-	char tmp[50] = ""; //-V808
-	if (_inline)
-		sprintf(tmp, "%d", data);
-	else
-		sprintf(tmp, "%d\n", data);
-	sendToDebug_str(tmp);
-}
-
-void sendToDebug_hex(uint8_t data, bool _inline)
+void print_hex(uint8_t data, bool _inline)
 {
 	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%02X", data);
 	else
 		sprintf(tmp, "%02X\n", data);
-	sendToDebug_str(tmp);
+	print(tmp);
 }
 
-void sendToDebug_bin8(uint8_t data, bool _inline)
+void print_bin8(uint8_t data, bool _inline)
 {
 	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%c%c%c%c%c%c%c%c", BYTE_TO_BINARY(data));
 	else
 		sprintf(tmp, "%c%c%c%c%c%c%c%c\n", BYTE_TO_BINARY(data));
-	sendToDebug_str(tmp);
+	print(tmp);
 }
 
-void sendToDebug_bin16(uint16_t data, bool _inline)
+void print_bin16(uint16_t data, bool _inline)
 {
 	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", BIT16_TO_BINARY(data));
 	else
 		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", BIT16_TO_BINARY(data));
-	sendToDebug_str(tmp);
-}
-
-void sendToDebug_uint16(uint16_t data, bool _inline)
-{
-	char tmp[50] = ""; //-V808
-	if (_inline)
-		sprintf(tmp, "%d", data);
-	else
-		sprintf(tmp, "%d\n", data);
-	sendToDebug_str(tmp);
-}
-void sendToDebug_uint32(uint32_t data, bool _inline)
-{
-	char tmp[50] = ""; //-V808
-	if (_inline)
-		sprintf(tmp, "%u", data);
-	else
-		sprintf(tmp, "%u\n", data);
-	sendToDebug_str(tmp);
-}
-void sendToDebug_int8(int8_t data, bool _inline)
-{
-	char tmp[50] = ""; //-V808
-	if (_inline)
-		sprintf(tmp, "%d", data);
-	else
-		sprintf(tmp, "%d\n", data);
-	sendToDebug_str(tmp);
-}
-void sendToDebug_int16(int16_t data, bool _inline)
-{
-	char tmp[50] = ""; //-V808
-	if (_inline)
-		sprintf(tmp, "%d", data);
-	else
-		sprintf(tmp, "%d\n", data);
-	sendToDebug_str(tmp);
-}
-void sendToDebug_int32(int32_t data, bool _inline)
-{
-	char tmp[50] = ""; //-V808
-	if (_inline)
-		sprintf(tmp, "%d", data);
-	else
-		sprintf(tmp, "%d\n", data);
-	sendToDebug_str(tmp);
-}
-
-void sendToDebug_float32(float32_t data, bool _inline)
-{
-	char tmp[50] = ""; //-V808
-	if (_inline)
-		sprintf(tmp, "%f", (double)data);
-	else
-		sprintf(tmp, "%f\n", (double)data);
-	sendToDebug_str(tmp);
-}
-
-void sendToDebug_float64(float64_t data, bool _inline)
-{
-	char tmp[50] = ""; //-V808
-	if (_inline)
-		sprintf(tmp, "%f", (double)data);
-	else
-		sprintf(tmp, "%f\n", (double)data);
-	sendToDebug_str(tmp);
+	print(tmp);
 }
 
 uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
@@ -512,7 +396,7 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 {
 	if (SPI_busy)
 	{
-		sendToDebug_strln("SPI Busy");
+		println("SPI Busy");
 		return false;
 	}
 

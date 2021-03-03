@@ -75,24 +75,19 @@ void PrintProfilerResult()
 	for (uint8_t i = 0; i < PROFILES_COUNT; i++)
 		if (profiles[i].samples > 0)
 		{
-			sendToDebug_str("Profile #");
-			sendToDebug_uint8(i, true);
-			sendToDebug_str(" Samples: ");
-			sendToDebug_uint32(profiles[i].samples, true);
+			print("Profile #", i, " Samples: ", profiles[i].samples);
 			if (i == PROFILES_COUNT - 1)
 			{
-				sendToDebug_str(" Time, us: ");
-				sendToDebug_uint32(profiles[i].diff / (SystemCoreClock / 1000000), false);
+				println(" Time, us: ", profiles[i].diff / (SystemCoreClock / 1000000));
 			}
 			else
 			{
-				sendToDebug_str(" Time, ms: ");
-				sendToDebug_uint32(profiles[i].diff, false);
+				println(" Time, ms: ", profiles[i].diff);
 			}
 			profiles[i].diff = 0;
 			profiles[i].samples = 0;
 			printed = true;
 		}
 	if (printed)
-		sendToDebug_str("\r\n");
+		println("");
 }

@@ -166,7 +166,7 @@ void WM8731_Init(void)
 {
 	if (WM8731_SendI2CCommand(B8(00011110), B8(00000000)) != 0) //R15 Reset Chip
 	{
-		sendToDebug_strln("[ERR] Audio codec not found");
+		println("[ERR] Audio codec not found");
 		LCD_showError("Audio codec init error", true);
 	}
 	WM8731_SendI2CCommand(B8(00000101), B8(10000000)); //R2 Left Headphone Out Mute

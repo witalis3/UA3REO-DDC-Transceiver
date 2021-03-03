@@ -231,19 +231,19 @@ int main(void)
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   __HAL_RCC_BKPRAM_CLK_ENABLE();
   HAL_EnableCompensationCell();
-  sendToDebug_str("\r\n----------------------------------\r\n");
-  sendToDebug_strln("Wolf Transceiver Initialization...");
+  println("\r\n----------------------------------");
+  println("Wolf Transceiver Initialization...");
   InitSettings();
-  sendToDebug_strln("[OK] USB init");
+  println("[OK] USB init");
   USBD_Restart();
-  sendToDebug_strln("[OK] FIFO timer TIM7 init");
+  println("[OK] FIFO timer TIM7 init");
   HAL_TIM_Base_Start_IT(&htim7);
-  sendToDebug_strln("[OK] Real Time Clock init");
+  println("[OK] Real Time Clock init");
   HAL_RTC_Init(&hrtc);
-  sendToDebug_strln("[OK] Frontpanel init");
+  println("[OK] Frontpanel init");
   FRONTPANEL_Init();
 	
-  sendToDebug_strln("[OK] Settings loading");
+  println("[OK] Settings loading");
 #ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[13].state) //soft reset (MENU)
     LoadSettings(true);
@@ -257,7 +257,7 @@ int main(void)
     LoadSettings(false);
 	
   TRX.Locked = false;
-  sendToDebug_strln("[OK] LCD init");
+  println("[OK] LCD init");
   LCD_busy = true;
   LCD_Init();
   if (SHOW_LOGO)
@@ -273,10 +273,10 @@ int main(void)
     LCDDriver_getTextBounds(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, &FreeSans9pt7b);
     LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), &FreeSans9pt7b);
   }
-  sendToDebug_strln("[OK] Profiler init");
+  println("[OK] Profiler init");
   InitProfiler();
 	
-  sendToDebug_strln("[OK] Calibration loading");
+  println("[OK] Calibration loading");
 #ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
     LoadCalibration(true);
@@ -289,7 +289,7 @@ int main(void)
 #endif
     LoadCalibration(false);
 	
-  sendToDebug_strln("[OK] FPGA init");
+  println("[OK] FPGA init");
 #ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[19].state) //fpga bus test (MODE+)
     FPGA_Init(true, false);
@@ -298,40 +298,40 @@ int main(void)
   else
 #endif
     FPGA_Init(false, false);
-  sendToDebug_strln("[OK] STM32-ADC Calibration");
+  println("[OK] STM32-ADC Calibration");
   HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
-  sendToDebug_strln("[OK] RF-Unit init");
+  println("[OK] RF-Unit init");
   RF_UNIT_UpdateState(false);
-  sendToDebug_strln("[OK] FFT/Waterfall & TIM4 init");
+  println("[OK] FFT/Waterfall & TIM4 init");
   FFT_PreInit();
   FFT_Init();
   HAL_TIM_Base_Start_IT(&htim4);
-  sendToDebug_strln("[OK] AudioCodec init");
+  println("[OK] AudioCodec init");
   WM8731_Init();
-  sendToDebug_strln("[OK] TRX init");
+  println("[OK] TRX init");
   TRX_Init();
-  sendToDebug_strln("[OK] Audioprocessor & TIM5 init");
+  println("[OK] Audioprocessor & TIM5 init");
   initAudioProcessor();
   HAL_TIM_Base_Start_IT(&htim5);
   if (SHOW_LOGO)
     HAL_Delay(1500); //logo wait
   LCD_busy = false;
   LCD_redraw(true);
-  sendToDebug_strln("[OK] Misc timer TIM6 init");
+  println("[OK] Misc timer TIM6 init");
   HAL_TIM_Base_Start_IT(&htim6);
-  sendToDebug_strln("[OK] CPU Load init");
+  println("[OK] CPU Load init");
   CPULOAD_Init();
   TRX_Inited = true;
-  sendToDebug_strln("[OK] WIFI timer TIM3 init");
+  println("[OK] WIFI timer TIM3 init");
   HAL_TIM_Base_Start_IT(&htim3);
-  sendToDebug_strln("[OK] ENC2 timer TIM16 init");
+  println("[OK] ENC2 timer TIM16 init");
   HAL_TIM_Base_Start_IT(&htim16);
-  sendToDebug_strln("[OK] PERIPHERAL timer TIM15 init");
+  println("[OK] PERIPHERAL timer TIM15 init");
   HAL_TIM_Base_Start_IT(&htim15);
-  sendToDebug_strln("[OK] Digital decoder timer TIM17 init");
+  println("[OK] Digital decoder timer TIM17 init");
   HAL_TIM_Base_Start_IT(&htim17);
-  sendToDebug_str("UA3REO Transceiver started!\r\n\r\n");
+  println("UA3REO Transceiver started!\r\n");
   //while(true){HAL_Delay(3000); SCB->AIRCR = 0x05FA0004; } //debug restart
   /* USER CODE END 2 */
 
@@ -1749,6 +1749,12 @@ int fputc(int ch, FILE *f)
 		DEBUG_Transmit_FIFO((uint8_t *)&usb_char, 1);
 	}
 	
+	//LCD
+	if (LCD_DEBUG_ENABLED)
+	{
+		print_chr_LCDOnly((char)ch);
+	}
+	
   return (ch);
 }
 /* USER CODE END 4 */
@@ -1834,7 +1840,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  sendToDebug_strln("error handled");
+  println("error handled");
   /*while (1)
 	{
 		LCD_showError("Error handled", true);

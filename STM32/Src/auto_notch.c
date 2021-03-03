@@ -41,12 +41,7 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	if (isnanf(minValOut) || isinff(minValOut) || isnanf(maxValOut) || isinff(maxValOut))
 	{
 		if (AUTO_NOTCH_DEBUG)
-		{
-			sendToDebug_str("auto notch err ");
-			sendToDebug_float32(minValOut, true);
-			sendToDebug_str(" ");
-			sendToDebug_float32(maxValOut, false);
-		}
+			println("auto notch err ", minValOut, " ", maxValOut);
 		InitAutoNotchReduction();
 		memset(buffer, 0x00, sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);
 		temporary_stop = 500;
@@ -55,10 +50,7 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	if (maxValOut > 1.0f)
 	{
 		if (AUTO_NOTCH_DEBUG)
-		{
-			sendToDebug_strln("auto notch reset");
-			sendToDebug_float32(maxValOut, false);
-		}
+			println("auto notch reset", maxValOut);
 		InitAutoNotchReduction();
 		temporary_stop = 500;
 	}

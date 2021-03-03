@@ -126,7 +126,7 @@ static void TRX_Start_RX()
 {
 	if (TRX_TXRXMode == 1)
 		return;
-	sendToDebug_str("RX MODE\r\n");
+	println("RX MODE");
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	Processor_NeedRXBuffer = false;
@@ -142,7 +142,7 @@ static void TRX_Start_TX()
 {
 	if (TRX_TXRXMode == 2)
 		return;
-	sendToDebug_str("TX MODE\r\n");
+	println("TX MODE");
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	HAL_Delay(10); // delay before the RF signal is applied, so that the relay has time to trigger
@@ -153,7 +153,7 @@ static void TRX_Start_TXRX()
 {
 	if (TRX_TXRXMode == 3)
 		return;
-	sendToDebug_str("TXRX MODE\r\n");
+	println("TXRX MODE");
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	TRX_TXRXMode = 3;
@@ -376,7 +376,7 @@ void TRX_DoAutoGain(void)
 			if (skip_cycles == 0)
 			{
 				LCD_UpdateQuery.TopButtons = true;
-				sendToDebug_strln("AUTOGAIN LPF + BPF + ATT");
+				println("AUTOGAIN LPF + BPF + ATT");
 				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
@@ -405,7 +405,7 @@ void TRX_DoAutoGain(void)
 			if (skip_cycles == 0)
 			{
 				LCD_UpdateQuery.TopButtons = true;
-				sendToDebug_strln("AUTOGAIN LPF + BPF");
+				println("AUTOGAIN LPF + BPF");
 				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
@@ -439,7 +439,7 @@ void TRX_DoAutoGain(void)
 			if (skip_cycles == 0)
 			{
 				LCD_UpdateQuery.TopButtons = true;
-				sendToDebug_strln("AUTOGAIN LPF + BPF + PGA");
+				println("AUTOGAIN LPF + BPF + PGA");
 				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
@@ -475,7 +475,7 @@ void TRX_DoAutoGain(void)
 			if (skip_cycles == 0)
 			{
 				LCD_UpdateQuery.TopButtons = true;
-				sendToDebug_strln("AUTOGAIN LPF + BPF + PGA + DRIVER");
+				println("AUTOGAIN LPF + BPF + PGA + DRIVER");
 				resetVAD();
 				TRX_AutoGain_Stage++;
 			}
@@ -509,7 +509,7 @@ void TRX_DoAutoGain(void)
 			if (skip_cycles == 0)
 			{
 				LCD_UpdateQuery.TopButtons = true;
-				sendToDebug_strln("AUTOGAIN LPF + BPF + PGA + DRIVER + LNA");
+				println("AUTOGAIN LPF + BPF + PGA + DRIVER + LNA");
 				resetVAD();
 				TRX_AutoGain_Stage++;
 			}

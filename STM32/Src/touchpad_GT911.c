@@ -55,7 +55,7 @@ void GT911_RD_RegOneByte(uint16_t reg, uint8_t *buf)
 	}
 	else
 	{
-		sendToDebug_str("no touchpad found on i2c bus");
+		print("no touchpad found on i2c bus");
 		
 		//try new i2c addr if failed
 		if(gt911_i2c_addr == GT911_I2C_ADDR_1)
@@ -98,7 +98,7 @@ void GT911_ReadStatus(void)
 
 	static IRAM2 char str[64] = {0};
 	sprintf(str, "TouchPad_ID:%d,%d,%d\r\nTouchPad_Config_Version:%2x", buf[0], buf[1], buf[2], buf[3]);
-	sendToDebug_strln(str);
+	println(str);
 }
 
 void GT911_ReadFirmwareVersion(void)
@@ -108,7 +108,7 @@ void GT911_ReadFirmwareVersion(void)
 
 	static IRAM2 char str[128] = {0};
 	sprintf(str, "FirmwareVersion:%2x", (((uint16_t)buf[1] << 8) + buf[0]));
-	sendToDebug_strln(str);
+	println(str);
 }
 
 void GT911_Init(void)
@@ -161,7 +161,7 @@ void GT911_Init(void)
 	sendToDebug_uint8(rbuf[2],false);
 	sendToDebug_uint8(rbuf[3],false);*/
 
-	sendToDebug_strln("Touchpad calibrated");
+	println("Touchpad calibrated");
 }
 
 void GT911_Scan(void)

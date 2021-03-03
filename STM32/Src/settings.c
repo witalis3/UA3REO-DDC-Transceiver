@@ -82,7 +82,7 @@ void InitSettings(void)
 	version_string[++cur_len] = BUILD_MIN_CH0;
 	version_string[++cur_len] = BUILD_MIN_CH1;
 	version_string[++cur_len] = '\0';
-	sendToDebug_strln(version_string);
+	println(version_string);
 }
 
 void LoadSettings(bool clear)
@@ -95,33 +95,33 @@ void LoadSettings(bool clear)
 		memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 		if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 		{
-			sendToDebug_strln("[ERR] BACKUP SRAM data incorrect");
+			println("[ERR] BACKUP SRAM data incorrect");
 
 			LoadSettingsFromEEPROM();
 			if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 			{
-				sendToDebug_strln("[ERR] EEPROM Settings data incorrect");
+				println("[ERR] EEPROM Settings data incorrect");
 			}
 			else
 			{
-				sendToDebug_strln("[OK] Settings data succesfully loaded from EEPROM");
+				println("[OK] Settings data succesfully loaded from EEPROM");
 			}
 		}
 		else
 		{
-			sendToDebug_strln("[OK] Settings data succesfully loaded from BACKUP SRAM bank 2");
+			println("[OK] Settings data succesfully loaded from BACKUP SRAM bank 2");
 		}
 	}
 	else
 	{
-		sendToDebug_strln("[OK] Settings data succesfully loaded from BACKUP SRAM bank 1");
+		println("[OK] Settings data succesfully loaded from BACKUP SRAM bank 1");
 	}
 	BKPSRAM_Disable();
 
 	if (TRX.flash_id != SETT_VERSION || clear || TRX.ENDBit != 100 || TRX.csum != calculateCSUM()) // code to trace new clean flash
 	{
 		if (clear)
-			sendToDebug_strln("[OK] Soft reset TRX");
+			println("[OK] Soft reset TRX");
 		memset(&TRX, 0x00, sizeof(TRX));
 		//
 		TRX.flash_id = SETT_VERSION;		 // Firmware ID in SRAM, if it doesn't match, use the default
@@ -297,7 +297,7 @@ void LoadSettings(bool clear)
 		TRX.WSPR_BANDS_2 = false;
 		//
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
-		sendToDebug_strln("[OK] Loaded default settings");
+		println("[OK] Loaded default settings");
 		LCD_showError("Loaded default settings", true);
 		SaveSettings();
 		SaveSettingsToEEPROM();
@@ -313,7 +313,7 @@ static void LoadSettingsFromEEPROM(void)
 		tryes++;
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
-		sendToDebug_strln("[ERR] Read EEPROM SETTINGS multiple errors");
+		println("[ERR] Read EEPROM SETTINGS multiple errors");
 	EEPROM_PowerDown();
 }
 
@@ -326,12 +326,11 @@ void LoadCalibration(bool clear)
 		tryes++;
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
-		sendToDebug_strln("[ERR] Read EEPROM CALIBRATE multiple errors");
+		println("[ERR] Read EEPROM CALIBRATE multiple errors");
 
 	if (CALIBRATE.ENDBit != 100 || CALIBRATE.flash_id != CALIB_VERSION || clear || CALIBRATE.csum != calculateCSUM_EEPROM()) // code for checking the firmware in the eeprom, if it does not match, we use the default
 	{
-		sendToDebug_str("[ERR] CALIBRATE Flash check CODE:");
-		sendToDebug_uint8(CALIBRATE.flash_id, false);
+		println("[ERR] CALIBRATE Flash check CODE:", CALIBRATE.flash_id, false);
 		CALIBRATE.flash_id = CALIB_VERSION; // code for checking the firmware in the eeprom, if it does not match, we use the default
 
 		CALIBRATE.ENCODER_INVERT = false;	  // invert left-right rotation of the main encoder
@@ -393,7 +392,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TUNE_MAX_POWER = 2;					// Maximum RF power in Tune mode
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
-		sendToDebug_strln("[OK] Loaded default calibrate settings");
+		println("[OK] Loaded default calibrate settings");
 		LCD_showError("Loaded default calibrations", true);
 		SaveCalibration();
 	}
@@ -460,8 +459,8 @@ void SaveSettingsToEEPROM(void)
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
 	{
-		sendToDebug_strln("[ERR] Erase EEPROM Settings multiple errors");
-		sendToDebug_flush();
+		println("[ERR] Erase EEPROM Settings multiple errors");
+		print_flush();
 		EEPROM_Busy = false;
 		return;
 	}
@@ -472,16 +471,16 @@ void SaveSettingsToEEPROM(void)
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
 	{
-		sendToDebug_strln("[ERR] Write EEPROM Settings multiple errors");
-		sendToDebug_flush();
+		println("[ERR] Write EEPROM Settings multiple errors");
+		print_flush();
 		EEPROM_Busy = false;
 		return;
 	}
 
 	EEPROM_Busy = false;
 	EEPROM_PowerDown();
-	sendToDebug_strln("[OK] EEPROM Settings Saved");
-	sendToDebug_flush();
+	println("[OK] EEPROM Settings Saved");
+	print_flush();
 }
 
 void SaveCalibration(void)
@@ -499,7 +498,7 @@ void SaveCalibration(void)
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
 	{
-		sendToDebug_strln("[ERR] Erase EEPROM calibrate multiple errors");
+		println("[ERR] Erase EEPROM calibrate multiple errors");
 		EEPROM_Busy = false;
 		return;
 	}
@@ -510,14 +509,14 @@ void SaveCalibration(void)
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
 	{
-		sendToDebug_strln("[ERR] Write EEPROM calibrate multiple errors");
+		println("[ERR] Write EEPROM calibrate multiple errors");
 		EEPROM_Busy = false;
 		return;
 	}
 
 	EEPROM_Busy = false;
 	EEPROM_PowerDown();
-	sendToDebug_strln("[OK] EEPROM Calibrations Saved");
+	println("[OK] EEPROM Calibrations Saved");
 	NeedSaveCalibration = false;
 }
 
@@ -554,7 +553,7 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		SPI_process = true;
 	if (size > sizeof(write_clone))
 	{
-		sendToDebug_strln("EEPROM buffer error");
+		println("EEPROM buffer error");
 		return false;
 	}
 	memcpy(write_clone, Buffer, size);
@@ -612,7 +611,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	if (!res)
 	{
 		EEPROM_Enabled = false;
-		sendToDebug_strln("[ERR] EEPROM not found...");
+		println("[ERR] EEPROM not found...");
 		LCD_showError("EEPROM init error", true);
 		SPI_process = false;
 		return true;
@@ -633,7 +632,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		if (!res)
 		{
 			EEPROM_Enabled = false;
-			sendToDebug_strln("[ERR] EEPROM not found...");
+			println("[ERR] EEPROM not found...");
 			LCD_showError("EEPROM init error", true);
 			SPI_process = false;
 			return true;
@@ -645,7 +644,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		for (uint16_t i = 0; i < size; i++)
 			if (read_clone[i] != Buffer[i])
 			{
-				sendToDebug_uint8(read_clone[i], false);
+				println(read_clone[i]);
 				SPI_process = false;
 				return false;
 			}
@@ -669,7 +668,7 @@ static void EEPROM_WaitWrite(void)
 			HAL_Delay(1);
 	} while ((status & 0x01) == 0x01 && (tryes < 200));
 	if (tryes == 200)
-		sendToDebug_strln("[ERR]EEPROM Lock wait error");
+		println("[ERR]EEPROM Lock wait error");
 }
 
 static void EEPROM_PowerDown(void)

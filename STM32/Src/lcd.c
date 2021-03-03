@@ -1460,7 +1460,7 @@ void LCD_showTooltip(char text[])
 	if (LCD_UpdateQuery.Tooltip) //redraw old tooltip
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 	LCD_UpdateQuery.Tooltip = true;
-	sendToDebug_strln(text);
+	println((char *)text);
 }
 
 static void LCD_printTooltip(void)

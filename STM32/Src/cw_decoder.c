@@ -196,7 +196,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 			last_space = true;
 		}
 		if (CWDECODER_DEBUG)
-			sendToDebug_str("s");
+			print("s");
 		stop = true;
 	}
 
@@ -225,7 +225,7 @@ static void CWDecoder_Recognise(void)
 			word_time = dot_time * 7.0f;
 			strcat(code, ".");
 			if (CWDECODER_DEBUG)
-				sendToDebug_str(".");
+				print(".");
 		}
 		else if (highduration >= (dash_time * CWDECODER_ERROR_DIFF))
 		{
@@ -235,7 +235,7 @@ static void CWDecoder_Recognise(void)
 			word_time = dot_time * 7.0f;
 			strcat(code, "-");
 			if (CWDECODER_DEBUG)
-				sendToDebug_str("-");
+				print("-");
 		}
 		else
 		{
@@ -260,7 +260,7 @@ static void CWDecoder_Recognise(void)
 			CWDecoder_Decode();
 			last_space = false;
 			if (CWDECODER_DEBUG)
-				sendToDebug_str("c");
+				print("c");
 		}
 		else if (lowduration > (word_time * CWDECODER_ERROR_SPACE_DIFF * lacktime)) // word space
 		{
@@ -271,7 +271,7 @@ static void CWDecoder_Recognise(void)
 				last_space = true;
 			}
 			if (CWDECODER_DEBUG)
-				sendToDebug_strln("w");
+				println("w");
 		}
 		else
 		{

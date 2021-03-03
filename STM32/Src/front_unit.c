@@ -419,7 +419,7 @@ void FRONTPANEL_Init(void)
 	if (test_value == 65535)
 	{
 		FRONTPanel_MCP3008_1_Enabled = false;
-		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 1 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
+		println("[ERR] Frontpanel MCP3008 - 1 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 1 init error (FPGA I2S CLK?)", true);
 	}
 #endif
@@ -428,7 +428,7 @@ void FRONTPANEL_Init(void)
 	if (test_value == 65535)
 	{
 		FRONTPanel_MCP3008_2_Enabled = false;
-		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
+		println("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 2 init error", true);
 	}
 #endif
@@ -437,7 +437,7 @@ void FRONTPANEL_Init(void)
 	if (test_value == 65535)
 	{
 		FRONTPanel_MCP3008_3_Enabled = false;
-		sendToDebug_strln("[ERR] Frontpanel MCP3008 - 3 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
+		println("[ERR] Frontpanel MCP3008 - 3 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 3 init error", true);
 	}
 #endif

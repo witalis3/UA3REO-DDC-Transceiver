@@ -172,25 +172,7 @@ void processVAD(float32_t *buffer)
 	static uint32_t prevPrint = 0;
 	if (debug && (HAL_GetTick() - prevPrint) > 100)
 	{
-		sendToDebug_str(" SMF1: ");
-		sendToDebug_float32(SMFdb1, true);
-		sendToDebug_str(" SMF2: ");
-		sendToDebug_float32(SMFdb2, true);
-		sendToDebug_str(" Res_E1: ");
-		sendToDebug_float32(Res_E1, true);
-		sendToDebug_str(" Res_E2: ");
-		sendToDebug_float32(Res_E2, true);
-		sendToDebug_str(" Res_MD1: ");
-		sendToDebug_float32(Res_MD1, true);
-		sendToDebug_str(" Res_MD2: ");
-		sendToDebug_float32(Res_MD2, true);
-		sendToDebug_str(" MD1_Idx: ");
-		sendToDebug_float32(MD1_index, true);
-		sendToDebug_str(" MD2_Idx: ");
-		sendToDebug_float32(MD2_index, true);
-		sendToDebug_str(" EQU: ");
-		sendToDebug_float32(Res_Equation, true);
-		sendToDebug_str(" ");
+		print(" SMF1: ", SMFdb1, " SMF2: ", SMFdb2, " Res_E1: ", Res_E1, " Res_E2: ", Res_E2, " Res_MD1: ", Res_MD1, " Res_MD2: ", Res_MD2, " MD1_Idx: ", MD1_index, " MD2_Idx: ", MD2_index, " EQU: ", Res_Equation, " ");
 	}
 
 	//check thresholds
@@ -200,65 +182,65 @@ void processVAD(float32_t *buffer)
 	{
 		points1++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
-			sendToDebug_str("M");
+			print("M");
 		if (Res_MD1_IDX < 5)
 		{
 			points1++;
 			if (debug && (HAL_GetTick() - prevPrint) > 100)
-				sendToDebug_str("I");
+				print("I");
 		}
 	}
 	if (Res_MD2 > 7.0f)
 	{
 		points2++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
-			sendToDebug_str("m");
+			print("m");
 		if (Res_MD2_IDX < 10)
 		{
 			points2++;
 			if (debug && (HAL_GetTick() - prevPrint) > 100)
-				sendToDebug_str("i");
+				print("i");
 		}
 	}
 	if (SMFdb1 < -23.0f)
 	{
 		points1++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
-			sendToDebug_str("S");
+			print("S");
 	}
 	if (SMFdb2 < -4.0f)
 	{
 		points2++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
-			sendToDebug_str("s");
+			print("s");
 	}
 	if (Res_E1 > 10.0f)
 	{
 		points1++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
-			sendToDebug_str("E");
+			print("E");
 	}
 	if (Res_E2 > 10.0f)
 	{
 		points2++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
-			sendToDebug_str("e");
+			print("e");
 	}
 	if (Res_Equation > 20.0f)
 	{
 		points1--;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
-			sendToDebug_str("Q");
+			print("Q");
 	}
 	if (Res_Equation < 0.1f)
 	{
 		points2--;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
-			sendToDebug_str("q");
+			print("q");
 	}
 	if (debug && (HAL_GetTick() - prevPrint) > 100)
 	{
-		sendToDebug_newline();
+		println("");
 		prevPrint = HAL_GetTick();
 	}
 

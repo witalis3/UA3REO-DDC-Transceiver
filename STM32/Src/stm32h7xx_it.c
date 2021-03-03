@@ -584,7 +584,7 @@ void TIM6_DAC_IRQHandler(void)
     LCD_showInfo("GOOD BYE!", false);
     SaveSettings();
     SaveSettingsToEEPROM();
-    sendToDebug_flush();
+    print_flush();
     while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
     {
     }
@@ -611,7 +611,7 @@ void TIM6_DAC_IRQHandler(void)
       LCD_UpdateQuery.TopButtons = true;
       NeedSaveSettings = true;
       TRX_Restart_Mode();
-      sendToDebug_strln("RF temperature too HIGH!");
+      println("RF temperature too HIGH!");
       LCD_showTooltip("RF temperature too HIGH!");
     }
     if (TRX_SWR > CALIBRATE.TRX_MAX_SWR && !TRX_Tune && TRX_PWR_Forward > 1.0f)
@@ -623,7 +623,7 @@ void TIM6_DAC_IRQHandler(void)
       LCD_UpdateQuery.TopButtons = true;
       NeedSaveSettings = true;
       TRX_Restart_Mode();
-      sendToDebug_strln("SWR too HIGH!");
+      println("SWR too HIGH!");
       LCD_showTooltip("SWR too HIGH!");
     }
   }
@@ -692,7 +692,7 @@ void TIM6_DAC_IRQHandler(void)
       fpga_stuck_errors = 0;
     if (fpga_stuck_errors > 5 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop)
     {
-      sendToDebug_strln("[ERR] IQ stuck error, restart");
+      println("[ERR] IQ stuck error, restart");
       fpga_stuck_errors = 0;
       FPGA_NeedRestart = true;
     }
@@ -745,8 +745,7 @@ void TIM6_DAC_IRQHandler(void)
     static bool phase_restarted = false;
     if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop)
     {
-      sendToDebug_str("[ERR] IQ phase error, restart | ");
-      sendToDebug_float32(TRX_IQ_phase_error, false);
+      println("[ERR] IQ phase error, restart | ", TRX_IQ_phase_error);
       FPGA_NeedRestart = true;
       phase_restarted = true;
     }
@@ -783,44 +782,22 @@ void TIM6_DAC_IRQHandler(void)
       uint32_t dbg_TX_USB_AUDIO_SAMPLES = (uint32_t)((float32_t)TX_USB_AUDIO_SAMPLES * dbg_coeff);
       uint32_t cpu_load = (uint32_t)CPU_LOAD.Load;
       //Print Debug info
-      sendToDebug_str("FPGA Samples: ");
-      sendToDebug_uint32(dbg_FPGA_samples, false); //~96000
-      sendToDebug_str("Audio DMA samples: ");
-      sendToDebug_uint32(dbg_WM8731_DMA_samples, false); //~48000
-      sendToDebug_str("Audioproc blocks: ");
-      sendToDebug_uint32(dbg_AUDIOPROC_samples, false);
-      sendToDebug_str("CPU Load: ");
-      sendToDebug_uint32(cpu_load, false);
-      sendToDebug_str("RF/STM32 Temperature: ");
-      sendToDebug_int16((int16_t)TRX_RF_Temperature, true);
-      sendToDebug_str(" / ");
-      sendToDebug_int16((int16_t)TRX_STM32_TEMPERATURE, false);
-      sendToDebug_str("STM32 Voltage: ");
-      sendToDebug_float32(TRX_STM32_VREF, false);
-      sendToDebug_str("TIM6 delay: ");
-      sendToDebug_uint32(dbg_tim6_delay, false);
-      sendToDebug_str("FFT FPS: ");
-      sendToDebug_uint32(FFT_FPS, false);
-      sendToDebug_str("First byte of RX-FPGA I/Q: ");
-      sendToDebug_float32(dbg_FPGA_Audio_Buffer_I_tmp, true); //first byte of I
-      sendToDebug_str(" / ");
-      sendToDebug_float32(dbg_FPGA_Audio_Buffer_Q_tmp, false); //first byte of Q
-      sendToDebug_str("IQ Phase error: ");
-      sendToDebug_float32(TRX_IQ_phase_error, false); //first byte of Q
-      sendToDebug_str("USB Audio RX/TX samples: ");
-      sendToDebug_uint32(dbg_RX_USB_AUDIO_SAMPLES, true); //~48000
-      sendToDebug_str(" / ");
-      sendToDebug_uint32(dbg_TX_USB_AUDIO_SAMPLES, false); //~48000
-      sendToDebug_str("ADC MIN/MAX Amplitude: ");
-      sendToDebug_int16(TRX_ADC_MINAMPLITUDE, true);
-      sendToDebug_str(" / ");
-      sendToDebug_int16(TRX_ADC_MAXAMPLITUDE, false);
-			//sendToDebug_bin16(TRX_ADC_MINAMPLITUDE, true); sendToDebug_str(" / "); sendToDebug_bin16(TRX_ADC_MAXAMPLITUDE, false);
-      sendToDebug_str("VCXO Error: ");
-      sendToDebug_int32(TRX_VCXO_ERROR, false);
-      sendToDebug_str("WIFI State: ");
-      sendToDebug_int16(WIFI_State, false);
-      sendToDebug_newline();
+      println("FPGA Samples: ", dbg_FPGA_samples); //~96000
+      println("Audio DMA samples: ", dbg_WM8731_DMA_samples); //~48000
+      println("Audioproc blocks: ", dbg_AUDIOPROC_samples);
+      println("CPU Load: ", cpu_load);
+      println("RF/STM32 Temperature: ", (int16_t)TRX_RF_Temperature, " / ", (int16_t)TRX_STM32_TEMPERATURE);
+      println("STM32 Voltage: ", TRX_STM32_VREF);
+      println("TIM6 delay: ", dbg_tim6_delay);
+      println("FFT FPS: ", FFT_FPS);
+      println("First byte of RX-FPGA I/Q: ", dbg_FPGA_Audio_Buffer_I_tmp, " / ", dbg_FPGA_Audio_Buffer_Q_tmp); //first byte of IQ
+      println("IQ Phase error: ", TRX_IQ_phase_error); //first byte of Q
+      println("USB Audio RX/TX samples: ", dbg_RX_USB_AUDIO_SAMPLES, " / ", dbg_TX_USB_AUDIO_SAMPLES); //~48000
+      println("ADC MIN/MAX Amplitude: ", TRX_ADC_MINAMPLITUDE, " / ", TRX_ADC_MAXAMPLITUDE);
+			//print_bin16(TRX_ADC_MINAMPLITUDE, true); print_str(" / "); print_bin16(TRX_ADC_MAXAMPLITUDE, false);
+      println("VCXO Error: ", TRX_VCXO_ERROR);
+      println("WIFI State: ", WIFI_State);
+      println("");
       PrintProfilerResult();
     }
 
@@ -881,7 +858,7 @@ void TIM7_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
 
-  sendToDebug_flush(); // send data to debug from the buffer
+  print_flush(); // send data to debug from the buffer
 
   // unmute after transition process end
   if (TRX_Temporary_Mute_StartTime > 0 && (HAL_GetTick() - TRX_Temporary_Mute_StartTime) > 10)

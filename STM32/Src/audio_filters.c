@@ -716,9 +716,7 @@ static IIR_BIQUAD_FILTER *getIIRFilter(IIR_BIQUAD_FILTER_TYPE type, uint_fast16_
 	for (uint16_t i = 0; i < IIR_FILTERS_COUNT; i++)
 		if (IIR_Biquad_Filters[i].type == type && IIR_Biquad_Filters[i].width == width)
 			return (IIR_BIQUAD_FILTER *)&IIR_Biquad_Filters[i];
-	sendToDebug_strln("Wrong filter length");
-	sendToDebug_uint16(type, false);
-	sendToDebug_uint16((uint16_t)width, false);
+	println("Wrong filter length ", type, " ", (uint16_t)width);
 	return (IIR_BIQUAD_FILTER *)&IIR_Biquad_Filters[0];
 }
 

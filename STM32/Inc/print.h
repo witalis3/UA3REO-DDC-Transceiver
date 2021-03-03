@@ -1,30 +1,19 @@
-//https://github.com/exebook/generic-print
+//redisigned https://github.com/exebook/generic-print
 
 #include <stdarg.h>
 #include <stdio.h>
 
-static int __print_enable_color = 1;
-
-static void __print_color(FILE* fd, int a) {
-	if (!__print_enable_color) return;
-	if (a == -1) fprintf(fd, "\x1b(B\x1b[m");
-	else fprintf(fd, "\x1b[38;5;%im", a);
-}
-
-#define __print_array(fd, T, qual, color) \
-	__print_color(fd, __print_color_normal); \
+#define __print_array(T, qual, color) \
 	int max_len = 16; \
 	int n = size/sizeof(T); \
 	T *m = va_arg(v, T*); \
-	fprintf(fd, "["); \
-	__print_color(fd, color); \
+	printf("["); \
 	for (int i = 0; i < (n < max_len ? n : max_len); i++) { \
-		if (i > 0) fprintf(fd, " "); \
-		fprintf(fd, qual, m[i]); \
+		if (i > 0) printf(" "); \
+		printf(qual, m[i]); \
 	} \
-	__print_color(fd, __print_color_normal); \
-	if (n > max_len) fprintf(fd, "..."); \
-	fprintf(fd, "]");
+	if (n > max_len) printf("..."); \
+	printf("]");
 
 static int __print_color_normal = -1; // -1 means default terminal foreground color
 static int __print_color_number = 4;
@@ -40,96 +29,76 @@ static void __print_setup_colors(int normal, int number, int string, int hex, in
 	__print_color_float = fractional;
 }
 
-static void __print_func (FILE *fd, int count, unsigned short types[], ...) {
+static void __print_func (int count, unsigned short types[], ...) {
 	va_list v;
 	va_start(v, types);
 	#ifdef __print_DEBUG
-	fprintf(fd, "args[%i]: ", count);
+	fprintf("args[%i]: ", count);
 	for (int i = 0; i < count; i++) {
 		char type = types[i] & 0x1F;
 		char size = types[i] >> 5;
-		if (i > 0) fprintf(fd, " ");
-		fprintf(fd, "%i[%i]", type, size);
+		if (i > 0) fprintf(" ");
+		fprintf("%i[%i]", type, size);
 	}
-	fprintf(fd, "\n");
+	fprintf("\n");
 	#endif // __print_DEBUG
 
 	for (int i = 0; i < count; i++) {
-		if (i > 0) fprintf(fd, " ");
 		char type = types[i] & 0x1F;
 		char size = types[i] >> 5;
 		if (type == 1) {
-			__print_color(fd, __print_color_float);
 			double d = va_arg(v, double);
-			fprintf(fd, "%'G", d);
+			printf("%f", d);
 		}
 		else if (type == 2) {
-			__print_color(fd, __print_color_string);
 			char c = va_arg(v, int);
-			fprintf(fd, "'%c'", c); __print_color(fd, __print_color_number);
-			fprintf(fd, "%i", (int)c);
+			printf("%c", c);
 		}
 		else if (type == 3) {
-			__print_color(fd, __print_color_number);
 			char c = va_arg(v, int);
-			fprintf(fd, "%i", (unsigned char)c);
-			__print_color(fd, __print_color_normal);
-			fprintf(fd, "<");
-			__print_color(fd, __print_color_hex);
-			fprintf(fd, "0x%X", (unsigned char)c);
-			__print_color(fd, __print_color_normal);
-			fprintf(fd, ">");
+			printf("%u", (unsigned char)c);
 		}
 		else if (type == 4) {
-			__print_color(fd, __print_color_number);
-			fprintf(fd, "%'i", va_arg(v, int));
+			printf("%d", va_arg(v, int));
 		}
 		else if (type == 5) {
-			__print_color(fd, __print_color_number);
-			fprintf(fd, "%'u", va_arg(v, int));
+			printf("%u", va_arg(v, unsigned int));
 		}
 		else if (type == 6) {
-			__print_color(fd, __print_color_number);
-			fprintf(fd, "%'li", va_arg(v, unsigned long));
+			printf("%lu", va_arg(v, unsigned long));
 		}
 		else if (type == 7) {
-			__print_color(fd, __print_color_number);
-			fprintf(fd, "%'lu", va_arg(v, long));
+			printf("%ld", va_arg(v, long));
 		}
 		else if (type == 8) {
-			__print_color(fd, __print_color_string);
-			fprintf(fd, "\"%s\"", va_arg(v, char*));
+			printf("%s", va_arg(v, char*));
 		}
 		else if (type == 9) {
-			__print_color(fd, __print_color_normal);
-			fprintf(fd, "%s", va_arg(v, char*));
+			printf("%s", va_arg(v, char*));
 		}
 		else if (type == 10) {
-			__print_color(fd, __print_color_hex);
-			fprintf(fd, "%p", va_arg(v, void*));
+			printf("%p", va_arg(v, void*));
 		}
 		else if (type == 11) {
-			__print_array(fd, int, "%i", __print_color_number);
+			__print_array(int, "%i", __print_color_number);
 		}
 		else if (type == 12) {
-			__print_array(fd, unsigned int, "%u", __print_color_number);
+			__print_array(unsigned int, "%u", __print_color_number);
 		}
 		else if (type == 13) {
-			__print_array(fd, short, "%i", __print_color_number);
+			__print_array(short, "%i", __print_color_number);
 		}
 		else if (type == 14) {
-			__print_array(fd, unsigned short, "%i", __print_color_number);
+			__print_array(unsigned short, "%i", __print_color_number);
 		}
 		else if (type == 15) {
-			__print_array(fd, char*, "\"%s\"", __print_color_string);
+			__print_array(char*, "%s", __print_color_string);
 		}
 		else {
-			fprintf(fd, "print: unsupported type (of size %i)\n", size); break;
+			printf("print: unsupported type %i (of size %i)\n", type, size); break;
 		}
 	}
 	va_end(v);
-	__print_color(fd, -1);
-	fprintf(fd, "\n");
 }
 
 #define __print_typeid(a) \
@@ -166,12 +135,12 @@ static void __print_func (FILE *fd, int count, unsigned short types[], ...) {
 
 #define __print_types(a...) __print_types_int(a, (void)0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
 
-#define fprint(fd, a...)({ \
+#define fprint(a...)({ \
 	int count = __print_count(a); \
 	unsigned short stack[count], *_p = stack + count; \
 	__print_types(a); \
-	__print_func(fd, count, _p, a); \
+	__print_func(count, _p, a); \
 });
 
-#define print(a...) fprint(stdout, a)
-
+#define print(a...) fprint(a)
+#define println(a...) fprint(a, "\r\n")

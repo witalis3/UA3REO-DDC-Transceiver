@@ -67,7 +67,7 @@ void WIFI_Init(void)
 	WIFI_WaitForOk();
 	if (strstr(WIFI_readedLine, "OK") != NULL)
 	{
-		sendToDebug_str("[WIFI] WIFI Module Inited\r\n");
+		println("[WIFI] WIFI Module Inited");
 		WIFI_State = WIFI_INITED;
 
 		// check if there are active connections, if yes - don't create a new one
@@ -81,14 +81,14 @@ void WIFI_Init(void)
 				WIFI_State = WIFI_READY;
 				WIFI_connected = true;
 				LCD_UpdateQuery.StatusInfoGUI = true;
-				sendToDebug_str("[WIFI] Connected\r\n");
+				println("[WIFI] Connected");
 			}
 		}
 	}
 	if (WIFI_State == WIFI_UNDEFINED)
 	{
 		WIFI_State = WIFI_NOTFOUND;
-		sendToDebug_str("[WIFI] WIFI Module Not Found\r\n");
+		println("[WIFI] WIFI Module Not Found");
 	}
 }
 
@@ -174,7 +174,7 @@ void WIFI_Process(void)
 		}
 		if (AP1_exist && strlen(TRX.WIFI_PASSWORD1) > 5)
 		{
-			sendToDebug_str3("[WIFI] Start connecting to AP1: ", TRX.WIFI_AP1, "\r\n");
+			println("[WIFI] Start connecting to AP1: ", TRX.WIFI_AP1);
 			strcat(com, "AT+CWJAP_CUR=\"");
 			strcat(com, TRX.WIFI_AP1);
 			strcat(com, "\",\"");
@@ -186,7 +186,7 @@ void WIFI_Process(void)
 		}
 		if (AP2_exist && strlen(TRX.WIFI_PASSWORD2) > 5)
 		{
-			sendToDebug_str3("[WIFI] Start connecting to AP2: ", TRX.WIFI_AP2, "\r\n");
+			println("[WIFI] Start connecting to AP2: ", TRX.WIFI_AP2);
 			strcat(com, "AT+CWJAP_CUR=\"");
 			strcat(com, TRX.WIFI_AP2);
 			strcat(com, "\",\"");
@@ -198,7 +198,7 @@ void WIFI_Process(void)
 		}
 		if (AP3_exist && strlen(TRX.WIFI_PASSWORD3) > 5)
 		{
-			sendToDebug_str3("[WIFI] Start connecting to AP: ", TRX.WIFI_AP3, "\r\n");
+			println("[WIFI] Start connecting to AP: ", TRX.WIFI_AP3);
 			strcat(com, "AT+CWJAP_CUR=\"");
 			strcat(com, TRX.WIFI_AP3);
 			strcat(com, "\",\"");
@@ -214,7 +214,7 @@ void WIFI_Process(void)
 		WIFI_TryGetLine();
 		if (strstr(WIFI_readedLine, "GOT IP") != NULL)
 		{
-			sendToDebug_str("[WIFI] Connected\r\n");
+			println("[WIFI] Connected");
 			WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); //AUTOCONNECT
 			WIFI_WaitForOk();
 			WIFI_State = WIFI_READY;
@@ -223,21 +223,21 @@ void WIFI_Process(void)
 		}
 		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL)
 		{
-			sendToDebug_str("[WIFI] Disconnected\r\n");
+			println("[WIFI] Disconnected");
 			//WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
 		if (strstr(WIFI_readedLine, "FAIL") != NULL)
 		{
-			sendToDebug_str("[WIFI] Connect failed\r\n");
+			println("[WIFI] Connect failed");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
 		if (strstr(WIFI_readedLine, "ERROR") != NULL)
 		{
-			sendToDebug_str("[WIFI] Connect error\r\n");
+			println("[WIFI] Connect error");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 			LCD_UpdateQuery.StatusInfoGUI = true;
@@ -280,13 +280,13 @@ void WIFI_Process(void)
 			*wifi_incoming_data_end = 0x00;
 
 			if (WIFI_DEBUG)
-				sendToDebug_str3("[WIFI] Command received: ", wifi_incoming_data, "\r\n");
+				println("[WIFI] Command received: ", wifi_incoming_data);
 			if (wifi_incoming_length_uint > 0)
 				CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
 		}
 		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL)
 		{
-			sendToDebug_str("[WIFI] Disconnected\r\n");
+			println("[WIFI] Disconnected");
 			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 			WIFI_IP_Gotted = false;
@@ -324,7 +324,7 @@ void WIFI_Process(void)
 				WIFI_SendCommand("AT+CIPSTO=3600\r\n"); //Connection timeout
 				WIFI_WaitForOk();
 				WIFI_CAT_server_started = true;
-				sendToDebug_strln("[WIFI] CAT Server started on port 6784");
+				println("[WIFI] CAT Server started on port 6784");
 				WIFI_State = WIFI_READY;
 			}
 			//SNTP Command Ended
@@ -464,7 +464,7 @@ void WIFI_Process(void)
 												HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 												HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 												TRX_SNTP_Synced = HAL_GetTick();
-												sendToDebug_str("[WIFI] TIME SYNCED\r\n");
+												println("[WIFI] TIME SYNCED");
 											}
 										}
 									}
@@ -490,7 +490,7 @@ void WIFI_Process(void)
 						{
 							*end = 0x00;
 							strcat(WIFI_IP, start);
-							sendToDebug_str3("[WIFI] GOT IP: ", WIFI_IP, "\r\n");
+							println("[WIFI] GOT IP: ", WIFI_IP);
 							WIFI_IP_Gotted = true;
 						}
 					}
@@ -621,7 +621,7 @@ static void WIFI_SendCommand(char *command)
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
 	if (WIFI_DEBUG) //DEBUG
-		sendToDebug_str2("WIFI_S: ", command);
+		print("WIFI_S: ", command);
 }
 
 static bool WIFI_WaitForOk(void)
@@ -691,7 +691,7 @@ static bool WIFI_TryGetLine(void)
 	}
 
 	if (WIFI_DEBUG) //DEBUG
-		sendToDebug_str2("WIFI_R: ", WIFI_readedLine);
+		print("WIFI_R: ", WIFI_readedLine);
 
 	return true;
 }

@@ -88,9 +88,7 @@ void SD_Process(void)
 		disk.is_initialized[SDFatFs.drv] = false;
 		if (disk_initialize(SDFatFs.drv) == RES_OK)
 		{
-			sendToDebug_str("[OK] SD Card Inserted: ");
-			sendToDebug_uint32(sdinfo.capacity / 1024 / 1024, true);
-			sendToDebug_strln("Mb");
+			println("[OK] SD Card Inserted: ", sdinfo.capacity / 1024 / 1024, "Mb");
 			SD_Present = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
@@ -172,7 +170,7 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%d.wav", sDate.Year, sDate.Month, sDate.Date, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO()->Freq);
-	sendToDebug_strln(filename);
+	println(filename);
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
 		memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
@@ -1104,11 +1102,11 @@ static void SDCOMM_LISTROOT(void)
 				char *fn = fileInfo.fname;
 				if (fileInfo.fattrib & AM_DIR)
 				{
-					sendToDebug_str("[DIR]  ");
+					print("[DIR]  ");
 				}
 				if (strlen(fn))
 				{
-					sendToDebug_str(fn);
+					print(fn);
 					//sendToDebug_uint32(strlen(fn),false);
 				}
 				else
@@ -1119,10 +1117,10 @@ static void SDCOMM_LISTROOT(void)
 			}
 			else
 				break;
-			sendToDebug_str("\r\n");
+			println("");
 		}
 		f_closedir(&dir);
-		sendToDebug_str("read complete\r\n");
+		println("read complete");
 	}
 	else
 	{
@@ -1136,7 +1134,7 @@ static uint8_t SPIx_WriteRead(uint8_t Byte)
 	uint8_t SPIx_receivedByte = 0;
 	
 	if (!SPI_Transmit(&Byte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
-		sendToDebug_strln("SD SPI R Err");
+		println("SD SPI R Err");
 
 	return SPIx_receivedByte;
 }
@@ -1236,7 +1234,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 	//for (cnt = 0; cnt < btr; cnt++)
 		//buff[cnt] = SPI_ReceiveByte();
 	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
-		sendToDebug_strln("SD SPI R Err");
+		println("SD SPI R Err");
 	memcpy(buff, SD_Read_Block_tmp, btr);
 	
 	SPI_Release();
@@ -1261,7 +1259,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 			memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
 			if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 			{
-				sendToDebug_strln("SD SPI W Err");
+				println("SD SPI W Err");
 				return 0;
 			}
 		}
@@ -1269,7 +1267,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 		{
 			if (!SPI_Transmit(buff, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 			{
-				sendToDebug_strln("SD SPI W Err");
+				println("SD SPI W Err");
 				return 0;
 			}
 		}
