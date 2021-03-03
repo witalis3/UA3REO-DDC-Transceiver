@@ -156,7 +156,7 @@ static void __print_func (FILE *fd, int count, unsigned short types[], ...) {
 
 #define __print_push(c,size,cont) (cont, *--_p = c | (size << 5))
 #define __builtin_choose_expr __builtin_choose_expr
-#define __print_is_type(a, t) __builtin_types_compatible_p(typeof(a), t)
+#define __print_is_type(a, t) __builtin_types_compatible_p(__typeof__(a), t)
 #define __print_count_int(q,w,e,r,t,y,u,i,o,p,a,s,d,f,g,h,j,k,l,z,x,c,v,b,n,m,...) m
 #define __print_count(a...)__print_count_int(a,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
 
