@@ -1169,6 +1169,18 @@ void FFT_printWaterfallDMA(void)
 		{
 			FFT_FPS++;
 			lastWTFFreq = currentFFTFreq;
+			if (NeedWTFRedraw) //redraw cycles counter
+			{
+				if (needredraw_wtf_counter == 0)
+				{
+					needredraw_wtf_counter = 3;
+					NeedWTFRedraw = false;
+				}
+				else
+				{
+					needredraw_wtf_counter--;
+				}
+			}
 			FFT_need_fft = true;
 			LCD_busy = false;
 		}
