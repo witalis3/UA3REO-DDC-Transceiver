@@ -40,15 +40,15 @@
 // DMA1-3 - Peripheral SPI2 TX
 // DMA1-5 - sending data to audio codec
 
-// DMA2-3 - Fill 32bits arrays
 // DMA2-4 - DMA for copying 16 bit arrays
 // DMA2-5 - draw the fft at 16 bits, increment
 // DMA2-6 - draw the waterfall at 16 bits, increment
 
-// MDMA-0 - copy audio buffers at 32bit
+// MDMA-0 - copy buffers at 32bit
 // MDMA-1 - send audio processor buffer to codec buffer - A
 // MDMA-2 - send audio processor buffer to codec buffer - B
 // MDMA-3 - move the waterfall down
+// MDMA-4 - fill buffers at 32bit
 
 /* USER CODE END Header */
 
@@ -123,7 +123,6 @@ uint32_t dbg_FPGA_samples = 0;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 extern DMA2D_HandleTypeDef hdma2d;
 extern DMA_HandleTypeDef hdma_spi3_tx;
 extern DMA_HandleTypeDef hdma_spi2_rx;

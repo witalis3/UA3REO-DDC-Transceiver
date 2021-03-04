@@ -89,11 +89,11 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
-DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
 MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
 MDMA_HandleTypeDef hmdma_mdma_channel41_sw_0;
 MDMA_HandleTypeDef hmdma_mdma_channel42_sw_0;
 MDMA_HandleTypeDef hmdma_mdma_channel43_sw_0;
+MDMA_HandleTypeDef hmdma_mdma_channel44_sw_0;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
@@ -1238,7 +1238,6 @@ static void MX_USB_OTG_FS_PCD_Init(void)
   *   hdma_memtomem_dma2_stream6
   *   hdma_memtomem_dma2_stream4
   *   hdma_memtomem_dma2_stream5
-  *   hdma_memtomem_dma2_stream3
   */
 static void MX_DMA_Init(void)
 {
@@ -1304,25 +1303,6 @@ static void MX_DMA_Init(void)
     Error_Handler( );
   }
 
-  /* Configure DMA request hdma_memtomem_dma2_stream3 on DMA2_Stream3 */
-  hdma_memtomem_dma2_stream3.Instance = DMA2_Stream3;
-  hdma_memtomem_dma2_stream3.Init.Request = DMA_REQUEST_MEM2MEM;
-  hdma_memtomem_dma2_stream3.Init.Direction = DMA_MEMORY_TO_MEMORY;
-  hdma_memtomem_dma2_stream3.Init.PeriphInc = DMA_PINC_DISABLE;
-  hdma_memtomem_dma2_stream3.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_memtomem_dma2_stream3.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-  hdma_memtomem_dma2_stream3.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-  hdma_memtomem_dma2_stream3.Init.Mode = DMA_NORMAL;
-  hdma_memtomem_dma2_stream3.Init.Priority = DMA_PRIORITY_LOW;
-  hdma_memtomem_dma2_stream3.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
-  hdma_memtomem_dma2_stream3.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
-  hdma_memtomem_dma2_stream3.Init.MemBurst = DMA_MBURST_SINGLE;
-  hdma_memtomem_dma2_stream3.Init.PeriphBurst = DMA_PBURST_SINGLE;
-  if (HAL_DMA_Init(&hdma_memtomem_dma2_stream3) != HAL_OK)
-  {
-    Error_Handler( );
-  }
-
   /* DMA interrupt init */
   /* DMA1_Stream1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 1, 0);
@@ -1352,6 +1332,7 @@ static void MX_DMA_Init(void)
   *   hmdma_mdma_channel41_sw_0
   *   hmdma_mdma_channel42_sw_0
   *   hmdma_mdma_channel43_sw_0
+  *   hmdma_mdma_channel44_sw_0
   */
 static void MX_MDMA_Init(void)
 {
@@ -1444,6 +1425,28 @@ static void MX_MDMA_Init(void)
   hmdma_mdma_channel43_sw_0.Init.SourceBlockAddressOffset = 0;
   hmdma_mdma_channel43_sw_0.Init.DestBlockAddressOffset = 0;
   if (HAL_MDMA_Init(&hmdma_mdma_channel43_sw_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Configure MDMA channel MDMA_Channel4 */
+  /* Configure MDMA request hmdma_mdma_channel44_sw_0 on MDMA_Channel4 */
+  hmdma_mdma_channel44_sw_0.Instance = MDMA_Channel4;
+  hmdma_mdma_channel44_sw_0.Init.Request = MDMA_REQUEST_SW;
+  hmdma_mdma_channel44_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
+  hmdma_mdma_channel44_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
+  hmdma_mdma_channel44_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
+  hmdma_mdma_channel44_sw_0.Init.SourceInc = MDMA_SRC_INC_DISABLE;
+  hmdma_mdma_channel44_sw_0.Init.DestinationInc = MDMA_DEST_INC_WORD;
+  hmdma_mdma_channel44_sw_0.Init.SourceDataSize = MDMA_SRC_DATASIZE_WORD;
+  hmdma_mdma_channel44_sw_0.Init.DestDataSize = MDMA_DEST_DATASIZE_WORD;
+  hmdma_mdma_channel44_sw_0.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
+  hmdma_mdma_channel44_sw_0.Init.BufferTransferLength = 32;
+  hmdma_mdma_channel44_sw_0.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
+  hmdma_mdma_channel44_sw_0.Init.DestBurst = MDMA_DEST_BURST_SINGLE;
+  hmdma_mdma_channel44_sw_0.Init.SourceBlockAddressOffset = 0;
+  hmdma_mdma_channel44_sw_0.Init.DestBlockAddressOffset = 0;
+  if (HAL_MDMA_Init(&hmdma_mdma_channel44_sw_0) != HAL_OK)
   {
     Error_Handler();
   }
