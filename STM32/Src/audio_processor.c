@@ -463,12 +463,12 @@ void processRxAudio(void)
 		if (WM8731_DMA_state) //complete
 		{
 			HAL_MDMA_Start_IT(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
-			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0);
 		}
 		else //half
 		{
 			HAL_MDMA_Start_IT(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
-			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0);
 		}
 	}
 
@@ -781,12 +781,12 @@ void processTxAudio(void)
 		if (WM8731_DMA_state) //compleate
 		{
 			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
-			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0);
 		}
 		else //half
 		{
 			HAL_MDMA_Start(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], AUDIO_BUFFER_SIZE * 4, 1);
-			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0);
 		}
 	}
 	else
@@ -823,16 +823,16 @@ void processTxAudio(void)
 		if (FPGA_Audio_Buffer_State) //Send to FPGA DMA
 		{
 			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
-			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0);
 			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
-			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0);
 		}
 		else
 		{
 			HAL_MDMA_Start(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[0], AUDIO_BUFFER_HALF_SIZE * 4, 1);
-			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0);
 			HAL_MDMA_Start(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0], AUDIO_BUFFER_HALF_SIZE * 4, 1);
-			HAL_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0);
 		}
 		Aligned_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_I[0], sizeof(FPGA_Audio_SendBuffer_I));
 		Aligned_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));

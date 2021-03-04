@@ -578,7 +578,7 @@ bool FFT_printFFT(void)
 		if(length > 64)
 			length = 64;
 		HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)&indexed_wtf_buffer[move_est - 1][LAYOUT->FFT_PRINT_SIZE], (uint32_t)&indexed_wtf_buffer[move_est][LAYOUT->FFT_PRINT_SIZE], LAYOUT->FFT_PRINT_SIZE * length + 4, 1);
-		HAL_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
+		SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0);
 		move_est -= length;
 	}
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
