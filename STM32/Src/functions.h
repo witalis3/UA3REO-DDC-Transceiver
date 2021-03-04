@@ -84,6 +84,8 @@ __asm(".global __use_no_heap\n\t");
   for (uint_fast16_t wait_i = 0; wait_i < 100; wait_i++) \
     __asm("nop");
 
+#define DMA_MAX_BLOCK 65535
+
 // Example of __DATE__ string: "Jul 27 2012"
 //                              01234567890
 #define BUILD_YEAR_CH0 (__DATE__[7])
@@ -162,7 +164,9 @@ extern float32_t log10f_fast(float32_t X);
 extern void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read);
 extern void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length);
 extern void dma_memcpy32(void *dest, void *src, uint32_t len);
-extern void dma_memset32(void * dst, uint32_t val, uint32_t size);
+extern void dma_memset32(void *dest, uint32_t val, uint32_t size, bool invalidate);
+extern void dma_memset(void *dest, uint8_t val, uint32_t size, bool invalidate);
+extern void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma);
 extern float32_t db2rateV(float32_t i);
 extern float32_t db2rateP(float32_t i);
 extern float32_t rate2dbV(float32_t i);

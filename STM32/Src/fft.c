@@ -255,19 +255,19 @@ void FFT_Init(void)
 		zoomed_width = FFT_SIZE;
 
 	// clear the buffers
-	memset(&fft_output_buffer, 0x00, sizeof(fft_output_buffer));
-	memset(&indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
-	memset(&FFTInputCharge, 0x00, sizeof(FFTInputCharge));
-	memset(&fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
-	memset(&wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
-	memset(&FFTInput, 0x00, sizeof(FFTInput));
-	memset(&FFTInput_I_A, 0x00, sizeof(FFTInput_I_A));
-	memset(&FFTInput_Q_A, 0x00, sizeof(FFTInput_Q_A));
-	memset(&FFTInput_I_B, 0x00, sizeof(FFTInput_I_B));
-	memset(&FFTInput_Q_B, 0x00, sizeof(FFTInput_Q_B));
-	memset(&FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer));
-	memset(FFTOutput_mean, 0x00, sizeof FFTOutput_mean);
-	memset(&FFTInput_tmp, 0x00, sizeof(FFTInput_tmp));
+	dma_memset(fft_output_buffer, 0x00, sizeof(fft_output_buffer), false);
+	dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer), true);
+	dma_memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge), true);
+	dma_memset(fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs), true);
+	dma_memset(wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs), true);
+	dma_memset(FFTInput, 0x00, sizeof(FFTInput), true);
+	dma_memset(FFTInput_I_A, 0x00, sizeof(FFTInput_I_A), true);
+	dma_memset(FFTInput_Q_A, 0x00, sizeof(FFTInput_Q_A), true);
+	dma_memset(FFTInput_I_B, 0x00, sizeof(FFTInput_I_B), true);
+	dma_memset(FFTInput_Q_B, 0x00, sizeof(FFTInput_Q_B), true);
+	dma_memset(FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer), true);
+	dma_memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean), true);
+	dma_memset(FFTInput_tmp, 0x00, sizeof(FFTInput_tmp), true);
 	NeedWTFRedraw = true;
 	FFT_new_buffer_ready = false;
 	FFT_buff_index = 0;
@@ -309,7 +309,7 @@ void FFT_bufferPrepare(void)
 	uint32_t nowFFTChargeBufferFreq = CurrentVFO()->Freq;
 	if(TRX.WTF_Moving && fabsf((float32_t)FFT_lastFFTChargeBufferFreq - (float32_t)nowFFTChargeBufferFreq) > (500 / fft_zoom)) //zeroing threshold
 	{
-		memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
+		dma_memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge), true);
 		FFT_ChargeBuffer_collected = 0;
 	}
 	FFT_lastFFTChargeBufferFreq = nowFFTChargeBufferFreq;
@@ -399,7 +399,7 @@ void FFT_doFFT(void)
 	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
 
 	//Debug VAD
-	/*memset(FFTInput, 0x00, sizeof(FFTInput));
+	/*dma_memset(FFTInput, 0x00, sizeof(FFTInput));
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 	{
 		FFTInput[i] = VAD_FFTBuffer_Export[i];
@@ -407,7 +407,7 @@ void FFT_doFFT(void)
 	NeedFFTInputBuffer = true;*/
 
 	//Debug CW Decoder
-	/*memset(FFTInput, 0x00, sizeof(FFTInput));
+	/*dma_memset(FFTInput, 0x00, sizeof(FFTInput));
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 	{
 		FFTInput[i] = CWDEC_FFTBuffer_Export[i];
@@ -503,7 +503,7 @@ void FFT_doFFT(void)
 		FFT_meanBuffer_index = 0;
 
 	// Averaging values
-	memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean));
+	dma_memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean), true);
 	for (uint_fast16_t avg_idx = 0; avg_idx < TRX.FFT_Averaging; avg_idx++)
 	{
 		int32_t freq_diff = roundf(((float32_t)((float32_t)fft_meanbuffer_freqs[avg_idx] - (float32_t)CurrentVFO()->Freq) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom);
@@ -547,7 +547,7 @@ bool FFT_printFFT(void)
 	if (CurrentVFO()->Freq != currentFFTFreq)
 	{
 		//calculate scale lines
-		memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
+		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos), true);
 		uint8_t index = 0;
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 		{
@@ -922,7 +922,7 @@ void FFT_afterPrintFFT(void)
 	//continue DMA draw?
 	if (print_fft_dma_estimated_size > 0)
 	{
-		if (print_fft_dma_estimated_size <= FFT_DMA_MAX_BLOCK)
+		if (print_fft_dma_estimated_size <= DMA_MAX_BLOCK)
 		{
 			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
 			print_fft_dma_estimated_size = 0;
@@ -930,9 +930,9 @@ void FFT_afterPrintFFT(void)
 		}
 		else
 		{
-			print_fft_dma_estimated_size -= FFT_DMA_MAX_BLOCK;
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, FFT_DMA_MAX_BLOCK);
-			print_fft_dma_position += FFT_DMA_MAX_BLOCK;
+			print_fft_dma_estimated_size -= DMA_MAX_BLOCK;
+			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, DMA_MAX_BLOCK);
+			print_fft_dma_position += DMA_MAX_BLOCK;
 		}
 		return;
 	}
@@ -941,7 +941,7 @@ void FFT_afterPrintFFT(void)
 	if(lastWTFFreq != currentFFTFreq || NeedWTFRedraw)
 	{
 		// clear and display part of the vertical bar
-		memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));
+		dma_memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp), true);
 
 		// output bandmaps
 		int8_t band_curr = getBandFromFreq(CurrentVFO()->Freq, true);
@@ -1033,7 +1033,7 @@ static void FFT_3DPrintFFT(void)
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 
 	//clear old data
-	memset(indexed_3d_fft_buffer, fftHeight, sizeof(indexed_3d_fft_buffer));
+	dma_memset(indexed_3d_fft_buffer, fftHeight, sizeof(indexed_3d_fft_buffer), true);
 
 	//draw 3D WTF
 	for (int32_t wtf_yindex = 0; wtf_yindex <= FFT_3D_SLIDES; wtf_yindex++) //each slides
@@ -1264,7 +1264,7 @@ void FFT_printWaterfallDMA(void)
 
 		if (body_width <= 0)
 		{
-			memset(&wtf_output_line, BG_COLOR, sizeof(wtf_output_line));
+			dma_memset(&wtf_output_line, BG_COLOR, sizeof(wtf_output_line), false);
 		}
 		else
 		{
@@ -1278,7 +1278,7 @@ void FFT_printWaterfallDMA(void)
 			}
 			else if (margin_left > 0)
 			{
-				memset(&wtf_output_line, BG_COLOR, (uint32_t)(margin_left * 2)); // fill the space to the left
+				dma_memset(&wtf_output_line, BG_COLOR, (uint32_t)(margin_left * 2), false); // fill the space to the left
 				for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++)
 					if ((margin_left + wtf_x) >= bw_line_start && (margin_left + wtf_x) <= bw_line_end) //print bw bar
 						wtf_output_line[margin_left + wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x]];
@@ -1287,7 +1287,7 @@ void FFT_printWaterfallDMA(void)
 			}
 			if (margin_right > 0)
 			{
-				memset(&wtf_output_line[(LAYOUT->FFT_PRINT_SIZE - margin_right)], BG_COLOR, (uint32_t)(margin_right * 2)); // fill the space to the right
+				dma_memset(&wtf_output_line[(LAYOUT->FFT_PRINT_SIZE - margin_right)], BG_COLOR, (uint32_t)(margin_right * 2), false); // fill the space to the right
 				for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_right); wtf_x++)
 					if (wtf_x >= bw_line_start && wtf_x <= bw_line_end) //print bw bar
 						wtf_output_line[wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x + margin_right]];

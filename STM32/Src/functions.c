@@ -20,13 +20,13 @@ void dma_memcpy32(void *dest, void *src, uint32_t len)
 {
 	if (len == 0)
 		return;
-	static bool dma_busy = false;
-	if(dma_busy) //for async calls
-		HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
-	dma_busy = true;
+	static bool dma_memcpy32_busy = false;
+	if(dma_memcpy32_busy) //for async calls
+		HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, 1000);
+	dma_memcpy32_busy = true;
 	HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, len * 4, 1);
-	HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, HAL_MAX_DELAY);
-	dma_busy = false;
+	HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, 1000);
+	dma_memcpy32_busy = false;
 }
 
 void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read)
@@ -545,9 +545,134 @@ float32_t quick_median_select(float32_t* arr, int n)
 }
 
 SRAM static uint32_t dma_memset32_reg = 0;
-void dma_memset32(void * dst, uint32_t val, uint32_t size)
+void dma_memset32(void *dest, uint32_t val, uint32_t size, bool invalidate)
 {
+	if (size == 0)
+		return;
+
+	static bool dma_memset32_busy = false;
+	if(dma_memset32_busy) //for async calls
+		SLEEPING_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3);
+	
+	dma_memset32_busy = true;
 	dma_memset32_reg = val;
-	HAL_DMA_Start(&hdma_memtomem_dma2_stream3, (uint32_t)&dma_memset32_reg, (uint32_t)dst, size);
-	HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+	HAL_DMA_Start(&hdma_memtomem_dma2_stream3, (uint32_t)&dma_memset32_reg, (uint32_t)dest, size);
+	SLEEPING_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3);
+	dma_memset32_busy = false;
+	
+	if(invalidate)
+		Aligned_InvalidateDCache_by_Addr(dest, size * 4);
+}
+
+void dma_memset(void *dest, uint8_t val, uint32_t size, bool invalidate)
+{
+	uint32_t val32 = (val << 24) | (val << 16) | (val << 8) | (val << 0);
+	uint32_t block32 = size / 4;
+	uint32_t block8 = size % 4;
+	while(block32 > DMA_MAX_BLOCK)
+	{
+		dma_memset32(dest, val32, DMA_MAX_BLOCK, invalidate);
+		block32 -= DMA_MAX_BLOCK;
+		dest += DMA_MAX_BLOCK;
+	}
+	dma_memset32(dest, val32, block32, invalidate);
+	if(block8 > 0)
+	{
+		dest += block32;
+		uint8_t *arr = dest;
+		for(uint32_t i = 0 ; i < block8 ; i++)
+			arr[i] = val;
+	}
+}
+
+typedef struct
+{
+  __IO uint32_t ISR;   /*!< DMA interrupt status register */
+  __IO uint32_t Reserved0;
+  __IO uint32_t IFCR;  /*!< DMA interrupt flag clear register */
+} DMA_Base_Registers;
+
+void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma)
+{
+	#define Timeout 100
+  uint32_t cpltlevel_mask;
+  uint32_t tickstart = HAL_GetTick();
+
+  /* IT status register */
+  __IO uint32_t *isr_reg;
+  /* IT clear flag register */
+  __IO uint32_t *ifcr_reg;
+
+  if(HAL_DMA_STATE_BUSY != hdma->State) /* No transfer ongoing */
+  {
+    __HAL_UNLOCK(hdma);
+    return;
+  }
+
+	/* Get the level transfer complete flag */
+	/* Transfer Complete flag */
+	cpltlevel_mask = DMA_FLAG_TCIF0_4 << (hdma->StreamIndex & 0x1FU);
+
+	isr_reg  = &(((DMA_Base_Registers *)hdma->StreamBaseAddress)->ISR);
+	ifcr_reg = &(((DMA_Base_Registers *)hdma->StreamBaseAddress)->IFCR);
+
+  while(((*isr_reg) & cpltlevel_mask) == 0U)
+  {
+		if(((*isr_reg) & (DMA_FLAG_FEIF0_4 << (hdma->StreamIndex & 0x1FU))) != 0U) /* Clear the FIFO error flag */
+			(*ifcr_reg) = DMA_FLAG_FEIF0_4 << (hdma->StreamIndex & 0x1FU);
+
+		if(((*isr_reg) & (DMA_FLAG_DMEIF0_4 << (hdma->StreamIndex & 0x1FU))) != 0U) /* Clear the Direct Mode error flag */
+			(*ifcr_reg) = DMA_FLAG_DMEIF0_4 << (hdma->StreamIndex & 0x1FU);
+
+		if(((*isr_reg) & (DMA_FLAG_TEIF0_4 << (hdma->StreamIndex & 0x1FU))) != 0U)
+		{
+			/* Clear the transfer error flag */
+			(*ifcr_reg) = DMA_FLAG_TEIF0_4 << (hdma->StreamIndex & 0x1FU);
+
+			/* Change the DMA state */
+			hdma->State = HAL_DMA_STATE_READY;
+
+			/* Process Unlocked */
+			__HAL_UNLOCK(hdma);
+
+			return;
+		}
+
+    /* Check for the Timeout (Not applicable in circular mode)*/
+		if((HAL_GetTick() - tickstart) > Timeout)
+		{
+			/* if timeout then abort the current transfer */
+			/* No need to check return value: as in this case we will return HAL_ERROR with HAL_DMA_ERROR_TIMEOUT error code  */
+			(void) HAL_DMA_Abort(hdma);
+			return;
+		}
+
+    if(IS_DMA_DMAMUX_ALL_INSTANCE(hdma->Instance) != 0U) /* No DMAMUX available for BDMA1 */
+    {
+      /* Check for DMAMUX Request generator (if used) overrun status */
+      if(hdma->DMAmuxRequestGen != 0U)
+      {
+        /* if using DMAMUX request generator Check for DMAMUX request generator overrun */
+        if((hdma->DMAmuxRequestGenStatus->RGSR & hdma->DMAmuxRequestGenStatusMask) != 0U) /* Clear the DMAMUX request generator overrun flag */
+					hdma->DMAmuxRequestGenStatus->RGCFR = hdma->DMAmuxRequestGenStatusMask;
+      }
+
+      /* Check for DMAMUX Synchronization overrun */
+      if((hdma->DMAmuxChannelStatus->CSR & hdma->DMAmuxChannelStatusMask) != 0U) /* Clear the DMAMUX synchro overrun flag */
+        hdma->DMAmuxChannelStatus->CFR = hdma->DMAmuxChannelStatusMask;
+    }
+		
+		//go sleep
+		CPULOAD_GoToSleepMode();
+  }
+
+
+  /* Get the level transfer complete flag */
+	/* Clear the half transfer and transfer complete flags */
+	(*ifcr_reg) = (DMA_FLAG_HTIF0_4 | DMA_FLAG_TCIF0_4) << (hdma->StreamIndex & 0x1FU);
+
+	/* Process Unlocked */
+	__HAL_UNLOCK(hdma);
+
+	hdma->State = HAL_DMA_STATE_READY;
 }
