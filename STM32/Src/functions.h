@@ -33,7 +33,8 @@ __asm(".global __use_no_heap\n\t");
 #define BACKUP_SRAM_BANK1_ADDR (uint32_t *)0x38800000
 #define BACKUP_SRAM_BANK2_ADDR (uint32_t *)0x38800800
 //#define ALIGN_32BIT __attribute__((aligned(32)))
-#define IRAM2_START_ADDR 0x24000000
+#define NOCACHE_ADDR_START 0x30000000
+#define NOCACHE_ADDR_END 0x30048000
 
 //UINT from BINARY STRING
 #define HEX__(n) 0x##n##LU
@@ -167,7 +168,6 @@ extern void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uin
 extern void dma_memcpy32(void *dest, void *src, uint32_t len);
 extern void dma_memset32(void *dest, uint32_t val, uint32_t size);
 extern void dma_memset(void *dest, uint8_t val, uint32_t size);
-extern void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma);
 extern float32_t db2rateV(float32_t i);
 extern float32_t db2rateP(float32_t i);
 extern float32_t rate2dbV(float32_t i);
