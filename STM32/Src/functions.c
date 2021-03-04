@@ -565,7 +565,7 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	
 	dma_memset32_busy = true;
 	dma_memset32_reg = val;
-	HAL_MDMA_Start(&hmdma_mdma_channel44_sw_0, (uint32_t)&dma_memset32_reg, (uint32_t)dest, 4, size);
+	HAL_MDMA_Start(&hmdma_mdma_channel44_sw_0, (uint32_t)&dma_memset32_reg, (uint32_t)dest, 4 * size, 1);
 	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel44_sw_0);
 	dma_memset32_busy = false;
 	
@@ -595,11 +595,12 @@ void dma_memset(void *dest, uint8_t val, uint32_t size)
 		uint32_t val32 = (val << 24) | (val << 16) | (val << 8) | (val << 0);
 		uint32_t block32 = size / 4;
 		uint32_t block8 = size % 4;
-		while(block32 > DMA_MAX_BLOCK)
+		uint32_t max_block = DMA_MAX_BLOCK / 4;
+		while(block32 > max_block)
 		{
-			dma_memset32(pDst, val32, DMA_MAX_BLOCK);
-			block32 -= DMA_MAX_BLOCK;
-			pDst += DMA_MAX_BLOCK * 4;
+			dma_memset32(pDst, val32, max_block);
+			block32 -= max_block;
+			pDst += max_block * 4;
 		}
 		dma_memset32(pDst, val32, block32);
 		
