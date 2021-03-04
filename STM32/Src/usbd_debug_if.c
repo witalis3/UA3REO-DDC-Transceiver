@@ -205,7 +205,7 @@ uint8_t DEBUG_Transmit_FIFO_Events(void)
 		return USBD_FAIL;
 	FIFO_Events_busy = true;
 	uint16_t indx = 0;
-	memset(temp_buff, 0x00, DEBUG_TX_FIFO_BUFFER_SIZE);
+	dma_memset(temp_buff, 0x00, DEBUG_TX_FIFO_BUFFER_SIZE);
 
 	if (debug_tx_fifo_tail > debug_tx_fifo_head)
 	{

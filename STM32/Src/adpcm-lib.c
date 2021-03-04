@@ -74,7 +74,7 @@ void *adpcm_create_context(int num_channels, int lookahead, int noise_shaping, i
 {
     int ch, i;
 
-    memset(&pcnxt, 0, sizeof(struct adpcm_context));
+    dma_memset(&pcnxt, 0, sizeof(struct adpcm_context));
     pcnxt.noise_shaping = noise_shaping;
     pcnxt.num_channels = num_channels;
     pcnxt.lookahead = lookahead;
@@ -101,7 +101,7 @@ void adpcm_free_context(void *p)
     struct adpcm_context *pcnxt = (struct adpcm_context *)p;
 
     //free (pcnxt);
-    memset(pcnxt, 0, sizeof(struct adpcm_context));
+    dma_memset(pcnxt, 0, sizeof(struct adpcm_context));
 }
 
 static void set_decode_parameters(struct adpcm_context *pcnxt, int32_t *init_pcmdata, int8_t *init_index)

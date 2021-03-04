@@ -239,6 +239,6 @@ void ResetAGC(void)
 {
 	AGC_RX1_need_gain_db = 0.0f;
 	AGC_RX2_need_gain_db = 0.0f;
-	memset(AGC_RX1_ringbuffer, 0x00, sizeof(AGC_RX1_ringbuffer));
-	memset(AGC_RX2_ringbuffer, 0x00, sizeof(AGC_RX2_ringbuffer));
+	dma_memset(AGC_RX1_ringbuffer, 0x00, sizeof(AGC_RX1_ringbuffer));
+	dma_memset(AGC_RX2_ringbuffer, 0x00, sizeof(AGC_RX2_ringbuffer));
 }

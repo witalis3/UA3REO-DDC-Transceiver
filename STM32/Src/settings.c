@@ -122,7 +122,7 @@ void LoadSettings(bool clear)
 	{
 		if (clear)
 			println("[OK] Soft reset TRX");
-		memset(&TRX, 0x00, sizeof(TRX));
+		dma_memset(&TRX, 0x00, sizeof(TRX));
 		//
 		TRX.flash_id = SETT_VERSION;		 // Firmware ID in SRAM, if it doesn't match, use the default
 		//TRX
@@ -424,14 +424,14 @@ void SaveSettings(void)
 	{
 		memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
-		memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
+		dma_memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 	}
 	else
 	{
 		memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-		memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
+		dma_memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 	}
 	BKPSRAM_Disable();

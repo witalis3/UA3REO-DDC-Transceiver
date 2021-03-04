@@ -57,7 +57,7 @@ void processVAD(float32_t *buffer)
 #define debug false
 
 	// clear the old FFT buffer
-	memset(VAD_FFTBuffer, 0x00, sizeof(VAD_FFTBuffer));
+	dma_memset(VAD_FFTBuffer, 0x00, sizeof(VAD_FFTBuffer));
 	// copy the incoming data for the next work
 	memcpy(InputBuffer, buffer, sizeof(InputBuffer));
 	// Decimator

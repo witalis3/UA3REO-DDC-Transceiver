@@ -97,9 +97,9 @@ void WIFI_Process(void)
 	static IRAM2 char com_t[128] = {0};
 	static IRAM2 char tz[2] = {0};
 	static IRAM2 char com[128] = {0};
-	memset(com_t, 0x00, sizeof(com_t));
-	memset(tz, 0x00, sizeof(tz));
-	memset(com, 0x00, sizeof(com));
+	dma_memset(com_t, 0x00, sizeof(com_t));
+	dma_memset(tz, 0x00, sizeof(tz));
+	dma_memset(com, 0x00, sizeof(com));
 	
 	if (WIFI_State == WIFI_NOTFOUND)
 		return;
@@ -551,7 +551,7 @@ void WIFI_ListAP(void (*callback)(void))
 	WIFI_FoundedAP_Index = 0;
 
 	for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-		memset((char *)&WIFI_FoundedAP_InWork[i], 0x00, sizeof WIFI_FoundedAP_InWork[i]);
+		dma_memset((char *)&WIFI_FoundedAP_InWork[i], 0x00, sizeof WIFI_FoundedAP_InWork[i]);
 	WIFI_SendCommand("AT+CWLAP\r\n"); //List AP
 }
 
@@ -560,7 +560,7 @@ static bool WIFI_ListAP_Sync(void)
 	WIFI_SendCommand("AT+CWLAP\r\n"); //List AP
 	WIFI_FoundedAP_Index = 0;
 	for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-		memset((char *)&WIFI_FoundedAP[i], 0x00, sizeof WIFI_FoundedAP[i]);
+		dma_memset((char *)&WIFI_FoundedAP[i], 0x00, sizeof WIFI_FoundedAP[i]);
 	uint32_t startTime = HAL_GetTick();
 	char *sep = "OK";
 	char *istr;
@@ -614,7 +614,7 @@ static void WIFI_SendCommand(char *command)
 {
 	HAL_UART_AbortReceive(&huart6);
 	HAL_UART_AbortReceive_IT(&huart6);
-	memset(WIFI_AnswerBuffer, 0x00, sizeof(WIFI_AnswerBuffer));
+	dma_memset(WIFI_AnswerBuffer, 0x00, sizeof(WIFI_AnswerBuffer));
 	WIFI_Answer_ReadIndex = 0;
 	HAL_UART_Receive_DMA(&huart6, (uint8_t *)WIFI_AnswerBuffer, WIFI_ANSWER_BUFFER_SIZE);
 	HAL_UART_Transmit_IT(&huart6, (uint8_t *)command, (uint16_t)strlen(command));
@@ -651,8 +651,8 @@ static bool WIFI_WaitForOk(void)
 
 static bool WIFI_TryGetLine(void)
 {
-	memset(WIFI_readedLine, 0x00, sizeof(WIFI_readedLine));
-	memset(tmp, 0x00, sizeof(tmp));
+	dma_memset(WIFI_readedLine, 0x00, sizeof(WIFI_readedLine));
+	dma_memset(tmp, 0x00, sizeof(tmp));
 
 	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
 	if (WIFI_Answer_ReadIndex == dma_index)
@@ -855,7 +855,7 @@ static void WIFI_sendHTTPRequest(void)
 {
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_TCP_GET_RESPONSE;
-	memset(WIFI_HTTRequest, 0x00, sizeof(WIFI_HTTRequest));
+	dma_memset(WIFI_HTTRequest, 0x00, sizeof(WIFI_HTTRequest));
 	strcat(WIFI_HTTRequest, "GET ");
 	strcat(WIFI_HTTRequest, WIFI_GETuri);
 	strcat(WIFI_HTTRequest, " HTTP/1.1\r\n");
@@ -877,7 +877,7 @@ bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https)
 	WIFI_ProcessingCommandCallback = callback;
 	WIFI_HTTP_Response_Status = 0;
 
-	memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
+	dma_memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
 	strcat(WIFI_HOSTuri, "AT+CIPSTART=0,");
 	if (!https)
 		strcat(WIFI_HOSTuri, "\"TCP\"");
@@ -891,12 +891,12 @@ bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https)
 	else
 		strcat(WIFI_HOSTuri, "\",443,10\r\n");
 
-	memset(WIFI_GETuri, 0x00, sizeof(WIFI_GETuri));
+	dma_memset(WIFI_GETuri, 0x00, sizeof(WIFI_GETuri));
 	strcat(WIFI_GETuri, url);
 
 	WIFI_SendCommand(WIFI_HOSTuri);
 
-	memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
+	dma_memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
 	strcat(WIFI_HOSTuri, host);
 	return true;
 }
@@ -914,7 +914,7 @@ static void WIFI_printText_callback(void)
 
 static void WIFI_printImage_stream_partial_callback(void)
 {
-	memset(WIFI_RLEStreamBuffer, 0x00, sizeof(WIFI_RLEStreamBuffer));
+	dma_memset(WIFI_RLEStreamBuffer, 0x00, sizeof(WIFI_RLEStreamBuffer));
 	//parse hex output from server (convert to bin)
 	char *istr = WIFI_HTTResponseHTML;
 	char hex[5] = {0};
@@ -942,7 +942,7 @@ static void WIFI_printImage_stream_partial_callback(void)
 		strcpy(WIFI_HTTResponseHTML, istr);
 	}
 	else
-		memset(WIFI_HTTResponseHTML, 0x00, sizeof(WIFI_HTTResponseHTML));
+		dma_memset(WIFI_HTTResponseHTML, 0x00, sizeof(WIFI_HTTResponseHTML));
 }
 
 static void WIFI_printImage_stream_callback(void)

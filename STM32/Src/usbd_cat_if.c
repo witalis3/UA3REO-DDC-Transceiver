@@ -162,17 +162,17 @@ static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
 				if (cat_buffer[cat_buffer_head] == ';')
 				{
 					CAT_processingWiFiCommand = false;
-					memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
+					dma_memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
 					memcpy(command_to_parse, cat_buffer, cat_buffer_head);
 					cat_buffer_head = 0;
-					memset(&cat_buffer, 0, CAT_BUFFER_SIZE);
+					dma_memset(&cat_buffer, 0, CAT_BUFFER_SIZE);
 					continue;
 				}
 				cat_buffer_head++;
 				if (cat_buffer_head >= CAT_BUFFER_SIZE)
 				{
 					cat_buffer_head = 0;
-					memset(&cat_buffer, 0, CAT_BUFFER_SIZE);
+					dma_memset(&cat_buffer, 0, CAT_BUFFER_SIZE);
 				}
 			}
 		}
@@ -219,7 +219,7 @@ void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id)
 {
 	CAT_processingWiFiCommand = true;
 	CAT_processingWiFi_link_id = link_id;
-	memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
+	dma_memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
 	memcpy(command_to_parse, data, length);
 	ua3reo_dev_cat_parseCommand();
 }
@@ -233,7 +233,7 @@ void ua3reo_dev_cat_parseCommand(void)
 	char _command_buffer[CAT_BUFFER_SIZE] = {0};
 	char *_command = _command_buffer;
 	memcpy(_command, command_to_parse, CAT_BUFFER_SIZE);
-	memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
+	dma_memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
 	while (*_command == '\r' || *_command == '\n' || *_command == ' ') //trim
 		_command++;
 	if (strlen(_command) < 2)

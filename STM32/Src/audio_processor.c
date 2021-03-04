@@ -814,7 +814,7 @@ void processTxAudio(void)
 		}
 		else if (TRX.CW_SelfHear)
 		{
-			memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
+			dma_memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
 			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 		}
 		//
@@ -992,7 +992,7 @@ static void doMIC_EQ(uint16_t size)
 		if (NeedReinitReverber)
 		{
 			reverber_position = 0;
-			memset(Processor_Reverber_Buffer, 0x00, sizeof(Processor_Reverber_Buffer));
+			dma_memset(Processor_Reverber_Buffer, 0x00, sizeof(Processor_Reverber_Buffer));
 			NeedReinitReverber = false;
 		}
 

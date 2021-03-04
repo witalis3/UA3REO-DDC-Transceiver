@@ -72,7 +72,7 @@ void CWDecoder_Init(void)
 void CWDecoder_Process(float32_t *bufferIn)
 {
 	// clear the old FFT buffer
-	memset(CWDEC_FFTBuffer, 0x00, sizeof(CWDEC_FFTBuffer));
+	dma_memset(CWDEC_FFTBuffer, 0x00, sizeof(CWDEC_FFTBuffer));
 	// copy the incoming data for the next work
 	memcpy(CWDEC_InputBuffer, bufferIn, sizeof(CWDEC_InputBuffer));
 	// Decimator

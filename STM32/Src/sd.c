@@ -173,8 +173,8 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 	println(filename);
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
-		memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
-		memset(&wav_hdr, 0x00, sizeof(wav_hdr));
+		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+		dma_memset(&wav_hdr, 0x00, sizeof(wav_hdr));
 		// RIFF header
 		wav_hdr.riffsig = 0x46464952;
 		wav_hdr.filesize = sizeof(wav_hdr);
@@ -268,7 +268,7 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 	char valbuff[64] = {0};
 	float32_t tmp_float = 0;
 
-	memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+	dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 
 	strcat((char *)SD_workbuffer_A, name);
 	strcat((char *)SD_workbuffer_A, " = ");
@@ -331,7 +331,7 @@ static bool SD_WRITE_SETT_STRING(char *name, char *value)
 {
 	uint32_t byteswritten;
 
-	memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+	dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 
 	strcat((char *)SD_workbuffer_A, name);
 	strcat((char *)SD_workbuffer_A, " = ");
@@ -574,8 +574,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	static IRAM2 char value[64] = {0};
 	char *istr = strstr((char *)line, " = ");
 	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)line);
-	memset(name, 0x00, sizeof(name));
-	memset(value, 0x00, sizeof(value));
+	dma_memset(name, 0x00, sizeof(name));
+	dma_memset(value, 0x00, sizeof(value));
 	if(len > 63) return;
 	strncpy(name, (char *)line, len);
 	strncpy(value, (char *)line + len + 3, len);
@@ -691,7 +691,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.Dual_RX_Type = (DUAL_RX_TYPE)uintval;
 	if (strcmp(name, "TRX.CALLSIGN") == 0)
 	{
-		memset(TRX.CALLSIGN, 0x00, sizeof(TRX.CALLSIGN));
+		dma_memset(TRX.CALLSIGN, 0x00, sizeof(TRX.CALLSIGN));
 		uint32_t lens = strlen(value);
 		if (lens > sizeof(TRX.CALLSIGN))
 			lens = sizeof(TRX.CALLSIGN);
@@ -699,7 +699,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	}
 	if (strcmp(name, "TRX.LOCATOR") == 0)
 	{
-		memset(TRX.LOCATOR, 0x00, sizeof(TRX.LOCATOR));
+		dma_memset(TRX.LOCATOR, 0x00, sizeof(TRX.LOCATOR));
 		uint32_t lens = strlen(value);
 		if (lens > sizeof(TRX.LOCATOR))
 			lens = sizeof(TRX.LOCATOR);
@@ -850,7 +850,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.WIFI_CAT_SERVER = uintval;
 	if (strcmp(name, "TRX.WIFI_AP1") == 0)
 	{
-		memset(TRX.WIFI_AP1, 0x00, sizeof(TRX.WIFI_AP1));
+		dma_memset(TRX.WIFI_AP1, 0x00, sizeof(TRX.WIFI_AP1));
 		uint32_t lens = strlen(value);
 		if (lens > sizeof(TRX.WIFI_AP1))
 			lens = sizeof(TRX.WIFI_AP1);
@@ -858,7 +858,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	}
 	if (strcmp(name, "TRX.WIFI_AP2") == 0)
 	{
-		memset(TRX.WIFI_AP2, 0x00, sizeof(TRX.WIFI_AP2));
+		dma_memset(TRX.WIFI_AP2, 0x00, sizeof(TRX.WIFI_AP2));
 		uint32_t lens = strlen(value);
 		if (lens > sizeof(TRX.WIFI_AP2))
 			lens = sizeof(TRX.WIFI_AP2);
@@ -866,7 +866,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	}
 	if (strcmp(name, "TRX.WIFI_AP3") == 0)
 	{
-		memset(TRX.WIFI_AP3, 0x00, sizeof(TRX.WIFI_AP3));
+		dma_memset(TRX.WIFI_AP3, 0x00, sizeof(TRX.WIFI_AP3));
 		uint32_t lens = strlen(value);
 		if (lens > sizeof(TRX.WIFI_AP3))
 			lens = sizeof(TRX.WIFI_AP3);
@@ -874,7 +874,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	}
 	if (strcmp(name, "TRX.WIFI_PASSWORD1") == 0)
 	{
-		memset(TRX.WIFI_PASSWORD1, 0x00, sizeof(TRX.WIFI_PASSWORD1));
+		dma_memset(TRX.WIFI_PASSWORD1, 0x00, sizeof(TRX.WIFI_PASSWORD1));
 		uint32_t lens = strlen(value);
 		if (lens > sizeof(TRX.WIFI_PASSWORD1))
 			lens = sizeof(TRX.WIFI_PASSWORD1);
@@ -882,7 +882,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	}
 	if (strcmp(name, "TRX.WIFI_PASSWORD2") == 0)
 	{
-		memset(TRX.WIFI_PASSWORD2, 0x00, sizeof(TRX.WIFI_PASSWORD2));
+		dma_memset(TRX.WIFI_PASSWORD2, 0x00, sizeof(TRX.WIFI_PASSWORD2));
 		uint32_t lens = strlen(value);
 		if (lens > sizeof(TRX.WIFI_PASSWORD2))
 			lens = sizeof(TRX.WIFI_PASSWORD2);
@@ -890,7 +890,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	}
 	if (strcmp(name, "TRX.WIFI_PASSWORD3") == 0)
 	{
-		memset(TRX.WIFI_PASSWORD3, 0x00, sizeof(TRX.WIFI_PASSWORD3));
+		dma_memset(TRX.WIFI_PASSWORD3, 0x00, sizeof(TRX.WIFI_PASSWORD3));
 		uint32_t lens = strlen(value);
 		if (lens > sizeof(TRX.WIFI_PASSWORD3))
 			lens = sizeof(TRX.WIFI_PASSWORD3);
@@ -1052,7 +1052,7 @@ static void SDCOMM_IMPORT_SETT(void)
 					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)SD_workbuffer_A + start_index));
 					if (len <= 64)
 					{
-						memset(readedLine, 0x00, sizeof(readedLine));
+						dma_memset(readedLine, 0x00, sizeof(readedLine));
 						strncpy(readedLine, (char *)SD_workbuffer_A + start_index, len);
 						start_index += len + 2;
 						istr = strstr((char *)SD_workbuffer_A + start_index, "\r\n"); // look for the end of the line
@@ -1230,7 +1230,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 	if (cnt >= 0xFFFF)
 		return 0;
 
-	memset(buff, 0xFF, btr);
+	dma_memset(buff, 0xFF, btr);
 	//for (cnt = 0; cnt < btr; cnt++)
 		//buff[cnt] = SPI_ReceiveByte();
 	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))

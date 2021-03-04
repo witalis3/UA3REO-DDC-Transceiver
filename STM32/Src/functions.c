@@ -266,7 +266,7 @@ void shiftTextLeft(char *string, uint_fast16_t shiftLength)
 	uint_fast16_t size = strlen(string);
 	if (shiftLength >= size)
 	{
-		memset(string, '\0', size);
+		dma_memset(string, '\0', size);
 		return;
 	}
 	for (uint_fast16_t i = 0; i < size - shiftLength; i++)
@@ -469,12 +469,12 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		}
 		else if (out_data == NULL)
 		{
-			memset(in_data, 0x00, count);
+			dma_memset(in_data, 0x00, count);
 			res = HAL_SPI_Receive(&hspi2, in_data, count, timeout);
 		}
 		else
 		{
-			memset(in_data, 0x00, count);
+			dma_memset(in_data, 0x00, count);
 			res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, timeout);
 		}
 	}
@@ -545,7 +545,7 @@ float32_t quick_median_select(float32_t* arr, int n)
 }
 
 SRAM static uint32_t dma_memset32_reg = 0;
-void dma_memset32(void *dest, uint32_t val, uint32_t size, bool invalidate)
+void dma_memset32(void *dest, uint32_t val, uint32_t size)
 {
 	if (size == 0)
 		return;
@@ -560,22 +560,27 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size, bool invalidate)
 	SLEEPING_DMA_PollForTransfer(&hdma_memtomem_dma2_stream3);
 	dma_memset32_busy = false;
 	
-	if(invalidate)
-		Aligned_InvalidateDCache_by_Addr(dest, size * 4);
+	Aligned_InvalidateDCache_by_Addr(dest, size * 4);
 }
 
-void dma_memset(void *dest, uint8_t val, uint32_t size, bool invalidate)
+void dma_memset(void *dest, uint8_t val, uint32_t size)
 {
+	if((uint32_t)dest < IRAM2_START_ADDR) //DTCM
+	{
+		memset(dest, val, size);
+		return;
+	}
+	
 	uint32_t val32 = (val << 24) | (val << 16) | (val << 8) | (val << 0);
 	uint32_t block32 = size / 4;
 	uint32_t block8 = size % 4;
 	while(block32 > DMA_MAX_BLOCK)
 	{
-		dma_memset32(dest, val32, DMA_MAX_BLOCK, invalidate);
+		dma_memset32(dest, val32, DMA_MAX_BLOCK);
 		block32 -= DMA_MAX_BLOCK;
 		dest += DMA_MAX_BLOCK;
 	}
-	dma_memset32(dest, val32, block32, invalidate);
+	dma_memset32(dest, val32, block32);
 	if(block8 > 0)
 	{
 		dest += block32;

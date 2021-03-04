@@ -582,13 +582,13 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	static USBD_MSC_BOT_HandleTypeDef pClassDataSTORAGE = {0};
 	
 	pdev->pClassDataDEBUG = &pClassDataDEBUG;
-	memset(pdev->pClassDataDEBUG, 0, sizeof(USBD_DEBUG_HandleTypeDef));
+	dma_memset(pdev->pClassDataDEBUG, 0, sizeof(USBD_DEBUG_HandleTypeDef));
 	pdev->pClassDataCAT = &pClassDataCAT;
-	memset(pdev->pClassDataCAT, 0, sizeof(USBD_CAT_HandleTypeDef));
+	dma_memset(pdev->pClassDataCAT, 0, sizeof(USBD_CAT_HandleTypeDef));
 	pdev->pClassDataAUDIO = &pClassDataAUDIO;
-	memset(pdev->pClassDataAUDIO, 0, sizeof(USBD_AUDIO_HandleTypeDef));
+	dma_memset(pdev->pClassDataAUDIO, 0, sizeof(USBD_AUDIO_HandleTypeDef));
 	pdev->pClassDataSTORAGE = &pClassDataSTORAGE;
-	memset(pdev->pClassDataSTORAGE, 0, sizeof(USBD_MSC_BOT_HandleTypeDef));
+	dma_memset(pdev->pClassDataSTORAGE, 0, sizeof(USBD_MSC_BOT_HandleTypeDef));
 
 	hcdc_debug = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
 
@@ -1571,7 +1571,7 @@ static void AUDIO_REQ_GetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef 
 	USBD_AUDIO_HandleTypeDef *haudio;
 	haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
 
-	memset(haudio->control.data, 0, sizeof(haudio->control.data));
+	dma_memset(haudio->control.data, 0, sizeof(haudio->control.data));
 
 	/* Send the current mute state */
 	USBD_CtlSendData(pdev, haudio->control.data, req->wLength);
