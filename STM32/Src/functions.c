@@ -18,14 +18,20 @@ volatile bool SPI_TXRX_ready = false;
 
 void dma_memcpy32(void *dest, void *src, uint32_t len)
 {
+	static bool dma_memcpy32_busy = false;
+	
 	if (len == 0)
 		return;
-	static bool dma_memcpy32_busy = false;
+	
 	if(dma_memcpy32_busy) //for async calls
-		HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, 1000);
+	{
+		memcpy(dest, src, len * 4);
+		return;
+	}
+	
 	dma_memcpy32_busy = true;
 	HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, len * 4, 1);
-	HAL_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0, HAL_MDMA_FULL_TRANSFER, 1000);
+	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0);
 	dma_memcpy32_busy = false;
 }
 
@@ -560,7 +566,7 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	dma_memset32_busy = true;
 	dma_memset32_reg = val;
 	HAL_MDMA_Start(&hmdma_mdma_channel44_sw_0, (uint32_t)&dma_memset32_reg, (uint32_t)dest, 4, size);
-	HAL_MDMA_PollForTransfer(&hmdma_mdma_channel44_sw_0, HAL_MDMA_FULL_TRANSFER, 100);
+	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel44_sw_0);
 	dma_memset32_busy = false;
 	
 	if((uint32_t)dest < NOCACHE_ADDR_START || (uint32_t)dest > NOCACHE_ADDR_START)
@@ -569,7 +575,7 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 
 void dma_memset(void *dest, uint8_t val, uint32_t size)
 {
-	if(dma_memset32_busy || size < 2048) //for async and fast calls
+	if(dma_memset32_busy || size < 128) //for async and fast calls
 	{
 		memset(dest, val, size);
 		return;
@@ -605,4 +611,43 @@ void dma_memset(void *dest, uint8_t val, uint32_t size)
 				*pDst++ = val;
 		}
 	}
+}
+
+void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
+{
+	#define Timeout 100
+  uint32_t tickstart;
+
+  if(HAL_MDMA_STATE_BUSY != hmdma->State)
+    return;
+
+  /* Get timeout */
+  tickstart = HAL_GetTick();
+
+  while(__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_CTC) == 0U)
+  {
+    if((__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_TE) != 0U))
+    {
+      (void) HAL_MDMA_Abort(hmdma); /* if error then abort the current transfer */
+      return;
+    }
+
+    /* Check for the Timeout */
+		if(((HAL_GetTick() - tickstart ) > Timeout) || (Timeout == 0U))
+		{
+			(void) HAL_MDMA_Abort(hmdma); /* if timeout then abort the current transfer */
+			return;
+		}
+		
+		//go sleep
+		CPULOAD_GoToSleepMode();
+  }
+
+  /* Clear the transfer level flag */
+	__HAL_MDMA_CLEAR_FLAG(hmdma, (MDMA_FLAG_BRT | MDMA_FLAG_BT | MDMA_FLAG_BFTC | MDMA_FLAG_CTC));
+
+	/* Process unlocked */
+	__HAL_UNLOCK(hmdma);
+
+	hmdma->State = HAL_MDMA_STATE_READY;
 }

@@ -168,6 +168,7 @@ extern void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uin
 extern void dma_memcpy32(void *dest, void *src, uint32_t len);
 extern void dma_memset32(void *dest, uint32_t val, uint32_t size);
 extern void dma_memset(void *dest, uint8_t val, uint32_t size);
+extern void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma);
 extern float32_t db2rateV(float32_t i);
 extern float32_t db2rateP(float32_t i);
 extern float32_t rate2dbV(float32_t i);
