@@ -111,11 +111,11 @@ static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf)
 		/* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
 		/*******************************************************************************/
 	case CDC_SET_LINE_CODING:
-		memcpy(lineCoding, pbuf, sizeof(lineCoding));
+		dma_memcpy(lineCoding, pbuf, sizeof(lineCoding));
 		break;
 
 	case CDC_GET_LINE_CODING:
-		memcpy(pbuf, lineCoding, sizeof(lineCoding));
+		dma_memcpy(pbuf, lineCoding, sizeof(lineCoding));
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:
@@ -163,7 +163,7 @@ static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
 				{
 					CAT_processingWiFiCommand = false;
 					dma_memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
-					memcpy(command_to_parse, cat_buffer, cat_buffer_head);
+					dma_memcpy(command_to_parse, cat_buffer, cat_buffer_head);
 					cat_buffer_head = 0;
 					dma_memset(&cat_buffer, 0, CAT_BUFFER_SIZE);
 					continue;
@@ -220,7 +220,7 @@ void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id)
 	CAT_processingWiFiCommand = true;
 	CAT_processingWiFi_link_id = link_id;
 	dma_memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
-	memcpy(command_to_parse, data, length);
+	dma_memcpy(command_to_parse, data, length);
 	ua3reo_dev_cat_parseCommand();
 }
 
@@ -232,7 +232,7 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	char _command_buffer[CAT_BUFFER_SIZE] = {0};
 	char *_command = _command_buffer;
-	memcpy(_command, command_to_parse, CAT_BUFFER_SIZE);
+	dma_memcpy(_command, command_to_parse, CAT_BUFFER_SIZE);
 	dma_memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
 	while (*_command == '\r' || *_command == '\n' || *_command == ' ') //trim
 		_command++;

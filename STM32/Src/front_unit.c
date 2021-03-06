@@ -1126,9 +1126,9 @@ void FRONTPANEL_BUTTONHANDLER_HPF(uint32_t parameter)
 void FRONTPANEL_BUTTONHANDLER_ArB(uint32_t parameter) //A=B
 {
 	if (TRX.current_vfo)
-		memcpy(&TRX.VFO_A, &TRX.VFO_B, sizeof TRX.VFO_B);
+		dma_memcpy(&TRX.VFO_A, &TRX.VFO_B, sizeof TRX.VFO_B);
 	else
-		memcpy(&TRX.VFO_B, &TRX.VFO_A, sizeof TRX.VFO_B);
+		dma_memcpy(&TRX.VFO_B, &TRX.VFO_A, sizeof TRX.VFO_B);
 
 	LCD_showTooltip("VFO COPIED");
 

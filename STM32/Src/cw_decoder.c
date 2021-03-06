@@ -74,7 +74,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 	// clear the old FFT buffer
 	dma_memset(CWDEC_FFTBuffer, 0x00, sizeof(CWDEC_FFTBuffer));
 	// copy the incoming data for the next work
-	memcpy(CWDEC_InputBuffer, bufferIn, sizeof(CWDEC_InputBuffer));
+	dma_memcpy(CWDEC_InputBuffer, bufferIn, sizeof(CWDEC_InputBuffer));
 	// Decimator
 	arm_fir_decimate_f32(&CWDEC_DECIMATE, CWDEC_InputBuffer, CWDEC_InputBuffer, DECODER_PACKET_SIZE);
 	// Fill the unnecessary part of the buffer with zeros

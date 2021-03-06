@@ -62,13 +62,13 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	//do ring buffer
 	static uint32_t ring_position = 0;
 	//save new data to ring buffer
-	memcpy(&agc_ringbuffer[ring_position * blockSize], agcBuffer, sizeof(float32_t) * blockSize);
+	dma_memcpy(&agc_ringbuffer[ring_position * blockSize], agcBuffer, sizeof(float32_t) * blockSize);
 	//move ring buffer index
 	ring_position++;
 	if (ring_position >= AGC_RINGBUFFER_TAPS_SIZE)
 		ring_position = 0;
 	//get old data to process
-	memcpy(agcBuffer, &agc_ringbuffer[ring_position * blockSize], sizeof(float32_t) * blockSize);
+	dma_memcpy(agcBuffer, &agc_ringbuffer[ring_position * blockSize], sizeof(float32_t) * blockSize);
 
 	//calculate the magnitude in dBFS
 	float32_t AGC_RX_magnitude = 0;
@@ -156,13 +156,13 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target)
 	//do ring buffer
 	static uint32_t ring_position = 0;
 	//save new data to ring buffer
-	memcpy(&agc_ringbuffer_i[ring_position * blockSize], agcBuffer_i, sizeof(float32_t) * blockSize);
+	dma_memcpy(&agc_ringbuffer_i[ring_position * blockSize], agcBuffer_i, sizeof(float32_t) * blockSize);
 	//move ring buffer index
 	ring_position++;
 	if (ring_position >= AGC_RINGBUFFER_TAPS_SIZE)
 		ring_position = 0;
 	//get old data to process
-	memcpy(agcBuffer_i, &agc_ringbuffer_i[ring_position * blockSize], sizeof(float32_t) * blockSize);
+	dma_memcpy(agcBuffer_i, &agc_ringbuffer_i[ring_position * blockSize], sizeof(float32_t) * blockSize);
 
 	//calculate the magnitude
 	float32_t AGC_TX_I_magnitude = 0;

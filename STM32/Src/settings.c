@@ -88,11 +88,11 @@ void InitSettings(void)
 void LoadSettings(bool clear)
 {
 	BKPSRAM_Enable();
-	memcpy(&TRX, BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
+	dma_memcpy(&TRX, BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 	// Check, the data in the backup sram is correct, otherwise we use the second bank
 	if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 	{
-		memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
+		dma_memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 		if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 		{
 			println("[ERR] BACKUP SRAM data incorrect");
@@ -422,14 +422,14 @@ void SaveSettings(void)
 	Aligned_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
 	if (settings_bank == 1)
 	{
-		memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
+		dma_memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 		dma_memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 	}
 	else
 	{
-		memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
+		dma_memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 		dma_memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
@@ -556,7 +556,7 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		println("EEPROM buffer error");
 		return false;
 	}
-	memcpy(write_clone, Buffer, size);
+	dma_memcpy(write_clone, Buffer, size);
 	Aligned_CleanDCache_by_Addr((uint32_t *)write_clone, sizeof(write_clone));
 
 	const uint16_t page_size = 256;

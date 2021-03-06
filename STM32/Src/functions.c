@@ -16,25 +16,6 @@ volatile bool SPI_busy = false;
 volatile bool SPI_process = false;
 volatile bool SPI_TXRX_ready = false;
 
-void dma_memcpy32(void *dest, void *src, uint32_t len)
-{
-	static bool dma_memcpy32_busy = false;
-	
-	if (len == 0)
-		return;
-	
-	if(dma_memcpy32_busy) //for async calls
-	{
-		memcpy(dest, src, len * 4);
-		return;
-	}
-	
-	dma_memcpy32_busy = true;
-	HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, len * 4, 1);
-	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0);
-	dma_memcpy32_busy = false;
-}
-
 void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read)
 {
 	Aligned_CleanDCache_by_Addr(source, length * 4);
@@ -610,6 +591,70 @@ void dma_memset(void *dest, uint8_t val, uint32_t size)
 			pDst += block32 * 4;
 			while(block8--)
 				*pDst++ = val;
+		}
+	}
+}
+
+static bool dma_memcpy32_busy = false;
+void dma_memcpy32(void *dest, void *src, uint32_t size)
+{
+	if (size == 0)
+		return;
+	
+	if(dma_memcpy32_busy) //for async calls
+	{
+		memcpy(dest, src, size * 4);
+		return;
+	}
+	
+	dma_memcpy32_busy = true;
+	if((uint32_t)src < NOCACHE_ADDR_START || (uint32_t)src > NOCACHE_ADDR_START)
+		Aligned_CleanDCache_by_Addr(src, size * 4);
+	HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, size * 4, 1);
+	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0);
+	dma_memcpy32_busy = false;
+	
+	if((uint32_t)dest < NOCACHE_ADDR_START || (uint32_t)dest > NOCACHE_ADDR_START)
+		Aligned_InvalidateDCache_by_Addr(dest, size * 4);
+}
+
+void dma_memcpy(void *dest, void *src, uint32_t size)
+{
+	if(dma_memcpy32_busy || size < 128) //for async and fast calls
+	{
+		memcpy(dest, src, size);
+		return;
+	}
+	
+	//left align
+	char *pSrc = (char *)src;
+	char *pDst = (char *)dest;
+	while(((uint32_t)pSrc != (((uint32_t)pSrc) & ~(uint32_t)0x3) || (uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3)) && size > 0)
+	{
+		*pDst++ = *pSrc++;
+		size--;
+	}
+	
+	if(size > 0)
+	{
+		//center copy in 32bit
+		uint32_t block32 = size / 4;
+		uint32_t block8 = size % 4;
+		uint32_t max_block = DMA_MAX_BLOCK / 4;
+		while(block32 > max_block)
+		{
+			dma_memcpy32(pDst, pSrc, max_block);
+			block32 -= max_block;
+			pDst += max_block * 4;
+		}
+		dma_memcpy32(pDst, pSrc, block32);
+		
+		//right align
+		if(block8 > 0)
+		{
+			pDst += block32 * 4;
+			while(block8--)
+				*pDst++ = *pSrc++;
 		}
 	}
 }

@@ -302,7 +302,7 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 		sprintf(valbuff, "%d", (int32_t)*value);
 		break;
 	case SYSMENU_FLOAT32:
-		memcpy(&tmp_float, value, sizeof(float32_t));
+		dma_memcpy(&tmp_float, value, sizeof(float32_t));
 		sprintf(valbuff, "%.6f", (double)tmp_float);
 		break;
 	case SYSMENU_FUNCBUTTON:
@@ -1235,7 +1235,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 		//buff[cnt] = SPI_ReceiveByte();
 	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
 		println("SD SPI R Err");
-	memcpy(buff, SD_Read_Block_tmp, btr);
+	dma_memcpy(buff, SD_Read_Block_tmp, btr);
 	
 	SPI_Release();
 	SPI_Release();
@@ -1256,7 +1256,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 
 		if(dma)
 		{
-			memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
+			dma_memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
 			if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 			{
 				println("SD SPI W Err");

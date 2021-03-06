@@ -325,7 +325,7 @@ void FFT_bufferPrepare(void)
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
 		// Shift old data
-		memcpy(&FFTInputCharge[0], &FFTInputCharge[zoomed_width_half * 2], sizeof(float32_t) * (FFT_SIZE - zoomed_width_half) * 2); //*2 - >i+q
+		dma_memcpy(&FFTInputCharge[0], &FFTInputCharge[zoomed_width_half * 2], sizeof(float32_t) * (FFT_SIZE - zoomed_width_half) * 2); //*2 - >i+q
 		// Add new data with 50% overlap
 		for (uint_fast16_t i = 0; i < zoomed_width_half; i++)
 		{
@@ -337,7 +337,7 @@ void FFT_bufferPrepare(void)
 	else
 	{
 		//Make a combined buffer for calculation with 50% overlap
-		memcpy(&FFTInputCharge[0], &FFTInputCharge[FFT_HALF_SIZE * 2], sizeof(float32_t) * FFT_HALF_SIZE * 2); //*2 - >i+q
+		dma_memcpy(&FFTInputCharge[0], &FFTInputCharge[FFT_HALF_SIZE * 2], sizeof(float32_t) * FFT_HALF_SIZE * 2); //*2 - >i+q
 		for (uint_fast16_t i = 0; i < FFT_HALF_SIZE; i++)
 		{
 			FFTInputCharge[(FFT_HALF_SIZE + i) * 2] = FFTInput_I_current[i];
@@ -372,7 +372,7 @@ void FFT_doFFT(void)
 	
 	// Get charge buffer
 	fft_charge_copying = true;
-	memcpy(FFTInput, FFTInputCharge, sizeof(FFTInput));
+	dma_memcpy(FFTInput, FFTInputCharge, sizeof(FFTInput));
 
 	//Do full windowing
 	if (FFT_ChargeBuffer_collected >= FFT_SIZE)
@@ -417,12 +417,12 @@ void FFT_doFFT(void)
 	}*/
 
 	// Swap fft parts
-	memcpy(&FFTInput[FFT_SIZE], &FFTInput[0], sizeof(float32_t) * (FFT_SIZE / 2));			  //left - > tmp
-	memcpy(&FFTInput[0], &FFTInput[FFT_SIZE / 2], sizeof(float32_t) * (FFT_SIZE / 2));		  //right - > left
-	memcpy(&FFTInput[FFT_SIZE / 2], &FFTInput[FFT_SIZE], sizeof(float32_t) * (FFT_SIZE / 2)); //tmp - > right
+	dma_memcpy(&FFTInput[FFT_SIZE], &FFTInput[0], sizeof(float32_t) * (FFT_SIZE / 2));			  //left - > tmp
+	dma_memcpy(&FFTInput[0], &FFTInput[FFT_SIZE / 2], sizeof(float32_t) * (FFT_SIZE / 2));		  //right - > left
+	dma_memcpy(&FFTInput[FFT_SIZE / 2], &FFTInput[FFT_SIZE], sizeof(float32_t) * (FFT_SIZE / 2)); //tmp - > right
 
 	// Compress the calculated FFT to visible
-	memcpy(&FFTInput[0], &FFTInput[FFT_SIZE / 2 - FFT_USEFUL_SIZE / 2], sizeof(float32_t) * FFT_USEFUL_SIZE); //useful fft part
+	dma_memcpy(&FFTInput[0], &FFTInput[FFT_SIZE / 2 - FFT_USEFUL_SIZE / 2], sizeof(float32_t) * FFT_USEFUL_SIZE); //useful fft part
 	float32_t fft_compress_rate = (float32_t)FFT_USEFUL_SIZE / (float32_t)LAYOUT->FFT_PRINT_SIZE;
 	float32_t fft_compress_rate_half = floorf(fft_compress_rate / 2.0f);	   //full points
 	float32_t fft_compress_rate_parts = fmodf(fft_compress_rate / 2.0f, 1.0f); //partial points
@@ -488,14 +488,14 @@ void FFT_doFFT(void)
 				index2 = 0;
 		}
 	}
-	memcpy(&FFTInput, FFTInput_tmp, sizeof(FFTInput_tmp));
+	dma_memcpy(&FFTInput, FFTInput_tmp, sizeof(FFTInput_tmp));
 
 	//Averaging
 	if (TRX.FFT_Averaging > FFT_MAX_MEANS)
 		TRX.FFT_Averaging = FFT_MAX_MEANS;
 
 	//Store old FFT for averaging
-	memcpy(&FFT_meanBuffer[FFT_meanBuffer_index][0], FFTInput, sizeof(float32_t) * LAYOUT->FFT_PRINT_SIZE);
+	dma_memcpy(&FFT_meanBuffer[FFT_meanBuffer_index][0], FFTInput, sizeof(float32_t) * LAYOUT->FFT_PRINT_SIZE);
 	fft_meanbuffer_freqs[FFT_meanBuffer_index] = FFT_lastFFTChargeBufferFreq;
 
 	FFT_meanBuffer_index++;
@@ -586,7 +586,7 @@ bool FFT_printFFT(void)
 	
 
 	// Looking for the median in frequency response
-	memcpy(FFTInput_tmp, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE * 4);
+	dma_memcpy(FFTInput_tmp, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE * 4);
 	float32_t medianValue = quick_median_select(FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
 
 	// Maximum amplitude

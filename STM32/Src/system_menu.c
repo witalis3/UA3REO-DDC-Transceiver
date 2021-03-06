@@ -4117,7 +4117,7 @@ static void drawSystemMenuElement(char *title, SystemMenuType type, uint32_t *va
 		sprintf(ctmp, "%d", (int32_t)*value);
 		break;
 	case SYSMENU_FLOAT32:
-		memcpy(&tmp_float, value, sizeof(float32_t));
+		dma_memcpy(&tmp_float, value, sizeof(float32_t));
 		sprintf(ctmp, "%.2f", (double)tmp_float);
 		break;
 	case SYSMENU_BOOLEAN:
