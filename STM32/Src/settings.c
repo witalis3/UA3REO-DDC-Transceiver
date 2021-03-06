@@ -150,6 +150,21 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.AGC = true;				 // AGC
 		TRX.VFO_B.FM_SQL_threshold = 4;			 // FM noise reduction
 		TRX.Fast = true;					 // accelerated frequency change when the encoder rotates
+		for (uint8_t i = 0; i < BANDS_COUNT; i++)
+		{
+			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
+			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
+			TRX.BANDS_SAVED_SETTINGS[i].LNA = TRX.LNA;
+			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
+			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT = TRX.ANT;
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.VFO_A.FM_SQL_threshold;
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
+			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
+			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
+			TRX.BANDS_SAVED_SETTINGS[i].AutoGain_Stage = 6;
+		}
 		TRX.LNA = false;					 // LNA (Low Noise Amplifier)
 		TRX.ATT = false;					 // attenuator
 		TRX.ATT_DB = 12.0f;					 // suppress the attenuator
@@ -282,24 +297,6 @@ void LoadSettings(bool clear)
 		TRX.WSPR_BANDS_2 = false;
 		//
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
-		
-		//Default band settings
-		for (uint8_t i = 0; i < BANDS_COUNT; i++)
-		{
-			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
-			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
-			TRX.BANDS_SAVED_SETTINGS[i].LNA = TRX.LNA;
-			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
-			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
-			TRX.BANDS_SAVED_SETTINGS[i].ANT = TRX.ANT;
-			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
-			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.VFO_A.FM_SQL_threshold;
-			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
-			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
-			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
-			TRX.BANDS_SAVED_SETTINGS[i].AutoGain_Stage = 6;
-		}
-		
 		println("[OK] Loaded default settings");
 		LCD_showError("Loaded default settings", true);
 		SaveSettings();
@@ -422,15 +419,20 @@ void SaveSettings(void)
 {
 	BKPSRAM_Enable();
 	TRX.csum = calculateCSUM();
+	Aligned_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
 	if (settings_bank == 1)
 	{
 		dma_memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
+		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 		dma_memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
+		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 	}
 	else
 	{
 		dma_memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
+		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 		dma_memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
+		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 	}
 	BKPSRAM_Disable();
 	NeedSaveSettings = false;
@@ -555,6 +557,7 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		return false;
 	}
 	dma_memcpy(write_clone, Buffer, size);
+	Aligned_CleanDCache_by_Addr((uint32_t *)write_clone, sizeof(write_clone));
 
 	const uint16_t page_size = 256;
 	for (uint16_t page = 0; page <= (size / page_size); page++)

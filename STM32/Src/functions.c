@@ -18,6 +18,7 @@ volatile bool SPI_TXRX_ready = false;
 
 void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read)
 {
+	Aligned_CleanDCache_by_Addr(source, length * 4);
 	if (index >= words_to_read)
 	{
 		dma_memcpy32(&dest[0], &source[index - words_to_read], words_to_read);
@@ -28,6 +29,7 @@ void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, ui
 		dma_memcpy32(&dest[0], &source[length - prev_part], prev_part);
 		dma_memcpy32(&dest[prev_part], &source[0], (words_to_read - prev_part));
 	}
+	Aligned_InvalidateDCache_by_Addr(dest, words_to_read * 4);
 }
 
 void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length)
@@ -549,7 +551,7 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	dma_memset32_busy = false;
 	
 	if((uint32_t)dest < NOCACHE_ADDR_START || (uint32_t)dest > NOCACHE_ADDR_START)
-		Aligned_SCB_InvalidateDCache_by_Addr(dest, size * 4);
+		Aligned_InvalidateDCache_by_Addr(dest, size * 4);
 }
 
 void dma_memset(void *dest, uint8_t val, uint32_t size)
@@ -607,13 +609,13 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 	
 	dma_memcpy32_busy = true;
 	if((uint32_t)src < NOCACHE_ADDR_START || (uint32_t)src > NOCACHE_ADDR_START)
-		Aligned_SCB_CleanDCache_by_Addr(src, size * 4);
+		Aligned_CleanDCache_by_Addr(src, size * 4);
 	HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, size * 4, 1);
 	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0);
 	dma_memcpy32_busy = false;
 	
 	if((uint32_t)dest < NOCACHE_ADDR_START || (uint32_t)dest > NOCACHE_ADDR_START)
-		Aligned_SCB_InvalidateDCache_by_Addr(dest, size * 4);
+		Aligned_InvalidateDCache_by_Addr(dest, size * 4);
 }
 
 void dma_memcpy(void *dest, void *src, uint32_t size)
@@ -644,7 +646,6 @@ void dma_memcpy(void *dest, void *src, uint32_t size)
 			dma_memcpy32(pDst, pSrc, max_block);
 			block32 -= max_block;
 			pDst += max_block * 4;
-			pSrc += max_block * 4;
 		}
 		dma_memcpy32(pDst, pSrc, block32);
 		
@@ -652,7 +653,6 @@ void dma_memcpy(void *dest, void *src, uint32_t size)
 		if(block8 > 0)
 		{
 			pDst += block32 * 4;
-			pSrc += block32 * 4;
 			while(block8--)
 				*pDst++ = *pSrc++;
 		}
