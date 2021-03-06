@@ -646,6 +646,7 @@ void dma_memcpy(void *dest, void *src, uint32_t size)
 			dma_memcpy32(pDst, pSrc, max_block);
 			block32 -= max_block;
 			pDst += max_block * 4;
+			pSrc += max_block * 4;
 		}
 		dma_memcpy32(pDst, pSrc, block32);
 		
@@ -653,6 +654,7 @@ void dma_memcpy(void *dest, void *src, uint32_t size)
 		if(block8 > 0)
 		{
 			pDst += block32 * 4;
+			pSrc += block32 * 4;
 			while(block8--)
 				*pDst++ = *pSrc++;
 		}
