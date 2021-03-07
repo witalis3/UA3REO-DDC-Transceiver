@@ -55,7 +55,7 @@ int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_
 	}
 	
   *block_num  = sdinfo.SECTOR_COUNT;
-  *block_size = sdinfo.capacity / sdinfo.SECTOR_COUNT;
+  *block_size = sdinfo.BLOCK_SIZE;
   return (USBD_OK);
 }
 

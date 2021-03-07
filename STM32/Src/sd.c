@@ -9,7 +9,12 @@
 #include "vocoder.h"
 
 IRAM2 FATFS SDFatFs;
-sd_info_ptr sdinfo;
+sd_info_ptr sdinfo = {
+	.type = 0,
+	.SECTOR_COUNT = 0,
+	.BLOCK_SIZE = 512,
+	.CAPACITY = 0,
+};
 extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
 bool SD_CommandInProcess = false;
@@ -88,7 +93,7 @@ void SD_Process(void)
 		disk.is_initialized[SDFatFs.drv] = false;
 		if (disk_initialize(SDFatFs.drv) == RES_OK)
 		{
-			println("[OK] SD Card Inserted: ", (uint32_t)(sdinfo.capacity / (uint64_t)1024 / (uint64_t)1024), "Mb");
+			println("[OK] SD Card Inserted: ", (uint32_t)(sdinfo.CAPACITY / (uint64_t)1024 / (uint64_t)1024), "Mb");
 			SD_Present = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
@@ -1215,7 +1220,7 @@ void SD_PowerOn(void)
 	HAL_Delay(20);
 }
 
-SRAM uint8_t SD_Read_Block_tmp[512] = {0};
+SRAM uint8_t SD_Read_Block_tmp[SD_MAXBLOCK_SIZE] = {0};
 uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 {
 	uint8_t result;
@@ -1242,7 +1247,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 	return 1;
 }
 
-SRAM uint8_t SD_Write_Block_tmp[512] = {0};
+SRAM uint8_t SD_Write_Block_tmp[SD_MAXBLOCK_SIZE] = {0};
 uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 {
 	uint8_t result;
@@ -1251,13 +1256,13 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 	SPI_SendByte(token);
 	if (token != 0xFD)
 	{ /* Send data if token is other than StopTran */
-		//for (cnt = 0; cnt < 512; cnt++)
+		//for (cnt = 0; cnt < sdinfo.BLOCK_SIZE; cnt++)
 			//SPI_SendByte(buff[cnt]);
 
 		if(dma)
 		{
 			dma_memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
-			if (!SPI_Transmit(SD_Write_Block_tmp, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
+			if (!SPI_Transmit(SD_Write_Block_tmp, NULL, sdinfo.BLOCK_SIZE, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 			{
 				println("SD SPI W Err");
 				return 0;
@@ -1265,7 +1270,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 		}
 		else
 		{
-			if (!SPI_Transmit(buff, NULL, 512, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
+			if (!SPI_Transmit(buff, NULL, sdinfo.BLOCK_SIZE, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 			{
 				println("SD SPI W Err");
 				return 0;
@@ -1351,13 +1356,16 @@ uint8_t sd_ini(void)
 			}
 			for (tmr = 25000; tmr && SD_cmd(cmd, 0); tmr--)
 				;								 // Wait for leaving idle state
-			if (!tmr || SD_cmd(CMD16, 512) != 0) // Set R/W block length to 512
+			sdinfo.BLOCK_SIZE = 512;
+			if (!tmr || SD_cmd(CMD16, sdinfo.BLOCK_SIZE) != 0) // Set R/W block length to 512
 				sdinfo.type = 0;
 		}
 
 		//GET_SECTOR_COUNT // Get drive capacity in unit of sector (DWORD)
 		if ((SD_cmd(CMD9, 0) == 0))
 		{
+			sdinfo.BLOCK_SIZE = 512;
+			
 			SPI_ReceiveByte();
 			SPI_ReceiveByte(); //clean buff ???
 			for (i = 0; i < 16; i++)
@@ -1374,13 +1382,14 @@ uint8_t sd_ini(void)
 
 			if ((csd[0] >> 6) == 1) // SDC ver 2.00 // High Capacity - CSD Version 2.0
 			{
-				DWORD C_SIZE = (DWORD)csd[9] + ((DWORD)csd[8] << 8) + ((DWORD)(csd[7] & 0x3F) << 16) + 1;
+				uint32_t C_SIZE = (DWORD)csd[9] + ((DWORD)csd[8] << 8) + ((DWORD)(csd[7] & 0x3F) << 16) + 1;
+				//println(C_SIZE); //7674 in 4gb, 15248 in 8gb
 				sdinfo.SECTOR_COUNT = C_SIZE << 10;
 				//println("SDHC sector count: ", sdinfo.SECTOR_COUNT);
 			}
 			if(sdinfo.SECTOR_COUNT == 0) // Standard Capacity - CSD Version 1.0
 			{
-				DWORD csize = ((csd[5] & 0x03) << 10) + ((WORD)csd[6] << 2) + ((WORD)(csd[7] & 0xC0) >> 6);
+				uint32_t csize = ((csd[5] & 0x03) << 10) + ((WORD)csd[6] << 2) + ((WORD)(csd[7] & 0xC0) >> 6);
 				//println(csize);
 				BYTE READ_BL_LEN = (csd[5] & 0xF0) >> 4;
 				uint32_t BLOCK_LEN = pow(2, READ_BL_LEN);
@@ -1390,7 +1399,7 @@ uint8_t sd_ini(void)
 				//println(MULT);
 				uint32_t BLOCKNR = (csize + 1) * MULT;
 				//println(BLOCKNR);
-				uint32_t SECTOR_COUNT = BLOCKNR * BLOCK_LEN / 512;
+				uint32_t SECTOR_COUNT = BLOCKNR * BLOCK_LEN / sdinfo.BLOCK_SIZE;
 				//println(SECTOR_COUNT);
 				sdinfo.SECTOR_COUNT = SECTOR_COUNT;
 				//println("SDSC sector count: ", sdinfo.SECTOR_COUNT);
@@ -1402,7 +1411,7 @@ uint8_t sd_ini(void)
 				sdinfo.SECTOR_COUNT = csize << (n - 9);
 				//println("SDC1 sector count: ", sdinfo.SECTOR_COUNT);
 			}
-			sdinfo.capacity = sdinfo.SECTOR_COUNT * 512;
+			sdinfo.CAPACITY = (uint64_t)sdinfo.SECTOR_COUNT * (uint64_t)sdinfo.BLOCK_SIZE;
 		}
 		//
 	}

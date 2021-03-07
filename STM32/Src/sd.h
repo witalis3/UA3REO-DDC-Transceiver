@@ -32,11 +32,15 @@
 #define ACMD41 (0xC0 + 41) // SEND_OP_COND (SDC)
 #define ACMD23 (0xC0 + 23) /* SET_WR_BLK_ERASE_COUNT (SDC) */
 //--------------------------------------------------
+
+#define SD_MAXBLOCK_SIZE 512
+
 typedef struct sd_info
 {
 	volatile uint8_t type;
-	uint64_t SECTOR_COUNT;
-	uint64_t capacity;
+	uint32_t SECTOR_COUNT;
+	uint16_t BLOCK_SIZE;
+	uint64_t CAPACITY;
 } sd_info_ptr;
 
 typedef enum
