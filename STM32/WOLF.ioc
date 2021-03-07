@@ -522,6 +522,7 @@ NVIC.EXTI2_IRQn=true\:2\:0\:true\:false\:true\:true\:true
 NVIC.EXTI4_IRQn=true\:6\:0\:true\:false\:true\:true\:true
 NVIC.ForceEnableDMAVector=true
 NVIC.HardFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false
+NVIC.MDMA_IRQn=true\:0\:0\:false\:false\:true\:true\:true
 NVIC.MemoryManagement_IRQn=true\:0\:0\:true\:false\:true\:false\:false
 NVIC.NonMaskableInt_IRQn=true\:0\:0\:false\:false\:true\:false\:false
 NVIC.OTG_FS_IRQn=true\:1\:0\:true\:false\:true\:true\:true
