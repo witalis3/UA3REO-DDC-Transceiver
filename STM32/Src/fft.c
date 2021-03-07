@@ -52,7 +52,7 @@ SRAM static uint16_t fft_output_buffer[MAX_FFT_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0
 IRAM2 static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};								 // frequencies for each row of the waterfall
 static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};							 // frequencies for each row of the fft mean buffer
-SRAM static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
+IRAM2 static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
 #if FFT_3D_enabled
 IRAM2 static uint8_t indexed_3d_fft_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with 3d WTF output
 #endif
@@ -572,6 +572,7 @@ bool FFT_printFFT(void)
 
 	// move the waterfall down using DMA
 	uint32_t move_est = wtfHeight - 1;
+	Aligned_CleanDCache_by_Addr(indexed_wtf_buffer, sizeof(indexed_wtf_buffer));
 	while(move_est > 0)
 	{
 		uint8_t length = move_est;
@@ -581,6 +582,7 @@ bool FFT_printFFT(void)
 		SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0);
 		move_est -= length;
 	}
+	Aligned_CleanInvalidateDCache_by_Addr(indexed_wtf_buffer, sizeof(indexed_wtf_buffer));
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
 		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
 	
@@ -908,6 +910,7 @@ bool FFT_printFFT(void)
 		fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 
 	//Print FFT
+	Aligned_CleanDCache_by_Addr(fft_output_buffer, sizeof(fft_output_buffer));
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
 	print_fft_dma_estimated_size = LAYOUT->FFT_PRINT_SIZE * fftHeight;
 	print_fft_dma_position = 0;
@@ -1162,6 +1165,7 @@ void FFT_printWaterfallDMA(void)
 			wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2];
 
 			//Send To DMA
+			Aligned_CleanDCache_by_Addr(wtf_output_line, sizeof(wtf_output_line));
 			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
 			print_wtf_yindex++;
 		}
@@ -1310,6 +1314,7 @@ void FFT_printWaterfallDMA(void)
 		wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2]; //mixColors(wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 
 		//draw the line
+		Aligned_CleanDCache_by_Addr(wtf_output_line, sizeof(wtf_output_line));
 		HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream6, (uint32_t)&wtf_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
 		
 		//go to next line

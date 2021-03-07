@@ -23,7 +23,7 @@ IRAM2 static NR_Instance NR_RX1 = {
 	.SNR_post = {0},
 	.SNR_prio = {0},
 };
-SRAM4 static NR_Instance NR_RX2 = {
+SRAM static NR_Instance NR_RX2 = {
 	.NR_InputBuffer = {0},
 	.NR_InputBuffer_index = 0,
 	.NR_OutputBuffer = {0},
