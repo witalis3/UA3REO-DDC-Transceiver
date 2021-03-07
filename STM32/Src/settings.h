@@ -120,6 +120,14 @@ typedef enum
 	TRX_INPUT_USB,
 } TRX_INPUT_TYPE;
 
+// debug level
+typedef enum
+{
+	TRX_DEBUG_OFF,
+	TRX_DEBUG_WIFI,
+	TRX_DEBUG_SYSTEM,
+} TRX_DEBUG_TYPE;
+
 // Save settings by band
 typedef struct
 {
@@ -160,7 +168,7 @@ extern struct TRX_SETTINGS
 	uint16_t FRQ_FAST_STEP;
 	uint16_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
-	bool Debug_Console;
+	TRX_DEBUG_TYPE Debug_Type;
 	bool BandMapEnabled;
 	TRX_INPUT_TYPE InputType;
 	bool AutoGain;

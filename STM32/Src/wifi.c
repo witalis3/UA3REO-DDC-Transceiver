@@ -283,7 +283,7 @@ void WIFI_Process(void)
 			char *wifi_incoming_data_end = wifi_incoming_data + wifi_incoming_length_uint;
 			*wifi_incoming_data_end = 0x00;
 
-			if (WIFI_DEBUG)
+			if (TRX.Debug_Type == TRX_DEBUG_WIFI)
 				println("[WIFI] Command received: ", wifi_incoming_data);
 			if (wifi_incoming_length_uint > 0)
 				CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
@@ -626,7 +626,7 @@ static void WIFI_SendCommand(char *command)
 	HAL_UART_Transmit_IT(&huart6, (uint8_t *)command, (uint16_t)strlen(command));
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
-	if (WIFI_DEBUG) //DEBUG
+	if (TRX.Debug_Type == TRX_DEBUG_WIFI) //DEBUG
 		print("WIFI_S: ", command);
 }
 
@@ -696,7 +696,7 @@ static bool WIFI_TryGetLine(void)
 		WIFI_Answer_ReadIndex -= WIFI_ANSWER_BUFFER_SIZE;
 	}
 
-	if (WIFI_DEBUG) //DEBUG
+	if (TRX.Debug_Type == TRX_DEBUG_WIFI) //DEBUG
 		print("WIFI_R: ", WIFI_readedLine);
 
 	return true;

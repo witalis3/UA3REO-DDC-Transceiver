@@ -400,7 +400,7 @@ static void SDCOMM_EXPORT_SETT(void)
 			SD_WRITE_SETT_LINE("TRX.FRQ_FAST_STEP", (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_STEP", (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FAST_STEP", (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.Debug_Console", (uint32_t *)&TRX.Debug_Console, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Debug_Type", (uint32_t *)&TRX.Debug_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.BandMapEnabled", (uint32_t *)&TRX.BandMapEnabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.InputType", (uint32_t *)&TRX.InputType, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AutoGain", (uint32_t *)&TRX.AutoGain, SYSMENU_BOOLEAN);
@@ -678,8 +678,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FRQ_ENC_STEP = (uint16_t)uintval;
 	if (strcmp(name, "TRX.FRQ_ENC_FAST_STEP") == 0)
 		TRX.FRQ_ENC_FAST_STEP = uintval;
-	if (strcmp(name, "TRX.Debug_Console") == 0)
-		TRX.Debug_Console = bval;
+	if (strcmp(name, "TRX.Debug_Type") == 0)
+		TRX.Debug_Type = (uint8_t)uintval;
 	if (strcmp(name, "TRX.BandMapEnabled") == 0)
 		TRX.BandMapEnabled = bval;
 	if (strcmp(name, "TRX.InputType") == 0)

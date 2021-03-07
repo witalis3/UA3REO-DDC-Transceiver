@@ -12,7 +12,6 @@
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
 #define WIFI_FOUNDED_AP_MAXCOUNT 16
-#define WIFI_DEBUG (false || TRX.Debug_Console) //WIFI debug output to console
 
 typedef enum
 {
