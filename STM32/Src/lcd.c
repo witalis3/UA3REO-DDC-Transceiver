@@ -1354,13 +1354,19 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 	//main freq click
 	if (y >= LAYOUT->FREQ_Y_TOP && y <= LAYOUT->FREQ_Y_TOP + LAYOUT->FREQ_BLOCK_HEIGHT && x >= LAYOUT->FREQ_LEFT_MARGIN && x <= LAYOUT->FREQ_LEFT_MARGIN + LAYOUT->FREQ_WIDTH)
 	{
-		LCD_showBandWindow(false);
+		if (!TRX.current_vfo)	//vfo-a
+			LCD_showBandWindow(false);
+		else
+			FRONTPANEL_BUTTONHANDLER_AsB(0);
 		return;
 	}
 	//sec freq click
 	if (y >= LAYOUT->FREQ_B_Y_TOP && y <= LAYOUT->FREQ_B_Y_TOP + LAYOUT->FREQ_B_BLOCK_HEIGHT && x >= LAYOUT->FREQ_B_LEFT_MARGIN && x <= LAYOUT->FREQ_B_LEFT_MARGIN + LAYOUT->FREQ_B_WIDTH)
 	{
-		LCD_showBandWindow(true);
+		if (TRX.current_vfo) //vfo-b
+			LCD_showBandWindow(true);
+		else
+			FRONTPANEL_BUTTONHANDLER_AsB(0);
 		return;
 	}
 	//buttons
