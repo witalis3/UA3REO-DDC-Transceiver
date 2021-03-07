@@ -252,7 +252,7 @@ void WIFI_Process(void)
 		WIFI_TryGetLine();
 		WIFI_ProcessingCommandCallback = 0;
 		//receive commands from WIFI clients
-		if (strstr(WIFI_readedLine, "+IPD") != NULL && WIFI_ProcessingCommand != WIFI_COMM_TCP_GET_RESPONSE)
+		if (strstr(WIFI_readedLine, "+IPD") != NULL && WIFI_ProcessingCommand != WIFI_COMM_TCP_GET_RESPONSE && WIFI_CAT_server_started)
 		{
 			char *wifi_incoming_link_id = strchr(WIFI_readedLine, ',');
 			if (wifi_incoming_link_id == NULL)
@@ -660,6 +660,7 @@ static bool WIFI_TryGetLine(void)
 	dma_memset(WIFI_readedLine, 0x00, sizeof(WIFI_readedLine));
 	dma_memset(tmp, 0x00, sizeof(tmp));
 
+	Aligned_CleanInvalidateDCache_by_Addr((uint32_t)WIFI_AnswerBuffer, sizeof(WIFI_AnswerBuffer));
 	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
 	if (WIFI_Answer_ReadIndex == dma_index)
 		return false;
