@@ -1363,28 +1363,43 @@ uint8_t sd_ini(void)
 			for (i = 0; i < 16; i++)
 				csd[i] = SPI_ReceiveByte();
 			/*sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[0],csd[1],csd[2],csd[3]);
-			sendToDebug_str(sd_str_buff);
+			print(sd_str_buff);
 			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[4],csd[5],csd[6],csd[7]);
-			sendToDebug_str(sd_str_buff);
+			print(sd_str_buff);
 			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[8],csd[9],csd[10],csd[11]);
-			sendToDebug_str(sd_str_buff);
+			print(sd_str_buff);
 			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[12],csd[13],csd[14],csd[15]);
-			sendToDebug_str(sd_str_buff);*/
+			print(sd_str_buff);*/
 
-			if ((csd[0] >> 6) == 1)
-			{																				   // SDC ver 2.00
-				DWORD csize = csd[9] + ((WORD)csd[8] << 8) + ((DWORD)(csd[7] & 63) << 16) + 1; //63=0x3F
-				sdinfo.SECTOR_COUNT = csize << 10;
-				//sendToDebug_str("a");
-				//sendToDebug_uint32(sdinfo.SECTOR_COUNT, false);
+			if ((csd[0] >> 6) == 1) // SDC ver 2.00 // High Capacity - CSD Version 2.0
+			{
+				DWORD C_SIZE = (DWORD)csd[9] + ((DWORD)csd[8] << 8) + ((DWORD)(csd[7] & 0x3F) << 16) + 1;
+				sdinfo.SECTOR_COUNT = C_SIZE << 10;
+				//println("SDHC sector count: ", sdinfo.SECTOR_COUNT);
 			}
-			else
+			if(sdinfo.SECTOR_COUNT == 0) // Standard Capacity - CSD Version 1.0
+			{
+				DWORD csize = ((csd[5] & 0x03) << 10) + ((WORD)csd[6] << 2) + ((WORD)(csd[7] & 0xC0) >> 6);
+				//println(csize);
+				BYTE READ_BL_LEN = (csd[5] & 0xF0) >> 4;
+				uint32_t BLOCK_LEN = pow(2, READ_BL_LEN);
+				//println(BLOCK_LEN);
+				BYTE C_SIZE_MULT = (csd[9] & 0x03) | ((csd[10] & 0x80) >> 5);
+				uint32_t MULT = pow(2, (C_SIZE_MULT + 2));
+				//println(MULT);
+				uint32_t BLOCKNR = (csize + 1) * MULT;
+				//println(BLOCKNR);
+				uint32_t SECTOR_COUNT = BLOCKNR * BLOCK_LEN / 512;
+				//println(SECTOR_COUNT);
+				sdinfo.SECTOR_COUNT = SECTOR_COUNT;
+				//println("SDSC sector count: ", sdinfo.SECTOR_COUNT);
+			}
+			if((csd[0] >> 6) != 1 || sdinfo.SECTOR_COUNT == 0)
 			{ // SDC ver 1.XX or MMC ver 3
 				BYTE n = (BYTE)((csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2);
 				DWORD csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
 				sdinfo.SECTOR_COUNT = csize << (n - 9);
-				//sendToDebug_str("b");
-				//sendToDebug_uint32(sdinfo.SECTOR_COUNT, false);
+				//println("SDC1 sector count: ", sdinfo.SECTOR_COUNT);
 			}
 			sdinfo.capacity = sdinfo.SECTOR_COUNT * 512;
 		}

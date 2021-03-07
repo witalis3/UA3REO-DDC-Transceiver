@@ -46,6 +46,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * WSPR Beacon
 * Equalizer TX/RX, reverber
 * SSB Scanner mode
+* Support SDHC/SDSC memory cards
 * AGC takes into account the characteristics of human hearing (K-Weighting)
 * TCXO frequency stabilization (it is possible to use an external clock source, such as GPS)
 * WiFi operation: Time synchronization, virtual CAT interface (see Scheme/WIFI-CAT-instruction.txt)
