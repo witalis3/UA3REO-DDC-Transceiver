@@ -88,7 +88,7 @@ void SD_Process(void)
 		disk.is_initialized[SDFatFs.drv] = false;
 		if (disk_initialize(SDFatFs.drv) == RES_OK)
 		{
-			println("[OK] SD Card Inserted: ", sdinfo.capacity / 1024 / 1024, "Mb");
+			println("[OK] SD Card Inserted: ", (uint32_t)(sdinfo.capacity / (uint64_t)1024 / (uint64_t)1024), "Mb");
 			SD_Present = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
@@ -1362,6 +1362,7 @@ uint8_t sd_ini(void)
 			SPI_ReceiveByte(); //clean buff ???
 			for (i = 0; i < 16; i++)
 				csd[i] = SPI_ReceiveByte();
+			
 			/*sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[0],csd[1],csd[2],csd[3]);
 			print(sd_str_buff);
 			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[4],csd[5],csd[6],csd[7]);

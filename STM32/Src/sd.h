@@ -35,8 +35,8 @@
 typedef struct sd_info
 {
 	volatile uint8_t type;
-	DWORD SECTOR_COUNT;
-	uint32_t capacity;
+	uint64_t SECTOR_COUNT;
+	uint64_t capacity;
 } sd_info_ptr;
 
 typedef enum
