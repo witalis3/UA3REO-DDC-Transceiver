@@ -125,11 +125,6 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern DMA2D_HandleTypeDef hdma2d;
 extern DMA_HandleTypeDef hdma_spi3_tx;
-extern MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
-extern MDMA_HandleTypeDef hmdma_mdma_channel41_sw_0;
-extern MDMA_HandleTypeDef hmdma_mdma_channel42_sw_0;
-extern MDMA_HandleTypeDef hmdma_mdma_channel43_sw_0;
-extern MDMA_HandleTypeDef hmdma_mdma_channel44_sw_0;
 extern DMA_HandleTypeDef hdma_spi2_rx;
 extern DMA_HandleTypeDef hdma_spi2_tx;
 extern SPI_HandleTypeDef hspi2;
@@ -1032,24 +1027,6 @@ void TIM17_IRQHandler(void)
   if (TRX.CWDecoder)
     DECODER_Process();
   /* USER CODE END TIM17_IRQn 1 */
-}
-
-/**
-  * @brief This function handles MDMA global interrupt.
-  */
-void MDMA_IRQHandler(void)
-{
-  /* USER CODE BEGIN MDMA_IRQn 0 */
-	CPULOAD_WakeUp();
-  /* USER CODE END MDMA_IRQn 0 */
-  HAL_MDMA_IRQHandler(&hmdma_mdma_channel40_sw_0);
-  HAL_MDMA_IRQHandler(&hmdma_mdma_channel41_sw_0);
-  HAL_MDMA_IRQHandler(&hmdma_mdma_channel42_sw_0);
-  HAL_MDMA_IRQHandler(&hmdma_mdma_channel43_sw_0);
-  HAL_MDMA_IRQHandler(&hmdma_mdma_channel44_sw_0);
-  /* USER CODE BEGIN MDMA_IRQn 1 */
-
-  /* USER CODE END MDMA_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
