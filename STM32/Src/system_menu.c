@@ -411,6 +411,9 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 		{"WIFI CAT Server", SYSMENU_BOOLEAN, (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_HANDL_WIFI_CAT_Server},
 		{"WIFI Update ESP firmware", SYSMENU_RUN, 0, SYSMENU_HANDL_WIFI_UpdateFW},
 		{"", SYSMENU_INFOLINE, 0, 0},
+		{"NET:", SYSMENU_INFOLINE, 0, 0},
+		{WIFI_AP, SYSMENU_INFOLINE, 0, 0},
+		{"", SYSMENU_INFOLINE, 0, 0},
 		{"IP:", SYSMENU_INFOLINE, 0, 0},
 		{WIFI_IP, SYSMENU_INFOLINE, 0, 0},
 };
@@ -559,6 +562,7 @@ static bool sysmenu_sysinfo_opened = false;
 static bool sysmenu_item_selected_by_enc2 = false;
 
 //WIFI
+static bool sysmenu_wifi_needupdate_ap = true;
 static bool sysmenu_wifi_selectap1_menu_opened = false;
 static bool sysmenu_wifi_selectap2_menu_opened = false;
 static bool sysmenu_wifi_selectap3_menu_opened = false;
@@ -567,7 +571,6 @@ static bool sysmenu_wifi_setAP2password_menu_opened = false;
 static bool sysmenu_wifi_setAP3password_menu_opened = false;
 static bool sysmenu_trx_setCallsign_menu_opened = false;
 static bool sysmenu_trx_setLocator_menu_opened = false;
-static uint16_t sysmenu_wifi_rescan_interval = 0;
 static uint8_t sysmenu_wifi_selected_ap_index = 0;
 static uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
 static uint8_t sysmenu_trx_selected_callsign_char_index = 0;
@@ -2285,70 +2288,73 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
-static void SYSMENU_WIFI_DrawSelectAP1MenuCallback(void)
+static void SYSMENU_HANDL_WIFI_RedrawSelectAPMenu(void)
 {
-	sysmenu_wifi_rescan_interval = 0;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
-static void SYSMENU_WIFI_DrawSelectAP2MenuCallback(void)
-{
-	sysmenu_wifi_rescan_interval = 0;
-}
-
-static void SYSMENU_WIFI_DrawSelectAP3MenuCallback(void)
-{
-	sysmenu_wifi_rescan_interval = 0;
-}
 
 static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw)
 {
-	if (full_redraw || sysmenu_wifi_rescan_interval == 0)
+	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("AP1 Found:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		uint16_t curr_x = 5;
+		LCDDriver_printText("NET1 Found:", curr_x, 5, FG_COLOR, BG_COLOR, 2);
+		curr_x += 28;
+		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, 2);
+		curr_x += 24;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 33 + i * 24, COLOR_GREEN, BG_COLOR, 2);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, 2);
 		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
-		WIFI_ListAP(SYSMENU_WIFI_DrawSelectAP1MenuCallback);
 	}
-	sysmenu_wifi_rescan_interval++;
-	if (sysmenu_wifi_rescan_interval > 30)
-		sysmenu_wifi_rescan_interval = 0;
-	LCD_UpdateQuery.SystemMenu = true;
+	if(sysmenu_wifi_needupdate_ap)
+	{
+		sysmenu_wifi_needupdate_ap = false;
+		WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu);
+	}
 }
 
 static void SYSMENU_WIFI_DrawSelectAP2Menu(bool full_redraw)
 {
-	if (full_redraw || sysmenu_wifi_rescan_interval == 0)
+	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("AP2 Found:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		uint16_t curr_x = 5;
+		LCDDriver_printText("NET2 Found:", curr_x, 5, FG_COLOR, BG_COLOR, 2);
+		curr_x += 28;
+		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, 2);
+		curr_x += 24;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 33 + i * 24, COLOR_GREEN, BG_COLOR, 2);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, 2);
 		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
-		WIFI_ListAP(SYSMENU_WIFI_DrawSelectAP2MenuCallback);
 	}
-	sysmenu_wifi_rescan_interval++;
-	if (sysmenu_wifi_rescan_interval > 30)
-		sysmenu_wifi_rescan_interval = 0;
-	LCD_UpdateQuery.SystemMenu = true;
+	if(sysmenu_wifi_needupdate_ap)
+	{
+		sysmenu_wifi_needupdate_ap = false;
+		WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu);
+	}
 }
 
 static void SYSMENU_WIFI_DrawSelectAP3Menu(bool full_redraw)
 {
-	if (full_redraw || sysmenu_wifi_rescan_interval == 0)
+	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("AP3 Found:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		uint16_t curr_x = 5;
+		LCDDriver_printText("NET3 Found:", curr_x, 5, FG_COLOR, BG_COLOR, 2);
+		curr_x += 28;
+		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, 2);
+		curr_x += 24;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, 33 + i * 24, COLOR_GREEN, BG_COLOR, 2);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, 2);
 		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
-		WIFI_ListAP(SYSMENU_WIFI_DrawSelectAP3MenuCallback);
 	}
-	sysmenu_wifi_rescan_interval++;
-	if (sysmenu_wifi_rescan_interval > 30)
-		sysmenu_wifi_rescan_interval = 0;
-	LCD_UpdateQuery.SystemMenu = true;
+	if(sysmenu_wifi_needupdate_ap)
+	{
+		sysmenu_wifi_needupdate_ap = false;
+		WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu);
+	}
 }
 
 static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir)
@@ -2360,11 +2366,20 @@ static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir)
 	SYSMENU_WIFI_DrawSelectAP1Menu(true);
 	if (dir == 0)
 	{
-		strcpy(TRX.WIFI_AP1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
-		WIFI_State = WIFI_CONFIGURED;
-		sysmenu_wifi_selectap1_menu_opened = false;
-		systemMenuIndex = 0;
-		LCD_UpdateQuery.SystemMenuRedraw = true;
+		if(sysmenu_wifi_selected_ap_index == 0)
+		{
+			sysmenu_wifi_needupdate_ap = true;
+			dma_memset((void*)WIFI_FoundedAP, 0, sizeof(WIFI_FoundedAP));
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+		}
+		else
+		{
+			strcpy(TRX.WIFI_AP1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+			WIFI_State = WIFI_CONFIGURED;
+			sysmenu_wifi_selectap1_menu_opened = false;
+			systemMenuIndex = 0;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+		}
 	}
 }
 
@@ -2377,11 +2392,20 @@ static void SYSMENU_WIFI_SelectAP2MenuMove(int8_t dir)
 	SYSMENU_WIFI_DrawSelectAP2Menu(true);
 	if (dir == 0)
 	{
-		strcpy(TRX.WIFI_AP2, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
-		WIFI_State = WIFI_CONFIGURED;
-		sysmenu_wifi_selectap2_menu_opened = false;
-		systemMenuIndex = 0;
-		LCD_UpdateQuery.SystemMenuRedraw = true;
+		if(sysmenu_wifi_selected_ap_index == 0)
+		{
+			sysmenu_wifi_needupdate_ap = true;
+			dma_memset((void*)WIFI_FoundedAP, 0, sizeof(WIFI_FoundedAP));
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+		}
+		else
+		{
+			strcpy(TRX.WIFI_AP2, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+			WIFI_State = WIFI_CONFIGURED;
+			sysmenu_wifi_selectap2_menu_opened = false;
+			systemMenuIndex = 0;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+		}
 	}
 }
 
@@ -2394,11 +2418,20 @@ static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir)
 	SYSMENU_WIFI_DrawSelectAP3Menu(true);
 	if (dir == 0)
 	{
-		strcpy(TRX.WIFI_AP3, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index]);
-		WIFI_State = WIFI_CONFIGURED;
-		sysmenu_wifi_selectap3_menu_opened = false;
-		systemMenuIndex = 0;
-		LCD_UpdateQuery.SystemMenuRedraw = true;
+		if(sysmenu_wifi_selected_ap_index == 0)
+		{
+			sysmenu_wifi_needupdate_ap = true;
+			dma_memset((void*)WIFI_FoundedAP, 0, sizeof(WIFI_FoundedAP));
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+		}
+		else
+		{
+			strcpy(TRX.WIFI_AP3, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+			WIFI_State = WIFI_CONFIGURED;
+			sysmenu_wifi_selectap3_menu_opened = false;
+			systemMenuIndex = 0;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+		}
 	}
 }
 
@@ -2407,7 +2440,7 @@ static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("AP1 Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("NET1 Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
 	}
 
 	LCDDriver_printText(TRX.WIFI_PASSWORD1, 10, 37, COLOR_GREEN, BG_COLOR, 2);
@@ -2419,7 +2452,7 @@ static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("AP2 Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("NET2 Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
 	}
 
 	LCDDriver_printText(TRX.WIFI_PASSWORD2, 10, 37, COLOR_GREEN, BG_COLOR, 2);
@@ -2431,7 +2464,7 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("AP3 Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("NET3 Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
 	}
 
 	LCDDriver_printText(TRX.WIFI_PASSWORD3, 10, 37, COLOR_GREEN, BG_COLOR, 2);
@@ -2518,48 +2551,51 @@ static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction)
 static void SYSMENU_HANDL_WIFI_SelectAP1(int8_t direction)
 {
 #pragma unused(direction)
+	sysmenu_wifi_needupdate_ap = true;
+	sysmenu_wifi_selected_ap_index = 0;
 	sysmenu_wifi_selectap1_menu_opened = true;
-	SYSMENU_WIFI_DrawSelectAP1Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SelectAP2(int8_t direction)
 {
 #pragma unused(direction)
+	sysmenu_wifi_needupdate_ap = true;
+	sysmenu_wifi_selected_ap_index = 0;
 	sysmenu_wifi_selectap2_menu_opened = true;
-	SYSMENU_WIFI_DrawSelectAP2Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SelectAP3(int8_t direction)
 {
 #pragma unused(direction)
+	sysmenu_wifi_needupdate_ap = true;
+	sysmenu_wifi_selected_ap_index = 0;
 	sysmenu_wifi_selectap3_menu_opened = true;
-	SYSMENU_WIFI_DrawSelectAP3Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SetAP1password(int8_t direction)
 {
 #pragma unused(direction)
+	sysmenu_wifi_selected_ap_password_char_index = 0;
 	sysmenu_wifi_setAP1password_menu_opened = true;
-	SYSMENU_WIFI_DrawAP1passwordMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SetAP2password(int8_t direction)
 {
 #pragma unused(direction)
+	sysmenu_wifi_selected_ap_password_char_index = 0;
 	sysmenu_wifi_setAP2password_menu_opened = true;
-	SYSMENU_WIFI_DrawAP2passwordMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SetAP3password(int8_t direction)
 {
 #pragma unused(direction)
+	sysmenu_wifi_selected_ap_password_char_index = 0;
 	sysmenu_wifi_setAP3password_menu_opened = true;
-	SYSMENU_WIFI_DrawAP3passwordMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -3579,18 +3615,15 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	}
 	else if (sysmenu_wifi_selectap1_menu_opened)
 	{
-		SYSMENU_WIFI_DrawSelectAP1Menu(0);
-		return;
+		SYSMENU_WIFI_DrawSelectAP1Menu(draw_background);
 	}
 	else if (sysmenu_wifi_selectap2_menu_opened)
 	{
-		SYSMENU_WIFI_DrawSelectAP2Menu(0);
-		return;
+		SYSMENU_WIFI_DrawSelectAP2Menu(draw_background);
 	}
 	else if (sysmenu_wifi_selectap3_menu_opened)
 	{
-		SYSMENU_WIFI_DrawSelectAP3Menu(0);
-		return;
+		SYSMENU_WIFI_DrawSelectAP3Menu(draw_background);
 	}
 	else if (sysmenu_wifi_setAP1password_menu_opened)
 	{

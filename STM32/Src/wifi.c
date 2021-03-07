@@ -38,6 +38,7 @@ static char WIFI_FoundedAP_InWork[WIFI_FOUNDED_AP_MAXCOUNT][MAX_WIFIPASS_LENGTH]
 volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][MAX_WIFIPASS_LENGTH] = {0};
 bool WIFI_IP_Gotted = false;
 char WIFI_IP[15] = {0};
+char WIFI_AP[MAX_WIFIPASS_LENGTH] = {0};
 static uint16_t WIFI_HTTP_Response_Status = 0;
 static uint32_t WIFI_HTTP_Response_ContentLength = 0;
 IRAM2 static char WIFI_HOSTuri[128] = {0};
@@ -183,6 +184,7 @@ void WIFI_Process(void)
 			WIFI_SendCommand(com); //connect to AP
 			//WIFI_WaitForOk();
 			WIFI_State = WIFI_CONNECTING;
+			strcpy(WIFI_AP, TRX.WIFI_AP1);
 		}
 		if (AP2_exist && strlen(TRX.WIFI_PASSWORD2) > 5)
 		{
@@ -195,6 +197,7 @@ void WIFI_Process(void)
 			WIFI_SendCommand(com); //connect to AP
 			//WIFI_WaitForOk();
 			WIFI_State = WIFI_CONNECTING;
+			strcpy(WIFI_AP, TRX.WIFI_AP2);
 		}
 		if (AP3_exist && strlen(TRX.WIFI_PASSWORD3) > 5)
 		{
@@ -207,6 +210,7 @@ void WIFI_Process(void)
 			WIFI_SendCommand(com); //connect to AP
 			//WIFI_WaitForOk();
 			WIFI_State = WIFI_CONNECTING;
+			strcpy(WIFI_AP, TRX.WIFI_AP3);
 		}
 		break;
 
@@ -492,6 +496,8 @@ void WIFI_Process(void)
 							strcat(WIFI_IP, start);
 							println("[WIFI] GOT IP: ", WIFI_IP);
 							WIFI_IP_Gotted = true;
+							if(LCD_systemMenuOpened)
+								LCD_UpdateQuery.SystemMenuRedraw = true;
 						}
 					}
 				}
@@ -540,7 +546,7 @@ void WIFI_ListAP(void (*callback)(void))
 {
 	if (WIFI_State != WIFI_READY && WIFI_State != WIFI_CONFIGURED)
 		return;
-	if (WIFI_State == WIFI_CONFIGURED && !WIFI_stop_auto_ap_list) // stop auto-connection when searching for networks
+	if (WIFI_State == WIFI_CONFIGURED && !WIFI_stop_auto_ap_list && WIFI_ProcessingCommand == WIFI_COMM_LISTAP) // stop auto-connection when searching for networks
 	{
 		WIFI_stop_auto_ap_list = true;
 		WIFI_WaitForOk();

@@ -51,6 +51,7 @@ extern volatile WiFiState WIFI_State;
 extern volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][MAX_WIFIPASS_LENGTH];
 extern bool WIFI_IP_Gotted;
 extern char WIFI_IP[15];
+extern char WIFI_AP[MAX_WIFIPASS_LENGTH];
 
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);
