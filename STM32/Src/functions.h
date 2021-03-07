@@ -75,6 +75,7 @@ __asm(".global __use_no_heap\n\t");
 
 #define Aligned_CleanDCache_by_Addr(buff, size) (SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
 #define Aligned_InvalidateDCache_by_Addr(buff, size) (SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
+#define Aligned_CleanInvalidateDCache_by_Addr(buff, size) (SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
 
 #define isnanf __ARM_isnanf
 #define isinff __ARM_isinff

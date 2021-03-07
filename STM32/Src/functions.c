@@ -544,12 +544,15 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	
 	dma_memset32_busy = true;
 	dma_memset32_reg = val;
+	if((uint32_t)dest < NOCACHE_ADDR_START || (uint32_t)dest > NOCACHE_ADDR_END)
+		Aligned_CleanDCache_by_Addr(dest, size * 4);
+	
 	HAL_MDMA_Start(&hmdma_mdma_channel44_sw_0, (uint32_t)&dma_memset32_reg, (uint32_t)dest, 4 * size, 1);
 	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel44_sw_0);
-	dma_memset32_busy = false;
 	
 	if((uint32_t)dest < NOCACHE_ADDR_START || (uint32_t)dest > NOCACHE_ADDR_END)
-		Aligned_InvalidateDCache_by_Addr(dest, size * 4);
+		Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);
+	dma_memset32_busy = false;
 	
 	/*uint32_t *pDst = (uint32_t *)dest;
 	for(uint32_t i = 0; i < size; i++)
@@ -613,13 +616,14 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 	dma_memcpy32_busy = true;
 	if((uint32_t)src < NOCACHE_ADDR_START || (uint32_t)src > NOCACHE_ADDR_END)
 		Aligned_CleanDCache_by_Addr(src, size * 4);
+	if((uint32_t)dest < NOCACHE_ADDR_START || (uint32_t)dest > NOCACHE_ADDR_END)
+		Aligned_CleanDCache_by_Addr(dest, size * 4);
 	
 	uint8_t res = HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, size * 4, 1);
 	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0);
 	
 	if((uint32_t)dest < NOCACHE_ADDR_START || (uint32_t)dest > NOCACHE_ADDR_END)
-		Aligned_InvalidateDCache_by_Addr(dest, size * 4);
-	
+		Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);
 	dma_memcpy32_busy = false;
 	
 	/*char *pSrc = (char *)src;

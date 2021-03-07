@@ -820,6 +820,8 @@ void processTxAudio(void)
 		//
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_Audio_Buffer_TX_I[0], sizeof(APROC_Audio_Buffer_TX_I));
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_Audio_Buffer_TX_Q[0], sizeof(APROC_Audio_Buffer_TX_Q));
+		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_I[0], sizeof(FPGA_Audio_SendBuffer_I));
+		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));
 		if (FPGA_Audio_Buffer_State) //Send to FPGA DMA
 		{
 			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
@@ -834,8 +836,8 @@ void processTxAudio(void)
 			HAL_MDMA_Start(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0);
 		}
-		Aligned_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_I[0], sizeof(FPGA_Audio_SendBuffer_I));
-		Aligned_InvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));
+		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_I[0], sizeof(FPGA_Audio_SendBuffer_I));
+		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));
 	}
 
 	Processor_NeedTXBuffer = false;
@@ -1089,15 +1091,11 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	// Double channel I-> Q
 	if (rx_id == AUDIO_RX1)
 	{
-		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_Audio_Buffer_RX1_I[0], size * 4);
 		dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX1_Q[0], (uint32_t *)&APROC_Audio_Buffer_RX1_I[0], size);
-		Aligned_InvalidateDCache_by_Addr((uint32_t *)&APROC_Audio_Buffer_RX1_Q[0], size * 4);
 	}
 	else
 	{
-		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_Audio_Buffer_RX2_I[0], size * 4);
 		dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX2_Q[0], (uint32_t *)&APROC_Audio_Buffer_RX2_I[0], size);
-		Aligned_InvalidateDCache_by_Addr((uint32_t *)&APROC_Audio_Buffer_RX2_Q[0], size * 4);
 	}
 }
 
