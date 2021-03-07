@@ -399,6 +399,8 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 
 	if (dma)
 	{
+		Aligned_CleanDCache_by_Addr((uint32_t)out_data, count);
+		Aligned_CleanDCache_by_Addr((uint32_t)in_data, count);
 		uint32_t starttime = HAL_GetTick();
 		SPI_TXRX_ready = false;
 		if (in_data == NULL)
@@ -445,6 +447,7 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		}
 		while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < 1000))
 			CPULOAD_GoToSleepMode();
+		Aligned_CleanInvalidateDCache_by_Addr((uint32_t)in_data, count);
 	}
 	else
 	{
