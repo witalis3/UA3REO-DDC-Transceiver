@@ -132,12 +132,12 @@ DRESULT USER_read (
 	if (Stat & STA_NOINIT)
 		return RES_NOTRDY;
 	if (!(sdinfo.type & CT_BLOCK))
-		sector *= 512; /* Convert to byte address if needed */
+		sector *= sdinfo.BLOCK_SIZE; /* Convert to byte address if needed */
 
 	if (count == 1) /* Single block read */
 	{
 		if ((SD_cmd(CMD17, sector) == 0) /* READ_SINGLE_BLOCK */
-			&& SD_Read_Block(buff, 512))
+			&& SD_Read_Block(buff, sdinfo.BLOCK_SIZE))
 		{
 			count = 0;
 		}
@@ -148,9 +148,9 @@ DRESULT USER_read (
 		{ /* READ_MULTIPLE_BLOCK */
 			do
 			{
-				if (!SD_Read_Block(buff, 512))
+				if (!SD_Read_Block(buff, sdinfo.BLOCK_SIZE))
 					break;
-				buff += 512;
+				buff += sdinfo.BLOCK_SIZE;
 			} while (--count);
 			SD_cmd(CMD12, 0); /* STOP_TRANSMISSION */
 		}
@@ -186,7 +186,7 @@ DRESULT USER_write (
 	if (Stat & STA_PROTECT)
 		return RES_WRPRT;
 	if (!(sdinfo.type & CT_BLOCK))
-		sector *= 512; /* Convert to byte address if needed */
+		sector *= sdinfo.BLOCK_SIZE; /* Convert to byte address if needed */
 	if (count == 1)	   /* Single block write */
 	{
 		if ((SD_cmd(CMD24, sector) == 0) /* WRITE_BLOCK */
@@ -206,7 +206,7 @@ DRESULT USER_write (
 			{
 				if (!SD_Write_Block((BYTE *)buff, 0xFC, true))
 					break;
-				buff += 512;
+				buff += sdinfo.BLOCK_SIZE;
 			} while (--count);
 			if (!SD_Write_Block(0, 0xFD, true)) /* STOP_TRAN token */
 			{
@@ -255,11 +255,11 @@ DRESULT USER_ioctl (
 		res = RES_OK;
 		break;
 	case GET_SECTOR_SIZE: /* Get sectors on the disk (WORD) */
-		*(WORD *)buff = 512;
+		*(WORD *)buff = sdinfo.BLOCK_SIZE;
 		res = RES_OK;
 		break;
 	case GET_BLOCK_SIZE:
-		*(DWORD *)buff = 512;
+		*(DWORD *)buff = sdinfo.BLOCK_SIZE;
 		res = RES_OK;
 		break;
 	default:
