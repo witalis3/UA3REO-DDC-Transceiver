@@ -207,11 +207,11 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 ### WIFI Settings
 
 * **WIFI Enabled** - Enable WiFi module (need restart)
-* **WIFI Select AP** - WiFi hotspot selection
-* **WIFI Set AP Pass** - Set password for WiFi hotspot
+* **WIFI Network** - WiFi hotspot selection
+* **WIFI Network Pass** - Set password for WiFi hotspot
 * **WIFI Timezone** - Time zone (for updating the time via the Internet)
 * **WIFI CAT Server** - Server for receiving CAT commands via WIFI
-* **WIFI Update firmware** - Start cloud autoupdate firmware for ESP-01 (if present)
+* **WIFI Update ESP firmware** - Start cloud autoupdate firmware for ESP-01 (if present)
 
 ### SD Card
 

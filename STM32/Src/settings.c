@@ -647,7 +647,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		for (uint16_t i = 0; i < size; i++)
 			if (read_clone[i] != Buffer[i])
 			{
-				println(read_clone[i]);
+				//println(read_clone[i]);
 				SPI_process = false;
 				return false;
 			}
