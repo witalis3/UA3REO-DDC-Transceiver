@@ -1083,7 +1083,12 @@ static void FFT_3DPrintFFT(void)
 		{
 			//bg
 			if (fft_y > (fftHeight - fft_header[fft_x]))
-				print_output_buffer[wtfHeight - cwdecoder_offset + fft_y][fft_x] = palette_fft[fft_y];
+			{
+				if (fft_x >= bw_line_start && fft_x <= bw_line_end)
+					print_output_buffer[wtfHeight - cwdecoder_offset + fft_y][fft_x] = palette_bw_fft_colors[fft_y];
+				else
+					print_output_buffer[wtfHeight - cwdecoder_offset + fft_y][fft_x] = palette_fft[fft_y];
+			}
 		}
 	}
 
@@ -1108,6 +1113,16 @@ static void FFT_3DPrintFFT(void)
 		fft_y_prev = fft_y;
 	}
 
+	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
+	{
+		//Gauss filter center
+		if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+			print_output_buffer[fft_y][bw_line_center] = palette_fft[fftHeight * 3 / 4];
+
+		//Сenter line
+		print_output_buffer[fft_y][LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2];
+	}
+	
 	//do after events
 	FFT_afterPrintFFT();
 }
@@ -1133,27 +1148,6 @@ void FFT_printWaterfallDMA(void)
 			{
 				wtf_output_line[wtf_x] = print_output_buffer[print_wtf_yindex][wtf_x];
 			}
-
-			//bw bar highlight
-			/*if (print_wtf_yindex > wtfHeight)
-			{
-				uint16_t fft_y = print_wtf_yindex - wtfHeight + cwdecoder_offset;
-				for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
-				{
-					if (fft_x >= bw_line_start && fft_x <= bw_line_end)
-					{
-						if (fft_y > (fftHeight - fft_header[fft_x]))
-							wtf_output_line[fft_x] = palette_bw_fft_colors[(*indexed_3d_fft_buffer)[print_wtf_yindex][fft_x]];
-					}
-				}
-			}*/
-
-			//Gauss filter center
-			if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-				wtf_output_line[bw_line_center] = palette_fft[fftHeight * 3 / 4]; //mixColors(wtf_output_line[bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
-
-			//Сenter line
-			wtf_output_line[LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2];
 
 			//Send To DMA
 			Aligned_CleanDCache_by_Addr(wtf_output_line, sizeof(wtf_output_line));
