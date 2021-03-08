@@ -53,9 +53,7 @@ IRAM2 static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{
 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};								 // frequencies for each row of the waterfall
 static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};							 // frequencies for each row of the fft mean buffer
 IRAM2 static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
-#if FFT_3D_enabled
-IRAM2 static uint8_t indexed_3d_fft_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with 3d WTF output
-#endif
+static uint8_t (*indexed_3d_fft_buffer)[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = (uint8_t (*)[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE])fft_output_buffer; //indexed color buffer with 3d WTF output
 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft colors output
 static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft peaks
 static int32_t grid_lines_pos[20] = {-1};					//grid lines positions
@@ -1028,7 +1026,6 @@ void FFT_afterPrintFFT(void)
 //3D mode print
 static void FFT_3DPrintFFT(void)
 {
-#if FFT_3D_enabled
 	uint16_t wtfHeight = GET_WTFHeight;
 	uint16_t fftHeight = GET_FFTHeight;
 	uint_fast8_t cwdecoder_offset = 0;
@@ -1036,7 +1033,8 @@ static void FFT_3DPrintFFT(void)
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 
 	//clear old data
-	dma_memset(indexed_3d_fft_buffer, fftHeight, sizeof(indexed_3d_fft_buffer));
+	//dma_memset(*indexed_3d_fft_buffer, fftHeight, sizeof(*indexed_3d_fft_buffer));
+	dma_memset(fft_output_buffer, fftHeight, sizeof(fft_output_buffer));
 
 	//draw 3D WTF
 	for (int32_t wtf_yindex = 0; wtf_yindex <= FFT_3D_SLIDES; wtf_yindex++) //each slides
@@ -1069,14 +1067,14 @@ static void FFT_3DPrintFFT(void)
 
 				for (uint16_t h = 0; h < line_max; h++)
 				{
-					if(indexed_3d_fft_buffer[print_bin_height + h][print_x] != fftHeight)
+					if((*indexed_3d_fft_buffer)[print_bin_height + h][print_x] != fftHeight)
 						break;
-					indexed_3d_fft_buffer[print_bin_height + h][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x] + h;
+					(*indexed_3d_fft_buffer)[print_bin_height + h][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x] + h;
 				}
 			}
 			if (TRX.FFT_3D == 2) //pixel mode
-				if(indexed_3d_fft_buffer[print_bin_height][print_x] == fftHeight)
-					indexed_3d_fft_buffer[print_bin_height][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x];
+				if((*indexed_3d_fft_buffer)[print_bin_height][print_x] == fftHeight)
+					(*indexed_3d_fft_buffer)[print_bin_height][print_x] = indexed_wtf_buffer[wtf_yindex][wtf_x];
 		}
 	}
 
@@ -1087,7 +1085,7 @@ static void FFT_3DPrintFFT(void)
 		{
 			//bg
 			if (fft_y > (fftHeight - fft_header[fft_x]))
-				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset + fft_y][fft_x] = fft_y;
+				(*indexed_3d_fft_buffer)[wtfHeight - cwdecoder_offset + fft_y][fft_x] = fft_y;
 		}
 	}
 
@@ -1099,14 +1097,14 @@ static void FFT_3DPrintFFT(void)
 		int32_t y_diff = (int32_t)fft_y - (int32_t)fft_y_prev;
 		if (fft_x == 0 || (y_diff <= 1 && y_diff >= -1))
 		{
-			indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset - 1 + fft_y][fft_x] = fftHeight / 2;
+			(*indexed_3d_fft_buffer)[wtfHeight - cwdecoder_offset - 1 + fft_y][fft_x] = fftHeight / 2;
 		}
 		else
 		{
 			for (uint32_t l = 0; l < (abs(y_diff / 2) + 1); l++) //draw line
 			{
-				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset - 1 + fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = fftHeight / 2;
-				indexed_3d_fft_buffer[wtfHeight - cwdecoder_offset - 1 + fft_y + ((y_diff > 0) ? -l : l)][fft_x] = fftHeight / 2;
+				(*indexed_3d_fft_buffer)[wtfHeight - cwdecoder_offset - 1 + fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = fftHeight / 2;
+				(*indexed_3d_fft_buffer)[wtfHeight - cwdecoder_offset - 1 + fft_y + ((y_diff > 0) ? -l : l)][fft_x] = fftHeight / 2;
 			}
 		}
 		fft_y_prev = fft_y;
@@ -1114,10 +1112,6 @@ static void FFT_3DPrintFFT(void)
 
 	//do after events
 	FFT_afterPrintFFT();
-#else
-	FFT_need_fft = true;
-	LCD_busy = false;
-#endif
 }
 
 // waterfall output
@@ -1130,7 +1124,6 @@ void FFT_printWaterfallDMA(void)
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 
 //3D version printout
-#if FFT_3D_enabled
 	if (TRX.FFT_3D > 0)
 	{
 		if (print_wtf_yindex == 0)
@@ -1140,7 +1133,7 @@ void FFT_printWaterfallDMA(void)
 		{
 			for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
 			{
-				wtf_output_line[wtf_x] = palette_fft[indexed_3d_fft_buffer[print_wtf_yindex][wtf_x]];
+				wtf_output_line[wtf_x] = palette_fft[(*indexed_3d_fft_buffer)[print_wtf_yindex][wtf_x]];
 			}
 
 			//bw bar highlight
@@ -1152,7 +1145,7 @@ void FFT_printWaterfallDMA(void)
 					if (fft_x >= bw_line_start && fft_x <= bw_line_end)
 					{
 						if (fft_y > (fftHeight - fft_header[fft_x]))
-							wtf_output_line[fft_x] = palette_bw_fft_colors[indexed_3d_fft_buffer[print_wtf_yindex][fft_x]];
+							wtf_output_line[fft_x] = palette_bw_fft_colors[(*indexed_3d_fft_buffer)[print_wtf_yindex][fft_x]];
 					}
 				}
 			}
@@ -1190,7 +1183,6 @@ void FFT_printWaterfallDMA(void)
 		}
 		return;
 	}
-#endif
 	//
 
 	static uint8_t line_repeats_need = 1;
