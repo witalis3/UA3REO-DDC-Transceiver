@@ -52,7 +52,6 @@ IRAM2 static uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE
 SRAM static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};								 // frequencies for each row of the waterfall
 static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};							 // frequencies for each row of the fft mean buffer
-SRAM static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft colors output
 static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft peaks
 static int32_t grid_lines_pos[20] = {-1};					//grid lines positions
@@ -61,7 +60,6 @@ static int16_t bw_line_start = 0;							//BW bar params
 static int16_t bw_line_width = 0;							//BW bar params
 static int16_t bw_line_end = 0;								//BW bar params
 static int16_t bw_line_center = 0;							//BW bar params
-static uint16_t print_wtf_yindex = 0;						// the current coordinate of the waterfall output via DMA
 static float32_t window_multipliers[FFT_SIZE] = {0};		// coefficients of the selected window function
 static float32_t hz_in_pixel = 1.0f;						// current FFT density value
 static uint16_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0}; // temporary buffer to move the waterfall
@@ -923,7 +921,7 @@ bool FFT_printFFT(void)
 #endif
 	
 	uint16_t wtf_printed_lines = 0;
-	print_wtf_yindex = fftHeight;
+	uint16_t print_wtf_yindex = fftHeight;
 #ifdef HAS_BTE
 	while ((print_wtf_yindex < (fftHeight + wtfHeight - cwdecoder_offset) && (lastWTFFreq != currentFFTFreq || NeedWTFRedraw)) || (print_wtf_yindex == fftHeight && lastWTFFreq == currentFFTFreq && !NeedWTFRedraw))
 #else
@@ -1255,87 +1253,6 @@ void FFT_afterPrintFFT(void)
 	}
 	FFT_need_fft = true;
 	LCD_busy = false;
-}
-
-// waterfall output
-void FFT_printWaterfallDMA(void)
-{
-	uint16_t fftHeight = GET_FFTHeight;
-	uint16_t wtfHeight = GET_WTFHeight;
-	uint_fast8_t cwdecoder_offset = 0;
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
-		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
-
-	static uint8_t line_repeats_need = 1;
-
-	//wtf area
-	if (print_wtf_yindex == 0)
-		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + (uint16_t)(wtfHeight - cwdecoder_offset) - 1);
-
-//print waterfall line
-	if (print_wtf_yindex < (wtfHeight - cwdecoder_offset))
-	{
-		uint16_t corr_print_wtf_yindex = print_wtf_yindex / line_repeats_need;
-		// calculate offset
-		float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[corr_print_wtf_yindex]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom;
-		float32_t freq_diff_part = fmodf(freq_diff, 1.0f);
-		int32_t margin_left = 0;
-		if (freq_diff < 0)
-			margin_left = -floorf(freq_diff);
-		if (margin_left > LAYOUT->FFT_PRINT_SIZE)
-			margin_left = LAYOUT->FFT_PRINT_SIZE;
-		int32_t margin_right = 0;
-		if (freq_diff > 0)
-			margin_right = ceilf(freq_diff);
-		if (margin_right > LAYOUT->FFT_PRINT_SIZE)
-			margin_right = LAYOUT->FFT_PRINT_SIZE;
-		if ((margin_left + margin_right) > LAYOUT->FFT_PRINT_SIZE)
-			margin_right = 0;
-		//rounding
-		int32_t body_width = LAYOUT->FFT_PRINT_SIZE - margin_left - margin_right;
-
-		if (!TRX.WTF_Moving) //skip WTF moving
-		{
-			body_width = LAYOUT->FFT_PRINT_SIZE;
-			margin_left = 0;
-			margin_right = 0;
-		}
-
-		if (body_width <= 0)
-		{
-			dma_memset(&wtf_output_line, BG_COLOR, sizeof(wtf_output_line));
-		}
-		else
-		{
-			if (margin_left == 0 && margin_right == 0) //print full line
-			{
-				for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
-					if (wtf_x >= bw_line_start && wtf_x <= bw_line_end) //print bw bar
-						wtf_output_line[wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x]];
-					else
-						wtf_output_line[wtf_x] = palette_fft[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x]];
-			}
-			else if (margin_left > 0)
-			{
-				dma_memset(&wtf_output_line, BG_COLOR, (uint32_t)(margin_left * 2)); // fill the space to the left
-				for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++)
-					if ((margin_left + wtf_x) >= bw_line_start && (margin_left + wtf_x) <= bw_line_end) //print bw bar
-						wtf_output_line[margin_left + wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x]];
-					else
-						wtf_output_line[margin_left + wtf_x] = palette_fft[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x]];
-			}
-			if (margin_right > 0)
-			{
-				dma_memset(&wtf_output_line[(LAYOUT->FFT_PRINT_SIZE - margin_right)], BG_COLOR, (uint32_t)(margin_right * 2)); // fill the space to the right
-				for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_right); wtf_x++)
-					if (wtf_x >= bw_line_start && wtf_x <= bw_line_end) //print bw bar
-						wtf_output_line[wtf_x] = palette_bw_fft_colors[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x + margin_right]];
-					else
-						wtf_output_line[wtf_x] = palette_fft[indexed_wtf_buffer[corr_print_wtf_yindex][wtf_x + margin_right]];
-			}
-		}
-
-	}
 }
 
 // get color from signal strength

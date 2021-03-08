@@ -57,7 +57,6 @@ extern void FFT_bufferPrepare(void);                     // FFT Buffer process
 extern void FFT_doFFT(void);                             // FFT calculation
 extern bool FFT_printFFT(void);                          // FFT output
 extern void FFT_afterPrintFFT(void);                     // FFT output after callback
-extern void FFT_printWaterfallDMA(void);                 // waterfall output
 extern uint32_t getFreqOnFFTPosition(uint16_t position); //get frequency from pixel X position
 
 #endif

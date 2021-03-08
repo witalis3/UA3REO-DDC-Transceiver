@@ -893,7 +893,7 @@ void DMA2_Stream6_IRQHandler(void)
   /* USER CODE END DMA2_Stream6_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream6);
   /* USER CODE BEGIN DMA2_Stream6_IRQn 1 */
-  FFT_printWaterfallDMA(); // display the waterfall
+
   /* USER CODE END DMA2_Stream6_IRQn 1 */
 }
 
