@@ -5,47 +5,18 @@
 // useful info https://github.com/df8oe/UHSDR/wiki/Noise-reduction
 
 //Private variables
-SRAM static NR_Instance NR_RX1 = {
-	.NR_InputBuffer = {0},
-	.NR_InputBuffer_index = 0,
-	.NR_OutputBuffer = {0},
-	.NR_OutputBuffer_index = 0,
-	.NR_Prev_Buffer = {0},
-	.FFT_Buffer = {0},
-	.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE,
-	.FFT_COMPLEX_MAG = {0},
-	.FFT_AVERAGE_MAG = {0},
-	.FFT_MINIMUM_MAG = {0},
-	.NR_GAIN = {0},
-	.LAST_IFFT_RESULT = {0},
-	
-	.NR_GAIN_old = {0},
-	.SNR_post = {0},
-	.SNR_prio = {0},
-};
-SRAM static NR_Instance NR_RX2 = {
-	.NR_InputBuffer = {0},
-	.NR_InputBuffer_index = 0,
-	.NR_OutputBuffer = {0},
-	.NR_OutputBuffer_index = 0,
-	.NR_Prev_Buffer = {0},
-	.FFT_Buffer = {0},
-	.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE,
-	.FFT_COMPLEX_MAG = {0},
-	.FFT_AVERAGE_MAG = {0},
-	.FFT_MINIMUM_MAG = {0},
-	.NR_GAIN = {0},
-	.LAST_IFFT_RESULT = {0},
-	
-	.NR_GAIN_old = {0},
-	.SNR_post = {0},
-	.SNR_prio = {0},
-};
+SRAM static NR_Instance NR_RX1 = {0};
+SRAM static NR_Instance NR_RX2 = {0};
 static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; // coefficients for the window function
 
 // initialize DNR
 void InitNoiseReduction(void)
 {
+	dma_memset(&NR_RX1, 0, sizeof(NR_RX1));
+	dma_memset(&NR_RX2, 0, sizeof(NR_RX1));
+	NR_RX1.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE;
+	NR_RX2.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE;
+	
 	for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
 		von_Hann[idx] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * F_PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)));
 	
