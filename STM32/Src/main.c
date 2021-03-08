@@ -86,7 +86,6 @@ DMA_HandleTypeDef hdma_usart6_rx;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
-DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
@@ -1235,7 +1234,6 @@ static void MX_USB_OTG_FS_PCD_Init(void)
 /**
   * Enable DMA controller clock
   * Configure DMA for memory to memory transfers
-  *   hdma_memtomem_dma2_stream6
   *   hdma_memtomem_dma2_stream4
   *   hdma_memtomem_dma2_stream5
   */
@@ -1245,25 +1243,6 @@ static void MX_DMA_Init(void)
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
   __HAL_RCC_DMA2_CLK_ENABLE();
-
-  /* Configure DMA request hdma_memtomem_dma2_stream6 on DMA2_Stream6 */
-  hdma_memtomem_dma2_stream6.Instance = DMA2_Stream6;
-  hdma_memtomem_dma2_stream6.Init.Request = DMA_REQUEST_MEM2MEM;
-  hdma_memtomem_dma2_stream6.Init.Direction = DMA_MEMORY_TO_MEMORY;
-  hdma_memtomem_dma2_stream6.Init.PeriphInc = DMA_PINC_ENABLE;
-  hdma_memtomem_dma2_stream6.Init.MemInc = DMA_MINC_DISABLE;
-  hdma_memtomem_dma2_stream6.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-  hdma_memtomem_dma2_stream6.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
-  hdma_memtomem_dma2_stream6.Init.Mode = DMA_NORMAL;
-  hdma_memtomem_dma2_stream6.Init.Priority = DMA_PRIORITY_LOW;
-  hdma_memtomem_dma2_stream6.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
-  hdma_memtomem_dma2_stream6.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
-  hdma_memtomem_dma2_stream6.Init.MemBurst = DMA_MBURST_INC8;
-  hdma_memtomem_dma2_stream6.Init.PeriphBurst = DMA_PBURST_INC8;
-  if (HAL_DMA_Init(&hdma_memtomem_dma2_stream6) != HAL_OK)
-  {
-    Error_Handler( );
-  }
 
   /* Configure DMA request hdma_memtomem_dma2_stream4 on DMA2_Stream4 */
   hdma_memtomem_dma2_stream4.Instance = DMA2_Stream4;
@@ -1319,9 +1298,6 @@ static void MX_DMA_Init(void)
   /* DMA2_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream5_IRQn, 7, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream5_IRQn);
-  /* DMA2_Stream6_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 7, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
 
 }
 
