@@ -4,7 +4,7 @@
 
 //Private variables
 static NB_Instance NB_RX1 = {0};
-IRAM2 static NB_Instance NB_RX2 = {0};
+SRAM static NB_Instance NB_RX2 = {0};
 
 // start NB for the data block
 void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)

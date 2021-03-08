@@ -12,11 +12,11 @@ static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static void (*WIFI_ProcessingCommandCallback)(void);
 
 static SRAM char WIFI_AnswerBuffer[WIFI_ANSWER_BUFFER_SIZE] = {0};
-static IRAM2 char WIFI_readedLine[WIFI_LINE_BUFFER_SIZE] = {0};
-static IRAM2 char tmp[WIFI_LINE_BUFFER_SIZE] = {0};
-static IRAM2 int16_t WIFI_RLEStreamBuffer[WIFI_RLE_BUFFER_SIZE] = {0};
-static IRAM2 uint16_t WIFI_RLEStreamBuffer_index = 0;
-static IRAM2 uint16_t WIFI_RLEStreamBuffer_part = 0;
+static SRAM char WIFI_readedLine[WIFI_LINE_BUFFER_SIZE] = {0};
+static SRAM char tmp[WIFI_LINE_BUFFER_SIZE] = {0};
+static SRAM int16_t WIFI_RLEStreamBuffer[WIFI_RLE_BUFFER_SIZE] = {0};
+static SRAM uint16_t WIFI_RLEStreamBuffer_index = 0;
+static SRAM uint16_t WIFI_RLEStreamBuffer_part = 0;
 static uint32_t WIFI_Answer_ReadIndex = 0;
 static uint32_t commandStartTime = 0;
 static uint8_t WIFI_FoundedAP_Index = 0;
@@ -41,10 +41,10 @@ char WIFI_IP[15] = {0};
 char WIFI_AP[MAX_WIFIPASS_LENGTH] = {0};
 static uint16_t WIFI_HTTP_Response_Status = 0;
 static uint32_t WIFI_HTTP_Response_ContentLength = 0;
-IRAM2 static char WIFI_HOSTuri[128] = {0};
-IRAM2 static char WIFI_GETuri[128] = {0};
-IRAM2 static char WIFI_HTTRequest[128] = {0};
-IRAM2 static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
+SRAM static char WIFI_HOSTuri[128] = {0};
+SRAM static char WIFI_GETuri[128] = {0};
+SRAM static char WIFI_HTTRequest[128] = {0};
+SRAM static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
 
 void WIFI_Init(void)
 {
