@@ -48,12 +48,12 @@ static uint16_t palette_fft[MAX_FFT_HEIGHT + 1] = {0};								 // color palette 
 static uint16_t palette_bg_gradient[MAX_FFT_HEIGHT + 1] = {0};						 // color palette with gradient background of FFT
 static uint16_t palette_bw_fft_colors[MAX_FFT_HEIGHT + 1] = {0};					 // color palette with bw highlighted FFT colors
 static uint16_t palette_bw_bg_colors[MAX_FFT_HEIGHT + 1] = {0};						 // color palette with bw highlighted background colors
-IRAM2 static uint16_t fft_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};	 //buffer with fft print data
+IRAM2 static uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};	 //buffer with fft print data
 SRAM static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};								 // frequencies for each row of the waterfall
 static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};							 // frequencies for each row of the fft mean buffer
 SRAM static uint16_t wtf_output_line[MAX_FFT_PRINT_SIZE] = {0};						 // temporary buffer to draw the waterfall
-static uint8_t (*indexed_3d_fft_buffer)[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = (uint8_t (*)[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE])fft_output_buffer; //indexed color buffer with 3d WTF output
+static uint8_t (*indexed_3d_fft_buffer)[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = (uint8_t (*)[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE])print_output_buffer; //indexed color buffer with 3d WTF output
 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft colors output
 static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft peaks
 static int32_t grid_lines_pos[20] = {-1};					//grid lines positions
@@ -253,7 +253,7 @@ void FFT_Init(void)
 		zoomed_width = FFT_SIZE;
 
 	// clear the buffers
-	dma_memset(fft_output_buffer, 0x00, sizeof(fft_output_buffer));
+	dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
 	dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
 	dma_memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 	dma_memset(fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
@@ -772,16 +772,16 @@ bool FFT_printFFT(void)
 				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
 				{
 					if (fft_y >= (fftHeight - fft_header[fft_x]))
-						fft_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fft_y];
+						print_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fft_y];
 					else
-						fft_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+						print_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
 				}
 				else //other fft data
 				{
 					if (fft_y >= (fftHeight - fft_header[fft_x]))
-						fft_output_buffer[fft_y][fft_x] = y_palette;
+						print_output_buffer[fft_y][fft_x] = y_palette;
 					else
-						fft_output_buffer[fft_y][fft_x] = background;
+						print_output_buffer[fft_y][fft_x] = background;
 				}
 			}
 		}
@@ -794,16 +794,16 @@ bool FFT_printFFT(void)
 				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
 				{
 					if (fft_y >= (fftHeight - fft_header[fft_x]))
-						fft_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
+						print_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
 					else
-						fft_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+						print_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
 				}
 				else //other fft data
 				{
 					if (fft_y >= (fftHeight - fft_header[fft_x]))
-						fft_output_buffer[fft_y][fft_x] = y_palette;
+						print_output_buffer[fft_y][fft_x] = y_palette;
 					else
-						fft_output_buffer[fft_y][fft_x] = background;
+						print_output_buffer[fft_y][fft_x] = background;
 				}
 			}
 		}
@@ -816,16 +816,16 @@ bool FFT_printFFT(void)
 				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
 				{
 					if (fft_y == (fftHeight - fft_header[fft_x]))
-						fft_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
+						print_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
 					else
-						fft_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+						print_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
 				}
 				else //other fft data
 				{
 					if (fft_y == (fftHeight - fft_header[fft_x]))
-						fft_output_buffer[fft_y][fft_x] = y_palette;
+						print_output_buffer[fft_y][fft_x] = y_palette;
 					else
-						fft_output_buffer[fft_y][fft_x] = background;
+						print_output_buffer[fft_y][fft_x] = background;
 				}
 			}
 		}
@@ -834,9 +834,9 @@ bool FFT_printFFT(void)
 			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 			{
 				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
-					fft_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+					print_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
 				else //other fft data
-					fft_output_buffer[fft_y][fft_x] = background;
+					print_output_buffer[fft_y][fft_x] = background;
 			}
 		}
 	}
@@ -849,14 +849,14 @@ bool FFT_printFFT(void)
 			int32_t y_diff = (int32_t)fft_y - (int32_t)fft_y_prev;
 			if (fft_x == 0 || (y_diff <= 1 && y_diff >= -1))
 			{
-				fft_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
+				print_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
 			}
 			else
 			{
 				for (uint32_t l = 0; l < (abs(y_diff / 2) + 1); l++) //draw line
 				{
-					fft_output_buffer[fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = palette_fft[fftHeight / 2];
-					fft_output_buffer[fft_y + ((y_diff > 0) ? -l : l)][fft_x] = palette_fft[fftHeight / 2];
+					print_output_buffer[fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = palette_fft[fftHeight / 2];
+					print_output_buffer[fft_y + ((y_diff > 0) ? -l : l)][fft_x] = palette_fft[fftHeight / 2];
 				}
 			}
 			fft_y_prev = fft_y;
@@ -873,14 +873,14 @@ bool FFT_printFFT(void)
 			int32_t y_diff = (int32_t)fft_y - (int32_t)fft_y_prev;
 			if (fft_x == 0 || (y_diff <= 1 && y_diff >= -1))
 			{
-				fft_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
+				print_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
 			}
 			else
 			{
 				for (uint32_t l = 0; l < (abs(y_diff / 2) + 1); l++) //draw line
 				{
-					fft_output_buffer[fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = palette_fft[fftHeight / 2];
-					fft_output_buffer[fft_y + ((y_diff > 0) ? -l : l)][fft_x] = palette_fft[fftHeight / 2];
+					print_output_buffer[fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = palette_fft[fftHeight / 2];
+					print_output_buffer[fft_y + ((y_diff > 0) ? -l : l)][fft_x] = palette_fft[fftHeight / 2];
 				}
 			}
 			fft_y_prev = fft_y;
@@ -893,22 +893,22 @@ bool FFT_printFFT(void)
 		for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
 			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
 				for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-					fft_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = palette_fft[fftHeight * 3 / 4]; //mixColors(fft_output_buffer[fft_y][grid_lines_pos[grid_line_index]], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = palette_fft[fftHeight * 3 / 4]; //mixColors(fft_output_buffer[fft_y][grid_lines_pos[grid_line_index]], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	}
 
 	//Gauss filter center
 	if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 	{
 		for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-			fft_output_buffer[fft_y][bw_line_center] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+			print_output_buffer[fft_y][bw_line_center] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][bw_line_center], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 	}
 
 	//draw center line
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-		fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
+		print_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = palette_fft[fftHeight / 2]; //mixColors(fft_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)], palette_fft[fftHeight / 2], FFT_SCALE_LINES_BRIGHTNESS);
 
 	//Print FFT
-	Aligned_CleanDCache_by_Addr(fft_output_buffer, sizeof(fft_output_buffer));
+	Aligned_CleanDCache_by_Addr(print_output_buffer, sizeof(print_output_buffer));
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, (LAYOUT->FFT_FFTWTF_POS_Y + fftHeight));
 	print_fft_dma_estimated_size = LAYOUT->FFT_PRINT_SIZE * fftHeight;
 	print_fft_dma_position = 0;
@@ -925,14 +925,14 @@ void FFT_afterPrintFFT(void)
 	{
 		if (print_fft_dma_estimated_size <= DMA_MAX_BLOCK)
 		{
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
+			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&print_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
 			print_fft_dma_estimated_size = 0;
 			print_fft_dma_position = 0;
 		}
 		else
 		{
 			print_fft_dma_estimated_size -= DMA_MAX_BLOCK;
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&fft_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, DMA_MAX_BLOCK);
+			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&print_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, DMA_MAX_BLOCK);
 			print_fft_dma_position += DMA_MAX_BLOCK;
 		}
 		return;
@@ -1033,8 +1033,7 @@ static void FFT_3DPrintFFT(void)
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 
 	//clear old data
-	//dma_memset(*indexed_3d_fft_buffer, fftHeight, sizeof(*indexed_3d_fft_buffer));
-	dma_memset(fft_output_buffer, fftHeight, sizeof(fft_output_buffer));
+	dma_memset(print_output_buffer, fftHeight, sizeof(print_output_buffer));
 
 	//draw 3D WTF
 	for (int32_t wtf_yindex = 0; wtf_yindex <= FFT_3D_SLIDES; wtf_yindex++) //each slides
