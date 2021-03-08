@@ -634,7 +634,7 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 
 void dma_memcpy(void *dest, void *src, uint32_t size)
 {
-	if(dma_memcpy32_busy || size < 128) //for async and fast calls
+	if(dma_memcpy32_busy || size < 1024) //for async and fast calls
 	{
 		memcpy(dest, src, size);
 		return;
