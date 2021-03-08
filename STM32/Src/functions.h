@@ -85,7 +85,7 @@ __asm(".global __use_no_heap\n\t");
   for (uint_fast16_t wait_i = 0; wait_i < 100; wait_i++) \
     __asm("nop");
 
-#define DMA_MAX_BLOCK 65535
+#define DMA_MAX_BLOCK 65000
 
 // Example of __DATE__ string: "Jul 27 2012"
 //                              01234567890
