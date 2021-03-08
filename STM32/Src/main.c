@@ -41,6 +41,7 @@
 #include "usbd_debug_if.h"
 #include "wifi.h"
 #include "images.h"
+#include "sd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -327,6 +328,7 @@ int main(void)
   println("[OK] ENC2 timer TIM16 init");
   HAL_TIM_Base_Start_IT(&htim16);
   println("[OK] PERIPHERAL timer TIM15 init");
+	dma_memset(&SDFatFs, 0, sizeof(SDFatFs));
   HAL_TIM_Base_Start_IT(&htim15);
   println("[OK] Digital decoder timer TIM17 init");
   HAL_TIM_Base_Start_IT(&htim17);
