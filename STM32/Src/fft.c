@@ -533,9 +533,6 @@ bool FFT_printFFT(void)
 		return;*/
 	LCD_busy = true;
 
-	//clear old data
-	dma_memset(print_output_buffer, 0, sizeof(print_output_buffer));
-	
 	uint16_t height = 0; // column height in FFT output
 	uint16_t tmp = 0;
 	uint16_t fftHeight = GET_FFTHeight;
@@ -890,7 +887,15 @@ bool FFT_printFFT(void)
 		}
 	}
 	
-	//Waterfall
+	////Waterfall
+	
+	//clear old data
+	if(lastWTFFreq != currentFFTFreq || NeedWTFRedraw)
+	{
+		dma_memset(print_output_buffer[fftHeight], 0, sizeof(uint16_t) * LAYOUT->FFT_PRINT_SIZE * (wtfHeight - cwdecoder_offset));
+	}
+	
+	//BTE
 	static uint8_t line_repeats_need = 1;
 #ifdef HAS_BTE
 	//move exist lines down with BTE
@@ -1035,6 +1040,9 @@ static void FFT_3DPrintFFT(void)
 	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 
+	//clear old data
+	dma_memset(print_output_buffer, 0, sizeof(print_output_buffer));
+	
 	//draw 3D WTF
 	for (int32_t wtf_yindex = 0; wtf_yindex <= FFT_3D_SLIDES; wtf_yindex++) //each slides
 	{
