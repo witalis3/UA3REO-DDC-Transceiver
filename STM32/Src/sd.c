@@ -8,7 +8,7 @@
 #include "system_menu.h"
 #include "vocoder.h"
 
-SRAM4 FATFS SDFatFs = {0};
+SRAM FATFS SDFatFs = {0};
 sd_info_ptr sdinfo = {
 	.type = 0,
 	.SECTOR_COUNT = 0,
