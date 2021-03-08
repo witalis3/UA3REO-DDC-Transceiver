@@ -185,6 +185,7 @@ void WM8731_Init(void)
 // RX Buffer is fully sent to the codec
 ITCM static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 {
+	CPULOAD_WakeUp();
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
 		if (Processor_NeedRXBuffer) // if the audio codec did not provide data to the buffer, raise the error flag
@@ -200,6 +201,7 @@ ITCM static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 // RX Buffer half sent to the codec
 ITCM static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 {
+	CPULOAD_WakeUp();
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
 	{
 		if (Processor_NeedRXBuffer) // if the audio codec did not provide data to the buffer, raise the error flag
@@ -215,6 +217,7 @@ ITCM static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 // TX Buffer is completely taken from the codec
 ITCM static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
 {
+	CPULOAD_WakeUp();
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
 	HAL_I2S_RxCpltCallback(hi2s);
 }
@@ -222,6 +225,7 @@ ITCM static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
 // TX Buffer half received from the codec
 ITCM static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
 {
+	CPULOAD_WakeUp();
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
 	HAL_I2S_RxHalfCpltCallback(hi2s);
 }
@@ -229,6 +233,7 @@ ITCM static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
 // DMA I2S error
 ITCM static void I2S_DMAError(DMA_HandleTypeDef *hdma)
 {
+	CPULOAD_WakeUp();
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent; /* Derogation MISRAC2012-Rule-11.5 */
 
 	/* Disable Rx and Tx DMA Request */
