@@ -8,7 +8,7 @@
 #include "system_menu.h"
 #include "vocoder.h"
 
-SRAM4 FATFS SDFatFs;
+SRAM4 FATFS SDFatFs = {0};
 sd_info_ptr sdinfo = {
 	.type = 0,
 	.SECTOR_COUNT = 0,
@@ -29,13 +29,13 @@ bool SD_Mounted = false;
 
 static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 
-SRAM4 static FIL File;
-SRAM4 static FILINFO fileInfo = {0};
-SRAM4 static DIR dir = {0};
-SRAM4 BYTE SD_workbuffer_A[_MAX_SS];
-SRAM4 BYTE SD_workbuffer_B[_MAX_SS];
-SRAM4 BYTE SD_workbuffer_current = false; //false - fill A save B, true - fill B save A
-SRAM4 static WAV_header wav_hdr = {0};
+SRAM static FIL File = {0};
+SRAM static FILINFO fileInfo = {0};
+SRAM static DIR dir = {0};
+SRAM BYTE SD_workbuffer_A[_MAX_SS] = {0};
+SRAM BYTE SD_workbuffer_B[_MAX_SS] = {0};
+SRAM static WAV_header wav_hdr = {0};
+BYTE SD_workbuffer_current = false; //false - fill A save B, true - fill B save A
 
 static void SDCOMM_CHECKSD(void);
 static void SDCOMM_LISTROOT(void);
