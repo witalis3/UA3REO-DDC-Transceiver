@@ -499,6 +499,16 @@
               <FilePath>..\Src\fft.h</FilePath>
             </File>
             <File>
+              <FileName>filemanager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\filemanager.c</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\filemanager.h</FilePath>
+            </File>
+            <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\fonts.c</FilePath>
@@ -1726,6 +1736,16 @@
               <FileName>fft.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fft.h</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\filemanager.c</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\filemanager.h</FilePath>
             </File>
             <File>
               <FileName>fonts.c</FileName>
@@ -3026,6 +3046,16 @@
               <FilePath>..\Src\fft.h</FilePath>
             </File>
             <File>
+              <FileName>filemanager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\filemanager.c</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\filemanager.h</FilePath>
+            </File>
+            <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\fonts.c</FilePath>
@@ -4322,6 +4352,16 @@
               <FileName>fft.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fft.h</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\filemanager.c</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\filemanager.h</FilePath>
             </File>
             <File>
               <FileName>fonts.c</FileName>
@@ -5622,6 +5662,16 @@
               <FilePath>..\Src\fft.h</FilePath>
             </File>
             <File>
+              <FileName>filemanager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\filemanager.c</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\filemanager.h</FilePath>
+            </File>
+            <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\fonts.c</FilePath>
@@ -6920,6 +6970,16 @@
               <FilePath>..\Src\fft.h</FilePath>
             </File>
             <File>
+              <FileName>filemanager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\filemanager.c</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\filemanager.h</FilePath>
+            </File>
+            <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\fonts.c</FilePath>
@@ -8216,6 +8276,16 @@
               <FileName>fft.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fft.h</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\filemanager.c</FilePath>
+            </File>
+            <File>
+              <FileName>filemanager.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\filemanager.h</FilePath>
             </File>
             <File>
               <FileName>fonts.c</FileName>

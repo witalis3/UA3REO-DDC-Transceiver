@@ -16,6 +16,7 @@
 #include "wspr.h"
 #include "stm32h7xx_it.h"
 #include "usbd_ua3reo.h"
+#include "filemanager.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -238,6 +239,7 @@ static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
+static void SYSMENU_HANDL_FILEMANAGER(int8_t direction);
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); //Tisho
 
 const static struct sysmenu_item_handler sysmenu_handlers[] =
@@ -523,6 +525,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 		{"RDA Statistics", SYSMENU_RUN, 0, SYSMENU_HANDL_RDA_STATS},
 		{"Propagination", SYSMENU_RUN, 0, SYSMENU_HANDL_PROPAGINATION},
 		{"WSPR Beacon", SYSMENU_MENU, 0, SYSMENU_HANDL_WSPRMENU},
+		{"File Manager", SYSMENU_RUN, 0, SYSMENU_HANDL_FILEMANAGER},
 #ifdef SWR_AD8307_LOG
 		{"SWR Tandem Match Contr.", SYSMENU_RUN, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl}, //Tisho
 #endif
@@ -559,6 +562,7 @@ bool SYSMENU_hiddenmenu_enabled = false;
 static bool sysmenu_services_opened = false;
 static bool sysmenu_infowindow_opened = false;
 static bool sysmenu_sysinfo_opened = false;
+static bool sysmenu_filemanager_opened = false;
 static bool sysmenu_item_selected_by_enc2 = false;
 
 //WIFI
@@ -3595,6 +3599,14 @@ static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
 	WIFI_getPropagination();
 }
 
+//SD FILE MANAGER
+static void SYSMENU_HANDL_FILEMANAGER(int8_t direction)
+{
+#pragma unused(direction)
+	sysmenu_filemanager_opened = true;
+	SYSMENU_drawSystemMenu(true);
+}
+
 //COMMON MENU FUNCTIONS
 void SYSMENU_drawSystemMenu(bool draw_background)
 {
@@ -3666,6 +3678,10 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	{
 		SYSMENU_HANDL_SYSINFO(0);
 		return;
+	}
+	else if (sysmenu_filemanager_opened)
+	{
+		FILEMANAGER_Draw(draw_background);
 	}
 	else if (sysmenu_infowindow_opened)
 	{
@@ -3745,6 +3761,11 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 	{
 		SYSMENU_HANDL_SETTIME(direction);
 		LCD_UpdateQuery.SystemMenu = true;
+		return;
+	}
+	if (sysmenu_filemanager_opened)
+	{
+		FILEMANAGER_EventRotate(direction);
 		return;
 	}
 	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_INFOLINE)
@@ -3846,6 +3867,13 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		sysmenu_infowindow_opened = false;
 		sysmenu_sysinfo_opened = false;
+		systemMenuIndex = 0;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+	else if (sysmenu_filemanager_opened)
+	{
+		FILEMANAGER_Closing();
+		sysmenu_filemanager_opened = false;
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
@@ -4053,6 +4081,12 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 				TimeMenuSelection = 0;
 		}
 		LCD_UpdateQuery.SystemMenu = true;
+		return;
+	}
+	//File manager
+	if (sysmenu_filemanager_opened)
+	{
+		FILEMANAGER_EventSecondaryRotate(direction);
 		return;
 	}
 	//other
