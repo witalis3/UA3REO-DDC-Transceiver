@@ -785,26 +785,35 @@ bool FFT_printFFT(void)
 				}
 			}
 		}
-		else if (TRX.FFT_Style == 2) //fill
+	}
+	
+	if (TRX.FFT_Style == 2) //fill
+	{
+		//BG
+		for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
 		{
-			y_palette = palette_fft[fftHeight / 2];
-			
+			if (TRX.FFT_Background)
+				background = palette_bg_gradient[fft_y];
 			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 			{
 				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
-				{
-					if (fft_y >= (fftHeight - fft_header[fft_x]))
-						print_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
-					else
-						print_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
-				}
-				else //other fft data
-				{
-					if (fft_y >= (fftHeight - fft_header[fft_x]))
-						print_output_buffer[fft_y][fft_x] = y_palette;
-					else
-						print_output_buffer[fft_y][fft_x] = background;
-				}
+					print_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+				else
+					print_output_buffer[fft_y][fft_x] = background;
+			}
+		}
+		//Data
+		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+		{
+			if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
+			{
+				for(uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
+					print_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
+			}
+			else
+			{
+				for(uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
+					print_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
 			}
 		}
 	}
@@ -816,7 +825,6 @@ bool FFT_printFFT(void)
 		{
 			if (TRX.FFT_Background)
 				background = palette_bg_gradient[fft_y];
-			
 			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 			{
 				if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
@@ -829,7 +837,6 @@ bool FFT_printFFT(void)
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
 			uint32_t fft_y = fftHeight - fft_header[fft_x];
-			
 			if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
 				print_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
 			else
