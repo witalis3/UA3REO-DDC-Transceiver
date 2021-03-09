@@ -672,19 +672,19 @@ bool FFT_printFFT(void)
 	else
 		maxValueFFT_rx = maxValueFFT;
 
+	//scale fft mean buffer
+	arm_scale_f32(FFTOutput_mean, (1.0f / maxValueFFT) * fftHeight, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
+	
 	// calculate the colors for the waterfall
 	for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 	{
-		height = (uint16_t)((float32_t)FFTOutput_mean[(uint_fast16_t)fft_x] * (1.0f / maxValueFFT) * fftHeight);
-		if (height > fftHeight)
-			height = fftHeight;
+		//if (FFTOutput_mean[fft_x] > fftHeight)
+			//FFTOutput_mean[fft_x] = fftHeight;
 
-		wtf_buffer_freqs[0] = currentFFTFreq;
-		fft_header[fft_x] = height;
-		indexed_wtf_buffer[0][fft_x] = fftHeight - height;
-		if (fft_x == (LAYOUT->FFT_PRINT_SIZE / 2))
-			continue;
+		fft_header[fft_x] = FFTOutput_mean[fft_x];
+		indexed_wtf_buffer[0][fft_x] = fftHeight - FFTOutput_mean[fft_x];
 	}
+	wtf_buffer_freqs[0] = currentFFTFreq;
 	
 	//FFT Peaks
 	if(TRX.FFT_HoldPeaks)
