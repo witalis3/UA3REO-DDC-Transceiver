@@ -53,6 +53,7 @@ typedef enum
 	SDCOMM_IMPORT_SETTINGS,
 	SDCOMM_START_RECORD,
 	SDCOMM_PROCESS_RECORD,
+	SDCOMM_LIST_DIRECTORY,
 } SD_COMMAND;
 
 extern sd_info_ptr sdinfo;
@@ -81,6 +82,6 @@ extern uint8_t SPI_wait_ready(void);
 extern uint8_t SD_cmd(uint8_t cmd, uint32_t arg);
 extern void SD_Process(void);
 extern bool SD_isIdle(void);
-extern void SD_doCommand(SD_COMMAND command, bool force);
+extern bool SD_doCommand(SD_COMMAND command, bool force);
 //--------------------------------------------------
 #endif /* SD_H_ */

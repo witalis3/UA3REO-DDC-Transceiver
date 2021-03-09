@@ -1124,7 +1124,7 @@ void LCD_redraw(bool do_now)
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	LCD_UpdateQuery.TopButtonsRedraw = true;
 	LCD_UpdateQuery.BottomButtonsRedraw = true;
-	LCD_UpdateQuery.SystemMenu = true;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 	LCD_UpdateQuery.TextBar = true;
 	LCD_last_s_meter = 0;
 	LCD_last_showed_freq = 0;

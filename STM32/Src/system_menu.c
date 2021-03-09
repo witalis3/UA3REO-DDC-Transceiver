@@ -3682,6 +3682,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	else if (sysmenu_filemanager_opened)
 	{
 		FILEMANAGER_Draw(draw_background);
+		return;
 	}
 	else if (sysmenu_infowindow_opened)
 	{

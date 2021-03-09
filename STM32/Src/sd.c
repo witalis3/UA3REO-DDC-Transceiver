@@ -26,9 +26,9 @@ bool SD_BusyByUSB = false;
 bool SD_USBCardReader = false;
 uint32_t SD_Present_tryTime = 0;
 bool SD_Mounted = false;
-
 static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 
+SRAM char FILEMANAGER_CurrentPath[128] = "/";
 SRAM static FIL File = {0};
 SRAM static FILINFO fileInfo = {0};
 SRAM static DIR dir = {0};
@@ -37,16 +37,17 @@ SRAM BYTE SD_workbuffer_B[_MAX_SS] = {0};
 SRAM static WAV_header wav_hdr = {0};
 BYTE SD_workbuffer_current = false; //false - fill A save B, true - fill B save A
 
-static void SDCOMM_CHECKSD(void);
-static void SDCOMM_LISTROOT(void);
-static void SDCOMM_MKFS(void);
-static void SDCOMM_EXPORT_SETT(void);
-static void SDCOMM_IMPORT_SETT(void);
+static void SDCOMM_CHECKSD_handler(void);
+static void SDCOMM_LISTROOT_handler(void);
+static void SDCOMM_MKFS_handler(void);
+static void SDCOMM_EXPORT_SETT_handler(void);
+static void SDCOMM_IMPORT_SETT_handler(void);
 static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type);
 static bool SD_WRITE_SETT_STRING(char *name, char *value);
 static void SDCOMM_PARSE_SETT_LINE(char *line);
-static bool SDCOMM_CREATE_RECORD_FILE(void);
-static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void);
+static bool SDCOMM_CREATE_RECORD_FILE_handler(void);
+static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void);
+static void SDCOMM_LIST_DIRECTORY_handler(void);
 
 bool SD_isIdle(void)
 {
@@ -56,7 +57,7 @@ bool SD_isIdle(void)
 		return false;
 }
 
-void SD_doCommand(SD_COMMAND command, bool force)
+bool SD_doCommand(SD_COMMAND command, bool force)
 {
 	if (SD_Mounted)
 	{
@@ -68,14 +69,17 @@ void SD_doCommand(SD_COMMAND command, bool force)
 		{
 			SD_CommandInProcess = true;
 			SD_currentCommand = command;
+			return true;
 		}
+		return false;
 	}
-	else if (!SD_Mounted)
+	else
 	{
 		if (LCD_systemMenuOpened)
 			LCD_showInfo("SD card not found", true);
 		else
 			LCD_showTooltip("SD card not found");
+		return false;
 	}
 }
 
@@ -127,25 +131,28 @@ void SD_Process(void)
 			//
 			break;
 		case SDCOMM_CHECK_SD:
-			SDCOMM_CHECKSD();
+			SDCOMM_CHECKSD_handler();
 			break;
 		case SDCOMM_LIST_ROOT:
-			SDCOMM_LISTROOT();
+			SDCOMM_LISTROOT_handler();
 			break;
 		case SDCOMM_FORMAT:
-			SDCOMM_MKFS();
+			SDCOMM_MKFS_handler();
 			break;
 		case SDCOMM_EXPORT_SETTINGS:
-			SDCOMM_EXPORT_SETT();
+			SDCOMM_EXPORT_SETT_handler();
 			break;
 		case SDCOMM_IMPORT_SETTINGS:
-			SDCOMM_IMPORT_SETT();
+			SDCOMM_IMPORT_SETT_handler();
 			break;
 		case SDCOMM_START_RECORD:
-			SDCOMM_CREATE_RECORD_FILE();
+			SDCOMM_CREATE_RECORD_FILE_handler();
 			break;
 		case SDCOMM_PROCESS_RECORD:
-			SDCOMM_WRITE_PACKET_RECORD_FILE();
+			SDCOMM_WRITE_PACKET_RECORD_FILE_handler();
+			break;
+		case SDCOMM_LIST_DIRECTORY:
+			SDCOMM_LIST_DIRECTORY_handler();
 			break;
 		}
 		SD_CommandInProcess = false;
@@ -153,7 +160,40 @@ void SD_Process(void)
 	}
 }
 
-static void SDCOMM_CHECKSD(void)
+static void SDCOMM_LIST_DIRECTORY_handler(void)
+{
+	if (f_opendir(&dir, FILEMANAGER_CurrentPath) == FR_OK)
+	{
+		while(f_readdir(&dir, &fileInfo) == FR_OK && fileInfo.fname[0])
+		{
+			if (fileInfo.fattrib & AM_DIR)
+			{
+				println("[DIR] ", fileInfo.fname);
+			}
+		}
+		f_closedir(&dir);
+		
+		f_opendir(&dir, FILEMANAGER_CurrentPath);
+		while(f_readdir(&dir, &fileInfo) == FR_OK && fileInfo.fname[0])
+		{
+			if (!(fileInfo.fattrib & AM_DIR))
+			{
+				println("[FILE] ", fileInfo.fname);
+			}
+		}
+		f_closedir(&dir);
+		
+		println("read complete");
+	}
+	else
+	{
+		LCD_showInfo("SD error", true);
+		SYSMENU_eventCloseAllSystemMenu();
+		SD_Present = false;
+	}
+}
+
+static void SDCOMM_CHECKSD_handler(void)
 {
 	if (f_mount(&SDFatFs, (TCHAR const *)USERPath, 1) == FR_OK)
 	{
@@ -167,7 +207,7 @@ static void SDCOMM_CHECKSD(void)
 	}
 }
 
-static bool SDCOMM_CREATE_RECORD_FILE(void)
+static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 {
 	char filename[64] = {0};
 	RTC_TimeTypeDef sTime = {0};
@@ -225,7 +265,7 @@ static bool SDCOMM_CREATE_RECORD_FILE(void)
 	return false;
 }
 
-static bool SDCOMM_WRITE_PACKET_RECORD_FILE(void)
+static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)
 {
 	//write to SD
 	uint32_t byteswritten;
@@ -352,7 +392,7 @@ static bool SD_WRITE_SETT_STRING(char *name, char *value)
 	return true;
 }
 
-static void SDCOMM_EXPORT_SETT(void)
+static void SDCOMM_EXPORT_SETT_handler(void)
 {
 	LCD_showInfo("Exporting...", false);
 	if (f_open(&File, "wolf.ini", FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
@@ -1037,7 +1077,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.TUNE_MAX_POWER = (uint8_t)uintval;
 }
 
-static void SDCOMM_IMPORT_SETT(void)
+static void SDCOMM_IMPORT_SETT_handler(void)
 {
 	char readedLine[64] = {0};
 	LCD_showInfo("Importing...", false);
@@ -1081,7 +1121,7 @@ static void SDCOMM_IMPORT_SETT(void)
 	LCD_showInfo("Settings import complete", true);
 }
 
-static void SDCOMM_MKFS(void)
+static void SDCOMM_MKFS_handler(void)
 {
 	LCD_showInfo("Start formatting...", false);
 	FRESULT res = f_mkfs((TCHAR const *)USERPath, FM_FAT32, 0, SD_workbuffer_A, sizeof SD_workbuffer_A);
@@ -1096,7 +1136,7 @@ static void SDCOMM_MKFS(void)
 	}
 }
 
-static void SDCOMM_LISTROOT(void)
+static void SDCOMM_LISTROOT_handler(void)
 {
 	if (f_opendir(&dir, "/") == FR_OK)
 	{
