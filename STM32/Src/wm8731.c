@@ -10,8 +10,8 @@
 uint32_t WM8731_DMA_samples = 0;									// count the number of samples passed to the audio codec
 bool WM8731_DMA_state = true;										// what part of the buffer we are working with, true - compleate; false - half
 bool WM8731_Buffer_underrun = false;								// lack of data in the buffer from the audio processor
-IRAM2 int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; // audio codec ring buffers
-IRAM2 int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
+SRAM int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; // audio codec ring buffers
+SRAM int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
 bool WM8731_Beeping; //Beeping flag
 bool WM8731_Muting;	 //Muting flag
 

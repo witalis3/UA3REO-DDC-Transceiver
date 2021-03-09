@@ -12,10 +12,10 @@ bool FFT_need_fft = true;						   // need to prepare data for display on the scr
 bool FFT_new_buffer_ready = false;				   // buffer is full, can be processed
 uint32_t FFT_buff_index = 0;					   // current buffer index when it is filled with FPGA
 bool FFT_buff_current = 0;						   // current FFT Input buffer A - false, B - true
-SRAM float32_t FFTInput_I_A[FFT_HALF_SIZE] = {0}; // incoming buffer FFT I
-SRAM float32_t FFTInput_Q_A[FFT_HALF_SIZE] = {0}; // incoming buffer FFT Q
-SRAM float32_t FFTInput_I_B[FFT_HALF_SIZE] = {0}; // incoming buffer FFT I
-SRAM float32_t FFTInput_Q_B[FFT_HALF_SIZE] = {0}; // incoming buffer FFT Q
+IRAM2 float32_t FFTInput_I_A[FFT_HALF_SIZE] = {0}; // incoming buffer FFT I
+IRAM2 float32_t FFTInput_Q_A[FFT_HALF_SIZE] = {0}; // incoming buffer FFT Q
+IRAM2 float32_t FFTInput_I_B[FFT_HALF_SIZE] = {0}; // incoming buffer FFT I
+IRAM2 float32_t FFTInput_Q_B[FFT_HALF_SIZE] = {0}; // incoming buffer FFT Q
 uint16_t FFT_FPS = 0;
 uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
@@ -36,8 +36,8 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
 static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0};			// charge FFT I and Q buffer
-SRAM static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};					// combined FFT I and Q buffer
-SRAM static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};						// temporary buffer for sorting, moving and fft compressing
+IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};					// combined FFT I and Q buffer
+IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};						// temporary buffer for sorting, moving and fft compressing
 SRAM static float32_t FFT_meanBuffer[FFT_MAX_MEANS][MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
 SRAM static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};						// averaged FFT buffer (for output)
 static float32_t maxValueFFT_rx = 0;											// maximum value of the amplitude in the resulting frequency response
@@ -992,7 +992,7 @@ bool FFT_printFFT(void)
 		print_wtf_yindex++;
 		wtf_printed_lines++;
 	}
-	
+		
 	//Draw grids
 	if (TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
 	{
