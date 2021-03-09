@@ -996,29 +996,33 @@ bool FFT_printFFT(void)
 	//Draw grids
 	if (TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
 	{
+		uint16_t color = palette_fft[fftHeight * 3 / 4];
 		for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
 			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
 				for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = palette_fft[fftHeight * 3 / 4];
+					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = color;
 	}
 	if (TRX.FFT_Grid >= 2)
 	{
+		uint16_t color = palette_fft[fftHeight * 3 / 4];
 		for (int8_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
 			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
 				for (uint32_t fft_y = fftHeight; fft_y < (fftHeight + wtfHeight); fft_y++)
-					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = palette_fft[fftHeight * 3 / 4];
+					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = color;
 	}
 
 	//Gauss filter center
 	if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
 	{
+		uint16_t color = palette_fft[fftHeight / 2];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
-			print_output_buffer[fft_y][bw_line_center] = palette_fft[fftHeight / 2];
+			print_output_buffer[fft_y][bw_line_center] = color;
 	}
 
 	//Draw center line
+	uint16_t color = palette_fft[fftHeight / 2];
 	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
-		print_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = palette_fft[fftHeight / 2];
+		print_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = color;
 
 	//Init print 2D FFT+WTF
 	Aligned_CleanDCache_by_Addr(print_output_buffer, sizeof(print_output_buffer));
