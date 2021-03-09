@@ -270,7 +270,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Freq Step ENC2 FAST", SYSMENU_UINT32R, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 		{"Att step, dB", SYSMENU_UINT8, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
-		{"DEBUG Console", SYSMENU_ENUM, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "WIFI", "SYSTEM"}},
+		{"DEBUG Console", SYSMENU_ENUM, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH"}},
 		{"Input Type", SYSMENU_ENUM, (uint32_t *)&TRX.InputType, SYSMENU_HANDL_TRX_INPUT_TYPE, {"MIC", "LINE", "USB"}},
 		{"Callsign", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetCallsign},
 		{"Locator", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetLocator},
@@ -666,8 +666,8 @@ static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction)
 {
 	if (direction > 0 || TRX.Debug_Type > 0)
 		TRX.Debug_Type += direction;
-	if (direction > 2)
-		TRX.Debug_Type = 2;
+	if (TRX.Debug_Type > 4)
+		TRX.Debug_Type = 4;
 }
 
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction)

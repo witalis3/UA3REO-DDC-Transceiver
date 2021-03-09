@@ -124,8 +124,10 @@ typedef enum
 typedef enum
 {
 	TRX_DEBUG_OFF,
-	TRX_DEBUG_WIFI,
 	TRX_DEBUG_SYSTEM,
+	TRX_DEBUG_WIFI,
+	TRX_DEBUG_BUTTONS,
+	TRX_DEBUG_TOUCH,
 } TRX_DEBUG_TYPE;
 
 // Save settings by band

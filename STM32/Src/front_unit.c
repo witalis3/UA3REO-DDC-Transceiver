@@ -466,10 +466,7 @@ void FRONTPANEL_Process(void)
 	FRONTPANEL_check_ENC2SW();
 #endif
 
-#ifdef FRONT_UNIT_DEBUG
 	static uint32_t fu_debug_lasttime = 0;
-#endif
-
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
 	uint16_t mcp3008_value = 0;
 
@@ -508,19 +505,15 @@ void FRONTPANEL_Process(void)
 #endif
 			continue;
 
-#ifdef FRONT_UNIT_DEBUG
-		static uint8_t fu_gebug_lastchannel = 255;
-		if ((HAL_GetTick() - fu_debug_lasttime > 500 && fu_gebug_lastchannel != PERIPH_FrontPanel_Buttons[b].channel) || fu_debug_lasttime == 0)
+		if(TRX.Debug_Type == TRX_DEBUG_BUTTONS)
 		{
-			sendToDebug_str("F_UNIT: port ");
-			sendToDebug_uint8(PERIPH_FrontPanel_Buttons[b].port, true);
-			sendToDebug_str(" channel ");
-			sendToDebug_uint8(PERIPH_FrontPanel_Buttons[b].channel, true);
-			sendToDebug_str(" value ");
-			sendToDebug_uint16(mcp3008_value, false);
-			fu_gebug_lastchannel = PERIPH_FrontPanel_Buttons[b].channel;
+			static uint8_t fu_gebug_lastchannel = 255;
+			if ((HAL_GetTick() - fu_debug_lasttime > 500 && fu_gebug_lastchannel != PERIPH_FrontPanel_Buttons[b].channel) || fu_debug_lasttime == 0)
+			{
+				println("F_UNIT: port ", PERIPH_FrontPanel_Buttons[b].port, " channel ", PERIPH_FrontPanel_Buttons[b].channel, " value ", mcp3008_value);
+				fu_gebug_lastchannel = PERIPH_FrontPanel_Buttons[b].channel;
+			}
 		}
-#endif
 
 		// AF_GAIN
 		if (PERIPH_FrontPanel_Buttons[b].type == FUNIT_CTRL_AF_GAIN)
@@ -578,6 +571,8 @@ void FRONTPANEL_Process(void)
 			if (mcp3008_value >= PERIPH_FrontPanel_Buttons[b].tres_min && mcp3008_value < PERIPH_FrontPanel_Buttons[b].tres_max)
 			{
 				PERIPH_FrontPanel_Buttons[b].state = true;
+				if(TRX.Debug_Type == TRX_DEBUG_BUTTONS)
+					println("Button pressed: port ", PERIPH_FrontPanel_Buttons[b].port, " channel ", PERIPH_FrontPanel_Buttons[b].channel, " value: ", mcp3008_value);
 			}
 			else
 				PERIPH_FrontPanel_Buttons[b].state = false;
@@ -635,13 +630,14 @@ void FRONTPANEL_Process(void)
 		}
 	}
 
-#ifdef FRONT_UNIT_DEBUG
-	if (HAL_GetTick() - fu_debug_lasttime > 500)
+	if(TRX.Debug_Type == TRX_DEBUG_BUTTONS)
 	{
-		sendToDebug_newline();
-		fu_debug_lasttime = HAL_GetTick();
+		if (HAL_GetTick() - fu_debug_lasttime > 500)
+		{
+			println("");
+			fu_debug_lasttime = HAL_GetTick();
+		}
 	}
-#endif
 
 	SPI_process = false;
 }

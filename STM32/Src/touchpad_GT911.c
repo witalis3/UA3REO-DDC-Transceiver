@@ -166,7 +166,6 @@ void GT911_Init(void)
 
 void GT911_Scan(void)
 {
-	//char str[64] = {0};
 	uint8_t buf[41] = {0};
 	uint8_t Clearbuf = 0;
 
@@ -190,12 +189,11 @@ void GT911_Scan(void)
 
 			GT911.TouchpointFlag = buf[0];
 			GT911.TouchCount = buf[0] & 0x0f;
-			if (GT911.TouchCount > 5 || GT911.TouchCount == 0)
+			if (GT911.TouchCount > GT911_MAX_TOUCH || GT911.TouchCount == 0)
 			{
 				GT911_WR_Reg(GT911_READ_XY_REG, (uint8_t *)&Clearbuf, 1);
 				return;
 			}
-			GT911.TouchCount = 1; //LIMIT NOW
 			GT911_RD_Reg(GT911_READ_XY_REG + 1, &buf[1], GT911.TouchCount * 8);
 			GT911_WR_Reg(GT911_READ_XY_REG, (uint8_t *)&Clearbuf, 1);
 
@@ -243,8 +241,15 @@ void GT911_Scan(void)
 				GT911.Y[touch_id] = LCD_HEIGHT - GT911.Y[touch_id];
 #endif
 
-				//sprintf(str, "%d,%d - %d / %d", GT911.X[touch_id], GT911.Y[touch_id], GT911.Touchkeytrackid[touch_id], GT911.TouchCount);
-				//sendToDebug_strln(str);
+				if(TRX.Debug_Type == TRX_DEBUG_TOUCH)
+				{
+					print("Touch X:", GT911.X[touch_id]);
+					print(" Y:", GT911.Y[touch_id]);
+					print_flush();
+					print(" ID:", GT911.Touchkeytrackid[touch_id]);
+					println(" COUNT:", GT911.TouchCount);
+					print_flush();
+				}
 
 				TOUCHPAD_processTouch(GT911.X[touch_id], GT911.Y[touch_id]);
 			}
