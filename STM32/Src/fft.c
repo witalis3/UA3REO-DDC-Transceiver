@@ -992,7 +992,7 @@ bool FFT_printFFT(void)
 		print_wtf_yindex++;
 		wtf_printed_lines++;
 	}
-		
+	
 	//Draw grids
 	if (TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
 	{
