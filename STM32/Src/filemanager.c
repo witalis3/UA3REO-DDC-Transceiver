@@ -4,10 +4,11 @@
 #include "system_menu.h"
 
 static bool first_start = true;
-static bool current_index = 0;
+static uint16_t current_index = 0;
 
 SRAM char FILEMANAGER_CurrentPath[128] = "/";
 SRAM char FILEMANAGER_LISTING[FILEMANAGER_LISTING_MAX_FILES][FILEMANAGER_LISTING_MAX_FILELEN] = {""};
+uint16_t FILEMANAGER_files_count = 0;
 
 static void FILEMANAGER_Refresh(void);
 
@@ -39,7 +40,7 @@ void FILEMANAGER_Draw(bool redraw)
 		LCD_UpdateQuery.SystemMenuRedraw = false;
 	}
 	
-	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT), LAYOUT->SYSMENU_W, FG_COLOR);
+	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, FG_COLOR);
 	
 	LCD_UpdateQuery.SystemMenu = false;
 }
@@ -51,12 +52,14 @@ void FILEMANAGER_EventRotate(int8_t direction)
 
 void FILEMANAGER_EventSecondaryRotate(int8_t direction)
 {
-	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT), LAYOUT->SYSMENU_W, BG_COLOR);
+	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, BG_COLOR);
 	if(direction > 0 || current_index > 0)
 		current_index += direction;
 	if(current_index > FILEMANAGER_LISTING_ITEMS_ON_PAGE)
 		current_index = FILEMANAGER_LISTING_ITEMS_ON_PAGE;
-	println(current_index);
+	if(current_index > FILEMANAGER_files_count)
+		current_index = FILEMANAGER_files_count;
+	
 	LCD_UpdateQuery.SystemMenu = true;
 }
 

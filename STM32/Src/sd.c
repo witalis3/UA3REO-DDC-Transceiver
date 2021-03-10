@@ -162,7 +162,7 @@ void SD_Process(void)
 
 static void SDCOMM_LIST_DIRECTORY_handler(void)
 {
-	uint16_t file_index = 0;
+	FILEMANAGER_files_count = 0;
 	dma_memset(FILEMANAGER_LISTING, 0, sizeof(FILEMANAGER_LISTING));
 	if (f_opendir(&dir, FILEMANAGER_CurrentPath) == FR_OK)
 	{
@@ -171,12 +171,12 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 			if (fileInfo.fattrib & AM_DIR)
 			{
 				println("[DIR] ", fileInfo.fname);
-				if(file_index < FILEMANAGER_LISTING_MAX_FILES)
+				if(FILEMANAGER_files_count < FILEMANAGER_LISTING_MAX_FILES)
 				{
-					strcat(FILEMANAGER_LISTING[file_index], "[DIR] ");
-					strncat(FILEMANAGER_LISTING[file_index], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 6 - 1));
+					strcat(FILEMANAGER_LISTING[FILEMANAGER_files_count], "[DIR] ");
+					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_count], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 6 - 1));
 				}
-				file_index++;
+				FILEMANAGER_files_count++;
 			}
 		}
 		f_closedir(&dir);
@@ -187,11 +187,11 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 			if (!(fileInfo.fattrib & AM_DIR))
 			{
 				println("[FILE] ", fileInfo.fname);
-				if(file_index < FILEMANAGER_LISTING_MAX_FILES)
+				if(FILEMANAGER_files_count < FILEMANAGER_LISTING_MAX_FILES)
 				{
-					strncat(FILEMANAGER_LISTING[file_index], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 1));
+					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_count], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 1));
 				}
-				file_index++;
+				FILEMANAGER_files_count++;
 			}
 		}
 		f_closedir(&dir);

@@ -11,6 +11,7 @@
 
 extern char FILEMANAGER_CurrentPath[128];
 extern char FILEMANAGER_LISTING[FILEMANAGER_LISTING_MAX_FILES][FILEMANAGER_LISTING_MAX_FILELEN];
+extern uint16_t FILEMANAGER_files_count;
 
 extern void FILEMANAGER_Draw(bool redraw);
 extern void FILEMANAGER_EventRotate(int8_t direction);
