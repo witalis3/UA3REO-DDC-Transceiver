@@ -19,6 +19,7 @@ void FILEMANAGER_Draw(bool redraw)
 	{
 		first_start = false;
 		FILEMANAGER_files_startindex = 0;
+		current_index = 0;
 		strcpy(FILEMANAGER_CurrentPath, "");
 		FILEMANAGER_Refresh();
 		return;
@@ -65,6 +66,7 @@ void FILEMANAGER_EventRotate(int8_t direction)
 			char *istr = strrchr(FILEMANAGER_CurrentPath, '/');
 			*istr = 0;
 			FILEMANAGER_files_startindex = 0;
+			current_index = 0;
 			FILEMANAGER_Refresh();
 		}
 	}
@@ -76,6 +78,7 @@ void FILEMANAGER_EventRotate(int8_t direction)
 			strcat(FILEMANAGER_CurrentPath, "/");
 			strcat(FILEMANAGER_CurrentPath, istr + 6);
 			FILEMANAGER_files_startindex = 0;
+			current_index = 0;
 			FILEMANAGER_Refresh();
 		}
 	}
@@ -86,10 +89,28 @@ void FILEMANAGER_EventSecondaryRotate(int8_t direction)
 	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, BG_COLOR);
 	if(direction > 0 || current_index > 0)
 		current_index += direction;
-	if(current_index > FILEMANAGER_LISTING_ITEMS_ON_PAGE)
+	
+	int16_t real_file_index = FILEMANAGER_files_startindex + current_index - 1;
+	
+	//limit
+	if(real_file_index >= FILEMANAGER_files_count)
+		current_index--;
+	
+	//list down
+	if(current_index > FILEMANAGER_LISTING_ITEMS_ON_PAGE && real_file_index < FILEMANAGER_files_count)
+	{
+		FILEMANAGER_files_startindex += FILEMANAGER_LISTING_ITEMS_ON_PAGE;
+		current_index = 1;
+		FILEMANAGER_Refresh();
+	}
+	
+	//list up
+	if(FILEMANAGER_files_startindex > 0 && current_index == 0)
+	{
+		FILEMANAGER_files_startindex -= FILEMANAGER_LISTING_ITEMS_ON_PAGE;
 		current_index = FILEMANAGER_LISTING_ITEMS_ON_PAGE;
-	if(current_index > FILEMANAGER_files_count)
-		current_index = FILEMANAGER_files_count;
+		FILEMANAGER_Refresh();
+	}
 	
 	LCD_UpdateQuery.SystemMenu = true;
 }
@@ -101,7 +122,6 @@ void FILEMANAGER_Closing(void)
 
 static void FILEMANAGER_Refresh(void)
 {
-	current_index = 0;
 	if(!SD_doCommand(SDCOMM_LIST_DIRECTORY, false))
 		SYSMENU_eventCloseSystemMenu();
 	

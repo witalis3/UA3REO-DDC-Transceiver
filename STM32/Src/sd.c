@@ -163,6 +163,7 @@ void SD_Process(void)
 static void SDCOMM_LIST_DIRECTORY_handler(void)
 {
 	FILEMANAGER_files_count = 0;
+	uint16_t FILEMANAGER_files_added = 0;
 	dma_memset(FILEMANAGER_LISTING, 0, sizeof(FILEMANAGER_LISTING));
 	if (f_opendir(&dir, FILEMANAGER_CurrentPath) == FR_OK)
 	{
@@ -171,10 +172,12 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 			if (fileInfo.fattrib & AM_DIR)
 			{
 				println("[DIR] ", fileInfo.fname);
-				if(FILEMANAGER_files_count < FILEMANAGER_LISTING_MAX_FILES)
+				
+				if(FILEMANAGER_files_startindex <= FILEMANAGER_files_count && FILEMANAGER_files_added < FILEMANAGER_LISTING_MAX_FILES)
 				{
-					strcat(FILEMANAGER_LISTING[FILEMANAGER_files_count], "[DIR] ");
-					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_count], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 6));
+					strcat(FILEMANAGER_LISTING[FILEMANAGER_files_added], "[DIR] ");
+					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_added], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 6));
+					FILEMANAGER_files_added++;
 				}
 				FILEMANAGER_files_count++;
 			}
@@ -187,9 +190,10 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 			if (!(fileInfo.fattrib & AM_DIR))
 			{
 				println("[FILE] ", fileInfo.fname);
-				if(FILEMANAGER_files_count < FILEMANAGER_LISTING_MAX_FILES)
+				if(FILEMANAGER_files_startindex <= FILEMANAGER_files_count && FILEMANAGER_files_added < FILEMANAGER_LISTING_MAX_FILES)
 				{
-					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_count], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN));
+					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_added], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN));
+					FILEMANAGER_files_added++;
 				}
 				FILEMANAGER_files_count++;
 			}

@@ -291,3 +291,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 ### Propagination 
 
 * Show propagination statistics (from internet)
+
+### File Manager 
+
+* Show SD Card file manager
