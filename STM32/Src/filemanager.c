@@ -6,8 +6,9 @@
 static bool first_start = true;
 static uint16_t current_index = 0;
 
-SRAM char FILEMANAGER_CurrentPath[128] = "/";
-SRAM char FILEMANAGER_LISTING[FILEMANAGER_LISTING_MAX_FILES][FILEMANAGER_LISTING_MAX_FILELEN] = {""};
+SRAM char FILEMANAGER_CurrentPath[128] = "";
+SRAM char FILEMANAGER_LISTING[FILEMANAGER_LISTING_MAX_FILES][FILEMANAGER_LISTING_MAX_FILELEN + 1] = {""};
+uint16_t FILEMANAGER_files_startindex = 0;
 uint16_t FILEMANAGER_files_count = 0;
 
 static void FILEMANAGER_Refresh(void);
@@ -17,6 +18,8 @@ void FILEMANAGER_Draw(bool redraw)
 	if(first_start)
 	{
 		first_start = false;
+		FILEMANAGER_files_startindex = 0;
+		strcpy(FILEMANAGER_CurrentPath, "");
 		FILEMANAGER_Refresh();
 		return;
 	}
@@ -26,9 +29,13 @@ void FILEMANAGER_Draw(bool redraw)
 		uint16_t cur_y = 5;
 		LCDDriver_printText("SD CARD FILE MANAGER", 5, cur_y, COLOR_GREEN, BG_COLOR, 2);
 		cur_y += 24;
-		LCDDriver_printText(FILEMANAGER_CurrentPath, 5, cur_y, FG_COLOR, BG_COLOR, 2);
+		if(strlen(FILEMANAGER_CurrentPath) == 0)
+			LCDDriver_printText("/", 5, cur_y, FG_COLOR, BG_COLOR, 2);
+		else
+			LCDDriver_printText(FILEMANAGER_CurrentPath, 5, cur_y, FG_COLOR, BG_COLOR, 2);
 		cur_y += 24;
-		LCDDriver_printText("..", 5, cur_y, FG_COLOR, BG_COLOR, 2);
+		if(FILEMANAGER_files_startindex == 0)
+			LCDDriver_printText("..", 5, cur_y, FG_COLOR, BG_COLOR, 2);
 		cur_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
 		
 		for(uint16_t file_id = 0; file_id < FILEMANAGER_LISTING_ITEMS_ON_PAGE; file_id++)
@@ -47,7 +54,31 @@ void FILEMANAGER_Draw(bool redraw)
 
 void FILEMANAGER_EventRotate(int8_t direction)
 {
-	
+	if (current_index == 0)
+	{
+		if (strcmp(FILEMANAGER_CurrentPath, "") == 0) // root
+		{
+			SYSMENU_eventCloseSystemMenu();
+		}
+		else //inner folder
+		{
+			char *istr = strrchr(FILEMANAGER_CurrentPath, '/');
+			*istr = 0;
+			FILEMANAGER_files_startindex = 0;
+			FILEMANAGER_Refresh();
+		}
+	}
+	else
+	{
+		char *istr = strstr(FILEMANAGER_LISTING[current_index - 1], "[DIR] ");
+		if (istr != NULL && ((strlen(istr + 6) + 1) < sizeof(FILEMANAGER_CurrentPath))) //is directory
+		{
+			strcat(FILEMANAGER_CurrentPath, "/");
+			strcat(FILEMANAGER_CurrentPath, istr + 6);
+			FILEMANAGER_files_startindex = 0;
+			FILEMANAGER_Refresh();
+		}
+	}
 }
 
 void FILEMANAGER_EventSecondaryRotate(int8_t direction)

@@ -174,7 +174,7 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 				if(FILEMANAGER_files_count < FILEMANAGER_LISTING_MAX_FILES)
 				{
 					strcat(FILEMANAGER_LISTING[FILEMANAGER_files_count], "[DIR] ");
-					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_count], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 6 - 1));
+					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_count], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 6));
 				}
 				FILEMANAGER_files_count++;
 			}
@@ -189,7 +189,7 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 				println("[FILE] ", fileInfo.fname);
 				if(FILEMANAGER_files_count < FILEMANAGER_LISTING_MAX_FILES)
 				{
-					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_count], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 1));
+					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_count], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN));
 				}
 				FILEMANAGER_files_count++;
 			}
