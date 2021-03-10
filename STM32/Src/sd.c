@@ -7,6 +7,7 @@
 #include "user_diskio.h"
 #include "system_menu.h"
 #include "vocoder.h"
+#include "filemanager.h"
 
 SRAM FATFS SDFatFs = {0};
 sd_info_ptr sdinfo = {
@@ -28,7 +29,6 @@ uint32_t SD_Present_tryTime = 0;
 bool SD_Mounted = false;
 static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 
-SRAM char FILEMANAGER_CurrentPath[128] = "/";
 SRAM static FIL File = {0};
 SRAM static FILINFO fileInfo = {0};
 SRAM static DIR dir = {0};
@@ -162,6 +162,8 @@ void SD_Process(void)
 
 static void SDCOMM_LIST_DIRECTORY_handler(void)
 {
+	uint16_t file_index = 0;
+	dma_memset(FILEMANAGER_LISTING, 0, sizeof(FILEMANAGER_LISTING));
 	if (f_opendir(&dir, FILEMANAGER_CurrentPath) == FR_OK)
 	{
 		while(f_readdir(&dir, &fileInfo) == FR_OK && fileInfo.fname[0])
@@ -169,6 +171,12 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 			if (fileInfo.fattrib & AM_DIR)
 			{
 				println("[DIR] ", fileInfo.fname);
+				if(file_index < FILEMANAGER_LISTING_MAX_FILES)
+				{
+					strcat(FILEMANAGER_LISTING[file_index], "[DIR] ");
+					strncat(FILEMANAGER_LISTING[file_index], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 6 - 1));
+				}
+				file_index++;
 			}
 		}
 		f_closedir(&dir);
@@ -179,10 +187,14 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 			if (!(fileInfo.fattrib & AM_DIR))
 			{
 				println("[FILE] ", fileInfo.fname);
+				if(file_index < FILEMANAGER_LISTING_MAX_FILES)
+				{
+					strncat(FILEMANAGER_LISTING[file_index], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 1));
+				}
+				file_index++;
 			}
 		}
 		f_closedir(&dir);
-		
 		println("read complete");
 	}
 	else
@@ -191,6 +203,7 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 		SYSMENU_eventCloseAllSystemMenu();
 		SD_Present = false;
 	}
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SDCOMM_CHECKSD_handler(void)
