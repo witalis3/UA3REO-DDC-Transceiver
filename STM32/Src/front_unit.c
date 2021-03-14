@@ -296,15 +296,22 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			VFO *vfo = CurrentVFO();
 			uint32_t newfreq = 0;
 			float32_t freq_round = 0;
+			float32_t step = 0;
 			if (TRX.Fast)
 			{
-				freq_round = roundf((float32_t)vfo->Freq / (float32_t)TRX.FRQ_ENC_FAST_STEP) * (float32_t)TRX.FRQ_ENC_FAST_STEP;
-				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)TRX.FRQ_ENC_FAST_STEP * direction);
+				step = (float32_t)TRX.FRQ_ENC_FAST_STEP;
+				if(CurrentVFO()->Mode == TRX_MODE_WFM)
+					step = step * 2;
+				freq_round = roundf((float32_t)vfo->Freq / step) * step;
+				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)step * direction);
 			}
 			else
 			{
-				freq_round = roundf((float32_t)vfo->Freq / (float32_t)TRX.FRQ_ENC_STEP) * (float32_t)TRX.FRQ_ENC_STEP;
-				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)TRX.FRQ_ENC_STEP * direction);
+				step = (float32_t)TRX.FRQ_ENC_STEP;
+				if(CurrentVFO()->Mode == TRX_MODE_WFM)
+					step = step * 2;
+				freq_round = roundf((float32_t)vfo->Freq / step) * step;
+				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)step * direction);
 			}
 			TRX_setFrequency(newfreq, vfo);
 			LCD_UpdateQuery.FreqInfo = true;
