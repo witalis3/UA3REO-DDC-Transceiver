@@ -27,7 +27,7 @@ entity rx_ciccomp_tb is
     constant PHYSCHANIN_c             : natural := 1;
     constant PHYSCHANOUT_c            : natural := 1;
     constant INWIDTH_c                : natural := 32;
-    constant OUTWIDTH_c               : natural := 57;
+    constant OUTWIDTH_c               : natural := 61;
     constant BANKINWIDTH_c            : natural := 0;
     constant BANKCOUNT_c              : natural := 1;
     constant DATA_WIDTH_c             : natural := (INWIDTH_c+BANKINWIDTH_c) * PHYSCHANIN_c;
@@ -44,7 +44,7 @@ entity rx_ciccomp_tb is
     constant TOTAL_OUTCHANS_ALLOWED   : natural := PHYSCHANOUT_c * CHANSPERPHYOUT_c;
     constant NUM_OF_TAPS_c            : natural := 128;
     constant TOTAL_EFF_COEF_c         : natural := 64;
-    constant COEFF_BIT_WIDTH_c        : natural := 18;
+    constant COEFF_BIT_WIDTH_c        : natural := 22;
     constant COEFF_BUS_DATA_WIDTH_c   : natural := 32;
     constant COEFF_BUS_ADDR_WIDTH   : natural := 6;
 
