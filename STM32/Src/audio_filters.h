@@ -8,7 +8,7 @@
 #include "fpga.h"
 #include "functions.h"
 
-#define IIR_FILTERS_COUNT 69													  // Total Filters In The Collection
+#define IIR_FILTERS_COUNT 70													  // Total Filters In The Collection
 #define IQ_RX_HILBERT_TAPS 201														  // RX Hilbert filter order
 #define IQ_TX_HILBERT_TAPS 300														  // TX Hilbert filter order
 #define IIR_MAX_STAGES 15														  // Maximum order of IIR filters
@@ -29,15 +29,14 @@
 #define IIR_RX1_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX2_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
 
-#define CW_HPF_COUNT 3
-#define SSB_HPF_COUNT 7
+#define CW_HPF_COUNT 8
+#define SSB_HPF_COUNT 8
 #define CW_LPF_COUNT 19
 #define SSB_LPF_COUNT 11
 #define AM_LPF_COUNT 18
 #define NFM_LPF_COUNT 8
 
-#define MAX_HPF_WIDTH_CW 100
-#define MAX_HPF_WIDTH_SSB 500
+#define MAX_HPF_WIDTH 600
 #define MAX_LPF_WIDTH_CW 1000
 #define MAX_LPF_WIDTH_SSB 3400
 #define MAX_LPF_WIDTH_AM 10000
