@@ -9,15 +9,14 @@
 #include "functions.h"
 
 #define IIR_FILTERS_COUNT 70													  // Total Filters In The Collection
-#define IQ_RX_HILBERT_TAPS 201														  // RX Hilbert filter order
-#define IQ_TX_HILBERT_TAPS 300														  // TX Hilbert filter order
+#define IQ_HILBERT_TAPS 201														  // Hilbert filter order
 #define IIR_MAX_STAGES 15														  // Maximum order of IIR filters
 #define NOTCH_STAGES 1															  // order of manual Notch filter
 #define EQ_STAGES 1																  // order of the biquad of the equalizer filter
 #define BIQUAD_COEFF_IN_STAGE 5													  // coefficients in manual Notch filter order
-#define FIR_RX1_HILBERT_STATE_SIZE (IQ_RX_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
-#define FIR_RX2_HILBERT_STATE_SIZE (IQ_RX_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
-#define FIR_TX_HILBERT_STATE_SIZE (IQ_TX_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
+#define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
+#define FIR_RX2_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
+#define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
 #define IIR_RX1_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX2_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
 #define IIR_RX1_GAUSS_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
