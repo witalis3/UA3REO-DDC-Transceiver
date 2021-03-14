@@ -329,7 +329,10 @@ void LoadCalibration(bool clear)
 		tryes++;
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
+	{
 		println("[ERR] Read EEPROM CALIBRATE multiple errors");
+		LCD_showError("EEPROM Error", true);
+	}
 
 	if (CALIBRATE.ENDBit != 100 || CALIBRATE.flash_id != CALIB_VERSION || clear || CALIBRATE.csum != calculateCSUM_EEPROM()) // code for checking the firmware in the eeprom, if it does not match, we use the default
 	{
@@ -464,6 +467,7 @@ void SaveSettingsToEEPROM(void)
 	{
 		println("[ERR] Erase EEPROM Settings multiple errors");
 		print_flush();
+		LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
@@ -476,6 +480,7 @@ void SaveSettingsToEEPROM(void)
 	{
 		println("[ERR] Write EEPROM Settings multiple errors");
 		print_flush();
+		LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
@@ -502,6 +507,7 @@ void SaveCalibration(void)
 	if (tryes >= EEPROM_REPEAT_TRYES)
 	{
 		println("[ERR] Erase EEPROM calibrate multiple errors");
+		LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
@@ -513,6 +519,7 @@ void SaveCalibration(void)
 	if (tryes >= EEPROM_REPEAT_TRYES)
 	{
 		println("[ERR] Write EEPROM calibrate multiple errors");
+		LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
