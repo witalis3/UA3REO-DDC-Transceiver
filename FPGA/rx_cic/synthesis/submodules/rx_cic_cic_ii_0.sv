@@ -19,6 +19,7 @@ module rx_cic_cic_ii_0 (
     clk,
     clken,
     reset_n,
+    rate,
     in_ready,
 	in_error,
 	out_error,
@@ -33,9 +34,9 @@ module rx_cic_cic_ii_0 (
     parameter FILTER_TYPE             =  "decimator";
     parameter STAGES        =  7;
     parameter D_DELAY              =  1;
-    parameter VRC_EN   =  0;
-    parameter RCF_MAX         =  640;
-    parameter RCF_MIN         =  640;
+    parameter VRC_EN   =  1;
+    parameter RCF_MAX         =  1280;
+    parameter RCF_MIN         =  160;
     parameter INTERFACES    =  1;
     parameter CH_PER_INT  =  1;
     parameter INT_USE_MEM      =  "false";
@@ -48,33 +49,33 @@ module rx_cic_cic_ii_0 (
     parameter PIPELINING              =  0;
 
 
-    parameter C_STAGE_0_WIDTH         = 97;
-    parameter C_STAGE_1_WIDTH         = 97;
-    parameter C_STAGE_2_WIDTH         = 97;
-    parameter C_STAGE_3_WIDTH         = 97;
-    parameter C_STAGE_4_WIDTH         = 97;
-    parameter C_STAGE_5_WIDTH         = 97;
-    parameter C_STAGE_6_WIDTH         = 97;
-    parameter C_STAGE_7_WIDTH         = 97;
-    parameter C_STAGE_8_WIDTH         = 97;
-    parameter C_STAGE_9_WIDTH         = 97;
-    parameter C_STAGE_10_WIDTH        = 97;
-    parameter C_STAGE_11_WIDTH        = 97;
-    parameter MAX_C_STAGE_WIDTH       = 97;
+    parameter C_STAGE_0_WIDTH         = 104;
+    parameter C_STAGE_1_WIDTH         = 104;
+    parameter C_STAGE_2_WIDTH         = 104;
+    parameter C_STAGE_3_WIDTH         = 104;
+    parameter C_STAGE_4_WIDTH         = 104;
+    parameter C_STAGE_5_WIDTH         = 104;
+    parameter C_STAGE_6_WIDTH         = 104;
+    parameter C_STAGE_7_WIDTH         = 104;
+    parameter C_STAGE_8_WIDTH         = 104;
+    parameter C_STAGE_9_WIDTH         = 104;
+    parameter C_STAGE_10_WIDTH        = 104;
+    parameter C_STAGE_11_WIDTH        = 104;
+    parameter MAX_C_STAGE_WIDTH       = 104;
  
-    parameter I_STAGE_0_WIDTH         = 97;
-    parameter I_STAGE_1_WIDTH         = 97;
-    parameter I_STAGE_2_WIDTH         = 97;
-    parameter I_STAGE_3_WIDTH         = 97;
-    parameter I_STAGE_4_WIDTH         = 97;
-    parameter I_STAGE_5_WIDTH         = 97;
-    parameter I_STAGE_6_WIDTH         = 97;
-    parameter I_STAGE_7_WIDTH         = 97;
-    parameter I_STAGE_8_WIDTH         = 97;
-    parameter I_STAGE_9_WIDTH         = 97;
-    parameter I_STAGE_10_WIDTH        = 97;
-    parameter I_STAGE_11_WIDTH        = 97;
-    parameter MAX_I_STAGE_WIDTH       = 97;
+    parameter I_STAGE_0_WIDTH         = 104;
+    parameter I_STAGE_1_WIDTH         = 104;
+    parameter I_STAGE_2_WIDTH         = 104;
+    parameter I_STAGE_3_WIDTH         = 104;
+    parameter I_STAGE_4_WIDTH         = 104;
+    parameter I_STAGE_5_WIDTH         = 104;
+    parameter I_STAGE_6_WIDTH         = 104;
+    parameter I_STAGE_7_WIDTH         = 104;
+    parameter I_STAGE_8_WIDTH         = 104;
+    parameter I_STAGE_9_WIDTH         = 104;
+    parameter I_STAGE_10_WIDTH        = 104;
+    parameter I_STAGE_11_WIDTH        = 104;
+    parameter MAX_I_STAGE_WIDTH       = 104;
 
     localparam TOTAL_CHANNELS = CH_PER_INT*INTERFACES;
 
@@ -115,7 +116,7 @@ module rx_cic_cic_ii_0 (
 input       clk;
 input       clken;
 input       reset_n;
-logic       [RATE_FACTOR_WIDTH-1:0]  rate;  
+input       [RATE_FACTOR_WIDTH-1:0]	rate;
 logic       in_startofpacket;
 logic       in_endofpacket;
 output      in_ready;
@@ -142,7 +143,6 @@ assign din[0] = in_data;
 assign out_data = dout[0];
 assign       in_startofpacket = 1'b1;
 assign       in_endofpacket = 1'b1;
-assign   rate = '0;
 
 
 

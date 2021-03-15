@@ -14,6 +14,7 @@ module rx_cic (
 		input  wire        out_ready, //          .ready
 		input  wire        clken,     //     clken.clken
 		input  wire        clk,       //     clock.clk
+		input  wire [10:0] rate,      //      rate.conduit
 		input  wire        reset_n    //     reset.reset_n
 	);
 
@@ -28,7 +29,8 @@ module rx_cic (
 		.out_data  (out_data),  // av_st_out.out_data
 		.out_error (out_error), //          .error
 		.out_valid (out_valid), //          .valid
-		.out_ready (out_ready)  //          .ready
+		.out_ready (out_ready), //          .ready
+		.rate      (rate)       //      rate.conduit
 	);
 
 endmodule

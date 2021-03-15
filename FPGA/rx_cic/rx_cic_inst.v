@@ -9,6 +9,7 @@
 		.out_ready (<connected-to-out_ready>), //          .ready
 		.clken     (<connected-to-clken>),     //     clken.clken
 		.clk       (<connected-to-clk>),       //     clock.clk
+		.rate      (<connected-to-rate>),      //      rate.conduit
 		.reset_n   (<connected-to-reset_n>)    //     reset.reset_n
 	);
 

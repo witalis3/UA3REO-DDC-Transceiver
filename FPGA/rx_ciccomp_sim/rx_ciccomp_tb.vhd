@@ -36,9 +36,9 @@ entity rx_ciccomp_tb is
     constant CHANSPERPHYIN_c          : natural := 1;
     constant CHANSPERPHYOUT_c         : natural := 1;
     constant LOG2_CHANSPERPHYOUT_c    : natural := 0;
-    constant TDM_FACTOR_c             : natural := 640;
+    constant TDM_FACTOR_c             : natural := 160;
     constant INVERSE_TDM_FACTOR_c     : natural := 1;
-    constant INVALID_CYCLES_c         : natural := 639;
+    constant INVALID_CYCLES_c         : natural := 159;
     constant INTERP_FACTOR_c          : natural := 1;
     constant TOTAL_INCHANS_ALLOWED    : natural := PHYSCHANIN_c * CHANSPERPHYIN_c;
     constant TOTAL_OUTCHANS_ALLOWED   : natural := PHYSCHANOUT_c * CHANSPERPHYOUT_c;

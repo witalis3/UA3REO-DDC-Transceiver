@@ -32,7 +32,7 @@ uint16_t FPGA_FW_Version[3] = {0};
 
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
-bool FPGA_bus_stop = false;					  // suspend the FPGA bus
+bool FPGA_bus_stop = true;					  // suspend the FPGA bus
 
 // Prototypes
 static inline void FPGA_clockFall(void);			// remove CLK signal
@@ -54,6 +54,8 @@ static void FPGA_spi_flash_erase(void);		  // clear flash memory
 // initialize exchange with FPGA
 void FPGA_Init(bool bus_test, bool firmware_test)
 {
+	FPGA_bus_stop = true;
+	
 	FPGA_GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
 	FPGA_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	FPGA_GPIO_InitStruct.Pull = GPIO_PULLUP;
@@ -67,7 +69,6 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 	HAL_GPIO_Init(FPGA_CLK_GPIO_Port, &FPGA_GPIO_InitStruct);
 
 	//BUS TEST
-	FPGA_bus_stop = true;
 	for (uint16_t i = 0; i < 256; i++)
 	{
 		FPGA_setBusOutput();
@@ -91,10 +92,8 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 			HAL_Delay(1000);
 		}
 	}
-	FPGA_bus_stop = false;
 
 	//GET FW VERSION
-	FPGA_bus_stop = true;
 
 	FPGA_setBusOutput();
 	FPGA_writePacket(8);
@@ -111,8 +110,6 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 	FPGA_FW_Version[0] = FPGA_readPacket;
 	FPGA_clockFall();
 
-	FPGA_bus_stop = false;
-
 	if (bus_test) //BUS STRESS TEST MODE
 	{
 		LCD_showError("Check FPGA BUS...", false);
@@ -120,7 +117,6 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 
 		while (bus_test)
 		{
-			FPGA_bus_stop = true;
 			for (uint16_t i = 0; i < 256; i++)
 			{
 				FPGA_setBusOutput();
@@ -150,7 +146,6 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 
 	if (firmware_test) //FIRMWARE VERIFICATION MODE
 	{
-		FPGA_bus_stop = true;
 		LCD_showError("Check FPGA FIRMWARE...", false);
 		HAL_Delay(1000);
 #if FPGA_FLASH_IN_HEX
@@ -160,11 +155,9 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 			HAL_Delay(1000);
 		}
 #endif
-		FPGA_bus_stop = false;
 	}
 
 #if FPGA_FLASH_IN_HEX
-	FPGA_bus_stop = true;
 	if (FPGA_is_present())
 	{
 		if (!FPGA_spi_flash_verify(false)) // check the first 2048 bytes of FPGA firmware
@@ -185,17 +178,17 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 			}
 		}
 	}
-	FPGA_bus_stop = false;
 #endif
 
 	//pre-reset FPGA to sync IQ data
-	FPGA_bus_stop = true;
 	FPGA_setBusOutput();
 	FPGA_writePacket(5); // RESET ON
 	FPGA_syncAndClockRiseFall();
 	HAL_Delay(100);
 	FPGA_writePacket(6); // RESET OFF
 	FPGA_syncAndClockRiseFall();
+	
+	//star FPGA bus
 	FPGA_bus_stop = false;
 }
 
@@ -280,6 +273,9 @@ void FPGA_fpgadata_iqclock(void)
 		FPGA_syncAndClockRiseFall();
 
 		//2 blocks (48*2=96khz)
+		FPGA_fpgadata_getiq();
+		FPGA_fpgadata_getiq();
+		
 		FPGA_fpgadata_getiq();
 		FPGA_fpgadata_getiq();
 	}
@@ -401,6 +397,9 @@ static inline void FPGA_fpgadata_sendparam(void)
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX_DAC_HP2);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX_DAC_X4);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX_DCDC_Freq);
+	bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);
+	bitWrite(FPGA_fpgadata_out_tmp8, 7, 0);
+	//11 - 48khz 01 - 96khz 10 - 192khz 00 - 384khz IQ speed
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
 	FPGA_clockFall();

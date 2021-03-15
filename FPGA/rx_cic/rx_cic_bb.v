@@ -10,6 +10,7 @@ module rx_cic (
 	out_ready,
 	clken,
 	clk,
+	rate,
 	reset_n);	
 
 	input	[1:0]	in_error;
@@ -22,5 +23,6 @@ module rx_cic (
 	input		out_ready;
 	input		clken;
 	input		clk;
+	input	[10:0]	rate;
 	input		reset_n;
 endmodule

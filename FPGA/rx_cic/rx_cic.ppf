@@ -16,5 +16,6 @@
   <pin name="out_error[1..0]" direction="output" scope="external" />
   <pin name="out_valid" direction="output" scope="external" />
   <pin name="out_ready" direction="input" scope="external" />
+  <pin name="rate[10..0]" direction="input" scope="external" />
  </global>
 </pinplan>

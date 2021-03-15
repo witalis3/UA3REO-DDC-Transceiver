@@ -45,7 +45,8 @@ DAC_hp1,
 DAC_hp2,
 DAC_x4,
 DCDC_freq,
-TX_NCO_freq
+TX_NCO_freq,
+RX_CIC_RATE,
 );
 
 input clk_in;
@@ -94,6 +95,7 @@ output reg DAC_hp1 = 0;
 output reg DAC_hp2 = 0;
 output reg DAC_x4 = 0;
 output reg DCDC_freq = 0;
+output reg unsigned [10:0] RX_CIC_RATE = 'd640;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -285,6 +287,16 @@ begin
 		DAC_hp2 = DATA_BUS[3:3];
 		DAC_x4 = DATA_BUS[4:4];
 		DCDC_freq = DATA_BUS[5:5];
+		
+		if(DATA_BUS[7:6] =='d0)
+			RX_CIC_RATE = 'd160;
+		else if(DATA_BUS[7:6] =='d1)
+			RX_CIC_RATE = 'd320;
+		else if(DATA_BUS[7:6] =='d2)
+			RX_CIC_RATE = 'd640;
+		else if(DATA_BUS[7:6] =='d3)
+			RX_CIC_RATE = 'd1280;
+		
 		k = 116;
 	end
 	else if (k == 116)

@@ -10,6 +10,7 @@
 			out_ready : in  std_logic                     := 'X';             -- ready
 			clken     : in  std_logic                     := 'X';             -- clken
 			clk       : in  std_logic                     := 'X';             -- clk
+			rate      : in  std_logic_vector(10 downto 0) := (others => 'X'); -- conduit
 			reset_n   : in  std_logic                     := 'X'              -- reset_n
 		);
 	end component rx_cic;
@@ -26,6 +27,7 @@
 			out_ready => CONNECTED_TO_out_ready, --          .ready
 			clken     => CONNECTED_TO_clken,     --     clken.clken
 			clk       => CONNECTED_TO_clk,       --     clock.clk
+			rate      => CONNECTED_TO_rate,      --      rate.conduit
 			reset_n   => CONNECTED_TO_reset_n    --     reset.reset_n
 		);
 
