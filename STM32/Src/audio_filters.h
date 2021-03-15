@@ -124,10 +124,18 @@ extern arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HSHELF_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HPASS_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HSHELF_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HPASS_FILTER;
-extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_I;
-extern arm_fir_decimate_instance_f32 DECIMATE_RX1_AUDIO_Q;
-extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_I;
-extern arm_fir_decimate_instance_f32 DECIMATE_RX2_AUDIO_Q;
+extern arm_fir_decimate_instance_f32 DECIMATE_2_RX1_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_2_RX1_AUDIO_Q;
+extern arm_fir_decimate_instance_f32 DECIMATE_2_RX2_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_2_RX2_AUDIO_Q;
+extern arm_fir_decimate_instance_f32 DECIMATE_4_RX1_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_4_RX1_AUDIO_Q;
+extern arm_fir_decimate_instance_f32 DECIMATE_4_RX2_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_4_RX2_AUDIO_Q;
+extern arm_fir_decimate_instance_f32 DECIMATE_8_RX1_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_8_RX1_AUDIO_Q;
+extern arm_fir_decimate_instance_f32 DECIMATE_8_RX2_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_8_RX2_AUDIO_Q;
 extern volatile bool NeedReinitNotch;			  // need to reinitialize the manual Notch filter
 extern volatile bool NeedReinitAudioFilters;	  // need to reinitialize the Audio filters
 extern volatile bool NeedReinitAudioFiltersClean; //also clean state

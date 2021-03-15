@@ -16,7 +16,7 @@
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ DAC_CLOCK		   // Maximum transmission frequency
 #define TRX_SAMPLERATE 48000			   // audio stream sampling rate during processing
-#define IQ_SAMPLERATE 96000				   // sampling rate of the audio stream from FPGA
+#define IQ_SAMPLERATE 192000				   // sampling rate of the audio stream from FPGA
 #define MAX_TX_AMPLITUDE 1.0f			   // Maximum amplitude when transmitting to FPGA
 #define AGC_MAX_GAIN 30.0f				   // Maximum gain in AGC, dB
 #define AGC_CLIPPING 6.0f				   // Limit over target in AGC, dB
@@ -61,7 +61,6 @@
 #define USB_DEBUG_ENABLED true	// allow using USB as a console
 #define SWD_DEBUG_ENABLED false // enable SWD as a console
 #define LCD_DEBUG_ENABLED false // enable LCD as a console
-#define AUDIO_DECIM_RATE (IQ_SAMPLERATE / TRX_SAMPLERATE)
 #define DCDC_FREQ_0 999024
 #define DCDC_FREQ_1 1200782
 #define ADC_INPUT_IMPEDANCE 200.0f //50ohm -> 1:4 trans

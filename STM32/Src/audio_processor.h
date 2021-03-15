@@ -12,7 +12,7 @@
 #define AUDIO_BUFFER_HALF_SIZE (AUDIO_BUFFER_SIZE / 2)					   // buffer size for working with sound 48kHz
 #define FPGA_TX_IQ_BUFFER_SIZE AUDIO_BUFFER_SIZE						   // size of TX data buffer for FPGA
 #define FPGA_TX_IQ_BUFFER_HALF_SIZE (FPGA_TX_IQ_BUFFER_SIZE / 2)		   // half the size of the TX data buffer for FPGA
-#define FPGA_RX_IQ_BUFFER_SIZE (FPGA_TX_IQ_BUFFER_SIZE * AUDIO_DECIM_RATE) // size of the RX data buffer from the PGA
+#define FPGA_RX_IQ_BUFFER_SIZE FPGA_TX_IQ_BUFFER_SIZE // size of the RX data buffer from the PGA
 #define FPGA_RX_IQ_BUFFER_HALF_SIZE (FPGA_RX_IQ_BUFFER_SIZE / 2)		   // half the size of the RX data buffer from the PGA
 
 #define FM_TX_HPF_ALPHA 0.95f			  // For FM modulator: "Alpha" (high-pass) factor to pre-emphasis
