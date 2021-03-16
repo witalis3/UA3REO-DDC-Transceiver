@@ -6,6 +6,9 @@
 #include "settings.h"
 
 #define TRX_SLOW_SETFREQ_MIN_STEPSIZE 100 //step in hz for slowly touchpad tuning
+#define TRX_GetSamplerateByENUM(rate) ((rate==TRX_SAMPLERATE_K48) ? 48000 : (rate==TRX_SAMPLERATE_K96) ? 96000 : (rate==TRX_SAMPLERATE_K192) ? 192000 : 384000)
+#define TRX_GetRXSampleRate ((CurrentVFO()->Mode != TRX_MODE_WFM) ? TRX_GetSamplerateByENUM(TRX.SAMPLERATE_MAIN) : TRX_GetSamplerateByENUM(TRX.SAMPLERATE_WFM))
+#define TRX_GetRXSampleRateENUM ((CurrentVFO()->Mode != TRX_MODE_WFM) ? TRX.SAMPLERATE_MAIN : TRX.SAMPLERATE_WFM)
 
 extern void TRX_Init(void);
 extern void TRX_setFrequency(uint32_t _freq, VFO *vfo);
@@ -24,7 +27,7 @@ extern void TRX_TemporaryMute(void);
 extern void TRX_ProcessScanMode(void);
 extern void TRX_setFrequencySlowly(uint32_t target_freq);
 extern void TRX_setFrequencySlowly_Process(void);
-
+	
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;
 volatile extern bool TRX_old_ptt_soft;

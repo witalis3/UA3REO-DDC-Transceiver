@@ -102,7 +102,7 @@ void processRxAudio(void)
 	//Decimate
 	uint16_t decimated_block_size_rx1 = FPGA_RX_IQ_BUFFER_HALF_SIZE;
 	uint16_t decimated_block_size_rx2 = FPGA_RX_IQ_BUFFER_HALF_SIZE;
-	uint32_t need_decimate_rate = IQ_SAMPLERATE / TRX_SAMPLERATE;
+	uint32_t need_decimate_rate = TRX_GetRXSampleRate / TRX_SAMPLERATE;
 	if (current_vfo->Mode != TRX_MODE_WFM)
 	{
 		doRX_Decimate(AUDIO_RX1, decimated_block_size_rx1, need_decimate_rate);

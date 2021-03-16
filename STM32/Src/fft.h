@@ -17,7 +17,7 @@
 #define FFT_COMPRESS_INTERVAL 0.9f                                                                                                                         // compress interval of the FFT signal
 #define FFT_MAX ((float32_t)TRX.FFT_Sensitivity * 1.5f)                                                                                                            // MAX FFT signal threshold
 #define FFT_STEP_COEFF 10.0f                                                                                                                               // step coefficient for auto-calibration of the FFT signal (more - slower)
-#define FFT_HZ_IN_PIXEL (float32_t)((float32_t)IQ_SAMPLERATE * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / (float32_t)LAYOUT->FFT_PRINT_SIZE)     // hertz per FFT pixel RX
+#define FFT_HZ_IN_PIXEL (float32_t)((float32_t)TRX_GetRXSampleRate * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / (float32_t)LAYOUT->FFT_PRINT_SIZE)     // hertz per FFT pixel RX
 #define FFT_TX_HZ_IN_PIXEL (float32_t)((float32_t)TRX_SAMPLERATE * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / (float32_t)LAYOUT->FFT_PRINT_SIZE) // hertz per FFT pixel TX
 #define FFT_BW_BRIGHTNESS 10                                                                                                                               // pixel brightness on bw bar
 #define FFT_SCALE_LINES_BRIGHTNESS 0.4f                                                                                                                    // pixel brightness on scale lines

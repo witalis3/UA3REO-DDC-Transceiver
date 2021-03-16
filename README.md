@@ -29,7 +29,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 
 ## Transceiver Features
 
-* Panorama (spectrum + waterfall) 96 kHz wide
+* Panorama (spectrum + waterfall) up to 384 kHz wide
 * Panorama tweaks and themes
 * Dual receiver (mixing A + B or A&B audio in stereo)
 * Adjustable bandwidth: HPF from 0Hz to 500Hz, LPF from 300Hz to 20kHz
@@ -127,6 +127,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **RF Filters** - Hardware filter management (LPF / HPF / BPF)
 * **Two Signal tune** - Two-signal generator in TUNE mode (1 + 2kHz)
 * **Shift Interval** - Offset range SHIFT (+ -)
+* **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
+* **WFM Samplerate** - Max FFT/samplerate on WFM mode
 * **Freq Step** - Frequency step by the main encoder
 * **Freq Step FAST** - Frequency step by the main encoder in FAST mode
 * **Freq Step ENC2** - Frequency tuning step by main add. encoder

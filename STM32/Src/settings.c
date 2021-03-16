@@ -160,6 +160,8 @@ void LoadSettings(bool clear)
 		TRX.ShiftEnabled = false;		  // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 1000;		  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
 		TRX.TWO_SIGNAL_TUNE = false;	  // Two-signal generator in TUNE mode (1 + 2kHz)
+		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; //Samplerate for ssb/cw/digi/nfm/etc modes
+		TRX.SAMPLERATE_WFM = TRX_SAMPLERATE_K192; //Samplerate for WMF mode
 		TRX.FRQ_STEP = 10;				  // frequency tuning step by the main encoder
 		TRX.FRQ_FAST_STEP = 100;		  // frequency tuning step by the main encoder in FAST mode
 		TRX.FRQ_ENC_STEP = 25000;		  // frequency tuning step by main add. encoder

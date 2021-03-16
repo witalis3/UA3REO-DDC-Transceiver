@@ -253,7 +253,7 @@ void FFT_Init(void)
 	if(TRX_on_TX())
 		fft_current_spectrum_width_hz = TRX_SAMPLERATE / fft_zoom;
 	else
-		fft_current_spectrum_width_hz = IQ_SAMPLERATE / fft_zoom;
+		fft_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
 	
 	// clear the buffers
 	dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));

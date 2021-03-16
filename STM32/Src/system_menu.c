@@ -25,6 +25,8 @@ static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
 static void SYSMENU_HANDL_TRX_INPUT_TYPE(int8_t direction);
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction);
+static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction);
+static void SYSMENU_HANDL_TRX_SAMPLERATE_WFM(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
@@ -266,6 +268,8 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"RF_Filters", SYSMENU_BOOLEAN, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_TRX_RFFilters},
 		{"Two Signal TUNE", SYSMENU_BOOLEAN, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
 		{"Shift Interval", SYSMENU_UINT16, (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_HANDL_TRX_SHIFT_INTERVAL},
+		{"TRX Samplerate", SYSMENU_ENUM, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_TRX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
+		{"WFM Samplerate", SYSMENU_ENUM, (uint32_t *)&TRX.SAMPLERATE_WFM, SYSMENU_HANDL_TRX_SAMPLERATE_WFM, {"48khz", "96khz", "192khz", "384khz"}},
 		{"Freq Step", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
 		{"Freq Step FAST", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
 		{"Freq Step ENC2", SYSMENU_UINT16, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
@@ -672,6 +676,26 @@ static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction)
 		TRX.Debug_Type += direction;
 	if (TRX.Debug_Type > 4)
 		TRX.Debug_Type = 4;
+}
+
+static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction)
+{
+	if (direction > 0 || TRX.SAMPLERATE_MAIN > 0)
+		TRX.SAMPLERATE_MAIN += direction;
+	if (TRX.SAMPLERATE_MAIN > 3)
+		TRX.SAMPLERATE_MAIN = 3;
+	
+	FFT_Init();
+}
+
+static void SYSMENU_HANDL_TRX_SAMPLERATE_WFM(int8_t direction)
+{
+	if (direction > 0 || TRX.SAMPLERATE_WFM > 0)
+		TRX.SAMPLERATE_WFM += direction;
+	if (TRX.SAMPLERATE_WFM > 3)
+		TRX.SAMPLERATE_WFM = 3;
+	
+	FFT_Init();
 }
 
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction)

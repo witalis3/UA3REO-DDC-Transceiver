@@ -273,33 +273,34 @@ void FPGA_fpgadata_iqclock(void)
 		FPGA_syncAndClockRiseFall();
 
 		//blocks by 48k
-		if(IQ_SAMPLERATE == 48000)
+		switch(TRX_GetRXSampleRateENUM)
 		{
-			FPGA_fpgadata_getiq();
-		}
-		else if(IQ_SAMPLERATE == 96000)
-		{
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
-		}
-		else if(IQ_SAMPLERATE == 192000)
-		{
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
-		}
-		else if(IQ_SAMPLERATE == 384000)
-		{
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
-			
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
-			FPGA_fpgadata_getiq();
+			case TRX_SAMPLERATE_K48:
+				FPGA_fpgadata_getiq();
+			break;
+			case TRX_SAMPLERATE_K96:
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+			break;
+			case TRX_SAMPLERATE_K192:
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+			break;
+			case TRX_SAMPLERATE_K384:
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+				
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+				FPGA_fpgadata_getiq();
+			break;
+			default:
+			break;
 		}
 	}
 }
@@ -421,25 +422,26 @@ static inline void FPGA_fpgadata_sendparam(void)
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX_DAC_X4);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX_DCDC_Freq);
 	//11 - 48khz 01 - 96khz 10 - 192khz 00 - 384khz IQ speed
-	if(IQ_SAMPLERATE == 48000)
+	switch(TRX_GetRXSampleRateENUM)
 	{
-		bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);
-		bitWrite(FPGA_fpgadata_out_tmp8, 7, 1);
-	}
-	else if(IQ_SAMPLERATE == 96000)
-	{
-		bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
-		bitWrite(FPGA_fpgadata_out_tmp8, 7, 1);
-	}
-	else if(IQ_SAMPLERATE == 192000)
-	{
-		bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);
-		bitWrite(FPGA_fpgadata_out_tmp8, 7, 0);
-	}
-	else if(IQ_SAMPLERATE == 384000)
-	{
-		bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
-		bitWrite(FPGA_fpgadata_out_tmp8, 7, 0);
+		case TRX_SAMPLERATE_K48:
+			bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);
+			bitWrite(FPGA_fpgadata_out_tmp8, 7, 1);
+		break;
+		case TRX_SAMPLERATE_K96:
+			bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
+			bitWrite(FPGA_fpgadata_out_tmp8, 7, 1);
+		break;
+		case TRX_SAMPLERATE_K192:
+			bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);
+			bitWrite(FPGA_fpgadata_out_tmp8, 7, 0);
+		break;
+		case TRX_SAMPLERATE_K384:
+			bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
+			bitWrite(FPGA_fpgadata_out_tmp8, 7, 0);
+		break;
+		default:
+		break;
 	}
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
