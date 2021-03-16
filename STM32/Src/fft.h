@@ -49,6 +49,7 @@ extern uint16_t FFT_FPS;
 extern uint16_t FFT_FPS_Last;
 extern bool NeedWTFRedraw;
 extern bool NeedFFTReinit;
+extern uint32_t fft_current_spectrum_width_hz;
 
 // Public methods
 extern void FFT_Init(void);                              // FFT initialization

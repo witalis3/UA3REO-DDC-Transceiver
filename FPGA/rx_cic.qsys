@@ -86,7 +86,7 @@
   <parameter name="REQ_OUT_WIDTH" value="32" />
   <parameter name="REQ_PIPELINE" value="0" />
   <parameter name="ROUND_TYPE" value="CONV_ROUND" />
-  <parameter name="STAGES" value="7" />
+  <parameter name="STAGES" value="6" />
   <parameter name="VRC_EN" value="1" />
   <parameter name="design_env" value="NATIVE" />
   <parameter name="hyper_opt_select" value="0" />

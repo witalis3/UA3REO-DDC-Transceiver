@@ -32,7 +32,7 @@ module rx_cic_cic_ii_0 (
 
 
     parameter FILTER_TYPE             =  "decimator";
-    parameter STAGES        =  7;
+    parameter STAGES        =  6;
     parameter D_DELAY              =  1;
     parameter VRC_EN   =  1;
     parameter RCF_MAX         =  1280;
@@ -49,33 +49,33 @@ module rx_cic_cic_ii_0 (
     parameter PIPELINING              =  0;
 
 
-    parameter C_STAGE_0_WIDTH         = 104;
-    parameter C_STAGE_1_WIDTH         = 104;
-    parameter C_STAGE_2_WIDTH         = 104;
-    parameter C_STAGE_3_WIDTH         = 104;
-    parameter C_STAGE_4_WIDTH         = 104;
-    parameter C_STAGE_5_WIDTH         = 104;
-    parameter C_STAGE_6_WIDTH         = 104;
-    parameter C_STAGE_7_WIDTH         = 104;
-    parameter C_STAGE_8_WIDTH         = 104;
-    parameter C_STAGE_9_WIDTH         = 104;
-    parameter C_STAGE_10_WIDTH        = 104;
-    parameter C_STAGE_11_WIDTH        = 104;
-    parameter MAX_C_STAGE_WIDTH       = 104;
+    parameter C_STAGE_0_WIDTH         = 93;
+    parameter C_STAGE_1_WIDTH         = 93;
+    parameter C_STAGE_2_WIDTH         = 93;
+    parameter C_STAGE_3_WIDTH         = 93;
+    parameter C_STAGE_4_WIDTH         = 93;
+    parameter C_STAGE_5_WIDTH         = 93;
+    parameter C_STAGE_6_WIDTH         = 93;
+    parameter C_STAGE_7_WIDTH         = 93;
+    parameter C_STAGE_8_WIDTH         = 93;
+    parameter C_STAGE_9_WIDTH         = 93;
+    parameter C_STAGE_10_WIDTH        = 93;
+    parameter C_STAGE_11_WIDTH        = 93;
+    parameter MAX_C_STAGE_WIDTH       = 93;
  
-    parameter I_STAGE_0_WIDTH         = 104;
-    parameter I_STAGE_1_WIDTH         = 104;
-    parameter I_STAGE_2_WIDTH         = 104;
-    parameter I_STAGE_3_WIDTH         = 104;
-    parameter I_STAGE_4_WIDTH         = 104;
-    parameter I_STAGE_5_WIDTH         = 104;
-    parameter I_STAGE_6_WIDTH         = 104;
-    parameter I_STAGE_7_WIDTH         = 104;
-    parameter I_STAGE_8_WIDTH         = 104;
-    parameter I_STAGE_9_WIDTH         = 104;
-    parameter I_STAGE_10_WIDTH        = 104;
-    parameter I_STAGE_11_WIDTH        = 104;
-    parameter MAX_I_STAGE_WIDTH       = 104;
+    parameter I_STAGE_0_WIDTH         = 93;
+    parameter I_STAGE_1_WIDTH         = 93;
+    parameter I_STAGE_2_WIDTH         = 93;
+    parameter I_STAGE_3_WIDTH         = 93;
+    parameter I_STAGE_4_WIDTH         = 93;
+    parameter I_STAGE_5_WIDTH         = 93;
+    parameter I_STAGE_6_WIDTH         = 93;
+    parameter I_STAGE_7_WIDTH         = 93;
+    parameter I_STAGE_8_WIDTH         = 93;
+    parameter I_STAGE_9_WIDTH         = 93;
+    parameter I_STAGE_10_WIDTH        = 93;
+    parameter I_STAGE_11_WIDTH        = 93;
+    parameter MAX_I_STAGE_WIDTH       = 93;
 
     localparam TOTAL_CHANNELS = CH_PER_INT*INTERFACES;
 

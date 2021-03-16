@@ -27,7 +27,7 @@ entity rx_ciccomp_tb is
     constant PHYSCHANIN_c             : natural := 1;
     constant PHYSCHANOUT_c            : natural := 1;
     constant INWIDTH_c                : natural := 32;
-    constant OUTWIDTH_c               : natural := 61;
+    constant OUTWIDTH_c               : natural := 62;
     constant BANKINWIDTH_c            : natural := 0;
     constant BANKCOUNT_c              : natural := 1;
     constant DATA_WIDTH_c             : natural := (INWIDTH_c+BANKINWIDTH_c) * PHYSCHANIN_c;
@@ -42,11 +42,11 @@ entity rx_ciccomp_tb is
     constant INTERP_FACTOR_c          : natural := 1;
     constant TOTAL_INCHANS_ALLOWED    : natural := PHYSCHANIN_c * CHANSPERPHYIN_c;
     constant TOTAL_OUTCHANS_ALLOWED   : natural := PHYSCHANOUT_c * CHANSPERPHYOUT_c;
-    constant NUM_OF_TAPS_c            : natural := 128;
-    constant TOTAL_EFF_COEF_c         : natural := 64;
+    constant NUM_OF_TAPS_c            : natural := 129;
+    constant TOTAL_EFF_COEF_c         : natural := 129;
     constant COEFF_BIT_WIDTH_c        : natural := 22;
     constant COEFF_BUS_DATA_WIDTH_c   : natural := 32;
-    constant COEFF_BUS_ADDR_WIDTH   : natural := 6;
+    constant COEFF_BUS_ADDR_WIDTH   : natural := 8;
 
 end entity rx_ciccomp_tb;
 
@@ -461,7 +461,7 @@ begin  -- process resetgen
     reset_design <= '1';
 
 
-    wait for tclk*128*2;
+    wait for tclk*129*2;
     reset_design <= '1';
     wait;
 end process reset_design_gen;

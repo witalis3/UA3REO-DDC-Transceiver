@@ -994,32 +994,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
 		fft_zoom = TRX.FFT_ZoomCW;
 	
-	if(!TRX_on_TX())
-	{
-		if (fft_zoom == 1)
-			sprintf(buff, "FFT:96kHz");
-		else if (fft_zoom == 2)
-			sprintf(buff, "FFT:48kHz");
-		else if (fft_zoom == 4)
-			sprintf(buff, "FFT:24kHz");
-		else if (fft_zoom == 8)
-			sprintf(buff, "FFT:12kHz");
-		else if (fft_zoom == 16)
-			sprintf(buff, "FFT:6kHz ");
-	}
-	else
-	{
-		if (fft_zoom == 1)
-			sprintf(buff, "FFT:48kHz");
-		else if (fft_zoom == 2)
-			sprintf(buff, "FFT:24kHz");
-		else if (fft_zoom == 4)
-			sprintf(buff, "FFT:12kHz");
-		else if (fft_zoom == 8)
-			sprintf(buff, "FFT:6kHz");
-		else if (fft_zoom == 16)
-			sprintf(buff, "FFT:3kHz ");
-	}
+	sprintf(buff, "FFT:%dkHz", fft_current_spectrum_width_hz / 1000);
+	addSymbols(buff, buff, 10, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 #if (defined(LAY_800x480))

@@ -20,6 +20,7 @@ uint16_t FFT_FPS = 0;
 uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
 bool NeedFFTReinit = false;
+uint32_t fft_current_spectrum_width_hz = 96000;	//Current sectrum width
 
 //Private variables
 #if FFT_SIZE == 2048
@@ -249,6 +250,11 @@ void FFT_Init(void)
 	else
 		zoomed_width = FFT_SIZE;
 
+	if(TRX_on_TX())
+		fft_current_spectrum_width_hz = TRX_SAMPLERATE / fft_zoom;
+	else
+		fft_current_spectrum_width_hz = IQ_SAMPLERATE / fft_zoom;
+	
 	// clear the buffers
 	dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
 	dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
@@ -547,14 +553,12 @@ bool FFT_printFFT(void)
 		//calculate scale lines
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
 		uint8_t index = 0;
+		uint32_t grid_step = fft_current_spectrum_width_hz / 9.6;
+		
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 		{
 			int32_t pos = -1;
-			uint32_t grid_freq = 0;
-			if (fft_zoom == 1)
-				grid_freq = (CurrentVFO()->Freq / 10000 * 10000) + ((i - 6) * 10000);
-			else
-				grid_freq = (CurrentVFO()->Freq / 5000 * 5000) + ((i - 6) * 5000);
+			uint32_t grid_freq = (CurrentVFO()->Freq / grid_step * grid_step) + ((i - 6) * grid_step);
 			pos = getFreqPositionOnFFT(grid_freq);
 			if (pos >= 0)
 			{
