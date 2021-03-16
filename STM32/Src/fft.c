@@ -53,8 +53,8 @@ IRAM2 static uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE
 SRAM static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
 static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};								 // frequencies for each row of the waterfall
 static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};							 // frequencies for each row of the fft mean buffer
-static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft colors output
-static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft peaks
+IRAM2 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft colors output
+IRAM2 static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft peaks
 static int32_t grid_lines_pos[20] = {-1};					//grid lines positions
 static uint32_t grid_lines_freq[20] = {-1};					//grid lines frequencies
 static int16_t bw_line_start = 0;							//BW bar params
@@ -507,7 +507,7 @@ void FFT_doFFT(void)
 	dma_memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean));
 	for (uint_fast16_t avg_idx = 0; avg_idx < TRX.FFT_Averaging; avg_idx++)
 	{
-		int32_t freq_diff = roundf(((float32_t)((float32_t)fft_meanbuffer_freqs[avg_idx] - (float32_t)CurrentVFO()->Freq) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom);
+		int32_t freq_diff = roundf(((float32_t)((float32_t)fft_meanbuffer_freqs[avg_idx] - (float32_t)CurrentVFO()->Freq) / hz_in_pixel) * (float32_t)fft_zoom);
 
 		if (!TRX.WTF_Moving)
 			freq_diff = 0;
@@ -915,7 +915,7 @@ bool FFT_printFFT(void)
 	{
 		uint16_t wtf_y_index = (print_wtf_yindex - fftHeight) / line_repeats_need;
 		// calculate offset
-		float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / FFT_HZ_IN_PIXEL) * (float32_t)fft_zoom;
+		float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float32_t)fft_zoom;
 		float32_t freq_diff_part = fmodf(freq_diff, 1.0f);
 		int32_t margin_left = 0;
 		if (freq_diff < 0)
