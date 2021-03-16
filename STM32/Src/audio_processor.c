@@ -422,11 +422,14 @@ void processRxAudio(void)
 		APROC_AudioBuffer_out_send[audio_buffer_index] = convertToSPIBigEndian(APROC_AudioBuffer_out_send[audio_buffer_index]); //for 32bit audio
 		//Index
 		audio_buffer_index++;
+		
+		if(audio_buffer_index >= AUDIO_BUFFER_SIZE)
+			break;
 	}
-	if(audio_buffer_index != AUDIO_BUFFER_SIZE)
-		return;
-	else
+	if(audio_buffer_index >= AUDIO_BUFFER_SIZE)
 		audio_buffer_index = 0;
+	else
+		return;
 
 	//Beep signal
 	if (WM8731_Beeping)

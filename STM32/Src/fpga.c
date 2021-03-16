@@ -378,7 +378,23 @@ static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 11
 	//OUT CICCOMP-GAIN
-	FPGA_writePacket(CALIBRATE.CICFIR_GAINER_val);
+	switch(TRX_GetRXSampleRateENUM)
+	{
+		case TRX_SAMPLERATE_K48:
+			FPGA_writePacket(CALIBRATE.CICFIR_GAINER_48K_val);
+		break;
+		case TRX_SAMPLERATE_K96:
+			FPGA_writePacket(CALIBRATE.CICFIR_GAINER_96K_val);
+		break;
+		case TRX_SAMPLERATE_K192:
+			FPGA_writePacket(CALIBRATE.CICFIR_GAINER_192K_val);
+		break;
+		case TRX_SAMPLERATE_K384:
+			FPGA_writePacket(CALIBRATE.CICFIR_GAINER_384K_val);
+		break;
+		default:
+		break;
+	}
 	FPGA_clockRise();
 	FPGA_clockFall();
 

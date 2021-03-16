@@ -9,7 +9,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-#define SETT_VERSION 24				   // Settings config version
+#define SETT_VERSION 25				   // Settings config version
 #define CALIB_VERSION 25				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -303,7 +303,10 @@ extern struct TRX_CALIBRATE
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
 	bool ENCODER_ON_FALLING;
-	uint8_t CICFIR_GAINER_val;
+	uint8_t CICFIR_GAINER_48K_val;
+	uint8_t CICFIR_GAINER_96K_val;
+	uint8_t CICFIR_GAINER_192K_val;
+	uint8_t CICFIR_GAINER_384K_val;
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;
 	uint8_t rf_out_power_2200m;
