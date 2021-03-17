@@ -84,10 +84,7 @@ void preProcessRxAudio(void)
 	if (!FPGA_RX_buffer_ready)
 		return;
 	if (preprocessor_buffer_ready)
-	{
-		println("preprocessor overrun");
 		return;
-	}
 	
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();

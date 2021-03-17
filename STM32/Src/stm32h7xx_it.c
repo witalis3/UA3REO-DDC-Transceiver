@@ -1003,13 +1003,15 @@ void TIM17_IRQHandler(void)
   /* USER CODE END TIM17_IRQn 0 */
   HAL_TIM_IRQHandler(&htim17);
   /* USER CODE BEGIN TIM17_IRQn 1 */
+	
+	//audio buffer preprocessor
+	preProcessRxAudio();
+	
   if (FFT_new_buffer_ready)
     FFT_bufferPrepare();
 
   if (TRX.CWDecoder)
     DECODER_Process();
-	
-	preProcessRxAudio(); //audio buffer preprocessor
 	
   /* USER CODE END TIM17_IRQn 1 */
 }
@@ -1033,8 +1035,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   CPULOAD_WakeUp();
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
-    if (!WM8731_Buffer_underrun)
-      FPGA_fpgadata_iqclock();  // IQ data
+		FPGA_fpgadata_iqclock();  // IQ data
     FPGA_fpgadata_stuffclock(); // parameters and other services
   }
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder
