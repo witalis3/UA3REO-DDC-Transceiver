@@ -378,11 +378,11 @@ void FFT_doFFT(void)
 	//Do full windowing
 	if (FFT_ChargeBuffer_collected >= FFT_SIZE)
 	{
+		FFT_ChargeBuffer_collected = FFT_SIZE;
 		arm_cmplx_mult_real_f32(FFTInput, window_multipliers, FFTInput, FFT_SIZE);
 	}
 	else //partial windowing
 	{
-		FFT_ChargeBuffer_collected = FFT_SIZE;
 		for (uint16_t i = (FFT_SIZE - FFT_ChargeBuffer_collected); i < FFT_SIZE; i++)
 		{
 			uint16_t coeff_idx = (FFT_SIZE / FFT_ChargeBuffer_collected) * (FFT_SIZE - i);
@@ -391,9 +391,8 @@ void FFT_doFFT(void)
 		}
 		
 		//Gain signal if partial buffer (for normalize)
-		arm_scale_f32(FFTInput, ((float32_t)FFT_SIZE / (float32_t)FFT_ChargeBuffer_collected), FFTInput, FFT_DOUBLE_SIZE_BUFFER);
+		arm_scale_f32(FFTInput, ((float32_t)FFT_SIZE / (float32_t)FFT_ChargeBuffer_collected / 2.0f), FFTInput, FFT_DOUBLE_SIZE_BUFFER);
 	}
-	FFT_ChargeBuffer_collected = 0;
 	fft_charge_copying = false;
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
