@@ -70,7 +70,6 @@ volatile extern float32_t TRX_IQ_phase_error;
 volatile extern bool TRX_NeedGoToBootloader;
 volatile extern bool TRX_Temporary_Stop_BandMap;
 volatile extern float32_t TRX_RF_Temperature;
-volatile extern uint8_t TRX_AutoGain_Stage;
 extern const char *MODE_DESCR[];
 extern ADC_HandleTypeDef hadc1;
 extern uint32_t TRX_freq_phrase;

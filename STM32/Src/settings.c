@@ -299,7 +299,6 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
 			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
-			TRX.BANDS_SAVED_SETTINGS[i].AutoGain_Stage = 6;
 		}
 		
 		println("[OK] Loaded default settings");

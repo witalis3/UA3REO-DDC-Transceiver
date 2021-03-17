@@ -65,9 +65,12 @@
 #define ADC_INPUT_IMPEDANCE 200.0f //50ohm -> 1:4 trans
 #define ADC_RANGE 2.25f
 #define ADC_RANGE_PGA 1.5f
+
 #define ADC_LNA_GAIN_DB 20.0f
 #define ADC_DRIVER_GAIN_DB 25.5f
 #define ADC_PGA_GAIN_DB 3.522f
+#define AUTOGAINER_TAGET (ADC_FULL_SCALE / 3)
+#define AUTOGAINER_HYSTERESIS 5000
 
 #define MAX_WIFIPASS_LENGTH 32
 #define MAX_CALLSIGN_LENGTH 16
@@ -151,7 +154,6 @@ typedef struct
 	uint8_t DNR_Type;
 	bool AGC;
 	uint8_t FM_SQL_threshold;
-	uint8_t AutoGain_Stage;
 } BAND_SAVED_SETTINGS_TYPE;
 
 extern struct TRX_SETTINGS
