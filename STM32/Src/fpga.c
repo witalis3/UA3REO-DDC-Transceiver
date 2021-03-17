@@ -683,7 +683,7 @@ static inline void FPGA_fpgadata_getiq(void)
 		if(FPGA_RX_buffer_ready)
 		{
 			FPGA_Buffer_underrun = true;
-			//sendToDebug_str("fpga overrun");
+			//println("fpga overrun");
 		}
 		else
 		{
@@ -702,7 +702,7 @@ static inline void FPGA_fpgadata_getiq(void)
 		FFT_buff_index = 0;
 		if (FFT_new_buffer_ready)
 		{
-			//sendToDebug_str("fft overrun");
+			//println("fft overrun");
 		}
 		else
 		{

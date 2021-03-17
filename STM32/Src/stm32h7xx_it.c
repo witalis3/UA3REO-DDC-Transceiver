@@ -1008,6 +1008,9 @@ void TIM17_IRQHandler(void)
 
   if (TRX.CWDecoder)
     DECODER_Process();
+	
+	preProcessRxAudio(); //audio buffer preprocessor
+	
   /* USER CODE END TIM17_IRQn 1 */
 }
 

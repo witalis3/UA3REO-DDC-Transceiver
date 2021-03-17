@@ -548,7 +548,7 @@ bool FFT_printFFT(void)
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 	hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 
-	if (CurrentVFO()->Freq != currentFFTFreq)
+	if (CurrentVFO()->Freq != currentFFTFreq || NeedWTFRedraw)
 	{
 		//calculate scale lines
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));

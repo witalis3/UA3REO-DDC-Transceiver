@@ -17,10 +17,17 @@
 volatile uint32_t AUDIOPROC_samples = 0;							   // audio samples processed in the processor
 volatile bool Processor_NeedRXBuffer = false;						   // codec needs data from processor for RX
 volatile bool Processor_NeedTXBuffer = false;						   // codec needs data from processor for TX
-float32_t APROC_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // copy of the working part of the FPGA buffers for processing
+
+float32_t APROC_Audio_Buffer_RX1_accum_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // copy of the working part of the FPGA buffers for processing
+float32_t APROC_Audio_Buffer_RX1_accum_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+float32_t APROC_Audio_Buffer_RX2_accum_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+float32_t APROC_Audio_Buffer_RX2_accum_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+
+float32_t APROC_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // decimated and ready to demod buffer
 float32_t APROC_Audio_Buffer_RX1_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+
 float32_t APROC_Audio_Buffer_TX_Q[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t Processor_RX_Power_value;					// RX signal magnitude
@@ -40,6 +47,7 @@ static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
+static bool preprocessor_buffer_ready = false;
 
 // Prototypes
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // Hilbert filter for phase shift of signals
@@ -70,14 +78,17 @@ void initAudioProcessor(void)
 	ADPCM_Init();
 }
 
-// start audio processor for RX
-void processRxAudio(void)
+// RX decimator and preprocessor
+void preProcessRxAudio(void)
 {
-	if (!Processor_NeedRXBuffer)
-		return;
 	if (!FPGA_RX_buffer_ready)
 		return;
-
+	if (preprocessor_buffer_ready)
+	{
+		println("preprocessor overrun");
+		return;
+	}
+	
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
 
@@ -100,7 +111,7 @@ void processRxAudio(void)
 		//demodulate wfm before decimation
 		DemodulateFM(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);	
 	}
-	doRX_DecimateInput(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, &APROC_Audio_Buffer_RX1_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX1_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
+	doRX_DecimateInput(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, &APROC_Audio_Buffer_RX1_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX1_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 	
 	if (TRX.Dual_RX)
 	{
@@ -109,7 +120,7 @@ void processRxAudio(void)
 			//demodulate wfm before decimation
 			DemodulateFM(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);	
 		}
-		doRX_DecimateInput(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, &APROC_Audio_Buffer_RX2_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX2_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
+		doRX_DecimateInput(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, &APROC_Audio_Buffer_RX2_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX2_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 	}
 	
 	FPGA_RX_buffer_ready = false; // start processing of new buffer
@@ -119,7 +130,28 @@ void processRxAudio(void)
 		audio_buffer_in_index = 0;
 	else
 		return;
+	
+	preprocessor_buffer_ready = true;
+}
 
+// start audio processor for RX
+void processRxAudio(void)
+{
+	if (!Processor_NeedRXBuffer)
+		return;
+	if (!preprocessor_buffer_ready)
+		return;
+
+	//get data from preprocessor
+	dma_memcpy(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_accum_I, sizeof(APROC_Audio_Buffer_RX1_I));
+	dma_memcpy(APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_accum_Q, sizeof(APROC_Audio_Buffer_RX1_Q));
+	dma_memcpy(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_accum_I, sizeof(APROC_Audio_Buffer_RX2_I));
+	dma_memcpy(APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_accum_Q, sizeof(APROC_Audio_Buffer_RX2_Q));
+	preprocessor_buffer_ready = false;
+	
+	VFO *current_vfo = CurrentVFO();
+	VFO *secondary_vfo = SecondaryVFO();
+	
 	//Process DC corrector filter
 	if (current_vfo->Mode != TRX_MODE_AM && current_vfo->Mode != TRX_MODE_NFM && current_vfo->Mode != TRX_MODE_WFM)
 	{

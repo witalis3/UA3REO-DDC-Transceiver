@@ -46,6 +46,7 @@ extern bool APROC_IFGain_Overflow;
 
 // Public methods
 extern void processRxAudio(void);	  // start audio processor for RX
+extern void preProcessRxAudio(void);	  // start audio pre-processor for RX
 extern void processTxAudio(void);	  // start audio processor for TX
 extern void initAudioProcessor(void); // initialize audio processor
 
