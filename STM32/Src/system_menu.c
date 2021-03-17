@@ -2726,6 +2726,7 @@ static void SYSMENU_HANDL_SD_ImportSettings(int8_t direction)
 	if (direction > 0 && SD_isIdle() && !LCD_busy)
 	{
 		SD_doCommand(SDCOMM_IMPORT_SETTINGS, false);
+		NeedSaveCalibration = true;
 	}
 }
 
