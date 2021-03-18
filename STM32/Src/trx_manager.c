@@ -100,7 +100,11 @@ void TRX_Restart_Mode()
 		TRX.current_vfo = !TRX.current_vfo;
 		TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 		TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
-		LCD_UpdateQuery.FreqInfo = true;
+		
+		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+		TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
+		
+		LCD_UpdateQuery.FreqInfoRedraw = true;
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	}
