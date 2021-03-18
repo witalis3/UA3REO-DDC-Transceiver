@@ -500,6 +500,9 @@ static inline void FPGA_fpgadata_getparam(void)
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket;
 	TRX_ADC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 0);
 	TRX_DAC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 1);
+	/*bool IQ_overrun = bitRead(FPGA_fpgadata_in_tmp8, 2);
+	if(IQ_overrun)
+		println("iq overrun");*/
 	FPGA_clockFall();
 
 	//STAGE 3
