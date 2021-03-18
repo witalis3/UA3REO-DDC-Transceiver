@@ -89,7 +89,7 @@
 #define W25Q16_SECTOR_SIZE 4096
 #define EEPROM_SECTOR_CALIBRATION 0
 #define EEPROM_SECTOR_SETTINGS 4
-#define EEPROM_REPEAT_TRYES 5 // command tryes
+#define EEPROM_REPEAT_TRYES 10 // command tryes
 
 typedef struct
 {

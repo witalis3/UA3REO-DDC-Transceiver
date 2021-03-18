@@ -478,6 +478,7 @@ void SaveSettingsToEEPROM(void)
 	tryes = 0;
 	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&TRX, sizeof(TRX), EEPROM_SECTOR_SETTINGS, true, false))
 	{
+		EEPROM_Sector_Erase(EEPROM_SECTOR_SETTINGS, false);
 		tryes++;
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
@@ -518,6 +519,7 @@ void SaveCalibration(void)
 	tryes = 0;
 	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&CALIBRATE, sizeof(CALIBRATE), EEPROM_SECTOR_CALIBRATION, true, false))
 	{
+		EEPROM_Sector_Erase(EEPROM_SECTOR_CALIBRATION, false);
 		tryes++;
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES)
