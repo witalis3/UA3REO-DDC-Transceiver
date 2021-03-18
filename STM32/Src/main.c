@@ -249,7 +249,7 @@ int main(void)
 	
   println("[OK] Settings loading");
 #ifdef FRONTPANEL_SMALL_V1
-  if (PERIPH_FrontPanel_Buttons[13].state) //soft reset (MENU)
+  if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (MENU)
     LoadSettings(true);
   else
 #endif
@@ -282,7 +282,7 @@ int main(void)
 	
   println("[OK] Calibration loading");
 #ifdef FRONTPANEL_SMALL_V1
-  if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
+  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
     LoadCalibration(true);
   else
 #endif
