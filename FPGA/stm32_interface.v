@@ -121,6 +121,7 @@ reg signed [15:0] ADC_MAX;
 reg ADC_MINMAX_RESET;
 reg sync_reset_n = 1;
 reg unsigned [7:0] BUS_TEST;
+reg iq_overrun = 0;
 
 always @ (posedge IQ_valid)
 begin
@@ -323,10 +324,12 @@ begin
 	begin
 		DATA_BUS_OUT[0:0] = ADC_OTR;
 		DATA_BUS_OUT[1:1] = DAC_OTR;
+		DATA_BUS_OUT[2:2] = iq_overrun;
 		k = 201;
 	end
 	else if (k == 201)
 	begin
+		iq_overrun = 0;
 		DATA_BUS_OUT[7:0] = ADC_MIN[15:8];
 		k = 202;
 	end
@@ -413,6 +416,7 @@ begin
 			REG_RX1_Q[31:0] = 'd0;
 			REG_RX2_I[31:0] = 'd0;
 			REG_RX2_Q[31:0] = 'd0;
+			iq_overrun = 1;
 		end
 		else
 		begin
