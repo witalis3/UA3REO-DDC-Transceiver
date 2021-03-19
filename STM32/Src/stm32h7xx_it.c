@@ -1004,8 +1004,9 @@ void TIM17_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim17);
   /* USER CODE BEGIN TIM17_IRQn 1 */
 	
-	//audio buffer preprocessor
-	preProcessRxAudio();
+	//audio buffer RX preprocessor
+	if (!TRX_on_TX())
+		preProcessRxAudio();
 	
   if (FFT_new_buffer_ready)
     FFT_bufferPrepare();
