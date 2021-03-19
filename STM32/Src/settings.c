@@ -348,7 +348,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENCODER_ON_FALLING = false; // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;  //acceleration rate if rotate
 		CALIBRATE.CICFIR_GAINER_48K_val = 53;	  // Offset from the output of the CIC compensator
-		CALIBRATE.CICFIR_GAINER_96K_val = 46;	  // Offset from the output of the CIC compensator
+		CALIBRATE.CICFIR_GAINER_96K_val = 47;	  // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_192K_val = 41;	  // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_384K_val = 35;	  // Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 42;	  // Offset from the TX-CIC output of the compensator
