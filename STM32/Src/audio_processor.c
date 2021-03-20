@@ -67,7 +67,7 @@ static void doRX_EQ(uint16_t size);												 // receiver equalizer
 static void doMIC_EQ(uint16_t size);											 // microphone equalizer
 static void doVAD(uint16_t size);												 // voice activity detector
 static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 //IF gain
-static void doRX_DecimateInput(float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor); //decimate RX samplerate input stream
+static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor); //decimate RX samplerate input stream
 
 // initialize audio processor
 void initAudioProcessor(void)
@@ -108,7 +108,7 @@ void preProcessRxAudio(void)
 		//demodulate wfm before decimation
 		DemodulateFM(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);	
 	}
-	doRX_DecimateInput(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, &APROC_Audio_Buffer_RX1_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX1_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
+	doRX_DecimateInput(AUDIO_RX1, FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, &APROC_Audio_Buffer_RX1_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX1_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 	
 	if (TRX.Dual_RX)
 	{
@@ -117,7 +117,7 @@ void preProcessRxAudio(void)
 			//demodulate wfm before decimation
 			DemodulateFM(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);	
 		}
-		doRX_DecimateInput(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, &APROC_Audio_Buffer_RX2_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX2_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
+		doRX_DecimateInput(AUDIO_RX2, FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, &APROC_Audio_Buffer_RX2_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX2_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 	}
 	
 	FPGA_RX_buffer_ready = false; // start processing of new buffer
@@ -874,7 +874,7 @@ static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	}
 }
 
-static void doRX_DecimateInput(float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor)
+static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor)
 {
 	if(factor == 1)
 	{
@@ -883,18 +883,54 @@ static void doRX_DecimateInput(float32_t *in_i, float32_t *in_q, float32_t *out_
 	}
 	else if(factor == 2)
 	{
-		arm_fir_decimate_f32(&DECIMATE_2_RX1_AUDIO_I, in_i, out_i, size);
-		arm_fir_decimate_f32(&DECIMATE_2_RX1_AUDIO_Q, in_q, out_q, size);
+		if (rx_id == AUDIO_RX1)
+		{
+			arm_biquad_cascade_df2T_f32(&DECIMATE_2_IIR_RX1_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_2_IIR_RX1_AUDIO_Q, in_q, in_q, size);
+			arm_fir_decimate_f32(&DECIMATE_2_RX1_AUDIO_I, in_i, out_i, size);
+			arm_fir_decimate_f32(&DECIMATE_2_RX1_AUDIO_Q, in_q, out_q, size);
+		}
+		else
+		{
+			arm_biquad_cascade_df2T_f32(&DECIMATE_2_IIR_RX2_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_2_IIR_RX2_AUDIO_Q, in_q, in_q, size);
+			arm_fir_decimate_f32(&DECIMATE_2_RX2_AUDIO_I, in_i, out_i, size);
+			arm_fir_decimate_f32(&DECIMATE_2_RX2_AUDIO_Q, in_q, out_q, size);
+		}
 	}
 	else if(factor == 4)
 	{
-		arm_fir_decimate_f32(&DECIMATE_4_RX1_AUDIO_I, in_i, out_i, size);
-		arm_fir_decimate_f32(&DECIMATE_4_RX1_AUDIO_Q, in_q, out_q, size);
+		if (rx_id == AUDIO_RX1)
+		{
+			arm_biquad_cascade_df2T_f32(&DECIMATE_4_IIR_RX1_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_4_IIR_RX1_AUDIO_Q, in_q, in_q, size);
+			arm_fir_decimate_f32(&DECIMATE_4_RX1_AUDIO_I, in_i, out_i, size);
+			arm_fir_decimate_f32(&DECIMATE_4_RX1_AUDIO_Q, in_q, out_q, size);
+		}
+		else
+		{
+			arm_biquad_cascade_df2T_f32(&DECIMATE_4_IIR_RX2_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_4_IIR_RX2_AUDIO_Q, in_q, in_q, size);
+			arm_fir_decimate_f32(&DECIMATE_4_RX2_AUDIO_I, in_i, out_i, size);
+			arm_fir_decimate_f32(&DECIMATE_4_RX2_AUDIO_Q, in_q, out_q, size);
+		}
 	}
 	else if(factor == 8)
 	{
-		arm_fir_decimate_f32(&DECIMATE_8_RX1_AUDIO_I, in_i, out_i, size);
-		arm_fir_decimate_f32(&DECIMATE_8_RX1_AUDIO_Q, in_q, out_q, size);
+		if (rx_id == AUDIO_RX1)
+		{
+			arm_biquad_cascade_df2T_f32(&DECIMATE_8_IIR_RX1_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_8_IIR_RX1_AUDIO_Q, in_q, in_q, size);
+			arm_fir_decimate_f32(&DECIMATE_8_FIR_RX1_AUDIO_I, in_i, out_i, size);
+			arm_fir_decimate_f32(&DECIMATE_8_FIR_RX1_AUDIO_Q, in_q, out_q, size);
+		}
+		else
+		{
+			arm_biquad_cascade_df2T_f32(&DECIMATE_8_IIR_RX2_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_8_IIR_RX2_AUDIO_Q, in_q, in_q, size);
+			arm_fir_decimate_f32(&DECIMATE_8_FIR_RX2_AUDIO_I, in_i, out_i, size);
+			arm_fir_decimate_f32(&DECIMATE_8_FIR_RX2_AUDIO_Q, in_q, out_q, size);
+		}
 	}
 }
 
