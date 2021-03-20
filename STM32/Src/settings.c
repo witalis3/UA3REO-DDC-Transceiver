@@ -607,14 +607,16 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 	{
 		int16_t last_verified_err = -2;
 		int16_t prev_verified_err = -1;
-		while(last_verified_err != prev_verified_err)
+		uint16_t verify_tryes = 0;
+		while(last_verified_err != prev_verified_err && verify_tryes < 10)
 		{
 			EEPROM_Read_Data(verify_clone, size, sector, false, true);
 			for (uint16_t i = 0; i < size; i++)
 				if (verify_clone[i] != write_clone[i])
 				{
-					last_verified_err = i;
+					verify_tryes++;
 					prev_verified_err = last_verified_err;
+					last_verified_err = i;
 					//println("EEROM Verify error, pos:", i, " mem:", write_clone[i], " fla:", verify_clone[i]);
 					print_flush();
 					SPI_process = false;
