@@ -34,7 +34,7 @@
 #define GET_WTFHeight ((TRX.FFT_Height == 1) ? LAYOUT->WTF_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2 : LAYOUT->WTF_HEIGHT_STYLE3))
 
 #define ZOOMFFT_DECIM_STAGES_IIR 9
-#define ZOOMFFT_DECIM_STAGES_FIR 5
+#define ZOOMFFT_DECIM_STAGES_FIR 4
 
 // Public variables
 extern uint32_t FFT_buff_index;
