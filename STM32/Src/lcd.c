@@ -641,6 +641,8 @@ static int32_t LCD_GetSMeterValPosition(float32_t dbm)
 
 static void LCD_PrintMeterArrow(int16_t target_pixel_x)
 {
+	if(target_pixel_x < 0) target_pixel_x = 0;
+	if(target_pixel_x > 220) target_pixel_x = 220;
 	float32_t x0 = LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_SMETER_WIDTH / 2 + 2;
 	float32_t y0 = LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_SMETER_ANALOG_HEIGHT + 140;
 	float32_t x1 = LAYOUT->STATUS_BAR_X_OFFSET + target_pixel_x;
