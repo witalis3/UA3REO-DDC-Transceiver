@@ -1417,16 +1417,21 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 	//bottom buttons
 	if ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) < y)
 	{
-		if (dx < -100 && FRONTPANEL_funcbuttons_page < (FUNCBUTTONS_PAGES - 1))
+		if (dx < -50)
 		{
 			FRONTPANEL_funcbuttons_page++;
+			if(FRONTPANEL_funcbuttons_page >= FUNCBUTTONS_PAGES)
+				FRONTPANEL_funcbuttons_page = 0;
 			LCD_UpdateQuery.BottomButtons = true;
 			LCD_UpdateQuery.TopButtons = true;
 			return true; //stop
 		}
-		if (dx > 100 && FRONTPANEL_funcbuttons_page > 0)
+		if (dx > 50)
 		{
-			FRONTPANEL_funcbuttons_page--;
+			if(FRONTPANEL_funcbuttons_page == 0)
+				FRONTPANEL_funcbuttons_page = FUNCBUTTONS_PAGES - 1;
+			else
+				FRONTPANEL_funcbuttons_page--;
 			LCD_UpdateQuery.BottomButtons = true;
 			LCD_UpdateQuery.TopButtons = true;
 			return true; //stop
