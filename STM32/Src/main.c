@@ -293,6 +293,9 @@ int main(void)
 #endif
     LoadCalibration(false);
 	
+	println("[OK] RTC calibration");
+	RTC_Calibration();
+	
   println("[OK] FPGA init");
 #ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[19].state) //fpga bus test (MODE+)

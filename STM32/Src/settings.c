@@ -400,6 +400,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TRX_MAX_SWR = 5;						// Maximum SWR to enable protect on TX (NOT IN TUNE MODE!)
 		CALIBRATE.FM_DEVIATION_SCALE = 10;			// FM Deviation scale
 		CALIBRATE.TUNE_MAX_POWER = 2;					// Maximum RF power in Tune mode
+		CALIBRATE.RTC_Calibration = 0;				//Real Time Clock calibration
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		println("[OK] Loaded default calibrate settings");
@@ -782,4 +783,17 @@ static uint8_t calculateCSUM_EEPROM(void)
 		csum_new += *(CALIBRATE_addr + i);
 	CALIBRATE.csum = csum_old;
 	return csum_new;
+}
+
+void RTC_Calibration(void)
+{
+	HAL_RTCEx_SetSmoothCalib(&hrtc, RTC_SMOOTHCALIB_PERIOD_32SEC, RTC_SMOOTHCALIB_PLUSPULSES_RESET, 0);
+	
+	//insert (clock TOO FAST, ADD cycles)
+	if(CALIBRATE.RTC_Calibration > 0)
+		HAL_RTCEx_SetSmoothCalib(&hrtc, RTC_SMOOTHCALIB_PERIOD_32SEC, RTC_SMOOTHCALIB_PLUSPULSES_SET, 512 - CALIBRATE.RTC_Calibration);
+	
+	//remove (clock TOO SLOW, REMOVE cycles)
+	if(CALIBRATE.RTC_Calibration < 0)
+		HAL_RTCEx_SetSmoothCalib(&hrtc, RTC_SMOOTHCALIB_PERIOD_32SEC, RTC_SMOOTHCALIB_PLUSPULSES_RESET, -CALIBRATE.RTC_Calibration);
 }

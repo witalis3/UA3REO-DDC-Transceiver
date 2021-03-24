@@ -451,6 +451,30 @@ void WIFI_Process(void)
 											//save to RTC clock
 											if (year > 2018)
 											{
+												uint32_t currTime = RTC->TR;
+												uint8_t currHours = ((currTime >> 20) & 0x03) * 10 + ((currTime >> 16) & 0x0f);
+												uint8_t currMinutes = ((currTime >> 12) & 0x07) * 10 + ((currTime >> 8) & 0x0f);
+												uint8_t currSeconds = ((currTime >> 4) & 0x07) * 10 + ((currTime >> 0) & 0x0f);
+												//clock diff
+												if(currHours == hrs && currMinutes == min && currSeconds != sec)
+												{
+													int16_t secDiff = currSeconds - sec;
+													println("Current clock error in sec: ", secDiff);
+													
+													if(secDiff < 0)
+														CALIBRATE.RTC_Calibration--;
+													if(secDiff > 0)
+														CALIBRATE.RTC_Calibration++;
+													if (CALIBRATE.RTC_Calibration < -511)
+														CALIBRATE.RTC_Calibration = -511;
+													if (CALIBRATE.RTC_Calibration > 511)
+														CALIBRATE.RTC_Calibration = 511;
+													NeedSaveCalibration = true;
+													
+													RTC_Calibration();
+													println("New RTC Calibration value: ", CALIBRATE.RTC_Calibration);
+												}
+												
 												RTC_TimeTypeDef sTime;
 												sTime.TimeFormat = RTC_HOURFORMAT12_PM;
 												sTime.SubSeconds = 0;
