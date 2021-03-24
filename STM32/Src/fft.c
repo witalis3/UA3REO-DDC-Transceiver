@@ -692,18 +692,43 @@ bool FFT_printFFT(void)
 	//FFT Peaks
 	if(TRX.FFT_HoldPeaks)
 	{
-		if(lastWTFFreq == currentFFTFreq && !NeedWTFRedraw)
+		//peaks moving
+		if(lastWTFFreq != currentFFTFreq)
 		{
-			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
-				if(fft_peaks[fft_x] <= fft_header[fft_x])
-					fft_peaks[fft_x] = fft_header[fft_x];
-				else if(fft_peaks[fft_x] > 0)
-					fft_peaks[fft_x]--;
+			float32_t diff = (float32_t)currentFFTFreq - (float32_t)lastWTFFreq;
+			diff = diff / (float32_t)(hz_in_pixel * fft_zoom);
+			diff = roundf(diff);
+			
+			if(diff > 0)
+			{
+				for (int32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+				{
+					int32_t new_x = fft_x + (int32_t)diff;
+					if(new_x >= 0 && new_x < LAYOUT->FFT_PRINT_SIZE)
+						fft_peaks[fft_x] = fft_peaks[new_x];
+					else
+						fft_peaks[fft_x] = 0;
+				}
+			}
+			else if(diff < 0)
+			{
+				for (int32_t fft_x = LAYOUT->FFT_PRINT_SIZE - 1; fft_x >= 0; fft_x--)
+				{
+					int32_t new_x = fft_x + (int32_t)diff;
+					if(new_x >= 0 && new_x < LAYOUT->FFT_PRINT_SIZE)
+						fft_peaks[fft_x] = fft_peaks[new_x];
+					else
+						fft_peaks[fft_x] = 0;
+				}
+			}
 		}
-		else
+		//peaks falling
+		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
-			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+			if(fft_peaks[fft_x] <= fft_header[fft_x])
 				fft_peaks[fft_x] = fft_header[fft_x];
+			else if(fft_peaks[fft_x] > 0)
+				fft_peaks[fft_x]--;
 		}
 	}
 	
