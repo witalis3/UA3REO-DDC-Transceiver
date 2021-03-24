@@ -371,7 +371,11 @@ void TRX_DoAutoGain(void)
 	//Process AutoGain feature
 	if (TRX.AutoGain && !TRX_on_TX())
 	{
-		TRX.ATT = true;
+		if(!TRX.ATT)
+		{
+			TRX.ATT = true;
+			LCD_UpdateQuery.TopButtons = true;
+		}
 		
 		int32_t max_amplitude = abs(TRX_ADC_MAXAMPLITUDE);
 		if (abs(TRX_ADC_MINAMPLITUDE) > max_amplitude)

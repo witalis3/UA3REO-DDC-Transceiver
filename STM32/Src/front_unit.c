@@ -1243,9 +1243,9 @@ static void FRONTPANEL_BUTTONHANDLER_AUTOGAINER(uint32_t parameter)
 	TRX.AutoGain = !TRX.AutoGain;
 
 	if (TRX.AutoGain)
-		LCD_showTooltip("AUTOGAINER ON");
+		LCD_showTooltip("AUTOGAIN ON");
 	else
-		LCD_showTooltip("AUTOGAINER OFF");
+		LCD_showTooltip("AUTOGAIN OFF");
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
