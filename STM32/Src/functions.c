@@ -470,10 +470,18 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 	if (!hold_cs)
 		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
 	SPI_busy = false;
-	if (res == HAL_TIMEOUT || res == HAL_ERROR)
+	if (res == HAL_TIMEOUT)
+	{
+		//println("spi timeout");
 		return false;
-	else
-		return true;
+	}
+	if (res == HAL_ERROR)
+	{
+		//println("spi error");
+		return false;
+	}
+	
+	return true;
 }
 
 /*

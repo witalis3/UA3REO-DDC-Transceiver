@@ -543,6 +543,7 @@ void SaveCalibration(void)
 	EEPROM_Busy = false;
 	EEPROM_PowerDown();
 	println("[OK] EEPROM Calibrations Saved");
+	print_flush();
 	NeedSaveCalibration = false;
 }
 
@@ -607,9 +608,11 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 	{
 		int16_t last_verified_err = -2;
 		int16_t prev_verified_err = -1;
+		bool verify_succ = true;
 		uint16_t verify_tryes = 0;
-		while(last_verified_err != prev_verified_err && verify_tryes < 10)
+		while(last_verified_err != prev_verified_err && verify_tryes < 5)
 		{
+			verify_succ = true;
 			EEPROM_Read_Data(verify_clone, size, sector, false, true);
 			for (uint16_t i = 0; i < size; i++)
 				if (verify_clone[i] != write_clone[i])
@@ -617,11 +620,18 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 					verify_tryes++;
 					prev_verified_err = last_verified_err;
 					last_verified_err = i;
-					//println("EEROM Verify error, pos:", i, " mem:", write_clone[i], " fla:", verify_clone[i]);
+					println("EEROM Verify error, pos:", i, " mem:", write_clone[i], " fla:", verify_clone[i]);
 					print_flush();
-					SPI_process = false;
+					verify_succ = false;
 					break;
 				}
+			if(verify_succ)
+				break;
+		}
+		if(!verify_succ)
+		{
+			SPI_process = false;
+			return false;
 		}
 	}
 	SPI_process = false;
@@ -644,18 +654,24 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	Address[1] = (BigAddress >> 8) & 0xFF;
 	Address[0] = BigAddress & 0xFF;
 
-	bool res = SPI_Transmit(&Read_Data, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false); // Read Command
-	if (!res)
+	bool read_ok = false;
+	int8_t tryes = 0;
+	while(!read_ok && tryes < 5)
 	{
-		EEPROM_Enabled = false;
-		println("[ERR] EEPROM not found...");
-		LCD_showError("EEPROM init error", true);
-		SPI_process = false;
-		return true;
-	}
+		bool res = SPI_Transmit(&Read_Data, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false); // Read Command
+		if (!res)
+		{
+			EEPROM_Enabled = false;
+			println("[ERR] EEPROM not found...");
+			LCD_showError("EEPROM init error", true);
+			SPI_process = false;
+			return true;
+		}
 
-	SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);				   // Write Address
-	SPI_Transmit(NULL, (uint8_t *)(Buffer), size, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Read
+		SPI_Transmit(Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);				   // Write Address
+		read_ok = SPI_Transmit(NULL, (uint8_t *)(Buffer), size, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Read
+		tryes++;
+	}
 
 	Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)Buffer, size);
 	
@@ -687,7 +703,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		for (uint16_t i = 0; i < size; i++)
 			if (read_clone[i] != Buffer[i])
 			{
-				//println(read_clone[i]);
+				//println("read err", read_clone[i]);
 				SPI_process = false;
 				return false;
 			}

@@ -3981,6 +3981,9 @@ void SYSMENU_eventCloseSystemMenu(void)
 		}
 		else
 		{
+			if(sysmenu_handlers_selected == (struct sysmenu_item_handler*)&sysmenu_calibration_handlers[0]) //exit from calibration
+				NeedSaveCalibration = true;
+			
 			sysmenu_handlers_selected = (struct sysmenu_item_handler*)&sysmenu_handlers[0];
 			sysmenu_item_count_selected = (uint8_t*)&sysmenu_item_count;
 			sysmenu_onroot = true;
@@ -3990,8 +3993,6 @@ void SYSMENU_eventCloseSystemMenu(void)
 	}
 	sysmenu_item_selected_by_enc2 = false;
 	NeedSaveSettings = true;
-	if (SYSMENU_hiddenmenu_enabled)
-		NeedSaveCalibration = true;
 	
 	if(SD_USBCardReader)
 	{
