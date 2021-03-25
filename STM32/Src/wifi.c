@@ -50,7 +50,8 @@ void WIFI_Init(void)
 {
 	//wifi uart speed = 115200 * 8 = 921600  / * 16 = 1843200
 	WIFI_SendCommand("AT+UART_CUR=921600,8,1,0,1\r\n"); //uart config
-	WIFI_WaitForOk();
+	HAL_Delay(100);
+	//WIFI_WaitForOk();
 	huart6.Init.BaudRate = 921600;
 	HAL_UART_Init(&huart6);
 
@@ -317,11 +318,13 @@ void WIFI_Process(void)
 		{
 			//ListAP Command Ended
 			if (WIFI_ProcessingCommand == WIFI_COMM_LISTAP)
+			{
 				for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
 				{
 					strcpy((char *)&WIFI_FoundedAP[i], (char *)&WIFI_FoundedAP_InWork[i]);
 					WIFI_stop_auto_ap_list = false;
 				}
+			}
 			//Create Server Command Ended
 			if (WIFI_ProcessingCommand == WIFI_COMM_CREATESERVER)
 			{
@@ -371,13 +374,16 @@ void WIFI_Process(void)
 					if (end != NULL)
 					{
 						*end = 0x00;
-						strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
-						if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
-							WIFI_FoundedAP_Index++;
+						if(strlen(start)>0)
+						{
+							strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
+							if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
+								WIFI_FoundedAP_Index++;
+						}
 					}
 				}
 			}
-			else if (WIFI_ProcessingCommand == WIFI_COMM_GETSNTP) //Get and sync SNMP time
+			else if (WIFI_ProcessingCommand == WIFI_COMM_GETSNTP) //Get and sync SNTP time
 			{													  //Mon Jan 18 20:17:56 2021
 				char *sntp_str = strchr(WIFI_readedLine, ' ');
 				if (sntp_str != NULL)
@@ -577,10 +583,10 @@ bool WIFI_GetIP(void (*callback)(void))
 	return true;
 }
 
-void WIFI_ListAP(void (*callback)(void))
+bool WIFI_ListAP(void (*callback)(void))
 {
 	if (WIFI_State != WIFI_READY && WIFI_State != WIFI_CONFIGURED)
-		return;
+		return false;
 	if (WIFI_State == WIFI_CONFIGURED && !WIFI_stop_auto_ap_list && WIFI_ProcessingCommand == WIFI_COMM_LISTAP) // stop auto-connection when searching for networks
 	{
 		WIFI_stop_auto_ap_list = true;
@@ -594,6 +600,7 @@ void WIFI_ListAP(void (*callback)(void))
 	for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
 		dma_memset((char *)&WIFI_FoundedAP_InWork[i], 0x00, sizeof WIFI_FoundedAP_InWork[i]);
 	WIFI_SendCommand("AT+CWLAP\r\n"); //List AP
+	return true;
 }
 
 static bool WIFI_ListAP_Sync(void)

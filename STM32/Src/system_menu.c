@@ -2352,6 +2352,7 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_RedrawSelectAPMenu(void)
 {
+	WIFI_State = WIFI_READY;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -2372,8 +2373,10 @@ static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw)
 	}
 	if(sysmenu_wifi_needupdate_ap)
 	{
-		sysmenu_wifi_needupdate_ap = false;
-		WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu);
+		if(WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu))
+			sysmenu_wifi_needupdate_ap = false;
+		else
+			LCD_UpdateQuery.SystemMenu = true;
 	}
 }
 
@@ -2393,8 +2396,10 @@ static void SYSMENU_WIFI_DrawSelectAP2Menu(bool full_redraw)
 	}
 	if(sysmenu_wifi_needupdate_ap)
 	{
-		sysmenu_wifi_needupdate_ap = false;
-		WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu);
+		if(WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu))
+			sysmenu_wifi_needupdate_ap = false;
+		else
+			LCD_UpdateQuery.SystemMenu = true;
 	}
 }
 
@@ -2414,8 +2419,10 @@ static void SYSMENU_WIFI_DrawSelectAP3Menu(bool full_redraw)
 	}
 	if(sysmenu_wifi_needupdate_ap)
 	{
-		sysmenu_wifi_needupdate_ap = false;
-		WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu);
+		if(WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu))
+			sysmenu_wifi_needupdate_ap = false;
+		else
+			LCD_UpdateQuery.SystemMenu = true;
 	}
 }
 

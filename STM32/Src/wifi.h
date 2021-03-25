@@ -54,7 +54,7 @@ extern char WIFI_AP[MAX_WIFIPASS_LENGTH];
 
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);
-extern void WIFI_ListAP(void (*callback)(void));
+extern bool WIFI_ListAP(void (*callback)(void));
 extern bool WIFI_GetSNTPTime(void (*callback)(void));
 extern bool WIFI_GetIP(void (*callback)(void));
 //extern void WIFI_GetStatus(void);
