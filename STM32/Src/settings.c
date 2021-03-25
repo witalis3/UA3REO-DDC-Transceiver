@@ -789,11 +789,18 @@ void RTC_Calibration(void)
 {
 	HAL_RTCEx_SetSmoothCalib(&hrtc, RTC_SMOOTHCALIB_PERIOD_32SEC, RTC_SMOOTHCALIB_PLUSPULSES_RESET, 0);
 	
+	//0.477 ppm (0.5 tick RTCCLK on 32 sec).
+	//0.954 ppm (0.5 tick RTCCLK on 16 sec).
+	//1.907 ppm (0.5 tick RTCCLK on 8 sec).
+	
 	//insert (clock TOO FAST, ADD cycles)
 	if(CALIBRATE.RTC_Calibration > 0)
 		HAL_RTCEx_SetSmoothCalib(&hrtc, RTC_SMOOTHCALIB_PERIOD_32SEC, RTC_SMOOTHCALIB_PLUSPULSES_SET, 512 - CALIBRATE.RTC_Calibration);
 	
 	//remove (clock TOO SLOW, REMOVE cycles)
 	if(CALIBRATE.RTC_Calibration < 0)
-		HAL_RTCEx_SetSmoothCalib(&hrtc, RTC_SMOOTHCALIB_PERIOD_32SEC, RTC_SMOOTHCALIB_PLUSPULSES_RESET, -CALIBRATE.RTC_Calibration);
+	{
+		uint32_t newval = -CALIBRATE.RTC_Calibration;
+		HAL_RTCEx_SetSmoothCalib(&hrtc, RTC_SMOOTHCALIB_PERIOD_32SEC, RTC_SMOOTHCALIB_PLUSPULSES_RESET, newval);
+	}
 }

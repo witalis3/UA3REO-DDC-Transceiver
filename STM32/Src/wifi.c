@@ -456,10 +456,10 @@ void WIFI_Process(void)
 												uint8_t currMinutes = ((currTime >> 12) & 0x07) * 10 + ((currTime >> 8) & 0x0f);
 												uint8_t currSeconds = ((currTime >> 4) & 0x07) * 10 + ((currTime >> 0) & 0x0f);
 												//clock diff
-												if(currHours == hrs && currMinutes == min && currSeconds != sec)
+												if(currHours != hrs || currMinutes != min || currSeconds != sec)
 												{
-													int16_t secDiff = currSeconds - sec;
-													println("Current clock error in sec: ", secDiff);
+													int16_t secDiff = (currHours - hrs) * 3600 + (currMinutes - min) * 60 + (currSeconds - sec);
+													println("[RTC] Current clock error in sec: ", secDiff);
 													
 													if(secDiff < 0)
 														CALIBRATE.RTC_Calibration--;
@@ -472,27 +472,35 @@ void WIFI_Process(void)
 													NeedSaveCalibration = true;
 													
 													RTC_Calibration();
-													println("New RTC Calibration value: ", CALIBRATE.RTC_Calibration);
-												}
+													println("[RTC] New RTC Calibration value: ", CALIBRATE.RTC_Calibration);
 												
-												RTC_TimeTypeDef sTime;
-												sTime.TimeFormat = RTC_HOURFORMAT12_PM;
-												sTime.SubSeconds = 0;
-												sTime.SecondFraction = 0;
-												sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-												sTime.StoreOperation = RTC_STOREOPERATION_SET;
-												sTime.Hours = hrs;
-												sTime.Minutes = min;
-												sTime.Seconds = sec;
-												RTC_DateTypeDef sDate;
-												sDate.Date = day;
-												sDate.Month = month;
-												sDate.Year = year_short;
-												BKPSRAM_Enable();
-												HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-												HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+													//set time
+													RTC_TimeTypeDef sTime;
+													sTime.TimeFormat = RTC_HOURFORMAT12_PM;
+													sTime.SubSeconds = 0;
+													sTime.SecondFraction = 0;
+													sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+													sTime.StoreOperation = RTC_STOREOPERATION_SET;
+													sTime.Hours = hrs;
+													sTime.Minutes = min;
+													sTime.Seconds = sec;
+													RTC_DateTypeDef sDate;
+													sDate.Date = day;
+													sDate.Month = month;
+													sDate.Year = year_short;
+													BKPSRAM_Enable();
+													HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+													HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+													println("[RTC] New time set")
+												}
 												TRX_SNTP_Synced = HAL_GetTick();
 												println("[WIFI] TIME SYNCED");
+												
+												//reset SNTP
+												char com_t[64] = {0};
+												sprintf(com_t, "AT+CIPSNTPCFG=1,%d,\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n", TRX.WIFI_TIMEZONE);
+												WIFI_SendCommand(com_t); //configure SNMP
+												WIFI_WaitForOk();
 											}
 										}
 									}
