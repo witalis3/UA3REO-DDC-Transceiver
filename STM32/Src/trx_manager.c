@@ -534,16 +534,34 @@ void TRX_ProcessScanMode(void)
 {
 	static bool oldState = false;
 	static uint32_t StateChangeTime = 0;
-	if (oldState != VAD_Muting)
-	{
-		oldState = VAD_Muting;
-		StateChangeTime = HAL_GetTick();
-	}
 	bool goSweep = false;
-	if (VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
-		goSweep = true;
-	if (!VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME))
-		goSweep = true;
+	
+	if(CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_NFM)
+	{
+		if (oldState != DFM_RX1_Squelched)
+		{
+			oldState = DFM_RX1_Squelched;
+			StateChangeTime = HAL_GetTick();
+		}
+		
+		if (DFM_RX1_Squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
+			goSweep = true;
+		if (!DFM_RX1_Squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_FM))
+			goSweep = true;
+	}
+	else
+	{
+		if (oldState != VAD_Muting)
+		{
+			oldState = VAD_Muting;
+			StateChangeTime = HAL_GetTick();
+		}
+		
+		if (VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
+			goSweep = true;
+		if (!VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_OTHER))
+			goSweep = true;
+	}
 
 	if (goSweep)
 	{
@@ -552,7 +570,13 @@ void TRX_ProcessScanMode(void)
 		{
 			if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO()->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO()->Freq))
 			{
-				uint32_t new_freq = (CurrentVFO()->Freq + SCANNER_FREQ_STEP) / SCANNER_FREQ_STEP * SCANNER_FREQ_STEP;
+				uint32_t step = SCANNER_FREQ_STEP_OTHER;
+				if(CurrentVFO()->Mode == TRX_MODE_WFM)
+					step = SCANNER_FREQ_STEP_WFM;
+				if(CurrentVFO()->Mode == TRX_MODE_NFM)
+					step = SCANNER_FREQ_STEP_NFM;
+				
+				uint32_t new_freq = (CurrentVFO()->Freq + step) / step * step;
 				if (new_freq >= BANDS[band].regions[region_id].endFreq)
 					new_freq = BANDS[band].regions[region_id].startFreq;
 

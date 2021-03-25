@@ -32,8 +32,11 @@
 #define FPGA_FLASH_IN_HEX false			   // enable FPGA firmware in STM32 firmware
 #define SNTP_SYNC_INTERVAL (60 * 60)	   // Time synchronization interval via NTP, sec
 #define SCANNER_NOSIGNAL_TIME 50		   //time to continue sweeping if signal too low
-#define SCANNER_SIGNAL_TIME 1000		   //time to continue sweeping if signal founded
-#define SCANNER_FREQ_STEP 500			   //step for freq scanner
+#define SCANNER_SIGNAL_TIME_FM 5000		   //time to continue sweeping if signal founded for FM
+#define SCANNER_SIGNAL_TIME_OTHER 1000		   //time to continue sweeping if signal founded for SSB
+#define SCANNER_FREQ_STEP_WFM 100000			   //step for freq scanner for WFM
+#define SCANNER_FREQ_STEP_NFM 25000			   //step for freq scanner for NFM
+#define SCANNER_FREQ_STEP_OTHER 500			   //step for freq scanner for SSB
 #define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
 
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS

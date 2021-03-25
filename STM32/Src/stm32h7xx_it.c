@@ -685,7 +685,7 @@ void TIM6_DAC_IRQHandler(void)
       fpga_stuck_errors++;
     else
       fpga_stuck_errors = 0;
-    if (fpga_stuck_errors > 5 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop)
+    if (fpga_stuck_errors > 5 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO()->Mode != TRX_MODE_WFM)
     {
       println("[ERR] IQ stuck error, restart");
       fpga_stuck_errors = 0;
@@ -738,7 +738,7 @@ void TIM6_DAC_IRQHandler(void)
 
     //Detect FPGA IQ phase error
     static bool phase_restarted = false;
-    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop)
+    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO()->Mode != TRX_MODE_WFM)
     {
       println("[ERR] IQ phase error, restart | ", TRX_IQ_phase_error);
       FPGA_NeedRestart = true;

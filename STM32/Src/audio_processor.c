@@ -43,7 +43,7 @@ static float32_t DFM_RX1_fm_sql_avg = 0.0f;														 // average SQL in FM
 static float32_t DFM_RX2_fm_sql_avg = 0.0f;
 static float32_t DFM_RX1_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 IRAM2 static float32_t DFM_RX2_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
-static bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
+bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
@@ -258,6 +258,7 @@ void processRxAudio(void)
 		DemodulateFM(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, false); //48khz iq
 		doRX_IFGain(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		//doVAD(FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		break;
@@ -265,6 +266,7 @@ void processRxAudio(void)
 		//doRX_IFGain(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_SMETER(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		//doVAD(FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		break;
