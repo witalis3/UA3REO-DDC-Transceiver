@@ -789,9 +789,9 @@ void RTC_Calibration(void)
 {
 	HAL_RTCEx_SetSmoothCalib(&hrtc, RTC_SMOOTHCALIB_PERIOD_32SEC, RTC_SMOOTHCALIB_PLUSPULSES_RESET, 0);
 	
-	//0.477 ppm (0.5 tick RTCCLK on 32 sec).
-	//0.954 ppm (0.5 tick RTCCLK on 16 sec).
-	//1.907 ppm (0.5 tick RTCCLK on 8 sec).
+	//0.954 ppm (0.5 tick RTCCLK on 32 sec).
+	//1.908 ppm (0.5 tick RTCCLK on 16 sec).
+	//3.816 ppm (0.5 tick RTCCLK on 8 sec).
 	
 	//insert (clock TOO FAST, ADD cycles)
 	if(CALIBRATE.RTC_Calibration > 0)

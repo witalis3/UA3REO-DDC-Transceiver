@@ -461,18 +461,21 @@ void WIFI_Process(void)
 													int16_t secDiff = (currHours - hrs) * 3600 + (currMinutes - min) * 60 + (currSeconds - sec);
 													println("[RTC] Current clock error in sec: ", secDiff);
 													
-													if(secDiff < 0)
-														CALIBRATE.RTC_Calibration--;
-													if(secDiff > 0)
-														CALIBRATE.RTC_Calibration++;
-													if (CALIBRATE.RTC_Calibration < -511)
-														CALIBRATE.RTC_Calibration = -511;
-													if (CALIBRATE.RTC_Calibration > 511)
-														CALIBRATE.RTC_Calibration = 511;
-													NeedSaveCalibration = true;
-													
-													RTC_Calibration();
-													println("[RTC] New RTC Calibration value: ", CALIBRATE.RTC_Calibration);
+													if(secDiff < 1 || secDiff > 1) //do recalibration
+													{
+														if(secDiff < 0)
+															CALIBRATE.RTC_Calibration--;
+														if(secDiff > 0)
+															CALIBRATE.RTC_Calibration++;
+														if (CALIBRATE.RTC_Calibration < -511)
+															CALIBRATE.RTC_Calibration = -511;
+														if (CALIBRATE.RTC_Calibration > 511)
+															CALIBRATE.RTC_Calibration = 511;
+														NeedSaveCalibration = true;
+														
+														RTC_Calibration();
+														println("[RTC] New RTC Calibration value: ", CALIBRATE.RTC_Calibration);
+													}
 												
 													//set time
 													RTC_TimeTypeDef sTime;

@@ -249,7 +249,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **MAX SWR** - Maximum VSWR before protection operation
 * **FM Deviation Scale** - Set TX FM Deviation Scale
 * **TUNE Max Power** - Maximum RF power in Tune mode
-* **RTC CALIBRATION** - Clock crystal calibration, one division is 0.477 ppm
+* **RTC CALIBRATION** - Clock crystal calibration, one division is 0.954 ppm
 
 ### Set Clock Time
 
