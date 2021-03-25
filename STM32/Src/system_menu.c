@@ -208,6 +208,7 @@ static void SYSMENU_HANDL_CALIB_TRX_MAX_RF_TEMP(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TRX_MAX_SWR(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TUNE_MAX_POWER(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RTC_CALIBRATION(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
@@ -497,7 +498,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"MAX SWR", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TRX_MAX_SWR, SYSMENU_HANDL_CALIB_TRX_MAX_SWR},
 		{"FM Deviation Scale", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.FM_DEVIATION_SCALE, SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE},
 		{"TUNE Max Power", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},
-		{"RTC CALIBRATION", SYSMENU_INT16, (uint32_t *)&CALIBRATE.RTC_Calibration, SYSMENU_HANDL_CALIB_RTC_CALIBRATION},
+		{"RTC COARSE CALIBR", SYSMENU_UINT8, (uint32_t *)&CALIBRATE.RTC_Coarse_Calibration, SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION},
+		{"RTC FINE CALIBR", SYSMENU_INT16, (uint32_t *)&CALIBRATE.RTC_Calibration, SYSMENU_HANDL_CALIB_RTC_CALIBRATION},
 };
 const static uint8_t sysmenu_calibration_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 
@@ -3445,6 +3447,17 @@ static void SYSMENU_HANDL_CALIB_RTC_CALIBRATION(int8_t direction)
 		CALIBRATE.RTC_Calibration = -511;
 	if (CALIBRATE.RTC_Calibration > 511)
 		CALIBRATE.RTC_Calibration = 511;
+	
+	RTC_Calibration();
+}
+
+static void SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION(int8_t direction)
+{
+	CALIBRATE.RTC_Coarse_Calibration += direction;
+	if (CALIBRATE.RTC_Coarse_Calibration < 1)
+		CALIBRATE.RTC_Coarse_Calibration = 1;
+	if (CALIBRATE.RTC_Coarse_Calibration > 250)
+		CALIBRATE.RTC_Coarse_Calibration = 250;
 	
 	RTC_Calibration();
 }

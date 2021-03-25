@@ -620,6 +620,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.TRX_MAX_SWR", (uint32_t *)&CALIBRATE.TRX_MAX_SWR, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.FM_DEVIATION_SCALE", (uint32_t *)&CALIBRATE.FM_DEVIATION_SCALE, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.TUNE_MAX_POWER", (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.RTC_Coarse_Calibration", (uint32_t *)&CALIBRATE.RTC_Coarse_Calibration, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.RTC_Calibration", (uint32_t *)&CALIBRATE.RTC_Calibration, SYSMENU_INT16);
     }
 
@@ -1108,6 +1109,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.FM_DEVIATION_SCALE = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.TUNE_MAX_POWER") == 0)
 		CALIBRATE.TUNE_MAX_POWER = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.RTC_Coarse_Calibration") == 0)
+		CALIBRATE.RTC_Coarse_Calibration = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.RTC_Calibration") == 0)
 		CALIBRATE.RTC_Calibration = intval;
 }

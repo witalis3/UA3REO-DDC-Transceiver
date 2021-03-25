@@ -356,6 +356,7 @@ extern struct TRX_CALIBRATE
 	uint8_t TRX_MAX_SWR;
 	uint8_t FM_DEVIATION_SCALE;
 	uint8_t TUNE_MAX_POWER;
+	uint8_t RTC_Coarse_Calibration;
 	int16_t RTC_Calibration;
 	
 	uint8_t csum;	//check sum

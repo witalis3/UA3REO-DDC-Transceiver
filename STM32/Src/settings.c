@@ -1,5 +1,6 @@
 #include "settings.h"
 #include "stm32h7xx_hal.h"
+#include "stm32h7xx_hal_rtc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "functions.h"
@@ -400,6 +401,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TRX_MAX_SWR = 5;						// Maximum SWR to enable protect on TX (NOT IN TUNE MODE!)
 		CALIBRATE.FM_DEVIATION_SCALE = 10;			// FM Deviation scale
 		CALIBRATE.TUNE_MAX_POWER = 2;					// Maximum RF power in Tune mode
+		CALIBRATE.RTC_Coarse_Calibration = 127;	//Coarse RTC calibration
 		CALIBRATE.RTC_Calibration = 0;				//Real Time Clock calibration
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
@@ -787,6 +789,13 @@ static uint8_t calculateCSUM_EEPROM(void)
 
 void RTC_Calibration(void)
 {
+	if(hrtc.Init.AsynchPrediv != CALIBRATE.RTC_Coarse_Calibration)
+	{
+		HAL_PWR_EnableBkUpAccess();
+		hrtc.Init.AsynchPrediv = CALIBRATE.RTC_Coarse_Calibration;
+		HAL_RTC_Init(&hrtc);
+	}
+		
 	HAL_RTCEx_SetSmoothCalib(&hrtc, RTC_SMOOTHCALIB_PERIOD_32SEC, RTC_SMOOTHCALIB_PLUSPULSES_RESET, 0);
 	
 	//0.954 ppm (0.5 tick RTCCLK on 32 sec).

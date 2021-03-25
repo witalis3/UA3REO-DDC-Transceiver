@@ -461,7 +461,7 @@ void WIFI_Process(void)
 													int16_t secDiff = (currHours - hrs) * 3600 + (currMinutes - min) * 60 + (currSeconds - sec);
 													println("[RTC] Current clock error in sec: ", secDiff);
 													
-													if(secDiff < 1 || secDiff > 1) //do recalibration
+													if(secDiff < -1 || secDiff > 1) //do recalibration
 													{
 														if(secDiff < 0)
 															CALIBRATE.RTC_Calibration--;
