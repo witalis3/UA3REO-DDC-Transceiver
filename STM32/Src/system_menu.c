@@ -696,6 +696,7 @@ static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction)
 		TRX.SAMPLERATE_MAIN = 3;
 
 	FFT_Init();
+	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_TRX_SAMPLERATE_WFM(int8_t direction)
@@ -706,6 +707,7 @@ static void SYSMENU_HANDL_TRX_SAMPLERATE_WFM(int8_t direction)
 		TRX.SAMPLERATE_WFM = 3;
 
 	FFT_Init();
+	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction)
