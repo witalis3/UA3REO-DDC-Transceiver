@@ -454,18 +454,20 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		__SPI2_CLK_ENABLE();
 		if (in_data == NULL)
 		{
-			res = HAL_SPI_Transmit(&hspi2, out_data, count, timeout);
+			res = HAL_SPI_Transmit_IT(&hspi2, out_data, count);
 		}
 		else if (out_data == NULL)
 		{
 			dma_memset(in_data, 0x00, count);
-			res = HAL_SPI_Receive(&hspi2, in_data, count, timeout);
+			res = HAL_SPI_Receive_IT(&hspi2, in_data, count);
 		}
 		else
 		{
 			dma_memset(in_data, 0x00, count);
-			res = HAL_SPI_TransmitReceive(&hspi2, out_data, in_data, count, timeout);
+			res = HAL_SPI_TransmitReceive_IT(&hspi2, out_data, in_data, count);
 		}
+		uint32_t startTime = HAL_GetTick();
+		while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout) {}
 	}
 
 	if (!hold_cs)
