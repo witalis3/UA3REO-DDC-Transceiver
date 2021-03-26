@@ -265,7 +265,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	VFO *secondary_vfo = SecondaryVFO();
 	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
 	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
-	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT);
+	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq);
 	if (!TRX_on_TX())
 	{
 		switch (current_vfo->Mode)
