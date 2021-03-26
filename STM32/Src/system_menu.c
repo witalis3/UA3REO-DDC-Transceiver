@@ -1207,164 +1207,32 @@ static void SYSMENU_HANDL_AUDIO_VAD_Squelch(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)
 {
-	if (direction > 0)
-	{
-		if (TRX.SSB_HPF_Filter == 0)
-			TRX.SSB_HPF_Filter = 60;
-		else if (TRX.SSB_HPF_Filter == 60)
-			TRX.SSB_HPF_Filter = 100;
-		else if (TRX.SSB_HPF_Filter == 100)
-			TRX.SSB_HPF_Filter = 200;
-		else if (TRX.SSB_HPF_Filter == 200)
-			TRX.SSB_HPF_Filter = 300;
-		else if (TRX.SSB_HPF_Filter == 300)
-			TRX.SSB_HPF_Filter = 400;
-		else if (TRX.SSB_HPF_Filter == 400)
-			TRX.SSB_HPF_Filter = 500;
-		else if (TRX.SSB_HPF_Filter == 500)
-			TRX.SSB_HPF_Filter = 600;
-	}
-	else
-	{
-		if (TRX.SSB_HPF_Filter == 60)
-			TRX.SSB_HPF_Filter = 0;
-		else if (TRX.SSB_HPF_Filter == 100)
-			TRX.SSB_HPF_Filter = 60;
-		else if (TRX.SSB_HPF_Filter == 200)
-			TRX.SSB_HPF_Filter = 100;
-		else if (TRX.SSB_HPF_Filter == 300)
-			TRX.SSB_HPF_Filter = 200;
-		else if (TRX.SSB_HPF_Filter == 400)
-			TRX.SSB_HPF_Filter = 300;
-		else if (TRX.SSB_HPF_Filter == 500)
-			TRX.SSB_HPF_Filter = 400;
-		else if (TRX.SSB_HPF_Filter == 600)
-			TRX.SSB_HPF_Filter = 500;
-	}
+	if (TRX.SSB_HPF_Filter > 0 || direction > 0)
+		TRX.SSB_HPF_Filter += direction * 50;
+	if(TRX.SSB_HPF_Filter > MAX_HPF_WIDTH)
+		TRX.SSB_HPF_Filter = MAX_HPF_WIDTH;
+	
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 static void SYSMENU_HANDL_AUDIO_CW_HPF_pass(int8_t direction)
 {
-	if (direction > 0)
-	{
-		if (TRX.CW_HPF_Filter == 0)
-			TRX.CW_HPF_Filter = 60;
-		else if (TRX.CW_HPF_Filter == 60)
-			TRX.CW_HPF_Filter = 100;
-		else if (TRX.CW_HPF_Filter == 100)
-			TRX.CW_HPF_Filter = 200;
-		else if (TRX.CW_HPF_Filter == 200)
-			TRX.CW_HPF_Filter = 300;
-		else if (TRX.CW_HPF_Filter == 300)
-			TRX.CW_HPF_Filter = 400;
-		else if (TRX.CW_HPF_Filter == 400)
-			TRX.CW_HPF_Filter = 500;
-		else if (TRX.CW_HPF_Filter == 500)
-			TRX.CW_HPF_Filter = 600;
-	}
-	else
-	{
-		if (TRX.CW_HPF_Filter == 60)
-			TRX.CW_HPF_Filter = 0;
-		else if (TRX.CW_HPF_Filter == 100)
-			TRX.CW_HPF_Filter = 60;
-		else if (TRX.CW_HPF_Filter == 200)
-			TRX.CW_HPF_Filter = 100;
-		else if (TRX.CW_HPF_Filter == 300)
-			TRX.CW_HPF_Filter = 200;
-		else if (TRX.CW_HPF_Filter == 400)
-			TRX.CW_HPF_Filter = 300;
-		else if (TRX.CW_HPF_Filter == 500)
-			TRX.CW_HPF_Filter = 400;
-		else if (TRX.CW_HPF_Filter == 600)
-			TRX.CW_HPF_Filter = 500;
-	}
+	if (TRX.CW_HPF_Filter > 0 || direction > 0)
+		TRX.CW_HPF_Filter += direction * 50;
+	if(TRX.CW_HPF_Filter > MAX_HPF_WIDTH)
+		TRX.CW_HPF_Filter = MAX_HPF_WIDTH;
+	
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 {
-	if (direction > 0)
-	{
-		if (TRX.CW_LPF_Filter == 100)
-			TRX.CW_LPF_Filter = 150;
-		else if (TRX.CW_LPF_Filter == 150)
-			TRX.CW_LPF_Filter = 200;
-		else if (TRX.CW_LPF_Filter == 200)
-			TRX.CW_LPF_Filter = 250;
-		else if (TRX.CW_LPF_Filter == 250)
-			TRX.CW_LPF_Filter = 300;
-		else if (TRX.CW_LPF_Filter == 300)
-			TRX.CW_LPF_Filter = 350;
-		else if (TRX.CW_LPF_Filter == 350)
-			TRX.CW_LPF_Filter = 400;
-		else if (TRX.CW_LPF_Filter == 400)
-			TRX.CW_LPF_Filter = 450;
-		else if (TRX.CW_LPF_Filter == 450)
-			TRX.CW_LPF_Filter = 500;
-		else if (TRX.CW_LPF_Filter == 500)
-			TRX.CW_LPF_Filter = 550;
-		else if (TRX.CW_LPF_Filter == 550)
-			TRX.CW_LPF_Filter = 600;
-		else if (TRX.CW_LPF_Filter == 600)
-			TRX.CW_LPF_Filter = 650;
-		else if (TRX.CW_LPF_Filter == 650)
-			TRX.CW_LPF_Filter = 700;
-		else if (TRX.CW_LPF_Filter == 700)
-			TRX.CW_LPF_Filter = 750;
-		else if (TRX.CW_LPF_Filter == 750)
-			TRX.CW_LPF_Filter = 800;
-		else if (TRX.CW_LPF_Filter == 800)
-			TRX.CW_LPF_Filter = 850;
-		else if (TRX.CW_LPF_Filter == 850)
-			TRX.CW_LPF_Filter = 900;
-		else if (TRX.CW_LPF_Filter == 900)
-			TRX.CW_LPF_Filter = 950;
-		else if (TRX.CW_LPF_Filter == 950)
-			TRX.CW_LPF_Filter = 1000;
-	}
-	else
-	{
-		if (TRX.CW_LPF_Filter == 1000)
-			TRX.CW_LPF_Filter = 950;
-		else if (TRX.CW_LPF_Filter == 950)
-			TRX.CW_LPF_Filter = 900;
-		else if (TRX.CW_LPF_Filter == 900)
-			TRX.CW_LPF_Filter = 850;
-		else if (TRX.CW_LPF_Filter == 850)
-			TRX.CW_LPF_Filter = 800;
-		else if (TRX.CW_LPF_Filter == 800)
-			TRX.CW_LPF_Filter = 750;
-		else if (TRX.CW_LPF_Filter == 750)
-			TRX.CW_LPF_Filter = 700;
-		else if (TRX.CW_LPF_Filter == 700)
-			TRX.CW_LPF_Filter = 650;
-		else if (TRX.CW_LPF_Filter == 650)
-			TRX.CW_LPF_Filter = 600;
-		else if (TRX.CW_LPF_Filter == 600)
-			TRX.CW_LPF_Filter = 550;
-		else if (TRX.CW_LPF_Filter == 550)
-			TRX.CW_LPF_Filter = 500;
-		else if (TRX.CW_LPF_Filter == 500)
-			TRX.CW_LPF_Filter = 450;
-		else if (TRX.CW_LPF_Filter == 450)
-			TRX.CW_LPF_Filter = 400;
-		else if (TRX.CW_LPF_Filter == 400)
-			TRX.CW_LPF_Filter = 350;
-		else if (TRX.CW_LPF_Filter == 350)
-			TRX.CW_LPF_Filter = 300;
-		else if (TRX.CW_LPF_Filter == 300)
-			TRX.CW_LPF_Filter = 250;
-		else if (TRX.CW_LPF_Filter == 250)
-			TRX.CW_LPF_Filter = 200;
-		else if (TRX.CW_LPF_Filter == 200)
-			TRX.CW_LPF_Filter = 150;
-		else if (TRX.CW_LPF_Filter == 150)
-			TRX.CW_LPF_Filter = 100;
-	}
+	if (TRX.CW_LPF_Filter > 50 || direction > 0)
+		TRX.CW_LPF_Filter += direction * 50;
+	if(TRX.CW_LPF_Filter > MAX_LPF_WIDTH_CW)
+		TRX.CW_LPF_Filter = MAX_LPF_WIDTH_CW;
 
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
@@ -1372,55 +1240,10 @@ static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction)
 {
-	if (direction > 0)
-	{
-		if (TRX.SSB_LPF_RX_Filter == 0)
-			TRX.SSB_LPF_RX_Filter = 1400;
-
-		if (TRX.SSB_LPF_RX_Filter == 1400)
-			TRX.SSB_LPF_RX_Filter = 1600;
-		else if (TRX.SSB_LPF_RX_Filter == 1600)
-			TRX.SSB_LPF_RX_Filter = 1800;
-		else if (TRX.SSB_LPF_RX_Filter == 1800)
-			TRX.SSB_LPF_RX_Filter = 2100;
-		else if (TRX.SSB_LPF_RX_Filter == 2100)
-			TRX.SSB_LPF_RX_Filter = 2300;
-		else if (TRX.SSB_LPF_RX_Filter == 2300)
-			TRX.SSB_LPF_RX_Filter = 2500;
-		else if (TRX.SSB_LPF_RX_Filter == 2500)
-			TRX.SSB_LPF_RX_Filter = 2700;
-		else if (TRX.SSB_LPF_RX_Filter == 2700)
-			TRX.SSB_LPF_RX_Filter = 2900;
-		else if (TRX.SSB_LPF_RX_Filter == 2900)
-			TRX.SSB_LPF_RX_Filter = 3000;
-		else if (TRX.SSB_LPF_RX_Filter == 3000)
-			TRX.SSB_LPF_RX_Filter = 3200;
-		else if (TRX.SSB_LPF_RX_Filter == 3200)
-			TRX.SSB_LPF_RX_Filter = 3400;
-	}
-	else
-	{
-		if (TRX.SSB_LPF_RX_Filter == 1600)
-			TRX.SSB_LPF_RX_Filter = 1400;
-		else if (TRX.SSB_LPF_RX_Filter == 1800)
-			TRX.SSB_LPF_RX_Filter = 1600;
-		else if (TRX.SSB_LPF_RX_Filter == 2100)
-			TRX.SSB_LPF_RX_Filter = 1800;
-		else if (TRX.SSB_LPF_RX_Filter == 2300)
-			TRX.SSB_LPF_RX_Filter = 2100;
-		else if (TRX.SSB_LPF_RX_Filter == 2500)
-			TRX.SSB_LPF_RX_Filter = 2300;
-		else if (TRX.SSB_LPF_RX_Filter == 2700)
-			TRX.SSB_LPF_RX_Filter = 2500;
-		else if (TRX.SSB_LPF_RX_Filter == 2900)
-			TRX.SSB_LPF_RX_Filter = 2700;
-		else if (TRX.SSB_LPF_RX_Filter == 3000)
-			TRX.SSB_LPF_RX_Filter = 2900;
-		else if (TRX.SSB_LPF_RX_Filter == 3200)
-			TRX.SSB_LPF_RX_Filter = 3000;
-		else if (TRX.SSB_LPF_RX_Filter == 3400)
-			TRX.SSB_LPF_RX_Filter = 3200;
-	}
+	if (TRX.SSB_LPF_RX_Filter > 100 || direction > 0)
+		TRX.SSB_LPF_RX_Filter += direction * 100;
+	if(TRX.SSB_LPF_RX_Filter > MAX_LPF_WIDTH_SSB)
+		TRX.SSB_LPF_RX_Filter = MAX_LPF_WIDTH_SSB;
 
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
@@ -1428,55 +1251,10 @@ static void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction)
 {
-	if (direction > 0)
-	{
-		if (TRX.SSB_LPF_TX_Filter == 0)
-			TRX.SSB_LPF_TX_Filter = 1400;
-
-		if (TRX.SSB_LPF_TX_Filter == 1400)
-			TRX.SSB_LPF_TX_Filter = 1600;
-		else if (TRX.SSB_LPF_TX_Filter == 1600)
-			TRX.SSB_LPF_TX_Filter = 1800;
-		else if (TRX.SSB_LPF_TX_Filter == 1800)
-			TRX.SSB_LPF_TX_Filter = 2100;
-		else if (TRX.SSB_LPF_TX_Filter == 2100)
-			TRX.SSB_LPF_TX_Filter = 2300;
-		else if (TRX.SSB_LPF_TX_Filter == 2300)
-			TRX.SSB_LPF_TX_Filter = 2500;
-		else if (TRX.SSB_LPF_TX_Filter == 2500)
-			TRX.SSB_LPF_TX_Filter = 2700;
-		else if (TRX.SSB_LPF_TX_Filter == 2700)
-			TRX.SSB_LPF_TX_Filter = 2900;
-		else if (TRX.SSB_LPF_TX_Filter == 2900)
-			TRX.SSB_LPF_TX_Filter = 3000;
-		else if (TRX.SSB_LPF_TX_Filter == 3000)
-			TRX.SSB_LPF_TX_Filter = 3200;
-		else if (TRX.SSB_LPF_TX_Filter == 3200)
-			TRX.SSB_LPF_TX_Filter = 3400;
-	}
-	else
-	{
-		if (TRX.SSB_LPF_TX_Filter == 1600)
-			TRX.SSB_LPF_TX_Filter = 1400;
-		else if (TRX.SSB_LPF_TX_Filter == 1800)
-			TRX.SSB_LPF_TX_Filter = 1600;
-		else if (TRX.SSB_LPF_TX_Filter == 2100)
-			TRX.SSB_LPF_TX_Filter = 1800;
-		else if (TRX.SSB_LPF_TX_Filter == 2300)
-			TRX.SSB_LPF_TX_Filter = 2100;
-		else if (TRX.SSB_LPF_TX_Filter == 2500)
-			TRX.SSB_LPF_TX_Filter = 2300;
-		else if (TRX.SSB_LPF_TX_Filter == 2700)
-			TRX.SSB_LPF_TX_Filter = 2500;
-		else if (TRX.SSB_LPF_TX_Filter == 2900)
-			TRX.SSB_LPF_TX_Filter = 2700;
-		else if (TRX.SSB_LPF_TX_Filter == 3000)
-			TRX.SSB_LPF_TX_Filter = 2900;
-		else if (TRX.SSB_LPF_TX_Filter == 3200)
-			TRX.SSB_LPF_TX_Filter = 3000;
-		else if (TRX.SSB_LPF_TX_Filter == 3400)
-			TRX.SSB_LPF_TX_Filter = 3200;
-	}
+	if (TRX.SSB_LPF_TX_Filter > 100 || direction > 0)
+		TRX.SSB_LPF_TX_Filter += direction * 100;
+	if(TRX.SSB_LPF_TX_Filter > MAX_LPF_WIDTH_SSB)
+		TRX.SSB_LPF_TX_Filter = MAX_LPF_WIDTH_SSB;
 
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
@@ -1484,80 +1262,10 @@ static void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction)
 {
-	if (direction > 0)
-	{
-		if (TRX.AM_LPF_RX_Filter == 2100)
-			TRX.AM_LPF_RX_Filter = 2300;
-		else if (TRX.AM_LPF_RX_Filter == 2300)
-			TRX.AM_LPF_RX_Filter = 2500;
-		else if (TRX.AM_LPF_RX_Filter == 2500)
-			TRX.AM_LPF_RX_Filter = 2700;
-		else if (TRX.AM_LPF_RX_Filter == 2700)
-			TRX.AM_LPF_RX_Filter = 2900;
-		else if (TRX.AM_LPF_RX_Filter == 2900)
-			TRX.AM_LPF_RX_Filter = 3000;
-		else if (TRX.AM_LPF_RX_Filter == 3000)
-			TRX.AM_LPF_RX_Filter = 3200;
-		else if (TRX.AM_LPF_RX_Filter == 3200)
-			TRX.AM_LPF_RX_Filter = 3400;
-		else if (TRX.AM_LPF_RX_Filter == 3400)
-			TRX.AM_LPF_RX_Filter = 3600;
-		else if (TRX.AM_LPF_RX_Filter == 3600)
-			TRX.AM_LPF_RX_Filter = 3800;
-		else if (TRX.AM_LPF_RX_Filter == 3800)
-			TRX.AM_LPF_RX_Filter = 4000;
-		else if (TRX.AM_LPF_RX_Filter == 4000)
-			TRX.AM_LPF_RX_Filter = 4500;
-		else if (TRX.AM_LPF_RX_Filter == 4500)
-			TRX.AM_LPF_RX_Filter = 5000;
-		else if (TRX.AM_LPF_RX_Filter == 5000)
-			TRX.AM_LPF_RX_Filter = 6000;
-		else if (TRX.AM_LPF_RX_Filter == 6000)
-			TRX.AM_LPF_RX_Filter = 7000;
-		else if (TRX.AM_LPF_RX_Filter == 7000)
-			TRX.AM_LPF_RX_Filter = 8000;
-		else if (TRX.AM_LPF_RX_Filter == 8000)
-			TRX.AM_LPF_RX_Filter = 9000;
-		else if (TRX.AM_LPF_RX_Filter == 9000)
-			TRX.AM_LPF_RX_Filter = 10000;
-	}
-	else
-	{
-		if (TRX.AM_LPF_RX_Filter == 2300)
-			TRX.AM_LPF_RX_Filter = 2100;
-		else if (TRX.AM_LPF_RX_Filter == 2500)
-			TRX.AM_LPF_RX_Filter = 2300;
-		else if (TRX.AM_LPF_RX_Filter == 2700)
-			TRX.AM_LPF_RX_Filter = 2500;
-		else if (TRX.AM_LPF_RX_Filter == 2900)
-			TRX.AM_LPF_RX_Filter = 2700;
-		else if (TRX.AM_LPF_RX_Filter == 3000)
-			TRX.AM_LPF_RX_Filter = 2900;
-		else if (TRX.AM_LPF_RX_Filter == 3200)
-			TRX.AM_LPF_RX_Filter = 3000;
-		else if (TRX.AM_LPF_RX_Filter == 3400)
-			TRX.AM_LPF_RX_Filter = 3200;
-		else if (TRX.AM_LPF_RX_Filter == 3600)
-			TRX.AM_LPF_RX_Filter = 3400;
-		else if (TRX.AM_LPF_RX_Filter == 3800)
-			TRX.AM_LPF_RX_Filter = 3400;
-		else if (TRX.AM_LPF_RX_Filter == 4000)
-			TRX.AM_LPF_RX_Filter = 3800;
-		else if (TRX.AM_LPF_RX_Filter == 4500)
-			TRX.AM_LPF_RX_Filter = 3800;
-		else if (TRX.AM_LPF_RX_Filter == 5000)
-			TRX.AM_LPF_RX_Filter = 4500;
-		else if (TRX.AM_LPF_RX_Filter == 6000)
-			TRX.AM_LPF_RX_Filter = 5000;
-		else if (TRX.AM_LPF_RX_Filter == 7000)
-			TRX.AM_LPF_RX_Filter = 6000;
-		else if (TRX.AM_LPF_RX_Filter == 8000)
-			TRX.AM_LPF_RX_Filter = 7000;
-		else if (TRX.AM_LPF_RX_Filter == 9000)
-			TRX.AM_LPF_RX_Filter = 8000;
-		else if (TRX.AM_LPF_RX_Filter == 10000)
-			TRX.AM_LPF_RX_Filter = 9000;
-	}
+	if (TRX.AM_LPF_RX_Filter > 100 || direction > 0)
+		TRX.AM_LPF_RX_Filter += direction * 100;
+	if(TRX.AM_LPF_RX_Filter > MAX_LPF_WIDTH_AM)
+		TRX.AM_LPF_RX_Filter = MAX_LPF_WIDTH_AM;
 
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
@@ -1565,162 +1273,32 @@ static void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction)
 {
-	if (direction > 0)
-	{
-		if (TRX.AM_LPF_TX_Filter == 2100)
-			TRX.AM_LPF_TX_Filter = 2300;
-		else if (TRX.AM_LPF_TX_Filter == 2300)
-			TRX.AM_LPF_TX_Filter = 2500;
-		else if (TRX.AM_LPF_TX_Filter == 2500)
-			TRX.AM_LPF_TX_Filter = 2700;
-		else if (TRX.AM_LPF_TX_Filter == 2700)
-			TRX.AM_LPF_TX_Filter = 2900;
-		else if (TRX.AM_LPF_TX_Filter == 2900)
-			TRX.AM_LPF_TX_Filter = 3000;
-		else if (TRX.AM_LPF_TX_Filter == 3000)
-			TRX.AM_LPF_TX_Filter = 3200;
-		else if (TRX.AM_LPF_TX_Filter == 3200)
-			TRX.AM_LPF_TX_Filter = 3400;
-		else if (TRX.AM_LPF_TX_Filter == 3400)
-			TRX.AM_LPF_TX_Filter = 3600;
-		else if (TRX.AM_LPF_TX_Filter == 3600)
-			TRX.AM_LPF_TX_Filter = 3800;
-		else if (TRX.AM_LPF_TX_Filter == 3800)
-			TRX.AM_LPF_TX_Filter = 4000;
-		else if (TRX.AM_LPF_TX_Filter == 4000)
-			TRX.AM_LPF_TX_Filter = 4500;
-		else if (TRX.AM_LPF_TX_Filter == 4500)
-			TRX.AM_LPF_TX_Filter = 5000;
-		else if (TRX.AM_LPF_TX_Filter == 5000)
-			TRX.AM_LPF_TX_Filter = 6000;
-		else if (TRX.AM_LPF_TX_Filter == 6000)
-			TRX.AM_LPF_TX_Filter = 7000;
-		else if (TRX.AM_LPF_TX_Filter == 7000)
-			TRX.AM_LPF_TX_Filter = 8000;
-		else if (TRX.AM_LPF_TX_Filter == 8000)
-			TRX.AM_LPF_TX_Filter = 9000;
-		else if (TRX.AM_LPF_TX_Filter == 9000)
-			TRX.AM_LPF_TX_Filter = 10000;
-	}
-	else
-	{
-		if (TRX.AM_LPF_TX_Filter == 2300)
-			TRX.AM_LPF_TX_Filter = 2100;
-		else if (TRX.AM_LPF_TX_Filter == 2500)
-			TRX.AM_LPF_TX_Filter = 2300;
-		else if (TRX.AM_LPF_TX_Filter == 2700)
-			TRX.AM_LPF_TX_Filter = 2500;
-		else if (TRX.AM_LPF_TX_Filter == 2900)
-			TRX.AM_LPF_TX_Filter = 2700;
-		else if (TRX.AM_LPF_TX_Filter == 3000)
-			TRX.AM_LPF_TX_Filter = 2900;
-		else if (TRX.AM_LPF_TX_Filter == 3200)
-			TRX.AM_LPF_TX_Filter = 3000;
-		else if (TRX.AM_LPF_TX_Filter == 3400)
-			TRX.AM_LPF_TX_Filter = 3200;
-		else if (TRX.AM_LPF_TX_Filter == 3600)
-			TRX.AM_LPF_TX_Filter = 3400;
-		else if (TRX.AM_LPF_TX_Filter == 3800)
-			TRX.AM_LPF_TX_Filter = 3400;
-		else if (TRX.AM_LPF_TX_Filter == 4000)
-			TRX.AM_LPF_TX_Filter = 3800;
-		else if (TRX.AM_LPF_TX_Filter == 4500)
-			TRX.AM_LPF_TX_Filter = 3800;
-		else if (TRX.AM_LPF_TX_Filter == 5000)
-			TRX.AM_LPF_TX_Filter = 4500;
-		else if (TRX.AM_LPF_TX_Filter == 6000)
-			TRX.AM_LPF_TX_Filter = 5000;
-		else if (TRX.AM_LPF_TX_Filter == 7000)
-			TRX.AM_LPF_TX_Filter = 6000;
-		else if (TRX.AM_LPF_TX_Filter == 8000)
-			TRX.AM_LPF_TX_Filter = 7000;
-		else if (TRX.AM_LPF_TX_Filter == 9000)
-			TRX.AM_LPF_TX_Filter = 8000;
-		else if (TRX.AM_LPF_TX_Filter == 10000)
-			TRX.AM_LPF_TX_Filter = 9000;
-	}
-
+	if (TRX.AM_LPF_TX_Filter > 100 || direction > 0)
+		TRX.AM_LPF_TX_Filter += direction * 100;
+	if(TRX.AM_LPF_TX_Filter > MAX_LPF_WIDTH_AM)
+		TRX.AM_LPF_TX_Filter = MAX_LPF_WIDTH_AM;
+	
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 static void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction)
 {
-	if (direction > 0)
-	{
-		if (TRX.FM_LPF_RX_Filter == 5000)
-			TRX.FM_LPF_RX_Filter = 6000;
-		else if (TRX.FM_LPF_RX_Filter == 6000)
-			TRX.FM_LPF_RX_Filter = 7000;
-		else if (TRX.FM_LPF_RX_Filter == 7000)
-			TRX.FM_LPF_RX_Filter = 8000;
-		else if (TRX.FM_LPF_RX_Filter == 8000)
-			TRX.FM_LPF_RX_Filter = 9000;
-		else if (TRX.FM_LPF_RX_Filter == 9000)
-			TRX.FM_LPF_RX_Filter = 10000;
-		else if (TRX.FM_LPF_RX_Filter == 10000)
-			TRX.FM_LPF_RX_Filter = 15000;
-		else if (TRX.FM_LPF_RX_Filter == 15000)
-			TRX.FM_LPF_RX_Filter = 20000;
-	}
-	else
-	{
-		if (TRX.FM_LPF_RX_Filter == 6000)
-			TRX.FM_LPF_RX_Filter = 5000;
-		else if (TRX.FM_LPF_RX_Filter == 7000)
-			TRX.FM_LPF_RX_Filter = 6000;
-		else if (TRX.FM_LPF_RX_Filter == 8000)
-			TRX.FM_LPF_RX_Filter = 7000;
-		else if (TRX.FM_LPF_RX_Filter == 9000)
-			TRX.FM_LPF_RX_Filter = 8000;
-		else if (TRX.FM_LPF_RX_Filter == 10000)
-			TRX.FM_LPF_RX_Filter = 9000;
-		else if (TRX.FM_LPF_RX_Filter == 15000)
-			TRX.FM_LPF_RX_Filter = 10000;
-		else if (TRX.FM_LPF_RX_Filter == 20000)
-			TRX.FM_LPF_RX_Filter = 15000;
-	}
-
+	if (TRX.FM_LPF_RX_Filter > 1000 || direction > 0)
+		TRX.FM_LPF_RX_Filter += direction * 1000;
+	if(TRX.FM_LPF_RX_Filter > MAX_LPF_WIDTH_NFM)
+		TRX.FM_LPF_RX_Filter = MAX_LPF_WIDTH_NFM;
+	
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
 static void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction)
 {
-	if (direction > 0)
-	{
-		if (TRX.FM_LPF_TX_Filter == 5000)
-			TRX.FM_LPF_TX_Filter = 6000;
-		else if (TRX.FM_LPF_TX_Filter == 6000)
-			TRX.FM_LPF_TX_Filter = 7000;
-		else if (TRX.FM_LPF_TX_Filter == 7000)
-			TRX.FM_LPF_TX_Filter = 8000;
-		else if (TRX.FM_LPF_TX_Filter == 8000)
-			TRX.FM_LPF_TX_Filter = 9000;
-		else if (TRX.FM_LPF_TX_Filter == 9000)
-			TRX.FM_LPF_TX_Filter = 10000;
-		else if (TRX.FM_LPF_TX_Filter == 10000)
-			TRX.FM_LPF_TX_Filter = 15000;
-		else if (TRX.FM_LPF_TX_Filter == 15000)
-			TRX.FM_LPF_TX_Filter = 20000;
-	}
-	else
-	{
-		if (TRX.FM_LPF_TX_Filter == 6000)
-			TRX.FM_LPF_TX_Filter = 5000;
-		else if (TRX.FM_LPF_TX_Filter == 7000)
-			TRX.FM_LPF_TX_Filter = 6000;
-		else if (TRX.FM_LPF_TX_Filter == 8000)
-			TRX.FM_LPF_TX_Filter = 7000;
-		else if (TRX.FM_LPF_TX_Filter == 9000)
-			TRX.FM_LPF_TX_Filter = 8000;
-		else if (TRX.FM_LPF_TX_Filter == 10000)
-			TRX.FM_LPF_TX_Filter = 9000;
-		else if (TRX.FM_LPF_TX_Filter == 15000)
-			TRX.FM_LPF_TX_Filter = 10000;
-		else if (TRX.FM_LPF_TX_Filter == 20000)
-			TRX.FM_LPF_TX_Filter = 15000;
-	}
+	if (TRX.FM_LPF_TX_Filter > 1000 || direction > 0)
+		TRX.FM_LPF_TX_Filter += direction * 1000;
+	if(TRX.FM_LPF_TX_Filter > MAX_LPF_WIDTH_NFM)
+		TRX.FM_LPF_TX_Filter = MAX_LPF_WIDTH_NFM;
 
 	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
