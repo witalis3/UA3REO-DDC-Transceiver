@@ -883,55 +883,21 @@ static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32
 		dma_memcpy(out_i, in_i, size * 4);
 		dma_memcpy(out_q, in_q, size * 4);
 	}
-	else if (factor == 2)
+	else
 	{
 		if (rx_id == AUDIO_RX1)
 		{
-			arm_biquad_cascade_df2T_f32(&DECIMATE_2_IIR_RX1_AUDIO_I, in_i, in_i, size);
-			arm_biquad_cascade_df2T_f32(&DECIMATE_2_IIR_RX1_AUDIO_Q, in_q, in_q, size);
-			arm_fir_decimate_f32(&DECIMATE_2_RX1_AUDIO_I, in_i, out_i, size);
-			arm_fir_decimate_f32(&DECIMATE_2_RX1_AUDIO_Q, in_q, out_q, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_IIR_RX1_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_IIR_RX1_AUDIO_Q, in_q, in_q, size);
+			arm_fir_decimate_f32(&DECIMATE_FIR_RX1_AUDIO_I, in_i, out_i, size);
+			arm_fir_decimate_f32(&DECIMATE_FIR_RX1_AUDIO_Q, in_q, out_q, size);
 		}
 		else
 		{
-			arm_biquad_cascade_df2T_f32(&DECIMATE_2_IIR_RX2_AUDIO_I, in_i, in_i, size);
-			arm_biquad_cascade_df2T_f32(&DECIMATE_2_IIR_RX2_AUDIO_Q, in_q, in_q, size);
-			arm_fir_decimate_f32(&DECIMATE_2_RX2_AUDIO_I, in_i, out_i, size);
-			arm_fir_decimate_f32(&DECIMATE_2_RX2_AUDIO_Q, in_q, out_q, size);
-		}
-	}
-	else if (factor == 4)
-	{
-		if (rx_id == AUDIO_RX1)
-		{
-			arm_biquad_cascade_df2T_f32(&DECIMATE_4_IIR_RX1_AUDIO_I, in_i, in_i, size);
-			arm_biquad_cascade_df2T_f32(&DECIMATE_4_IIR_RX1_AUDIO_Q, in_q, in_q, size);
-			arm_fir_decimate_f32(&DECIMATE_4_RX1_AUDIO_I, in_i, out_i, size);
-			arm_fir_decimate_f32(&DECIMATE_4_RX1_AUDIO_Q, in_q, out_q, size);
-		}
-		else
-		{
-			arm_biquad_cascade_df2T_f32(&DECIMATE_4_IIR_RX2_AUDIO_I, in_i, in_i, size);
-			arm_biquad_cascade_df2T_f32(&DECIMATE_4_IIR_RX2_AUDIO_Q, in_q, in_q, size);
-			arm_fir_decimate_f32(&DECIMATE_4_RX2_AUDIO_I, in_i, out_i, size);
-			arm_fir_decimate_f32(&DECIMATE_4_RX2_AUDIO_Q, in_q, out_q, size);
-		}
-	}
-	else if (factor == 8)
-	{
-		if (rx_id == AUDIO_RX1)
-		{
-			arm_biquad_cascade_df2T_f32(&DECIMATE_8_IIR_RX1_AUDIO_I, in_i, in_i, size);
-			arm_biquad_cascade_df2T_f32(&DECIMATE_8_IIR_RX1_AUDIO_Q, in_q, in_q, size);
-			arm_fir_decimate_f32(&DECIMATE_8_FIR_RX1_AUDIO_I, in_i, out_i, size);
-			arm_fir_decimate_f32(&DECIMATE_8_FIR_RX1_AUDIO_Q, in_q, out_q, size);
-		}
-		else
-		{
-			arm_biquad_cascade_df2T_f32(&DECIMATE_8_IIR_RX2_AUDIO_I, in_i, in_i, size);
-			arm_biquad_cascade_df2T_f32(&DECIMATE_8_IIR_RX2_AUDIO_Q, in_q, in_q, size);
-			arm_fir_decimate_f32(&DECIMATE_8_FIR_RX2_AUDIO_I, in_i, out_i, size);
-			arm_fir_decimate_f32(&DECIMATE_8_FIR_RX2_AUDIO_Q, in_q, out_q, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_IIR_RX2_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32(&DECIMATE_IIR_RX2_AUDIO_Q, in_q, in_q, size);
+			arm_fir_decimate_f32(&DECIMATE_FIR_RX2_AUDIO_I, in_i, out_i, size);
+			arm_fir_decimate_f32(&DECIMATE_FIR_RX2_AUDIO_Q, in_q, out_q, size);
 		}
 	}
 }

@@ -11,24 +11,20 @@
 
 #define IQ_HILBERT_TAPS 201														  // Hilbert filter order
 #define IIR_STAGES IIR_BIQUAD_MAX_SECTIONS														  // Maximum order of IIR filters
+#define IIR_DECIMATOR_FILTER_STAGES 9									// order of decimator filter
 #define NOTCH_STAGES 1															  // order of manual Notch filter
 #define EQ_STAGES 1																  // order of the biquad of the equalizer filter
 #define GAUSS_STAGES 3																  // order of the gauss CW filter
 #define GAUSS_WIDTH 50															//passband of gauss CW filter
 #define BIQUAD_COEFF_IN_STAGE 5													  // coefficients in manual Notch filter order
-#define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
-#define FIR_RX2_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
+#define FIR_RX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
 #define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
-#define IIR_RX1_LPF_Taps_STATE_SIZE (IIR_STAGES * 2)
-#define IIR_RX2_LPF_Taps_STATE_SIZE (IIR_STAGES * 2)
-#define IIR_RX1_GAUSS_Taps_STATE_SIZE (IIR_STAGES * 2)
-#define IIR_RX2_GAUSS_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX_LPF_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX_GAUSS_Taps_STATE_SIZE (IIR_STAGES * 2)
 #define IIR_TX_LPF_Taps_STATE_SIZE (IIR_STAGES * 2)
-#define IIR_RX1_HPF_Taps_STATE_SIZE (IIR_STAGES * 2)
-#define IIR_RX2_HPF_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX_HPF_Taps_STATE_SIZE (IIR_STAGES * 2)
 #define IIR_TX_HPF_Taps_STATE_SIZE (IIR_STAGES * 2)
-#define IIR_RX1_HPF_SQL_STATE_SIZE (IIR_STAGES * 2)
-#define IIR_RX2_HPF_SQL_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX_HPF_SQL_STATE_SIZE (IIR_STAGES * 2)
 
 #define CW_HPF_COUNT 8
 #define SSB_HPF_COUNT 8
@@ -111,30 +107,14 @@ extern arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HSHELF_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HPASS_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HSHELF_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HPASS_FILTER;
-extern arm_fir_decimate_instance_f32 DECIMATE_2_RX1_AUDIO_I;
-extern arm_fir_decimate_instance_f32 DECIMATE_2_RX1_AUDIO_Q;
-extern arm_fir_decimate_instance_f32 DECIMATE_2_RX2_AUDIO_I;
-extern arm_fir_decimate_instance_f32 DECIMATE_2_RX2_AUDIO_Q;
-extern arm_fir_decimate_instance_f32 DECIMATE_4_RX1_AUDIO_I;
-extern arm_fir_decimate_instance_f32 DECIMATE_4_RX1_AUDIO_Q;
-extern arm_fir_decimate_instance_f32 DECIMATE_4_RX2_AUDIO_I;
-extern arm_fir_decimate_instance_f32 DECIMATE_4_RX2_AUDIO_Q;
-extern arm_fir_decimate_instance_f32 DECIMATE_8_FIR_RX1_AUDIO_I;
-extern arm_fir_decimate_instance_f32 DECIMATE_8_FIR_RX1_AUDIO_Q;
-extern arm_fir_decimate_instance_f32 DECIMATE_8_FIR_RX2_AUDIO_I;
-extern arm_fir_decimate_instance_f32 DECIMATE_8_FIR_RX2_AUDIO_Q;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_2_IIR_RX1_AUDIO_I;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_2_IIR_RX1_AUDIO_Q;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_2_IIR_RX2_AUDIO_I;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_2_IIR_RX2_AUDIO_Q;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_4_IIR_RX1_AUDIO_I;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_4_IIR_RX1_AUDIO_Q;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_4_IIR_RX2_AUDIO_I;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_4_IIR_RX2_AUDIO_Q;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_8_IIR_RX1_AUDIO_I;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_8_IIR_RX1_AUDIO_Q;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_8_IIR_RX2_AUDIO_I;
-extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_8_IIR_RX2_AUDIO_Q;
+extern arm_fir_decimate_instance_f32 DECIMATE_FIR_RX1_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_FIR_RX1_AUDIO_Q;
+extern arm_fir_decimate_instance_f32 DECIMATE_FIR_RX2_AUDIO_I;
+extern arm_fir_decimate_instance_f32 DECIMATE_FIR_RX2_AUDIO_Q;
+extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX1_AUDIO_I;
+extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX1_AUDIO_Q;
+extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX2_AUDIO_I;
+extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX2_AUDIO_Q;
 extern volatile bool NeedReinitNotch;			  // need to reinitialize the manual Notch filter
 extern volatile bool NeedReinitAudioFilters;	  // need to reinitialize the Audio filters
 extern volatile bool NeedReinitAudioFiltersClean; //also clean state
