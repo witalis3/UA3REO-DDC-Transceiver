@@ -534,7 +534,7 @@ void WIFI_Process(void)
 						if (end != NULL)
 						{
 							*end = 0x00;
-							strcat(WIFI_IP, start);
+							strcpy(WIFI_IP, start);
 							println("[WIFI] GOT IP: ", WIFI_IP);
 							WIFI_IP_Gotted = true;
 							if (LCD_systemMenuOpened)

@@ -451,6 +451,7 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 	}
 	else
 	{
+		__SPI2_CLK_ENABLE();
 		if (in_data == NULL)
 		{
 			res = HAL_SPI_Transmit(&hspi2, out_data, count, timeout);
