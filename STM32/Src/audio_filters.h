@@ -7,26 +7,27 @@
 #include <stdbool.h>
 #include "fpga.h"
 #include "functions.h"
+#include "BiquadDesigner/biquad.h"
 
-#define IIR_FILTERS_COUNT 28													  // Total Filters In The Collection
+#define IIR_FILTERS_COUNT 19													  // Total Filters In The Collection
 #define IQ_HILBERT_TAPS 201														  // Hilbert filter order
-#define IIR_MAX_STAGES 15														  // Maximum order of IIR filters
+#define IIR_STAGES IIR_BIQUAD_MAX_SECTIONS														  // Maximum order of IIR filters
 #define NOTCH_STAGES 1															  // order of manual Notch filter
 #define EQ_STAGES 1																  // order of the biquad of the equalizer filter
 #define BIQUAD_COEFF_IN_STAGE 5													  // coefficients in manual Notch filter order
 #define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
 #define FIR_RX2_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
 #define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
-#define IIR_RX1_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
-#define IIR_RX2_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
-#define IIR_RX1_GAUSS_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
-#define IIR_RX2_GAUSS_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
-#define IIR_TX_LPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
-#define IIR_RX1_HPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
-#define IIR_RX2_HPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
-#define IIR_TX_HPF_Taps_STATE_SIZE (IIR_MAX_STAGES * 2)
-#define IIR_RX1_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
-#define IIR_RX2_HPF_SQL_STATE_SIZE (IIR_MAX_STAGES * 2)
+#define IIR_RX1_LPF_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX2_LPF_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX1_GAUSS_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX2_GAUSS_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_TX_LPF_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX1_HPF_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX2_HPF_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_TX_HPF_Taps_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX1_HPF_SQL_STATE_SIZE (IIR_STAGES * 2)
+#define IIR_RX2_HPF_SQL_STATE_SIZE (IIR_STAGES * 2)
 
 #define CW_HPF_COUNT 8
 #define SSB_HPF_COUNT 8
@@ -56,7 +57,6 @@ typedef enum // BiQuad filter type for automatic calculation
 
 typedef enum // type of filter in the collection
 {
-	IIR_BIQUAD_HPF,
 	IIR_BIQUAD_LPF_GAUSS
 } IIR_BIQUAD_FILTER_TYPE;
 
