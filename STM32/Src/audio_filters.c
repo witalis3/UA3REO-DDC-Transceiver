@@ -22,25 +22,25 @@ static float32_t Fir_RX2_Hilbert_State_I[FIR_RX_HILBERT_STATE_SIZE] = {0};
 static float32_t Fir_RX2_Hilbert_State_Q[FIR_RX_HILBERT_STATE_SIZE] = {0};
 static float32_t Fir_Tx_Hilbert_State_I[FIR_TX_HILBERT_STATE_SIZE] = {0};
 static float32_t Fir_Tx_Hilbert_State_Q[FIR_TX_HILBERT_STATE_SIZE] = {0};
-static float32_t IIR_RX1_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_STAGES] = {0};
+static float32_t IIR_RX1_LPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_LPF_STAGES] = {0};
 static float32_t IIR_RX1_LPF_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX1_LPF_Q_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX1_GAUSS_Coeffs[BIQUAD_COEFF_IN_STAGE * GAUSS_STAGES] = {0};
 static float32_t IIR_RX1_GAUSS_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
-static float32_t IIR_RX2_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_STAGES] = {0};
+static float32_t IIR_RX2_LPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_LPF_STAGES] = {0};
 static float32_t IIR_RX2_LPF_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_LPF_Q_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_GAUSS_Coeffs[BIQUAD_COEFF_IN_STAGE * GAUSS_STAGES] = {0};
 static float32_t IIR_RX2_GAUSS_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
-static float32_t IIR_TX_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_STAGES] = {0};
+static float32_t IIR_TX_LPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_LPF_STAGES] = {0};
 static float32_t IIR_TX_LPF_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
-static float32_t IIR_RX1_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_STAGES] = {0};
-static float32_t IIR_RX2_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_STAGES] = {0};
+static float32_t IIR_RX1_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
+static float32_t IIR_RX2_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
 static float32_t IIR_RX1_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_TX_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
-static float32_t IIR_RX1_HPF_SQL_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_STAGES] = {0};
-static float32_t IIR_RX2_HPF_SQL_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_STAGES] = {0};
+static float32_t IIR_RX1_HPF_SQL_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
+static float32_t IIR_RX2_HPF_SQL_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
 static float32_t IIR_RX1_HPF_SQL_State[IIR_RX_HPF_SQL_STATE_SIZE] = {0};
 static float32_t IIR_RX2_HPF_SQL_State[IIR_RX_HPF_SQL_STATE_SIZE] = {0};
 static float32_t NOTCH_RX1_Coeffs[BIQUAD_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
@@ -269,47 +269,48 @@ void ReinitAudioFilters(void)
 	DECIMATE_IIR_RX1_AUDIO_I.numStages = decim_iir_filter_stages;
 	
 	//LPF RX1
-	filter = biquad_create(IIR_STAGES);
+	filter = biquad_create(IIR_LPF_STAGES);
 	biquad_init_lowpass(filter, TRX_SAMPLERATE, lpf_rx1_width);
-	fill_biquad_coeffs(filter, IIR_RX1_Coeffs, IIR_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_LPF_I, IIR_STAGES, IIR_RX1_Coeffs, (float32_t *)&IIR_RX1_LPF_I_State[0]);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_LPF_Q, IIR_STAGES, IIR_RX1_Coeffs, (float32_t *)&IIR_RX1_LPF_Q_State[0]);
+	fill_biquad_coeffs(filter, IIR_RX1_LPF_Coeffs, IIR_LPF_STAGES);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_LPF_I, IIR_LPF_STAGES, IIR_RX1_LPF_Coeffs, (float32_t *)&IIR_RX1_LPF_I_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_LPF_Q, IIR_LPF_STAGES, IIR_RX1_LPF_Coeffs, (float32_t *)&IIR_RX1_LPF_Q_State[0]);
 	
 	//LPF TX
 	biquad_init_lowpass(filter, TRX_SAMPLERATE, lpf_tx_width);
-	fill_biquad_coeffs(filter, IIR_TX_Coeffs, IIR_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_LPF_I, IIR_STAGES, IIR_TX_Coeffs, (float32_t *)&IIR_TX_LPF_I_State[0]);
+	fill_biquad_coeffs(filter, IIR_TX_LPF_Coeffs, IIR_LPF_STAGES);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_LPF_I, IIR_LPF_STAGES, IIR_TX_LPF_Coeffs, (float32_t *)&IIR_TX_LPF_I_State[0]);
 	
 	//LPF RX2
 	biquad_init_lowpass(filter, TRX_SAMPLERATE, lpf_rx2_width);
-	fill_biquad_coeffs(filter, IIR_RX2_Coeffs, IIR_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_LPF_I, IIR_STAGES, IIR_RX2_Coeffs, (float32_t *)&IIR_RX2_LPF_I_State[0]);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_LPF_Q, IIR_STAGES, IIR_RX2_Coeffs, (float32_t *)&IIR_RX2_LPF_Q_State[0]);
+	fill_biquad_coeffs(filter, IIR_RX2_LPF_Coeffs, IIR_LPF_STAGES);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_LPF_I, IIR_LPF_STAGES, IIR_RX2_LPF_Coeffs, (float32_t *)&IIR_RX2_LPF_I_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_LPF_Q, IIR_LPF_STAGES, IIR_RX2_LPF_Coeffs, (float32_t *)&IIR_RX2_LPF_Q_State[0]);
 
 	//HPF
+	filter = biquad_create(IIR_HPF_STAGES);
 	biquad_init_highpass(filter, TRX_SAMPLERATE, hpf_rx1_width);
-	fill_biquad_coeffs(filter, IIR_RX1_HPF_Coeffs, IIR_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_HPF_I, IIR_STAGES, IIR_RX1_HPF_Coeffs, (float32_t *)&IIR_RX1_HPF_I_State[0]);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_HPF_I, IIR_STAGES, IIR_RX1_HPF_Coeffs, (float32_t *)&IIR_TX_HPF_I_State[0]);
+	fill_biquad_coeffs(filter, IIR_RX1_HPF_Coeffs, IIR_HPF_STAGES);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_HPF_I, IIR_HPF_STAGES, IIR_RX1_HPF_Coeffs, (float32_t *)&IIR_RX1_HPF_I_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_HPF_I, IIR_HPF_STAGES, IIR_RX1_HPF_Coeffs, (float32_t *)&IIR_TX_HPF_I_State[0]);
 
 	biquad_init_highpass(filter, TRX_SAMPLERATE, hpf_rx2_width);
-	fill_biquad_coeffs(filter, IIR_RX2_HPF_Coeffs, IIR_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_HPF_I, IIR_STAGES, IIR_RX2_HPF_Coeffs, (float32_t *)&IIR_RX2_HPF_I_State[0]);
+	fill_biquad_coeffs(filter, IIR_RX2_HPF_Coeffs, IIR_HPF_STAGES);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_HPF_I, IIR_HPF_STAGES, IIR_RX2_HPF_Coeffs, (float32_t *)&IIR_RX2_HPF_I_State[0]);
 
 	//FM Squelch
 	if (CurrentVFO()->LPF_RX_Filter_Width > 15000 || CurrentVFO()->LPF_RX_Filter_Width == 0)
 		biquad_init_highpass(filter, TRX_SAMPLERATE, 20000);
 	else
 		biquad_init_highpass(filter, TRX_SAMPLERATE, 15000);
-	fill_biquad_coeffs(filter, IIR_RX1_HPF_SQL_Coeffs, IIR_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_Squelch_HPF, IIR_STAGES, IIR_RX2_HPF_SQL_Coeffs, (float32_t *)&IIR_RX1_HPF_SQL_State[0]);
+	fill_biquad_coeffs(filter, IIR_RX1_HPF_SQL_Coeffs, IIR_HPF_STAGES);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_Squelch_HPF, IIR_HPF_STAGES, IIR_RX2_HPF_SQL_Coeffs, (float32_t *)&IIR_RX1_HPF_SQL_State[0]);
 	
 	if (SecondaryVFO()->LPF_RX_Filter_Width > 15000 || SecondaryVFO()->LPF_RX_Filter_Width == 0)
 		biquad_init_highpass(filter, TRX_SAMPLERATE, 20000);
 	else
 		biquad_init_highpass(filter, TRX_SAMPLERATE, 15000);
-	fill_biquad_coeffs(filter, IIR_RX2_HPF_SQL_Coeffs, IIR_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_Squelch_HPF, IIR_STAGES, IIR_RX2_HPF_SQL_Coeffs, (float32_t *)&IIR_RX2_HPF_SQL_State[0]);
+	fill_biquad_coeffs(filter, IIR_RX2_HPF_SQL_Coeffs, IIR_HPF_STAGES);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_Squelch_HPF, IIR_HPF_STAGES, IIR_RX2_HPF_SQL_Coeffs, (float32_t *)&IIR_RX2_HPF_SQL_State[0]);
 
 	//RX1 GAUSS
 	filter = biquad_create(GAUSS_STAGES);
