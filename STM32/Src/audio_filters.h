@@ -9,11 +9,12 @@
 #include "functions.h"
 #include "BiquadDesigner/biquad.h"
 
-#define IIR_FILTERS_COUNT 19													  // Total Filters In The Collection
 #define IQ_HILBERT_TAPS 201														  // Hilbert filter order
 #define IIR_STAGES IIR_BIQUAD_MAX_SECTIONS														  // Maximum order of IIR filters
 #define NOTCH_STAGES 1															  // order of manual Notch filter
 #define EQ_STAGES 1																  // order of the biquad of the equalizer filter
+#define GAUSS_STAGES 3																  // order of the gauss CW filter
+#define GAUSS_WIDTH 50															//passband of gauss CW filter
 #define BIQUAD_COEFF_IN_STAGE 5													  // coefficients in manual Notch filter order
 #define FIR_RX1_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
 #define FIR_RX2_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
@@ -55,11 +56,6 @@ typedef enum // BiQuad filter type for automatic calculation
 	BIQUAD_highShelf
 } BIQUAD_TYPE;
 
-typedef enum // type of filter in the collection
-{
-	IIR_BIQUAD_LPF_GAUSS
-} IIR_BIQUAD_FILTER_TYPE;
-
 typedef enum // states of DC correctors for each user
 {
 	DC_FILTER_RX1_I,
@@ -77,14 +73,6 @@ typedef struct // keep old sample values for DC filter. Multiple states for diff
 	float32_t x_prev;
 	float32_t y_prev;
 } DC_filter_state_type;
-
-typedef struct // filter in collection
-{
-	const IIR_BIQUAD_FILTER_TYPE type;
-	const float32_t *coeffs; // Coefficients converted to ARMA in reverse order by MATLAB
-	const uint8_t stages;
-	const uint16_t width;
-} IIR_BIQUAD_FILTER;
 
 // Public variables
 extern arm_fir_instance_f32 FIR_RX1_Hilbert_I; // filter instances
