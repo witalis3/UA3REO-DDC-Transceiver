@@ -13,7 +13,7 @@ extern "C"
 #include "audio_processor.h"
 
 #define DEBUG_INTERFACE_IDX 0x0 // Index of DEBUG interface
-#define CAT_INTERFACE_IDX 0x2	// Index of CAT interface
+#define CAT_INTERFACE_IDX 0x2 // Index of CAT interface
 #define AUDIO_INTERFACE_IDX 0x4 // Index of AUDIO interface
 #define STORAGE_INTERFACE_IDX 0x7 // Index of STORAGE interface
 
@@ -52,7 +52,7 @@ extern "C"
 
 /* CDC Endpoints parameters: you can fine tune these values depending on the needed baudrates and performance. */
 #define CDC_DATA_FS_MAX_PACKET_SIZE 16U /* Endpoint IN & OUT Packet size */
-#define CDC_CMD_PACKET_SIZE 16U			/* Control Endpoint Packet size */
+#define CDC_CMD_PACKET_SIZE 16U /* Control Endpoint Packet size */
 
 #define USB_CDC_CONFIG_DESC_SIZ 337U
 
@@ -74,9 +74,9 @@ extern "C"
 
 //AUDIO
 #define USBD_AUDIO_FREQ 48000U
-#define BYTES_IN_SAMPLE_AUDIO_OUT_PACKET 3U													//24bit
-#define AUDIO_OUT_PACKET (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 * (USBD_AUDIO_FREQ / 1000))	//3bytes (24bit) * 2 channel * 48 packet per second
-#define USB_AUDIO_RX_BUFFER_SIZE (AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET)		//24 bit
+#define BYTES_IN_SAMPLE_AUDIO_OUT_PACKET 3U //24bit
+#define AUDIO_OUT_PACKET (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 * (USBD_AUDIO_FREQ / 1000)) //3bytes (24bit) * 2 channel * 48 packet per second
+#define USB_AUDIO_RX_BUFFER_SIZE (AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET) //24 bit
 #define USB_AUDIO_TX_BUFFER_SIZE (AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2) //24 bit x2 size
 
 #define AUDIO_REQ_GET_CUR 0x81U
@@ -184,42 +184,40 @@ extern "C"
 
 	typedef struct _USBD_STORAGE
 	{
-		int8_t (* Init)(uint8_t lun);
-		int8_t (* GetCapacity)(uint8_t lun, uint32_t *block_num, uint16_t *block_size);
-		int8_t (* IsReady)(uint8_t lun);
-		int8_t (* IsWriteProtected)(uint8_t lun);
-		int8_t (* Read)(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
-		int8_t (* Write)(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
-		int8_t (* GetMaxLun)(void);
+		int8_t (*Init)(uint8_t lun);
+		int8_t (*GetCapacity)(uint8_t lun, uint32_t *block_num, uint16_t *block_size);
+		int8_t (*IsReady)(uint8_t lun);
+		int8_t (*IsWriteProtected)(uint8_t lun);
+		int8_t (*Read)(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
+		int8_t (*Write)(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
+		int8_t (*GetMaxLun)(void);
 		int8_t *pInquiry;
 
 	} USBD_StorageTypeDef;
 
-
 	typedef struct
 	{
-		uint32_t                 max_lun;
-		uint32_t                 interface;
-		uint8_t                  bot_state;
-		uint8_t                  bot_status;
-		uint32_t                 bot_data_length;
-		uint8_t                  bot_data[MSC_MEDIA_PACKET];
-		USBD_MSC_BOT_CBWTypeDef  cbw;
-		USBD_MSC_BOT_CSWTypeDef  csw;
+		uint32_t max_lun;
+		uint32_t interface;
+		uint8_t bot_state;
+		uint8_t bot_status;
+		uint32_t bot_data_length;
+		uint8_t bot_data[MSC_MEDIA_PACKET];
+		USBD_MSC_BOT_CBWTypeDef cbw;
+		USBD_MSC_BOT_CSWTypeDef csw;
 
-		USBD_SCSI_SenseTypeDef   scsi_sense [SENSE_LIST_DEEPTH];
-		uint8_t                  scsi_sense_head;
-		uint8_t                  scsi_sense_tail;
-		uint8_t                  scsi_medium_state;
+		USBD_SCSI_SenseTypeDef scsi_sense[SENSE_LIST_DEEPTH];
+		uint8_t scsi_sense_head;
+		uint8_t scsi_sense_tail;
+		uint8_t scsi_medium_state;
 
-		uint16_t                 scsi_blk_size;
-		uint32_t                 scsi_blk_nbr;
+		uint16_t scsi_blk_size;
+		uint32_t scsi_blk_nbr;
 
-		uint32_t                 scsi_blk_addr;
-		uint32_t                 scsi_blk_len;
-	}
-	USBD_MSC_BOT_HandleTypeDef;
-	
+		uint32_t scsi_blk_addr;
+		uint32_t scsi_blk_len;
+	} USBD_MSC_BOT_HandleTypeDef;
+
 	extern USBD_ClassTypeDef USBD_UA3REO;
 	extern USBD_HandleTypeDef hUsbDeviceFS;
 
@@ -240,9 +238,9 @@ extern "C"
 	extern uint8_t USBD_AUDIO_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_AUDIO_ItfTypeDef *fops);
 	extern uint8_t USBD_AUDIO_StartTransmit(USBD_HandleTypeDef *pdev);
 	extern uint8_t USBD_AUDIO_StartReceive(USBD_HandleTypeDef *pdev);
-	
-	uint8_t  USBD_MSC_RegisterStorage(USBD_HandleTypeDef *pdev, USBD_StorageTypeDef *fops);
-	
+
+	uint8_t USBD_MSC_RegisterStorage(USBD_HandleTypeDef *pdev, USBD_StorageTypeDef *fops);
+
 	extern void USBD_Restart(void);
 
 	/**

@@ -171,11 +171,11 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target)
 	uint32_t tmp_index;
 	arm_max_no_idx_f32(agcBuffer_i, blockSize, &ampl_max_i);
 	arm_min_f32(agcBuffer_i, blockSize, &ampl_min_i, &tmp_index);
-	if(ampl_max_i > -ampl_min_i)
+	if (ampl_max_i > -ampl_min_i)
 		AGC_TX_I_magnitude = ampl_max_i;
 	else
 		AGC_TX_I_magnitude = -ampl_min_i;
-	
+
 	if (AGC_TX_I_magnitude == 0.0f)
 		AGC_TX_I_magnitude = 0.001f;
 	float32_t AGC_TX_dbFS = rate2dbV(AGC_TX_I_magnitude);

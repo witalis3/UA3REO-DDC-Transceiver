@@ -14,9 +14,9 @@
 #include "vocoder.h"
 
 // Public variables
-volatile uint32_t AUDIOPROC_samples = 0;							   // audio samples processed in the processor
-volatile bool Processor_NeedRXBuffer = false;						   // codec needs data from processor for RX
-volatile bool Processor_NeedTXBuffer = false;						   // codec needs data from processor for TX
+volatile uint32_t AUDIOPROC_samples = 0;	  // audio samples processed in the processor
+volatile bool Processor_NeedRXBuffer = false; // codec needs data from processor for RX
+volatile bool Processor_NeedTXBuffer = false; // codec needs data from processor for TX
 
 float32_t APROC_Audio_Buffer_RX1_accum_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // copy of the working part of the FPGA buffers for processing
 float32_t APROC_Audio_Buffer_RX1_accum_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
@@ -30,16 +30,16 @@ float32_t APROC_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 
 float32_t APROC_Audio_Buffer_TX_Q[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
-volatile float32_t Processor_RX_Power_value;					// RX signal magnitude
-volatile float32_t Processor_TX_MAX_amplitude_OUT;				// TX uplift after ALC
+volatile float32_t Processor_RX_Power_value;	   // RX signal magnitude
+volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
 bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
 
 // Private variables
-static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};									 // output buffer of the audio processor
+static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
 static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0, DFM_RX1_emph_prev = 0, DFM_RX2_emph_prev = 0; // used in FM detection and low / high pass processing
-static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;							 // used for squelch processing and debouncing tone detection, respectively
-static float32_t DFM_RX1_fm_sql_avg = 0.0f;														 // average SQL in FM
+static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;																		   // used for squelch processing and debouncing tone detection, respectively
+static float32_t DFM_RX1_fm_sql_avg = 0.0f;																									   // average SQL in FM
 static float32_t DFM_RX2_fm_sql_avg = 0.0f;
 static float32_t DFM_RX1_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 IRAM2 static float32_t DFM_RX2_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
@@ -50,23 +50,23 @@ IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_
 static bool preprocessor_buffer_ready = false;
 
 // Prototypes
-static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // Hilbert filter for phase shift of signals
-static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // Low-pass filter for I and Q
-static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);					 // LPF filter for I
-static void doRX_GAUSS_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // Gauss filter for I
-static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);					 // HPF filter for I
-static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size);					 // Digital Noise Reduction
-static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode); // automatic gain control
-static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size);					 // notch filter
-static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size);			 // impulse noise suppressor
-static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 // s-meter
-static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);			 // copy I to Q channel
-static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm);				 // FM demodulator
-static void ModulateFM(uint16_t size, float32_t amplitude);											 // FM modulator
-static void doRX_EQ(uint16_t size);												 // receiver equalizer
-static void doMIC_EQ(uint16_t size);											 // microphone equalizer
-static void doVAD(uint16_t size);												 // voice activity detector
-static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);				 //IF gain
+static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																							  // Hilbert filter for phase shift of signals
+static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																							  // Low-pass filter for I and Q
+static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																								  // LPF filter for I
+static void doRX_GAUSS_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																							  // Gauss filter for I
+static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																								  // HPF filter for I
+static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																								  // Digital Noise Reduction
+static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode);																			  // automatic gain control
+static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																								  // notch filter
+static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																						  // impulse noise suppressor
+static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																							  // s-meter
+static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																						  // copy I to Q channel
+static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm);											  // FM demodulator
+static void ModulateFM(uint16_t size, float32_t amplitude);																									  // FM modulator
+static void doRX_EQ(uint16_t size);																															  // receiver equalizer
+static void doMIC_EQ(uint16_t size);																														  // microphone equalizer
+static void doVAD(uint16_t size);																															  // voice activity detector
+static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																							  //IF gain
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor); //decimate RX samplerate input stream
 
 // initialize audio processor
@@ -85,7 +85,7 @@ void preProcessRxAudio(void)
 		return;
 	if (preprocessor_buffer_ready)
 		return;
-	
+
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
 
@@ -96,38 +96,38 @@ void preProcessRxAudio(void)
 	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
 	float32_t *FPGA_Audio_Buffer_RX2_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_I_A : (float32_t *)&FPGA_Audio_Buffer_RX2_I_B;
 	float32_t *FPGA_Audio_Buffer_RX2_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B;
-	
+
 	//Get and decimate input
 	uint32_t need_decimate_rate = TRX_GetRXSampleRate / TRX_SAMPLERATE;
 	static uint32_t audio_buffer_in_index = 0;
-	if(audio_buffer_in_index + (FPGA_RX_IQ_BUFFER_HALF_SIZE / need_decimate_rate) > FPGA_RX_IQ_BUFFER_HALF_SIZE)
+	if (audio_buffer_in_index + (FPGA_RX_IQ_BUFFER_HALF_SIZE / need_decimate_rate) > FPGA_RX_IQ_BUFFER_HALF_SIZE)
 		audio_buffer_in_index = 0;
-		
+
 	if (current_vfo->Mode == TRX_MODE_WFM)
 	{
 		//demodulate wfm before decimation
-		DemodulateFM(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);	
+		DemodulateFM(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 	}
 	doRX_DecimateInput(AUDIO_RX1, FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, &APROC_Audio_Buffer_RX1_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX1_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
-	
+
 	if (TRX.Dual_RX)
 	{
 		if (secondary_vfo->Mode == TRX_MODE_WFM)
 		{
 			//demodulate wfm before decimation
-			DemodulateFM(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);	
+			DemodulateFM(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		}
 		doRX_DecimateInput(AUDIO_RX2, FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, &APROC_Audio_Buffer_RX2_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX2_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 	}
-	
+
 	FPGA_RX_buffer_ready = false; // start processing of new buffer
-	
+
 	audio_buffer_in_index += FPGA_RX_IQ_BUFFER_HALF_SIZE / need_decimate_rate;
-	if(audio_buffer_in_index >= FPGA_RX_IQ_BUFFER_HALF_SIZE)
+	if (audio_buffer_in_index >= FPGA_RX_IQ_BUFFER_HALF_SIZE)
 		audio_buffer_in_index = 0;
 	else
 		return;
-	
+
 	preprocessor_buffer_ready = true;
 }
 
@@ -145,10 +145,10 @@ void processRxAudio(void)
 	dma_memcpy(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_accum_I, sizeof(APROC_Audio_Buffer_RX2_I));
 	dma_memcpy(APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_accum_Q, sizeof(APROC_Audio_Buffer_RX2_Q));
 	preprocessor_buffer_ready = false;
-	
+
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
-	
+
 	//Process DC corrector filter
 	if (current_vfo->Mode != TRX_MODE_AM && current_vfo->Mode != TRX_MODE_NFM && current_vfo->Mode != TRX_MODE_WFM)
 	{
@@ -514,7 +514,7 @@ void processTxAudio(void)
 			dma_index--;
 		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
 	}
-	
+
 	//One-signal zero-tune generator
 	if (TRX_Tune && !TRX.TWO_SIGNAL_TUNE)
 	{
@@ -538,7 +538,7 @@ void processTxAudio(void)
 			APROC_Audio_Buffer_TX_Q[i] = point;
 		}
 		//hilbert fir
-		if(mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_CW_L)
+		if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_CW_L)
 		{
 			// + 45 deg to I data
 			arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
@@ -616,13 +616,13 @@ void processTxAudio(void)
 		//IIR LPF
 		if (current_vfo->LPF_TX_Filter_Width > 0)
 			arm_biquad_cascade_df2T_f32(&IIR_TX_LPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-		
+
 		//TX AGC (compressor)
-		if(mode == TRX_MODE_USB || mode == TRX_MODE_LSB)
+		if (mode == TRX_MODE_USB || mode == TRX_MODE_LSB)
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f);
 		else
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.95f);
-		
+
 		//double left and right channel
 		dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], AUDIO_BUFFER_HALF_SIZE * 4);
 
@@ -704,40 +704,40 @@ void processTxAudio(void)
 			}
 		}
 	}
-	
+
 	//// RF PowerControl (Audio Level Control)
-	
+
 	// amplitude for the selected power and range
 	float32_t RFpower_amplitude = log10f_fast(((float32_t)TRX.RF_Power * 0.9f + 10.0f) / 10.0f) * TRX_MAX_TX_Amplitude;
 	if (RFpower_amplitude < 0.0f)
 		RFpower_amplitude = 0.0f;
 	if (mode == TRX_MODE_LOOPBACK)
 		RFpower_amplitude = 0.5f;
-	
+
 	//Tune power regulator
-	if(TRX_Tune)
+	if (TRX_Tune)
 	{
 		static float32_t tune_power = 0;
 		float32_t full_power = TRX_PWR_Forward + TRX_PWR_Backward;
-		
-		if(fabsf(full_power - (float32_t)CALIBRATE.TUNE_MAX_POWER) > 0.1f) //histeresis
+
+		if (fabsf(full_power - (float32_t)CALIBRATE.TUNE_MAX_POWER) > 0.1f) //histeresis
 		{
-			if(full_power < CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
+			if (full_power < CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
 				tune_power = 0.995f * tune_power + 0.005f * RFpower_amplitude;
-			if((TRX_PWR_Forward + TRX_PWR_Backward) > CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
+			if ((TRX_PWR_Forward + TRX_PWR_Backward) > CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
 				tune_power = 0.995f * tune_power;
 		}
-		
-		if(tune_power > RFpower_amplitude * 1.05f)
+
+		if (tune_power > RFpower_amplitude * 1.05f)
 			tune_power = RFpower_amplitude;
-		
+
 		RFpower_amplitude = tune_power;
 	}
-	
+
 	//Apply gain
 	arm_scale_f32(APROC_Audio_Buffer_TX_I, RFpower_amplitude, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 	arm_scale_f32(APROC_Audio_Buffer_TX_Q, RFpower_amplitude, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
-	
+
 	// looking for a maximum in amplitude
 	float32_t ampl_max_i = 0.0f;
 	float32_t ampl_max_q = 0.0f;
@@ -772,7 +772,7 @@ void processTxAudio(void)
 			Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN * ALC_need_gain_target;
 		}
 	}
-	
+
 	if (RFpower_amplitude > 0.0f)
 		TRX_ALC = TRX_ALC * 0.9f + (Processor_TX_MAX_amplitude_OUT / RFpower_amplitude) * 0.1f; //smooth
 	else
@@ -878,12 +878,12 @@ static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor)
 {
-	if(factor == 1)
+	if (factor == 1)
 	{
 		dma_memcpy(out_i, in_i, size * 4);
 		dma_memcpy(out_q, in_q, size * 4);
 	}
-	else if(factor == 2)
+	else if (factor == 2)
 	{
 		if (rx_id == AUDIO_RX1)
 		{
@@ -900,7 +900,7 @@ static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32
 			arm_fir_decimate_f32(&DECIMATE_2_RX2_AUDIO_Q, in_q, out_q, size);
 		}
 	}
-	else if(factor == 4)
+	else if (factor == 4)
 	{
 		if (rx_id == AUDIO_RX1)
 		{
@@ -917,7 +917,7 @@ static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32
 			arm_fir_decimate_f32(&DECIMATE_4_RX2_AUDIO_Q, in_q, out_q, size);
 		}
 	}
-	else if(factor == 8)
+	else if (factor == 8)
 	{
 		if (rx_id == AUDIO_RX1)
 		{
@@ -1096,7 +1096,7 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		if (CurrentVFO()->DNR_Type > 0)
 		{
 			for (uint32_t block = 0; block < (size / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				if(CurrentVFO()->DNR_Type == 2)
+				if (CurrentVFO()->DNR_Type == 2)
 					processNoiseReduction(APROC_Audio_Buffer_RX1_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 2);
 				else
 					processNoiseReduction(APROC_Audio_Buffer_RX1_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 1);
@@ -1107,7 +1107,7 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		if (SecondaryVFO()->DNR_Type > 0)
 		{
 			for (uint32_t block = 0; block < (size / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				if(SecondaryVFO()->DNR_Type == 2)
+				if (SecondaryVFO()->DNR_Type == 2)
 					processNoiseReduction(APROC_Audio_Buffer_RX2_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 2);
 				else
 					processNoiseReduction(APROC_Audio_Buffer_RX2_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 1);
@@ -1224,8 +1224,8 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			data_i[i] = data_i[i] * (1.0f - alpha) + *emph_prev * alpha;
 			*emph_prev = data_i[i];
 		}
-		else if (*squelched)				// were we squelched or tone NOT detected?
-			data_i[i] = 0; // do not filter receive audio - fill buffer with zeroes to mute it
+		else if (*squelched) // were we squelched or tone NOT detected?
+			data_i[i] = 0;	 // do not filter receive audio - fill buffer with zeroes to mute it
 	}
 
 	// *** Squelch Processing ***
@@ -1242,26 +1242,26 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		if (*fm_sql_avg > 0.7f) // limit maximum noise value in averaging to keep it from going out into the weeds under no-signal conditions (higher = noisier)
 			*fm_sql_avg = 0.7f;
 		b = *fm_sql_avg * 10.0f; // scale noise amplitude to range of squelch setting
-		
+
 		// Now evaluate noise power with respect to squelch setting
-		if (!FM_SQL_threshold) // is squelch set to zero?
-			*squelched = false;	   // yes, the we are un-squelched
-		else if (*squelched)	   // are we squelched?
+		if (!FM_SQL_threshold)	// is squelch set to zero?
+			*squelched = false; // yes, the we are un-squelched
+		else if (*squelched)	// are we squelched?
 		{
 			if (b <= (float)((float32_t)(10.0f - FM_SQL_threshold) - FM_SQUELCH_HYSTERESIS)) // yes - is average above threshold plus hysteresis?
-				*squelched = false;												   //  yes, open the squelch
+				*squelched = false;															 //  yes, open the squelch
 		}
 		else // is the squelch open (e.g. passing audio)?
 		{
 			if ((float32_t)(10.0f - FM_SQL_threshold) > FM_SQUELCH_HYSTERESIS) // is setting higher than hysteresis?
 			{
 				if (b > (float)((float32_t)(10 - FM_SQL_threshold) + FM_SQUELCH_HYSTERESIS)) // yes - is average below threshold minus hysteresis?
-					*squelched = true;												  // yes, close the squelch
+					*squelched = true;														 // yes, close the squelch
 			}
 			else // setting is lower than hysteresis so we can't use it!
 			{
 				if (b > (10.0f - (float)FM_SQL_threshold)) // yes - is average below threshold?
-					*squelched = true;						   // yes, close the squelch
+					*squelched = true;					   // yes, close the squelch
 			}
 		}
 	}
@@ -1274,7 +1274,7 @@ static void ModulateFM(uint16_t size, float32_t amplitude)
 	static float32_t hpf_prev_b = 0;
 	static float32_t fm_mod_accum = 0;
 	static float32_t modulation_index = 0;
-	if(CurrentVFO()->LPF_TX_Filter_Width > 0)
+	if (CurrentVFO()->LPF_TX_Filter_Width > 0)
 		modulation_index = CurrentVFO()->LPF_TX_Filter_Width / (float32_t)TRX_SAMPLERATE * (float32_t)CALIBRATE.FM_DEVIATION_SCALE;
 	else
 		modulation_index = (float32_t)CALIBRATE.FM_DEVIATION_SCALE;
@@ -1283,7 +1283,7 @@ static void ModulateFM(uint16_t size, float32_t amplitude)
 	{
 		hpf_prev_b = FM_TX_HPF_ALPHA * (hpf_prev_b + APROC_Audio_Buffer_TX_I[i] - hpf_prev_a); // do differentiation
 		hpf_prev_a = APROC_Audio_Buffer_TX_I[i];											   // save "[n-1] samples for next iteration
-		fm_mod_accum += hpf_prev_b * modulation_index;				   // save differentiated data in audio buffer
+		fm_mod_accum += hpf_prev_b * modulation_index;										   // save differentiated data in audio buffer
 		while (fm_mod_accum > (2.0f * PI))
 			fm_mod_accum -= (2.0f * PI); // limit range
 		while (fm_mod_accum < -(2.0f * PI))
@@ -1313,26 +1313,26 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		//overflow protect
 		arm_min_f32(APROC_Audio_Buffer_RX1_I, size, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_I, size, &maxVal);
-		if((minVal * if_gain) < -1.0f)
+		if ((minVal * if_gain) < -1.0f)
 		{
-			if(!CurrentVFO()->AGC)
+			if (!CurrentVFO()->AGC)
 				APROC_IFGain_Overflow = true;
 		}
-		if((maxVal * if_gain) > 1.0f)
+		if ((maxVal * if_gain) > 1.0f)
 		{
-			if(!CurrentVFO()->AGC)
+			if (!CurrentVFO()->AGC)
 				APROC_IFGain_Overflow = true;
 		}
 		arm_min_f32(APROC_Audio_Buffer_RX1_Q, size, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_Q, size, &maxVal);
-		if((minVal * if_gain) < -1.0f)
+		if ((minVal * if_gain) < -1.0f)
 		{
-			if(!CurrentVFO()->AGC)
+			if (!CurrentVFO()->AGC)
 				APROC_IFGain_Overflow = true;
 		}
-		if((maxVal * if_gain) > 1.0f)
+		if ((maxVal * if_gain) > 1.0f)
 		{
-			if(!CurrentVFO()->AGC)
+			if (!CurrentVFO()->AGC)
 				APROC_IFGain_Overflow = true;
 		}
 
@@ -1346,26 +1346,26 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		//overflow protect RX2
 		arm_min_f32(APROC_Audio_Buffer_RX2_I, size, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX2_I, size, &maxVal);
-		if((minVal * if_gain) < -1.0f)
+		if ((minVal * if_gain) < -1.0f)
 		{
-			if(!SecondaryVFO()->AGC)
+			if (!SecondaryVFO()->AGC)
 				APROC_IFGain_Overflow = true;
 		}
-		if((maxVal * if_gain) > 1.0f)
+		if ((maxVal * if_gain) > 1.0f)
 		{
-			if(!SecondaryVFO()->AGC)
+			if (!SecondaryVFO()->AGC)
 				APROC_IFGain_Overflow = true;
 		}
 		arm_min_f32(APROC_Audio_Buffer_RX2_Q, size, &minVal, &index);
 		arm_max_no_idx_f32(APROC_Audio_Buffer_RX2_Q, size, &maxVal);
-		if((minVal * if_gain) < -1.0f)
+		if ((minVal * if_gain) < -1.0f)
 		{
-			if(!SecondaryVFO()->AGC)
+			if (!SecondaryVFO()->AGC)
 				APROC_IFGain_Overflow = true;
 		}
-		if((maxVal * if_gain) > 1.0f)
+		if ((maxVal * if_gain) > 1.0f)
 		{
-			if(!SecondaryVFO()->AGC)
+			if (!SecondaryVFO()->AGC)
 				APROC_IFGain_Overflow = true;
 		}
 

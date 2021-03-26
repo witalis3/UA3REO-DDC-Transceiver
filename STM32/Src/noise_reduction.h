@@ -29,7 +29,7 @@ typedef struct
 	float32_t FFT_MINIMUM_MAG[NOISE_REDUCTION_FFT_SIZE_HALF];
 	float32_t NR_GAIN[NOISE_REDUCTION_FFT_SIZE_HALF];
 	float32_t LAST_IFFT_RESULT[NOISE_REDUCTION_FFT_SIZE_HALF];
-	
+
 	//DNR2
 	float32_t NR_GAIN_old[NOISE_REDUCTION_FFT_SIZE_HALF];
 	float32_t SNR_post[NOISE_REDUCTION_FFT_SIZE_HALF];
@@ -37,7 +37,7 @@ typedef struct
 } NR_Instance;
 
 // Public methods
-extern void InitNoiseReduction(void);										   // initialize DNR
+extern void InitNoiseReduction(void);															// initialize DNR
 extern void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t nr_type); // run DNR for the data block
 
 #endif

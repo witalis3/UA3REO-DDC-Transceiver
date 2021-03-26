@@ -7,9 +7,9 @@
 #include "usbd_audio_if.h"
 
 //Public variables
-uint32_t WM8731_DMA_samples = 0;									// count the number of samples passed to the audio codec
-bool WM8731_DMA_state = true;										// what part of the buffer we are working with, true - compleate; false - half
-bool WM8731_Buffer_underrun = false;								// lack of data in the buffer from the audio processor
+uint32_t WM8731_DMA_samples = 0;								   // count the number of samples passed to the audio codec
+bool WM8731_DMA_state = true;									   // what part of the buffer we are working with, true - compleate; false - half
+bool WM8731_Buffer_underrun = false;							   // lack of data in the buffer from the audio processor
 SRAM int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; // audio codec ring buffers
 SRAM int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
 bool WM8731_Beeping; //Beeping flag
@@ -105,7 +105,7 @@ void WM8731_TXRX_mode(void) //loopback
 	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); //R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); //R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00010000)); //R5 Digital Audio Path Control
-	if (TRX.InputType == TRX_INPUT_LINE)							   //line
+	if (TRX.InputType == TRX_INPUT_LINE)			   //line
 	{
 		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); //R0 Left Line In
 		WM8731_SendI2CCommand(B8(00000010), B8(00010111)); //R1 Right Line In

@@ -102,7 +102,7 @@ void WIFI_Process(void)
 	dma_memset(com_t, 0x00, sizeof(com_t));
 	dma_memset(tz, 0x00, sizeof(tz));
 	dma_memset(com, 0x00, sizeof(com));
-	
+
 	if (WIFI_State == WIFI_NOTFOUND)
 		return;
 	if (WIFI_State == WIFI_UNDEFINED)
@@ -374,7 +374,7 @@ void WIFI_Process(void)
 					if (end != NULL)
 					{
 						*end = 0x00;
-						if(strlen(start)>0)
+						if (strlen(start) > 0)
 						{
 							strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
 							if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
@@ -462,27 +462,27 @@ void WIFI_Process(void)
 												uint8_t currMinutes = ((currTime >> 12) & 0x07) * 10 + ((currTime >> 8) & 0x0f);
 												uint8_t currSeconds = ((currTime >> 4) & 0x07) * 10 + ((currTime >> 0) & 0x0f);
 												//clock diff
-												if(currHours != hrs || currMinutes != min || currSeconds != sec)
+												if (currHours != hrs || currMinutes != min || currSeconds != sec)
 												{
 													int16_t secDiff = (currHours - hrs) * 3600 + (currMinutes - min) * 60 + (currSeconds - sec);
 													println("[RTC] Current clock error in sec: ", secDiff);
-													
-													if(secDiff < -1 || secDiff > 1) //do recalibration
+
+													if (secDiff < -1 || secDiff > 1) //do recalibration
 													{
-														if(secDiff < 0)
+														if (secDiff < 0)
 															CALIBRATE.RTC_Calibration--;
-														if(secDiff > 0)
+														if (secDiff > 0)
 															CALIBRATE.RTC_Calibration++;
 														if (CALIBRATE.RTC_Calibration < -511)
 															CALIBRATE.RTC_Calibration = -511;
 														if (CALIBRATE.RTC_Calibration > 511)
 															CALIBRATE.RTC_Calibration = 511;
 														NeedSaveCalibration = true;
-														
+
 														RTC_Calibration();
 														println("[RTC] New RTC Calibration value: ", CALIBRATE.RTC_Calibration);
 													}
-												
+
 													//set time
 													RTC_TimeTypeDef sTime;
 													sTime.TimeFormat = RTC_HOURFORMAT12_PM;
@@ -504,7 +504,7 @@ void WIFI_Process(void)
 												}
 												TRX_SNTP_Synced = HAL_GetTick();
 												println("[WIFI] TIME SYNCED");
-												
+
 												//reset SNTP
 												char com_t[64] = {0};
 												sprintf(com_t, "AT+CIPSNTPCFG=1,%d,\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n", TRX.WIFI_TIMEZONE);
@@ -537,7 +537,7 @@ void WIFI_Process(void)
 							strcat(WIFI_IP, start);
 							println("[WIFI] GOT IP: ", WIFI_IP);
 							WIFI_IP_Gotted = true;
-							if(LCD_systemMenuOpened)
+							if (LCD_systemMenuOpened)
 								LCD_UpdateQuery.SystemMenuRedraw = true;
 						}
 					}
@@ -805,17 +805,17 @@ static void WIFI_getHTTPResponse(void)
 			commandStartTime = HAL_GetTick();
 
 			uint32_t start_time = HAL_GetTick();
-      uint32_t len = strlen(WIFI_HTTResponseHTML);
+			uint32_t len = strlen(WIFI_HTTResponseHTML);
 			while (len < response_length && len < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 5000)
 			{
 				if (WIFI_TryGetLine())
 				{
-					if(len + strlen(WIFI_readedLine) < sizeof(WIFI_HTTResponseHTML))
+					if (len + strlen(WIFI_readedLine) < sizeof(WIFI_HTTResponseHTML))
 						strcat(WIFI_HTTResponseHTML, WIFI_readedLine);
 					else
 						break;
 				}
-        len = strlen(WIFI_HTTResponseHTML);
+				len = strlen(WIFI_HTTResponseHTML);
 			}
 			char *istr3 = WIFI_HTTResponseHTML;
 			istr3 += response_length;
@@ -837,12 +837,12 @@ static void WIFI_getHTTPResponse(void)
 			{
 				istr4 += 16;
 				char *istr5 = strchr(istr4, '\r');
-                if (istr5 != NULL)
-                {
-                    *istr5 = 0;
-                    WIFI_HTTP_Response_ContentLength = (uint32_t)(atoi(istr4));
-                    *istr5 = ' ';
-                }
+				if (istr5 != NULL)
+				{
+					*istr5 = 0;
+					WIFI_HTTP_Response_ContentLength = (uint32_t)(atoi(istr4));
+					*istr5 = ' ';
+				}
 			}
 
 			//get response body
@@ -969,7 +969,7 @@ static void WIFI_printImage_stream_partial_callback(void)
 	char hex[5] = {0};
 	WIFI_RLEStreamBuffer_index = 0;
 	int16_t val = 0;
-  uint32_t len = strlen(WIFI_HTTResponseHTML);
+	uint32_t len = strlen(WIFI_HTTResponseHTML);
 	while (*istr != 0 && (len >= ((WIFI_RLEStreamBuffer_index * 4) + 4)))
 	{
 		//Get hex
@@ -980,7 +980,7 @@ static void WIFI_printImage_stream_partial_callback(void)
 		WIFI_RLEStreamBuffer[WIFI_RLEStreamBuffer_index] = val;
 		WIFI_RLEStreamBuffer_index++;
 	}
-	
+
 	//send to LCD RLE stream decoder
 	LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, WIFI_RLEStreamBuffer_index);
 

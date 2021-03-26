@@ -29,11 +29,9 @@ EndBSPDependencies */
 #include "usbd_ua3reo.h"
 #include "usbd_msc_data.h"
 
-
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
   */
-
 
 /** @defgroup MSC_SCSI
   * @brief Mass storage SCSI layer module
@@ -47,7 +45,6 @@ EndBSPDependencies */
   * @}
   */
 
-
 /** @defgroup MSC_SCSI_Private_Defines
   * @{
   */
@@ -56,14 +53,12 @@ EndBSPDependencies */
   * @}
   */
 
-
 /** @defgroup MSC_SCSI_Private_Macros
   * @{
   */
 /**
   * @}
   */
-
 
 /** @defgroup MSC_SCSI_Private_Variables
   * @{
@@ -72,7 +67,6 @@ EndBSPDependencies */
 /**
   * @}
   */
-
 
 /** @defgroup MSC_SCSI_Private_FunctionPrototypes
   * @{
@@ -104,11 +98,9 @@ static int8_t SCSI_UpdateBotData(USBD_MSC_BOT_HandleTypeDef *hmsc,
   * @}
   */
 
-
 /** @defgroup MSC_SCSI_Private_Functions
   * @{
   */
-
 
 /**
 * @brief  SCSI_ProcessCmd
@@ -122,7 +114,7 @@ int8_t SCSI_ProcessCmd(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *cmd)
 {
   int8_t ret;
   USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
-//sendToDebug_uint8(cmd[0],false);
+  //sendToDebug_uint8(cmd[0],false);
   switch (cmd[0])
   {
   case SCSI_TEST_UNIT_READY: //0
@@ -172,10 +164,10 @@ int8_t SCSI_ProcessCmd(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *cmd)
   case SCSI_READ12: //168
     ret = SCSI_Read12(pdev, lun, cmd);
     break;
-	
-	case SCSI_READ16: //136 HACK!
+
+  case SCSI_READ16: //136 HACK!
     ret = SCSI_Read12(pdev, lun, cmd);
-		ret = 0;
+    ret = 0;
     break;
 
   case SCSI_WRITE10: //42
@@ -196,12 +188,11 @@ int8_t SCSI_ProcessCmd(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *cmd)
     ret = -1;
     break;
   }
-//sendToDebug_uint8(ret,false);
-//sendToDebug_newline();
+  //sendToDebug_uint8(ret,false);
+  //sendToDebug_newline();
 
   return ret;
 }
-
 
 /**
 * @brief  SCSI_TestUnitReady
@@ -241,7 +232,6 @@ static int8_t SCSI_TestUnitReady(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t 
 
   return 0;
 }
-
 
 /**
 * @brief  SCSI_Inquiry
@@ -296,7 +286,6 @@ static int8_t SCSI_Inquiry(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *param
   return 0;
 }
 
-
 /**
 * @brief  SCSI_ReadCapacity10
 *         Process Read Capacity 10 command
@@ -320,20 +309,18 @@ static int8_t SCSI_ReadCapacity10(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t
 
   hmsc->bot_data[0] = (uint8_t)((hmsc->scsi_blk_nbr - 1U) >> 24);
   hmsc->bot_data[1] = (uint8_t)((hmsc->scsi_blk_nbr - 1U) >> 16);
-  hmsc->bot_data[2] = (uint8_t)((hmsc->scsi_blk_nbr - 1U) >>  8);
+  hmsc->bot_data[2] = (uint8_t)((hmsc->scsi_blk_nbr - 1U) >> 8);
   hmsc->bot_data[3] = (uint8_t)(hmsc->scsi_blk_nbr - 1U);
 
-  hmsc->bot_data[4] = (uint8_t)(hmsc->scsi_blk_size >>  24);
-  hmsc->bot_data[5] = (uint8_t)(hmsc->scsi_blk_size >>  16);
-  hmsc->bot_data[6] = (uint8_t)(hmsc->scsi_blk_size >>  8);
+  hmsc->bot_data[4] = (uint8_t)(hmsc->scsi_blk_size >> 24);
+  hmsc->bot_data[5] = (uint8_t)(hmsc->scsi_blk_size >> 16);
+  hmsc->bot_data[6] = (uint8_t)(hmsc->scsi_blk_size >> 8);
   hmsc->bot_data[7] = (uint8_t)(hmsc->scsi_blk_size);
 
   hmsc->bot_data_length = 8U;
 
   return 0;
-
 }
-
 
 /**
 * @brief  SCSI_ReadCapacity16
@@ -359,8 +346,8 @@ static int8_t SCSI_ReadCapacity16(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t
 
   hmsc->bot_data_length = ((uint32_t)params[10] << 24) |
                           ((uint32_t)params[11] << 16) |
-                          ((uint32_t)params[12] <<  8) |
-                           (uint32_t)params[13];
+                          ((uint32_t)params[12] << 8) |
+                          (uint32_t)params[13];
 
   for (idx = 0U; idx < hmsc->bot_data_length; idx++)
   {
@@ -369,22 +356,21 @@ static int8_t SCSI_ReadCapacity16(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t
 
   hmsc->bot_data[4] = (uint8_t)((hmsc->scsi_blk_nbr - 1U) >> 24);
   hmsc->bot_data[5] = (uint8_t)((hmsc->scsi_blk_nbr - 1U) >> 16);
-  hmsc->bot_data[6] = (uint8_t)((hmsc->scsi_blk_nbr - 1U) >>  8);
+  hmsc->bot_data[6] = (uint8_t)((hmsc->scsi_blk_nbr - 1U) >> 8);
   hmsc->bot_data[7] = (uint8_t)(hmsc->scsi_blk_nbr - 1U);
 
-  hmsc->bot_data[8] = (uint8_t)(hmsc->scsi_blk_size >>  24);
-  hmsc->bot_data[9] = (uint8_t)(hmsc->scsi_blk_size >>  16);
-  hmsc->bot_data[10] = (uint8_t)(hmsc->scsi_blk_size >>  8);
+  hmsc->bot_data[8] = (uint8_t)(hmsc->scsi_blk_size >> 24);
+  hmsc->bot_data[9] = (uint8_t)(hmsc->scsi_blk_size >> 16);
+  hmsc->bot_data[10] = (uint8_t)(hmsc->scsi_blk_size >> 8);
   hmsc->bot_data[11] = (uint8_t)(hmsc->scsi_blk_size);
 
   hmsc->bot_data_length = ((uint32_t)params[10] << 24) |
                           ((uint32_t)params[11] << 16) |
-                          ((uint32_t)params[12] <<  8) |
-                           (uint32_t)params[13];
+                          ((uint32_t)params[12] << 8) |
+                          (uint32_t)params[13];
 
   return 0;
 }
-
 
 /**
 * @brief  SCSI_ReadFormatCapacity
@@ -410,7 +396,7 @@ static int8_t SCSI_ReadFormatCapacity(USBD_HandleTypeDef *pdev, uint8_t lun, uin
     return -1;
   }
 
-  for (i = 0U; i < 12U ; i++)
+  for (i = 0U; i < 12U; i++)
   {
     hmsc->bot_data[i] = 0U;
   }
@@ -418,19 +404,18 @@ static int8_t SCSI_ReadFormatCapacity(USBD_HandleTypeDef *pdev, uint8_t lun, uin
   hmsc->bot_data[3] = 0x08U;
   hmsc->bot_data[4] = (uint8_t)((blk_nbr - 1U) >> 24);
   hmsc->bot_data[5] = (uint8_t)((blk_nbr - 1U) >> 16);
-  hmsc->bot_data[6] = (uint8_t)((blk_nbr - 1U) >>  8);
+  hmsc->bot_data[6] = (uint8_t)((blk_nbr - 1U) >> 8);
   hmsc->bot_data[7] = (uint8_t)(blk_nbr - 1U);
 
   hmsc->bot_data[8] = 0x02U;
-  hmsc->bot_data[9] = (uint8_t)(blk_size >>  16);
-  hmsc->bot_data[10] = (uint8_t)(blk_size >>  8);
+  hmsc->bot_data[9] = (uint8_t)(blk_size >> 16);
+  hmsc->bot_data[10] = (uint8_t)(blk_size >> 8);
   hmsc->bot_data[11] = (uint8_t)(blk_size);
 
   hmsc->bot_data_length = 12U;
 
   return 0;
 }
-
 
 /**
 * @brief  SCSI_ModeSense6
@@ -455,7 +440,6 @@ static int8_t SCSI_ModeSense6(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *pa
   return 0;
 }
 
-
 /**
 * @brief  SCSI_ModeSense10
 *         Process Mode Sense10 command
@@ -478,7 +462,6 @@ static int8_t SCSI_ModeSense10(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *p
 
   return 0;
 }
-
 
 /**
 * @brief  SCSI_RequestSense
@@ -530,7 +513,6 @@ static int8_t SCSI_RequestSense(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *
   return 0;
 }
 
-
 /**
 * @brief  SCSI_SenseCode
 *         Load the last error code in the error list
@@ -555,7 +537,6 @@ void SCSI_SenseCode(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t sKey, uint8_t
     hmsc->scsi_sense_tail = 0U;
   }
 }
-
 
 /**
 * @brief  SCSI_StartStopUnit
@@ -597,7 +578,6 @@ static int8_t SCSI_StartStopUnit(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t 
   return 0;
 }
 
-
 /**
 * @brief  SCSI_AllowPreventRemovable
 *         Process Allow Prevent Removable medium command
@@ -623,7 +603,6 @@ static int8_t SCSI_AllowPreventRemovable(USBD_HandleTypeDef *pdev, uint8_t lun, 
 
   return 0;
 }
-
 
 /**
 * @brief  SCSI_Read10
@@ -660,10 +639,10 @@ static int8_t SCSI_Read10(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *params
 
     hmsc->scsi_blk_addr = ((uint32_t)params[2] << 24) |
                           ((uint32_t)params[3] << 16) |
-                          ((uint32_t)params[4] <<  8) |
+                          ((uint32_t)params[4] << 8) |
                           (uint32_t)params[5];
 
-    hmsc->scsi_blk_len = ((uint32_t)params[7] <<  8) | (uint32_t)params[8];
+    hmsc->scsi_blk_len = ((uint32_t)params[7] << 8) | (uint32_t)params[8];
 
     if (SCSI_CheckAddressRange(pdev, lun, hmsc->scsi_blk_addr,
                                hmsc->scsi_blk_len) < 0)
@@ -684,7 +663,6 @@ static int8_t SCSI_Read10(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *params
 
   return SCSI_ProcessRead(pdev, lun);
 }
-
 
 /**
 * @brief  SCSI_Read12
@@ -720,7 +698,7 @@ static int8_t SCSI_Read12(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *params
 
     hmsc->scsi_blk_addr = ((uint32_t)params[2] << 24) |
                           ((uint32_t)params[3] << 16) |
-                          ((uint32_t)params[4] <<  8) |
+                          ((uint32_t)params[4] << 8) |
                           (uint32_t)params[5];
 
     hmsc->scsi_blk_len = ((uint32_t)params[6] << 24) |
@@ -747,7 +725,6 @@ static int8_t SCSI_Read12(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *params
 
   return SCSI_ProcessRead(pdev, lun);
 }
-
 
 /**
 * @brief  SCSI_Write10
@@ -827,7 +804,6 @@ static int8_t SCSI_Write10(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *param
 
   return 0;
 }
-
 
 /**
 * @brief  SCSI_Write12
@@ -911,7 +887,6 @@ static int8_t SCSI_Write12(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *param
 
   return 0;
 }
-
 
 /**
 * @brief  SCSI_Verify10
@@ -1010,9 +985,7 @@ static int8_t SCSI_ProcessWrite(USBD_HandleTypeDef *pdev, uint8_t lun)
 
   len = MIN(len, MSC_MEDIA_PACKET);
 
-  if (((USBD_StorageTypeDef *)pdev->pUserDataSTORAGE)->Write(lun, hmsc->bot_data,
-                                                      hmsc->scsi_blk_addr,
-                                                      (len / hmsc->scsi_blk_size)) < 0)
+  if (((USBD_StorageTypeDef *)pdev->pUserDataSTORAGE)->Write(lun, hmsc->bot_data, hmsc->scsi_blk_addr, (len / hmsc->scsi_blk_size)) < 0)
   {
     SCSI_SenseCode(pdev, lun, HARDWARE_ERROR, WRITE_FAULT);
     return -1;
@@ -1038,7 +1011,6 @@ static int8_t SCSI_ProcessWrite(USBD_HandleTypeDef *pdev, uint8_t lun)
 
   return 0;
 }
-
 
 /**
 * @brief  SCSI_UpdateBotData
@@ -1067,11 +1039,9 @@ static int8_t SCSI_UpdateBotData(USBD_MSC_BOT_HandleTypeDef *hmsc,
   * @}
   */
 
-
 /**
   * @}
   */
-
 
 /**
   * @}

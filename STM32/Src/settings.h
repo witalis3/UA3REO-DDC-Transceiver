@@ -9,7 +9,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-#define SETT_VERSION 25				   // Settings config version
+#define SETT_VERSION 25					   // Settings config version
 #define CALIB_VERSION 26				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -27,16 +27,16 @@
 #define MAX_RF_POWER 7.0f				   // Maximum power (for meter scale)
 #define SHOW_LOGO true					   // Show logo on boot (from images.h)
 #define POWERDOWN_TIMEOUT 1000			   // time of pressing the shutdown button, for operation, ms
-#define POWERDOWN_FORCE_TIMEOUT 2000			   // force time
+#define POWERDOWN_FORCE_TIMEOUT 2000	   // force time
 #define USB_RESTART_TIMEOUT 5000		   // time after which USB restart occurs if there are no packets
 #define FPGA_FLASH_IN_HEX false			   // enable FPGA firmware in STM32 firmware
 #define SNTP_SYNC_INTERVAL (60 * 60)	   // Time synchronization interval via NTP, sec
 #define SCANNER_NOSIGNAL_TIME 50		   //time to continue sweeping if signal too low
 #define SCANNER_SIGNAL_TIME_FM 5000		   //time to continue sweeping if signal founded for FM
-#define SCANNER_SIGNAL_TIME_OTHER 1000		   //time to continue sweeping if signal founded for SSB
-#define SCANNER_FREQ_STEP_WFM 100000			   //step for freq scanner for WFM
-#define SCANNER_FREQ_STEP_NFM 25000			   //step for freq scanner for NFM
-#define SCANNER_FREQ_STEP_OTHER 500			   //step for freq scanner for SSB
+#define SCANNER_SIGNAL_TIME_OTHER 1000	   //time to continue sweeping if signal founded for SSB
+#define SCANNER_FREQ_STEP_WFM 100000	   //step for freq scanner for WFM
+#define SCANNER_FREQ_STEP_NFM 25000		   //step for freq scanner for NFM
+#define SCANNER_FREQ_STEP_OTHER 500		   //step for freq scanner for SSB
 #define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
 
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
@@ -361,7 +361,7 @@ extern struct TRX_CALIBRATE
 	uint8_t TUNE_MAX_POWER;
 	uint8_t RTC_Coarse_Calibration;
 	int16_t RTC_Calibration;
-	
+
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit
 } CALIBRATE;
@@ -382,7 +382,7 @@ extern void BKPSRAM_Disable(void);
 extern VFO *CurrentVFO(void);
 extern VFO *SecondaryVFO(void);
 extern void RTC_Calibration(void);
-	
+
 #ifdef FRONTPANEL_SMALL_V1
 #define HRDW_MCP3008_1 true
 #define HRDW_MCP3008_2 true

@@ -64,10 +64,10 @@ void print_chr_LCDOnly(char chr)
 {
 	if (LCD_DEBUG_ENABLED)
 	{
-		if(chr == '\r')
+		if (chr == '\r')
 			return;
-		
-		if(chr == '\n')
+
+		if (chr == '\n')
 		{
 			dbg_lcd_y += 9;
 			dbg_lcd_x = 0;
@@ -78,7 +78,7 @@ void print_chr_LCDOnly(char chr)
 			}
 			return;
 		}
-		
+
 		LCDDriver_drawChar(dbg_lcd_x, dbg_lcd_y, chr, COLOR_RED, BG_COLOR, 1);
 		dbg_lcd_x += 6;
 	}
@@ -288,7 +288,7 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 		return (float32_t)CALIBRATE.rf_out_power_10m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 	if (freq < 80.0 * 1000000)
 		return (float32_t)CALIBRATE.rf_out_power_6m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	
+
 	return (float32_t)CALIBRATE.rf_out_power_2m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 }
 
@@ -296,7 +296,7 @@ float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate
 {
 	float32_t ret = amplitude * arm_sin_f32(*index * (2.0f * F_PI));
 	*index += ((float32_t)freq / (float32_t)samplerate);
-	while(*index >= 1.0f)
+	while (*index >= 1.0f)
 		*index -= 1.0f;
 	return ret;
 }
@@ -480,7 +480,7 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		//println("spi error");
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -490,54 +490,66 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
  *  Cambridge University Press, 1992, Section 8.5, ISBN 0-521-43108-5
  *  This code by Nicolas Devillard - 1998. Public domain.
  */
-float32_t quick_median_select(float32_t* arr, int n)
+float32_t quick_median_select(float32_t *arr, int n)
 {
-    int low, high ;
-    int median;
-    int middle, ll, hh;
+	int low, high;
+	int median;
+	int middle, ll, hh;
 
-    low = 0 ; high = n-1 ; median = (low + high) / 2;
-    for (;;) {
-        if (high <= low) /* One element only */
-            return arr[median] ;
+	low = 0;
+	high = n - 1;
+	median = (low + high) / 2;
+	for (;;)
+	{
+		if (high <= low) /* One element only */
+			return arr[median];
 
-        if (high == low + 1) {  /* Two elements only */
-            if (arr[low] > arr[high])
-                ELEM_SWAP_F32(arr[low], arr[high]) ;
-            return arr[median] ;
-        }
+		if (high == low + 1)
+		{ /* Two elements only */
+			if (arr[low] > arr[high])
+				ELEM_SWAP_F32(arr[low], arr[high]);
+			return arr[median];
+		}
 
-    /* Find median of low, middle and high items; swap into position low */
-    middle = (low + high) / 2;
-    if (arr[middle] > arr[high])    ELEM_SWAP_F32(arr[middle], arr[high]) ;
-    if (arr[low] > arr[high])       ELEM_SWAP_F32(arr[low], arr[high]) ;
-    if (arr[middle] > arr[low])     ELEM_SWAP_F32(arr[middle], arr[low]) ;
+		/* Find median of low, middle and high items; swap into position low */
+		middle = (low + high) / 2;
+		if (arr[middle] > arr[high])
+			ELEM_SWAP_F32(arr[middle], arr[high]);
+		if (arr[low] > arr[high])
+			ELEM_SWAP_F32(arr[low], arr[high]);
+		if (arr[middle] > arr[low])
+			ELEM_SWAP_F32(arr[middle], arr[low]);
 
-    /* Swap low item (now in position middle) into position (low+1) */
-    ELEM_SWAP_F32(arr[middle], arr[low+1]) ;
+		/* Swap low item (now in position middle) into position (low+1) */
+		ELEM_SWAP_F32(arr[middle], arr[low + 1]);
 
-    /* Nibble from each end towards middle, swapping items when stuck */
-    ll = low + 1;
-    hh = high;
-    for (;;) {
-        do ll++; while (arr[low] > arr[ll]) ;
-        do hh--; while (arr[hh]  > arr[low]) ;
+		/* Nibble from each end towards middle, swapping items when stuck */
+		ll = low + 1;
+		hh = high;
+		for (;;)
+		{
+			do
+				ll++;
+			while (arr[low] > arr[ll]);
+			do
+				hh--;
+			while (arr[hh] > arr[low]);
 
-        if (hh < ll)
-        break;
+			if (hh < ll)
+				break;
 
-        ELEM_SWAP_F32(arr[ll], arr[hh]) ;
-    }
+			ELEM_SWAP_F32(arr[ll], arr[hh]);
+		}
 
-    /* Swap middle item (in position low) back into correct position */
-    ELEM_SWAP_F32(arr[low], arr[hh]) ;
+		/* Swap middle item (in position low) back into correct position */
+		ELEM_SWAP_F32(arr[low], arr[hh]);
 
-    /* Re-set active partition */
-    if (hh <= median)
-        low = ll;
-        if (hh >= median)
-        high = hh - 1;
-    }
+		/* Re-set active partition */
+		if (hh <= median)
+			low = ll;
+		if (hh >= median)
+			high = hh - 1;
+	}
 }
 
 static uint32_t dma_memset32_reg = 0;
@@ -547,23 +559,23 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	if (size == 0)
 		return;
 
-	if(dma_memset32_busy) //for async calls
+	if (dma_memset32_busy) //for async calls
 	{
 		memset(dest, val, size * 4);
 		return;
 	}
-	
+
 	dma_memset32_busy = true;
 	dma_memset32_reg = val;
 	Aligned_CleanDCache_by_Addr(&dma_memset32_reg, sizeof(dma_memset32_reg));
 	Aligned_CleanDCache_by_Addr(dest, size * 4);
-	
+
 	HAL_MDMA_Start(&hmdma_mdma_channel44_sw_0, (uint32_t)&dma_memset32_reg, (uint32_t)dest, 4 * size, 1);
 	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel44_sw_0);
-	
+
 	Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);
 	dma_memset32_busy = false;
-	
+
 	/*uint32_t *pDst = (uint32_t *)dest;
 	for(uint32_t i = 0; i < size; i++)
 		if(pDst[i] != val)
@@ -572,40 +584,40 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 
 void dma_memset(void *dest, uint8_t val, uint32_t size)
 {
-	if(dma_memset32_busy || size < 128) //for async and fast calls
+	if (dma_memset32_busy || size < 128) //for async and fast calls
 	{
 		memset(dest, val, size);
 		return;
 	}
-	
+
 	//left align
 	char *pDst = (char *)dest;
-	while((uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3) && size > 0)
+	while ((uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3) && size > 0)
 	{
 		*pDst++ = val;
 		size--;
 	}
-	
-	if(size > 0)
+
+	if (size > 0)
 	{
 		//center fills in 32bit
 		uint32_t val32 = (val << 24) | (val << 16) | (val << 8) | (val << 0);
 		uint32_t block32 = size / 4;
 		uint32_t block8 = size % 4;
 		uint32_t max_block = DMA_MAX_BLOCK / 4;
-		while(block32 > max_block)
+		while (block32 > max_block)
 		{
 			dma_memset32(pDst, val32, max_block);
 			block32 -= max_block;
 			pDst += max_block * 4;
 		}
 		dma_memset32(pDst, val32, block32);
-		
+
 		//right align
-		if(block8 > 0)
+		if (block8 > 0)
 		{
 			pDst += block32 * 4;
-			while(block8--)
+			while (block8--)
 				*pDst++ = val;
 		}
 	}
@@ -616,23 +628,23 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 {
 	if (size == 0)
 		return;
-	
-	if(dma_memcpy32_busy) //for async calls
+
+	if (dma_memcpy32_busy) //for async calls
 	{
 		memcpy(dest, src, size * 4);
 		return;
 	}
-	
+
 	dma_memcpy32_busy = true;
 	Aligned_CleanDCache_by_Addr(src, size * 4);
 	Aligned_CleanDCache_by_Addr(dest, size * 4);
-	
+
 	uint8_t res = HAL_MDMA_Start(&hmdma_mdma_channel40_sw_0, (uint32_t)src, (uint32_t)dest, size * 4, 1);
 	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel40_sw_0);
-	
+
 	Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);
 	dma_memcpy32_busy = false;
-	
+
 	/*char *pSrc = (char *)src;
 	char *pDst = (char *)dest;
 	for(uint32_t i = 0; i < size * 4; i++)
@@ -642,28 +654,28 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 
 void dma_memcpy(void *dest, void *src, uint32_t size)
 {
-	if(dma_memcpy32_busy || size < 1024) //for async and fast calls
+	if (dma_memcpy32_busy || size < 1024) //for async and fast calls
 	{
 		memcpy(dest, src, size);
 		return;
 	}
-	
+
 	//left align
 	char *pSrc = (char *)src;
 	char *pDst = (char *)dest;
-	while(((uint32_t)pSrc != (((uint32_t)pSrc) & ~(uint32_t)0x3) || (uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3)) && size > 0)
+	while (((uint32_t)pSrc != (((uint32_t)pSrc) & ~(uint32_t)0x3) || (uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3)) && size > 0)
 	{
 		*pDst++ = *pSrc++;
 		size--;
 	}
-	
-	if(size > 0)
+
+	if (size > 0)
 	{
 		//center copy in 32bit
 		uint32_t block32 = size / 4;
 		uint32_t block8 = size % 4;
 		uint32_t max_block = DMA_MAX_BLOCK / 4;
-		while(block32 > max_block)
+		while (block32 > max_block)
 		{
 			dma_memcpy32(pDst, pSrc, max_block);
 			block32 -= max_block;
@@ -671,13 +683,13 @@ void dma_memcpy(void *dest, void *src, uint32_t size)
 			pSrc += max_block * 4;
 		}
 		dma_memcpy32(pDst, pSrc, block32);
-		
+
 		//right align
-		if(block8 > 0)
+		if (block8 > 0)
 		{
 			pDst += block32 * 4;
 			pSrc += block32 * 4;
-			while(block8--)
+			while (block8--)
 				*pDst++ = *pSrc++;
 		}
 	}
@@ -685,35 +697,35 @@ void dma_memcpy(void *dest, void *src, uint32_t size)
 
 void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 {
-	#define Timeout 100
-  uint32_t tickstart;
+#define Timeout 100
+	uint32_t tickstart;
 
-  if(HAL_MDMA_STATE_BUSY != hmdma->State)
-    return;
+	if (HAL_MDMA_STATE_BUSY != hmdma->State)
+		return;
 
-  /* Get timeout */
-  tickstart = HAL_GetTick();
+	/* Get timeout */
+	tickstart = HAL_GetTick();
 
-  while(__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_CTC) == 0U)
-  {
-    if((__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_TE) != 0U))
-    {
-      (void) HAL_MDMA_Abort(hmdma); /* if error then abort the current transfer */
-      return;
-    }
-
-    /* Check for the Timeout */
-		if(((HAL_GetTick() - tickstart ) > Timeout) || (Timeout == 0U))
+	while (__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_CTC) == 0U)
+	{
+		if ((__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_TE) != 0U))
 		{
-			(void) HAL_MDMA_Abort(hmdma); /* if timeout then abort the current transfer */
+			(void)HAL_MDMA_Abort(hmdma); /* if error then abort the current transfer */
 			return;
 		}
-		
+
+		/* Check for the Timeout */
+		if (((HAL_GetTick() - tickstart) > Timeout) || (Timeout == 0U))
+		{
+			(void)HAL_MDMA_Abort(hmdma); /* if timeout then abort the current transfer */
+			return;
+		}
+
 		//go sleep
 		CPULOAD_GoToSleepMode();
-  }
+	}
 
-  /* Clear the transfer level flag */
+	/* Clear the transfer level flag */
 	__HAL_MDMA_CLEAR_FLAG(hmdma, (MDMA_FLAG_BRT | MDMA_FLAG_BT | MDMA_FLAG_BFTC | MDMA_FLAG_CTC));
 
 	/* Process unlocked */

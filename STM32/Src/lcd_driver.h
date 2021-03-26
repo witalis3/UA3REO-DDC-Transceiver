@@ -74,11 +74,11 @@ typedef struct
 } GFXfont;
 
 //Functions defines Macros
-#define uswap(a, b)     \
-	{                   \
+#define uswap(a, b)              \
+	{                            \
 		register uint16_t t = a; \
-		a = b;          \
-		b = t;          \
+		a = b;                   \
+		b = t;                   \
 	}
 #define rgb888torgb565(r, g, b) ((uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3)))
 

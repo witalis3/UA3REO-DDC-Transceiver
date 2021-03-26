@@ -190,26 +190,26 @@ static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uin
 
 static void LCDDriver_waitBusy(void)
 {
-	//uint32_t prio = NVIC_GetPriority(((int32_t)__get_IPSR()) - 16);
+  //uint32_t prio = NVIC_GetPriority(((int32_t)__get_IPSR()) - 16);
   while ((LCDDriver_ReadStatus() & 0x80) == 0x80)
   {
-		//if (prio == 7 || prio == 8)
-			CPULOAD_GoToSleepMode();
-		/*else
+    //if (prio == 7 || prio == 8)
+    CPULOAD_GoToSleepMode();
+    /*else
 			__asm("nop");*/
-	}
+  }
 }
 
 static void LCDDriver_waitBTE(void)
 {
-	//uint32_t prio = NVIC_GetPriority(((int32_t)__get_IPSR()) - 16);
+  //uint32_t prio = NVIC_GetPriority(((int32_t)__get_IPSR()) - 16);
   while ((LCDDriver_ReadStatus() & 0x40) == 0x40)
-	{
-		//if (prio == 7 || prio == 8)
-			CPULOAD_GoToSleepMode();
-		/*else
+  {
+    //if (prio == 7 || prio == 8)
+    CPULOAD_GoToSleepMode();
+    /*else
 			__asm("nop");*/
-	}
+  }
 }
 
 static bool LCDDriver_waitPoll(uint16_t regname, uint8_t waitflag)
@@ -221,7 +221,7 @@ static bool LCDDriver_waitPoll(uint16_t regname, uint8_t waitflag)
     uint16_t temp = LCDDriver_readReg(regname);
     if (!(temp & waitflag))
       return true;
-		CPULOAD_GoToSleepMode();
+    CPULOAD_GoToSleepMode();
   }
   return false;
 }

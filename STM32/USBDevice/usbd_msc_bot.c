@@ -33,7 +33,6 @@ EndBSPDependencies */
   * @{
   */
 
-
 /** @defgroup MSC_BOT
   * @brief BOT protocol module
   * @{
@@ -46,7 +45,6 @@ EndBSPDependencies */
   * @}
   */
 
-
 /** @defgroup MSC_BOT_Private_Defines
   * @{
   */
@@ -55,14 +53,12 @@ EndBSPDependencies */
   * @}
   */
 
-
 /** @defgroup MSC_BOT_Private_Macros
   * @{
   */
 /**
   * @}
   */
-
 
 /** @defgroup MSC_BOT_Private_Variables
   * @{
@@ -71,7 +67,6 @@ EndBSPDependencies */
 /**
   * @}
   */
-
 
 /** @defgroup MSC_BOT_Private_FunctionPrototypes
   * @{
@@ -83,11 +78,9 @@ static void MSC_BOT_Abort(USBD_HandleTypeDef *pdev);
   * @}
   */
 
-
 /** @defgroup MSC_BOT_Private_Functions
   * @{
   */
-
 
 /**
 * @brief  MSC_BOT_Init
@@ -126,7 +119,7 @@ void MSC_BOT_Reset(USBD_HandleTypeDef *pdev)
 {
   USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
 
-  hmsc->bot_state  = USBD_BOT_IDLE;
+  hmsc->bot_state = USBD_BOT_IDLE;
   hmsc->bot_status = USBD_BOT_STATUS_RECOVERY;
 
   (void)USBD_LL_ClearStallEP(pdev, MSC_EPIN_ADDR);
@@ -143,7 +136,7 @@ void MSC_BOT_Reset(USBD_HandleTypeDef *pdev)
 * @param  pdev: device instance
 * @retval None
 */
-void MSC_BOT_DeInit(USBD_HandleTypeDef  *pdev)
+void MSC_BOT_DeInit(USBD_HandleTypeDef *pdev)
 {
   USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
   hmsc->bot_state = USBD_BOT_IDLE;
@@ -195,19 +188,19 @@ void MSC_BOT_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 
   switch (hmsc->bot_state)
   {
-    case USBD_BOT_IDLE:
-      MSC_BOT_CBW_Decode(pdev);
-      break;
+  case USBD_BOT_IDLE:
+    MSC_BOT_CBW_Decode(pdev);
+    break;
 
-    case USBD_BOT_DATA_OUT:
-      if (SCSI_ProcessCmd(pdev, hmsc->cbw.bLUN, &hmsc->cbw.CB[0]) < 0)
-      {
-        MSC_BOT_SendCSW(pdev, USBD_CSW_CMD_FAILED);
-      }
-      break;
+  case USBD_BOT_DATA_OUT:
+    if (SCSI_ProcessCmd(pdev, hmsc->cbw.bLUN, &hmsc->cbw.CB[0]) < 0)
+    {
+      MSC_BOT_SendCSW(pdev, USBD_CSW_CMD_FAILED);
+    }
+    break;
 
-    default:
-      break;
+  default:
+    break;
   }
 }
 
@@ -217,7 +210,7 @@ void MSC_BOT_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 * @param  pdev: device instance
 * @retval None
 */
-static void  MSC_BOT_CBW_Decode(USBD_HandleTypeDef *pdev)
+static void MSC_BOT_CBW_Decode(USBD_HandleTypeDef *pdev)
 {
   USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
 
@@ -280,7 +273,7 @@ static void  MSC_BOT_CBW_Decode(USBD_HandleTypeDef *pdev)
 * @param  len: Data Length
 * @retval None
 */
-static void  MSC_BOT_SendData(USBD_HandleTypeDef *pdev, uint8_t *pbuf, uint32_t len)
+static void MSC_BOT_SendData(USBD_HandleTypeDef *pdev, uint8_t *pbuf, uint32_t len)
 {
   USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
 
@@ -300,7 +293,7 @@ static void  MSC_BOT_SendData(USBD_HandleTypeDef *pdev, uint8_t *pbuf, uint32_t 
 * @param  status : CSW status
 * @retval None
 */
-void  MSC_BOT_SendCSW(USBD_HandleTypeDef *pdev, uint8_t CSW_Status)
+void MSC_BOT_SendCSW(USBD_HandleTypeDef *pdev, uint8_t CSW_Status)
 {
   USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
 
@@ -323,7 +316,7 @@ void  MSC_BOT_SendCSW(USBD_HandleTypeDef *pdev, uint8_t CSW_Status)
 * @retval status
 */
 
-static void  MSC_BOT_Abort(USBD_HandleTypeDef *pdev)
+static void MSC_BOT_Abort(USBD_HandleTypeDef *pdev)
 {
   USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
 
@@ -351,7 +344,7 @@ static void  MSC_BOT_Abort(USBD_HandleTypeDef *pdev)
 * @retval None
 */
 
-void  MSC_BOT_CplClrFeature(USBD_HandleTypeDef *pdev, uint8_t epnum)
+void MSC_BOT_CplClrFeature(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
   USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
 
@@ -373,11 +366,9 @@ void  MSC_BOT_CplClrFeature(USBD_HandleTypeDef *pdev, uint8_t epnum)
   * @}
   */
 
-
 /**
   * @}
   */
-
 
 /**
   * @}

@@ -85,9 +85,9 @@ bool SD_doCommand(SD_COMMAND command, bool force)
 
 void SD_Process(void)
 {
-	if(SD_BusyByUSB)
+	if (SD_BusyByUSB)
 		return;
-	
+
 	//Init card
 	if (!SD_Present && (HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL)
 	{
@@ -117,13 +117,13 @@ void SD_Process(void)
 	//Do actions
 	if (SD_Mounted)
 	{
-		if(SD_currentCommand != SDCOMM_IDLE)
+		if (SD_currentCommand != SDCOMM_IDLE)
 			SD_Present_tryTime = HAL_GetTick();
 		switch (SD_currentCommand)
 		{
 		case SDCOMM_IDLE:
 			//check SD card inserted if idle
-			if((SD_Present_tryTime < HAL_GetTick()) && (HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL && !SD_RecordInProcess)
+			if ((SD_Present_tryTime < HAL_GetTick()) && (HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL && !SD_RecordInProcess)
 			{
 				SD_doCommand(SDCOMM_CHECK_SD, false);
 				return;
@@ -167,13 +167,13 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 	dma_memset(FILEMANAGER_LISTING, 0, sizeof(FILEMANAGER_LISTING));
 	if (f_opendir(&dir, FILEMANAGER_CurrentPath) == FR_OK)
 	{
-		while(f_readdir(&dir, &fileInfo) == FR_OK && fileInfo.fname[0])
+		while (f_readdir(&dir, &fileInfo) == FR_OK && fileInfo.fname[0])
 		{
 			if (fileInfo.fattrib & AM_DIR)
 			{
 				println("[DIR] ", fileInfo.fname);
-				
-				if(FILEMANAGER_files_startindex <= FILEMANAGER_files_count && FILEMANAGER_files_added < FILEMANAGER_LISTING_MAX_FILES)
+
+				if (FILEMANAGER_files_startindex <= FILEMANAGER_files_count && FILEMANAGER_files_added < FILEMANAGER_LISTING_MAX_FILES)
 				{
 					strcat(FILEMANAGER_LISTING[FILEMANAGER_files_added], "[DIR] ");
 					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_added], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 6));
@@ -183,14 +183,14 @@ static void SDCOMM_LIST_DIRECTORY_handler(void)
 			}
 		}
 		f_closedir(&dir);
-		
+
 		f_opendir(&dir, FILEMANAGER_CurrentPath);
-		while(f_readdir(&dir, &fileInfo) == FR_OK && fileInfo.fname[0])
+		while (f_readdir(&dir, &fileInfo) == FR_OK && fileInfo.fname[0])
 		{
 			if (!(fileInfo.fattrib & AM_DIR))
 			{
 				println("[FILE] ", fileInfo.fname);
-				if(FILEMANAGER_files_startindex <= FILEMANAGER_files_count && FILEMANAGER_files_added < FILEMANAGER_LISTING_MAX_FILES)
+				if (FILEMANAGER_files_startindex <= FILEMANAGER_files_count && FILEMANAGER_files_added < FILEMANAGER_LISTING_MAX_FILES)
 				{
 					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_added], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN));
 					FILEMANAGER_files_added++;
@@ -312,11 +312,11 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)
 		SD_RecordInProcess = false;
 		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_showTooltip("Stop recording");
-		
+
 		//update wav length
 		f_lseek(&File, 0);
 		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
-		
+
 		f_close(&File);
 		SD_NeedStopRecord = false;
 		return true;
@@ -417,7 +417,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 		//TRX
 		bool res = SD_WRITE_SETT_LINE("TRX.VFO_A.Freq", (uint32_t *)&TRX.VFO_A.Freq, SYSMENU_UINT32);
 		if (res)
-    {
+		{
 			SD_WRITE_SETT_LINE("TRX.VFO_A.Mode", (uint32_t *)&TRX.VFO_A.Mode, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.LPF_RX_Filter_Width", (uint32_t *)&TRX.VFO_A.LPF_RX_Filter_Width, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.LPF_TX_Filter_Width", (uint32_t *)&TRX.VFO_A.LPF_TX_Filter_Width, SYSMENU_UINT32);
@@ -471,7 +471,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_STRING("TRX.LOCATOR", TRX.LOCATOR);
 			SD_WRITE_SETT_LINE("TRX.Transverter_Enabled", (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_Offset_Mhz", (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_UINT16);
-      //AUDIO
+			//AUDIO
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint32_t *)&TRX.IF_Gain, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_GAIN", (uint32_t *)&TRX.MIC_GAIN, SYSMENU_UINT8);
@@ -501,7 +501,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FM_LPF_TX_Filter", (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.Beeper", (uint32_t *)&TRX.Beeper, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VAD_Squelch", (uint32_t *)&TRX.VAD_Squelch, SYSMENU_BOOLEAN);
-      //CW
+			//CW
 			SD_WRITE_SETT_LINE("TRX.CWDecoder", (uint32_t *)&TRX.CWDecoder, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_GENERATOR_SHIFT_HZ", (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_Key_timeout", (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_UINT16);
@@ -509,7 +509,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.CW_KEYER", (uint32_t *)&TRX.CW_KEYER, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_KEYER_WPM", (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_GaussFilter", (uint32_t *)&TRX.CW_GaussFilter, SYSMENU_BOOLEAN);
-      //SCREEN
+			//SCREEN
 			SD_WRITE_SETT_LINE("TRX.ColorThemeId", (uint32_t *)&TRX.ColorThemeId, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.LayoutThemeId", (uint32_t *)&TRX.LayoutThemeId, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Enabled", (uint32_t *)&TRX.FFT_Enabled, SYSMENU_BOOLEAN);
@@ -533,13 +533,13 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FFT_Automatic", (uint32_t *)&TRX.FFT_Automatic, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualBottom", (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualTop", (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_INT16);
-      //ADC
+			//ADC
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_PGA", (uint32_t *)&TRX.ADC_PGA, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_RAND", (uint32_t *)&TRX.ADC_RAND, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_SHDN", (uint32_t *)&TRX.ADC_SHDN, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_DITH", (uint32_t *)&TRX.ADC_DITH, SYSMENU_BOOLEAN);
-      //WIFI
+			//WIFI
 			SD_WRITE_SETT_LINE("TRX.WIFI_Enabled", (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.WIFI_TIMEZONE", (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.WIFI_CAT_SERVER", (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_BOOLEAN);
@@ -549,7 +549,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD1", TRX.WIFI_PASSWORD1);
 			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD2", TRX.WIFI_PASSWORD2);
 			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD3", TRX.WIFI_PASSWORD3);
-      //SERVICES
+			//SERVICES
 			SD_WRITE_SETT_LINE("TRX.SPEC_Begin", (uint32_t *)&TRX.SPEC_Begin, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.SPEC_End", (uint32_t *)&TRX.SPEC_End, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.SPEC_TopDBM", (uint32_t *)&TRX.SPEC_TopDBM, SYSMENU_INT16);
@@ -566,7 +566,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_10", (uint32_t *)&TRX.WSPR_BANDS_10, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_6", (uint32_t *)&TRX.WSPR_BANDS_6, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.WSPR_BANDS_2", (uint32_t *)&TRX.WSPR_BANDS_2, SYSMENU_BOOLEAN);
-      //CALIBRATION
+			//CALIBRATION
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_INVERT", (uint32_t *)&CALIBRATE.ENCODER_INVERT, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER2_INVERT", (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_DEBOUNCE", (uint32_t *)&CALIBRATE.ENCODER_DEBOUNCE, SYSMENU_UINT8);
@@ -622,7 +622,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.TUNE_MAX_POWER", (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.RTC_Coarse_Calibration", (uint32_t *)&CALIBRATE.RTC_Coarse_Calibration, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.RTC_Calibration", (uint32_t *)&CALIBRATE.RTC_Calibration, SYSMENU_INT16);
-    }
+		}
 
 		if (!res)
 			LCD_showInfo("SD error", true);
@@ -645,7 +645,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)line);
 	dma_memset(name, 0x00, sizeof(name));
 	dma_memset(value, 0x00, sizeof(value));
-	if(len > 63) return;
+	if (len > 63)
+		return;
 	strncpy(name, (char *)line, len);
 	strncpy(value, (char *)line + len + 3, len);
 
@@ -1215,7 +1216,7 @@ static void SDCOMM_LISTROOT_handler(void)
 static uint8_t SPIx_WriteRead(uint8_t Byte)
 {
 	uint8_t SPIx_receivedByte = 0;
-	
+
 	if (!SPI_Transmit(&Byte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
 		println("SD SPI R Err");
 
@@ -1315,11 +1316,11 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 
 	dma_memset(buff, 0xFF, btr);
 	//for (cnt = 0; cnt < btr; cnt++)
-		//buff[cnt] = SPI_ReceiveByte();
+	//buff[cnt] = SPI_ReceiveByte();
 	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
 		println("SD SPI R Err");
 	dma_memcpy(buff, SD_Read_Block_tmp, btr);
-	
+
 	SPI_Release();
 	SPI_Release();
 	return 1;
@@ -1335,9 +1336,9 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 	if (token != 0xFD)
 	{ /* Send data if token is other than StopTran */
 		//for (cnt = 0; cnt < sdinfo.BLOCK_SIZE; cnt++)
-			//SPI_SendByte(buff[cnt]);
+		//SPI_SendByte(buff[cnt]);
 
-		if(dma)
+		if (dma)
 		{
 			dma_memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
 			if (!SPI_Transmit(SD_Write_Block_tmp, NULL, sdinfo.BLOCK_SIZE, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
@@ -1430,10 +1431,10 @@ uint8_t sd_ini(void)
 			{
 				sdinfo.type = CT_MMC;
 				cmd = CMD1; // MMCv3
-					//sendToDebug_strln("MMCv3");
+							//sendToDebug_strln("MMCv3");
 			}
 			for (tmr = 25000; tmr && SD_cmd(cmd, 0); tmr--)
-				;								 // Wait for leaving idle state
+				; // Wait for leaving idle state
 			sdinfo.BLOCK_SIZE = 512;
 			if (!tmr || SD_cmd(CMD16, sdinfo.BLOCK_SIZE) != 0) // Set R/W block length to 512
 				sdinfo.type = 0;
@@ -1443,12 +1444,12 @@ uint8_t sd_ini(void)
 		if ((SD_cmd(CMD9, 0) == 0))
 		{
 			sdinfo.BLOCK_SIZE = 512;
-			
+
 			SPI_ReceiveByte();
 			SPI_ReceiveByte(); //clean buff ???
 			for (i = 0; i < 16; i++)
 				csd[i] = SPI_ReceiveByte();
-			
+
 			/*sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[0],csd[1],csd[2],csd[3]);
 			print(sd_str_buff);
 			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[4],csd[5],csd[6],csd[7]);
@@ -1465,7 +1466,7 @@ uint8_t sd_ini(void)
 				sdinfo.SECTOR_COUNT = C_SIZE << 10;
 				//println("SDHC sector count: ", sdinfo.SECTOR_COUNT);
 			}
-			if(sdinfo.SECTOR_COUNT == 0) // Standard Capacity - CSD Version 1.0
+			if (sdinfo.SECTOR_COUNT == 0) // Standard Capacity - CSD Version 1.0
 			{
 				uint32_t csize = ((csd[5] & 0x03) << 10) + ((WORD)csd[6] << 2) + ((WORD)(csd[7] & 0xC0) >> 6);
 				//println(csize);
@@ -1482,7 +1483,7 @@ uint8_t sd_ini(void)
 				sdinfo.SECTOR_COUNT = SECTOR_COUNT;
 				//println("SDSC sector count: ", sdinfo.SECTOR_COUNT);
 			}
-			if((csd[0] >> 6) != 1 || sdinfo.SECTOR_COUNT == 0)
+			if ((csd[0] >> 6) != 1 || sdinfo.SECTOR_COUNT == 0)
 			{ // SDC ver 1.XX or MMC ver 3
 				BYTE n = (BYTE)((csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2);
 				DWORD csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;

@@ -100,10 +100,10 @@ void TRX_Restart_Mode()
 		TRX.current_vfo = !TRX.current_vfo;
 		TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 		TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
-		
+
 		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 		TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
-		
+
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
@@ -346,10 +346,10 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 
 	//WFM Samplerate change
 	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_WFM && old_mode != TRX_MODE_WFM && _mode == TRX_MODE_WFM)
-			NeedFFTReinit = true;
+		NeedFFTReinit = true;
 	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_WFM && old_mode == TRX_MODE_WFM && _mode != TRX_MODE_WFM)
-			NeedFFTReinit = true;
-	
+		NeedFFTReinit = true;
+
 	if (old_mode != _mode)
 		NeedReinitAudioFiltersClean = true;
 	NeedReinitAudioFilters = true;
@@ -362,21 +362,21 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 void TRX_DoAutoGain(void)
 {
 	uint8_t skip_cycles = 0;
-	if(skip_cycles > 0)
+	if (skip_cycles > 0)
 	{
 		skip_cycles--;
 		return;
 	}
-	
+
 	//Process AutoGain feature
 	if (TRX.AutoGain && !TRX_on_TX())
 	{
-		if(!TRX.ATT)
+		if (!TRX.ATT)
 		{
 			TRX.ATT = true;
 			LCD_UpdateQuery.TopButtons = true;
 		}
-		
+
 		int32_t max_amplitude = abs(TRX_ADC_MAXAMPLITUDE);
 		if (abs(TRX_ADC_MINAMPLITUDE) > max_amplitude)
 			max_amplitude = abs(TRX_ADC_MINAMPLITUDE);
@@ -386,21 +386,21 @@ void TRX_DoAutoGain(void)
 			new_att_val += 0.5f;
 		else if (max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && new_att_val > 0.0f)
 			new_att_val -= 0.5f;
-		
-		if(new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_Driver)
+
+		if (new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_Driver)
 		{
 			TRX.ADC_Driver = true;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
 		}
-		else if(new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_PGA)
+		else if (new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_PGA)
 		{
 			TRX.ADC_PGA = true;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
 		}
-		
-		if(new_att_val != TRX.ATT_DB)
+
+		if (new_att_val != TRX.ATT_DB)
 		{
 			TRX.ATT_DB = new_att_val;
 			LCD_UpdateQuery.TopButtons = true;
@@ -535,15 +535,15 @@ void TRX_ProcessScanMode(void)
 	static bool oldState = false;
 	static uint32_t StateChangeTime = 0;
 	bool goSweep = false;
-	
-	if(CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_NFM)
+
+	if (CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_NFM)
 	{
 		if (oldState != DFM_RX1_Squelched)
 		{
 			oldState = DFM_RX1_Squelched;
 			StateChangeTime = HAL_GetTick();
 		}
-		
+
 		if (DFM_RX1_Squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
 			goSweep = true;
 		if (!DFM_RX1_Squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_FM))
@@ -556,7 +556,7 @@ void TRX_ProcessScanMode(void)
 			oldState = VAD_Muting;
 			StateChangeTime = HAL_GetTick();
 		}
-		
+
 		if (VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
 			goSweep = true;
 		if (!VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_OTHER))
@@ -571,11 +571,11 @@ void TRX_ProcessScanMode(void)
 			if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO()->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO()->Freq))
 			{
 				uint32_t step = SCANNER_FREQ_STEP_OTHER;
-				if(CurrentVFO()->Mode == TRX_MODE_WFM)
+				if (CurrentVFO()->Mode == TRX_MODE_WFM)
 					step = SCANNER_FREQ_STEP_WFM;
-				if(CurrentVFO()->Mode == TRX_MODE_NFM)
+				if (CurrentVFO()->Mode == TRX_MODE_NFM)
 					step = SCANNER_FREQ_STEP_NFM;
-				
+
 				uint32_t new_freq = (CurrentVFO()->Freq + step) / step * step;
 				if (new_freq >= BANDS[band].regions[region_id].endFreq)
 					new_freq = BANDS[band].regions[region_id].startFreq;

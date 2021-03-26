@@ -20,7 +20,7 @@ uint16_t FFT_FPS = 0;
 uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
 bool NeedFFTReinit = false;
-uint32_t fft_current_spectrum_width_hz = 96000;	//Current sectrum width
+uint32_t fft_current_spectrum_width_hz = 96000; //Current sectrum width
 
 //Private variables
 #if FFT_SIZE == 2048
@@ -36,37 +36,37 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
-static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0};			// charge FFT I and Q buffer
-IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};					// combined FFT I and Q buffer
-IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};						// temporary buffer for sorting, moving and fft compressing
+static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0};				   // charge FFT I and Q buffer
+IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};				   // combined FFT I and Q buffer
+IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};				   // temporary buffer for sorting, moving and fft compressing
 SRAM static float32_t FFT_meanBuffer[FFT_MAX_MEANS][MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
-SRAM static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};						// averaged FFT buffer (for output)
-static float32_t maxValueFFT_rx = 0;											// maximum value of the amplitude in the resulting frequency response
-static float32_t maxValueFFT_tx = 0;											// maximum value of the amplitude in the resulting frequency response
+SRAM static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};				   // averaged FFT buffer (for output)
+static float32_t maxValueFFT_rx = 0;										   // maximum value of the amplitude in the resulting frequency response
+static float32_t maxValueFFT_tx = 0;										   // maximum value of the amplitude in the resulting frequency response
 static uint32_t currentFFTFreq = 0;
-static uint32_t lastWTFFreq = 0;													 //last WTF printed freq
-static uint16_t palette_fft[MAX_FFT_HEIGHT + 1] = {0};								 // color palette with FFT colors
-static uint16_t palette_bg_gradient[MAX_FFT_HEIGHT + 1] = {0};						 // color palette with gradient background of FFT
-static uint16_t palette_bw_fft_colors[MAX_FFT_HEIGHT + 1] = {0};					 // color palette with bw highlighted FFT colors
-static uint16_t palette_bw_bg_colors[MAX_FFT_HEIGHT + 1] = {0};						 // color palette with bw highlighted background colors
-IRAM2 static uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};	 //buffer with fft/3d fft/wtf print data
-SRAM static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //indexed color buffer with wtf
-static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};								 // frequencies for each row of the waterfall
-static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};							 // frequencies for each row of the fft mean buffer
-IRAM2 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft colors output
-IRAM2 static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};		//buffer with fft peaks
-static int32_t grid_lines_pos[20] = {-1};					//grid lines positions
-static uint32_t grid_lines_freq[20] = {-1};					//grid lines frequencies
-static int16_t bw_line_start = 0;							//BW bar params
-static int16_t bw_line_width = 0;							//BW bar params
-static int16_t bw_line_end = 0;								//BW bar params
-static int16_t bw_line_center = 0;							//BW bar params
-static float32_t window_multipliers[FFT_SIZE] = {0};		// coefficients of the selected window function
-static float32_t hz_in_pixel = 1.0f;						// current FFT density value
-static uint16_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0}; // temporary buffer to move the waterfall
-static uint32_t print_fft_dma_estimated_size = 0;			//block size for dma
-static uint32_t print_fft_dma_position = 0;					//positior for dma fft print
-static uint8_t needredraw_wtf_counter = 3;					//redraw cycles after event
+static uint32_t lastWTFFreq = 0;														   //last WTF printed freq
+static uint16_t palette_fft[MAX_FFT_HEIGHT + 1] = {0};									   // color palette with FFT colors
+static uint16_t palette_bg_gradient[MAX_FFT_HEIGHT + 1] = {0};							   // color palette with gradient background of FFT
+static uint16_t palette_bw_fft_colors[MAX_FFT_HEIGHT + 1] = {0};						   // color palette with bw highlighted FFT colors
+static uint16_t palette_bw_bg_colors[MAX_FFT_HEIGHT + 1] = {0};							   // color palette with bw highlighted background colors
+IRAM2 static uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; //buffer with fft/3d fft/wtf print data
+SRAM static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}};		   //indexed color buffer with wtf
+static uint32_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};									   // frequencies for each row of the waterfall
+static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};								   // frequencies for each row of the fft mean buffer
+IRAM2 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};								   //buffer with fft colors output
+IRAM2 static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};								   //buffer with fft peaks
+static int32_t grid_lines_pos[20] = {-1};												   //grid lines positions
+static uint32_t grid_lines_freq[20] = {-1};												   //grid lines frequencies
+static int16_t bw_line_start = 0;														   //BW bar params
+static int16_t bw_line_width = 0;														   //BW bar params
+static int16_t bw_line_end = 0;															   //BW bar params
+static int16_t bw_line_center = 0;														   //BW bar params
+static float32_t window_multipliers[FFT_SIZE] = {0};									   // coefficients of the selected window function
+static float32_t hz_in_pixel = 1.0f;													   // current FFT density value
+static uint16_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0};								   // temporary buffer to move the waterfall
+static uint32_t print_fft_dma_estimated_size = 0;										   //block size for dma
+static uint32_t print_fft_dma_position = 0;												   //positior for dma fft print
+static uint8_t needredraw_wtf_counter = 3;												   //redraw cycles after event
 static bool fft_charge_ready = false;
 static bool fft_charge_copying = false;
 static uint8_t FFT_meanBuffer_index = 0;
@@ -123,13 +123,13 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		// 2x magnify decimate fir
 		{
 			.numTaps = ZOOMFFT_DECIM_STAGES_FIR,
-			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792,   0.5574889164132,   0.5574889164132, -0.05698952454792},
+			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
 			.pState = NULL},
 		{0}, // 3
 		// 4x magnify decimate fir
 		{
 			.numTaps = ZOOMFFT_DECIM_STAGES_FIR,
-			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792,   0.5574889164132,   0.5574889164132, -0.05698952454792},
+			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
 			.pState = NULL},
 		{0}, // 5
 		{0}, // 6
@@ -137,7 +137,7 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		// 8x magnify decimate fir
 		{
 			.numTaps = ZOOMFFT_DECIM_STAGES_FIR,
-			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792,   0.5574889164132,   0.5574889164132, -0.05698952454792},
+			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
 			.pState = NULL},
 		{0}, // 9
 		{0}, // 10
@@ -149,7 +149,7 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		// 16x magnify decimate fir
 		{
 			.numTaps = ZOOMFFT_DECIM_STAGES_FIR,
-			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792,   0.5574889164132,   0.5574889164132, -0.05698952454792},
+			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
 			.pState = NULL},
 };
 
@@ -250,11 +250,11 @@ void FFT_Init(void)
 	else
 		zoomed_width = FFT_SIZE;
 
-	if(TRX_on_TX())
+	if (TRX_on_TX())
 		fft_current_spectrum_width_hz = TRX_SAMPLERATE / fft_zoom;
 	else
 		fft_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
-	
+
 	// clear the buffers
 	dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
 	dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
@@ -308,13 +308,13 @@ void FFT_bufferPrepare(void)
 
 	//Reset old samples if frequency changed
 	uint32_t nowFFTChargeBufferFreq = CurrentVFO()->Freq;
-	if(TRX.WTF_Moving && fabsf((float32_t)FFT_lastFFTChargeBufferFreq - (float32_t)nowFFTChargeBufferFreq) > (500 / fft_zoom)) //zeroing threshold
+	if (TRX.WTF_Moving && fabsf((float32_t)FFT_lastFFTChargeBufferFreq - (float32_t)nowFFTChargeBufferFreq) > (500 / fft_zoom)) //zeroing threshold
 	{
 		dma_memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 		FFT_ChargeBuffer_collected = 0;
 	}
 	FFT_lastFFTChargeBufferFreq = nowFFTChargeBufferFreq;
-	
+
 	//ZoomFFT
 	if (fft_zoom > 1)
 	{
@@ -364,13 +364,13 @@ void FFT_doFFT(void)
 		return;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
-	
-	if(NeedFFTReinit)
+
+	if (NeedFFTReinit)
 	{
 		FFT_Init();
 		return;
 	}
-	
+
 	// Get charge buffer
 	fft_charge_copying = true;
 	dma_memcpy(FFTInput, FFTInputCharge, sizeof(FFTInput));
@@ -389,7 +389,7 @@ void FFT_doFFT(void)
 			FFTInput[i * 2] = FFTInput[i * 2] * window_multipliers[coeff_idx];
 			FFTInput[i * 2 + 1] = FFTInput[i * 2 + 1] * window_multipliers[coeff_idx];
 		}
-		
+
 		//Gain signal if partial buffer (for normalize)
 		arm_scale_f32(FFTInput, ((float32_t)FFT_SIZE / (float32_t)FFT_ChargeBuffer_collected / 2.0f), FFTInput, FFT_DOUBLE_SIZE_BUFFER);
 	}
@@ -553,7 +553,7 @@ bool FFT_printFFT(void)
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
 		uint8_t index = 0;
 		uint32_t grid_step = fft_current_spectrum_width_hz / 9.6;
-		
+
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 		{
 			int32_t pos = -1;
@@ -574,10 +574,10 @@ bool FFT_printFFT(void)
 	// move the waterfall down using DMA
 	uint32_t move_est = wtfHeight - 1;
 	Aligned_CleanDCache_by_Addr(indexed_wtf_buffer, sizeof(indexed_wtf_buffer));
-	while(move_est > 0)
+	while (move_est > 0)
 	{
 		uint8_t length = move_est;
-		if(length > 64)
+		if (length > 64)
 			length = 64;
 		HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)&indexed_wtf_buffer[move_est - 1][LAYOUT->FFT_PRINT_SIZE], (uint32_t)&indexed_wtf_buffer[move_est][LAYOUT->FFT_PRINT_SIZE], LAYOUT->FFT_PRINT_SIZE * length + 4, 1);
 		SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0);
@@ -586,7 +586,6 @@ bool FFT_printFFT(void)
 	Aligned_CleanInvalidateDCache_by_Addr(indexed_wtf_buffer, sizeof(indexed_wtf_buffer));
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
 		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
-	
 
 	// Looking for the median in frequency response
 	dma_memcpy(FFTInput_tmp, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE * 4);
@@ -614,7 +613,7 @@ bool FFT_printFFT(void)
 		if (maxValueFFT < minValue)
 			maxValueFFT = minValue;
 	}
-	else if(TRX.FFT_Automatic) //Fit by median (automatic)
+	else if (TRX.FFT_Automatic) //Fit by median (automatic)
 	{
 		maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
 
@@ -655,13 +654,13 @@ bool FFT_printFFT(void)
 		sendToDebug_str(" (");
 		sendToDebug_float32(rate2dbP(debug_max), true);
 		sendToDebug_strln(")");*/
-		
+
 		float32_t minManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualBottom)) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
 		float32_t maxManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualTop)) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
 		arm_offset_f32(FFTOutput_mean, -minManualAmplitude, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
-				if (FFTOutput_mean[i] < 0)
-					FFTOutput_mean[i] = 0;
+			if (FFTOutput_mean[i] < 0)
+				FFTOutput_mean[i] = 0;
 		maxValueFFT = maxManualAmplitude - minManualAmplitude;
 	}
 
@@ -677,45 +676,45 @@ bool FFT_printFFT(void)
 
 	//scale fft mean buffer
 	arm_scale_f32(FFTOutput_mean, (1.0f / maxValueFFT) * fftHeight, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
-	
+
 	// calculate the colors for the waterfall
 	for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 	{
 		//if (FFTOutput_mean[fft_x] > fftHeight)
-			//FFTOutput_mean[fft_x] = fftHeight;
+		//FFTOutput_mean[fft_x] = fftHeight;
 
 		fft_header[fft_x] = FFTOutput_mean[fft_x];
 		indexed_wtf_buffer[0][fft_x] = fftHeight - FFTOutput_mean[fft_x];
 	}
 	wtf_buffer_freqs[0] = currentFFTFreq;
-	
+
 	//FFT Peaks
-	if(TRX.FFT_HoldPeaks)
+	if (TRX.FFT_HoldPeaks)
 	{
 		//peaks moving
-		if(lastWTFFreq != currentFFTFreq)
+		if (lastWTFFreq != currentFFTFreq)
 		{
 			float32_t diff = (float32_t)currentFFTFreq - (float32_t)lastWTFFreq;
 			diff = diff / (float32_t)(hz_in_pixel * fft_zoom);
 			diff = roundf(diff);
-			
-			if(diff > 0)
+
+			if (diff > 0)
 			{
 				for (int32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 				{
 					int32_t new_x = fft_x + (int32_t)diff;
-					if(new_x >= 0 && new_x < LAYOUT->FFT_PRINT_SIZE)
+					if (new_x >= 0 && new_x < LAYOUT->FFT_PRINT_SIZE)
 						fft_peaks[fft_x] = fft_peaks[new_x];
 					else
 						fft_peaks[fft_x] = 0;
 				}
 			}
-			else if(diff < 0)
+			else if (diff < 0)
 			{
 				for (int32_t fft_x = LAYOUT->FFT_PRINT_SIZE - 1; fft_x >= 0; fft_x--)
 				{
 					int32_t new_x = fft_x + (int32_t)diff;
-					if(new_x >= 0 && new_x < LAYOUT->FFT_PRINT_SIZE)
+					if (new_x >= 0 && new_x < LAYOUT->FFT_PRINT_SIZE)
 						fft_peaks[fft_x] = fft_peaks[new_x];
 					else
 						fft_peaks[fft_x] = 0;
@@ -725,16 +724,16 @@ bool FFT_printFFT(void)
 		//peaks falling
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
-			if(fft_peaks[fft_x] <= fft_header[fft_x])
+			if (fft_peaks[fft_x] <= fft_header[fft_x])
 				fft_peaks[fft_x] = fft_header[fft_x];
-			else if(fft_peaks[fft_x] > 0)
+			else if (fft_peaks[fft_x] > 0)
 				fft_peaks[fft_x]--;
 		}
 	}
-	
+
 	// calculate bw bar size
 	uint16_t curwidth = CurrentVFO()->LPF_RX_Filter_Width;
-	if(TRX_on_TX())
+	if (TRX_on_TX())
 		curwidth = CurrentVFO()->LPF_TX_Filter_Width;
 	switch (CurrentVFO()->Mode)
 	{
@@ -797,41 +796,41 @@ bool FFT_printFFT(void)
 				print_output_buffer[fft_y][fft_x] = background;
 		}
 	}
-		
+
 	if (TRX.FFT_Style == 1) //gradient
 	{
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
 			if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
 			{
-				for(uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
+				for (uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
 					print_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fft_y];
 			}
 			else
 			{
-				for(uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
+				for (uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
 					print_output_buffer[fft_y][fft_x] = palette_fft[fft_y];
 			}
 		}
 	}
-	
+
 	if (TRX.FFT_Style == 2) //fill
 	{
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
 			if (fft_x >= bw_line_start && fft_x <= bw_line_end) //bw bar
 			{
-				for(uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
+				for (uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
 					print_output_buffer[fft_y][fft_x] = palette_bw_fft_colors[fftHeight / 2];
 			}
 			else
 			{
-				for(uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
+				for (uint32_t fft_y = (fftHeight - fft_header[fft_x]); fft_y < fftHeight; fft_y++)
 					print_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
 			}
 		}
 	}
-	
+
 	if (TRX.FFT_Style == 3) //dots
 	{
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
@@ -843,7 +842,7 @@ bool FFT_printFFT(void)
 				print_output_buffer[fft_y][fft_x] = palette_fft[fftHeight / 2];
 		}
 	}
-	
+
 	if (TRX.FFT_Style == 4) //contour
 	{
 		uint32_t fft_y_prev = 0;
@@ -868,7 +867,7 @@ bool FFT_printFFT(void)
 	}
 
 	//FFT Peaks
-	if(TRX.FFT_HoldPeaks)
+	if (TRX.FFT_HoldPeaks)
 	{
 		uint32_t fft_y_prev = 0;
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
@@ -890,35 +889,35 @@ bool FFT_printFFT(void)
 			fft_y_prev = fft_y;
 		}
 	}
-	
+
 	////Waterfall
-	
+
 	//clear old data
-	if(lastWTFFreq != currentFFTFreq || NeedWTFRedraw)
+	if (lastWTFFreq != currentFFTFreq || NeedWTFRedraw)
 	{
 		dma_memset(print_output_buffer[fftHeight], 0, sizeof(uint16_t) * LAYOUT->FFT_PRINT_SIZE * (wtfHeight - cwdecoder_offset));
 	}
-	
+
 	//BTE
 	static uint8_t line_repeats_need = 1;
 #ifdef HAS_BTE
 	//move exist lines down with BTE
 	if (lastWTFFreq == currentFFTFreq && !NeedWTFRedraw)
 	{
-		if(TRX.FFT_Speed <= 3)
+		if (TRX.FFT_Speed <= 3)
 		{
 			//1 line
 			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
 			line_repeats_need = 1;
 		}
-		if(TRX.FFT_Speed == 4 && FFT_FPS_Last < 44)
+		if (TRX.FFT_Speed == 4 && FFT_FPS_Last < 44)
 		{
 			//2 line
 			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
 			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
 			line_repeats_need = 2;
 		}
-		if(TRX.FFT_Speed == 5 && FFT_FPS_Last < 55)
+		if (TRX.FFT_Speed == 5 && FFT_FPS_Last < 55)
 		{
 			//3 line
 			LCDDriver_BTE_copyArea(0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight, 0, LAYOUT->FFT_FFTWTF_POS_Y + fftHeight + 1, LAYOUT->FFT_PRINT_SIZE, (uint16_t)(wtfHeight - cwdecoder_offset - 1), true);
@@ -928,14 +927,14 @@ bool FFT_printFFT(void)
 		}
 	}
 #endif
-	
+
 	uint16_t wtf_printed_lines = 0;
 	uint16_t print_wtf_yindex = fftHeight;
 #ifdef HAS_BTE
 	while ((print_wtf_yindex < (fftHeight + wtfHeight - cwdecoder_offset) && (lastWTFFreq != currentFFTFreq || NeedWTFRedraw)) || (print_wtf_yindex == fftHeight && lastWTFFreq == currentFFTFreq && !NeedWTFRedraw))
 #else
 	while (print_wtf_yindex < (fftHeight + wtfHeight - cwdecoder_offset))
-#endif	
+#endif
 	{
 		uint16_t wtf_y_index = (print_wtf_yindex - fftHeight) / line_repeats_need;
 		// calculate offset
@@ -992,11 +991,11 @@ bool FFT_printFFT(void)
 						print_output_buffer[print_wtf_yindex][wtf_x] = palette_fft[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]];
 			}
 		}
-		
+
 		print_wtf_yindex++;
 		wtf_printed_lines++;
 	}
-	
+
 	//Draw grids
 	if (TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
 	{
@@ -1034,7 +1033,7 @@ bool FFT_printFFT(void)
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_2d_print_height - 1);
 	print_fft_dma_estimated_size = LAYOUT->FFT_PRINT_SIZE * fft_2d_print_height;
 	print_fft_dma_position = 0;
-	
+
 	FFT_afterPrintFFT();
 	return true;
 }
@@ -1050,7 +1049,7 @@ static void FFT_3DPrintFFT(void)
 
 	//clear old data
 	dma_memset(print_output_buffer, 0, sizeof(print_output_buffer));
-	
+
 	//draw 3D WTF
 	for (int32_t wtf_yindex = 0; wtf_yindex <= FFT_3D_SLIDES; wtf_yindex++) //each slides
 	{
@@ -1082,13 +1081,13 @@ static void FFT_3DPrintFFT(void)
 
 				for (uint16_t h = 0; h < line_max; h++)
 				{
-					if(print_output_buffer[print_bin_height + h][print_x] != palette_fft[fftHeight])
+					if (print_output_buffer[print_bin_height + h][print_x] != palette_fft[fftHeight])
 						break;
 					print_output_buffer[print_bin_height + h][print_x] = palette_fft[indexed_wtf_buffer[wtf_yindex][wtf_x] + h];
 				}
 			}
 			if (TRX.FFT_3D == 2) //pixel mode
-				if(print_output_buffer[print_bin_height][print_x] == palette_fft[fftHeight])
+				if (print_output_buffer[print_bin_height][print_x] == palette_fft[fftHeight])
 					print_output_buffer[print_bin_height][print_x] = palette_fft[indexed_wtf_buffer[wtf_yindex][wtf_x]];
 		}
 	}
@@ -1139,14 +1138,14 @@ static void FFT_3DPrintFFT(void)
 		//Сenter line
 		print_output_buffer[fft_y][LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2];
 	}
-	
+
 	//Init print 3D FFT
 	Aligned_CleanDCache_by_Addr(print_output_buffer, sizeof(print_output_buffer));
 	uint32_t fft_3d_print_height = fftHeight + (uint16_t)(wtfHeight - cwdecoder_offset) - 1;
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_3d_print_height);
 	print_fft_dma_estimated_size = LAYOUT->FFT_PRINT_SIZE * fft_3d_print_height;
 	print_fft_dma_position = 0;
-	
+
 	//do after events
 	FFT_afterPrintFFT();
 }
@@ -1173,7 +1172,7 @@ void FFT_afterPrintFFT(void)
 	}
 
 	// calc bandmap
-	if(lastWTFFreq != currentFFTFreq || NeedWTFRedraw)
+	if (lastWTFFreq != currentFFTFreq || NeedWTFRedraw)
 	{
 		// clear and display part of the vertical bar
 		dma_memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));

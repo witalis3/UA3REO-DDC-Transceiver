@@ -205,19 +205,20 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
 		.WINDOWS_BG = COLOR_BLACK,
 	},
-	
-	{//2 - black, 7-segments FREQ
+
+	{
+		//2 - black, 7-segments FREQ
 		//3'2 inch
 		.BACKGROUND = COLOR_BLACK,
 		.FOREGROUND = COLOR_WHITE,
 		.BUTTON_TEXT = rgb888torgb565(32, 191, 17),
 		.BUTTON_INACTIVE_TEXT = rgb888torgb565(130, 130, 130),
 		.BUTTON_BACKGROUND = rgb888torgb565(50, 50, 50),
-		
+
 		.FREQ_MHZ = rgb888torgb565(0, 255, 212),
 		.FREQ_KHZ = rgb888torgb565(0, 255, 212),
-		.FREQ_HZ = rgb888torgb565(255,195,0),
-		
+		.FREQ_HZ = rgb888torgb565(255, 195, 0),
+
 		.STATUS_VFO = COLOR_BLACK,
 		.STATUS_VFO_BG = COLOR_WHITE,
 		.STATUS_BAR_LEFT = rgb888torgb565(100, 100, 255),
@@ -260,14 +261,14 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
 		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
 		//7inch
-				
+
 		.FREQ_B_MHZ = rgb888torgb565(0, 255, 212),
 		.FREQ_B_KHZ = rgb888torgb565(0, 255, 212),
-		.FREQ_B_HZ = rgb888torgb565(255,195,0),
+		.FREQ_B_HZ = rgb888torgb565(255, 195, 0),
 
 		.FREQ_A_INACTIVE = rgb888torgb565(100, 100, 100),
 		.FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
-		
+
 		.STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
 		.STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
 		.BUTTON_BACK = rgb888torgb565(60, 60, 60),
@@ -276,8 +277,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
 		.WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
 		.WINDOWS_BG = COLOR_BLACK,
-	}
-};
+	}};
 
 #define COLOR_THEMES_COUNT 3
 #define BG_COLOR COLOR->BACKGROUND

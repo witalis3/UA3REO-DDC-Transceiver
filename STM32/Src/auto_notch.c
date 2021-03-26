@@ -29,7 +29,7 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	if (rx_id == AUDIO_RX2)
 		instance = &RX2_AN_instance;
 
-	dma_memcpy(&instance->lms2_reference[instance->reference_index_new], buffer, sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);													  // save the data to the reference buffer
+	dma_memcpy(&instance->lms2_reference[instance->reference_index_new], buffer, sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);												  // save the data to the reference buffer
 	arm_lms_norm_f32(&instance->lms2_Norm_instance, buffer, &instance->lms2_reference[instance->reference_index_old], instance->lms2_errsig2, buffer, AUTO_NOTCH_BLOCK_SIZE); // start LMS filter
 
 	//overflow protect

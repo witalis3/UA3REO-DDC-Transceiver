@@ -300,7 +300,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			if (TRX.Fast)
 			{
 				step = (float32_t)TRX.FRQ_ENC_FAST_STEP;
-				if(CurrentVFO()->Mode == TRX_MODE_WFM)
+				if (CurrentVFO()->Mode == TRX_MODE_WFM)
 					step = step * 2;
 				freq_round = roundf((float32_t)vfo->Freq / step) * step;
 				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)step * direction);
@@ -308,7 +308,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			else
 			{
 				step = (float32_t)TRX.FRQ_ENC_STEP;
-				if(CurrentVFO()->Mode == TRX_MODE_WFM)
+				if (CurrentVFO()->Mode == TRX_MODE_WFM)
 					step = step * 2;
 				freq_round = roundf((float32_t)vfo->Freq / step) * step;
 				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)step * direction);
@@ -462,13 +462,13 @@ void FRONTPANEL_Process(void)
 		SYSMENU_eventRotateSystemMenu(FRONTPANEL_ProcessEncoder1);
 		FRONTPANEL_ProcessEncoder1 = 0;
 	}
-	
-	if(FRONTPANEL_ProcessEncoder2 != 0)
+
+	if (FRONTPANEL_ProcessEncoder2 != 0)
 	{
 		FRONTPANEL_ENCODER2_Rotated(FRONTPANEL_ProcessEncoder2);
 		FRONTPANEL_ProcessEncoder2 = 0;
 	}
-	
+
 #ifndef HAS_TOUCHPAD
 	FRONTPANEL_check_ENC2SW();
 #endif
@@ -512,7 +512,7 @@ void FRONTPANEL_Process(void)
 #endif
 			continue;
 
-		if(TRX.Debug_Type == TRX_DEBUG_BUTTONS)
+		if (TRX.Debug_Type == TRX_DEBUG_BUTTONS)
 		{
 			static uint8_t fu_gebug_lastchannel = 255;
 			if ((HAL_GetTick() - fu_debug_lasttime > 500 && fu_gebug_lastchannel != PERIPH_FrontPanel_Buttons[b].channel) || fu_debug_lasttime == 0)
@@ -578,7 +578,7 @@ void FRONTPANEL_Process(void)
 			if (mcp3008_value >= PERIPH_FrontPanel_Buttons[b].tres_min && mcp3008_value < PERIPH_FrontPanel_Buttons[b].tres_max)
 			{
 				PERIPH_FrontPanel_Buttons[b].state = true;
-				if(TRX.Debug_Type == TRX_DEBUG_BUTTONS)
+				if (TRX.Debug_Type == TRX_DEBUG_BUTTONS)
 					println("Button pressed: port ", PERIPH_FrontPanel_Buttons[b].port, " channel ", PERIPH_FrontPanel_Buttons[b].channel, " value: ", mcp3008_value);
 			}
 			else
@@ -637,7 +637,7 @@ void FRONTPANEL_Process(void)
 		}
 	}
 
-	if(TRX.Debug_Type == TRX_DEBUG_BUTTONS)
+	if (TRX.Debug_Type == TRX_DEBUG_BUTTONS)
 	{
 		if (HAL_GetTick() - fu_debug_lasttime > 500)
 		{
@@ -676,7 +676,7 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX.current_vfo = !TRX.current_vfo;
 	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
-	
+
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
@@ -690,7 +690,7 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX.FM_SQL_threshold = CurrentVFO()->FM_SQL_threshold;
 	CurrentVFO()->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-	
+
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.BottomButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
@@ -1070,9 +1070,9 @@ void FRONTPANEL_BUTTONHANDLER_DNR(uint32_t parameter)
 {
 	TRX_TemporaryMute();
 	InitNoiseReduction();
-	if(CurrentVFO()->DNR_Type == 0)
+	if (CurrentVFO()->DNR_Type == 0)
 		CurrentVFO()->DNR_Type = 1;
-	else if(CurrentVFO()->DNR_Type == 1)
+	else if (CurrentVFO()->DNR_Type == 1)
 		CurrentVFO()->DNR_Type = 2;
 	else
 		CurrentVFO()->DNR_Type = 0;
@@ -1445,22 +1445,22 @@ void FRONTPANEL_BUTTONHANDLER_SETRF_POWER(uint32_t parameter)
 
 void FRONTPANEL_BUTTONHANDLER_LEFT_ARR(uint32_t parameter)
 {
-	if(FRONTPANEL_funcbuttons_page == 0)
+	if (FRONTPANEL_funcbuttons_page == 0)
 		FRONTPANEL_funcbuttons_page = (FUNCBUTTONS_PAGES - 1);
 	else
 		FRONTPANEL_funcbuttons_page--;
-	
+
 	LCD_UpdateQuery.BottomButtons = true;
 	LCD_UpdateQuery.TopButtons = true;
 }
 
 void FRONTPANEL_BUTTONHANDLER_RIGHT_ARR(uint32_t parameter)
 {
-	if(FRONTPANEL_funcbuttons_page >= (FUNCBUTTONS_PAGES - 1))
+	if (FRONTPANEL_funcbuttons_page >= (FUNCBUTTONS_PAGES - 1))
 		FRONTPANEL_funcbuttons_page = 0;
 	else
 		FRONTPANEL_funcbuttons_page++;
-	
+
 	LCD_UpdateQuery.BottomButtons = true;
 	LCD_UpdateQuery.TopButtons = true;
 }

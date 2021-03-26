@@ -557,17 +557,17 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
-	
+
   ms10_counter++;
-	
-	//power off sequence
-	static bool prev_pwr_state = true;
-	if(prev_pwr_state == true && HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
-	{
-		powerdown_start_delay = HAL_GetTick();
-	}
-	prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
-	
+
+  //power off sequence
+  static bool prev_pwr_state = true;
+  if (prev_pwr_state == true && HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
+  {
+    powerdown_start_delay = HAL_GetTick();
+  }
+  prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
+
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) && ((!NeedSaveCalibration && !SPI_process && !EEPROM_Busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
   {
     TRX_Inited = false;
@@ -591,9 +591,9 @@ void TIM6_DAC_IRQHandler(void)
     }
   }
 
-	//Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
+  //Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
   RF_UNIT_ProcessSensors();
-	
+
   //TRX protector
   if (TRX_on_TX())
   {
@@ -622,7 +622,7 @@ void TIM6_DAC_IRQHandler(void)
       LCD_showTooltip("SWR too HIGH!");
     }
   }
-	
+
   // transmission release time after key signal
   if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_dot_hard && !TRX_key_dash_hard)
   {
@@ -666,9 +666,9 @@ void TIM6_DAC_IRQHandler(void)
   TOUCHPAD_ProcessInterrupt();
 #endif
 
-	float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
-	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
-	
+  float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
+  float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+
   if ((ms10_counter % 10) == 0) // every 100ms
   {
     // every 100ms we receive data from FPGA (amplitude, ADC overload, etc.)
@@ -705,11 +705,11 @@ void TIM6_DAC_IRQHandler(void)
     WM8731_Buffer_underrun = false;
     FPGA_Buffer_underrun = false;
     RX_USB_AUDIO_underrun = false;
-		APROC_IFGain_Overflow = false;
+    APROC_IFGain_Overflow = false;
     SD_underrun = false;
   }
 
-	static bool needLCDDoEvents = true;
+  static bool needLCDDoEvents = true;
   if ((ms10_counter % 3) == 0) // every 30ms
   {
     LCD_UpdateQuery.StatusInfoBar = true;
@@ -718,12 +718,12 @@ void TIM6_DAC_IRQHandler(void)
   }
   else if (LCD_UpdateQuery.FreqInfo) //Redraw freq fast
     needLCDDoEvents = true;
-	
-	if(needLCDDoEvents && !LCD_busy)
-	{
-		LCD_doEvents();
-		needLCDDoEvents = false;
-	}
+
+  if (needLCDDoEvents && !LCD_busy)
+  {
+    LCD_doEvents();
+    needLCDDoEvents = false;
+  }
 
   static uint8_t needPrintFFT = 0;
   if (needPrintFFT < 10 && (ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
@@ -757,10 +757,10 @@ void TIM6_DAC_IRQHandler(void)
     TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
     TRX_STM32_VREF = TRX_getSTM32H743vref();
 
-		//Save Debug variables
-		uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
+    //Save Debug variables
+    uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
     float32_t dbg_coeff = 1000.0f / (float32_t)dbg_tim6_delay;
-		dbg_FPGA_samples = (uint32_t)((float32_t)FPGA_samples * dbg_coeff);
+    dbg_FPGA_samples = (uint32_t)((float32_t)FPGA_samples * dbg_coeff);
     if (TRX.Debug_Type == TRX_DEBUG_SYSTEM)
     {
       //Print debug
@@ -777,7 +777,7 @@ void TIM6_DAC_IRQHandler(void)
       uint32_t dbg_TX_USB_AUDIO_SAMPLES = (uint32_t)((float32_t)TX_USB_AUDIO_SAMPLES * dbg_coeff);
       uint32_t cpu_load = (uint32_t)CPU_LOAD.Load;
       //Print Debug info
-      println("FPGA Samples: ", dbg_FPGA_samples); //~96000
+      println("FPGA Samples: ", dbg_FPGA_samples);            //~96000
       println("Audio DMA samples: ", dbg_WM8731_DMA_samples); //~48000
       println("Audioproc blocks: ", dbg_AUDIOPROC_samples);
       println("CPU Load: ", cpu_load);
@@ -786,10 +786,10 @@ void TIM6_DAC_IRQHandler(void)
       println("TIM6 delay: ", dbg_tim6_delay);
       println("FFT FPS: ", FFT_FPS);
       println("First byte of RX-FPGA I/Q: ", dbg_FPGA_Audio_Buffer_I_tmp, " / ", dbg_FPGA_Audio_Buffer_Q_tmp); //first byte of IQ
-      println("IQ Phase error: ", TRX_IQ_phase_error); //first byte of Q
-      println("USB Audio RX/TX samples: ", dbg_RX_USB_AUDIO_SAMPLES, " / ", dbg_TX_USB_AUDIO_SAMPLES); //~48000
+      println("IQ Phase error: ", TRX_IQ_phase_error);                                                         //first byte of Q
+      println("USB Audio RX/TX samples: ", dbg_RX_USB_AUDIO_SAMPLES, " / ", dbg_TX_USB_AUDIO_SAMPLES);         //~48000
       println("ADC MIN/MAX Amplitude: ", TRX_ADC_MINAMPLITUDE, " / ", TRX_ADC_MAXAMPLITUDE);
-			//print_bin16(TRX_ADC_MINAMPLITUDE, true); print_str(" / "); print_bin16(TRX_ADC_MAXAMPLITUDE, false);
+      //print_bin16(TRX_ADC_MINAMPLITUDE, true); print_str(" / "); print_bin16(TRX_ADC_MAXAMPLITUDE, false);
       println("VCXO Error: ", TRX_VCXO_ERROR);
       println("WIFI State: ", WIFI_State);
       println("");
@@ -913,7 +913,7 @@ void DMA2D_IRQHandler(void)
 void OTG_FS_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_FS_IRQn 0 */
-	CPULOAD_WakeUp();
+  CPULOAD_WakeUp();
   /* USER CODE END OTG_FS_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
@@ -932,9 +932,9 @@ void TIM15_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim15);
   /* USER CODE BEGIN TIM15_IRQn 1 */
 
-	if(SD_BusyByUSB) 
-		return;
-	
+  if (SD_BusyByUSB)
+    return;
+
   //FRONT PANEL SPI
   static uint16_t front_slowler = 0;
   front_slowler++;
@@ -1003,17 +1003,17 @@ void TIM17_IRQHandler(void)
   /* USER CODE END TIM17_IRQn 0 */
   HAL_TIM_IRQHandler(&htim17);
   /* USER CODE BEGIN TIM17_IRQn 1 */
-	
-	//audio buffer RX preprocessor
-	if (!TRX_on_TX())
-		preProcessRxAudio();
-	
+
+  //audio buffer RX preprocessor
+  if (!TRX_on_TX())
+    preProcessRxAudio();
+
   if (FFT_new_buffer_ready)
     FFT_bufferPrepare();
 
   if (TRX.CWDecoder)
     DECODER_Process();
-	
+
   /* USER CODE END TIM17_IRQn 1 */
 }
 
@@ -1036,7 +1036,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   CPULOAD_WakeUp();
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
-		FPGA_fpgadata_iqclock();  // IQ data
+    FPGA_fpgadata_iqclock();    // IQ data
     FPGA_fpgadata_stuffclock(); // parameters and other services
   }
   else if (GPIO_Pin == GPIO_PIN_2) //Main encoder

@@ -95,7 +95,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x09,					 /* bLength: Interface Descriptor size */
 		USB_DESC_TYPE_INTERFACE, /* bDescriptorType: Interface */
 		/* Interface descriptor type */
-		DEBUG_INTERFACE_IDX,					 /* bInterfaceNumber: Number of Interface */
+		DEBUG_INTERFACE_IDX,	 /* bInterfaceNumber: Number of Interface */
 		0x00,					 /* bAlternateSetting: Alternate setting */
 		0x01,					 /* bNumEndpoints: One endpoints used */
 		0x02,					 /* bInterfaceClass: Communication Interface Class */
@@ -142,15 +142,15 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x10, /* bInterval: */
 
 		/*Data class interface descriptor*/
-		0x09,					 /* bLength: Endpoint Descriptor size */
-		USB_DESC_TYPE_INTERFACE, /* bDescriptorType: */
-		(DEBUG_INTERFACE_IDX + 1),					 /* bInterfaceNumber: Number of Interface */
-		0x00,					 /* bAlternateSetting: Alternate setting */
-		0x02,					 /* bNumEndpoints: Two endpoints used */
-		0x0A,					 /* bInterfaceClass: CDC */
-		0x00,					 /* bInterfaceSubClass: */
-		0x00,					 /* bInterfaceProtocol: */
-		USBD_IDX_INTERFACE1_STR, /* iInterface: */
+		0x09,					   /* bLength: Endpoint Descriptor size */
+		USB_DESC_TYPE_INTERFACE,   /* bDescriptorType: */
+		(DEBUG_INTERFACE_IDX + 1), /* bInterfaceNumber: Number of Interface */
+		0x00,					   /* bAlternateSetting: Alternate setting */
+		0x02,					   /* bNumEndpoints: Two endpoints used */
+		0x0A,					   /* bInterfaceClass: CDC */
+		0x00,					   /* bInterfaceSubClass: */
+		0x00,					   /* bInterfaceProtocol: */
+		USBD_IDX_INTERFACE1_STR,   /* iInterface: */
 
 		/*Endpoint OUT Descriptor*/
 		0x07,								 /* bLength: Endpoint Descriptor size */
@@ -188,7 +188,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x09,					 /* bLength: Interface Descriptor size */
 		USB_DESC_TYPE_INTERFACE, /* bDescriptorType: Interface */
 		/* Interface descriptor type */
-		CAT_INTERFACE_IDX,					 /* bInterfaceNumber: Number of Interface */
+		CAT_INTERFACE_IDX,		 /* bInterfaceNumber: Number of Interface */
 		0x00,					 /* bAlternateSetting: Alternate setting */
 		0x01,					 /* bNumEndpoints: One endpoints used */
 		0x02,					 /* bInterfaceClass: Communication Interface Class */
@@ -237,7 +237,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		/*Data class interface descriptor*/
 		0x09,					 /* bLength: Endpoint Descriptor size */
 		USB_DESC_TYPE_INTERFACE, /* bDescriptorType: */
-		(CAT_INTERFACE_IDX + 1),					 /* bInterfaceNumber: Number of Interface */
+		(CAT_INTERFACE_IDX + 1), /* bInterfaceNumber: Number of Interface */
 		0x00,					 /* bAlternateSetting: Alternate setting */
 		0x02,					 /* bNumEndpoints: Two endpoints used */
 		0x0A,					 /* bInterfaceClass: CDC */
@@ -281,7 +281,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		//------------------------------
 		0x09,					 //     bLength
 		0x04,					 //     bDescriptorType
-		AUDIO_INTERFACE_IDX,					 //     bInterfaceNumber
+		AUDIO_INTERFACE_IDX,	 //     bInterfaceNumber
 		0x00,					 //     bAlternateSetting
 		0x00,					 //     bNumEndPoints
 		0x01,					 //     bInterfaceClass      (Audio Device Class)
@@ -358,27 +358,27 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 
 		//Interface Descriptor (Microphone):
 		//------------------------------
-		0x09,					 //     bLength
-		0x04,					 //     bDescriptorType
-		(AUDIO_INTERFACE_IDX + 1),					 //     bInterfaceNumber
-		0x00,					 //     bAlternateSetting
-		0x00,					 //     bNumEndPoints
-		0x01,					 //     bInterfaceClass      (Audio Device Class)
-		0x02,					 //     bInterfaceSubClass   (Audio Streaming Interface)
-		0x00,					 //     bInterfaceProtocol
-		USBD_IDX_INTERFACE3_STR, //     iInterface   "xxxx 1"
+		0x09,					   //     bLength
+		0x04,					   //     bDescriptorType
+		(AUDIO_INTERFACE_IDX + 1), //     bInterfaceNumber
+		0x00,					   //     bAlternateSetting
+		0x00,					   //     bNumEndPoints
+		0x01,					   //     bInterfaceClass      (Audio Device Class)
+		0x02,					   //     bInterfaceSubClass   (Audio Streaming Interface)
+		0x00,					   //     bInterfaceProtocol
+		USBD_IDX_INTERFACE3_STR,   //     iInterface   "xxxx 1"
 
 		//Interface Descriptor (Microphone):
 		//------------------------------
-		0x09,					 //     bLength
-		0x04,					 //     bDescriptorType
-		(AUDIO_INTERFACE_IDX + 1),					 //     bInterfaceNumber
-		0x01,					 //     bAlternateSetting
-		0x01,					 //     bNumEndPoints
-		0x01,					 //     bInterfaceClass      (Audio Device Class)
-		0x02,					 //     bInterfaceSubClass   (Audio Streaming Interface)
-		0x00,					 //     bInterfaceProtocol
-		USBD_IDX_INTERFACE3_STR, //     iInterface   "xxxx 1"
+		0x09,					   //     bLength
+		0x04,					   //     bDescriptorType
+		(AUDIO_INTERFACE_IDX + 1), //     bInterfaceNumber
+		0x01,					   //     bAlternateSetting
+		0x01,					   //     bNumEndPoints
+		0x01,					   //     bInterfaceClass      (Audio Device Class)
+		0x02,					   //     bInterfaceSubClass   (Audio Streaming Interface)
+		0x00,					   //     bInterfaceProtocol
+		USBD_IDX_INTERFACE3_STR,   //     iInterface   "xxxx 1"
 
 		//AS Interface Descriptor (Microphone):
 		//------------------------------
@@ -428,27 +428,27 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 
 		//Interface Descriptor (Speaker):
 		//------------------------------
-		0x09,					 //     bLength
-		0x04,					 //     bDescriptorType
-		(AUDIO_INTERFACE_IDX + 2),					 //     bInterfaceNumber
-		0x00,					 //     bAlternateSetting
-		0x00,					 //     bNumEndPoints
-		0x01,					 //     bInterfaceClass      (Audio Device Class)
-		0x02,					 //     bInterfaceSubClass   (Audio Streaming Interface)
-		0x00,					 //     bInterfaceProtocol
-		USBD_IDX_INTERFACE3_STR, //     iInterface   "yyyy 3"
+		0x09,					   //     bLength
+		0x04,					   //     bDescriptorType
+		(AUDIO_INTERFACE_IDX + 2), //     bInterfaceNumber
+		0x00,					   //     bAlternateSetting
+		0x00,					   //     bNumEndPoints
+		0x01,					   //     bInterfaceClass      (Audio Device Class)
+		0x02,					   //     bInterfaceSubClass   (Audio Streaming Interface)
+		0x00,					   //     bInterfaceProtocol
+		USBD_IDX_INTERFACE3_STR,   //     iInterface   "yyyy 3"
 
 		//Interface Descriptor (Speaker):
 		//------------------------------
-		0x09,					 //     bLength
-		0x04,					 //     bDescriptorType
-		(AUDIO_INTERFACE_IDX + 2),					 //     bInterfaceNumber
-		0x01,					 //     bAlternateSetting
-		0x01,					 //     bNumEndPoints
-		0x01,					 //     bInterfaceClass      (Audio Device Class)
-		0x02,					 //     bInterfaceSubClass   (Audio Streaming Interface)
-		0x00,					 //     bInterfaceProtocol
-		USBD_IDX_INTERFACE3_STR, //    iInterface   "zzzz 3"
+		0x09,					   //     bLength
+		0x04,					   //     bDescriptorType
+		(AUDIO_INTERFACE_IDX + 2), //     bInterfaceNumber
+		0x01,					   //     bAlternateSetting
+		0x01,					   //     bNumEndPoints
+		0x01,					   //     bInterfaceClass      (Audio Device Class)
+		0x02,					   //     bInterfaceSubClass   (Audio Streaming Interface)
+		0x00,					   //     bInterfaceProtocol
+		USBD_IDX_INTERFACE3_STR,   //    iInterface   "zzzz 3"
 
 		//AS Interface Descriptor (Speaker):
 		//------------------------------
@@ -495,33 +495,33 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00, //     bLockDelayUnits   (undefined)
 		0x00, // wLockDelay
 		0x00, // wLockDelay
-		
-		// Mass Storage interface
-		0x09,                                            /* bLength: Interface Descriptor size */
-		0x04,                                            /* bDescriptorType: */
-		STORAGE_INTERFACE_IDX,                           /* bInterfaceNumber: Number of Interface */
-		0x00,                                            /* bAlternateSetting: Alternate setting */
-		0x02,                                            /* bNumEndpoints*/
-		0x08,                                            /* bInterfaceClass: MSC Class */
-		0x06,                                            /* bInterfaceSubClass : SCSI transparent*/
-		0x50,                                            /* nInterfaceProtocol */
-		0x05,                                            /* iInterface: */
-		/********************  Mass Storage Endpoints ********************/
-		0x07,                                            /* Endpoint descriptor length = 7 */
-		0x05,                                            /* Endpoint descriptor type */
-		MSC_EPIN_ADDR,                                   /* Endpoint address (IN, address 1) */
-		0x02,                                            /* Bulk endpoint type */
-		LOBYTE(MSC_MAX_FS_PACKET),
-		HIBYTE(MSC_MAX_FS_PACKET),
-		0x00,                                            /* Polling interval in milliseconds */
 
-		0x07,                                            /* Endpoint descriptor length = 7 */
-		0x05,                                            /* Endpoint descriptor type */
-		MSC_EPOUT_ADDR,                                  /* Endpoint address (OUT, address 1) */
-		0x02,                                            /* Bulk endpoint type */
+		// Mass Storage interface
+		0x09,				   /* bLength: Interface Descriptor size */
+		0x04,				   /* bDescriptorType: */
+		STORAGE_INTERFACE_IDX, /* bInterfaceNumber: Number of Interface */
+		0x00,				   /* bAlternateSetting: Alternate setting */
+		0x02,				   /* bNumEndpoints*/
+		0x08,				   /* bInterfaceClass: MSC Class */
+		0x06,				   /* bInterfaceSubClass : SCSI transparent*/
+		0x50,				   /* nInterfaceProtocol */
+		0x05,				   /* iInterface: */
+		/********************  Mass Storage Endpoints ********************/
+		0x07,		   /* Endpoint descriptor length = 7 */
+		0x05,		   /* Endpoint descriptor type */
+		MSC_EPIN_ADDR, /* Endpoint address (IN, address 1) */
+		0x02,		   /* Bulk endpoint type */
 		LOBYTE(MSC_MAX_FS_PACKET),
 		HIBYTE(MSC_MAX_FS_PACKET),
-		0x00                                             /* Polling interval in milliseconds */
+		0x00, /* Polling interval in milliseconds */
+
+		0x07,			/* Endpoint descriptor length = 7 */
+		0x05,			/* Endpoint descriptor type */
+		MSC_EPOUT_ADDR, /* Endpoint address (OUT, address 1) */
+		0x02,			/* Bulk endpoint type */
+		LOBYTE(MSC_MAX_FS_PACKET),
+		HIBYTE(MSC_MAX_FS_PACKET),
+		0x00 /* Polling interval in milliseconds */
 };
 
 /**
@@ -580,7 +580,7 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	static USBD_CAT_HandleTypeDef pClassDataCAT = {0};
 	static USBD_AUDIO_HandleTypeDef pClassDataAUDIO = {0};
 	static USBD_MSC_BOT_HandleTypeDef pClassDataSTORAGE = {0};
-	
+
 	pdev->pClassDataDEBUG = &pClassDataDEBUG;
 	dma_memset(pdev->pClassDataDEBUG, 0, sizeof(USBD_DEBUG_HandleTypeDef));
 	pdev->pClassDataCAT = &pClassDataCAT;
@@ -602,7 +602,6 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	/* Prepare Out endpoint to receive next packet */
 	USBD_LL_PrepareReceive(pdev, DEBUG_OUT_EP, hcdc_debug->RxBuffer, CDC_DATA_FS_OUT_PACKET_SIZE);
 
-
 	hcdc_cat = (USBD_CAT_HandleTypeDef *)pdev->pClassDataCAT;
 
 	((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Init();
@@ -612,18 +611,17 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 
 	USBD_LL_PrepareReceive(pdev, CAT_OUT_EP, hcdc_cat->RxBuffer, CDC_DATA_FS_OUT_PACKET_SIZE);
 
-
 	haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
 	haudio->alt_setting = 0U;
 
 	// Initialize the Audio output Hardware layer
 	if (((USBD_AUDIO_ItfTypeDef *)pdev->pUserDataAUDIO)->Init() != 0)
 	{
-			return USBD_FAIL;
+		return USBD_FAIL;
 	}
-	
+
 	MSC_BOT_Init(pdev);
-		
+
 	return ret;
 }
 
@@ -957,115 +955,115 @@ static uint8_t USBD_AUDIO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 
 uint8_t USBD_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
-  USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
-  USBD_StatusTypeDef ret = USBD_OK;
-  uint16_t status_info = 0U;
+	USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
+	USBD_StatusTypeDef ret = USBD_OK;
+	uint16_t status_info = 0U;
 
-  switch (req->bmRequest & USB_REQ_TYPE_MASK)
-  {
-    /* Class request */
-  case USB_REQ_TYPE_CLASS:
-    switch (req->bRequest)
-    {
-    case BOT_GET_MAX_LUN:
-      if ((req->wValue  == 0U) && (req->wLength == 1U) && ((req->bmRequest & 0x80U) == 0x80U))
-      {
-        hmsc->max_lun = (uint32_t)((USBD_StorageTypeDef *)pdev->pUserDataSTORAGE)->GetMaxLun();
-        (void)USBD_CtlSendData(pdev, (uint8_t *)&hmsc->max_lun, 1U);
-      }
-      else
-      {
-        USBD_CtlError(pdev);
-        ret = USBD_FAIL;
-      }
-      break;
+	switch (req->bmRequest & USB_REQ_TYPE_MASK)
+	{
+		/* Class request */
+	case USB_REQ_TYPE_CLASS:
+		switch (req->bRequest)
+		{
+		case BOT_GET_MAX_LUN:
+			if ((req->wValue == 0U) && (req->wLength == 1U) && ((req->bmRequest & 0x80U) == 0x80U))
+			{
+				hmsc->max_lun = (uint32_t)((USBD_StorageTypeDef *)pdev->pUserDataSTORAGE)->GetMaxLun();
+				(void)USBD_CtlSendData(pdev, (uint8_t *)&hmsc->max_lun, 1U);
+			}
+			else
+			{
+				USBD_CtlError(pdev);
+				ret = USBD_FAIL;
+			}
+			break;
 
-    case BOT_RESET:
-      if ((req->wValue  == 0U) && (req->wLength == 0U) && ((req->bmRequest & 0x80U) != 0x80U))
-      {
-        MSC_BOT_Reset(pdev);
-      }
-      else
-      {
-        USBD_CtlError(pdev);
-        ret = USBD_FAIL;
-      }
-      break;
+		case BOT_RESET:
+			if ((req->wValue == 0U) && (req->wLength == 0U) && ((req->bmRequest & 0x80U) != 0x80U))
+			{
+				MSC_BOT_Reset(pdev);
+			}
+			else
+			{
+				USBD_CtlError(pdev);
+				ret = USBD_FAIL;
+			}
+			break;
 
-    default:
-      USBD_CtlError(pdev);
-      ret = USBD_FAIL;
-      break;
-    }
-    break;
-    /* Interface & Endpoint request */
-  case USB_REQ_TYPE_STANDARD:
-    switch (req->bRequest)
-    {
-    case USB_REQ_GET_STATUS:
-      if (pdev->dev_state == USBD_STATE_CONFIGURED)
-      {
-        (void)USBD_CtlSendData(pdev, (uint8_t *)&status_info, 2U);
-      }
-      else
-      {
-        USBD_CtlError(pdev);
-        ret = USBD_FAIL;
-      }
-      break;
+		default:
+			USBD_CtlError(pdev);
+			ret = USBD_FAIL;
+			break;
+		}
+		break;
+		/* Interface & Endpoint request */
+	case USB_REQ_TYPE_STANDARD:
+		switch (req->bRequest)
+		{
+		case USB_REQ_GET_STATUS:
+			if (pdev->dev_state == USBD_STATE_CONFIGURED)
+			{
+				(void)USBD_CtlSendData(pdev, (uint8_t *)&status_info, 2U);
+			}
+			else
+			{
+				USBD_CtlError(pdev);
+				ret = USBD_FAIL;
+			}
+			break;
 
-    case USB_REQ_GET_INTERFACE:
-      if (pdev->dev_state == USBD_STATE_CONFIGURED)
-      {
-        (void)USBD_CtlSendData(pdev, (uint8_t *)&hmsc->interface, 1U);
-      }
-      else
-      {
-        USBD_CtlError(pdev);
-        ret = USBD_FAIL;
-      }
-      break;
+		case USB_REQ_GET_INTERFACE:
+			if (pdev->dev_state == USBD_STATE_CONFIGURED)
+			{
+				(void)USBD_CtlSendData(pdev, (uint8_t *)&hmsc->interface, 1U);
+			}
+			else
+			{
+				USBD_CtlError(pdev);
+				ret = USBD_FAIL;
+			}
+			break;
 
-    case USB_REQ_SET_INTERFACE:
-      if (pdev->dev_state == USBD_STATE_CONFIGURED)
-      {
-        hmsc->interface = (uint8_t)(req->wValue);
-      }
-      else
-      {
-        USBD_CtlError(pdev);
-        ret = USBD_FAIL;
-      }
-      break;
+		case USB_REQ_SET_INTERFACE:
+			if (pdev->dev_state == USBD_STATE_CONFIGURED)
+			{
+				hmsc->interface = (uint8_t)(req->wValue);
+			}
+			else
+			{
+				USBD_CtlError(pdev);
+				ret = USBD_FAIL;
+			}
+			break;
 
-    case USB_REQ_CLEAR_FEATURE:
-      if (pdev->dev_state == USBD_STATE_CONFIGURED)
-      {
-        if (req->wValue == USB_FEATURE_EP_HALT)
-        {
-          /* Flush the FIFO */
-          (void)USBD_LL_FlushEP(pdev, (uint8_t)req->wIndex);
+		case USB_REQ_CLEAR_FEATURE:
+			if (pdev->dev_state == USBD_STATE_CONFIGURED)
+			{
+				if (req->wValue == USB_FEATURE_EP_HALT)
+				{
+					/* Flush the FIFO */
+					(void)USBD_LL_FlushEP(pdev, (uint8_t)req->wIndex);
 
-          /* Handle BOT error */
-          MSC_BOT_CplClrFeature(pdev, (uint8_t)req->wIndex);
-        }
-      }
-      break;
+					/* Handle BOT error */
+					MSC_BOT_CplClrFeature(pdev, (uint8_t)req->wIndex);
+				}
+			}
+			break;
 
-    default:
-      USBD_CtlError(pdev);
-      ret = USBD_FAIL;
-      break;
-    }
-    break;
+		default:
+			USBD_CtlError(pdev);
+			ret = USBD_FAIL;
+			break;
+		}
+		break;
 
-  default:
-    USBD_CtlError(pdev);
-    ret = USBD_FAIL;
-    break;
-  }
+	default:
+		USBD_CtlError(pdev);
+		ret = USBD_FAIL;
+		break;
+	}
 
-  return (uint8_t)ret;
+	return (uint8_t)ret;
 }
 
 static uint8_t USBD_UA3REO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
@@ -1190,9 +1188,9 @@ static uint8_t USBD_AUDIO_DataIn(USBD_HandleTypeDef *pdev)
 
 uint8_t USBD_MSC_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
-  MSC_BOT_DataIn(pdev, epnum);
+	MSC_BOT_DataIn(pdev, epnum);
 
-  return (uint8_t)USBD_OK;
+	return (uint8_t)USBD_OK;
 }
 
 static uint8_t USBD_UA3REO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
@@ -1268,9 +1266,9 @@ static uint8_t USBD_AUDIO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 
 uint8_t USBD_MSC_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
-  MSC_BOT_DataOut(pdev, epnum);
+	MSC_BOT_DataOut(pdev, epnum);
 
-  return (uint8_t)USBD_OK;
+	return (uint8_t)USBD_OK;
 }
 
 static uint8_t USBD_UA3REO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
@@ -1631,12 +1629,12 @@ void USBD_Restart(void)
 */
 uint8_t USBD_MSC_RegisterStorage(USBD_HandleTypeDef *pdev, USBD_StorageTypeDef *fops)
 {
-  if (fops == NULL)
-  {
-    return (uint8_t)USBD_FAIL;
-  }
+	if (fops == NULL)
+	{
+		return (uint8_t)USBD_FAIL;
+	}
 
-  pdev->pUserDataSTORAGE = fops;
+	pdev->pUserDataSTORAGE = fops;
 
-  return (uint8_t)USBD_OK;
+	return (uint8_t)USBD_OK;
 }

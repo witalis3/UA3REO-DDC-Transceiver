@@ -8,15 +8,15 @@
 #endif
 
 // Public variables
-volatile uint32_t FPGA_samples = 0;										  // counter of the number of samples when exchanging with FPGA
-volatile bool FPGA_NeedSendParams = false;								  // flag of the need to send parameters to FPGA
-volatile bool FPGA_NeedGetParams = false;								  // flag of the need to get parameters from FPGA
-volatile bool FPGA_NeedRestart = true;									  // flag of necessity to restart FPGA modules
-volatile bool FPGA_Buffer_underrun = false;								  // flag of lack of data from FPGA
-uint_fast16_t FPGA_Audio_RXBuffer_Index = 0;							  // current index in FPGA buffers
-uint_fast16_t FPGA_Audio_TXBuffer_Index = 0;							  // current index in FPGA buffers
-bool FPGA_Audio_Buffer_State = true;									  // buffer state, half or full full true - compleate; false - half
-bool FPGA_RX_Buffer_Current = true;									  // buffer state, false - fill B, work A
+volatile uint32_t FPGA_samples = 0;			 // counter of the number of samples when exchanging with FPGA
+volatile bool FPGA_NeedSendParams = false;	 // flag of the need to send parameters to FPGA
+volatile bool FPGA_NeedGetParams = false;	 // flag of the need to get parameters from FPGA
+volatile bool FPGA_NeedRestart = true;		 // flag of necessity to restart FPGA modules
+volatile bool FPGA_Buffer_underrun = false;	 // flag of lack of data from FPGA
+uint_fast16_t FPGA_Audio_RXBuffer_Index = 0; // current index in FPGA buffers
+uint_fast16_t FPGA_Audio_TXBuffer_Index = 0; // current index in FPGA buffers
+bool FPGA_Audio_Buffer_State = true;		 // buffer state, half or full full true - compleate; false - half
+bool FPGA_RX_Buffer_Current = true;			 // buffer state, false - fill B, work A
 bool FPGA_RX_buffer_ready = true;
 volatile float32_t FPGA_Audio_Buffer_RX1_Q_A[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // FPGA buffers
 volatile float32_t FPGA_Audio_Buffer_RX1_I_A[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
@@ -55,7 +55,7 @@ static void FPGA_spi_flash_erase(void);		  // clear flash memory
 void FPGA_Init(bool bus_test, bool firmware_test)
 {
 	FPGA_bus_stop = true;
-	
+
 	FPGA_GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
 	FPGA_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	FPGA_GPIO_InitStruct.Pull = GPIO_PULLUP;
@@ -187,7 +187,7 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 	HAL_Delay(100);
 	FPGA_writePacket(6); // RESET OFF
 	FPGA_syncAndClockRiseFall();
-	
+
 	//star FPGA bus
 	FPGA_bus_stop = false;
 }
@@ -273,33 +273,33 @@ void FPGA_fpgadata_iqclock(void)
 		FPGA_syncAndClockRiseFall();
 
 		//blocks by 48k
-		switch(TRX_GetRXSampleRateENUM)
+		switch (TRX_GetRXSampleRateENUM)
 		{
-			case TRX_SAMPLERATE_K48:
-				FPGA_fpgadata_getiq();
+		case TRX_SAMPLERATE_K48:
+			FPGA_fpgadata_getiq();
 			break;
-			case TRX_SAMPLERATE_K96:
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
+		case TRX_SAMPLERATE_K96:
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
 			break;
-			case TRX_SAMPLERATE_K192:
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
+		case TRX_SAMPLERATE_K192:
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
 			break;
-			case TRX_SAMPLERATE_K384:
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
-				
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
-				FPGA_fpgadata_getiq();
+		case TRX_SAMPLERATE_K384:
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
+
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
+			FPGA_fpgadata_getiq();
 			break;
-			default:
+		default:
 			break;
 		}
 	}
@@ -378,21 +378,21 @@ static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 11
 	//OUT CICCOMP-GAIN
-	switch(TRX_GetRXSampleRateENUM)
+	switch (TRX_GetRXSampleRateENUM)
 	{
-		case TRX_SAMPLERATE_K48:
-			FPGA_writePacket(CALIBRATE.CICFIR_GAINER_48K_val);
+	case TRX_SAMPLERATE_K48:
+		FPGA_writePacket(CALIBRATE.CICFIR_GAINER_48K_val);
 		break;
-		case TRX_SAMPLERATE_K96:
-			FPGA_writePacket(CALIBRATE.CICFIR_GAINER_96K_val);
+	case TRX_SAMPLERATE_K96:
+		FPGA_writePacket(CALIBRATE.CICFIR_GAINER_96K_val);
 		break;
-		case TRX_SAMPLERATE_K192:
-			FPGA_writePacket(CALIBRATE.CICFIR_GAINER_192K_val);
+	case TRX_SAMPLERATE_K192:
+		FPGA_writePacket(CALIBRATE.CICFIR_GAINER_192K_val);
 		break;
-		case TRX_SAMPLERATE_K384:
-			FPGA_writePacket(CALIBRATE.CICFIR_GAINER_384K_val);
+	case TRX_SAMPLERATE_K384:
+		FPGA_writePacket(CALIBRATE.CICFIR_GAINER_384K_val);
 		break;
-		default:
+	default:
 		break;
 	}
 	FPGA_clockRise();
@@ -438,25 +438,25 @@ static inline void FPGA_fpgadata_sendparam(void)
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX_DAC_X4);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX_DCDC_Freq);
 	//11 - 48khz 01 - 96khz 10 - 192khz 00 - 384khz IQ speed
-	switch(TRX_GetRXSampleRateENUM)
+	switch (TRX_GetRXSampleRateENUM)
 	{
-		case TRX_SAMPLERATE_K48:
-			bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);
-			bitWrite(FPGA_fpgadata_out_tmp8, 7, 1);
+	case TRX_SAMPLERATE_K48:
+		bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);
+		bitWrite(FPGA_fpgadata_out_tmp8, 7, 1);
 		break;
-		case TRX_SAMPLERATE_K96:
-			bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
-			bitWrite(FPGA_fpgadata_out_tmp8, 7, 1);
+	case TRX_SAMPLERATE_K96:
+		bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
+		bitWrite(FPGA_fpgadata_out_tmp8, 7, 1);
 		break;
-		case TRX_SAMPLERATE_K192:
-			bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);
-			bitWrite(FPGA_fpgadata_out_tmp8, 7, 0);
+	case TRX_SAMPLERATE_K192:
+		bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);
+		bitWrite(FPGA_fpgadata_out_tmp8, 7, 0);
 		break;
-		case TRX_SAMPLERATE_K384:
-			bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
-			bitWrite(FPGA_fpgadata_out_tmp8, 7, 0);
+	case TRX_SAMPLERATE_K384:
+		bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
+		bitWrite(FPGA_fpgadata_out_tmp8, 7, 0);
 		break;
-		default:
+	default:
 		break;
 	}
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
@@ -552,7 +552,7 @@ static float32_t *FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buf
 static inline void FPGA_fpgadata_getiq(void)
 {
 	register int_fast32_t FPGA_fpgadata_in_tmp32 = 0;
-	
+
 	float32_t FPGA_fpgadata_in_float32_i = 0;
 	float32_t FPGA_fpgadata_in_float32_q = 0;
 	FPGA_samples++;
@@ -601,7 +601,7 @@ static inline void FPGA_fpgadata_getiq(void)
 	FPGA_clockFall();
 
 	FPGA_fpgadata_in_float32_i = (float32_t)FPGA_fpgadata_in_tmp32;
-	
+
 	FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q / 2147483648.0f;
 	FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_float32_i / 2147483648.0f;
 	if (TRX_RX1_IQ_swap)
@@ -664,7 +664,7 @@ static inline void FPGA_fpgadata_getiq(void)
 		FPGA_clockFall();
 
 		FPGA_fpgadata_in_float32_i = (float32_t)FPGA_fpgadata_in_tmp32;
-		
+
 		FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q / 2147483648.0f;
 		FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_float32_i / 2147483648.0f;
 		if (TRX_RX2_IQ_swap)
@@ -683,7 +683,7 @@ static inline void FPGA_fpgadata_getiq(void)
 	if (FPGA_Audio_RXBuffer_Index == FPGA_RX_IQ_BUFFER_HALF_SIZE)
 	{
 		FPGA_Audio_RXBuffer_Index = 0;
-		if(FPGA_RX_buffer_ready)
+		if (FPGA_RX_buffer_ready)
 		{
 			FPGA_Buffer_underrun = true;
 			//println("fpga overrun");

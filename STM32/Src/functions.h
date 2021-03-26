@@ -28,7 +28,7 @@ __asm(".global __use_no_heap\n\t");
 
 #define ITCM __attribute__((section(".ITCM"))) __attribute__((aligned(32))) // 64kb ITCM
 #define IRAM2 __attribute__((section(".IRAM"))) __attribute__((aligned(32))) // 512kb AXI SRAM
-#define SRAM __attribute__((section(".SRAM"))) __attribute__((aligned(32)))  // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb
+#define SRAM __attribute__((section(".SRAM"))) __attribute__((aligned(32))) // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb
 #define SRAM4 __attribute__((section(".SRAM4"))) __attribute__((aligned(32))) // SRAM4 64kb
 #define BACKUP_SRAM_BANK1_ADDR (uint32_t *)0x38800000
 #define BACKUP_SRAM_BANK2_ADDR (uint32_t *)0x38800800
@@ -39,32 +39,32 @@ __asm(".global __use_no_heap\n\t");
 #define B8__(x) ((x & 0x0000000FLU) ? 1 : 0) + ((x & 0x000000F0LU) ? 2 : 0) + ((x & 0x00000F00LU) ? 4 : 0) + ((x & 0x0000F000LU) ? 8 : 0) + ((x & 0x000F0000LU) ? 16 : 0) + ((x & 0x00F00000LU) ? 32 : 0) + ((x & 0x0F000000LU) ? 64 : 0) + ((x & 0xF0000000LU) ? 128 : 0)
 #define B8(d) ((unsigned char)B8__(HEX__(d)))
 
-#define BYTE_TO_BINARY(byte)  \
-  (byte & 0x80 ? '1' : '0'), \
-  (byte & 0x40 ? '1' : '0'), \
-  (byte & 0x20 ? '1' : '0'), \
-  (byte & 0x10 ? '1' : '0'), \
-  (byte & 0x08 ? '1' : '0'), \
-  (byte & 0x04 ? '1' : '0'), \
-  (byte & 0x02 ? '1' : '0'), \
-  (byte & 0x01 ? '1' : '0') 
-#define BIT16_TO_BINARY(byte)  \
-  (byte & 0x8000 ? '1' : '0'), \
-  (byte & 0x4000 ? '1' : '0'), \
-  (byte & 0x2000 ? '1' : '0'), \
-  (byte & 0x1000 ? '1' : '0'), \
-  (byte & 0x0800 ? '1' : '0'), \
-  (byte & 0x0400 ? '1' : '0'), \
-  (byte & 0x0200 ? '1' : '0'), \
-  (byte & 0x0100 ? '1' : '0'), \
-	(byte & 0x0080 ? '1' : '0'), \
-  (byte & 0x0040 ? '1' : '0'), \
-  (byte & 0x0020 ? '1' : '0'), \
-  (byte & 0x0010 ? '1' : '0'), \
-  (byte & 0x0008 ? '1' : '0'), \
-  (byte & 0x0004 ? '1' : '0'), \
-  (byte & 0x0002 ? '1' : '0'), \
-  (byte & 0x0001 ? '1' : '0') 
+#define BYTE_TO_BINARY(byte)     \
+  (byte & 0x80 ? '1' : '0'),     \
+      (byte & 0x40 ? '1' : '0'), \
+      (byte & 0x20 ? '1' : '0'), \
+      (byte & 0x10 ? '1' : '0'), \
+      (byte & 0x08 ? '1' : '0'), \
+      (byte & 0x04 ? '1' : '0'), \
+      (byte & 0x02 ? '1' : '0'), \
+      (byte & 0x01 ? '1' : '0')
+#define BIT16_TO_BINARY(byte)      \
+  (byte & 0x8000 ? '1' : '0'),     \
+      (byte & 0x4000 ? '1' : '0'), \
+      (byte & 0x2000 ? '1' : '0'), \
+      (byte & 0x1000 ? '1' : '0'), \
+      (byte & 0x0800 ? '1' : '0'), \
+      (byte & 0x0400 ? '1' : '0'), \
+      (byte & 0x0200 ? '1' : '0'), \
+      (byte & 0x0100 ? '1' : '0'), \
+      (byte & 0x0080 ? '1' : '0'), \
+      (byte & 0x0040 ? '1' : '0'), \
+      (byte & 0x0020 ? '1' : '0'), \
+      (byte & 0x0010 ? '1' : '0'), \
+      (byte & 0x0008 ? '1' : '0'), \
+      (byte & 0x0004 ? '1' : '0'), \
+      (byte & 0x0002 ? '1' : '0'), \
+      (byte & 0x0001 ? '1' : '0')
 
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
@@ -133,7 +133,12 @@ __asm(".global __use_no_heap\n\t");
 #define BUILD_SEC_CH0 (__TIME__[6])
 #define BUILD_SEC_CH1 (__TIME__[7])
 
-#define ELEM_SWAP_F32(a,b) { register float32_t t=(a);(a)=(b);(b)=t; }
+#define ELEM_SWAP_F32(a, b)     \
+  {                             \
+    register float32_t t = (a); \
+    (a) = (b);                  \
+    (b) = t;                    \
+  }
 
 typedef struct
 {
@@ -180,6 +185,6 @@ extern float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t sam
 extern int32_t convertToSPIBigEndian(int32_t in);
 extern uint8_t rev8(uint8_t data);
 extern bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma);
-extern float32_t quick_median_select(float32_t* arr, int n);
+extern float32_t quick_median_select(float32_t *arr, int n);
 
 #endif

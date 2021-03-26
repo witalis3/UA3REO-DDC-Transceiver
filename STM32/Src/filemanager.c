@@ -15,7 +15,7 @@ static void FILEMANAGER_Refresh(void);
 
 void FILEMANAGER_Draw(bool redraw)
 {
-	if(first_start)
+	if (first_start)
 	{
 		first_start = false;
 		FILEMANAGER_files_startindex = 0;
@@ -24,32 +24,32 @@ void FILEMANAGER_Draw(bool redraw)
 		FILEMANAGER_Refresh();
 		return;
 	}
-	if(redraw)
+	if (redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
 		uint16_t cur_y = 5;
 		LCDDriver_printText("SD CARD FILE MANAGER", 5, cur_y, COLOR_GREEN, BG_COLOR, 2);
 		cur_y += 24;
-		if(strlen(FILEMANAGER_CurrentPath) == 0)
+		if (strlen(FILEMANAGER_CurrentPath) == 0)
 			LCDDriver_printText("/", 5, cur_y, FG_COLOR, BG_COLOR, 2);
 		else
 			LCDDriver_printText(FILEMANAGER_CurrentPath, 5, cur_y, FG_COLOR, BG_COLOR, 2);
 		cur_y += 24;
-		if(FILEMANAGER_files_startindex == 0)
+		if (FILEMANAGER_files_startindex == 0)
 			LCDDriver_printText("..", 5, cur_y, FG_COLOR, BG_COLOR, 2);
 		cur_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
-		
-		for(uint16_t file_id = 0; file_id < FILEMANAGER_LISTING_ITEMS_ON_PAGE; file_id++)
+
+		for (uint16_t file_id = 0; file_id < FILEMANAGER_LISTING_ITEMS_ON_PAGE; file_id++)
 		{
 			LCDDriver_printText(FILEMANAGER_LISTING[file_id], 5, cur_y, FG_COLOR, BG_COLOR, 2);
 			cur_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
 		}
-		
+
 		LCD_UpdateQuery.SystemMenuRedraw = false;
 	}
-	
+
 	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, FG_COLOR);
-	
+
 	LCD_UpdateQuery.SystemMenu = false;
 }
 
@@ -87,31 +87,31 @@ void FILEMANAGER_EventRotate(int8_t direction)
 void FILEMANAGER_EventSecondaryRotate(int8_t direction)
 {
 	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, BG_COLOR);
-	if(direction > 0 || current_index > 0)
+	if (direction > 0 || current_index > 0)
 		current_index += direction;
-	
+
 	int16_t real_file_index = FILEMANAGER_files_startindex + current_index - 1;
-	
+
 	//limit
-	if(real_file_index >= FILEMANAGER_files_count)
+	if (real_file_index >= FILEMANAGER_files_count)
 		current_index--;
-	
+
 	//list down
-	if(current_index > FILEMANAGER_LISTING_ITEMS_ON_PAGE && real_file_index < FILEMANAGER_files_count)
+	if (current_index > FILEMANAGER_LISTING_ITEMS_ON_PAGE && real_file_index < FILEMANAGER_files_count)
 	{
 		FILEMANAGER_files_startindex += FILEMANAGER_LISTING_ITEMS_ON_PAGE;
 		current_index = 1;
 		FILEMANAGER_Refresh();
 	}
-	
+
 	//list up
-	if(FILEMANAGER_files_startindex > 0 && current_index == 0)
+	if (FILEMANAGER_files_startindex > 0 && current_index == 0)
 	{
 		FILEMANAGER_files_startindex -= FILEMANAGER_LISTING_ITEMS_ON_PAGE;
 		current_index = FILEMANAGER_LISTING_ITEMS_ON_PAGE;
 		FILEMANAGER_Refresh();
 	}
-	
+
 	LCD_UpdateQuery.SystemMenu = true;
 }
 
@@ -122,8 +122,8 @@ void FILEMANAGER_Closing(void)
 
 static void FILEMANAGER_Refresh(void)
 {
-	if(!SD_doCommand(SDCOMM_LIST_DIRECTORY, false))
+	if (!SD_doCommand(SDCOMM_LIST_DIRECTORY, false))
 		SYSMENU_eventCloseSystemMenu();
-	
+
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }

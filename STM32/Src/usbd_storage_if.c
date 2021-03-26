@@ -2,20 +2,21 @@
 #include "sd.h"
 #include "lcd.h"
 
-const int8_t STORAGE_Inquirydata_FS[] = {/* 36 */
-  /* LUN 0 */
-  0x00,
-  0x80,
-  0x02,
-  0x02,
-  (STANDARD_INQUIRY_DATA_LEN - 5),
-  0x00,
-  0x00,
-  0x00,
-  'S', 'T', 'M', ' ', ' ', ' ', ' ', ' ', /* Manufacturer : 8 bytes */
-  'P', 'r', 'o', 'd', 'u', 'c', 't', ' ', /* Product      : 16 Bytes */
-  ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-  '0', '.', '0' ,'1'                      /* Version      : 4 Bytes */
+const int8_t STORAGE_Inquirydata_FS[] = {
+	/* 36 */
+	/* LUN 0 */
+	0x00,
+	0x80,
+	0x02,
+	0x02,
+	(STANDARD_INQUIRY_DATA_LEN - 5),
+	0x00,
+	0x00,
+	0x00,
+	'S', 'T', 'M', ' ', ' ', ' ', ' ', ' ', /* Manufacturer : 8 bytes */
+	'P', 'r', 'o', 'd', 'u', 'c', 't', ' ', /* Product      : 16 Bytes */
+	' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+	'0', '.', '0', '1' /* Version      : 4 Bytes */
 };
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
@@ -29,44 +30,43 @@ static int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uin
 static int8_t STORAGE_GetMaxLun_FS(void);
 
 USBD_StorageTypeDef USBD_Storage_Interface_fops_FS =
-{
-  STORAGE_Init_FS,
-  STORAGE_GetCapacity_FS,
-  STORAGE_IsReady_FS,
-  STORAGE_IsWriteProtected_FS,
-  STORAGE_Read_FS,
-  STORAGE_Write_FS,
-  STORAGE_GetMaxLun_FS,
-  (int8_t *)STORAGE_Inquirydata_FS
-};
+	{
+		STORAGE_Init_FS,
+		STORAGE_GetCapacity_FS,
+		STORAGE_IsReady_FS,
+		STORAGE_IsWriteProtected_FS,
+		STORAGE_Read_FS,
+		STORAGE_Write_FS,
+		STORAGE_GetMaxLun_FS,
+		(int8_t *)STORAGE_Inquirydata_FS};
 
 int8_t STORAGE_Init_FS(uint8_t lun)
 {
-  return (USBD_OK);
+	return (USBD_OK);
 }
 
 int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
-	if(!SD_Present || !SD_USBCardReader)
+	if (!SD_Present || !SD_USBCardReader)
 	{
-		*block_num  = 0;
+		*block_num = 0;
 		*block_size = 0;
 		return (USBD_OK);
 	}
-	
-  *block_num  = sdinfo.SECTOR_COUNT;
-  *block_size = sdinfo.BLOCK_SIZE;
-  return (USBD_OK);
+
+	*block_num = sdinfo.SECTOR_COUNT;
+	*block_size = sdinfo.BLOCK_SIZE;
+	return (USBD_OK);
 }
 
 int8_t STORAGE_IsReady_FS(uint8_t lun)
 {
-	if(!SD_USBCardReader)
+	if (!SD_USBCardReader)
 		return (USBD_FAIL);
-	
-	if(!SD_Present || SD_RecordInProcess || SD_CommandInProcess)
+
+	if (!SD_Present || SD_RecordInProcess || SD_CommandInProcess)
 		return (USBD_FAIL);
-  return (USBD_OK);
+	return (USBD_OK);
 }
 
 int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
@@ -76,10 +76,10 @@ int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
 
 int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
-	if(!SD_USBCardReader)
+	if (!SD_USBCardReader)
 		return (USBD_FAIL);
-	
-	if(SPI_busy || SPI_process || SD_BusyByUSB || !SD_Present || SD_RecordInProcess || SD_CommandInProcess)
+
+	if (SPI_busy || SPI_process || SD_BusyByUSB || !SD_Present || SD_RecordInProcess || SD_CommandInProcess)
 		return (USBD_FAIL);
 
 	//HAL_SD_ReadBlocks(&hsd, buf, blk_addr, (uint32_t) blk_len, 10);
@@ -95,7 +95,7 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 	else // Multiple block read
 	{
 		if (SD_cmd(CMD18, blk_addr) == 0) // READ_MULTIPLE_BLOCK
-		{ 
+		{
 			do
 			{
 				if (!SD_Read_Block(buf, 512))
@@ -106,9 +106,9 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 		}
 	}
 	SPI_Release();
-	
+
 	SD_BusyByUSB = false;
-	if(blk_len == 0)
+	if (blk_len == 0)
 		SD_Present_tryTime = HAL_GetTick() + 10000;
 	else
 	{
@@ -116,23 +116,23 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 		SD_Present = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 	}
-	
+
 	return blk_len ? USBD_FAIL : USBD_OK;
 }
 
 int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
-	if(!SD_USBCardReader)
+	if (!SD_USBCardReader)
 		return (USBD_FAIL);
-	
-	if(SPI_busy || SPI_process || SD_BusyByUSB || !SD_Present || SD_RecordInProcess || SD_CommandInProcess)
+
+	if (SPI_busy || SPI_process || SD_BusyByUSB || !SD_Present || SD_RecordInProcess || SD_CommandInProcess)
 		return (USBD_FAIL);
-	
+
 	//HAL_SD_WriteBlocks(&hsd, buf, blk_addr, (uint32_t) blk_len, 10);
 	SD_BusyByUSB = true;
 	if (!(sdinfo.type & CT_BLOCK))
 		blk_addr *= 512; /* Convert to byte address if needed */
-	if (blk_len == 1)	   /* Single block write */
+	if (blk_len == 1)	 /* Single block write */
 	{
 		if ((SD_cmd(CMD24, blk_addr) == 0) /* WRITE_BLOCK */
 			&& SD_Write_Block((BYTE *)buf, 0xFE, true))
@@ -161,9 +161,9 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 		}
 	}
 	SPI_Release();
-	
+
 	SD_BusyByUSB = false;
-	if(blk_len == 0)
+	if (blk_len == 0)
 		SD_Present_tryTime = HAL_GetTick() + 10000;
 	else
 	{
@@ -171,7 +171,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 		SD_Present = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 	}
-	
+
 	return blk_len ? USBD_FAIL : USBD_OK;
 }
 

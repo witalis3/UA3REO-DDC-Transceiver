@@ -35,7 +35,7 @@ static float32_t word_time = 0;			 // pause between words
 static bool last_space = false;			 // the last character was a space
 static char code[CWDECODER_MAX_CODE_SIZE] = {0};
 static arm_rfft_fast_instance_f32 CWDECODER_FFT_Inst;
-SRAM static float32_t CWDEC_FFTBuffer[CWDECODER_FFTSIZE * 2] = {0};	   // FFT buffer
+SRAM static float32_t CWDEC_FFTBuffer[CWDECODER_FFTSIZE * 2] = {0};		  // FFT buffer
 SRAM static float32_t CWDEC_FFTBufferCharge[CWDECODER_FFTSIZE * 2] = {0}; // cumulative buffer
 //SRAM float32_t CWDEC_FFTBuffer_Export[CWDECODER_FFTSIZE] = {0};
 SRAM static float32_t CWDEC_window_multipliers[CWDECODER_FFT_SAMPLES] = {0};
