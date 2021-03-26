@@ -472,12 +472,12 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 	SPI_busy = false;
 	if (res == HAL_TIMEOUT)
 	{
-		//println("spi timeout");
+		println("[ERR] SPI timeout");
 		return false;
 	}
 	if (res == HAL_ERROR)
 	{
-		//println("spi error");
+		println("[ERR] SPI error, code: ", hspi2.ErrorCode);
 		return false;
 	}
 
