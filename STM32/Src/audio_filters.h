@@ -8,7 +8,7 @@
 #include "fpga.h"
 #include "functions.h"
 
-#define IIR_FILTERS_COUNT 70													  // Total Filters In The Collection
+#define IIR_FILTERS_COUNT 28													  // Total Filters In The Collection
 #define IQ_HILBERT_TAPS 201														  // Hilbert filter order
 #define IIR_MAX_STAGES 15														  // Maximum order of IIR filters
 #define NOTCH_STAGES 1															  // order of manual Notch filter
@@ -57,7 +57,6 @@ typedef enum // BiQuad filter type for automatic calculation
 typedef enum // type of filter in the collection
 {
 	IIR_BIQUAD_HPF,
-	IIR_BIQUAD_LPF,
 	IIR_BIQUAD_LPF_GAUSS
 } IIR_BIQUAD_FILTER_TYPE;
 

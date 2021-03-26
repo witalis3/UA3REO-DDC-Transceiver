@@ -1241,6 +1241,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>BiquadDesigner</GroupName>
+          <Files>
+            <File>
+              <FileName>biquad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.c</FilePath>
+            </File>
+            <File>
+              <FileName>biquad.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -2476,6 +2491,21 @@
               <FileName>ccsbcs.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BiquadDesigner</GroupName>
+          <Files>
+            <File>
+              <FileName>biquad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.c</FilePath>
+            </File>
+            <File>
+              <FileName>biquad.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -3788,6 +3818,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>BiquadDesigner</GroupName>
+          <Files>
+            <File>
+              <FileName>biquad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.c</FilePath>
+            </File>
+            <File>
+              <FileName>biquad.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
           <GroupOption>
             <CommonProperty>
@@ -5092,6 +5137,21 @@
               <FileName>ccsbcs.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BiquadDesigner</GroupName>
+          <Files>
+            <File>
+              <FileName>biquad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.c</FilePath>
+            </File>
+            <File>
+              <FileName>biquad.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -6404,6 +6464,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>BiquadDesigner</GroupName>
+          <Files>
+            <File>
+              <FileName>biquad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.c</FilePath>
+            </File>
+            <File>
+              <FileName>biquad.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
           <GroupOption>
             <CommonProperty>
@@ -7712,6 +7787,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>BiquadDesigner</GroupName>
+          <Files>
+            <File>
+              <FileName>biquad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.c</FilePath>
+            </File>
+            <File>
+              <FileName>biquad.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
           <GroupOption>
             <CommonProperty>
@@ -9016,6 +9106,21 @@
               <FileName>ccsbcs.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BiquadDesigner</GroupName>
+          <Files>
+            <File>
+              <FileName>biquad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.c</FilePath>
+            </File>
+            <File>
+              <FileName>biquad.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
             </File>
           </Files>
         </Group>
