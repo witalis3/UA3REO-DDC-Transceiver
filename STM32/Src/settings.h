@@ -40,6 +40,8 @@
 #define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
 
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
+//#define RF_UNIT_QRP_V1
+#define RF_UNIT_BIG_V1
 
 //select how the SWR and the power is measured
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
@@ -302,6 +304,7 @@ extern struct TRX_SETTINGS
 extern struct TRX_CALIBRATE
 {
 	uint8_t flash_id; //version check
+	uint8_t rf_unit_id; //rf-unit type
 	bool ENCODER_INVERT;
 	bool ENCODER2_INVERT;
 	uint8_t ENCODER_DEBOUNCE;
@@ -343,6 +346,12 @@ extern struct TRX_CALIBRATE
 	uint32_t BPF_5_END;
 	uint32_t BPF_6_START;
 	uint32_t BPF_6_END;
+	uint32_t BPF_7_START;
+	uint32_t BPF_7_END;
+	uint32_t BPF_8_START;
+	uint32_t BPF_8_END;
+	uint32_t BPF_9_START;
+	uint32_t BPF_9_END;
 	uint32_t BPF_HPF;
 	float32_t SWR_FWD_Calibration;
 	float32_t SWR_REF_Calibration;

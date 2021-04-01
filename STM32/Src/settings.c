@@ -13,6 +13,13 @@
 
 char version_string[19] = "2.3.2"; //1.2.3-yymmdd.hhmm (concatinate)
 
+#ifdef RF_UNIT_QRP_V1
+uint8_t rf_unit_id = 1; //rf-unit calibrations template
+#endif
+#ifdef RF_UNIT_BIG_V1
+uint8_t rf_unit_id = 2; //rf-unit calibrations template
+#endif
+
 //W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
 IRAM2 static uint8_t Sector_Erase = W25Q16_COMMAND_Sector_Erase;
@@ -336,11 +343,12 @@ void LoadCalibration(bool clear)
 		LCD_showError("EEPROM Error", true);
 	}
 
-	if (CALIBRATE.ENDBit != 100 || CALIBRATE.flash_id != CALIB_VERSION || clear || CALIBRATE.csum != calculateCSUM_EEPROM()) // code for checking the firmware in the eeprom, if it does not match, we use the default
+	if (CALIBRATE.ENDBit != 100 || CALIBRATE.flash_id != CALIB_VERSION || CALIBRATE.rf_unit_id != rf_unit_id || clear || CALIBRATE.csum != calculateCSUM_EEPROM()) // code for checking the firmware in the eeprom, if it does not match, we use the default
 	{
 		println("[ERR] CALIBRATE Flash check CODE:", CALIBRATE.flash_id, false);
 		CALIBRATE.flash_id = CALIB_VERSION; // code for checking the firmware in the eeprom, if it does not match, we use the default
-
+		CALIBRATE.rf_unit_id = rf_unit_id; // rf-unit calibrate template
+		
 		CALIBRATE.ENCODER_INVERT = false;	   // invert left-right rotation of the main encoder
 		CALIBRATE.ENCODER2_INVERT = false;	   // invert left-right rotation of the optional encoder
 		CALIBRATE.ENCODER_DEBOUNCE = 0;		   // time to eliminate contact bounce at the main encoder, ms
@@ -372,6 +380,7 @@ void LoadCalibration(bool clear)
 												   // Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
 												   // Next, the average border response frequencies are set
 		CALIBRATE.LPF_END = 60000 * 1000;		   //LPF
+		#ifdef RF_UNIT_QRP_V1
 		CALIBRATE.BPF_0_START = 135 * 1000 * 1000; //2m U14-RF3
 		CALIBRATE.BPF_0_END = 150 * 1000 * 1000;   //2m
 		CALIBRATE.BPF_1_START = 1500 * 1000;	   //160m U16-RF2
@@ -386,6 +395,27 @@ void LoadCalibration(bool clear)
 		CALIBRATE.BPF_5_END = 21000 * 1000;		   //20,17m
 		CALIBRATE.BPF_6_START = 21000 * 1000;	   //15,12,10,6m U14-RF4
 		CALIBRATE.BPF_6_END = 64000 * 1000;		   //15,12,10,6m
+		#endif
+		#ifdef RF_UNIT_BIG_V1
+		CALIBRATE.BPF_1_START = 0 * 1000;	   //2200m
+		CALIBRATE.BPF_1_END = 1000 * 1000;		   //2200m
+		CALIBRATE.BPF_2_START = 1000 * 1000;	   //160m
+		CALIBRATE.BPF_2_END = 2500 * 1000;		   //160m
+		CALIBRATE.BPF_3_START = 2500 * 1000;	   //80m
+		CALIBRATE.BPF_3_END = 5000 * 1000;		   //80m
+		CALIBRATE.BPF_4_START = 5000 * 1000;	   //40m
+		CALIBRATE.BPF_4_END = 8500 * 1000;		   //40m
+		CALIBRATE.BPF_5_START = 8500 * 1000;	   //30m
+		CALIBRATE.BPF_5_END = 12000 * 1000;		   //30m
+		CALIBRATE.BPF_6_START = 12000 * 1000;	   //20m
+		CALIBRATE.BPF_6_END = 17000 * 1000;		   //20m
+		CALIBRATE.BPF_7_START = 17000 * 1000;	   //17,15,12m
+		CALIBRATE.BPF_7_END = 25500 * 1000;		   //17,15,12m
+		CALIBRATE.BPF_8_START = 25500 * 1000;	   //CB,10m
+		CALIBRATE.BPF_8_END = 35000 * 1000;		   //CB,10m
+		CALIBRATE.BPF_9_START = 35000 * 1000;	   //6m
+		CALIBRATE.BPF_9_END = 70000 * 1000;		   //6m
+		#endif
 		CALIBRATE.BPF_HPF = 60000 * 1000;		   //HPF U14-RF1
 		CALIBRATE.SWR_FWD_Calibration = 11.0f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration = 11.0f;	   //SWR Transormator rate return
