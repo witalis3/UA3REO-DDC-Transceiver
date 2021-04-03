@@ -38,6 +38,9 @@ static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction);
+static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction);
+static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction);
+static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction);
@@ -295,6 +298,11 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Locator", SYSMENU_RUN, 0, SYSMENU_HANDL_TRX_SetLocator},
 		{"Transverter Enable", SYSMENU_BOOLEAN, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
 		{"Transverter Offset, mHz", SYSMENU_UINT16, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
+#ifdef HAS_ATU
+		{"ATU Ind", SYSMENU_UINT8, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TRX_ATU_I},
+		{"ATU Cap", SYSMENU_UINT8, (uint32_t *)&TRX.ATU_C, SYSMENU_HANDL_TRX_ATU_C},
+		{"ATU T", SYSMENU_BOOLEAN, (uint32_t *)&TRX.ATU_T, SYSMENU_HANDL_TRX_ATU_T},
+#endif
 };
 const static uint8_t sysmenu_trx_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sysmenu_trx_handlers[0]);
 
@@ -961,6 +969,36 @@ static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction)
 		TRX.Transverter_Offset_Mhz = 1;
 	if (TRX.Transverter_Offset_Mhz > 500)
 		TRX.Transverter_Offset_Mhz = 500;
+}
+
+static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction)
+{
+	#ifdef HAS_ATU
+	if(TRX.ATU_I > 0 || direction > 0)
+		TRX.ATU_I += direction;
+	if (TRX.ATU_I > MAX_ATU_POS)
+		TRX.ATU_I = MAX_ATU_POS;
+	#endif
+}
+
+static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction)
+{
+	#ifdef HAS_ATU
+	if(TRX.ATU_C > 0 || direction > 0)
+		TRX.ATU_C += direction;
+	if (TRX.ATU_C > MAX_ATU_POS)
+		TRX.ATU_C = MAX_ATU_POS;
+	#endif
+}
+
+static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction)
+{
+	#ifdef HAS_ATU
+	if (direction > 0)
+		TRX.ATU_T = true;
+	if (direction < 0)
+		TRX.ATU_T = false;
+	#endif
 }
 
 //AUDIO MENU

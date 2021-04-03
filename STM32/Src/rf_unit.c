@@ -291,85 +291,96 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			if (registerNumber == 0 && CurrentVFO()->Freq >= 70000000)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-6 ATT_ON_1
-			if (registerNumber == 1 && TRX.ATT && att_val_1)
+			if (registerNumber == 1 && !(TRX.ATT && att_val_1))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-5 ATT_ON_0.5
-			if (registerNumber == 2 && TRX.ATT && att_val_05)
+			if (registerNumber == 2 && !(TRX.ATT && att_val_05))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-4 ATT_ON_16
-			if (registerNumber == 3 && TRX.ATT && att_val_16)
+			if (registerNumber == 3 && !(TRX.ATT && att_val_16))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-3 ATT_ON_2
-			if (registerNumber == 4 && TRX.ATT && att_val_2)
+			if (registerNumber == 4 && !(TRX.ATT && att_val_2))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-2 ATT_ON_4
-			if (registerNumber == 5 && TRX.ATT && att_val_4)
+			if (registerNumber == 5 && !(TRX.ATT && att_val_4))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-1 ATT_ON_8
-			if (registerNumber == 6 && TRX.ATT && att_val_8)
+			if (registerNumber == 6 && !(TRX.ATT && att_val_8))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U1-0 LNA_ON
-			if (registerNumber == 7 && !TRX_on_TX() && TRX.LNA)
+			if (registerNumber == 7 && !(!TRX_on_TX() && TRX.LNA))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			
+			//U3-7 TUN_C_5
+			if (registerNumber == 8 && bitRead(TRX.ATU_C, 4))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U3-6 TUN_C_4
+			if (registerNumber == 9 && bitRead(TRX.ATU_C, 3))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U3-5 BPF_1
+			if (registerNumber == 10 && (bpf == 1 || (TRX.Dual_RX && bpf_second == 1)))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U3-4 BPF_2
+			if (registerNumber == 11 && (bpf == 2 || (TRX.Dual_RX && bpf_second == 2)))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U3-3 TX_PTT_OUT
+			if (registerNumber == 12 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U3-2 TUN_C_1
+			if (registerNumber == 13 && bitRead(TRX.ATU_C, 0))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U3-1 TUN_C_2
+			if (registerNumber == 14 && bitRead(TRX.ATU_C, 1))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U3-0 TUN_C_3
+			if (registerNumber == 15 && bitRead(TRX.ATU_C, 2))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			
 			//U2-7 TUN_T
-			//if (registerNumber == 8 &&
+			if (registerNumber == 16 && TRX.ATU_T)
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U2-6 TUN_I_5
-			//if (registerNumber == 9 &&
+			if (registerNumber == 17 && bitRead(TRX.ATU_I, 4))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U2-5 UNUSED
-			//if (registerNumber == 10 &&
+			//if (registerNumber == 18 &&
 			//U2-4 VHF_AMP_BIAS_ON
-			if (registerNumber == 11 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK && CurrentVFO()->Freq >= 70000000)
+			if (registerNumber == 19 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK && CurrentVFO()->Freq >= 70000000)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U2-3 TUN_I_1
-			//if (registerNumber == 12 &&
+			if (registerNumber == 20 && bitRead(TRX.ATU_I, 0))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U2-2 TUN_I_2
-			//if (registerNumber == 13 &&
+			if (registerNumber == 21 && bitRead(TRX.ATU_I, 1))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U2-1 TUN_I_3
-			//if (registerNumber == 14 &&
+			if (registerNumber == 22 && bitRead(TRX.ATU_I, 2))
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U2-0 TUN_I_4
-			//if (registerNumber == 15 &&
-			
-			//U3-7 TUN_C_5
-			//if (registerNumber == 16 &&
-			//U3-6 TUN_C_4
-			//if (registerNumber == 17 &&
-			//U3-5 BPF_1
-			if (registerNumber == 18 && (bpf == 1 || bpf_second == 1))
+			if (registerNumber == 23 && bitRead(TRX.ATU_I, 3))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-4 BPF_2
-			if (registerNumber == 19 && (bpf == 2 || bpf_second == 2))
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-3 TX_PTT_OUT
-			if (registerNumber == 20 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-2 TUN_C_1
-			//if (registerNumber == 21 &&
-			//U3-1 TUN_C_2
-			//if (registerNumber == 22 &&
-			//U3-0 TUN_C_3
-			//if (registerNumber == 23 &&
 			
 			//U7-7 BPF_6
-			if (registerNumber == 24 && (bpf == 6 || bpf_second == 6))
+			if (registerNumber == 24 && (bpf == 6 || (TRX.Dual_RX && bpf_second == 6)))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U7-6 BPF_5
-			if (registerNumber == 25 && (bpf == 5 || bpf_second == 5))
+			if (registerNumber == 25 && (bpf == 5 || (TRX.Dual_RX && bpf_second == 5)))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U7-5 BPF_4
-			if (registerNumber == 26 && (bpf == 4 || bpf_second == 4))
+			if (registerNumber == 26 && (bpf == 4 || (TRX.Dual_RX && bpf_second == 4)))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U7-4 BPF_3
-			if (registerNumber == 27 && (bpf == 3 || bpf_second == 3))
+			if (registerNumber == 27 && (bpf == 3 || (TRX.Dual_RX && bpf_second == 3)))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U7-3 BPF_7
-			if (registerNumber == 28 && (bpf == 7 || bpf_second == 7))
+			if (registerNumber == 28 && (bpf == 7 || (TRX.Dual_RX && bpf_second == 7)))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U7-2 BPF_8
-			if (registerNumber == 29 && (bpf == 8 || bpf_second == 8))
+			if (registerNumber == 29 && (bpf == 8 || (TRX.Dual_RX && bpf_second == 8)))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U7-1 BPF_9
-			if (registerNumber == 30 && (bpf == 9 || bpf_second == 9))
+			if (registerNumber == 30 && (bpf == 9 || (TRX.Dual_RX && bpf_second == 9)))
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U7-0 HF_AMP_BIAS_ON
 			if (registerNumber == 31 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK && CurrentVFO()->Freq < 70000000)

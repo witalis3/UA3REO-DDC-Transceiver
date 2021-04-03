@@ -9,7 +9,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-#define SETT_VERSION 25					   // Settings config version
+#define SETT_VERSION 26					   // Settings config version
 #define CALIB_VERSION 26				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -199,6 +199,9 @@ extern struct TRX_SETTINGS
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	bool Transverter_Enabled;
 	uint16_t Transverter_Offset_Mhz;
+	uint8_t ATU_I;
+	uint8_t ATU_C;
+	bool ATU_T;
 	//AUDIO
 	uint8_t IF_Gain;
 	uint8_t FM_SQL_threshold;
@@ -400,6 +403,10 @@ extern void RTC_Calibration(void);
 #ifdef FRONTPANEL_BIG_V1
 #define HRDW_MCP3008_1 true
 #define HRDW_HAS_FUNCBUTTONS true
+#endif
+#ifdef RF_UNIT_BIG_V1
+#define HAS_ATU true
+#define MAX_ATU_POS B8(00011111)
 #endif
 
 #endif
