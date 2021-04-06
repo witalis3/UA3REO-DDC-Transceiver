@@ -40,8 +40,6 @@
 #define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
 
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
-//#define RF_UNIT_QRP_V1
-#define RF_UNIT_BIG_V1
 
 //select how the SWR and the power is measured
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
@@ -144,6 +142,13 @@ typedef enum
 	TRX_SAMPLERATE_K192,
 	TRX_SAMPLERATE_K384,
 } TRX_IQ_SAMPLERATE_VALUE;
+
+// debug level
+typedef enum
+{
+	RF_UNIT_QRP,
+	RF_UNIT_BIG,
+} TRX_RF_UNIT_TYPE;
 
 // Save settings by band
 typedef struct
@@ -307,13 +312,13 @@ extern struct TRX_SETTINGS
 extern struct TRX_CALIBRATE
 {
 	uint8_t flash_id; //version check
-	uint8_t rf_unit_id; //rf-unit type
 	bool ENCODER_INVERT;
 	bool ENCODER2_INVERT;
 	uint8_t ENCODER_DEBOUNCE;
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
 	bool ENCODER_ON_FALLING;
+	TRX_RF_UNIT_TYPE RF_unit_type;
 	uint8_t CICFIR_GAINER_48K_val;
 	uint8_t CICFIR_GAINER_96K_val;
 	uint8_t CICFIR_GAINER_192K_val;
@@ -334,28 +339,28 @@ extern struct TRX_CALIBRATE
 	uint8_t rf_out_power_2m;
 	int16_t smeter_calibration;
 	int16_t adc_offset;
-	uint32_t LPF_END;
-	uint32_t BPF_0_START; //UHF
-	uint32_t BPF_0_END;	  //UHF
-	uint32_t BPF_1_START;
-	uint32_t BPF_1_END;
-	uint32_t BPF_2_START;
-	uint32_t BPF_2_END;
-	uint32_t BPF_3_START;
-	uint32_t BPF_3_END;
-	uint32_t BPF_4_START;
-	uint32_t BPF_4_END;
-	uint32_t BPF_5_START;
-	uint32_t BPF_5_END;
-	uint32_t BPF_6_START;
-	uint32_t BPF_6_END;
-	uint32_t BPF_7_START;
-	uint32_t BPF_7_END;
-	uint32_t BPF_8_START;
-	uint32_t BPF_8_END;
-	uint32_t BPF_9_START;
-	uint32_t BPF_9_END;
-	uint32_t BPF_HPF;
+	uint32_t RFU_LPF_END;
+	uint32_t RFU_HPF_START;
+	uint32_t RFU_BPF_0_START; //UHF
+	uint32_t RFU_BPF_0_END;	  //UHF
+	uint32_t RFU_BPF_1_START;
+	uint32_t RFU_BPF_1_END;
+	uint32_t RFU_BPF_2_START;
+	uint32_t RFU_BPF_2_END;
+	uint32_t RFU_BPF_3_START;
+	uint32_t RFU_BPF_3_END;
+	uint32_t RFU_BPF_4_START;
+	uint32_t RFU_BPF_4_END;
+	uint32_t RFU_BPF_5_START;
+	uint32_t RFU_BPF_5_END;
+	uint32_t RFU_BPF_6_START;
+	uint32_t RFU_BPF_6_END;
+	uint32_t RFU_BPF_7_START;
+	uint32_t RFU_BPF_7_END;
+	uint32_t RFU_BPF_8_START;
+	uint32_t RFU_BPF_8_END;
+	uint32_t RFU_BPF_9_START;
+	uint32_t RFU_BPF_9_END;
 	float32_t SWR_FWD_Calibration;
 	float32_t SWR_REF_Calibration;
 	int8_t VCXO_correction;
@@ -396,17 +401,13 @@ extern VFO *SecondaryVFO(void);
 extern void RTC_Calibration(void);
 
 #ifdef FRONTPANEL_SMALL_V1
-#define HRDW_MCP3008_1 true
-#define HRDW_MCP3008_2 true
-#define HRDW_MCP3008_3 true
+	#define HRDW_MCP3008_1 true
+	#define HRDW_MCP3008_2 true
+	#define HRDW_MCP3008_3 true
 #endif
 #ifdef FRONTPANEL_BIG_V1
-#define HRDW_MCP3008_1 true
-#define HRDW_HAS_FUNCBUTTONS true
-#endif
-#ifdef RF_UNIT_BIG_V1
-#define HAS_ATU true
-#define MAX_ATU_POS B8(00011111)
+	#define HRDW_MCP3008_1 true
+	#define HRDW_HAS_FUNCBUTTONS true
 #endif
 
 #endif

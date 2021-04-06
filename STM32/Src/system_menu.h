@@ -21,7 +21,6 @@ typedef enum
 	SYSMENU_INT32,
 	SYSMENU_FLOAT32,
 	SYSMENU_MENU,
-	SYSMENU_HIDDEN_MENU,
 	SYSMENU_INFOLINE,
 	SYSMENU_FUNCBUTTON,
 	SYSMENU_ENUM,
@@ -32,6 +31,7 @@ struct sysmenu_item_handler
 {
 	char *title;
 	SystemMenuType type;
+	bool (*checkVisibleHandler)(void);
 	uint32_t *value;
 	void (*menuHandler)(int8_t direction);
 	char enumerate[ENUM_MAX_COUNT][ENUM_MAX_LENGTH];
