@@ -577,6 +577,8 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateCallsignChar(int8_t dir);
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateLocatorChar(int8_t dir);
+static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex);
+static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex);
 
 static struct sysmenu_item_handler *sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_handlers[0];
 static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
@@ -3523,24 +3525,11 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 		if (draw_background)
 			LCDDriver_Fill(BG_COLOR);
 
-		uint8_t current_selected_page = 0;
-		uint8_t visible = 0;
-		for(uint8_t i = 0; i < systemMenuIndex; i++)
-		{
-			if(sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler())
-			{
-				visible++;
-				if(visible >= LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
-				{
-					visible = 0;
-					current_selected_page++;
-				}
-			}
-		}
+		uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(systemMenuIndex);
 		if (current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE > sysmenu_item_count)
 			current_selected_page = 0;
 
-		visible = 0;
+		uint8_t visible = 0;
 		uint8_t current_page = 0;
 		for (uint8_t m = 0; m < sysmenu_item_count; m++)
 		{
@@ -3950,38 +3939,11 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 
 	//clear selection line
 	LCD_busy = true;
-	sysmenu_y = 5;
-	uint8_t added = 0;
-	for(uint8_t i = 0; i < systemMenuIndex; i++)
-	{
-		if(sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler())
-		{
-			sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
-			added++;
-			if(added >= LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
-			{
-				added = 0;
-				sysmenu_y = 5;
-			}
-		}
-	}
+	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(systemMenuIndex) * LAYOUT->SYSMENU_ITEM_HEIGHT;
 	LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, BG_COLOR);
 	LCD_busy = false;
 	//current page
-	uint8_t current_selected_page = 0;
-	uint8_t visible = 0;
-	for(uint8_t i = 0; i < systemMenuIndex; i++)
-	{
-		if(sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler())
-		{
-			visible++;
-			if(visible >= LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
-			{
-				visible = 0;
-				current_selected_page++;
-			}
-		}
-	}
+	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(systemMenuIndex);
 	//do moving
 	if (direction < 0)
 	{
@@ -4021,58 +3983,15 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 		systemMenuRootIndex = systemMenuIndex;
 	
 	//pager
-	uint8_t new_page = 0;
-	visible = 0;
-	for(uint8_t i = 0; i < systemMenuIndex; i++)
-	{
-		if(sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler())
-		{
-			visible++;
-			if(visible >= LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
-			{
-				visible = 0;
-				new_page++;
-			}
-		}
-	}
+	uint8_t new_page = SYSTMENU_getPageFromRealIndex(systemMenuIndex);
 	if (current_selected_page != new_page)
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void SYSMENU_redrawCurrentItem(void)
 {
-	//current page
-	uint8_t current_selected_page = 0;
-	uint8_t visible = 0;
-	for(uint8_t i = 0; i < systemMenuIndex; i++)
-	{
-		if(sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler())
-		{
-			visible++;
-			if(visible >= LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
-			{
-				visible = 0;
-				current_selected_page++;
-			}
-		}
-	}
-	//
-	sysmenu_i = visible;
-	sysmenu_y = 5;
-	uint8_t added = 0;
-	for(uint8_t i = 0; i < systemMenuIndex; i++)
-	{
-		if(sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler())
-		{
-			sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
-			added++;
-			if(added >= LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
-			{
-				added = 0;
-				sysmenu_y = 5;
-			}
-		}
-	}
+	sysmenu_i = SYSTMENU_getVisibleIdFromReal(systemMenuIndex);
+	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(systemMenuIndex) * LAYOUT->SYSMENU_ITEM_HEIGHT;
 	drawSystemMenuElement(&sysmenu_handlers_selected[systemMenuIndex], true);
 }
 
@@ -4148,6 +4067,19 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 		LCDDriver_printText(ctmp, x_pos, sysmenu_y, FG_COLOR, BG_COLOR, 2);
 	}
 
+	if (SYSTMENU_getVisibleIdFromReal(systemMenuIndex) == sysmenu_i)
+	{
+		if (sysmenu_item_selected_by_enc2)
+			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
+		else
+			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, FG_COLOR);
+	}
+	sysmenu_i++;
+	sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
+}
+
+static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex)
+{
 	uint8_t visible = 0;
 	for(uint8_t i = 0; i < systemMenuIndex; i++)
 	{
@@ -4160,15 +4092,26 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 			}
 		}
 	}
-	if (visible == sysmenu_i)
+	return visible;
+}
+
+static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex)
+{
+	uint8_t visible = 0;
+	uint8_t page = 0;
+	for(uint8_t i = 0; i < systemMenuIndex; i++)
 	{
-		if (sysmenu_item_selected_by_enc2)
-			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
-		else
-			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, FG_COLOR);
+		if(sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler())
+		{
+			visible++;
+			if(visible >= LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
+			{
+				visible = 0;
+				page++;
+			}
+		}
 	}
-	sysmenu_i++;
-	sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
+	return page;
 }
 
 static bool SYSMENU_HANDL_CHECK_RFU_QRP(void)
