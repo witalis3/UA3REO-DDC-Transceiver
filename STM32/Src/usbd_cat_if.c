@@ -238,7 +238,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		_command++;
 	if (strlen(_command) < 2)
 		return;
-	//sendToDebug_str3("New CAT command: |",_command,"|\r\n");
+	println("New CAT command: |",_command,"|");
 
 	char command[3] = {0};
 	strncpy(command, _command, 2);
@@ -777,23 +777,23 @@ static uint8_t getFT450Mode(uint8_t VFO_Mode)
 
 static uint8_t setFT450Mode(char *FT450_Mode)
 {
-	if (strcmp(FT450_Mode, "01") == 0)
+	if (strcmp(FT450_Mode, "01") == 0 || strcmp(FT450_Mode, "1") == 0)
 		return TRX_MODE_LSB;
-	if (strcmp(FT450_Mode, "02") == 0)
+	if (strcmp(FT450_Mode, "02") == 0 || strcmp(FT450_Mode, "2") == 0)
 		return TRX_MODE_USB;
-	if (strcmp(FT450_Mode, "08") == 0)
+	if (strcmp(FT450_Mode, "08") == 0 || strcmp(FT450_Mode, "8") == 0)
 		return TRX_MODE_IQ;
-	if (strcmp(FT450_Mode, "03") == 0)
+	if (strcmp(FT450_Mode, "03") == 0 || strcmp(FT450_Mode, "3") == 0)
 		return TRX_MODE_CW_L;
-	if (strcmp(FT450_Mode, "06") == 0)
+	if (strcmp(FT450_Mode, "06") == 0 || strcmp(FT450_Mode, "6") == 0)
 		return TRX_MODE_DIGI_L;
-	if (strcmp(FT450_Mode, "09") == 0)
+	if (strcmp(FT450_Mode, "09") == 0 || strcmp(FT450_Mode, "9") == 0)
 		return TRX_MODE_DIGI_U;
-	if (strcmp(FT450_Mode, "0C") == 0)
+	if (strcmp(FT450_Mode, "0C") == 0 || strcmp(FT450_Mode, "C") == 0)
 		return TRX_MODE_DIGI_U;
-	if (strcmp(FT450_Mode, "04") == 0)
+	if (strcmp(FT450_Mode, "04") == 0 || strcmp(FT450_Mode, "4") == 0)
 		return TRX_MODE_NFM;
-	if (strcmp(FT450_Mode, "05") == 0)
+	if (strcmp(FT450_Mode, "05") == 0 || strcmp(FT450_Mode, "5") == 0)
 		return TRX_MODE_AM;
 	println("Unknown mode ", FT450_Mode);
 	return TRX_MODE_USB;
