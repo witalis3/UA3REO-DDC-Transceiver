@@ -1415,8 +1415,7 @@ uint8_t sd_ini(void)
 	uint8_t i, cmd;
 	int16_t tmr;
 	uint32_t temp;
-	//char sd_str_buff[60]={0};
-
+	
 	sdinfo.type = 0;
 	uint8_t ocr[4];
 	uint8_t csd[16];
@@ -1482,11 +1481,16 @@ uint8_t sd_ini(void)
 			sdinfo.BLOCK_SIZE = 512;
 
 			SPI_ReceiveByte();
-			SPI_ReceiveByte(); //clean buff ???
+			
 			for (i = 0; i < 16; i++)
+			{
 				csd[i] = SPI_ReceiveByte();
+				if(i == 0 && csd[i] >= 0xF0)
+					csd[i] = SPI_ReceiveByte(); //repeat (clean buff)
+			}
 
-			/*sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[0],csd[1],csd[2],csd[3]);
+			/*char sd_str_buff[60]={0};
+			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[0],csd[1],csd[2],csd[3]);
 			print(sd_str_buff);
 			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[4],csd[5],csd[6],csd[7]);
 			print(sd_str_buff);
@@ -1505,17 +1509,17 @@ uint8_t sd_ini(void)
 			if (sdinfo.SECTOR_COUNT == 0) // Standard Capacity - CSD Version 1.0
 			{
 				uint32_t csize = ((csd[5] & 0x03) << 10) + ((WORD)csd[6] << 2) + ((WORD)(csd[7] & 0xC0) >> 6);
-				//println(csize);
+				//println("csize: ", csize);
 				BYTE READ_BL_LEN = (csd[5] & 0xF0) >> 4;
 				uint32_t BLOCK_LEN = pow(2, READ_BL_LEN);
-				//println(BLOCK_LEN);
+				//println("BLOCK_LEN: ", BLOCK_LEN);
 				BYTE C_SIZE_MULT = (csd[9] & 0x03) | ((csd[10] & 0x80) >> 5);
 				uint32_t MULT = pow(2, (C_SIZE_MULT + 2));
-				//println(MULT);
+				//println("MULT: ", MULT);
 				uint32_t BLOCKNR = (csize + 1) * MULT;
-				//println(BLOCKNR);
+				//println("BLOCKNR: ", BLOCKNR);
 				uint32_t SECTOR_COUNT = BLOCKNR * BLOCK_LEN / sdinfo.BLOCK_SIZE;
-				//println(SECTOR_COUNT);
+				//println("SECTOR_COUNT: ", SECTOR_COUNT);
 				sdinfo.SECTOR_COUNT = SECTOR_COUNT;
 				//println("SDSC sector count: ", sdinfo.SECTOR_COUNT);
 			}
