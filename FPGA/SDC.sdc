@@ -3,8 +3,13 @@ set_time_format -unit ns -decimal_places 3
 create_clock -name "clock_crystal" -period 122.880MHz [get_ports {clk_sys_lvpecl_p}]
 create_clock -name "clock_adc" -period 122.880MHz [get_ports {ADC_CLK}]
 create_clock -name "clock_tcxo" -period 12.288MHz [get_ports {TCXO_CLK_IN}]
-create_clock -name "clock_stm32" -period 25MHz [get_ports {STM32_CLK}]
-create_clock -name "RX1_CICOMP_Q_clk" -period 96KHz {rx_ciccomp:RX1_CICOMP_Q|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
+create_clock -name "clock_stm32" -period 12.288MHz [get_ports {STM32_CLK}]
+create_clock -name "RX1_CICCOMP_Q_clk" -period 0.384MHz {rx_ciccomp:RX1_CICCOMP_Q|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
+create_clock -name "RX1_CICCOMP_I_clk" -period 0.384MHz {rx_ciccomp:RX1_CICCOMP_I|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
+create_clock -name "RX2_CICCOMP_Q_clk" -period 0.384MHz {rx_ciccomp:RX2_CICCOMP_Q|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
+create_clock -name "RX2_CICCOMP_I_clk" -period 0.384MHz {rx_ciccomp:RX2_CICCOMP_I|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
+create_clock -name "RX_IQ_ST_CLK" -period 0.384MHz {stm32_interface:STM32_INTERFACE|IQ_RX_READ_CLK}
+create_clock -name "TX_IQ_ST_CLK" -period 0.048MHz {stm32_interface:STM32_INTERFACE|tx_iq_valid} 
 
 set_clock_groups -asynchronous -group clock_crystal -group clock_adc -group clock_tcxo -group clock_stm32
 

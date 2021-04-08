@@ -77,10 +77,10 @@ module fifo (
 		dcfifo_component.lpm_width = 32,
 		dcfifo_component.lpm_widthu = 5,
 		dcfifo_component.overflow_checking = "ON",
-		dcfifo_component.rdsync_delaypipe = 3,
+		dcfifo_component.rdsync_delaypipe = 5,
 		dcfifo_component.underflow_checking = "ON",
 		dcfifo_component.use_eab = "ON",
-		dcfifo_component.wrsync_delaypipe = 3;
+		dcfifo_component.wrsync_delaypipe = 5;
 
 
 endmodule
@@ -128,10 +128,10 @@ endmodule
 // Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "32"
 // Retrieval info: CONSTANT: LPM_WIDTHU NUMERIC "5"
 // Retrieval info: CONSTANT: OVERFLOW_CHECKING STRING "ON"
-// Retrieval info: CONSTANT: RDSYNC_DELAYPIPE NUMERIC "3"
+// Retrieval info: CONSTANT: RDSYNC_DELAYPIPE NUMERIC "5"
 // Retrieval info: CONSTANT: UNDERFLOW_CHECKING STRING "ON"
 // Retrieval info: CONSTANT: USE_EAB STRING "ON"
-// Retrieval info: CONSTANT: WRSYNC_DELAYPIPE NUMERIC "3"
+// Retrieval info: CONSTANT: WRSYNC_DELAYPIPE NUMERIC "5"
 // Retrieval info: USED_PORT: data 0 0 32 0 INPUT NODEFVAL "data[31..0]"
 // Retrieval info: USED_PORT: q 0 0 32 0 OUTPUT NODEFVAL "q[31..0]"
 // Retrieval info: USED_PORT: rdclk 0 0 0 0 INPUT NODEFVAL "rdclk"

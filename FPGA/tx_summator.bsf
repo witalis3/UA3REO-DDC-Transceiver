@@ -20,9 +20,9 @@ refer to the applicable agreement for further details.
 */
 (header "symbol" (version "1.2"))
 (symbol
-	(rect 0 0 160 112)
+	(rect 0 0 160 96)
 	(text "tx_summator" (rect 43 0 132 16)(font "Arial" (font_size 10)))
-	(text "inst" (rect 8 96 25 108)(font "Arial" ))
+	(text "inst" (rect 8 80 25 92)(font "Arial" ))
 	(port
 		(pt 0 40)
 		(input)
@@ -51,13 +51,6 @@ refer to the applicable agreement for further details.
 		(text "result[27..0]" (rect 100 42 155 55)(font "Arial" (font_size 8)))
 		(line (pt 160 56)(pt 96 56)(line_width 3))
 	)
-	(port
-		(pt 160 96)
-		(output)
-		(text "overflow" (rect 0 0 51 14)(font "Arial" (font_size 8)))
-		(text "overflow" (rect 113 82 155 95)(font "Arial" (font_size 8)))
-		(line (pt 160 96)(pt 80 96))
-	)
 	(drawing
 		(text "A+B" (rect 75 51 169 115)(font "Arial" (font_size 8)))
 		(text "A" (rect 64 35 134 83)(font "Arial" (font_size 8)))
@@ -66,11 +59,10 @@ refer to the applicable agreement for further details.
 		(line (pt 64 32)(pt 96 40))
 		(line (pt 64 80)(pt 96 72))
 		(line (pt 96 40)(pt 96 72))
-		(line (pt 80 76)(pt 80 96))
 		(line (pt 0 0)(pt 162 0))
-		(line (pt 162 0)(pt 162 114))
-		(line (pt 0 114)(pt 162 114))
-		(line (pt 0 0)(pt 0 114))
+		(line (pt 162 0)(pt 162 98))
+		(line (pt 0 98)(pt 162 98))
+		(line (pt 0 0)(pt 0 98))
 		(line (pt 64 50)(pt 70 56))
 		(line (pt 70 56)(pt 64 62))
 	)

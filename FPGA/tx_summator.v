@@ -40,33 +40,29 @@ module tx_summator (
 	clock,
 	dataa,
 	datab,
-	overflow,
 	result);
 
 	input	  clock;
 	input	[27:0]  dataa;
 	input	[27:0]  datab;
-	output	  overflow;
 	output	[27:0]  result;
 
-	wire  sub_wire0;
-	wire [27:0] sub_wire1;
-	wire  overflow = sub_wire0;
-	wire [27:0] result = sub_wire1[27:0];
+	wire [27:0] sub_wire0;
+	wire [27:0] result = sub_wire0[27:0];
 
 	lpm_add_sub	LPM_ADD_SUB_component (
 				.clock (clock),
 				.dataa (dataa),
 				.datab (datab),
-				.overflow (sub_wire0),
-				.result (sub_wire1)
+				.result (sub_wire0)
 				// synopsys translate_off
 				,
 				.aclr (),
 				.add_sub (),
 				.cin (),
 				.clken (),
-				.cout ()
+				.cout (),
+				.overflow ()
 				// synopsys translate_on
 				);
 	defparam
@@ -91,7 +87,7 @@ endmodule
 // Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone IV E"
 // Retrieval info: PRIVATE: LPM_PIPELINE NUMERIC "1"
 // Retrieval info: PRIVATE: Latency NUMERIC "1"
-// Retrieval info: PRIVATE: Overflow NUMERIC "1"
+// Retrieval info: PRIVATE: Overflow NUMERIC "0"
 // Retrieval info: PRIVATE: RadixA NUMERIC "10"
 // Retrieval info: PRIVATE: RadixB NUMERIC "10"
 // Retrieval info: PRIVATE: Representation NUMERIC "0"
@@ -113,12 +109,10 @@ endmodule
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: dataa 0 0 28 0 INPUT NODEFVAL "dataa[27..0]"
 // Retrieval info: USED_PORT: datab 0 0 28 0 INPUT NODEFVAL "datab[27..0]"
-// Retrieval info: USED_PORT: overflow 0 0 0 0 OUTPUT NODEFVAL "overflow"
 // Retrieval info: USED_PORT: result 0 0 28 0 OUTPUT NODEFVAL "result[27..0]"
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @dataa 0 0 28 0 dataa 0 0 28 0
 // Retrieval info: CONNECT: @datab 0 0 28 0 datab 0 0 28 0
-// Retrieval info: CONNECT: overflow 0 0 0 0 @overflow 0 0 0 0
 // Retrieval info: CONNECT: result 0 0 28 0 @result 0 0 28 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL tx_summator.inc FALSE
