@@ -45,31 +45,6 @@ reg PWM_flash_off = 0;
 always @ (posedge pwm_clk_in)
 begin
 	//do PWM
-	/*PWM_counter = PWM_counter + 16'd1;
-	
-	if(PWM_counter < PWM_max) //do flash pump
-	begin
-		if((PWM_flash_state == 0 && PWM_counter_on <= PWM) || (PWM_counter_off >= (PWM_max - PWM)))
-		begin
-			pump = 1;
-			PWM_flash_state = 1;
-			PWM_counter_on = PWM_counter_on + 16'd1;
-		end
-		else
-		begin
-			pump = 0;
-			PWM_flash_state = 0;
-			PWM_counter_off = PWM_counter_off + 16'd1;
-		end
-	end
-	else
-	begin
-		PWM_counter = 0;
-		PWM_counter_on = 0;
-		PWM_counter_off = 0;
-	end*/
-	
-	//do PWM
 	if(PWM_flash_state == 1)
 		PWM_flash_state = 0;
 	else
