@@ -11,7 +11,6 @@ ADC_IN,
 adcclk_in,
 FLASH_data_in,
 FLASH_busy,
-IQ_valid,
 VCXO_error,
 
 DATA_BUS,
@@ -47,6 +46,8 @@ DAC_x4,
 DCDC_freq,
 TX_NCO_freq,
 RX_CIC_RATE,
+IQ_RX_READ_REQ,
+IQ_RX_READ_CLK
 );
 
 input clk_in;
@@ -61,7 +62,6 @@ input signed [15:0] ADC_IN;
 input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
-input IQ_valid;
 input signed [23:0] VCXO_error;
 
 output reg unsigned [31:0] NCO1_freq = 242347;
@@ -82,7 +82,9 @@ output reg ADC_PGA = 0;
 output reg ADC_RAND = 0;
 output reg ADC_SHDN = 1;
 output reg ADC_DITH = 0;
-output reg unsigned [7:0] unused = 0;
+output reg unused = 0;
+output reg IQ_RX_READ_REQ = 0;
+output reg IQ_RX_READ_CLK = 0;
 output reg unsigned [7:0] CICFIR_GAIN = 32;
 output reg unsigned [7:0] TX_CICFIR_GAIN = 32;
 output reg unsigned [7:0] DAC_GAIN = 32;
@@ -102,38 +104,14 @@ reg   [7:0] DATA_BUS_OUT;
 reg         DATA_BUS_OE; // 1 - out 0 - in
 assign DATA_BUS = DATA_BUS_OE ? DATA_BUS_OUT : 8'bZ ;
 
-parameter rx_buffer_length = (8 - 1);
 reg signed [15:0] k = 'd1;
-reg signed [31:0] BUFFER_RX1_I [0:rx_buffer_length];
-reg signed [31:0] BUFFER_RX1_Q [0:rx_buffer_length];
-reg signed [31:0] BUFFER_RX2_I [0:rx_buffer_length];
-reg signed [31:0] BUFFER_RX2_Q [0:rx_buffer_length];
-reg signed [15:0] BUFFER_RX_head = 'd0;
-reg signed [15:0] BUFFER_RX_tail = 'd0;
-reg signed [31:0] REG_RX1_I;
-reg signed [31:0] REG_RX1_Q;
-reg signed [31:0] REG_RX2_I;
-reg signed [31:0] REG_RX2_Q;
-reg signed [31:0] I_HOLD;
-reg signed [31:0] Q_HOLD;
 reg signed [15:0] ADC_MIN;
 reg signed [15:0] ADC_MAX;
+reg signed [31:0] READ_RX1_I;
+reg signed [31:0] READ_RX1_Q;
 reg ADC_MINMAX_RESET;
 reg sync_reset_n = 1;
 reg unsigned [7:0] BUS_TEST;
-reg iq_overrun = 0;
-
-always @ (posedge IQ_valid)
-begin
-	BUFFER_RX1_I[BUFFER_RX_head][31:0] = RX1_I[31:0];
-	BUFFER_RX1_Q[BUFFER_RX_head][31:0] = RX1_Q[31:0];
-	BUFFER_RX2_I[BUFFER_RX_head][31:0] = RX2_I[31:0];
-	BUFFER_RX2_Q[BUFFER_RX_head][31:0] = RX2_Q[31:0];
-	if(BUFFER_RX_head >= rx_buffer_length)
-		BUFFER_RX_head = 0;
-	else
-		BUFFER_RX_head = BUFFER_RX_head + 16'd1;
-end
 
 always @ (posedge clk_in)
 begin
@@ -201,8 +179,6 @@ begin
 		//clear TX chain
 		if(tx == 0)
 		begin
-			I_HOLD[7:0] = 8'd0;
-			Q_HOLD[7:0] = 8'd0;
 			TX_I[31:0] = 32'd0;
 			TX_Q[31:0] = 32'd0;
 			tx_iq_valid = 1;
@@ -324,12 +300,12 @@ begin
 	begin
 		DATA_BUS_OUT[0:0] = ADC_OTR;
 		DATA_BUS_OUT[1:1] = DAC_OTR;
-		DATA_BUS_OUT[2:2] = iq_overrun;
+		//DATA_BUS_OUT[2:2] = iq_overrun;
 		k = 201;
 	end
 	else if (k == 201)
 	begin
-		iq_overrun = 0;
+		//iq_overrun = 0;
 		DATA_BUS_OUT[7:0] = ADC_MIN[15:8];
 		k = 202;
 	end
@@ -366,109 +342,88 @@ begin
 	end
 	else if (k == 300) //TX IQ
 	begin
-		Q_HOLD[31:24] = DATA_BUS[7:0];
+		TX_Q[31:24] = DATA_BUS[7:0];
 		k = 301;
 	end
 	else if (k == 301)
 	begin
-		Q_HOLD[23:16] = DATA_BUS[7:0];
+		TX_Q[23:16] = DATA_BUS[7:0];
 		k = 302;
 	end
 	else if (k == 302)
 	begin
-		Q_HOLD[15:8] = DATA_BUS[7:0];
+		TX_Q[15:8] = DATA_BUS[7:0];
 		k = 303;
 	end
 	else if (k == 303)
 	begin
-		Q_HOLD[7:0] = DATA_BUS[7:0];
+		TX_Q[7:0] = DATA_BUS[7:0];
 		k = 304;
 	end
 	else if (k == 304)
 	begin
-		I_HOLD[31:24] = DATA_BUS[7:0];
+		TX_I[31:24] = DATA_BUS[7:0];
 		k = 305;
 	end
 	else if (k == 305)
 	begin
-		I_HOLD[23:16] = DATA_BUS[7:0];
+		TX_I[23:16] = DATA_BUS[7:0];
 		k = 306;
 	end
 	else if (k == 306)
 	begin
-		I_HOLD[15:8] = DATA_BUS[7:0];
+		TX_I[15:8] = DATA_BUS[7:0];
 		k = 307;
 	end
 	else if (k == 307)
 	begin
-		I_HOLD[7:0] = DATA_BUS[7:0];
-		TX_I[31:0] = I_HOLD[31:0];
-		TX_Q[31:0] = Q_HOLD[31:0];
+		TX_I[7:0] = DATA_BUS[7:0];
 		tx_iq_valid = 1;
 		k = 999;
 	end
 	else if (k == 400) //RX1 IQ
 	begin
-		
-		if(BUFFER_RX_tail == BUFFER_RX_head) //догнал буффер
-		begin	
-			REG_RX1_I[31:0] = 'd0;
-			REG_RX1_Q[31:0] = 'd0;
-			REG_RX2_I[31:0] = 'd0;
-			REG_RX2_Q[31:0] = 'd0;
-			iq_overrun = 1;
-		end
-		else
-		begin
-			REG_RX1_I[31:0] = BUFFER_RX1_I[BUFFER_RX_tail][31:0];
-			REG_RX1_Q[31:0] = BUFFER_RX1_Q[BUFFER_RX_tail][31:0];
-			REG_RX2_I[31:0] = BUFFER_RX2_I[BUFFER_RX_tail][31:0];
-			REG_RX2_Q[31:0] = BUFFER_RX2_Q[BUFFER_RX_tail][31:0];
-			
-			if(BUFFER_RX_tail >= rx_buffer_length)
-				BUFFER_RX_tail = 0;
-			else
-				BUFFER_RX_tail = BUFFER_RX_tail + 16'd1;
-		end
-		
-		I_HOLD = REG_RX1_I;
-		Q_HOLD = REG_RX1_Q;
-		DATA_BUS_OUT[7:0] = Q_HOLD[31:24];
+		IQ_RX_READ_REQ = 1;
+		IQ_RX_READ_CLK = 1;
+		READ_RX1_I[31:0] = RX1_I[31:0];
+		READ_RX1_Q[31:0] = RX1_Q[31:0];
+		DATA_BUS_OUT[7:0] = READ_RX1_Q[31:24];
 		k = 401;
 	end
 	else if (k == 401)
 	begin
-		DATA_BUS_OUT[7:0] = Q_HOLD[23:16];
+		IQ_RX_READ_CLK = 0;
+		DATA_BUS_OUT[7:0] = READ_RX1_Q[23:16];
 		k = 402;
 	end
 	else if (k == 402)
 	begin
-		DATA_BUS_OUT[7:0] = Q_HOLD[15:8];
+		DATA_BUS_OUT[7:0] = READ_RX1_Q[15:8];
 		k = 403;
 	end
 	else if (k == 403)
 	begin
-		DATA_BUS_OUT[7:0] = Q_HOLD[7:0];
+		DATA_BUS_OUT[7:0] = READ_RX1_Q[7:0];
 		k = 404;
 	end
 	else if (k == 404)
 	begin
-		DATA_BUS_OUT[7:0] = I_HOLD[31:24];
+		DATA_BUS_OUT[7:0] = READ_RX1_I[31:24];
 		k = 405;
 	end
 	else if (k == 405)
 	begin
-		DATA_BUS_OUT[7:0] = I_HOLD[23:16];
+		DATA_BUS_OUT[7:0] = READ_RX1_I[23:16];
 		k = 406;
 	end
 	else if (k == 406)
 	begin
-		DATA_BUS_OUT[7:0] = I_HOLD[15:8];
+		DATA_BUS_OUT[7:0] = READ_RX1_I[15:8];
 		k = 407;
 	end
 	else if (k == 407)
 	begin
-		DATA_BUS_OUT[7:0] = I_HOLD[7:0];
+		DATA_BUS_OUT[7:0] = READ_RX1_I[7:0];
 		if(rx2 == 1)
 			k = 408;
 		else
@@ -476,44 +431,42 @@ begin
 	end
 	else if (k == 408) //RX2 IQ
 	begin
-		I_HOLD = REG_RX2_I;
-		Q_HOLD = REG_RX2_Q;
-		DATA_BUS_OUT[7:0] = Q_HOLD[31:24];
+		DATA_BUS_OUT[7:0] = RX2_Q[31:24];
 		k = 409;
 	end
 	else if (k == 409)
 	begin
-		DATA_BUS_OUT[7:0] = Q_HOLD[23:16];
+		DATA_BUS_OUT[7:0] = RX2_Q[23:16];
 		k = 410;
 	end
 	else if (k == 410)
 	begin
-		DATA_BUS_OUT[7:0] = Q_HOLD[15:8];
+		DATA_BUS_OUT[7:0] = RX2_Q[15:8];
 		k = 411;
 	end
 	else if (k == 411)
 	begin
-		DATA_BUS_OUT[7:0] = Q_HOLD[7:0];
+		DATA_BUS_OUT[7:0] = RX2_Q[7:0];
 		k = 412;
 	end
 	else if (k == 412)
 	begin
-		DATA_BUS_OUT[7:0] = I_HOLD[31:24];
+		DATA_BUS_OUT[7:0] = RX2_I[31:24];
 		k = 413;
 	end
 	else if (k == 413)
 	begin
-		DATA_BUS_OUT[7:0] = I_HOLD[23:16];
+		DATA_BUS_OUT[7:0] = RX2_I[23:16];
 		k = 414;
 	end
 	else if (k == 414)
 	begin
-		DATA_BUS_OUT[7:0] = I_HOLD[15:8];
+		DATA_BUS_OUT[7:0] = RX2_I[15:8];
 		k = 415;
 	end
 	else if (k == 415)
 	begin
-		DATA_BUS_OUT[7:0] = I_HOLD[7:0];
+		DATA_BUS_OUT[7:0] = RX2_I[7:0];
 		k = 400;
 	end
 	else if (k == 500) //BUS TEST
