@@ -231,6 +231,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **Encoder slow rate** - Deceleration rate of the main encoder
 * **Encoder on falling** - The encoder is triggered only when level A falls
 * **Encoder acceleration** - The encoder acceleration on faster rotation speeds
+* **RF-Unit Type** - RF-Unit Type (QRP / BIG)
 * **CICCOMP Shift** - Bit shift after CIC compensator
 * **TX CICCOMP Shift** - Bit shift after TX CIC compensator
 * **DAC Shift** - Bit shift of the output to the DAC
@@ -238,8 +239,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **S METER** - S-meter calibration
 * **ADC OFFSET** - ADC offset calibration
 * **LPF END** - LPF filter parameters
-* **BPF x** - Bandpass filter parameters
 * **HPF START** - HPF filter parameters
+* **BPF x** - Bandpass filter parameters
 * **SWR FWD/REF RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
 * **VCXO Correction** - Frequency adjustment of the reference oscillator
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
@@ -280,6 +281,14 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **Freq offset** - Offset from center of WSPR band
 * **WSPR Band xxx** - Select bands to WSPR beacon
 
+### DX Cluster 
+
+* Show DX Cluster info by current band (from internet)
+
+### Propagination 
+
+* Show propagination statistics (from internet)
+
 ### Band SWR
 
 * Run SWR analizer on current band
@@ -291,10 +300,6 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 ### RDA Statistics 
 
 * Print statistics from RDA award (from internet)
-
-### Propagination 
-
-* Show propagination statistics (from internet)
 
 ### File Manager 
 

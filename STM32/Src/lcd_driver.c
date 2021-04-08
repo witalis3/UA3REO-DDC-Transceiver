@@ -131,13 +131,15 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 	uint8_t c = 0;
 	text_cursor_x = x;
 	text_cursor_y = y;
-	for (uint16_t i = 0; i < 256 && text[i] != NULL; i++)
+	for (uint16_t i = 0; i < 1024 && text[i] != NULL; i++)
 	{
 		c = text[i];
 		if (c == '\n')
 		{
 			text_cursor_x = 0;
 			text_cursor_y += gfxFont->yAdvance;
+			if(text_cursor_y > LCD_HEIGHT)
+				return;
 		}
 		else if (c != '\r')
 		{

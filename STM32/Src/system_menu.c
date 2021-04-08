@@ -250,6 +250,7 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_SDMENU(int8_t direction);
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 
+static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction);
 static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
@@ -547,11 +548,12 @@ const static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 
 const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 	{
+		{"DX Cluster", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DX_CLUSTER},
+		{"Propagination", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGINATION},
 		{"Band SWR", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_BAND_START},
 		{"HF SWR", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_HF_START},
 		{"Spectrum Analyzer", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SPECTRUMMENU},
 		{"RDA Statistics", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RDA_STATS},
-		{"Propagination", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGINATION},
 		{"WSPR Beacon", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WSPRMENU},
 		{"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_FILEMANAGER},
 #ifdef SWR_AD8307_LOG
@@ -3416,6 +3418,15 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true);
 	WIFI_getRDA();
+}
+
+//DX_CLUSTER
+static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction)
+{
+#pragma unused(direction)
+	sysmenu_infowindow_opened = true;
+	SYSMENU_drawSystemMenu(true);
+	WIFI_getDXCluster();
 }
 
 //PROPAGINATION

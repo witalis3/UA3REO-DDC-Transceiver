@@ -7,6 +7,7 @@
 #include "lcd.h"
 #include <stdlib.h>
 #include "usbd_cat_if.h"
+#include "bands.h"
 
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static void (*WIFI_ProcessingCommandCallback)(void);
@@ -955,7 +956,7 @@ static void WIFI_printText_callback(void)
 	LCDDriver_Fill(BG_COLOR);
 	if (WIFI_HTTP_Response_Status == 200)
 	{
-		LCDDriver_printTextFont(WIFI_HTTResponseHTML, 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+		LCDDriver_printTextFont(WIFI_HTTResponseHTML, 0, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 	}
 	else
 		LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
@@ -1044,6 +1045,23 @@ void WIFI_getRDA(void)
 	}
 	char url[64] = "/trx_services/rda.php?callsign=";
 	strcat(url, TRX.CALLSIGN);
+	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false);
+}
+
+void WIFI_getDXCluster(void)
+{
+	LCDDriver_Fill(BG_COLOR);
+	if (WIFI_connected && WIFI_State == WIFI_READY)
+		LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	else
+	{
+		LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+		return;
+	}
+	char url[64] = "/trx_services/cluster.php?band=";
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	if(band >= 0)
+		strcat(url, BANDS[band].name);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false);
 }
 

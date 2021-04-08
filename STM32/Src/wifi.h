@@ -64,6 +64,7 @@ extern bool WIFI_UpdateFW(void (*callback)(void));
 extern bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void (*callback)(void));
 extern bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https);
 extern void WIFI_getRDA(void);
+extern void WIFI_getDXCluster(void);
 extern void WIFI_getPropagination(void);
 
 #endif
