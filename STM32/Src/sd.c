@@ -379,6 +379,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)
 	if ((byteswritten == 0) || (res != FR_OK))
 	{
 		SD_Present = false;
+		SD_NeedStopRecord = false;
 		SD_RecordInProcess = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.StatusInfoBar = true;

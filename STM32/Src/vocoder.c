@@ -20,7 +20,8 @@ void VOCODER_Process(void)
 		adpcm_encode_block(ADPCM_cnxt, (uint8_t *)&SD_workbuffer_A[SD_RecordBufferIndex], &outbuff_size, VOCODER_Buffer, SIZE_ADPCM_BLOCK);
 	else
 		adpcm_encode_block(ADPCM_cnxt, (uint8_t *)&SD_workbuffer_B[SD_RecordBufferIndex], &outbuff_size, VOCODER_Buffer, SIZE_ADPCM_BLOCK);
-	SD_RecordBufferIndex += outbuff_size;
+	SD_RecordBufferIndex += SIZE_ADPCM_COMPRESSED_BLOCK; //outbuff_size;
+
 	if (SD_RecordBufferIndex == _MAX_SS)
 	{
 		SD_RecordBufferIndex = 0;

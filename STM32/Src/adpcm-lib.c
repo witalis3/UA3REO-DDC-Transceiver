@@ -170,7 +170,7 @@ static double minimum_error(const struct adpcm_channel *pchan, int nch, int32_t 
     else
         return min_error;
 
-    for (nibble2 = 0; nibble2 <= 0xF; ++nibble2)
+    /*for (nibble2 = 0; nibble2 <= 0xF; ++nibble2)
     {
         double error;
 
@@ -207,7 +207,7 @@ static double minimum_error(const struct adpcm_channel *pchan, int nch, int32_t 
                 min_error = error;
             }
         }
-    }
+    }*/
 
     return min_error;
 }
