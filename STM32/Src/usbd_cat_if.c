@@ -309,21 +309,26 @@ void ua3reo_dev_cat_parseCommand(void)
 		}
 		else
 		{
+			uint8_t new_vfo = 0;
 			if (strcmp(arguments, "0") == 0)
-				TRX.current_vfo = 0;
+				new_vfo = 0;
 			else if (strcmp(arguments, "1") == 0)
-				TRX.current_vfo = 1;
-			LCD_UpdateQuery.TopButtons = true;
-			LCD_UpdateQuery.BottomButtons = true;
-			LCD_UpdateQuery.FreqInfoRedraw = true;
-			LCD_UpdateQuery.StatusInfoGUI = true;
-			LCD_UpdateQuery.StatusInfoBarRedraw = true;
-			NeedSaveSettings = true;
-			NeedReinitAudioFiltersClean = true;
-			NeedReinitAudioFilters = true;
-			resetVAD();
-			FFT_Init();
-			TRX_ScanMode = false;
+				new_vfo = 1;
+			if(TRX.current_vfo != new_vfo)
+			{
+				TRX.current_vfo = new_vfo;
+				LCD_UpdateQuery.TopButtons = true;
+				LCD_UpdateQuery.BottomButtons = true;
+				LCD_UpdateQuery.FreqInfoRedraw = true;
+				LCD_UpdateQuery.StatusInfoGUI = true;
+				LCD_UpdateQuery.StatusInfoBarRedraw = true;
+				NeedSaveSettings = true;
+				NeedReinitAudioFiltersClean = true;
+				NeedReinitAudioFilters = true;
+				resetVAD();
+				FFT_Init();
+				TRX_ScanMode = false;
+			}
 			println("CAT arguments: ", _command);
 		}
 		return;
