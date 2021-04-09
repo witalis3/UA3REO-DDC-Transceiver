@@ -6,13 +6,15 @@
 #include "settings.h"
 
 #define SIZE_ADPCM_BLOCK 505 // 505->256
+#define SIZE_ADPCM_COMPRESSED_BLOCK 256
 
-extern int16_t VOCODER_InBuffer[SIZE_ADPCM_BLOCK];
-extern uint16_t VOCODER_InBuffer_Index;
+extern int16_t VOCODER_Buffer[SIZE_ADPCM_BLOCK];
+extern uint16_t VOCODER_Buffer_Index;
 extern void *ADPCM_cnxt;
 
 extern void ADPCM_Init(void);
 extern void VOCODER_Process(void);
+extern bool VODECODER_Process(void);
 
 typedef struct
 {

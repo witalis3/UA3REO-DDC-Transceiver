@@ -55,14 +55,18 @@ typedef enum
 	SDCOMM_PROCESS_RECORD,
 	SDCOMM_LIST_DIRECTORY,
 	SDCOMM_DELETE_FILE,
+	SDCOMM_START_PLAY,
+	SDCOMM_PROCESS_PLAY,
 } SD_COMMAND;
 
 extern sd_info_ptr sdinfo;
 extern FATFS SDFatFs;
 extern bool SD_RecordInProcess;
+extern bool SD_PlayInProcess;
 extern bool SD_CommandInProcess;
 extern bool SD_underrun;
 extern bool SD_NeedStopRecord;
+extern bool SD_NeedStopPlay;
 extern bool SD_Present;
 extern bool SD_BusyByUSB;
 extern bool SD_USBCardReader;
@@ -72,6 +76,8 @@ extern uint32_t SD_RecordBufferIndex;
 extern BYTE SD_workbuffer_A[_MAX_SS];
 extern BYTE SD_workbuffer_B[_MAX_SS];
 extern BYTE SD_workbuffer_current;
+extern bool SD_Play_Buffer_Ready;
+extern uint32_t SD_Play_Buffer_Size;
 
 //--------------------------------------------------
 extern void SD_PowerOn(void);

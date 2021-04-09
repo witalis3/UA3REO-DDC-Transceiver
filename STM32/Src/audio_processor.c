@@ -68,6 +68,7 @@ static void doMIC_EQ(uint16_t size);																														  // microphon
 static void doVAD(uint16_t size);																															  // voice activity detector
 static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																							  //IF gain
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor); //decimate RX samplerate input stream
+static void APROC_SD_Play(void);
 
 // initialize audio processor
 void initAudioProcessor(void)
@@ -139,6 +140,12 @@ void processRxAudio(void)
 	if (!preprocessor_buffer_ready)
 		return;
 
+	if(SD_PlayInProcess)
+	{
+		APROC_SD_Play();
+		return;
+	}
+	
 	//get data from preprocessor
 	dma_memcpy(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_accum_I, sizeof(APROC_Audio_Buffer_RX1_I));
 	dma_memcpy(APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_accum_Q, sizeof(APROC_Audio_Buffer_RX1_Q));
@@ -427,11 +434,11 @@ void processRxAudio(void)
 		//FPGA_RX_IQ_BUFFER_HALF_SIZE - 192
 		for (uint_fast16_t i = 0; i < FPGA_RX_IQ_BUFFER_HALF_SIZE; i++)
 		{
-			arm_float_to_q15(&APROC_Audio_Buffer_RX1_I[i], &VOCODER_InBuffer[VOCODER_InBuffer_Index], 1); //left channel
-			VOCODER_InBuffer_Index++;
-			if (VOCODER_InBuffer_Index == SIZE_ADPCM_BLOCK)
+			arm_float_to_q15(&APROC_Audio_Buffer_RX1_I[i], &VOCODER_Buffer[VOCODER_Buffer_Index], 1); //left channel
+			VOCODER_Buffer_Index++;
+			if (VOCODER_Buffer_Index == SIZE_ADPCM_BLOCK)
 			{
-				VOCODER_InBuffer_Index = 0;
+				VOCODER_Buffer_Index = 0;
 				VOCODER_Process();
 			}
 		}
@@ -1338,5 +1345,66 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		//apply gain
 		arm_scale_f32(APROC_Audio_Buffer_RX2_I, if_gain, APROC_Audio_Buffer_RX2_I, size);
 		arm_scale_f32(APROC_Audio_Buffer_RX2_Q, if_gain, APROC_Audio_Buffer_RX2_Q, size);
+	}
+}
+
+static void APROC_SD_Play(void)
+{
+	static uint32_t vocoder_index = SIZE_ADPCM_BLOCK;
+	static uint32_t outbuff_index = 0;
+	
+	if(vocoder_index == SIZE_ADPCM_BLOCK)
+	{
+		vocoder_index = 0;
+		VODECODER_Process();
+	}
+	
+	if(vocoder_index < SIZE_ADPCM_BLOCK)
+	{
+		while(vocoder_index < SIZE_ADPCM_BLOCK && outbuff_index < FPGA_RX_IQ_BUFFER_HALF_SIZE)
+		{
+			APROC_AudioBuffer_out[outbuff_index * 2] = VOCODER_Buffer[vocoder_index] << 16;
+			APROC_AudioBuffer_out[outbuff_index * 2 + 1] = APROC_AudioBuffer_out[outbuff_index * 2];
+			vocoder_index++;
+			outbuff_index++;
+		}
+		
+		if(outbuff_index == FPGA_RX_IQ_BUFFER_HALF_SIZE)
+		{
+			outbuff_index = 0;
+
+			//OUT Volume
+			float32_t volume_gain_new = volume2rate((float32_t)TRX_Volume / 1023.0f);
+			volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
+
+			//Volume Gain and SPI convert
+			for (uint_fast16_t i = 0; i < (FPGA_RX_IQ_BUFFER_HALF_SIZE * 2); i++)
+			{
+				//Gain
+				APROC_AudioBuffer_out[i] = (int32_t)((float32_t)APROC_AudioBuffer_out[i] * volume_gain);
+				//Codec SPI
+				APROC_AudioBuffer_out[i] = convertToSPIBigEndian(APROC_AudioBuffer_out[i]); //for 32bit audio
+			}
+
+			//Send to Codec DMA
+			if (TRX_Inited)
+			{
+				Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
+				if (WM8731_DMA_state) //complete
+				{
+					HAL_MDMA_Start_IT(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
+					SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0);
+				}
+				else //half
+				{
+					HAL_MDMA_Start_IT(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
+					SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0);
+				}
+			}
+			//
+			Processor_NeedTXBuffer = false;
+			Processor_NeedRXBuffer = false;
+			USB_AUDIO_need_rx_buffer = false;
+		}
 	}
 }

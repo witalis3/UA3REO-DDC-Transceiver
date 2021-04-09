@@ -685,7 +685,7 @@ void TIM6_DAC_IRQHandler(void)
       fpga_stuck_errors++;
     else
       fpga_stuck_errors = 0;
-    if (fpga_stuck_errors > 5 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO()->Mode != TRX_MODE_WFM)
+    if (fpga_stuck_errors > 5 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO()->Mode != TRX_MODE_WFM && !SD_PlayInProcess)
     {
       println("[ERR] IQ stuck error, restart");
       fpga_stuck_errors = 0;

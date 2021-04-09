@@ -18,9 +18,13 @@ sd_info_ptr sdinfo = {
 };
 extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
+bool SD_PlayInProcess = false;
 bool SD_CommandInProcess = false;
 bool SD_underrun = false;
 bool SD_NeedStopRecord = false;
+bool SD_NeedStopPlay = false;
+bool SD_Play_Buffer_Ready = false;
+uint32_t SD_Play_Buffer_Size = false;
 uint32_t SD_RecordBufferIndex = 0;
 bool SD_Present = false;
 bool SD_BusyByUSB = false;
@@ -46,9 +50,11 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 static bool SD_WRITE_SETT_STRING(char *name, char *value);
 static void SDCOMM_PARSE_SETT_LINE(char *line);
 static bool SDCOMM_CREATE_RECORD_FILE_handler(void);
+static bool SDCOMM_OPEN_PLAY_FILE_handler(void);
 static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void);
 static void SDCOMM_LIST_DIRECTORY_handler(void);
 static void SDCOMM_DELETE_FILE_handler(void);
+static void SDCOMM_READ_PLAY_FILE_handler(void);
 
 bool SD_isIdle(void)
 {
@@ -64,6 +70,7 @@ bool SD_doCommand(SD_COMMAND command, bool force)
 	{
 		if (SD_CommandInProcess && !force)
 		{
+			println("SD command ovverrun: ", SD_currentCommand);
 			SD_underrun = true;
 		}
 		else
@@ -157,6 +164,12 @@ void SD_Process(void)
 			break;
 		case SDCOMM_DELETE_FILE:
 			SDCOMM_DELETE_FILE_handler();
+			break;
+		case SDCOMM_START_PLAY:
+			SDCOMM_OPEN_PLAY_FILE_handler();
+			break;
+		case SDCOMM_PROCESS_PLAY:
+			SDCOMM_READ_PLAY_FILE_handler();
 			break;
 		}
 		SD_CommandInProcess = false;
@@ -299,6 +312,59 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 	return false;
+}
+
+static bool SDCOMM_OPEN_PLAY_FILE_handler(void)
+{
+	if (f_open(&File, (TCHAR*)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK)
+	{
+		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+		dma_memset(&wav_hdr, 0x00, sizeof(wav_hdr));
+
+		//read header
+		uint32_t bytesreaded;
+		FRESULT res = f_read(&File, &wav_hdr, sizeof(wav_hdr), &bytesreaded);
+		//println((TCHAR*)SD_workbuffer_A);
+		//println(bytesreaded, " ", res);
+		
+		SD_PlayInProcess = true;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		return true;
+	}
+	else
+	{
+		LCD_showTooltip("SD error");
+		SD_PlayInProcess = false;
+		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
+	}
+	return false;
+}
+
+static void SDCOMM_READ_PLAY_FILE_handler(void)
+{
+	//read from SD
+	uint32_t bytesreaded;
+	FRESULT res;
+	if (SD_workbuffer_current)
+		res = f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded);
+	else
+		res = f_read(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&bytesreaded);
+	if ((bytesreaded == 0) || (res != FR_OK) || SD_NeedStopPlay)
+	{
+		//println(bytesreaded, " ", res, " ", (uint8_t)SD_NeedStopPlay);
+		SD_PlayInProcess = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		println("Stop WAV playing");
+		f_close(&File);
+		SD_NeedStopPlay = false;
+	}
+	else
+	{
+		SD_Play_Buffer_Ready = true;
+		SD_Play_Buffer_Size = bytesreaded;
+	}
 }
 
 static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)

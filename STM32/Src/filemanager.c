@@ -5,6 +5,7 @@
 
 static bool first_start = true;
 static uint16_t current_index = 0;
+static FILEMANAGER_ACTION current_dialog_action = FILMAN_ACT_CANCEL;
 
 SRAM char FILEMANAGER_CurrentPath[128] = "";
 SRAM char FILEMANAGER_LISTING[FILEMANAGER_LISTING_MAX_FILES][FILEMANAGER_LISTING_MAX_FILELEN + 1] = {""};
@@ -157,7 +158,18 @@ static void FILEMANAGER_Refresh(void)
 static void FILEMANAGER_OpenDialog(void)
 {
 	FILEMANAGER_dialog_opened = true;
-	uint8_t max_buttons_index = 1;
+	bool allow_play_wav = false;
+	uint8_t max_buttons_index = 1; //cancel+delete
+	
+	
+	//chack play wav
+	char *istr = strstr(FILEMANAGER_LISTING[current_index - 1], ".wav");
+	if (istr != NULL)
+	{
+		max_buttons_index++;
+		allow_play_wav = true;
+	}
+	
 	if(FILEMANAGER_dialog_button_index > max_buttons_index)
 		FILEMANAGER_dialog_button_index = max_buttons_index;
 	
@@ -171,29 +183,63 @@ static void FILEMANAGER_OpenDialog(void)
 	uint16_t button_w = LCD_WIDTH - margin * 2 - button_x;
 	uint16_t button_h = margin;
 	uint16_t bounds_x, bounds_y, bounds_w, bounds_h;
+	uint8_t print_index = 0;
+	bool button_active = false;
 	//back
-	LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, (FILEMANAGER_dialog_button_index == 0) ? FG_COLOR : BG_COLOR);
-	LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, (FILEMANAGER_dialog_button_index == 0) ? BG_COLOR : FG_COLOR);
+	button_active = (FILEMANAGER_dialog_button_index == print_index);
+	LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
+	LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 	LCDDriver_getTextBounds("Cancel", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-	LCDDriver_printTextFont("Cancel", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, (FILEMANAGER_dialog_button_index == 0) ? BG_COLOR : FG_COLOR, (FILEMANAGER_dialog_button_index == 0) ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+	LCDDriver_printTextFont("Cancel", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
 	button_y += button_h + margin;
+	if(button_active)
+		current_dialog_action = FILMAN_ACT_CANCEL;
+	print_index++;
+	//play wav
+	if(allow_play_wav)
+	{
+		button_active = (FILEMANAGER_dialog_button_index == print_index);
+		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
+		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
+		if(!SD_PlayInProcess)
+		{
+			LCDDriver_getTextBounds("Play WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont("Play WAV", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		}
+		else
+		{
+			LCDDriver_getTextBounds("Playing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont("Playing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		}
+		button_y += button_h + margin;
+		if(button_active)
+			current_dialog_action = FILMAN_ACT_PLAYWAV;
+		print_index++;
+	}
 	//delete
-	LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, (FILEMANAGER_dialog_button_index == 1) ? FG_COLOR : BG_COLOR);
-	LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, (FILEMANAGER_dialog_button_index == 1) ? BG_COLOR : FG_COLOR);
+	button_active = (FILEMANAGER_dialog_button_index == print_index);
+	LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
+	LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 	LCDDriver_getTextBounds("Delete", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-	LCDDriver_printTextFont("Delete", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, (FILEMANAGER_dialog_button_index == 1) ? BG_COLOR : FG_COLOR, (FILEMANAGER_dialog_button_index == 1) ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+	LCDDriver_printTextFont("Delete", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
 	button_y += button_h + margin;
+	if(button_active)
+			current_dialog_action = FILMAN_ACT_DELETE;
+	print_index++;
 }
 
 static void FILEMANAGER_DialogAction(void)
 {
-	if(FILEMANAGER_dialog_button_index == 0) //back
+	if(SD_PlayInProcess)
+			SD_NeedStopPlay = true;
+	
+	if(current_dialog_action == FILMAN_ACT_CANCEL) //back
 	{
 		FILEMANAGER_dialog_opened = false;
 		FILEMANAGER_Refresh();
 		return;
 	}
-	if(FILEMANAGER_dialog_button_index == 1) //delete
+	if(current_dialog_action == FILMAN_ACT_DELETE) //delete
 	{
 		if(!SD_CommandInProcess)
 		{
@@ -208,6 +254,25 @@ static void FILEMANAGER_DialogAction(void)
 			current_index--;
 			SD_doCommand(SDCOMM_DELETE_FILE, false);
 		}
+		return;
+	}
+	if(current_dialog_action == FILMAN_ACT_PLAYWAV) //play WAV
+	{
+		if(SD_PlayInProcess)
+		{
+			SD_NeedStopPlay = true;
+			return;
+		}
+		
+		println("Play WAV started");
+		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
+		if(strlen(FILEMANAGER_CurrentPath) > 0)
+		{
+			strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+			strcat((char*)SD_workbuffer_A, "/");
+		}
+		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+		SD_doCommand(SDCOMM_START_PLAY, false);
 		return;
 	}
 }
