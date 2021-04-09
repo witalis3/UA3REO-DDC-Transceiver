@@ -1191,7 +1191,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		{
 			data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
 			//fm de emphasis
-			const float32_t alpha = 0.15f;
+			const float32_t alpha = 0.25f;
 			data_i[i] = data_i[i] * (1.0f - alpha) + *emph_prev * alpha;
 			*emph_prev = data_i[i];
 		}
