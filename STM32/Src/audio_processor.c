@@ -265,7 +265,6 @@ void processRxAudio(void)
 		DemodulateFM(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, false); //48khz iq
 		doRX_IFGain(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		//doVAD(FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		break;
@@ -273,7 +272,6 @@ void processRxAudio(void)
 		//doRX_IFGain(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_SMETER(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		//doVAD(FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, current_vfo->Mode);
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		break;
@@ -1189,7 +1187,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		*q_prev = data_q[i]; // save "previous" value of each channel to allow detection of the change of angle in next go-around
 		*i_prev = data_i[i];
 
-		if ((!*squelched) || (!FM_SQL_threshold)) // high-pass audio only if we are un-squelched (to save processor time)
+		if ((!*squelched) || !FM_SQL_threshold || !TRX.Squelch) // high-pass audio only if we are un-squelched (to save processor time)
 		{
 			data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
 			//fm de emphasis
@@ -1217,7 +1215,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		b = *fm_sql_avg * 10.0f; // scale noise amplitude to range of squelch setting
 
 		// Now evaluate noise power with respect to squelch setting
-		if (!FM_SQL_threshold)	// is squelch set to zero?
+		if (!FM_SQL_threshold || !TRX.Squelch)	// is squelch set to zero?
 			*squelched = false; // yes, the we are un-squelched
 		else if (*squelched)	// are we squelched?
 		{

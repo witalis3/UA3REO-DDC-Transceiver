@@ -69,7 +69,7 @@ static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_VAD_Squelch(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
 
 static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
@@ -324,8 +324,8 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"AM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.AM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass},
 		{"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass},
 		{"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass},
-		{"FM Squelch", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
-		{"VAD Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.VAD_Squelch, SYSMENU_HANDL_AUDIO_VAD_Squelch},
+		{"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Squelch, SYSMENU_HANDL_AUDIO_Squelch},
+		{"FM Squelch level", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
 		{"MIC EQ Low", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_LOW, SYSMENU_HANDL_AUDIO_MIC_EQ_LOW},
 		{"MIC EQ Mid", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_MID, SYSMENU_HANDL_AUDIO_MIC_EQ_MID},
 		{"MIC EQ High", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_HIG, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG},
@@ -1227,12 +1227,12 @@ static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
 		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold = CurrentVFO()->FM_SQL_threshold;
 }
 
-static void SYSMENU_HANDL_AUDIO_VAD_Squelch(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction)
 {
 	if (direction > 0)
-		TRX.VAD_Squelch = true;
+		TRX.Squelch = true;
 	if (direction < 0)
-		TRX.VAD_Squelch = false;
+		TRX.Squelch = false;
 }
 
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)

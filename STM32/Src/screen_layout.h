@@ -21,34 +21,36 @@ extern "C"
 #if (defined(LAY_800x480))
 		const uint16_t TOPBUTTONS_COUNT;
 #endif
-		const uint16_t TOPBUTTONS_WIDTH;
+		const float32_t TOPBUTTONS_WIDTH;
 		const uint16_t TOPBUTTONS_HEIGHT;
 		const uint16_t TOPBUTTONS_TB_MARGIN;
 		const uint16_t TOPBUTTONS_LR_MARGIN;
-		const uint16_t TOPBUTTONS_PRE_X;
+		const float32_t TOPBUTTONS_PRE_X;
 		const uint16_t TOPBUTTONS_PRE_Y;
-		const uint16_t TOPBUTTONS_ATT_X;
+		const float32_t TOPBUTTONS_ATT_X;
 		const uint16_t TOPBUTTONS_ATT_Y;
-		const uint16_t TOPBUTTONS_PGA_X;
+		const float32_t TOPBUTTONS_PGA_X;
 		const uint16_t TOPBUTTONS_PGA_Y;
-		const uint16_t TOPBUTTONS_DRV_X;
+		const float32_t TOPBUTTONS_DRV_X;
 		const uint16_t TOPBUTTONS_DRV_Y;
-		const uint16_t TOPBUTTONS_AGC_X;
+		const float32_t TOPBUTTONS_AGC_X;
 		const uint16_t TOPBUTTONS_AGC_Y;
 		const uint16_t TOPBUTTONS_SECOND_LINE_Y;
-		const uint16_t TOPBUTTONS_DNR_X;
+		const float32_t TOPBUTTONS_DNR_X;
 		const uint16_t TOPBUTTONS_DNR_Y;
-		const uint16_t TOPBUTTONS_NB_X;
+		const float32_t TOPBUTTONS_NB_X;
 		const uint16_t TOPBUTTONS_NB_Y;
 #if (defined(LAY_800x480))
-		const uint16_t TOPBUTTONS_NOTCH_X;
+		const float32_t TOPBUTTONS_NOTCH_X;
 		const uint16_t TOPBUTTONS_NOTCH_Y;
+		const float32_t TOPBUTTONS_SQL_X;
+		const uint16_t TOPBUTTONS_SQL_Y;
 #endif
-		const uint16_t TOPBUTTONS_FAST_X;
+		const float32_t TOPBUTTONS_FAST_X;
 		const uint16_t TOPBUTTONS_FAST_Y;
-		const uint16_t TOPBUTTONS_MUTE_X;
+		const float32_t TOPBUTTONS_MUTE_X;
 		const uint16_t TOPBUTTONS_MUTE_Y;
-		const uint16_t TOPBUTTONS_LOCK_X;
+		const float32_t TOPBUTTONS_LOCK_X;
 		const uint16_t TOPBUTTONS_LOCK_Y;
 		//Clock
 		const uint16_t CLOCK_POS_Y;

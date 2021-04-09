@@ -237,7 +237,7 @@ extern struct TRX_SETTINGS
 	uint16_t FM_LPF_RX_Filter;
 	uint16_t FM_LPF_TX_Filter;
 	bool Beeper;
-	bool VAD_Squelch;
+	bool Squelch;
 	//CW
 	bool CWDecoder;
 	uint16_t CW_GENERATOR_SHIFT_HZ;

@@ -1279,6 +1279,13 @@ void FRONTPANEL_BUTTONHANDLER_SERVICES(uint32_t parameter)
 	}
 }
 
+void FRONTPANEL_BUTTONHANDLER_SQL(uint32_t parameter)
+{
+	TRX.Squelch = !TRX.Squelch;
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
 static void FRONTPANEL_BUTTONHANDLER_SCAN(uint32_t parameter)
 {
 	TRX_ScanMode = !TRX_ScanMode;

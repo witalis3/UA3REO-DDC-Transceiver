@@ -51,7 +51,7 @@ void resetVAD(void)
 // run VAD for the data block
 void processVAD(float32_t *buffer)
 {
-	if (!TRX.VAD_Squelch && !TRX_ScanMode)
+	if (!TRX.Squelch && !TRX_ScanMode)
 		return;
 
 #define debug false

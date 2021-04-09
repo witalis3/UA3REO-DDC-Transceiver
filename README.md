@@ -45,7 +45,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Spectrum analyzer
 * WSPR Beacon
 * Equalizer TX/RX, reverber
-* SSB Scanner mode
+* SSB/FM Scanner mode
 * Support SDHC/SDSC/SDXC memory cards up to 16Gb
 * WAV files radio recording and playback
 * AGC takes into account the characteristics of human hearing (K-Weighting)
@@ -153,8 +153,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **SSB LPF Pass** - HPF cutoff frequency when operating in SSB
 * **CW LPF Pass** - LPF cutoff frequency when working in CW
 * **FM LPF Pass** - LPF cutoff frequency when working in FM
-* **FM Squelch** - FM squelch level
-* **VAD Squelch** - SSB squelch on VAD techonogy
+* **Squelch** - Enable SSB/FM Squelch
+* **FM Squelch level** - FM squelch level
 * **MIC EQ xxx** - Microphone equalizer levels
 * **MIC Reverber** - Microphone reverberator level
 * **RX EQ xxx** - Receiver equalizer levels
