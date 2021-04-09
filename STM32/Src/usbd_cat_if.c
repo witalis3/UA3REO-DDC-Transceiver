@@ -715,6 +715,18 @@ void ua3reo_dev_cat_parseCommand(void)
 		}
 		return;
 	}
+	if (strcmp(command, "KP") == 0) // READ KEY PITCH
+	{
+		if (!has_args)
+		{
+			CAT_Transmit("KP04;");
+		}
+		else
+		{
+			println("Unknown CAT arguments: ", _command);
+		}
+		return;
+	}
 
 	if (strcmp(command, "TX") == 0) // TX SET
 	{
