@@ -286,6 +286,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	//BIG Version RF Unit
 	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
 	{
+		if(TRX_Tune)
+			RF_UNIT_ProcessATU();
 		static const uint8_t MAX_ATU_POS = B8(00011111); //5x5 tuner
 		
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch

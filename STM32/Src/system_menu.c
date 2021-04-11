@@ -204,6 +204,7 @@ static void SYSMENU_HANDL_CALIB_BPF_8_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_9_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_9_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
+static void SYSMENU_HANDL_CALIB_MAX_RF_POWER(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
@@ -502,13 +503,16 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"BPF 8 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_8_END, SYSMENU_HANDL_CALIB_BPF_8_END},
 		{"BPF 9 START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_9_START, SYSMENU_HANDL_CALIB_BPF_9_START},
 		{"BPF 9 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_9_END, SYSMENU_HANDL_CALIB_BPF_9_END},
+		{"MAX RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER, SYSMENU_HANDL_CALIB_MAX_RF_POWER},
 		{"SWR FWD RATE", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration, SYSMENU_HANDL_CALIB_SWR_FWD_RATE},
 		{"SWR REF RATE", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration, SYSMENU_HANDL_CALIB_SWR_REF_RATE},
 		{"VCXO Correction", SYSMENU_INT8, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
+#ifdef SWR_AD8307_LOG		
 		{"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
 		{"FW_AD8307_Offset (mV)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_OFFS, SYSMENU_HANDL_CALIB_FW_AD8307_OFFS},
 		{"BW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.BW_AD8307_SLP, SYSMENU_HANDL_CALIB_BW_AD8307_SLP},
 		{"BW_AD8307_Offset (mV)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.BW_AD8307_OFFS, SYSMENU_HANDL_CALIB_BW_AD8307_OFFS},
+#endif
 		{"FAN Medium start", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_MEDIUM_START, SYSMENU_HANDL_CALIB_FAN_MEDIUM_START},
 		{"FAN Medium stop", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_MEDIUM_STOP, SYSMENU_HANDL_CALIB_FAN_MEDIUM_STOP},
 		{"FAN Full start", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_FULL_START, SYSMENU_HANDL_CALIB_FAN_FULL_START},
@@ -958,32 +962,37 @@ static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction)
 {
-	#ifdef HAS_ATU
-	if(TRX.ATU_I > 0 || direction > 0)
-		TRX.ATU_I += direction;
-	if (TRX.ATU_I > MAX_ATU_POS)
-		TRX.ATU_I = MAX_ATU_POS;
-	#endif
+	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
+	{
+		static const uint8_t MAX_ATU_POS = B8(00011111); //5x5 tuner
+		if(TRX.ATU_I > 0 || direction > 0)
+			TRX.ATU_I += direction;
+		if (TRX.ATU_I > MAX_ATU_POS)
+			TRX.ATU_I = MAX_ATU_POS;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction)
 {
-	#ifdef HAS_ATU
-	if(TRX.ATU_C > 0 || direction > 0)
-		TRX.ATU_C += direction;
-	if (TRX.ATU_C > MAX_ATU_POS)
-		TRX.ATU_C = MAX_ATU_POS;
-	#endif
+	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
+	{
+		static const uint8_t MAX_ATU_POS = B8(00011111); //5x5 tuner
+		if(TRX.ATU_C > 0 || direction > 0)
+			TRX.ATU_C += direction;
+		if (TRX.ATU_C > MAX_ATU_POS)
+			TRX.ATU_C = MAX_ATU_POS;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction)
 {
-	#ifdef HAS_ATU
-	if (direction > 0)
-		TRX.ATU_T = true;
-	if (direction < 0)
-		TRX.ATU_T = false;
-	#endif
+	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
+	{
+		if (direction > 0)
+			TRX.ATU_T = true;
+		if (direction < 0)
+			TRX.ATU_T = false;
+	}
 }
 
 //AUDIO MENU
@@ -2569,6 +2578,10 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_8_END = 0;		   //disabled on qrp version
 		CALIBRATE.RFU_BPF_9_START = 0;	   //disabled on qrp version
 		CALIBRATE.RFU_BPF_9_END = 0;		   //disabled on qrp version
+		CALIBRATE.SWR_FWD_Calibration = 11.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration = 11.0f;	   //SWR Transormator rate return
+		CALIBRATE.TUNE_MAX_POWER = 2;			   // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER = 7;				//Max TRX Power for indication
 	}
 	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
 	{
@@ -2592,6 +2605,10 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_8_END = 35000 * 1000;		   //CB,10m
 		CALIBRATE.RFU_BPF_9_START = 35000 * 1000;	   //6m
 		CALIBRATE.RFU_BPF_9_END = 70000 * 1000;		   //6m
+		CALIBRATE.SWR_FWD_Calibration = 20.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration = 20.0f;	   //SWR Transormator rate return
+		CALIBRATE.TUNE_MAX_POWER = 5;			   // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER = 100;				//Max TRX Power for indication
 	}
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
@@ -3052,6 +3069,15 @@ static void SYSMENU_HANDL_CALIB_SWR_REF_RATE(int8_t direction)
 		CALIBRATE.SWR_REF_Calibration = 1.0f;
 	if (CALIBRATE.SWR_REF_Calibration > 50.0f)
 		CALIBRATE.SWR_REF_Calibration = 50.0f;
+}
+
+static void SYSMENU_HANDL_CALIB_MAX_RF_POWER(int8_t direction)
+{
+	CALIBRATE.MAX_RF_POWER += direction;
+	if (CALIBRATE.MAX_RF_POWER < 5)
+		CALIBRATE.MAX_RF_POWER = 5;
+	if (CALIBRATE.MAX_RF_POWER > 200)
+		CALIBRATE.MAX_RF_POWER = 200;
 }
 
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)

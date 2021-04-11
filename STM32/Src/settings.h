@@ -24,7 +24,6 @@
 #define AUTOGAIN_MAX_AMPLITUDE 30000.0f	   // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
 #define AUTOGAIN_CORRECTOR_WAITSTEP 5	   // waiting for the averaging of the results when the auto-corrector of the input circuits is running
 #define KEY_HOLD_TIME 500				   // time of long pressing of the keyboard button for triggering, ms
-#define MAX_RF_POWER 7.0f				   // Maximum power (for meter scale)
 #define SHOW_LOGO true					   // Show logo on boot (from images.h)
 #define POWERDOWN_TIMEOUT 1000			   // time of pressing the shutdown button, for operation, ms
 #define POWERDOWN_FORCE_TIMEOUT 2000	   // force time
@@ -363,6 +362,7 @@ extern struct TRX_CALIBRATE
 	uint32_t RFU_BPF_9_END;
 	float32_t SWR_FWD_Calibration;
 	float32_t SWR_REF_Calibration;
+	uint8_t MAX_RF_POWER;
 	int8_t VCXO_correction;
 	uint8_t ENCODER_ACCELERATION;
 	float32_t FW_AD8307_SLP;

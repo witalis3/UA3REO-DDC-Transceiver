@@ -399,6 +399,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_9_END = 0;		   //disabled on qrp version
 		CALIBRATE.SWR_FWD_Calibration = 11.0f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration = 11.0f;	   //SWR Transormator rate return
+		CALIBRATE.MAX_RF_POWER = 7;				//Max TRX Power for indication
 		CALIBRATE.VCXO_correction = 16;			   //VCXO Frequency offset
 		CALIBRATE.FW_AD8307_SLP = 25.5f;		   //Slope for the log amp used to mreasure the FW power (mV/dB)
 		CALIBRATE.FW_AD8307_OFFS = 1150.0f;		   //Offset to back calculate the output voltage to dBm (mV)

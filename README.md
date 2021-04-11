@@ -242,6 +242,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **LPF END** - LPF filter parameters
 * **HPF START** - HPF filter parameters
 * **BPF x** - Bandpass filter parameters
+* **MAX RF Power** - Maximim RF power (for indication)
 * **SWR FWD/REF RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
 * **VCXO Correction** - Frequency adjustment of the reference oscillator
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
