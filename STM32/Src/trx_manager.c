@@ -284,6 +284,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 
 	//
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
+	RF_UNIT_ATU_Invalidate();
 	FPGA_NeedSendParams = true;
 }
 

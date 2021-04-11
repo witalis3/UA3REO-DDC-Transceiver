@@ -12,6 +12,7 @@
 #include "trx_manager.h"
 #include "sd.h"
 #include "vocoder.h"
+#include "rf_unit.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;	  // audio samples processed in the processor
@@ -728,13 +729,19 @@ void processTxAudio(void)
 		if (fabsf(full_power - (float32_t)CALIBRATE.TUNE_MAX_POWER) > 0.1f) //histeresis
 		{
 			if (full_power < CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
-				tune_power = 0.995f * tune_power + 0.005f * RFpower_amplitude;
+				tune_power = 0.99f * tune_power + 0.01f * RFpower_amplitude;
 			if ((TRX_PWR_Forward + TRX_PWR_Backward) > CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
-				tune_power = 0.995f * tune_power;
+				tune_power = 0.99f * tune_power;
+			ATU_TunePowerStabilized = false;
 		}
+		else
+			ATU_TunePowerStabilized = true;
 
 		if (tune_power > RFpower_amplitude * 1.05f)
+		{
 			tune_power = RFpower_amplitude;
+			ATU_TunePowerStabilized = true;
+		}
 
 		RFpower_amplitude = tune_power;
 	}

@@ -8,6 +8,15 @@
 #include "functions.h"
 #include "audio_filters.h"
 
+static bool ATU_Finished = false;
+static bool ATU_InProcess = false;
+static float32_t ATU_MinSWR = 1.0;
+static uint8_t ATU_MinSWR_I = 0;
+static uint8_t ATU_MinSWR_C = 0;
+static bool ATU_MinSWR_T = false;
+static uint8_t ATU_Stage = 0;
+bool ATU_TunePowerStabilized = false;
+
 #define SENS_TABLE_COUNT 24
 static const int16_t KTY81_120_sensTable[SENS_TABLE_COUNT][2] = { // table of sensor characteristics
 	{-55, 490},
@@ -66,6 +75,196 @@ static uint8_t getBPFByFreq(uint32_t freq)
 			return 7;
 	}
 	return 255;
+}
+
+void RF_UNIT_ATU_Invalidate(void)
+{
+	ATU_Finished = false;
+	ATU_InProcess = false;
+	ATU_TunePowerStabilized = false;
+}
+
+static void RF_UNIT_ProcessATU(void)
+{
+	if (!TRX_Tune)
+		return;
+	if (TRX_PWR_Forward < 2.0f)
+		return;
+	if (ATU_Finished)
+		return;
+	if (ATU_TunePowerStabilized)
+		return;
+	/*if (TRX_SWR < 1.1f)
+	{
+		ATU_Finished = true;
+		return;
+	}*/
+	
+	#define delay_stages 1
+	static uint8_t delay_stages_count = 0;
+	if(delay_stages_count < delay_stages)
+	{
+		delay_stages_count++;
+		return;
+	}
+	else
+	{
+		delay_stages_count = 0;
+	}
+	
+	static float32_t ATU_MinSWR_Slider = 9.9f;
+	static float32_t ATU_MinSWR_prev = 9.9f;
+	static float32_t ATU_MinSWR_prev_prev = 9.9f;
+		
+	if(!ATU_Finished && !ATU_InProcess)
+	{
+		TRX.ATU_I = 0;
+		TRX.ATU_C = 0;
+		TRX.ATU_T = 0;
+		ATU_MinSWR = 99.9f;
+		ATU_MinSWR_prev = ATU_MinSWR;
+		ATU_MinSWR_prev_prev = ATU_MinSWR;
+		ATU_MinSWR_I = 0;
+		ATU_MinSWR_C = 0;
+		ATU_MinSWR_T = false;
+		ATU_Stage = 0;
+		ATU_InProcess = true;
+	}
+	else
+	{
+		//best result
+		if(TRX_SWR < ATU_MinSWR)
+		{
+			ATU_MinSWR = TRX_SWR;
+			ATU_MinSWR_I = TRX.ATU_I;
+			ATU_MinSWR_C = TRX.ATU_C;
+			ATU_MinSWR_T = TRX.ATU_T;
+		}
+		//wrong way?
+		bool wrong_way = false;
+		if(ATU_MinSWR_prev_prev < ATU_MinSWR_prev && ATU_MinSWR_prev < TRX_SWR)
+			wrong_way = true;
+		ATU_MinSWR_prev_prev = ATU_MinSWR_prev;
+		ATU_MinSWR_prev = TRX_SWR;
+		//if(wrong_way) print("W");
+		println(ATU_Stage, " ", TRX.ATU_I, " ", TRX.ATU_C, " ", (uint8_t)TRX.ATU_T, " ", TRX_SWR, " ", TRX_PWR_Forward);
+		//iteration block
+		uint8_t MAX_ATU_POS = 0;
+		if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
+			MAX_ATU_POS = B8(00011111); //5x5 tuner
+		
+		if(ATU_Stage == 0) //iterate inds
+		{
+			if(TRX.ATU_I < MAX_ATU_POS && !wrong_way)
+			{
+				TRX.ATU_I++;
+			}
+			else
+			{
+				ATU_Stage = 1;
+				TRX.ATU_I = ATU_MinSWR_I;
+				TRX.ATU_C = 1;
+				ATU_MinSWR_prev_prev = ATU_MinSWR_prev = 9.9f;
+			}
+		}
+		else if(ATU_Stage == 1) //iterate caps
+		{
+			if(TRX.ATU_C < MAX_ATU_POS)
+			{
+				TRX.ATU_C++;
+			}
+			else
+			{
+				ATU_Stage = 2;
+				TRX.ATU_C = 0;
+				TRX.ATU_T = true;
+				ATU_MinSWR_prev_prev = ATU_MinSWR_prev = 9.9f;
+			}
+		}
+		else if(ATU_Stage == 2) //iterate caps with other T
+		{
+			if(TRX.ATU_C < MAX_ATU_POS)
+			{
+				TRX.ATU_C++;
+			}
+			else
+			{
+				TRX.ATU_C = 0;
+				TRX.ATU_T = ATU_MinSWR_T;
+				ATU_MinSWR_Slider = ATU_MinSWR;
+				if(TRX.ATU_I > 0)
+				{
+					TRX.ATU_I = ATU_MinSWR_I - 1;
+					ATU_Stage = 3;
+				}
+				else
+					ATU_Stage = 4;
+				ATU_MinSWR_prev_prev = ATU_MinSWR_prev = 9.9f;
+			}
+		}
+		else if(ATU_Stage == 3) //iterate caps with i-1
+		{
+			if(TRX.ATU_C < MAX_ATU_POS && !wrong_way)
+			{
+				TRX.ATU_C++;
+			}
+			else
+			{
+				//slide more?
+				if(ATU_MinSWR < ATU_MinSWR_Slider && TRX.ATU_I > 0)
+				{
+					ATU_MinSWR_Slider = ATU_MinSWR;
+					TRX.ATU_I = ATU_MinSWR_I - 1;
+					TRX.ATU_C = 0;
+				}
+				else //go slide right
+				{
+					TRX.ATU_C = 0;
+					ATU_MinSWR_Slider = ATU_MinSWR;
+					if(TRX.ATU_I < MAX_ATU_POS)
+					{
+						TRX.ATU_I = ATU_MinSWR_I + 1;
+						ATU_Stage = 4;
+					}
+					else
+						ATU_Stage = 5;
+				}
+				ATU_MinSWR_prev_prev = ATU_MinSWR_prev = 9.9f;
+			}
+		}
+		else if(ATU_Stage == 4) //iterate caps with i+1
+		{
+			if(TRX.ATU_C < MAX_ATU_POS && !wrong_way)
+			{
+				TRX.ATU_C++;
+			}
+			else
+			{
+				//slide more?
+				if(ATU_MinSWR < ATU_MinSWR_Slider && TRX.ATU_I < MAX_ATU_POS)
+				{
+					ATU_MinSWR_Slider = ATU_MinSWR;
+					TRX.ATU_I = ATU_MinSWR_I + 1;
+					TRX.ATU_C = 0;
+				}
+				else //enough
+				{
+					ATU_Stage = 5;
+				}
+				ATU_MinSWR_prev_prev = ATU_MinSWR_prev = 9.9f;
+			}
+		}
+		
+		if(ATU_Stage == 5) //finish tune
+		{
+			ATU_InProcess = false;
+			ATU_Finished = true;
+			TRX.ATU_I = ATU_MinSWR_I;
+			TRX.ATU_C = ATU_MinSWR_C;
+			TRX.ATU_T = ATU_MinSWR_T;
+			println("ATU best I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", ATU_MinSWR);
+		}
+	}
 }
 
 void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
@@ -532,8 +731,8 @@ void RF_UNIT_ProcessSensors(void)
 		TRX_SWR = 0.0f;
 
 #else //if it is used the standard measure (diode rectifier)
-	forward = forward / (1510.0f / (0.1f + 1510.0f)); // adjust the voltage based on the voltage divider (0.1 ohm and 510 ohm)
-	if (forward < 0.01f)							  // do not measure less than 10mV
+	forward = forward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
+	if (forward < 0.1f)							  // do not measure less than 100mV
 	{
 		TRX_VLT_forward = 0.0f;
 		TRX_VLT_backward = 0.0f;
@@ -546,8 +745,8 @@ void RF_UNIT_ProcessSensors(void)
 		forward += 0.21f;								   // drop on diode
 		forward = forward * CALIBRATE.SWR_FWD_Calibration; // Transformation ratio of the SWR meter
 
-		backward = backward / (1510.0f / (0.1f + 1510.0f)); // adjust the voltage based on the voltage divider (0.1 ohm and 510 ohm)
-		if (backward >= 0.01f)								// do not measure less than 10mV
+		backward = backward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
+		if (backward >= 0.1f)								// do not measure less than 100mV
 		{
 			backward += 0.21f;									 // drop on diode
 			backward = backward * CALIBRATE.SWR_REF_Calibration; // Transformation ratio of the SWR meter
