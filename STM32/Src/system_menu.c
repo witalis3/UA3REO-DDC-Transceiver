@@ -17,6 +17,7 @@
 #include "stm32h7xx_it.h"
 #include "usbd_ua3reo.h"
 #include "filemanager.h"
+#include "rf_unit.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -686,6 +687,8 @@ static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)
 		TRX.RF_Power += direction;
 	if (TRX.RF_Power > 100)
 		TRX.RF_Power = 100;
+	
+	ATU_TunePowerStabilized = false;
 }
 
 static void SYSMENU_HANDL_TRX_INPUT_TYPE(int8_t direction)
@@ -2605,8 +2608,8 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_8_END = 35000 * 1000;		   //CB,10m
 		CALIBRATE.RFU_BPF_9_START = 35000 * 1000;	   //6m
 		CALIBRATE.RFU_BPF_9_END = 70000 * 1000;		   //6m
-		CALIBRATE.SWR_FWD_Calibration = 20.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration = 20.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration = 22.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration = 22.0f;	   //SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 10;			   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 100;				//Max TRX Power for indication
 	}
@@ -3184,8 +3187,8 @@ static void SYSMENU_HANDL_CALIB_TUNE_MAX_POWER(int8_t direction)
 	CALIBRATE.TUNE_MAX_POWER += direction;
 	if (CALIBRATE.TUNE_MAX_POWER < 1)
 		CALIBRATE.TUNE_MAX_POWER = 1;
-	if (CALIBRATE.TUNE_MAX_POWER > 20)
-		CALIBRATE.TUNE_MAX_POWER = 20;
+	if (CALIBRATE.TUNE_MAX_POWER > 120)
+		CALIBRATE.TUNE_MAX_POWER = 120;
 }
 
 static void SYSMENU_HANDL_CALIB_RTC_CALIBRATION(int8_t direction)

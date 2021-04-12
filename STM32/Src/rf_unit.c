@@ -92,7 +92,7 @@ static void RF_UNIT_ProcessATU(void)
 		return;
 	if (ATU_Finished)
 		return;
-	if (ATU_TunePowerStabilized)
+	if (!ATU_TunePowerStabilized)
 		return;
 	/*if (TRX_SWR < 1.1f)
 	{

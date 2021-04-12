@@ -12,6 +12,7 @@
 #include "vad.h"
 #include "sd.h"
 #include "noise_reduction.h"
+#include "rf_unit.h"
 
 uint8_t FRONTPANEL_funcbuttons_page = 0;
 int8_t FRONTPANEL_ProcessEncoder1 = 0;
@@ -1446,7 +1447,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_TX_BW(uint32_t parameter)
 void FRONTPANEL_BUTTONHANDLER_SETRF_POWER(uint32_t parameter)
 {
 	TRX.RF_Power = parameter;
-
+	ATU_TunePowerStabilized = false;
 	LCD_closeWindow();
 }
 

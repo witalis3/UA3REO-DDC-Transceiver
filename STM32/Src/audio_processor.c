@@ -726,13 +726,12 @@ void processTxAudio(void)
 		static float32_t tune_power = 0;
 		float32_t full_power = TRX_PWR_Forward + TRX_PWR_Backward;
 
-		if (fabsf(full_power - (float32_t)CALIBRATE.TUNE_MAX_POWER) > 0.1f) //histeresis
+		if (fabsf(full_power - (float32_t)CALIBRATE.TUNE_MAX_POWER) > 0.1f && !ATU_TunePowerStabilized) //histeresis
 		{
 			if (full_power < CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
-				tune_power = 0.99f * tune_power + 0.01f * RFpower_amplitude;
+				tune_power = 0.995f * tune_power + 0.005f * RFpower_amplitude;
 			if ((TRX_PWR_Forward + TRX_PWR_Backward) > CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
-				tune_power = 0.99f * tune_power;
-			ATU_TunePowerStabilized = false;
+				tune_power = 0.995f * tune_power;
 		}
 		else
 			ATU_TunePowerStabilized = true;
