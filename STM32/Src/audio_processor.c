@@ -711,14 +711,37 @@ void processTxAudio(void)
 		}
 	}
 
+	//Loopback/DIGI mode self-hearing
+	if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U)
+	{
+		float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
+		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+		{
+			float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx * 0.5f;
+			arm_float_to_q31(&sample, &APROC_AudioBuffer_out[i * 2], 1);
+			APROC_AudioBuffer_out[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]); //left channel
+			APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];					//right channel
+		}
+
+		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
+		if (WM8731_DMA_state) //compleate
+		{
+			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0);
+		}
+		else //half
+		{
+			HAL_MDMA_Start(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], AUDIO_BUFFER_SIZE * 4, 1);
+			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0);
+		}
+	}
+	
 	//// RF PowerControl (Audio Level Control)
 
 	// amplitude for the selected power and range
 	float32_t RFpower_amplitude = log10f_fast(((float32_t)TRX.RF_Power * 0.9f + 10.0f) / 10.0f) * TRX_MAX_TX_Amplitude;
 	if (RFpower_amplitude < 0.0f)
 		RFpower_amplitude = 0.0f;
-	if (mode == TRX_MODE_LOOPBACK)
-		RFpower_amplitude = 0.5f;
 
 	//Tune power regulator
 	if (TRX_Tune)
@@ -769,14 +792,14 @@ void processTxAudio(void)
 
 	// calculate the target gain
 	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN;
-	//sendToDebug_float32(Processor_TX_MAX_amplitude_IN, false);
+	//println(Processor_TX_MAX_amplitude_IN);
 	if (Processor_TX_MAX_amplitude_IN > 0.0f)
 	{
 		// overload (clipping), sharply reduce the gain
-		if (Processor_TX_MAX_amplitude_IN > RFpower_amplitude * 1.00f)
+		if (Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE)
 		{
 			float32_t ALC_need_gain_target = (RFpower_amplitude * 0.99f) / Processor_TX_MAX_amplitude_IN;
-			//sendToDebug_str("ALC_CLIP "); sendToDebug_float32(Processor_TX_MAX_amplitude_IN / RFpower_amplitude, false);
+			//println("ALC_CLIP ", Processor_TX_MAX_amplitude_IN / RFpower_amplitude);
 			// apply gain
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, ALC_need_gain_target, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 			arm_scale_f32(APROC_Audio_Buffer_TX_Q, ALC_need_gain_target, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
@@ -790,33 +813,7 @@ void processTxAudio(void)
 		TRX_ALC = 0.0f;
 	//RF PowerControl (Audio Level Control) Compressor END
 
-	//Loopback mode
-	if (mode == TRX_MODE_LOOPBACK && !TRX_Tune)
-	{
-		//OUT Volume
-		float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
-		arm_scale_f32(APROC_Audio_Buffer_TX_I, volume_gain_tx, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-
-		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
-		{
-			arm_float_to_q31(&APROC_Audio_Buffer_TX_I[i], &APROC_AudioBuffer_out[i * 2], 1);
-			APROC_AudioBuffer_out[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]); //left channel
-			APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];					//right channel
-		}
-
-		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
-		if (WM8731_DMA_state) //compleate
-		{
-			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
-			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0);
-		}
-		else //half
-		{
-			HAL_MDMA_Start(&hmdma_mdma_channel42_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], AUDIO_BUFFER_SIZE * 4, 1);
-			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0);
-		}
-	}
-	else
+	if (mode != TRX_MODE_LOOPBACK)
 	{
 		//CW SelfHear
 		if (TRX.CW_SelfHear && (TRX.CW_KEYER || TRX_key_serial || TRX_key_dot_hard || TRX_key_dash_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U) && !TRX_Tune)
@@ -839,7 +836,7 @@ void processTxAudio(void)
 			}
 			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 		}
-		else if (TRX.CW_SelfHear)
+		else if (TRX.CW_SelfHear && mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U)
 		{
 			dma_memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
 			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
