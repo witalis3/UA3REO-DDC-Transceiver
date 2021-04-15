@@ -24,7 +24,8 @@ static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
-static void SYSMENU_HANDL_TRX_INPUT_TYPE(int8_t direction);
+static void SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN(int8_t direction);
+static void SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI(int8_t direction);
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction);
 static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_SAMPLERATE_FM(int8_t direction);
@@ -315,7 +316,8 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 		{"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
 		{"DEBUG Console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH"}},
-		{"Input Type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType, SYSMENU_HANDL_TRX_INPUT_TYPE, {"MIC", "LINE", "USB"}},
+		{"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN, {"MIC", "LINE", "USB"}},
+		{"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI, {"MIC", "LINE", "USB"}},
 		{"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
 		{"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
 		{"Transverter Enable", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
@@ -723,12 +725,21 @@ static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)
 	ATU_TunePowerStabilized = false;
 }
 
-static void SYSMENU_HANDL_TRX_INPUT_TYPE(int8_t direction)
+static void SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN(int8_t direction)
 {
-	if (direction > 0 || TRX.InputType > 0)
-		TRX.InputType += direction;
-	if (TRX.InputType > 2)
-		TRX.InputType = 2;
+	if (direction > 0 || TRX.InputType_MAIN > 0)
+		TRX.InputType_MAIN += direction;
+	if (TRX.InputType_MAIN > 2)
+		TRX.InputType_MAIN = 2;
+	WM8731_TXRX_mode();
+}
+
+static void SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI(int8_t direction)
+{
+	if (direction > 0 || TRX.InputType_DIGI > 0)
+		TRX.InputType_DIGI += direction;
+	if (TRX.InputType_DIGI > 2)
+		TRX.InputType_DIGI = 2;
 	WM8731_TXRX_mode();
 }
 

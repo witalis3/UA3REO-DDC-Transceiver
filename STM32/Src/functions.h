@@ -11,6 +11,7 @@ __asm(".global __use_no_heap\n\t");
 #include <arm_math.h>
 #include "profiler.h"
 #include "print.h"
+#include "settings.h"
 
 #define TRX_MODE_LSB 0
 #define TRX_MODE_USB 1
@@ -186,5 +187,6 @@ extern int32_t convertToSPIBigEndian(int32_t in);
 extern uint8_t rev8(uint8_t data);
 extern bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma);
 extern float32_t quick_median_select(float32_t *arr, int n);
+extern uint8_t getInputType(void);
 
 #endif

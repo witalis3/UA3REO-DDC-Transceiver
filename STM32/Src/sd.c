@@ -547,7 +547,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FAST_STEP", (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.Debug_Type", (uint32_t *)&TRX.Debug_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.BandMapEnabled", (uint32_t *)&TRX.BandMapEnabled, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.InputType", (uint32_t *)&TRX.InputType, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.InputType_MAIN", (uint32_t *)&TRX.InputType_MAIN, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.InputType_DIGI", (uint32_t *)&TRX.InputType_DIGI, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AutoGain", (uint32_t *)&TRX.AutoGain, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CLAR", (uint32_t *)&TRX.CLAR, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint32_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
@@ -861,8 +862,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.Debug_Type = (uint8_t)uintval;
 	if (strcmp(name, "TRX.BandMapEnabled") == 0)
 		TRX.BandMapEnabled = bval;
-	if (strcmp(name, "TRX.InputType") == 0)
-		TRX.InputType = (uint8_t)uintval;
+	if (strcmp(name, "TRX.InputType_MAIN") == 0)
+		TRX.InputType_MAIN = (uint8_t)uintval;
+	if (strcmp(name, "TRX.InputType_DIGI") == 0)
+		TRX.InputType_DIGI = (uint8_t)uintval;
 	if (strcmp(name, "TRX.AutoGain") == 0)
 		TRX.AutoGain = bval;
 	if (strcmp(name, "TRX.CLAR") == 0)

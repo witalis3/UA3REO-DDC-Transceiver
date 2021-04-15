@@ -736,3 +736,11 @@ void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 
 	hmdma->State = HAL_MDMA_STATE_READY;
 }
+
+uint8_t getInputType(void)
+{
+	uint8_t type = TRX.InputType_MAIN;
+	if(CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U || CurrentVFO()->Mode == TRX_MODE_IQ)
+		type = TRX.InputType_DIGI;
+	return type;
+}

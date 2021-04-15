@@ -193,7 +193,8 @@ extern struct TRX_SETTINGS
 	uint32_t FRQ_ENC_FAST_STEP;
 	TRX_DEBUG_TYPE Debug_Type;
 	bool BandMapEnabled;
-	TRX_INPUT_TYPE InputType;
+	TRX_INPUT_TYPE InputType_MAIN;
+	TRX_INPUT_TYPE InputType_DIGI;
 	bool AutoGain;
 	bool Locked;
 	bool CLAR;

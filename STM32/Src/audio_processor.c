@@ -506,7 +506,7 @@ void processTxAudio(void)
 	AUDIOPROC_samples++;
 	uint_fast8_t mode = current_vfo->Mode;
 
-	if (TRX.InputType == TRX_INPUT_USB) //USB AUDIO
+	if (getInputType() == TRX_INPUT_USB) //USB AUDIO
 	{
 		uint32_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET; //buffer 8bit, data 24 bit
 		if ((buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET) == 1)
@@ -593,7 +593,7 @@ void processTxAudio(void)
 			APROC_Audio_Buffer_TX_Q[i] = (float32_t)APROC_AudioBuffer_out[i * 2 + 1] / 2147483648.0f;
 		}
 
-		if (TRX.InputType == TRX_INPUT_MIC)
+		if (getInputType() == TRX_INPUT_MIC)
 		{
 			//Mic Gain
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, TRX.MIC_GAIN, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
@@ -603,7 +603,7 @@ void processTxAudio(void)
 				doMIC_EQ(AUDIO_BUFFER_HALF_SIZE);
 		}
 		//USB Gain (24bit)
-		if (TRX.InputType == TRX_INPUT_USB)
+		if (getInputType() == TRX_INPUT_USB)
 		{
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, 10.0f, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 			arm_scale_f32(APROC_Audio_Buffer_TX_Q, 10.0f, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);

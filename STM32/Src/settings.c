@@ -169,7 +169,8 @@ void LoadSettings(bool clear)
 		TRX.FRQ_ENC_FAST_STEP = 50000;			  // frequency tuning step by main add. encoder in FAST mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;			  // Debug output to DEBUG / UART port
 		TRX.BandMapEnabled = true;				  // automatic change of mode according to the range map
-		TRX.InputType = TRX_INPUT_MIC;			  // type of input to transfer
+		TRX.InputType_MAIN = TRX_INPUT_MIC;			  // type of input to transfer (SSB/FM/AM)
+		TRX.InputType_DIGI = TRX_INPUT_USB;			  // type of input to transfer (DIGI)
 		TRX.AutoGain = false;					  // auto-control preamp and attenuator
 		TRX.Locked = false;						  // Lock control
 		TRX.CLAR = false;						  // Split frequency mode (receive one VFO, transmit another)
