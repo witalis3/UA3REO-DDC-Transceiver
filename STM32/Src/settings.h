@@ -378,6 +378,22 @@ extern struct TRX_CALIBRATE
 	uint8_t TUNE_MAX_POWER;
 	uint8_t RTC_Coarse_Calibration;
 	int16_t RTC_Calibration;
+	uint8_t EXT_2200m;
+	uint8_t EXT_160m;
+	uint8_t EXT_80m;
+	uint8_t EXT_60m;
+	uint8_t EXT_40m;
+	uint8_t EXT_30m;
+	uint8_t EXT_20m;
+	uint8_t EXT_17m;
+	uint8_t EXT_15m;
+	uint8_t EXT_12m;
+	uint8_t EXT_CB;
+	uint8_t EXT_10m;
+	uint8_t EXT_6m;
+	uint8_t EXT_FM;
+	uint8_t EXT_2m;
+	uint8_t EXT_70cm;
 
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit

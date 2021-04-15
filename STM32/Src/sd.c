@@ -425,6 +425,7 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 	case SYSMENU_BOOLEAN:
 		sprintf(valbuff, "%u", (uint8_t)*value);
 		break;
+	case SYSMENU_B4:
 	case SYSMENU_UINT8:
 		sprintf(valbuff, "%u", (uint8_t)*value);
 		break;
@@ -659,6 +660,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_SLOW_RATE", (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ON_FALLING", (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ACCELERATION", (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.RF_unit_type", (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER_48K", (uint32_t *)&CALIBRATE.CICFIR_GAINER_48K_val, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER_96K", (uint32_t *)&CALIBRATE.CICFIR_GAINER_96K_val, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER_192K", (uint32_t *)&CALIBRATE.CICFIR_GAINER_192K_val, SYSMENU_UINT8);
@@ -714,6 +716,22 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.TUNE_MAX_POWER", (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.RTC_Coarse_Calibration", (uint32_t *)&CALIBRATE.RTC_Coarse_Calibration, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.RTC_Calibration", (uint32_t *)&CALIBRATE.RTC_Calibration, SYSMENU_INT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_2200m", (uint32_t *)&CALIBRATE.EXT_2200m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_160m", (uint32_t *)&CALIBRATE.EXT_160m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_80m", (uint32_t *)&CALIBRATE.EXT_80m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_60m", (uint32_t *)&CALIBRATE.EXT_60m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_40m", (uint32_t *)&CALIBRATE.EXT_40m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_30m", (uint32_t *)&CALIBRATE.EXT_30m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_20m", (uint32_t *)&CALIBRATE.EXT_20m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_17m", (uint32_t *)&CALIBRATE.EXT_17m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_15m", (uint32_t *)&CALIBRATE.EXT_15m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_12m", (uint32_t *)&CALIBRATE.EXT_12m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_CB", (uint32_t *)&CALIBRATE.EXT_CB, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_10m", (uint32_t *)&CALIBRATE.EXT_10m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_6m", (uint32_t *)&CALIBRATE.EXT_6m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_FM", (uint32_t *)&CALIBRATE.EXT_FM, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_2m", (uint32_t *)&CALIBRATE.EXT_2m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_70cm", (uint32_t *)&CALIBRATE.EXT_70cm, SYSMENU_UINT8);
 		}
 
 		if (!res)
@@ -1110,6 +1128,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.ENCODER_ON_FALLING = bval;
 	if (strcmp(name, "CALIBRATE.ENCODER_ACCELERATION") == 0)
 		CALIBRATE.ENCODER_ACCELERATION = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.RF_unit_type") == 0)
+		CALIBRATE.RF_unit_type = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_48K") == 0)
 		CALIBRATE.CICFIR_GAINER_48K_val = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_96K") == 0)
@@ -1220,6 +1240,39 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.RTC_Coarse_Calibration = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.RTC_Calibration") == 0)
 		CALIBRATE.RTC_Calibration = intval;
+	
+	if (strcmp(name, "CALIBRATE.EXT_2200m") == 0)
+		CALIBRATE.EXT_2200m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_160m") == 0)
+		CALIBRATE.EXT_160m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_80m") == 0)
+		CALIBRATE.EXT_80m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_60m") == 0)
+		CALIBRATE.EXT_60m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_40m") == 0)
+		CALIBRATE.EXT_40m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_30m") == 0)
+		CALIBRATE.EXT_30m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_20m") == 0)
+		CALIBRATE.EXT_20m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_17m") == 0)
+		CALIBRATE.EXT_17m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_15m") == 0)
+		CALIBRATE.EXT_15m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_12m") == 0)
+		CALIBRATE.EXT_12m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_CB") == 0)
+		CALIBRATE.EXT_CB = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_10m") == 0)
+		CALIBRATE.EXT_10m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_6m") == 0)
+		CALIBRATE.EXT_6m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_FM") == 0)
+		CALIBRATE.EXT_FM = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_2m") == 0)
+		CALIBRATE.EXT_2m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_70cm") == 0)
+		CALIBRATE.EXT_70cm = (uint8_t)uintval;
 }
 
 static void SDCOMM_IMPORT_SETT_handler(void)

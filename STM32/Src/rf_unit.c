@@ -317,38 +317,38 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 	uint8_t band_out = 0;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band == 0) //2200m
-		band_out = 0;
-	if (band == 3) //160m
-		band_out = 1;
-	if (band == 6) //80m
-		band_out = 2;
-	if (band == 10) //60m
-		band_out = 3;
-	if (band == 12) //40m
-		band_out = 4;
-	if (band == 15) //30m
-		band_out = 5;
-	if (band == 18) //20m
-		band_out = 6;
-	if (band == 21) //17m
-		band_out = 7;
-	if (band == 23) //15m
-		band_out = 8;
-	if (band == 25) //12m
-		band_out = 9;
+	if (band == 0 || band == 1 || band == 2) //2200m
+		band_out = CALIBRATE.EXT_2200m;
+	if (band == 3 || band == 4) //160m
+		band_out = CALIBRATE.EXT_160m;
+	if (band == 6 || band == 5 || band == 7 || band == 8) //80m
+		band_out = CALIBRATE.EXT_80m;
+	if (band == 10 || band == 9 || band == 11) //60m
+		band_out = CALIBRATE.EXT_60m;
+	if (band == 12 || band == 13) //40m
+		band_out = CALIBRATE.EXT_40m;
+	if (band == 15 || band == 14 || band == 16) //30m
+		band_out = CALIBRATE.EXT_30m;
+	if (band == 18 || band == 17 || band == 19) //20m
+		band_out = CALIBRATE.EXT_20m;
+	if (band == 21 || band == 20 || band == 22) //17m
+		band_out = CALIBRATE.EXT_17m;
+	if (band == 23 || band == 24) //15m
+		band_out = CALIBRATE.EXT_15m;
+	if (band == 25 || band == 26) //12m
+		band_out = CALIBRATE.EXT_12m;
 	if (band == 27) //CB
-		band_out = 10;
+		band_out = CALIBRATE.EXT_CB;
 	if (band == 28) //10m
-		band_out = 11;
+		band_out = CALIBRATE.EXT_10m;
 	if (band == 29) //6m
-		band_out = 12;
-	if (band == 30) //FM
-		band_out = 13;
+		band_out = CALIBRATE.EXT_6m;
+	if (band == 30 || band == 31) //FM
+		band_out = CALIBRATE.EXT_FM;
 	if (band == 32) //2m
-		band_out = 14;
+		band_out = CALIBRATE.EXT_2m;
 	if (band == 33) //70cm
-		band_out = 15;
+		band_out = CALIBRATE.EXT_70cm;
 
 	//QRP Version RF Unit
 	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)

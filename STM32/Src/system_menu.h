@@ -25,6 +25,7 @@ typedef enum
 	SYSMENU_FUNCBUTTON,
 	SYSMENU_ENUM,
 	SYSMENU_ENUMR,
+	SYSMENU_B4,
 } SystemMenuType;
 
 struct sysmenu_item_handler

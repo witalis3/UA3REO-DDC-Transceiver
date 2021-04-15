@@ -414,6 +414,22 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TUNE_MAX_POWER = 2;			   // Maximum RF power in Tune mode
 		CALIBRATE.RTC_Coarse_Calibration = 127;	   //Coarse RTC calibration
 		CALIBRATE.RTC_Calibration = 0;			   //Real Time Clock calibration
+		CALIBRATE.EXT_2200m = 0;						//External port by band
+		CALIBRATE.EXT_160m = 1;						//External port by band
+		CALIBRATE.EXT_80m = 2;						//External port by band
+		CALIBRATE.EXT_60m = 3;						//External port by band
+		CALIBRATE.EXT_40m = 4;						//External port by band
+		CALIBRATE.EXT_30m = 5;						//External port by band
+		CALIBRATE.EXT_20m = 6;						//External port by band
+		CALIBRATE.EXT_17m = 7;						//External port by band
+		CALIBRATE.EXT_15m = 8;						//External port by band
+		CALIBRATE.EXT_12m = 9;						//External port by band
+		CALIBRATE.EXT_CB = 10;						//External port by band
+		CALIBRATE.EXT_10m = 11;						//External port by band
+		CALIBRATE.EXT_6m = 12;						//External port by band
+		CALIBRATE.EXT_FM = 13;						//External port by band
+		CALIBRATE.EXT_2m = 14;						//External port by band
+		CALIBRATE.EXT_70cm = 15;						//External port by band
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		println("[OK] Loaded default calibrate settings");

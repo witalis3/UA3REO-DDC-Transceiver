@@ -222,6 +222,22 @@ static void SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TUNE_MAX_POWER(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RTC_CALIBRATION(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_2200m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_160m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_80m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_60m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_40m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_30m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_20m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_17m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_15m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_12m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_CB(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_10m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_6m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_FM(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_2m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_70cm(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
@@ -523,6 +539,22 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"TUNE Max Power", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},
 		{"RTC COARSE CALIBR", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.RTC_Coarse_Calibration, SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION},
 		{"RTC FINE CALIBR", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.RTC_Calibration, SYSMENU_HANDL_CALIB_RTC_CALIBRATION},
+		{"EXT 2200m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_2200m, SYSMENU_HANDL_CALIB_EXT_2200m},
+		{"EXT 160m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_160m, SYSMENU_HANDL_CALIB_EXT_160m},
+		{"EXT 80m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_80m, SYSMENU_HANDL_CALIB_EXT_80m},
+		{"EXT 60m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_60m, SYSMENU_HANDL_CALIB_EXT_60m},
+		{"EXT 40m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_40m, SYSMENU_HANDL_CALIB_EXT_40m},
+		{"EXT 30m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_30m, SYSMENU_HANDL_CALIB_EXT_30m},
+		{"EXT 20m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_20m, SYSMENU_HANDL_CALIB_EXT_20m},
+		{"EXT 17m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_17m, SYSMENU_HANDL_CALIB_EXT_17m},
+		{"EXT 15m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_15m, SYSMENU_HANDL_CALIB_EXT_15m},
+		{"EXT 12m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_12m, SYSMENU_HANDL_CALIB_EXT_12m},
+		{"EXT CB", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_CB, SYSMENU_HANDL_CALIB_EXT_CB},
+		{"EXT 10m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_10m, SYSMENU_HANDL_CALIB_EXT_10m},
+		{"EXT 6m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_6m, SYSMENU_HANDL_CALIB_EXT_6m},
+		{"EXT FM", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_FM, SYSMENU_HANDL_CALIB_EXT_FM},
+		{"EXT 2m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_2m, SYSMENU_HANDL_CALIB_EXT_2m},
+		{"EXT 70cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_70cm, SYSMENU_HANDL_CALIB_EXT_70cm},
 };
 
 const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
@@ -3213,6 +3245,134 @@ static void SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION(int8_t direction)
 	RTC_Calibration();
 }
 
+static void SYSMENU_HANDL_CALIB_EXT_2200m(int8_t direction)
+{
+	if(CALIBRATE.EXT_2200m > 0 || direction > 0)
+		CALIBRATE.EXT_2200m += direction;
+	if (CALIBRATE.EXT_2200m > 15)
+		CALIBRATE.EXT_2200m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_160m(int8_t direction)
+{
+	if(CALIBRATE.EXT_160m > 0 || direction > 0)
+		CALIBRATE.EXT_160m += direction;
+	if (CALIBRATE.EXT_160m > 15)
+		CALIBRATE.EXT_160m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_80m(int8_t direction)
+{
+	if(CALIBRATE.EXT_80m > 0 || direction > 0)
+		CALIBRATE.EXT_80m += direction;
+	if (CALIBRATE.EXT_80m > 15)
+		CALIBRATE.EXT_80m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_60m(int8_t direction)
+{
+	if(CALIBRATE.EXT_60m > 0 || direction > 0)
+		CALIBRATE.EXT_60m += direction;
+	if (CALIBRATE.EXT_60m > 15)
+		CALIBRATE.EXT_60m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_40m(int8_t direction)
+{
+	if(CALIBRATE.EXT_40m > 0 || direction > 0)
+		CALIBRATE.EXT_40m += direction;
+	if (CALIBRATE.EXT_40m > 15)
+		CALIBRATE.EXT_40m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_30m(int8_t direction)
+{
+	if(CALIBRATE.EXT_30m > 0 || direction > 0)
+		CALIBRATE.EXT_30m += direction;
+	if (CALIBRATE.EXT_30m > 15)
+		CALIBRATE.EXT_30m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_20m(int8_t direction)
+{
+	if(CALIBRATE.EXT_20m > 0 || direction > 0)
+		CALIBRATE.EXT_20m += direction;
+	if (CALIBRATE.EXT_20m > 15)
+		CALIBRATE.EXT_20m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_17m(int8_t direction)
+{
+	if(CALIBRATE.EXT_17m > 0 || direction > 0)
+		CALIBRATE.EXT_17m += direction;
+	if (CALIBRATE.EXT_17m > 15)
+		CALIBRATE.EXT_17m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_15m(int8_t direction)
+{
+	if(CALIBRATE.EXT_15m > 0 || direction > 0)
+		CALIBRATE.EXT_15m += direction;
+	if (CALIBRATE.EXT_15m > 15)
+		CALIBRATE.EXT_15m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_12m(int8_t direction)
+{
+	if(CALIBRATE.EXT_12m > 0 || direction > 0)
+		CALIBRATE.EXT_12m += direction;
+	if (CALIBRATE.EXT_12m > 15)
+		CALIBRATE.EXT_12m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_CB(int8_t direction)
+{
+	if(CALIBRATE.EXT_CB > 0 || direction > 0)
+		CALIBRATE.EXT_CB += direction;
+	if (CALIBRATE.EXT_CB > 15)
+		CALIBRATE.EXT_CB = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_10m(int8_t direction)
+{
+	if(CALIBRATE.EXT_10m > 0 || direction > 0)
+		CALIBRATE.EXT_10m += direction;
+	if (CALIBRATE.EXT_10m > 15)
+		CALIBRATE.EXT_10m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_6m(int8_t direction)
+{
+	if(CALIBRATE.EXT_6m > 0 || direction > 0)
+		CALIBRATE.EXT_6m += direction;
+	if (CALIBRATE.EXT_6m > 15)
+		CALIBRATE.EXT_6m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_FM(int8_t direction)
+{
+	if(CALIBRATE.EXT_FM > 0 || direction > 0)
+		CALIBRATE.EXT_FM += direction;
+	if (CALIBRATE.EXT_FM > 15)
+		CALIBRATE.EXT_FM = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_2m(int8_t direction)
+{
+	if(CALIBRATE.EXT_2m > 0 || direction > 0)
+		CALIBRATE.EXT_2m += direction;
+	if (CALIBRATE.EXT_2m > 15)
+		CALIBRATE.EXT_2m = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_70cm(int8_t direction)
+{
+	if(CALIBRATE.EXT_70cm > 0 || direction > 0)
+		CALIBRATE.EXT_70cm += direction;
+	if (CALIBRATE.EXT_70cm > 15)
+		CALIBRATE.EXT_70cm = 15;
+}
+
 //SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 {
@@ -4052,6 +4212,9 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 	{
 	case SYSMENU_UINT8:
 		sprintf(ctmp, "%d", (uint8_t)*menuElement->value);
+		break;
+	case SYSMENU_B4:
+		sprintf(ctmp, "%d%d%d%d", bitRead((uint8_t)*menuElement->value, 3), bitRead((uint8_t)*menuElement->value, 2), bitRead((uint8_t)*menuElement->value, 1), bitRead((uint8_t)*menuElement->value, 0));
 		break;
 	case SYSMENU_ENUM:
 		sprintf(ctmp, "%s", menuElement->enumerate[(uint8_t)*menuElement->value]);
