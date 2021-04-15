@@ -345,10 +345,10 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 			NeedFFTReinit = true;
 	}
 
-	//WFM Samplerate change
-	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_WFM && old_mode != TRX_MODE_WFM && _mode == TRX_MODE_WFM)
+	//FM Samplerate change
+	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && old_mode != TRX_MODE_WFM && old_mode != TRX_MODE_NFM && (_mode == TRX_MODE_WFM || _mode == TRX_MODE_NFM))
 		NeedFFTReinit = true;
-	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_WFM && old_mode == TRX_MODE_WFM && _mode != TRX_MODE_WFM)
+	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && (old_mode == TRX_MODE_WFM || old_mode == TRX_MODE_NFM) && _mode != TRX_MODE_WFM && _mode != TRX_MODE_NFM)
 		NeedFFTReinit = true;
 
 	if (old_mode != _mode)

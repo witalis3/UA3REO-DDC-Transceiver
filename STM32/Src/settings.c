@@ -162,7 +162,7 @@ void LoadSettings(bool clear)
 		TRX.SHIFT_INTERVAL = 1000;				  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
 		TRX.TWO_SIGNAL_TUNE = false;			  // Two-signal generator in TUNE mode (1 + 2kHz)
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; //Samplerate for ssb/cw/digi/nfm/etc modes
-		TRX.SAMPLERATE_WFM = TRX_SAMPLERATE_K192; //Samplerate for WMF mode
+		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192; //Samplerate for FM mode
 		TRX.FRQ_STEP = 10;						  // frequency tuning step by the main encoder
 		TRX.FRQ_FAST_STEP = 100;				  // frequency tuning step by the main encoder in FAST mode
 		TRX.FRQ_ENC_STEP = 25000;				  // frequency tuning step by main add. encoder
@@ -303,6 +303,7 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
 			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
+			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 		}
 
 		println("[OK] Loaded default settings");

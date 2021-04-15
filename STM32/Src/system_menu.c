@@ -27,7 +27,7 @@ static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
 static void SYSMENU_HANDL_TRX_INPUT_TYPE(int8_t direction);
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction);
 static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction);
-static void SYSMENU_HANDL_TRX_SAMPLERATE_WFM(int8_t direction);
+static void SYSMENU_HANDL_TRX_SAMPLERATE_FM(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
@@ -307,7 +307,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Two Signal TUNE", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
 		{"Shift Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_HANDL_TRX_SHIFT_INTERVAL},
 		{"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_TRX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
-		{"WFM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_WFM, SYSMENU_HANDL_TRX_SAMPLERATE_WFM, {"48khz", "96khz", "192khz", "384khz"}},
+		{"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_TRX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
 		{"Freq Step", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
 		{"Freq Step FAST", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
 		{"Freq Step ENC2", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
@@ -747,16 +747,19 @@ static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction)
 	if (TRX.SAMPLERATE_MAIN > 3)
 		TRX.SAMPLERATE_MAIN = 3;
 
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE = TRX.SAMPLERATE_MAIN;
+	
 	FFT_Init();
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_TRX_SAMPLERATE_WFM(int8_t direction)
+static void SYSMENU_HANDL_TRX_SAMPLERATE_FM(int8_t direction)
 {
-	if (direction > 0 || TRX.SAMPLERATE_WFM > 0)
-		TRX.SAMPLERATE_WFM += direction;
-	if (TRX.SAMPLERATE_WFM > 3)
-		TRX.SAMPLERATE_WFM = 3;
+	if (direction > 0 || TRX.SAMPLERATE_FM > 0)
+		TRX.SAMPLERATE_FM += direction;
+	if (TRX.SAMPLERATE_FM > 3)
+		TRX.SAMPLERATE_FM = 3;
 
 	FFT_Init();
 	NeedReinitAudioFilters = true;
