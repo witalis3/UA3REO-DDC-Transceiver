@@ -260,10 +260,21 @@ static void LCD_displayFreqInfo(bool redraw)
 		LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_KHZ, LAYOUT->FREQ_Y_BASELINE, !TRX.current_vfo ? COLOR->FREQ_KHZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, LAYOUT->FREQ_FONT);
 		LCD_last_showed_freq_khz = khz;
 	}
-	if (redraw || (LCD_last_showed_freq_hz != hz))
+	if (redraw || (LCD_last_showed_freq_hz != hz) || TRX.ChannelMode)
 	{
 		addSymbols(buff, LCD_freq_string_hz, 3, "0", false);
-		LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL, !TRX.current_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, LAYOUT->FREQ_SMALL_FONT);
+		int_fast8_t band = getBandFromFreq(display_freq, false);
+		int_fast8_t channel = getChannelbyFreq(display_freq);
+		if(TRX.ChannelMode && BANDS[band].channelsCount > 0)
+		{
+			sprintf(buff, "CH:-");
+			if(band != -1 && channel != -1)
+				sprintf(buff, "CH:%s", (char *)BANDS[band].channels[channel].name);
+			addSymbols(buff, buff, 6, " ", true);
+			LCDDriver_printText(buff, LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL - 18, !TRX.current_vfo ? COLOR->FREQ_KHZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, 2);
+		}
+		else
+			LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL, !TRX.current_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, LAYOUT->FREQ_SMALL_FONT);
 		LCD_last_showed_freq_hz = hz;
 	}
 
@@ -303,10 +314,21 @@ static void LCD_displayFreqInfo(bool redraw)
 		LCDDriver_printTextFont(buff, LAYOUT->FREQ_B_X_OFFSET_KHZ, LAYOUT->FREQ_B_Y_BASELINE, TRX.current_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_B_FONT);
 		LCD_last_showed_freq_khz_B = khz_B;
 	}
-	if (redraw || (LCD_last_showed_freq_hz_B != hz_B))
+	if (redraw || (LCD_last_showed_freq_hz_B != hz_B) || TRX.ChannelMode)
 	{
 		addSymbols(buff, LCD_freq_string_hz_B, 3, "0", false);
-		LCDDriver_printTextFont(buff, LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL, TRX.current_vfo ? COLOR->FREQ_B_HZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_B_SMALL_FONT);
+		int_fast8_t band = getBandFromFreq(LCD_last_showed_freq_B, false);
+		int_fast8_t channel = getChannelbyFreq(LCD_last_showed_freq_B);
+		if(TRX.ChannelMode && BANDS[band].channelsCount > 0)
+		{
+			sprintf(buff, "CH:-");
+			if(band != -1 && channel != -1)
+				sprintf(buff, "CH:%s", (char *)BANDS[band].channels[channel].name);
+			addSymbols(buff, buff, 6, " ", true);
+			LCDDriver_printText(buff, LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL - 18, TRX.current_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, 2);
+		}
+		else
+			LCDDriver_printTextFont(buff, LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL, TRX.current_vfo ? COLOR->FREQ_B_HZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_B_SMALL_FONT);
 		LCD_last_showed_freq_hz_B = hz_B;
 	}
 #endif

@@ -112,6 +112,7 @@ static void __print_func (int count, unsigned short types[], ...) {
 	__builtin_choose_expr(__print_is_type(a, unsigned long), 7, \
 	__builtin_choose_expr(__print_is_type(a, short), 4, \
 	__builtin_choose_expr(__print_is_type(a, char*), 8, \
+	__builtin_choose_expr(__print_is_type(a, const char*), 8, \
 	__builtin_choose_expr(__print_is_type(a, char[]), 9, \
 	__builtin_choose_expr(__print_is_type(a, void*), 10, \
 	__builtin_choose_expr(__print_is_type(a, int[]), 11, \
@@ -121,7 +122,7 @@ static void __print_func (int count, unsigned short types[], ...) {
 	__builtin_choose_expr(__print_is_type(a, char*[]), 15, \
 	__builtin_choose_expr(sizeof(a) == 1, 2, \
 	__builtin_choose_expr(sizeof(a) == 2, 4, \
-	(0)  )))))))))))))))))))
+	(0)  ))))))))))))))))))))
 
 #define __print_push(c,size,cont) (cont, *--_p = c | (size << 5))
 #define __builtin_choose_expr __builtin_choose_expr

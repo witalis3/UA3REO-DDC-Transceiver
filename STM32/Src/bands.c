@@ -593,16 +593,16 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.name = "87A", .rxFreq = 157375000, .txFreq =	157375000},
 				{.name = "88", .rxFreq = 157425000, .txFreq =	157425000},
 				{.name = "88A", .rxFreq = 157425000, .txFreq =	157425000},
-				{.name = "WX01", .rxFreq = 162550000, .txFreq =	0},
-				{.name = "WX02", .rxFreq = 162400000, .txFreq =	0},
-				{.name = "WX03", .rxFreq = 162475000, .txFreq =	0},
-				{.name = "WX04", .rxFreq = 162425000, .txFreq =	0},
-				{.name = "WX05", .rxFreq = 162450000, .txFreq =	0},
-				{.name = "WX06", .rxFreq = 162500000, .txFreq =	0},
-				{.name = "WX07", .rxFreq = 162525000, .txFreq =	0},
-				{.name = "WX08", .rxFreq = 161750000, .txFreq =	0},
-				{.name = "WX09", .rxFreq = 161775000, .txFreq =	0},
-				{.name = "WX10", .rxFreq = 163275000, .txFreq =	0},
+				{.name = "W01", .rxFreq = 162550000, .txFreq =	0},
+				{.name = "W02", .rxFreq = 162400000, .txFreq =	0},
+				{.name = "W03", .rxFreq = 162475000, .txFreq =	0},
+				{.name = "W04", .rxFreq = 162425000, .txFreq =	0},
+				{.name = "W05", .rxFreq = 162450000, .txFreq =	0},
+				{.name = "W06", .rxFreq = 162500000, .txFreq =	0},
+				{.name = "W07", .rxFreq = 162525000, .txFreq =	0},
+				{.name = "W08", .rxFreq = 161750000, .txFreq =	0},
+				{.name = "W09", .rxFreq = 161775000, .txFreq =	0},
+				{.name = "W10", .rxFreq = 163275000, .txFreq =	0},
 			},
 			.channelsCount = 91,
 		},
@@ -677,4 +677,18 @@ uint_fast8_t getModeFromFreq(uint32_t freq)
 			}
 	}
 	return ret;
+}
+
+int8_t getChannelbyFreq(uint32_t freq)
+{
+	int8_t band = getBandFromFreq(freq, false);
+	if(band != -1)
+	{
+		for(uint8_t ind = 0; ind < BANDS[band].channelsCount; ind++)
+		{
+			if(BANDS[band].channels[ind].rxFreq == freq || BANDS[band].channels[ind].txFreq == freq)
+				return ind;
+		}
+	}
+	return -1;
 }
