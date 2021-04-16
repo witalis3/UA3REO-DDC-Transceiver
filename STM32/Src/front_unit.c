@@ -1403,6 +1403,19 @@ void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter)
 	if (band >= BANDS_COUNT)
 		band = 0;
 
+	//manual freq enter
+	if(TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_A.Freq)
+	{
+		TRX_Temporary_Stop_BandMap = false;
+		resetVAD();
+		TRX_ScanMode = false;
+		LCD_closeWindow();
+		LCD_redraw(true);
+		LCD_showManualFreqWindow(false);
+		return;
+	}
+	//
+	
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_A);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_A);
 	if(TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
@@ -1434,6 +1447,19 @@ void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter)
 	if (band >= BANDS_COUNT)
 		band = 0;
 
+	//manual freq enter
+	if(TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_B.Freq)
+	{
+		TRX_Temporary_Stop_BandMap = false;
+		resetVAD();
+		TRX_ScanMode = false;
+		LCD_closeWindow();
+		LCD_redraw(true);
+		LCD_showManualFreqWindow(true);
+		return;
+	}
+	//
+	
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_B);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_B);
 	TRX.VFO_B.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;

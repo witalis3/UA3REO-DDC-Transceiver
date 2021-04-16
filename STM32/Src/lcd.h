@@ -61,6 +61,7 @@ extern void LCD_showTooltip(char text[]);
 extern void LCD_openWindow(uint16_t w, uint16_t h);
 extern void LCD_closeWindow(void);
 extern void LCD_showRFPowerWindow(void);
+extern void LCD_showManualFreqWindow(bool secondary_vfo);
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
 volatile extern bool LCD_busy;
