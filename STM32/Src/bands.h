@@ -7,6 +7,23 @@
 
 #define BANDS_COUNT 34 // number of bands in the collection
 
+#define BANDID_2200m 0
+#define BANDID_160m 3
+#define BANDID_80m 6
+#define BANDID_60m 10
+#define BANDID_40m 12
+#define BANDID_30m 15
+#define BANDID_20m 18
+#define BANDID_17m 21
+#define BANDID_15m 23
+#define BANDID_12m 25
+#define BANDID_CB 27
+#define BANDID_10m 28
+#define BANDID_6m 29
+#define BANDID_FM 30
+#define BANDID_2m 32
+#define BANDID_70cm 33
+
 typedef struct // description of the region in the band
 {
 	const uint32_t startFreq;

@@ -317,37 +317,37 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 	uint8_t band_out = 0;
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
-	if (band == 0 || band == 1 || band == 2) //2200m
+	if (band == BANDID_2200m || band == 1 || band == 2) //2200m
 		band_out = CALIBRATE.EXT_2200m;
-	if (band == 3 || band == 4) //160m
+	if (band == BANDID_160m || band == 4) //160m
 		band_out = CALIBRATE.EXT_160m;
-	if (band == 6 || band == 5 || band == 7 || band == 8) //80m
+	if (band == BANDID_80m || band == 5 || band == 7 || band == 8) //80m
 		band_out = CALIBRATE.EXT_80m;
-	if (band == 10 || band == 9 || band == 11) //60m
+	if (band == BANDID_60m || band == 9 || band == 11) //60m
 		band_out = CALIBRATE.EXT_60m;
-	if (band == 12 || band == 13) //40m
+	if (band == BANDID_40m || band == 13) //40m
 		band_out = CALIBRATE.EXT_40m;
-	if (band == 15 || band == 14 || band == 16) //30m
+	if (band == BANDID_30m || band == 14 || band == 16) //30m
 		band_out = CALIBRATE.EXT_30m;
-	if (band == 18 || band == 17 || band == 19) //20m
+	if (band == BANDID_20m || band == 17 || band == 19) //20m
 		band_out = CALIBRATE.EXT_20m;
-	if (band == 21 || band == 20 || band == 22) //17m
+	if (band == BANDID_17m || band == 20 || band == 22) //17m
 		band_out = CALIBRATE.EXT_17m;
-	if (band == 23 || band == 24) //15m
+	if (band == BANDID_15m || band == 24) //15m
 		band_out = CALIBRATE.EXT_15m;
-	if (band == 25 || band == 26) //12m
+	if (band == BANDID_12m || band == 26) //12m
 		band_out = CALIBRATE.EXT_12m;
-	if (band == 27) //CB
+	if (band == BANDID_CB) //CB
 		band_out = CALIBRATE.EXT_CB;
-	if (band == 28) //10m
+	if (band == BANDID_10m) //10m
 		band_out = CALIBRATE.EXT_10m;
-	if (band == 29) //6m
+	if (band == BANDID_6m) //6m
 		band_out = CALIBRATE.EXT_6m;
-	if (band == 30 || band == 31) //FM
+	if (band == BANDID_FM || band == 31) //FM
 		band_out = CALIBRATE.EXT_FM;
-	if (band == 32) //2m
+	if (band == BANDID_2m) //2m
 		band_out = CALIBRATE.EXT_2m;
-	if (band == 33) //70cm
+	if (band == BANDID_70cm) //70cm
 		band_out = CALIBRATE.EXT_70cm;
 
 	//QRP Version RF Unit

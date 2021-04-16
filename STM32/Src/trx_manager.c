@@ -164,7 +164,84 @@ static void TRX_Start_TXRX()
 void TRX_ptt_change(void)
 {
 	if (TRX_Tune)
+		TRX_Tune = false;
+	
+	bool notx = false;
+	int8_t band = getBandFromFreq(CurrentVFO()->Freq, false);
+	switch(band)
+	{
+		case BANDID_2200m:
+			if(CALIBRATE.NOTX_2200m)
+				notx = true;
+			break;
+		case BANDID_160m:
+			if(CALIBRATE.NOTX_160m)
+				notx = true;
+			break;
+		case BANDID_80m:
+			if(CALIBRATE.NOTX_80m)
+				notx = true;
+			break;
+		case BANDID_60m:
+			if(CALIBRATE.NOTX_60m)
+				notx = true;
+			break;
+		case BANDID_40m:
+			if(CALIBRATE.NOTX_40m)
+				notx = true;
+			break;
+		case BANDID_30m:
+			if(CALIBRATE.NOTX_30m)
+				notx = true;
+			break;
+		case BANDID_20m:
+			if(CALIBRATE.NOTX_20m)
+				notx = true;
+			break;
+		case BANDID_17m:
+			if(CALIBRATE.NOTX_17m)
+				notx = true;
+			break;
+		case BANDID_15m:
+			if(CALIBRATE.NOTX_15m)
+				notx = true;
+			break;
+		case BANDID_12m:
+			if(CALIBRATE.NOTX_12m)
+				notx = true;
+			break;
+		case BANDID_CB:
+			if(CALIBRATE.NOTX_CB)
+				notx = true;
+			break;
+		case BANDID_10m:
+			if(CALIBRATE.NOTX_10m)
+				notx = true;
+			break;
+		case BANDID_6m:
+			if(CALIBRATE.NOTX_6m)
+				notx = true;
+			break;
+		case BANDID_2m:
+			if(CALIBRATE.NOTX_2m)
+				notx = true;
+			break;
+		case BANDID_70cm:
+			if(CALIBRATE.NOTX_70cm)
+				notx = true;
+			break;
+		default:
+			if(CALIBRATE.NOTX_NOTHAM)
+				notx = true;
+			break;
+	}
+	if(notx)
+	{
+		TRX_ptt_soft = false;
+		TRX_ptt_hard = false;
 		return;
+	}
+	
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
 	if (TRX_ptt_hard != TRX_new_ptt_hard)
 	{

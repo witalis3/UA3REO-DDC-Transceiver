@@ -396,6 +396,23 @@ extern struct TRX_CALIBRATE
 	uint8_t EXT_FM;
 	uint8_t EXT_2m;
 	uint8_t EXT_70cm;
+	bool NOTX_NOTHAM;
+	bool NOTX_2200m;
+	bool NOTX_160m;
+	bool NOTX_80m;
+	bool NOTX_60m;
+	bool NOTX_40m;
+	bool NOTX_30m;
+	bool NOTX_20m;
+	bool NOTX_17m;
+	bool NOTX_15m;
+	bool NOTX_12m;
+	bool NOTX_CB;
+	bool NOTX_10m;
+	bool NOTX_6m;
+	bool NOTX_FM;
+	bool NOTX_2m;
+	bool NOTX_70cm;
 
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit

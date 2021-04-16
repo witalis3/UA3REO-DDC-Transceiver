@@ -432,6 +432,22 @@ void LoadCalibration(bool clear)
 		CALIBRATE.EXT_FM = 13;						//External port by band
 		CALIBRATE.EXT_2m = 14;						//External port by band
 		CALIBRATE.EXT_70cm = 15;						//External port by band
+		CALIBRATE.NOTX_NOTHAM = true;			//disable TX on non-HAM bands
+		CALIBRATE.NOTX_2200m = false;			//disable TX on some bands
+		CALIBRATE.NOTX_160m = false;
+		CALIBRATE.NOTX_80m = false;
+		CALIBRATE.NOTX_60m = true;
+		CALIBRATE.NOTX_40m = false;
+		CALIBRATE.NOTX_30m = false;
+		CALIBRATE.NOTX_20m = false;
+		CALIBRATE.NOTX_17m = false;
+		CALIBRATE.NOTX_15m = false;
+		CALIBRATE.NOTX_12m = false;
+		CALIBRATE.NOTX_CB = false;
+		CALIBRATE.NOTX_10m = false;
+		CALIBRATE.NOTX_6m = false;
+		CALIBRATE.NOTX_2m = false;
+		CALIBRATE.NOTX_70cm = true;
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		println("[OK] Loaded default calibrate settings");

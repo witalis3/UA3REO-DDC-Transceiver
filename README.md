@@ -255,6 +255,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **RTC COARSE CALIBR** - Very coarse clock crystal calibration
 * **RTC FINE CALIBR** - Clock crystal calibration, one division is 0.954 ppm
 * **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain
+* **NOTX xxx** - Disable TX on selected bands
 
 ### Set Clock Time
 

@@ -239,6 +239,23 @@ static void SYSMENU_HANDL_CALIB_EXT_6m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_FM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_2m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_70cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_NOTHAM(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_2200m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_160m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_80m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_60m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_40m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_30m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_20m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_17m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_15m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_12m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_CB(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_10m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_6m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_FM(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_2m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_70cm(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
@@ -557,6 +574,23 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"EXT FM", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_FM, SYSMENU_HANDL_CALIB_EXT_FM},
 		{"EXT 2m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_2m, SYSMENU_HANDL_CALIB_EXT_2m},
 		{"EXT 70cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_70cm, SYSMENU_HANDL_CALIB_EXT_70cm},
+		
+		{"NOTX NOT HAM", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_NOTHAM, SYSMENU_HANDL_CALIB_NOTX_NOTHAM},
+		{"NOTX 2200m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2200m, SYSMENU_HANDL_CALIB_NOTX_2200m},
+		{"NOTX 160m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_160m, SYSMENU_HANDL_CALIB_NOTX_160m},
+		{"NOTX 80m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_80m, SYSMENU_HANDL_CALIB_NOTX_80m},
+		{"NOTX 60m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_60m, SYSMENU_HANDL_CALIB_NOTX_60m},
+		{"NOTX 40m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_40m, SYSMENU_HANDL_CALIB_NOTX_40m},
+		{"NOTX 30m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_30m, SYSMENU_HANDL_CALIB_NOTX_30m},
+		{"NOTX 20m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_20m, SYSMENU_HANDL_CALIB_NOTX_20m},
+		{"NOTX 17m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_17m, SYSMENU_HANDL_CALIB_NOTX_17m},
+		{"NOTX 15m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_15m, SYSMENU_HANDL_CALIB_NOTX_15m},
+		{"NOTX 12m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_12m, SYSMENU_HANDL_CALIB_NOTX_12m},
+		{"NOTX CB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_CB, SYSMENU_HANDL_CALIB_NOTX_CB},
+		{"NOTX 10m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_10m, SYSMENU_HANDL_CALIB_NOTX_10m},
+		{"NOTX 6m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_6m, SYSMENU_HANDL_CALIB_NOTX_6m},
+		{"NOTX 2m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2m, SYSMENU_HANDL_CALIB_NOTX_2m},
+		{"NOTX 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_70cm, SYSMENU_HANDL_CALIB_NOTX_70cm},
 };
 
 const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
@@ -3385,6 +3419,134 @@ static void SYSMENU_HANDL_CALIB_EXT_70cm(int8_t direction)
 		CALIBRATE.EXT_70cm += direction;
 	if (CALIBRATE.EXT_70cm > 15)
 		CALIBRATE.EXT_70cm = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_NOTHAM(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_NOTHAM = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_NOTHAM = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_2200m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_2200m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_2200m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_160m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_160m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_160m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_80m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_80m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_80m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_60m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_60m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_60m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_40m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_40m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_40m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_30m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_30m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_30m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_20m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_20m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_20m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_17m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_17m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_17m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_15m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_15m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_15m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_12m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_12m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_12m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_CB(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_CB = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_CB = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_10m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_10m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_10m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_6m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_6m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_6m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_2m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_2m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_2m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_70cm(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_70cm = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_70cm = false;
 }
 
 //SERVICES

@@ -377,7 +377,7 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 			},
 			.regionsCount = 1,
 		},
-		//FM RADIO
+		//AIR BAND
 		{
 			.name = "AIR",
 			.selectable = false,
