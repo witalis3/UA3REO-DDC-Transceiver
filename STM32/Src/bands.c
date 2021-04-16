@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "settings.h"
 
-const BAND_MAP BANDS[BANDS_COUNT] =
+SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 	{
 		//2200METERS
 		{

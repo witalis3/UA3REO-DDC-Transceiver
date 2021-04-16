@@ -256,6 +256,8 @@ static void SYSMENU_HANDL_CALIB_NOTX_6m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_FM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_2m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_70cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
@@ -574,7 +576,6 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"EXT FM", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_FM, SYSMENU_HANDL_CALIB_EXT_FM},
 		{"EXT 2m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_2m, SYSMENU_HANDL_CALIB_EXT_2m},
 		{"EXT 70cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_70cm, SYSMENU_HANDL_CALIB_EXT_70cm},
-		
 		{"NOTX NOT HAM", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_NOTHAM, SYSMENU_HANDL_CALIB_NOTX_NOTHAM},
 		{"NOTX 2200m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2200m, SYSMENU_HANDL_CALIB_NOTX_2200m},
 		{"NOTX 160m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_160m, SYSMENU_HANDL_CALIB_NOTX_160m},
@@ -591,6 +592,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"NOTX 6m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_6m, SYSMENU_HANDL_CALIB_NOTX_6m},
 		{"NOTX 2m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2m, SYSMENU_HANDL_CALIB_NOTX_2m},
 		{"NOTX 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_70cm, SYSMENU_HANDL_CALIB_NOTX_70cm},
+		{"ENABLE 60M Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_60m_band, SYSMENU_HANDL_CALIB_ENABLE_60m_band},
+		{"ENABLE Marine Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_HANDL_CALIB_ENABLE_marine_band},
 };
 
 const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
@@ -3547,6 +3550,26 @@ static void SYSMENU_HANDL_CALIB_NOTX_70cm(int8_t direction)
 		CALIBRATE.NOTX_70cm = true;
 	if (direction < 0)
 		CALIBRATE.NOTX_70cm = false;
+}
+
+static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.ENABLE_60m_band = true;
+	if (direction < 0)
+		CALIBRATE.ENABLE_60m_band = false;
+	
+	BANDS[BANDID_60m].selectable = CALIBRATE.ENABLE_60m_band;
+}
+
+static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.ENABLE_marine_band = true;
+	if (direction < 0)
+		CALIBRATE.ENABLE_marine_band = false;
+	
+	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
 }
 
 //SERVICES

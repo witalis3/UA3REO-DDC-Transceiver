@@ -413,6 +413,8 @@ extern struct TRX_CALIBRATE
 	bool NOTX_FM;
 	bool NOTX_2m;
 	bool NOTX_70cm;
+	bool ENABLE_60m_band;
+	bool ENABLE_marine_band;
 
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit

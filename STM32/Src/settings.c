@@ -448,6 +448,8 @@ void LoadCalibration(bool clear)
 		CALIBRATE.NOTX_6m = false;
 		CALIBRATE.NOTX_2m = false;
 		CALIBRATE.NOTX_70cm = true;
+		CALIBRATE.ENABLE_60m_band = false; 	//enable hidden bands
+		CALIBRATE.ENABLE_marine_band = false;
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		println("[OK] Loaded default calibrate settings");
@@ -455,6 +457,9 @@ void LoadCalibration(bool clear)
 		SaveCalibration();
 	}
 	EEPROM_PowerDown();
+	//enable bands
+	BANDS[BANDID_60m].selectable = CALIBRATE.ENABLE_60m_band;
+	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
 }
 
 inline VFO *CurrentVFO(void)

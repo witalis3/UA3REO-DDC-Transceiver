@@ -1559,8 +1559,9 @@ static void LCD_showBandWindow(bool secondary_vfo)
 		}
 	}
 	//divider
-	yi++;
-	LCDDriver_drawFastHLine(LCD_WIDTH / 2 - window_width / 2, LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height / 2 + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), window_width, COLOR->WINDOWS_BORDER);
+	if(xi != 0)
+		yi++;
+	LCDDriver_drawFastHLine(LCD_WIDTH / 2 - window_width / 2, LCD_window.y + LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height / 3 + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), window_width, COLOR->WINDOWS_BORDER);
 	//unselectable bands next (broadcast)
 	xi = 0;
 	for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++)

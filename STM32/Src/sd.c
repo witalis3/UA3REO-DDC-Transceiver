@@ -750,6 +750,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_FM", (uint32_t *)&CALIBRATE.NOTX_FM, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_2m", (uint32_t *)&CALIBRATE.NOTX_2m, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_70cm", (uint32_t *)&CALIBRATE.NOTX_70cm, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_60m_band", (uint32_t *)&CALIBRATE.ENABLE_60m_band, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_marine_band", (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_BOOLEAN);
 		}
 
 		if (!res)
@@ -1325,6 +1327,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.NOTX_2m = bval;
 	if (strcmp(name, "CALIBRATE.NOTX_70cm") == 0)
 		CALIBRATE.NOTX_70cm = bval;
+	if (strcmp(name, "CALIBRATE.ENABLE_60m_band") == 0)
+		CALIBRATE.ENABLE_60m_band = bval;
+	if (strcmp(name, "CALIBRATE.ENABLE_marine_band") == 0)
+		CALIBRATE.ENABLE_marine_band = bval;
 }
 
 static void SDCOMM_IMPORT_SETT_handler(void)
