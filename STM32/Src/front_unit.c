@@ -252,7 +252,23 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 
 	VFO *vfo = CurrentVFO();
 	uint32_t newfreq = 0;
-	if (TRX.Fast)
+	if (TRX.ChannelMode && BANDS[getBandFromFreq(vfo->Freq, false)].channelsCount > 0)
+	{
+		int_fast8_t band = getBandFromFreq(vfo->Freq, false);
+		int_fast8_t channel = getChannelbyFreq(vfo->Freq, false);
+		int_fast8_t new_channel = channel + direction;
+		if(new_channel < 0)
+			new_channel = BANDS[band].channelsCount - 1;
+		if(new_channel >= BANDS[band].channelsCount)
+			new_channel = 0;
+		
+		newfreq = BANDS[band].channels[new_channel].rxFreq;
+		TRX.CLAR = BANDS[band].channels_clar;
+		if(BANDS[band].channels_clar)
+			TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO());
+		LCD_UpdateQuery.FreqInfoRedraw = true;
+	}
+	else if (TRX.Fast)
 	{
 		newfreq = (uint32_t)((int32_t)vfo->Freq + (int32_t)((float32_t)TRX.FRQ_FAST_STEP * direction));
 		if ((vfo->Freq % TRX.FRQ_FAST_STEP) > 0 && fabsf(direction) <= 1.0f)
@@ -298,7 +314,23 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			uint32_t newfreq = 0;
 			float32_t freq_round = 0;
 			float32_t step = 0;
-			if (TRX.Fast)
+			if (TRX.ChannelMode && BANDS[getBandFromFreq(vfo->Freq, false)].channelsCount > 0)
+			{
+				int_fast8_t band = getBandFromFreq(vfo->Freq, false);
+				int_fast8_t channel = getChannelbyFreq(vfo->Freq, false);
+				int_fast8_t new_channel = channel + direction;
+				if(new_channel < 0)
+					new_channel = BANDS[band].channelsCount - 1;
+				if(new_channel >= BANDS[band].channelsCount)
+					new_channel = 0;
+				
+				newfreq = BANDS[band].channels[new_channel].rxFreq;
+				TRX.CLAR = BANDS[band].channels_clar;
+				if(BANDS[band].channels_clar)
+					TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO());
+				LCD_UpdateQuery.FreqInfoRedraw = true;
+			}
+			else if (TRX.Fast)
 			{
 				step = (float32_t)TRX.FRQ_ENC_FAST_STEP;
 				if (CurrentVFO()->Mode == TRX_MODE_WFM)

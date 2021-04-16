@@ -263,8 +263,16 @@ static void LCD_displayFreqInfo(bool redraw)
 	if (redraw || (LCD_last_showed_freq_hz != hz) || TRX.ChannelMode)
 	{
 		addSymbols(buff, LCD_freq_string_hz, 3, "0", false);
-		int_fast8_t band = getBandFromFreq(display_freq, false);
-		int_fast8_t channel = getChannelbyFreq(display_freq);
+		int_fast8_t band = -1;
+		int_fast8_t channel = -1;
+		if(TRX.ChannelMode)
+		{
+			band = getBandFromFreq(display_freq, false);
+			if(!TRX.current_vfo)
+				channel = getChannelbyFreq(display_freq, false);
+			else
+				channel = getChannelbyFreq(display_freq, true);
+		}
 		if(TRX.ChannelMode && BANDS[band].channelsCount > 0)
 		{
 			sprintf(buff, "CH:-");
@@ -317,8 +325,16 @@ static void LCD_displayFreqInfo(bool redraw)
 	if (redraw || (LCD_last_showed_freq_hz_B != hz_B) || TRX.ChannelMode)
 	{
 		addSymbols(buff, LCD_freq_string_hz_B, 3, "0", false);
-		int_fast8_t band = getBandFromFreq(LCD_last_showed_freq_B, false);
-		int_fast8_t channel = getChannelbyFreq(LCD_last_showed_freq_B);
+		int_fast8_t band = -1;
+		int_fast8_t channel = -1;
+		if(TRX.ChannelMode)
+		{
+			band = getBandFromFreq(LCD_last_showed_freq_B, false);
+			if(TRX.current_vfo)
+				channel = getChannelbyFreq(LCD_last_showed_freq_B, false);
+			else
+				channel = getChannelbyFreq(LCD_last_showed_freq_B, true);
+		}
 		if(TRX.ChannelMode && BANDS[band].channelsCount > 0)
 		{
 			sprintf(buff, "CH:-");

@@ -419,7 +419,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		vfo->HPF_Filter_Width = 0;
 		break;
 	}
-
+	
 	//FFT Zoom change
 	if (TRX.FFT_Zoom != TRX.FFT_ZoomCW)
 	{

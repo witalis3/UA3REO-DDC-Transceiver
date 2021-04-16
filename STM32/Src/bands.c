@@ -530,7 +530,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.name = "12", .rxFreq = 156600000, .txFreq =	156600000},
 				{.name = "13", .rxFreq = 156650000, .txFreq =	156650000},
 				{.name = "14", .rxFreq = 156700000, .txFreq =	156700000},
-				{.name = "15", .rxFreq = 156750000, .txFreq =	0},
+				{.name = "15", .rxFreq = 156750000, .txFreq =	156750000},
 				{.name = "16", .rxFreq = 156800000, .txFreq =	156800000},
 				{.name = "17", .rxFreq = 156850000, .txFreq =	156850000},
 				{.name = "18", .rxFreq = 161500000, .txFreq =	156900000},
@@ -590,21 +590,19 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.name = "85", .rxFreq =	161875000, .txFreq =	157275000},
 				{.name = "86", .rxFreq =	161925000, .txFreq =	157325000},
 				{.name = "87", .rxFreq =	157375000, .txFreq =	157375000},
-				{.name = "87A", .rxFreq = 157375000, .txFreq =	157375000},
-				{.name = "88", .rxFreq = 157425000, .txFreq =	157425000},
-				{.name = "88A", .rxFreq = 157425000, .txFreq =	157425000},
-				{.name = "W01", .rxFreq = 162550000, .txFreq =	0},
-				{.name = "W02", .rxFreq = 162400000, .txFreq =	0},
-				{.name = "W03", .rxFreq = 162475000, .txFreq =	0},
-				{.name = "W04", .rxFreq = 162425000, .txFreq =	0},
-				{.name = "W05", .rxFreq = 162450000, .txFreq =	0},
-				{.name = "W06", .rxFreq = 162500000, .txFreq =	0},
-				{.name = "W07", .rxFreq = 162525000, .txFreq =	0},
-				{.name = "W08", .rxFreq = 161750000, .txFreq =	0},
-				{.name = "W09", .rxFreq = 161775000, .txFreq =	0},
-				{.name = "W10", .rxFreq = 163275000, .txFreq =	0},
+				{.name = "88", .rxFreq =  157425000, .txFreq =	157425000},
+				{.name = "W01", .rxFreq = 162550000, .txFreq =	162550000},
+				{.name = "W02", .rxFreq = 162400000, .txFreq =	162400000},
+				{.name = "W03", .rxFreq = 162475000, .txFreq =	162475000},
+				{.name = "W04", .rxFreq = 162425000, .txFreq =	162425000},
+				{.name = "W05", .rxFreq = 162450000, .txFreq =	162450000},
+				{.name = "W06", .rxFreq = 162500000, .txFreq =	162500000},
+				{.name = "W07", .rxFreq = 162525000, .txFreq =	162525000},
+				//{.name = "W08", .rxFreq = 161750000, .txFreq =	161750000},
+				//{.name = "W09", .rxFreq = 161775000, .txFreq =	161775000},
+				{.name = "W10", .rxFreq = 163275000, .txFreq =	163275000},
 			},
-			.channelsCount = 91,
+			.channelsCount = 87,
 		},
 		//70cm
 		{
@@ -679,14 +677,16 @@ uint_fast8_t getModeFromFreq(uint32_t freq)
 	return ret;
 }
 
-int8_t getChannelbyFreq(uint32_t freq)
+int8_t getChannelbyFreq(uint32_t freq, bool txfreq)
 {
 	int8_t band = getBandFromFreq(freq, false);
 	if(band != -1)
 	{
 		for(uint8_t ind = 0; ind < BANDS[band].channelsCount; ind++)
 		{
-			if(BANDS[band].channels[ind].rxFreq == freq || BANDS[band].channels[ind].txFreq == freq)
+			if(BANDS[band].channels[ind].rxFreq == freq && !txfreq)
+				return ind;
+			if(BANDS[band].channels[ind].txFreq == freq && txfreq)
 				return ind;
 		}
 	}
