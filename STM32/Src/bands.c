@@ -401,6 +401,17 @@ const BAND_MAP BANDS[BANDS_COUNT] =
 			},
 			.regionsCount = 3,
 		},
+		//VHF Marine band
+		{
+			.name = "Marine",
+			.selectable = false,
+			.startFreq = 156000000,
+			.endFreq = 174000000,
+			.regions = (const REGION_MAP[]){
+				{.startFreq = 156000000, .endFreq = 174000000, .mode = TRX_MODE_NFM},
+			},
+			.regionsCount = 3,
+		},
 		//70cm
 		{
 			.name = "70cm",

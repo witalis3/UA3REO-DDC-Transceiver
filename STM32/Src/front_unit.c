@@ -710,6 +710,13 @@ void FRONTPANEL_BUTTONHANDLER_TUNE(uint32_t parameter)
 {
 	TRX_Tune = !TRX_Tune;
 	TRX_ptt_hard = TRX_Tune;
+	
+	if(TRX_TX_Disabled(CurrentVFO()->Freq))
+	{
+		TRX_Tune = false;
+		TRX_ptt_hard = false;
+	}
+	
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;

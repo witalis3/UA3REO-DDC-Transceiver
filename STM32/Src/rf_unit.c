@@ -345,7 +345,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		band_out = CALIBRATE.EXT_6m;
 	if (band == BANDID_FM || band == 31) //FM
 		band_out = CALIBRATE.EXT_FM;
-	if (band == BANDID_2m) //2m
+	if (band == BANDID_2m || band == BANDID_Marine) //2m
 		band_out = CALIBRATE.EXT_2m;
 	if (band == BANDID_70cm) //70cm
 		band_out = CALIBRATE.EXT_70cm;

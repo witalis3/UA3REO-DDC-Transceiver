@@ -29,6 +29,7 @@ extern void TRX_TemporaryMute(void);
 extern void TRX_ProcessScanMode(void);
 extern void TRX_setFrequencySlowly(uint32_t target_freq);
 extern void TRX_setFrequencySlowly_Process(void);
+extern bool TRX_TX_Disabled(uint32_t freq);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;

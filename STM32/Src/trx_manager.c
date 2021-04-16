@@ -166,8 +166,36 @@ void TRX_ptt_change(void)
 	if (TRX_Tune)
 		TRX_Tune = false;
 	
+	bool notx = TRX_TX_Disabled(CurrentVFO()->Freq);
+	if(notx)
+	{
+		TRX_ptt_soft = false;
+		TRX_ptt_hard = false;
+		return;
+	}
+	
+	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
+	if (TRX_ptt_hard != TRX_new_ptt_hard)
+	{
+		TRX_ptt_hard = TRX_new_ptt_hard;
+		TRX_ptt_soft = false;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+		FPGA_NeedSendParams = true;
+		TRX_Restart_Mode();
+	}
+	if (TRX_ptt_soft != TRX_old_ptt_soft)
+	{
+		TRX_old_ptt_soft = TRX_ptt_soft;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+		FPGA_NeedSendParams = true;
+		TRX_Restart_Mode();
+	}
+}
+
+bool TRX_TX_Disabled(uint32_t freq)
+{
 	bool notx = false;
-	int8_t band = getBandFromFreq(CurrentVFO()->Freq, false);
+	int8_t band = getBandFromFreq(freq, false);
 	switch(band)
 	{
 		case BANDID_2200m:
@@ -235,29 +263,7 @@ void TRX_ptt_change(void)
 				notx = true;
 			break;
 	}
-	if(notx)
-	{
-		TRX_ptt_soft = false;
-		TRX_ptt_hard = false;
-		return;
-	}
-	
-	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
-	if (TRX_ptt_hard != TRX_new_ptt_hard)
-	{
-		TRX_ptt_hard = TRX_new_ptt_hard;
-		TRX_ptt_soft = false;
-		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
-		FPGA_NeedSendParams = true;
-		TRX_Restart_Mode();
-	}
-	if (TRX_ptt_soft != TRX_old_ptt_soft)
-	{
-		TRX_old_ptt_soft = TRX_ptt_soft;
-		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
-		FPGA_NeedSendParams = true;
-		TRX_Restart_Mode();
-	}
+	return notx;
 }
 
 void TRX_key_change(void)
