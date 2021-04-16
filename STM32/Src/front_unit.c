@@ -267,6 +267,8 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		if(BANDS[band].channels_clar)
 			TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO());
 		LCD_UpdateQuery.FreqInfoRedraw = true;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	}
 	else if (TRX.Fast)
 	{
@@ -329,6 +331,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				if(BANDS[band].channels_clar)
 					TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO());
 				LCD_UpdateQuery.FreqInfoRedraw = true;
+				LCD_UpdateQuery.StatusInfoGUI = true;
+				LCD_UpdateQuery.StatusInfoBarRedraw = true;
 			}
 			else if (TRX.Fast)
 			{
