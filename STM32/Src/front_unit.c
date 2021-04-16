@@ -252,7 +252,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 
 	VFO *vfo = CurrentVFO();
 	uint32_t newfreq = 0;
-	if (TRX.ChannelMode && BANDS[getBandFromFreq(vfo->Freq, false)].channelsCount > 0)
+	if (TRX.ChannelMode && getBandFromFreq(vfo->Freq, false) != -1 && BANDS[getBandFromFreq(vfo->Freq, false)].channelsCount > 0)
 	{
 		int_fast8_t band = getBandFromFreq(vfo->Freq, false);
 		int_fast8_t channel = getChannelbyFreq(vfo->Freq, false);
@@ -316,7 +316,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			uint32_t newfreq = 0;
 			float32_t freq_round = 0;
 			float32_t step = 0;
-			if (TRX.ChannelMode && BANDS[getBandFromFreq(vfo->Freq, false)].channelsCount > 0)
+			if (TRX.ChannelMode && getBandFromFreq(vfo->Freq, false) != -1 && BANDS[getBandFromFreq(vfo->Freq, false)].channelsCount > 0)
 			{
 				int_fast8_t band = getBandFromFreq(vfo->Freq, false);
 				int_fast8_t channel = getChannelbyFreq(vfo->Freq, false);
