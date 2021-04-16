@@ -49,6 +49,8 @@ SRAM static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
 
 void WIFI_Init(void)
 {
+	huart6.Init.BaudRate = 115200;
+	HAL_UART_Init(&huart6);
 	//wifi uart speed = 115200 * 8 = 921600  / * 16 = 1843200
 	WIFI_SendCommand("AT+UART_CUR=921600,8,1,0,1\r\n"); //uart config
 	HAL_Delay(100);
@@ -88,6 +90,11 @@ void WIFI_Init(void)
 			}
 		}
 	}
+	else if (WIFI_State != WIFI_UNDEFINED)
+	{
+		WIFI_State = WIFI_REINIT;
+	}
+	
 	if (WIFI_State == WIFI_UNDEFINED)
 	{
 		WIFI_State = WIFI_NOTFOUND;
@@ -106,7 +113,7 @@ void WIFI_Process(void)
 
 	if (WIFI_State == WIFI_NOTFOUND)
 		return;
-	if (WIFI_State == WIFI_UNDEFINED)
+	if (WIFI_State == WIFI_UNDEFINED || WIFI_State == WIFI_REINIT)
 	{
 		WIFI_Init();
 		return;
@@ -233,6 +240,8 @@ void WIFI_Process(void)
 			//WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 			LCD_UpdateQuery.StatusInfoGUI = true;
+			WIFI_SW_Restart(NULL);
+			return;
 		}
 		if (strstr(WIFI_readedLine, "FAIL") != NULL)
 		{
@@ -297,6 +306,8 @@ void WIFI_Process(void)
 			WIFI_connected = false;
 			WIFI_IP_Gotted = false;
 			LCD_UpdateQuery.StatusInfoGUI = true;
+			WIFI_SW_Restart(NULL);
+			return;
 		}
 		break;
 
@@ -317,6 +328,13 @@ void WIFI_Process(void)
 		}
 		else if (strstr(WIFI_readedLine, "OK") != NULL)
 		{
+			//SW reset
+			if (WIFI_ProcessingCommand == WIFI_COMM_SW_RESTART)
+			{
+				HAL_Delay(1000);
+				WIFI_Init();
+				return;
+			}
 			//ListAP Command Ended
 			if (WIFI_ProcessingCommand == WIFI_COMM_LISTAP)
 			{
@@ -556,6 +574,7 @@ void WIFI_Process(void)
 
 	case WIFI_UNDEFINED:
 	case WIFI_NOTFOUND:
+	case WIFI_REINIT:
 	case WIFI_FAIL:
 	case WIFI_SLEEP:
 		break;
@@ -1076,4 +1095,15 @@ void WIFI_getPropagination(void)
 		return;
 	}
 	WIFI_getHTTPpage("ua3reo.ru", "/trx_services/propagination.php", WIFI_printImage_callback, false);
+}
+
+bool WIFI_SW_Restart(void (*callback)(void))
+{
+	println("[WIFI] SW Restart");
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_SW_RESTART;
+	WIFI_ProcessingCommandCallback = callback;
+	WIFI_SendCommand("AT+RST\r\n"); //Start Update Firmware
+	//WIFI_WaitForOk();
+	return true;
 }
