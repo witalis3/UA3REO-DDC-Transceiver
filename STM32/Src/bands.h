@@ -32,6 +32,13 @@ typedef struct // description of the region in the band
 	const uint_fast8_t mode;
 } REGION_MAP;
 
+typedef struct // description of the region in the band
+{
+	const char *name;
+	const uint32_t rxFreq;
+	const uint32_t txFreq;
+} CHANNEL_MAP;
+
 typedef struct // description of the band
 {
 	const char *name;
@@ -40,6 +47,9 @@ typedef struct // description of the band
 	const uint32_t endFreq;
 	const REGION_MAP *regions;
 	const uint_fast8_t regionsCount;
+	const bool channels_clar;
+	const CHANNEL_MAP *channels;
+	const uint_fast8_t channelsCount;
 } BAND_MAP;
 
 // Public variables

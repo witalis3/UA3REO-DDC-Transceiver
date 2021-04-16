@@ -15,6 +15,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 135700, .endFreq = 137800, .mode = TRX_MODE_CW_L},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Long Wave Broadcast
 		{
@@ -26,6 +29,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 148500, .endFreq = 283500, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Medium Wave Broadcast
 		{
@@ -37,6 +43,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 526500, .endFreq = 1606500, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//160METERS
 		{
@@ -50,6 +59,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 1843000, .endFreq = 2000000, .mode = TRX_MODE_LSB},
 			},
 			.regionsCount = 3,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -61,6 +73,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 2300000, .endFreq = 2468000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -72,6 +87,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 3200000, .endFreq = 3400000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//80METERS
 		{
@@ -85,6 +103,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 3600000, .endFreq = 3800000, .mode = TRX_MODE_LSB},
 			},
 			.regionsCount = 3,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -96,6 +117,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 3950000, .endFreq = 4000000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -107,6 +131,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 4750000, .endFreq = 4995000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -118,6 +145,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 5005000, .endFreq = 5060000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//60METERS
 		{
@@ -129,6 +159,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 5330500, .endFreq = 5403500, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -140,6 +173,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 5900000, .endFreq = 6200000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//40METERS
 		{
@@ -155,6 +191,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 7080000, .endFreq = 7200000, .mode = TRX_MODE_LSB},
 			},
 			.regionsCount = 5,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -166,6 +205,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 7200000, .endFreq = 7450000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -177,6 +219,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 9400000, .endFreq = 9900000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//30METERS
 		{
@@ -189,6 +234,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 10130000, .endFreq = 10150000, .mode = TRX_MODE_DIGI_U},
 			},
 			.regionsCount = 2,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -200,6 +248,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 11600000, .endFreq = 12100000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -211,6 +262,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 13570000, .endFreq = 13870000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//20METERS
 		{
@@ -224,6 +278,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 14112000, .endFreq = 14350000, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 3,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -235,6 +292,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 15100000, .endFreq = 15800000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -246,6 +306,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 17480000, .endFreq = 17900000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//17METERS
 		{
@@ -259,6 +322,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 18120000, .endFreq = 18168000, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 3,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -270,6 +336,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 18900000, .endFreq = 19020000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//15METERS
 		{
@@ -283,6 +352,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 21149000, .endFreq = 21450000, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 4,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -294,6 +366,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 21450000, .endFreq = 21850000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//12METERS
 		{
@@ -307,6 +382,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 24940000, .endFreq = 24990000, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 4,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//Shortwave Wave Broadcast
 		{
@@ -318,6 +396,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 25670000, .endFreq = 26100000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//CB
 		{
@@ -329,6 +410,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 26960000, .endFreq = 27410000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//10METERS
 		{
@@ -348,6 +432,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 29520000, .endFreq = 29700000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 9,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//6METERS
 		{
@@ -365,6 +452,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 51100000, .endFreq = 54000000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 7,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//FM RADIO
 		{
@@ -376,6 +466,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 65900000, .endFreq = 108000000, .mode = TRX_MODE_WFM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//AIR BAND
 		{
@@ -387,6 +480,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 108000000, .endFreq = 137000000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//2 meter
 		{
@@ -400,6 +496,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 144491000, .endFreq = 146000000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 3,
+			.channels_clar = false,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//VHF Marine band
 		{
@@ -411,6 +510,101 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 156000000, .endFreq = 174000000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 3,
+			.channels_clar = true,
+			.channels = (const CHANNEL_MAP[]){
+				{.name = "1", .rxFreq =	160650000, .txFreq =	156050000},
+				{.name = "1A", .rxFreq = 156050000, .txFreq =	156050000},	
+				{.name = "2", .rxFreq =	160070000, .txFreq =	156100000},
+				{.name = "3", .rxFreq =	160750000, .txFreq =	156150000},
+				{.name = "4", .rxFreq =	160800000, .txFreq =	156200000},
+				{.name = "4A", .rxFreq = 156200000, .txFreq =	156200000},
+				{.name = "5", .rxFreq =	160850000, .txFreq =	156250000},
+				{.name = "5A", .rxFreq = 156250000, .txFreq =	156250000},
+				{.name = "6", .rxFreq =	156300000, .txFreq =	156300000},
+				{.name = "7", .rxFreq =	160950000, .txFreq =	156350000},
+				{.name = "7A", .rxFreq = 156350000, .txFreq =	156350000},
+				{.name = "8", .rxFreq =	156400000, .txFreq =	156400000},
+				{.name = "9", .rxFreq =	156450000, .txFreq =	156450000},
+				{.name = "10", .rxFreq = 156500000, .txFreq =	156500000},
+				{.name = "11", .rxFreq = 156550000, .txFreq =	156550000},
+				{.name = "12", .rxFreq = 156600000, .txFreq =	156600000},
+				{.name = "13", .rxFreq = 156650000, .txFreq =	156650000},
+				{.name = "14", .rxFreq = 156700000, .txFreq =	156700000},
+				{.name = "15", .rxFreq = 156750000, .txFreq =	0},
+				{.name = "16", .rxFreq = 156800000, .txFreq =	156800000},
+				{.name = "17", .rxFreq = 156850000, .txFreq =	156850000},
+				{.name = "18", .rxFreq = 161500000, .txFreq =	156900000},
+				{.name = "18A", .rxFreq = 156900000, .txFreq = 156900000},
+				{.name = "19", .rxFreq = 161550000, .txFreq =	156950000},
+				{.name = "19A", .rxFreq = 156950000, .txFreq = 156950000},
+				{.name = "20", .rxFreq = 161600000, .txFreq =	157000000},
+				{.name = "20A", .rxFreq = 157000000, .txFreq = 157000000},
+				{.name = "21", .rxFreq = 161650000, .txFreq =	157050000},
+				{.name = "21A", .rxFreq = 157050000, .txFreq = 157050000},
+				{.name = "22", .rxFreq = 161700000, .txFreq =	157100000},
+				{.name = "22A", .rxFreq =	157100000, .txFreq =	157100000},
+				{.name = "23", .rxFreq =	161750000, .txFreq =	157150000},
+				{.name = "23A", .rxFreq =	157150000, .txFreq =	157150000},
+				{.name = "24", .rxFreq =	161800000, .txFreq =	157200000},
+				{.name = "25", .rxFreq =	161850000, .txFreq =	157250000},
+				{.name = "26", .rxFreq =	161900000, .txFreq =	157300000},
+				{.name = "27", .rxFreq =	161950000, .txFreq =	157350000},
+				{.name = "28", .rxFreq =	162000000, .txFreq =	157400000},
+				{.name = "60", .rxFreq =	160625000, .txFreq =	156025000},
+				{.name = "61", .rxFreq =	160675000, .txFreq =	156075000},
+				{.name = "61A", .rxFreq =	156075000, .txFreq =	156075000},	
+				{.name = "62", .rxFreq =	160725000, .txFreq =	156125000},
+				{.name = "62A", .rxFreq =	156125000, .txFreq =	156125000},
+				{.name = "63", .rxFreq =	160775000, .txFreq =	156175000},
+				{.name = "63A", .rxFreq =	156175000, .txFreq =	156175000},
+				{.name = "64", .rxFreq =	160825000, .txFreq =	156225000},
+				{.name = "64A", .rxFreq =	156225000, .txFreq =	156225000},
+				{.name = "65", .rxFreq =	160875000, .txFreq =	156275000},
+				{.name = "65A", .rxFreq =	156275000, .txFreq =	156275000},
+				{.name = "66", .rxFreq =	160925000, .txFreq =	156325000},
+				{.name = "66A", .rxFreq =	156325000, .txFreq =	156325000},
+				{.name = "67", .rxFreq =	156375000, .txFreq =	156375000},
+				{.name = "68", .rxFreq =	156425000, .txFreq =	156425000},
+				{.name = "69", .rxFreq =	156475000, .txFreq =	156475000},
+				{.name = "70", .rxFreq =	156525000, .txFreq =	156525000},
+				{.name = "71", .rxFreq =	156575000, .txFreq =	156575000},
+				{.name = "72", .rxFreq =	156625000, .txFreq =	156625000},
+				{.name = "73", .rxFreq =	156675000, .txFreq =	156675000},
+				{.name = "74", .rxFreq =	156725000, .txFreq =	156725000},
+				{.name = "75", .rxFreq =	156775000, .txFreq =	156775000},
+				{.name = "76", .rxFreq =	156825000, .txFreq =	156825000},
+				{.name = "77", .rxFreq =	156875000, .txFreq =	156875000},
+				{.name = "78", .rxFreq =	161525000, .txFreq =	156925000},
+				{.name = "78A", .rxFreq =	156925000, .txFreq =	156925000},
+				{.name = "79", .rxFreq =	161575000, .txFreq =	156975000},
+				{.name = "79A", .rxFreq =	156975000, .txFreq =	156975000},
+				{.name = "80", .rxFreq =	161625000, .txFreq =	157025000},
+				{.name = "80A", .rxFreq =	157025000, .txFreq =	157025000},
+				{.name = "81", .rxFreq =	161675000, .txFreq =	157075000},
+				{.name = "81A", .rxFreq =	157075000, .txFreq =	157075000},
+				{.name = "82", .rxFreq =	161725000, .txFreq =	157125000},
+				{.name = "82A", .rxFreq =	157125000, .txFreq =	157125000},
+				{.name = "83", .rxFreq =	161775000, .txFreq =	157175000},
+				{.name = "83A", .rxFreq =	157175000, .txFreq =	157175000},
+				{.name = "84", .rxFreq =	161825000, .txFreq =	157225000},
+				{.name = "85", .rxFreq =	161875000, .txFreq =	157275000},
+				{.name = "86", .rxFreq =	161925000, .txFreq =	157325000},
+				{.name = "87", .rxFreq =	157375000, .txFreq =	157375000},
+				{.name = "87A", .rxFreq = 157375000, .txFreq =	157375000},
+				{.name = "88", .rxFreq = 157425000, .txFreq =	157425000},
+				{.name = "88A", .rxFreq = 157425000, .txFreq =	157425000},
+				{.name = "WX01", .rxFreq = 162550000, .txFreq =	0},
+				{.name = "WX02", .rxFreq = 162400000, .txFreq =	0},
+				{.name = "WX03", .rxFreq = 162475000, .txFreq =	0},
+				{.name = "WX04", .rxFreq = 162425000, .txFreq =	0},
+				{.name = "WX05", .rxFreq = 162450000, .txFreq =	0},
+				{.name = "WX06", .rxFreq = 162500000, .txFreq =	0},
+				{.name = "WX07", .rxFreq = 162525000, .txFreq =	0},
+				{.name = "WX08", .rxFreq = 161750000, .txFreq =	0},
+				{.name = "WX09", .rxFreq = 161775000, .txFreq =	0},
+				{.name = "WX10", .rxFreq = 163275000, .txFreq =	0},
+			},
+			.channelsCount = 91,
 		},
 		//70cm
 		{
@@ -428,6 +622,8 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 434100000, .endFreq = 440000000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 7,
+			.channels = NULL,
+			.channelsCount = 0,
 		},
 		//
 };

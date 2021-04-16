@@ -182,6 +182,7 @@ extern struct TRX_SETTINGS
 	bool RF_Filters;
 	bool ANT;
 	uint8_t RF_Power;
+	bool ChannelMode;
 	bool ShiftEnabled;
 	uint16_t SHIFT_INTERVAL;
 	bool TWO_SIGNAL_TUNE;

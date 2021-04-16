@@ -536,6 +536,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.ANT", (uint32_t *)&TRX.ANT, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Filters", (uint32_t *)&TRX.RF_Filters, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Power", (uint32_t *)&TRX.RF_Power, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint32_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ShiftEnabled", (uint32_t *)&TRX.ShiftEnabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SHIFT_INTERVAL", (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.TWO_SIGNAL_TUNE", (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_BOOLEAN);
@@ -857,6 +858,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.ANT = bval;
 	if (strcmp(name, "TRX.RF_Filters") == 0)
 		TRX.RF_Filters = bval;
+	if (strcmp(name, "TRX.ChannelMode") == 0)
+		TRX.ChannelMode = bval;
 	if (strcmp(name, "TRX.RF_Power") == 0)
 		TRX.RF_Power = (uint8_t)uintval;
 	if (strcmp(name, "TRX.ShiftEnabled") == 0)
