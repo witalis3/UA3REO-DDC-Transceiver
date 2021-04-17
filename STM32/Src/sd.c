@@ -55,6 +55,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void);
 static void SDCOMM_LIST_DIRECTORY_handler(void);
 static void SDCOMM_DELETE_FILE_handler(void);
 static void SDCOMM_READ_PLAY_FILE_handler(void);
+static void SDCOMM_FLASH_BIN_handler(void);
 
 bool SD_isIdle(void)
 {
@@ -170,6 +171,9 @@ void SD_Process(void)
 			break;
 		case SDCOMM_PROCESS_PLAY:
 			SDCOMM_READ_PLAY_FILE_handler();
+			break;
+		case SDCOMM_FLASH_BIN:
+			SDCOMM_FLASH_BIN_handler();
 			break;
 		}
 		SD_CommandInProcess = false;
@@ -312,6 +316,143 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 	return false;
+}
+
+static void SDCOMM_FLASH_BIN_handler(void)
+{
+	if (f_open(&File, (TCHAR*)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK)
+	{
+		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+		println("[FLASH] File Opened");
+		
+		//SCB_DisableICache();
+		//SCB_DisableDCache();
+		HAL_FLASH_OB_Unlock();
+		HAL_FLASH_Unlock();
+		println("[FLASH] Unlocked");
+		
+		FLASH_OBProgramInitTypeDef OBInit;
+		OBInit.OptionType = OPTIONBYTE_WRP;
+		OBInit.Banks      = FLASH_BANK_2;
+		OBInit.WRPState   = OB_WRPSTATE_DISABLE;
+		OBInit.WRPSector  = OB_WRP_SECTOR_ALL;
+		HAL_FLASHEx_OBProgram(&OBInit);
+		if (HAL_FLASH_OB_Launch() != HAL_OK)
+		{
+			println("[FLASH] WP disable error");
+			return;
+		}
+		println("[FLASH] WP disabled");
+		
+		__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGSERR);
+		FLASH_EraseInitTypeDef EraseInitStruct;
+		EraseInitStruct.VoltageRange  = FLASH_VOLTAGE_RANGE_3;
+		EraseInitStruct.Sector        = 0;
+		EraseInitStruct.NbSectors     = 8;
+		EraseInitStruct.Banks = FLASH_BANK_2;
+		EraseInitStruct.TypeErase = FLASH_TYPEERASE_MASSERASE;
+		uint32_t SectorError = 0;
+		println("[FLASH] Erasing...");
+		if (HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError) != HAL_OK) {     
+				HAL_FLASH_Lock();
+				println("[FLASH] Erase error");
+				return;
+		}
+		println("[FLASH] Erased");
+		
+		bool read_flag = true;
+		uint32_t bytesreaded = 0;
+		uint32_t LastPGAddress = 0x08100000; //second bank
+		const uint32_t flash_word_size = 8 * 4;//8x 32bits words
+		while (read_flag == true) {
+			if (f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded) != FR_OK) {
+				println("[FLASH] File read error");
+				return;
+			}
+
+			if (bytesreaded > 0)
+			{
+				for(uint32_t block_addr = 0; block_addr < bytesreaded ; block_addr += flash_word_size)
+				{
+					//println("[FLASH] Programming: ", LastPGAddress);
+					//print_flush();
+					uint8_t res = HAL_FLASH_Program(0, LastPGAddress, (uint32_t)&SD_workbuffer_A[block_addr]);
+					if (res != HAL_OK) {
+						println("[FLASH] Flashing error: ", res, " ", HAL_FLASH_GetError());
+						return;
+					}
+					//Check the written value
+					if (*(uint32_t*)LastPGAddress != *(uint32_t*)(SD_workbuffer_A + block_addr))
+					{
+						println("[FLASH] Flash Verify error");
+						return;
+					}
+					//println("[FLASH] Block flashed: ", LastPGAddress);
+					//print_flush();
+					
+					LastPGAddress += flash_word_size;
+				}
+
+				println("[FLASH] Flashed: ", LastPGAddress);
+				print_flush();
+			}
+			else
+			{
+				read_flag = false;
+			}
+		}
+		
+		println("[FLASH] Flashed");
+		
+		HAL_FLASH_Lock();
+		println("[FLASH] Locked");
+		
+		//First part finished, swap to bank 2
+		/* Get the Dual boot configuration status */
+		HAL_FLASHEx_OBGetConfig(&OBInit);
+
+		/* Get FLASH_WRP_SECTORS write protection status */
+		OBInit.Banks     = FLASH_BANK_1;
+		HAL_FLASHEx_OBGetConfig(&OBInit);
+		
+		/*Swap to bank2 */
+		/*Set OB SWAP_BANK_OPT to swap Bank2*/
+		OBInit.OptionType = OPTIONBYTE_USER;
+		OBInit.USERType   = OB_USER_SWAP_BANK;
+		OBInit.USERConfig = OB_SWAP_BANK_ENABLE;
+		HAL_FLASHEx_OBProgram(&OBInit);
+		
+		/* Launch Option bytes loading */
+		HAL_FLASH_OB_Launch();
+		SCB_InvalidateICache();
+		
+		//we are on bank 2, flash second part
+		println("[FLASH] Banks swapped");
+		
+		/*
+		//Set OB SWAP_BANK_OPT to swap Bank1
+		OBInit.OptionType = OPTIONBYTE_USER;
+		OBInit.USERType = OB_USER_SWAP_BANK;
+		OBInit.USERConfig = OB_SWAP_BANK_DISABLE;
+		HAL_FLASHEx_OBProgram(&OBInit);
+		
+		// Launch Option bytes loading
+		HAL_FLASH_OB_Launch();
+		SCB_InvalidateICache();
+		*/
+		
+		//SCB->AIRCR = 0x05FA0004; // software reset
+		
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+	else
+	{
+		LCD_showTooltip("SD error");
+		SD_PlayInProcess = false;
+		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
+	}
 }
 
 static bool SDCOMM_OPEN_PLAY_FILE_handler(void)

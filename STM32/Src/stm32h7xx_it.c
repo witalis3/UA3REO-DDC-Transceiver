@@ -585,7 +585,7 @@ void TIM6_DAC_IRQHandler(void)
     }
     HAL_Delay(500);
     HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-    //SCB->AIRCR = 0x05FA0004; // software resetw
+    //SCB->AIRCR = 0x05FA0004; // software reset
     while (true)
     {
     }

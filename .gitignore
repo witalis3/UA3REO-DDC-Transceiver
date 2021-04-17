@@ -9,6 +9,7 @@ Scheme/EXPERIMANTAL/*/__Previews/*
 Scheme/ALTIUM_DESIGNER/*/History/*
 STM32/MDK-ARM/WOLF/*.htm
 STM32/MDK-ARM/WOLF/*.hex
+STM32/MDK-ARM/*.bin
 STM32/Debug/*
 Status Report.txt
 Design Rule Check*

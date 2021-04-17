@@ -57,6 +57,7 @@ typedef enum
 	SDCOMM_DELETE_FILE,
 	SDCOMM_START_PLAY,
 	SDCOMM_PROCESS_PLAY,
+	SDCOMM_FLASH_BIN,
 } SD_COMMAND;
 
 extern sd_info_ptr sdinfo;

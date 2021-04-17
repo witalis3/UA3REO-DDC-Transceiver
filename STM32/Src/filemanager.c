@@ -159,15 +159,23 @@ static void FILEMANAGER_OpenDialog(void)
 {
 	FILEMANAGER_dialog_opened = true;
 	bool allow_play_wav = false;
+	bool allow_flash_bin = false;
 	uint8_t max_buttons_index = 1; //cancel+delete
 	
 	
-	//chack play wav
+	//check play wav
 	char *istr = strstr(FILEMANAGER_LISTING[current_index - 1], ".wav");
 	if (istr != NULL)
 	{
 		max_buttons_index++;
 		allow_play_wav = true;
+	}
+	//check flash bin
+	istr = strstr(FILEMANAGER_LISTING[current_index - 1], ".bin");
+	if (istr != NULL)
+	{
+		max_buttons_index++;
+		allow_flash_bin = true;
 	}
 	
 	if(FILEMANAGER_dialog_button_index > max_buttons_index)
@@ -214,6 +222,19 @@ static void FILEMANAGER_OpenDialog(void)
 		button_y += button_h + margin;
 		if(button_active)
 			current_dialog_action = FILMAN_ACT_PLAYWAV;
+		print_index++;
+	}
+	//flash bin
+	if(allow_flash_bin)
+	{
+		button_active = (FILEMANAGER_dialog_button_index == print_index);
+		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
+		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
+		LCDDriver_getTextBounds("Flash STM32 firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+		LCDDriver_printTextFont("Flash STM32 firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		button_y += button_h + margin;
+		if(button_active)
+			current_dialog_action = FILMAN_ACT_FLASHBIN;
 		print_index++;
 	}
 	//delete
@@ -273,6 +294,20 @@ static void FILEMANAGER_DialogAction(void)
 		}
 		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 		SD_doCommand(SDCOMM_START_PLAY, false);
+		return;
+	}
+	if(current_dialog_action == FILMAN_ACT_FLASHBIN) //flash stm32 bin firmware
+	{
+		println("[FLASH] BIN flashing started");
+		TRX_Mute = true;
+		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
+		if(strlen(FILEMANAGER_CurrentPath) > 0)
+		{
+			strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+			strcat((char*)SD_workbuffer_A, "/");
+		}
+		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+		SD_doCommand(SDCOMM_FLASH_BIN, false);
 		return;
 	}
 }
