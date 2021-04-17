@@ -415,35 +415,32 @@ static void SDCOMM_FLASH_BIN_handler(void)
 		OBInit.Banks     = FLASH_BANK_1;
 		HAL_FLASHEx_OBGetConfig(&OBInit);
 		
-		/*Swap to bank2 */
-		/*Set OB SWAP_BANK_OPT to swap Bank2*/
-		OBInit.OptionType = OPTIONBYTE_USER;
-		OBInit.USERType   = OB_USER_SWAP_BANK;
-		OBInit.USERConfig = OB_SWAP_BANK_ENABLE;
-		HAL_FLASHEx_OBProgram(&OBInit);
+		if ((OBInit.USERConfig & OB_SWAP_BANK_ENABLE) == OB_SWAP_BANK_DISABLE) 
+    {
+			//Swap to bank2
+			//Set OB SWAP_BANK_OPT to swap Bank2
+			OBInit.OptionType = OPTIONBYTE_USER;
+			OBInit.USERType   = OB_USER_SWAP_BANK;
+			OBInit.USERConfig = OB_SWAP_BANK_ENABLE;
+			HAL_FLASHEx_OBProgram(&OBInit);
+		}
+		else
+		{
+			//Swap to bank1
+			//Set OB SWAP_BANK_OPT to swap Bank1
+			OBInit.OptionType = OPTIONBYTE_USER;
+			OBInit.USERType   = OB_USER_SWAP_BANK;
+			OBInit.USERConfig = OB_SWAP_BANK_DISABLE;
+			HAL_FLASHEx_OBProgram(&OBInit);
+		}
 		
 		/* Launch Option bytes loading */
 		HAL_FLASH_OB_Launch();
 		SCB_InvalidateICache();
 		
-		//we are on bank 2, flash second part
+		
 		println("[FLASH] Banks swapped");
-		
-		/*
-		//Set OB SWAP_BANK_OPT to swap Bank1
-		OBInit.OptionType = OPTIONBYTE_USER;
-		OBInit.USERType = OB_USER_SWAP_BANK;
-		OBInit.USERConfig = OB_SWAP_BANK_DISABLE;
-		HAL_FLASHEx_OBProgram(&OBInit);
-		
-		// Launch Option bytes loading
-		HAL_FLASH_OB_Launch();
-		SCB_InvalidateICache();
-		*/
-		
-		//SCB->AIRCR = 0x05FA0004; // software reset
-		
-		LCD_UpdateQuery.SystemMenuRedraw = true;
+		SCB->AIRCR = 0x05FA0004; // software reset
 	}
 	else
 	{
