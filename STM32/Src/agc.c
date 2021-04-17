@@ -141,7 +141,7 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 }
 
 //Run TX AGC on data block
-void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target)
+void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, uint_fast8_t mode)
 {
 	float32_t *AGC_need_gain_db = &AGC_TX_need_gain_db;
 	float32_t *AGC_need_gain_db_old = &AGC_TX_need_gain_db_old;
@@ -150,8 +150,23 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target)
 	//higher speed in settings - higher speed of AGC processing
 	float32_t TX_AGC_STEPSIZE_UP = 0.0f;
 	float32_t TX_AGC_STEPSIZE_DOWN = 0.0f;
-	TX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.TX_Compressor_speed;
-	TX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.TX_Compressor_speed;
+	switch(mode)
+	{
+		case TRX_MODE_LSB:
+		case TRX_MODE_USB:
+		case TRX_MODE_LOOPBACK:
+		default:
+			TX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.TX_Compressor_speed_SSB;
+			TX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.TX_Compressor_speed_SSB;
+		break;
+		
+		case TRX_MODE_NFM:
+		case TRX_MODE_WFM:
+		case TRX_MODE_AM:
+			TX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
+			TX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
+		break;
+	}
 
 	//do ring buffer
 	static uint32_t ring_position = 0;
@@ -203,9 +218,24 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target)
 		*AGC_need_gain_db = -200.0f;
 
 	//gain limitation
-	if (*AGC_need_gain_db > TRX.TX_Compressor_maxgain)
-		*AGC_need_gain_db = TRX.TX_Compressor_maxgain;
-
+	switch(mode)
+	{
+		case TRX_MODE_LSB:
+		case TRX_MODE_USB:
+		case TRX_MODE_LOOPBACK:
+		default:
+			if (*AGC_need_gain_db > TRX.TX_Compressor_maxgain_SSB)
+				*AGC_need_gain_db = TRX.TX_Compressor_maxgain_SSB;
+		break;
+		
+		case TRX_MODE_NFM:
+		case TRX_MODE_WFM:
+		case TRX_MODE_AM:
+			if (*AGC_need_gain_db > TRX.TX_Compressor_maxgain_AMFM)
+				*AGC_need_gain_db = TRX.TX_Compressor_maxgain_AMFM;
+		break;
+	}
+	
 	//apply gain
 	if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.0f) //gain changed
 	{

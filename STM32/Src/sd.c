@@ -566,9 +566,12 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_LOW", (uint32_t *)&TRX.RX_EQ_LOW, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_MID", (uint32_t *)&TRX.RX_EQ_MID, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_HIG", (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_LOW", (uint32_t *)&TRX.MIC_EQ_LOW, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID", (uint32_t *)&TRX.MIC_EQ_MID, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG", (uint32_t *)&TRX.MIC_EQ_HIG, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_LOW_SSB", (uint32_t *)&TRX.MIC_EQ_LOW_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID_SSB", (uint32_t *)&TRX.MIC_EQ_MID_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG_SSB", (uint32_t *)&TRX.MIC_EQ_HIG_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_LOW_AMFM", (uint32_t *)&TRX.MIC_EQ_LOW_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID_AMFM", (uint32_t *)&TRX.MIC_EQ_MID_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG_AMFM", (uint32_t *)&TRX.MIC_EQ_HIG_AMFM, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_REVERBER", (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DNR_SNR_THRESHOLD", (uint32_t *)&TRX.DNR_SNR_THRESHOLD, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DNR_AVERAGE", (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_UINT8);
@@ -576,8 +579,10 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.NOISE_BLANKER", (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_SSB_speed", (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_CW_speed", (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.TX_Compressor_speed", (uint32_t *)&TRX.TX_Compressor_speed, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.TX_Compressor_maxgain", (uint32_t *)&TRX.TX_Compressor_maxgain, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.TX_Compressor_speed_SSB", (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.TX_Compressor_maxgain_SSB", (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.TX_Compressor_speed_AMFM", (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.TX_Compressor_maxgain_AMFM", (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.CW_LPF_Filter2", (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_HPF_Filter2", (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.SSB_LPF_RX_Filter", (uint32_t *)&TRX.SSB_LPF_RX_Filter, SYSMENU_UINT16);
@@ -931,12 +936,18 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.RX_EQ_MID = (int8_t)intval;
 	if (strcmp(name, "TRX.RX_EQ_HIG") == 0)
 		TRX.RX_EQ_HIG = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_LOW") == 0)
-		TRX.MIC_EQ_LOW = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_MID") == 0)
-		TRX.MIC_EQ_MID = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_HIG") == 0)
-		TRX.MIC_EQ_HIG = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_LOW_SSB") == 0)
+		TRX.MIC_EQ_LOW_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_MID_SSB") == 0)
+		TRX.MIC_EQ_MID_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_HIG_SSB") == 0)
+		TRX.MIC_EQ_HIG_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_LOW_AMFM") == 0)
+		TRX.MIC_EQ_LOW_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_MID_AMFM") == 0)
+		TRX.MIC_EQ_MID_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_HIG_AMFM") == 0)
+		TRX.MIC_EQ_HIG_AMFM = (int8_t)intval;
 	if (strcmp(name, "TRX.MIC_REVERBER") == 0)
 		TRX.MIC_REVERBER = (uint8_t)uintval;
 	if (strcmp(name, "TRX.DNR_SNR_THRESHOLD") == 0)
@@ -951,10 +962,14 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.RX_AGC_SSB_speed = (uint8_t)uintval;
 	if (strcmp(name, "TRX.RX_AGC_CW_speed") == 0)
 		TRX.RX_AGC_CW_speed = (uint8_t)uintval;
-	if (strcmp(name, "TRX.TX_Compressor_speed") == 0)
-		TRX.TX_Compressor_speed = (uint8_t)uintval;
-	if (strcmp(name, "TRX.TX_Compressor_maxgain") == 0)
-		TRX.TX_Compressor_maxgain = (uint8_t)uintval;
+	if (strcmp(name, "TRX.TX_Compressor_speed_SSB") == 0)
+		TRX.TX_Compressor_speed_SSB = (uint8_t)uintval;
+	if (strcmp(name, "TRX.TX_Compressor_maxgain_SSB") == 0)
+		TRX.TX_Compressor_maxgain_SSB = (uint8_t)uintval;
+	if (strcmp(name, "TRX.TX_Compressor_speed_AMFM") == 0)
+		TRX.TX_Compressor_speed_AMFM = (uint8_t)uintval;
+	if (strcmp(name, "TRX.TX_Compressor_maxgain_AMFM") == 0)
+		TRX.TX_Compressor_maxgain_AMFM = (uint8_t)uintval;
 	if (strcmp(name, "TRX.CW_LPF_Filter2") == 0)
 		TRX.CW_LPF_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.CW_HPF_Filter2") == 0)

@@ -217,9 +217,12 @@ extern struct TRX_SETTINGS
 	int8_t RX_EQ_LOW;
 	int8_t RX_EQ_MID;
 	int8_t RX_EQ_HIG;
-	int8_t MIC_EQ_LOW;
-	int8_t MIC_EQ_MID;
-	int8_t MIC_EQ_HIG;
+	int8_t MIC_EQ_LOW_SSB;
+	int8_t MIC_EQ_MID_SSB;
+	int8_t MIC_EQ_HIG_SSB;
+	int8_t MIC_EQ_LOW_AMFM;
+	int8_t MIC_EQ_MID_AMFM;
+	int8_t MIC_EQ_HIG_AMFM;
 	uint8_t MIC_REVERBER;
 	uint8_t DNR_SNR_THRESHOLD;
 	uint8_t DNR_AVERAGE;
@@ -227,8 +230,10 @@ extern struct TRX_SETTINGS
 	bool NOISE_BLANKER;
 	uint8_t RX_AGC_SSB_speed;
 	uint8_t RX_AGC_CW_speed;
-	uint8_t TX_Compressor_speed;
-	uint8_t TX_Compressor_maxgain;
+	uint8_t TX_Compressor_speed_SSB;
+	uint8_t TX_Compressor_maxgain_SSB;
+	uint8_t TX_Compressor_speed_AMFM;
+	uint8_t TX_Compressor_maxgain_AMFM;
 	uint16_t CW_LPF_Filter;
 	uint16_t CW_HPF_Filter;
 	uint16_t SSB_LPF_RX_Filter;

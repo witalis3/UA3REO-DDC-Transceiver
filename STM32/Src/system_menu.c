@@ -60,17 +60,22 @@ static void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_AMFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_AMFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_AMFM(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_REVERBER(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_EQ_LOW(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_EQ_MID(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_EQ_HIG(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_AMFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
@@ -367,17 +372,22 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass},
 		{"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Squelch, SYSMENU_HANDL_AUDIO_Squelch},
 		{"FM Squelch level", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
-		{"MIC EQ Low", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_LOW, SYSMENU_HANDL_AUDIO_MIC_EQ_LOW},
-		{"MIC EQ Mid", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_MID, SYSMENU_HANDL_AUDIO_MIC_EQ_MID},
-		{"MIC EQ High", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_HIG, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG},
+		{"MIC EQ Low SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_LOW_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB},
+		{"MIC EQ Mid SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_MID_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB},
+		{"MIC EQ High SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_HIG_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB},
+		{"MIC EQ Low AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_LOW_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_AMFM},
+		{"MIC EQ Mid AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_MID_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_MID_AMFM},
+		{"MIC EQ High AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_HIG_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_AMFM},
 		{"MIC Reverber", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_HANDL_AUDIO_MIC_REVERBER},
 		{"RX EQ Low", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_LOW, SYSMENU_HANDL_AUDIO_RX_EQ_LOW},
 		{"RX EQ Mid", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_MID, SYSMENU_HANDL_AUDIO_RX_EQ_MID},
 		{"RX EQ High", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_HANDL_AUDIO_RX_EQ_HIG},
 		{"RX AGC SSB Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed},
 		{"RX AGC CW Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed},
-		{"TX Compressor Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed, SYSMENU_HANDL_AUDIO_TX_CompressorSpeed},
-		{"TX Compressor MaxGain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain},
+		{"TX Compr Speed SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_SSB},
+		{"TX Compr MaxGain SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_SSB},
+		{"TX Compr Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_AMFM},
+		{"TX Compr MaxGain AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM},		
 		{"Beeper", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 };
 
@@ -1213,33 +1223,63 @@ static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction)
 		TRX.DNR_MINIMAL = 100;
 }
 
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB(int8_t direction)
 {
-	TRX.MIC_EQ_LOW += direction;
-	if (TRX.MIC_EQ_LOW < -10)
-		TRX.MIC_EQ_LOW = -10;
-	if (TRX.MIC_EQ_LOW > 10)
-		TRX.MIC_EQ_LOW = 10;
+	TRX.MIC_EQ_LOW_SSB += direction;
+	if (TRX.MIC_EQ_LOW_SSB < -10)
+		TRX.MIC_EQ_LOW_SSB = -10;
+	if (TRX.MIC_EQ_LOW_SSB > 10)
+		TRX.MIC_EQ_LOW_SSB = 10;
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_AMFM(int8_t direction)
 {
-	TRX.MIC_EQ_MID += direction;
-	if (TRX.MIC_EQ_MID < -10)
-		TRX.MIC_EQ_MID = -10;
-	if (TRX.MIC_EQ_MID > 10)
-		TRX.MIC_EQ_MID = 10;
+	TRX.MIC_EQ_LOW_AMFM += direction;
+	if (TRX.MIC_EQ_LOW_AMFM < -10)
+		TRX.MIC_EQ_LOW_AMFM = -10;
+	if (TRX.MIC_EQ_LOW_AMFM > 10)
+		TRX.MIC_EQ_LOW_AMFM = 10;
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB(int8_t direction)
 {
-	TRX.MIC_EQ_HIG += direction;
-	if (TRX.MIC_EQ_HIG < -10)
-		TRX.MIC_EQ_HIG = -10;
-	if (TRX.MIC_EQ_HIG > 10)
-		TRX.MIC_EQ_HIG = 10;
+	TRX.MIC_EQ_MID_SSB += direction;
+	if (TRX.MIC_EQ_MID_SSB < -10)
+		TRX.MIC_EQ_MID_SSB = -10;
+	if (TRX.MIC_EQ_MID_SSB > 10)
+		TRX.MIC_EQ_MID_SSB = 10;
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_AMFM(int8_t direction)
+{
+	TRX.MIC_EQ_MID_AMFM += direction;
+	if (TRX.MIC_EQ_MID_AMFM < -10)
+		TRX.MIC_EQ_MID_AMFM = -10;
+	if (TRX.MIC_EQ_MID_AMFM > 10)
+		TRX.MIC_EQ_MID_AMFM = 10;
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB(int8_t direction)
+{
+	TRX.MIC_EQ_HIG_SSB += direction;
+	if (TRX.MIC_EQ_HIG_SSB < -10)
+		TRX.MIC_EQ_HIG_SSB = -10;
+	if (TRX.MIC_EQ_HIG_SSB > 10)
+		TRX.MIC_EQ_HIG_SSB = 10;
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_AMFM(int8_t direction)
+{
+	TRX.MIC_EQ_HIG_AMFM += direction;
+	if (TRX.MIC_EQ_HIG_AMFM < -10)
+		TRX.MIC_EQ_HIG_AMFM = -10;
+	if (TRX.MIC_EQ_HIG_AMFM > 10)
+		TRX.MIC_EQ_HIG_AMFM = 10;
 	NeedReinitAudioFilters = true;
 }
 
@@ -1300,22 +1340,40 @@ static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction)
 		TRX.RX_AGC_CW_speed = 20;
 }
 
-static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_SSB(int8_t direction)
 {
-	TRX.TX_Compressor_speed += direction;
-	if (TRX.TX_Compressor_speed < 1)
-		TRX.TX_Compressor_speed = 1;
-	if (TRX.TX_Compressor_speed > 10)
-		TRX.TX_Compressor_speed = 10;
+	TRX.TX_Compressor_speed_SSB += direction;
+	if (TRX.TX_Compressor_speed_SSB < 1)
+		TRX.TX_Compressor_speed_SSB = 1;
+	if (TRX.TX_Compressor_speed_SSB > 10)
+		TRX.TX_Compressor_speed_SSB = 10;
 }
 
-static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_AMFM(int8_t direction)
 {
-	TRX.TX_Compressor_maxgain += direction;
-	if (TRX.TX_Compressor_maxgain < 1)
-		TRX.TX_Compressor_maxgain = 1;
-	if (TRX.TX_Compressor_maxgain > 10)
-		TRX.TX_Compressor_maxgain = 10;
+	TRX.TX_Compressor_speed_AMFM += direction;
+	if (TRX.TX_Compressor_speed_AMFM < 1)
+		TRX.TX_Compressor_speed_AMFM = 1;
+	if (TRX.TX_Compressor_speed_AMFM > 10)
+		TRX.TX_Compressor_speed_AMFM = 10;
+}
+
+static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_SSB(int8_t direction)
+{
+	TRX.TX_Compressor_maxgain_SSB += direction;
+	if (TRX.TX_Compressor_maxgain_SSB < 1)
+		TRX.TX_Compressor_maxgain_SSB = 1;
+	if (TRX.TX_Compressor_maxgain_SSB > 10)
+		TRX.TX_Compressor_maxgain_SSB = 10;
+}
+
+static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM(int8_t direction)
+{
+	TRX.TX_Compressor_maxgain_AMFM += direction;
+	if (TRX.TX_Compressor_maxgain_AMFM < 1)
+		TRX.TX_Compressor_maxgain_AMFM = 1;
+	if (TRX.TX_Compressor_maxgain_AMFM > 10)
+		TRX.TX_Compressor_maxgain_AMFM = 10;
 }
 
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)

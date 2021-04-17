@@ -65,7 +65,7 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);											
 static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm);											  // FM demodulator
 static void ModulateFM(uint16_t size, float32_t amplitude);																									  // FM modulator
 static void doRX_EQ(uint16_t size);																															  // receiver equalizer
-static void doMIC_EQ(uint16_t size);																														  // microphone equalizer
+static void doMIC_EQ(uint16_t size, uint8_t mode);																														  // microphone equalizer
 static void doVAD(uint16_t size);																															  // voice activity detector
 static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																							  //IF gain
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor); //decimate RX samplerate input stream
@@ -600,7 +600,7 @@ void processTxAudio(void)
 			arm_scale_f32(APROC_Audio_Buffer_TX_Q, TRX.MIC_GAIN, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 			//Mic Equalizer
 			if (mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U && mode != TRX_MODE_IQ)
-				doMIC_EQ(AUDIO_BUFFER_HALF_SIZE);
+				doMIC_EQ(AUDIO_BUFFER_HALF_SIZE, mode);
 		}
 		//USB Gain (24bit)
 		if (getInputType() == TRX_INPUT_USB)
@@ -625,9 +625,9 @@ void processTxAudio(void)
 
 		//TX AGC (compressor)
 		if (mode == TRX_MODE_USB || mode == TRX_MODE_LSB)
-			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f);
+			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f, mode);
 		else
-			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.95f);
+			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.95f, mode);
 
 		//double left and right channel
 		dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], AUDIO_BUFFER_HALF_SIZE * 4);
@@ -1027,15 +1027,34 @@ static void doRX_EQ(uint16_t size)
 }
 
 // Equalizer microphone
-static void doMIC_EQ(uint16_t size)
+static void doMIC_EQ(uint16_t size, uint8_t mode)
 {
-	if (TRX.MIC_EQ_LOW != 0)
-		arm_biquad_cascade_df2T_f32(&EQ_MIC_LOW_FILTER, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
-	if (TRX.MIC_EQ_MID != 0)
-		arm_biquad_cascade_df2T_f32(&EQ_MIC_MID_FILTER, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
-	if (TRX.MIC_EQ_HIG != 0)
-		arm_biquad_cascade_df2T_f32(&EQ_MIC_HIG_FILTER, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
-
+	switch(mode)
+	{
+		case TRX_MODE_LSB:
+		case TRX_MODE_USB:
+		case TRX_MODE_LOOPBACK:
+		default:
+			if (TRX.MIC_EQ_LOW_SSB != 0)
+				arm_biquad_cascade_df2T_f32(&EQ_MIC_LOW_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+			if (TRX.MIC_EQ_MID_SSB != 0)
+				arm_biquad_cascade_df2T_f32(&EQ_MIC_MID_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+			if (TRX.MIC_EQ_HIG_SSB != 0)
+				arm_biquad_cascade_df2T_f32(&EQ_MIC_HIG_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		break;
+		
+		case TRX_MODE_NFM:
+		case TRX_MODE_WFM:
+		case TRX_MODE_AM:
+			if (TRX.MIC_EQ_LOW_AMFM != 0)
+				arm_biquad_cascade_df2T_f32(&EQ_MIC_LOW_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+			if (TRX.MIC_EQ_MID_AMFM != 0)
+				arm_biquad_cascade_df2T_f32(&EQ_MIC_MID_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+			if (TRX.MIC_EQ_HIG_AMFM != 0)
+				arm_biquad_cascade_df2T_f32(&EQ_MIC_HIG_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		break;
+	}
+	
 	//Reverber
 	if (TRX.MIC_REVERBER > 0)
 	{
