@@ -1778,6 +1778,7 @@ void LCD_showManualFreqWindow(bool secondary_vfo)
 
 void LCD_ManualFreqButtonHandler(uint32_t parameter)
 {
+#if (defined(HAS_TOUCHPAD))
 	char buff[50] = {0};
 	uint32_t newfreq = 0;
 	if(parameter < 10)
@@ -1839,4 +1840,5 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter)
 		
 	sprintf(buff, "%u", manualFreqEnter);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), 50, LAYOUT->WINDOWS_BUTTON_WIDTH * 5 + LAYOUT->WINDOWS_BUTTON_MARGIN * 4, LAYOUT->WINDOWS_BUTTON_HEIGHT, buff, false, false, true, 0, NULL, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+#endif
 }
