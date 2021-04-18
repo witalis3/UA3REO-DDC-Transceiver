@@ -539,11 +539,6 @@
               <FilePath>..\Src\fpga.h</FilePath>
             </File>
             <File>
-              <FileName>fpga_flash.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\fpga_flash.h</FilePath>
-            </File>
-            <File>
               <FileName>functions.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\functions.c</FilePath>
@@ -1791,11 +1786,6 @@
               <FileName>fpga.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga_flash.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\fpga_flash.h</FilePath>
             </File>
             <File>
               <FileName>functions.c</FileName>
@@ -3116,11 +3106,6 @@
               <FilePath>..\Src\fpga.h</FilePath>
             </File>
             <File>
-              <FileName>fpga_flash.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\fpga_flash.h</FilePath>
-            </File>
-            <File>
               <FileName>functions.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\functions.c</FilePath>
@@ -4437,11 +4422,6 @@
               <FileName>fpga.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga_flash.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\fpga_flash.h</FilePath>
             </File>
             <File>
               <FileName>functions.c</FileName>
@@ -5762,11 +5742,6 @@
               <FilePath>..\Src\fpga.h</FilePath>
             </File>
             <File>
-              <FileName>fpga_flash.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\fpga_flash.h</FilePath>
-            </File>
-            <File>
               <FileName>functions.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\functions.c</FilePath>
@@ -7085,11 +7060,6 @@
               <FilePath>..\Src\fpga.h</FilePath>
             </File>
             <File>
-              <FileName>fpga_flash.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\fpga_flash.h</FilePath>
-            </File>
-            <File>
               <FileName>functions.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\functions.c</FilePath>
@@ -8406,11 +8376,6 @@
               <FileName>fpga.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga_flash.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\fpga_flash.h</FilePath>
             </File>
             <File>
               <FileName>functions.c</FileName>

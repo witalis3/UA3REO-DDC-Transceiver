@@ -8,6 +8,7 @@
 #include "system_menu.h"
 #include "vocoder.h"
 #include "filemanager.h"
+#include "fpga.h"
 
 SRAM FATFS SDFatFs = {0};
 sd_info_ptr sdinfo = {
@@ -56,6 +57,7 @@ static void SDCOMM_LIST_DIRECTORY_handler(void);
 static void SDCOMM_DELETE_FILE_handler(void);
 static void SDCOMM_READ_PLAY_FILE_handler(void);
 static void SDCOMM_FLASH_BIN_handler(void);
+static void SDCOMM_FLASH_JIC_handler(void);
 
 bool SD_isIdle(void)
 {
@@ -174,6 +176,9 @@ void SD_Process(void)
 			break;
 		case SDCOMM_FLASH_BIN:
 			SDCOMM_FLASH_BIN_handler();
+			break;
+		case SDCOMM_FLASH_JIC:
+			SDCOMM_FLASH_JIC_handler();
 			break;
 		}
 		SD_CommandInProcess = false;
@@ -472,6 +477,87 @@ static void SDCOMM_FLASH_BIN_handler(void)
 		
 		println("[FLASH] Banks swapped");
 		LCD_showInfo("Finished...", true);
+	}
+	else
+	{
+		LCD_showTooltip("SD error");
+		SD_PlayInProcess = false;
+		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
+	}
+}
+
+static void SDCOMM_FLASH_JIC_handler(void)
+{
+	if (f_open(&File, (TCHAR*)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK)
+	{
+		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+		println("[FLASH] File Opened");
+		
+		FPGA_bus_stop = true;
+		HAL_Delay(100);
+		if(!FPGA_is_present()) return;
+		
+		bool verify_error = true;
+		while(verify_error)
+		{
+			LCD_showInfo("Erasing...", false);
+			FPGA_spi_flash_erase();
+			
+			LCD_showInfo("Programming...", false);
+			f_lseek(&File, FPGA_flash_file_offset);
+			uint32_t fpga_flash_pos = 0;
+			uint32_t bytesreaded = 0;
+			bool read_in_progress = true;
+			while(read_in_progress)
+			{
+				if (f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded) != FR_OK) {
+					println("[FLASH] File read error");
+					return;
+				}
+				
+				if (bytesreaded > 0)
+				{
+					FPGA_spi_flash_write(fpga_flash_pos, (uint8_t *)SD_workbuffer_A, bytesreaded);
+					fpga_flash_pos += bytesreaded;
+					if(fpga_flash_pos >= FPGA_flash_size)
+						break;
+				}
+				else
+					read_in_progress = false;
+			}
+			
+			LCD_showInfo("Verify...", false);
+			f_lseek(&File, FPGA_flash_file_offset);
+			fpga_flash_pos = 0;
+			bytesreaded = 0;
+			read_in_progress = true;
+			while(read_in_progress)
+			{
+				if (f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded) != FR_OK) {
+					println("[FLASH] File read error");
+					return;
+				}
+				
+				if (bytesreaded > 0)
+				{
+					verify_error = !FPGA_spi_flash_verify(fpga_flash_pos, (uint8_t *)SD_workbuffer_A, bytesreaded);
+					fpga_flash_pos += bytesreaded;
+					if(fpga_flash_pos >= FPGA_flash_size)
+						break;
+					if(verify_error)
+						break;
+				}
+				else
+					read_in_progress = false;
+			}
+		}
+		
+		f_close(&File);
+		LCD_showInfo("Finished...", true);
+		//HAL_NVIC_SystemReset();
+		SCB->AIRCR = 0x05FA0004; // software reset
 	}
 	else
 	{

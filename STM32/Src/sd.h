@@ -58,6 +58,7 @@ typedef enum
 	SDCOMM_START_PLAY,
 	SDCOMM_PROCESS_PLAY,
 	SDCOMM_FLASH_BIN,
+	SDCOMM_FLASH_JIC,
 } SD_COMMAND;
 
 extern sd_info_ptr sdinfo;
