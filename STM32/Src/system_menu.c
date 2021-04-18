@@ -264,6 +264,7 @@ static void SYSMENU_HANDL_CALIB_NOTX_2m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_70cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction);
+static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
@@ -319,7 +320,7 @@ const static struct sysmenu_item_handler sysmenu_handlers[] =
 		{"WIFI Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WIFIMENU},
 		{"SD Card", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SDMENU},
 		{"Set Clock Time", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SETTIME},
-		{"Flash update", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Bootloader},
+		{"DFU Mode", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Bootloader},
 		{"System info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SYSINFO},
 		{"Calibration", SYSMENU_MENU, SYSMENU_HANDL_CHECK_HIDDEN_ENABLED, 0, SYSMENU_HANDL_CALIBRATIONMENU},
 };
@@ -606,6 +607,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"NOTX 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_70cm, SYSMENU_HANDL_CALIB_NOTX_70cm},
 		{"ENABLE 60M Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_60m_band, SYSMENU_HANDL_CALIB_ENABLE_60m_band},
 		{"ENABLE Marine Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_HANDL_CALIB_ENABLE_marine_band},
+		{"OTA Update", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_HANDL_CALIB_OTA_update},
 };
 
 const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
@@ -3638,6 +3640,14 @@ static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction)
 		CALIBRATE.ENABLE_marine_band = false;
 	
 	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
+}
+
+static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.OTA_update = true;
+	if (direction < 0)
+		CALIBRATE.OTA_update = false;
 }
 
 //SERVICES

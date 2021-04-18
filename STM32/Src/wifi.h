@@ -53,6 +53,9 @@ extern volatile char WIFI_FoundedAP[WIFI_FOUNDED_AP_MAXCOUNT][MAX_WIFIPASS_LENGT
 extern bool WIFI_IP_Gotted;
 extern char WIFI_IP[15];
 extern char WIFI_AP[MAX_WIFIPASS_LENGTH];
+extern bool WIFI_NewFW_checked;
+extern bool WIFI_NewFW_STM32;
+extern bool WIFI_NewFW_FPGA;
 
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);
@@ -69,5 +72,6 @@ extern void WIFI_getRDA(void);
 extern void WIFI_getDXCluster(void);
 extern void WIFI_getPropagination(void);
 extern bool WIFI_SW_Restart(void (*callback)(void));
+extern void WIFI_checkFWUpdates(void);
 
 #endif

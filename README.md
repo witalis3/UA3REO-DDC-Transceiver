@@ -257,14 +257,15 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain
 * **NOTX xxx** - Disable TX on selected bands
 * **ENABLE xxx Band** - Enable hidden bands
+* **OTA Update** - Enable OTA firmware update over WiFi
 
 ### Set Clock Time
 
 * Clock setting
 
-### Flash update
+### DFU Mode
 
-* Launch STM32 firmware update
+* Launch STM32 USB firmware update over DFU mode
 
 ### System info
 

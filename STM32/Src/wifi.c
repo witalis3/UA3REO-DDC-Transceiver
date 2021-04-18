@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "usbd_cat_if.h"
 #include "bands.h"
+#include "fpga.h"
 
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static void (*WIFI_ProcessingCommandCallback)(void);
@@ -46,6 +47,9 @@ SRAM static char WIFI_HOSTuri[128] = {0};
 SRAM static char WIFI_GETuri[128] = {0};
 SRAM static char WIFI_HTTRequest[128] = {0};
 SRAM static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
+bool WIFI_NewFW_checked = false;
+bool WIFI_NewFW_STM32 = false;
+bool WIFI_NewFW_FPGA = false;
 
 void WIFI_Init(void)
 {
@@ -1106,4 +1110,37 @@ bool WIFI_SW_Restart(void (*callback)(void))
 	WIFI_SendCommand("AT+RST\r\n"); //Start Update Firmware
 	//WIFI_WaitForOk();
 	return true;
+}
+
+static void WIFI_checkFWUpdates_callback(void)
+{
+	if (WIFI_HTTP_Response_Status == 200)
+	{
+		if(strstr(WIFI_HTTResponseHTML,"new all") != NULL)
+		{
+			WIFI_NewFW_STM32 = true;
+			WIFI_NewFW_FPGA = true;
+			LCD_showTooltip("New Firmware available");
+		}
+		else if(strstr(WIFI_HTTResponseHTML,"new stm32") != NULL)
+		{
+			WIFI_NewFW_STM32 = true;
+			LCD_showTooltip("New STM32 FW available");
+		}
+		else if(strstr(WIFI_HTTResponseHTML,"new fpga") != NULL)
+		{
+			WIFI_NewFW_FPGA = true;
+			LCD_showTooltip("New FPGA FW available");
+		}
+	}
+	WIFI_NewFW_checked = true;
+}
+
+void WIFI_checkFWUpdates(void)
+{
+	if (WIFI_connected && WIFI_State != WIFI_READY)
+		return;
+	char url[128];
+	sprintf(url, "/trx_services/check_fw_updates.php?dev=0&stm32=%s&fpga=%d.%d.%d", version_string, FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
+	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_checkFWUpdates_callback, false);
 }
