@@ -490,10 +490,6 @@ void FRONTPANEL_Init(void)
 
 void FRONTPANEL_Process(void)
 {
-	if (SPI_process)
-		return;
-	SPI_process = true;
-
 	if (LCD_systemMenuOpened && !LCD_busy && FRONTPANEL_ProcessEncoder1 != 0)
 	{
 		SYSMENU_eventRotateSystemMenu(FRONTPANEL_ProcessEncoder1);
@@ -510,6 +506,12 @@ void FRONTPANEL_Process(void)
 	FRONTPANEL_check_ENC2SW();
 #endif
 
+	if(SD_USBCardReader)
+		return;
+	if (SPI_process)
+		return;
+	SPI_process = true;
+	
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
 	uint16_t mcp3008_value = 0;

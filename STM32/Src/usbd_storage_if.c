@@ -80,7 +80,15 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 		return (USBD_FAIL);
 
 	if (SPI_busy || SPI_process || SD_BusyByUSB || !SD_Present || SD_RecordInProcess || SD_CommandInProcess)
+	{
+		/*if(SPI_busy) println("RE: SPI_B");
+		if(SPI_process) println("RE: SPI_P");
+		if(SD_BusyByUSB) println("RE: USB_B");
+		if(!SD_Present) println("RE: !P");
+		if(SD_RecordInProcess) println("RE: CP");
+		if(SD_CommandInProcess) println("RE: RP");*/
 		return (USBD_FAIL);
+	}
 
 	//HAL_SD_ReadBlocks(&hsd, buf, blk_addr, (uint32_t) blk_len, 10);
 	SD_BusyByUSB = true;
@@ -89,11 +97,13 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 
 	if (blk_len == 1) // Single block read
 	{
+		//println("USB read sigle: ",blk_addr);
 		if ((SD_cmd(CMD17, blk_addr) == 0) && SD_Read_Block(buf, 512)) // READ_SINGLE_BLOCK
 			blk_len = 0;
 	}
 	else // Multiple block read
 	{
+		//println("USB read mult: ",blk_addr);
 		if (SD_cmd(CMD18, blk_addr) == 0) // READ_MULTIPLE_BLOCK
 		{
 			do
@@ -112,6 +122,7 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 		SD_Present_tryTime = HAL_GetTick() + 10000;
 	else
 	{
+		print("USB SD read err");
 		SD_Mounted = false;
 		SD_Present = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;

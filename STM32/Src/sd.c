@@ -325,8 +325,8 @@ static void SDCOMM_FLASH_BIN_handler(void)
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
 		
-		//SCB_DisableICache();
-		//SCB_DisableDCache();
+		SCB_DisableICache();
+		SCB_DisableDCache();
 		HAL_FLASH_OB_Unlock();
 		HAL_FLASH_Unlock();
 		println("[FLASH] Unlocked");
@@ -353,6 +353,7 @@ static void SDCOMM_FLASH_BIN_handler(void)
 		EraseInitStruct.TypeErase = FLASH_TYPEERASE_MASSERASE;
 		uint32_t SectorError = 0;
 		println("[FLASH] Erasing...");
+		LCD_showInfo("Erasing...", false);
 		if (HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError) != HAL_OK) {     
 				HAL_FLASH_Lock();
 				println("[FLASH] Erase error");
@@ -360,6 +361,7 @@ static void SDCOMM_FLASH_BIN_handler(void)
 		}
 		println("[FLASH] Erased");
 		
+		LCD_showInfo("Programming...", false);
 		bool read_flag = true;
 		uint32_t bytesreaded = 0;
 		uint32_t LastPGAddress = 0x08100000; //second bank
@@ -404,18 +406,32 @@ static void SDCOMM_FLASH_BIN_handler(void)
 		
 		println("[FLASH] Flashed");
 		
-		HAL_FLASH_Lock();
-		println("[FLASH] Locked");
+		//HAL_FLASH_Lock();
+		//println("[FLASH] Locked");
 		
 		//First part finished, swap to bank 2
-		/* Get the Dual boot configuration status */
+		// Get the Dual boot configuration status
 		HAL_FLASHEx_OBGetConfig(&OBInit);
-
-		/* Get FLASH_WRP_SECTORS write protection status */
+		// Get FLASH_WRP_SECTORS write protection status
 		OBInit.Banks     = FLASH_BANK_1;
 		HAL_FLASHEx_OBGetConfig(&OBInit);
 		
-		if ((OBInit.USERConfig & OB_SWAP_BANK_ENABLE) == OB_SWAP_BANK_DISABLE) 
+		/*println(HAL_FLASH_OB_Unlock());
+		HAL_Delay(100);
+		SET_BIT(FLASH->OPTSR_PRG, FLASH_OPTCR_SWAP_BANK);
+		//CLEAR_BIT(FLASH->OPTSR_PRG, FLASH_OPTCR_SWAP_BANK);
+		HAL_Delay(100);
+		while(FLASH_OB_WaitForLastOperation(0) != HAL_OK) {}
+		HAL_Delay(100);
+		SET_BIT(FLASH->OPTCR, FLASH_OPTCR_OPTSTART);
+		HAL_Delay(100);
+		while(HAL_IS_BIT_CLR(FLASH->OPTSR_CUR, FLASH_OPTSR_SWAP_BANK_OPT)) {}
+		//while(HAL_IS_BIT_SET(FLASH->OPTSR_CUR, FLASH_OPTSR_SWAP_BANK_OPT)) {}
+		HAL_Delay(100);
+		while(FLASH_OB_WaitForLastOperation(0) != HAL_OK){}
+		HAL_FLASH_OB_Lock();*/
+		
+		//if ((OBInit.USERConfig & OB_SWAP_BANK_ENABLE) == OB_SWAP_BANK_DISABLE) 
     {
 			//Swap to bank2
 			//Set OB SWAP_BANK_OPT to swap Bank2
@@ -423,8 +439,12 @@ static void SDCOMM_FLASH_BIN_handler(void)
 			OBInit.USERType   = OB_USER_SWAP_BANK;
 			OBInit.USERConfig = OB_SWAP_BANK_ENABLE;
 			HAL_FLASHEx_OBProgram(&OBInit);
+			// Launch Option bytes loading
+			HAL_FLASH_OB_Launch();
+			HAL_NVIC_SystemReset();
+			//SCB_InvalidateICache();
 		}
-		else
+		/*else
 		{
 			//Swap to bank1
 			//Set OB SWAP_BANK_OPT to swap Bank1
@@ -432,15 +452,14 @@ static void SDCOMM_FLASH_BIN_handler(void)
 			OBInit.USERType   = OB_USER_SWAP_BANK;
 			OBInit.USERConfig = OB_SWAP_BANK_DISABLE;
 			HAL_FLASHEx_OBProgram(&OBInit);
-		}
-		
-		/* Launch Option bytes loading */
-		HAL_FLASH_OB_Launch();
-		SCB_InvalidateICache();
-		
+			// Launch Option bytes loading
+			HAL_FLASH_OB_Launch();
+			SCB_InvalidateICache();
+		}*/
 		
 		println("[FLASH] Banks swapped");
-		SCB->AIRCR = 0x05FA0004; // software reset
+		LCD_showInfo("Finished...", true);
+		//SCB->AIRCR = 0x05FA0004; // software reset
 	}
 	else
 	{
@@ -1638,17 +1657,27 @@ uint8_t SD_cmd(uint8_t cmd, uint32_t arg)
 			return res;
 	}
 	// Select the card
-	HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
+	//HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
 	SPI_ReceiveByte();
-	HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
 	SPI_ReceiveByte();
 	// Send a command packet
 	SPI_SendByte(cmd);					// Start + Command index
 	SPI_SendByte((uint8_t)(arg >> 24)); // Argument[31..24]
 	SPI_SendByte((uint8_t)(arg >> 16)); // Argument[23..16]
 	SPI_SendByte((uint8_t)(arg >> 8));	// Argument[15..8]
-	SPI_SendByte((uint8_t)arg);			// Argument[7..0]
+	SPI_SendByte((uint8_t)(arg));			// Argument[7..0]
 	n = 0x01;							// Dummy CRC + Stop
+	
+	uint8_t crcval = 0x00U;
+	crcval = sd_crc7_byte(crcval, cmd);
+	crcval = sd_crc7_byte(crcval, (uint8_t)(arg >> 24));
+	crcval = sd_crc7_byte(crcval, (uint8_t)(arg >> 16));
+	crcval = sd_crc7_byte(crcval, (uint8_t)(arg >> 8));
+	crcval = sd_crc7_byte(crcval, (uint8_t)(arg));
+	n = (crcval << 1) | 0x01U;
+	//println("CMD CRC: ",n);
+	
 	if (cmd == CMD0)
 	{
 		n = 0x95;
@@ -1664,6 +1693,9 @@ uint8_t SD_cmd(uint8_t cmd, uint32_t arg)
 	{
 		res = SPI_ReceiveByte();
 	} while ((res & 0x80) && --n);
+	if(n == 0)
+		println("SD CMD timeout");
+	//println("SD CMD ", cmd, " RES ", res);
 	return res;
 }
 
@@ -1685,17 +1717,36 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 		cnt++;
 	} while ((result != 0xFE) && (cnt < 0xFFFF));
 	if (cnt >= 0xFFFF)
+	{
+		LCD_showInfo("SD R Token Err", true);
 		return 0;
+	}
 
 	dma_memset(buff, 0xFF, btr);
 	//for (cnt = 0; cnt < btr; cnt++)
-	//buff[cnt] = SPI_ReceiveByte();
+	//  buff[cnt] = SPI_ReceiveByte();
 	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+	{
 		println("SD SPI R Err");
+		return 0;
+	}
 	dma_memcpy(buff, SD_Read_Block_tmp, btr);
 
-	SPI_Release();
-	SPI_Release();
+	//CRC check
+	uint32_t crcval = 0x0000U;
+	for (uint16_t i = 0; i < btr; i++)
+		crcval = sd_crc16_byte(crcval, buff[i]);
+	
+	//SPI_Release();
+	//SPI_Release();
+	uint16_t crc = (SPI_ReceiveByte() << 8) | (SPI_ReceiveByte() << 0);
+	
+	if(crcval != crc)
+	{
+		println(crcval, " -> ", crc, " CRC R ERR");
+		return 0;
+	}
+	//println(crcval, " -> ", crc);
 	return 1;
 }
 
@@ -1729,11 +1780,20 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 			}
 		}
 
-		SPI_Release();
-		SPI_Release();
+		//CRC check
+		uint32_t crcval = 0x0000U;
+		for (uint16_t i = 0; i < SD_MAXBLOCK_SIZE; i++)
+			crcval = sd_crc16_byte(crcval, buff[i]);
+		SPI_SendByte((crcval >> 8) & 0xFF);
+		SPI_SendByte((crcval >> 0) & 0xFF);
+		//SPI_Release();
+		//SPI_Release();
 		result = SPI_ReceiveByte();
 		if ((result & 0x05) != 0x05)
+		{
+			println(crcval, " CRC W ERR");
 			return 0;
+		}
 		cnt = 0;
 		do
 		{ //BUSY
@@ -1742,7 +1802,10 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 		} while ((result != 0xFF) && (cnt < 0xFFFF));
 
 		if (cnt >= 0xFFFF)
+		{
+			println(crcval, " SD W BUSY");
 			return 0;
+		}
 	}
 	return 1;
 }
@@ -1752,6 +1815,7 @@ uint8_t sd_ini(void)
 	uint8_t i, cmd;
 	int16_t tmr;
 	uint32_t temp;
+	sd_crc_generate_table();
 	
 	sdinfo.type = 0;
 	uint8_t ocr[4];
@@ -1759,12 +1823,12 @@ uint8_t sd_ini(void)
 	temp = hspi2.Init.BaudRatePrescaler;
 	hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; //156.25 kbbs (96 kbps)
 	HAL_SPI_Init(&hspi2);
-	HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
 	for (i = 0; i < 10; i++)
 		SPI_Release();
 	hspi2.Init.BaudRatePrescaler = temp;
 	HAL_SPI_Init(&hspi2);
-	HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
+	//HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
 	if (SD_cmd(CMD0, 0) == 1) // Enter Idle state
 	{
 		SPI_Release();

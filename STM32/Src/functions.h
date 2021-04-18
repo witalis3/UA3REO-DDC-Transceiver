@@ -188,5 +188,8 @@ extern uint8_t rev8(uint8_t data);
 extern bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma);
 extern float32_t quick_median_select(float32_t *arr, int n);
 extern uint8_t getInputType(void);
+extern unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte);
+extern unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte);
+extern void sd_crc_generate_table(void);
 
 #endif

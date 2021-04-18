@@ -744,3 +744,45 @@ uint8_t getInputType(void)
 		type = TRX.InputType_DIGI;
 	return type;
 }
+
+/* CRC16 table (for SD data) */
+static unsigned int sd_crc16_table[256];
+/* CRC7 table (for SD commands) */
+static unsigned int sd_crc7_table[256];
+
+/* Running CRC16 calculation for a byte. */
+unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte)
+{
+ return (sd_crc16_table[(byte ^ (crcval >> 8)) & 0xFFU] ^ (crcval << 8)) & 0xFFFFU;
+}
+
+/* Running CRC7 calculation for a byte. */
+unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte)
+{
+ return sd_crc7_table[(byte ^ (crcval << 1)) & 0xFFU];
+}
+
+void sd_crc_generate_table(void)
+{
+	int crc = 0;
+	/* Generate CRC16 table */
+	for (uint32_t byt = 0U; byt < 256U; byt ++){
+	 crc = byt << 8;
+	 for (uint32_t bit = 0U; bit < 8U; bit ++){
+		crc <<= 1;
+		if ((crc & 0x10000U) != 0U){ crc ^= 0x1021U; }
+	 }
+	 sd_crc16_table[byt] = (crc & 0xFFFFU);
+	}
+	
+	/* Generate CRC7 table */
+	for (uint32_t byt = 0U; byt < 256U; byt ++){
+	 crc = byt;
+	 if ((crc & 0x80U) != 0U){ crc ^= 0x89U; }
+	 for (uint32_t bit = 1U; bit < 8U; bit ++){
+		crc <<= 1;
+		if ((crc & 0x80U) != 0U){ crc ^= 0x89U; }
+	 }
+	 sd_crc7_table[byt] = (crc & 0x7FU);
+	}
+}
