@@ -325,8 +325,8 @@ static void SDCOMM_FLASH_BIN_handler(void)
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
 		
-		SCB_DisableICache();
-		SCB_DisableDCache();
+		//SCB_DisableICache();
+		//SCB_DisableDCache();
 		HAL_FLASH_OB_Unlock();
 		HAL_FLASH_Unlock();
 		println("[FLASH] Unlocked");
@@ -406,32 +406,16 @@ static void SDCOMM_FLASH_BIN_handler(void)
 		
 		println("[FLASH] Flashed");
 		
-		//HAL_FLASH_Lock();
-		//println("[FLASH] Locked");
+		//First part finished, swap banks
 		
-		//First part finished, swap to bank 2
 		// Get the Dual boot configuration status
 		HAL_FLASHEx_OBGetConfig(&OBInit);
 		// Get FLASH_WRP_SECTORS write protection status
 		OBInit.Banks     = FLASH_BANK_1;
 		HAL_FLASHEx_OBGetConfig(&OBInit);
 		
-		/*println(HAL_FLASH_OB_Unlock());
-		HAL_Delay(100);
-		SET_BIT(FLASH->OPTSR_PRG, FLASH_OPTCR_SWAP_BANK);
-		//CLEAR_BIT(FLASH->OPTSR_PRG, FLASH_OPTCR_SWAP_BANK);
-		HAL_Delay(100);
-		while(FLASH_OB_WaitForLastOperation(0) != HAL_OK) {}
-		HAL_Delay(100);
-		SET_BIT(FLASH->OPTCR, FLASH_OPTCR_OPTSTART);
-		HAL_Delay(100);
-		while(HAL_IS_BIT_CLR(FLASH->OPTSR_CUR, FLASH_OPTSR_SWAP_BANK_OPT)) {}
-		//while(HAL_IS_BIT_SET(FLASH->OPTSR_CUR, FLASH_OPTSR_SWAP_BANK_OPT)) {}
-		HAL_Delay(100);
-		while(FLASH_OB_WaitForLastOperation(0) != HAL_OK){}
-		HAL_FLASH_OB_Lock();*/
-		
-		//if ((OBInit.USERConfig & OB_SWAP_BANK_ENABLE) == OB_SWAP_BANK_DISABLE) 
+		uint32_t i = 0;
+		if ((OBInit.USERConfig & OB_SWAP_BANK_ENABLE) == OB_SWAP_BANK_DISABLE) 
     {
 			//Swap to bank2
 			//Set OB SWAP_BANK_OPT to swap Bank2
@@ -440,11 +424,25 @@ static void SDCOMM_FLASH_BIN_handler(void)
 			OBInit.USERConfig = OB_SWAP_BANK_ENABLE;
 			HAL_FLASHEx_OBProgram(&OBInit);
 			// Launch Option bytes loading
-			HAL_FLASH_OB_Launch();
-			HAL_NVIC_SystemReset();
-			//SCB_InvalidateICache();
+			//HAL_FLASH_OB_Launch();
+			HAL_SuspendTick();
+			__disable_irq();   //Disable all interrupts
+			SysTick->CTRL = 0; //Disable Systick timer
+			SysTick->VAL = 0;
+			SysTick->LOAD = 0;
+			HAL_RCC_DeInit();		//Set the clock to the default state
+			for (i = 0; i < 5; i++) //Clear Interrupt Enable Register & Interrupt Pending Register
+			{
+				NVIC->ICER[i] = 0xFFFFFFFF;
+				NVIC->ICPR[i] = 0xFFFFFFFF;
+			}
+			SET_BIT(FLASH->OPTCR, FLASH_OPTCR_OPTSTART);
+			while(READ_BIT(FLASH->OPTSR_CUR, FLASH_OPTSR_OPT_BUSY) != 0U) {}
+			//FLASH_OB_WaitForLastOperation(100);
+			//HAL_NVIC_SystemReset();
+			SCB->AIRCR = 0x05FA0004; // software reset
 		}
-		/*else
+		else
 		{
 			//Swap to bank1
 			//Set OB SWAP_BANK_OPT to swap Bank1
@@ -453,13 +451,27 @@ static void SDCOMM_FLASH_BIN_handler(void)
 			OBInit.USERConfig = OB_SWAP_BANK_DISABLE;
 			HAL_FLASHEx_OBProgram(&OBInit);
 			// Launch Option bytes loading
-			HAL_FLASH_OB_Launch();
-			SCB_InvalidateICache();
-		}*/
+			//HAL_FLASH_OB_Launch();
+			HAL_SuspendTick();
+			__disable_irq();   //Disable all interrupts
+			SysTick->CTRL = 0; //Disable Systick timer
+			SysTick->VAL = 0;
+			SysTick->LOAD = 0;
+			HAL_RCC_DeInit();		//Set the clock to the default state
+			for (i = 0; i < 5; i++) //Clear Interrupt Enable Register & Interrupt Pending Register
+			{
+				NVIC->ICER[i] = 0xFFFFFFFF;
+				NVIC->ICPR[i] = 0xFFFFFFFF;
+			}
+			SET_BIT(FLASH->OPTCR, FLASH_OPTCR_OPTSTART);
+			while(READ_BIT(FLASH->OPTSR_CUR, FLASH_OPTSR_OPT_BUSY) != 0U) {}
+			//FLASH_OB_WaitForLastOperation(100);
+			//HAL_NVIC_SystemReset();
+			SCB->AIRCR = 0x05FA0004; // software reset
+		}
 		
 		println("[FLASH] Banks swapped");
 		LCD_showInfo("Finished...", true);
-		//SCB->AIRCR = 0x05FA0004; // software reset
 	}
 	else
 	{
