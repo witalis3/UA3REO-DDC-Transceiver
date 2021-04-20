@@ -9,7 +9,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-#define SETT_VERSION 26					   // Settings config version
+#define SETT_VERSION 27					   // Settings config version
 #define CALIB_VERSION 26				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -91,6 +91,22 @@
 #define EEPROM_SECTOR_CALIBRATION 0
 #define EEPROM_SECTOR_SETTINGS 4
 #define EEPROM_REPEAT_TRYES 10 // command tryes
+
+typedef enum
+{
+	TRX_MODE_LSB,
+	TRX_MODE_USB,
+	TRX_MODE_CW,
+	TRX_MODE_NFM,
+	TRX_MODE_WFM,
+	TRX_MODE_AM,
+	TRX_MODE_DIGI_L,
+	TRX_MODE_DIGI_U,
+	TRX_MODE_IQ,
+	TRX_MODE_LOOPBACK,
+	TRX_MODE_NO_TX,
+} TRX_MODE;
+#define TRX_MODE_COUNT 11
 
 typedef struct
 {
@@ -234,7 +250,6 @@ extern struct TRX_SETTINGS
 	uint8_t TX_Compressor_speed_AMFM;
 	uint8_t TX_Compressor_maxgain_AMFM;
 	uint16_t CW_LPF_Filter;
-	uint16_t CW_HPF_Filter;
 	uint16_t SSB_LPF_RX_Filter;
 	uint16_t SSB_LPF_TX_Filter;
 	uint16_t SSB_HPF_Filter;
@@ -246,7 +261,7 @@ extern struct TRX_SETTINGS
 	bool Squelch;
 	//CW
 	bool CWDecoder;
-	uint16_t CW_GENERATOR_SHIFT_HZ;
+	uint16_t CW_Pitch;
 	uint16_t CW_Key_timeout;
 	uint16_t CW_SelfHear;
 	bool CW_KEYER;

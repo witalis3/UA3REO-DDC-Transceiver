@@ -310,7 +310,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	}
 	else
 	{
-		if (!enc2_func_mode || ((CurrentVFO()->Mode != TRX_MODE_CW_L && CurrentVFO()->Mode != TRX_MODE_CW_U)))
+		if (!enc2_func_mode || CurrentVFO()->Mode != TRX_MODE_CW)
 		{
 			VFO *vfo = CurrentVFO();
 			uint32_t newfreq = 0;
@@ -431,7 +431,7 @@ void FRONTPANEL_check_ENC2SW(void)
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 {
 	//ENC2 CLICK
-	if ((CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U) && !LCD_systemMenuOpened && !LCD_window.opened)
+	if (CurrentVFO()->Mode == TRX_MODE_CW && !LCD_systemMenuOpened && !LCD_window.opened)
 	{
 		enc2_func_mode = !enc2_func_mode; //enc2 rotary mode
 
@@ -893,10 +893,8 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(uint32_t parameter)
 		mode = TRX_MODE_USB;
 	else if (mode == TRX_MODE_USB)
 		mode = TRX_MODE_LSB;
-	else if (mode == TRX_MODE_CW_L)
-		mode = TRX_MODE_CW_U;
-	else if (mode == TRX_MODE_CW_U)
-		mode = TRX_MODE_CW_L;
+	else if (mode == TRX_MODE_CW)
+		mode = TRX_MODE_CW;
 	else if (mode == TRX_MODE_NFM)
 		mode = TRX_MODE_WFM;
 	else if (mode == TRX_MODE_WFM)
@@ -933,10 +931,10 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_N(uint32_t parameter)
 	if (mode == TRX_MODE_LOOPBACK)
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	if (mode == TRX_MODE_LSB)
-		mode = TRX_MODE_CW_L;
+		mode = TRX_MODE_CW;
 	else if (mode == TRX_MODE_USB)
-		mode = TRX_MODE_CW_U;
-	else if (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
+		mode = TRX_MODE_CW;
+	else if (mode == TRX_MODE_CW)
 		mode = TRX_MODE_DIGI_U;
 	else if (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U)
 		mode = TRX_MODE_NFM;
@@ -1154,7 +1152,7 @@ void FRONTPANEL_BUTTONHANDLER_BW(uint32_t parameter)
 	if (!LCD_systemMenuOpened)
 	{
 		LCD_systemMenuOpened = true;
-		if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		if (CurrentVFO()->Mode == TRX_MODE_CW)
 			SYSMENU_AUDIO_BW_CW_HOTKEY();
 		else if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM)
 			SYSMENU_AUDIO_BW_FM_HOTKEY();
@@ -1174,10 +1172,7 @@ void FRONTPANEL_BUTTONHANDLER_HPF(uint32_t parameter)
 	if (!LCD_systemMenuOpened)
 	{
 		LCD_systemMenuOpened = true;
-		if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
-			SYSMENU_AUDIO_HPF_CW_HOTKEY();
-		else
-			SYSMENU_AUDIO_HPF_SSB_HOTKEY();
+		SYSMENU_AUDIO_HPF_SSB_HOTKEY();
 	}
 	else
 	{
@@ -1502,7 +1497,7 @@ void FRONTPANEL_BUTTONHANDLER_SETSECMODE(uint32_t parameter)
 
 void FRONTPANEL_BUTTONHANDLER_SET_RX_BW(uint32_t parameter)
 {
-	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+	if (CurrentVFO()->Mode == TRX_MODE_CW)
 		TRX.CW_LPF_Filter = parameter;
 	if (CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB || CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U)
 		TRX.SSB_LPF_RX_Filter = parameter;
@@ -1519,7 +1514,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_RX_BW(uint32_t parameter)
 
 void FRONTPANEL_BUTTONHANDLER_SET_TX_BW(uint32_t parameter)
 {
-	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+	if (CurrentVFO()->Mode == TRX_MODE_CW)
 		TRX.CW_LPF_Filter = parameter;
 	if (CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB || CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U)
 		TRX.SSB_LPF_TX_Filter = parameter;

@@ -88,7 +88,7 @@ void SPEC_Start(void)
 	TRX.ShiftEnabled = false;
 	TRX.NOISE_BLANKER = false;
 	TRX_setFrequency(TRX.SPEC_Begin * SPEC_Resolution, CurrentVFO());
-	TRX_setMode(TRX_MODE_CW_U, CurrentVFO());
+	TRX_setMode(TRX_MODE_CW, CurrentVFO());
 	CurrentVFO()->ManualNotchFilter = false;
 	CurrentVFO()->AutoNotchFilter = false;
 	CurrentVFO()->DNR_Type = false;

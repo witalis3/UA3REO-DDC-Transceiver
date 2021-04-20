@@ -503,7 +503,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	printInfo(LAYOUT->STATUS_MODE_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), LAYOUT->STATUS_MODE_BLOCK_WIDTH, LAYOUT->STATUS_MODE_BLOCK_HEIGHT, (char *)MODE_DESCR[CurrentVFO()->Mode], BG_COLOR, COLOR->STATUS_MODE, COLOR->STATUS_MODE, true);
 #endif
 	//Redraw CW decoder
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 	{
 		LCDDriver_Fill_RectWH(0, LCD_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, LAYOUT->FFT_PRINT_SIZE, LAYOUT->FFT_CWDECODER_OFFSET, BG_COLOR);
 		LCD_UpdateQuery.TextBar = true;
@@ -548,11 +548,6 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_RX_Filter;
 		bw_trapez_bw_right_width = 0.0f;
 		break;
-	case TRX_MODE_CW_L:
-		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.CW_HPF_Filter * 4.0f;
-		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_CW * TRX.CW_LPF_Filter;
-		bw_trapez_bw_right_width = 0.0f;
-		break;
 	case TRX_MODE_USB:
 		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_Filter;
 	case TRX_MODE_DIGI_U:
@@ -562,10 +557,9 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 		else
 			bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_RX_Filter;
 		break;
-	case TRX_MODE_CW_U:
-		bw_trapez_bw_left_width = 0.0f;
-		bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_CW * TRX.CW_LPF_Filter;
-		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.CW_HPF_Filter * 4.0f;
+	case TRX_MODE_CW:
+		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_CW * TRX.CW_LPF_Filter;
+		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
 	case TRX_MODE_NFM:
 		if (TRX_on_TX())
@@ -787,7 +781,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	{
 		float32_t s_width = 0.0f;
 
-		if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		if (CurrentVFO()->Mode == TRX_MODE_CW)
 			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX_dBm) * 0.5f; // smooth CW faster!
 		else
 			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX_dBm) * 0.25f; // smooth the movement of the S-meter
@@ -976,8 +970,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	//Info labels
 	char buff[32] = "";
 	//BW HPF-LPF
-	if ((CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-		sprintf(buff, "BW:%d-%d", TRX.CW_HPF_Filter, TRX.CW_LPF_Filter);
+	if (CurrentVFO()->Mode == TRX_MODE_CW)
+		sprintf(buff, "BW:%d", TRX.CW_LPF_Filter);
 	else if ((CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U))
 	{
 		if (TRX_on_TX())
@@ -1038,7 +1032,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_NOTCH_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_NOTCH_Y_OFFSET, COLOR->STATUS_LABEL_NOTCH, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	//FFT BW
 	uint8_t fft_zoom = TRX.FFT_Zoom;
-	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+	if (CurrentVFO()->Mode == TRX_MODE_CW)
 		fft_zoom = TRX.FFT_ZoomCW;
 
 	sprintf(buff, "FFT:%dkHz", fft_current_spectrum_width_hz / 1000);
@@ -1130,7 +1124,7 @@ static void LCD_displayTextBar(void)
 	}
 	LCD_busy = true;
 
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 	{
 		char ctmp[70];
 		sprintf(ctmp, "WPM:%d %s", CW_Decoder_WPM, (char *)&CW_Decoder_Text);
@@ -1668,7 +1662,7 @@ static void LCD_showBWWindow(void)
 	uint32_t cur_width = CurrentVFO()->LPF_RX_Filter_Width;
 	if (TRX_on_TX())
 		cur_width = CurrentVFO()->LPF_TX_Filter_Width;
-	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+	if (CurrentVFO()->Mode == TRX_MODE_CW)
 		filters_count = CW_LPF_COUNT;
 	if (CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB || CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U)
 		filters_count = SSB_LPF_COUNT;
@@ -1691,7 +1685,7 @@ static void LCD_showBWWindow(void)
 		{
 			uint8_t index = yi * buttons_in_line + xi;
 			uint32_t width = 0;
-			if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+			if (CurrentVFO()->Mode == TRX_MODE_CW)
 				width = AUTIO_FILTERS_LPF_CW_LIST[index];
 			if (CurrentVFO()->Mode == TRX_MODE_LSB || CurrentVFO()->Mode == TRX_MODE_USB || CurrentVFO()->Mode == TRX_MODE_DIGI_L || CurrentVFO()->Mode == TRX_MODE_DIGI_U)
 				width = AUTIO_FILTERS_LPF_SSB_LIST[index];

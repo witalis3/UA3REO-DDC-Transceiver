@@ -226,7 +226,7 @@ void FFT_Init(void)
 	FFT_fill_color_palette();
 	//ZoomFFT
 	fft_zoom = TRX.FFT_Zoom;
-	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+	if (CurrentVFO()->Mode == TRX_MODE_CW)
 		fft_zoom = TRX.FFT_ZoomCW;
 	if (fft_zoom > 1)
 	{
@@ -543,7 +543,7 @@ bool FFT_printFFT(void)
 	uint16_t fftHeight = GET_FFTHeight;
 	uint16_t wtfHeight = GET_WTFHeight;
 	uint_fast8_t cwdecoder_offset = 0;
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 	hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 
@@ -738,7 +738,6 @@ bool FFT_printFFT(void)
 	switch (CurrentVFO()->Mode)
 	{
 	case TRX_MODE_LSB:
-	case TRX_MODE_CW_L:
 	case TRX_MODE_DIGI_L:
 		bw_line_width = (int16_t)(curwidth / hz_in_pixel * fft_zoom);
 		if (bw_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
@@ -746,7 +745,6 @@ bool FFT_printFFT(void)
 		bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - bw_line_width;
 		break;
 	case TRX_MODE_USB:
-	case TRX_MODE_CW_U:
 	case TRX_MODE_DIGI_U:
 		bw_line_width = (int16_t)(curwidth / hz_in_pixel * fft_zoom);
 		if (bw_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
@@ -755,7 +753,8 @@ bool FFT_printFFT(void)
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
-		bw_line_width = (int16_t)(curwidth / hz_in_pixel * fft_zoom * 2);
+	case TRX_MODE_CW:
+		bw_line_width = (int16_t)(curwidth / hz_in_pixel * fft_zoom);
 		if (bw_line_width > LAYOUT->FFT_PRINT_SIZE)
 			bw_line_width = LAYOUT->FFT_PRINT_SIZE;
 		bw_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_line_width / 2);
@@ -1015,7 +1014,7 @@ bool FFT_printFFT(void)
 	}
 
 	//Gauss filter center
-	if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
+	if (TRX.CW_GaussFilter && CurrentVFO()->Mode == TRX_MODE_CW)
 	{
 		uint16_t color = palette_fft[fftHeight / 2];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
@@ -1044,7 +1043,7 @@ static void FFT_3DPrintFFT(void)
 	uint16_t wtfHeight = GET_WTFHeight;
 	uint16_t fftHeight = GET_FFTHeight;
 	uint_fast8_t cwdecoder_offset = 0;
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 
 	//clear old data
@@ -1131,10 +1130,6 @@ static void FFT_3DPrintFFT(void)
 
 	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
 	{
-		//Gauss filter center
-		if (TRX.CW_GaussFilter && (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U))
-			print_output_buffer[fft_y][bw_line_center] = palette_fft[fftHeight * 3 / 4];
-
 		//Сenter line
 		print_output_buffer[fft_y][LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2];
 	}
@@ -1193,7 +1188,7 @@ void FFT_afterPrintFFT(void)
 			for (uint16_t region = 0; region < BANDS[band].regionsCount; region++)
 			{
 				uint16_t region_color = COLOR->BANDMAP_SSB;
-				if (BANDS[band].regions[region].mode == TRX_MODE_CW_L || BANDS[band].regions[region].mode == TRX_MODE_CW_U)
+				if (BANDS[band].regions[region].mode == TRX_MODE_CW)
 					region_color = COLOR->BANDMAP_CW;
 				else if (BANDS[band].regions[region].mode == TRX_MODE_DIGI_L || BANDS[band].regions[region].mode == TRX_MODE_DIGI_U)
 					region_color = COLOR->BANDMAP_DIGI;

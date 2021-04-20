@@ -111,7 +111,7 @@ void TRX_Restart_Mode()
 	//
 	if (TRX_on_TX())
 	{
-		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
+		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW)
 			TRX_Start_TXRX();
 		else
 			TRX_Start_TX();
@@ -271,7 +271,7 @@ void TRX_key_change(void)
 {
 	if (TRX_Tune)
 		return;
-	if (CurrentVFO()->Mode != TRX_MODE_CW_L && CurrentVFO()->Mode != TRX_MODE_CW_U)
+	if (CurrentVFO()->Mode != TRX_MODE_CW)
 		return;
 	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
 	if (TRX_key_dot_hard != TRX_new_key_dot_hard)
@@ -347,25 +347,17 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	//get fpga freq phrase
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
-	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
-	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
-	//TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq);
-	//if (!TRX_on_TX())
-	//{
-		switch (current_vfo->Mode)
-		{
-		case TRX_MODE_CW_L:
-			TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq - TRX.CW_GENERATOR_SHIFT_HZ);
-			break;
-		case TRX_MODE_CW_U:
-			TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX.CW_GENERATOR_SHIFT_HZ);
-			break;
-		default:
-			TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq);
-			break;
-		}
-	//}
-
+	
+	if(current_vfo->Mode == TRX_MODE_CW)
+		TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_Pitch, 1);
+	else
+		TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
+	if(secondary_vfo->Mode == TRX_MODE_CW)
+		TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT + TRX.CW_Pitch, 2);
+	else
+		TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
+	
+	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq);
 	//
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
 	RF_UNIT_ATU_Invalidate();
@@ -401,11 +393,10 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		vfo->LPF_TX_Filter_Width = TRX.SSB_LPF_TX_Filter;
 		vfo->HPF_Filter_Width = TRX.SSB_HPF_Filter;
 		break;
-	case TRX_MODE_CW_L:
-	case TRX_MODE_CW_U:
+	case TRX_MODE_CW:
 		vfo->LPF_RX_Filter_Width = TRX.CW_LPF_Filter;
 		vfo->LPF_TX_Filter_Width = TRX.CW_LPF_Filter;
-		vfo->HPF_Filter_Width = TRX.CW_HPF_Filter;
+		vfo->HPF_Filter_Width = 0;
 		LCD_UpdateQuery.TextBar = true;
 		break;
 	case TRX_MODE_NFM:
@@ -423,9 +414,9 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	//FFT Zoom change
 	if (TRX.FFT_Zoom != TRX.FFT_ZoomCW)
 	{
-		if ((old_mode == TRX_MODE_CW_L || old_mode == TRX_MODE_CW_U) && (_mode != TRX_MODE_CW_L && _mode != TRX_MODE_CW_U))
+		if (old_mode == TRX_MODE_CW && _mode != TRX_MODE_CW)
 			NeedFFTReinit = true;
-		if ((old_mode != TRX_MODE_CW_L && old_mode != TRX_MODE_CW_U) && (_mode == TRX_MODE_CW_L || _mode == TRX_MODE_CW_U))
+		if (old_mode != TRX_MODE_CW && _mode == TRX_MODE_CW)
 			NeedFFTReinit = true;
 	}
 

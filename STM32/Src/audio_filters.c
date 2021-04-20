@@ -142,8 +142,8 @@ arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX2_AUDIO_Q =
 const uint32_t AUTIO_FILTERS_HPF_LIST[CW_HPF_COUNT] = {0, 60, 100, 200, 300, 400, 500, 600};
 const uint32_t AUTIO_FILTERS_LPF_CW_LIST[CW_LPF_COUNT] = {100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000};
 const uint32_t AUTIO_FILTERS_LPF_SSB_LIST[SSB_LPF_COUNT] = {1400, 1600, 1800, 2100, 2300, 2500, 2700, 2900, 3000, 3200, 3400};
-const uint32_t AUTIO_FILTERS_LPF_AM_LIST[AM_LPF_COUNT] = {2100, 2300, 2500, 2700, 2900, 3000, 3200, 3400, 3600, 3800, 4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000};
-const uint32_t AUTIO_FILTERS_LPF_NFM_LIST[NFM_LPF_COUNT] = {5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000};
+const uint32_t AUTIO_FILTERS_LPF_AM_LIST[AM_LPF_COUNT] = {2100, 2300, 2500, 2700, 2900, 3000, 3200, 3400, 3600, 3800, 4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000};
+const uint32_t AUTIO_FILTERS_LPF_NFM_LIST[NFM_LPF_COUNT] = {5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, 24000, 30000, 44000};
 
 arm_fir_instance_f32 FIR_RX1_Hilbert_I; // filter instances
 arm_fir_instance_f32 FIR_RX1_Hilbert_Q;
@@ -212,7 +212,7 @@ void InitAudioFilters(void)
 void ReinitAudioFilters(void)
 {
 	//RX1 Hilbert
-	if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+	if (CurrentVFO()->Mode == TRX_MODE_CW)
 	{
 		arm_fir_init_f32(&FIR_RX1_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
 		arm_fir_init_f32(&FIR_RX1_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
@@ -224,7 +224,7 @@ void ReinitAudioFilters(void)
 	}
 
 	//RX2 Hilbert
-	if (SecondaryVFO()->Mode == TRX_MODE_CW_L || SecondaryVFO()->Mode == TRX_MODE_CW_U)
+	if (SecondaryVFO()->Mode == TRX_MODE_CW)
 	{
 		arm_fir_init_f32(&FIR_RX2_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
 		arm_fir_init_f32(&FIR_RX2_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
@@ -249,12 +249,16 @@ void ReinitAudioFilters(void)
 		lpf_rx1_width = CurrentVFO()->LPF_RX_Filter_Width;
 	if(lpf_rx1_width < hpf_rx1_width)
 		lpf_rx1_width = hpf_rx1_width + 100;
+	if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_AM)
+		lpf_rx1_width /= 2;
 	//
 	uint32_t lpf_rx2_width = 2700; //default settings
 	if (SecondaryVFO()->LPF_RX_Filter_Width > 0)
 		lpf_rx2_width = SecondaryVFO()->LPF_RX_Filter_Width;
 	if(lpf_rx2_width < hpf_rx2_width)
 		lpf_rx2_width = hpf_rx2_width + 100;
+	if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_AM)
+		lpf_rx2_width /= 2;
 	//
 	uint32_t lpf_tx_width = 2700; //default settings
 	if (CurrentVFO()->LPF_TX_Filter_Width > 0)

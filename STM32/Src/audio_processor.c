@@ -193,7 +193,7 @@ void processRxAudio(void)
 	switch (current_vfo->Mode) // first receiver
 	{
 	case TRX_MODE_LSB:
-	case TRX_MODE_CW_L:
+	case TRX_MODE_CW:
 		doRX_HILBERT(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 		doRX_HPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -218,7 +218,6 @@ void processRxAudio(void)
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		break;
 	case TRX_MODE_USB:
-	case TRX_MODE_CW_U:
 		doRX_HILBERT(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		arm_add_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
 		doRX_HPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -290,7 +289,7 @@ void processRxAudio(void)
 		switch (secondary_vfo->Mode) // second receiver
 		{
 		case TRX_MODE_LSB:
-		case TRX_MODE_CW_L:
+		case TRX_MODE_CW:
 			doRX_HILBERT(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 			doRX_HPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -308,7 +307,6 @@ void processRxAudio(void)
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, secondary_vfo->Mode);
 			break;
 		case TRX_MODE_USB:
-		case TRX_MODE_CW_U:
 			doRX_HILBERT(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			arm_add_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
 			doRX_HPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -544,7 +542,7 @@ void processTxAudio(void)
 			APROC_Audio_Buffer_TX_Q[i] = point;
 		}
 		//hilbert fir
-		if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_CW_L)
+		if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_CW)
 		{
 			// + 45 deg to I data
 			arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
@@ -634,8 +632,7 @@ void processTxAudio(void)
 
 		switch (mode)
 		{
-		case TRX_MODE_CW_L:
-		case TRX_MODE_CW_U:
+		case TRX_MODE_CW:
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
 				APROC_Audio_Buffer_TX_I[i] = TRX_GenerateCWSignal(1.0f);
@@ -816,13 +813,13 @@ void processTxAudio(void)
 	if (mode != TRX_MODE_LOOPBACK)
 	{
 		//CW SelfHear
-		if (TRX.CW_SelfHear && (TRX.CW_KEYER || TRX_key_serial || TRX_key_dot_hard || TRX_key_dash_hard) && (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U) && !TRX_Tune)
+		if (TRX.CW_SelfHear && (TRX.CW_KEYER || TRX_key_serial || TRX_key_dot_hard || TRX_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune)
 		{
 			float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
 			float32_t amplitude = (db2rateV(TRX.AGC_GAIN_TARGET) * volume_gain_tx * CODEC_BITS_FULL_SCALE / 2.0f);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				int32_t data = convertToSPIBigEndian((int32_t)(amplitude * (APROC_Audio_Buffer_TX_I[i] / RFpower_amplitude) * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_GENERATOR_SHIFT_HZ)));
+				int32_t data = convertToSPIBigEndian((int32_t)(amplitude * (APROC_Audio_Buffer_TX_I[i] / RFpower_amplitude) * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_Pitch)));
 				if (WM8731_DMA_state)
 				{
 					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
@@ -957,14 +954,14 @@ static void doRX_GAUSS_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		return;
 	if (rx_id == AUDIO_RX1)
 	{
-		if (CurrentVFO()->Mode == TRX_MODE_CW_L || CurrentVFO()->Mode == TRX_MODE_CW_U)
+		if (CurrentVFO()->Mode == TRX_MODE_CW)
 		{
 			arm_biquad_cascade_df2T_f32(&IIR_RX1_GAUSS, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		}
 	}
 	else
 	{
-		if (SecondaryVFO()->Mode == TRX_MODE_CW_L || SecondaryVFO()->Mode == TRX_MODE_CW_U)
+		if (SecondaryVFO()->Mode == TRX_MODE_CW)
 		{
 			arm_biquad_cascade_df2T_f32(&IIR_RX2_GAUSS, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		}

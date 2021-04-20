@@ -36,7 +36,7 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	//higher speed in settings - higher speed of AGC processing
 	float32_t RX_AGC_STEPSIZE_UP = 0.0f;
 	float32_t RX_AGC_STEPSIZE_DOWN = 0.0f;
-	if (mode == TRX_MODE_CW_L || mode == TRX_MODE_CW_U)
+	if (mode == TRX_MODE_CW)
 	{
 		RX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.RX_AGC_CW_speed;
 		RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_CW_speed;

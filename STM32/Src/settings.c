@@ -49,8 +49,7 @@ static uint8_t calculateCSUM_EEPROM(void);
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"LSB",
 	"USB",
-	"CW-L",
-	"CW-U",
+	"CW",
 	"NFM",
 	"WFM",
 	"AM",
@@ -211,7 +210,6 @@ void LoadSettings(bool clear)
 		TRX.TX_Compressor_speed_AMFM = 3;					   // TX compressor speed AM/FM
 		TRX.TX_Compressor_maxgain_AMFM = 10;					   //TX compressor max gain AM/FM
 		TRX.CW_LPF_Filter = 1000;						   // default value of CW filter width
-		TRX.CW_HPF_Filter = 0;							   // default value of CW filter width
 		TRX.SSB_LPF_RX_Filter = 2700;					   // default value of SSB filter width
 		TRX.SSB_LPF_TX_Filter = 2700;					   // default value of SSB filter width
 		TRX.SSB_HPF_Filter = 300;						   // default value of SSB filter width
@@ -223,7 +221,7 @@ void LoadSettings(bool clear)
 		TRX.Squelch = false;						   //SSB/FM Squelch
 		//CW
 		TRX.CWDecoder = false;			 // automatic telegraph decoder
-		TRX.CW_GENERATOR_SHIFT_HZ = 500; // LO offset in CW mode
+		TRX.CW_Pitch = 600; // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;		 // time of releasing transmission after the last character on the key
 		TRX.CW_SelfHear = true;			 // self-control CW
 		TRX.CW_KEYER = true;			 // Automatic key

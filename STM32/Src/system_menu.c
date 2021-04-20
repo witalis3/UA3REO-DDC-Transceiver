@@ -55,7 +55,6 @@ static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_CW_HPF_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction);
@@ -80,7 +79,7 @@ static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
 
-static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction);
+static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
 static void SYSMENU_HANDL_CW_Decoder(int8_t direction);
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
@@ -365,7 +364,6 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"SSB HPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_pass},
 		{"SSB LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass},
 		{"SSB LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass},
-		{"CW HPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_HANDL_AUDIO_CW_HPF_pass},
 		{"CW LPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_HANDL_AUDIO_CW_LPF_pass},
 		{"AM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.AM_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass},
 		{"AM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.AM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass},
@@ -395,7 +393,7 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 	{
 		{"CW Key timeout", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
-		{"CW Generator shift", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ},
+		{"CW Pitch", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_Pitch, SYSMENU_HANDL_CW_Pitch},
 		{"CW Self Hear", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
 		{"CW Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
 		{"CW Keyer WPM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
@@ -1150,13 +1148,6 @@ void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
 	LCD_redraw(false);
 }
 
-void SYSMENU_AUDIO_HPF_CW_HOTKEY(void)
-{
-	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 9;
-	LCD_redraw(false);
-}
-
 void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
@@ -1411,17 +1402,6 @@ static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)
 	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
 }
 
-static void SYSMENU_HANDL_AUDIO_CW_HPF_pass(int8_t direction)
-{
-	if (TRX.CW_HPF_Filter > 0 || direction > 0)
-		TRX.CW_HPF_Filter += direction * 50;
-	if(TRX.CW_HPF_Filter > MAX_HPF_WIDTH)
-		TRX.CW_HPF_Filter = MAX_HPF_WIDTH;
-	
-	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
-}
-
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 {
 	if (TRX.CW_LPF_Filter > 50 || direction > 0)
@@ -1541,13 +1521,13 @@ static void SYSMENU_HANDL_CW_Decoder(int8_t direction)
 		TRX.CWDecoder = false;
 }
 
-static void SYSMENU_HANDL_CW_GENERATOR_SHIFT_HZ(int8_t direction)
+static void SYSMENU_HANDL_CW_Pitch(int8_t direction)
 {
-	TRX.CW_GENERATOR_SHIFT_HZ += direction * 100;
-	if (TRX.CW_GENERATOR_SHIFT_HZ < 100)
-		TRX.CW_GENERATOR_SHIFT_HZ = 100;
-	if (TRX.CW_GENERATOR_SHIFT_HZ > 10000)
-		TRX.CW_GENERATOR_SHIFT_HZ = 10000;
+	TRX.CW_Pitch += direction * 100;
+	if (TRX.CW_Pitch < 100)
+		TRX.CW_Pitch = 100;
+	if (TRX.CW_Pitch > 10000)
+		TRX.CW_Pitch = 10000;
 }
 
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction)

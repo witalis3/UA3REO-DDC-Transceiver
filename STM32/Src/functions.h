@@ -13,20 +13,6 @@ __asm(".global __use_no_heap\n\t");
 #include "print.h"
 #include "settings.h"
 
-#define TRX_MODE_LSB 0
-#define TRX_MODE_USB 1
-#define TRX_MODE_CW_L 2
-#define TRX_MODE_CW_U 3
-#define TRX_MODE_NFM 4
-#define TRX_MODE_WFM 5
-#define TRX_MODE_AM 6
-#define TRX_MODE_DIGI_L 7
-#define TRX_MODE_DIGI_U 8
-#define TRX_MODE_IQ 9
-#define TRX_MODE_LOOPBACK 10
-#define TRX_MODE_NO_TX 11
-#define TRX_MODE_COUNT 12
-
 #define ITCM __attribute__((section(".ITCM"))) __attribute__((aligned(32))) // 64kb ITCM
 #define IRAM2 __attribute__((section(".IRAM"))) __attribute__((aligned(32))) // 512kb AXI SRAM
 #define SRAM __attribute__((section(".SRAM"))) __attribute__((aligned(32))) // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb

@@ -75,7 +75,7 @@ void WSPR_Start(void)
 	TRX_Mute = true;
 	TRX.TWO_SIGNAL_TUNE = false;
 	TRX.BandMapEnabled = false;
-	TRX_setMode(TRX_MODE_CW_U, CurrentVFO());
+	TRX_setMode(TRX_MODE_CW, CurrentVFO());
 	wspr_band = WSPR_GetNextBand();
 	WSPR_Encode();
 

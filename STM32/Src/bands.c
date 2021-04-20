@@ -12,7 +12,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 135700,
 			.endFreq = 137800,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 135700, .endFreq = 137800, .mode = TRX_MODE_CW_L},
+				{.startFreq = 135700, .endFreq = 137800, .mode = TRX_MODE_CW},
 			},
 			.regionsCount = 1,
 			.channels_clar = false,
@@ -54,7 +54,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 1810000,
 			.endFreq = 2000000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 1810000, .endFreq = 1838000, .mode = TRX_MODE_CW_L},
+				{.startFreq = 1810000, .endFreq = 1838000, .mode = TRX_MODE_CW},
 				{.startFreq = 1838000, .endFreq = 1843000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 1843000, .endFreq = 2000000, .mode = TRX_MODE_LSB},
 			},
@@ -98,7 +98,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 3500000,
 			.endFreq = 3800000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 3500000, .endFreq = 3570000, .mode = TRX_MODE_CW_L},
+				{.startFreq = 3500000, .endFreq = 3570000, .mode = TRX_MODE_CW},
 				{.startFreq = 3570000, .endFreq = 3600000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 3600000, .endFreq = 3800000, .mode = TRX_MODE_LSB},
 			},
@@ -184,7 +184,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 7000000,
 			.endFreq = 7200000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 7000000, .endFreq = 7040000, .mode = TRX_MODE_CW_L},
+				{.startFreq = 7000000, .endFreq = 7040000, .mode = TRX_MODE_CW},
 				{.startFreq = 7040000, .endFreq = 7060000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 7060000, .endFreq = 7074000, .mode = TRX_MODE_LSB},
 				{.startFreq = 7074000, .endFreq = 7080000, .mode = TRX_MODE_DIGI_U},
@@ -230,7 +230,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 10100000,
 			.endFreq = 10150000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 10100000, .endFreq = 10130000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 10100000, .endFreq = 10130000, .mode = TRX_MODE_CW},
 				{.startFreq = 10130000, .endFreq = 10150000, .mode = TRX_MODE_DIGI_U},
 			},
 			.regionsCount = 2,
@@ -273,7 +273,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 14000000,
 			.endFreq = 14350000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 14000000, .endFreq = 14070000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 14000000, .endFreq = 14070000, .mode = TRX_MODE_CW},
 				{.startFreq = 14070000, .endFreq = 14112000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 14112000, .endFreq = 14350000, .mode = TRX_MODE_USB},
 			},
@@ -317,7 +317,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 18068000,
 			.endFreq = 18168000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 18068000, .endFreq = 18095000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 18068000, .endFreq = 18095000, .mode = TRX_MODE_CW},
 				{.startFreq = 18095000, .endFreq = 18120000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 18120000, .endFreq = 18168000, .mode = TRX_MODE_USB},
 			},
@@ -347,7 +347,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 21000000,
 			.endFreq = 21450000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 21000000, .endFreq = 21070000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 21000000, .endFreq = 21070000, .mode = TRX_MODE_CW},
 				{.startFreq = 21070000, .endFreq = 21149000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 21149000, .endFreq = 21450000, .mode = TRX_MODE_USB},
 			},
@@ -377,7 +377,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 24890000,
 			.endFreq = 24990000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 24890000, .endFreq = 24915000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 24890000, .endFreq = 24915000, .mode = TRX_MODE_CW},
 				{.startFreq = 24915000, .endFreq = 24940000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 24940000, .endFreq = 24990000, .mode = TRX_MODE_USB},
 			},
@@ -462,9 +462,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 28000000,
 			.endFreq = 29700000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 28000000, .endFreq = 28070000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 28000000, .endFreq = 28070000, .mode = TRX_MODE_CW},
 				{.startFreq = 28070000, .endFreq = 28190000, .mode = TRX_MODE_DIGI_U},
-				{.startFreq = 28190000, .endFreq = 28300000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 28190000, .endFreq = 28300000, .mode = TRX_MODE_CW},
 				{.startFreq = 28300000, .endFreq = 28320000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 28320000, .endFreq = 29100000, .mode = TRX_MODE_USB},
 				{.startFreq = 29100000, .endFreq = 29200000, .mode = TRX_MODE_NFM},
@@ -484,7 +484,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 50000000,
 			.endFreq = 54000000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 50000000, .endFreq = 50100000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 50000000, .endFreq = 50100000, .mode = TRX_MODE_CW},
 				{.startFreq = 50100000, .endFreq = 50300000, .mode = TRX_MODE_USB},
 				{.startFreq = 50300000, .endFreq = 50350000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 50350000, .endFreq = 50600000, .mode = TRX_MODE_USB},
@@ -532,7 +532,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.startFreq = 144000000,
 			.endFreq = 146000000,
 			.regions = (const REGION_MAP[]){
-				{.startFreq = 144000000, .endFreq = 144110000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 144000000, .endFreq = 144110000, .mode = TRX_MODE_CW},
 				{.startFreq = 144110000, .endFreq = 144491000, .mode = TRX_MODE_USB},
 				{.startFreq = 144491000, .endFreq = 146000000, .mode = TRX_MODE_NFM},
 			},
@@ -653,11 +653,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.endFreq = 446200000,
 			.regions = (const REGION_MAP[]){
 				{.startFreq = 430000000, .endFreq = 432000000, .mode = TRX_MODE_NFM},
-				{.startFreq = 432000000, .endFreq = 432100000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 432000000, .endFreq = 432100000, .mode = TRX_MODE_CW},
 				{.startFreq = 432100000, .endFreq = 432400000, .mode = TRX_MODE_USB},
-				{.startFreq = 432400000, .endFreq = 432500000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 432400000, .endFreq = 432500000, .mode = TRX_MODE_CW},
 				{.startFreq = 432500000, .endFreq = 434000000, .mode = TRX_MODE_NFM},
-				{.startFreq = 434000000, .endFreq = 434100000, .mode = TRX_MODE_CW_U},
+				{.startFreq = 434000000, .endFreq = 434100000, .mode = TRX_MODE_CW},
 				{.startFreq = 434100000, .endFreq = 446200000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 7,

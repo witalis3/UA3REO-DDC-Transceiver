@@ -838,8 +838,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_maxgain_SSB", (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_speed_AMFM", (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_maxgain_AMFM", (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.CW_LPF_Filter2", (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("TRX.CW_HPF_Filter2", (uint32_t *)&TRX.CW_HPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.CW_LPF_Filter", (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.SSB_LPF_RX_Filter", (uint32_t *)&TRX.SSB_LPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.SSB_LPF_TX_Filter", (uint32_t *)&TRX.SSB_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.SSB_HPF_Filter", (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_UINT16);
@@ -851,7 +850,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.Squelch", (uint32_t *)&TRX.Squelch, SYSMENU_BOOLEAN);
 			//CW
 			SD_WRITE_SETT_LINE("TRX.CWDecoder", (uint32_t *)&TRX.CWDecoder, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.CW_GENERATOR_SHIFT_HZ", (uint32_t *)&TRX.CW_GENERATOR_SHIFT_HZ, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.CW_Pitch", (uint32_t *)&TRX.CW_Pitch, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_Key_timeout", (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_SelfHear", (uint32_t *)&TRX.CW_SelfHear, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_KEYER", (uint32_t *)&TRX.CW_KEYER, SYSMENU_BOOLEAN);
@@ -1226,10 +1225,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.TX_Compressor_speed_AMFM = (uint8_t)uintval;
 	if (strcmp(name, "TRX.TX_Compressor_maxgain_AMFM") == 0)
 		TRX.TX_Compressor_maxgain_AMFM = (uint8_t)uintval;
-	if (strcmp(name, "TRX.CW_LPF_Filter2") == 0)
+	if (strcmp(name, "TRX.CW_LPF_Filter") == 0)
 		TRX.CW_LPF_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.CW_HPF_Filter2") == 0)
-		TRX.CW_HPF_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.SSB_LPF_RX_Filter") == 0)
 		TRX.SSB_LPF_RX_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.SSB_LPF_TX_Filter") == 0)
@@ -1251,8 +1248,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	//CW
 	if (strcmp(name, "TRX.CWDecoder") == 0)
 		TRX.CWDecoder = uintval;
-	if (strcmp(name, "TRX.CW_GENERATOR_SHIFT_HZ") == 0)
-		TRX.CW_GENERATOR_SHIFT_HZ = (uint16_t)uintval;
+	if (strcmp(name, "TRX.CW_Pitch") == 0)
+		TRX.CW_Pitch = (uint16_t)uintval;
 	if (strcmp(name, "TRX.CW_Key_timeout") == 0)
 		TRX.CW_Key_timeout = (uint16_t)uintval;
 	if (strcmp(name, "TRX.CW_SelfHear") == 0)

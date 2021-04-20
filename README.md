@@ -149,8 +149,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **AGC Gain target, LKFS** - Maximum AGC gain (Maximum volume with AGC on)
 * **Mic Gain** - Microphone gain
 * **DNR xxx** - Digital squelch adjustment
-* **SSB HPF Pass** - LPF cutoff frequency when operating in SSB
-* **SSB LPF Pass** - HPF cutoff frequency when operating in SSB
+* **SSB HPF Pass** - HPF cutoff frequency when operating in SSB
+* **SSB LPF Pass** - LPF cutoff frequency when operating in SSB
 * **CW LPF Pass** - LPF cutoff frequency when working in CW
 * **FM LPF Pass** - LPF cutoff frequency when working in FM
 * **Squelch** - Enable SSB/FM Squelch
@@ -166,7 +166,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 ### CW Settings
 
 * **CW Key timeout** - Time before stopping the transmission mode after releasing the key
-* **CW Generator shift** - Detuning the receive generator from the transmit frequency
+* **CW Pitch** - Detuning the receive generator from the transmit frequency
 * **CW Self Hear** - Self-control CW (key press is heard)
 * **CW Keyer** - Automatic Key
 * **CW Keyer WPM** - Key Speed, WPM

@@ -771,9 +771,7 @@ static uint8_t getFT450Mode(uint8_t VFO_Mode)
 		return 2;
 	if (VFO_Mode == TRX_MODE_IQ)
 		return 8;
-	if (VFO_Mode == TRX_MODE_CW_L)
-		return 3;
-	if (VFO_Mode == TRX_MODE_CW_U)
+	if (VFO_Mode == TRX_MODE_CW)
 		return 3;
 	if (VFO_Mode == TRX_MODE_DIGI_L)
 		return 6;
@@ -801,7 +799,7 @@ static uint8_t setFT450Mode(char *FT450_Mode)
 	if (strcmp(FT450_Mode, "08") == 0 || strcmp(FT450_Mode, "8") == 0)
 		return TRX_MODE_IQ;
 	if (strcmp(FT450_Mode, "03") == 0 || strcmp(FT450_Mode, "3") == 0)
-		return TRX_MODE_CW_L;
+		return TRX_MODE_CW;
 	if (strcmp(FT450_Mode, "06") == 0 || strcmp(FT450_Mode, "6") == 0)
 		return TRX_MODE_DIGI_L;
 	if (strcmp(FT450_Mode, "09") == 0 || strcmp(FT450_Mode, "9") == 0)

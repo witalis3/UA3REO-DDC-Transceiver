@@ -56,7 +56,6 @@ extern void SYSMENU_AUDIO_BW_CW_HOTKEY(void);
 extern void SYSMENU_AUDIO_BW_AM_HOTKEY(void);
 extern void SYSMENU_AUDIO_BW_FM_HOTKEY(void);
 extern void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void);
-extern void SYSMENU_AUDIO_HPF_CW_HOTKEY(void);
 extern void SYSMENU_AUDIO_SQUELCH_HOTKEY(void);
 extern void SYSMENU_AUDIO_AGC_HOTKEY(void);
 extern void SYSMENU_HANDL_SERVICESMENU(int8_t direction);
