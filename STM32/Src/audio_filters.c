@@ -26,12 +26,14 @@ static float32_t IIR_RX1_LPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_LPF_STAGES] = {0
 static float32_t IIR_RX1_LPF_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX1_LPF_Q_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX1_GAUSS_Coeffs[BIQUAD_COEFF_IN_STAGE * GAUSS_STAGES] = {0};
-static float32_t IIR_RX1_GAUSS_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
+static float32_t IIR_RX1_GAUSS_I_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
+static float32_t IIR_RX1_GAUSS_Q_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_LPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_LPF_STAGES] = {0};
 static float32_t IIR_RX2_LPF_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_LPF_Q_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_GAUSS_Coeffs[BIQUAD_COEFF_IN_STAGE * GAUSS_STAGES] = {0};
-static float32_t IIR_RX2_GAUSS_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
+static float32_t IIR_RX2_GAUSS_I_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
+static float32_t IIR_RX2_GAUSS_Q_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_TX_LPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_LPF_STAGES] = {0};
 static float32_t IIR_TX_LPF_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX1_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
@@ -153,10 +155,12 @@ arm_fir_instance_f32 FIR_TX_Hilbert_I;
 arm_fir_instance_f32 FIR_TX_Hilbert_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF_Q;
-arm_biquad_cascade_df2T_instance_f32 IIR_RX1_GAUSS;
+arm_biquad_cascade_df2T_instance_f32 IIR_RX1_GAUSS_I;
+arm_biquad_cascade_df2T_instance_f32 IIR_RX1_GAUSS_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_LPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_LPF_Q;
-arm_biquad_cascade_df2T_instance_f32 IIR_RX2_GAUSS;
+arm_biquad_cascade_df2T_instance_f32 IIR_RX2_GAUSS_I;
+arm_biquad_cascade_df2T_instance_f32 IIR_RX2_GAUSS_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX1_HPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_HPF_I;
@@ -247,16 +251,16 @@ void ReinitAudioFilters(void)
 	uint32_t lpf_rx1_width = 2700; //default settings
 	if (CurrentVFO()->LPF_RX_Filter_Width > 0)
 		lpf_rx1_width = CurrentVFO()->LPF_RX_Filter_Width;
-	if(lpf_rx1_width < hpf_rx1_width)
-		lpf_rx1_width = hpf_rx1_width + 100;
+	if(lpf_rx1_width < hpf_rx1_width && CurrentVFO()->HPF_Filter_Width > 0)
+			lpf_rx1_width = hpf_rx1_width + 100;
 	if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_AM || CurrentVFO()->Mode == TRX_MODE_CW)
 		lpf_rx1_width /= 2;
 	//
 	uint32_t lpf_rx2_width = 2700; //default settings
 	if (SecondaryVFO()->LPF_RX_Filter_Width > 0)
 		lpf_rx2_width = SecondaryVFO()->LPF_RX_Filter_Width;
-	if(lpf_rx2_width < hpf_rx2_width)
-		lpf_rx2_width = hpf_rx2_width + 100;
+	if(lpf_rx2_width < hpf_rx2_width && SecondaryVFO()->HPF_Filter_Width > 0)
+			lpf_rx2_width = hpf_rx2_width + 100;
 	if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_AM || CurrentVFO()->Mode == TRX_MODE_CW)
 		lpf_rx2_width /= 2;
 	//
@@ -330,14 +334,16 @@ void ReinitAudioFilters(void)
 
 	//RX1 GAUSS
 	filter = biquad_create(GAUSS_STAGES);
-	biquad_init_bandpass(filter, TRX_SAMPLERATE, lpf_rx1_width / 2 - GAUSS_WIDTH / 2, lpf_rx1_width / 2 + GAUSS_WIDTH / 2);
+	biquad_init_lowpass(filter, TRX_SAMPLERATE, GAUSS_WIDTH / 2);
 	fill_biquad_coeffs(filter, IIR_RX1_GAUSS_Coeffs, GAUSS_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_GAUSS, GAUSS_STAGES, IIR_RX1_GAUSS_Coeffs, (float32_t *)&IIR_RX1_GAUSS_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_GAUSS_I, GAUSS_STAGES, IIR_RX1_GAUSS_Coeffs, (float32_t *)&IIR_RX1_GAUSS_I_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_GAUSS_Q, GAUSS_STAGES, IIR_RX1_GAUSS_Coeffs, (float32_t *)&IIR_RX1_GAUSS_Q_State[0]);
 	
 	//RX2 GAUSS
-	biquad_init_bandpass(filter, TRX_SAMPLERATE, lpf_rx2_width / 2 - GAUSS_WIDTH / 2, lpf_rx2_width / 2 + GAUSS_WIDTH / 2);
+	biquad_init_lowpass(filter, TRX_SAMPLERATE, GAUSS_WIDTH / 2);
 	fill_biquad_coeffs(filter, IIR_RX2_GAUSS_Coeffs, GAUSS_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_GAUSS, GAUSS_STAGES, IIR_RX2_GAUSS_Coeffs, (float32_t *)&IIR_RX2_GAUSS_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_GAUSS_I, GAUSS_STAGES, IIR_RX2_GAUSS_Coeffs, (float32_t *)&IIR_RX2_GAUSS_I_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_GAUSS_Q, GAUSS_STAGES, IIR_RX2_GAUSS_Coeffs, (float32_t *)&IIR_RX2_GAUSS_Q_State[0]);
 	
 	//RX Equalizer
 	calcBiquad(BIQUAD_peak, 400, TRX_SAMPLERATE, 0.5f, TRX.RX_EQ_LOW, EQ_RX_LOW_FILTER_Coeffs);

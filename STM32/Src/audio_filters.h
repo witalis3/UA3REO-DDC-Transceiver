@@ -15,8 +15,8 @@
 #define IIR_DECIMATOR_FILTER_STAGES 9									// order of decimator filter
 #define NOTCH_STAGES 1															  // order of manual Notch filter
 #define EQ_STAGES 1																  // order of the biquad of the equalizer filter
-#define GAUSS_STAGES 3																  // order of the gauss CW filter
-#define GAUSS_WIDTH 50															//passband of gauss CW filter
+#define GAUSS_STAGES 1																  // order of the gauss CW filter
+#define GAUSS_WIDTH 20															//passband of gauss CW filter
 #define BIQUAD_COEFF_IN_STAGE 5													  // coefficients in manual Notch filter order
 #define FIR_RX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
 #define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
@@ -80,10 +80,12 @@ extern arm_fir_instance_f32 FIR_TX_Hilbert_I;
 extern arm_fir_instance_f32 FIR_TX_Hilbert_Q;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF_I;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF_Q;
-extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_GAUSS;
+extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_GAUSS_I;
+extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_GAUSS_Q;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX2_LPF_I;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX2_LPF_Q;
-extern arm_biquad_cascade_df2T_instance_f32 IIR_RX2_GAUSS;
+extern arm_biquad_cascade_df2T_instance_f32 IIR_RX2_GAUSS_I;
+extern arm_biquad_cascade_df2T_instance_f32 IIR_RX2_GAUSS_Q;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_I;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_Q;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_HPF_I;
