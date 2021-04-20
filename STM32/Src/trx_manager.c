@@ -347,16 +347,8 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	//get fpga freq phrase
 	VFO *current_vfo = CurrentVFO();
 	VFO *secondary_vfo = SecondaryVFO();
-	
-	if(current_vfo->Mode == TRX_MODE_CW)
-		TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT + TRX.CW_Pitch, 1);
-	else
-		TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
-	if(secondary_vfo->Mode == TRX_MODE_CW)
-		TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT + TRX.CW_Pitch, 2);
-	else
-		TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
-	
+	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
+	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
 	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq);
 	//
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);

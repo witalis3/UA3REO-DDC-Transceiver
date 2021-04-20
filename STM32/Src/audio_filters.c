@@ -249,7 +249,7 @@ void ReinitAudioFilters(void)
 		lpf_rx1_width = CurrentVFO()->LPF_RX_Filter_Width;
 	if(lpf_rx1_width < hpf_rx1_width)
 		lpf_rx1_width = hpf_rx1_width + 100;
-	if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_AM)
+	if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_AM || CurrentVFO()->Mode == TRX_MODE_CW)
 		lpf_rx1_width /= 2;
 	//
 	uint32_t lpf_rx2_width = 2700; //default settings
@@ -257,7 +257,7 @@ void ReinitAudioFilters(void)
 		lpf_rx2_width = SecondaryVFO()->LPF_RX_Filter_Width;
 	if(lpf_rx2_width < hpf_rx2_width)
 		lpf_rx2_width = hpf_rx2_width + 100;
-	if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_AM)
+	if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_AM || CurrentVFO()->Mode == TRX_MODE_CW)
 		lpf_rx2_width /= 2;
 	//
 	uint32_t lpf_tx_width = 2700; //default settings
