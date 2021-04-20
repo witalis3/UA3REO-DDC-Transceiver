@@ -38,6 +38,9 @@ struct sysmenu_item_handler
 	char enumerate[ENUM_MAX_COUNT][ENUM_MAX_LENGTH];
 };
 
+extern bool sysmenu_ota_opened;
+extern uint8_t sysmenu_ota_opened_state;
+
 extern void SYSMENU_drawSystemMenu(bool draw_background);
 extern void SYSMENU_redrawCurrentItem(void);
 extern void SYSMENU_eventRotateSystemMenu(int8_t direction);

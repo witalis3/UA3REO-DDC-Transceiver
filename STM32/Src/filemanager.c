@@ -2,6 +2,7 @@
 #include "lcd.h"
 #include "sd.h"
 #include "system_menu.h"
+#include "wifi.h"
 
 static bool first_start = true;
 static uint16_t current_index = 0;
@@ -344,5 +345,77 @@ static void FILEMANAGER_DialogAction(void)
 		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 		SD_doCommand(SDCOMM_FLASH_JIC, false);
 		return;
+	}
+}
+
+void FILEMANAGER_OTAUpdate_handler(void)
+{
+	sysmenu_ota_opened = true;
+	if(sysmenu_ota_opened_state == 0)
+	{
+		if(WIFI_State != WIFI_READY)
+		{
+			LCD_showInfo("WIFI not ready", true);
+			sysmenu_ota_opened = false;
+			return;
+		}
+		if(!SD_Present || SD_RecordInProcess || SD_PlayInProcess || SD_CommandInProcess)
+		{
+			LCD_showInfo("SD not ready", true);
+			sysmenu_ota_opened = false;
+			return;
+		}
+		if(!WIFI_NewFW_checked)
+		{
+			WIFI_checkFWUpdates();
+			LCD_showInfo("Checking updates", false);
+			return;
+		}
+		if(!WIFI_NewFW_STM32 && !WIFI_NewFW_FPGA)
+		{
+			LCD_showInfo("No updates", true);
+			sysmenu_ota_opened = false;
+			return;
+		}
+		//delete old files
+		LCD_showInfo("Clean old files...", false);
+		strcpy((char*)SD_workbuffer_A, "update_stm32.bin");
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		strcpy((char*)SD_workbuffer_A, "update_stm32.crc");
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		strcpy((char*)SD_workbuffer_A, "update_fpga.jic");
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		strcpy((char*)SD_workbuffer_A, "update_fpga.crc");
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		strcpy((char*)SD_workbuffer_A, "test.txt");
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		
+		sysmenu_ota_opened_state = 1;
+	}
+	//
+	if(sysmenu_ota_opened_state == 1)
+	{
+		LCD_showInfo("Downloading FPGA FW to SD", false);
+		sysmenu_ota_opened_state = 2;
+		WIFI_downloadFileToSD("/trx_services/test.txt", "test.txt");
+		return;
+	}
+	if(sysmenu_ota_opened_state == 2) //download process
+	{
+		println("downloading...");
+	}
+	if(sysmenu_ota_opened_state == 3)
+	{
+		LCD_showInfo("Finished", true);
+		
+		sysmenu_ota_opened = false;
+		sysmenu_ota_opened_state = 0;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		SYSMENU_eventCloseAllSystemMenu();
 	}
 }

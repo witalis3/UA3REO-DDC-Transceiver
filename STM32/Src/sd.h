@@ -59,6 +59,7 @@ typedef enum
 	SDCOMM_PROCESS_PLAY,
 	SDCOMM_FLASH_BIN,
 	SDCOMM_FLASH_JIC,
+	SDCOMM_WRITE_TO_FILE,
 } SD_COMMAND;
 
 extern sd_info_ptr sdinfo;
@@ -80,6 +81,8 @@ extern BYTE SD_workbuffer_B[_MAX_SS];
 extern BYTE SD_workbuffer_current;
 extern bool SD_Play_Buffer_Ready;
 extern uint32_t SD_Play_Buffer_Size;
+extern uint32_t SDCOMM_WRITE_TO_FILE_partsize;
+extern void (*SDCOMM_WRITE_TO_FILE_callback)(void);
 
 //--------------------------------------------------
 extern void SD_PowerOn(void);

@@ -9,6 +9,8 @@
 #include "usbd_cat_if.h"
 #include "bands.h"
 #include "fpga.h"
+#include "system_menu.h"
+#include "sd.h"
 
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static void (*WIFI_ProcessingCommandCallback)(void);
@@ -1134,6 +1136,8 @@ static void WIFI_checkFWUpdates_callback(void)
 		}
 	}
 	WIFI_NewFW_checked = true;
+	if(sysmenu_ota_opened)
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void WIFI_checkFWUpdates(void)
@@ -1143,4 +1147,41 @@ void WIFI_checkFWUpdates(void)
 	char url[128];
 	sprintf(url, "/trx_services/check_fw_updates.php?dev=0&stm32=%s&fpga=%d.%d.%d", version_string, FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_checkFWUpdates_callback, false);
+}
+
+static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
+{
+	println("File part downloaded");
+	sysmenu_ota_opened = true;
+	sysmenu_ota_opened_state = 3;
+	LCD_busy = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static char* WIFI_downloadFileToSD_filename;
+static void WIFI_downloadFileToSD_callback(void)
+{
+	if (WIFI_HTTP_Response_Status == 200)
+	{
+		strcpy((char*)SD_workbuffer_A, WIFI_downloadFileToSD_filename);
+		strcpy((char*)SD_workbuffer_B, WIFI_HTTResponseHTML);
+		SDCOMM_WRITE_TO_FILE_callback = WIFI_WIFI_downloadFileToSD_callback_writed;
+		SDCOMM_WRITE_TO_FILE_partsize = strlen(WIFI_HTTResponseHTML);
+		SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
+	}
+	else
+	{
+		println("BAD HTTP status ", WIFI_HTTP_Response_Status);
+		sysmenu_ota_opened = false;
+		LCD_busy = false;
+		LCD_redraw(false);
+	}
+}
+
+void WIFI_downloadFileToSD(char* url, char* filename)
+{
+	if (WIFI_connected && WIFI_State != WIFI_READY)
+		return;
+	WIFI_downloadFileToSD_filename = filename;
+	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false);
 }

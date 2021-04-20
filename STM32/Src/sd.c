@@ -33,7 +33,9 @@ bool SD_USBCardReader = false;
 uint32_t SD_Present_tryTime = 0;
 bool SD_Mounted = false;
 static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
-
+uint32_t SDCOMM_WRITE_TO_FILE_partsize = 0;
+void (*SDCOMM_WRITE_TO_FILE_callback)(void);
+	
 SRAM static FIL File = {0};
 SRAM static FILINFO fileInfo = {0};
 SRAM static DIR dir = {0};
@@ -58,6 +60,7 @@ static void SDCOMM_DELETE_FILE_handler(void);
 static void SDCOMM_READ_PLAY_FILE_handler(void);
 static void SDCOMM_FLASH_BIN_handler(void);
 static void SDCOMM_FLASH_JIC_handler(void);
+static void SDCOMM_WRITE_TO_FILE_handler(void);
 
 bool SD_isIdle(void)
 {
@@ -180,9 +183,38 @@ void SD_Process(void)
 		case SDCOMM_FLASH_JIC:
 			SDCOMM_FLASH_JIC_handler();
 			break;
+		case SDCOMM_WRITE_TO_FILE:
+			SDCOMM_WRITE_TO_FILE_handler();
+			break;
 		}
 		SD_CommandInProcess = false;
 		SD_currentCommand = SDCOMM_IDLE;
+	}
+}
+
+static void SDCOMM_WRITE_TO_FILE_handler(void)
+{
+	if (f_open(&File, (TCHAR*)SD_workbuffer_A, FA_WRITE | FA_OPEN_APPEND) == FR_OK)
+	{
+		uint32_t byteswritten;
+		FRESULT res = f_write(&File, SD_workbuffer_B, SDCOMM_WRITE_TO_FILE_partsize, (void *)&byteswritten);
+		if(res != FR_OK || byteswritten == 0)
+		{
+			println("SD file append error");
+		}
+		else
+		{
+			println("SD file data appended ", byteswritten);
+			SDCOMM_WRITE_TO_FILE_callback();
+		}
+	}
+	else
+	{
+		LCD_showTooltip("SD error");
+		SD_PlayInProcess = false;
+		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 }
 

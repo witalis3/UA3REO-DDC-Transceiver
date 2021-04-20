@@ -159,6 +159,7 @@ static void SYSMENU_HANDL_SD_USB(int8_t direction);
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
+static void SYSMENU_HANDL_OTA_Update(int8_t direction);
 static void SYSMENU_HANDL_SYSINFO(int8_t direction);
 
 static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction);
@@ -320,6 +321,7 @@ const static struct sysmenu_item_handler sysmenu_handlers[] =
 		{"SD Card", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SDMENU},
 		{"Set Clock Time", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SETTIME},
 		{"DFU Mode", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Bootloader},
+		{"OTA Update", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_OTA_Update},
 		{"System info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SYSINFO},
 		{"Calibration", SYSMENU_MENU, SYSMENU_HANDL_CHECK_HIDDEN_ENABLED, 0, SYSMENU_HANDL_CALIBRATIONMENU},
 };
@@ -683,6 +685,8 @@ static bool sysmenu_infowindow_opened = false;
 static bool sysmenu_sysinfo_opened = false;
 static bool sysmenu_filemanager_opened = false;
 static bool sysmenu_item_selected_by_enc2 = false;
+bool sysmenu_ota_opened = false;
+uint8_t sysmenu_ota_opened_state = 0;
 
 //WIFI
 static bool sysmenu_wifi_needupdate_ap = true;
@@ -2585,6 +2589,12 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction)
 	LCD_busy = true;
 }
 
+static void SYSMENU_HANDL_OTA_Update(int8_t direction)
+{
+	sysmenu_ota_opened_state = 0;
+	FILEMANAGER_OTAUpdate_handler();
+}
+
 //SYSTEM INFO
 static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 {
@@ -3968,6 +3978,10 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	{
 		FILEMANAGER_Draw(draw_background);
 		return;
+	}
+	else if (sysmenu_ota_opened)
+	{
+		FILEMANAGER_OTAUpdate_handler();
 	}
 	else if (sysmenu_infowindow_opened)
 	{

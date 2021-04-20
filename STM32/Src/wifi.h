@@ -73,5 +73,6 @@ extern void WIFI_getDXCluster(void);
 extern void WIFI_getPropagination(void);
 extern bool WIFI_SW_Restart(void (*callback)(void));
 extern void WIFI_checkFWUpdates(void);
+extern void WIFI_downloadFileToSD(char* url, char* filename);
 
 #endif
