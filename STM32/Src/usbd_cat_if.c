@@ -15,7 +15,8 @@
 #define CAT_BUFFER_SIZE 64
 static char cat_buffer[CAT_BUFFER_SIZE] = {0};
 static uint8_t cat_buffer_head = 0;
-static char command_to_parse[CAT_BUFFER_SIZE] = {0};
+static char command_to_parse1[CAT_BUFFER_SIZE] = {0};
+static char command_to_parse2[CAT_BUFFER_SIZE] = {0};
 static uint8_t CAT_UserRxBufferFS[CAT_APP_RX_DATA_SIZE];
 static uint8_t CAT_UserTxBufferFS[CAT_APP_TX_DATA_SIZE];
 static bool CAT_processingWiFiCommand = false;
@@ -24,7 +25,7 @@ static uint8_t lineCoding[7] = {0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08}; // 11
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-static uint8_t getFT450Mode(uint8_t VFO_Mode);
+static void getFT450Mode(uint8_t VFO_Mode, char* out);
 static uint8_t setFT450Mode(char *FT450_Mode);
 static int8_t CAT_Init_FS(void);
 static int8_t CAT_DeInit_FS(void);
@@ -152,6 +153,8 @@ static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
 {
 	char charBuff[CAT_BUFFER_SIZE] = {0};
 	strncpy(charBuff, (char *)Buf, Len[0]);
+	dma_memset(&Buf, 0, Len[0]);
+	//println((char *)charBuff);
 	if (Len[0] <= CAT_BUFFER_SIZE)
 	{
 		for (uint16_t i = 0; i < Len[0]; i++)
@@ -162,17 +165,26 @@ static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
 				if (cat_buffer[cat_buffer_head] == ';')
 				{
 					CAT_processingWiFiCommand = false;
-					dma_memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
-					dma_memcpy(command_to_parse, cat_buffer, cat_buffer_head);
+					if(strlen(command_to_parse1) == 0)
+					{
+						dma_memset(command_to_parse1, 0, sizeof(command_to_parse1));
+						dma_memcpy(command_to_parse1, cat_buffer, cat_buffer_head);
+					}
+					else if(strlen(command_to_parse2) == 0)
+					{
+						dma_memset(command_to_parse2, 0, sizeof(command_to_parse2));
+						dma_memcpy(command_to_parse2, cat_buffer, cat_buffer_head);
+					}
+					
 					cat_buffer_head = 0;
-					dma_memset(&cat_buffer, 0, CAT_BUFFER_SIZE);
+					dma_memset(cat_buffer, 0, CAT_BUFFER_SIZE);
 					continue;
 				}
 				cat_buffer_head++;
 				if (cat_buffer_head >= CAT_BUFFER_SIZE)
 				{
 					cat_buffer_head = 0;
-					dma_memset(&cat_buffer, 0, CAT_BUFFER_SIZE);
+					dma_memset(cat_buffer, 0, CAT_BUFFER_SIZE);
 				}
 			}
 		}
@@ -207,7 +219,7 @@ static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len)
 static void CAT_Transmit(char *data)
 {
 	CAT_Transmit_FS((uint8_t *)data, (uint16_t)strlen(data));
-	//sendToDebug_str3("CAT command answer: |",data,"|\r\n");
+	//println("CAT command answer: |",data,"|");
 	if (CAT_processingWiFiCommand)
 	{
 		WIFI_SendCatAnswer(data, CAT_processingWiFi_link_id, NULL);
@@ -219,26 +231,35 @@ void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id)
 {
 	CAT_processingWiFiCommand = true;
 	CAT_processingWiFi_link_id = link_id;
-	dma_memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
-	dma_memcpy(command_to_parse, data, length);
+	dma_memset(&command_to_parse1, 0, CAT_BUFFER_SIZE);
+	dma_memcpy(command_to_parse1, data, length);
 	ua3reo_dev_cat_parseCommand();
 }
 
 void ua3reo_dev_cat_parseCommand(void)
 {
 	USBD_CAT_ReceivePacket(&hUsbDeviceFS); //prepare next command
-	if (command_to_parse[0] == 0)
+	if (command_to_parse1[0] == 0 && command_to_parse2[0] == 0)
 		return;
 
 	char _command_buffer[CAT_BUFFER_SIZE] = {0};
 	char *_command = _command_buffer;
-	dma_memcpy(_command, command_to_parse, CAT_BUFFER_SIZE);
-	dma_memset(&command_to_parse, 0, CAT_BUFFER_SIZE);
+	if(strlen(command_to_parse1) > 0)
+	{
+		dma_memcpy(_command, command_to_parse1, CAT_BUFFER_SIZE);
+		dma_memset(command_to_parse1, 0, CAT_BUFFER_SIZE);
+	}
+	else if(strlen(command_to_parse2) > 0)
+	{
+		dma_memcpy(_command, command_to_parse2, CAT_BUFFER_SIZE);
+		dma_memset(command_to_parse2, 0, CAT_BUFFER_SIZE);
+	}
+	
 	while (*_command == '\r' || *_command == '\n' || *_command == ' ') //trim
 		_command++;
 	if (strlen(_command) < 2)
 		return;
-	println("New CAT command: |",_command,"|");
+	//println("New CAT command: |",_command,"|");
 
 	char command[3] = {0};
 	strncpy(command, _command, 2);
@@ -282,16 +303,21 @@ void ua3reo_dev_cat_parseCommand(void)
 	{
 		if (!has_args)
 		{
-			CAT_Transmit("FT0;");
+			if(!TRX.CLAR)
+				CAT_Transmit("FT0;");
+			else
+				CAT_Transmit("FT1;");
 		}
 		else
 		{
 			if (strcmp(arguments, "0") == 0)
 			{
-			} //SPLIT DONT SUPPOTED
+				TRX.CLAR = false;
+			}
 			else if (strcmp(arguments, "1") == 0)
 			{
-			} //SPLIT DONT SUPPOTED
+				TRX.CLAR = true;
+			}
 			else
 				println("Unknown CAT arguments: ", _command);
 		}
@@ -329,7 +355,7 @@ void ua3reo_dev_cat_parseCommand(void)
 				FFT_Init();
 				TRX_ScanMode = false;
 			}
-			println("CAT arguments: ", _command);
+			//println("CAT arguments: ", _command);
 		}
 		return;
 	}
@@ -347,8 +373,9 @@ void ua3reo_dev_cat_parseCommand(void)
 			strcat(answer, "+0000"); //clirifier offset
 			strcat(answer, "0");	 //RX clar off
 			strcat(answer, "0");	 //TX clar off
-			sprintf(ctmp, "%d", getFT450Mode((uint8_t)CurrentVFO()->Mode));
-			strcat(answer, ctmp); //mode
+			char mode[3] = {0};
+			getFT450Mode((uint8_t)CurrentVFO()->Mode, mode);
+			strcat(answer, mode); //mode
 			strcat(answer, "0");  //VFO Memory
 			strcat(answer, "0");  //CTCSS OFF
 			strcat(answer, "00"); //TONE NUMBER
@@ -391,7 +418,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		if (!has_args)
 		{
 			char answer[30] = {0};
-			strcat(answer, "FA");
+			strcat(answer, "FB");
 			if (TRX.VFO_B.Freq < 10000000)
 				strcat(answer, "0");
 			sprintf(ctmp, "%u", TRX.VFO_B.Freq);
@@ -508,8 +535,9 @@ void ua3reo_dev_cat_parseCommand(void)
 			{
 				char answer[30] = {0};
 				strcat(answer, "MD0");
-				sprintf(ctmp, "%d", getFT450Mode((uint8_t)CurrentVFO()->Mode));
-				strcat(answer, ctmp); //mode
+				char mode[3] = {0};
+				getFT450Mode((uint8_t)CurrentVFO()->Mode, mode);
+				strcat(answer, mode); //mode
 				strcat(answer, ";");
 				CAT_Transmit(answer);
 			}
@@ -553,7 +581,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			if (strcmp(arguments, "0") == 0)
 			{
-				CAT_Transmit("SH016;");
+				CAT_Transmit("SH031;");
 			}
 		}
 		return;
@@ -693,6 +721,65 @@ void ua3reo_dev_cat_parseCommand(void)
 		return;
 	}
 
+	if (strcmp(command, "BS") == 0) // BAND SELECT
+	{
+		if (!has_args)
+		{
+			
+		}
+		else
+		{
+			int8_t band = -1;
+			if (strcmp(arguments, "00") == 0)
+				band = BANDID_160m;
+			else if (strcmp(arguments, "01") == 0)
+				band = BANDID_80m;
+			else if (strcmp(arguments, "03") == 0)
+				band = BANDID_40m;
+			else if (strcmp(arguments, "04") == 0)
+				band = BANDID_30m;
+			else if (strcmp(arguments, "05") == 0)
+				band = BANDID_20m;
+			else if (strcmp(arguments, "06") == 0)
+				band = BANDID_17m;
+			else if (strcmp(arguments, "07") == 0)
+				band = BANDID_15m;
+			else if (strcmp(arguments, "08") == 0)
+				band = BANDID_12m;
+			else if (strcmp(arguments, "09") == 0)
+				band = BANDID_10m;
+			else if (strcmp(arguments, "10") == 0)
+				band = BANDID_6m;
+			else
+				println("Unknown CAT arguments: ", _command);
+			println((uint8_t)band);
+			if(band > -1)
+			{
+				println(TRX.BANDS_SAVED_SETTINGS[band].Freq);
+				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
+				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
+				if(TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
+				{
+					TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
+					FFT_Init();
+					NeedReinitAudioFilters = true;
+				}
+				TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
+				TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
+				TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
+				TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
+				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
+				TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
+				CurrentVFO()->FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+				CurrentVFO()->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
+				CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+				TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+				TRX_Temporary_Stop_BandMap = false;
+			}
+		}
+		return;
+	}
+	
 	if (strcmp(command, "NA") == 0) // NARROW
 	{
 		if (!has_args)
@@ -763,31 +850,30 @@ void ua3reo_dev_cat_parseCommand(void)
 	//sendToDebug_str2(arguments,"|\r\n");
 }
 
-static uint8_t getFT450Mode(uint8_t VFO_Mode)
+static void getFT450Mode(uint8_t VFO_Mode, char* out)
 {
 	if (VFO_Mode == TRX_MODE_LSB)
-		return 1;
+		strcpy(out, "1");
 	if (VFO_Mode == TRX_MODE_USB)
-		return 2;
+		strcpy(out, "2");
 	if (VFO_Mode == TRX_MODE_IQ)
-		return 8;
+		strcpy(out, "8");
 	if (VFO_Mode == TRX_MODE_CW)
-		return 3;
+		strcpy(out, "3");
 	if (VFO_Mode == TRX_MODE_DIGI_L)
-		return 6;
+		strcpy(out, "8");
 	if (VFO_Mode == TRX_MODE_DIGI_U)
-		return 9;
+		strcpy(out, "C");
 	if (VFO_Mode == TRX_MODE_NO_TX)
-		return 8;
+		strcpy(out, "8");
 	if (VFO_Mode == TRX_MODE_NFM)
-		return 4;
+		strcpy(out, "4");
 	if (VFO_Mode == TRX_MODE_WFM)
-		return 4;
+		strcpy(out, "4");
 	if (VFO_Mode == TRX_MODE_AM)
-		return 5;
+		strcpy(out, "5");
 	if (VFO_Mode == TRX_MODE_LOOPBACK)
-		return 8;
-	return 1;
+		strcpy(out, "8");
 }
 
 static uint8_t setFT450Mode(char *FT450_Mode)
