@@ -154,9 +154,9 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPSERVERMAXCONN=3\r\n"); //Max server connections
 		WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CIPSSLSIZE=4096\r\n"); //SSL size
+		WIFI_SendCommand("AT+CIPSSLSIZE=2048\r\n"); //SSL size
 		WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CIPSSLCCONF=2\r\n"); //SSL config
+		WIFI_SendCommand("AT+CIPSSLCCONF=0\r\n"); //SSL config
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPRECVMODE=0\r\n"); //TCP receive passive mode
 		WIFI_WaitForOk();
@@ -1192,7 +1192,6 @@ static uint32_t WIFI_downloadFileToSD_startIndex = 0;
 static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 {
 	static int32_t downloaded_kb_prev = 0;
-	static int32_t downloaded_kb_sleep = 0;
 	if(WIFI_downloadFileToSD_compleated)
 	{
 		sysmenu_ota_opened = true;
@@ -1214,11 +1213,6 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 			sprintf(buff, "Downloading file to SD ... %dk", downloaded_kb);
 			LCD_showInfo(buff, false);
 			downloaded_kb_prev = downloaded_kb;
-		}
-		if(abs(downloaded_kb_sleep - downloaded_kb) >= 100)
-		{
-			HAL_Delay(3000); //some sleep time for ESP
-			downloaded_kb_sleep = downloaded_kb;
 		}
 	}
 }
