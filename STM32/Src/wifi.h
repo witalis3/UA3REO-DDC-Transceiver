@@ -7,7 +7,7 @@
 
 #define WIFI_ANSWER_BUFFER_SIZE (512 * 8)
 #define WIFI_LINE_BUFFER_SIZE WIFI_ANSWER_BUFFER_SIZE
-#define WIFI_HTML_RESP_BUFFER_SIZE (512 * 4)
+#define WIFI_HTML_RESP_BUFFER_SIZE (512 * 4 + 256)
 #define WIFI_RLE_BUFFER_SIZE (512)
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
@@ -56,6 +56,7 @@ extern char WIFI_AP[MAX_WIFIPASS_LENGTH];
 extern bool WIFI_NewFW_checked;
 extern bool WIFI_NewFW_STM32;
 extern bool WIFI_NewFW_FPGA;
+extern bool WIFI_downloadFileToSD_compleated;
 
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);

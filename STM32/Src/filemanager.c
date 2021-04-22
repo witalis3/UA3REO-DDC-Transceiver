@@ -417,7 +417,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		WIFI_downloadFileToSD(url, "firmware_fpga.jic");
 		return;
 	}
-	if(sysmenu_ota_opened_state == 2 && !SD_CommandInProcess && WIFI_State == WIFI_READY && WIFI_NewFW_FPGA)
+	if(sysmenu_ota_opened_state == 2 && WIFI_downloadFileToSD_compleated)
 	{
 		LCD_showInfo("FPGA FW downloaded", true);
 		downloaded_fpga_fw = true;

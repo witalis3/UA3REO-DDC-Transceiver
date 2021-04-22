@@ -474,8 +474,11 @@ static char ota_config_lcd[] = "ILI9481";
 #if defined(LCD_HX8357B)
 static char ota_config_lcd[] = "HX8357B";
 #endif
-#if defined(LCD_HX8357C)
+#if defined(LCD_HX8357C) && !defined(LCD_SLOW)
 static char ota_config_lcd[] = "HX8357C";
+#endif
+#if defined(LCD_HX8357C) && defined(LCD_SLOW)
+static char ota_config_lcd[] = "HX8357C-SLOW";
 #endif
 #if defined(LCD_ILI9486)
 static char ota_config_lcd[] = "ILI9486";

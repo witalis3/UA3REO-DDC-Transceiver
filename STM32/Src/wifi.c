@@ -34,6 +34,7 @@ static void WIFI_sendHTTPRequest(void);
 static void WIFI_getHTTPResponse(void);
 static void WIFI_printImage_stream_callback(void);
 static void WIFI_printImage_stream_partial_callback(void);
+static void WIFI_downloadFileToSD_callback(void);
 
 bool WIFI_connected = false;
 bool WIFI_CAT_server_started = false;
@@ -52,6 +53,7 @@ SRAM static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
 bool WIFI_NewFW_checked = false;
 bool WIFI_NewFW_STM32 = false;
 bool WIFI_NewFW_FPGA = false;
+bool WIFI_downloadFileToSD_compleated = false;
 
 void WIFI_Init(void)
 {
@@ -124,7 +126,7 @@ void WIFI_Process(void)
 		WIFI_Init();
 		return;
 	}
-
+	//println(WIFI_State, " ",WIFI_PROCESS_COMMAND);
 	/////////
 
 	switch (WIFI_State)
@@ -267,7 +269,7 @@ void WIFI_Process(void)
 
 	case WIFI_READY:
 		WIFI_TryGetLine();
-		WIFI_ProcessingCommandCallback = 0;
+		//WIFI_ProcessingCommandCallback = 0;
 		//receive commands from WIFI clients
 		if (strstr(WIFI_readedLine, "+IPD") != NULL && WIFI_ProcessingCommand != WIFI_COMM_TCP_GET_RESPONSE && WIFI_CAT_server_started)
 		{
@@ -535,6 +537,7 @@ void WIFI_Process(void)
 												sprintf(com_t, "AT+CIPSNTPCFG=1,%d,\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n", TRX.WIFI_TIMEZONE);
 												WIFI_SendCommand(com_t); //configure SNMP
 												WIFI_WaitForOk();
+												WIFI_State = WIFI_READY;
 											}
 										}
 									}
@@ -568,7 +571,7 @@ void WIFI_Process(void)
 					}
 				}
 			}
-			else if (WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE) //GetIP Command process
+			else if (WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE) //TCP_GET_RESPONSE Command process
 			{
 				char *istr;
 				istr = strstr(WIFI_readedLine, "+IPD");
@@ -921,7 +924,9 @@ static void WIFI_getHTTPResponse(void)
 			WIFI_ProcessingCommand = WIFI_COMM_NONE;
 			WIFI_State = WIFI_READY;
 			if (WIFI_ProcessingCommandCallback != NULL)
+			{
 				WIFI_ProcessingCommandCallback();
+			}
 		}
 	}
 }
@@ -1149,16 +1154,27 @@ void WIFI_checkFWUpdates(void)
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_checkFWUpdates_callback, false);
 }
 
+static char* WIFI_downloadFileToSD_filename;
+static char WIFI_downloadFileToSD_url[128] = {0};
+static uint32_t WIFI_downloadFileToSD_startIndex = 0;
+#define WIFI_downloadFileToSD_part_size 1000
 static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 {
-	println("File part downloaded");
-	sysmenu_ota_opened = true;
-	LCD_busy = false;
-	LCD_UpdateQuery.SystemMenuRedraw = true;
+	if(WIFI_downloadFileToSD_compleated)
+	{
+		sysmenu_ota_opened = true;
+		LCD_busy = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+	else
+	{
+		char url[128] = {0};
+		sprintf(url, "%s&start=%d&count=%d", WIFI_downloadFileToSD_url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
+		println("[WIFI] Get next file part");
+		WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false);
+	}
 }
 
-static bool WIFI_downloadFileToSD_compleated = false;
-static char* WIFI_downloadFileToSD_filename;
 static void WIFI_downloadFileToSD_callback(void)
 {
 	if (WIFI_HTTP_Response_Status == 200)
@@ -1187,11 +1203,14 @@ static void WIFI_downloadFileToSD_callback(void)
 			dma_memcpy((char*)SD_workbuffer_B, WIFI_HTTResponseHTML, WIFI_DecodedStreamBuffer_index);
 			SDCOMM_WRITE_TO_FILE_callback = WIFI_WIFI_downloadFileToSD_callback_writed;
 			SDCOMM_WRITE_TO_FILE_partsize = WIFI_DecodedStreamBuffer_index;
+			println("File part ", WIFI_downloadFileToSD_startIndex, " downloaded");
+			WIFI_downloadFileToSD_startIndex += WIFI_DecodedStreamBuffer_index;
 			SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
 		}
 		else
 		{
 			WIFI_downloadFileToSD_compleated = true;
+			WIFI_WIFI_downloadFileToSD_callback_writed();
 		}
 	}
 	else
@@ -1208,5 +1227,8 @@ void WIFI_downloadFileToSD(char* url, char* filename)
 	if (WIFI_connected && WIFI_State != WIFI_READY)
 		return;
 	WIFI_downloadFileToSD_filename = filename;
+	WIFI_downloadFileToSD_startIndex = 0;
+	strcpy(WIFI_downloadFileToSD_url, url);
+	sprintf(url, "%s&start=%d&count=%d", url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false);
 }
