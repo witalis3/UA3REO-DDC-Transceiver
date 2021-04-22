@@ -271,10 +271,12 @@ int main(void)
   {
     LCDDriver_Fill(rgb888torgb565(243, 243, 243));
     LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo.width) / 2), ((LCD_HEIGHT - IMAGES_logo.height) / 2), &IMAGES_logo, BG_COLOR, BG_COLOR);
-    LCDDriver_printText(version_string, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
+    strcpy(greetings_buff, "ver. ");
+    strcat(greetings_buff, version_string);
+		LCDDriver_printText(greetings_buff, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
     //show callsign greetings
     uint16_t x1, y1, w, h;
-    strcat(greetings_buff, "Hello, ");
+    strcpy(greetings_buff, "Hello, ");
     strcat(greetings_buff, TRX.CALLSIGN);
     strcat(greetings_buff, " !");
     LCDDriver_getTextBounds(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, &FreeSans9pt7b);

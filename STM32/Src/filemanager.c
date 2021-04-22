@@ -501,9 +501,9 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_BYTES;
 		HAL_CRC_Init(&hcrc);
 		
-    FILINFO FileInfo;
-    f_stat("firmware_fpga.jic", &FileInfo);
-		println("Filesize: ", FileInfo.fsize);
+    //FILINFO FileInfo;
+    //f_stat("firmware_fpga.jic", &FileInfo);
+		//println("Filesize: ", FileInfo.fsize);
 		
 		if (f_open(&File, "firmware_fpga.jic", FA_READ | FA_OPEN_EXISTING) == FR_OK)
 		{
@@ -547,11 +547,19 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			else
 			{
 				LCD_showInfo("CRC ERROR", true);
-				sysmenu_ota_opened_state = 16;
+				sysmenu_ota_opened_state = 1;
+				downloaded_fpga_fw = false;
+				LCD_UpdateQuery.SystemMenuRedraw = true;
+				return;
 			}
 		}
 		else
-			sysmenu_ota_opened_state = 16;
+		{
+			sysmenu_ota_opened_state = 1;
+			downloaded_fpga_fw = false;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+			return;
+		}
 	}
 	if(sysmenu_ota_opened_state == 10) //STM32
 	{
@@ -610,17 +618,42 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			else
 			{
 				LCD_showInfo("CRC ERROR", true);
-				sysmenu_ota_opened_state = 16;
+				sysmenu_ota_opened_state = 5;
+				downloaded_fpga_fw = false;
+				LCD_UpdateQuery.SystemMenuRedraw = true;
+				return;
 			}
 		}
 		else
-			sysmenu_ota_opened_state = 16;
+		{
+			sysmenu_ota_opened_state = 5;
+			downloaded_fpga_fw = false;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+			return;
+		}
 	}
 	//flash
 	if(sysmenu_ota_opened_state == 15)
 	{
 		LCD_showInfo("Flashing", true);
-		
+		if(WIFI_NewFW_FPGA && WIFI_NewFW_STM32)
+		{
+			strcpy((char*)SD_workbuffer_A, "firmware_fpga.jic");
+			SDCOMM_FLASH_JIC_handler(false);
+			strcpy((char*)SD_workbuffer_A, "firmware_stm32.bin");
+			SDCOMM_FLASH_BIN_handler();
+		}
+		else if(WIFI_NewFW_FPGA)
+		{
+			strcpy((char*)SD_workbuffer_A, "firmware_fpga.jic");
+			SDCOMM_FLASH_JIC_handler(true);
+		}
+		else if(WIFI_NewFW_STM32)
+		{
+			strcpy((char*)SD_workbuffer_A, "firmware_stm32.bin");
+			SDCOMM_FLASH_BIN_handler();
+		}
+			
 		sysmenu_ota_opened_state = 16;
 	}
 	//finish

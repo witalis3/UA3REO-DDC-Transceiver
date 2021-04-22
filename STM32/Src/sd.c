@@ -58,8 +58,6 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void);
 static void SDCOMM_LIST_DIRECTORY_handler(void);
 static void SDCOMM_DELETE_FILE_handler(void);
 static void SDCOMM_READ_PLAY_FILE_handler(void);
-static void SDCOMM_FLASH_BIN_handler(void);
-static void SDCOMM_FLASH_JIC_handler(void);
 static void SDCOMM_WRITE_TO_FILE_handler(void);
 
 bool SD_isIdle(void)
@@ -181,7 +179,7 @@ void SD_Process(void)
 			SDCOMM_FLASH_BIN_handler();
 			break;
 		case SDCOMM_FLASH_JIC:
-			SDCOMM_FLASH_JIC_handler();
+			SDCOMM_FLASH_JIC_handler(true);
 			break;
 		case SDCOMM_WRITE_TO_FILE:
 			SDCOMM_WRITE_TO_FILE_handler();
@@ -356,7 +354,7 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 	return false;
 }
 
-static void SDCOMM_FLASH_BIN_handler(void)
+void SDCOMM_FLASH_BIN_handler(void)
 {
 	if (f_open(&File, (TCHAR*)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK)
 	{
@@ -521,7 +519,7 @@ static void SDCOMM_FLASH_BIN_handler(void)
 	}
 }
 
-static void SDCOMM_FLASH_JIC_handler(void)
+void SDCOMM_FLASH_JIC_handler(bool restart)
 {
 	if (f_open(&File, (TCHAR*)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK)
 	{
@@ -590,7 +588,8 @@ static void SDCOMM_FLASH_JIC_handler(void)
 		f_close(&File);
 		LCD_showInfo("Finished...", true);
 		//HAL_NVIC_SystemReset();
-		SCB->AIRCR = 0x05FA0004; // software reset
+		if(restart)
+			SCB->AIRCR = 0x05FA0004; // software reset
 	}
 	else
 	{

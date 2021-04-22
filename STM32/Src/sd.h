@@ -96,5 +96,7 @@ extern uint8_t SD_cmd(uint8_t cmd, uint32_t arg);
 extern void SD_Process(void);
 extern bool SD_isIdle(void);
 extern bool SD_doCommand(SD_COMMAND command, bool force);
+extern void SDCOMM_FLASH_JIC_handler(bool restart);
+extern void SDCOMM_FLASH_BIN_handler(void);
 //--------------------------------------------------
 #endif /* SD_H_ */

@@ -267,6 +267,10 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 
 * Launch STM32 USB firmware update over DFU mode
 
+### OTA Update
+
+* Launch FPGA/STM32 firmware update over internet
+
 ### System info
 
 * Show info about TRX
