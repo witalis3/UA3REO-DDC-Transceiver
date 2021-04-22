@@ -62,6 +62,7 @@ typedef enum
 	SDCOMM_WRITE_TO_FILE,
 } SD_COMMAND;
 
+extern FIL File;
 extern sd_info_ptr sdinfo;
 extern FATFS SDFatFs;
 extern bool SD_RecordInProcess;

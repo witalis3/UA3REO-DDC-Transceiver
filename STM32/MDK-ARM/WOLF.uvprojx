@@ -1058,6 +1058,16 @@
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc_ex.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2306,6 +2316,16 @@
               <FileName>stm32h7xx_ll_usb.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc_ex.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3625,6 +3645,16 @@
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc_ex.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4942,6 +4972,16 @@
               <FileName>stm32h7xx_ll_usb.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc_ex.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -6261,6 +6301,16 @@
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc_ex.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -7579,6 +7629,16 @@
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc_ex.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8896,6 +8956,16 @@
               <FileName>stm32h7xx_ll_usb.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_crc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc_ex.c</FilePath>
             </File>
           </Files>
         </Group>

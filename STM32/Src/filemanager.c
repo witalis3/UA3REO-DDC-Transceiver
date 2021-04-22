@@ -393,8 +393,8 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		f_unlink((TCHAR*)SD_workbuffer_A);
 		f_unlink((TCHAR*)SD_workbuffer_A);
 		strcpy((char*)SD_workbuffer_A, "firmware_fpga.jic");
-		//f_unlink((TCHAR*)SD_workbuffer_A);
-		//f_unlink((TCHAR*)SD_workbuffer_A);
+		f_unlink((TCHAR*)SD_workbuffer_A);
+		f_unlink((TCHAR*)SD_workbuffer_A);
 		strcpy((char*)SD_workbuffer_A, "firmware_fpga.crc");
 		f_unlink((TCHAR*)SD_workbuffer_A);
 		f_unlink((TCHAR*)SD_workbuffer_A);
@@ -416,9 +416,8 @@ void FILEMANAGER_OTAUpdate_handler(void)
 	{
 		LCD_showInfo("Downloading FPGA FW to SD", false);
 		sysmenu_ota_opened_state = 2;
-		//sprintf(url, "/trx_services/get_fw.php?type=fpga&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
-		//WIFI_downloadFileToSD(url, "firmware_fpga.jic");
-		WIFI_downloadFileToSD_compleated = true; LCD_UpdateQuery.SystemMenuRedraw = true;
+		sprintf(url, "/trx_services/get_fw.php?type=fpga&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
+		WIFI_downloadFileToSD(url, "firmware_fpga.jic");
 		return;
 	}
 	if(sysmenu_ota_opened_state == 2 && WIFI_downloadFileToSD_compleated)
@@ -489,18 +488,143 @@ void FILEMANAGER_OTAUpdate_handler(void)
 	//Check CRC
 	if(sysmenu_ota_opened_state == 9) //FPGA
 	{
-		CRC_ResetDR(); // ?????
-		for(i=0;i<size_file ;i+=4)
-		CRC_CalcCRC(flash_read(0x08000000+i));
-		crc=CRC_GetCRC();
-		sysmenu_ota_opened_state = 15;
+		LCD_showInfo("Check FPGA FW CRC", true);
+		
+		uint32_t FileCRCValue = 0;
+		uint32_t NeedCRCValue = 0;
+		
+		hcrc.Instance = CRC;
+		hcrc.Init.DefaultPolynomialUse    = DEFAULT_POLYNOMIAL_ENABLE;
+		hcrc.Init.DefaultInitValueUse     = DEFAULT_INIT_VALUE_ENABLE;
+		hcrc.Init.InputDataInversionMode  = CRC_INPUTDATA_INVERSION_NONE;
+		hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+		hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_BYTES;
+		HAL_CRC_Init(&hcrc);
+		
+    FILINFO FileInfo;
+    f_stat("firmware_fpga.jic", &FileInfo);
+		println("Filesize: ", FileInfo.fsize);
+		
+		if (f_open(&File, "firmware_fpga.jic", FA_READ | FA_OPEN_EXISTING) == FR_OK)
+		{
+			__HAL_CRC_DR_RESET(&hcrc);
+			uint32_t bytesreaded;
+			uint32_t bytesprocessed;
+			bool read_flag = true;
+			while(read_flag)
+			{
+				if(f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded) != FR_OK || bytesreaded == 0)
+				{
+					read_flag = false;
+				}
+				else
+				{
+					bytesprocessed += bytesreaded;
+					FileCRCValue = __REV(~HAL_CRC_Accumulate(&hcrc, (uint32_t *)SD_workbuffer_A, bytesreaded));
+				}
+			}
+			f_close(&File);
+			
+			//read original CRC
+			f_open(&File, "firmware_fpga.crc", FA_READ | FA_OPEN_EXISTING);
+			dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+			f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded);
+			println("Need CRC: ", (char*)SD_workbuffer_A);
+			
+			//compare
+			char tmp[16] = {0};
+			sprintf(tmp, "%u", FileCRCValue);
+			println("File CRC: ", tmp);
+			if(strstr((char*)SD_workbuffer_A, tmp) != NULL)
+			{
+				LCD_showInfo("CRC OK", true);
+				
+				if(WIFI_NewFW_STM32)
+					sysmenu_ota_opened_state = 10;
+				else
+					sysmenu_ota_opened_state = 15;
+			}
+			else
+			{
+				LCD_showInfo("CRC ERROR", true);
+				sysmenu_ota_opened_state = 16;
+			}
+		}
+		else
+			sysmenu_ota_opened_state = 16;
 	}
 	if(sysmenu_ota_opened_state == 10) //STM32
 	{
-		sysmenu_ota_opened_state = 15;
+		LCD_showInfo("Check STM32 FW CRC", true);
+		
+		uint32_t FileCRCValue = 0;
+		uint32_t NeedCRCValue = 0;
+		
+		hcrc.Instance = CRC;
+		hcrc.Init.DefaultPolynomialUse    = DEFAULT_POLYNOMIAL_ENABLE;
+		hcrc.Init.DefaultInitValueUse     = DEFAULT_INIT_VALUE_ENABLE;
+		hcrc.Init.InputDataInversionMode  = CRC_INPUTDATA_INVERSION_NONE;
+		hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+		hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_BYTES;
+		HAL_CRC_Init(&hcrc);
+		
+    //FILINFO FileInfo;
+    //f_stat("firmware_fpga.jic", &FileInfo);
+		//println(FileInfo.fsize);
+		
+		if (f_open(&File, "firmware_stm32.bin", FA_READ | FA_OPEN_EXISTING) == FR_OK)
+		{
+			__HAL_CRC_DR_RESET(&hcrc);
+			uint32_t bytesreaded;
+			uint32_t bytesprocessed;
+			bool read_flag = true;
+			while(read_flag)
+			{
+				if(f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded) != FR_OK || bytesreaded == 0)
+				{
+					read_flag = false;
+				}
+				else
+				{
+					bytesprocessed += bytesreaded;
+					FileCRCValue = __REV(~HAL_CRC_Accumulate(&hcrc, (uint32_t *)SD_workbuffer_A, bytesreaded));
+				}
+			}
+			f_close(&File);
+			
+			//read original CRC
+			f_open(&File, "firmware_stm32.crc", FA_READ | FA_OPEN_EXISTING);
+			dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+			f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded);
+			println("Need CRC: ", (char*)SD_workbuffer_A);
+			
+			//compare
+			char tmp[16] = {0};
+			sprintf(tmp, "%u", FileCRCValue);
+			println("File CRC: ", tmp);
+			if(strstr((char*)SD_workbuffer_A, tmp) != NULL)
+			{
+				LCD_showInfo("CRC OK", true);
+				sysmenu_ota_opened_state = 15;
+			}
+			else
+			{
+				LCD_showInfo("CRC ERROR", true);
+				sysmenu_ota_opened_state = 16;
+			}
+		}
+		else
+			sysmenu_ota_opened_state = 16;
+	}
+	//flash
+	if(sysmenu_ota_opened_state == 15)
+	{
+		LCD_showInfo("Flashing", true);
+		
+		sysmenu_ota_opened_state = 16;
 	}
 	//finish
-	if(sysmenu_ota_opened_state == 15)
+	if(sysmenu_ota_opened_state == 16)
 	{
 		LCD_showInfo("Finished", true);
 		

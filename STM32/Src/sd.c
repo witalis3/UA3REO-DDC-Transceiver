@@ -36,7 +36,7 @@ static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 uint32_t SDCOMM_WRITE_TO_FILE_partsize = 0;
 void (*SDCOMM_WRITE_TO_FILE_callback)(void);
 	
-SRAM static FIL File = {0};
+SRAM FIL File = {0};
 SRAM static FILINFO fileInfo = {0};
 SRAM static DIR dir = {0};
 SRAM BYTE SD_workbuffer_A[_MAX_SS] = {0};

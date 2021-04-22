@@ -75,6 +75,8 @@ extern MDMA_HandleTypeDef hmdma_mdma_channel43_sw_0;
 extern MDMA_HandleTypeDef hmdma_mdma_channel44_sw_0;
 extern SRAM_HandleTypeDef hsram1;
 
+extern CRC_HandleTypeDef hcrc;
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
