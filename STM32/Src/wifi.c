@@ -50,7 +50,7 @@ static uint32_t WIFI_HTTP_Response_ContentLength = 0;
 SRAM static char WIFI_HOSTuri[128] = {0};
 SRAM static char WIFI_GETuri[128] = {0};
 SRAM static char WIFI_HTTRequest[128] = {0};
-SRAM static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
+SRAM4 static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
 bool WIFI_NewFW_checked = false;
 bool WIFI_NewFW_STM32 = false;
 bool WIFI_NewFW_FPGA = false;
@@ -1188,10 +1188,11 @@ void WIFI_checkFWUpdates(void)
 static char* WIFI_downloadFileToSD_filename;
 static char WIFI_downloadFileToSD_url[128] = {0};
 static uint32_t WIFI_downloadFileToSD_startIndex = 0;
-#define WIFI_downloadFileToSD_part_size 1000
+#define WIFI_downloadFileToSD_part_size 2000
 static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 {
 	static int32_t downloaded_kb_prev = 0;
+	static int32_t downloaded_kb_sleep = 0;
 	if(WIFI_downloadFileToSD_compleated)
 	{
 		sysmenu_ota_opened = true;
@@ -1214,6 +1215,11 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 			LCD_showInfo(buff, false);
 			downloaded_kb_prev = downloaded_kb;
 		}
+		if(abs(downloaded_kb_sleep - downloaded_kb) >= 100)
+		{
+			HAL_Delay(1000); //some sleep time for ESP
+			downloaded_kb_sleep = downloaded_kb;
+		}
 	}
 }
 
@@ -1227,6 +1233,7 @@ static void WIFI_downloadFileToSD_callback(void)
 		uint32_t WIFI_DecodedStreamBuffer_index = 0;
 		int16_t val = 0;
 		uint32_t len = strlen(WIFI_HTTResponseHTML);
+		println(len);
 		while (*istr != 0 && (len >= ((WIFI_DecodedStreamBuffer_index * 2) + 2)))
 		{
 			//Get hex
