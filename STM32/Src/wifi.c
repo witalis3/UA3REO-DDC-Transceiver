@@ -334,8 +334,13 @@ void WIFI_Process(void)
 		{
 			println("[WIFI] command timeout");
 			
-			if(get_HTTP_tryes < 3 && (WIFI_ProcessingCommand == WIFI_COMM_TCP_CONNECT || WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE))
+			if(get_HTTP_tryes < 6 && (WIFI_ProcessingCommand == WIFI_COMM_TCP_CONNECT || WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE))
 			{
+				if(get_HTTP_tryes >= 3)
+				{
+					WIFI_SendCommand("AT+CIPCLOSE=0\r\n");
+					WIFI_WaitForOk();
+				}
 				WIFI_State = WIFI_READY;
 				WIFI_getHTTPpage("", "", NULL, false, true);
 				return;
@@ -1186,6 +1191,7 @@ static uint32_t WIFI_downloadFileToSD_startIndex = 0;
 #define WIFI_downloadFileToSD_part_size 1000
 static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 {
+	static int32_t downloaded_kb_prev = 0;
 	if(WIFI_downloadFileToSD_compleated)
 	{
 		sysmenu_ota_opened = true;
@@ -1198,6 +1204,16 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 		sprintf(url, "%s&start=%d&count=%d", WIFI_downloadFileToSD_url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
 		println("[WIFI] Get next file part");
 		WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false, false);
+		
+		//progress
+		int32_t downloaded_kb = WIFI_downloadFileToSD_startIndex / 1024;
+		if(abs(downloaded_kb_prev - downloaded_kb) >= 10)
+		{
+			char buff[64]={0};
+			sprintf(buff, "Downloading file to SD ... %dk", downloaded_kb);
+			LCD_showInfo(buff, false);
+			downloaded_kb_prev = downloaded_kb;
+		}
 	}
 }
 

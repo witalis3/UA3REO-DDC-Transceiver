@@ -237,7 +237,6 @@ int main(void)
   HAL_EnableCompensationCell();
   println("\r\n----------------------------------");
   println("Wolf Transceiver Initialization...");
-  InitSettings();
   println("[OK] USB init");
   USBD_Restart();
   println("[OK] FIFO timer TIM7 init");

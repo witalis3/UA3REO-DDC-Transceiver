@@ -60,31 +60,6 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"NOTX",
 };
 
-void InitSettings(void)
-{
-	static bool already_inited = false;
-	if (already_inited)
-		return;
-	already_inited = true;
-
-	//concat build date to version -yymmdd.hhmm
-	uint8_t cur_len = (uint8_t)strlen(version_string);
-	strcat(version_string, "-");
-	version_string[++cur_len] = BUILD_YEAR_CH2;
-	version_string[++cur_len] = BUILD_YEAR_CH3;
-	version_string[++cur_len] = BUILD_MONTH_CH0;
-	version_string[++cur_len] = BUILD_MONTH_CH1;
-	version_string[++cur_len] = BUILD_DAY_CH0;
-	version_string[++cur_len] = BUILD_DAY_CH1;
-	version_string[++cur_len] = '.';
-	version_string[++cur_len] = BUILD_HOUR_CH0;
-	version_string[++cur_len] = BUILD_HOUR_CH1;
-	version_string[++cur_len] = BUILD_MIN_CH0;
-	version_string[++cur_len] = BUILD_MIN_CH1;
-	version_string[++cur_len] = '\0';
-	println(version_string);
-}
-
 void LoadSettings(bool clear)
 {
 	BKPSRAM_Enable();

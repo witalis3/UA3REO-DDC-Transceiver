@@ -446,7 +446,6 @@ extern volatile bool NeedSaveSettings;
 extern volatile bool NeedSaveCalibration;
 extern volatile bool EEPROM_Busy;
 
-extern void InitSettings(void);
 extern void LoadSettings(bool clear);
 extern void LoadCalibration(bool clear);
 extern void SaveSettings(void);
