@@ -402,13 +402,16 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		downloaded_fpga_crc = false;
 		downloaded_stm_fw = false;
 		downloaded_stm_crc = false;
-		sysmenu_ota_opened_state = 1;
+		if(WIFI_NewFW_FPGA)
+			sysmenu_ota_opened_state = 1;
+		else
+			sysmenu_ota_opened_state = 5;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
 	//config
 	char url[128] = {0};
-	//downloading
+	//downloading FPGA
 	if(sysmenu_ota_opened_state == 1 && WIFI_NewFW_FPGA && !downloaded_fpga_fw)
 	{
 		LCD_showInfo("Downloading FPGA FW to SD", false);
@@ -425,8 +428,74 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
+	//downloading FPGA CRC
+	if(sysmenu_ota_opened_state == 3 && WIFI_NewFW_FPGA && !downloaded_fpga_crc)
+	{
+		LCD_showInfo("Downloading FPGA CRC to SD", false);
+		sysmenu_ota_opened_state = 4;
+		sprintf(url, "/trx_services/get_fw.php?type=fpga_crc&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
+		WIFI_downloadFileToSD(url, "firmware_fpga.crc");
+		return;
+	}
+	if(sysmenu_ota_opened_state == 4 && WIFI_downloadFileToSD_compleated)
+	{
+		LCD_showInfo("FPGA CRC downloaded", true);
+		downloaded_fpga_crc = true;
+		if(WIFI_NewFW_STM32)
+			sysmenu_ota_opened_state = 5;
+		else
+			sysmenu_ota_opened_state = 9;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		return;
+	}
+	//downloading STM
+	if(sysmenu_ota_opened_state == 5 && WIFI_NewFW_FPGA && !downloaded_stm_fw)
+	{
+		LCD_showInfo("Downloading STM32 FW to SD", false);
+		sysmenu_ota_opened_state = 6;
+		sprintf(url, "/trx_services/get_fw.php?type=stm32&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
+		WIFI_downloadFileToSD(url, "firmware_stm32.bin");
+		return;
+	}
+	if(sysmenu_ota_opened_state == 6 && WIFI_downloadFileToSD_compleated)
+	{
+		LCD_showInfo("FPGA FW downloaded", true);
+		downloaded_stm_fw = true;
+		sysmenu_ota_opened_state = 7;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		return;
+	}
+	//downloading FPGA CRC
+	if(sysmenu_ota_opened_state == 7 && WIFI_NewFW_FPGA && !downloaded_stm_crc)
+	{
+		LCD_showInfo("Downloading STM32 CRC to SD", false);
+		sysmenu_ota_opened_state = 8;
+		sprintf(url, "/trx_services/get_fw.php?type=stm32_crc&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
+		WIFI_downloadFileToSD(url, "firmware_stm32.crc");
+		return;
+	}
+	if(sysmenu_ota_opened_state == 8 && WIFI_downloadFileToSD_compleated)
+	{
+		LCD_showInfo("STM32 CRC downloaded", true);
+		downloaded_stm_crc = true;
+		if(WIFI_NewFW_FPGA)
+			sysmenu_ota_opened_state = 9;
+		else
+			sysmenu_ota_opened_state = 10;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		return;
+	}
+	//Check CRC
+	if(sysmenu_ota_opened_state == 9)
+	{
+		sysmenu_ota_opened_state = 15;
+	}
+	if(sysmenu_ota_opened_state == 10)
+	{
+		sysmenu_ota_opened_state = 15;
+	}
 	//finish
-	if(sysmenu_ota_opened_state == 3)
+	if(sysmenu_ota_opened_state == 15)
 	{
 		LCD_showInfo("Finished", true);
 		

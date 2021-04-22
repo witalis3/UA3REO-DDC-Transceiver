@@ -142,8 +142,8 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CWDHCP=1,1\r\n"); //DHCP
 		WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CIPDNS_CUR=1,\"8.8.8.8\"\r\n"); //DNS
-		WIFI_WaitForOk();
+		WIFI_SendCommand("AT+CIPDNS_CUR=1,\"8.8.8.8\",\"77.88.8.8\"\r\n"); //DNS
+		//WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); //Hostname
 		WIFI_WaitForOk();
 		//WIFI_SendCommand("AT+CWCOUNTRY=1,\"RU\",1,13\r\n"); //Country
@@ -334,7 +334,7 @@ void WIFI_Process(void)
 		{
 			println("[WIFI] command timeout");
 			
-			if(get_HTTP_tryes < 6 && (WIFI_ProcessingCommand == WIFI_COMM_TCP_CONNECT || WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE))
+			if(WIFI_ProcessingCommand == WIFI_COMM_TCP_CONNECT || WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE)
 			{
 				if(get_HTTP_tryes >= 3)
 				{
@@ -1217,7 +1217,7 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 		}
 		if(abs(downloaded_kb_sleep - downloaded_kb) >= 100)
 		{
-			HAL_Delay(1000); //some sleep time for ESP
+			HAL_Delay(3000); //some sleep time for ESP
 			downloaded_kb_sleep = downloaded_kb;
 		}
 	}
@@ -1276,6 +1276,7 @@ void WIFI_downloadFileToSD(char* url, char* filename)
 	if (WIFI_connected && WIFI_State != WIFI_READY)
 		return;
 	get_HTTP_tryes = 0;
+	WIFI_downloadFileToSD_compleated = false;
 	WIFI_downloadFileToSD_filename = filename;
 	WIFI_downloadFileToSD_startIndex = 0;
 	strcpy(WIFI_downloadFileToSD_url, url);
