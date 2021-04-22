@@ -314,8 +314,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		{
 			VFO *vfo = CurrentVFO();
 			uint32_t newfreq = 0;
-			float32_t freq_round = 0;
-			float32_t step = 0;
+			float64_t freq_round = 0;
+			float64_t step = 0;
 			if (TRX.ChannelMode && getBandFromFreq(vfo->Freq, false) != -1 && BANDS[getBandFromFreq(vfo->Freq, false)].channelsCount > 0)
 			{
 				int_fast8_t band = getBandFromFreq(vfo->Freq, false);
@@ -336,18 +336,18 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			}
 			else if (TRX.Fast)
 			{
-				step = (float32_t)TRX.FRQ_ENC_FAST_STEP;
+				step = (float64_t)TRX.FRQ_ENC_FAST_STEP;
 				if (CurrentVFO()->Mode == TRX_MODE_WFM)
-					step = step * 2;
-				freq_round = roundf((float32_t)vfo->Freq / step) * step;
+					step = step * 2.0;
+				freq_round = roundf((float64_t)vfo->Freq / step) * step;
 				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)step * direction);
 			}
 			else
 			{
-				step = (float32_t)TRX.FRQ_ENC_STEP;
+				step = (float64_t)TRX.FRQ_ENC_STEP;
 				if (CurrentVFO()->Mode == TRX_MODE_WFM)
-					step = step * 2;
-				freq_round = roundf((float32_t)vfo->Freq / step) * step;
+					step = step * 2.0;
+				freq_round = roundf((float64_t)vfo->Freq / step) * step;
 				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)step * direction);
 			}
 			TRX_setFrequency(newfreq, vfo);
