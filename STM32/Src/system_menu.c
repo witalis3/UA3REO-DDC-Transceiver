@@ -3982,6 +3982,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	else if (sysmenu_ota_opened)
 	{
 		FILEMANAGER_OTAUpdate_handler();
+		return;
 	}
 	else if (sysmenu_infowindow_opened)
 	{

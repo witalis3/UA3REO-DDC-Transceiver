@@ -1153,7 +1153,6 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 {
 	println("File part downloaded");
 	sysmenu_ota_opened = true;
-	sysmenu_ota_opened_state = 3;
 	LCD_busy = false;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }

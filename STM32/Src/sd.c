@@ -198,6 +198,7 @@ static void SDCOMM_WRITE_TO_FILE_handler(void)
 	{
 		uint32_t byteswritten;
 		FRESULT res = f_write(&File, SD_workbuffer_B, SDCOMM_WRITE_TO_FILE_partsize, (void *)&byteswritten);
+		f_close(&File);
 		if(res != FR_OK || byteswritten == 0)
 		{
 			println("SD file append error");

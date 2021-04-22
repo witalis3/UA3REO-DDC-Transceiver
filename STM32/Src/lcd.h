@@ -50,7 +50,7 @@ typedef struct
 } WindowType;
 
 extern void LCD_Init(void);
-extern void LCD_doEvents(void);
+extern bool LCD_doEvents(void);
 extern void LCD_showError(char text[], bool redraw);
 extern void LCD_showInfo(char text[], bool autohide);
 extern void LCD_redraw(bool do_now);

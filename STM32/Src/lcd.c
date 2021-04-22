@@ -58,6 +58,7 @@ static uint8_t Last_showed_Seconds = 255;
 static uint32_t Tooltip_DiplayStartTime = 0;
 static bool Tooltip_first_draw = true;
 static char Tooltip_string[64] = {0};
+static bool LCD_showInfo_opened = false;
 
 static TouchpadButton_handler TouchpadButton_handlers[64] = {0};
 static uint8_t TouchpadButton_handlers_count = 0;
@@ -1159,10 +1160,12 @@ void LCD_redraw(bool do_now)
 		LCD_doEvents();
 }
 
-void LCD_doEvents(void)
+bool LCD_doEvents(void)
 {
+	if (LCD_UpdateQuery.SystemMenuRedraw && LCD_showInfo_opened)
+		LCD_busy = false;
 	if (LCD_busy)
-		return;
+		return false;
 
 	if (LCD_UpdateQuery.Background)
 	{
@@ -1204,6 +1207,7 @@ void LCD_doEvents(void)
 		LCD_displayTextBar();
 	if (LCD_UpdateQuery.Tooltip)
 		LCD_printTooltip();
+	return true;
 }
 
 static void printInfoSmall(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t inactive_color, bool active)
@@ -1306,6 +1310,7 @@ void LCD_showError(char text[], bool redraw)
 
 void LCD_showInfo(char text[], bool autohide)
 {
+	LCD_showInfo_opened = true;
 	LCD_busy = true;
 	if (!LCD_inited)
 		LCD_Init();
@@ -1317,6 +1322,7 @@ void LCD_showInfo(char text[], bool autohide)
 	if (autohide)
 	{
 		HAL_Delay(2000);
+		LCD_showInfo_opened = false;
 		LCD_busy = false;
 		LCD_redraw(false);
 	}

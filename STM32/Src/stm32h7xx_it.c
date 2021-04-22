@@ -719,11 +719,8 @@ void TIM6_DAC_IRQHandler(void)
   else if (LCD_UpdateQuery.FreqInfo) //Redraw freq fast
     needLCDDoEvents = true;
 
-  if (needLCDDoEvents && !LCD_busy)
-  {
-    LCD_doEvents();
+  if (needLCDDoEvents && LCD_doEvents())
     needLCDDoEvents = false;
-  }
 
   static uint8_t needPrintFFT = 0;
   if (needPrintFFT < 10 && (ms10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec

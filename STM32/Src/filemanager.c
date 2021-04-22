@@ -369,12 +369,14 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		{
 			WIFI_checkFWUpdates();
 			LCD_showInfo("Checking updates", false);
+			LCD_UpdateQuery.SystemMenuRedraw = true;
 			return;
 		}
 		if(!WIFI_NewFW_STM32 && !WIFI_NewFW_FPGA)
 		{
 			LCD_showInfo("No updates", true);
 			sysmenu_ota_opened = false;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
 			return;
 		}
 		//delete old files
@@ -396,6 +398,8 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		f_unlink((TCHAR*)SD_workbuffer_A);
 		
 		sysmenu_ota_opened_state = 1;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		return;
 	}
 	//
 	if(sysmenu_ota_opened_state == 1)
@@ -405,9 +409,12 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		WIFI_downloadFileToSD("/trx_services/test.txt", "test.txt");
 		return;
 	}
-	if(sysmenu_ota_opened_state == 2) //download process
+	if(sysmenu_ota_opened_state == 2 && !SD_CommandInProcess && WIFI_State == WIFI_READY)
 	{
-		println("downloading...");
+		LCD_showInfo("FPGA FW downloaded", true);
+		sysmenu_ota_opened_state = 3;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		return;
 	}
 	if(sysmenu_ota_opened_state == 3)
 	{
