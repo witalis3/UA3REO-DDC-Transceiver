@@ -680,8 +680,8 @@ bool FFT_printFFT(void)
 	// calculate the colors for the waterfall
 	for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 	{
-		//if (FFTOutput_mean[fft_x] > fftHeight)
-		//FFTOutput_mean[fft_x] = fftHeight;
+		if (FFTOutput_mean[fft_x] > fftHeight)
+			FFTOutput_mean[fft_x] = fftHeight;
 
 		fft_header[fft_x] = FFTOutput_mean[fft_x];
 		indexed_wtf_buffer[0][fft_x] = fftHeight - FFTOutput_mean[fft_x];
