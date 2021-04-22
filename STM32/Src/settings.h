@@ -469,36 +469,36 @@ extern void RTC_Calibration(void);
 #endif
 
 #if defined(LCD_ILI9481) 
-static char otg_config_lcd[] = "ILI9481";
+static char ota_config_lcd[] = "ILI9481";
 #endif
 #if defined(LCD_HX8357B)
-static char otg_config_lcd[] = "HX8357B";
+static char ota_config_lcd[] = "HX8357B";
 #endif
 #if defined(LCD_HX8357C)
-static char otg_config_lcd[] = "HX8357C";
+static char ota_config_lcd[] = "HX8357C";
 #endif
 #if defined(LCD_ILI9486)
-static char otg_config_lcd[] = "ILI9486";
+static char ota_config_lcd[] = "ILI9486";
 #endif
 #if defined(LCD_ST7796S)
-static char otg_config_lcd[] = "ST7796S";
+static char ota_config_lcd[] = "ST7796S";
 #endif
 #if defined(LCD_RA8875)
-static char otg_config_lcd[] = "RA8875";
+static char ota_config_lcd[] = "RA8875";
 #endif
 #if defined(FRONTPANEL_BIG_V1)
-static char otg_config_frontpanel[] = "BIG";
+static char ota_config_frontpanel[] = "BIG";
 #endif
 #if defined(FRONTPANEL_SMALL_V1)
-static char otg_config_frontpanel[] = "SMALL";
-static char otg_config_tangent[] = "NONE";
-static char otg_config_touchpad[] = "NONE";
+static char ota_config_frontpanel[] = "SMALL";
+static char ota_config_tangent[] = "NONE";
+static char ota_config_touchpad[] = "NONE";
 #endif
 #if defined(TOUCHPAD_GT911)
-static char otg_config_touchpad[] = "GT911";
+static char ota_config_touchpad[] = "GT911";
 #endif
 #if defined(TANGENT_YAESU_MH36)
-static char otg_config_tangent[] = "YAESU_MH36";
+static char ota_config_tangent[] = "YAESU_MH36";
 #endif
 
 #endif

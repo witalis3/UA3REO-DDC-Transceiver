@@ -350,6 +350,11 @@ static void FILEMANAGER_DialogAction(void)
 
 void FILEMANAGER_OTAUpdate_handler(void)
 {
+	static bool downloaded_fpga_fw = false;
+	static bool downloaded_fpga_crc = false;
+	static bool downloaded_stm_fw = false;
+	static bool downloaded_stm_crc = false;
+	
 	sysmenu_ota_opened = true;
 	if(sysmenu_ota_opened_state == 0)
 	{
@@ -381,41 +386,46 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		}
 		//delete old files
 		LCD_showInfo("Clean old files...", false);
-		strcpy((char*)SD_workbuffer_A, "update_stm32.bin");
+		strcpy((char*)SD_workbuffer_A, "firmware_stm32.bin");
 		f_unlink((TCHAR*)SD_workbuffer_A);
 		f_unlink((TCHAR*)SD_workbuffer_A);
-		strcpy((char*)SD_workbuffer_A, "update_stm32.crc");
+		strcpy((char*)SD_workbuffer_A, "firmware_stm32.crc");
 		f_unlink((TCHAR*)SD_workbuffer_A);
 		f_unlink((TCHAR*)SD_workbuffer_A);
-		strcpy((char*)SD_workbuffer_A, "update_fpga.jic");
+		strcpy((char*)SD_workbuffer_A, "firmware_fpga.jic");
 		f_unlink((TCHAR*)SD_workbuffer_A);
 		f_unlink((TCHAR*)SD_workbuffer_A);
-		strcpy((char*)SD_workbuffer_A, "update_fpga.crc");
+		strcpy((char*)SD_workbuffer_A, "firmware_fpga.crc");
 		f_unlink((TCHAR*)SD_workbuffer_A);
 		f_unlink((TCHAR*)SD_workbuffer_A);
-		strcpy((char*)SD_workbuffer_A, "test.txt");
-		f_unlink((TCHAR*)SD_workbuffer_A);
-		f_unlink((TCHAR*)SD_workbuffer_A);
-		
+		downloaded_fpga_fw = false;
+		downloaded_fpga_crc = false;
+		downloaded_stm_fw = false;
+		downloaded_stm_crc = false;
 		sysmenu_ota_opened_state = 1;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
-	//
-	if(sysmenu_ota_opened_state == 1)
+	//config
+	char url[128] = {0};
+	//downloading
+	if(sysmenu_ota_opened_state == 1 && WIFI_NewFW_FPGA && !downloaded_fpga_fw)
 	{
 		LCD_showInfo("Downloading FPGA FW to SD", false);
 		sysmenu_ota_opened_state = 2;
-		WIFI_downloadFileToSD("/trx_services/test.txt", "test.txt");
+		sprintf(url, "/trx_services/get_fw.php?type=fpga&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
+		WIFI_downloadFileToSD(url, "firmware_fpga.jic");
 		return;
 	}
-	if(sysmenu_ota_opened_state == 2 && !SD_CommandInProcess && WIFI_State == WIFI_READY)
+	if(sysmenu_ota_opened_state == 2 && !SD_CommandInProcess && WIFI_State == WIFI_READY && WIFI_NewFW_FPGA)
 	{
 		LCD_showInfo("FPGA FW downloaded", true);
+		downloaded_fpga_fw = true;
 		sysmenu_ota_opened_state = 3;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
+	//finish
 	if(sysmenu_ota_opened_state == 3)
 	{
 		LCD_showInfo("Finished", true);

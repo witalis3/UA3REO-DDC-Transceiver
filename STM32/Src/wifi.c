@@ -85,7 +85,7 @@ void WIFI_Init(void)
 		WIFI_SendCommand("AT+CIPSTATUS\r\n");
 		while (WIFI_TryGetLine())
 		{
-			if (strstr(WIFI_readedLine, "STATUS:2") != NULL)
+			if (strstr(WIFI_readedLine, "STATUS:2") != NULL || strstr(WIFI_readedLine, "STATUS:4") != NULL)
 			{
 				WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); //AUTOCONNECT
 				WIFI_WaitForOk();
@@ -1157,16 +1157,42 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+static bool WIFI_downloadFileToSD_compleated = false;
 static char* WIFI_downloadFileToSD_filename;
 static void WIFI_downloadFileToSD_callback(void)
 {
 	if (WIFI_HTTP_Response_Status == 200)
 	{
-		strcpy((char*)SD_workbuffer_A, WIFI_downloadFileToSD_filename);
-		strcpy((char*)SD_workbuffer_B, WIFI_HTTResponseHTML);
-		SDCOMM_WRITE_TO_FILE_callback = WIFI_WIFI_downloadFileToSD_callback_writed;
-		SDCOMM_WRITE_TO_FILE_partsize = strlen(WIFI_HTTResponseHTML);
-		SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
+		//parse hex output from server (convert to bin)
+		char *istr = WIFI_HTTResponseHTML;
+		char hex[5] = {0};
+		uint32_t WIFI_DecodedStreamBuffer_index = 0;
+		int16_t val = 0;
+		uint32_t len = strlen(WIFI_HTTResponseHTML);
+		while (*istr != 0 && (len >= ((WIFI_DecodedStreamBuffer_index * 2) + 2)))
+		{
+			//Get hex
+			strncpy(hex, istr, 2);
+			val = (int16_t)(strtol(hex, NULL, 16));
+			istr += 2;
+			//Save
+			WIFI_HTTResponseHTML[WIFI_DecodedStreamBuffer_index] = val;
+			WIFI_DecodedStreamBuffer_index++;
+		}
+		//
+		if(WIFI_DecodedStreamBuffer_index > 0)
+		{
+			WIFI_downloadFileToSD_compleated = false;
+			strcpy((char*)SD_workbuffer_A, WIFI_downloadFileToSD_filename);
+			dma_memcpy((char*)SD_workbuffer_B, WIFI_HTTResponseHTML, WIFI_DecodedStreamBuffer_index);
+			SDCOMM_WRITE_TO_FILE_callback = WIFI_WIFI_downloadFileToSD_callback_writed;
+			SDCOMM_WRITE_TO_FILE_partsize = WIFI_DecodedStreamBuffer_index;
+			SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
+		}
+		else
+		{
+			WIFI_downloadFileToSD_compleated = true;
+		}
 	}
 	else
 	{

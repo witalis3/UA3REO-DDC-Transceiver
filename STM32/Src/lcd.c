@@ -1314,7 +1314,7 @@ void LCD_showInfo(char text[], bool autohide)
 	LCD_busy = true;
 	if (!LCD_inited)
 		LCD_Init();
-
+	println((char*)text);
 	LCDDriver_Fill(BG_COLOR);
 	uint16_t x1, y1, w, h;
 	LCDDriver_getTextBounds(text, 0, 0, &x1, &y1, &w, &h, (GFXfont *)&FreeSans12pt7b);
