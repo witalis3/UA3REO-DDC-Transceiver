@@ -25,6 +25,7 @@ static uint32_t WIFI_Answer_ReadIndex = 0;
 static uint32_t commandStartTime = 0;
 static uint8_t WIFI_FoundedAP_Index = 0;
 static bool WIFI_stop_auto_ap_list = false;
+static uint8_t get_HTTP_tryes = 0;
 
 static void WIFI_SendCommand(char *command);
 static bool WIFI_WaitForOk(void);
@@ -331,8 +332,19 @@ void WIFI_Process(void)
 		WIFI_TryGetLine();
 		if ((HAL_GetTick() - commandStartTime) > WIFI_COMMAND_TIMEOUT)
 		{
-			WIFI_State = WIFI_TIMEOUT;
-			WIFI_ProcessingCommand = WIFI_COMM_NONE;
+			println("[WIFI] command timeout");
+			
+			if(get_HTTP_tryes < 3 && (WIFI_ProcessingCommand == WIFI_COMM_TCP_CONNECT || WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE))
+			{
+				WIFI_State = WIFI_READY;
+				WIFI_getHTTPpage("", "", NULL, false, true);
+				return;
+			}
+			else
+			{
+				WIFI_State = WIFI_TIMEOUT;
+				WIFI_ProcessingCommand = WIFI_COMM_NONE;
+			}
 		}
 		else if (strstr(WIFI_readedLine, "OK") != NULL)
 		{
@@ -948,36 +960,50 @@ static void WIFI_sendHTTPRequest(void)
 	WIFI_SendCommand(WIFI_HTTRequest);
 }
 
-bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https)
+bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https, bool is_repeat)
 {
-	if (WIFI_State != WIFI_READY)
+	if (WIFI_State != WIFI_READY && !is_repeat)
 		return false;
+	static char _host[32] = {0};
+	static char _url[128] = {0};
+	static bool _https;
+	if(!is_repeat)
+	{
+		get_HTTP_tryes = 0;
+		strcpy(_host, host);
+		strcpy(_url, url);
+		_https = https;
+		WIFI_ProcessingCommandCallback = callback;
+	}
+	else
+	{
+		get_HTTP_tryes++;
+	}
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_TCP_CONNECT;
-	WIFI_ProcessingCommandCallback = callback;
 	WIFI_HTTP_Response_Status = 0;
 
 	dma_memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
 	strcat(WIFI_HOSTuri, "AT+CIPSTART=0,");
-	if (!https)
+	if (!_https)
 		strcat(WIFI_HOSTuri, "\"TCP\"");
 	else
 		strcat(WIFI_HOSTuri, "\"SSL\"");
 	strcat(WIFI_HOSTuri, ",\"");
-	strcat(WIFI_HOSTuri, host);
+	strcat(WIFI_HOSTuri, _host);
 
-	if (!https)
+	if (!_https)
 		strcat(WIFI_HOSTuri, "\",80,10\r\n");
 	else
 		strcat(WIFI_HOSTuri, "\",443,10\r\n");
 
 	dma_memset(WIFI_GETuri, 0x00, sizeof(WIFI_GETuri));
-	strcat(WIFI_GETuri, url);
+	strcat(WIFI_GETuri, _url);
 
 	WIFI_SendCommand(WIFI_HOSTuri);
 
 	dma_memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
-	strcat(WIFI_HOSTuri, host);
+	strcat(WIFI_HOSTuri, _host);
 	return true;
 }
 
@@ -1054,7 +1080,7 @@ static void WIFI_printImage_callback(void)
 				{
 					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
 					WIFI_RLEStreamBuffer_part = 0;
-					WIFI_getHTTPpage("ua3reo.ru", "/trx_services/propagination.php?part=0", WIFI_printImage_stream_callback, false);
+					WIFI_getHTTPpage("ua3reo.ru", "/trx_services/propagination.php?part=0", WIFI_printImage_stream_callback, false, false);
 				}
 			}
 		}
@@ -1075,7 +1101,7 @@ void WIFI_getRDA(void)
 	}
 	char url[64] = "/trx_services/rda.php?callsign=";
 	strcat(url, TRX.CALLSIGN);
-	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false);
+	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false, false);
 }
 
 void WIFI_getDXCluster(void)
@@ -1092,7 +1118,7 @@ void WIFI_getDXCluster(void)
 	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
 	if(band >= 0)
 		strcat(url, BANDS[band].name);
-	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false);
+	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false, false);
 }
 
 void WIFI_getPropagination(void)
@@ -1105,7 +1131,7 @@ void WIFI_getPropagination(void)
 		LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 		return;
 	}
-	WIFI_getHTTPpage("ua3reo.ru", "/trx_services/propagination.php", WIFI_printImage_callback, false);
+	WIFI_getHTTPpage("ua3reo.ru", "/trx_services/propagination.php", WIFI_printImage_callback, false, false);
 }
 
 bool WIFI_SW_Restart(void (*callback)(void))
@@ -1151,7 +1177,7 @@ void WIFI_checkFWUpdates(void)
 		return;
 	char url[128];
 	sprintf(url, "/trx_services/check_fw_updates.php?dev=0&stm32=%s&fpga=%d.%d.%d", version_string, FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
-	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_checkFWUpdates_callback, false);
+	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_checkFWUpdates_callback, false, false);
 }
 
 static char* WIFI_downloadFileToSD_filename;
@@ -1171,7 +1197,7 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 		char url[128] = {0};
 		sprintf(url, "%s&start=%d&count=%d", WIFI_downloadFileToSD_url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
 		println("[WIFI] Get next file part");
-		WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false);
+		WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false, false);
 	}
 }
 
@@ -1226,9 +1252,10 @@ void WIFI_downloadFileToSD(char* url, char* filename)
 {
 	if (WIFI_connected && WIFI_State != WIFI_READY)
 		return;
+	get_HTTP_tryes = 0;
 	WIFI_downloadFileToSD_filename = filename;
 	WIFI_downloadFileToSD_startIndex = 0;
 	strcpy(WIFI_downloadFileToSD_url, url);
 	sprintf(url, "%s&start=%d&count=%d", url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
-	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false);
+	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false, false);
 }
