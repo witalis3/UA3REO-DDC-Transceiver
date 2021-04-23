@@ -89,5 +89,6 @@ extern void FRONTPANEL_BUTTONHANDLER_SETRF_POWER(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_LEFT_ARR(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_RIGHT_ARR(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SQL(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_SQUELCH(uint32_t parameter);
 
 #endif

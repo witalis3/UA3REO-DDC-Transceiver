@@ -27,7 +27,6 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_MODE_N(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter);
-static void FRONTPANEL_BUTTONHANDLER_SQUELCH(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_WPM(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_KEYER(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SCAN(uint32_t parameter);
@@ -1075,7 +1074,7 @@ void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(uint32_t parameter)
 	}
 }
 
-static void FRONTPANEL_BUTTONHANDLER_SQUELCH(uint32_t parameter)
+void FRONTPANEL_BUTTONHANDLER_SQUELCH(uint32_t parameter)
 {
 	if (!LCD_systemMenuOpened)
 	{
