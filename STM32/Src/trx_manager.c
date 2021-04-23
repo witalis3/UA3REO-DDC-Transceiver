@@ -491,7 +491,10 @@ void TRX_DBMCalculate(void)
 	if (TRX.ADC_Driver)
 		adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
 	TRX_RX_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
-	TRX_RX_dBm += CALIBRATE.smeter_calibration;
+	if(CurrentVFO()->Freq < 70000000)
+		TRX_RX_dBm += CALIBRATE.smeter_calibration_hf;
+	else
+		TRX_RX_dBm += CALIBRATE.smeter_calibration_vhf;
 
 	Processor_RX_Power_value = 0;
 }

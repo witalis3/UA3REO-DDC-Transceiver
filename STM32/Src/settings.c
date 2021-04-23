@@ -352,7 +352,8 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_10m = 24;		   //10m
 		CALIBRATE.rf_out_power_6m = 13;			   //6m
 		CALIBRATE.rf_out_power_2m = 100;		   //2m
-		CALIBRATE.smeter_calibration = 0;		   // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off)
+		CALIBRATE.smeter_calibration_hf = 0;		   // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
+		CALIBRATE.smeter_calibration_vhf = 0;		   // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;				   // Calibrate the offset at the ADC input (DC)
 												   // Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
 												   // Next, the average border response frequencies are set

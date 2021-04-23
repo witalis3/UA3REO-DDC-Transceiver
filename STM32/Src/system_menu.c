@@ -188,7 +188,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_12M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_10M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction);
-static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction);
+static void SYSMENU_HANDL_CALIB_S_METER_HF(int8_t direction);
+static void SYSMENU_HANDL_CALIB_S_METER_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_0_START(int8_t direction);
@@ -530,7 +531,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"RF GAIN 10m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_HANDL_CALIB_RF_GAIN_10M},
 		{"RF GAIN 6m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_HANDL_CALIB_RF_GAIN_6M},
 		{"RF GAIN 2m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_HANDL_CALIB_RF_GAIN_2M},
-		{"S METER", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration, SYSMENU_HANDL_CALIB_S_METER},
+		{"S METER HF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_HANDL_CALIB_S_METER_HF},
+		{"S METER VHF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_vhf, SYSMENU_HANDL_CALIB_S_METER_VHF},
 		{"ADC OFFSET", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
 		{"LPF END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_QRP, (uint32_t *)&CALIBRATE.RFU_LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
 		{"HPF START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_QRP, (uint32_t *)&CALIBRATE.RFU_HPF_START, SYSMENU_HANDL_CALIB_HPF_START},
@@ -2984,13 +2986,22 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction)
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
 }
 
-static void SYSMENU_HANDL_CALIB_S_METER(int8_t direction)
+static void SYSMENU_HANDL_CALIB_S_METER_HF(int8_t direction)
 {
-	CALIBRATE.smeter_calibration += direction;
-	if (CALIBRATE.smeter_calibration < -50)
-		CALIBRATE.smeter_calibration = -50;
-	if (CALIBRATE.smeter_calibration > 50)
-		CALIBRATE.smeter_calibration = 50;
+	CALIBRATE.smeter_calibration_hf += direction;
+	if (CALIBRATE.smeter_calibration_hf < -50)
+		CALIBRATE.smeter_calibration_hf = -50;
+	if (CALIBRATE.smeter_calibration_hf > 50)
+		CALIBRATE.smeter_calibration_hf = 50;
+}
+
+static void SYSMENU_HANDL_CALIB_S_METER_VHF(int8_t direction)
+{
+	CALIBRATE.smeter_calibration_vhf += direction;
+	if (CALIBRATE.smeter_calibration_vhf < -50)
+		CALIBRATE.smeter_calibration_vhf = -50;
+	if (CALIBRATE.smeter_calibration_vhf > 50)
+		CALIBRATE.smeter_calibration_vhf = 50;
 }
 
 static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction)
