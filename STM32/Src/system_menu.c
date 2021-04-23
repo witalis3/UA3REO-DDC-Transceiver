@@ -634,6 +634,7 @@ const static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 		{"BAND 10m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_10, SYSMENU_HANDL_WSPR_BAND10},
 		{"BAND 6m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_6, SYSMENU_HANDL_WSPR_BAND6},
 		{"BAND 2m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_2, SYSMENU_HANDL_WSPR_BAND2},
+		{"", SYSMENU_INFOLINE, 0, 0},
 };
 
 const static struct sysmenu_item_handler sysmenu_services_handlers[] =
@@ -4424,7 +4425,7 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 		else
 			systemMenuIndex = sysmenu_item_count - 1;
 		
-		while(sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler != NULL && !sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler())
+		while(sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE || (sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler != NULL && !sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler()))
 		{
 			if (systemMenuIndex == 0)
 				systemMenuIndex = sysmenu_item_count - 1;
@@ -4436,7 +4437,7 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	{
 		systemMenuIndex++;
 		
-		while(sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler != NULL && !sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler())
+		while(sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE || (sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler != NULL && !sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler()))
 		{
 			if (systemMenuIndex >= sysmenu_item_count - 1)
 				systemMenuIndex = 0;
@@ -4447,9 +4448,6 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	if (systemMenuIndex >= sysmenu_item_count)
 		systemMenuIndex = 0;
 	
-	while (systemMenuIndex > 0 && sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE)
-		systemMenuIndex = 0;
-
 	LCD_UpdateQuery.SystemMenuCurrent = true;
 	if (sysmenu_onroot)
 		systemMenuRootIndex = systemMenuIndex;
