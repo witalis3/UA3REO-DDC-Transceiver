@@ -392,7 +392,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.FAN_FULL_START = 70;			   // Temperature at which the fan starts at full power
 		CALIBRATE.TRX_MAX_RF_TEMP = 80;			   // Maximum RF unit themperature to enable protect
 		CALIBRATE.TRX_MAX_SWR = 3;				   // Maximum SWR to enable protect on TX (NOT IN TUNE MODE!)
-		CALIBRATE.FM_DEVIATION_SCALE = 5;		   // FM Deviation scale
+		CALIBRATE.FM_DEVIATION_SCALE = 4;		   // FM Deviation scale
 		CALIBRATE.AM_DC_RATE = 100;						//AM DC Scale
 		CALIBRATE.TUNE_MAX_POWER = 2;			   // Maximum RF power in Tune mode
 		CALIBRATE.RTC_Coarse_Calibration = 127;	   //Coarse RTC calibration
