@@ -641,7 +641,12 @@ void processTxAudio(void)
 			arm_biquad_cascade_df2T_f32(&IIR_TX_LPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 
 		//TX AGC (compressor)
-		if (mode == TRX_MODE_USB || mode == TRX_MODE_LSB)
+		float32_t am_dc_part = 1.0f * ((float32_t)CALIBRATE.AM_DC_RATE / 100.0f);
+		if (mode == TRX_MODE_AM)
+		{
+			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.5f, mode);
+		}
+		else if (mode == TRX_MODE_USB || mode == TRX_MODE_LSB)
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f, mode);
 		else
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.95f, mode);
@@ -682,9 +687,8 @@ void processTxAudio(void)
 			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 			for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				float32_t dc_part = TRX_MAX_TX_Amplitude * 0.9f; //50%?
-				float32_t i_am = ((APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]) + dc_part) / 2.0f;
-				float32_t q_am = ((APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]) - dc_part) / 2.0f;
+				float32_t i_am = ((APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]) + am_dc_part) / 2.0f;
+				float32_t q_am = ((APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]) - am_dc_part) / 2.0f;
 				APROC_Audio_Buffer_TX_I[i] = i_am;
 				APROC_Audio_Buffer_TX_Q[i] = q_am;
 			}
@@ -805,7 +809,7 @@ void processTxAudio(void)
 		Processor_TX_MAX_amplitude_IN = -ampl_min_i;
 	if ((-ampl_min_q) > Processor_TX_MAX_amplitude_IN)
 		Processor_TX_MAX_amplitude_IN = -ampl_min_q;
-
+	
 	// calculate the target gain
 	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN;
 	//println(Processor_TX_MAX_amplitude_IN);
@@ -815,7 +819,7 @@ void processTxAudio(void)
 		if (Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE)
 		{
 			float32_t ALC_need_gain_target = (RFpower_amplitude * 0.99f) / Processor_TX_MAX_amplitude_IN;
-			//println("ALC_CLIP ", Processor_TX_MAX_amplitude_IN / RFpower_amplitude);
+			println("ALC_CLIP ", Processor_TX_MAX_amplitude_IN / RFpower_amplitude, " NEED ", RFpower_amplitude);
 			// apply gain
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, ALC_need_gain_target, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 			arm_scale_f32(APROC_Audio_Buffer_TX_Q, ALC_need_gain_target, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
