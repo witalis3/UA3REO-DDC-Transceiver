@@ -188,8 +188,8 @@ void LoadSettings(bool clear)
 		TRX.SSB_LPF_RX_Filter = 2700;					   // default value of SSB filter width
 		TRX.SSB_LPF_TX_Filter = 2700;					   // default value of SSB filter width
 		TRX.SSB_HPF_Filter = 300;						   // default value of SSB filter width
-		TRX.AM_LPF_RX_Filter = 4000;					   // default value of AM filter width
-		TRX.AM_LPF_TX_Filter = 4000;					   // default value of AM filter width
+		TRX.AM_LPF_RX_Filter = 6000;					   // default value of AM filter width
+		TRX.AM_LPF_TX_Filter = 6000;					   // default value of AM filter width
 		TRX.FM_LPF_RX_Filter = 10000;					   // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 10000;					   // default value of the FM filter width
 		TRX.Beeper = true;								   //Keyboard beeper
@@ -392,7 +392,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.FAN_FULL_START = 70;			   // Temperature at which the fan starts at full power
 		CALIBRATE.TRX_MAX_RF_TEMP = 80;			   // Maximum RF unit themperature to enable protect
 		CALIBRATE.TRX_MAX_SWR = 3;				   // Maximum SWR to enable protect on TX (NOT IN TUNE MODE!)
-		CALIBRATE.FM_DEVIATION_SCALE = 10;		   // FM Deviation scale
+		CALIBRATE.FM_DEVIATION_SCALE = 5;		   // FM Deviation scale
 		CALIBRATE.TUNE_MAX_POWER = 2;			   // Maximum RF power in Tune mode
 		CALIBRATE.RTC_Coarse_Calibration = 127;	   //Coarse RTC calibration
 		CALIBRATE.RTC_Calibration = 0;			   //Real Time Clock calibration

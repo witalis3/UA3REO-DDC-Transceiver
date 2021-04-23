@@ -269,6 +269,8 @@ void ReinitAudioFilters(void)
 		lpf_tx_width = CurrentVFO()->LPF_TX_Filter_Width;
 	if(lpf_tx_width < hpf_rx1_width)
 		lpf_tx_width = hpf_rx1_width + 100;
+	if (CurrentVFO()->Mode == TRX_MODE_NFM || CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_AM || CurrentVFO()->Mode == TRX_MODE_CW)
+		lpf_tx_width /= 2;
 	//
 	
 	//Decimator filters

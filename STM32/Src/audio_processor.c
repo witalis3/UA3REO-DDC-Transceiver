@@ -682,7 +682,7 @@ void processTxAudio(void)
 			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 			for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				float32_t dc_part = TRX_MAX_TX_Amplitude * 0.5f; //50%?
+				float32_t dc_part = TRX_MAX_TX_Amplitude * 0.9f; //50%?
 				float32_t i_am = ((APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]) + dc_part) / 2.0f;
 				float32_t q_am = ((APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]) - dc_part) / 2.0f;
 				APROC_Audio_Buffer_TX_I[i] = i_am;
