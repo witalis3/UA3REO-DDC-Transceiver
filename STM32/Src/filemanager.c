@@ -529,6 +529,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			f_open(&File, "firmware_fpga.crc", FA_READ | FA_OPEN_EXISTING);
 			dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 			f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded);
+			f_close(&File);
 			println("Need CRC: ", (char*)SD_workbuffer_A);
 			
 			//compare
@@ -604,6 +605,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			f_open(&File, "firmware_stm32.crc", FA_READ | FA_OPEN_EXISTING);
 			dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 			f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded);
+			f_close(&File);
 			println("Need CRC: ", (char*)SD_workbuffer_A);
 			
 			//compare
@@ -638,6 +640,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		LCD_showInfo("Flashing", true);
 		if(WIFI_NewFW_FPGA && WIFI_NewFW_STM32)
 		{
+			TRX_Mute = true;
 			strcpy((char*)SD_workbuffer_A, "firmware_fpga.jic");
 			SDCOMM_FLASH_JIC_handler(false);
 			strcpy((char*)SD_workbuffer_A, "firmware_stm32.bin");
@@ -645,11 +648,13 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		}
 		else if(WIFI_NewFW_FPGA)
 		{
+			TRX_Mute = true;
 			strcpy((char*)SD_workbuffer_A, "firmware_fpga.jic");
 			SDCOMM_FLASH_JIC_handler(true);
 		}
 		else if(WIFI_NewFW_STM32)
 		{
+			TRX_Mute = true;
 			strcpy((char*)SD_workbuffer_A, "firmware_stm32.bin");
 			SDCOMM_FLASH_BIN_handler();
 		}
