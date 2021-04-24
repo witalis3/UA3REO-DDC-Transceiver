@@ -251,6 +251,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **MAX RF Temp** - Maximum temperature of the PA before the protection operation
 * **MAX SWR** - Maximum VSWR before protection operation
 * **FM Deviation Scale** - Set TX FM Deviation Scale
+* **AM Modulation Index** - Set TX AM Modulation Scale
 * **TUNE Max Power** - Maximum RF power in Tune mode
 * **RTC COARSE CALIBR** - Very coarse clock crystal calibration
 * **RTC FINE CALIBR** - Clock crystal calibration, one division is 0.954 ppm

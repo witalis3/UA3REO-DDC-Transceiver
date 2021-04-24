@@ -398,7 +398,7 @@ extern struct TRX_CALIBRATE
 	uint8_t TRX_MAX_RF_TEMP;
 	uint8_t TRX_MAX_SWR;
 	uint8_t FM_DEVIATION_SCALE;
-	uint8_t AM_DC_RATE;
+	uint8_t AM_MODULATION_INDEX;
 	uint8_t TUNE_MAX_POWER;
 	uint8_t RTC_Coarse_Calibration;
 	int16_t RTC_Calibration;
