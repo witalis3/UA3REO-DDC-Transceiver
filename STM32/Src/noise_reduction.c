@@ -154,7 +154,16 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->NR_GAIN_old[bindx] = instance->SNR_post[bindx] * instance->NR_GAIN[bindx] * instance->NR_GAIN[bindx];
 				}
 			}
-
+			//smooth gain
+			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
+			{
+				#define smooth_gain_alpha 0.9f
+				#define smooth_gain_beta (1.0f - smooth_gain_alpha)
+				if((idx - 1) >= 0)
+					instance->NR_GAIN[idx - 1] = instance->NR_GAIN[idx - 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
+				if((idx + 1) < NOISE_REDUCTION_FFT_SIZE_HALF)
+					instance->NR_GAIN[idx + 1] = instance->NR_GAIN[idx + 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
+			}
 			//apply gain weighting
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
@@ -168,7 +177,10 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 			arm_cfft_f32(instance->FFT_Inst, instance->FFT_Buffer, 1, 1);
 			//windowing
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
+			{
 				instance->FFT_Buffer[idx * 2] *= von_Hann[idx];
+				instance->FFT_Buffer[idx * 2 + 1] *= von_Hann[idx];
+			}
 			//return data (do overlap-add: take real part of first half of current iFFT result and add to 2nd half of last frames´ iFFT result)
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				instance->NR_OutputBuffer[loop * NOISE_REDUCTION_FFT_SIZE_HALF + idx] = instance->FFT_Buffer[idx * 2] + instance->LAST_IFFT_RESULT[idx];
