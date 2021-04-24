@@ -11,9 +11,11 @@ module rx_ciccomp (
 		input  wire [31:0] ast_sink_data,    //   avalon_streaming_sink.data
 		input  wire        ast_sink_valid,   //                        .valid
 		input  wire [1:0]  ast_sink_error,   //                        .error
+		output wire        ast_sink_ready,   //                        .ready
 		output wire [61:0] ast_source_data,  // avalon_streaming_source.data
 		output wire        ast_source_valid, //                        .valid
-		output wire [1:0]  ast_source_error  //                        .error
+		output wire [1:0]  ast_source_error, //                        .error
+		input  wire        ast_source_ready  //                        .ready
 	);
 
 	rx_ciccomp_0002 rx_ciccomp_inst (
@@ -22,9 +24,11 @@ module rx_ciccomp (
 		.ast_sink_data    (ast_sink_data),    //   avalon_streaming_sink.data
 		.ast_sink_valid   (ast_sink_valid),   //                        .valid
 		.ast_sink_error   (ast_sink_error),   //                        .error
+		.ast_sink_ready   (ast_sink_ready),   //                        .ready
 		.ast_source_data  (ast_source_data),  // avalon_streaming_source.data
 		.ast_source_valid (ast_source_valid), //                        .valid
-		.ast_source_error (ast_source_error)  //                        .error
+		.ast_source_error (ast_source_error), //                        .error
+		.ast_source_ready (ast_source_ready)  //                        .ready
 	);
 
 endmodule
@@ -66,8 +70,8 @@ endmodule
 // Retrieval info: 	<generic name="inputRate" value="0.768" />
 // Retrieval info: 	<generic name="coeffReload" value="false" />
 // Retrieval info: 	<generic name="baseAddress" value="0" />
-// Retrieval info: 	<generic name="readWriteMode" value="read_write" />
-// Retrieval info: 	<generic name="backPressure" value="false" />
+// Retrieval info: 	<generic name="readWriteMode" value="read" />
+// Retrieval info: 	<generic name="backPressure" value="true" />
 // Retrieval info: 	<generic name="deviceFamily" value="Cyclone IV E" />
 // Retrieval info: 	<generic name="speedGrade" value="slow" />
 // Retrieval info: 	<generic name="delayRAMBlockThreshold" value="20" />

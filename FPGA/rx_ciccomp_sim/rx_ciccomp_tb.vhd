@@ -145,10 +145,12 @@ port map (
     clk                => clk,
     reset_n            => reset_design,
 
+    ast_sink_ready     => ast_sink_ready,
     ast_sink_data      => ast_sink_data,
     ast_source_data    => ast_source_data,
     ast_sink_valid     => ast_sink_valid,
     ast_source_valid   => ast_source_valid,
+    ast_source_ready   => ast_source_ready,
 
 
 
@@ -159,7 +161,6 @@ port map (
 
 -- for example purposes, the ready signal is always asserted.
 ast_source_ready <= '1';
-ast_sink_ready <= '1';
 
 
 

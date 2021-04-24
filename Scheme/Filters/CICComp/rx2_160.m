@@ -1,5 +1,5 @@
 %%%%%% CIC filter parameters %%%%%%
-R = 160; %% Decimation factor
+R = 160; %% Decimation factor 160,320,640,1280
 M = 1; %% Differential delay
 N = 6; %% Number of stages
 B = 22; %% Coeffi. Bit-width
@@ -9,7 +9,7 @@ B = 22; %% Coeffi. Bit-width
 L = 128; %% Filter order; must be even
 %Fo = R*Fc/Fs; %% Normalized Cutoff freq; 0<Fo<=0.5/M;
 %Fo = 0.5/M; %% use Fo=0.5 if you don't care responses are
-Fo = 0.25/M; %% decimate by 2
+Fo = 0.5/2/M; %% decimate by 2
 %% outside the pass band
 %%%%%%% CIC Compensator Design using fir2.m %%%%%%
 p = 2e3; %% Granularity

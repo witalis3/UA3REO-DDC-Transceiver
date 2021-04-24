@@ -33,7 +33,7 @@ set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_C
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y29lZmZpY2llbnRSZWFkYmFjaw==::ZmFsc2U=::Y29lZmZpY2llbnRSZWFkYmFjaw=="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y29lZmZpY2llbnRXcml0ZWFibGU=::ZmFsc2U=::Y29lZmZpY2llbnRXcml0ZWFibGU="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "YnVzRGF0YVdpZHRo::MzI=::YnVzRGF0YVdpZHRo"
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "YmFja1ByZXNzdXJl::ZmFsc2U=::QmFjayBQcmVzc3VyZSBTdXBwb3J0"
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "YmFja1ByZXNzdXJl::dHJ1ZQ==::QmFjayBQcmVzc3VyZSBTdXBwb3J0"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZGV2aWNlRmFtaWx5::Q3ljbG9uZSBJViBF::RGV2aWNlIEZhbWlseQ=="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "c3BlZWRHcmFkZQ==::c2xvdw==::U3BlZWQgR3JhZGU="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZGVsYXlSQU1CbG9ja1RocmVzaG9sZA==::MjA=::TWVtb3J5IEJsb2NrIFRocmVzaG9sZA=="
