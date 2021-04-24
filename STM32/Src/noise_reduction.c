@@ -95,7 +95,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 			if (nr_type == 1)
 			{
 				//calculate signal-noise-ratio
-				float32_t threshold = ((float32_t)TRX.DNR_SNR_THRESHOLD + 10.0f) / 10.0f;
+				float32_t threshold = ((float32_t)TRX.DNR1_SNR_THRESHOLD + 10.0f) / 10.0f;
 				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				{
 					float32_t snr = instance->FFT_COMPLEX_MAG[idx] / instance->FFT_MINIMUM_MAG[idx];
@@ -127,13 +127,25 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 			if (nr_type == 2)
 			{
 				//new noise estimate MMSE based
+				static float32_t xt_coeff = 0.5f;
 				for (int bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++) // 1. Step of NR - calculate the SNR's
 				{
-					float32_t xt_coeff = 0.5;																				   //????
 					instance->SNR_post[bindx] = fmax(fmin(instance->FFT_COMPLEX_MAG[bindx] / xt_coeff, 1000.0), snr_prio_min); // limited to +30 /-15 dB, might be still too much of reduction, let's try it?
 					instance->SNR_prio[bindx] = fmax(alpha * instance->NR_GAIN_old[bindx] + (1.0 - alpha) * fmax(instance->SNR_post[bindx] - 1.0, 0.0), 0.0);
 				}
-
+				
+				//some automatic
+				if(instance->SNR_post[10] > (((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) * 10.0f) && xt_coeff < 50.0f)
+					xt_coeff += 0.01f;
+				else if(instance->SNR_post[10] > ((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) && xt_coeff < 50.0f)
+					xt_coeff += 0.001f;
+				
+				if(instance->SNR_post[10] < (((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) * 0.1f) && xt_coeff > 0.1f)
+					xt_coeff -= 0.01f;
+				else if(instance->SNR_post[10] < ((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) && xt_coeff > 0.1f)
+					xt_coeff -= 0.001f;
+				//println(instance->FFT_COMPLEX_MAG[10], " ",instance->SNR_post[10], " ", xt_coeff);
+				
 				//calculate v = SNRprio(n, bin[i]) / (SNRprio(n, bin[i]) + 1) * SNRpost(n, bin[i]) (eq. 12 of Schmitt et al. 2002, eq. 9 of Romanin et al. 2009)  and calculate the HK's
 				for (int bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
 				{
