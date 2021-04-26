@@ -1033,7 +1033,6 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  CPULOAD_WakeUp();
   if (GPIO_Pin == GPIO_PIN_10) //FPGA BUS
   {
     FPGA_fpgadata_iqclock();    // IQ data

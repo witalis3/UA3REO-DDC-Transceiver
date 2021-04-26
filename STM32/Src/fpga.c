@@ -227,6 +227,7 @@ void FPGA_fpgadata_iqclock(void)
 		FPGA_syncAndClockRiseFall();
 
 		//blocks by 48k
+		FPGA_setBusInput();
 		switch (TRX_GetRXSampleRateENUM)
 		{
 		case TRX_SAMPLERATE_K48:
@@ -510,7 +511,6 @@ static inline void FPGA_fpgadata_getiq(void)
 	float32_t FPGA_fpgadata_in_float32_i = 0;
 	float32_t FPGA_fpgadata_in_float32_q = 0;
 	FPGA_samples++;
-	FPGA_setBusInput();
 
 	//STAGE 2 in Q RX1
 	FPGA_clockRise();
