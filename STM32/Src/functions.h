@@ -178,4 +178,13 @@ extern unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte);
 extern unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte);
 extern void sd_crc_generate_table(void);
 
+inline float sqrtf_f32i(float f)
+{
+	float32_t res;
+	__ASM("VSQRT.F32 %0,%1" : "=t"(res) : "t"(f));
+  //const int result = 0x1fbb4000 + (*(int*)&f >> 1);
+  //return *(float*)&result;   
+	return res;
+}
+
 #endif
