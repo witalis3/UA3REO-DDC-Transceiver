@@ -134,29 +134,6 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 		}
 	}
 
-#if FPGA_FLASH_IN_HEX
-	if (FPGA_is_present())
-	{
-		if (!FPGA_spi_flash_verify(false)) // check the first 2048 bytes of FPGA firmware
-		{
-			while (!FPGA_spi_flash_verify(true))
-			{
-				FPGA_spi_flash_erase();
-				FPGA_spi_flash_write();
-				if (FPGA_spi_flash_verify(true))
-				{
-					LCD_showError("Flash update complete!", false);
-					HAL_Delay(1000);
-					HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-					while (true)
-					{
-					};
-				}
-			}
-		}
-	}
-#endif
-
 	//pre-reset FPGA to sync IQ data
 	FPGA_setBusOutput();
 	FPGA_writePacket(5); // RESET ON
@@ -520,12 +497,12 @@ static inline void FPGA_fpgadata_getparam(void)
 }
 
 // get IQ data
-static float32_t *FFTInput_I_current = (float32_t *)&FFTInput_I_A;
-static float32_t *FFTInput_Q_current = (float32_t *)&FFTInput_Q_A;
-static float32_t *FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_A;
-static float32_t *FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A;
-static float32_t *FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_A;
-static float32_t *FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A;
+static float32_t *FFTInput_I_current = (float32_t *)&FFTInput_I_A[0];
+static float32_t *FFTInput_Q_current = (float32_t *)&FFTInput_Q_A[0];
+static float32_t *FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_A[0];
+static float32_t *FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A[0];
+static float32_t *FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_A[0];
+static float32_t *FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A[0];
 static inline void FPGA_fpgadata_getiq(void)
 {
 	register int_fast32_t FPGA_fpgadata_in_tmp32 = 0;
@@ -581,20 +558,11 @@ static inline void FPGA_fpgadata_getiq(void)
 
 	FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q / 2147483648.0f;
 	FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_float32_i / 2147483648.0f;
-	if (TRX_RX1_IQ_swap)
-	{
-		FFTInput_I_current[FFT_buff_index] = FPGA_fpgadata_in_float32_q;
-		FPGA_Audio_Buffer_RX1_I_current[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32_q;
-		FFTInput_Q_current[FFT_buff_index] = FPGA_fpgadata_in_float32_i;
-		FPGA_Audio_Buffer_RX1_Q_current[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32_i;
-	}
-	else
-	{
-		FFTInput_Q_current[FFT_buff_index] = FPGA_fpgadata_in_float32_q;
-		FPGA_Audio_Buffer_RX1_Q_current[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32_q;
-		FFTInput_I_current[FFT_buff_index] = FPGA_fpgadata_in_float32_i;
-		FPGA_Audio_Buffer_RX1_I_current[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32_i;
-	}
+
+	*FFTInput_Q_current++ = FPGA_fpgadata_in_float32_q;
+	*FPGA_Audio_Buffer_RX1_Q_current++ = FPGA_fpgadata_in_float32_q;
+	*FFTInput_I_current++ = FPGA_fpgadata_in_float32_i;
+	*FPGA_Audio_Buffer_RX1_I_current++ = FPGA_fpgadata_in_float32_i;
 
 	if (TRX.Dual_RX)
 	{
@@ -644,16 +612,9 @@ static inline void FPGA_fpgadata_getiq(void)
 
 		FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q / 2147483648.0f;
 		FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_float32_i / 2147483648.0f;
-		if (TRX_RX2_IQ_swap)
-		{
-			FPGA_Audio_Buffer_RX2_I_current[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32_q;
-			FPGA_Audio_Buffer_RX2_Q_current[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32_i;
-		}
-		else
-		{
-			FPGA_Audio_Buffer_RX2_Q_current[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32_q;
-			FPGA_Audio_Buffer_RX2_I_current[FPGA_Audio_RXBuffer_Index] = FPGA_fpgadata_in_float32_i;
-		}
+
+		*FPGA_Audio_Buffer_RX2_Q_current++ = FPGA_fpgadata_in_float32_q;
+		*FPGA_Audio_Buffer_RX2_I_current++ = FPGA_fpgadata_in_float32_i;
 	}
 
 	FPGA_Audio_RXBuffer_Index++;
@@ -669,15 +630,46 @@ static inline void FPGA_fpgadata_getiq(void)
 		{
 			FPGA_RX_buffer_ready = true;
 			FPGA_RX_Buffer_Current = !FPGA_RX_Buffer_Current;
-			FPGA_Audio_Buffer_RX1_I_current = FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
-			FPGA_Audio_Buffer_RX1_Q_current = FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
-			FPGA_Audio_Buffer_RX2_I_current = FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_I_A : (float32_t *)&FPGA_Audio_Buffer_RX2_I_B;
-			FPGA_Audio_Buffer_RX2_Q_current = FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B;
+		}
+		
+		if (TRX_RX1_IQ_swap)
+		{
+			if(FPGA_RX_Buffer_Current)
+			{
+				FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A[0];
+				FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_A[0];
+				FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A[0];
+				FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_A[0];
+			}
+			else
+			{
+				FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B[0];
+				FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_B[0];
+				FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B[0];
+				FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_B[0];
+			}
+		}
+		else
+		{
+			if(FPGA_RX_Buffer_Current)
+			{
+				FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_A[0];
+				FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A[0];
+				FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_A[0];
+				FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A[0];
+			}
+			else
+			{
+				FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_B[0];
+				FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B[0];
+				FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_B[0];
+				FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B[0];
+			}
 		}
 	}
 
 	FFT_buff_index++;
-	if (FFT_buff_index >= FFT_HALF_SIZE)
+	if (FFT_buff_index == FFT_HALF_SIZE)
 	{
 		FFT_buff_index = 0;
 		if (FFT_new_buffer_ready)
@@ -687,9 +679,33 @@ static inline void FPGA_fpgadata_getiq(void)
 		else
 		{
 			FFT_new_buffer_ready = true;
-			FFT_buff_current = !FFT_buff_current;
-			FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
-			FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
+			FFT_buff_current = !FFT_buff_current;	
+		}
+		if (TRX_RX1_IQ_swap)
+		{
+			if(FFT_buff_current)
+			{
+				FFTInput_I_current = (float32_t *)&FFTInput_Q_A[0];
+				FFTInput_Q_current = (float32_t *)&FFTInput_I_A[0];
+			}
+			else
+			{
+				FFTInput_I_current = (float32_t *)&FFTInput_Q_B[0];
+				FFTInput_Q_current = (float32_t *)&FFTInput_I_B[0];
+			}
+		}
+		else
+		{
+			if(FFT_buff_current)
+			{
+				FFTInput_I_current = (float32_t *)&FFTInput_I_A[0];
+				FFTInput_Q_current = (float32_t *)&FFTInput_Q_A[0];
+			}
+			else
+			{
+				FFTInput_I_current = (float32_t *)&FFTInput_I_B[0];
+				FFTInput_Q_current = (float32_t *)&FFTInput_Q_B[0];
+			}
 		}
 	}
 }
