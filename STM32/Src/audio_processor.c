@@ -638,10 +638,10 @@ void processTxAudio(void)
 	{
 		//IIR HPF
 		if (current_vfo->HPF_Filter_Width > 0)
-			arm_biquad_cascade_df2T_f32(&IIR_TX_HPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_TX_HPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		//IIR LPF
 		if (current_vfo->LPF_TX_Filter_Width > 0)
-			arm_biquad_cascade_df2T_f32(&IIR_TX_LPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_TX_LPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 
 		//TX AGC (compressor)
 		if (mode == TRX_MODE_AM)
@@ -927,15 +927,15 @@ static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32
 	{
 		if (rx_id == AUDIO_RX1)
 		{
-			arm_biquad_cascade_df2T_f32(&DECIMATE_IIR_RX1_AUDIO_I, in_i, in_i, size);
-			arm_biquad_cascade_df2T_f32(&DECIMATE_IIR_RX1_AUDIO_Q, in_q, in_q, size);
+			arm_biquad_cascade_df2T_f32_rolled(&DECIMATE_IIR_RX1_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32_rolled(&DECIMATE_IIR_RX1_AUDIO_Q, in_q, in_q, size);
 			arm_fir_decimate_f32(&DECIMATE_FIR_RX1_AUDIO_I, in_i, out_i, size);
 			arm_fir_decimate_f32(&DECIMATE_FIR_RX1_AUDIO_Q, in_q, out_q, size);
 		}
 		else
 		{
-			arm_biquad_cascade_df2T_f32(&DECIMATE_IIR_RX2_AUDIO_I, in_i, in_i, size);
-			arm_biquad_cascade_df2T_f32(&DECIMATE_IIR_RX2_AUDIO_Q, in_q, in_q, size);
+			arm_biquad_cascade_df2T_f32_rolled(&DECIMATE_IIR_RX2_AUDIO_I, in_i, in_i, size);
+			arm_biquad_cascade_df2T_f32_rolled(&DECIMATE_IIR_RX2_AUDIO_Q, in_q, in_q, size);
 			arm_fir_decimate_f32(&DECIMATE_FIR_RX2_AUDIO_I, in_i, out_i, size);
 			arm_fir_decimate_f32(&DECIMATE_FIR_RX2_AUDIO_Q, in_q, out_q, size);
 		}
@@ -949,16 +949,16 @@ static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	{
 		if (CurrentVFO()->LPF_RX_Filter_Width > 0)
 		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX1_LPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
-			arm_biquad_cascade_df2T_f32(&IIR_RX1_LPF_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX1_LPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX1_LPF_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
 		}
 	}
 	else
 	{
 		if (SecondaryVFO()->LPF_RX_Filter_Width > 0)
 		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX2_LPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
-			arm_biquad_cascade_df2T_f32(&IIR_RX2_LPF_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX2_LPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX2_LPF_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, size);
 		}
 	}
 }
@@ -970,14 +970,14 @@ static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	{
 		if (CurrentVFO()->LPF_RX_Filter_Width > 0)
 		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX1_LPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX1_LPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		}
 	}
 	else
 	{
 		if (SecondaryVFO()->LPF_RX_Filter_Width > 0)
 		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX2_LPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX2_LPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		}
 	}
 }
@@ -991,16 +991,16 @@ static void doRX_GAUSS_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	{
 		if (CurrentVFO()->Mode == TRX_MODE_CW)
 		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX1_GAUSS_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
-			arm_biquad_cascade_df2T_f32(&IIR_RX1_GAUSS_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX1_GAUSS_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX1_GAUSS_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
 		}
 	}
 	else
 	{
 		if (SecondaryVFO()->Mode == TRX_MODE_CW)
 		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX2_GAUSS_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
-			arm_biquad_cascade_df2T_f32(&IIR_RX2_GAUSS_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX2_GAUSS_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX2_GAUSS_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, size);
 		}
 	}
 }
@@ -1012,14 +1012,14 @@ static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	{
 		if (CurrentVFO()->HPF_Filter_Width > 0)
 		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX1_HPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX1_HPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		}
 	}
 	else
 	{
 		if (SecondaryVFO()->HPF_Filter_Width > 0)
 		{
-			arm_biquad_cascade_df2T_f32(&IIR_RX2_HPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX2_HPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		}
 	}
 }
@@ -1030,7 +1030,7 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	if (rx_id == AUDIO_RX1)
 	{
 		if (CurrentVFO()->ManualNotchFilter) // manual filter
-			arm_biquad_cascade_df2T_f32(&NOTCH_RX1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&NOTCH_RX1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		else if (CurrentVFO()->AutoNotchFilter) // automatic filter
 		{
 			for (uint32_t block = 0; block < (size / AUTO_NOTCH_BLOCK_SIZE); block++)
@@ -1040,7 +1040,7 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	else
 	{
 		if (SecondaryVFO()->ManualNotchFilter)
-			arm_biquad_cascade_df2T_f32(&NOTCH_RX2_FILTER, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
+			arm_biquad_cascade_df2T_f32_rolled(&NOTCH_RX2_FILTER, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		else if (SecondaryVFO()->AutoNotchFilter)
 		{
 			for (uint32_t block = 0; block < (size / AUTO_NOTCH_BLOCK_SIZE); block++)
@@ -1053,11 +1053,11 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 static void doRX_EQ(uint16_t size)
 {
 	if (TRX.RX_EQ_LOW != 0)
-		arm_biquad_cascade_df2T_f32(&EQ_RX_LOW_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_LOW_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 	if (TRX.RX_EQ_MID != 0)
-		arm_biquad_cascade_df2T_f32(&EQ_RX_MID_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_MID_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 	if (TRX.RX_EQ_HIG != 0)
-		arm_biquad_cascade_df2T_f32(&EQ_RX_HIG_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_HIG_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 }
 
 // Equalizer microphone
@@ -1070,22 +1070,22 @@ static void doMIC_EQ(uint16_t size, uint8_t mode)
 		case TRX_MODE_LOOPBACK:
 		default:
 			if (TRX.MIC_EQ_LOW_SSB != 0)
-				arm_biquad_cascade_df2T_f32(&EQ_MIC_LOW_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+				arm_biquad_cascade_df2T_f32_rolled(&EQ_MIC_LOW_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 			if (TRX.MIC_EQ_MID_SSB != 0)
-				arm_biquad_cascade_df2T_f32(&EQ_MIC_MID_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+				arm_biquad_cascade_df2T_f32_rolled(&EQ_MIC_MID_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 			if (TRX.MIC_EQ_HIG_SSB != 0)
-				arm_biquad_cascade_df2T_f32(&EQ_MIC_HIG_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+				arm_biquad_cascade_df2T_f32_rolled(&EQ_MIC_HIG_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		break;
 		
 		case TRX_MODE_NFM:
 		case TRX_MODE_WFM:
 		case TRX_MODE_AM:
 			if (TRX.MIC_EQ_LOW_AMFM != 0)
-				arm_biquad_cascade_df2T_f32(&EQ_MIC_LOW_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+				arm_biquad_cascade_df2T_f32_rolled(&EQ_MIC_LOW_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 			if (TRX.MIC_EQ_MID_AMFM != 0)
-				arm_biquad_cascade_df2T_f32(&EQ_MIC_MID_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+				arm_biquad_cascade_df2T_f32_rolled(&EQ_MIC_MID_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 			if (TRX.MIC_EQ_HIG_AMFM != 0)
-				arm_biquad_cascade_df2T_f32(&EQ_MIC_HIG_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+				arm_biquad_cascade_df2T_f32_rolled(&EQ_MIC_HIG_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		break;
 	}
 	
@@ -1256,7 +1256,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	}
 
 	// *** Squelch Processing ***
-	arm_biquad_cascade_df2T_f32(iir_filter_inst, squelch_buf, squelch_buf, size);									   // Do IIR high-pass filter on audio so we may detect squelch noise energy
+	arm_biquad_cascade_df2T_f32_rolled(iir_filter_inst, squelch_buf, squelch_buf, size);									   // Do IIR high-pass filter on audio so we may detect squelch noise energy
 	*fm_sql_avg = ((1.0f - FM_RX_SQL_SMOOTHING) * *fm_sql_avg) + (FM_RX_SQL_SMOOTHING * sqrtf(fabsf(squelch_buf[0]))); // IIR filter squelch energy magnitude:  We need look at only one representative sample
 
 	*fm_sql_count = *fm_sql_count + 1; // bump count that controls how often the squelch threshold is checked

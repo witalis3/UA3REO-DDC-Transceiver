@@ -50,13 +50,13 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	//do k-weighting (for LKFS)
 	if (rx_id == AUDIO_RX1)
 	{
-		arm_biquad_cascade_df2T_f32(&AGC_RX1_KW_HSHELF_FILTER, agcBuffer, agcBuffer_kw, blockSize);
-		arm_biquad_cascade_df2T_f32(&AGC_RX1_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX1_KW_HSHELF_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX1_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
 	}
 	else
 	{
-		arm_biquad_cascade_df2T_f32(&AGC_RX2_KW_HSHELF_FILTER, agcBuffer, agcBuffer_kw, blockSize);
-		arm_biquad_cascade_df2T_f32(&AGC_RX2_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX2_KW_HSHELF_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX2_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
 	}
 
 	//do ring buffer

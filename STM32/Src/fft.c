@@ -302,8 +302,8 @@ void FFT_bufferPrepare(void)
 	//Process Notch filter
 	if (CurrentVFO()->ManualNotchFilter && !TRX_on_TX())
 	{
-		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_I_FILTER, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
-		arm_biquad_cascade_df2T_f32(&NOTCH_FFT_Q_FILTER, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
+		arm_biquad_cascade_df2T_f32_rolled(&NOTCH_FFT_I_FILTER, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
+		arm_biquad_cascade_df2T_f32_rolled(&NOTCH_FFT_Q_FILTER, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
 	}
 
 	//Reset old samples if frequency changed
@@ -320,8 +320,8 @@ void FFT_bufferPrepare(void)
 	{
 		uint32_t zoomed_width_half = zoomed_width / 2;
 		//Biquad LPF filter
-		arm_biquad_cascade_df2T_f32(&IIR_biquad_Zoom_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
-		arm_biquad_cascade_df2T_f32(&IIR_biquad_Zoom_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
+		arm_biquad_cascade_df2T_f32_rolled(&IIR_biquad_Zoom_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
+		arm_biquad_cascade_df2T_f32_rolled(&IIR_biquad_Zoom_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
 		// Decimator
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
 		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
