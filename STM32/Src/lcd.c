@@ -240,7 +240,7 @@ static void LCD_displayFreqInfo(bool redraw)
 		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP, LCD_WIDTH - LAYOUT->FREQ_LEFT_MARGIN - LAYOUT->FREQ_RIGHT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT, BG_COLOR);
 
 	if ((mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN) > 0)
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_BASELINE - LAYOUT->FREQ_HEIGHT, mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_HEIGHT, BG_COLOR);
+		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP, mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT, BG_COLOR);
 
 	// add spaces to output the frequency
 	uint16_t hz = (display_freq % 1000);
@@ -303,7 +303,7 @@ static void LCD_displayFreqInfo(bool redraw)
 		LCDDriver_Fill_RectWH(LAYOUT->FREQ_B_LEFT_MARGIN, LAYOUT->FREQ_B_Y_TOP, LCD_WIDTH - LAYOUT->FREQ_B_LEFT_MARGIN - LAYOUT->FREQ_B_RIGHT_MARGIN, LAYOUT->FREQ_B_BLOCK_HEIGHT, BG_COLOR);
 
 	if ((mhz_x_offset_B - LAYOUT->FREQ_B_LEFT_MARGIN) > 0)
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_B_LEFT_MARGIN, LAYOUT->FREQ_B_Y_BASELINE - LAYOUT->FREQ_B_HEIGHT, mhz_x_offset_B - LAYOUT->FREQ_B_LEFT_MARGIN, LAYOUT->FREQ_B_HEIGHT, BG_COLOR);
+		LCDDriver_Fill_RectWH(LAYOUT->FREQ_B_LEFT_MARGIN, LAYOUT->FREQ_B_Y_TOP, mhz_x_offset_B - LAYOUT->FREQ_B_LEFT_MARGIN, LAYOUT->FREQ_B_BLOCK_HEIGHT, BG_COLOR);
 
 	// add spaces to output the frequency
 	uint16_t hz_B = (LCD_last_showed_freq_B % 1000);
@@ -1330,7 +1330,7 @@ void LCD_showInfo(char text[], bool autohide)
 
 void LCD_processTouch(uint16_t x, uint16_t y)
 {
-#if (defined(HAS_TOUCHPAD))
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	if (TRX.Locked)
 		return;
 	if (LCD_systemMenuOpened)
@@ -1562,7 +1562,7 @@ void LCD_closeWindow(void)
 
 static void LCD_showBandWindow(bool secondary_vfo)
 {
-#if (defined(HAS_TOUCHPAD))
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	const uint8_t buttons_in_line = 6;
 	uint8_t selectable_bands_count = 0;
 	uint8_t unselectable_bands_count = 0;
@@ -1632,7 +1632,7 @@ static void LCD_showBandWindow(bool secondary_vfo)
 
 static void LCD_showModeWindow(bool secondary_vfo)
 {
-#if (defined(HAS_TOUCHPAD))
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	const uint8_t buttons_in_line = 4;
 	const uint8_t buttons_lines = ceil((float32_t)TRX_MODE_COUNT / (float32_t)buttons_in_line);
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
@@ -1662,7 +1662,7 @@ static void LCD_showModeWindow(bool secondary_vfo)
 
 static void LCD_showBWWindow(void)
 {
-#if (defined(HAS_TOUCHPAD))
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 
 	uint8_t filters_count = 0;
 	uint32_t cur_width = CurrentVFO()->LPF_RX_Filter_Width;
@@ -1716,7 +1716,7 @@ static void LCD_showBWWindow(void)
 
 void LCD_showRFPowerWindow(void)
 {
-#if (defined(HAS_TOUCHPAD))
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	const uint8_t buttons_in_line = 5;
 	const uint8_t buttons_lines = 2;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
@@ -1743,7 +1743,7 @@ void LCD_showRFPowerWindow(void)
 
 void LCD_showManualFreqWindow(bool secondary_vfo)
 {
-#if (defined(HAS_TOUCHPAD))
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	manualFreqEnter = 0;
 	const uint8_t buttons_in_line = 7;
 	const uint8_t buttons_top_offset = 150;
@@ -1778,7 +1778,7 @@ void LCD_showManualFreqWindow(bool secondary_vfo)
 
 void LCD_ManualFreqButtonHandler(uint32_t parameter)
 {
-#if (defined(HAS_TOUCHPAD))
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	char buff[50] = {0};
 	uint32_t newfreq = 0;
 	if(parameter < 10)
