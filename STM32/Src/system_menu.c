@@ -1548,9 +1548,9 @@ static void SYSMENU_HANDL_CW_Decoder(int8_t direction)
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction)
 {
-	TRX.CW_Pitch += direction * 100;
-	if (TRX.CW_Pitch < 100)
-		TRX.CW_Pitch = 100;
+	TRX.CW_Pitch += direction * 10;
+	if (TRX.CW_Pitch < 50)
+		TRX.CW_Pitch = 50;
 	if (TRX.CW_Pitch > 10000)
 		TRX.CW_Pitch = 10000;
 }
