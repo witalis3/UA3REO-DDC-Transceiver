@@ -218,14 +218,14 @@ static void LCD_displayFreqInfo(bool redraw)
 	}
 	LCD_busy = true;
 
-	uint32_t display_freq = CurrentVFO->Freq;
+	uint64_t display_freq = CurrentVFO->Freq;
 #if (defined(LAY_800x480))
 	display_freq = TRX.VFO_A.Freq;
 #endif
 	if (TRX.Transverter_Enabled)
-		display_freq += TRX.Transverter_Offset_Mhz * 1000 * 1000;
-	if (display_freq > 999999999)
-		display_freq = 999999999;
+		display_freq += (uint64_t)TRX.Transverter_Offset_Mhz * 1000 * 1000;
+	while (display_freq >= 1000000000) //1GHZ limit
+		display_freq -= 1000000000;
 	LCD_last_showed_freq = display_freq;
 
 	uint16_t mhz_x_offset = 0;
@@ -290,8 +290,14 @@ static void LCD_displayFreqInfo(bool redraw)
 	}
 
 #if (defined(LAY_800x480))
+	display_freq = TRX.VFO_B.Freq;
+	if (TRX.Transverter_Enabled)
+		display_freq += (uint64_t)TRX.Transverter_Offset_Mhz * 1000 * 1000;
+	while (display_freq >= 1000000000) //1GHZ limit
+		display_freq -= 1000000000;
+	
 	uint16_t mhz_x_offset_B = 0;
-	LCD_last_showed_freq_B = TRX.VFO_B.Freq;
+	LCD_last_showed_freq_B = display_freq;
 	if (LCD_last_showed_freq_B >= 100000000)
 		mhz_x_offset_B = LAYOUT->FREQ_B_X_OFFSET_100;
 	else if (LCD_last_showed_freq_B >= 10000000)

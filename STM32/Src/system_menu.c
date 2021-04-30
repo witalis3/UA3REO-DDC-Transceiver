@@ -1073,8 +1073,8 @@ static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction)
 	TRX.Transverter_Offset_Mhz += direction;
 	if (TRX.Transverter_Offset_Mhz < 1)
 		TRX.Transverter_Offset_Mhz = 1;
-	if (TRX.Transverter_Offset_Mhz > 500)
-		TRX.Transverter_Offset_Mhz = 500;
+	if (TRX.Transverter_Offset_Mhz > 15000)
+		TRX.Transverter_Offset_Mhz = 15000;
 }
 
 static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction)
