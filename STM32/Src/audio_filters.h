@@ -40,6 +40,8 @@
 #define MAX_LPF_WIDTH_AM 20000
 #define MAX_LPF_WIDTH_NFM 44000
 
+#define CTCSS_FREQS_COUNT 66
+
 typedef enum // BiQuad filter type for automatic calculation
 {
 	BIQUAD_onepolelp,
@@ -130,6 +132,7 @@ extern const uint32_t AUTIO_FILTERS_LPF_CW_LIST[CW_LPF_COUNT];
 extern const uint32_t AUTIO_FILTERS_LPF_SSB_LIST[SSB_LPF_COUNT];
 extern const uint32_t AUTIO_FILTERS_LPF_AM_LIST[AM_LPF_COUNT];
 extern const uint32_t AUTIO_FILTERS_LPF_NFM_LIST[NFM_LPF_COUNT];
+extern float32_t CTCSS_Freqs[CTCSS_FREQS_COUNT];
 
 //Public methods
 extern void InitAudioFilters(void);													   // initialize audio filters

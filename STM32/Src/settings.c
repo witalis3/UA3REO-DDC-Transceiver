@@ -197,6 +197,7 @@ void LoadSettings(bool clear)
 		TRX.FM_LPF_RX_Filter = 10000;					   // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 10000;					   // default value of the FM filter width
 		TRX.Beeper = true;								   //Keyboard beeper
+		TRX.CTCSS_Freq = 0;									//CTCSS FM Frequency
 		//CW
 		TRX.CWDecoder = false;			 // automatic telegraph decoder
 		TRX.CW_Pitch = 600; // LO offset in CW mode

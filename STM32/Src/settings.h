@@ -260,6 +260,7 @@ extern struct TRX_SETTINGS
 	uint16_t FM_LPF_RX_Filter;
 	uint16_t FM_LPF_TX_Filter;
 	bool Beeper;
+	float32_t CTCSS_Freq;
 	//CW
 	bool CWDecoder;
 	uint16_t CW_Pitch;

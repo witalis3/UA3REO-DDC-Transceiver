@@ -162,6 +162,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **TX Compressor Speed** - TX compressor response speed for transmission (more-faster)
 * **TX Compressor MaxGain** - Maximum comressor gain
 * **Beeper** - Beep on key press
+* **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
 
 ### CW Settings
 
