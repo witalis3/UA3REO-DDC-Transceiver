@@ -1049,6 +1049,37 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_60m_band", (uint32_t *)&CALIBRATE.ENABLE_60m_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_marine_band", (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.OTA_update", (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_BOOLEAN);
+			//Bands settings
+			char buff[64] = {0};
+			for (uint8_t i = 0; i < BANDS_COUNT; i++)
+			{
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].Freq, SYSMENU_UINT32);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Mode", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].Mode, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].LNA", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].LNA, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ATT, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT_DB", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ATT_DB, SYSMENU_FLOAT32);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_Driver", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].SQL, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].DNR_Type, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].AGC, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE, SYSMENU_UINT8);
+			}
 		}
 
 		if (!res)
@@ -1648,6 +1679,51 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.ENABLE_marine_band = bval;
 	if (strcmp(name, "CALIBRATE.OTA_update") == 0)
 		CALIBRATE.OTA_update = bval;
+	
+	//Bands settings
+	char buff[64] = {0};
+	for (uint8_t i = 0; i < BANDS_COUNT; i++)
+	{
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].Freq = uintval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Mode", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)uintval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].LNA", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].LNA = bval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].ATT = bval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT_DB", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = floatval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].ANT = bval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_Driver", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = bval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].SQL = bval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = (uint8_t)uintval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = bval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = (uint8_t)uintval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].AGC = bval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = (uint8_t)uintval;
+	}
 }
 
 static void SDCOMM_IMPORT_SETT_handler(void)
