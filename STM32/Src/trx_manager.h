@@ -9,8 +9,8 @@
 #define TRX_GetSamplerateByENUM(rate) ((rate == TRX_SAMPLERATE_K48) ? 48000 : (rate == TRX_SAMPLERATE_K96) ? 96000  \
                                                                           : (rate == TRX_SAMPLERATE_K192)  ? 192000 \
                                                                                                            : 384000)
-#define TRX_GetRXSampleRate ((CurrentVFO()->Mode != TRX_MODE_WFM && CurrentVFO()->Mode != TRX_MODE_NFM) ? TRX_GetSamplerateByENUM(TRX.SAMPLERATE_MAIN) : TRX_GetSamplerateByENUM(TRX.SAMPLERATE_FM))
-#define TRX_GetRXSampleRateENUM ((CurrentVFO()->Mode != TRX_MODE_WFM && CurrentVFO()->Mode != TRX_MODE_NFM) ? TRX.SAMPLERATE_MAIN : TRX.SAMPLERATE_FM)
+#define TRX_GetRXSampleRate ((CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->Mode != TRX_MODE_NFM) ? TRX_GetSamplerateByENUM(TRX.SAMPLERATE_MAIN) : TRX_GetSamplerateByENUM(TRX.SAMPLERATE_FM))
+#define TRX_GetRXSampleRateENUM ((CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->Mode != TRX_MODE_NFM) ? TRX.SAMPLERATE_MAIN : TRX.SAMPLERATE_FM)
 
 extern void TRX_Init(void);
 extern void TRX_setFrequency(uint32_t _freq, VFO *vfo);

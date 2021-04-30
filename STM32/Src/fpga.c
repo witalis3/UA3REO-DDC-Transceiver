@@ -207,7 +207,7 @@ void FPGA_fpgadata_iqclock(void)
 {
 	if (FPGA_bus_stop)
 		return;
-	VFO *current_vfo = CurrentVFO();
+	VFO *current_vfo = CurrentVFO;
 	if (current_vfo->Mode == TRX_MODE_LOOPBACK)
 		return;
 	//data exchange
@@ -264,13 +264,12 @@ void FPGA_fpgadata_iqclock(void)
 static inline void FPGA_fpgadata_sendparam(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
-	VFO *current_vfo = CurrentVFO();
 
 	//STAGE 2
 	//out PTT+PREAMP
-	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));				   //RX1
-	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX && !TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK)); //RX2
-	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX() && current_vfo->Mode != TRX_MODE_LOOPBACK));								   //TX
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK));				   //RX1
+	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX && !TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); //RX2
+	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK));								   //TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
 	if (TRX_on_TX())

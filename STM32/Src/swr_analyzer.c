@@ -154,7 +154,7 @@ void SWR_Start(uint32_t start, uint32_t end)
 	endFreq = end;
 
 	//save settings
-	Lastfreq = CurrentVFO()->Freq;
+	Lastfreq = CurrentVFO->Freq;
 	LastMute = TRX_Mute;
 
 	// draw the GUI
@@ -182,7 +182,7 @@ void SWR_Start(uint32_t start, uint32_t end)
 	}
 
 	// start scanning
-	TRX_setFrequency(startFreq, CurrentVFO());
+	TRX_setFrequency(startFreq, CurrentVFO);
 	TRX_Mute = true;
 	TRX_Tune = true;
 	TRX_ptt_hard = TRX_Tune;
@@ -201,7 +201,7 @@ void SWR_Start(uint32_t start, uint32_t end)
 
 void SWR_Stop(void)
 {
-	TRX_setFrequency(Lastfreq, CurrentVFO());
+	TRX_setFrequency(Lastfreq, CurrentVFO);
 	TRX_Mute = LastMute;
 	TRX_Tune = false;
 	TRX_ptt_hard = false;
@@ -244,7 +244,7 @@ void SWR_Draw(void)
 		now_freq = startFreq;
 	}
 	now_freq += freq_step;
-	TRX_setFrequency((uint32_t)now_freq, CurrentVFO());
+	TRX_setFrequency((uint32_t)now_freq, CurrentVFO);
 	FPGA_NeedSendParams = true;
 	LCD_busy = false;
 }

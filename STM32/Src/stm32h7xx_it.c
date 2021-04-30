@@ -533,7 +533,7 @@ void TIM5_IRQHandler(void)
 
   if (TRX_on_TX())
   {
-    if (CurrentVFO()->Mode != TRX_MODE_NO_TX)
+    if (CurrentVFO->Mode != TRX_MODE_NO_TX)
       processTxAudio();
   }
   else
@@ -685,7 +685,7 @@ void TIM6_DAC_IRQHandler(void)
       fpga_stuck_errors++;
     else
       fpga_stuck_errors = 0;
-    if (fpga_stuck_errors > 5 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO()->Mode != TRX_MODE_WFM && !SD_PlayInProcess)
+    if (fpga_stuck_errors > 5 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM && !SD_PlayInProcess)
     {
       println("[ERR] IQ stuck error, restart");
       fpga_stuck_errors = 0;
@@ -735,7 +735,7 @@ void TIM6_DAC_IRQHandler(void)
 
     //Detect FPGA IQ phase error
     static bool phase_restarted = false;
-    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO()->Mode != TRX_MODE_WFM)
+    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM)
     {
       println("[ERR] IQ phase error, restart | ", TRX_IQ_phase_error);
       FPGA_NeedRestart = true;
@@ -1045,7 +1045,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
   else if (GPIO_Pin == GPIO_PIN_4) //PTT
   {
-    if (TRX_Inited && CurrentVFO()->Mode != TRX_MODE_NO_TX)
+    if (TRX_Inited && CurrentVFO->Mode != TRX_MODE_NO_TX)
       TRX_ptt_change();
   }
   else if (GPIO_Pin == GPIO_PIN_1) //KEY DOT

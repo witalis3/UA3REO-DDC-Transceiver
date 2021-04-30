@@ -45,6 +45,6 @@ void DECODER_Process(void)
 		DECODER_tail = 0;
 
 	//CW Decoder
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CWDecoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
 		CWDecoder_Process(bufferOut);
 }

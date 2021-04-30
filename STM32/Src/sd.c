@@ -303,7 +303,7 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 	RTC_DateTypeDef sDate = {0};
 	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%d.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO()->Freq);
+	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%d.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO->Freq);
 	println(filename);
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
@@ -812,7 +812,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR_Type", (uint32_t *)&TRX.VFO_B.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint32_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold", (uint32_t *)&TRX.VFO_B.FM_SQL_threshold, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.current_vfo", (uint32_t *)&TRX.current_vfo, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.selected_vfo", (uint32_t *)&TRX.selected_vfo, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.LNA", (uint32_t *)&TRX.LNA, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ATT", (uint32_t *)&TRX.ATT, SYSMENU_BOOLEAN);
@@ -1137,8 +1137,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_B.AGC = bval;
 	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold") == 0)
 		TRX.VFO_B.FM_SQL_threshold = (uint8_t)uintval;
-	if (strcmp(name, "TRX.current_vfo") == 0)
-		TRX.current_vfo = bval;
+	if (strcmp(name, "TRX.selected_vfo") == 0)
+		TRX.selected_vfo = bval;
 	if (strcmp(name, "TRX.LNA") == 0)
 		TRX.LNA = bval;
 	if (strcmp(name, "TRX.ATT") == 0)

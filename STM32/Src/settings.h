@@ -185,7 +185,7 @@ extern struct TRX_SETTINGS
 {
 	uint8_t flash_id; //version check
 	//TRX
-	bool current_vfo; // false - A; true - B
+	bool selected_vfo; // false - A; true - B
 	VFO VFO_A;
 	VFO VFO_B;
 	bool Fast;
@@ -448,6 +448,8 @@ extern char version_string[19]; //1.2.3-yymmdd.hhmmss
 extern volatile bool NeedSaveSettings;
 extern volatile bool NeedSaveCalibration;
 extern volatile bool EEPROM_Busy;
+extern VFO *CurrentVFO;
+extern VFO *SecondaryVFO;
 
 extern void LoadSettings(bool clear);
 extern void LoadCalibration(bool clear);
@@ -456,8 +458,6 @@ extern void SaveCalibration(void);
 extern void SaveSettingsToEEPROM(void);
 extern void BKPSRAM_Enable(void);
 extern void BKPSRAM_Disable(void);
-extern VFO *CurrentVFO(void);
-extern VFO *SecondaryVFO(void);
 extern void RTC_Calibration(void);
 
 #ifdef FRONTPANEL_SMALL_V1

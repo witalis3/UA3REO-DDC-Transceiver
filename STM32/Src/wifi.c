@@ -1120,7 +1120,7 @@ void WIFI_getDXCluster(void)
 		return;
 	}
 	char url[64] = "/trx_services/cluster.php?band=";
-	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if(band >= 0)
 		strcat(url, BANDS[band].name);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false, false);

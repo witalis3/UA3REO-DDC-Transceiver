@@ -788,7 +788,7 @@ int8_t getBandFromFreq(uint32_t freq, bool nearest)
 uint_fast8_t getModeFromFreq(uint32_t freq)
 {
 	uint_fast8_t ret = 0;
-	ret = CurrentVFO()->Mode;
+	ret = CurrentVFO->Mode;
 
 	for (uint_fast16_t b = 0; b < BANDS_COUNT; b++)
 	{

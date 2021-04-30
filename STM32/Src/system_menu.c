@@ -826,7 +826,7 @@ static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction)
 	if (TRX.SAMPLERATE_MAIN > 3)
 		TRX.SAMPLERATE_MAIN = 3;
 
-	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 	
 	FFT_Init();
@@ -1391,16 +1391,16 @@ static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
 {
-	if (direction < 0 && CurrentVFO()->FM_SQL_threshold == 0)
+	if (direction < 0 && CurrentVFO->FM_SQL_threshold == 0)
 		return;
-	CurrentVFO()->FM_SQL_threshold += direction;
-	if (CurrentVFO()->FM_SQL_threshold > 10)
-		CurrentVFO()->FM_SQL_threshold = 10;
-	TRX.FM_SQL_threshold = CurrentVFO()->FM_SQL_threshold;
+	CurrentVFO->FM_SQL_threshold += direction;
+	if (CurrentVFO->FM_SQL_threshold > 10)
+		CurrentVFO->FM_SQL_threshold = 10;
+	TRX.FM_SQL_threshold = CurrentVFO->FM_SQL_threshold;
 
-	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band > 0)
-		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold = CurrentVFO()->FM_SQL_threshold;
+		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold = CurrentVFO->FM_SQL_threshold;
 }
 
 static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction)
@@ -1418,8 +1418,8 @@ static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)
 	if(TRX.SSB_HPF_Filter > MAX_HPF_WIDTH)
 		TRX.SSB_HPF_Filter = MAX_HPF_WIDTH;
 	
-	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
@@ -1429,8 +1429,8 @@ static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 	if(TRX.CW_LPF_Filter > MAX_LPF_WIDTH_CW)
 		TRX.CW_LPF_Filter = MAX_LPF_WIDTH_CW;
 
-	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction)
@@ -1440,8 +1440,8 @@ static void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction)
 	if(TRX.SSB_LPF_RX_Filter > MAX_LPF_WIDTH_SSB)
 		TRX.SSB_LPF_RX_Filter = MAX_LPF_WIDTH_SSB;
 
-	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction)
@@ -1451,8 +1451,8 @@ static void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction)
 	if(TRX.SSB_LPF_TX_Filter > MAX_LPF_WIDTH_SSB)
 		TRX.SSB_LPF_TX_Filter = MAX_LPF_WIDTH_SSB;
 
-	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction)
@@ -1462,8 +1462,8 @@ static void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction)
 	if(TRX.AM_LPF_RX_Filter > MAX_LPF_WIDTH_AM)
 		TRX.AM_LPF_RX_Filter = MAX_LPF_WIDTH_AM;
 
-	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction)
@@ -1473,8 +1473,8 @@ static void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction)
 	if(TRX.AM_LPF_TX_Filter > MAX_LPF_WIDTH_AM)
 		TRX.AM_LPF_TX_Filter = MAX_LPF_WIDTH_AM;
 	
-	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction)
@@ -1484,8 +1484,8 @@ static void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction)
 	if(TRX.FM_LPF_RX_Filter > MAX_LPF_WIDTH_NFM)
 		TRX.FM_LPF_RX_Filter = MAX_LPF_WIDTH_NFM;
 	
-	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction)
@@ -1495,8 +1495,8 @@ static void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction)
 	if(TRX.FM_LPF_TX_Filter > MAX_LPF_WIDTH_NFM)
 		TRX.FM_LPF_TX_Filter = MAX_LPF_WIDTH_NFM;
 
-	TRX_setMode(SecondaryVFO()->Mode, SecondaryVFO());
-	TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction)
@@ -2062,7 +2062,7 @@ static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction)
 		TRX.ADC_Driver = true;
 	if (direction < 0)
 		TRX.ADC_Driver = false;
-	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
 	FPGA_NeedSendParams = true;
@@ -2074,7 +2074,7 @@ static void SYSMENU_HANDL_ADC_PGA(int8_t direction)
 		TRX.ADC_PGA = true;
 	if (direction < 0)
 		TRX.ADC_PGA = false;
-	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band > 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
 	FPGA_NeedSendParams = true;
@@ -2864,7 +2864,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_2200M(int8_t direction)
 	if (CALIBRATE.rf_out_power_2200m > 100)
 		CALIBRATE.rf_out_power_2200m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_160M(int8_t direction)
@@ -2876,7 +2876,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_160M(int8_t direction)
 	if (CALIBRATE.rf_out_power_160m > 100)
 		CALIBRATE.rf_out_power_160m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_80M(int8_t direction)
@@ -2888,7 +2888,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_80M(int8_t direction)
 	if (CALIBRATE.rf_out_power_80m > 100)
 		CALIBRATE.rf_out_power_80m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_40M(int8_t direction)
@@ -2900,7 +2900,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_40M(int8_t direction)
 	if (CALIBRATE.rf_out_power_40m > 100)
 		CALIBRATE.rf_out_power_40m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_30M(int8_t direction)
@@ -2912,7 +2912,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_30M(int8_t direction)
 	if (CALIBRATE.rf_out_power_30m > 100)
 		CALIBRATE.rf_out_power_30m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_20M(int8_t direction)
@@ -2924,7 +2924,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_20M(int8_t direction)
 	if (CALIBRATE.rf_out_power_20m > 100)
 		CALIBRATE.rf_out_power_20m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_17M(int8_t direction)
@@ -2936,7 +2936,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_17M(int8_t direction)
 	if (CALIBRATE.rf_out_power_17m > 100)
 		CALIBRATE.rf_out_power_17m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_15M(int8_t direction)
@@ -2948,7 +2948,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_15M(int8_t direction)
 	if (CALIBRATE.rf_out_power_15m > 100)
 		CALIBRATE.rf_out_power_15m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_12M(int8_t direction)
@@ -2960,7 +2960,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_12M(int8_t direction)
 	if (CALIBRATE.rf_out_power_12m > 100)
 		CALIBRATE.rf_out_power_12m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_10M(int8_t direction)
@@ -2972,7 +2972,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_10M(int8_t direction)
 	if (CALIBRATE.rf_out_power_10m > 100)
 		CALIBRATE.rf_out_power_10m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction)
@@ -2984,7 +2984,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction)
 	if (CALIBRATE.rf_out_power_6m > 100)
 		CALIBRATE.rf_out_power_6m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction)
@@ -2996,7 +2996,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction)
 	if (CALIBRATE.rf_out_power_2m > 100)
 		CALIBRATE.rf_out_power_2m = 100;
 
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO()->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_CALIB_S_METER_HF(int8_t direction)
@@ -3880,7 +3880,7 @@ static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction)
 	else
 	{
 		SYSMENU_swr_opened = true;
-		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 		SWR_Start(BANDS[band].startFreq - 100000, BANDS[band].endFreq + 100000);
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}

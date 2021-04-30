@@ -59,14 +59,14 @@ void WSPR_Start(void)
 	LCD_busy = true;
 
 	//save settings
-	Lastfreq = CurrentVFO()->Freq;
-	Lastmode = CurrentVFO()->Mode;
+	Lastfreq = CurrentVFO->Freq;
+	Lastmode = CurrentVFO->Mode;
 	LastAutoGain = TRX.AutoGain;
 	LastBandMapEnabled = TRX.BandMapEnabled;
 	LastRF_Filters = TRX.RF_Filters;
-	LastManualNotch = CurrentVFO()->ManualNotchFilter;
-	LastAutoNotch = CurrentVFO()->AutoNotchFilter;
-	LastDNR = CurrentVFO()->DNR_Type;
+	LastManualNotch = CurrentVFO->ManualNotchFilter;
+	LastAutoNotch = CurrentVFO->AutoNotchFilter;
+	LastDNR = CurrentVFO->DNR_Type;
 	LastShift = TRX.ShiftEnabled;
 	LastNB = TRX.NOISE_BLANKER;
 	LastMute = TRX_Mute;
@@ -75,7 +75,7 @@ void WSPR_Start(void)
 	TRX_Mute = true;
 	TRX.TWO_SIGNAL_TUNE = false;
 	TRX.BandMapEnabled = false;
-	TRX_setMode(TRX_MODE_CW, CurrentVFO());
+	TRX_setMode(TRX_MODE_CW, CurrentVFO);
 	wspr_band = WSPR_GetNextBand();
 	WSPR_Encode();
 
@@ -105,14 +105,14 @@ void WSPR_Stop(void)
 {
 	WSPR_StopTransmit();
 
-	TRX_setFrequency(Lastfreq, CurrentVFO());
-	TRX_setMode(Lastmode, CurrentVFO());
+	TRX_setFrequency(Lastfreq, CurrentVFO);
+	TRX_setMode(Lastmode, CurrentVFO);
 	TRX.AutoGain = LastAutoGain;
 	TRX.BandMapEnabled = LastBandMapEnabled;
 	TRX.RF_Filters = LastRF_Filters;
-	CurrentVFO()->ManualNotchFilter = LastManualNotch;
-	CurrentVFO()->AutoNotchFilter = LastAutoNotch;
-	CurrentVFO()->DNR_Type = LastDNR;
+	CurrentVFO->ManualNotchFilter = LastManualNotch;
+	CurrentVFO->AutoNotchFilter = LastAutoNotch;
+	CurrentVFO->DNR_Type = LastDNR;
 	TRX.ShiftEnabled = LastShift;
 	TRX.NOISE_BLANKER = LastNB;
 	TRX_Mute = LastMute;
@@ -141,7 +141,7 @@ void WSPR_DoEvents(void)
 	if (bitRead(Minutes, 0) == 0 && Seconds == 0 && OLD_Seconds != Seconds)
 	{
 		wspr_band = WSPR_GetNextBand();
-		TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band), CurrentVFO());
+		TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band), CurrentVFO);
 		WSPR_StartTransmit();
 	}
 	OLD_Seconds = Seconds;
@@ -199,7 +199,7 @@ void WSPR_DoFastEvents(void)
 {
 	if (WSPR2_BeginDelay < 1)
 	{ // Begin delay - actually 0.682mSec
-		TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band), CurrentVFO());
+		TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band), CurrentVFO);
 		WSPR2_BeginDelay++;
 	}
 	else
@@ -207,7 +207,7 @@ void WSPR_DoFastEvents(void)
 		// Begin 162 WSPR symbol transmission
 		if (WSPR2_count < 162)
 		{
-			TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band) + WSPR2_OffsetFreq[WSPR2_symTable[WSPR2_count]], CurrentVFO());
+			TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band) + WSPR2_OffsetFreq[WSPR2_symTable[WSPR2_count]], CurrentVFO);
 			WSPR2_count++; //Increments the interrupt counter
 		}
 		else

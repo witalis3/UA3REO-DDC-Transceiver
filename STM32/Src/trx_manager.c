@@ -74,7 +74,7 @@ static void TRX_Start_TXRX(void);
 
 bool TRX_on_TX(void)
 {
-	if (TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO()->Mode == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0)
+	if (TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO->Mode == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0)
 		return true;
 	return false;
 }
@@ -84,24 +84,34 @@ void TRX_Init()
 	TRX_Start_RX();
 	WM8731_TXRX_mode();
 	WM8731_start_i2s_and_dma();
-	uint_fast8_t saved_mode = CurrentVFO()->Mode;
-	TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
-	TRX_setMode(saved_mode, CurrentVFO());
+	uint_fast8_t saved_mode = CurrentVFO->Mode;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+	TRX_setMode(saved_mode, CurrentVFO);
 	HAL_ADCEx_InjectedStart(&hadc1); //ADC RF-UNIT'а
 	HAL_ADCEx_InjectedStart(&hadc3); //ADC CPU temperature
 }
 
 void TRX_Restart_Mode()
 {
-	uint_fast8_t mode = CurrentVFO()->Mode;
+	uint_fast8_t mode = CurrentVFO->Mode;
 	//CLAR
 	if (TRX.CLAR)
 	{
-		TRX.current_vfo = !TRX.current_vfo;
-		TRX_setFrequency(CurrentVFO()->Freq, CurrentVFO());
-		TRX_setMode(CurrentVFO()->Mode, CurrentVFO());
+		TRX.selected_vfo = !TRX.selected_vfo;
+		if(!TRX.selected_vfo)
+		{
+			CurrentVFO = &TRX.VFO_A;
+			SecondaryVFO = &TRX.VFO_B;
+		}
+		else
+		{
+			CurrentVFO = &TRX.VFO_B;
+			SecondaryVFO = &TRX.VFO_A;
+		}
+		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+		TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 
-		int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 		TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
 
 		LCD_UpdateQuery.FreqInfoRedraw = true;
@@ -166,7 +176,7 @@ void TRX_ptt_change(void)
 	if (TRX_Tune)
 		TRX_Tune = false;
 	
-	bool notx = TRX_TX_Disabled(CurrentVFO()->Freq);
+	bool notx = TRX_TX_Disabled(CurrentVFO->Freq);
 	if(notx)
 	{
 		TRX_ptt_soft = false;
@@ -271,7 +281,7 @@ void TRX_key_change(void)
 {
 	if (TRX_Tune)
 		return;
-	if (CurrentVFO()->Mode != TRX_MODE_CW)
+	if (CurrentVFO->Mode != TRX_MODE_CW)
 		return;
 	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
 	if (TRX_key_dot_hard != TRX_new_key_dot_hard)
@@ -345,11 +355,9 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	}
 
 	//get fpga freq phrase
-	VFO *current_vfo = CurrentVFO();
-	VFO *secondary_vfo = SecondaryVFO();
-	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)current_vfo->Freq + TRX_SHIFT, 1);
-	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)secondary_vfo->Freq + TRX_SHIFT, 2);
-	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)current_vfo->Freq);
+	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)CurrentVFO->Freq + TRX_SHIFT, 1);
+	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)SecondaryVFO->Freq + TRX_SHIFT, 2);
+	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)CurrentVFO->Freq);
 	//
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
 	RF_UNIT_ATU_Invalidate();
@@ -474,7 +482,7 @@ void TRX_DoAutoGain(void)
 			TRX.ATT_DB = new_att_val;
 			LCD_UpdateQuery.TopButtons = true;
 			//save settings
-			int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+			int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 			TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
 			TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
 			TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
@@ -491,7 +499,7 @@ void TRX_DBMCalculate(void)
 	if (TRX.ADC_Driver)
 		adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
 	TRX_RX_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
-	if(CurrentVFO()->Freq < 70000000)
+	if(CurrentVFO->Freq < 70000000)
 		TRX_RX_dBm += CALIBRATE.smeter_calibration_hf;
 	else
 		TRX_RX_dBm += CALIBRATE.smeter_calibration_vhf;
@@ -608,7 +616,7 @@ void TRX_ProcessScanMode(void)
 	static uint32_t StateChangeTime = 0;
 	bool goSweep = false;
 
-	if (CurrentVFO()->Mode == TRX_MODE_WFM || CurrentVFO()->Mode == TRX_MODE_NFM)
+	if (CurrentVFO->Mode == TRX_MODE_WFM || CurrentVFO->Mode == TRX_MODE_NFM)
 	{
 		if (oldState != DFM_RX1_Squelched)
 		{
@@ -637,22 +645,22 @@ void TRX_ProcessScanMode(void)
 
 	if (goSweep)
 	{
-		int8_t band = getBandFromFreq(CurrentVFO()->Freq, false);
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, false);
 		for (uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++)
 		{
-			if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO()->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO()->Freq))
+			if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO->Freq))
 			{
 				uint32_t step = SCANNER_FREQ_STEP_OTHER;
-				if (CurrentVFO()->Mode == TRX_MODE_WFM)
+				if (CurrentVFO->Mode == TRX_MODE_WFM)
 					step = SCANNER_FREQ_STEP_WFM;
-				if (CurrentVFO()->Mode == TRX_MODE_NFM)
+				if (CurrentVFO->Mode == TRX_MODE_NFM)
 					step = SCANNER_FREQ_STEP_NFM;
 
-				uint32_t new_freq = (CurrentVFO()->Freq + step) / step * step;
+				uint32_t new_freq = (CurrentVFO->Freq + step) / step * step;
 				if (new_freq >= BANDS[band].regions[region_id].endFreq)
 					new_freq = BANDS[band].regions[region_id].startFreq;
 
-				TRX_setFrequency(new_freq, CurrentVFO());
+				TRX_setFrequency(new_freq, CurrentVFO);
 				LCD_UpdateQuery.FreqInfo = true;
 				StateChangeTime = HAL_GetTick();
 				break;
@@ -673,15 +681,15 @@ void TRX_setFrequencySlowly_Process(void)
 {
 	if (!setFreqSlowly_processing)
 		return;
-	int32_t diff = CurrentVFO()->Freq - setFreqSlowly_target;
+	int32_t diff = CurrentVFO->Freq - setFreqSlowly_target;
 	if (diff > TRX_SLOW_SETFREQ_MIN_STEPSIZE || diff < -TRX_SLOW_SETFREQ_MIN_STEPSIZE)
 	{
-		TRX_setFrequency(CurrentVFO()->Freq - diff / 4, CurrentVFO());
+		TRX_setFrequency(CurrentVFO->Freq - diff / 4, CurrentVFO);
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 	else
 	{
-		TRX_setFrequency(setFreqSlowly_target, CurrentVFO());
+		TRX_setFrequency(setFreqSlowly_target, CurrentVFO);
 		LCD_UpdateQuery.FreqInfo = true;
 		setFreqSlowly_processing = false;
 	}

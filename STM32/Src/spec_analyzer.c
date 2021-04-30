@@ -45,14 +45,14 @@ void SPEC_Start(void)
 	LCD_busy = true;
 
 	//save settings
-	Lastfreq = CurrentVFO()->Freq;
-	Lastmode = CurrentVFO()->Mode;
+	Lastfreq = CurrentVFO->Freq;
+	Lastmode = CurrentVFO->Mode;
 	LastAutoGain = TRX.AutoGain;
 	LastBandMapEnabled = TRX.BandMapEnabled;
 	LastRF_Filters = TRX.RF_Filters;
-	LastManualNotch = CurrentVFO()->ManualNotchFilter;
-	LastAutoNotch = CurrentVFO()->AutoNotchFilter;
-	LastDNR = CurrentVFO()->DNR_Type;
+	LastManualNotch = CurrentVFO->ManualNotchFilter;
+	LastAutoNotch = CurrentVFO->AutoNotchFilter;
+	LastDNR = CurrentVFO->DNR_Type;
 	LastShift = TRX.ShiftEnabled;
 	LastNB = TRX.NOISE_BLANKER;
 	LastMute = TRX_Mute;
@@ -87,11 +87,11 @@ void SPEC_Start(void)
 	TRX.RF_Filters = false;
 	TRX.ShiftEnabled = false;
 	TRX.NOISE_BLANKER = false;
-	TRX_setFrequency(TRX.SPEC_Begin * SPEC_Resolution, CurrentVFO());
-	TRX_setMode(TRX_MODE_CW, CurrentVFO());
-	CurrentVFO()->ManualNotchFilter = false;
-	CurrentVFO()->AutoNotchFilter = false;
-	CurrentVFO()->DNR_Type = false;
+	TRX_setFrequency(TRX.SPEC_Begin * SPEC_Resolution, CurrentVFO);
+	TRX_setMode(TRX_MODE_CW, CurrentVFO);
+	CurrentVFO->ManualNotchFilter = false;
+	CurrentVFO->AutoNotchFilter = false;
+	CurrentVFO->DNR_Type = false;
 	TRX_Mute = true;
 	FPGA_NeedSendParams = true;
 	now_freq = TRX.SPEC_Begin * SPEC_Resolution;
@@ -106,14 +106,14 @@ void SPEC_Start(void)
 
 void SPEC_Stop(void)
 {
-	TRX_setFrequency(Lastfreq, CurrentVFO());
-	TRX_setMode(Lastmode, CurrentVFO());
+	TRX_setFrequency(Lastfreq, CurrentVFO);
+	TRX_setMode(Lastmode, CurrentVFO);
 	TRX.AutoGain = LastAutoGain;
 	TRX.BandMapEnabled = LastBandMapEnabled;
 	TRX.RF_Filters = LastRF_Filters;
-	CurrentVFO()->ManualNotchFilter = LastManualNotch;
-	CurrentVFO()->AutoNotchFilter = LastAutoNotch;
-	CurrentVFO()->DNR_Type = LastDNR;
+	CurrentVFO->ManualNotchFilter = LastManualNotch;
+	CurrentVFO->AutoNotchFilter = LastAutoNotch;
+	CurrentVFO->DNR_Type = LastDNR;
 	TRX.ShiftEnabled = LastShift;
 	TRX.NOISE_BLANKER = LastNB;
 	TRX_Mute = LastMute;
@@ -154,7 +154,7 @@ void SPEC_Draw(void)
 		now_freq = TRX.SPEC_Begin * SPEC_Resolution;
 	}
 	now_freq += freq_step;
-	TRX_setFrequency((uint32_t)now_freq, CurrentVFO());
+	TRX_setFrequency((uint32_t)now_freq, CurrentVFO);
 	FPGA_NeedSendParams = true;
 	LCD_busy = false;
 }

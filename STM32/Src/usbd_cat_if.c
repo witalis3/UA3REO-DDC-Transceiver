@@ -328,7 +328,7 @@ void ua3reo_dev_cat_parseCommand(void)
 	{
 		if (!has_args)
 		{
-			if (!TRX.current_vfo)
+			if (!TRX.selected_vfo)
 				CAT_Transmit("VS0;");
 			else
 				CAT_Transmit("VS1;");
@@ -340,9 +340,19 @@ void ua3reo_dev_cat_parseCommand(void)
 				new_vfo = 0;
 			else if (strcmp(arguments, "1") == 0)
 				new_vfo = 1;
-			if(TRX.current_vfo != new_vfo)
+			if(TRX.selected_vfo != new_vfo)
 			{
-				TRX.current_vfo = new_vfo;
+				TRX.selected_vfo = new_vfo;
+				if(!TRX.selected_vfo)
+				{
+					CurrentVFO = &TRX.VFO_A;
+					SecondaryVFO = &TRX.VFO_B;
+				}
+				else
+				{
+					CurrentVFO = &TRX.VFO_B;
+					SecondaryVFO = &TRX.VFO_A;
+				}
 				LCD_UpdateQuery.TopButtons = true;
 				LCD_UpdateQuery.BottomButtons = true;
 				LCD_UpdateQuery.FreqInfoRedraw = true;
@@ -366,15 +376,15 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			char answer[30] = {0};
 			strcat(answer, "IF001"); //memory channel
-			if (CurrentVFO()->Freq < 10000000)
+			if (CurrentVFO->Freq < 10000000)
 				strcat(answer, "0");
-			sprintf(ctmp, "%u", CurrentVFO()->Freq);
+			sprintf(ctmp, "%u", CurrentVFO->Freq);
 			strcat(answer, ctmp);	 //freq
 			strcat(answer, "+0000"); //clirifier offset
 			strcat(answer, "0");	 //RX clar off
 			strcat(answer, "0");	 //TX clar off
 			char mode[3] = {0};
-			getFT450Mode((uint8_t)CurrentVFO()->Mode, mode);
+			getFT450Mode((uint8_t)CurrentVFO->Mode, mode);
 			strcat(answer, mode); //mode
 			strcat(answer, "0");  //VFO Memory
 			strcat(answer, "0");  //CTCSS OFF
@@ -404,9 +414,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		}
 		else
 		{
-			if (TRX.current_vfo == 0)
-				TRX_setFrequency((uint32_t)atoi(arguments), CurrentVFO());
-			TRX.VFO_A.Freq = (uint32_t)atoi(arguments);
+			TRX_setFrequency((uint32_t)atoi(arguments), CurrentVFO);
 			LCD_UpdateQuery.FreqInfo = true;
 			LCD_UpdateQuery.TopButtons = true;
 		}
@@ -428,9 +436,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		}
 		else
 		{
-			if (TRX.current_vfo == 1)
-				TRX_setFrequency((uint32_t)atoi(arguments), CurrentVFO());
-			TRX.VFO_B.Freq = (uint32_t)atoi(arguments);
+			TRX_setFrequency((uint32_t)atoi(arguments), SecondaryVFO);
 			LCD_UpdateQuery.FreqInfo = true;
 			LCD_UpdateQuery.TopButtons = true;
 		}
@@ -506,7 +512,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			if (strcmp(arguments, "0") == 0)
 			{
-				if (TRX.RX_AGC_SSB_speed == 0 || !CurrentVFO()->AGC)
+				if (TRX.RX_AGC_SSB_speed == 0 || !CurrentVFO->AGC)
 					CAT_Transmit("GT00;");
 				else if (TRX.RX_AGC_SSB_speed == 1)
 					CAT_Transmit("GT04;");
@@ -536,16 +542,16 @@ void ua3reo_dev_cat_parseCommand(void)
 				char answer[30] = {0};
 				strcat(answer, "MD0");
 				char mode[3] = {0};
-				getFT450Mode((uint8_t)CurrentVFO()->Mode, mode);
+				getFT450Mode((uint8_t)CurrentVFO->Mode, mode);
 				strcat(answer, mode); //mode
 				strcat(answer, ";");
 				CAT_Transmit(answer);
 			}
 			else
 			{
-				if (CurrentVFO()->Mode != setFT450Mode(arguments))
+				if (CurrentVFO->Mode != setFT450Mode(arguments))
 				{
-					TRX_setMode(setFT450Mode(arguments), CurrentVFO());
+					TRX_setMode(setFT450Mode(arguments), CurrentVFO);
 					LCD_UpdateQuery.TopButtons = true;
 				}
 			}
@@ -756,8 +762,8 @@ void ua3reo_dev_cat_parseCommand(void)
 			if(band > -1)
 			{
 				println(TRX.BANDS_SAVED_SETTINGS[band].Freq);
-				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO());
-				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO());
+				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
+				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
 				if(TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
 				{
 					TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
@@ -770,9 +776,9 @@ void ua3reo_dev_cat_parseCommand(void)
 				TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 				TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-				CurrentVFO()->FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
-				CurrentVFO()->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-				CurrentVFO()->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+				CurrentVFO->FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+				CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
+				CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 				TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
 				TRX_Temporary_Stop_BandMap = false;
 			}

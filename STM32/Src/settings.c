@@ -26,6 +26,7 @@ IRAM2 static uint8_t Address[3] = {0x00};
 struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
 static uint8_t settings_bank = 1;
+static bool EEPROM_Enabled = true;
 
 IRAM2 static uint8_t write_clone[sizeof(TRX)] = {0};
 IRAM2 static uint8_t read_clone[sizeof(TRX)] = {0};
@@ -34,7 +35,8 @@ IRAM2 static uint8_t verify_clone[sizeof(TRX)] = {0};
 volatile bool NeedSaveSettings = false;
 volatile bool NeedSaveCalibration = false;
 volatile bool EEPROM_Busy = false;
-static bool EEPROM_Enabled = true;
+VFO *CurrentVFO = &TRX.VFO_A;
+VFO *SecondaryVFO = &TRX.VFO_B;
 
 static void LoadSettingsFromEEPROM(void);
 static bool EEPROM_Sector_Erase(uint8_t sector, bool force);
@@ -101,7 +103,7 @@ void LoadSettings(bool clear)
 		//
 		TRX.flash_id = SETT_VERSION; // Firmware ID in SRAM, if it doesn't match, use the default
 		//TRX
-		TRX.current_vfo = false;				  // current VFO (false - A)
+		TRX.selected_vfo = false;				  // current VFO (false - A)
 		TRX.VFO_A.Freq = 7100000;				  // stored VFO-A frequency
 		TRX.VFO_A.Mode = TRX_MODE_LSB;			  // saved VFO-A mode
 		TRX.VFO_A.LPF_RX_Filter_Width = 2700;	  // saved bandwidth for VFO-A
@@ -292,6 +294,18 @@ void LoadSettings(bool clear)
 		SaveSettings();
 		SaveSettingsToEEPROM();
 	}
+	
+	//VFO settings
+	if(!TRX.selected_vfo)
+	{
+		CurrentVFO = &TRX.VFO_A;
+		SecondaryVFO = &TRX.VFO_B;
+	}
+	else
+	{
+		CurrentVFO = &TRX.VFO_B;
+		SecondaryVFO = &TRX.VFO_A;
+	}
 }
 
 static void LoadSettingsFromEEPROM(void)
@@ -443,22 +457,6 @@ void LoadCalibration(bool clear)
 	//enable bands
 	BANDS[BANDID_60m].selectable = CALIBRATE.ENABLE_60m_band;
 	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
-}
-
-inline VFO *CurrentVFO(void)
-{
-	if (!TRX.current_vfo)
-		return &TRX.VFO_A;
-	else
-		return &TRX.VFO_B;
-}
-
-inline VFO *SecondaryVFO(void)
-{
-	if (!TRX.current_vfo)
-		return &TRX.VFO_B;
-	else
-		return &TRX.VFO_A;
 }
 
 void SaveSettings(void)

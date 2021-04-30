@@ -192,7 +192,7 @@ ITCM static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 			WM8731_Buffer_underrun = true;
 		WM8731_DMA_state = true;
 		Processor_NeedRXBuffer = true;
-		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
+		if (CurrentVFO->Mode == TRX_MODE_LOOPBACK)
 			Processor_NeedTXBuffer = true;
 		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE / 2);
 	}
@@ -208,7 +208,7 @@ ITCM static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 			WM8731_Buffer_underrun = true;
 		WM8731_DMA_state = false;
 		Processor_NeedRXBuffer = true;
-		if (CurrentVFO()->Mode == TRX_MODE_LOOPBACK)
+		if (CurrentVFO->Mode == TRX_MODE_LOOPBACK)
 			Processor_NeedTXBuffer = true;
 		WM8731_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE / 2);
 	}

@@ -273,9 +273,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	bool dualrx_bpf_disabled = false;
 	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
 	{
-		if (TRX.Dual_RX && SecondaryVFO()->Freq > CALIBRATE.RFU_LPF_END)
+		if (TRX.Dual_RX && SecondaryVFO->Freq > CALIBRATE.RFU_LPF_END)
 			dualrx_lpf_disabled = true;
-		if (TRX.Dual_RX && getBPFByFreq(CurrentVFO()->Freq) != getBPFByFreq(SecondaryVFO()->Freq))
+		if (TRX.Dual_RX && getBPFByFreq(CurrentVFO->Freq) != getBPFByFreq(SecondaryVFO->Freq))
 			dualrx_bpf_disabled = true;
 	}
 
@@ -312,11 +312,11 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		att_val -= 0.5f;
 	}
 
-	uint8_t bpf = getBPFByFreq(CurrentVFO()->Freq);
-	uint8_t bpf_second = getBPFByFreq(SecondaryVFO()->Freq);
+	uint8_t bpf = getBPFByFreq(CurrentVFO->Freq);
+	uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
 
 	uint8_t band_out = 0;
-	int8_t band = getBandFromFreq(CurrentVFO()->Freq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band == BANDID_2200m || band == 1 || band == 2) //2200m
 		band_out = CALIBRATE.EXT_2200m;
 	if (band == BANDID_160m || band == 4) //160m
@@ -364,7 +364,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			if (!clean)
 			{
 				//U7-QH LPF_ON
-				if (registerNumber == 0 && TRX.RF_Filters && (CurrentVFO()->Freq <= CALIBRATE.RFU_LPF_END) && !dualrx_lpf_disabled)
+				if (registerNumber == 0 && TRX.RF_Filters && (CurrentVFO->Freq <= CALIBRATE.RFU_LPF_END) && !dualrx_lpf_disabled)
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U7-QG LNA_ON
 				if (registerNumber == 1 && !TRX_on_TX() && TRX.LNA)
@@ -416,7 +416,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 16 && bitRead(band_out, 0))
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U3-QG PTT_OUT
-				if (registerNumber == 17 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 17 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U3-QF BAND_OUT_2
 				if (registerNumber == 18 && bitRead(band_out, 2))
@@ -500,7 +500,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			if (!clean)
 			{
 				//U1-7 HF-VHF-SELECT
-				if (registerNumber == 0 && CurrentVFO()->Freq >= 70000000)
+				if (registerNumber == 0 && CurrentVFO->Freq >= 70000000)
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U1-6 ATT_ON_1
 				if (registerNumber == 1 && !(TRX.ATT && att_val_1))
@@ -537,7 +537,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 11 && (bpf == 2 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 2)))
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U3-3 TX_PTT_OUT
-				if (registerNumber == 12 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 12 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U3-2 TUN_C_1
 				if (registerNumber == 13 && bitRead(TRX.ATU_C, 0))
@@ -558,7 +558,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U2-5 UNUSED
 				//if (registerNumber == 18 &&
 				//U2-4 VHF_AMP_BIAS_ON
-				if (registerNumber == 19 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK && CurrentVFO()->Freq >= 70000000)
+				if (registerNumber == 19 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U2-3 TUN_I_1
 				if (registerNumber == 20 && bitRead(TRX.ATU_I, 0))
@@ -595,7 +595,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 30 && (bpf == 9 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 9)))
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U7-0 HF_AMP_BIAS_ON
-				if (registerNumber == 31 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK && CurrentVFO()->Freq < 70000000)
+				if (registerNumber == 31 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				
 				//U11-7 ANT1-2_OUT
@@ -641,7 +641,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 34 && bitRead(band_out, 3))
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U11-4 TX_PTT_OUT
-				if (registerNumber == 35 && TRX_on_TX() && CurrentVFO()->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 35 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 				//U11-3 BAND_OUT_1
 				if (registerNumber == 36 && bitRead(band_out, 1))
@@ -769,7 +769,7 @@ void RF_UNIT_ProcessSensors(void)
 		TRX_PWR_Backward = (TRX_VLT_backward * TRX_VLT_backward) / 50.0f;
 
 		//VHF SWR tandem match capacity fix
-		if (CurrentVFO()->Freq > 80000000)
+		if (CurrentVFO->Freq > 80000000)
 			TRX_PWR_Backward -= TRX_PWR_Forward / 3.0f;
 
 		if (TRX_PWR_Backward < 0.0f)

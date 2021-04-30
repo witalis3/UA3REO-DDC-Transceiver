@@ -226,7 +226,7 @@ void FFT_Init(void)
 	FFT_fill_color_palette();
 	//ZoomFFT
 	fft_zoom = TRX.FFT_Zoom;
-	if (CurrentVFO()->Mode == TRX_MODE_CW)
+	if (CurrentVFO->Mode == TRX_MODE_CW)
 		fft_zoom = TRX.FFT_ZoomCW;
 	if (fft_zoom > 1)
 	{
@@ -300,14 +300,14 @@ void FFT_bufferPrepare(void)
 	}
 
 	//Process Notch filter
-	if (CurrentVFO()->ManualNotchFilter && !TRX_on_TX())
+	if (CurrentVFO->ManualNotchFilter && !TRX_on_TX())
 	{
 		arm_biquad_cascade_df2T_f32_rolled(&NOTCH_FFT_I_FILTER, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
 		arm_biquad_cascade_df2T_f32_rolled(&NOTCH_FFT_Q_FILTER, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
 	}
 
 	//Reset old samples if frequency changed
-	uint32_t nowFFTChargeBufferFreq = CurrentVFO()->Freq;
+	uint32_t nowFFTChargeBufferFreq = CurrentVFO->Freq;
 	if (TRX.WTF_Moving && fabsf((float32_t)FFT_lastFFTChargeBufferFreq - (float32_t)nowFFTChargeBufferFreq) > (500 / fft_zoom)) //zeroing threshold
 	{
 		dma_memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
@@ -506,7 +506,7 @@ void FFT_doFFT(void)
 	dma_memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean));
 	for (uint_fast16_t avg_idx = 0; avg_idx < TRX.FFT_Averaging; avg_idx++)
 	{
-		int32_t freq_diff = roundf(((float32_t)((float32_t)fft_meanbuffer_freqs[avg_idx] - (float32_t)CurrentVFO()->Freq) / hz_in_pixel) * (float32_t)fft_zoom);
+		int32_t freq_diff = roundf(((float32_t)((float32_t)fft_meanbuffer_freqs[avg_idx] - (float32_t)CurrentVFO->Freq) / hz_in_pixel) * (float32_t)fft_zoom);
 
 		if (!TRX.WTF_Moving)
 			freq_diff = 0;
@@ -543,11 +543,11 @@ bool FFT_printFFT(void)
 	uint16_t fftHeight = GET_FFTHeight;
 	uint16_t wtfHeight = GET_WTFHeight;
 	uint_fast8_t cwdecoder_offset = 0;
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CWDecoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 	hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 
-	if (CurrentVFO()->Freq != currentFFTFreq || NeedWTFRedraw)
+	if (CurrentVFO->Freq != currentFFTFreq || NeedWTFRedraw)
 	{
 		//calculate scale lines
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
@@ -557,7 +557,7 @@ bool FFT_printFFT(void)
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 		{
 			int32_t pos = -1;
-			uint32_t grid_freq = (CurrentVFO()->Freq / grid_step * grid_step) + ((i - 6) * grid_step);
+			uint32_t grid_freq = (CurrentVFO->Freq / grid_step * grid_step) + ((i - 6) * grid_step);
 			pos = getFreqPositionOnFFT(grid_freq);
 			if (pos >= 0)
 			{
@@ -568,7 +568,7 @@ bool FFT_printFFT(void)
 		}
 
 		// offset the fft if needed
-		currentFFTFreq = CurrentVFO()->Freq;
+		currentFFTFreq = CurrentVFO->Freq;
 	}
 
 	// move the waterfall down using DMA
@@ -732,10 +732,10 @@ bool FFT_printFFT(void)
 	}
 
 	// calculate bw bar size
-	uint16_t curwidth = CurrentVFO()->LPF_RX_Filter_Width;
+	uint16_t curwidth = CurrentVFO->LPF_RX_Filter_Width;
 	if (TRX_on_TX())
-		curwidth = CurrentVFO()->LPF_TX_Filter_Width;
-	switch (CurrentVFO()->Mode)
+		curwidth = CurrentVFO->LPF_TX_Filter_Width;
+	switch (CurrentVFO->Mode)
 	{
 	case TRX_MODE_LSB:
 	case TRX_MODE_DIGI_L:
@@ -1014,7 +1014,7 @@ bool FFT_printFFT(void)
 	}
 
 	//Gauss filter center
-	if (TRX.CW_GaussFilter && CurrentVFO()->Mode == TRX_MODE_CW)
+	if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW)
 	{
 		uint16_t color = palette_fft[fftHeight / 2];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
@@ -1043,7 +1043,7 @@ static void FFT_3DPrintFFT(void)
 	uint16_t wtfHeight = GET_WTFHeight;
 	uint16_t fftHeight = GET_FFTHeight;
 	uint_fast8_t cwdecoder_offset = 0;
-	if (TRX.CWDecoder && (CurrentVFO()->Mode == TRX_MODE_CW || CurrentVFO()->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CWDecoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
 		cwdecoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 
 	//clear old data
@@ -1173,7 +1173,7 @@ void FFT_afterPrintFFT(void)
 		dma_memset(bandmap_line_tmp, 0x00, sizeof(bandmap_line_tmp));
 
 		// output bandmaps
-		int8_t band_curr = getBandFromFreq(CurrentVFO()->Freq, true);
+		int8_t band_curr = getBandFromFreq(CurrentVFO->Freq, true);
 		int8_t band_left = band_curr;
 		if (band_curr > 0)
 			band_left = band_curr - 1;
@@ -1203,7 +1203,7 @@ void FFT_afterPrintFFT(void)
 					fft_freq_position_stop = LAYOUT->FFT_PRINT_SIZE;
 				if (fft_freq_position_start == -1 && fft_freq_position_stop != -1)
 					fft_freq_position_start = 0;
-				if (fft_freq_position_start == -1 && fft_freq_position_stop == -1 && BANDS[band].regions[region].startFreq < CurrentVFO()->Freq && BANDS[band].regions[region].endFreq > CurrentVFO()->Freq)
+				if (fft_freq_position_start == -1 && fft_freq_position_stop == -1 && BANDS[band].regions[region].startFreq < CurrentVFO->Freq && BANDS[band].regions[region].endFreq > CurrentVFO->Freq)
 				{
 					fft_freq_position_start = 0;
 					fft_freq_position_stop = LAYOUT->FFT_PRINT_SIZE;
@@ -1509,7 +1509,7 @@ static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initializ
 
 static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 {
-	int32_t pos = (int32_t)((float32_t)LAYOUT->FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO()->Freq) / hz_in_pixel * (float32_t)fft_zoom);
+	int32_t pos = (int32_t)((float32_t)LAYOUT->FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO->Freq) / hz_in_pixel * (float32_t)fft_zoom);
 	if (pos < 0 || pos >= LAYOUT->FFT_PRINT_SIZE)
 		return -1;
 	if (TRX.FFT_Lens) //lens correction
@@ -1519,7 +1519,7 @@ static inline int32_t getFreqPositionOnFFT(uint32_t freq)
 
 uint32_t getFreqOnFFTPosition(uint16_t position)
 {
-	return (uint32_t)((int32_t)CurrentVFO()->Freq + (int32_t)(-((float32_t)LAYOUT->FFT_PRINT_SIZE * (hz_in_pixel / (float32_t)fft_zoom) / 2.0f) + (float32_t)position * (hz_in_pixel / (float32_t)fft_zoom)));
+	return (uint32_t)((int32_t)CurrentVFO->Freq + (int32_t)(-((float32_t)LAYOUT->FFT_PRINT_SIZE * (hz_in_pixel / (float32_t)fft_zoom) / 2.0f) + (float32_t)position * (hz_in_pixel / (float32_t)fft_zoom)));
 }
 
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center)

@@ -100,7 +100,7 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 		*AGC_need_gain_db = 1.0f;*/
 
 	//AGC off, not adjustable
-	if ((rx_id == AUDIO_RX1 && !CurrentVFO()->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO()->AGC))
+	if ((rx_id == AUDIO_RX1 && !CurrentVFO->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO->AGC))
 		*AGC_need_gain_db = 1.0f;
 
 	//Muting if need
