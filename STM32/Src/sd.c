@@ -800,6 +800,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.NotchFC", (uint32_t *)&TRX.VFO_A.NotchFC, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint32_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.SQL", (uint32_t *)&TRX.VFO_A.SQL, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold", (uint32_t *)&TRX.VFO_A.FM_SQL_threshold, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Freq", (uint32_t *)&TRX.VFO_B.Freq, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Mode", (uint32_t *)&TRX.VFO_B.Mode, SYSMENU_UINT32);
@@ -811,6 +812,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.NotchFC", (uint32_t *)&TRX.VFO_B.NotchFC, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR_Type", (uint32_t *)&TRX.VFO_B.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint32_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.SQL", (uint32_t *)&TRX.VFO_B.SQL, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold", (uint32_t *)&TRX.VFO_B.FM_SQL_threshold, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.selected_vfo", (uint32_t *)&TRX.selected_vfo, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
@@ -880,7 +882,6 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FM_LPF_RX_Filter", (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.FM_LPF_TX_Filter", (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.Beeper", (uint32_t *)&TRX.Beeper, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.Squelch", (uint32_t *)&TRX.Squelch, SYSMENU_BOOLEAN);
 			//CW
 			SD_WRITE_SETT_LINE("TRX.CWDecoder", (uint32_t *)&TRX.CWDecoder, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_Pitch", (uint32_t *)&TRX.CW_Pitch, SYSMENU_UINT16);
@@ -1113,6 +1114,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_A.DNR_Type = (uint8_t)uintval;
 	if (strcmp(name, "TRX.VFO_A.AGC") == 0)
 		TRX.VFO_A.AGC = bval;
+	if (strcmp(name, "TRX.VFO_A.SQL") == 0)
+		TRX.VFO_A.SQL = bval;
 	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold") == 0)
 		TRX.VFO_A.FM_SQL_threshold = (uint8_t)uintval;
 	if (strcmp(name, "TRX.VFO_B.Freq") == 0)
@@ -1135,6 +1138,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_B.DNR_Type = (uint8_t)uintval;
 	if (strcmp(name, "TRX.VFO_B.AGC") == 0)
 		TRX.VFO_B.AGC = bval;
+	if (strcmp(name, "TRX.VFO_B.SQL") == 0)
+		TRX.VFO_B.SQL = bval;
 	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold") == 0)
 		TRX.VFO_B.FM_SQL_threshold = (uint8_t)uintval;
 	if (strcmp(name, "TRX.selected_vfo") == 0)
@@ -1280,8 +1285,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FM_LPF_TX_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.Beeper") == 0)
 		TRX.Beeper = uintval;
-	if (strcmp(name, "TRX.Squelch") == 0)
-		TRX.Squelch = bval;
 	//CW
 	if (strcmp(name, "TRX.CWDecoder") == 0)
 		TRX.CWDecoder = uintval;

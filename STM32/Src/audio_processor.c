@@ -1205,6 +1205,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	float32_t *fm_sql_avg = &DFM_RX1_fm_sql_avg;
 	arm_biquad_cascade_df2T_instance_f32 *iir_filter_inst = &IIR_RX1_Squelch_HPF;
 	bool *squelched = &DFM_RX1_Squelched;
+	bool sql_enabled = CurrentVFO->SQL;
 	float32_t *squelch_buf = DFM_RX1_squelch_buf;
 
 	uint8_t FM_SQL_threshold = CurrentVFO->FM_SQL_threshold;
@@ -1221,6 +1222,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		squelched = &DFM_RX2_Squelched;
 		squelch_buf = DFM_RX2_squelch_buf;
 		FM_SQL_threshold = SecondaryVFO->FM_SQL_threshold;
+		sql_enabled = SecondaryVFO->SQL;
 	}
 
 	for (uint_fast16_t i = 0; i < size; i++)
@@ -1236,7 +1238,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		*q_prev = data_q[i]; // save "previous" value of each channel to allow detection of the change of angle in next go-around
 		*i_prev = data_i[i];
 
-		if ((!*squelched) || !FM_SQL_threshold || !TRX.Squelch) // high-pass audio only if we are un-squelched (to save processor time)
+		if ((!*squelched) || !FM_SQL_threshold || !sql_enabled) // high-pass audio only if we are un-squelched (to save processor time)
 		{
 			data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
 			//fm de emphasis
@@ -1264,7 +1266,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		b = *fm_sql_avg * 10.0f; // scale noise amplitude to range of squelch setting
 
 		// Now evaluate noise power with respect to squelch setting
-		if (!FM_SQL_threshold || !TRX.Squelch)	// is squelch set to zero?
+		if (!FM_SQL_threshold || !sql_enabled)	// is squelch set to zero?
 			*squelched = false; // yes, the we are un-squelched
 		else if (*squelched)	// are we squelched?
 		{

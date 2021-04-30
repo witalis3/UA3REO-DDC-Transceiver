@@ -114,6 +114,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.NotchFC = 1000;				  // cutoff frequency of the notch filter
 		TRX.VFO_A.DNR_Type = 0;					  // digital noise reduction
 		TRX.VFO_A.AGC = true;					  // AGC
+		TRX.VFO_A.SQL = false;					  // SSB/FM Squelch
 		TRX.VFO_A.FM_SQL_threshold = 5;			  // FM noise squelch
 		TRX.VFO_B.Freq = 14150000;				  // stored VFO-B frequency
 		TRX.VFO_B.Mode = TRX_MODE_USB;			  // saved VFO-B mode
@@ -125,6 +126,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.NotchFC = 1000;				  // cutoff frequency of the notch filter
 		TRX.VFO_B.DNR_Type = 0;					  // digital noise reduction
 		TRX.VFO_B.AGC = true;					  // AGC
+		TRX.VFO_B.SQL = false;					  // SSB/FM Squelch
 		TRX.VFO_B.FM_SQL_threshold = 5;			  // FM noise squelch
 		TRX.Fast = true;						  // accelerated frequency change when the encoder rotates
 		TRX.LNA = false;						  // LNA (Low Noise Amplifier)
@@ -163,7 +165,6 @@ void LoadSettings(bool clear)
 		TRX.ATU_T = false;							//ATU default state
 		//AUDIO
 		TRX.IF_Gain = 70;								   // IF gain, dB (before all processing and AGC)
-		TRX.FM_SQL_threshold = TRX.VFO_A.FM_SQL_threshold; //shadow variable
 		TRX.AGC_GAIN_TARGET = -30;						   // Maximum (target) AGC gain
 		TRX.MIC_GAIN = 1;								   // Microphone gain
 		TRX.RX_EQ_LOW = 0;								   // Receiver Equalizer (Low)
@@ -196,7 +197,6 @@ void LoadSettings(bool clear)
 		TRX.FM_LPF_RX_Filter = 10000;					   // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 10000;					   // default value of the FM filter width
 		TRX.Beeper = true;								   //Keyboard beeper
-		TRX.Squelch = false;						   //SSB/FM Squelch
 		//CW
 		TRX.CWDecoder = false;			 // automatic telegraph decoder
 		TRX.CW_Pitch = 600; // LO offset in CW mode
@@ -282,12 +282,20 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
 			TRX.BANDS_SAVED_SETTINGS[i].ANT = TRX.ANT;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
+			if(TRX.BANDS_SAVED_SETTINGS[i].Freq < 70000000)
+				TRX.BANDS_SAVED_SETTINGS[i].SQL = false;
+			else
+				TRX.BANDS_SAVED_SETTINGS[i].SQL = true;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.VFO_A.FM_SQL_threshold;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
 			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 		}
+		
+		//Shadow variables
+		TRX.SQL_shadow = TRX.VFO_A.SQL;
+		TRX.FM_SQL_threshold_shadow = TRX.VFO_A.FM_SQL_threshold;
 
 		println("[OK] Loaded default settings");
 		LCD_showError("Loaded default settings", true);

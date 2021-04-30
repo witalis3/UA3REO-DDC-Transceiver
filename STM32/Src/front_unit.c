@@ -737,9 +737,11 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 	CurrentVFO->FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
-	TRX.FM_SQL_threshold = CurrentVFO->FM_SQL_threshold;
 	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
+	TRX.SQL_shadow = CurrentVFO->SQL;
+	TRX.FM_SQL_threshold_shadow = CurrentVFO->FM_SQL_threshold;
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.BottomButtons = true;
@@ -997,7 +999,9 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 	CurrentVFO->FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
 	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-	TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
+	TRX.SQL_shadow = CurrentVFO->SQL;
+	TRX.FM_SQL_threshold_shadow = CurrentVFO->FM_SQL_threshold;
 	TRX_Temporary_Stop_BandMap = false;
 
 	LCD_UpdateQuery.TopButtons = true;
@@ -1035,8 +1039,10 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	CurrentVFO->FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
-	TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+	TRX.SQL_shadow = CurrentVFO->SQL;
+	TRX.FM_SQL_threshold_shadow = CurrentVFO->FM_SQL_threshold;
 	TRX_Temporary_Stop_BandMap = false;
 
 	LCD_UpdateQuery.TopButtons = true;
@@ -1345,7 +1351,13 @@ void FRONTPANEL_BUTTONHANDLER_SERVICES(uint32_t parameter)
 
 void FRONTPANEL_BUTTONHANDLER_SQL(uint32_t parameter)
 {
-	TRX.Squelch = !TRX.Squelch;
+	CurrentVFO->SQL = !CurrentVFO->SQL;
+	TRX.SQL_shadow = CurrentVFO->SQL;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band > 0)
+		TRX.BANDS_SAVED_SETTINGS[band].SQL = CurrentVFO->SQL;
+	
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
@@ -1436,8 +1448,9 @@ void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter)
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 	TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-	TRX.VFO_A.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
-	TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+	TRX.VFO_A.SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
+	TRX.SQL_shadow = CurrentVFO->SQL;
+	TRX.FM_SQL_threshold_shadow = CurrentVFO->FM_SQL_threshold;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 	TRX.VFO_A.DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	TRX.VFO_A.AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
@@ -1472,6 +1485,7 @@ void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter)
 	TRX.VFO_B.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
 	TRX.VFO_B.DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	TRX.VFO_B.AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+	TRX.VFO_B.SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	TRX_Temporary_Stop_BandMap = false;
 
 	resetVAD();

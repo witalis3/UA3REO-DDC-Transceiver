@@ -375,8 +375,8 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"AM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.AM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass},
 		{"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass},
 		{"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass},
-		{"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Squelch, SYSMENU_HANDL_AUDIO_Squelch},
-		{"FM Squelch level", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold, SYSMENU_HANDL_AUDIO_FMSquelch},
+		{"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_AUDIO_Squelch},
+		{"FM Squelch level", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_shadow, SYSMENU_HANDL_AUDIO_FMSquelch},
 		{"MIC EQ Low SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_LOW_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB},
 		{"MIC EQ Mid SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_MID_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB},
 		{"MIC EQ High SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_HIG_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB},
@@ -1396,7 +1396,7 @@ static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
 	CurrentVFO->FM_SQL_threshold += direction;
 	if (CurrentVFO->FM_SQL_threshold > 10)
 		CurrentVFO->FM_SQL_threshold = 10;
-	TRX.FM_SQL_threshold = CurrentVFO->FM_SQL_threshold;
+	TRX.FM_SQL_threshold_shadow = CurrentVFO->FM_SQL_threshold;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band > 0)
@@ -1406,9 +1406,14 @@ static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
 static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction)
 {
 	if (direction > 0)
-		TRX.Squelch = true;
+		CurrentVFO->SQL = true;
 	if (direction < 0)
-		TRX.Squelch = false;
+		CurrentVFO->SQL = false;
+	TRX.SQL_shadow = CurrentVFO->SQL;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band > 0)
+		TRX.BANDS_SAVED_SETTINGS[band].SQL = CurrentVFO->SQL;
 }
 
 static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)

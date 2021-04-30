@@ -779,7 +779,9 @@ void ua3reo_dev_cat_parseCommand(void)
 				CurrentVFO->FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
 				CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 				CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-				TRX.FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+				CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
+				TRX.FM_SQL_threshold_shadow = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+				TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 				TRX_Temporary_Stop_BandMap = false;
 			}
 		}

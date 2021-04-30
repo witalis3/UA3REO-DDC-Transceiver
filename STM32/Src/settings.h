@@ -121,6 +121,7 @@ typedef struct
 	uint8_t DNR_Type; //0-disabled 1-dnr 2-dnr2
 	uint8_t FM_SQL_threshold;
 	bool AGC;
+	bool SQL;
 } VFO;
 
 // dual receiver operating mode
@@ -177,6 +178,7 @@ typedef struct
 	bool ADC_PGA;
 	uint8_t DNR_Type;
 	bool AGC;
+	bool SQL;
 	uint8_t FM_SQL_threshold;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
@@ -226,7 +228,6 @@ extern struct TRX_SETTINGS
 	bool ATU_T;
 	//AUDIO
 	uint8_t IF_Gain;
-	uint8_t FM_SQL_threshold;
 	int8_t AGC_GAIN_TARGET;
 	uint8_t MIC_GAIN;
 	int8_t RX_EQ_LOW;
@@ -259,7 +260,6 @@ extern struct TRX_SETTINGS
 	uint16_t FM_LPF_RX_Filter;
 	uint16_t FM_LPF_TX_Filter;
 	bool Beeper;
-	bool Squelch;
 	//CW
 	bool CWDecoder;
 	uint16_t CW_Pitch;
@@ -326,6 +326,9 @@ extern struct TRX_SETTINGS
 	bool WSPR_BANDS_10;
 	bool WSPR_BANDS_6;
 	bool WSPR_BANDS_2;
+	//Shadow variables
+	bool SQL_shadow;
+	uint8_t FM_SQL_threshold_shadow;
 	//
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit
