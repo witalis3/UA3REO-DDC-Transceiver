@@ -405,8 +405,8 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		vfo->HPF_Filter_Width = 0;
 		break;
 	case TRX_MODE_WFM:
-		vfo->LPF_RX_Filter_Width = 0;
-		vfo->LPF_TX_Filter_Width = 0;
+		vfo->LPF_RX_Filter_Width = 17000;
+		vfo->LPF_TX_Filter_Width = 17000;
 		vfo->HPF_Filter_Width = 0;
 		break;
 	}
