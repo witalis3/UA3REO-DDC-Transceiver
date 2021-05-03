@@ -1042,7 +1042,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		fft_zoom = TRX.FFT_ZoomCW;
 
-	sprintf(buff, "FFT:%dkHz", fft_current_spectrum_width_hz / 1000);
+	sprintf(buff, "%dkHz x%d", fft_current_spectrum_width_hz / 1000, fft_zoom);
 	addSymbols(buff, buff, 10, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
