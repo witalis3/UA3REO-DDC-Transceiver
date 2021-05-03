@@ -27,6 +27,10 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_MODE_N(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_SAMPLE_N(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_SAMPLE_P(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_ZOOM_N(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_ZOOM_P(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_WPM(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_KEYER(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SCAN(uint32_t parameter);
@@ -130,22 +134,31 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "MENU", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU},
 
 	{.name = "WPM", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_WPM},
-	{.name = "HPF", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_HPF, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF},
-	{.name = "LOCK", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_LOCK, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},
 	{.name = "SQL", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH},
 	{.name = "DOUBLE", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOUBLE, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOUBLEMODE},
 	{.name = "CLAR", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},
 	{.name = "SCAN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SCAN, .holdHandler = FRONTPANEL_BUTTONHANDLER_SCAN},
+	{.name = "PLAY", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_PLAY},
 	{.name = "REC", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_REC, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC},
+	{.name = "MENU", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU},
 
 	{.name = "BW", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_BW},
 	{.name = "MODE+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_P},
 	{.name = "MODE-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N},
 	{.name = "BAND+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_P},
 	{.name = "BAND-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_N},
-	{.name = "PLAY", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_PLAY},
 	{.name = "BANDMP", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP, .holdHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP},
 	{.name = "AUTOGN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER, .holdHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER},
+	{.name = "MENU", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU},
+	
+	{.name = "SAMPLE-", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_N},
+	{.name = "SAMPLE+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_P},
+	{.name = "ZOOM-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N},
+	{.name = "ZOOM+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P},
+	{.name = "LOCK", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_LOCK, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},
+	{.name = "HPF", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_HPF, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF},
+	{.name = "SERVICE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},
+	{.name = "MENU", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU},
 };
 
 void FRONTPANEL_ENCODER_checkRotate(void)
@@ -1586,4 +1599,102 @@ void FRONTPANEL_BUTTONHANDLER_RIGHT_ARR(uint32_t parameter)
 
 	LCD_UpdateQuery.BottomButtons = true;
 	LCD_UpdateQuery.TopButtons = true;
+}
+
+static void FRONTPANEL_BUTTONHANDLER_SAMPLE_N(uint32_t parameter)
+{
+	if(CurrentVFO->Mode == TRX_MODE_WFM)
+	{
+		if (TRX.SAMPLERATE_FM > 0)
+			TRX.SAMPLERATE_FM -= 1;
+	}
+	else
+	{
+		if (TRX.SAMPLERATE_MAIN > 0)
+			TRX.SAMPLERATE_MAIN -= 1;
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE = TRX.SAMPLERATE_MAIN;
+	}
+	
+	FFT_Init();
+	NeedReinitAudioFilters = true;
+	LCD_redraw(false);
+}
+
+static void FRONTPANEL_BUTTONHANDLER_SAMPLE_P(uint32_t parameter)
+{
+	if(CurrentVFO->Mode == TRX_MODE_WFM)
+	{
+		if (TRX.SAMPLERATE_FM < 3)
+			TRX.SAMPLERATE_FM += 1;
+	}
+	else
+	{
+		if (TRX.SAMPLERATE_MAIN > 0)
+			TRX.SAMPLERATE_MAIN -= 1;
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE = TRX.SAMPLERATE_MAIN;
+	}
+	
+	FFT_Init();
+	NeedReinitAudioFilters = true;
+	LCD_redraw(false);
+}
+
+static void FRONTPANEL_BUTTONHANDLER_ZOOM_N(uint32_t parameter)
+{
+	if(CurrentVFO->Mode == TRX_MODE_CW)
+	{
+		if (TRX.FFT_ZoomCW == 2)
+			TRX.FFT_ZoomCW = 1;
+		else if (TRX.FFT_ZoomCW == 4)
+			TRX.FFT_ZoomCW = 2;
+		else if (TRX.FFT_ZoomCW == 8)
+			TRX.FFT_ZoomCW = 4;
+		else if (TRX.FFT_ZoomCW == 16)
+			TRX.FFT_ZoomCW = 8;
+	}
+	else
+	{
+		if (TRX.FFT_Zoom == 2)
+			TRX.FFT_Zoom = 1;
+		else if (TRX.FFT_Zoom == 4)
+			TRX.FFT_Zoom = 2;
+		else if (TRX.FFT_Zoom == 8)
+			TRX.FFT_Zoom = 4;
+		else if (TRX.FFT_Zoom == 16)
+			TRX.FFT_Zoom = 8;
+	}
+	
+	FFT_Init();
+	LCD_redraw(false);
+}
+
+static void FRONTPANEL_BUTTONHANDLER_ZOOM_P(uint32_t parameter)
+{
+	if(CurrentVFO->Mode == TRX_MODE_CW)
+	{
+		if (TRX.FFT_ZoomCW == 1)
+			TRX.FFT_ZoomCW = 2;
+		else if (TRX.FFT_ZoomCW == 2)
+			TRX.FFT_ZoomCW = 4;
+		else if (TRX.FFT_ZoomCW == 4)
+			TRX.FFT_ZoomCW = 8;
+		else if (TRX.FFT_ZoomCW == 8)
+			TRX.FFT_ZoomCW = 16;
+	}
+	else
+	{
+		if (TRX.FFT_Zoom == 1)
+			TRX.FFT_Zoom = 2;
+		else if (TRX.FFT_Zoom == 2)
+			TRX.FFT_Zoom = 4;
+		else if (TRX.FFT_Zoom == 4)
+			TRX.FFT_Zoom = 8;
+		else if (TRX.FFT_Zoom == 8)
+			TRX.FFT_Zoom = 16;
+	}
+	
+	FFT_Init();
+	LCD_redraw(false);
 }

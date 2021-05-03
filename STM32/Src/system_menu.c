@@ -136,6 +136,14 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON21(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON22(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON23(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON24(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON25(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON26(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON27(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON30(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON31(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction);
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
@@ -442,7 +450,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 		{"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blackman", "Nutall", "BlNutall", "Hann", "Hamming", "No"}},
 #ifdef HRDW_HAS_FUNCBUTTONS
-#if FUNCBUTTONS_COUNT == 24
+#if FUNCBUTTONS_COUNT == 32
 		{"Func button 1", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[0], SYSMENU_HANDL_SCREEN_FUNC_BUTTON1},
 		{"Func button 2", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[1], SYSMENU_HANDL_SCREEN_FUNC_BUTTON2},
 		{"Func button 3", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[2], SYSMENU_HANDL_SCREEN_FUNC_BUTTON3},
@@ -467,6 +475,14 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"Func button 22", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[21], SYSMENU_HANDL_SCREEN_FUNC_BUTTON22},
 		{"Func button 23", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[22], SYSMENU_HANDL_SCREEN_FUNC_BUTTON23},
 		{"Func button 24", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[23], SYSMENU_HANDL_SCREEN_FUNC_BUTTON24},
+		{"Func button 25", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[24], SYSMENU_HANDL_SCREEN_FUNC_BUTTON25},
+		{"Func button 26", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[25], SYSMENU_HANDL_SCREEN_FUNC_BUTTON26},
+		{"Func button 27", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[26], SYSMENU_HANDL_SCREEN_FUNC_BUTTON27},
+		{"Func button 28", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[27], SYSMENU_HANDL_SCREEN_FUNC_BUTTON28},
+		{"Func button 29", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[28], SYSMENU_HANDL_SCREEN_FUNC_BUTTON29},
+		{"Func button 30", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[29], SYSMENU_HANDL_SCREEN_FUNC_BUTTON30},
+		{"Func button 31", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[30], SYSMENU_HANDL_SCREEN_FUNC_BUTTON31},
+		{"Func button 32", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[31], SYSMENU_HANDL_SCREEN_FUNC_BUTTON32},
 #endif
 #endif
 };
@@ -2064,6 +2080,70 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON24(int8_t direction)
 		TRX.FuncButtons[23] += direction;
 	if (TRX.FuncButtons[23] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[23] = FUNCBUTTONS_COUNT - 1;
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON25(int8_t direction)
+{
+	if (TRX.FuncButtons[24] > 0 || direction > 0)
+		TRX.FuncButtons[24] += direction;
+	if (TRX.FuncButtons[24] >= FUNCBUTTONS_COUNT)
+		TRX.FuncButtons[24] = FUNCBUTTONS_COUNT - 1;
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON26(int8_t direction)
+{
+	if (TRX.FuncButtons[25] > 0 || direction > 0)
+		TRX.FuncButtons[25] += direction;
+	if (TRX.FuncButtons[25] >= FUNCBUTTONS_COUNT)
+		TRX.FuncButtons[25] = FUNCBUTTONS_COUNT - 1;
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON27(int8_t direction)
+{
+	if (TRX.FuncButtons[26] > 0 || direction > 0)
+		TRX.FuncButtons[26] += direction;
+	if (TRX.FuncButtons[26] >= FUNCBUTTONS_COUNT)
+		TRX.FuncButtons[26] = FUNCBUTTONS_COUNT - 1;
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction)
+{
+	if (TRX.FuncButtons[27] > 0 || direction > 0)
+		TRX.FuncButtons[27] += direction;
+	if (TRX.FuncButtons[27] >= FUNCBUTTONS_COUNT)
+		TRX.FuncButtons[27] = FUNCBUTTONS_COUNT - 1;
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction)
+{
+	if (TRX.FuncButtons[28] > 0 || direction > 0)
+		TRX.FuncButtons[28] += direction;
+	if (TRX.FuncButtons[28] >= FUNCBUTTONS_COUNT)
+		TRX.FuncButtons[28] = FUNCBUTTONS_COUNT - 1;
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON30(int8_t direction)
+{
+	if (TRX.FuncButtons[29] > 0 || direction > 0)
+		TRX.FuncButtons[29] += direction;
+	if (TRX.FuncButtons[29] >= FUNCBUTTONS_COUNT)
+		TRX.FuncButtons[29] = FUNCBUTTONS_COUNT - 1;
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON31(int8_t direction)
+{
+	if (TRX.FuncButtons[30] > 0 || direction > 0)
+		TRX.FuncButtons[30] += direction;
+	if (TRX.FuncButtons[30] >= FUNCBUTTONS_COUNT)
+		TRX.FuncButtons[30] = FUNCBUTTONS_COUNT - 1;
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction)
+{
+	if (TRX.FuncButtons[31] > 0 || direction > 0)
+		TRX.FuncButtons[31] += direction;
+	if (TRX.FuncButtons[31] >= FUNCBUTTONS_COUNT)
+		TRX.FuncButtons[31] = FUNCBUTTONS_COUNT - 1;
 }
 
 //ADC/DAC MENU
