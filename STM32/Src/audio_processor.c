@@ -1301,6 +1301,17 @@ static void ModulateFM(uint16_t size, float32_t amplitude)
 	else
 		modulation_index = (float32_t)CALIBRATE.FM_DEVIATION_SCALE;
 
+	//CTCSS
+	if(TRX.CTCSS_Freq > 0.0)
+	{
+		static float32_t CTCSS_gen_index = 0;
+		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+		{
+			float32_t point = generateSin(0.25f, &CTCSS_gen_index, TRX_SAMPLERATE, TRX.CTCSS_Freq);
+			APROC_Audio_Buffer_TX_I[i] += point;
+		}
+	}
+	
 	for (uint_fast16_t i = 0; i < size; i++)
 	{
 		hpf_prev_b = FM_TX_HPF_ALPHA * (hpf_prev_b + APROC_Audio_Buffer_TX_I[i] - hpf_prev_a); // do differentiation
