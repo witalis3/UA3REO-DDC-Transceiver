@@ -1005,7 +1005,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 	TRX_Temporary_Stop_BandMap = false;
 
 	LCD_UpdateQuery.TopButtons = true;
-	LCD_UpdateQuery.FreqInfo = true;
+	LCD_UpdateQuery.FreqInfoRedraw = true;
 	resetVAD();
 	TRX_ScanMode = false;
 }
@@ -1046,7 +1046,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
 	TRX_Temporary_Stop_BandMap = false;
 
 	LCD_UpdateQuery.TopButtons = true;
-	LCD_UpdateQuery.FreqInfo = true;
+	LCD_UpdateQuery.FreqInfoRedraw = true;
 	resetVAD();
 	TRX_ScanMode = false;
 }
@@ -1456,6 +1456,9 @@ void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter)
 	TRX.VFO_A.AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	TRX_Temporary_Stop_BandMap = false;
 
+	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.FreqInfoRedraw = true;
+	
 	resetVAD();
 	TRX_ScanMode = false;
 	LCD_closeWindow();
@@ -1488,6 +1491,9 @@ void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter)
 	TRX.VFO_B.SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	TRX_Temporary_Stop_BandMap = false;
 
+	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.FreqInfoRedraw = true;
+	
 	resetVAD();
 	TRX_ScanMode = false;
 	LCD_closeWindow();
