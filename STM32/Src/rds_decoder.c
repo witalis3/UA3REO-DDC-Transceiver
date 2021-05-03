@@ -48,8 +48,9 @@ static float32_t RDS_gen_step = 0.0f;
 static uint32_t RDS_decoder_samplerate = 0;
 
 static void testFFT(float32_t *bufferIn);
-static uint16_t BuildSyndrome(uint32_t raw);
-static uint32_t ApplyFEC(uint32_t *block, uint32_t _syndrome);
+static uint16_t RDS_BuildSyndrome(uint32_t raw);
+static uint32_t RDS_ApplyFEC(uint32_t *block, uint32_t _syndrome);
+static bool RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC, uint32_t groupD);
 
 void RDSDecoder_Init(void)
 {
@@ -98,6 +99,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 		RDS_buff_I[i] = bufferIn[i] * sin;
 		RDS_buff_Q[i] = bufferIn[i] * cos;
 	}
+	
 	//filter mirror
 	arm_biquad_cascade_df2T_f32_rolled(&RDS_LPF_I_Filter, RDS_buff_I, RDS_buff_I, DECODER_PACKET_SIZE);
 	arm_biquad_cascade_df2T_f32_rolled(&RDS_LPF_Q_Filter, RDS_buff_Q, RDS_buff_Q, DECODER_PACKET_SIZE);
@@ -107,17 +109,17 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	//test
 	testFFT(bufferIn);
 	//get bits data
-	static uint32_t block1 = 0;
-	static uint32_t block2 = 0;
-	static uint32_t block3 = 0;
-	static uint32_t block4 = 0;
+	static uint32_t raw_block1 = 0;
+	static uint32_t raw_block2 = 0;
+	static uint32_t raw_block3 = 0;
+	static uint32_t raw_block4 = 0;
 	static bool angle_state_prev = false;
 	static bool prev_bit = false;
 	static uint8_t bit_sample_counter = 0;
 	for(uint32_t i = 0 ; i < (DECODER_PACKET_SIZE / RDS_DECIMATOR) ; i++)
 	{
 		float32_t angle = atan2f(RDS_buff_Q[i], RDS_buff_I[i]);
-		if(angle > -0.8f && angle < 0.8f) //phase gone away, do some pll!
+		if(angle > -0.9f && angle < 0.9f) //phase gone away, do some pll!
 		{
 			//RDS_gen_step += angle * 0.000001f;
 			//println(RDS_gen_step, " ", angle);
@@ -129,61 +131,75 @@ void RDSDecoder_Process(float32_t *bufferIn)
 			if(bit_sample_counter >= 4) //anti-noise
 			{
 				//shift data
-				block4 <<= 1;
-				block4 |= (block3 >> 25) & 0x1;
-				block3 <<= 1;
-				block3 |= (block2 >> 25) & 0x1;
-				block2 <<= 1;
-				block2 |= (block1 >> 25) & 0x1;
-				block1 <<= 1;
+				raw_block4 <<= 1;
+				raw_block4 |= (raw_block3 >> 25) & 0x1;
+				raw_block3 <<= 1;
+				raw_block3 |= (raw_block2 >> 25) & 0x1;
+				raw_block2 <<= 1;
+				raw_block2 |= (raw_block1 >> 25) & 0x1;
+				raw_block1 <<= 1;
 				//do diff
-				if(angle_state_prev && !prev_bit)
-					block1 |= 1;
-				if(!angle_state_prev && prev_bit)
-					block1 |= 1;
-				angle_state_prev = prev_bit;
+				if((angle_state_prev && !prev_bit) || (!angle_state_prev && prev_bit))
+				{
+					raw_block1 |= 1;
+					prev_bit = true;
+				}
+				else
+					prev_bit = false;
 				//wait block A
 				#define MaxCorrectableBits 5
+				#define CheckwordBitsCount 10
 				bool gotA = false;
-				uint16_t _syndrome = BuildSyndrome(block1);
+				uint32_t block4 = raw_block4;
+				uint16_t _syndrome = RDS_BuildSyndrome(block4);
 				_syndrome ^= 0x3d8;
 				gotA = _syndrome == 0 ? true : false;
+				//if(!gotA && RDS_ApplyFEC(&block4, _syndrome) <= MaxCorrectableBits)
+					//gotA = true;
 				if(gotA)
 				{
+					block4 = (uint16_t)((block4 >> CheckwordBitsCount) & 0xffff);
 					print("A");
 					
 					//wait block B
 					bool gotB = false;
-					_syndrome = BuildSyndrome(block2);
+					uint32_t block3 = raw_block3;
+					_syndrome = RDS_BuildSyndrome(block3);
 					_syndrome ^= 0x3d4;
 					gotB = _syndrome == 0 ? true : false;
-					if(!gotB && ApplyFEC(&block2, _syndrome) <= MaxCorrectableBits)
+					if(!gotB && RDS_ApplyFEC(&block3, _syndrome) <= MaxCorrectableBits)
 						gotB = true;
 					if(gotB)
 					{
+						block3 = (uint16_t)((block3 >> CheckwordBitsCount) & 0xffff);
 						print("B");
 						
 						//wait block C
 						bool gotC = false;
-						_syndrome = BuildSyndrome(block3);
-						_syndrome ^= (uint16_t)((block2 & 0x800) == 0 ? 0x25c : 0x3cc);
+						uint32_t block2 = raw_block2;
+						_syndrome = RDS_BuildSyndrome(block2);
+						_syndrome ^= (uint16_t)((block3 & 0x800) == 0 ? 0x25c : 0x3cc);
 						gotC = _syndrome == 0 ? true : false;
-						if(!gotC && ApplyFEC(&block3, _syndrome) <= MaxCorrectableBits)
+						if(!gotC && RDS_ApplyFEC(&block2, _syndrome) <= MaxCorrectableBits)
 							gotC = true;
 						if(gotC)
 						{
+							block2 = (uint16_t)((block2 >> CheckwordBitsCount) & 0xffff);
 							print("C");
 							
 							//wait block D
 							bool gotD = false;
-							_syndrome = BuildSyndrome(block4);
+							uint32_t block1 = raw_block1;
+							_syndrome = RDS_BuildSyndrome(block1);
 							_syndrome ^= 0x258;
 							gotD = _syndrome == 0 ? true : false;
-							if(!gotD && ApplyFEC(&block4, _syndrome) <= MaxCorrectableBits)
+							if(!gotD && RDS_ApplyFEC(&block1, _syndrome) <= MaxCorrectableBits)
 								gotD = true;
 							if(gotD)
 							{
-								print("D");
+								block1 = (uint16_t)((block1 >> CheckwordBitsCount) & 0xffff);
+								println("D");
+								RDS_AnalyseFrames(block4, block3, block2, block1);
 							}
 						}
 					}
@@ -206,11 +222,86 @@ void RDSDecoder_Process(float32_t *bufferIn)
 		}
 		angle_state_prev = angle_state;
 		//println(angle);
-	}
-	
+	}	
 }
 
-static uint32_t ApplyFEC(uint32_t *block, uint32_t _syndrome)
+static bool RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC, uint32_t groupD)
+{
+		bool result = false;
+
+		//if ((groupB & 0xf800) == 0x4000) // 2a group radio text
+		//{
+		//    string messageTime = Dump4A(groupB, groupC, groupD);
+		//    Console.WriteLine(messageTime);
+		//}
+
+		if ((groupB & 0xf800) == 0x2000) // 2a group radio text
+		{
+				int index = (groupB & 0xf) * 4; // text segment
+				//var abFlag = ((groupB >> 4) & 0x1) == 1;
+
+				char str[8] = {0};
+				char tmp = 0;
+				tmp = (char)(groupC >> 8);
+				strncat(str, &tmp, 1);
+				tmp = (char)(groupC & 0xff);
+				strncat(str, &tmp, 1);
+				tmp = (char)(groupD >> 8);
+				strncat(str, &tmp, 1);
+				tmp = (char)(groupD & 0xff);
+				strncat(str, &tmp, 1);
+				/*if (sb.ToString().Any(ch => (ch < ' ') || (ch > 0x7f)))
+				{
+						return false; // ignore garbage
+				}*/
+
+				println("2A ", index, ": ", str);
+				
+				//_radioTextSB.Remove(index, 4);             
+				//_radioTextSB.Insert(index, sb.ToString());
+				//_radioText = _radioTextSB.ToString().Trim();
+				//_piCode = groupA;
+
+				result = true;
+
+				//Console.WriteLine(_radioText.ToString());
+		}
+
+		if ((groupB & 0xf800) == 0x0000) // 0a group radio text
+		{
+				int index = (groupB & 0x3) * 2; // text segment
+
+				char str[8] = {0};
+				char tmp = 0;
+
+				tmp = (char)(groupD >> 8);
+				strncat(str, &tmp, 1);
+				tmp = (char)(groupD & 0xff);
+				strncat(str, &tmp, 1);
+				
+				/*if (sb.ToString().Any(ch => (ch < ' ') || (ch > 0x7f)))
+				{
+						return false; // ignore garbage
+				}*/
+
+				println("0A ", index, ": ", str);
+				
+				/*_programServiceSB.Remove(index, 2);
+				_programServiceSB.Insert(index, sb.ToString());
+				_programService = _programServiceSB.ToString().Substring(0, 8);
+				_piCode = groupA;*/
+
+				result = true;
+
+				//Console.WriteLine(_programService.ToString());
+
+				//Console.WriteLine("" + ((groupC >> 8) / 10.0 + 87.5) + " " + ((groupC & 0xff) / 10.0 + 87.5));
+		}
+
+		return result;
+}
+
+static uint32_t RDS_ApplyFEC(uint32_t *block, uint32_t _syndrome)
 {
 		const uint16_t poly = 0x5b9;
 		const int errorMask = (1 << 5);
@@ -232,7 +323,7 @@ static uint32_t ApplyFEC(uint32_t *block, uint32_t _syndrome)
 		return correctedBitsCount;
 }
 
-static uint16_t BuildSyndrome(uint32_t raw)
+static uint16_t RDS_BuildSyndrome(uint32_t raw)
 {
 		uint16_t Parity[] = 
 		{
