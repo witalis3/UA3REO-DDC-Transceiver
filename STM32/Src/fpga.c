@@ -558,9 +558,9 @@ static inline void FPGA_fpgadata_getiq(void)
 	FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q / 2147483648.0f;
 	FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_float32_i / 2147483648.0f;
 
-	*FFTInput_Q_current++ = FPGA_fpgadata_in_float32_q;
+	//*FFTInput_Q_current++ = FPGA_fpgadata_in_float32_q;
 	*FPGA_Audio_Buffer_RX1_Q_current++ = FPGA_fpgadata_in_float32_q;
-	*FFTInput_I_current++ = FPGA_fpgadata_in_float32_i;
+	//*FFTInput_I_current++ = FPGA_fpgadata_in_float32_i;
 	*FPGA_Audio_Buffer_RX1_I_current++ = FPGA_fpgadata_in_float32_i;
 
 	if (TRX.Dual_RX)
@@ -667,7 +667,7 @@ static inline void FPGA_fpgadata_getiq(void)
 		}
 	}
 
-	FFT_buff_index++;
+	/*FFT_buff_index++;
 	if (FFT_buff_index == FFT_HALF_SIZE)
 	{
 		FFT_buff_index = 0;
@@ -706,7 +706,7 @@ static inline void FPGA_fpgadata_getiq(void)
 				FFTInput_Q_current = (float32_t *)&FFTInput_Q_B[0];
 			}
 		}
-	}
+	}*/
 }
 
 // send IQ data

@@ -1011,7 +1011,7 @@ void TIM17_IRQHandler(void)
   if (FFT_new_buffer_ready)
     FFT_bufferPrepare();
 
-  if (TRX.CWDecoder)
+  if (NeedProcessDecoder)
     DECODER_Process();
 
   /* USER CODE END TIM17_IRQn 1 */

@@ -1,5 +1,6 @@
 #include "decoder.h"
 #include "cw_decoder.h"
+#include "rds_decoder.h"
 
 //Private variables
 static SRAM float32_t DECODER_Buffer[DECODER_BUFF_SIZE] = {0};
@@ -9,11 +10,11 @@ static uint32_t DECODER_tail = 0; // index of reading data from the buffer
 void DECODER_Init(void)
 {
 	CWDecoder_Init();
+	RDSDecoder_Init();
 }
 
 void DECODER_PutSamples(float32_t *bufferIn, uint32_t size)
 {
-	//Aligned_CleanDCache_by_Addr((uint32_t *)bufferIn, size * 4);
 	if ((DECODER_head + size) <= DECODER_BUFF_SIZE)
 	{
 		dma_memcpy32((uint32_t *)&DECODER_Buffer[DECODER_head], (uint32_t *)bufferIn, size);
@@ -28,6 +29,8 @@ void DECODER_PutSamples(float32_t *bufferIn, uint32_t size)
 		DECODER_head = 0;
 		dma_memcpy32((uint32_t *)&DECODER_Buffer[DECODER_head], (uint32_t *)bufferIn, (size - firstpart));
 		DECODER_head += (size - firstpart);
+		//if (DECODER_tail == DECODER_head)
+			//print("o");
 	}
 }
 
@@ -35,7 +38,7 @@ void DECODER_Process(void)
 {
 	if (DECODER_tail == DECODER_head) //overrun
 	{
-		//sendToDebug_str("o");
+		//print("o");
 		return;
 	}
 	// get data from the buffer
@@ -47,4 +50,8 @@ void DECODER_Process(void)
 	//CW Decoder
 	if (TRX.CWDecoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
 		CWDecoder_Process(bufferOut);
+	
+	//RDS Decoder
+	if (CurrentVFO->Mode == TRX_MODE_WFM)
+		RDSDecoder_Process(bufferOut);
 }

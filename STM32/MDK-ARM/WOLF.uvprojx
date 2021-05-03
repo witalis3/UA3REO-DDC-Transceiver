@@ -639,6 +639,16 @@
               <FilePath>..\Inc\print.h</FilePath>
             </File>
             <File>
+              <FileName>rds_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rds_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rds_decoder.h</FilePath>
+            </File>
+            <File>
               <FileName>rf_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\rf_unit.c</FilePath>
@@ -1896,6 +1906,16 @@
               <FileName>print.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\print.h</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rds_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rds_decoder.h</FilePath>
             </File>
             <File>
               <FileName>rf_unit.c</FileName>
@@ -3226,6 +3246,16 @@
               <FilePath>..\Inc\print.h</FilePath>
             </File>
             <File>
+              <FileName>rds_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rds_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rds_decoder.h</FilePath>
+            </File>
+            <File>
               <FileName>rf_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\rf_unit.c</FilePath>
@@ -4552,6 +4582,16 @@
               <FileName>print.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\print.h</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rds_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rds_decoder.h</FilePath>
             </File>
             <File>
               <FileName>rf_unit.c</FileName>
@@ -5882,6 +5922,16 @@
               <FilePath>..\Inc\print.h</FilePath>
             </File>
             <File>
+              <FileName>rds_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rds_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rds_decoder.h</FilePath>
+            </File>
+            <File>
               <FileName>rf_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\rf_unit.c</FilePath>
@@ -7210,6 +7260,16 @@
               <FilePath>..\Inc\print.h</FilePath>
             </File>
             <File>
+              <FileName>rds_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rds_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rds_decoder.h</FilePath>
+            </File>
+            <File>
               <FileName>rf_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\rf_unit.c</FilePath>
@@ -8536,6 +8596,16 @@
               <FileName>print.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\print.h</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rds_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rds_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rds_decoder.h</FilePath>
             </File>
             <File>
               <FileName>rf_unit.c</FileName>

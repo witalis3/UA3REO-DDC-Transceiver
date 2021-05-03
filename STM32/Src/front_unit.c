@@ -49,13 +49,13 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
 
 #ifdef HRDW_MCP3008_1
-static bool FRONTPanel_MCP3008_1_Enabled = true;
+//static bool FRONTPanel_MCP3008_1_Enabled = true;
 #endif
 #ifdef HRDW_MCP3008_2
-static bool FRONTPanel_MCP3008_2_Enabled = true;
+//static bool FRONTPanel_MCP3008_2_Enabled = true;
 #endif
 #ifdef HRDW_MCP3008_3
-static bool FRONTPanel_MCP3008_3_Enabled = true;
+//static bool FRONTPanel_MCP3008_3_Enabled = true;
 #endif
 
 static int32_t ENCODER_slowler = 0;
@@ -472,7 +472,7 @@ void FRONTPANEL_Init(void)
 	test_value = FRONTPANEL_ReadMCP3008_Value(0, AD1_CS_GPIO_Port, AD1_CS_Pin);
 	if (test_value == 65535)
 	{
-		FRONTPanel_MCP3008_1_Enabled = false;
+		//FRONTPanel_MCP3008_1_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 1 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 1 init error (FPGA I2S CLK?)", true);
 	}
@@ -481,7 +481,7 @@ void FRONTPANEL_Init(void)
 	test_value = FRONTPANEL_ReadMCP3008_Value(0, AD2_CS_GPIO_Port, AD2_CS_Pin);
 	if (test_value == 65535)
 	{
-		FRONTPanel_MCP3008_2_Enabled = false;
+		//FRONTPanel_MCP3008_2_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 2 init error", true);
 	}
@@ -490,7 +490,7 @@ void FRONTPANEL_Init(void)
 	test_value = FRONTPANEL_ReadMCP3008_Value(0, AD3_CS_GPIO_Port, AD3_CS_Pin);
 	if (test_value == 65535)
 	{
-		FRONTPanel_MCP3008_3_Enabled = false;
+		//FRONTPanel_MCP3008_3_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 3 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 3 init error", true);
 	}
@@ -530,6 +530,7 @@ void FRONTPANEL_Process(void)
 	for (uint16_t b = 0; b < buttons_count; b++)
 	{
 //check disabled ports
+/*
 #ifdef HRDW_MCP3008_1
 		if (PERIPH_FrontPanel_Buttons[b].port == 1 && !FRONTPanel_MCP3008_1_Enabled)
 			continue;
@@ -542,7 +543,8 @@ void FRONTPANEL_Process(void)
 		if (PERIPH_FrontPanel_Buttons[b].port == 3 && !FRONTPanel_MCP3008_3_Enabled)
 			continue;
 #endif
-
+*/
+		
 //get state from ADC MCP3008 (10bit - 1024values)
 #ifdef HRDW_MCP3008_1
 		if (PERIPH_FrontPanel_Buttons[b].port == 1)

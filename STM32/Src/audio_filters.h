@@ -139,5 +139,6 @@ extern void InitAudioFilters(void);													   // initialize audio filters
 extern void ReinitAudioFilters(void);												   // reinitialize audio filters
 extern void InitNotchFilter(void);													   // initialize the manual Notch filter
 extern void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum); // start DC corrector
+extern void fill_biquad_coeffs(iir_filter_t *filter, float32_t *coeffs, uint8_t sect_num);
 
 #endif

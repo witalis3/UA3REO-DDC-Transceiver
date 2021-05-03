@@ -194,7 +194,6 @@ volatile bool NeedReinitAudioFiltersClean = false; //also clean state
 // Prototypes
 static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, float32_t *outCoeffs);									  // automatic calculation of the Biquad filter for Notch
 static void arm_biquad_cascade_df2T_initNoClean_f32(arm_biquad_cascade_df2T_instance_f32 *S, uint8_t numStages, const float32_t *pCoeffs, float32_t *pState); //init without state-clean version
-static void fill_biquad_coeffs(iir_filter_t *filter, float32_t *coeffs, uint8_t sect_num);
 
 // initialize audio filters
 void InitAudioFilters(void)
@@ -541,7 +540,7 @@ static void arm_biquad_cascade_df2T_initNoClean_f32(arm_biquad_cascade_df2T_inst
 	S->pState = pState;
 }
 
-static void fill_biquad_coeffs(iir_filter_t *filter, float32_t *coeffs, uint8_t sect_num)
+void fill_biquad_coeffs(iir_filter_t *filter, float32_t *coeffs, uint8_t sect_num)
 {
 	//transpose and save coefficients
 	uint16_t ind = 0;
