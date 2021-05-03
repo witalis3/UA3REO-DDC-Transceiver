@@ -17,6 +17,8 @@
 #define RDS_FILTER_STAGES 5
 #define RDS_FREQ 57000
 #define RDS_LOW_FREQ 1187.5f
+#define RDS_FILTER_WIDTH 2000
+#define RDS_DECIMATOR 16
 
 // Public variables
 extern char RDS_Decoder_Text[RDS_DECODER_STRLEN + 1];

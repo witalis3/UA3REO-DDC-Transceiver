@@ -121,6 +121,16 @@ void print_bin16(uint16_t data, bool _inline)
 	print(tmp);
 }
 
+void print_bin26(uint32_t data, bool _inline)
+{
+	char tmp[50] = ""; //-V808
+	if (_inline)
+		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", BIT26_TO_BINARY(data));
+	else
+		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", BIT26_TO_BINARY(data));
+	print(tmp);
+}
+
 uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
 {
 	if (freq < 0)
