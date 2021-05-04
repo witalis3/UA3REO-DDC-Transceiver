@@ -199,7 +199,7 @@ void LoadSettings(bool clear)
 		TRX.Beeper = true;								   //Keyboard beeper
 		TRX.CTCSS_Freq = 0;									//CTCSS FM Frequency
 		//CW
-		TRX.CWDecoder = false;			 // automatic telegraph decoder
+		TRX.CWDecoderEnabled = false;			 // automatic telegraph decoder
 		TRX.CW_Pitch = 600; // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;		 // time of releasing transmission after the last character on the key
 		TRX.CW_SelfHear = true;			 // self-control CW

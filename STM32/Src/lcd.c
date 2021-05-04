@@ -12,6 +12,7 @@
 #include "usbd_ua3reo.h"
 #include "noise_reduction.h"
 #include "cw_decoder.h"
+#include "rds_decoder.h"
 #include "front_unit.h"
 #include "screen_layout.h"
 #include "images.h"
@@ -509,8 +510,8 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 #else
 	printInfo(LAYOUT->STATUS_MODE_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), LAYOUT->STATUS_MODE_BLOCK_WIDTH, LAYOUT->STATUS_MODE_BLOCK_HEIGHT, (char *)MODE_DESCR[CurrentVFO->Mode], BG_COLOR, COLOR->STATUS_MODE, COLOR->STATUS_MODE, true);
 #endif
-	//Redraw CW decoder
-	if (TRX.CWDecoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
+	//Redraw TextBar
+	if (NeedProcessDecoder)
 	{
 		LCDDriver_Fill_RectWH(0, LCD_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, LAYOUT->FFT_PRINT_SIZE, LAYOUT->FFT_CWDECODER_OFFSET, BG_COLOR);
 		LCD_UpdateQuery.TextBar = true;
@@ -1131,11 +1132,15 @@ static void LCD_displayTextBar(void)
 	}
 	LCD_busy = true;
 
-	if (TRX.CWDecoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CWDecoderEnabled && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
 	{
 		char ctmp[70];
 		sprintf(ctmp, "WPM:%d %s", CW_Decoder_WPM, (char *)&CW_Decoder_Text);
 		LCDDriver_printText(ctmp, 2, (LCD_HEIGHT - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET + 1), COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
+	}
+	else if (NeedProcessDecoder && CurrentVFO->Mode == TRX_MODE_WFM)
+	{
+		LCDDriver_printText(RDS_Decoder_Text, 2, (LCD_HEIGHT - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET + 1), COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
 	}
 
 	LCD_UpdateQuery.TextBar = false;

@@ -262,7 +262,7 @@ extern struct TRX_SETTINGS
 	bool Beeper;
 	float32_t CTCSS_Freq;
 	//CW
-	bool CWDecoder;
+	bool CWDecoderEnabled;
 	uint16_t CW_Pitch;
 	uint16_t CW_Key_timeout;
 	uint16_t CW_SelfHear;

@@ -15,6 +15,10 @@
 
 char RDS_Decoder_Text[RDS_DECODER_STRLEN + 1] = {0}; // decoded string
 
+char RDS_Decoder_0A[RDS_STR_MAXLEN];
+char RDS_Decoder_2A[RDS_STR_MAXLEN];
+char RDS_Decoder_2B[RDS_STR_MAXLEN];
+
 //signal
 static float32_t RDS_Signal_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
 static float32_t RDS_Signal_Filter_State[2 * RDS_FILTER_STAGES] = {0};
@@ -50,11 +54,12 @@ static uint32_t RDS_decoder_samplerate = 0;
 static uint32_t RDS_decoder_mainfreq = 0;
 static float32_t RDS_CLoop_C1 = 0;
 static float32_t RDS_CLoop_C2 = 0;
-	
+static float32_t error_integral_prev = 0;
+
 //static void testFFT(float32_t *bufferIn);
 static uint16_t RDS_BuildSyndrome(uint32_t raw);
 static uint32_t RDS_ApplyFEC(uint32_t *block, uint32_t _syndrome);
-static bool RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC, uint32_t groupD);
+static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC, uint32_t groupD);
 
 void RDSDecoder_Init(void)
 {
@@ -78,7 +83,6 @@ void RDSDecoder_Init(void)
 	
 	//RDS NCO
 	RDS_gen_step = ((float32_t)RDS_FREQ / (float32_t)RDS_decoder_samplerate);
-	RDS_gen_step_original = RDS_gen_step;
 	
 	//Main freq
 	RDS_decoder_mainfreq = CurrentVFO->Freq;
@@ -88,6 +92,14 @@ void RDSDecoder_Init(void)
 	float32_t loop_theta = 2.0f * F_PI * BW;
 	RDS_CLoop_C1 = 4.0f * powf(loop_theta, 2) / (1 + sqrt(2.0f) * loop_theta + powf(loop_theta, 2));
 	RDS_CLoop_C2 = 2.0f * sqrtf(2.0f) * loop_theta / (1.0f + sqrtf(2.0f) * loop_theta + powf(loop_theta, 2));
+	error_integral_prev = 0.0f;
+	
+	//Result
+	dma_memset(RDS_Decoder_0A, 0x00, sizeof(RDS_Decoder_0A));
+	dma_memset(RDS_Decoder_2A, 0x00, sizeof(RDS_Decoder_2A));
+	dma_memset(RDS_Decoder_2B, 0x00, sizeof(RDS_Decoder_2B));
+	sprintf(RDS_Decoder_Text, " RDS: none");
+	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 }
 
 void RDSDecoder_Process(float32_t *bufferIn)
@@ -133,7 +145,6 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	{
 		//Costas loop
 		float32_t error = RDS_buff_Q[i] * RDS_buff_I[i];
-		static float32_t error_integral_prev = 0;
 		float32_t error_integral = error * RDS_CLoop_C1 + error_integral_prev;
     float32_t PhErr = error * RDS_CLoop_C2 + error_integral;
 		error_integral_prev = error_integral;
@@ -272,97 +283,61 @@ void RDSDecoder_Process(float32_t *bufferIn)
 						block1 = (uint16_t)((block1 >> CheckwordBitsCount) & 0xffff);
 						//println("D");
 						RDS_AnalyseFrames(block4, block3, block2, block1);
+						//write string
+						if((strlen(RDS_Decoder_0A) + strlen(RDS_Decoder_2A) + strlen(RDS_Decoder_2B)) < RDS_DECODER_STRLEN)
+							sprintf(RDS_Decoder_Text, " RDS: %s %s %s", RDS_Decoder_0A, RDS_Decoder_2A, RDS_Decoder_2B);
+						LCD_UpdateQuery.TextBar = true;
+						//println(RDS_Decoder_0A, " ", RDS_Decoder_2A, " ", RDS_Decoder_2B);
 					}
 				}
 			}
 		}
 		
-		//print_bin26(block1, true);
-		//print(" ");
-		//print_bin26(block2, true);
-		//print(" ");
-		//print_bin26(block3, true);
-		//print(" ");
-		//print_bin26(block4, false);
-		//
-		//println(angle);
 	}
 }
 
-static bool RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC, uint32_t groupD)
+static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC, uint32_t groupD)
 {
-		bool result = false;
-
-		//if ((groupB & 0xf800) == 0x4000) // 2a group radio text
-		//{
-		//    string messageTime = Dump4A(groupB, groupC, groupD);
-		//    Console.WriteLine(messageTime);
-		//}
-
-		if ((groupB & 0xf800) == 0x2000) // 2a group radio text
+	// 2A group radio text
+	if ((groupB & 0xf800) == 0x2000)
+	{
+		int index = (groupB & 0xf) * 4; // text segment
+		bool abFlag = ((groupB >> 4) & 0x1) == 1;
+		
+		if(index < 0 || index > RDS_STR_MAXLEN - 5)
+			return;
+			
+		if(abFlag)
 		{
-				int index = (groupB & 0xf) * 4; // text segment
-				//var abFlag = ((groupB >> 4) & 0x1) == 1;
-
-				char str[8] = {0};
-				char tmp = 0;
-				tmp = (char)(groupC >> 8);
-				strncat(str, &tmp, 1);
-				tmp = (char)(groupC & 0xff);
-				strncat(str, &tmp, 1);
-				tmp = (char)(groupD >> 8);
-				strncat(str, &tmp, 1);
-				tmp = (char)(groupD & 0xff);
-				strncat(str, &tmp, 1);
-				/*if (sb.ToString().Any(ch => (ch < ' ') || (ch > 0x7f)))
-				{
-						return false; // ignore garbage
-				}*/
-
-				println("2A ", index, ": ", str);
-				
-				//_radioTextSB.Remove(index, 4);             
-				//_radioTextSB.Insert(index, sb.ToString());
-				//_radioText = _radioTextSB.ToString().Trim();
-				//_piCode = groupA;
-
-				result = true;
-
-				//Console.WriteLine(_radioText.ToString());
+			RDS_Decoder_2A[index] = cleanASCIIgarbage((char)(groupC >> 8));
+			RDS_Decoder_2A[index + 1] = cleanASCIIgarbage((char)(groupC & 0xff));
+			RDS_Decoder_2A[index + 2] = cleanASCIIgarbage((char)(groupD >> 8));
+			RDS_Decoder_2A[index + 3] = cleanASCIIgarbage((char)(groupD & 0xff));
+		}
+		else
+		{
+			RDS_Decoder_2B[index] = cleanASCIIgarbage((char)(groupC >> 8));
+			RDS_Decoder_2B[index + 1] = cleanASCIIgarbage((char)(groupC & 0xff));
+			RDS_Decoder_2B[index + 2] = cleanASCIIgarbage((char)(groupD >> 8));
+			RDS_Decoder_2B[index + 3] = cleanASCIIgarbage((char)(groupD & 0xff));
 		}
 
-		if ((groupB & 0xf800) == 0x0000) // 0a group radio text
-		{
-				int index = (groupB & 0x3) * 2; // text segment
+		//println("2A ", abFlag?" A ":" B ", index, ": ", str);
+	}
 
-				char str[8] = {0};
-				char tmp = 0;
+	// 0A group radio text
+	if ((groupB & 0xf800) == 0x0000)
+	{
+		int index = (groupB & 0x3) * 2; // text segment
+		
+		if(index < 0 || index > RDS_STR_MAXLEN - 3)
+			return;
+		
+		RDS_Decoder_0A[index] = cleanASCIIgarbage((char)(groupD >> 8));
+		RDS_Decoder_0A[index + 1] = cleanASCIIgarbage((char)(groupD & 0xff));
 
-				tmp = (char)(groupD >> 8);
-				strncat(str, &tmp, 1);
-				tmp = (char)(groupD & 0xff);
-				strncat(str, &tmp, 1);
-				
-				/*if (sb.ToString().Any(ch => (ch < ' ') || (ch > 0x7f)))
-				{
-						return false; // ignore garbage
-				}*/
-
-				println("0A ", index, ": ", str);
-				
-				/*_programServiceSB.Remove(index, 2);
-				_programServiceSB.Insert(index, sb.ToString());
-				_programService = _programServiceSB.ToString().Substring(0, 8);
-				_piCode = groupA;*/
-
-				result = true;
-
-				//Console.WriteLine(_programService.ToString());
-
-				//Console.WriteLine("" + ((groupC >> 8) / 10.0 + 87.5) + " " + ((groupC & 0xff) / 10.0 + 87.5));
-		}
-
-		return result;
+		//println("0A ", index, ": ", str);
+	}
 }
 
 static uint32_t RDS_ApplyFEC(uint32_t *block, uint32_t _syndrome)

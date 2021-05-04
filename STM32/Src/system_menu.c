@@ -414,7 +414,7 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 		{"CW Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
 		{"CW Keyer WPM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
 		{"CW Gauss filter", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_GaussFilter, SYSMENU_HANDL_CW_GaussFilter},
-		{"CW Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CWDecoder, SYSMENU_HANDL_CW_Decoder},
+		{"CW Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CWDecoderEnabled, SYSMENU_HANDL_CW_Decoder},
 };
 
 const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
@@ -1574,9 +1574,9 @@ void SYSMENU_CW_KEYER_HOTKEY(void)
 static void SYSMENU_HANDL_CW_Decoder(int8_t direction)
 {
 	if (direction > 0)
-		TRX.CWDecoder = true;
+		TRX.CWDecoderEnabled = true;
 	if (direction < 0)
-		TRX.CWDecoder = false;
+		TRX.CWDecoderEnabled = false;
 }
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction)

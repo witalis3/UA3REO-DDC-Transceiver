@@ -1,4 +1,5 @@
 ----Version 2.3.6----
++STM32: Релизовано декодирование и вывод информации RDS в WFM моде
 
 ----Version 2.3.5----
 +FPGA: Исправление пути генерации RBF-файла, Thx Konstantin N. Savchenko

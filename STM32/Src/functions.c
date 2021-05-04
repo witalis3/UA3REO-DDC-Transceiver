@@ -862,3 +862,10 @@ void arm_biquad_cascade_df2T_f32_rolled(const arm_biquad_cascade_df2T_instance_f
    } while (stage > 0U);
 
 }
+
+char cleanASCIIgarbage(char chr)
+{
+	if((chr < ' ') || (chr > 0x7f))
+		return 0;
+	return chr;
+}
