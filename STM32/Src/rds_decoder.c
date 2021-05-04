@@ -45,9 +45,13 @@ arm_fir_decimate_instance_f32 DECIMATE_FIR_Q =
 static float32_t RDS_buff_I[DECODER_PACKET_SIZE] = {0};
 static float32_t RDS_buff_Q[DECODER_PACKET_SIZE] = {0};
 static float32_t RDS_gen_step = 0.0f;
+static float32_t RDS_gen_step_original = 0.0f;
 static uint32_t RDS_decoder_samplerate = 0;
-
-static void testFFT(float32_t *bufferIn);
+static uint32_t RDS_decoder_mainfreq = 0;
+static float32_t RDS_CLoop_C1 = 0;
+static float32_t RDS_CLoop_C2 = 0;
+	
+//static void testFFT(float32_t *bufferIn);
 static uint16_t RDS_BuildSyndrome(uint32_t raw);
 static uint32_t RDS_ApplyFEC(uint32_t *block, uint32_t _syndrome);
 static bool RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC, uint32_t groupD);
@@ -74,12 +78,22 @@ void RDSDecoder_Init(void)
 	
 	//RDS NCO
 	RDS_gen_step = ((float32_t)RDS_FREQ / (float32_t)RDS_decoder_samplerate);
+	RDS_gen_step_original = RDS_gen_step;
+	
+	//Main freq
+	RDS_decoder_mainfreq = CurrentVFO->Freq;
+	
+	//Costas loop
+	#define BW (100.0f / (float32_t)RDS_decoder_samplerate)
+	float32_t loop_theta = 2.0f * F_PI * BW;
+	RDS_CLoop_C1 = 4.0f * powf(loop_theta, 2) / (1 + sqrt(2.0f) * loop_theta + powf(loop_theta, 2));
+	RDS_CLoop_C2 = 2.0f * sqrtf(2.0f) * loop_theta / (1.0f + sqrtf(2.0f) * loop_theta + powf(loop_theta, 2));
 }
 
 void RDSDecoder_Process(float32_t *bufferIn)
 {
 	//reinit?
-	if(RDS_decoder_samplerate != TRX_GetRXSampleRate)
+	if(RDS_decoder_samplerate != TRX_GetRXSampleRate || RDS_decoder_mainfreq != CurrentVFO->Freq)
 		RDSDecoder_Init();
 	//no rds in signal
 	if(RDS_decoder_samplerate < 192000)
@@ -107,122 +121,172 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	arm_fir_decimate_f32(&DECIMATE_FIR_I, RDS_buff_I, RDS_buff_I, DECODER_PACKET_SIZE);
 	arm_fir_decimate_f32(&DECIMATE_FIR_Q, RDS_buff_Q, RDS_buff_Q, DECODER_PACKET_SIZE);
 	//test
-	testFFT(bufferIn);
+	//testFFT(bufferIn);
 	//get bits data
 	static uint32_t raw_block1 = 0;
 	static uint32_t raw_block2 = 0;
 	static uint32_t raw_block3 = 0;
 	static uint32_t raw_block4 = 0;
-	static bool angle_state_prev = false;
-	static bool prev_bit = false;
+	static bool signal_state_prev = false;
 	static uint8_t bit_sample_counter = 0;
 	for(uint32_t i = 0 ; i < (DECODER_PACKET_SIZE / RDS_DECIMATOR) ; i++)
 	{
-		float32_t angle = atan2f(RDS_buff_Q[i], RDS_buff_I[i]);
-		if(angle > -0.9f && angle < 0.9f) //phase gone away, do some pll!
-		{
-			//RDS_gen_step += angle * 0.000001f;
-			//println(RDS_gen_step, " ", angle);
-			continue;
-		}
-		bool angle_state = (angle > 0.0f) ? true : false;
-		if((!angle_state_prev && angle_state) || (angle_state_prev && !angle_state))
-		{
-			if(bit_sample_counter >= 4) //anti-noise
-			{
-				//shift data
-				raw_block4 <<= 1;
-				raw_block4 |= (raw_block3 >> 25) & 0x1;
-				raw_block3 <<= 1;
-				raw_block3 |= (raw_block2 >> 25) & 0x1;
-				raw_block2 <<= 1;
-				raw_block2 |= (raw_block1 >> 25) & 0x1;
-				raw_block1 <<= 1;
-				//do diff
-				if((angle_state_prev && !prev_bit) || (!angle_state_prev && prev_bit))
-				{
-					raw_block1 |= 1;
-					prev_bit = true;
-				}
-				else
-					prev_bit = false;
-				//wait block A
-				#define MaxCorrectableBits 5
-				#define CheckwordBitsCount 10
-				bool gotA = false;
-				uint32_t block4 = raw_block4;
-				uint16_t _syndrome = RDS_BuildSyndrome(block4);
-				_syndrome ^= 0x3d8;
-				gotA = _syndrome == 0 ? true : false;
-				//if(!gotA && RDS_ApplyFEC(&block4, _syndrome) <= MaxCorrectableBits)
-					//gotA = true;
-				if(gotA)
-				{
-					block4 = (uint16_t)((block4 >> CheckwordBitsCount) & 0xffff);
-					print("A");
-					
-					//wait block B
-					bool gotB = false;
-					uint32_t block3 = raw_block3;
-					_syndrome = RDS_BuildSyndrome(block3);
-					_syndrome ^= 0x3d4;
-					gotB = _syndrome == 0 ? true : false;
-					if(!gotB && RDS_ApplyFEC(&block3, _syndrome) <= MaxCorrectableBits)
-						gotB = true;
-					if(gotB)
-					{
-						block3 = (uint16_t)((block3 >> CheckwordBitsCount) & 0xffff);
-						print("B");
-						
-						//wait block C
-						bool gotC = false;
-						uint32_t block2 = raw_block2;
-						_syndrome = RDS_BuildSyndrome(block2);
-						_syndrome ^= (uint16_t)((block3 & 0x800) == 0 ? 0x25c : 0x3cc);
-						gotC = _syndrome == 0 ? true : false;
-						if(!gotC && RDS_ApplyFEC(&block2, _syndrome) <= MaxCorrectableBits)
-							gotC = true;
-						if(gotC)
-						{
-							block2 = (uint16_t)((block2 >> CheckwordBitsCount) & 0xffff);
-							print("C");
-							
-							//wait block D
-							bool gotD = false;
-							uint32_t block1 = raw_block1;
-							_syndrome = RDS_BuildSyndrome(block1);
-							_syndrome ^= 0x258;
-							gotD = _syndrome == 0 ? true : false;
-							if(!gotD && RDS_ApplyFEC(&block1, _syndrome) <= MaxCorrectableBits)
-								gotD = true;
-							if(gotD)
-							{
-								block1 = (uint16_t)((block1 >> CheckwordBitsCount) & 0xffff);
-								println("D");
-								RDS_AnalyseFrames(block4, block3, block2, block1);
-							}
-						}
-					}
-				}
-				
-				/*print_bin26(block1, true);
-				print(" ");
-				print_bin26(block2, true);
-				print(" ");
-				print_bin26(block3, true);
-				print(" ");
-				print_bin26(block4, false);*/
-				//
-				bit_sample_counter = 1;
-			}
-		}
-		else
+		//Costas loop
+		float32_t error = RDS_buff_Q[i] * RDS_buff_I[i];
+		static float32_t error_integral_prev = 0;
+		float32_t error_integral = error * RDS_CLoop_C1 + error_integral_prev;
+    float32_t PhErr = error * RDS_CLoop_C2 + error_integral;
+		error_integral_prev = error_integral;
+		RDS_gen_step += PhErr;
+		//get data
+		bool signal_state = (RDS_buff_I[i] > 0.0f) ? true : false;
+		static bool filtered_state = false;
+		uint8_t process_bits = 0;
+		if(signal_state_prev == signal_state)
 		{
 			bit_sample_counter++;
 		}
-		angle_state_prev = angle_state;
+		else
+		{
+			if(bit_sample_counter >= 8)
+			{
+				process_bits = 2;
+			}
+			else if(bit_sample_counter >= 4)
+			{
+				process_bits = 1;
+			}
+			filtered_state = signal_state_prev;
+			
+			bit_sample_counter = 1;
+			signal_state_prev = signal_state;
+		}
+		//get bits
+		static bool bit1_ready = false;
+		static bool bit1_state = false;
+		static bool bit2_ready = false;
+		static bool bit2_state = false;
+		bool bit_out_state = false;
+		bool bit_out_ready = false;
+		static bool filtered_state_prev = false;
+		if(process_bits > 0)
+		{
+			//FPGA_samples += process_bits;
+			for(uint8_t i = 0; i < process_bits ; i++)
+			{
+				if(!bit1_ready)
+				{
+					bit1_state = filtered_state_prev;
+					bit1_ready = true;
+				}
+				else if(bit1_ready && !bit2_ready)
+				{
+					bit2_state = filtered_state_prev;
+					bit2_ready = true;
+					//shift error
+					if(bit1_state == bit2_state)
+					{
+						bit1_state = filtered_state_prev;
+						bit1_ready = true;
+						bit2_ready = false;
+					}
+				}
+				
+				if(bit1_ready && bit2_ready)
+				{
+					bit_out_state = bit1_state;
+					bit1_ready = false;
+					bit2_ready = false;
+					bit_out_ready = true;
+				}
+				filtered_state_prev = filtered_state;
+			}
+		}
+		if(!bit_out_ready)
+			continue;
+			
+		//shift data
+		raw_block4 <<= 1;
+		raw_block4 |= (raw_block3 >> 25) & 0x1;
+		raw_block3 <<= 1;
+		raw_block3 |= (raw_block2 >> 25) & 0x1;
+		raw_block2 <<= 1;
+		raw_block2 |= (raw_block1 >> 25) & 0x1;
+		raw_block1 <<= 1;
+		//do diff
+		static bool prev_bit = false;
+		if(bit_out_state != prev_bit)
+			raw_block1 |= 1;
+		prev_bit = bit_out_state;
+		//wait block A
+		#define MaxCorrectableBits 1 //5
+		#define CheckwordBitsCount 10
+		bool gotA = false;
+		uint32_t block4 = raw_block4;
+		uint16_t _syndrome = RDS_BuildSyndrome(block4);
+		_syndrome ^= 0x3d8;
+		gotA = _syndrome == 0 ? true : false;
+		//if(!gotA && RDS_ApplyFEC(&block4, _syndrome) <= MaxCorrectableBits)
+			//gotA = true;
+		if(gotA)
+		{
+			block4 = (uint16_t)((block4 >> CheckwordBitsCount) & 0xffff);
+			//print("A");
+			
+			//wait block B
+			bool gotB = false;
+			uint32_t block3 = raw_block3;
+			_syndrome = RDS_BuildSyndrome(block3);
+			_syndrome ^= 0x3d4;
+			gotB = _syndrome == 0 ? true : false;
+			if(!gotB && RDS_ApplyFEC(&block3, _syndrome) <= MaxCorrectableBits)
+				gotB = true;
+			if(gotB)
+			{
+				block3 = (uint16_t)((block3 >> CheckwordBitsCount) & 0xffff);
+				//print("B");
+				
+				//wait block C
+				bool gotC = false;
+				uint32_t block2 = raw_block2;
+				_syndrome = RDS_BuildSyndrome(block2);
+				_syndrome ^= (uint16_t)((block3 & 0x800) == 0 ? 0x25c : 0x3cc);
+				gotC = _syndrome == 0 ? true : false;
+				if(!gotC && RDS_ApplyFEC(&block2, _syndrome) <= MaxCorrectableBits)
+					gotC = true;
+				if(gotC)
+				{
+					block2 = (uint16_t)((block2 >> CheckwordBitsCount) & 0xffff);
+					//print("C");
+					
+					//wait block D
+					bool gotD = false;
+					uint32_t block1 = raw_block1;
+					_syndrome = RDS_BuildSyndrome(block1);
+					_syndrome ^= 0x258;
+					gotD = _syndrome == 0 ? true : false;
+					if(!gotD && RDS_ApplyFEC(&block1, _syndrome) <= MaxCorrectableBits)
+						gotD = true;
+					if(gotD)
+					{
+						block1 = (uint16_t)((block1 >> CheckwordBitsCount) & 0xffff);
+						//println("D");
+						RDS_AnalyseFrames(block4, block3, block2, block1);
+					}
+				}
+			}
+		}
+		
+		//print_bin26(block1, true);
+		//print(" ");
+		//print_bin26(block2, true);
+		//print(" ");
+		//print_bin26(block3, true);
+		//print(" ");
+		//print_bin26(block4, false);
+		//
 		//println(angle);
-	}	
+	}
 }
 
 static bool RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC, uint32_t groupD)
