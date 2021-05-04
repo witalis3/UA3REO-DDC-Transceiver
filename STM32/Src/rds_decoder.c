@@ -98,7 +98,7 @@ void RDSDecoder_Init(void)
 	dma_memset(RDS_Decoder_0A, 0x00, sizeof(RDS_Decoder_0A));
 	dma_memset(RDS_Decoder_2A, 0x00, sizeof(RDS_Decoder_2A));
 	dma_memset(RDS_Decoder_2B, 0x00, sizeof(RDS_Decoder_2B));
-	sprintf(RDS_Decoder_Text, " RDS: none");
+	sprintf(RDS_Decoder_Text, " RDS: -");
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 }
 
