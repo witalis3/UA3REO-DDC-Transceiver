@@ -1019,6 +1019,8 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
+	LCD_UpdateQuery.StatusInfoBarRedraw = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 	resetVAD();
 	TRX_ScanMode = false;
 }
@@ -1060,6 +1062,8 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
+	LCD_UpdateQuery.StatusInfoBarRedraw = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
 	resetVAD();
 	TRX_ScanMode = false;
 }
@@ -1630,8 +1634,8 @@ static void FRONTPANEL_BUTTONHANDLER_SAMPLE_P(uint32_t parameter)
 	}
 	else
 	{
-		if (TRX.SAMPLERATE_MAIN > 0)
-			TRX.SAMPLERATE_MAIN -= 1;
+		if (TRX.SAMPLERATE_MAIN < 3)
+			TRX.SAMPLERATE_MAIN += 1;
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 		TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 	}

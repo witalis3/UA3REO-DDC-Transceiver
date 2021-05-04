@@ -761,7 +761,6 @@ void ua3reo_dev_cat_parseCommand(void)
 			println((uint8_t)band);
 			if(band > -1)
 			{
-				println(TRX.BANDS_SAVED_SETTINGS[band].Freq);
 				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
 				if(TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
@@ -783,6 +782,13 @@ void ua3reo_dev_cat_parseCommand(void)
 				TRX.FM_SQL_threshold_shadow = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
 				TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 				TRX_Temporary_Stop_BandMap = false;
+				
+				LCD_UpdateQuery.TopButtons = true;
+				LCD_UpdateQuery.FreqInfoRedraw = true;
+				LCD_UpdateQuery.StatusInfoBarRedraw = true;
+				LCD_UpdateQuery.StatusInfoGUI = true;
+				resetVAD();
+				TRX_ScanMode = false;
 			}
 		}
 		return;
