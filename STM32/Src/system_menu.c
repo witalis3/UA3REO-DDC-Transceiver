@@ -354,7 +354,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Freq Step FAST", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
 		{"Freq Step ENC2", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
 		{"Freq Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
-		{"CW Freq Step divider", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
+		{"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 		{"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
 		{"DEBUG Console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH"}},
@@ -4177,6 +4177,11 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 
 void SYSMENU_eventRotateSystemMenu(int8_t direction)
 {
+	if(direction < -1)
+		direction = -1;
+	if(direction > 1)
+		direction = 1;
+	
 	if (sysmenu_wifi_selectap1_menu_opened)
 	{
 		SYSMENU_WIFI_SelectAP1MenuMove(0);
