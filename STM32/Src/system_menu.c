@@ -34,6 +34,7 @@ static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction);
@@ -353,6 +354,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Freq Step FAST", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
 		{"Freq Step ENC2", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
 		{"Freq Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
+		{"CW Freq Step divider", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 		{"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
 		{"DEBUG Console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH"}},
@@ -974,6 +976,15 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction)
 			}
 		}
 	TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
+}
+
+static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction)
+{
+	TRX.FRQ_CW_STEP_DIVIDER += direction;
+	if (TRX.FRQ_CW_STEP_DIVIDER < 1)
+		TRX.FRQ_CW_STEP_DIVIDER = 1;
+	if (TRX.FRQ_CW_STEP_DIVIDER > 100)
+		TRX.FRQ_CW_STEP_DIVIDER = 100;
 }
 
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction)

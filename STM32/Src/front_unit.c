@@ -283,15 +283,21 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	}
 	else if (TRX.Fast)
 	{
-		newfreq = (uint32_t)((int32_t)CurrentVFO->Freq + (int32_t)((float32_t)TRX.FRQ_FAST_STEP * direction));
-		if ((CurrentVFO->Freq % TRX.FRQ_FAST_STEP) > 0 && fabsf(direction) <= 1.0f)
-			newfreq = CurrentVFO->Freq / TRX.FRQ_FAST_STEP * TRX.FRQ_FAST_STEP;
+		uint32_t step = TRX.FRQ_FAST_STEP;
+		if (CurrentVFO->Mode == TRX_MODE_CW)
+					step = step / TRX.FRQ_CW_STEP_DIVIDER;
+		newfreq = (uint32_t)((int32_t)CurrentVFO->Freq + (int32_t)((float32_t)step * direction));
+		if ((CurrentVFO->Freq % step) > 0 && fabsf(direction) <= 1.0f)
+			newfreq = CurrentVFO->Freq / step * step;
 	}
 	else
 	{
-		newfreq = (uint32_t)((int32_t)CurrentVFO->Freq + (int32_t)((float32_t)TRX.FRQ_STEP * direction));
-		if ((CurrentVFO->Freq % TRX.FRQ_STEP) > 0 && fabsf(direction) <= 1.0f)
-			newfreq = CurrentVFO->Freq / TRX.FRQ_STEP * TRX.FRQ_STEP;
+		uint32_t step = TRX.FRQ_STEP;
+		if (CurrentVFO->Mode == TRX_MODE_CW)
+					step = step / TRX.FRQ_CW_STEP_DIVIDER;
+		newfreq = (uint32_t)((int32_t)CurrentVFO->Freq + (int32_t)((float32_t)step * direction));
+		if ((CurrentVFO->Freq % step) > 0 && fabsf(direction) <= 1.0f)
+			newfreq = CurrentVFO->Freq / step * step;
 	}
 	TRX_setFrequency(newfreq, CurrentVFO);
 	LCD_UpdateQuery.FreqInfo = true;
@@ -349,6 +355,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				step = (float64_t)TRX.FRQ_ENC_FAST_STEP;
 				if (CurrentVFO->Mode == TRX_MODE_WFM)
 					step = step * 2.0;
+				if (CurrentVFO->Mode == TRX_MODE_CW)
+					step = step / TRX.FRQ_CW_STEP_DIVIDER;
 				freq_round = roundf((float64_t)CurrentVFO->Freq / step) * step;
 				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)step * direction);
 			}
@@ -357,6 +365,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				step = (float64_t)TRX.FRQ_ENC_STEP;
 				if (CurrentVFO->Mode == TRX_MODE_WFM)
 					step = step * 2.0;
+				if (CurrentVFO->Mode == TRX_MODE_CW)
+					step = step / TRX.FRQ_CW_STEP_DIVIDER;
 				freq_round = roundf((float64_t)CurrentVFO->Freq / step) * step;
 				newfreq = (uint32_t)((int32_t)freq_round + (int32_t)step * direction);
 			}

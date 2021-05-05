@@ -9,7 +9,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-#define SETT_VERSION 27					   // Settings config version
+#define SETT_VERSION 28					   // Settings config version
 #define CALIB_VERSION 28				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -209,6 +209,7 @@ extern struct TRX_SETTINGS
 	uint16_t FRQ_FAST_STEP;
 	uint16_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
+	uint8_t FRQ_CW_STEP_DIVIDER;
 	TRX_DEBUG_TYPE Debug_Type;
 	bool BandMapEnabled;
 	TRX_INPUT_TYPE InputType_MAIN;
