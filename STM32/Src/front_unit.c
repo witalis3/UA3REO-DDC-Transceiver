@@ -1579,6 +1579,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_TX_BW(uint32_t parameter)
 void FRONTPANEL_BUTTONHANDLER_SETRF_POWER(uint32_t parameter)
 {
 	TRX.RF_Power = parameter;
+	APROC_TX_clip_gain = 1.0f;
 	ATU_TunePowerStabilized = false;
 	LCD_closeWindow();
 }

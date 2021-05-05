@@ -35,6 +35,7 @@ volatile float32_t Processor_RX_Power_value;	   // RX signal magnitude
 volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
 bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
+float32_t APROC_TX_clip_gain = 1.0f;
 
 // Private variables
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
@@ -628,7 +629,6 @@ void processTxAudio(void)
 		dc_filter(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, DC_FILTER_TX_Q);
 	}
 
-	static float32_t clip_gain = 1.0f;
 	if (mode != TRX_MODE_IQ && !TRX_Tune)
 	{
 		//IIR HPF
@@ -642,12 +642,12 @@ void processTxAudio(void)
 		if (mode == TRX_MODE_AM)
 		{
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE,  0.7f, mode);
-			arm_scale_f32(APROC_Audio_Buffer_TX_I, ((float32_t)CALIBRATE.AM_MODULATION_INDEX / 200.0f) * clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+			arm_scale_f32(APROC_Audio_Buffer_TX_I, ((float32_t)CALIBRATE.AM_MODULATION_INDEX / 200.0f) * APROC_TX_clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		}
 		else if (mode == TRX_MODE_USB || mode == TRX_MODE_LSB)
-			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f * clip_gain, mode);
+			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f * APROC_TX_clip_gain, mode);
 		else
-			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.95f * clip_gain, mode);
+			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.95f * APROC_TX_clip_gain, mode);
 
 		//double left and right channel
 		dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], AUDIO_BUFFER_HALF_SIZE * 4);
@@ -685,8 +685,8 @@ void processTxAudio(void)
 			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 			for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				float32_t i_am = ((APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]) + 1.0f * clip_gain);
-				float32_t q_am = ((APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]) - 1.0f * clip_gain);
+				float32_t i_am = ((APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]) + 1.0f * APROC_TX_clip_gain);
+				float32_t q_am = ((APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]) - 1.0f * APROC_TX_clip_gain);
 				APROC_Audio_Buffer_TX_I[i] = i_am;
 				APROC_Audio_Buffer_TX_Q[i] = q_am;
 			}
@@ -819,21 +819,21 @@ void processTxAudio(void)
 		if ((Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE) || (mode == TRX_MODE_AM && !TRX_Tune && Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE * 0.7f))
 		{
 			//correct gain
-			if(clip_gain > 0.0f)
-				clip_gain -= 0.001f;
+			if(APROC_TX_clip_gain > 0.0f)
+				APROC_TX_clip_gain -= 0.001f;
 			//clip
 			float32_t ALC_need_gain_target = (RFpower_amplitude * 0.99f) / Processor_TX_MAX_amplitude_IN;
-			println("ALC_CLIP ", Processor_TX_MAX_amplitude_IN / RFpower_amplitude, " NEED ", RFpower_amplitude, " CG ", clip_gain);
+			println("ALC_CLIP ", Processor_TX_MAX_amplitude_IN / RFpower_amplitude, " NEED ", RFpower_amplitude, " CG ", APROC_TX_clip_gain);
 			TRX_DAC_OTR = true;
 			// apply gain
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, ALC_need_gain_target, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 			arm_scale_f32(APROC_Audio_Buffer_TX_Q, ALC_need_gain_target, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 			Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN * ALC_need_gain_target;
 		}
-		else if( clip_gain < 1.0f && Processor_TX_MAX_amplitude_IN < RFpower_amplitude)
-			clip_gain += 0.0001f;
+		else if( APROC_TX_clip_gain < 1.0f && Processor_TX_MAX_amplitude_IN < RFpower_amplitude)
+			APROC_TX_clip_gain += 0.0001f;
 	}
-
+	
 	if (RFpower_amplitude > 0.0f)
 		TRX_ALC = TRX_ALC * 0.9f + (Processor_TX_MAX_amplitude_OUT / RFpower_amplitude) * 0.1f; //smooth
 	else

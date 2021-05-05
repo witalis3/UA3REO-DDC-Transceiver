@@ -1758,6 +1758,10 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 					else
 						break;
 				}
+				//reinit
+				COLOR = &COLOR_THEMES[TRX.ColorThemeId];
+				LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
+				FFT_Init();
 			}
 		}
 	}

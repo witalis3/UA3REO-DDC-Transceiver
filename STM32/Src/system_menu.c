@@ -808,6 +808,7 @@ static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)
 	if (TRX.RF_Power > 100)
 		TRX.RF_Power = 100;
 	
+	APROC_TX_clip_gain = 1.0f;
 	ATU_TunePowerStabilized = false;
 }
 

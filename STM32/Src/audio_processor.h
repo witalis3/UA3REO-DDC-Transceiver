@@ -45,6 +45,7 @@ extern bool NeedReinitReverber;
 extern bool APROC_IFGain_Overflow;
 extern bool DFM_RX1_Squelched;
 extern bool DFM_RX2_Squelched;
+extern float32_t APROC_TX_clip_gain;
 
 // Public methods
 extern void processRxAudio(void);	  // start audio processor for RX
