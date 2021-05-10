@@ -556,8 +556,8 @@ static inline void FPGA_fpgadata_getiq(void)
 
 	FPGA_fpgadata_in_float32_i = (float32_t)FPGA_fpgadata_in_tmp32;
 
-	FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q / 2147483648.0f;
-	FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_float32_i / 2147483648.0f;
+	FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q * 4.656612873077393e-10; //int to float
+	FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_float32_i * 4.656612873077393e-10;
 
 	*FFTInput_Q_current++ = FPGA_fpgadata_in_float32_q;
 	*FPGA_Audio_Buffer_RX1_Q_current++ = FPGA_fpgadata_in_float32_q;
@@ -610,8 +610,8 @@ static inline void FPGA_fpgadata_getiq(void)
 
 		FPGA_fpgadata_in_float32_i = (float32_t)FPGA_fpgadata_in_tmp32;
 
-		FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q / 2147483648.0f;
-		FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_float32_i / 2147483648.0f;
+		FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q * 4.656612873077393e-10; //int to float
+		FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_float32_i * 4.656612873077393e-10;
 
 		*FPGA_Audio_Buffer_RX2_Q_current++ = FPGA_fpgadata_in_float32_q;
 		*FPGA_Audio_Buffer_RX2_I_current++ = FPGA_fpgadata_in_float32_i;
