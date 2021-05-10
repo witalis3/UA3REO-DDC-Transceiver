@@ -156,8 +156,6 @@ void WM8731_Beep(void)
 	if (TRX.Beeper)
 	{
 		WM8731_Beeping = true;
-		HAL_Delay(50);
-		WM8731_Beeping = false;
 	}
 }
 

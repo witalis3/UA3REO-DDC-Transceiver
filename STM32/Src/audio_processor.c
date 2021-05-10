@@ -469,18 +469,33 @@ void processRxAudio(void)
 	}
 
 	//Beep signal
+	static float32_t beep_index = 0;
+	static uint32_t beep_samples = 0;
 	if (WM8731_Beeping)
 	{
-		float32_t signal = 0;
+		float32_t old_signal = 0;
 		int32_t out = 0;
+		bool halted = false;
 		float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f) * 0.1f;
 		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
 		{
-			static float32_t beep_index = 0;
-			signal = generateSin(amplitude, &beep_index, TRX_SAMPLERATE, 1500);
+			float32_t signal = generateSin(amplitude, &beep_index, TRX_SAMPLERATE, 1500);
 			arm_float_to_q31(&signal, &out, 1);
 			APROC_AudioBuffer_out[pos * 2] = convertToSPIBigEndian(out);		 //left channel
 			APROC_AudioBuffer_out[pos * 2 + 1] = APROC_AudioBuffer_out[pos * 2]; //right channel
+			if(beep_samples >= 20 && old_signal < 0 && signal >= 0)
+			{
+				halted = true;
+				break;
+			}
+			old_signal = signal;
+		}
+		beep_samples++;
+		if(halted)
+		{
+			beep_index = 0;
+			beep_samples = 0;
+			WM8731_Beeping = false;
 		}
 	}
 
