@@ -185,6 +185,8 @@ void LoadSettings(bool clear)
 		TRX.NOISE_BLANKER = true;						   // suppressor of short impulse noise NOISE BLANKER
 		TRX.RX_AGC_SSB_speed = 10;						   // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;						   // AGC receive rate on CW
+		TRX.RX_AGC_Max_gain = 30;						//Maximum AGC gain
+		TRX.RX_AGC_Hold = 700;						//AGC Hold time on peaks
 		TRX.TX_Compressor_speed_SSB = 3;					   // TX compressor speed SSB
 		TRX.TX_Compressor_maxgain_SSB = 10;					   //TX compressor max gain SSB
 		TRX.TX_Compressor_speed_AMFM = 3;					   // TX compressor speed AM/FM

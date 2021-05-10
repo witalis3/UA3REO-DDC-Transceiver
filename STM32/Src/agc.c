@@ -11,6 +11,8 @@ static float32_t AGC_TX_need_gain_db = 0.0f;
 static float32_t AGC_RX1_need_gain_db_old = 0.0f;
 static float32_t AGC_RX2_need_gain_db_old = 0.0f;
 static float32_t AGC_TX_need_gain_db_old = 0.0f;
+static uint32_t AGC_RX1_last_agc_peak_time = 0.0f;
+static uint32_t AGC_RX2_last_agc_peak_time = 0.0f;
 static float32_t AGC_RX1_agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE] = {0};
 IRAM2 static float32_t AGC_RX2_agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE] = {0};
 static float32_t AGC_RX1_ringbuffer[AGC_RINGBUFFER_TAPS_SIZE * AUDIO_BUFFER_HALF_SIZE] = {0};
@@ -25,12 +27,14 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	float32_t *AGC_need_gain_db_old = &AGC_RX1_need_gain_db_old;
 	float32_t *agcBuffer_kw = (float32_t *)&AGC_RX1_agcBuffer_kw;
 	float32_t *agc_ringbuffer = (float32_t *)&AGC_RX1_ringbuffer;
+	uint32_t *last_agc_peak_time = &AGC_RX1_last_agc_peak_time;
 	if (rx_id == AUDIO_RX2)
 	{
 		AGC_need_gain_db = &AGC_RX2_need_gain_db;
 		AGC_need_gain_db_old = &AGC_RX2_need_gain_db_old;
 		agcBuffer_kw = (float32_t *)&AGC_RX2_agcBuffer_kw;
 		agc_ringbuffer = (float32_t *)&AGC_RX2_ringbuffer;
+		last_agc_peak_time = &AGC_RX2_last_agc_peak_time;
 	}
 
 	//higher speed in settings - higher speed of AGC processing
@@ -43,7 +47,7 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	}
 	else
 	{
-		RX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.RX_AGC_SSB_speed;
+		RX_AGC_STEPSIZE_UP = 1000.0f / (float32_t)TRX.RX_AGC_SSB_speed;
 		RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_SSB_speed;
 	}
 
@@ -83,9 +87,15 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	{
 		float32_t diff = ((float32_t)TRX.AGC_GAIN_TARGET - (AGC_RX_dbFS + *AGC_need_gain_db));
 		if (diff > 0)
-			*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_UP;
+		{
+			if((HAL_GetTick() - *last_agc_peak_time) > TRX.RX_AGC_Hold)
+				*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_UP;
+		}
 		else
+		{
 			*AGC_need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
+			*last_agc_peak_time = HAL_GetTick();
+		}
 
 		//overload (clipping), sharply reduce the gain
 		if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + AGC_CLIPPING))
@@ -94,10 +104,6 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 			//sendToDebug_float32(diff,false);
 		}
 	}
-
-	//noise threshold, below it - do not amplify
-	/*if (AGC_RX_dbFS < AGC_NOISE_GATE)
-		*AGC_need_gain_db = 1.0f;*/
 
 	//AGC off, not adjustable
 	if ((rx_id == AUDIO_RX1 && !CurrentVFO->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO->AGC))
@@ -108,10 +114,11 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 		*AGC_need_gain_db = -200.0f;
 
 	//gain limitation
-	if (*AGC_need_gain_db > AGC_MAX_GAIN)
-		*AGC_need_gain_db = AGC_MAX_GAIN;
+	if (*AGC_need_gain_db > (float32_t)TRX.RX_AGC_Max_gain)
+		*AGC_need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
 
 	//apply gain
+	println(*AGC_need_gain_db);
 	if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.0f) //gain changed
 	{
 		float32_t gainApplyStep = 0;

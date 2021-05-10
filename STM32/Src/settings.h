@@ -17,7 +17,6 @@
 #define MAX_TX_FREQ_HZ DAC_CLOCK		   // Maximum transmission frequency
 #define TRX_SAMPLERATE 48000			   // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE 1.0f			   // Maximum amplitude when transmitting to FPGA
-#define AGC_MAX_GAIN 30.0f				   // Maximum gain in AGC, dB
 #define AGC_CLIPPING 6.0f				   // Limit over target in AGC, dB
 #define TOUCHPAD_DELAY 200				   // Anti-bounce time for pressing the touchpad
 #define AUTOGAIN_TARGET_AMPLITUDE 20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
@@ -248,6 +247,8 @@ extern struct TRX_SETTINGS
 	bool NOISE_BLANKER;
 	uint8_t RX_AGC_SSB_speed;
 	uint8_t RX_AGC_CW_speed;
+	uint8_t RX_AGC_Max_gain;
+	uint16_t RX_AGC_Hold;
 	uint8_t TX_Compressor_speed_SSB;
 	uint8_t TX_Compressor_maxgain_SSB;
 	uint8_t TX_Compressor_speed_AMFM;

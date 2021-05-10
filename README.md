@@ -40,7 +40,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Digital Noise Reduction (DNR), Pulse Noise Reduction (NB)
 * CAT / PTT virtual COM ports (FT-450 emulation)
 * USB operation (audio transmission, CAT, KEY, PTT)
-* CW decoder, self-control, gauss filter
+* RDS/CW decoder, self-control, gauss filter
 * SWR Graphs
 * Spectrum analyzer
 * WSPR Beacon
@@ -160,6 +160,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **MIC Reverber** - Microphone reverberator level
 * **RX EQ xxx** - Receiver equalizer levels
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
+* **RX AGC Max gain** - Limit of AGC gain, dB
+* **RX AGC Hold time** - Time of AGC gain holding on signal peaks, ms
 * **TX Compressor Speed** - TX compressor response speed for transmission (more-faster)
 * **TX Compressor MaxGain** - Maximum comressor gain
 * **Beeper** - Beep on key press
