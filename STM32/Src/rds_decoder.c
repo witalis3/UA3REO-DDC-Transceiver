@@ -99,7 +99,8 @@ void RDSDecoder_Init(void)
 	dma_memset(RDS_Decoder_2A, 0x00, sizeof(RDS_Decoder_2A));
 	dma_memset(RDS_Decoder_2B, 0x00, sizeof(RDS_Decoder_2B));
 	sprintf(RDS_Decoder_Text, " RDS: -");
-	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+	addSymbols(RDS_Decoder_Text, RDS_Decoder_Text, RDS_DECODER_STRLEN, " ", true);
+	LCD_UpdateQuery.TextBar = true;
 }
 
 void RDSDecoder_Process(float32_t *bufferIn)
@@ -285,8 +286,11 @@ void RDSDecoder_Process(float32_t *bufferIn)
 						RDS_AnalyseFrames(block4, block3, block2, block1);
 						//write string
 						if((strlen(RDS_Decoder_0A) + strlen(RDS_Decoder_2A) + strlen(RDS_Decoder_2B)) < RDS_DECODER_STRLEN)
+						{
 							sprintf(RDS_Decoder_Text, " RDS: %s %s %s", RDS_Decoder_0A, RDS_Decoder_2A, RDS_Decoder_2B);
-						LCD_UpdateQuery.TextBar = true;
+							addSymbols(RDS_Decoder_Text, RDS_Decoder_Text, RDS_DECODER_STRLEN, " ", true);
+							LCD_UpdateQuery.TextBar = true;
+						}
 						//println(RDS_Decoder_0A, " ", RDS_Decoder_2A, " ", RDS_Decoder_2B);
 					}
 				}
