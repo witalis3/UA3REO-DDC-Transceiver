@@ -362,6 +362,8 @@ void FFT_doFFT(void)
 		return;
 	if (!fft_charge_ready)
 		return;
+	if (FFT_ChargeBuffer_collected == 0)
+		return;
 	/*if (CPU_LOAD.Load > 90)
 		return;*/
 
@@ -374,7 +376,8 @@ void FFT_doFFT(void)
 	// Get charge buffer
 	fft_charge_copying = true;
 	dma_memcpy(FFTInput, FFTInputCharge, sizeof(FFTInput));
-
+	fft_charge_copying = false;
+	
 	//Do full windowing
 	if (FFT_ChargeBuffer_collected >= FFT_SIZE)
 	{
@@ -383,9 +386,12 @@ void FFT_doFFT(void)
 	}
 	else //partial windowing
 	{
+		float32_t coeff_rate = (float32_t)FFT_SIZE / (float32_t)FFT_ChargeBuffer_collected;
 		for (uint16_t i = (FFT_SIZE - FFT_ChargeBuffer_collected); i < FFT_SIZE; i++)
 		{
-			uint16_t coeff_idx = (FFT_SIZE / FFT_ChargeBuffer_collected) * (FFT_SIZE - i);
+			uint16_t coeff_idx = coeff_rate * (float32_t)(i - (FFT_SIZE - FFT_ChargeBuffer_collected));
+			if(coeff_idx > (FFT_SIZE - 1))
+				coeff_idx = (FFT_SIZE - 1);
 			FFTInput[i * 2] = FFTInput[i * 2] * window_multipliers[coeff_idx];
 			FFTInput[i * 2 + 1] = FFTInput[i * 2 + 1] * window_multipliers[coeff_idx];
 		}
@@ -393,7 +399,6 @@ void FFT_doFFT(void)
 		//Gain signal if partial buffer (for normalize)
 		arm_scale_f32(FFTInput, ((float32_t)FFT_SIZE / (float32_t)FFT_ChargeBuffer_collected / 2.0f), FFTInput, FFT_DOUBLE_SIZE_BUFFER);
 	}
-	fft_charge_copying = false;
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 	arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
