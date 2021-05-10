@@ -118,7 +118,7 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 		*AGC_need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
 
 	//apply gain
-	println(*AGC_need_gain_db);
+	//println(*AGC_need_gain_db);
 	if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.0f) //gain changed
 	{
 		float32_t gainApplyStep = 0;
