@@ -1101,16 +1101,14 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 
 static void SDCOMM_PARSE_SETT_LINE(char *line)
 {
-	static IRAM2 char name[64] = {0};
-	static IRAM2 char value[64] = {0};
+	static IRAM2 char name[83] = {0};
+	static IRAM2 char value[83] = {0};
 	char *istr = strstr((char *)line, " = ");
-	uint16_t len = (uint16_t)((uint32_t)istr - (uint32_t)line);
+	uint16_t name_len = (uint16_t)((uint32_t)istr - (uint32_t)line);
 	dma_memset(name, 0x00, sizeof(name));
 	dma_memset(value, 0x00, sizeof(value));
-	if (len > 63)
-		return;
-	strncpy(name, (char *)line, len);
-	strncpy(value, (char *)line + len + 3, len);
+	strncpy(name, (char *)line, name_len);
+	strcpy(value, (char *)line + name_len + 3);
 
 	uint32_t uintval = atol(value);
 	int32_t intval = atol(value);
@@ -1119,14 +1117,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (uintval > 0)
 		bval = true;
 
-	/*sendToDebug_strln(name);
-	sendToDebug_strln(value);
-	sendToDebug_uint8(bval, false);
-	sendToDebug_uint32(uintval, false);
-	sendToDebug_int32(intval, false);
-	sendToDebug_float32(floatval, false);
-	sendToDebug_newline();
-	sendToDebug_flush();*/
+	println("IMP: ",name, " = ", value);
+	print_flush();
 
 	//TRX
 	if (strcmp(name, "TRX.VFO_A.Freq") == 0)
@@ -1748,15 +1740,22 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 		while (bytesread != 0)
 		{
 			FRESULT res = f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesread);
+			if(res != FR_OK)
+			{
+				f_close(&File);
+				LCD_showInfo("Read error", true);
+				SD_Present = false;
+				return;
+			}
 			uint16_t start_index = 0;
-			if (res == FR_OK && bytesread != 0)
+			if (bytesread != 0)
 			{
 				//sendToDebug_str((char*)workbuffer);
 				char *istr = strstr((char *)SD_workbuffer_A + start_index, "\r\n"); // look for the end of the line
 				while (istr != NULL && start_index < sizeof(SD_workbuffer_A))
 				{
 					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)SD_workbuffer_A + start_index));
-					if (len <= 64)
+					if (len <= 80)
 					{
 						dma_memset(readedLine, 0x00, sizeof(readedLine));
 						strncpy(readedLine, (char *)SD_workbuffer_A + start_index, len);
@@ -1765,7 +1764,10 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 						SDCOMM_PARSE_SETT_LINE(readedLine);
 					}
 					else
+					{
+						LCD_showInfo("Line length error", true);
 						break;
+					}
 				}
 				//reinit
 				COLOR = &COLOR_THEMES[TRX.ColorThemeId];
