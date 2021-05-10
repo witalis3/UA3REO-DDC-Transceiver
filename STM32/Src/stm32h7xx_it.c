@@ -734,12 +734,11 @@ void TIM6_DAC_IRQHandler(void)
     ms10_counter = 0;
 
     //Detect FPGA IQ phase error
-    static bool phase_restarted = false;
-    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM)
+    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !TRX_phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM)
     {
       println("[ERR] IQ phase error, restart | ", TRX_IQ_phase_error);
       FPGA_NeedRestart = true;
-      phase_restarted = true;
+      TRX_phase_restarted = true;
     }
 
     if (!WIFI_IP_Gotted) //Get resolved IP

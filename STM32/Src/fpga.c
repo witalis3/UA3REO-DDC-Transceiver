@@ -158,6 +158,7 @@ void FPGA_restart(void) // restart FPGA modules
 	}
 	else
 	{
+		FPGA_setBusOutput();
 		FPGA_writePacket(6); // RESET OFF
 		FPGA_syncAndClockRiseFall();
 		FPGA_NeedRestart = false;

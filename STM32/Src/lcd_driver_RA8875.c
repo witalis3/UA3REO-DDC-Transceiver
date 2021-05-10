@@ -58,7 +58,7 @@ inline uint16_t LCDDriver_readReg(uint16_t reg)
 void LCDDriver_Init(void)
 {
 	//Wait LCD on
-	HAL_Delay(250); //for stability
+	//HAL_Delay(250); //for stability
   //PLL Init
   LCDDriver_writeReg(LCD_RA8875_PLLC1, LCD_RA8875_PLLC1_PLLDIV1 + 11); //divider + multiplier
   HAL_Delay(1);

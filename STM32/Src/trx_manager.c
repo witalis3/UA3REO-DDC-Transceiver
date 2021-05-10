@@ -66,6 +66,7 @@ uint32_t TRX_freq_phrase2 = 0;
 uint32_t TRX_freq_phrase_tx = 0;
 volatile float32_t TRX_RF_Temperature = 0.0f;
 volatile bool TRX_ScanMode = false;
+bool TRX_phase_restarted = false;
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
@@ -139,6 +140,8 @@ static void TRX_Start_RX()
 	if (TRX_TXRXMode == 1)
 		return;
 	println("RX MODE");
+	FPGA_NeedRestart = true;
+	TRX_phase_restarted = false;
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	Processor_NeedRXBuffer = false;
