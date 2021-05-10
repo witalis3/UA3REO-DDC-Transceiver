@@ -750,8 +750,6 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
-	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
 	TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
