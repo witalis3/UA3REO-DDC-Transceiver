@@ -774,6 +774,9 @@ unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte)
 
 void sd_crc_generate_table(void)
 {
+	static bool crc_table_generated = false;
+	if(crc_table_generated)
+		return;
 	int crc = 0;
 	/* Generate CRC16 table */
 	for (uint32_t byt = 0U; byt < 256U; byt ++){
@@ -795,6 +798,7 @@ void sd_crc_generate_table(void)
 	 }
 	 sd_crc7_table[byt] = (crc & 0x7FU);
 	}
+	crc_table_generated = true;
 }
 
 void arm_biquad_cascade_df2T_f32_rolled(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst,uint32_t blockSize)

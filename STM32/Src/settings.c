@@ -808,24 +808,26 @@ void BKPSRAM_Disable(void)
 
 static uint8_t calculateCSUM(void)
 {
+	sd_crc_generate_table();
 	uint8_t csum_old = TRX.csum;
-	uint8_t csum_new =
-		TRX.csum = 0;
+	uint8_t csum_new = 0;
+	TRX.csum = 0;
 	uint8_t *TRX_addr = (uint8_t *)&TRX;
 	for (uint16_t i = 0; i < sizeof(TRX); i++)
-		csum_new += *(TRX_addr + i);
+		csum_new = sd_crc7_byte(csum_new, *(TRX_addr + i));
 	TRX.csum = csum_old;
 	return csum_new;
 }
 
 static uint8_t calculateCSUM_EEPROM(void)
 {
+	sd_crc_generate_table();
 	uint8_t csum_old = CALIBRATE.csum;
-	uint8_t csum_new =
-		CALIBRATE.csum = 0;
+	uint8_t csum_new = 0;
+	CALIBRATE.csum = 0;
 	uint8_t *CALIBRATE_addr = (uint8_t *)&CALIBRATE;
 	for (uint16_t i = 0; i < sizeof(CALIBRATE); i++)
-		csum_new += *(CALIBRATE_addr + i);
+		csum_new = sd_crc7_byte(csum_new, *(CALIBRATE_addr + i));
 	CALIBRATE.csum = csum_old;
 	return csum_new;
 }

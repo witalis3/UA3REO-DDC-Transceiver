@@ -32,7 +32,7 @@
 #define CW_LPF_COUNT 19
 #define SSB_LPF_COUNT 11
 #define AM_LPF_COUNT 20
-#define NFM_LPF_COUNT 11
+#define NFM_LPF_COUNT 12
 
 #define MAX_HPF_WIDTH 600
 #define MAX_LPF_WIDTH_CW 1000
