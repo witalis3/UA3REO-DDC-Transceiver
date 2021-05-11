@@ -341,7 +341,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 		TRX_DCDC_Freq = 0;
 
 	//get band
-	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
+	int_fast8_t bandFromFreq = getBandFromFreq(_freq, true);
 	if (bandFromFreq >= 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;

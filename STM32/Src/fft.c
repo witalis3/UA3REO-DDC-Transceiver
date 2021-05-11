@@ -901,6 +901,12 @@ bool FFT_printFFT(void)
 	{
 		dma_memset(print_output_buffer[fftHeight], 0, sizeof(uint16_t) * LAYOUT->FFT_PRINT_SIZE * (wtfHeight - decoder_offset));
 	}
+	else
+	{
+		#ifndef HAS_BTE
+		dma_memset(print_output_buffer[fftHeight], 0, sizeof(uint16_t) * LAYOUT->FFT_PRINT_SIZE * (wtfHeight - decoder_offset));
+		#endif
+	}
 
 	//BTE
 	static uint8_t line_repeats_need = 1;
