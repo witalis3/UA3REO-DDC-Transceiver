@@ -26,9 +26,9 @@ static arm_biquad_cascade_df2T_instance_f32 RDS_Signal_Filter;
 //lpf
 static float32_t RDS_LPF_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
 static float32_t RDS_LPF_Filter_I_State[2 * RDS_FILTER_STAGES] = {0};
-static float32_t RDS_LPF_Filter_Q_State[2 * RDS_FILTER_STAGES] = {0};
+//static float32_t RDS_LPF_Filter_Q_State[2 * RDS_FILTER_STAGES] = {0};
 static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_I_Filter;
-static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_Q_Filter;
+//static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_Q_Filter;
 //decimator
 static const float32_t DECIMATE_FIR_Coeffs[4] = {-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792};
 arm_fir_decimate_instance_f32 DECIMATE_FIR_I =
@@ -38,13 +38,13 @@ arm_fir_decimate_instance_f32 DECIMATE_FIR_I =
 		.pCoeffs = DECIMATE_FIR_Coeffs,
 		.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]){0}
 	};
-arm_fir_decimate_instance_f32 DECIMATE_FIR_Q =
+/*arm_fir_decimate_instance_f32 DECIMATE_FIR_Q =
 	{
 		.M = RDS_DECIMATOR,
 		.numTaps = 4,
 		.pCoeffs = DECIMATE_FIR_Coeffs,
 		.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]){0}
-	};
+	};*/
 	
 static float32_t RDS_buff_I[DECODER_PACKET_SIZE] = {0};
 static float32_t RDS_buff_Q[DECODER_PACKET_SIZE] = {0};
@@ -79,7 +79,7 @@ void RDSDecoder_Init(void)
 	biquad_init_lowpass(filter, RDS_decoder_samplerate, RDS_FILTER_WIDTH);
 	fill_biquad_coeffs(filter, RDS_LPF_Filter_Coeffs, RDS_FILTER_STAGES);
 	arm_biquad_cascade_df2T_init_f32(&RDS_LPF_I_Filter, RDS_FILTER_STAGES, RDS_LPF_Filter_Coeffs, RDS_LPF_Filter_I_State);
-	arm_biquad_cascade_df2T_init_f32(&RDS_LPF_Q_Filter, RDS_FILTER_STAGES, RDS_LPF_Filter_Coeffs, RDS_LPF_Filter_Q_State);
+	//arm_biquad_cascade_df2T_init_f32(&RDS_LPF_Q_Filter, RDS_FILTER_STAGES, RDS_LPF_Filter_Coeffs, RDS_LPF_Filter_Q_State);
 	
 	//RDS NCO
 	RDS_gen_step = ((float32_t)RDS_FREQ / (float32_t)RDS_decoder_samplerate);
@@ -118,21 +118,21 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	for (uint_fast16_t i = 0; i < DECODER_PACKET_SIZE; i++)
 	{
 		float32_t sin = arm_sin_f32(RDS_gen_index * (2.0f * F_PI));
-		float32_t cos = arm_cos_f32(RDS_gen_index * (2.0f * F_PI));
+		//float32_t cos = arm_cos_f32(RDS_gen_index * (2.0f * F_PI));
 		RDS_gen_index += RDS_gen_step;
 		while (RDS_gen_index >= 1.0f)
 			RDS_gen_index -= 1.0f;
 	
 		RDS_buff_I[i] = bufferIn[i] * sin;
-		RDS_buff_Q[i] = bufferIn[i] * cos;
+		//RDS_buff_Q[i] = bufferIn[i] * cos;
 	}
 	
 	//filter mirror
 	arm_biquad_cascade_df2T_f32_rolled(&RDS_LPF_I_Filter, RDS_buff_I, RDS_buff_I, DECODER_PACKET_SIZE);
-	arm_biquad_cascade_df2T_f32_rolled(&RDS_LPF_Q_Filter, RDS_buff_Q, RDS_buff_Q, DECODER_PACKET_SIZE);
+	//arm_biquad_cascade_df2T_f32_rolled(&RDS_LPF_Q_Filter, RDS_buff_Q, RDS_buff_Q, DECODER_PACKET_SIZE);
 	//decimate
 	arm_fir_decimate_f32(&DECIMATE_FIR_I, RDS_buff_I, RDS_buff_I, DECODER_PACKET_SIZE);
-	arm_fir_decimate_f32(&DECIMATE_FIR_Q, RDS_buff_Q, RDS_buff_Q, DECODER_PACKET_SIZE);
+	//arm_fir_decimate_f32(&DECIMATE_FIR_Q, RDS_buff_Q, RDS_buff_Q, DECODER_PACKET_SIZE);
 	//test
 	//testFFT(bufferIn);
 	//get bits data
@@ -145,11 +145,11 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	for(uint32_t i = 0 ; i < (DECODER_PACKET_SIZE / RDS_DECIMATOR) ; i++)
 	{
 		//Costas loop
-		float32_t error = RDS_buff_Q[i] * RDS_buff_I[i];
+		/*float32_t error = RDS_buff_Q[i] * RDS_buff_I[i];
 		float32_t error_integral = error * RDS_CLoop_C1 + error_integral_prev;
     float32_t PhErr = error * RDS_CLoop_C2 + error_integral;
 		error_integral_prev = error_integral;
-		RDS_gen_step += PhErr;
+		RDS_gen_step += PhErr;*/
 		//get data
 		bool signal_state = (RDS_buff_I[i] > 0.0f) ? true : false;
 		static bool filtered_state = false;
