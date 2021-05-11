@@ -11,7 +11,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "2.3.6-beta4"; //1.2.3-yymmdd.hhmm (concatinate)
+char version_string[19] = "2.3.6"; //1.2.3-yymmdd.hhmm (concatinate)
 
 //W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -238,6 +238,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_3D = 0;				 //FFT 3D mode
 		TRX.FFT_ManualBottom = -100; //Minimal threshold for manual FFT scale
 		TRX.FFT_ManualTop = -75;	 //Maximum threshold for manual FFT scale
+		TRX.RDS_Decoder = true;		//RDS Decoder panel
 		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)
 			TRX.FuncButtons[i] = i;
 		//ADC

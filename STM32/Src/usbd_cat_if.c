@@ -758,7 +758,7 @@ void ua3reo_dev_cat_parseCommand(void)
 				band = BANDID_6m;
 			else
 				println("Unknown CAT arguments: ", _command);
-			println((uint8_t)band);
+			//println((uint8_t)band);
 			if(band > -1)
 			{
 				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
