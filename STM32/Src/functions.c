@@ -477,9 +477,13 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 			res = HAL_SPI_TransmitReceive_IT(&hspi2, out_data, in_data, count);
 		}
 		uint32_t startTime = HAL_GetTick();
-		while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout) {}
+		while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout)
+			CPULOAD_GoToSleepMode();
 	}
 
+	if(HAL_SPI_GetError(&hspi2) != 0)
+			res = HAL_ERROR;
+	
 	if (!hold_cs)
 		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
 	SPI_busy = false;
