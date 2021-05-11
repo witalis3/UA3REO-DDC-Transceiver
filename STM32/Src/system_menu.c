@@ -4609,6 +4609,8 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	else
 	{
 		systemMenuIndex++;
+		if (systemMenuIndex >= sysmenu_item_count)
+				systemMenuIndex = 0;
 		
 		while(sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE || (sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler != NULL && !sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler()))
 		{
