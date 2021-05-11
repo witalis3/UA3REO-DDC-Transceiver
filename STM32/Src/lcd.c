@@ -807,8 +807,10 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX_dBm) * 0.25f; // smooth the movement of the S-meter
 
 		//digital s-meter version
-		if ((redraw || (LCD_last_s_meter != s_width)) && !LAYOUT->STATUS_SMETER_ANALOG)
+		static uint32_t last_s_meter_draw_time = 0;
+		if ((redraw || (LCD_last_s_meter != s_width) || (HAL_GetTick() - last_s_meter_draw_time) > 500) && !LAYOUT->STATUS_SMETER_ANALOG)
 		{
+			last_s_meter_draw_time = HAL_GetTick();
 			//clear old bar
 			if ((LCD_last_s_meter - s_width) > 0)
 				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)(LCD_last_s_meter - s_width + 1), LAYOUT->STATUS_BAR_HEIGHT - 3, BG_COLOR);

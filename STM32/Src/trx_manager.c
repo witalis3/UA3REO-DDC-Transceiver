@@ -496,7 +496,10 @@ void TRX_DoAutoGain(void)
 void TRX_DBMCalculate(void)
 {
 	if (Processor_RX_Power_value == 0)
+	{
+		TRX_RX_dBm = -150.0f;
 		return;
+	}
 
 	float32_t adc_volts = Processor_RX_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
 	if (TRX.ADC_Driver)
@@ -507,6 +510,8 @@ void TRX_DBMCalculate(void)
 	else
 		TRX_RX_dBm += CALIBRATE.smeter_calibration_vhf;
 
+	if(TRX_RX_dBm < -150.0f)
+		TRX_RX_dBm = -150.0f;
 	Processor_RX_Power_value = 0;
 }
 
