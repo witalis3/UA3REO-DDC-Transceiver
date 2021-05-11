@@ -9,6 +9,7 @@
 #include "vocoder.h"
 #include "filemanager.h"
 #include "fpga.h"
+#include "audio_filters.h"
 
 SRAM FATFS SDFatFs = {0};
 sd_info_ptr sdinfo = {
@@ -1107,6 +1108,16 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	uint16_t name_len = (uint16_t)((uint32_t)istr - (uint32_t)line);
 	dma_memset(name, 0x00, sizeof(name));
 	dma_memset(value, 0x00, sizeof(value));
+	if(name_len > 82)
+	{
+		LCD_showInfo("Line length error", true);
+		return;
+	}
+	if(strlen((char *)line + name_len + 3) > 82)
+	{
+		LCD_showInfo("Line length error", true);
+		return;
+	}
 	strncpy(name, (char *)line, name_len);
 	strcpy(value, (char *)line + name_len + 3);
 
@@ -1732,7 +1743,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 
 static void SDCOMM_IMPORT_SETT_handler(void)
 {
-	char readedLine[64] = {0};
+	char readedLine[83] = {0};
 	LCD_showInfo("Importing...", false);
 	if (f_open(&File, "wolf.ini", FA_READ) == FR_OK)
 	{
@@ -1773,6 +1784,11 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 				COLOR = &COLOR_THEMES[TRX.ColorThemeId];
 				LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
 				FFT_Init();
+				NeedReinitAudioFiltersClean = true;
+				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+				TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
+				TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+				TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 			}
 		}
 	}
