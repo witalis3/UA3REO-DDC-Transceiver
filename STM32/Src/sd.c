@@ -1128,8 +1128,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (uintval > 0)
 		bval = true;
 
-	println("IMP: ",name, " = ", value);
-	print_flush();
+	//println("IMP: ",name, " = ", value);
+	//print_flush();
 
 	//TRX
 	if (strcmp(name, "TRX.VFO_A.Freq") == 0)
@@ -1750,11 +1750,23 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 		uint32_t bytesread = 1;
 		while (bytesread != 0)
 		{
+			dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 			FRESULT res = f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesread);
 			if(res != FR_OK)
 			{
 				f_close(&File);
-				LCD_showInfo("Read error", true);
+				if(res == FR_DISK_ERR)
+					LCD_showInfo("Disk error", true);
+				else if(res == FR_INT_ERR)
+					LCD_showInfo("Int error", true);
+				else if(res == FR_NOT_READY)
+					LCD_showInfo("Not Ready error", true);
+				else if(res == FR_INVALID_OBJECT)
+					LCD_showInfo("Invalid Object error", true);
+				else if(res == FR_TIMEOUT)
+					LCD_showInfo("Timeout error", true);
+				else
+					LCD_showInfo("Unknown error", true);
 				SD_Present = false;
 				return;
 			}
@@ -1977,7 +1989,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 	dma_memset(buff, 0xFF, btr);
 	//for (cnt = 0; cnt < btr; cnt++)
 	//  buff[cnt] = SPI_ReceiveByte();
-	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
 	{
 		println("SD SPI R Err");
 		return 0;
