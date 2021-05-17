@@ -577,7 +577,7 @@ bool FFT_printFFT(void)
 	}
 
 	// move the waterfall down using DMA
-	uint32_t move_est = wtfHeight - 1;
+	uint32_t move_est = wtfHeight - 2;
 	Aligned_CleanDCache_by_Addr(indexed_wtf_buffer, sizeof(indexed_wtf_buffer));
 	while (move_est > 0)
 	{

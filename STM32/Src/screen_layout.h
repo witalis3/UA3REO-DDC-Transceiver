@@ -246,7 +246,7 @@ extern "C"
 #define LAYOUT_THEMES_COUNT 3
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
 #define MAX_FFT_HEIGHT 165
-#define MAX_WTF_HEIGHT 192
+#define MAX_WTF_HEIGHT 195
 #define FFT_AND_WTF_HEIGHT 290
 #endif
 
