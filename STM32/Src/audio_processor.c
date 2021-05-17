@@ -660,8 +660,6 @@ void processTxAudio(void)
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE,  0.7f, mode);
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, ((float32_t)CALIBRATE.AM_MODULATION_INDEX / 200.0f) * APROC_TX_clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		}
-		else if (mode == TRX_MODE_USB || mode == TRX_MODE_LSB)
-			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f * APROC_TX_clip_gain, mode);
 		else
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.95f * APROC_TX_clip_gain, mode);
 
@@ -832,7 +830,7 @@ void processTxAudio(void)
 	if (Processor_TX_MAX_amplitude_IN > 0.0f)
 	{
 		// overload (clipping), sharply reduce the gain
-		if ((Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE) || (mode == TRX_MODE_AM && !TRX_Tune && Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE * 0.7f))
+		if (Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE)
 		{
 			//correct gain
 			if(APROC_TX_clip_gain > 0.0f)

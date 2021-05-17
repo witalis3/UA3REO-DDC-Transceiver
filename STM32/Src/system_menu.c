@@ -1411,8 +1411,8 @@ static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_SSB(int8_t direction)
 	TRX.TX_Compressor_speed_SSB += direction;
 	if (TRX.TX_Compressor_speed_SSB < 1)
 		TRX.TX_Compressor_speed_SSB = 1;
-	if (TRX.TX_Compressor_speed_SSB > 10)
-		TRX.TX_Compressor_speed_SSB = 10;
+	if (TRX.TX_Compressor_speed_SSB > 200)
+		TRX.TX_Compressor_speed_SSB = 200;
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_AMFM(int8_t direction)
@@ -1420,8 +1420,8 @@ static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_AMFM(int8_t direction)
 	TRX.TX_Compressor_speed_AMFM += direction;
 	if (TRX.TX_Compressor_speed_AMFM < 1)
 		TRX.TX_Compressor_speed_AMFM = 1;
-	if (TRX.TX_Compressor_speed_AMFM > 10)
-		TRX.TX_Compressor_speed_AMFM = 10;
+	if (TRX.TX_Compressor_speed_AMFM > 200)
+		TRX.TX_Compressor_speed_AMFM = 200;
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_SSB(int8_t direction)
