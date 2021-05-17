@@ -199,6 +199,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_20M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_17M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_15M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_12M(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_CB(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_10M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction);
@@ -557,6 +558,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"RF GAIN 17m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_17m, SYSMENU_HANDL_CALIB_RF_GAIN_17M},
 		{"RF GAIN 15m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_15m, SYSMENU_HANDL_CALIB_RF_GAIN_15M},
 		{"RF GAIN 12m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_12m, SYSMENU_HANDL_CALIB_RF_GAIN_12M},
+		{"RF GAIN CB", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_cb, SYSMENU_HANDL_CALIB_RF_GAIN_CB},
 		{"RF GAIN 10m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_HANDL_CALIB_RF_GAIN_10M},
 		{"RF GAIN 6m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_HANDL_CALIB_RF_GAIN_6M},
 		{"RF GAIN 2m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_HANDL_CALIB_RF_GAIN_2M},
@@ -3104,6 +3106,18 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_12M(int8_t direction)
 		CALIBRATE.rf_out_power_12m += direction;
 	if (CALIBRATE.rf_out_power_12m > 100)
 		CALIBRATE.rf_out_power_12m = 100;
+
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
+}
+
+static void SYSMENU_HANDL_CALIB_RF_GAIN_CB(int8_t direction)
+{
+	if (CALIBRATE.rf_out_power_cb > 0)
+		CALIBRATE.rf_out_power_cb += direction;
+	if (CALIBRATE.rf_out_power_cb == 0 && direction > 0)
+		CALIBRATE.rf_out_power_cb += direction;
+	if (CALIBRATE.rf_out_power_cb > 100)
+		CALIBRATE.rf_out_power_cb = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 }

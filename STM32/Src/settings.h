@@ -363,6 +363,7 @@ extern struct TRX_CALIBRATE
 	uint8_t rf_out_power_17m;
 	uint8_t rf_out_power_15m;
 	uint8_t rf_out_power_12m;
+	uint8_t rf_out_power_cb;
 	uint8_t rf_out_power_10m;
 	uint8_t rf_out_power_6m;
 	uint8_t rf_out_power_2m;

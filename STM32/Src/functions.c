@@ -294,6 +294,8 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 		return (float32_t)CALIBRATE.rf_out_power_15m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 	if (freq < 26.5 * 1000000)
 		return (float32_t)CALIBRATE.rf_out_power_12m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+	if (freq < 28.0 * 1000000)
+		return (float32_t)CALIBRATE.rf_out_power_cb / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 	if (freq < 40.0 * 1000000)
 		return (float32_t)CALIBRATE.rf_out_power_10m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 	if (freq < 80.0 * 1000000)

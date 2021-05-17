@@ -977,6 +977,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_17m", (uint32_t *)&CALIBRATE.rf_out_power_17m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_15m", (uint32_t *)&CALIBRATE.rf_out_power_15m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_12m", (uint32_t *)&CALIBRATE.rf_out_power_12m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_cb", (uint32_t *)&CALIBRATE.rf_out_power_cb, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_10m", (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_6m", (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2m", (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_UINT8);
@@ -1543,6 +1544,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.rf_out_power_15m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_12m") == 0)
 		CALIBRATE.rf_out_power_12m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_cb") == 0)
+		CALIBRATE.rf_out_power_cb = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_10m") == 0)
 		CALIBRATE.rf_out_power_10m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_6m") == 0)

@@ -377,6 +377,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_17m = 24;		   //17m
 		CALIBRATE.rf_out_power_15m = 24;		   //15m
 		CALIBRATE.rf_out_power_12m = 24;		   //12m
+		CALIBRATE.rf_out_power_cb = 24;				//27mhz
 		CALIBRATE.rf_out_power_10m = 24;		   //10m
 		CALIBRATE.rf_out_power_6m = 13;			   //6m
 		CALIBRATE.rf_out_power_2m = 100;		   //2m
