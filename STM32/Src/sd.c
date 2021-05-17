@@ -1111,12 +1111,13 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	dma_memset(value, 0x00, sizeof(value));
 	if(name_len > 82)
 	{
-		LCD_showInfo("Line length error", true);
+		LCD_showInfo("Line name length error", true);
+		//println("E ", line);
 		return;
 	}
 	if(strlen((char *)line + name_len + 3) > 82)
 	{
-		LCD_showInfo("Line length error", true);
+		LCD_showInfo("Line value length error", true);
 		return;
 	}
 	strncpy(name, (char *)line, name_len);
@@ -1751,6 +1752,7 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 	if (f_open(&File, "wolf.ini", FA_READ) == FR_OK)
 	{
 		uint32_t bytesread = 1;
+		uint32_t file_offset = 1;
 		while (bytesread != 0)
 		{
 			dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
@@ -1786,6 +1788,7 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 						dma_memset(readedLine, 0x00, sizeof(readedLine));
 						strncpy(readedLine, (char *)SD_workbuffer_A + start_index, len);
 						start_index += len + 2;
+						file_offset += len + 2;
 						istr = strstr((char *)SD_workbuffer_A + start_index, "\r\n"); // look for the end of the line
 						SDCOMM_PARSE_SETT_LINE(readedLine);
 					}
@@ -1795,17 +1798,20 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 						break;
 					}
 				}
-				//reinit
-				COLOR = &COLOR_THEMES[TRX.ColorThemeId];
-				LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
-				FFT_Init();
-				NeedReinitAudioFiltersClean = true;
-				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
-				TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
-				TRX_setMode(CurrentVFO->Mode, CurrentVFO);
-				TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+				//tailing
+				f_lseek(&File, file_offset);
+				//println("Estimate: ", bytesread - start_index);
 			}
 		}
+		//reinit
+		COLOR = &COLOR_THEMES[TRX.ColorThemeId];
+		LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
+		FFT_Init();
+		NeedReinitAudioFiltersClean = true;
+		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+		TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
+		TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+		TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	}
 	else
 	{
@@ -1992,7 +1998,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 	dma_memset(buff, 0xFF, btr);
 	//for (cnt = 0; cnt < btr; cnt++)
 	//  buff[cnt] = SPI_ReceiveByte();
-	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
+	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
 	{
 		println("SD SPI R Err");
 		return 0;
