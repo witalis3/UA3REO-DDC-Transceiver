@@ -114,6 +114,7 @@
 static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
 static uint32_t powerdown_start_delay = 0;
+static bool prev_pwr_state = true;
 uint32_t dbg_FPGA_samples = 0;
 /* USER CODE END 0 */
 
@@ -561,7 +562,6 @@ void TIM6_DAC_IRQHandler(void)
   ms10_counter++;
 
   //power off sequence
-  static bool prev_pwr_state = true;
   if (prev_pwr_state == true && HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
   {
     powerdown_start_delay = HAL_GetTick();
