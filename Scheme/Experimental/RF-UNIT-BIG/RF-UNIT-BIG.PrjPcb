@@ -106,6 +106,23 @@ GenerateClassCluster=0
 DocumentUniqueId=
 
 [Document5]
+DocumentPath=RD.PcbLib
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=SETIEANE
+
+[Document6]
 DocumentPath=RF-UNIT-BIG.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -122,7 +139,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=GLHMXHEX
 
-[Document6]
+[Document7]
 DocumentPath=RF-UNIT-BIG.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -139,7 +156,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=TJHHVOVB
 
-[Document7]
+[Document8]
 DocumentPath=RF-UNIT-BIG.PcbDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -156,7 +173,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=EELJMCFY
 
-[Document8]
+[Document9]
 DocumentPath=HF_TUNER.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -173,7 +190,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=OEMRFKGQ
 
-[Document9]
+[Document10]
 DocumentPath=HF_AMP.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -190,7 +207,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=CHILLPLU
 
-[Document10]
+[Document11]
 DocumentPath=HF_AMP_DRIVER.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -207,7 +224,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=XYBGCRHT
 
-[Document11]
+[Document12]
 DocumentPath=SWR_HF.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -224,7 +241,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=WKAUGRMY
 
-[Document12]
+[Document13]
 DocumentPath=VHF_AMP.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -241,7 +258,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=PNNYIUMK
 
-[Document13]
+[Document14]
 DocumentPath=SWR_VHF.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -258,7 +275,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=CUVFJKEF
 
-[Document14]
+[Document15]
 DocumentPath=CONTROL.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -275,7 +292,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=FFHRVRMX
 
-[Document15]
+[Document16]
 DocumentPath=RF-UNIT-BIG.SCHDOC
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -291,6 +308,62 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=WAVPDUVG
+
+[GeneratedDocument1]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Design Rule Check - RF-UNIT-BIG.html
+DItemRevisionGUID=
+
+[GeneratedDocument2]
+DocumentPath=Project Outputs for RF-UNIT-BIG\NC Drill\RF-UNIT-BIG.DRR
+DItemRevisionGUID=
+
+[GeneratedDocument3]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.EXTREP
+DItemRevisionGUID=
+
+[GeneratedDocument4]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GBL
+DItemRevisionGUID=
+
+[GeneratedDocument5]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GBO
+DItemRevisionGUID=
+
+[GeneratedDocument6]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GBS
+DItemRevisionGUID=
+
+[GeneratedDocument7]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GKO
+DItemRevisionGUID=
+
+[GeneratedDocument8]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GTL
+DItemRevisionGUID=
+
+[GeneratedDocument9]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GTO
+DItemRevisionGUID=
+
+[GeneratedDocument10]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GTS
+DItemRevisionGUID=
+
+[GeneratedDocument11]
+DocumentPath=Project Outputs for RF-UNIT-BIG\NC Drill\RF-UNIT-BIG.LDP
+DItemRevisionGUID=
+
+[GeneratedDocument12]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.REP
+DItemRevisionGUID=
+
+[GeneratedDocument13]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.RUL
+DItemRevisionGUID=
+
+[GeneratedDocument14]
+DocumentPath=Project Outputs for RF-UNIT-BIG\NC Drill\RF-UNIT-BIG.TXT
+DItemRevisionGUID=
 
 [SearchPath1]
 Path=C:\Users\Public\Documents\Altium\AD19\Library\ExportIntLib\*.*
