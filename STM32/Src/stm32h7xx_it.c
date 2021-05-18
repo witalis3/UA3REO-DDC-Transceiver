@@ -25,6 +25,7 @@
 // EXTI11 - PWR_button
 // EXTI13 - ENC2_CLK
 
+// TIM2 - WSPR
 // TIM3 - WIFI
 // TIM4 - FFT calculation
 // TIM5 - audio processor
@@ -964,6 +965,8 @@ void TIM16_IRQHandler(void)
   /* USER CODE END TIM16_IRQn 0 */
   HAL_TIM_IRQHandler(&htim16);
   /* USER CODE BEGIN TIM16_IRQn 1 */
+	// Update watchdog
+	HAL_IWDG_Refresh(&hiwdg1);
   // Poll an additional encoder by timer, because interrupt hangs in line with FPGA
   static uint8_t ENC2lastClkVal = 0;
   static bool ENC2first = true;

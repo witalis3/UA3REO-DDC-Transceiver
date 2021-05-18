@@ -10,6 +10,7 @@ _Noreturn void JumpToBootloader(void)
 	uint32_t i = 0;
 	void (*SysMemBootJump)(void);
 
+	__HAL_DBGMCU_FREEZE_IWDG1();
 	volatile uint32_t BootAddr = 0x1FF09800;
 	LCD_busy = true;
 	TRX_Inited = false;
