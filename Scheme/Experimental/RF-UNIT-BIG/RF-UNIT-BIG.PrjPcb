@@ -28,7 +28,7 @@ DItemRevisionGUID=
 ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
-OutputPath=Project Outputs for RF-UNIT-BIG
+OutputPath=
 LogFolderPath=
 ManagedProjectGUID=
 IncludeDesignInRelease=0
@@ -310,58 +310,54 @@ GenerateClassCluster=0
 DocumentUniqueId=WAVPDUVG
 
 [GeneratedDocument1]
-DocumentPath=Project Outputs for RF-UNIT-BIG\Design Rule Check - RF-UNIT-BIG.html
-DItemRevisionGUID=
-
-[GeneratedDocument2]
 DocumentPath=Project Outputs for RF-UNIT-BIG\NC Drill\RF-UNIT-BIG.DRR
 DItemRevisionGUID=
 
-[GeneratedDocument3]
+[GeneratedDocument2]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.EXTREP
 DItemRevisionGUID=
 
-[GeneratedDocument4]
+[GeneratedDocument3]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GBL
 DItemRevisionGUID=
 
-[GeneratedDocument5]
+[GeneratedDocument4]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GBO
 DItemRevisionGUID=
 
-[GeneratedDocument6]
+[GeneratedDocument5]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GBS
 DItemRevisionGUID=
 
-[GeneratedDocument7]
+[GeneratedDocument6]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GKO
 DItemRevisionGUID=
 
-[GeneratedDocument8]
+[GeneratedDocument7]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GTL
 DItemRevisionGUID=
 
-[GeneratedDocument9]
+[GeneratedDocument8]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GTO
 DItemRevisionGUID=
 
-[GeneratedDocument10]
+[GeneratedDocument9]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.GTS
 DItemRevisionGUID=
 
-[GeneratedDocument11]
+[GeneratedDocument10]
 DocumentPath=Project Outputs for RF-UNIT-BIG\NC Drill\RF-UNIT-BIG.LDP
 DItemRevisionGUID=
 
-[GeneratedDocument12]
+[GeneratedDocument11]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.REP
 DItemRevisionGUID=
 
-[GeneratedDocument13]
+[GeneratedDocument12]
 DocumentPath=Project Outputs for RF-UNIT-BIG\Gerber\RF-UNIT-BIG.RUL
 DItemRevisionGUID=
 
-[GeneratedDocument14]
+[GeneratedDocument13]
 DocumentPath=Project Outputs for RF-UNIT-BIG\NC Drill\RF-UNIT-BIG.TXT
 DItemRevisionGUID=
 
@@ -380,7 +376,7 @@ ContentTypeGUID=CB6F2064-E317-11DF-B822-12313F0024A2
 ConfigurationType=Source
 
 [Generic_EDE]
-OutputDir=Project Outputs for RF-UNIT-BIG
+OutputDir=
 
 [OutputGroup1]
 Name=Netlist Outputs
