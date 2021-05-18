@@ -230,7 +230,8 @@ void SWR_Draw(void)
 	RF_UNIT_ProcessSensors();
 
 	// Draw
-	data[graph_sweep_x] = TRX_SWR;
+	if(graph_sweep_x < graph_width)
+		data[graph_sweep_x] = TRX_SWR;
 	SWR_DrawGraphCol(graph_sweep_x, true);
 	// draw a marker
 	if (graph_sweep_x == graph_selected_x)
@@ -238,7 +239,7 @@ void SWR_Draw(void)
 
 	// Move on to calculating the next step
 	graph_sweep_x++;
-	if (now_freq > endFreq)
+	if (now_freq >= endFreq)
 	{
 		graph_sweep_x = 0;
 		now_freq = startFreq;

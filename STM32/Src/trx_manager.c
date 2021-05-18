@@ -16,6 +16,7 @@
 #include "rf_unit.h"
 #include "system_menu.h"
 #include "vad.h"
+#include "swr_analyzer.h"
 
 volatile bool TRX_ptt_hard = false;
 volatile bool TRX_ptt_soft = false;
@@ -342,7 +343,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 
 	//get band
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, true);
-	if (bandFromFreq >= 0)
+	if (bandFromFreq >= 0 && !SYSMENU_swr_opened)
 	{
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
 	}
