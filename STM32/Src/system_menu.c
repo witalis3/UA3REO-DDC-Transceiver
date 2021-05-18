@@ -1799,8 +1799,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction)
 	TRX.FFT_Height += direction;
 	if (TRX.FFT_Height < 1)
 		TRX.FFT_Height = 1;
-	if (TRX.FFT_Height > 3)
-		TRX.FFT_Height = 3;
+	if (TRX.FFT_Height > 5)
+		TRX.FFT_Height = 5;
 	FFT_Init();
 }
 

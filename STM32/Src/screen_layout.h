@@ -199,6 +199,10 @@ extern "C"
 		const uint16_t WTF_HEIGHT_STYLE2;
 		const uint16_t FFT_HEIGHT_STYLE3;
 		const uint16_t WTF_HEIGHT_STYLE3;
+		const uint16_t FFT_HEIGHT_STYLE4;
+		const uint16_t WTF_HEIGHT_STYLE4;
+		const uint16_t FFT_HEIGHT_STYLE5;
+		const uint16_t WTF_HEIGHT_STYLE5;
 		const uint16_t FFT_PRINT_SIZE;
 		const uint16_t FFT_CWDECODER_OFFSET;
 		const uint16_t FFT_FFTWTF_POS_Y;
@@ -238,14 +242,14 @@ extern "C"
 #if (defined(LAY_480x320))
 #define LAYOUT_THEMES_COUNT 2
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
-#define MAX_FFT_HEIGHT 102
+#define MAX_FFT_HEIGHT 137
 #define MAX_WTF_HEIGHT 102
 #define FFT_AND_WTF_HEIGHT 152
 #endif
 #if (defined(LAY_800x480))
 #define LAYOUT_THEMES_COUNT 3
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
-#define MAX_FFT_HEIGHT 165
+#define MAX_FFT_HEIGHT 275
 #define MAX_WTF_HEIGHT 195
 #define FFT_AND_WTF_HEIGHT 290
 #endif
