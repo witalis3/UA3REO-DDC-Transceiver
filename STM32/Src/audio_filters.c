@@ -329,10 +329,10 @@ void ReinitAudioFilters(void)
 	fill_biquad_coeffs(filter, IIR_RX1_HPF_SQL_Coeffs, IIR_HPF_STAGES);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_Squelch_HPF, IIR_HPF_STAGES, IIR_RX2_HPF_SQL_Coeffs, (float32_t *)&IIR_RX1_HPF_SQL_State[0]);
 	
-	if (SecondaryVFO->LPF_RX_Filter_Width > 15000 || SecondaryVFO->LPF_RX_Filter_Width == 0)
+	if (SecondaryVFO->LPF_RX_Filter_Width == 0)
 		biquad_init_highpass(filter, TRX_SAMPLERATE, 20000);
 	else
-		biquad_init_highpass(filter, TRX_SAMPLERATE, 15000);
+		biquad_init_highpass(filter, TRX_SAMPLERATE, SecondaryVFO->LPF_RX_Filter_Width + 1000);
 	fill_biquad_coeffs(filter, IIR_RX2_HPF_SQL_Coeffs, IIR_HPF_STAGES);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_Squelch_HPF, IIR_HPF_STAGES, IIR_RX2_HPF_SQL_Coeffs, (float32_t *)&IIR_RX2_HPF_SQL_State[0]);
 

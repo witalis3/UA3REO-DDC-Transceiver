@@ -1282,8 +1282,11 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 
 	// *** Squelch Processing ***
 	arm_biquad_cascade_df2T_f32_rolled(iir_filter_inst, squelch_buf, squelch_buf, size);									   // Do IIR high-pass filter on audio so we may detect squelch noise energy
-	*fm_sql_avg = ((1.0f - FM_RX_SQL_SMOOTHING) * *fm_sql_avg) + (FM_RX_SQL_SMOOTHING * sqrtf(fabsf(squelch_buf[0]))); // IIR filter squelch energy magnitude:  We need look at only one representative sample
-
+	static float32_t hpf_rms = 0;
+	arm_rms_f32(squelch_buf, size, &hpf_rms);
+	*fm_sql_avg = ((1.0f - FM_RX_SQL_SMOOTHING) * *fm_sql_avg) + (FM_RX_SQL_SMOOTHING * hpf_rms); // IIR filter squelch energy magnitude
+	//println(*fm_sql_avg);
+	
 	*fm_sql_count = *fm_sql_count + 1; // bump count that controls how often the squelch threshold is checked
 	if (*fm_sql_count >= FM_SQUELCH_PROC_DECIMATION)
 		*fm_sql_count = 0; // enforce the count limit
