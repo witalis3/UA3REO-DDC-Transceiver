@@ -334,7 +334,6 @@ set_global_assignment -name SIP_FILE rx_ciccomp.sip
 set_global_assignment -name QIP_FILE tx_ciccomp.qip
 set_global_assignment -name SIP_FILE tx_ciccomp.sip
 set_global_assignment -name QIP_FILE diffclock_buff.qip
-set_global_assignment -name QIP_FILE dcdc_pll.qip
 set_global_assignment -name QIP_FILE tx_pll.qip
 set_global_assignment -name QIP_FILE fifo.qip
 set_global_assignment -name QIP_FILE VCXO_PLL.qip

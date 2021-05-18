@@ -60,7 +60,7 @@
 #define USB_DEBUG_ENABLED true	// allow using USB as a console
 #define SWD_DEBUG_ENABLED false // enable SWD as a console
 #define LCD_DEBUG_ENABLED false // enable LCD as a console
-#define DCDC_FREQ_0 900000
+#define DCDC_FREQ_0 960000
 #define DCDC_FREQ_1 1200000
 #define ADC_INPUT_IMPEDANCE 200.0f //50ohm -> 1:4 trans
 #define ADC_RANGE 2.25f
