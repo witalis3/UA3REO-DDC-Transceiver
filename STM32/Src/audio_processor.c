@@ -46,6 +46,7 @@ static float32_t DFM_RX2_fm_sql_avg = 0.0f;
 static float32_t DFM_RX1_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 IRAM2 static float32_t DFM_RX2_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
+static float32_t DFM_RX1_SquelchRate = 1.0f, DFM_RX2_SquelchRate = 1.0f;
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
@@ -1214,6 +1215,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	float32_t *fm_sql_avg = &DFM_RX1_fm_sql_avg;
 	arm_biquad_cascade_df2T_instance_f32 *iir_filter_inst = &IIR_RX1_Squelch_HPF;
 	bool *squelched = &DFM_RX1_Squelched;
+	float32_t *squelchRate = &DFM_RX1_SquelchRate;
 	bool sql_enabled = CurrentVFO->SQL;
 	float32_t *squelch_buf = DFM_RX1_squelch_buf;
 
@@ -1229,6 +1231,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		fm_sql_avg = &DFM_RX2_fm_sql_avg;
 		iir_filter_inst = &IIR_RX2_Squelch_HPF;
 		squelched = &DFM_RX2_Squelched;
+		squelchRate = &DFM_RX2_SquelchRate;
 		squelch_buf = DFM_RX2_squelch_buf;
 		FM_SQL_threshold = SecondaryVFO->FM_SQL_threshold;
 		sql_enabled = SecondaryVFO->SQL;
@@ -1247,16 +1250,34 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		*q_prev = data_q[i]; // save "previous" value of each channel to allow detection of the change of angle in next go-around
 		*i_prev = data_i[i];
 
+		//demod
+		data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
+		//fm de emphasis
+		const float32_t alpha = 0.25f;
+		data_i[i] = data_i[i] * (1.0f - alpha) + *emph_prev * alpha;
+		*emph_prev = data_i[i];
+		
+		//smooth SQL edges
 		if ((!*squelched) || !FM_SQL_threshold || !sql_enabled) // high-pass audio only if we are un-squelched (to save processor time)
-		{
-			data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
-			//fm de emphasis
-			const float32_t alpha = 0.25f;
-			data_i[i] = data_i[i] * (1.0f - alpha) + *emph_prev * alpha;
-			*emph_prev = data_i[i];
+		{ 
+			if(*squelchRate < 1.00f)
+			{
+				data_i[i] *= *squelchRate;
+				*squelchRate = 1.001f * *squelchRate;
+			}
 		}
 		else if (*squelched) // were we squelched or tone NOT detected?
-			data_i[i] = 0;	 // do not filter receive audio - fill buffer with zeroes to mute it
+		{
+			if(*squelchRate > 0.01f)
+			{
+				data_i[i] *= *squelchRate;
+				*squelchRate = 0.999f * *squelchRate;
+			}
+			else
+			{
+				data_i[i] = 0;
+			}
+		}
 	}
 
 	// *** Squelch Processing ***
@@ -1276,23 +1297,34 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 
 		// Now evaluate noise power with respect to squelch setting
 		if (!FM_SQL_threshold || !sql_enabled)	// is squelch set to zero?
+		{
 			*squelched = false; // yes, the we are un-squelched
+		}
 		else if (*squelched)	// are we squelched?
 		{
 			if (b <= (float)((float32_t)(10.0f - FM_SQL_threshold) - FM_SQUELCH_HYSTERESIS)) // yes - is average above threshold plus hysteresis?
+			{
+				*squelchRate = 0.01f;
 				*squelched = false;															 //  yes, open the squelch
+			}
 		}
 		else // is the squelch open (e.g. passing audio)?
 		{
 			if ((float32_t)(10.0f - FM_SQL_threshold) > FM_SQUELCH_HYSTERESIS) // is setting higher than hysteresis?
 			{
 				if (b > (float)((float32_t)(10 - FM_SQL_threshold) + FM_SQUELCH_HYSTERESIS)) // yes - is average below threshold minus hysteresis?
+				{
+					*squelchRate = 1.0f;
 					*squelched = true;														 // yes, close the squelch
+				}
 			}
 			else // setting is lower than hysteresis so we can't use it!
 			{
 				if (b > (10.0f - (float)FM_SQL_threshold)) // yes - is average below threshold?
+				{
+					*squelchRate = 1.0f;
 					*squelched = true;					   // yes, close the squelch
+				}
 			}
 		}
 	}
