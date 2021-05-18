@@ -55,7 +55,7 @@ refer to the applicable agreement for further details.
 		(text "0.00" (rect 115 107 246 225)(font "Arial" ))
 		(text "50.00" (rect 147 107 315 225)(font "Arial" ))
 		(text "c1" (rect 54 121 115 253)(font "Arial" ))
-		(text "25/3072" (rect 72 121 175 253)(font "Arial" ))
+		(text "15/2048" (rect 72 121 175 253)(font "Arial" ))
 		(text "0.00" (rect 115 121 246 253)(font "Arial" ))
 		(text "50.00" (rect 147 121 315 253)(font "Arial" ))
 		(line (pt 0 0)(pt 249 0))

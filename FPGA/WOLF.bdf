@@ -4960,7 +4960,7 @@ refer to the applicable agreement for further details.
 		(text "0.00" (rect 115 107 136 119)(font "Arial" ))
 		(text "50.00" (rect 147 107 174 119)(font "Arial" ))
 		(text "c1" (rect 54 121 65 133)(font "Arial" ))
-		(text "25/3072" (rect 72 121 110 133)(font "Arial" ))
+		(text "15/2048" (rect 72 121 110 133)(font "Arial" ))
 		(text "0.00" (rect 115 121 136 133)(font "Arial" ))
 		(text "50.00" (rect 147 121 174 133)(font "Arial" ))
 		(line (pt 0 0)(pt 249 0))
