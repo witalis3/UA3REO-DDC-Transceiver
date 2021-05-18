@@ -2754,7 +2754,7 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction)
 
 static void SYSMENU_HANDL_OTA_Update(int8_t direction)
 {
-	sysmenu_ota_opened_state = 0;
+	FILEMANAGER_OTAUpdate_reset();
 	FILEMANAGER_OTAUpdate_handler();
 }
 
@@ -4398,6 +4398,13 @@ void SYSMENU_eventCloseSystemMenu(void)
 		LCD_UpdateQuery.Background = true;
 		LCD_redraw(false);
 	}
+	else if (sysmenu_ota_opened)
+	{
+		sysmenu_ota_opened = false;
+		LCD_showInfo("OTA cancelled", true);
+		systemMenuIndex = 0;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
 	else
 	{
 		if (sysmenu_onroot)
@@ -4431,6 +4438,11 @@ void SYSMENU_eventCloseSystemMenu(void)
 
 void SYSMENU_eventCloseAllSystemMenu(void)
 {
+	if(sysmenu_ota_opened)
+	{
+		sysmenu_ota_opened = false;
+		LCD_showInfo("OTA cancelled", true);
+	}
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 	sysmenu_onroot = true;

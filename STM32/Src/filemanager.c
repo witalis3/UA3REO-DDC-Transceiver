@@ -15,6 +15,11 @@ uint16_t FILEMANAGER_files_count = 0;
 bool FILEMANAGER_dialog_opened = false;
 uint16_t FILEMANAGER_dialog_button_index = 0;
 
+static bool downloaded_fpga_fw = false;
+static bool downloaded_fpga_crc = false;
+static bool downloaded_stm_fw = false;
+static bool downloaded_stm_crc = false;
+
 static void FILEMANAGER_Refresh(void);
 static void FILEMANAGER_OpenDialog(void);
 static void FILEMANAGER_DialogAction(void);
@@ -348,19 +353,25 @@ static void FILEMANAGER_DialogAction(void)
 	}
 }
 
+void FILEMANAGER_OTAUpdate_reset(void)
+{
+	sysmenu_ota_opened_state = 0;
+	sysmenu_ota_opened = false;
+	WIFI_NewFW_checked = false;
+	downloaded_fpga_fw = false;
+	downloaded_fpga_crc = false;
+	downloaded_stm_fw = false;
+	downloaded_stm_crc = false;
+}
+
 void FILEMANAGER_OTAUpdate_handler(void)
 {
-	static bool downloaded_fpga_fw = false;
-	static bool downloaded_fpga_crc = false;
-	static bool downloaded_stm_fw = false;
-	static bool downloaded_stm_crc = false;
-	
 	sysmenu_ota_opened = true;
 	if(sysmenu_ota_opened_state == 0)
 	{
-		if(WIFI_State != WIFI_READY)
+		if(WIFI_State == WIFI_UNDEFINED || WIFI_State == WIFI_NOTFOUND || WIFI_State == WIFI_SLEEP || !WIFI_IP_Gotted || TRX_SNTP_Synced == 0)
 		{
-			LCD_showInfo("WIFI not ready", true);
+			LCD_showInfo("WIFI not inited", true);
 			sysmenu_ota_opened = false;
 			return;
 		}
@@ -372,9 +383,18 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		}
 		if(!WIFI_NewFW_checked)
 		{
-			WIFI_checkFWUpdates();
-			LCD_showInfo("Checking updates", false);
+			if(WIFI_State == WIFI_READY)
+			{
+				WIFI_checkFWUpdates();
+				LCD_showInfo("Checking updates", false);
+			}
 			LCD_UpdateQuery.SystemMenuRedraw = true;
+			return;
+		}
+		if(WIFI_State != WIFI_READY)
+		{
+			LCD_showInfo("WIFI not ready", true);
+			sysmenu_ota_opened = false;
 			return;
 		}
 		if(!WIFI_NewFW_STM32 && !WIFI_NewFW_FPGA)

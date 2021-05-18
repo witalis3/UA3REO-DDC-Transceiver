@@ -1191,10 +1191,15 @@ static uint32_t WIFI_downloadFileToSD_startIndex = 0;
 #define WIFI_downloadFileToSD_part_size 2000
 static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 {
+	if(!sysmenu_ota_opened)
+	{
+		println("OTA cancelled");
+		return;
+	}
+		
 	static int32_t downloaded_kb_prev = 0;
 	if(WIFI_downloadFileToSD_compleated)
 	{
-		sysmenu_ota_opened = true;
 		LCD_busy = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}

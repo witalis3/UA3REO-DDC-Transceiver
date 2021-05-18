@@ -759,6 +759,7 @@ void TIM6_DAC_IRQHandler(void)
     uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
     float32_t dbg_coeff = 1000.0f / (float32_t)dbg_tim6_delay;
     dbg_FPGA_samples = (uint32_t)((float32_t)FPGA_samples * dbg_coeff);
+
     if (TRX.Debug_Type == TRX_DEBUG_SYSTEM)
     {
       //Print debug
