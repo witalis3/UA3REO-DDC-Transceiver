@@ -295,8 +295,8 @@ void FFT_bufferPrepare(void)
 	//Process DC corrector filter
 	if (!TRX_on_TX())
 	{
-		//dc_filter(FFTInput_I_current, FFT_HALF_SIZE, DC_FILTER_FFT_I);
-		//dc_filter(FFTInput_Q_current, FFT_HALF_SIZE, DC_FILTER_FFT_Q);
+		dc_filter(FFTInput_I_current, FFT_HALF_SIZE, DC_FILTER_FFT_I);
+		dc_filter(FFTInput_Q_current, FFT_HALF_SIZE, DC_FILTER_FFT_Q);
 	}
 
 	//Process Notch filter
