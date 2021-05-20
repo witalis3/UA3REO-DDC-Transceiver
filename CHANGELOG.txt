@@ -1,6 +1,7 @@
 ----Version 2.4.1----
 +STM32: Расширен диапазон регулировки SWR FWD/REF Calibration, Thx R4DZ
 +STM32: Доработка самоконтроля в CW, Thx UR5YDW
++STM32: Доработка индикации перегрузки, Thx UR5YDW
 
 ----Version 2.4.0----
 +HARDW: Доработки экспериментальной RF-UNIT-BIG-rev3, переход на RD16 + RD100

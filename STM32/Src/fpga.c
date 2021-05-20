@@ -25,10 +25,11 @@ volatile float32_t FPGA_Audio_Buffer_RX2_I_B[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 uint16_t FPGA_FW_Version[3] = {0};
+uint8_t ADCDAC_OVR_StatusLatency = 0;
+bool FPGA_bus_stop = true;					  // suspend the FPGA bus
 
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
-bool FPGA_bus_stop = true;					  // suspend the FPGA bus
 
 // Prototypes
 static inline void FPGA_clockFall(void);			// remove CLK signal
@@ -453,8 +454,13 @@ static inline void FPGA_fpgadata_getparam(void)
 	//STAGE 2
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket;
-	TRX_ADC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 0);
-	TRX_DAC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 1);
+	if(ADCDAC_OVR_StatusLatency >= 10)
+	{
+		TRX_ADC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 0);
+		TRX_DAC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 1);
+	}
+	else
+		ADCDAC_OVR_StatusLatency++;
 	/*bool IQ_overrun = bitRead(FPGA_fpgadata_in_tmp8, 2);
 	if(IQ_overrun)
 		println("iq overrun");*/
