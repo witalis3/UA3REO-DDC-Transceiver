@@ -362,6 +362,7 @@ void SDCOMM_FLASH_BIN_handler(void)
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
 		TRX_Mute = true;
+		WM8731_CleanBuffer();
 		
 		//SCB_DisableICache();
 		//SCB_DisableDCache();
@@ -390,11 +391,10 @@ void SDCOMM_FLASH_BIN_handler(void)
 		EraseInitStruct.Banks = FLASH_BANK_2;
 		EraseInitStruct.TypeErase = FLASH_TYPEERASE_MASSERASE;
 		uint32_t SectorError = 0;
-		println("[FLASH] Erasing...");
 		LCD_showInfo("Erasing...", false);
 		if (HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError) != HAL_OK) {     
 				HAL_FLASH_Lock();
-				println("[FLASH] Erase error");
+				LCD_showInfo("Flash erase error", true);
 				return;
 		}
 		println("[FLASH] Erased");
@@ -406,7 +406,7 @@ void SDCOMM_FLASH_BIN_handler(void)
 		const uint32_t flash_word_size = 8 * 4;//8x 32bits words
 		while (read_flag == true) {
 			if (f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded) != FR_OK) {
-				println("[FLASH] File read error");
+				LCD_showInfo("File read error", true);
 				return;
 			}
 
@@ -418,13 +418,14 @@ void SDCOMM_FLASH_BIN_handler(void)
 					//print_flush();
 					uint8_t res = HAL_FLASH_Program(0, LastPGAddress, (uint32_t)&SD_workbuffer_A[block_addr]);
 					if (res != HAL_OK) {
-						println("[FLASH] Flashing error: ", res, " ", HAL_FLASH_GetError());
+						LCD_showInfo("Flashing error", true);
+						//println("[FLASH] Flashing error: ", res, " ", HAL_FLASH_GetError());
 						return;
 					}
 					//Check the written value
 					if (*(uint32_t*)LastPGAddress != *(uint32_t*)(SD_workbuffer_A + block_addr))
 					{
-						println("[FLASH] Flash Verify error");
+						LCD_showInfo("Flash Verify error", true);
 						return;
 					}
 					//println("[FLASH] Block flashed: ", LastPGAddress);
@@ -442,7 +443,7 @@ void SDCOMM_FLASH_BIN_handler(void)
 			}
 		}
 		
-		println("[FLASH] Flashed");
+		LCD_showInfo("Flashed", true);
 		
 		//First part finished, swap banks
 		
@@ -513,7 +514,7 @@ void SDCOMM_FLASH_BIN_handler(void)
 	}
 	else
 	{
-		LCD_showTooltip("SD error");
+		LCD_showInfo("SD error", true);
 		SD_PlayInProcess = false;
 		SD_Present = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -528,6 +529,7 @@ void SDCOMM_FLASH_JIC_handler(bool restart)
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
 		TRX_Mute = true;
+		WM8731_CleanBuffer();
 		
 		FPGA_bus_stop = true;
 		HAL_Delay(100);
@@ -547,7 +549,7 @@ void SDCOMM_FLASH_JIC_handler(bool restart)
 			while(read_in_progress)
 			{
 				if (f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded) != FR_OK) {
-					println("[FLASH] File read error");
+					LCD_showInfo("File read error...", true);
 					return;
 				}
 				
@@ -570,7 +572,7 @@ void SDCOMM_FLASH_JIC_handler(bool restart)
 			while(read_in_progress)
 			{
 				if (f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded) != FR_OK) {
-					println("[FLASH] File read error");
+					LCD_showInfo("File read error...", true);
 					return;
 				}
 				
@@ -596,7 +598,7 @@ void SDCOMM_FLASH_JIC_handler(bool restart)
 	}
 	else
 	{
-		LCD_showTooltip("SD error");
+		LCD_showInfo("SD error", true);
 		SD_PlayInProcess = false;
 		SD_Present = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;
