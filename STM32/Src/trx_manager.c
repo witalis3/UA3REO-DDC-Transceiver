@@ -332,9 +332,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 		_freq = MAX_RX_FREQ_HZ;
 
 	vfo->Freq = _freq;
-	if (SYSMENU_spectrum_opened)
-		return;
-
+	
 	//set DC-DC Sync freq
 	uint32_t dcdc_offset_0 = abs((int32_t)DCDC_FREQ_0 / 2 - (int32_t)_freq % (int32_t)DCDC_FREQ_0);
 	uint32_t dcdc_offset_1 = abs((int32_t)DCDC_FREQ_1 / 2 - (int32_t)_freq % (int32_t)DCDC_FREQ_1);
@@ -343,9 +341,21 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	else
 		TRX_DCDC_Freq = 0;
 
+	//get settings and fpga freq phrase
+	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)CurrentVFO->Freq + TRX_SHIFT, 1);
+	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)SecondaryVFO->Freq + TRX_SHIFT, 2);
+	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)CurrentVFO->Freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
+	RF_UNIT_ATU_Invalidate();
+	FPGA_NeedSendParams = true;
+	
+	//services
+	if (SYSMENU_spectrum_opened || SYSMENU_swr_opened)
+		return;
+	
 	//get band
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, true);
-	if (bandFromFreq >= 0 && !SYSMENU_swr_opened)
+	if (bandFromFreq >= 0)
 	{
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
 	}
@@ -359,15 +369,6 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 			LCD_UpdateQuery.TopButtons = true;
 		}
 	}
-
-	//get fpga freq phrase
-	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)CurrentVFO->Freq + TRX_SHIFT, 1);
-	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)SecondaryVFO->Freq + TRX_SHIFT, 2);
-	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)CurrentVFO->Freq);
-	//
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
-	RF_UNIT_ATU_Invalidate();
-	FPGA_NeedSendParams = true;
 }
 
 void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo)

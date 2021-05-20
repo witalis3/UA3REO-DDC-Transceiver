@@ -140,15 +140,18 @@ void SPEC_Draw(void)
 	TRX_DBMCalculate();
 
 	// Draw
-	data[graph_sweep_x] = TRX_RX_dBm;
-	SPEC_DrawGraphCol(graph_sweep_x, true);
-	// draw a marker
-	if (graph_sweep_x == graph_selected_x)
-		SPEC_DrawBottomGUI();
+	if(graph_sweep_x < graph_width)
+	{
+		data[graph_sweep_x] = TRX_RX_dBm;
+		SPEC_DrawGraphCol(graph_sweep_x, true);
+		// draw a marker
+		if (graph_sweep_x == graph_selected_x)
+			SPEC_DrawBottomGUI();
+	}
 
 	// Move on to calculating the next step
 	graph_sweep_x++;
-	if (now_freq > (TRX.SPEC_End * SPEC_Resolution))
+	if (now_freq >= (TRX.SPEC_End * SPEC_Resolution))
 	{
 		graph_sweep_x = 0;
 		now_freq = TRX.SPEC_Begin * SPEC_Resolution;
@@ -179,7 +182,7 @@ static void SPEC_DrawGraphCol(uint16_t x, bool clear)
 	if (clear)
 	{
 		// clear
-		LCDDriver_drawFastVLine((graph_start_x + x + 1), graph_start_y, graph_height, COLOR_BLACK);
+		LCDDriver_drawFastVLine((graph_start_x + x + 1), graph_start_y, graph_height - 1, COLOR_BLACK);
 		// draw stripes behind the chart
 		int16_t vres = (TRX.SPEC_BottomDBM - TRX.SPEC_TopDBM);
 		for (uint8_t n = 0; n < (SPEC_VParts - 1); n++)

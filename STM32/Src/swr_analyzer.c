@@ -231,11 +231,13 @@ void SWR_Draw(void)
 
 	// Draw
 	if(graph_sweep_x < graph_width)
+	{
 		data[graph_sweep_x] = TRX_SWR;
-	SWR_DrawGraphCol(graph_sweep_x, true);
-	// draw a marker
-	if (graph_sweep_x == graph_selected_x)
-		SWR_DrawBottomGUI();
+		SWR_DrawGraphCol(graph_sweep_x, true);
+		// draw a marker
+		if (graph_sweep_x == graph_selected_x)
+			SWR_DrawBottomGUI();
+	}
 
 	// Move on to calculating the next step
 	graph_sweep_x++;
@@ -270,7 +272,7 @@ static void SWR_DrawGraphCol(uint16_t x, bool clear)
 	if (clear)
 	{
 		// clear
-		LCDDriver_drawFastVLine((graph_start_x + x + 1), graph_start_y, graph_height, COLOR_BLACK);
+		LCDDriver_drawFastVLine((graph_start_x + x + 1), graph_start_y, graph_height - 1, COLOR_BLACK);
 		// draw stripes behind the chart
 		int16_t vres = SWR_TopSWR;
 		for (uint8_t n = 0; n < (SWR_VParts - 1); n++)
