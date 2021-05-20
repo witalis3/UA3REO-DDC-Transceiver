@@ -743,13 +743,19 @@ void RF_UNIT_ProcessSensors(void)
 	else
 	{
 		forward += 0.21f;								   // drop on diode
-		forward = forward * CALIBRATE.SWR_FWD_Calibration; // Transformation ratio of the SWR meter
+		if (CurrentVFO->Freq >= 80000000) // Transformation ratio of the SWR meter
+			forward = forward * CALIBRATE.SWR_FWD_Calibration_VHF;
+		else
+			forward = forward * CALIBRATE.SWR_FWD_Calibration_HF;
 
 		backward = backward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
 		if (backward >= 0.1f)								// do not measure less than 100mV
 		{
 			backward += 0.21f;									 // drop on diode
-			backward = backward * CALIBRATE.SWR_REF_Calibration; // Transformation ratio of the SWR meter
+			if (CurrentVFO->Freq >= 80000000) // Transformation ratio of the SWR meter
+				backward = backward * CALIBRATE.SWR_REF_Calibration_VHF; // Transformation ratio of the SWR meter
+			else
+				backward = backward * CALIBRATE.SWR_REF_Calibration_HF; // Transformation ratio of the SWR meter
 		}
 		else
 			backward = 0.001f;
@@ -770,10 +776,6 @@ void RF_UNIT_ProcessSensors(void)
 		if (TRX_PWR_Forward < 0.0f)
 			TRX_PWR_Forward = 0.0f;
 		TRX_PWR_Backward = (TRX_VLT_backward * TRX_VLT_backward) / 50.0f;
-
-		//VHF SWR tandem match capacity fix
-		if (CurrentVFO->Freq > 80000000)
-			TRX_PWR_Backward -= TRX_PWR_Forward / 3.0f;
 
 		if (TRX_PWR_Backward < 0.0f)
 			TRX_PWR_Backward = 0.0f;

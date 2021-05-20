@@ -249,6 +249,8 @@ int main(void)
   USBD_Restart();
   println("[OK] FIFO timer TIM7 init");
   HAL_TIM_Base_Start_IT(&htim7);
+	println("[OK] ENC2 timer TIM16 init");
+  HAL_TIM_Base_Start_IT(&htim16);
   println("[OK] Real Time Clock init");
   HAL_RTC_Init(&hrtc);
   println("[OK] Frontpanel init");
@@ -341,8 +343,6 @@ int main(void)
   TRX_Inited = true;
   println("[OK] WIFI timer TIM3 init");
   HAL_TIM_Base_Start_IT(&htim3);
-  println("[OK] ENC2 timer TIM16 init");
-  HAL_TIM_Base_Start_IT(&htim16);
   println("[OK] PERIPHERAL timer TIM15 init");
   dma_memset(&SDFatFs, 0, sizeof(SDFatFs));
   HAL_TIM_Base_Start_IT(&htim15);

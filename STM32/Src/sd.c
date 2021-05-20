@@ -1008,8 +1008,10 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.RFU_BPF_9_START", (uint32_t *)&CALIBRATE.RFU_BPF_9_START, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.RFU_BPF_9_END", (uint32_t *)&CALIBRATE.RFU_BPF_9_END, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.RFU_HPF_START", (uint32_t *)&CALIBRATE.RFU_HPF_START, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("CALIBRATE.SWR_FWD_Calibration", (uint32_t *)&CALIBRATE.SWR_FWD_Calibration, SYSMENU_FLOAT32);
-			SD_WRITE_SETT_LINE("CALIBRATE.SWR_REF_Calibration", (uint32_t *)&CALIBRATE.SWR_REF_Calibration, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.SWR_FWD_Calibration_HF", (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_HF, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.SWR_REF_Calibration_HF", (uint32_t *)&CALIBRATE.SWR_REF_Calibration_HF, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.SWR_FWD_Calibration_VHF", (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.SWR_REF_Calibration_VHF", (uint32_t *)&CALIBRATE.SWR_REF_Calibration_VHF, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.MAX_RF_POWER", (uint32_t *)&CALIBRATE.MAX_RF_POWER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.VCXO_correction", (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.FAN_MEDIUM_START", (uint32_t *)&CALIBRATE.FAN_MEDIUM_START, SYSMENU_UINT8);
@@ -1605,10 +1607,14 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.RFU_BPF_9_END = uintval;
 	if (strcmp(name, "CALIBRATE.RFU_HPF_START") == 0)
 		CALIBRATE.RFU_HPF_START = uintval;
-	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration") == 0)
-		CALIBRATE.SWR_FWD_Calibration = floatval;
-	if (strcmp(name, "CALIBRATE.SWR_REF_Calibration") == 0)
-		CALIBRATE.SWR_REF_Calibration = floatval;
+	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_HF") == 0)
+		CALIBRATE.SWR_FWD_Calibration_HF = floatval;
+	if (strcmp(name, "CALIBRATE.SWR_REF_Calibration_HF") == 0)
+		CALIBRATE.SWR_REF_Calibration_HF = floatval;
+	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_VHF") == 0)
+		CALIBRATE.SWR_FWD_Calibration_VHF = floatval;
+	if (strcmp(name, "CALIBRATE.SWR_REF_Calibration_VHF") == 0)
+		CALIBRATE.SWR_REF_Calibration_VHF = floatval;
 	if (strcmp(name, "CALIBRATE.MAX_RF_POWER") == 0)
 		CALIBRATE.MAX_RF_POWER = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.VCXO_correction") == 0)

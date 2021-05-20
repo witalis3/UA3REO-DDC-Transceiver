@@ -229,8 +229,10 @@ static void SYSMENU_HANDL_CALIB_BPF_9_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_9_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_MAX_RF_POWER(int8_t direction);
-static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE(int8_t direction);
-static void SYSMENU_HANDL_CALIB_SWR_REF_RATE(int8_t direction);
+static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF(int8_t direction);
+static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF(int8_t direction);
+static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction);
+static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction);  //Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction); //Tisho
@@ -589,8 +591,10 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"BPF 9 START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_9_START, SYSMENU_HANDL_CALIB_BPF_9_START},
 		{"BPF 9 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_9_END, SYSMENU_HANDL_CALIB_BPF_9_END},
 		{"MAX RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER, SYSMENU_HANDL_CALIB_MAX_RF_POWER},
-		{"SWR FWD RATE", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration, SYSMENU_HANDL_CALIB_SWR_FWD_RATE},
-		{"SWR REF RATE", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration, SYSMENU_HANDL_CALIB_SWR_REF_RATE},
+		{"SWR FWD RATE HF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_HF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF},
+		{"SWR REF RATE HF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration_HF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF},
+		{"SWR FWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF},
+		{"SWR REF RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
 		{"VCXO Correction", SYSMENU_INT8, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #ifdef SWR_AD8307_LOG		
 		{"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
@@ -2889,8 +2893,10 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_8_END = 0;		   //disabled on qrp version
 		CALIBRATE.RFU_BPF_9_START = 0;	   //disabled on qrp version
 		CALIBRATE.RFU_BPF_9_END = 0;		   //disabled on qrp version
-		CALIBRATE.SWR_FWD_Calibration = 11.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration = 11.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_HF = 11.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_VHF = 3.6f;	   //SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 2;			   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 7;				//Max TRX Power for indication
 	}
@@ -2916,8 +2922,10 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_8_END = 35000 * 1000;		   //CB,10m
 		CALIBRATE.RFU_BPF_9_START = 35000 * 1000;	   //6m
 		CALIBRATE.RFU_BPF_9_END = 70000 * 1000;		   //6m
-		CALIBRATE.SWR_FWD_Calibration = 22.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration = 22.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_HF = 22.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_HF = 22.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 22.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_VHF = 22.0f;	   //SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 10;			   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 100;				//Max TRX Power for indication
 	}
@@ -3385,22 +3393,40 @@ static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction)
 		CALIBRATE.RFU_HPF_START = 999999999;
 }
 
-static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE(int8_t direction)
+static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF(int8_t direction)
 {
-	CALIBRATE.SWR_FWD_Calibration += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_FWD_Calibration < 1.0f)
-		CALIBRATE.SWR_FWD_Calibration = 1.0f;
-	if (CALIBRATE.SWR_FWD_Calibration > 70.0f)
-		CALIBRATE.SWR_FWD_Calibration = 70.0f;
+	CALIBRATE.SWR_FWD_Calibration_HF += (float32_t)direction * 0.1f;
+	if (CALIBRATE.SWR_FWD_Calibration_HF < 1.0f)
+		CALIBRATE.SWR_FWD_Calibration_HF = 1.0f;
+	if (CALIBRATE.SWR_FWD_Calibration_HF > 70.0f)
+		CALIBRATE.SWR_FWD_Calibration_HF = 70.0f;
 }
 
-static void SYSMENU_HANDL_CALIB_SWR_REF_RATE(int8_t direction)
+static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF(int8_t direction)
 {
-	CALIBRATE.SWR_REF_Calibration += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_REF_Calibration < 1.0f)
-		CALIBRATE.SWR_REF_Calibration = 1.0f;
-	if (CALIBRATE.SWR_REF_Calibration > 70.0f)
-		CALIBRATE.SWR_REF_Calibration = 70.0f;
+	CALIBRATE.SWR_REF_Calibration_HF += (float32_t)direction * 0.1f;
+	if (CALIBRATE.SWR_REF_Calibration_HF < 1.0f)
+		CALIBRATE.SWR_REF_Calibration_HF = 1.0f;
+	if (CALIBRATE.SWR_REF_Calibration_HF > 70.0f)
+		CALIBRATE.SWR_REF_Calibration_HF = 70.0f;
+}
+
+static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction)
+{
+	CALIBRATE.SWR_FWD_Calibration_VHF += (float32_t)direction * 0.1f;
+	if (CALIBRATE.SWR_FWD_Calibration_VHF < 1.0f)
+		CALIBRATE.SWR_FWD_Calibration_VHF = 1.0f;
+	if (CALIBRATE.SWR_FWD_Calibration_VHF > 70.0f)
+		CALIBRATE.SWR_FWD_Calibration_VHF = 70.0f;
+}
+
+static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction)
+{
+	CALIBRATE.SWR_REF_Calibration_VHF += (float32_t)direction * 0.1f;
+	if (CALIBRATE.SWR_REF_Calibration_VHF < 1.0f)
+		CALIBRATE.SWR_REF_Calibration_VHF = 1.0f;
+	if (CALIBRATE.SWR_REF_Calibration_VHF > 70.0f)
+		CALIBRATE.SWR_REF_Calibration_VHF = 70.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_MAX_RF_POWER(int8_t direction)
