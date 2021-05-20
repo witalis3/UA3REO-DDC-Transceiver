@@ -1,3 +1,6 @@
+----Version 2.4.1----
++STM32: Расширен диапазон регулировки SWR FWD/REF Calibration, Thx R4DZ
+
 ----Version 2.4.0----
 +HARDW: Доработки экспериментальной RF-UNIT-BIG-rev3, переход на RD16 + RD100
 +FPGA: Доработки PLL
