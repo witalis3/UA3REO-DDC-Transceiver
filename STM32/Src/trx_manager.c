@@ -68,6 +68,7 @@ uint32_t TRX_freq_phrase_tx = 0;
 volatile float32_t TRX_RF_Temperature = 0.0f;
 volatile bool TRX_ScanMode = false;
 bool TRX_phase_restarted = false;
+uint32_t TRX_TX_StartTime = 0;
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
@@ -162,7 +163,7 @@ static void TRX_Start_TX()
 	println("TX MODE");
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
-	HAL_Delay(10); // delay before the RF signal is applied, so that the relay has time to trigger
+	TRX_TX_StartTime = HAL_GetTick();
 	TRX_TXRXMode = 2;
 }
 

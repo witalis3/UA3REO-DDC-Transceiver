@@ -461,6 +461,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENABLE_60m_band = false; 	//enable hidden bands
 		CALIBRATE.ENABLE_marine_band = false;
 		CALIBRATE.OTA_update = true;				//enable OTA FW update over WiFi
+		CALIBRATE.TX_StartDelay = 5;			//Relay switch delay before RF signal ON, ms
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		println("[OK] Loaded default calibrate settings");

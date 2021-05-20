@@ -264,6 +264,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **NOTX xxx** - Disable TX on selected bands
 * **ENABLE xxx Band** - Enable hidden bands
 * **OTA Update** - Enable OTA firmware update over WiFi
+* **TX Start Delay** - Delay before the RF signal is applied (ms), so that the relay has time to trigger
 
 ### Set Clock Time
 

@@ -1058,6 +1058,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_60m_band", (uint32_t *)&CALIBRATE.ENABLE_60m_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_marine_band", (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.OTA_update", (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.TX_StartDelay", (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_UINT8);
 			//Bands settings
 			char buff[64] = {0};
 			for (uint8_t i = 0; i < BANDS_COUNT; i++)
@@ -1703,6 +1704,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.ENABLE_marine_band = bval;
 	if (strcmp(name, "CALIBRATE.OTA_update") == 0)
 		CALIBRATE.OTA_update = bval;
+	if (strcmp(name, "CALIBRATE.TX_StartDelay") == 0)
+		CALIBRATE.TX_StartDelay = (uint8_t)uintval;
 	
 	//Bands settings
 	char buff[64] = {0};

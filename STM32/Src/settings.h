@@ -447,6 +447,7 @@ extern struct TRX_CALIBRATE
 	bool ENABLE_60m_band;
 	bool ENABLE_marine_band;
 	bool OTA_update;
+	uint8_t TX_StartDelay;
 
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit

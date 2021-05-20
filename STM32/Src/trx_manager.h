@@ -83,5 +83,6 @@ extern uint32_t TRX_freq_phrase_tx;
 volatile extern uint32_t TRX_Temporary_Mute_StartTime;
 volatile extern bool TRX_ScanMode;
 extern bool TRX_phase_restarted;
+extern uint32_t TRX_TX_StartTime;
 
 #endif
