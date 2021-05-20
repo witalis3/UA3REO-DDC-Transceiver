@@ -860,11 +860,14 @@ void processTxAudio(void)
 		//CW SelfHear
 		if (TRX.CW_SelfHear && (TRX.CW_KEYER || TRX_key_serial || TRX_key_dot_hard || TRX_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune)
 		{
-			float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
-			float32_t amplitude = (db2rateV(TRX.AGC_GAIN_TARGET) * volume_gain_tx * CODEC_BITS_FULL_SCALE / 2.0f);
+			static float32_t cwgen_index = 0;
+			float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				int32_t data = convertToSPIBigEndian((int32_t)(amplitude * (APROC_Audio_Buffer_TX_I[i] / RFpower_amplitude) * arm_sin_f32(((float32_t)i / (float32_t)TRX_SAMPLERATE) * PI * 2.0f * (float32_t)TRX.CW_Pitch)));
+				float32_t point = generateSin(amplitude * (APROC_Audio_Buffer_TX_I[i] / RFpower_amplitude), &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
+				int32_t sample = 0;
+				arm_float_to_q31(&point, &sample, 1);
+				int32_t data = convertToSPIBigEndian(sample);
 				if (WM8731_DMA_state)
 				{
 					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
