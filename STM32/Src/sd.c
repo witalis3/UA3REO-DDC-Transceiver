@@ -2121,6 +2121,8 @@ uint8_t sd_ini(void)
 	if (SD_cmd(CMD0, 0) == 1) // Enter Idle state
 	{
 		SPI_Release();
+		SD_cmd(ACMD42, 0); //disable pull-up on CD line
+		
 		//OCR
 		if (SD_cmd(CMD8, 0x1AA) == 1) // SDv2
 		{

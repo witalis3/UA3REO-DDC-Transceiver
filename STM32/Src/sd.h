@@ -30,6 +30,7 @@
 #define CMD55 (0x40 + 55)  // APP_CMD
 #define CMD58 (0x40 + 58)  // READ_OCR
 #define ACMD41 (0xC0 + 41) // SEND_OP_COND (SDC)
+#define ACMD42 (0xC0 + 42) // SET_CLR_CARD_DETECT
 #define ACMD23 (0xC0 + 23) /* SET_WR_BLK_ERASE_COUNT (SDC) */
 //--------------------------------------------------
 
