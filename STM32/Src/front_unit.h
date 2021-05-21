@@ -91,5 +91,7 @@ extern void FRONTPANEL_BUTTONHANDLER_LEFT_ARR(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_RIGHT_ARR(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SQL(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SQUELCH(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_ZOOM_N(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_ZOOM_P(uint32_t parameter);
 
 #endif

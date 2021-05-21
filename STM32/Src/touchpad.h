@@ -16,6 +16,6 @@
 extern void TOUCHPAD_Init(void);
 extern void TOUCHPAD_ProcessInterrupt(void);
 extern void TOUCHPAD_reserveInterrupt(void);
-extern void TOUCHPAD_processTouch(uint16_t x, uint16_t y);
+extern void TOUCHPAD_processTouch(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 #endif

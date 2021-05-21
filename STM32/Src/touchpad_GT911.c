@@ -250,9 +250,11 @@ void GT911_Scan(void)
 					println(" COUNT:", GT911.TouchCount);
 					print_flush();
 				}
-
-				TOUCHPAD_processTouch(GT911.X[touch_id], GT911.Y[touch_id]);
 			}
+			if(GT911.TouchCount == 1)
+					TOUCHPAD_processTouch(GT911.X[0], GT911.Y[0], 0, 0);
+			if(GT911.TouchCount == 2)
+					TOUCHPAD_processTouch(GT911.X[0], GT911.Y[0], GT911.X[1], GT911.Y[1]);
 		}
 	}
 }

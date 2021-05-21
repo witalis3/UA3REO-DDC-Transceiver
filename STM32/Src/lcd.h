@@ -57,6 +57,7 @@ extern void LCD_redraw(bool do_now);
 extern void LCD_processTouch(uint16_t x, uint16_t y);
 extern void LCD_processHoldTouch(uint16_t x, uint16_t y);
 extern bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy);
+extern bool LCD_processSwipeTwoFingersTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy);
 extern void LCD_showTooltip(char text[]);
 extern void LCD_openWindow(uint16_t w, uint16_t h);
 extern void LCD_closeWindow(void);

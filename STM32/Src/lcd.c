@@ -1467,12 +1467,12 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 
 bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 {
-#pragma unused(dy)
 #if (defined(HAS_TOUCHPAD))
 	if (TRX.Locked)
 		return false;
 	if (LCD_systemMenuOpened || LCD_window.opened)
 		return false;
+	
 	//fft/wtf swipe
 	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y))
 	{
@@ -1507,6 +1507,32 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 			LCD_UpdateQuery.BottomButtons = true;
 			LCD_UpdateQuery.TopButtons = true;
 			return true; //stop
+		}
+	}
+#endif
+	return false;
+}
+
+bool LCD_processSwipeTwoFingersTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
+{
+#if (defined(HAS_TOUCHPAD))
+	if (TRX.Locked)
+		return false;
+	if (LCD_systemMenuOpened || LCD_window.opened)
+		return false;
+	
+	//fft/wtf two finger swipe zoom
+	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y))
+	{
+		if (dx < -50)
+		{
+			FRONTPANEL_BUTTONHANDLER_ZOOM_P(0);
+			return true;
+		}
+		else if (dx > 50)
+		{
+			FRONTPANEL_BUTTONHANDLER_ZOOM_N(0);
+			return true;
 		}
 	}
 #endif

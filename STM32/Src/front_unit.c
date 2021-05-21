@@ -29,8 +29,6 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SAMPLE_N(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SAMPLE_P(uint32_t parameter);
-static void FRONTPANEL_BUTTONHANDLER_ZOOM_N(uint32_t parameter);
-static void FRONTPANEL_BUTTONHANDLER_ZOOM_P(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_WPM(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_KEYER(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SCAN(uint32_t parameter);
@@ -1669,7 +1667,7 @@ static void FRONTPANEL_BUTTONHANDLER_SAMPLE_N(uint32_t parameter)
 	
 	FFT_Init();
 	NeedReinitAudioFilters = true;
-	LCD_redraw(false);
+	LCD_UpdateQuery.StatusInfoBar = true;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_SAMPLE_P(uint32_t parameter)
@@ -1689,10 +1687,10 @@ static void FRONTPANEL_BUTTONHANDLER_SAMPLE_P(uint32_t parameter)
 	
 	FFT_Init();
 	NeedReinitAudioFilters = true;
-	LCD_redraw(false);
+	LCD_UpdateQuery.StatusInfoBar = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_ZOOM_N(uint32_t parameter)
+void FRONTPANEL_BUTTONHANDLER_ZOOM_N(uint32_t parameter)
 {
 	if(CurrentVFO->Mode == TRX_MODE_CW)
 	{
@@ -1718,10 +1716,10 @@ static void FRONTPANEL_BUTTONHANDLER_ZOOM_N(uint32_t parameter)
 	}
 	
 	FFT_Init();
-	LCD_redraw(false);
+	LCD_UpdateQuery.StatusInfoBar = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_ZOOM_P(uint32_t parameter)
+void FRONTPANEL_BUTTONHANDLER_ZOOM_P(uint32_t parameter)
 {
 	if(CurrentVFO->Mode == TRX_MODE_CW)
 	{
@@ -1747,5 +1745,5 @@ static void FRONTPANEL_BUTTONHANDLER_ZOOM_P(uint32_t parameter)
 	}
 	
 	FFT_Init();
-	LCD_redraw(false);
+	LCD_UpdateQuery.StatusInfoBar = true;
 }

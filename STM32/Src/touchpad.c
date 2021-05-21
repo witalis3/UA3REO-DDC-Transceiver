@@ -9,10 +9,14 @@ static bool hold_touch_handled = false;
 static bool hold_swipe_handled = false;
 static uint32_t touch_startime = 0;
 static uint32_t touch_lasttime = 0;
-static uint16_t touch_start_x = 0;
-static uint16_t touch_start_y = 0;
-static uint16_t touch_end_x = 0;
-static uint16_t touch_end_y = 0;
+static uint16_t touch_start_x1 = 0;
+static uint16_t touch_start_x2 = 0;
+static uint16_t touch_start_y1 = 0;
+static uint16_t touch_start_y2 = 0;
+static uint16_t touch_end_x1 = 0;
+static uint16_t touch_end_x2 = 0;
+static uint16_t touch_end_y1 = 0;
+static uint16_t touch_end_y2 = 0;
 
 void TOUCHPAD_Init(void)
 {
@@ -37,23 +41,47 @@ void TOUCHPAD_ProcessInterrupt(void)
 
 	if (touched && !hold_swipe_handled && (touch_lasttime < (HAL_GetTick() - TOUCHPAD_TIMEOUT)) && ((touch_lasttime - touch_startime) <= TOUCHPAD_CLICK_TIMEOUT) && ((touch_lasttime - touch_startime) >= TOUCHPAD_CLICK_THRESHOLD))
 	{
-		LCD_processTouch(touch_end_x, touch_end_y);
+		LCD_processTouch(touch_end_x1, touch_end_y1);
 		touched = false;
 	}
 	else if (touched && !hold_touch_handled && !hold_swipe_handled && (touch_lasttime > (HAL_GetTick() - TOUCHPAD_TIMEOUT)) && ((touch_lasttime - touch_startime) >= TOUCHPAD_HOLD_TIMEOUT))
 	{
 		hold_touch_handled = true;
-		LCD_processHoldTouch(touch_end_x, touch_end_y);
+		LCD_processHoldTouch(touch_end_x1, touch_end_y1);
 	}
 	else if (touched && (touch_lasttime > (HAL_GetTick() - TOUCHPAD_TIMEOUT)))
 	{
-		if (hold_swipe_handled || abs(touch_end_x - touch_start_x) > TOUCHPAD_SWIPE_THRESHOLD_PX || abs(touch_end_y - touch_start_y) > TOUCHPAD_SWIPE_THRESHOLD_PX)
-			if (LCD_processSwipeTouch(touch_start_x, touch_start_y, (touch_end_x - touch_start_x), (touch_end_y - touch_start_y)))
+		//One/Two finger swipe
+		if (hold_swipe_handled || abs(touch_end_x1 - touch_start_x1) > TOUCHPAD_SWIPE_THRESHOLD_PX || abs(touch_end_y1 - touch_start_y1) > TOUCHPAD_SWIPE_THRESHOLD_PX)
+		{
+			bool two_finger = false;
+			if (abs(touch_end_x2 - touch_start_x2) > TOUCHPAD_SWIPE_THRESHOLD_PX || abs(touch_end_y2 - touch_start_y2) > TOUCHPAD_SWIPE_THRESHOLD_PX)
+				two_finger = true;
+			
+			int16_t dx1 = (touch_end_x1 - touch_start_x1);
+			int16_t dy1 = (touch_end_y1 - touch_start_y1);
+			int16_t dx2 = (touch_end_x2 - touch_start_x2);
+			int16_t dy2 = (touch_end_y2 - touch_start_y2);
+			if(touch_end_x2 < touch_end_x1) //right finger touched first
 			{
-				touch_start_x = touch_end_x;
-				touch_start_y = touch_end_y;
+				dx1 = dx2;
+				dy1 = dy2;
+			}
+			
+			if (two_finger && LCD_processSwipeTwoFingersTouch(touch_start_x1, touch_start_y1, dx1, dy1))
+			{
+				touch_start_x1 = touch_end_x1;
+				touch_start_x2 = touch_end_x2;
+				touch_start_y1 = touch_end_y1;
+				touch_start_y2 = touch_end_y2;
+			}
+			else if (!two_finger && (touch_end_x2 == 0 && touch_end_y2 == 0) && LCD_processSwipeTouch(touch_start_x1, touch_start_y1, dx1, dy1))
+			{
+				touch_start_x1 = touch_end_x1;
+				touch_start_y1 = touch_end_y1;
 				hold_swipe_handled = true;
 			}
+		}
 	}
 	else if (touched && (touch_lasttime < (HAL_GetTick() - TOUCHPAD_TIMEOUT)))
 	{
@@ -71,18 +99,26 @@ void TOUCHPAD_reserveInterrupt(void)
 #endif
 }
 
-void TOUCHPAD_processTouch(uint16_t x, uint16_t y)
+void TOUCHPAD_processTouch(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
-	touch_end_x = x;
-	touch_end_y = y;
+	touch_end_x1 = x1;
+	touch_end_x2 = x2;
+	touch_end_y1 = y1;
+	touch_end_y2 = y2;
 	touch_lasttime = HAL_GetTick();
-
+	if (touch_end_x2 == 0 && touch_end_y2 == 0)
+	{
+		touch_start_x2 = 0;
+		touch_start_y2 = 0;
+	}
 	if (!touched)
 	{
 		touched = true;
 		touch_startime = touch_lasttime;
-		touch_start_x = x;
-		touch_start_y = y;
+		touch_start_x1 = x1;
+		touch_start_x2 = x2;
+		touch_start_y1 = y1;
+		touch_start_y2 = y2;
 	}
 }
 
