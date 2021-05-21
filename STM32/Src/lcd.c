@@ -283,7 +283,7 @@ static void LCD_displayFreqInfo(bool redraw)
 			else
 				channel = getChannelbyFreq(display_freq, true);
 		}
-		if(TRX.ChannelMode && BANDS[band].channelsCount > 0)
+		if(TRX.ChannelMode && band >=0 && BANDS[band].channelsCount > 0)
 		{
 			sprintf(buff, "CH:-");
 			if(band != -1 && channel != -1)
@@ -357,7 +357,7 @@ static void LCD_displayFreqInfo(bool redraw)
 			else
 				channel = getChannelbyFreq(LCD_last_showed_freq_B, true);
 		}
-		if(TRX.ChannelMode && BANDS[band].channelsCount > 0)
+		if(TRX.ChannelMode && band >=0 && BANDS[band].channelsCount > 0)
 		{
 			sprintf(buff, "CH:-");
 			if(band != -1 && channel != -1)
