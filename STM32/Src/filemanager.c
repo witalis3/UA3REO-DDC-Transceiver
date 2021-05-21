@@ -436,7 +436,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 	{
 		LCD_showInfo("Downloading FPGA FW to SD", false);
 		sysmenu_ota_opened_state = 2;
-		sprintf(url, "/trx_services/get_fw.php?type=fpga&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
+		sprintf(url, "/trx_services/get_fw.php?type=fpga&lcd=%s&front=%s&touch=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad);
 		WIFI_downloadFileToSD(url, "firmware_fpga.jic");
 		return;
 	}
@@ -453,7 +453,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 	{
 		LCD_showInfo("Downloading FPGA CRC to SD", false);
 		sysmenu_ota_opened_state = 4;
-		sprintf(url, "/trx_services/get_fw.php?type=fpga&crc&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
+		sprintf(url, "/trx_services/get_fw.php?type=fpga&crc&lcd=%s&front=%s&touch=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad);
 		WIFI_downloadFileToSD(url, "firmware_fpga.crc");
 		return;
 	}
@@ -473,7 +473,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 	{
 		LCD_showInfo("Downloading STM32 FW to SD", false);
 		sysmenu_ota_opened_state = 6;
-		sprintf(url, "/trx_services/get_fw.php?type=stm32&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
+		sprintf(url, "/trx_services/get_fw.php?type=stm32&lcd=%s&front=%s&touch=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad);
 		WIFI_downloadFileToSD(url, "firmware_stm32.bin");
 		return;
 	}
@@ -490,7 +490,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 	{
 		LCD_showInfo("Downloading STM32 CRC to SD", false);
 		sysmenu_ota_opened_state = 8;
-		sprintf(url, "/trx_services/get_fw.php?type=stm32&crc&lcd=%s&front=%s&touch=%s&tangent=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad, ota_config_tangent);
+		sprintf(url, "/trx_services/get_fw.php?type=stm32&crc&lcd=%s&front=%s&touch=%s", ota_config_lcd, ota_config_frontpanel, ota_config_touchpad);
 		WIFI_downloadFileToSD(url, "firmware_stm32.crc");
 		return;
 	}

@@ -51,6 +51,8 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * AGC takes into account the characteristics of human hearing (K-Weighting)
 * TCXO frequency stabilization (it is possible to use an external clock source, such as GPS)
 * WiFi operation: Time synchronization, virtual CAT interface (see Scheme/WIFI-CAT-instruction.txt)
+* Tangent support Yaesu MH-36 и MH-48
+* And other.. (see menu)
 
 ### Sensitivity
 
@@ -238,6 +240,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **Encoder on falling** - The encoder is triggered only when level A falls
 * **Encoder acceleration** - The encoder acceleration on faster rotation speeds
 * **RF-Unit Type** - RF-Unit Type (QRP / BIG)
+* **Tangent Type** - Select tangent type
 * **CICCOMP Shift** - Bit shift after CIC compensator
 * **TX CICCOMP Shift** - Bit shift after TX CIC compensator
 * **DAC Shift** - Bit shift of the output to the DAC

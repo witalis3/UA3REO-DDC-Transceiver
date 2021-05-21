@@ -184,6 +184,7 @@ static void SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TangentType(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_48K_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_96K_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_192K_SHIFT(int8_t direction);
@@ -546,6 +547,9 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"Encoder on falling", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
 		{"Encoder acceleration", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
 		{"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG"}},
+#if defined(FRONTPANEL_BIG_V1)
+		{"Tangent Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.TangentType, SYSMENU_HANDL_CALIB_TangentType, {"MH-36", "MH-48"}},
+#endif
 		{"CICCOMP 48K Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.CICFIR_GAINER_48K_val, SYSMENU_HANDL_CALIB_CICCOMP_48K_SHIFT},
 		{"CICCOMP 96K Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.CICFIR_GAINER_96K_val, SYSMENU_HANDL_CALIB_CICCOMP_96K_SHIFT},
 		{"CICCOMP 192K Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.CICFIR_GAINER_192K_val, SYSMENU_HANDL_CALIB_CICCOMP_192K_SHIFT},
@@ -2930,6 +2934,14 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.MAX_RF_POWER = 100;				//Max TRX Power for indication
 	}
 	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_CALIB_TangentType(int8_t direction)
+{
+	if(CALIBRATE.TangentType > 0 || direction > 0)
+		CALIBRATE.TangentType += direction;
+	if (CALIBRATE.TangentType > 1)
+		CALIBRATE.TangentType = 1;
 }
 
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)

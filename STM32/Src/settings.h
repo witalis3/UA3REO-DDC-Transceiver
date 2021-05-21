@@ -148,7 +148,7 @@ typedef enum
 	TRX_DEBUG_TOUCH,
 } TRX_DEBUG_TYPE;
 
-// debug level
+// IQ SAMPLERATE
 typedef enum
 {
 	TRX_SAMPLERATE_K48,
@@ -157,12 +157,19 @@ typedef enum
 	TRX_SAMPLERATE_K384,
 } TRX_IQ_SAMPLERATE_VALUE;
 
-// debug level
+// RF UNIT TYPE
 typedef enum
 {
 	RF_UNIT_QRP,
 	RF_UNIT_BIG,
 } TRX_RF_UNIT_TYPE;
+
+// TANGENT TYPE
+typedef enum
+{
+	TANGENT_MH36,
+	TANGENT_MH48,
+} TRX_TANGENT_TYPE;
 
 // Save settings by band
 typedef struct
@@ -348,6 +355,7 @@ extern struct TRX_CALIBRATE
 	uint8_t ENCODER_SLOW_RATE;
 	bool ENCODER_ON_FALLING;
 	TRX_RF_UNIT_TYPE RF_unit_type;
+	TRX_TANGENT_TYPE TangentType;
 	uint8_t CICFIR_GAINER_48K_val;
 	uint8_t CICFIR_GAINER_96K_val;
 	uint8_t CICFIR_GAINER_192K_val;
@@ -507,14 +515,10 @@ static char ota_config_frontpanel[] = "BIG";
 #endif
 #if defined(FRONTPANEL_SMALL_V1)
 static char ota_config_frontpanel[] = "SMALL";
-static char ota_config_tangent[] = "NONE";
 static char ota_config_touchpad[] = "NONE";
 #endif
 #if defined(TOUCHPAD_GT911)
 static char ota_config_touchpad[] = "GT911";
-#endif
-#if defined(TANGENT_YAESU_MH36)
-static char ota_config_tangent[] = "YAESU_MH36";
 #endif
 
 #endif

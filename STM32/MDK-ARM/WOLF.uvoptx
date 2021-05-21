@@ -1228,7 +1228,7 @@
   </Target>
 
   <Target>
-    <TargetName>RA8875_GT911_MH36</TargetName>
+    <TargetName>RA8875_GT911</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
