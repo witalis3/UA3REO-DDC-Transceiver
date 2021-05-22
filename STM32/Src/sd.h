@@ -68,6 +68,7 @@ extern FIL File;
 extern sd_info_ptr sdinfo;
 extern FATFS SDFatFs;
 extern bool SD_RecordInProcess;
+extern bool SD_RecordingCQmessage;
 extern bool SD_PlayInProcess;
 extern bool SD_CommandInProcess;
 extern bool SD_underrun;

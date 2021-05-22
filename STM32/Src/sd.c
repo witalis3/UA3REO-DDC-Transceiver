@@ -20,6 +20,7 @@ sd_info_ptr sdinfo = {
 };
 extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
+bool SD_RecordingCQmessage = false;
 bool SD_PlayInProcess = false;
 bool SD_CommandInProcess = false;
 bool SD_underrun = false;
@@ -379,7 +380,9 @@ static bool SDCOMM_CREATE_RECORD_FILE_main(char* filename, bool audio_rec)
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 	if(!audio_rec)
+	{
 		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
 	return false;
 }
 
@@ -716,6 +719,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)
 	if (SD_NeedStopRecord)
 	{
 		SD_RecordInProcess = false;
+		SD_RecordingCQmessage = false;
 		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_showTooltip("Stop recording");
 
