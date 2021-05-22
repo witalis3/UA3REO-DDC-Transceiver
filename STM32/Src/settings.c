@@ -11,7 +11,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "2.4.1"; //1.2.3-yymmdd.hhmm (concatinate)
+char version_string[19] = "2.4.2"; //1.2.3-yymmdd.hhmm (concatinate)
 
 //W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -411,6 +411,8 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_9_END = 0;		   //disabled on qrp version
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_HF = 11.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_6M = 10.0f;	   //SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_VHF = 3.6f;	   //SWR Transormator rate return
 		CALIBRATE.MAX_RF_POWER = 7;				//Max TRX Power for indication

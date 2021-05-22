@@ -743,8 +743,12 @@ void RF_UNIT_ProcessSensors(void)
 	else
 	{
 		forward += 0.21f;								   // drop on diode
-		if (CurrentVFO->Freq >= 80000000) // Transformation ratio of the SWR meter
+		
+		// Transformation ratio of the SWR meter
+		if (CurrentVFO->Freq >= 80000000)
 			forward = forward * CALIBRATE.SWR_FWD_Calibration_VHF;
+		else if (CurrentVFO->Freq >= 40000000)
+			forward = forward * CALIBRATE.SWR_FWD_Calibration_6M;
 		else
 			forward = forward * CALIBRATE.SWR_FWD_Calibration_HF;
 
@@ -752,10 +756,14 @@ void RF_UNIT_ProcessSensors(void)
 		if (backward >= 0.1f)								// do not measure less than 100mV
 		{
 			backward += 0.21f;									 // drop on diode
-			if (CurrentVFO->Freq >= 80000000) // Transformation ratio of the SWR meter
-				backward = backward * CALIBRATE.SWR_REF_Calibration_VHF; // Transformation ratio of the SWR meter
+			
+			// Transformation ratio of the SWR meter
+			if (CurrentVFO->Freq >= 80000000)
+				backward = backward * CALIBRATE.SWR_REF_Calibration_VHF;
+			else if (CurrentVFO->Freq >= 40000000)
+				backward = backward * CALIBRATE.SWR_REF_Calibration_6M;
 			else
-				backward = backward * CALIBRATE.SWR_REF_Calibration_HF; // Transformation ratio of the SWR meter
+				backward = backward * CALIBRATE.SWR_REF_Calibration_HF;
 		}
 		else
 			backward = 0.001f;

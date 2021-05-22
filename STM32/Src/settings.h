@@ -402,6 +402,8 @@ extern struct TRX_CALIBRATE
 	uint32_t RFU_BPF_9_END;
 	float32_t SWR_FWD_Calibration_HF;
 	float32_t SWR_REF_Calibration_HF;
+	float32_t SWR_FWD_Calibration_6M;
+	float32_t SWR_REF_Calibration_6M;
 	float32_t SWR_FWD_Calibration_VHF;
 	float32_t SWR_REF_Calibration_VHF;
 	uint8_t MAX_RF_POWER;

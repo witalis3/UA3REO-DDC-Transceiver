@@ -1013,6 +1013,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.RFU_HPF_START", (uint32_t *)&CALIBRATE.RFU_HPF_START, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.SWR_FWD_Calibration_HF", (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_HF, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.SWR_REF_Calibration_HF", (uint32_t *)&CALIBRATE.SWR_REF_Calibration_HF, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.SWR_FWD_Calibration_6M", (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_6M, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.SWR_REF_Calibration_6M", (uint32_t *)&CALIBRATE.SWR_REF_Calibration_6M, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.SWR_FWD_Calibration_VHF", (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.SWR_REF_Calibration_VHF", (uint32_t *)&CALIBRATE.SWR_REF_Calibration_VHF, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.MAX_RF_POWER", (uint32_t *)&CALIBRATE.MAX_RF_POWER, SYSMENU_UINT8);
@@ -1616,6 +1618,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.SWR_FWD_Calibration_HF = floatval;
 	if (strcmp(name, "CALIBRATE.SWR_REF_Calibration_HF") == 0)
 		CALIBRATE.SWR_REF_Calibration_HF = floatval;
+	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_6M") == 0)
+		CALIBRATE.SWR_FWD_Calibration_6M = floatval;
+	if (strcmp(name, "CALIBRATE.SWR_REF_Calibration_6M") == 0)
+		CALIBRATE.SWR_REF_Calibration_6M = floatval;
 	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_VHF") == 0)
 		CALIBRATE.SWR_FWD_Calibration_VHF = floatval;
 	if (strcmp(name, "CALIBRATE.SWR_REF_Calibration_VHF") == 0)
