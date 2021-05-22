@@ -1,5 +1,6 @@
 # Трансивер "Волк"
 Проект DDC-DUC SDR трансивера https://ua3reo.ru/tag/transiver-ua3reo/
+Телеграм канал сообщества: https://t.me/TRX_Wolf
 
 ## Принцип работы
 
