@@ -326,6 +326,7 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
 static void SYSMENU_HANDL_FILEMANAGER(int8_t direction);
+static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); //Tisho
 
 static bool SYSMENU_HANDL_CHECK_RFU_QRP(void);
@@ -695,6 +696,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 		{"RDA Statistics", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RDA_STATS},
 		{"WSPR Beacon", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WSPRMENU},
 		{"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_FILEMANAGER},
+		{"Record CQ message", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RECORD_CQ_WAV},
 #ifdef SWR_AD8307_LOG
 		{"SWR Tandem Match Contr.", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl}, //Tisho
 #endif
@@ -4137,7 +4139,6 @@ static void SYSMENU_HANDL_SWR_HF_START(int8_t direction)
 //RDA STATS
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 {
-#pragma unused(direction)
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true);
 	WIFI_getRDA();
@@ -4146,7 +4147,6 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 //DX_CLUSTER
 static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction)
 {
-#pragma unused(direction)
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true);
 	WIFI_getDXCluster();
@@ -4155,7 +4155,6 @@ static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction)
 //PROPAGINATION
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
 {
-#pragma unused(direction)
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true);
 	WIFI_getPropagination();
@@ -4164,9 +4163,15 @@ static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
 //SD FILE MANAGER
 static void SYSMENU_HANDL_FILEMANAGER(int8_t direction)
 {
-#pragma unused(direction)
 	sysmenu_filemanager_opened = true;
 	SYSMENU_drawSystemMenu(true);
+}
+
+//RECORD CQ MESSAGE
+static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction)
+{
+	sysmenu_filemanager_opened = true;
+	FILEMANAGER_StartRecCQWav();
 }
 
 //COMMON MENU FUNCTIONS

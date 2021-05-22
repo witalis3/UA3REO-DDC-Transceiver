@@ -60,6 +60,8 @@ static void SDCOMM_LIST_DIRECTORY_handler(void);
 static void SDCOMM_DELETE_FILE_handler(void);
 static void SDCOMM_READ_PLAY_FILE_handler(void);
 static void SDCOMM_WRITE_TO_FILE_handler(void);
+static bool SDCOMM_CREATE_RECORD_FILE_main(char* filename, bool audio_rec);
+static bool SDCOMM_CREATE_CQ_MESSAGE_FILE_handler(void);
 
 bool SD_isIdle(void)
 {
@@ -163,6 +165,9 @@ void SD_Process(void)
 			break;
 		case SDCOMM_PROCESS_RECORD:
 			SDCOMM_WRITE_PACKET_RECORD_FILE_handler();
+			break;
+		case SDCOMM_CREATE_CQ_MESSAGE_FILE:
+			SDCOMM_CREATE_CQ_MESSAGE_FILE_handler();
 			break;
 		case SDCOMM_LIST_DIRECTORY:
 			SDCOMM_LIST_DIRECTORY_handler();
@@ -306,6 +311,20 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%d.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO->Freq);
 	println(filename);
+	return SDCOMM_CREATE_RECORD_FILE_main(filename, true);
+}
+
+static bool SDCOMM_CREATE_CQ_MESSAGE_FILE_handler(void)
+{
+	return SDCOMM_CREATE_RECORD_FILE_main("cq_message.wav", false);
+}
+
+static bool SDCOMM_CREATE_RECORD_FILE_main(char* filename, bool audio_rec)
+{
+	RTC_TimeTypeDef sTime = {0};
+	RTC_DateTypeDef sDate = {0};
+	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
@@ -339,9 +358,16 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 		uint32_t byteswritten;
 		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
 
-		SD_RecordInProcess = true;
-		LCD_UpdateQuery.StatusInfoBar = true;
-		LCD_showTooltip("Start recording");
+		if(audio_rec)
+		{
+			SD_RecordInProcess = true;
+			LCD_UpdateQuery.StatusInfoBar = true;
+			LCD_showTooltip("Start recording");
+		}
+		else
+		{
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+		}
 		return true;
 	}
 	else
@@ -352,6 +378,8 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
+	if(!audio_rec)
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	return false;
 }
 

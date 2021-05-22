@@ -19,6 +19,7 @@ static bool downloaded_fpga_fw = false;
 static bool downloaded_fpga_crc = false;
 static bool downloaded_stm_fw = false;
 static bool downloaded_stm_crc = false;
+static bool start_rec_cqmessage = false;
 
 static void FILEMANAGER_Refresh(void);
 static void FILEMANAGER_OpenDialog(void);
@@ -54,6 +55,14 @@ void FILEMANAGER_Draw(bool redraw)
 		{
 			LCDDriver_printText(FILEMANAGER_LISTING[file_id], 5, cur_y, FG_COLOR, BG_COLOR, 2);
 			cur_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
+			
+			//CQ recorder
+			if(start_rec_cqmessage && strcmp(FILEMANAGER_LISTING[file_id], "cq_message.wav") == 0)
+			{
+				current_index = file_id + 1;
+				FILEMANAGER_dialog_opened = true;
+				start_rec_cqmessage = false;
+			}
 		}
 
 		LCD_UpdateQuery.SystemMenuRedraw = false;
@@ -161,10 +170,20 @@ static void FILEMANAGER_Refresh(void)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+void FILEMANAGER_StartRecCQWav(void)
+{
+	if (!SD_doCommand(SDCOMM_CREATE_CQ_MESSAGE_FILE, false))
+		SYSMENU_eventCloseSystemMenu();
+
+	start_rec_cqmessage = true;
+	first_start = true;
+}
+
 static void FILEMANAGER_OpenDialog(void)
 {
 	FILEMANAGER_dialog_opened = true;
 	bool allow_play_wav = false;
+	bool allow_cq_rec = false;
 	bool allow_flash_bin = false;
 	bool allow_flash_jic = false;
 	uint8_t max_buttons_index = 1; //cancel+delete
@@ -176,6 +195,13 @@ static void FILEMANAGER_OpenDialog(void)
 	{
 		max_buttons_index++;
 		allow_play_wav = true;
+	}
+	//check cq message rec wav
+	istr = strstr(FILEMANAGER_LISTING[current_index - 1], "cq_message.wav");
+	if (istr != NULL)
+	{
+		max_buttons_index++;
+		allow_cq_rec = true;
 	}
 	//check flash stm32 bin
 	istr = strstr(FILEMANAGER_LISTING[current_index - 1], ".bin");
@@ -236,6 +262,27 @@ static void FILEMANAGER_OpenDialog(void)
 		button_y += button_h + margin;
 		if(button_active)
 			current_dialog_action = FILMAN_ACT_PLAYWAV;
+		print_index++;
+	}
+	//rec cq message
+	if(allow_cq_rec)
+	{
+		button_active = (FILEMANAGER_dialog_button_index == print_index);
+		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
+		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
+		//if(!SD_PlayInProcess)
+		{
+			LCDDriver_getTextBounds("Record CQ message", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont("Record CQ message", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		}
+		/*else
+		{
+			LCDDriver_getTextBounds("Recording...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		}*/
+		button_y += button_h + margin;
+		if(button_active)
+			current_dialog_action = FILMAN_ACT_REC_CQ_WAV;
 		print_index++;
 	}
 	//flash bin
@@ -321,6 +368,25 @@ static void FILEMANAGER_DialogAction(void)
 		}
 		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 		SD_doCommand(SDCOMM_START_PLAY, false);
+		return;
+	}
+	if(current_dialog_action == FILMAN_ACT_REC_CQ_WAV) //record CQ message
+	{
+		/*if(SD_PlayInProcess)
+		{
+			SD_NeedStopPlay = true;
+			return;
+		}*/
+		
+		println("CQ message recorder started");
+		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
+		if(strlen(FILEMANAGER_CurrentPath) > 0)
+		{
+			strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+			strcat((char*)SD_workbuffer_A, "/");
+		}
+		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+		//SD_doCommand(SDCOMM_START_PLAY, false);
 		return;
 	}
 	if(current_dialog_action == FILMAN_ACT_FLASHBIN) //flash stm32 bin firmware

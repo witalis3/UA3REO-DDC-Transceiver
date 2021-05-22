@@ -14,6 +14,7 @@ typedef enum
 	FILMAN_ACT_CANCEL,
 	FILMAN_ACT_DELETE,
 	FILMAN_ACT_PLAYWAV,
+	FILMAN_ACT_REC_CQ_WAV,
 	FILMAN_ACT_FLASHBIN,
 	FILMAN_ACT_FLASHJIC,
 } FILEMANAGER_ACTION;
@@ -29,5 +30,6 @@ extern void FILEMANAGER_Closing(void);
 extern void FILEMANAGER_EventSecondaryRotate(int8_t direction);
 extern void FILEMANAGER_OTAUpdate_handler(void);
 extern void FILEMANAGER_OTAUpdate_reset(void);
+extern void FILEMANAGER_StartRecCQWav(void);
 
 #endif

@@ -62,7 +62,7 @@ void TOUCHPAD_ProcessInterrupt(void)
 			int16_t dy1 = (touch_end_y1 - touch_start_y1);
 			int16_t dx2 = (touch_end_x2 - touch_start_x2);
 			int16_t dy2 = (touch_end_y2 - touch_start_y2);
-			if(touch_end_x2 < touch_end_x1) //right finger touched first
+			if(two_finger && touch_end_x2 < touch_end_x1) //right finger touched first
 			{
 				dx1 = dx2;
 				dy1 = dy2;
