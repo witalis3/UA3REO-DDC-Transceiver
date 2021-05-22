@@ -1432,6 +1432,10 @@ static void FRONTPANEL_BUTTONHANDLER_PLAY(uint32_t parameter)
 	if (SD_RecordInProcess)
 		SD_NeedStopRecord = true;
 	
+	//go tx
+	TRX_ptt_soft = true;
+	TRX_ptt_change();
+	
 	//start play cq message
 	SD_PlayCQMessageInProcess = true;
 	dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));

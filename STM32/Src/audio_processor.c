@@ -73,6 +73,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor); //decimate RX samplerate input stream
 static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff);
 static void APROC_SD_Play(void);
+static bool APROC_SD_PlayTX(void);
 
 // initialize audio processor
 void initAudioProcessor(void)
@@ -551,6 +552,13 @@ void processTxAudio(void)
 		if ((dma_index % 2) == 1)
 			dma_index--;
 		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
+	}
+	
+	//Play CQ message
+	if(SD_PlayCQMessageInProcess && SD_PlayInProcess)
+	{
+		if(!APROC_SD_PlayTX()) //false - data not ready
+			return;
 	}
 
 	//One-signal zero-tune generator
@@ -1532,6 +1540,40 @@ static void APROC_SD_Play(void)
 			USB_AUDIO_need_rx_buffer = false;
 		}
 	}
+}
+
+static bool APROC_SD_PlayTX(void)
+{
+	static uint32_t vocoder_index = SIZE_ADPCM_BLOCK;
+	static uint32_t outbuff_index = 0;
+	
+	if(vocoder_index == SIZE_ADPCM_BLOCK)
+	{
+		vocoder_index = 0;
+		VODECODER_Process();
+	}
+	
+	if(vocoder_index < SIZE_ADPCM_BLOCK)
+	{
+		while(vocoder_index < SIZE_ADPCM_BLOCK && outbuff_index < AUDIO_BUFFER_HALF_SIZE)
+		{
+			APROC_AudioBuffer_out[outbuff_index * 2] = VOCODER_Buffer[vocoder_index] << 16;
+			APROC_AudioBuffer_out[outbuff_index * 2 + 1] = APROC_AudioBuffer_out[outbuff_index * 2];
+			vocoder_index++;
+			outbuff_index++;
+		}
+		
+		if(outbuff_index == AUDIO_BUFFER_HALF_SIZE)
+		{
+			outbuff_index = 0;
+
+			//data ready
+			return true;
+		}
+	}
+	
+	//data not ready
+	return false;
 }
 
 static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff)

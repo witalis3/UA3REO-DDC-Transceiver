@@ -47,7 +47,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Equalizer TX/RX, reverber
 * SSB/FM Scanner mode
 * Support SDHC/SDSC/SDXC memory cards up to 16Gb
-* WAV files radio recording and playback
+* WAV files radio recording and playback, fast broadcast recorded CQ message
 * AGC takes into account the characteristics of human hearing (K-Weighting)
 * TCXO frequency stabilization (it is possible to use an external clock source, such as GPS)
 * WiFi operation: Time synchronization, virtual CAT interface (see Scheme/WIFI-CAT-instruction.txt)

@@ -748,7 +748,12 @@ static void SDCOMM_READ_PLAY_FILE_handler(void)
 	{
 		//println(bytesreaded, " ", res, " ", (uint8_t)SD_NeedStopPlay);
 		SD_PlayInProcess = false;
-		SD_PlayCQMessageInProcess = false;
+		if(SD_PlayCQMessageInProcess)
+		{
+			TRX_ptt_soft = false;
+			TRX_ptt_change();
+			SD_PlayCQMessageInProcess = false;
+		}
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		println("Stop WAV playing");
 		f_close(&File);
