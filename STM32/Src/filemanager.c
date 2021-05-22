@@ -57,7 +57,7 @@ void FILEMANAGER_Draw(bool redraw)
 			cur_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
 			
 			//CQ recorder
-			if(start_rec_cqmessage && strcmp(FILEMANAGER_LISTING[file_id], "cq_message.wav") == 0)
+			if(start_rec_cqmessage && strcmp(FILEMANAGER_LISTING[file_id], SD_CQ_MESSAGE_FILE) == 0)
 			{
 				current_index = file_id + 1;
 				FILEMANAGER_dialog_opened = true;
@@ -197,7 +197,7 @@ static void FILEMANAGER_OpenDialog(void)
 		allow_play_wav = true;
 	}
 	//check cq message rec wav
-	istr = strstr(FILEMANAGER_LISTING[current_index - 1], "cq_message.wav");
+	istr = strstr(FILEMANAGER_LISTING[current_index - 1], SD_CQ_MESSAGE_FILE);
 	if (istr != NULL)
 	{
 		max_buttons_index++;
@@ -372,6 +372,7 @@ static void FILEMANAGER_DialogAction(void)
 	}
 	if(current_dialog_action == FILMAN_ACT_REC_CQ_WAV) //record CQ message
 	{
+		
 		if(SD_RecordInProcess)
 		{
 			SD_NeedStopRecord = true;
@@ -387,6 +388,7 @@ static void FILEMANAGER_DialogAction(void)
 		}
 		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 		SD_RecordingCQmessage = true;
+		rec_cqmessage_old_mode = CurrentVFO->Mode;
 		TRX_setMode(TRX_MODE_LOOPBACK, CurrentVFO);
 		SD_RecordInProcess = true;
 		LCD_UpdateQuery.SystemMenuRedraw = true;

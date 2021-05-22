@@ -743,9 +743,24 @@ void processTxAudio(void)
 			}
 		}
 	}
-
+	
+	//SD card send
+	if (SD_RecordInProcess)
+	{
+		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+		{
+			arm_float_to_q15(&APROC_Audio_Buffer_TX_I[i], &VOCODER_Buffer[VOCODER_Buffer_Index], 1); //left channel
+			VOCODER_Buffer_Index++;
+			if (VOCODER_Buffer_Index == SIZE_ADPCM_BLOCK)
+			{
+				VOCODER_Buffer_Index = 0;
+				VOCODER_Process();
+			}
+		}
+	}
+	
 	//Loopback/DIGI mode self-hearing
-	if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U)
+	if ((!SD_RecordInProcess && mode == TRX_MODE_LOOPBACK) || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U)
 	{
 		float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)

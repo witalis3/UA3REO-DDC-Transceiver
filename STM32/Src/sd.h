@@ -7,8 +7,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "fatfs.h"
+#include "settings.h"
 //--------------------------------------------------
 #define SD_CARD_SCAN_INTERVAL 1000
+#define SD_CQ_MESSAGE_FILE "!cq_message.wav"
 //--------------------------------------------------
 /* Card type flags (CardType) */
 #define CT_MMC 0x01				 /* MMC ver 3 */
@@ -69,6 +71,7 @@ extern sd_info_ptr sdinfo;
 extern FATFS SDFatFs;
 extern bool SD_RecordInProcess;
 extern bool SD_RecordingCQmessage;
+extern TRX_MODE rec_cqmessage_old_mode;
 extern bool SD_PlayInProcess;
 extern bool SD_CommandInProcess;
 extern bool SD_underrun;

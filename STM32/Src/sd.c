@@ -21,6 +21,7 @@ sd_info_ptr sdinfo = {
 extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
 bool SD_RecordingCQmessage = false;
+TRX_MODE rec_cqmessage_old_mode;
 bool SD_PlayInProcess = false;
 bool SD_CommandInProcess = false;
 bool SD_underrun = false;
@@ -317,7 +318,7 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 
 static bool SDCOMM_CREATE_CQ_MESSAGE_FILE_handler(void)
 {
-	return SDCOMM_CREATE_RECORD_FILE_main("cq_message.wav", false);
+	return SDCOMM_CREATE_RECORD_FILE_main(SD_CQ_MESSAGE_FILE, false);
 }
 
 static bool SDCOMM_CREATE_RECORD_FILE_main(char* filename, bool audio_rec)
@@ -384,6 +385,74 @@ static bool SDCOMM_CREATE_RECORD_FILE_main(char* filename, bool audio_rec)
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	return false;
+}
+
+static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)
+{
+	//reopen cq message
+	static bool need_cqmess_reopen = true;
+	if (SD_RecordingCQmessage)
+	{
+		if (need_cqmess_reopen)
+		{
+			f_open(&File, SD_CQ_MESSAGE_FILE, FA_WRITE | FA_OPEN_EXISTING);
+			f_lseek(&File, sizeof(wav_hdr));
+			need_cqmess_reopen = false;
+		}
+	}
+	//write to SD
+	uint32_t byteswritten;
+	FRESULT res;
+	if (SD_workbuffer_current)
+		res = f_write(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&byteswritten);
+	else
+		res = f_write(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&byteswritten);
+	if ((byteswritten == 0) || (res != FR_OK))
+	{
+		SD_Present = false;
+		SD_NeedStopRecord = false;
+		SD_RecordInProcess = false;
+		if(SD_RecordingCQmessage)
+		{
+			TRX_setMode(rec_cqmessage_old_mode, CurrentVFO);
+			SD_RecordingCQmessage = false;
+		}
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		need_cqmess_reopen = true;
+		LCD_showTooltip("SD error");
+		return false;
+	}
+	else
+	{
+		//store size
+		wav_hdr.datasize += byteswritten;
+	}
+
+	//stop record
+	if (SD_NeedStopRecord)
+	{
+		SD_RecordInProcess = false;
+		if(SD_RecordingCQmessage)
+		{
+			TRX_setMode(rec_cqmessage_old_mode, CurrentVFO);
+			SD_RecordingCQmessage = false;
+		}
+		LCD_UpdateQuery.StatusInfoBar = true;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+		need_cqmess_reopen = true;
+		LCD_showTooltip("Stop recording");
+
+		//update wav length
+		f_lseek(&File, 0);
+		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
+
+		f_close(&File);
+		SD_NeedStopRecord = false;
+		return true;
+	}
+	return true;
 }
 
 void SDCOMM_FLASH_BIN_handler(void)
@@ -688,50 +757,6 @@ static void SDCOMM_READ_PLAY_FILE_handler(void)
 		SD_Play_Buffer_Ready = true;
 		SD_Play_Buffer_Size = bytesreaded;
 	}
-}
-
-static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)
-{
-	//write to SD
-	uint32_t byteswritten;
-	FRESULT res;
-	if (SD_workbuffer_current)
-		res = f_write(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&byteswritten);
-	else
-		res = f_write(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&byteswritten);
-	if ((byteswritten == 0) || (res != FR_OK))
-	{
-		SD_Present = false;
-		SD_NeedStopRecord = false;
-		SD_RecordInProcess = false;
-		LCD_UpdateQuery.StatusInfoGUI = true;
-		LCD_UpdateQuery.StatusInfoBar = true;
-		LCD_showTooltip("SD error");
-		return false;
-	}
-	else
-	{
-		//store size
-		wav_hdr.datasize += byteswritten;
-	}
-
-	//stop record
-	if (SD_NeedStopRecord)
-	{
-		SD_RecordInProcess = false;
-		SD_RecordingCQmessage = false;
-		LCD_UpdateQuery.StatusInfoBar = true;
-		LCD_showTooltip("Stop recording");
-
-		//update wav length
-		f_lseek(&File, 0);
-		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
-
-		f_close(&File);
-		SD_NeedStopRecord = false;
-		return true;
-	}
-	return true;
 }
 
 static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
