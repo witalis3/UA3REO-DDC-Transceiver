@@ -73,6 +73,7 @@ extern bool SD_RecordInProcess;
 extern bool SD_RecordingCQmessage;
 extern TRX_MODE rec_cqmessage_old_mode;
 extern bool SD_PlayInProcess;
+extern bool SD_PlayCQMessageInProcess;
 extern bool SD_CommandInProcess;
 extern bool SD_underrun;
 extern bool SD_NeedStopRecord;

@@ -23,6 +23,7 @@ bool SD_RecordInProcess = false;
 bool SD_RecordingCQmessage = false;
 TRX_MODE rec_cqmessage_old_mode;
 bool SD_PlayInProcess = false;
+bool SD_PlayCQMessageInProcess = false;
 bool SD_CommandInProcess = false;
 bool SD_underrun = false;
 bool SD_NeedStopRecord = false;
@@ -747,6 +748,7 @@ static void SDCOMM_READ_PLAY_FILE_handler(void)
 	{
 		//println(bytesreaded, " ", res, " ", (uint8_t)SD_NeedStopPlay);
 		SD_PlayInProcess = false;
+		SD_PlayCQMessageInProcess = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		println("Stop WAV playing");
 		f_close(&File);
