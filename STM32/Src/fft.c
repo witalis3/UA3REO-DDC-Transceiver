@@ -256,12 +256,12 @@ void FFT_Init(void)
 		fft_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
 
 	// clear the buffers
-	//dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
-	//dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
-	//dma_memset(wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
+	dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
+	dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
+	dma_memset(wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
+	dma_memset(fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
+	dma_memset(FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer));
 	dma_memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
-	//dma_memset(fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
-	//dma_memset(FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer));
 	dma_memset(FFTInput, 0x00, sizeof(FFTInput));
 	dma_memset(FFTInput_I_A, 0x00, sizeof(FFTInput_I_A));
 	dma_memset(FFTInput_Q_A, 0x00, sizeof(FFTInput_Q_A));
