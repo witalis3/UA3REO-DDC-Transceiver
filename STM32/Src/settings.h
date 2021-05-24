@@ -192,6 +192,7 @@ typedef struct
 extern struct TRX_SETTINGS
 {
 	uint8_t flash_id; //version check
+	bool NeedGoToBootloader;
 	//TRX
 	bool selected_vfo; // false - A; true - B
 	VFO VFO_A;

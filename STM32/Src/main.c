@@ -230,7 +230,6 @@ int main(void)
   MX_DMA2D_Init();
   MX_TIM2_Init();
   MX_CRC_Init();
-  MX_IWDG1_Init();
   /* USER CODE BEGIN 2 */
 #ifdef HAS_TOUCHPAD
   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -269,6 +268,18 @@ int main(void)
 #endif
     LoadSettings(false);
 
+	//DFU bootloader
+	if (TRX.NeedGoToBootloader)
+	{
+		TRX.NeedGoToBootloader = false;
+		SaveSettings();
+    JumpToBootloader();
+	}
+	else
+	{
+		MX_IWDG1_Init();
+	}
+	
   TRX.Locked = false;
   println("[OK] LCD init");
   LCD_busy = true;
@@ -360,8 +371,6 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     CPULOAD_GoToSleepMode();
-    if (TRX_NeedGoToBootloader)
-      JumpToBootloader();
   }
   /* USER CODE END 3 */
 }

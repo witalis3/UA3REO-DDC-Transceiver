@@ -2763,7 +2763,11 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction)
 {
 #pragma unused(direction)
 	WM8731_CleanBuffer();
-	TRX_NeedGoToBootloader = true;
+	TRX.NeedGoToBootloader = true;
+	SaveSettings();
+	HAL_Delay(500);
+	SCB->AIRCR = 0x05FA0004;
+	
 	TRX_Inited = false;
 	LCD_busy = true;
 }

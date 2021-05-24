@@ -102,6 +102,7 @@ void LoadSettings(bool clear)
 		dma_memset(&TRX, 0x00, sizeof(TRX));
 		//
 		TRX.flash_id = SETT_VERSION; // Firmware ID in SRAM, if it doesn't match, use the default
+		TRX.NeedGoToBootloader = false;
 		//TRX
 		TRX.selected_vfo = false;				  // current VFO (false - A)
 		TRX.VFO_A.Freq = 7100000;				  // stored VFO-A frequency

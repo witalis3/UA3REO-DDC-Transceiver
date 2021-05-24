@@ -72,7 +72,6 @@ volatile extern uint16_t TRX_Volume;
 volatile extern float32_t TRX_STM32_VREF;
 volatile extern float32_t TRX_STM32_TEMPERATURE;
 volatile extern float32_t TRX_IQ_phase_error;
-volatile extern bool TRX_NeedGoToBootloader;
 volatile extern bool TRX_Temporary_Stop_BandMap;
 volatile extern float32_t TRX_RF_Temperature;
 extern const char *MODE_DESCR[];
