@@ -203,6 +203,7 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 	float32_t AGC_TX_dbFS = rate2dbV(AGC_TX_I_magnitude);
 
 	//move the gain one step
+	//println(AGC_TX_dbFS);
 	float32_t diff = (target - (AGC_TX_dbFS + *AGC_need_gain_db));
 	if (diff > 0)
 		*AGC_need_gain_db += diff / TX_AGC_STEPSIZE_UP;
@@ -244,6 +245,7 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 	}
 	
 	//apply gain
+	//println(*AGC_need_gain_db);
 	if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.0f) //gain changed
 	{
 		float32_t gainApplyStep = 0;

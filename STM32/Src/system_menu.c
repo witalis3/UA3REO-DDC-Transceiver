@@ -1447,8 +1447,8 @@ static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_SSB(int8_t direction)
 	TRX.TX_Compressor_maxgain_SSB += direction;
 	if (TRX.TX_Compressor_maxgain_SSB < 1)
 		TRX.TX_Compressor_maxgain_SSB = 1;
-	if (TRX.TX_Compressor_maxgain_SSB > 10)
-		TRX.TX_Compressor_maxgain_SSB = 10;
+	if (TRX.TX_Compressor_maxgain_SSB > 30)
+		TRX.TX_Compressor_maxgain_SSB = 30;
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM(int8_t direction)
@@ -1456,8 +1456,8 @@ static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM(int8_t direction)
 	TRX.TX_Compressor_maxgain_AMFM += direction;
 	if (TRX.TX_Compressor_maxgain_AMFM < 1)
 		TRX.TX_Compressor_maxgain_AMFM = 1;
-	if (TRX.TX_Compressor_maxgain_AMFM > 10)
-		TRX.TX_Compressor_maxgain_AMFM = 10;
+	if (TRX.TX_Compressor_maxgain_AMFM > 30)
+		TRX.TX_Compressor_maxgain_AMFM = 30;
 }
 
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
