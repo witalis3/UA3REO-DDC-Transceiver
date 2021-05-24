@@ -36,6 +36,7 @@ volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
 bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
 float32_t APROC_TX_clip_gain = 1.0f;
+float32_t APROC_TX_ALC_IN_clip_gain = 1.0f;
 
 // Private variables
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
@@ -827,8 +828,8 @@ void processTxAudio(void)
 	}
 
 	//Apply gain
-	arm_scale_f32(APROC_Audio_Buffer_TX_I, RFpower_amplitude, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-	arm_scale_f32(APROC_Audio_Buffer_TX_Q, RFpower_amplitude, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(APROC_Audio_Buffer_TX_I, RFpower_amplitude * APROC_TX_ALC_IN_clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(APROC_Audio_Buffer_TX_Q, RFpower_amplitude * APROC_TX_ALC_IN_clip_gain, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 
 	// looking for a maximum in amplitude
 	float32_t ampl_max_i = 0.0f;
@@ -853,8 +854,8 @@ void processTxAudio(void)
 	//println(Processor_TX_MAX_amplitude_IN, " ", RFpower_amplitude);
 	if (Processor_TX_MAX_amplitude_IN > 0.0f)
 	{
-		// overload (clipping), sharply reduce the gain
-		if (Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE)
+		// DAC overload (clipping), sharply reduce the gain
+		if (Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE) //dac range overload or alc input over 1 volt
 		{
 			//correct gain
 			if(APROC_TX_clip_gain > 0.0f)
@@ -870,12 +871,25 @@ void processTxAudio(void)
 		}
 		else if( APROC_TX_clip_gain < 1.0f && Processor_TX_MAX_amplitude_IN < RFpower_amplitude)
 			APROC_TX_clip_gain += 0.0001f;
+		
+		// Input External ALC overload, over 1 volt
+		if (TRX_ALC_IN > 1.0f)
+		{
+			//correct gain
+			if(APROC_TX_ALC_IN_clip_gain > 0.0f)
+				APROC_TX_ALC_IN_clip_gain -= 0.001f;
+			//show info to console
+			println("EXT_ALC_IN_OVR ", APROC_TX_ALC_IN_clip_gain);
+			TRX_DAC_OTR = true;
+		}
+		else if( APROC_TX_ALC_IN_clip_gain < 1.0f)
+			APROC_TX_ALC_IN_clip_gain += 0.001f;
 	}
 	
 	if (RFpower_amplitude > 0.0f)
-		TRX_ALC = TRX_ALC * 0.9f + (Processor_TX_MAX_amplitude_OUT / RFpower_amplitude) * 0.1f; //smooth
+		TRX_ALC_OUT = TRX_ALC_OUT * 0.9f + (Processor_TX_MAX_amplitude_OUT / RFpower_amplitude) * 0.1f; //smooth
 	else
-		TRX_ALC = 0.0f;
+		TRX_ALC_OUT = 0.0f;
 	//RF PowerControl (Audio Level Control) Compressor END
 
 	if (mode != TRX_MODE_LOOPBACK)
