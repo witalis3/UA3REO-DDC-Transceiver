@@ -23,11 +23,11 @@
 #define CWDECODER_MAX_SLIDE 0.99f                       // reduction factor for the maximum FFT threshold
 #define CWDECODER_ZOOMED_SAMPLES (DECODER_PACKET_SIZE / CWDECODER_MAGNIFY)
 #define CWDECODER_SPEC_PART (CWDECODER_FFTSIZE_HALF / 2) // search for a signal only in the first part of the signal (CW bandwidth is narrow)
-#define CWDECODER_WPM_UP_SPEED 0.80f                     // speed increase factor during auto-tuning
+#define CWDECODER_WPM_UP_SPEED 0.50f                     // speed increase factor during auto-tuning
 #define CWDECODER_ERROR_DIFF 0.5f                        // error factor when determining the point and dash
 #define CWDECODER_ERROR_SPACE_DIFF 0.6f                  // error factor when determining the character and space
 #define CWDECODER_MAX_CODE_SIZE 10                       // maximum character code size
-#define CWDECODER_MAX_WPM 99                             // maximum WPM
+#define CWDECODER_MAX_WPM 50                             // maximum WPM
 #define CWDECODER_DEBUG false                            //Show Debug
 
 // Public variables
