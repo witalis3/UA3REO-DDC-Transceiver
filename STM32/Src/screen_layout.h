@@ -218,6 +218,7 @@ extern "C"
 		const uint16_t GREETINGS_X;
 		const uint16_t GREETINGS_Y;
 		//Tooltip
+		const GFXfont *TOOLTIP_FONT;
 		const uint16_t TOOLTIP_TIMEOUT;
 		const uint16_t TOOLTIP_MARGIN;
 		const uint16_t TOOLTIP_POS_X;
