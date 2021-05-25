@@ -1270,7 +1270,7 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 	LCDDriver_Fill_RectWH(x_act, y_act, w_act, h_act, COLOR->BUTTON_BACK);										  //button body
 	LCDDriver_drawRectXY(x_act, y_act, x_act + w_act, y_act + h_act, COLOR->BUTTON_BORDER);						  //border
 	LCDDriver_getTextBounds(text, x_act, y_act, &x1_text, &y1_text, &w_text, &h_text, (GFXfont *)&FreeSans9pt7b); //get text bounds
-	if (show_lighter)
+	if (show_lighter && LAYOUT->BUTTON_LIGHTER_HEIGHT > 0)
 	{
 		LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans9pt7b); //text
 		uint16_t lighter_width = (uint16_t)((float32_t)w_act * LAYOUT->BUTTON_LIGHTER_WIDTH);

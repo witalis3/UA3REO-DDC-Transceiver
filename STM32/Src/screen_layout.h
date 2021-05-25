@@ -248,7 +248,7 @@ extern "C"
 #define FFT_AND_WTF_HEIGHT 152
 #endif
 #if (defined(LAY_800x480))
-#define LAYOUT_THEMES_COUNT 3
+#define LAYOUT_THEMES_COUNT 4
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
 #define MAX_FFT_HEIGHT 275
 #define MAX_WTF_HEIGHT 195
