@@ -12,6 +12,7 @@
 +STM32: Добавлена сетка частот 2м диапазона, Thx UR5YDW
 +STM32: Новая тема оформления для 7 дюймовой версии, Thx RZ1ZR
 +STM32: Новый SAM демодулятор (синхро AM), Thx UR5YDW
++STM32: Вывод DX кластера на спектр, Thx UR5YDW
 
 ----Version 2.4.1----
 +STM32: Расширен диапазон регулировки SWR FWD/REF Calibration, Thx R4DZ
