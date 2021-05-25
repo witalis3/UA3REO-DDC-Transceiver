@@ -6,6 +6,7 @@
 #include "vad.h"
 #include "lcd.h"
 #include "cw_decoder.h"
+#include "wifi.h"
 
 //Public variables
 bool FFT_need_fft = true;						   // need to prepare data for display on the screen
@@ -1258,6 +1259,20 @@ void FFT_afterPrintFFT(void)
 			}
 	}
 
+	//DXCluster labels
+	if(true)
+	{
+		for(uint16_t i = 0; i < WIFI_DXCLUSTER_list_count ; i ++)
+		{
+			int32_t pos = getFreqPositionOnFFT(WIFI_DXCLUSTER_list[i].Freq);
+			if (pos >= 0 && pos < LAYOUT->FFT_PRINT_SIZE)
+			{
+				LCDDriver_drawFastVLine(pos, LAYOUT->FFT_FFTWTF_POS_Y + 5, 7, COLOR_RED);
+				LCDDriver_printText(WIFI_DXCLUSTER_list[i].Callsign, pos + 2, LAYOUT->FFT_FFTWTF_POS_Y + 5, FG_COLOR, BG_COLOR, 1);
+			}
+		}
+	}
+	
 	// finish
 	FFT_FPS++;
 	lastWTFFreq = currentFFTFreq;
