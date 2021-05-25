@@ -207,6 +207,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FFT Averaging** - FFT burst averaging level
 * **FFT Window** - Select FFT window (1-Dolph–Chebyshev 2-Blackman-Harris 3-Nutall 4-Blackman-Nutall 5-Hann 6-Hamming 7-No window)
 * **RDS Decoder** - Enable RDS Decoder for WFM mode
+* **FFT DXCluster** - Show DXCluster info over FFT
 
 ### ADC / DAC Settings
 

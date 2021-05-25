@@ -1039,6 +1039,28 @@ bool FFT_printFFT(void)
 	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
 		print_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = color;
 
+	//DXCluster labels
+	if(TRX.FFT_DXCluster)
+	{
+		int32_t prev_pos = -999;
+		uint16_t prev_y = 5;
+		for(uint16_t i = 0; i < WIFI_DXCLUSTER_list_count ; i ++)
+		{
+			int32_t pos = getFreqPositionOnFFT(WIFI_DXCLUSTER_list[i].Freq);
+			if (pos >= 0 && pos < LAYOUT->FFT_PRINT_SIZE)
+			{
+				uint16_t y = 5;
+				if((pos - prev_pos) < 60)
+					y = prev_y + 10;
+				if(y > fftHeight)
+					y = 5;
+				prev_y = y;
+				LCDDriver_printTextInMemory(WIFI_DXCLUSTER_list[i].Callsign, pos - (strlen(WIFI_DXCLUSTER_list[i].Callsign) / 2 * 6), y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+			}
+			prev_pos = pos;
+		}
+	}
+	
 	//Init print 2D FFT+WTF
 	Aligned_CleanDCache_by_Addr(print_output_buffer, sizeof(print_output_buffer));
 	uint32_t fft_2d_print_height = fftHeight + wtf_printed_lines;
@@ -1141,9 +1163,9 @@ static void FFT_3DPrintFFT(void)
 		fft_y_prev = fft_y;
 	}
 
+	//Сenter line
 	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
 	{
-		//Сenter line
 		print_output_buffer[fft_y][LAYOUT->FFT_PRINT_SIZE / 2] = palette_fft[fftHeight / 2];
 	}
 
@@ -1259,20 +1281,6 @@ void FFT_afterPrintFFT(void)
 			}
 	}
 
-	//DXCluster labels
-	if(true)
-	{
-		for(uint16_t i = 0; i < WIFI_DXCLUSTER_list_count ; i ++)
-		{
-			int32_t pos = getFreqPositionOnFFT(WIFI_DXCLUSTER_list[i].Freq);
-			if (pos >= 0 && pos < LAYOUT->FFT_PRINT_SIZE)
-			{
-				LCDDriver_drawFastVLine(pos, LAYOUT->FFT_FFTWTF_POS_Y + 5, 7, COLOR_RED);
-				LCDDriver_printText(WIFI_DXCLUSTER_list[i].Callsign, pos + 2, LAYOUT->FFT_FFTWTF_POS_Y + 5, FG_COLOR, BG_COLOR, 1);
-			}
-		}
-	}
-	
 	// finish
 	FFT_FPS++;
 	lastWTFFreq = currentFFTFreq;

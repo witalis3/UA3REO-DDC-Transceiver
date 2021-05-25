@@ -9,7 +9,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-#define SETT_VERSION 29					   // Settings config version
+#define SETT_VERSION 30					   // Settings config version
 #define CALIB_VERSION 29				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -35,7 +35,7 @@
 #define SCANNER_FREQ_STEP_NFM 25000		   //step for freq scanner for NFM
 #define SCANNER_FREQ_STEP_OTHER 500		   //step for freq scanner for SSB
 #define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
-#define DXCLUSTER_UPDATE_TIME (1000*10*2)	//interval to get cluster info
+#define DXCLUSTER_UPDATE_TIME (1000*60*2)	//interval to get cluster info
 
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
@@ -306,6 +306,7 @@ extern struct TRX_SETTINGS
 	int16_t FFT_ManualBottom;
 	int16_t FFT_ManualTop;
 	bool RDS_Decoder;
+	bool FFT_DXCluster;
 	uint8_t FuncButtons[FUNCBUTTONS_COUNT];
 	//ADC
 	bool ADC_Driver;

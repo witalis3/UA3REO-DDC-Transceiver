@@ -241,6 +241,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_ManualBottom = -100; //Minimal threshold for manual FFT scale
 		TRX.FFT_ManualTop = -75;	 //Maximum threshold for manual FFT scale
 		TRX.RDS_Decoder = true;		//RDS Decoder panel
+		TRX.FFT_DXCluster = false;	//Show DX cluster over FFT
 		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)
 			TRX.FuncButtons[i] = i;
 		//ADC
