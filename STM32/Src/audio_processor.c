@@ -1682,6 +1682,13 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		sam_data->adb_sam_omega_max = (2.0 * F_PI * TRX_SAMPLERATE / TRX_SAMPLERATE);
 		sam_data->adb_sam_g1 = (1.0 - expf(-2.0 * SAM_omegaN * SAM_zeta / TRX_SAMPLERATE));
 		sam_data->adb_sam_g2 = (- sam_data->adb_sam_g1 + 2.0 * (1 - expf(- SAM_omegaN * SAM_zeta / TRX_SAMPLERATE) * cosf(SAM_omegaN / TRX_SAMPLERATE * sqrtf(1.0 - SAM_zeta * SAM_zeta))));
+		//fade leveler
+		float32_t tauR = 0.02; // value emperically determined
+    float32_t tauI = 1.4;  // value emperically determined
+    sam_data->adb_sam_mtauR = (expf(- 1 / ((float32_t)TRX_SAMPLERATE * tauR)));
+    sam_data->adb_sam_onem_mtauR = (1.0 - sam_data->adb_sam_mtauR);
+    sam_data->adb_sam_mtauI = (expf(- 1 / ((float32_t)TRX_SAMPLERATE * tauI)));
+    sam_data->adb_sam_onem_mtauI = (1.0 - sam_data->adb_sam_mtauI);
 	}
 	// Wheatley 2011 cuteSDR & Warren Pratts WDSP, 2016
 	for (int i = 0; i < blockSize; i++)
@@ -1729,8 +1736,22 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 			sam_data->d[j] = sam_data->d[j - 1];
 		}
 
+		//out
 		out_buffer_l[i] = (ai_ps + bi_ps) - (aq_ps - bq_ps);
 		out_buffer_r[i] = (ai_ps - bi_ps) + (aq_ps + bq_ps);
+		
+		//fade leveler
+		static float32_t dc27_l = 0;
+		static float32_t dc27_r = 0;
+    static float32_t dc_insert_l = {0};
+    static float32_t dc_insert_r = {0};
+		
+    dc27_l = sam_data->adb_sam_mtauR * dc27_l + sam_data->adb_sam_onem_mtauR * out_buffer_l[i];
+		dc27_r = sam_data->adb_sam_mtauR * dc27_r + sam_data->adb_sam_onem_mtauR * out_buffer_r[i];
+    dc_insert_l = sam_data->adb_sam_mtauI * dc_insert_l + sam_data->adb_sam_onem_mtauI * corr[0];
+		dc_insert_r = sam_data->adb_sam_mtauI * dc_insert_r + sam_data->adb_sam_onem_mtauI * corr[0];
+    out_buffer_l[i] = out_buffer_l[i] + dc_insert_l - dc27_l;
+		out_buffer_r[i] = out_buffer_r[i] + dc_insert_r - dc27_r;
 
 		// determine phase error
 		float32_t phzerror = atan2f(corr[1], corr[0]);

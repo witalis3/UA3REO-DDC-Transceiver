@@ -51,6 +51,11 @@ typedef struct
 	float32_t adb_sam_g2;
 	float32_t adb_sam_omega_min;
 	float32_t adb_sam_omega_max;
+	
+	float32_t adb_sam_mtauR;
+	float32_t adb_sam_onem_mtauR;
+	float32_t adb_sam_mtauI;
+	float32_t adb_sam_onem_mtauI;
 } demod_sam_data_t;
 
 typedef struct
