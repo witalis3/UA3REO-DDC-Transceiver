@@ -23,6 +23,43 @@
 #define AUDIO_RX_NB_DELAY_BUFFER_SIZE (AUDIO_RX_NB_DELAY_BUFFER_ITEMS * 2)
 #define AUDIO_MAX_REVERBER_TAPS 10
 
+//SAM
+#define SAM_PLL_HILBERT_STAGES 7
+#define SAM_OUT_IDX   (3 * SAM_PLL_HILBERT_STAGES)
+#define SAM_omegaN 200.0 // PLL bandwidth 50.0 - 1000.0
+#define SAM_zeta 0.1 // PLL step response: smaller, slower response 1.0 - 0.1
+		
+typedef struct
+{
+	bool inited;
+	uint16_t  count;
+
+	float32_t fil_out;
+	float32_t lowpass;
+	float32_t omega2;
+	float32_t phs;
+
+	float32_t dsI;             // delayed sample, I path
+	float32_t dsQ;             // delayed sample, Q path
+
+	float32_t a[SAM_OUT_IDX + 3];     // Filter a variables
+	float32_t b[SAM_OUT_IDX + 3];     // Filter b variables
+	float32_t c[SAM_OUT_IDX + 3];     // Filter c variables
+	float32_t d[SAM_OUT_IDX + 3];     // Filter d variables
+
+	float32_t adb_sam_g1;
+	float32_t adb_sam_g2;
+	float32_t adb_sam_omega_min;
+	float32_t adb_sam_omega_max;
+} demod_sam_data_t;
+
+typedef struct
+{
+    const float32_t               c0[SAM_PLL_HILBERT_STAGES];          // Filter coefficients - path 0
+    const float32_t               c1[SAM_PLL_HILBERT_STAGES];          // Filter coefficients - path 1
+} demod_sam_const_t;
+//
+
 typedef enum // receiver number
 {
 	AUDIO_RX1,

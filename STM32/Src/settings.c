@@ -55,6 +55,7 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"NFM",
 	"WFM",
 	"AM",
+	"SAM",
 	"DIGL",
 	"DIGU",
 	"IQ",

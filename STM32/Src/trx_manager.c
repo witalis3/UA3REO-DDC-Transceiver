@@ -388,6 +388,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	switch (_mode)
 	{
 	case TRX_MODE_AM:
+	case TRX_MODE_SAM:
 		vfo->LPF_RX_Filter_Width = TRX.AM_LPF_RX_Filter;
 		vfo->LPF_TX_Filter_Width = TRX.AM_LPF_TX_Filter;
 		vfo->HPF_Filter_Width = 0;

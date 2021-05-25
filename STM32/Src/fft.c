@@ -758,6 +758,7 @@ bool FFT_printFFT(void)
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
+	case TRX_MODE_SAM:
 	case TRX_MODE_CW:
 		bw_line_width = (int16_t)(curwidth / hz_in_pixel * fft_zoom);
 		if (bw_line_width > LAYOUT->FFT_PRINT_SIZE)
@@ -1205,7 +1206,7 @@ void FFT_afterPrintFFT(void)
 					region_color = COLOR->BANDMAP_DIGI;
 				else if (BANDS[band].regions[region].mode == TRX_MODE_NFM || BANDS[band].regions[region].mode == TRX_MODE_WFM)
 					region_color = COLOR->BANDMAP_FM;
-				else if (BANDS[band].regions[region].mode == TRX_MODE_AM)
+				else if (BANDS[band].regions[region].mode == TRX_MODE_AM || BANDS[band].regions[region].mode == TRX_MODE_SAM)
 					region_color = COLOR->BANDMAP_AM;
 
 				fft_freq_position_start = getFreqPositionOnFFT(BANDS[band].regions[region].startFreq);

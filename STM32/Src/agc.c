@@ -20,7 +20,7 @@ IRAM2 static float32_t AGC_RX2_ringbuffer[AGC_RINGBUFFER_TAPS_SIZE * AUDIO_BUFFE
 IRAM2 static float32_t AGC_TX_ringbuffer_i[AGC_RINGBUFFER_TAPS_SIZE * AUDIO_BUFFER_HALF_SIZE] = {0};
 
 //Run AGC on data block
-void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint_fast8_t mode)
+void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint_fast8_t mode, bool stereo)
 {
 	//RX1 or RX2
 	float32_t *AGC_need_gain_db = &AGC_RX1_need_gain_db;
@@ -54,25 +54,26 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 	//do k-weighting (for LKFS)
 	if (rx_id == AUDIO_RX1)
 	{
-		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX1_KW_HSHELF_FILTER, agcBuffer, agcBuffer_kw, blockSize);
-		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX1_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX1_KW_HSHELF_FILTER, agcBuffer_i, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX1_KW_HPASS_FILTER, agcBuffer_i, agcBuffer_kw, blockSize);
 	}
 	else
 	{
-		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX2_KW_HSHELF_FILTER, agcBuffer, agcBuffer_kw, blockSize);
-		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX2_KW_HPASS_FILTER, agcBuffer, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX2_KW_HSHELF_FILTER, agcBuffer_i, agcBuffer_kw, blockSize);
+		arm_biquad_cascade_df2T_f32_rolled(&AGC_RX2_KW_HPASS_FILTER, agcBuffer_i, agcBuffer_kw, blockSize);
 	}
 
 	//do ring buffer
 	static uint32_t ring_position = 0;
 	//save new data to ring buffer
-	dma_memcpy(&agc_ringbuffer[ring_position * blockSize], agcBuffer, sizeof(float32_t) * blockSize);
+	dma_memcpy(&agc_ringbuffer[ring_position * blockSize], agcBuffer_i, sizeof(float32_t) * blockSize);
 	//move ring buffer index
 	ring_position++;
 	if (ring_position >= AGC_RINGBUFFER_TAPS_SIZE)
 		ring_position = 0;
 	//get old data to process
-	dma_memcpy(agcBuffer, &agc_ringbuffer[ring_position * blockSize], sizeof(float32_t) * blockSize);
+	if(!stereo)
+		dma_memcpy(agcBuffer_i, &agc_ringbuffer[ring_position * blockSize], sizeof(float32_t) * blockSize);
 
 	//calculate the magnitude in dBFS
 	float32_t AGC_RX_magnitude = 0;
@@ -130,20 +131,24 @@ void DoRxAGC(float32_t *agcBuffer, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx
 		bool zero_cross = false;
 		for (uint_fast16_t i = 0; i < blockSize; i++)
 		{
-			if (val_prev < 0.0f && agcBuffer[i] > 0.0f)
+			if (val_prev < 0.0f && agcBuffer_i[i] > 0.0f)
 				zero_cross = true;
-			else if (val_prev > 0.0f && agcBuffer[i] < 0.0f)
+			else if (val_prev > 0.0f && agcBuffer_i[i] < 0.0f)
 				zero_cross = true;
 			if (zero_cross)
 				*AGC_need_gain_db_old += gainApplyStep;
 
-			agcBuffer[i] = agcBuffer[i] * db2rateV(*AGC_need_gain_db_old);
-			val_prev = agcBuffer[i];
+			agcBuffer_i[i] = agcBuffer_i[i] * db2rateV(*AGC_need_gain_db_old);
+			if(stereo)
+				agcBuffer_q[i] = agcBuffer_q[i] * db2rateV(*AGC_need_gain_db_old);
+			val_prev = agcBuffer_i[i];
 		}
 	}
 	else //gain did not change, apply gain across all samples
 	{
-		arm_scale_f32(agcBuffer, db2rateV(*AGC_need_gain_db), agcBuffer, blockSize);
+		arm_scale_f32(agcBuffer_i, db2rateV(*AGC_need_gain_db), agcBuffer_i, blockSize);
+		if(stereo)
+			arm_scale_f32(agcBuffer_q, db2rateV(*AGC_need_gain_db), agcBuffer_q, blockSize);
 	}
 }
 
@@ -170,6 +175,7 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 		case TRX_MODE_NFM:
 		case TRX_MODE_WFM:
 		case TRX_MODE_AM:
+		case TRX_MODE_SAM:
 			TX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
 			TX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
 		break;
@@ -239,6 +245,7 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 		case TRX_MODE_NFM:
 		case TRX_MODE_WFM:
 		case TRX_MODE_AM:
+		case TRX_MODE_SAM:
 			if (*AGC_need_gain_db > TRX.TX_Compressor_maxgain_AMFM)
 				*AGC_need_gain_db = TRX.TX_Compressor_maxgain_AMFM;
 		break;

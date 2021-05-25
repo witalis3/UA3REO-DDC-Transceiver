@@ -886,6 +886,8 @@ static void getFT450Mode(uint8_t VFO_Mode, char* out)
 		strcpy(out, "4");
 	if (VFO_Mode == TRX_MODE_AM)
 		strcpy(out, "5");
+	if (VFO_Mode == TRX_MODE_SAM)
+		strcpy(out, "5");
 	if (VFO_Mode == TRX_MODE_LOOPBACK)
 		strcpy(out, "8");
 }

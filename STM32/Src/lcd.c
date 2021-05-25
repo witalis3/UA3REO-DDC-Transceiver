@@ -589,6 +589,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
 	case TRX_MODE_AM:
+	case TRX_MODE_SAM:
 		if (TRX_on_TX())
 			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * TRX.AM_LPF_TX_Filter;
 		else
@@ -1008,7 +1009,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		else
 			sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_Filter, TRX.SSB_LPF_RX_Filter);
 	}
-	else if ((CurrentVFO->Mode == TRX_MODE_AM))
+	else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
 	{
 		if (TRX_on_TX())
 			sprintf(buff, "BW:%d", TRX.AM_LPF_TX_Filter);
@@ -1723,7 +1724,7 @@ static void LCD_showBWWindow(void)
 		filters_count = CW_LPF_COUNT;
 	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U)
 		filters_count = SSB_LPF_COUNT;
-	if (CurrentVFO->Mode == TRX_MODE_AM)
+	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
 		filters_count = AM_LPF_COUNT;
 	if (CurrentVFO->Mode == TRX_MODE_NFM)
 		filters_count = NFM_LPF_COUNT;
@@ -1746,7 +1747,7 @@ static void LCD_showBWWindow(void)
 				width = AUTIO_FILTERS_LPF_CW_LIST[index];
 			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U)
 				width = AUTIO_FILTERS_LPF_SSB_LIST[index];
-			if (CurrentVFO->Mode == TRX_MODE_AM)
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
 				width = AUTIO_FILTERS_LPF_AM_LIST[index];
 			if (CurrentVFO->Mode == TRX_MODE_NFM)
 				width = AUTIO_FILTERS_LPF_NFM_LIST[index];
