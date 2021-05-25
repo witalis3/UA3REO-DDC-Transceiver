@@ -27,6 +27,9 @@ static uint8_t WIFI_FoundedAP_Index = 0;
 static bool WIFI_stop_auto_ap_list = false;
 static uint8_t get_HTTP_tryes = 0;
 
+DXCLUSTER_ENTRY WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_MAX_RECORDS] = {0};
+uint16_t WIFI_DXCLUSTER_list_count = 0;
+
 static void WIFI_SendCommand(char *command);
 static bool WIFI_WaitForOk(void);
 static bool WIFI_ListAP_Sync(void);
@@ -1107,6 +1110,69 @@ void WIFI_getRDA(void)
 	char url[64] = "/trx_services/rda.php?callsign=";
 	strcat(url, TRX.CALLSIGN);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false, false);
+}
+
+static void WIFI_getDXCluster_background_callback(void)
+{
+	if (WIFI_HTTP_Response_Status == 200)
+	{
+		WIFI_DXCLUSTER_list_count = 0;
+		//println(WIFI_HTTResponseHTML);
+		
+		char *istr_l = WIFI_HTTResponseHTML;
+		bool end = false;
+		while(!end)
+		{
+			char *istr_r = strchr(istr_l, ' ');
+			if(istr_r != NULL)
+			{
+				*istr_r = 0;
+				uint32_t freq = (uint32_t)atoi(istr_l);
+				//println("F", freq);
+				
+				istr_l = istr_r + 1;
+				istr_r = strchr(istr_l, '\n');
+				if(istr_r != NULL)
+				{
+					*istr_r = 0;
+					//println("C", istr_l);
+					
+					if(strlen(istr_l) < WIFI_DXCLUSTER_MAX_CALL_LEN)
+					{
+						WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_list_count].Freq = freq;
+						strcpy(WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_list_count].Callsign, istr_l);
+						WIFI_DXCLUSTER_list_count++;
+						
+						istr_l = istr_r + 1;
+						
+						if(WIFI_DXCLUSTER_list_count >= WIFI_DXCLUSTER_MAX_RECORDS)
+							end = true;
+					}
+					else
+						end = true;
+				}
+				else
+					end = true;
+			}
+			else
+				end = true;
+		}
+		
+		for(uint16_t i = 0; i < WIFI_DXCLUSTER_list_count ; i ++)
+			println(WIFI_DXCLUSTER_list[i].Freq, "|", WIFI_DXCLUSTER_list[i].Callsign);
+	}
+}
+
+bool WIFI_getDXCluster_background(void)
+{
+	if (!WIFI_connected || WIFI_State != WIFI_READY)
+		return false;
+	char url[64] = "/trx_services/cluster.php?background&band=";
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if(band >= 0)
+		strcat(url, BANDS[band].name);
+	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_getDXCluster_background_callback, false, false);
+	return true;
 }
 
 void WIFI_getDXCluster(void)

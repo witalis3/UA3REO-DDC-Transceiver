@@ -12,6 +12,14 @@
 #define WIFI_COMMAND_DELAY 10
 #define WIFI_COMMAND_TIMEOUT 5000
 #define WIFI_FOUNDED_AP_MAXCOUNT 16
+#define WIFI_DXCLUSTER_MAX_RECORDS 30
+#define WIFI_DXCLUSTER_MAX_CALL_LEN 10
+
+typedef struct
+{
+	uint32_t Freq;
+	char Callsign[WIFI_DXCLUSTER_MAX_CALL_LEN];
+} DXCLUSTER_ENTRY;
 
 typedef enum
 {
@@ -57,6 +65,8 @@ extern bool WIFI_NewFW_checked;
 extern bool WIFI_NewFW_STM32;
 extern bool WIFI_NewFW_FPGA;
 extern bool WIFI_downloadFileToSD_compleated;
+extern DXCLUSTER_ENTRY WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_MAX_RECORDS];
+extern uint16_t WIFI_DXCLUSTER_list_count;
 
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);
@@ -75,5 +85,6 @@ extern void WIFI_getPropagination(void);
 extern bool WIFI_SW_Restart(void (*callback)(void));
 extern void WIFI_checkFWUpdates(void);
 extern void WIFI_downloadFileToSD(char* url, char* filename);
+extern bool WIFI_getDXCluster_background(void);
 
 #endif
