@@ -262,7 +262,7 @@ int main(void)
   else
 #endif
 #if FRONTPANEL_BIG_V1
-      if (PERIPH_FrontPanel_Buttons[20].state) //soft reset (F1)
+      if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (F1)
     LoadSettings(true);
   else
 #endif
@@ -309,7 +309,7 @@ int main(void)
   else
 #endif
 #ifdef FRONTPANEL_BIG_V1
-      if (PERIPH_FrontPanel_Buttons[20].state && PERIPH_FrontPanel_Buttons[10].state) //Very hard reset (F1+F8)
+      if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8)
     LoadCalibration(true);
   else
 #endif
