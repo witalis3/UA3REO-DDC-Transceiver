@@ -25,12 +25,17 @@ void LCDDriver_SetCurrentXOffset(uint16_t x)
 void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h)
 {
 	uint8_t line = 0;
-	if ((x >= LCD_WIDTH) ||			// Clip right
-		(y >= LCD_HEIGHT) ||		// Clip bottom
-		((x + 6 * size - 1) < 0) || // Clip left
-		((y + 8 * size - 1) < 0))	// Clip top
+	
+	if ((x >= buffer_w) ||			// Clip right
+		(y >= buffer_h) ||		// Clip bottom
+		((x + 6 * size) < 0) || // Clip left
+		((y + 8 * size) < 0))	// Clip top
 		return;
 
+	if((x + 6 * size) >= buffer_w ||
+		(y + 8 * size) >= buffer_h)
+	return;
+	
 	if (c < 32) //non-printable
 		return;
 	if (!_cp437 && (c >= 176))
@@ -62,7 +67,7 @@ void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_
 	}
 }
 
-void LCDDriver_printTextInMemory(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h)
+void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h)
 {
 	uint16_t i = 0;
 	uint16_t offset = size * 6;

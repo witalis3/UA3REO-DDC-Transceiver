@@ -1068,6 +1068,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	resetVAD();
 	TRX_ScanMode = false;
+	TRX_DXCluster_UpdateTime = 0;
 }
 
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
@@ -1111,6 +1112,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	resetVAD();
 	TRX_ScanMode = false;
+	TRX_DXCluster_UpdateTime = 0;
 }
 
 void FRONTPANEL_BUTTONHANDLER_RF_POWER(uint32_t parameter)
@@ -1535,6 +1537,7 @@ void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter)
 	resetVAD();
 	TRX_ScanMode = false;
 	LCD_closeWindow();
+	TRX_DXCluster_UpdateTime = 0;
 }
 
 void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter)
@@ -1570,6 +1573,7 @@ void FRONTPANEL_BUTTONHANDLER_SETSECBAND(uint32_t parameter)
 	resetVAD();
 	TRX_ScanMode = false;
 	LCD_closeWindow();
+	TRX_DXCluster_UpdateTime = 0;
 }
 
 void FRONTPANEL_BUTTONHANDLER_SETMODE(uint32_t parameter)

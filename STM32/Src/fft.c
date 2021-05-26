@@ -1043,6 +1043,7 @@ bool FFT_printFFT(void)
 	if(TRX.FFT_DXCluster)
 	{
 		int32_t prev_pos = -999;
+		int32_t prev_w = 0;
 		uint16_t prev_y = 5;
 		for(uint16_t i = 0; i < WIFI_DXCLUSTER_list_count ; i ++)
 		{
@@ -1050,11 +1051,12 @@ bool FFT_printFFT(void)
 			if (pos >= 0 && pos < LAYOUT->FFT_PRINT_SIZE)
 			{
 				uint16_t y = 5;
-				if((pos - prev_pos) < 60)
+				if((pos - prev_pos) < prev_w)
 					y = prev_y + 10;
 				if(y > fftHeight)
 					y = 5;
 				prev_y = y;
+				prev_w = strlen(WIFI_DXCLUSTER_list[i].Callsign) * 6;
 				LCDDriver_printTextInMemory(WIFI_DXCLUSTER_list[i].Callsign, pos - (strlen(WIFI_DXCLUSTER_list[i].Callsign) / 2 * 6), y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 			}
 			prev_pos = pos;
