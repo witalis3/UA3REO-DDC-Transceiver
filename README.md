@@ -247,7 +247,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **CICCOMP Shift** - Bit shift after CIC compensator
 * **TX CICCOMP Shift** - Bit shift after TX CIC compensator
 * **DAC Shift** - Bit shift of the output to the DAC
-* **RF GAIN xx** - Calibration of the maximum output power for each range
+* **RF GAIN xxx** - Calibration of the maximum output power for each range
 * **S METER** - S-meter calibration
 * **ADC OFFSET** - ADC offset calibration
 * **LPF END** - LPF filter parameters

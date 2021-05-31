@@ -124,31 +124,13 @@ void WM8731_TXRX_mode(void) //loopback
 void WM8731_Mute(void)
 {
 	WM8731_Muting = true;
-
-	//hardware mute
-	/*for(int16_t i = 127; i >= 0; i-= 5)
-	{
-		uint8_t val = 128 + (int8_t)i; //Channel Zero Cross detect  + 0dB
-		WM8731_SendI2CCommand(B8(00000101), val); //R2 Left Headphone Out
-		WM8731_SendI2CCommand(B8(00000111), val); //R3 Right Headphone Out
-	}
-	WM8731_SendI2CCommand(B8(00000101), B8(10000000)); //R2 Left Headphone Out
-	WM8731_SendI2CCommand(B8(00000111), B8(10000000)); //R3 Right Headphone Out*/
+	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_RESET);
 }
 
 void WM8731_UnMute(void)
 {
 	WM8731_Muting = false;
-
-	//hardware unmute
-	/*for(int16_t i = 0; i <= 127; i+= 5)
-	{
-		uint8_t val = 128 + (int8_t)i; //Channel Zero Cross detect  + 0dB
-		WM8731_SendI2CCommand(B8(00000101), val); //R2 Left Headphone Out
-		WM8731_SendI2CCommand(B8(00000111), val); //R3 Right Headphone Out
-	}
-	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); //R2 Left Headphone Out
-	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); //R3 Right Headphone Out*/
+	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_SET);
 }
 
 void WM8731_Beep(void)

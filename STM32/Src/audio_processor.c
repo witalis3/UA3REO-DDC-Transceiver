@@ -865,7 +865,7 @@ void processTxAudio(void)
 
 	// calculate the target gain
 	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN;
-	//println(Processor_TX_MAX_amplitude_IN, " ", RFpower_amplitude);
+	//println(Processor_TX_MAX_amplitude_IN, " ", RFpower_amplitude, " ", APROC_TX_ALC_IN_clip_gain);
 	if (Processor_TX_MAX_amplitude_IN > 0.0f)
 	{
 		// DAC overload (clipping), sharply reduce the gain

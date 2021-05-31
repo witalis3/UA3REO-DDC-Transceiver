@@ -276,32 +276,59 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 	if (freq > MAX_TX_FREQ_HZ)
 		return 0.0f;
 
+	uint16_t calibrate_level = 0;
+	
 	if (freq < 1.0 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_2200m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 2.5 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_160m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 5.3 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_80m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 8.5 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_40m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 12.0 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_30m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 16.0 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_20m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 19.5 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_17m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 22.5 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_15m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 26.5 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_12m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 28.0 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_cb / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 40.0 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_10m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-	if (freq < 80.0 * 1000000)
-		return (float32_t)CALIBRATE.rf_out_power_6m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
-
-	return (float32_t)CALIBRATE.rf_out_power_2m / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+		calibrate_level = CALIBRATE.rf_out_power_2200m;
+	else if (freq < 2.5 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_160m;
+	else if (freq < 5.3 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_80m;
+	else if (freq < 8.5 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_40m;
+	else if (freq < 12.0 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_30m;
+	else if (freq < 16.0 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_20m;
+	else if (freq < 19.5 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_17m;
+	else if (freq < 22.5 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_15m;
+	else if (freq < 26.5 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_12m;
+	else if (freq < 28.0 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_cb;
+	else if (freq < 40.0 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_10m;
+	else if (freq < 80.0 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_6m;
+	else
+		calibrate_level = CALIBRATE.rf_out_power_2m;
+	
+	if(calibrate_level > 200) //dac driver bias
+	{
+		calibrate_level -= 200;
+		TRX_DAC_DRV_A0 = false;
+		TRX_DAC_DRV_A1 = false;
+	}
+	else if(calibrate_level > 100) //dac driver bias 75%
+	{
+		calibrate_level -= 100;
+		TRX_DAC_DRV_A0 = true;
+		TRX_DAC_DRV_A1 = false;
+	}
+	else if(calibrate_level > 0) //dac driver bias 50%
+	{
+		TRX_DAC_DRV_A0 = false;
+		TRX_DAC_DRV_A1 = true;
+	}
+	else if(calibrate_level == 0) //dac driver off
+	{
+		TRX_DAC_DRV_A0 = true;
+		TRX_DAC_DRV_A1 = true;
+	}
+	
+	return (float32_t)calibrate_level / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 }
 
 float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq)

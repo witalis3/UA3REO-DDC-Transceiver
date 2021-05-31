@@ -68,6 +68,8 @@ volatile extern bool TRX_DAC_HP1;
 volatile extern bool TRX_DAC_HP2;
 volatile extern bool TRX_DAC_X4;
 volatile extern bool TRX_DCDC_Freq;
+volatile extern bool TRX_DAC_DRV_A0;
+volatile extern bool TRX_DAC_DRV_A1;
 volatile extern bool TRX_Mute;
 volatile extern uint16_t TRX_Volume;
 volatile extern float32_t TRX_STM32_VREF;

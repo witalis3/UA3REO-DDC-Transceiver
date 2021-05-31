@@ -47,7 +47,9 @@ DCDC_freq,
 TX_NCO_freq,
 RX_CIC_RATE,
 IQ_RX_READ_REQ,
-IQ_RX_READ_CLK
+IQ_RX_READ_CLK,
+DAC_DRV_A0,
+DAC_DRV_A1
 );
 
 input clk_in;
@@ -97,6 +99,8 @@ output reg DAC_hp1 = 0;
 output reg DAC_hp2 = 0;
 output reg DAC_x4 = 0;
 output reg DCDC_freq = 0;
+output reg DAC_DRV_A0 = 1;
+output reg DAC_DRV_A1 = 1;
 output reg unsigned [10:0] RX_CIC_RATE = 'd640;
 
 inout [7:0] DATA_BUS;
@@ -294,6 +298,12 @@ begin
 	else if (k == 119)
 	begin
 		TX_NCO_freq[7:0] = DATA_BUS[7:0];
+		k = 120;
+	end
+	else if (k == 120)
+	begin
+		DAC_DRV_A0 = DATA_BUS[0:0];
+		DAC_DRV_A1 = DATA_BUS[1:1];
 		k = 999;
 	end
 	else if (k == 200) //SEND PARAMS
@@ -507,7 +517,7 @@ begin
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd4; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd6; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

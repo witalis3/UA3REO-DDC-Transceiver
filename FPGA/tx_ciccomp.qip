@@ -27,7 +27,7 @@ set_global_assignment -entity "tx_ciccomp_0002" -library "tx_ciccomp" -name IP_C
 set_global_assignment -entity "tx_ciccomp_0002" -library "tx_ciccomp" -name IP_COMPONENT_PARAMETER "TF9iYW5kc0ZpbHRlcg==::MQ==::TC10aCBCYW5kIEZpbHRlcg=="
 set_global_assignment -entity "tx_ciccomp_0002" -library "tx_ciccomp" -name IP_COMPONENT_PARAMETER "aW5wdXRDaGFubmVsTnVt::MQ==::TWF4IE51bWJlciBvZiBDaGFubmVscw=="
 set_global_assignment -entity "tx_ciccomp_0002" -library "tx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2xvY2tSYXRl::MTg4LjE2::Q2xvY2sgUmF0ZQ=="
-set_global_assignment -entity "tx_ciccomp_0002" -library "tx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2xvY2tTbGFjaw==::MjQ=::Q2xvY2sgU2xhY2s="
+set_global_assignment -entity "tx_ciccomp_0002" -library "tx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2xvY2tTbGFjaw==::MTY=::Q2xvY2sgU2xhY2s="
 set_global_assignment -entity "tx_ciccomp_0002" -library "tx_ciccomp" -name IP_COMPONENT_PARAMETER "aW5wdXRSYXRl::MC4wNDg=::SW5wdXQgU2FtcGxlIFJhdGUgKE1TUFMp"
 set_global_assignment -entity "tx_ciccomp_0002" -library "tx_ciccomp" -name IP_COMPONENT_PARAMETER "Y29lZmZSZWxvYWQ=::ZmFsc2U=::Q29lZmZpY2llbnRzIFJlbG9hZA=="
 set_global_assignment -entity "tx_ciccomp_0002" -library "tx_ciccomp" -name IP_COMPONENT_PARAMETER "Y29lZmZpY2llbnRSZWFkYmFjaw==::ZmFsc2U=::Y29lZmZpY2llbnRSZWFkYmFjaw=="

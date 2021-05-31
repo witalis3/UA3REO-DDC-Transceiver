@@ -442,6 +442,23 @@ static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_writePacket(TRX_freq_phrase_tx & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
+	
+	//STAGE 22
+	//OUT PARAMS
+	FPGA_fpgadata_out_tmp8 = 0;
+	if(TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK) // TX
+	{
+		bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DRV_A0);
+		bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX_DAC_DRV_A1);
+	}
+	else
+	{
+		bitWrite(FPGA_fpgadata_out_tmp8, 0, 1); //DAC driver shutdown
+		bitWrite(FPGA_fpgadata_out_tmp8, 1, 1); //DAC driver shutdown
+	}
+	FPGA_writePacket(FPGA_fpgadata_out_tmp8 & 0XFFU);
+	FPGA_clockRise();
+	FPGA_clockFall();
 }
 
 // get parameters
