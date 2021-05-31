@@ -131,13 +131,12 @@ DRESULT USER_read (
 		return RES_PARERR;
 	if (Stat & STA_NOINIT)
 		return RES_NOTRDY;
-	if (!(sdinfo.type & CT_BLOCK))
-		sector *= sdinfo.BLOCK_SIZE; /* Convert to byte address if needed */
+	if (!(sdinfo.type & CT_BLOCK)) /* Convert to byte address if needed */
+		sector *= sdinfo.BLOCK_SIZE; 
 
 	if (count == 1) /* Single block read */
 	{
-		if ((SD_cmd(CMD17, sector) == 0) /* READ_SINGLE_BLOCK */
-			&& SD_Read_Block(buff, sdinfo.BLOCK_SIZE))
+		if ((SD_cmd(CMD17, sector) == 0) && SD_Read_Block(buff, sdinfo.BLOCK_SIZE)) /* READ_SINGLE_BLOCK */
 		{
 			count = 0;
 		}
@@ -189,8 +188,7 @@ DRESULT USER_write (
 		sector *= sdinfo.BLOCK_SIZE; /* Convert to byte address if needed */
 	if (count == 1)					 /* Single block write */
 	{
-		if ((SD_cmd(CMD24, sector) == 0) /* WRITE_BLOCK */
-			&& SD_Write_Block((BYTE *)buff, 0xFE, true))
+		if ((SD_cmd(CMD24, sector) == 0) && SD_Write_Block((BYTE *)buff, 0xFE, true)) /* WRITE_BLOCK */
 			count = 0;
 	}
 	else /* Multiple block write */
