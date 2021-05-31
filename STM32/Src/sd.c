@@ -2083,7 +2083,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 	} while ((result != 0xFE) && (cnt < 0xFFFF));
 	if (cnt >= 0xFFFF)
 	{
-		LCD_showInfo("SD R Token Err", true);
+		println("SD R Token Err", true);
 		return 0;
 	}
 

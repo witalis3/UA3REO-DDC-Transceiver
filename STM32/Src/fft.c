@@ -1053,11 +1053,15 @@ bool FFT_printFFT(void)
 				uint16_t y = 5;
 				if((pos - prev_pos) < prev_w)
 					y = prev_y + 10;
-				if(y > fftHeight)
-					y = 5;
-				prev_y = y;
-				prev_w = strlen(WIFI_DXCLUSTER_list[i].Callsign) * 6;
-				LCDDriver_printTextInMemory(WIFI_DXCLUSTER_list[i].Callsign, pos - (strlen(WIFI_DXCLUSTER_list[i].Callsign) / 2 * 6), y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+				if(y < (fftHeight - 10))
+				{
+					prev_y = y;
+					prev_w = strlen(WIFI_DXCLUSTER_list[i].Callsign) * 6;
+					char tmp[64] = {0};
+					strcpy(tmp, "|");
+					strcat(tmp, WIFI_DXCLUSTER_list[i].Callsign);
+					LCDDriver_printTextInMemory(tmp, pos - 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+				}
 			}
 			prev_pos = pos;
 		}

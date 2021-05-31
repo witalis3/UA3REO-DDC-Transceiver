@@ -47,6 +47,8 @@
 /* Disk status */
 static volatile DSTATUS Stat = STA_NOINIT;
 
+#define SD_RETRY_COUNT 10
+
 /* USER CODE END DECL */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -134,29 +136,36 @@ DRESULT USER_read (
 	if (!(sdinfo.type & CT_BLOCK)) /* Convert to byte address if needed */
 		sector *= sdinfo.BLOCK_SIZE; 
 
-	if (count == 1) /* Single block read */
+	uint8_t try_n = 0;
+	UINT _count = count;
+	while(try_n < SD_RETRY_COUNT && _count > 0)
 	{
-		if ((SD_cmd(CMD17, sector) == 0) && SD_Read_Block(buff, sdinfo.BLOCK_SIZE)) /* READ_SINGLE_BLOCK */
+		try_n++;
+		_count = count;
+		BYTE *_buff = buff;
+		if (_count == 1) /* Single block read */
 		{
-			count = 0;
-		}
-	}
-	else /* Multiple block read */
-	{
-		if (SD_cmd(CMD18, sector) == 0)
-		{ /* READ_MULTIPLE_BLOCK */
-			do
+			if ((SD_cmd(CMD17, sector) == 0) && SD_Read_Block(_buff, sdinfo.BLOCK_SIZE)) /* READ_SINGLE_BLOCK */
 			{
-				if (!SD_Read_Block(buff, sdinfo.BLOCK_SIZE))
-					break;
-				buff += sdinfo.BLOCK_SIZE;
-			} while (--count);
-			SD_cmd(CMD12, 0); /* STOP_TRANSMISSION */
+				_count = 0;
+			}
 		}
+		else /* Multiple block read */
+		{
+			if (SD_cmd(CMD18, sector) == 0)
+			{ /* READ_MULTIPLE_BLOCK */
+				do
+				{
+					if (!SD_Read_Block(_buff, sdinfo.BLOCK_SIZE))
+						break;
+					_buff += sdinfo.BLOCK_SIZE;
+				} while (--_count);
+				SD_cmd(CMD12, 0); /* STOP_TRANSMISSION */
+			}
+		}
+		SPI_Release();
 	}
-	SPI_Release();
-
-	return count ? RES_ERROR : RES_OK;
+	return _count ? RES_ERROR : RES_OK;
   /* USER CODE END READ */
 }
 
@@ -186,35 +195,45 @@ DRESULT USER_write (
 		return RES_WRPRT;
 	if (!(sdinfo.type & CT_BLOCK))
 		sector *= sdinfo.BLOCK_SIZE; /* Convert to byte address if needed */
-	if (count == 1)					 /* Single block write */
+	
+	uint8_t try_n = 0;
+	UINT _count = count;
+	while(try_n < SD_RETRY_COUNT && _count > 0)
 	{
-		if ((SD_cmd(CMD24, sector) == 0) && SD_Write_Block((BYTE *)buff, 0xFE, true)) /* WRITE_BLOCK */
-			count = 0;
-	}
-	else /* Multiple block write */
-	{
-		if (sdinfo.type & CT_SDC)
+		try_n++;
+		_count = count;
+		BYTE *_buff = (BYTE *)buff;
+	
+		if (_count == 1)					 /* Single block write */
 		{
-			SD_cmd(ACMD23, count); /* Predefine number of sectors */
+			if ((SD_cmd(CMD24, sector) == 0) && SD_Write_Block(_buff, 0xFE, true)) /* WRITE_BLOCK */
+				_count = 0;
 		}
-
-		if (SD_cmd(CMD25, sector) == 0)
-		{ /* WRITE_MULTIPLE_BLOCK */
-			do
+		else /* Multiple block write */
+		{
+			if (sdinfo.type & CT_SDC)
 			{
-				if (!SD_Write_Block((BYTE *)buff, 0xFC, true))
-					break;
-				buff += sdinfo.BLOCK_SIZE;
-			} while (--count);
-			if (!SD_Write_Block(0, 0xFD, true)) /* STOP_TRAN token */
-			{
-				count = 1;
+				SD_cmd(ACMD23, _count); /* Predefine number of sectors */
 			}
-			SPI_wait_ready();
+
+			if (SD_cmd(CMD25, sector) == 0)
+			{ /* WRITE_MULTIPLE_BLOCK */
+				do
+				{
+					if (!SD_Write_Block(_buff, 0xFC, true))
+						break;
+					_buff += sdinfo.BLOCK_SIZE;
+				} while (--_count);
+				if (!SD_Write_Block(0, 0xFD, true)) /* STOP_TRAN token */
+				{
+					_count = 1;
+				}
+				SPI_wait_ready();
+			}
 		}
+		SPI_Release();
 	}
-	SPI_Release();
-	return count ? RES_ERROR : RES_OK;
+	return _count ? RES_ERROR : RES_OK;
   /* USER CODE END WRITE */
 }
 #endif /* _USE_WRITE == 1 */
