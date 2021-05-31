@@ -521,10 +521,11 @@ static char ota_config_frontpanel[] = "BIG";
 #endif
 #if defined(FRONTPANEL_SMALL_V1)
 static char ota_config_frontpanel[] = "SMALL";
-static char ota_config_touchpad[] = "NONE";
 #endif
 #if defined(TOUCHPAD_GT911)
 static char ota_config_touchpad[] = "GT911";
+#else
+static char ota_config_touchpad[] = "NONE";
 #endif
 
 #endif
