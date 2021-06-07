@@ -941,12 +941,22 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 			//FWD
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_TX_LABELS_FWD_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, LAYOUT->STATUS_TX_LABELS_VAL_WIDTH, LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
-			sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward);
+			if(TRX_PWR_Forward >= 100.0f)
+				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Forward);
+			else if(TRX_PWR_Forward >= 10.0f)
+				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward);
+			else
+				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward);
 			LCDDriver_printText(ctmp, LAYOUT->STATUS_TX_LABELS_FWD_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 			//REF
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_TX_LABELS_REF_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, LAYOUT->STATUS_TX_LABELS_VAL_WIDTH, LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
-			sprintf(ctmp, "%.1fW", (double)TRX_PWR_Backward);
+			if(TRX_PWR_Backward >= 100.0f)
+				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Backward);
+			else if(TRX_PWR_Backward >= 10.0f)
+				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Backward);
+			else
+				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Backward);
 			LCDDriver_printText(ctmp, LAYOUT->STATUS_TX_LABELS_REF_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 			//SWR Meter

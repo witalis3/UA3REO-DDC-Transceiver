@@ -603,7 +603,8 @@ void TIM6_DAC_IRQHandler(void)
       TRX_Tune = false;
       TRX_ptt_hard = false;
       TRX_ptt_soft = false;
-      LCD_UpdateQuery.StatusInfoGUI = true;
+      LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
       LCD_UpdateQuery.TopButtons = true;
       NeedSaveSettings = true;
       TRX_Restart_Mode();
@@ -615,7 +616,8 @@ void TIM6_DAC_IRQHandler(void)
       TRX_Tune = false;
       TRX_ptt_hard = false;
       TRX_ptt_soft = false;
-      LCD_UpdateQuery.StatusInfoGUI = true;
+      LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
       LCD_UpdateQuery.TopButtons = true;
       NeedSaveSettings = true;
       TRX_Restart_Mode();
