@@ -814,6 +814,8 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 
 void FRONTPANEL_BUTTONHANDLER_TUNE(uint32_t parameter)
 {
+	RF_UNIT_ATU_Invalidate();
+	
 	TRX_Tune = !TRX_Tune;
 	TRX_ptt_hard = TRX_Tune;
 	

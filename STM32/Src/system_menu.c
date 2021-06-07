@@ -3633,6 +3633,7 @@ static void SYSMENU_HANDL_CALIB_TUNE_MAX_POWER(int8_t direction)
 		CALIBRATE.TUNE_MAX_POWER = 1;
 	if (CALIBRATE.TUNE_MAX_POWER > 120)
 		CALIBRATE.TUNE_MAX_POWER = 120;
+	ATU_TunePowerStabilized = false;
 }
 
 static void SYSMENU_HANDL_CALIB_RTC_CALIBRATION(int8_t direction)

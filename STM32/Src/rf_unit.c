@@ -11,7 +11,6 @@
 static bool ATU_Finished = false;
 static bool ATU_InProcess = false;
 static float32_t ATU_MinSWR = 1.0;
-static float32_t ATU_MaxPWR = 1.0;
 static uint8_t ATU_MinSWR_I = 0;
 static uint8_t ATU_MinSWR_C = 0;
 static bool ATU_MinSWR_T = false;
@@ -91,15 +90,17 @@ static void RF_UNIT_ProcessATU(void)
 		return;
 	if (TRX_PWR_Forward < 2.0f)
 		return;
+	//if (TRX_SWR > 2.0f && !ATU_InProcess)
+		//ATU_Finished = false;
 	if (ATU_Finished)
 		return;
 	if (!ATU_TunePowerStabilized)
 		return;
-	/*if (TRX_SWR < 1.1f)
+	if (TRX_SWR <= NORMAL_SWR)
 	{
 		ATU_Finished = true;
 		return;
-	}*/
+	}
 	
 	#define delay_stages 1
 	static uint8_t delay_stages_count = 0;
@@ -113,6 +114,8 @@ static void RF_UNIT_ProcessATU(void)
 		delay_stages_count = 0;
 	}
 	
+	float32_t TRX_PWR = TRX_PWR_Forward - TRX_PWR_Backward;
+	
 	static float32_t ATU_MinSWR_Slider = 9.9f;
 	static float32_t ATU_MinSWR_prev = 9.9f;
 	static float32_t ATU_MinSWR_prev_prev = 9.9f;
@@ -122,7 +125,6 @@ static void RF_UNIT_ProcessATU(void)
 		TRX.ATU_I = 0;
 		TRX.ATU_C = 0;
 		TRX.ATU_T = 0;
-		ATU_MaxPWR = 0.0f;
 		ATU_MinSWR = 99.9f;
 		ATU_MinSWR_prev = ATU_MinSWR;
 		ATU_MinSWR_prev_prev = ATU_MinSWR;
@@ -135,20 +137,19 @@ static void RF_UNIT_ProcessATU(void)
 	else
 	{
 		//best result
-		if(TRX_SWR < ATU_MinSWR)
+		if(ATU_MinSWR > TRX_SWR)
 		{
 			ATU_MinSWR = TRX_SWR;
 			ATU_MinSWR_I = TRX.ATU_I;
 			ATU_MinSWR_C = TRX.ATU_C;
 			ATU_MinSWR_T = TRX.ATU_T;
-			ATU_MaxPWR = TRX_PWR_Forward;
 		}
 		//wrong way?
 		bool wrong_way = false;
 		if(ATU_MinSWR_prev_prev < ATU_MinSWR_prev && ATU_MinSWR_prev < TRX_SWR)
 			wrong_way = true;
 		ATU_MinSWR_prev_prev = ATU_MinSWR_prev;
-		ATU_MinSWR_prev = TRX_SWR;
+		ATU_MinSWR_prev = TRX_PWR;
 		
 		//debug
 		if(ATU_Stage == 0)
@@ -163,7 +164,7 @@ static void RF_UNIT_ProcessATU(void)
 			print("I+1 ");
 		if(wrong_way) 
 			print("Wr Way ");
-		println("I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", TRX_SWR, " FWD: ", TRX_PWR_Forward, " BCK: ", TRX_PWR_Backward);
+		println("I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", TRX_SWR, " PWR: ", TRX_PWR);
 		//iteration block
 		uint8_t MAX_ATU_POS = 0;
 		if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
@@ -215,7 +216,7 @@ static void RF_UNIT_ProcessATU(void)
 				}
 				else
 					ATU_Stage = 4;
-				ATU_MinSWR_prev_prev = ATU_MinSWR_prev = 9.9f;
+				ATU_MinSWR_prev_prev = ATU_MinSWR_prev = 9.09f;
 			}
 		}
 		else if(ATU_Stage == 3) //iterate caps with i-1
@@ -267,7 +268,7 @@ static void RF_UNIT_ProcessATU(void)
 				{
 					ATU_Stage = 5;
 				}
-				ATU_MinSWR_prev_prev = ATU_MinSWR_prev = 9.9f;
+				ATU_MinSWR_prev_prev = ATU_MinSWR_prev = 0.0f;
 			}
 		}
 		
@@ -278,7 +279,7 @@ static void RF_UNIT_ProcessATU(void)
 			TRX.ATU_I = ATU_MinSWR_I;
 			TRX.ATU_C = ATU_MinSWR_C;
 			TRX.ATU_T = ATU_MinSWR_T;
-			println("ATU best I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", ATU_MinSWR, " PWR: ", ATU_MaxPWR);
+			println("ATU best I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", ATU_MinSWR, " PWR: ", TRX_PWR);
 		}
 	}
 }

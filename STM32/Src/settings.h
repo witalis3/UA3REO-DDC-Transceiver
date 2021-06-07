@@ -36,6 +36,7 @@
 #define SCANNER_FREQ_STEP_OTHER 500		   //step for freq scanner for SSB
 #define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
 #define DXCLUSTER_UPDATE_TIME (1000*60*2)	//interval to get cluster info
+#define NORMAL_SWR	1.5f								//ATU SWR target
 
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
