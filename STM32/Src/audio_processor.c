@@ -788,7 +788,7 @@ void processTxAudio(void)
 		float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f);
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx * 0.5f;
+			float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx * db2rateV(TRX.AGC_GAIN_TARGET);
 			arm_float_to_q31(&sample, &APROC_AudioBuffer_out[i * 2], 1);
 			APROC_AudioBuffer_out[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]); //left channel
 			APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];					//right channel
