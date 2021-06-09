@@ -3486,8 +3486,8 @@ static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF(int8_t direction)
 	CALIBRATE.SWR_FWD_Calibration_HF += (float32_t)direction * 0.1f;
 	if (CALIBRATE.SWR_FWD_Calibration_HF < 1.0f)
 		CALIBRATE.SWR_FWD_Calibration_HF = 1.0f;
-	if (CALIBRATE.SWR_FWD_Calibration_HF > 70.0f)
-		CALIBRATE.SWR_FWD_Calibration_HF = 70.0f;
+	if (CALIBRATE.SWR_FWD_Calibration_HF > 200.0f)
+		CALIBRATE.SWR_FWD_Calibration_HF = 200.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF(int8_t direction)
@@ -3495,8 +3495,8 @@ static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF(int8_t direction)
 	CALIBRATE.SWR_REF_Calibration_HF += (float32_t)direction * 0.1f;
 	if (CALIBRATE.SWR_REF_Calibration_HF < 1.0f)
 		CALIBRATE.SWR_REF_Calibration_HF = 1.0f;
-	if (CALIBRATE.SWR_REF_Calibration_HF > 70.0f)
-		CALIBRATE.SWR_REF_Calibration_HF = 70.0f;
+	if (CALIBRATE.SWR_REF_Calibration_HF > 200.0f)
+		CALIBRATE.SWR_REF_Calibration_HF = 200.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_6M(int8_t direction)
@@ -3504,8 +3504,8 @@ static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_6M(int8_t direction)
 	CALIBRATE.SWR_FWD_Calibration_6M += (float32_t)direction * 0.1f;
 	if (CALIBRATE.SWR_FWD_Calibration_6M < 1.0f)
 		CALIBRATE.SWR_FWD_Calibration_6M = 1.0f;
-	if (CALIBRATE.SWR_FWD_Calibration_6M > 70.0f)
-		CALIBRATE.SWR_FWD_Calibration_6M = 70.0f;
+	if (CALIBRATE.SWR_FWD_Calibration_6M > 200.0f)
+		CALIBRATE.SWR_FWD_Calibration_6M = 200.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_6M(int8_t direction)
@@ -3513,8 +3513,8 @@ static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_6M(int8_t direction)
 	CALIBRATE.SWR_REF_Calibration_6M += (float32_t)direction * 0.1f;
 	if (CALIBRATE.SWR_REF_Calibration_6M < 1.0f)
 		CALIBRATE.SWR_REF_Calibration_6M = 1.0f;
-	if (CALIBRATE.SWR_REF_Calibration_6M > 70.0f)
-		CALIBRATE.SWR_REF_Calibration_6M = 70.0f;
+	if (CALIBRATE.SWR_REF_Calibration_6M > 200.0f)
+		CALIBRATE.SWR_REF_Calibration_6M = 200.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction)
@@ -3522,8 +3522,8 @@ static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction)
 	CALIBRATE.SWR_FWD_Calibration_VHF += (float32_t)direction * 0.1f;
 	if (CALIBRATE.SWR_FWD_Calibration_VHF < 1.0f)
 		CALIBRATE.SWR_FWD_Calibration_VHF = 1.0f;
-	if (CALIBRATE.SWR_FWD_Calibration_VHF > 70.0f)
-		CALIBRATE.SWR_FWD_Calibration_VHF = 70.0f;
+	if (CALIBRATE.SWR_FWD_Calibration_VHF > 200.0f)
+		CALIBRATE.SWR_FWD_Calibration_VHF = 200.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction)
@@ -3531,8 +3531,8 @@ static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction)
 	CALIBRATE.SWR_REF_Calibration_VHF += (float32_t)direction * 0.1f;
 	if (CALIBRATE.SWR_REF_Calibration_VHF < 1.0f)
 		CALIBRATE.SWR_REF_Calibration_VHF = 1.0f;
-	if (CALIBRATE.SWR_REF_Calibration_VHF > 70.0f)
-		CALIBRATE.SWR_REF_Calibration_VHF = 70.0f;
+	if (CALIBRATE.SWR_REF_Calibration_VHF > 200.0f)
+		CALIBRATE.SWR_REF_Calibration_VHF = 200.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_MAX_RF_POWER(int8_t direction)
