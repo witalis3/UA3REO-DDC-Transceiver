@@ -58,6 +58,7 @@ IRAM2 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};								   //buffer w
 IRAM2 static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};								   //buffer with fft peaks
 static int32_t grid_lines_pos[20] = {-1};												   //grid lines positions
 static uint32_t grid_lines_freq[20] = {-1};												   //grid lines frequencies
+static int32_t vfob_line_pos = -1;																//secondary receiver position on fft
 static int16_t bw_line_start = 0;														   //BW bar params
 static int16_t bw_line_width = 0;														   //BW bar params
 static int16_t bw_line_end = 0;															   //BW bar params
@@ -575,6 +576,9 @@ bool FFT_printFFT(void)
 
 		// offset the fft if needed
 		currentFFTFreq = CurrentVFO->Freq;
+		
+		//save RX2 position
+		vfob_line_pos = getFreqPositionOnFFT(SecondaryVFO->Freq);
 	}
 
 	// move the waterfall down using DMA
@@ -1026,6 +1030,14 @@ bool FFT_printFFT(void)
 					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = color;
 	}
 
+	//Draw RX2 line
+	if (vfob_line_pos >=0 && vfob_line_pos < LAYOUT->FFT_PRINT_SIZE)
+	{
+		uint16_t color = palette_fft[fftHeight / 2];
+		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
+			print_output_buffer[fft_y][vfob_line_pos] = color;
+	}
+	
 	//Gauss filter center
 	if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW)
 	{
