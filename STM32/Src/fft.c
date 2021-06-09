@@ -1057,10 +1057,10 @@ bool FFT_printFFT(void)
 				{
 					prev_y = y;
 					prev_w = strlen(WIFI_DXCLUSTER_list[i].Callsign) * 6;
-					char tmp[64] = {0};
-					strcpy(tmp, "|");
-					strcat(tmp, WIFI_DXCLUSTER_list[i].Callsign);
-					LCDDriver_printTextInMemory(tmp, pos - 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+					LCDDriver_printTextInMemory(WIFI_DXCLUSTER_list[i].Callsign, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+					//vertical line
+					for(uint8_t y_line = 0 ; y_line < 8; y_line++)
+						print_output_buffer[y + y_line][pos] = COLOR_RED;
 				}
 			}
 			prev_pos = pos;

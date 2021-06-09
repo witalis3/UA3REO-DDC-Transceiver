@@ -1160,6 +1160,8 @@ static void WIFI_getDXCluster_background_callback(void)
 		
 		//for(uint16_t i = 0; i < WIFI_DXCLUSTER_list_count ; i ++)
 			//println(WIFI_DXCLUSTER_list[i].Freq, "|", WIFI_DXCLUSTER_list[i].Callsign);
+		
+		println("DXCluster updated");
 	}
 }
 
