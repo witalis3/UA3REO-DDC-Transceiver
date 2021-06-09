@@ -633,14 +633,14 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	LCD_busy = false;
 }
 
-static int32_t LCD_GetSMeterValPosition(float32_t dbm)
+static int32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf)
 {
 	int32_t width = LAYOUT->STATUS_SMETER_WIDTH - 2;
 	float32_t TRX_s_meter = 0;
 	if (!LAYOUT->STATUS_SMETER_ANALOG) //digital version
 	{
 		TRX_s_meter = (127.0f + dbm); // 127dbm - S0, 6dBm - 1S div
-		if (CurrentVFO->Freq >= 144000000)
+		if (correct_vhf && CurrentVFO->Freq >= 144000000)
 			TRX_s_meter = (147.0f + dbm); // 147dbm - S0 for frequencies above 144mhz
 
 		if (TRX_s_meter < 54.01f) // first 9 points of meter is 6 dB each
@@ -657,7 +657,7 @@ static int32_t LCD_GetSMeterValPosition(float32_t dbm)
 	else //analog meter version
 	{
 		TRX_s_meter = (127.0f + dbm); // 127dbm - S0, 6dBm - 1S div
-		if (CurrentVFO->Freq >= 144000000)
+		if (correct_vhf && CurrentVFO->Freq >= 144000000)
 			TRX_s_meter = (147.0f + dbm); // 147dbm - S0 for frequencies above 144mhz
 
 		if (TRX_s_meter < 54.01f) // first 9 points of meter is 6 dB each
@@ -803,9 +803,9 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		float32_t s_width = 0.0f;
 
 		if (CurrentVFO->Mode == TRX_MODE_CW)
-			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX_dBm) * 0.5f; // smooth CW faster!
+			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX_dBm, true) * 0.5f; // smooth CW faster!
 		else
-			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX_dBm) * 0.25f; // smooth the movement of the S-meter
+			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX_dBm, true) * 0.25f; // smooth the movement of the S-meter
 
 		//digital s-meter version
 		static uint32_t last_s_meter_draw_time = 0;
@@ -996,7 +996,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 5, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 			LCD_drawSMeter();
-			LCD_PrintMeterArrow(LCD_GetSMeterValPosition(LCD_SWR2DBM_meter(TRX_SWR)));
+			LCD_PrintMeterArrow(LCD_GetSMeterValPosition(LCD_SWR2DBM_meter(TRX_SWR), false));
 		}
 	}
 
