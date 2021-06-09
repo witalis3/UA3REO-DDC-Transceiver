@@ -2981,7 +2981,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.SWR_FWD_Calibration_VHF = 22.0f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_VHF = 22.0f;	   //SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 10;			   // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER = 100;				//Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER = 50;				//Max TRX Power for indication
 	}
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }

@@ -811,7 +811,7 @@ void processTxAudio(void)
 
 	// amplitude for the selected power and range
 	float32_t RFpower_amplitude = log10f_fast(((float32_t)TRX.RF_Power * 0.9f + 10.0f) / 10.0f) * TRX_MAX_TX_Amplitude;
-	if (RFpower_amplitude < 0.0f)
+	if (RFpower_amplitude < 0.0f || TRX.RF_Power == 0)
 		RFpower_amplitude = 0.0f;
 	if ((mode == TRX_MODE_AM || mode == TRX_MODE_SAM) && !TRX_Tune)
 		RFpower_amplitude = RFpower_amplitude * 0.7f;
