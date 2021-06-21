@@ -6,6 +6,8 @@
 +HARDW: Ферритовые бусины заменены на BLM21
 +HARDW: Motherboard rev30: Добавлена USB изоляция по линии VBUS
 +HARDW: Motherboard rev30: На шлейф передней панели выведена линия синхронизации DC-DC для подавления помех на части бендов, Thx DL1EGQ
++HARDW: Motherboard rev30: Стабилизатор LM1085-3.3 заменён на более мощный LM1084IS-3.3
++HARDW: Motherboard rev30: Стабилизаторы FPGA (1.2, 2.5) и АЦП (3.3) заменены на более мощные, в корпусах DPAK, Thx Игорь @Q
 +HARDW: FRONT-UNIT-7 rev5: Выведена линия синхронизации DC-DC для подавления помех на части бендов (для MOTHERBOARD-rev30 и новее), Thx DL1EGQ
 +HARDW: FRONT-UNIT-7 rev5: Доработка трассировки питания, Thx Дмитрий Кириенко
 
