@@ -16,8 +16,8 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 
 * Receiving frequencies: 0 MHz - 750 MHz
 * Transmission frequencies: 0 MHz - 160 MHz
-* TX power (QRP-7W version): 7W+ (HF), 5W (VHF)
-* TX power (BIG-35W version): 35W+ (HF), 35W+ (VHF)
+* TX power (QRP version): 7W+ (HF), 5W (VHF)
+* TX power (BIG version): 50-100W+ (HF), 50W+ (VHF)
 * Two antenna inputs
 * Modulation types (TX / RX): CW, LSB, USB, AM, FM, WFM, DIGI
 * LNA, Preamplifier
@@ -26,8 +26,8 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Band pass filters
 * ADC dynamic range (16 bit) ~100dB
 * Supply voltage: 13.8V (overvoltage and polarity reversal protection)
-* Consumption current when receiving: ~ 0.7A
-* Current consumption during transmission: ~ 2.5A+
+* Consumption current when receiving: ~0.7А (3'2 QRP), 1.1A (7' BIG)
+* Current consumption during transmission: ~2.5А+ (QRP), 15A+ (BIG)
 
 ## Transceiver Features
 
