@@ -173,7 +173,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=
+DocumentUniqueId=EELJMCFY
 
 [Document9]
 DocumentPath=RF-UNIT-QRP.PcbLib
@@ -199,7 +199,7 @@ AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
 AnnotateScope=All
-AnnotateOrder=-1
+AnnotateOrder=7
 DoLibraryUpdate=1
 DoDatabaseUpdate=1
 ClassGenCCAutoEnabled=1
@@ -225,6 +225,10 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
+
+[GeneratedDocument1]
+DocumentPath=Project Outputs for RF-UNIT-QRP-7W\Design Rule Check - RF-UNIT-QRP.html
+DItemRevisionGUID=
 
 [SearchPath1]
 Path=C:\Users\Public\Documents\Altium\AD19\Library\ExportIntLib\*.*

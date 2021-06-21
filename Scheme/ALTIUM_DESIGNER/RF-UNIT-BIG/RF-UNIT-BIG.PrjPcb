@@ -54,7 +54,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=IHQRKPCH
+DocumentUniqueId=CZZTCPTP
 
 [Document2]
 DocumentPath=LNA.SchDoc
@@ -284,7 +284,7 @@ AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
 AnnotateScope=All
-AnnotateOrder=-1
+AnnotateOrder=13
 DoLibraryUpdate=1
 DoDatabaseUpdate=1
 ClassGenCCAutoEnabled=1
@@ -310,6 +310,10 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BZGQMMMI
+
+[GeneratedDocument1]
+DocumentPath=Project Outputs for RF-UNIT-BIG\Design Rule Check - RF-UNIT-BIG.html
+DItemRevisionGUID=
 
 [SearchPath1]
 Path=C:\Users\Public\Documents\Altium\AD19\Library\ExportIntLib\*.*
