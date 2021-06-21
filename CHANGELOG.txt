@@ -8,6 +8,8 @@
 +HARDW: Motherboard rev30: На шлейф передней панели выведена линия синхронизации DC-DC для подавления помех на части бендов, Thx DL1EGQ
 +HARDW: Motherboard rev30: Стабилизатор LM1085-3.3 заменён на более мощный LM1084IS-3.3
 +HARDW: Motherboard rev30: Стабилизаторы FPGA (1.2, 2.5) и АЦП (3.3) заменены на более мощные, в корпусах DPAK, Thx Игорь @Q
++HARDW: Motherboard rev30: Увеличено количество переходных отверстий под АЦП
++HARDW: Motherboard rev30: Добавлены отверстия для крепления радиаторов к АЦП/FPGA/STM32, Thx RU4PN
 +HARDW: FRONT-UNIT-7 rev5: Выведена линия синхронизации DC-DC для подавления помех на части бендов (для MOTHERBOARD-rev30 и новее), Thx DL1EGQ
 +HARDW: FRONT-UNIT-7 rev5: Доработка трассировки питания, Thx Дмитрий Кириенко
 +HARDW: FRONT-UNIT-7 rev5: Защитный диод по питанию дисплея, Thx R4DZ
