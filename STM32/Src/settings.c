@@ -11,7 +11,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "2.7.0"; //1.2.3-yymmdd.hhmm (concatinate)
+char version_string[19] = "2.8.0"; //1.2.3-yymmdd.hhmm (concatinate)
 
 //W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -166,6 +166,7 @@ void LoadSettings(bool clear)
 		TRX.ATU_I = 0;									//ATU default state
 		TRX.ATU_C = 0;									//ATU default state
 		TRX.ATU_T = false;							//ATU default state
+		TRX.ATU_Enabled = true;					//ATU enabled state
 		//AUDIO
 		TRX.IF_Gain = 70;								   // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;						   // Maximum (target) AGC gain

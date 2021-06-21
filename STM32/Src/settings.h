@@ -234,6 +234,7 @@ extern struct TRX_SETTINGS
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	bool Transverter_Enabled;
 	uint16_t Transverter_Offset_Mhz;
+	bool ATU_Enabled;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
 	bool ATU_T;

@@ -86,6 +86,11 @@ void RF_UNIT_ATU_Invalidate(void)
 
 static void RF_UNIT_ProcessATU(void)
 {
+	if (!TRX.ATU_Enabled)
+	{
+		ATU_Finished = true;
+		return;
+	}
 	if (!TRX_Tune)
 		return;
 	if (TRX_PWR_Forward < 2.0f)
