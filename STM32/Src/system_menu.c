@@ -2954,18 +2954,18 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 	}
 	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
 	{
-		CALIBRATE.rf_out_power_2200m = 60;		   //2200m
-		CALIBRATE.rf_out_power_160m = 60;		   //160m
-		CALIBRATE.rf_out_power_80m = 60;		   //80m
-		CALIBRATE.rf_out_power_40m = 60;		   //40m
-		CALIBRATE.rf_out_power_30m = 60;		   //30m
-		CALIBRATE.rf_out_power_20m = 60;		   //20m
-		CALIBRATE.rf_out_power_17m = 60;		   //17m
-		CALIBRATE.rf_out_power_15m = 60;		   //15m
-		CALIBRATE.rf_out_power_12m = 60;		   //12m
-		CALIBRATE.rf_out_power_cb = 60;				//27mhz
-		CALIBRATE.rf_out_power_10m = 60;		   //10m
-		CALIBRATE.rf_out_power_6m = 60;			   //6m
+		CALIBRATE.rf_out_power_2200m = 40;		   //2200m
+		CALIBRATE.rf_out_power_160m = 40;		   //160m
+		CALIBRATE.rf_out_power_80m = 40;		   //80m
+		CALIBRATE.rf_out_power_40m = 40;		   //40m
+		CALIBRATE.rf_out_power_30m = 40;		   //30m
+		CALIBRATE.rf_out_power_20m = 40;		   //20m
+		CALIBRATE.rf_out_power_17m = 40;		   //17m
+		CALIBRATE.rf_out_power_15m = 40;		   //15m
+		CALIBRATE.rf_out_power_12m = 40;		   //12m
+		CALIBRATE.rf_out_power_cb = 40;				//27mhz
+		CALIBRATE.rf_out_power_10m = 40;		   //10m
+		CALIBRATE.rf_out_power_6m = 40;			   //6m
 		CALIBRATE.rf_out_power_2m = 50;		   //2m
 		CALIBRATE.RFU_LPF_END = 0;		   //disabled in BIG version
 		CALIBRATE.RFU_HPF_START = 0;		   //disabled in BIG version
