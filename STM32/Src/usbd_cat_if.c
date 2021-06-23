@@ -804,11 +804,11 @@ void ua3reo_dev_cat_parseCommand(void)
 				TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 				TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-				CurrentVFO->FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+				CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
 				CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 				CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 				CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-				TRX.FM_SQL_threshold_shadow = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+				TRX.FM_SQL_threshold_dbm_shadow = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
 				TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 				TRX_Temporary_Stop_BandMap = false;
 				

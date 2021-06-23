@@ -31,7 +31,8 @@ float32_t APROC_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 
 float32_t APROC_Audio_Buffer_TX_Q[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
-volatile float32_t Processor_RX_Power_value;	   // RX signal magnitude
+volatile float32_t Processor_RX1_Power_value;	   // RX signal magnitude
+volatile float32_t Processor_RX2_Power_value;	   // RX signal magnitude
 volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
 bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
@@ -41,11 +42,6 @@ float32_t APROC_TX_ALC_IN_clip_gain = 1.0f;
 // Private variables
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
 static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0, DFM_RX1_emph_prev = 0, DFM_RX2_emph_prev = 0; // used in FM detection and low / high pass processing
-static uint_fast8_t DFM_RX1_fm_sql_count = 0, DFM_RX2_fm_sql_count = 0;																		   // used for squelch processing and debouncing tone detection, respectively
-static float32_t DFM_RX1_fm_sql_avg = 0.0f;																									   // average SQL in FM
-static float32_t DFM_RX2_fm_sql_avg = 0.0f;
-static float32_t DFM_RX1_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
-IRAM2 static float32_t DFM_RX2_squelch_buf[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t DFM_RX1_SquelchRate = 1.0f, DFM_RX2_SquelchRate = 1.0f;
 static float32_t current_if_gain = 0.0f;
@@ -63,9 +59,9 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																			
 static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode, bool stereo);																			  // automatic gain control
 static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																								  // notch filter
 static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																						  // impulse noise suppressor
-static void doRX_SMETER(float32_t *buff, uint16_t size, bool if_gained);																					  // s-meter
+static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size, bool if_gained);																					  // s-meter
 static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																						  // copy I to Q channel
-static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm);											  // FM demodulator
+static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm, float32_t dbm);											  // FM demodulator
 static void ModulateFM(uint16_t size, float32_t amplitude);																									  // FM modulator
 static void doRX_EQ(uint16_t size);																															  // receiver equalizer
 static void doMIC_EQ(uint16_t size, uint8_t mode);																											  // microphone equalizer
@@ -111,9 +107,9 @@ void preProcessRxAudio(void)
 	if (CurrentVFO->Mode == TRX_MODE_WFM)
 	{
 		//calc s-meter
-		doRX_SMETER(FPGA_Audio_Buffer_RX1_I_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, false);
+		doRX_SMETER(AUDIO_RX1, FPGA_Audio_Buffer_RX1_I_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, false);
 		//demodulate wfm before decimation
-		DemodulateFM(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+		DemodulateFM(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, true, TRX_RX1_dBm);
 		//RDS Decoder
 		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_current, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	}
@@ -123,8 +119,10 @@ void preProcessRxAudio(void)
 	{
 		if (SecondaryVFO->Mode == TRX_MODE_WFM)
 		{
+			//calc s-meter
+			doRX_SMETER(AUDIO_RX2, FPGA_Audio_Buffer_RX2_I_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, false);
 			//demodulate wfm before decimation
-			DemodulateFM(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+			DemodulateFM(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, true, TRX_RX2_dBm);
 		}
 		doRX_DecimateInput(AUDIO_RX2, FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, &APROC_Audio_Buffer_RX2_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX2_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 	}
@@ -203,7 +201,7 @@ void processRxAudio(void)
 		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 		doRX_NOTCH(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_SMETER(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		DECODER_PutSamples(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doVAD(FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -217,7 +215,7 @@ void processRxAudio(void)
 		doRX_LPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NOTCH(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_SMETER(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		DECODER_PutSamples(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doVAD(FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -228,7 +226,7 @@ void processRxAudio(void)
 		doRX_HILBERT(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 		doRX_LPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_SMETER(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		DECODER_PutSamples(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, false);
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -240,7 +238,7 @@ void processRxAudio(void)
 		doRX_LPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NOTCH(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_SMETER(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		DECODER_PutSamples(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doVAD(FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -251,7 +249,7 @@ void processRxAudio(void)
 		doRX_HILBERT(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		arm_add_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
 		doRX_LPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_SMETER(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		DECODER_PutSamples(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, false);
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -269,7 +267,7 @@ void processRxAudio(void)
 		dc_filter(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, DC_FILTER_RX1_I);
 		doRX_NOTCH(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_SMETER(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doVAD(FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, false);
@@ -278,14 +276,14 @@ void processRxAudio(void)
 	case TRX_MODE_SAM:
 		doRX_LPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DemodSAM(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_SMETER(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		doVAD(FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, true);
 		break;
 	case TRX_MODE_NFM:
 		doRX_LPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_SMETER(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
-		DemodulateFM(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, false); //48khz iq
+		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+		DemodulateFM(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, false, TRX_RX1_dBm); //48khz iq
 		doRX_IFGain(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, false);
@@ -299,7 +297,7 @@ void processRxAudio(void)
 		break;
 	case TRX_MODE_IQ:
 	default:
-		doRX_SMETER(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, false);
+		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, false);
 		break;
 	}
 
@@ -317,6 +315,7 @@ void processRxAudio(void)
 			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 			doRX_NOTCH(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			break;
@@ -327,6 +326,7 @@ void processRxAudio(void)
 			doRX_LPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NOTCH(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			break;
@@ -334,6 +334,7 @@ void processRxAudio(void)
 			doRX_HILBERT(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 			doRX_LPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			break;
 		case TRX_MODE_USB:
@@ -343,6 +344,7 @@ void processRxAudio(void)
 			doRX_LPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NOTCH(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			break;
@@ -350,6 +352,7 @@ void processRxAudio(void)
 			doRX_HILBERT(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			arm_add_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
 			doRX_LPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			break;
 		case TRX_MODE_AM:
@@ -365,17 +368,20 @@ void processRxAudio(void)
 			dc_filter(APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, DC_FILTER_RX2_I);
 			doRX_NOTCH(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			break;
 		case TRX_MODE_SAM:
 			doRX_LPF_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_DemodSAM(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, true);
 			break;
 		case TRX_MODE_NFM:
 			doRX_LPF_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			DemodulateFM(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, false);
+			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
+			DemodulateFM(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, false, TRX_RX2_dBm);
 			doRX_IFGain(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
@@ -387,6 +393,7 @@ void processRxAudio(void)
 			break;
 		case TRX_MODE_IQ:
 		default:
+			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			break;
 		}
 	}
@@ -1240,16 +1247,30 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // s-meter
-static void doRX_SMETER(float32_t *buff, uint16_t size, bool if_gained)
+static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size, bool if_gained)
 {
-	if (Processor_RX_Power_value != 0)
-		return;
-	// Prepare data to calculate s-meter
-	static float32_t i = 0;
-	arm_rms_f32(buff, size, &i);
-	if (if_gained && current_if_gain != 0.0f)
-		i *= 1.0f / current_if_gain;
-	Processor_RX_Power_value = i;
+	if (rx_id == AUDIO_RX1)
+	{
+		if (Processor_RX1_Power_value != 0)
+			return;
+		// Prepare data to calculate s-meter
+		static float32_t i = 0;
+		arm_rms_f32(buff, size, &i);
+		if (if_gained && current_if_gain != 0.0f)
+			i *= 1.0f / current_if_gain;
+		Processor_RX1_Power_value = i;
+	}
+	if (rx_id == AUDIO_RX2)
+	{
+		if (Processor_RX1_Power_value != 0)
+			return;
+		// Prepare data to calculate s-meter
+		static float32_t i = 0;
+		arm_rms_f32(buff, size, &i);
+		if (if_gained && current_if_gain != 0.0f)
+			i *= 1.0f / current_if_gain;
+		Processor_RX1_Power_value = i;
+	}
 }
 
 // copy I to Q channel
@@ -1267,20 +1288,15 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 }
 
 // FM demodulator
-static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm)
+static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm, float32_t dbm)
 {
 	float32_t *i_prev = &DFM_RX1_i_prev;
 	float32_t *q_prev = &DFM_RX1_q_prev;
 	float32_t *emph_prev = &DFM_RX1_emph_prev;
-	uint_fast8_t *fm_sql_count = &DFM_RX1_fm_sql_count;
-	float32_t *fm_sql_avg = &DFM_RX1_fm_sql_avg;
-	arm_biquad_cascade_df2T_instance_f32 *iir_filter_inst = &IIR_RX1_Squelch_HPF;
 	bool *squelched = &DFM_RX1_Squelched;
 	float32_t *squelchRate = &DFM_RX1_SquelchRate;
 	bool sql_enabled = CurrentVFO->SQL;
-	float32_t *squelch_buf = DFM_RX1_squelch_buf;
-
-	uint8_t FM_SQL_threshold = CurrentVFO->FM_SQL_threshold;
+	int8_t FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
 	float32_t angle, x, y, b;
 
 	if (rx_id == AUDIO_RX2)
@@ -1288,13 +1304,9 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		i_prev = &DFM_RX2_i_prev;
 		q_prev = &DFM_RX2_q_prev;
 		emph_prev = &DFM_RX2_emph_prev;
-		fm_sql_count = &DFM_RX2_fm_sql_count;
-		fm_sql_avg = &DFM_RX2_fm_sql_avg;
-		iir_filter_inst = &IIR_RX2_Squelch_HPF;
 		squelched = &DFM_RX2_Squelched;
 		squelchRate = &DFM_RX2_SquelchRate;
-		squelch_buf = DFM_RX2_squelch_buf;
-		FM_SQL_threshold = SecondaryVFO->FM_SQL_threshold;
+		FM_SQL_threshold_dbm = SecondaryVFO->FM_SQL_threshold_dbm;
 		sql_enabled = SecondaryVFO->SQL;
 	}
 
@@ -1304,9 +1316,6 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		y = (data_q[i] * *i_prev) - (data_i[i] * *q_prev);
 		x = (data_i[i] * *i_prev) + (data_q[i] * *q_prev);
 		angle = atan2f(y, x);
-
-		// we now have our audio in "angle"
-		squelch_buf[i] = angle; // save audio in "d" buffer for squelch noise filtering/detection - done later
 
 		*q_prev = data_q[i]; // save "previous" value of each channel to allow detection of the change of angle in next go-around
 		*i_prev = data_i[i];
@@ -1319,7 +1328,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		*emph_prev = data_i[i];
 
 		//smooth SQL edges
-		if ((!*squelched) || !FM_SQL_threshold || !sql_enabled) // high-pass audio only if we are un-squelched (to save processor time)
+		if (!*squelched || !sql_enabled) // high-pass audio only if we are un-squelched (to save processor time)
 		{
 			if (*squelchRate < 1.00f)
 			{
@@ -1342,55 +1351,15 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	}
 
 	// *** Squelch Processing ***
-	arm_biquad_cascade_df2T_f32_rolled(iir_filter_inst, squelch_buf, squelch_buf, size); // Do IIR high-pass filter on audio so we may detect squelch noise energy
-	static float32_t hpf_rms = 0;
-	arm_rms_f32(squelch_buf, size, &hpf_rms);
-	*fm_sql_avg = ((1.0f - FM_RX_SQL_SMOOTHING) * *fm_sql_avg) + (FM_RX_SQL_SMOOTHING * hpf_rms); // IIR filter squelch energy magnitude
-	//println(*fm_sql_avg);
-
-	*fm_sql_count = *fm_sql_count + 1; // bump count that controls how often the squelch threshold is checked
-	if (*fm_sql_count >= FM_SQUELCH_PROC_DECIMATION)
-		*fm_sql_count = 0; // enforce the count limit
-
-	// Determine if the (averaged) energy in "ads.fm_sql_avg" is above or below the squelch threshold
-	if (*fm_sql_count == 0) // do the squelch threshold calculation much less often than we are called to process this audio
+	if(FM_SQL_threshold_dbm > dbm && !*squelched)
 	{
-		if (*fm_sql_avg > 0.7f) // limit maximum noise value in averaging to keep it from going out into the weeds under no-signal conditions (higher = noisier)
-			*fm_sql_avg = 0.7f;
-		b = *fm_sql_avg * 10.0f; // scale noise amplitude to range of squelch setting
-
-		// Now evaluate noise power with respect to squelch setting
-		if (!FM_SQL_threshold || !sql_enabled) // is squelch set to zero?
-		{
-			*squelched = false; // yes, the we are un-squelched
-		}
-		else if (*squelched) // are we squelched?
-		{
-			if (b <= (float)((float32_t)(10.0f - FM_SQL_threshold) - FM_SQUELCH_HYSTERESIS)) // yes - is average above threshold plus hysteresis?
-			{
-				*squelchRate = 0.01f;
-				*squelched = false; //  yes, open the squelch
-			}
-		}
-		else // is the squelch open (e.g. passing audio)?
-		{
-			if ((float32_t)(10.0f - FM_SQL_threshold) > FM_SQUELCH_HYSTERESIS) // is setting higher than hysteresis?
-			{
-				if (b > (float)((float32_t)(10 - FM_SQL_threshold) + FM_SQUELCH_HYSTERESIS)) // yes - is average below threshold minus hysteresis?
-				{
-					*squelchRate = 1.0f;
-					*squelched = true; // yes, close the squelch
-				}
-			}
-			else // setting is lower than hysteresis so we can't use it!
-			{
-				if (b > (10.0f - (float)FM_SQL_threshold)) // yes - is average below threshold?
-				{
-					*squelchRate = 1.0f;
-					*squelched = true; // yes, close the squelch
-				}
-			}
-		}
+		*squelchRate = 1.0f;
+		*squelched = true; // yes, close the squelch
+	}
+	else if(FM_SQL_threshold_dbm <= dbm && *squelched)
+	{
+		*squelchRate = 0.01f;
+		*squelched = false; //  yes, open the squelch
 	}
 }
 

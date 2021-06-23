@@ -41,10 +41,6 @@ static float32_t IIR_RX2_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0
 static float32_t IIR_RX1_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_TX_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
-static float32_t IIR_RX1_HPF_SQL_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
-static float32_t IIR_RX2_HPF_SQL_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
-static float32_t IIR_RX1_HPF_SQL_State[IIR_RX_HPF_SQL_STATE_SIZE] = {0};
-static float32_t IIR_RX2_HPF_SQL_State[IIR_RX_HPF_SQL_STATE_SIZE] = {0};
 static float32_t NOTCH_RX1_Coeffs[BIQUAD_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX2_Coeffs[BIQUAD_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX1_State[2 * NOTCH_STAGES] = {0};
@@ -316,21 +312,6 @@ void ReinitAudioFilters(void)
 	biquad_init_highpass(filter, TRX_SAMPLERATE, hpf_rx2_width);
 	fill_biquad_coeffs(filter, IIR_RX2_HPF_Coeffs, IIR_HPF_STAGES);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_HPF_I, IIR_HPF_STAGES, IIR_RX2_HPF_Coeffs, (float32_t *)&IIR_RX2_HPF_I_State[0]);
-
-	//FM Squelch
-	if (CurrentVFO->LPF_RX_Filter_Width > 15000 || CurrentVFO->LPF_RX_Filter_Width == 0)
-		biquad_init_highpass(filter, TRX_SAMPLERATE, 20000);
-	else
-		biquad_init_highpass(filter, TRX_SAMPLERATE, 15000);
-	fill_biquad_coeffs(filter, IIR_RX1_HPF_SQL_Coeffs, IIR_HPF_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_Squelch_HPF, IIR_HPF_STAGES, IIR_RX2_HPF_SQL_Coeffs, (float32_t *)&IIR_RX1_HPF_SQL_State[0]);
-	
-	if (SecondaryVFO->LPF_RX_Filter_Width == 0)
-		biquad_init_highpass(filter, TRX_SAMPLERATE, 20000);
-	else
-		biquad_init_highpass(filter, TRX_SAMPLERATE, SecondaryVFO->LPF_RX_Filter_Width + 1000);
-	fill_biquad_coeffs(filter, IIR_RX2_HPF_SQL_Coeffs, IIR_HPF_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_Squelch_HPF, IIR_HPF_STAGES, IIR_RX2_HPF_SQL_Coeffs, (float32_t *)&IIR_RX2_HPF_SQL_State[0]);
 
 	//RX1 GAUSS
 	filter = biquad_create(GAUSS_STAGES);

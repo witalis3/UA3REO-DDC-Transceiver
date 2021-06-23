@@ -870,7 +870,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint32_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SQL", (uint32_t *)&TRX.VFO_A.SQL, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold", (uint32_t *)&TRX.VFO_A.FM_SQL_threshold, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dbm", (uint32_t *)&TRX.VFO_A.FM_SQL_threshold_dbm, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Freq", (uint32_t *)&TRX.VFO_B.Freq, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Mode", (uint32_t *)&TRX.VFO_B.Mode, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.LPF_RX_Filter_Width", (uint32_t *)&TRX.VFO_B.LPF_RX_Filter_Width, SYSMENU_UINT32);
@@ -882,7 +882,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR_Type", (uint32_t *)&TRX.VFO_B.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint32_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SQL", (uint32_t *)&TRX.VFO_B.SQL, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold", (uint32_t *)&TRX.VFO_B.FM_SQL_threshold, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold_dbm", (uint32_t *)&TRX.VFO_B.FM_SQL_threshold_dbm, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.selected_vfo", (uint32_t *)&TRX.selected_vfo, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.LNA", (uint32_t *)&TRX.LNA, SYSMENU_BOOLEAN);
@@ -1153,8 +1153,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].SQL, SYSMENU_BOOLEAN);
-				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold", i);
-				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dbm", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
@@ -1184,8 +1184,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SQL", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].SQL, SYSMENU_BOOLEAN);
-				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].FM_SQL_threshold", i);
-				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold, SYSMENU_UINT8);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].FM_SQL_threshold_dbm", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_PGA", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].DNR_Type", i);
@@ -1265,8 +1265,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_A.AGC = bval;
 	if (strcmp(name, "TRX.VFO_A.SQL") == 0)
 		TRX.VFO_A.SQL = bval;
-	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold") == 0)
-		TRX.VFO_A.FM_SQL_threshold = (uint8_t)uintval;
+	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold_dbm") == 0)
+		TRX.VFO_A.FM_SQL_threshold_dbm = (int8_t)intval;
 	if (strcmp(name, "TRX.VFO_B.Freq") == 0)
 		TRX.VFO_B.Freq = uintval;
 	if (strcmp(name, "TRX.VFO_B.Mode") == 0)
@@ -1289,8 +1289,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_B.AGC = bval;
 	if (strcmp(name, "TRX.VFO_B.SQL") == 0)
 		TRX.VFO_B.SQL = bval;
-	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold") == 0)
-		TRX.VFO_B.FM_SQL_threshold = (uint8_t)uintval;
+	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold_dbm") == 0)
+		TRX.VFO_B.FM_SQL_threshold_dbm = (int8_t)intval;
 	if (strcmp(name, "TRX.selected_vfo") == 0)
 		TRX.selected_vfo = bval;
 	if (strcmp(name, "TRX.LNA") == 0)
@@ -1856,9 +1856,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
 		if (strcmp(name, buff) == 0)
 			TRX.BANDS_SAVED_SETTINGS[i].SQL = bval;
-		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold", i);
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dbm", i);
 		if (strcmp(name, buff) == 0)
-			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = (uint8_t)uintval;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm = (int8_t)intval;
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 		if (strcmp(name, buff) == 0)
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = bval;
@@ -1900,9 +1900,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SQL", i);
 		if (strcmp(name, buff) == 0)
 			CALIBRATE.MEMORY_CHANNELS[i].SQL = bval;
-		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].FM_SQL_threshold", i);
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].FM_SQL_threshold_dbm", i);
 		if (strcmp(name, buff) == 0)
-			CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold = (uint8_t)uintval;
+			CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold_dbm = (int8_t)intval;
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_PGA", i);
 		if (strcmp(name, buff) == 0)
 			CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA = bval;

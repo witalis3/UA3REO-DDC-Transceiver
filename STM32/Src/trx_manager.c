@@ -31,7 +31,8 @@ volatile bool TRX_RX2_IQ_swap = false;
 volatile bool TRX_TX_IQ_swap = false;
 volatile bool TRX_Tune = false;
 volatile bool TRX_Inited = false;
-volatile float32_t TRX_RX_dBm = -100.0f;
+volatile float32_t TRX_RX1_dBm = -100.0f;
+volatile float32_t TRX_RX2_dBm = -100.0f;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
@@ -510,24 +511,47 @@ void TRX_DoAutoGain(void)
 
 void TRX_DBMCalculate(void)
 {
-	if (Processor_RX_Power_value == 0)
+	//RX1
+	if (Processor_RX1_Power_value == 0)
 	{
-		TRX_RX_dBm = -150.0f;
-		return;
+		TRX_RX1_dBm = -150.0f;
 	}
-
-	float32_t adc_volts = Processor_RX_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
-	if (TRX.ADC_Driver)
-		adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
-	TRX_RX_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
-	if(CurrentVFO->Freq < 70000000)
-		TRX_RX_dBm += CALIBRATE.smeter_calibration_hf;
 	else
-		TRX_RX_dBm += CALIBRATE.smeter_calibration_vhf;
+	{
+		float32_t adc_volts = Processor_RX1_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
+		if (TRX.ADC_Driver)
+			adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
+		TRX_RX1_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
+		if(CurrentVFO->Freq < 70000000)
+			TRX_RX1_dBm += CALIBRATE.smeter_calibration_hf;
+		else
+			TRX_RX1_dBm += CALIBRATE.smeter_calibration_vhf;
 
-	if(TRX_RX_dBm < -150.0f)
-		TRX_RX_dBm = -150.0f;
-	Processor_RX_Power_value = 0;
+		if(TRX_RX1_dBm < -150.0f)
+			TRX_RX1_dBm = -150.0f;
+		Processor_RX1_Power_value = 0;
+	}
+	
+	//RX2
+	if (Processor_RX1_Power_value == 0)
+	{
+		TRX_RX2_dBm = -150.0f;
+	}
+	else
+	{
+		float32_t adc_volts = Processor_RX2_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
+		if (TRX.ADC_Driver)
+			adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
+		TRX_RX2_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
+		if(SecondaryVFO->Freq < 70000000)
+			TRX_RX2_dBm += CALIBRATE.smeter_calibration_hf;
+		else
+			TRX_RX2_dBm += CALIBRATE.smeter_calibration_vhf;
+
+		if(TRX_RX2_dBm < -150.0f)
+			TRX_RX2_dBm = -150.0f;
+		Processor_RX2_Power_value = 0;
+	}
 }
 
 float32_t current_cw_power = 0.0f;

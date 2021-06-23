@@ -131,7 +131,7 @@ void SPEC_Draw(void)
 		LCD_UpdateQuery.SystemMenu = true;
 		return;
 	}
-	if (Processor_RX_Power_value == 0) //-V550
+	if (Processor_RX1_Power_value == 0) //-V550
 		return;
 	tick_start_time = HAL_GetTick();
 
@@ -142,7 +142,7 @@ void SPEC_Draw(void)
 	// Draw
 	if(graph_sweep_x < graph_width)
 	{
-		data[graph_sweep_x] = TRX_RX_dBm;
+		data[graph_sweep_x] = TRX_RX1_dBm;
 		SPEC_DrawGraphCol(graph_sweep_x, true);
 		// draw a marker
 		if (graph_sweep_x == graph_selected_x)

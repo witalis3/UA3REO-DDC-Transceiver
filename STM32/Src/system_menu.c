@@ -403,7 +403,7 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass},
 		{"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass},
 		{"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_AUDIO_Squelch},
-		{"FM Squelch level", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_shadow, SYSMENU_HANDL_AUDIO_FMSquelch},
+		{"FM Squelch level, dbm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_AUDIO_FMSquelch},
 		{"MIC EQ Low SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_LOW_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB},
 		{"MIC EQ Mid SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_MID_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB},
 		{"MIC EQ High SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_HIG_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB},
@@ -1490,16 +1490,12 @@ static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction)
 {
-	if (direction < 0 && CurrentVFO->FM_SQL_threshold == 0)
-		return;
-	CurrentVFO->FM_SQL_threshold += direction;
-	if (CurrentVFO->FM_SQL_threshold > 10)
-		CurrentVFO->FM_SQL_threshold = 10;
-	TRX.FM_SQL_threshold_shadow = CurrentVFO->FM_SQL_threshold;
+	CurrentVFO->FM_SQL_threshold_dbm += direction;
+	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0)
-		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold = CurrentVFO->FM_SQL_threshold;
+	if (band >= 0)
+		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
 }
 
 static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction)
@@ -1511,7 +1507,7 @@ static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction)
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].SQL = CurrentVFO->SQL;
 }
 
@@ -2262,7 +2258,7 @@ static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction)
 	if (direction < 0)
 		TRX.ADC_Driver = false;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
 	FPGA_NeedSendParams = true;
 }
@@ -2274,7 +2270,7 @@ static void SYSMENU_HANDL_ADC_PGA(int8_t direction)
 	if (direction < 0)
 		TRX.ADC_PGA = false;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0)
+	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
 	FPGA_NeedSendParams = true;
 }

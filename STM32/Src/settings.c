@@ -117,7 +117,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.DNR_Type = 0;					  // digital noise reduction
 		TRX.VFO_A.AGC = true;					  // AGC
 		TRX.VFO_A.SQL = false;					  // SSB/FM Squelch
-		TRX.VFO_A.FM_SQL_threshold = 5;			  // FM noise squelch
+		TRX.VFO_A.FM_SQL_threshold_dbm = -70;			  // FM noise squelch
 		TRX.VFO_B.Freq = 14150000;				  // stored VFO-B frequency
 		TRX.VFO_B.Mode = TRX_MODE_USB;			  // saved VFO-B mode
 		TRX.VFO_B.LPF_RX_Filter_Width = 2700;	  // saved bandwidth for VFO-B
@@ -129,7 +129,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.DNR_Type = 0;					  // digital noise reduction
 		TRX.VFO_B.AGC = true;					  // AGC
 		TRX.VFO_B.SQL = false;					  // SSB/FM Squelch
-		TRX.VFO_B.FM_SQL_threshold = 5;			  // FM noise squelch
+		TRX.VFO_B.FM_SQL_threshold_dbm = -70;			  // FM noise squelch
 		TRX.Fast = true;						  // accelerated frequency change when the encoder rotates
 		TRX.LNA = false;						  // LNA (Low Noise Amplifier)
 		TRX.ATT = false;						  // attenuator
@@ -296,7 +296,7 @@ void LoadSettings(bool clear)
 				TRX.BANDS_SAVED_SETTINGS[i].SQL = false;
 			else
 				TRX.BANDS_SAVED_SETTINGS[i].SQL = true;
-			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold = TRX.VFO_A.FM_SQL_threshold;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm = TRX.VFO_A.FM_SQL_threshold_dbm;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
 			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
@@ -305,7 +305,7 @@ void LoadSettings(bool clear)
 		
 		//Shadow variables
 		TRX.SQL_shadow = TRX.VFO_A.SQL;
-		TRX.FM_SQL_threshold_shadow = TRX.VFO_A.FM_SQL_threshold;
+		TRX.FM_SQL_threshold_dbm_shadow = TRX.VFO_A.FM_SQL_threshold_dbm;
 
 		println("[OK] Loaded default settings");
 		LCD_showError("Loaded default settings", true);
@@ -484,7 +484,7 @@ void LoadCalibration(bool clear)
 			CALIBRATE.MEMORY_CHANNELS[i].ANT = TRX.ANT;
 			CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver = TRX.ADC_Driver;
 			CALIBRATE.MEMORY_CHANNELS[i].SQL = false;
-			CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold = TRX.VFO_A.FM_SQL_threshold;
+			CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold_dbm = TRX.VFO_A.FM_SQL_threshold_dbm;
 			CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA = TRX.ADC_PGA;
 			CALIBRATE.MEMORY_CHANNELS[i].DNR_Type = 0;
 			CALIBRATE.MEMORY_CHANNELS[i].AGC = true;

@@ -123,7 +123,7 @@ typedef struct
 	bool AutoNotchFilter;
 	uint_fast16_t NotchFC;
 	uint8_t DNR_Type; //0-disabled 1-dnr 2-dnr2
-	uint8_t FM_SQL_threshold;
+	uint8_t FM_SQL_threshold_dbm;
 	bool AGC;
 	bool SQL;
 } VFO;
@@ -190,7 +190,7 @@ typedef struct
 	uint8_t DNR_Type;
 	bool AGC;
 	bool SQL;
-	uint8_t FM_SQL_threshold;
+	int8_t FM_SQL_threshold_dbm;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
 
@@ -347,7 +347,7 @@ extern struct TRX_SETTINGS
 	bool WSPR_BANDS_2;
 	//Shadow variables
 	bool SQL_shadow;
-	uint8_t FM_SQL_threshold_shadow;
+	int8_t FM_SQL_threshold_dbm_shadow;
 	//Memory
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	//

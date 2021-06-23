@@ -805,9 +805,9 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		float32_t s_width = 0.0f;
 
 		if (CurrentVFO->Mode == TRX_MODE_CW)
-			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX_dBm, true) * 0.5f; // smooth CW faster!
+			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX1_dBm, true) * 0.5f; // smooth CW faster!
 		else
-			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX_dBm, true) * 0.25f; // smooth the movement of the S-meter
+			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX1_dBm, true) * 0.25f; // smooth the movement of the S-meter
 
 		//digital s-meter version
 		static uint32_t last_s_meter_draw_time = 0;
@@ -856,15 +856,15 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		}
 
 		//print dBm value
-		sprintf(ctmp, "%ddBm", (int16_t)TRX_RX_dBm);
+		sprintf(ctmp, "%ddBm", (int16_t)TRX_RX1_dBm);
 		addSymbols(ctmp, ctmp, 7, " ", true);
 		LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 		//print s-meter value
 		static float32_t TRX_RX_dBm_averaging = -120.0f;
-		TRX_RX_dBm_averaging = 0.97f * TRX_RX_dBm_averaging + 0.03f * TRX_RX_dBm;
-		if (TRX_RX_dBm > TRX_RX_dBm_averaging)
-			TRX_RX_dBm_averaging = TRX_RX_dBm;
+		TRX_RX_dBm_averaging = 0.97f * TRX_RX_dBm_averaging + 0.03f * TRX_RX1_dBm;
+		if (TRX_RX1_dBm > TRX_RX_dBm_averaging)
+			TRX_RX_dBm_averaging = TRX_RX1_dBm;
 
 		if (CurrentVFO->Freq < 144000000)
 		{
@@ -1941,13 +1941,13 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter)
 			TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 			TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
 			TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-			CurrentVFO->FM_SQL_threshold = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold;
+			CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
 			TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 			CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 			CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 			CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 			TRX.SQL_shadow = CurrentVFO->SQL;
-			TRX.FM_SQL_threshold_shadow = CurrentVFO->FM_SQL_threshold;
+			TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
 		}
 		TRX_Temporary_Stop_BandMap = false;
 	}
