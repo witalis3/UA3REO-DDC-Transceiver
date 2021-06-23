@@ -334,6 +334,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	if (_freq >= MAX_RX_FREQ_HZ)
 		_freq = MAX_RX_FREQ_HZ;
 
+	int64_t freq_diff = _freq - vfo->Freq;
 	vfo->Freq = _freq;
 	
 	//set DC-DC Sync freq
@@ -370,6 +371,12 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 			TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Mode = mode_from_bandmap;
 			LCD_UpdateQuery.TopButtons = true;
 		}
+	}
+	
+	//CLAR freq secondary VFO sync
+	if(TRX.CLAR && vfo == CurrentVFO)
+	{
+		TRX_setFrequency(SecondaryVFO->Freq + freq_diff, SecondaryVFO);
 	}
 }
 
