@@ -439,6 +439,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	WM8731_TXRX_mode();
 	if (old_mode != _mode)
 		NeedReinitAudioFiltersClean = true;
+	NeedReinitNotch = true;
 	NeedReinitAudioFilters = true;
 	NeedSaveSettings = true;
 	LCD_UpdateQuery.StatusInfoBar = true;

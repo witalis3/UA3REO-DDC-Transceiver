@@ -13,7 +13,7 @@
 #define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS					// order of IIR LPF filters
 #define IIR_HPF_STAGES 5					// order of IIR HPF filters
 #define IIR_DECIMATOR_FILTER_STAGES 9									// order of decimator filter
-#define NOTCH_STAGES 1															  // order of manual Notch filter
+#define NOTCH_STAGES 3															  // order of manual Notch filter
 #define EQ_STAGES 1																  // order of the biquad of the equalizer filter
 #define GAUSS_STAGES 1																  // order of the gauss CW filter
 #define GAUSS_WIDTH 20															//passband of gauss CW filter
@@ -100,8 +100,6 @@ extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_Squelch_HPF;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX2_Squelch_HPF;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER;
-extern arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_I_FILTER;
-extern arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_Q_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 EQ_RX_LOW_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 EQ_RX_MID_FILTER;
 extern arm_biquad_cascade_df2T_instance_f32 EQ_RX_HIG_FILTER;

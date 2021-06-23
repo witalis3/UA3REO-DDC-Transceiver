@@ -49,8 +49,6 @@ static float32_t NOTCH_RX1_Coeffs[BIQUAD_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX2_Coeffs[BIQUAD_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX1_State[2 * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX2_State[2 * NOTCH_STAGES] = {0};
-static float32_t NOTCH_FFT_I_State[2 * NOTCH_STAGES] = {0};
-static float32_t NOTCH_FFT_Q_State[2 * NOTCH_STAGES] = {0};
 static float32_t EQ_RX_LOW_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_MID_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_HIG_FILTER_State[2 * EQ_STAGES] = {0};
@@ -172,8 +170,6 @@ arm_biquad_cascade_df2T_instance_f32 IIR_RX1_Squelch_HPF;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_Squelch_HPF;
 arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER = {NOTCH_STAGES, NOTCH_RX1_State, NOTCH_RX1_Coeffs}; // manual notch filter
 arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER = {NOTCH_STAGES, NOTCH_RX2_State, NOTCH_RX2_Coeffs};
-arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_I_FILTER = {NOTCH_STAGES, NOTCH_FFT_I_State, NOTCH_RX1_Coeffs};
-arm_biquad_cascade_df2T_instance_f32 NOTCH_FFT_Q_FILTER = {NOTCH_STAGES, NOTCH_FFT_Q_State, NOTCH_RX1_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_LOW_FILTER = {EQ_STAGES, EQ_RX_LOW_FILTER_State, EQ_RX_LOW_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_MID_FILTER = {EQ_STAGES, EQ_RX_MID_FILTER_State, EQ_RX_MID_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_HIG_FILTER = {EQ_STAGES, EQ_RX_HIG_FILTER_State, EQ_RX_HIG_FILTER_Coeffs};
@@ -370,8 +366,45 @@ void ReinitAudioFilters(void)
 // initialize the manual Notch filter
 void InitNotchFilter(void)
 {
-	calcBiquad(BIQUAD_notch, CurrentVFO->NotchFC / 2, TRX_SAMPLERATE, 0.5f, 0, NOTCH_RX1_Coeffs);
-	calcBiquad(BIQUAD_notch, SecondaryVFO->NotchFC / 2, TRX_SAMPLERATE, 0.5f, 0, NOTCH_RX2_Coeffs);
+	if(CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
+			CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
+	if(SecondaryVFO->NotchFC > SecondaryVFO->LPF_RX_Filter_Width)
+			SecondaryVFO->NotchFC = SecondaryVFO->LPF_RX_Filter_Width;
+	
+	int16_t rx1_notch_width_hz = 100;
+	int16_t rx2_notch_width_hz = 100;
+	int16_t rx1_notch_pos = CurrentVFO->NotchFC;
+	int16_t rx2_notch_pos = SecondaryVFO->NotchFC;
+	
+	if(CurrentVFO->Mode == TRX_MODE_CW)
+		rx1_notch_pos = (TRX.CW_Pitch + CurrentVFO->NotchFC - CurrentVFO->LPF_RX_Filter_Width / 2);
+	if(SecondaryVFO->Mode == TRX_MODE_CW)
+		rx2_notch_pos = (TRX.CW_Pitch + SecondaryVFO->NotchFC - SecondaryVFO->LPF_RX_Filter_Width / 2);
+	
+	int16_t rx1_notch_pos_f1 = rx1_notch_pos - rx1_notch_width_hz / 2;
+	int16_t rx1_notch_pos_f2 = rx1_notch_pos + rx1_notch_width_hz / 2;
+	int16_t rx2_notch_pos_f1 = rx2_notch_pos - rx2_notch_width_hz / 2;
+	int16_t rx2_notch_pos_f2 = rx2_notch_pos + rx2_notch_width_hz / 2;
+	if(rx1_notch_pos_f1 < 50)
+		rx1_notch_pos_f1 = 50;
+	if(rx2_notch_pos_f1 < 50)
+		rx2_notch_pos_f1 = 50;
+	if(rx1_notch_pos_f2 > TRX_SAMPLERATE / 2)
+		rx1_notch_pos_f2 = TRX_SAMPLERATE / 2;
+	if(rx2_notch_pos_f2 > TRX_SAMPLERATE / 2)
+		rx2_notch_pos_f2 = TRX_SAMPLERATE / 2;
+	
+	iir_filter_t *filter = biquad_create(NOTCH_STAGES);
+	biquad_init_bandstop(filter, TRX_SAMPLERATE, rx1_notch_pos_f1, rx1_notch_pos_f2);
+	fill_biquad_coeffs(filter, NOTCH_RX1_Coeffs, NOTCH_STAGES);
+	
+	filter = biquad_create(NOTCH_STAGES);
+	biquad_init_bandstop(filter, TRX_SAMPLERATE, rx2_notch_pos_f1, rx2_notch_pos_f2);
+	fill_biquad_coeffs(filter, NOTCH_RX2_Coeffs, NOTCH_STAGES);
+	
+	arm_biquad_cascade_df2T_initNoClean_f32(&NOTCH_RX1_FILTER, NOTCH_STAGES, NOTCH_RX1_Coeffs, NOTCH_RX1_State);
+	arm_biquad_cascade_df2T_initNoClean_f32(&NOTCH_RX2_FILTER, NOTCH_STAGES, NOTCH_RX2_Coeffs, NOTCH_RX2_State);
+	
 	NeedReinitNotch = false;
 }
 

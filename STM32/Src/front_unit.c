@@ -329,14 +329,27 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	}
 
 	//NOTCH - default action
+	float64_t step = 50;
+	if(CurrentVFO->Mode == TRX_MODE_CW)
+		step = 10;
 	if (CurrentVFO->ManualNotchFilter)
 	{
-		if (CurrentVFO->NotchFC > 50 && direction < 0)
-			CurrentVFO->NotchFC -= 50;
+		if (CurrentVFO->NotchFC > step && direction < 0)
+			CurrentVFO->NotchFC -= step;
 		else if (CurrentVFO->NotchFC < CurrentVFO->LPF_RX_Filter_Width && direction > 0)
-			CurrentVFO->NotchFC += 50;
+			CurrentVFO->NotchFC += step;
+		
+		CurrentVFO->NotchFC = roundf((float64_t)CurrentVFO->NotchFC / step) * step;
+		
+		if(CurrentVFO->NotchFC < step)
+			CurrentVFO->NotchFC = step;
+		
+		if(CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
+			CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
+		
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		NeedReinitNotch = true;
+		NeedWTFRedraw = true;
 	}
 	else
 	{
@@ -1297,6 +1310,7 @@ void FRONTPANEL_BUTTONHANDLER_NOTCH(uint32_t parameter)
 
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	LCD_UpdateQuery.TopButtons = true;
+	NeedWTFRedraw = true;
 	NeedSaveSettings = true;
 }
 
@@ -1313,6 +1327,7 @@ void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter)
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitNotch = true;
+	NeedWTFRedraw = true;
 	NeedSaveSettings = true;
 }
 
@@ -1587,6 +1602,11 @@ void FRONTPANEL_BUTTONHANDLER_SETMODE(uint32_t parameter)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
 	resetVAD();
+	if(CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
+	{
+		CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
+		NeedReinitNotch = true;
+	}
 	TRX_ScanMode = false;
 	LCD_closeWindow();
 }
@@ -1600,6 +1620,11 @@ void FRONTPANEL_BUTTONHANDLER_SETSECMODE(uint32_t parameter)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
 	resetVAD();
+	if(SecondaryVFO->NotchFC > SecondaryVFO->LPF_RX_Filter_Width)
+	{
+		SecondaryVFO->NotchFC = SecondaryVFO->LPF_RX_Filter_Width;
+		NeedReinitNotch = true;
+	}
 	TRX_ScanMode = false;
 	LCD_closeWindow();
 }

@@ -301,13 +301,6 @@ void FFT_bufferPrepare(void)
 		dc_filter(FFTInput_Q_current, FFT_HALF_SIZE, DC_FILTER_FFT_Q);
 	}
 
-	//Process Notch filter
-	if (CurrentVFO->ManualNotchFilter && !TRX_on_TX())
-	{
-		arm_biquad_cascade_df2T_f32_rolled(&NOTCH_FFT_I_FILTER, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
-		arm_biquad_cascade_df2T_f32_rolled(&NOTCH_FFT_Q_FILTER, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
-	}
-
 	//Reset old samples if frequency changed
 	uint32_t nowFFTChargeBufferFreq = CurrentVFO->Freq;
 	if (TRX.WTF_Moving && fabsf((float32_t)FFT_lastFFTChargeBufferFreq - (float32_t)nowFFTChargeBufferFreq) > (500 / fft_zoom)) //zeroing threshold
@@ -751,6 +744,9 @@ bool FFT_printFFT(void)
 		curwidth = CurrentVFO->LPF_TX_Filter_Width;
 	int32_t bw_rx1_line_width = 0;
 	int32_t bw_rx2_line_width = 0;
+	int32_t rx1_notch_line_pos = 100;
+	int32_t rx2_notch_line_pos = 100;
+	
 	switch (CurrentVFO->Mode)
 	{
 		case TRX_MODE_LSB:
@@ -759,6 +755,7 @@ bool FFT_printFFT(void)
 			if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
 				bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 			bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - bw_rx1_line_width;
+			rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		case TRX_MODE_USB:
 		case TRX_MODE_DIGI_U:
@@ -766,6 +763,7 @@ bool FFT_printFFT(void)
 			if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
 				bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 			bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2;
+			rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		case TRX_MODE_NFM:
 		case TRX_MODE_AM:
@@ -775,10 +773,15 @@ bool FFT_printFFT(void)
 			if (bw_rx1_line_width > LAYOUT->FFT_PRINT_SIZE)
 				bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE;
 			bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_rx1_line_width / 2);
+			if(CurrentVFO->Mode == TRX_MODE_CW)
+				rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
+			else
+				rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		case TRX_MODE_WFM:
 			bw_rx1_line_width = 0;
 			bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_rx1_line_width / 2);
+			rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		default:
 			break;
@@ -791,6 +794,7 @@ bool FFT_printFFT(void)
 			if (bw_rx2_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
 				bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 			bw_rx2_line_start = rx2_line_pos - bw_rx2_line_width;
+			rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		case TRX_MODE_USB:
 		case TRX_MODE_DIGI_U:
@@ -798,6 +802,7 @@ bool FFT_printFFT(void)
 			if (bw_rx2_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
 				bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 			bw_rx2_line_start = rx2_line_pos;
+			rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		case TRX_MODE_NFM:
 		case TRX_MODE_AM:
@@ -807,10 +812,15 @@ bool FFT_printFFT(void)
 			if (bw_rx2_line_width > LAYOUT->FFT_PRINT_SIZE)
 				bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE;
 			bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
+			if(SecondaryVFO->Mode == TRX_MODE_CW)
+				rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
+			else
+				rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		case TRX_MODE_WFM:
 			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE;
 			bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
+			rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		default:
 			break;
@@ -1088,6 +1098,20 @@ bool FFT_printFFT(void)
 			print_output_buffer[fft_y][bw_rx2_line_center] = color;
 	}
 
+	//Show manual Notch filter line
+	if (CurrentVFO->ManualNotchFilter && !TRX_on_TX() && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
+	{
+		uint16_t color = palette_fft[fftHeight * 1 / 4];
+		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
+			print_output_buffer[fft_y][rx1_notch_line_pos] = color;
+	}
+	if (SecondaryVFO->ManualNotchFilter && !TRX_on_TX() && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
+	{
+		uint16_t color = palette_fft[fftHeight * 1 / 4];
+		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
+			print_output_buffer[fft_y][rx2_notch_line_pos] = color;
+	}
+	
 	//Draw RX2 center line
 	if (rx2_line_pos >=0 && rx2_line_pos < LAYOUT->FFT_PRINT_SIZE)
 	{

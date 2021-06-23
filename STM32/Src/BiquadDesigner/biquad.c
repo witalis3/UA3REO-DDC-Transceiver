@@ -23,8 +23,7 @@ typedef struct {
 static void complex_mul(complex_d *a, complex_d *b);
 static void complex_div(complex_d *p, complex_d *q);
 
-static void biquad_init_band(iir_filter_t *filter, double fs,
-    double f1, double f2, int stop);
+static void biquad_init_band(iir_filter_t *filter, double fs, double f1, double f2, int stop);
 
 static iir_filter_t filter_designer;
 	
@@ -188,14 +187,12 @@ void biquad_init_highpass(struct iir_filter *filter, double fs, double f) {
         filter->d[i] = 0;
 }
 
-void biquad_init_bandpass(struct iir_filter *filter, double fs,
-    double f1, double f2)
+void biquad_init_bandpass(struct iir_filter *filter, double fs, double f1, double f2)
 {
 	return biquad_init_band(filter, fs, f1, f2, 0);
 }
 
-void biquad_init_bandstop(struct iir_filter *filter, double fs,
-    double f1, double f2)
+void biquad_init_bandstop(struct iir_filter *filter, double fs, double f1, double f2)
 {
 	return biquad_init_band(filter, fs, f1, f2, 1);
 }
@@ -299,8 +296,7 @@ static void bilinear_transform(complex_d *z, complex_d *s, double ts)
  *  Compute bandpass or bandstop filter parameters
  */
 
-static void biquad_init_band(struct iir_filter *filter, double fs,
-    double f1, double f2, int stop)
+static void biquad_init_band(struct iir_filter *filter, double fs, double f1, double f2, int stop)
 {
     double ts = 1.0 / fs;
     double bw, f;
