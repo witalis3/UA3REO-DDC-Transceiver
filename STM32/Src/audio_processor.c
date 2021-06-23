@@ -1260,16 +1260,17 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size,
 			i *= 1.0f / current_if_gain;
 		Processor_RX1_Power_value = i;
 	}
+	
 	if (rx_id == AUDIO_RX2)
 	{
-		if (Processor_RX1_Power_value != 0)
+		if (Processor_RX2_Power_value != 0)
 			return;
 		// Prepare data to calculate s-meter
 		static float32_t i = 0;
 		arm_rms_f32(buff, size, &i);
 		if (if_gained && current_if_gain != 0.0f)
 			i *= 1.0f / current_if_gain;
-		Processor_RX1_Power_value = i;
+		Processor_RX2_Power_value = i;
 	}
 }
 

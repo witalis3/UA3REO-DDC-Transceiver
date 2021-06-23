@@ -533,7 +533,7 @@ void TRX_DBMCalculate(void)
 	}
 	
 	//RX2
-	if (Processor_RX1_Power_value == 0)
+	if (Processor_RX2_Power_value == 0)
 	{
 		TRX_RX2_dBm = -150.0f;
 	}
