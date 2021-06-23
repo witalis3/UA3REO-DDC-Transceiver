@@ -252,7 +252,7 @@ void FFT_Init(void)
 	else
 		zoomed_width = FFT_SIZE;
 
-	if (TRX_on_TX())
+	if (TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 		fft_current_spectrum_width_hz = TRX_SAMPLERATE / fft_zoom;
 	else
 		fft_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
