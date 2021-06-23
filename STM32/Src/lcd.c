@@ -19,6 +19,7 @@
 #include "wifi.h"
 #include "fft.h"
 #include "sd.h"
+#include "vad.h"
 
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
@@ -76,6 +77,7 @@ static void LCD_showBandWindow(bool secondary_vfo);
 static void LCD_showModeWindow(bool secondary_vfo);
 static void LCD_showBWWindow(void);
 static void LCD_ManualFreqButtonHandler(uint32_t parameter);
+static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter);
 #if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, bool in_window, uint32_t parameter, void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color);
 #endif
@@ -1468,14 +1470,38 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 void LCD_processHoldTouch(uint16_t x, uint16_t y)
 {
 #if (defined(HAS_TOUCHPAD))
-	if (TRX.Locked || LCD_window.opened)
+	if (TRX.Locked)
 		return;
+	
 	if (LCD_systemMenuOpened)
 	{
 		SYSMENU_eventCloseAllSystemMenu();
 		LCD_redraw(false);
 		return;
 	}
+	
+	//windows
+	//outline touch (window close)
+	if (LCD_window.opened && (y <= LCD_window.y || y >= (LCD_window.y + LCD_window.h) || x <= LCD_window.x || x >= (LCD_window.x + LCD_window.w)))
+	{
+		LCD_closeWindow();
+		return;
+	}
+	
+	//window buttons
+	for (uint8_t i = 0; i < LCD_window.buttons_count; i++)
+	{
+		if ((LCD_window.buttons[i].x1 <= x) && (LCD_window.buttons[i].y1 <= y) && (LCD_window.buttons[i].x2 >= x) && (LCD_window.buttons[i].y2 >= y))
+		{
+			if (LCD_window.buttons[i].holdHandler != NULL)
+				LCD_window.buttons[i].holdHandler(LCD_window.buttons[i].parameter);
+			return;
+		}
+	}
+	
+	if (LCD_window.opened)
+		return;
+	
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
 		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))
@@ -1645,6 +1671,8 @@ static void LCD_showBandWindow(bool secondary_vfo)
 			selectable_bands_count++;
 		else
 			unselectable_bands_count++;
+	selectable_bands_count++; //memory bank
+		
 	const uint8_t buttons_lines_selectable = ceil((float32_t)selectable_bands_count / (float32_t)buttons_in_line);
 	const uint8_t buttons_lines_unselectable = ceil((float32_t)unselectable_bands_count / (float32_t)buttons_in_line);
 	const uint8_t divider_height = 30;
@@ -1676,6 +1704,16 @@ static void LCD_showBandWindow(bool secondary_vfo)
 			xi = 0;
 		}
 	}
+	
+	//memory bank
+	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "MEM", false, true, true, 0, LCD_ShowMemoryChannelsButtonHandler, LCD_ShowMemoryChannelsButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	xi++;
+	if (xi >= buttons_in_line)
+	{
+		yi++;
+		xi = 0;
+	}
+		
 	//divider
 	if(xi != 0)
 		yi++;
@@ -1918,3 +1956,31 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter)
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), 50, LAYOUT->WINDOWS_BUTTON_WIDTH * 5 + LAYOUT->WINDOWS_BUTTON_MARGIN * 4, LAYOUT->WINDOWS_BUTTON_HEIGHT, buff, false, false, true, 0, NULL, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 #endif
 }
+
+static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
+{
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	const uint8_t buttons_in_line = 7;
+	const uint8_t buttons_lines = 5;
+	const uint8_t buttons_top_offset = 0;
+	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
+	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
+	LCD_openWindow(window_width, window_height);
+	LCD_busy = true;
+
+	uint8_t channel_num = 1;
+	char tmp[32] = {0};
+	for(uint8_t y = 0; y < buttons_lines; y++)
+	{
+		for(uint8_t x = 0; x < buttons_in_line; x++)
+		{
+			sprintf(tmp, "%u", channel_num);
+			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + x * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, tmp, (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == CurrentVFO->Freq), true, true, (channel_num - 1), FRONTPANEL_SelectMemoryChannelsButtonHandler, FRONTPANEL_SaveMemoryChannelsButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			channel_num++;
+		}
+	}
+	
+	LCD_busy = false;
+#endif
+}
+

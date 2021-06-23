@@ -93,6 +93,8 @@
 #define EEPROM_SECTOR_SETTINGS 4
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
+#define MEMORY_CHANNELS_COUNT 35
+
 typedef enum
 {
 	TRX_MODE_LSB,
@@ -201,7 +203,6 @@ extern struct TRX_SETTINGS
 	VFO VFO_A;
 	VFO VFO_B;
 	bool Fast;
-	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	bool LNA;
 	bool ATT;
 	float32_t ATT_DB;
@@ -347,6 +348,8 @@ extern struct TRX_SETTINGS
 	//Shadow variables
 	bool SQL_shadow;
 	uint8_t FM_SQL_threshold_shadow;
+	//Memory
+	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	//
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit
@@ -467,6 +470,7 @@ extern struct TRX_CALIBRATE
 	bool ENABLE_marine_band;
 	bool OTA_update;
 	uint16_t TX_StartDelay;
+	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit

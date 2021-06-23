@@ -1164,6 +1164,37 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE, SYSMENU_UINT8);
 			}
+			
+			//Memory channels settings
+			for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)
+			{
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].Freq, SYSMENU_UINT32);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].Mode, SYSMENU_UINT8);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].LNA", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].LNA, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ATT, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT_DB", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ATT_DB, SYSMENU_FLOAT32);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ANT, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_Driver", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SQL", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].SQL, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].FM_SQL_threshold", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold, SYSMENU_UINT8);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_PGA", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].DNR_Type", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].DNR_Type, SYSMENU_UINT8);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].AGC", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].AGC, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SAMPLERATE", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE, SYSMENU_UINT8);
+			}
 		}
 
 		if (!res)
@@ -1840,6 +1871,50 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
 		if (strcmp(name, buff) == 0)
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = (uint8_t)uintval;
+	}
+		
+	//Memory channels settings
+	for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)
+	{
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].Freq = uintval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)uintval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].LNA", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].LNA = bval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].ATT = bval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT_DB", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].ATT_DB = floatval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].ANT = bval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_Driver", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver = bval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SQL", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].SQL = bval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].FM_SQL_threshold", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold = (uint8_t)uintval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_PGA", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA = bval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].DNR_Type", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].DNR_Type = (uint8_t)uintval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].AGC", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].AGC = bval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SAMPLERATE", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE = (uint8_t)uintval;
 	}
 }
 

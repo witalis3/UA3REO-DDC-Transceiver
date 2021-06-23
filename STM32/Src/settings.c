@@ -473,6 +473,24 @@ void LoadCalibration(bool clear)
 		CALIBRATE.OTA_update = true;				//enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;			//Relay switch delay before RF signal ON, ms
 
+		//Default memory channels
+		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)
+		{
+			CALIBRATE.MEMORY_CHANNELS[i].Freq = BANDS[0].startFreq + (BANDS[0].endFreq - BANDS[0].startFreq) / 2;
+			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)getModeFromFreq(CALIBRATE.MEMORY_CHANNELS[i].Freq);
+			CALIBRATE.MEMORY_CHANNELS[i].LNA = TRX.LNA;
+			CALIBRATE.MEMORY_CHANNELS[i].ATT = TRX.ATT;
+			CALIBRATE.MEMORY_CHANNELS[i].ATT_DB = TRX.ATT_DB;
+			CALIBRATE.MEMORY_CHANNELS[i].ANT = TRX.ANT;
+			CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver = TRX.ADC_Driver;
+			CALIBRATE.MEMORY_CHANNELS[i].SQL = false;
+			CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold = TRX.VFO_A.FM_SQL_threshold;
+			CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA = TRX.ADC_PGA;
+			CALIBRATE.MEMORY_CHANNELS[i].DNR_Type = 0;
+			CALIBRATE.MEMORY_CHANNELS[i].AGC = true;
+			CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
+		}
+
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 		println("[OK] Loaded default calibrate settings");
 		LCD_showError("Loaded default calibrations", true);

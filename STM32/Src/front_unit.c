@@ -1790,3 +1790,66 @@ void FRONTPANEL_BUTTONHANDLER_ZOOM_P(uint32_t parameter)
 	FFT_Init();
 	LCD_UpdateQuery.StatusInfoBar = true;
 }
+
+void FRONTPANEL_SelectMemoryChannelsButtonHandler(uint32_t parameter)
+{
+	int8_t channel = parameter;
+	if (channel >= MEMORY_CHANNELS_COUNT)
+		channel = 0;
+	
+	TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].Freq, CurrentVFO);
+	TRX_setMode(CALIBRATE.MEMORY_CHANNELS[channel].Mode, CurrentVFO);
+	if(TRX.SAMPLERATE_MAIN != CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE)
+	{
+		TRX.SAMPLERATE_MAIN = CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE;
+		FFT_Init();
+		NeedReinitAudioFilters = true;
+	}
+	TRX.LNA = CALIBRATE.MEMORY_CHANNELS[channel].LNA;
+	TRX.ATT = CALIBRATE.MEMORY_CHANNELS[channel].ATT;
+	TRX.ATT_DB = CALIBRATE.MEMORY_CHANNELS[channel].ATT_DB;
+	TRX.ANT = CALIBRATE.MEMORY_CHANNELS[channel].ANT;
+	TRX.ADC_Driver = CALIBRATE.MEMORY_CHANNELS[channel].ADC_Driver;
+	CurrentVFO->SQL = CALIBRATE.MEMORY_CHANNELS[channel].SQL;
+	CurrentVFO->FM_SQL_threshold = CALIBRATE.MEMORY_CHANNELS[channel].FM_SQL_threshold;
+	TRX.SQL_shadow = CurrentVFO->SQL;
+	TRX.FM_SQL_threshold_shadow = CurrentVFO->FM_SQL_threshold;
+	TRX.ADC_PGA = CALIBRATE.MEMORY_CHANNELS[channel].ADC_PGA;
+	CurrentVFO->DNR_Type = CALIBRATE.MEMORY_CHANNELS[channel].DNR_Type;
+	CurrentVFO->AGC = CALIBRATE.MEMORY_CHANNELS[channel].AGC;
+	TRX_Temporary_Stop_BandMap = false;
+
+	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.FreqInfoRedraw = true;
+	
+	resetVAD();
+	TRX_ScanMode = false;
+	LCD_closeWindow();
+	TRX_DXCluster_UpdateTime = 0;
+}
+
+void FRONTPANEL_SaveMemoryChannelsButtonHandler(uint32_t parameter)
+{
+	int8_t channel = parameter;
+	if (channel >= MEMORY_CHANNELS_COUNT)
+		channel = 0;
+	
+	CALIBRATE.MEMORY_CHANNELS[channel].Freq = CurrentVFO->Freq;
+	CALIBRATE.MEMORY_CHANNELS[channel].Mode = CurrentVFO->Mode;
+	CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE = TRX.SAMPLERATE_MAIN;
+	CALIBRATE.MEMORY_CHANNELS[channel].LNA = TRX.LNA;
+	CALIBRATE.MEMORY_CHANNELS[channel].ATT = TRX.ATT;
+	CALIBRATE.MEMORY_CHANNELS[channel].ATT_DB = TRX.ATT_DB;
+	CALIBRATE.MEMORY_CHANNELS[channel].ANT = TRX.ANT;
+	CALIBRATE.MEMORY_CHANNELS[channel].ADC_Driver = TRX.ADC_Driver;
+	CALIBRATE.MEMORY_CHANNELS[channel].SQL = CurrentVFO->SQL;
+	CALIBRATE.MEMORY_CHANNELS[channel].FM_SQL_threshold = CurrentVFO->FM_SQL_threshold;
+	CALIBRATE.MEMORY_CHANNELS[channel].ADC_PGA = TRX.ADC_PGA;
+	CALIBRATE.MEMORY_CHANNELS[channel].DNR_Type = CurrentVFO->DNR_Type;
+	CALIBRATE.MEMORY_CHANNELS[channel].AGC = CurrentVFO->AGC;
+	
+	LCD_closeWindow();
+	
+	NeedSaveCalibration = true;
+	LCD_showTooltip("Channel saved");
+}
