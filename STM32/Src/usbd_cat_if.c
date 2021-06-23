@@ -427,33 +427,6 @@ void ua3reo_dev_cat_parseCommand(void)
 		}
 		return;
 	}
-	{
-		if (!has_args)
-		{
-			char answer[30] = {0};
-			strcat(answer, "IF001"); //memory channel
-			if (CurrentVFO->Freq < 10000000)
-				strcat(answer, "0");
-			sprintf(ctmp, "%u", CurrentVFO->Freq);
-			strcat(answer, ctmp);	 //freq
-			strcat(answer, "+0000"); //clirifier offset
-			strcat(answer, "0");	 //RX clar off
-			strcat(answer, "0");	 //TX clar off
-			char mode[3] = {0};
-			getFT450Mode((uint8_t)CurrentVFO->Mode, mode);
-			strcat(answer, mode); //mode
-			strcat(answer, "0");  //VFO Memory
-			strcat(answer, "0");  //CTCSS OFF
-			strcat(answer, "00"); //TONE NUMBER
-			strcat(answer, "0;"); //Simplex
-			CAT_Transmit(answer);
-		}
-		else
-		{
-			println("Unknown CAT arguments: ", _command);
-		}
-		return;
-	}
 
 	if (strcmp(command, "FA") == 0) // FREQUENCY VFO-A
 	{

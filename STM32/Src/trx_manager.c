@@ -561,6 +561,7 @@ float32_t TRX_GenerateCWSignal(float32_t power)
 	if(TRX_key_serial)
 		return TRX_generateRiseSignal(power);
 
+	//keyer
 	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
 	uint32_t dash_length_ms = dot_length_ms * 3;
 	uint32_t sim_space_length_ms = dot_length_ms;

@@ -111,12 +111,12 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 		if (pbuf[2] == 1)
 		{
 			TRX_key_serial = true;
-			print("K");
+			//print("K");
 		}
 		else
 		{
 			TRX_key_serial = false;
-			print("N");
+			//print("N");
 		}
 		break;
 
