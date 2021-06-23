@@ -50,6 +50,7 @@ static void SYSMENU_HANDL_TRX_ATU_Enabled(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_Gain(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_Boost(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
@@ -388,6 +389,7 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"IF Gain, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
 		{"AGC Gain target, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
 		{"Mic Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.MIC_GAIN, SYSMENU_HANDL_AUDIO_MIC_Gain},
+		{"Mic Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_AUDIO_MIC_Boost},
 		{"DNR1 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR1_SNR_THRESHOLD, SYSMENU_HANDL_AUDIO_DNR1_THRES},
 		{"DNR2 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR2_SNR_THRESHOLD, SYSMENU_HANDL_AUDIO_DNR2_THRES},
 		{"DNR Average", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_AUDIO_DNR_AVERAGE},
@@ -1267,6 +1269,17 @@ static void SYSMENU_HANDL_AUDIO_MIC_Gain(int8_t direction)
 		TRX.MIC_GAIN = 1;
 	if (TRX.MIC_GAIN > 20)
 		TRX.MIC_GAIN = 20;
+}
+
+static void SYSMENU_HANDL_AUDIO_MIC_Boost(int8_t direction)
+{
+	if (direction < 0)
+		TRX.MIC_Boost = false;
+	if (direction > 0)
+		TRX.MIC_Boost = true;
+	
+	//reinit codec
+	WM8731_TXRX_mode();
 }
 
 static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction)

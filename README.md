@@ -154,6 +154,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **IF Gain, dB** - IF gain
 * **AGC Gain target, LKFS** - Maximum AGC gain (Maximum volume with AGC on)
 * **Mic Gain** - Microphone gain
+* **Mic Boost** - +20db hardware mic amplifier
 * **DNR xxx** - Digital squelch adjustment
 * **SSB HPF Pass** - HPF cutoff frequency when operating in SSB
 * **SSB LPF Pass** - LPF cutoff frequency when operating in SSB

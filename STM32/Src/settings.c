@@ -171,6 +171,7 @@ void LoadSettings(bool clear)
 		TRX.IF_Gain = 70;								   // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;						   // Maximum (target) AGC gain
 		TRX.MIC_GAIN = 1;								   // Microphone gain
+		TRX.MIC_Boost = true;								// +20db mic amplifier
 		TRX.RX_EQ_LOW = 0;								   // Receiver Equalizer (Low)
 		TRX.RX_EQ_MID = 0;								   // Receiver EQ (mids)
 		TRX.RX_EQ_HIG = 0;								   // Receiver EQ (high)

@@ -793,7 +793,7 @@ void processTxAudio(void)
 			APROC_AudioBuffer_out[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]); //left channel
 			APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];					//right channel
 		}
-
+		
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
 		if (WM8731_DMA_state) //compleate
 		{

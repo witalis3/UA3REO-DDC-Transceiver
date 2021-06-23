@@ -677,6 +677,10 @@ bool FFT_printFFT(void)
 	//limits
 	if (maxValueFFT < 0.0000001f)
 		maxValueFFT = 0.0000001f;
+	
+	//tx noise scale limit
+	if (TRX_on_TX() && maxValueFFT < FFT_TX_MIN_LEVEL)
+		maxValueFFT = FFT_TX_MIN_LEVEL;
 
 	// save values ​​for switching RX / TX
 	if (TRX_on_TX())
@@ -694,7 +698,7 @@ bool FFT_printFFT(void)
 			FFTOutput_mean[fft_x] = fftHeight;
 
 		fft_header[fft_x] = FFTOutput_mean[fft_x];
-		indexed_wtf_buffer[0][fft_x] = fftHeight - FFTOutput_mean[fft_x];
+		indexed_wtf_buffer[0][fft_x] = roundf((float32_t)fftHeight - FFTOutput_mean[fft_x]);
 	}
 	wtf_buffer_freqs[0] = currentFFTFreq;
 
@@ -1051,7 +1055,7 @@ bool FFT_printFFT(void)
 		print_wtf_yindex++;
 		wtf_printed_lines++;
 	}
-
+	
 	//Draw grids
 	if (TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
 	{

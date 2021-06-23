@@ -116,7 +116,10 @@ void WM8731_TXRX_mode(void) //loopback
 	{
 		WM8731_SendI2CCommand(B8(00000001), B8(10000000)); //R0 Left Line In
 		WM8731_SendI2CCommand(B8(00000011), B8(10000000)); //R1 Right Line In
-		WM8731_SendI2CCommand(B8(00001000), B8(00010101)); //R4 Analogue Audio Path Control
+		if(TRX.MIC_Boost)
+			WM8731_SendI2CCommand(B8(00001000), B8(00010101)); //R4 Analogue Audio Path Control
+		else
+			WM8731_SendI2CCommand(B8(00001000), B8(00010100)); //R4 Analogue Audio Path Control
 		WM8731_SendI2CCommand(B8(00001100), B8(01100001)); //R6 Power Down Control, internal crystal
 	}
 }

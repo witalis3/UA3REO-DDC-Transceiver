@@ -29,6 +29,7 @@
 #define FFT_3D_X_OFFSET 5
 #define FFT_MAX_MEANS 5      //store old fft data for averaging
 #define FFT_MAX_TOP_SCALE 30 //maximum scale parameter
+#define FFT_TX_MIN_LEVEL 30.0f			//fft tx minimum scale level
 
 #define GET_FFTHeight ((TRX.FFT_Height == 1) ? LAYOUT->FFT_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->FFT_HEIGHT_STYLE2 : ((TRX.FFT_Height == 3) ? LAYOUT->FFT_HEIGHT_STYLE3 : ((TRX.FFT_Height == 4) ? LAYOUT->FFT_HEIGHT_STYLE4 : LAYOUT->FFT_HEIGHT_STYLE5))))
 #define GET_WTFHeight ((TRX.FFT_Height == 1) ? LAYOUT->WTF_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2 : ((TRX.FFT_Height == 3) ? LAYOUT->WTF_HEIGHT_STYLE3 : ((TRX.FFT_Height == 4) ? LAYOUT->WTF_HEIGHT_STYLE4 : LAYOUT->WTF_HEIGHT_STYLE5))))
