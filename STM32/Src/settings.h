@@ -10,7 +10,7 @@
 #include "front_unit.h"
 
 #define SETT_VERSION 31					   // Settings config version
-#define CALIB_VERSION 29				   // Calibration config version
+#define CALIB_VERSION 31				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
@@ -466,7 +466,7 @@ extern struct TRX_CALIBRATE
 	bool ENABLE_60m_band;
 	bool ENABLE_marine_band;
 	bool OTA_update;
-	uint8_t TX_StartDelay;
+	uint16_t TX_StartDelay;
 
 	uint8_t csum;	//check sum
 	uint8_t ENDBit; //end bit
