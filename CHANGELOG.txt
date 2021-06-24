@@ -1,3 +1,6 @@
+----Version 2.8.1----
++HARDW: Исправлена Motherboard rev30, Thx RA9UCN
+
 ----Version 2.8.0----
 +HARDW: Добавлены платы лицевой и задней панели разработки EA7GIB
 +HARDW: RF-UNIT-BIG-rev5: Добавлены блокировочные конденсаторы, Thx UR4QBP
