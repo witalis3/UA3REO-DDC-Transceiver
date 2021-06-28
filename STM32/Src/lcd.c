@@ -47,6 +47,7 @@ static uint16_t LCD_last_showed_freq_khz_B = 9999;
 static uint16_t LCD_last_showed_freq_hz_B = 9999;
 #endif
 static uint32_t manualFreqEnter = 0;
+static bool LCD_screenKeyboardOpened = false;
 
 static bool LCD_inited = false;
 static float32_t LCD_last_s_meter = 1.0f;
@@ -1377,74 +1378,90 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	if (TRX.Locked)
 		return;
-	if (LCD_systemMenuOpened)
+	
+	if (!LCD_screenKeyboardOpened && LCD_systemMenuOpened)
 	{
 		SYSMENU_eventCloseAllSystemMenu();
 		LCD_redraw(false);
 		return;
 	}
+	
 	//windows
-	//outline touch (window close)
-	if (LCD_window.opened && (y <= LCD_window.y || y >= (LCD_window.y + LCD_window.h) || x <= LCD_window.x || x >= (LCD_window.x + LCD_window.w)))
+	if (LCD_window.opened)
 	{
-		LCD_closeWindow();
+		//outline touch (window close)
+		if (y <= LCD_window.y || y >= (LCD_window.y + LCD_window.h) || x <= LCD_window.x || x >= (LCD_window.x + LCD_window.w))
+		{
+			LCD_closeWindow();
+			return;
+		}
+		
+		//window buttons
+		for (uint8_t i = 0; i < LCD_window.buttons_count; i++)
+		{
+			if ((LCD_window.buttons[i].x1 <= x) && (LCD_window.buttons[i].y1 <= y) && (LCD_window.buttons[i].x2 >= x) && (LCD_window.buttons[i].y2 >= y))
+			{
+				if (LCD_window.buttons[i].clickHandler != NULL)
+					LCD_window.buttons[i].clickHandler(LCD_window.buttons[i].parameter);
+				return;
+			}
+		}
+		
 		return;
 	}
-	//window buttons
-	for (uint8_t i = 0; i < LCD_window.buttons_count; i++)
+	
+	if (!LCD_screenKeyboardOpened)
 	{
-		if ((LCD_window.buttons[i].x1 <= x) && (LCD_window.buttons[i].y1 <= y) && (LCD_window.buttons[i].x2 >= x) && (LCD_window.buttons[i].y2 >= y))
+		//ant click
+		//ANT indicator
+		if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET + LAYOUT->STATUS_ANT_BLOCK_HEIGHT + 20) && x >= LAYOUT->STATUS_ANT_X_OFFSET && x <= (LAYOUT->STATUS_ANT_X_OFFSET + LAYOUT->STATUS_ANT_BLOCK_WIDTH + 20))
 		{
-			if (LCD_window.buttons[i].clickHandler != NULL)
-				LCD_window.buttons[i].clickHandler(LCD_window.buttons[i].parameter);
+			FRONTPANEL_BUTTONHANDLER_ANT(false);
+			return;
+		}
+		
+		//main mode click
+		if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT + 20) && x >= (LAYOUT->STATUS_MODE_X_OFFSET - 20) && x <= LAYOUT->STATUS_MODE_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH + 20)
+		{
+			LCD_showModeWindow(false);
+			return;
+		}
+		
+		//sec mode click
+		if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT + 20) && x >= (LAYOUT->STATUS_MODE_B_X_OFFSET - 20) && x <= (LAYOUT->STATUS_MODE_B_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH + 20))
+		{
+			LCD_showModeWindow(true);
+			return;
+		}
+		
+		//bw click
+		if (y >= LAYOUT->BW_TRAPEZ_POS_Y && y <= LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT && x >= LAYOUT->BW_TRAPEZ_POS_X && x <= LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH)
+		{
+			LCD_showBWWindow();
+			return;
+		}
+		
+		//main freq click
+		if (y >= LAYOUT->FREQ_Y_TOP && y <= LAYOUT->FREQ_Y_TOP + LAYOUT->FREQ_BLOCK_HEIGHT && x >= LAYOUT->FREQ_LEFT_MARGIN && x <= LAYOUT->FREQ_LEFT_MARGIN + LAYOUT->FREQ_WIDTH)
+		{
+			if (!TRX.selected_vfo) //vfo-a
+				LCD_showBandWindow(false);
+			else
+				FRONTPANEL_BUTTONHANDLER_AsB(0);
+			return;
+		}
+		
+		//sec freq click
+		if (y >= LAYOUT->FREQ_B_Y_TOP && y <= LAYOUT->FREQ_B_Y_TOP + LAYOUT->FREQ_B_BLOCK_HEIGHT && x >= LAYOUT->FREQ_B_LEFT_MARGIN && x <= LAYOUT->FREQ_B_LEFT_MARGIN + LAYOUT->FREQ_B_WIDTH)
+		{
+			if (TRX.selected_vfo) //vfo-b
+				LCD_showBandWindow(true);
+			else
+				FRONTPANEL_BUTTONHANDLER_AsB(0);
 			return;
 		}
 	}
-	if (LCD_window.opened)
-		return;
-	//ant click
-	//ANT indicator
-	if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET + LAYOUT->STATUS_ANT_BLOCK_HEIGHT + 20) && x >= LAYOUT->STATUS_ANT_X_OFFSET && x <= (LAYOUT->STATUS_ANT_X_OFFSET + LAYOUT->STATUS_ANT_BLOCK_WIDTH + 20))
-	{
-		FRONTPANEL_BUTTONHANDLER_ANT(false);
-		return;
-	}
-	//main mode click
-	if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT + 20) && x >= (LAYOUT->STATUS_MODE_X_OFFSET - 20) && x <= LAYOUT->STATUS_MODE_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH + 20)
-	{
-		LCD_showModeWindow(false);
-		return;
-	}
-	//sec mode click
-	if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT + 20) && x >= (LAYOUT->STATUS_MODE_B_X_OFFSET - 20) && x <= (LAYOUT->STATUS_MODE_B_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH + 20))
-	{
-		LCD_showModeWindow(true);
-		return;
-	}
-	//bw click
-	if (y >= LAYOUT->BW_TRAPEZ_POS_Y && y <= LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT && x >= LAYOUT->BW_TRAPEZ_POS_X && x <= LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH)
-	{
-		LCD_showBWWindow();
-		return;
-	}
-	//main freq click
-	if (y >= LAYOUT->FREQ_Y_TOP && y <= LAYOUT->FREQ_Y_TOP + LAYOUT->FREQ_BLOCK_HEIGHT && x >= LAYOUT->FREQ_LEFT_MARGIN && x <= LAYOUT->FREQ_LEFT_MARGIN + LAYOUT->FREQ_WIDTH)
-	{
-		if (!TRX.selected_vfo) //vfo-a
-			LCD_showBandWindow(false);
-		else
-			FRONTPANEL_BUTTONHANDLER_AsB(0);
-		return;
-	}
-	//sec freq click
-	if (y >= LAYOUT->FREQ_B_Y_TOP && y <= LAYOUT->FREQ_B_Y_TOP + LAYOUT->FREQ_B_BLOCK_HEIGHT && x >= LAYOUT->FREQ_B_LEFT_MARGIN && x <= LAYOUT->FREQ_B_LEFT_MARGIN + LAYOUT->FREQ_B_WIDTH)
-	{
-		if (TRX.selected_vfo) //vfo-b
-			LCD_showBandWindow(true);
-		else
-			FRONTPANEL_BUTTONHANDLER_AsB(0);
-		return;
-	}
+	
 	//buttons
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
@@ -1455,15 +1472,19 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 			return;
 		}
 	}
-	//fft/wtf tap
-	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + LAYOUT->FFT_FFTWTF_BOTTOM - 50) >= y))
+	
+	if (!LCD_screenKeyboardOpened)
 	{
-		//frequency tap
-		uint32_t newfreq = getFreqOnFFTPosition(x);
-		newfreq = newfreq / 500 * 500;
-		TRX_setFrequencySlowly(newfreq);
-		LCD_UpdateQuery.FreqInfo = true;
-		return;
+		//fft/wtf tap
+		if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + LAYOUT->FFT_FFTWTF_BOTTOM - 50) >= y))
+		{
+			//frequency tap
+			uint32_t newfreq = getFreqOnFFTPosition(x);
+			newfreq = newfreq / 500 * 500;
+			TRX_setFrequencySlowly(newfreq);
+			LCD_UpdateQuery.FreqInfo = true;
+			return;
+		}
 	}
 #endif
 }
@@ -1987,6 +2008,8 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
 
 void LCD_printKeyboard(void)
 {
+	TouchpadButton_handlers_count = 0;
+	LCD_screenKeyboardOpened = true;
 	LCDDriver_Fill_RectWH(0, LCD_HEIGHT / 2, LCD_WIDTH, LCD_HEIGHT / 2, COLOR->KEYBOARD_BG);
 	const uint16_t button_width = (LCD_HEIGHT / 2 - LAYOUT->WINDOWS_BUTTON_MARGIN * 2) / 5;
 	const uint16_t button_height = button_width;
@@ -2001,7 +2024,7 @@ void LCD_printKeyboard(void)
 		char text[2] = {0};
 		text[0] = line1[i];
 		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, true, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	}
 	y++;
 	buttons_left_offset += button_width / 2;
@@ -2012,7 +2035,7 @@ void LCD_printKeyboard(void)
 		char text[2] = {0};
 		text[0] = line2[i];
 		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, true, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	}
 	y++;
 	buttons_left_offset += button_width / 2;
@@ -2023,7 +2046,7 @@ void LCD_printKeyboard(void)
 		char text[2] = {0};
 		text[0] = line3[i];
 		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, true, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	}
 	y++;
 	buttons_left_offset += button_width / 2;
@@ -2034,6 +2057,11 @@ void LCD_printKeyboard(void)
 		char text[2] = {0};
 		text[0] = line4[i];
 		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, true, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	}
+}
+
+void LCD_hideKeyboard(void)
+{
+	LCD_screenKeyboardOpened = false;
 }

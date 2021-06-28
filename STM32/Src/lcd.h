@@ -64,6 +64,7 @@ extern void LCD_closeWindow(void);
 extern void LCD_showRFPowerWindow(void);
 extern void LCD_showManualFreqWindow(bool secondary_vfo);
 extern void LCD_printKeyboard(void);
+extern void LCD_hideKeyboard(void);
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
 volatile extern bool LCD_busy;

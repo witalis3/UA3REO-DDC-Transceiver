@@ -18,6 +18,8 @@ void LOCINFO_Start(void)
 {
 	LCD_busy = true;
 
+	memset(entered_locator, 0x00, sizeof(entered_locator));
+	
 	// draw the GUI
 	LCDDriver_Fill(BG_COLOR);
 
@@ -28,19 +30,22 @@ void LOCINFO_Start(void)
 // stop
 void LOCINFO_Stop(void)
 {
-	LCD_UpdateQuery.StatusInfoBarRedraw = true;
+	LCD_hideKeyboard();
 }
 
 static void LOCINFO_keyboardHandler(uint32_t parameter)
 {
-	char str[2];
+	char str[2] = {0};
 	str[0] = parameter;
-	if(strlen(entered_locator) > 0 && parameter == '<') //backspace
-		entered_locator[strlen(entered_locator) - 1] = 0;
+	if(parameter == '<') //backspace
+	{
+		if(strlen(entered_locator) > 0)
+			entered_locator[strlen(entered_locator) - 1] = 0;
+	}
 	else if(strlen(entered_locator) < 8)
 		strcat(entered_locator, str);
 	
-	LCD_UpdateQuery.StatusInfoBarRedraw = true;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 // draw
@@ -52,19 +57,17 @@ void LOCINFO_Draw(void)
 		return;
 	}
 	LCD_busy = true;
-
-	LCDDriver_printTextFont("Locator Info", 10, 30, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 	
 	char tmp[64] = {0};
 	sprintf(tmp, "Enter Locator: %s", entered_locator);
 	addSymbols(tmp, tmp, 15+8, " ", true);
-	LCDDriver_printTextFont(tmp, 10, 50, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	LCDDriver_printText(tmp, 10, 40, FG_COLOR, BG_COLOR, 2);
 	
 	LCD_keyboardHandler = LOCINFO_keyboardHandler;
 	LCD_printKeyboard();
 
 	LCD_busy = false;
-	LCD_UpdateQuery.SystemMenuRedraw = true;
+	//LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 // events to the encoder
