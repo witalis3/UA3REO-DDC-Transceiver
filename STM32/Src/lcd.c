@@ -95,11 +95,11 @@ void LCD_Init(void)
 	MODIFY_REG(hdma2d.Instance->OPFCCR, DMA2D_OPFCCR_CM | DMA2D_OPFCCR_SB, DMA2D_OUTPUT_ARGB8888 | DMA2D_BYTES_REGULAR);
 
 	LCDDriver_Init();
-#if SCREEN_ROTATE
-	LCDDriver_setRotation(2);
-#else
-	LCDDriver_setRotation(4);
-#endif
+	if(CALIBRATE.LCD_Rotate)
+		LCDDriver_setRotation(2);
+	else
+		LCDDriver_setRotation(4);
+	
 #ifdef HAS_TOUCHPAD
 	TOUCHPAD_Init();
 #endif

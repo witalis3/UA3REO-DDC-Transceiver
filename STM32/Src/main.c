@@ -262,7 +262,7 @@ int main(void)
   else
 #endif
 #if FRONTPANEL_BIG_V1
-      if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (F1)
+  if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (F1)
     LoadSettings(true);
   else
 #endif
@@ -279,6 +279,19 @@ int main(void)
 	{
 		MX_IWDG1_Init();
 	}
+
+  println("[OK] Calibration loading");
+#ifdef FRONTPANEL_SMALL_V1
+  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
+    LoadCalibration(true);
+  else
+#endif
+#ifdef FRONTPANEL_BIG_V1
+  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8)
+    LoadCalibration(true);
+  else
+#endif
+    LoadCalibration(false);
 	
   TRX.Locked = false;
   println("[OK] LCD init");
@@ -301,19 +314,6 @@ int main(void)
   }
   println("[OK] Profiler init");
   InitProfiler();
-
-  println("[OK] Calibration loading");
-#ifdef FRONTPANEL_SMALL_V1
-  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
-    LoadCalibration(true);
-  else
-#endif
-#ifdef FRONTPANEL_BIG_V1
-      if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8)
-    LoadCalibration(true);
-  else
-#endif
-    LoadCalibration(false);
 
   println("[OK] RTC calibration");
   RTC_Calibration();

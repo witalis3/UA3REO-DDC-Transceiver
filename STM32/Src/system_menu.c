@@ -291,6 +291,7 @@ static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction);
+static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
@@ -663,6 +664,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"ENABLE Marine Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_HANDL_CALIB_ENABLE_marine_band},
 		{"OTA Update", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_HANDL_CALIB_OTA_update},
 		{"TX Start Delay", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_HANDL_CALIB_TX_StartDelay},
+		{"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
 };
 
 const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
@@ -3996,6 +3998,17 @@ static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction)
 		CALIBRATE.TX_StartDelay += direction;
 	if (CALIBRATE.TX_StartDelay > 2000)
 		CALIBRATE.TX_StartDelay = 2000;
+}
+
+static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.LCD_Rotate = true;
+	if (direction < 0)
+		CALIBRATE.LCD_Rotate = false;
+	
+	LCD_Init();
+	LCD_redraw(false);
 }
 
 //SERVICES

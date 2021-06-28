@@ -141,9 +141,14 @@ void LCDDriver_setBrightness(uint8_t percent)
 //Set screen rotation
 void LCDDriver_setRotation(uint8_t rotate)
 {
-#if SCREEN_ROTATE
-  LCDDriver_writeReg(LCD_RA8875_DPCR, LCD_RA8875_DPCR_HDIR | LCD_RA8875_DPCR_VDIR);
-#endif
+	if(CALIBRATE.LCD_Rotate)
+	{
+		LCDDriver_writeReg(LCD_RA8875_DPCR, LCD_RA8875_DPCR_HDIR | LCD_RA8875_DPCR_VDIR);
+	}
+	else
+	{
+		LCDDriver_writeReg(LCD_RA8875_DPCR, 0);
+	}
 }
 
 //Set cursor position

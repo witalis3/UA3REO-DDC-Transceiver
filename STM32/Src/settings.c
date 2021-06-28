@@ -472,6 +472,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENABLE_marine_band = false;
 		CALIBRATE.OTA_update = true;				//enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;			//Relay switch delay before RF signal ON, ms
+		CALIBRATE.LCD_Rotate = false;			//LCD 180 degree rotation
 
 		//Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)

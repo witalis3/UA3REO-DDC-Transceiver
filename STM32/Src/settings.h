@@ -10,7 +10,7 @@
 #include "front_unit.h"
 
 #define SETT_VERSION 31					   // Settings config version
-#define CALIB_VERSION 31				   // Calibration config version
+#define CALIB_VERSION 32				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
@@ -47,8 +47,6 @@
 #define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_2
 #define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_4
 #define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_2
-
-#define SCREEN_ROTATE false // turn the screen upside down
 
 //#define ADC_BITS 16																						// ADC bit depth
 //#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
@@ -470,6 +468,8 @@ extern struct TRX_CALIBRATE
 	bool ENABLE_marine_band;
 	bool OTA_update;
 	uint16_t TX_StartDelay;
+	bool LCD_Rotate;
+	
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 
 	uint8_t csum;	//check sum

@@ -236,10 +236,11 @@ void GT911_Scan(void)
 				if (GT911.X[touch_id] > 795)
 					GT911.X[touch_id] = 795;
 
-#if SCREEN_ROTATE
-				GT911.X[touch_id] = LCD_WIDTH - GT911.X[touch_id];
-				GT911.Y[touch_id] = LCD_HEIGHT - GT911.Y[touch_id];
-#endif
+				if(CALIBRATE.LCD_Rotate)
+				{
+					GT911.X[touch_id] = LCD_WIDTH - GT911.X[touch_id];
+					GT911.Y[touch_id] = LCD_HEIGHT - GT911.Y[touch_id];
+				}
 
 				if (TRX.Debug_Type == TRX_DEBUG_TOUCH)
 				{
