@@ -558,6 +558,14 @@ void processTxAudio(void)
 {
 	if (!Processor_NeedTXBuffer)
 		return;
+	
+	//sync fpga to audio-codec
+	static bool old_WM8731_DMA_state = false;
+	if(WM8731_DMA_state == old_WM8731_DMA_state)
+		return;
+	old_WM8731_DMA_state = WM8731_DMA_state;
+	bool start_WM8731_DMA_state = old_WM8731_DMA_state;
+	
 	AUDIOPROC_samples++;
 	uint_fast8_t mode = CurrentVFO->Mode;
 
@@ -803,7 +811,7 @@ void processTxAudio(void)
 		}
 		
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
-		if (WM8731_DMA_state) //compleate
+		if (start_WM8731_DMA_state) //compleate
 		{
 			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0);
@@ -927,7 +935,7 @@ void processTxAudio(void)
 				int32_t sample = 0;
 				arm_float_to_q31(&point, &sample, 1);
 				int32_t data = convertToSPIBigEndian(sample);
-				if (WM8731_DMA_state)
+				if (start_WM8731_DMA_state)
 				{
 					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
 					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2 + 1] = data;

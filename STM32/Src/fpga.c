@@ -471,7 +471,7 @@ static inline void FPGA_fpgadata_getparam(void)
 	//STAGE 2
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket;
-	if(ADCDAC_OVR_StatusLatency >= 10)
+	if(ADCDAC_OVR_StatusLatency >= 50)
 	{
 		TRX_ADC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 0);
 		TRX_DAC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 1);
