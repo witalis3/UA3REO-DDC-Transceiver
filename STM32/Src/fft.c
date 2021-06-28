@@ -836,14 +836,26 @@ bool FFT_printFFT(void)
 
 	// prepare FFT print over the waterfall
 	uint16_t background = BG_COLOR;
+	uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++) //Background
 	{
+		bool dbm_grid = false;
 		if (TRX.FFT_Background)
 			background = palette_bg_gradient[fft_y];
+		if(TRX.FFT_dBmGrid)
+			for(uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL)
+				if(y == fft_y)
+				{
+					background = grid_color;
+					dbm_grid = true;
+				}
+				
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
 			if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) //bw bar
-				print_output_buffer[fft_y][fft_x] = palette_bw_bg_colors[fft_y];
+			{
+				print_output_buffer[fft_y][fft_x] = dbm_grid ? background : palette_bw_bg_colors[fft_y];
+			}
 			else
 				print_output_buffer[fft_y][fft_x] = background;
 		}
@@ -1055,21 +1067,19 @@ bool FFT_printFFT(void)
 	}
 	
 	//Draw grids
-	if (TRX.FFT_Grid == 1 || TRX.FFT_Grid == 2)
+	if (TRX.FFT_FreqGrid == 1 || TRX.FFT_FreqGrid == 2)
 	{
-		uint16_t color = palette_fft[fftHeight * 3 / 4];
 		for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
 			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
 				for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
-					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = color;
+					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = grid_color;
 	}
-	if (TRX.FFT_Grid >= 2)
+	if (TRX.FFT_FreqGrid >= 2)
 	{
-		uint16_t color = palette_fft[fftHeight * 3 / 4];
 		for (int8_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
 			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
 				for (uint32_t fft_y = fftHeight; fft_y < (fftHeight + wtfHeight); fft_y++)
-					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = color;
+					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = grid_color;
 	}
 
 	//Gauss filter center
@@ -1143,18 +1153,17 @@ bool FFT_printFFT(void)
 	}
 	
 	//Print DBM grid
-	if(false)
+	if(TRX.FFT_dBmGrid)
 	{
 		char tmp[64] = {0};
-		int16_t max_dbm = getDBFromFFTAmpl(maxValueFFT + minValueFFT);
-		int16_t med_dbm = getDBFromFFTAmpl((maxValueFFT + minValueFFT) / 2.0f);
-		int16_t min_dbm = getDBFromFFTAmpl(minValueFFT);
-		sprintf(tmp, "%d", max_dbm);
-		LCDDriver_printTextInMemory(tmp, 0, 0, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
-		sprintf(tmp, "%d", med_dbm);
-		LCDDriver_printTextInMemory(tmp, 0, fftHeight / 2 - 4, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
-		sprintf(tmp, "%d", min_dbm);
-		LCDDriver_printTextInMemory(tmp, 0, fftHeight - 8, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+		float32_t ampl_on_bin = (maxValueFFT + minValueFFT) / (float32_t)fftHeight;
+		
+		for(uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL)
+		{
+			int16_t dbm = getDBFromFFTAmpl(ampl_on_bin * (float32_t)(fftHeight - y));
+			sprintf(tmp, "%d", dbm);
+			LCDDriver_printTextInMemory(tmp, 0, y - 4, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+		}
 	}
 	
 	//Init print 2D FFT+WTF

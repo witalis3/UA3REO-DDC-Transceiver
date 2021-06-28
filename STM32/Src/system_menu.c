@@ -108,7 +108,8 @@ static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction);
-static void SYSMENU_HANDL_SCREEN_FFT_Grid(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_FreqGrid(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_dBmGrid(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Sensitivity(int8_t direction);
@@ -464,7 +465,8 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Height", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
 		{"FFT Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style, {"", "Gradient", "Fill", "Dots", "Contour"}},
 		{"FFT Color", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color, {"", "Blu>Y>R", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
-		{"FFT Grid", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Grid, SYSMENU_HANDL_SCREEN_FFT_Grid, {"NO", "Top", "All", "Bott"}},
+		{"FFT Freq Grid", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_FreqGrid, SYSMENU_HANDL_SCREEN_FFT_FreqGrid, {"NO", "Top", "All", "Bott"}},
+		{"FFT dBm Grid", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_dBmGrid, SYSMENU_HANDL_SCREEN_FFT_dBmGrid},
 		{"FFT Background", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Background, SYSMENU_HANDL_SCREEN_FFT_Background},
 		{"FFT Lens", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Lens, SYSMENU_HANDL_SCREEN_FFT_Lens},
 		{"FFT Hold Peaks", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_HoldPeaks, SYSMENU_HANDL_SCREEN_FFT_HoldPeaks},
@@ -1864,6 +1866,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction)
 		TRX.FFT_Height = 1;
 	if (TRX.FFT_Height > 5)
 		TRX.FFT_Height = 5;
+	
 	FFT_Init();
 }
 
@@ -1874,6 +1877,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction)
 		TRX.FFT_Style = 1;
 	if (TRX.FFT_Style > 4)
 		TRX.FFT_Style = 4;
+	
 	FFT_Init();
 }
 
@@ -1884,16 +1888,28 @@ static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction)
 		TRX.FFT_Color = 1;
 	if (TRX.FFT_Color > 7)
 		TRX.FFT_Color = 7;
+	
 	FFT_Init();
 }
 
-static void SYSMENU_HANDL_SCREEN_FFT_Grid(int8_t direction)
+static void SYSMENU_HANDL_SCREEN_FFT_FreqGrid(int8_t direction)
 {
-	TRX.FFT_Grid += direction;
-	if (TRX.FFT_Grid < 0)
-		TRX.FFT_Grid = 0;
-	if (TRX.FFT_Grid > 3)
-		TRX.FFT_Grid = 3;
+	TRX.FFT_FreqGrid += direction;
+	if (TRX.FFT_FreqGrid < 0)
+		TRX.FFT_FreqGrid = 0;
+	if (TRX.FFT_FreqGrid > 3)
+		TRX.FFT_FreqGrid = 3;
+	
+	FFT_Init();
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_dBmGrid(int8_t direction)
+{
+	if (direction > 0)
+		TRX.FFT_dBmGrid = true;
+	if (direction < 0)
+		TRX.FFT_dBmGrid = false;
+	
 	FFT_Init();
 }
 

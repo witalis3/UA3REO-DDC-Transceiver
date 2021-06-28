@@ -237,13 +237,14 @@ void LoadSettings(bool clear)
 		TRX.FFT_Style = 1;			 // FFT style
 		TRX.FFT_Color = 1;			 // FFT display color
 		TRX.FFT_Compressor = true;	 //Compress FFT Peaks
-		TRX.FFT_Grid = 1;			 // FFT grid style
+		TRX.FFT_FreqGrid = 1;			 // FFT freq grid style
+		TRX.FFT_dBmGrid = false;			 // FFT power grid
 		TRX.FFT_Background = true;	 //FFT gradient background
 		TRX.FFT_Lens = false;		 //FFT lens effect
 		TRX.FFT_HoldPeaks = false;	 // Show FFT Peaks
 		TRX.FFT_3D = 0;				 //FFT 3D mode
 		TRX.FFT_ManualBottom = -130; //Minimal threshold for manual FFT scale
-		TRX.FFT_ManualTop = -75;	 //Maximum threshold for manual FFT scale
+		TRX.FFT_ManualTop = -40;	 //Maximum threshold for manual FFT scale
 		TRX.RDS_Decoder = true;		//RDS Decoder panel
 		TRX.FFT_DXCluster = false;	//Show DX cluster over FFT
 		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)

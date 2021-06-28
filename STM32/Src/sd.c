@@ -985,7 +985,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FFT_Color", (uint32_t *)&TRX.FFT_Color, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Compressor", (uint32_t *)&TRX.FFT_Compressor, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.WTF_Moving", (uint32_t *)&TRX.WTF_Moving, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.FFT_Grid", (uint32_t *)&TRX.FFT_Grid, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.FFT_FreqGrid", (uint32_t *)&TRX.FFT_FreqGrid, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.FFT_dBmGrid", (uint32_t *)&TRX.FFT_dBmGrid, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_Background", (uint32_t *)&TRX.FFT_Background, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_Lens", (uint32_t *)&TRX.FFT_Lens, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_HoldPeaks", (uint32_t *)&TRX.FFT_HoldPeaks, SYSMENU_BOOLEAN);
@@ -1501,8 +1502,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FFT_Compressor = uintval;
 	if (strcmp(name, "TRX.WTF_Moving") == 0)
 		TRX.WTF_Moving = uintval;
-	if (strcmp(name, "TRX.FFT_Grid") == 0)
-		TRX.FFT_Grid = (int8_t)intval;
+	if (strcmp(name, "TRX.FFT_FreqGrid") == 0)
+		TRX.FFT_FreqGrid = (int8_t)intval;
+	if (strcmp(name, "TRX.FFT_dBmGrid") == 0)
+		TRX.FFT_dBmGrid = bval;
 	if (strcmp(name, "TRX.FFT_Background") == 0)
 		TRX.FFT_Background = uintval;
 	if (strcmp(name, "TRX.FFT_Lens") == 0)

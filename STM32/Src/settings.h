@@ -302,7 +302,8 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_Style;
 	uint8_t FFT_Color;
 	bool FFT_Compressor;
-	int8_t FFT_Grid;
+	int8_t FFT_FreqGrid;
+	bool FFT_dBmGrid;
 	bool FFT_Background;
 	bool FFT_Lens;
 	bool FFT_HoldPeaks;
