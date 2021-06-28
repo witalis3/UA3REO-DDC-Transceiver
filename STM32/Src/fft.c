@@ -21,7 +21,7 @@ uint16_t FFT_FPS = 0;
 uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
 bool NeedFFTReinit = false;
-uint32_t fft_current_spectrum_width_hz = 96000; //Current sectrum width
+uint32_t FFT_current_spectrum_width_hz = 96000; //Current sectrum width
 
 //Private variables
 #if FFT_SIZE == 2048
@@ -254,9 +254,9 @@ void FFT_Init(void)
 		zoomed_width = FFT_SIZE;
 
 	if (TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
-		fft_current_spectrum_width_hz = TRX_SAMPLERATE / fft_zoom;
+		FFT_current_spectrum_width_hz = TRX_SAMPLERATE / fft_zoom;
 	else
-		fft_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
+		FFT_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
 
 	// clear the buffers
 	dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
@@ -553,7 +553,7 @@ bool FFT_printFFT(void)
 		//calculate scale lines
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
 		uint8_t index = 0;
-		uint32_t grid_step = fft_current_spectrum_width_hz / 9.6;
+		uint32_t grid_step = FFT_current_spectrum_width_hz / 9.6;
 		if(grid_step < 1000)
 			grid_step = 1000;
 		grid_step =( grid_step / 1000) * 1000;
