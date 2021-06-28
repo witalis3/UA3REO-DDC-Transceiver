@@ -966,6 +966,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.CW_KEYER_WPM", (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_GaussFilter", (uint32_t *)&TRX.CW_GaussFilter, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_DotToDashRate", (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("TRX.CW_Iambic", (uint32_t *)&TRX.CW_Iambic, SYSMENU_BOOLEAN);
 			//SCREEN
 			SD_WRITE_SETT_LINE("TRX.ColorThemeId", (uint32_t *)&TRX.ColorThemeId, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.LayoutThemeId", (uint32_t *)&TRX.LayoutThemeId, SYSMENU_UINT8);
@@ -1465,6 +1466,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.CW_GaussFilter = uintval;
 	if (strcmp(name, "TRX.CW_DotToDashRate") == 0)
 		TRX.CW_DotToDashRate = floatval;
+	if (strcmp(name, "TRX.CW_Iambic") == 0)
+		TRX.CW_Iambic = bval;
 	//SCREEN
 	if (strcmp(name, "TRX.ColorThemeId") == 0)
 		TRX.ColorThemeId = (uint8_t)uintval;

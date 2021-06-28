@@ -26,8 +26,11 @@ volatile uint_fast16_t CW_Key_Timeout_est = 0;
 
 static uint32_t KEYER_symbol_start_time = 0;	  // start time of the automatic key character
 static uint_fast8_t KEYER_symbol_status = 0;	  // status (signal or period) of the automatic key symbol
-static float32_t current_cw_power = 0.0f;
-
+static float32_t current_cw_power = 0.0f;				// current amplitude (for rise/fall)
+static bool iambic_first_button_pressed = false; //start symbol | false - dot, true - dash
+static bool iambic_last_symbol = false;					//last Iambic symbol | false - dot, true - dash
+static bool iambic_sequence_started = false;
+	
 void CW_key_change(void)
 {
 	if (TRX_Tune)
@@ -107,6 +110,14 @@ float32_t CW_GenerateSignal(float32_t power)
 	uint32_t sim_space_length_ms = dot_length_ms;
 	uint32_t curTime = HAL_GetTick();
 	
+	//Iambic keyer start mode
+	if(CW_key_dot_hard && !CW_key_dash_hard)
+		iambic_first_button_pressed = false;
+	if(!CW_key_dot_hard && CW_key_dash_hard)
+		iambic_first_button_pressed = true;
+	if(CW_key_dot_hard && CW_key_dash_hard)
+		iambic_sequence_started = true;
+	
 	//DOT .
 	if (KEYER_symbol_status == 0 && CW_key_dot_hard)
 	{
@@ -120,6 +131,7 @@ float32_t CW_GenerateSignal(float32_t power)
 	}
 	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) < curTime)
 	{
+		iambic_last_symbol = false;
 		KEYER_symbol_start_time = curTime;
 		KEYER_symbol_status = 3;
 	}
@@ -137,6 +149,7 @@ float32_t CW_GenerateSignal(float32_t power)
 	}
 	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) < curTime)
 	{
+		iambic_last_symbol = true;
 		KEYER_symbol_start_time = curTime;
 		KEYER_symbol_status = 3;
 	}
@@ -149,7 +162,39 @@ float32_t CW_GenerateSignal(float32_t power)
 	}
 	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) < curTime)
 	{
-		KEYER_symbol_status = 0;
+		if(!TRX.CW_Iambic) //classic keyer
+			KEYER_symbol_status = 0;
+		else //iambic keyer
+		{
+			//start iambic sequence
+			if(iambic_sequence_started)
+			{
+				if(!iambic_last_symbol) // iambic dot . , next dash -
+				{
+					KEYER_symbol_start_time = curTime;
+					KEYER_symbol_status = 2;
+					if(iambic_first_button_pressed && (!CW_key_dot_hard || !CW_key_dash_hard)) //iambic dash-dot sequence compleated
+					{
+						//println("-.e");
+						iambic_sequence_started = false;
+						KEYER_symbol_status = 0;
+					}
+				}
+				else // iambic dash - , next dot .
+				{
+					KEYER_symbol_start_time = curTime;
+					KEYER_symbol_status = 1;
+					if(!iambic_first_button_pressed && (!CW_key_dot_hard || !CW_key_dash_hard)) //iambic dot-dash sequence compleated
+					{
+						//println(".-e");
+						KEYER_symbol_status = 0;
+						iambic_sequence_started = false;
+					}
+				}
+			}
+			else //no sequence, classic mode
+				KEYER_symbol_status = 0;
+		}
 	}
 
 	return CW_generateFallSignal(power);

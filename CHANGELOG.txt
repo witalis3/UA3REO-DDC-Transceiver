@@ -3,6 +3,7 @@
 +STM32: Доработана настройка TX Start Delay в режиме CW, Thx RA9N
 +STM32: В меню калибровок добавлена возможность переворота экрана на 180 градусов, Thx RA6UAC
 +STM32: Новая настройка CW DotToDash Rate, которая задаёт отношение длинны тире к точке, Thx UA3DPB
++STM32: Новая настройка CW Iambic Keyer, которая включает ямбический ключ, Thx UA3DPB
 
 ----Version 2.8.1----
 +HARDW: Исправлена Motherboard rev30, Thx RA9UCN
