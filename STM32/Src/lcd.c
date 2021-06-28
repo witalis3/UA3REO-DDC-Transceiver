@@ -28,7 +28,7 @@ uint16_t LCD_bw_trapez_stripe_pos = 0;
 IRAM2 WindowType LCD_window = {0};
 STRUCT_COLOR_THEME *COLOR = &COLOR_THEMES[0];
 STRUCT_LAYOUT_THEME *LAYOUT = &LAYOUT_THEMES[0];
-static uint32_t manualFreqEnter = 0;
+void (*LCD_keyboardHandler)(uint32_t parameter) = NULL;
 
 static char LCD_freq_string_hz[6] = {0};
 static char LCD_freq_string_khz[6] = {0};
@@ -46,6 +46,7 @@ static uint16_t LCD_last_showed_freq_mhz_B = 9999;
 static uint16_t LCD_last_showed_freq_khz_B = 9999;
 static uint16_t LCD_last_showed_freq_hz_B = 9999;
 #endif
+static uint32_t manualFreqEnter = 0;
 
 static bool LCD_inited = false;
 static float32_t LCD_last_s_meter = 1.0f;
@@ -1984,3 +1985,55 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
 #endif
 }
 
+void LCD_printKeyboard(void)
+{
+	LCDDriver_Fill_RectWH(0, LCD_HEIGHT / 2, LCD_WIDTH, LCD_HEIGHT / 2, COLOR->KEYBOARD_BG);
+	const uint16_t button_width = (LCD_HEIGHT / 2 - LAYOUT->WINDOWS_BUTTON_MARGIN * 2) / 5;
+	const uint16_t button_height = button_width;
+	const uint16_t buttons_top_offset = LCD_HEIGHT / 2 + LAYOUT->WINDOWS_BUTTON_MARGIN;
+	uint16_t buttons_left_offset = button_width * 2.5;
+	uint16_t x = 0;
+	uint16_t y = 0;
+	//
+	char line1[] = "1234567890<";
+	for(uint8_t i = 0; i < strlen(line1); i ++)
+	{
+		char text[2] = {0};
+		text[0] = line1[i];
+		x = i;
+		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, true, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	}
+	y++;
+	buttons_left_offset += button_width / 2;
+	//
+	char line2[] = "QWERTYUIOP";
+	for(uint8_t i = 0; i < strlen(line2); i ++)
+	{
+		char text[2] = {0};
+		text[0] = line2[i];
+		x = i;
+		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, true, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	}
+	y++;
+	buttons_left_offset += button_width / 2;
+	//
+	char line3[] = "ASDFGHJKL";
+	for(uint8_t i = 0; i < strlen(line3); i ++)
+	{
+		char text[2] = {0};
+		text[0] = line3[i];
+		x = i;
+		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, true, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	}
+	y++;
+	buttons_left_offset += button_width / 2;
+	//
+	char line4[] = "ZXCVBNM";
+	for(uint8_t i = 0; i < strlen(line4); i ++)
+	{
+		char text[2] = {0};
+		text[0] = line4[i];
+		x = i;
+		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, true, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	}
+}

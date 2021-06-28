@@ -718,7 +718,9 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 #ifdef SWR_AD8307_LOG
 		{"SWR Tandem Match Contr.", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl}, //Tisho
 #endif
+#ifdef LAY_800x480
 		{"Locator info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_LOCATOR_INFO},
+#endif
 };
 
 //COMMON MENU

@@ -68,6 +68,7 @@ typedef const struct
 	const uint16_t BUTTON_LIGHTER_INACTIVE;
 	const uint16_t WINDOWS_BORDER;
 	const uint16_t WINDOWS_BG;
+	const uint16_t KEYBOARD_BG;
 } STRUCT_COLOR_THEME;
 
 static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
@@ -137,6 +138,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
 		.WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
 		.WINDOWS_BG = COLOR_BLACK,
+		.KEYBOARD_BG = rgb888torgb565(20, 20, 20),
 	},
 	//1 - white
 	{
@@ -204,6 +206,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
 		.WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
 		.WINDOWS_BG = COLOR_BLACK,
+		.KEYBOARD_BG = rgb888torgb565(20, 20, 20),
 	},
 
 	{
@@ -277,6 +280,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
 		.WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
 		.WINDOWS_BG = COLOR_BLACK,
+		.KEYBOARD_BG = rgb888torgb565(20, 20, 20),
 	}};
 
 #define COLOR_THEMES_COUNT 3
