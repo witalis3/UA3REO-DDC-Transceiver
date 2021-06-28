@@ -13,6 +13,7 @@
 #include "sd.h"
 #include "vocoder.h"
 #include "rf_unit.h"
+#include "cw.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;	  // audio samples processed in the processor
@@ -701,7 +702,7 @@ void processTxAudio(void)
 		case TRX_MODE_CW:
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
-				APROC_Audio_Buffer_TX_I[i] = TRX_GenerateCWSignal(1.0f);
+				APROC_Audio_Buffer_TX_I[i] = CW_GenerateSignal(1.0f);
 				APROC_Audio_Buffer_TX_Q[i] = 0.0f;
 			}
 			DECODER_PutSamples(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE); //отправляем данные в цифровой декодер
@@ -916,7 +917,7 @@ void processTxAudio(void)
 	if (mode != TRX_MODE_LOOPBACK)
 	{
 		//CW SelfHear
-		if (TRX.CW_SelfHear && (TRX.CW_KEYER || TRX_key_serial || TRX_key_dot_hard || TRX_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune)
+		if (TRX.CW_SelfHear && (TRX.CW_KEYER || CW_key_serial || CW_key_dot_hard || CW_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune)
 		{
 			static float32_t cwgen_index = 0;
 			float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f);

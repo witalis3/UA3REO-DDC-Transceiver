@@ -1,6 +1,7 @@
 #include "usbd_debug_if.h"
 #include "usbd_cat_if.h"
 #include "trx_manager.h"
+#include "cw.h"
 #include "lcd_driver.h"
 
 #define DEBUG_APP_RX_DATA_SIZE 8
@@ -110,12 +111,12 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 	case CDC_SET_CONTROL_LINE_STATE:
 		if (pbuf[2] == 1)
 		{
-			TRX_key_serial = true;
+			CW_key_serial = true;
 			//print("K");
 		}
 		else
 		{
-			TRX_key_serial = false;
+			CW_key_serial = false;
 			//print("N");
 		}
 		break;

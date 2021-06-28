@@ -469,6 +469,16 @@
               <FilePath>..\Src\color_themes.h</FilePath>
             </File>
             <File>
+              <FileName>cw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\cw.c</FilePath>
+            </File>
+            <File>
+              <FileName>cw.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\cw.h</FilePath>
+            </File>
+            <File>
               <FileName>cw_decoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\cw_decoder.c</FilePath>
@@ -1941,6 +1951,16 @@
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\color_themes.h</FilePath>
+            </File>
+            <File>
+              <FileName>cw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\cw.c</FilePath>
+            </File>
+            <File>
+              <FileName>cw.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\cw.h</FilePath>
             </File>
             <File>
               <FileName>cw_decoder.c</FileName>
@@ -3486,6 +3506,16 @@
               <FilePath>..\Src\color_themes.h</FilePath>
             </File>
             <File>
+              <FileName>cw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\cw.c</FilePath>
+            </File>
+            <File>
+              <FileName>cw.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\cw.h</FilePath>
+            </File>
+            <File>
               <FileName>cw_decoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\cw_decoder.c</FilePath>
@@ -5027,6 +5057,16 @@
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\color_themes.h</FilePath>
+            </File>
+            <File>
+              <FileName>cw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\cw.c</FilePath>
+            </File>
+            <File>
+              <FileName>cw.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\cw.h</FilePath>
             </File>
             <File>
               <FileName>cw_decoder.c</FileName>
@@ -6572,6 +6612,16 @@
               <FilePath>..\Src\color_themes.h</FilePath>
             </File>
             <File>
+              <FileName>cw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\cw.c</FilePath>
+            </File>
+            <File>
+              <FileName>cw.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\cw.h</FilePath>
+            </File>
+            <File>
               <FileName>cw_decoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\cw_decoder.c</FilePath>
@@ -8115,6 +8165,16 @@
               <FilePath>..\Src\color_themes.h</FilePath>
             </File>
             <File>
+              <FileName>cw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\cw.c</FilePath>
+            </File>
+            <File>
+              <FileName>cw.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\cw.h</FilePath>
+            </File>
+            <File>
               <FileName>cw_decoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\cw_decoder.c</FilePath>
@@ -9656,6 +9716,16 @@
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\color_themes.h</FilePath>
+            </File>
+            <File>
+              <FileName>cw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\cw.c</FilePath>
+            </File>
+            <File>
+              <FileName>cw.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\cw.h</FilePath>
             </File>
             <File>
               <FileName>cw_decoder.c</FileName>

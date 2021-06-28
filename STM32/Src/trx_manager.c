@@ -17,15 +17,11 @@
 #include "system_menu.h"
 #include "vad.h"
 #include "swr_analyzer.h"
+#include "cw.h"
 
 volatile bool TRX_ptt_hard = false;
 volatile bool TRX_ptt_soft = false;
 volatile bool TRX_old_ptt_soft = false;
-volatile bool TRX_key_serial = false;
-volatile bool TRX_old_key_serial = false;
-volatile bool TRX_key_dot_hard = false;
-volatile bool TRX_key_dash_hard = false;
-volatile uint_fast16_t TRX_Key_Timeout_est = 0;
 volatile bool TRX_RX1_IQ_swap = false;
 volatile bool TRX_RX2_IQ_swap = false;
 volatile bool TRX_TX_IQ_swap = false;
@@ -57,8 +53,6 @@ volatile bool TRX_DAC_X4 = false;
 volatile bool TRX_DCDC_Freq = false;
 volatile bool TRX_DAC_DRV_A0 = true;
 volatile bool TRX_DAC_DRV_A1 = true;
-static uint32_t KEYER_symbol_start_time = 0;	  // start time of the automatic key character
-static uint_fast8_t KEYER_symbol_status = 0;	  // status (signal or period) of the automatic key symbol
 volatile float32_t TRX_STM32_VREF = 3.3f;		  // voltage on STM32
 volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; // STM32 temperature
 volatile float32_t TRX_IQ_phase_error = 0.0f;
@@ -81,7 +75,7 @@ static void TRX_Start_TXRX(void);
 
 bool TRX_on_TX(void)
 {
-	if (TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO->Mode == TRX_MODE_LOOPBACK || TRX_Key_Timeout_est > 0)
+	if (TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO->Mode == TRX_MODE_LOOPBACK || CW_Key_Timeout_est > 0)
 		return true;
 	return false;
 }
@@ -288,44 +282,6 @@ bool TRX_TX_Disabled(uint32_t freq)
 			break;
 	}
 	return notx;
-}
-
-void TRX_key_change(void)
-{
-	if (TRX_Tune)
-		return;
-	if (CurrentVFO->Mode != TRX_MODE_CW)
-		return;
-	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
-	if (TRX_key_dot_hard != TRX_new_key_dot_hard)
-	{
-		TRX_key_dot_hard = TRX_new_key_dot_hard;
-		if (TRX_key_dot_hard == true && (KEYER_symbol_status == 0 || !TRX.CW_KEYER))
-		{
-			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-			FPGA_NeedSendParams = true;
-			TRX_Restart_Mode();
-		}
-	}
-	bool TRX_new_key_dash_hard = !HAL_GPIO_ReadPin(KEY_IN_DASH_GPIO_Port, KEY_IN_DASH_Pin);
-	if (TRX_key_dash_hard != TRX_new_key_dash_hard)
-	{
-		TRX_key_dash_hard = TRX_new_key_dash_hard;
-		if (TRX_key_dash_hard == true && (KEYER_symbol_status == 0 || !TRX.CW_KEYER))
-		{
-			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-			FPGA_NeedSendParams = true;
-			TRX_Restart_Mode();
-		}
-	}
-	if (TRX_key_serial != TRX_old_key_serial)
-	{
-		TRX_old_key_serial = TRX_key_serial;
-		if (TRX_key_serial == true)
-			TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		FPGA_NeedSendParams = true;
-		TRX_Restart_Mode();
-	}
 }
 
 void TRX_setFrequency(uint32_t _freq, VFO *vfo)
@@ -552,90 +508,6 @@ void TRX_DBMCalculate(void)
 			TRX_RX2_dBm = -150.0f;
 		Processor_RX2_Power_value = 0;
 	}
-}
-
-float32_t current_cw_power = 0.0f;
-static float32_t TRX_generateRiseSignal(float32_t power)
-{
-	if (current_cw_power < power)
-		current_cw_power += power * 0.007f;
-	if (current_cw_power > power)
-		current_cw_power = power;
-	return current_cw_power;
-}
-static float32_t TRX_generateFallSignal(float32_t power)
-{
-	if (current_cw_power > 0.0f)
-		current_cw_power -= power * 0.007f;
-	if (current_cw_power < 0.0f)
-		current_cw_power = 0.0f;
-	return current_cw_power;
-}
-
-float32_t TRX_GenerateCWSignal(float32_t power)
-{
-	if (!TRX.CW_KEYER)
-	{
-		if (!TRX_key_serial && !TRX_ptt_hard && !TRX_key_dot_hard && !TRX_key_dash_hard)
-			return TRX_generateFallSignal(power);
-		return TRX_generateRiseSignal(power);
-	}
-	
-	//usb cw
-	if(TRX_key_serial)
-		return TRX_generateRiseSignal(power);
-
-	//keyer
-	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
-	uint32_t dash_length_ms = dot_length_ms * 3;
-	uint32_t sim_space_length_ms = dot_length_ms;
-	uint32_t curTime = HAL_GetTick();
-	//dot
-	if (KEYER_symbol_status == 0 && TRX_key_dot_hard)
-	{
-		KEYER_symbol_start_time = curTime;
-		KEYER_symbol_status = 1;
-	}
-	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) > curTime)
-	{
-		TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		return TRX_generateRiseSignal(power);
-	}
-	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) < curTime)
-	{
-		KEYER_symbol_start_time = curTime;
-		KEYER_symbol_status = 3;
-	}
-
-	//dash
-	if (KEYER_symbol_status == 0 && TRX_key_dash_hard)
-	{
-		KEYER_symbol_start_time = curTime;
-		KEYER_symbol_status = 2;
-	}
-	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) > curTime)
-	{
-		TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		return TRX_generateRiseSignal(power);
-	}
-	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) < curTime)
-	{
-		KEYER_symbol_start_time = curTime;
-		KEYER_symbol_status = 3;
-	}
-
-	//space
-	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) > curTime)
-	{
-		TRX_Key_Timeout_est = TRX.CW_Key_timeout;
-		return TRX_generateFallSignal(power);
-	}
-	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) < curTime)
-	{
-		KEYER_symbol_status = 0;
-	}
-
-	return TRX_generateFallSignal(power);
 }
 
 float32_t TRX_getSTM32H743Temperature(void)

@@ -111,6 +111,7 @@
 #include "swr_analyzer.h"
 #include "sd.h"
 #include "wspr.h"
+#include "cw.h"
 
 static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
@@ -627,10 +628,10 @@ void TIM6_DAC_IRQHandler(void)
   }
 
   // transmission release time after key signal
-  if (TRX_Key_Timeout_est > 0 && !TRX_key_serial && !TRX_key_dot_hard && !TRX_key_dash_hard)
+  if (CW_Key_Timeout_est > 0 && !CW_key_serial && !CW_key_dot_hard && !CW_key_dash_hard)
   {
-    TRX_Key_Timeout_est -= 10;
-    if (TRX_Key_Timeout_est == 0)
+    CW_Key_Timeout_est -= 10;
+    if (CW_Key_Timeout_est == 0)
     {
       FPGA_NeedSendParams = true;
       TRX_Restart_Mode();
@@ -657,8 +658,8 @@ void TIM6_DAC_IRQHandler(void)
     TRX_ptt_change();
 
   // emulate the key via the COM port
-  if (TRX_key_serial != TRX_old_key_serial)
-    TRX_key_change();
+  if (CW_key_serial != CW_old_key_serial)
+    CW_key_change();
 
   // update the state of the RF-Unit board
   RF_UNIT_UpdateState(false);
@@ -1059,11 +1060,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
   else if (GPIO_Pin == GPIO_PIN_1) //KEY DOT
   {
-    TRX_key_change();
+    CW_key_change();
   }
   else if (GPIO_Pin == GPIO_PIN_0) //KEY DASH
   {
-    TRX_key_change();
+    CW_key_change();
   }
 }
 /* USER CODE END 1 */
