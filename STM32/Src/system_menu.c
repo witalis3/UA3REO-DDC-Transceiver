@@ -95,6 +95,7 @@ static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
 static void SYSMENU_HANDL_CW_GaussFilter(int8_t direction);
 static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction);
+static void SYSMENU_HANDL_CW_Invert(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
@@ -441,6 +442,7 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 		{"CW Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CWDecoderEnabled, SYSMENU_HANDL_CW_Decoder},
 		{"CW DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
 		{"CW Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
+		{"CW Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
 };
 
 const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
@@ -1731,6 +1733,14 @@ static void SYSMENU_HANDL_CW_Iambic(int8_t direction)
 		TRX.CW_Iambic = true;
 	if (direction < 0)
 		TRX.CW_Iambic = false;
+}
+
+static void SYSMENU_HANDL_CW_Invert(int8_t direction)
+{
+	if (direction > 0)
+		TRX.CW_Invert = true;
+	if (direction < 0)
+		TRX.CW_Invert = false;
 }
 
 //SCREEN MENU

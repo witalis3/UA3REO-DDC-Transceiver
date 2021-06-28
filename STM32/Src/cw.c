@@ -37,7 +37,11 @@ void CW_key_change(void)
 		return;
 	if (CurrentVFO->Mode != TRX_MODE_CW)
 		return;
+	
 	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
+	if(TRX.CW_Invert)
+		TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DASH_GPIO_Port, KEY_IN_DASH_Pin);
+	
 	if (CW_key_dot_hard != TRX_new_key_dot_hard)
 	{
 		CW_key_dot_hard = TRX_new_key_dot_hard;
@@ -48,7 +52,11 @@ void CW_key_change(void)
 			TRX_Restart_Mode();
 		}
 	}
+	
 	bool TRX_new_key_dash_hard = !HAL_GPIO_ReadPin(KEY_IN_DASH_GPIO_Port, KEY_IN_DASH_Pin);
+	if(TRX.CW_Invert)
+		TRX_new_key_dash_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
+	
 	if (CW_key_dash_hard != TRX_new_key_dash_hard)
 	{
 		CW_key_dash_hard = TRX_new_key_dash_hard;
@@ -59,6 +67,7 @@ void CW_key_change(void)
 			TRX_Restart_Mode();
 		}
 	}
+	
 	if (CW_key_serial != CW_old_key_serial)
 	{
 		CW_old_key_serial = CW_key_serial;

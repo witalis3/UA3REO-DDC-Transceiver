@@ -184,6 +184,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **CW Decoder** - Software CW receive decoder
 * **CW DotToDash Rate** - Keyer dash to dot length rate
 * **CW Iambic Keyer** - Enable Iambic mode keyer
+* **CW Key Invert** - Invert dash/dot on key
 
 ### SCREEN Settings
 

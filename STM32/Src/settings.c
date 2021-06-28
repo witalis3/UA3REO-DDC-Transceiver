@@ -215,6 +215,7 @@ void LoadSettings(bool clear)
 		TRX.CW_GaussFilter = false;		 //Gauss responce LPF filter
 		TRX.CW_DotToDashRate = 3.0f;		// Dot To Dash length rate
 		TRX.CW_Iambic = false;			//CW Iambic Keyer
+		TRX.CW_Invert = false;			//CW dash/dot inversion
 		//SCREEN
 		TRX.ColorThemeId = 0;	//Selected Color theme
 		TRX.LayoutThemeId = 0;	//Selected Layout theme

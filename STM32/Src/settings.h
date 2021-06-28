@@ -285,6 +285,7 @@ extern struct TRX_SETTINGS
 	bool CW_GaussFilter;
 	float32_t CW_DotToDashRate;
 	bool CW_Iambic;
+	bool CW_Invert;
 	//SCREEN
 	uint8_t ColorThemeId;
 	uint8_t LayoutThemeId;
