@@ -614,6 +614,16 @@
               <FilePath>..\Src\lcd_driver_RA8875.h</FilePath>
             </File>
             <File>
+              <FileName>locator.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\locator.c</FilePath>
+            </File>
+            <File>
+              <FileName>locator.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\locator.h</FilePath>
+            </File>
+            <File>
               <FileName>noise_blanker.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\noise_blanker.c</FilePath>
@@ -2096,6 +2106,16 @@
               <FileName>lcd_driver_RA8875.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\lcd_driver_RA8875.h</FilePath>
+            </File>
+            <File>
+              <FileName>locator.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\locator.c</FilePath>
+            </File>
+            <File>
+              <FileName>locator.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\locator.h</FilePath>
             </File>
             <File>
               <FileName>noise_blanker.c</FileName>
@@ -3651,6 +3671,16 @@
               <FilePath>..\Src\lcd_driver_RA8875.h</FilePath>
             </File>
             <File>
+              <FileName>locator.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\locator.c</FilePath>
+            </File>
+            <File>
+              <FileName>locator.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\locator.h</FilePath>
+            </File>
+            <File>
               <FileName>noise_blanker.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\noise_blanker.c</FilePath>
@@ -5202,6 +5232,16 @@
               <FileName>lcd_driver_RA8875.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\lcd_driver_RA8875.h</FilePath>
+            </File>
+            <File>
+              <FileName>locator.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\locator.c</FilePath>
+            </File>
+            <File>
+              <FileName>locator.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\locator.h</FilePath>
             </File>
             <File>
               <FileName>noise_blanker.c</FileName>
@@ -6757,6 +6797,16 @@
               <FilePath>..\Src\lcd_driver_RA8875.h</FilePath>
             </File>
             <File>
+              <FileName>locator.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\locator.c</FilePath>
+            </File>
+            <File>
+              <FileName>locator.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\locator.h</FilePath>
+            </File>
+            <File>
               <FileName>noise_blanker.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\noise_blanker.c</FilePath>
@@ -8310,6 +8360,16 @@
               <FilePath>..\Src\lcd_driver_RA8875.h</FilePath>
             </File>
             <File>
+              <FileName>locator.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\locator.c</FilePath>
+            </File>
+            <File>
+              <FileName>locator.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\locator.h</FilePath>
+            </File>
+            <File>
               <FileName>noise_blanker.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\noise_blanker.c</FilePath>
@@ -9861,6 +9921,16 @@
               <FileName>lcd_driver_RA8875.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\lcd_driver_RA8875.h</FilePath>
+            </File>
+            <File>
+              <FileName>locator.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\locator.c</FilePath>
+            </File>
+            <File>
+              <FileName>locator.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\locator.h</FilePath>
             </File>
             <File>
               <FileName>noise_blanker.c</FileName>

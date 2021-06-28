@@ -18,6 +18,7 @@
 #include "usbd_ua3reo.h"
 #include "filemanager.h"
 #include "rf_unit.h"
+#include "locator.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -336,6 +337,7 @@ static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
 static void SYSMENU_HANDL_FILEMANAGER(int8_t direction);
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); //Tisho
+static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction);
 
 static bool SYSMENU_HANDL_CHECK_RFU_QRP(void);
 static bool SYSMENU_HANDL_CHECK_RFU_BIG(void);
@@ -716,6 +718,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 #ifdef SWR_AD8307_LOG
 		{"SWR Tandem Match Contr.", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl}, //Tisho
 #endif
+		{"Locator info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_LOCATOR_INFO},
 };
 
 //COMMON MENU
@@ -4323,6 +4326,14 @@ static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction)
 	FILEMANAGER_StartRecCQWav();
 }
 
+//LOCATOR INFO
+static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction)
+{
+	SYSMENU_locator_info_opened = true;
+	LOCINFO_Start();
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
 //COMMON MENU FUNCTIONS
 void SYSMENU_drawSystemMenu(bool draw_background)
 {
@@ -4389,6 +4400,10 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	else if (SYSMENU_swr_opened)
 	{
 		SWR_Draw();
+	}
+	else if (SYSMENU_locator_info_opened)
+	{
+		LOCINFO_Draw();
 	}
 	else if (sysmenu_sysinfo_opened)
 	{
@@ -4592,6 +4607,13 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		SYSMENU_swr_opened = false;
 		SWR_Stop();
+		systemMenuIndex = 0;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+	else if (SYSMENU_locator_info_opened)
+	{
+		SYSMENU_locator_info_opened = false;
+		LOCINFO_Stop();
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
@@ -4812,6 +4834,8 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 		return;
 	}
 	if (SYSMENU_swr_opened)
+		return;
+	if (SYSMENU_locator_info_opened)
 		return;
 	if (sysmenu_infowindow_opened)
 		return;
