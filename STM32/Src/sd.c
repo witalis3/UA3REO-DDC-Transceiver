@@ -729,6 +729,8 @@ static bool SDCOMM_OPEN_PLAY_FILE_handler(void)
 		LCD_showTooltip("SD error");
 		SD_PlayInProcess = false;
 		SD_Present = false;
+		TRX_ptt_soft = false;
+		TRX_ptt_change();
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
