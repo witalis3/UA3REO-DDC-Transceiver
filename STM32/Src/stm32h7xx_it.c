@@ -632,7 +632,6 @@ void TIM6_DAC_IRQHandler(void)
     TRX_Key_Timeout_est -= 10;
     if (TRX_Key_Timeout_est == 0)
     {
-      LCD_UpdateQuery.StatusInfoGUIRedraw = true;
       FPGA_NeedSendParams = true;
       TRX_Restart_Mode();
     }
