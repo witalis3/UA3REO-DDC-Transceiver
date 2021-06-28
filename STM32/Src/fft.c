@@ -553,6 +553,9 @@ bool FFT_printFFT(void)
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
 		uint8_t index = 0;
 		uint32_t grid_step = fft_current_spectrum_width_hz / 9.6;
+		if(grid_step < 1000)
+			grid_step = 1000;
+		grid_step =( grid_step / 1000) * 1000;
 
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 		{
