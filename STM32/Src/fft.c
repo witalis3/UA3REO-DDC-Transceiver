@@ -298,8 +298,8 @@ void FFT_bufferPrepare(void)
 	//Process DC corrector filter
 	if (!TRX_on_TX())
 	{
-		dc_filter(FFTInput_I_current, FFT_HALF_SIZE, DC_FILTER_FFT_I);
-		dc_filter(FFTInput_Q_current, FFT_HALF_SIZE, DC_FILTER_FFT_Q);
+		//dc_filter(FFTInput_I_current, FFT_HALF_SIZE, DC_FILTER_FFT_I);
+		//dc_filter(FFTInput_Q_current, FFT_HALF_SIZE, DC_FILTER_FFT_Q);
 	}
 
 	//Reset old samples if frequency changed
@@ -645,26 +645,8 @@ bool FFT_printFFT(void)
 	}
 	else //Manual Scale
 	{
-		// debug
-		/*float32_t minAmplValue = 0;
-		uint32_t minAmplValueIndex = 0;
-		arm_min_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &minAmplValue, &minAmplValueIndex);
-		float32_t debug_min = minAmplValue / (float32_t)TRX.FFT_Averaging / (float32_t)FFT_SIZE;
-		debug_min = debug_min * debug_min;
-		float32_t debug_max = maxAmplValue / (float32_t)TRX.FFT_Averaging / (float32_t)FFT_SIZE;
-		debug_max = debug_max * debug_max;
-		sendToDebug_str("min: ");
-		sendToDebug_float32(debug_min, true);
-		sendToDebug_str(" (");
-		sendToDebug_float32(rate2dbP(debug_min), true);
-		sendToDebug_str(") max: ");
-		sendToDebug_float32(debug_max, true);
-		sendToDebug_str(" (");
-		sendToDebug_float32(rate2dbP(debug_max), true);
-		sendToDebug_strln(")");*/
-
-		float32_t minManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualBottom - 2.0f) * 0.001f * 50.0f) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
-		float32_t maxManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualTop - 2.0f) * 0.001f * 50.0f) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
+		float32_t minManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualBottom - 2.0f + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) - ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) * 0.001f * 50.0f) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
+		float32_t maxManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualTop - 2.0f + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) - ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) * 0.001f * 50.0f) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
 		arm_offset_f32(FFTOutput_mean, -minManualAmplitude, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 			if (FFTOutput_mean[i] < 0)
@@ -1163,17 +1145,16 @@ bool FFT_printFFT(void)
 	//Print DBM grid
 	if(false)
 	{
-		println(maxAmplValue, " ", TRX_RX1_dBm, " ", getDBFromFFTAmpl(maxValueFFT));
 		char tmp[64] = {0};
 		int16_t max_dbm = getDBFromFFTAmpl(maxValueFFT + minValueFFT);
 		int16_t med_dbm = getDBFromFFTAmpl((maxValueFFT + minValueFFT) / 2.0f);
 		int16_t min_dbm = getDBFromFFTAmpl(minValueFFT);
 		sprintf(tmp, "%d", max_dbm);
-		LCDDriver_printTextInMemory(tmp, 2, 0, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+		LCDDriver_printTextInMemory(tmp, 0, 0, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 		sprintf(tmp, "%d", med_dbm);
-		LCDDriver_printTextInMemory(tmp, 2, fftHeight / 2 - 4, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+		LCDDriver_printTextInMemory(tmp, 0, fftHeight / 2 - 4, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 		sprintf(tmp, "%d", min_dbm);
-		LCDDriver_printTextInMemory(tmp, 2, fftHeight - 8, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+		LCDDriver_printTextInMemory(tmp, 0, fftHeight - 8, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 	}
 	
 	//Init print 2D FFT+WTF
@@ -1717,5 +1698,14 @@ static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center)
 
 static float32_t getDBFromFFTAmpl(float32_t ampl)
 {
-	return rate2dbP(powf(ampl / (float32_t)FFT_SIZE / (float32_t)TRX.FFT_Averaging, 2) / 50.0f / 0.001f) + 2.0f; //roughly... because window and other...
+	float32_t dbm = rate2dbP(powf(ampl / (float32_t)FFT_SIZE / (float32_t)TRX.FFT_Averaging, 2) / 50.0f / 0.001f) + 2.0f; //roughly... because window and other...
+	if (TRX.ADC_Driver)
+		dbm -= ADC_DRIVER_GAIN_DB;
+	
+	if(CurrentVFO->Freq < 70000000)
+		dbm += CALIBRATE.smeter_calibration_hf;
+	else
+		dbm += CALIBRATE.smeter_calibration_vhf;
+	
+	return dbm;
 }
