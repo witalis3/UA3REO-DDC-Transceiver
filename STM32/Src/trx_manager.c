@@ -174,6 +174,7 @@ static void TRX_Start_TXRX()
 	println("TXRX MODE");
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
+	TRX_TX_StartTime = HAL_GetTick();
 	TRX_TXRXMode = 3;
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 }

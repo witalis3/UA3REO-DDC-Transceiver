@@ -85,6 +85,11 @@ static float32_t CW_generateFallSignal(float32_t power)
 
 float32_t CW_GenerateSignal(float32_t power)
 {
+	//Do no signal before start TX delay
+	if ((HAL_GetTick() - TRX_TX_StartTime) < CALIBRATE.TX_StartDelay)
+		return 0.0f;
+		
+	//Keyer disabled
 	if (!TRX.CW_KEYER)
 	{
 		if (!CW_key_serial && !TRX_ptt_hard && !CW_key_dot_hard && !CW_key_dash_hard)
@@ -92,16 +97,17 @@ float32_t CW_GenerateSignal(float32_t power)
 		return CW_generateRiseSignal(power);
 	}
 	
-	//usb cw
+	//USB CW (Serial)
 	if(CW_key_serial)
 		return CW_generateRiseSignal(power);
 
-	//keyer
+	//Keyer
 	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
 	uint32_t dash_length_ms = dot_length_ms * 3;
 	uint32_t sim_space_length_ms = dot_length_ms;
 	uint32_t curTime = HAL_GetTick();
-	//dot
+	
+	//DOT .
 	if (KEYER_symbol_status == 0 && CW_key_dot_hard)
 	{
 		KEYER_symbol_start_time = curTime;
@@ -118,7 +124,7 @@ float32_t CW_GenerateSignal(float32_t power)
 		KEYER_symbol_status = 3;
 	}
 
-	//dash
+	//DASH -
 	if (KEYER_symbol_status == 0 && CW_key_dash_hard)
 	{
 		KEYER_symbol_start_time = curTime;
@@ -135,7 +141,7 @@ float32_t CW_GenerateSignal(float32_t power)
 		KEYER_symbol_status = 3;
 	}
 
-	//space
+	//SPACE
 	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) > curTime)
 	{
 		CW_Key_Timeout_est = TRX.CW_Key_timeout;

@@ -945,18 +945,20 @@ void processTxAudio(void)
 			dma_memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
 			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 		}
-		// delay before the RF signal is applied, so that the relay has time to trigger
+		
+		// Delay before the RF signal is applied, so that the relay has time to trigger
 		if ((HAL_GetTick() - TRX_TX_StartTime) < CALIBRATE.TX_StartDelay)
 		{
 			dma_memset((void *)&APROC_Audio_Buffer_TX_I[0], 0x00, sizeof(APROC_Audio_Buffer_TX_I));
 			dma_memset((void *)&APROC_Audio_Buffer_TX_Q[0], 0x00, sizeof(APROC_Audio_Buffer_TX_Q));
 		}
-		//send to FPGA
+		
+		//Send to FPGA (DMA)
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_Audio_Buffer_TX_I[0], sizeof(APROC_Audio_Buffer_TX_I));
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_Audio_Buffer_TX_Q[0], sizeof(APROC_Audio_Buffer_TX_Q));
 		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_I[0], sizeof(FPGA_Audio_SendBuffer_I));
 		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));
-		if (FPGA_Audio_Buffer_State) //Send to FPGA DMA
+		if (FPGA_Audio_Buffer_State)
 		{
 			HAL_MDMA_Start(&hmdma_mdma_channel41_sw_0, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel41_sw_0);

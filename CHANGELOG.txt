@@ -1,5 +1,6 @@
 ----Version 2.9.0----
 +STM32: Уменьшено моргание интерфейса при работе CW
++STM32: Доработана настройка TX Start Delay в режиме CW, Thx RA9N
 
 ----Version 2.8.1----
 +HARDW: Исправлена Motherboard rev30, Thx RA9UCN
