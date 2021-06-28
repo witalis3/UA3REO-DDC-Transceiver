@@ -283,6 +283,7 @@ extern struct TRX_SETTINGS
 	bool CW_KEYER;
 	uint16_t CW_KEYER_WPM;
 	bool CW_GaussFilter;
+	float32_t CW_DotToDashRate;
 	//SCREEN
 	uint8_t ColorThemeId;
 	uint8_t LayoutThemeId;

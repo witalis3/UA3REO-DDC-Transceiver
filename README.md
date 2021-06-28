@@ -182,6 +182,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **CW Keyer WPM** - Key Speed, WPM
 * **CW Gauss filter** - Gauss responce LPF filter
 * **CW Decoder** - Software CW receive decoder
+* **CW DotToDash Rate** - Keyer dash to dot length rate
 
 ### SCREEN Settings
 

@@ -93,6 +93,7 @@ static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
 static void SYSMENU_HANDL_CW_GaussFilter(int8_t direction);
+static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
@@ -436,6 +437,7 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 		{"CW Keyer WPM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
 		{"CW Gauss filter", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_GaussFilter, SYSMENU_HANDL_CW_GaussFilter},
 		{"CW Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CWDecoderEnabled, SYSMENU_HANDL_CW_Decoder},
+		{"CW DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
 };
 
 const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
@@ -1708,6 +1710,15 @@ static void SYSMENU_HANDL_CW_SelfHear(int8_t direction)
 		TRX.CW_SelfHear = true;
 	if (direction < 0)
 		TRX.CW_SelfHear = false;
+}
+
+static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction)
+{
+	TRX.CW_DotToDashRate += 0.01f * direction;
+	if (TRX.CW_DotToDashRate < 3.0f)
+		TRX.CW_DotToDashRate = 3.0f;
+	if (TRX.CW_DotToDashRate > 5.0f)
+		TRX.CW_DotToDashRate = 5.0f;
 }
 
 //SCREEN MENU

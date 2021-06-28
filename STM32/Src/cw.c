@@ -103,7 +103,7 @@ float32_t CW_GenerateSignal(float32_t power)
 
 	//Keyer
 	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
-	uint32_t dash_length_ms = dot_length_ms * 3;
+	uint32_t dash_length_ms = (float32_t)dot_length_ms * TRX.CW_DotToDashRate;
 	uint32_t sim_space_length_ms = dot_length_ms;
 	uint32_t curTime = HAL_GetTick();
 	

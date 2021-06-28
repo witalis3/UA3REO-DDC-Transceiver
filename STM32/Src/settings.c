@@ -213,6 +213,7 @@ void LoadSettings(bool clear)
 		TRX.CW_KEYER = true;			 // Automatic key
 		TRX.CW_KEYER_WPM = 30;			 // Automatic key speed
 		TRX.CW_GaussFilter = false;		 //Gauss responce LPF filter
+		TRX.CW_DotToDashRate = 3.0f;		// Dot To Dash length rate
 		//SCREEN
 		TRX.ColorThemeId = 0;	//Selected Color theme
 		TRX.LayoutThemeId = 0;	//Selected Layout theme
