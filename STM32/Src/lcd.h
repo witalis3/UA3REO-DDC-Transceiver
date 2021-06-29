@@ -63,7 +63,7 @@ extern void LCD_openWindow(uint16_t w, uint16_t h);
 extern void LCD_closeWindow(void);
 extern void LCD_showRFPowerWindow(void);
 extern void LCD_showManualFreqWindow(bool secondary_vfo);
-extern void LCD_printKeyboard(void);
+extern void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter));
 extern void LCD_hideKeyboard(void);
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
@@ -73,6 +73,5 @@ extern uint16_t LCD_bw_trapez_stripe_pos;
 extern WindowType LCD_window;
 extern STRUCT_COLOR_THEME *COLOR;
 extern STRUCT_LAYOUT_THEME *LAYOUT;
-extern void (*LCD_keyboardHandler)(uint32_t parameter);
 	
 #endif

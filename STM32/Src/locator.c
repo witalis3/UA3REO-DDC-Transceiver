@@ -16,6 +16,7 @@ char entered_locator[32] = {0};
 //Prototypes
 static float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat);
 static float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2);
+static float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) ;
 
 // start
 void LOCINFO_Start(void)
@@ -66,28 +67,36 @@ void LOCINFO_Draw(void)
 	float32_t lon = LOCINFO_get_latlon_from_locator(entered_locator, false);
 	float32_t my_lat = LOCINFO_get_latlon_from_locator(TRX.LOCATOR, true);
 	float32_t my_lon = LOCINFO_get_latlon_from_locator(TRX.LOCATOR, false);
-	println(lat, " ", lon, " ", my_lat, " ", my_lon);
+	uint16_t distance = LOCINFO_distanceInKmBetweenEarthCoordinates(my_lat, my_lon, lat, lon);
+	int16_t azimuth = LOCINFO_azimuthFromCoordinates(my_lat, my_lon, lat, lon);
 	
 	char tmp[64] = {0};
-	sprintf(tmp, "Enter Locator: %s", entered_locator);
+	
+	sprintf(tmp, "My Locator: %s", TRX.LOCATOR);
 	addSymbols(tmp, tmp, 15+8, " ", true);
 	LCDDriver_printText(tmp, 10, 30, FG_COLOR, BG_COLOR, 2);
 	
-	sprintf(tmp, "LAT: %f", lat);
+	sprintf(tmp, "Target Locator: %s", entered_locator);
 	addSymbols(tmp, tmp, 15+8, " ", true);
 	LCDDriver_printText(tmp, 10, 50, FG_COLOR, BG_COLOR, 2);
 	
-	sprintf(tmp, "LON: %f", lon);
+	sprintf(tmp, "LAT: %f", lat);
 	addSymbols(tmp, tmp, 15+8, " ", true);
 	LCDDriver_printText(tmp, 10, 70, FG_COLOR, BG_COLOR, 2);
 	
-	uint16_t distance = LOCINFO_distanceInKmBetweenEarthCoordinates(my_lat, my_lon, lat, lon);
-	sprintf(tmp, "Distance: %d km", distance);
+	sprintf(tmp, "LON: %f", lon);
 	addSymbols(tmp, tmp, 15+8, " ", true);
 	LCDDriver_printText(tmp, 10, 90, FG_COLOR, BG_COLOR, 2);
 	
-	LCD_keyboardHandler = LOCINFO_keyboardHandler;
-	LCD_printKeyboard();
+	sprintf(tmp, "Distance: %d km", distance);
+	addSymbols(tmp, tmp, 15+8, " ", true);
+	LCDDriver_printText(tmp, 10, 110, FG_COLOR, BG_COLOR, 2);
+	
+	sprintf(tmp, "Azimuth: %d deg", azimuth);
+	addSymbols(tmp, tmp, 15+8, " ", true);
+	LCDDriver_printText(tmp, 10, 130, FG_COLOR, BG_COLOR, 2);
+	
+	LCD_printKeyboard(LOCINFO_keyboardHandler);
 
 	LCD_busy = false;
 }
@@ -160,4 +169,21 @@ static float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, flo
   float32_t c = 2.0f * atan2f(sqrtf(a), sqrtf(1.0f - a)); 
 	
   return earthRadiusKm * c;
+}
+
+static float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) 
+{
+  float32_t dLat = DEG2RAD(lat2 - lat1);
+  float32_t dLon = DEG2RAD(lon2 - lon1);
+
+  lat1 = DEG2RAD(lat1);
+  lat2 = DEG2RAD(lat2);
+	
+	float32_t azimuth = atan2f((arm_sin_f32(dLon) * arm_cos_f32(lat2)), (arm_cos_f32(lat1) * arm_sin_f32(lat2) - arm_sin_f32(lat1) * arm_cos_f32(lat2) * arm_cos_f32(dLon)));
+	
+	azimuth = RAD2DEG(azimuth);
+	while(azimuth < 0)
+		azimuth += 360.0f;
+	
+  return azimuth;
 }

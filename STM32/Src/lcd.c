@@ -28,7 +28,6 @@ uint16_t LCD_bw_trapez_stripe_pos = 0;
 IRAM2 WindowType LCD_window = {0};
 STRUCT_COLOR_THEME *COLOR = &COLOR_THEMES[0];
 STRUCT_LAYOUT_THEME *LAYOUT = &LAYOUT_THEMES[0];
-void (*LCD_keyboardHandler)(uint32_t parameter) = NULL;
 
 static char LCD_freq_string_hz[6] = {0};
 static char LCD_freq_string_khz[6] = {0};
@@ -48,6 +47,7 @@ static uint16_t LCD_last_showed_freq_hz_B = 9999;
 #endif
 static uint32_t manualFreqEnter = 0;
 static bool LCD_screenKeyboardOpened = false;
+static void (*LCD_keyboardHandler)(uint32_t parameter) = NULL;
 
 static bool LCD_inited = false;
 static float32_t LCD_last_s_meter = 1.0f;
@@ -2006,9 +2006,11 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
 #endif
 }
 
-void LCD_printKeyboard(void)
+void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter))
 {
 	TouchpadButton_handlers_count = 0;
+	LCD_keyboardHandler = keyboardHandler;
+	
 	LCD_screenKeyboardOpened = true;
 	LCDDriver_Fill_RectWH(0, LCD_HEIGHT / 2, LCD_WIDTH, LCD_HEIGHT / 2, COLOR->KEYBOARD_BG);
 	const uint16_t button_width = (LCD_HEIGHT / 2 - LAYOUT->WINDOWS_BUTTON_MARGIN * 2) / 5;
@@ -2064,4 +2066,5 @@ void LCD_printKeyboard(void)
 void LCD_hideKeyboard(void)
 {
 	LCD_screenKeyboardOpened = false;
+	LCD_keyboardHandler = NULL;
 }

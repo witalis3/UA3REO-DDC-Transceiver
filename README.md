@@ -338,3 +338,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 ### Record CQ message
 
 * Record a short message for quick broadcast
+
+### Locator Info
+
+* Calculate distance and azimuth from QTH-locator

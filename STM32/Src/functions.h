@@ -96,6 +96,7 @@ __asm(".global __use_no_heap\n\t");
 #define F_PI 3.141592653589793238463f
 #define SQRT2 1.41421356237f
 #define DEG2RAD(x) ((float32_t)(x) * F_PI / 180.f)
+#define RAD2DEG(x) ((float32_t)(x) * 180.f / F_PI)
 #define ARRLENTH(x) (sizeof(x) / sizeof((x)[0]))
 #define MINI_DELAY                                       \
   for (uint_fast16_t wait_i = 0; wait_i < 100; wait_i++) \
