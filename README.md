@@ -342,3 +342,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 ### Locator Info
 
 * Calculate distance and azimuth from QTH-locator
+
+### Callsign Info
+
+* Show callsign data

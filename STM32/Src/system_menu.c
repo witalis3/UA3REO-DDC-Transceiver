@@ -19,6 +19,7 @@
 #include "filemanager.h"
 #include "rf_unit.h"
 #include "locator.h"
+#include "callsign.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -338,6 +339,7 @@ static void SYSMENU_HANDL_FILEMANAGER(int8_t direction);
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); //Tisho
 static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction);
+static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction);
 
 static bool SYSMENU_HANDL_CHECK_RFU_QRP(void);
 static bool SYSMENU_HANDL_CHECK_RFU_BIG(void);
@@ -720,6 +722,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 #endif
 #ifdef LAY_800x480
 		{"Locator info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_LOCATOR_INFO},
+		{"Callsign info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CALLSIGN_INFO},
 #endif
 };
 
@@ -4336,6 +4339,14 @@ static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+//CALLSIGN INFO
+static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction)
+{
+	SYSMENU_callsign_info_opened = true;
+	CALSIGN_INFO_Start();
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
 //COMMON MENU FUNCTIONS
 void SYSMENU_drawSystemMenu(bool draw_background)
 {
@@ -4406,6 +4417,10 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	else if (SYSMENU_locator_info_opened)
 	{
 		LOCINFO_Draw();
+	}
+	else if (SYSMENU_callsign_info_opened)
+	{
+		CALSIGN_INFO_Draw();
 	}
 	else if (sysmenu_sysinfo_opened)
 	{
@@ -4616,6 +4631,13 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		SYSMENU_locator_info_opened = false;
 		LOCINFO_Stop();
+		systemMenuIndex = 0;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+	else if (SYSMENU_callsign_info_opened)
+	{
+		SYSMENU_callsign_info_opened = false;
+		CALSIGN_INFO_Stop();
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
@@ -4838,6 +4860,8 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	if (SYSMENU_swr_opened)
 		return;
 	if (SYSMENU_locator_info_opened)
+		return;
+	if (SYSMENU_callsign_info_opened)
 		return;
 	if (sysmenu_infowindow_opened)
 		return;

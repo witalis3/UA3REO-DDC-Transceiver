@@ -16,7 +16,7 @@ char entered_locator[32] = {0};
 //Prototypes
 static float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat);
 static float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2);
-static float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) ;
+static float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2);
 
 // start
 void LOCINFO_Start(void)

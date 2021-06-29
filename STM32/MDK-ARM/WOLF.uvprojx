@@ -464,6 +464,16 @@
               <FilePath>..\Src\bootloader.h</FilePath>
             </File>
             <File>
+              <FileName>callsign.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\callsign.c</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\callsign.h</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\color_themes.h</FilePath>
@@ -1956,6 +1966,16 @@
               <FileName>bootloader.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\bootloader.h</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\callsign.c</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\callsign.h</FilePath>
             </File>
             <File>
               <FileName>color_themes.h</FileName>
@@ -3521,6 +3541,16 @@
               <FilePath>..\Src\bootloader.h</FilePath>
             </File>
             <File>
+              <FileName>callsign.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\callsign.c</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\callsign.h</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\color_themes.h</FilePath>
@@ -5082,6 +5112,16 @@
               <FileName>bootloader.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\bootloader.h</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\callsign.c</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\callsign.h</FilePath>
             </File>
             <File>
               <FileName>color_themes.h</FileName>
@@ -6647,6 +6687,16 @@
               <FilePath>..\Src\bootloader.h</FilePath>
             </File>
             <File>
+              <FileName>callsign.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\callsign.c</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\callsign.h</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\color_themes.h</FilePath>
@@ -8210,6 +8260,16 @@
               <FilePath>..\Src\bootloader.h</FilePath>
             </File>
             <File>
+              <FileName>callsign.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\callsign.c</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\callsign.h</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\color_themes.h</FilePath>
@@ -9771,6 +9831,16 @@
               <FileName>bootloader.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\bootloader.h</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\callsign.c</FilePath>
+            </File>
+            <File>
+              <FileName>callsign.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\callsign.h</FilePath>
             </File>
             <File>
               <FileName>color_themes.h</FileName>
