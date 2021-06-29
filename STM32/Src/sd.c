@@ -997,6 +997,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualTop", (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.RDS_Decoder", (uint32_t *)&TRX.RDS_Decoder, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_DXCluster", (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.FFT_DXCluster_Azimuth", (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_BOOLEAN);
 			//ADC
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_PGA", (uint32_t *)&TRX.ADC_PGA, SYSMENU_BOOLEAN);
@@ -1527,6 +1528,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.RDS_Decoder = bval;
 	if (strcmp(name, "TRX.FFT_DXCluster") == 0)
 		TRX.FFT_DXCluster = bval;
+	if (strcmp(name, "TRX.FFT_DXCluster_Azimuth") == 0)
+		TRX.FFT_DXCluster_Azimuth = bval;
 	//ADC
 	if (strcmp(name, "TRX.ADC_Driver") == 0)
 		TRX.ADC_Driver = uintval;

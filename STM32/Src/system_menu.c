@@ -125,6 +125,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_ManualBottom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ManualTop(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_RDS_Decoder(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON2(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON3(int8_t direction);
@@ -484,6 +485,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blackman", "Nutall", "BlNutall", "Hann", "Hamming", "No"}},
 		{"RDS Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RDS_Decoder, SYSMENU_HANDL_SCREEN_RDS_Decoder},
 		{"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
+		{"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
 #ifdef HRDW_HAS_FUNCBUTTONS
 #if FUNCBUTTONS_COUNT == 32
 		{"Func button 1", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[0], SYSMENU_HANDL_SCREEN_FUNC_BUTTON1},
@@ -1953,6 +1955,14 @@ static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction)
 		TRX.FFT_DXCluster = true;
 	if (direction < 0)
 		TRX.FFT_DXCluster = false;
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth(int8_t direction)
+{
+	if (direction > 0)
+		TRX.FFT_DXCluster_Azimuth = true;
+	if (direction < 0)
+		TRX.FFT_DXCluster_Azimuth = false;
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction)

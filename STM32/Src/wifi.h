@@ -19,6 +19,7 @@ typedef struct
 {
 	uint32_t Freq;
 	char Callsign[WIFI_DXCLUSTER_MAX_CALL_LEN];
+	uint16_t Azimuth;
 } DXCLUSTER_ENTRY;
 
 typedef enum

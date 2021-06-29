@@ -753,7 +753,7 @@ void TIM6_DAC_IRQHandler(void)
       WIFI_StartCATServer(NULL);
 		if(CALIBRATE.OTA_update && !WIFI_NewFW_checked)	//check OTA FW updates
 			WIFI_checkFWUpdates();
-		if((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || WIFI_DXCLUSTER_list_count == 0) //get and show dx cluster
+		if((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || WIFI_DXCLUSTER_list_count == 0 || TRX_DXCluster_UpdateTime == 0) //get and show dx cluster
 		{
 			if(WIFI_getDXCluster_background())
 				TRX_DXCluster_UpdateTime = HAL_GetTick();

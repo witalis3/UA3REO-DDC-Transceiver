@@ -1141,7 +1141,16 @@ bool FFT_printFFT(void)
 				{
 					prev_y = y;
 					prev_w = strlen(WIFI_DXCLUSTER_list[i].Callsign) * 6 + 4;
-					LCDDriver_printTextInMemory(WIFI_DXCLUSTER_list[i].Callsign, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+					
+					char str[64] = {0};
+					strcat(str, WIFI_DXCLUSTER_list[i].Callsign);
+					if(TRX.FFT_DXCluster_Azimuth)
+					{
+						sprintf(str, "%s %u^o", WIFI_DXCLUSTER_list[i].Callsign, WIFI_DXCLUSTER_list[i].Azimuth);
+						prev_w += 5 * 6;
+					}
+					
+					LCDDriver_printTextInMemory(str, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 					//vertical line
 					if (pos >= 0)
 						for(uint8_t y_line = 0 ; y_line < 8; y_line++)

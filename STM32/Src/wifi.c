@@ -11,6 +11,8 @@
 #include "fpga.h"
 #include "system_menu.h"
 #include "sd.h"
+#include "callsign.h"
+#include "locator.h"
 
 static WiFiProcessingCommand WIFI_ProcessingCommand = WIFI_COMM_NONE;
 static void (*WIFI_ProcessingCommandCallback)(void);
@@ -1141,6 +1143,17 @@ static void WIFI_getDXCluster_background_callback(void)
 					{
 						WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_list_count].Freq = freq;
 						strcpy(WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_list_count].Callsign, istr_l);
+						WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_list_count].Azimuth = 0;
+						if(TRX.FFT_DXCluster_Azimuth)
+						{
+							CALLSIGN_INFO_LINE *info;
+							CALLSIGN_getInfoByCallsign(&info, WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_list_count].Callsign);
+							float32_t my_lat = LOCINFO_get_latlon_from_locator(TRX.LOCATOR, true);
+							float32_t my_lon = LOCINFO_get_latlon_from_locator(TRX.LOCATOR, false);
+							int16_t azimuth = LOCINFO_azimuthFromCoordinates(my_lat, my_lon, info->lat, info->lon);
+							WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_list_count].Azimuth = azimuth;
+						}
+						
 						WIFI_DXCLUSTER_list_count++;
 						
 						istr_l = istr_r + 1;

@@ -31,4 +31,6 @@ extern void CALLSIGN_INFO_Stop(void);				  //stop session
 extern void CALLSIGN_INFO_Draw(void);			  //drawing
 extern void CALLSIGN_INFO_EncRotate(int8_t direction); //events per encoder tick
 
+extern void CALLSIGN_getInfoByCallsign(CALLSIGN_INFO_LINE **ret, char *call);
+
 #endif

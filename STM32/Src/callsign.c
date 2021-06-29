@@ -458,7 +458,6 @@ bool SYSMENU_callsign_info_opened = false;
 char entered_callsign[32] = {0};
 
 //Prototypes
-static void CALLSIGN_getInfoByCallsign(CALLSIGN_INFO_LINE **ret, char *call);
 
 // start
 void CALLSIGN_INFO_Start(void)
@@ -577,7 +576,7 @@ void CALLSIGN_INFO_EncRotate(int8_t direction)
 	LCD_busy = false;*/
 }
 
-static void CALLSIGN_getInfoByCallsign(CALLSIGN_INFO_LINE **ret, char *call)
+void CALLSIGN_getInfoByCallsign(CALLSIGN_INFO_LINE **ret, char *call)
 {
 	*ret = NULL;
 	if(strlen(call) < 1)

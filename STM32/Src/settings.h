@@ -313,6 +313,7 @@ extern struct TRX_SETTINGS
 	int16_t FFT_ManualTop;
 	bool RDS_Decoder;
 	bool FFT_DXCluster;
+	bool FFT_DXCluster_Azimuth;
 	uint8_t FuncButtons[FUNCBUTTONS_COUNT];
 	//ADC
 	bool ADC_Driver;
