@@ -5,14 +5,30 @@
 #include "main.h"
 #include "stdbool.h"
 #include "stdint.h"
+#include "functions.h"
+
+#define CALLSIGN_DB_GLOBAL_COUNT 346
+#define CALLSIGN_DB_RUS_COUNT 89
+
+typedef struct // description of the call database
+{
+	const char *continent;
+	const char *country;
+	const uint8_t cq_zone;
+	const uint8_t itu_zone;
+	const float32_t lat;
+	const float32_t lon;
+	const char (*prefixes)[7];
+	const uint16_t prefixesCount;
+} CALLSIGN_INFO_LINE;
 
 //Public variabled
 extern bool SYSMENU_callsign_info_opened;
 
 //Public methods
-extern void CALSIGN_INFO_Start(void);				  //launch
-extern void CALSIGN_INFO_Stop(void);				  //stop session
-extern void CALSIGN_INFO_Draw(void);			  //drawing
-extern void CALSIGN_INFO_EncRotate(int8_t direction); //events per encoder tick
+extern void CALLSIGN_INFO_Start(void);				  //launch
+extern void CALLSIGN_INFO_Stop(void);				  //stop session
+extern void CALLSIGN_INFO_Draw(void);			  //drawing
+extern void CALLSIGN_INFO_EncRotate(int8_t direction); //events per encoder tick
 
 #endif

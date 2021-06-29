@@ -906,3 +906,10 @@ char cleanASCIIgarbage(char chr)
 		return 0;
 	return chr;
 }
+
+bool textStartsWith(const char *a, const char *b)
+{
+  if(strncmp(a, b, strlen(b)) == 0) 
+		return 1;
+	return 0;
+}

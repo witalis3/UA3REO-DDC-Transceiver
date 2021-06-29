@@ -210,6 +210,7 @@ extern unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte);
 extern void sd_crc_generate_table(void);
 extern void arm_biquad_cascade_df2T_f32_rolled(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst,uint32_t blockSize);
 extern char cleanASCIIgarbage(char chr);
+extern bool textStartsWith(const char *a, const char *b);
 
 inline float sqrtf_f32i(float f)
 {

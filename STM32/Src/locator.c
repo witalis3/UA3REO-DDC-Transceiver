@@ -14,9 +14,6 @@ bool SYSMENU_locator_info_opened = false;
 char entered_locator[32] = {0};
 
 //Prototypes
-static float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat);
-static float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2);
-static float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2);
 
 // start
 void LOCINFO_Start(void)
@@ -111,7 +108,7 @@ void LOCINFO_EncRotate(int8_t direction)
 	LCD_busy = false;*/
 }
 
-static float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat)
+float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat)
 {
 	//origin
 	float32_t lon = -180.0f; //Positive: East, negative: West.
@@ -155,7 +152,7 @@ static float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat)
 		return lon;
 }
 
-static float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) 
+float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) 
 {
   float32_t earthRadiusKm = 6371.0f;
 
@@ -171,7 +168,7 @@ static float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, flo
   return earthRadiusKm * c;
 }
 
-static float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) 
+float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) 
 {
   float32_t dLat = DEG2RAD(lat2 - lat1);
   float32_t dLon = DEG2RAD(lon2 - lon1);

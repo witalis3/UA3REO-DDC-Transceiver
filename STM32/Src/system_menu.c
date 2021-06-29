@@ -4343,7 +4343,7 @@ static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction)
 static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction)
 {
 	SYSMENU_callsign_info_opened = true;
-	CALSIGN_INFO_Start();
+	CALLSIGN_INFO_Start();
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -4420,7 +4420,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	}
 	else if (SYSMENU_callsign_info_opened)
 	{
-		CALSIGN_INFO_Draw();
+		CALLSIGN_INFO_Draw();
 	}
 	else if (sysmenu_sysinfo_opened)
 	{
@@ -4637,7 +4637,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 	else if (SYSMENU_callsign_info_opened)
 	{
 		SYSMENU_callsign_info_opened = false;
-		CALSIGN_INFO_Stop();
+		CALLSIGN_INFO_Stop();
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
