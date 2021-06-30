@@ -60,7 +60,7 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"DIGU",
 	"IQ",
 	"LOOP",
-	"NOTX",
+	"RTTY",
 };
 
 void LoadSettings(bool clear)
@@ -206,7 +206,6 @@ void LoadSettings(bool clear)
 		TRX.Beeper = true;								   //Keyboard beeper
 		TRX.CTCSS_Freq = 0;									//CTCSS FM Frequency
 		//CW
-		TRX.CWDecoderEnabled = false;			 // automatic telegraph decoder
 		TRX.CW_Pitch = 600; // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;		 // time of releasing transmission after the last character on the key
 		TRX.CW_SelfHear = true;			 // self-control CW
@@ -246,11 +245,16 @@ void LoadSettings(bool clear)
 		TRX.FFT_3D = 0;				 //FFT 3D mode
 		TRX.FFT_ManualBottom = -130; //Minimal threshold for manual FFT scale
 		TRX.FFT_ManualTop = -40;	 //Maximum threshold for manual FFT scale
-		TRX.RDS_Decoder = true;		//RDS Decoder panel
 		TRX.FFT_DXCluster = false;	//Show DX cluster over FFT
 		TRX.FFT_DXCluster_Azimuth = false;	//Add azimut to callsign
 		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)
 			TRX.FuncButtons[i] = i;
+		//DECODERS
+		TRX.CW_Decoder = false;			 // automatic telegraph decoder
+		TRX.RDS_Decoder = true;		//RDS Decoder panel
+		TRX.RTTY_Speed = 50;			//RTTY decoder speed
+		TRX.RTTY_Shift = 170;			//RTTY decoder shift
+		TRX.RTTY_Freq = 300;			//RTTY decoder center frequency
 		//ADC
 		TRX.ADC_Driver = true; // preamplifier (ADC driver)
 		TRX.ADC_PGA = true;	   // ADC preamp

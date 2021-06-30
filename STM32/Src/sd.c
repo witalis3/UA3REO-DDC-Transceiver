@@ -960,7 +960,6 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.Beeper", (uint32_t *)&TRX.Beeper, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CTCSS_Freq", (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_FLOAT32);
 			//CW
-			SD_WRITE_SETT_LINE("TRX.CWDecoder", (uint32_t *)&TRX.CWDecoderEnabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_Pitch", (uint32_t *)&TRX.CW_Pitch, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_Key_timeout", (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_SelfHear", (uint32_t *)&TRX.CW_SelfHear, SYSMENU_UINT16);
@@ -995,9 +994,14 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FFT_Automatic", (uint32_t *)&TRX.FFT_Automatic, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualBottom", (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualTop", (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_INT16);
-			SD_WRITE_SETT_LINE("TRX.RDS_Decoder", (uint32_t *)&TRX.RDS_Decoder, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_DXCluster", (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_DXCluster_Azimuth", (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_BOOLEAN);
+			//DECODER
+			SD_WRITE_SETT_LINE("TRX.CW_Decoder", (uint32_t *)&TRX.CW_Decoder, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.RDS_Decoder", (uint32_t *)&TRX.RDS_Decoder, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.RTTY_Speed", (uint32_t *)&TRX.RTTY_Speed, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.RTTY_Shift", (uint32_t *)&TRX.RTTY_Shift, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.RTTY_Freq", (uint32_t *)&TRX.RTTY_Freq, SYSMENU_UINT16);
 			//ADC
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_PGA", (uint32_t *)&TRX.ADC_PGA, SYSMENU_BOOLEAN);
@@ -1455,8 +1459,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (strcmp(name, "TRX.CTCSS_Freq") == 0)
 		TRX.CTCSS_Freq = floatval;
 	//CW
-	if (strcmp(name, "TRX.CWDecoder") == 0)
-		TRX.CWDecoderEnabled = uintval;
 	if (strcmp(name, "TRX.CW_Pitch") == 0)
 		TRX.CW_Pitch = (uint16_t)uintval;
 	if (strcmp(name, "TRX.CW_Key_timeout") == 0)
@@ -1524,12 +1526,21 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.FFT_ManualBottom = (int16_t)intval;
 	if (strcmp(name, "TRX.FFT_ManualTop") == 0)
 		TRX.FFT_ManualTop = (int16_t)intval;
-	if (strcmp(name, "TRX.RDS_Decoder") == 0)
-		TRX.RDS_Decoder = bval;
 	if (strcmp(name, "TRX.FFT_DXCluster") == 0)
 		TRX.FFT_DXCluster = bval;
 	if (strcmp(name, "TRX.FFT_DXCluster_Azimuth") == 0)
 		TRX.FFT_DXCluster_Azimuth = bval;
+	//DECODERS
+	if (strcmp(name, "TRX.CW_Decoder") == 0)
+		TRX.CW_Decoder = bval;
+	if (strcmp(name, "TRX.RDS_Decoder") == 0)
+		TRX.RDS_Decoder = bval;
+	if (strcmp(name, "TRX.RTTY_Speed") == 0)
+		TRX.RTTY_Speed = uintval;
+	if (strcmp(name, "TRX.RTTY_Shift") == 0)
+		TRX.RTTY_Shift = uintval;
+	if (strcmp(name, "TRX.RTTY_Freq") == 0)
+		TRX.RTTY_Freq = uintval;
 	//ADC
 	if (strcmp(name, "TRX.ADC_Driver") == 0)
 		TRX.ADC_Driver = uintval;

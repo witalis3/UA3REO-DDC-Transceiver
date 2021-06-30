@@ -746,6 +746,7 @@ bool FFT_printFFT(void)
 			rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		case TRX_MODE_USB:
+		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
 			bw_rx1_line_width = (int32_t)(curwidth / hz_in_pixel * fft_zoom);
 			if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
@@ -785,6 +786,7 @@ bool FFT_printFFT(void)
 			rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
 			break;
 		case TRX_MODE_USB:
+		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
 			bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / hz_in_pixel * fft_zoom);
 			if (bw_rx2_line_width > (LAYOUT->FFT_PRINT_SIZE / 2))
@@ -1339,7 +1341,7 @@ void FFT_afterPrintFFT(void)
 				uint16_t region_color = COLOR->BANDMAP_SSB;
 				if (BANDS[band].regions[region].mode == TRX_MODE_CW)
 					region_color = COLOR->BANDMAP_CW;
-				else if (BANDS[band].regions[region].mode == TRX_MODE_DIGI_L || BANDS[band].regions[region].mode == TRX_MODE_DIGI_U)
+				else if (BANDS[band].regions[region].mode == TRX_MODE_DIGI_L || BANDS[band].regions[region].mode == TRX_MODE_DIGI_U || BANDS[band].regions[region].mode == TRX_MODE_RTTY)
 					region_color = COLOR->BANDMAP_DIGI;
 				else if (BANDS[band].regions[region].mode == TRX_MODE_NFM || BANDS[band].regions[region].mode == TRX_MODE_WFM)
 					region_color = COLOR->BANDMAP_FM;

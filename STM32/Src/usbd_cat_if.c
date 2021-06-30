@@ -905,10 +905,8 @@ static void getFT450Mode(uint8_t VFO_Mode, char* out)
 		strcpy(out, "3");
 	if (VFO_Mode == TRX_MODE_DIGI_L)
 		strcpy(out, "8");
-	if (VFO_Mode == TRX_MODE_DIGI_U)
+	if (VFO_Mode == TRX_MODE_DIGI_U || VFO_Mode == TRX_MODE_RTTY)
 		strcpy(out, "C");
-	if (VFO_Mode == TRX_MODE_NO_TX)
-		strcpy(out, "8");
 	if (VFO_Mode == TRX_MODE_NFM)
 		strcpy(out, "4");
 	if (VFO_Mode == TRX_MODE_WFM)

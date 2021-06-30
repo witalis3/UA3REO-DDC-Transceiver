@@ -689,6 +689,16 @@
               <FilePath>..\Src\rf_unit.h</FilePath>
             </File>
             <File>
+              <FileName>rtty_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rtty_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rtty_decoder.h</FilePath>
+            </File>
+            <File>
               <FileName>screen_layout.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\screen_layout.h</FilePath>
@@ -2191,6 +2201,16 @@
               <FileName>rf_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\rf_unit.h</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rtty_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rtty_decoder.h</FilePath>
             </File>
             <File>
               <FileName>screen_layout.h</FileName>
@@ -3766,6 +3786,16 @@
               <FilePath>..\Src\rf_unit.h</FilePath>
             </File>
             <File>
+              <FileName>rtty_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rtty_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rtty_decoder.h</FilePath>
+            </File>
+            <File>
               <FileName>screen_layout.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\screen_layout.h</FilePath>
@@ -5337,6 +5367,16 @@
               <FileName>rf_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\rf_unit.h</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rtty_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rtty_decoder.h</FilePath>
             </File>
             <File>
               <FileName>screen_layout.h</FileName>
@@ -6912,6 +6952,16 @@
               <FilePath>..\Src\rf_unit.h</FilePath>
             </File>
             <File>
+              <FileName>rtty_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rtty_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rtty_decoder.h</FilePath>
+            </File>
+            <File>
               <FileName>screen_layout.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\screen_layout.h</FilePath>
@@ -8485,6 +8535,16 @@
               <FilePath>..\Src\rf_unit.h</FilePath>
             </File>
             <File>
+              <FileName>rtty_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rtty_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rtty_decoder.h</FilePath>
+            </File>
+            <File>
               <FileName>screen_layout.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\screen_layout.h</FilePath>
@@ -10056,6 +10116,16 @@
               <FileName>rf_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\rf_unit.h</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rtty_decoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtty_decoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\rtty_decoder.h</FilePath>
             </File>
             <File>
               <FileName>screen_layout.h</FileName>

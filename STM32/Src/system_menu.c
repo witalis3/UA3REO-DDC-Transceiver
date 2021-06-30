@@ -89,7 +89,6 @@ static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CTCSS_Freq(int8_t direction);
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
-static void SYSMENU_HANDL_CW_Decoder(int8_t direction);
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
@@ -123,7 +122,6 @@ static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ManualBottom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ManualTop(int8_t direction);
-static void SYSMENU_HANDL_SCREEN_RDS_Decoder(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction);
@@ -158,6 +156,12 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON30(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON31(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction);
+
+static void SYSMENU_HANDL_DECODERS_CW_Decoder(int8_t direction);
+static void SYSMENU_HANDL_DECODERS_RDS_Decoder(int8_t direction);
+static void SYSMENU_HANDL_DECODERS_RTTY_Speed(int8_t direction);
+static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction);
+static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction);
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
@@ -324,6 +328,7 @@ static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
+static void SYSMENU_HANDL_DECODERSMENU(int8_t direction);
 static void SYSMENU_HANDL_ADCMENU(int8_t direction);
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_SDMENU(int8_t direction);
@@ -353,6 +358,7 @@ const static struct sysmenu_item_handler sysmenu_handlers[] =
 		{"AUDIO Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_AUDIOMENU},
 		{"CW Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_CWMENU},
 		{"SCREEN Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_LCDMENU},
+		{"Decoders", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_DECODERSMENU},
 		{"ADC/DAC Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_ADCMENU},
 		{"WIFI Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WIFIMENU},
 		{"SD Card", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SDMENU},
@@ -444,7 +450,6 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 		{"CW Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
 		{"CW Keyer WPM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
 		{"CW Gauss filter", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_GaussFilter, SYSMENU_HANDL_CW_GaussFilter},
-		{"CW Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CWDecoderEnabled, SYSMENU_HANDL_CW_Decoder},
 		{"CW DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
 		{"CW Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
 		{"CW Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
@@ -483,7 +488,6 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Compressor", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
 		{"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 		{"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blackman", "Nutall", "BlNutall", "Hann", "Hamming", "No"}},
-		{"RDS Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RDS_Decoder, SYSMENU_HANDL_SCREEN_RDS_Decoder},
 		{"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
 		{"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
 #ifdef HRDW_HAS_FUNCBUTTONS
@@ -522,6 +526,15 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"Func button 32", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[31], SYSMENU_HANDL_SCREEN_FUNC_BUTTON32},
 #endif
 #endif
+};
+
+const static struct sysmenu_item_handler sysmenu_decoders_handlers[] =
+	{
+		{"CW Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Decoder, SYSMENU_HANDL_DECODERS_CW_Decoder},
+		{"RDS Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RDS_Decoder, SYSMENU_HANDL_DECODERS_RDS_Decoder},
+		{"RTTY Speed", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Speed, SYSMENU_HANDL_DECODERS_RTTY_Speed},
+		{"RTTY Shift", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Shift, SYSMENU_HANDL_DECODERS_RTTY_Shift},
+		{"RTTY Freq", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Freq, SYSMENU_HANDL_DECODERS_RTTY_Freq},
 };
 
 const static struct sysmenu_item_handler sysmenu_adc_handlers[] =
@@ -1668,14 +1681,6 @@ void SYSMENU_CW_KEYER_HOTKEY(void)
 	LCD_redraw(false);
 }
 
-static void SYSMENU_HANDL_CW_Decoder(int8_t direction)
-{
-	if (direction > 0)
-		TRX.CWDecoderEnabled = true;
-	if (direction < 0)
-		TRX.CWDecoderEnabled = false;
-}
-
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction)
 {
 	TRX.CW_Pitch += direction * 10;
@@ -1939,14 +1944,6 @@ static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction)
 		TRX.WTF_Moving = true;
 	if (direction < 0)
 		TRX.WTF_Moving = false;
-}
-
-static void SYSMENU_HANDL_SCREEN_RDS_Decoder(int8_t direction)
-{
-	if (direction > 0)
-		TRX.RDS_Decoder = true;
-	if (direction < 0)
-		TRX.RDS_Decoder = false;
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction)
@@ -2304,6 +2301,58 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction)
 		TRX.FuncButtons[31] += direction;
 	if (TRX.FuncButtons[31] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[31] = FUNCBUTTONS_COUNT - 1;
+}
+
+//DECODERS MENU
+
+static void SYSMENU_HANDL_DECODERSMENU(int8_t direction)
+{
+#pragma unused(direction)
+	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_decoders_handlers[0];
+	sysmenu_item_count = sizeof(sysmenu_decoders_handlers) / sizeof(sysmenu_decoders_handlers[0]);
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	LCD_redraw(false);
+}
+
+static void SYSMENU_HANDL_DECODERS_CW_Decoder(int8_t direction)
+{
+	if (direction > 0)
+		TRX.CW_Decoder = true;
+	if (direction < 0)
+		TRX.CW_Decoder = false;
+}
+
+static void SYSMENU_HANDL_DECODERS_RDS_Decoder(int8_t direction)
+{
+	if (direction > 0)
+		TRX.RDS_Decoder = true;
+	if (direction < 0)
+		TRX.RDS_Decoder = false;
+}
+
+static void SYSMENU_HANDL_DECODERS_RTTY_Speed(int8_t direction)
+{
+	if (direction > 0)
+		TRX.RTTY_Speed = true;
+	if (direction < 0)
+		TRX.RTTY_Speed = false;
+}
+
+static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction)
+{
+	if (direction > 0)
+		TRX.RTTY_Shift = true;
+	if (direction < 0)
+		TRX.RTTY_Shift = false;
+}
+
+static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction)
+{
+	if (direction > 0)
+		TRX.RTTY_Freq = true;
+	if (direction < 0)
+		TRX.RTTY_Freq = false;
 }
 
 //ADC/DAC MENU

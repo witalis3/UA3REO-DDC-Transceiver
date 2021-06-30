@@ -987,6 +987,8 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_P(uint32_t parameter)
 	else if (mode == TRX_MODE_DIGI_L)
 		mode = TRX_MODE_DIGI_U;
 	else if (mode == TRX_MODE_DIGI_U)
+		mode = TRX_MODE_RTTY;
+	else if (mode == TRX_MODE_RTTY)
 		mode = TRX_MODE_DIGI_L;
 	else if (mode == TRX_MODE_AM)
 		mode = TRX_MODE_SAM;
@@ -1023,7 +1025,7 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_N(uint32_t parameter)
 		mode = TRX_MODE_CW;
 	else if (mode == TRX_MODE_CW)
 		mode = TRX_MODE_DIGI_U;
-	else if (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U)
+	else if (mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY)
 		mode = TRX_MODE_NFM;
 	else if (mode == TRX_MODE_NFM || mode == TRX_MODE_WFM)
 		mode = TRX_MODE_AM;
@@ -1635,7 +1637,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_RX_BW(uint32_t parameter)
 {
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		TRX.CW_LPF_Filter = parameter;
-	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U)
+	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
 		TRX.SSB_LPF_RX_Filter = parameter;
 	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
 		TRX.AM_LPF_RX_Filter = parameter;
@@ -1652,7 +1654,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_TX_BW(uint32_t parameter)
 {
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		TRX.CW_LPF_Filter = parameter;
-	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U)
+	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
 		TRX.SSB_LPF_TX_Filter = parameter;
 	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
 		TRX.AM_LPF_TX_Filter = parameter;

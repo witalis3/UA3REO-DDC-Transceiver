@@ -12,7 +12,7 @@
 #define TRX_GetRXSampleRate ((CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->Mode != TRX_MODE_NFM) ? TRX_GetSamplerateByENUM(TRX.SAMPLERATE_MAIN) : TRX_GetSamplerateByENUM(TRX.SAMPLERATE_FM))
 #define TRX_GetRXSampleRateENUM ((CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->Mode != TRX_MODE_NFM) ? TRX.SAMPLERATE_MAIN : TRX.SAMPLERATE_FM)
 
-#define NeedProcessDecoder ((TRX.CWDecoderEnabled && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK)) || (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM))
+#define NeedProcessDecoder ((TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK)) || (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM) || CurrentVFO->Mode == TRX_MODE_RTTY)
 
 extern void TRX_Init(void);
 extern void TRX_setFrequency(uint32_t _freq, VFO *vfo);

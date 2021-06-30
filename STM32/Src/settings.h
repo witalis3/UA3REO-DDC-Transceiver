@@ -106,7 +106,7 @@ typedef enum
 	TRX_MODE_DIGI_U,
 	TRX_MODE_IQ,
 	TRX_MODE_LOOPBACK,
-	TRX_MODE_NO_TX,
+	TRX_MODE_RTTY,
 } TRX_MODE;
 #define TRX_MODE_COUNT 12
 
@@ -276,7 +276,6 @@ extern struct TRX_SETTINGS
 	bool Beeper;
 	float32_t CTCSS_Freq;
 	//CW
-	bool CWDecoderEnabled;
 	uint16_t CW_Pitch;
 	uint16_t CW_Key_timeout;
 	uint16_t CW_SelfHear;
@@ -311,10 +310,15 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_3D;
 	int16_t FFT_ManualBottom;
 	int16_t FFT_ManualTop;
-	bool RDS_Decoder;
 	bool FFT_DXCluster;
 	bool FFT_DXCluster_Azimuth;
 	uint8_t FuncButtons[FUNCBUTTONS_COUNT];
+	//DECODERS
+	bool CW_Decoder;
+	bool RDS_Decoder;
+	uint16_t RTTY_Speed;
+	uint16_t RTTY_Shift;
+	uint16_t RTTY_Freq;
 	//ADC
 	bool ADC_Driver;
 	bool ADC_PGA;

@@ -181,7 +181,6 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **CW Keyer** - Automatic Key
 * **CW Keyer WPM** - Key Speed, WPM
 * **CW Gauss filter** - Gauss responce LPF filter
-* **CW Decoder** - Software CW receive decoder
 * **CW DotToDash Rate** - Keyer dash to dot length rate
 * **CW Iambic Keyer** - Enable Iambic mode keyer
 * **CW Key Invert** - Invert dash/dot on key
@@ -212,9 +211,15 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FFT Compressor** - Enable FFT peak comressor
 * **FFT Averaging** - FFT burst averaging level
 * **FFT Window** - Select FFT window (1-Dolph–Chebyshev 2-Blackman-Harris 3-Nutall 4-Blackman-Nutall 5-Hann 6-Hamming 7-No window)
-* **RDS Decoder** - Enable RDS Decoder for WFM mode
 * **FFT DXCluster** - Show DXCluster info over FFT
 * **FFT DXCluster Azimuth** - Add azimuth data to DX-cluster
+
+### Decoders
+* **CW Decoder** - Software CW receive decoder
+* **RDS Decoder** - Enable RDS Decoder for WFM mode
+* **RTTY Speed** - Speed of RTTY data
+* **RTTY Shift** - RTTY carrier shifts
+* **RTTY Freq** - Central frequency of RTTY decoding
 
 ### ADC / DAC Settings
 

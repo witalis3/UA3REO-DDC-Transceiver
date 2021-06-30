@@ -1,6 +1,7 @@
 #include "decoder.h"
 #include "cw_decoder.h"
 #include "rds_decoder.h"
+#include "rtty_decoder.h"
 
 //Private variables
 static SRAM float32_t DECODER_Buffer[DECODER_BUFF_SIZE] = {0};
@@ -11,6 +12,7 @@ void DECODER_Init(void)
 {
 	CWDecoder_Init();
 	RDSDecoder_Init();
+	RTTYDecoder_Init();
 }
 
 void DECODER_PutSamples(float32_t *bufferIn, uint32_t size)
@@ -48,10 +50,14 @@ void DECODER_Process(void)
 		DECODER_tail = 0;
 
 	//CW Decoder
-	if (TRX.CWDecoderEnabled && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
 		CWDecoder_Process(bufferOut);
 	
 	//RDS Decoder
-	if (CurrentVFO->Mode == TRX_MODE_WFM)
+	if (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM)
 		RDSDecoder_Process(bufferOut);
+	
+	//RTTY Decoder
+	if (CurrentVFO->Mode == TRX_MODE_RTTY)
+		RTTYDecoder_Process(bufferOut);
 }

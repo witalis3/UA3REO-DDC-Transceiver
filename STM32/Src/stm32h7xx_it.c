@@ -536,8 +536,7 @@ void TIM5_IRQHandler(void)
 
   if (TRX_on_TX())
   {
-    if (CurrentVFO->Mode != TRX_MODE_NO_TX)
-      processTxAudio();
+		processTxAudio();
   }
   else
   {
@@ -1055,7 +1054,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
   else if (GPIO_Pin == GPIO_PIN_4) //PTT
   {
-    if (TRX_Inited && CurrentVFO->Mode != TRX_MODE_NO_TX)
+    if (TRX_Inited)
       TRX_ptt_change();
   }
   else if (GPIO_Pin == GPIO_PIN_1) //KEY DOT

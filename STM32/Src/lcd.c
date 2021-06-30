@@ -13,6 +13,7 @@
 #include "noise_reduction.h"
 #include "cw_decoder.h"
 #include "rds_decoder.h"
+#include "rtty_decoder.h"
 #include "front_unit.h"
 #include "screen_layout.h"
 #include "images.h"
@@ -574,6 +575,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 		break;
 	case TRX_MODE_USB:
 		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_Filter;
+	case TRX_MODE_RTTY:
 	case TRX_MODE_DIGI_U:
 		bw_trapez_bw_left_width = 0.0f;
 		if (TRX_on_TX())
@@ -1009,7 +1011,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	//BW HPF-LPF
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		sprintf(buff, "BW:%d", TRX.CW_LPF_Filter);
-	else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U))
+	else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY))
 	{
 		if (TRX_on_TX())
 			sprintf(buff, "BW:%d", TRX.SSB_LPF_TX_Filter);
@@ -1166,7 +1168,7 @@ static void LCD_displayTextBar(void)
 	}
 	LCD_busy = true;
 
-	if (TRX.CWDecoderEnabled && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
 	{
 		char ctmp[70];
 		sprintf(ctmp, "WPM:%d %s", CW_Decoder_WPM, (char *)&CW_Decoder_Text);
@@ -1175,6 +1177,10 @@ static void LCD_displayTextBar(void)
 	else if (NeedProcessDecoder && CurrentVFO->Mode == TRX_MODE_WFM)
 	{
 		LCDDriver_printText(RDS_Decoder_Text, 2, (LCD_HEIGHT - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET + 1), COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
+	}
+	else if (NeedProcessDecoder && CurrentVFO->Mode == TRX_MODE_RTTY)
+	{
+		LCDDriver_printText(RTTY_Decoder_Text, 2, (LCD_HEIGHT - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET + 1), COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
 	}
 
 	LCD_UpdateQuery.TextBar = false;
@@ -1804,7 +1810,7 @@ static void LCD_showBWWindow(void)
 		cur_width = CurrentVFO->LPF_TX_Filter_Width;
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		filters_count = CW_LPF_COUNT;
-	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U)
+	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
 		filters_count = SSB_LPF_COUNT;
 	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
 		filters_count = AM_LPF_COUNT;
@@ -1827,7 +1833,7 @@ static void LCD_showBWWindow(void)
 			uint32_t width = 0;
 			if (CurrentVFO->Mode == TRX_MODE_CW)
 				width = AUTIO_FILTERS_LPF_CW_LIST[index];
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U)
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
 				width = AUTIO_FILTERS_LPF_SSB_LIST[index];
 			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
 				width = AUTIO_FILTERS_LPF_AM_LIST[index];
