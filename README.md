@@ -42,7 +42,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Digital Noise Reduction (DNR), Pulse Noise Reduction (NB)
 * CAT / PTT virtual COM ports (FT-450 emulation)
 * USB operation (audio transmission, CAT, KEY, PTT)
-* RDS/CW decoder, self-control, gauss filter
+* RDS/CW/RTTY decoder, self-control, gauss filter
 * SWR Graphs
 * Spectrum analyzer
 * WSPR Beacon
