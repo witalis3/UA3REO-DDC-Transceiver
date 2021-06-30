@@ -20,6 +20,7 @@
 #include "rf_unit.h"
 #include "locator.h"
 #include "callsign.h"
+#include "rtty_decoder.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -2359,6 +2360,8 @@ static void SYSMENU_HANDL_DECODERS_RTTY_Speed(int8_t direction)
 		else if(TRX.RTTY_Speed == 50)
 			TRX.RTTY_Speed = 45;
 	}
+	
+	RTTYDecoder_Init();
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction)
