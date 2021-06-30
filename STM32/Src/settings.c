@@ -252,7 +252,7 @@ void LoadSettings(bool clear)
 		//DECODERS
 		TRX.CW_Decoder = false;			 // automatic telegraph decoder
 		TRX.RDS_Decoder = true;		//RDS Decoder panel
-		TRX.RTTY_Speed = 50;			//RTTY decoder speed
+		TRX.RTTY_Speed = 45;			//RTTY decoder speed
 		TRX.RTTY_Shift = 170;			//RTTY decoder shift
 		TRX.RTTY_Freq = 300;			//RTTY decoder center frequency
 		//ADC

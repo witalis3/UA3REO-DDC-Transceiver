@@ -2334,25 +2334,65 @@ static void SYSMENU_HANDL_DECODERS_RDS_Decoder(int8_t direction)
 static void SYSMENU_HANDL_DECODERS_RTTY_Speed(int8_t direction)
 {
 	if (direction > 0)
-		TRX.RTTY_Speed = true;
+	{
+		if(TRX.RTTY_Speed == 45)
+			TRX.RTTY_Speed = 50;
+		else if(TRX.RTTY_Speed == 50)
+			TRX.RTTY_Speed = 75;
+		else if(TRX.RTTY_Speed == 75)
+			TRX.RTTY_Speed = 100;
+		else if(TRX.RTTY_Speed == 100)
+			TRX.RTTY_Speed = 150;
+		else if(TRX.RTTY_Speed == 150)
+			TRX.RTTY_Speed = 300;
+	}
 	if (direction < 0)
-		TRX.RTTY_Speed = false;
+	{
+		if(TRX.RTTY_Speed == 300)
+			TRX.RTTY_Speed = 150;
+		else if(TRX.RTTY_Speed == 150)
+			TRX.RTTY_Speed = 100;
+		else if(TRX.RTTY_Speed == 100)
+			TRX.RTTY_Speed = 75;
+		else if(TRX.RTTY_Speed == 75)
+			TRX.RTTY_Speed = 50;
+		else if(TRX.RTTY_Speed == 50)
+			TRX.RTTY_Speed = 45;
+	}
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction)
 {
 	if (direction > 0)
-		TRX.RTTY_Shift = true;
+	{
+		if(TRX.RTTY_Shift == 85)
+			TRX.RTTY_Shift = 170;
+		else if(TRX.RTTY_Shift == 170)
+			TRX.RTTY_Shift = 425;
+		else if(TRX.RTTY_Shift == 425)
+			TRX.RTTY_Shift = 450;
+		else if(TRX.RTTY_Shift == 450)
+			TRX.RTTY_Shift = 850;
+	}
 	if (direction < 0)
-		TRX.RTTY_Shift = false;
+	{
+		if(TRX.RTTY_Shift == 850)
+			TRX.RTTY_Shift = 450;
+		else if(TRX.RTTY_Shift == 450)
+			TRX.RTTY_Shift = 425;
+		else if(TRX.RTTY_Shift == 425)
+			TRX.RTTY_Shift = 170;
+		else if(TRX.RTTY_Shift == 170)
+			TRX.RTTY_Shift = 85;
+	}
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction)
 {
-	if (direction > 0)
-		TRX.RTTY_Freq = true;
-	if (direction < 0)
-		TRX.RTTY_Freq = false;
+	if (TRX.RTTY_Freq > 50 || direction > 0)
+		TRX.RTTY_Freq += direction * 50;
+	if (TRX.RTTY_Freq > 3000)
+		TRX.RTTY_Freq = 3000;
 }
 
 //ADC/DAC MENU
