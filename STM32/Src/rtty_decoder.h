@@ -14,6 +14,10 @@
 #define RTTY_DECODER_STRLEN 30 // length of decoded string
 #endif
 
+#define RTTY_LPF_STAGES 2
+#define RTTY_BPF_STAGES 4
+#define RTTY_BPF_WIDTH 50
+
 #define RTTY_SYMBOL_CODE (0b11011)
 #define RTTY_LETTER_CODE (0b11111)
 

@@ -26,6 +26,21 @@ static uint16_t RTTY_byteResult_bnum = 0;
 static int32_t RTTY_DPLLBitPhase;
 static int32_t RTTY_DPLLOldVal;
 
+//lpf
+static float32_t RTTY_LPF_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RTTY_LPF_STAGES] = {0};
+static float32_t RTTY_LPF_Filter_State[2 * RTTY_LPF_STAGES] = {0};
+static arm_biquad_cascade_df2T_instance_f32 RTTY_LPF_Filter;
+
+//mark
+static float32_t RTTY_Mark_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RTTY_BPF_STAGES] = {0};
+static float32_t RTTY_Mark_Filter_State[2 * RTTY_BPF_STAGES] = {0};
+static arm_biquad_cascade_df2T_instance_f32 RTTY_Mark_Filter;
+
+//space
+static float32_t RTTY_Space_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RTTY_BPF_STAGES] = {0};
+static float32_t RTTY_Space_Filter_State[2 * RTTY_BPF_STAGES] = {0};
+static arm_biquad_cascade_df2T_instance_f32 RTTY_Space_Filter;
+
 static const char RTTY_Letters[] = {
     '\0',   'E',    '\n',   'A',    ' ',    'S',    'I',    'U',
     '\r',   'D',    'R',    'J',    'N',    'F',    'C',    'K',
@@ -47,8 +62,28 @@ static float32_t RTTYDecoder_decayavg(float32_t average, float32_t input, int we
 
 void RTTYDecoder_Init(void)
 {
+	//speed
 	RTTY_oneBitSampleCount = (uint16_t)roundf((float32_t)TRX_SAMPLERATE / (float32_t)TRX.RTTY_Speed);
 	
+	//RTTY LPF Filter
+	iir_filter_t *filter = biquad_create(RTTY_LPF_STAGES);
+	biquad_init_lowpass(filter, TRX_SAMPLERATE, TRX.RTTY_Speed);
+	fill_biquad_coeffs(filter, RTTY_LPF_Filter_Coeffs, RTTY_LPF_STAGES);
+	arm_biquad_cascade_df2T_init_f32(&RTTY_LPF_Filter, RTTY_LPF_STAGES, RTTY_LPF_Filter_Coeffs, RTTY_LPF_Filter_State);
+	
+	//RTTY mark filter
+	filter = biquad_create(RTTY_BPF_STAGES);
+	biquad_init_bandpass(filter, TRX_SAMPLERATE, (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) - RTTY_BPF_WIDTH / 2, (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) + RTTY_BPF_WIDTH / 2);
+	fill_biquad_coeffs(filter, RTTY_Mark_Filter_Coeffs, RTTY_BPF_STAGES);
+	arm_biquad_cascade_df2T_init_f32(&RTTY_Mark_Filter, RTTY_BPF_STAGES, RTTY_Mark_Filter_Coeffs, RTTY_Mark_Filter_State);
+	
+	//RTTY space filter
+	filter = biquad_create(RTTY_BPF_STAGES);
+	biquad_init_bandpass(filter, TRX_SAMPLERATE, (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) - RTTY_BPF_WIDTH / 2, (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) + RTTY_BPF_WIDTH / 2);
+	fill_biquad_coeffs(filter, RTTY_Space_Filter_Coeffs, RTTY_BPF_STAGES);
+	arm_biquad_cascade_df2T_init_f32(&RTTY_Space_Filter, RTTY_BPF_STAGES, RTTY_Space_Filter_Coeffs, RTTY_Space_Filter_State);
+	
+	//text
 	sprintf(RTTY_Decoder_Text, " RTTY: -");
 	addSymbols(RTTY_Decoder_Text, RTTY_Decoder_Text, RTTY_DECODER_STRLEN, " ", true);
 	LCD_UpdateQuery.TextBar = true;
@@ -227,8 +262,12 @@ static float32_t RTTYDecoder_decayavg(float32_t average, float32_t input, int we
 static int RTTYDecoder_demodulator(float32_t sample)
 {
 
-	float32_t space_mag = 0; //RttyDecoder_bandPassFreq(sample, rttyDecoderData.bpfSpaceConfig, &rttyDecoderData.bpfSpaceData);
-	float32_t mark_mag = 0; //RttyDecoder_bandPassFreq(sample, rttyDecoderData.bpfMarkConfig, &rttyDecoderData.bpfMarkData);
+	//float32_t space_mag = RttyDecoder_bandPassFreq(sample, rttyDecoderData.bpfSpaceConfig, &rttyDecoderData.bpfSpaceData);
+	//float32_t mark_mag = RttyDecoder_bandPassFreq(sample, rttyDecoderData.bpfMarkConfig, &rttyDecoderData.bpfMarkData);
+	float32_t space_mag = 0;
+	float32_t mark_mag = 0;
+	arm_biquad_cascade_df2T_f32_rolled(&RTTY_Space_Filter, &sample, &space_mag, 1);
+	arm_biquad_cascade_df2T_f32_rolled(&RTTY_Mark_Filter, &sample, &mark_mag, 1);
 
 	float32_t v1 = 0.0;
 	// calculating the RMS of the two lines (squaring them)
@@ -274,7 +313,8 @@ static int RTTYDecoder_demodulator(float32_t sample)
 
 	// Optimal ATC (Section 6 of of www.w7ay.net/site/Technical/ATC)
 	v1 = (mclipped - noise_floor) * (mark_env - noise_floor) - (sclipped - noise_floor) * (space_env - noise_floor) - 0.25 *  ((mark_env - noise_floor) * (mark_env - noise_floor) - (space_env - noise_floor) * (space_env - noise_floor));
-	v1 = 0; //RttyDecoder_lowPass(v1, rttyDecoderData.lpfConfig, &rttyDecoderData.lpfData);
+	//v1 = RttyDecoder_lowPass(v1, rttyDecoderData.lpfConfig, &rttyDecoderData.lpfData);
+	arm_biquad_cascade_df2T_f32_rolled(&RTTY_LPF_Filter, &v1, &v1, 1);
 
 	return (v1 > 0)?0:1;
 }
