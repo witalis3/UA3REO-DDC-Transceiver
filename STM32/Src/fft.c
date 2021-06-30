@@ -1097,6 +1097,19 @@ bool FFT_printFFT(void)
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
 			print_output_buffer[fft_y][bw_rx2_line_center] = color;
 	}
+	
+	//RTTY center frequency
+	if(CurrentVFO->Mode == TRX_MODE_RTTY)
+	{
+		uint16_t color = palette_fft[fftHeight / 2];
+		uint16_t x1 =  (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
+		uint16_t x2 =  (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
+		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
+		{
+			print_output_buffer[fft_y][x1] = color;
+			print_output_buffer[fft_y][x2] = color;
+		}
+	}
 
 	//Show manual Notch filter line
 	if (CurrentVFO->ManualNotchFilter && !TRX_on_TX() && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)

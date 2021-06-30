@@ -163,6 +163,7 @@ static void SYSMENU_HANDL_DECODERS_RDS_Decoder(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_RTTY_Speed(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction);
+static void SYSMENU_HANDL_DECODERS_RTTY_StopBits(int8_t direction);
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
@@ -536,6 +537,7 @@ const static struct sysmenu_item_handler sysmenu_decoders_handlers[] =
 		{"RTTY Speed", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Speed, SYSMENU_HANDL_DECODERS_RTTY_Speed},
 		{"RTTY Shift", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Shift, SYSMENU_HANDL_DECODERS_RTTY_Shift},
 		{"RTTY Freq", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Freq, SYSMENU_HANDL_DECODERS_RTTY_Freq},
+		{"RTTY StopBits", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.RTTY_StopBits, SYSMENU_HANDL_DECODERS_RTTY_StopBits, {"1", "1.5", "2"}},
 };
 
 const static struct sysmenu_item_handler sysmenu_adc_handlers[] =
@@ -2388,6 +2390,8 @@ static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction)
 		else if(TRX.RTTY_Shift == 170)
 			TRX.RTTY_Shift = 85;
 	}
+	
+	RTTYDecoder_Init();
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction)
@@ -2396,6 +2400,18 @@ static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction)
 		TRX.RTTY_Freq += direction * 50;
 	if (TRX.RTTY_Freq > 3000)
 		TRX.RTTY_Freq = 3000;
+	
+	RTTYDecoder_Init();
+}
+
+static void SYSMENU_HANDL_DECODERS_RTTY_StopBits(int8_t direction)
+{
+	if (TRX.RTTY_StopBits > 0 || direction > 0)
+		TRX.RTTY_StopBits += direction;
+	if (TRX.RTTY_StopBits > 2)
+		TRX.RTTY_StopBits = 2;
+	
+	RTTYDecoder_Init();
 }
 
 //ADC/DAC MENU

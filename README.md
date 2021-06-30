@@ -220,6 +220,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **RTTY Speed** - Speed of RTTY data
 * **RTTY Shift** - RTTY carrier shifts
 * **RTTY Freq** - Central frequency of RTTY decoding
+* **RTTY StopBits** - RTTY Stop bits
 
 ### ADC / DAC Settings
 

@@ -319,6 +319,7 @@ extern struct TRX_SETTINGS
 	uint16_t RTTY_Speed;
 	uint16_t RTTY_Shift;
 	uint16_t RTTY_Freq;
+	uint8_t RTTY_StopBits;
 	//ADC
 	bool ADC_Driver;
 	bool ADC_PGA;

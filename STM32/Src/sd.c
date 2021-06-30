@@ -1002,6 +1002,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.RTTY_Speed", (uint32_t *)&TRX.RTTY_Speed, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.RTTY_Shift", (uint32_t *)&TRX.RTTY_Shift, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.RTTY_Freq", (uint32_t *)&TRX.RTTY_Freq, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.RTTY_StopBits", (uint32_t *)&TRX.RTTY_StopBits, SYSMENU_UINT8);
 			//ADC
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_PGA", (uint32_t *)&TRX.ADC_PGA, SYSMENU_BOOLEAN);
@@ -1541,6 +1542,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.RTTY_Shift = uintval;
 	if (strcmp(name, "TRX.RTTY_Freq") == 0)
 		TRX.RTTY_Freq = uintval;
+	if (strcmp(name, "TRX.RTTY_StopBits") == 0)
+		TRX.RTTY_StopBits = (uint8_t)uintval;
 	//ADC
 	if (strcmp(name, "TRX.ADC_Driver") == 0)
 		TRX.ADC_Driver = uintval;

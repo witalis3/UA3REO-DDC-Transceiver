@@ -254,7 +254,8 @@ void LoadSettings(bool clear)
 		TRX.RDS_Decoder = true;		//RDS Decoder panel
 		TRX.RTTY_Speed = 45;			//RTTY decoder speed
 		TRX.RTTY_Shift = 170;			//RTTY decoder shift
-		TRX.RTTY_Freq = 300;			//RTTY decoder center frequency
+		TRX.RTTY_Freq = 1000;			//RTTY decoder center frequency
+		TRX.RTTY_StopBits = 1;		//RTTY 1, 1.5, 2 stop bits
 		//ADC
 		TRX.ADC_Driver = true; // preamplifier (ADC driver)
 		TRX.ADC_PGA = true;	   // ADC preamp
