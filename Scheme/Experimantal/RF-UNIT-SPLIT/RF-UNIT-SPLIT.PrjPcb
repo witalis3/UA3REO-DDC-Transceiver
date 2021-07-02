@@ -30,7 +30,7 @@ ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
 IsProjectConflictPreventionWarningsEnabled=1
-OutputPath=
+OutputPath=Project Outputs for RF-UNIT-SPLIT
 LogFolderPath=
 ManagedProjectGUID=
 IncludeDesignInRelease=0
@@ -190,57 +190,61 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=TJHHVOVB
+DocumentUniqueId=GUCCKGGI
 
 [GeneratedDocument1]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.DRR
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\BOM\Bill of Materials-RF-UNIT-SPLIT.xlsx
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.EXTREP
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.DRR
 DItemRevisionGUID=
 
 [GeneratedDocument3]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBL
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument4]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBO
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBL
 DItemRevisionGUID=
 
 [GeneratedDocument5]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBS
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBO
 DItemRevisionGUID=
 
 [GeneratedDocument6]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GKO
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBS
 DItemRevisionGUID=
 
 [GeneratedDocument7]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTL
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GKO
 DItemRevisionGUID=
 
 [GeneratedDocument8]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTO
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTL
 DItemRevisionGUID=
 
 [GeneratedDocument9]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTS
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTO
 DItemRevisionGUID=
 
 [GeneratedDocument10]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.LDP
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTS
 DItemRevisionGUID=
 
 [GeneratedDocument11]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.REP
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.LDP
 DItemRevisionGUID=
 
 [GeneratedDocument12]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.RUL
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.REP
 DItemRevisionGUID=
 
 [GeneratedDocument13]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.RUL
+DItemRevisionGUID=
+
+[GeneratedDocument14]
 DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.TXT
 DItemRevisionGUID=
 
@@ -259,7 +263,7 @@ ContentTypeGUID=CB6F2064-E317-11DF-B822-12313F0024A2
 ConfigurationType=Source
 
 [Generic_EDE]
-OutputDir=
+OutputDir=Project Outputs for RF-UNIT-SPLIT
 
 [OutputGroup1]
 Name=Netlist Outputs
