@@ -261,71 +261,15 @@ GenerateClassCluster=0
 DocumentUniqueId=SUPUHQIL
 
 [GeneratedDocument1]
-DocumentPath=Project Outputs for MOTHERBOARD\Design Rule Check - MOTHERBOARD.html
+DocumentPath=Project Outputs for MOTHERBOARD\BOM\Bill of Materials-MOTHERBOARD.xls
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-RoundHoles.TXT
+DocumentPath=Project Outputs for MOTHERBOARD\BOM\Bill of Materials-MOTHERBOARD.xlsx
 DItemRevisionGUID=
 
 [GeneratedDocument3]
-DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-SlotHoles.TXT
-DItemRevisionGUID=
-
-[GeneratedDocument4]
-DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.DRR
-DItemRevisionGUID=
-
-[GeneratedDocument5]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.EXTREP
-DItemRevisionGUID=
-
-[GeneratedDocument6]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G1
-DItemRevisionGUID=
-
-[GeneratedDocument7]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G2
-DItemRevisionGUID=
-
-[GeneratedDocument8]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBL
-DItemRevisionGUID=
-
-[GeneratedDocument9]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBO
-DItemRevisionGUID=
-
-[GeneratedDocument10]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBS
-DItemRevisionGUID=
-
-[GeneratedDocument11]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GKO
-DItemRevisionGUID=
-
-[GeneratedDocument12]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTL
-DItemRevisionGUID=
-
-[GeneratedDocument13]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTO
-DItemRevisionGUID=
-
-[GeneratedDocument14]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTS
-DItemRevisionGUID=
-
-[GeneratedDocument15]
-DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.LDP
-DItemRevisionGUID=
-
-[GeneratedDocument16]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.REP
-DItemRevisionGUID=
-
-[GeneratedDocument17]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.RUL
+DocumentPath=Project Outputs for MOTHERBOARD\Design Rule Check - MOTHERBOARD.html
 DItemRevisionGUID=
 
 [Configuration1]
