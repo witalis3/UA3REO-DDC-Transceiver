@@ -30,7 +30,7 @@ ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
 IsProjectConflictPreventionWarningsEnabled=1
-OutputPath=
+OutputPath=Project Outputs for RF-UNIT-BIG
 LogFolderPath=
 ManagedProjectGUID=
 IncludeDesignInRelease=0
@@ -309,7 +309,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=GGVZNNAS
+DocumentUniqueId=ZNSNUJYT
 
 [GeneratedDocument1]
 DocumentPath=Project Outputs for RF-UNIT-BIG\BOM\Bill of Materials-RF-UNIT-BIG.xlsx
@@ -382,7 +382,7 @@ ContentTypeGUID=CB6F2064-E317-11DF-B822-12313F0024A2
 ConfigurationType=Source
 
 [Generic_EDE]
-OutputDir=
+OutputDir=Project Outputs for RF-UNIT-BIG
 
 [OutputGroup1]
 Name=Netlist Outputs

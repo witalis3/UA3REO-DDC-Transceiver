@@ -30,7 +30,7 @@ ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
 IsProjectConflictPreventionWarningsEnabled=1
-OutputPath=
+OutputPath=Project Outputs for FRONT-UNIT-7
 LogFolderPath=
 ManagedProjectGUID=
 IncludeDesignInRelease=0
@@ -122,85 +122,89 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=ZTAIYPZB
+DocumentUniqueId=IPLDWSXT
 
 [GeneratedDocument1]
-DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7-RectHoles.TXT
+DocumentPath=Project Outputs for FRONT-UNIT-7\BOM\Bill of Materials-FRONT-UNIT-7.xlsx
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7-RoundHoles.TXT
+DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7-RectHoles.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument3]
-DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7-SlotHoles.TXT
+DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7-RoundHoles.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument4]
-DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7.DRR
+DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7-SlotHoles.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument5]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.EXTREP
+DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7.DRR
 DItemRevisionGUID=
 
 [GeneratedDocument6]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GBL
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument7]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GBO
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GBL
 DItemRevisionGUID=
 
 [GeneratedDocument8]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GBS
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GBO
 DItemRevisionGUID=
 
 [GeneratedDocument9]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GKO
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GBS
 DItemRevisionGUID=
 
 [GeneratedDocument10]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GM2
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GKO
 DItemRevisionGUID=
 
 [GeneratedDocument11]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GM13
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GM2
 DItemRevisionGUID=
 
 [GeneratedDocument12]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GM15
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GM13
 DItemRevisionGUID=
 
 [GeneratedDocument13]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GPB
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GM15
 DItemRevisionGUID=
 
 [GeneratedDocument14]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GPT
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GPB
 DItemRevisionGUID=
 
 [GeneratedDocument15]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GTL
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GPT
 DItemRevisionGUID=
 
 [GeneratedDocument16]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GTO
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GTL
 DItemRevisionGUID=
 
 [GeneratedDocument17]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GTS
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GTO
 DItemRevisionGUID=
 
 [GeneratedDocument18]
-DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7.LDP
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.GTS
 DItemRevisionGUID=
 
 [GeneratedDocument19]
-DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.REP
+DocumentPath=Project Outputs for FRONT-UNIT-7\NC Drill\FRONT-UNIT-7.LDP
 DItemRevisionGUID=
 
 [GeneratedDocument20]
+DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.REP
+DItemRevisionGUID=
+
+[GeneratedDocument21]
 DocumentPath=Project Outputs for FRONT-UNIT-7\Gerber\FRONT-UNIT-7.RUL
 DItemRevisionGUID=
 
@@ -251,7 +255,7 @@ SCH_HasExpandLogicalToPhysicalSheets=-1
 SaveSettingsToOutJob=-1
 
 [Generic_EDE]
-OutputDir=
+OutputDir=Project Outputs for FRONT-UNIT-7
 
 [OutputGroup1]
 Name=Netlist Outputs
