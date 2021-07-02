@@ -30,7 +30,7 @@ ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
 IsProjectConflictPreventionWarningsEnabled=1
-OutputPath=
+OutputPath=Project Outputs for MOTHERBOARD
 LogFolderPath=
 ManagedProjectGUID=
 IncludeDesignInRelease=0
@@ -54,7 +54,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=TUWDZFSQ
+DocumentUniqueId=XPHVGFFA
 
 [Document2]
 DocumentPath=MOTHERBOARD.PcbLib
@@ -260,18 +260,6 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=SUPUHQIL
 
-[GeneratedDocument1]
-DocumentPath=Project Outputs for MOTHERBOARD\BOM\Bill of Materials-MOTHERBOARD.xls
-DItemRevisionGUID=
-
-[GeneratedDocument2]
-DocumentPath=Project Outputs for MOTHERBOARD\BOM\Bill of Materials-MOTHERBOARD.xlsx
-DItemRevisionGUID=
-
-[GeneratedDocument3]
-DocumentPath=Project Outputs for MOTHERBOARD\Design Rule Check - MOTHERBOARD.html
-DItemRevisionGUID=
-
 [Configuration1]
 Name=Sources
 ParameterCount=0
@@ -283,7 +271,7 @@ ContentTypeGUID=CB6F2064-E317-11DF-B822-12313F0024A2
 ConfigurationType=Source
 
 [Generic_EDE]
-OutputDir=
+OutputDir=Project Outputs for MOTHERBOARD
 
 [OutputGroup1]
 Name=Netlist Outputs
