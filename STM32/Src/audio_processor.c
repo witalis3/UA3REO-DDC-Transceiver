@@ -830,6 +830,36 @@ void processTxAudio(void)
 			SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel42_sw_0);
 		}
 	}
+	
+	//CW SelfHear
+	if (TRX.CW_SelfHear && (TRX.CW_KEYER || CW_key_serial || CW_key_dot_hard || CW_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune)
+	{
+		static float32_t cwgen_index = 0;
+		float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f);
+		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+		{
+			float32_t point = generateSin(amplitude * APROC_Audio_Buffer_TX_I[i], &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
+			int32_t sample = 0;
+			arm_float_to_q31(&point, &sample, 1);
+			int32_t data = convertToSPIBigEndian(sample);
+			if (start_WM8731_DMA_state)
+			{
+				CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
+				CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2 + 1] = data;
+			}
+			else
+			{
+				CODEC_Audio_Buffer_RX[i * 2] = data;
+				CODEC_Audio_Buffer_RX[i * 2 + 1] = data;
+			}
+		}
+		Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
+	}
+	else if (TRX.CW_SelfHear && mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U && mode != TRX_MODE_RTTY)
+	{
+		dma_memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
+		Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
+	}
 
 	//// RF PowerControl (Audio Level Control)
 
@@ -932,36 +962,6 @@ void processTxAudio(void)
 
 	if (mode != TRX_MODE_LOOPBACK)
 	{
-		//CW SelfHear
-		if (TRX.CW_SelfHear && (TRX.CW_KEYER || CW_key_serial || CW_key_dot_hard || CW_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune)
-		{
-			static float32_t cwgen_index = 0;
-			float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f);
-			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
-			{
-				float32_t point = generateSin(amplitude * (APROC_Audio_Buffer_TX_I[i] / RFpower_amplitude), &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
-				int32_t sample = 0;
-				arm_float_to_q31(&point, &sample, 1);
-				int32_t data = convertToSPIBigEndian(sample);
-				if (start_WM8731_DMA_state)
-				{
-					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
-					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2 + 1] = data;
-				}
-				else
-				{
-					CODEC_Audio_Buffer_RX[i * 2] = data;
-					CODEC_Audio_Buffer_RX[i * 2 + 1] = data;
-				}
-			}
-			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
-		}
-		else if (TRX.CW_SelfHear && mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U && mode != TRX_MODE_RTTY)
-		{
-			dma_memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
-			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
-		}
-		
 		// Delay before the RF signal is applied, so that the relay has time to trigger
 		if ((HAL_GetTick() - TRX_TX_StartTime) < CALIBRATE.TX_StartDelay)
 		{
