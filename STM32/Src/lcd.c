@@ -2014,6 +2014,7 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
 
 void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter))
 {
+	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	TouchpadButton_handlers_count = 0;
 	LCD_keyboardHandler = keyboardHandler;
 	
@@ -2067,6 +2068,7 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter))
 		x = i;
 		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	}
+	#endif
 }
 
 void LCD_hideKeyboard(void)
