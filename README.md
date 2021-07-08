@@ -40,7 +40,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Switchable AGC (AGC) with adjustable attack rate
 * Range map, with the ability to automatically switch modes
 * Digital Noise Reduction (DNR), Pulse Noise Reduction (NB)
-* CAT / PTT virtual COM ports (FT-450 emulation)
+* CAT virtual COM port (FT-450 emulation, RTS - PTT, DTR - CW)
 * USB operation (audio transmission, CAT, KEY, PTT)
 * RDS/CW/RTTY decoder, self-control, gauss filter
 * SWR Graphs

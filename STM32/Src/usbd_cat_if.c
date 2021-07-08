@@ -8,6 +8,7 @@
 #include "audio_filters.h"
 #include "wifi.h"
 #include "vad.h"
+#include "cw.h"
 
 #define CAT_APP_RX_DATA_SIZE 32
 #define CAT_APP_TX_DATA_SIZE 32
@@ -75,23 +76,18 @@ static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf)
 	switch (cmd)
 	{
 	case CDC_SEND_ENCAPSULATED_COMMAND:
-
 		break;
 
 	case CDC_GET_ENCAPSULATED_RESPONSE:
-
 		break;
 
 	case CDC_SET_COMM_FEATURE:
-
 		break;
 
 	case CDC_GET_COMM_FEATURE:
-
 		break;
 
 	case CDC_CLEAR_COMM_FEATURE:
-
 		break;
 
 		/*******************************************************************************/
@@ -120,11 +116,25 @@ static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf)
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:
-
+		if ((pbuf[2] & 0x2) == 0x2) //RTS
+		{
+			TRX_ptt_soft = true;
+		}
+		else
+		{
+			TRX_ptt_soft = false;
+		}
+		if ((pbuf[2] & 0x1) == 0x1) //DTR
+		{
+			CW_key_serial = true;
+		}
+		else
+		{
+			CW_key_serial = false;
+		}
 		break;
 
 	case CDC_SEND_BREAK:
-
 		break;
 
 	default:
