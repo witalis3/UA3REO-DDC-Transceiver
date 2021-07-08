@@ -2377,6 +2377,8 @@ static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction)
 		else if(TRX.RTTY_Shift == 182)
 			TRX.RTTY_Shift = 200;
 		else if(TRX.RTTY_Shift == 200)
+			TRX.RTTY_Shift = 220;
+		else if(TRX.RTTY_Shift == 220)
 			TRX.RTTY_Shift = 240;
 		else if(TRX.RTTY_Shift == 240)
 			TRX.RTTY_Shift = 350;
@@ -2398,6 +2400,8 @@ static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction)
 		else if(TRX.RTTY_Shift == 350)
 			TRX.RTTY_Shift = 240;
 		else if(TRX.RTTY_Shift == 240)
+			TRX.RTTY_Shift = 220;
+		else if(TRX.RTTY_Shift == 220)
 			TRX.RTTY_Shift = 200;
 		else if(TRX.RTTY_Shift == 200)
 			TRX.RTTY_Shift = 182;
