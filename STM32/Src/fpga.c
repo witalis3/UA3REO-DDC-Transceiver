@@ -27,6 +27,7 @@ volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 uint16_t FPGA_FW_Version[3] = {0};
 uint8_t ADCDAC_OVR_StatusLatency = 0;
 bool FPGA_bus_stop = true;					  // suspend the FPGA bus
+volatile bool FPGA_bus_test_result = true;
 
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
@@ -79,6 +80,7 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 		{
 			char buff[64];
 			sprintf(buff, "BUS Error: %d -> %d", i, ret);
+			FPGA_bus_test_result = false;
 			LCD_showError(buff, false);
 			HAL_Delay(1000);
 		}

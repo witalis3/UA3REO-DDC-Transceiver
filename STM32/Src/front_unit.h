@@ -47,6 +47,9 @@ typedef struct
 extern PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[];
 extern const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT];
 extern uint8_t FRONTPANEL_funcbuttons_page;
+extern bool FRONTPanel_MCP3008_1_Enabled;
+extern bool FRONTPanel_MCP3008_2_Enabled;
+extern bool FRONTPanel_MCP3008_3_Enabled;
 
 extern void FRONTPANEL_ENCODER_checkRotate(void);
 extern void FRONTPANEL_ENCODER2_checkRotate(void);

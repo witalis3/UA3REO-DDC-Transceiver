@@ -21,6 +21,7 @@
 #include "locator.h"
 #include "callsign.h"
 #include "rtty_decoder.h"
+#include "self_test.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -348,6 +349,7 @@ static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); //Tisho
 static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction);
 static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction);
+static void SYSMENU_HANDL_SELF_TEST(int8_t direction);
 
 static bool SYSMENU_HANDL_CHECK_RFU_QRP(void);
 static bool SYSMENU_HANDL_CHECK_RFU_BIG(void);
@@ -742,6 +744,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 		{"Locator info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_LOCATOR_INFO},
 		{"Callsign info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CALLSIGN_INFO},
 #endif
+		{"Self Test", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SELF_TEST},
 };
 
 //COMMON MENU
@@ -4485,6 +4488,14 @@ static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+//SELF TEST
+static void SYSMENU_HANDL_SELF_TEST(int8_t direction)
+{
+	SYSMENU_selftest_opened = true;
+	SELF_TEST_Start();
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
 //COMMON MENU FUNCTIONS
 void SYSMENU_drawSystemMenu(bool draw_background)
 {
@@ -4559,6 +4570,10 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	else if (SYSMENU_callsign_info_opened)
 	{
 		CALLSIGN_INFO_Draw();
+	}
+	else if (SYSMENU_selftest_opened)
+	{
+		SELF_TEST_Draw();
 	}
 	else if (sysmenu_sysinfo_opened)
 	{
@@ -4776,6 +4791,13 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		SYSMENU_callsign_info_opened = false;
 		CALLSIGN_INFO_Stop();
+		systemMenuIndex = 0;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+	else if (SYSMENU_selftest_opened)
+	{
+		SYSMENU_selftest_opened = false;
+		SELF_TEST_Stop();
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
@@ -5001,6 +5023,11 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 		return;
 	if (SYSMENU_callsign_info_opened)
 		return;
+	if (SYSMENU_selftest_opened)
+	{
+		SELF_TEST_EncRotate(direction);
+		return;
+	}
 	if (sysmenu_infowindow_opened)
 		return;
 	//time menu

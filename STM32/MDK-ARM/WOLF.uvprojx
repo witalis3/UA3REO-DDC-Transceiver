@@ -714,6 +714,16 @@
               <FilePath>..\Src\screen_layout_800x480.cpp</FilePath>
             </File>
             <File>
+              <FileName>self_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\self_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\self_test.h</FilePath>
+            </File>
+            <File>
               <FileName>sd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\sd.c</FilePath>
@@ -2226,6 +2236,16 @@
               <FileName>screen_layout_800x480.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Src\screen_layout_800x480.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\self_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\self_test.h</FilePath>
             </File>
             <File>
               <FileName>sd.c</FileName>
@@ -3811,6 +3831,16 @@
               <FilePath>..\Src\screen_layout_800x480.cpp</FilePath>
             </File>
             <File>
+              <FileName>self_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\self_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\self_test.h</FilePath>
+            </File>
+            <File>
               <FileName>sd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\sd.c</FilePath>
@@ -5392,6 +5422,16 @@
               <FileName>screen_layout_800x480.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Src\screen_layout_800x480.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\self_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\self_test.h</FilePath>
             </File>
             <File>
               <FileName>sd.c</FileName>
@@ -6977,6 +7017,16 @@
               <FilePath>..\Src\screen_layout_800x480.cpp</FilePath>
             </File>
             <File>
+              <FileName>self_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\self_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\self_test.h</FilePath>
+            </File>
+            <File>
               <FileName>sd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\sd.c</FilePath>
@@ -8560,6 +8610,16 @@
               <FilePath>..\Src\screen_layout_800x480.cpp</FilePath>
             </File>
             <File>
+              <FileName>self_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\self_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\self_test.h</FilePath>
+            </File>
+            <File>
               <FileName>sd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\sd.c</FilePath>
@@ -10141,6 +10201,16 @@
               <FileName>screen_layout_800x480.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Src\screen_layout_800x480.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\self_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>self_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\self_test.h</FilePath>
             </File>
             <File>
               <FileName>sd.c</FileName>

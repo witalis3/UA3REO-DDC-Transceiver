@@ -18,6 +18,16 @@ uint8_t FRONTPANEL_funcbuttons_page = 0;
 int8_t FRONTPANEL_ProcessEncoder1 = 0;
 int8_t FRONTPANEL_ProcessEncoder2 = 0;
 
+#ifdef HRDW_MCP3008_1
+bool FRONTPanel_MCP3008_1_Enabled = true;
+#endif
+#ifdef HRDW_MCP3008_2
+bool FRONTPanel_MCP3008_2_Enabled = true;
+#endif
+#ifdef HRDW_MCP3008_3
+bool FRONTPanel_MCP3008_3_Enabled = true;
+#endif
+
 static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN);
@@ -46,16 +56,6 @@ static void FRONTPANEL_BUTTONHANDLER_FUNCH(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
 static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value);
-
-#ifdef HRDW_MCP3008_1
-static bool FRONTPanel_MCP3008_1_Enabled = true;
-#endif
-#ifdef HRDW_MCP3008_2
-static bool FRONTPanel_MCP3008_2_Enabled = true;
-#endif
-#ifdef HRDW_MCP3008_3
-static bool FRONTPanel_MCP3008_3_Enabled = true;
-#endif
 
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
