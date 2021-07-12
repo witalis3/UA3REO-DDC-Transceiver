@@ -7,7 +7,9 @@
 #include "stdint.h"
 #include "functions.h"
 
-#define SELF_TEST_pages 1
+#define SELF_TEST_pages 2
+#define SELF_TEST_frequency 14000000
+#define SELF_TEST_adc_test_latency 1000
 
 //Public variabled
 extern bool SYSMENU_selftest_opened;

@@ -4574,6 +4574,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 	else if (SYSMENU_selftest_opened)
 	{
 		SELF_TEST_Draw();
+		return;
 	}
 	else if (sysmenu_sysinfo_opened)
 	{
