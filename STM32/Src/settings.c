@@ -25,8 +25,9 @@ IRAM2 static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
 IRAM2 static uint8_t Address[3] = {0x00};
 struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
+bool EEPROM_Enabled = true;
 static uint8_t settings_bank = 1;
-static bool EEPROM_Enabled = true;
+
 
 IRAM2 static uint8_t write_clone[sizeof(TRX)] = {0};
 IRAM2 static uint8_t read_clone[sizeof(TRX)] = {0};

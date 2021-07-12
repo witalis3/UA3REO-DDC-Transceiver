@@ -492,7 +492,8 @@ extern volatile bool NeedSaveCalibration;
 extern volatile bool EEPROM_Busy;
 extern VFO *CurrentVFO;
 extern VFO *SecondaryVFO;
-
+extern bool EEPROM_Enabled;
+	
 extern void LoadSettings(bool clear);
 extern void LoadCalibration(bool clear);
 extern void SaveSettings(void);

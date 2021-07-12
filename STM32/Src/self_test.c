@@ -1,4 +1,4 @@
-#include "callsign.h"
+#include "self_test.h"
 #include "main.h"
 #include "lcd_driver.h"
 #include "trx_manager.h"
@@ -12,8 +12,8 @@
 bool SYSMENU_selftest_opened = false;
 
 //Private Variables
-static uint8_t SELF_TEST_current_page = 0;
-	
+static int8_t SELF_TEST_current_page = 0;
+
 //Prototypes
 static void SELF_TEST_printResult(bool result, uint16_t pos_y);
 
@@ -46,14 +46,16 @@ void SELF_TEST_Draw(void)
 	
 	// draw the GUI
 	LCDDriver_Fill(BG_COLOR);
+
+	//predefine
+	#define margin_left 5
+	#define margin_bottom 20
+	uint16_t pos_y = margin_left;
+	bool pass = true;
 	
+	//print pages
 	if(SELF_TEST_current_page == 0)
 	{
-		#define margin_left 5
-		#define margin_bottom 20
-		uint16_t pos_y = margin_left;
-		bool pass = true;
-		
 		//FPGA BUS test
 		LCDDriver_printText("FPGA", 5, pos_y, FG_COLOR, BG_COLOR, 2);
 		SELF_TEST_printResult(FPGA_bus_test_result, pos_y);
@@ -73,10 +75,31 @@ void SELF_TEST_Draw(void)
 		if(!FRONTPanel_MCP3008_3_Enabled)
 			pass = false;
 		#endif
-		LCDDriver_printText("MCP3008", 5, pos_y, FG_COLOR, BG_COLOR, 2);
-		SELF_TEST_printResult(pass, pos_y);
+		if(FPGA_bus_test_result)
+		{
+			LCDDriver_printText("MCP3008", 5, pos_y, FG_COLOR, BG_COLOR, 2);
+			SELF_TEST_printResult(pass, pos_y);
+			pos_y += margin_bottom;
+		}
+		
+		//STM32 EEPROM test
+		if(FPGA_bus_test_result)
+		{
+			LCDDriver_printText("STM32 EEPROM", 5, pos_y, FG_COLOR, BG_COLOR, 2);
+			SELF_TEST_printResult(EEPROM_Enabled, pos_y);
+			pos_y += margin_bottom;
+		}
+		
+		//WM8731 test
+		LCDDriver_printText("WM8731", 5, pos_y, FG_COLOR, BG_COLOR, 2);
+		SELF_TEST_printResult(WM8731_test_result, pos_y);
 		pos_y += margin_bottom;
 	}
+	
+	//Pager
+	pos_y += margin_bottom;
+	LCDDriver_printText("Rotate ENC2 to print next page", 5, pos_y, FG_COLOR, BG_COLOR, 2);
+	pos_y += margin_bottom;
 	
 	LCD_busy = false;
 }
@@ -95,9 +118,9 @@ static void SELF_TEST_printResult(bool result, uint16_t pos_y)
 // events to the encoder
 void SELF_TEST_EncRotate(int8_t direction)
 {
-	if (LCD_busy)
-		return;
-	LCD_busy = true;
-
-	LCD_busy = false;
+	SELF_TEST_current_page += direction;
+	if (SELF_TEST_current_page < 0)
+		SELF_TEST_current_page = 0;
+	if (SELF_TEST_current_page >= SELF_TEST_pages)
+		SELF_TEST_current_page = SELF_TEST_pages - 1;
 }

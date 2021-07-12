@@ -14,6 +14,7 @@ SRAM int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; // audio code
 SRAM int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
 bool WM8731_Beeping; //Beeping flag
 bool WM8731_Muting;	 //Muting flag
+bool WM8731_test_result = true; //self-test flag
 
 //Private variables
 
@@ -151,6 +152,7 @@ void WM8731_Init(void)
 	{
 		println("[ERR] Audio codec not found");
 		LCD_showError("Audio codec init error", true);
+		WM8731_test_result = false;
 	}
 	WM8731_SendI2CCommand(B8(00000101), B8(10000000)); //R2 Left Headphone Out Mute
 	WM8731_SendI2CCommand(B8(00000111), B8(10000000)); //R3 Right Headphone Out Mute

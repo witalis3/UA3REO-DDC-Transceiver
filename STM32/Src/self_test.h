@@ -7,6 +7,8 @@
 #include "stdint.h"
 #include "functions.h"
 
+#define SELF_TEST_pages 1
+
 //Public variabled
 extern bool SYSMENU_selftest_opened;
 

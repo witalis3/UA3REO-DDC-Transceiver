@@ -27,7 +27,7 @@ volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 uint16_t FPGA_FW_Version[3] = {0};
 uint8_t ADCDAC_OVR_StatusLatency = 0;
 bool FPGA_bus_stop = true;					  // suspend the FPGA bus
-volatile bool FPGA_bus_test_result = true;
+volatile bool FPGA_bus_test_result = true; //self-test flag
 
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
