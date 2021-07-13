@@ -89,6 +89,7 @@ static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CTCSS_Freq(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_SELFHEAR_Volume(int8_t direction);
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
@@ -444,6 +445,7 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"TX Compr MaxGain AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM},		
 		{"Beeper", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 		{"CTCSS Frequency", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_HANDL_AUDIO_CTCSS_Freq},
+		{"SelfHear Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_HANDL_AUDIO_SELFHEAR_Volume},
 };
 
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
@@ -1659,6 +1661,15 @@ static void SYSMENU_HANDL_AUDIO_CTCSS_Freq(int8_t direction)
 	if(current_pos >= CTCSS_FREQS_COUNT)
 		current_pos = CTCSS_FREQS_COUNT - 1;
 	TRX.CTCSS_Freq = CTCSS_Freqs[current_pos];
+}
+
+static void SYSMENU_HANDL_AUDIO_SELFHEAR_Volume(int8_t direction)
+{
+	TRX.SELFHEAR_Volume += direction;
+	if(TRX.SELFHEAR_Volume > 100)
+		TRX.SELFHEAR_Volume = 100;
+	if(TRX.SELFHEAR_Volume < 1)
+		TRX.SELFHEAR_Volume = 1;
 }
 
 //CW MENU

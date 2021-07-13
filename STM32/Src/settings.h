@@ -9,7 +9,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-#define SETT_VERSION 32					   // Settings config version
+#define SETT_VERSION 33					   // Settings config version
 #define CALIB_VERSION 32				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -275,6 +275,7 @@ extern struct TRX_SETTINGS
 	uint16_t FM_LPF_TX_Filter;
 	bool Beeper;
 	float32_t CTCSS_Freq;
+	uint8_t SELFHEAR_Volume;
 	//CW
 	uint16_t CW_Pitch;
 	uint16_t CW_Key_timeout;
