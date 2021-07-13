@@ -538,7 +538,7 @@ void LoadCalibration(bool clear)
 		//Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)
 		{
-			CALIBRATE.MEMORY_CHANNELS[i].Freq = BANDS[0].startFreq + (BANDS[0].endFreq - BANDS[0].startFreq) / 2;
+			CALIBRATE.MEMORY_CHANNELS[i].Freq = 0;
 			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)getModeFromFreq(CALIBRATE.MEMORY_CHANNELS[i].Freq);
 			CALIBRATE.MEMORY_CHANNELS[i].LNA = TRX.LNA;
 			CALIBRATE.MEMORY_CHANNELS[i].ATT = TRX.ATT;

@@ -2002,7 +2002,11 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
 	{
 		for(uint8_t x = 0; x < buttons_in_line; x++)
 		{
-			sprintf(tmp, "%u", channel_num);
+			if(CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == 0)
+				sprintf(tmp, "-");
+			else
+				sprintf(tmp, "%.1f", CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq / 1000000.0f);
+			
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + x * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, tmp, (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == CurrentVFO->Freq), true, true, (channel_num - 1), FRONTPANEL_SelectMemoryChannelsButtonHandler, FRONTPANEL_SaveMemoryChannelsButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 			channel_num++;
 		}
