@@ -9,17 +9,20 @@
 #include <stdio.h>
 #include "images.h"
 
-extern uint32_t LCD_FSMC_COMM_ADDR;
-extern uint32_t LCD_FSMC_DATA_ADDR;
-
 //LCD dimensions defines
 #if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_ST7796S) || defined(LCD_R61581))
 #include "lcd_driver_ILI9481.h"
+#endif
+#if (defined(LCD_ST7735S))
+#include "lcd_driver_ST7735S.h"
 #endif
 #if (defined(LCD_RA8875))
 #include "lcd_driver_RA8875.h"
 #endif
 
+#if (LCD_WIDTH == 160 && LCD_HEIGHT == 128)
+#define LAY_160x128
+#endif
 #if (LCD_WIDTH == 480 && LCD_HEIGHT == 320)
 #define LAY_480x320
 #endif
@@ -81,11 +84,12 @@ typedef struct
 		b = t;                   \
 	}
 #define rgb888torgb565(r, g, b) ((uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3)))
-
+	
 extern uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
 extern uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);		   //mix two colors with opacity
 
-extern void LCDDriver_SendData(uint16_t data);
+extern void LCDDriver_SendData8(uint8_t data);
+extern void LCDDriver_SendData16(uint16_t data);
 extern uint16_t LCDDriver_readReg(uint16_t reg);
 extern void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 extern uint16_t LCDDriver_GetCurrentXOffset(void);
@@ -105,7 +109,8 @@ extern void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint
 extern void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size);
 extern void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h);
 extern void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, const GFXfont *gfxFont);
-extern void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, const GFXfont *gfxFont);
+extern void LCDDriver_getTextBoundsFont(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, const GFXfont *gfxFont);
+extern void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, uint8_t size);
 extern void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data);
 extern void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image, uint16_t transparent_color, uint16_t bg_color);
 extern void LCDDriver_setRotation(uint8_t rotate);

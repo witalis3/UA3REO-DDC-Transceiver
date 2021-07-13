@@ -467,7 +467,7 @@ void processRxAudio(void)
 	}
 
 	//OUT Volume
-	float32_t volume_gain_new = volume2rate((float32_t)TRX_Volume / 1023.0f);
+	float32_t volume_gain_new = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
 	volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
 
 	//SD card send
@@ -503,7 +503,7 @@ void processRxAudio(void)
 		float32_t old_signal = 0;
 		int32_t out = 0;
 		bool halted = false;
-		float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f) * 0.1f;
+		float32_t amplitude = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE) * 0.1f;
 		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
 		{
 			float32_t signal = generateSin(amplitude, &beep_index, TRX_SAMPLERATE, 1500);
@@ -809,7 +809,7 @@ void processTxAudio(void)
 	//Loopback/DIGI mode self-hearing
 	if ((!SD_RecordInProcess && mode == TRX_MODE_LOOPBACK) || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY)
 	{
-		float32_t volume_gain_tx = volume2rate((float32_t)TRX_Volume / 1023.0f) * volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+		float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE) * volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx * db2rateV(TRX.AGC_GAIN_TARGET);
@@ -835,7 +835,7 @@ void processTxAudio(void)
 	if (TRX.CW_SelfHear && (TRX.CW_KEYER || CW_key_serial || CW_key_dot_hard || CW_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune)
 	{
 		static float32_t cwgen_index = 0;
-		float32_t amplitude = volume2rate((float32_t)TRX_Volume / 1023.0f) * volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+		float32_t amplitude = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE) * volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			float32_t point = generateSin(amplitude * APROC_Audio_Buffer_TX_I[i], &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
@@ -1528,7 +1528,7 @@ static void APROC_SD_Play(void)
 			outbuff_index = 0;
 
 			//OUT Volume
-			float32_t volume_gain_new = volume2rate((float32_t)TRX_Volume / 1023.0f);
+			float32_t volume_gain_new = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
 			volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
 
 			//Volume Gain and SPI convert

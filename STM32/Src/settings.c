@@ -143,8 +143,18 @@ void LoadSettings(bool clear)
 		TRX.ShiftEnabled = false;				  // activate the SHIFT mode
 		TRX.SHIFT_INTERVAL = 1000;				  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
 		TRX.TWO_SIGNAL_TUNE = false;			  // Two-signal generator in TUNE mode (1 + 2kHz)
+#ifdef LAY_160x128
+		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; //Samplerate for ssb/cw/digi/nfm/etc modes
+		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192; //Samplerate for FM mode
+#endif
+#ifdef LAY_480x320
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; //Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192; //Samplerate for FM mode
+#endif
+#ifdef LAY_800x480
+		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; //Samplerate for ssb/cw/digi/nfm/etc modes
+		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192; //Samplerate for FM mode
+#endif
 		TRX.FRQ_STEP = 10;						  // frequency tuning step by the main encoder
 		TRX.FRQ_FAST_STEP = 100;				  // frequency tuning step by the main encoder in FAST mode
 		TRX.FRQ_ENC_STEP = 25000;				  // frequency tuning step by main add. encoder
@@ -154,7 +164,11 @@ void LoadSettings(bool clear)
 		TRX.BandMapEnabled = true;				  // automatic change of mode according to the range map
 		TRX.InputType_MAIN = TRX_INPUT_MIC;			  // type of input to transfer (SSB/FM/AM)
 		TRX.InputType_DIGI = TRX_INPUT_USB;			  // type of input to transfer (DIGI)
+#ifdef FRONTPANEL_X1
+		TRX.AutoGain = true;					  // auto-control preamp and attenuator
+#else
 		TRX.AutoGain = false;					  // auto-control preamp and attenuator
+#endif
 		TRX.Locked = false;						  // Lock control
 		TRX.CLAR = false;						  // Split frequency mode (receive one VFO, transmit another)
 		TRX.Dual_RX = false;					  //Dual RX feature
@@ -169,7 +183,8 @@ void LoadSettings(bool clear)
 		TRX.ATU_T = false;							//ATU default state
 		TRX.ATU_Enabled = true;					//ATU enabled state
 		//AUDIO
-		TRX.IF_Gain = 70;								   // IF gain, dB (before all processing and AGC)
+		TRX.Volume = 25;									//AF Volume
+		TRX.IF_Gain = 15;								   // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;						   // Maximum (target) AGC gain
 		TRX.MIC_GAIN = 1;								   // Microphone gain
 		TRX.MIC_Boost = true;								// +20db mic amplifier
@@ -221,11 +236,16 @@ void LoadSettings(bool clear)
 		TRX.ColorThemeId = 0;	//Selected Color theme
 		TRX.LayoutThemeId = 0;	//Selected Layout theme
 		TRX.FFT_Enabled = true; // use FFT spectrum
+#ifdef LAY_160x128
+		TRX.FFT_Zoom = 2;	// approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
+#endif
+#ifdef LAY_480x320
+		TRX.FFT_Zoom = 2;	// approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
+#endif
 #ifdef LAY_800x480
 		TRX.FFT_Zoom = 1;	// approximation of the FFT spectrum
-		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
-#else
-		TRX.FFT_Zoom = 2;	// approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
 		TRX.LCD_Brightness = 60;	 //LCD Brightness
@@ -235,11 +255,16 @@ void LoadSettings(bool clear)
 		TRX.FFT_Speed = 3;			 // FFT Speed
 		TRX.FFT_Averaging = 4;		 // averaging the FFT to make it smoother
 		TRX.FFT_Window = 1;			 //FFT Window
-		TRX.FFT_Height = 2;			 // FFT display height
 		TRX.FFT_Style = 1;			 // FFT style
 		TRX.FFT_Color = 1;			 // FFT display color
 		TRX.FFT_Compressor = true;	 //Compress FFT Peaks
+#ifdef LAY_160x128
+		TRX.FFT_FreqGrid = 0;			 // FFT freq grid style
+		TRX.FFT_Height = 3;			 // FFT display height
+#else
 		TRX.FFT_FreqGrid = 1;			 // FFT freq grid style
+		TRX.FFT_Height = 2;			 // FFT display height
+#endif
 		TRX.FFT_dBmGrid = false;			 // FFT power grid
 		TRX.FFT_Background = true;	 //FFT gradient background
 		TRX.FFT_Lens = false;		 //FFT lens effect
@@ -317,9 +342,10 @@ void LoadSettings(bool clear)
 		
 		//Shadow variables
 		TRX.SQL_shadow = TRX.VFO_A.SQL;
+		TRX.AGC_shadow = TRX.VFO_A.AGC;
+		TRX.DNR_shadow = TRX.VFO_A.DNR_Type;
 		TRX.FM_SQL_threshold_dbm_shadow = TRX.VFO_A.FM_SQL_threshold_dbm;
 
-		println("[OK] Loaded default settings");
 		LCD_showError("Loaded default settings", true);
 		SaveSettings();
 		SaveSettingsToEEPROM();
@@ -404,6 +430,27 @@ void LoadCalibration(bool clear)
 		CALIBRATE.adc_offset = 0;				   // Calibrate the offset at the ADC input (DC)
 												   // Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
 												   // Next, the average border response frequencies are set
+#ifdef FRONTPANEL_X1
+		CALIBRATE.RFU_HPF_START = 60000 * 1000;		   //HPF
+		CALIBRATE.RFU_BPF_1_START = 1500 * 1000;	   //160m
+		CALIBRATE.RFU_BPF_1_END = 2400 * 1000;		   //160m
+		CALIBRATE.RFU_BPF_2_START = 2400 * 1000;	   //80m
+		CALIBRATE.RFU_BPF_2_END = 4500 * 1000;		   //80m
+		CALIBRATE.RFU_BPF_3_START = 4500 * 1000;	   //40m
+		CALIBRATE.RFU_BPF_3_END = 7500 * 1000;		   //40m
+		CALIBRATE.RFU_BPF_4_START = 7500 * 1000;	   //30m
+		CALIBRATE.RFU_BPF_4_END = 11500 * 1000;		   //30m
+		CALIBRATE.RFU_BPF_5_START = 11500 * 1000;	   //20m
+		CALIBRATE.RFU_BPF_5_END = 14800 * 1000;		   //20m
+		CALIBRATE.RFU_BPF_6_START = 14800 * 1000;	   //17,15m
+		CALIBRATE.RFU_BPF_6_END = 22000 * 1000;		   //17,15m
+		CALIBRATE.RFU_BPF_7_START = 22000 * 1000;	   //12,10m
+		CALIBRATE.RFU_BPF_7_END = 32000 * 1000;		   //12,10m
+		CALIBRATE.RFU_BPF_8_START = 135000 * 1000;	   //2m
+		CALIBRATE.RFU_BPF_8_END = 150000 * 1000;		   //2m
+		CALIBRATE.RFU_BPF_9_START = 0;	   //disabled on qrp version
+		CALIBRATE.RFU_BPF_9_END = 0;		   //disabled on qrp version
+#else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;		   //LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;		   //HPF U14-RF1
 		CALIBRATE.RFU_BPF_0_START = 135 * 1000 * 1000; //2m U14-RF3
@@ -426,6 +473,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_8_END = 0;		   //disabled on qrp version
 		CALIBRATE.RFU_BPF_9_START = 0;	   //disabled on qrp version
 		CALIBRATE.RFU_BPF_9_END = 0;		   //disabled on qrp version
+#endif
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_HF = 11.0f;	   //SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f;	   //SWR Transormator rate forward
@@ -485,6 +533,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.OTA_update = true;				//enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;			//Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;			//LCD 180 degree rotation
+		CALIBRATE.PWR_VLT_Calibration = 1000.0f;	//VLT meter calibration
 
 		//Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)
@@ -505,8 +554,12 @@ void LoadCalibration(bool clear)
 		}
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
-		println("[OK] Loaded default calibrate settings");
+		
+#ifdef LAY_160x128
+		LCD_showError("Load default calibrate", true);
+#else
 		LCD_showError("Loaded default calibrations", true);
+#endif
 		SaveCalibration();
 	}
 	EEPROM_PowerDown();

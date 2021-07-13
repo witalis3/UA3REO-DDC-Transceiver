@@ -65,7 +65,6 @@ volatile extern bool TRX_DCDC_Freq;
 volatile extern bool TRX_DAC_DRV_A0;
 volatile extern bool TRX_DAC_DRV_A1;
 volatile extern bool TRX_Mute;
-volatile extern uint16_t TRX_Volume;
 volatile extern float32_t TRX_STM32_VREF;
 volatile extern float32_t TRX_STM32_TEMPERATURE;
 volatile extern float32_t TRX_IQ_phase_error;
@@ -81,5 +80,7 @@ volatile extern bool TRX_ScanMode;
 extern bool TRX_phase_restarted;
 extern uint32_t TRX_TX_StartTime;
 extern uint32_t TRX_DXCluster_UpdateTime;
+volatile extern float32_t TRX_PWR_Voltage;
+volatile extern float32_t TRX_RF_Current;
 
 #endif

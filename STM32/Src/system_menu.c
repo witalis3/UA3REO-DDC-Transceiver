@@ -51,7 +51,11 @@ static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_Enabled(int8_t direction);
 
+static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_DNR(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_AGC(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_Gain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_Boost(int8_t direction);
@@ -306,6 +310,7 @@ static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction);
+static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
@@ -407,7 +412,13 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 
 const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 	{
+#if defined(FRONTPANEL_X1)
+		{"Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.Volume, SYSMENU_HANDL_AUDIO_Volume},
+#endif
 		{"IF Gain, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
+		{"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_AUDIO_DNR, {"OFF", "DNR1", "DNR2"}},
+		{"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_AUDIO_NOISE_BLANKER},
+		{"AGC", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_shadow, SYSMENU_HANDL_AUDIO_AGC},
 		{"AGC Gain target, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
 		{"Mic Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.MIC_GAIN, SYSMENU_HANDL_AUDIO_MIC_Gain},
 		{"Mic Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_AUDIO_MIC_Boost},
@@ -481,7 +492,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Manual Bottom, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_HANDL_SCREEN_FFT_ManualBottom},
 		{"FFT Manual Top, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_HANDL_SCREEN_FFT_ManualTop},
 		{"FFT Height", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
-		{"FFT Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style, {"", "Gradient", "Fill", "Dots", "Contour"}},
+		{"FFT Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style, {"", "Gradien", "Fill", "Dots", "Contour"}},
 		{"FFT Color", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color, {"", "Blu>Y>R", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
 		{"FFT Freq Grid", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_FreqGrid, SYSMENU_HANDL_SCREEN_FFT_FreqGrid, {"NO", "Top", "All", "Bott"}},
 		{"FFT dBm Grid", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_dBmGrid, SYSMENU_HANDL_SCREEN_FFT_dBmGrid},
@@ -493,7 +504,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"WTF Moving", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WTF_Moving, SYSMENU_HANDL_SCREEN_WTF_Moving},
 		{"FFT Compressor", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
 		{"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
-		{"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blackman", "Nutall", "BlNutall", "Hann", "Hamming", "No"}},
+		{"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blckman", "Nutall", "BlNutll", "Hann", "Hamming", "No"}},
 		{"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
 		{"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
 #ifdef HRDW_HAS_FUNCBUTTONS
@@ -699,6 +710,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"OTA Update", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_HANDL_CALIB_OTA_update},
 		{"TX Start Delay", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_HANDL_CALIB_TX_StartDelay},
 		{"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
+		{"PWR VLT Calibr", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_HANDL_CALIB_PWR_VLT_Calibration},
 };
 
 const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
@@ -1080,10 +1092,10 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("CALLSIGN:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("CALLSIGN:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.CALLSIGN, 10, 37, COLOR_GREEN, BG_COLOR, 2);
+	LCDDriver_printText(TRX.CALLSIGN, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * 12, 54, 12, COLOR_RED);
 }
 
@@ -1092,10 +1104,10 @@ static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("LOCATOR:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("LOCATOR:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.LOCATOR, 10, 37, COLOR_GREEN, BG_COLOR, 2);
+	LCDDriver_printText(TRX.LOCATOR, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_locator_char_index * 12, 54, 12, COLOR_RED);
 }
 
@@ -1283,6 +1295,50 @@ void SYSMENU_AUDIO_AGC_HOTKEY(void)
 	SYSMENU_HANDL_AUDIOMENU(0);
 	systemMenuIndex = 25;
 	LCD_redraw(false);
+}
+
+static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction)
+{
+	if(direction > 0 || TRX.Volume > 0)
+		TRX.Volume += direction;
+	if (TRX.Volume > 100)
+		TRX.Volume = 100;
+}
+
+static void SYSMENU_HANDL_AUDIO_DNR(int8_t direction)
+{
+	if (direction > 0 || CurrentVFO->DNR_Type > 0)
+		CurrentVFO->DNR_Type += direction;
+	if (CurrentVFO->DNR_Type > 2)
+		CurrentVFO->DNR_Type = 2;
+	
+	TRX.DNR_shadow = CurrentVFO->DNR_Type;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band > 0)
+		TRX.BANDS_SAVED_SETTINGS[band].DNR_Type = CurrentVFO->DNR_Type;
+}
+
+static void SYSMENU_HANDL_AUDIO_AGC(int8_t direction)
+{
+	if (direction > 0)
+		CurrentVFO->AGC = true;
+	if (direction < 0)
+		CurrentVFO->AGC = false;
+	
+	TRX.AGC_shadow = CurrentVFO->AGC;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band > 0)
+		TRX.BANDS_SAVED_SETTINGS[band].AGC = CurrentVFO->AGC;
+}
+
+static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction)
+{
+	if (direction > 0)
+		TRX.NOISE_BLANKER = true;
+	if (direction < 0)
+		TRX.NOISE_BLANKER = false;
 }
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction)
@@ -2288,6 +2344,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction)
 		TRX.FuncButtons[27] = FUNCBUTTONS_COUNT - 1;
 }
 
+#if FUNCBUTTONS_COUNT > 28
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction)
 {
 	if (TRX.FuncButtons[28] > 0 || direction > 0)
@@ -2319,6 +2376,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction)
 	if (TRX.FuncButtons[31] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[31] = FUNCBUTTONS_COUNT - 1;
 }
+#endif 
 
 //DECODERS MENU
 
@@ -2535,12 +2593,12 @@ static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
 		uint16_t curr_x = 5;
-		LCDDriver_printText("NET1 Found:", curr_x, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("NET1 Found:", curr_x, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		curr_x += 28;
-		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, 2);
+		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		curr_x += 24;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, 2);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	if (sysmenu_wifi_needupdate_ap)
@@ -2558,12 +2616,12 @@ static void SYSMENU_WIFI_DrawSelectAP2Menu(bool full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
 		uint16_t curr_x = 5;
-		LCDDriver_printText("NET2 Found:", curr_x, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("NET2 Found:", curr_x, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		curr_x += 28;
-		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, 2);
+		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		curr_x += 24;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, 2);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	if (sysmenu_wifi_needupdate_ap)
@@ -2581,12 +2639,12 @@ static void SYSMENU_WIFI_DrawSelectAP3Menu(bool full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
 		uint16_t curr_x = 5;
-		LCDDriver_printText("NET3 Found:", curr_x, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("NET3 Found:", curr_x, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		curr_x += 28;
-		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, 2);
+		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		curr_x += 24;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, 2);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	if (sysmenu_wifi_needupdate_ap)
@@ -2681,10 +2739,10 @@ static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("NET1 Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("NET1 Password:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD1, 10, 37, COLOR_GREEN, BG_COLOR, 2);
+	LCDDriver_printText(TRX.WIFI_PASSWORD1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
 }
 
@@ -2693,10 +2751,10 @@ static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("NET2 Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("NET2 Password:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD2, 10, 37, COLOR_GREEN, BG_COLOR, 2);
+	LCDDriver_printText(TRX.WIFI_PASSWORD2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
 }
 
@@ -2705,10 +2763,10 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		LCDDriver_printText("NET3 Password:", 5, 5, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText("NET3 Password:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD3, 10, 37, COLOR_GREEN, BG_COLOR, 2);
+	LCDDriver_printText(TRX.WIFI_PASSWORD3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
 }
 
@@ -2986,15 +3044,15 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 	{
 		sprintf(ctmp, "%d", Hours);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printText(ctmp, 76, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, 3);
+		LCDDriver_printText(ctmp, 76, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		LCDDriver_printText(":", 124, 100, COLOR->BUTTON_TEXT, BG_COLOR, 3);
 		sprintf(ctmp, "%d", Minutes);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printText(ctmp, 148, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, 3);
+		LCDDriver_printText(ctmp, 148, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		LCDDriver_printText(":", 194, 100, COLOR->BUTTON_TEXT, BG_COLOR, 3);
 		sprintf(ctmp, "%d", Seconds);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printText(ctmp, 220, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, 3);
+		LCDDriver_printText(ctmp, 220, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 }
 
@@ -3030,28 +3088,28 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 	uint16_t y = 10;
 	char out[80];
 	sprintf(out, "STM32 FW ver: %s", version_string);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "FPGA FW ver: %d.%d.%d", FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "WIFI IP: %s", WIFI_IP);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "FPGA SAMPLES: %d     ", dbg_FPGA_samples);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "STM32 VOLTAGE: %f     ", TRX_STM32_VREF);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "IQ PHASE: %f     ", TRX_IQ_phase_error);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "ADC MIN/MAX: %d/%d     ", TRX_ADC_MINAMPLITUDE, TRX_ADC_MAXAMPLITUDE);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "VCXO ERROR: %d     ", TRX_VCXO_ERROR);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, 2);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 
 	LCD_UpdateQuery.SystemMenu = true;
@@ -4218,6 +4276,15 @@ static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction)
 	LCD_redraw(false);
 }
 
+static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction)
+{
+	CALIBRATE.PWR_VLT_Calibration += (float32_t)direction * 1.0f;
+	if (CALIBRATE.PWR_VLT_Calibration < 1.0f)
+		CALIBRATE.PWR_VLT_Calibration = 1.0f;
+	if (CALIBRATE.PWR_VLT_Calibration > 1500.0f)
+		CALIBRATE.PWR_VLT_Calibration = 1500.0f;
+}
+
 //SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 {
@@ -5077,7 +5144,7 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	//clear selection line
 	LCD_busy = true;
 	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(systemMenuIndex) * LAYOUT->SYSMENU_ITEM_HEIGHT;
-	LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, BG_COLOR);
+	LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, BG_COLOR);
 	LCD_busy = false;
 	//current page
 	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(systemMenuIndex);
@@ -5139,10 +5206,10 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 	if (!onlyVal)
 	{
 		LCDDriver_Fill_RectXY(0, sysmenu_y, LAYOUT->SYSMENU_W, sysmenu_y + 17, BG_COLOR);
-		LCDDriver_printText(menuElement->title, LAYOUT->SYSMENU_X1, sysmenu_y, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText(menuElement->title, LAYOUT->SYSMENU_X1, sysmenu_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	uint16_t x_pos = LAYOUT->SYSMENU_X2 - 5 * 12;
+	uint16_t x_pos = LAYOUT->SYSMENU_X2 - RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE * ENUM_MAX_LENGTH;
 	float32_t tmp_float = 0;
 	switch (menuElement->type)
 	{
@@ -5203,15 +5270,15 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 	if (menuElement->type != SYSMENU_INFOLINE)
 	{
 		addSymbols(ctmp, ctmp, ENUM_MAX_LENGTH, " ", false);
-		LCDDriver_printText(ctmp, x_pos, sysmenu_y, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText(ctmp, x_pos, sysmenu_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
 	if (SYSTMENU_getVisibleIdFromReal(systemMenuIndex) == sysmenu_i)
 	{
 		if (sysmenu_item_selected_by_enc2)
-			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
+			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
 		else
-			LCDDriver_drawFastHLine(0, sysmenu_y + 17, LAYOUT->SYSMENU_W, FG_COLOR);
+			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	sysmenu_i++;
 	sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;

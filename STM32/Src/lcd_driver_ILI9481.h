@@ -9,6 +9,7 @@
 //LCD dimensions defines
 #define LCD_WIDTH 480
 #define LCD_HEIGHT 320
+#define LCD_TYPE_FSMC true
 
 //ILI9481 LCD commands
 #define LCD_COMMAND_COLUMN_ADDR 0x2A

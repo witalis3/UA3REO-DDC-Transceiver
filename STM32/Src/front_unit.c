@@ -644,9 +644,9 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 	// AF_GAIN
 	if (button->type == FUNIT_CTRL_AF_GAIN)
 	{
-		TRX_Volume = (uint16_t)(1023.0f - mcp3008_value);
-		if (TRX_Volume < 50)
-			TRX_Volume = 0;
+		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - mcp3008_value);
+		if (TRX.Volume < 50)
+			TRX.Volume = 0;
 	}
 
 	// SHIFT or IF Gain

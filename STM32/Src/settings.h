@@ -238,6 +238,7 @@ extern struct TRX_SETTINGS
 	uint8_t ATU_C;
 	bool ATU_T;
 	//AUDIO
+	uint16_t Volume;
 	uint8_t IF_Gain;
 	int8_t AGC_GAIN_TARGET;
 	uint8_t MIC_GAIN;
@@ -356,6 +357,8 @@ extern struct TRX_SETTINGS
 	bool WSPR_BANDS_2;
 	//Shadow variables
 	bool SQL_shadow;
+	bool AGC_shadow;
+	uint8_t DNR_shadow;
 	int8_t FM_SQL_threshold_dbm_shadow;
 	//Memory
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
@@ -480,6 +483,7 @@ extern struct TRX_CALIBRATE
 	bool OTA_update;
 	uint16_t TX_StartDelay;
 	bool LCD_Rotate;
+	float32_t PWR_VLT_Calibration;
 	
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 
@@ -513,6 +517,10 @@ extern void RTC_Calibration(void);
 	#define HRDW_MCP3008_1 true
 	#define HRDW_HAS_FUNCBUTTONS true
 #endif
+#ifdef FRONTPANEL_X1
+	#define HRDW_MCP3008_1 true
+	#define HRDW_HAS_FUNCBUTTONS false
+#endif
 
 #if defined(LCD_ILI9481) 
 static char ota_config_lcd[] = "ILI9481";
@@ -532,15 +540,26 @@ static char ota_config_lcd[] = "ILI9486";
 #if defined(LCD_ST7796S)
 static char ota_config_lcd[] = "ST7796S";
 #endif
+#if defined(LCD_ST7735S)
+static char ota_config_lcd[] = "ST7735S";
+#endif
 #if defined(LCD_RA8875)
 static char ota_config_lcd[] = "RA8875";
 #endif
+
 #if defined(FRONTPANEL_BIG_V1)
 static char ota_config_frontpanel[] = "BIG";
+#define MAX_VOLUME_VALUE 1024.0f
 #endif
 #if defined(FRONTPANEL_SMALL_V1)
 static char ota_config_frontpanel[] = "SMALL";
+#define MAX_VOLUME_VALUE 1024.0f
 #endif
+#if defined(FRONTPANEL_X1)
+static char ota_config_frontpanel[] = "X1";
+#define MAX_VOLUME_VALUE 100.0f
+#endif
+
 #if defined(TOUCHPAD_GT911)
 static char ota_config_touchpad[] = "GT911";
 #else

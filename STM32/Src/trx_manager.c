@@ -34,7 +34,6 @@ volatile bool TRX_DAC_OTR = false;
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile int32_t TRX_VCXO_ERROR = 0;
-volatile uint16_t TRX_Volume = 0;
 volatile uint32_t TRX_SNTP_Synced = 0; // time of the last time synchronization
 volatile int_fast16_t TRX_SHIFT = 0;
 volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
@@ -67,6 +66,8 @@ volatile bool TRX_ScanMode = false;
 bool TRX_phase_restarted = false;
 uint32_t TRX_TX_StartTime = 0;
 uint32_t TRX_DXCluster_UpdateTime = 0;
+volatile float32_t TRX_PWR_Voltage = 12.0f;
+volatile float32_t TRX_RF_Current = 0.0f;
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static void TRX_Start_RX(void);
@@ -89,6 +90,9 @@ void TRX_Init()
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(saved_mode, CurrentVFO);
 	HAL_ADCEx_InjectedStart(&hadc1); //ADC RF-UNIT'а
+#ifdef hadc2
+	HAL_ADCEx_InjectedStart(&hadc2); //ADC Tangent (some versions)
+#endif
 	HAL_ADCEx_InjectedStart(&hadc3); //ADC CPU temperature
 }
 

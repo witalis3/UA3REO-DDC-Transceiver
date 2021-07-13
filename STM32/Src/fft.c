@@ -1315,6 +1315,7 @@ void FFT_afterPrintFFT(void)
 	//continue DMA draw?
 	if (print_fft_dma_estimated_size > 0)
 	{
+#ifdef LCD_TYPE_FSMC		
 		if (print_fft_dma_estimated_size <= DMA_MAX_BLOCK)
 		{
 			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&print_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
@@ -1328,6 +1329,21 @@ void FFT_afterPrintFFT(void)
 			print_fft_dma_position += DMA_MAX_BLOCK;
 		}
 		return;
+#endif
+#ifdef LCD_TYPE_SPI
+		if(hspi4.Init.DataSize != SPI_DATASIZE_16BIT)
+		{
+			hspi4.Init.DataSize = SPI_DATASIZE_16BIT;
+			HAL_SPI_Init(&hspi4);
+		}
+		LCD_DC_GPIO_Port->BSRR = LCD_DC_Pin;
+
+		HAL_SPI_Transmit_DMA(&hspi4, (uint8_t *)(&print_output_buffer[0] + print_fft_dma_position * 2), print_fft_dma_estimated_size);
+		while(HAL_SPI_GetState(&hspi4) != HAL_SPI_STATE_READY) { CPULOAD_GoToSleepMode(); }
+
+		print_fft_dma_estimated_size = 0;
+		print_fft_dma_position = 0;
+#endif
 	}
 
 	// calc bandmap
@@ -1383,7 +1399,7 @@ void FFT_afterPrintFFT(void)
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT - 4, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y - 3);
 	for (uint8_t r = 0; r < 2; r++)
 		for (uint32_t pixel_counter = 0; pixel_counter < LAYOUT->FFT_PRINT_SIZE; pixel_counter++)
-			LCDDriver_SendData(bandmap_line_tmp[pixel_counter]);
+			LCDDriver_SendData16(bandmap_line_tmp[pixel_counter]);
 
 	// Print FFT frequency labels
 	if (LAYOUT->FFT_FREQLABELS_HEIGHT > 0 && (lastWTFFreq != currentFFTFreq || NeedWTFRedraw))

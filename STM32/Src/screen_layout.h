@@ -127,7 +127,7 @@ extern "C"
 		const int16_t STATUS_ANT_Y_OFFSET;
 		const uint16_t STATUS_ANT_BLOCK_WIDTH;
 		const uint16_t STATUS_ANT_BLOCK_HEIGHT;
-		const uint16_t STATUS_TX_LABELS_OFFSET_X;
+		const int16_t STATUS_TX_LABELS_OFFSET_X;
 		const uint16_t STATUS_TX_LABELS_MARGIN_X;
 		bool STATUS_SMETER_ANALOG;
 		const int16_t STATUS_SMETER_TOP_OFFSET;
@@ -172,6 +172,7 @@ extern "C"
 		const uint16_t STATUS_TX_LABELS_SWR_X;
 		const uint16_t STATUS_TX_LABELS_FWD_X;
 		const uint16_t STATUS_TX_LABELS_REF_X;
+		const uint16_t STATUS_TX_LABELS_ALC_X;
 		const uint16_t STATUS_TX_ALC_X_OFFSET;
 		const uint16_t STATUS_MODE_X_OFFSET;
 		const int16_t STATUS_MODE_Y_OFFSET;
@@ -209,6 +210,7 @@ extern "C"
 		const uint16_t FFT_FFTWTF_BOTTOM;
 		const uint16_t FFT_FREQLABELS_HEIGHT;
 		//System menu
+		const uint8_t SYSMENU_FONT_SIZE;
 		const uint16_t SYSMENU_X1;
 		const uint16_t SYSMENU_X2;
 		const uint16_t SYSMENU_W;
@@ -240,6 +242,13 @@ extern "C"
 #endif
 	} STRUCT_LAYOUT_THEME;
 
+#if (defined(LAY_160x128))
+#define LAYOUT_THEMES_COUNT 1
+#define MAX_FFT_PRINT_SIZE LCD_WIDTH
+#define MAX_FFT_HEIGHT 55
+#define MAX_WTF_HEIGHT 55
+#define FFT_AND_WTF_HEIGHT 55
+#endif
 #if (defined(LAY_480x320))
 #define LAYOUT_THEMES_COUNT 2
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH

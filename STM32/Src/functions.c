@@ -251,8 +251,13 @@ float32_t rate2dbP(float32_t i) // from times to decibels (for power)
 #define VOLUME_EPSILON powf(10.0f, (VOLUME_LOW_DB / 20.0f))
 float32_t volume2rate(float32_t i) // from the position of the volume knob to the gain
 {
-	if (i < (15.0f / 1024.f)) //mute zone
+	float32_t mute_zone = 15.0f;
+	if (MAX_VOLUME_VALUE == 100.0f)
+		mute_zone = 1.0f;
+	
+	if (i < (mute_zone / MAX_VOLUME_VALUE)) //mute zone
 		return 0.0f;
+	
 	return powf(VOLUME_EPSILON, (1.0f - i));
 }
 

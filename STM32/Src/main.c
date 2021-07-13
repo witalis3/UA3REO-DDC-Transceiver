@@ -309,7 +309,7 @@ int main(void)
     strcpy(greetings_buff, "Hello, ");
     strcat(greetings_buff, TRX.CALLSIGN);
     strcat(greetings_buff, " !");
-    LCDDriver_getTextBounds(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, &FreeSans9pt7b);
+    LCDDriver_getTextBoundsFont(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, &FreeSans9pt7b);
     LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), &FreeSans9pt7b);
   }
   println("[OK] Profiler init");

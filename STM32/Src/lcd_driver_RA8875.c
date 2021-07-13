@@ -29,6 +29,12 @@ inline void LCDDriver_SendData(uint16_t data)
   *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)) = data;
 }
 
+//Write data to LCD
+inline void LCDDriver_SendData16(uint16_t data)
+{
+  *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)) = data;
+}
+
 //Write pair command-data
 inline void LCDDriver_writeReg(uint16_t reg, uint16_t val)
 {

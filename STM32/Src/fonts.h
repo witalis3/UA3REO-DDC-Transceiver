@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define RASTR_FONT_W 6
+#define RASTR_FONT_H 8
+
 extern const GFXfont FreeSans7pt7b;
 extern const GFXfont FreeSans9pt7b;
 extern const GFXfont FreeSans12pt7b;

@@ -869,7 +869,7 @@ static inline void FPGA_setBusInput(void)
 	//sendToDebug_uint32(temp,false);
 	GPIOA->MODER = temp;*/
 
-	GPIOA->MODER = -1431764992;
+	FPGA_setGPIOBusInput; // macros
 }
 
 // switch bus to pin
@@ -896,7 +896,7 @@ static inline void FPGA_setBusOutput(void)
 	//sendToDebug_uint32(temp,false);
 	GPIOA->MODER = temp;*/
 
-	GPIOA->MODER = -1431743147;
+	FPGA_setGPIOBusOutput; // macros
 }
 
 // raise the CLK signal

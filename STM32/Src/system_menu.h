@@ -4,9 +4,15 @@
 #include "stm32h7xx.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include "lcd_driver.h"
 
 #define ENUM_MAX_COUNT 8
-#define ENUM_MAX_LENGTH 10
+
+#ifdef LAY_160x128
+	#define ENUM_MAX_LENGTH 7
+#else
+	#define ENUM_MAX_LENGTH 10
+#endif
 
 typedef enum
 {

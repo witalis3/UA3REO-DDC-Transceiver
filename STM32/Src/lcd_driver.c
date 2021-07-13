@@ -118,9 +118,9 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 				for (int8_t s_x = 0; s_x < size; s_x++) //x size scale
 				{
 					if (line & 0x1)
-						LCDDriver_SendData(color); //font pixel
+						LCDDriver_SendData16(color); //font pixel
 					else
-						LCDDriver_SendData(bg); //background pixel
+						LCDDriver_SendData16(bg); //background pixel
 				}
 			}
 		}
@@ -170,7 +170,7 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 		{
 			if (xx < glyph->xOffset || xx >= (glyph->xOffset + glyph->width))
 			{
-				LCDDriver_SendData(bg); //background pixel
+				LCDDriver_SendData16(bg); //background pixel
 				continue;
 			}
 			if (!(bit++ & 7))
@@ -179,11 +179,11 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 			}
 			if (bits & 0x80)
 			{
-				LCDDriver_SendData(color); //font pixel
+				LCDDriver_SendData16(color); //font pixel
 			}
 			else
 			{
-				LCDDriver_SendData(bg); //background pixel
+				LCDDriver_SendData16(bg); //background pixel
 			}
 			bits <<= 1;
 		}
@@ -284,7 +284,7 @@ static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx
 	@param    h      The boundary height, set by function
 */
 /**************************************************************************/
-void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, const GFXfont *gfxFont)
+void LCDDriver_getTextBoundsFont(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, const GFXfont *gfxFont)
 {
 	uint8_t c; // Current character
 
@@ -312,6 +312,12 @@ void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, 
 	}
 }
 
+void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, uint8_t size)
+{
+	*w = 6 * size * strlen(text);
+	*h = 8 * size;
+}
+
 //Image print (RGB 565, 2 bytes per pixel)
 void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data)
 {
@@ -319,7 +325,7 @@ void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_
 	LCDDriver_SetCursorAreaPosition(x, y, w + x - 1, h + y - 1);
 	for (uint32_t i = 0; i < n; i += 2)
 	{
-		LCDDriver_SendData((uint16_t)((data[i] << 8) | data[i + 1]));
+		LCDDriver_SendData16((uint16_t)((data[i] << 8) | data[i + 1]));
 	}
 }
 
@@ -339,9 +345,9 @@ void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *im
 			for (uint16_t p = 0; p < count; p++)
 			{
 				if (image->data[i] == transparent_color)
-					LCDDriver_SendData(bg_color);
+					LCDDriver_SendData16(bg_color);
 				else
-					LCDDriver_SendData(image->data[i]);
+					LCDDriver_SendData16(image->data[i]);
 				decoded++;
 				i++;
 				if (pixels <= decoded)
@@ -355,9 +361,9 @@ void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *im
 			for (uint16_t p = 0; p < count; p++)
 			{
 				if (image->data[i] == transparent_color)
-					LCDDriver_SendData(bg_color);
+					LCDDriver_SendData16(bg_color);
 				else
-					LCDDriver_SendData(image->data[i]);
+					LCDDriver_SendData16(image->data[i]);
 				decoded++;
 				if (pixels <= decoded)
 					return;
@@ -403,7 +409,7 @@ void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t l
 
 			for (; nr_count_p < nr_count;)
 			{
-				LCDDriver_SendData(data[processed]);
+				LCDDriver_SendData16(data[processed]);
 				RLEStream_decoded++;
 				nr_count_p++;
 				processed++;
@@ -429,7 +435,7 @@ void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t l
 
 			for (; r_count_p < r_count;)
 			{
-				LCDDriver_SendData(data[processed]);
+				LCDDriver_SendData16(data[processed]);
 				r_count_p++;
 				RLEStream_decoded++;
 				if (RLEStream_pixels <= RLEStream_decoded)
