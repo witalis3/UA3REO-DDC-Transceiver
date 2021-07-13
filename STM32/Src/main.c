@@ -261,7 +261,7 @@ int main(void)
     LoadSettings(true);
   else
 #endif
-#if FRONTPANEL_BIG_V1
+#if defined(FRONTPANEL_BIG_V1) || defined(AFRONTPANEL_WF_100D)
   if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (F1)
     LoadSettings(true);
   else
@@ -286,7 +286,7 @@ int main(void)
     LoadCalibration(true);
   else
 #endif
-#ifdef FRONTPANEL_BIG_V1
+#if defined(FRONTPANEL_BIG_V1) || defined(AFRONTPANEL_WF_100D)
   if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8)
     LoadCalibration(true);
   else

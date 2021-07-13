@@ -117,6 +117,20 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 };
 #endif
 
+#ifdef FRONTPANEL_WF_100D
+PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
+	//buttons
+	{.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN}, //AF GAIN
+	{.port = 1, .channel = 1, .type = FUNIT_CTRL_SHIFT},   //SHIFT
+	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON_DEBUG, .tres_min = 0, .tres_max = 1024, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = NULL, .holdHandler = NULL},
+	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON_DEBUG, .tres_min = 0, .tres_max = 1024, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = NULL, .holdHandler = NULL},
+	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON_DEBUG, .tres_min = 0, .tres_max = 1024, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = NULL, .holdHandler = NULL},
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON_DEBUG, .tres_min = 0, .tres_max = 1024, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = NULL, .holdHandler = NULL},
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON_DEBUG, .tres_min = 0, .tres_max = 1024, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = NULL, .holdHandler = NULL},
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON_DEBUG, .tres_min = 0, .tres_max = 1024, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = NULL, .holdHandler = NULL},
+};
+#endif
+
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH36[] = {
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_PTT, .tres_min = 200, .tres_max = 430},																																												 //PTT_SW1 - PTT
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 430, .tres_max = 640, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOWN, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOWN},	 //PTT_SW1 - DOWN
@@ -689,7 +703,7 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 			frontunit_ptt_state_prev = frontunit_ptt_state_now;
 		}
 	}
-
+	
 	//BUTTONS
 	if (button->type == FUNIT_CTRL_BUTTON)
 	{
@@ -753,6 +767,14 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 
 		//save prev state
 		button->prev_state = button->state;
+	}
+	
+	//DEBUG BUTTONS
+	if (button->type == FUNIT_CTRL_BUTTON_DEBUG)
+	{
+		char str[64] = {0};
+		sprintf(str, "%d: %d       ", button->channel, mcp3008_value);
+		LCDDriver_printText(str, 10, 200 + button->channel * 20, COLOR_RED, BG_COLOR, 2);
 	}
 }
 

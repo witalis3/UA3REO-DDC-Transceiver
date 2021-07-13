@@ -602,7 +602,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"Encoder on falling", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
 		{"Encoder acceleration", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
 		{"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG"}},
-#if defined(FRONTPANEL_BIG_V1)
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
 		{"Tangent Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.TangentType, SYSMENU_HANDL_CALIB_TangentType, {"MH-36", "MH-48"}},
 #endif
 		{"CICCOMP 48K Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.CICFIR_GAINER_48K_val, SYSMENU_HANDL_CALIB_CICCOMP_48K_SHIFT},

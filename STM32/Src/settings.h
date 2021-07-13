@@ -10,7 +10,7 @@
 #include "front_unit.h"
 
 #define SETT_VERSION 33					   // Settings config version
-#define CALIB_VERSION 32				   // Calibration config version
+#define CALIB_VERSION 33				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
@@ -513,7 +513,7 @@ extern void RTC_Calibration(void);
 	#define HRDW_MCP3008_2 true
 	#define HRDW_MCP3008_3 true
 #endif
-#ifdef FRONTPANEL_BIG_V1
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
 	#define HRDW_MCP3008_1 true
 	#define HRDW_HAS_FUNCBUTTONS true
 #endif
@@ -549,6 +549,10 @@ static char ota_config_lcd[] = "RA8875";
 
 #if defined(FRONTPANEL_BIG_V1)
 static char ota_config_frontpanel[] = "BIG";
+#define MAX_VOLUME_VALUE 1024.0f
+#endif
+#if defined(FRONTPANEL_WF_100D)
+static char ota_config_frontpanel[] = "WF_100D";
 #define MAX_VOLUME_VALUE 1024.0f
 #endif
 #if defined(FRONTPANEL_SMALL_V1)
