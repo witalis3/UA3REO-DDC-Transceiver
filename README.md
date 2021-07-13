@@ -54,6 +54,8 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * TCXO frequency stabilization (it is possible to use an external clock source, such as GPS)
 * WiFi operation: Time synchronization, virtual CAT interface (see Scheme/WIFI-CAT-instruction.txt)
 * Tangent support Yaesu MH-36 и MH-48
+* Hardware self-testing
+* Firmware update over USB, SD, WiFi
 * And other.. (see menu)
 
 ### Sensitivity

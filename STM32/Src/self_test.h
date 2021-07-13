@@ -7,7 +7,7 @@
 #include "stdint.h"
 #include "functions.h"
 
-#define SELF_TEST_pages 3
+#define SELF_TEST_pages 4
 #define SELF_TEST_frequency 14000000
 #define SELF_TEST_adc_test_latency 500
 

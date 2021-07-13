@@ -8,6 +8,7 @@ DATA_SYNC,
 ADC_OTR,
 DAC_OTR,
 ADC_IN,
+ADC_RAW,
 adcclk_in,
 FLASH_data_in,
 FLASH_busy,
@@ -61,6 +62,7 @@ input DATA_SYNC;
 input ADC_OTR;
 input DAC_OTR;
 input signed [15:0] ADC_IN;
+input signed [15:0] ADC_RAW;
 input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
@@ -348,6 +350,16 @@ begin
 	else if (k == 207)
 	begin
 		DATA_BUS_OUT[7:0] = VCXO_error[7:0];
+		k = 208;
+	end
+	else if (k == 208)
+	begin
+		DATA_BUS_OUT[7:0] = ADC_RAW[15:8];
+		k = 209;
+	end
+	else if (k == 209)
+	begin
+		DATA_BUS_OUT[7:0] = ADC_RAW[7:0];
 		k = 999;
 	end
 	else if (k == 300) //TX IQ
@@ -512,12 +524,12 @@ begin
 	end
 	else if (k == 800) //GET INFO
 	begin
-		DATA_BUS_OUT[7:0] = 'd2; //flash id 1
+		DATA_BUS_OUT[7:0] = 'd3; //flash id 1
 		k = 801;
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd6; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd0; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

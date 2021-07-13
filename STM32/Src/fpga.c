@@ -28,6 +28,7 @@ uint16_t FPGA_FW_Version[3] = {0};
 uint8_t ADCDAC_OVR_StatusLatency = 0;
 bool FPGA_bus_stop = true;					  // suspend the FPGA bus
 volatile bool FPGA_bus_test_result = true; //self-test flag
+int16_t ADC_RAW_IN = 0;
 
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
@@ -520,6 +521,17 @@ static inline void FPGA_fpgadata_getparam(void)
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 	TRX_VCXO_ERROR = FPGA_fpgadata_in_tmp32;
 	FPGA_clockFall();
+	
+	//STAGE 10 - ADC RAW DATA
+	FPGA_fpgadata_in_tmp32 = 0;
+	FPGA_clockRise();
+	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
+	FPGA_clockFall();
+	//STAGE 11
+	FPGA_clockRise();
+	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
+	FPGA_clockFall();
+	ADC_RAW_IN = (int16_t)(FPGA_fpgadata_in_tmp32 & 0xFFFF);
 }
 
 // get IQ data
