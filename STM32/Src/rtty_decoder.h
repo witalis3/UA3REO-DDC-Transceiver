@@ -11,7 +11,7 @@
 #if (defined(LAY_800x480))
 #define RTTY_DECODER_STRLEN 66 // length of decoded string
 #else
-#define RTTY_DECODER_STRLEN 30 // length of decoded string
+#define RTTY_DECODER_STRLEN 40 // length of decoded string
 #endif
 
 #define RTTY_LPF_STAGES 2
