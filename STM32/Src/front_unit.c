@@ -166,25 +166,25 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 487, .tres_max = 536, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 6, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB18 F7
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 536, .tres_max = 613, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 5, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB19 F6
 	
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 116, .tres_max = 259, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 4, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB23 F5
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 259, .tres_max = 430, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB24 F4
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 430, .tres_max = 515, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 2, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB20 F3
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 515, .tres_max = 572, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB21 F2
+	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 378, .tres_max = 439, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 4, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB23 F5
+	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 439, .tres_max = 479, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB24 F4
+	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 479, .tres_max = 536, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 2, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB20 F3
+	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 536, .tres_max = 613, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB21 F2
 		
-	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 231, .tres_max = 384, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU}, //SB22 MENU
-	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 384, .tres_max = 497, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE}, //SB13 TUNE ATU
-	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 497, .tres_max = 523, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = FRONTPANEL_BUTTONHANDLER_MUTE}, //SB14 MUTE
-	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 523, .tres_max = 589, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB15 F1
+	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 378, .tres_max = 443, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU}, //SB22 MENU
+	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 443, .tres_max = 483, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE}, //SB13 TUNE ATU
+	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 483, .tres_max = 542, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = FRONTPANEL_BUTTONHANDLER_MUTE}, //SB14 MUTE
+	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 542, .tres_max = 626, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB15 F1
 	
-	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 124, .tres_max = 267, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_10m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB2 10M
-	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 267, .tres_max = 434, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_CB, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB3 CB
-	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 434, .tres_max = 515, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_2m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB4 2M
-	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 515, .tres_max = 572, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_FM, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB5 FM
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 383, .tres_max = 445, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_10m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB2 10M
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 445, .tres_max = 483, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_CB, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB3 CB
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 483, .tres_max = 536, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_2m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB4 2M
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 536, .tres_max = 613, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_FM, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB5 FM
 		
-	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 225, .tres_max = 383, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_20m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB6 20M
-	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 383, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_17m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB7 17M
-	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 520, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_15m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB11 15M
-	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 520, .tres_max = 581, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_12m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB12 12M
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 383, .tres_max = 445, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_20m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB6 20M
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 445, .tres_max = 483, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_17m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB7 17M
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 483, .tres_max = 536, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_15m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB11 15M
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 536, .tres_max = 613, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_12m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB12 12M
 		
 	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 383, .tres_max = 449, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_160m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB8 160M
 	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 449, .tres_max = 487, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_80m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SETBAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SETBAND}, //SB9 80M
@@ -1597,7 +1597,7 @@ void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter)
 		band = 0;
 
 	//manual freq enter
-	if(TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_A.Freq)
+	if(LCD_window.opened && TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_A.Freq)
 	{
 		TRX_Temporary_Stop_BandMap = false;
 		resetVAD();
@@ -1636,7 +1636,8 @@ void FRONTPANEL_BUTTONHANDLER_SETBAND(uint32_t parameter)
 	
 	resetVAD();
 	TRX_ScanMode = false;
-	LCD_closeWindow();
+	if(LCD_window.opened)
+		LCD_closeWindow();
 	TRX_DXCluster_UpdateTime = 0;
 }
 
