@@ -93,6 +93,9 @@ bool SD_doCommand(SD_COMMAND command, bool force)
 	}
 	else
 	{
+		TRX_ptt_soft = false;
+		TRX_ptt_change();
+		
 		if (LCD_systemMenuOpened)
 			LCD_showInfo("SD card not found", true);
 		else

@@ -7,7 +7,6 @@
 #include <stdbool.h>
 #include "functions.h"
 #include "bands.h"
-#include "front_unit.h"
 
 #define SETT_VERSION 33					   // Settings config version
 #define CALIB_VERSION 33				   // Calibration config version
@@ -92,6 +91,80 @@
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
 #define MEMORY_CHANNELS_COUNT 35
+
+
+//FRONT PANELS
+#ifdef FRONTPANEL_SMALL_V1
+	#define HRDW_MCP3008_1 true
+	#define HRDW_MCP3008_2 true
+	#define HRDW_MCP3008_3 true
+	#define MAX_VOLUME_VALUE 1024.0f
+	#define FUNCBUTTONS_COUNT 1
+	#define FUNCBUTTONS_ON_PAGE 1
+	static char ota_config_frontpanel[] = "SMALL";
+#endif
+
+#ifdef FRONTPANEL_BIG_V1
+	#define HRDW_MCP3008_1 true
+	#define HRDW_HAS_FUNCBUTTONS true
+	#define MAX_VOLUME_VALUE 1024.0f
+	#define FUNCBUTTONS_COUNT 32
+	#define FUNCBUTTONS_ON_PAGE 8
+	static char ota_config_frontpanel[] = "BIG";
+#endif
+	
+#ifdef FRONTPANEL_WF_100D
+	#define HRDW_MCP3008_1 true
+	#define HRDW_HAS_FUNCBUTTONS true
+	#define MAX_VOLUME_VALUE 1024.0f
+	#define FUNCBUTTONS_COUNT 27
+	#define FUNCBUTTONS_ON_PAGE 9
+	static char ota_config_frontpanel[] = "WF_100D";
+#endif
+	
+#ifdef FRONTPANEL_X1
+	#define HRDW_MCP3008_1 true
+	#define HRDW_HAS_FUNCBUTTONS false
+	#define MAX_VOLUME_VALUE 100.0f
+	static char ota_config_frontpanel[] = "X1";
+#endif
+
+#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+
+//LCDs
+#if defined(LCD_ILI9481) 
+static char ota_config_lcd[] = "ILI9481";
+#endif
+#if defined(LCD_HX8357B)
+static char ota_config_lcd[] = "HX8357B";
+#endif
+#if defined(LCD_HX8357C) && !defined(LCD_SLOW)
+static char ota_config_lcd[] = "HX8357C";
+#endif
+#if defined(LCD_HX8357C) && defined(LCD_SLOW)
+static char ota_config_lcd[] = "HX8357C-SLOW";
+#endif
+#if defined(LCD_ILI9486)
+static char ota_config_lcd[] = "ILI9486";
+#endif
+#if defined(LCD_ST7796S)
+static char ota_config_lcd[] = "ST7796S";
+#endif
+#if defined(LCD_ST7735S)
+static char ota_config_lcd[] = "ST7735S";
+#endif
+#if defined(LCD_RA8875)
+static char ota_config_lcd[] = "RA8875";
+#endif
+
+//TOUCHPADs
+#if defined(TOUCHPAD_GT911)
+static char ota_config_touchpad[] = "GT911";
+#else
+static char ota_config_touchpad[] = "NONE";
+#endif
+
+
 
 typedef enum
 {
@@ -507,67 +580,5 @@ extern void SaveSettingsToEEPROM(void);
 extern void BKPSRAM_Enable(void);
 extern void BKPSRAM_Disable(void);
 extern void RTC_Calibration(void);
-
-#ifdef FRONTPANEL_SMALL_V1
-	#define HRDW_MCP3008_1 true
-	#define HRDW_MCP3008_2 true
-	#define HRDW_MCP3008_3 true
-#endif
-#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
-	#define HRDW_MCP3008_1 true
-	#define HRDW_HAS_FUNCBUTTONS true
-#endif
-#ifdef FRONTPANEL_X1
-	#define HRDW_MCP3008_1 true
-	#define HRDW_HAS_FUNCBUTTONS false
-#endif
-
-#if defined(LCD_ILI9481) 
-static char ota_config_lcd[] = "ILI9481";
-#endif
-#if defined(LCD_HX8357B)
-static char ota_config_lcd[] = "HX8357B";
-#endif
-#if defined(LCD_HX8357C) && !defined(LCD_SLOW)
-static char ota_config_lcd[] = "HX8357C";
-#endif
-#if defined(LCD_HX8357C) && defined(LCD_SLOW)
-static char ota_config_lcd[] = "HX8357C-SLOW";
-#endif
-#if defined(LCD_ILI9486)
-static char ota_config_lcd[] = "ILI9486";
-#endif
-#if defined(LCD_ST7796S)
-static char ota_config_lcd[] = "ST7796S";
-#endif
-#if defined(LCD_ST7735S)
-static char ota_config_lcd[] = "ST7735S";
-#endif
-#if defined(LCD_RA8875)
-static char ota_config_lcd[] = "RA8875";
-#endif
-
-#if defined(FRONTPANEL_BIG_V1)
-static char ota_config_frontpanel[] = "BIG";
-#define MAX_VOLUME_VALUE 1024.0f
-#endif
-#if defined(FRONTPANEL_WF_100D)
-static char ota_config_frontpanel[] = "WF_100D";
-#define MAX_VOLUME_VALUE 1024.0f
-#endif
-#if defined(FRONTPANEL_SMALL_V1)
-static char ota_config_frontpanel[] = "SMALL";
-#define MAX_VOLUME_VALUE 1024.0f
-#endif
-#if defined(FRONTPANEL_X1)
-static char ota_config_frontpanel[] = "X1";
-#define MAX_VOLUME_VALUE 100.0f
-#endif
-
-#if defined(TOUCHPAD_GT911)
-static char ota_config_touchpad[] = "GT911";
-#else
-static char ota_config_touchpad[] = "NONE";
-#endif
 
 #endif

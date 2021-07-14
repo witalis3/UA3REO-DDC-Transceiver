@@ -191,7 +191,7 @@ static void LCD_displayBottomButtons(bool redraw)
 	uint16_t curr_x = 0;
 	printButton(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<-", true, false, false, 0, FRONTPANEL_BUTTONHANDLER_LEFT_ARR, FRONTPANEL_BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	curr_x += LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH;
-	for (uint8_t i = 0; i < 8; i++)
+	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++)
 	{
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, true, false, false, 0, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].holdHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 		curr_x += LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH;

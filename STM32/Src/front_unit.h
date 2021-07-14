@@ -3,11 +3,9 @@
 
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
+#include "settings.h"
 
 #define MCP3008_SINGLE_THRESHOLD 300
-#define FUNCBUTTONS_COUNT 32
-#define FUNCBUTTONS_ON_PAGE 8
-#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
 
 typedef enum
 {

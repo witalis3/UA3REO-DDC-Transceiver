@@ -5,6 +5,7 @@
 #include "bootloader.h"
 #include "functions.h"
 #include "wifi.h"
+#include "front_unit.h"
 #include "spec_analyzer.h"
 #include "swr_analyzer.h"
 #include "fonts.h"
@@ -508,7 +509,6 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
 		{"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
 #ifdef HRDW_HAS_FUNCBUTTONS
-#if FUNCBUTTONS_COUNT == 32
 		{"Func button 1", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[0], SYSMENU_HANDL_SCREEN_FUNC_BUTTON1},
 		{"Func button 2", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[1], SYSMENU_HANDL_SCREEN_FUNC_BUTTON2},
 		{"Func button 3", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[2], SYSMENU_HANDL_SCREEN_FUNC_BUTTON3},
@@ -536,6 +536,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"Func button 25", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[24], SYSMENU_HANDL_SCREEN_FUNC_BUTTON25},
 		{"Func button 26", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[25], SYSMENU_HANDL_SCREEN_FUNC_BUTTON26},
 		{"Func button 27", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[26], SYSMENU_HANDL_SCREEN_FUNC_BUTTON27},
+#if FUNCBUTTONS_COUNT > 27
 		{"Func button 28", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[27], SYSMENU_HANDL_SCREEN_FUNC_BUTTON28},
 		{"Func button 29", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[28], SYSMENU_HANDL_SCREEN_FUNC_BUTTON29},
 		{"Func button 30", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[29], SYSMENU_HANDL_SCREEN_FUNC_BUTTON30},
@@ -2128,6 +2129,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction)
 		TRX.FuncButtons[0] = FUNCBUTTONS_COUNT - 1;
 }
 
+#if FUNCBUTTONS_COUNT > 1
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON2(int8_t direction)
 {
 	if (TRX.FuncButtons[1] > 0 || direction > 0)
@@ -2335,7 +2337,9 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON27(int8_t direction)
 	if (TRX.FuncButtons[26] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[26] = FUNCBUTTONS_COUNT - 1;
 }
+#endif
 
+#if FUNCBUTTONS_COUNT > 27
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction)
 {
 	if (TRX.FuncButtons[27] > 0 || direction > 0)
@@ -2343,6 +2347,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction)
 	if (TRX.FuncButtons[27] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[27] = FUNCBUTTONS_COUNT - 1;
 }
+#endif
 
 #if FUNCBUTTONS_COUNT > 28
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction)
@@ -5263,7 +5268,9 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 	case SYSMENU_INFOLINE:
 		break;
 	case SYSMENU_FUNCBUTTON:
+		#if HRDW_HAS_FUNCBUTTONS
 		sprintf(ctmp, "%s", (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[(uint8_t)*menuElement->value]].name);
+		#endif
 		break;
 	}
 
