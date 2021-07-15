@@ -5407,7 +5407,12 @@ static bool SYSMENU_HANDL_CHECK_HAS_ATU(void)
 
 static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void)
 {
-	return (CALIBRATE.RF_unit_type == RF_UNIT_QRP);
+	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
+		return true;
+	if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
+		return true;
+	
+	return false;
 }
 
 static bool SYSMENU_HANDL_CHECK_HIDDEN_ENABLED(void)

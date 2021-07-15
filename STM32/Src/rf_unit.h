@@ -4,6 +4,8 @@
 #include "stm32h7xx_hal.h"
 #include <stdbool.h>
 
+#define SET_DATA_PIN HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET)
+
 extern bool ATU_TunePowerStabilized;
 
 extern void RF_UNIT_UpdateState(bool clean);
