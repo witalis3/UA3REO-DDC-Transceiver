@@ -429,9 +429,15 @@ void LoadCalibration(bool clear)
 		CALIBRATE.smeter_calibration_hf = 0;		   // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;		   // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;				   // Calibrate the offset at the ADC input (DC)
-												   // Bandwidth frequency data from BPF filters (taken with GKCH or set by sensitivity), Hz
-												   // Next, the average border response frequencies are set
-#ifdef FRONTPANEL_X1
+		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_HF = 11.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_6M = 10.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_VHF = 3.6f;	   //SWR Transormator rate return
+		CALIBRATE.TUNE_MAX_POWER = 2;			   // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER = 7;				//Max TRX Power for indication
+#if defined(FRONTPANEL_X1)
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;		   //HPF
 		CALIBRATE.RFU_BPF_1_START = 1500 * 1000;	   //160m
 		CALIBRATE.RFU_BPF_1_END = 2400 * 1000;		   //160m
@@ -449,6 +455,49 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_7_END = 32000 * 1000;		   //12,10m
 		CALIBRATE.RFU_BPF_8_START = 135000 * 1000;	   //2m
 		CALIBRATE.RFU_BPF_8_END = 150000 * 1000;		   //2m
+#elif defined(FRONTPANEL_WF_100D)
+		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
+		CALIBRATE.rf_out_power_2200m = 40;		   //2200m
+		CALIBRATE.rf_out_power_160m = 40;		   //160m
+		CALIBRATE.rf_out_power_80m = 40;		   //80m
+		CALIBRATE.rf_out_power_40m = 40;		   //40m
+		CALIBRATE.rf_out_power_30m = 40;		   //30m
+		CALIBRATE.rf_out_power_20m = 40;		   //20m
+		CALIBRATE.rf_out_power_17m = 40;		   //17m
+		CALIBRATE.rf_out_power_15m = 40;		   //15m
+		CALIBRATE.rf_out_power_12m = 40;		   //12m
+		CALIBRATE.rf_out_power_cb = 40;				//27mhz
+		CALIBRATE.rf_out_power_10m = 40;		   //10m
+		CALIBRATE.rf_out_power_6m = 40;			   //6m
+		CALIBRATE.rf_out_power_2m = 50;		   //2m
+		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;		   //LPF
+		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;		   //HPF
+		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;	   //1.6-2.5mH
+		CALIBRATE.RFU_BPF_0_END = 2500 * 1000;		   //
+		CALIBRATE.RFU_BPF_1_START = 2500 * 1000;	   //2.5-4mHz
+		CALIBRATE.RFU_BPF_1_END = 4000 * 1000;		   //
+		CALIBRATE.RFU_BPF_2_START = 6000 * 1000;	   //6-7.3mHz
+		CALIBRATE.RFU_BPF_2_END = 7300 * 1000;		   //
+		CALIBRATE.RFU_BPF_3_START = 7300 * 1000;	   //7-12mHz
+		CALIBRATE.RFU_BPF_3_END = 12000 * 1000;		   //
+		CALIBRATE.RFU_BPF_4_START = 12000 * 1000;	   //12-14.5mHz
+		CALIBRATE.RFU_BPF_4_END = 14500 * 1000;		   //
+		CALIBRATE.RFU_BPF_5_START = 14500 * 1000;	   //14.5-21.5mHz
+		CALIBRATE.RFU_BPF_5_END = 21500 * 1000;		   //
+		CALIBRATE.RFU_BPF_6_START = 21500 * 1000;	   //21.5-30 mHz
+		CALIBRATE.RFU_BPF_6_END = 30000 * 1000;		   //
+		CALIBRATE.RFU_BPF_7_START = 135 * 1000 * 1000;	   //135-150mHz
+		CALIBRATE.RFU_BPF_7_END = 150 * 1000 * 1000;		   //
+		CALIBRATE.RFU_BPF_8_START = 0;	   //disabled
+		CALIBRATE.RFU_BPF_8_END = 0;		   //disabled
+		CALIBRATE.SWR_FWD_Calibration_HF = 22.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_HF = 22.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_6M = 22.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_6M = 22.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 22.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_VHF = 22.0f;	   //SWR Transormator rate return
+		CALIBRATE.TUNE_MAX_POWER = 10;			   // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER = 100;				//Max TRX Power for indication
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;		   //LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;		   //HPF U14-RF1
@@ -471,13 +520,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_8_START = 0;	   //disabled on qrp version
 		CALIBRATE.RFU_BPF_8_END = 0;		   //disabled on qrp version
 #endif
-		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 11.0f;	   //SWR Transormator rate return
-		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 10.0f;	   //SWR Transormator rate return
-		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 3.6f;	   //SWR Transormator rate return
-		CALIBRATE.MAX_RF_POWER = 7;				//Max TRX Power for indication
 		CALIBRATE.VCXO_correction = 0;			   //VCXO Frequency offset
 		CALIBRATE.FW_AD8307_SLP = 25.5f;		   //Slope for the log amp used to mreasure the FW power (mV/dB)
 		CALIBRATE.FW_AD8307_OFFS = 1150.0f;		   //Offset to back calculate the output voltage to dBm (mV)
@@ -490,7 +532,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TRX_MAX_SWR = 3;				   // Maximum SWR to enable protect on TX (NOT IN TUNE MODE!)
 		CALIBRATE.FM_DEVIATION_SCALE = 4;		   // FM Deviation scale
 		CALIBRATE.AM_MODULATION_INDEX = 50;	 //AM Modulation Index
-		CALIBRATE.TUNE_MAX_POWER = 2;			   // Maximum RF power in Tune mode
 		CALIBRATE.RTC_Coarse_Calibration = 127;	   //Coarse RTC calibration
 		CALIBRATE.RTC_Calibration = 0;			   //Real Time Clock calibration
 		CALIBRATE.EXT_2200m = 0;						//External port by band

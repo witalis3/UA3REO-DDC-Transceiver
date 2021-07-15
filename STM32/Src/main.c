@@ -261,7 +261,7 @@ int main(void)
     LoadSettings(true);
   else
 #endif
-#if defined(FRONTPANEL_BIG_V1) || defined(AFRONTPANEL_WF_100D)
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
   if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (F1)
     LoadSettings(true);
   else
@@ -286,12 +286,17 @@ int main(void)
     LoadCalibration(true);
   else
 #endif
-#if defined(FRONTPANEL_BIG_V1) || defined(AFRONTPANEL_WF_100D)
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
   if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8)
     LoadCalibration(true);
   else
 #endif
     LoadCalibration(false);
+	
+#if defined(FRONTPANEL_WF_100D)
+	if(CALIBRATE.RF_unit_type != RF_UNIT_WF_100D)
+		LoadCalibration(true);
+#endif
 	
   TRX.Locked = false;
   println("[OK] LCD init");
