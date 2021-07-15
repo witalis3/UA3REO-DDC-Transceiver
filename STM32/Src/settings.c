@@ -449,8 +449,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_7_END = 32000 * 1000;		   //12,10m
 		CALIBRATE.RFU_BPF_8_START = 135000 * 1000;	   //2m
 		CALIBRATE.RFU_BPF_8_END = 150000 * 1000;		   //2m
-		CALIBRATE.RFU_BPF_9_START = 0;	   //disabled on qrp version
-		CALIBRATE.RFU_BPF_9_END = 0;		   //disabled on qrp version
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;		   //LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;		   //HPF U14-RF1
@@ -472,8 +470,6 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_7_END = 0;		   //disabled on qrp version
 		CALIBRATE.RFU_BPF_8_START = 0;	   //disabled on qrp version
 		CALIBRATE.RFU_BPF_8_END = 0;		   //disabled on qrp version
-		CALIBRATE.RFU_BPF_9_START = 0;	   //disabled on qrp version
-		CALIBRATE.RFU_BPF_9_END = 0;		   //disabled on qrp version
 #endif
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_HF = 11.0f;	   //SWR Transormator rate return

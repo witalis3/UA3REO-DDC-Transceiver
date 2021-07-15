@@ -238,6 +238,7 @@ typedef enum
 {
 	RF_UNIT_QRP,
 	RF_UNIT_BIG,
+	RF_UNIT_WF_100D,
 } TRX_RF_UNIT_TYPE;
 
 // TANGENT TYPE
@@ -494,8 +495,6 @@ extern struct TRX_CALIBRATE
 	uint32_t RFU_BPF_7_END;
 	uint32_t RFU_BPF_8_START;
 	uint32_t RFU_BPF_8_END;
-	uint32_t RFU_BPF_9_START;
-	uint32_t RFU_BPF_9_END;
 	float32_t SWR_FWD_Calibration_HF;
 	float32_t SWR_REF_Calibration_HF;
 	float32_t SWR_FWD_Calibration_6M;

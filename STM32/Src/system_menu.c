@@ -359,9 +359,12 @@ static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction);
 static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction);
 static void SYSMENU_HANDL_SELF_TEST(int8_t direction);
 
-static bool SYSMENU_HANDL_CHECK_RFU_QRP(void);
-static bool SYSMENU_HANDL_CHECK_RFU_BIG(void);
-static bool SYSMENU_HANDL_CHECK_RFU_ATU(void);
+static bool SYSMENU_HANDL_CHECK_HAS_LPF(void);
+static bool SYSMENU_HANDL_CHECK_HAS_HPF(void);
+static bool SYSMENU_HANDL_CHECK_HAS_ATU(void);
+static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void);
+static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void);
+static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void);
 static bool SYSMENU_HANDL_CHECK_HIDDEN_ENABLED(void);
 
 const static struct sysmenu_item_handler sysmenu_handlers[] =
@@ -387,7 +390,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
 		{"Band Map", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
 		{"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
-		{"RF_Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_RFU_QRP, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_TRX_RFFilters},
+		{"RF_Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_TRX_RFFilters},
 		{"Two Signal TUNE", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
 		{"Shift Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_HANDL_TRX_SHIFT_INTERVAL},
 		{"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_TRX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
@@ -406,10 +409,10 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
 		{"Transverter Enable", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
 		{"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
-		{"ATU Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_RFU_ATU, (uint32_t *)&TRX.ATU_Enabled, SYSMENU_HANDL_TRX_ATU_Enabled},
-		{"ATU Ind", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_RFU_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TRX_ATU_I},
-		{"ATU Cap", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_RFU_ATU, (uint32_t *)&TRX.ATU_C, SYSMENU_HANDL_TRX_ATU_C},
-		{"ATU T", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_RFU_ATU, (uint32_t *)&TRX.ATU_T, SYSMENU_HANDL_TRX_ATU_T},
+		{"ATU Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_Enabled, SYSMENU_HANDL_TRX_ATU_Enabled},
+		{"ATU Ind", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TRX_ATU_I},
+		{"ATU Cap", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_C, SYSMENU_HANDL_TRX_ATU_C},
+		{"ATU T", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_T, SYSMENU_HANDL_TRX_ATU_T},
 };
 
 const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
@@ -604,7 +607,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"Encoder slow rate", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
 		{"Encoder on falling", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
 		{"Encoder acceleration", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
-		{"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG"}},
+		{"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "WF-100D"}},
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
 		{"Tangent Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.TangentType, SYSMENU_HANDL_CALIB_TangentType, {"MH-36", "MH-48"}},
 #endif
@@ -630,10 +633,10 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"S METER HF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_HANDL_CALIB_S_METER_HF},
 		{"S METER VHF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_vhf, SYSMENU_HANDL_CALIB_S_METER_VHF},
 		{"ADC OFFSET", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
-		{"LPF END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_QRP, (uint32_t *)&CALIBRATE.RFU_LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
-		{"HPF START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_QRP, (uint32_t *)&CALIBRATE.RFU_HPF_START, SYSMENU_HANDL_CALIB_HPF_START},
-		{"BPF 0 START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_QRP, (uint32_t *)&CALIBRATE.RFU_BPF_0_START, SYSMENU_HANDL_CALIB_BPF_0_START},
-		{"BPF 0 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_QRP, (uint32_t *)&CALIBRATE.RFU_BPF_0_END, SYSMENU_HANDL_CALIB_BPF_0_END},
+		{"LPF END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_LPF, (uint32_t *)&CALIBRATE.RFU_LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
+		{"HPF START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_LPF, (uint32_t *)&CALIBRATE.RFU_HPF_START, SYSMENU_HANDL_CALIB_HPF_START},
+		{"BPF 0 START", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.RFU_BPF_0_START, SYSMENU_HANDL_CALIB_BPF_0_START},
+		{"BPF 0 END", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.RFU_BPF_0_END, SYSMENU_HANDL_CALIB_BPF_0_END},
 		{"BPF 1 START", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.RFU_BPF_1_START, SYSMENU_HANDL_CALIB_BPF_1_START},
 		{"BPF 1 END", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.RFU_BPF_1_END, SYSMENU_HANDL_CALIB_BPF_1_END},
 		{"BPF 2 START", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.RFU_BPF_2_START, SYSMENU_HANDL_CALIB_BPF_2_START},
@@ -646,12 +649,10 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"BPF 5 END", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.RFU_BPF_5_END, SYSMENU_HANDL_CALIB_BPF_5_END},
 		{"BPF 6 START", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.RFU_BPF_6_START, SYSMENU_HANDL_CALIB_BPF_6_START},
 		{"BPF 6 END", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.RFU_BPF_6_END, SYSMENU_HANDL_CALIB_BPF_6_END},
-		{"BPF 7 START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_7_START, SYSMENU_HANDL_CALIB_BPF_7_START},
-		{"BPF 7 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_7_END, SYSMENU_HANDL_CALIB_BPF_7_END},
-		{"BPF 8 START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_8_START, SYSMENU_HANDL_CALIB_BPF_8_START},
-		{"BPF 8 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_8_END, SYSMENU_HANDL_CALIB_BPF_8_END},
-		{"BPF 9 START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_9_START, SYSMENU_HANDL_CALIB_BPF_9_START},
-		{"BPF 9 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_RFU_BIG, (uint32_t *)&CALIBRATE.RFU_BPF_9_END, SYSMENU_HANDL_CALIB_BPF_9_END},
+		{"BPF 7 START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_BPF_8, (uint32_t *)&CALIBRATE.RFU_BPF_7_START, SYSMENU_HANDL_CALIB_BPF_7_START},
+		{"BPF 7 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_BPF_8, (uint32_t *)&CALIBRATE.RFU_BPF_7_END, SYSMENU_HANDL_CALIB_BPF_7_END},
+		{"BPF 8 START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_BPF_9, (uint32_t *)&CALIBRATE.RFU_BPF_8_START, SYSMENU_HANDL_CALIB_BPF_8_START},
+		{"BPF 8 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_BPF_9, (uint32_t *)&CALIBRATE.RFU_BPF_8_END, SYSMENU_HANDL_CALIB_BPF_8_END},
 		{"MAX RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER, SYSMENU_HANDL_CALIB_MAX_RF_POWER},
 		{"SWR FWD RATE HF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_HF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF},
 		{"SWR REF RATE HF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration_HF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF},
@@ -3194,8 +3195,8 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 {
 	if(CALIBRATE.RF_unit_type > 0 || direction > 0)
 		CALIBRATE.RF_unit_type += direction;
-	if (CALIBRATE.RF_unit_type > 1)
-		CALIBRATE.RF_unit_type = 1;
+	if (CALIBRATE.RF_unit_type > 2)
+		CALIBRATE.RF_unit_type = 2;
 	
 	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
 	{
@@ -3232,8 +3233,6 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_7_END = 0;		   //disabled on qrp version
 		CALIBRATE.RFU_BPF_8_START = 0;	   //disabled on qrp version
 		CALIBRATE.RFU_BPF_8_END = 0;		   //disabled on qrp version
-		CALIBRATE.RFU_BPF_9_START = 0;	   //disabled on qrp version
-		CALIBRATE.RFU_BPF_9_END = 0;		   //disabled on qrp version
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_HF = 11.0f;	   //SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f;	   //SWR Transormator rate forward
@@ -3260,24 +3259,24 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.rf_out_power_2m = 50;		   //2m
 		CALIBRATE.RFU_LPF_END = 0;		   //disabled in BIG version
 		CALIBRATE.RFU_HPF_START = 0;		   //disabled in BIG version
-		CALIBRATE.RFU_BPF_1_START = 0 * 1000;	   //2200m
-		CALIBRATE.RFU_BPF_1_END = 1000 * 1000;		   //2200m
-		CALIBRATE.RFU_BPF_2_START = 1000 * 1000;	   //160m
-		CALIBRATE.RFU_BPF_2_END = 2500 * 1000;		   //160m
-		CALIBRATE.RFU_BPF_3_START = 2500 * 1000;	   //80m
-		CALIBRATE.RFU_BPF_3_END = 5000 * 1000;		   //80m
-		CALIBRATE.RFU_BPF_4_START = 5000 * 1000;	   //40m
-		CALIBRATE.RFU_BPF_4_END = 8500 * 1000;		   //40m
-		CALIBRATE.RFU_BPF_5_START = 8500 * 1000;	   //30m
-		CALIBRATE.RFU_BPF_5_END = 12000 * 1000;		   //30m
-		CALIBRATE.RFU_BPF_6_START = 12000 * 1000;	   //20m
-		CALIBRATE.RFU_BPF_6_END = 17000 * 1000;		   //20m
-		CALIBRATE.RFU_BPF_7_START = 17000 * 1000;	   //17,15,12m
-		CALIBRATE.RFU_BPF_7_END = 25500 * 1000;		   //17,15,12m
-		CALIBRATE.RFU_BPF_8_START = 25500 * 1000;	   //CB,10m
-		CALIBRATE.RFU_BPF_8_END = 35000 * 1000;		   //CB,10m
-		CALIBRATE.RFU_BPF_9_START = 35000 * 1000;	   //6m
-		CALIBRATE.RFU_BPF_9_END = 70000 * 1000;		   //6m
+		CALIBRATE.RFU_BPF_0_START = 0 * 1000;	   //2200m
+		CALIBRATE.RFU_BPF_0_END = 1000 * 1000;		   //2200m
+		CALIBRATE.RFU_BPF_1_START = 1000 * 1000;	   //160m
+		CALIBRATE.RFU_BPF_1_END = 2500 * 1000;		   //160m
+		CALIBRATE.RFU_BPF_2_START = 2500 * 1000;	   //80m
+		CALIBRATE.RFU_BPF_2_END = 5000 * 1000;		   //80m
+		CALIBRATE.RFU_BPF_3_START = 5000 * 1000;	   //40m
+		CALIBRATE.RFU_BPF_3_END = 8500 * 1000;		   //40m
+		CALIBRATE.RFU_BPF_4_START = 8500 * 1000;	   //30m
+		CALIBRATE.RFU_BPF_4_END = 12000 * 1000;		   //30m
+		CALIBRATE.RFU_BPF_5_START = 12000 * 1000;	   //20m
+		CALIBRATE.RFU_BPF_5_END = 17000 * 1000;		   //20m
+		CALIBRATE.RFU_BPF_6_START = 17000 * 1000;	   //17,15,12m
+		CALIBRATE.RFU_BPF_6_END = 25500 * 1000;		   //17,15,12m
+		CALIBRATE.RFU_BPF_7_START = 25500 * 1000;	   //CB,10m
+		CALIBRATE.RFU_BPF_7_END = 35000 * 1000;		   //CB,10m
+		CALIBRATE.RFU_BPF_8_START = 35000 * 1000;	   //6m
+		CALIBRATE.RFU_BPF_8_END = 70000 * 1000;		   //6m
 		CALIBRATE.SWR_FWD_Calibration_HF = 22.0f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_HF = 22.0f;	   //SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 22.0f;	   //SWR Transormator rate forward
@@ -3286,6 +3285,50 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.SWR_REF_Calibration_VHF = 22.0f;	   //SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 10;			   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 50;				//Max TRX Power for indication
+	}
+	if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
+	{
+		CALIBRATE.rf_out_power_2200m = 40;		   //2200m
+		CALIBRATE.rf_out_power_160m = 40;		   //160m
+		CALIBRATE.rf_out_power_80m = 40;		   //80m
+		CALIBRATE.rf_out_power_40m = 40;		   //40m
+		CALIBRATE.rf_out_power_30m = 40;		   //30m
+		CALIBRATE.rf_out_power_20m = 40;		   //20m
+		CALIBRATE.rf_out_power_17m = 40;		   //17m
+		CALIBRATE.rf_out_power_15m = 40;		   //15m
+		CALIBRATE.rf_out_power_12m = 40;		   //12m
+		CALIBRATE.rf_out_power_cb = 40;				//27mhz
+		CALIBRATE.rf_out_power_10m = 40;		   //10m
+		CALIBRATE.rf_out_power_6m = 40;			   //6m
+		CALIBRATE.rf_out_power_2m = 50;		   //2m
+		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;		   //LPF
+		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;		   //HPF
+		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;	   //1.6-2.5mH
+		CALIBRATE.RFU_BPF_0_END = 2500 * 1000;		   //
+		CALIBRATE.RFU_BPF_1_START = 2500 * 1000;	   //2.5-4mHz
+		CALIBRATE.RFU_BPF_1_END = 4000 * 1000;		   //
+		CALIBRATE.RFU_BPF_2_START = 6000 * 1000;	   //6-7.3mHz
+		CALIBRATE.RFU_BPF_2_END = 7300 * 1000;		   //
+		CALIBRATE.RFU_BPF_3_START = 7300 * 1000;	   //7-12mHz
+		CALIBRATE.RFU_BPF_3_END = 12000 * 1000;		   //
+		CALIBRATE.RFU_BPF_4_START = 12000 * 1000;	   //12-14.5mHz
+		CALIBRATE.RFU_BPF_4_END = 14500 * 1000;		   //
+		CALIBRATE.RFU_BPF_5_START = 14500 * 1000;	   //14.5-21.5mHz
+		CALIBRATE.RFU_BPF_5_END = 21500 * 1000;		   //
+		CALIBRATE.RFU_BPF_6_START = 21500 * 1000;	   //21.5-30 mHz
+		CALIBRATE.RFU_BPF_6_END = 30000 * 1000;		   //
+		CALIBRATE.RFU_BPF_7_START = 135 * 1000 * 1000;	   //135-150mHz
+		CALIBRATE.RFU_BPF_7_END = 150 * 1000 * 1000;		   //
+		CALIBRATE.RFU_BPF_8_START = 0;	   //disabled
+		CALIBRATE.RFU_BPF_8_END = 0;		   //disabled
+		CALIBRATE.SWR_FWD_Calibration_HF = 22.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_HF = 22.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_6M = 22.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_6M = 22.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 22.0f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_VHF = 22.0f;	   //SWR Transormator rate return
+		CALIBRATE.TUNE_MAX_POWER = 10;			   // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER = 100;				//Max TRX Power for indication
 	}
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
@@ -3756,24 +3799,6 @@ static void SYSMENU_HANDL_CALIB_BPF_8_END(int8_t direction)
 		CALIBRATE.RFU_BPF_8_END = 1;
 	if (CALIBRATE.RFU_BPF_8_END > 999999999)
 		CALIBRATE.RFU_BPF_8_END = 999999999;
-}
-
-static void SYSMENU_HANDL_CALIB_BPF_9_START(int8_t direction)
-{
-	CALIBRATE.RFU_BPF_9_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_9_START < 1)
-		CALIBRATE.RFU_BPF_9_START = 1;
-	if (CALIBRATE.RFU_BPF_9_START > 999999999)
-		CALIBRATE.RFU_BPF_9_START = 999999999;
-}
-
-static void SYSMENU_HANDL_CALIB_BPF_9_END(int8_t direction)
-{
-	CALIBRATE.RFU_BPF_9_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_9_END < 1)
-		CALIBRATE.RFU_BPF_9_END = 1;
-	if (CALIBRATE.RFU_BPF_9_END > 999999999)
-		CALIBRATE.RFU_BPF_9_END = 999999999;
 }
 
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction)
@@ -5337,19 +5362,52 @@ static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex)
 	return page;
 }
 
-static bool SYSMENU_HANDL_CHECK_RFU_QRP(void)
+static bool SYSMENU_HANDL_CHECK_HAS_LPF(void)
+{
+	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
+		return true;
+	if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
+		return true;
+	
+	return false;
+}
+
+static bool SYSMENU_HANDL_CHECK_HAS_HPF(void)
+{
+	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
+		return true;
+	if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
+		return true;
+	
+	return false;
+}
+
+static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void)
+{
+	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
+		return true;
+	if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
+		return true;
+	
+	return false;
+}
+
+static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void)
+{
+	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
+		return true;
+	
+	return false;
+}
+
+static bool SYSMENU_HANDL_CHECK_HAS_ATU(void)
+{
+	return (CALIBRATE.RF_unit_type == RF_UNIT_BIG);
+}
+
+static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void)
 {
 	return (CALIBRATE.RF_unit_type == RF_UNIT_QRP);
-}
-
-static bool SYSMENU_HANDL_CHECK_RFU_BIG(void)
-{
-	return (CALIBRATE.RF_unit_type == RF_UNIT_BIG);
-}
-
-static bool SYSMENU_HANDL_CHECK_RFU_ATU(void)
-{
-	return (CALIBRATE.RF_unit_type == RF_UNIT_BIG);
 }
 
 static bool SYSMENU_HANDL_CHECK_HIDDEN_ENABLED(void)
