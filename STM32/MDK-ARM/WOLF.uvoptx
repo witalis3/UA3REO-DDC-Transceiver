@@ -2430,8 +2430,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Src\self_test.c</PathWithFileName>
-      <FilenameWithoutPath>self_test.c</FilenameWithoutPath>
+      <PathWithFileName>..\Src\sd.c</PathWithFileName>
+      <FilenameWithoutPath>sd.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2442,8 +2442,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Src\self_test.h</PathWithFileName>
-      <FilenameWithoutPath>self_test.h</FilenameWithoutPath>
+      <PathWithFileName>..\Src\sd.h</PathWithFileName>
+      <FilenameWithoutPath>sd.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2454,8 +2454,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Src\sd.c</PathWithFileName>
-      <FilenameWithoutPath>sd.c</FilenameWithoutPath>
+      <PathWithFileName>..\Src\self_test.c</PathWithFileName>
+      <FilenameWithoutPath>self_test.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2466,8 +2466,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Src\sd.h</PathWithFileName>
-      <FilenameWithoutPath>sd.h</FilenameWithoutPath>
+      <PathWithFileName>..\Src\self_test.h</PathWithFileName>
+      <FilenameWithoutPath>self_test.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

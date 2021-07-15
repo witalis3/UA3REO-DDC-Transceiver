@@ -829,6 +829,12 @@ bool FFT_printFFT(void)
 		bw_rx2_line_center = FFT_getLensCorrection(bw_rx2_line_center);
 		bw_rx2_line_end = FFT_getLensCorrection(bw_rx2_line_end);
 	}
+	if(!TRX.Show_Sec_VFO) //disable RX2 bw show
+	{
+		bw_rx2_line_start = LCD_WIDTH + 10;
+		bw_rx2_line_center = LCD_WIDTH + 10;
+		bw_rx2_line_end = LCD_WIDTH + 10;
+	}
 
 	if (TRX.FFT_3D > 0)
 	{

@@ -132,6 +132,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_ManualBottom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ManualTop(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_Show_Sec_VFO(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON2(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON3(int8_t direction);
@@ -508,6 +509,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blckman", "Nutall", "BlNutll", "Hann", "Hamming", "No"}},
 		{"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
 		{"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
+		{"Show Sec VFO", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Show_Sec_VFO, SYSMENU_HANDL_SCREEN_Show_Sec_VFO},
 #ifdef HRDW_HAS_FUNCBUTTONS
 		{"Func button 1", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[0], SYSMENU_HANDL_SCREEN_FUNC_BUTTON1},
 		{"Func button 2", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[1], SYSMENU_HANDL_SCREEN_FUNC_BUTTON2},
@@ -2119,6 +2121,14 @@ static void SYSMENU_HANDL_SCREEN_FFT_Sensitivity(int8_t direction)
 		TRX.FFT_Sensitivity = FFT_MIN + 1;
 	if (TRX.FFT_Sensitivity > FFT_MAX_TOP_SCALE)
 		TRX.FFT_Sensitivity = FFT_MAX_TOP_SCALE;
+}
+
+static void SYSMENU_HANDL_SCREEN_Show_Sec_VFO(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Show_Sec_VFO = true;
+	if (direction < 0)
+		TRX.Show_Sec_VFO = false;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction)

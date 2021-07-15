@@ -387,6 +387,7 @@ extern struct TRX_SETTINGS
 	int16_t FFT_ManualTop;
 	bool FFT_DXCluster;
 	bool FFT_DXCluster_Azimuth;
+	bool Show_Sec_VFO;
 	uint8_t FuncButtons[FUNCBUTTONS_COUNT];
 	//DECODERS
 	bool CW_Decoder;
