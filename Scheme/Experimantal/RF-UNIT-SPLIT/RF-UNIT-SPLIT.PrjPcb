@@ -30,7 +30,7 @@ ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
 IsProjectConflictPreventionWarningsEnabled=1
-OutputPath=Project Outputs for RF-UNIT-SPLIT
+OutputPath=
 LogFolderPath=
 ManagedProjectGUID=
 IncludeDesignInRelease=0
@@ -192,62 +192,6 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=GUCCKGGI
 
-[GeneratedDocument1]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\BOM\Bill of Materials-RF-UNIT-SPLIT.xlsx
-DItemRevisionGUID=
-
-[GeneratedDocument2]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.DRR
-DItemRevisionGUID=
-
-[GeneratedDocument3]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.EXTREP
-DItemRevisionGUID=
-
-[GeneratedDocument4]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBL
-DItemRevisionGUID=
-
-[GeneratedDocument5]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBO
-DItemRevisionGUID=
-
-[GeneratedDocument6]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBS
-DItemRevisionGUID=
-
-[GeneratedDocument7]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GKO
-DItemRevisionGUID=
-
-[GeneratedDocument8]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTL
-DItemRevisionGUID=
-
-[GeneratedDocument9]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTO
-DItemRevisionGUID=
-
-[GeneratedDocument10]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTS
-DItemRevisionGUID=
-
-[GeneratedDocument11]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.LDP
-DItemRevisionGUID=
-
-[GeneratedDocument12]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.REP
-DItemRevisionGUID=
-
-[GeneratedDocument13]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.RUL
-DItemRevisionGUID=
-
-[GeneratedDocument14]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.TXT
-DItemRevisionGUID=
-
 [SearchPath1]
 Path=C:\Users\Public\Documents\Altium\AD19\Library\ExportIntLib\*.*
 IncludeSubFolders=1
@@ -263,7 +207,7 @@ ContentTypeGUID=CB6F2064-E317-11DF-B822-12313F0024A2
 ConfigurationType=Source
 
 [Generic_EDE]
-OutputDir=Project Outputs for RF-UNIT-SPLIT
+OutputDir=
 
 [OutputGroup1]
 Name=Netlist Outputs
