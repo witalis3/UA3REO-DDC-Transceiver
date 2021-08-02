@@ -2179,7 +2179,7 @@ uint8_t SD_cmd(uint8_t cmd, uint32_t arg)
 	{
 		res = SPI_ReceiveByte();
 	} while ((res & 0x80) && --n);
-	if(n == 0)
+	if(n == 0 && SD_Present)
 		println("SD CMD timeout");
 	//println("SD CMD ", cmd, " RES ", res);
 	return res;
