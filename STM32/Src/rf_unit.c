@@ -792,7 +792,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U32-B -
 				//if (registerNumber == 30)
 				//U32-A U3 BPF_1_EN
-				if (registerNumber == 31 && (dualrx_bpf_disabled || (!(CurrentVFO->Freq >= CALIBRATE.RFU_HPF_START && bpf == 255) && !(CurrentVFO->Freq <= CALIBRATE.RFU_LPF_END && bpf == 255) && bpf != 7 && !TRX.RF_Filters))) //bypass, lpf, hpf, 145(7)
+				if (registerNumber == 31 && (dualrx_bpf_disabled || (!(CurrentVFO->Freq >= CALIBRATE.RFU_HPF_START && bpf == 255) && !(CurrentVFO->Freq <= CALIBRATE.RFU_LPF_END && bpf == 255) && bpf != 7))) //bypass, lpf, hpf, 145(7)
 					SET_DATA_PIN;
 			}
 			MINI_DELAY
