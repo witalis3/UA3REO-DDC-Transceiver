@@ -191,9 +191,9 @@ void SELF_TEST_Draw(void)
 				pass = false;
 			if(TRX_ADC_MAXAMPLITUDE < 0)
 				pass = false;
-			if((abs(TRX_ADC_MINAMPLITUDE) > abs(TRX_ADC_MAXAMPLITUDE)) && (abs(TRX_ADC_MINAMPLITUDE) > abs(TRX_ADC_MAXAMPLITUDE) * 4))
+			if((abs(TRX_ADC_MINAMPLITUDE) > abs(TRX_ADC_MAXAMPLITUDE)) && (abs(TRX_ADC_MINAMPLITUDE) > (abs(TRX_ADC_MAXAMPLITUDE) * 4)))
 				pass = false;
-			if((abs(TRX_ADC_MINAMPLITUDE) < abs(TRX_ADC_MAXAMPLITUDE)) && (abs(TRX_ADC_MINAMPLITUDE) * 4 > abs(TRX_ADC_MAXAMPLITUDE)))
+			if((abs(TRX_ADC_MINAMPLITUDE) < abs(TRX_ADC_MAXAMPLITUDE)) && ((abs(TRX_ADC_MINAMPLITUDE) * 4) < abs(TRX_ADC_MAXAMPLITUDE)))
 				pass = false;
 			LCDDriver_printText("ADC Symmetry", margin_left, pos_y, FG_COLOR, BG_COLOR, 2);
 			SELF_TEST_printResult(pass, pos_y);
@@ -556,16 +556,19 @@ void SELF_TEST_EncRotate(int8_t direction)
 {
 	if (LCD_busy)
 		return;
+	
 	LCD_busy = true;
+	LCDDriver_Fill(BG_COLOR);
+	LCD_busy = false;
 	
 	SELF_TEST_current_page += direction;
 	if (SELF_TEST_current_page < 0)
 		SELF_TEST_current_page = 0;
 	if (SELF_TEST_current_page >= SELF_TEST_pages)
+	{
 		SELF_TEST_current_page = SELF_TEST_pages - 1;
+		FRONTPANEL_BUTTONHANDLER_SERVICES(0);
+	}
 	
-	LCDDriver_Fill(BG_COLOR);
-	
-	LCD_busy = false;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
