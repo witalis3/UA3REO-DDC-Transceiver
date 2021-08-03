@@ -165,8 +165,6 @@ void Error_Handler(void);
 #define ESP_1_RX_GPIO_Port GPIOC
 #define AD1_CS_Pin GPIO_PIN_8
 #define AD1_CS_GPIO_Port GPIOC
-#define AUDIO_I2S_CLOCK_Pin GPIO_PIN_9
-#define AUDIO_I2S_CLOCK_GPIO_Port GPIOC
 #define AD2_CS_Pin GPIO_PIN_8
 #define AD2_CS_GPIO_Port GPIOA
 #define WM8731_WS_LRC_Pin GPIO_PIN_15

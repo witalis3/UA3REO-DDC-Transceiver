@@ -1679,11 +1679,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(ENC2_CLK_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : SWR_BACKW_Pin */
-  GPIO_InitStruct.Pin = SWR_BACKW_Pin;
+  /*Configure GPIO pins : SWR_BACKW_Pin PC9 */
+  GPIO_InitStruct.Pin = SWR_BACKW_Pin|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(SWR_BACKW_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : FPGA_CLK_Pin FPGA_SYNC_Pin AD1_CS_Pin */
   GPIO_InitStruct.Pin = FPGA_CLK_Pin|FPGA_SYNC_Pin|AD1_CS_Pin;
@@ -1742,14 +1742,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : AUDIO_I2S_CLOCK_Pin */
-  GPIO_InitStruct.Pin = AUDIO_I2S_CLOCK_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-  HAL_GPIO_Init(AUDIO_I2S_CLOCK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PD2 */
   GPIO_InitStruct.Pin = GPIO_PIN_2;
