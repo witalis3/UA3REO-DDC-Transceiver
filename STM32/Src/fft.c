@@ -1132,7 +1132,7 @@ bool FFT_printFFT(void)
 	}
 	
 	//Draw RX2 center line
-	if (rx2_line_pos >=0 && rx2_line_pos < LAYOUT->FFT_PRINT_SIZE)
+	if (rx2_line_pos >=0 && rx2_line_pos < LAYOUT->FFT_PRINT_SIZE && TRX.Show_Sec_VFO)
 	{
 		uint16_t color = palette_fft[fftHeight / 2];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
