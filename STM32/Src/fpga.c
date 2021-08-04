@@ -83,7 +83,7 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 			sprintf(buff, "BUS Error: %d -> %d", i, ret);
 			FPGA_bus_test_result = false;
 			LCD_showError(buff, false);
-			HAL_Delay(1000);
+			HAL_Delay(300);
 		}
 	}
 
