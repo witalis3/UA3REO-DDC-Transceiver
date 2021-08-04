@@ -130,6 +130,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 ### TRX Settings
 
 * **RF Power** - Transmission power,%
+* **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
 * **RF Filters** - Hardware filter management (LPF / HPF / BPF)
