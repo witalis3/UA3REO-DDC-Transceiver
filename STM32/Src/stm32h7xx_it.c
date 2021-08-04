@@ -1037,7 +1037,10 @@ void DMA1_Stream0_IRQHandler(void)
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
   CPULOAD_WakeUp();
-  SPI_TXRX_ready = true;
+	if(hspi->Instance	== SPI2)
+	{
+		SPI_TXRX_ready = true;
+	}
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
