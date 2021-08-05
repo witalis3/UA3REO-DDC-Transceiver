@@ -217,6 +217,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FFT Window** - Select FFT window (1-Dolph–Chebyshev 2-Blackman-Harris 3-Nutall 4-Blackman-Nutall 5-Hann 6-Hamming 7-No window)
 * **FFT DXCluster** - Show DXCluster info over FFT
 * **FFT DXCluster Azimuth** - Add azimuth data to DX-cluster
+* **FFT DXCluster Timeout** - Timeout of DX-cluser spots in minutes
 * **Show Sec VFO** - Show secondary VFO position on spectre
 
 ### Decoders

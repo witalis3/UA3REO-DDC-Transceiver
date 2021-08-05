@@ -1186,6 +1186,7 @@ bool WIFI_getDXCluster_background(void)
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if(band >= 0)
 		strcat(url, BANDS[band].name);
+	sprintf(url, "%s&timeout=%d", url, TRX.FFT_DXCluster_Timeout);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_getDXCluster_background_callback, false, false);
 	return true;
 }
