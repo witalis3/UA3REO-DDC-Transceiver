@@ -76,7 +76,7 @@ static void TRX_Start_TXRX(void);
 
 bool TRX_on_TX(void)
 {
-	if (TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO->Mode == TRX_MODE_LOOPBACK || CW_Key_Timeout_est > 0)
+	if (TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO->Mode == TRX_MODE_LOOPBACK || (TRX.CW_PTT_Type == KEY_PTT && CW_Key_Timeout_est > 0))
 		return true;
 	return false;
 }
@@ -134,8 +134,6 @@ void TRX_Restart_Mode()
 	{
 		TRX_Start_RX();
 	}
-	NeedReinitReverber = true;
-	NeedFFTReinit = true;
 }
 
 static void TRX_Start_RX()
@@ -154,7 +152,10 @@ static void TRX_Start_RX()
 	//clean TX buffer
 	dma_memset((void *)&FPGA_Audio_SendBuffer_Q[0], 0x00, sizeof(FPGA_Audio_SendBuffer_Q));
 	dma_memset((void *)&FPGA_Audio_SendBuffer_I[0], 0x00, sizeof(FPGA_Audio_SendBuffer_I));
+	
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+	NeedReinitReverber = true;
+	NeedFFTReinit = true;
 }
 
 static void TRX_Start_TX()
@@ -166,7 +167,10 @@ static void TRX_Start_TX()
 	WM8731_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_TXRXMode = 2;
+	
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+	NeedReinitReverber = true;
+	NeedFFTReinit = true;
 }
 
 static void TRX_Start_TXRX()
@@ -178,7 +182,10 @@ static void TRX_Start_TXRX()
 	WM8731_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_TXRXMode = 3;
+	
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+	NeedReinitReverber = true;
+	NeedFFTReinit = true;
 }
 
 void TRX_ptt_change(void)
@@ -193,6 +200,9 @@ void TRX_ptt_change(void)
 		TRX_ptt_hard = false;
 		return;
 	}
+	
+	if (CurrentVFO->Mode == TRX_MODE_CW && TRX.CW_PTT_Type == KEY_PTT) //cw ptt type
+		return;
 	
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
 	if (TRX_ptt_hard != TRX_new_ptt_hard)

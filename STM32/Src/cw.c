@@ -23,9 +23,10 @@ volatile bool CW_old_key_serial = false;
 volatile bool CW_key_dot_hard = false;
 volatile bool CW_key_dash_hard = false;
 volatile uint_fast16_t CW_Key_Timeout_est = 0;
+volatile uint_fast8_t KEYER_symbol_status = 0;	  // status (signal or period) of the automatic key symbol
 
 static uint32_t KEYER_symbol_start_time = 0;	  // start time of the automatic key character
-static uint_fast8_t KEYER_symbol_status = 0;	  // status (signal or period) of the automatic key symbol
+
 static float32_t current_cw_power = 0.0f;				// current amplitude (for rise/fall)
 static bool iambic_first_button_pressed = false; //start symbol | false - dot, true - dash
 static bool iambic_last_symbol = false;					//last Iambic symbol | false - dot, true - dash

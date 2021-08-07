@@ -248,6 +248,13 @@ typedef enum
 	TANGENT_MH48,
 } TRX_TANGENT_TYPE;
 
+// CW PTT TYPE
+typedef enum
+{
+	KEY_PTT,
+	EXT_PTT,
+} CW_PTT_TYPE;
+
 // Save settings by band
 typedef struct
 {
@@ -361,6 +368,7 @@ extern struct TRX_SETTINGS
 	float32_t CW_DotToDashRate;
 	bool CW_Iambic;
 	bool CW_Invert;
+	CW_PTT_TYPE CW_PTT_Type;
 	//SCREEN
 	uint8_t ColorThemeId;
 	uint8_t LayoutThemeId;

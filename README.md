@@ -188,6 +188,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **CW DotToDash Rate** - Keyer dash to dot length rate
 * **CW Iambic Keyer** - Enable Iambic mode keyer
 * **CW Key Invert** - Invert dash/dot on key
+* **CW PTT Type** - RX/TX switch type for CW: by key or external PTT (tangent, etc.)
 
 ### SCREEN Settings
 

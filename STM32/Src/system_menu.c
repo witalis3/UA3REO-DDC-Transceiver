@@ -23,6 +23,7 @@
 #include "callsign.h"
 #include "rtty_decoder.h"
 #include "self_test.h"
+#include "cw.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -105,6 +106,7 @@ static void SYSMENU_HANDL_CW_GaussFilter(int8_t direction);
 static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction);
 static void SYSMENU_HANDL_CW_Invert(int8_t direction);
+static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
@@ -476,6 +478,7 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
 		{"CW DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
 		{"CW Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
 		{"CW Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
+		{"CW PTT Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_PTT_Type, SYSMENU_HANDL_CW_PTT_Type, {"Key", "PTT"}},
 };
 
 const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
@@ -1835,6 +1838,16 @@ static void SYSMENU_HANDL_CW_Invert(int8_t direction)
 		TRX.CW_Invert = true;
 	if (direction < 0)
 		TRX.CW_Invert = false;
+}
+
+static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction)
+{
+	if (direction > 0 || TRX.CW_PTT_Type > 0)
+		TRX.CW_PTT_Type += direction;
+	if (TRX.CW_PTT_Type > 1)
+		TRX.CW_PTT_Type = 1;
+	
+	KEYER_symbol_status = 0;
 }
 
 //SCREEN MENU
