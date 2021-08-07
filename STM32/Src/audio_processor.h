@@ -28,7 +28,11 @@
 #define SAM_OUT_IDX   (3 * SAM_PLL_HILBERT_STAGES)
 #define SAM_omegaN 200.0 // PLL bandwidth 50.0 - 1000.0
 #define SAM_zeta 0.1 // PLL step response: smaller, slower response 1.0 - 0.1
-		
+
+//Stereo WFM
+#define SWFM_PILOT_TONE_FREQ 19000.0f
+#define SWFM_STEREO_PILOT_TONE_FREQ (2.0f * SWFM_PILOT_TONE_FREQ)
+
 typedef struct
 {
 	bool inited;

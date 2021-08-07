@@ -117,10 +117,10 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	static float32_t RDS_gen_index = 0;
 	for (uint_fast16_t i = 0; i < DECODER_PACKET_SIZE; i++)
 	{
-		float32_t sin = arm_sin_f32(RDS_gen_index * (2.0f * F_PI));
-		//float32_t cos = arm_cos_f32(RDS_gen_index * (2.0f * F_PI));
+		float32_t sin = arm_sin_f32(RDS_gen_index * F_2PI);
+		//float32_t cos = arm_cos_f32(RDS_gen_index * F_2PI);
 		RDS_gen_index += RDS_gen_step;
-		while (RDS_gen_index >= 1.0f)
+		if (RDS_gen_index >= 1.0f)
 			RDS_gen_index -= 1.0f;
 	
 		RDS_buff_I[i] = bufferIn[i] * sin;

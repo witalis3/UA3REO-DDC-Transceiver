@@ -358,6 +358,7 @@ extern struct TRX_SETTINGS
 	bool Beeper;
 	float32_t CTCSS_Freq;
 	uint8_t SELFHEAR_Volume;
+	bool FM_Stereo;
 	//CW
 	uint16_t CW_Pitch;
 	uint16_t CW_Key_timeout;

@@ -73,6 +73,7 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize);
+static void DemodulateStereoFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size);
 
 // initialize audio processor
 void initAudioProcessor(void)
@@ -111,8 +112,6 @@ void preProcessRxAudio(void)
 		doRX_SMETER(AUDIO_RX1, FPGA_Audio_Buffer_RX1_I_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, false);
 		//demodulate wfm before decimation
 		DemodulateFM(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, true, TRX_RX1_dBm);
-		//RDS Decoder
-		DECODER_PutSamples(FPGA_Audio_Buffer_RX1_I_current, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	}
 	doRX_DecimateInput(AUDIO_RX1, FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, &APROC_Audio_Buffer_RX1_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX1_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 
@@ -292,10 +291,13 @@ void processRxAudio(void)
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		break;
 	case TRX_MODE_WFM:
-		doRX_LPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		if(TRX.FM_Stereo)
+			DemodulateStereoFM(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		doRX_LPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, false);
-		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, TRX.FM_Stereo);
+		if(!TRX.FM_Stereo)
+			doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		break;
 	case TRX_MODE_IQ:
 	default:
@@ -390,9 +392,11 @@ void processRxAudio(void)
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			break;
 		case TRX_MODE_WFM:
-			doRX_LPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			if(TRX.FM_Stereo)
+				DemodulateStereoFM(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_LPF_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
+			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, TRX.FM_Stereo);
 			break;
 		case TRX_MODE_IQ:
 		default:
@@ -424,10 +428,7 @@ void processRxAudio(void)
 		if (!TRX.Dual_RX)
 		{
 			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1); //left channel
-			if (CurrentVFO->Mode == TRX_MODE_IQ)
-				arm_float_to_q31(&APROC_Audio_Buffer_RX1_Q[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
-			else
-				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
+			arm_float_to_q31(&APROC_Audio_Buffer_RX1_Q[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
 		}
 		else if (TRX.Dual_RX_Type == VFO_A_AND_B)
 		{
@@ -1342,10 +1343,11 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 
 		//demod
 		data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
+		
 		//fm de emphasis
-		const float32_t alpha = 0.25f;
-		data_i[i] = data_i[i] * (1.0f - alpha) + *emph_prev * alpha;
-		*emph_prev = data_i[i];
+		//const float32_t alpha = 0.25f;
+		//data_i[i] = data_i[i] * (1.0f - alpha) + *emph_prev * alpha;
+		//*emph_prev = data_i[i];
 
 		//smooth SQL edges
 		if (!*squelched || !sql_enabled) // high-pass audio only if we are un-squelched (to save processor time)
@@ -1380,6 +1382,50 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	{
 		*squelchRate = 0.01f;
 		*squelched = false; //  yes, open the squelch
+	}
+	
+	//RDS Decoder
+	if (rx_id == AUDIO_RX1 && wfm)
+	{
+		DECODER_PutSamples(data_i, size);
+	}
+	
+	//Stereo FM
+	if(TRX.FM_Stereo)
+	{
+		//move signal to low freq
+		float32_t SWFM_gen_step = ((float32_t)SWFM_STEREO_PILOT_TONE_FREQ / (float32_t)TRX_GetRXSampleRate) * F_2PI;
+		static float32_t SWFM_gen_index = 0;
+		for (uint_fast16_t i = 0; i < size; i++)
+		{
+			//get stereo iq from decoded wfm
+			data_q[i] = data_i[i] * arm_cos_f32(SWFM_gen_index);
+			data_i[i] = data_i[i] * arm_sin_f32(SWFM_gen_index);
+			
+			SWFM_gen_index += SWFM_gen_step;
+			if (SWFM_gen_index >= F_2PI)
+				SWFM_gen_index -= F_2PI;
+		}
+	}
+}
+
+static void DemodulateStereoFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size)
+{
+	//Stereo FM
+	if(TRX.FM_Stereo)
+	{
+		//Do hilbert
+		doRX_HILBERT(rx_id, size);
+		
+		//Extract channels
+		for(uint32_t i = 0; i < size; i++)
+		{
+			float32_t left = data_i[i] - data_q[i]; // difference of I and Q - LSB
+			float32_t right = data_i[i] + data_q[i]; // sum of I and Q - USB
+			
+			data_i[i] = left;
+			data_q[i] = right;
+		}
 	}
 }
 
@@ -1606,10 +1652,8 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 	{
 		for (uint16_t i = 0; i < size; i++)
 		{
-			float32_t sin = arm_sin_f32(gen_position_rx1 * (2.0f * F_PI));
-			float32_t cos = arm_cos_f32(gen_position_rx1 * (2.0f * F_PI));
-			APROC_Audio_Buffer_RX1_I[i] *= sin;
-			APROC_Audio_Buffer_RX1_Q[i] *= cos;
+			APROC_Audio_Buffer_RX1_I[i] *= arm_sin_f32(gen_position_rx1 * F_2PI);
+			APROC_Audio_Buffer_RX1_Q[i] *= arm_cos_f32(gen_position_rx1 * F_2PI);
 
 			gen_position_rx1 += (freq_diff / (float32_t)TRX_SAMPLERATE);
 			while (gen_position_rx1 >= 1.0f)
@@ -1620,10 +1664,8 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 	{
 		for (uint16_t i = 0; i < size; i++)
 		{
-			float32_t sin = arm_sin_f32(gen_position_rx2 * (2.0f * F_PI));
-			float32_t cos = arm_cos_f32(gen_position_rx2 * (2.0f * F_PI));
-			APROC_Audio_Buffer_RX2_I[i] *= sin;
-			APROC_Audio_Buffer_RX2_Q[i] *= cos;
+			APROC_Audio_Buffer_RX2_I[i] *= arm_sin_f32(gen_position_rx2 * F_2PI);
+			APROC_Audio_Buffer_RX2_Q[i] *= arm_cos_f32(gen_position_rx2 * F_2PI);
 
 			gen_position_rx2 += (freq_diff / (float32_t)TRX_SAMPLERATE);
 			while (gen_position_rx2 >= 1.0f)

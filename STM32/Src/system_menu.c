@@ -96,6 +96,7 @@ static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CTCSS_Freq(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SELFHEAR_Volume(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_FM_Stereo(int8_t direction);
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
@@ -464,6 +465,7 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"Beeper", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 		{"CTCSS Frequency", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_HANDL_AUDIO_CTCSS_Freq},
 		{"SelfHear Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_HANDL_AUDIO_SELFHEAR_Volume},
+		{"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_AUDIO_FM_Stereo},
 };
 
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
@@ -1734,6 +1736,14 @@ static void SYSMENU_HANDL_AUDIO_SELFHEAR_Volume(int8_t direction)
 		TRX.SELFHEAR_Volume = 100;
 	if(TRX.SELFHEAR_Volume < 1)
 		TRX.SELFHEAR_Volume = 1;
+}
+
+static void SYSMENU_HANDL_AUDIO_FM_Stereo(int8_t direction)
+{
+	if (direction > 0)
+		TRX.FM_Stereo = true;
+	if (direction < 0)
+		TRX.FM_Stereo = false;
 }
 
 //CW MENU

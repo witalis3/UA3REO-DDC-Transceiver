@@ -94,6 +94,7 @@ __asm(".global __use_no_heap\n\t");
 #define isinff __ARM_isinff
 
 #define F_PI 3.141592653589793238463f
+#define F_2PI (3.141592653589793238463f * 2.0f)
 #define SQRT2 1.41421356237f
 #define DEG2RAD(x) ((float32_t)(x) * F_PI / 180.f)
 #define RAD2DEG(x) ((float32_t)(x) * 180.f / F_PI)
