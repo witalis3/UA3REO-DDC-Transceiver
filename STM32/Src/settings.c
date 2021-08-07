@@ -199,7 +199,7 @@ void LoadSettings(bool clear)
 		TRX.MIC_EQ_HIG_AMFM = 0;								   // Mic EQ (high) AM/FM
 		TRX.MIC_REVERBER = 0;							   // Mic Reveerber
 		TRX.DNR1_SNR_THRESHOLD = 50;						   // Digital noise reduction 1 level
-		TRX.DNR2_SNR_THRESHOLD = 30;						   // Digital noise reduction 2 level
+		TRX.DNR2_SNR_THRESHOLD = 35;						   // Digital noise reduction 2 level
 		TRX.DNR_AVERAGE = 2;							   // DNR averaging when looking for average magnitude
 		TRX.DNR_MINIMAL = 99;							   // DNR averaging when searching for minimum magnitude
 		TRX.NOISE_BLANKER = true;						   // suppressor of short impulse noise NOISE BLANKER
