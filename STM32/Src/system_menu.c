@@ -364,7 +364,6 @@ static void SYSMENU_HANDL_SELF_TEST(int8_t direction);
 
 static bool SYSMENU_HANDL_CHECK_HAS_LPF(void);
 static bool SYSMENU_HANDL_CHECK_HAS_HPF(void);
-static bool SYSMENU_HANDL_CHECK_HAS_ATU(void);
 static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void);
 static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void);
 static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void);
@@ -5428,7 +5427,7 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void)
 	return false;
 }
 
-static bool SYSMENU_HANDL_CHECK_HAS_ATU(void)
+bool SYSMENU_HANDL_CHECK_HAS_ATU(void)
 {
 	return (CALIBRATE.RF_unit_type == RF_UNIT_BIG);
 }

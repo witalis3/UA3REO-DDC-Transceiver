@@ -69,4 +69,6 @@ extern void SYSMENU_AUDIO_SQUELCH_HOTKEY(void);
 extern void SYSMENU_AUDIO_AGC_HOTKEY(void);
 extern void SYSMENU_HANDL_SERVICESMENU(int8_t direction);
 
+extern bool SYSMENU_HANDL_CHECK_HAS_ATU(void);
+
 #endif

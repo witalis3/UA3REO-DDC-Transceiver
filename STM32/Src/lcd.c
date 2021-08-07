@@ -938,6 +938,36 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	}
 	else
 	{
+		//ATU
+		if(SYSMENU_HANDL_CHECK_HAS_ATU() && LAYOUT->STATUS_ATU_I_Y > 0)
+		{
+			//if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
+			const float32_t atu_i[5] = {0.1, 0.22, 0.45, 1.0, 2.2};
+			const float32_t atu_c[5] = {10.0, 22.0, 47.0, 100.0, 220.0};
+			const uint8_t MAX_ATU_POS = B8(00011111); //5x5 tuner
+			
+			float32_t i_val = 0;
+			float32_t c_val = 0;
+			for(uint8_t i = 0; i < MAX_ATU_POS; i++)
+			{
+				if(bitRead(TRX.ATU_I, i))
+					i_val += atu_i[i];
+				if(bitRead(TRX.ATU_C, i))
+					c_val += atu_c[i];
+			}
+			
+			sprintf(ctmp, "I=%.2fuH", i_val);
+			addSymbols(ctmp, ctmp, 8, " ", true);
+			LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+			
+			if(TRX.ATU_T)
+				sprintf(ctmp, "CT=%dpF", (uint32_t)c_val);
+			else
+				sprintf(ctmp, "C=%dpF", (uint32_t)c_val);
+			addSymbols(ctmp, ctmp, 8, " ", true);
+			LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_C_X, LAYOUT->STATUS_ATU_C_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		}
+			
 		if (!LAYOUT->STATUS_SMETER_ANALOG)
 		{
 			//SWR

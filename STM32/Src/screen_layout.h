@@ -167,6 +167,10 @@ extern "C"
 		const uint16_t STATUS_SMETER_PEAK_HOLDTIME;
 		const uint16_t STATUS_SMETER_TXLABELS_MARGIN;
 		const uint16_t STATUS_SMETER_TXLABELS_PADDING;
+		const uint16_t STATUS_ATU_I_X;
+		const uint16_t STATUS_ATU_I_Y;
+		const uint16_t STATUS_ATU_C_X;
+		const uint16_t STATUS_ATU_C_Y;
 		const uint16_t STATUS_TX_LABELS_VAL_WIDTH;
 		const uint16_t STATUS_TX_LABELS_VAL_HEIGHT;
 		const uint16_t STATUS_TX_LABELS_SWR_X;
