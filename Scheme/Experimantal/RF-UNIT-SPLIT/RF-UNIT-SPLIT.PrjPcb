@@ -192,6 +192,10 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=GUCCKGGI
 
+[GeneratedDocument1]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Design Rule Check - RF-UNIT-SPLIT.html
+DItemRevisionGUID=
+
 [SearchPath1]
 Path=C:\Users\Public\Documents\Altium\AD19\Library\ExportIntLib\*.*
 IncludeSubFolders=1
