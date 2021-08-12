@@ -1,5 +1,5 @@
 ----Version 3.0.0----
-+HARDW: RF-UNIT-QRP_20W: Добавлена 20 ваттая QRP++ версия платы RF-UNIT, Thx автору DB5AT
++HARDW: RF-UNIT-QRP_20W: Добавлена 20 ваттная QRP++ версия платы RF-UNIT, Thx автору DB5AT
 +HARDW: RF-UNIT-SPLIT-rev3: Доработки шелкографии, переходов, контура, Thx UB3DKI
 +HARDW: Добавлена плата PCB MIC MH-48 (папка Addons) для 7 дюймовой лицевой панели, Thx автору EA7GIB
 +HARDW: RF-UNIT-QRP-rev22: Обновлены номиналы всех фильтров (TX/RX ФНЧ, ФВЧ, ДПФ) для достижения лучшего АЧХ, Thx Radist2
