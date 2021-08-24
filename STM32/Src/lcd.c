@@ -1721,6 +1721,10 @@ void LCD_closeWindow(void)
 static void LCD_showBandWindow(bool secondary_vfo)
 {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	//TX block
+	if(TRX_on_TX())
+		return;
+	
 	const uint8_t buttons_in_line = 6;
 	uint8_t selectable_bands_count = 0;
 	uint8_t unselectable_bands_count = 0;

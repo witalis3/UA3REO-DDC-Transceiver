@@ -858,6 +858,10 @@ void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(uint32_t parameter)
 
 void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 {
+	//TX block
+	if(TRX_on_TX())
+		return;
+	
 	TRX_TemporaryMute();
 	
 	TRX.selected_vfo = !TRX.selected_vfo;
@@ -1127,6 +1131,10 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_N(uint32_t parameter)
 
 static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 {
+	//TX block
+	if(TRX_on_TX())
+		return;
+	
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	band++;
 	if (band >= BANDS_COUNT)
@@ -1171,6 +1179,10 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
 {
+	//TX block
+	if(TRX_on_TX())
+		return;
+	
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	band--;
 	if (band < 0)
