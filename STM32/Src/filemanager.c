@@ -246,6 +246,7 @@ static void FILEMANAGER_OpenDialog(void)
 	//play wav
 	if(allow_play_wav)
 	{
+		//Play Localy
 		button_active = (FILEMANAGER_dialog_button_index == print_index);
 		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
@@ -261,7 +262,26 @@ static void FILEMANAGER_OpenDialog(void)
 		}
 		button_y += button_h + margin;
 		if(button_active)
-			current_dialog_action = FILMAN_ACT_PLAYWAV;
+			current_dialog_action = FILMAN_ACT_PLAY_WAV;
+		print_index++;
+		
+		//Tansmit WAV
+		button_active = (FILEMANAGER_dialog_button_index == print_index);
+		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
+		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
+		if(!SD_PlayCQMessageInProcess)
+		{
+			LCDDriver_getTextBoundsFont("Transmit WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont("Transmit WAV", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		}
+		else
+		{
+			LCDDriver_getTextBoundsFont("TXing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		}
+		button_y += button_h + margin;
+		if(button_active)
+			current_dialog_action = FILMAN_ACT_TRANSMIT_WAV;
 		print_index++;
 	}
 	//rec cq message
@@ -351,15 +371,57 @@ static void FILEMANAGER_DialogAction(void)
 		}
 		return;
 	}
-	if(current_dialog_action == FILMAN_ACT_PLAYWAV) //play WAV
+	if(current_dialog_action == FILMAN_ACT_PLAY_WAV) //play WAV Localy
 	{
 		if(SD_PlayInProcess)
 		{
 			SD_NeedStopPlay = true;
 			return;
 		}
+		if (SD_RecordInProcess)
+		{
+			SD_NeedStopRecord = true;
+			return;
+		}
 		
 		println("Play WAV started");
+		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
+		if(strlen(FILEMANAGER_CurrentPath) > 0)
+		{
+			strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+			strcat((char*)SD_workbuffer_A, "/");
+		}
+		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+		SD_doCommand(SDCOMM_START_PLAY, false);
+		return;
+	}
+	if(current_dialog_action == FILMAN_ACT_TRANSMIT_WAV) //Transmit WAV
+	{
+		if(SD_PlayInProcess)
+		{
+			SD_NeedStopPlay = true;
+			return;
+		}
+		if (SD_RecordInProcess)
+		{
+			SD_NeedStopRecord = true;
+			return;
+		}
+		if (SD_PlayCQMessageInProcess)
+		{
+			SD_NeedStopPlay = true;
+			return;
+		}
+		
+		println("Transmit WAV started");
+		
+		//go tx
+		TRX_ptt_soft = true;
+		TRX_ptt_change();
+		
+		//start play cq message
+		SD_PlayCQMessageInProcess = true;
+		
 		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
 		if(strlen(FILEMANAGER_CurrentPath) > 0)
 		{
