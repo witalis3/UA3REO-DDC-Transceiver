@@ -602,8 +602,7 @@ void processTxAudio(void)
 	//Play CQ message
 	if (SD_PlayCQMessageInProcess && SD_PlayInProcess)
 	{
-		if (!APROC_SD_PlayTX()) //false - data not ready
-			return;
+		while(!APROC_SD_PlayTX()); //false - data not ready, continue decoding
 	}
 
 	//One-signal zero-tune generator
