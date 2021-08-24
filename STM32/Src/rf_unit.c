@@ -414,22 +414,22 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U1-QH NOT USED
 				//if (registerNumber == 8)
 				//U1-QG BPF_2_A0
-				if (registerNumber == 9 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2))
+				if (registerNumber == 9 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)) //1,2 - bpf2; 5,6 - bpf1
 					SET_DATA_PIN;
 				//U1-QF BPF_2_A1
-				if (registerNumber == 10 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2))
+				if (registerNumber == 10 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6)) //4,2 - bpf2; 0,6 - bpf1
 					SET_DATA_PIN;
 				//U1-QE BPF_2_!EN
-				if (registerNumber == 11 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4)))
+				if (registerNumber == 11 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4))) //1,2,3,4 - bpf2
 					SET_DATA_PIN;
 				//U1-QD BPF_1_A0
-				if (registerNumber == 12 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 5 || bpf == 6))
+				if (registerNumber == 12 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)) //1,2 - bpf2; 5,6 - bpf1
 					SET_DATA_PIN;
 				//U1-QC BPF_1_A1
-				if (registerNumber == 13 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 0 || bpf == 6))
+				if (registerNumber == 13 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6)) //4,2 - bpf2; 0,6 - bpf1
 					SET_DATA_PIN;
 				//U1-QB BPF_1_!EN
-				if (registerNumber == 14 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7)))
+				if (registerNumber == 14 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7))) //5,6,7,0 - bpf1
 					SET_DATA_PIN;
 				//U1-QA BPF_ON
 				if (registerNumber == 15 && TRX.RF_Filters && !dualrx_bpf_disabled && bpf != 255)

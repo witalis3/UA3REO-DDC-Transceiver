@@ -1,5 +1,6 @@
 ----Version 3.1.0----
 +STM32: Устранение ошибки в телефонном самоконтроле, Thx UA9ULT
++STM32: Доработки поддержки RF-UNIT-QRP, Thx UA9ULT
 
 ----Version 3.0.0----
 +HARDW: RF-UNIT-QRP_20W: Добавлена 20 ваттная QRP++ версия платы RF-UNIT, Thx автору DB5AT
