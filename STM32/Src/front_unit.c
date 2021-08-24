@@ -1818,6 +1818,24 @@ void FRONTPANEL_BUTTONHANDLER_SETRF_POWER(uint32_t parameter)
 	LCD_closeWindow();
 }
 
+void FRONTPANEL_BUTTONHANDLER_SET_ATT_DB(uint32_t parameter)
+{
+	TRX.ATT_DB = parameter;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0)
+	{
+		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
+		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
+	}
+
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+	resetVAD();
+	
+	LCD_closeWindow();
+}
+
 void FRONTPANEL_BUTTONHANDLER_LEFT_ARR(uint32_t parameter)
 {
 	if (FRONTPANEL_funcbuttons_page == 0)

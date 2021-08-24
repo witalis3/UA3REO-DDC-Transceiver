@@ -79,6 +79,7 @@ static void LCD_printTooltip(void);
 static void LCD_showBandWindow(bool secondary_vfo);
 static void LCD_showModeWindow(bool secondary_vfo);
 static void LCD_showBWWindow(void);
+static void LCD_showATTWindow(uint32_t parameter);
 static void LCD_ManualFreqButtonHandler(uint32_t parameter);
 static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter);
 #if (defined(LAY_800x480))
@@ -129,7 +130,7 @@ static void LCD_displayTopButtons(bool redraw)
 	printButton(LAYOUT->TOPBUTTONS_PRE_X, LAYOUT->TOPBUTTONS_PRE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "PRE", TRX.LNA, true, false, 0, FRONTPANEL_BUTTONHANDLER_PRE, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	char buff[64] = {0};
 	sprintf(buff, "ATT%d", (uint8_t)TRX.ATT_DB);
-	printButton(LAYOUT->TOPBUTTONS_ATT_X, LAYOUT->TOPBUTTONS_ATT_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, buff, TRX.ATT, true, false, 0, FRONTPANEL_BUTTONHANDLER_ATT, FRONTPANEL_BUTTONHANDLER_ATTHOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	printButton(LAYOUT->TOPBUTTONS_ATT_X, LAYOUT->TOPBUTTONS_ATT_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, buff, TRX.ATT, true, false, 0, FRONTPANEL_BUTTONHANDLER_ATT, LCD_showATTWindow, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	printButton(LAYOUT->TOPBUTTONS_PGA_X, LAYOUT->TOPBUTTONS_PGA_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "PGA", TRX.ADC_PGA, true, false, 0, FRONTPANEL_BUTTONHANDLER_PGA_ONLY, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	printButton(LAYOUT->TOPBUTTONS_DRV_X, LAYOUT->TOPBUTTONS_DRV_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DRV", TRX.ADC_Driver, true, false, 0, FRONTPANEL_BUTTONHANDLER_DRV_ONLY, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	printButton(LAYOUT->TOPBUTTONS_FAST_X, LAYOUT->TOPBUTTONS_FAST_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", TRX.Fast, true, false, 0, FRONTPANEL_BUTTONHANDLER_FAST, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
@@ -2113,4 +2114,32 @@ void LCD_hideKeyboard(void)
 {
 	LCD_screenKeyboardOpened = false;
 	LCD_keyboardHandler = NULL;
+}
+
+void LCD_showATTWindow(uint32_t parameter)
+{
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	const uint8_t buttons_in_line = 5;
+	const uint8_t buttons_lines = 2;
+	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
+	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
+	while (LCD_busy)
+		;
+	LCD_openWindow(window_width, window_height);
+	LCD_busy = true;
+	uint8_t db = 3;
+	for (uint8_t yi = 0; yi < buttons_lines; yi++)
+	{
+		for (uint8_t xi = 0; xi < buttons_in_line; xi++)
+		{
+			char str[8];
+			sprintf(str, "%d dB", db);
+			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (TRX.ATT_DB == db), true, true, db, FRONTPANEL_BUTTONHANDLER_SET_ATT_DB, FRONTPANEL_BUTTONHANDLER_SET_ATT_DB, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			db += 3;
+			if(db > 31)
+				db = 31;
+		}
+	}
+	LCD_busy = false;
+#endif
 }
