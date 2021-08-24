@@ -34,6 +34,7 @@ static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
 static void SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI(int8_t direction);
 static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction);
+static void SYSMENU_HANDL_TRX_SPLIT_INTERVAL(int8_t direction);
 static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_SAMPLERATE_FM(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
@@ -396,6 +397,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"RF_Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_TRX_RFFilters},
 		{"Two Signal TUNE", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
 		{"Shift Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_HANDL_TRX_SHIFT_INTERVAL},
+		{"Split Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SPLIT_INTERVAL, SYSMENU_HANDL_TRX_SPLIT_INTERVAL},
 		{"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_TRX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
 		{"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_TRX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
 		{"Freq Step", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
@@ -965,6 +967,15 @@ static void SYSMENU_HANDL_TRX_SHIFT_INTERVAL(int8_t direction)
 		TRX.SHIFT_INTERVAL = 100;
 	if (TRX.SHIFT_INTERVAL > 10000)
 		TRX.SHIFT_INTERVAL = 10000;
+}
+
+static void SYSMENU_HANDL_TRX_SPLIT_INTERVAL(int8_t direction)
+{
+	TRX.SPLIT_INTERVAL += direction * 100;
+	if (TRX.SPLIT_INTERVAL < 100)
+		TRX.SPLIT_INTERVAL = 100;
+	if (TRX.SPLIT_INTERVAL > 10000)
+		TRX.SPLIT_INTERVAL = 10000;
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction)

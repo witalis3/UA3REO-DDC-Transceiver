@@ -141,7 +141,9 @@ void LoadSettings(bool clear)
 		TRX.RF_Power = 20;						  //output power (%)
 		TRX.ChannelMode = false;				//enable channel mode on VFO
 		TRX.ShiftEnabled = false;				  // activate the SHIFT mode
+		TRX.SplitEnabled = false;				  // activate the SPLIT mode
 		TRX.SHIFT_INTERVAL = 1000;				  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
+		TRX.SPLIT_INTERVAL = 1000;				  // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
 		TRX.TWO_SIGNAL_TUNE = false;			  // Two-signal generator in TUNE mode (1 + 2kHz)
 #ifdef LAY_160x128
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; //Samplerate for ssb/cw/digi/nfm/etc modes

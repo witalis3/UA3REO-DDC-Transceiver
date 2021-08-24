@@ -125,6 +125,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **MENU [clamp]** - Enable key lock LOCK
 * **MENU [at power on]** - Reset transceiver settings
 * **MENU [at power on+PRE]** - Reset transceiver settings and calibration
+* **SHIFT** - Offset of the receiving frequency relative to the current frequency (TX without offset)
+* **SPLIT** - Offset of the transmission frequency relative to the current frequency (RX without offset)
 
 ## Settings
 
@@ -137,6 +139,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **RF Filters** - Hardware filter management (LPF / HPF / BPF)
 * **Two Signal tune** - Two-signal generator in TUNE mode (1 + 2kHz)
 * **Shift Interval** - Offset range SHIFT (+ -)
+* **Split Interval** - Offset range SPLIT (+ -)
 * **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
 * **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
 * **Freq Step** - Frequency step by the main encoder

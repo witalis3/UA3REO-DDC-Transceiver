@@ -45,6 +45,7 @@ static void FRONTPANEL_BUTTONHANDLER_SCAN(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_REC(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_PLAY(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_CLAR(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_STEP(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_BANDMAP(uint32_t parameter);
@@ -73,7 +74,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH}, //RFPOWER-SQUELCH
 	{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF},			  //BW-HPF
 
-	{.port = 2, .channel = 7, .type = FUNIT_CTRL_SHIFT},																																																										 //SHIFT
+	{.port = 2, .channel = 7, .type = FUNIT_CTRL_SHIFT_SPLIT},																																																										 //SHIFT/SPLIT
 	{.port = 2, .channel = 6, .type = FUNIT_CTRL_AF_GAIN},																																																										 //AF GAIN
 	{.port = 2, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_DNR, .holdHandler = FRONTPANEL_BUTTONHANDLER_NB},			 //DNR-NB
 	{.port = 2, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_NOTCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL}, //NOTCH-MANUAL
@@ -97,7 +98,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	//buttons
 	{.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN}, //AF GAIN
-	{.port = 1, .channel = 1, .type = FUNIT_CTRL_SHIFT},   //SHIFT
+	{.port = 1, .channel = 1, .type = FUNIT_CTRL_SHIFT_SPLIT},   //SHIFT/SPLIT
 
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_TANGENT}, //TANGENT_SW1
 	{.port = 1, .channel = 3, .type = FUNIT_CTRL_TANGENT}, //TANGENT_SW2
@@ -122,14 +123,14 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "TUNE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE},
 	{.name = "POWER", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER},
 	{.name = "ANT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ANT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ANT},
-	{.name = "SHIFT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SHIFT, .holdHandler = FRONTPANEL_BUTTONHANDLER_CLAR},
+	{.name = "SHIFT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SHIFT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},
 	{.name = "SERVICE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},
 	{.name = "MENU", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU},
 
 	{.name = "WPM", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_WPM},
-	{.name = "SQL", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH},
+	{.name = "SPLIT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SPLIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SPLIT},
 	{.name = "DOUBLE", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOUBLE, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOUBLEMODE},
-	{.name = "CLAR", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},
+	{.name = "CLAR", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_CLAR},
 	{.name = "SCAN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SCAN, .holdHandler = FRONTPANEL_BUTTONHANDLER_SCAN},
 	{.name = "PLAY", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_PLAY},
 	{.name = "REC", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_REC, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC},
@@ -150,7 +151,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "ZOOM+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P},
 	{.name = "LOCK", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_LOCK, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},
 	{.name = "HPF", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_HPF, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF},
-	{.name = "SERVICE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},
+	{.name = "SQL", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH},
 	{.name = "MENU", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU},
 };
 #endif
@@ -159,7 +160,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	//buttons
 	{.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN}, //AF GAIN
-	{.port = 1, .channel = 1, .type = FUNIT_CTRL_SHIFT},   //SHIFT
+	{.port = 1, .channel = 1, .type = FUNIT_CTRL_SHIFT_SPLIT},   //SHIFT/SPLIT
 	
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 383, .tres_max = 449, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 8, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB16 F9
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 449, .tres_max = 487, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 7, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB17 F8
@@ -199,7 +200,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "TUNE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE},
 	{.name = "POWER", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER},
 	{.name = "ANT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ANT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ANT},
-	{.name = "SHIFT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SHIFT, .holdHandler = FRONTPANEL_BUTTONHANDLER_CLAR},
+	{.name = "SHIFT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SHIFT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},
 	{.name = "PLAY", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_PLAY},
 	{.name = "REC", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_REC, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC},
 	{.name = "SERVICE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},
@@ -208,13 +209,13 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "SAMPL+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_P},
 	{.name = "ZOOM-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N},
 	{.name = "ZOOM+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P},
-	{.name = "SCAN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SCAN, .holdHandler = FRONTPANEL_BUTTONHANDLER_SCAN},
+	{.name = "SPLIT", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SPLIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SPLIT},
 	{.name = "DOUBLE", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOUBLE, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOUBLEMODE},
-	{.name = "CLAR", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},
+	{.name = "CLAR", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_CLAR},
 	{.name = "WPM", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_WPM},
 	{.name = "HPF", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_HPF, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF},
 	
-	{.name = "SQL", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH},
+	{.name = "SCAN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SCAN, .holdHandler = FRONTPANEL_BUTTONHANDLER_SCAN},
 	{.name = "BW", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_BW},
 	{.name = "MODE+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_P},
 	{.name = "MODE-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N},
@@ -720,8 +721,8 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 			TRX.Volume = 0;
 	}
 
-	// SHIFT or IF Gain
-	if (button->type == FUNIT_CTRL_SHIFT)
+	// SHIFT / SPLIT or IF Gain
+	if (button->type == FUNIT_CTRL_SHIFT_SPLIT)
 	{
 		if (TRX.ShiftEnabled)
 		{
@@ -738,10 +739,29 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 					LCD_UpdateQuery.StatusInfoGUI = true;
 				}
 			}
+			TRX_SPLIT = 0;
+		}
+		else if (TRX.SplitEnabled)
+		{
+			int_fast16_t TRX_SPLIT_old = TRX_SPLIT;
+			TRX_SPLIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SPLIT_INTERVAL * 2 / 1023.0f) - TRX.SPLIT_INTERVAL);
+			if (TRX_SPLIT_old != TRX_SPLIT && !TRX_on_TX())
+			{
+				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
+				LCD_bw_trapez_stripe_pos_new = LCD_bw_trapez_stripe_pos_new + (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_SPLIT / (float32_t)TRX.SPLIT_INTERVAL));
+				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
+				{
+					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
+					LCD_UpdateQuery.StatusInfoGUI = true;
+				}
+			}
+			TRX_SHIFT = 0;
 		}
 		else
 		{
 			TRX_SHIFT = 0;
+			TRX_SPLIT = 0;
 			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 60.0f / 1023.0f));
 		}
 	}
@@ -1429,6 +1449,14 @@ void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter)
 static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter)
 {
 	TRX.ShiftEnabled = !TRX.ShiftEnabled;
+	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
+	NeedSaveSettings = true;
+}
+
+static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter)
+{
+	TRX.SplitEnabled = !TRX.SplitEnabled;
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;

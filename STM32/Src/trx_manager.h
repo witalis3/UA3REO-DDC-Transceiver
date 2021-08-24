@@ -48,6 +48,7 @@ volatile extern int16_t TRX_ADC_MAXAMPLITUDE;
 volatile extern int32_t TRX_VCXO_ERROR;
 volatile extern uint32_t TRX_SNTP_Synced;
 volatile extern int_fast16_t TRX_SHIFT;
+volatile extern int_fast16_t TRX_SPLIT;
 volatile extern float32_t TRX_MAX_TX_Amplitude;
 volatile extern float32_t TRX_PWR_Forward;
 volatile extern float32_t TRX_PWR_Backward;

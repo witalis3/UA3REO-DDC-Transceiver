@@ -1077,6 +1077,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		sprintf(buff, "RIT:CLAR");
 	else if (TRX.ShiftEnabled)
 		sprintf(buff, "SHIFT:%d", TRX_SHIFT);
+	else if (TRX.SplitEnabled)
+		sprintf(buff, "SPLIT:%d", TRX_SPLIT);
 	else
 		sprintf(buff, "RIT:OFF");
 	addSymbols(buff, buff, 12, " ", true);

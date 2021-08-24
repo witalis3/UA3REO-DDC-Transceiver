@@ -36,6 +36,7 @@ volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile int32_t TRX_VCXO_ERROR = 0;
 volatile uint32_t TRX_SNTP_Synced = 0; // time of the last time synchronization
 volatile int_fast16_t TRX_SHIFT = 0;
+volatile int_fast16_t TRX_SPLIT = 0;
 volatile float32_t TRX_MAX_TX_Amplitude = MAX_TX_AMPLITUDE;
 volatile float32_t TRX_PWR_Forward = 0;
 volatile float32_t TRX_PWR_Backward = 0;
@@ -318,7 +319,7 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 	//get settings and fpga freq phrase
 	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)CurrentVFO->Freq + TRX_SHIFT, 1);
 	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)SecondaryVFO->Freq + TRX_SHIFT, 2);
-	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)CurrentVFO->Freq);
+	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)CurrentVFO->Freq + TRX_SPLIT);
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
 	FPGA_NeedSendParams = true;
 	
