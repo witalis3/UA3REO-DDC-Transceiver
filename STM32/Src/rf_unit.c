@@ -172,13 +172,10 @@ static void RF_UNIT_ProcessATU(void)
 			print("Wr Way ");
 		println("I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", TRX_SWR, " PWR: ", TRX_PWR);
 		//iteration block
-		uint8_t MAX_ATU_POS = 0;
-		if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
-			MAX_ATU_POS = B8(00011111); //5x5 tuner
 		
 		if(ATU_Stage == 0) //iterate inds
 		{
-			if(TRX.ATU_I < MAX_ATU_POS && !wrong_way)
+			if(TRX.ATU_I < ATU_MAXPOS && !wrong_way)
 			{
 				TRX.ATU_I++;
 			}
@@ -192,7 +189,7 @@ static void RF_UNIT_ProcessATU(void)
 		}
 		else if(ATU_Stage == 1) //iterate caps
 		{
-			if(TRX.ATU_C < MAX_ATU_POS)
+			if(TRX.ATU_C < ATU_MAXPOS)
 			{
 				TRX.ATU_C++;
 			}
@@ -206,7 +203,7 @@ static void RF_UNIT_ProcessATU(void)
 		}
 		else if(ATU_Stage == 2) //iterate caps with other T
 		{
-			if(TRX.ATU_C < MAX_ATU_POS)
+			if(TRX.ATU_C < ATU_MAXPOS)
 			{
 				TRX.ATU_C++;
 			}
@@ -227,7 +224,7 @@ static void RF_UNIT_ProcessATU(void)
 		}
 		else if(ATU_Stage == 3) //iterate caps with i-1
 		{
-			if(TRX.ATU_C < MAX_ATU_POS && !wrong_way)
+			if(TRX.ATU_C < ATU_MAXPOS && !wrong_way)
 			{
 				TRX.ATU_C++;
 			}
@@ -244,7 +241,7 @@ static void RF_UNIT_ProcessATU(void)
 				{
 					TRX.ATU_C = 0;
 					ATU_MinSWR_Slider = ATU_MinSWR;
-					if(TRX.ATU_I < MAX_ATU_POS)
+					if(TRX.ATU_I < ATU_MAXPOS)
 					{
 						TRX.ATU_I = ATU_MinSWR_I + 1;
 						ATU_Stage = 4;
@@ -257,14 +254,14 @@ static void RF_UNIT_ProcessATU(void)
 		}
 		else if(ATU_Stage == 4) //iterate caps with i+1
 		{
-			if(TRX.ATU_C < MAX_ATU_POS && !wrong_way)
+			if(TRX.ATU_C < ATU_MAXPOS && !wrong_way)
 			{
 				TRX.ATU_C++;
 			}
 			else
 			{
 				//slide more?
-				if(ATU_MinSWR < ATU_MinSWR_Slider && TRX.ATU_I < MAX_ATU_POS)
+				if(ATU_MinSWR < ATU_MinSWR_Slider && TRX.ATU_I < ATU_MAXPOS)
 				{
 					ATU_MinSWR_Slider = ATU_MinSWR;
 					TRX.ATU_I = ATU_MinSWR_I + 1;
@@ -510,7 +507,6 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	{
 		if(TRX_Tune)
 			RF_UNIT_ProcessATU();
-		static const uint8_t MAX_ATU_POS = B8(00011111); //5x5 tuner
 		
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
 		MINI_DELAY

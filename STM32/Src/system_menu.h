@@ -32,6 +32,8 @@ typedef enum
 	SYSMENU_ENUM,
 	SYSMENU_ENUMR,
 	SYSMENU_B4,
+	SYSMENU_ATU_I,
+	SYSMENU_ATU_C,
 } SystemMenuType;
 
 struct sysmenu_item_handler

@@ -788,6 +788,8 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 		break;
 	case SYSMENU_B4:
 	case SYSMENU_UINT8:
+	case SYSMENU_ATU_I:
+	case SYSMENU_ATU_C:
 		sprintf(valbuff, "%u", (uint8_t)*value);
 		break;
 	case SYSMENU_ENUM:

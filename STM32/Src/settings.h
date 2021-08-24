@@ -92,6 +92,15 @@
 
 #define MEMORY_CHANNELS_COUNT 35
 
+#define ATU_MAXLENGTH 5
+#define ATU_5x5_MAXPOS B8(00011111)
+static float32_t ATU_5x5_I_VALS[ATU_MAXLENGTH + 1] = {0.0, 0.1, 0.22, 0.45, 1.0, 2.2};
+static float32_t ATU_5x5_C_VALS[ATU_MAXLENGTH + 1] = {0.0, 10.0, 22.0, 47.0, 100.0, 220.0};
+static float32_t ATU_0x0_I_VALS[ATU_MAXLENGTH + 1] = {0.0};
+static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
+#define ATU_MAXPOS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_MAXPOS : 0)
+#define ATU_I_VALS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_I_VALS : ATU_0x0_I_VALS)
+#define ATU_C_VALS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_C_VALS : ATU_0x0_C_VALS)
 
 //FRONT PANELS
 #ifdef FRONTPANEL_SMALL_V1

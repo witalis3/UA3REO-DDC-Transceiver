@@ -413,8 +413,8 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Transverter Enable", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
 		{"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
 		{"ATU Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_Enabled, SYSMENU_HANDL_TRX_ATU_Enabled},
-		{"ATU Ind", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TRX_ATU_I},
-		{"ATU Cap", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_C, SYSMENU_HANDL_TRX_ATU_C},
+		{"ATU Ind", SYSMENU_ATU_I, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TRX_ATU_I},
+		{"ATU Cap", SYSMENU_ATU_C, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_C, SYSMENU_HANDL_TRX_ATU_C},
 		{"ATU T", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_T, SYSMENU_HANDL_TRX_ATU_T},
 };
 
@@ -1202,48 +1202,34 @@ static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction)
 {
-	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
-	{
-		static const uint8_t MAX_ATU_POS = B8(00011111); //5x5 tuner
-		if(TRX.ATU_I > 0 || direction > 0)
-			TRX.ATU_I += direction;
-		if (TRX.ATU_I > MAX_ATU_POS)
-			TRX.ATU_I = MAX_ATU_POS;
-	}
+	if(TRX.ATU_I > 0 || direction > 0)
+		TRX.ATU_I += direction;
+	if (TRX.ATU_I > ATU_MAXPOS)
+		TRX.ATU_I = ATU_MAXPOS;
 }
 
 static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction)
 {
-	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
-	{
-		static const uint8_t MAX_ATU_POS = B8(00011111); //5x5 tuner
-		if(TRX.ATU_C > 0 || direction > 0)
-			TRX.ATU_C += direction;
-		if (TRX.ATU_C > MAX_ATU_POS)
-			TRX.ATU_C = MAX_ATU_POS;
-	}
+	if(TRX.ATU_C > 0 || direction > 0)
+		TRX.ATU_C += direction;
+	if (TRX.ATU_C > ATU_MAXPOS)
+		TRX.ATU_C = ATU_MAXPOS;
 }
 
 static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction)
 {
-	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
-	{
-		if (direction > 0)
-			TRX.ATU_T = true;
-		if (direction < 0)
-			TRX.ATU_T = false;
-	}
+	if (direction > 0)
+		TRX.ATU_T = true;
+	if (direction < 0)
+		TRX.ATU_T = false;
 }
 
 static void SYSMENU_HANDL_TRX_ATU_Enabled(int8_t direction)
 {
-	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
-	{
-		if (direction > 0)
-			TRX.ATU_Enabled = true;
-		if (direction < 0)
-			TRX.ATU_Enabled = false;
-	}
+	if (direction > 0)
+		TRX.ATU_Enabled = true;
+	if (direction < 0)
+		TRX.ATU_Enabled = false;
 }
 
 //AUDIO MENU
@@ -5280,6 +5266,10 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 	if(menuElement->checkVisibleHandler != NULL && !menuElement->checkVisibleHandler())
 		return;
 	char ctmp[32] = {0};
+	float32_t *atu_i = ATU_I_VALS;
+	float32_t *atu_c = ATU_C_VALS;
+	float32_t float_tmp_val = 0;
+	
 	if (!onlyVal)
 	{
 		LCDDriver_Fill_RectXY(0, sysmenu_y, LAYOUT->SYSMENU_W, sysmenu_y + 17, BG_COLOR);
@@ -5343,6 +5333,24 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 		#if HRDW_HAS_FUNCBUTTONS
 		sprintf(ctmp, "%s", (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[(uint8_t)*menuElement->value]].name);
 		#endif
+		break;
+	case SYSMENU_ATU_I:
+		float_tmp_val = 0;
+		for(uint8_t i = 0; i < ATU_MAXPOS; i++)
+		{
+			if(bitRead((uint8_t)*menuElement->value, i))
+				float_tmp_val += atu_i[i + 1];
+		}
+		sprintf(ctmp, "%.2fuH", (double)float_tmp_val);
+		break;
+	case SYSMENU_ATU_C:
+		float_tmp_val = 0;
+		for(uint8_t i = 0; i < ATU_MAXPOS; i++)
+		{
+			if(bitRead((uint8_t)*menuElement->value, i))
+				float_tmp_val += atu_c[i + 1];
+		}
+		sprintf(ctmp, "%dpF", (uint32_t)float_tmp_val);
 		break;
 	}
 
