@@ -427,7 +427,10 @@ void processRxAudio(void)
 
 	// muting
 	if (TRX_Mute)
+	{
 		arm_scale_f32(APROC_Audio_Buffer_RX1_I, 0.0f, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		arm_scale_f32(APROC_Audio_Buffer_RX1_Q, 0.0f, APROC_Audio_Buffer_RX1_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+	}
 
 	// create buffers for transmission to the codec
 	for (uint_fast16_t i = 0; i < FPGA_RX_IQ_BUFFER_HALF_SIZE; i++)
