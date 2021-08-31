@@ -9,15 +9,22 @@
 
 //Private variables
 static const uint16_t graph_start_x = 25;
-static const uint16_t graph_width = LCD_WIDTH - 30;
 static const uint16_t graph_start_y = 5;
-static const uint16_t graph_height = LCD_HEIGHT - 25;
 static float32_t now_freq;
 static float32_t freq_step;
 static uint16_t graph_sweep_x = 0;
 static uint32_t tick_start_time = 0;
-static int16_t graph_selected_x = (LCD_WIDTH - 30) / 2;
+#if LCD_WIDTH > 30
 static float32_t data[LCD_WIDTH - 30] = {0};
+static const uint16_t graph_width = LCD_WIDTH - 30;
+static const uint16_t graph_height = LCD_HEIGHT - 25;
+static int16_t graph_selected_x = (LCD_WIDTH - 30) / 2;
+#else
+static float32_t data[2] = {0};
+static const uint16_t graph_width = 1;
+static const uint16_t graph_height = 1;
+static int16_t graph_selected_x = 1;
+#endif
 static uint32_t startFreq = 0;
 static uint32_t endFreq = 0;
 

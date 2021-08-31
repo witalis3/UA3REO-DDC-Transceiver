@@ -193,7 +193,7 @@ static void FILEMANAGER_OpenDialog(void)
 	char *istr = strstr(FILEMANAGER_LISTING[current_index - 1], ".wav");
 	if (istr != NULL)
 	{
-		max_buttons_index++;
+		max_buttons_index += 2;
 		allow_play_wav = true;
 	}
 	//check cq message rec wav

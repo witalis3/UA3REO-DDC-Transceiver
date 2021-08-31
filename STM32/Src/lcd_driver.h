@@ -19,7 +19,13 @@
 #if (defined(LCD_RA8875))
 #include "lcd_driver_RA8875.h"
 #endif
+#if (defined(LCD_NONE))
+#include "lcd_driver_NONE.h"
+#endif
 
+#if (LCD_WIDTH == 1 && LCD_HEIGHT == 1)
+#define LAY_1x1
+#endif
 #if (LCD_WIDTH == 160 && LCD_HEIGHT == 128)
 #define LAY_160x128
 #endif

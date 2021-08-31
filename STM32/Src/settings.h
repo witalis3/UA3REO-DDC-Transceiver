@@ -103,6 +103,13 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 #define ATU_C_VALS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_C_VALS : ATU_0x0_C_VALS)
 
 //FRONT PANELS
+#ifdef FRONTPANEL_NONE
+	#define MAX_VOLUME_VALUE 1024.0f
+	#define FUNCBUTTONS_COUNT 1
+	#define FUNCBUTTONS_ON_PAGE 1
+	static char ota_config_frontpanel[] = "NONE";
+#endif
+
 #ifdef FRONTPANEL_SMALL_V1
 	#define HRDW_MCP3008_1 true
 	#define HRDW_MCP3008_2 true
@@ -164,6 +171,9 @@ static char ota_config_lcd[] = "ST7735S";
 #endif
 #if defined(LCD_RA8875)
 static char ota_config_lcd[] = "RA8875";
+#endif
+#if defined(LCD_NONE)
+static char ota_config_lcd[] = "NONE";
 #endif
 
 //TOUCHPADs

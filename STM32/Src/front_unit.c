@@ -227,6 +227,12 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 };
 #endif
 
+#ifdef FRONTPANEL_NONE
+PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
+	
+};
+#endif
+
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH36[] = {
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_PTT, .tres_min = 200, .tres_max = 430},																																												 //PTT_SW1 - PTT
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 430, .tres_max = 640, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOWN, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOWN},	 //PTT_SW1 - DOWN
