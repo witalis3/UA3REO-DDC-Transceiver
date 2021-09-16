@@ -92,15 +92,18 @@
 
 #define MEMORY_CHANNELS_COUNT 35
 
-#define ATU_MAXLENGTH 5
+#define ATU_MAXLENGTH 7
 #define ATU_5x5_MAXPOS B8(00011111)
+#define ATU_7x7_MAXPOS B8(01111111)
 static float32_t ATU_5x5_I_VALS[ATU_MAXLENGTH + 1] = {0.0, 0.1, 0.22, 0.45, 1.0, 2.2};
 static float32_t ATU_5x5_C_VALS[ATU_MAXLENGTH + 1] = {0.0, 10.0, 22.0, 47.0, 100.0, 220.0};
+static float32_t ATU_7x7_I_VALS[ATU_MAXLENGTH + 1] = {0.0, 0.05, 0.1, 0.22, 0.45, 1.0, 2.2, 4.4};
+static float32_t ATU_7x7_C_VALS[ATU_MAXLENGTH + 1] = {0.0, 10.0, 22.0, 47.0, 100.0, 220.0, 470.0, 1000.0};
 static float32_t ATU_0x0_I_VALS[ATU_MAXLENGTH + 1] = {0.0};
 static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
-#define ATU_MAXPOS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_MAXPOS : 0)
-#define ATU_I_VALS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_I_VALS : ATU_0x0_I_VALS)
-#define ATU_C_VALS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_C_VALS : ATU_0x0_C_VALS)
+#define ATU_MAXPOS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : 0))
+#define ATU_I_VALS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_I_VALS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_I_VALS : ATU_0x0_I_VALS))
+#define ATU_C_VALS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG) ? ATU_5x5_C_VALS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_C_VALS : ATU_0x0_C_VALS))
 
 //FRONT PANELS
 #ifdef FRONTPANEL_NONE
@@ -119,6 +122,8 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 	#define FUNCBUTTONS_ON_PAGE 1
 	static char ota_config_frontpanel[] = "SMALL";
 #endif
+
+#define FUNCBUTTONS_MAX_COUNT 32
 
 #ifdef FRONTPANEL_BIG_V1
 	#define HRDW_MCP3008_1 true
@@ -257,6 +262,7 @@ typedef enum
 {
 	RF_UNIT_QRP,
 	RF_UNIT_BIG,
+	RF_UNIT_SPLIT,
 	RF_UNIT_WF_100D,
 } TRX_RF_UNIT_TYPE;
 
@@ -420,7 +426,7 @@ extern struct TRX_SETTINGS
 	bool FFT_DXCluster_Azimuth;
 	uint8_t FFT_DXCluster_Timeout;
 	bool Show_Sec_VFO;
-	uint8_t FuncButtons[FUNCBUTTONS_COUNT];
+	uint8_t FuncButtons[FUNCBUTTONS_MAX_COUNT];
 	//DECODERS
 	bool CW_Decoder;
 	bool RDS_Decoder;

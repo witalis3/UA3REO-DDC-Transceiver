@@ -615,7 +615,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"Encoder slow rate", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
 		{"Encoder on falling", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
 		{"Encoder acceleration", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
-		{"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "WF-100D"}},
+		{"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "WF-100D"}},
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
 		{"Tangent Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.TangentType, SYSMENU_HANDL_CALIB_TangentType, {"MH-36", "MH-48"}},
 #endif
@@ -3229,8 +3229,8 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 {
 	if(CALIBRATE.RF_unit_type > 0 || direction > 0)
 		CALIBRATE.RF_unit_type += direction;
-	if (CALIBRATE.RF_unit_type > 2)
-		CALIBRATE.RF_unit_type = 2;
+	if (CALIBRATE.RF_unit_type > 3)
+		CALIBRATE.RF_unit_type = 3;
 	
 	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
 	{
@@ -3276,7 +3276,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.TUNE_MAX_POWER = 2;			   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 7;				//Max TRX Power for indication
 	}
-	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
+	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT)
 	{
 		CALIBRATE.rf_out_power_2200m = 40;		   //2200m
 		CALIBRATE.rf_out_power_160m = 40;		   //160m
@@ -5420,53 +5420,102 @@ static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex)
 
 static bool SYSMENU_HANDL_CHECK_HAS_LPF(void)
 {
-	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
-		return true;
-	if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
-		return true;
+	switch (CALIBRATE.RF_unit_type)
+	{
+		case RF_UNIT_QRP:
+			return true;
+		case RF_UNIT_WF_100D:
+			return true;
+		case RF_UNIT_BIG:
+			return false;
+		case RF_UNIT_SPLIT:
+			return false;
+	}
 	
 	return false;
 }
 
 static bool SYSMENU_HANDL_CHECK_HAS_HPF(void)
 {
-	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
-		return true;
-	if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
-		return true;
+	switch (CALIBRATE.RF_unit_type)
+	{
+		case RF_UNIT_QRP:
+			return true;
+		case RF_UNIT_WF_100D:
+			return true;
+		case RF_UNIT_BIG:
+			return false;
+		case RF_UNIT_SPLIT:
+			return false;
+	}
 	
 	return false;
 }
 
 static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void)
 {
-	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
-		return true;
-	if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
-		return true;
+	switch (CALIBRATE.RF_unit_type)
+	{
+		case RF_UNIT_QRP:
+			return false;
+		case RF_UNIT_WF_100D:
+			return true;
+		case RF_UNIT_BIG:
+			return true;
+		case RF_UNIT_SPLIT:
+			return true;
+	}
 	
 	return false;
 }
 
 static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void)
 {
-	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
-		return true;
+	switch (CALIBRATE.RF_unit_type)
+	{
+		case RF_UNIT_QRP:
+			return false;
+		case RF_UNIT_WF_100D:
+			return false;
+		case RF_UNIT_BIG:
+			return true;
+		case RF_UNIT_SPLIT:
+			return true;
+	}
 	
 	return false;
 }
 
 bool SYSMENU_HANDL_CHECK_HAS_ATU(void)
 {
-	return (CALIBRATE.RF_unit_type == RF_UNIT_BIG);
+	switch (CALIBRATE.RF_unit_type)
+	{
+		case RF_UNIT_QRP:
+			return false;
+		case RF_UNIT_WF_100D:
+			return false;
+		case RF_UNIT_BIG:
+			return true;
+		case RF_UNIT_SPLIT:
+			return true;
+	}
+	
+	return false;
 }
 
 static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void)
 {
-	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
-		return true;
-	if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
-		return true;
+	switch (CALIBRATE.RF_unit_type)
+	{
+		case RF_UNIT_QRP:
+			return true;
+		case RF_UNIT_WF_100D:
+			return true;
+		case RF_UNIT_BIG:
+			return false;
+		case RF_UNIT_SPLIT:
+			return false;
+	}
 	
 	return false;
 }
