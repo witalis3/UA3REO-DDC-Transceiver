@@ -640,7 +640,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	LCD_busy = false;
 }
 
-static int32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf)
+static float32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf)
 {
 	int32_t width = LAYOUT->STATUS_SMETER_WIDTH - 2;
 	float32_t TRX_s_meter = 0;
@@ -816,7 +816,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 		//digital s-meter version
 		static uint32_t last_s_meter_draw_time = 0;
-		if ((redraw || (LCD_last_s_meter != s_width) || (HAL_GetTick() - last_s_meter_draw_time) > 500) && !LAYOUT->STATUS_SMETER_ANALOG)
+		if (!LAYOUT->STATUS_SMETER_ANALOG && (redraw || (LCD_last_s_meter != s_width) || (HAL_GetTick() - last_s_meter_draw_time) > 500))
 		{
 			last_s_meter_draw_time = HAL_GetTick();
 			//clear old bar
@@ -851,7 +851,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		}
 
 		//analog s-meter version
-		if ((redraw || (LCD_last_s_meter != s_width)) && LAYOUT->STATUS_SMETER_ANALOG)
+		if (LAYOUT->STATUS_SMETER_ANALOG && (redraw || (fabsf(LCD_last_s_meter - s_width) >= 1.0f)))
 		{
 			// redraw s-meter gui and line
 			LCD_drawSMeter();
