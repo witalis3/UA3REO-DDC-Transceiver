@@ -70,7 +70,7 @@ static uint8_t getBPFByFreq(uint32_t freq)
 		if (freq >= CALIBRATE.RFU_BPF_8_START && freq < CALIBRATE.RFU_BPF_8_END)
 			return 8;
 	}
-	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
+	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN)
 	{
 		if (freq >= CALIBRATE.RFU_HPF_START)
 			return 7;
@@ -291,7 +291,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {
 	bool dualrx_lpf_disabled = false;
 	bool dualrx_bpf_disabled = false;
-	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)
+	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN)
 	{
 		if (TRX.Dual_RX && SecondaryVFO->Freq > CALIBRATE.RFU_LPF_END)
 			dualrx_lpf_disabled = true;
@@ -868,7 +868,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U11-3 BAND_OUT_1
 				if (registerNumber == 44 && bitRead(band_out, 1))
 					SET_DATA_PIN;
-				//U11-2 TX_PTT_OUT
+				//U11-2 TUNE_OUT
 				if (registerNumber == 45 && TRX_Tune)
 					SET_DATA_PIN;
 				//U11-1 ATT_ON_8
@@ -876,6 +876,208 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 				//U11-0 ATT_ON_16
 				if (registerNumber == 47 && !(TRX.ATT && att_val_16))
+					SET_DATA_PIN;
+			}
+			MINI_DELAY
+			HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_SET);
+		}
+		MINI_DELAY
+		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET);
+		MINI_DELAY
+		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(RFUNIT_OE_GPIO_Port, RFUNIT_OE_Pin, GPIO_PIN_RESET);
+	}
+	
+	//RU4PN Version RF Unit ///////////////////////////////////////////////////////////////////////
+	if(CALIBRATE.RF_unit_type == RF_UNIT_RU4PN)
+	{
+		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
+		MINI_DELAY
+		for (uint8_t registerNumber = 0; registerNumber < 24; registerNumber++)
+		{
+			HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); // data block
+			MINI_DELAY
+			HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); //data
+			MINI_DELAY
+			if (!clean)
+			{
+				//U2-7 TUN_C_3
+				if (registerNumber == 0 && bitRead(TRX.ATU_C, 2))
+					SET_DATA_PIN;
+				//U2-6 HF-VHF-SELECT
+				if (registerNumber == 1 && CurrentVFO->Freq >= 70000000)
+					SET_DATA_PIN;
+				//U2-5 HF_AMP_BIAS_ON
+				if (registerNumber == 2 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
+					SET_DATA_PIN;
+				//U2-4 VHF_AMP_BIAS_ON
+				if (registerNumber == 3 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
+					SET_DATA_PIN;
+				//U2-3 TUN_C_1
+				if (registerNumber == 4 && bitRead(TRX.ATU_C, 0))
+					SET_DATA_PIN;
+				//U2-2 TUN_I_1
+				if (registerNumber == 5 && bitRead(TRX.ATU_I, 0))
+					SET_DATA_PIN;
+				//U2-1 TUN_C_2
+				if (registerNumber == 6 && bitRead(TRX.ATU_C, 1))
+					SET_DATA_PIN;
+				//U2-0 TUN_I_2
+				if (registerNumber == 7 && bitRead(TRX.ATU_I, 1))
+					SET_DATA_PIN;
+				
+				//U3-7 NOT USED
+				//if (registerNumber == 8)
+				//U3-6 NOT USED
+				//if (registerNumber == 9)
+				//U3-5 NOT USED
+				//if (registerNumber == 10)
+				//U3-4 NOT USED
+				//if (registerNumber == 11)
+				//U3-3 TUN_I_3
+				if (registerNumber == 12 && bitRead(TRX.ATU_I, 2))
+					SET_DATA_PIN;
+				//U5-2 TUN_C_4
+				if (registerNumber == 13 && bitRead(TRX.ATU_C, 3))
+					SET_DATA_PIN;
+				//U5-1 TUN_I_4
+				if (registerNumber == 14 && bitRead(TRX.ATU_I, 3))
+					SET_DATA_PIN;
+				//U5-0 TUN_C_5
+				if (registerNumber == 15 && bitRead(TRX.ATU_C, 4))
+					SET_DATA_PIN;
+				
+				//U11-7 ANT1-2_OUT
+				if (registerNumber == 16 && TRX.ANT)
+					SET_DATA_PIN;
+				//U11-6 FAN_OUT
+				if (registerNumber == 17)
+				{
+					static bool fan_status = false;
+					static bool fan_pwm = false;
+					if (fan_status && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
+						fan_status = false;
+					if (!fan_status && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
+					{
+						fan_status = true;
+						fan_pwm = true;
+					}
+					if (TRX_RF_Temperature >= CALIBRATE.FAN_FULL_START) // Temperature at which the fan starts at full power
+						fan_pwm = false;
+
+					if (fan_status)
+					{
+						if (fan_pwm) //PWM
+						{
+							const uint8_t on_ticks = 1;
+							const uint8_t off_ticks = 1;
+							static bool pwm_status = false; //true - on false - off
+							static uint8_t pwm_ticks = 0;
+							pwm_ticks++;
+							if (pwm_status)
+								SET_DATA_PIN;
+							if ((pwm_status && pwm_ticks == on_ticks) || (!pwm_status && pwm_ticks == off_ticks))
+							{
+								pwm_status = !pwm_status;
+								pwm_ticks = 0;
+							}
+						}
+						else
+							SET_DATA_PIN;
+					}
+				}
+				//U11-5 BAND_OUT_3
+				if (registerNumber == 18 && bitRead(band_out, 3))
+					SET_DATA_PIN;
+				//U11-4 BAND_OUT_1
+				if (registerNumber == 19 && bitRead(band_out, 1))
+					SET_DATA_PIN;
+				//U11-3 TUNE_OUT
+				if (registerNumber == 20 && TRX_Tune)
+					SET_DATA_PIN;
+				//U11-2 BAND_OUT_2
+				if (registerNumber == 21 && bitRead(band_out, 2))
+					SET_DATA_PIN;
+				//U11-1 BAND_OUT_0
+				if (registerNumber == 22 && bitRead(band_out, 0))
+					SET_DATA_PIN;
+				//U11-0 TX_PTT_OUT
+				if (registerNumber == 23 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+					SET_DATA_PIN;
+				
+				//U1-7 LPF_ON
+				if (registerNumber == 24 && !(TRX.RF_Filters && (CurrentVFO->Freq <= CALIBRATE.RFU_LPF_END) && !dualrx_lpf_disabled))
+					SET_DATA_PIN;
+				//U1-6 ATT_ON_1
+				if (registerNumber == 25 && !(TRX.ATT && att_val_1))
+					SET_DATA_PIN;
+				//U1-5 ATT_ON_0.5
+				if (registerNumber == 26 && !(TRX.ATT && att_val_05))
+					SET_DATA_PIN;
+				//U1-4 ATT_ON_16
+				if (registerNumber == 27 && !(TRX.ATT && att_val_16))
+					SET_DATA_PIN;
+				//U1-3 ATT_ON_2
+				if (registerNumber == 28 && !(TRX.ATT && att_val_2))
+					SET_DATA_PIN;
+				//U1-2 ATT_ON_4
+				if (registerNumber == 29 && !(TRX.ATT && att_val_4))
+					SET_DATA_PIN;
+				//U1-1 ATT_ON_8
+				if (registerNumber == 30 && !(TRX.ATT && att_val_8))
+					SET_DATA_PIN;
+				//U1-0 LNA_ON
+				if (registerNumber == 31 && !(!TRX_on_TX() && TRX.LNA))
+					SET_DATA_PIN;
+				
+				//U7-7 LPF_7
+				if (registerNumber == 32 && CurrentVFO->Freq > 31000000 && CurrentVFO->Freq <= 60000000)
+					SET_DATA_PIN;
+				//U7-6 LPF_6
+				if (registerNumber == 33 && CurrentVFO->Freq > 22000000 && CurrentVFO->Freq <= 31000000)
+					SET_DATA_PIN;
+				//U7-5 LPF_5
+				if (registerNumber == 34 && CurrentVFO->Freq > 15000000 && CurrentVFO->Freq <= 22000000)
+					SET_DATA_PIN;
+				//U7-4 LPF_4
+				if (registerNumber == 35 && CurrentVFO->Freq > 7500000 && CurrentVFO->Freq <= 15000000)
+					SET_DATA_PIN;
+				//U7-3 TUN_I_5
+				if (registerNumber == 36 && bitRead(TRX.ATU_I, 4))
+					SET_DATA_PIN;
+				//U7-2 LPF_1
+				if (registerNumber == 37 && CurrentVFO->Freq <= 2500000)
+					SET_DATA_PIN;
+				//U7-1 LPF_2
+				if (registerNumber == 38 && CurrentVFO->Freq > 2500000 && CurrentVFO->Freq <= 4500000)
+					SET_DATA_PIN;
+				//U7-0 LPF_3
+				if (registerNumber == 39 && CurrentVFO->Freq > 4500000 && CurrentVFO->Freq <= 7500000)
+					SET_DATA_PIN;
+				
+				//U21-7 TUN_T
+				if (registerNumber == 40 && TRX.ATU_T)
+					SET_DATA_PIN;
+				//U21-6 BPF_2_!EN
+				if (registerNumber == 41 && !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4))) //1,2,3,4 - bpf2
+					SET_DATA_PIN;
+				//U21-5 BPF_2_A1
+				if (registerNumber == 42 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6))) //4,2 - bpf2; 0,6 - bpf1
+					SET_DATA_PIN;
+				//U21-4 BPF_2_A0
+				if (registerNumber == 43 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6))) //1,2 - bpf2; 5,6 - bpf1
+					SET_DATA_PIN;
+				//U21-3 BPF_1_A0
+				if (registerNumber == 44 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6))) //1,2 - bpf2; 5,6 - bpf1
+					SET_DATA_PIN;
+				//U21-2 BPF_1_A1
+				if (registerNumber == 45 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6))) //4,2 - bpf2; 0,6 - bpf1
+					SET_DATA_PIN;
+				//U21-1 BPF_1_!EN
+				if (registerNumber == 46 && !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7))) //5,6,7,0 - bpf1
+					SET_DATA_PIN;
+				//U21-0 BPF_ON
+				if (registerNumber == 47 && !(TRX.RF_Filters && !dualrx_bpf_disabled && bpf != 255))
 					SET_DATA_PIN;
 			}
 			MINI_DELAY
