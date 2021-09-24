@@ -1006,7 +1006,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 				
 				//U1-7 LPF_ON
-				if (registerNumber == 24 && !(TRX.RF_Filters && (CurrentVFO->Freq <= CALIBRATE.RFU_LPF_END) && !dualrx_lpf_disabled))
+				if (registerNumber == 24 && (TRX.RF_Filters && (CurrentVFO->Freq <= CALIBRATE.RFU_LPF_END) && !dualrx_lpf_disabled))
 					SET_DATA_PIN;
 				//U1-6 ATT_ON_1
 				if (registerNumber == 25 && !(TRX.ATT && att_val_1))
