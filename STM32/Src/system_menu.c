@@ -1258,49 +1258,49 @@ static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 8;
+	systemMenuIndex = 12;
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 11;
+	systemMenuIndex = 15;
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 12;
+	systemMenuIndex = 16;
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 14;
+	systemMenuIndex = 18;
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 7;
+	systemMenuIndex = 11;
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 16;
+	systemMenuIndex = 20;
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_AGC_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 25;
+	systemMenuIndex = 29;
 	LCD_redraw(false);
 }
 

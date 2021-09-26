@@ -81,6 +81,7 @@ extern void FRONTPANEL_BUTTONHANDLER_BW(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_HPF(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SERVICES(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_MENU(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_MENUHOLD(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_LOCK(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter);
