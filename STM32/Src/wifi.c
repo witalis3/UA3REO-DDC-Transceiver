@@ -63,12 +63,27 @@ bool WIFI_downloadFileToSD_compleated = false;
 
 void WIFI_Init(void)
 {
-	huart6.Init.BaudRate = 115200;
+	static uint8_t init_version = 0;
+	
+	if(init_version == 0)
+	{
+		huart6.Init.BaudRate = 115200;
+		huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+		huart6.AdvancedInit.Swap = UART_ADVFEATURE_SWAP_DISABLE;
+	}
+	
+	if(init_version == 1)
+	{
+		huart6.Init.BaudRate = 115200;
+		huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_SWAP_INIT;
+		huart6.AdvancedInit.Swap = UART_ADVFEATURE_SWAP_ENABLE;
+	}
+	
 	HAL_UART_Init(&huart6);
+	
 	//wifi uart speed = 115200 * 8 = 921600  / * 16 = 1843200
 	WIFI_SendCommand("AT+UART_CUR=921600,8,1,0,1\r\n"); //uart config
 	HAL_Delay(100);
-	//WIFI_WaitForOk();
 	huart6.Init.BaudRate = 921600;
 	HAL_UART_Init(&huart6);
 
@@ -111,8 +126,17 @@ void WIFI_Init(void)
 	
 	if (WIFI_State == WIFI_UNDEFINED)
 	{
-		WIFI_State = WIFI_NOTFOUND;
-		println("[WIFI] WIFI Module Not Found");
+		if(init_version == 1)
+		{
+			WIFI_State = WIFI_NOTFOUND;
+			println("[WIFI] WIFI Module Not Found");
+		}
+		else
+		{
+			println("[WIFI] Trying next init params");
+			init_version++;
+			WIFI_State = WIFI_REINIT;
+		}
 	}
 }
 
@@ -209,7 +233,7 @@ void WIFI_Process(void)
 			WIFI_State = WIFI_CONNECTING;
 			strcpy(WIFI_AP, TRX.WIFI_AP1);
 		}
-		if (AP2_exist && strlen(TRX.WIFI_PASSWORD2) > 5)
+		if (AP2_exist && !AP1_exist && strlen(TRX.WIFI_PASSWORD2) > 5)
 		{
 			println("[WIFI] Start connecting to AP2: ", TRX.WIFI_AP2);
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -222,7 +246,7 @@ void WIFI_Process(void)
 			WIFI_State = WIFI_CONNECTING;
 			strcpy(WIFI_AP, TRX.WIFI_AP2);
 		}
-		if (AP3_exist && strlen(TRX.WIFI_PASSWORD3) > 5)
+		if (AP3_exist && !AP1_exist && !AP2_exist && strlen(TRX.WIFI_PASSWORD3) > 5)
 		{
 			println("[WIFI] Start connecting to AP: ", TRX.WIFI_AP3);
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -568,6 +592,7 @@ void WIFI_Process(void)
 						}
 					}
 				}
+				TRX_SNTP_Synced = HAL_GetTick();
 			}
 			else if (WIFI_ProcessingCommand == WIFI_COMM_GETIP) //GetIP Command process
 			{
@@ -674,8 +699,13 @@ static bool WIFI_ListAP_Sync(void)
 		}
 
 		istr = strstr(WIFI_readedLine, sep);
-		if (istr != NULL)
+		if (istr != NULL) //OK
+		{
+			if(WIFI_FoundedAP_Index > 0)
+				LCD_UpdateQuery.SystemMenuRedraw = true;
+			
 			return true;
+		}
 
 		if (strlen(WIFI_readedLine) > 5) //-V814
 		{
@@ -694,6 +724,7 @@ static bool WIFI_ListAP_Sync(void)
 			}
 		}
 	}
+	
 	return false;
 }
 
