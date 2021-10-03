@@ -22,10 +22,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 /* USER CODE BEGIN Includes */
+extern DMA_HandleTypeDef hdma_spi3_tx;
 extern DMA_HandleTypeDef hdma_spi3_rx;
 /* USER CODE END Includes */
-extern DMA_HandleTypeDef hdma_spi3_tx;
-
 extern DMA_HandleTypeDef hdma_spi2_rx;
 
 extern DMA_HandleTypeDef hdma_spi2_tx;
@@ -332,7 +331,10 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+  /* USER CODE BEGIN SPI3_MspInit 1 */
+
     /* I2S3 DMA Init */
+		
     /* SPI3_TX Init */
     hdma_spi3_tx.Instance = DMA1_Stream5;
     hdma_spi3_tx.Init.Request = DMA_REQUEST_SPI3_TX;
@@ -348,12 +350,10 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     {
       Error_Handler();
     }
-
+		HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 1, 0);
+		HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
     __HAL_LINKDMA(hi2s,hdmatx,hdma_spi3_tx);
-
-  /* USER CODE BEGIN SPI3_MspInit 1 */
-
-    //Перевод SPI3 в режим Full-Duplex I2S, STM32CubeMX не умеет
+		
     /* SPI3_RX Init */
     hdma_spi3_rx.Instance = DMA1_Stream0;
     hdma_spi3_rx.Init.Request = DMA_REQUEST_SPI3_RX;
@@ -369,6 +369,8 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     {
       Error_Handler();
     }
+		HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 1, 0);
+		HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
     __HAL_LINKDMA(hi2s, hdmarx, hdma_spi3_rx);
 
   /* USER CODE END SPI3_MspInit 1 */
@@ -402,9 +404,8 @@ void HAL_I2S_MspDeInit(I2S_HandleTypeDef* hi2s)
 
     HAL_GPIO_DeInit(GPIOC, WM8731_BCLK_Pin|WM8731_ADC_SD_Pin|WM8731_DAC_SD_Pin);
 
-    /* I2S3 DMA DeInit */
-    HAL_DMA_DeInit(hi2s->hdmatx);
   /* USER CODE BEGIN SPI3_MspDeInit 1 */
+		HAL_DMA_DeInit(hi2s->hdmatx);
     HAL_DMA_DeInit(hi2s->hdmarx);
   /* USER CODE END SPI3_MspDeInit 1 */
   }

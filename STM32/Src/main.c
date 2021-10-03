@@ -66,7 +66,6 @@ CRC_HandleTypeDef hcrc;
 DMA2D_HandleTypeDef hdma2d;
 
 I2S_HandleTypeDef hi2s3;
-DMA_HandleTypeDef hdma_spi3_tx;
 
 IWDG_HandleTypeDef hiwdg1;
 
@@ -101,6 +100,7 @@ SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
 DMA_HandleTypeDef hdma_spi3_rx;
+DMA_HandleTypeDef hdma_spi3_tx;
 static char greetings_buff[32] = {0};
 /* USER CODE END PV */
 
@@ -732,7 +732,7 @@ static void MX_I2S3_Init(void)
 
   /* USER CODE END I2S3_Init 1 */
   hi2s3.Instance = SPI3;
-  hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
+  hi2s3.Init.Mode = I2S_MODE_MASTER_FULLDUPLEX;
   hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
   hi2s3.Init.DataFormat = I2S_DATAFORMAT_32B;
   hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
@@ -1360,9 +1360,6 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
-  /* DMA1_Stream5_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 1, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
   /* DMA2_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream5_IRQn, 7, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream5_IRQn);
@@ -1388,7 +1385,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel0 */
   /* Configure MDMA request hmdma_mdma_channel40_sw_0 on MDMA_Channel0 */
   hmdma_mdma_channel40_sw_0.Instance = MDMA_Channel0;
-  hmdma_mdma_channel40_sw_0.Init.Request = MDMA_REQUEST_SW;
+	hmdma_mdma_channel40_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel40_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel40_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
   hmdma_mdma_channel40_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
@@ -1410,7 +1407,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel1 */
   /* Configure MDMA request hmdma_mdma_channel41_sw_0 on MDMA_Channel1 */
   hmdma_mdma_channel41_sw_0.Instance = MDMA_Channel1;
-  hmdma_mdma_channel41_sw_0.Init.Request = MDMA_REQUEST_SW;
+	hmdma_mdma_channel41_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel41_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel41_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
   hmdma_mdma_channel41_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
@@ -1432,7 +1429,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel2 */
   /* Configure MDMA request hmdma_mdma_channel42_sw_0 on MDMA_Channel2 */
   hmdma_mdma_channel42_sw_0.Instance = MDMA_Channel2;
-  hmdma_mdma_channel42_sw_0.Init.Request = MDMA_REQUEST_SW;
+	hmdma_mdma_channel42_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel42_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel42_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
   hmdma_mdma_channel42_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
@@ -1454,7 +1451,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel3 */
   /* Configure MDMA request hmdma_mdma_channel43_sw_0 on MDMA_Channel3 */
   hmdma_mdma_channel43_sw_0.Instance = MDMA_Channel3;
-  hmdma_mdma_channel43_sw_0.Init.Request = MDMA_REQUEST_SW;
+	hmdma_mdma_channel43_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel43_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel43_sw_0.Init.Priority = MDMA_PRIORITY_LOW;
   hmdma_mdma_channel43_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
@@ -1476,7 +1473,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel4 */
   /* Configure MDMA request hmdma_mdma_channel44_sw_0 on MDMA_Channel4 */
   hmdma_mdma_channel44_sw_0.Instance = MDMA_Channel4;
-  hmdma_mdma_channel44_sw_0.Init.Request = MDMA_REQUEST_SW;
+	hmdma_mdma_channel44_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel44_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel44_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
   hmdma_mdma_channel44_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;

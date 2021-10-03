@@ -123,7 +123,6 @@ uint32_t dbg_FPGA_samples = 0;
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern DMA2D_HandleTypeDef hdma2d;
-extern DMA_HandleTypeDef hdma_spi3_tx;
 extern DMA_HandleTypeDef hdma_spi2_rx;
 extern DMA_HandleTypeDef hdma_spi2_tx;
 extern SPI_HandleTypeDef hspi2;
@@ -409,20 +408,6 @@ void DMA1_Stream3_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
 
   /* USER CODE END DMA1_Stream3_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA1 stream5 global interrupt.
-  */
-void DMA1_Stream5_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Stream5_IRQn 0 */
-  CPULOAD_WakeUp();
-  /* USER CODE END DMA1_Stream5_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_spi3_tx);
-  /* USER CODE BEGIN DMA1_Stream5_IRQn 1 */
-
-  /* USER CODE END DMA1_Stream5_IRQn 1 */
 }
 
 /**
@@ -1069,5 +1054,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     CW_key_change();
   }
 }
+
+void DMA1_Stream5_IRQHandler(void)
+{
+  CPULOAD_WakeUp();
+  HAL_DMA_IRQHandler(&hdma_spi3_tx);
+}
+
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

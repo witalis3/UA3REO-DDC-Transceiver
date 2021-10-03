@@ -10,7 +10,7 @@
       <TargetName>ILI9481</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6150000::V6.15::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -14165,8 +14165,6 @@
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.5.0" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.8.0"/>
         <targetInfos>
-          <targetInfo name="HX8357B"/>
-          <targetInfo name="HX8357C"/>
           <targetInfo name="HX8357C-SLOW"/>
           <targetInfo name="ILI9481"/>
           <targetInfo name="ILI9486"/>
@@ -14194,7 +14192,6 @@
               <MiscControls>-Wno-everything</MiscControls>
             </c>
           </targetInfo>
-          <targetInfo name="ILI9481"/>
           <targetInfo name="ILI9486">
             <c>
               <MiscControls>-Wno-everything</MiscControls>
