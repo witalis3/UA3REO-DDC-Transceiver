@@ -8,8 +8,8 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 35					   // Settings config version
-#define CALIB_VERSION 33				   // Calibration config version
+#define SETT_VERSION 36					   // Settings config version
+#define CALIB_VERSION 36				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
