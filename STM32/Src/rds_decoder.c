@@ -285,12 +285,25 @@ void RDSDecoder_Process(float32_t *bufferIn)
 						//println("D");
 						RDS_AnalyseFrames(block4, block3, block2, block1);
 						//write string
-						if((strlen(RDS_Decoder_0A) + strlen(RDS_Decoder_2A) + strlen(RDS_Decoder_2B)) < RDS_DECODER_STRLEN)
+						memset(RDS_Decoder_Text, 0x00, sizeof(RDS_Decoder_Text));
+						strcat(RDS_Decoder_Text, " RDS: ");
+						if((strlen(RDS_Decoder_Text) + strlen(RDS_Decoder_0A)) < RDS_DECODER_STRLEN)
 						{
-							sprintf(RDS_Decoder_Text, " RDS: %s %s %s", RDS_Decoder_0A, RDS_Decoder_2A, RDS_Decoder_2B);
-							addSymbols(RDS_Decoder_Text, RDS_Decoder_Text, RDS_DECODER_STRLEN, " ", true);
-							LCD_UpdateQuery.TextBar = true;
+							strcat(RDS_Decoder_Text, RDS_Decoder_0A);
+							strcat(RDS_Decoder_Text, " ");
 						}
+						if((strlen(RDS_Decoder_Text) + strlen(RDS_Decoder_2A)) < RDS_DECODER_STRLEN)
+						{
+							strcat(RDS_Decoder_Text, RDS_Decoder_2A);
+							strcat(RDS_Decoder_Text, " ");
+						}
+						if((strlen(RDS_Decoder_Text) + strlen(RDS_Decoder_2B)) < RDS_DECODER_STRLEN)
+						{
+							strcat(RDS_Decoder_Text, RDS_Decoder_2B);
+							strcat(RDS_Decoder_Text, " ");
+						}
+						addSymbols(RDS_Decoder_Text, RDS_Decoder_Text, RDS_DECODER_STRLEN, " ", true);
+						LCD_UpdateQuery.TextBar = true;
 						//println(RDS_Decoder_0A, " ", RDS_Decoder_2A, " ", RDS_Decoder_2B);
 					}
 				}
@@ -308,7 +321,7 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 		int index = (groupB & 0xf) * 4; // text segment
 		bool abFlag = ((groupB >> 4) & 0x1) == 1;
 		
-		if(index < 0 || index > RDS_STR_MAXLEN - 5)
+		if(index < 0 || index > (RDS_STR_MAXLEN - 5))
 			return;
 			
 		if(abFlag)
@@ -334,7 +347,7 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 	{
 		int index = (groupB & 0x3) * 2; // text segment
 		
-		if(index < 0 || index > RDS_STR_MAXLEN - 3)
+		if(index < 0 || index > (RDS_STR_MAXLEN - 3))
 			return;
 		
 		RDS_Decoder_0A[index] = cleanASCIIgarbage((char)(groupD >> 8));
