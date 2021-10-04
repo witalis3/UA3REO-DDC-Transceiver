@@ -891,6 +891,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	//RU4PN Version RF Unit ///////////////////////////////////////////////////////////////////////
 	if(CALIBRATE.RF_unit_type == RF_UNIT_RU4PN)
 	{
+		if(TRX_Tune)
+			RF_UNIT_ProcessATU();
+		
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
 		MINI_DELAY
 		for (uint8_t registerNumber = 0; registerNumber < 48; registerNumber++)
@@ -1031,28 +1034,28 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 				
 				//U7-7 LPF_7
-				if (registerNumber == 32 && CurrentVFO->Freq > 31000000 && CurrentVFO->Freq <= 60000000)
+				if (registerNumber == 32 && TRX_on_TX() && CurrentVFO->Freq > 31000000 && CurrentVFO->Freq <= 60000000)
 					SET_DATA_PIN;
 				//U7-6 LPF_6
-				if (registerNumber == 33 && CurrentVFO->Freq > 22000000 && CurrentVFO->Freq <= 31000000)
+				if (registerNumber == 33 && TRX_on_TX() && CurrentVFO->Freq > 22000000 && CurrentVFO->Freq <= 31000000)
 					SET_DATA_PIN;
 				//U7-5 LPF_5
-				if (registerNumber == 34 && CurrentVFO->Freq > 15000000 && CurrentVFO->Freq <= 22000000)
+				if (registerNumber == 34 && TRX_on_TX() && CurrentVFO->Freq > 15000000 && CurrentVFO->Freq <= 22000000)
 					SET_DATA_PIN;
 				//U7-4 LPF_4
-				if (registerNumber == 35 && CurrentVFO->Freq > 7500000 && CurrentVFO->Freq <= 15000000)
+				if (registerNumber == 35 && TRX_on_TX() && CurrentVFO->Freq > 7500000 && CurrentVFO->Freq <= 15000000)
 					SET_DATA_PIN;
 				//U7-3 TUN_I_5
 				if (registerNumber == 36 && bitRead(TRX.ATU_I, 4))
 					SET_DATA_PIN;
 				//U7-2 LPF_1
-				if (registerNumber == 37 && CurrentVFO->Freq <= 2500000)
+				if (registerNumber == 37 && TRX_on_TX() && CurrentVFO->Freq <= 2500000)
 					SET_DATA_PIN;
 				//U7-1 LPF_2
-				if (registerNumber == 38 && CurrentVFO->Freq > 2500000 && CurrentVFO->Freq <= 4500000)
+				if (registerNumber == 38 && TRX_on_TX() && CurrentVFO->Freq > 2500000 && CurrentVFO->Freq <= 4500000)
 					SET_DATA_PIN;
 				//U7-0 LPF_3
-				if (registerNumber == 39 && CurrentVFO->Freq > 4500000 && CurrentVFO->Freq <= 7500000)
+				if (registerNumber == 39 && TRX_on_TX() && CurrentVFO->Freq > 4500000 && CurrentVFO->Freq <= 7500000)
 					SET_DATA_PIN;
 				
 				//U21-7 TUN_T
