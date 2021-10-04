@@ -289,6 +289,7 @@ void LoadSettings(bool clear)
 		TRX.RTTY_Shift = 170;			//RTTY decoder shift
 		TRX.RTTY_Freq = 1000;			//RTTY decoder center frequency
 		TRX.RTTY_StopBits = 1;		//RTTY 1, 1.5, 2 stop bits
+		TRX.RTTY_InvertBits = false;	//RTTY 0 and 1 reverse
 		//ADC
 		TRX.ADC_Driver = true; // preamplifier (ADC driver)
 		TRX.ADC_PGA = true;	   // ADC preamp

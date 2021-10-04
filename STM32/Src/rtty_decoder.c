@@ -330,5 +330,12 @@ static int RTTYDecoder_demodulator(float32_t sample)
 	// lowpass filtering the summed line
 	arm_biquad_cascade_df2T_f32_rolled(&RTTY_LPF_Filter, &v1, &v1, 1);*/
 
-	return (v1 > 0) ? 0 : 1;
+	if(TRX.RTTY_InvertBits)
+	{
+		return (v1 > 0) ? 1 : 0;
+	}
+	else
+	{
+		return (v1 > 0) ? 0 : 1;
+	}
 }
