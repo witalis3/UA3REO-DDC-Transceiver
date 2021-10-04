@@ -1742,8 +1742,8 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 	{
 		sam_data->inited = true;
 		//pll
-		sam_data->adb_sam_omega_min = - (2.0 * F_PI * TRX_SAMPLERATE / TRX_SAMPLERATE);
-		sam_data->adb_sam_omega_max = (2.0 * F_PI * TRX_SAMPLERATE / TRX_SAMPLERATE);
+		sam_data->adb_sam_omega_min = - (2.0 * F_PI * SAM_omegaN / TRX_SAMPLERATE);
+		sam_data->adb_sam_omega_max = (2.0 * F_PI * SAM_omegaN / TRX_SAMPLERATE);
 		sam_data->adb_sam_g1 = (1.0 - expf(-2.0 * SAM_omegaN * SAM_zeta / TRX_SAMPLERATE));
 		sam_data->adb_sam_g2 = (- sam_data->adb_sam_g1 + 2.0 * (1 - expf(- SAM_omegaN * SAM_zeta / TRX_SAMPLERATE) * cosf(SAM_omegaN / TRX_SAMPLERATE * sqrtf(1.0 - SAM_zeta * SAM_zeta))));
 		//fade leveler
