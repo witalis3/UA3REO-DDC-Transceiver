@@ -1722,7 +1722,7 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 	//part of UHSDR project https://github.com/df8oe/UHSDR/blob/active-devel/mchf-eclipse/drivers/audio/audio_driver.c
 	static demod_sam_data_t sam_data_rx1;
 	static demod_sam_data_t sam_data_rx2;
-	static demod_sam_data_t *sam_data = &sam_data_rx1;
+	demod_sam_data_t *sam_data = &sam_data_rx1;
 	if (rx_id == AUDIO_RX2)
 		sam_data = &sam_data_rx2;
 	
