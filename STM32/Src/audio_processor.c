@@ -420,6 +420,10 @@ void processRxAudio(void)
 		arm_add_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		arm_scale_f32(APROC_Audio_Buffer_RX1_I, 0.5f, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	}
+	if (TRX.Dual_RX && TRX.Dual_RX_Type == VFO_A_AND_B)
+	{
+		dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX1_Q[0], (uint32_t *)&APROC_Audio_Buffer_RX2_I[0], FPGA_RX_IQ_BUFFER_HALF_SIZE);
+	}
 
 	// receiver equalizer
 	if (CurrentVFO->Mode != TRX_MODE_DIGI_L && CurrentVFO->Mode != TRX_MODE_DIGI_U && CurrentVFO->Mode != TRX_MODE_RTTY && CurrentVFO->Mode != TRX_MODE_IQ)
@@ -445,11 +449,11 @@ void processRxAudio(void)
 			if (!TRX.selected_vfo)
 			{
 				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1);	  //left channel
-				arm_float_to_q31(&APROC_Audio_Buffer_RX2_I[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX1_Q[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
 			}
 			else
 			{
-				arm_float_to_q31(&APROC_Audio_Buffer_RX2_I[i], &APROC_AudioBuffer_out[i * 2], 1);	  //left channel
+				arm_float_to_q31(&APROC_Audio_Buffer_RX1_Q[i], &APROC_AudioBuffer_out[i * 2], 1);	  //left channel
 				arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
 			}
 		}
@@ -1180,11 +1184,20 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 static void doRX_EQ(uint16_t size)
 {
 	if (TRX.RX_EQ_LOW != 0)
-		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_LOW_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+	{
+		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_I_LOW_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_Q_LOW_FILTER, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
+	}
 	if (TRX.RX_EQ_MID != 0)
-		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_MID_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+	{
+		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_I_MID_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_Q_MID_FILTER, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
+	}
 	if (TRX.RX_EQ_HIG != 0)
-		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_HIG_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+	{
+		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_I_HIG_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+		arm_biquad_cascade_df2T_f32_rolled(&EQ_RX_Q_HIG_FILTER, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
+	}
 }
 
 // Equalizer microphone
