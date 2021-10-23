@@ -113,6 +113,8 @@
 #include "wspr.h"
 #include "cw.h"
 
+#include "FT8\FT8_main.h"		//Tisho
+
 static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
 static uint32_t powerdown_start_delay = 0;
@@ -532,6 +534,11 @@ void TIM5_IRQHandler(void)
     LCD_doEvents();
   //EndProfilerUs(true);
   /* USER CODE END TIM5_IRQn 1 */
+
+	//Tisho
+	if(FT8_DecodeActiveFlg)		//if "true"
+			MenagerFT8();
+		
 }
 
 /**
