@@ -1,6 +1,7 @@
 ----Version 3.2.0----
 +HARDW: Добавлены интерактивные монтажные схемы boastools, Thx EB4DYL
 +HARDW: Добавлена поддержка FT8 в режиме TX/RX (для версии 3'2 / 3'5 дюймов), Thx автору DB5AT
++FPGA: Улучшена коррекция VCXO, Thx RA9N
 
 ----Version 3.1.0----
 +HARDW: добавлена FRONT-UNIT-3.5-RA9UCN: Новая версия лицевой панели от RA9UCN
