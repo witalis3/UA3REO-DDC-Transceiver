@@ -21,7 +21,7 @@
 #include "arm_math.h"
 #include <string.h>
 #include "decode_ft8.h"
-#include "locator.h"
+#include "locator_ft8.h"
 
 #include "FT8_GUI.h"
 #include "lcd_driver.h"			//For debug

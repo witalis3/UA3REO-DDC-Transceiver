@@ -25,7 +25,7 @@
 //#include "options.h"
 //#include "log_file.h"
 #include "decode_ft8.h"
-//#include "locator.h"
+//#include "locator_ft8.h"
 //#include "traffic_manager.h"
 
 #include "FT8_main.h"

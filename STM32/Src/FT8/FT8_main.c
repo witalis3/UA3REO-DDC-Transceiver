@@ -12,7 +12,7 @@
 #include "decode_ft8.h"
 //#include "WF_Table.h"
 #include "arm_math.h"
-#include "locator.h"
+#include "locator_ft8.h"
 #include "traffic_manager.h"
 #include "FT8_GUI.h"
 

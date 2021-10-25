@@ -112,7 +112,6 @@
 #include "sd.h"
 #include "wspr.h"
 #include "cw.h"
-
 #include "FT8\FT8_main.h"		//Tisho
 
 static uint32_t ms10_counter = 0;
@@ -535,10 +534,10 @@ void TIM5_IRQHandler(void)
   //EndProfilerUs(true);
   /* USER CODE END TIM5_IRQn 1 */
 
-	//Tisho
-	if(FT8_DecodeActiveFlg)		//if "true"
+#if FT8_SUPPORT
+	if(FT8_DecodeActiveFlg)
 			MenagerFT8();
-		
+#endif
 }
 
 /**

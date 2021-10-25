@@ -14,8 +14,6 @@
 #include "vocoder.h"
 #include "rf_unit.h"
 #include "cw.h"
-
-//Tisho
 #include "FT8/FT8_main.h"
 #include "FT8/decode_ft8.h"
 
@@ -45,7 +43,9 @@ float32_t APROC_TX_clip_gain = 1.0f;
 float32_t APROC_TX_ALC_IN_clip_gain = 1.0f;
 
 // Private variables
+#if FT8_SUPPORT
 static q15_t APROC_AudioBuffer_FT8_out[AUDIO_BUFFER_SIZE/2] = {0};			//Tisho
+#endif
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
 static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0, DFM_RX1_emph_prev = 0, DFM_RX2_emph_prev = 0; // used in FM detection and low / high pass processing
 bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
@@ -448,8 +448,9 @@ void processRxAudio(void)
 		{
 			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1); //left channel
 			arm_float_to_q31(&APROC_Audio_Buffer_RX1_Q[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); //right channel
-			
+#if FT8_SUPPORT
 			arm_float_to_q15(&APROC_Audio_Buffer_RX1_Q[i], &APROC_AudioBuffer_FT8_out[i], 1); //FT8 Buffer - Tisho
+#endif
 		}
 		else if (TRX.Dual_RX_Type == VFO_A_AND_B)
 		{
@@ -516,6 +517,7 @@ void processRxAudio(void)
 	* the "input_gulp" is complete every 160ms !
 	* this is repeat 40 times, till all 40*24 => 960 samples are colected (the size of the "input_gulp")
 	*/
+#if FT8_SUPPORT
 	if(FT8_DecodeActiveFlg)				//if "true"
 		{
 			if(FT8_ColectDataFlg)			//if "true"
@@ -532,7 +534,7 @@ void processRxAudio(void)
 //		if(!FT8_Bussy)		//MenagerFT8() is now called in TIM5_IRQHandler -> stm32h7xx_it.c
 //			MenagerFT8();
 		}
-	
+#endif
 	//Volume Gain and SPI convert
 	for (uint_fast16_t i = 0; i < (FPGA_RX_IQ_BUFFER_HALF_SIZE * 2); i++)
 	{
@@ -644,6 +646,7 @@ void processTxAudio(void)
 		while(!APROC_SD_PlayTX()); //false - data not ready, continue decoding
 	}
 
+#if FT8_SUPPORT
 	//Tisho - FT8
 	//used in the transmit period to generate time interval when process_data(); is executed => and then set high the "DSP_Flag"			
 	if(FT8_DecodeActiveFlg)		//if "true"
@@ -654,7 +657,7 @@ void processTxAudio(void)
 		if(FT8_ColectDataFlg)			//if "true"
 			FT8_DatBlockNum++;
 		}
-	
+#endif
 	//One-signal zero-tune generator
 	if (TRX_Tune && !TRX.TWO_SIGNAL_TUNE)
 	{

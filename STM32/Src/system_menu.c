@@ -24,10 +24,7 @@
 #include "rtty_decoder.h"
 #include "self_test.h"
 #include "cw.h"
-
 #include "FT8/FT8_main.h"							//Tisho
-
-bool SYSMENU_FT8_DECODER_opened = false; //Tisho
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -770,7 +767,9 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 		{"WSPR Beacon", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WSPRMENU},
 		{"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_FILEMANAGER},
 		{"Record CQ message", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RECORD_CQ_WAV},
+#if FT8_SUPPORT
 		{"FT-8 Decoder", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_FT8_Decoder},		//Tisho
+#endif
 #ifdef SWR_AD8307_LOG
 		{"SWR Tandem Match Contr.", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl}, //Tisho
 #endif
@@ -817,6 +816,7 @@ static bool sysmenu_filemanager_opened = false;
 static bool sysmenu_item_selected_by_enc2 = false;
 bool sysmenu_ota_opened = false;
 uint8_t sysmenu_ota_opened_state = 0;
+bool SYSMENU_FT8_DECODER_opened = false; //Tisho
 
 //WIFI
 static bool sysmenu_wifi_needupdate_ap = true;
@@ -3426,6 +3426,7 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+#if FT8_SUPPORT
 static void SYSMENU_HANDL_FT8_Decoder(int8_t direction) // Tisho
 {
 #pragma unused(direction)
@@ -3439,6 +3440,7 @@ static void SYSMENU_HANDL_FT8_Decoder(int8_t direction) // Tisho
 		InitFT8_Decoder();
 	}
 }
+#endif
 
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction) //Tisho
 {
@@ -4760,10 +4762,12 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 		WSPR_DoEvents();
 		return;
 	}
+#if FT8_SUPPORT
 	else if (SYSMENU_FT8_DECODER_opened) //Tisho
 	{
 		MenagerFT8();
 	}	
+#endif
 	else if (SYSMENU_TDM_CTRL_opened) //Tisho
 	{
 		TDM_Voltages();
@@ -5011,6 +5015,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
+#if FT8_SUPPORT
 	else if (SYSMENU_FT8_DECODER_opened) //Tisho
 	{
 		FT8_DecodeActiveFlg = false;
@@ -5018,6 +5023,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
+#endif
 	else if (SYSMENU_TDM_CTRL_opened) //Tisho
 	{
 		SYSMENU_TDM_CTRL_opened = false;
@@ -5117,9 +5123,10 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void)
 		sysmenu_item_selected_by_enc2 = !sysmenu_item_selected_by_enc2;
 		LCD_UpdateQuery.SystemMenuCurrent = true;
 	}
-	
+#if FT8_SUPPORT
 	if (SYSMENU_FT8_DECODER_opened)				//Tisho
 		FT8_Enc2Click();
+#endif
 }
 
 //secondary encoder rotate
@@ -5248,11 +5255,13 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 		SELF_TEST_EncRotate(direction);
 		return;
 	}
+#if FT8_SUPPORT
 	if (SYSMENU_FT8_DECODER_opened)				//Tisho
 	{
 		FT8_Enc2Rotate(direction);
 		return;
 	}
+#endif
 	if (sysmenu_infowindow_opened)
 		return;
 	//time menu

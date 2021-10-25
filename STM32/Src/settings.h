@@ -156,30 +156,39 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 //LCDs
 #if defined(LCD_ILI9481) 
 static char ota_config_lcd[] = "ILI9481";
+#define FT8_SUPPORT true
 #endif
 #if defined(LCD_HX8357B)
 static char ota_config_lcd[] = "HX8357B";
+#define FT8_SUPPORT true
 #endif
 #if defined(LCD_HX8357C) && !defined(LCD_SLOW)
 static char ota_config_lcd[] = "HX8357C";
+#define FT8_SUPPORT true
 #endif
 #if defined(LCD_HX8357C) && defined(LCD_SLOW)
 static char ota_config_lcd[] = "HX8357C-SLOW";
+#define FT8_SUPPORT true
 #endif
 #if defined(LCD_ILI9486)
 static char ota_config_lcd[] = "ILI9486";
+#define FT8_SUPPORT true
 #endif
 #if defined(LCD_ST7796S)
 static char ota_config_lcd[] = "ST7796S";
+#define FT8_SUPPORT true
 #endif
 #if defined(LCD_ST7735S)
 static char ota_config_lcd[] = "ST7735S";
+#define FT8_SUPPORT true
 #endif
 #if defined(LCD_RA8875)
 static char ota_config_lcd[] = "RA8875";
+#define FT8_SUPPORT false
 #endif
 #if defined(LCD_NONE)
 static char ota_config_lcd[] = "NONE";
+#define FT8_SUPPORT false
 #endif
 
 //TOUCHPADs
