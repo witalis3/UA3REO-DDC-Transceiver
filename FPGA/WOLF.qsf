@@ -93,7 +93,6 @@ set_location_assignment PIN_68 -to ADC_INPUT[0]
 set_global_assignment -name CONFIGURATION_VCCIO_LEVEL 2.5V
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS OUTPUT DRIVING GROUND"
 set_global_assignment -name ENABLE_DRC_SETTINGS OFF
-set_global_assignment -name AUTO_MERGE_PLLS ON
 set_location_assignment PIN_69 -to PREAMP
 set_location_assignment PIN_44 -to ADC_OTR
 set_global_assignment -name SAVE_DISK_SPACE OFF
@@ -120,7 +119,7 @@ set_location_assignment PIN_121 -to DAC_OUTPUT[13]
 
 
 set_global_assignment -name TIMING_ANALYZER_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS OFF
-set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE PERFORMANCE"
+set_global_assignment -name OPTIMIZATION_MODE BALANCED
 set_global_assignment -name AUTO_RAM_TO_LCELL_CONVERSION ON
 
 set_location_assignment PIN_135 -to AUDIO_I2S_CLOCK
@@ -151,7 +150,6 @@ set_location_assignment PIN_51 -to ADC_INPUT[12]
 set_location_assignment PIN_90 -to ADC_CLK
 set_global_assignment -name ALLOW_REGISTER_RETIMING OFF
 set_global_assignment -name POWER_USE_DEVICE_CHARACTERISTICS MAXIMUM
-set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
 set_location_assignment PIN_100 -to DAC_PD
 
 set_global_assignment -name POST_FLOW_SCRIPT_FILE "quartus_sh:auto_convert.tcl"
@@ -163,13 +161,6 @@ set_global_assignment -name POWER_DEFAULT_TOGGLE_RATE 12.5%
 set_global_assignment -name POWER_OUTPUT_SAF_NAME output_files/signal_activity.saf
 set_global_assignment -name POWER_REPORT_SIGNAL_ACTIVITY ON
 set_global_assignment -name POWER_REPORT_POWER_DISSIPATION ON
-set_global_assignment -name SYNTH_GATED_CLOCK_CONVERSION OFF
-set_global_assignment -name PRE_MAPPING_RESYNTHESIS ON
-set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS ON
-set_global_assignment -name OPTIMIZE_SSN "NORMAL COMPILATION"
-set_global_assignment -name WEAK_PULL_UP_RESISTOR OFF
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_MAP_LOGIC_TO_MEMORY_FOR_AREA ON
 
 
 set_location_assignment PIN_133 -to DCDC_SYNC
@@ -293,16 +284,6 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DAC_CLK
 set_location_assignment PIN_132 -to VCXO_CHARGE_PUMP
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VCXO_CHARGE_PUMP
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to VCXO_CHARGE_PUMP
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
-set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION ON
-set_global_assignment -name ROUTER_TIMING_OPTIMIZATION_LEVEL MAXIMUM
-set_global_assignment -name QII_AUTO_PACKED_REGISTERS NORMAL
-set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE SPEED
-set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
-set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON
-set_global_assignment -name MUX_RESTRUCTURE OFF
-set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING ON
-set_global_assignment -name PLACEMENT_EFFORT_MULTIPLIER 1
 set_location_assignment PIN_76 -to DAC_DRV_A0
 set_location_assignment PIN_77 -to DAC_DRV_A1
 set_global_assignment -name BDF_FILE WOLF.bdf
