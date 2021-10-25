@@ -532,12 +532,13 @@ void TIM5_IRQHandler(void)
   if (SYSMENU_spectrum_opened)
     LCD_doEvents();
   //EndProfilerUs(true);
-  /* USER CODE END TIM5_IRQn 1 */
-
+	
 #if FT8_SUPPORT
 	if(FT8_DecodeActiveFlg)
-			MenagerFT8();
+		MenagerFT8();
 #endif
+	
+  /* USER CODE END TIM5_IRQn 1 */
 }
 
 /**

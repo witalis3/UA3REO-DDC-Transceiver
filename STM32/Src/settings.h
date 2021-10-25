@@ -43,9 +43,9 @@
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 //SPI Speed
-#define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_16
-#define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_16
-#define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_16
+#define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_4
+#define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_2
+#define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_4
 
 //#define ADC_BITS 16																						// ADC bit depth
 //#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
