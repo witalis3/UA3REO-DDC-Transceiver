@@ -17,8 +17,8 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Receiving frequencies: 0 MHz - 750 MHz
 * Transmission frequencies: 0 MHz - 160 MHz
 * TX power (QRP version): 7W+ (HF), 5W (VHF)
-* TX power (QRP++ version): 20W (HF), 7W (VHF)
-* TX power (BIG version): 50-100W+ (HF), 50W+ (VHF)
+* TX power (QRP++ DB5AT version): 20W (HF), 7W (VHF)
+* TX power (RU4PN version): 100W (HF), 50W+ (VHF)
 * Two antenna inputs
 * Modulation types (TX / RX): CW, LSB, USB, AM, FM, WFM, DIGI
 * LNA, Preamplifier
