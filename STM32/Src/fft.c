@@ -579,16 +579,21 @@ bool FFT_printFFT(void)
 	}
 
 	// move the waterfall down using DMA
-	uint32_t move_est = wtfHeight - 2;
+	uint32_t srcAddr = (uint32_t)&indexed_wtf_buffer[wtfHeight - 2][LAYOUT->FFT_PRINT_SIZE];
+	uint32_t destAddr = (uint32_t)&indexed_wtf_buffer[wtfHeight - 1][LAYOUT->FFT_PRINT_SIZE];
+	uint32_t endAddr = (uint32_t)&indexed_wtf_buffer[0][0];
+	uint32_t estimated = srcAddr - endAddr;
 	Aligned_CleanDCache_by_Addr(indexed_wtf_buffer, sizeof(indexed_wtf_buffer));
-	while (move_est > 0)
+	while (estimated > 0)
 	{
-		uint8_t length = move_est;
-		if (length > 64)
-			length = 64;
-		HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)&indexed_wtf_buffer[move_est - 1][LAYOUT->FFT_PRINT_SIZE], (uint32_t)&indexed_wtf_buffer[move_est][LAYOUT->FFT_PRINT_SIZE], LAYOUT->FFT_PRINT_SIZE * length + 4, 1);
+		uint32_t length = estimated;
+		if (length > DMA_MAX_BLOCK)
+			length = DMA_MAX_BLOCK;
+		HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, srcAddr, destAddr, length * 4, 1);
 		SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0);
-		move_est -= length;
+		srcAddr -= length;
+		destAddr -= length;
+		estimated -= length;
 	}
 	Aligned_CleanInvalidateDCache_by_Addr(indexed_wtf_buffer, sizeof(indexed_wtf_buffer));
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
