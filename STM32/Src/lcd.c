@@ -109,6 +109,10 @@ void LCD_Init(void)
 #endif
 	LCDDriver_Fill(BG_COLOR);
 
+#ifdef HAS_BRIGHTNESS_CONTROL
+	LCDDriver_setBrightness(TRX.LCD_Brightness);
+#endif
+	
 	LCD_inited = true;
 }
 

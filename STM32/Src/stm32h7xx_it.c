@@ -696,6 +696,7 @@ void TIM6_DAC_IRQHandler(void)
       TRX_ProcessScanMode();
 		
 		//Process LCD dimmer
+#ifdef HAS_BRIGHTNESS_CONTROL
 		static bool LCD_Dimmer_State = false;
 		if(!LCD_busy)
 		{
@@ -712,6 +713,7 @@ void TIM6_DAC_IRQHandler(void)
 			}
 			LCD_busy = false;
 		}
+#endif
 
     // reset error flags
     WM8731_Buffer_underrun = false;
