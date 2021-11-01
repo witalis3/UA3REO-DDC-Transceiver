@@ -375,12 +375,16 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		break;
 	case TRX_MODE_LSB:
 	case TRX_MODE_USB:
-	case TRX_MODE_DIGI_L:
-	case TRX_MODE_DIGI_U:
-	case TRX_MODE_RTTY:
 		vfo->LPF_RX_Filter_Width = TRX.SSB_LPF_RX_Filter;
 		vfo->LPF_TX_Filter_Width = TRX.SSB_LPF_TX_Filter;
 		vfo->HPF_Filter_Width = TRX.SSB_HPF_Filter;
+		break;
+	case TRX_MODE_DIGI_L:
+	case TRX_MODE_DIGI_U:
+	case TRX_MODE_RTTY:
+		vfo->LPF_RX_Filter_Width = TRX.DIGI_LPF_Filter;
+		vfo->LPF_TX_Filter_Width = TRX.DIGI_LPF_Filter;
+		vfo->HPF_Filter_Width = 0;
 		break;
 	case TRX_MODE_CW:
 		vfo->LPF_RX_Filter_Width = TRX.CW_LPF_Filter;

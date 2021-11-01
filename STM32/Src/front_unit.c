@@ -1828,8 +1828,10 @@ void FRONTPANEL_BUTTONHANDLER_SET_RX_BW(uint32_t parameter)
 {
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		TRX.CW_LPF_Filter = parameter;
-	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB)
 		TRX.SSB_LPF_RX_Filter = parameter;
+	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+		TRX.DIGI_LPF_Filter = parameter;
 	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
 		TRX.AM_LPF_RX_Filter = parameter;
 	if (CurrentVFO->Mode == TRX_MODE_NFM)
@@ -1845,8 +1847,10 @@ void FRONTPANEL_BUTTONHANDLER_SET_TX_BW(uint32_t parameter)
 {
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		TRX.CW_LPF_Filter = parameter;
-	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB)
 		TRX.SSB_LPF_TX_Filter = parameter;
+	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+		TRX.DIGI_LPF_Filter = parameter;
 	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
 		TRX.AM_LPF_TX_Filter = parameter;
 	if (CurrentVFO->Mode == TRX_MODE_NFM)

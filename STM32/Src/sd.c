@@ -957,6 +957,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_speed_AMFM", (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_maxgain_AMFM", (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.CW_LPF_Filter", (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.DIGI_LPF_Filter", (uint32_t *)&TRX.DIGI_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.SSB_LPF_RX_Filter", (uint32_t *)&TRX.SSB_LPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.SSB_LPF_TX_Filter", (uint32_t *)&TRX.SSB_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.SSB_HPF_Filter", (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_UINT16);
@@ -1458,6 +1459,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.TX_Compressor_maxgain_AMFM = (uint8_t)uintval;
 	if (strcmp(name, "TRX.CW_LPF_Filter") == 0)
 		TRX.CW_LPF_Filter = (uint16_t)uintval;
+	if (strcmp(name, "TRX.DIGI_LPF_Filter") == 0)
+		TRX.DIGI_LPF_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.SSB_LPF_RX_Filter") == 0)
 		TRX.SSB_LPF_RX_Filter = (uint16_t)uintval;
 	if (strcmp(name, "TRX.SSB_LPF_TX_Filter") == 0)

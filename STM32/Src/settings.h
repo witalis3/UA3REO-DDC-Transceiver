@@ -386,6 +386,7 @@ extern struct TRX_SETTINGS
 	uint8_t TX_Compressor_speed_AMFM;
 	uint8_t TX_Compressor_maxgain_AMFM;
 	uint16_t CW_LPF_Filter;
+	uint16_t DIGI_LPF_Filter;
 	uint16_t SSB_LPF_RX_Filter;
 	uint16_t SSB_LPF_TX_Filter;
 	uint16_t SSB_HPF_Filter;
