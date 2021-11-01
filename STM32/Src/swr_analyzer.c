@@ -27,6 +27,8 @@ static int16_t graph_selected_x = 1;
 #endif
 static uint32_t startFreq = 0;
 static uint32_t endFreq = 0;
+static uint32_t minSWR_Freq = 99.0f;
+static float32_t minSWR_SWR = 0;
 
 //Saved variables
 static uint32_t Lastfreq = 0;
@@ -219,6 +221,9 @@ void SWR_Stop(void)
 // draw the spectrum analyzer
 void SWR_Draw(void)
 {
+	static uint32_t minSWR_Freq_tmp = 0;
+	static float32_t minSWR_SWR_tmp = 99.0f;
+	
 	if (LCD_busy)
 		return;
 
@@ -244,6 +249,17 @@ void SWR_Draw(void)
 		// draw a marker
 		if (graph_sweep_x == graph_selected_x)
 			SWR_DrawBottomGUI();
+		//calculate minimum SWR
+		if(minSWR_SWR_tmp > TRX_SWR)
+		{
+			minSWR_SWR_tmp = TRX_SWR;
+			minSWR_Freq_tmp = (uint32_t)now_freq;
+		}
+		if(minSWR_SWR > TRX_SWR)
+		{
+			minSWR_SWR = TRX_SWR;
+			minSWR_Freq = (uint32_t)now_freq;
+		}
 	}
 
 	// Move on to calculating the next step
@@ -252,6 +268,10 @@ void SWR_Draw(void)
 	{
 		graph_sweep_x = 0;
 		now_freq = startFreq;
+		//Minimum SWR
+		minSWR_SWR = minSWR_SWR_tmp;
+		minSWR_Freq = minSWR_Freq_tmp;
+		minSWR_SWR_tmp = 99.0f;
 	}
 	now_freq += freq_step;
 	TRX_setFrequency((uint32_t)now_freq, CurrentVFO);
@@ -297,9 +317,9 @@ static void SWR_DrawBottomGUI(void)
 {
 	char ctmp[64] = {0};
 	int32_t freq = (int32_t)startFreq + ((int32_t)(endFreq - startFreq) / (graph_width - 1) * graph_selected_x);
-	sprintf(ctmp, "Freq=%dkHz SWR=%.1f", (freq / 1000), (double)data[graph_selected_x]);
-	LCDDriver_Fill_RectWH(170, graph_start_y + graph_height + 3, 200, 6, COLOR_BLACK);
-	LCDDriver_printText(ctmp, 170, graph_start_y + graph_height + 3, COLOR_GREEN, COLOR_BLACK, 1);
+	sprintf(ctmp, "Freq=%dkHz SWR=%.1f | MinSWR=%.1f on %dkHz", (freq / 1000), (double)data[graph_selected_x], minSWR_SWR, (minSWR_Freq / 1000));
+	LCDDriver_Fill_RectWH(100, graph_start_y + graph_height + 3, 200, 6, COLOR_BLACK);
+	LCDDriver_printText(ctmp, 100, graph_start_y + graph_height + 3, COLOR_GREEN, COLOR_BLACK, 1);
 	LCDDriver_drawFastVLine(graph_start_x + (uint16_t)graph_selected_x + 1, graph_start_y, graph_height, COLOR_GREEN);
 }
 
