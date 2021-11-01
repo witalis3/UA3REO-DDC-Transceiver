@@ -228,7 +228,7 @@ typedef struct
 	bool AutoNotchFilter;
 	uint_fast16_t NotchFC;
 	uint8_t DNR_Type; //0-disabled 1-dnr 2-dnr2
-	uint8_t FM_SQL_threshold_dbm;
+	int8_t FM_SQL_threshold_dbm;
 	bool AGC;
 	bool SQL;
 } VFO;
