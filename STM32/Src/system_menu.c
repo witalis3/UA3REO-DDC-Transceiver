@@ -5107,6 +5107,17 @@ void SYSMENU_eventCloseAllSystemMenu(void)
 	sysmenu_item_selected_by_enc2 = false;
 	LCD_systemMenuOpened = false;
 	LCD_UpdateQuery.Background = true;
+	
+#if FT8_SUPPORT
+	if (SYSMENU_FT8_DECODER_opened) 							//Tisho
+	{
+		FT8_DecodeActiveFlg = false;
+		SYSMENU_FT8_DECODER_opened = false;
+		systemMenuIndex = 0;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+#endif
+	
 	LCD_redraw(false);
 }
 
