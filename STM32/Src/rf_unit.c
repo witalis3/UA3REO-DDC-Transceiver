@@ -108,7 +108,7 @@ static void RF_UNIT_ProcessATU(void)
 		return;
 	}
 	
-	#define delay_stages 1
+	#define delay_stages 3
 	static uint8_t delay_stages_count = 0;
 	if(delay_stages_count < delay_stages)
 	{
