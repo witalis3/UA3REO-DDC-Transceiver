@@ -341,13 +341,9 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 
 * Show propagination statistics (from internet)
 
-### Band SWR
+### SWR Analyser
 
-* Run SWR analizer on current band
-
-### HF SWR
-
-* Run SWR analizer on all bands
+* Run SWR analizer (Band SWR - on current band, HF SWR - on all HF bands, Custom SWR - in selected range)
 
 ### RDA Statistics 
 

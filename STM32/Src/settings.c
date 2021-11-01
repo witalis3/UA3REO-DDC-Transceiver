@@ -308,11 +308,13 @@ void LoadSettings(bool clear)
 		TRX.WIFI_TIMEZONE = 3;						 // time zone (for time synchronization)
 		TRX.WIFI_CAT_SERVER = false;				 // Server for receiving CAT commands via WIFI
 		//SERVICES
+		TRX.SWR_CUSTOM_Begin = 6500;		// start spectrum analyzer range
+		TRX.SWR_CUSTOM_End = 7500;		// end of spectrum analyzer range
 		TRX.SPEC_Begin = 1000;		// start spectrum analyzer range
 		TRX.SPEC_End = 30000;		// end of spectrum analyzer range
 		TRX.SPEC_TopDBM = -60;		// chart thresholds
 		TRX.SPEC_BottomDBM = -130;	// chart thresholds
-		TRX.WSPR_FREQ_OFFSET = 0;	//offset beacon from creq center
+		TRX.WSPR_FREQ_OFFSET = 0;	//offset beacon from freq center
 		TRX.WSPR_BANDS_160 = false; //enabled WSPR bands
 		TRX.WSPR_BANDS_80 = true;
 		TRX.WSPR_BANDS_40 = true;

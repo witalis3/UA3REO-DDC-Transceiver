@@ -464,6 +464,8 @@ extern struct TRX_SETTINGS
 	int8_t WIFI_TIMEZONE;
 	bool WIFI_CAT_SERVER;
 	//SERVICES
+	uint32_t SWR_CUSTOM_Begin;
+	uint32_t SWR_CUSTOM_End;
 	uint32_t SPEC_Begin;
 	uint32_t SPEC_End;
 	int16_t SPEC_TopDBM;

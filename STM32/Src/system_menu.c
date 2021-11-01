@@ -324,11 +324,41 @@ static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction);
 static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction);
 
+static void SYSMENU_HANDL_TRXMENU(int8_t direction);
+static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
+static void SYSMENU_HANDL_CWMENU(int8_t direction);
+static void SYSMENU_HANDL_LCDMENU(int8_t direction);
+static void SYSMENU_HANDL_DECODERSMENU(int8_t direction);
+static void SYSMENU_HANDL_ADCMENU(int8_t direction);
+static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
+static void SYSMENU_HANDL_SDMENU(int8_t direction);
+static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
+
+static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction);
+static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
+static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction);
+static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
+static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
+static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
+static void SYSMENU_HANDL_FILEMANAGER(int8_t direction);
+static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
+static void SYSMENU_HANDL_FT8_Decoder(int8_t direction);		//Tisho
+static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); //Tisho
+static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction);
+static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction);
+static void SYSMENU_HANDL_SELF_TEST(int8_t direction);
+
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction);
+
+static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction);
+static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
+static void SYSMENU_HANDL_SWR_CUSTOM_Begin(int8_t direction);
+static void SYSMENU_HANDL_SWR_CUSTOM_Start(int8_t direction);
+static void SYSMENU_HANDL_SWR_CUSTOM_End(int8_t direction);
 
 static void SYSMENU_HANDL_WSPR_Start(int8_t direction);
 static void SYSMENU_HANDL_WSPR_FREQ_OFFSET(int8_t direction);
@@ -343,31 +373,6 @@ static void SYSMENU_HANDL_WSPR_BAND12(int8_t direction);
 static void SYSMENU_HANDL_WSPR_BAND10(int8_t direction);
 static void SYSMENU_HANDL_WSPR_BAND6(int8_t direction);
 static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction);
-
-static void SYSMENU_HANDL_TRXMENU(int8_t direction);
-static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
-static void SYSMENU_HANDL_CWMENU(int8_t direction);
-static void SYSMENU_HANDL_LCDMENU(int8_t direction);
-static void SYSMENU_HANDL_DECODERSMENU(int8_t direction);
-static void SYSMENU_HANDL_ADCMENU(int8_t direction);
-static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
-static void SYSMENU_HANDL_SDMENU(int8_t direction);
-static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
-
-static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction);
-static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
-static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction);
-static void SYSMENU_HANDL_SWR_HF_START(int8_t direction);
-static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
-static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
-static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
-static void SYSMENU_HANDL_FILEMANAGER(int8_t direction);
-static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
-static void SYSMENU_HANDL_FT8_Decoder(int8_t direction);		//Tisho
-static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); //Tisho
-static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction);
-static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction);
-static void SYSMENU_HANDL_SELF_TEST(int8_t direction);
 
 static bool SYSMENU_HANDL_CHECK_HAS_LPF(void);
 static bool SYSMENU_HANDL_CHECK_HAS_HPF(void);
@@ -733,6 +738,15 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"PWR VLT Calibr", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_HANDL_CALIB_PWR_VLT_Calibration},
 };
 
+const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
+	{
+		{"Band SWR", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_BAND_START},
+		{"HF SWR", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_HF_START},
+		{"Custom SWR", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_CUSTOM_Start},
+		{"Custom Begin, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SWR_CUSTOM_Begin, SYSMENU_HANDL_SWR_CUSTOM_Begin},
+		{"Custom End, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SWR_CUSTOM_End, SYSMENU_HANDL_SWR_CUSTOM_End},
+};
+
 const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 	{
 		{"Spectrum START", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SPECTRUM_Start},
@@ -764,8 +778,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 	{
 		{"DX Cluster", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DX_CLUSTER},
 		{"Propagination", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGINATION},
-		{"Band SWR", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_BAND_START},
-		{"HF SWR", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_HF_START},
+		{"SWR Analyzer", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SWR_ANALYSER_MENU},
 		{"Spectrum Analyzer", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SPECTRUMMENU},
 		{"RDA Statistics", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RDA_STATS},
 		{"WSPR Beacon", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WSPRMENU},
@@ -4450,7 +4463,77 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 	LCD_redraw(false);
 }
 
-//SPECTRUM ANALIZER
+//SWR ANALYZER
+static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction)
+{
+#pragma unused(direction)
+	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_swr_analyser_handlers[0];
+	sysmenu_item_count = sizeof(sysmenu_swr_analyser_handlers) / sizeof(sysmenu_swr_analyser_handlers[0]);
+	sysmenu_onroot = false;
+	systemMenuIndex = 0;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_SWR_CUSTOM_Start(int8_t direction)
+{
+	if (SYSMENU_swr_opened)
+	{
+		SWR_EncRotate(direction);
+	}
+	else
+	{
+		SYSMENU_swr_opened = true;
+		SWR_Start(TRX.SWR_CUSTOM_Begin * 1000, TRX.SWR_CUSTOM_End * 1000);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+}
+
+static void SYSMENU_HANDL_SWR_CUSTOM_Begin(int8_t direction)
+{
+	TRX.SWR_CUSTOM_Begin += direction * 100;
+	if (TRX.SWR_CUSTOM_Begin < 100)
+		TRX.SWR_CUSTOM_Begin = 100;
+}
+
+static void SYSMENU_HANDL_SWR_CUSTOM_End(int8_t direction)
+{
+	TRX.SWR_CUSTOM_End += direction * 100;
+	if (TRX.SWR_CUSTOM_End < 100)
+		TRX.SWR_CUSTOM_End = 100;
+}
+
+//SWR BAND ANALYZER
+static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction)
+{
+	if (SYSMENU_swr_opened)
+	{
+		SWR_EncRotate(direction);
+	}
+	else
+	{
+		SYSMENU_swr_opened = true;
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		SWR_Start(BANDS[band].startFreq - 100000, BANDS[band].endFreq + 100000);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+}
+
+//SWR HF ANALYZER
+static void SYSMENU_HANDL_SWR_HF_START(int8_t direction)
+{
+	if (SYSMENU_swr_opened)
+	{
+		SWR_EncRotate(direction);
+	}
+	else
+	{
+		SYSMENU_swr_opened = true;
+		SWR_Start(1000000, 60000000);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+}
+
+//SPECTRUM ANALYZER
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
 {
 #pragma unused(direction)
@@ -4631,37 +4714,6 @@ static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction)
 		TRX.WSPR_BANDS_2 = true;
 	if (direction < 0)
 		TRX.WSPR_BANDS_2 = false;
-}
-
-//SWR BAND ANALYZER
-static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction)
-{
-	if (SYSMENU_swr_opened)
-	{
-		SWR_EncRotate(direction);
-	}
-	else
-	{
-		SYSMENU_swr_opened = true;
-		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-		SWR_Start(BANDS[band].startFreq - 100000, BANDS[band].endFreq + 100000);
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	}
-}
-
-//SWR HF ANALYZER
-static void SYSMENU_HANDL_SWR_HF_START(int8_t direction)
-{
-	if (SYSMENU_swr_opened)
-	{
-		SWR_EncRotate(direction);
-	}
-	else
-	{
-		SYSMENU_swr_opened = true;
-		SWR_Start(1000000, 60000000);
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	}
 }
 
 //RDA STATS

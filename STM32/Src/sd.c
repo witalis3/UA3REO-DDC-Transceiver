@@ -1034,6 +1034,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD2", TRX.WIFI_PASSWORD2);
 			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD3", TRX.WIFI_PASSWORD3);
 			//SERVICES
+			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_Begin", (uint32_t *)&TRX.SWR_CUSTOM_Begin, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_End", (uint32_t *)&TRX.SWR_CUSTOM_End, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.SPEC_Begin", (uint32_t *)&TRX.SPEC_Begin, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.SPEC_End", (uint32_t *)&TRX.SPEC_End, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.SPEC_TopDBM", (uint32_t *)&TRX.SPEC_TopDBM, SYSMENU_INT16);
@@ -1643,6 +1645,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		strncpy(TRX.WIFI_PASSWORD3, value, lens);
 	}
 	//SERVICES
+	if (strcmp(name, "TRX.SWR_CUSTOM_Begin") == 0)
+		TRX.SWR_CUSTOM_Begin = uintval;
+	if (strcmp(name, "TRX.SWR_CUSTOM_End") == 0)
+		TRX.SWR_CUSTOM_End = uintval;
 	if (strcmp(name, "TRX.SPEC_Begin") == 0)
 		TRX.SPEC_Begin = uintval;
 	if (strcmp(name, "TRX.SPEC_End") == 0)
