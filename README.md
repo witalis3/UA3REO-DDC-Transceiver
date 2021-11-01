@@ -287,6 +287,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FAN Full start** - Temperature of the PA for starting the fan at full speed
 * **MAX RF Temp** - Maximum temperature of the PA before the protection operation
 * **MAX SWR** - Maximum VSWR before protection operation
+* **SSB Power addition** - Addition of RF power in SSB power, %
 * **FM Deviation Scale** - Set TX FM Deviation Scale
 * **AM Modulation Index** - Set TX AM Modulation Scale
 * **TUNE Max Power** - Maximum RF power in Tune mode
