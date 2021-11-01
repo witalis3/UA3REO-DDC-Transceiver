@@ -254,7 +254,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
 		TRX.LCD_Brightness = 60;	 //LCD Brightness
-		TRX.LCD_SleepTimeout = 300;	 //LCD Brightness
+		TRX.LCD_SleepTimeout = 0;	 //LCD Sleep Timeout berfore idle
 		TRX.WTF_Moving = true;		 //move WTF with frequency encoder
 		TRX.FFT_Automatic = true;	 //Automatic FFT Scale
 		TRX.FFT_Sensitivity = 8;	 //Threshold of FFT autocalibrate
