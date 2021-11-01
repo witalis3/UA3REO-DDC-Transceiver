@@ -34,6 +34,7 @@ static bool iambic_sequence_started = false;
 	
 void CW_key_change(void)
 {
+	TRX_Inactive_Time = 0;
 	if (TRX_Tune)
 		return;
 	if (CurrentVFO->Mode != TRX_MODE_CW)

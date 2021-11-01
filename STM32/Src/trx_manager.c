@@ -192,6 +192,7 @@ static void TRX_Start_TXRX()
 
 void TRX_ptt_change(void)
 {
+	TRX_Inactive_Time = 0;
 	if (TRX_Tune)
 		TRX_Tune = false;
 	
