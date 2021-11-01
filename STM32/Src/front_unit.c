@@ -343,6 +343,7 @@ void FRONTPANEL_ENCODER2_checkRotate(void)
 
 static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, handler here, direction -1 - left, 1 - right
 {
+	TRX_Inactive_Time = 0;
 	if (TRX.Locked || LCD_window.opened)
 		return;
 	if (LCD_systemMenuOpened)
@@ -397,6 +398,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, handler here, direction -1 - left, 1 - right
 {
+	TRX_Inactive_Time = 0;
 	if (TRX.Locked || LCD_window.opened)
 		return;
 
@@ -554,6 +556,7 @@ void FRONTPANEL_check_ENC2SW(void)
 
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 {
+	TRX_Inactive_Time = 0;
 	//ENC2 CLICK
 	if (CurrentVFO->Mode == TRX_MODE_CW && !LCD_systemMenuOpened && !LCD_window.opened)
 	{
@@ -576,6 +579,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter)
 {
+	TRX_Inactive_Time = 0;
 	FRONTPANEL_BUTTONHANDLER_MENU(0);
 }
 
@@ -793,6 +797,7 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 		//set state
 		if (mcp3008_value >= button->tres_min && mcp3008_value < button->tres_max)
 		{
+			TRX_Inactive_Time = 0;
 			button->state = true;
 			if (TRX.Debug_Type == TRX_DEBUG_BUTTONS)
 				println("Button pressed: port ", button->port, " channel ", button->channel, " value: ", mcp3008_value);

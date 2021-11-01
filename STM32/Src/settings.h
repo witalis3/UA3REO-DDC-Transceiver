@@ -36,7 +36,7 @@
 #define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
 #define DXCLUSTER_UPDATE_TIME (1000*60*1)	//interval to get cluster info, 1min
 #define NORMAL_SWR	1.5f								//ATU SWR target
-
+#define IDLE_LCD_BRIGHTNESS 5					//Low brightness for IDLE mode (dimmer)
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
 //select how the SWR and the power is measured
@@ -416,6 +416,7 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_Zoom;
 	uint8_t FFT_ZoomCW;
 	uint8_t LCD_Brightness;
+	uint16_t LCD_SleepTimeout;
 	bool WTF_Moving;
 	bool FFT_Automatic;
 	uint8_t FFT_Sensitivity;

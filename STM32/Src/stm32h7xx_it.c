@@ -694,6 +694,24 @@ void TIM6_DAC_IRQHandler(void)
     //Process Scaner
     if (TRX_ScanMode)
       TRX_ProcessScanMode();
+		
+		//Process LCD dimmer
+		static bool LCD_Dimmer_State = false;
+		if(!LCD_busy)
+		{
+			LCD_busy = true;
+			if(!LCD_Dimmer_State && TRX.LCD_SleepTimeout > 0 &&TRX_Inactive_Time >= TRX.LCD_SleepTimeout)
+			{
+				LCDDriver_setBrightness(IDLE_LCD_BRIGHTNESS);
+				LCD_Dimmer_State = true;
+			}
+			if(LCD_Dimmer_State && TRX_Inactive_Time < TRX.LCD_SleepTimeout)
+			{
+				LCDDriver_setBrightness(TRX.LCD_Brightness);
+				LCD_Dimmer_State = false;
+			}
+			LCD_busy = false;
+		}
 
     // reset error flags
     WM8731_Buffer_underrun = false;
@@ -726,6 +744,7 @@ void TIM6_DAC_IRQHandler(void)
   if (ms10_counter == 101) // every 1 sec
   {
     ms10_counter = 0;
+		TRX_Inactive_Time++;
 
     //Detect FPGA IQ phase error
     if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !TRX_phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM)
@@ -749,7 +768,7 @@ void TIM6_DAC_IRQHandler(void)
 			if(WIFI_getDXCluster_background())
 				TRX_DXCluster_UpdateTime = HAL_GetTick();
 		}
-
+		
     CPULOAD_Calc(); // Calculate CPU load
     TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
     TRX_STM32_VREF = TRX_getSTM32H743vref();

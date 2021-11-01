@@ -120,6 +120,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ZoomCW(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_LCD_Brightness(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_LCD_SleepTimeout(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction);
@@ -501,6 +502,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Zoom CW", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_HANDL_SCREEN_FFT_ZoomCW},
 #ifdef HAS_BRIGHTNESS_CONTROL
 		{"LCD Brightness", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_SCREEN_LCD_Brightness},
+		{"LCD Sleep Timeout", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.LCD_SleepTimeout, SYSMENU_HANDL_SCREEN_LCD_SleepTimeout},
 #endif
 		{"Color Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME, {"Black", "White", "Colored"}},
 #ifdef LAY_480x320
@@ -2141,6 +2143,14 @@ static void SYSMENU_HANDL_SCREEN_LCD_Brightness(int8_t direction)
 	if (TRX.LCD_Brightness > 100)
 		TRX.LCD_Brightness = 100;
 	LCDDriver_setBrightness(TRX.LCD_Brightness);
+}
+
+static void SYSMENU_HANDL_SCREEN_LCD_SleepTimeout(int8_t direction)
+{
+	if(TRX.LCD_SleepTimeout > 0 || direction > 0)
+		TRX.LCD_SleepTimeout += direction;
+	if (TRX.LCD_SleepTimeout > 1000)
+		TRX.LCD_SleepTimeout = 1000;
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction)

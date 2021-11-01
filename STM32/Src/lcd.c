@@ -1416,6 +1416,7 @@ void LCD_showInfo(char text[], bool autohide)
 void LCD_processTouch(uint16_t x, uint16_t y)
 {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	TRX_Inactive_Time = 0;
 	if (TRX.Locked)
 		return;
 	

@@ -66,6 +66,7 @@ volatile float32_t TRX_RF_Temperature = 0.0f;
 volatile bool TRX_ScanMode = false;
 bool TRX_phase_restarted = false;
 uint32_t TRX_TX_StartTime = 0;
+uint32_t TRX_Inactive_Time = 0;
 uint32_t TRX_DXCluster_UpdateTime = 0;
 volatile float32_t TRX_PWR_Voltage = 12.0f;
 volatile float32_t TRX_RF_Current = 0.0f;
