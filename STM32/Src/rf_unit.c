@@ -505,7 +505,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	//BIG Version RF Unit ///////////////////////////////////////////////////////////////////////
 	if(CALIBRATE.RF_unit_type == RF_UNIT_BIG)
 	{
-		if(TRX_Tune)
+		if(TRX_Tune && CurrentVFO->Freq <= 70000000)
 			RF_UNIT_ProcessATU();
 		
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
@@ -688,7 +688,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	//SPLIT Version RF Unit ///////////////////////////////////////////////////////////////////////
 	if(CALIBRATE.RF_unit_type == RF_UNIT_SPLIT)
 	{
-		if(TRX_Tune)
+		if(TRX_Tune && CurrentVFO->Freq <= 70000000)
 			RF_UNIT_ProcessATU();
 		
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
@@ -891,7 +891,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	//RU4PN Version RF Unit ///////////////////////////////////////////////////////////////////////
 	if(CALIBRATE.RF_unit_type == RF_UNIT_RU4PN)
 	{
-		if(TRX_Tune)
+		if(TRX_Tune && CurrentVFO->Freq <= 70000000)
 			RF_UNIT_ProcessATU();
 		
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
