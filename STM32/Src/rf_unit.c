@@ -1106,9 +1106,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			MINI_DELAY
 			if (!clean)
 			{
-				//U23-7 Net_RX/TX
-				if (registerNumber == 0 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
-					SET_DATA_PIN;
+				//U23-7 -
+				//if (registerNumber == 0
 				//U23-6 ATT_ON_16
 				if (registerNumber == 1 && !(TRX.ATT && att_val_16))
 					SET_DATA_PIN;
@@ -1127,9 +1126,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U23-1 ATT_ON_8
 				if (registerNumber == 6 && !(TRX.ATT && att_val_8))
 					SET_DATA_PIN;
-				//U23-0 LNA_ON
-				if (registerNumber == 7 && !(!TRX_on_TX() && TRX.LNA))
-					SET_DATA_PIN;
+				//U23-0 -
+				//if (registerNumber == 7
 				
 				//U24-7 LPF_5
 				if (registerNumber == 8  && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && bpf == 4)
@@ -1140,8 +1138,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U24-5 LPF_7
 				if (registerNumber == 10  && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && bpf == 6)
 					SET_DATA_PIN;
-				//U24-4 LPF_8
-				if (registerNumber == 11  && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && bpf == 5)
+				//U24-4 HF_AMP_BIAS_ON
+				if (registerNumber == 11 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
 					SET_DATA_PIN;
 				//U24-3 LPF_1
 				if (registerNumber == 12  && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && bpf == 0)
@@ -1189,10 +1187,12 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//if (registerNumber == 26)
 				//U32-E -
 				//if (registerNumber == 27)
-				//U32-D -
-				//if (registerNumber == 28)
-				//U32-C -
-				//if (registerNumber == 29)
+				//U32-D Net_RX/TX
+				if (registerNumber == 28 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+					SET_DATA_PIN;
+				//U32-C - LNA_ON
+				if (registerNumber == 29 && (!TRX_on_TX() && TRX.LNA))
+					SET_DATA_PIN;
 				//U32-B -
 				//if (registerNumber == 30)
 				//U32-A U3 BPF_1_EN
