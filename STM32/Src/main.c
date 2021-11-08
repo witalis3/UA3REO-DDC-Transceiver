@@ -262,7 +262,7 @@ int main(void)
   else
 #endif
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
-  if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (F1)
+  if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (F1) (CB)
     LoadSettings(true);
   else
 #endif
@@ -287,7 +287,7 @@ int main(void)
   else
 #endif
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
-  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8)
+  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8) (CB+F6)
     LoadCalibration(true);
   else
 #endif
@@ -1445,10 +1445,10 @@ static void MX_MDMA_Init(void)
   hmdma_mdma_channel43_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel43_sw_0.Init.Priority = MDMA_PRIORITY_LOW;
   hmdma_mdma_channel43_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
-  hmdma_mdma_channel43_sw_0.Init.SourceInc = MDMA_SRC_DEC_WORD;
-  hmdma_mdma_channel43_sw_0.Init.DestinationInc = MDMA_DEST_DEC_WORD;
-  hmdma_mdma_channel43_sw_0.Init.SourceDataSize = MDMA_SRC_DATASIZE_WORD;
-  hmdma_mdma_channel43_sw_0.Init.DestDataSize = MDMA_DEST_DATASIZE_WORD;
+  hmdma_mdma_channel43_sw_0.Init.SourceInc = MDMA_SRC_DEC_BYTE;
+  hmdma_mdma_channel43_sw_0.Init.DestinationInc = MDMA_DEST_DEC_BYTE;
+  hmdma_mdma_channel43_sw_0.Init.SourceDataSize = MDMA_SRC_DATASIZE_BYTE;
+  hmdma_mdma_channel43_sw_0.Init.DestDataSize = MDMA_DEST_DATASIZE_BYTE;
   hmdma_mdma_channel43_sw_0.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
   hmdma_mdma_channel43_sw_0.Init.BufferTransferLength = 32;
   hmdma_mdma_channel43_sw_0.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
