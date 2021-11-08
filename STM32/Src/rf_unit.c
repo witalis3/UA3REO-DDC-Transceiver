@@ -291,7 +291,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {
 	bool dualrx_lpf_disabled = false;
 	bool dualrx_bpf_disabled = false;
-	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN)
+	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
 	{
 		if (TRX.Dual_RX && SecondaryVFO->Freq > CALIBRATE.RFU_LPF_END)
 			dualrx_lpf_disabled = true;
@@ -1173,10 +1173,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 21 && !dualrx_bpf_disabled && TRX.RF_Filters && (bpf == 5 || bpf == 4)) //14.5-21.5(5) 12-14.5(4)
 					SET_DATA_PIN;
 				//U31-B U5 BPF_2_EN
-				if (registerNumber == 22 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 5 && bpf != 6 && bpf != 4 && bpf != 200))) // net5?, 21.5-30(6), 14.5-21.5(5), 12-14.5(4)
+				if (registerNumber == 22 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 5 || bpf == 6 || bpf == 4))) // net5?, 21.5-30(6), 14.5-21.5(5), 12-14.5(4)
 					SET_DATA_PIN;
 				//U31-A U7 BPF_3_EN
-				if (registerNumber == 23 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 3 && bpf != 0 && bpf != 2))) // 6-7.3(2), 7-12(3), 2.5-4(1), 1.6-2.5(0)
+				if (registerNumber == 23 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 3 || bpf == 0 || bpf == 2))) // 6-7.3(2), 7-12(3), 2.5-4(1), 1.6-2.5(0)
 					SET_DATA_PIN;
 				
 				//U32-H -
@@ -1196,7 +1196,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U32-B -
 				//if (registerNumber == 30)
 				//U32-A U3 BPF_1_EN
-				if (registerNumber == 31 && (dualrx_bpf_disabled || (!(CurrentVFO->Freq >= CALIBRATE.RFU_HPF_START && bpf == 255) && !(CurrentVFO->Freq <= CALIBRATE.RFU_LPF_END && bpf == 255) && bpf != 7))) //bypass, lpf, hpf, 145(7)
+				if (registerNumber == 31 && !(TRX.RF_Filters && ((CurrentVFO->Freq >= CALIBRATE.RFU_HPF_START && bpf == 255) || (CurrentVFO->Freq <= CALIBRATE.RFU_LPF_END && bpf == 255) || bpf == 7 || dualrx_bpf_disabled))) //bypass, lpf, hpf, 145(7)
 					SET_DATA_PIN;
 			}
 			MINI_DELAY

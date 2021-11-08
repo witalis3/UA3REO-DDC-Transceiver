@@ -64,6 +64,7 @@ bool WIFI_downloadFileToSD_compleated = false;
 void WIFI_Init(void)
 {
 	static uint8_t init_version = 0;
+	WIFI_State = WIFI_UNDEFINED;
 	
 	if(init_version == 0)
 	{
