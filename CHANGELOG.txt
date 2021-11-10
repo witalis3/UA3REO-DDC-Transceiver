@@ -1,5 +1,6 @@
 ----Version 3.2.1----
 +HARDW: В папку Case добавлены STL модели ручек энкодера для распечатки на 3д принтере, Thx автору EB4DYL
++HARDW: Новая RF-UNIT-RU4PN-rev3 и исправлениями ошибок, Thx RU4PN
 +STM32: Исправление водопада, декодера RDS/CW, Thx RU4PN, UA9ULT, UR4UOQ и другим
 +STM32: Диапазон FFT Averaging расширен до 0-10, Thx Гена
 
