@@ -1,3 +1,6 @@
+----Version 3.2.2----
++HARDW: Новая RF-UNIT-RU4PN-rev4b, Thx RU4PN
+
 ----Version 3.2.1----
 +HARDW: В папку Case добавлены STL модели ручек энкодера для распечатки на 3д принтере, Thx автору EB4DYL
 +HARDW: Новая RF-UNIT-RU4PN-rev3, Thx RU4PN
