@@ -1,6 +1,7 @@
 ----Version 3.2.2----
-+HARDW: Новая RF-UNIT-RU4PN-rev4b, Thx RU4PN
++HARDW: Новая RF-UNIT-BIG-RU4PN-rev4b, Thx RU4PN
 +HARDW: Новые платы корпуса и тангенты, Thx EA7GIB
++HARDW: Новая версия RF-UNIT-BIG-DB5AT на основе AFT05mp075nr1, Thx DB5AT
 
 ----Version 3.2.1----
 +HARDW: В папку Case добавлены STL модели ручек энкодера для распечатки на 3д принтере, Thx автору EB4DYL
