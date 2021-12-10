@@ -22,6 +22,8 @@
 #include "sd.h"
 #include "vad.h"
 
+#include "INA226_PWR_monitor.h"				//Tisho
+
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
 volatile bool LCD_systemMenuOpened = false;
@@ -1079,15 +1081,39 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		sprintf(buff, "BW:FULL");
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_BW_Y_OFFSET, COLOR->STATUS_LABEL_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	//RIT
-	if (TRX.CLAR)
-		sprintf(buff, "RIT:CLAR");
-	else if (TRX.ShiftEnabled)
-		sprintf(buff, "SHIFT:%d", TRX_SHIFT);
-	else if (TRX.SplitEnabled)
-		sprintf(buff, "SPLIT:%d", TRX_SPLIT);
+	
+	//Tisho - begin of change
+	//INA226 current voltage indication 
+	#if defined(FRONTPANEL_BIG_V1)
+	if(CALIBRATE.INA226_EN)							//Is the INA226 used (installed) 
+		{
+			Read_INA226_Data();
+			sprintf(buff, "%2.1fV/%2.1fA ", Get_INA226_Voltage(), Get_INA226_Current());
+		}
 	else
-		sprintf(buff, "RIT:OFF");
+		{
+		//RIT
+		if (TRX.CLAR)
+			sprintf(buff, "RIT:CLAR");
+		else if (TRX.ShiftEnabled)
+			sprintf(buff, "SHIFT:%d", TRX_SHIFT);
+		else if (TRX.SplitEnabled)
+			sprintf(buff, "SPLIT:%d", TRX_SPLIT);
+		else
+			sprintf(buff, "RIT:OFF");
+		}
+		
+	#else
+		//RIT
+		if (TRX.CLAR)
+			sprintf(buff, "RIT:CLAR");
+		else if (TRX.ShiftEnabled)
+			sprintf(buff, "SHIFT:%d", TRX_SHIFT);
+		else if (TRX.SplitEnabled)
+			sprintf(buff, "SPLIT:%d", TRX_SPLIT);
+		else
+			sprintf(buff, "RIT:OFF");
+	#endif																		//Tisho end of change
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_RIT_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_RIT_Y_OFFSET, COLOR->STATUS_LABEL_RIT, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 //THERMAL

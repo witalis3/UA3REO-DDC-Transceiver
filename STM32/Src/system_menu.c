@@ -25,6 +25,7 @@
 #include "self_test.h"
 #include "cw.h"
 #include "FT8/FT8_main.h"							//Tisho
+#include "INA226_PWR_monitor.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -324,6 +325,9 @@ static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction);
 static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction);
+static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction);					//Tisho
+static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction);
+
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -737,6 +741,10 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"OTA Update", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_HANDL_CALIB_OTA_update},
 		{"TX Start Delay", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_HANDL_CALIB_TX_StartDelay},
 		{"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
+		#if defined(FRONTPANEL_BIG_V1)
+		{"INA226_PWR_MON", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},		//Tisho
+		{"INA226_Cur_Calc(mA/Bit)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL},		//Tisho
+		#endif	
 		{"PWR VLT Calibr", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_HANDL_CALIB_PWR_VLT_Calibration},
 };
 
@@ -4449,6 +4457,27 @@ static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction)
 	
 	LCD_Init();
 	LCD_redraw(false);
+}
+
+//Tisho
+static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction)
+{
+	if (direction > 0)
+		{
+		CALIBRATE.INA226_EN = true;
+		INA226_Init();
+		}	
+	if (direction < 0)
+		CALIBRATE.INA226_EN = false;
+}
+
+static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction)
+{
+	CALIBRATE.INA226_CurCalc += (float32_t)direction * 0.01f;
+	if (CALIBRATE.INA226_CurCalc < 0.01f)
+		CALIBRATE.INA226_CurCalc = 0.01f;
+	if (CALIBRATE.INA226_CurCalc > 10.0f)
+		CALIBRATE.INA226_CurCalc = 10.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction)
