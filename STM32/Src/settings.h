@@ -610,6 +610,8 @@ extern struct TRX_CALIBRATE
 	bool OTA_update;
 	uint16_t TX_StartDelay;
 	bool LCD_Rotate;
+	bool INA226_EN;												//Tisho
+	float32_t INA226_CurCalc;							//X_mA/Bit Coeficient is dependant on the used shunt (tolerances and soldering)
 	float32_t PWR_VLT_Calibration;
 	
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];

@@ -42,6 +42,7 @@
 #include "wifi.h"
 #include "images.h"
 #include "sd.h"
+#include "INA226_PWR_monitor.h"				//Tisho
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -365,6 +366,13 @@ int main(void)
   println("[OK] Digital decoder timer TIM17 init");
   HAL_TIM_Base_Start_IT(&htim17);
   println("UA3REO Transceiver started!\r\n");
+	
+	//Tisho													
+	#if defined(FRONTPANEL_BIG_V1)
+	if(CALIBRATE.INA226_EN)		//	if INA226 is activated then initialise
+		INA226_Init();
+	#endif																		//Tisho end of change
+	
   //while(true){HAL_Delay(3000); SCB->AIRCR = 0x05FA0004; } //debug restart
   /* USER CODE END 2 */
 

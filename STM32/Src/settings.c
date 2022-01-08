@@ -582,6 +582,8 @@ void LoadCalibration(bool clear)
 		CALIBRATE.OTA_update = true;				//enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;			//Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;			//LCD 180 degree rotation
+		CALIBRATE.INA226_EN = false;			//INA226 is not used				//Tisho
+		CALIBRATE.INA226_CurCalc = 0.4f;			//0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f;	//VLT meter calibration
 
 		//Default memory channels

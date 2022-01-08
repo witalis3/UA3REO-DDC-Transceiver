@@ -57,6 +57,7 @@ extern void i2c_stop(I2C_DEVICE *dev);
 extern bool i2c_get_ack(I2C_DEVICE *dev);
 extern bool i2c_beginReceive_u8(I2C_DEVICE *dev, uint8_t slave_address);
 extern uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack);
+extern uint16_t i2c_Read_Word(I2C_DEVICE *dev); 	//Tisho
 extern uint8_t i2c_endTransmission(I2C_DEVICE *dev);
 
 #endif

@@ -230,8 +230,8 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 {
 	unsigned char i, receive = 0;
 	SDA_IN(dev);
-	I2C_DELAY
-	I2C_DELAY
+//	I2C_DELAY
+//	I2C_DELAY
 
 	for (i = 0; i < 8; i++)
 	{
@@ -240,10 +240,12 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 		I2C_DELAY
 		SCK_SET;
 		receive <<= 1;
-		I2C_DELAY
-		I2C_DELAY
+//		I2C_DELAY
+//		I2C_DELAY
 		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
 			receive++;
+		I2C_DELAY
+		I2C_DELAY
 	}
 	if (!ack)
 	{
@@ -263,6 +265,10 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 	{
 		//Ack
 		SCK_CLR;
+		
+		I2C_DELAY
+		I2C_DELAY
+		
 		SDA_OUT(dev);
 		SDA_CLR;
 		I2C_DELAY
@@ -273,5 +279,80 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 		SCK_CLR;
 		SDA_IN(dev);
 	}
+	I2C_DELAY
+	I2C_DELAY
+	I2C_DELAY
+	return receive;
+}
+
+//Tisho
+	/*After the first Byte is recieved the master sends "ACK"
+	*After the second Byte is recieved the master sends "NACK"
+	*
+	*/
+	
+uint16_t i2c_Read_Word(I2C_DEVICE *dev)
+{
+	unsigned char i;
+	uint16_t receive = 0;
+	
+	SDA_IN(dev);
+	
+	for (i = 0; i < 8; i++)
+	{
+		SCK_CLR;
+		I2C_DELAY
+		SCK_SET;
+		receive <<= 1;
+		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
+			receive++;
+		I2C_DELAY
+	}
+	//Ack
+	SCK_CLR;
+	SDA_OUT(dev);
+	SDA_CLR;
+	I2C_DELAY
+	I2C_DELAY
+	I2C_DELAY
+	SCK_SET;
+	I2C_DELAY
+	I2C_DELAY
+	I2C_DELAY
+	SCK_CLR;
+	SDA_IN(dev);
+	
+	//Second byte
+	//Strange efect was observed when reading the second byte of data from INA226:
+	//if the interypts are not disabled the data is not read corect (offen the INA is pulling down the SDA for the complete byte)
+	//most strange part is that the first byte is read witout a problem (witout the "__disable_irq()" help)
+	//it is good to investigate the efect further!
+	
+	__disable_irq();   //Disable all interrupts	
+	for (i = 0; i < 8; i++)
+	{
+	SCK_CLR;
+	I2C_DELAY
+	SCK_SET;
+	receive <<= 1;
+	if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
+		receive++;
+	I2C_DELAY
+	}
+	__enable_irq(); //Re-enable all interrupts
+		
+	
+	//NAck
+	SCK_CLR;
+	SDA_OUT(dev);
+	SDA_SET;
+	I2C_DELAY
+	I2C_DELAY
+	SCK_SET;
+	I2C_DELAY
+	I2C_DELAY
+	SCK_CLR;
+	SDA_IN(dev);
+
 	return receive;
 }
