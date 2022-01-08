@@ -5680,7 +5680,7 @@ bool SYSMENU_HANDL_CHECK_HAS_ATU(void)
 		case RF_UNIT_RU4PN:
 			return true;
 		case RF_UNIT_WF_100D:
-			return false;
+			return true;
 		case RF_UNIT_BIG:
 			return true;
 		case RF_UNIT_SPLIT:
