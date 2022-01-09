@@ -41,6 +41,7 @@ bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
 float32_t APROC_TX_clip_gain = 1.0f;
 float32_t APROC_TX_ALC_IN_clip_gain = 1.0f;
+float32_t APROC_TX_tune_power = 0.0f;
 
 // Private variables
 #if FT8_SUPPORT
@@ -936,26 +937,40 @@ void processTxAudio(void)
 	//Tune power regulator
 	if (TRX_Tune)
 	{
-		static float32_t tune_power = 0;
-		float32_t full_power = TRX_PWR_Forward + TRX_PWR_Backward;
-
-		if (fabsf(full_power - (float32_t)CALIBRATE.TUNE_MAX_POWER) > 0.1f && !ATU_TunePowerStabilized) //histeresis
+		if(!ATU_TunePowerStabilized)
 		{
-			if (full_power < CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
-				tune_power = 0.993f * tune_power + 0.007f * RFpower_amplitude;
-			if ((TRX_PWR_Forward + TRX_PWR_Backward) > CALIBRATE.TUNE_MAX_POWER && tune_power < RFpower_amplitude)
-				tune_power = 0.993f * tune_power;
-		}
-		else
-			ATU_TunePowerStabilized = true;
+			float32_t full_power = TRX_PWR_Forward;
 
-		if (tune_power >= RFpower_amplitude * 0.99f)
-		{
-			tune_power = RFpower_amplitude;
-			ATU_TunePowerStabilized = true;
+			if (fabsf(full_power - (float32_t)CALIBRATE.TUNE_MAX_POWER) > 0.1f) //histeresis
+			{
+				float32_t coeff_a = 0.993f;
+				if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D || CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT)
+				{
+					coeff_a = 0.997f;
+				}
+				float32_t coeff_b = 1.0f - coeff_a;
+				
+				if (full_power < CALIBRATE.TUNE_MAX_POWER && APROC_TX_tune_power < RFpower_amplitude)
+					APROC_TX_tune_power = coeff_a * APROC_TX_tune_power + coeff_b * RFpower_amplitude;
+				if (TRX_PWR_Forward > CALIBRATE.TUNE_MAX_POWER && APROC_TX_tune_power < RFpower_amplitude)
+					APROC_TX_tune_power = coeff_a * APROC_TX_tune_power;
+			}
+			else
+			{
+				ATU_TunePowerStabilized = true;
+				println("Tune Power Stabilized");
+			}
+
+			if (APROC_TX_tune_power >= RFpower_amplitude * 0.99f)
+			{
+				APROC_TX_tune_power = RFpower_amplitude;
+				ATU_TunePowerStabilized = true;
+				println("Tune Power Stabilized");
+			}
 		}
 
-		RFpower_amplitude = tune_power;
+		//println(RFpower_amplitude, " ", APROC_TX_tune_power);
+		RFpower_amplitude = APROC_TX_tune_power;
 	}
 
 	//Apply gain
@@ -1004,7 +1019,7 @@ void processTxAudio(void)
 			APROC_TX_clip_gain += 0.0001f;
 
 		// Input External ALC overload, over 1 volt
-		if (TRX_ALC_IN > 1.0f)
+		if (TRX_ALC_IN > 1.0f && CALIBRATE.RF_unit_type != RF_UNIT_WF_100D)
 		{
 			//correct gain
 			if (APROC_TX_ALC_IN_clip_gain > 0.0f)
@@ -1022,7 +1037,7 @@ void processTxAudio(void)
 	else
 		TRX_ALC_OUT = 0.0f;
 	//RF PowerControl (Audio Level Control) Compressor END
-
+	
 	if (mode != TRX_MODE_LOOPBACK)
 	{
 		// Delay before the RF signal is applied, so that the relay has time to trigger

@@ -941,7 +941,13 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 
 void FRONTPANEL_BUTTONHANDLER_TUNE(uint32_t parameter)
 {
-	RF_UNIT_ATU_Invalidate();
+	if(!TRX_Tune)
+	{
+		APROC_TX_tune_power = 0.0f;
+		RF_UNIT_ATU_Invalidate();
+		ATU_TunePowerStabilized = false;
+		LCD_UpdateQuery.StatusInfoBar = true;
+	}
 	
 	TRX_Tune = !TRX_Tune;
 	TRX_ptt_hard = TRX_Tune;
@@ -1871,6 +1877,7 @@ void FRONTPANEL_BUTTONHANDLER_SETRF_POWER(uint32_t parameter)
 {
 	TRX.RF_Power = parameter;
 	APROC_TX_clip_gain = 1.0f;
+	APROC_TX_tune_power = 0.0f;
 	ATU_TunePowerStabilized = false;
 	LCD_closeWindow();
 }

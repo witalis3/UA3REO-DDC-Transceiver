@@ -90,24 +90,23 @@ static void RF_UNIT_ProcessATU(void)
 	if (!TRX.ATU_Enabled)
 	{
 		ATU_Finished = true;
-		TRX.ATU_I = 0;
-		TRX.ATU_C = 0;
-		TRX.ATU_T = 0;
 		return;
 	}
+	
 	if (!TRX_Tune)
 		return;
-	if (TRX_PWR_Forward < 2.0f)
-		return;
-	//if (TRX_SWR > 2.0f && !ATU_InProcess)
-		//ATU_Finished = false;
+	
 	if (ATU_Finished)
 		return;
-	if (!ATU_TunePowerStabilized)
-		return;
-	if (TRX_SWR <= NORMAL_SWR)
+	
+	/*if (!ATU_Finished && TRX_PWR_Forward <= 1.1f)
 	{
 		ATU_Finished = true;
+		return;
+	}*/
+	
+	if (!ATU_TunePowerStabilized)
+	{
 		return;
 	}
 	
@@ -121,6 +120,12 @@ static void RF_UNIT_ProcessATU(void)
 	else
 	{
 		delay_stages_count = 0;
+	}
+	
+	if (TRX_SWR <= NORMAL_SWR)
+	{
+		ATU_Finished = true;
+		return;
 	}
 	
 	float32_t TRX_PWR = TRX_PWR_Forward - TRX_PWR_Backward;
@@ -142,6 +147,7 @@ static void RF_UNIT_ProcessATU(void)
 		ATU_MinSWR_T = false;
 		ATU_Stage = 0;
 		ATU_InProcess = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 	else
 	{
@@ -173,7 +179,7 @@ static void RF_UNIT_ProcessATU(void)
 			print("I+1 ");
 		if(wrong_way) 
 			print("Wr Way ");
-		println("I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", TRX_SWR, " PWR: ", TRX_PWR);
+		println("Stage: ", ATU_Stage, " I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", TRX_SWR, " PWR: ", TRX_PWR);
 		//iteration block
 		
 		if(ATU_Stage == 0) //iterate inds
@@ -287,6 +293,8 @@ static void RF_UNIT_ProcessATU(void)
 			TRX.ATU_T = ATU_MinSWR_T;
 			println("ATU best I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", ATU_MinSWR, " PWR: ", TRX_PWR);
 		}
+		
+		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 }
 
@@ -1329,15 +1337,11 @@ void RF_UNIT_ProcessSensors(void)
 
 	//SWR
 	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / 16383.0f;
-#if (defined(FRONTPANEL_WF_100D))
-	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / 16383.0f;
-	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / 16383.0f;
-#else
 	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / 16383.0f;
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / 16383.0f;
-#endif 
-	//	static float32_t TRX_VLT_forward = 0.0f;		//Tisho
-	//	static float32_t TRX_VLT_backward = 0.0f;		//Tisho
+	// println("FWD: ", forward, " BKW: ", backward);
+	// static float32_t TRX_VLT_forward = 0.0f;		//Tisho
+	// static float32_t TRX_VLT_backward = 0.0f;		//Tisho
 
 #if (defined(SWR_AD8307_LOG)) //If it is used the Log amp. AD8307
 
