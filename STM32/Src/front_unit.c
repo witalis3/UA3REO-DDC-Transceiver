@@ -944,6 +944,9 @@ void FRONTPANEL_BUTTONHANDLER_TUNE(uint32_t parameter)
 	if(!TRX_Tune)
 	{
 		APROC_TX_tune_power = 0.0f;
+		TRX.ATU_I = 0;
+		TRX.ATU_C = 0;
+		TRX.ATU_T = 0;
 		RF_UNIT_ATU_Invalidate();
 		ATU_TunePowerStabilized = false;
 		LCD_UpdateQuery.StatusInfoBar = true;

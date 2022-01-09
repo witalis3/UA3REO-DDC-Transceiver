@@ -7,6 +7,7 @@
 #include "system_menu.h"
 #include "functions.h"
 #include "audio_filters.h"
+#include "front_unit.h"
 
 static bool ATU_Finished = false;
 static bool ATU_InProcess = false;
@@ -122,13 +123,16 @@ static void RF_UNIT_ProcessATU(void)
 		delay_stages_count = 0;
 	}
 	
-	if (TRX_SWR <= NORMAL_SWR)
+	//float32_t TRX_PWR = TRX_PWR_Forward - TRX_PWR_Backward;
+	float32_t TRX_PWR = TRX_PWR_Forward;
+	
+	if (TRX_SWR <= NORMAL_SWR && TRX_PWR >= (float32_t)CALIBRATE.TUNE_MAX_POWER / 2.0f)
 	{
+		println("Normal SWR, stop!");
 		ATU_Finished = true;
+		FRONTPANEL_BUTTONHANDLER_TUNE(0);
 		return;
 	}
-	
-	float32_t TRX_PWR = TRX_PWR_Forward - TRX_PWR_Backward;
 	
 	static float32_t ATU_MinSWR_Slider = 9.9f;
 	static float32_t ATU_MinSWR_prev = 9.9f;
@@ -163,8 +167,9 @@ static void RF_UNIT_ProcessATU(void)
 		bool wrong_way = false;
 		if(ATU_MinSWR_prev_prev < ATU_MinSWR_prev && ATU_MinSWR_prev < TRX_SWR)
 			wrong_way = true;
+		//println("PREV PREV: ", ATU_MinSWR_prev_prev, " PREV: ", ATU_MinSWR_prev, " NOW: ", TRX_SWR);
 		ATU_MinSWR_prev_prev = ATU_MinSWR_prev;
-		ATU_MinSWR_prev = TRX_PWR;
+		ATU_MinSWR_prev = TRX_SWR;
 		
 		//debug
 		if(ATU_Stage == 0)
@@ -198,7 +203,7 @@ static void RF_UNIT_ProcessATU(void)
 		}
 		else if(ATU_Stage == 1) //iterate caps
 		{
-			if(TRX.ATU_C < ATU_MAXPOS)
+			if(TRX.ATU_C < ATU_MAXPOS && !wrong_way)
 			{
 				TRX.ATU_C++;
 			}
@@ -212,7 +217,7 @@ static void RF_UNIT_ProcessATU(void)
 		}
 		else if(ATU_Stage == 2) //iterate caps with other T
 		{
-			if(TRX.ATU_C < ATU_MAXPOS)
+			if(TRX.ATU_C < ATU_MAXPOS && !wrong_way)
 			{
 				TRX.ATU_C++;
 			}
@@ -292,6 +297,7 @@ static void RF_UNIT_ProcessATU(void)
 			TRX.ATU_C = ATU_MinSWR_C;
 			TRX.ATU_T = ATU_MinSWR_T;
 			println("ATU best I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", ATU_MinSWR, " PWR: ", TRX_PWR);
+			FRONTPANEL_BUTTONHANDLER_TUNE(0);
 		}
 		
 		LCD_UpdateQuery.StatusInfoBar = true;
