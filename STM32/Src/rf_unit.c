@@ -946,8 +946,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 7 && bitRead(TRX.ATU_I, 1))
 					SET_DATA_PIN;
 				
-				//U3-7 NOT USED
-				//if (registerNumber == 8)
+				//U3-7 HF-VHF-SELECT
+				if (registerNumber == 8 && CurrentVFO->Freq >= 70000000)
+					SET_DATA_PIN;
 				//U3-6 NOT USED
 				//if (registerNumber == 9)
 				//U3-5 NOT USED
@@ -957,13 +958,13 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U3-3 TUN_I_3
 				if (registerNumber == 12 && bitRead(TRX.ATU_I, 2))
 					SET_DATA_PIN;
-				//U5-2 TUN_C_4
+				//U3-2 TUN_C_4
 				if (registerNumber == 13 && bitRead(TRX.ATU_C, 3))
 					SET_DATA_PIN;
-				//U5-1 TUN_I_4
+				//U3-1 TUN_I_4
 				if (registerNumber == 14 && bitRead(TRX.ATU_I, 3))
 					SET_DATA_PIN;
-				//U5-0 TUN_C_5
+				//U3-0 TUN_C_5
 				if (registerNumber == 15 && bitRead(TRX.ATU_C, 4))
 					SET_DATA_PIN;
 				

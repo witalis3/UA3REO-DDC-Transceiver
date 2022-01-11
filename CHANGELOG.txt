@@ -2,7 +2,7 @@
 +HARDW: Новая RF-UNIT-BIG-RU4PN-rev4b, Thx RU4PN
 +HARDW: Новые платы корпуса и тангенты, Thx EA7GIB
 +HARDW: Новая версия RF-UNIT-BIG-DB5AT на основе AFT05mp075nr1, Thx DB5AT
-+STM32: Доработки для версии WF-100D
++STM32: Доработки для версии WF-100D, RU4PN
 +STM32: Доработки ATU
 
 ----Version 3.2.1----

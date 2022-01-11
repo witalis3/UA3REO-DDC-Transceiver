@@ -953,6 +953,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>INA226_PWR_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2636,6 +2646,16 @@
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -4390,6 +4410,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>INA226_PWR_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -6142,6 +6172,16 @@
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -7896,6 +7936,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>INA226_PWR_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -9648,6 +9698,16 @@
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -11402,6 +11462,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>INA226_PWR_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -13086,6 +13156,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>INA226_PWR_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -14769,6 +14849,16 @@
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>INA226_PWR_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\INA226_PWR_monitor.h</FilePath>
             </File>
           </Files>
         </Group>
