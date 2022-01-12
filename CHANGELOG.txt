@@ -2,12 +2,14 @@
 +HARDW: Новая RF-UNIT-BIG-RU4PN-rev4b, Thx RU4PN
 +HARDW: Новые платы корпуса и тангенты, Thx EA7GIB
 +HARDW: Новая версия RF-UNIT-BIG-DB5AT на основе AFT05mp075nr1, Thx DB5AT
-+STM32: Доработки для версии WF-100D, RU4PN
++HARDW: Новая версия плат корпуса от DB5AT
++STM32: Добавлена поддержка измерителя INA226, Thx DB5AT
++STM32: Доработки для версии WF-100D и RU4PN
 +STM32: Доработки ATU
 
 ----Version 3.2.1----
-+HARDW: В папку Case добавлены STL модели ручек энкодера для распечатки на 3д принтере, Thx автору EB4DYL
-+HARDW: Новая RF-UNIT-RU4PN-rev3, Thx RU4PN
++HARDW: В папку Case добавлены STL модели ручек энкодера для распечатки на 3д принтере, Thx авторуДобавлена поддержка измерителя INA226T-Thx добав-rev3, Thx RU4PN
++HARDW: Новая RF-UNIT-RU4PN-rev3, Th и RU4PN
 -Tandem VHF разведён прямо на плате
 -Уменьшены ёмкости ФНЧ дорожек
 -Добавлены места пайки экрана на входные фильтра УКВ-подуля
