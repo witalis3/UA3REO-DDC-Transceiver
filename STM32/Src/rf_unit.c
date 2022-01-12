@@ -1143,8 +1143,42 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			{
 				//U1-7 -
 				//if (registerNumber == 0
-				//U1-6 -
-				//if (registerNumber == 1
+				//U1-6 FAN_OUT
+				if (registerNumber == 1)
+				{
+					static bool fan_status = false;
+					static bool fan_pwm = false;
+					if (fan_status && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
+						fan_status = false;
+					if (!fan_status && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
+					{
+						fan_status = true;
+						fan_pwm = true;
+					}
+					if (TRX_RF_Temperature >= CALIBRATE.FAN_FULL_START) // Temperature at which the fan starts at full power
+						fan_pwm = false;
+
+					if (fan_status)
+					{
+						if (fan_pwm) //PWM
+						{
+							const uint8_t on_ticks = 1;
+							const uint8_t off_ticks = 1;
+							static bool pwm_status = false; //true - on false - off
+							static uint8_t pwm_ticks = 0;
+							pwm_ticks++;
+							if (pwm_status)
+								SET_DATA_PIN;
+							if ((pwm_status && pwm_ticks == on_ticks) || (!pwm_status && pwm_ticks == off_ticks))
+							{
+								pwm_status = !pwm_status;
+								pwm_ticks = 0;
+							}
+						}
+						else
+							SET_DATA_PIN;
+					}
+				}
 				//U1-5 -
 				//if (registerNumber == 2
 				//U1-4 -
@@ -1440,6 +1474,13 @@ void RF_UNIT_ProcessSensors(void)
 			TRX_PWR_Backward = TRX_PWR_Forward;
 	}
 #endif
+	
+	TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * 0.95f + TRX_PWR_Forward * 0.05f;
+	if(TRX_PWR_Forward > TRX_PWR_Forward_SMOOTHED) {
+		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward;
+	}
+	TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * 0.95f + TRX_PWR_Backward * 0.05f;
+	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * 0.9f + TRX_SWR * 0.1f;
 }
 
 //Tisho

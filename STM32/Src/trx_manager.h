@@ -53,6 +53,9 @@ volatile extern float32_t TRX_MAX_TX_Amplitude;
 volatile extern float32_t TRX_PWR_Forward;
 volatile extern float32_t TRX_PWR_Backward;
 volatile extern float32_t TRX_SWR;
+volatile extern float32_t TRX_PWR_Forward_SMOOTHED;
+volatile extern float32_t TRX_PWR_Backward_SMOOTHED;
+volatile extern float32_t TRX_SWR_SMOOTHED;
 volatile extern float32_t TRX_VLT_forward;  //Tisho
 volatile extern float32_t TRX_VLT_backward; //Tisho
 volatile extern float32_t TRX_ALC_IN;

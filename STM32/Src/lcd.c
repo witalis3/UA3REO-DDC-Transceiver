@@ -983,34 +983,34 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		{
 			//SWR
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_TX_LABELS_SWR_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, LAYOUT->STATUS_TX_LABELS_VAL_WIDTH, LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
-			sprintf(ctmp, "%.1f", (double)TRX_SWR);
+			sprintf(ctmp, "%.1f", (double)TRX_SWR_SMOOTHED);
 			LCDDriver_printText(ctmp, LAYOUT->STATUS_TX_LABELS_SWR_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 			//FWD
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_TX_LABELS_FWD_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, LAYOUT->STATUS_TX_LABELS_VAL_WIDTH, LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
-			if(TRX_PWR_Forward >= 100.0f)
-				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Forward);
-			else if(TRX_PWR_Forward >= 9.5f)
-				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward);
+			if(TRX_PWR_Forward_SMOOTHED >= 100.0f)
+				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Forward_SMOOTHED);
+			else if(TRX_PWR_Forward_SMOOTHED >= 9.5f)
+				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
 			else
-				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward);
+				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
 			LCDDriver_printText(ctmp, LAYOUT->STATUS_TX_LABELS_FWD_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 			//REF
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_TX_LABELS_REF_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, LAYOUT->STATUS_TX_LABELS_VAL_WIDTH, LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
-			if(TRX_PWR_Backward >= 100.0f)
-				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Backward);
-			else if(TRX_PWR_Backward >= 9.5f)
-				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Backward);
+			if(TRX_PWR_Backward_SMOOTHED >= 100.0f)
+				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Backward_SMOOTHED);
+			else if(TRX_PWR_Backward_SMOOTHED >= 9.5f)
+				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Backward_SMOOTHED);
 			else
-				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Backward);
+				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Backward_SMOOTHED);
 			LCDDriver_printText(ctmp, LAYOUT->STATUS_TX_LABELS_REF_X, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 			//SWR Meter
-			float32_t fwd_power = TRX_PWR_Forward;
+			float32_t fwd_power = TRX_PWR_Forward_SMOOTHED;
 			if (fwd_power > CALIBRATE.MAX_RF_POWER)
 				fwd_power = CALIBRATE.MAX_RF_POWER;
-			uint16_t ref_width = (uint16_t)(TRX_PWR_Backward * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER);
+			uint16_t ref_width = (uint16_t)(TRX_PWR_Backward_SMOOTHED * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER);
 			uint16_t fwd_width = (uint16_t)(fwd_power * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER);
 			uint16_t est_width = (uint16_t)((CALIBRATE.MAX_RF_POWER - fwd_power) * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER);
 			if (ref_width > fwd_width)
@@ -1035,15 +1035,15 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		else //analog meter version
 		{
 			//SWR
-			sprintf(ctmp, "%.1f", (double)TRX_SWR);
+			sprintf(ctmp, "%.1f", (double)TRX_SWR_SMOOTHED);
 			LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET - 5, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 			//FWD
-			sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward);
+			sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
 			LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 5, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 			LCD_drawSMeter();
-			LCD_PrintMeterArrow(LCD_GetSMeterValPosition(LCD_SWR2DBM_meter(TRX_SWR), false));
+			LCD_PrintMeterArrow(LCD_GetSMeterValPosition(LCD_SWR2DBM_meter(TRX_SWR_SMOOTHED), false));
 		}
 	}
 
