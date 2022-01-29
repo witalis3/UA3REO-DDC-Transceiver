@@ -1352,9 +1352,11 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 void RF_UNIT_ProcessSensors(void)
 {
+	#define B16_RANGE 65535.0f
+	#define B14_RANGE 16383.0f
+	
 	//THERMAL
-
-	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / 16383.0f;
+	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B14_RANGE;
 
 	float32_t therm_resistance = -2000.0f * rf_thermal / (-3.3f + rf_thermal);
 	uint_fast8_t point_left = 0;
@@ -1377,15 +1379,14 @@ void RF_UNIT_ProcessSensors(void)
 		TRX_RF_Temperature = TRX_RF_Temperature_new;
 
 	//SWR
-	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / 16383.0f;
-	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / 16383.0f;
-	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / 16383.0f;
+	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B14_RANGE;
+	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B14_RANGE;
+	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B14_RANGE;
 	// println("FWD: ", forward, " BKW: ", backward);
 	// static float32_t TRX_VLT_forward = 0.0f;		//Tisho
 	// static float32_t TRX_VLT_backward = 0.0f;		//Tisho
 
 #if (defined(SWR_AD8307_LOG)) //If it is used the Log amp. AD8307
-
 	float32_t P_FW_dBm, P_BW_dBm;
 	float32_t V_FW_Scaled, V_BW_Scaled;
 	//float32_t NewSWR;
@@ -1413,8 +1414,8 @@ void RF_UNIT_ProcessSensors(void)
 		TRX_SWR = 0.0f;
 
 #else //if it is used the standard measure (diode rectifier)
-	forward = forward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
-	if (forward < 0.1f)							  // do not measure less than 100mV
+	//forward = forward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
+	if (forward < 0.05f)							  // do not measure less than 100mV
 	{
 		TRX_VLT_forward = 0.0f;
 		TRX_VLT_backward = 0.0f;
@@ -1434,8 +1435,8 @@ void RF_UNIT_ProcessSensors(void)
 		else
 			forward = forward * CALIBRATE.SWR_FWD_Calibration_HF;
 
-		backward = backward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
-		if (backward >= 0.1f)								// do not measure less than 100mV
+		//backward = backward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
+		if (backward >= 0.05f)								// do not measure less than 100mV
 		{
 			backward += 0.21f;									 // drop on diode
 			
@@ -1450,6 +1451,7 @@ void RF_UNIT_ProcessSensors(void)
 		else
 			backward = 0.001f;
 
+		//smooth process
 		TRX_VLT_forward = TRX_VLT_forward + (forward - TRX_VLT_forward) / 2;
 		TRX_VLT_backward = TRX_VLT_backward + (backward - TRX_VLT_backward) / 2;
 		if ((TRX_VLT_forward - TRX_VLT_backward) > 0.0f)
@@ -1475,12 +1477,16 @@ void RF_UNIT_ProcessSensors(void)
 	}
 #endif
 	
-	TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * 0.95f + TRX_PWR_Forward * 0.05f;
+	#define smooth_stick_time 500
+	static uint32_t forw_smooth_time = 0;
+	if(HAL_GetTick() - forw_smooth_time > smooth_stick_time)
+		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * 0.99f + TRX_PWR_Forward * 0.01f;
 	if(TRX_PWR_Forward > TRX_PWR_Forward_SMOOTHED) {
 		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward;
+		forw_smooth_time = HAL_GetTick();
 	}
-	TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * 0.95f + TRX_PWR_Backward * 0.05f;
-	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * 0.9f + TRX_SWR * 0.1f;
+	TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * 0.99f + TRX_PWR_Backward * 0.01f;
+	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * 0.98f + TRX_SWR * 0.02f;
 }
 
 //Tisho
