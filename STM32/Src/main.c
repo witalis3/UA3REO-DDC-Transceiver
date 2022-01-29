@@ -270,7 +270,11 @@ int main(void)
     LoadSettings(false);
 
 	//DFU bootloader
+#if defined(FRONTPANEL_WF_100D)
+	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[10].state)
+#else
 	if (TRX.NeedGoToBootloader)
+#endif
 	{
 		TRX.NeedGoToBootloader = false;
 		SaveSettings();
