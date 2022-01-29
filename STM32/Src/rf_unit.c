@@ -1477,7 +1477,7 @@ void RF_UNIT_ProcessSensors(void)
 	}
 #endif
 	
-	#define smooth_stick_time 500
+	#define smooth_stick_time 100
 	static uint32_t forw_smooth_time = 0;
 	if(HAL_GetTick() - forw_smooth_time > smooth_stick_time)
 		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * 0.99f + TRX_PWR_Forward * 0.01f;

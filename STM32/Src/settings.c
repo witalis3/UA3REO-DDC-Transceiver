@@ -500,12 +500,12 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_7_END = 150 * 1000 * 1000;		   //
 		CALIBRATE.RFU_BPF_8_START = 0;	   //disabled
 		CALIBRATE.RFU_BPF_8_END = 0;		   //disabled
-		CALIBRATE.SWR_FWD_Calibration_HF = 22.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 22.0f;	   //SWR Transormator rate return
-		CALIBRATE.SWR_FWD_Calibration_6M = 22.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 22.0f;	   //SWR Transormator rate return
-		CALIBRATE.SWR_FWD_Calibration_VHF = 22.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 22.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_HF = 13.8f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_HF = 13.8f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_6M = 13.8f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_6M = 13.8f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 13.8f;	   //SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_VHF = 13.8f;	   //SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 10;			   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 100;				//Max TRX Power for indication
 #else
