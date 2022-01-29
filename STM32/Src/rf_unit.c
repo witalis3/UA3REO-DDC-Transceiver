@@ -1353,10 +1353,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 void RF_UNIT_ProcessSensors(void)
 {
 	#define B16_RANGE 65535.0f
-	#define B14_RANGE 16383.0f
+	//#define B14_RANGE 16383.0f
 	
 	//THERMAL
-	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B14_RANGE;
+	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B16_RANGE;
 
 	float32_t therm_resistance = -2000.0f * rf_thermal / (-3.3f + rf_thermal);
 	uint_fast8_t point_left = 0;
@@ -1379,9 +1379,9 @@ void RF_UNIT_ProcessSensors(void)
 		TRX_RF_Temperature = TRX_RF_Temperature_new;
 
 	//SWR
-	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B14_RANGE;
-	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B14_RANGE;
-	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B14_RANGE;
+	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B16_RANGE;
+	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B16_RANGE;
+	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B16_RANGE;
 	// println("FWD: ", forward, " BKW: ", backward);
 	// static float32_t TRX_VLT_forward = 0.0f;		//Tisho
 	// static float32_t TRX_VLT_backward = 0.0f;		//Tisho
@@ -1493,16 +1493,17 @@ void RF_UNIT_ProcessSensors(void)
 //used to controll the calibration of the FW and BW power measurments
 void RF_UNIT_MeasureVoltage(void)
 {
-	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / 16383.0f;
-	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / 16383.0f;
+	#define B16_RANGE 65535.0f
+	//#define B14_RANGE 16383.0f
+	
+	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B16_RANGE;
+	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B16_RANGE;
 	//use the TRX_VLT_forward and TRX_VLT_backward global variables
 	//for the raw ADC input voltages
 	//in the TDM_Voltages() the other stuff will be calculated localy
 
 	static float32_t VLT_forward = 0.0f;
 	static float32_t VLT_backward = 0.0f;
-	//	TRX_VLT_forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / 16383.0f;
-	//	TRX_VLT_backward= (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / 16383.0f;
 	VLT_forward = VLT_forward + (forward - VLT_forward) / 10;
 	VLT_backward = VLT_backward + (backward - VLT_backward) / 10;
 

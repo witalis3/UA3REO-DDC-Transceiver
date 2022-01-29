@@ -498,16 +498,16 @@ static void MX_ADC1_Init(void)
   /** Common config
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV128;
-  hadc1.Init.Resolution = ADC_RESOLUTION_14B_OPT;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV256;
+  hadc1.Init.Resolution = ADC_RESOLUTION_16B;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   hadc1.Init.LowPowerAutoWait = DISABLE;
   hadc1.Init.ContinuousConvMode = ENABLE;
   hadc1.Init.NbrOfConversion = 1;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
-  hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc1.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
   hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
   hadc1.Init.OversamplingMode = DISABLE;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
@@ -528,7 +528,7 @@ static void MX_ADC1_Init(void)
   */
   sConfigInjected.InjectedChannel = ADC_CHANNEL_11;
   sConfigInjected.InjectedRank = ADC_INJECTED_RANK_1;
-  sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_32CYCLES_5;
+  sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_1CYCLE_5;
   sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
   sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
   sConfigInjected.InjectedOffset = 0;
@@ -538,9 +538,7 @@ static void MX_ADC1_Init(void)
   sConfigInjected.QueueInjectedContext = DISABLE;
   sConfigInjected.ExternalTrigInjecConv = ADC_EXTERNALTRIGINJEC_T4_TRGO;
   sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONV_EDGE_RISING;
-  sConfigInjected.InjecOversamplingMode = ENABLE;
-  sConfigInjected.InjecOversampling.Ratio = 64;
-  sConfigInjected.InjecOversampling.RightBitShift = ADC_RIGHTBITSHIFT_6;
+  sConfigInjected.InjecOversamplingMode = DISABLE;
   if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
   {
     Error_Handler();
@@ -557,6 +555,7 @@ static void MX_ADC1_Init(void)
   */
   sConfigInjected.InjectedChannel = ADC_CHANNEL_8;
   sConfigInjected.InjectedRank = ADC_INJECTED_RANK_3;
+  sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_32CYCLES_5;
   if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
   {
     Error_Handler();
@@ -595,16 +594,16 @@ static void MX_ADC3_Init(void)
   /** Common config
   */
   hadc3.Instance = ADC3;
-  hadc3.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV128;
+  hadc3.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV256;
   hadc3.Init.Resolution = ADC_RESOLUTION_16B;
   hadc3.Init.ScanConvMode = ADC_SCAN_ENABLE;
-  hadc3.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc3.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   hadc3.Init.LowPowerAutoWait = DISABLE;
   hadc3.Init.ContinuousConvMode = ENABLE;
   hadc3.Init.NbrOfConversion = 1;
   hadc3.Init.DiscontinuousConvMode = DISABLE;
   hadc3.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
-  hadc3.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc3.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
   hadc3.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
   hadc3.Init.OversamplingMode = DISABLE;
   if (HAL_ADC_Init(&hadc3) != HAL_OK)
@@ -1387,7 +1386,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel0 */
   /* Configure MDMA request hmdma_mdma_channel40_sw_0 on MDMA_Channel0 */
   hmdma_mdma_channel40_sw_0.Instance = MDMA_Channel0;
-	hmdma_mdma_channel40_sw_0.Init.Request = MDMA_REQUEST_SW;
+  hmdma_mdma_channel40_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel40_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel40_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
   hmdma_mdma_channel40_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
@@ -1409,7 +1408,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel1 */
   /* Configure MDMA request hmdma_mdma_channel41_sw_0 on MDMA_Channel1 */
   hmdma_mdma_channel41_sw_0.Instance = MDMA_Channel1;
-	hmdma_mdma_channel41_sw_0.Init.Request = MDMA_REQUEST_SW;
+  hmdma_mdma_channel41_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel41_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel41_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
   hmdma_mdma_channel41_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
@@ -1431,7 +1430,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel2 */
   /* Configure MDMA request hmdma_mdma_channel42_sw_0 on MDMA_Channel2 */
   hmdma_mdma_channel42_sw_0.Instance = MDMA_Channel2;
-	hmdma_mdma_channel42_sw_0.Init.Request = MDMA_REQUEST_SW;
+  hmdma_mdma_channel42_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel42_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel42_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
   hmdma_mdma_channel42_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
@@ -1453,7 +1452,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel3 */
   /* Configure MDMA request hmdma_mdma_channel43_sw_0 on MDMA_Channel3 */
   hmdma_mdma_channel43_sw_0.Instance = MDMA_Channel3;
-	hmdma_mdma_channel43_sw_0.Init.Request = MDMA_REQUEST_SW;
+  hmdma_mdma_channel43_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel43_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel43_sw_0.Init.Priority = MDMA_PRIORITY_LOW;
   hmdma_mdma_channel43_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
@@ -1475,7 +1474,7 @@ static void MX_MDMA_Init(void)
   /* Configure MDMA channel MDMA_Channel4 */
   /* Configure MDMA request hmdma_mdma_channel44_sw_0 on MDMA_Channel4 */
   hmdma_mdma_channel44_sw_0.Instance = MDMA_Channel4;
-	hmdma_mdma_channel44_sw_0.Init.Request = MDMA_REQUEST_SW;
+  hmdma_mdma_channel44_sw_0.Init.Request = MDMA_REQUEST_SW;
   hmdma_mdma_channel44_sw_0.Init.TransferTriggerMode = MDMA_FULL_TRANSFER;
   hmdma_mdma_channel44_sw_0.Init.Priority = MDMA_PRIORITY_MEDIUM;
   hmdma_mdma_channel44_sw_0.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
@@ -1881,4 +1880,3 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
