@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 37					   // Settings config version
+#define SETT_VERSION 38					   // Settings config version
 #define CALIB_VERSION 38				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -35,7 +35,8 @@
 #define SCANNER_FREQ_STEP_OTHER 500		   //step for freq scanner for SSB
 #define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
 #define DXCLUSTER_UPDATE_TIME (1000*60*1)	//interval to get cluster info, 1min
-#define NORMAL_SWR	1.2f								//ATU SWR target
+#define NORMAL_SWR_SAVED	1.5f								//ATU SWR target for saved settings
+#define NORMAL_SWR_TUNE	1.2f								//ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5					//Low brightness for IDLE mode (dimmer)
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
@@ -307,6 +308,9 @@ typedef struct
 	bool SQL;
 	int8_t FM_SQL_threshold_dbm;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
+	uint8_t BEST_ATU_I;
+	uint8_t BEST_ATU_C;
+	bool BEST_ATU_T;
 } BAND_SAVED_SETTINGS_TYPE;
 
 extern struct TRX_SETTINGS

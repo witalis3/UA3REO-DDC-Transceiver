@@ -1252,6 +1252,14 @@ static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction)
 		TRX.ATU_I += direction;
 	if (TRX.ATU_I > ATU_MAXPOS)
 		TRX.ATU_I = ATU_MAXPOS;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0)
+	{
+		TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I = TRX.ATU_I;
+		TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C = TRX.ATU_C;
+		TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T = TRX.ATU_T;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction)
@@ -1260,6 +1268,14 @@ static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction)
 		TRX.ATU_C += direction;
 	if (TRX.ATU_C > ATU_MAXPOS)
 		TRX.ATU_C = ATU_MAXPOS;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0)
+	{
+		TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I = TRX.ATU_I;
+		TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C = TRX.ATU_C;
+		TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T = TRX.ATU_T;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction)
@@ -1268,6 +1284,14 @@ static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction)
 		TRX.ATU_T = true;
 	if (direction < 0)
 		TRX.ATU_T = false;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0)
+	{
+		TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I = TRX.ATU_I;
+		TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C = TRX.ATU_C;
+		TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T = TRX.ATU_T;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_ATU_Enabled(int8_t direction)

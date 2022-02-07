@@ -11,6 +11,7 @@
 
 static bool ATU_Finished = false;
 static bool ATU_InProcess = false;
+static bool ATU_BestValsProbed = false;
 static float32_t ATU_MinSWR = 1.0;
 static uint8_t ATU_MinSWR_I = 0;
 static uint8_t ATU_MinSWR_C = 0;
@@ -84,6 +85,7 @@ void RF_UNIT_ATU_Invalidate(void)
 	ATU_Finished = false;
 	ATU_InProcess = false;
 	ATU_TunePowerStabilized = false;
+	ATU_BestValsProbed = false;
 }
 
 static void RF_UNIT_ProcessATU(void)
@@ -111,10 +113,22 @@ static void RF_UNIT_ProcessATU(void)
 		return;
 	}
 	
-	#define delay_stages 2
+	if(!ATU_BestValsProbed) {
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		if (band >= 0)
+		{
+			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I;
+			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C;
+			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T;
+		}
+		LCD_UpdateQuery.StatusInfoBar = true;
+	}
+	
+	#define delay_stages_saved 5
+	#define delay_stages_tune 2
 	static float32_t TRX_SWR_val = 1.0f;
 	static uint8_t delay_stages_count = 0;
-	if(delay_stages_count < delay_stages)
+	if((!ATU_BestValsProbed && delay_stages_count < delay_stages_saved) || (ATU_BestValsProbed && delay_stages_count < delay_stages_tune))
 	{
 		if(delay_stages_count == 0)
 			TRX_SWR_val = 99.0f;
@@ -134,7 +148,8 @@ static void RF_UNIT_ProcessATU(void)
 	//float32_t TRX_PWR = TRX_PWR_Forward - TRX_PWR_Backward;
 	float32_t TRX_PWR = TRX_PWR_Forward;
 	
-	if (TRX_SWR_val <= NORMAL_SWR && TRX_PWR >= (float32_t)CALIBRATE.TUNE_MAX_POWER / 2.0f)
+	if (TRX_PWR >= (float32_t)CALIBRATE.TUNE_MAX_POWER / 2.0f)
+		if((!ATU_BestValsProbed && TRX_SWR_val <= NORMAL_SWR_SAVED) || (ATU_BestValsProbed && TRX_SWR_val <= NORMAL_SWR_TUNE))
 	{
 		println("Normal SWR, stop!");
 		sprintf(buff, "Best SWR: %.1f", TRX_SWR_val);
@@ -142,8 +157,19 @@ static void RF_UNIT_ProcessATU(void)
 		ATU_Finished = true;
 		delay_stages_count = 0;
 		FRONTPANEL_BUTTONHANDLER_TUNE(0);
+		
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		if (band >= 0)
+		{
+			TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I = TRX.ATU_I;
+			TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C = TRX.ATU_C;
+			TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T = TRX.ATU_T;
+		}
 		return;
 	}
+	
+	if(!ATU_BestValsProbed)
+		ATU_BestValsProbed = true;
 	
 	static float32_t ATU_MinSWR_Slider = 9.9f;
 	static float32_t ATU_MinSWR_prev_1 = 9.9f;
@@ -169,7 +195,7 @@ static void RF_UNIT_ProcessATU(void)
 	else
 	{
 		//best result
-		if(ATU_MinSWR > TRX_SWR_val)
+		if(ATU_MinSWR > TRX_SWR_val && TRX_PWR >= (float32_t)CALIBRATE.TUNE_MAX_POWER / 2.0f)
 		{
 			ATU_MinSWR = TRX_SWR_val;
 			ATU_MinSWR_I = TRX.ATU_I;
@@ -315,6 +341,15 @@ static void RF_UNIT_ProcessATU(void)
 			sprintf(buff, "Best SWR: %.1f", ATU_MinSWR);
 			LCD_showTooltip(buff);
 			delay_stages_count = 0;
+			
+			int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+			if (band >= 0)
+			{
+				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T = TRX.ATU_T;
+			}
+			
 			FRONTPANEL_BUTTONHANDLER_TUNE(0);
 		}
 		
@@ -1393,8 +1428,10 @@ void RF_UNIT_ProcessSensors(void)
 	float32_t TRX_RF_Temperature_new = (power_left * (1.0f - part_point)) + (power_right * (part_point));
 	if (TRX_RF_Temperature_new < 0.0f)
 		TRX_RF_Temperature_new = 0.0f;
-	if (fabsf(TRX_RF_Temperature_new - TRX_RF_Temperature) > 0.5f) //hysteresis
+	if (fabsf(TRX_RF_Temperature_new - TRX_RF_Temperature) >= 10.0f) //hysteresis
 		TRX_RF_Temperature = TRX_RF_Temperature_new;
+	else
+		TRX_RF_Temperature = TRX_RF_Temperature * 0.99f + TRX_RF_Temperature_new * 0.01f;
 
 	//SWR
 	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B16_RANGE;
