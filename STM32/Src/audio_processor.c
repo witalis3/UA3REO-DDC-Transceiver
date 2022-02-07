@@ -943,11 +943,11 @@ void processTxAudio(void)
 
 			if (fabsf(full_power - (float32_t)CALIBRATE.TUNE_MAX_POWER) > 0.1f) //histeresis
 			{
-				println("Process Tune Stabilizer ", APROC_TX_tune_power);
+				//println("Process Tune Stabilizer ", APROC_TX_tune_power);
 				float32_t coeff_a = 0.993f;
 				if(CALIBRATE.RF_unit_type == RF_UNIT_WF_100D || CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT)
 				{
-					coeff_a = 0.997f;
+					coeff_a = 0.996f;
 				}
 				float32_t coeff_b = 1.0f - coeff_a;
 				
