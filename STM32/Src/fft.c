@@ -1191,11 +1191,11 @@ bool FFT_printFFT(void)
 	if(TRX.FFT_dBmGrid)
 	{
 		char tmp[64] = {0};
-		float32_t ampl_on_bin = (maxValueFFT + minValueFFT) / (float32_t)fftHeight;
+		float32_t ampl_on_bin = (maxValueFFT - minValueFFT) / (float32_t)fftHeight;
 		
 		for(uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL)
 		{
-			int16_t dbm = getDBFromFFTAmpl(ampl_on_bin * (float32_t)(fftHeight - y));
+			int16_t dbm = getDBFromFFTAmpl(maxValueFFT - ampl_on_bin * (float32_t)y);
 			sprintf(tmp, "%d", dbm);
 			LCDDriver_printTextInMemory(tmp, 0, y - 4, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 		}
