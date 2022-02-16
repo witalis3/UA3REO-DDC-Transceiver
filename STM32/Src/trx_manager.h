@@ -43,6 +43,7 @@ volatile extern float32_t TRX_RX1_dBm;
 volatile extern float32_t TRX_RX2_dBm;
 volatile extern bool TRX_ADC_OTR;
 volatile extern bool TRX_DAC_OTR;
+volatile extern bool TRX_MIC_BELOW_NOISEGATE;
 volatile extern int16_t TRX_ADC_MINAMPLITUDE;
 volatile extern int16_t TRX_ADC_MAXAMPLITUDE;
 volatile extern int32_t TRX_VCXO_ERROR;

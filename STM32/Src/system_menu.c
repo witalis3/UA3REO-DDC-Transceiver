@@ -64,6 +64,7 @@ static void SYSMENU_HANDL_AUDIO_AGC(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_Gain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_Boost(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_NOISE_GATE(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
@@ -469,6 +470,7 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"MIC EQ Mid AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_MID_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_MID_AMFM},
 		{"MIC EQ High AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_HIG_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_AMFM},
 		{"MIC Reverber", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_HANDL_AUDIO_MIC_REVERBER},
+		{"MIC Noise Gate", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_HANDL_AUDIO_MIC_NOISE_GATE},
 		{"RX EQ Low", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_LOW, SYSMENU_HANDL_AUDIO_RX_EQ_LOW},
 		{"RX EQ Mid", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_MID, SYSMENU_HANDL_AUDIO_RX_EQ_MID},
 		{"RX EQ High", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_HANDL_AUDIO_RX_EQ_HIG},
@@ -1548,6 +1550,15 @@ static void SYSMENU_HANDL_AUDIO_MIC_REVERBER(int8_t direction)
 	if (TRX.MIC_REVERBER > (AUDIO_MAX_REVERBER_TAPS - 1))
 		TRX.MIC_REVERBER = (AUDIO_MAX_REVERBER_TAPS - 1);
 	NeedReinitReverber = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_MIC_NOISE_GATE(int8_t direction)
+{
+	TRX.MIC_NOISE_GATE += direction;
+	if (TRX.MIC_NOISE_GATE < -120)
+		TRX.MIC_NOISE_GATE = -120;
+	if (TRX.MIC_NOISE_GATE > 0)
+		TRX.MIC_NOISE_GATE = 0;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_EQ_LOW(int8_t direction)

@@ -172,6 +172,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FM Squelch level** - FM squelch level
 * **MIC EQ xxx** - Microphone equalizer levels
 * **MIC Reverber** - Microphone reverberator level
+* **MIC Noise Gate** - The level below which the microphone signal is muted, dbFS
 * **RX EQ xxx** - Receiver equalizer levels
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
 * **RX AGC Max gain** - Limit of AGC gain, dB

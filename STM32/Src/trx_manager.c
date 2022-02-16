@@ -31,6 +31,7 @@ volatile float32_t TRX_RX1_dBm = -100.0f;
 volatile float32_t TRX_RX2_dBm = -100.0f;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
+volatile bool TRX_MIC_BELOW_NOISEGATE = false;
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile int32_t TRX_VCXO_ERROR = 0;

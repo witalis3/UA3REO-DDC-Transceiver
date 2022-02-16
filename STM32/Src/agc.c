@@ -3,6 +3,7 @@
 #include "settings.h"
 #include "audio_filters.h"
 #include "vad.h"
+#include "trx_manager.h"
 
 //Private variables
 static float32_t AGC_RX1_need_gain_db = 0.0f;
@@ -157,7 +158,7 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 {
 	float32_t *AGC_need_gain_db = &AGC_TX_need_gain_db;
 	float32_t *AGC_need_gain_db_old = &AGC_TX_need_gain_db_old;
-	float32_t *agc_ringbuffer_i = (float32_t *)&AGC_TX_ringbuffer_i;
+	//float32_t *agc_ringbuffer_i = (float32_t *)&AGC_TX_ringbuffer_i;
 
 	//higher speed in settings - higher speed of AGC processing
 	float32_t TX_AGC_STEPSIZE_UP = 0.0f;
@@ -184,13 +185,13 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 	//do ring buffer
 	static uint32_t ring_position = 0;
 	//save new data to ring buffer
-	dma_memcpy(&agc_ringbuffer_i[ring_position * blockSize], agcBuffer_i, sizeof(float32_t) * blockSize);
+	//dma_memcpy(&agc_ringbuffer_i[ring_position * blockSize], agcBuffer_i, sizeof(float32_t) * blockSize);
 	//move ring buffer index
 	ring_position++;
 	if (ring_position >= AGC_RINGBUFFER_TAPS_SIZE)
 		ring_position = 0;
 	//get old data to process
-	dma_memcpy(agcBuffer_i, &agc_ringbuffer_i[ring_position * blockSize], sizeof(float32_t) * blockSize);
+	//dma_memcpy(agcBuffer_i, &agc_ringbuffer_i[ring_position * blockSize], sizeof(float32_t) * blockSize);
 
 	//calculate the magnitude
 	float32_t AGC_TX_I_magnitude = 0;
@@ -203,33 +204,38 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 		AGC_TX_I_magnitude = ampl_max_i;
 	else
 		AGC_TX_I_magnitude = -ampl_min_i;
-
 	if (AGC_TX_I_magnitude == 0.0f)
-		AGC_TX_I_magnitude = 0.001f;
+		AGC_TX_I_magnitude = 0.000001f;
+	
 	float32_t AGC_TX_dbFS = rate2dbV(AGC_TX_I_magnitude);
-
-	//move the gain one step
-	//println(AGC_TX_dbFS);
-	float32_t diff = (target - (AGC_TX_dbFS + *AGC_need_gain_db));
-	if (diff > 0)
-		*AGC_need_gain_db += diff / TX_AGC_STEPSIZE_UP;
-	else
-		*AGC_need_gain_db += diff / TX_AGC_STEPSIZE_DOWN;
-
-	//overload (clipping), sharply reduce the gain
-	if ((AGC_TX_dbFS + *AGC_need_gain_db) > target)
-	{
-		*AGC_need_gain_db = target - AGC_TX_dbFS;
-		//sendToDebug_float32(diff,false);
+	if(AGC_TX_dbFS < -100.0f)
+		AGC_TX_dbFS = -100.0f;
+	
+	//mic noise threshold (gate), below it - mute
+	if (AGC_TX_dbFS < TRX.MIC_NOISE_GATE) {
+		target = 0.0f;
+		TRX_MIC_BELOW_NOISEGATE = true;
+	} else { 
+		//println(AGC_TX_I_magnitude, " ", AGC_TX_dbFS, " ", *AGC_need_gain_db);
+		TRX_MIC_BELOW_NOISEGATE = false;
 	}
+	
+	//move the gain one step
+	if (target > 0.0f)
+	{
+		float32_t diff = (target - (AGC_TX_dbFS + *AGC_need_gain_db));
+		if (diff > 0)
+			*AGC_need_gain_db += diff / TX_AGC_STEPSIZE_UP;
+		else
+			*AGC_need_gain_db += diff / TX_AGC_STEPSIZE_DOWN;
 
-	//noise threshold, below it - do not amplify
-	/*if (AGC_RX_dbFS < AGC_NOISE_GATE)
-		*AGC_need_gain_db = 1.0f;*/
-
-	//Muting if need
-	if (target == 0.0f)
-		*AGC_need_gain_db = -200.0f;
+		//overload (clipping), sharply reduce the gain
+		if ((AGC_TX_dbFS + *AGC_need_gain_db) > target)
+		{
+			*AGC_need_gain_db = target - AGC_TX_dbFS;
+			//sendToDebug_float32(diff,false);
+		}
+	}
 
 	//gain limitation
 	switch(mode)
@@ -253,7 +259,34 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 	
 	//apply gain
 	//println(*AGC_need_gain_db);
-	if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.0f) //gain changed
+	if (target == 0.0f) //zero gain (mute)
+	{
+		#define zero_gain 200.0f
+		float32_t gainApplyStep = 0;
+		if (*AGC_need_gain_db_old > zero_gain)
+			gainApplyStep = -(*AGC_need_gain_db_old - zero_gain) / (float32_t)blockSize;
+		if (*AGC_need_gain_db_old < zero_gain)
+			gainApplyStep = (zero_gain - *AGC_need_gain_db_old) / (float32_t)blockSize;
+		float32_t val_prev = 0.0f;
+		bool zero_cross = false;
+		for (uint_fast16_t i = 0; i < blockSize; i++)
+		{
+			if (val_prev < 0.0f && agcBuffer_i[i] > 0.0f)
+				zero_cross = true;
+			else if (val_prev > 0.0f && agcBuffer_i[i] < 0.0f)
+				zero_cross = true;
+			if (zero_cross)
+				*AGC_need_gain_db_old += gainApplyStep;
+
+			if(*AGC_need_gain_db_old >= zero_gain)
+				agcBuffer_i[i] = agcBuffer_i[i] * db2rateV(*AGC_need_gain_db_old);
+			else
+				agcBuffer_i[i] = 0.0f;
+			
+			val_prev = agcBuffer_i[i];
+		}
+	}
+	else if (fabsf(*AGC_need_gain_db_old - *AGC_need_gain_db) > 0.0f) //gain changed
 	{
 		float32_t gainApplyStep = 0;
 		if (*AGC_need_gain_db_old > *AGC_need_gain_db)

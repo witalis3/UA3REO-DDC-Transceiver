@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 38					   // Settings config version
+#define SETT_VERSION 39					   // Settings config version
 #define CALIB_VERSION 38				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -366,6 +366,7 @@ extern struct TRX_SETTINGS
 	int8_t AGC_GAIN_TARGET;
 	uint8_t MIC_GAIN;
 	bool MIC_Boost;
+	int8_t MIC_NOISE_GATE;
 	int8_t RX_EQ_LOW;
 	int8_t RX_EQ_MID;
 	int8_t RX_EQ_HIG;

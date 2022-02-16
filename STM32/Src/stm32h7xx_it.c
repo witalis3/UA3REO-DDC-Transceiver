@@ -721,6 +721,7 @@ void TIM6_DAC_IRQHandler(void)
     RX_USB_AUDIO_underrun = false;
     APROC_IFGain_Overflow = false;
     SD_underrun = false;
+		TRX_MIC_BELOW_NOISEGATE = false;
   }
 
   static bool needLCDDoEvents = true;
