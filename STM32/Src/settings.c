@@ -471,6 +471,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_8_START = 135000 * 1000;	   //2m
 		CALIBRATE.RFU_BPF_8_END = 150000 * 1000;		   //2m
 #elif defined(FRONTPANEL_WF_100D)
+		CALIBRATE.ENCODER2_INVERT = true;	   // invert left-right rotation of the optional encoder
 		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
 		CALIBRATE.rf_out_power_2200m = 40;		   //2200m
 		CALIBRATE.rf_out_power_160m = 40;		   //160m
