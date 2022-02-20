@@ -650,10 +650,15 @@ bool FFT_printFFT(void)
 	
 	//dbm scaling
 	if(FFT_DBM_SCALE) {
-		if(minAmplValue_averaged > minAmplValue)
-			minAmplValue_averaged = minAmplValue;
+		if(TRX.FFT_Automatic)
+		{
+			if(minAmplValue_averaged > minAmplValue)
+				minAmplValue_averaged = minAmplValue;
+			else
+				minAmplValue_averaged = minAmplValue_averaged * 0.99f + minAmplValue * 0.01f;
+		}
 		else
-			minAmplValue_averaged = minAmplValue_averaged * 0.95f + minAmplValue * 0.05f;
+			minAmplValue_averaged = (float32_t)TRX.FFT_ManualBottom;
 		
 		arm_offset_f32(FFTOutput_mean, -minAmplValue_averaged, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
@@ -684,7 +689,7 @@ bool FFT_printFFT(void)
 		FFT_minDBM = minAmplValue_averaged;
 		FFT_maxDBM = maxAmplValue;
 	}
-	else if (TRX.FFT_Automatic) //Fit by median (automatic)
+	else if(TRX.FFT_Automatic) //Fit by median (automatic)
 	{
 		if(FFT_DBM_SCALE) {
 			medianValue -= minAmplValue_averaged;
@@ -720,14 +725,26 @@ bool FFT_printFFT(void)
 	}
 	else //Manual Scale
 	{
-		float32_t minManualAmplitude = getFFTAmplFromDB((float32_t)TRX.FFT_ManualBottom);
-		float32_t maxManualAmplitude = getFFTAmplFromDB((float32_t)TRX.FFT_ManualTop);
-		arm_offset_f32(FFTOutput_mean, -minManualAmplitude, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
-		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
-			if (FFTOutput_mean[i] < 0)
-				FFTOutput_mean[i] = 0;
-		maxValueFFT = maxManualAmplitude - minManualAmplitude;
-		minValueFFT = minManualAmplitude;
+		if(FFT_DBM_SCALE) {
+			float32_t minManualAmplitude = (float32_t)TRX.FFT_ManualBottom - minAmplValue_averaged;
+			float32_t maxManualAmplitude = (float32_t)TRX.FFT_ManualTop - minAmplValue_averaged;
+			maxValueFFT = maxManualAmplitude;
+			minValueFFT = minManualAmplitude;
+			
+			FFT_minDBM = minValueFFT + minAmplValue_averaged;
+			FFT_maxDBM = maxValueFFT + minAmplValue_averaged;
+		}
+		else
+		{
+			float32_t minManualAmplitude = getFFTAmplFromDB((float32_t)TRX.FFT_ManualBottom);
+			float32_t maxManualAmplitude = getFFTAmplFromDB((float32_t)TRX.FFT_ManualTop);
+			arm_offset_f32(FFTOutput_mean, -minManualAmplitude, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
+			for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
+				if (FFTOutput_mean[i] < 0)
+					FFTOutput_mean[i] = 0;
+			maxValueFFT = maxManualAmplitude - minManualAmplitude;
+			minValueFFT = minManualAmplitude;
+		}
 	}
 
 	//limits
