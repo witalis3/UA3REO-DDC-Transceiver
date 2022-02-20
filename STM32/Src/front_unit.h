@@ -72,6 +72,7 @@ extern void FRONTPANEL_BUTTONHANDLER_NOTCH(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_FAST(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_MUTE(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_MUTE_AFAMP(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_ArB(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_TUNE(uint32_t parameter);

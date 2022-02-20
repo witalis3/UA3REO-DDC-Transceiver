@@ -62,6 +62,7 @@ volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; // STM32 temperature
 volatile float32_t TRX_IQ_phase_error = 0.0f;
 volatile bool TRX_Temporary_Stop_BandMap = false;
 volatile bool TRX_Mute = false;
+volatile bool TRX_AFAmp_Mute = false;
 volatile uint32_t TRX_Temporary_Mute_StartTime = 0;
 uint32_t TRX_freq_phrase = 0;
 uint32_t TRX_freq_phrase2 = 0;

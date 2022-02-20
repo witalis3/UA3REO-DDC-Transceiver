@@ -174,7 +174,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 		
 	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 117, .tres_max = 231, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENUHOLD}, //SB22 MENU
 	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 231, .tres_max = 354, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE}, //SB13 TUNE ATU
-	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 354, .tres_max = 492, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = FRONTPANEL_BUTTONHANDLER_MUTE}, //SB14 MUTE
+	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 354, .tres_max = 492, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MUTE, .holdHandler = FRONTPANEL_BUTTONHANDLER_MUTE_AFAMP}, //SB14 MUTE
 	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 492, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB15 F1
 	
 	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 117, .tres_max = 231, .state = false, .prev_state = false, .work_in_menu = true, .parameter = BANDID_10m, .clickHandler = FRONTPANEL_BUTTONHANDLER_SET_CUR_VFO_BAND, .holdHandler = FRONTPANEL_BUTTONHANDLER_SET_CUR_VFO_BAND}, //SB2 10M
@@ -1545,6 +1545,20 @@ void FRONTPANEL_BUTTONHANDLER_MENUHOLD(uint32_t parameter)
 void FRONTPANEL_BUTTONHANDLER_MUTE(uint32_t parameter)
 {
 	TRX_Mute = !TRX_Mute;
+	TRX_AFAmp_Mute = false;
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
+void FRONTPANEL_BUTTONHANDLER_MUTE_AFAMP(uint32_t parameter)
+{
+	TRX_AFAmp_Mute = !TRX_AFAmp_Mute;
+	if(TRX_AFAmp_Mute)
+		WM8731_Mute_AF_AMP();
+	else
+		WM8731_UnMute_AF_AMP();
+	TRX_Mute = false;
+	
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }

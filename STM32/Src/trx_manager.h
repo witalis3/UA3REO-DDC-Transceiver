@@ -70,6 +70,7 @@ volatile extern bool TRX_DCDC_Freq;
 volatile extern bool TRX_DAC_DRV_A0;
 volatile extern bool TRX_DAC_DRV_A1;
 volatile extern bool TRX_Mute;
+volatile extern bool TRX_AFAmp_Mute;
 volatile extern float32_t TRX_STM32_VREF;
 volatile extern float32_t TRX_STM32_TEMPERATURE;
 volatile extern float32_t TRX_IQ_phase_error;

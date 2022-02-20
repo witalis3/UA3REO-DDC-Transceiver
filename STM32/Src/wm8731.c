@@ -128,12 +128,23 @@ void WM8731_TXRX_mode(void) //loopback
 void WM8731_Mute(void)
 {
 	WM8731_Muting = true;
-	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_RESET);
+	WM8731_Mute_AF_AMP();
 }
 
 void WM8731_UnMute(void)
 {
 	WM8731_Muting = false;
+	if(!TRX_AFAmp_Mute)
+		WM8731_UnMute_AF_AMP();
+}
+
+void WM8731_Mute_AF_AMP(void)
+{
+	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_RESET);
+}
+
+void WM8731_UnMute_AF_AMP(void)
+{
 	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_SET);
 }
 

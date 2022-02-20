@@ -29,5 +29,7 @@ extern void WM8731_CleanBuffer(void);       //clear the audio codec and USB audi
 extern void WM8731_TXRX_mode(void); //switch to mixed mode RX-TX (for LOOP)
 extern void WM8731_Mute(void);      //mute audio out
 extern void WM8731_UnMute(void);    //disable audio mute
+extern void WM8731_Mute_AF_AMP(void);      //mute audio out (AF AMP only)
+extern void WM8731_UnMute_AF_AMP(void);    //disable audio mute (AF AMP only)
 extern void WM8731_Beep(void);      //beep on key press
 #endif
