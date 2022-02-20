@@ -650,8 +650,8 @@ bool FFT_printFFT(void)
 	}
 	else //Manual Scale
 	{
-		float32_t minManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualBottom - 2.0f + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) - ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) * 0.001f * 50.0f) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
-		float32_t maxManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualTop - 2.0f + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) - ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) * 0.001f * 50.0f) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
+		float32_t minManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualBottom - FFT_DBM_COMPENSATION + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) - ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) * 0.001f * 50.0f) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
+		float32_t maxManualAmplitude = sqrtf(db2rateP((float32_t)TRX.FFT_ManualTop - FFT_DBM_COMPENSATION + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) - ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) * 0.001f * 50.0f) * (float32_t)FFT_SIZE * (float32_t)TRX.FFT_Averaging;
 		arm_offset_f32(FFTOutput_mean, -minManualAmplitude, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 			if (FFTOutput_mean[i] < 0)
@@ -1203,11 +1203,19 @@ bool FFT_printFFT(void)
 	if(TRX.FFT_dBmGrid)
 	{
 		char tmp[64] = {0};
-		float32_t ampl_on_bin = (maxValueFFT - minValueFFT) / (float32_t)fftHeight;
+		float32_t ampl_on_bin = maxValueFFT / (float32_t)fftHeight;
+		if(!TRX.FFT_Automatic) {
+			ampl_on_bin = (maxValueFFT + minValueFFT) / (float32_t)fftHeight;
+		}
 		
 		for(uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL)
 		{
-			int16_t dbm = getDBFromFFTAmpl(maxValueFFT - ampl_on_bin * (float32_t)y);
+			int16_t dbm = 0;
+			if(TRX.FFT_Automatic) {
+				dbm = getDBFromFFTAmpl(maxValueFFT - ampl_on_bin * (float32_t)y);
+			} else {
+				dbm = getDBFromFFTAmpl((maxValueFFT + minValueFFT) - ampl_on_bin * (float32_t)y);
+			}
 			sprintf(tmp, "%d", dbm);
 			LCDDriver_printTextInMemory(tmp, 0, y - 4, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 		}
@@ -1776,14 +1784,14 @@ static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center)
 
 static float32_t getDBFromFFTAmpl(float32_t ampl)
 {
-	float32_t dbm = rate2dbP(powf(ampl / (float32_t)FFT_SIZE / (float32_t)TRX.FFT_Averaging, 2) / 50.0f / 0.001f) + 2.0f; //roughly... because window and other...
+	float32_t db = rate2dbP(powf(ampl / (float32_t)FFT_SIZE / (float32_t)TRX.FFT_Averaging, 2) / 50.0f / 0.001f) + FFT_DBM_COMPENSATION; //roughly... because window and other...
 	if (TRX.ADC_Driver)
-		dbm -= ADC_DRIVER_GAIN_DB;
+		db -= ADC_DRIVER_GAIN_DB;
 	
 	if(CurrentVFO->Freq < 70000000)
-		dbm += CALIBRATE.smeter_calibration_hf;
+		db += CALIBRATE.smeter_calibration_hf;
 	else
-		dbm += CALIBRATE.smeter_calibration_vhf;
+		db += CALIBRATE.smeter_calibration_vhf;
 	
-	return dbm;
+	return db;
 }
