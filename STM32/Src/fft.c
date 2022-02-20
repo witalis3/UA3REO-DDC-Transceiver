@@ -621,20 +621,7 @@ bool FFT_printFFT(void)
 	Aligned_CleanInvalidateDCache_by_Addr(indexed_wtf_buffer, sizeof(indexed_wtf_buffer));
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
 		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
-
-	// Looking for the median in frequency response
-	dma_memcpy(FFTInput_tmp, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE * 4);
-	float32_t medianValue = quick_median_select(FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
-
-	// Maximum amplitude
-	float32_t maxValueFFT = maxValueFFT_rx;
-	float32_t minValueFFT = maxValueFFT / (float32_t)fftHeight;
-	if (TRX_on_TX())
-		maxValueFFT = maxValueFFT_tx;
-	float32_t maxValue = (medianValue * FFT_MAX);
-	float32_t targetValue = (medianValue * FFT_TARGET);
-	float32_t minValue = (medianValue * FFT_MIN);
-
+	
 	// Looking for the maximum/minimum in frequency response
 	float32_t maxAmplValue = 0;
 	float32_t minAmplValue = 0;
@@ -647,24 +634,41 @@ bool FFT_printFFT(void)
 	}
 	arm_max_no_idx_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &maxAmplValue);
 	//println(minAmplValue, " ", maxAmplValue, " ", maxValueFFT);
+
+	// Looking for the median in frequency response
+	dma_memcpy(FFTInput_tmp, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE * 4);
+	float32_t medianValue = quick_median_select(FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
+
+	// FFT Targets
+	float32_t maxValueFFT = maxValueFFT_rx;
+	float32_t minValueFFT = maxValueFFT / (float32_t)fftHeight;
+	if (TRX_on_TX())
+		maxValueFFT = maxValueFFT_tx;
+	float32_t maxValue = (medianValue * FFT_MAX);
+	float32_t targetValue = (medianValue * FFT_TARGET);
+	float32_t minValue = (medianValue * FFT_MIN);
+	
+	//dbm scaling
+	if(FFT_DBM_SCALE) {
+		if(minAmplValue_averaged > minAmplValue)
+			minAmplValue_averaged = minAmplValue;
+		else
+			minAmplValue_averaged = minAmplValue_averaged * 0.95f + minAmplValue * 0.05f;
+		
+		arm_offset_f32(FFTOutput_mean, -minAmplValue_averaged, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
+		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
+			if (FFTOutput_mean[i] < 0)
+				FFTOutput_mean[i] = 0;
+	}
 	
 	// Auto-calibrate FFT levels
 	if (TRX_on_TX() || (TRX.FFT_Automatic && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE)) //Fit FFT to MAX
 	{
 		if(FFT_DBM_SCALE) {
-			minAmplValue_averaged = minAmplValue_averaged * 0.95f + minAmplValue * 0.05f;
-			arm_offset_f32(FFTOutput_mean, -minAmplValue_averaged, FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE);
-			for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
-				if (FFTOutput_mean[i] < 0)
-					FFTOutput_mean[i] = 0;
-				
 			float32_t newMaxAmplValue = maxAmplValue - minAmplValue_averaged;
 			maxValueFFT = maxValueFFT * 0.95f + newMaxAmplValue * 0.05f;
 			if (maxValueFFT < newMaxAmplValue)
 				maxValueFFT = newMaxAmplValue;
-			
-			FFT_minDBM = minAmplValue_averaged;
-			FFT_maxDBM = maxAmplValue;
 		}
 		else 
 		{
@@ -676,23 +680,38 @@ bool FFT_printFFT(void)
 			if (maxValueFFT < minValue)
 				maxValueFFT = minValue;
 		}
+		
+		FFT_minDBM = minAmplValue_averaged;
+		FFT_maxDBM = maxAmplValue;
 	}
 	else if (TRX.FFT_Automatic) //Fit by median (automatic)
 	{
+		if(FFT_DBM_SCALE) {
+			medianValue -= minAmplValue_averaged;
+			if(medianValue < 1.0f) medianValue = 1.0f;
+			maxValue = medianValue * FFT_MAX;
+			targetValue = medianValue * FFT_TARGET;
+			minValue = medianValue * FFT_MIN;
+		}
+		
 		maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
+		//println(maxValueFFT, " ", targetValue, " ", medianValue, " ", (medianValue / FFT_TARGET));
 
 		// minimum-maximum threshold for median
 		if (maxValueFFT < minValue)
 			maxValueFFT = minValue;
 		if (maxValueFFT > maxValue)
 			maxValueFFT = maxValue;
+		
+		FFT_minDBM = minAmplValue_averaged;
+		FFT_maxDBM = maxValueFFT + minAmplValue_averaged;
 
 		// Compress peaks
 		float32_t compressTargetValue = (maxValueFFT * FFT_COMPRESS_INTERVAL);
 		float32_t compressSourceInterval = maxAmplValue - compressTargetValue;
 		float32_t compressTargetInterval = maxValueFFT - compressTargetValue;
 		float32_t compressRate = compressTargetInterval / compressSourceInterval;
-		if (TRX.FFT_Compressor && TRX.FFT_Sensitivity < 50)
+		if (TRX.FFT_Compressor)
 		{
 			for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 				if (FFTOutput_mean[i] > compressTargetValue)
