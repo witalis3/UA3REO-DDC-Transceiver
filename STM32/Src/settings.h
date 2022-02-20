@@ -26,7 +26,7 @@
 #define POWERDOWN_TIMEOUT 1000			   // time of pressing the shutdown button, for operation, ms
 #define POWERDOWN_FORCE_TIMEOUT 2000	   // force time
 #define USB_RESTART_TIMEOUT 5000		   // time after which USB restart occurs if there are no packets
-#define SNTP_SYNC_INTERVAL (60 * 60)	   // Time synchronization interval via NTP, sec
+#define SNTP_SYNC_INTERVAL (60 * 5)	   // Time synchronization interval via NTP, sec
 #define SCANNER_NOSIGNAL_TIME 50		   //time to continue sweeping if signal too low
 #define SCANNER_SIGNAL_TIME_FM 5000		   //time to continue sweeping if signal founded for FM
 #define SCANNER_SIGNAL_TIME_OTHER 1000	   //time to continue sweeping if signal founded for SSB
