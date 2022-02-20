@@ -33,7 +33,7 @@
 #define SCANNER_FREQ_STEP_WFM 100000	   //step for freq scanner for WFM
 #define SCANNER_FREQ_STEP_NFM 25000		   //step for freq scanner for NFM
 #define SCANNER_FREQ_STEP_OTHER 500		   //step for freq scanner for SSB
-#define ENCODER_MIN_RATE_ACCELERATION 1.2f //encoder enable rounding if lower than value
+#define ENCODER_MIN_RATE_ACCELERATION 2.0f //encoder enable rounding if lower than value
 #define DXCLUSTER_UPDATE_TIME (1000*60*1)	//interval to get cluster info, 1min
 #define NORMAL_SWR_SAVED	1.5f								//ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE	1.2f								//ATU SWR target for new tune
