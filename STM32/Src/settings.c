@@ -264,6 +264,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Averaging = 4;		 // averaging the FFT to make it smoother
 		TRX.FFT_Window = 1;			 //FFT Window
 		TRX.FFT_Style = 1;			 // FFT style
+		TRX.FFT_BW_Style = 1;			 // FFT BW style
 		TRX.FFT_Color = 1;			 // FFT display color
 		TRX.FFT_Compressor = true;	 //Compress FFT Peaks
 #ifdef LAY_160x128

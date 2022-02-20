@@ -1149,6 +1149,18 @@ bool FFT_printFFT(void)
 	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
 		print_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = color;
 
+	//Draw BW lines
+	if(TRX.FFT_BW_Style == 3)
+	{
+		uint16_t color_bw = palette_fft[fftHeight / 2];
+		uint16_t color_center = palette_fft[0];
+		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+			print_output_buffer[fft_y][bw_rx1_line_start] = color_bw;
+			print_output_buffer[fft_y][bw_rx1_line_end] = color_bw;
+			print_output_buffer[fft_y][(LAYOUT->FFT_PRINT_SIZE / 2)] = color_center;
+		}
+	}
+	
 	//DXCluster labels
 	if(TRX.FFT_DXCluster)
 	{
@@ -1689,6 +1701,12 @@ static uint16_t getBGColor(uint_fast8_t height) // Get FFT background gradient
 // prepare the color palette
 static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initialization
 {
+	uint8_t FFT_BW_BRIGHTNESS = 0;
+	if(TRX.FFT_BW_Style == 1)
+		FFT_BW_BRIGHTNESS = FFT_BW_BRIGHTNESS_1;
+	if(TRX.FFT_BW_Style == 2)
+		FFT_BW_BRIGHTNESS = FFT_BW_BRIGHTNESS_2;
+	
 	for (uint_fast8_t i = 0; i <= GET_FFTHeight; i++)
 	{
 		palette_fft[i] = getFFTColor(GET_FFTHeight - i);

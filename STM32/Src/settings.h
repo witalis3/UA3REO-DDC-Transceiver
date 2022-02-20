@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 40					   // Settings config version
+#define SETT_VERSION 41					   // Settings config version
 #define CALIB_VERSION 39				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -431,12 +431,13 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_Window;
 	uint8_t FFT_Height;
 	uint8_t FFT_Style;
+	uint8_t FFT_BW_Style;
 	uint8_t FFT_Color;
 	bool FFT_Compressor;
 	int8_t FFT_FreqGrid;
 	bool FFT_dBmGrid;
 	bool FFT_Background;
-	bool FFT_Lens;
+	bool FFT_Lens; 
 	bool FFT_HoldPeaks;
 	uint8_t FFT_3D;
 	int16_t FFT_ManualBottom;
