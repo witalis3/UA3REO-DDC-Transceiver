@@ -173,7 +173,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **CW LPF Pass** - LPF cutoff frequency when working in CW
 * **DIGI LPF Pass** - LPF cutoff frequency when working in DIGI
 * **FM LPF Pass** - LPF cutoff frequency when working in FM
-* **Squelch** - Enable SSB/FM Squelch
+* **Squelch** - Enable SSB/AM/CW/FM Squelch
 * **FM Squelch level** - FM squelch level
 * **MIC EQ xxx** - Microphone equalizer levels
 * **MIC Reverber** - Microphone reverberator level
