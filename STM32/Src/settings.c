@@ -184,6 +184,7 @@ void LoadSettings(bool clear)
 		TRX.ATU_C = 0;									//ATU default state
 		TRX.ATU_T = false;							//ATU default state
 		TRX.ATU_Enabled = true;					//ATU enabled state
+		TRX.TUNER_Enabled = true;					//TUNER enabled state
 		//AUDIO
 		TRX.Volume = 25;									//AF Volume
 		TRX.IF_Gain = 15;								   // IF gain, dB (before all processing and AGC)
@@ -589,6 +590,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.INA226_EN = false;			//INA226 is not used				//Tisho
 		CALIBRATE.INA226_CurCalc = 0.4f;			//0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f;	//VLT meter calibration
+		CALIBRATE.ATU_AVERAGING = 3;	//Tuner averaging stages
 
 		//Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)

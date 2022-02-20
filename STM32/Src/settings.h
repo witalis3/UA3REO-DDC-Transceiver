@@ -8,8 +8,8 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 39					   // Settings config version
-#define CALIB_VERSION 38				   // Calibration config version
+#define SETT_VERSION 40					   // Settings config version
+#define CALIB_VERSION 39				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000		   // Maximum receive frequency (from the ADC datasheet)
@@ -356,6 +356,7 @@ extern struct TRX_SETTINGS
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	bool Transverter_Enabled;
 	uint16_t Transverter_Offset_Mhz;
+	bool TUNER_Enabled;
 	bool ATU_Enabled;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
@@ -618,6 +619,7 @@ extern struct TRX_CALIBRATE
 	bool INA226_EN;												//Tisho
 	float32_t INA226_CurCalc;							//X_mA/Bit Coeficient is dependant on the used shunt (tolerances and soldering)
 	float32_t PWR_VLT_Calibration;
+	uint8_t ATU_AVERAGING;
 	
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 

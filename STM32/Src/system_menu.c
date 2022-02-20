@@ -55,6 +55,7 @@ static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_Enabled(int8_t direction);
+static void SYSMENU_HANDL_TRX_TUNER_Enabled(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
@@ -328,7 +329,7 @@ static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction);
 static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction);					//Tisho
 static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction);
-
+static void SYSMENU_HANDL_CALIB_ATU_AVERAGING(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -430,6 +431,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
 		{"Transverter Enable", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
 		{"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
+		{"TUNER Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_HANDL_TRX_TUNER_Enabled},
 		{"ATU Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_Enabled, SYSMENU_HANDL_TRX_ATU_Enabled},
 		{"ATU Ind", SYSMENU_ATU_I, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TRX_ATU_I},
 		{"ATU Cap", SYSMENU_ATU_C, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_C, SYSMENU_HANDL_TRX_ATU_C},
@@ -748,6 +750,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"INA226_Cur_Calc(mA/Bit)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL},		//Tisho
 		#endif	
 		{"PWR VLT Calibr", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_HANDL_CALIB_PWR_VLT_Calibration},
+		{"ATU Averaging", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&CALIBRATE.ATU_AVERAGING, SYSMENU_HANDL_CALIB_ATU_AVERAGING},
 };
 
 const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
@@ -1302,6 +1305,14 @@ static void SYSMENU_HANDL_TRX_ATU_Enabled(int8_t direction)
 		TRX.ATU_Enabled = true;
 	if (direction < 0)
 		TRX.ATU_Enabled = false;
+}
+
+static void SYSMENU_HANDL_TRX_TUNER_Enabled(int8_t direction)
+{
+	if (direction > 0)
+		TRX.TUNER_Enabled = true;
+	if (direction < 0)
+		TRX.TUNER_Enabled = false;
 }
 
 //AUDIO MENU
@@ -4494,7 +4505,6 @@ static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction)
 	LCD_redraw(false);
 }
 
-//Tisho
 static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction)
 {
 	if (direction > 0)
@@ -4522,6 +4532,14 @@ static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction)
 		CALIBRATE.PWR_VLT_Calibration = 1.0f;
 	if (CALIBRATE.PWR_VLT_Calibration > 1500.0f)
 		CALIBRATE.PWR_VLT_Calibration = 1500.0f;
+}
+
+static void SYSMENU_HANDL_CALIB_ATU_AVERAGING(int8_t direction)
+{
+	if(CALIBRATE.ATU_AVERAGING > 0 || direction > 0)
+		CALIBRATE.ATU_AVERAGING += direction;
+	if (CALIBRATE.ATU_AVERAGING > 15)
+		CALIBRATE.ATU_AVERAGING = 15;
 }
 
 //SERVICES

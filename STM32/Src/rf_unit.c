@@ -124,18 +124,18 @@ static void RF_UNIT_ProcessATU(void)
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 	
-	#define delay_stages_saved 5
-	#define delay_stages_tune 2
+	#define delay_stages_saved (CALIBRATE.ATU_AVERAGING * 2)
+	#define delay_stages_tune CALIBRATE.ATU_AVERAGING
 	static float32_t TRX_SWR_val = 1.0f;
 	static uint8_t delay_stages_count = 0;
 	if((!ATU_BestValsProbed && delay_stages_count < delay_stages_saved) || (ATU_BestValsProbed && delay_stages_count < delay_stages_tune))
 	{
 		if(delay_stages_count == 0)
 			TRX_SWR_val = 99.0f;
-		
+
 		if(TRX_SWR < TRX_SWR_val)
 			TRX_SWR_val = TRX_SWR;
-		
+
 		delay_stages_count++;
 		return;
 	}
@@ -614,10 +614,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 				
 				//U3-7 TUN_C_5
-				if (registerNumber == 8 && bitRead(TRX.ATU_C, 4))
+				if (registerNumber == 8 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4))
 					SET_DATA_PIN;
 				//U3-6 TUN_C_4
-				if (registerNumber == 9 && bitRead(TRX.ATU_C, 3))
+				if (registerNumber == 9 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3))
 					SET_DATA_PIN;
 				//U3-5 BPF_1
 				if (registerNumber == 10 && (bpf == 0 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 0)))
@@ -629,20 +629,20 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 12 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					SET_DATA_PIN;
 				//U3-2 TUN_C_1
-				if (registerNumber == 13 && bitRead(TRX.ATU_C, 0))
+				if (registerNumber == 13 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0))
 					SET_DATA_PIN;
 				//U3-1 TUN_C_2
-				if (registerNumber == 14 && bitRead(TRX.ATU_C, 1))
+				if (registerNumber == 14 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1))
 					SET_DATA_PIN;
 				//U3-0 TUN_C_3
-				if (registerNumber == 15 && bitRead(TRX.ATU_C, 2))
+				if (registerNumber == 15 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2))
 					SET_DATA_PIN;
 				
 				//U2-7 TUN_T
-				if (registerNumber == 16 && TRX.ATU_T)
+				if (registerNumber == 16 && TRX.TUNER_Enabled && TRX.ATU_T)
 					SET_DATA_PIN;
 				//U2-6 TUN_I_5
-				if (registerNumber == 17 && bitRead(TRX.ATU_I, 4))
+				if (registerNumber == 17 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4))
 					SET_DATA_PIN;
 				//U2-5 UNUSED
 				//if (registerNumber == 18 &&
@@ -650,16 +650,16 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 19 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
 					SET_DATA_PIN;
 				//U2-3 TUN_I_1
-				if (registerNumber == 20 && bitRead(TRX.ATU_I, 0))
+				if (registerNumber == 20 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0))
 					SET_DATA_PIN;
 				//U2-2 TUN_I_2
-				if (registerNumber == 21 && bitRead(TRX.ATU_I, 1))
+				if (registerNumber == 21 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1))
 					SET_DATA_PIN;
 				//U2-1 TUN_I_3
-				if (registerNumber == 22 && bitRead(TRX.ATU_I, 2))
+				if (registerNumber == 22 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2))
 					SET_DATA_PIN;
 				//U2-0 TUN_I_4
-				if (registerNumber == 23 && bitRead(TRX.ATU_I, 3))
+				if (registerNumber == 23 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3))
 					SET_DATA_PIN;
 				
 				//U7-7 BPF_6
@@ -775,22 +775,22 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 0 && TRX.ANT)
 					SET_DATA_PIN;
 				//U5-6 TUN_I_4
-				if (registerNumber == 1 && bitRead(TRX.ATU_I, 3))
+				if (registerNumber == 1 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3))
 					SET_DATA_PIN;
 				//U5-5 TUN_I_1
-				if (registerNumber == 2 && bitRead(TRX.ATU_I, 0))
+				if (registerNumber == 2 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0))
 					SET_DATA_PIN;
 				//U5-4 TUN_I_2
-				if (registerNumber == 3 && bitRead(TRX.ATU_I, 1))
+				if (registerNumber == 3 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1))
 					SET_DATA_PIN;
 				//U5-3 TUN_C_4
-				if (registerNumber == 4 && bitRead(TRX.ATU_C, 3))
+				if (registerNumber == 4 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3))
 					SET_DATA_PIN;
 				//U5-2 TUN_C_1
-				if (registerNumber == 5 && bitRead(TRX.ATU_C, 0))
+				if (registerNumber == 5 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0))
 					SET_DATA_PIN;
 				//U5-1 TUN_C_2
-				if (registerNumber == 6 && bitRead(TRX.ATU_C, 1))
+				if (registerNumber == 6 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1))
 					SET_DATA_PIN;
 				//U5-0 FAN_OUT
 				if (registerNumber == 7)
@@ -830,28 +830,28 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				}
 				
 				//U1-7 TUN_C_5
-				if (registerNumber == 8 && bitRead(TRX.ATU_C, 4))
+				if (registerNumber == 8 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4))
 					SET_DATA_PIN;
 				//U1-6 TUN_C_6
-				if (registerNumber == 9 && bitRead(TRX.ATU_C, 5))
+				if (registerNumber == 9 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 5))
 					SET_DATA_PIN;
 				//U1-5 TUN_C_3
-				if (registerNumber == 10 && bitRead(TRX.ATU_C, 2))
+				if (registerNumber == 10 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2))
 					SET_DATA_PIN;
 				//U1-4 TUN_I_7
-				if (registerNumber == 11 && bitRead(TRX.ATU_I, 6))
+				if (registerNumber == 11 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 6))
 					SET_DATA_PIN;
 				//U1-3 TUN_T
-				if (registerNumber == 12 && TRX.ATU_T)
+				if (registerNumber == 12 && TRX.TUNER_Enabled && TRX.ATU_T)
 					SET_DATA_PIN;
 				//U2-2 TUN_I_5
-				if (registerNumber == 13 && bitRead(TRX.ATU_I, 4))
+				if (registerNumber == 13 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4))
 					SET_DATA_PIN;
 				//U2-1 TUN_I_6
-				if (registerNumber == 14 && bitRead(TRX.ATU_I, 5))
+				if (registerNumber == 14 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5))
 					SET_DATA_PIN;
 				//U2-0 TUN_I_3
-				if (registerNumber == 15 && bitRead(TRX.ATU_I, 2))
+				if (registerNumber == 15 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2))
 					SET_DATA_PIN;
 				
 				//U3-7 BPF_7
@@ -876,7 +876,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 22 && (bpf == 0 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 0)))
 					SET_DATA_PIN;
 				//U3-0 TUN_C_7
-				if (registerNumber == 23 && bitRead(TRX.ATU_C, 6))
+				if (registerNumber == 23 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 6))
 					SET_DATA_PIN;
 				
 				//U2-7 TX_PTT_OUT
@@ -975,7 +975,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			if (!clean)
 			{
 				//U2-7 TUN_C_3
-				if (registerNumber == 0 && bitRead(TRX.ATU_C, 2))
+				if (registerNumber == 0 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2))
 					SET_DATA_PIN;
 				//U2-6 HF-VHF-SELECT
 				if (registerNumber == 1 && CurrentVFO->Freq >= 70000000)
@@ -987,16 +987,16 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 3 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
 					SET_DATA_PIN;
 				//U2-3 TUN_C_1
-				if (registerNumber == 4 && bitRead(TRX.ATU_C, 0))
+				if (registerNumber == 4 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0))
 					SET_DATA_PIN;
 				//U2-2 TUN_I_1
-				if (registerNumber == 5 && bitRead(TRX.ATU_I, 0))
+				if (registerNumber == 5 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0))
 					SET_DATA_PIN;
 				//U2-1 TUN_C_2
-				if (registerNumber == 6 && bitRead(TRX.ATU_C, 1))
+				if (registerNumber == 6 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1))
 					SET_DATA_PIN;
 				//U2-0 TUN_I_2
-				if (registerNumber == 7 && bitRead(TRX.ATU_I, 1))
+				if (registerNumber == 7 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1))
 					SET_DATA_PIN;
 				
 				//U3-7 HF-VHF-SELECT
@@ -1009,16 +1009,16 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U3-4 NOT USED
 				//if (registerNumber == 11)
 				//U3-3 TUN_I_3
-				if (registerNumber == 12 && bitRead(TRX.ATU_I, 2))
+				if (registerNumber == 12 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2))
 					SET_DATA_PIN;
 				//U3-2 TUN_C_4
-				if (registerNumber == 13 && bitRead(TRX.ATU_C, 3))
+				if (registerNumber == 13 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3))
 					SET_DATA_PIN;
 				//U3-1 TUN_I_4
-				if (registerNumber == 14 && bitRead(TRX.ATU_I, 3))
+				if (registerNumber == 14 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3))
 					SET_DATA_PIN;
 				//U3-0 TUN_C_5
-				if (registerNumber == 15 && bitRead(TRX.ATU_C, 4))
+				if (registerNumber == 15 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4))
 					SET_DATA_PIN;
 				
 				//U11-7 ANT1-2_OUT
@@ -1117,7 +1117,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 35 && TRX_on_TX() && CurrentVFO->Freq > 7500000 && CurrentVFO->Freq <= 15000000)
 					SET_DATA_PIN;
 				//U7-3 TUN_I_5
-				if (registerNumber == 36 && bitRead(TRX.ATU_I, 4))
+				if (registerNumber == 36 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4))
 					SET_DATA_PIN;
 				//U7-2 LPF_1
 				if (registerNumber == 37 && TRX_on_TX() && CurrentVFO->Freq <= 2500000)
@@ -1130,7 +1130,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 				
 				//U21-7 TUN_T
-				if (registerNumber == 40 && TRX.ATU_T)
+				if (registerNumber == 40 && TRX.TUNER_Enabled && TRX.ATU_T)
 					SET_DATA_PIN;
 				//U21-6 BPF_2_!EN
 				if (registerNumber == 41 && !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4))) //1,2,3,4 - bpf2
@@ -1250,53 +1250,53 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 				
 				//U2-7 TUN_I_7
-				if (registerNumber == 8 && bitRead(TRX.ATU_I, 6))
+				if (registerNumber == 8 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 6))
 					SET_DATA_PIN;
 				//U2-6 TUN_I_6
-				if (registerNumber == 9 && bitRead(TRX.ATU_I, 5))
+				if (registerNumber == 9 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5))
 					SET_DATA_PIN;
 				//U2-5 TUN_I_5
-				if (registerNumber == 10 && bitRead(TRX.ATU_I, 4))
+				if (registerNumber == 10 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4))
 					SET_DATA_PIN;
 				//U2-4 ANT1-2_OUT
 				if (registerNumber == 11 && !TRX.ANT)
 					SET_DATA_PIN;
 				//U2-3 TUN_I_4
-				if (registerNumber == 12 && bitRead(TRX.ATU_I, 3))
+				if (registerNumber == 12 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3))
 					SET_DATA_PIN;
 				//U2-2 TUN_I_3
-				if (registerNumber == 13 && bitRead(TRX.ATU_I, 2))
+				if (registerNumber == 13 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2))
 					SET_DATA_PIN;
 				//U2-1 TUN_I_2
-				if (registerNumber == 14 && bitRead(TRX.ATU_I, 1))
+				if (registerNumber == 14 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1))
 					SET_DATA_PIN;
 				//U2-0 TUN_I_1
-				if (registerNumber == 15 && bitRead(TRX.ATU_I, 0))
+				if (registerNumber == 15 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0))
 					SET_DATA_PIN;
 				
 				//U3-7 TUN_C_7
-				if (registerNumber == 16 && bitRead(TRX.ATU_C, 6))
+				if (registerNumber == 16 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 6))
 					SET_DATA_PIN;
 				//U3-6 TUN_C_6
-				if (registerNumber == 17 && bitRead(TRX.ATU_C, 5))
+				if (registerNumber == 17 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 5))
 					SET_DATA_PIN;
 				//U3-5 TUN_C_5
-				if (registerNumber == 18 && bitRead(TRX.ATU_C, 4))
+				if (registerNumber == 18 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4))
 					SET_DATA_PIN;
 				//U3-4 TUN_C_4
-				if (registerNumber == 19 && bitRead(TRX.ATU_C, 3))
+				if (registerNumber == 19 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3))
 					SET_DATA_PIN;
 				//U3-3 TUN_C_3
-				if (registerNumber == 20 && bitRead(TRX.ATU_C, 2))
+				if (registerNumber == 20 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2))
 					SET_DATA_PIN;
 				//U3-2 TUN_C_2
-				if (registerNumber == 21 && bitRead(TRX.ATU_C, 1))
+				if (registerNumber == 21 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1))
 					SET_DATA_PIN;
 				//U3-1 TUN_C_1
-				if (registerNumber == 22 && bitRead(TRX.ATU_C, 0))
+				if (registerNumber == 22 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0))
 					SET_DATA_PIN;
 				//U3-0 TUN_T
-				if (registerNumber == 23 && TRX.ATU_T)
+				if (registerNumber == 23 && TRX.TUNER_Enabled && TRX.ATU_T)
 					SET_DATA_PIN;
 				
 				//U23-7 -

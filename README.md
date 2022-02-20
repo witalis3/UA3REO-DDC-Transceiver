@@ -155,6 +155,11 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **Locator** - User QTH locator
 * **Transverter Enable** - Enable external transverter
 * **Transverter Offset, mHz** - External transverter frequency offset, mHz
+* **TUNER Enabled** - Turning on the antenna tuner
+* **ATU Enabled** - Turning on the automatic antenna tuner
+* **ATU Ind** - Combination of tuner inductances
+* **ATU Cap** - Tuner Capacitance Combination
+* **ATU T** - Tuner capacitive arm position
 
 ### AUDIO Settings
 
@@ -302,6 +307,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **OTA Update** - Enable OTA firmware update over WiFi
 * **TX Start Delay** - Delay before the RF signal is applied (ms), so that the relay has time to trigger
 * **LCD Rotate** - Rotate screen at 180 degrees
+* **ATU Averaging** - The number of steps of averaging SWR values during measurements in the operation of an automatic tuner
 
 ### Set Clock Time
 

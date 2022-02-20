@@ -928,6 +928,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.Transverter_Enabled", (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_Offset_Mhz", (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.ATU_Enabled", (uint32_t *)&TRX.ATU_Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.TUNER_Enabled", (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_BOOLEAN);
 			//AUDIO
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint32_t *)&TRX.IF_Gain, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
@@ -1166,6 +1167,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.INA226_EN", (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_BOOLEAN);					//Tisho
 			SD_WRITE_SETT_LINE("CALIBRATE.INA226_CurCalc", (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.PWR_VLT_Calibration", (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.ATU_AVERAGING", (uint32_t *)&CALIBRATE.ATU_AVERAGING, SYSMENU_UINT8);
 			//Bands settings
 			char buff[64] = {0};
 			for (uint8_t i = 0; i < BANDS_COUNT; i++)
@@ -1408,6 +1410,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.Transverter_Offset_Mhz = (uint16_t)uintval;
 	if (strcmp(name, "TRX.ATU_Enabled") == 0)
 		TRX.ATU_Enabled = bval;
+	if (strcmp(name, "TRX.TUNER_Enabled") == 0)
+		TRX.TUNER_Enabled = bval;
 	//AUDIO
 	if (strcmp(name, "TRX.IF_Gain") == 0)
 		TRX.IF_Gain = (uint8_t)uintval;
@@ -1911,6 +1915,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.INA226_CurCalc = floatval;
 	if (strcmp(name, "CALIBRATE.PWR_VLT_Calibration") == 0)
 		CALIBRATE.PWR_VLT_Calibration = floatval;
+	if (strcmp(name, "CALIBRATE.ATU_AVERAGING") == 0)
+		CALIBRATE.ATU_AVERAGING = (uint8_t)uintval;
 	
 	//Bands settings
 	char buff[64] = {0};
