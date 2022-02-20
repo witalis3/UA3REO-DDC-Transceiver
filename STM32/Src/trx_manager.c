@@ -77,6 +77,7 @@ volatile float32_t TRX_PWR_Voltage = 12.0f;
 volatile float32_t TRX_RF_Current = 0.0f;
 
 static uint_fast8_t TRX_TXRXMode = 0; //0 - undef, 1 - rx, 2 - tx, 3 - txrx
+static bool TRX_CLAR_Applied = false;
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);
@@ -105,9 +106,25 @@ void TRX_Restart_Mode()
 {
 	ADCDAC_OVR_StatusLatency = 0;
 	uint_fast8_t mode = CurrentVFO->Mode;
-	//CLAR
-	if (TRX.CLAR)
+	
+	//Switch mode
+	if (TRX_on_TX())
 	{
+		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW)
+			TRX_Start_TXRX();
+		else
+			TRX_Start_TX();
+	}
+	else
+	{
+		TRX_Start_RX();
+	}
+	
+	//CLAR
+	if (TRX.CLAR && !TRX_CLAR_Applied)
+	{
+		TRX_CLAR_Applied = true;
+		
 		TRX.selected_vfo = !TRX.selected_vfo;
 		if(!TRX.selected_vfo)
 		{
@@ -129,18 +146,6 @@ void TRX_Restart_Mode()
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	}
-	//
-	if (TRX_on_TX())
-	{
-		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW)
-			TRX_Start_TXRX();
-		else
-			TRX_Start_TX();
-	}
-	else
-	{
-		TRX_Start_RX();
-	}
 }
 
 static void TRX_Start_RX()
@@ -155,6 +160,7 @@ static void TRX_Start_RX()
 	Processor_NeedRXBuffer = false;
 	WM8731_Buffer_underrun = false;
 	WM8731_DMA_state = true;
+	TRX_CLAR_Applied = false;
 	TRX_TXRXMode = 1;
 	//clean TX buffer
 	dma_memset((void *)&FPGA_Audio_SendBuffer_Q[0], 0x00, sizeof(FPGA_Audio_SendBuffer_Q));
@@ -173,6 +179,7 @@ static void TRX_Start_TX()
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
+	TRX_CLAR_Applied = false;
 	TRX_TXRXMode = 2;
 	
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
@@ -188,6 +195,7 @@ static void TRX_Start_TXRX()
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
+	TRX_CLAR_Applied = false;
 	TRX_TXRXMode = 3;
 	
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;

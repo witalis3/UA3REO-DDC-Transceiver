@@ -37,8 +37,14 @@ void CW_key_change(void)
 	TRX_Inactive_Time = 0;
 	if (TRX_Tune)
 		return;
+	
 	if (CurrentVFO->Mode != TRX_MODE_CW)
+	{
+		CW_key_dot_hard = false;
+		CW_key_dash_hard = false;
+		KEYER_symbol_status = 0;
 		return;
+	}
 	
 	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
 	if(TRX.CW_Invert)
