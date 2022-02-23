@@ -326,12 +326,13 @@ void ua3reo_dev_cat_parseCommand(void)
 	{
 		if (!has_args)
 		{
-			#if CAT_FT450
+			if(CALIBRATE.CAT_Type == CAT_FT450) {
 				CAT_Transmit("ID0241;");
-			#endif
-			#if CAT_TS2000
+			}
+			
+			if(CALIBRATE.CAT_Type == CAT_TS2000) {
 				CAT_Transmit("ID019;");
-			#endif
+			}
 		}
 		else
 		{
@@ -417,7 +418,7 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			char answer[30] = {0};
 			
-			#if CAT_FT450
+			if(CALIBRATE.CAT_Type == CAT_FT450) {
 				strcat(answer, "IF001"); //memory channel
 				if (CurrentVFO->Freq < 10000000)
 					strcat(answer, "0");
@@ -433,9 +434,9 @@ void ua3reo_dev_cat_parseCommand(void)
 				strcat(answer, "0");  //CTCSS OFF
 				strcat(answer, "00"); //TONE NUMBER
 				strcat(answer, "0;"); //Simplex
-			#endif
+			}
 				
-			#if CAT_TS2000
+			if(CALIBRATE.CAT_Type == CAT_TS2000) {
 				strcat(answer, "IF"); //TRX status
 				sprintf(ctmp, "%u", CurrentVFO->Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
@@ -462,7 +463,7 @@ void ua3reo_dev_cat_parseCommand(void)
 				strcat(answer, "0"); //0: OFF, 1: TONE, 2: CTCSS
 				strcat(answer, "00"); //Tone number (00 ~ 42). Refer to the TN and CN command.
 				strcat(answer, "0;"); //Shift status
-			#endif
+			}
 				
 			CAT_Transmit(answer);
 		}
@@ -508,15 +509,18 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			char answer[30] = {0};
 			strcat(answer, "FA");
-			#if CAT_FT450
+			
+			if(CALIBRATE.CAT_Type == CAT_FT450) {
 				if (TRX.VFO_A.Freq < 10000000)
 					strcat(answer, "0");
 				sprintf(ctmp, "%u", TRX.VFO_A.Freq);
-			#endif
-			#if CAT_TS2000
+			}
+			
+			if(CALIBRATE.CAT_Type == CAT_TS2000) {
 				sprintf(ctmp, "%u", TRX.VFO_A.Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
-			#endif
+			}
+			
 			strcat(answer, ctmp); //freq
 			strcat(answer, ";");
 			CAT_Transmit(answer);
@@ -536,15 +540,18 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			char answer[30] = {0};
 			strcat(answer, "FB");
-			#if CAT_FT450
+			
+			if(CALIBRATE.CAT_Type == CAT_FT450) {
 				if (TRX.VFO_B.Freq < 10000000)
 					strcat(answer, "0");
 				sprintf(ctmp, "%u", TRX.VFO_B.Freq);
-			#endif
-			#if CAT_TS2000
+			}
+				
+			if(CALIBRATE.CAT_Type == CAT_TS2000) {
 				sprintf(ctmp, "%u", TRX.VFO_B.Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
-			#endif
+			}
+			
 			strcat(answer, ctmp); //freq
 			strcat(answer, ";");
 			CAT_Transmit(answer);
@@ -648,11 +655,11 @@ void ua3reo_dev_cat_parseCommand(void)
 	{
 		if (!has_args)
 		{
-			#if CAT_FT450
+			if(CALIBRATE.CAT_Type == CAT_FT450) {
 				println("Unknown CAT arguments: ", _command);
-			#endif
+			}
 			
-			#if CAT_TS2000
+			if(CALIBRATE.CAT_Type == CAT_TS2000) {
 				char answer[30] = {0};
 				strcat(answer, "MD");
 				char mode[3] = {0};
@@ -660,7 +667,7 @@ void ua3reo_dev_cat_parseCommand(void)
 				strcat(answer, mode); //mode
 				strcat(answer, ";");
 				CAT_Transmit(answer);
-			#endif
+			}
 		}
 		else
 		{
@@ -676,21 +683,21 @@ void ua3reo_dev_cat_parseCommand(void)
 			}
 			else
 			{
-				#if CAT_FT450
+				if(CALIBRATE.CAT_Type == CAT_FT450) {
 					if (CurrentVFO->Mode != setFT450Mode(arguments))
 					{
 						TRX_setMode(setFT450Mode(arguments), CurrentVFO);
 						LCD_UpdateQuery.TopButtons = true;
 					}
-				#endif
+				}
 				
-				#if CAT_TS2000
+				if(CALIBRATE.CAT_Type == CAT_TS2000) {
 					if (CurrentVFO->Mode != setTS2000Mode(arguments))
 					{
 						TRX_setMode(setTS2000Mode(arguments), CurrentVFO);
 						LCD_UpdateQuery.TopButtons = true;
 					}
-				#endif
+				}
 			}
 		}
 		return;
@@ -976,24 +983,24 @@ void ua3reo_dev_cat_parseCommand(void)
 	{
 		if (!has_args)
 		{
-			#if CAT_FT450
+			if(CALIBRATE.CAT_Type == CAT_FT450) {
 				if (TRX_ptt_soft)
 					CAT_Transmit("TX1;");
 				else if (TRX_ptt_hard)
 					CAT_Transmit("TX2;");
 				else
 					CAT_Transmit("TX0;");
-			#endif
+			}
 			
-			#if CAT_TS2000
+			if(CALIBRATE.CAT_Type == CAT_TS2000) {
 				TRX_ptt_soft = true;
 				LCD_UpdateQuery.StatusInfoBarRedraw = true;
 				LCD_UpdateQuery.StatusInfoGUI = true;
-			#endif
+			}
 		}
 		else
 		{
-			#if CAT_FT450
+			if(CALIBRATE.CAT_Type == CAT_FT450) {
 				if (strcmp(arguments, "0") == 0)
 				{
 					TRX_ptt_soft = false;
@@ -1002,7 +1009,7 @@ void ua3reo_dev_cat_parseCommand(void)
 				{
 					TRX_ptt_soft = true;
 				}
-			#endif
+			}
 			
 			LCD_UpdateQuery.StatusInfoBarRedraw = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
@@ -1028,13 +1035,13 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			char answer[30] = {0};
 
-			#if CAT_TS2000
+			if(CALIBRATE.CAT_Type == CAT_TS2000) {
 				strcat(answer, "FW");
 				sprintf(ctmp, "%u", CurrentVFO->LPF_RX_Filter_Width);
 				addSymbols(ctmp, ctmp, 4, "0", false);
 				strcat(answer, ctmp);
 				strcat(answer, ";");
-			#endif
+			}
 				
 			CAT_Transmit(answer);
 		}

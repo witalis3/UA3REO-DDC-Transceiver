@@ -593,6 +593,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.INA226_CurCalc = 0.4f;			//0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f;	//VLT meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;	//Tuner averaging stages
+		CALIBRATE.CAT_Type = CAT_FT450;
 
 		//Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)

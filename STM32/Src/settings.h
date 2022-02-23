@@ -40,9 +40,6 @@
 #define IDLE_LCD_BRIGHTNESS 5					//Low brightness for IDLE mode (dimmer)
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
-#define CAT_FT450 true
-#define CAT_TS2000 false
-
 //select how the SWR and the power is measured
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
@@ -224,15 +221,15 @@ typedef enum
 typedef struct
 {
 	uint32_t Freq;
-	uint_fast8_t Mode;
 	uint_fast16_t HPF_Filter_Width;
 	uint_fast16_t LPF_RX_Filter_Width;
 	uint_fast16_t LPF_TX_Filter_Width;
-	bool ManualNotchFilter;
-	bool AutoNotchFilter;
+	uint_fast8_t Mode;
 	uint_fast16_t NotchFC;
 	uint8_t DNR_Type; //0-disabled 1-dnr 2-dnr2
 	int8_t FM_SQL_threshold_dbm;
+	bool ManualNotchFilter;
+	bool AutoNotchFilter;
 	bool AGC;
 	bool SQL;
 } VFO;
@@ -243,6 +240,13 @@ typedef enum
 	VFO_A_AND_B,
 	VFO_A_PLUS_B,
 } DUAL_RX_TYPE;
+
+// CAT type
+typedef enum
+{
+	CAT_FT450,
+	CAT_TS2000,
+} CAT_TYPE;
 
 // trx input
 typedef enum
@@ -299,21 +303,21 @@ typedef enum
 // Save settings by band
 typedef struct
 {
+	float32_t ATT_DB;
 	uint32_t Freq;
 	uint8_t Mode;
+	uint8_t DNR_Type;
+	uint8_t BEST_ATU_I;
+	uint8_t BEST_ATU_C;
+	int8_t FM_SQL_threshold_dbm;
+	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 	bool LNA;
-	float32_t ATT_DB;
 	bool ATT;
 	bool ANT;
 	bool ADC_Driver;
 	bool ADC_PGA;
-	uint8_t DNR_Type;
 	bool AGC;
 	bool SQL;
-	int8_t FM_SQL_threshold_dbm;
-	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
-	uint8_t BEST_ATU_I;
-	uint8_t BEST_ATU_C;
 	bool BEST_ATU_T;
 } BAND_SAVED_SETTINGS_TYPE;
 
@@ -322,55 +326,77 @@ extern struct TRX_SETTINGS
 	uint8_t flash_id; //version check
 	bool NeedGoToBootloader;
 	//TRX
-	bool selected_vfo; // false - A; true - B
+	float32_t ATT_DB;
+	uint32_t FRQ_ENC_FAST_STEP;
 	VFO VFO_A;
 	VFO VFO_B;
-	bool Fast;
-	bool LNA;
-	bool ATT;
-	float32_t ATT_DB;
-	uint8_t ATT_STEP;
-	bool RF_Filters;
-	bool ANT;
-	uint8_t RF_Power;
-	bool ChannelMode;
-	bool ShiftEnabled;
-	bool SplitEnabled;
 	uint16_t SHIFT_INTERVAL;
 	uint16_t SPLIT_INTERVAL;
-	bool TWO_SIGNAL_TUNE;
-	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_MAIN;
-	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_FM;
 	uint16_t FRQ_STEP;
 	uint16_t FRQ_FAST_STEP;
 	uint16_t FRQ_ENC_STEP;
-	uint32_t FRQ_ENC_FAST_STEP;
+	uint16_t Transverter_Offset_Mhz;
+	uint8_t ATT_STEP;
+	uint8_t RF_Power;
 	uint8_t FRQ_CW_STEP_DIVIDER;
+	uint8_t ATU_I;
+	uint8_t ATU_C;
 	TRX_DEBUG_TYPE Debug_Type;
-	bool BandMapEnabled;
+	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_MAIN;
+	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_FM;
 	TRX_INPUT_TYPE InputType_MAIN;
 	TRX_INPUT_TYPE InputType_DIGI;
+	DUAL_RX_TYPE Dual_RX_Type;
+	bool selected_vfo; // false - A; true - B
+	bool Fast;
+	bool LNA;
+	bool ATT;
+	bool RF_Filters;
+	bool ANT;
+	bool ChannelMode;
+	bool ShiftEnabled;
+	bool SplitEnabled;
+	bool TWO_SIGNAL_TUNE;
+	bool BandMapEnabled;
 	bool AutoGain;
 	bool Locked;
 	bool CLAR;
 	bool Dual_RX;
-	DUAL_RX_TYPE Dual_RX_Type;
 	bool Encoder_Accelerate;
-	char CALLSIGN[MAX_CALLSIGN_LENGTH];
-	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	bool Transverter_Enabled;
-	uint16_t Transverter_Offset_Mhz;
 	bool TUNER_Enabled;
 	bool ATU_Enabled;
-	uint8_t ATU_I;
-	uint8_t ATU_C;
 	bool ATU_T;
+	char CALLSIGN[MAX_CALLSIGN_LENGTH];
+	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	//AUDIO
+	float32_t CTCSS_Freq;
 	uint16_t Volume;
+	uint16_t RX_AGC_Hold;
+	uint16_t CW_LPF_Filter;
+	uint16_t DIGI_LPF_Filter;
+	uint16_t SSB_LPF_RX_Filter;
+	uint16_t SSB_LPF_TX_Filter;
+	uint16_t SSB_HPF_Filter;
+	uint16_t AM_LPF_RX_Filter;
+	uint16_t AM_LPF_TX_Filter;
+	uint16_t FM_LPF_RX_Filter;
+	uint16_t FM_LPF_TX_Filter;
 	uint8_t IF_Gain;
-	int8_t AGC_GAIN_TARGET;
 	uint8_t MIC_GAIN;
-	bool MIC_Boost;
+	uint8_t MIC_REVERBER;
+	uint8_t DNR1_SNR_THRESHOLD;
+	uint8_t DNR2_SNR_THRESHOLD;
+	uint8_t DNR_AVERAGE;
+	uint8_t DNR_MINIMAL;
+	uint8_t RX_AGC_SSB_speed;
+	uint8_t RX_AGC_CW_speed;
+	uint8_t RX_AGC_Max_gain;
+	uint8_t TX_Compressor_speed_SSB;
+	uint8_t TX_Compressor_maxgain_SSB;
+	uint8_t TX_Compressor_speed_AMFM;
+	uint8_t TX_Compressor_maxgain_AMFM;
+	uint8_t SELFHEAR_Volume;
 	int8_t MIC_NOISE_GATE;
 	int8_t RX_EQ_LOW;
 	int8_t RX_EQ_MID;
@@ -381,54 +407,32 @@ extern struct TRX_SETTINGS
 	int8_t MIC_EQ_LOW_AMFM;
 	int8_t MIC_EQ_MID_AMFM;
 	int8_t MIC_EQ_HIG_AMFM;
-	uint8_t MIC_REVERBER;
-	uint8_t DNR1_SNR_THRESHOLD;
-	uint8_t DNR2_SNR_THRESHOLD;
-	uint8_t DNR_AVERAGE;
-	uint8_t DNR_MINIMAL;
+	int8_t AGC_GAIN_TARGET;
+	bool MIC_Boost;
 	bool NOISE_BLANKER;
-	uint8_t RX_AGC_SSB_speed;
-	uint8_t RX_AGC_CW_speed;
-	uint8_t RX_AGC_Max_gain;
-	uint16_t RX_AGC_Hold;
-	uint8_t TX_Compressor_speed_SSB;
-	uint8_t TX_Compressor_maxgain_SSB;
-	uint8_t TX_Compressor_speed_AMFM;
-	uint8_t TX_Compressor_maxgain_AMFM;
-	uint16_t CW_LPF_Filter;
-	uint16_t DIGI_LPF_Filter;
-	uint16_t SSB_LPF_RX_Filter;
-	uint16_t SSB_LPF_TX_Filter;
-	uint16_t SSB_HPF_Filter;
-	uint16_t AM_LPF_RX_Filter;
-	uint16_t AM_LPF_TX_Filter;
-	uint16_t FM_LPF_RX_Filter;
-	uint16_t FM_LPF_TX_Filter;
 	bool Beeper;
-	float32_t CTCSS_Freq;
-	uint8_t SELFHEAR_Volume;
 	bool FM_Stereo;
 	//CW
+	float32_t CW_DotToDashRate;
 	uint16_t CW_Pitch;
 	uint16_t CW_Key_timeout;
 	uint16_t CW_SelfHear;
-	bool CW_KEYER;
 	uint16_t CW_KEYER_WPM;
+	CW_PTT_TYPE CW_PTT_Type;
+	bool CW_KEYER;
 	bool CW_GaussFilter;
-	float32_t CW_DotToDashRate;
 	bool CW_Iambic;
 	bool CW_Invert;
-	CW_PTT_TYPE CW_PTT_Type;
 	//SCREEN
+	int16_t FFT_ManualBottom;
+	int16_t FFT_ManualTop;
+	uint16_t LCD_SleepTimeout;
+	int8_t FFT_FreqGrid;
 	uint8_t ColorThemeId;
 	uint8_t LayoutThemeId;
-	bool FFT_Enabled;
 	uint8_t FFT_Zoom;
 	uint8_t FFT_ZoomCW;
 	uint8_t LCD_Brightness;
-	uint16_t LCD_SleepTimeout;
-	bool WTF_Moving;
-	bool FFT_Automatic;
 	uint8_t FFT_Sensitivity;
 	uint8_t FFT_Speed;
 	uint8_t FFT_Averaging;
@@ -437,27 +441,27 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_Style;
 	uint8_t FFT_BW_Style;
 	uint8_t FFT_Color;
+	uint8_t FFT_3D;
+	uint8_t FFT_DXCluster_Timeout;
+	uint8_t FuncButtons[FUNCBUTTONS_MAX_COUNT];
+	bool FFT_Enabled;
+	bool WTF_Moving;
+	bool FFT_Automatic;
 	bool FFT_Compressor;
-	int8_t FFT_FreqGrid;
 	bool FFT_dBmGrid;
 	bool FFT_Background;
 	bool FFT_Lens; 
 	bool FFT_HoldPeaks;
-	uint8_t FFT_3D;
-	int16_t FFT_ManualBottom;
-	int16_t FFT_ManualTop;
 	bool FFT_DXCluster;
 	bool FFT_DXCluster_Azimuth;
-	uint8_t FFT_DXCluster_Timeout;
 	bool Show_Sec_VFO;
-	uint8_t FuncButtons[FUNCBUTTONS_MAX_COUNT];
 	//DECODERS
-	bool CW_Decoder;
-	bool RDS_Decoder;
 	uint16_t RTTY_Speed;
 	uint16_t RTTY_Shift;
 	uint16_t RTTY_Freq;
 	uint8_t RTTY_StopBits;
+	bool CW_Decoder;
+	bool RDS_Decoder;
 	bool RTTY_InvertBits;
 	//ADC
 	bool ADC_Driver;
@@ -466,15 +470,15 @@ extern struct TRX_SETTINGS
 	bool ADC_SHDN;
 	bool ADC_DITH;
 	//WIFI
+	int8_t WIFI_TIMEZONE;
 	bool WIFI_Enabled;
+	bool WIFI_CAT_SERVER;
 	char WIFI_AP1[MAX_WIFIPASS_LENGTH];
 	char WIFI_PASSWORD1[MAX_WIFIPASS_LENGTH];
 	char WIFI_AP2[MAX_WIFIPASS_LENGTH];
 	char WIFI_PASSWORD2[MAX_WIFIPASS_LENGTH];
 	char WIFI_AP3[MAX_WIFIPASS_LENGTH];
 	char WIFI_PASSWORD3[MAX_WIFIPASS_LENGTH];
-	int8_t WIFI_TIMEZONE;
-	bool WIFI_CAT_SERVER;
 	//SERVICES
 	uint32_t SWR_CUSTOM_Begin;
 	uint32_t SWR_CUSTOM_End;
@@ -495,10 +499,10 @@ extern struct TRX_SETTINGS
 	bool WSPR_BANDS_6;
 	bool WSPR_BANDS_2;
 	//Shadow variables
-	bool SQL_shadow;
-	bool AGC_shadow;
 	uint8_t DNR_shadow;
 	int8_t FM_SQL_threshold_dbm_shadow;
+	bool SQL_shadow;
+	bool AGC_shadow;
 	//Memory
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	//
@@ -509,36 +513,19 @@ extern struct TRX_SETTINGS
 extern struct TRX_CALIBRATE
 {
 	uint8_t flash_id; //version check
-	bool ENCODER_INVERT;
-	bool ENCODER2_INVERT;
-	uint8_t ENCODER_DEBOUNCE;
-	uint8_t ENCODER2_DEBOUNCE;
-	uint8_t ENCODER_SLOW_RATE;
-	bool ENCODER_ON_FALLING;
-	TRX_RF_UNIT_TYPE RF_unit_type;
-	TRX_TANGENT_TYPE TangentType;
-	uint8_t CICFIR_GAINER_48K_val;
-	uint8_t CICFIR_GAINER_96K_val;
-	uint8_t CICFIR_GAINER_192K_val;
-	uint8_t CICFIR_GAINER_384K_val;
-	uint8_t TXCICFIR_GAINER_val;
-	uint8_t DAC_GAINER_val;
-	uint16_t rf_out_power_2200m;
-	uint16_t rf_out_power_160m;
-	uint16_t rf_out_power_80m;
-	uint16_t rf_out_power_40m;
-	uint16_t rf_out_power_30m;
-	uint16_t rf_out_power_20m;
-	uint16_t rf_out_power_17m;
-	uint16_t rf_out_power_15m;
-	uint16_t rf_out_power_12m;
-	uint16_t rf_out_power_cb;
-	uint16_t rf_out_power_10m;
-	uint16_t rf_out_power_6m;
-	uint16_t rf_out_power_2m;
-	int16_t smeter_calibration_hf;
-	int16_t smeter_calibration_vhf;
-	int16_t adc_offset;
+	
+	float32_t SWR_FWD_Calibration_HF;
+	float32_t SWR_REF_Calibration_HF;
+	float32_t SWR_FWD_Calibration_6M;
+	float32_t SWR_REF_Calibration_6M;
+	float32_t SWR_FWD_Calibration_VHF;
+	float32_t SWR_REF_Calibration_VHF;
+	float32_t FW_AD8307_SLP;
+	float32_t FW_AD8307_OFFS;
+	float32_t BW_AD8307_SLP;
+	float32_t BW_AD8307_OFFS;
+	float32_t INA226_CurCalc;							//X_mA/Bit Coeficient is dependant on the used shunt (tolerances and soldering)
+	float32_t PWR_VLT_Calibration;
 	uint32_t RFU_LPF_END;
 	uint32_t RFU_HPF_START;
 	uint32_t RFU_BPF_0_START; //UHF
@@ -559,19 +546,35 @@ extern struct TRX_CALIBRATE
 	uint32_t RFU_BPF_7_END;
 	uint32_t RFU_BPF_8_START;
 	uint32_t RFU_BPF_8_END;
-	float32_t SWR_FWD_Calibration_HF;
-	float32_t SWR_REF_Calibration_HF;
-	float32_t SWR_FWD_Calibration_6M;
-	float32_t SWR_REF_Calibration_6M;
-	float32_t SWR_FWD_Calibration_VHF;
-	float32_t SWR_REF_Calibration_VHF;
+	int16_t RTC_Calibration;
+	uint16_t rf_out_power_2200m;
+	uint16_t rf_out_power_160m;
+	uint16_t rf_out_power_80m;
+	uint16_t rf_out_power_40m;
+	uint16_t rf_out_power_30m;
+	uint16_t rf_out_power_20m;
+	uint16_t rf_out_power_17m;
+	uint16_t rf_out_power_15m;
+	uint16_t rf_out_power_12m;
+	uint16_t rf_out_power_cb;
+	uint16_t rf_out_power_10m;
+	uint16_t rf_out_power_6m;
+	uint16_t rf_out_power_2m;
+	uint16_t TX_StartDelay;
+	int16_t smeter_calibration_hf;
+	int16_t smeter_calibration_vhf;
+	int16_t adc_offset;
+	uint8_t ENCODER_DEBOUNCE;
+	uint8_t ENCODER2_DEBOUNCE;
+	uint8_t ENCODER_SLOW_RATE;
+	uint8_t CICFIR_GAINER_48K_val;
+	uint8_t CICFIR_GAINER_96K_val;
+	uint8_t CICFIR_GAINER_192K_val;
+	uint8_t CICFIR_GAINER_384K_val;
+	uint8_t TXCICFIR_GAINER_val;
+	uint8_t DAC_GAINER_val;
 	uint8_t MAX_RF_POWER;
-	int8_t VCXO_correction;
 	uint8_t ENCODER_ACCELERATION;
-	float32_t FW_AD8307_SLP;
-	float32_t FW_AD8307_OFFS;
-	float32_t BW_AD8307_SLP;
-	float32_t BW_AD8307_OFFS;
 	uint8_t FAN_MEDIUM_START;
 	uint8_t FAN_MEDIUM_STOP;
 	uint8_t FAN_FULL_START;
@@ -582,7 +585,6 @@ extern struct TRX_CALIBRATE
 	uint8_t AM_MODULATION_INDEX;
 	uint8_t TUNE_MAX_POWER;
 	uint8_t RTC_Coarse_Calibration;
-	int16_t RTC_Calibration;
 	uint8_t EXT_2200m;
 	uint8_t EXT_160m;
 	uint8_t EXT_80m;
@@ -599,6 +601,14 @@ extern struct TRX_CALIBRATE
 	uint8_t EXT_FM;
 	uint8_t EXT_2m;
 	uint8_t EXT_70cm;
+	uint8_t ATU_AVERAGING;
+	int8_t VCXO_correction;
+	TRX_RF_UNIT_TYPE RF_unit_type;
+	TRX_TANGENT_TYPE TangentType;
+	CAT_TYPE CAT_Type;
+	bool ENCODER_INVERT;
+	bool ENCODER2_INVERT;
+	bool ENCODER_ON_FALLING;
 	bool NOTX_NOTHAM;
 	bool NOTX_2200m;
 	bool NOTX_160m;
@@ -619,13 +629,8 @@ extern struct TRX_CALIBRATE
 	bool ENABLE_60m_band;
 	bool ENABLE_marine_band;
 	bool OTA_update;
-	uint16_t TX_StartDelay;
 	bool LCD_Rotate;
 	bool INA226_EN;												//Tisho
-	float32_t INA226_CurCalc;							//X_mA/Bit Coeficient is dependant on the used shunt (tolerances and soldering)
-	float32_t PWR_VLT_Calibration;
-	uint8_t ATU_AVERAGING;
-	
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 
 	uint8_t csum;	//check sum

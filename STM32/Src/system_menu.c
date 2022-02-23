@@ -331,6 +331,7 @@ static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction);
 static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction);					//Tisho
 static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ATU_AVERAGING(int8_t direction);
+static void SYSMENU_HANDL_CALIB_CAT_Type(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -753,6 +754,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		#endif	
 		//{"PWR VLT Calibr", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_HANDL_CALIB_PWR_VLT_Calibration},
 		{"ATU Averaging", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&CALIBRATE.ATU_AVERAGING, SYSMENU_HANDL_CALIB_ATU_AVERAGING},
+		{"CAT Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.CAT_Type, SYSMENU_HANDL_CALIB_CAT_Type, {"FT-450", "TS2000"}},
 };
 
 const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
@@ -4553,6 +4555,14 @@ static void SYSMENU_HANDL_CALIB_ATU_AVERAGING(int8_t direction)
 		CALIBRATE.ATU_AVERAGING += direction;
 	if (CALIBRATE.ATU_AVERAGING > 15)
 		CALIBRATE.ATU_AVERAGING = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_CAT_Type(int8_t direction)
+{
+	if(CALIBRATE.CAT_Type > 0 || direction > 0)
+		CALIBRATE.CAT_Type += direction;
+	if (CALIBRATE.CAT_Type > 1)
+		CALIBRATE.CAT_Type = 1;
 }
 
 //SERVICES
