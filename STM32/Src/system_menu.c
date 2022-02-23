@@ -425,7 +425,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 		{"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
-		{"DEBUG Console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH"}},
+		{"DEBUG Console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT"}},
 		{"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN, {"MIC", "LINE", "USB"}},
 		{"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI, {"MIC", "LINE", "USB"}},
 		{"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
@@ -973,8 +973,8 @@ static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction)
 {
 	if (direction > 0 || TRX.Debug_Type > 0)
 		TRX.Debug_Type += direction;
-	if (TRX.Debug_Type > 4)
-		TRX.Debug_Type = 4;
+	if (TRX.Debug_Type > 5)
+		TRX.Debug_Type = 5;
 }
 
 static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction)

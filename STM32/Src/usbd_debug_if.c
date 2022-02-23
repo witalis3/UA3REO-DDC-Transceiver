@@ -3,6 +3,7 @@
 #include "trx_manager.h"
 #include "cw.h"
 #include "lcd_driver.h"
+#include "lcd.h"
 
 #define DEBUG_APP_RX_DATA_SIZE 8
 #define DEBUG_APP_TX_DATA_SIZE 64
@@ -109,7 +110,26 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:
-
+		if ((pbuf[2] & 0x1) == 0x1) //DTR
+		{
+			TRX_ptt_soft = true;
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
+		}
+		else
+		{
+			TRX_ptt_soft = false;
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
+		}
+		if ((pbuf[2] & 0x2) == 0x2) //RTS
+		{
+			CW_key_serial = true;
+		}
+		else
+		{
+			CW_key_serial = false;
+		}
 		break;
 
 	case CDC_SEND_BREAK:

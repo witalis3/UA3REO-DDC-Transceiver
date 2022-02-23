@@ -162,6 +162,7 @@ static void TRX_Start_RX()
 	WM8731_DMA_state = true;
 	TRX_CLAR_Applied = false;
 	TRX_TXRXMode = 1;
+	
 	//clean TX buffer
 	dma_memset((void *)&FPGA_Audio_SendBuffer_Q[0], 0x00, sizeof(FPGA_Audio_SendBuffer_Q));
 	dma_memset((void *)&FPGA_Audio_SendBuffer_I[0], 0x00, sizeof(FPGA_Audio_SendBuffer_I));
@@ -218,13 +219,18 @@ void TRX_ptt_change(void)
 	}
 	
 	if (CurrentVFO->Mode == TRX_MODE_CW && TRX.CW_PTT_Type == KEY_PTT) //cw ptt type
+	{
+		TRX_ptt_soft = false;
+		CW_key_serial = false;
 		return;
+	}
 	
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
 	if (TRX_ptt_hard != TRX_new_ptt_hard)
 	{
 		TRX_ptt_hard = TRX_new_ptt_hard;
 		TRX_ptt_soft = false;
+		CW_key_serial = false;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();

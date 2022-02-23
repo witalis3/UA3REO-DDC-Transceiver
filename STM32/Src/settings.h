@@ -40,6 +40,9 @@
 #define IDLE_LCD_BRIGHTNESS 5					//Low brightness for IDLE mode (dimmer)
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
+#define CAT_FT450 true
+#define CAT_TS2000 false
+
 //select how the SWR and the power is measured
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
@@ -257,6 +260,7 @@ typedef enum
 	TRX_DEBUG_WIFI,
 	TRX_DEBUG_BUTTONS,
 	TRX_DEBUG_TOUCH,
+	TRX_DEBUG_CAT,
 } TRX_DEBUG_TYPE;
 
 // IQ SAMPLERATE
