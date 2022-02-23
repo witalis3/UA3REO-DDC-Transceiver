@@ -261,7 +261,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Automatic = true;	 //Automatic FFT Scale
 		TRX.FFT_Sensitivity = 8;	 //Threshold of FFT autocalibrate
 		TRX.FFT_Speed = 3;			 // FFT Speed
-		TRX.FFT_Averaging = 4;		 // averaging the FFT to make it smoother
+		TRX.FFT_Averaging = 8;		 // averaging the FFT to make it smoother
 		TRX.FFT_Window = 1;			 //FFT Window
 		TRX.FFT_Style = 1;			 // FFT style
 		TRX.FFT_BW_Style = 1;			 // FFT BW style
