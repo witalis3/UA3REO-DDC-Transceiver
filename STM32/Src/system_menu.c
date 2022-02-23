@@ -145,6 +145,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_Show_Sec_VFO(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Scale_Type(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON2(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON3(int8_t direction);
@@ -545,6 +546,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
 		{"FFT DXCluster Timeout", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_DXCluster_Timeout, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout},
 		{"Show Sec VFO", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Show_Sec_VFO, SYSMENU_HANDL_SCREEN_Show_Sec_VFO},
+		{"FFT Scale Type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Scale_Type, SYSMENU_HANDL_SCREEN_FFT_Scale_Type, {"Ampl", "dBm"}},
 #ifdef HRDW_HAS_FUNCBUTTONS
 		{"Func button 1", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[0], SYSMENU_HANDL_SCREEN_FUNC_BUTTON1},
 		{"Func button 2", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[1], SYSMENU_HANDL_SCREEN_FUNC_BUTTON2},
@@ -2279,6 +2281,14 @@ static void SYSMENU_HANDL_SCREEN_Show_Sec_VFO(int8_t direction)
 		TRX.Show_Sec_VFO = true;
 	if (direction < 0)
 		TRX.Show_Sec_VFO = false;
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_Scale_Type(int8_t direction)
+{
+	if (direction > 0)
+		TRX.FFT_Scale_Type = 1;
+	if (direction < 0)
+		TRX.FFT_Scale_Type = 0;
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction)

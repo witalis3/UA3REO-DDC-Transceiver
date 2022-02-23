@@ -423,7 +423,7 @@ void FFT_doFFT(void)
 	}*/
 
 	//dBm scale
-	if(FFT_DBM_SCALE) {
+	if(TRX.FFT_Scale_Type == 1) {
 		for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
 			FFTInput[i] = getDBFromFFTAmpl(FFTInput[i]);
 	}
@@ -627,7 +627,7 @@ bool FFT_printFFT(void)
 	float32_t minAmplValue = 0;
 	uint32_t minAmplValueIndex = 0;
 	arm_min_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &minAmplValue, &minAmplValueIndex);
-	if(FFT_DBM_SCALE) {
+	if(TRX.FFT_Scale_Type == 1) {
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 				if (FFTOutput_mean[i] == 0.0f)
 					FFTOutput_mean[i] = minAmplValue;
@@ -649,7 +649,7 @@ bool FFT_printFFT(void)
 	float32_t minValue = (medianValue * FFT_MIN);
 	
 	//dbm scaling
-	if(FFT_DBM_SCALE) {
+	if(TRX.FFT_Scale_Type == 1) {
 		if(TRX.FFT_Automatic)
 		{
 			if(minAmplValue_averaged > minAmplValue)
@@ -669,7 +669,7 @@ bool FFT_printFFT(void)
 	// Auto-calibrate FFT levels
 	if (TRX_on_TX() || (TRX.FFT_Automatic && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE)) //Fit FFT to MAX
 	{
-		if(FFT_DBM_SCALE) {
+		if(TRX.FFT_Scale_Type == 1) {
 			float32_t newMaxAmplValue = maxAmplValue - minAmplValue_averaged;
 			maxValueFFT = maxValueFFT * 0.95f + newMaxAmplValue * 0.05f;
 			if (maxValueFFT < newMaxAmplValue)
@@ -691,12 +691,12 @@ bool FFT_printFFT(void)
 	}
 	else if(TRX.FFT_Automatic) //Fit by median (automatic)
 	{
-		if(FFT_DBM_SCALE) {
+		if(TRX.FFT_Scale_Type == 1) {
 			medianValue -= minAmplValue_averaged;
 			if(medianValue < 1.0f) medianValue = 1.0f;
-			maxValue = medianValue * FFT_MAX;
-			targetValue = medianValue * FFT_TARGET;
-			minValue = medianValue * FFT_MIN;
+			maxValue = medianValue * FFT_MAX / 2.0f;
+			targetValue = medianValue * FFT_TARGET / 2.0f;
+			minValue = medianValue * FFT_MIN / 2.0f;
 		}
 		
 		maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
@@ -725,7 +725,7 @@ bool FFT_printFFT(void)
 	}
 	else //Manual Scale
 	{
-		if(FFT_DBM_SCALE) {
+		if(TRX.FFT_Scale_Type == 1) {
 			float32_t minManualAmplitude = (float32_t)TRX.FFT_ManualBottom - minAmplValue_averaged;
 			float32_t maxManualAmplitude = (float32_t)TRX.FFT_ManualTop - minAmplValue_averaged;
 			maxValueFFT = maxManualAmplitude;
@@ -748,7 +748,7 @@ bool FFT_printFFT(void)
 	}
 
 	//limits
-	if (maxValueFFT < 0.0000001f && !FFT_DBM_SCALE)
+	if (maxValueFFT < 0.0000001f && TRX.FFT_Scale_Type == 0)
 		maxValueFFT = 0.0000001f;
 	
 	//tx noise scale limit
@@ -1287,7 +1287,7 @@ bool FFT_printFFT(void)
 	}
 	
 	//Print DBM grid (LOG Scale)
-	if(TRX.FFT_dBmGrid && !FFT_DBM_SCALE)
+	if(TRX.FFT_dBmGrid && TRX.FFT_Scale_Type == 0)
 	{
 		char tmp[64] = {0};
 		float32_t ampl_on_bin = maxValueFFT / (float32_t)fftHeight;
@@ -1309,7 +1309,7 @@ bool FFT_printFFT(void)
 	}
 	
 	//Print DBM grid (dBm Scale)
-	if(TRX.FFT_dBmGrid && FFT_DBM_SCALE)
+	if(TRX.FFT_dBmGrid && TRX.FFT_Scale_Type == 1)
 	{
 		char tmp[64] = {0};
 		float32_t dbm_on_bin = (FFT_maxDBM - FFT_minDBM) / (float32_t)fftHeight;

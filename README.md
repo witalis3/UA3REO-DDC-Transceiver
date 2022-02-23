@@ -234,6 +234,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **FFT DXCluster Azimuth** - Add azimuth data to DX-cluster
 * **FFT DXCluster Timeout** - Timeout of DX-cluser spots in minutes
 * **Show Sec VFO** - Show secondary VFO position on spectre
+* **FFT Scale Type** - Y-axis style on FFT between signal amplitude and dBm to fit more dynamic range on screen (Useful when manually adjusting FFT range).
 
 ### Decoders
 * **CW Decoder** - Software CW receive decoder
