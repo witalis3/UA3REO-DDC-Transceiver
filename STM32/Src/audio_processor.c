@@ -80,7 +80,6 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize);
-static void DemodulateStereoFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size);
 
 // initialize audio processor
 void initAudioProcessor(void)
@@ -301,8 +300,6 @@ void processRxAudio(void)
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		break;
 	case TRX_MODE_WFM:
-		if(TRX.FM_Stereo)
-			DemodulateStereoFM(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_LPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, TRX.FM_Stereo);
@@ -405,8 +402,6 @@ void processRxAudio(void)
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			break;
 		case TRX_MODE_WFM:
-			if(TRX.FM_Stereo)
-				DemodulateStereoFM(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_LPF_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, TRX.FM_Stereo);
@@ -1503,33 +1498,17 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		static float32_t SWFM_gen_index = 0;
 		for (uint_fast16_t i = 0; i < size; i++)
 		{
-			//get stereo iq from decoded wfm
-			data_q[i] = data_i[i] * arm_cos_f32(SWFM_gen_index);
-			data_i[i] = data_i[i] * arm_sin_f32(SWFM_gen_index);
+			//get stereo sample from decoded wfm
+			float32_t stereo_sample = data_i[i] * arm_sin_f32(SWFM_gen_index);
 			
+			//rotate nco
 			SWFM_gen_index += SWFM_gen_step;
 			if (SWFM_gen_index >= F_2PI)
 				SWFM_gen_index -= F_2PI;
-		}
-	}
-}
-
-static void DemodulateStereoFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size)
-{
-	//Stereo FM
-	if(TRX.FM_Stereo)
-	{
-		//Do hilbert
-		doRX_HILBERT(rx_id, size);
-		
-		//Extract channels
-		for(uint32_t i = 0; i < size; i++)
-		{
-			float32_t left = data_i[i] - data_q[i]; // difference of I and Q - LSB
-			float32_t right = data_i[i] + data_q[i]; // sum of I and Q - USB
 			
-			data_i[i] = left;
-			data_q[i] = right;
+			//get channels
+			data_i[i] = data_i[i] + stereo_sample; //Mono (L+R) + Stereo (L-R) = 2L
+			data_q[i] = data_i[i] - stereo_sample; //Mono (L+R) - Stereo (L-R) = 2R
 		}
 	}
 }
