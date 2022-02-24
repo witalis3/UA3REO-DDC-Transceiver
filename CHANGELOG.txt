@@ -1,6 +1,7 @@
 ----Version 3.3.0----
 +HARDW: Новая RF-UNIT-BIG-RU4PN, Thx RU4PN
 +HARDW: Новые платы корпуса и тангенты, Thx EA7GIB
++HARDW: Новая плата подключения аудио(и не только) разъёмов, Thx EA7GIB
 +HARDW: Новая версия RF-UNIT-BIG-DB5AT на основе AFT05mp075nr1, Thx DB5AT
 +HARDW: Новая версия плат корпуса от DB5AT
 +STM32: Добавлена поддержка измерителя INA226, Thx DB5AT
