@@ -747,7 +747,7 @@ void processTxAudio(void)
 	if (mode != TRX_MODE_IQ && !TRX_Tune)
 	{
 		//IIR HPF
-		if (CurrentVFO->HPF_Filter_Width > 0)
+		if (CurrentVFO->HPF_TX_Filter_Width > 0)
 			arm_biquad_cascade_df2T_f32_rolled(&IIR_TX_HPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		//IIR LPF
 		if (CurrentVFO->LPF_TX_Filter_Width > 0)
@@ -1198,14 +1198,14 @@ static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
-		if (CurrentVFO->HPF_Filter_Width > 0)
+		if (CurrentVFO->HPF_RX_Filter_Width > 0)
 		{
 			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX1_HPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		}
 	}
 	else
 	{
-		if (SecondaryVFO->HPF_Filter_Width > 0)
+		if (SecondaryVFO->HPF_RX_Filter_Width > 0)
 		{
 			arm_biquad_cascade_df2T_f32_rolled(&IIR_RX2_HPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		}

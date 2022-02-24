@@ -70,7 +70,8 @@ static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
@@ -457,7 +458,8 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"DNR2 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR2_SNR_THRESHOLD, SYSMENU_HANDL_AUDIO_DNR2_THRES},
 		{"DNR Average", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_AUDIO_DNR_AVERAGE},
 		{"DNR Minimal", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_HANDL_AUDIO_DNR_MINMAL},
-		{"SSB HPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_pass},
+		{"SSB HPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_RX_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass},
+		{"SSB HPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_TX_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass},
 		{"SSB LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass},
 		{"SSB LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass},
 		{"CW LPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_HANDL_AUDIO_CW_LPF_pass},
@@ -1702,12 +1704,23 @@ static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction)
 		TRX.BANDS_SAVED_SETTINGS[band].SQL = CurrentVFO->SQL;
 }
 
-static void SYSMENU_HANDL_AUDIO_SSB_HPF_pass(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction)
 {
-	if (TRX.SSB_HPF_Filter > 0 || direction > 0)
-		TRX.SSB_HPF_Filter += direction * 50;
-	if(TRX.SSB_HPF_Filter > MAX_HPF_WIDTH)
-		TRX.SSB_HPF_Filter = MAX_HPF_WIDTH;
+	if (TRX.SSB_HPF_RX_Filter > 0 || direction > 0)
+		TRX.SSB_HPF_RX_Filter += direction * 50;
+	if(TRX.SSB_HPF_RX_Filter > MAX_HPF_WIDTH)
+		TRX.SSB_HPF_RX_Filter = MAX_HPF_WIDTH;
+	
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+}
+
+static void SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(int8_t direction)
+{
+	if (TRX.SSB_HPF_TX_Filter > 0 || direction > 0)
+		TRX.SSB_HPF_TX_Filter += direction * 50;
+	if(TRX.SSB_HPF_TX_Filter > MAX_HPF_WIDTH)
+		TRX.SSB_HPF_TX_Filter = MAX_HPF_WIDTH;
 	
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);

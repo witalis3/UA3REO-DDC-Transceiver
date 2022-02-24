@@ -111,7 +111,8 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.Mode = TRX_MODE_LSB;			  // saved VFO-A mode
 		TRX.VFO_A.LPF_RX_Filter_Width = 2700;	  // saved bandwidth for VFO-A
 		TRX.VFO_A.LPF_TX_Filter_Width = 2700;	  // saved bandwidth for VFO-A
-		TRX.VFO_A.HPF_Filter_Width = 60;		  // saved bandwidth for VFO-A
+		TRX.VFO_A.HPF_RX_Filter_Width = 60;		  // saved bandwidth for VFO-A
+		TRX.VFO_A.HPF_TX_Filter_Width = 60;		  // saved bandwidth for VFO-A
 		TRX.VFO_A.ManualNotchFilter = false;	  // notch filter to cut out noise
 		TRX.VFO_A.AutoNotchFilter = false;		  // notch filter to cut out noise
 		TRX.VFO_A.NotchFC = 1000;				  // cutoff frequency of the notch filter
@@ -123,7 +124,8 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.Mode = TRX_MODE_USB;			  // saved VFO-B mode
 		TRX.VFO_B.LPF_RX_Filter_Width = 2700;	  // saved bandwidth for VFO-B
 		TRX.VFO_B.LPF_TX_Filter_Width = 2700;	  // saved bandwidth for VFO-B
-		TRX.VFO_B.HPF_Filter_Width = 60;		  // saved bandwidth for VFO-B
+		TRX.VFO_B.HPF_RX_Filter_Width = 60;		  // saved bandwidth for VFO-B
+		TRX.VFO_B.HPF_TX_Filter_Width = 60;		  // saved bandwidth for VFO-B
 		TRX.VFO_B.ManualNotchFilter = false;	  // notch filter to cut out noise
 		TRX.VFO_B.AutoNotchFilter = false;		  // notch filter to cut out noise
 		TRX.VFO_B.NotchFC = 1000;				  // cutoff frequency of the notch filter
@@ -219,7 +221,8 @@ void LoadSettings(bool clear)
 		TRX.DIGI_LPF_Filter = 3000;						   // default value of DIGI filter width
 		TRX.SSB_LPF_RX_Filter = 2700;					   // default value of SSB filter width
 		TRX.SSB_LPF_TX_Filter = 2700;					   // default value of SSB filter width
-		TRX.SSB_HPF_Filter = 300;						   // default value of SSB filter width
+		TRX.SSB_HPF_RX_Filter = 300;						   // default value of SSB filter width
+		TRX.SSB_HPF_TX_Filter = 300;						   // default value of SSB filter width
 		TRX.AM_LPF_RX_Filter = 6000;					   // default value of AM filter width
 		TRX.AM_LPF_TX_Filter = 6000;					   // default value of AM filter width
 		TRX.FM_LPF_RX_Filter = 10000;					   // default value of the FM filter width

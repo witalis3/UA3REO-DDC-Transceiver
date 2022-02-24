@@ -40,6 +40,7 @@ static float32_t IIR_RX2_GAUSS_I_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_GAUSS_Q_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_TX_LPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_LPF_STAGES] = {0};
 static float32_t IIR_TX_LPF_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
+static float32_t IIR_TX_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
 static float32_t IIR_RX1_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
 static float32_t IIR_RX2_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
 static float32_t IIR_RX1_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
@@ -248,18 +249,21 @@ void ReinitAudioFilters(void)
 	}
 
 	//parameters
+	uint32_t hpf_tx_width = 300; //default settings
 	uint32_t hpf_rx1_width = 300; //default settings
-	if (CurrentVFO->HPF_Filter_Width > 0)
-		hpf_rx1_width = CurrentVFO->HPF_Filter_Width;
+	if (CurrentVFO->HPF_RX_Filter_Width > 0)
+		hpf_rx1_width = CurrentVFO->HPF_RX_Filter_Width;
+	if (CurrentVFO->HPF_TX_Filter_Width > 0)
+		hpf_tx_width = CurrentVFO->HPF_TX_Filter_Width;
 	//
 	uint32_t hpf_rx2_width = 300; //default settings
-	if (SecondaryVFO->HPF_Filter_Width > 0)
-		hpf_rx2_width = SecondaryVFO->HPF_Filter_Width;
+	if (SecondaryVFO->HPF_RX_Filter_Width > 0)
+		hpf_rx2_width = SecondaryVFO->HPF_RX_Filter_Width;
 	//
 	uint32_t lpf_rx1_width = 2700; //default settings
 	if (CurrentVFO->LPF_RX_Filter_Width > 0)
 		lpf_rx1_width = CurrentVFO->LPF_RX_Filter_Width;
-	if(lpf_rx1_width < hpf_rx1_width && CurrentVFO->HPF_Filter_Width > 0)
+	if(lpf_rx1_width < hpf_rx1_width && CurrentVFO->HPF_RX_Filter_Width > 0)
 			lpf_rx1_width = hpf_rx1_width + 100;
 	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW)
 		lpf_rx1_width /= 2;
@@ -267,7 +271,7 @@ void ReinitAudioFilters(void)
 	uint32_t lpf_rx2_width = 2700; //default settings
 	if (SecondaryVFO->LPF_RX_Filter_Width > 0)
 		lpf_rx2_width = SecondaryVFO->LPF_RX_Filter_Width;
-	if(lpf_rx2_width < hpf_rx2_width && SecondaryVFO->HPF_Filter_Width > 0)
+	if(lpf_rx2_width < hpf_rx2_width && SecondaryVFO->HPF_RX_Filter_Width > 0)
 			lpf_rx2_width = hpf_rx2_width + 100;
 	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW)
 		lpf_rx2_width /= 2;
@@ -275,8 +279,8 @@ void ReinitAudioFilters(void)
 	uint32_t lpf_tx_width = 2700; //default settings
 	if (CurrentVFO->LPF_TX_Filter_Width > 0)
 		lpf_tx_width = CurrentVFO->LPF_TX_Filter_Width;
-	if(lpf_tx_width < hpf_rx1_width)
-		lpf_tx_width = hpf_rx1_width + 100;
+	if(lpf_tx_width < hpf_tx_width)
+		lpf_tx_width = hpf_tx_width + 100;
 	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW)
 		lpf_tx_width /= 2;
 	//
@@ -320,16 +324,21 @@ void ReinitAudioFilters(void)
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_LPF2_I, IIR_LPF_STAGES, IIR_RX2_LPF_Coeffs, (float32_t *)&IIR_RX2_LPF2_I_State[0]);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_LPF2_Q, IIR_LPF_STAGES, IIR_RX2_LPF_Coeffs, (float32_t *)&IIR_RX2_LPF2_Q_State[0]);
 
-	//HPF
+	//HPF RX1
 	filter = biquad_create(IIR_HPF_STAGES);
 	biquad_init_highpass(filter, TRX_SAMPLERATE, hpf_rx1_width);
 	fill_biquad_coeffs(filter, IIR_RX1_HPF_Coeffs, IIR_HPF_STAGES);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_HPF_I, IIR_HPF_STAGES, IIR_RX1_HPF_Coeffs, (float32_t *)&IIR_RX1_HPF_I_State[0]);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_HPF_I, IIR_HPF_STAGES, IIR_RX1_HPF_Coeffs, (float32_t *)&IIR_TX_HPF_I_State[0]);
-
+	
+	//HPF RX2
 	biquad_init_highpass(filter, TRX_SAMPLERATE, hpf_rx2_width);
 	fill_biquad_coeffs(filter, IIR_RX2_HPF_Coeffs, IIR_HPF_STAGES);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_HPF_I, IIR_HPF_STAGES, IIR_RX2_HPF_Coeffs, (float32_t *)&IIR_RX2_HPF_I_State[0]);
+	
+	//HPF TX
+	biquad_init_highpass(filter, TRX_SAMPLERATE, hpf_tx_width);
+	fill_biquad_coeffs(filter, IIR_TX_HPF_Coeffs, IIR_HPF_STAGES);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_HPF_I, IIR_HPF_STAGES, IIR_TX_HPF_Coeffs, (float32_t *)&IIR_TX_HPF_I_State[0]);
 
 	//RX1 GAUSS
 	filter = biquad_create(GAUSS_STAGES);

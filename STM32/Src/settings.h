@@ -221,7 +221,8 @@ typedef enum
 typedef struct
 {
 	uint32_t Freq;
-	uint_fast16_t HPF_Filter_Width;
+	uint_fast16_t HPF_RX_Filter_Width;
+	uint_fast16_t HPF_TX_Filter_Width;
 	uint_fast16_t LPF_RX_Filter_Width;
 	uint_fast16_t LPF_TX_Filter_Width;
 	uint_fast8_t Mode;
@@ -377,7 +378,8 @@ extern struct TRX_SETTINGS
 	uint16_t DIGI_LPF_Filter;
 	uint16_t SSB_LPF_RX_Filter;
 	uint16_t SSB_LPF_TX_Filter;
-	uint16_t SSB_HPF_Filter;
+	uint16_t SSB_HPF_RX_Filter;
+	uint16_t SSB_HPF_TX_Filter;
 	uint16_t AM_LPF_RX_Filter;
 	uint16_t AM_LPF_TX_Filter;
 	uint16_t FM_LPF_RX_Filter;

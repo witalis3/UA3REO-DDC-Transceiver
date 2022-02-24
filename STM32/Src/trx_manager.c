@@ -392,36 +392,42 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	case TRX_MODE_SAM:
 		vfo->LPF_RX_Filter_Width = TRX.AM_LPF_RX_Filter;
 		vfo->LPF_TX_Filter_Width = TRX.AM_LPF_TX_Filter;
-		vfo->HPF_Filter_Width = 0;
+		vfo->HPF_RX_Filter_Width = 0;
+		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	case TRX_MODE_LSB:
 	case TRX_MODE_USB:
 		vfo->LPF_RX_Filter_Width = TRX.SSB_LPF_RX_Filter;
 		vfo->LPF_TX_Filter_Width = TRX.SSB_LPF_TX_Filter;
-		vfo->HPF_Filter_Width = TRX.SSB_HPF_Filter;
+		vfo->HPF_RX_Filter_Width = TRX.SSB_HPF_RX_Filter;
+		vfo->HPF_TX_Filter_Width = TRX.SSB_HPF_TX_Filter;
 		break;
 	case TRX_MODE_DIGI_L:
 	case TRX_MODE_DIGI_U:
 	case TRX_MODE_RTTY:
 		vfo->LPF_RX_Filter_Width = TRX.DIGI_LPF_Filter;
 		vfo->LPF_TX_Filter_Width = TRX.DIGI_LPF_Filter;
-		vfo->HPF_Filter_Width = 0;
+		vfo->HPF_RX_Filter_Width = 0;
+		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	case TRX_MODE_CW:
 		vfo->LPF_RX_Filter_Width = TRX.CW_LPF_Filter;
 		vfo->LPF_TX_Filter_Width = TRX.CW_LPF_Filter;
-		vfo->HPF_Filter_Width = 0;
+		vfo->HPF_RX_Filter_Width = 0;
+		vfo->HPF_TX_Filter_Width = 0;
 		LCD_UpdateQuery.TextBar = true;
 		break;
 	case TRX_MODE_NFM:
 		vfo->LPF_RX_Filter_Width = TRX.FM_LPF_RX_Filter;
 		vfo->LPF_TX_Filter_Width = TRX.FM_LPF_TX_Filter;
-		vfo->HPF_Filter_Width = 0;
+		vfo->HPF_RX_Filter_Width = 0;
+		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	case TRX_MODE_WFM:
 		vfo->LPF_RX_Filter_Width = 16000;
 		vfo->LPF_TX_Filter_Width = 16000;
-		vfo->HPF_Filter_Width = 0;
+		vfo->HPF_RX_Filter_Width = 0;
+		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	}
 	
