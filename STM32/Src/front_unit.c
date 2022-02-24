@@ -1386,6 +1386,19 @@ void FRONTPANEL_BUTTONHANDLER_DNR(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
+void FRONTPANEL_BUTTONHANDLER_DNR_HOLD(uint32_t parameter)
+{
+	if (!LCD_systemMenuOpened)
+	{
+		LCD_systemMenuOpened = true;
+		SYSMENU_AUDIO_DNR_HOTKEY();
+	}
+	else
+	{
+		SYSMENU_eventCloseAllSystemMenu();
+	}
+}
+
 void FRONTPANEL_BUTTONHANDLER_NB(uint32_t parameter)
 {
 	TRX.NOISE_BLANKER = !TRX.NOISE_BLANKER;

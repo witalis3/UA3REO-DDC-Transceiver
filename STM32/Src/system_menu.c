@@ -1377,6 +1377,13 @@ void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 	LCD_redraw(false);
 }
 
+void SYSMENU_AUDIO_DNR_HOTKEY(void)
+{
+	SYSMENU_HANDL_AUDIOMENU(0);
+	systemMenuIndex = 8;
+	LCD_redraw(false);
+}
+
 void SYSMENU_AUDIO_AGC_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);

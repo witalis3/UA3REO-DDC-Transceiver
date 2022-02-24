@@ -67,6 +67,7 @@ extern void FRONTPANEL_BUTTONHANDLER_DRV_ONLY(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_AGC(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_AGC_SPEED(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_DNR(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_DNR_HOLD(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_NB(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_NOTCH(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter);
