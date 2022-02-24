@@ -146,6 +146,9 @@ void TRX_Restart_Mode()
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	}
+	
+	if(TRX.SplitEnabled)
+		LCD_UpdateQuery.FreqInfoRedraw = true;
 }
 
 static void TRX_Start_RX()

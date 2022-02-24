@@ -240,6 +240,8 @@ static void LCD_displayFreqInfo(bool redraw)
 #endif
 	if (TRX.Transverter_Enabled)
 		display_freq += (uint64_t)TRX.Transverter_Offset_Mhz * 1000 * 1000;
+	if (TRX_on_TX() && !TRX.selected_vfo)
+		display_freq += TRX_SPLIT;
 
 	LCD_last_showed_freq = display_freq;
 	uint16_t hz = (display_freq % 1000);
@@ -315,6 +317,8 @@ static void LCD_displayFreqInfo(bool redraw)
 	display_freq = TRX.VFO_B.Freq;
 	if (TRX.Transverter_Enabled)
 		display_freq += (uint64_t)TRX.Transverter_Offset_Mhz * 1000 * 1000;
+	if (TRX_on_TX() && TRX.selected_vfo)
+		display_freq += TRX_SPLIT;
 	
 	LCD_last_showed_freq_B = display_freq;
 	uint16_t hz_B = (LCD_last_showed_freq_B % 1000);
