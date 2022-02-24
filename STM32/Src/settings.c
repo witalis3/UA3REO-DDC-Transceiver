@@ -191,7 +191,7 @@ void LoadSettings(bool clear)
 		TRX.AGC_GAIN_TARGET = -30;						   // Maximum (target) AGC gain
 		TRX.MIC_GAIN = 1;								   // Microphone gain
 		TRX.MIC_Boost = true;								// +20db mic amplifier
-		TRX.MIC_NOISE_GATE = -50;							// Mic noise gate
+		TRX.MIC_NOISE_GATE = -120;							// Mic noise gate
 		TRX.RX_EQ_LOW = 0;								   // Receiver Equalizer (Low)
 		TRX.RX_EQ_MID = 0;								   // Receiver EQ (mids)
 		TRX.RX_EQ_HIG = 0;								   // Receiver EQ (high)

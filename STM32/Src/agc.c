@@ -212,7 +212,7 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 		AGC_TX_dbFS = -100.0f;
 	
 	//mic noise threshold (gate), below it - mute
-	if (AGC_TX_dbFS < TRX.MIC_NOISE_GATE) {
+	if (AGC_TX_dbFS < TRX.MIC_NOISE_GATE && TRX.MIC_NOISE_GATE > -120) { //-120db - disabled
 		target = 0.0f;
 		TRX_MIC_BELOW_NOISEGATE = true;
 	} else { 
