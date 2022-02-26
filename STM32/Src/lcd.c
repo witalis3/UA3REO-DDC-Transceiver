@@ -21,7 +21,7 @@
 #include "fft.h"
 #include "sd.h"
 #include "vad.h"
-
+#include "rf_unit.h"
 #include "INA226_PWR_monitor.h"				//Tisho
 
 volatile bool LCD_busy = false;
@@ -557,12 +557,25 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	else
 		LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_WIFI_ICON_X, LAYOUT->STATUS_WIFI_ICON_Y, &IMAGES_wifi_inactive, COLOR_BLACK, BG_COLOR);
 
+#if (defined(LAY_800x480))
+	if(FAN_Active) {
+		//FAN indicator
+		LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_FAN_ICON_X, LAYOUT->STATUS_FAN_ICON_Y, &IMAGES_fan, COLOR_BLACK, BG_COLOR);
+	} else {
+		//SD indicator
+		if (SD_Present)
+			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_SD_ICON_X, LAYOUT->STATUS_SD_ICON_Y, &IMAGES_sd_active, COLOR_BLACK, BG_COLOR);
+		else
+			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_SD_ICON_X, LAYOUT->STATUS_SD_ICON_Y, &IMAGES_sd_inactive, COLOR_BLACK, BG_COLOR);
+	}
+#else
 	//SD indicator
 	if (SD_Present)
 		LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_SD_ICON_X, LAYOUT->STATUS_SD_ICON_Y, &IMAGES_sd_active, COLOR_BLACK, BG_COLOR);
 	else
 		LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_SD_ICON_X, LAYOUT->STATUS_SD_ICON_Y, &IMAGES_sd_inactive, COLOR_BLACK, BG_COLOR);
-
+#endif
+	
 	/////BW trapezoid
 	LCDDriver_Fill_RectWH(LAYOUT->BW_TRAPEZ_POS_X, LAYOUT->BW_TRAPEZ_POS_Y, LAYOUT->BW_TRAPEZ_WIDTH, LAYOUT->BW_TRAPEZ_HEIGHT, BG_COLOR); //clear back
 #define bw_trapez_margin 10

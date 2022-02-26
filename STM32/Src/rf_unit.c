@@ -18,6 +18,8 @@ static uint8_t ATU_MinSWR_C = 0;
 static bool ATU_MinSWR_T = false;
 static uint8_t ATU_Stage = 0;
 bool ATU_TunePowerStabilized = false;
+bool FAN_Active = false;
+static bool FAN_Active_old = false;
 
 #define SENS_TABLE_COUNT 24
 static const int16_t KTY81_120_sensTable[SENS_TABLE_COUNT][2] = { // table of sensor characteristics
@@ -523,19 +525,23 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U3-QB FAN_OUT
 				if (registerNumber == 22) //FAN
 				{
-					static bool fan_status = false;
 					static bool fan_pwm = false;
-					if (fan_status && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
-						fan_status = false;
-					if (!fan_status && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
+					if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
+						FAN_Active = false;
+					if (!FAN_Active && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
 					{
-						fan_status = true;
+						FAN_Active = true;
 						fan_pwm = true;
 					}
 					if (TRX_RF_Temperature >= CALIBRATE.FAN_FULL_START) // Temperature at which the fan starts at full power
 						fan_pwm = false;
 
-					if (fan_status)
+					if(FAN_Active != FAN_Active_old) {
+						FAN_Active_old = FAN_Active;
+						LCD_UpdateQuery.StatusInfoGUI = true;
+					}
+					
+					if (FAN_Active)
 					{
 						if (fan_pwm) //PWM
 						{
@@ -693,19 +699,23 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U11-6 FAN_OUT
 				if (registerNumber == 33)
 				{
-					static bool fan_status = false;
 					static bool fan_pwm = false;
-					if (fan_status && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
-						fan_status = false;
-					if (!fan_status && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
+					if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
+						FAN_Active = false;
+					if (!FAN_Active && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
 					{
-						fan_status = true;
+						FAN_Active = true;
 						fan_pwm = true;
 					}
 					if (TRX_RF_Temperature >= CALIBRATE.FAN_FULL_START) // Temperature at which the fan starts at full power
 						fan_pwm = false;
+					
+					if(FAN_Active != FAN_Active_old) {
+						FAN_Active_old = FAN_Active;
+						LCD_UpdateQuery.StatusInfoGUI = true;
+					}
 
-					if (fan_status)
+					if (FAN_Active)
 					{
 						if (fan_pwm) //PWM
 						{
@@ -795,19 +805,23 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U5-0 FAN_OUT
 				if (registerNumber == 7)
 				{
-					static bool fan_status = false;
 					static bool fan_pwm = false;
-					if (fan_status && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
-						fan_status = false;
-					if (!fan_status && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
+					if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
+						FAN_Active = false;
+					if (!FAN_Active && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
 					{
-						fan_status = true;
+						FAN_Active = true;
 						fan_pwm = true;
 					}
 					if (TRX_RF_Temperature >= CALIBRATE.FAN_FULL_START) // Temperature at which the fan starts at full power
 						fan_pwm = false;
 
-					if (fan_status)
+					if(FAN_Active != FAN_Active_old) {
+						FAN_Active_old = FAN_Active;
+						LCD_UpdateQuery.StatusInfoGUI = true;
+					}
+					
+					if (FAN_Active)
 					{
 						if (fan_pwm) //PWM
 						{
@@ -1027,19 +1041,23 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U11-6 FAN_OUT
 				if (registerNumber == 17)
 				{
-					static bool fan_status = false;
 					static bool fan_pwm = false;
-					if (fan_status && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
-						fan_status = false;
-					if (!fan_status && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
+					if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
+						FAN_Active = false;
+					if (!FAN_Active && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
 					{
-						fan_status = true;
+						FAN_Active = true;
 						fan_pwm = true;
 					}
 					if (TRX_RF_Temperature >= CALIBRATE.FAN_FULL_START) // Temperature at which the fan starts at full power
 						fan_pwm = false;
+					
+					if(FAN_Active != FAN_Active_old) {
+						FAN_Active_old = FAN_Active;
+						LCD_UpdateQuery.StatusInfoGUI = true;
+					}
 
-					if (fan_status)
+					if (FAN_Active)
 					{
 						if (fan_pwm) //PWM
 						{
@@ -1199,19 +1217,23 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				//U1-6 FAN_OUT
 				if (registerNumber == 1)
 				{
-					static bool fan_status = false;
 					static bool fan_pwm = false;
-					if (fan_status && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
-						fan_status = false;
-					if (!fan_status && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
+					if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) // Temperature at which the fan stops
+						FAN_Active = false;
+					if (!FAN_Active && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
 					{
-						fan_status = true;
+						FAN_Active = true;
 						fan_pwm = true;
 					}
 					if (TRX_RF_Temperature >= CALIBRATE.FAN_FULL_START) // Temperature at which the fan starts at full power
 						fan_pwm = false;
+					
+					if(FAN_Active != FAN_Active_old) {
+						FAN_Active_old = FAN_Active;
+						LCD_UpdateQuery.StatusInfoGUI = true;
+					}
 
-					if (fan_status)
+					if (FAN_Active)
 					{
 						if (fan_pwm) //PWM
 						{

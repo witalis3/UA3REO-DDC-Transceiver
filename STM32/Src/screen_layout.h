@@ -64,6 +64,9 @@ extern "C"
 		//SD
 		const uint16_t STATUS_SD_ICON_X;
 		const uint16_t STATUS_SD_ICON_Y;
+		//FAN
+		const uint16_t STATUS_FAN_ICON_X;
+		const uint16_t STATUS_FAN_ICON_Y;
 		//Frequency output
 		const uint16_t FREQ_A_LEFT;
 		const uint16_t FREQ_X_OFFSET_100;
