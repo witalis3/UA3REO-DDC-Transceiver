@@ -182,6 +182,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON31(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction);
 
 static void SYSMENU_HANDL_DECODERS_CW_Decoder(int8_t direction);
+static void SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_RDS_Decoder(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_RTTY_Speed(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction);
@@ -592,6 +593,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 const static struct sysmenu_item_handler sysmenu_decoders_handlers[] =
 	{
 		{"CW Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Decoder, SYSMENU_HANDL_DECODERS_CW_Decoder},
+		{"CW Decoder Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_Decoder_Threshold, SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold},
 		{"RDS Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RDS_Decoder, SYSMENU_HANDL_DECODERS_RDS_Decoder},
 		{"RTTY Speed", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Speed, SYSMENU_HANDL_DECODERS_RTTY_Speed},
 		{"RTTY Shift", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Shift, SYSMENU_HANDL_DECODERS_RTTY_Shift},
@@ -2604,6 +2606,14 @@ static void SYSMENU_HANDL_DECODERS_CW_Decoder(int8_t direction)
 		TRX.CW_Decoder = true;
 	if (direction < 0)
 		TRX.CW_Decoder = false;
+}
+
+static void SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold(int8_t direction)
+{
+	if (TRX.CW_Decoder_Threshold > 1 || direction > 0)
+		TRX.CW_Decoder_Threshold += direction;
+	if (TRX.CW_Decoder_Threshold > 50)
+		TRX.CW_Decoder_Threshold = 50;
 }
 
 static void SYSMENU_HANDL_DECODERS_RDS_Decoder(int8_t direction)

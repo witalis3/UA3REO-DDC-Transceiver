@@ -130,7 +130,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 	//sendToDebug_str(" ");
 	//sendToDebug_float32(CWDEC_FFTBuffer[maxIndex], false);
 
-	if (CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES && (maxValue > meanValue * CWDECODER_MEAN_THRES)) // signal is active
+	if (CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES && (maxValue > meanValue * (float32_t)TRX.CW_Decoder_Threshold)) // signal is active
 	{
 		//sendToDebug_float32(CWDEC_FFTBuffer [maxIndex], false);
 		//sendToDebug_str("s");

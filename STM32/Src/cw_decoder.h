@@ -18,7 +18,7 @@
 #define CWDECODER_FFTSIZE 256                           // FFT size for analysis
 #define CWDECODER_FFT_SAMPLES (DECODER_PACKET_SIZE * 4) // number of samples for analysis
 #define CWDECODER_FFTSIZE_HALF (CWDECODER_FFTSIZE / 2)  // half the size of the FFT
-#define CWDECODER_MEAN_THRES 10.0f                      // Below this signal strength, we consider that it is noise
+//#define CWDECODER_MEAN_THRES 10.0f                      // Below this signal strength, we consider that it is noise
 #define CWDECODER_MAX_THRES 0.5f                        // Below this signal strength, we consider that it is not active
 #define CWDECODER_MAX_SLIDE 0.99f                       // reduction factor for the maximum FFT threshold
 #define CWDECODER_ZOOMED_SAMPLES (DECODER_PACKET_SIZE / CWDECODER_MAGNIFY)
@@ -27,7 +27,7 @@
 #define CWDECODER_ERROR_DIFF 0.5f                        // error factor when determining the point and dash
 #define CWDECODER_ERROR_SPACE_DIFF 0.6f                  // error factor when determining the character and space
 #define CWDECODER_MAX_CODE_SIZE 10                       // maximum character code size
-#define CWDECODER_MAX_WPM 50                             // maximum WPM
+#define CWDECODER_MAX_WPM 40                             // maximum WPM
 #define CWDECODER_DEBUG false                            //Show Debug
 
 // Public variables

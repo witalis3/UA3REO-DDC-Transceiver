@@ -1020,6 +1020,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FFT_Scale_Type", (uint32_t *)&TRX.FFT_Scale_Type, SYSMENU_UINT8);
 			//DECODER
 			SD_WRITE_SETT_LINE("TRX.CW_Decoder", (uint32_t *)&TRX.CW_Decoder, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.CW_Decoder_Threshold", (uint32_t *)&TRX.CW_Decoder_Threshold, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.RDS_Decoder", (uint32_t *)&TRX.RDS_Decoder, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RTTY_Speed", (uint32_t *)&TRX.RTTY_Speed, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.RTTY_Shift", (uint32_t *)&TRX.RTTY_Shift, SYSMENU_UINT16);
@@ -1597,6 +1598,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	//DECODERS
 	if (strcmp(name, "TRX.CW_Decoder") == 0)
 		TRX.CW_Decoder = bval;
+	if (strcmp(name, "TRX.CW_Decoder_Threshold") == 0)
+		TRX.CW_Decoder_Threshold = (uint8_t)uintval;
 	if (strcmp(name, "TRX.RDS_Decoder") == 0)
 		TRX.RDS_Decoder = bval;
 	if (strcmp(name, "TRX.RTTY_Speed") == 0)

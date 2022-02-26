@@ -239,6 +239,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 
 ### Decoders
 * **CW Decoder** - Software CW receive decoder
+* **CW Decoder Threshold** - CW receive decoder sensivity
 * **RDS Decoder** - Enable RDS Decoder for WFM mode
 * **RTTY Speed** - Speed of RTTY data
 * **RTTY Shift** - RTTY carrier shifts

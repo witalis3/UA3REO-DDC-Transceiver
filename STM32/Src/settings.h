@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 43					   // Settings config version
+#define SETT_VERSION 44					   // Settings config version
 #define CALIB_VERSION 39				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -464,6 +464,7 @@ extern struct TRX_SETTINGS
 	uint16_t RTTY_Shift;
 	uint16_t RTTY_Freq;
 	uint8_t RTTY_StopBits;
+	uint8_t CW_Decoder_Threshold;
 	bool CW_Decoder;
 	bool RDS_Decoder;
 	bool RTTY_InvertBits;

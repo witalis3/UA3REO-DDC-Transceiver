@@ -242,6 +242,7 @@ void LoadSettings(bool clear)
 		TRX.CW_Iambic = false;			//CW Iambic Keyer
 		TRX.CW_Invert = false;			//CW dash/dot inversion
 		TRX.CW_PTT_Type = KEY_PTT;	//CW PTT type (Key / External tangent ptt)
+		TRX.CW_Decoder_Threshold = 14;	//CW Decoder sensivity
 		//SCREEN
 		TRX.ColorThemeId = 0;	//Selected Color theme
 		TRX.LayoutThemeId = 0;	//Selected Layout theme
