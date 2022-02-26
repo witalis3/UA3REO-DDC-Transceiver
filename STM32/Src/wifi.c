@@ -54,7 +54,7 @@ static uint16_t WIFI_HTTP_Response_Status = 0;
 static uint32_t WIFI_HTTP_Response_ContentLength = 0;
 SRAM static char WIFI_HOSTuri[128] = {0};
 SRAM static char WIFI_GETuri[128] = {0};
-SRAM static char WIFI_HTTRequest[128] = {0};
+SRAM static char WIFI_HTTRequest[256] = {0};
 SRAM4 static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
 bool WIFI_NewFW_checked = false;
 bool WIFI_NewFW_STM32 = false;
@@ -100,6 +100,7 @@ void WIFI_Init(void)
 	*/
 	WIFI_SendCommand("AT\r\n");
 	WIFI_WaitForOk();
+	
 	if (strstr(WIFI_readedLine, "OK") != NULL)
 	{
 		println("[WIFI] WIFI Module Inited");
@@ -789,7 +790,7 @@ static bool WIFI_TryGetLine(void)
 	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
 	if (WIFI_Answer_ReadIndex == dma_index)
 		return false;
-
+	
 	if (dma_index < WIFI_Answer_ReadIndex)
 	{
 		//tail
@@ -883,6 +884,7 @@ static void WIFI_getHTTPResponse(void)
 		{
 			*istr2 = 0;
 			uint32_t response_length = atoi(istr);
+			//println("RESP LENGTH: ", response_length);
 			istr2++;
 			strcpy(WIFI_HTTResponseHTML, istr2);
 			commandStartTime = HAL_GetTick();
@@ -900,6 +902,7 @@ static void WIFI_getHTTPResponse(void)
 				}
 				len = strlen(WIFI_HTTResponseHTML);
 			}
+			//println("RESP LENGTH STRLEN: ", strlen(WIFI_HTTResponseHTML));
 			char *istr3 = WIFI_HTTResponseHTML;
 			istr3 += response_length;
 			*istr3 = 0;
@@ -981,6 +984,7 @@ static void WIFI_getHTTPResponse(void)
 			{
 				WIFI_ProcessingCommandCallback();
 			}
+			WIFI_SendCommand("AT+CIPCLOSE=0\r\n");
 		}
 	}
 }
@@ -1150,6 +1154,8 @@ static void WIFI_getDXCluster_background_callback(void)
 {
 	if (WIFI_HTTP_Response_Status == 200)
 	{
+		//println("COUNT 0");
+		//println("SIZE ", strlen(WIFI_HTTResponseHTML));
 		WIFI_DXCLUSTER_list_count = 0;
 		//println(WIFI_HTTResponseHTML);
 		
@@ -1187,6 +1193,7 @@ static void WIFI_getDXCluster_background_callback(void)
 						}
 						
 						WIFI_DXCLUSTER_list_count++;
+						//println("COUNT ", WIFI_DXCLUSTER_list_count);
 						
 						istr_l = istr_r + 1;
 						
@@ -1338,8 +1345,10 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 
 static void WIFI_downloadFileToSD_callback(void)
 {
+	static uint8_t WIFI_HTTP_error_retryes = 0;
 	if (WIFI_HTTP_Response_Status == 200)
 	{
+		WIFI_HTTP_error_retryes = 0;
 		//parse hex output from server (convert to bin)
 		char *istr = WIFI_HTTResponseHTML;
 		char hex[5] = {0};
@@ -1378,9 +1387,19 @@ static void WIFI_downloadFileToSD_callback(void)
 	else
 	{
 		println("BAD HTTP status ", WIFI_HTTP_Response_Status);
-		sysmenu_ota_opened = false;
-		LCD_busy = false;
-		LCD_redraw(false);
+		if(WIFI_HTTP_error_retryes < 10) {
+			WIFI_HTTP_error_retryes++;
+			println("RETRY: ", WIFI_HTTP_error_retryes);
+			println(WIFI_HOSTuri, WIFI_GETuri);
+			HAL_Delay(1000);
+			WIFI_getHTTPpage(WIFI_HOSTuri, WIFI_GETuri, WIFI_downloadFileToSD_callback, false, false);
+		}
+		else 
+		{
+			sysmenu_ota_opened = false;
+			LCD_busy = false;
+			LCD_redraw(false);
+		}
 	}
 }
 
