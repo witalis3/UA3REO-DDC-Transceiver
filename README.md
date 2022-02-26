@@ -364,7 +364,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 
 ### File Manager 
 
-* Show SD Card file manager, support WAV playback and deleteing files
+* Show SD Card file manager, support WAV playback and deleteing files, listening and broadcasting recordings, as well as updating firmware from a memory card
 
 ### Record CQ message
 
