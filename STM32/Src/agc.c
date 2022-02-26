@@ -84,10 +84,15 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
 	float32_t AGC_RX_dbFS = rate2dbV(full_scale_rate);
 
+	//gain target
+	float32_t gain_target = (float32_t)TRX.AGC_GAIN_TARGET;
+	if (mode == TRX_MODE_CW)
+		gain_target += CW_ADD_GAIN;
+	
 	//move the gain one step
 	if (!WM8731_Muting && !VAD_Muting)
 	{
-		float32_t diff = ((float32_t)TRX.AGC_GAIN_TARGET - (AGC_RX_dbFS + *AGC_need_gain_db));
+		float32_t diff = (gain_target - (AGC_RX_dbFS + *AGC_need_gain_db));
 		if (diff > 0)
 		{
 			if((HAL_GetTick() - *last_agc_peak_time) > TRX.RX_AGC_Hold)
@@ -100,9 +105,9 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		}
 
 		//overload (clipping), sharply reduce the gain
-		if ((AGC_RX_dbFS + *AGC_need_gain_db) > ((float32_t)TRX.AGC_GAIN_TARGET + AGC_CLIPPING))
+		if ((AGC_RX_dbFS + *AGC_need_gain_db) > (gain_target + AGC_CLIPPING))
 		{
-			*AGC_need_gain_db = (float32_t)TRX.AGC_GAIN_TARGET - AGC_RX_dbFS;
+			*AGC_need_gain_db = gain_target - AGC_RX_dbFS;
 			//sendToDebug_float32(diff,false);
 		}
 	}

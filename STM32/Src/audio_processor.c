@@ -1564,72 +1564,53 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	float32_t minVal = 0;
 	float32_t maxVal = 0;
 	uint32_t index = 0;
-
-	if (rx_id == AUDIO_RX1)
+	bool CW = false;
+	
+	float32_t* I_buff = APROC_Audio_Buffer_RX1_I;
+	float32_t* Q_buff = APROC_Audio_Buffer_RX1_Q;
+	if (rx_id == AUDIO_RX2)
 	{
-		//overflow protect
-		arm_min_f32(APROC_Audio_Buffer_RX1_I, size, &minVal, &index);
-		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_I, size, &maxVal);
-		if ((minVal * if_gain) < -1.0f)
-		{
-			if (!CurrentVFO->AGC)
-				APROC_IFGain_Overflow = true;
-		}
-		if ((maxVal * if_gain) > 1.0f)
-		{
-			if (!CurrentVFO->AGC)
-				APROC_IFGain_Overflow = true;
-		}
-		arm_min_f32(APROC_Audio_Buffer_RX1_Q, size, &minVal, &index);
-		arm_max_no_idx_f32(APROC_Audio_Buffer_RX1_Q, size, &maxVal);
-		if ((minVal * if_gain) < -1.0f)
-		{
-			if (!CurrentVFO->AGC)
-				APROC_IFGain_Overflow = true;
-		}
-		if ((maxVal * if_gain) > 1.0f)
-		{
-			if (!CurrentVFO->AGC)
-				APROC_IFGain_Overflow = true;
-		}
-
-		//apply gain
-		arm_scale_f32(APROC_Audio_Buffer_RX1_I, if_gain, APROC_Audio_Buffer_RX1_I, size);
-		arm_scale_f32(APROC_Audio_Buffer_RX1_Q, if_gain, APROC_Audio_Buffer_RX1_Q, size);
-		current_if_gain = if_gain;
+		I_buff = APROC_Audio_Buffer_RX2_I;
+		Q_buff = APROC_Audio_Buffer_RX2_Q;
 	}
-	else
+	
+	if (rx_id == AUDIO_RX1 && CurrentVFO->Mode==TRX_MODE_CW)
+		CW = true;
+	if (rx_id == AUDIO_RX2 && SecondaryVFO->Mode==TRX_MODE_CW)
+		CW = true;
+	if(CW)
+		if_gain += db2rateV(CW_ADD_GAIN);
+	
+	//overflow protect
+	arm_min_f32(I_buff, size, &minVal, &index);
+	arm_max_no_idx_f32(I_buff, size, &maxVal);
+	if ((minVal * if_gain) < -1.0f)
 	{
-		//overflow protect RX2
-		arm_min_f32(APROC_Audio_Buffer_RX2_I, size, &minVal, &index);
-		arm_max_no_idx_f32(APROC_Audio_Buffer_RX2_I, size, &maxVal);
-		if ((minVal * if_gain) < -1.0f)
-		{
-			if (!SecondaryVFO->AGC)
-				APROC_IFGain_Overflow = true;
-		}
-		if ((maxVal * if_gain) > 1.0f)
-		{
-			if (!SecondaryVFO->AGC)
-				APROC_IFGain_Overflow = true;
-		}
-		arm_min_f32(APROC_Audio_Buffer_RX2_Q, size, &minVal, &index);
-		arm_max_no_idx_f32(APROC_Audio_Buffer_RX2_Q, size, &maxVal);
-		if ((minVal * if_gain) < -1.0f)
-		{
-			if (!SecondaryVFO->AGC)
-				APROC_IFGain_Overflow = true;
-		}
-		if ((maxVal * if_gain) > 1.0f)
-		{
-			if (!SecondaryVFO->AGC)
-				APROC_IFGain_Overflow = true;
-		}
-
-		//apply gain
-		arm_scale_f32(APROC_Audio_Buffer_RX2_I, if_gain, APROC_Audio_Buffer_RX2_I, size);
-		arm_scale_f32(APROC_Audio_Buffer_RX2_Q, if_gain, APROC_Audio_Buffer_RX2_Q, size);
+		if (!CurrentVFO->AGC)
+			APROC_IFGain_Overflow = true;
 	}
+	if ((maxVal * if_gain) > 1.0f)
+	{
+		if (!CurrentVFO->AGC)
+			APROC_IFGain_Overflow = true;
+	}
+	arm_min_f32(Q_buff, size, &minVal, &index);
+	arm_max_no_idx_f32(Q_buff, size, &maxVal);
+	if ((minVal * if_gain) < -1.0f)
+	{
+		if (!CurrentVFO->AGC)
+			APROC_IFGain_Overflow = true;
+	}
+	if ((maxVal * if_gain) > 1.0f)
+	{
+		if (!CurrentVFO->AGC)
+			APROC_IFGain_Overflow = true;
+	}
+
+	//apply gain
+	arm_scale_f32(I_buff, if_gain, I_buff, size);
+	arm_scale_f32(Q_buff, if_gain, Q_buff, size);
+	current_if_gain = if_gain;
 }
 
 static void APROC_SD_Play(void)
