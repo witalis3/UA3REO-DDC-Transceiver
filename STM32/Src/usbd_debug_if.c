@@ -110,7 +110,7 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:
-		if ((pbuf[2] & 0x1) == 0x1) //DTR
+		if ((pbuf[2] & 0x2) == 0x2) //RTS
 		{
 			TRX_ptt_soft = true;
 			LCD_UpdateQuery.StatusInfoBarRedraw = true;
@@ -122,7 +122,7 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 			LCD_UpdateQuery.StatusInfoBarRedraw = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
 		}
-		if ((pbuf[2] & 0x2) == 0x2) //RTS
+		if ((pbuf[2] & 0x1) == 0x1) //DTR
 		{
 			CW_key_serial = true;
 		}
