@@ -357,7 +357,6 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 		vfoa_freq = STATIC_TRANSVERTER_OFFSET + (vfoa_freq - BANDS[BANDID_6cm].startFreq);
 	if(TRX.Transverter_3cm && getBandFromFreq(vfoa_freq, true) == BANDID_3cm)
 		vfoa_freq = STATIC_TRANSVERTER_OFFSET + (vfoa_freq - BANDS[BANDID_3cm].startFreq);
-	println(vfoa_freq);
 	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
 	
 	int64_t vfob_freq = SecondaryVFO->Freq + TRX_SHIFT;
