@@ -48,7 +48,7 @@ static uint16_t LCD_last_showed_freq_mhz_B = 9999;
 static uint16_t LCD_last_showed_freq_khz_B = 9999;
 static uint16_t LCD_last_showed_freq_hz_B = 9999;
 #endif
-static uint32_t manualFreqEnter = 0;
+static uint64_t manualFreqEnter = 0;
 static bool LCD_screenKeyboardOpened = false;
 static void (*LCD_keyboardHandler)(uint32_t parameter) = NULL;
 
@@ -1783,7 +1783,10 @@ static void LCD_showBandWindow(bool secondary_vfo)
 	if(TRX_on_TX())
 		return;
 	
-	const uint8_t buttons_in_line = 6;
+	uint8_t buttons_in_line = 6;
+	if(TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm)
+		buttons_in_line = 7;
+	
 	uint8_t selectable_bands_count = 0;
 	uint8_t unselectable_bands_count = 0;
 	for (uint8_t i = 0; i < BANDS_COUNT; i++)
@@ -2012,7 +2015,7 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter)
 {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	char buff[50] = {0};
-	uint32_t newfreq = 0;
+	uint64_t newfreq = 0;
 	if(parameter < 10)
 	{
 		if(manualFreqEnter < 100000000)
@@ -2072,7 +2075,7 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter)
 		TRX_Temporary_Stop_BandMap = false;
 	}
 		
-	sprintf(buff, "%u", manualFreqEnter);
+	sprintf(buff, "%llu", manualFreqEnter);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), 50, LAYOUT->WINDOWS_BUTTON_WIDTH * 5 + LAYOUT->WINDOWS_BUTTON_MARGIN * 4, LAYOUT->WINDOWS_BUTTON_HEIGHT, buff, false, false, true, 0, NULL, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 #endif
 }

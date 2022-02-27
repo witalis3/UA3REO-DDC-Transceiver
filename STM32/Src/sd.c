@@ -315,7 +315,7 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void)
 	RTC_DateTypeDef sDate = {0};
 	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%d.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO->Freq);
+	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%llu.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO->Freq);
 	println(filename);
 	return SDCOMM_CREATE_RECORD_FILE_main(filename, true);
 }
@@ -931,6 +931,11 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.Transverter_Offset_Mhz", (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.ATU_Enabled", (uint32_t *)&TRX.ATU_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TUNER_Enabled", (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Transverter_70cm", (uint32_t *)&TRX.Transverter_70cm, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Transverter_23cm", (uint32_t *)&TRX.Transverter_23cm, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Transverter_13cm", (uint32_t *)&TRX.Transverter_13cm, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Transverter_6cm", (uint32_t *)&TRX.Transverter_6cm, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Transverter_3cm", (uint32_t *)&TRX.Transverter_3cm, SYSMENU_BOOLEAN);
 			//AUDIO
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint32_t *)&TRX.IF_Gain, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
@@ -1413,14 +1418,18 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 			lens = sizeof(TRX.LOCATOR);
 		strncpy(TRX.LOCATOR, value, lens);
 	}
-	if (strcmp(name, "TRX.Transverter_Enabled") == 0)
-		TRX.Transverter_Enabled = bval;
+	if (strcmp(name, "TRX.Transverter_Enabled") == 0) TRX.Transverter_Enabled = bval;
 	if (strcmp(name, "TRX.Transverter_Offset_Mhz") == 0)
 		TRX.Transverter_Offset_Mhz = (uint16_t)uintval;
 	if (strcmp(name, "TRX.ATU_Enabled") == 0)
 		TRX.ATU_Enabled = bval;
 	if (strcmp(name, "TRX.TUNER_Enabled") == 0)
 		TRX.TUNER_Enabled = bval;
+	if (strcmp(name, "TRX.Transverter_70cm") == 0) TRX.Transverter_70cm = bval;
+	if (strcmp(name, "TRX.Transverter_23cm") == 0) TRX.Transverter_23cm = bval;
+	if (strcmp(name, "TRX.Transverter_13cm") == 0) TRX.Transverter_13cm = bval;
+	if (strcmp(name, "TRX.Transverter_6cm") == 0) TRX.Transverter_6cm = bval;
+	if (strcmp(name, "TRX.Transverter_3cm") == 0) TRX.Transverter_3cm = bval;
 	//AUDIO
 	if (strcmp(name, "TRX.IF_Gain") == 0)
 		TRX.IF_Gain = (uint8_t)uintval;

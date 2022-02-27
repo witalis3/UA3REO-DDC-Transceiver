@@ -40,6 +40,7 @@
 #define IDLE_LCD_BRIGHTNESS 5					//Low brightness for IDLE mode (dimmer)
 #define CW_ADD_GAIN_IF	35.0f							//additional IF gain in CW
 #define CW_ADD_GAIN_AF	6.0f							//additional AF gain in CW
+#define STATIC_TRANSVERTER_OFFSET	144000000	//static transverter IF
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
 //select how the SWR and the power is measured
@@ -222,7 +223,7 @@ typedef enum
 
 typedef struct
 {
-	uint32_t Freq;
+	uint64_t Freq;
 	uint_fast16_t HPF_RX_Filter_Width;
 	uint_fast16_t HPF_TX_Filter_Width;
 	uint_fast16_t LPF_RX_Filter_Width;
@@ -307,7 +308,7 @@ typedef enum
 typedef struct
 {
 	float32_t ATT_DB;
-	uint32_t Freq;
+	uint64_t Freq;
 	uint8_t Mode;
 	uint8_t BEST_ATU_I;
 	uint8_t BEST_ATU_C;
@@ -370,6 +371,11 @@ extern struct TRX_SETTINGS
 	bool TUNER_Enabled;
 	bool ATU_Enabled;
 	bool ATU_T;
+	bool Transverter_70cm;
+	bool Transverter_23cm;
+	bool Transverter_13cm;
+	bool Transverter_6cm;
+	bool Transverter_3cm;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	//AUDIO

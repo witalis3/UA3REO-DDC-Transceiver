@@ -56,6 +56,11 @@ static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_Enabled(int8_t direction);
 static void SYSMENU_HANDL_TRX_TUNER_Enabled(int8_t direction);
+static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction);
+static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction);
+static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction);
+static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction);
+static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
@@ -431,13 +436,18 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI, {"MIC", "LINE", "USB"}},
 		{"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
 		{"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
-		{"Transverter Enable", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
-		{"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
+		{"Custom Transverter", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
+		{"CTransverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
 		{"TUNER Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_HANDL_TRX_TUNER_Enabled},
 		{"ATU Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_Enabled, SYSMENU_HANDL_TRX_ATU_Enabled},
 		{"ATU Ind", SYSMENU_ATU_I, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TRX_ATU_I},
 		{"ATU Cap", SYSMENU_ATU_C, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_C, SYSMENU_HANDL_TRX_ATU_C},
 		{"ATU T", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_T, SYSMENU_HANDL_TRX_ATU_T},
+		{"Transverter 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_70cm, SYSMENU_HANDL_TRX_TRANSV_70CM},
+		{"Transverter 23cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_23cm, SYSMENU_HANDL_TRX_TRANSV_23CM},
+		{"Transverter 13cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_13cm, SYSMENU_HANDL_TRX_TRANSV_13CM},
+		{"Transverter 6cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_6cm, SYSMENU_HANDL_TRX_TRANSV_6CM},
+		{"Transverter 3cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_3cm, SYSMENU_HANDL_TRX_TRANSV_3CM},
 };
 
 const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
@@ -1269,6 +1279,54 @@ static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction)
 		TRX.Transverter_Offset_Mhz = 1;
 	if (TRX.Transverter_Offset_Mhz > 15000)
 		TRX.Transverter_Offset_Mhz = 15000;
+}
+
+static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Transverter_70cm = true;
+	if (direction < 0)
+		TRX.Transverter_70cm = false;
+}
+
+static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Transverter_23cm = true;
+	if (direction < 0)
+		TRX.Transverter_23cm = false;
+	
+	BANDS[BANDID_23cm].selectable = TRX.Transverter_23cm;
+}
+
+static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Transverter_13cm = true;
+	if (direction < 0)
+		TRX.Transverter_13cm = false;
+	
+	BANDS[BANDID_13cm].selectable = TRX.Transverter_13cm;
+}
+
+static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Transverter_6cm = true;
+	if (direction < 0)
+		TRX.Transverter_6cm = false;
+	
+	BANDS[BANDID_6cm].selectable = TRX.Transverter_6cm;
+}
+
+static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Transverter_3cm = true;
+	if (direction < 0)
+		TRX.Transverter_3cm = false;
+	
+	BANDS[BANDID_3cm].selectable = TRX.Transverter_3cm;
 }
 
 static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction)

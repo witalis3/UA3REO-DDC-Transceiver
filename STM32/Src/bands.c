@@ -765,11 +765,63 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			},
 			.channelsCount = 85,
 		},
+		//23cm
+		{
+			.name = "23cm",
+			.selectable = false,
+			.startFreq = 1260000000,
+			.endFreq = 1300000000,
+			.regions = (const REGION_MAP[]){
+				{.startFreq = 1260000000, .endFreq = 1300000000, .mode = TRX_MODE_USB},
+			},
+			.regionsCount = 1,
+			.channels = NULL,
+			.channelsCount = 0,
+		},
+		//13cm
+		{
+			.name = "13cm",
+			.selectable = false,
+			.startFreq = 2320000000,
+			.endFreq = 2450000000,
+			.regions = (const REGION_MAP[]){
+				{.startFreq = 2320000000, .endFreq = 2450000000, .mode = TRX_MODE_USB},
+			},
+			.regionsCount = 1,
+			.channels = NULL,
+			.channelsCount = 0,
+		},
+		//6cm
+		{
+			.name = "6cm",
+			.selectable = false,
+			.startFreq = 5650000000,
+			.endFreq = 5850000000,
+			.regions = (const REGION_MAP[]){
+				{.startFreq = 5650000000, .endFreq = 5850000000, .mode = TRX_MODE_USB},
+			},
+			.regionsCount = 1,
+			.channels = NULL,
+			.channelsCount = 0,
+		},
+		//3cm
+		{
+			.name = "3cm",
+			.selectable = false,
+			.startFreq = 10000000000,
+			.endFreq = 10500000000,
+			.regions = (const REGION_MAP[]){
+				{.startFreq = 10000000000, .endFreq = 10500000000, .mode = TRX_MODE_USB},
+			},
+			.regionsCount = 1,
+			.channels = NULL,
+			.channelsCount = 0,
+		},
 		//
 };
 
 // band number from frequency
-int8_t getBandFromFreq(uint32_t freq, bool nearest)
+int8_t getBandFromFreq(uint64_t freq, bool nearest)
 {
 	for (int8_t b = 0; b < BANDS_COUNT; b++)
 		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq)
@@ -799,7 +851,7 @@ int8_t getBandFromFreq(uint32_t freq, bool nearest)
 }
 
 // mod from frequency
-uint_fast8_t getModeFromFreq(uint32_t freq)
+uint_fast8_t getModeFromFreq(uint64_t freq)
 {
 	uint_fast8_t ret = 0;
 	ret = CurrentVFO->Mode;
@@ -819,7 +871,7 @@ uint_fast8_t getModeFromFreq(uint32_t freq)
 	return ret;
 }
 
-int8_t getChannelbyFreq(uint32_t freq, bool txfreq)
+int8_t getChannelbyFreq(uint64_t freq, bool txfreq)
 {
 	int8_t band = getBandFromFreq(freq, false);
 	if(band != -1)

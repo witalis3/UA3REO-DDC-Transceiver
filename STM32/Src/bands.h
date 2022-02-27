@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define BANDS_COUNT 35 // number of bands in the collection
+#define BANDS_COUNT 39 // number of bands in the collection
 
 #define BANDID_2200m 0
 #define BANDID_160m 3
@@ -24,11 +24,15 @@
 #define BANDID_2m 32
 #define BANDID_Marine 33
 #define BANDID_70cm 34
+#define BANDID_23cm 35
+#define BANDID_13cm 36
+#define BANDID_6cm 37
+#define BANDID_3cm 38
 
 typedef struct // description of the region in the band
 {
-	const uint32_t startFreq;
-	const uint32_t endFreq;
+	const uint64_t startFreq;
+	const uint64_t endFreq;
 	const uint_fast8_t mode;
 } REGION_MAP;
 
@@ -43,8 +47,8 @@ typedef struct // description of the band
 {
 	const char *name;
 	bool selectable;
-	const uint32_t startFreq;
-	const uint32_t endFreq;
+	const uint64_t startFreq;
+	const uint64_t endFreq;
 	const REGION_MAP *regions;
 	const uint_fast8_t regionsCount;
 	const CHANNEL_MAP *channels;
@@ -55,7 +59,7 @@ typedef struct // description of the band
 extern BAND_MAP BANDS[BANDS_COUNT];
 
 // Public methods
-extern uint_fast8_t getModeFromFreq(uint32_t freq);			// mod from frequency
-extern int8_t getBandFromFreq(uint32_t freq, bool nearest); // band number from frequency
-extern int8_t getChannelbyFreq(uint32_t freq, bool txfreq);			//get channel by frequency
+extern uint_fast8_t getModeFromFreq(uint64_t freq);			// mod from frequency
+extern int8_t getBandFromFreq(uint64_t freq, bool nearest); // band number from frequency
+extern int8_t getChannelbyFreq(uint64_t freq, bool txfreq);			//get channel by frequency
 #endif

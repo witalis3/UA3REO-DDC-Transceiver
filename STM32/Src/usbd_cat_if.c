@@ -422,7 +422,7 @@ void ua3reo_dev_cat_parseCommand(void)
 				strcat(answer, "IF001"); //memory channel
 				if (CurrentVFO->Freq < 10000000)
 					strcat(answer, "0");
-				sprintf(ctmp, "%u", CurrentVFO->Freq);
+				sprintf(ctmp, "%llu", CurrentVFO->Freq);
 				strcat(answer, ctmp);	 //freq
 				strcat(answer, "+0000"); //clirifier offset
 				strcat(answer, "0");	 //RX clar off
@@ -438,7 +438,7 @@ void ua3reo_dev_cat_parseCommand(void)
 				
 			if(CALIBRATE.CAT_Type == CAT_TS2000) {
 				strcat(answer, "IF"); //TRX status
-				sprintf(ctmp, "%u", CurrentVFO->Freq);
+				sprintf(ctmp, "%llu", CurrentVFO->Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
 				strcat(answer, ctmp);	 //freq
 				strcat(answer, "0000"); //Frequency step size
@@ -482,7 +482,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			strcat(answer, "OI001"); //memory channel
 			if (SecondaryVFO->Freq < 10000000)
 				strcat(answer, "0");
-			sprintf(ctmp, "%u", SecondaryVFO->Freq);
+			sprintf(ctmp, "%llu", SecondaryVFO->Freq);
 			strcat(answer, ctmp);	 //freq
 			strcat(answer, "+0000"); //clirifier offset
 			strcat(answer, "0");	 //RX clar off
@@ -513,11 +513,11 @@ void ua3reo_dev_cat_parseCommand(void)
 			if(CALIBRATE.CAT_Type == CAT_FT450) {
 				if (TRX.VFO_A.Freq < 10000000)
 					strcat(answer, "0");
-				sprintf(ctmp, "%u", TRX.VFO_A.Freq);
+				sprintf(ctmp, "%llu", TRX.VFO_A.Freq);
 			}
 			
 			if(CALIBRATE.CAT_Type == CAT_TS2000) {
-				sprintf(ctmp, "%u", TRX.VFO_A.Freq);
+				sprintf(ctmp, "%llu", TRX.VFO_A.Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
 			}
 			
@@ -544,11 +544,11 @@ void ua3reo_dev_cat_parseCommand(void)
 			if(CALIBRATE.CAT_Type == CAT_FT450) {
 				if (TRX.VFO_B.Freq < 10000000)
 					strcat(answer, "0");
-				sprintf(ctmp, "%u", TRX.VFO_B.Freq);
+				sprintf(ctmp, "%llu", TRX.VFO_B.Freq);
 			}
 				
 			if(CALIBRATE.CAT_Type == CAT_TS2000) {
-				sprintf(ctmp, "%u", TRX.VFO_B.Freq);
+				sprintf(ctmp, "%llu", TRX.VFO_B.Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
 			}
 			

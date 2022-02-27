@@ -94,6 +94,12 @@ static void __print_func (int count, unsigned short types[], ...) {
 		else if (type == 15) {
 			__print_array(char*, "%s", __print_color_string);
 		}
+		else if (type == 16) {
+			printf("%llu", va_arg(v, unsigned long long));
+		}
+		else if (type == 17) {
+			printf("%lld", va_arg(v, signed long long));
+		}
 		else {
 			printf("print: unsupported type %i (of size %i)\n", type, size); break;
 		}
@@ -120,9 +126,11 @@ static void __print_func (int count, unsigned short types[], ...) {
 	__builtin_choose_expr(__print_is_type(a, short[]), 13, \
 	__builtin_choose_expr(__print_is_type(a, unsigned short[]), 14, \
 	__builtin_choose_expr(__print_is_type(a, char*[]), 15, \
+	__builtin_choose_expr(__print_is_type(a, unsigned long long), 16, \
+	__builtin_choose_expr(__print_is_type(a, signed long long), 17, \
 	__builtin_choose_expr(sizeof(a) == 1, 2, \
 	__builtin_choose_expr(sizeof(a) == 2, 4, \
-	(0)  ))))))))))))))))))))
+	(0)  ))))))))))))))))))))))
 
 #define __print_push(c,size,cont) (cont, *--_p = c | (size << 5))
 #define __builtin_choose_expr __builtin_choose_expr

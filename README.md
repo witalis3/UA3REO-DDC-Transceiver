@@ -160,6 +160,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **ATU Ind** - Combination of tuner inductances
 * **ATU Cap** - Tuner Capacitance Combination
 * **ATU T** - Tuner capacitive arm position
+* **Transverter XXcm** - Enable external transverter support with IF 144mhz
 
 ### AUDIO Settings
 

@@ -187,6 +187,11 @@ void LoadSettings(bool clear)
 		TRX.ATU_T = false;							//ATU default state
 		TRX.ATU_Enabled = true;					//ATU enabled state
 		TRX.TUNER_Enabled = true;					//TUNER enabled state
+		TRX.Transverter_70cm = false;			//Transvertrs enable (2m IF)
+		TRX.Transverter_23cm = false;			//Transvertrs enable (2m IF)
+		TRX.Transverter_13cm = false;			//Transvertrs enable (2m IF)
+		TRX.Transverter_6cm = false;			//Transvertrs enable (2m IF)
+		TRX.Transverter_3cm = false;			//Transvertrs enable (2m IF)
 		//AUDIO
 		TRX.Volume = 25;									//AF Volume
 		TRX.IF_Gain = 15;								   // IF gain, dB (before all processing and AGC)
@@ -381,6 +386,11 @@ void LoadSettings(bool clear)
 		CurrentVFO = &TRX.VFO_B;
 		SecondaryVFO = &TRX.VFO_A;
 	}
+	
+	BANDS[BANDID_23cm].selectable = TRX.Transverter_23cm;
+	BANDS[BANDID_13cm].selectable = TRX.Transverter_13cm;
+	BANDS[BANDID_6cm].selectable = TRX.Transverter_6cm;
+	BANDS[BANDID_3cm].selectable = TRX.Transverter_3cm;
 }
 
 static void LoadSettingsFromEEPROM(void)

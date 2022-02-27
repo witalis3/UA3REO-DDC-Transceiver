@@ -59,7 +59,7 @@ static uint32_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};								   // frequenc
 IRAM2 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};								   //buffer with fft colors output
 IRAM2 static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};								   //buffer with fft peaks
 static int32_t grid_lines_pos[20] = {-1};												   //grid lines positions
-static uint32_t grid_lines_freq[20] = {-1};												   //grid lines frequencies
+static uint64_t grid_lines_freq[20] = {-1};												   //grid lines frequencies
 static int32_t rx2_line_pos = -1;																//secondary receiver position on fft
 static int32_t bw_rx1_line_start = 0;														   //BW bar params RX1
 static int32_t bw_rx1_line_end = 0;															   //BW bar params RX1
@@ -75,7 +75,7 @@ static bool fft_charge_ready = false;
 static bool fft_charge_copying = false;
 static uint8_t FFT_meanBuffer_index = 0;
 static uint32_t FFT_ChargeBuffer_collected = 0;
-static uint32_t FFT_lastFFTChargeBufferFreq = 0;
+static uint64_t FFT_lastFFTChargeBufferFreq = 0;
 static uint8_t FFTOutput_averaged_count[FFT_SIZE] = {0};
 static float32_t minAmplValue_averaged = 0;
 static float32_t FFT_minDBM = 0;
@@ -164,7 +164,7 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 //Prototypes
 static uint16_t getFFTColor(uint_fast8_t height, bool type); // Get FFT color warmth (blue to red) , type 0 - fft, type 1 - wtf
 static void FFT_fill_color_palette(void);			// prepare the color palette
-static int32_t getFreqPositionOnFFT(uint32_t freq, bool full_pos); // get the position on the FFT for a given frequency
+static int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos); // get the position on the FFT for a given frequency
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center);
 static void FFT_3DPrintFFT(void);
 static float32_t getDBFromFFTAmpl(float32_t ampl);
@@ -313,8 +313,8 @@ void FFT_bufferPrepare(void)
 	}
 
 	//Reset old samples if frequency changed
-	uint32_t nowFFTChargeBufferFreq = CurrentVFO->Freq;
-	if (TRX.WTF_Moving && fabsf((float32_t)FFT_lastFFTChargeBufferFreq - (float32_t)nowFFTChargeBufferFreq) > (500 / fft_zoom)) //zeroing threshold
+	uint64_t nowFFTChargeBufferFreq = CurrentVFO->Freq;
+	if (TRX.WTF_Moving && fabsl((float64_t)FFT_lastFFTChargeBufferFreq - (float64_t)nowFFTChargeBufferFreq) > (500 / fft_zoom)) //zeroing threshold
 	{
 		dma_memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
 		FFT_ChargeBuffer_collected = 0;
@@ -525,13 +525,13 @@ void FFT_doFFT(void)
 	
 	for (uint_fast16_t avg_idx = 0; avg_idx < TRX.FFT_Averaging; avg_idx++)
 	{
-		int32_t freq_diff = roundf(((float32_t)((float32_t)fft_meanbuffer_freqs[avg_idx] - (float32_t)CurrentVFO->Freq) / hz_in_pixel) * (float32_t)fft_zoom);
+		int64_t freq_diff = roundl(((float64_t)((float64_t)fft_meanbuffer_freqs[avg_idx] - (float64_t)CurrentVFO->Freq) / hz_in_pixel) * (float64_t)fft_zoom);
 
 		if (!TRX.WTF_Moving)
 			freq_diff = 0;
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 		{
-			int32_t new_x = (int32_t)i - (int32_t)freq_diff;
+			int64_t new_x = (int64_t)i - (int64_t)freq_diff;
 			
 			if (new_x > -1 && new_x < LAYOUT->FFT_PRINT_SIZE)
 			{
@@ -581,15 +581,15 @@ bool FFT_printFFT(void)
 		//calculate scale lines
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
 		uint8_t index = 0;
-		uint32_t grid_step = FFT_current_spectrum_width_hz / 9.6;
+		uint64_t grid_step = FFT_current_spectrum_width_hz / 9.6;
 		if(grid_step < 1000)
 			grid_step = 1000;
 		grid_step = (grid_step / 1000) * 1000;
 
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++)
 		{
-			int32_t pos = -1;
-			uint32_t grid_freq = (CurrentVFO->Freq / grid_step * grid_step) + ((i - 6) * grid_step);
+			int64_t pos = -1;
+			uint64_t grid_freq = (CurrentVFO->Freq / grid_step * grid_step) + ((i - 6) * grid_step);
 			pos = getFreqPositionOnFFT(grid_freq, false);
 			if (pos >= 0)
 			{
@@ -786,9 +786,9 @@ bool FFT_printFFT(void)
 		//peaks moving
 		if (lastWTFFreq != currentFFTFreq)
 		{
-			float32_t diff = (float32_t)currentFFTFreq - (float32_t)lastWTFFreq;
-			diff = diff / (float32_t)(hz_in_pixel * fft_zoom);
-			diff = roundf(diff);
+			float64_t diff = (float64_t)currentFFTFreq - (float64_t)lastWTFFreq;
+			diff = diff / (float64_t)(hz_in_pixel * fft_zoom);
+			diff = roundl(diff);
 
 			if (diff > 0)
 			{
@@ -1110,9 +1110,9 @@ bool FFT_printFFT(void)
 	{
 		uint16_t wtf_y_index = (print_wtf_yindex - fftHeight) / line_repeats_need;
 		// calculate offset
-		float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float32_t)fft_zoom;
-		float32_t freq_diff_part = fmodf(freq_diff, 1.0f);
-		int32_t margin_left = 0;
+		float64_t freq_diff = (((float64_t)currentFFTFreq - (float64_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float64_t)fft_zoom;
+		float64_t freq_diff_part = fmodl(freq_diff, 1.0f);
+		int64_t margin_left = 0;
 		if (freq_diff < 0)
 			margin_left = -floorf(freq_diff);
 		if (margin_left > LAYOUT->FFT_PRINT_SIZE)
@@ -1496,8 +1496,8 @@ void FFT_afterPrintFFT(void)
 		int8_t band_right = band_curr;
 		if (band_curr < (BANDS_COUNT - 1))
 			band_right = band_curr + 1;
-		int32_t fft_freq_position_start = 0;
-		int32_t fft_freq_position_stop = 0;
+		int64_t fft_freq_position_start = 0;
+		int64_t fft_freq_position_stop = 0;
 		for (uint16_t band = band_left; band <= band_right; band++)
 		{
 			//regions
@@ -1526,7 +1526,7 @@ void FFT_afterPrintFFT(void)
 				}
 
 				if (fft_freq_position_start != -1 && fft_freq_position_stop != -1)
-					for (int32_t pixel_counter = fft_freq_position_start; pixel_counter < fft_freq_position_stop; pixel_counter++)
+					for (int64_t pixel_counter = fft_freq_position_start; pixel_counter < fft_freq_position_stop; pixel_counter++)
 						bandmap_line_tmp[(uint16_t)pixel_counter] = region_color;
 			}
 		}
@@ -1554,8 +1554,8 @@ void FFT_afterPrintFFT(void)
 					LCDDriver_Fill_RectWH(grid_lines_pos[grid_line_index], LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT, grid_lines_pos[grid_line_index + 1] - grid_lines_pos[grid_line_index], LAYOUT->FFT_FREQLABELS_HEIGHT - 1, BG_COLOR);
 				else
 					LCDDriver_Fill_RectWH(grid_lines_pos[grid_line_index], LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT, LAYOUT->FFT_PRINT_SIZE - grid_lines_pos[grid_line_index], LAYOUT->FFT_FREQLABELS_HEIGHT - 1, BG_COLOR);
-				uint32_t freq = grid_lines_freq[grid_line_index] / 1000;
-				float32_t freq2 = (float32_t)freq / 1000.f;
+				uint64_t freq = grid_lines_freq[grid_line_index] / 1000;
+				float64_t freq2 = (float32_t)freq / 1000.f;
 				sprintf(str, "%.3f", freq2);
 				int32_t x = grid_lines_pos[grid_line_index] - (strlen(str) * 6 / 2);
 				LCDDriver_printText(str, x, LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT, FG_COLOR, BG_COLOR, 1);
@@ -1839,7 +1839,7 @@ static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initializ
 	}
 }
 
-static inline int32_t getFreqPositionOnFFT(uint32_t freq, bool full_pos)
+static inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos)
 {
 	int32_t pos = (int32_t)((float32_t)LAYOUT->FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO->Freq) / hz_in_pixel * (float32_t)fft_zoom);
 	if (!full_pos && (pos < 0 || pos >= LAYOUT->FFT_PRINT_SIZE))

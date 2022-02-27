@@ -322,11 +322,16 @@ bool TRX_TX_Disabled(uint32_t freq)
 	return notx;
 }
 
-void TRX_setFrequency(uint32_t _freq, VFO *vfo)
+void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 {
 	if (_freq < 1)
 		return;
-	if (_freq >= MAX_RX_FREQ_HZ)
+	
+	bool transverter_enabled = false;
+	if(TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm)
+		transverter_enabled = true;
+	
+	if (!transverter_enabled && _freq >= MAX_RX_FREQ_HZ)
 		_freq = MAX_RX_FREQ_HZ;
 
 	int64_t freq_diff = _freq - vfo->Freq;
@@ -341,10 +346,48 @@ void TRX_setFrequency(uint32_t _freq, VFO *vfo)
 		TRX_DCDC_Freq = 0;
 
 	//get settings and fpga freq phrase
-	TRX_freq_phrase = getRXPhraseFromFrequency((int32_t)CurrentVFO->Freq + TRX_SHIFT, 1);
-	TRX_freq_phrase2 = getRXPhraseFromFrequency((int32_t)SecondaryVFO->Freq + TRX_SHIFT, 2);
-	TRX_freq_phrase_tx = getTXPhraseFromFrequency((int32_t)CurrentVFO->Freq + TRX_SPLIT);
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo->Freq);
+	int64_t vfoa_freq = CurrentVFO->Freq + TRX_SHIFT;
+	if(TRX.Transverter_70cm && getBandFromFreq(vfoa_freq, true) == BANDID_70cm)
+		vfoa_freq = STATIC_TRANSVERTER_OFFSET + (vfoa_freq - BANDS[BANDID_70cm].startFreq);
+	if(TRX.Transverter_23cm && getBandFromFreq(vfoa_freq, true) == BANDID_23cm)
+		vfoa_freq = STATIC_TRANSVERTER_OFFSET + (vfoa_freq - BANDS[BANDID_23cm].startFreq);
+	if(TRX.Transverter_13cm && getBandFromFreq(vfoa_freq, true) == BANDID_13cm)
+		vfoa_freq = STATIC_TRANSVERTER_OFFSET + (vfoa_freq - BANDS[BANDID_13cm].startFreq);
+	if(TRX.Transverter_6cm && getBandFromFreq(vfoa_freq, true) == BANDID_6cm)
+		vfoa_freq = STATIC_TRANSVERTER_OFFSET + (vfoa_freq - BANDS[BANDID_6cm].startFreq);
+	if(TRX.Transverter_3cm && getBandFromFreq(vfoa_freq, true) == BANDID_3cm)
+		vfoa_freq = STATIC_TRANSVERTER_OFFSET + (vfoa_freq - BANDS[BANDID_3cm].startFreq);
+	println(vfoa_freq);
+	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
+	
+	int64_t vfob_freq = SecondaryVFO->Freq + TRX_SHIFT;
+	if(TRX.Transverter_70cm && getBandFromFreq(vfob_freq, true) == BANDID_70cm)
+		vfob_freq = STATIC_TRANSVERTER_OFFSET + (vfob_freq - BANDS[BANDID_70cm].startFreq);
+	if(TRX.Transverter_23cm && getBandFromFreq(vfob_freq, true) == BANDID_23cm)
+		vfob_freq = STATIC_TRANSVERTER_OFFSET + (vfob_freq - BANDS[BANDID_23cm].startFreq);
+	if(TRX.Transverter_13cm && getBandFromFreq(vfob_freq, true) == BANDID_13cm)
+		vfob_freq = STATIC_TRANSVERTER_OFFSET + (vfob_freq - BANDS[BANDID_13cm].startFreq);
+	if(TRX.Transverter_6cm && getBandFromFreq(vfob_freq, true) == BANDID_6cm)
+		vfob_freq = STATIC_TRANSVERTER_OFFSET + (vfob_freq - BANDS[BANDID_6cm].startFreq);
+	if(TRX.Transverter_3cm && getBandFromFreq(vfob_freq, true) == BANDID_3cm)
+		vfob_freq = STATIC_TRANSVERTER_OFFSET + (vfob_freq - BANDS[BANDID_3cm].startFreq);
+	
+	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
+		
+	int64_t vfo_tx_freq = CurrentVFO->Freq + TRX_SPLIT;
+	if(TRX.Transverter_70cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_70cm)
+		vfo_tx_freq = STATIC_TRANSVERTER_OFFSET + (vfo_tx_freq - BANDS[BANDID_70cm].startFreq);
+	if(TRX.Transverter_23cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_23cm)
+		vfo_tx_freq = STATIC_TRANSVERTER_OFFSET + (vfo_tx_freq - BANDS[BANDID_23cm].startFreq);
+	if(TRX.Transverter_13cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_13cm)
+		vfo_tx_freq = STATIC_TRANSVERTER_OFFSET + (vfo_tx_freq - BANDS[BANDID_13cm].startFreq);
+	if(TRX.Transverter_6cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_6cm)
+		vfo_tx_freq = STATIC_TRANSVERTER_OFFSET + (vfo_tx_freq - BANDS[BANDID_6cm].startFreq);
+	if(TRX.Transverter_3cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_3cm)
+		vfo_tx_freq = STATIC_TRANSVERTER_OFFSET + (vfo_tx_freq - BANDS[BANDID_3cm].startFreq);
+	TRX_freq_phrase_tx = getTXPhraseFromFrequency(vfo_tx_freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo_tx_freq);
+	
 	FPGA_NeedSendParams = true;
 	
 	//services

@@ -15,7 +15,7 @@
 #define NeedProcessDecoder ((TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK)) || (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM) || CurrentVFO->Mode == TRX_MODE_RTTY)
 
 extern void TRX_Init(void);
-extern void TRX_setFrequency(uint32_t _freq, VFO *vfo);
+extern void TRX_setFrequency(uint64_t _freq, VFO *vfo);
 extern void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo); //for WSPR and other
 extern void TRX_setMode(uint_fast8_t _mode, VFO *vfo);
 extern void TRX_ptt_change(void);
