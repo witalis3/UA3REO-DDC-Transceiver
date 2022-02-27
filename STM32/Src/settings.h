@@ -38,7 +38,8 @@
 #define NORMAL_SWR_SAVED	1.5f								//ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE	1.2f								//ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5					//Low brightness for IDLE mode (dimmer)
-#define CW_ADD_GAIN	25.0f							//additional AF/IF gain in CW
+#define CW_ADD_GAIN_IF	35.0f							//additional IF gain in CW
+#define CW_ADD_GAIN_AF	6.0f							//additional AF gain in CW
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
 //select how the SWR and the power is measured

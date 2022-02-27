@@ -1573,7 +1573,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	if (rx_id == AUDIO_RX2 && SecondaryVFO->Mode==TRX_MODE_CW)
 		CW = true;
 	if(CW)
-		if_gain += db2rateV(CW_ADD_GAIN);
+		if_gain += db2rateV(CW_ADD_GAIN_IF);
 	
 	//overflow protect
 	arm_min_f32(I_buff, size, &minVal, &index);
