@@ -933,7 +933,7 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-	CurrentVFO->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	TRX.SQL_shadow = CurrentVFO->SQL;
@@ -1221,7 +1221,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 	TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C;
 	TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T;
 	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-	CurrentVFO->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	TRX.SQL_shadow = CurrentVFO->SQL;
@@ -1271,7 +1271,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
 	TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I;
 	TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C;
 	TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T;
-	CurrentVFO->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
@@ -1380,11 +1380,15 @@ void FRONTPANEL_BUTTONHANDLER_DNR(uint32_t parameter)
 {
 	TRX_TemporaryMute();
 	InitNoiseReduction();
-	CurrentVFO->DNR = !CurrentVFO->DNR;
-	
+	if (CurrentVFO->DNR_Type == 0)
+		CurrentVFO->DNR_Type = 1;
+	else if (CurrentVFO->DNR_Type == 1)
+		CurrentVFO->DNR_Type = 2;
+	else
+		CurrentVFO->DNR_Type = 0;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0)
-		TRX.BANDS_SAVED_SETTINGS[band].DNR = CurrentVFO->DNR;
+		TRX.BANDS_SAVED_SETTINGS[band].DNR_Type = CurrentVFO->DNR_Type;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
@@ -1756,7 +1760,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter)
 	TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I;
 	TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C;
 	TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T;
-	CurrentVFO->DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	TRX_Temporary_Stop_BandMap = false;
 
@@ -1807,7 +1811,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter)
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-	TRX.VFO_A.DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+	TRX.VFO_A.DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	TRX.VFO_A.AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I;
 	TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C;
@@ -1846,7 +1850,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter)
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_B);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_B);
 	TRX.VFO_B.FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-	TRX.VFO_B.DNR = TRX.BANDS_SAVED_SETTINGS[band].DNR;
+	TRX.VFO_B.DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	TRX.VFO_B.AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	TRX.VFO_B.SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	TRX_Temporary_Stop_BandMap = false;
@@ -2105,7 +2109,7 @@ void FRONTPANEL_SelectMemoryChannelsButtonHandler(uint32_t parameter)
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
 	TRX.ADC_PGA = CALIBRATE.MEMORY_CHANNELS[channel].ADC_PGA;
-	CurrentVFO->DNR = CALIBRATE.MEMORY_CHANNELS[channel].DNR;
+	CurrentVFO->DNR_Type = CALIBRATE.MEMORY_CHANNELS[channel].DNR_Type;
 	CurrentVFO->AGC = CALIBRATE.MEMORY_CHANNELS[channel].AGC;
 	TRX_Temporary_Stop_BandMap = false;
 
@@ -2135,7 +2139,7 @@ void FRONTPANEL_SaveMemoryChannelsButtonHandler(uint32_t parameter)
 	CALIBRATE.MEMORY_CHANNELS[channel].SQL = CurrentVFO->SQL;
 	CALIBRATE.MEMORY_CHANNELS[channel].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
 	CALIBRATE.MEMORY_CHANNELS[channel].ADC_PGA = TRX.ADC_PGA;
-	CALIBRATE.MEMORY_CHANNELS[channel].DNR = CurrentVFO->DNR;
+	CALIBRATE.MEMORY_CHANNELS[channel].DNR_Type = CurrentVFO->DNR_Type;
 	CALIBRATE.MEMORY_CHANNELS[channel].AGC = CurrentVFO->AGC;
 	
 	LCD_closeWindow();

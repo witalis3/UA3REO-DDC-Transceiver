@@ -230,8 +230,8 @@ typedef struct
 	uint_fast16_t LPF_TX_Filter_Width;
 	uint_fast8_t Mode;
 	uint_fast16_t NotchFC;
+	uint8_t DNR_Type; //0-disabled 1-dnr 2-dnr2
 	int8_t FM_SQL_threshold_dbm;
-	bool DNR;
 	bool ManualNotchFilter;
 	bool AutoNotchFilter;
 	bool AGC;
@@ -310,6 +310,7 @@ typedef struct
 	float32_t ATT_DB;
 	uint64_t Freq;
 	uint8_t Mode;
+	uint8_t DNR_Type;
 	uint8_t BEST_ATU_I;
 	uint8_t BEST_ATU_C;
 	int8_t FM_SQL_threshold_dbm;
@@ -321,7 +322,6 @@ typedef struct
 	bool ADC_PGA;
 	bool AGC;
 	bool SQL;
-	bool DNR;
 	bool BEST_ATU_T;
 } BAND_SAVED_SETTINGS_TYPE;
 
@@ -395,6 +395,10 @@ extern struct TRX_SETTINGS
 	uint8_t IF_Gain;
 	uint8_t MIC_GAIN;
 	uint8_t MIC_REVERBER;
+	uint8_t DNR1_SNR_THRESHOLD;
+	uint8_t DNR2_SNR_THRESHOLD;
+	uint8_t DNR_AVERAGE;
+	uint8_t DNR_MINIMAL;
 	uint8_t RX_AGC_SSB_speed;
 	uint8_t RX_AGC_CW_speed;
 	uint8_t RX_AGC_Max_gain;
@@ -414,7 +418,6 @@ extern struct TRX_SETTINGS
 	int8_t MIC_EQ_MID_AMFM;
 	int8_t MIC_EQ_HIG_AMFM;
 	int8_t AGC_GAIN_TARGET;
-	int8_t DNR_LEVEL;
 	bool MIC_Boost;
 	bool NOISE_BLANKER;
 	bool Beeper;
@@ -509,6 +512,7 @@ extern struct TRX_SETTINGS
 	bool WSPR_BANDS_6;
 	bool WSPR_BANDS_2;
 	//Shadow variables
+	uint8_t DNR_shadow;
 	int8_t FM_SQL_threshold_dbm_shadow;
 	bool SQL_shadow;
 	bool AGC_shadow;

@@ -1324,18 +1324,24 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
-		if (CurrentVFO->DNR)
+		if (CurrentVFO->DNR_Type > 0)
 		{
 			for (uint32_t block = 0; block < (size / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				processNoiseReduction(APROC_Audio_Buffer_RX1_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
+				if (CurrentVFO->DNR_Type == 2)
+					processNoiseReduction(APROC_Audio_Buffer_RX1_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 2);
+				else
+					processNoiseReduction(APROC_Audio_Buffer_RX1_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 1);
 		}
 	}
 	else
 	{
-		if (SecondaryVFO->DNR)
+		if (SecondaryVFO->DNR_Type > 0)
 		{
 			for (uint32_t block = 0; block < (size / NOISE_REDUCTION_BLOCK_SIZE); block++)
-				processNoiseReduction(APROC_Audio_Buffer_RX2_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id);
+				if (SecondaryVFO->DNR_Type == 2)
+					processNoiseReduction(APROC_Audio_Buffer_RX2_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 2);
+				else
+					processNoiseReduction(APROC_Audio_Buffer_RX2_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, 1);
 		}
 	}
 }

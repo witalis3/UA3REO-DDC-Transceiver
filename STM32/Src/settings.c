@@ -116,7 +116,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.ManualNotchFilter = false;	  // notch filter to cut out noise
 		TRX.VFO_A.AutoNotchFilter = false;		  // notch filter to cut out noise
 		TRX.VFO_A.NotchFC = 1000;				  // cutoff frequency of the notch filter
-		TRX.VFO_A.DNR = false;					  // digital noise reduction
+		TRX.VFO_A.DNR_Type = 0;					  // digital noise reduction
 		TRX.VFO_A.AGC = true;					  // AGC
 		TRX.VFO_A.SQL = false;					  // SSB/FM Squelch
 		TRX.VFO_A.FM_SQL_threshold_dbm = -90;			  // FM noise squelch
@@ -129,7 +129,7 @@ void LoadSettings(bool clear)
 		TRX.VFO_B.ManualNotchFilter = false;	  // notch filter to cut out noise
 		TRX.VFO_B.AutoNotchFilter = false;		  // notch filter to cut out noise
 		TRX.VFO_B.NotchFC = 1000;				  // cutoff frequency of the notch filter
-		TRX.VFO_B.DNR = false;					  // digital noise reduction
+		TRX.VFO_B.DNR_Type = 0;					  // digital noise reduction
 		TRX.VFO_B.AGC = true;					  // AGC
 		TRX.VFO_B.SQL = false;					  // SSB/FM Squelch
 		TRX.VFO_B.FM_SQL_threshold_dbm = -90;			  // FM noise squelch
@@ -209,7 +209,10 @@ void LoadSettings(bool clear)
 		TRX.MIC_EQ_MID_AMFM = 0;								   // Mic Equalizer (Mids) AM/FM
 		TRX.MIC_EQ_HIG_AMFM = 0;								   // Mic EQ (high) AM/FM
 		TRX.MIC_REVERBER = 0;							   // Mic Reveerber
-		TRX.DNR_LEVEL = -15;						   // Digital noise reduction level
+		TRX.DNR1_SNR_THRESHOLD = 50;						   // Digital noise reduction 1 level
+		TRX.DNR2_SNR_THRESHOLD = 35;						   // Digital noise reduction 2 level
+		TRX.DNR_AVERAGE = 2;							   // DNR averaging when looking for average magnitude
+		TRX.DNR_MINIMAL = 99;							   // DNR averaging when searching for minimum magnitude
 		TRX.NOISE_BLANKER = true;						   // suppressor of short impulse noise NOISE BLANKER
 		TRX.RX_AGC_SSB_speed = 10;						   // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;						   // AGC receive rate on CW
@@ -357,7 +360,7 @@ void LoadSettings(bool clear)
 				TRX.BANDS_SAVED_SETTINGS[i].SQL = true;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm = TRX.VFO_A.FM_SQL_threshold_dbm;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
-			TRX.BANDS_SAVED_SETTINGS[i].DNR = false;
+			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 			TRX.BANDS_SAVED_SETTINGS[i].BEST_ATU_I = TRX.ATU_I;
@@ -368,6 +371,7 @@ void LoadSettings(bool clear)
 		//Shadow variables
 		TRX.SQL_shadow = TRX.VFO_A.SQL;
 		TRX.AGC_shadow = TRX.VFO_A.AGC;
+		TRX.DNR_shadow = TRX.VFO_A.DNR_Type;
 		TRX.FM_SQL_threshold_dbm_shadow = TRX.VFO_A.FM_SQL_threshold_dbm;
 
 		LCD_showError("Loaded default settings", true);
@@ -625,7 +629,7 @@ void LoadCalibration(bool clear)
 			CALIBRATE.MEMORY_CHANNELS[i].SQL = false;
 			CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold_dbm = TRX.VFO_A.FM_SQL_threshold_dbm;
 			CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA = TRX.ADC_PGA;
-			CALIBRATE.MEMORY_CHANNELS[i].DNR = false;
+			CALIBRATE.MEMORY_CHANNELS[i].DNR_Type = 0;
 			CALIBRATE.MEMORY_CHANNELS[i].AGC = true;
 			CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 		}

@@ -66,7 +66,7 @@ void WSPR_Start(void)
 	LastRF_Filters = TRX.RF_Filters;
 	LastManualNotch = CurrentVFO->ManualNotchFilter;
 	LastAutoNotch = CurrentVFO->AutoNotchFilter;
-	LastDNR = CurrentVFO->DNR;
+	LastDNR = CurrentVFO->DNR_Type;
 	LastShift = TRX.ShiftEnabled;
 	LastNB = TRX.NOISE_BLANKER;
 	LastMute = TRX_Mute;
@@ -112,7 +112,7 @@ void WSPR_Stop(void)
 	TRX.RF_Filters = LastRF_Filters;
 	CurrentVFO->ManualNotchFilter = LastManualNotch;
 	CurrentVFO->AutoNotchFilter = LastAutoNotch;
-	CurrentVFO->DNR = LastDNR;
+	CurrentVFO->DNR_Type = LastDNR;
 	TRX.ShiftEnabled = LastShift;
 	TRX.NOISE_BLANKER = LastNB;
 	TRX_Mute = LastMute;
