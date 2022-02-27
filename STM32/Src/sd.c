@@ -875,7 +875,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.ManualNotchFilter", (uint32_t *)&TRX.VFO_A.ManualNotchFilter, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AutoNotchFilter", (uint32_t *)&TRX.VFO_A.AutoNotchFilter, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.NotchFC", (uint32_t *)&TRX.VFO_A.NotchFC, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint32_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR", (uint32_t *)&TRX.VFO_A.DNR, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SQL", (uint32_t *)&TRX.VFO_A.SQL, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dbm", (uint32_t *)&TRX.VFO_A.FM_SQL_threshold_dbm, SYSMENU_INT8);
@@ -888,7 +888,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.VFO_B.ManualNotchFilter", (uint32_t *)&TRX.VFO_B.ManualNotchFilter, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AutoNotchFilter", (uint32_t *)&TRX.VFO_B.AutoNotchFilter, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.NotchFC", (uint32_t *)&TRX.VFO_B.NotchFC, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR_Type", (uint32_t *)&TRX.VFO_B.DNR_Type, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR", (uint32_t *)&TRX.VFO_B.DNR, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint32_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SQL", (uint32_t *)&TRX.VFO_B.SQL, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold_dbm", (uint32_t *)&TRX.VFO_B.FM_SQL_threshold_dbm, SYSMENU_INT8);
@@ -947,10 +947,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID_AMFM", (uint32_t *)&TRX.MIC_EQ_MID_AMFM, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG_AMFM", (uint32_t *)&TRX.MIC_EQ_HIG_AMFM, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_REVERBER", (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.DNR1_SNR_THRESHOLD", (uint32_t *)&TRX.DNR1_SNR_THRESHOLD, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.DNR2_SNR_THRESHOLD", (uint32_t *)&TRX.DNR2_SNR_THRESHOLD, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.DNR_AVERAGE", (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.DNR_MINIMAL", (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.DNR_LEVEL", (uint32_t *)&TRX.DNR_LEVEL, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.NOISE_BLANKER", (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_SSB_speed", (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_CW_speed", (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_UINT8);
@@ -1200,8 +1197,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
-				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
-				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].DNR_Type, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].DNR, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].AGC, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
@@ -1231,8 +1228,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_PGA", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA, SYSMENU_BOOLEAN);
-				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].DNR_Type", i);
-				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].DNR_Type, SYSMENU_UINT8);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].DNR", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].DNR, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].AGC", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].AGC, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SAMPLERATE", i);
@@ -1304,8 +1301,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_A.AutoNotchFilter = bval;
 	if (strcmp(name, "TRX.VFO_A.NotchFC") == 0)
 		TRX.VFO_A.NotchFC = uintval;
-	if (strcmp(name, "TRX.VFO_A.DNR_Type") == 0)
-		TRX.VFO_A.DNR_Type = (uint8_t)uintval;
+	if (strcmp(name, "TRX.VFO_A.DNR") == 0)
+		TRX.VFO_A.DNR = bval;
 	if (strcmp(name, "TRX.VFO_A.AGC") == 0)
 		TRX.VFO_A.AGC = bval;
 	if (strcmp(name, "TRX.VFO_A.SQL") == 0)
@@ -1330,8 +1327,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.VFO_B.AutoNotchFilter = bval;
 	if (strcmp(name, "TRX.VFO_B.NotchFC") == 0)
 		TRX.VFO_B.NotchFC = uintval;
-	if (strcmp(name, "TRX.VFO_B.DNR_Type") == 0)
-		TRX.VFO_B.DNR_Type = (uint8_t)uintval;
+	if (strcmp(name, "TRX.VFO_B.DNR") == 0)
+		TRX.VFO_B.DNR = bval;
 	if (strcmp(name, "TRX.VFO_B.AGC") == 0)
 		TRX.VFO_B.AGC = bval;
 	if (strcmp(name, "TRX.VFO_B.SQL") == 0)
@@ -1455,14 +1452,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.MIC_EQ_HIG_AMFM = (int8_t)intval;
 	if (strcmp(name, "TRX.MIC_REVERBER") == 0)
 		TRX.MIC_REVERBER = (uint8_t)uintval;
-	if (strcmp(name, "TRX.DNR1_SNR_THRESHOLD") == 0)
-		TRX.DNR1_SNR_THRESHOLD = (uint8_t)uintval;
-	if (strcmp(name, "TRX.DNR2_SNR_THRESHOLD") == 0)
-		TRX.DNR2_SNR_THRESHOLD = (uint8_t)uintval;
-	if (strcmp(name, "TRX.DNR_AVERAGE") == 0)
-		TRX.DNR_AVERAGE = (uint8_t)uintval;
-	if (strcmp(name, "TRX.DNR_MINIMAL") == 0)
-		TRX.DNR_MINIMAL = (uint8_t)uintval;
+	if (strcmp(name, "TRX.DNR_LEVEL") == 0)
+		TRX.DNR_LEVEL = (int8_t)intval;
 	if (strcmp(name, "TRX.NOISE_BLANKER") == 0)
 		TRX.NOISE_BLANKER = uintval;
 	if (strcmp(name, "TRX.RX_AGC_SSB_speed") == 0)
@@ -1976,9 +1967,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 		if (strcmp(name, buff) == 0)
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = bval;
-		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR", i);
 		if (strcmp(name, buff) == 0)
-			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = (uint8_t)uintval;
+			TRX.BANDS_SAVED_SETTINGS[i].DNR = bval;
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
 		if (strcmp(name, buff) == 0)
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = bval;
@@ -2020,9 +2011,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_PGA", i);
 		if (strcmp(name, buff) == 0)
 			CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA = bval;
-		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].DNR_Type", i);
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].DNR", i);
 		if (strcmp(name, buff) == 0)
-			CALIBRATE.MEMORY_CHANNELS[i].DNR_Type = (uint8_t)uintval;
+			CALIBRATE.MEMORY_CHANNELS[i].DNR = bval;
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].AGC", i);
 		if (strcmp(name, buff) == 0)
 			CALIBRATE.MEMORY_CHANNELS[i].AGC = bval;

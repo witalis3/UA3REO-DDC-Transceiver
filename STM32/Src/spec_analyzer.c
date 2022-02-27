@@ -33,7 +33,7 @@ static bool LastBandMapEnabled = false;
 static bool LastRF_Filters = false;
 static bool LastManualNotch = false;
 static bool LastAutoNotch = false;
-static uint8_t LastDNR = false;
+static bool LastDNR = false;
 static bool LastShift = false;
 static bool LastNB = false;
 static bool LastMute = false;
@@ -59,7 +59,7 @@ void SPEC_Start(void)
 	LastRF_Filters = TRX.RF_Filters;
 	LastManualNotch = CurrentVFO->ManualNotchFilter;
 	LastAutoNotch = CurrentVFO->AutoNotchFilter;
-	LastDNR = CurrentVFO->DNR_Type;
+	LastDNR = CurrentVFO->DNR;
 	LastShift = TRX.ShiftEnabled;
 	LastNB = TRX.NOISE_BLANKER;
 	LastMute = TRX_Mute;
@@ -98,7 +98,7 @@ void SPEC_Start(void)
 	TRX_setMode(TRX_MODE_CW, CurrentVFO);
 	CurrentVFO->ManualNotchFilter = false;
 	CurrentVFO->AutoNotchFilter = false;
-	CurrentVFO->DNR_Type = false;
+	CurrentVFO->DNR = false;
 	TRX_Mute = true;
 	FPGA_NeedSendParams = true;
 	now_freq = TRX.SPEC_Begin * SPEC_Resolution;
@@ -120,7 +120,7 @@ void SPEC_Stop(void)
 	TRX.RF_Filters = LastRF_Filters;
 	CurrentVFO->ManualNotchFilter = LastManualNotch;
 	CurrentVFO->AutoNotchFilter = LastAutoNotch;
-	CurrentVFO->DNR_Type = LastDNR;
+	CurrentVFO->DNR = LastDNR;
 	TRX.ShiftEnabled = LastShift;
 	TRX.NOISE_BLANKER = LastNB;
 	TRX_Mute = LastMute;
