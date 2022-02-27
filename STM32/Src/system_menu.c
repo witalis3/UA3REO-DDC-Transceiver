@@ -824,6 +824,23 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 		{"Self Test", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SELF_TEST},
 };
 
+static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
+	{ .menu_handler = sysmenu_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_trx_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_audio_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_cw_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_screen_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_decoders_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_adc_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_wifi_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_sd_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_calibration_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_swr_analyser_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_spectrum_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_wspr_handlers, .currentIndex = 0 },
+	{ .menu_handler = sysmenu_services_handlers, .currentIndex = 0 },
+};
+
 //COMMON MENU
 static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool onlyVal);
 static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw);
@@ -844,11 +861,11 @@ static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateLocatorChar(int8_t dir);
 static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex);
 static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex);
+static void setCurrentMenuIndex(uint8_t index);
+static uint8_t getCurrentMenuIndex();
 
 static struct sysmenu_item_handler *sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_handlers[0];
 static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
-static uint8_t systemMenuIndex = 0;
-static uint8_t systemMenuRootIndex = 0;
 static uint16_t sysmenu_y = 5;
 static uint8_t sysmenu_i = 0;
 static bool sysmenu_onroot = true;
@@ -889,23 +906,22 @@ static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_trx_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_trx_handlers) / sizeof(sysmenu_trx_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void SYSMENU_TRX_RFPOWER_HOTKEY(void)
 {
 	SYSMENU_HANDL_TRXMENU(0);
-	systemMenuIndex = 0;
+	setCurrentMenuIndex(0);
 	LCD_redraw(false);
 }
 
 void SYSMENU_TRX_STEP_HOTKEY(void)
 {
 	SYSMENU_HANDL_TRXMENU(0);
-	systemMenuIndex = 7;
+	setCurrentMenuIndex(7);
 	if (TRX.Fast)
-		systemMenuIndex = 8;
+		setCurrentMenuIndex(8);
 	LCD_redraw(false);
 }
 
@@ -1335,63 +1351,62 @@ static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_audio_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_audio_handlers) / sizeof(sysmenu_audio_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 12;
+	setCurrentMenuIndex(12);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 15;
+	setCurrentMenuIndex(15);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 17;
+	setCurrentMenuIndex(17);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 19;
+	setCurrentMenuIndex(19);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 11;
+	setCurrentMenuIndex(11);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 21;
+	setCurrentMenuIndex(21);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_DNR_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 8;
+	setCurrentMenuIndex(8);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_AGC_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	systemMenuIndex = 30;
+	setCurrentMenuIndex(30);
 	LCD_redraw(false);
 }
 
@@ -1873,21 +1888,20 @@ static void SYSMENU_HANDL_CWMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_cw_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_cw_handlers) / sizeof(sysmenu_cw_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_redraw(false);
 }
 
 void SYSMENU_CW_WPM_HOTKEY(void)
 {
 	SYSMENU_HANDL_CWMENU(0);
-	systemMenuIndex = 4;
+	setCurrentMenuIndex(4);
 	LCD_redraw(false);
 }
 
 void SYSMENU_CW_KEYER_HOTKEY(void)
 {
 	SYSMENU_HANDL_CWMENU(0);
-	systemMenuIndex = 3;
+	setCurrentMenuIndex(3);
 	LCD_redraw(false);
 }
 
@@ -1986,7 +2000,6 @@ static void SYSMENU_HANDL_LCDMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_screen_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_screen_handlers) / sizeof(sysmenu_screen_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -2596,7 +2609,6 @@ static void SYSMENU_HANDL_DECODERSMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_decoders_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_decoders_handlers) / sizeof(sysmenu_decoders_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_redraw(false);
 }
 
@@ -2740,7 +2752,6 @@ static void SYSMENU_HANDL_ADCMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_adc_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -2803,7 +2814,6 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_wifi_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_wifi_handlers) / sizeof(sysmenu_wifi_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -2902,7 +2912,6 @@ static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir)
 			strcpy(TRX.WIFI_AP1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
 			sysmenu_wifi_selectap1_menu_opened = false;
-			systemMenuIndex = 0;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
 	}
@@ -2928,7 +2937,6 @@ static void SYSMENU_WIFI_SelectAP2MenuMove(int8_t dir)
 			strcpy(TRX.WIFI_AP2, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
 			sysmenu_wifi_selectap2_menu_opened = false;
-			systemMenuIndex = 0;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
 	}
@@ -2954,7 +2962,6 @@ static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir)
 			strcpy(TRX.WIFI_AP3, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
 			sysmenu_wifi_selectap3_menu_opened = false;
-			systemMenuIndex = 0;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
 	}
@@ -3160,7 +3167,6 @@ static void SYSMENU_HANDL_SDMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_sd_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_sd_handlers) / sizeof(sysmenu_sd_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -3582,7 +3588,6 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_calibration_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -4626,7 +4631,6 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_services_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_services_handlers) / sizeof(sysmenu_services_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	//drawSystemMenu(true);
 	LCD_redraw(false);
 }
@@ -4638,7 +4642,6 @@ static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_swr_analyser_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_swr_analyser_handlers) / sizeof(sysmenu_swr_analyser_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -4708,7 +4711,6 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_spectrum_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_spectrum_handlers) / sizeof(sysmenu_spectrum_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -4769,7 +4771,6 @@ static void SYSMENU_HANDL_WSPRMENU(int8_t direction)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_wspr_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_wspr_handlers) / sizeof(sysmenu_wspr_handlers[0]);
 	sysmenu_onroot = false;
-	systemMenuIndex = 0;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -5060,7 +5061,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 		if (draw_background)
 			LCDDriver_Fill(BG_COLOR);
 
-		uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(systemMenuIndex);
+		uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
 		if (current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE > sysmenu_item_count)
 			current_selected_page = 0;
 
@@ -5148,9 +5149,9 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 		FILEMANAGER_EventRotate(direction);
 		return;
 	}
-	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_INFOLINE)
-		sysmenu_handlers_selected[systemMenuIndex].menuHandler(direction);
-	if (sysmenu_handlers_selected[systemMenuIndex].type != SYSMENU_RUN)
+	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_INFOLINE)
+		sysmenu_handlers_selected[getCurrentMenuIndex()].menuHandler(direction);
+	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_RUN)
 		LCD_UpdateQuery.SystemMenuCurrent = true;
 }
 
@@ -5159,103 +5160,88 @@ void SYSMENU_eventCloseSystemMenu(void)
 	if (sysmenu_wifi_selectap1_menu_opened)
 	{
 		sysmenu_wifi_selectap1_menu_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
 	}
 	if (sysmenu_wifi_selectap2_menu_opened)
 	{
 		sysmenu_wifi_selectap2_menu_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
 	}
 	if (sysmenu_wifi_selectap3_menu_opened)
 	{
 		sysmenu_wifi_selectap3_menu_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
 	}
 	else if (sysmenu_wifi_setAP1password_menu_opened)
 	{
 		sysmenu_wifi_setAP1password_menu_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
 	}
 	else if (sysmenu_wifi_setAP2password_menu_opened)
 	{
 		sysmenu_wifi_setAP2password_menu_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
 	}
 	else if (sysmenu_wifi_setAP3password_menu_opened)
 	{
 		sysmenu_wifi_setAP3password_menu_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
 	}
 	else if (sysmenu_trx_setCallsign_menu_opened)
 	{
 		sysmenu_trx_setCallsign_menu_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (sysmenu_trx_setLocator_menu_opened)
 	{
 		sysmenu_trx_setLocator_menu_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_spectrum_opened)
 	{
 		SYSMENU_spectrum_opened = false;
 		SPEC_Stop();
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_wspr_opened)
 	{
 		SYSMENU_wspr_opened = false;
 		WSPR_Stop();
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (sysmenu_timeMenuOpened)
 	{
 		sysmenu_timeMenuOpened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_swr_opened)
 	{
 		SYSMENU_swr_opened = false;
 		SWR_Stop();
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_locator_info_opened)
 	{
 		SYSMENU_locator_info_opened = false;
 		LOCINFO_Stop();
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_callsign_info_opened)
 	{
 		SYSMENU_callsign_info_opened = false;
 		CALLSIGN_INFO_Stop();
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_selftest_opened)
 	{
 		SYSMENU_selftest_opened = false;
 		SELF_TEST_Stop();
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 #if FT8_SUPPORT
@@ -5263,28 +5249,24 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		FT8_DecodeActiveFlg = false;
 		SYSMENU_FT8_DECODER_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 #endif
 	else if (SYSMENU_TDM_CTRL_opened) //Tisho
 	{
 		SYSMENU_TDM_CTRL_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (sysmenu_infowindow_opened)
 	{
 		sysmenu_infowindow_opened = false;
 		sysmenu_sysinfo_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (sysmenu_filemanager_opened)
 	{
 		FILEMANAGER_Closing();
 		sysmenu_filemanager_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (sysmenu_services_opened)
@@ -5292,7 +5274,6 @@ void SYSMENU_eventCloseSystemMenu(void)
 		sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_handlers[0];
 		sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 		sysmenu_onroot = true;
-		systemMenuIndex = systemMenuRootIndex;
 		sysmenu_services_opened = false;
 		LCD_systemMenuOpened = false;
 		LCD_UpdateQuery.Background = true;
@@ -5302,7 +5283,6 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		sysmenu_ota_opened = false;
 		LCD_showInfo("OTA cancelled", true);
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else
@@ -5321,7 +5301,6 @@ void SYSMENU_eventCloseSystemMenu(void)
 			sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_handlers[0];
 			sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 			sysmenu_onroot = true;
-			systemMenuIndex = systemMenuRootIndex;
 			SYSMENU_drawSystemMenu(true);
 		}
 	}
@@ -5346,7 +5325,6 @@ void SYSMENU_eventCloseAllSystemMenu(void)
 	sysmenu_handlers_selected = (struct sysmenu_item_handler *)&sysmenu_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 	sysmenu_onroot = true;
-	systemMenuIndex = systemMenuRootIndex;
 	sysmenu_item_selected_by_enc2 = false;
 	LCD_systemMenuOpened = false;
 	LCD_UpdateQuery.Background = true;
@@ -5356,7 +5334,6 @@ void SYSMENU_eventCloseAllSystemMenu(void)
 	{
 		FT8_DecodeActiveFlg = false;
 		SYSMENU_FT8_DECODER_opened = false;
-		systemMenuIndex = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 #endif
@@ -5367,7 +5344,7 @@ void SYSMENU_eventCloseAllSystemMenu(void)
 //secondary encoder click
 void SYSMENU_eventSecEncoderClickSystemMenu(void)
 {
-	if (sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_MENU || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_RUN || sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE)
+	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE)
 	{
 		sysmenu_item_selected_by_enc2 = false;
 		SYSMENU_eventRotateSystemMenu(1);
@@ -5552,59 +5529,57 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 
 	//clear selection line
 	LCD_busy = true;
-	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(systemMenuIndex) * LAYOUT->SYSMENU_ITEM_HEIGHT;
+	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) * LAYOUT->SYSMENU_ITEM_HEIGHT;
 	LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, BG_COLOR);
 	LCD_busy = false;
 	//current page
-	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(systemMenuIndex);
+	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
 	//do moving
 	if (direction < 0)
 	{
-		if (systemMenuIndex > 0)
-			systemMenuIndex--;
+		if (getCurrentMenuIndex() > 0)
+			setCurrentMenuIndex(getCurrentMenuIndex() - 1);
 		else
-			systemMenuIndex = sysmenu_item_count - 1;
+			setCurrentMenuIndex(sysmenu_item_count - 1);
 		
-		while(sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE || (sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler != NULL && !sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler()))
+		while(sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE || (sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler != NULL && !sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler()))
 		{
-			if (systemMenuIndex == 0)
-				systemMenuIndex = sysmenu_item_count - 1;
+			if (getCurrentMenuIndex() == 0)
+				setCurrentMenuIndex(sysmenu_item_count - 1);
 			else
-				systemMenuIndex--;
+				setCurrentMenuIndex(getCurrentMenuIndex() - 1);
 		}
 	}
 	else
 	{
-		systemMenuIndex++;
-		if (systemMenuIndex >= sysmenu_item_count)
-				systemMenuIndex = 0;
+		setCurrentMenuIndex(getCurrentMenuIndex() + 1);
+		if (getCurrentMenuIndex() >= sysmenu_item_count)
+				setCurrentMenuIndex(0);
 		
-		while(sysmenu_handlers_selected[systemMenuIndex].type == SYSMENU_INFOLINE || (sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler != NULL && !sysmenu_handlers_selected[systemMenuIndex].checkVisibleHandler()))
+		while(sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE || (sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler != NULL && !sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler()))
 		{
-			if (systemMenuIndex >= sysmenu_item_count - 1)
-				systemMenuIndex = 0;
+			if (getCurrentMenuIndex() >= sysmenu_item_count - 1)
+				setCurrentMenuIndex(0);
 			else
-				systemMenuIndex++;
+				setCurrentMenuIndex(getCurrentMenuIndex() + 1);
 		}
 	}
-	if (systemMenuIndex >= sysmenu_item_count)
-		systemMenuIndex = 0;
+	if (getCurrentMenuIndex() >= sysmenu_item_count)
+		setCurrentMenuIndex(0);
 	
 	LCD_UpdateQuery.SystemMenuCurrent = true;
-	if (sysmenu_onroot)
-		systemMenuRootIndex = systemMenuIndex;
 	
 	//pager
-	uint8_t new_page = SYSTMENU_getPageFromRealIndex(systemMenuIndex);
+	uint8_t new_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
 	if (current_selected_page != new_page)
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void SYSMENU_redrawCurrentItem(void)
 {
-	sysmenu_i = SYSTMENU_getVisibleIdFromReal(systemMenuIndex);
-	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(systemMenuIndex) * LAYOUT->SYSMENU_ITEM_HEIGHT;
-	drawSystemMenuElement(&sysmenu_handlers_selected[systemMenuIndex], true);
+	sysmenu_i = SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex());
+	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) * LAYOUT->SYSMENU_ITEM_HEIGHT;
+	drawSystemMenuElement(&sysmenu_handlers_selected[getCurrentMenuIndex()], true);
 }
 
 static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool onlyVal)
@@ -5706,7 +5681,7 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 		LCDDriver_printText(ctmp, x_pos, sysmenu_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	if (SYSTMENU_getVisibleIdFromReal(systemMenuIndex) == sysmenu_i)
+	if (SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) == sysmenu_i)
 	{
 		if (sysmenu_item_selected_by_enc2)
 			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
@@ -5720,7 +5695,7 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex)
 {
 	uint8_t visible = 0;
-	for(uint8_t i = 0; i < systemMenuIndex; i++)
+	for(uint8_t i = 0; i < getCurrentMenuIndex(); i++)
 	{
 		if(sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler())
 		{
@@ -5738,7 +5713,7 @@ static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex)
 {
 	uint8_t visible = 0;
 	uint8_t page = 0;
-	for(uint8_t i = 0; i < systemMenuIndex; i++)
+	for(uint8_t i = 0; i < getCurrentMenuIndex(); i++)
 	{
 		if(sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler())
 		{
@@ -5870,4 +5845,22 @@ static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void)
 static bool SYSMENU_HANDL_CHECK_HIDDEN_ENABLED(void)
 {
 	return SYSMENU_hiddenmenu_enabled;
+}
+
+static void setCurrentMenuIndex(uint8_t index)
+{
+	uint8_t count = sizeof(sysmenu_wrappers) / sizeof(sysmenu_wrappers[0]);
+	for(uint8_t i = 0 ; i < count; i++)
+		if(sysmenu_wrappers[i].menu_handler == sysmenu_handlers_selected)
+			sysmenu_wrappers[i].currentIndex = index;
+}
+
+static uint8_t getCurrentMenuIndex()
+{
+	uint8_t count = sizeof(sysmenu_wrappers) / sizeof(sysmenu_wrappers[0]);
+	for(uint8_t i = 0 ; i < count; i++)
+		if(sysmenu_wrappers[i].menu_handler == sysmenu_handlers_selected)
+			return sysmenu_wrappers[i].currentIndex;
+	
+		return 0;
 }

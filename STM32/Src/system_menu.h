@@ -46,6 +46,12 @@ struct sysmenu_item_handler
 	char enumerate[ENUM_MAX_COUNT][ENUM_MAX_LENGTH];
 };
 
+struct sysmenu_menu_wrapper
+{
+	const struct sysmenu_item_handler* menu_handler;
+	uint8_t currentIndex;
+};
+
 extern bool sysmenu_ota_opened;
 extern uint8_t sysmenu_ota_opened_state;
 
