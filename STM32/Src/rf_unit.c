@@ -441,6 +441,18 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		band_out = CALIBRATE.EXT_2m;
 	if (band == BANDID_70cm) //70cm
 		band_out = CALIBRATE.EXT_70cm;
+	
+	//Transverters
+	if(TRX.Transverter_70cm && band == BANDID_70cm) //70cm
+		band_out = CALIBRATE.EXT_TRANSV_70cm;
+	if(TRX.Transverter_23cm && band == BANDID_23cm) //23cm
+		band_out = CALIBRATE.EXT_TRANSV_23cm;
+	if(TRX.Transverter_13cm && band == BANDID_13cm) //13cm
+		band_out = CALIBRATE.EXT_TRANSV_13cm;
+	if(TRX.Transverter_6cm && band == BANDID_6cm) //6cm
+		band_out = CALIBRATE.EXT_TRANSV_6cm;
+	if(TRX.Transverter_3cm && band == BANDID_3cm) //3cm
+		band_out = CALIBRATE.EXT_TRANSV_3cm;
 
 	//QRP Version RF Unit ///////////////////////////////////////////////////////////////////////
 	if(CALIBRATE.RF_unit_type == RF_UNIT_QRP)

@@ -310,6 +310,11 @@ static void SYSMENU_HANDL_CALIB_EXT_6m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_FM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_2m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_70cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_70cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_23cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_13cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_6cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_NOTHAM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_2200m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_160m(int8_t direction);
@@ -737,6 +742,11 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"EXT FM", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_FM, SYSMENU_HANDL_CALIB_EXT_FM},
 		{"EXT 2m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_2m, SYSMENU_HANDL_CALIB_EXT_2m},
 		{"EXT 70cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_70cm, SYSMENU_HANDL_CALIB_EXT_70cm},
+		{"EXT Transv 70cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_70cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_70cm},
+		{"EXT Transv 23cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_23cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_23cm},
+		{"EXT Transv 13cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_13cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_13cm},
+		{"EXT Transv 6cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_6cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_6cm},
+		{"EXT Transv 3cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_3cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm},
 		{"NOTX NOT HAM", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_NOTHAM, SYSMENU_HANDL_CALIB_NOTX_NOTHAM},
 		{"NOTX 2200m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2200m, SYSMENU_HANDL_CALIB_NOTX_2200m},
 		{"NOTX 160m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_160m, SYSMENU_HANDL_CALIB_NOTX_160m},
@@ -4410,6 +4420,46 @@ static void SYSMENU_HANDL_CALIB_EXT_70cm(int8_t direction)
 		CALIBRATE.EXT_70cm += direction;
 	if (CALIBRATE.EXT_70cm > 15)
 		CALIBRATE.EXT_70cm = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_70cm(int8_t direction)
+{
+	if(CALIBRATE.EXT_TRANSV_70cm > 0 || direction > 0)
+		CALIBRATE.EXT_TRANSV_70cm += direction;
+	if (CALIBRATE.EXT_TRANSV_70cm > 15)
+		CALIBRATE.EXT_TRANSV_70cm = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_23cm(int8_t direction)
+{
+	if(CALIBRATE.EXT_TRANSV_23cm > 0 || direction > 0)
+		CALIBRATE.EXT_TRANSV_23cm += direction;
+	if (CALIBRATE.EXT_TRANSV_23cm > 15)
+		CALIBRATE.EXT_TRANSV_23cm = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_13cm(int8_t direction)
+{
+	if(CALIBRATE.EXT_TRANSV_13cm > 0 || direction > 0)
+		CALIBRATE.EXT_TRANSV_13cm += direction;
+	if (CALIBRATE.EXT_TRANSV_13cm > 15)
+		CALIBRATE.EXT_TRANSV_13cm = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_6cm(int8_t direction)
+{
+	if(CALIBRATE.EXT_TRANSV_6cm > 0 || direction > 0)
+		CALIBRATE.EXT_TRANSV_6cm += direction;
+	if (CALIBRATE.EXT_TRANSV_6cm > 15)
+		CALIBRATE.EXT_TRANSV_6cm = 15;
+}
+
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm(int8_t direction)
+{
+	if(CALIBRATE.EXT_TRANSV_3cm > 0 || direction > 0)
+		CALIBRATE.EXT_TRANSV_3cm += direction;
+	if (CALIBRATE.EXT_TRANSV_3cm > 15)
+		CALIBRATE.EXT_TRANSV_3cm = 15;
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_NOTHAM(int8_t direction)

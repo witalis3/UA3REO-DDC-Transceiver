@@ -610,6 +610,11 @@ extern struct TRX_CALIBRATE
 	uint8_t EXT_FM;
 	uint8_t EXT_2m;
 	uint8_t EXT_70cm;
+	uint8_t EXT_TRANSV_70cm;
+	uint8_t EXT_TRANSV_23cm;
+	uint8_t EXT_TRANSV_13cm;
+	uint8_t EXT_TRANSV_6cm;
+	uint8_t EXT_TRANSV_3cm;
 	uint8_t ATU_AVERAGING;
 	int8_t VCXO_correction;
 	TRX_RF_UNIT_TYPE RF_unit_type;

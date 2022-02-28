@@ -580,6 +580,11 @@ void LoadCalibration(bool clear)
 		CALIBRATE.EXT_FM = 13;						//External port by band
 		CALIBRATE.EXT_2m = 14;						//External port by band
 		CALIBRATE.EXT_70cm = 15;						//External port by band
+		CALIBRATE.EXT_TRANSV_70cm = 15;
+		CALIBRATE.EXT_TRANSV_23cm = 13;
+		CALIBRATE.EXT_TRANSV_13cm = 12;
+		CALIBRATE.EXT_TRANSV_6cm = 10;
+		CALIBRATE.EXT_TRANSV_3cm = 0;
 		CALIBRATE.NOTX_NOTHAM = true;			//disable TX on non-HAM bands
 		CALIBRATE.NOTX_2200m = false;			//disable TX on some bands
 		CALIBRATE.NOTX_160m = false;
