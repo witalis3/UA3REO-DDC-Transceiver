@@ -1459,13 +1459,16 @@ void RF_UNIT_ProcessSensors(void)
 	float32_t part_point_left = therm_resistance - KTY81_120_sensTable[point_left][1];
 	float32_t part_point_right = KTY81_120_sensTable[point_right][1] - therm_resistance;
 	float32_t part_point = part_point_left / (part_point_left + part_point_right);
-	float32_t TRX_RF_Temperature_new = (power_left * (1.0f - part_point)) + (power_right * (part_point));
-	if (TRX_RF_Temperature_new < 0.0f)
-		TRX_RF_Temperature_new = 0.0f;
-	if (fabsf(TRX_RF_Temperature_new - TRX_RF_Temperature) >= 10.0f) //hysteresis
-		TRX_RF_Temperature = TRX_RF_Temperature_new;
+		float32_t TRX_RF_Temperature_measured = (power_left * (1.0f - part_point)) + (power_right * (part_point));
+	if (TRX_RF_Temperature_measured < 0.0f)
+		TRX_RF_Temperature_measured = 0.0f;
+	static float32_t TRX_RF_Temperature_averaged = 20.0f;
+	TRX_RF_Temperature_averaged = TRX_RF_Temperature_averaged * 0.9f + TRX_RF_Temperature_measured * 0.1f;
+	
+	if (fabsf(TRX_RF_Temperature_averaged - TRX_RF_Temperature) >= 10.0f) //hysteresis
+		TRX_RF_Temperature = TRX_RF_Temperature_averaged;
 	else
-		TRX_RF_Temperature = TRX_RF_Temperature * 0.99f + TRX_RF_Temperature_new * 0.01f;
+		TRX_RF_Temperature = TRX_RF_Temperature * 0.99f + TRX_RF_Temperature_averaged * 0.01f;
 
 	//SWR
 	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B16_RANGE;
