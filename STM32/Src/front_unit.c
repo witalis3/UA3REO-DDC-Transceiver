@@ -1501,6 +1501,9 @@ void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter)
 static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter)
 {
 	TRX.ShiftEnabled = !TRX.ShiftEnabled;
+	TRX_SHIFT = 0;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
@@ -1509,6 +1512,9 @@ static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter)
 static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter)
 {
 	TRX.SplitEnabled = !TRX.SplitEnabled;
+	TRX_SPLIT = 0;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
