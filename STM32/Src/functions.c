@@ -609,7 +609,7 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 {
 	if (size == 0)
 		return;
-	
+
 	if (dma_memset32_busy) //for async calls
 	{
 		if(val == 0) {
@@ -626,16 +626,8 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	Aligned_CleanDCache_by_Addr(&dma_memset32_reg, sizeof(dma_memset32_reg));
 	Aligned_CleanDCache_by_Addr(dest, size * 4);
 
-	uint32_t max_block = DMA_MAX_BLOCK / 4;
-	while(size >= max_block) {
-		HAL_MDMA_Start(&hmdma_mdma_channel44_sw_0, (uint32_t)&dma_memset32_reg, (uint32_t)dest, 4 * max_block, 1);
-		SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel44_sw_0);
-		size -= max_block;
-	}
-	if(size > 0) {
-		HAL_MDMA_Start(&hmdma_mdma_channel44_sw_0, (uint32_t)&dma_memset32_reg, (uint32_t)dest, 4 * size, 1);
-		SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel44_sw_0);
-	}
+	HAL_MDMA_Start(&hmdma_mdma_channel44_sw_0, (uint32_t)&dma_memset32_reg, (uint32_t)dest, 4 * size, 1);
+	SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel44_sw_0);
 
 	Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);
 	dma_memset32_busy = false;
@@ -678,6 +670,12 @@ void dma_memset(void *dest, uint8_t val, uint32_t size)
 		uint32_t block32 = size / 4;
 		uint32_t block8 = size % 4;
 		uint32_t max_block = DMA_MAX_BLOCK / 4;
+		while (block32 > max_block)
+		{
+			dma_memset32(pDst, val32, max_block);
+			block32 -= max_block;
+			pDst += max_block * 4;
+		}
 		dma_memset32(pDst, val32, block32);
 
 		//right align
