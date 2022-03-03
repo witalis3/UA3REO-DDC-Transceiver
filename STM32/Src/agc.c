@@ -102,10 +102,10 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		if ((AGC_RX_dbFS + AGC->need_gain_db) > (gain_target + AGC_CLIPPING))
 		{
 			AGC->need_gain_db = gain_target - AGC_RX_dbFS;
-			//sendToDebug_float32(diff,false);
+			//println("AGC overload ", diff);
 		}
 		
-		//println(AGC->need_gain_db, " ", diff, " ", AGC->hold_time);
+		//println("AGC HoldTime ", AGC->need_gain_db, " ", diff, " ", AGC->hold_time);
 	}
 
 	//AGC off, not adjustable
