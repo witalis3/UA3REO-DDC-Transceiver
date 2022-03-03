@@ -51,7 +51,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] =
 			.STATUS_SD_ICON_X = (LCD_WIDTH - 93 - 16),
 			.STATUS_SD_ICON_Y = 3,
 			//FAN
-			.STATUS_FAN_ICON_X = (LCD_WIDTH - 98 - 16),
+			.STATUS_FAN_ICON_X = (LCD_WIDTH - 93 - 16),
 			.STATUS_FAN_ICON_Y = 3,
 			//Frequency output
 			.FREQ_A_LEFT = 0,
