@@ -133,10 +133,11 @@ static void RF_UNIT_ProcessATU(void)
 	if((!ATU_BestValsProbed && delay_stages_count < delay_stages_saved) || (ATU_BestValsProbed && delay_stages_count < delay_stages_tune))
 	{
 		if(delay_stages_count == 0)
-			TRX_SWR_val = 99.0f;
-
-		if(TRX_SWR < TRX_SWR_val)
 			TRX_SWR_val = TRX_SWR;
+
+		//if(TRX_SWR < TRX_SWR_val)
+			//TRX_SWR_val = TRX_SWR;
+		TRX_SWR_val = TRX_SWR_val * 0.5f + TRX_SWR * 0.5f;
 
 		delay_stages_count++;
 		return;
