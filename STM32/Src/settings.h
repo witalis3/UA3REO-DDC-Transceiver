@@ -331,14 +331,14 @@ extern struct TRX_SETTINGS
 	bool NeedGoToBootloader;
 	//TRX
 	float32_t ATT_DB;
+	uint32_t FRQ_STEP;
+	uint32_t FRQ_FAST_STEP;
+	uint32_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
 	VFO VFO_A;
 	VFO VFO_B;
 	uint16_t SHIFT_INTERVAL;
 	uint16_t SPLIT_INTERVAL;
-	uint16_t FRQ_STEP;
-	uint16_t FRQ_FAST_STEP;
-	uint16_t FRQ_ENC_STEP;
 	uint16_t Transverter_Offset_Mhz;
 	uint8_t ATT_STEP;
 	uint8_t RF_Power;

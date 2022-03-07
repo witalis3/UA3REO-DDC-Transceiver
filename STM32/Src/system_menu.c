@@ -433,9 +433,9 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Split Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SPLIT_INTERVAL, SYSMENU_HANDL_TRX_SPLIT_INTERVAL},
 		{"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_TRX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
 		{"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_TRX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
-		{"Freq Step", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
-		{"Freq Step FAST", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
-		{"Freq Step ENC2", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
+		{"Freq Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
+		{"Freq Step FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
+		{"Freq Step ENC2", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
 		{"Freq Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
 		{"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
@@ -1068,7 +1068,7 @@ static void SYSMENU_HANDL_TRX_SPLIT_INTERVAL(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction)
 {
-	const uint16_t freq_steps[] = {1, 10, 25, 50, 100};
+	const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 5000, 25000, 50000, 100000, 500000};
 	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
 		if (TRX.FRQ_STEP == freq_steps[i])
 		{
@@ -1094,7 +1094,7 @@ static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction)
 {
-	const uint16_t freq_steps[] = {10, 25, 50, 100, 500, 1000};
+	const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 5000, 25000, 50000, 100000, 500000};
 	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
 		if (TRX.FRQ_FAST_STEP == freq_steps[i])
 		{
@@ -1120,7 +1120,7 @@ static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction)
 {
-	const uint16_t freq_steps[] = {1000, 5000, 25000, 50000};
+	const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 5000, 25000, 50000, 100000, 500000};
 	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
 		if (TRX.FRQ_ENC_STEP == freq_steps[i])
 		{
@@ -1146,7 +1146,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction)
 {
-	const uint32_t freq_steps[] = {5000, 25000, 50000, 100000, 500000};
+	const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 5000, 25000, 50000, 100000, 500000};
 	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
 		if (TRX.FRQ_ENC_FAST_STEP == freq_steps[i])
 		{
