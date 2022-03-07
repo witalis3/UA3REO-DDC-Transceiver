@@ -5730,6 +5730,9 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 	case SYSMENU_UINT32R:
 		sprintf(ctmp, "%u", (uint32_t)*menuElement->value);
 		break;
+	case SYSMENU_UINT64:
+		sprintf(ctmp, "%llu", (uint64_t)*menuElement->value);
+		break;
 	case SYSMENU_INT8:
 		sprintf(ctmp, "%d", (int8_t)*menuElement->value);
 		break;

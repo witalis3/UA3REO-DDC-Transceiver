@@ -804,6 +804,9 @@ static bool SD_WRITE_SETT_LINE(char *name, uint32_t *value, SystemMenuType type)
 	case SYSMENU_UINT32:
 		sprintf(valbuff, "%u", (uint32_t)*value);
 		break;
+	case SYSMENU_UINT64:
+		sprintf(valbuff, "%llu", (uint64_t)*value);
+		break;
 	case SYSMENU_INT8:
 		sprintf(valbuff, "%d", (int8_t)*value);
 		break;
@@ -864,7 +867,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 	if (f_open(&File, "wolf.ini", FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 	{
 		//TRX
-		bool res = SD_WRITE_SETT_LINE("TRX.VFO_A.Freq", (uint32_t *)&TRX.VFO_A.Freq, SYSMENU_UINT32);
+		bool res = SD_WRITE_SETT_LINE("TRX.VFO_A.Freq", (uint32_t *)&TRX.VFO_A.Freq, SYSMENU_UINT64);
 		if (res)
 		{
 			SD_WRITE_SETT_LINE("TRX.VFO_A.Mode", (uint32_t *)&TRX.VFO_A.Mode, SYSMENU_UINT32);
@@ -879,7 +882,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SQL", (uint32_t *)&TRX.VFO_A.SQL, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dbm", (uint32_t *)&TRX.VFO_A.FM_SQL_threshold_dbm, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.VFO_B.Freq", (uint32_t *)&TRX.VFO_B.Freq, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.Freq", (uint32_t *)&TRX.VFO_B.Freq, SYSMENU_UINT64);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Mode", (uint32_t *)&TRX.VFO_B.Mode, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.LPF_RX_Filter_Width", (uint32_t *)&TRX.VFO_B.LPF_RX_Filter_Width, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.LPF_TX_Filter_Width", (uint32_t *)&TRX.VFO_B.LPF_TX_Filter_Width, SYSMENU_UINT32);
@@ -1191,7 +1194,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			for (uint8_t i = 0; i < BANDS_COUNT; i++)
 			{
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
-				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].Freq, SYSMENU_UINT32);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].Freq, SYSMENU_UINT64);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Mode", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].Mode, SYSMENU_UINT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].LNA", i);
@@ -1222,7 +1225,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)
 			{
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
-				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].Freq, SYSMENU_UINT32);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].Freq, SYSMENU_UINT64);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].Mode, SYSMENU_UINT8);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].LNA", i);
@@ -1285,6 +1288,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	strncpy(name, (char *)line, name_len);
 	strcpy(value, (char *)line + name_len + 3);
 
+	uint32_t uint64val = atoll(value);
 	uint32_t uintval = atol(value);
 	int32_t intval = atol(value);
 	float32_t floatval = atof(value);
@@ -1297,7 +1301,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 
 	//TRX
 	if (strcmp(name, "TRX.VFO_A.Freq") == 0)
-		TRX.VFO_A.Freq = uintval;
+		TRX.VFO_A.Freq = uint64val;
 	if (strcmp(name, "TRX.VFO_A.Mode") == 0)
 		TRX.VFO_A.Mode = uintval;
 	if (strcmp(name, "TRX.VFO_A.LPF_RX_Filter_Width") == 0)
@@ -1323,7 +1327,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold_dbm") == 0)
 		TRX.VFO_A.FM_SQL_threshold_dbm = (int8_t)intval;
 	if (strcmp(name, "TRX.VFO_B.Freq") == 0)
-		TRX.VFO_B.Freq = uintval;
+		TRX.VFO_B.Freq = uint64val;
 	if (strcmp(name, "TRX.VFO_B.Mode") == 0)
 		TRX.VFO_B.Mode = uintval;
 	if (strcmp(name, "TRX.VFO_B.LPF_RX_Filter_Width") == 0)
@@ -1966,7 +1970,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	{
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
 		if (strcmp(name, buff) == 0)
-			TRX.BANDS_SAVED_SETTINGS[i].Freq = uintval;
+			TRX.BANDS_SAVED_SETTINGS[i].Freq = uint64val;
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Mode", i);
 		if (strcmp(name, buff) == 0)
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)uintval;
@@ -2010,7 +2014,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	{
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
 		if (strcmp(name, buff) == 0)
-			CALIBRATE.MEMORY_CHANNELS[i].Freq = uintval;
+			CALIBRATE.MEMORY_CHANNELS[i].Freq = uint64val;
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
 		if (strcmp(name, buff) == 0)
 			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)uintval;
