@@ -1488,6 +1488,8 @@ static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction)
 
 static void SYSMENU_HANDL_AUDIO_DNR(int8_t direction)
 {
+	TRX_TemporaryMute();
+	
 	if (direction > 0 || CurrentVFO->DNR_Type > 0)
 		CurrentVFO->DNR_Type += direction;
 	if (CurrentVFO->DNR_Type > 2)

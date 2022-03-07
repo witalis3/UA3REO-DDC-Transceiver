@@ -113,22 +113,26 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		AGC->need_gain_db = 1.0f;
 
 	//Muting if need
+	float32_t current_need_gain = AGC->need_gain_db;
 	if (WM8731_Muting || VAD_Muting)
-		AGC->need_gain_db = -200.0f;
+	{
+		current_need_gain = -200.0f;
+		AGC->need_gain_db -= 10.0f;
+	}
 
 	//gain limitation
 	if (AGC->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain)
 		AGC->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
-
+	
 	//apply gain
 	//println(AGC->need_gain_db);
-	if (fabsf(AGC->need_gain_db_old - AGC->need_gain_db) > 0.0f) //gain changed
+	if (fabsf(AGC->need_gain_db_old - current_need_gain) > 0.0f) //gain changed
 	{
 		float32_t gainApplyStep = 0;
-		if (AGC->need_gain_db_old > AGC->need_gain_db)
-			gainApplyStep = -(AGC->need_gain_db_old - AGC->need_gain_db) / (float32_t)blockSize;
-		if (AGC->need_gain_db_old < AGC->need_gain_db)
-			gainApplyStep = (AGC->need_gain_db - AGC->need_gain_db_old) / (float32_t)blockSize;
+		if (AGC->need_gain_db_old > current_need_gain)
+			gainApplyStep = -(AGC->need_gain_db_old - current_need_gain) / (float32_t)blockSize;
+		if (AGC->need_gain_db_old < current_need_gain)
+			gainApplyStep = (current_need_gain - AGC->need_gain_db_old) / (float32_t)blockSize;
 		float32_t val_prev = 0.0f;
 		bool zero_cross = false;
 		for (uint_fast16_t i = 0; i < blockSize; i++)
