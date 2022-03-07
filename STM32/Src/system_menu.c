@@ -1474,7 +1474,7 @@ void SYSMENU_AUDIO_DNR_HOTKEY(void)
 void SYSMENU_AUDIO_AGC_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(30);
+	setCurrentMenuIndex(34);
 	LCD_redraw(false);
 }
 
