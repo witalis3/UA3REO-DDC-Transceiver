@@ -947,6 +947,9 @@ bool FFT_printFFT(void)
 		bool dbm_grid = false;
 		if (TRX.FFT_Background)
 			background = palette_bg_gradient[fft_y];
+		else
+			background = BG_COLOR;
+		
 		if(TRX.FFT_dBmGrid)
 			for(uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL)
 				if(y == fft_y)
