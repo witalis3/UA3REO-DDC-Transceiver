@@ -222,12 +222,12 @@ void LoadSettings(bool clear)
 		TRX.TX_Compressor_maxgain_SSB = 10;					   //TX compressor max gain SSB
 		TRX.TX_Compressor_speed_AMFM = 3;					   // TX compressor speed AM/FM
 		TRX.TX_Compressor_maxgain_AMFM = 10;					   //TX compressor max gain AM/FM
-		TRX.CW_LPF_Filter = 300;						   // default value of CW filter width
+		TRX.CW_LPF_Filter = 600;						   // default value of CW filter width
 		TRX.DIGI_LPF_Filter = 3000;						   // default value of DIGI filter width
 		TRX.SSB_LPF_RX_Filter = 2700;					   // default value of SSB filter width
 		TRX.SSB_LPF_TX_Filter = 2700;					   // default value of SSB filter width
-		TRX.SSB_HPF_RX_Filter = 300;						   // default value of SSB filter width
-		TRX.SSB_HPF_TX_Filter = 300;						   // default value of SSB filter width
+		TRX.SSB_HPF_RX_Filter = 200;						   // default value of SSB filter width
+		TRX.SSB_HPF_TX_Filter = 200;						   // default value of SSB filter width
 		TRX.AM_LPF_RX_Filter = 6000;					   // default value of AM filter width
 		TRX.AM_LPF_TX_Filter = 6000;					   // default value of AM filter width
 		TRX.FM_LPF_RX_Filter = 10000;					   // default value of the FM filter width
