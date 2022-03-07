@@ -658,6 +658,19 @@ void memset16(void *dest, uint16_t val, uint32_t size)
 
 	uint16_t *buf = dest;
 	while(size--) *buf++ = val;
+	
+	/*char *buf = dest;
+	union 
+	{
+			uint8_t d8[2];
+			uint16_t d16;
+	}u16 = {.d16 = val};
+
+	while(size--) 
+	{
+			*buf++ = u16.d8[0];
+			*buf++ = u16.d8[1];
+	}*/
 }
 
 void dma_memset(void *dest, uint8_t val, uint32_t size)
