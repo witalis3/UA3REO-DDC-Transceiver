@@ -657,7 +657,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 			LCDDriver_Fill_Triangle(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width_offset, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, COLOR->BW_TRAPEZ_FILL);
 	}
 	//shift stripe
-	if (!TRX.ShiftEnabled || LCD_bw_trapez_stripe_pos == 0)
+	if ((!TRX.ShiftEnabled && !TRX.SplitEnabled) || LCD_bw_trapez_stripe_pos == 0)
 		LCD_bw_trapez_stripe_pos = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
 	LCDDriver_Fill_RectWH(LCD_bw_trapez_stripe_pos - 1, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT / 2, 3, LAYOUT->BW_TRAPEZ_HEIGHT / 2, COLOR->BW_TRAPEZ_STRIPE);
 	/////END BW trapezoid
@@ -1105,38 +1105,27 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_BW_Y_OFFSET, COLOR->STATUS_LABEL_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	
-	//Tisho - begin of change
-	//INA226 current voltage indication 
-	#if defined(FRONTPANEL_BIG_V1)
-	if(CALIBRATE.INA226_EN)							//Is the INA226 used (installed) 
-		{
-			Read_INA226_Data();
-			sprintf(buff, "%2.1fV/%2.1fA ", Get_INA226_Voltage(), Get_INA226_Current());
-		}
+	if(CALIBRATE.INA226_EN)							////INA226 current voltage indication  Is the INA226 used (installed) 
+	{
+		Read_INA226_Data();
+		sprintf(buff, "%2.1fV/%2.1fA ", Get_INA226_Voltage(), Get_INA226_Current());
+	}
 	else
-		{
+	{
 		//RIT
 		if (TRX.CLAR)
 			sprintf(buff, "RIT:CLAR");
+		else if (TRX.ShiftEnabled && TRX_SHIFT > 0)
+			sprintf(buff, "SHIFT:+%d", TRX_SHIFT);
 		else if (TRX.ShiftEnabled)
 			sprintf(buff, "SHIFT:%d", TRX_SHIFT);
+		else if (TRX.SplitEnabled && TRX_SPLIT > 0)
+			sprintf(buff, "SPLIT:+%d", TRX_SPLIT);
 		else if (TRX.SplitEnabled)
 			sprintf(buff, "SPLIT:%d", TRX_SPLIT);
 		else
 			sprintf(buff, "RIT:OFF");
-		}
-		
-	#else
-		//RIT
-		if (TRX.CLAR)
-			sprintf(buff, "RIT:CLAR");
-		else if (TRX.ShiftEnabled)
-			sprintf(buff, "SHIFT:%d", TRX_SHIFT);
-		else if (TRX.SplitEnabled)
-			sprintf(buff, "SPLIT:%d", TRX_SPLIT);
-		else
-			sprintf(buff, "RIT:OFF");
-	#endif																		//Tisho end of change
+	}
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_RIT_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_RIT_Y_OFFSET, COLOR->STATUS_LABEL_RIT, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 //THERMAL
@@ -1712,7 +1701,11 @@ void LCD_showTooltip(char text[])
 	strcpy(Tooltip_string, text);
 	Tooltip_first_draw = true;
 	if (LCD_UpdateQuery.Tooltip) //redraw old tooltip
+	{
+		LCD_UpdateQuery.StatusInfoBarRedraw = true;
 		LCD_UpdateQuery.FreqInfoRedraw = true;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+	}
 	LCD_UpdateQuery.Tooltip = true;
 	println((char *)text);
 }

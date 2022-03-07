@@ -191,6 +191,7 @@ void LoadSettings(bool clear)
 		TRX.Transverter_13cm = false;			//Transvertrs enable (2m IF)
 		TRX.Transverter_6cm = false;			//Transvertrs enable (2m IF)
 		TRX.Transverter_3cm = false;			//Transvertrs enable (2m IF)
+		TRX.FineRITTune = true;					//Fine or coarse tune for split/shift
 		//AUDIO
 		TRX.Volume = 25;									//AF Volume
 		TRX.IF_Gain = 15;								   // IF gain, dB (before all processing and AGC)

@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 45					   // Settings config version
+#define SETT_VERSION 46					   // Settings config version
 #define CALIB_VERSION 39				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -360,6 +360,7 @@ extern struct TRX_SETTINGS
 	bool ChannelMode;
 	bool ShiftEnabled;
 	bool SplitEnabled;
+	bool FineRITTune;
 	bool TWO_SIGNAL_TUNE;
 	bool BandMapEnabled;
 	bool AutoGain;

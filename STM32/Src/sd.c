@@ -909,6 +909,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint32_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ShiftEnabled", (uint32_t *)&TRX.ShiftEnabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SplitEnabled", (uint32_t *)&TRX.SplitEnabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.FineRITTune", (uint32_t *)&TRX.FineRITTune, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SHIFT_INTERVAL", (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.SPLIT_INTERVAL", (uint32_t *)&TRX.SPLIT_INTERVAL, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.TWO_SIGNAL_TUNE", (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_BOOLEAN);
@@ -1376,6 +1377,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.ShiftEnabled = bval;
 	if (strcmp(name, "TRX.SplitEnabled") == 0)
 		TRX.SplitEnabled = bval;
+	if (strcmp(name, "TRX.FineRITTune") == 0)
+		TRX.FineRITTune = bval;
 	if (strcmp(name, "TRX.SHIFT_INTERVAL") == 0)
 		TRX.SHIFT_INTERVAL = (uint16_t)uintval;
 	if (strcmp(name, "TRX.SPLIT_INTERVAL") == 0)

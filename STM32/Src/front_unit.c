@@ -61,7 +61,7 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;
-static bool enc2_func_mode = false; //false - fast-step, true - func mode (WPM, etc...)
+static uint8_t enc2_func_mode_idx = 0; //0 - fast-step, 1 - WPM, 2 - SPLIT/SHIFT, 3 - NOTCH
 
 #ifdef FRONTPANEL_SMALL_V1
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
@@ -413,98 +413,125 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		SYSMENU_eventSecRotateSystemMenu(direction);
 		return;
 	}
-
-	//NOTCH - default action
-	float64_t step = 50;
-	if(CurrentVFO->Mode == TRX_MODE_CW)
-		step = 10;
-	if (CurrentVFO->ManualNotchFilter)
+	
+	if (enc2_func_mode_idx == 1 && CurrentVFO->Mode != TRX_MODE_CW) //no WPM if not CW
+			enc2_func_mode_idx = 0;
+		if (enc2_func_mode_idx == 2 && ((!TRX.ShiftEnabled && !TRX.SplitEnabled) || !TRX.FineRITTune)) //nothing to RIT tune
+			enc2_func_mode_idx = 0;
+		if (enc2_func_mode_idx == 3 && !CurrentVFO->ManualNotchFilter) //nothing to NOTCH tune
+			enc2_func_mode_idx = 0;
+	
+	if (enc2_func_mode_idx == 0)
 	{
-		if (CurrentVFO->NotchFC > step && direction < 0)
-			CurrentVFO->NotchFC -= step;
-		else if (CurrentVFO->NotchFC < CurrentVFO->LPF_RX_Filter_Width && direction > 0)
-			CurrentVFO->NotchFC += step;
-		
-		CurrentVFO->NotchFC = roundf((float64_t)CurrentVFO->NotchFC / step) * step;
-		
-		if(CurrentVFO->NotchFC < step)
-			CurrentVFO->NotchFC = step;
-		
-		if(CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
-			CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
-		
-		LCD_UpdateQuery.StatusInfoGUI = true;
-		NeedReinitNotch = true;
-		NeedWTFRedraw = true;
-	}
-	else
-	{
-		if (!enc2_func_mode || CurrentVFO->Mode != TRX_MODE_CW)
+		float64_t newfreq = (float64_t)CurrentVFO->Freq;
+		float64_t step = 0;
+		if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
 		{
-			float64_t newfreq = (float64_t)CurrentVFO->Freq;
-			float64_t step = 0;
-			if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
-			{
-				int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
-				int_fast8_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
-				int_fast8_t new_channel = channel + direction;
-				if(new_channel < 0)
-					new_channel = BANDS[band].channelsCount - 1;
-				if(new_channel >= BANDS[band].channelsCount)
-					new_channel = 0;
-				
-				newfreq = BANDS[band].channels[new_channel].rxFreq;
-				TRX.CLAR = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
-				if(TRX.CLAR)
-					TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
-				LCD_UpdateQuery.FreqInfoRedraw = true;
-				LCD_UpdateQuery.StatusInfoGUI = true;
-				LCD_UpdateQuery.StatusInfoBarRedraw = true;
-			}
-			else if (TRX.Fast)
-			{
-				step = TRX.FRQ_ENC_FAST_STEP;
-				if (CurrentVFO->Mode == TRX_MODE_WFM)
-					step = step * 2.0;
-				if (CurrentVFO->Mode == TRX_MODE_CW)
-					step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-				
-				if (direction == -1.0f)
-					newfreq = ceill(newfreq / step) * step;
-				if (direction == 1.0f)
-					newfreq = floorl(newfreq / step) * step;
-				newfreq = newfreq + step * direction;
-			}
-			else
-			{
-				step = TRX.FRQ_ENC_STEP;
-				if (CurrentVFO->Mode == TRX_MODE_WFM)
-					step = step * 2.0;
-				if (CurrentVFO->Mode == TRX_MODE_CW)
-					step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-				
-				if (direction == -1.0f)
-					newfreq = ceill(newfreq / step) * step;
-				if (direction == 1.0f)
-					newfreq = floorl(newfreq / step) * step;
-				newfreq = newfreq + step * direction;
-			}
-			TRX_setFrequency(newfreq, CurrentVFO);
-			LCD_UpdateQuery.FreqInfo = true;
+			int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
+			int_fast8_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
+			int_fast8_t new_channel = channel + direction;
+			if(new_channel < 0)
+				new_channel = BANDS[band].channelsCount - 1;
+			if(new_channel >= BANDS[band].channelsCount)
+				new_channel = 0;
+			
+			newfreq = BANDS[band].channels[new_channel].rxFreq;
+			TRX.CLAR = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
+			if(TRX.CLAR)
+				TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
+			LCD_UpdateQuery.FreqInfoRedraw = true;
+			LCD_UpdateQuery.StatusInfoGUI = true;
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
+		}
+		else if (TRX.Fast)
+		{
+			step = TRX.FRQ_ENC_FAST_STEP;
+			if (CurrentVFO->Mode == TRX_MODE_WFM)
+				step = step * 2.0;
+			if (CurrentVFO->Mode == TRX_MODE_CW)
+				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+			
+			if (direction == -1.0f)
+				newfreq = ceill(newfreq / step) * step;
+			if (direction == 1.0f)
+				newfreq = floorl(newfreq / step) * step;
+			newfreq = newfreq + step * direction;
 		}
 		else
 		{
-			//ENC2 Func mode (WPM)
-			TRX.CW_KEYER_WPM += direction;
-			if (TRX.CW_KEYER_WPM < 1)
-				TRX.CW_KEYER_WPM = 1;
-			if (TRX.CW_KEYER_WPM > 200)
-				TRX.CW_KEYER_WPM = 200;
-			char sbuff[32] = {0};
-			sprintf(sbuff, "WPM: %u", TRX.CW_KEYER_WPM);
-			LCD_showTooltip(sbuff);
+			step = TRX.FRQ_ENC_STEP;
+			if (CurrentVFO->Mode == TRX_MODE_WFM)
+				step = step * 2.0;
+			if (CurrentVFO->Mode == TRX_MODE_CW)
+				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+			
+			if (direction == -1.0f)
+				newfreq = ceill(newfreq / step) * step;
+			if (direction == 1.0f)
+				newfreq = floorl(newfreq / step) * step;
+			newfreq = newfreq + step * direction;
+		}
+		TRX_setFrequency(newfreq, CurrentVFO);
+		LCD_UpdateQuery.FreqInfo = true;
+	}
+	
+	if (enc2_func_mode_idx == 1)
+	{
+		//ENC2 Func mode (WPM)
+		TRX.CW_KEYER_WPM += direction;
+		if (TRX.CW_KEYER_WPM < 1)
+			TRX.CW_KEYER_WPM = 1;
+		if (TRX.CW_KEYER_WPM > 200)
+			TRX.CW_KEYER_WPM = 200;
+		char sbuff[32] = {0};
+		sprintf(sbuff, "WPM: %u", TRX.CW_KEYER_WPM);
+		LCD_showTooltip(sbuff);
+	}
+	
+	if (enc2_func_mode_idx == 2) //Fine SPLIT/SHIFT
+	{
+		if (TRX.ShiftEnabled && TRX.FineRITTune) {
+			TRX_SHIFT += direction * 10;
+			if(TRX_SHIFT > TRX.SHIFT_INTERVAL)
+				TRX_SHIFT = TRX.SHIFT_INTERVAL;
+			if(TRX_SHIFT < -TRX.SHIFT_INTERVAL)
+				TRX_SHIFT = -TRX.SHIFT_INTERVAL;
+		}
+		
+		if (TRX.SplitEnabled && TRX.FineRITTune) {
+			TRX_SPLIT += direction * 10;
+			if(TRX_SPLIT > TRX.SPLIT_INTERVAL)
+				TRX_SPLIT = TRX.SPLIT_INTERVAL;
+			if(TRX_SPLIT < -TRX.SPLIT_INTERVAL)
+				TRX_SPLIT = -TRX.SPLIT_INTERVAL;
 		}
 	}
+	
+	if (enc2_func_mode_idx == 3) //Manual Notch
+	{
+		float64_t step = 50;
+		if(CurrentVFO->Mode == TRX_MODE_CW)
+			step = 10;
+		if (CurrentVFO->ManualNotchFilter)
+		{
+			if (CurrentVFO->NotchFC > step && direction < 0)
+				CurrentVFO->NotchFC -= step;
+			else if (CurrentVFO->NotchFC < CurrentVFO->LPF_RX_Filter_Width && direction > 0)
+				CurrentVFO->NotchFC += step;
+			
+			CurrentVFO->NotchFC = roundf((float64_t)CurrentVFO->NotchFC / step) * step;
+			
+			if(CurrentVFO->NotchFC < step)
+				CurrentVFO->NotchFC = step;
+			
+			if(CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
+				CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
+			
+			LCD_UpdateQuery.StatusInfoGUI = true;
+			NeedReinitNotch = true;
+			NeedWTFRedraw = true;
+		}
+	}	
 }
 
 void FRONTPANEL_check_ENC2SW(void)
@@ -571,14 +598,28 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 {
 	TRX_Inactive_Time = 0;
 	//ENC2 CLICK
-	if (CurrentVFO->Mode == TRX_MODE_CW && !LCD_systemMenuOpened && !LCD_window.opened)
+	if (!LCD_systemMenuOpened && !LCD_window.opened)
 	{
-		enc2_func_mode = !enc2_func_mode; //enc2 rotary mode
+		enc2_func_mode_idx++; //enc2 rotary mode
+		
+		if (enc2_func_mode_idx == 1 && CurrentVFO->Mode != TRX_MODE_CW) //no WPM if not CW
+			enc2_func_mode_idx++;
+		if (enc2_func_mode_idx == 2 && ((!TRX.ShiftEnabled && !TRX.SplitEnabled) || !TRX.FineRITTune)) //nothing to RIT tune
+			enc2_func_mode_idx++;
+		if (enc2_func_mode_idx == 3 && !CurrentVFO->ManualNotchFilter) //nothing to NOTCH tune
+			enc2_func_mode_idx++;
+		
+		if(enc2_func_mode_idx > 3)
+			enc2_func_mode_idx = 0;
 
-		if (!enc2_func_mode)
+		if (enc2_func_mode_idx == 0)
 			LCD_showTooltip("FAST STEP");
-		else
+		if (enc2_func_mode_idx == 1)
 			LCD_showTooltip("SET WPM");
+		if (enc2_func_mode_idx == 2)
+			LCD_showTooltip("SET RIT");
+		if (enc2_func_mode_idx == 3)
+			LCD_showTooltip("SET NOTCH");
 	}
 	else
 	{
@@ -749,13 +790,16 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 	{
 		if (TRX.ShiftEnabled)
 		{
-			int_fast16_t TRX_SHIFT_old = TRX_SHIFT;
-			TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SHIFT_INTERVAL * 2 / 1023.0f) - TRX.SHIFT_INTERVAL);
+			static int_fast16_t TRX_SHIFT_old = 0;
+			if(!TRX.FineRITTune)
+				TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SHIFT_INTERVAL * 2 / 1023.0f) - TRX.SHIFT_INTERVAL);
+			
 			if (TRX_SHIFT_old != TRX_SHIFT)
 			{
+				TRX_SHIFT_old = TRX_SHIFT;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new = LCD_bw_trapez_stripe_pos_new + (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_SHIFT / (float32_t)TRX.SHIFT_INTERVAL));
+				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_SHIFT / (float32_t)TRX.SHIFT_INTERVAL));
 				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
 				{
 					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
@@ -764,15 +808,19 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 			}
 			TRX_SPLIT = 0;
 		}
-		else if (TRX.SplitEnabled)
+		
+		if (TRX.SplitEnabled)
 		{
-			int_fast16_t TRX_SPLIT_old = TRX_SPLIT;
-			TRX_SPLIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SPLIT_INTERVAL * 2 / 1023.0f) - TRX.SPLIT_INTERVAL);
-			if (TRX_SPLIT_old != TRX_SPLIT && !TRX_on_TX())
+			static int_fast16_t TRX_SPLIT_old = 0;
+			if(!TRX.FineRITTune)
+				TRX_SPLIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SPLIT_INTERVAL * 2 / 1023.0f) - TRX.SPLIT_INTERVAL);
+			
+			if (TRX_SPLIT_old != TRX_SPLIT)
 			{
+				TRX_SPLIT_old = TRX_SPLIT;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new = LCD_bw_trapez_stripe_pos_new + (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_SPLIT / (float32_t)TRX.SPLIT_INTERVAL));
+				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_SPLIT / (float32_t)TRX.SPLIT_INTERVAL));
 				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
 				{
 					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
@@ -781,10 +829,16 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 			}
 			TRX_SHIFT = 0;
 		}
-		else
+		
+		if (!TRX.ShiftEnabled && TRX.SplitEnabled && !TRX.FineRITTune) //Disable shift/split + IF
 		{
 			TRX_SHIFT = 0;
 			TRX_SPLIT = 0;
+			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 60.0f / 1023.0f));
+		}
+		
+		if (TRX.FineRITTune) //IF only
+		{
 			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 60.0f / 1023.0f));
 		}
 	}
@@ -1505,6 +1559,7 @@ void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter)
 static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter)
 {
 	TRX.ShiftEnabled = !TRX.ShiftEnabled;
+	TRX.SplitEnabled = false;
 	TRX_SHIFT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
@@ -1516,6 +1571,7 @@ static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter)
 static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter)
 {
 	TRX.SplitEnabled = !TRX.SplitEnabled;
+	TRX.ShiftEnabled = false;
 	TRX_SPLIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);

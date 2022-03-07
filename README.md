@@ -140,6 +140,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **Two Signal tune** - Two-signal generator in TUNE mode (1 + 2kHz)
 * **Shift Interval** - Offset range SHIFT (+ -)
 * **Split Interval** - Offset range SPLIT (+ -)
+* **Fine RIT Tune** - Fine or coarse tuning for SPLIT/SHIFT (encoder or resistor)
 * **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
 * **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
 * **Freq Step** - Frequency step by the main encoder

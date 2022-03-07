@@ -61,6 +61,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction);
+static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
@@ -431,6 +432,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Two Signal TUNE", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE},
 		{"Shift Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_HANDL_TRX_SHIFT_INTERVAL},
 		{"Split Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SPLIT_INTERVAL, SYSMENU_HANDL_TRX_SPLIT_INTERVAL},
+		{"Fine RIT Tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FineRITTune, SYSMENU_HANDL_TRX_FineRITTune},
 		{"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_TRX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
 		{"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_TRX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
 		{"Freq Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
@@ -984,6 +986,14 @@ static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction)
 		TRX.TWO_SIGNAL_TUNE = true;
 	if (direction < 0)
 		TRX.TWO_SIGNAL_TUNE = false;
+}
+
+static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction)
+{
+	if (direction > 0)
+		TRX.FineRITTune = true;
+	if (direction < 0)
+		TRX.FineRITTune = false;
 }
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction)
