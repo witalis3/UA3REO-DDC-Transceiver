@@ -11,7 +11,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "3.4.1-dev"; //1.2.3-yymmdd.hhmm (concatinate)
+char version_string[19] = "3.4.1";
 
 //W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -27,7 +27,6 @@ struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
 bool EEPROM_Enabled = true;
 static uint8_t settings_bank = 1;
-
 
 IRAM2 static uint8_t write_clone[sizeof(TRX)] = {0};
 IRAM2 static uint8_t read_clone[sizeof(TRX)] = {0};
