@@ -42,6 +42,7 @@ IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};				   // combined
 IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};				   // temporary buffer for sorting, moving and fft compressing
 SRAM static float32_t FFT_meanBuffer[FFT_MAX_MEANS][MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
 IRAM2 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};				   // averaged FFT buffer (for output)
+IRAM2 static float32_t FFTOutput_average[MAX_FFT_PRINT_SIZE] = {0};				   // averaged FFT buffer (for output)
 static float32_t maxValueFFT_rx = 0;										   // maximum value of the amplitude in the resulting frequency response
 static float32_t maxValueFFT_tx = 0;										   // maximum value of the amplitude in the resulting frequency response
 static uint64_t currentFFTFreq = 0;
@@ -76,7 +77,7 @@ static bool fft_charge_copying = false;
 static uint8_t FFT_meanBuffer_index = 0;
 static uint32_t FFT_ChargeBuffer_collected = 0;
 static uint64_t FFT_lastFFTChargeBufferFreq = 0;
-static uint8_t FFTOutput_averaged_count[FFT_SIZE] = {0};
+static uint8_t FFTOutput_mean_count[FFT_SIZE] = {0};
 static float32_t minAmplValue_averaged = 0;
 static float32_t FFT_minDBM = 0;
 static float32_t FFT_maxDBM = 0;
@@ -508,22 +509,28 @@ void FFT_doFFT(void)
 	dma_memcpy(&FFTInput, FFTInput_tmp, sizeof(FFTInput_tmp));
 
 	//Averaging
-	if (TRX.FFT_Averaging > FFT_MAX_MEANS)
-		TRX.FFT_Averaging = FFT_MAX_MEANS;
+	if (TRX.FFT_Averaging > (FFT_MAX_MEANS + FFT_MAX_AVER))
+		TRX.FFT_Averaging = (FFT_MAX_MEANS + FFT_MAX_AVER);
+	uint8_t max_mean = TRX.FFT_Averaging;
+	if (max_mean > FFT_MAX_MEANS)
+		max_mean = FFT_MAX_MEANS;
+	uint8_t averaging = 0;
+	if(TRX.FFT_Averaging > FFT_MAX_MEANS)
+		averaging = TRX.FFT_Averaging - FFT_MAX_MEANS + 1;
 
 	//Store old FFT for averaging
 	dma_memcpy(&FFT_meanBuffer[FFT_meanBuffer_index][0], FFTInput, sizeof(float32_t) * LAYOUT->FFT_PRINT_SIZE);
 	fft_meanbuffer_freqs[FFT_meanBuffer_index] = FFT_lastFFTChargeBufferFreq;
 
 	FFT_meanBuffer_index++;
-	if (FFT_meanBuffer_index >= TRX.FFT_Averaging)
+	if (FFT_meanBuffer_index >= max_mean)
 		FFT_meanBuffer_index = 0;
 
 	// Averaging values
 	dma_memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean));
-	dma_memset(FFTOutput_averaged_count, 0x00, sizeof(FFTOutput_averaged_count));
+	dma_memset(FFTOutput_mean_count, 0x00, sizeof(FFTOutput_mean_count));
 	
-	for (uint_fast16_t avg_idx = 0; avg_idx < TRX.FFT_Averaging; avg_idx++)
+	for (uint_fast16_t avg_idx = 0; avg_idx < max_mean; avg_idx++)
 	{
 		int64_t freq_diff = roundl(((float64_t)((float64_t)fft_meanbuffer_freqs[avg_idx] - (float64_t)CurrentVFO->Freq) / hz_in_pixel) * (float64_t)fft_zoom);
 
@@ -536,17 +543,26 @@ void FFT_doFFT(void)
 			if (new_x > -1 && new_x < LAYOUT->FFT_PRINT_SIZE)
 			{
 				FFTOutput_mean[i] += FFT_meanBuffer[avg_idx][new_x];
-				FFTOutput_averaged_count[i]++;
+				FFTOutput_mean_count[i]++;
 			}
 		}
 	}
 	
 	for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
 	{
-		if(FFTOutput_averaged_count[i] > 1)
-			FFTOutput_mean[i] /= (float32_t)FFTOutput_averaged_count[i];
+		if(FFTOutput_mean_count[i] > 1)
+			FFTOutput_mean[i] /= (float32_t)FFTOutput_mean_count[i];
 	}
-
+	
+	if(averaging > 0) {
+		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
+		{
+			float32_t alpha = 1.0f / averaging;
+			FFTOutput_average[i] = FFTOutput_average[i] * (1.0f - alpha) + FFTOutput_mean[i] * (alpha);
+			FFTOutput_mean[i] = FFTOutput_average[i];
+		}
+	}
+		
 	FFT_need_fft = false;
 }
 
