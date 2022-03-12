@@ -276,7 +276,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Style = 1;			 // FFT style
 		TRX.FFT_BW_Style = 1;			 // FFT BW style
 		TRX.FFT_Color = 1;			 // FFT display color
-		TRX.WTF_Color = 1;			 // WTF display color
+		TRX.WTF_Color = 2;			 // WTF display color
 		TRX.FFT_Compressor = true;	 //Compress FFT Peaks
 #ifdef LAY_160x128
 		TRX.FFT_FreqGrid = 0;			 // FFT freq grid style

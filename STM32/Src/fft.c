@@ -1650,6 +1650,43 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 		return rgb888torgb565(red, green, blue);
 	}
 	
+	//blue -> yellow -> red // version 2
+	if ((!type && TRX.FFT_Color == 2) || (type && TRX.WTF_Color == 2))
+	{
+		// r g b
+		// 0 0 0
+		// 0 0 255
+		// 255 255 0
+		// 255 0 0
+		// contrast of each of the 3 zones, the total should be 1.0f
+		const float32_t contrast1 = 0.40f; //blue
+		const float32_t contrast2 = 0.30f; //yellow
+		const float32_t contrast3 = 0.30f; //red
+
+		if (height < GET_FFTHeight * contrast1)
+		{
+			blue = (uint_fast8_t)(height * 255 / (GET_FFTHeight * contrast1));
+			if (COLOR->WTF_BG_WHITE)
+			{
+				red -= blue;
+				green -= blue;
+			}
+		}
+		else if (height < GET_FFTHeight * (contrast1 + contrast2))
+		{
+			green = (uint_fast8_t)((height - GET_FFTHeight * contrast1) * 255 / ((GET_FFTHeight - GET_FFTHeight * contrast1) * (contrast1 + contrast2)));
+			red = green;
+			blue = 255 - green;
+		}
+		else
+		{
+			red = 255;
+			blue = 0;
+			green = (uint_fast8_t)(255 - (height - (GET_FFTHeight * (contrast1 + contrast2))) * 255 / ((GET_FFTHeight - (GET_FFTHeight * (contrast1 + contrast2))) * (contrast1 + contrast2 + contrast3)));
+		}
+		return rgb888torgb565(red, green, blue);
+	}
+	
 	//black -> yellow -> red
 	if ((!type && TRX.FFT_Color == 2) || (type && TRX.WTF_Color == 2))
 	{
