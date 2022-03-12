@@ -354,6 +354,20 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	if (fabsf(direction) <= ENCODER_MIN_RATE_ACCELERATION)
 		direction = (direction < 0.0f) ? -1.0f : 1.0f;
 
+	if (TRX_on_TX())
+	{
+		if (direction > 0 || TRX.RF_Power > 0)
+			TRX.RF_Power += direction;
+		if (TRX.RF_Power > 100)
+			TRX.RF_Power = 100;
+		
+		char sbuff[32] = {0};
+		sprintf(sbuff, "Power: %u", TRX.RF_Power);
+		LCD_showTooltip(sbuff);
+		
+		return;
+	}
+	
 	float64_t newfreq = CurrentVFO->Freq;
 	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
 	{
