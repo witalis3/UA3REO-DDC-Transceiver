@@ -162,7 +162,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN}, //AF GAIN
 	{.port = 1, .channel = 1, .type = FUNIT_CTRL_SHIFT_SPLIT},   //SHIFT/SPLIT
 	
-	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 117, .tres_max = 231, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 8, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB16 F9
+	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 100, .tres_max = 231, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 8, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB16 F9
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 231, .tres_max = 354, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 7, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB17 F8
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 354, .tres_max = 492, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 6, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB18 F7
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 492, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 5, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB19 F6

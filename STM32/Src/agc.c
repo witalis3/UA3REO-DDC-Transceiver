@@ -117,7 +117,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	if (WM8731_Muting || VAD_Muting)
 	{
 		current_need_gain = -200.0f;
-		AGC->need_gain_db -= 10.0f;
+		//AGC->need_gain_db -= 10.0f;
 	}
 
 	//gain limitation
