@@ -1440,6 +1440,9 @@ void FRONTPANEL_BUTTONHANDLER_DNR(uint32_t parameter)
 		CurrentVFO->DNR_Type = 2;
 	else
 		CurrentVFO->DNR_Type = 0;
+	
+	TRX.DNR_shadow = CurrentVFO->DNR_Type;
+	
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0)
 		TRX.BANDS_SAVED_SETTINGS[band].DNR_Type = CurrentVFO->DNR_Type;
