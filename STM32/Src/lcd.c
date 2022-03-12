@@ -1612,7 +1612,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 	
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
-		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 - 20 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))
+		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 - 10 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))
 		{
 			if (TouchpadButton_handlers[i].holdHandler != NULL)
 				TouchpadButton_handlers[i].holdHandler(TouchpadButton_handlers[i].parameter);
