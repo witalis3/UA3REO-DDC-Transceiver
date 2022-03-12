@@ -41,6 +41,7 @@
 #define CW_ADD_GAIN_IF	35.0f							//additional IF gain in CW
 #define CW_ADD_GAIN_AF	6.0f							//additional AF gain in CW
 #define STATIC_TRANSVERTER_OFFSET	144000000	//static transverter IF
+#define TX_LPF_TIMEOUT	(180*1000)	//TX LPF On Timeout, millisec (3 min)
 //FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
 //select how the SWR and the power is measured

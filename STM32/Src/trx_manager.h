@@ -85,6 +85,7 @@ volatile extern uint32_t TRX_Temporary_Mute_StartTime;
 volatile extern bool TRX_ScanMode;
 extern bool TRX_phase_restarted;
 extern uint32_t TRX_TX_StartTime;
+extern uint32_t TRX_TX_EndTime;
 extern uint32_t TRX_DXCluster_UpdateTime;
 volatile extern float32_t TRX_PWR_Voltage;
 volatile extern float32_t TRX_RF_Current;
