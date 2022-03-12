@@ -77,7 +77,9 @@ static float32_t AGC_RX1_KW_HPASS_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t AGC_RX2_KW_HPASS_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t AGC_RX_KW_HSHELF_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t AGC_RX_KW_HPASS_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
-
+static float32_t SFM_Signal_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * SFM_FILTER_STAGES] = {0};
+static float32_t SFM_Signal_Filter_State[2 * SFM_FILTER_STAGES] = {0};
+		
 static DC_filter_state_type DC_Filter_State[8] = {0}; // states of the DC corrector
 
 // Collection of filters
@@ -194,6 +196,8 @@ arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HSHELF_FILTER = {EQ_STAGES, AGC_
 arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HPASS_FILTER = {EQ_STAGES, AGC_RX1_KW_HPASS_FILTER_State, AGC_RX_KW_HPASS_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HSHELF_FILTER = {EQ_STAGES, AGC_RX2_KW_HSHELF_FILTER_State, AGC_RX_KW_HSHELF_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HPASS_FILTER = {EQ_STAGES, AGC_RX2_KW_HPASS_FILTER_State, AGC_RX_KW_HPASS_FILTER_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 SFM_Signal_Filter = {SFM_FILTER_STAGES, SFM_Signal_Filter_State, SFM_Signal_Filter_Coeffs};
+
 volatile bool NeedReinitNotch = false;			   // need to re-initialize the manual Notch filter
 volatile bool NeedReinitAudioFilters = false;	   // need to re-initialize Audio filters
 volatile bool NeedReinitAudioFiltersClean = false; //also clean state
@@ -365,6 +369,12 @@ void ReinitAudioFilters(void)
 	calcBiquad(BIQUAD_peak, 400, TRX_SAMPLERATE, 0.5f, TRX.MIC_EQ_LOW_AMFM, EQ_MIC_LOW_FILTER_Coeffs_AMFM);
 	calcBiquad(BIQUAD_peak, 1000, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_MID_AMFM, EQ_MIC_MID_FILTER_Coeffs_AMFM);
 	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 1.5f, TRX.MIC_EQ_HIG_AMFM, EQ_MIC_HIG_FILTER_Coeffs_AMFM);
+
+	//Stereo FM pilot
+	filter = biquad_create(SFM_FILTER_STAGES);
+	biquad_init_bandpass(filter, TRX_GetRXSampleRate, SWFM_STEREO_PILOT_TONE_FREQ - 100, SWFM_STEREO_PILOT_TONE_FREQ + 100);
+	fill_biquad_coeffs(filter, SFM_Signal_Filter_Coeffs, SFM_FILTER_STAGES);
+	arm_biquad_cascade_df2T_init_f32(&SFM_Signal_Filter, SFM_FILTER_STAGES, SFM_Signal_Filter_Coeffs, SFM_Signal_Filter_State);
 
 	//All done
 	NeedReinitAudioFilters = false;

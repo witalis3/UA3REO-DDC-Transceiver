@@ -37,6 +37,8 @@ float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t Processor_RX1_Power_value;	   // RX signal magnitude
 volatile float32_t Processor_RX2_Power_value;	   // RX signal magnitude
 volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
+float32_t stereo_fm_pilot_out[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+
 bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
 float32_t APROC_TX_clip_gain = 1.0f;
@@ -1499,18 +1501,17 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	//Stereo FM
 	if(TRX.FM_Stereo)
 	{
+		arm_biquad_cascade_df2T_f32_rolled(&SFM_Signal_Filter, data_i, stereo_fm_pilot_out, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		
 		//move signal to low freq
-		float32_t SWFM_gen_step = ((float32_t)SWFM_STEREO_PILOT_TONE_FREQ / (float32_t)TRX_GetRXSampleRate) * F_2PI;
-		static float32_t SWFM_gen_index = 0;
 		for (uint_fast16_t i = 0; i < size; i++)
 		{
-			//get stereo sample from decoded wfm
-			float32_t stereo_sample = data_i[i] * arm_sin_f32(SWFM_gen_index);
+			static float32_t prev_sample = 0.0f;
+			float32_t angle = atan2f(stereo_fm_pilot_out[i], prev_sample) * 2.0f; //double freq
+			prev_sample = stereo_fm_pilot_out[i];
 			
-			//rotate nco
-			SWFM_gen_index += SWFM_gen_step;
-			if (SWFM_gen_index >= F_2PI)
-				SWFM_gen_index -= F_2PI;
+			//get stereo sample from decoded wfm
+			float32_t stereo_sample = data_i[i] * arm_sin_f32(angle);
 			
 			//get channels
 			data_i[i] = data_i[i] + stereo_sample; //Mono (L+R) + Stereo (L-R) = 2L

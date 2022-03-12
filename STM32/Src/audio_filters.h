@@ -26,6 +26,7 @@
 #define IIR_RX_HPF_Taps_STATE_SIZE (IIR_HPF_STAGES * 2)
 #define IIR_TX_HPF_Taps_STATE_SIZE (IIR_HPF_STAGES * 2)
 #define IIR_RX_HPF_SQL_STATE_SIZE (IIR_HPF_STAGES * 2)
+#define SFM_FILTER_STAGES 5
 
 #define CW_HPF_COUNT 8
 #define SSB_HPF_COUNT 8
@@ -126,6 +127,7 @@ extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX1_AUDIO_I;
 extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX1_AUDIO_Q;
 extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX2_AUDIO_I;
 extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX2_AUDIO_Q;
+extern arm_biquad_cascade_df2T_instance_f32 SFM_Signal_Filter;
 extern volatile bool NeedReinitNotch;			  // need to reinitialize the manual Notch filter
 extern volatile bool NeedReinitAudioFilters;	  // need to reinitialize the Audio filters
 extern volatile bool NeedReinitAudioFiltersClean; //also clean state
