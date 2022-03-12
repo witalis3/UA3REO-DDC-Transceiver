@@ -841,6 +841,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX1_dBm, true) * 0.5f; // smooth CW faster!
 		else
 			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX1_dBm, true) * 0.25f; // smooth the movement of the S-meter
+		//println(LCD_last_s_meter, " ", s_width, " ", TRX_RX1_dBm, " ", LCD_GetSMeterValPosition(TRX_RX1_dBm, true));
 
 		//digital s-meter version
 		static uint32_t last_s_meter_draw_time = 0;
@@ -886,7 +887,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		}
 
 		//analog s-meter version
-		if (LAYOUT->STATUS_SMETER_ANALOG && (redraw || (fabsf(LCD_last_s_meter - s_width) >= 1.0f)))
+		if (LAYOUT->STATUS_SMETER_ANALOG && (redraw || (fabsf(LCD_last_s_meter - s_width) >= 0.1f)))
 		{
 			// redraw s-meter gui and line
 			LCD_drawSMeter();
