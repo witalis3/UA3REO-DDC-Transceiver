@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 46					   // Settings config version
+#define SETT_VERSION 47					   // Settings config version
 #define CALIB_VERSION 39				   // Calibration config version
 #define ADC_CLOCK 122880000				   // ADC generator frequency
 #define DAC_CLOCK 188160000				   // DAC generator frequency
@@ -378,6 +378,7 @@ extern struct TRX_SETTINGS
 	bool Transverter_13cm;
 	bool Transverter_6cm;
 	bool Transverter_3cm;
+	bool Auto_Input_Switch;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	//AUDIO

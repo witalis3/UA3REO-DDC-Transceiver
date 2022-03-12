@@ -233,6 +233,14 @@ void TRX_ptt_change(void)
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
 	if (TRX_ptt_hard != TRX_new_ptt_hard)
 	{
+		if(TRX.Auto_Input_Switch) {
+			if(CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
+				TRX.InputType_DIGI = TRX_INPUT_MIC;
+			else
+				TRX.InputType_MAIN = TRX_INPUT_MIC;
+			WM8731_TXRX_mode();
+		}
+		
 		TRX_ptt_hard = TRX_new_ptt_hard;
 		TRX_ptt_soft = false;
 		CW_key_serial = false;
@@ -242,6 +250,14 @@ void TRX_ptt_change(void)
 	}
 	if (TRX_ptt_soft != TRX_old_ptt_soft)
 	{
+		if(TRX.Auto_Input_Switch) {
+			if(CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
+				TRX.InputType_DIGI = TRX_INPUT_USB;
+			else
+				TRX.InputType_MAIN = TRX_INPUT_USB;
+			WM8731_TXRX_mode();
+		}
+		
 		TRX_old_ptt_soft = TRX_ptt_soft;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
