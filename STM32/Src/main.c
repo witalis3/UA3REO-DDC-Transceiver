@@ -305,11 +305,20 @@ int main(void)
   LCD_Init();
   if (SHOW_LOGO)
   {
+		#if (defined(LAY_800x480))
+		LCDDriver_Fill(rgb888torgb565(255, 255, 255));
+    LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo7, BG_COLOR, BG_COLOR);
+    strcpy(greetings_buff, "ver. ");
+    strcat(greetings_buff, version_string);
+		LCDDriver_printTextFont(greetings_buff, 30, (LCD_HEIGHT - 30), COLOR_BLACK, rgb888torgb565(243, 243, 243), &FreeSans12pt7b);
+		#else
     LCDDriver_Fill(rgb888torgb565(243, 243, 243));
     LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo.width) / 2), ((LCD_HEIGHT - IMAGES_logo.height) / 2), &IMAGES_logo, BG_COLOR, BG_COLOR);
     strcpy(greetings_buff, "ver. ");
     strcat(greetings_buff, version_string);
 		LCDDriver_printText(greetings_buff, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
+		#endif
+		
     //show callsign greetings
     uint16_t x1, y1, w, h;
     strcpy(greetings_buff, "Hello, ");

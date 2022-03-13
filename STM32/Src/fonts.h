@@ -15,13 +15,13 @@ extern const GFXfont FreeSans9pt7b;
 extern const GFXfont FreeSans12pt7b;
 extern const GFXfont FreeSans18pt7b;
 extern const GFXfont FreeSans24pt7b;
-extern const GFXfont FreeSans36pt7b;
 extern const GFXfont FreeSans32pt7b;
-extern const GFXfont Quito36pt7b;
+extern const GFXfont FreeSans36pt7b;
 extern const GFXfont Quito32pt7b;
-extern const GFXfont DS_DIGIT36pt7b;
-extern const GFXfont DS_DIGIT32pt7b;
+extern const GFXfont Quito36pt7b;
 extern const GFXfont DS_DIGIT18pt7b;
+extern const GFXfont DS_DIGIT32pt7b;
+extern const GFXfont DS_DIGIT36pt7b;
 extern const unsigned char rastr_font[];
 
 #endif
