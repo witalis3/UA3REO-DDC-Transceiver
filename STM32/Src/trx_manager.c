@@ -238,7 +238,6 @@ void TRX_ptt_change(void)
 				TRX.InputType_DIGI = TRX_INPUT_MIC;
 			else
 				TRX.InputType_MAIN = TRX_INPUT_MIC;
-			WM8731_TXRX_mode();
 		}
 		
 		TRX_ptt_hard = TRX_new_ptt_hard;
@@ -255,7 +254,6 @@ void TRX_ptt_change(void)
 				TRX.InputType_DIGI = TRX_INPUT_USB;
 			else
 				TRX.InputType_MAIN = TRX_INPUT_USB;
-			WM8731_TXRX_mode();
 		}
 		
 		TRX_old_ptt_soft = TRX_ptt_soft;
