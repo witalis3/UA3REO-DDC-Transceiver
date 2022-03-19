@@ -308,6 +308,7 @@ void ReinitAudioFilters(void)
 	DECIMATE_FIR_RX2_AUDIO_I.M = need_decimate_rate;
 	DECIMATE_FIR_RX2_AUDIO_Q.M = need_decimate_rate;
 	DECIMATE_IIR_RX1_AUDIO_I.numStages = decim_iir_filter_stages;
+	DECIMATE_IIR_RX1_AUDIO_Q.numStages = decim_iir_filter_stages;
 	
 	//LPF RX1
 	filter = biquad_create(IIR_LPF_STAGES);
