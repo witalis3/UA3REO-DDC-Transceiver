@@ -1688,7 +1688,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 	
 	//black -> yellow -> red
-	if ((!type && TRX.FFT_Color == 2) || (type && TRX.WTF_Color == 2))
+	if ((!type && TRX.FFT_Color == 3) || (type && TRX.WTF_Color == 3))
 	{
 		// r g b
 		// 0 0 0
@@ -1732,7 +1732,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 	
 	//black -> yellow -> green
-	if ((!type && TRX.FFT_Color == 3) || (type && TRX.WTF_Color == 3))
+	if ((!type && TRX.FFT_Color == 4) || (type && TRX.WTF_Color == 4))
 	{
 		// r g b
 		// 0 0 0
@@ -1776,7 +1776,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 	
 	//black -> red
-	if ((!type && TRX.FFT_Color == 4) || (type && TRX.WTF_Color == 4))
+	if ((!type && TRX.FFT_Color == 5) || (type && TRX.WTF_Color == 5))
 	{
 		// r g b
 		// 0 0 0
@@ -1796,7 +1796,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 	
 	//black -> green
-	if ((!type && TRX.FFT_Color == 5) || (type && TRX.WTF_Color == 5))
+	if ((!type && TRX.FFT_Color == 6) || (type && TRX.WTF_Color == 6))
 	{
 		// r g b
 		// 0 0 0
@@ -1816,7 +1816,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 	
 	//black -> blue
-	if ((!type && TRX.FFT_Color == 6) || (type && TRX.WTF_Color == 6))
+	if ((!type && TRX.FFT_Color == 7) || (type && TRX.WTF_Color == 7))
 	{
 		// r g b
 		// 0 0 0
@@ -1836,7 +1836,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 	
 	//black -> white
-	if ((!type && TRX.FFT_Color == 7) || (type && TRX.WTF_Color == 7))
+	if ((!type && TRX.FFT_Color == 8) || (type && TRX.WTF_Color == 8))
 	{
 		// r g b
 		// 0 0 0
