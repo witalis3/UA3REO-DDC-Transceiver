@@ -879,9 +879,6 @@ void arm_biquad_cascade_df2T_f32_rolled(const arm_biquad_cascade_df2T_instance_f
 
   for(uint32_t stage = 0; stage < S->numStages; stage++)
   {
-		const float32_t *pIn = pSrc;
-    float32_t *pOut = pDst;
-		
 		float32_t b0 = pCoeffs[0];
 		float32_t b1 = pCoeffs[1];
 		float32_t b2 = pCoeffs[2];
@@ -894,13 +891,13 @@ void arm_biquad_cascade_df2T_f32_rolled(const arm_biquad_cascade_df2T_instance_f
 
 		for(uint32_t sample = 0; sample < blockSize; sample++)
 		{
-			float32_t Xn1 = *pIn++;
+			float32_t Xn1 = pSrc[sample];
 
 			float32_t acc1 = b0 * Xn1 + d1;
 			d1 = b1 * Xn1 + d2 + a1 * acc1;
 			d2 = b2 * Xn1 + a2 * acc1;
 
-			*pOut++ = acc1;
+			pDst[sample] = acc1;
 		}
 
 		pState[0] = d1;
