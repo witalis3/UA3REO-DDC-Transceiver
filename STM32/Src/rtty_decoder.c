@@ -271,8 +271,8 @@ static int RTTYDecoder_demodulator(float32_t sample)
 {
 	float32_t space_mag = 0;
 	float32_t mark_mag = 0;
-	arm_biquad_cascade_df2T_f32_rolled(&RTTY_Space_Filter, &sample, &space_mag, 1);
-	arm_biquad_cascade_df2T_f32_rolled(&RTTY_Mark_Filter, &sample, &mark_mag, 1);
+	arm_biquad_cascade_df2T_f32_single(&RTTY_Space_Filter, &sample, &space_mag, 1);
+	arm_biquad_cascade_df2T_f32_single(&RTTY_Mark_Filter, &sample, &mark_mag, 1);
 
 	float32_t v1 = 0.0;
 	// calculating the RMS of the two lines (squaring them)
@@ -318,7 +318,7 @@ static int RTTYDecoder_demodulator(float32_t sample)
 
 	// Optimal ATC (Section 6 of of www.w7ay.net/site/Technical/ATC)
 	v1 = (mclipped - noise_floor) * (mark_env - noise_floor) - (sclipped - noise_floor) * (space_env - noise_floor) - 0.25 * ((mark_env - noise_floor) * (mark_env - noise_floor) - (space_env - noise_floor) * (space_env - noise_floor));
-	arm_biquad_cascade_df2T_f32_rolled(&RTTY_LPF_Filter, &v1, &v1, 1);
+	arm_biquad_cascade_df2T_f32_single(&RTTY_LPF_Filter, &v1, &v1, 1);
 	
 	// RTTY without ATC, which works very well too!
 	// inverting line 1

@@ -872,7 +872,7 @@ void sd_crc_generate_table(void)
 	crc_table_generated = true;
 }
 
-void arm_biquad_cascade_df2T_f32_rolled(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst,uint32_t blockSize)
+void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst,uint32_t blockSize)
 {
   float32_t *pState = S->pState;
   const float32_t *pCoeffs = S->pCoeffs;
@@ -903,6 +903,53 @@ void arm_biquad_cascade_df2T_f32_rolled(const arm_biquad_cascade_df2T_instance_f
 		pState[0] = d1;
 		pState[1] = d2;
 		pState += 2U;
+   }
+}
+
+void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 * I, const arm_biquad_cascade_df2T_instance_f32 * Q, const float32_t * pSrc_I, const float32_t * pSrc_Q, float32_t * pDst_I, float32_t * pDst_Q, uint32_t blockSize)
+{
+  float32_t *pState_I = I->pState;
+	float32_t *pState_Q = Q->pState;
+  const float32_t *pCoeffs = I->pCoeffs;
+
+  for(uint32_t stage = 0; stage < I->numStages; stage++)
+  {
+		float32_t b0 = pCoeffs[0];
+		float32_t b1 = pCoeffs[1];
+		float32_t b2 = pCoeffs[2];
+		float32_t a1 = pCoeffs[3];
+		float32_t a2 = pCoeffs[4];
+		pCoeffs += 5U;
+		
+		float32_t d1_I = pState_I[0];
+		float32_t d2_I = pState_I[1];
+		float32_t d1_Q = pState_Q[0];
+		float32_t d2_Q = pState_Q[1];
+
+		for(uint32_t sample = 0; sample < blockSize; sample++)
+		{
+			float32_t Xn1_I = pSrc_I[sample];
+			float32_t Xn1_Q = pSrc_Q[sample];
+
+			float32_t acc1_I = b0 * Xn1_I + d1_I;
+			float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
+			
+			d1_I = b1 * Xn1_I + d2_I + a1 * acc1_I;
+			d1_Q = b1 * Xn1_Q + d2_Q + a1 * acc1_Q;
+			
+			d2_I = b2 * Xn1_I + a2 * acc1_I;
+			d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
+
+			pDst_I[sample] = acc1_I;
+			pDst_Q[sample] = acc1_Q;
+		}
+
+		pState_I[0] = d1_I;
+		pState_I[1] = d2_I;
+		pState_Q[0] = d1_Q;
+		pState_Q[1] = d2_Q;
+		pState_I += 2U;
+		pState_Q += 2U;
    }
 }
 

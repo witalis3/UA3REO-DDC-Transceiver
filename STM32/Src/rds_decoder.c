@@ -112,7 +112,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	if(RDS_decoder_samplerate < 192000)
 		return;
 	//filter RDS signal
-	arm_biquad_cascade_df2T_f32_rolled(&RDS_Signal_Filter, bufferIn, bufferIn, DECODER_PACKET_SIZE);
+	arm_biquad_cascade_df2T_f32_single(&RDS_Signal_Filter, bufferIn, bufferIn, DECODER_PACKET_SIZE);
 	//move signal to low freq
 	static float32_t RDS_gen_index = 0;
 	for (uint_fast16_t i = 0; i < DECODER_PACKET_SIZE; i++)
@@ -128,7 +128,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	}
 	
 	//filter mirror
-	arm_biquad_cascade_df2T_f32_rolled(&RDS_LPF_I_Filter, RDS_buff_I, RDS_buff_I, DECODER_PACKET_SIZE);
+	arm_biquad_cascade_df2T_f32_single(&RDS_LPF_I_Filter, RDS_buff_I, RDS_buff_I, DECODER_PACKET_SIZE);
 	//arm_biquad_cascade_df2T_f32_rolled(&RDS_LPF_Q_Filter, RDS_buff_Q, RDS_buff_Q, DECODER_PACKET_SIZE);
 	//decimate
 	arm_fir_decimate_f32(&DECIMATE_FIR_I, RDS_buff_I, RDS_buff_I, DECODER_PACKET_SIZE);

@@ -210,7 +210,8 @@ extern uint8_t getInputType(void);
 extern unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte);
 extern unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte);
 extern void sd_crc_generate_table(void);
-extern void arm_biquad_cascade_df2T_f32_rolled(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst,uint32_t blockSize);
+extern void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst,uint32_t blockSize);
+extern void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 * I, const arm_biquad_cascade_df2T_instance_f32 * Q, const float32_t * pSrc_I, const float32_t * pSrc_Q, float32_t * pDst_I, float32_t * pDst_Q, uint32_t blockSize);
 extern char cleanASCIIgarbage(char chr);
 extern bool textStartsWith(const char *a, const char *b);
 
