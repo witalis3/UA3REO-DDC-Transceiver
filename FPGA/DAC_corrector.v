@@ -1,6 +1,7 @@
 module DAC_corrector(
 clk_in,
 DATA_IN,
+shift,
 
 DATA_OUT
 );
@@ -10,16 +11,32 @@ parameter out_width = 14;
 
 input clk_in;
 input signed [(in_width-1):0] DATA_IN;
+input unsigned [7:0] shift;
 
 output reg unsigned [(out_width-1):0] DATA_OUT;
 
-wire signed [(in_width-1):0] tmp; //for rounding
-wire signed [(out_width-1):0] tmp2; // for truncate
+reg signed [(out_width-1):0] tmp=0;
 
-assign tmp = DATA_IN[(in_width-1):0] + { {(out_width){1'b0}}, DATA_IN[(in_width-out_width)], {(in_width-out_width-1){!DATA_IN[(in_width-out_width)]}}};
-assign tmp2 = tmp[(in_width-1):(in_width-out_width)]; 
+always @ (posedge clk_in)
+begin
+	//получаем 14 бит
+	if (shift<out_width)
+	begin
+		tmp[(out_width-1):0] = DATA_IN[(out_width-1):0];
+	end
+	if (shift>in_width)
+	begin
+		tmp[(out_width-1):0] = DATA_IN[(in_width-1) -: out_width];
+	end
+	else
+	begin
+		tmp[(out_width-1):0] = DATA_IN[(shift-1) -: out_width];
+	end
+	
+	//инвертируем первый бит, получая unsigned из two's complement
+	DATA_OUT[(out_width-1):0]={~tmp[(out_width-1)],tmp[(out_width-2):0]}; 
+	
+end
 
-always @(posedge clk_in)
-	DATA_OUT <= {~tmp2[(out_width-1)],tmp2[(out_width-2):0]}; //инвертируем первый бит, получая unsigned из two's complement
 
 endmodule
