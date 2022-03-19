@@ -25,6 +25,12 @@
 #define FPGA_readPacket (FPGA_BUS_D0_GPIO_Port->IDR & 0xFF)
 #define FPGA_setGPIOBusInput GPIOA->MODER = -1431764992
 #define FPGA_setGPIOBusOutput GPIOA->MODER = -1431743147
+#define FPGA_clockRise FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin
+#define FPGA_clockFall FPGA_CLK_GPIO_Port->BSRR = (FPGA_CLK_Pin << 16U)
+#define FPGA_syncAndClockRiseFall \
+					FPGA_CLK_GPIO_Port->BSRR = FPGA_SYNC_Pin; \
+					FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin; \
+					FPGA_CLK_GPIO_Port->BSRR = (FPGA_SYNC_Pin << 16U) | (FPGA_CLK_Pin << 16U);
 
 //Micron M25P80 Serial Flash COMMANDS:
 #define M25P80_WRITE_ENABLE 0x06

@@ -54,10 +54,10 @@ DAC_DRV_A1
 );
 
 input clk_in;
-input signed [31:0] RX1_I;
-input signed [31:0] RX1_Q;
-input signed [31:0] RX2_I;
-input signed [31:0] RX2_Q;
+input signed [23:0] RX1_I;
+input signed [23:0] RX1_Q;
+input signed [23:0] RX2_I;
+input signed [23:0] RX2_Q;
 input DATA_SYNC;
 input ADC_OTR;
 input DAC_OTR;
@@ -76,8 +76,8 @@ output reg rx1 = 1;
 output reg rx2 = 0;
 output reg tx = 0;
 output reg reset_n = 1;
-output reg signed [31:0] TX_I = 'd0;
-output reg signed [31:0] TX_Q = 'd0;
+output reg signed [23:0] TX_I = 'd0;
+output reg signed [23:0] TX_Q = 'd0;
 output reg [15:0] stage_debug = 0;
 output reg unsigned [7:0] FLASH_data_out = 0;
 output reg FLASH_enable = 0;
@@ -113,8 +113,12 @@ assign DATA_BUS = DATA_BUS_OE ? DATA_BUS_OUT : 8'bZ ;
 reg signed [15:0] k = 'd1;
 reg signed [15:0] ADC_MIN;
 reg signed [15:0] ADC_MAX;
-reg signed [31:0] READ_RX1_I;
-reg signed [31:0] READ_RX1_Q;
+reg signed [23:0] READ_RX1_I;
+reg signed [23:0] READ_RX1_Q;
+reg signed [23:0] READ_RX2_I;
+reg signed [23:0] READ_RX2_Q;
+reg signed [23:0] WRITE_TX_I;
+reg signed [23:0] WRITE_TX_Q;
 reg ADC_MINMAX_RESET;
 reg sync_reset_n = 1;
 reg unsigned [7:0] BUS_TEST;
@@ -185,8 +189,8 @@ begin
 		//clear TX chain
 		if(tx == 0)
 		begin
-			TX_I[31:0] = 32'd0;
-			TX_Q[31:0] = 32'd0;
+			TX_I[23:0] = 24'd0;
+			TX_Q[23:0] = 24'd0;
 			tx_iq_valid = 1;
 		end
 		//
@@ -364,42 +368,34 @@ begin
 	end
 	else if (k == 300) //TX IQ
 	begin
-		TX_Q[31:24] = DATA_BUS[7:0];
+		WRITE_TX_Q[23:16] = DATA_BUS[7:0];
 		k = 301;
 	end
 	else if (k == 301)
 	begin
-		TX_Q[23:16] = DATA_BUS[7:0];
+		WRITE_TX_Q[15:8] = DATA_BUS[7:0];
 		k = 302;
 	end
 	else if (k == 302)
 	begin
-		TX_Q[15:8] = DATA_BUS[7:0];
+		WRITE_TX_Q[7:0] = DATA_BUS[7:0];
 		k = 303;
 	end
 	else if (k == 303)
 	begin
-		TX_Q[7:0] = DATA_BUS[7:0];
+		WRITE_TX_I[23:16] = DATA_BUS[7:0];
 		k = 304;
 	end
 	else if (k == 304)
 	begin
-		TX_I[31:24] = DATA_BUS[7:0];
+		WRITE_TX_I[15:8] = DATA_BUS[7:0];
 		k = 305;
 	end
 	else if (k == 305)
 	begin
-		TX_I[23:16] = DATA_BUS[7:0];
-		k = 306;
-	end
-	else if (k == 306)
-	begin
-		TX_I[15:8] = DATA_BUS[7:0];
-		k = 307;
-	end
-	else if (k == 307)
-	begin
-		TX_I[7:0] = DATA_BUS[7:0];
+		WRITE_TX_I[7:0] = DATA_BUS[7:0];
+		TX_Q[23:0] = WRITE_TX_Q[23:0];
+		TX_I[23:0] = WRITE_TX_I[23:0];
 		tx_iq_valid = 1;
 		k = 999;
 	end
@@ -407,88 +403,70 @@ begin
 	begin
 		IQ_RX_READ_REQ = 1;
 		IQ_RX_READ_CLK = 1;
-		READ_RX1_I[31:0] = RX1_I[31:0];
-		READ_RX1_Q[31:0] = RX1_Q[31:0];
-		DATA_BUS_OUT[7:0] = READ_RX1_Q[31:24];
+		READ_RX1_I[23:0] = RX1_I[23:0];
+		READ_RX1_Q[23:0] = RX1_Q[23:0];
+		READ_RX2_I[23:0] = RX2_I[23:0];
+		READ_RX2_Q[23:0] = RX2_Q[23:0];
+		DATA_BUS_OUT[7:0] = READ_RX1_Q[23:16];
 		k = 401;
 	end
 	else if (k == 401)
 	begin
 		IQ_RX_READ_CLK = 0;
-		DATA_BUS_OUT[7:0] = READ_RX1_Q[23:16];
+		DATA_BUS_OUT[7:0] = READ_RX1_Q[15:8];
 		k = 402;
 	end
 	else if (k == 402)
 	begin
-		DATA_BUS_OUT[7:0] = READ_RX1_Q[15:8];
+		DATA_BUS_OUT[7:0] = READ_RX1_Q[7:0];
 		k = 403;
 	end
 	else if (k == 403)
 	begin
-		DATA_BUS_OUT[7:0] = READ_RX1_Q[7:0];
+		DATA_BUS_OUT[7:0] = READ_RX1_I[23:16];
 		k = 404;
 	end
 	else if (k == 404)
 	begin
-		DATA_BUS_OUT[7:0] = READ_RX1_I[31:24];
+		DATA_BUS_OUT[7:0] = READ_RX1_I[15:8];
 		k = 405;
 	end
 	else if (k == 405)
 	begin
-		DATA_BUS_OUT[7:0] = READ_RX1_I[23:16];
-		k = 406;
+		DATA_BUS_OUT[7:0] = READ_RX1_I[7:0];
+		if(rx2 == 1)
+			k = 406;
+		else
+			k = 400;
 	end
-	else if (k == 406)
+	else if (k == 406) //RX2 IQ
 	begin
-		DATA_BUS_OUT[7:0] = READ_RX1_I[15:8];
+		DATA_BUS_OUT[7:0] = READ_RX2_Q[23:16];
 		k = 407;
 	end
 	else if (k == 407)
 	begin
-		DATA_BUS_OUT[7:0] = READ_RX1_I[7:0];
-		if(rx2 == 1)
-			k = 408;
-		else
-			k = 400;
+		DATA_BUS_OUT[7:0] = READ_RX2_Q[15:8];
+		k = 408;
 	end
-	else if (k == 408) //RX2 IQ
+	else if (k == 408)
 	begin
-		DATA_BUS_OUT[7:0] = RX2_Q[31:24];
+		DATA_BUS_OUT[7:0] = READ_RX2_Q[7:0];
 		k = 409;
 	end
 	else if (k == 409)
 	begin
-		DATA_BUS_OUT[7:0] = RX2_Q[23:16];
+		DATA_BUS_OUT[7:0] = READ_RX2_I[23:16];
 		k = 410;
 	end
 	else if (k == 410)
 	begin
-		DATA_BUS_OUT[7:0] = RX2_Q[15:8];
+		DATA_BUS_OUT[7:0] = READ_RX2_I[15:8];
 		k = 411;
 	end
 	else if (k == 411)
 	begin
-		DATA_BUS_OUT[7:0] = RX2_Q[7:0];
-		k = 412;
-	end
-	else if (k == 412)
-	begin
-		DATA_BUS_OUT[7:0] = RX2_I[31:24];
-		k = 413;
-	end
-	else if (k == 413)
-	begin
-		DATA_BUS_OUT[7:0] = RX2_I[23:16];
-		k = 414;
-	end
-	else if (k == 414)
-	begin
-		DATA_BUS_OUT[7:0] = RX2_I[15:8];
-		k = 415;
-	end
-	else if (k == 415)
-	begin
-		DATA_BUS_OUT[7:0] = RX2_I[7:0];
+		DATA_BUS_OUT[7:0] = READ_RX2_I[7:0];
 		k = 400;
 	end
 	else if (k == 500) //BUS TEST
@@ -529,7 +507,7 @@ begin
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd2; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd6; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

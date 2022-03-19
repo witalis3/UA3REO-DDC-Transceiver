@@ -49,7 +49,7 @@ set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "NO HEAT SINK WITH STILL AIR"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
+set_global_assignment -name NUM_PARALLEL_PROCESSORS 8
 
 
 
@@ -286,6 +286,30 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VCXO_CHARGE_PUMP
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to VCXO_CHARGE_PUMP
 set_location_assignment PIN_76 -to DAC_DRV_A0
 set_location_assignment PIN_77 -to DAC_DRV_A1
+set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE SPEED
+set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
+set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION ON
+set_global_assignment -name ROUTER_TIMING_OPTIMIZATION_LEVEL MAXIMUM
+set_global_assignment -name QII_AUTO_PACKED_REGISTERS NORMAL
+set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
+set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON
+set_global_assignment -name MUX_RESTRUCTURE OFF
+set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING ON
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to "ADC_Latch:ADC_Latcher_IN|lpm_add_sub:LPM_ADD_SUB_component|add_sub_f2k:auto_generated|pipeline_dffe"
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to "mux14:DAC_MUX|lpm_mux:LPM_MUX_component|mux_jqe:auto_generated|external_latency_ffsa"
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to "spi_interface:FLASH|SCK_C"
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to "spi_interface:FLASH|MOSI_DQ0"
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to "spi_interface:FLASH|CS_S"
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to "stm32_interface:STM32_INTERFACE|DATA_BUS_OUT"
+set_global_assignment -name STATE_MACHINE_PROCESSING "ONE-HOT"
+set_instance_assignment -name GLOBAL_SIGNAL GLOBAL_CLOCK -to "clock_buffer:ADC_CLOCK_BUFFER|inclk"
+set_instance_assignment -name GLOBAL_SIGNAL GLOBAL_CLOCK -to "clock_buffer:ADC_CLOCK_BUFFER|outclk"
+set_instance_assignment -name GLOBAL_SIGNAL GLOBAL_CLOCK -to "clock_buffer:TX_PLL_BUFFER|inclk"
+set_instance_assignment -name GLOBAL_SIGNAL GLOBAL_CLOCK -to "clock_buffer:TX_PLL_BUFFER|outclk"
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to DAC_CLK
 set_global_assignment -name BDF_FILE WOLF.bdf
 set_global_assignment -name VERILOG_FILE DAC_corrector.v
 set_global_assignment -name VERILOG_FILE spi_interface.v
@@ -318,4 +342,5 @@ set_global_assignment -name QIP_FILE diffclock_buff.qip
 set_global_assignment -name QIP_FILE tx_pll.qip
 set_global_assignment -name QIP_FILE fifo.qip
 set_global_assignment -name QIP_FILE VCXO_PLL.qip
+set_global_assignment -name QIP_FILE output_buffer.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
