@@ -365,7 +365,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 
 	//STAGE 13
 	//OUT DAC-GAIN
-	FPGA_writePacket(CALIBRATE.DAC_GAINER_val);
+	FPGA_writePacket(0); //CALIBRATE.DAC_GAINER_val
 	FPGA_clockRise();
 	FPGA_clockFall();
 

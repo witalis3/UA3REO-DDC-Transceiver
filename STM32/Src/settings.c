@@ -11,7 +11,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "3.5.2-dev";
+char version_string[19] = "3.6.0-dev";
 
 //W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -439,12 +439,11 @@ void LoadCalibration(bool clear)
 		CALIBRATE.ENCODER_ACCELERATION = 75;   //acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;		//Tangent type
 		CALIBRATE.RF_unit_type = RF_UNIT_QRP;		//RF-unit type
-		CALIBRATE.CICFIR_GAINER_48K_val = 54;  // Offset from the output of the CIC compensator
-		CALIBRATE.CICFIR_GAINER_96K_val = 48;  // Offset from the output of the CIC compensator
-		CALIBRATE.CICFIR_GAINER_192K_val = 42; // Offset from the output of the CIC compensator
-		CALIBRATE.CICFIR_GAINER_384K_val = 36; // Offset from the output of the CIC compensator
-		CALIBRATE.TXCICFIR_GAINER_val = 42;	   // Offset from the TX-CIC output of the compensator
-		CALIBRATE.DAC_GAINER_val = 26;		   // DAC shift
+		CALIBRATE.CICFIR_GAINER_48K_val = 6;  // Offset from the output of the CIC compensator
+		CALIBRATE.CICFIR_GAINER_96K_val = 12;  // Offset from the output of the CIC compensator
+		CALIBRATE.CICFIR_GAINER_192K_val = 18; // Offset from the output of the CIC compensator
+		CALIBRATE.CICFIR_GAINER_384K_val = 24; // Offset from the output of the CIC compensator
+		CALIBRATE.TXCICFIR_GAINER_val = 6;	   // Offset from the TX-CIC output of the compensator
 		// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_2200m = 29;		   //2200m
 		CALIBRATE.rf_out_power_160m = 29;		   //160m
