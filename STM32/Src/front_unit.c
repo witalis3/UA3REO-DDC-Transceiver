@@ -1577,6 +1577,7 @@ static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter)
 {
 	TRX.ShiftEnabled = !TRX.ShiftEnabled;
 	TRX.SplitEnabled = false;
+	TRX.CLAR = false;
 	TRX_SHIFT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
@@ -1589,6 +1590,7 @@ static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter)
 {
 	TRX.SplitEnabled = !TRX.SplitEnabled;
 	TRX.ShiftEnabled = false;
+	TRX.CLAR = false;
 	TRX_SPLIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
@@ -1600,6 +1602,12 @@ static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter)
 static void FRONTPANEL_BUTTONHANDLER_CLAR(uint32_t parameter)
 {
 	TRX.CLAR = !TRX.CLAR;
+	TRX.SplitEnabled = false;
+	TRX.ShiftEnabled = false;
+	TRX_SPLIT = 0;
+	TRX_SHIFT = 0;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
