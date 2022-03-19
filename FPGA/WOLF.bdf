@@ -102,11 +102,11 @@ refer to the applicable agreement for further details.
 		(line (pt 117 12)(pt 121 8))
 	)
 	(text "GND" (rect 136 7 157 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect -848 -40 -792 -16))
+	(annotation_block (location)(rect -848 -64 -792 -40))
 )
 (pin
 	(input)
-	(rect -1072 56 -896 72)
+	(rect -1144 56 -968 72)
 	(text "INPUT" (rect 133 0 161 10)(font "Arial" (font_size 6)))
 	(text "ADC_CLK" (rect 9 0 59 12)(font "Arial" ))
 	(pt 176 8)
@@ -119,7 +119,7 @@ refer to the applicable agreement for further details.
 		(line (pt 117 12)(pt 121 8))
 	)
 	(text "VCC" (rect 136 7 156 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect -1128 72 -1072 96))
+	(annotation_block (location)(rect -1200 72 -1144 96))
 )
 (pin
 	(input)
@@ -1321,7 +1321,7 @@ refer to the applicable agreement for further details.
 	)
 )
 (symbol
-	(rect -864 -8 -592 96)
+	(rect -936 -8 -664 96)
 	(text "clock_buffer" (rect 99 -1 180 15)(font "Arial" (font_size 10)))
 	(text "ADC_CLOCK_BUFFER" (rect 8 88 126 100)(font "Arial" ))
 	(port
@@ -4987,6 +4987,78 @@ refer to the applicable agreement for further details.
 		(rectangle (rect 16 16 272 640))
 	)
 )
+(symbol
+	(rect -648 48 -600 80)
+	(text "GLOBAL" (rect 1 0 36 10)(font "Arial" (font_size 6)))
+	(text "GLOB_ADC" (rect 3 21 58 38)(font "Intel Clear" ))
+	(port
+		(pt 0 16)
+		(input)
+		(text "IN" (rect 2 7 13 19)(font "Courier New" (bold))(invisible))
+		(text "IN" (rect 2 7 13 19)(font "Courier New" (bold))(invisible))
+		(line (pt 0 16)(pt 14 16))
+	)
+	(port
+		(pt 48 16)
+		(output)
+		(text "OUT" (rect 32 7 49 19)(font "Courier New" (bold))(invisible))
+		(text "OUT" (rect 32 7 49 19)(font "Courier New" (bold))(invisible))
+		(line (pt 32 16)(pt 48 16))
+	)
+	(drawing
+		(line (pt 14 25)(pt 14 7))
+		(line (pt 14 7)(pt 32 16))
+		(line (pt 14 25)(pt 32 16))
+	)
+)
+(symbol
+	(rect 2752 680 2800 712)
+	(text "GLOBAL" (rect 1 0 36 10)(font "Arial" (font_size 6)))
+	(text "GLOB_MAIN" (rect 3 21 63 38)(font "Intel Clear" ))
+	(port
+		(pt 0 16)
+		(input)
+		(text "IN" (rect 2 7 13 19)(font "Courier New" (bold))(invisible))
+		(text "IN" (rect 2 7 13 19)(font "Courier New" (bold))(invisible))
+		(line (pt 0 16)(pt 14 16))
+	)
+	(port
+		(pt 48 16)
+		(output)
+		(text "OUT" (rect 32 7 49 19)(font "Courier New" (bold))(invisible))
+		(text "OUT" (rect 32 7 49 19)(font "Courier New" (bold))(invisible))
+		(line (pt 32 16)(pt 48 16))
+	)
+	(drawing
+		(line (pt 14 25)(pt 14 7))
+		(line (pt 14 7)(pt 32 16))
+		(line (pt 14 25)(pt 32 16))
+	)
+)
+(symbol
+	(rect 4024 792 4072 824)
+	(text "GLOBAL" (rect 1 0 36 10)(font "Arial" (font_size 6)))
+	(text "GLOB_DAC" (rect 3 21 58 38)(font "Intel Clear" ))
+	(port
+		(pt 0 16)
+		(input)
+		(text "IN" (rect 2 7 13 19)(font "Courier New" (bold))(invisible))
+		(text "IN" (rect 2 7 13 19)(font "Courier New" (bold))(invisible))
+		(line (pt 0 16)(pt 14 16))
+	)
+	(port
+		(pt 48 16)
+		(output)
+		(text "OUT" (rect 32 7 49 19)(font "Courier New" (bold))(invisible))
+		(text "OUT" (rect 32 7 49 19)(font "Courier New" (bold))(invisible))
+		(line (pt 32 16)(pt 48 16))
+	)
+	(drawing
+		(line (pt 14 25)(pt 14 7))
+		(line (pt 14 7)(pt 32 16))
+		(line (pt 14 25)(pt 32 16))
+	)
+)
 (connector
 	(pt 528 32)
 	(pt 440 32)
@@ -6163,16 +6235,8 @@ refer to the applicable agreement for further details.
 	(pt 3568 656)
 )
 (connector
-	(pt -592 64)
-	(pt -568 64)
-)
-(connector
 	(pt -568 -32)
 	(pt -568 64)
-)
-(connector
-	(pt -896 64)
-	(pt -864 64)
 )
 (connector
 	(pt -56 -32)
@@ -6455,14 +6519,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 2776 784)
-	(pt 2368 784)
-)
-(connector
-	(pt 2776 784)
-	(pt 2776 696)
-)
-(connector
 	(pt 6168 88)
 	(pt 6168 240)
 )
@@ -6505,14 +6561,6 @@ refer to the applicable agreement for further details.
 	(pt 2264 968)
 	(pt 2384 968)
 	(bus)
-)
-(connector
-	(pt 2720 696)
-	(pt 2776 696)
-)
-(connector
-	(pt 2776 696)
-	(pt 3048 696)
 )
 (connector
 	(pt 1928 952)
@@ -6729,22 +6777,6 @@ refer to the applicable agreement for further details.
 	(text "RESET_N" (rect 856 -400 899 -383)(font "Intel Clear" ))
 	(pt 896 -384)
 	(pt 864 -384)
-)
-(connector
-	(pt 4008 536)
-	(pt 4008 808)
-)
-(connector
-	(pt 4008 808)
-	(pt 3984 808)
-)
-(connector
-	(pt 3952 536)
-	(pt 4008 536)
-)
-(connector
-	(pt 4008 536)
-	(pt 4312 536)
 )
 (connector
 	(pt 4896 80)
@@ -7585,10 +7617,6 @@ refer to the applicable agreement for further details.
 	(pt 3696 888)
 )
 (connector
-	(pt 3048 696)
-	(pt 3048 872)
-)
-(connector
 	(pt 3048 872)
 	(pt 3048 1000)
 )
@@ -7768,6 +7796,59 @@ refer to the applicable agreement for further details.
 	(pt 4448 376)
 	(pt 4792 376)
 )
+(connector
+	(pt -968 64)
+	(pt -936 64)
+)
+(connector
+	(pt -664 64)
+	(pt -648 64)
+)
+(connector
+	(pt -600 64)
+	(pt -568 64)
+)
+(connector
+	(pt 2368 784)
+	(pt 3048 784)
+)
+(connector
+	(pt 3048 696)
+	(pt 3048 784)
+)
+(connector
+	(pt 3048 784)
+	(pt 3048 872)
+)
+(connector
+	(pt 2720 696)
+	(pt 2752 696)
+	(bus)
+)
+(connector
+	(pt 2800 696)
+	(pt 3048 696)
+)
+(connector
+	(pt 4200 536)
+	(pt 4200 808)
+)
+(connector
+	(pt 3952 536)
+	(pt 4200 536)
+)
+(connector
+	(pt 4200 536)
+	(pt 4312 536)
+)
+(connector
+	(pt 4072 808)
+	(pt 4200 808)
+)
+(connector
+	(pt 4024 808)
+	(pt 3984 808)
+)
 (junction (pt 376 120))
 (junction (pt 440 32))
 (junction (pt 440 448))
@@ -7840,9 +7921,7 @@ refer to the applicable agreement for further details.
 (junction (pt 5512 224))
 (junction (pt 4312 536))
 (junction (pt 5264 224))
-(junction (pt 2776 696))
 (junction (pt 6168 88))
-(junction (pt 4008 536))
 (junction (pt 1600 936))
 (junction (pt 776 520))
 (junction (pt 840 -136))
@@ -7867,4 +7946,6 @@ refer to the applicable agreement for further details.
 (junction (pt 2232 -256))
 (junction (pt 4448 112))
 (junction (pt 4448 376))
+(junction (pt 3048 784))
+(junction (pt 4200 536))
 (text "188.160mhz" (rect 3648 784 3724 803)(font "Intel Clear" (font_size 8)))
