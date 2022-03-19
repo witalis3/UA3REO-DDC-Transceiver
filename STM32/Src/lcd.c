@@ -1610,6 +1610,13 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 	if (LCD_window.opened)
 		return;
 	
+	//bw hold click
+	if (y >= LAYOUT->BW_TRAPEZ_POS_Y && y <= LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT && x >= LAYOUT->BW_TRAPEZ_POS_X && x <= LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH)
+	{
+		FRONTPANEL_BUTTONHANDLER_BW(0);
+		return;
+	}
+	
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
 		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 - 10 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))

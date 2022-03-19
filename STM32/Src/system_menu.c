@@ -1443,7 +1443,7 @@ static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(12);
+	setCurrentMenuIndex(13);
 	LCD_redraw(false);
 }
 
