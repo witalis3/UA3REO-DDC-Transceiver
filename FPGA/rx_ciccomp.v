@@ -6,29 +6,39 @@
 
 `timescale 1 ps / 1 ps
 module rx_ciccomp (
-		input  wire        clk,              //                     clk.clk
-		input  wire        reset_n,          //                     rst.reset_n
-		input  wire [31:0] ast_sink_data,    //   avalon_streaming_sink.data
-		input  wire        ast_sink_valid,   //                        .valid
-		input  wire [1:0]  ast_sink_error,   //                        .error
-		output wire        ast_sink_ready,   //                        .ready
-		output wire [61:0] ast_source_data,  // avalon_streaming_source.data
-		output wire        ast_source_valid, //                        .valid
-		output wire [1:0]  ast_source_error, //                        .error
-		input  wire        ast_source_ready  //                        .ready
+		input  wire        clk,                //                     clk.clk
+		input  wire        reset_n,            //                     rst.reset_n
+		input  wire [31:0] ast_sink_data,      //   avalon_streaming_sink.data
+		input  wire        ast_sink_valid,     //                        .valid
+		input  wire [1:0]  ast_sink_error,     //                        .error
+		input  wire        ast_sink_sop,       //                        .startofpacket
+		input  wire        ast_sink_eop,       //                        .endofpacket
+		output wire        ast_sink_ready,     //                        .ready
+		output wire [61:0] ast_source_data,    // avalon_streaming_source.data
+		output wire        ast_source_valid,   //                        .valid
+		output wire [1:0]  ast_source_error,   //                        .error
+		input  wire        ast_source_ready,   //                        .ready
+		output wire        ast_source_sop,     //                        .startofpacket
+		output wire        ast_source_eop,     //                        .endofpacket
+		output wire [1:0]  ast_source_channel  //                        .channel
 	);
 
 	rx_ciccomp_0002 rx_ciccomp_inst (
-		.clk              (clk),              //                     clk.clk
-		.reset_n          (reset_n),          //                     rst.reset_n
-		.ast_sink_data    (ast_sink_data),    //   avalon_streaming_sink.data
-		.ast_sink_valid   (ast_sink_valid),   //                        .valid
-		.ast_sink_error   (ast_sink_error),   //                        .error
-		.ast_sink_ready   (ast_sink_ready),   //                        .ready
-		.ast_source_data  (ast_source_data),  // avalon_streaming_source.data
-		.ast_source_valid (ast_source_valid), //                        .valid
-		.ast_source_error (ast_source_error), //                        .error
-		.ast_source_ready (ast_source_ready)  //                        .ready
+		.clk                (clk),                //                     clk.clk
+		.reset_n            (reset_n),            //                     rst.reset_n
+		.ast_sink_data      (ast_sink_data),      //   avalon_streaming_sink.data
+		.ast_sink_valid     (ast_sink_valid),     //                        .valid
+		.ast_sink_error     (ast_sink_error),     //                        .error
+		.ast_sink_sop       (ast_sink_sop),       //                        .startofpacket
+		.ast_sink_eop       (ast_sink_eop),       //                        .endofpacket
+		.ast_sink_ready     (ast_sink_ready),     //                        .ready
+		.ast_source_data    (ast_source_data),    // avalon_streaming_source.data
+		.ast_source_valid   (ast_source_valid),   //                        .valid
+		.ast_source_error   (ast_source_error),   //                        .error
+		.ast_source_ready   (ast_source_ready),   //                        .ready
+		.ast_source_sop     (ast_source_sop),     //                        .startofpacket
+		.ast_source_eop     (ast_source_eop),     //                        .endofpacket
+		.ast_source_channel (ast_source_channel)  //                        .channel
 	);
 
 endmodule
@@ -64,9 +74,9 @@ endmodule
 // Retrieval info: 	<generic name="decimFactor" value="2" />
 // Retrieval info: 	<generic name="symmetryMode" value="nsym" />
 // Retrieval info: 	<generic name="L_bandsFilter" value="1" />
-// Retrieval info: 	<generic name="inputChannelNum" value="1" />
+// Retrieval info: 	<generic name="inputChannelNum" value="4" />
 // Retrieval info: 	<generic name="clockRate" value="122.880" />
-// Retrieval info: 	<generic name="clockSlack" value="48" />
+// Retrieval info: 	<generic name="clockSlack" value="0" />
 // Retrieval info: 	<generic name="inputRate" value="0.768" />
 // Retrieval info: 	<generic name="coeffReload" value="false" />
 // Retrieval info: 	<generic name="baseAddress" value="0" />
@@ -74,10 +84,10 @@ endmodule
 // Retrieval info: 	<generic name="backPressure" value="true" />
 // Retrieval info: 	<generic name="deviceFamily" value="Cyclone IV E" />
 // Retrieval info: 	<generic name="speedGrade" value="slow" />
-// Retrieval info: 	<generic name="delayRAMBlockThreshold" value="20" />
-// Retrieval info: 	<generic name="dualMemDistRAMThreshold" value="1280" />
-// Retrieval info: 	<generic name="mRAMThreshold" value="1000000" />
-// Retrieval info: 	<generic name="hardMultiplierThreshold" value="10" />
+// Retrieval info: 	<generic name="delayRAMBlockThreshold" value="-1" />
+// Retrieval info: 	<generic name="dualMemDistRAMThreshold" value="-1" />
+// Retrieval info: 	<generic name="mRAMThreshold" value="-1" />
+// Retrieval info: 	<generic name="hardMultiplierThreshold" value="-1" />
 // Retrieval info: 	<generic name="reconfigurable" value="false" />
 // Retrieval info: 	<generic name="num_modes" value="2" />
 // Retrieval info: 	<generic name="reconfigurable_list" value="0" />

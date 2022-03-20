@@ -8,13 +8,13 @@ module channelizer4(
 	input wire in_ready_3,
 	input wire in_ready_4,
 
-	output wire [(width-1):0] out_data_1,
+	output reg [(width-1):0] out_data_1 = 'd0,
 	output wire [1:0] out_error_1,
-	output wire [(width-1):0] out_data_2,
+	output reg [(width-1):0] out_data_2 = 'd0,
 	output wire [1:0] out_error_2,
-	output wire [(width-1):0] out_data_3,
+	output reg [(width-1):0] out_data_3 = 'd0,
 	output wire [1:0] out_error_3,
-	output wire [(width-1):0] out_data_4,
+	output reg [(width-1):0] out_data_4 = 'd0,
 	output wire [1:0] out_error_4,
 	output wire out_valid_1,
 	output wire out_valid_2,
@@ -24,11 +24,6 @@ module channelizer4(
 );
 
 parameter width = 32;
-
-assign out_data_1 = in_data; 
-assign out_data_2 = in_data; 
-assign out_data_3 = in_data; 
-assign out_data_4 = in_data; 
 
 assign out_error_1 = in_error; 
 assign out_error_2 = in_error; 
@@ -42,4 +37,13 @@ assign out_valid_4 = (channel == 'd3) && in_valid;
 
 assign out_ready = ((channel == 'd0) && in_ready_1) || ((channel == 'd1) && in_ready_2) || ((channel == 'd2) && in_ready_3) || ((channel == 'd3) && in_ready_4);
 
+always @(posedge out_valid_1)
+	out_data_1 <= in_data;
+always @(posedge out_valid_2)
+	out_data_2 <= in_data;
+always @(posedge out_valid_3)
+	out_data_3 <= in_data;
+always @(posedge out_valid_4)
+	out_data_4 <= in_data;
+	
 endmodule

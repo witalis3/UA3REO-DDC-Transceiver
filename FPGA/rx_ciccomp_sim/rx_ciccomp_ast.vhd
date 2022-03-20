@@ -17,14 +17,14 @@ entity rx_ciccomp_ast is
         REM_MSB_TYPE_g      : string := "trunc";
         PHYSCHANIN          : integer := 1;
         PHYSCHANOUT         : integer := 1;
-        CHANSPERPHYIN       : natural := 1;
-        CHANSPERPHYOUT      : natural := 1;
-        OUTPUTFIFODEPTH     : integer := 4;
-        USE_PACKETS         : integer := 0;
+        CHANSPERPHYIN       : natural := 4;
+        CHANSPERPHYOUT      : natural := 4;
+        OUTPUTFIFODEPTH     : integer := 16;
+        USE_PACKETS         : integer := 1;
         MODE_WIDTH         : integer := 0;
         ENABLE_BACKPRESSURE : boolean := true;
-        LOG2_CHANSPERPHYOUT : natural := log2_ceil_one(1);
-        NUMCHANS            : integer := 1;
+        LOG2_CHANSPERPHYOUT : natural := log2_ceil_one(4);
+        NUMCHANS            : integer := 4;
         DEVICE_FAMILY       : string := "Cyclone IV E";
         COMPLEX_CONST       : integer := 1
   );

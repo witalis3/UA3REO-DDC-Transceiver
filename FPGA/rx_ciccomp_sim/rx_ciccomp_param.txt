@@ -1,7 +1,7 @@
 PhysChanIn : 1 
 PhysChanOut : 1 
-ChansPerPhyIn : 1 
-ChansPerPhyOut : 1 
+ChansPerPhyIn : 4 
+ChansPerPhyOut : 4 
 InWidth : 32 
 InFracWidth : 0 
 OutWidth : 62 

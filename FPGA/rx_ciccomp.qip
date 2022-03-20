@@ -25,9 +25,9 @@ set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_C
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZGVjaW1GYWN0b3I=::Mg==::RGVjaW1hdGlvbiBGYWN0b3I="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "c3ltbWV0cnlNb2Rl::bnN5bQ==::U3ltbWV0cnk="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "TF9iYW5kc0ZpbHRlcg==::MQ==::TC10aCBCYW5kIEZpbHRlcg=="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "aW5wdXRDaGFubmVsTnVt::MQ==::TWF4IE51bWJlciBvZiBDaGFubmVscw=="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "aW5wdXRDaGFubmVsTnVt::NA==::TWF4IE51bWJlciBvZiBDaGFubmVscw=="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2xvY2tSYXRl::MTIyLjg4MA==::Q2xvY2sgUmF0ZQ=="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2xvY2tTbGFjaw==::NDg=::Q2xvY2sgU2xhY2s="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2xvY2tTbGFjaw==::MA==::Q2xvY2sgU2xhY2s="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "aW5wdXRSYXRl::MC43Njg=::SW5wdXQgU2FtcGxlIFJhdGUgKE1TUFMp"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y29lZmZSZWxvYWQ=::ZmFsc2U=::Q29lZmZpY2llbnRzIFJlbG9hZA=="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y29lZmZpY2llbnRSZWFkYmFjaw==::ZmFsc2U=::Y29lZmZpY2llbnRSZWFkYmFjaw=="
@@ -36,10 +36,10 @@ set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_C
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "YmFja1ByZXNzdXJl::dHJ1ZQ==::QmFjayBQcmVzc3VyZSBTdXBwb3J0"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZGV2aWNlRmFtaWx5::Q3ljbG9uZSBJViBF::RGV2aWNlIEZhbWlseQ=="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "c3BlZWRHcmFkZQ==::c2xvdw==::U3BlZWQgR3JhZGU="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZGVsYXlSQU1CbG9ja1RocmVzaG9sZA==::MjA=::TWVtb3J5IEJsb2NrIFRocmVzaG9sZA=="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZHVhbE1lbURpc3RSQU1UaHJlc2hvbGQ=::MTI4MA==::RHVhbCBQb3J0IFJBTSBUaHJlc2hvbGQ="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "bVJBTVRocmVzaG9sZA==::MTAwMDAwMA==::TGFyZ2UgUkFNIFRocmVzaG9sZA=="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "aGFyZE11bHRpcGxpZXJUaHJlc2hvbGQ=::MTA=::SGFyZCBNdWx0aXBsaWVyIFRocmVzaG9sZA=="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZGVsYXlSQU1CbG9ja1RocmVzaG9sZA==::LTE=::TWVtb3J5IEJsb2NrIFRocmVzaG9sZA=="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZHVhbE1lbURpc3RSQU1UaHJlc2hvbGQ=::LTE=::RHVhbCBQb3J0IFJBTSBUaHJlc2hvbGQ="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "bVJBTVRocmVzaG9sZA==::LTE=::TGFyZ2UgUkFNIFRocmVzaG9sZA=="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "aGFyZE11bHRpcGxpZXJUaHJlc2hvbGQ=::LTE=::SGFyZCBNdWx0aXBsaWVyIFRocmVzaG9sZA=="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "cmVjb25maWd1cmFibGU=::ZmFsc2U=::UmVjb25maWd1cmFibGUgQ2FycmllciBNb2Rl"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "bnVtX21vZGVz::Mg==::TnVtYmVyIG9mIE1vZGVz"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "TW9kZVdpZHRo::MA==::TW9kZVdpZHRo"
@@ -68,18 +68,18 @@ set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_C
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "b3V0THNiQml0UmVt::MA==::TFNCIEJpdHMgdG8gUmVtb3Zl"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "aW5wdXRJbnRlcmZhY2VOdW0=::MQ==::TnVtYmVyIG9mIFBhcmFsbGVsIElucHV0IFN5bWJvbHM="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "b3V0cHV0SW50ZXJmYWNlTnVt::MQ==::TnVtYmVyIG9mIFBhcmFsbGVsIE91dHB1dCBTeW1ib2xz"
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2hhblBlcklucHV0SW50ZXJmYWNl::MQ==::TnVtYmVyIG9mIENoYW5uZWxzIHBlciBJbnB1dCBJbnRlcmZhY2U="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2hhblBlck91dHB1dEludGVyZmFjZQ==::MQ==::TnVtYmVyIG9mIENoYW5uZWxzIHBlciBPdXRwdXQgSW50ZXJmYWNl"
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2hhblBlcklucHV0SW50ZXJmYWNl::NA==::TnVtYmVyIG9mIENoYW5uZWxzIHBlciBJbnB1dCBJbnRlcmZhY2U="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "Y2hhblBlck91dHB1dEludGVyZmFjZQ==::NA==::TnVtYmVyIG9mIENoYW5uZWxzIHBlciBPdXRwdXQgSW50ZXJmYWNl"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "bGF0ZW5jeQ==::MjM=::bGF0ZW5jeQ=="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "b3V0cHV0Zmlmb2RlcHRo::NA==::b3V0cHV0Zmlmb2RlcHRo"
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZnVuY1Jlc3VsdA==::LWludGVycD0xIC1kZWNpbT0yIC1pbmN5Y2xlcz0xNjAgLWxlbj0xMjkgLWJhbmtjb3VudD0xIC1uc3ltIC1uYmFuZD0xIC1jaGFucz0xIC1mYW1pbHk9IkN5Y2xvbmUgSVYgRSIgCnx7fXwxfDF8MXwxfDYyfDMxfDIzfDN8bm9Db2RlfExVVFM6IDkwMSBEU1BzOiAxMiBSQU0gQml0czogMTIxOTF8::ZnVuY1Jlc3VsdA=="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "b3V0cHV0Zmlmb2RlcHRo::MTY=::b3V0cHV0Zmlmb2RlcHRo"
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZnVuY1Jlc3VsdA==::LWludGVycD0xIC1kZWNpbT0yIC1pbmN5Y2xlcz0xNjAgLWxlbj0xMjkgLWJhbmtjb3VudD0xIC1uc3ltIC1uYmFuZD0xIC1jaGFucz00IC1mYW1pbHk9IkN5Y2xvbmUgSVYgRSIgCnx7fXwxfDF8NHw0fDYyfDMxfDIzfDEyfG5vQ29kZXxMVVRTOiA4OTcgRFNQczogOCBSQU0gQml0czogMzY0Mzh8::ZnVuY1Jlc3VsdA=="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "YnVzQWRkcmVzc1dpZHRo::OA==::YnVzQWRkcmVzc1dpZHRo"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "YmFua0NvdW50::MQ==::TnVtYmVyIG9mIENvZWZmaWNpZW50IEJhbmtz"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "YmFua0luV2lkdGg=::MA==::YmFua0luV2lkdGg="
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "YmFua0Rpc3BsYXk=::MA==::YmFua0Rpc3BsYXk="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "bHV0Q291bnQ=::OTAx::TnVtYmVyIG9mIExVVHM="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZHNwQ291bnQ=::MTI=::TnVtYmVyIG9mIERTUHM="
-set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "bWVtQml0Q291bnQ=::MTIxOTE=::TnVtYmVyIG9mIE1lbW9yeSBCaXRz"
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "bHV0Q291bnQ=::ODk3::TnVtYmVyIG9mIExVVHM="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZHNwQ291bnQ=::OA==::TnVtYmVyIG9mIERTUHM="
+set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "bWVtQml0Q291bnQ=::MzY0Mzg=::TnVtYmVyIG9mIE1lbW9yeSBCaXRz"
 set_global_assignment -entity "rx_ciccomp_0002" -library "rx_ciccomp" -name IP_COMPONENT_PARAMETER "ZXJyb3JMaXN0::MA==::ZXJyb3JMaXN0"
 
 set_global_assignment -library "rx_ciccomp" -name VERILOG_FILE [file join $::quartus(qip_path) "rx_ciccomp.v"]
@@ -93,7 +93,8 @@ set_global_assignment -library "rx_ciccomp" -name VHDL_FILE [file join $::quartu
 set_global_assignment -library "rx_ciccomp" -name VHDL_FILE [file join $::quartus(qip_path) "rx_ciccomp/auk_dspip_roundsat_hpfir.vhd"]
 set_global_assignment -library "rx_ciccomp" -name VERILOG_FILE [file join $::quartus(qip_path) "rx_ciccomp/altera_avalon_sc_fifo.v"]
 set_global_assignment -library "rx_ciccomp" -name SOURCE_FILE [file join $::quartus(qip_path) "rx_ciccomp/rx_ciccomp_0002_rtl_core_u0_m0_wo0_cm0_lutmem.hex"]
-set_global_assignment -library "rx_ciccomp" -name SOURCE_FILE [file join $::quartus(qip_path) "rx_ciccomp/rx_ciccomp_0002_rtl_core_u0_m0_wo0_wi0_r0_ra0_count1_lut_lutmem.hex"]
+set_global_assignment -library "rx_ciccomp" -name SOURCE_FILE [file join $::quartus(qip_path) "rx_ciccomp/rx_ciccomp_0002_rtl_core_u0_m0_wo0_cm1_lutmem.hex"]
+set_global_assignment -library "rx_ciccomp" -name SOURCE_FILE [file join $::quartus(qip_path) "rx_ciccomp/rx_ciccomp_0002_rtl_core_u0_m0_wo0_wi0_r0_ra1_count2_lut_lutmem.hex"]
 set_global_assignment -library "rx_ciccomp" -name VHDL_FILE [file join $::quartus(qip_path) "rx_ciccomp/rx_ciccomp_0002_rtl_core.vhd"]
 set_global_assignment -library "rx_ciccomp" -name VHDL_FILE [file join $::quartus(qip_path) "rx_ciccomp/rx_ciccomp_0002_ast.vhd"]
 set_global_assignment -library "rx_ciccomp" -name VHDL_FILE [file join $::quartus(qip_path) "rx_ciccomp/rx_ciccomp_0002.vhd"]

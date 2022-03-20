@@ -23,10 +23,15 @@ entity rx_ciccomp_0002 is
     ast_sink_data : in STD_LOGIC_VECTOR((0 + 1*32) * 1 + 0 - 1 downto 0);
     ast_sink_valid : in STD_LOGIC;
     ast_sink_ready : out STD_LOGIC;
+    ast_sink_sop : in STD_LOGIC;
+    ast_sink_eop : in STD_LOGIC;
     ast_sink_error : in STD_LOGIC_VECTOR(1 downto 0);
     ast_source_data : out STD_LOGIC_VECTOR(62 * 1*1 - 1 downto 0);
     ast_source_valid : out STD_LOGIC;
     ast_source_ready : in STD_LOGIC;
+    ast_source_sop : out STD_LOGIC;
+    ast_source_eop : out STD_LOGIC;
+    ast_source_channel : out STD_LOGIC_VECTOR(log2_ceil_one(4) - 1 downto 0);
     ast_source_error : out STD_LOGIC_VECTOR(1 downto 0)
   );
 end rx_ciccomp_0002;
@@ -48,7 +53,7 @@ architecture syn of rx_ciccomp_0002 is
     ast_source_valid : out STD_LOGIC;
     ast_source_sop : out STD_LOGIC;
     ast_source_eop : out STD_LOGIC;
-    ast_source_channel : out STD_LOGIC_VECTOR(log2_ceil_one(1) - 1 downto 0);
+    ast_source_channel : out STD_LOGIC_VECTOR(log2_ceil_one(4) - 1 downto 0);
     ast_source_error : out STD_LOGIC_VECTOR(1 downto 0)
   );
 end component;
@@ -71,12 +76,12 @@ begin
         ast_sink_ready => ast_sink_ready,
         ast_source_ready => ast_source_ready,
     ast_source_valid => ast_source_valid,
-        ast_sink_sop => '0',
-        ast_sink_eop => '0',
+        ast_sink_sop => ast_sink_sop,
+        ast_sink_eop => ast_sink_eop,
     ast_sink_error => ast_sink_error,
-        ast_source_sop => open,
-        ast_source_eop => open,
-        ast_source_channel => open,
+        ast_source_sop => ast_source_sop,
+        ast_source_eop => ast_source_eop,
+        ast_source_channel => ast_source_channel,
     ast_source_error => ast_source_error
   );
 end syn;

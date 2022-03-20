@@ -19,7 +19,10 @@
    path="rx_ciccomp_sim/rx_ciccomp_rtl_core_u0_m0_wo0_cm0_lutmem.hex"
    type="HEX" />
  <file
-   path="rx_ciccomp_sim/rx_ciccomp_rtl_core_u0_m0_wo0_wi0_r0_ra0_count1_lut_lutmem.hex"
+   path="rx_ciccomp_sim/rx_ciccomp_rtl_core_u0_m0_wo0_cm1_lutmem.hex"
+   type="HEX" />
+ <file
+   path="rx_ciccomp_sim/rx_ciccomp_rtl_core_u0_m0_wo0_wi0_r0_ra1_count2_lut_lutmem.hex"
    type="HEX" />
  <file path="rx_ciccomp_sim/rx_ciccomp_rtl_core.vhd" type="VHDL" />
  <file path="rx_ciccomp_sim/rx_ciccomp_ast.vhd" type="VHDL" />
