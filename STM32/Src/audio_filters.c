@@ -297,8 +297,8 @@ void ReinitAudioFilters(void)
 	uint32_t decim_iir_filter_width = 20000;
 	if(lpf_rx1_width < 5000 && (!TRX.Dual_RX || lpf_rx2_width < 5000))
 		decim_iir_filter_width = 5000;
-	if(TRX_GetRXSampleRate > 192000)
-		decim_iir_filter_stages = 5;
+	if(TRX_GetRXSampleRateENUM == TRX_SAMPLERATE_K192) decim_iir_filter_stages = 5;
+	if(TRX_GetRXSampleRateENUM == TRX_SAMPLERATE_K384) decim_iir_filter_stages = 3;
 	iir_filter_t *filter = biquad_create(decim_iir_filter_stages);
 	biquad_init_lowpass(filter, TRX_GetRXSampleRate, 20000);
 	fill_biquad_coeffs(filter, DECIMATE_IIR_Coeffs, decim_iir_filter_stages);

@@ -872,7 +872,7 @@ void sd_crc_generate_table(void)
 	crc_table_generated = true;
 }
 
-void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst,uint32_t blockSize)
+void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst, uint32_t blockSize)
 {
   float32_t *pState = S->pState;
   const float32_t *pCoeffs = S->pCoeffs;
