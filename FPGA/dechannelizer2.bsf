@@ -100,20 +100,6 @@ refer to the applicable agreement for further details.
 		(text "out_eop" (rect 172 75 203 87)(font "Arial" ))
 		(line (pt 224 80)(pt 208 80)(line_width 1))
 	)
-	(port
-		(pt 224 96)
-		(output)
-		(text "I[23..0]" (rect 0 0 27 12)(font "Arial" ))
-		(text "I[23..0]" (rect 176 91 203 103)(font "Arial" ))
-		(line (pt 224 96)(pt 208 96)(line_width 3))
-	)
-	(port
-		(pt 224 112)
-		(output)
-		(text "Q[23..0]" (rect 0 0 31 12)(font "Arial" ))
-		(text "Q[23..0]" (rect 172 107 203 119)(font "Arial" ))
-		(line (pt 224 112)(pt 208 112)(line_width 3))
-	)
 	(drawing
 		(rectangle (rect 16 16 208 160)(line_width 1))
 	)

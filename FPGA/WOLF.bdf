@@ -4021,111 +4021,6 @@ refer to the applicable agreement for further details.
 	(annotation_block (parameter)(rect 4568 -288 4738 -231))
 )
 (symbol
-	(rect 3992 136 4216 312)
-	(text "dechannelizer2" (rect 5 0 76 12)(font "Arial" ))
-	(text "TX_DECHANNELIZER" (rect 8 160 120 172)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "in_data_1[23..0]" (rect 0 0 79 12)(font "Arial" ))
-		(text "in_data_1[23..0]" (rect 21 27 100 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32)(line_width 3))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "in_data_2[23..0]" (rect 0 0 79 12)(font "Arial" ))
-		(text "in_data_2[23..0]" (rect 21 43 100 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48)(line_width 3))
-	)
-	(port
-		(pt 0 64)
-		(input)
-		(text "in_valid" (rect 0 0 37 12)(font "Arial" ))
-		(text "in_valid" (rect 21 59 58 71)(font "Arial" ))
-		(line (pt 0 64)(pt 16 64))
-	)
-	(port
-		(pt 0 80)
-		(input)
-		(text "in_ready" (rect 0 0 42 12)(font "Arial" ))
-		(text "in_ready" (rect 21 75 63 87)(font "Arial" ))
-		(line (pt 0 80)(pt 16 80))
-	)
-	(port
-		(pt 0 96)
-		(input)
-		(text "clk" (rect 0 0 14 12)(font "Arial" ))
-		(text "clk" (rect 21 91 35 103)(font "Arial" ))
-		(line (pt 0 96)(pt 16 96))
-	)
-	(port
-		(pt 0 112)
-		(input)
-		(text "empty_1" (rect 0 0 43 12)(font "Arial" ))
-		(text "empty_1" (rect 21 107 64 119)(font "Arial" ))
-		(line (pt 0 112)(pt 16 112))
-	)
-	(port
-		(pt 0 128)
-		(input)
-		(text "empty_2" (rect 0 0 43 12)(font "Arial" ))
-		(text "empty_2" (rect 21 123 64 135)(font "Arial" ))
-		(line (pt 0 128)(pt 16 128))
-	)
-	(port
-		(pt 224 32)
-		(output)
-		(text "out_data[23..0]" (rect 0 0 74 12)(font "Arial" ))
-		(text "out_data[23..0]" (rect 141 27 203 39)(font "Arial" ))
-		(line (pt 224 32)(pt 208 32)(line_width 3))
-	)
-	(port
-		(pt 224 48)
-		(output)
-		(text "out_valid" (rect 0 0 44 12)(font "Arial" ))
-		(text "out_valid" (rect 166 43 203 55)(font "Arial" ))
-		(line (pt 224 48)(pt 208 48))
-	)
-	(port
-		(pt 224 64)
-		(output)
-		(text "out_sop" (rect 0 0 38 12)(font "Arial" ))
-		(text "out_sop" (rect 171 59 203 71)(font "Arial" ))
-		(line (pt 224 64)(pt 208 64))
-	)
-	(port
-		(pt 224 80)
-		(output)
-		(text "out_eop" (rect 0 0 38 12)(font "Arial" ))
-		(text "out_eop" (rect 171 75 203 87)(font "Arial" ))
-		(line (pt 224 80)(pt 208 80))
-	)
-	(port
-		(pt 224 96)
-		(output)
-		(text "I[23..0]" (rect 0 0 35 12)(font "Arial" ))
-		(text "I[23..0]" (rect 174 91 203 103)(font "Arial" ))
-		(line (pt 224 96)(pt 208 96)(line_width 3))
-	)
-	(port
-		(pt 224 112)
-		(output)
-		(text "Q[23..0]" (rect 0 0 40 12)(font "Arial" ))
-		(text "Q[23..0]" (rect 170 107 203 119)(font "Arial" ))
-		(line (pt 224 112)(pt 208 112)(line_width 3))
-	)
-	(parameter
-		"width"
-		"24"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(drawing
-		(rectangle (rect 16 16 208 160))
-	)
-	(annotation_block (parameter)(rect 4024 88 4193 126))
-)
-(symbol
 	(rect 2872 64 2936 112)
 	(text "OR2" (rect 1 0 19 10)(font "Arial" (font_size 6)))
 	(text "RX_EMPTY" (rect 3 37 58 54)(font "Intel Clear" ))
@@ -4592,6 +4487,97 @@ refer to the applicable agreement for further details.
 	(drawing
 		(rectangle (rect 16 16 272 640))
 	)
+)
+(symbol
+	(rect 3992 136 4216 312)
+	(text "dechannelizer2" (rect 5 0 76 12)(font "Arial" ))
+	(text "TX_DECHANNELIZER" (rect 8 160 120 172)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "in_data_1[23..0]" (rect 0 0 79 12)(font "Arial" ))
+		(text "in_data_1[23..0]" (rect 21 27 100 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32)(line_width 3))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "in_data_2[23..0]" (rect 0 0 79 12)(font "Arial" ))
+		(text "in_data_2[23..0]" (rect 21 43 100 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48)(line_width 3))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "in_valid" (rect 0 0 37 12)(font "Arial" ))
+		(text "in_valid" (rect 21 59 58 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port
+		(pt 0 80)
+		(input)
+		(text "in_ready" (rect 0 0 42 12)(font "Arial" ))
+		(text "in_ready" (rect 21 75 63 87)(font "Arial" ))
+		(line (pt 0 80)(pt 16 80))
+	)
+	(port
+		(pt 0 96)
+		(input)
+		(text "clk" (rect 0 0 14 12)(font "Arial" ))
+		(text "clk" (rect 21 91 35 103)(font "Arial" ))
+		(line (pt 0 96)(pt 16 96))
+	)
+	(port
+		(pt 0 112)
+		(input)
+		(text "empty_1" (rect 0 0 43 12)(font "Arial" ))
+		(text "empty_1" (rect 21 107 64 119)(font "Arial" ))
+		(line (pt 0 112)(pt 16 112))
+	)
+	(port
+		(pt 0 128)
+		(input)
+		(text "empty_2" (rect 0 0 43 12)(font "Arial" ))
+		(text "empty_2" (rect 21 123 64 135)(font "Arial" ))
+		(line (pt 0 128)(pt 16 128))
+	)
+	(port
+		(pt 224 32)
+		(output)
+		(text "out_data[23..0]" (rect 0 0 74 12)(font "Arial" ))
+		(text "out_data[23..0]" (rect 141 27 203 39)(font "Arial" ))
+		(line (pt 224 32)(pt 208 32)(line_width 3))
+	)
+	(port
+		(pt 224 48)
+		(output)
+		(text "out_valid" (rect 0 0 44 12)(font "Arial" ))
+		(text "out_valid" (rect 166 43 203 55)(font "Arial" ))
+		(line (pt 224 48)(pt 208 48))
+	)
+	(port
+		(pt 224 64)
+		(output)
+		(text "out_sop" (rect 0 0 38 12)(font "Arial" ))
+		(text "out_sop" (rect 171 59 203 71)(font "Arial" ))
+		(line (pt 224 64)(pt 208 64))
+	)
+	(port
+		(pt 224 80)
+		(output)
+		(text "out_eop" (rect 0 0 38 12)(font "Arial" ))
+		(text "out_eop" (rect 171 75 203 87)(font "Arial" ))
+		(line (pt 224 80)(pt 208 80))
+	)
+	(parameter
+		"width"
+		"24"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 208 160))
+	)
+	(annotation_block (parameter)(rect 4024 88 4193 126))
 )
 (connector
 	(pt 528 32)
@@ -6311,10 +6297,6 @@ refer to the applicable agreement for further details.
 	(pt 2840 392)
 )
 (connector
-	(pt 1344 392)
-	(pt 2840 392)
-)
-(connector
 	(pt 1344 -152)
 	(pt 1344 376)
 )
@@ -6353,11 +6335,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "RX1" (rect 2570 240 2590 257)(font "Intel Clear" ))
-	(pt 2640 248)
-	(pt 2600 248)
-)
-(connector
 	(pt 2616 296)
 	(pt 2640 296)
 )
@@ -6371,25 +6348,9 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 2240 240)
-	(pt 2240 64)
-)
-(connector
-	(pt 2240 64)
-	(pt 2640 64)
-)
-(connector
 	(pt 2568 24)
 	(pt 2640 24)
 	(bus)
-)
-(connector
-	(pt 2192 240)
-	(pt 2240 240)
-)
-(connector
-	(pt 2240 240)
-	(pt 2248 240)
 )
 (connector
 	(pt 2832 192)
@@ -6400,10 +6361,6 @@ refer to the applicable agreement for further details.
 	(pt 2832 88)
 	(pt 2816 88)
 	(bus)
-)
-(connector
-	(pt 2640 96)
-	(pt 2616 96)
 )
 (connector
 	(pt 2624 112)
@@ -6419,32 +6376,6 @@ refer to the applicable agreement for further details.
 	(pt 2640 112)
 )
 (connector
-	(text "IQ_RX_READ_REQ" (rect 2482 112 2572 129)(font "Intel Clear" ))
-	(pt 2616 128)
-	(pt 2536 128)
-)
-(connector
-	(pt 2616 96)
-	(pt 2616 128)
-)
-(connector
-	(pt 2616 128)
-	(pt 2616 296)
-)
-(connector
-	(text "RX1" (rect 2586 32 2606 49)(font "Intel Clear" ))
-	(pt 2640 48)
-	(pt 2584 48)
-)
-(connector
-	(pt 2568 -32)
-	(pt 2568 -112)
-)
-(connector
-	(pt 2568 -112)
-	(pt 2640 -112)
-)
-(connector
 	(pt 3056 240)
 	(pt 3056 -88)
 	(bus)
@@ -6458,11 +6389,6 @@ refer to the applicable agreement for further details.
 	(pt 2544 -152)
 	(pt 2560 -152)
 	(bus)
-)
-(connector
-	(text "RX2" (rect 2586 -144 2606 -127)(font "Intel Clear" ))
-	(pt 2640 -128)
-	(pt 2592 -128)
 )
 (connector
 	(pt 2640 -80)
@@ -6507,11 +6433,6 @@ refer to the applicable agreement for further details.
 	(pt 2616 96)
 )
 (connector
-	(text "RX2" (rect 2586 -328 2606 -311)(font "Intel Clear" ))
-	(pt 2640 -328)
-	(pt 2592 -328)
-)
-(connector
 	(pt 2560 -352)
 	(pt 2560 -152)
 	(bus)
@@ -6520,14 +6441,6 @@ refer to the applicable agreement for further details.
 	(pt 2560 -352)
 	(pt 2640 -352)
 	(bus)
-)
-(connector
-	(pt 2224 -312)
-	(pt 2224 -104)
-)
-(connector
-	(pt 2640 -312)
-	(pt 2224 -312)
 )
 (connector
 	(pt 4296 40)
@@ -6696,30 +6609,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 2240 256)
-	(pt 2240 336)
-)
-(connector
-	(pt 2184 256)
-	(pt 2240 256)
-)
-(connector
-	(pt 2240 256)
-	(pt 2248 256)
-)
-(connector
-	(pt 2640 264)
-	(pt 2576 264)
-)
-(connector
-	(pt 2240 336)
-	(pt 2576 336)
-)
-(connector
-	(pt 2576 264)
-	(pt 2576 336)
-)
-(connector
 	(pt 3824 -64)
 	(pt 3808 -64)
 )
@@ -6804,10 +6693,6 @@ refer to the applicable agreement for further details.
 )
 (connector
 	(pt 2160 -88)
-	(pt 2224 -88)
-)
-(connector
-	(pt 2224 -104)
 	(pt 2224 -88)
 )
 (connector
@@ -7235,6 +7120,103 @@ refer to the applicable agreement for further details.
 	(pt 5824 320)
 	(bus)
 )
+(connector
+	(pt 2192 240)
+	(pt 2240 240)
+)
+(connector
+	(pt 2240 240)
+	(pt 2248 240)
+)
+(connector
+	(pt 2616 96)
+	(pt 2616 296)
+)
+(connector
+	(text "IQ_RX_READ_REQ" (rect 2482 80 2572 97)(font "Intel Clear" ))
+	(pt 2536 96)
+	(pt 2616 96)
+)
+(connector
+	(pt 2616 96)
+	(pt 2640 96)
+)
+(connector
+	(pt 2224 -104)
+	(pt 2224 -88)
+)
+(connector
+	(pt 1344 392)
+	(pt 2840 392)
+)
+(connector
+	(text "RX1" (rect 2578 240 2598 257)(font "Intel Clear" ))
+	(pt 2608 248)
+	(pt 2640 248)
+)
+(connector
+	(pt 2576 264)
+	(pt 2640 264)
+)
+(connector
+	(pt 2240 64)
+	(pt 2640 64)
+)
+(connector
+	(pt 2240 240)
+	(pt 2240 64)
+)
+(connector
+	(text "RX1" (rect 2586 32 2606 49)(font "Intel Clear" ))
+	(pt 2600 48)
+	(pt 2640 48)
+)
+(connector
+	(pt 2568 -112)
+	(pt 2640 -112)
+)
+(connector
+	(pt 2568 -112)
+	(pt 2568 -32)
+)
+(connector
+	(text "RX2" (rect 2594 -152 2614 -135)(font "Intel Clear" ))
+	(pt 2640 -128)
+	(pt 2600 -128)
+)
+(connector
+	(pt 2224 -312)
+	(pt 2640 -312)
+)
+(connector
+	(pt 2224 -312)
+	(pt 2224 -104)
+)
+(connector
+	(text "RX2" (rect 2586 -344 2606 -327)(font "Intel Clear" ))
+	(pt 2640 -328)
+	(pt 2600 -328)
+)
+(connector
+	(pt 2240 256)
+	(pt 2240 328)
+)
+(connector
+	(pt 2240 328)
+	(pt 2576 328)
+)
+(connector
+	(pt 2576 264)
+	(pt 2576 328)
+)
+(connector
+	(pt 2184 256)
+	(pt 2240 256)
+)
+(connector
+	(pt 2240 256)
+	(pt 2248 256)
+)
 (junction (pt 376 120))
 (junction (pt 440 32))
 (junction (pt 440 448))
@@ -7312,7 +7294,6 @@ refer to the applicable agreement for further details.
 (junction (pt 3952 232))
 (junction (pt 2616 96))
 (junction (pt 2624 112))
-(junction (pt 2616 128))
 (junction (pt 2624 -64))
 (junction (pt 2616 -80))
 (junction (pt 3616 -128))

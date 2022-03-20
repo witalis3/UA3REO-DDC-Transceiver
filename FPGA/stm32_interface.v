@@ -403,7 +403,7 @@ begin
 	end
 	else if (k == 400) //RX1 IQ
 	begin
-		//if(in_empty == 1)
+		//if(in_empty == 0)
 		//begin
 			IQ_RX_READ_REQ = 1;
 			IQ_RX_READ_CLK = 1;
