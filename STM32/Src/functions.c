@@ -876,7 +876,9 @@ void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f
 {
   float32_t *pState = S->pState;
   const float32_t *pCoeffs = S->pCoeffs;
-
+	const float32_t *pIn = pSrc;
+  float32_t *pOut = pDst;
+	
   for(uint32_t stage = 0; stage < S->numStages; stage++)
   {
 		float32_t b0 = pCoeffs[0];
@@ -891,18 +893,21 @@ void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f
 
 		for(uint32_t sample = 0; sample < blockSize; sample++)
 		{
-			float32_t Xn1 = pSrc[sample];
+			float32_t Xn1 = *pIn++;
 
 			float32_t acc1 = b0 * Xn1 + d1;
 			d1 = b1 * Xn1 + d2 + a1 * acc1;
 			d2 = b2 * Xn1 + a2 * acc1;
 
-			pDst[sample] = acc1;
+			*pOut++ = acc1;
 		}
 
 		pState[0] = d1;
 		pState[1] = d2;
 		pState += 2U;
+		
+		pIn = pDst;
+		pOut = pDst;
    }
 }
 
@@ -911,6 +916,10 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
   float32_t *pState_I = I->pState;
 	float32_t *pState_Q = Q->pState;
   const float32_t *pCoeffs = I->pCoeffs;
+	const float32_t *pIn_I = pSrc_I;
+	const float32_t *pIn_Q = pSrc_Q;
+  float32_t *pOut_I = pDst_I;
+	float32_t *pOut_Q = pDst_Q;
 
   for(uint32_t stage = 0; stage < I->numStages; stage++)
   {
@@ -928,8 +937,8 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 
 		for(uint32_t sample = 0; sample < blockSize; sample++)
 		{
-			float32_t Xn1_I = pSrc_I[sample];
-			float32_t Xn1_Q = pSrc_Q[sample];
+			float32_t Xn1_I = *pIn_I++;
+			float32_t Xn1_Q = *pIn_Q++;
 
 			float32_t acc1_I = b0 * Xn1_I + d1_I;
 			float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
@@ -940,8 +949,8 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 			d2_I = b2 * Xn1_I + a2 * acc1_I;
 			d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
 
-			pDst_I[sample] = acc1_I;
-			pDst_Q[sample] = acc1_Q;
+			*pOut_I++ = acc1_I;
+			*pOut_Q++ = acc1_Q;
 		}
 
 		pState_I[0] = d1_I;
@@ -950,6 +959,11 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 		pState_Q[1] = d2_Q;
 		pState_I += 2U;
 		pState_Q += 2U;
+		
+		pIn_I = pDst_I;
+		pIn_Q = pDst_Q;
+		pOut_I = pDst_I;
+		pOut_Q = pDst_Q;
    }
 }
 
