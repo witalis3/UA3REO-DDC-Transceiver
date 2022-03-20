@@ -1,4 +1,4 @@
-----Version 3.6.0----
+----Version 4.0.0----
 +FPGA: Доработки и оптимизации
 +FPGA: Сокращена лишняя разрядность
 +FPGA: Объединены узлы RX_CIC, RX_CICCOMP, TX_CICCOMP
