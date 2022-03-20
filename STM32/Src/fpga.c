@@ -729,74 +729,47 @@ static inline void FPGA_fpgadata_getiq(void)
 // send IQ data
 static inline void FPGA_fpgadata_sendiq(void)
 {
-	q31_t FPGA_fpgadata_out_q_tmp32 = 0;
-	q31_t FPGA_fpgadata_out_i_tmp32 = 0;
-	q31_t FPGA_fpgadata_out_tmp_tmp32 = 0;
-	arm_float_to_q31((float32_t *)&FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index], &FPGA_fpgadata_out_q_tmp32, 1);
-	arm_float_to_q31((float32_t *)&FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index], &FPGA_fpgadata_out_i_tmp32, 1);
+	int32_t FPGA_fpgadata_out_q_tmp32 = 0;
+	int32_t FPGA_fpgadata_out_i_tmp32 = 0;
 	FPGA_samples++;
-
-	if (TRX_TX_IQ_swap)
+	
+	if (!TRX_TX_IQ_swap)
 	{
-		FPGA_fpgadata_out_tmp_tmp32 = FPGA_fpgadata_out_i_tmp32;
-		FPGA_fpgadata_out_i_tmp32 = FPGA_fpgadata_out_q_tmp32;
-		FPGA_fpgadata_out_q_tmp32 = FPGA_fpgadata_out_tmp_tmp32;
+		FPGA_fpgadata_out_i_tmp32 = FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f; //float -> int24
+		FPGA_fpgadata_out_q_tmp32 = FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f;
+	} else {
+		FPGA_fpgadata_out_i_tmp32 = FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f;
+		FPGA_fpgadata_out_q_tmp32 = FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f;
 	}
 
 	//STAGE 2 out Q
-	FPGA_writePacket((FPGA_fpgadata_out_q_tmp32 >> 24) & 0xFF);
-	//clock
+	FPGA_writePacket((FPGA_fpgadata_out_q_tmp32 >> 16) & 0xFF);
 	FPGA_clockRise();
-	//clock
 	FPGA_clockFall();
 
 	//STAGE 3
-	FPGA_writePacket((FPGA_fpgadata_out_q_tmp32 >> 16) & 0xFF);
-	//clock
+	FPGA_writePacket((FPGA_fpgadata_out_q_tmp32 >> 8) & 0xFF);
 	FPGA_clockRise();
-	//clock
 	FPGA_clockFall();
 
 	//STAGE 4
-	FPGA_writePacket((FPGA_fpgadata_out_q_tmp32 >> 8) & 0xFF);
-	//clock
-	FPGA_clockRise();
-	//clock
-	FPGA_clockFall();
-
-	//STAGE 5
 	FPGA_writePacket((FPGA_fpgadata_out_q_tmp32 >> 0) & 0xFF);
-	//clock
 	FPGA_clockRise();
-	//clock
 	FPGA_clockFall();
 
-	//STAGE 6 out I
-	FPGA_writePacket((FPGA_fpgadata_out_i_tmp32 >> 24) & 0xFF);
-	//clock
+	//STAGE 5 out I
+	FPGA_writePacket((FPGA_fpgadata_out_i_tmp32 >> 16) & 0xFF);
 	FPGA_clockRise();
-	//clock
+	FPGA_clockFall();
+
+	//STAGE 6
+	FPGA_writePacket((FPGA_fpgadata_out_i_tmp32 >> 8) & 0xFF);
+	FPGA_clockRise();
 	FPGA_clockFall();
 
 	//STAGE 7
-	FPGA_writePacket((FPGA_fpgadata_out_i_tmp32 >> 16) & 0xFF);
-	//clock
-	FPGA_clockRise();
-	//clock
-	FPGA_clockFall();
-
-	//STAGE 8
-	FPGA_writePacket((FPGA_fpgadata_out_i_tmp32 >> 8) & 0xFF);
-	//clock
-	FPGA_clockRise();
-	//clock
-	FPGA_clockFall();
-
-	//STAGE 9
 	FPGA_writePacket((FPGA_fpgadata_out_i_tmp32 >> 0) & 0xFF);
-	//clock
 	FPGA_clockRise();
-	//clock
 	FPGA_clockFall();
 
 	FPGA_Audio_TXBuffer_Index++;

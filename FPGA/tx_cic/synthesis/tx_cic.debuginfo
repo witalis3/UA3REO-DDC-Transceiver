@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="tx_cic" kind="system" version="18.1" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2020.12.05.17:16:15 -->
+ <!-- 2022.03.20.19:25:01 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1607174174</value>
+  <value>1647789898</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -242,7 +242,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="INTERFACES">
    <type>int</type>
-   <value>1</value>
+   <value>2</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -752,6 +752,18 @@ parameters are a RESULT of the module parameters. -->
     <width>16</width>
     <role>in_data</role>
    </port>
+   <port>
+    <name>in_startofpacket</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>startofpacket</role>
+   </port>
+   <port>
+    <name>in_endofpacket</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>endofpacket</role>
+   </port>
   </interface>
   <interface name="av_st_out" kind="conduit_end" version="18.1">
    <!-- The connection points exposed by a module instance for the
@@ -796,10 +808,16 @@ parameters are a RESULT of the module parameters. -->
    <type>conduit</type>
    <isStart>false</isStart>
    <port>
-    <name>out_data</name>
+    <name>out0_data</name>
     <direction>Output</direction>
     <width>14</width>
-    <role>out_data</role>
+    <role>out0_data</role>
+   </port>
+   <port>
+    <name>out1_data</name>
+    <direction>Output</direction>
+    <width>14</width>
+    <role>out1_data</role>
    </port>
    <port>
     <name>out_error</name>
@@ -854,5 +872,5 @@ parameters are a RESULT of the module parameters. -->
   <version>18.1</version>
  </plugin>
  <reportVersion>18.1 625</reportVersion>
- <uniqueIdentifier>00FF00F8780900000176330BBABE</uniqueIdentifier>
+ <uniqueIdentifier>00FF06BB7A640000017FA7EE82A4</uniqueIdentifier>
 </EnsembleReport>

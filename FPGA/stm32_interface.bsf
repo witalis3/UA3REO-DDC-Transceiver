@@ -122,6 +122,13 @@ refer to the applicable agreement for further details.
 		(line (pt 0 240)(pt 16 240)(line_width 3))
 	)
 	(port
+		(pt 0 256)
+		(input)
+		(text "in_empty" (rect 0 0 37 12)(font "Arial" ))
+		(text "in_empty" (rect 21 251 58 263)(font "Arial" ))
+		(line (pt 0 256)(pt 16 256)(line_width 1))
+	)
+	(port
 		(pt 288 48)
 		(output)
 		(text "NCO1_freq[31..0]" (rect 0 0 70 12)(font "Arial" ))

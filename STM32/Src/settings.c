@@ -443,7 +443,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.CICFIR_GAINER_96K_val = 12;  // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_192K_val = 18; // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_384K_val = 24; // Offset from the output of the CIC compensator
-		CALIBRATE.TXCICFIR_GAINER_val = 15;	   // Offset from the TX-CIC output of the compensator
+		CALIBRATE.TXCICFIR_GAINER_val = 5;	   // Offset from the TX-CIC output of the compensator
 		// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_2200m = 29;		   //2200m
 		CALIBRATE.rf_out_power_160m = 29;		   //160m

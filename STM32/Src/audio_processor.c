@@ -976,6 +976,7 @@ void processTxAudio(void)
 	}
 
 	//Apply gain
+	//println("amp:", RFpower_amplitude, "clip: ", APROC_TX_ALC_IN_clip_gain);
 	arm_scale_f32(APROC_Audio_Buffer_TX_I, RFpower_amplitude * APROC_TX_ALC_IN_clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 	arm_scale_f32(APROC_Audio_Buffer_TX_Q, RFpower_amplitude * APROC_TX_ALC_IN_clip_gain, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 

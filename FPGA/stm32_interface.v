@@ -13,6 +13,7 @@ adcclk_in,
 FLASH_data_in,
 FLASH_busy,
 VCXO_error,
+in_empty,
 
 DATA_BUS,
 NCO1_freq,
@@ -67,6 +68,7 @@ input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
 input signed [23:0] VCXO_error;
+input in_empty;
 
 output reg unsigned [31:0] NCO1_freq = 242347;
 output reg unsigned [31:0] NCO2_freq = 242347;
@@ -401,8 +403,11 @@ begin
 	end
 	else if (k == 400) //RX1 IQ
 	begin
-		IQ_RX_READ_REQ = 1;
-		IQ_RX_READ_CLK = 1;
+		//if(in_empty == 1)
+		//begin
+			IQ_RX_READ_REQ = 1;
+			IQ_RX_READ_CLK = 1;
+		//end
 		READ_RX1_I[23:0] = RX1_I[23:0];
 		READ_RX1_Q[23:0] = RX1_Q[23:0];
 		READ_RX2_I[23:0] = RX2_I[23:0];
