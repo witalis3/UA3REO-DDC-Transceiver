@@ -32,13 +32,13 @@ entity tx_ciccomp_tb is
     constant BANKCOUNT_c              : natural := 1;
     constant DATA_WIDTH_c             : natural := (INWIDTH_c+BANKINWIDTH_c) * PHYSCHANIN_c;
     constant OUT_WIDTH_c              : natural := OUTWIDTH_c * PHYSCHANOUT_c;
-    constant NUM_OF_CHANNELS_c        : natural := 1;
-    constant CHANSPERPHYIN_c          : natural := 1;
-    constant CHANSPERPHYOUT_c         : natural := 1;
-    constant LOG2_CHANSPERPHYOUT_c    : natural := 0;
+    constant NUM_OF_CHANNELS_c        : natural := 2;
+    constant CHANSPERPHYIN_c          : natural := 2;
+    constant CHANSPERPHYOUT_c         : natural := 2;
+    constant LOG2_CHANSPERPHYOUT_c    : natural := 1;
     constant TDM_FACTOR_c             : natural := 3920;
     constant INVERSE_TDM_FACTOR_c     : natural := 1;
-    constant INVALID_CYCLES_c         : natural := 3919;
+    constant INVALID_CYCLES_c         : natural := 3918;
     constant INTERP_FACTOR_c          : natural := 1;
     constant TOTAL_INCHANS_ALLOWED    : natural := PHYSCHANIN_c * CHANSPERPHYIN_c;
     constant TOTAL_OUTCHANS_ALLOWED   : natural := PHYSCHANOUT_c * CHANSPERPHYOUT_c;
@@ -68,10 +68,17 @@ architecture rtl of tx_ciccomp_tb is
     signal sink_completed     : std_logic := '0';
     signal ast_sink_ready     : std_logic;
 
+    signal ast_sink_sop       : std_logic := '0';
+    signal ast_sink_eop       : std_logic := '0';
+    signal ast_sink_sop_tmp   : std_logic := '0';
+    signal ast_sink_eop_tmp   : std_logic := '0';
 
 ----coef reload ports
 
 
+    signal ast_source_channel : std_logic_vector (LOG2_CHANSPERPHYOUT_c-1 downto 0);
+    signal ast_source_eop     : std_logic;
+    signal ast_source_sop     : std_logic;
 
     signal cnt                : natural range 0 to CHANSPERPHYIN_c;
     signal push_counter       : natural range 0 to CHANSPERPHYIN_c :=0;
@@ -145,12 +152,19 @@ port map (
     clk                => clk,
     reset_n            => reset_design,
 
+    ast_sink_ready     => ast_sink_ready,
     ast_sink_data      => ast_sink_data,
     ast_source_data    => ast_source_data,
     ast_sink_valid     => ast_sink_valid,
     ast_source_valid   => ast_source_valid,
+    ast_source_ready   => ast_source_ready,
 
+    ast_sink_sop       => ast_sink_sop,
+    ast_sink_eop       => ast_sink_eop,
 
+    ast_source_sop     => ast_source_sop,
+    ast_source_eop     => ast_source_eop,
+    ast_source_channel => ast_source_channel,
 
     ast_sink_error     => ast_sink_error,
     ast_source_error   => ast_source_error
@@ -159,13 +173,40 @@ port map (
 
 -- for example purposes, the ready signal is always asserted.
 ast_source_ready <= '1';
-ast_sink_ready <= '1';
 
 
 
 -- no input error
 ast_sink_error <= (others => '0');
 
+
+-- sop and eop asserted in first and last sample of data
+cnt_p : process (clk, reset_testbench)
+begin
+    if reset_testbench = '0' then
+    cnt <= 0;
+    elsif rising_edge(clk) then
+        if ast_sink_valid = '1' and ast_sink_ready = '1' then
+            if cnt = CHANSPERPHYIN_c - 1 then
+                cnt <= 0;
+            else
+                cnt <= cnt + 1;
+            end if;
+        end if;
+    end if;
+end process cnt_p;
+
+
+ast_sink_sop_tmp <= '1' when cnt = 0 else
+'0';
+
+
+ast_sink_eop_tmp <= '1' when cnt = CHANSPERPHYIN_c - 1 else
+'0';
+
+
+ast_sink_sop <= ast_sink_sop_tmp after tclk/4;
+ast_sink_eop <= ast_sink_eop_tmp after tclk/4;
 
 
 -----------------------------------------------------------------------------------------------

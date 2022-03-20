@@ -42,7 +42,8 @@ module fifo (
 	rdreq,
 	wrclk,
 	wrreq,
-	q);
+	q,
+	rdempty);
 
 	input	[23:0]  data;
 	input	  rdclk;
@@ -50,9 +51,12 @@ module fifo (
 	input	  wrclk;
 	input	  wrreq;
 	output	[23:0]  q;
+	output	  rdempty;
 
 	wire [23:0] sub_wire0;
+	wire  sub_wire1;
 	wire [23:0] q = sub_wire0[23:0];
+	wire  rdempty = sub_wire1;
 
 	dcfifo	dcfifo_component (
 				.data (data),
@@ -61,9 +65,9 @@ module fifo (
 				.wrclk (wrclk),
 				.wrreq (wrreq),
 				.q (sub_wire0),
+				.rdempty (sub_wire1),
 				.aclr (),
 				.eccstatus (),
-				.rdempty (),
 				.rdfull (),
 				.rdusedw (),
 				.wrempty (),
@@ -112,7 +116,7 @@ endmodule
 // Retrieval info: PRIVATE: diff_widths NUMERIC "0"
 // Retrieval info: PRIVATE: msb_usedw NUMERIC "0"
 // Retrieval info: PRIVATE: output_width NUMERIC "24"
-// Retrieval info: PRIVATE: rsEmpty NUMERIC "0"
+// Retrieval info: PRIVATE: rsEmpty NUMERIC "1"
 // Retrieval info: PRIVATE: rsFull NUMERIC "0"
 // Retrieval info: PRIVATE: rsUsedW NUMERIC "0"
 // Retrieval info: PRIVATE: sc_aclr NUMERIC "0"
@@ -135,6 +139,7 @@ endmodule
 // Retrieval info: USED_PORT: data 0 0 24 0 INPUT NODEFVAL "data[23..0]"
 // Retrieval info: USED_PORT: q 0 0 24 0 OUTPUT NODEFVAL "q[23..0]"
 // Retrieval info: USED_PORT: rdclk 0 0 0 0 INPUT NODEFVAL "rdclk"
+// Retrieval info: USED_PORT: rdempty 0 0 0 0 OUTPUT NODEFVAL "rdempty"
 // Retrieval info: USED_PORT: rdreq 0 0 0 0 INPUT NODEFVAL "rdreq"
 // Retrieval info: USED_PORT: wrclk 0 0 0 0 INPUT NODEFVAL "wrclk"
 // Retrieval info: USED_PORT: wrreq 0 0 0 0 INPUT NODEFVAL "wrreq"
@@ -144,10 +149,11 @@ endmodule
 // Retrieval info: CONNECT: @wrclk 0 0 0 0 wrclk 0 0 0 0
 // Retrieval info: CONNECT: @wrreq 0 0 0 0 wrreq 0 0 0 0
 // Retrieval info: CONNECT: q 0 0 24 0 @q 0 0 24 0
+// Retrieval info: CONNECT: rdempty 0 0 0 0 @rdempty 0 0 0 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL fifo.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL fifo.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL fifo.cmp FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL fifo.bsf FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL fifo.bsf TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL fifo_inst.v FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL fifo_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf

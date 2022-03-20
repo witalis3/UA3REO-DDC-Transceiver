@@ -303,6 +303,8 @@ set_instance_assignment -name FAST_INPUT_REGISTER ON -to "ADC_Latch:ADC_Latcher_
 set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to "mux14:DAC_MUX|lpm_mux:LPM_MUX_component|mux_jqe:auto_generated|external_latency_ffsa"
 set_global_assignment -name BDF_FILE WOLF.bdf
 set_global_assignment -name VERILOG_FILE DAC_corrector.v
+set_global_assignment -name VERILOG_FILE dechannelizer2.v
+set_global_assignment -name VERILOG_FILE channelizer2.v
 set_global_assignment -name VERILOG_FILE channelizer4.v
 set_global_assignment -name VERILOG_FILE spi_interface.v
 set_global_assignment -name VERILOG_FILE stm32_interface.v

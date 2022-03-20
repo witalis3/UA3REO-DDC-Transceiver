@@ -17,14 +17,14 @@ entity tx_ciccomp_ast is
         REM_MSB_TYPE_g      : string := "trunc";
         PHYSCHANIN          : integer := 1;
         PHYSCHANOUT         : integer := 1;
-        CHANSPERPHYIN       : natural := 1;
-        CHANSPERPHYOUT      : natural := 1;
-        OUTPUTFIFODEPTH     : integer := 4;
-        USE_PACKETS         : integer := 0;
+        CHANSPERPHYIN       : natural := 2;
+        CHANSPERPHYOUT      : natural := 2;
+        OUTPUTFIFODEPTH     : integer := 8;
+        USE_PACKETS         : integer := 1;
         MODE_WIDTH         : integer := 0;
-        ENABLE_BACKPRESSURE : boolean := false;
-        LOG2_CHANSPERPHYOUT : natural := log2_ceil_one(1);
-        NUMCHANS            : integer := 1;
+        ENABLE_BACKPRESSURE : boolean := true;
+        LOG2_CHANSPERPHYOUT : natural := log2_ceil_one(2);
+        NUMCHANS            : integer := 2;
         DEVICE_FAMILY       : string := "Cyclone IV E";
         COMPLEX_CONST       : integer := 1
   );
@@ -195,6 +195,7 @@ real_passthrough : if COMPLEX_CONST = 1 generate
         xIn_v                 : in std_logic_vector(0 downto 0);
         xIn_c                 : in std_logic_vector(7 downto 0);
         xIn_0                : in std_logic_vector(24 - 1 downto 0);
+        enable_i             : in std_logic_vector(0 downto 0);
         xOut_v               : out std_logic_vector(0 downto 0);
         xOut_c               : out std_logic_vector(7 downto 0);
         xOut_0              : out std_logic_vector(40- 1 downto 0);
@@ -223,6 +224,7 @@ end component tx_ciccomp_rtl_core;
             xOut_v    => core_out_valid_core,
             xOut_c    => core_out_channel_core,
             xOut_0   => core_out_core(40* 0 + 40- 1 downto 40* 0),
+            enable_i  => enable_in,
             clk       => clk,
             areset    => reset_fir
         );
