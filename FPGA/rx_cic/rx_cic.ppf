@@ -11,11 +11,17 @@
   <pin name="in_error[1..0]" direction="input" scope="external" />
   <pin name="in_valid" direction="input" scope="external" />
   <pin name="in_ready" direction="output" scope="external" />
-  <pin name="in_data[30..0]" direction="input" scope="external" />
+  <pin name="in0_data[30..0]" direction="input" scope="external" />
+  <pin name="in1_data[30..0]" direction="input" scope="external" />
+  <pin name="in2_data[30..0]" direction="input" scope="external" />
+  <pin name="in3_data[30..0]" direction="input" scope="external" />
   <pin name="out_data[31..0]" direction="output" scope="external" />
   <pin name="out_error[1..0]" direction="output" scope="external" />
   <pin name="out_valid" direction="output" scope="external" />
   <pin name="out_ready" direction="input" scope="external" />
+  <pin name="out_startofpacket" direction="output" scope="external" />
+  <pin name="out_endofpacket" direction="output" scope="external" />
+  <pin name="out_channel[1..0]" direction="output" scope="external" />
   <pin name="rate[10..0]" direction="input" scope="external" />
  </global>
 </pinplan>

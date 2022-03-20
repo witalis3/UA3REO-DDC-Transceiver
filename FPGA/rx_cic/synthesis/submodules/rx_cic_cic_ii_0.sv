@@ -13,7 +13,10 @@
 
 
 module rx_cic_cic_ii_0 (
-    in_data,
+    in0_data,
+    in1_data,
+    in2_data,
+    in3_data,
 	out_ready,
 	in_valid,
     clk,
@@ -21,6 +24,9 @@ module rx_cic_cic_ii_0 (
     reset_n,
     rate,
     in_ready,
+	out_channel,
+	out_startofpacket,
+	out_endofpacket,
 	in_error,
 	out_error,
     out_data,
@@ -37,7 +43,7 @@ module rx_cic_cic_ii_0 (
     parameter VRC_EN   =  1;
     parameter RCF_MAX         =  1280;
     parameter RCF_MIN         =  160;
-    parameter INTERFACES    =  1;
+    parameter INTERFACES    =  4;
     parameter CH_PER_INT  =  1;
     parameter INT_USE_MEM      =  "false";
     parameter INT_MEM     =  "auto";
@@ -121,14 +127,17 @@ logic       in_startofpacket;
 logic       in_endofpacket;
 output      in_ready;
 input       in_valid;
-logic [CHANNEL_OUT_WIDTH-1:0] out_channel;
-logic      out_startofpacket;
-logic      out_endofpacket;
+output      [CHANNEL_OUT_WIDTH-1:0] out_channel;
+output      out_startofpacket;
+output      out_endofpacket;
 input       [1:0]	  in_error;
 output      [1:0]	  out_error;
 input       out_ready;
 output      out_valid;
-input [IN_WIDTH-1:0]     in_data;
+ input [IN_WIDTH-1:0]    in0_data;
+ input [IN_WIDTH-1:0]    in1_data;
+ input [IN_WIDTH-1:0]    in2_data;
+ input [IN_WIDTH-1:0]    in3_data;
 output [OUT_WIDTH-1:0]    out_data;
 
 wire [IN_WIDTH-1:0]  din     [INTERFACES_IN-1:0];
@@ -138,7 +147,10 @@ wire [OUT_WIDTH-1:0] dout    [INTERFACES_OUT-1:0];
 
 
 
-assign din[0] = in_data;
+assign din[0] = in0_data;
+assign din[1] = in1_data;
+assign din[2] = in2_data;
+assign din[3] = in3_data;
 
 assign out_data = dout[0];
 assign       in_startofpacket = 1'b1;

@@ -42,7 +42,10 @@
   <port name="in_error" internal="in_error" />
   <port name="in_valid" internal="in_valid" />
   <port name="in_ready" internal="in_ready" />
-  <port name="in_data" internal="in_data" />
+  <port name="in0_data" internal="in0_data" />
+  <port name="in1_data" internal="in1_data" />
+  <port name="in2_data" internal="in2_data" />
+  <port name="in3_data" internal="in3_data" />
  </interface>
  <interface
    name="av_st_out"
@@ -53,6 +56,9 @@
   <port name="out_error" internal="out_error" />
   <port name="out_valid" internal="out_valid" />
   <port name="out_ready" internal="out_ready" />
+  <port name="out_startofpacket" internal="out_startofpacket" />
+  <port name="out_endofpacket" internal="out_endofpacket" />
+  <port name="out_channel" internal="out_channel" />
  </interface>
  <interface name="clken" internal="cic_ii_0.clken" type="conduit" dir="end">
   <port name="clken" internal="clken" />
@@ -76,7 +82,7 @@
   <parameter name="CLK_EN_PORT" value="true" />
   <parameter name="D_DELAY" value="1" />
   <parameter name="FILTER_TYPE" value="decimator" />
-  <parameter name="INTERFACES" value="1" />
+  <parameter name="INTERFACES" value="4" />
   <parameter name="IN_WIDTH" value="31" />
   <parameter name="RCF_FIX" value="640" />
   <parameter name="RCF_LB" value="160" />

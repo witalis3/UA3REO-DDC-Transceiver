@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="rx_cic" kind="rx_cic" version="1.0" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2022.03.20.00:16:17 -->
+ <!-- 2022.03.20.13:52:56 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1647720977</value>
+  <value>1647769976</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -190,7 +190,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="INTERFACES">
    <type>int</type>
-   <value>1</value>
+   <value>4</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -740,10 +740,28 @@ parameters are a RESULT of the module parameters. -->
     <role>ready</role>
    </port>
    <port>
-    <name>in_data</name>
+    <name>in0_data</name>
     <direction>Input</direction>
     <width>31</width>
-    <role>in_data</role>
+    <role>in0_data</role>
+   </port>
+   <port>
+    <name>in1_data</name>
+    <direction>Input</direction>
+    <width>31</width>
+    <role>in1_data</role>
+   </port>
+   <port>
+    <name>in2_data</name>
+    <direction>Input</direction>
+    <width>31</width>
+    <role>in2_data</role>
+   </port>
+   <port>
+    <name>in3_data</name>
+    <direction>Input</direction>
+    <width>31</width>
+    <role>in3_data</role>
    </port>
   </interface>
   <interface name="av_st_out" kind="conduit_end" version="18.1">
@@ -811,6 +829,24 @@ parameters are a RESULT of the module parameters. -->
     <direction>Input</direction>
     <width>1</width>
     <role>ready</role>
+   </port>
+   <port>
+    <name>out_startofpacket</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>startofpacket</role>
+   </port>
+   <port>
+    <name>out_endofpacket</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>endofpacket</role>
+   </port>
+   <port>
+    <name>out_channel</name>
+    <direction>Output</direction>
+    <width>2</width>
+    <role>channel</role>
    </port>
   </interface>
   <interface name="rate" kind="conduit_end" version="18.1">
