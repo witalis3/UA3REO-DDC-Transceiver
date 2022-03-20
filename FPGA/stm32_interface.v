@@ -34,7 +34,7 @@ ADC_DITH,
 unused,
 CICFIR_GAIN,
 TX_CICFIR_GAIN,
-FIR_BANK,
+DAC_GAIN,
 ADC_OFFSET,
 NCO2_freq,
 rx2,
@@ -93,7 +93,7 @@ output reg IQ_RX_READ_REQ = 0;
 output reg IQ_RX_READ_CLK = 0;
 output reg unsigned [7:0] CICFIR_GAIN = 32;
 output reg unsigned [7:0] TX_CICFIR_GAIN = 32;
-output reg unsigned [1:0] FIR_BANK = 0;
+output reg unsigned [7:0] DAC_GAIN = 0;
 output reg signed [15:0] ADC_OFFSET = 'd0;
 output reg tx_iq_valid = 0;
 output reg signed [7:0] VCXO_correction = 'd0;
@@ -250,7 +250,7 @@ begin
 	end
 	else if (k == 111)
 	begin
-		FIR_BANK[1:0] = DATA_BUS[1:0];
+		DAC_GAIN[7:0] = DATA_BUS[7:0];
 		k = 112;
 	end
 	else if (k == 112)

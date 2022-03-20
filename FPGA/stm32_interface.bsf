@@ -257,8 +257,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 336)
 		(output)
-		(text "FIR_BANK[1..0]" (rect 0 0 69 12)(font "Arial" ))
-		(text "FIR_BANK[1..0]" (rect 198 331 267 343)(font "Arial" ))
+		(text "DAC_GAIN[7..0]" (rect 0 0 73 12)(font "Arial" ))
+		(text "DAC_GAIN[7..0]" (rect 194 331 267 343)(font "Arial" ))
 		(line (pt 288 336)(pt 272 336)(line_width 3))
 	)
 	(port

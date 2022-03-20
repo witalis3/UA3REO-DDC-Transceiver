@@ -10,9 +10,7 @@ module dechannelizer2(
 	output reg [23:0] out_data = 'd0,
 	output reg out_valid,
 	output reg out_sop,
-	output reg out_eop,
-	output reg [23:0] I = 'd0,
-	output reg [23:0] Q = 'd0
+	output reg out_eop
 );
 
 reg signed [23:0] data_1_reg = 'd0;
@@ -25,8 +23,6 @@ begin
 	begin
 		data_1_reg = in_data_1;
 		data_2_reg = in_data_2;
-		I = in_data_1;
-		Q = in_data_2;
 		out_valid = 0;
 		out_sop = 0;
 		out_eop = 0;
