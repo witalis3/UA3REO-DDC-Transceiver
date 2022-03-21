@@ -333,15 +333,6 @@ int main(void)
   println("[OK] RTC calibration");
   RTC_Calibration();
 
-  println("[OK] FPGA init");
-#ifdef FRONTPANEL_SMALL_V1
-  if (PERIPH_FrontPanel_Buttons[19].state) //fpga bus test (MODE+)
-    FPGA_Init(true, false);
-  if (PERIPH_FrontPanel_Buttons[20].state) //fpga firmware test (MODE-)
-    FPGA_Init(false, true);
-  else
-#endif
-    FPGA_Init(false, false);
   println("[OK] RF-Unit init");
   RF_UNIT_UpdateState(false);
   println("[OK] FFT/Waterfall & ADC & TIM4 init");
@@ -374,6 +365,15 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim15);
   println("[OK] Digital decoder timer TIM17 init");
   HAL_TIM_Base_Start_IT(&htim17);
+	println("[OK] FPGA init");
+#ifdef FRONTPANEL_SMALL_V1
+  if (PERIPH_FrontPanel_Buttons[19].state) //fpga bus test (MODE+)
+    FPGA_Init(true, false);
+  if (PERIPH_FrontPanel_Buttons[20].state) //fpga firmware test (MODE-)
+    FPGA_Init(false, true);
+  else
+#endif
+  FPGA_Init(false, false);
   println("UA3REO Transceiver started!\r\n");
 	
 	//Tisho													
