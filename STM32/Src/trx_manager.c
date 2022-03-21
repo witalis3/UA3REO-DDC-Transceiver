@@ -187,6 +187,7 @@ static void TRX_Start_TX()
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_CLAR_Applied = false;
 	TRX_TXRXMode = 2;
+	FPGA_NeedRestart = true;
 	
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
@@ -203,6 +204,7 @@ static void TRX_Start_TXRX()
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_CLAR_Applied = false;
 	TRX_TXRXMode = 3;
+	FPGA_NeedRestart = true;
 	
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;

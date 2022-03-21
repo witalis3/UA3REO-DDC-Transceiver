@@ -7,16 +7,9 @@ create_clock -name "clock_stm32" -period 50MHz [get_ports {STM32_CLK}]
 create_clock -name "RX_IQ_ST_CLK" -period 0.384MHz {stm32_interface:STM32_INTERFACE|IQ_RX_READ_CLK}
 create_clock -name "TX_IQ_ST_CLK" -period 0.048MHz {stm32_interface:STM32_INTERFACE|tx_iq_valid} 
 
-create_clock -name "RX1_CICCOMP_Q_data_valid" -period 0.768MHz {rx_ciccomp:RX1_CICCOMP_Q|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
-create_clock -name "RX1_CICCOMP_I_data_valid" -period 0.768MHz {rx_ciccomp:RX1_CICCOMP_I|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
-create_clock -name "RX2_CICCOMP_Q_data_valid" -period 0.768MHz {rx_ciccomp:RX2_CICCOMP_Q|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
-create_clock -name "RX2_CICCOMP_I_data_valid" -period 0.768MHz {rx_ciccomp:RX2_CICCOMP_I|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|data_valid}
-create_clock -name "RX1_CICCOMP_I_out_valid" -period 0.384MHz {rx_ciccomp:RX1_CICCOMP_I|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|altera_avalon_sc_fifo:\backpressure_support:scfifo|out_valid}
-create_clock -name "RX1_CICCOMP_Q_out_valid" -period 0.384MHz {rx_ciccomp:RX1_CICCOMP_Q|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|altera_avalon_sc_fifo:\backpressure_support:scfifo|out_valid}
-create_clock -name "RX2_CICCOMP_I_out_valid" -period 0.384MHz {rx_ciccomp:RX2_CICCOMP_I|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|altera_avalon_sc_fifo:\backpressure_support:scfifo|out_valid}
-create_clock -name "RX2_CICCOMP_Q_out_valid" -period 0.384MHz {rx_ciccomp:RX2_CICCOMP_Q|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|altera_avalon_sc_fifo:\backpressure_support:scfifo|out_valid}
+create_clock -name "RX_CICCOMP_payload" -period 0.384MHz {rx_ciccomp:RX_CICCOMP|rx_ciccomp_0002:rx_ciccomp_inst|rx_ciccomp_0002_ast:rx_ciccomp_0002_ast_inst|auk_dspip_avalon_streaming_source_hpfir:source|altera_avalon_sc_fifo:\backpressure_support:scfifo|out_payload[0]}
 
-set_clock_groups -exclusive -group clock_crystal -group clock_adc -group clock_tcxo -group clock_stm32 -group RX1_CICCOMP_I_out_valid -group RX1_CICCOMP_Q_out_valid -group RX2_CICCOMP_I_out_valid -group RX2_CICCOMP_Q_out_valid -group RX_IQ_ST_CLK -group TX_IQ_ST_CLK
+set_clock_groups -exclusive -group clock_crystal -group clock_adc -group clock_tcxo -group clock_stm32 -group RX_CICCOMP_payload -group RX_IQ_ST_CLK -group TX_IQ_ST_CLK
 
 derive_clock_uncertainty
 derive_pll_clocks -create_base_clocks
@@ -70,14 +63,19 @@ set_input_delay -clock clock_stm32 -min 0ps [get_ports STM32_SYNC]
 set_input_delay -clock MAIN_PLL|altpll_component|auto_generated|pll1|clk[2] -max 36ps [get_ports FLASH_MISO]
 set_input_delay -clock MAIN_PLL|altpll_component|auto_generated|pll1|clk[2] -min 0ps [get_ports FLASH_MISO]
 
+set_false_path -from [get_clocks {clock_crystal}] -to [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}]
+set_false_path -from [get_clocks {TX_IQ_ST_CLK}] -to [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}]
+set_false_path -from [get_clocks {TX_IQ_ST_CLK}] -to [get_clocks {MAIN_PLL|altpll_component|auto_generated|pll1|clk[1]}]
 set_false_path -from [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {clock_crystal}]
 set_false_path -from [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {clock_stm32}]
 set_false_path -from [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {clock_adc}]
+set_false_path -from [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {TX_IQ_ST_CLK}]
+set_false_path -from [get_clocks {MAIN_PLL|altpll_component|auto_generated|pll1|clk[1]}] -to [get_clocks {TX_IQ_ST_CLK}]
+set_false_path -from [get_clocks {MAIN_PLL|altpll_component|auto_generated|pll1|clk[1]}] -to [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path -from [get_clocks {clock_stm32}] -to [get_clocks {MAIN_PLL|altpll_component|auto_generated|pll1|clk[2]}]
 set_false_path -from [get_clocks {clock_stm32}] -to [get_clocks {MAIN_PLL|altpll_component|auto_generated|pll1|clk[3]}]
 set_false_path -from [get_clocks {clock_stm32}] -to [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path -from [get_clocks {clock_stm32}] -to [get_clocks {DCDC_PLL|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path -from [get_clocks {MAIN_PLL|altpll_component|auto_generated|pll1|clk[2]}] -to [get_clocks {clock_stm32}]
-set_false_path -from [get_clocks {RX1_CICOMP_Q_clk}] -to [get_clocks {clock_stm32}]
 set_false_path -from [get_clocks {clock_adc}] -to [get_clocks {TX_PLL|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path -from [get_clocks {DCDC_PLL|altpll_component|auto_generated|pll1|clk[1]}] -to [get_clocks {DCDC_PLL|altpll_component|auto_generated|pll1|clk[0]}]
