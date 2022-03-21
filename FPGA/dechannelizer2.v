@@ -6,6 +6,7 @@ module dechannelizer2(
 	input wire clk,
 	input wire empty_1,
 	input wire empty_2,
+	input wire reset_n,
 
 	output reg [23:0] out_data = 'd0,
 	output reg out_valid,
@@ -19,7 +20,16 @@ reg [2:0] state = 'd0;
 
 always @(posedge clk)
 begin
-	if(state == 0 && in_valid && in_ready) //  && !empty_1 && !empty_2
+	if(reset_n == 0)
+	begin
+		data_1_reg = 0;
+		data_2_reg = 0;
+		out_valid = 0;
+		out_sop = 0;
+		out_eop = 0;
+		state = 0;
+	end
+	else if(state == 0 && in_valid && in_ready) //  && !empty_1 && !empty_2
 	begin
 		data_1_reg = in_data_1;
 		data_2_reg = in_data_2;

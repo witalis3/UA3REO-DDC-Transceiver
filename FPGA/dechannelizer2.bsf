@@ -73,6 +73,13 @@ refer to the applicable agreement for further details.
 		(line (pt 0 128)(pt 16 128)(line_width 1))
 	)
 	(port
+		(pt 0 144)
+		(input)
+		(text "reset_n" (rect 0 0 30 12)(font "Arial" ))
+		(text "reset_n" (rect 21 139 51 151)(font "Arial" ))
+		(line (pt 0 144)(pt 16 144)(line_width 1))
+	)
+	(port
 		(pt 224 32)
 		(output)
 		(text "out_data[23..0]" (rect 0 0 59 12)(font "Arial" ))
