@@ -154,6 +154,8 @@ begin
 		end
 		else if(DATA_BUS[7:0] == 'd4) //RX IQ
 		begin
+			IQ_RX_READ_REQ = 1;
+			IQ_RX_READ_CLK = 1;
 			DATA_BUS_OE = 1;
 			k = 400;
 		end
@@ -403,11 +405,7 @@ begin
 	end
 	else if (k == 400) //RX1 IQ
 	begin
-		//if(in_empty == 0)
-		//begin
-			IQ_RX_READ_REQ = 1;
-			IQ_RX_READ_CLK = 1;
-		//end
+		IQ_RX_READ_CLK = 0;
 		READ_RX1_I[23:0] = RX1_I[23:0];
 		READ_RX1_Q[23:0] = RX1_Q[23:0];
 		READ_RX2_I[23:0] = RX2_I[23:0];
@@ -417,7 +415,7 @@ begin
 	end
 	else if (k == 401)
 	begin
-		IQ_RX_READ_CLK = 0;
+		
 		DATA_BUS_OUT[7:0] = READ_RX1_Q[15:8];
 		k = 402;
 	end
@@ -442,7 +440,11 @@ begin
 		if(rx2 == 1)
 			k = 406;
 		else
+		begin
+			IQ_RX_READ_REQ = 1;
+			IQ_RX_READ_CLK = 1;
 			k = 400;
+		end
 	end
 	else if (k == 406) //RX2 IQ
 	begin

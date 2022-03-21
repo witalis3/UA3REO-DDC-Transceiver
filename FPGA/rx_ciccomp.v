@@ -72,7 +72,7 @@ endmodule
 // Retrieval info: 	<generic name="filterType" value="decim" />
 // Retrieval info: 	<generic name="interpFactor" value="1" />
 // Retrieval info: 	<generic name="decimFactor" value="2" />
-// Retrieval info: 	<generic name="symmetryMode" value="nsym" />
+// Retrieval info: 	<generic name="symmetryMode" value="sym" />
 // Retrieval info: 	<generic name="L_bandsFilter" value="1" />
 // Retrieval info: 	<generic name="inputChannelNum" value="4" />
 // Retrieval info: 	<generic name="clockRate" value="122.880" />
@@ -84,10 +84,10 @@ endmodule
 // Retrieval info: 	<generic name="backPressure" value="true" />
 // Retrieval info: 	<generic name="deviceFamily" value="Cyclone IV E" />
 // Retrieval info: 	<generic name="speedGrade" value="slow" />
-// Retrieval info: 	<generic name="delayRAMBlockThreshold" value="-1" />
-// Retrieval info: 	<generic name="dualMemDistRAMThreshold" value="-1" />
-// Retrieval info: 	<generic name="mRAMThreshold" value="-1" />
-// Retrieval info: 	<generic name="hardMultiplierThreshold" value="-1" />
+// Retrieval info: 	<generic name="delayRAMBlockThreshold" value="20" />
+// Retrieval info: 	<generic name="dualMemDistRAMThreshold" value="1280" />
+// Retrieval info: 	<generic name="mRAMThreshold" value="1000000" />
+// Retrieval info: 	<generic name="hardMultiplierThreshold" value="100" />
 // Retrieval info: 	<generic name="reconfigurable" value="false" />
 // Retrieval info: 	<generic name="num_modes" value="2" />
 // Retrieval info: 	<generic name="reconfigurable_list" value="0" />

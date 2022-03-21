@@ -19,7 +19,7 @@ reg [2:0] state = 'd0;
 
 always @(posedge clk)
 begin
-	if(state == 0 && in_valid && in_ready && !empty_1 && !empty_2)
+	if(state == 0 && in_valid && in_ready) //  && !empty_1 && !empty_2
 	begin
 		data_1_reg = in_data_1;
 		data_2_reg = in_data_2;
@@ -46,7 +46,6 @@ begin
 	end
 	else if(state == 3)
 	begin
-		out_data = 'd0;
 		out_valid = 0;
 		out_sop = 0;
 		out_eop = 0;

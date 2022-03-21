@@ -10,6 +10,7 @@
 		.out_error        (<connected-to-out_error>),        //          .error
 		.out_valid        (<connected-to-out_valid>),        //          .valid
 		.out_ready        (<connected-to-out_ready>),        //          .ready
+		.clken            (<connected-to-clken>),            //     clken.clken
 		.clk              (<connected-to-clk>),              //     clock.clk
 		.reset_n          (<connected-to-reset_n>)           //     reset.reset_n
 	);

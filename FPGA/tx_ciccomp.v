@@ -72,11 +72,11 @@ endmodule
 // Retrieval info: 	<generic name="filterType" value="single" />
 // Retrieval info: 	<generic name="interpFactor" value="1" />
 // Retrieval info: 	<generic name="decimFactor" value="1" />
-// Retrieval info: 	<generic name="symmetryMode" value="nsym" />
+// Retrieval info: 	<generic name="symmetryMode" value="sym" />
 // Retrieval info: 	<generic name="L_bandsFilter" value="1" />
 // Retrieval info: 	<generic name="inputChannelNum" value="2" />
-// Retrieval info: 	<generic name="clockRate" value="188.16" />
-// Retrieval info: 	<generic name="clockSlack" value="0" />
+// Retrieval info: 	<generic name="clockRate" value="188.160" />
+// Retrieval info: 	<generic name="clockSlack" value="12" />
 // Retrieval info: 	<generic name="inputRate" value="0.048" />
 // Retrieval info: 	<generic name="coeffReload" value="false" />
 // Retrieval info: 	<generic name="baseAddress" value="0" />
@@ -87,7 +87,7 @@ endmodule
 // Retrieval info: 	<generic name="delayRAMBlockThreshold" value="20" />
 // Retrieval info: 	<generic name="dualMemDistRAMThreshold" value="1280" />
 // Retrieval info: 	<generic name="mRAMThreshold" value="1000000" />
-// Retrieval info: 	<generic name="hardMultiplierThreshold" value="-1" />
+// Retrieval info: 	<generic name="hardMultiplierThreshold" value="100" />
 // Retrieval info: 	<generic name="reconfigurable" value="false" />
 // Retrieval info: 	<generic name="num_modes" value="2" />
 // Retrieval info: 	<generic name="reconfigurable_list" value="0" />

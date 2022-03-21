@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 18.1 625 win32 2022.03.20.16:56:42
+# ACDS 18.1 625 win32 2022.03.21.14:05:00
 # ----------------------------------------
 # Auto-generated simulation script rivierapro_setup.tcl
 # ----------------------------------------
@@ -153,7 +153,7 @@ if { [ string match "Active" $Aldec ] } {
 alias file_copy {
   echo "\[exec\] file_copy"
   file copy -force $QSYS_SIMDIR/rx_ciccomp_rtl_core_u0_m0_wo0_cm0_lutmem.hex ./
-  file copy -force $QSYS_SIMDIR/rx_ciccomp_rtl_core_u0_m0_wo0_cm1_lutmem.hex ./
+  file copy -force $QSYS_SIMDIR/rx_ciccomp_rtl_core_u0_m0_wo0_wi0_r0_ra0_count2_lut_lutmem.hex ./
   file copy -force $QSYS_SIMDIR/rx_ciccomp_rtl_core_u0_m0_wo0_wi0_r0_ra1_count2_lut_lutmem.hex ./
 }
 

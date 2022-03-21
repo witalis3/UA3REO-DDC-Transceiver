@@ -43,10 +43,10 @@ entity tx_ciccomp_tb is
     constant TOTAL_INCHANS_ALLOWED    : natural := PHYSCHANIN_c * CHANSPERPHYIN_c;
     constant TOTAL_OUTCHANS_ALLOWED   : natural := PHYSCHANOUT_c * CHANSPERPHYOUT_c;
     constant NUM_OF_TAPS_c            : natural := 64;
-    constant TOTAL_EFF_COEF_c         : natural := 64;
+    constant TOTAL_EFF_COEF_c         : natural := 32;
     constant COEFF_BIT_WIDTH_c        : natural := 10;
     constant COEFF_BUS_DATA_WIDTH_c   : natural := 16;
-    constant COEFF_BUS_ADDR_WIDTH   : natural := 6;
+    constant COEFF_BUS_ADDR_WIDTH   : natural := 5;
 
 end entity tx_ciccomp_tb;
 

@@ -301,6 +301,8 @@ set_global_assignment -name MUX_RESTRUCTURE OFF
 set_global_assignment -name STATE_MACHINE_PROCESSING "ONE-HOT"
 set_instance_assignment -name FAST_INPUT_REGISTER ON -to "ADC_Latch:ADC_Latcher_IN|lpm_add_sub:LPM_ADD_SUB_component|add_sub_f2k:auto_generated|pipeline_dffe"
 set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to "mux14:DAC_MUX|lpm_mux:LPM_MUX_component|mux_jqe:auto_generated|external_latency_ffsa"
+set_global_assignment -name QSYS_FILE DEBUG2.qsys
+set_global_assignment -name QSYS_FILE DEBUG.qsys
 set_global_assignment -name BDF_FILE WOLF.bdf
 set_global_assignment -name VERILOG_FILE DAC_corrector.v
 set_global_assignment -name VERILOG_FILE dechannelizer2.v

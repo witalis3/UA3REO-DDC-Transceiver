@@ -15,6 +15,7 @@ module tx_cic (
 		output wire [1:0]  out_error,        //          .error
 		output wire        out_valid,        //          .valid
 		input  wire        out_ready,        //          .ready
+		input  wire        clken,            //     clken.clken
 		input  wire        clk,              //     clock.clk
 		input  wire        reset_n           //     reset.reset_n
 	);
@@ -22,6 +23,7 @@ module tx_cic (
 	tx_cic_cic_ii_0 cic_ii_0 (
 		.clk              (clk),              //     clock.clk
 		.reset_n          (reset_n),          //     reset.reset_n
+		.clken            (clken),            //     clken.clken
 		.in_error         (in_error),         //  av_st_in.error
 		.in_valid         (in_valid),         //          .valid
 		.in_ready         (in_ready),         //          .ready
@@ -32,8 +34,7 @@ module tx_cic (
 		.out1_data        (out1_data),        //          .out1_data
 		.out_error        (out_error),        //          .error
 		.out_valid        (out_valid),        //          .valid
-		.out_ready        (out_ready),        //          .ready
-		.clken            (1'b1)              // (terminated)
+		.out_ready        (out_ready)         //          .ready
 	);
 
 endmodule

@@ -10,7 +10,7 @@ OutFracWidth : 0
 OutFullFracWidth : 0 
 nChans : 64 
 nTaps : 64 
-clockRate : 188.16 
+clockRate : 188.160 
 inRate : 0.048 
 interpN : 1 
 decimN : 1 
