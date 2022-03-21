@@ -171,6 +171,7 @@ void FPGA_restart(void) // restart FPGA modules
 		FPGA_NeedRestart = false;
 		FPGA_restart_state = false;
 	}*/
+	FPGA_NeedRestart = false;
 }
 
 // exchange parameters with FPGA
