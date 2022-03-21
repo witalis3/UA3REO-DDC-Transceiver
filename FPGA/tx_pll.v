@@ -94,9 +94,9 @@ module tx_pll (
 				.vcounderrange ());
 	defparam
 		altpll_component.bandwidth_type = "AUTO",
-		altpll_component.clk0_divide_by = 32,
+		altpll_component.clk0_divide_by = 40,
 		altpll_component.clk0_duty_cycle = 50,
-		altpll_component.clk0_multiply_by = 49,
+		altpll_component.clk0_multiply_by = 61,
 		altpll_component.clk0_phase_shift = "0",
 		altpll_component.clk1_divide_by = 128,
 		altpll_component.clk1_duty_cycle = 50,
@@ -174,11 +174,11 @@ endmodule
 // Retrieval info: PRIVATE: CUR_DEDICATED_CLK STRING "c0"
 // Retrieval info: PRIVATE: CUR_FBIN_CLK STRING "c0"
 // Retrieval info: PRIVATE: DEVICE_SPEED_GRADE STRING "8"
-// Retrieval info: PRIVATE: DIV_FACTOR0 NUMERIC "8"
+// Retrieval info: PRIVATE: DIV_FACTOR0 NUMERIC "35"
 // Retrieval info: PRIVATE: DIV_FACTOR1 NUMERIC "128"
 // Retrieval info: PRIVATE: DUTY_CYCLE0 STRING "50.00000000"
 // Retrieval info: PRIVATE: DUTY_CYCLE1 STRING "50.00000000"
-// Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE0 STRING "188.160004"
+// Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE0 STRING "187.391998"
 // Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE1 STRING "0.960000"
 // Retrieval info: PRIVATE: EXPLICIT_SWITCHOVER_COUNTER STRING "0"
 // Retrieval info: PRIVATE: EXT_FEEDBACK_RADIO STRING "0"
@@ -204,10 +204,10 @@ endmodule
 // Retrieval info: PRIVATE: MIG_DEVICE_SPEED_GRADE STRING "Any"
 // Retrieval info: PRIVATE: MIRROR_CLK0 STRING "0"
 // Retrieval info: PRIVATE: MIRROR_CLK1 STRING "0"
-// Retrieval info: PRIVATE: MULT_FACTOR0 NUMERIC "12"
+// Retrieval info: PRIVATE: MULT_FACTOR0 NUMERIC "49"
 // Retrieval info: PRIVATE: MULT_FACTOR1 NUMERIC "1"
 // Retrieval info: PRIVATE: NORMAL_MODE_RADIO STRING "1"
-// Retrieval info: PRIVATE: OUTPUT_FREQ0 STRING "188.16000000"
+// Retrieval info: PRIVATE: OUTPUT_FREQ0 STRING "187.39200000"
 // Retrieval info: PRIVATE: OUTPUT_FREQ1 STRING "100.00000000"
 // Retrieval info: PRIVATE: OUTPUT_FREQ_MODE0 STRING "1"
 // Retrieval info: PRIVATE: OUTPUT_FREQ_MODE1 STRING "0"
@@ -254,9 +254,9 @@ endmodule
 // Retrieval info: PRIVATE: ZERO_DELAY_RADIO STRING "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: BANDWIDTH_TYPE STRING "AUTO"
-// Retrieval info: CONSTANT: CLK0_DIVIDE_BY NUMERIC "32"
+// Retrieval info: CONSTANT: CLK0_DIVIDE_BY NUMERIC "40"
 // Retrieval info: CONSTANT: CLK0_DUTY_CYCLE NUMERIC "50"
-// Retrieval info: CONSTANT: CLK0_MULTIPLY_BY NUMERIC "49"
+// Retrieval info: CONSTANT: CLK0_MULTIPLY_BY NUMERIC "61"
 // Retrieval info: CONSTANT: CLK0_PHASE_SHIFT STRING "0"
 // Retrieval info: CONSTANT: CLK1_DIVIDE_BY NUMERIC "128"
 // Retrieval info: CONSTANT: CLK1_DUTY_CYCLE NUMERIC "50"
