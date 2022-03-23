@@ -54,6 +54,7 @@ static void (*LCD_keyboardHandler)(uint32_t parameter) = NULL;
 
 static bool LCD_inited = false;
 static float32_t LCD_last_s_meter = 1.0f;
+static float32_t LCD_smeter_peak_x = 0;
 static uint32_t Time;
 static uint8_t Hours;
 static uint8_t Last_showed_Hours = 255;
@@ -845,7 +846,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 		//digital s-meter version
 		static uint32_t last_s_meter_draw_time = 0;
-		if (!LAYOUT->STATUS_SMETER_ANALOG && (redraw || (LCD_last_s_meter != s_width) || (HAL_GetTick() - last_s_meter_draw_time) > 500))
+		if (!LAYOUT->STATUS_SMETER_ANALOG && (redraw || (fabsf(LCD_last_s_meter - s_width) >= 1.0f) || (fabsf(LCD_smeter_peak_x - s_width) >= 1.0f) || (HAL_GetTick() - last_s_meter_draw_time) > 500))
 		{
 			last_s_meter_draw_time = HAL_GetTick();
 			//clear old bar
@@ -859,18 +860,17 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)s_width, LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
 
 			// peak
-			static uint16_t smeter_peak_x = 0;
 			static uint32_t smeter_peak_settime = 0;
-			if (smeter_peak_x > s_width)
-				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + smeter_peak_x, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, 2, LAYOUT->STATUS_BAR_HEIGHT - 3, BG_COLOR); //clear old peak
-			if (smeter_peak_x > 0 && ((HAL_GetTick() - smeter_peak_settime) > LAYOUT->STATUS_SMETER_PEAK_HOLDTIME))
-				smeter_peak_x--;
-			if (s_width > smeter_peak_x)
+			if (LCD_smeter_peak_x > s_width)
+				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + LCD_smeter_peak_x, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, 2, LAYOUT->STATUS_BAR_HEIGHT - 3, BG_COLOR); //clear old peak
+			if (LCD_smeter_peak_x > 0 && ((HAL_GetTick() - smeter_peak_settime) > LAYOUT->STATUS_SMETER_PEAK_HOLDTIME))
+				LCD_smeter_peak_x--;
+			if (s_width > LCD_smeter_peak_x)
 			{
-				smeter_peak_x = (uint16_t)s_width;
+				LCD_smeter_peak_x = s_width;
 				smeter_peak_settime = HAL_GetTick();
 			}
-			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + smeter_peak_x, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, 2, LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER_PEAK);
+			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + LCD_smeter_peak_x, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, 2, LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER_PEAK);
 
 			//FM Squelch stripe
 			if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM)
