@@ -55,7 +55,7 @@ typedef const struct
 	const uint16_t BW_TRAPEZ_BORDER;
 	const uint16_t BW_TRAPEZ_STRIPE;
 	const uint16_t BW_TRAPEZ_FILL;
-	//7inch
+	// 7inch
 	const uint16_t FREQ_B_MHZ;
 	const uint16_t FREQ_B_KHZ;
 	const uint16_t FREQ_B_HZ;
@@ -73,9 +73,9 @@ typedef const struct
 } STRUCT_COLOR_THEME;
 
 static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
-	//0 - black
+	// 0 - black
 	{
-		//3'2 inch
+		// 3'2 inch
 		.BACKGROUND = COLOR_BLACK,
 		.FOREGROUND = COLOR_WHITE,
 		.BUTTON_TEXT = rgb888torgb565(32, 191, 17),
@@ -126,7 +126,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BW_TRAPEZ_BORDER = rgb888torgb565(120, 120, 120),
 		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
 		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
-		//7inch
+		// 7inch
 		.FREQ_B_MHZ = COLOR_WHITE,
 		.FREQ_B_KHZ = COLOR_WHITE,
 		.FREQ_B_HZ = rgb888torgb565(150, 150, 150),
@@ -142,9 +142,9 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.WINDOWS_BG = COLOR_BLACK,
 		.KEYBOARD_BG = rgb888torgb565(20, 20, 20),
 	},
-	//1 - white
+	// 1 - white
 	{
-		//3'2 inch
+		// 3'2 inch
 		.BACKGROUND = COLOR_WHITE,
 		.FOREGROUND = COLOR_BLACK,
 		.BUTTON_TEXT = rgb888torgb565(150, 130, 50),
@@ -195,7 +195,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BW_TRAPEZ_BORDER = rgb888torgb565(120, 120, 120),
 		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
 		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
-		//7inch
+		// 7inch
 		.FREQ_B_MHZ = COLOR_BLACK,
 		.FREQ_B_KHZ = COLOR_BLACK,
 		.FREQ_B_HZ = rgb888torgb565(130, 130, 130),
@@ -213,8 +213,8 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 	},
 
 	{
-		//2 - black, 7-segments FREQ
-		//3'2 inch
+		// 2 - black, 7-segments FREQ
+		// 3'2 inch
 		.BACKGROUND = COLOR_BLACK,
 		.FOREGROUND = COLOR_WHITE,
 		.BUTTON_TEXT = rgb888torgb565(32, 191, 17),
@@ -267,7 +267,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BW_TRAPEZ_BORDER = rgb888torgb565(120, 120, 120),
 		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
 		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
-		//7inch
+		// 7inch
 
 		.FREQ_B_MHZ = rgb888torgb565(0, 255, 212),
 		.FREQ_B_KHZ = rgb888torgb565(0, 255, 212),
@@ -291,7 +291,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 #define BG_COLOR COLOR->BACKGROUND
 #define FG_COLOR COLOR->FOREGROUND
 
-//LCD dimensions defines
+// LCD dimensions defines
 #include "screen_layout.h"
 
 #endif

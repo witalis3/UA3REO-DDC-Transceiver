@@ -4,7 +4,7 @@
 #if (defined(TOUCHPAD_GT911))
 #define HAS_TOUCHPAD true
 
-#define GT911_I2C_ADDR_1 93 //20/93 is shifted >> 1 touch addr
+#define GT911_I2C_ADDR_1 93 // 20/93 is shifted >> 1 touch addr
 #define GT911_I2C_ADDR_2 20
 #define GT911_MAX_TOUCH 5
 #define GT911_COMMAND_REG 0x8040
@@ -14,7 +14,7 @@
 #define GT911_READ_XY_REG 0x814E
 
 /* Commands for GT911_COMMAND_REG */
-//0: read coordinate state
+// 0: read coordinate state
 #define GOODIX_CMD_READ 0x00
 // 1: difference value original value
 #define GOODIX_CMD_DIFFVAL 0x01

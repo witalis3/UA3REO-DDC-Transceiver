@@ -9,9 +9,9 @@
 #define ENUM_MAX_COUNT 9
 
 #ifdef LAY_160x128
-	#define ENUM_MAX_LENGTH 7
+#define ENUM_MAX_LENGTH 7
 #else
-	#define ENUM_MAX_LENGTH 10
+#define ENUM_MAX_LENGTH 10
 #endif
 
 typedef enum
@@ -49,7 +49,7 @@ struct sysmenu_item_handler
 
 struct sysmenu_menu_wrapper
 {
-	const struct sysmenu_item_handler* menu_handler;
+	const struct sysmenu_item_handler *menu_handler;
 	uint8_t currentIndex;
 };
 

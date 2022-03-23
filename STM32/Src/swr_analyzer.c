@@ -7,7 +7,7 @@
 #include "lcd.h"
 #include "rf_unit.h"
 
-//Private variables
+// Private variables
 static const uint16_t graph_start_x = 25;
 static const uint16_t graph_start_y = 5;
 static float32_t now_freq;
@@ -30,26 +30,26 @@ static uint32_t endFreq = 0;
 static uint32_t minSWR_Freq = 99.0f;
 static float32_t minSWR_SWR = 0;
 
-//Saved variables
+// Saved variables
 static uint32_t Lastfreq = 0;
 static bool LastMute = false;
 
-//Public variables
+// Public variables
 bool SYSMENU_swr_opened = false;
-bool SYSMENU_TDM_CTRL_opened = false; //Tisho
+bool SYSMENU_TDM_CTRL_opened = false; // Tisho
 
-//Prototypes
+// Prototypes
 static void SWR_DrawBottomGUI(void);				  // display status at the bottom of the screen
 static void SWR_DrawGraphCol(uint16_t x, bool clear); // display the data column
 static uint16_t SWR_getYfromX(uint16_t x);			  // get height from data id
 
-extern void TDM_Voltages_Start(void) //Tisho
+extern void TDM_Voltages_Start(void) // Tisho
 {
 	LCD_busy = true;
 
 	// draw the GUI
 	LCDDriver_Fill(COLOR_BLACK);
-	//LCDDriver_drawFastVLine(graph_start_x, graph_start_y, graph_height, COLOR_WHITE);
+	// LCDDriver_drawFastVLine(graph_start_x, graph_start_y, graph_height, COLOR_WHITE);
 #if (defined(SWR_AD8307_LOG))
 	LCDDriver_printText("RAW    Scaled     PWR      PWR", 50, 10, COLOR_GREEN, COLOR_BLACK, 2);
 	LCDDriver_printText("[mV]    [Vp]     [dBm]     [W]", 50, 30, COLOR_GREEN, COLOR_BLACK, 2);
@@ -83,7 +83,7 @@ extern void TDM_Voltages_Start(void) //Tisho
 	LCD_UpdateQuery.SystemMenu = true;
 }
 
-extern void TDM_Voltages(void) //Tisho
+extern void TDM_Voltages(void) // Tisho
 {
 	char ctmp[64] = {0};
 
@@ -95,22 +95,22 @@ extern void TDM_Voltages(void) //Tisho
 	// Read the signals (Voltages - raw data)
 	RF_UNIT_MeasureVoltage();
 
-	//Calculate the values
-	//dBm is calculated using the voltage in mV (coefficients are defined as well in mV)
+	// Calculate the values
+	// dBm is calculated using the voltage in mV (coefficients are defined as well in mV)
 
-	//Calculate the Forward values
+	// Calculate the Forward values
 	P_FW_dBm = ((TRX_VLT_forward * 1000) - CALIBRATE.FW_AD8307_OFFS) / (CALIBRATE.FW_AD8307_SLP);
-	V_FW_Scaled = pow(10, (double)((P_FW_dBm - 10) / 20)); //Calculate in voltage (50ohm terminated)
-	P_FW_W = pow(10, (double)((P_FW_dBm - 30) / 10));	   //Calculate in W
+	V_FW_Scaled = pow(10, (double)((P_FW_dBm - 10) / 20)); // Calculate in voltage (50ohm terminated)
+	P_FW_W = pow(10, (double)((P_FW_dBm - 30) / 10));	   // Calculate in W
 
-	//Calculate the Backward values
+	// Calculate the Backward values
 	P_BW_dBm = ((TRX_VLT_backward * 1000) - CALIBRATE.BW_AD8307_OFFS) / (CALIBRATE.BW_AD8307_SLP);
-	V_BW_Scaled = pow(10, (double)((P_BW_dBm - 10) / 20)); //Calculate in voltage (50ohm terminated)
-	P_BW_W = pow(10, (double)((P_BW_dBm - 30) / 10));	   //Calculate in W
+	V_BW_Scaled = pow(10, (double)((P_BW_dBm - 10) / 20)); // Calculate in voltage (50ohm terminated)
+	P_BW_W = pow(10, (double)((P_BW_dBm - 30) / 10));	   // Calculate in W
 
-	//Print the forward values
+	// Print the forward values
 	sprintf(ctmp, "FW: %.0f ", (double)TRX_VLT_forward * 1000);
-	//LCDDriver_Fill_RectWH(5, 30, 480, 18, COLOR_BLACK);
+	// LCDDriver_Fill_RectWH(5, 30, 480, 18, COLOR_BLACK);
 	LCDDriver_printText(ctmp, 5, 55, COLOR_GREEN, COLOR_BLACK, 2);
 
 	sprintf(ctmp, "%.2f ", (double)V_FW_Scaled);
@@ -122,7 +122,7 @@ extern void TDM_Voltages(void) //Tisho
 	sprintf(ctmp, "%.1f ", (double)P_FW_W);
 	LCDDriver_printText(ctmp, 380, 55, COLOR_GREEN, COLOR_BLACK, 2);
 
-	//Print the backward values
+	// Print the backward values
 	sprintf(ctmp, "BW: %.0f ", (double)TRX_VLT_backward * 1000);
 	LCDDriver_printText(ctmp, 5, 80, COLOR_GREEN, COLOR_BLACK, 2);
 
@@ -138,15 +138,15 @@ extern void TDM_Voltages(void) //Tisho
 #else
 	RF_UNIT_ProcessSensors();
 
-	//Print the forward values
+	// Print the forward values
 	sprintf(ctmp, "FW: %.1f ", (double)TRX_VLT_forward);
-	//LCDDriver_Fill_RectWH(5, 30, 480, 18, COLOR_BLACK);
+	// LCDDriver_Fill_RectWH(5, 30, 480, 18, COLOR_BLACK);
 	LCDDriver_printText(ctmp, 5, 55, COLOR_GREEN, COLOR_BLACK, 2);
 
 	sprintf(ctmp, "%.2f ", (double)TRX_PWR_Forward);
 	LCDDriver_printText(ctmp, 150, 55, COLOR_GREEN, COLOR_BLACK, 2);
 
-	//Print the backward values
+	// Print the backward values
 	sprintf(ctmp, "BW: %.1f ", (double)TRX_VLT_backward);
 	LCDDriver_printText(ctmp, 5, 80, COLOR_GREEN, COLOR_BLACK, 2);
 
@@ -162,7 +162,7 @@ void SWR_Start(uint32_t start, uint32_t end)
 	startFreq = start;
 	endFreq = end;
 
-	//save settings
+	// save settings
 	Lastfreq = CurrentVFO->Freq;
 	LastMute = TRX_Mute;
 
@@ -223,7 +223,7 @@ void SWR_Draw(void)
 {
 	static uint32_t minSWR_Freq_tmp = 0;
 	static float32_t minSWR_SWR_tmp = 99.0f;
-	
+
 	if (LCD_busy)
 		return;
 
@@ -242,20 +242,20 @@ void SWR_Draw(void)
 	RF_UNIT_ProcessSensors();
 
 	// Draw
-	if(graph_sweep_x < graph_width)
+	if (graph_sweep_x < graph_width)
 	{
 		data[graph_sweep_x] = TRX_SWR;
 		SWR_DrawGraphCol(graph_sweep_x, true);
 		// draw a marker
 		if (graph_sweep_x == graph_selected_x)
 			SWR_DrawBottomGUI();
-		//calculate minimum SWR
-		if(minSWR_SWR_tmp > TRX_SWR)
+		// calculate minimum SWR
+		if (minSWR_SWR_tmp > TRX_SWR)
 		{
 			minSWR_SWR_tmp = TRX_SWR;
 			minSWR_Freq_tmp = (uint32_t)now_freq;
 		}
-		if(minSWR_SWR > TRX_SWR)
+		if (minSWR_SWR > TRX_SWR)
 		{
 			minSWR_SWR = TRX_SWR;
 			minSWR_Freq = (uint32_t)now_freq;
@@ -268,7 +268,7 @@ void SWR_Draw(void)
 	{
 		graph_sweep_x = 0;
 		now_freq = startFreq;
-		//Minimum SWR
+		// Minimum SWR
 		minSWR_SWR = minSWR_SWR_tmp;
 		minSWR_Freq = minSWR_Freq_tmp;
 		minSWR_SWR_tmp = 99.0f;

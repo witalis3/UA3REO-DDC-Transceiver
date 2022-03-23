@@ -13,7 +13,7 @@
 #include "arm_const_structs.h"
 #include "decoder.h"
 
-//Ported from https://github.com/df8oe/UHSDR/blob/active-devel/mchf-eclipse/drivers/audio/rtty.c
+// Ported from https://github.com/df8oe/UHSDR/blob/active-devel/mchf-eclipse/drivers/audio/rtty.c
 
 char RTTY_Decoder_Text[RTTY_DECODER_STRLEN + 1] = {0}; // decoded string
 
@@ -25,17 +25,17 @@ static uint16_t RTTY_byteResult_bnum = 0;
 static int32_t RTTY_DPLLBitPhase;
 static int32_t RTTY_DPLLOldVal;
 
-//lpf
+// lpf
 static float32_t RTTY_LPF_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RTTY_LPF_STAGES] = {0};
 static float32_t RTTY_LPF_Filter_State[2 * RTTY_LPF_STAGES] = {0};
 static arm_biquad_cascade_df2T_instance_f32 RTTY_LPF_Filter;
 
-//mark
+// mark
 static float32_t RTTY_Mark_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RTTY_BPF_STAGES] = {0};
 static float32_t RTTY_Mark_Filter_State[2 * RTTY_BPF_STAGES] = {0};
 static arm_biquad_cascade_df2T_instance_f32 RTTY_Mark_Filter;
 
-//space
+// space
 static float32_t RTTY_Space_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RTTY_BPF_STAGES] = {0};
 static float32_t RTTY_Space_Filter_State[2 * RTTY_BPF_STAGES] = {0};
 static arm_biquad_cascade_df2T_instance_f32 RTTY_Space_Filter;
@@ -59,31 +59,31 @@ static float32_t RTTYDecoder_decayavg(float32_t average, float32_t input, int we
 
 void RTTYDecoder_Init(void)
 {
-	//speed
+	// speed
 	if (TRX.RTTY_Speed == 45)
 		RTTY_oneBitSampleCount = (uint16_t)roundf((float32_t)TRX_SAMPLERATE / 45.45f);
 	else
 		RTTY_oneBitSampleCount = (uint16_t)roundf((float32_t)TRX_SAMPLERATE / (float32_t)TRX.RTTY_Speed);
 
-	//RTTY LPF Filter
+	// RTTY LPF Filter
 	iir_filter_t *filter = biquad_create(RTTY_LPF_STAGES);
 	biquad_init_lowpass(filter, TRX_SAMPLERATE, TRX.RTTY_Speed * 2);
 	fill_biquad_coeffs(filter, RTTY_LPF_Filter_Coeffs, RTTY_LPF_STAGES);
 	arm_biquad_cascade_df2T_init_f32(&RTTY_LPF_Filter, RTTY_LPF_STAGES, RTTY_LPF_Filter_Coeffs, RTTY_LPF_Filter_State);
 
-	//RTTY mark filter
+	// RTTY mark filter
 	filter = biquad_create(RTTY_BPF_STAGES);
 	biquad_init_bandpass(filter, TRX_SAMPLERATE, (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) - RTTY_BPF_WIDTH / 2, (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) + RTTY_BPF_WIDTH / 2);
 	fill_biquad_coeffs(filter, RTTY_Mark_Filter_Coeffs, RTTY_BPF_STAGES);
 	arm_biquad_cascade_df2T_init_f32(&RTTY_Mark_Filter, RTTY_BPF_STAGES, RTTY_Mark_Filter_Coeffs, RTTY_Mark_Filter_State);
 
-	//RTTY space filter
+	// RTTY space filter
 	filter = biquad_create(RTTY_BPF_STAGES);
 	biquad_init_bandpass(filter, TRX_SAMPLERATE, (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) - RTTY_BPF_WIDTH / 2, (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) + RTTY_BPF_WIDTH / 2);
 	fill_biquad_coeffs(filter, RTTY_Space_Filter_Coeffs, RTTY_BPF_STAGES);
 	arm_biquad_cascade_df2T_init_f32(&RTTY_Space_Filter, RTTY_BPF_STAGES, RTTY_Space_Filter_Coeffs, RTTY_Space_Filter_State);
 
-	//text
+	// text
 	sprintf(RTTY_Decoder_Text, " RTTY: -");
 	addSymbols(RTTY_Decoder_Text, RTTY_Decoder_Text, RTTY_DECODER_STRLEN, " ", true);
 	LCD_UpdateQuery.TextBar = true;
@@ -159,8 +159,8 @@ void RTTYDecoder_Process(float32_t *bufferIn)
 						charResult = RTTY_Letters[RTTY_byteResult];
 						break;
 					}
-					//RESULT !!!!
-					//print(charResult);
+					// RESULT !!!!
+					// print(charResult);
 					char str[2] = {0};
 					str[0] = charResult;
 					if (strlen(RTTY_Decoder_Text) >= RTTY_DECODER_STRLEN)
@@ -319,7 +319,7 @@ static int RTTYDecoder_demodulator(float32_t sample)
 	// Optimal ATC (Section 6 of of www.w7ay.net/site/Technical/ATC)
 	v1 = (mclipped - noise_floor) * (mark_env - noise_floor) - (sclipped - noise_floor) * (space_env - noise_floor) - 0.25 * ((mark_env - noise_floor) * (mark_env - noise_floor) - (space_env - noise_floor) * (space_env - noise_floor));
 	arm_biquad_cascade_df2T_f32_single(&RTTY_LPF_Filter, &v1, &v1, 1);
-	
+
 	// RTTY without ATC, which works very well too!
 	// inverting line 1
 	/*mark_mag *= -1;
@@ -330,7 +330,7 @@ static int RTTYDecoder_demodulator(float32_t sample)
 	// lowpass filtering the summed line
 	arm_biquad_cascade_df2T_f32_rolled(&RTTY_LPF_Filter, &v1, &v1, 1);*/
 
-	if(TRX.RTTY_InvertBits)
+	if (TRX.RTTY_InvertBits)
 	{
 		return (v1 > 0) ? 1 : 0;
 	}

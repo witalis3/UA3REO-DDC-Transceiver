@@ -4,7 +4,7 @@
 
 // useful info https://github.com/df8oe/UHSDR/wiki/Noise-reduction
 
-//Private variables
+// Private variables
 SRAM static NR_Instance NR_RX1 = {0};
 SRAM static NR_Instance NR_RX2 = {0};
 static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; // coefficients for the window function
@@ -39,53 +39,53 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 	if (rx_id == AUDIO_RX2)
 		instance = &NR_RX2;
 
-#define snr_prio_min 0.001 //range should be down to -30dB min
+#define snr_prio_min 0.001 // range should be down to -30dB min
 #define alpha 0.94
 
-	//fill input buffer
+	// fill input buffer
 	if (instance->NR_InputBuffer_index >= (NOISE_REDUCTION_FFT_SIZE / NOISE_REDUCTION_BLOCK_SIZE))
 		instance->NR_InputBuffer_index = 0;
 	dma_memcpy(&instance->NR_InputBuffer[instance->NR_InputBuffer_index * NOISE_REDUCTION_BLOCK_SIZE], buffer, NOISE_REDUCTION_BLOCK_SIZE * 4);
 	instance->NR_InputBuffer_index++;
 
-	if (instance->NR_InputBuffer_index == (NOISE_REDUCTION_FFT_SIZE / NOISE_REDUCTION_BLOCK_SIZE)) //input buffer ready
+	if (instance->NR_InputBuffer_index == (NOISE_REDUCTION_FFT_SIZE / NOISE_REDUCTION_BLOCK_SIZE)) // input buffer ready
 	{
 		instance->NR_InputBuffer_index = 0;
 		instance->NR_OutputBuffer_index = 0;
 
-		//overlap is 50%
+		// overlap is 50%
 		for (uint8_t loop = 0; loop < 2; loop++)
 		{
-			//prepare fft / fill buffers
-			//first half - prev data
+			// prepare fft / fill buffers
+			// first half - prev data
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
 				instance->FFT_Buffer[idx * 2] = instance->NR_Prev_Buffer[idx]; // real
 				instance->FFT_Buffer[idx * 2 + 1] = 0.0f;					   // imaginary
 			}
-			//save last half to prev data
+			// save last half to prev data
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
 				instance->NR_Prev_Buffer[idx] = instance->NR_InputBuffer[loop * NOISE_REDUCTION_FFT_SIZE_HALF + idx];
 			}
-			//last half - last data
+			// last half - last data
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE + idx * 2] = instance->NR_InputBuffer[loop * NOISE_REDUCTION_FFT_SIZE_HALF + idx]; // real
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE + idx * 2 + 1] = 0.0f;															 // imaginary
 			}
-			//windowing
+			// windowing
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
 				instance->FFT_Buffer[idx * 2] *= von_Hann[idx];
-			//do fft
+			// do fft
 			arm_cfft_f32(instance->FFT_Inst, instance->FFT_Buffer, 0, 1);
-			//get magnitude
+			// get magnitude
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				instance->FFT_COMPLEX_MAG[idx] = sqrtf(instance->FFT_Buffer[idx * 2] * instance->FFT_Buffer[idx * 2] + instance->FFT_Buffer[idx * 2 + 1] * instance->FFT_Buffer[idx * 2 + 1]);
-			//average magnitude
+			// average magnitude
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				instance->FFT_AVERAGE_MAG[idx] = instance->FFT_COMPLEX_MAG[idx] * (1.0f - (float32_t)TRX.DNR_AVERAGE / 500.0f) + instance->FFT_AVERAGE_MAG[idx] * ((float32_t)TRX.DNR_AVERAGE / 500.0f);
-			//minimum magnitude
+			// minimum magnitude
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				if (instance->FFT_MINIMUM_MAG[idx] > instance->FFT_COMPLEX_MAG[idx])
 					instance->FFT_MINIMUM_MAG[idx] = instance->FFT_COMPLEX_MAG[idx];
@@ -94,7 +94,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 
 			if (nr_type == 1)
 			{
-				//calculate signal-noise-ratio
+				// calculate signal-noise-ratio
 				float32_t threshold = ((float32_t)TRX.DNR1_SNR_THRESHOLD + 10.0f) / 10.0f;
 				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				{
@@ -108,17 +108,17 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					{
 						lambda = instance->FFT_AVERAGE_MAG[idx];
 					}
-					//gain calc
+					// gain calc
 					float32_t gain = 0.0f;
 					if (instance->FFT_COMPLEX_MAG[idx] > 0.0f)
 						gain = 1.0f - (lambda / instance->FFT_COMPLEX_MAG[idx]);
-					//delete noise
+					// delete noise
 					if (snr < threshold)
 						gain = 0.0f;
-					//else gain = 1.0f;
-					//time smoothing (exponential averaging) of gain weights
+					// else gain = 1.0f;
+					// time smoothing (exponential averaging) of gain weights
 					instance->NR_GAIN[idx] = NOISE_REDUCTION_ALPHA * instance->NR_GAIN[idx] + (1.0f - NOISE_REDUCTION_ALPHA) * gain;
-					//frequency smoothing of gain weights
+					// frequency smoothing of gain weights
 					if (idx > 0 && (idx < NOISE_REDUCTION_FFT_SIZE_HALF - 1))
 						instance->NR_GAIN[idx] = NOISE_REDUCTION_BETA * instance->NR_GAIN[idx - 1] + (1.0f - 2 * NOISE_REDUCTION_BETA) * instance->NR_GAIN[idx] + NOISE_REDUCTION_BETA * instance->NR_GAIN[idx + 1];
 				}
@@ -126,65 +126,65 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 
 			if (nr_type == 2)
 			{
-				//new noise estimate MMSE based
+				// new noise estimate MMSE based
 				static float32_t xt_coeff = 0.5f;
 				for (int bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++) // 1. Step of NR - calculate the SNR's
 				{
 					instance->SNR_post[bindx] = fmax(fmin(instance->FFT_COMPLEX_MAG[bindx] / xt_coeff, 1000.0), snr_prio_min); // limited to +30 /-15 dB, might be still too much of reduction, let's try it?
 					instance->SNR_prio[bindx] = fmax(alpha * instance->NR_GAIN_old[bindx] + (1.0 - alpha) * fmax(instance->SNR_post[bindx] - 1.0, 0.0), 0.0);
 				}
-				
-				//some automatic
-				if(instance->SNR_post[10] > (((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) * 10.0f) && xt_coeff < 50.0f)
+
+				// some automatic
+				if (instance->SNR_post[10] > (((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) * 10.0f) && xt_coeff < 50.0f)
 					xt_coeff += 0.01f;
-				else if(instance->SNR_post[10] > ((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) && xt_coeff < 50.0f)
+				else if (instance->SNR_post[10] > ((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) && xt_coeff < 50.0f)
 					xt_coeff += 0.001f;
-				
-				if(instance->SNR_post[10] < (((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) * 0.1f) && xt_coeff > 0.1f)
+
+				if (instance->SNR_post[10] < (((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) * 0.1f) && xt_coeff > 0.1f)
 					xt_coeff -= 0.01f;
-				else if(instance->SNR_post[10] < ((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) && xt_coeff > 0.1f)
+				else if (instance->SNR_post[10] < ((float32_t)TRX.DNR2_SNR_THRESHOLD / 100.0f) && xt_coeff > 0.1f)
 					xt_coeff -= 0.001f;
-				//println(instance->FFT_COMPLEX_MAG[10], " ",instance->SNR_post[10], " ", xt_coeff);
-				
-				//calculate v = SNRprio(n, bin[i]) / (SNRprio(n, bin[i]) + 1) * SNRpost(n, bin[i]) (eq. 12 of Schmitt et al. 2002, eq. 9 of Romanin et al. 2009)  and calculate the HK's
+				// println(instance->FFT_COMPLEX_MAG[10], " ",instance->SNR_post[10], " ", xt_coeff);
+
+				// calculate v = SNRprio(n, bin[i]) / (SNRprio(n, bin[i]) + 1) * SNRpost(n, bin[i]) (eq. 12 of Schmitt et al. 2002, eq. 9 of Romanin et al. 2009)  and calculate the HK's
 				for (int bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
 				{
 					float32_t v = instance->SNR_prio[bindx] / (instance->SNR_prio[bindx] + 1.0) * instance->SNR_post[bindx];
-					instance->NR_GAIN[bindx] = fmax(1.0 / instance->SNR_post[bindx] * sqrtf((0.7212 * v + v * v)), 0.001); //limit HK's to 0.001
+					instance->NR_GAIN[bindx] = fmax(1.0 / instance->SNR_post[bindx] * sqrtf((0.7212 * v + v * v)), 0.001); // limit HK's to 0.001
 					instance->NR_GAIN_old[bindx] = instance->SNR_post[bindx] * instance->NR_GAIN[bindx] * instance->NR_GAIN[bindx];
 				}
 			}
-			//smooth gain
+			// smooth gain
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
-				#define smooth_gain_alpha 0.9f
-				#define smooth_gain_beta (1.0f - smooth_gain_alpha)
-				if((idx - 1) >= 0)
+#define smooth_gain_alpha 0.9f
+#define smooth_gain_beta (1.0f - smooth_gain_alpha)
+				if ((idx - 1) >= 0)
 					instance->NR_GAIN[idx - 1] = instance->NR_GAIN[idx - 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
-				if((idx + 1) < NOISE_REDUCTION_FFT_SIZE_HALF)
+				if ((idx + 1) < NOISE_REDUCTION_FFT_SIZE_HALF)
 					instance->NR_GAIN[idx + 1] = instance->NR_GAIN[idx + 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
 			}
-			//apply gain weighting
+			// apply gain weighting
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
 				instance->FFT_Buffer[idx * 2] *= instance->NR_GAIN[idx];
 				instance->FFT_Buffer[idx * 2 + 1] *= instance->NR_GAIN[idx];
-				//symmetry
+				// symmetry
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->NR_GAIN[idx];
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->NR_GAIN[idx];
 			}
-			//do inverse fft
+			// do inverse fft
 			arm_cfft_f32(instance->FFT_Inst, instance->FFT_Buffer, 1, 1);
-			//windowing
+			// windowing
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
 			{
 				instance->FFT_Buffer[idx * 2] *= von_Hann[idx];
 				instance->FFT_Buffer[idx * 2 + 1] *= von_Hann[idx];
 			}
-			//return data (do overlap-add: take real part of first half of current iFFT result and add to 2nd half of last frames´ iFFT result)
+			// return data (do overlap-add: take real part of first half of current iFFT result and add to 2nd half of last frames´ iFFT result)
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				instance->NR_OutputBuffer[loop * NOISE_REDUCTION_FFT_SIZE_HALF + idx] = instance->FFT_Buffer[idx * 2] + instance->LAST_IFFT_RESULT[idx];
-			//save 2nd half of ifft result
+			// save 2nd half of ifft result
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				instance->LAST_IFFT_RESULT[idx] = instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE_HALF * 2 + idx * 2];
 		}

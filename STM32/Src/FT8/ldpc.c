@@ -1,14 +1,3 @@
-//
-// LDPC decoder for FT8.
-//
-// given a 174-bit codeword as an array of log-likelihood of zero,
-// return a 174-bit corrected codeword, or zero-length array.
-// last 87 bits are the (systematic) plain-text.
-// this is an implementation of the sum-product algorithm
-// from Sarah Johnson's Iterative Error Correction book.
-// codeword[i] = log ( P(x=0) / P(x=1) )
-//
-
 #include "ldpc.h"
 #include "constants.h"
 

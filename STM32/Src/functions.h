@@ -13,21 +13,21 @@ __asm(".global __use_no_heap\n\t");
 #include "print.h"
 #include "settings.h"
 
-#define ITCM __attribute__((section(".ITCM"))) __attribute__((aligned(32))) // 64kb ITCM
-#define IRAM2 __attribute__((section(".IRAM"))) __attribute__((aligned(32))) // 512kb AXI SRAM
-#define SRAM __attribute__((section(".SRAM"))) __attribute__((aligned(32))) // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb
+#define ITCM __attribute__((section(".ITCM"))) __attribute__((aligned(32)))   // 64kb ITCM
+#define IRAM2 __attribute__((section(".IRAM"))) __attribute__((aligned(32)))  // 512kb AXI SRAM
+#define SRAM __attribute__((section(".SRAM"))) __attribute__((aligned(32)))   // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb
 #define SRAM4 __attribute__((section(".SRAM4"))) __attribute__((aligned(32))) // SRAM4 64kb
 #define BACKUP_SRAM_BANK1_ADDR (uint32_t *)0x38800000
 #define BACKUP_SRAM_BANK2_ADDR (uint32_t *)0x38800800
 //#define ALIGN_32BIT __attribute__((aligned(32)))
 
-//UINT from BINARY STRING
+// UINT from BINARY STRING
 #define HEX__(n) 0x##n##LU
 #define B8__(x) ((x & 0x0000000FLU) ? 1 : 0) + ((x & 0x000000F0LU) ? 2 : 0) + ((x & 0x00000F00LU) ? 4 : 0) + ((x & 0x0000F000LU) ? 8 : 0) + ((x & 0x000F0000LU) ? 16 : 0) + ((x & 0x00F00000LU) ? 32 : 0) + ((x & 0x0F000000LU) ? 64 : 0) + ((x & 0xF0000000LU) ? 128 : 0)
 #define B8(d) ((unsigned char)B8__(HEX__(d)))
 
 #define BYTE_TO_BINARY(byte)     \
-			(byte & 0x80 ? '1' : '0'), \
+  (byte & 0x80 ? '1' : '0'),     \
       (byte & 0x40 ? '1' : '0'), \
       (byte & 0x20 ? '1' : '0'), \
       (byte & 0x10 ? '1' : '0'), \
@@ -36,7 +36,7 @@ __asm(".global __use_no_heap\n\t");
       (byte & 0x02 ? '1' : '0'), \
       (byte & 0x01 ? '1' : '0')
 #define BIT16_TO_BINARY(byte)      \
-			(byte & 0x8000 ? '1' : '0'), \
+  (byte & 0x8000 ? '1' : '0'),     \
       (byte & 0x4000 ? '1' : '0'), \
       (byte & 0x2000 ? '1' : '0'), \
       (byte & 0x1000 ? '1' : '0'), \
@@ -52,32 +52,32 @@ __asm(".global __use_no_heap\n\t");
       (byte & 0x0004 ? '1' : '0'), \
       (byte & 0x0002 ? '1' : '0'), \
       (byte & 0x0001 ? '1' : '0')
-#define BIT26_TO_BINARY(byte)      \
-			(byte & 0x2000000 ? '1' : '0'), \
-			(byte & 0x1000000 ? '1' : '0'), \
-			(byte & 0x800000 ? '1' : '0'), \
-			(byte & 0x400000 ? '1' : '0'), \
-			(byte & 0x200000 ? '1' : '0'), \
-			(byte & 0x100000 ? '1' : '0'), \
-			(byte & 0x80000 ? '1' : '0'), \
-			(byte & 0x40000 ? '1' : '0'), \
-			(byte & 0x20000 ? '1' : '0'), \
-			(byte & 0x10000 ? '1' : '0'), \
-			(byte & 0x8000 ? '1' : '0'), \
-      (byte & 0x4000 ? '1' : '0'), \
-      (byte & 0x2000 ? '1' : '0'), \
-      (byte & 0x1000 ? '1' : '0'), \
-      (byte & 0x0800 ? '1' : '0'), \
-      (byte & 0x0400 ? '1' : '0'), \
-      (byte & 0x0200 ? '1' : '0'), \
-      (byte & 0x0100 ? '1' : '0'), \
-      (byte & 0x0080 ? '1' : '0'), \
-      (byte & 0x0040 ? '1' : '0'), \
-      (byte & 0x0020 ? '1' : '0'), \
-      (byte & 0x0010 ? '1' : '0'), \
-      (byte & 0x0008 ? '1' : '0'), \
-      (byte & 0x0004 ? '1' : '0'), \
-      (byte & 0x0002 ? '1' : '0'), \
+#define BIT26_TO_BINARY(byte)         \
+  (byte & 0x2000000 ? '1' : '0'),     \
+      (byte & 0x1000000 ? '1' : '0'), \
+      (byte & 0x800000 ? '1' : '0'),  \
+      (byte & 0x400000 ? '1' : '0'),  \
+      (byte & 0x200000 ? '1' : '0'),  \
+      (byte & 0x100000 ? '1' : '0'),  \
+      (byte & 0x80000 ? '1' : '0'),   \
+      (byte & 0x40000 ? '1' : '0'),   \
+      (byte & 0x20000 ? '1' : '0'),   \
+      (byte & 0x10000 ? '1' : '0'),   \
+      (byte & 0x8000 ? '1' : '0'),    \
+      (byte & 0x4000 ? '1' : '0'),    \
+      (byte & 0x2000 ? '1' : '0'),    \
+      (byte & 0x1000 ? '1' : '0'),    \
+      (byte & 0x0800 ? '1' : '0'),    \
+      (byte & 0x0400 ? '1' : '0'),    \
+      (byte & 0x0200 ? '1' : '0'),    \
+      (byte & 0x0100 ? '1' : '0'),    \
+      (byte & 0x0080 ? '1' : '0'),    \
+      (byte & 0x0040 ? '1' : '0'),    \
+      (byte & 0x0020 ? '1' : '0'),    \
+      (byte & 0x0010 ? '1' : '0'),    \
+      (byte & 0x0008 ? '1' : '0'),    \
+      (byte & 0x0004 ? '1' : '0'),    \
+      (byte & 0x0002 ? '1' : '0'),    \
       (byte & 0x0001 ? '1' : '0')
 
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
@@ -96,8 +96,8 @@ __asm(".global __use_no_heap\n\t");
 #define F_PI 3.141592653589793238463f
 #define F_2PI (3.141592653589793238463f * 2.0f)
 #define SQRT2 1.41421356237f
-#define DEG2RAD(x) ((float32_t)(x) * F_PI / 180.f)
-#define RAD2DEG(x) ((float32_t)(x) * 180.f / F_PI)
+#define DEG2RAD(x) ((float32_t)(x)*F_PI / 180.f)
+#define RAD2DEG(x) ((float32_t)(x)*180.f / F_PI)
 #define ARRLENTH(x) (sizeof(x) / sizeof((x)[0]))
 #define MINI_DELAY                                       \
   for (uint_fast16_t wait_i = 0; wait_i < 100; wait_i++) \
@@ -184,7 +184,7 @@ extern void print_hex(uint8_t data, bool _inline);
 extern void print_bin8(uint8_t data, bool _inline);
 extern void print_bin16(uint16_t data, bool _inline);
 extern void print_bin26(uint32_t data, bool _inline);
-//extern void delay_us(uint32_t us);
+// extern void delay_us(uint32_t us);
 extern float32_t log10f_fast(float32_t X);
 extern void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read);
 extern void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length);
@@ -210,18 +210,20 @@ extern uint8_t getInputType(void);
 extern unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte);
 extern unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte);
 extern void sd_crc_generate_table(void);
-extern void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst,uint32_t blockSize);
-extern void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 * I, const arm_biquad_cascade_df2T_instance_f32 * Q, const float32_t * pSrc_I, const float32_t * pSrc_Q, float32_t * pDst_I, float32_t * pDst_Q, uint32_t blockSize);
+extern void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst, uint32_t blockSize);
+extern void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q, const float32_t *pSrc_I, const float32_t *pSrc_Q, float32_t *pDst_I, float32_t *pDst_Q, uint32_t blockSize);
 extern char cleanASCIIgarbage(char chr);
 extern bool textStartsWith(const char *a, const char *b);
 
 inline float sqrtf_f32i(float f)
 {
-	float32_t res;
-	__ASM("VSQRT.F32 %0,%1" : "=t"(res) : "t"(f));
-  //const int result = 0x1fbb4000 + (*(int*)&f >> 1);
-  //return *(float*)&result;   
-	return res;
+  float32_t res;
+  __ASM("VSQRT.F32 %0,%1"
+        : "=t"(res)
+        : "t"(f));
+  // const int result = 0x1fbb4000 + (*(int*)&f >> 1);
+  // return *(float*)&result;
+  return res;
 }
 
 #endif

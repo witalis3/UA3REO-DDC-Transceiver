@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "settings.h"
 
-#define TRX_SLOW_SETFREQ_MIN_STEPSIZE 100 //step in hz for slowly touchpad tuning
+#define TRX_SLOW_SETFREQ_MIN_STEPSIZE 100 // step in hz for slowly touchpad tuning
 #define TRX_GetSamplerateByENUM(rate) ((rate == TRX_SAMPLERATE_K48) ? 48000 : (rate == TRX_SAMPLERATE_K96) ? 96000  \
                                                                           : (rate == TRX_SAMPLERATE_K192)  ? 192000 \
                                                                                                            : 384000)
@@ -16,7 +16,7 @@
 
 extern void TRX_Init(void);
 extern void TRX_setFrequency(uint64_t _freq, VFO *vfo);
-extern void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo); //for WSPR and other
+extern void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo); // for WSPR and other
 extern void TRX_setMode(uint_fast8_t _mode, VFO *vfo);
 extern void TRX_ptt_change(void);
 extern bool TRX_on_TX(void);
@@ -57,8 +57,8 @@ volatile extern float32_t TRX_SWR;
 volatile extern float32_t TRX_PWR_Forward_SMOOTHED;
 volatile extern float32_t TRX_PWR_Backward_SMOOTHED;
 volatile extern float32_t TRX_SWR_SMOOTHED;
-volatile extern float32_t TRX_VLT_forward;  //Tisho
-volatile extern float32_t TRX_VLT_backward; //Tisho
+volatile extern float32_t TRX_VLT_forward;  // Tisho
+volatile extern float32_t TRX_VLT_backward; // Tisho
 volatile extern float32_t TRX_ALC_IN;
 volatile extern float32_t TRX_ALC_OUT;
 volatile extern bool TRX_DAC_DIV0;

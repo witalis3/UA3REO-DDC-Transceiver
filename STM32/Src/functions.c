@@ -137,7 +137,7 @@ uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the
 		return 0;
 	bool inverted = false;
 	int32_t _freq = freq;
-	if (_freq > ADC_CLOCK / 2) //Go Nyquist
+	if (_freq > ADC_CLOCK / 2) // Go Nyquist
 	{
 		while (_freq > (ADC_CLOCK / 2))
 		{
@@ -153,7 +153,7 @@ uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the
 		TRX_RX1_IQ_swap = inverted;
 	if (rx_num == 2)
 		TRX_RX2_IQ_swap = inverted;
-	float64_t res = round(((float64_t)_freq / (float64_t)ADC_CLOCK) * (float64_t)4294967296); //freq in hz/oscil in hz*2^bits (32 now);
+	float64_t res = round(((float64_t)_freq / (float64_t)ADC_CLOCK) * (float64_t)4294967296); // freq in hz/oscil in hz*2^bits (32 now);
 	return (uint32_t)res;
 }
 
@@ -167,14 +167,14 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
 	if (nyquist == 0) // <99.84mhz (good 0mhz - 79.872mhz) 0-0.4 dac freq
 	{
-		TRX_DAC_HP2 = false; //low-pass
+		TRX_DAC_HP2 = false; // low-pass
 	}
 	if (nyquist == 1) // 99.84-199.68mhz (good 119.808mhz - 159.744mhz) dac freq - (0.2-0.4 dac freq)
 	{
-		TRX_DAC_HP2 = true; //high-pass
+		TRX_DAC_HP2 = true; // high-pass
 	}
 
-	if (_freq > (DAC_CLOCK / 2)) //Go Nyquist
+	if (_freq > (DAC_CLOCK / 2)) // Go Nyquist
 	{
 		while (_freq > (DAC_CLOCK / 2))
 		{
@@ -188,7 +188,7 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	}
 	TRX_TX_IQ_swap = inverted;
 
-	float64_t res = round((float64_t)_freq / (float64_t)DAC_CLOCK * (float64_t)4294967296); //freq in hz/oscil in hz*2^NCO phase bits (32 now)
+	float64_t res = round((float64_t)_freq / (float64_t)DAC_CLOCK * (float64_t)4294967296); // freq in hz/oscil in hz*2^NCO phase bits (32 now)
 	return (uint32_t)res;
 }
 
@@ -254,10 +254,10 @@ float32_t volume2rate(float32_t i) // from the position of the volume knob to th
 	float32_t mute_zone = 15.0f;
 	if (MAX_VOLUME_VALUE == 100.0f)
 		mute_zone = 1.0f;
-	
-	if (i < (mute_zone / MAX_VOLUME_VALUE)) //mute zone
+
+	if (i < (mute_zone / MAX_VOLUME_VALUE)) // mute zone
 		return 0.0f;
-	
+
 	return powf(VOLUME_EPSILON, (1.0f - i));
 }
 
@@ -282,7 +282,7 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 		return 0.0f;
 
 	uint16_t calibrate_level = 0;
-	
+
 	if (freq < 1.0 * 1000000)
 		calibrate_level = CALIBRATE.rf_out_power_2200m;
 	else if (freq < 2.5 * 1000000)
@@ -309,36 +309,36 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 		calibrate_level = CALIBRATE.rf_out_power_6m;
 	else
 		calibrate_level = CALIBRATE.rf_out_power_2m;
-	
-	if(calibrate_level > 200) //dac driver bias
+
+	if (calibrate_level > 200) // dac driver bias
 	{
 		calibrate_level -= 200;
 		TRX_DAC_DRV_A0 = false;
 		TRX_DAC_DRV_A1 = false;
 	}
-	else if(calibrate_level > 100) //dac driver bias 75%
+	else if (calibrate_level > 100) // dac driver bias 75%
 	{
 		calibrate_level -= 100;
 		TRX_DAC_DRV_A0 = true;
 		TRX_DAC_DRV_A1 = false;
 	}
-	else if(calibrate_level > 0) //dac driver bias 50%
+	else if (calibrate_level > 0) // dac driver bias 50%
 	{
 		TRX_DAC_DRV_A0 = false;
 		TRX_DAC_DRV_A1 = true;
 	}
-	else if(calibrate_level == 0) //dac driver off
+	else if (calibrate_level == 0) // dac driver off
 	{
 		TRX_DAC_DRV_A0 = true;
 		TRX_DAC_DRV_A1 = true;
 	}
-	
+
 	return (float32_t)calibrate_level / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
 }
 
 float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq)
 {
-	//float32_t ret = amplitude * arm_sin_f32(*index * (2.0f * F_PI));
+	// float32_t ret = amplitude * arm_sin_f32(*index * (2.0f * F_PI));
 	float32_t ret = amplitude * sin(*index * (2.0f * F_PI));
 	*index += ((float32_t)freq / (float32_t)samplerate);
 	while (*index >= 1.0f)
@@ -430,14 +430,14 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		return false;
 	}
 
-	//SPI speed
+	// SPI speed
 	if (hspi2.Init.BaudRatePrescaler != prescaler)
 	{
 		hspi2.Init.BaudRatePrescaler = prescaler;
 		HAL_SPI_Init(&hspi2);
 	}
 
-	const int32_t timeout = 0x200; //HAL_MAX_DELAY
+	const int32_t timeout = 0x200; // HAL_MAX_DELAY
 	SPI_busy = true;
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
@@ -512,13 +512,13 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 			res = HAL_SPI_TransmitReceive_IT(&hspi2, out_data, in_data, count);
 		}
 		uint32_t startTime = HAL_GetTick();
-		while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout)
+		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout)
 			CPULOAD_GoToSleepMode();
 	}
 
-	if(HAL_SPI_GetError(&hspi2) != 0)
-			res = HAL_ERROR;
-	
+	if (HAL_SPI_GetError(&hspi2) != 0)
+		res = HAL_ERROR;
+
 	if (!hold_cs)
 		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
 	SPI_busy = false;
@@ -611,13 +611,17 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	if (size == 0)
 		return;
 
-	if (dma_memset32_busy) //for async calls
+	if (dma_memset32_busy) // for async calls
 	{
-		if(val == 0) {
+		if (val == 0)
+		{
 			memset(dest, val, size * 4);
-		} else {
+		}
+		else
+		{
 			uint32_t *buf = dest;
-			while(size--) *buf++ = val;
+			while (size--)
+				*buf++ = val;
 		}
 		return;
 	}
@@ -658,16 +662,17 @@ void memset16(void *dest, uint16_t val, uint32_t size)
 		return;
 
 	uint16_t *buf = dest;
-	while(size--) *buf++ = val;
-	
+	while (size--)
+		*buf++ = val;
+
 	/*char *buf = dest;
-	union 
+	union
 	{
 			uint8_t d8[2];
 			uint16_t d16;
 	}u16 = {.d16 = val};
 
-	while(size--) 
+	while(size--)
 	{
 			*buf++ = u16.d8[0];
 			*buf++ = u16.d8[1];
@@ -676,13 +681,13 @@ void memset16(void *dest, uint16_t val, uint32_t size)
 
 void dma_memset(void *dest, uint8_t val, uint32_t size)
 {
-	if (dma_memset32_busy || size < 128) //for async and fast calls
+	if (dma_memset32_busy || size < 128) // for async and fast calls
 	{
 		memset(dest, val, size);
 		return;
 	}
 
-	//left align
+	// left align
 	char *pDst = (char *)dest;
 	while ((uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3) && size > 0)
 	{
@@ -692,13 +697,13 @@ void dma_memset(void *dest, uint8_t val, uint32_t size)
 
 	if (size > 0)
 	{
-		//center fills in 32bit
+		// center fills in 32bit
 		uint32_t val32 = (val << 24) | (val << 16) | (val << 8) | (val << 0);
 		uint32_t block32 = size / 4;
 		uint32_t block8 = size % 4;
 		dma_memset32(pDst, val32, block32);
 
-		//right align
+		// right align
 		if (block8 > 0)
 		{
 			pDst += block32 * 4;
@@ -714,7 +719,7 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 	if (size == 0)
 		return;
 
-	if (dma_memcpy32_busy) //for async calls
+	if (dma_memcpy32_busy) // for async calls
 	{
 		memcpy(dest, src, size * 4);
 		return;
@@ -739,13 +744,13 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 
 void dma_memcpy(void *dest, void *src, uint32_t size)
 {
-	if (dma_memcpy32_busy || size < 1024) //for async and fast calls
+	if (dma_memcpy32_busy || size < 1024) // for async and fast calls
 	{
 		memcpy(dest, src, size);
 		return;
 	}
 
-	//left align
+	// left align
 	char *pSrc = (char *)src;
 	char *pDst = (char *)dest;
 	while (((uint32_t)pSrc != (((uint32_t)pSrc) & ~(uint32_t)0x3) || (uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3)) && size > 0)
@@ -756,7 +761,7 @@ void dma_memcpy(void *dest, void *src, uint32_t size)
 
 	if (size > 0)
 	{
-		//center copy in 32bit
+		// center copy in 32bit
 		uint32_t block32 = size / 4;
 		uint32_t block8 = size % 4;
 		uint32_t max_block = DMA_MAX_BLOCK / 4;
@@ -769,7 +774,7 @@ void dma_memcpy(void *dest, void *src, uint32_t size)
 		}
 		dma_memcpy32(pDst, pSrc, block32);
 
-		//right align
+		// right align
 		if (block8 > 0)
 		{
 			pDst += block32 * 4;
@@ -806,7 +811,7 @@ void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 			return;
 		}
 
-		//go sleep
+		// go sleep
 		CPULOAD_GoToSleepMode();
 	}
 
@@ -822,7 +827,7 @@ void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 uint8_t getInputType(void)
 {
 	uint8_t type = TRX.InputType_MAIN;
-	if(CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
+	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
 		type = TRX.InputType_DIGI;
 	return type;
 }
@@ -835,64 +840,77 @@ static unsigned int sd_crc7_table[256];
 /* Running CRC16 calculation for a byte. */
 unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte)
 {
- return (sd_crc16_table[(byte ^ (crcval >> 8)) & 0xFFU] ^ (crcval << 8)) & 0xFFFFU;
+	return (sd_crc16_table[(byte ^ (crcval >> 8)) & 0xFFU] ^ (crcval << 8)) & 0xFFFFU;
 }
 
 /* Running CRC7 calculation for a byte. */
 unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte)
 {
- return sd_crc7_table[(byte ^ (crcval << 1)) & 0xFFU];
+	return sd_crc7_table[(byte ^ (crcval << 1)) & 0xFFU];
 }
 
 void sd_crc_generate_table(void)
 {
 	static bool crc_table_generated = false;
-	if(crc_table_generated)
+	if (crc_table_generated)
 		return;
 	int crc = 0;
 	/* Generate CRC16 table */
-	for (uint32_t byt = 0U; byt < 256U; byt ++){
-	 crc = byt << 8;
-	 for (uint32_t bit = 0U; bit < 8U; bit ++){
-		crc <<= 1;
-		if ((crc & 0x10000U) != 0U){ crc ^= 0x1021U; }
-	 }
-	 sd_crc16_table[byt] = (crc & 0xFFFFU);
+	for (uint32_t byt = 0U; byt < 256U; byt++)
+	{
+		crc = byt << 8;
+		for (uint32_t bit = 0U; bit < 8U; bit++)
+		{
+			crc <<= 1;
+			if ((crc & 0x10000U) != 0U)
+			{
+				crc ^= 0x1021U;
+			}
+		}
+		sd_crc16_table[byt] = (crc & 0xFFFFU);
 	}
-	
+
 	/* Generate CRC7 table */
-	for (uint32_t byt = 0U; byt < 256U; byt ++){
-	 crc = byt;
-	 if ((crc & 0x80U) != 0U){ crc ^= 0x89U; }
-	 for (uint32_t bit = 1U; bit < 8U; bit ++){
-		crc <<= 1;
-		if ((crc & 0x80U) != 0U){ crc ^= 0x89U; }
-	 }
-	 sd_crc7_table[byt] = (crc & 0x7FU);
+	for (uint32_t byt = 0U; byt < 256U; byt++)
+	{
+		crc = byt;
+		if ((crc & 0x80U) != 0U)
+		{
+			crc ^= 0x89U;
+		}
+		for (uint32_t bit = 1U; bit < 8U; bit++)
+		{
+			crc <<= 1;
+			if ((crc & 0x80U) != 0U)
+			{
+				crc ^= 0x89U;
+			}
+		}
+		sd_crc7_table[byt] = (crc & 0x7FU);
 	}
 	crc_table_generated = true;
 }
 
-void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 * S,const float32_t * pSrc,float32_t * pDst, uint32_t blockSize)
+void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst, uint32_t blockSize)
 {
-  float32_t *pState = S->pState;
-  const float32_t *pCoeffs = S->pCoeffs;
+	float32_t *pState = S->pState;
+	const float32_t *pCoeffs = S->pCoeffs;
 	const float32_t *pIn = pSrc;
-  float32_t *pOut = pDst;
-	
-  for(uint32_t stage = 0; stage < S->numStages; stage++)
-  {
+	float32_t *pOut = pDst;
+
+	for (uint32_t stage = 0; stage < S->numStages; stage++)
+	{
 		float32_t b0 = pCoeffs[0];
 		float32_t b1 = pCoeffs[1];
 		float32_t b2 = pCoeffs[2];
 		float32_t a1 = pCoeffs[3];
 		float32_t a2 = pCoeffs[4];
 		pCoeffs += 5U;
-		
+
 		float32_t d1 = pState[0];
 		float32_t d2 = pState[1];
 
-		for(uint32_t sample = 0; sample < blockSize; sample++)
+		for (uint32_t sample = 0; sample < blockSize; sample++)
 		{
 			float32_t Xn1 = *pIn++;
 
@@ -906,47 +924,47 @@ void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f
 		pState[0] = d1;
 		pState[1] = d2;
 		pState += 2U;
-		
+
 		pIn = pDst;
 		pOut = pDst;
-   }
+	}
 }
 
-void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 * I, const arm_biquad_cascade_df2T_instance_f32 * Q, const float32_t * pSrc_I, const float32_t * pSrc_Q, float32_t * pDst_I, float32_t * pDst_Q, uint32_t blockSize)
+void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q, const float32_t *pSrc_I, const float32_t *pSrc_Q, float32_t *pDst_I, float32_t *pDst_Q, uint32_t blockSize)
 {
-  float32_t *pState_I = I->pState;
+	float32_t *pState_I = I->pState;
 	float32_t *pState_Q = Q->pState;
-  const float32_t *pCoeffs = I->pCoeffs;
+	const float32_t *pCoeffs = I->pCoeffs;
 	const float32_t *pIn_I = pSrc_I;
 	const float32_t *pIn_Q = pSrc_Q;
-  float32_t *pOut_I = pDst_I;
+	float32_t *pOut_I = pDst_I;
 	float32_t *pOut_Q = pDst_Q;
 
-  for(uint32_t stage = 0; stage < I->numStages; stage++)
-  {
+	for (uint32_t stage = 0; stage < I->numStages; stage++)
+	{
 		float32_t b0 = pCoeffs[0];
 		float32_t b1 = pCoeffs[1];
 		float32_t b2 = pCoeffs[2];
 		float32_t a1 = pCoeffs[3];
 		float32_t a2 = pCoeffs[4];
 		pCoeffs += 5U;
-		
+
 		float32_t d1_I = pState_I[0];
 		float32_t d2_I = pState_I[1];
 		float32_t d1_Q = pState_Q[0];
 		float32_t d2_Q = pState_Q[1];
 
-		for(uint32_t sample = 0; sample < blockSize; sample++)
+		for (uint32_t sample = 0; sample < blockSize; sample++)
 		{
 			float32_t Xn1_I = *pIn_I++;
 			float32_t Xn1_Q = *pIn_Q++;
 
 			float32_t acc1_I = b0 * Xn1_I + d1_I;
 			float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
-			
+
 			d1_I = b1 * Xn1_I + d2_I + a1 * acc1_I;
 			d1_Q = b1 * Xn1_Q + d2_Q + a1 * acc1_Q;
-			
+
 			d2_I = b2 * Xn1_I + a2 * acc1_I;
 			d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
 
@@ -960,24 +978,24 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 		pState_Q[1] = d2_Q;
 		pState_I += 2U;
 		pState_Q += 2U;
-		
+
 		pIn_I = pDst_I;
 		pIn_Q = pDst_Q;
 		pOut_I = pDst_I;
 		pOut_Q = pDst_Q;
-   }
+	}
 }
 
 char cleanASCIIgarbage(char chr)
 {
-	if((chr < ' ') || (chr > 0x7f))
+	if ((chr < ' ') || (chr > 0x7f))
 		return 0;
 	return chr;
 }
 
 bool textStartsWith(const char *a, const char *b)
 {
-  if(strncmp(a, b, strlen(b)) == 0) 
+	if (strncmp(a, b, strlen(b)) == 0)
 		return 1;
 	return 0;
 }

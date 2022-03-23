@@ -9,18 +9,18 @@ void *ADPCM_cnxt = NULL;
 void ADPCM_Init(void)
 {
 	int32_t average_deltas[2] = {0, 0};
-	ADPCM_cnxt = adpcm_create_context(1, 2, NOISE_SHAPING_DYNAMIC, average_deltas); //num_channels, lookahead, noise_shaping, average_deltas
+	ADPCM_cnxt = adpcm_create_context(1, 2, NOISE_SHAPING_DYNAMIC, average_deltas); // num_channels, lookahead, noise_shaping, average_deltas
 }
 
 void VOCODER_Process(void)
 {
-	//encode audio
+	// encode audio
 	uint32_t outbuff_size = 0;
 	if (!SD_workbuffer_current)
 		adpcm_encode_block(ADPCM_cnxt, (uint8_t *)&SD_workbuffer_A[SD_RecordBufferIndex], &outbuff_size, VOCODER_Buffer, SIZE_ADPCM_BLOCK);
 	else
 		adpcm_encode_block(ADPCM_cnxt, (uint8_t *)&SD_workbuffer_B[SD_RecordBufferIndex], &outbuff_size, VOCODER_Buffer, SIZE_ADPCM_BLOCK);
-	SD_RecordBufferIndex += SIZE_ADPCM_COMPRESSED_BLOCK; //outbuff_size;
+	SD_RecordBufferIndex += SIZE_ADPCM_COMPRESSED_BLOCK; // outbuff_size;
 
 	if (SD_RecordBufferIndex == _MAX_SS)
 	{
@@ -33,30 +33,30 @@ void VOCODER_Process(void)
 bool VODECODER_Process(void)
 {
 	static uint16_t VOCODER_PLAYER_SD_BUFFER_INDEX = 0;
-	if(SD_Play_Buffer_Ready || VOCODER_PLAYER_SD_BUFFER_INDEX > 0)
+	if (SD_Play_Buffer_Ready || VOCODER_PLAYER_SD_BUFFER_INDEX > 0)
 	{
-		if(VOCODER_PLAYER_SD_BUFFER_INDEX == 0)
+		if (VOCODER_PLAYER_SD_BUFFER_INDEX == 0)
 		{
-			//println("Readed from SD: ", SD_Play_Buffer_Size);
+			// println("Readed from SD: ", SD_Play_Buffer_Size);
 			SD_workbuffer_current = !SD_workbuffer_current;
 			SD_Play_Buffer_Ready = false;
 			SD_doCommand(SDCOMM_PROCESS_PLAY, false);
 		}
-		
+
 		if (!SD_workbuffer_current)
 			adpcm_decode_block(VOCODER_Buffer, (uint8_t *)&SD_workbuffer_A[VOCODER_PLAYER_SD_BUFFER_INDEX], SIZE_ADPCM_COMPRESSED_BLOCK, 1);
 		else
 			adpcm_decode_block(VOCODER_Buffer, (uint8_t *)&SD_workbuffer_B[VOCODER_PLAYER_SD_BUFFER_INDEX], SIZE_ADPCM_COMPRESSED_BLOCK, 1);
-	
+
 		VOCODER_PLAYER_SD_BUFFER_INDEX += SIZE_ADPCM_COMPRESSED_BLOCK;
-		
-		if(VOCODER_PLAYER_SD_BUFFER_INDEX >= _MAX_SS)
+
+		if (VOCODER_PLAYER_SD_BUFFER_INDEX >= _MAX_SS)
 		{
 			VOCODER_PLAYER_SD_BUFFER_INDEX = 0;
 		}
 		return true;
 	}
-	if(!SD_Play_Buffer_Ready && !SD_CommandInProcess)
+	if (!SD_Play_Buffer_Ready && !SD_CommandInProcess)
 		SD_doCommand(SDCOMM_PROCESS_PLAY, false);
 	return false;
 }

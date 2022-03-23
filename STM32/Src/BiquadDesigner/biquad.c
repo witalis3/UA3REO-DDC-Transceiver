@@ -10,12 +10,14 @@
 #include "biquad.h"
 #include "functions.h"
 
-typedef struct {
+typedef struct
+{
     float re;
     float im;
 } complex_s;
 
-typedef struct {
+typedef struct
+{
     double re;
     double im;
 } complex_d;
@@ -26,7 +28,7 @@ static void complex_div(complex_d *p, complex_d *q);
 static void biquad_init_band(iir_filter_t *filter, double fs, double f1, double f2, int stop);
 
 static iir_filter_t filter_designer;
-	
+
 iir_filter_t *biquad_create(int sections)
 {
     dma_memset(&filter_designer, 0x00, sizeof(iir_filter_t));
@@ -34,9 +36,9 @@ iir_filter_t *biquad_create(int sections)
     filter_designer.sections = sections;
     filter_designer.sect_ord = IIR_BIQUAD_SECTION_ORDER;
 
-		dma_memset(filter_designer.a, 0x00, sizeof(filter_designer.a));
-		dma_memset(filter_designer.b, 0x00, sizeof(filter_designer.b));
-		dma_memset(filter_designer.d, 0x00, sizeof(filter_designer.d));
+    dma_memset(filter_designer.a, 0x00, sizeof(filter_designer.a));
+    dma_memset(filter_designer.b, 0x00, sizeof(filter_designer.b));
+    dma_memset(filter_designer.d, 0x00, sizeof(filter_designer.d));
 
     return &filter_designer;
 }
@@ -62,7 +64,8 @@ void iir_freq_resp(iir_filter_t *filter, double *h, double fs, double f)
         k = filter->sect_ord;
         p.re = b[k];
         p.im = 0;
-        while (k > 0) {
+        while (k > 0)
+        {
             k -= 1.0;
             complex_mul(&p, &_z);
             p.re += b[k];
@@ -71,7 +74,8 @@ void iir_freq_resp(iir_filter_t *filter, double *h, double fs, double f)
         k = filter->sect_ord;
         q.re = a[k];
         q.im = 0;
-        while (k > 0) {
+        while (k > 0)
+        {
             k -= 1.0;
             complex_mul(&q, &_z);
             q.re += a[k];
@@ -96,7 +100,8 @@ double biquad_update(struct iir_filter *filter, double x)
     int k;
     double y;
 
-    for (k = 0; k < stages; k += 1) {
+    for (k = 0; k < stages; k += 1)
+    {
         y = x * b[0];
         y += d[0] * b[1] + d[1] * b[2];
         y -= d[2] * a[1] + d[3] * a[2];
@@ -121,7 +126,8 @@ void biquad_zero(struct iir_filter *filter)
     int i;
 
     n = filter->sections;
-    for (i = 0; i < n; i += 1) {
+    for (i = 0; i < n; i += 1)
+    {
         b[0] = 0;
         b[1] = 0;
         b[2] = 0;
@@ -141,11 +147,12 @@ void biquad_init_lowpass(struct iir_filter *filter, double fs, double f)
     int n;
 
     n = filter->sections;
-    for (i = 0; i < n; i += 1) {
+    for (i = 0; i < n; i += 1)
+    {
         k = n - i - 1.0;
         phi = F_PI / (4.0 * n) * (k * 2.0 + 1.0);
         alpha = sin(w) * cos(phi);
-			
+
         b[0] = (1.0 - cos(w)) / (2.0 * (1.0 + alpha));
         b[1] = (1.0 - cos(w)) / (1.0 + alpha);
         b[2] = (1.0 - cos(w)) / (2.0 * (1.0 + alpha));
@@ -160,7 +167,8 @@ void biquad_init_lowpass(struct iir_filter *filter, double fs, double f)
         filter->d[i] = 0;
 }
 
-void biquad_init_highpass(struct iir_filter *filter, double fs, double f) {
+void biquad_init_highpass(struct iir_filter *filter, double fs, double f)
+{
     double *a = filter->a;
     double *b = filter->b;
     double w = 2.0 * F_PI * f / fs;
@@ -169,7 +177,8 @@ void biquad_init_highpass(struct iir_filter *filter, double fs, double f) {
 
     n = filter->sections;
 
-    for (i = 0; i < n; i += 1) {
+    for (i = 0; i < n; i += 1)
+    {
         k = n - i - 1;
         phi = F_PI / (4.0 * n) * (k * 2.0 + 1.0);
         alpha = sin(w) * cos(phi);
@@ -189,12 +198,12 @@ void biquad_init_highpass(struct iir_filter *filter, double fs, double f) {
 
 void biquad_init_bandpass(struct iir_filter *filter, double fs, double f1, double f2)
 {
-	return biquad_init_band(filter, fs, f1, f2, 0);
+    return biquad_init_band(filter, fs, f1, f2, 0);
 }
 
 void biquad_init_bandstop(struct iir_filter *filter, double fs, double f1, double f2)
 {
-	return biquad_init_band(filter, fs, f1, f2, 1);
+    return biquad_init_band(filter, fs, f1, f2, 1);
 }
 
 static void complex_square(complex_d *s)
@@ -215,7 +224,8 @@ static void complex_sqrt(complex_d *s)
 
     x = s->re;
     y = s->im;
-    if (x == 0 && y == 0) {
+    if (x == 0 && y == 0)
+    {
         return;
     }
 
@@ -251,7 +261,8 @@ static void complex_div(complex_d *p, complex_d *q)
 
     x = q->re;
     y = q->im;
-    if (x == 0 && y == 0) {
+    if (x == 0 && y == 0)
+    {
         return;
     }
 
@@ -324,7 +335,8 @@ static void biquad_init_band(struct iir_filter *filter, double fs, double f1, do
 
     n = filter->sections;
 
-    for (i = 0; i < n; i += 1) {
+    for (i = 0; i < n; i += 1)
+    {
         phi = F_PI / 2.0 + F_PI * (2.0 * i + 1.0) / (n * 2.0);
         x = cos(phi);
         y = sin(phi);
@@ -366,7 +378,8 @@ static void biquad_init_band(struct iir_filter *filter, double fs, double f1, do
         a[1] = -2 * x;
         a[2] = x * x + y * y;
 
-        if (stop) {
+        if (stop)
+        {
             /* Band-stop: zeros at ω and ~ω */
             s.re = 0;
             s.im = wa;
@@ -377,7 +390,9 @@ static void biquad_init_band(struct iir_filter *filter, double fs, double f1, do
             b[0] = 1.0;
             b[1] = -2.0 * x;
             b[2] = x * x + y * y;
-        } else {
+        }
+        else
+        {
             /* Band-pass: zeros at ±1 */
             b[0] = 1.0;
             b[1] = 0.0;
@@ -386,11 +401,14 @@ static void biquad_init_band(struct iir_filter *filter, double fs, double f1, do
 
         /* Scale the parameters to get unity gain in the bassband */
 
-        if (stop) {
+        if (stop)
+        {
             /* Band-stop: unity gain at zero frequency */
             _z.re = 1.0;
             _z.im = 0.0;
-        } else {
+        }
+        else
+        {
             /* Band-pass: unity gain at ω */
             _z.re = cos(w);
             _z.im = -sin(w);

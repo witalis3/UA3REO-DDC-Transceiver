@@ -3,7 +3,7 @@
 #include "rds_decoder.h"
 #include "rtty_decoder.h"
 
-//Private variables
+// Private variables
 static SRAM float32_t DECODER_Buffer[DECODER_BUFF_SIZE] = {0};
 static uint32_t DECODER_head = 0; // index of adding new data to the buffer
 static uint32_t DECODER_tail = 0; // index of reading data from the buffer
@@ -31,16 +31,16 @@ void DECODER_PutSamples(float32_t *bufferIn, uint32_t size)
 		DECODER_head = 0;
 		dma_memcpy32((uint32_t *)&DECODER_Buffer[DECODER_head], (uint32_t *)bufferIn, (size - firstpart));
 		DECODER_head += (size - firstpart);
-		//if (DECODER_tail == DECODER_head)
-			//print("o");
+		// if (DECODER_tail == DECODER_head)
+		// print("o");
 	}
 }
 
 void DECODER_Process(void)
 {
-	if (DECODER_tail == DECODER_head) //overrun
+	if (DECODER_tail == DECODER_head) // overrun
 	{
-		//print("o");
+		// print("o");
 		return;
 	}
 	// get data from the buffer
@@ -49,15 +49,15 @@ void DECODER_Process(void)
 	if (DECODER_tail >= DECODER_BUFF_SIZE)
 		DECODER_tail = 0;
 
-	//CW Decoder
+	// CW Decoder
 	if (TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
 		CWDecoder_Process(bufferOut);
-	
-	//RDS Decoder
+
+	// RDS Decoder
 	if (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM)
 		RDSDecoder_Process(bufferOut);
-	
-	//RTTY Decoder
+
+	// RTTY Decoder
 	if (CurrentVFO->Mode == TRX_MODE_RTTY)
 		RTTYDecoder_Process(bufferOut);
 }

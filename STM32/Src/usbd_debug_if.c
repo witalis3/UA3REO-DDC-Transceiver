@@ -33,9 +33,9 @@ USBD_DEBUG_ItfTypeDef USBD_DEBUG_fops_FS =
 
 /* Private functions ---------------------------------------------------------*/
 /**
-  * @brief  Initializes the CDC media low layer over the FS USB IP
-  * @retval USBD_OK if all operations are OK else USBD_FAIL
-  */
+ * @brief  Initializes the CDC media low layer over the FS USB IP
+ * @retval USBD_OK if all operations are OK else USBD_FAIL
+ */
 static int8_t DEBUG_Init_FS(void)
 {
 	/* USER CODE BEGIN 3 */
@@ -47,9 +47,9 @@ static int8_t DEBUG_Init_FS(void)
 }
 
 /**
-  * @brief  DeInitializes the CDC media low layer
-  * @retval USBD_OK if all operations are OK else USBD_FAIL
-  */
+ * @brief  DeInitializes the CDC media low layer
+ * @retval USBD_OK if all operations are OK else USBD_FAIL
+ */
 static int8_t DEBUG_DeInit_FS(void)
 {
 	/* USER CODE BEGIN 4 */
@@ -58,12 +58,12 @@ static int8_t DEBUG_DeInit_FS(void)
 }
 
 /**
-  * @brief  Manage the CDC class requests
-  * @param  cmd: Command code
-  * @param  pbuf: Buffer containing command data (request parameters)
-  * @param  length: Number of data to be sent (in bytes)
-  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
-  */
+ * @brief  Manage the CDC class requests
+ * @param  cmd: Command code
+ * @param  pbuf: Buffer containing command data (request parameters)
+ * @param  length: Number of data to be sent (in bytes)
+ * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
+ */
 static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 {
 	/* USER CODE BEGIN 5 */
@@ -110,7 +110,7 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:
-		if ((pbuf[2] & 0x1) == 0x1) //DTR
+		if ((pbuf[2] & 0x1) == 0x1) // DTR
 		{
 			CW_key_serial = true;
 		}
@@ -118,10 +118,11 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 		{
 			CW_key_serial = false;
 		}
-		
-		if ((pbuf[2] & 0x2) == 0x2) //RTS
+
+		if ((pbuf[2] & 0x2) == 0x2) // RTS
 		{
-			if(!CW_key_serial && !TRX_ptt_soft) {
+			if (!CW_key_serial && !TRX_ptt_soft)
+			{
 				TRX_ptt_soft = true;
 				LCD_UpdateQuery.StatusInfoBarRedraw = true;
 				LCD_UpdateQuery.StatusInfoGUI = true;
@@ -129,7 +130,8 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 		}
 		else
 		{
-			if(!CW_key_serial && TRX_ptt_soft) {
+			if (!CW_key_serial && TRX_ptt_soft)
+			{
 				TRX_ptt_soft = false;
 				LCD_UpdateQuery.StatusInfoBarRedraw = true;
 				LCD_UpdateQuery.StatusInfoGUI = true;
@@ -147,19 +149,19 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 }
 
 /**
-  * @brief  Data received over USB OUT endpoint are sent over CDC interface
-  *         through this function.
-  *
-  *         @note
-  *         This function will block any OUT packet reception on USB endpoint
-  *         untill exiting this function. If you exit this function before transfer
-  *         is complete on CDC interface (ie. using DMA controller) it will result
-  *         in receiving more data while previous ones are still not sent.
-  *
-  * @param  Buf: Buffer of data to be received
-  * @param  Len: Number of data received (in bytes)
-  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
-  */
+ * @brief  Data received over USB OUT endpoint are sent over CDC interface
+ *         through this function.
+ *
+ *         @note
+ *         This function will block any OUT packet reception on USB endpoint
+ *         untill exiting this function. If you exit this function before transfer
+ *         is complete on CDC interface (ie. using DMA controller) it will result
+ *         in receiving more data while previous ones are still not sent.
+ *
+ * @param  Buf: Buffer of data to be received
+ * @param  Len: Number of data received (in bytes)
+ * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
+ */
 static int8_t DEBUG_Receive_FS(uint8_t *Buf)
 {
 	/* USER CODE BEGIN 6 */
@@ -170,16 +172,16 @@ static int8_t DEBUG_Receive_FS(uint8_t *Buf)
 }
 
 /**
-  * @brief  CDC_Transmit_FS
-  *         Data to send over USB IN endpoint are sent over CDC interface
-  *         through this function.
-  *         @note
-  *
-  *
-  * @param  Buf: Buffer of data to be sent
-  * @param  Len: Number of data to be sent (in bytes)
-  * @retval USBD_OK if all operations are OK else USBD_FAIL or USBD_BUSY
-  */
+ * @brief  CDC_Transmit_FS
+ *         Data to send over USB IN endpoint are sent over CDC interface
+ *         through this function.
+ *         @note
+ *
+ *
+ * @param  Buf: Buffer of data to be sent
+ * @param  Len: Number of data to be sent (in bytes)
+ * @retval USBD_OK if all operations are OK else USBD_FAIL or USBD_BUSY
+ */
 uint8_t DEBUG_Transmit_FS(uint8_t *Buf, uint16_t Len)
 {
 	uint8_t result = USBD_OK;

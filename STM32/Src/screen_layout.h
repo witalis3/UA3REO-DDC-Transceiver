@@ -10,10 +10,10 @@ extern "C"
 #include "color_themes.h"
 #include "fonts.h"
 
-	//LCD dimensions defines
+	// LCD dimensions defines
 	typedef const struct
 	{
-		//Top row of status buttons
+		// Top row of status buttons
 		const uint16_t TOPBUTTONS_X1;
 		const uint16_t TOPBUTTONS_X2;
 		const uint16_t TOPBUTTONS_Y1;
@@ -52,22 +52,22 @@ extern "C"
 		const uint16_t TOPBUTTONS_MUTE_Y;
 		const float32_t TOPBUTTONS_LOCK_X;
 		const uint16_t TOPBUTTONS_LOCK_Y;
-		//Clock
+		// Clock
 		const uint16_t CLOCK_POS_Y;
 		const uint16_t CLOCK_POS_HRS_X;
 		const uint16_t CLOCK_POS_MIN_X;
 		const uint16_t CLOCK_POS_SEC_X;
 		const GFXfont *CLOCK_FONT;
-		//WIFI
+		// WIFI
 		const uint16_t STATUS_WIFI_ICON_X;
 		const uint16_t STATUS_WIFI_ICON_Y;
-		//SD
+		// SD
 		const uint16_t STATUS_SD_ICON_X;
 		const uint16_t STATUS_SD_ICON_Y;
-		//FAN
+		// FAN
 		const uint16_t STATUS_FAN_ICON_X;
 		const uint16_t STATUS_FAN_ICON_Y;
-		//Frequency output
+		// Frequency output
 		const uint16_t FREQ_A_LEFT;
 		const uint16_t FREQ_X_OFFSET_100;
 		const uint16_t FREQ_X_OFFSET_10;
@@ -90,7 +90,7 @@ extern "C"
 		const uint16_t FREQ_DELIMITER_X1_OFFSET;
 		const uint16_t FREQ_DELIMITER_X2_OFFSET;
 #if (defined(LAY_800x480))
-		//Frequency B output
+		// Frequency B output
 		const uint16_t FREQ_B_LEFT;
 		const uint16_t FREQ_B_X_OFFSET_100;
 		const uint16_t FREQ_B_X_OFFSET_10;
@@ -113,7 +113,7 @@ extern "C"
 		const uint16_t FREQ_B_DELIMITER_X1_OFFSET;
 		const uint16_t FREQ_B_DELIMITER_X2_OFFSET;
 #endif
-		//Display statuses under frequency
+		// Display statuses under frequency
 		const uint16_t STATUS_Y_OFFSET;
 		const uint16_t STATUS_HEIGHT;
 		const uint16_t STATUS_BAR_X_OFFSET;
@@ -194,13 +194,13 @@ extern "C"
 		const uint16_t STATUS_ERR_WIDTH;
 		const uint16_t STATUS_ERR_HEIGHT;
 		const uint8_t TEXTBAR_FONT;
-		//bottom buttons
+		// bottom buttons
 		const uint16_t BOTTOM_BUTTONS_BLOCK_HEIGHT;
 		const uint16_t BOTTOM_BUTTONS_BLOCK_TOP;
 		const uint16_t BOTTOM_BUTTONS_COUNT;
 		const uint16_t BOTTOM_BUTTONS_ARROWS_WIDTH;
 		const uint16_t BOTTOM_BUTTONS_ONE_WIDTH;
-		//FFT and waterfall
+		// FFT and waterfall
 		const uint16_t FFT_HEIGHT_STYLE1;
 		const uint16_t WTF_HEIGHT_STYLE1;
 		const uint16_t FFT_HEIGHT_STYLE2;
@@ -216,33 +216,33 @@ extern "C"
 		const uint16_t FFT_FFTWTF_POS_Y;
 		const uint16_t FFT_FFTWTF_BOTTOM;
 		const uint16_t FFT_FREQLABELS_HEIGHT;
-		//System menu
+		// System menu
 		const uint8_t SYSMENU_FONT_SIZE;
 		const uint16_t SYSMENU_X1;
 		const uint16_t SYSMENU_X2;
 		const uint16_t SYSMENU_W;
 		const uint16_t SYSMENU_ITEM_HEIGHT;
 		const uint16_t SYSMENU_MAX_ITEMS_ON_PAGE;
-		//Stuff
+		// Stuff
 		const uint16_t GREETINGS_X;
 		const uint16_t GREETINGS_Y;
-		//Tooltip
+		// Tooltip
 		const GFXfont *TOOLTIP_FONT;
 		const uint16_t TOOLTIP_TIMEOUT;
 		const uint16_t TOOLTIP_MARGIN;
 		const uint16_t TOOLTIP_POS_X;
 		const uint16_t TOOLTIP_POS_Y;
-		//BW Trapezoid
+		// BW Trapezoid
 		const uint16_t BW_TRAPEZ_POS_X;
 		const uint16_t BW_TRAPEZ_POS_Y;
 		const uint16_t BW_TRAPEZ_HEIGHT;
 		const uint16_t BW_TRAPEZ_WIDTH;
 #if (defined(LAY_800x480))
-		//Touch buttons layout
+		// Touch buttons layout
 		const uint16_t BUTTON_PADDING;
 		const float32_t BUTTON_LIGHTER_WIDTH;
 		const uint16_t BUTTON_LIGHTER_HEIGHT;
-		//Windows
+		// Windows
 		const uint16_t WINDOWS_BUTTON_WIDTH;
 		const uint16_t WINDOWS_BUTTON_HEIGHT;
 		const uint16_t WINDOWS_BUTTON_MARGIN;

@@ -74,7 +74,7 @@ extern void WIFI_Process(void);
 extern bool WIFI_ListAP(void (*callback)(void));
 extern bool WIFI_GetSNTPTime(void (*callback)(void));
 extern bool WIFI_GetIP(void (*callback)(void));
-//extern void WIFI_GetStatus(void);
+// extern void WIFI_GetStatus(void);
 extern void WIFI_GoSleep(void);
 extern bool WIFI_StartCATServer(void (*callback)(void));
 extern bool WIFI_UpdateFW(void (*callback)(void));
@@ -85,7 +85,7 @@ extern void WIFI_getDXCluster(void);
 extern void WIFI_getPropagination(void);
 extern bool WIFI_SW_Restart(void (*callback)(void));
 extern void WIFI_checkFWUpdates(void);
-extern void WIFI_downloadFileToSD(char* url, char* filename);
+extern void WIFI_downloadFileToSD(char *url, char *filename);
 extern bool WIFI_getDXCluster_background(void);
 
 #endif

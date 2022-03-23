@@ -4,7 +4,8 @@
 #define IIR_BIQUAD_MAX_SECTIONS 15
 #define IIR_BIQUAD_SECTION_ORDER 2
 
-typedef struct iir_filter {
+typedef struct iir_filter
+{
     int sections;
     int sect_ord;
     double a[IIR_BIQUAD_MAX_SECTIONS * (IIR_BIQUAD_SECTION_ORDER + 1)];

@@ -23,13 +23,13 @@
 #define AUDIO_RX_NB_DELAY_BUFFER_SIZE (AUDIO_RX_NB_DELAY_BUFFER_ITEMS * 2)
 #define AUDIO_MAX_REVERBER_TAPS 10
 
-//SAM
+// SAM
 #define SAM_PLL_HILBERT_STAGES 7
-#define SAM_OUT_IDX   (3 * SAM_PLL_HILBERT_STAGES)
+#define SAM_OUT_IDX (3 * SAM_PLL_HILBERT_STAGES)
 #define SAM_omegaN 300.0 // PLL bandwidth 50.0 - 1000.0
-#define SAM_zeta 0.7 // PLL step response: smaller, slower response 1.0 - 0.1
+#define SAM_zeta 0.7	 // PLL step response: smaller, slower response 1.0 - 0.1
 
-//Stereo WFM
+// Stereo WFM
 #define SWFM_PILOT_TONE_FREQ 19000.0f
 #define SWFM_STEREO_PILOT_TONE_FREQ (2.0f * SWFM_PILOT_TONE_FREQ)
 #define SWFM_STEREO_AUDIO_HALF_WIDTH 15000.0f
@@ -37,26 +37,26 @@
 typedef struct
 {
 	bool inited;
-	uint16_t  count;
+	uint16_t count;
 
 	float32_t fil_out;
 	float32_t lowpass;
 	float32_t omega2;
 	float32_t phs;
 
-	float32_t dsI;             // delayed sample, I path
-	float32_t dsQ;             // delayed sample, Q path
+	float32_t dsI; // delayed sample, I path
+	float32_t dsQ; // delayed sample, Q path
 
-	float32_t a[SAM_OUT_IDX + 3];     // Filter a variables
-	float32_t b[SAM_OUT_IDX + 3];     // Filter b variables
-	float32_t c[SAM_OUT_IDX + 3];     // Filter c variables
-	float32_t d[SAM_OUT_IDX + 3];     // Filter d variables
+	float32_t a[SAM_OUT_IDX + 3]; // Filter a variables
+	float32_t b[SAM_OUT_IDX + 3]; // Filter b variables
+	float32_t c[SAM_OUT_IDX + 3]; // Filter c variables
+	float32_t d[SAM_OUT_IDX + 3]; // Filter d variables
 
 	float32_t adb_sam_g1;
 	float32_t adb_sam_g2;
 	float32_t adb_sam_omega_min;
 	float32_t adb_sam_omega_max;
-	
+
 	float32_t adb_sam_mtauR;
 	float32_t adb_sam_onem_mtauR;
 	float32_t adb_sam_mtauI;
@@ -65,8 +65,8 @@ typedef struct
 
 typedef struct
 {
-    const float32_t               c0[SAM_PLL_HILBERT_STAGES];          // Filter coefficients - path 0
-    const float32_t               c1[SAM_PLL_HILBERT_STAGES];          // Filter coefficients - path 1
+	const float32_t c0[SAM_PLL_HILBERT_STAGES]; // Filter coefficients - path 0
+	const float32_t c1[SAM_PLL_HILBERT_STAGES]; // Filter coefficients - path 1
 } demod_sam_const_t;
 //
 
@@ -87,8 +87,8 @@ extern float32_t APROC_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 extern float32_t APROC_Audio_Buffer_TX_Q[FPGA_TX_IQ_BUFFER_HALF_SIZE];
 extern float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE];
 extern volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
-extern volatile float32_t Processor_RX1_Power_value;		  // RX signal magnitude
-extern volatile float32_t Processor_RX2_Power_value;		  // RX signal magnitude
+extern volatile float32_t Processor_RX1_Power_value;	  // RX signal magnitude
+extern volatile float32_t Processor_RX2_Power_value;	  // RX signal magnitude
 extern bool NeedReinitReverber;
 extern bool APROC_IFGain_Overflow;
 extern bool DFM_RX1_Squelched;

@@ -10,8 +10,8 @@ const static arm_cfft_instance_f32 *VAD_FFT_Inst = &arm_cfft_sR_f32_len128;
 static float32_t window_multipliers[VAD_FFT_SIZE] = {0}; // coefficients for the window function
 static float32_t VAD_FFTBuffer[VAD_FFT_SIZE * 2] = {0};
 static float32_t VAD_FFTBufferCharge[VAD_FFT_SIZE * 2] = {0}; // cumulative buffer
-static float32_t InputBuffer[VAD_BLOCK_SIZE] = {0};			  //Input buffer
-//IRAM2 float32_t VAD_FFTBuffer_Export [VAD_FFT_SIZE] = {0};
+static float32_t InputBuffer[VAD_BLOCK_SIZE] = {0};			  // Input buffer
+// IRAM2 float32_t VAD_FFTBuffer_Export [VAD_FFT_SIZE] = {0};
 static float32_t VAD_decimState[VAD_BLOCK_SIZE + 4 - 1];
 static arm_fir_decimate_instance_f32 VAD_DECIMATE;
 static const arm_fir_decimate_instance_f32 VAD_FirDecimate =
@@ -26,7 +26,7 @@ static float32_t Min_E2 = 999.0f;
 static float32_t Min_MD1 = 999.0f;
 static float32_t Min_MD2 = 999.0f;
 static uint32_t start_counter = 0;
-bool VAD_Muting = false; //Muting flag
+bool VAD_Muting = false; // Muting flag
 
 // initialize VAD
 void InitVAD(void)
@@ -40,7 +40,7 @@ void InitVAD(void)
 
 void resetVAD(void)
 {
-	//need reset
+	// need reset
 	Min_E1 = 999.0f;
 	Min_E2 = 999.0f;
 	Min_MD1 = 999.0f;
@@ -78,7 +78,7 @@ void processVAD(float32_t *buffer)
 	arm_cfft_f32(VAD_FFT_Inst, VAD_FFTBuffer, 0, 1);
 	arm_cmplx_mag_squared_f32(VAD_FFTBuffer, VAD_FFTBuffer, VAD_FFT_SIZE);
 
-	//DEBUG VAD
+	// DEBUG VAD
 	/*if(NeedFFTInputBuffer)
 	{
 		memset(VAD_FFTBuffer_Export, 0x00, sizeof VAD_FFTBuffer_Export);
@@ -90,7 +90,7 @@ void processVAD(float32_t *buffer)
 	}
 	return;*/
 
-	//calc bw
+	// calc bw
 	uint32_t fft_bw = (TRX_SAMPLERATE / VAD_MAGNIFY / 2);
 	uint32_t fft_bins = VAD_FFT_SIZE / 2;
 	uint32_t trx_hpf = CurrentVFO->HPF_RX_Filter_Width;
@@ -106,7 +106,7 @@ void processVAD(float32_t *buffer)
 	uint32_t fft_center_bin = (fft_hpf_bin + fft_lpf_bin) / 2;
 	uint32_t fft_bin_halflen = fft_lpf_bin - fft_center_bin;
 
-	//calc power
+	// calc power
 	float32_t power1 = 0;
 	float32_t power2 = 0;
 	for (uint32_t bin = fft_hpf_bin; bin < fft_center_bin; bin++)
@@ -114,7 +114,7 @@ void processVAD(float32_t *buffer)
 	for (uint32_t bin = fft_center_bin; bin < fft_lpf_bin; bin++)
 		power2 += VAD_FFTBuffer[bin];
 
-	//calc SFM — Spectral Flatness Measure
+	// calc SFM — Spectral Flatness Measure
 	float32_t Amean1 = 0;
 	float32_t Amean2 = 0;
 	arm_mean_f32(&VAD_FFTBuffer[fft_hpf_bin], fft_bin_halflen, &Amean1);
@@ -134,7 +134,7 @@ void processVAD(float32_t *buffer)
 	Gmean2 = powf(10, Gmean2);
 	float32_t SMFdb2 = 10 * log10f_fast(Gmean2 / Amean2);
 
-	//find most dominant frequency component
+	// find most dominant frequency component
 	float32_t MD1 = 0.0f;
 	uint32_t MD1_index = 0.0f;
 	arm_max_f32(&VAD_FFTBuffer[fft_hpf_bin], fft_bin_halflen, &MD1, &MD1_index);
@@ -142,8 +142,8 @@ void processVAD(float32_t *buffer)
 	uint32_t MD2_index = 0.0f;
 	arm_max_f32(&VAD_FFTBuffer[fft_center_bin], fft_bin_halflen, &MD2, &MD2_index);
 
-	//minimums
-	if (start_counter < 100) //skip first packets
+	// minimums
+	if (start_counter < 100) // skip first packets
 	{
 		start_counter++;
 		Min_E1 = 999.0f;
@@ -161,23 +161,23 @@ void processVAD(float32_t *buffer)
 	if (MD2 < Min_MD2)
 		Min_MD2 = MD2;
 
-	//calc results
+	// calc results
 	float32_t Res_E1 = power1 / Min_E1;
 	float32_t Res_E2 = power2 / Min_E2;
 	float32_t Res_MD1 = MD1 / Min_MD1;
 	float32_t Res_MD2 = MD2 / Min_MD2;
-	float32_t Res_MD1_IDX = fabsf(5 - (float32_t)MD1_index);  //8 - voice dominant bin
-	float32_t Res_MD2_IDX = fabsf(17 - (float32_t)MD2_index); //20 - voice dominant bin
+	float32_t Res_MD1_IDX = fabsf(5 - (float32_t)MD1_index);  // 8 - voice dominant bin
+	float32_t Res_MD2_IDX = fabsf(17 - (float32_t)MD2_index); // 20 - voice dominant bin
 	float32_t Res_Equation = Res_E1 / Res_E2;
 
-	//debug
+	// debug
 	static uint32_t prevPrint = 0;
 	if (debug && (HAL_GetTick() - prevPrint) > 100)
 	{
 		print(" SMF1: ", SMFdb1, " SMF2: ", SMFdb2, " Res_E1: ", Res_E1, " Res_E2: ", Res_E2, " Res_MD1: ", Res_MD1, " Res_MD2: ", Res_MD2, " MD1_Idx: ", MD1_index, " MD2_Idx: ", MD2_index, " EQU: ", Res_Equation, " ");
 	}
 
-	//check thresholds
+	// check thresholds
 	uint8_t points1 = 0;
 	uint8_t points2 = 0;
 	if (Res_MD1 > 15.0f)
@@ -246,7 +246,7 @@ void processVAD(float32_t *buffer)
 		prevPrint = HAL_GetTick();
 	}
 
-	//calculate result state
+	// calculate result state
 	static bool state = false;
 	static uint16_t state_no_counter = 0;
 	static uint16_t state_yes_counter = 0;
@@ -276,7 +276,7 @@ void processVAD(float32_t *buffer)
 		state = false;
 	}
 
-	//move min averages
+	// move min averages
 	if (!state && state_no_counter > 500)
 	{
 		Min_E1 = 0.9f * Min_E1 + 0.1f * power1;
@@ -294,6 +294,6 @@ void processVAD(float32_t *buffer)
 		state_yes_counter = 0;
 	}
 
-	//set mute state
+	// set mute state
 	VAD_Muting = !state;
 }

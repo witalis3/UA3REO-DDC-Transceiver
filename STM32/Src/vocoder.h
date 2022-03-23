@@ -38,7 +38,7 @@ typedef struct
     // data chunk
     uint32_t datasig;  // chunk ID - "data" (0x64617461)
     uint32_t datasize; // data length
-    //uint8_t data[];       // data body
+    // uint8_t data[];       // data body
 
 } WAV_header;
 

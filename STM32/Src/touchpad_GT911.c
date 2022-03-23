@@ -57,7 +57,7 @@ void GT911_RD_RegOneByte(uint16_t reg, uint8_t *buf)
 	{
 		print("no touchpad found on i2c bus");
 
-		//try new i2c addr if failed
+		// try new i2c addr if failed
 		if (gt911_i2c_addr == GT911_I2C_ADDR_1)
 			gt911_i2c_addr = GT911_I2C_ADDR_2;
 		else
@@ -114,7 +114,7 @@ void GT911_ReadFirmwareVersion(void)
 void GT911_Init(void)
 {
 	/*GT911_Config[1] = 800 & 0x00FF; //X_Resolution
-	GT911_Config[2] = (800 >> 8) & 0x00FF; 
+	GT911_Config[2] = (800 >> 8) & 0x00FF;
 	GT911_Config[3] = 480 & 0x00FF; //Y_Resolution
 	GT911_Config[4] = (480 >> 8) & 0x00FF;
 	GT911_Config[5] = GT911_MAX_TOUCH; //Number_Of_Touch_Support
@@ -123,7 +123,7 @@ void GT911_Init(void)
 	GT911_Config[6] |= true << 6; //ReverseX
 	GT911_Config[6] |= true << 3; //SwithX2Y
 	GT911_Config[6] |= true << 2; //SoftwareNoiseReduction
-	
+
 	//GT911_CalculateCheckSum
 	GT911_Config[184] = 0;
 	for(uint8_t i = 0 ; i < 184 ; i++){
@@ -147,7 +147,7 @@ void GT911_Init(void)
 	/*buf[0] = GOODIX_CMD_READ;
 	GT911_WR_Reg(GT911_COMMAND_REG, buf, 1);
 	HAL_Delay(100);
-	
+
 	uint8_t rbuf[4] = {0};
 	GT911_RD_Reg(0x8048, (uint8_t *)&rbuf[0], 2);
 	sendToDebug_uint8(rbuf[0],false);
@@ -178,14 +178,14 @@ void GT911_Scan(void)
 		{
 			GT911_WR_Reg(GT911_READ_XY_REG, (uint8_t *)&Clearbuf, 1);
 
-			//sprintf(str,"%d",buf[0]);
-			//sendToDebug_strln(str);
-			//HAL_Delay(10);
+			// sprintf(str,"%d",buf[0]);
+			// sendToDebug_strln(str);
+			// HAL_Delay(10);
 		}
 		else
 		{
-			//sprintf(str, "bufstat:%d",(buf[0]&0x80));
-			//sendToDebug_strln(str);
+			// sprintf(str, "bufstat:%d",(buf[0]&0x80));
+			// sendToDebug_strln(str);
 
 			GT911.TouchpointFlag = buf[0];
 			GT911.TouchCount = buf[0] & 0x0f;
@@ -236,7 +236,7 @@ void GT911_Scan(void)
 				if (GT911.X[touch_id] > 795)
 					GT911.X[touch_id] = 795;
 
-				if(CALIBRATE.LCD_Rotate)
+				if (CALIBRATE.LCD_Rotate)
 				{
 					GT911.X[touch_id] = LCD_WIDTH - GT911.X[touch_id];
 					GT911.Y[touch_id] = LCD_HEIGHT - GT911.Y[touch_id];
@@ -252,10 +252,10 @@ void GT911_Scan(void)
 					print_flush();
 				}
 			}
-			if(GT911.TouchCount == 1)
-					TOUCHPAD_processTouch(GT911.X[0], GT911.Y[0], 0, 0);
-			if(GT911.TouchCount == 2)
-					TOUCHPAD_processTouch(GT911.X[0], GT911.Y[0], GT911.X[1], GT911.Y[1]);
+			if (GT911.TouchCount == 1)
+				TOUCHPAD_processTouch(GT911.X[0], GT911.Y[0], 0, 0);
+			if (GT911.TouchCount == 2)
+				TOUCHPAD_processTouch(GT911.X[0], GT911.Y[0], GT911.X[1], GT911.Y[1]);
 		}
 	}
 }

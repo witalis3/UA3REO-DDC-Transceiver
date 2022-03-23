@@ -6,19 +6,19 @@
 #include "agc.h"
 #include "usbd_audio_if.h"
 
-//Public variables
+// Public variables
 uint32_t WM8731_DMA_samples = 0;								   // count the number of samples passed to the audio codec
 bool WM8731_DMA_state = true;									   // what part of the buffer we are working with, true - compleate; false - half
 bool WM8731_Buffer_underrun = false;							   // lack of data in the buffer from the audio processor
 SRAM int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; // audio codec ring buffers
 SRAM int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
-bool WM8731_Beeping; //Beeping flag
-bool WM8731_Muting;	 //Muting flag
-bool WM8731_test_result = true; //self-test flag
+bool WM8731_Beeping;			// Beeping flag
+bool WM8731_Muting;				// Muting flag
+bool WM8731_test_result = true; // self-test flag
 
-//Private variables
+// Private variables
 
-//Prototypes
+// Prototypes
 static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value);																		  // send I2C command to codec
 static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize); // Full-duplex implementation of I2S startup
 static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma);																						  // RX Buffer is fully sent to the codec
@@ -55,7 +55,7 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 	uint8_t repeats = 0;
 	while (st != 0 && repeats < 3)
 	{
-		i2c_beginTransmission_u8(&I2C_WM8731, B8(0011010)); //I2C_ADDRESS_WM8731 00110100
+		i2c_beginTransmission_u8(&I2C_WM8731, B8(0011010)); // I2C_ADDRESS_WM8731 00110100
 		i2c_write_u8(&I2C_WM8731, reg);						// MSB
 		i2c_write_u8(&I2C_WM8731, value);					// MSB
 		st = i2c_endTransmission(&I2C_WM8731);
@@ -101,27 +101,27 @@ void WM8731_RX_mode(void)
 }*/
 
 // switch to mixed RX-TX mode (for LOOP)
-void WM8731_TXRX_mode(void) //loopback
+void WM8731_TXRX_mode(void) // loopback
 {
-	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); //R2 Left Headphone Out
-	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); //R3 Right Headphone Out
-	WM8731_SendI2CCommand(B8(00001010), B8(00010000)); //R5 Digital Audio Path Control
-	if (getInputType() == TRX_INPUT_LINE)			   //line
+	WM8731_SendI2CCommand(B8(00000101), B8(11111111)); // R2 Left Headphone Out
+	WM8731_SendI2CCommand(B8(00000111), B8(11111111)); // R3 Right Headphone Out
+	WM8731_SendI2CCommand(B8(00001010), B8(00010000)); // R5 Digital Audio Path Control
+	if (getInputType() == TRX_INPUT_LINE)			   // line
 	{
-		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); //R0 Left Line In
-		WM8731_SendI2CCommand(B8(00000010), B8(00010111)); //R1 Right Line In
-		WM8731_SendI2CCommand(B8(00001000), B8(00010010)); //R4 Analogue Audio Path Control
-		WM8731_SendI2CCommand(B8(00001100), B8(01100010)); //R6 Power Down Control, internal crystal
+		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); // R0 Left Line In
+		WM8731_SendI2CCommand(B8(00000010), B8(00010111)); // R1 Right Line In
+		WM8731_SendI2CCommand(B8(00001000), B8(00010010)); // R4 Analogue Audio Path Control
+		WM8731_SendI2CCommand(B8(00001100), B8(01100010)); // R6 Power Down Control, internal crystal
 	}
-	if (getInputType() == TRX_INPUT_MIC) //mic
+	if (getInputType() == TRX_INPUT_MIC) // mic
 	{
-		WM8731_SendI2CCommand(B8(00000001), B8(10000000)); //R0 Left Line In
-		WM8731_SendI2CCommand(B8(00000011), B8(10000000)); //R1 Right Line In
-		if(TRX.MIC_Boost)
-			WM8731_SendI2CCommand(B8(00001000), B8(00010101)); //R4 Analogue Audio Path Control
+		WM8731_SendI2CCommand(B8(00000001), B8(10000000)); // R0 Left Line In
+		WM8731_SendI2CCommand(B8(00000011), B8(10000000)); // R1 Right Line In
+		if (TRX.MIC_Boost)
+			WM8731_SendI2CCommand(B8(00001000), B8(00010101)); // R4 Analogue Audio Path Control
 		else
-			WM8731_SendI2CCommand(B8(00001000), B8(00010100)); //R4 Analogue Audio Path Control
-		WM8731_SendI2CCommand(B8(00001100), B8(01100001)); //R6 Power Down Control, internal crystal
+			WM8731_SendI2CCommand(B8(00001000), B8(00010100)); // R4 Analogue Audio Path Control
+		WM8731_SendI2CCommand(B8(00001100), B8(01100001));	   // R6 Power Down Control, internal crystal
 	}
 }
 
@@ -134,7 +134,7 @@ void WM8731_Mute(void)
 void WM8731_UnMute(void)
 {
 	WM8731_Muting = false;
-	if(!TRX_AFAmp_Mute)
+	if (!TRX_AFAmp_Mute)
 		WM8731_UnMute_AF_AMP();
 }
 
@@ -159,22 +159,22 @@ void WM8731_Beep(void)
 // initialize the audio codec over I2C
 void WM8731_Init(void)
 {
-	if (WM8731_SendI2CCommand(B8(00011110), B8(00000000)) != 0) //R15 Reset Chip
+	if (WM8731_SendI2CCommand(B8(00011110), B8(00000000)) != 0) // R15 Reset Chip
 	{
 		println("[ERR] Audio codec not found");
 		LCD_showError("Audio codec init error", true);
 		WM8731_test_result = false;
 	}
-	WM8731_SendI2CCommand(B8(00000101), B8(10000000)); //R2 Left Headphone Out Mute
-	WM8731_SendI2CCommand(B8(00000111), B8(10000000)); //R3 Right Headphone Out Mute
-	WM8731_SendI2CCommand(B8(00001110), B8(00001110)); //R7 Digital Audio Interface Format, Codec Slave, 32bits, I2S Format, MSB-First left-1 justified
-	WM8731_SendI2CCommand(B8(00010000), B8(00000000)); //R8 Sampling Control normal mode, 256fs, SR=0 (MCLK@12.288Mhz, fs=48kHz))
-	WM8731_SendI2CCommand(B8(00010010), B8(00000001)); //R9 reactivate digital audio interface
-	WM8731_SendI2CCommand(B8(00000000), B8(10000000)); //R0 Left Line In
-	WM8731_SendI2CCommand(B8(00000010), B8(10000000)); //R1 Right Line In
-	WM8731_SendI2CCommand(B8(00001000), B8(00010110)); //R4 Analogue Audio Path Control
-	WM8731_SendI2CCommand(B8(00001010), B8(00010000)); //R5 Digital Audio Path Control
-	WM8731_SendI2CCommand(B8(00001100), B8(01100111)); //R6 Power Down Control
+	WM8731_SendI2CCommand(B8(00000101), B8(10000000)); // R2 Left Headphone Out Mute
+	WM8731_SendI2CCommand(B8(00000111), B8(10000000)); // R3 Right Headphone Out Mute
+	WM8731_SendI2CCommand(B8(00001110), B8(00001110)); // R7 Digital Audio Interface Format, Codec Slave, 32bits, I2S Format, MSB-First left-1 justified
+	WM8731_SendI2CCommand(B8(00010000), B8(00000000)); // R8 Sampling Control normal mode, 256fs, SR=0 (MCLK@12.288Mhz, fs=48kHz))
+	WM8731_SendI2CCommand(B8(00010010), B8(00000001)); // R9 reactivate digital audio interface
+	WM8731_SendI2CCommand(B8(00000000), B8(10000000)); // R0 Left Line In
+	WM8731_SendI2CCommand(B8(00000010), B8(10000000)); // R1 Right Line In
+	WM8731_SendI2CCommand(B8(00001000), B8(00010110)); // R4 Analogue Audio Path Control
+	WM8731_SendI2CCommand(B8(00001010), B8(00010000)); // R5 Digital Audio Path Control
+	WM8731_SendI2CCommand(B8(00001100), B8(01100111)); // R6 Power Down Control
 	WM8731_UnMute();
 }
 
@@ -292,7 +292,7 @@ ITCM static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t
 	}
 	if (HAL_OK != HAL_DMA_Start_IT(hi2s->hdmatx, (uint32_t)hi2s->pTxBuffPtr, (uint32_t)&hi2s->Instance->TXDR, hi2s->TxXferSize))
 	{
-		//Update SPI error code
+		// Update SPI error code
 		SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
 		hi2s->State = HAL_I2S_STATE_READY;
 

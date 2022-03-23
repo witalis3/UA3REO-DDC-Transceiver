@@ -79,17 +79,17 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0xFA, /* MaxPower 500 mA */
 
 		//---------------------------------------------------------------------------
-		//DEBUG/KEY PORT
-		//Interface Association Descriptor:
+		// DEBUG/KEY PORT
+		// Interface Association Descriptor:
 		//------------------------------
-		0x08,					 //bLength
-		0x0B,					 //bDescriptorType
-		0x00,					 //bFirstInterface
-		0x02,					 //bInterfaceCount
-		0x02,					 //bFunctionClass      (Communication Device Class)
-		0x02,					 //bFunctionSubClass   (Abstract Control Model - ACM)
-		0x01,					 //bFunctionProtocol   (ITU-T V.250)
-		USBD_IDX_INTERFACE1_STR, //iFunction   ""
+		0x08,					 // bLength
+		0x0B,					 // bDescriptorType
+		0x00,					 // bFirstInterface
+		0x02,					 // bInterfaceCount
+		0x02,					 // bFunctionClass      (Communication Device Class)
+		0x02,					 // bFunctionSubClass   (Abstract Control Model - ACM)
+		0x01,					 // bFunctionProtocol   (ITU-T V.250)
+		USBD_IDX_INTERFACE1_STR, // iFunction   ""
 
 		/*Interface Descriptor */
 		0x09,					 /* bLength: Interface Descriptor size */
@@ -172,17 +172,17 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 
 		//---------------------------------------------------------------------------
 
-		//CAT PORT
-		//Interface Association Descriptor:
+		// CAT PORT
+		// Interface Association Descriptor:
 		//------------------------------
-		0x08,					 //bLength
-		0x0B,					 //bDescriptorType
-		0x02,					 //bFirstInterface
-		0x02,					 //bInterfaceCount
-		0x02,					 //bFunctionClass      (Communication Device Class)
-		0x02,					 //bFunctionSubClass   (Abstract Control Model - ACM)
-		0x01,					 //bFunctionProtocol   (ITU-T V.250)
-		USBD_IDX_INTERFACE2_STR, //iFunction   ""
+		0x08,					 // bLength
+		0x0B,					 // bDescriptorType
+		0x02,					 // bFirstInterface
+		0x02,					 // bInterfaceCount
+		0x02,					 // bFunctionClass      (Communication Device Class)
+		0x02,					 // bFunctionSubClass   (Abstract Control Model - ACM)
+		0x01,					 // bFunctionProtocol   (ITU-T V.250)
+		USBD_IDX_INTERFACE2_STR, // iFunction   ""
 
 		/*Interface Descriptor */
 		0x09,					 /* bLength: Interface Descriptor size */
@@ -265,8 +265,8 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 
 		//---------------------------------------------------------------------------
 
-		//AUDIO RX PORT
-		//Interface Association Descriptor:
+		// AUDIO RX PORT
+		// Interface Association Descriptor:
 		//------------------------------
 		0x08,					 //     bLength
 		0x0B,					 //    bDescriptorType
@@ -277,7 +277,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00,					 //     bFunctionProtocol
 		USBD_IDX_INTERFACE3_STR, //     iFunction   "UA3REO Transceiver AUDIO RX"
 
-		//Interface Descriptor (Control):
+		// Interface Descriptor (Control):
 		//------------------------------
 		0x09,					 //     bLength
 		0x04,					 //     bDescriptorType
@@ -289,7 +289,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00,					 //     bInterfaceProtocol
 		USBD_IDX_INTERFACE3_STR, //     iInterface   ""
 
-		//AC Interface Header Descriptor (Control):
+		// AC Interface Header Descriptor (Control):
 		//------------------------------
 		0x0A, //     bLength
 		0x24, //     bDescriptorType
@@ -302,7 +302,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x05, //     baInterfaceNr(1)
 		0x06, //     baInterfaceNr(2)
 
-		//AC Input Terminal Descriptor (Microphone):
+		// AC Input Terminal Descriptor (Microphone):
 		//------------------------------
 		0x0C, //    bLength
 		0x24, //     bDescriptorType
@@ -317,7 +317,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00, //    iChannelNames
 		0x00, //     iTerminal
 
-		//AC Output Terminal Descriptor (Microphone):
+		// AC Output Terminal Descriptor (Microphone):
 		//------------------------------
 		0x09, //     bLength
 		0x24, //     bDescriptorType
@@ -329,7 +329,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x1E, //    bSourceID
 		0x00, //     iTerminal   "wwww 1"
 
-		//AC Input Terminal Descriptor (Speaker):
+		// AC Input Terminal Descriptor (Speaker):
 		//------------------------------
 		0x0C, //    bLength
 		0x24, //     bDescriptorType
@@ -344,7 +344,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x1B, //    iChannelNames
 		0x00, //    iTerminal   "eeee 3"
 
-		//AC Output Terminal Descriptor (Speaker):
+		// AC Output Terminal Descriptor (Speaker):
 		//------------------------------
 		0x09, //     bLength
 		0x24, //     bDescriptorType
@@ -356,7 +356,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x0C, //    bSourceID
 		0x00, //     iTerminal
 
-		//Interface Descriptor (Microphone):
+		// Interface Descriptor (Microphone):
 		//------------------------------
 		0x09,					   //     bLength
 		0x04,					   //     bDescriptorType
@@ -368,7 +368,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00,					   //     bInterfaceProtocol
 		USBD_IDX_INTERFACE3_STR,   //     iInterface   "xxxx 1"
 
-		//Interface Descriptor (Microphone):
+		// Interface Descriptor (Microphone):
 		//------------------------------
 		0x09,					   //     bLength
 		0x04,					   //     bDescriptorType
@@ -380,7 +380,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00,					   //     bInterfaceProtocol
 		USBD_IDX_INTERFACE3_STR,   //     iInterface   "xxxx 1"
 
-		//AS Interface Descriptor (Microphone):
+		// AS Interface Descriptor (Microphone):
 		//------------------------------
 		0x07, //     bLength
 		0x24, //     bDescriptorType
@@ -390,7 +390,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x01, // wFormatTag   (PCM)
 		0x00, // wFormatTag   (PCM)
 
-		//AS Format Type 1 Descriptor (Microphone):
+		// AS Format Type 1 Descriptor (Microphone):
 		//------------------------------
 		0x0B, //    bLength
 		0x24, //     bDescriptorType
@@ -404,7 +404,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0xBB, //         tSamFreq(1)   (48000 Hz)
 		0x00, //         tSamFreq(1)   (48000 Hz)
 
-		//Endpoint Descriptor (Audio/MIDI 1.0) (Microphone):
+		// Endpoint Descriptor (Audio/MIDI 1.0) (Microphone):
 		//------------------------------
 		0x09,					  //     bLength
 		0x05,					  //     bDescriptorType
@@ -416,7 +416,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00, //     bRefresh
 		0x00, //     bSynchAddress
 
-		//AS Isochronous Data Endpoint Descriptor (Microphone):
+		// AS Isochronous Data Endpoint Descriptor (Microphone):
 		//------------------------------
 		0x07, //     bLength
 		0x25, //     bDescriptorType
@@ -426,7 +426,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00, // wLockDelay
 		0x00, // wLockDelay
 
-		//Interface Descriptor (Speaker):
+		// Interface Descriptor (Speaker):
 		//------------------------------
 		0x09,					   //     bLength
 		0x04,					   //     bDescriptorType
@@ -438,7 +438,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00,					   //     bInterfaceProtocol
 		USBD_IDX_INTERFACE3_STR,   //     iInterface   "yyyy 3"
 
-		//Interface Descriptor (Speaker):
+		// Interface Descriptor (Speaker):
 		//------------------------------
 		0x09,					   //     bLength
 		0x04,					   //     bDescriptorType
@@ -450,7 +450,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00,					   //     bInterfaceProtocol
 		USBD_IDX_INTERFACE3_STR,   //    iInterface   "zzzz 3"
 
-		//AS Interface Descriptor (Speaker):
+		// AS Interface Descriptor (Speaker):
 		//------------------------------
 		0x07, //     bLength
 		0x24, //     bDescriptorType
@@ -460,7 +460,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x01, // wFormatTag   (PCM)
 		0x00, // wFormatTag   (PCM)
 
-		//AS Format Type 1 Descriptor (Speaker):
+		// AS Format Type 1 Descriptor (Speaker):
 		//------------------------------
 		0x0B, //    bLength
 		0x24, //     bDescriptorType
@@ -474,7 +474,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0xBB, //         tSamFreq(1)   (48000 Hz)
 		0x00, //         tSamFreq(1)   (48000 Hz)
 
-		//Endpoint Descriptor (Audio/MIDI 1.0) (Speaker):
+		// Endpoint Descriptor (Audio/MIDI 1.0) (Speaker):
 		//------------------------------
 		0x09,					  //     bLength
 		0x05,					  //     bDescriptorType
@@ -486,7 +486,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x00, //     bRefresh
 		0x00, //     bSynchAddress
 
-		//AS Isochronous Data Endpoint Descriptor (Speaker):
+		// AS Isochronous Data Endpoint Descriptor (Speaker):
 		//------------------------------
 		0x07, //     bLength
 		0x25, //     bDescriptorType
@@ -525,20 +525,20 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 };
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /** @defgroup USBD_CDC_Private_Functions
-	* @{
-	*/
+ * @{
+ */
 
 /**
-	  * @brief  USBD_CDC_Init
-	  *         Initialize the CDC interface
-	  * @param  pdev: device instance
-	  * @param  cfgidx: Configuration index
-	  * @retval status
-	  */
+ * @brief  USBD_CDC_Init
+ *         Initialize the CDC interface
+ * @param  pdev: device instance
+ * @param  cfgidx: Configuration index
+ * @retval status
+ */
 static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 {
 	USB_LastActiveTime = HAL_GetTick();
@@ -570,7 +570,7 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	pdev->ep_out[AUDIO_OUT_EP & 0xFU].is_used = 1U;
 	pdev->ep_out[MSC_EPOUT_ADDR & 0xFU].is_used = 1U;
 
-	//INT EP
+	// INT EP
 	USBD_LL_OpenEP(pdev, DEBUG_CMD_EP, USBD_EP_TYPE_INTR, CDC_CMD_PACKET_SIZE);
 	USBD_LL_OpenEP(pdev, CAT_CMD_EP, USBD_EP_TYPE_INTR, CDC_CMD_PACKET_SIZE);
 	pdev->ep_in[DEBUG_CMD_EP & 0xFU].is_used = 1U;
@@ -626,12 +626,12 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 }
 
 /**
-  * @brief  USBD_CDC_Init
-  *         DeInitialize the CDC layer
-  * @param  pdev: device instance
-  * @param  cfgidx: Configuration index
-  * @retval status
-  */
+ * @brief  USBD_CDC_Init
+ *         DeInitialize the CDC layer
+ * @param  pdev: device instance
+ * @param  cfgidx: Configuration index
+ * @retval status
+ */
 static uint8_t USBD_UA3REO_DeInit(USBD_HandleTypeDef *pdev)
 {
 	uint8_t ret = 0U;
@@ -656,7 +656,7 @@ static uint8_t USBD_UA3REO_DeInit(USBD_HandleTypeDef *pdev)
 	pdev->ep_out[AUDIO_OUT_EP & 0xFU].is_used = 0U;
 	pdev->ep_out[MSC_EPOUT_ADDR & 0xFU].is_used = 0U;
 
-	//CLOSE INT EP
+	// CLOSE INT EP
 	USBD_LL_CloseEP(pdev, DEBUG_CMD_EP);
 	USBD_LL_CloseEP(pdev, CAT_CMD_EP);
 	pdev->ep_in[DEBUG_CMD_EP & 0xFU].is_used = 0U;
@@ -687,12 +687,12 @@ static uint8_t USBD_UA3REO_DeInit(USBD_HandleTypeDef *pdev)
 }
 
 /**
-  * @brief  USBD_CDC_Setup
-  *         Handle the CDC specific requests
-  * @param  pdev: instance
-  * @param  req: usb requests
-  * @retval status
-  */
+ * @brief  USBD_CDC_Setup
+ *         Handle the CDC specific requests
+ * @param  pdev: instance
+ * @param  req: usb requests
+ * @retval status
+ */
 static uint8_t USBD_DEBUG_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
 	USB_LastActiveTime = HAL_GetTick();
@@ -900,9 +900,9 @@ static uint8_t USBD_AUDIO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 		case USB_REQ_GET_DESCRIPTOR:
 			if ((req->wValue >> 8) == AUDIO_DESCRIPTOR_TYPE)
 			{
-				//pbuf = USBD_AUDIO_CfgDesc + 18;
-				//len = MIN(USB_AUDIO_DESC_SIZ , req->wLength);
-				//USBD_CtlSendData (pdev, pbuf, len);
+				// pbuf = USBD_AUDIO_CfgDesc + 18;
+				// len = MIN(USB_AUDIO_DESC_SIZ , req->wLength);
+				// USBD_CtlSendData (pdev, pbuf, len);
 			}
 			break;
 
@@ -1092,12 +1092,12 @@ static uint8_t USBD_UA3REO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef 
 }
 
 /**
-  * @brief  USBD_CDC_DataIn
-  *         Data sent on non-control IN endpoint
-  * @param  pdev: device instance
-  * @param  epnum: endpoint number
-  * @retval status
-  */
+ * @brief  USBD_CDC_DataIn
+ *         Data sent on non-control IN endpoint
+ * @param  pdev: device instance
+ * @param  epnum: endpoint number
+ * @retval status
+ */
 static uint8_t USBD_DEBUG_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
 	USBD_DEBUG_HandleTypeDef *hcdc_debug = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
@@ -1154,7 +1154,7 @@ static uint8_t USBD_CAT_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
 
 static uint8_t USBD_AUDIO_DataIn(USBD_HandleTypeDef *pdev)
 {
-	//Send audio to Host
+	// Send audio to Host
 	USBD_AUDIO_HandleTypeDef *hcdc_audio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
 	if (rx_buffer_head >= USB_AUDIO_RX_BUFFER_SIZE)
 	{
@@ -1180,7 +1180,7 @@ static uint8_t USBD_AUDIO_DataIn(USBD_HandleTypeDef *pdev)
 
 	pdev->ep_in[AUDIO_IN_EP & 0xFU].total_length = rx_buffer_step;
 	HAL_PCD_EP_Transmit(pdev->pData, AUDIO_IN_EP, hcdc_audio->RxBuffer + rx_buffer_head, rx_buffer_step);
-	RX_USB_AUDIO_SAMPLES += rx_buffer_step / (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2); //3 byte (24 bit) * 2 channel
+	RX_USB_AUDIO_SAMPLES += rx_buffer_step / (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2); // 3 byte (24 bit) * 2 channel
 	rx_buffer_head += rx_buffer_step;
 
 	return USBD_OK;
@@ -1206,12 +1206,12 @@ static uint8_t USBD_UA3REO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
 	return USBD_FAIL;
 }
 /**
-  * @brief  USBD_CDC_DataOut
-  *         Data received on non-control Out endpoint
-  * @param  pdev: device instance
-  * @param  epnum: endpoint number
-  * @retval status
-  */
+ * @brief  USBD_CDC_DataOut
+ *         Data received on non-control Out endpoint
+ * @param  pdev: device instance
+ * @param  epnum: endpoint number
+ * @retval status
+ */
 static uint8_t USBD_DEBUG_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
 	USB_LastActiveTime = HAL_GetTick();
@@ -1259,7 +1259,7 @@ static uint8_t USBD_AUDIO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 		if (haudio->TxBufferIndex > (USB_AUDIO_TX_BUFFER_SIZE - AUDIO_OUT_PACKET))
 			haudio->TxBufferIndex = 0;
 		USBD_LL_PrepareReceive(pdev, AUDIO_OUT_EP, haudio->TxBuffer + haudio->TxBufferIndex, AUDIO_OUT_PACKET);
-		TX_USB_AUDIO_SAMPLES += AUDIO_OUT_PACKET / (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2); //3 byte (24 bit) * 2 channel
+		TX_USB_AUDIO_SAMPLES += AUDIO_OUT_PACKET / (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2); // 3 byte (24 bit) * 2 channel
 	}
 	return USBD_OK;
 }
@@ -1285,30 +1285,30 @@ static uint8_t USBD_UA3REO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
 }
 
 /**
-  * @brief  USBD_CDC_EP0_RxReady
-  *         Handle EP0 Rx Ready event
-  * @param  pdev: device instance
-  * @retval status
-  */
+ * @brief  USBD_CDC_EP0_RxReady
+ *         Handle EP0 Rx Ready event
+ * @param  pdev: device instance
+ * @retval status
+ */
 
 static uint8_t USBD_UA3REO_EP0_RxReady(USBD_HandleTypeDef *pdev)
 {
 	USB_LastActiveTime = HAL_GetTick();
 	USBD_DEBUG_HandleTypeDef *hcdc_debug = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
 	USBD_CAT_HandleTypeDef *hcdc_cat = (USBD_CAT_HandleTypeDef *)pdev->pClassDataCAT;
-	//DEBUG
+	// DEBUG
 	if ((pdev->pUserDataDEBUG != NULL) && (hcdc_debug->CmdOpCode != 0xFFU))
 	{
 		((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(hcdc_debug->CmdOpCode, (uint8_t *)(void *)hcdc_debug->data, 0);
 		hcdc_debug->CmdOpCode = 0xFFU;
 	}
-	//CAT
+	// CAT
 	if ((pdev->pUserDataCAT != NULL) && (hcdc_cat->CmdOpCode != 0xFFU))
 	{
 		((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(hcdc_cat->CmdOpCode, (uint8_t *)(void *)hcdc_cat->data);
 		hcdc_cat->CmdOpCode = 0xFFU;
 	}
-	//AUDIO
+	// AUDIO
 	USBD_AUDIO_HandleTypeDef *haudio;
 	haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
 
@@ -1340,12 +1340,12 @@ static uint8_t USBD_UA3REO_IsoOutIncomplete(void)
 }
 
 /**
-  * @brief  USBD_CDC_GetFSCfgDesc
-  *         Return configuration descriptor
-  * @param  speed : current device speed
-  * @param  length : pointer data length
-  * @retval pointer to descriptor buffer
-  */
+ * @brief  USBD_CDC_GetFSCfgDesc
+ *         Return configuration descriptor
+ * @param  speed : current device speed
+ * @param  length : pointer data length
+ * @retval pointer to descriptor buffer
+ */
 static const uint8_t *USBD_UA3REO_GetFSCfgDesc(uint16_t *length)
 {
 	*length = sizeof(USBD_UA3REO_CfgFSDesc);
@@ -1353,11 +1353,11 @@ static const uint8_t *USBD_UA3REO_GetFSCfgDesc(uint16_t *length)
 }
 
 /**
-* @brief  DeviceQualifierDescriptor
-*         return Device Qualifier descriptor
-* @param  length : pointer data length
-* @retval pointer to descriptor buffer
-*/
+ * @brief  DeviceQualifierDescriptor
+ *         return Device Qualifier descriptor
+ * @param  length : pointer data length
+ * @retval pointer to descriptor buffer
+ */
 static const uint8_t *USBD_UA3REO_GetDeviceQualifierDescriptor(uint16_t *length)
 {
 	*length = sizeof(USBD_UA3REO_DeviceQualifierDesc);
@@ -1365,11 +1365,11 @@ static const uint8_t *USBD_UA3REO_GetDeviceQualifierDescriptor(uint16_t *length)
 }
 
 /**
-* @brief  USBD_CDC_RegisterInterface
-  * @param  pdev: device instance
-  * @param  fops: CD  Interface callback
-  * @retval status
-  */
+ * @brief  USBD_CDC_RegisterInterface
+ * @param  pdev: device instance
+ * @param  fops: CD  Interface callback
+ * @retval status
+ */
 uint8_t USBD_DEBUG_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_DEBUG_ItfTypeDef *fops)
 {
 	uint8_t ret = USBD_FAIL;
@@ -1402,11 +1402,11 @@ uint8_t USBD_AUDIO_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_AUDIO_ItfTyp
 }
 
 /**
-  * @brief  USBD_CDC_SetTxBuffer
-  * @param  pdev: device instance
-  * @param  pbuff: Tx Buffer
-  * @retval status
-  */
+ * @brief  USBD_CDC_SetTxBuffer
+ * @param  pdev: device instance
+ * @param  pbuff: Tx Buffer
+ * @retval status
+ */
 uint8_t USBD_DEBUG_SetTxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff, uint16_t length)
 {
 	USBD_DEBUG_HandleTypeDef *hcdc = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
@@ -1424,11 +1424,11 @@ uint8_t USBD_CAT_SetTxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff, uint16_t 
 }
 
 /**
-  * @brief  USBD_CDC_SetRxBuffer
-  * @param  pdev: device instance
-  * @param  pbuff: Rx Buffer
-  * @retval status
-  */
+ * @brief  USBD_CDC_SetRxBuffer
+ * @param  pdev: device instance
+ * @param  pbuff: Rx Buffer
+ * @retval status
+ */
 uint8_t USBD_DEBUG_SetRxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff)
 {
 	USBD_DEBUG_HandleTypeDef *hcdc = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
@@ -1444,11 +1444,11 @@ uint8_t USBD_CAT_SetRxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff)
 }
 
 /**
-  * @brief  USBD_CDC_TransmitPacket
-  *         Transmit packet on IN endpoint
-  * @param  pdev: device instance
-  * @retval status
-  */
+ * @brief  USBD_CDC_TransmitPacket
+ *         Transmit packet on IN endpoint
+ * @param  pdev: device instance
+ * @retval status
+ */
 uint8_t USBD_DEBUG_TransmitPacket(USBD_HandleTypeDef *pdev)
 {
 	USBD_DEBUG_HandleTypeDef *hcdc = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
@@ -1527,11 +1527,11 @@ uint8_t USBD_AUDIO_StartReceive(USBD_HandleTypeDef *pdev)
 }
 
 /**
-  * @brief  USBD_CDC_ReceivePacket
-  *         prepare OUT Endpoint for reception
-  * @param  pdev: device instance
-  * @retval status
-  */
+ * @brief  USBD_CDC_ReceivePacket
+ *         prepare OUT Endpoint for reception
+ * @param  pdev: device instance
+ * @retval status
+ */
 uint8_t USBD_DEBUG_ReceivePacket(USBD_HandleTypeDef *pdev)
 {
 	USBD_DEBUG_HandleTypeDef *hcdc = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
@@ -1576,12 +1576,12 @@ static void AUDIO_REQ_GetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef 
 }
 
 /**
-  * @brief  AUDIO_Req_SetCurrent
-  *         Handles the SET_CUR Audio control request.
-  * @param  pdev: instance
-  * @param  req: setup class request
-  * @retval status
-  */
+ * @brief  AUDIO_Req_SetCurrent
+ *         Handles the SET_CUR Audio control request.
+ * @param  pdev: instance
+ * @param  req: setup class request
+ * @retval status
+ */
 static void AUDIO_REQ_SetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
 	USBD_AUDIO_HandleTypeDef *haudio;
@@ -1610,23 +1610,23 @@ void USBD_Restart(void)
 {
 	MX_USB_DevDisconnect();
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	//GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
+	// GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
 	GPIO_InitStruct.Pin = GPIO_PIN_12;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
-	//HAL_Delay(1000);
+	// HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
+	// HAL_Delay(1000);
 
 	MX_USB_DEVICE_Init();
 	USB_LastActiveTime = HAL_GetTick();
 }
 
 /**
-* @brief  USBD_MSC_RegisterStorage
-* @param  fops: storage callback
-* @retval status
-*/
+ * @brief  USBD_MSC_RegisterStorage
+ * @param  fops: storage callback
+ * @retval status
+ */
 uint8_t USBD_MSC_RegisterStorage(USBD_HandleTypeDef *pdev, USBD_StorageTypeDef *fops)
 {
 	if (fops == NULL)

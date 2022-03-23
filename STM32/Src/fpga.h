@@ -26,7 +26,7 @@
 #define FPGA_setGPIOBusInput GPIOA->MODER = -1431764992
 #define FPGA_setGPIOBusOutput GPIOA->MODER = -1431743147
 
-//Micron M25P80 Serial Flash COMMANDS:
+// Micron M25P80 Serial Flash COMMANDS:
 #define M25P80_WRITE_ENABLE 0x06
 #define M25P80_WRITE_DISABLE 0x04
 #define M25P80_READ_IDENTIFICATION 0x9F
@@ -41,7 +41,7 @@
 #define M25P80_DEEP_POWER_DOWN 0xB9
 #define M25P80_RELEASE_from_DEEP_POWER_DOWN 0xAB
 
-//Public variables
+// Public variables
 extern volatile uint32_t FPGA_samples;                                            // counter of the number of samples when exchanging with FPGA
 extern volatile bool FPGA_Buffer_underrun;                                        // flag of lack of data from FPGA
 extern volatile bool FPGA_NeedSendParams;                                         // flag of the need to send parameters to FPGA
@@ -63,18 +63,18 @@ extern uint_fast16_t FPGA_Audio_RXBuffer_Index; // current index in FPGA buffers
 extern uint_fast16_t FPGA_Audio_TXBuffer_Index; // current index in FPGA buffers
 extern bool FPGA_Audio_Buffer_State;            // buffer state, half or full full true - compleate; false - half
 extern uint16_t FPGA_FW_Version[3];             // version from fpga
-extern bool FPGA_bus_stop;                      //temporary stop FPGA bus
+extern bool FPGA_bus_stop;                      // temporary stop FPGA bus
 extern uint8_t ADCDAC_OVR_StatusLatency;
 extern volatile bool FPGA_bus_test_result;
 extern int16_t ADC_RAW_IN;
 
-//Public methods
-extern void FPGA_Init(bool bus_test, bool firmware_test); // initialize exchange with FPGA
-extern void FPGA_fpgadata_iqclock(void);                  // exchange IQ data with FPGA
-extern void FPGA_fpgadata_stuffclock(void);               // exchange parameters with FPGA
-extern void FPGA_restart(void);                           // restart FPGA modules
-extern bool FPGA_is_present(void);												// check that the FPGA has firmware
-extern void FPGA_spi_flash_erase(void); 									// clear flash memory
-extern void FPGA_spi_flash_write(uint32_t flash_pos, uint8_t *buff, uint32_t size); // write new contents of FPGA SPI memory
+// Public methods
+extern void FPGA_Init(bool bus_test, bool firmware_test);                            // initialize exchange with FPGA
+extern void FPGA_fpgadata_iqclock(void);                                             // exchange IQ data with FPGA
+extern void FPGA_fpgadata_stuffclock(void);                                          // exchange parameters with FPGA
+extern void FPGA_restart(void);                                                      // restart FPGA modules
+extern bool FPGA_is_present(void);                                                   // check that the FPGA has firmware
+extern void FPGA_spi_flash_erase(void);                                              // clear flash memory
+extern void FPGA_spi_flash_write(uint32_t flash_pos, uint8_t *buff, uint32_t size);  // write new contents of FPGA SPI memory
 extern bool FPGA_spi_flash_verify(uint32_t flash_pos, uint8_t *buff, uint32_t size); // check flash memory
 #endif

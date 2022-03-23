@@ -22,14 +22,14 @@ typedef struct // description of the call database
 	const uint16_t prefixesCount;
 } CALLSIGN_INFO_LINE;
 
-//Public variabled
+// Public variabled
 extern bool SYSMENU_callsign_info_opened;
 
-//Public methods
-extern void CALLSIGN_INFO_Start(void);				  //launch
-extern void CALLSIGN_INFO_Stop(void);				  //stop session
-extern void CALLSIGN_INFO_Draw(void);			  //drawing
-extern void CALLSIGN_INFO_EncRotate(int8_t direction); //events per encoder tick
+// Public methods
+extern void CALLSIGN_INFO_Start(void);				   // launch
+extern void CALLSIGN_INFO_Stop(void);				   // stop session
+extern void CALLSIGN_INFO_Draw(void);				   // drawing
+extern void CALLSIGN_INFO_EncRotate(int8_t direction); // events per encoder tick
 
 extern void CALLSIGN_getInfoByCallsign(CALLSIGN_INFO_LINE **ret, char *call);
 

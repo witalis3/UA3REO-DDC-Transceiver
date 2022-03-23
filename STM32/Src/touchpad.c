@@ -21,14 +21,14 @@ static uint16_t touch_end_y2 = 0;
 void TOUCHPAD_Init(void)
 {
 #if (defined(TOUCHPAD_GT911))
-	//read touchpad info
+	// read touchpad info
 	GT911_ReadStatus();
 	GT911_ReadFirmwareVersion();
 	GT911_Init();
 
-	//calibrate
+	// calibrate
 	uint8_t send = 3;
-	GT911_WR_Reg(0x8040, (uint8_t *)&send, 1); //Reference capacitance update (Internal test);
+	GT911_WR_Reg(0x8040, (uint8_t *)&send, 1); // Reference capacitance update (Internal test);
 #endif
 }
 
@@ -51,23 +51,23 @@ void TOUCHPAD_ProcessInterrupt(void)
 	}
 	else if (touched && (touch_lasttime > (HAL_GetTick() - TOUCHPAD_TIMEOUT)))
 	{
-		//One/Two finger swipe
+		// One/Two finger swipe
 		if (hold_swipe_handled || abs(touch_end_x1 - touch_start_x1) > TOUCHPAD_SWIPE_THRESHOLD_PX || abs(touch_end_y1 - touch_start_y1) > TOUCHPAD_SWIPE_THRESHOLD_PX)
 		{
 			bool two_finger = false;
 			if (abs(touch_end_x2 - touch_start_x2) > TOUCHPAD_SWIPE_THRESHOLD_PX || abs(touch_end_y2 - touch_start_y2) > TOUCHPAD_SWIPE_THRESHOLD_PX)
 				two_finger = true;
-			
+
 			int16_t dx1 = (touch_end_x1 - touch_start_x1);
 			int16_t dy1 = (touch_end_y1 - touch_start_y1);
 			int16_t dx2 = (touch_end_x2 - touch_start_x2);
 			int16_t dy2 = (touch_end_y2 - touch_start_y2);
-			if(two_finger && touch_end_x2 < touch_end_x1) //right finger touched first
+			if (two_finger && touch_end_x2 < touch_end_x1) // right finger touched first
 			{
 				dx1 = dx2;
 				dy1 = dy2;
 			}
-			
+
 			if (two_finger && LCD_processSwipeTwoFingersTouch(touch_start_x1, touch_start_y1, dx1, dy1))
 			{
 				touch_start_x1 = touch_end_x1;

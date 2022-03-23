@@ -6,7 +6,7 @@
 #include "stm32h7xx_hal_rcc.h"
 #include "stm32h7xx_hal_gpio.h"
 
-//Public methods
+// Public methods
 extern void JumpToBootloader(void); // switch to DFU-mode buloder
 
 #endif

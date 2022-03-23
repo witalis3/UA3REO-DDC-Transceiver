@@ -27,8 +27,8 @@ int adpcm_encode_block(void *p, uint8_t *outbuf, size_t *outbufsize, const int16
 int adpcm_decode_block(int16_t *outbuf, const uint8_t *inbuf, size_t inbufsize, int channels);
 void adpcm_free_context(void *p);
 
-#define NOISE_SHAPING_OFF 0 // flat noise (no shaping)
-#define NOISE_SHAPING_STATIC 1 // first-order highpass shaping
+#define NOISE_SHAPING_OFF 0     // flat noise (no shaping)
+#define NOISE_SHAPING_STATIC 1  // first-order highpass shaping
 #define NOISE_SHAPING_DYNAMIC 2 // dynamically tilted noise based on signal
 
 #endif /* ADPCMLIB_H_ */

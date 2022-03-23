@@ -1,7 +1,7 @@
 #include "profiler.h"
 #include "functions.h"
 
-//Public variables
+// Public variables
 static PROFILE_INFO profiles[PROFILES_COUNT] = {0}; // collection of profilers
 
 // initialize the profiler

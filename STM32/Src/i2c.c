@@ -88,14 +88,14 @@ void i2c_stop(I2C_DEVICE *dev)
 bool i2c_get_ack(I2C_DEVICE *dev)
 {
 	uint32_t time = 0;
-	//I2C_DELAY
-	//I2C_DELAY
-	//SDA_CLR;
-	//I2C_DELAY
-	//I2C_DELAY
-	//SDA_SET;
-	//I2C_DELAY
-	//SDA_IN(dev);
+	// I2C_DELAY
+	// I2C_DELAY
+	// SDA_CLR;
+	// I2C_DELAY
+	// I2C_DELAY
+	// SDA_SET;
+	// I2C_DELAY
+	// SDA_IN(dev);
 
 	SDA_IN(dev);
 	I2C_DELAY
@@ -110,7 +110,7 @@ bool i2c_get_ack(I2C_DEVICE *dev)
 		if (time > 50)
 		{
 			i2c_stop(dev);
-			//sendToDebug_strln("no get ack");
+			// sendToDebug_strln("no get ack");
 			return false;
 		}
 		I2C_DELAY
@@ -171,7 +171,7 @@ bool i2c_beginReceive_u8(I2C_DEVICE *dev, uint8_t slave_address)
 	i2c_shift_out(dev, (uint8_t)((dev->i2c_tx_addr << 1) | I2C_READ));
 	if (!i2c_get_ack(dev))
 	{
-		//sendToDebug_strln("no ack");
+		// sendToDebug_strln("no ack");
 		return false;
 	}
 	return true;
@@ -183,7 +183,7 @@ uint8_t i2c_endTransmission(I2C_DEVICE *dev)
 		return EDATA;
 	i2c_start(dev);
 
-	//I2C_DELAY;
+	// I2C_DELAY;
 	i2c_shift_out(dev, (uint8_t)((dev->i2c_tx_addr << 1) | I2C_WRITE));
 	if (!i2c_get_ack(dev))
 		return ENACKADDR;
@@ -228,8 +228,8 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 {
 	unsigned char i, receive = 0;
 	SDA_IN(dev);
-//	I2C_DELAY
-//	I2C_DELAY
+	//	I2C_DELAY
+	//	I2C_DELAY
 
 	for (i = 0; i < 8; i++)
 	{
@@ -238,8 +238,8 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 		I2C_DELAY
 		SCK_SET;
 		receive <<= 1;
-//		I2C_DELAY
-//		I2C_DELAY
+		//		I2C_DELAY
+		//		I2C_DELAY
 		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
 			receive++;
 		I2C_DELAY
@@ -247,7 +247,7 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 	}
 	if (!ack)
 	{
-		//NAck
+		// NAck
 		SCK_CLR;
 		SDA_OUT(dev);
 		SDA_SET;
@@ -261,12 +261,12 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 	}
 	else
 	{
-		//Ack
+		// Ack
 		SCK_CLR;
-		
+
 		I2C_DELAY
 		I2C_DELAY
-		
+
 		SDA_OUT(dev);
 		SDA_CLR;
 		I2C_DELAY
@@ -283,19 +283,19 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack)
 	return receive;
 }
 
-//Tisho
-	/*After the first Byte is recieved the master sends "ACK"
-	*After the second Byte is recieved the master sends "NACK"
-	*
-	*/
-	
+// Tisho
+/*After the first Byte is recieved the master sends "ACK"
+ *After the second Byte is recieved the master sends "NACK"
+ *
+ */
+
 uint16_t i2c_Read_Word(I2C_DEVICE *dev)
 {
 	unsigned char i;
 	uint16_t receive = 0;
-	
+
 	SDA_IN(dev);
-	
+
 	for (i = 0; i < 8; i++)
 	{
 		SCK_CLR;
@@ -306,7 +306,7 @@ uint16_t i2c_Read_Word(I2C_DEVICE *dev)
 			receive++;
 		I2C_DELAY
 	}
-	//Ack
+	// Ack
 	SCK_CLR;
 	SDA_OUT(dev);
 	SDA_CLR;
@@ -319,28 +319,27 @@ uint16_t i2c_Read_Word(I2C_DEVICE *dev)
 	I2C_DELAY
 	SCK_CLR;
 	SDA_IN(dev);
-	
-	//Second byte
-	//Strange efect was observed when reading the second byte of data from INA226:
-	//if the interypts are not disabled the data is not read corect (offen the INA is pulling down the SDA for the complete byte)
-	//most strange part is that the first byte is read witout a problem (witout the "__disable_irq()" help)
-	//it is good to investigate the efect further!
-	
-	__disable_irq();   //Disable all interrupts	
+
+	// Second byte
+	// Strange efect was observed when reading the second byte of data from INA226:
+	// if the interypts are not disabled the data is not read corect (offen the INA is pulling down the SDA for the complete byte)
+	// most strange part is that the first byte is read witout a problem (witout the "__disable_irq()" help)
+	// it is good to investigate the efect further!
+
+	__disable_irq(); // Disable all interrupts
 	for (i = 0; i < 8; i++)
 	{
-	SCK_CLR;
-	I2C_DELAY
-	SCK_SET;
-	receive <<= 1;
-	if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
-		receive++;
-	I2C_DELAY
+		SCK_CLR;
+		I2C_DELAY
+		SCK_SET;
+		receive <<= 1;
+		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
+			receive++;
+		I2C_DELAY
 	}
-	__enable_irq(); //Re-enable all interrupts
-		
-	
-	//NAck
+	__enable_irq(); // Re-enable all interrupts
+
+	// NAck
 	SCK_CLR;
 	SDA_OUT(dev);
 	SDA_SET;

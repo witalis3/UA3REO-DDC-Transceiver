@@ -7,7 +7,7 @@
 #include "lcd.h"
 #include "fonts.h"
 
-//Private variables
+// Private variables
 static char tmp_buff[64] = {0};
 static WSPRState wspr_status = WSPR_WAIT;
 static uint8_t wspr_band = 160;
@@ -24,7 +24,7 @@ static const uint8_t WSPR2_SyncVec[162] = {
 static float64_t WSPR_bands_freq[11] = {0};
 static uint8_t WSPR2_count = 0;
 static uint8_t WSPR2_BeginDelay = 0;
-//Saved variables
+// Saved variables
 static uint32_t Lastfreq = 0;
 static uint_fast8_t Lastmode = 0;
 static bool LastAutoGain = false;
@@ -37,10 +37,10 @@ static bool LastShift = false;
 static bool LastNB = false;
 static bool LastMute = false;
 
-//Public variables
+// Public variables
 bool SYSMENU_wspr_opened = false;
 
-//Prototypes
+// Prototypes
 static uint8_t WSPR_GetNextBand(void);
 static float64_t WSPR_GetFreqFromBand(uint8_t band);
 static void WSPR_Encode(void);
@@ -58,7 +58,7 @@ void WSPR_Start(void)
 {
 	LCD_busy = true;
 
-	//save settings
+	// save settings
 	Lastfreq = CurrentVFO->Freq;
 	Lastmode = CurrentVFO->Mode;
 	LastAutoGain = TRX.AutoGain;
@@ -71,7 +71,7 @@ void WSPR_Start(void)
 	LastNB = TRX.NOISE_BLANKER;
 	LastMute = TRX_Mute;
 
-	//prepare trx
+	// prepare trx
 	TRX_Mute = true;
 	TRX.TWO_SIGNAL_TUNE = false;
 	TRX.BandMapEnabled = false;
@@ -79,7 +79,7 @@ void WSPR_Start(void)
 	wspr_band = WSPR_GetNextBand();
 	WSPR_Encode();
 
-	//prepare bands
+	// prepare bands
 	WSPR_bands_freq[0] = 1838100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
 	WSPR_bands_freq[1] = 3570100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
 	WSPR_bands_freq[2] = 7040100.0 + (float64_t)TRX.WSPR_FREQ_OFFSET;
@@ -137,7 +137,7 @@ void WSPR_DoEvents(void)
 	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
 	static uint8_t OLD_Seconds = 0;
 
-	//Start timeslot
+	// Start timeslot
 	if (bitRead(Minutes, 0) == 0 && Seconds == 0 && OLD_Seconds != Seconds)
 	{
 		wspr_band = WSPR_GetNextBand();
@@ -146,12 +146,12 @@ void WSPR_DoEvents(void)
 	}
 	OLD_Seconds = Seconds;
 
-	//show time
+	// show time
 	sprintf(tmp_buff, "Time: %02d:%02d:%02d", Hours, Minutes, Seconds);
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 
-	//next slot time
+	// next slot time
 	uint8_t Next_Hours = Hours;
 	uint8_t Next_Minutes = Minutes + 1;
 	uint8_t Next_Seconds = 0;
@@ -168,24 +168,24 @@ void WSPR_DoEvents(void)
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 
-	//status
+	// status
 	if (wspr_status == WSPR_WAIT)
 		LCDDriver_printText("STATUS: WAIT    ", 10, y, FG_COLOR, BG_COLOR, 2);
 	if (wspr_status == WSPR_TRANSMIT)
 		LCDDriver_printText("STATUS: TRANSMIT", 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 
-	//Band
+	// Band
 	sprintf(tmp_buff, "Current band: % 2dm (%dhz)", wspr_band, (uint32_t)(WSPR_GetFreqFromBand(wspr_band)));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 
-	//Next band
+	// Next band
 	sprintf(tmp_buff, "Next band: % 2dm (%dhz)", WSPR_GetNextBand(), (uint32_t)(WSPR_GetFreqFromBand(WSPR_GetNextBand())));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
 
-	//TX parameters
+	// TX parameters
 	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW, TEMP: % 2d     ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward), (int16_t)TRX_RF_Temperature);
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 	y += y_step;
@@ -194,7 +194,7 @@ void WSPR_DoEvents(void)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
-//Transmit
+// Transmit
 void WSPR_DoFastEvents(void)
 {
 	if (WSPR2_BeginDelay < 1)
@@ -208,12 +208,12 @@ void WSPR_DoFastEvents(void)
 		if (WSPR2_count < 162)
 		{
 			TRX_setTXFrequencyFloat(WSPR_GetFreqFromBand(wspr_band) + WSPR2_OffsetFreq[WSPR2_symTable[WSPR2_count]], CurrentVFO);
-			WSPR2_count++; //Increments the interrupt counter
+			WSPR2_count++; // Increments the interrupt counter
 		}
 		else
 		{
 			WSPR_StopTransmit();
-			TRX_SNTP_Synced = 0; //request time sync
+			TRX_SNTP_Synced = 0; // request time sync
 		}
 	}
 }
@@ -356,7 +356,7 @@ static char WSPR_chr_normf(char bc)
 
 static void WSPR_Encode_call(void)
 {
-	//copy callsign
+	// copy callsign
 	char enc_call[7] = {0};
 	for (int ci = 0; ci < 7; ci++)
 		enc_call[ci] = TRX.CALLSIGN[ci];
@@ -391,7 +391,7 @@ static void WSPR_Encode_locator(void)
 {
 	// Min = 0 dBm, Max = 43 dBm, steps 0,3,7,10,13,17,20,23,27,30,33,37,40,43
 	uint8_t power = 20;
-	//from 7w out max
+	// from 7w out max
 	if (TRX.RF_Power >= 3)
 		power = 23;
 	if (TRX.RF_Power >= 7)

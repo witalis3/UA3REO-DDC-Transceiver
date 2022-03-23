@@ -9,15 +9,15 @@
 #include "functions.h"
 #include "BiquadDesigner/biquad.h"
 
-#define IQ_HILBERT_TAPS 201														  // Hilbert filter order
-#define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS					// order of IIR LPF filters
-#define IIR_HPF_STAGES 5					// order of IIR HPF filters
-#define IIR_DECIMATOR_FILTER_STAGES 9									// order of decimator filter
-#define NOTCH_STAGES 3															  // order of manual Notch filter
-#define EQ_STAGES 1																  // order of the biquad of the equalizer filter
-#define GAUSS_STAGES 1																  // order of the gauss CW filter
-#define GAUSS_WIDTH 20															//passband of gauss CW filter
-#define BIQUAD_COEFF_IN_STAGE 5													  // coefficients in manual Notch filter order
+#define IQ_HILBERT_TAPS 201														 // Hilbert filter order
+#define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS									 // order of IIR LPF filters
+#define IIR_HPF_STAGES 5														 // order of IIR HPF filters
+#define IIR_DECIMATOR_FILTER_STAGES 9											 // order of decimator filter
+#define NOTCH_STAGES 3															 // order of manual Notch filter
+#define EQ_STAGES 1																 // order of the biquad of the equalizer filter
+#define GAUSS_STAGES 1															 // order of the gauss CW filter
+#define GAUSS_WIDTH 20															 // passband of gauss CW filter
+#define BIQUAD_COEFF_IN_STAGE 5													 // coefficients in manual Notch filter order
 #define FIR_RX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
 #define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
 #define IIR_RX_LPF_Taps_STATE_SIZE (IIR_LPF_STAGES * 2)
@@ -131,7 +131,7 @@ extern arm_biquad_cascade_df2T_instance_f32 SFM_Pilot_Filter;
 extern arm_biquad_cascade_df2T_instance_f32 SFM_Audio_Filter;
 extern volatile bool NeedReinitNotch;			  // need to reinitialize the manual Notch filter
 extern volatile bool NeedReinitAudioFilters;	  // need to reinitialize the Audio filters
-extern volatile bool NeedReinitAudioFiltersClean; //also clean state
+extern volatile bool NeedReinitAudioFiltersClean; // also clean state
 extern const uint32_t AUTIO_FILTERS_HPF_CW_LIST[CW_HPF_COUNT];
 extern const uint32_t AUTIO_FILTERS_HPF_SSB_LIST[SSB_HPF_COUNT];
 extern const uint32_t AUTIO_FILTERS_LPF_CW_LIST[CW_LPF_COUNT];
@@ -140,7 +140,7 @@ extern const uint32_t AUTIO_FILTERS_LPF_AM_LIST[AM_LPF_COUNT];
 extern const uint32_t AUTIO_FILTERS_LPF_NFM_LIST[NFM_LPF_COUNT];
 extern float32_t CTCSS_Freqs[CTCSS_FREQS_COUNT];
 
-//Public methods
+// Public methods
 extern void InitAudioFilters(void);													   // initialize audio filters
 extern void ReinitAudioFilters(void);												   // reinitialize audio filters
 extern void InitNotchFilter(void);													   // initialize the manual Notch filter

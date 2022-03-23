@@ -55,9 +55,9 @@ void FILEMANAGER_Draw(bool redraw)
 		{
 			LCDDriver_printText(FILEMANAGER_LISTING[file_id], 5, cur_y, FG_COLOR, BG_COLOR, 2);
 			cur_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
-			
-			//CQ recorder
-			if(start_rec_cqmessage && strcmp(FILEMANAGER_LISTING[file_id], SD_CQ_MESSAGE_FILE) == 0)
+
+			// CQ recorder
+			if (start_rec_cqmessage && strcmp(FILEMANAGER_LISTING[file_id], SD_CQ_MESSAGE_FILE) == 0)
 			{
 				current_index = file_id + 1;
 				FILEMANAGER_dialog_opened = true;
@@ -70,27 +70,27 @@ void FILEMANAGER_Draw(bool redraw)
 
 	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, FG_COLOR);
 
-	if(FILEMANAGER_dialog_opened)
+	if (FILEMANAGER_dialog_opened)
 		FILEMANAGER_OpenDialog();
-	
+
 	LCD_UpdateQuery.SystemMenu = false;
 }
 
 void FILEMANAGER_EventRotate(int8_t direction)
 {
-	if(FILEMANAGER_dialog_opened)
+	if (FILEMANAGER_dialog_opened)
 	{
 		FILEMANAGER_DialogAction();
 		return;
 	}
-	
-	if (current_index == 0) //go up
+
+	if (current_index == 0) // go up
 	{
 		if (strcmp(FILEMANAGER_CurrentPath, "") == 0) // root
 		{
 			SYSMENU_eventCloseSystemMenu();
 		}
-		else //inner folder
+		else // inner folder
 		{
 			char *istr = strrchr(FILEMANAGER_CurrentPath, '/');
 			*istr = 0;
@@ -102,7 +102,7 @@ void FILEMANAGER_EventRotate(int8_t direction)
 	else
 	{
 		char *istr = strstr(FILEMANAGER_LISTING[current_index - 1], "[DIR] ");
-		if (istr != NULL && ((strlen(istr + 6) + 1) < sizeof(FILEMANAGER_CurrentPath))) //is directory
+		if (istr != NULL && ((strlen(istr + 6) + 1) < sizeof(FILEMANAGER_CurrentPath))) // is directory
 		{
 			strcat(FILEMANAGER_CurrentPath, "/");
 			strcat(FILEMANAGER_CurrentPath, istr + 6);
@@ -110,7 +110,7 @@ void FILEMANAGER_EventRotate(int8_t direction)
 			current_index = 0;
 			FILEMANAGER_Refresh();
 		}
-		else //is file
+		else // is file
 		{
 			FILEMANAGER_dialog_button_index = 0;
 			FILEMANAGER_OpenDialog();
@@ -120,25 +120,25 @@ void FILEMANAGER_EventRotate(int8_t direction)
 
 void FILEMANAGER_EventSecondaryRotate(int8_t direction)
 {
-	if(FILEMANAGER_dialog_opened)
+	if (FILEMANAGER_dialog_opened)
 	{
-		if(FILEMANAGER_dialog_button_index > 0 || direction > 0)
+		if (FILEMANAGER_dialog_button_index > 0 || direction > 0)
 			FILEMANAGER_dialog_button_index += direction;
 		FILEMANAGER_OpenDialog();
 		return;
 	}
-	
+
 	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, BG_COLOR);
 	if (direction > 0 || current_index > 0)
 		current_index += direction;
 
 	int16_t real_file_index = FILEMANAGER_files_startindex + current_index - 1;
 
-	//limit
+	// limit
 	if (real_file_index >= FILEMANAGER_files_count)
 		current_index--;
 
-	//list down
+	// list down
 	if (current_index > FILEMANAGER_LISTING_ITEMS_ON_PAGE && real_file_index < FILEMANAGER_files_count)
 	{
 		FILEMANAGER_files_startindex += FILEMANAGER_LISTING_ITEMS_ON_PAGE;
@@ -146,7 +146,7 @@ void FILEMANAGER_EventSecondaryRotate(int8_t direction)
 		FILEMANAGER_Refresh();
 	}
 
-	//list up
+	// list up
 	if (FILEMANAGER_files_startindex > 0 && current_index == 0)
 	{
 		FILEMANAGER_files_startindex -= FILEMANAGER_LISTING_ITEMS_ON_PAGE;
@@ -186,46 +186,45 @@ static void FILEMANAGER_OpenDialog(void)
 	bool allow_cq_rec = false;
 	bool allow_flash_bin = false;
 	bool allow_flash_jic = false;
-	uint8_t max_buttons_index = 1; //cancel+delete
-	
-	
-	//check play wav
+	uint8_t max_buttons_index = 1; // cancel+delete
+
+	// check play wav
 	char *istr = strstr(FILEMANAGER_LISTING[current_index - 1], ".wav");
 	if (istr != NULL)
 	{
 		max_buttons_index += 2;
 		allow_play_wav = true;
 	}
-	//check cq message rec wav
+	// check cq message rec wav
 	istr = strstr(FILEMANAGER_LISTING[current_index - 1], SD_CQ_MESSAGE_FILE);
 	if (istr != NULL)
 	{
 		max_buttons_index++;
 		allow_cq_rec = true;
 	}
-	//check flash stm32 bin
+	// check flash stm32 bin
 	istr = strstr(FILEMANAGER_LISTING[current_index - 1], ".bin");
 	if (istr != NULL)
 	{
 		max_buttons_index++;
 		allow_flash_bin = true;
 	}
-	//check flash fpga jic
+	// check flash fpga jic
 	istr = strstr(FILEMANAGER_LISTING[current_index - 1], ".jic");
 	if (istr != NULL)
 	{
 		max_buttons_index++;
 		allow_flash_jic = true;
 	}
-	
-	if(FILEMANAGER_dialog_button_index > max_buttons_index)
+
+	if (FILEMANAGER_dialog_button_index > max_buttons_index)
 		FILEMANAGER_dialog_button_index = max_buttons_index;
-	
-	#define margin 30
-	//frame
+
+#define margin 30
+	// frame
 	LCDDriver_Fill_RectXY(margin, margin, LCD_WIDTH - margin, LCD_HEIGHT - margin, BG_COLOR);
 	LCDDriver_drawRectXY(margin, margin, LCD_WIDTH - margin, LCD_HEIGHT - margin, FG_COLOR);
-	//buttons
+	// buttons
 	uint16_t button_y = margin * 2;
 	uint16_t button_x = margin * 2;
 	uint16_t button_w = LCD_WIDTH - margin * 2 - button_x;
@@ -233,24 +232,24 @@ static void FILEMANAGER_OpenDialog(void)
 	uint16_t bounds_x, bounds_y, bounds_w, bounds_h;
 	uint8_t print_index = 0;
 	bool button_active = false;
-	//back
+	// back
 	button_active = (FILEMANAGER_dialog_button_index == print_index);
 	LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 	LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 	LCDDriver_getTextBoundsFont("Cancel", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 	LCDDriver_printTextFont("Cancel", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
 	button_y += button_h + margin;
-	if(button_active)
+	if (button_active)
 		current_dialog_action = FILMAN_ACT_CANCEL;
 	print_index++;
-	//play wav
-	if(allow_play_wav)
+	// play wav
+	if (allow_play_wav)
 	{
-		//Play Localy
+		// Play Localy
 		button_active = (FILEMANAGER_dialog_button_index == print_index);
 		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
-		if(!SD_PlayInProcess)
+		if (!SD_PlayInProcess)
 		{
 			LCDDriver_getTextBoundsFont("Play WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 			LCDDriver_printTextFont("Play WAV", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
@@ -261,15 +260,15 @@ static void FILEMANAGER_OpenDialog(void)
 			LCDDriver_printTextFont("Playing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
 		}
 		button_y += button_h + margin;
-		if(button_active)
+		if (button_active)
 			current_dialog_action = FILMAN_ACT_PLAY_WAV;
 		print_index++;
-		
-		//Tansmit WAV
+
+		// Tansmit WAV
 		button_active = (FILEMANAGER_dialog_button_index == print_index);
 		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
-		if(!SD_PlayCQMessageInProcess)
+		if (!SD_PlayCQMessageInProcess)
 		{
 			LCDDriver_getTextBoundsFont("Transmit WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 			LCDDriver_printTextFont("Transmit WAV", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
@@ -280,17 +279,17 @@ static void FILEMANAGER_OpenDialog(void)
 			LCDDriver_printTextFont("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
 		}
 		button_y += button_h + margin;
-		if(button_active)
+		if (button_active)
 			current_dialog_action = FILMAN_ACT_TRANSMIT_WAV;
 		print_index++;
 	}
-	//rec cq message
-	if(allow_cq_rec)
+	// rec cq message
+	if (allow_cq_rec)
 	{
 		button_active = (FILEMANAGER_dialog_button_index == print_index);
 		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
-		if(!SD_RecordInProcess)
+		if (!SD_RecordInProcess)
 		{
 			LCDDriver_getTextBoundsFont("Record CQ message", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 			LCDDriver_printTextFont("Record CQ message", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
@@ -301,12 +300,12 @@ static void FILEMANAGER_OpenDialog(void)
 			LCDDriver_printTextFont("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
 		}
 		button_y += button_h + margin;
-		if(button_active)
+		if (button_active)
 			current_dialog_action = FILMAN_ACT_REC_CQ_WAV;
 		print_index++;
 	}
-	//flash bin
-	if(allow_flash_bin)
+	// flash bin
+	if (allow_flash_bin)
 	{
 		button_active = (FILEMANAGER_dialog_button_index == print_index);
 		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
@@ -314,12 +313,12 @@ static void FILEMANAGER_OpenDialog(void)
 		LCDDriver_getTextBoundsFont("Flash STM32 firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 		LCDDriver_printTextFont("Flash STM32 firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
 		button_y += button_h + margin;
-		if(button_active)
+		if (button_active)
 			current_dialog_action = FILMAN_ACT_FLASHBIN;
 		print_index++;
 	}
-	//flash jic
-	if(allow_flash_jic)
+	// flash jic
+	if (allow_flash_jic)
 	{
 		button_active = (FILEMANAGER_dialog_button_index == print_index);
 		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
@@ -327,53 +326,53 @@ static void FILEMANAGER_OpenDialog(void)
 		LCDDriver_getTextBoundsFont("Flash FPGA firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 		LCDDriver_printTextFont("Flash FPGA firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
 		button_y += button_h + margin;
-		if(button_active)
+		if (button_active)
 			current_dialog_action = FILMAN_ACT_FLASHJIC;
 		print_index++;
 	}
-	//delete
+	// delete
 	button_active = (FILEMANAGER_dialog_button_index == print_index);
 	LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 	LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 	LCDDriver_getTextBoundsFont("Delete", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 	LCDDriver_printTextFont("Delete", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
 	button_y += button_h + margin;
-	if(button_active)
-			current_dialog_action = FILMAN_ACT_DELETE;
+	if (button_active)
+		current_dialog_action = FILMAN_ACT_DELETE;
 	print_index++;
 }
 
 static void FILEMANAGER_DialogAction(void)
 {
-	if(SD_PlayInProcess)
-			SD_NeedStopPlay = true;
-	
-	if(current_dialog_action == FILMAN_ACT_CANCEL) //back
+	if (SD_PlayInProcess)
+		SD_NeedStopPlay = true;
+
+	if (current_dialog_action == FILMAN_ACT_CANCEL) // back
 	{
 		FILEMANAGER_dialog_opened = false;
 		FILEMANAGER_Refresh();
 		return;
 	}
-	if(current_dialog_action == FILMAN_ACT_DELETE) //delete
+	if (current_dialog_action == FILMAN_ACT_DELETE) // delete
 	{
-		if(!SD_CommandInProcess)
+		if (!SD_CommandInProcess)
 		{
 			dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
-			if(strlen(FILEMANAGER_CurrentPath) > 0)
+			if (strlen(FILEMANAGER_CurrentPath) > 0)
 			{
-				strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
-				strcat((char*)SD_workbuffer_A, "/");
+				strcat((char *)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+				strcat((char *)SD_workbuffer_A, "/");
 			}
-			strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+			strcat((char *)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 			FILEMANAGER_dialog_opened = false;
 			current_index--;
 			SD_doCommand(SDCOMM_DELETE_FILE, false);
 		}
 		return;
 	}
-	if(current_dialog_action == FILMAN_ACT_PLAY_WAV) //play WAV Localy
+	if (current_dialog_action == FILMAN_ACT_PLAY_WAV) // play WAV Localy
 	{
-		if(SD_PlayInProcess)
+		if (SD_PlayInProcess)
 		{
 			SD_NeedStopPlay = true;
 			return;
@@ -383,21 +382,21 @@ static void FILEMANAGER_DialogAction(void)
 			SD_NeedStopRecord = true;
 			return;
 		}
-		
+
 		println("Play WAV started");
 		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
-		if(strlen(FILEMANAGER_CurrentPath) > 0)
+		if (strlen(FILEMANAGER_CurrentPath) > 0)
 		{
-			strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
-			strcat((char*)SD_workbuffer_A, "/");
+			strcat((char *)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+			strcat((char *)SD_workbuffer_A, "/");
 		}
-		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+		strcat((char *)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 		SD_doCommand(SDCOMM_START_PLAY, false);
 		return;
 	}
-	if(current_dialog_action == FILMAN_ACT_TRANSMIT_WAV) //Transmit WAV
+	if (current_dialog_action == FILMAN_ACT_TRANSMIT_WAV) // Transmit WAV
 	{
-		if(SD_PlayInProcess)
+		if (SD_PlayInProcess)
 		{
 			SD_NeedStopPlay = true;
 			return;
@@ -412,43 +411,43 @@ static void FILEMANAGER_DialogAction(void)
 			SD_NeedStopPlay = true;
 			return;
 		}
-		
+
 		println("Transmit WAV started");
-		
-		//go tx
+
+		// go tx
 		TRX_ptt_soft = true;
 		TRX_ptt_change();
-		
-		//start play cq message
+
+		// start play cq message
 		SD_PlayCQMessageInProcess = true;
-		
+
 		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
-		if(strlen(FILEMANAGER_CurrentPath) > 0)
+		if (strlen(FILEMANAGER_CurrentPath) > 0)
 		{
-			strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
-			strcat((char*)SD_workbuffer_A, "/");
+			strcat((char *)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+			strcat((char *)SD_workbuffer_A, "/");
 		}
-		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+		strcat((char *)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 		SD_doCommand(SDCOMM_START_PLAY, false);
 		return;
 	}
-	if(current_dialog_action == FILMAN_ACT_REC_CQ_WAV) //record CQ message
+	if (current_dialog_action == FILMAN_ACT_REC_CQ_WAV) // record CQ message
 	{
-		
-		if(SD_RecordInProcess)
+
+		if (SD_RecordInProcess)
 		{
 			SD_NeedStopRecord = true;
 			return;
 		}
-		
+
 		println("CQ message recorder started");
 		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
-		if(strlen(FILEMANAGER_CurrentPath) > 0)
+		if (strlen(FILEMANAGER_CurrentPath) > 0)
 		{
-			strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
-			strcat((char*)SD_workbuffer_A, "/");
+			strcat((char *)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+			strcat((char *)SD_workbuffer_A, "/");
 		}
-		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+		strcat((char *)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 		SD_RecordingCQmessage = true;
 		rec_cqmessage_old_mode = CurrentVFO->Mode;
 		TRX_setMode(TRX_MODE_LOOPBACK, CurrentVFO);
@@ -456,31 +455,31 @@ static void FILEMANAGER_DialogAction(void)
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
-	if(current_dialog_action == FILMAN_ACT_FLASHBIN) //flash stm32 bin firmware
+	if (current_dialog_action == FILMAN_ACT_FLASHBIN) // flash stm32 bin firmware
 	{
 		println("[FLASH] BIN flashing started");
 		TRX_Mute = true;
 		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
-		if(strlen(FILEMANAGER_CurrentPath) > 0)
+		if (strlen(FILEMANAGER_CurrentPath) > 0)
 		{
-			strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
-			strcat((char*)SD_workbuffer_A, "/");
+			strcat((char *)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+			strcat((char *)SD_workbuffer_A, "/");
 		}
-		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+		strcat((char *)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 		SD_doCommand(SDCOMM_FLASH_BIN, false);
 		return;
 	}
-	if(current_dialog_action == FILMAN_ACT_FLASHJIC) //flash fpga jic firmware
+	if (current_dialog_action == FILMAN_ACT_FLASHJIC) // flash fpga jic firmware
 	{
 		println("[FLASH] JIC flashing started");
 		TRX_Mute = true;
 		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
-		if(strlen(FILEMANAGER_CurrentPath) > 0)
+		if (strlen(FILEMANAGER_CurrentPath) > 0)
 		{
-			strcat((char*)SD_workbuffer_A, FILEMANAGER_CurrentPath);
-			strcat((char*)SD_workbuffer_A, "/");
+			strcat((char *)SD_workbuffer_A, FILEMANAGER_CurrentPath);
+			strcat((char *)SD_workbuffer_A, "/");
 		}
-		strcat((char*)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
+		strcat((char *)SD_workbuffer_A, FILEMANAGER_LISTING[current_index - 1]);
 		SD_doCommand(SDCOMM_FLASH_JIC, false);
 		return;
 	}
@@ -500,23 +499,23 @@ void FILEMANAGER_OTAUpdate_reset(void)
 void FILEMANAGER_OTAUpdate_handler(void)
 {
 	sysmenu_ota_opened = true;
-	if(sysmenu_ota_opened_state == 0)
+	if (sysmenu_ota_opened_state == 0)
 	{
-		if(WIFI_State == WIFI_UNDEFINED || WIFI_State == WIFI_NOTFOUND || WIFI_State == WIFI_SLEEP || !WIFI_IP_Gotted || TRX_SNTP_Synced == 0)
+		if (WIFI_State == WIFI_UNDEFINED || WIFI_State == WIFI_NOTFOUND || WIFI_State == WIFI_SLEEP || !WIFI_IP_Gotted || TRX_SNTP_Synced == 0)
 		{
 			LCD_showInfo("WIFI not inited", true);
 			sysmenu_ota_opened = false;
 			return;
 		}
-		if(!SD_Present || SD_RecordInProcess || SD_PlayInProcess || SD_CommandInProcess)
+		if (!SD_Present || SD_RecordInProcess || SD_PlayInProcess || SD_CommandInProcess)
 		{
 			LCD_showInfo("SD not ready", true);
 			sysmenu_ota_opened = false;
 			return;
 		}
-		if(!WIFI_NewFW_checked)
+		if (!WIFI_NewFW_checked)
 		{
-			if(WIFI_State == WIFI_READY)
+			if (WIFI_State == WIFI_READY)
 			{
 				WIFI_checkFWUpdates();
 				LCD_showInfo("Checking updates", false);
@@ -524,48 +523,48 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 			return;
 		}
-		if(WIFI_State != WIFI_READY)
+		if (WIFI_State != WIFI_READY)
 		{
 			LCD_showInfo("WIFI not ready", true);
 			sysmenu_ota_opened = false;
 			return;
 		}
-		if(!WIFI_NewFW_STM32 && !WIFI_NewFW_FPGA)
+		if (!WIFI_NewFW_STM32 && !WIFI_NewFW_FPGA)
 		{
 			LCD_showInfo("No updates", true);
 			sysmenu_ota_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 			return;
 		}
-		//delete old files
+		// delete old files
 		LCD_showInfo("Clean old files...", false);
-		strcpy((char*)SD_workbuffer_A, "firmware_stm32.bin");
-		f_unlink((TCHAR*)SD_workbuffer_A);
-		f_unlink((TCHAR*)SD_workbuffer_A);
-		strcpy((char*)SD_workbuffer_A, "firmware_stm32.crc");
-		f_unlink((TCHAR*)SD_workbuffer_A);
-		f_unlink((TCHAR*)SD_workbuffer_A);
-		strcpy((char*)SD_workbuffer_A, "firmware_fpga.jic");
-		f_unlink((TCHAR*)SD_workbuffer_A);
-		f_unlink((TCHAR*)SD_workbuffer_A);
-		strcpy((char*)SD_workbuffer_A, "firmware_fpga.crc");
-		f_unlink((TCHAR*)SD_workbuffer_A);
-		f_unlink((TCHAR*)SD_workbuffer_A);
+		strcpy((char *)SD_workbuffer_A, "firmware_stm32.bin");
+		f_unlink((TCHAR *)SD_workbuffer_A);
+		f_unlink((TCHAR *)SD_workbuffer_A);
+		strcpy((char *)SD_workbuffer_A, "firmware_stm32.crc");
+		f_unlink((TCHAR *)SD_workbuffer_A);
+		f_unlink((TCHAR *)SD_workbuffer_A);
+		strcpy((char *)SD_workbuffer_A, "firmware_fpga.jic");
+		f_unlink((TCHAR *)SD_workbuffer_A);
+		f_unlink((TCHAR *)SD_workbuffer_A);
+		strcpy((char *)SD_workbuffer_A, "firmware_fpga.crc");
+		f_unlink((TCHAR *)SD_workbuffer_A);
+		f_unlink((TCHAR *)SD_workbuffer_A);
 		downloaded_fpga_fw = false;
 		downloaded_fpga_crc = false;
 		downloaded_stm_fw = false;
 		downloaded_stm_crc = false;
-		if(WIFI_NewFW_FPGA)
+		if (WIFI_NewFW_FPGA)
 			sysmenu_ota_opened_state = 1;
 		else
 			sysmenu_ota_opened_state = 5;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
-	//config
+	// config
 	char url[128] = {0};
-	//downloading FPGA FW
-	if(sysmenu_ota_opened_state == 1 && WIFI_NewFW_FPGA && !downloaded_fpga_fw)
+	// downloading FPGA FW
+	if (sysmenu_ota_opened_state == 1 && WIFI_NewFW_FPGA && !downloaded_fpga_fw)
 	{
 		LCD_showInfo("Downloading FPGA FW to SD", false);
 		sysmenu_ota_opened_state = 2;
@@ -573,7 +572,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		WIFI_downloadFileToSD(url, "firmware_fpga.jic");
 		return;
 	}
-	if(sysmenu_ota_opened_state == 2 && WIFI_downloadFileToSD_compleated)
+	if (sysmenu_ota_opened_state == 2 && WIFI_downloadFileToSD_compleated)
 	{
 		LCD_showInfo("FPGA FW downloaded", true);
 		downloaded_fpga_fw = true;
@@ -581,8 +580,8 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
-	//downloading FPGA CRC
-	if(sysmenu_ota_opened_state == 3 && WIFI_NewFW_FPGA && !downloaded_fpga_crc)
+	// downloading FPGA CRC
+	if (sysmenu_ota_opened_state == 3 && WIFI_NewFW_FPGA && !downloaded_fpga_crc)
 	{
 		LCD_showInfo("Downloading FPGA CRC to SD", false);
 		sysmenu_ota_opened_state = 4;
@@ -590,19 +589,19 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		WIFI_downloadFileToSD(url, "firmware_fpga.crc");
 		return;
 	}
-	if(sysmenu_ota_opened_state == 4 && WIFI_downloadFileToSD_compleated)
+	if (sysmenu_ota_opened_state == 4 && WIFI_downloadFileToSD_compleated)
 	{
 		LCD_showInfo("FPGA CRC downloaded", true);
 		downloaded_fpga_crc = true;
-		if(WIFI_NewFW_STM32)
+		if (WIFI_NewFW_STM32)
 			sysmenu_ota_opened_state = 5;
 		else
 			sysmenu_ota_opened_state = 9;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
-	//downloading STM32 FW
-	if(sysmenu_ota_opened_state == 5 && WIFI_NewFW_STM32 && !downloaded_stm_fw)
+	// downloading STM32 FW
+	if (sysmenu_ota_opened_state == 5 && WIFI_NewFW_STM32 && !downloaded_stm_fw)
 	{
 		LCD_showInfo("Downloading STM32 FW to SD", false);
 		sysmenu_ota_opened_state = 6;
@@ -610,7 +609,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		WIFI_downloadFileToSD(url, "firmware_stm32.bin");
 		return;
 	}
-	if(sysmenu_ota_opened_state == 6 && WIFI_downloadFileToSD_compleated)
+	if (sysmenu_ota_opened_state == 6 && WIFI_downloadFileToSD_compleated)
 	{
 		LCD_showInfo("STM32 FW downloaded", true);
 		downloaded_stm_fw = true;
@@ -618,8 +617,8 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
-	//downloading STM32 CRC
-	if(sysmenu_ota_opened_state == 7 && WIFI_NewFW_STM32 && !downloaded_stm_crc)
+	// downloading STM32 CRC
+	if (sysmenu_ota_opened_state == 7 && WIFI_NewFW_STM32 && !downloaded_stm_crc)
 	{
 		LCD_showInfo("Downloading STM32 CRC to SD", false);
 		sysmenu_ota_opened_state = 8;
@@ -627,46 +626,46 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		WIFI_downloadFileToSD(url, "firmware_stm32.crc");
 		return;
 	}
-	if(sysmenu_ota_opened_state == 8 && WIFI_downloadFileToSD_compleated)
+	if (sysmenu_ota_opened_state == 8 && WIFI_downloadFileToSD_compleated)
 	{
 		LCD_showInfo("STM32 CRC downloaded", true);
 		downloaded_stm_crc = true;
-		if(WIFI_NewFW_FPGA)
+		if (WIFI_NewFW_FPGA)
 			sysmenu_ota_opened_state = 9;
 		else
 			sysmenu_ota_opened_state = 10;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
-	//Check CRC
-	if(sysmenu_ota_opened_state == 9) //FPGA
+	// Check CRC
+	if (sysmenu_ota_opened_state == 9) // FPGA
 	{
 		LCD_showInfo("Check FPGA FW CRC", true);
-		
+
 		uint32_t FileCRCValue = 0;
 		uint32_t NeedCRCValue = 0;
-		
+
 		hcrc.Instance = CRC;
-		hcrc.Init.DefaultPolynomialUse    = DEFAULT_POLYNOMIAL_ENABLE;
-		hcrc.Init.DefaultInitValueUse     = DEFAULT_INIT_VALUE_ENABLE;
-		hcrc.Init.InputDataInversionMode  = CRC_INPUTDATA_INVERSION_NONE;
+		hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+		hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+		hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
 		hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
-		hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_BYTES;
+		hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
 		HAL_CRC_Init(&hcrc);
-		
-    //FILINFO FileInfo;
-    //f_stat("firmware_fpga.jic", &FileInfo);
-		//println("Filesize: ", FileInfo.fsize);
-		
+
+		// FILINFO FileInfo;
+		// f_stat("firmware_fpga.jic", &FileInfo);
+		// println("Filesize: ", FileInfo.fsize);
+
 		if (f_open(&File, "firmware_fpga.jic", FA_READ | FA_OPEN_EXISTING) == FR_OK)
 		{
 			__HAL_CRC_DR_RESET(&hcrc);
 			uint32_t bytesreaded;
 			uint32_t bytesprocessed;
 			bool read_flag = true;
-			while(read_flag)
+			while (read_flag)
 			{
-				if(f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded) != FR_OK || bytesreaded == 0)
+				if (f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded) != FR_OK || bytesreaded == 0)
 				{
 					read_flag = false;
 				}
@@ -677,23 +676,23 @@ void FILEMANAGER_OTAUpdate_handler(void)
 				}
 			}
 			f_close(&File);
-			
-			//read original CRC
+
+			// read original CRC
 			f_open(&File, "firmware_fpga.crc", FA_READ | FA_OPEN_EXISTING);
 			dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 			f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded);
 			f_close(&File);
-			println("Need CRC: ", (char*)SD_workbuffer_A);
-			
-			//compare
+			println("Need CRC: ", (char *)SD_workbuffer_A);
+
+			// compare
 			char tmp[16] = {0};
 			sprintf(tmp, "%u", FileCRCValue);
 			println("File CRC: ", tmp);
-			if(strstr((char*)SD_workbuffer_A, tmp) != NULL)
+			if (strstr((char *)SD_workbuffer_A, tmp) != NULL)
 			{
 				LCD_showInfo("CRC OK", true);
-				
-				if(WIFI_NewFW_STM32)
+
+				if (WIFI_NewFW_STM32)
 					sysmenu_ota_opened_state = 10;
 				else
 					sysmenu_ota_opened_state = 15;
@@ -715,34 +714,34 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			return;
 		}
 	}
-	if(sysmenu_ota_opened_state == 10) //STM32
+	if (sysmenu_ota_opened_state == 10) // STM32
 	{
 		LCD_showInfo("Check STM32 FW CRC", true);
-		
+
 		uint32_t FileCRCValue = 0;
 		uint32_t NeedCRCValue = 0;
-		
+
 		hcrc.Instance = CRC;
-		hcrc.Init.DefaultPolynomialUse    = DEFAULT_POLYNOMIAL_ENABLE;
-		hcrc.Init.DefaultInitValueUse     = DEFAULT_INIT_VALUE_ENABLE;
-		hcrc.Init.InputDataInversionMode  = CRC_INPUTDATA_INVERSION_NONE;
+		hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+		hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+		hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
 		hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
-		hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_BYTES;
+		hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
 		HAL_CRC_Init(&hcrc);
-		
-    //FILINFO FileInfo;
-    //f_stat("firmware_fpga.jic", &FileInfo);
-		//println(FileInfo.fsize);
-		
+
+		// FILINFO FileInfo;
+		// f_stat("firmware_fpga.jic", &FileInfo);
+		// println(FileInfo.fsize);
+
 		if (f_open(&File, "firmware_stm32.bin", FA_READ | FA_OPEN_EXISTING) == FR_OK)
 		{
 			__HAL_CRC_DR_RESET(&hcrc);
 			uint32_t bytesreaded;
 			uint32_t bytesprocessed;
 			bool read_flag = true;
-			while(read_flag)
+			while (read_flag)
 			{
-				if(f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded) != FR_OK || bytesreaded == 0)
+				if (f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded) != FR_OK || bytesreaded == 0)
 				{
 					read_flag = false;
 				}
@@ -753,19 +752,19 @@ void FILEMANAGER_OTAUpdate_handler(void)
 				}
 			}
 			f_close(&File);
-			
-			//read original CRC
+
+			// read original CRC
 			f_open(&File, "firmware_stm32.crc", FA_READ | FA_OPEN_EXISTING);
 			dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 			f_read(&File, &SD_workbuffer_A, sizeof(SD_workbuffer_A), &bytesreaded);
 			f_close(&File);
-			println("Need CRC: ", (char*)SD_workbuffer_A);
-			
-			//compare
+			println("Need CRC: ", (char *)SD_workbuffer_A);
+
+			// compare
 			char tmp[16] = {0};
 			sprintf(tmp, "%u", FileCRCValue);
 			println("File CRC: ", tmp);
-			if(strstr((char*)SD_workbuffer_A, tmp) != NULL)
+			if (strstr((char *)SD_workbuffer_A, tmp) != NULL)
 			{
 				LCD_showInfo("CRC OK", true);
 				sysmenu_ota_opened_state = 15;
@@ -787,38 +786,38 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			return;
 		}
 	}
-	//flash
-	if(sysmenu_ota_opened_state == 15)
+	// flash
+	if (sysmenu_ota_opened_state == 15)
 	{
 		LCD_showInfo("Flashing", true);
-		if(WIFI_NewFW_FPGA && WIFI_NewFW_STM32)
+		if (WIFI_NewFW_FPGA && WIFI_NewFW_STM32)
 		{
 			TRX_Mute = true;
-			strcpy((char*)SD_workbuffer_A, "firmware_fpga.jic");
+			strcpy((char *)SD_workbuffer_A, "firmware_fpga.jic");
 			SDCOMM_FLASH_JIC_handler(false);
-			strcpy((char*)SD_workbuffer_A, "firmware_stm32.bin");
+			strcpy((char *)SD_workbuffer_A, "firmware_stm32.bin");
 			SDCOMM_FLASH_BIN_handler();
 		}
-		else if(WIFI_NewFW_FPGA)
+		else if (WIFI_NewFW_FPGA)
 		{
 			TRX_Mute = true;
-			strcpy((char*)SD_workbuffer_A, "firmware_fpga.jic");
+			strcpy((char *)SD_workbuffer_A, "firmware_fpga.jic");
 			SDCOMM_FLASH_JIC_handler(true);
 		}
-		else if(WIFI_NewFW_STM32)
+		else if (WIFI_NewFW_STM32)
 		{
 			TRX_Mute = true;
-			strcpy((char*)SD_workbuffer_A, "firmware_stm32.bin");
+			strcpy((char *)SD_workbuffer_A, "firmware_stm32.bin");
 			SDCOMM_FLASH_BIN_handler();
 		}
-			
+
 		sysmenu_ota_opened_state = 16;
 	}
-	//finish
-	if(sysmenu_ota_opened_state == 16)
+	// finish
+	if (sysmenu_ota_opened_state == 16)
 	{
 		LCD_showInfo("Finished", true);
-		
+
 		sysmenu_ota_opened = false;
 		sysmenu_ota_opened_state = 0;
 		LCD_UpdateQuery.SystemMenuRedraw = true;

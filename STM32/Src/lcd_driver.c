@@ -1,6 +1,6 @@
 #include "settings.h"
 
-//Header files
+// Header files
 #include "lcd_driver.h"
 #include "main.h"
 #include "fonts.h"
@@ -21,45 +21,45 @@ void LCDDriver_SetCurrentXOffset(uint16_t x)
 	text_cursor_x = x;
 }
 
-//Text printing functions
+// Text printing functions
 void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h)
 {
 	uint8_t line = 0;
-	
-	if ((x >= buffer_w) ||			// Clip right
+
+	if ((x >= buffer_w) ||		// Clip right
 		(y >= buffer_h) ||		// Clip bottom
 		((x + 6 * size) < 0) || // Clip left
 		((y + 8 * size) < 0))	// Clip top
 		return;
 
-	if((x + 6 * size) >= buffer_w ||
+	if ((x + 6 * size) >= buffer_w ||
 		(y + 8 * size) >= buffer_h)
-	return;
-	
-	if (c < 32) //non-printable
+		return;
+
+	if (c < 32) // non-printable
 		return;
 	if (!_cp437 && (c >= 176))
 		c++; // Handle 'classic' charset behavior
 
-	for (int8_t j = 0; j < 8; j++)											   //y line out
+	for (int8_t j = 0; j < 8; j++) // y line out
 	{
-		for (int8_t s_y = 0; s_y < size; s_y++) //y size scale
+		for (int8_t s_y = 0; s_y < size; s_y++) // y size scale
 		{
 			uint16_t *point = buffer + buffer_w * (y + j * (s_y + 1)) + x;
 			for (int8_t i = 0; i < 6; i++)
-			{ 
-				//x line out
+			{
+				// x line out
 				if (i == 5)
 					line = 0x0;
 				else
-					line = rastr_font[(c * 5) + i]; //read font
+					line = rastr_font[(c * 5) + i]; // read font
 				line >>= j;
-				for (int8_t s_x = 0; s_x < size; s_x++) //x size scale
+				for (int8_t s_x = 0; s_x < size; s_x++) // x size scale
 				{
 					if (line & 0x1)
-						*point = color; //font pixel
+						*point = color; // font pixel
 					else
-						*point = bg; //background pixel
+						*point = bg; // background pixel
 					point++;
 				}
 			}
@@ -74,7 +74,7 @@ void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t col
 	uint16_t skipped = 0;
 	for (i = 0; i < 128 && text[i] != 0; i++)
 	{
-		if (text[i] == '^' && text[i + 1] == 'o') //celsius
+		if (text[i] == '^' && text[i + 1] == 'o') // celsius
 		{
 			i++;
 			skipped++;
@@ -97,30 +97,30 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 		((y + 8 * size - 1) < 0))	// Clip top
 		return;
 
-	if (c < 32) //non-printable
+	if (c < 32) // non-printable
 		return;
 	if (!_cp437 && (c >= 176))
 		c++; // Handle 'classic' charset behavior
 
-	LCDDriver_SetCursorAreaPosition(x, y, x + 6 * size - 1, y + 8 * size - 1); //char area
-	for (int8_t j = 0; j < 8; j++)											   //y line out
+	LCDDriver_SetCursorAreaPosition(x, y, x + 6 * size - 1, y + 8 * size - 1); // char area
+	for (int8_t j = 0; j < 8; j++)											   // y line out
 	{
-		for (int8_t s_y = 0; s_y < size; s_y++) //y size scale
+		for (int8_t s_y = 0; s_y < size; s_y++) // y size scale
 		{
 			for (int8_t i = 0; i < 6; i++)
-			{ 
-				//x line out
+			{
+				// x line out
 				if (i == 5)
 					line = 0x0;
 				else
-					line = rastr_font[(c * 5) + i]; //read font
+					line = rastr_font[(c * 5) + i]; // read font
 				line >>= j;
-				for (int8_t s_x = 0; s_x < size; s_x++) //x size scale
+				for (int8_t s_x = 0; s_x < size; s_x++) // x size scale
 				{
 					if (line & 0x1)
-						LCDDriver_SendData16(color); //font pixel
+						LCDDriver_SendData16(color); // font pixel
 					else
-						LCDDriver_SendData16(bg); //background pixel
+						LCDDriver_SendData16(bg); // background pixel
 				}
 			}
 		}
@@ -134,7 +134,7 @@ void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, ui
 	uint16_t skipped = 0;
 	for (i = 0; i < 128 && text[i] != 0; i++)
 	{
-		if (text[i] == '^' && text[i + 1] == 'o') //celsius
+		if (text[i] == '^' && text[i + 1] == 'o') // celsius
 		{
 			i++;
 			skipped++;
@@ -162,7 +162,7 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 		ys1 = 0;
 	if (ys2 < 0)
 		ys2 = 0;
-	LCDDriver_SetCursorAreaPosition(x, (uint16_t)ys1, x + glyph->xAdvance - 1, (uint16_t)ys2); //char area
+	LCDDriver_SetCursorAreaPosition(x, (uint16_t)ys1, x + glyph->xAdvance - 1, (uint16_t)ys2); // char area
 
 	for (uint8_t yy = 0; yy < glyph->height; yy++)
 	{
@@ -170,7 +170,7 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 		{
 			if (xx < glyph->xOffset || xx >= (glyph->xOffset + glyph->width))
 			{
-				LCDDriver_SendData16(bg); //background pixel
+				LCDDriver_SendData16(bg); // background pixel
 				continue;
 			}
 			if (!(bit++ & 7))
@@ -179,11 +179,11 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 			}
 			if (bits & 0x80)
 			{
-				LCDDriver_SendData16(color); //font pixel
+				LCDDriver_SendData16(color); // font pixel
 			}
 			else
 			{
-				LCDDriver_SendData16(bg); //background pixel
+				LCDDriver_SendData16(bg); // background pixel
 			}
 			bits <<= 1;
 		}
@@ -202,7 +202,7 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 		{
 			text_cursor_x = 0;
 			text_cursor_y += gfxFont->yAdvance;
-			if(text_cursor_y > LCD_HEIGHT)
+			if (text_cursor_y > LCD_HEIGHT)
 				return;
 		}
 		else if (c != '\r')
@@ -318,7 +318,7 @@ void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, 
 	*h = 8 * size;
 }
 
-//Image print (RGB 565, 2 bytes per pixel)
+// Image print (RGB 565, 2 bytes per pixel)
 void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data)
 {
 	uint32_t n = w * h * 2;
@@ -354,7 +354,7 @@ void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *im
 					return;
 			}
 		}
-		else //repeats
+		else // repeats
 		{
 			uint16_t count = ((int16_t)image->data[i]);
 			i++;
@@ -420,7 +420,7 @@ void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t l
 			}
 			RLEStream_state = 0;
 		}
-		else if ((((int16_t)data[processed] > 0) && (RLEStream_state == 0)) || (RLEStream_state == 2)) //repeats
+		else if ((((int16_t)data[processed] > 0) && (RLEStream_state == 0)) || (RLEStream_state == 2)) // repeats
 		{
 			if (RLEStream_state == 0)
 			{

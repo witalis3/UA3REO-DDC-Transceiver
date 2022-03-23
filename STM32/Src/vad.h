@@ -16,9 +16,9 @@
 // Public methods
 extern void InitVAD(void);                 // initialize VAD
 extern void processVAD(float32_t *buffer); // run VAD for the data block
-extern void resetVAD(void);                //reset VAD status
+extern void resetVAD(void);                // reset VAD status
 
-//extern float32_t VAD_FFTBuffer_Export [VAD_FFT_SIZE];	//debug buffer
-extern bool VAD_Muting; //Muting flag
+// extern float32_t VAD_FFTBuffer_Export [VAD_FFT_SIZE];	//debug buffer
+extern bool VAD_Muting; // Muting flag
 
 #endif

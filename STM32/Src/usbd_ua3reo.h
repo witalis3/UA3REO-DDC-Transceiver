@@ -12,9 +12,9 @@ extern "C"
 #include "usbd_msc_scsi.h"
 #include "audio_processor.h"
 
-#define DEBUG_INTERFACE_IDX 0x0 // Index of DEBUG interface
-#define CAT_INTERFACE_IDX 0x2 // Index of CAT interface
-#define AUDIO_INTERFACE_IDX 0x4 // Index of AUDIO interface
+#define DEBUG_INTERFACE_IDX 0x0	  // Index of DEBUG interface
+#define CAT_INTERFACE_IDX 0x2	  // Index of CAT interface
+#define AUDIO_INTERFACE_IDX 0x4	  // Index of AUDIO interface
 #define STORAGE_INTERFACE_IDX 0x7 // Index of STORAGE interface
 
 #define DEBUG_EP_IDX 0x01
@@ -52,7 +52,7 @@ extern "C"
 
 /* CDC Endpoints parameters: you can fine tune these values depending on the needed baudrates and performance. */
 #define CDC_DATA_FS_MAX_PACKET_SIZE 16U /* Endpoint IN & OUT Packet size */
-#define CDC_CMD_PACKET_SIZE 16U /* Control Endpoint Packet size */
+#define CDC_CMD_PACKET_SIZE 16U			/* Control Endpoint Packet size */
 
 #define USB_CDC_CONFIG_DESC_SIZ 337U
 
@@ -72,12 +72,12 @@ extern "C"
 #define CDC_SET_CONTROL_LINE_STATE 0x22U
 #define CDC_SEND_BREAK 0x23U
 
-//AUDIO
+// AUDIO
 #define USBD_AUDIO_FREQ 48000U
-#define BYTES_IN_SAMPLE_AUDIO_OUT_PACKET 3U //24bit
-#define AUDIO_OUT_PACKET (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 * (USBD_AUDIO_FREQ / 1000)) //3bytes (24bit) * 2 channel * 48 packet per second
-#define USB_AUDIO_RX_BUFFER_SIZE (AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET) //24 bit
-#define USB_AUDIO_TX_BUFFER_SIZE (AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2) //24 bit x2 size
+#define BYTES_IN_SAMPLE_AUDIO_OUT_PACKET 3U													// 24bit
+#define AUDIO_OUT_PACKET (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 * (USBD_AUDIO_FREQ / 1000))	// 3bytes (24bit) * 2 channel * 48 packet per second
+#define USB_AUDIO_RX_BUFFER_SIZE (AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET)		// 24 bit
+#define USB_AUDIO_TX_BUFFER_SIZE (AUDIO_BUFFER_SIZE * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2) // 24 bit x2 size
 
 #define AUDIO_REQ_GET_CUR 0x81U
 #define AUDIO_REQ_SET_CUR 0x01U
@@ -244,8 +244,8 @@ extern "C"
 	extern void USBD_Restart(void);
 
 	/**
-	  * @}
-	  */
+	 * @}
+	 */
 
 #ifdef __cplusplus
 }

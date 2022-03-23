@@ -1,7 +1,7 @@
 #ifndef _LCDDRIVER_H_
 #define _LCDDRIVER_H_
 
-//List of includes
+// List of includes
 #include "settings.h"
 #include <stdbool.h>
 #include "stm32h7xx_hal.h"
@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "images.h"
 
-//LCD dimensions defines
+// LCD dimensions defines
 #if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_ST7796S) || defined(LCD_R61581))
 #include "lcd_driver_ILI9481.h"
 #endif
@@ -37,7 +37,7 @@
 #endif
 #define LCD_PIXEL_COUNT (LCD_WIDTH * LCD_HEIGHT)
 
-//List of colors
+// List of colors
 #define COLOR_BLACK 0x0000
 #define COLOR_NAVY 0x000F
 #define COLOR_DGREEN 0x03E0
@@ -82,7 +82,7 @@ typedef struct
 	const uint8_t yAdvance; ///< Newline distance (y axis)
 } GFXfont;
 
-//Functions defines Macros
+// Functions defines Macros
 #define uswap(a, b)              \
 	{                            \
 		register uint16_t t = a; \
@@ -90,9 +90,9 @@ typedef struct
 		b = t;                   \
 	}
 #define rgb888torgb565(r, g, b) ((uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xFF) >> 3)))
-	
-extern uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); //add opacity or mix colors
-extern uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);		   //mix two colors with opacity
+
+extern uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); // add opacity or mix colors
+extern uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);		   // mix two colors with opacity
 
 extern void LCDDriver_SendData8(uint8_t data);
 extern void LCDDriver_SendData16(uint16_t data);
@@ -126,7 +126,7 @@ extern void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uin
 extern void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t color, uint16_t radius, bool filled);
 extern void LCDDriver_fadeScreen(float32_t brightness);
 
-//BTE functions
+// BTE functions
 void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, uint16_t w, uint16_t h, bool fromEnd);
 
 #endif

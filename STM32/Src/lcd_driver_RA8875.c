@@ -1,7 +1,7 @@
 #include "settings.h"
 #if (defined(LCD_RA8875))
 
-//Header files
+// Header files
 #include "lcd_driver.h"
 #include "main.h"
 #include "fonts.h"
@@ -17,69 +17,69 @@ static uint16_t LCDDriver_currentFGColor = 0;
 //***** Functions prototypes *****//
 static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
-//Write command to LCD
+// Write command to LCD
 inline void LCDDriver_SendCommand(uint16_t com)
 {
   *(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR)) = com;
 }
 
-//Write data to LCD
+// Write data to LCD
 inline void LCDDriver_SendData(uint16_t data)
 {
   *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)) = data;
 }
 
-//Write data to LCD
+// Write data to LCD
 inline void LCDDriver_SendData16(uint16_t data)
 {
   *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)) = data;
 }
 
-//Write pair command-data
+// Write pair command-data
 inline void LCDDriver_writeReg(uint16_t reg, uint16_t val)
 {
   LCDDriver_SendCommand(reg);
   LCDDriver_SendData(val);
 }
 
-//Read command from LCD
+// Read command from LCD
 inline uint16_t LCDDriver_ReadStatus(void)
 {
   return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR));
 }
-//Read data from LCD
+// Read data from LCD
 inline uint16_t LCDDriver_ReadData(void)
 {
   return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR));
 }
 
-//Read Register
+// Read Register
 inline uint16_t LCDDriver_readReg(uint16_t reg)
 {
   LCDDriver_SendCommand(reg);
   return LCDDriver_ReadData();
 }
 
-//Initialise function
+// Initialise function
 void LCDDriver_Init(void)
 {
-	//Wait LCD on
-	//HAL_Delay(250); //for stability
-  //PLL Init
-  LCDDriver_writeReg(LCD_RA8875_PLLC1, LCD_RA8875_PLLC1_PLLDIV1 + 11); //divider + multiplier
+  // Wait LCD on
+  // HAL_Delay(250); //for stability
+  // PLL Init
+  LCDDriver_writeReg(LCD_RA8875_PLLC1, LCD_RA8875_PLLC1_PLLDIV1 + 11); // divider + multiplier
   HAL_Delay(1);
-  LCDDriver_writeReg(LCD_RA8875_PLLC2, LCD_RA8875_PLLC2_DIV2); //divider2
+  LCDDriver_writeReg(LCD_RA8875_PLLC2, LCD_RA8875_PLLC2_DIV2); // divider2
   HAL_Delay(1);
-  //SYS_CLK = FIN(25mhz) * ( LCD_RA8875_PLLC1_PLLDIV1[4:0] + 1 ) / (( LCD_RA8875_PLLC1_PLLDIV1[7:7] + 1 ) * ( 2 ^ LCD_RA8875_PLLC2[2:0] ))
-  HAL_Delay(200); //for pll stability
+  // SYS_CLK = FIN(25mhz) * ( LCD_RA8875_PLLC1_PLLDIV1[4:0] + 1 ) / (( LCD_RA8875_PLLC1_PLLDIV1[7:7] + 1 ) * ( 2 ^ LCD_RA8875_PLLC2[2:0] ))
+  HAL_Delay(200); // for pll stability
 
-  //Software reset
+  // Software reset
   LCDDriver_writeReg(LCD_RA8875_PWRR, LCD_RA8875_PWRR_SOFTRESET);
   HAL_Delay(1);
   LCDDriver_writeReg(LCD_RA8875_PWRR, LCD_RA8875_PWRR_NORMAL);
   HAL_Delay(1);
 
-  //select color and bus mode
+  // select color and bus mode
   LCDDriver_writeReg(LCD_RA8875_SYSR, LCD_RA8875_SYSR_16BPP | LCD_RA8875_SYSR_MCU16);
 
   // Timing values
@@ -114,13 +114,13 @@ void LCDDriver_Init(void)
   // Set active window
   LCDDriver_setActiveWindow(0, 0, (LCD_WIDTH - 1), (LCD_HEIGHT - 1));
 
-  //PWM setting
+  // PWM setting
   LCDDriver_setBrightness(60);
 
-  //clear screen
+  // clear screen
   LCDDriver_Fill(COLOR_WHITE);
 
-  //display ON
+  // display ON
   LCDDriver_writeReg(LCD_RA8875_PWRR, LCD_RA8875_PWRR_NORMAL | LCD_RA8875_PWRR_DISPON);
   HAL_Delay(100);
 
@@ -137,27 +137,27 @@ void LCDDriver_Init(void)
   HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
 }
 
-//Set diplay brightness
+// Set diplay brightness
 void LCDDriver_setBrightness(uint8_t percent)
 {
   LCDDriver_writeReg(LCD_RA8875_P1CR, LCD_RA8875_P1CR_ENABLE | (LCD_RA8875_PWM_CLK_DIV1024 & 0xF));
   LCDDriver_writeReg(LCD_RA8875_P1DCR, (uint16_t)(255.0f * ((100.f - (float32_t)percent) / 100.f)));
 }
 
-//Set screen rotation
+// Set screen rotation
 void LCDDriver_setRotation(uint8_t rotate)
 {
-	if(CALIBRATE.LCD_Rotate)
-	{
-		LCDDriver_writeReg(LCD_RA8875_DPCR, LCD_RA8875_DPCR_HDIR | LCD_RA8875_DPCR_VDIR);
-	}
-	else
-	{
-		LCDDriver_writeReg(LCD_RA8875_DPCR, 0);
-	}
+  if (CALIBRATE.LCD_Rotate)
+  {
+    LCDDriver_writeReg(LCD_RA8875_DPCR, LCD_RA8875_DPCR_HDIR | LCD_RA8875_DPCR_VDIR);
+  }
+  else
+  {
+    LCDDriver_writeReg(LCD_RA8875_DPCR, 0);
+  }
 }
 
-//Set cursor position
+// Set cursor position
 inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
   activeWindowIsFullscreen = false;
@@ -203,25 +203,25 @@ static void LCDDriver_setActiveWindow(uint16_t x1, uint16_t y1, uint16_t x2, uin
 
 static void LCDDriver_waitBusy(void)
 {
-  //uint32_t prio = NVIC_GetPriority(((int32_t)__get_IPSR()) - 16);
+  // uint32_t prio = NVIC_GetPriority(((int32_t)__get_IPSR()) - 16);
   while ((LCDDriver_ReadStatus() & 0x80) == 0x80)
   {
-    //if (prio == 7 || prio == 8)
+    // if (prio == 7 || prio == 8)
     CPULOAD_GoToSleepMode();
     /*else
-			__asm("nop");*/
+      __asm("nop");*/
   }
 }
 
 static void LCDDriver_waitBTE(void)
 {
-  //uint32_t prio = NVIC_GetPriority(((int32_t)__get_IPSR()) - 16);
+  // uint32_t prio = NVIC_GetPriority(((int32_t)__get_IPSR()) - 16);
   while ((LCDDriver_ReadStatus() & 0x40) == 0x40)
   {
-    //if (prio == 7 || prio == 8)
+    // if (prio == 7 || prio == 8)
     CPULOAD_GoToSleepMode();
     /*else
-			__asm("nop");*/
+      __asm("nop");*/
   }
 }
 
@@ -239,20 +239,20 @@ static bool LCDDriver_waitPoll(uint16_t regname, uint8_t waitflag)
   return false;
 }
 
-//Write data to a single pixel
+// Write data to a single pixel
 void LCDDriver_drawPixel(uint16_t x, uint16_t y, uint16_t color)
 {
   LCDDriver_SetCursorPosition(x, y);
   LCDDriver_SendData(color);
 }
 
-//Fill the entire screen with a background color
+// Fill the entire screen with a background color
 void LCDDriver_Fill(uint16_t color)
 {
   LCDDriver_Fill_RectXY(0, 0, LCD_WIDTH, LCD_HEIGHT, color);
 }
 
-//Rectangle drawing functions
+// Rectangle drawing functions
 void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
   LCDDriver_waitBusy();
@@ -300,7 +300,7 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 
   /* Draw! */
   LCDDriver_SendCommand(LCD_RA8875_DCR);
-  LCDDriver_SendData(0xB0); //filled rect
+  LCDDriver_SendData(0xB0); // filled rect
 
   /* Wait for the command to finish */
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
@@ -311,7 +311,7 @@ void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint1
   LCDDriver_Fill_RectXY(x, y, x + w, y + h, color);
 }
 
-//Line drawing functions
+// Line drawing functions
 void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
   LCDDriver_waitBusy();
@@ -359,7 +359,7 @@ void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint
 
   /* Draw! */
   LCDDriver_SendCommand(LCD_RA8875_DCR);
-  LCDDriver_SendData(0x80); //line
+  LCDDriver_SendData(0x80); // line
 
   /* Wait for the command to finish */
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
@@ -421,7 +421,7 @@ void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
 
   /* Draw! */
   LCDDriver_SendCommand(LCD_RA8875_DCR);
-  LCDDriver_SendData(LCD_RA8875_DCR_LINESQUTRI_START | LCD_RA8875_DCR_DRAWSQUARE); //not filled rect
+  LCDDriver_SendData(LCD_RA8875_DCR_LINESQUTRI_START | LCD_RA8875_DCR_DRAWSQUARE); // not filled rect
 
   /* Wait for the command to finish */
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
@@ -440,34 +440,34 @@ void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, 
 
   LCDDriver_waitBusy();
 
-  //1. Setting source layer and address REG[54h], [55h], [56h], [57h]
+  // 1. Setting source layer and address REG[54h], [55h], [56h], [57h]
   LCDDriver_writeReg(LCD_RA8875_BTE_HSBE0, sx & 0xFF);
   LCDDriver_writeReg(LCD_RA8875_BTE_HSBE1, (sx >> 8) & 0xFF);
   LCDDriver_writeReg(LCD_RA8875_BTE_VSBE0, sy & 0xFF);
   LCDDriver_writeReg(LCD_RA8875_BTE_VSBE1, (sy >> 8) & 0xFF);
 
-  //2. Setting destination layer and address REG[58h], [59h], [5Ah], [5Bh]
+  // 2. Setting destination layer and address REG[58h], [59h], [5Ah], [5Bh]
   LCDDriver_writeReg(LCD_RA8875_BTE_HDBE0, dx & 0xFF);
   LCDDriver_writeReg(LCD_RA8875_BTE_HDBE1, (dx >> 8) & 0xFF);
   LCDDriver_writeReg(LCD_RA8875_BTE_VDBE0, dy & 0xFF);
   LCDDriver_writeReg(LCD_RA8875_BTE_VDBE1, (dy >> 8) & 0xFF);
 
-  //3. Setting BTE width and height REG[5Ch], [5Dh], [5Eh], [5Fh]
+  // 3. Setting BTE width and height REG[5Ch], [5Dh], [5Eh], [5Fh]
   LCDDriver_writeReg(LCD_RA8875_BTE_BEWR0, w & 0xFF);
   LCDDriver_writeReg(LCD_RA8875_BTE_BEWR1, (w >> 8) & 0xFF);
   LCDDriver_writeReg(LCD_RA8875_BTE_BEHR0, h & 0xFF);
   LCDDriver_writeReg(LCD_RA8875_BTE_BEHR1, (h >> 8) & 0xFF);
 
-  //4. Setting BTE operation and ROP function REG[51h] Bit[3:0] = 2h
+  // 4. Setting BTE operation and ROP function REG[51h] Bit[3:0] = 2h
   if (fromEnd)
     LCDDriver_writeReg(LCD_RA8875_BTE_BECR1, LCD_RA8875_BTE_BECR1_MVN | LCD_RA8875_BTE_BECR1_DS);
   else
     LCDDriver_writeReg(LCD_RA8875_BTE_BECR1, LCD_RA8875_BTE_BECR1_MVP | LCD_RA8875_BTE_BECR1_DS);
 
-  //5. Enable BTE function REG[50h] Bit7 = 1
+  // 5. Enable BTE function REG[50h] Bit7 = 1
   LCDDriver_writeReg(LCD_RA8875_BTE_BECR0, LCDDriver_readReg(LCD_RA8875_BTE_BECR0) | LCD_RA8875_BTE_BECR0_BTEON);
 
-  //6. Check STSR REG Bit6 check 2D final
+  // 6. Check STSR REG Bit6 check 2D final
   LCDDriver_waitBTE();
 }
 
@@ -530,7 +530,7 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 
   /* Draw! */
   LCDDriver_SendCommand(LCD_RA8875_DCR);
-  LCDDriver_SendData(LCD_RA8875_DCR_DRAWTRIANGLE | LCD_RA8875_DCR_FILL | LCD_RA8875_DCR_LINESQUTRI_START); //filled triangle
+  LCDDriver_SendData(LCD_RA8875_DCR_DRAWTRIANGLE | LCD_RA8875_DCR_FILL | LCD_RA8875_DCR_LINESQUTRI_START); // filled triangle
 
   /* Wait for the command to finish */
   LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);
@@ -544,17 +544,17 @@ void LCDDriver_fadeScreen(float32_t brightness)
   {
     for (uint16_t x = 0; x < LCD_WIDTH; x++)
     {
-      //get current pixel
+      // get current pixel
       color = LCDDriver_ReadData();
-      //transform
-      //uint8_t r = (uint8_t)((float32_t)((color >> 11) & 0x1F) * brightness);
-      //uint8_t g = (uint8_t)((float32_t)((color >> 5) & 0x3F) * brightness);
-      //uint8_t b = (uint8_t)((float32_t)((color >> 0) & 0x1F) * brightness);
+      // transform
+      // uint8_t r = (uint8_t)((float32_t)((color >> 11) & 0x1F) * brightness);
+      // uint8_t g = (uint8_t)((float32_t)((color >> 5) & 0x3F) * brightness);
+      // uint8_t b = (uint8_t)((float32_t)((color >> 0) & 0x1F) * brightness);
       uint8_t r = ((color >> 11) & 0x1F) >> 2;
       uint8_t g = ((color >> 5) & 0x3F) >> 2;
       uint8_t b = ((color >> 0) & 0x1F) >> 2;
       color = (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
-      //write pixel back
+      // write pixel back
       LCDDriver_SendData(color);
     }
   }
@@ -592,7 +592,7 @@ void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t 
   LCDDriver_SendCommand(LCD_RA8875_DLVER1);
   LCDDriver_SendData((y0 + h) >> 8);
 
-  //set circle
+  // set circle
   LCDDriver_SendCommand(LCD_RA8875_ELL_A0);
   LCDDriver_SendData(radius);
   LCDDriver_SendCommand(LCD_RA8875_ELL_A1);

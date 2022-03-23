@@ -61,5 +61,5 @@ extern BAND_MAP BANDS[BANDS_COUNT];
 // Public methods
 extern uint_fast8_t getModeFromFreq(uint64_t freq);			// mod from frequency
 extern int8_t getBandFromFreq(uint64_t freq, bool nearest); // band number from frequency
-extern int8_t getChannelbyFreq(uint64_t freq, bool txfreq);			//get channel by frequency
+extern int8_t getChannelbyFreq(uint64_t freq, bool txfreq); // get channel by frequency
 #endif

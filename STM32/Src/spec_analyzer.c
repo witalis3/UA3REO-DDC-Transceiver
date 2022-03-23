@@ -6,7 +6,7 @@
 #include "fpga.h"
 #include "lcd.h"
 
-//Private variables
+// Private variables
 static const uint16_t graph_start_x = 25;
 static const uint16_t graph_start_y = 5;
 static float32_t now_freq;
@@ -25,7 +25,7 @@ static const uint16_t graph_height = 1;
 static int16_t graph_selected_x = 1;
 #endif
 
-//Saved variables
+// Saved variables
 static uint32_t Lastfreq = 0;
 static uint_fast8_t Lastmode = 0;
 static bool LastAutoGain = false;
@@ -38,10 +38,10 @@ static bool LastShift = false;
 static bool LastNB = false;
 static bool LastMute = false;
 
-//Public variables
+// Public variables
 bool SYSMENU_spectrum_opened = false;
 
-//Prototypes
+// Prototypes
 static void SPEC_DrawBottomGUI(void);				   // display status at the bottom of the screen
 static void SPEC_DrawGraphCol(uint16_t x, bool clear); // display the data column
 static uint16_t SPEC_getYfromX(uint16_t x);			   // get height from data id
@@ -51,7 +51,7 @@ void SPEC_Start(void)
 {
 	LCD_busy = true;
 
-	//save settings
+	// save settings
 	Lastfreq = CurrentVFO->Freq;
 	Lastmode = CurrentVFO->Mode;
 	LastAutoGain = TRX.AutoGain;
@@ -147,7 +147,7 @@ void SPEC_Draw(void)
 	TRX_DBMCalculate();
 
 	// Draw
-	if(graph_sweep_x < graph_width)
+	if (graph_sweep_x < graph_width)
 	{
 		data[graph_sweep_x] = TRX_RX1_dBm;
 		SPEC_DrawGraphCol(graph_sweep_x, true);

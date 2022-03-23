@@ -3,7 +3,7 @@
 #if (defined(LCD_RA8875))
 #define _LCDDRIVER_RA8875_H_
 
-#define LCD_FSMC_COMM_ADDR 0xC0080000 //remapped
+#define LCD_FSMC_COMM_ADDR 0xC0080000 // remapped
 #define LCD_FSMC_DATA_ADDR 0xC0000000
 
 #define LCD_WIDTH 800
@@ -264,9 +264,9 @@
 #define LCD_RA8875_BTE_BECR0 0x50 // BTE Function Control Register 0
 #define LCD_RA8875_BTE_BECR0_BTEON 0x80
 #define LCD_RA8875_BTE_BECR1 0x51     // BTE Function Control Register 1
-#define LCD_RA8875_BTE_BECR1_MVP 0x02 //Move BTE in positive direction with ROP.
-#define LCD_RA8875_BTE_BECR1_MVN 0x03 //Move BTE in negative direction with ROP.
-#define LCD_RA8875_BTE_BECR1_DS 0xC0  //Setting register Destination = source
+#define LCD_RA8875_BTE_BECR1_MVP 0x02 // Move BTE in positive direction with ROP.
+#define LCD_RA8875_BTE_BECR1_MVN 0x03 // Move BTE in negative direction with ROP.
+#define LCD_RA8875_BTE_BECR1_DS 0xC0  // Setting register Destination = source
 #define LCD_RA8875_BTE_HSBE0 0x54     // Horizontal Source Point 0 of BTE
 #define LCD_RA8875_BTE_HSBE1 0x55     // Horizontal Source Point 1 of BTE
 #define LCD_RA8875_BTE_VSBE0 0x56     // Vertical Source Point 0 of BTE

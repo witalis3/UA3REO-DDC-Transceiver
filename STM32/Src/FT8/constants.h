@@ -1,19 +1,11 @@
-/*
- * constants.h
- *
- *  Created on: Sep 17, 2019
- *      Author: user
- */
-
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
-
 
 #include <stdint.h>
 
 #define true 1
 #define false 0
-	
+
 // Define LDPC parameters
 #define FT8_LDPC_N (174)                        ///< Number of bits in the encoded message (payload with LDPC checksum bits)
 #define FT8_LDPC_K (91)                         ///< Number of payload bits (including CRC)
@@ -27,17 +19,14 @@ extern uint8_t tones[79];
 // Costas 7x7 tone pattern
 extern const uint8_t kCostas_map[7];
 
-
 // Gray code map
 extern const uint8_t kGray_map[8];
 
-
 // Parity generator matrix for (174,91) LDPC code, stored in bitpacked format (MSB first)
-//extern const uint8_t kGenerator[M][K_BYTES];
-extern  uint8_t kGenerator[83][12];
+// extern const uint8_t kGenerator[M][K_BYTES];
+extern uint8_t kGenerator[83][12];
 
 void initalize_constants(void);
-
 
 /// Column order (permutation) in which the bits in codeword are stored
 /// (Not really used in FT8 v2 - instead the Nm, Mn and generator matrices are already permuted)

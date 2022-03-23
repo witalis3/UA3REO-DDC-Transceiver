@@ -19,8 +19,8 @@
 #define FFT_STEP_COEFF 10.0f                                                                                                                                 // step coefficient for auto-calibration of the FFT signal (more - slower)
 #define FFT_HZ_IN_PIXEL (float32_t)((float32_t)TRX_GetRXSampleRate * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / (float32_t)LAYOUT->FFT_PRINT_SIZE) // hertz per FFT pixel RX
 #define FFT_TX_HZ_IN_PIXEL (float32_t)((float32_t)TRX_SAMPLERATE * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / (float32_t)LAYOUT->FFT_PRINT_SIZE)   // hertz per FFT pixel TX
-#define FFT_BW_BRIGHTNESS_1 10                                                                                                                                 // pixel brightness on bw bar
-#define FFT_BW_BRIGHTNESS_2 3                                                                                                                                 // pixel brightness on bw bar
+#define FFT_BW_BRIGHTNESS_1 10                                                                                                                               // pixel brightness on bw bar
+#define FFT_BW_BRIGHTNESS_2 3                                                                                                                                // pixel brightness on bw bar
 #define FFT_SCALE_LINES_BRIGHTNESS 0.4f                                                                                                                      // pixel brightness on scale lines
 #define FFT_MAX_GRID_NUMBER 13                                                                                                                               // max grid lines
 #define FFT_LENS_STEP_START 0.4f                                                                                                                             // start lens step
@@ -28,13 +28,13 @@
 #define FFT_3D_SLIDES 40                                                                                                                                     // 3D FFT parameters
 #define FFT_3D_Y_OFFSET 2
 #define FFT_3D_X_OFFSET 5
-#define FFT_MAX_MEANS 10      //store old fft data for meaning
-#define FFT_MAX_AVER 30      //store old fft data for averaging
-#define FFT_MAX_TOP_SCALE 30 //maximum scale parameter
-#define FFT_TX_MIN_LEVEL 30.0f			//fft tx minimum scale level
-#define FFT_DBM_GRID_TOP_MARGIN 12		//dbm grid top margin
-#define FFT_DBM_GRID_INTERVAL 24		//interval between dbm grids
-#define FFT_DBM_COMPENSATION 6.0f	//for amplitude conversion
+#define FFT_MAX_MEANS 10           // store old fft data for meaning
+#define FFT_MAX_AVER 30            // store old fft data for averaging
+#define FFT_MAX_TOP_SCALE 30       // maximum scale parameter
+#define FFT_TX_MIN_LEVEL 30.0f     // fft tx minimum scale level
+#define FFT_DBM_GRID_TOP_MARGIN 12 // dbm grid top margin
+#define FFT_DBM_GRID_INTERVAL 24   // interval between dbm grids
+#define FFT_DBM_COMPENSATION 6.0f  // for amplitude conversion
 
 #define GET_FFTHeight ((TRX.FFT_Height == 1) ? LAYOUT->FFT_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->FFT_HEIGHT_STYLE2 : ((TRX.FFT_Height == 3) ? LAYOUT->FFT_HEIGHT_STYLE3 : ((TRX.FFT_Height == 4) ? LAYOUT->FFT_HEIGHT_STYLE4 : LAYOUT->FFT_HEIGHT_STYLE5))))
 #define GET_WTFHeight ((TRX.FFT_Height == 1) ? LAYOUT->WTF_HEIGHT_STYLE1 : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2 : ((TRX.FFT_Height == 3) ? LAYOUT->WTF_HEIGHT_STYLE3 : ((TRX.FFT_Height == 4) ? LAYOUT->WTF_HEIGHT_STYLE4 : LAYOUT->WTF_HEIGHT_STYLE5))))
@@ -56,7 +56,7 @@ extern uint16_t FFT_FPS_Last;
 extern bool NeedWTFRedraw;
 extern bool NeedFFTReinit;
 extern uint32_t FFT_current_spectrum_width_hz;
-extern uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE]; //buffer with fft/3d fft/wtf print data
+extern uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE]; // buffer with fft/3d fft/wtf print data
 
 // Public methods
 extern void FFT_Init(void);                              // FFT initialization
@@ -65,6 +65,6 @@ extern void FFT_bufferPrepare(void);                     // FFT Buffer process
 extern void FFT_doFFT(void);                             // FFT calculation
 extern bool FFT_printFFT(void);                          // FFT output
 extern void FFT_afterPrintFFT(void);                     // FFT output after callback
-extern uint32_t getFreqOnFFTPosition(uint16_t position); //get frequency from pixel X position
+extern uint32_t getFreqOnFFTPosition(uint16_t position); // get frequency from pixel X position
 
 #endif
