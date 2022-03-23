@@ -1190,6 +1190,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.INA226_CurCalc", (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.PWR_VLT_Calibration", (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.ATU_AVERAGING", (uint32_t *)&CALIBRATE.ATU_AVERAGING, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.LNA_compensation", (uint32_t *)&CALIBRATE.LNA_compensation, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.CAT_Type", (uint32_t *)&CALIBRATE.CAT_Type, SYSMENU_UINT8);
 			//Bands settings
 			char buff[64] = {0};
@@ -1966,6 +1967,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.PWR_VLT_Calibration = floatval;
 	if (strcmp(name, "CALIBRATE.ATU_AVERAGING") == 0)
 		CALIBRATE.ATU_AVERAGING = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.LNA_compensation") == 0)
+		CALIBRATE.LNA_compensation = (int8_t)intval;
 	if (strcmp(name, "CALIBRATE.CAT_Type") == 0)
 		CALIBRATE.CAT_Type = (uint8_t)uintval;
 	

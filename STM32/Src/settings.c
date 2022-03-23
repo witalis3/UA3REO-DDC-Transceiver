@@ -616,6 +616,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f;	//VLT meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;	//Tuner averaging stages
 		CALIBRATE.CAT_Type = CAT_FT450;
+		CALIBRATE.LNA_compensation = 0;	//Compensation for LNA, db
 
 		//Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)

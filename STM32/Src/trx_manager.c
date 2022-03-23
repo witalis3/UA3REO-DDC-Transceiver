@@ -589,6 +589,9 @@ void TRX_DBMCalculate(void)
 		else
 			TRX_RX1_dBm += CALIBRATE.smeter_calibration_vhf;
 
+		if(TRX.LNA)
+			TRX_RX1_dBm += CALIBRATE.LNA_compensation;
+		
 		if(TRX_RX1_dBm < -150.0f)
 			TRX_RX1_dBm = -150.0f;
 		Processor_RX1_Power_value = 0;
@@ -610,6 +613,9 @@ void TRX_DBMCalculate(void)
 		else
 			TRX_RX2_dBm += CALIBRATE.smeter_calibration_vhf;
 
+		if(TRX.LNA)
+			TRX_RX2_dBm += CALIBRATE.LNA_compensation;
+		
 		if(TRX_RX2_dBm < -150.0f)
 			TRX_RX2_dBm = -150.0f;
 		Processor_RX2_Power_value = 0;

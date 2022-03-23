@@ -624,6 +624,7 @@ extern struct TRX_CALIBRATE
 	uint8_t EXT_TRANSV_3cm;
 	uint8_t ATU_AVERAGING;
 	int8_t VCXO_correction;
+	int8_t LNA_compensation;
 	TRX_RF_UNIT_TYPE RF_unit_type;
 	TRX_TANGENT_TYPE TangentType;
 	CAT_TYPE CAT_Type;
