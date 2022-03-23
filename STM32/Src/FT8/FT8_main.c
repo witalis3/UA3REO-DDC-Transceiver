@@ -98,9 +98,8 @@ void MenagerFT8(void)
 	if (decode_flag == 0)
 		process_data();
 
-	if (LCD_busy)
-		return;
-	LCD_busy = true; //
+	if (LCD_busy) return;
+	LCD_busy = true;
 
 	if (DSP_Flag == 1)
 	{
@@ -109,7 +108,6 @@ void MenagerFT8(void)
 
 		if (xmit_flag == 1)
 		{
-
 			__disable_irq(); // Disable all interrupts
 			int offset_index = 5;
 			// 79

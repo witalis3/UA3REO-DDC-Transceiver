@@ -24,7 +24,7 @@
 #include "rtty_decoder.h"
 #include "self_test.h"
 #include "cw.h"
-#include "FT8/FT8_main.h" //Tisho
+#include "FT8/FT8_main.h"
 #include "INA226_PWR_monitor.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
@@ -903,7 +903,7 @@ static bool sysmenu_filemanager_opened = false;
 static bool sysmenu_item_selected_by_enc2 = false;
 bool sysmenu_ota_opened = false;
 uint8_t sysmenu_ota_opened_state = 0;
-bool SYSMENU_FT8_DECODER_opened = false; // Tisho
+bool SYSMENU_FT8_DECODER_opened = false;
 
 // WIFI
 static bool sysmenu_wifi_needupdate_ap = true;
@@ -5142,12 +5142,13 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 		return;
 	}
 #if FT8_SUPPORT
-	else if (SYSMENU_FT8_DECODER_opened) // Tisho
+	else if (SYSMENU_FT8_DECODER_opened)
 	{
 		MenagerFT8();
+		return;
 	}
 #endif
-	else if (SYSMENU_TDM_CTRL_opened) // Tisho
+	else if (SYSMENU_TDM_CTRL_opened)
 	{
 		TDM_Voltages();
 	}
@@ -5380,14 +5381,14 @@ void SYSMENU_eventCloseSystemMenu(void)
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 #if FT8_SUPPORT
-	else if (SYSMENU_FT8_DECODER_opened) // Tisho
+	else if (SYSMENU_FT8_DECODER_opened)
 	{
 		FT8_DecodeActiveFlg = false;
 		SYSMENU_FT8_DECODER_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 #endif
-	else if (SYSMENU_TDM_CTRL_opened) // Tisho
+	else if (SYSMENU_TDM_CTRL_opened)
 	{
 		SYSMENU_TDM_CTRL_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -5479,6 +5480,14 @@ void SYSMENU_eventCloseAllSystemMenu(void)
 // secondary encoder click
 void SYSMENU_eventSecEncoderClickSystemMenu(void)
 {
+	#if FT8_SUPPORT
+	if (SYSMENU_FT8_DECODER_opened)
+	{
+		FT8_Enc2Click();
+		return;
+	}
+	#endif
+	
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE)
 	{
 		sysmenu_item_selected_by_enc2 = false;
@@ -5489,10 +5498,6 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void)
 		sysmenu_item_selected_by_enc2 = !sysmenu_item_selected_by_enc2;
 		LCD_UpdateQuery.SystemMenuCurrent = true;
 	}
-#if FT8_SUPPORT
-	if (SYSMENU_FT8_DECODER_opened) // Tisho
-		FT8_Enc2Click();
-#endif
 }
 
 // secondary encoder rotate

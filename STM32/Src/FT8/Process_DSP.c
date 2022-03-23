@@ -1,3 +1,7 @@
+#include "lcd_driver.h"
+#include "fft.h"
+#include "lcd.h"
+
 #include "Process_DSP.h"
 #include "WF_Table.h"
 #include "arm_math.h"
@@ -5,8 +9,6 @@
 #include "FT8_main.h"
 
 #include "traffic_manager.h"
-#include "lcd_driver.h"
-#include "fft.h"
 
 #define M_PI 3.14159265358979323846264338
 
@@ -17,33 +19,88 @@ extern int num_decoded_msg;
 int master_offset, offset_step;
 int CQ_Flag;
 
-SRAM4 q15_t window_dsp_buffer[FFT_SIZE_FT8];
-
-SRAM4 uint8_t WF_index[900];
-SRAM4 float window[FFT_SIZE_FT8];
-
-SRAM4 q15_t FFT_Scale[FFT_SIZE_FT8 * 2];
-SRAM4 q15_t FFT_Magnitude[FFT_SIZE_FT8];
-SRAM4 int32_t FFT_Mag_10[FFT_SIZE_FT8 / 2];
-SRAM4 uint8_t FFT_Buffer[FFT_SIZE_FT8 / 2];
-SRAM4 float mag_db[FFT_SIZE_FT8 / 2 + 1];
-
-SRAM4 q15_t dsp_buffer[3 * input_gulp_size] __attribute__((aligned(4)));
-SRAM4 q15_t dsp_output[FFT_SIZE_FT8 * 2] __attribute__((aligned(4)));
-SRAM4 q15_t input_gulp[input_gulp_size] __attribute__((aligned(4)));
-
-// SRAM uint8_t export_fft_power[ft8_msg_samples*ft8_buffer*4];
+#if (defined(LAY_800x480))
 uint8_t *export_fft_power;
+q15_t *window_dsp_buffer;
+uint8_t *WF_index;
+//float *window;
+SRAM4 float window[FFT_SIZE_FT8];
+q15_t *FFT_Scale;
+q15_t *FFT_Magnitude;
+int32_t *FFT_Mag_10;
+uint8_t *FFT_Buffer;
+//float *mag_db;
+SRAM4 float mag_db[FFT_SIZE_FT8 / 2 + 1];
+q15_t *dsp_buffer;
+q15_t *dsp_output;
+q15_t *input_gulp;
+#else
+IRAM2 uint8_t export_fft_power[ft8_msg_samples * ft8_buffer * 4];
+SRAM q15_t window_dsp_buffer[FFT_SIZE_FT8];
+
+SRAM uint8_t WF_index[WF_index_size];
+SRAM float window[FFT_SIZE_FT8];
+
+SRAM q15_t FFT_Scale[FFT_SIZE_FT8 * 2];
+SRAM q15_t FFT_Magnitude[FFT_SIZE_FT8];
+SRAM int32_t FFT_Mag_10[FFT_SIZE_FT8 / 2];
+SRAM uint8_t FFT_Buffer[FFT_SIZE_FT8 / 2];
+SRAM float mag_db[FFT_SIZE_FT8 / 2 + 1];
+
+SRAM q15_t dsp_buffer[3 * input_gulp_size] __attribute__((aligned(4)));
+SRAM q15_t dsp_output[FFT_SIZE_FT8 * 2] __attribute__((aligned(4)));
+q15_t input_gulp[input_gulp_size] __attribute__((aligned(4)));
+#endif
 
 arm_rfft_instance_q15 fft_inst;
 arm_cfft_radix4_instance_q15 aux_inst;
 
 void init_DSP(void)
 {
+	#if (defined(LAY_800x480))
   // malloc from Wolf FFT
-  export_fft_power = (uint8_t *)print_output_buffer;
-  dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
-  //
+	uint32_t offset = 0;
+	dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
+	
+  export_fft_power = (uint8_t *)print_output_buffer + offset;
+	offset += (ft8_msg_samples * ft8_buffer * 4);
+	
+	window_dsp_buffer = (q15_t *)print_output_buffer + offset;
+	offset += (FFT_SIZE_FT8 * sizeof(q15_t));
+	
+	WF_index = (uint8_t *)print_output_buffer + offset;
+	offset += WF_index_size;
+	
+	//window = (float *)print_output_buffer + offset;
+	offset += (FFT_SIZE_FT8 * sizeof(float));
+	
+	FFT_Scale = (q15_t *)print_output_buffer + offset;
+	offset += (FFT_SIZE_FT8 * 2 * sizeof(q15_t));
+	
+	FFT_Magnitude = (q15_t *)print_output_buffer + offset;
+	offset += (FFT_SIZE_FT8 * sizeof(q15_t));
+	
+	FFT_Mag_10 = (int32_t *)print_output_buffer + offset;
+	offset += ((FFT_SIZE_FT8 / 2) * sizeof(int32_t));
+		
+	FFT_Buffer = (uint8_t *)print_output_buffer + offset;
+	offset += FFT_SIZE_FT8 / 2;
+	
+	//mag_db = (float *)print_output_buffer + offset;
+	offset += ((FFT_SIZE_FT8 / 2 + 1) * sizeof(float));
+	
+	dsp_buffer = (q15_t *)print_output_buffer + offset;
+	offset += ((3 * input_gulp_size) * sizeof(q15_t));
+	
+	dsp_output = (q15_t *)print_output_buffer + offset;
+	offset += ((FFT_SIZE_FT8 * 2) * sizeof(q15_t));
+	
+	input_gulp = (q15_t *)print_output_buffer + offset;
+	offset += (input_gulp_size * sizeof(q15_t));
+	
+	println("FT8 buff size: ", sizeof(print_output_buffer), " need: ", offset);
+	print_flush();
+  #endif
 
   // arm_rfft_init_q15(&fft_inst, &aux_inst, FFT_SIZE_FT8, 0, 1);
   arm_rfft_init_q15(&fft_inst, FFT_SIZE_FT8, 0, 1);

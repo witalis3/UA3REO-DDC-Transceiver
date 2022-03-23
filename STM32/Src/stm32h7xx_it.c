@@ -528,16 +528,19 @@ void TIM5_IRQHandler(void)
   {
     processRxAudio();
   }
+	
   //in the spectrum analyzer mode, we raise its processing to priority, performing together with the audio processor
   if (SYSMENU_spectrum_opened)
     LCD_doEvents();
-  //EndProfilerUs(true);
 	
-#if FT8_SUPPORT
-	if(FT8_DecodeActiveFlg)
+	#if FT8_SUPPORT
+	if(FT8_DecodeActiveFlg) {
 		MenagerFT8();
-#endif
+	}
+	#endif
 	
+  //EndProfilerUs(true);
+
   /* USER CODE END TIM5_IRQn 1 */
 }
 
@@ -1037,7 +1040,6 @@ void TIM17_IRQHandler(void)
 
   if (NeedProcessDecoder)
     DECODER_Process();
-
   /* USER CODE END TIM17_IRQn 1 */
 }
 

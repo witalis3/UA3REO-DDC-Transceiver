@@ -97,9 +97,9 @@ int ft8_decode(void)
 		uint8_t plain[N];
 		int n_errors = 0;
 		bp_decode(log174, kLDPC_iterations, plain, &n_errors);
-
-		if (n_errors > 0)
-			continue;
+		print("FT8 Candidate: ", idx, " errors: ", n_errors);
+		
+		//if (n_errors > 0) continue;
 
 		// Extract payload + CRC (first K bits)
 		uint8_t a91[K_BYTES];
@@ -111,8 +111,10 @@ int ft8_decode(void)
 		a91[10] = 0;
 		a91[11] = 0;
 		uint16_t chksum2 = crc(a91, 96 - 14);
-		if (chksum != chksum2)
+		if (chksum != chksum2) {
+			println(" CRC error");
 			continue;
+		}
 
 		char message[kMax_message_length];
 
@@ -120,10 +122,14 @@ int ft8_decode(void)
 		char field2[14] = {0};
 		char field3[7] = {0};
 		int rc = unpack77_fields(a91, field1, field2, field3);
-		if (rc < 0)
+		if (rc < 0) {
+			println(" RC error");
 			continue;
+		}
 
 		sprintf(message, "%s %s %s ", field1, field2, field3);
+		print(" Decoded ");
+		println(field1, " ", field2, " ", field3);
 
 		// Check for duplicate messages
 		bool found = false;
@@ -135,6 +141,8 @@ int ft8_decode(void)
 				break;
 			}
 		}
+		
+		println(" Duplicate");
 
 		int raw_RSL;
 		int display_RSL;
@@ -142,7 +150,7 @@ int ft8_decode(void)
 
 		if (!found && num_decoded < kMax_decoded_messages)
 		{
-			if (strlen(message) < kMax_message_length)
+			if (strlen(message) > 4 && strlen(message) < kMax_message_length)
 			{
 				chksumAray[num_decoded] = chksum; // Used to check for duplicate messages
 				// strcpy(decoded[num_decoded], message);
@@ -168,6 +176,12 @@ int ft8_decode(void)
 				new_decoded[num_decoded].snr = display_RSL;
 
 				++num_decoded;
+				
+				println(" OK");
+			}
+			else
+			{
+				println(" Length error");
 			}
 		}
 
