@@ -9,7 +9,7 @@ use work.auk_dspip_math_pkg_hpfir.all;
 entity tx_ciccomp_ast is
   generic (
         INWIDTH             : integer := 24;
-        OUT_WIDTH_UNTRIMMED : integer := 40;
+        OUT_WIDTH_UNTRIMMED : integer := 48;
         BANKINWIDTH         : integer := 0;
         REM_LSB_BIT_g       : integer := 0;
         REM_LSB_TYPE_g      : string := "trunc";
@@ -198,7 +198,7 @@ real_passthrough : if COMPLEX_CONST = 1 generate
         enable_i             : in std_logic_vector(0 downto 0);
         xOut_v               : out std_logic_vector(0 downto 0);
         xOut_c               : out std_logic_vector(7 downto 0);
-        xOut_0              : out std_logic_vector(40- 1 downto 0);
+        xOut_0              : out std_logic_vector(48- 1 downto 0);
         clk                  : in std_logic;
         areset               : in std_logic
         );
@@ -223,7 +223,7 @@ end component tx_ciccomp_rtl_core;
             xIn_0     => data_in_core((0 + 24) * 0 + 24 - 1 downto (0 + 24) * 0),
             xOut_v    => core_out_valid_core,
             xOut_c    => core_out_channel_core,
-            xOut_0   => core_out_core(40* 0 + 40- 1 downto 40* 0),
+            xOut_0   => core_out_core(48* 0 + 48- 1 downto 48* 0),
             enable_i  => enable_in,
             clk       => clk,
             areset    => reset_fir

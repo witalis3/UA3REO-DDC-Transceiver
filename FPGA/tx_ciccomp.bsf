@@ -89,8 +89,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 448 72)
 		(output)
-		(text "ast_source_data[39..0]" (rect 0 0 92 12)(font "Arial" (font_size 8)))
-		(text "ast_source_data[39..0]" (rect 332 61 464 72)(font "Arial" (font_size 8)))
+		(text "ast_source_data[47..0]" (rect 0 0 93 12)(font "Arial" (font_size 8)))
+		(text "ast_source_data[47..0]" (rect 332 61 464 72)(font "Arial" (font_size 8)))
 		(line (pt 448 72)(pt 288 72)(line_width 3))
 	)
 	(port

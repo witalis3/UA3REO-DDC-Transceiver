@@ -52,15 +52,15 @@ clear all;
 %  ---- CIC Filter Parameters
 %  ------------------------------------------------------------------------
 
-R = 640;         % Decimation factor
-N = 7;         % Number of stages
+R = 160;         % Decimation factor 122.880mhz->768khz
+N = 5;         % Number of stages
 M = 1;         % Differential delay (only 1)
 
 %% ------------------------------------------------------------------------
 %  ---- FIR filter parameters
 %  ------------------------------------------------------------------------
 
-NFIR  = 128;     % Filter order, must be odd when Fo = 0.5 !!!
+NFIR  = 256;     % Filter order, must be odd when Fo = 0.5 !!!
 Bc    = 32;     % Coef. Bit-width
 Fo    = 0.245;    % Normalized Cutoff: 0.2 < Fo < 0.5;
 BETA  = 8;      % BETA parameter for Kaiser window (if IS_WIND = 'Y') 

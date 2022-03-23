@@ -440,11 +440,11 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TangentType = TANGENT_MH48;		//Tangent type
 		CALIBRATE.RF_unit_type = RF_UNIT_QRP;		//RF-unit type
 		CALIBRATE.CICFIR_GAINER_48K_val = 6;  // Offset from the output of the CIC compensator
-		CALIBRATE.CICFIR_GAINER_96K_val = 12;  // Offset from the output of the CIC compensator
-		CALIBRATE.CICFIR_GAINER_192K_val = 18; // Offset from the output of the CIC compensator
-		CALIBRATE.CICFIR_GAINER_384K_val = 24; // Offset from the output of the CIC compensator
+		CALIBRATE.CICFIR_GAINER_96K_val = 11;  // Offset from the output of the CIC compensator
+		CALIBRATE.CICFIR_GAINER_192K_val = 16; // Offset from the output of the CIC compensator
+		CALIBRATE.CICFIR_GAINER_384K_val = 21; // Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 5;	   // Offset from the TX-CIC output of the compensator
-		CALIBRATE.DAC_GAINER_val = 2;		   // DAC shift
+		CALIBRATE.DAC_GAINER_val = 3;		   // DAC shift
 		// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_2200m = 29;		   //2200m
 		CALIBRATE.rf_out_power_160m = 29;		   //160m

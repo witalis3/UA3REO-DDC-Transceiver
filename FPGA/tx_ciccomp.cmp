@@ -8,7 +8,7 @@
 			ast_sink_sop       : in  std_logic                     := 'X';             -- startofpacket
 			ast_sink_eop       : in  std_logic                     := 'X';             -- endofpacket
 			ast_sink_ready     : out std_logic;                                        -- ready
-			ast_source_data    : out std_logic_vector(39 downto 0);                    -- data
+			ast_source_data    : out std_logic_vector(47 downto 0);                    -- data
 			ast_source_valid   : out std_logic;                                        -- valid
 			ast_source_error   : out std_logic_vector(1 downto 0);                     -- error
 			ast_source_ready   : in  std_logic                     := 'X';             -- ready

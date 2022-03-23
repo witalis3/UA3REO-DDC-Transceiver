@@ -8,8 +8,8 @@ OutWidth : 62
 OutFullWidth : 62 
 OutFracWidth : 0 
 OutFullFracWidth : 0 
-nChans : 129 
-nTaps : 129 
+nChans : 256 
+nTaps : 256 
 clockRate : 122.880 
 inRate : 0.768 
 interpN : 1 

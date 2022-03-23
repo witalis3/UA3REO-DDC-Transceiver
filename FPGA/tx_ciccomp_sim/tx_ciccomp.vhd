@@ -26,7 +26,7 @@ entity tx_ciccomp is
     ast_sink_sop : in STD_LOGIC;
     ast_sink_eop : in STD_LOGIC;
     ast_sink_error : in STD_LOGIC_VECTOR(1 downto 0);
-    ast_source_data : out STD_LOGIC_VECTOR(40 * 1*1 - 1 downto 0);
+    ast_source_data : out STD_LOGIC_VECTOR(48 * 1*1 - 1 downto 0);
     ast_source_valid : out STD_LOGIC;
     ast_source_ready : in STD_LOGIC;
     ast_source_sop : out STD_LOGIC;
@@ -48,7 +48,7 @@ architecture syn of tx_ciccomp is
     ast_sink_sop : in STD_LOGIC;
     ast_sink_eop : in STD_LOGIC;
     ast_sink_error : in STD_LOGIC_VECTOR(1 downto 0);
-    ast_source_data : out STD_LOGIC_VECTOR(1*40 * 1 - 1 downto 0);
+    ast_source_data : out STD_LOGIC_VECTOR(1*48 * 1 - 1 downto 0);
     ast_source_ready : in STD_LOGIC;
     ast_source_valid : out STD_LOGIC;
     ast_source_sop : out STD_LOGIC;

@@ -7,6 +7,7 @@ tx_ciccomp_sim/auk_dspip_avalon_streaming_sink_hpfir.vhd
 tx_ciccomp_sim/auk_dspip_avalon_streaming_source_hpfir.vhd
 tx_ciccomp_sim/auk_dspip_roundsat_hpfir.vhd
 tx_ciccomp_sim/altera_avalon_sc_fifo.v
+tx_ciccomp_sim/tx_ciccomp_rtl_core_u0_m0_wo0_cm0_lutmem.hex
 tx_ciccomp_sim/tx_ciccomp_rtl_core.vhd
 tx_ciccomp_sim/tx_ciccomp_ast.vhd
 tx_ciccomp_sim/tx_ciccomp.vhd

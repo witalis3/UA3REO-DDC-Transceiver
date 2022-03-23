@@ -94,7 +94,7 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 18.1 625 win32 2022.03.21.14:05:00
+# ACDS 18.1 625 win32 2022.03.23.10:08:16
 
 # ----------------------------------------
 # Initialize variables
@@ -141,9 +141,6 @@ if ![ string match "*-64 vsim*" [ vsim -version ] ] {
 # Copy ROM/RAM files to simulation directory
 alias file_copy {
   echo "\[exec\] file_copy"
-  file copy -force $QSYS_SIMDIR/rx_ciccomp_rtl_core_u0_m0_wo0_cm0_lutmem.hex ./
-  file copy -force $QSYS_SIMDIR/rx_ciccomp_rtl_core_u0_m0_wo0_wi0_r0_ra0_count2_lut_lutmem.hex ./
-  file copy -force $QSYS_SIMDIR/rx_ciccomp_rtl_core_u0_m0_wo0_wi0_r0_ra1_count2_lut_lutmem.hex ./
 }
 
 # ----------------------------------------
