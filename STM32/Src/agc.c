@@ -125,7 +125,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		AGC->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
 	
 	//apply gain
-	//println(AGC->need_gain_db);
+	//println("cur agc: ", AGC_RX_dbFS, " need: ", AGC->need_gain_db);
 	if (fabsf(AGC->need_gain_db_old - current_need_gain) > 0.0f) //gain changed
 	{
 		float32_t gainApplyStep = 0;
@@ -317,8 +317,8 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 
 void ResetAGC(void)
 {
-	AGC_RX1.need_gain_db = 0.0f;
-	AGC_RX2.need_gain_db = 0.0f;
+	//AGC_RX1.need_gain_db = 0.0f;
+	//AGC_RX2.need_gain_db = 0.0f;
 	dma_memset(AGC_RX1.ringbuffer, 0x00, sizeof(AGC_RX1.ringbuffer));
 	dma_memset(AGC_RX2.ringbuffer, 0x00, sizeof(AGC_RX2.ringbuffer));
 }
