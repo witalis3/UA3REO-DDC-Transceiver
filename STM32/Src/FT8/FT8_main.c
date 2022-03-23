@@ -35,12 +35,6 @@ bool FT8_DecodeActiveFlg;
 bool FT8_ColectDataFlg;
 //bool FT8_Bussy = false;
 
-SRAM q15_t dsp_buffer[3*input_gulp_size] __attribute__ ((aligned (4)));
-SRAM q15_t dsp_output[FFT_SIZE_FT8 *2] __attribute__ ((aligned (4)));
-q15_t  input_gulp[input_gulp_size] __attribute__ ((aligned (4)));
-
-IRAM2 uint8_t export_fft_power[ft8_msg_samples*ft8_buffer*4] ;
-
 //Function prototypes
 void process_data(void);
 void update_synchronization(void);

@@ -357,9 +357,6 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim6);
   println("[OK] CPU Load init");
   CPULOAD_Init();
-  TRX_Inited = true;
-  println("[OK] WIFI timer TIM3 init");
-  HAL_TIM_Base_Start_IT(&htim3);
   println("[OK] PERIPHERAL timer TIM15 init");
   dma_memset(&SDFatFs, 0, sizeof(SDFatFs));
   HAL_TIM_Base_Start_IT(&htim15);
@@ -374,7 +371,10 @@ int main(void)
   else
 #endif
   FPGA_Init(false, false);
+	println("[OK] WIFI timer TIM3 init");
+  HAL_TIM_Base_Start_IT(&htim3);
   println("UA3REO Transceiver started!\r\n");
+	TRX_Inited = true;
 	
 	//Tisho													
 	#if defined(FRONTPANEL_BIG_V1)

@@ -56,6 +56,7 @@ extern uint16_t FFT_FPS_Last;
 extern bool NeedWTFRedraw;
 extern bool NeedFFTReinit;
 extern uint32_t FFT_current_spectrum_width_hz;
+extern uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE]; //buffer with fft/3d fft/wtf print data
 
 // Public methods
 extern void FFT_Init(void);                              // FFT initialization

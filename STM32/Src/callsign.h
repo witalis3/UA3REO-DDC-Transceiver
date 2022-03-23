@@ -18,7 +18,7 @@ typedef struct // description of the call database
 	const uint8_t itu_zone;
 	const float32_t lat;
 	const float32_t lon;
-	const char (*prefixes)[7];
+	const char (*prefixes)[6];
 	const uint16_t prefixesCount;
 } CALLSIGN_INFO_LINE;
 

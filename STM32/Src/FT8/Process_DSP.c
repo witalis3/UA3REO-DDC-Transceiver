@@ -6,6 +6,7 @@
 
 #include "traffic_manager.h"
 #include "lcd_driver.h"
+#include "fft.h"
 
 #define M_PI 3.14159265358979323846264338
 
@@ -17,22 +18,33 @@ extern int num_decoded_msg;
 int master_offset, offset_step;
 int CQ_Flag;
 
-SRAM q15_t  window_dsp_buffer[FFT_SIZE_FT8] __attribute__ ((aligned (4)));
+SRAM4 q15_t  window_dsp_buffer[FFT_SIZE_FT8];
 
-SRAM uint8_t WF_index[900];
-SRAM float   window[FFT_SIZE_FT8];
+SRAM4 uint8_t WF_index[900];
+SRAM4 float   window[FFT_SIZE_FT8];
 
-SRAM q15_t FFT_Scale[FFT_SIZE_FT8 * 2]; 
-SRAM q15_t FFT_Magnitude[FFT_SIZE_FT8]; 
-SRAM int32_t FFT_Mag_10[FFT_SIZE_FT8/2];
-SRAM uint8_t  FFT_Buffer[FFT_SIZE_FT8/2];
-SRAM float  mag_db[FFT_SIZE_FT8/2 + 1];
+SRAM4 q15_t FFT_Scale[FFT_SIZE_FT8 * 2]; 
+SRAM4 q15_t FFT_Magnitude[FFT_SIZE_FT8]; 
+SRAM4 int32_t FFT_Mag_10[FFT_SIZE_FT8/2];
+SRAM4 uint8_t  FFT_Buffer[FFT_SIZE_FT8/2];
+SRAM4 float  mag_db[FFT_SIZE_FT8/2 + 1];
 
+SRAM4 q15_t dsp_buffer[3*input_gulp_size] __attribute__ ((aligned (4)));
+SRAM4 q15_t dsp_output[FFT_SIZE_FT8 *2] __attribute__ ((aligned (4)));
+SRAM4 q15_t input_gulp[input_gulp_size] __attribute__ ((aligned (4)));
+
+//SRAM uint8_t export_fft_power[ft8_msg_samples*ft8_buffer*4];
+uint8_t *export_fft_power;
 
 arm_rfft_instance_q15 fft_inst;
 arm_cfft_radix4_instance_q15 aux_inst;
 
 void init_DSP(void) {
+	//malloc from Wolf FFT
+	export_fft_power = (uint8_t *)print_output_buffer;
+	dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
+	//
+	
    //arm_rfft_init_q15(&fft_inst, &aux_inst, FFT_SIZE_FT8, 0, 1);
 		arm_rfft_init_q15(&fft_inst, FFT_SIZE_FT8, 0, 1);
 		arm_cfft_radix4_init_q15(&aux_inst, FFT_SIZE_FT8, 0, 1);

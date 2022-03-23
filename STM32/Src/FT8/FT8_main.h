@@ -7,11 +7,6 @@
 
 
 //extern q15_t AudioBuffer_for_FT8[input_gulp_size];
-extern q15_t dsp_buffer[] __attribute__ ((aligned (4)));
-extern q15_t dsp_output[] __attribute__ ((aligned (4)));
-extern q15_t  input_gulp[input_gulp_size] __attribute__ ((aligned (4)));
-
-extern uint8_t export_fft_power[ft8_msg_samples*ft8_buffer*4] ;
 
 extern int ft8_flag, FT_8_counter, ft8_marker, decode_flag, WF_counter;
 
