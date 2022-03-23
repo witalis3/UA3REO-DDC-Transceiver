@@ -139,10 +139,10 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 	}
 
 	//pre-reset FPGA to sync IQ data
-	//FPGA_setBusOutput();
-	//FPGA_writePacket(5); // RESET ON
-	//FPGA_syncAndClockRiseFall();
-	//HAL_Delay(100);
+	FPGA_setBusOutput();
+	FPGA_writePacket(5); // RESET ON
+	FPGA_syncAndClockRiseFall();
+	HAL_Delay(100);
 	
 	FPGA_setBusOutput();
 	FPGA_writePacket(6); // RESET OFF
