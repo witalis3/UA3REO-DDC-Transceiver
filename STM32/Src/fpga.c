@@ -49,18 +49,31 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 {
 	FPGA_bus_stop = true;
 
+	HAL_GPIO_WritePin(FPGA_BUS_D0_GPIO_Port, FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin, GPIO_PIN_RESET);
 	FPGA_GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
 	FPGA_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	FPGA_GPIO_InitStruct.Pull = GPIO_PULLUP;
-	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	HAL_GPIO_Init(FPGA_BUS_D0_GPIO_Port, &FPGA_GPIO_InitStruct);
 
+	HAL_GPIO_WritePin(FPGA_CLK_GPIO_Port, FPGA_CLK_Pin | FPGA_SYNC_Pin, GPIO_PIN_RESET);
 	FPGA_GPIO_InitStruct.Pin = FPGA_CLK_Pin | FPGA_SYNC_Pin;
 	FPGA_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	FPGA_GPIO_InitStruct.Pull = GPIO_PULLUP;
-	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	HAL_GPIO_Init(FPGA_CLK_GPIO_Port, &FPGA_GPIO_InitStruct);
 
+	// pre-reset FPGA to sync IQ data
+	//HAL_Delay(100);
+	//FPGA_setBusOutput();
+	//FPGA_writePacket(5); // RESET ON
+	//FPGA_syncAndClockRiseFall();
+	
+	//HAL_Delay(100);
+	FPGA_setBusOutput();
+	FPGA_writePacket(6); // RESET OFF
+	FPGA_syncAndClockRiseFall();
+	
 	// BUS TEST
 	for (uint16_t i = 0; i < 256; i++)
 	{
@@ -88,7 +101,6 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 	}
 
 	// GET FW VERSION
-
 	FPGA_setBusOutput();
 	FPGA_writePacket(8);
 	FPGA_syncAndClockRiseFall();
@@ -138,17 +150,7 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 		}
 	}
 
-	// pre-reset FPGA to sync IQ data
-	FPGA_setBusOutput();
-	FPGA_writePacket(5); // RESET ON
-	FPGA_syncAndClockRiseFall();
-	HAL_Delay(100);
-
-	FPGA_setBusOutput();
-	FPGA_writePacket(6); // RESET OFF
-	FPGA_syncAndClockRiseFall();
-
-	// star FPGA bus
+	// start FPGA bus
 	FPGA_bus_stop = false;
 }
 

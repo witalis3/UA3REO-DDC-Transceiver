@@ -14,6 +14,7 @@ FLASH_data_in,
 FLASH_busy,
 VCXO_error,
 in_empty,
+dacclk_in,
 
 DATA_BUS,
 NCO1_freq,
@@ -22,7 +23,7 @@ rx1,
 tx,
 TX_I,
 TX_Q,
-reset_n,
+reset_adc_n,
 stage_debug,
 FLASH_data_out,
 FLASH_enable,
@@ -31,7 +32,7 @@ ADC_PGA,
 ADC_RAND,
 ADC_SHDN,
 ADC_DITH,
-unused,
+reset_dac_n,
 CICFIR_GAIN,
 TX_CICFIR_GAIN,
 DAC_GAIN,
@@ -69,6 +70,7 @@ input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
 input signed [23:0] VCXO_error;
 input in_empty;
+input dacclk_in;
 
 output reg unsigned [31:0] NCO1_freq = 242347;
 output reg unsigned [31:0] NCO2_freq = 242347;
@@ -77,7 +79,7 @@ output reg preamp_enable = 0;
 output reg rx1 = 1;
 output reg rx2 = 0;
 output reg tx = 0;
-output reg reset_n = 0;
+output reg reset_adc_n = 0;
 output reg signed [23:0] TX_I = 'd0;
 output reg signed [23:0] TX_Q = 'd0;
 output reg [15:0] stage_debug = 0;
@@ -88,7 +90,7 @@ output reg ADC_PGA = 0;
 output reg ADC_RAND = 0;
 output reg ADC_SHDN = 1;
 output reg ADC_DITH = 0;
-output reg unused = 0;
+output reg reset_dac_n = 0;
 output reg IQ_RX_READ_REQ = 0;
 output reg IQ_RX_READ_CLK = 0;
 output reg unsigned [7:0] CICFIR_GAIN = 32;
@@ -122,7 +124,7 @@ reg signed [23:0] READ_RX2_Q;
 reg signed [23:0] READ_TX_I;
 reg signed [23:0] READ_TX_Q;
 reg ADC_MINMAX_RESET;
-reg sync_reset_n = 1;
+reg sync_reset_n = 0;
 reg unsigned [7:0] BUS_TEST;
 
 always @ (posedge clk_in)
@@ -545,8 +547,14 @@ end
 
 always @ (negedge adcclk_in)
 begin
-	//RESET SYNC
-	reset_n = sync_reset_n;
+	//RESET ADC SYNC
+	reset_adc_n = sync_reset_n;
+end
+
+always @ (negedge dacclk_in)
+begin
+	//RESET DAC SYNC
+	reset_dac_n = sync_reset_n;
 end
 
 endmodule

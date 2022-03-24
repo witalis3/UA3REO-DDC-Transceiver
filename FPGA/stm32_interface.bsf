@@ -129,6 +129,13 @@ refer to the applicable agreement for further details.
 		(line (pt 0 256)(pt 16 256)(line_width 1))
 	)
 	(port
+		(pt 0 272)
+		(input)
+		(text "dacclk_in" (rect 0 0 36 12)(font "Arial" ))
+		(text "dacclk_in" (rect 21 267 57 279)(font "Arial" ))
+		(line (pt 0 272)(pt 16 272)(line_width 1))
+	)
+	(port
 		(pt 288 48)
 		(output)
 		(text "NCO1_freq[31..0]" (rect 0 0 70 12)(font "Arial" ))
@@ -173,8 +180,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 144)
 		(output)
-		(text "reset_n" (rect 0 0 30 12)(font "Arial" ))
-		(text "reset_n" (rect 237 139 267 151)(font "Arial" ))
+		(text "reset_adc_n" (rect 0 0 50 12)(font "Arial" ))
+		(text "reset_adc_n" (rect 217 139 267 151)(font "Arial" ))
 		(line (pt 288 144)(pt 272 144)(line_width 1))
 	)
 	(port
@@ -236,8 +243,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 288)
 		(output)
-		(text "unused" (rect 0 0 28 12)(font "Arial" ))
-		(text "unused" (rect 239 283 267 295)(font "Arial" ))
+		(text "reset_dac_n" (rect 0 0 50 12)(font "Arial" ))
+		(text "reset_dac_n" (rect 217 283 267 295)(font "Arial" ))
 		(line (pt 288 288)(pt 272 288)(line_width 1))
 	)
 	(port

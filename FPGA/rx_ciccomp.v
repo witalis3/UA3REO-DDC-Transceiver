@@ -76,7 +76,7 @@ endmodule
 // Retrieval info: 	<generic name="L_bandsFilter" value="1" />
 // Retrieval info: 	<generic name="inputChannelNum" value="4" />
 // Retrieval info: 	<generic name="clockRate" value="122.880" />
-// Retrieval info: 	<generic name="clockSlack" value="0" />
+// Retrieval info: 	<generic name="clockSlack" value="12" />
 // Retrieval info: 	<generic name="inputRate" value="0.768" />
 // Retrieval info: 	<generic name="coeffReload" value="false" />
 // Retrieval info: 	<generic name="baseAddress" value="0" />
