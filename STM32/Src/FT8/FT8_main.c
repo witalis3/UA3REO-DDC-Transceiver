@@ -221,14 +221,26 @@ void update_synchronization(void)
 	if (Seconds_Old != Seconds) // update the time on screen only when change
 	{
 		sprintf(ctmp, "%02d:%02d:%02d", Hours, Minutes, Seconds);
+		#if (defined(LAY_800x480))
+		LCDDriver_printText(ctmp, 680, 5, COLOR_WHITE, COLOR_BLACK, 2);
+		#else
 		LCDDriver_printText(ctmp, 360, 5, COLOR_WHITE, COLOR_BLACK, 2);
+		#endif
 
 		// TX parameters
 		sprintf(ctmp, "SWR: %.1f, PWR: %.1fW    ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward));
+		#if (defined(LAY_800x480))
+		LCDDriver_printText(ctmp, 235, 400, FG_COLOR, BG_COLOR, 2);
+		#else
 		LCDDriver_printText(ctmp, 235, 280, FG_COLOR, BG_COLOR, 2);
+		#endif
 
 		sprintf(ctmp, "TEMP: % 2d    ", (int16_t)TRX_RF_Temperature);
+		#if (defined(LAY_800x480))
+		LCDDriver_printText(ctmp, 235, 420, FG_COLOR, BG_COLOR, 2);
+		#else
 		LCDDriver_printText(ctmp, 235, 300, FG_COLOR, BG_COLOR, 2);
+		#endif
 
 		Seconds_Old = Seconds;
 	}

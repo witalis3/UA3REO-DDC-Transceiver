@@ -169,36 +169,65 @@ void FT8_Print_Freq(void)
 	char ctmp[10] = {0};
 
 	sprintf(ctmp, "%d kHz ", FT8_BND_Freq);
+	#if (defined(LAY_800x480))
+	LCDDriver_printText(ctmp, 680, 30, COLOR_WHITE, COLOR_BLACK, 2);
+	#else
 	LCDDriver_printText(ctmp, 360, 30, COLOR_WHITE, COLOR_BLACK, 2);
+	#endif
 
 	sprintf(ctmp, "%d Hz ", cursor_freq);
+	#if (defined(LAY_800x480))
+	LCDDriver_printText(ctmp, 680, 55, COLOR_WHITE, COLOR_BLACK, 2);
+	#else
 	LCDDriver_printText(ctmp, 360, 55, COLOR_WHITE, COLOR_BLACK, 2);
+	#endif
 }
 
 void FT8_Print_TargetCall(void)
 {
+	#if (defined(LAY_800x480))
+	LCDDriver_printText(Target_Call, 680, 80, COLOR_YELLOW, COLOR_BLACK, 2); // Display in the upper right corner (under the clock) the call sign of the partner
+	#else
 	LCDDriver_printText(Target_Call, 360, 80, COLOR_YELLOW, COLOR_BLACK, 2); // Display in the upper right corner (under the clock) the call sign of the partner
+	#endif
 }
 
 void FT8_Clear_TargetCall(void)
 {
+	#if (defined(LAY_800x480))
+	LCDDriver_Fill_RectXY(680, 80, 799, 100, COLOR_BLACK); // Clear the old target call mesage
+	#else
 	LCDDriver_Fill_RectXY(360, 80, 480, 100, COLOR_BLACK); // Clear the old target call mesage
+	#endif
 }
 
 void FT8_Clear_Mess_Field(void)
 {
+	#if (defined(LAY_800x480))
+	LCDDriver_Fill_RectXY(0, 100, 480, 380, COLOR_BLACK); // Clear the old mesages
+	#else
 	LCDDriver_Fill_RectXY(0, 100, 480, 240, COLOR_BLACK); // Clear the old mesages
+	#endif
 }
 
 void FT8_Print_TX_Mess(char *message)
 {
+	#if (defined(LAY_800x480))
+	LCDDriver_Fill_RectXY(0, 380, 240, 394, COLOR_BLACK); // Clear the old TX mesage
+	LCDDriver_printText(message, 0, 380, COLOR_RED, COLOR_BLACK, 2);
+	#else
 	LCDDriver_Fill_RectXY(0, 260, 240, 274, COLOR_BLACK); // Clear the old TX mesage
 	LCDDriver_printText(message, 0, 260, COLOR_RED, COLOR_BLACK, 2);
+	#endif
 }
 
 void FT8_Clear_TX_Mess(void)
 {
+	#if (defined(LAY_800x480))
+	LCDDriver_Fill_RectXY(0, 380, 240, 394, COLOR_BLACK); // Clear the old TX mesage
+	#else
 	LCDDriver_Fill_RectXY(0, 260, 240, 274, COLOR_BLACK); // Clear the old TX mesage
+	#endif
 }
 
 void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg)
@@ -240,16 +269,19 @@ void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg)
 	{
 		FT8_Menu_Idx += direction;
 
+		#if (defined(LAY_800x480))
+		if (decoded_msg > 11) // message_limit it is 6
+			MessIdx = 11;
+		else
+			MessIdx = decoded_msg;
+		#else
 		if (decoded_msg > 6) // message_limit it is 6
 			MessIdx = 6;
 		else
 			MessIdx = decoded_msg;
+		#endif
 
-		//	if (FT8_Menu_Idx < 0)
-		//		FT8_Menu_Idx = FT8_Menu_Max_Idx + MessIdx;
-		// FT8_Menu_Idx = 0;
 		if (FT8_Menu_Idx > (FT8_Menu_Max_Idx + MessIdx))
-			// FT8_Menu_Idx = FT8_Menu_Max_Idx + MessIdx;
 			FT8_Menu_Idx = 0;
 
 		Update_FT8_Menu_Cursor();

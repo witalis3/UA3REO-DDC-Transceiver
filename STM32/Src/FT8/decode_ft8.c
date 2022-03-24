@@ -33,29 +33,28 @@ const int kLDPC_iterations = 20;	  // original 10
 const int kMax_candidates = 80;		  // original 20
 const int kMax_decoded_messages = 30; // original 6
 const int kMax_message_length = 20;
-
 const int kMin_score = 20; // original 40 Minimum sync score threshold for candidates
 
 int strindex(char s[], char t[]);
 
 extern int ND;
 extern int NS;
-
 extern int NN;
 // Define the LDPC sizes
 extern int N;
 extern int K;
-
 extern int M;
-
 extern int K_BYTES;
 
 Decode new_decoded[40] = {0}; // Decode new_decoded[20]={0};
 
+#if (defined(LAY_800x480))
+int message_limit = 11;
+#else
 int message_limit = 6;
+#endif
 
 extern char Station_Call[];
-
 char Target_Call[7]; // target station (partner) callsign
 int Target_RSL;		 // four character RSL  + /0
 char Target_Grid[5]; // Grid square of the target station (partner)

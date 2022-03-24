@@ -173,8 +173,6 @@ void update_offset_waterfall(int offset)
 			color = COLOR_RED;
 		
 		LCDDriver_SendData16(color);
-		
-    //LCDDriver_drawPixel(k - ft8_min_bin, WF_counter, color);
   }
 
   WF_counter++;

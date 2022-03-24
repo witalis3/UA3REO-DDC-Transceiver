@@ -1,16 +1,24 @@
 #ifndef FT8_GUI_H_
 #define FT8_GUI_H_
 
+#include "lcd.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include "stm32h7xx_hal.h"
 
 #define FT8_Menu_Max_Idx 2 // 3 Buttons in total
 
+#if (defined(LAY_800x480))
+#define button_spac_x 75 // Spacing betwenn the buttons
+#define button_height 30
+#define button_line 400
+#define button_width 60
+#else
 #define button_spac_x 75 // Spacing betwenn the buttons
 #define button_height 30
 #define button_line 280
 #define button_width 60
+#endif
 
 extern uint8_t FT8_Menu_Idx;
 
