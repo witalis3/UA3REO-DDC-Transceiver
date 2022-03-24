@@ -214,7 +214,8 @@ extern void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_ins
 extern void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q, const float32_t *pSrc_I, const float32_t *pSrc_Q, float32_t *pDst_I, float32_t *pDst_Q, uint32_t blockSize);
 extern char cleanASCIIgarbage(char chr);
 extern bool textStartsWith(const char *a, const char *b);
-
+extern void *alloc_to_wtf(uint32_t size, bool reset);
+	
 inline float sqrtf_f32i(float f)
 {
   float32_t res;

@@ -999,3 +999,20 @@ bool textStartsWith(const char *a, const char *b)
 		return 1;
 	return 0;
 }
+
+void *alloc_to_wtf(uint32_t size, bool reset)
+{
+	static uint32_t allocated = 0;
+	if(reset) {
+		allocated = 0;
+		dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
+	}
+	size = (size + 0x03) & ~ 0x03;
+	if ((allocated + size) > sizeof(print_output_buffer))
+	{
+		LCD_showError("WTF ALLOC mem error", true);
+	}
+	void * p = (void *) ((uint8_t *)print_output_buffer + allocated);
+	allocated += size;
+	return p;
+}
