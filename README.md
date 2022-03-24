@@ -46,6 +46,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * RDS/CW/RTTY decoder, self-control, gauss filter
 * SWR Graphs
 * Spectrum analyzer
+* FT8 receiver/transmitter
 * WSPR Beacon
 * Equalizer TX/RX, reverber
 * SSB/FM Scanner mode
@@ -373,6 +374,10 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 ### Record CQ message
 
 * Record a short message for quick broadcast
+
+### FT8-Decoder
+
+* FT8 Receiver / transmitter
 
 ### Locator Info
 

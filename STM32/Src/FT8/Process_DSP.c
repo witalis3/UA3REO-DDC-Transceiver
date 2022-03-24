@@ -135,13 +135,10 @@ void extract_power(int offset)
 
 void process_FT8_FFT(void)
 {
-
   if (ft8_flag == 1)
   {
-
     master_offset = offset_step * FT_8_counter;
     extract_power(master_offset);
-
     update_offset_waterfall(master_offset);
 
     FT_8_counter++;
@@ -168,36 +165,17 @@ void update_offset_waterfall(int offset)
     WF_index[x] = bar;
   }
 
-  int tmp_K;
+	LCDDriver_SetCursorAreaPosition(0, WF_counter, (ft8_buffer - ft8_min_bin), WF_counter);
   for (int k = ft8_min_bin; k < ft8_buffer; k++)
   {
-    LCDDriver_drawPixel(k - ft8_min_bin, WF_counter, WFPalette[WF_index[k]]);
-
-    if ((k - ft8_min_bin == cursor_line - 1) || (k - ft8_min_bin == cursor_line) || (k - ft8_min_bin == cursor_line + 1))
-      LCDDriver_drawPixel(k - ft8_min_bin, WF_counter, COLOR_RED);
-
-    tmp_K = k;
-    //		if (k - ft8_min_bin == cursor_line)
-    //			LCDDriver_drawPixel(k - ft8_min_bin, WF_counter,COLOR_RED);
-    // tft.drawPixel(k - ft8_min_bin, WF_counter,HX8357_RED);
-
-    //    tft.drawPixel(k-ft8_min_bin, WF_counter, WFPalette[WF_index[k]]);
-    //    if (k - ft8_min_bin == cursor_line) tft.drawPixel(k - ft8_min_bin, WF_counter,HX8357_RED);
+		uint16_t color = WFPalette[WF_index[k]];
+		if ((k - ft8_min_bin == cursor_line - 1) || (k - ft8_min_bin == cursor_line) || (k - ft8_min_bin == cursor_line + 1))
+			color = COLOR_RED;
+		
+		LCDDriver_SendData16(color);
+		
+    //LCDDriver_drawPixel(k - ft8_min_bin, WF_counter, color);
   }
-  //	LCDDriver_drawPixel(tmp_K + 1, WF_counter,COLOR_RED);			//Indicate the end of the  FFT field
-
-  /*
-        if (num_decoded_msg > 0 &&  WF_counter == 0) {
-        display_messages(num_decoded_msg);
-
-  //       if (CQ_Flag == 1)
-          service_CQ();
-        else
-          Check_Calling_Stations(num_decoded_msg);
-  //
-        num_decoded_msg = 0;
-        }
-  */
 
   WF_counter++;
 }

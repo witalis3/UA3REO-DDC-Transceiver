@@ -103,8 +103,10 @@ void MenagerFT8(void)
 
 	if (DSP_Flag == 1)
 	{
-		if (!TRX_Tune)
+		if (!TRX_Tune) {
+			//println("process_FT8_FFT");
 			process_FT8_FFT();
+		}
 
 		if (xmit_flag == 1)
 		{
@@ -189,7 +191,7 @@ void process_data(void)
 		//		}
 		FT8_DatBlockNum = 0;
 
-		//	  println("Prepare new Data!");	//Debug
+		//println("Prepare new Data!");	//Debug
 		for (int i = 0; i < input_gulp_size; i++)
 		{
 			dsp_buffer[i] = dsp_buffer[i + input_gulp_size];

@@ -99,7 +99,10 @@ int ft8_decode(void)
 		bp_decode(log174, kLDPC_iterations, plain, &n_errors);
 		print("FT8 Candidate: ", idx, " errors: ", n_errors);
 		
-		//if (n_errors > 0) continue;
+		if (n_errors > 10) {
+			println(" Many errors");
+			continue;
+		}
 
 		// Extract payload + CRC (first K bits)
 		uint8_t a91[K_BYTES];
