@@ -50,7 +50,7 @@ float32_t APROC_TX_tune_power = 0.0f;
 #if FT8_SUPPORT
 static q15_t APROC_AudioBuffer_FT8_out[AUDIO_BUFFER_SIZE / 2] = {0};
 #endif
-static uint8_t APROC_AudioBuffer_WIFI_out[2050] = {0};
+//static uint8_t APROC_AudioBuffer_WIFI_out[2050] = {0};
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
 
 static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0, DFM_RX1_emph_prev = 0, DFM_RX2_emph_prev = 0; // used in FM detection and low / high pass processing
@@ -499,8 +499,8 @@ void processRxAudio(void)
 	}
 	
 	//Send to WIFI
-	static uint32_t wifi_iq_buffer_index = 0;
-	if(false && WIFI_maySendIQ)
+	/*static uint32_t wifi_iq_buffer_index = 0;
+	if(WIFI_maySendIQ)
 	{
 		if(wifi_iq_buffer_index == 0) {
 			dma_memset(APROC_AudioBuffer_WIFI_out, 0x00, sizeof(APROC_AudioBuffer_WIFI_out));
@@ -514,16 +514,11 @@ void processRxAudio(void)
 		
 		if(wifi_iq_buffer_index >= 1900)
 		{
-			bool res = WIFI_SendIQData((char *)APROC_AudioBuffer_WIFI_out);
-			if(res) {
-				print("i");
-			} else {
-				print("d");
-			}
+			WIFI_SendIQData(APROC_AudioBuffer_WIFI_out, wifi_iq_buffer_index);
 			
 			wifi_iq_buffer_index = 0;
 		}
-	}
+	}*/
 
 	// OUT Volume
 	float32_t volume_gain_new = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);

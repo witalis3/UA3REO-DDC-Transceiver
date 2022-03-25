@@ -88,6 +88,6 @@ extern bool WIFI_SW_Restart(void (*callback)(void));
 extern void WIFI_checkFWUpdates(void);
 extern void WIFI_downloadFileToSD(char *url, char *filename);
 extern bool WIFI_getDXCluster_background(void);
-extern bool WIFI_SendIQData(char *data);
+extern bool WIFI_SendIQData(uint8_t *data, uint32_t size);
 	
 #endif

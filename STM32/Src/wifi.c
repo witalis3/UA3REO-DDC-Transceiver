@@ -861,7 +861,7 @@ bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void (*callback)(void))
 	return true;
 }
 
-bool WIFI_SendIQData(char *data)
+bool WIFI_SendIQData(uint8_t *data, uint32_t size)
 {
 	if (WIFI_State != WIFI_READY)
 		return false;
@@ -870,10 +870,10 @@ bool WIFI_SendIQData(char *data)
 	WIFI_ProcessingCommand = WIFI_COMM_SENDTCPDATA;
 	WIFI_ProcessingCommandCallback = NULL;
 	char header[64] = {0};
-	sprintf(header, "AT+CIPSEND=%u,%u\r\n", link_id, strlen(data));
+	sprintf(header, "AT+CIPSEND=%u,%u\r\n", link_id, size);
 	HAL_UART_Transmit_IT(&huart6, (uint8_t *)header, (uint16_t)strlen(header)); // Start IQ sending
 	HAL_Delay(2);
-	HAL_UART_Transmit_IT(&huart6, (uint8_t *)data, (uint16_t)strlen(data)); // Send IQ data
+	HAL_UART_Transmit_IT(&huart6, data, size); // Send IQ data
 	WIFI_ProcessingCommand = WIFI_COMM_NONE;
 	WIFI_State = WIFI_READY;
 	return true;
