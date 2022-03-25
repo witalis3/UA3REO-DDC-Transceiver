@@ -60,6 +60,7 @@ bool WIFI_NewFW_checked = false;
 bool WIFI_NewFW_STM32 = false;
 bool WIFI_NewFW_FPGA = false;
 bool WIFI_downloadFileToSD_compleated = false;
+bool WIFI_maySendIQ = false;
 
 void WIFI_Init(void)
 {
@@ -90,19 +91,20 @@ void WIFI_Init(void)
 
 	WIFI_SendCommand("ATE0\r\n"); // echo off
 	WIFI_WaitForOk();
-	WIFI_SendCommand("AT+GMR\r\n"); // system info ESP8266
-	WIFI_WaitForOk();
-	/*
-	AT version:1.7.4.0(May 11 2020 19:13:04)
-	SDK version:3.0.4(9532ceb)
-	compile time:May 27 2020 10:12:20
-	Bin version(Wroom 02):1.7.4
-	*/
-	WIFI_SendCommand("AT\r\n");
-	WIFI_WaitForOk();
 
 	if (strstr(WIFI_readedLine, "OK") != NULL)
 	{
+		WIFI_SendCommand("AT+GMR\r\n"); // system info ESP8266
+		WIFI_WaitForOk();
+		/*
+		AT version:1.7.4.0(May 11 2020 19:13:04)
+		SDK version:3.0.4(9532ceb)
+		compile time:May 27 2020 10:12:20
+		Bin version(Wroom 02):1.7.4
+		*/
+		WIFI_SendCommand("AT\r\n");
+		WIFI_WaitForOk();
+		
 		println("[WIFI] WIFI Module Inited");
 		WIFI_State = WIFI_INITED;
 
@@ -277,10 +279,10 @@ void WIFI_Process(void)
 		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL)
 		{
 			println("[WIFI] Disconnected");
-			// WIFI_State = WIFI_CONFIGURED;
+			WIFI_State = WIFI_CONNECTING;
 			WIFI_connected = false;
 			LCD_UpdateQuery.StatusInfoGUI = true;
-			WIFI_SW_Restart(NULL);
+			//WIFI_SW_Restart(NULL);
 			return;
 		}
 		if (strstr(WIFI_readedLine, "FAIL") != NULL)
@@ -854,6 +856,24 @@ bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void (*callback)(void))
 	strcat(answer_data, data);
 	strcat(answer_data, "\r");
 	WIFI_SendCommand(answer_data); // Send CAT answer data
+	WIFI_ProcessingCommand = WIFI_COMM_NONE;
+	WIFI_State = WIFI_READY;
+	return true;
+}
+
+bool WIFI_SendIQData(char *data)
+{
+	if (WIFI_State != WIFI_READY)
+		return false;
+	#define link_id 0
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_SENDTCPDATA;
+	WIFI_ProcessingCommandCallback = NULL;
+	char header[64] = {0};
+	sprintf(header, "AT+CIPSEND=%u,%u\r\n", link_id, strlen(data));
+	HAL_UART_Transmit_IT(&huart6, (uint8_t *)header, (uint16_t)strlen(header)); // Start IQ sending
+	HAL_Delay(2);
+	HAL_UART_Transmit_IT(&huart6, (uint8_t *)data, (uint16_t)strlen(data)); // Send IQ data
 	WIFI_ProcessingCommand = WIFI_COMM_NONE;
 	WIFI_State = WIFI_READY;
 	return true;

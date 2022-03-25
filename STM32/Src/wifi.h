@@ -68,6 +68,7 @@ extern bool WIFI_NewFW_FPGA;
 extern bool WIFI_downloadFileToSD_compleated;
 extern DXCLUSTER_ENTRY WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_MAX_RECORDS];
 extern uint16_t WIFI_DXCLUSTER_list_count;
+extern bool WIFI_maySendIQ;
 
 extern void WIFI_Init(void);
 extern void WIFI_Process(void);
@@ -87,5 +88,6 @@ extern bool WIFI_SW_Restart(void (*callback)(void));
 extern void WIFI_checkFWUpdates(void);
 extern void WIFI_downloadFileToSD(char *url, char *filename);
 extern bool WIFI_getDXCluster_background(void);
-
+extern bool WIFI_SendIQData(char *data);
+	
 #endif

@@ -16,6 +16,7 @@
 #include "cw.h"
 #include "FT8/FT8_main.h"
 #include "FT8/decode_ft8.h"
+#include "wifi.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;	  // audio samples processed in the processor
@@ -46,11 +47,12 @@ float32_t APROC_TX_clip_gain = 1.0f;
 float32_t APROC_TX_ALC_IN_clip_gain = 1.0f;
 float32_t APROC_TX_tune_power = 0.0f;
 
-// Private variables
 #if FT8_SUPPORT
 static q15_t APROC_AudioBuffer_FT8_out[AUDIO_BUFFER_SIZE / 2] = {0};
 #endif
+static uint8_t APROC_AudioBuffer_WIFI_out[2050] = {0};
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
+
 static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0, DFM_RX1_emph_prev = 0, DFM_RX2_emph_prev = 0; // used in FM detection and low / high pass processing
 bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
 static float32_t DFM_RX1_SquelchRate = 1.0f, DFM_RX2_SquelchRate = 1.0f;
@@ -494,6 +496,33 @@ void processRxAudio(void)
 			USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 2] = (APROC_AudioBuffer_out[i] >> 24) & 0xFF;
 		}
 		USB_AUDIO_need_rx_buffer = false;
+	}
+	
+	//Send to WIFI
+	static uint32_t wifi_iq_buffer_index = 0;
+	if(false && WIFI_maySendIQ)
+	{
+		if(wifi_iq_buffer_index == 0) {
+			dma_memset(APROC_AudioBuffer_WIFI_out, 0x00, sizeof(APROC_AudioBuffer_WIFI_out));
+			strcpy((char *)APROC_AudioBuffer_WIFI_out, "IQ:");
+			wifi_iq_buffer_index += 3;
+		}
+		
+		for (uint_fast16_t i = 0; i < (FPGA_RX_IQ_BUFFER_HALF_SIZE / 8); i++)  // 6kbps
+			APROC_AudioBuffer_WIFI_out[wifi_iq_buffer_index + i * 8] = (APROC_AudioBuffer_out[i] >> 24) & 0xFF; // 32->8 bit
+		wifi_iq_buffer_index += (FPGA_RX_IQ_BUFFER_HALF_SIZE / 8);
+		
+		if(wifi_iq_buffer_index >= 1900)
+		{
+			bool res = WIFI_SendIQData((char *)APROC_AudioBuffer_WIFI_out);
+			if(res) {
+				print("i");
+			} else {
+				print("d");
+			}
+			
+			wifi_iq_buffer_index = 0;
+		}
 	}
 
 	// OUT Volume
