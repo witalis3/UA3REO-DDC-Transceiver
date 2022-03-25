@@ -101,6 +101,11 @@ void SELF_TEST_Draw(void)
 		LCDDriver_printText("WM8731", margin_left, pos_y, FG_COLOR, BG_COLOR, 2);
 		SELF_TEST_printResult(WM8731_test_result, pos_y);
 		pos_y += margin_bottom;
+		
+		// TCXO test
+		LCDDriver_printText("TCXO", margin_left, pos_y, FG_COLOR, BG_COLOR, 2);
+		SELF_TEST_printResult(abs(TRX_VCXO_ERROR) < 10, pos_y);
+		pos_y += margin_bottom;
 	}
 
 	if (SELF_TEST_current_page == 1)
