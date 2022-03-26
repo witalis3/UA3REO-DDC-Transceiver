@@ -12,14 +12,14 @@
 
 typedef struct // description of the call database
 {
-	const char *continent;
-	const char *country;
-	const uint8_t cq_zone;
-	const uint8_t itu_zone;
 	const float32_t lat;
 	const float32_t lon;
-	const char (*prefixes)[6];
 	const uint16_t prefixesCount;
+	const uint8_t cq_zone;
+	const uint8_t itu_zone;
+	const char *continent;
+	const char *country;
+	const char (*prefixes)[6];
 } CALLSIGN_INFO_LINE;
 
 // Public variabled

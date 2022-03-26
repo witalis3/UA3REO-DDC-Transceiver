@@ -88,6 +88,8 @@ extern void FRONTPANEL_BUTTONHANDLER_LOCK(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_SET_BAND_MEMORY(uint32_t parameter);
+extern void FRONTPANEL_BUTTONHANDLER_GET_BAND_MEMORY(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SETMODE(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SETSECMODE(uint32_t parameter);
 extern void FRONTPANEL_BUTTONHANDLER_SET_RX_BW(uint32_t parameter);

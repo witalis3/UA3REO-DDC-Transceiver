@@ -635,6 +635,12 @@ void LoadCalibration(bool clear)
 			CALIBRATE.MEMORY_CHANNELS[i].AGC = true;
 			CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 		}
+		for (uint8_t i = 0; i < BANDS_COUNT; i++) {
+			CALIBRATE.BAND_MEMORIES[i][0] = TRX.BANDS_SAVED_SETTINGS[i].Freq;
+			
+			for (uint8_t j = 1; j < BANDS_MEMORIES_COUNT; j++)
+				CALIBRATE.BAND_MEMORIES[i][j] = 0;
+		}
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 

@@ -96,6 +96,7 @@
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
 #define MEMORY_CHANNELS_COUNT 35
+#define BANDS_MEMORIES_COUNT 3
 
 #define ATU_MAXLENGTH 7
 #define ATU_0x0_MAXPOS B8(00000000)
@@ -652,6 +653,7 @@ extern struct TRX_CALIBRATE
 	bool LCD_Rotate;
 	bool INA226_EN; // Tisho
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
+	uint32_t BAND_MEMORIES[BANDS_COUNT][BANDS_MEMORIES_COUNT];
 
 	uint8_t csum;	// check sum
 	uint8_t ENDBit; // end bit

@@ -11,7 +11,7 @@
 #ifdef LAY_160x128
 #define ENUM_MAX_LENGTH 7
 #else
-#define ENUM_MAX_LENGTH 10
+#define ENUM_MAX_LENGTH 8
 #endif
 
 typedef enum
