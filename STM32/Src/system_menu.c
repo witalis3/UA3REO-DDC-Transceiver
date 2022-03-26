@@ -541,7 +541,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 #endif
 		{"Color Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME, {"Black", "White", "Colored"}},
 #ifdef LAY_480x320
-		{"Layout Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME, {"Default", "7 Segment"}},
+		{"Layout Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME, {"Default", "7 Segm"}},
 #endif
 #ifdef LAY_800x480
 		{"Layout Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME, {"Default", "Analog", "7 Segm", "Classic"}},
