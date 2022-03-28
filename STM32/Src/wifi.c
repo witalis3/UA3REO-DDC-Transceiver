@@ -114,8 +114,6 @@ void WIFI_Init(void)
 		{
 			if (strstr(WIFI_readedLine, "STATUS:2") != NULL || strstr(WIFI_readedLine, "STATUS:4") != NULL)
 			{
-				WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); // AUTOCONNECT
-				WIFI_WaitForOk();
 				WIFI_State = WIFI_READY;
 				WIFI_connected = true;
 				LCD_UpdateQuery.StatusInfoGUI = true;
@@ -270,8 +268,6 @@ void WIFI_Process(void)
 		if (strstr(WIFI_readedLine, "GOT IP") != NULL)
 		{
 			println("[WIFI] Connected");
-			WIFI_SendCommand("AT+CWAUTOCONN=1\r\n"); // AUTOCONNECT
-			WIFI_WaitForOk();
 			WIFI_State = WIFI_READY;
 			WIFI_connected = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
@@ -279,10 +275,10 @@ void WIFI_Process(void)
 		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL)
 		{
 			println("[WIFI] Disconnected");
-			WIFI_State = WIFI_CONNECTING;
+			WIFI_State = WIFI_CONFIGURED;
 			WIFI_connected = false;
 			LCD_UpdateQuery.StatusInfoGUI = true;
-			//WIFI_SW_Restart(NULL);
+			WIFI_SW_Restart(NULL);
 			return;
 		}
 		if (strstr(WIFI_readedLine, "FAIL") != NULL)
