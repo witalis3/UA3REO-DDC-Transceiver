@@ -68,8 +68,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 264 64)
 		(output)
-		(text "PWM[15..0]" (rect 0 0 48 12)(font "Arial" ))
-		(text "PWM[15..0]" (rect 195 59 243 71)(font "Arial" ))
+		(text "PWM[23..0]" (rect 0 0 49 12)(font "Arial" ))
+		(text "PWM[23..0]" (rect 194 59 243 71)(font "Arial" ))
 		(line (pt 264 64)(pt 248 64)(line_width 3))
 	)
 	(parameter
