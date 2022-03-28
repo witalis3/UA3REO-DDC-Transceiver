@@ -104,11 +104,11 @@ static void RF_UNIT_ProcessATU(void)
 	if (ATU_Finished)
 		return;
 
-	/*if (!ATU_Finished && TRX_PWR_Forward <= 1.1f)
+	if (!ATU_Finished && TRX.RF_Power == 0)
 	{
 		ATU_Finished = true;
 		return;
-	}*/
+	}
 
 	if (!ATU_TunePowerStabilized)
 	{
@@ -152,7 +152,7 @@ static void RF_UNIT_ProcessATU(void)
 	// float32_t TRX_PWR = TRX_PWR_Forward - TRX_PWR_Backward;
 	float32_t TRX_PWR = TRX_PWR_Forward;
 
-	if (TRX_PWR >= (float32_t)CALIBRATE.TUNE_MAX_POWER / 2.0f)
+	if (TRX_PWR >= 5.0f)
 		if ((!ATU_BestValsProbed && TRX_SWR_val <= NORMAL_SWR_SAVED) || (ATU_BestValsProbed && TRX_SWR_val <= NORMAL_SWR_TUNE))
 		{
 			println("Normal SWR, stop!");
