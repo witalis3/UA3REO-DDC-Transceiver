@@ -183,11 +183,6 @@ begin
 				PWM = PWM - 16'd20;
 			else if(freq_error_now > 1) //fine
 				PWM = PWM - 16'd1;
-			
-			/*if(freq_error_now < 0) //fine
-				PWM = PWM + 'd1;
-			else if(freq_error_now > 0) //fine
-				PWM = PWM - 'd1;*/
 					
 			state = 4;
 		end
