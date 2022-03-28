@@ -68,7 +68,7 @@ input signed [15:0] ADC_RAW;
 input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
-input signed [23:0] VCXO_error;
+input signed [31:0] VCXO_error;
 input in_empty;
 input dacclk_in;
 
@@ -349,25 +349,30 @@ begin
 	end
 	else if (k == 205)
 	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[23:16];
+		DATA_BUS_OUT[7:0] = VCXO_error[31:24];
 		k = 206;
 	end
 	else if (k == 206)
 	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[15:8];
+		DATA_BUS_OUT[7:0] = VCXO_error[23:16];
 		k = 207;
 	end
 	else if (k == 207)
 	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[7:0];
+		DATA_BUS_OUT[7:0] = VCXO_error[15:8];
 		k = 208;
 	end
 	else if (k == 208)
 	begin
-		DATA_BUS_OUT[7:0] = ADC_RAW[15:8];
+		DATA_BUS_OUT[7:0] = VCXO_error[7:0];
 		k = 209;
 	end
 	else if (k == 209)
+	begin
+		DATA_BUS_OUT[7:0] = ADC_RAW[15:8];
+		k = 210;
+	end
+	else if (k == 210)
 	begin
 		DATA_BUS_OUT[7:0] = ADC_RAW[7:0];
 		k = 999;

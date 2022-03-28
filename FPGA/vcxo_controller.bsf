@@ -54,8 +54,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 264 32)
 		(output)
-		(text "freq_error[23..0]" (rect 0 0 67 12)(font "Arial" ))
-		(text "freq_error[23..0]" (rect 176 27 243 39)(font "Arial" ))
+		(text "freq_error[31..0]" (rect 0 0 66 12)(font "Arial" ))
+		(text "freq_error[31..0]" (rect 177 27 243 39)(font "Arial" ))
 		(line (pt 264 32)(pt 248 32)(line_width 3))
 	)
 	(port

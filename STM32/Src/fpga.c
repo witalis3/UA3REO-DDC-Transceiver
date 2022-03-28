@@ -512,28 +512,28 @@ static inline void FPGA_fpgadata_getparam(void)
 
 	// STAGE 7 - TCXO ERROR
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp8 = FPGA_readPacket;
-	FPGA_fpgadata_in_tmp32 = 0;
-	if (bitRead(FPGA_fpgadata_in_tmp8, 7) == 1)
-		FPGA_fpgadata_in_tmp32 = 0xFF000000;
-	FPGA_fpgadata_in_tmp32 |= (FPGA_fpgadata_in_tmp8 << 16);
+	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 24);
 	FPGA_clockFall();
 	// STAGE 8
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
+	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 16);
 	FPGA_clockFall();
 	// STAGE 9
+	FPGA_clockRise();
+	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
+	FPGA_clockFall();
+	// STAGE 10
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 	TRX_VCXO_ERROR = FPGA_fpgadata_in_tmp32;
 	FPGA_clockFall();
 
-	// STAGE 10 - ADC RAW DATA
+	// STAGE 11 - ADC RAW DATA
 	FPGA_fpgadata_in_tmp32 = 0;
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
 	FPGA_clockFall();
-	// STAGE 11
+	// STAGE 12
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 	FPGA_clockFall();
