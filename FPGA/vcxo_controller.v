@@ -19,16 +19,18 @@ input signed [7:0] VCXO_correction;
 
 output reg signed [31:0] freq_error = 0;
 output reg pump = 0;
-output reg signed [23:0] PWM = 19000;
+output reg signed [23:0] PWM = 16000;
 
-reg [23:0] PWM_max = 38000;
+reg [23:0] PWM_max = 32000;
 reg signed [31:0] freq_error_now = 0;
 reg signed [31:0] freq_error_prev = 0;
+reg signed [31:0] freq_error_diff = 0;
 reg [31:0] VCXO_counter = 0;
 reg [31:0] VCXO_counter_result = 0;
 reg [31:0] TCXO_counter = 0;
 reg [2:0] vcxo_cnt_state = 0; //0 - idle , 1 - work , 2 - reset
 reg [2:0] vcxo_cnt_need_state = 0; //0 - idle , 1 - work , 2 - reset
+reg locked = 0;
 reg [7:0] state = 0;
 
 reg [23:0] PWM_counter = 0;
@@ -164,41 +166,45 @@ begin
 		else if(state == 2)
 		begin
 			freq_error_now = VCXO_counter_result - VCXO_freq + $signed(VCXO_correction);
+			freq_error_diff = freq_error_prev - freq_error_now;
 			state = 3;
 		end
 		else if(state == 3)
 		begin
-			//save
-			if(freq_error_prev == freq_error_now)
+			if(freq_error_diff == 0 || (locked == 0 && freq_error_diff < 50 && freq_error_diff > -50)) //pricision if locked
 			begin
+				//save
 				freq_error = freq_error_now;
 				
+				//get lock!
+				if(freq_error_diff == 0 && freq_error_now == 0)
+					locked = 1;	
+						
 				//tune
-				if($signed(freq_error) < $signed(-50)) //extra coarse
-					PWM = $signed(PWM) + $signed(200);
-				else if($signed(freq_error) < $signed(-10)) //coarse
-					PWM = $signed(PWM) + $signed(20);
-				else if($signed(freq_error) < $signed(0)) //fine
-					PWM = $signed(PWM) + $signed(1);
-				else if($signed(freq_error) > $signed(50)) //extra coarse
-					PWM = $signed(PWM) - $signed(200);
-				else if($signed(freq_error) > $signed(10)) //coarse
-					PWM = $signed(PWM) - $signed(20);
-				else if($signed(freq_error) > $signed(0)) //fine
-					PWM = $signed(PWM) - $signed(1);
-					
-				if($signed(PWM) > PWM_max)
-					PWM = $signed(PWM_max);
-				if($signed(PWM) < $signed(1))
-					PWM = $signed(1);
+				if(freq_error_now < -50 && locked == 0) //extra coarse
+					PWM = PWM + 16'd250;
+				else if(freq_error_now < -10) //coarse
+					PWM = PWM + 16'd50;
+				else if(freq_error_now < 0) //fine
+					PWM = PWM + 16'd1;
+				else if(freq_error_now > 50 && locked == 0) //extra coarse
+					PWM = PWM - 16'd250;
+				else if(freq_error_now > 10) //coarse
+					PWM = PWM - 16'd50;
+				else if(freq_error_now > 0) //fine
+					PWM = PWM - 16'd1;
 			end
-			else
-				freq_error_prev = freq_error_now;
+			
+			if($signed(PWM) > PWM_max)
+				PWM = $signed(PWM_max);
+			if($signed(PWM) < $signed(1))
+				PWM = $signed(1);
 					
 			state = 4;
 		end
 		else if(state == 4)
 		begin
+			freq_error_prev = freq_error_now;
 			vcxo_cnt_need_state = 2; //reset
 			state = 0;
 		end
