@@ -30,7 +30,7 @@ ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
 IsProjectConflictPreventionWarningsEnabled=1
-OutputPath=
+OutputPath=Project Outputs for MOTHERBOARD
 LogFolderPath=
 ManagedProjectGUID=
 IncludeDesignInRelease=0
@@ -54,7 +54,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=TUWDZFSQ
+DocumentUniqueId=TBOGKJYN
 
 [Document2]
 DocumentPath=MOTHERBOARD.PcbLib
@@ -260,122 +260,72 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=SUPUHQIL
 
-[Document14]
-DocumentPath=CAMtastic1.Cam
-AnnotationEnabled=1
-AnnotateStartValue=1
-AnnotationIndexControlEnabled=0
-AnnotateSuffix=
-AnnotateScope=All
-AnnotateOrder=-1
-DoLibraryUpdate=1
-DoDatabaseUpdate=1
-ClassGenCCAutoEnabled=1
-ClassGenCCAutoRoomEnabled=1
-ClassGenNCAutoScope=None
-DItemRevisionGUID=
-GenerateClassCluster=0
-DocumentUniqueId=
-
-[Document15]
-DocumentPath=CAMtastic2.Cam
-AnnotationEnabled=1
-AnnotateStartValue=1
-AnnotationIndexControlEnabled=0
-AnnotateSuffix=
-AnnotateScope=All
-AnnotateOrder=-1
-DoLibraryUpdate=1
-DoDatabaseUpdate=1
-ClassGenCCAutoEnabled=1
-ClassGenCCAutoRoomEnabled=1
-ClassGenNCAutoScope=None
-DItemRevisionGUID=
-GenerateClassCluster=0
-DocumentUniqueId=
-
 [GeneratedDocument1]
 DocumentPath=Project Outputs for MOTHERBOARD\Design Rule Check - MOTHERBOARD.html
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD-RoundHoles.TXT
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-RoundHoles.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument3]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD-SlotHoles.TXT
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-SlotHoles.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument4]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.DRR
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.DRR
 DItemRevisionGUID=
 
 [GeneratedDocument5]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.EXTREP
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument6]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.G1
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G1
 DItemRevisionGUID=
 
 [GeneratedDocument7]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.G2
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G2
 DItemRevisionGUID=
 
 [GeneratedDocument8]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GBL
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBL
 DItemRevisionGUID=
 
 [GeneratedDocument9]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GBO
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBO
 DItemRevisionGUID=
 
 [GeneratedDocument10]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GBS
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBS
 DItemRevisionGUID=
 
 [GeneratedDocument11]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GKO
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GKO
 DItemRevisionGUID=
 
 [GeneratedDocument12]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GM1
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTL
 DItemRevisionGUID=
 
 [GeneratedDocument13]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GM2
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTO
 DItemRevisionGUID=
 
 [GeneratedDocument14]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GM13
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTS
 DItemRevisionGUID=
 
 [GeneratedDocument15]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GM15
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.LDP
 DItemRevisionGUID=
 
 [GeneratedDocument16]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GTL
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.REP
 DItemRevisionGUID=
 
 [GeneratedDocument17]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GTO
-DItemRevisionGUID=
-
-[GeneratedDocument18]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.GTS
-DItemRevisionGUID=
-
-[GeneratedDocument19]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.LDP
-DItemRevisionGUID=
-
-[GeneratedDocument20]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.REP
-DItemRevisionGUID=
-
-[GeneratedDocument21]
-DocumentPath=Project Outputs for MOTHERBOARD\MOTHERBOARD.RUL
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.RUL
 DItemRevisionGUID=
 
 [Configuration1]
@@ -389,7 +339,7 @@ ContentTypeGUID=CB6F2064-E317-11DF-B822-12313F0024A2
 ConfigurationType=Source
 
 [Generic_EDE]
-OutputDir=
+OutputDir=Project Outputs for MOTHERBOARD
 
 [OutputGroup1]
 Name=Netlist Outputs
@@ -500,7 +450,7 @@ OutputDefault20=0
 [OutputGroup2]
 Name=Simulator Outputs
 Description=
-TargetPrinter=Brother DCP-7057
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 
 [OutputGroup3]
@@ -624,7 +574,7 @@ OutputDefault3=0
 [OutputGroup5]
 Name=Fabrication Outputs
 Description=
-TargetPrinter=Brother DCP-7057
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=NC Drill
 OutputName1=NC Drill Files
