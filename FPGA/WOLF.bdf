@@ -3876,74 +3876,6 @@ refer to the applicable agreement for further details.
 	)
 )
 (symbol
-	(rect 2384 888 2648 1000)
-	(text "vcxo_controller" (rect 5 0 80 12)(font "Arial" ))
-	(text "VCXO_CONTROLLER" (rect 8 96 117 108)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "vcxo_clk_in" (rect 0 0 59 12)(font "Arial" ))
-		(text "vcxo_clk_in" (rect 21 27 80 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "tcxo_clk_in" (rect 0 0 55 12)(font "Arial" ))
-		(text "tcxo_clk_in" (rect 21 43 76 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48))
-	)
-	(port
-		(pt 0 64)
-		(input)
-		(text "pwm_clk_in" (rect 0 0 56 12)(font "Arial" ))
-		(text "pwm_clk_in" (rect 21 59 77 71)(font "Arial" ))
-		(line (pt 0 64)(pt 16 64))
-	)
-	(port
-		(pt 0 80)
-		(input)
-		(text "VCXO_correction[7..0]" (rect 0 0 109 12)(font "Arial" ))
-		(text "VCXO_correction[7..0]" (rect 21 75 130 87)(font "Arial" ))
-		(line (pt 0 80)(pt 16 80)(line_width 3))
-	)
-	(port
-		(pt 264 32)
-		(output)
-		(text "freq_error[31..0]" (rect 0 0 80 12)(font "Arial" ))
-		(text "freq_error[31..0]" (rect 176 27 256 39)(font "Arial" ))
-		(line (pt 264 32)(pt 248 32)(line_width 3))
-	)
-	(port
-		(pt 264 48)
-		(output)
-		(text "pump" (rect 0 0 27 12)(font "Arial" ))
-		(text "pump" (rect 221 43 248 55)(font "Arial" ))
-		(line (pt 264 48)(pt 248 48))
-	)
-	(port
-		(pt 264 64)
-		(output)
-		(text "PWM[23..0]" (rect 0 0 57 12)(font "Arial" ))
-		(text "PWM[23..0]" (rect 195 59 252 71)(font "Arial" ))
-		(line (pt 264 64)(pt 248 64)(line_width 3))
-	)
-	(parameter
-		"VCXO_freq"
-		"12288000"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"TCXO_freq"
-		"1228800"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(drawing
-		(rectangle (rect 16 16 248 96))
-	)
-	(annotation_block (parameter)(rect 2408 816 2607 873))
-)
-(symbol
 	(rect 5272 264 5440 392)
 	(text "tx_mixer" (rect 59 0 118 16)(font "Arial" (font_size 10)))
 	(text "TX_MIXER_Q" (rect 8 112 72 124)(font "Arial" ))
@@ -4374,42 +4306,42 @@ refer to the applicable agreement for further details.
 		(pt 448 72)
 		(output)
 		(text "ast_source_data[47..0]" (rect 0 0 132 14)(font "Arial" (font_size 8)))
-		(text "ast_source_data[47..0]" (rect 332 61 443 75)(font "Arial" (font_size 8)))
+		(text "ast_source_data[47..0]" (rect 332 61 464 75)(font "Arial" (font_size 8)))
 		(line (pt 448 72)(pt 288 72)(line_width 3))
 	)
 	(port
 		(pt 448 88)
 		(output)
 		(text "ast_source_valid" (rect 0 0 97 14)(font "Arial" (font_size 8)))
-		(text "ast_source_valid" (rect 361 77 443 91)(font "Arial" (font_size 8)))
+		(text "ast_source_valid" (rect 361 77 458 91)(font "Arial" (font_size 8)))
 		(line (pt 448 88)(pt 288 88))
 	)
 	(port
 		(pt 448 104)
 		(output)
 		(text "ast_source_error[1..0]" (rect 0 0 128 14)(font "Arial" (font_size 8)))
-		(text "ast_source_error[1..0]" (rect 337 93 445 107)(font "Arial" (font_size 8)))
+		(text "ast_source_error[1..0]" (rect 337 93 465 107)(font "Arial" (font_size 8)))
 		(line (pt 448 104)(pt 288 104)(line_width 3))
 	)
 	(port
 		(pt 448 136)
 		(output)
 		(text "ast_source_sop" (rect 0 0 93 14)(font "Arial" (font_size 8)))
-		(text "ast_source_sop" (rect 365 125 443 139)(font "Arial" (font_size 8)))
+		(text "ast_source_sop" (rect 365 125 458 139)(font "Arial" (font_size 8)))
 		(line (pt 448 136)(pt 288 136))
 	)
 	(port
 		(pt 448 152)
 		(output)
 		(text "ast_source_eop" (rect 0 0 93 14)(font "Arial" (font_size 8)))
-		(text "ast_source_eop" (rect 365 141 443 155)(font "Arial" (font_size 8)))
+		(text "ast_source_eop" (rect 365 141 458 155)(font "Arial" (font_size 8)))
 		(line (pt 448 152)(pt 288 152))
 	)
 	(port
 		(pt 448 168)
 		(output)
 		(text "ast_source_channel" (rect 0 0 116 14)(font "Arial" (font_size 8)))
-		(text "ast_source_channel" (rect 345 157 443 171)(font "Arial" (font_size 8)))
+		(text "ast_source_channel" (rect 345 157 461 171)(font "Arial" (font_size 8)))
 		(line (pt 448 168)(pt 288 168))
 	)
 	(drawing
@@ -4522,42 +4454,42 @@ refer to the applicable agreement for further details.
 		(pt 448 72)
 		(output)
 		(text "ast_source_data[61..0]" (rect 0 0 132 14)(font "Arial" (font_size 8)))
-		(text "ast_source_data[61..0]" (rect 334 61 445 75)(font "Arial" (font_size 8)))
+		(text "ast_source_data[61..0]" (rect 334 61 466 75)(font "Arial" (font_size 8)))
 		(line (pt 448 72)(pt 288 72)(line_width 3))
 	)
 	(port
 		(pt 448 88)
 		(output)
 		(text "ast_source_valid" (rect 0 0 97 14)(font "Arial" (font_size 8)))
-		(text "ast_source_valid" (rect 361 77 443 91)(font "Arial" (font_size 8)))
+		(text "ast_source_valid" (rect 361 77 458 91)(font "Arial" (font_size 8)))
 		(line (pt 448 88)(pt 288 88))
 	)
 	(port
 		(pt 448 104)
 		(output)
 		(text "ast_source_error[1..0]" (rect 0 0 128 14)(font "Arial" (font_size 8)))
-		(text "ast_source_error[1..0]" (rect 337 93 445 107)(font "Arial" (font_size 8)))
+		(text "ast_source_error[1..0]" (rect 337 93 465 107)(font "Arial" (font_size 8)))
 		(line (pt 448 104)(pt 288 104)(line_width 3))
 	)
 	(port
 		(pt 448 136)
 		(output)
 		(text "ast_source_sop" (rect 0 0 93 14)(font "Arial" (font_size 8)))
-		(text "ast_source_sop" (rect 365 125 443 139)(font "Arial" (font_size 8)))
+		(text "ast_source_sop" (rect 365 125 458 139)(font "Arial" (font_size 8)))
 		(line (pt 448 136)(pt 288 136))
 	)
 	(port
 		(pt 448 152)
 		(output)
 		(text "ast_source_eop" (rect 0 0 93 14)(font "Arial" (font_size 8)))
-		(text "ast_source_eop" (rect 365 141 443 155)(font "Arial" (font_size 8)))
+		(text "ast_source_eop" (rect 365 141 458 155)(font "Arial" (font_size 8)))
 		(line (pt 448 152)(pt 288 152))
 	)
 	(port
 		(pt 448 168)
 		(output)
 		(text "ast_source_channel[1..0]" (rect 0 0 145 14)(font "Arial" (font_size 8)))
-		(text "ast_source_channel[1..0]" (rect 323 157 445 171)(font "Arial" (font_size 8)))
+		(text "ast_source_channel[1..0]" (rect 323 157 468 171)(font "Arial" (font_size 8)))
 		(line (pt 448 168)(pt 288 168)(line_width 3))
 	)
 	(drawing
@@ -4598,6 +4530,81 @@ refer to the applicable agreement for further details.
 		(line (pt 0 264)(pt 448 264))
 		(line (pt 0 0)(pt 0 264))
 	)
+)
+(symbol
+	(rect 2384 888 2648 1032)
+	(text "vcxo_controller" (rect 5 0 80 12)(font "Arial" ))
+	(text "VCXO_CONTROLLER" (rect 8 128 117 140)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "vcxo_clk_in" (rect 0 0 59 12)(font "Arial" ))
+		(text "vcxo_clk_in" (rect 21 27 80 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "tcxo_clk_in" (rect 0 0 55 12)(font "Arial" ))
+		(text "tcxo_clk_in" (rect 21 43 76 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "pwm_clk_in" (rect 0 0 56 12)(font "Arial" ))
+		(text "pwm_clk_in" (rect 21 59 77 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port
+		(pt 0 80)
+		(input)
+		(text "VCXO_correction[7..0]" (rect 0 0 109 12)(font "Arial" ))
+		(text "VCXO_correction[7..0]" (rect 21 75 130 87)(font "Arial" ))
+		(line (pt 0 80)(pt 16 80)(line_width 3))
+	)
+	(port
+		(pt 0 96)
+		(input)
+		(text "tx" (rect 0 0 9 12)(font "Arial" ))
+		(text "tx" (rect 21 91 30 103)(font "Arial" ))
+		(line (pt 0 96)(pt 16 96))
+	)
+	(port
+		(pt 264 32)
+		(output)
+		(text "freq_error[31..0]" (rect 0 0 80 12)(font "Arial" ))
+		(text "freq_error[31..0]" (rect 176 27 243 39)(font "Arial" ))
+		(line (pt 264 32)(pt 248 32)(line_width 3))
+	)
+	(port
+		(pt 264 48)
+		(output)
+		(text "pump" (rect 0 0 27 12)(font "Arial" ))
+		(text "pump" (rect 221 43 243 55)(font "Arial" ))
+		(line (pt 264 48)(pt 248 48))
+	)
+	(port
+		(pt 264 64)
+		(output)
+		(text "PWM[31..0]" (rect 0 0 57 12)(font "Arial" ))
+		(text "PWM[31..0]" (rect 195 59 243 71)(font "Arial" ))
+		(line (pt 264 64)(pt 248 64)(line_width 3))
+	)
+	(parameter
+		"VCXO_freq"
+		"12288000"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(parameter
+		"TCXO_freq"
+		"1228800"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 248 128))
+	)
+	(annotation_block (parameter)(rect 2408 816 2607 873))
 )
 (connector
 	(pt 528 32)
@@ -7322,6 +7329,11 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 1560 936)
 	(pt 1600 936)
+)
+(connector
+	(text "TX" (rect 2314 976 2326 993)(font "Intel Clear" ))
+	(pt 2384 984)
+	(pt 2336 984)
 )
 (junction (pt 440 32))
 (junction (pt 440 448))

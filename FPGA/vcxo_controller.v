@@ -3,6 +3,7 @@ vcxo_clk_in,
 tcxo_clk_in,
 pwm_clk_in,
 VCXO_correction,
+tx,
 
 freq_error,
 pump,
@@ -16,12 +17,12 @@ input vcxo_clk_in;
 input tcxo_clk_in;
 input pwm_clk_in;
 input signed [7:0] VCXO_correction;
+input tx;
 
 output reg signed [31:0] freq_error = 0;
 output reg pump = 0;
-output reg signed [23:0] PWM = 16000;
+output reg signed [31:0] PWM = 16000;
 
-reg [23:0] PWM_max = 32000;
 reg signed [31:0] freq_error_now = 0;
 reg signed [31:0] freq_error_prev = 0;
 reg signed [31:0] freq_error_diff = 0;
@@ -30,91 +31,24 @@ reg [31:0] VCXO_counter_result = 0;
 reg [31:0] TCXO_counter = 0;
 reg [2:0] vcxo_cnt_state = 0; //0 - idle , 1 - work , 2 - reset
 reg [2:0] vcxo_cnt_need_state = 0; //0 - idle , 1 - work , 2 - reset
-reg locked = 0;
 reg [7:0] state = 0;
+reg counter_resetted = 0;
+reg counter_idle = 0;
 
-reg [23:0] PWM_counter = 0;
-reg [23:0] PWM_counter_on = 0;
-reg [23:0] PWM_counter_off = 0;
-reg PWM_bol_on = 0;
-reg PWM_bol_off = 0;
-reg PWM_raven = 0;
-reg PWM_flash_state = 0;
-reg PWM_flash_on = 0;
-reg PWM_flash_off = 0;
+reg [31:0] PWM_max = 32000;
+reg [31:0] PWM_counter = 0;
 
 always @ (posedge pwm_clk_in)
 begin
 	//do PWM
-	/*PWM_counter = PWM_counter + 'd1;
-	if(PWM_counter >= 100)
+	PWM_counter = PWM_counter + 'd1;
+	if(PWM_counter >= PWM_max)
 		PWM_counter = 0;
 		
-	if(PWM_counter < 50)
+	if(PWM_counter < $signed(PWM))
 		pump = 1;
 	else
-		pump = 0;*/
-		
-	if(PWM_flash_state == 1)
-		PWM_flash_state = 0;
-	else
-		PWM_flash_state = 1;
-		
-	if(PWM_counter_on == 0 && PWM_counter_off == 0) //reset
-	begin
-		PWM_counter_on = PWM;
-		PWM_counter_off = PWM_max - PWM;
-	end
-	else
-	begin
-		//
-		if((PWM_counter_on >> 1) >= PWM_counter_off)
-			PWM_bol_on = 1;
-		else
-			PWM_bol_on = 0;
-		//
-		if((PWM_counter_off >> 1) >= PWM_counter_on)
-			PWM_bol_off = 1;
-		else
-			PWM_bol_off = 0;
-		//
-		if(PWM_bol_on == 0 && PWM_bol_off == 0)
-			PWM_raven = 1;
-		else
-			PWM_raven = 0;
-		//
-		if(PWM_raven == 1 && PWM_flash_state == 1 && PWM_counter_on > 0)
-			PWM_flash_on = 1;
-		else
-			PWM_flash_on = 0;
-		//
-		if(PWM_raven == 1 && PWM_flash_state == 0 && PWM_counter_off > 0)
-			PWM_flash_off = 1;
-		else
-			PWM_flash_off = 0;
-		//
-		if(PWM_bol_on == 1)
-		begin
-			PWM_counter_on = PWM_counter_on - 16'd1;
-			pump = 1;
-		end
-		else if(PWM_flash_on == 1)
-		begin
-			PWM_counter_on = PWM_counter_on - 16'd1;
-			pump = 1;
-		end
-		//
-		if(PWM_bol_off == 1)
-		begin
-			PWM_counter_off = PWM_counter_off - 16'd1;
-			pump = 0;
-		end
-		else if(PWM_flash_off == 1)
-		begin
-			PWM_counter_off = PWM_counter_off - 16'd1;
-			pump = 0;
-		end
-	end
+		pump = 0;
 end
 
 always @ (posedge vcxo_clk_in)
@@ -126,20 +60,33 @@ begin
 	else if(vcxo_cnt_state == 0) //idle, get results
 	begin
 		VCXO_counter_result = VCXO_counter;
+		counter_idle = 1;
 	end
 	else if(vcxo_cnt_state == 1) //count
 	begin
 		VCXO_counter = VCXO_counter + 'd1;
+		counter_resetted = 0;
+		counter_idle = 0;
 	end
 	else if(vcxo_cnt_state == 2) //reset
 	begin
 		VCXO_counter = 0;
+		counter_resetted = 1;
 	end
 end
 
 always @ (posedge tcxo_clk_in)
 begin
-	if(vcxo_cnt_state != vcxo_cnt_need_state)
+	if(tx)
+	begin
+		vcxo_cnt_need_state = 0;
+		state = 0;
+	end
+	if((vcxo_cnt_state != vcxo_cnt_need_state)
+		|| (vcxo_cnt_need_state == 2 && !counter_resetted)
+		|| (vcxo_cnt_need_state == 0 && !counter_idle)
+		|| (vcxo_cnt_need_state == 1 && (counter_idle || counter_resetted))
+	)
 	begin
 		//wait VCXO counter state set
 	end
@@ -171,28 +118,23 @@ begin
 		end
 		else if(state == 3)
 		begin
-			if(freq_error_diff == 0 || (locked == 0 && freq_error_diff < 50 && freq_error_diff > -50)) //pricision if locked
-			begin
-				//save
-				freq_error = freq_error_now;
-				
-				//get lock!
-				if(freq_error_diff == 0 && freq_error_now == 0)
-					locked = 1;	
-						
+			if(freq_error_diff == 0) //check mesure
+			begin		
 				//tune
-				if(freq_error_now < -50 && locked == 0) //extra coarse
-					PWM = PWM + 16'd250;
-				else if(freq_error_now < -10) //coarse
-					PWM = PWM + 16'd50;
-				else if(freq_error_now < 0) //fine
-					PWM = PWM + 16'd1;
-				else if(freq_error_now > 50 && locked == 0) //extra coarse
-					PWM = PWM - 16'd250;
-				else if(freq_error_now > 10) //coarse
-					PWM = PWM - 16'd50;
-				else if(freq_error_now > 0) //fine
-					PWM = PWM - 16'd1;
+				if(freq_error_now < -10 || freq_error_now > 10)
+				begin
+					PWM = $signed(PWM) - ($signed(freq_error_now) <<< 1);
+					freq_error = freq_error_now;
+				end
+				else if(freq_error_now < -1 || freq_error_now > 1)
+				begin
+					PWM = $signed(PWM) - $signed(freq_error_now);
+					freq_error = freq_error_now;
+				end
+				else
+				begin
+					freq_error = 0;
+				end
 			end
 			
 			if($signed(PWM) > PWM_max)
