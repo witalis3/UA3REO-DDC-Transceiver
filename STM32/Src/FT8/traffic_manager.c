@@ -389,7 +389,7 @@ void LogQSO(void)
 		RST Sent (that you issued to your worked party)
 		*/
 
-		sprintf(StrToLog, " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:3>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s <time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>", strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, RapRcv_RSL, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq, Station_Call, Locator);
+		sprintf(StrToLog, " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s <time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>", strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL), RapRcv_RSL, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq, Station_Call, Locator);
 		StrToLog[0] = CR;
 
 		Len = strlen(StrToLog);
