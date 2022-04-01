@@ -78,7 +78,7 @@
   <parameter name="FILTER_TYPE" value="interpolator" />
   <parameter name="INTERFACES" value="2" />
   <parameter name="IN_WIDTH" value="16" />
-  <parameter name="RCF_FIX" value="3904" />
+  <parameter name="RCF_FIX" value="3920" />
   <parameter name="RCF_LB" value="8" />
   <parameter name="RCF_UB" value="21" />
   <parameter name="REQ_DIF_MEM" value="logic_element" />
