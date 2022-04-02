@@ -535,6 +535,7 @@ void TIM5_IRQHandler(void)
 	
 	#if FT8_SUPPORT
 	if(FT8_DecodeActiveFlg) {
+		TRX_Inactive_Time = 0;
 		MenagerFT8();
 	}
 	#endif

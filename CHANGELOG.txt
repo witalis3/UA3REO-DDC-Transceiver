@@ -1,6 +1,7 @@
 ----Version 4.0.1----
 +FPGA: Доработки цепей TX, Tnx RA9N
 +STM: Доработки цепей TX, Tnx RA9N
++STM: При активном LCD Sleep timeout в FT8 больше не отключается экран, Tnx RU4PN
 
 ----Version 4.0.0----
 +HARDW: Новая MOTHERBOARD-RA9UCN-mod-rev31: Доработана Charge Pump цепь, рекомендуется обновить свои трансиверы в соответствии с новыми номиналами, Tnx RA9N
