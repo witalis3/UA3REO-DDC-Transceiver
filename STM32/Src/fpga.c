@@ -745,13 +745,13 @@ static inline void FPGA_fpgadata_sendiq(void)
 
 	if (!TRX_TX_IQ_swap)
 	{
-		FPGA_fpgadata_out_i_tmp32 = FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f; // float -> int24
-		FPGA_fpgadata_out_q_tmp32 = FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f;
+		FPGA_fpgadata_out_i_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f); // float -> int24
+		FPGA_fpgadata_out_q_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
 	}
 	else
 	{
-		FPGA_fpgadata_out_i_tmp32 = FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f;
-		FPGA_fpgadata_out_q_tmp32 = FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f;
+		FPGA_fpgadata_out_i_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
+		FPGA_fpgadata_out_q_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
 	}
 
 	// STAGE 2 out Q

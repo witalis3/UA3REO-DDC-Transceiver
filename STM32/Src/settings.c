@@ -444,7 +444,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.CICFIR_GAINER_192K_val = 17; // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_384K_val = 22; // Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 5;	   // Offset from the TX-CIC output of the compensator
-		CALIBRATE.DAC_GAINER_val = 6;		   // DAC shift
+		CALIBRATE.DAC_GAINER_val = 4;		   // DAC shift
 		// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_2200m = 29;		  // 2200m
 		CALIBRATE.rf_out_power_160m = 29;		  // 160m
