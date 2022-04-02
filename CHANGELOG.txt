@@ -1,9 +1,9 @@
 ----Version 4.0.1----
-+FPGA: Доработки цепей TX
-+STM: Доработки цепей TX
++FPGA: Доработки цепей TX, Tnx RA9N
++STM: Доработки цепей TX, Tnx RA9N
 
 ----Version 4.0.0----
-+HARDW: Новая MOTHERBOARD-RA9UCN-mod-rev31: Доработана Charge Pump цепь, рекомендуется обновить свои трансиверы в соответствии с новыми номиналами, RA9N
++HARDW: Новая MOTHERBOARD-RA9UCN-mod-rev31: Доработана Charge Pump цепь, рекомендуется обновить свои трансиверы в соответствии с новыми номиналами, Tnx RA9N
 +FPGA: Доработки и оптимизации
 +FPGA: Сокращена лишняя разрядность
 +FPGA: Объединены узлы RX_CIC, RX_CICCOMP, TX_CICCOMP, TX_CIC
