@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="DEBUG2" kind="system" version="18.1" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2022.03.28.15:22:12 -->
+ <!-- 2022.04.04.00:05:44 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1648466529</value>
+  <value>1649016341</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -209,7 +209,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="probe_width">
    <type>int</type>
-   <value>16</value>
+   <value>24</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -312,7 +312,7 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>probe</name>
     <direction>Input</direction>
-    <width>16</width>
+    <width>24</width>
     <role>probe</role>
    </port>
   </interface>
@@ -334,5 +334,5 @@ parameters are a RESULT of the module parameters. -->
   <version>18.1</version>
  </plugin>
  <reportVersion>18.1 625</reportVersion>
- <uniqueIdentifier>00FF06BB7A640000017FD04314F4</uniqueIdentifier>
+ <uniqueIdentifier>00FF06BB7A640000017FF1088BD6</uniqueIdentifier>
 </EnsembleReport>

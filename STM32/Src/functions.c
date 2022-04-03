@@ -333,7 +333,7 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 		TRX_DAC_DRV_A1 = true;
 	}
 
-	return (float32_t)calibrate_level / 100.0f * (float32_t)MAX_TX_AMPLITUDE;
+	return (float32_t)calibrate_level / 100.0f;
 }
 
 float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq)

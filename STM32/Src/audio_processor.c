@@ -1039,7 +1039,7 @@ void processTxAudio(void)
 	if (Processor_TX_MAX_amplitude_IN > 0.0f)
 	{
 		// DAC overload (clipping), sharply reduce the gain
-		if (Processor_TX_MAX_amplitude_IN > MAX_TX_AMPLITUDE) // dac range overload or alc input over 1 volt
+		if (Processor_TX_MAX_amplitude_IN > 1.0f) // dac range overload or alc input over 1 volt
 		{
 			// correct gain
 			if (APROC_TX_clip_gain > 0.0f)
@@ -1078,6 +1078,10 @@ void processTxAudio(void)
 
 	if (mode != TRX_MODE_LOOPBACK)
 	{
+		// Apply DAC bus limit
+		arm_scale_f32(APROC_Audio_Buffer_TX_I, MAX_TX_AMPLITUDE_MULT, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+		arm_scale_f32(APROC_Audio_Buffer_TX_Q, MAX_TX_AMPLITUDE_MULT, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+		
 		// Delay before the RF signal is applied, so that the relay has time to trigger
 		if ((HAL_GetTick() - TRX_TX_StartTime) < CALIBRATE.TX_StartDelay)
 		{

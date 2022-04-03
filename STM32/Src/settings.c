@@ -11,7 +11,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "4.0.1";
+char version_string[19] = "4.0.2-dev";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -444,7 +444,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.CICFIR_GAINER_192K_val = 17; // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_384K_val = 22; // Offset from the output of the CIC compensator
 		CALIBRATE.TXCICFIR_GAINER_val = 5;	   // Offset from the TX-CIC output of the compensator
-		CALIBRATE.DAC_GAINER_val = 4;		   // DAC shift
+		CALIBRATE.DAC_GAINER_val = 5;		   // DAC shift
 		// Calibrate the maximum output power for each band
 		CALIBRATE.rf_out_power_2200m = 29;		  // 2200m
 		CALIBRATE.rf_out_power_160m = 29;		  // 160m
