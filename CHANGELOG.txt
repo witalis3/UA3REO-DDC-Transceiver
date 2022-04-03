@@ -1,6 +1,7 @@
 ----Version 4.0.2----
 +FPGA: Доработки цепей TX, Tnx RA9N, RU4PN, R3MCD, UR5VLC, UN7LAS, UA9ULT
 +STM: Увеличение максимальной мощности TX, Tnx RA9N
++STM: Ссылка на меню сервисов добавлено в основное меню
 
 ----Version 4.0.1----
 +FPGA: Доработки цепей TX, Tnx RA9N
