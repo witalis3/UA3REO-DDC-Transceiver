@@ -53,8 +53,6 @@ typedef enum
 	WIFI_COMM_SW_RESTART,
 } WiFiProcessingCommand;
 
-extern RTC_HandleTypeDef hrtc;
-
 extern bool WIFI_connected;
 extern bool WIFI_CAT_server_started;
 extern volatile WiFiState WIFI_State;

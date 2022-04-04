@@ -2,19 +2,16 @@
 #include <math.h>
 #include "arm_math.h"
 
-const double EARTH_RAD = 6371; // radius in km
+static const double EARTH_RAD = 6371; // radius in km
 
 void process_locator(char locator[]);
 double distance(double lat1, double lon1, double lat2, double lon2);
 double deg2rad(double deg);
-
-float Latitude, Longitude;
-
-float Station_Latitude, Station_Longitude;
-
-float Target_Latitude, Target_Longitude;
-
 float Target_Distance(char target[]);
+
+static float Latitude, Longitude;
+static float Station_Latitude, Station_Longitude;
+static float Target_Latitude, Target_Longitude;
 
 void set_Station_Coordinates(char station[])
 {

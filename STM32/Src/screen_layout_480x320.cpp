@@ -166,7 +166,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] =
 			.GREETINGS_X = (LCD_WIDTH / 2 - 5),
 			.GREETINGS_Y = 25,
 			// Tooltip
-			.TOOLTIP_FONT = (GFXfont *)&FreeSans12pt7b,
+			.TOOLTIP_FONT = (const GFXfont *)&FreeSans12pt7b,
 			.TOOLTIP_TIMEOUT = 1000,
 			.TOOLTIP_MARGIN = 5,
 			.TOOLTIP_POS_X = (LCD_WIDTH / 2),

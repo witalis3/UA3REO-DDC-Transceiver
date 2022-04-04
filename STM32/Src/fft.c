@@ -105,15 +105,15 @@ static const float32_t *mag_coeffs[17] =
 		NULL, // 0
 		NULL, // 1
 		// 2x magnify lpf iir
-		(float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_IIR * 5]){0.8384843639921, 0, 0, 0, 0, 1, 0.5130084793341, 1, 0.1784114407685, -0.6967733943344, 0.8744089756375, 0, 0, 0, 0, 1, 1.046379755684, 1, 0.3420998857106, -0.3982809814397, 1.83222755502, 0, 0, 0, 0, 1, 1.831496024383, 1, 0.5072844084012, -0.1179052535088, 0.01953722920982, 0, 0, 0, 0, 1, 0.3029841730578, 1, 0.09694668293684, -0.9095549467394, 1, 0, 0, 0, 0},
+		(const float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_IIR * 5]){0.8384843639921, 0, 0, 0, 0, 1, 0.5130084793341, 1, 0.1784114407685, -0.6967733943344, 0.8744089756375, 0, 0, 0, 0, 1, 1.046379755684, 1, 0.3420998857106, -0.3982809814397, 1.83222755502, 0, 0, 0, 0, 1, 1.831496024383, 1, 0.5072844084012, -0.1179052535088, 0.01953722920982, 0, 0, 0, 0, 1, 0.3029841730578, 1, 0.09694668293684, -0.9095549467394, 1, 0, 0, 0, 0},
 		NULL, // 3
 		// 4x magnify lpf iir
-		(float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_IIR * 5]){0.6737499659657, 0, 0, 0, 0, 1, -1.102065194995, 1, 1.353694541279, -0.7896377861467, 0.53324811147, 0, 0, 0, 0, 1, -0.5853766477218, 1, 1.289175897987, -0.5882714065646, 0.6143152247695, 0, 0, 0, 0, 1, 1.182778527244, 1, 1.236309127239, -0.4063767082903, 0.01708381580242, 0, 0, 0, 0, 1, -1.245590418009, 1, 1.418191929315, -0.9374008035325, 1, 0, 0, 0, 0},
+		(const float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_IIR * 5]){0.6737499659657, 0, 0, 0, 0, 1, -1.102065194995, 1, 1.353694541279, -0.7896377861467, 0.53324811147, 0, 0, 0, 0, 1, -0.5853766477218, 1, 1.289175897987, -0.5882714065646, 0.6143152247695, 0, 0, 0, 0, 1, 1.182778527244, 1, 1.236309127239, -0.4063767082903, 0.01708381580242, 0, 0, 0, 0, 1, -1.245590418009, 1, 1.418191929315, -0.9374008035325, 1, 0, 0, 0, 0},
 		NULL, // 5
 		NULL, // 6
 		NULL, // 7
 		// 8x magnify lpf iir
-		(float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_IIR * 5]){0.6469981129046, 0, 0, 0, 0, 1, -1.750671284068, 1, 1.766710155669, -0.8829517893283, 0.4645312725883, 0, 0, 0, 0, 1, -1.553480572725, 1, 1.681513354365, -0.7637556184482, 0.2925692260954, 0, 0, 0, 0, 1, -0.1114766808264, 1, 1.601891439147, -0.6499504503566, 0.01652325734055, 0, 0, 0, 0, 1, -1.797298202754, 1, 1.831125104215, -0.9660534813317, 1, 0, 0, 0, 0},
+		(const float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_IIR * 5]){0.6469981129046, 0, 0, 0, 0, 1, -1.750671284068, 1, 1.766710155669, -0.8829517893283, 0.4645312725883, 0, 0, 0, 0, 1, -1.553480572725, 1, 1.681513354365, -0.7637556184482, 0.2925692260954, 0, 0, 0, 0, 1, -0.1114766808264, 1, 1.601891439147, -0.6499504503566, 0.01652325734055, 0, 0, 0, 0, 1, -1.797298202754, 1, 1.831125104215, -0.9660534813317, 1, 0, 0, 0, 0},
 		NULL, // 9
 		NULL, // 10
 		NULL, // 11
@@ -122,7 +122,7 @@ static const float32_t *mag_coeffs[17] =
 		NULL, // 14
 		NULL, // 15
 		// 16x magnify lpf iir
-		(float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_IIR * 5]){0.6500044972642, 0, 0, 0, 0, 1, -1.935616780918, 1, 1.908632776595, -0.9387888949475, 0.4599444315799, 0, 0, 0, 0, 1, -1.880017827578, 1, 1.851418291083, -0.8732990221737, 0.2087317940803, 0, 0, 0, 0, 1, -1.278402634611, 1, 1.794539349192, -0.80764043772, 0.01645106748385, 0, 0, 0, 0, 1, -1.948135342532, 1, 1.948194658987, -0.9825675157696, 1, 0, 0, 0, 0},
+		(const float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_IIR * 5]){0.6500044972642, 0, 0, 0, 0, 1, -1.935616780918, 1, 1.908632776595, -0.9387888949475, 0.4599444315799, 0, 0, 0, 0, 1, -1.880017827578, 1, 1.851418291083, -0.8732990221737, 0.2087317940803, 0, 0, 0, 0, 1, -1.278402634611, 1, 1.794539349192, -0.80764043772, 0.01645106748385, 0, 0, 0, 0, 1, -1.948135342532, 1, 1.948194658987, -0.9825675157696, 1, 0, 0, 0, 0},
 };
 
 static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
@@ -132,13 +132,13 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		// 2x magnify decimate fir
 		{
 			.numTaps = ZOOMFFT_DECIM_STAGES_FIR,
-			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
+			.pCoeffs = (const float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
 			.pState = NULL},
 		{0}, // 3
 		// 4x magnify decimate fir
 		{
 			.numTaps = ZOOMFFT_DECIM_STAGES_FIR,
-			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
+			.pCoeffs = (const float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
 			.pState = NULL},
 		{0}, // 5
 		{0}, // 6
@@ -146,7 +146,7 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		// 8x magnify decimate fir
 		{
 			.numTaps = ZOOMFFT_DECIM_STAGES_FIR,
-			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
+			.pCoeffs = (const float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
 			.pState = NULL},
 		{0}, // 9
 		{0}, // 10
@@ -158,7 +158,7 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate[17] =
 		// 16x magnify decimate fir
 		{
 			.numTaps = ZOOMFFT_DECIM_STAGES_FIR,
-			.pCoeffs = (float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
+			.pCoeffs = (const float32_t *)(const float32_t[ZOOMFFT_DECIM_STAGES_FIR]){-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792},
 			.pState = NULL},
 };
 
@@ -182,9 +182,8 @@ void FFT_PreInit(void)
 		float64_t max = 0.0;
 		float64_t tg = pow(10.0, atten / 20.0);
 		float64_t x0 = cosh((1.0 / ((float64_t)FFT_SIZE - 1.0)) * acosh(tg));
-		float64_t M = (FFT_SIZE - 1) / 2;
-		if ((FFT_SIZE % 2) == 0)
-			M = M + 0.5; /* handle even length windows */
+		float64_t M = (float32_t)(FFT_SIZE - 1) / 2.0f;
+		//if ((FFT_SIZE % 2) == 0) M = M + 0.5; /* handle even length windows */
 		for (uint32_t nn = 0; nn < ((FFT_SIZE / 2) + 1); nn++)
 		{
 			float64_t n = nn - M;
@@ -192,7 +191,7 @@ void FFT_PreInit(void)
 			for (uint32_t i = 1; i <= M; i++)
 			{
 				float64_t cheby_poly = 0.0;
-				float64_t cp_x = x0 * cos(F_PI * i / (float64_t)FFT_SIZE);
+				float64_t cp_x = x0 * arm_cos_f32(F_PI * i / (float64_t)FFT_SIZE);
 				float64_t cp_n = FFT_SIZE - 1;
 				if (fabs(cp_x) <= 1)
 					cheby_poly = cos(cp_n * acos(cp_x));
@@ -303,8 +302,8 @@ void FFT_bufferPrepare(void)
 		return;*/
 	fft_charge_ready = false;
 
-	float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_B : (float32_t *)&FFTInput_I_A; // inverted
-	float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_B : (float32_t *)&FFTInput_Q_A;
+	float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)FFTInput_I_B : (float32_t *)FFTInput_I_A; // inverted
+	float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)FFTInput_Q_B : (float32_t *)FFTInput_Q_A;
 
 	// Process DC corrector filter
 	if (!TRX_on_TX())
@@ -783,7 +782,7 @@ bool FFT_printFFT(void)
 	if (TRX_on_TX() && maxValueFFT < FFT_TX_MIN_LEVEL)
 		maxValueFFT = FFT_TX_MIN_LEVEL;
 
-	// save values ​​for switching RX / TX
+    // save values for TX/RX
 	if (TRX_on_TX())
 		maxValueFFT_tx = maxValueFFT;
 	else
@@ -841,7 +840,7 @@ bool FFT_printFFT(void)
 		{
 			if (fft_peaks[fft_x] <= fft_header[fft_x])
 				fft_peaks[fft_x] = fft_header[fft_x];
-			else if (fft_peaks[fft_x] > 0)
+			else
 				fft_peaks[fft_x]--;
 		}
 	}

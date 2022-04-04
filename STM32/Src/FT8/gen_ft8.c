@@ -20,8 +20,7 @@
 #include "lcd_driver.h" //For debug
 #include "lcd.h"		//For debug
 
-char message[20];
-
+static char message[20];
 extern char Station_Call[];
 extern char Locator[];
 
@@ -37,7 +36,7 @@ void set_message(uint16_t index)
 	char blank[] = "                   ";
 	char seventy_three[] = "RR73";
 	char seventy_three2[] = "73";
-	char Reply_State[20];
+	//char Reply_State[20];
 
 	strcpy(message, blank);
 	//		message_state = 0;

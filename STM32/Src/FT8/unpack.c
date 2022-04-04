@@ -8,13 +8,13 @@
 // extern _Bool false;
 
 // const uint32_t NBASE = 37L*36L*10L*27L*27L*27L;
-const uint32_t MAX22 = 4194304L;
-const uint32_t NTOKENS = 2063592L;
-const uint16_t MAXGRID4 = 32400L;
+static const uint32_t MAX22 = 4194304L;
+static const uint32_t NTOKENS = 2063592L;
+static const uint16_t MAXGRID4 = 32400L;
 
 // n28 is a 28-bit integer, e.g. n28a or n28b, containing all the
 // call sign bits from a packed message.
-int unpack28(uint32_t n28, uint8_t ip, uint8_t i3, char *result)
+static int unpack28(uint32_t n28, uint8_t ip, uint8_t i3, char *result)
 {
     // Check for special tokens DE, QRZ, CQ, CQ_nnn, CQ_aaaa
     if (n28 < NTOKENS)
@@ -92,7 +92,7 @@ int unpack28(uint32_t n28, uint8_t ip, uint8_t i3, char *result)
 
     // Skip trailing and leading whitespace in case of a short callsign
     strcpy(result, trim(callsign));
-    if (strlen(result) == 0)
+    if (result[0] != '\0')
         return -1;
 
     // Check if we should append /R or /P suffix
@@ -111,7 +111,7 @@ int unpack28(uint32_t n28, uint8_t ip, uint8_t i3, char *result)
     return 0; // Success
 }
 
-int unpack_type1(const uint8_t *a77, uint8_t i3, char *field1, char *field2, char *field3)
+static int unpack_type1(const uint8_t *a77, uint8_t i3, char *field1, char *field2, char *field3)
 {
     uint32_t n28a, n28b;
     uint16_t igrid4;
@@ -190,7 +190,7 @@ int unpack_type1(const uint8_t *a77, uint8_t i3, char *field1, char *field2, cha
             strcpy(field3, "RR73");
         else if (irpt == 4)
             strcpy(field3, "73");
-        else if (irpt >= 5)
+        else
         {
             char *dst = field3;
             // Extract signal report as a two digit number with a + or - sign
@@ -207,7 +207,7 @@ int unpack_type1(const uint8_t *a77, uint8_t i3, char *field1, char *field2, cha
     return 0; // Success
 }
 
-int unpack_text(const uint8_t *a71, char *text)
+static int unpack_text(const uint8_t *a71, char *text)
 {
     // TODO: test
     uint8_t b71[9];
@@ -238,7 +238,7 @@ int unpack_text(const uint8_t *a71, char *text)
     return 0; // Success
 }
 
-int unpack_telemetry(const uint8_t *a71, char *telemetry)
+static int unpack_telemetry(const uint8_t *a71, char *telemetry)
 {
     uint8_t b71[9];
 
@@ -267,7 +267,7 @@ int unpack_telemetry(const uint8_t *a71, char *telemetry)
 
 // none standard for wsjt-x 2.0
 // by KD8CEC
-int unpack_nonstandard(const uint8_t *a77, char *field1, char *field2, char *field3)
+static int unpack_nonstandard(const uint8_t *a77, char *field1, char *field2, char *field3)
 {
     /*
         wsjt-x 2.1.0 rc5

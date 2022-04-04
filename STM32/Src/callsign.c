@@ -482,7 +482,7 @@ static void CALLSIGN_INFO_keyboardHandler(uint32_t parameter)
 	str[0] = parameter;
 	if(parameter == '<') //backspace
 	{
-		if(strlen(entered_callsign) > 0)
+		if(entered_callsign[0] != '\0')
 			entered_callsign[strlen(entered_callsign) - 1] = 0;
 	}
 	else if(strlen(entered_callsign) < 8)
@@ -513,7 +513,7 @@ void CALLSIGN_INFO_Draw(void)
 	addSymbols(tmp, tmp, 15+8, " ", true);
 	LCDDriver_printText(tmp, 10, 30, FG_COLOR, BG_COLOR, 2);
 	
-	if(strlen(entered_callsign) > 0)
+	if(entered_callsign[0] != '\0')
 	{
 		if (info == NULL)
 		{

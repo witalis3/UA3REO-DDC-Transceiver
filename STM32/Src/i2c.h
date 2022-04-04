@@ -47,8 +47,8 @@ extern I2C_DEVICE I2C_TOUCHPAD;
 #define SCK_CLR HAL_GPIO_WritePin(dev->SCK_PORT, dev->SCK_PIN, GPIO_PIN_RESET)
 
 extern void i2c_begin(I2C_DEVICE *dev);
-extern void i2c_beginTransmission_u8(I2C_DEVICE *dev, uint8_t);
-extern void i2c_write_u8(I2C_DEVICE *dev, uint8_t);
+extern void i2c_beginTransmission_u8(I2C_DEVICE *dev, uint8_t slave_address);
+extern void i2c_write_u8(I2C_DEVICE *dev, uint8_t value);
 extern void i2c_shift_out(I2C_DEVICE *dev, uint8_t val);
 extern void i2c_start(I2C_DEVICE *dev);
 extern void i2c_stop(I2C_DEVICE *dev);

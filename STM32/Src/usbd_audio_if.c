@@ -3,7 +3,7 @@
 #include "wm8731.h"
 #include "trx_manager.h"
 
-extern USBD_HandleTypeDef hUsbDeviceFS;
+// extern USBD_HandleTypeDef hUsbDeviceFS;
 
 static int8_t AUDIO_Init_FS(void);
 static int8_t AUDIO_DeInit_FS(void);

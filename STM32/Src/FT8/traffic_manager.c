@@ -12,7 +12,7 @@
 #include "lcd_driver.h" //For debug
 #include "lcd.h"		//For debug
 
-extern RTC_HandleTypeDef hrtc; // used for the "date" and "time" acquisition
+//extern RTC_HandleTypeDef hrtc; // used for the "date" and "time" acquisition
 
 uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
 uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
@@ -23,8 +23,8 @@ char Locator[7];	  // four character locator  + /0	for example = "JN48"
 
 #define FT8_TONE_SPACING 6.25
 
-extern uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
-extern uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
+//extern uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
+//extern uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 extern uint16_t cursor_line;
 
 int Beacon_State; //
@@ -106,7 +106,7 @@ void set_Xmit_Freq(uint32_t BandFreq, uint16_t Freq)
 
 void set_FT8_Tone(char ft8_tone)
 {
-	char ctmp[20] = {0}; // Debug
+	//char ctmp[20] = {0}; // Debug
 	uint32_t F_FT8;
 
 	//  F_FT8 =  F_Long + ft8_tone * FT8_TONE_SPACING;

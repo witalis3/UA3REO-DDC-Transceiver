@@ -56,7 +56,7 @@ bool VODECODER_Process(void)
 		}
 		return true;
 	}
-	if (!SD_Play_Buffer_Ready && !SD_CommandInProcess)
+	if (!SD_CommandInProcess)
 		SD_doCommand(SDCOMM_PROCESS_PLAY, false);
 	return false;
 }

@@ -876,7 +876,7 @@ int8_t getChannelbyFreq(uint64_t freq, bool txfreq)
 	int8_t band = getBandFromFreq(freq, false);
 	if (band != -1)
 	{
-		for (uint8_t ind = 0; ind < BANDS[band].channelsCount; ind++)
+		for (int8_t ind = 0; ind < BANDS[band].channelsCount; ind++)
 		{
 			if (BANDS[band].channels[ind].rxFreq == freq && !txfreq)
 				return ind;

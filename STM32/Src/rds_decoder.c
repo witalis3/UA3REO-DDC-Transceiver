@@ -15,9 +15,9 @@
 
 char RDS_Decoder_Text[RDS_DECODER_STRLEN + 1] = {0}; // decoded string
 
-char RDS_Decoder_0A[RDS_STR_MAXLEN];
-char RDS_Decoder_2A[RDS_STR_MAXLEN];
-char RDS_Decoder_2B[RDS_STR_MAXLEN];
+static char RDS_Decoder_0A[RDS_STR_MAXLEN];
+static char RDS_Decoder_2A[RDS_STR_MAXLEN];
+static char RDS_Decoder_2B[RDS_STR_MAXLEN];
 
 // signal
 static float32_t RDS_Signal_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
@@ -31,7 +31,7 @@ static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_I_Filter;
 // static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_Q_Filter;
 // decimator
 static const float32_t DECIMATE_FIR_Coeffs[4] = {-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792};
-arm_fir_decimate_instance_f32 DECIMATE_FIR_I =
+static arm_fir_decimate_instance_f32 DECIMATE_FIR_I =
 	{
 		.M = RDS_DECIMATOR,
 		.numTaps = 4,
@@ -190,7 +190,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 					bit1_state = filtered_state_prev;
 					bit1_ready = true;
 				}
-				else if (bit1_ready && !bit2_ready)
+				else if (!bit2_ready)
 				{
 					bit2_state = filtered_state_prev;
 					bit2_ready = true;
@@ -319,7 +319,7 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 		int index = (groupB & 0xf) * 4; // text segment
 		bool abFlag = ((groupB >> 4) & 0x1) == 1;
 
-		if (index < 0 || index > (RDS_STR_MAXLEN - 5))
+		if (index > (RDS_STR_MAXLEN - 5))
 			return;
 
 		if (abFlag)
@@ -345,8 +345,7 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 	{
 		int index = (groupB & 0x3) * 2; // text segment
 
-		if (index < 0 || index > (RDS_STR_MAXLEN - 3))
-			return;
+		//if (index > (RDS_STR_MAXLEN - 3)) return;
 
 		RDS_Decoder_0A[index] = cleanASCIIgarbage((char)(groupD >> 8));
 		RDS_Decoder_0A[index + 1] = cleanASCIIgarbage((char)(groupD & 0xff));

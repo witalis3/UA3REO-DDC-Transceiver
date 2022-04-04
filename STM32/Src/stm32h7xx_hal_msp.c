@@ -22,14 +22,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 /* USER CODE BEGIN Includes */
-extern DMA_HandleTypeDef hdma_spi3_tx;
-extern DMA_HandleTypeDef hdma_spi3_rx;
 /* USER CODE END Includes */
-extern DMA_HandleTypeDef hdma_spi2_rx;
-
-extern DMA_HandleTypeDef hdma_spi2_tx;
-
-extern DMA_HandleTypeDef hdma_usart6_rx;
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */

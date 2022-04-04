@@ -22,7 +22,7 @@ extern int K;
 
 extern int M;
 
-extern int K_BYTES;
+//extern int K_BYTES;
 
 int max_score;
 
@@ -63,9 +63,7 @@ int find_sync(const uint8_t *power, int num_blocks, int num_bins, const uint8_t 
 
                         const uint8_t *p8 = power + offset;
 
-                        score += 8 * p8[sync_map[k]] -
-                                 p8[0] - p8[1] - p8[2] - p8[3] -
-                                 p8[4] - p8[5] - p8[6] - p8[7];
+                        score += 8 * p8[sync_map[k]] - p8[0] - p8[1] - p8[2] - p8[3] - p8[4] - p8[5] - p8[6] - p8[7];
 
                         /*
                         // Check only the neighbors of the expected symbol frequency- and time-wise

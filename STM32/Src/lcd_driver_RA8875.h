@@ -1,7 +1,7 @@
-#ifndef _LCDDRIVER_RA8875_H_
+#ifndef LCDDRIVER_RA8875_H_
 #include "settings.h"
 #if (defined(LCD_RA8875))
-#define _LCDDRIVER_RA8875_H_
+#define LCDDRIVER_RA8875_H_
 
 #define LCD_FSMC_COMM_ADDR 0xC0080000 // remapped
 #define LCD_FSMC_DATA_ADDR 0xC0000000

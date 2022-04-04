@@ -167,20 +167,20 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 	float32_t TX_AGC_STEPSIZE_DOWN = 0.0f;
 	switch (mode)
 	{
+    case TRX_MODE_NFM:
+	case TRX_MODE_WFM:
+	case TRX_MODE_AM:
+	case TRX_MODE_SAM:
+		TX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
+		TX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
+		break;
+
 	case TRX_MODE_LSB:
 	case TRX_MODE_USB:
 	case TRX_MODE_LOOPBACK:
 	default:
 		TX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.TX_Compressor_speed_SSB;
 		TX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.TX_Compressor_speed_SSB;
-		break;
-
-	case TRX_MODE_NFM:
-	case TRX_MODE_WFM:
-	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
-		TX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
-		TX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
 		break;
 	}
 
@@ -245,20 +245,20 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 	// gain limitation
 	switch (mode)
 	{
-	case TRX_MODE_LSB:
-	case TRX_MODE_USB:
-	case TRX_MODE_LOOPBACK:
-	default:
-		if (AGC_TX.need_gain_db > TRX.TX_Compressor_maxgain_SSB)
-			AGC_TX.need_gain_db = TRX.TX_Compressor_maxgain_SSB;
-		break;
-
 	case TRX_MODE_NFM:
 	case TRX_MODE_WFM:
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
 		if (AGC_TX.need_gain_db > TRX.TX_Compressor_maxgain_AMFM)
 			AGC_TX.need_gain_db = TRX.TX_Compressor_maxgain_AMFM;
+		break;
+
+	case TRX_MODE_LSB:
+	case TRX_MODE_USB:
+	case TRX_MODE_LOOPBACK:
+	default:
+		if (AGC_TX.need_gain_db > TRX.TX_Compressor_maxgain_SSB)
+			AGC_TX.need_gain_db = TRX.TX_Compressor_maxgain_SSB;
 		break;
 	}
 

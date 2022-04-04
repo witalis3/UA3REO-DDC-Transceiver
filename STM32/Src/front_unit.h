@@ -27,20 +27,20 @@ typedef struct
 
 typedef struct
 {
-	uint8_t port;
-	uint8_t channel;
-	FRONT_UNIT_CONTROL_TYPE type;
-	uint16_t tres_min;
-	uint16_t tres_max;
-	bool state;
-	bool prev_state;
-	uint32_t start_hold_time;
-	bool afterhold;
-	bool work_in_menu;
-	char name[16];
-	uint32_t parameter;
+    uint32_t parameter;
+    uint32_t start_hold_time;
 	void (*clickHandler)(uint32_t parameter);
 	void (*holdHandler)(uint32_t parameter);
+    uint16_t tres_min;
+	uint16_t tres_max;
+	uint8_t port;
+	uint8_t channel;
+	bool state;
+	bool prev_state;
+	bool afterhold;
+	bool work_in_menu;
+    FRONT_UNIT_CONTROL_TYPE type;
+	char name[16];
 } PERIPH_FrontPanel_Button;
 
 extern PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[];

@@ -127,10 +127,7 @@ void SELF_TEST_Draw(void)
 			if (prev_adc_state[i] != 0 && prev_adc_state[i] != bit)
 				ok[i] = true;
 
-			if (bit)
-				prev_adc_state[i] = bit;
-			else
-				prev_adc_state[i] = bit;
+			prev_adc_state[i] = bit;
 		}
 
 		LCDDriver_printText("ADC BITS: ", margin_left, pos_y, FG_COLOR, BG_COLOR, 2);

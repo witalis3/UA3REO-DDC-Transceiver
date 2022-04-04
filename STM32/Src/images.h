@@ -1,5 +1,5 @@
-#ifndef __IMAGES_H
-#define __IMAGES_H
+#ifndef IMAGES_H
+#define IMAGES_H
 
 #include "stm32h7xx_hal.h"
 #include "functions.h"

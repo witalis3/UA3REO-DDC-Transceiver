@@ -1,8 +1,8 @@
 #include "INA226_PWR_monitor.h"
 #include "i2c.h"
 
-float Voltage = 0;
-float Current = 0;
+static float Voltage = 0;
+static float Current = 0;
 
 uint16_t INA226_Read2Byte(uint8_t reg_addr)
 {
@@ -10,7 +10,7 @@ uint16_t INA226_Read2Byte(uint8_t reg_addr)
 	uint16_t temp = 0;
 
 	uint8_t NumBytes = 5;
-	uint8_t buf[6] = {0};
+	//uint8_t buf[6] = {0};
 
 	i2c_beginTransmission_u8(&I2C_TOUCHPAD, INA226_ADDR);
 	i2c_write_u8(&I2C_TOUCHPAD, reg_addr);

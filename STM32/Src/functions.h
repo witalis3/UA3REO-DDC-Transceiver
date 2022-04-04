@@ -22,9 +22,9 @@ __asm(".global __use_no_heap\n\t");
 //#define ALIGN_32BIT __attribute__((aligned(32)))
 
 // UINT from BINARY STRING
-#define HEX__(n) 0x##n##LU
-#define B8__(x) ((x & 0x0000000FLU) ? 1 : 0) + ((x & 0x000000F0LU) ? 2 : 0) + ((x & 0x00000F00LU) ? 4 : 0) + ((x & 0x0000F000LU) ? 8 : 0) + ((x & 0x000F0000LU) ? 16 : 0) + ((x & 0x00F00000LU) ? 32 : 0) + ((x & 0x0F000000LU) ? 64 : 0) + ((x & 0xF0000000LU) ? 128 : 0)
-#define B8(d) ((unsigned char)B8__(HEX__(d)))
+#define HEX_(n) 0x##n##LU
+#define B8_(x) (((x) & 0x0000000FLU) ? 1 : 0) + (((x) & 0x000000F0LU) ? 2 : 0) + (((x) & 0x00000F00LU) ? 4 : 0) + (((x) & 0x0000F000LU) ? 8 : 0) + (((x) & 0x000F0000LU) ? 16 : 0) + (((x) & 0x00F00000LU) ? 32 : 0) + (((x) & 0x0F000000LU) ? 64 : 0) + (((x) & 0xF0000000LU) ? 128 : 0)
+#define B8(d) ((unsigned char)B8_(HEX_(d)))
 
 #define BYTE_TO_BINARY(byte)     \
   (byte & 0x80 ? '1' : '0'),     \
@@ -215,16 +215,5 @@ extern void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instanc
 extern char cleanASCIIgarbage(char chr);
 extern bool textStartsWith(const char *a, const char *b);
 extern void *alloc_to_wtf(uint32_t size, bool reset);
-	
-inline float sqrtf_f32i(float f)
-{
-  float32_t res;
-  __ASM("VSQRT.F32 %0,%1"
-        : "=t"(res)
-        : "t"(f));
-  // const int result = 0x1fbb4000 + (*(int*)&f >> 1);
-  // return *(float*)&result;
-  return res;
-}
 
 #endif

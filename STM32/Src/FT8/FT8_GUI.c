@@ -6,7 +6,7 @@
 #include "gen_ft8.h"
 
 uint8_t FT8_Menu_Idx;
-uint8_t Sel_Mess_Idx; // Selected recieved mesage index (used when we want to answer somebodey)
+static uint8_t Sel_Mess_Idx; // Selected recieved mesage index (used when we want to answer somebodey)
 
 static ButtonStruct sButtonData[] = {
 	{/*text*/ " CQ ", // button 0
@@ -38,7 +38,7 @@ void Unarm_FT8_Buttons(void)
 
 void drawButton(uint16_t i)
 {
-	char ctmp[5] = {0};
+	//char ctmp[5] = {0};
 
 	uint16_t color;
 	if (sButtonData[i].state)

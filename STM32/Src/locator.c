@@ -11,7 +11,7 @@
 bool SYSMENU_locator_info_opened = false;
 
 // Private Variables
-char entered_locator[32] = {0};
+static char entered_locator[32] = {0};
 
 // Prototypes
 

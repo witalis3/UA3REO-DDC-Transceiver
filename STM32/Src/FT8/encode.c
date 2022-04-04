@@ -13,13 +13,13 @@ extern int K;
 
 extern int M;
 
-extern int K_BYTES;
+//extern int K_BYTES;
 
 extern uint16_t CRC_POLYNOMIAL; // CRC-14 polynomial without the leading (MSB) 1
 extern int CRC_WIDTH;
 
 // Returns 1 if an odd number of bits are set in x, zero otherwise
-uint8_t parity8(uint8_t x)
+static uint8_t parity8(uint8_t x)
 {
     x ^= x >> 4; // a b c d ae bf cg dh
     x ^= x >> 2; // a b ac bd cae dbf aecg bfdh

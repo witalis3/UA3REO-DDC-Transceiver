@@ -17,7 +17,7 @@ static uint16_t debug_tx_fifo_head = 0;
 static uint16_t debug_tx_fifo_tail = 0;
 static uint8_t lineCoding[7] = {0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08}; // 115200bps, 1stop, no parity, 8bit
 
-extern USBD_HandleTypeDef hUsbDeviceFS;
+// extern USBD_HandleTypeDef hUsbDeviceFS;
 
 static int8_t DEBUG_Init_FS(void);
 static int8_t DEBUG_DeInit_FS(void);

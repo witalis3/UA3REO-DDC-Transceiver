@@ -2314,8 +2314,6 @@ static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout(int8_t direction)
 {
 	if (TRX.FFT_DXCluster_Timeout > 0 || direction > 0)
 		TRX.FFT_DXCluster_Timeout += direction;
-	if (TRX.FFT_DXCluster_Timeout < 0)
-		TRX.FFT_DXCluster_Timeout = 0;
 	if (TRX.FFT_DXCluster_Timeout > 30)
 		TRX.FFT_DXCluster_Timeout = 30;
 
@@ -5749,8 +5747,6 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 		sprintf(ctmp, "%d%d%d%d", bitRead((uint8_t)*menuElement->value, 3), bitRead((uint8_t)*menuElement->value, 2), bitRead((uint8_t)*menuElement->value, 1), bitRead((uint8_t)*menuElement->value, 0));
 		break;
 	case SYSMENU_ENUM:
-		sprintf(ctmp, "%s", menuElement->enumerate[(uint8_t)*menuElement->value]);
-		break;
 	case SYSMENU_ENUMR:
 		sprintf(ctmp, "%s", menuElement->enumerate[(uint8_t)*menuElement->value]);
 		break;
@@ -5758,9 +5754,7 @@ static void drawSystemMenuElement(struct sysmenu_item_handler *menuElement, bool
 		sprintf(ctmp, "%d", (uint16_t)*menuElement->value);
 		break;
 	case SYSMENU_UINT32:
-		sprintf(ctmp, "%u", (uint32_t)*menuElement->value);
-		break;
-	case SYSMENU_UINT32R:
+    case SYSMENU_UINT32R:
 		sprintf(ctmp, "%u", (uint32_t)*menuElement->value);
 		break;
 	case SYSMENU_UINT64:
@@ -5999,7 +5993,7 @@ static void setCurrentMenuIndex(uint8_t index)
 			sysmenu_wrappers[i].currentIndex = index;
 }
 
-static uint8_t getCurrentMenuIndex()
+static uint8_t getCurrentMenuIndex(void)
 {
 	uint8_t count = sizeof(sysmenu_wrappers) / sizeof(sysmenu_wrappers[0]);
 	for (uint8_t i = 0; i < count; i++)

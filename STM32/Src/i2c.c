@@ -30,7 +30,7 @@ I2C_DEVICE I2C_TOUCHPAD = {
 	.i2c_tx_buf_overflow = false,
 };
 
-static uint8_t i2c_writeOneByte(I2C_DEVICE *dev, uint8_t);
+static uint8_t i2c_writeOneByte(I2C_DEVICE *dev, uint8_t byte);
 
 static void SDA_OUT(I2C_DEVICE *dev)
 {

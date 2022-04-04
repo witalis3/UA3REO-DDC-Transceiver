@@ -146,7 +146,7 @@ arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX2_AUDIO_Q =
 float32_t CTCSS_Freqs[CTCSS_FREQS_COUNT] = {0.0, 33.0, 35.4, 36.6, 37.9, 39.6, 44.4, 47.5, 49.2, 51.2, 53.0, 54.9, 56.8, 58.8, 63.0, 67.0, 69.3, 71.9, 74.4, 77.0, 79.7, 82.5, 85.4, 88.5, 91.5, 94.8, 97.4, 100.0, 103.5, 107.2, 110.9, 114.8, 118.8, 123.0, 127.3, 131.8, 136.5, 141.3, 146.2, 150.0, 151.4, 156.7, 159.8, 162.2, 165.5, 167.9, 171.3, 173.8, 177.3, 179.9, 183.5, 186.2, 189.9, 192.8, 196.6, 199.5, 203.5, 206.5, 210.7, 218.1, 225.7, 229.1, 233.6, 241.8, 250.3, 254.1};
 
 // Public variables
-const uint32_t AUTIO_FILTERS_HPF_LIST[CW_HPF_COUNT] = {0, 60, 100, 200, 300, 400, 500, 600};
+//const uint32_t AUTIO_FILTERS_HPF_LIST[CW_HPF_COUNT] = {0, 60, 100, 200, 300, 400, 500, 600};
 const uint32_t AUTIO_FILTERS_LPF_CW_LIST[CW_LPF_COUNT] = {50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000};
 const uint32_t AUTIO_FILTERS_LPF_SSB_LIST[SSB_LPF_COUNT] = {1400, 1600, 1800, 2100, 2300, 2500, 2700, 2900, 3000, 3200, 3400};
 const uint32_t AUTIO_FILTERS_LPF_AM_LIST[AM_LPF_COUNT] = {2100, 2300, 2500, 2700, 2900, 3000, 3200, 3400, 3600, 3800, 4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000};
@@ -174,8 +174,8 @@ arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX1_HPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_HPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_TX_HPF_I;
-arm_biquad_cascade_df2T_instance_f32 IIR_RX1_Squelch_HPF;
-arm_biquad_cascade_df2T_instance_f32 IIR_RX2_Squelch_HPF;
+//arm_biquad_cascade_df2T_instance_f32 IIR_RX1_Squelch_HPF;
+//arm_biquad_cascade_df2T_instance_f32 IIR_RX2_Squelch_HPF;
 arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER = {NOTCH_STAGES, NOTCH_RX1_State, NOTCH_RX1_Coeffs}; // manual notch filter
 arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER = {NOTCH_STAGES, NOTCH_RX2_State, NOTCH_RX2_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_I_LOW_FILTER = {EQ_STAGES, EQ_RX_I_LOW_FILTER_State, EQ_RX_LOW_FILTER_Coeffs};
@@ -209,8 +209,8 @@ static void arm_biquad_cascade_df2T_initNoClean_f32(arm_biquad_cascade_df2T_inst
 void InitAudioFilters(void)
 {
 	// TX Hilbert
-	arm_fir_init_f32(&FIR_TX_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
-	arm_fir_init_f32(&FIR_TX_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_Tx_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_TX_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs[0], (float32_t *)&Fir_Tx_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
+	arm_fir_init_f32(&FIR_TX_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs[0], (float32_t *)&Fir_Tx_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
 
 	// AGC K-Weight LKFS BS.1770
 	calcBiquad(BIQUAD_highShelf, 1500, TRX_SAMPLERATE, 1.0f / sqrtf(2), 4.0f, AGC_RX_KW_HSHELF_FILTER_Coeffs);
@@ -228,28 +228,12 @@ void InitAudioFilters(void)
 void ReinitAudioFilters(void)
 {
 	// RX1 Hilbert
-	if (CurrentVFO->Mode == TRX_MODE_CW)
-	{
-		arm_fir_init_f32(&FIR_RX1_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
-		arm_fir_init_f32(&FIR_RX1_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
-	}
-	else
-	{
-		arm_fir_init_f32(&FIR_RX1_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
-		arm_fir_init_f32(&FIR_RX1_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX1_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
-	}
+    arm_fir_init_f32(&FIR_RX1_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs[0], (float32_t *)&Fir_RX1_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
+    arm_fir_init_f32(&FIR_RX1_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs[0], (float32_t *)&Fir_RX1_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
 
 	// RX2 Hilbert
-	if (SecondaryVFO->Mode == TRX_MODE_CW)
-	{
-		arm_fir_init_f32(&FIR_RX2_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
-		arm_fir_init_f32(&FIR_RX2_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
-	}
-	else
-	{
-		arm_fir_init_f32(&FIR_RX2_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
-		arm_fir_init_f32(&FIR_RX2_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs, (float32_t *)&Fir_RX2_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
-	}
+    arm_fir_init_f32(&FIR_RX2_Hilbert_I, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_I_coeffs[0], (float32_t *)&Fir_RX2_Hilbert_State_I[0], AUDIO_BUFFER_HALF_SIZE);
+    arm_fir_init_f32(&FIR_RX2_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs[0], (float32_t *)&Fir_RX2_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
 
 	// parameters
 	uint32_t hpf_tx_width = 300;  // default settings
@@ -552,6 +536,7 @@ static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, 
 		}
 		break;
 	case BIQUAD_highShelf:
+    default:
 		if (peakGain >= 0.0f)
 		{
 			norm = 1.0f / (1.0f + SQRT2 * K + K * K);

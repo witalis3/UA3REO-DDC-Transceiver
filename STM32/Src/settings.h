@@ -307,14 +307,13 @@ typedef enum
 // Save settings by band
 typedef struct
 {
+    uint64_t Freq;
 	float32_t ATT_DB;
-	uint64_t Freq;
 	uint8_t Mode;
 	uint8_t DNR_Type;
 	uint8_t BEST_ATU_I;
 	uint8_t BEST_ATU_C;
 	int8_t FM_SQL_threshold_dbm;
-	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 	bool LNA;
 	bool ATT;
 	bool ANT;
@@ -323,6 +322,7 @@ typedef struct
 	bool AGC;
 	bool SQL;
 	bool BEST_ATU_T;
+    TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
 
 extern struct TRX_SETTINGS

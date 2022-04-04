@@ -16,42 +16,45 @@ extern uint16_t cursor_line;
 
 extern int num_decoded_msg;
 
-int master_offset, offset_step;
+static int master_offset, offset_step;
 int CQ_Flag;
 
 #if (defined(LAY_800x480))
 uint8_t *export_fft_power;
-q15_t *window_dsp_buffer;
-uint8_t *WF_index;
-float *window;
-q15_t *FFT_Scale;
-q15_t *FFT_Magnitude;
-int32_t *FFT_Mag_10;
-uint8_t *FFT_Buffer;
-float *mag_db;
+static q15_t *window_dsp_buffer;
+
+static uint8_t *WF_index;
+static float *window;
+
+static q15_t *FFT_Scale;
+static q15_t *FFT_Magnitude;
+static int32_t *FFT_Mag_10;
+static uint8_t *FFT_Buffer;
+static float *mag_db;
+
 q15_t *dsp_buffer;
 q15_t *dsp_output;
 q15_t *input_gulp;
 #else
 IRAM2 uint8_t export_fft_power[ft8_msg_samples * ft8_buffer * 4];
-SRAM q15_t window_dsp_buffer[FFT_SIZE_FT8];
+static SRAM q15_t window_dsp_buffer[FFT_SIZE_FT8];
 
-SRAM uint8_t WF_index[WF_index_size];
-SRAM float window[FFT_SIZE_FT8];
+static SRAM uint8_t WF_index[WF_index_size];
+static SRAM float window[FFT_SIZE_FT8];
 
-SRAM q15_t FFT_Scale[FFT_SIZE_FT8 * 2];
-SRAM q15_t FFT_Magnitude[FFT_SIZE_FT8];
-SRAM int32_t FFT_Mag_10[FFT_SIZE_FT8 / 2];
-SRAM uint8_t FFT_Buffer[FFT_SIZE_FT8 / 2];
-SRAM float mag_db[FFT_SIZE_FT8 / 2 + 1];
+static SRAM q15_t FFT_Scale[FFT_SIZE_FT8 * 2];
+static SRAM q15_t FFT_Magnitude[FFT_SIZE_FT8];
+static SRAM int32_t FFT_Mag_10[FFT_SIZE_FT8 / 2];
+static SRAM uint8_t FFT_Buffer[FFT_SIZE_FT8 / 2];
+static SRAM float mag_db[FFT_SIZE_FT8 / 2 + 1];
 
 SRAM q15_t dsp_buffer[3 * input_gulp_size] __attribute__((aligned(4)));
 SRAM q15_t dsp_output[FFT_SIZE_FT8 * 2] __attribute__((aligned(4)));
 q15_t input_gulp[input_gulp_size] __attribute__((aligned(4)));
 #endif
 
-arm_rfft_instance_q15 fft_inst;
-arm_cfft_radix4_instance_q15 aux_inst;
+static arm_rfft_instance_q15 fft_inst;
+static arm_cfft_radix4_instance_q15 aux_inst;
 
 void init_DSP(void)
 {
@@ -80,7 +83,7 @@ void init_DSP(void)
   offset_step = (int)ft8_buffer * 4;
 }
 
-int max_bin, max_bin_number;
+static int max_bin, max_bin_number;
 
 float ft_blackman_i(int i, int N)
 {
@@ -96,7 +99,7 @@ float ft_blackman_i(int i, int N)
 }
 
 // Compute FFT magnitudes (log power) for each timeslot in the signal
-void extract_power(int offset)
+static void extract_power(int offset)
 {
 
   // Loop over two possible time offsets (0 and block_size/2)

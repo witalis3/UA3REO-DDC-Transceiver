@@ -1,5 +1,5 @@
-#ifndef _FONTS_H_
-#define _FONTS_H_
+#ifndef FONTS_H_
+#define FONTS_H_
 
 #include <stdbool.h>
 #include "stm32h7xx_hal.h"

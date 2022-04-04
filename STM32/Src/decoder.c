@@ -19,7 +19,7 @@ void DECODER_PutSamples(float32_t *bufferIn, uint32_t size)
 {
 	if ((DECODER_head + size) <= DECODER_BUFF_SIZE)
 	{
-		dma_memcpy32((uint32_t *)&DECODER_Buffer[DECODER_head], (uint32_t *)bufferIn, size);
+		dma_memcpy32((float32_t *)&DECODER_Buffer[DECODER_head], (float32_t *)bufferIn, size);
 		DECODER_head += size;
 		if (DECODER_head >= DECODER_BUFF_SIZE)
 			DECODER_head = 0;
@@ -27,9 +27,9 @@ void DECODER_PutSamples(float32_t *bufferIn, uint32_t size)
 	else
 	{
 		uint32_t firstpart = DECODER_BUFF_SIZE - DECODER_head;
-		dma_memcpy32((uint32_t *)&DECODER_Buffer[DECODER_head], (uint32_t *)bufferIn, firstpart);
+		dma_memcpy32((float32_t *)&DECODER_Buffer[DECODER_head], (float32_t *)bufferIn, firstpart);
 		DECODER_head = 0;
-		dma_memcpy32((uint32_t *)&DECODER_Buffer[DECODER_head], (uint32_t *)bufferIn, (size - firstpart));
+		dma_memcpy32((float32_t *)&DECODER_Buffer[DECODER_head], (float32_t *)bufferIn, (size - firstpart));
 		DECODER_head += (size - firstpart);
 		// if (DECODER_tail == DECODER_head)
 		// print("o");

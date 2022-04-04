@@ -8,15 +8,15 @@
 #include <stdbool.h>
 
 // TODO: This is wasteful, should figure out something more elegant
-const char A0[] = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+-./?";
-const char A1[] = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const char A2[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const char A3[] = "0123456789";
-const char A4[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static const char A0[] = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+-./?";
+static const char A1[] = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static const char A2[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static const char A3[] = "0123456789";
+static const char A4[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 // Pack a special token, a 22-bit hash code, or a valid base call
 // into a 28-bit integer.
-int32_t pack28(const char *callsign)
+static int32_t pack28(const char *callsign)
 {
     // constexpr int32_t NTOKENS = 2063592L;
     // constexpr int32_t MAX22   = 4194304L;
@@ -118,7 +118,7 @@ int32_t pack28(const char *callsign)
 // Check if a string could be a valid standard callsign or a valid
 // compound callsign.
 // Return base call "bc" and a logical "cok" indicator.
-bool chkcall(const char *call, char *bc)
+static bool chkcall(const char *call, char *bc)
 {
     int length = strlen(call); // n1=len_trim(w)
     if (length > 11)
@@ -145,7 +145,7 @@ bool chkcall(const char *call, char *bc)
     return true;
 }
 
-uint16_t packgrid(const char *grid4)
+static uint16_t packgrid(const char *grid4)
 {
     // constexpr uint16_t MAXGRID4 = 32400;
     uint16_t MAXGRID4 = 32400;
