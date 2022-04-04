@@ -372,7 +372,7 @@ static uint32_t RDS_ApplyFEC(uint32_t *block, uint32_t _syndrome)
 		correctedBitsCount += (st && bitError) ? 1 : 0;
 		correction >>= 1;
 	}
-	_syndrome &= 0x3ff;
+	//_syndrome &= 0x3ff;
 	return correctedBitsCount;
 }
 

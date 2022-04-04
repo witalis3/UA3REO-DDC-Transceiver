@@ -411,11 +411,11 @@ static void WSPR_Encode_locator(void)
 	// merge coded locator and power into message array c[]
 	unsigned long t1 = m1;
 	WSPR2_encMessage[3] = WSPR2_encMessage[3] + (0x0f & t1 >> 18);
-	t1 = m1;
+	//t1 = m1;
 	WSPR2_encMessage[4] = t1 >> 10;
-	t1 = m1;
+	//t1 = m1;
 	WSPR2_encMessage[5] = t1 >> 2;
-	t1 = m1;
+	//t1 = m1;
 	WSPR2_encMessage[6] = t1 << 6;
 }
 

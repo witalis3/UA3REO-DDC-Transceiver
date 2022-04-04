@@ -22,15 +22,15 @@ void LCDDriver_SetCurrentXOffset(uint16_t x)
 }
 
 // Text printing functions
-void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h)
+static void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h)
 {
 	uint8_t line = 0;
 
 	if ((x >= buffer_w) ||		// Clip right
-		(y >= buffer_h) ||		// Clip bottom
-		((x + 6 * size) < 0) || // Clip left
-		((y + 8 * size) < 0))	// Clip top
-		return;
+		(y >= buffer_h)		// Clip bottom
+		// || ((x + 6 * size) < 0) || // Clip left
+		//((y + 8 * size) < 0)	// Clip top
+		) return;
 
 	if ((x + 6 * size) >= buffer_w ||
 		(y + 8 * size) >= buffer_h)
@@ -151,7 +151,7 @@ void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, ui
 void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, const GFXfont *gfxFont)
 {
 	c -= gfxFont->first;
-	GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c];
+	const GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c];
 
 	uint16_t bo = glyph->bitmapOffset;
 	uint8_t bits = 0;
@@ -209,7 +209,7 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 		{
 			if ((c >= gfxFont->first) && (c <= gfxFont->last))
 			{
-				GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c - gfxFont->first];
+				const GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c - gfxFont->first];
 				if ((glyph->width > 0) && (glyph->height > 0))
 				{
 					if (wrap && ((text_cursor_x + (glyph->xOffset + glyph->width)) > LCD_WIDTH))
@@ -249,7 +249,7 @@ static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx
 	{
 		if ((c >= gfxFont->first) && (c <= gfxFont->last))
 		{ // Char present in this font?
-			GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c - gfxFont->first];
+			const GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c - gfxFont->first];
 			if (wrap && ((*x + (((int16_t)glyph->xOffset + glyph->width))) > LCD_WIDTH))
 			{
 				*x = 0; // Reset x to zero, advance y by one line
