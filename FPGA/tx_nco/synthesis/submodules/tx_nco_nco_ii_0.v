@@ -67,7 +67,7 @@ parameter Z30 = 0;
 parameter Z31 = 0;
 parameter nc = 1;
 parameter log2nc =0;
-parameter outselinit = 0;
+parameter outselinit = -1;
 parameter paci0= 0;
 parameter paci1= 0;
 parameter paci2= 0;
@@ -92,6 +92,10 @@ assign reset = !reset_n;
 
 wire [apr-1:0]  phi_inc_i_w;
 wire [apr-1:0]  phi_acc_w;
+wire [aprid-1:0] phi_acc_w_d;
+wire [aprid-1:0] phi_acc_w_di;
+wire [dpri-1:0]  rval_w_d;
+wire [dpri-1:0]  rval_w;
 wire [mpr-1:0] cordic_0x;
 wire [mpr-1:0] cordic_0y;
 wire [apri-1:0] cordic_0z;
@@ -212,6 +216,8 @@ reg [mpr-1:0] fsin_o_w_reg [0-1:0];
 wire [mpr-1:0] fsin_o_w_pipelined;
 reg [mpr-1:0] fcos_o_w_reg [0-1:0];
 wire [mpr-1:0] fcos_o_w_pipelined;
+reg [aprid-1:0] phi_acc_w_d_reg [0-1:0];
+wire [aprid-1:0] phi_acc_w_d_pipelined;
 // Pipeline block
 assign reset_pipelined = reset; // pipeline for this signal is disabled
 // Pipeline block
@@ -224,6 +230,8 @@ assign out_valid_w_pipelined = out_valid_w; // pipeline for this signal is disab
 assign fsin_o_w_pipelined = fsin_o_w; // pipeline for this signal is disabled
 // Pipeline block
 assign fcos_o_w_pipelined = fcos_o_w; // pipeline for this signal is disabled
+// Pipeline block
+assign phi_acc_w_d_pipelined = phi_acc_w_d; // pipeline for this signal is disabled
 
 
 assign cordic_1x = cordic_1x_w;
@@ -271,12 +279,12 @@ assign cordic_y_res = cordic_14y_w;
 cord_init ci(.clk(clk),
                 .reset(reset_pipelined),
                 .clken(clken_pipelined),
-             .phi_acc_w(phi_acc_w),
+             .phi_acc_w(phi_acc_w_d_pipelined),
              .corx(cordic_0x),
              .cory(cordic_0y),
              .corz(cordic_0z)
 );
-defparam ci.apr=apr;
+defparam ci.apr=aprid;
 defparam ci.apri=apri;
 defparam ci.mpr=mpr;
 defparam ci.X0=X0;
@@ -292,7 +300,7 @@ cord_fs cfs(.clk(clk),
            );
 defparam cfs.mpr=mpr;
 
-assign curqd = phi_acc_w[apr-1:apr-2];
+assign curqd = phi_acc_w_d_pipelined[aprid-1:aprid-2];
 
 
 cord_seg_sel css(.clk(clk),
@@ -323,6 +331,30 @@ defparam ux000.paci4 = paci4 ;
 defparam ux000.paci5 = paci5 ;
 defparam ux000.paci6 = paci6 ;
 defparam ux000.paci7 = paci7 ;
+
+asj_dxx_g ux001(.clk(clk),
+            .clken(clken_pipelined),
+              .reset(reset_pipelined),
+              .dxxrv(rval_w_d)
+              );
+defparam ux001.dpri = dpri;
+assign rval_w = rval_w_d;
+asj_dxx ux002(.clk(clk),
+            .clken(clken_pipelined),
+	         .reset(reset_pipelined),
+            .dxxpdi(phi_acc_w_di),
+            .rval(rval_w),
+            .dxxpdo(phi_acc_w_d)
+           );
+
+defparam ux002.aprid = aprid;
+defparam ux002.dpri = dpri;
+
+asj_nco_apr_dxx ux0219(.pcc_w(phi_acc_w),
+                         .pcc_d(phi_acc_w_di)
+                         );
+defparam ux0219.apr = apr;
+defparam ux0219.aprid = aprid;
 
 
 
@@ -565,7 +597,7 @@ asj_nco_isdr ux710isdr(.clk(clk),
                     .clken(clken_pipelined),
                     .data_ready(out_valid_w)
                     );
-defparam ux710isdr.ctc=32;
+defparam ux710isdr.ctc=34;
 defparam ux710isdr.cpr=6;
 assign out_valid = out_valid_w_pipelined;
 

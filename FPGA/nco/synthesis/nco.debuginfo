@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="nco" kind="system" version="18.1" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2022.04.14.17:22:52 -->
+ <!-- 2022.04.14.21:00:06 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1649942569</value>
+  <value>1649955604</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -161,7 +161,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="arch">
    <type>java.lang.String</type>
-   <value>cordic</value>
+   <value>trig</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -195,7 +195,7 @@ the requested settings for a module instance. -->
    <type>boolean</type>
    <value>true</value>
    <derived>false</derived>
-   <enabled>false</enabled>
+   <enabled>true</enabled>
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
@@ -237,7 +237,7 @@ the requested settings for a module instance. -->
    <value>parallel</value>
    <derived>false</derived>
    <enabled>true</enabled>
-   <visible>true</visible>
+   <visible>false</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="trig_cycles_per_output">
@@ -245,7 +245,7 @@ the requested settings for a module instance. -->
    <value>1</value>
    <derived>false</derived>
    <enabled>true</enabled>
-   <visible>false</visible>
+   <visible>true</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="cycles_per_output">
@@ -253,12 +253,12 @@ the requested settings for a module instance. -->
    <value>1</value>
    <derived>true</derived>
    <enabled>true</enabled>
-   <visible>true</visible>
+   <visible>false</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="want_dither">
    <type>boolean</type>
-   <value>false</value>
+   <value>true</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -266,9 +266,9 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="dpri">
    <type>int</type>
-   <value>10</value>
+   <value>6</value>
    <derived>false</derived>
-   <enabled>false</enabled>
+   <enabled>true</enabled>
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
@@ -620,5 +620,5 @@ parameters are a RESULT of the module parameters. -->
   <version>18.1</version>
  </plugin>
  <reportVersion>18.1 625</reportVersion>
- <uniqueIdentifier>00FF06BB7A6400000180283DAA1B</uniqueIdentifier>
+ <uniqueIdentifier>00FF06BB7A640000018029048DBD</uniqueIdentifier>
 </EnsembleReport>

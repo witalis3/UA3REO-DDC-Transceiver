@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2022.04.14.16:54:31"
+ date="2022.04.14.20:58:16"
  outputDirectory="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/">
  <perimeter>
   <parameter
@@ -78,13 +78,13 @@
  </perimeter>
  <entity
    path=""
-   parameterizationKey="tx_nco:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1649940869,AUTO_UNIQUE_ID=(altera_nco_ii:18.1:apr=32,aprf=32,apri=22,aprp=16,arch=cordic,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=4,fmod_pipe=1,freq_out=7.1,fsamp=188.16,hyper_opt=false,hyper_opt_select=false,mpr=14,numba=1,numch=1,phi_inc=162065624,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=false,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output)"
+   parameterizationKey="tx_nco:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1649955494,AUTO_UNIQUE_ID=(altera_nco_ii:18.1:apr=32,aprf=32,apri=22,aprp=16,arch=cordic,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=4,fmod_pipe=1,freq_out=7.1,fsamp=188.16,hyper_opt=false,hyper_opt_select=false,mpr=14,numba=1,numch=1,phi_inc=162065624,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=true,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output)"
    instancePathKey="tx_nco"
    kind="tx_nco"
    version="1.0"
    name="tx_nco">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_GENERATION_ID" value="1649940869" />
+  <parameter name="AUTO_GENERATION_ID" value="1649955494" />
   <parameter name="AUTO_DEVICE" value="EP4CE22E22C8" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV E" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="-1" />
@@ -98,7 +98,7 @@
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_nco_isdr.v"
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_nco_apr_dxx.v"
        type="VERILOG"
        attributes="" />
    <file
@@ -110,15 +110,11 @@
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cord_fs.v"
-       type="VERILOG"
-       attributes="" />
-   <file
        path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cord_seg_sel.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cordic_zxor_1p_lpm.v"
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_dxx_g.v"
        type="VERILOG"
        attributes="" />
    <file
@@ -131,6 +127,22 @@
        attributes="" />
    <file
        path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_altqmcpipe.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_nco_isdr.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cord_fs.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_dxx.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cordic_zxor_1p_lpm.v"
        type="VERILOG"
        attributes="" />
    <file
@@ -189,7 +201,7 @@
  </entity>
  <entity
    path="submodules/"
-   parameterizationKey="altera_nco_ii:18.1:apr=32,aprf=32,apri=22,aprp=16,arch=cordic,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=4,fmod_pipe=1,freq_out=7.1,fsamp=188.16,hyper_opt=false,hyper_opt_select=false,mpr=14,numba=1,numch=1,phi_inc=162065624,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=false,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output"
+   parameterizationKey="altera_nco_ii:18.1:apr=32,aprf=32,apri=22,aprp=16,arch=cordic,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=4,fmod_pipe=1,freq_out=7.1,fsamp=188.16,hyper_opt=false,hyper_opt_select=false,mpr=14,numba=1,numch=1,phi_inc=162065624,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=true,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output"
    instancePathKey="tx_nco:.:nco_ii_0"
    kind="altera_nco_ii"
    version="18.1"
@@ -203,7 +215,7 @@
   <parameter name="selected_device_family" value="Cyclone IV E" />
   <parameter name="apri" value="22" />
   <parameter name="aprf" value="32" />
-  <parameter name="want_dither" value="false" />
+  <parameter name="want_dither" value="true" />
   <parameter name="hyper_opt_select" value="false" />
   <parameter name="want_phase_mod" value="false" />
   <parameter name="apr" value="32" />
@@ -223,7 +235,7 @@
   <parameter name="real_freq_out" value="7.1" />
   <generatedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_nco_isdr.v"
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_nco_apr_dxx.v"
        type="VERILOG"
        attributes="" />
    <file
@@ -235,15 +247,11 @@
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cord_fs.v"
-       type="VERILOG"
-       attributes="" />
-   <file
        path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cord_seg_sel.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cordic_zxor_1p_lpm.v"
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_dxx_g.v"
        type="VERILOG"
        attributes="" />
    <file
@@ -256,6 +264,22 @@
        attributes="" />
    <file
        path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_altqmcpipe.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_nco_isdr.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cord_fs.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/asj_dxx.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/tx_nco/synthesis/submodules/cordic_zxor_1p_lpm.v"
        type="VERILOG"
        attributes="" />
    <file
