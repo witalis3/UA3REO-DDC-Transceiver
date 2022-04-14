@@ -15,6 +15,11 @@ bool SYSMENU_selftest_opened = false;
 static int8_t SELF_TEST_current_page = 0;
 static bool SELF_TEST_old_autogainer = false;
 static uint32_t SELF_TEST_old_freq = SELF_TEST_frequency;
+static bool LastLNA = false;
+static bool LastDRV = false;
+static bool LastPGA = false;
+static bool LastATT = false;
+static float32_t LastATT_DB = false;
 
 // Prototypes
 static void SELF_TEST_printResult(bool result, uint16_t pos_y);
@@ -24,6 +29,12 @@ void SELF_TEST_Start(void)
 {
 	LCD_busy = true;
 
+	LastLNA = TRX.LNA;
+	LastDRV = TRX.ADC_Driver;
+	LastPGA = TRX.ADC_PGA;
+	LastATT = TRX.ATT;
+	LastATT_DB = TRX.ATT_DB;
+	
 	SELF_TEST_old_autogainer = TRX.AutoGain;
 	SELF_TEST_old_freq = CurrentVFO->Freq;
 	SELF_TEST_current_page = 0;
@@ -39,6 +50,12 @@ void SELF_TEST_Stop(void)
 {
 	TRX.AutoGain = SELF_TEST_old_autogainer;
 	TRX_setFrequency(SELF_TEST_old_freq, CurrentVFO);
+	
+	TRX.LNA = LastLNA;
+	TRX.ADC_Driver = LastDRV;
+	TRX.ADC_PGA = LastPGA;
+	TRX.ATT = LastATT;
+	TRX.ATT_DB = LastATT_DB;
 }
 
 // draw
