@@ -87,7 +87,7 @@ endmodule
 // Retrieval info: 	<generic name="delayRAMBlockThreshold" value="-1" />
 // Retrieval info: 	<generic name="dualMemDistRAMThreshold" value="-1" />
 // Retrieval info: 	<generic name="mRAMThreshold" value="-1" />
-// Retrieval info: 	<generic name="hardMultiplierThreshold" value="100" />
+// Retrieval info: 	<generic name="hardMultiplierThreshold" value="-1" />
 // Retrieval info: 	<generic name="reconfigurable" value="false" />
 // Retrieval info: 	<generic name="num_modes" value="2" />
 // Retrieval info: 	<generic name="reconfigurable_list" value="0" />
