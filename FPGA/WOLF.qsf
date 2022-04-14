@@ -119,7 +119,7 @@ set_location_assignment PIN_121 -to DAC_OUTPUT[13]
 
 
 set_global_assignment -name TIMING_ANALYZER_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS OFF
-set_global_assignment -name OPTIMIZATION_MODE BALANCED
+set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE PERFORMANCE"
 set_global_assignment -name AUTO_RAM_TO_LCELL_CONVERSION ON
 
 set_location_assignment PIN_135 -to AUDIO_I2S_CLOCK

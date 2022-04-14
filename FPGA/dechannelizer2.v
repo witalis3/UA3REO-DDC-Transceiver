@@ -22,8 +22,8 @@ always @(posedge clk)
 begin
 	if(reset_n == 0)
 	begin
-		//data_1_reg <= 0;
-		//data_2_reg <= 0;
+		data_1_reg <= 0;
+		data_2_reg <= 0;
 		out_valid <= 0;
 		out_sop <= 0;
 		out_eop <= 0;
