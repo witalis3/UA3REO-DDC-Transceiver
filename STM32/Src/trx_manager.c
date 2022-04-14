@@ -668,15 +668,15 @@ void TRX_ProcessScanMode(void)
 	}
 	else
 	{
-		if (oldState != VAD_Muting)
+		if (oldState != VAD_RX1_Muting)
 		{
-			oldState = VAD_Muting;
+			oldState = VAD_RX1_Muting;
 			StateChangeTime = HAL_GetTick();
 		}
 
-		if (VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
+		if (VAD_RX1_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
 			goSweep = true;
-		if (!VAD_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_OTHER))
+		if (!VAD_RX1_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_OTHER))
 			goSweep = true;
 	}
 

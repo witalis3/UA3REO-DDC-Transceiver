@@ -13,12 +13,34 @@
 #define VAD_FFT_SIZE_HALF (VAD_FFT_SIZE / 2)
 #define VAD_ZOOMED_SAMPLES (VAD_BLOCK_SIZE / VAD_MAGNIFY)
 
+typedef struct
+{
+	const arm_cfft_instance_f32 *FFT_Inst;
+	float32_t FFTBuffer[VAD_FFT_SIZE * 2];
+	float32_t FFTBufferCharge[VAD_FFT_SIZE * 2]; // cumulative buffer
+	float32_t InputBuffer[VAD_BLOCK_SIZE];			  // Input buffer
+	float32_t decimState[VAD_BLOCK_SIZE + 4 - 1];
+	arm_fir_decimate_instance_f32 DECIMATE;
+	arm_fir_decimate_instance_f32 FirDecimate;
+	
+	float32_t Min_E1;
+	float32_t Min_E2;
+	float32_t Min_MD1;
+	float32_t Min_MD2;
+	uint32_t start_counter;
+	
+	bool state;
+	uint16_t state_no_counter;
+	uint16_t state_yes_counter;
+} VAD_Instance;
+
 // Public methods
 extern void InitVAD(void);                 // initialize VAD
-extern void processVAD(float32_t *buffer); // run VAD for the data block
+extern void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer); // run VAD for the data block
 extern void resetVAD(void);                // reset VAD status
 
 // extern float32_t VAD_FFTBuffer_Export [VAD_FFT_SIZE];	//debug buffer
-extern bool VAD_Muting; // Muting flag
+extern volatile bool VAD_RX1_Muting; // Muting flag
+extern volatile bool VAD_RX2_Muting; // Muting flag
 
 #endif
