@@ -367,29 +367,29 @@ defparam ux0123.rnw = rnwf;
 defparam ux0123.rf = rcff;
 defparam ux0123.dev = "Cyclone IV E";
 
-asj_nco_madx_cen m1(
-         .dataa_0(rcy_c),
-         .dataa_1(rcy_s),
-         .datab_0(rfy_c),
-         .datab_1(rfy_s),
-         .result(result_r),
-         .clock0(clk),
-         .clken(clken_pipelined));
-defparam m1.mpr = mpr;
-defparam m1.opr = opr;
-// Writing multiplier for 'Cyclone IV E'
-
-asj_nco_mady_cen m0(
+mac_i_lpm m0(.clk(clk),
+                .reset(reset_pipelined),
+         .clken(clken_pipelined),
+         .a_or_s(1'b1),
          .dataa_0(rcy_s),
          .dataa_1(rfy_s),
          .datab_0(rfy_c),
          .datab_1(rcy_c),
-         .result(result_i),
-         .clock0(clk),
-         .clken(clken_pipelined));
+         .result(result_i));
 defparam m0.mpr = mpr;
 defparam m0.opr = opr;
-// Writing multiplier for 'Cyclone IV E'
+
+mac_i_lpm m1(.clk(clk),
+                .reset(reset_pipelined),
+         .clken(clken_pipelined),
+         .a_or_s(1'b0),
+         .dataa_0(rcy_c),
+         .dataa_1(rcy_s),
+         .datab_0(rfy_c),
+         .datab_1(rfy_s),
+         .result(result_r));
+defparam m1.mpr = mpr;
+defparam m1.opr = opr;
 
 asj_nco_derot ux0136(.crwx_rc(rcx_c_pipelined),
                      .crwx_rf(rfx_c_pipelined),
@@ -426,7 +426,7 @@ asj_nco_isdr ux710isdr(.clk(clk),
                     .clken(clken_pipelined),
                     .data_ready(out_valid_w)
                     );
-defparam ux710isdr.ctc=8;
+defparam ux710isdr.ctc=11;
 defparam ux710isdr.cpr=4;
 assign out_valid = out_valid_w_pipelined;
 
