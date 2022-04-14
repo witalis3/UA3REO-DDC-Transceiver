@@ -15,7 +15,7 @@
 #define MAX_RX_FREQ_HZ 750000000			  // Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ DAC_CLOCK			  // Maximum transmission frequency
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
-#define MAX_TX_AMPLITUDE_MULT 0.88f				  // Maximum amplitude when transmitting to FPGA
+#define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
 #define AGC_CLIPPING 6.0f					  // Limit over target in AGC, dB
 #define TOUCHPAD_DELAY 200					  // Anti-bounce time for pressing the touchpad
 #define AUTOGAIN_TARGET_AMPLITUDE 20000.0f	  // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
