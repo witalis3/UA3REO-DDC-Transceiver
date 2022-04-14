@@ -481,6 +481,8 @@ begin
 	else if (k == 411)
 	begin
 		DATA_BUS_OUT[7:0] = READ_RX2_I[7:0];
+		IQ_RX_READ_REQ = 1;
+		IQ_RX_READ_CLK = 1;
 		k = 400;
 	end
 	else if (k == 500) //BUS TEST
