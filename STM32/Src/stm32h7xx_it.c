@@ -595,6 +595,8 @@ void TIM6_DAC_IRQHandler(void)
   //TRX protector
   if (TRX_on_TX())
   {
+		TRX_TX_EndTime = HAL_GetTick();
+		
     if (TRX_RF_Temperature > CALIBRATE.TRX_MAX_RF_TEMP)
     {
       TRX_Tune = false;

@@ -410,7 +410,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
 
 	bool turn_on_tx_lpf = true;
-	if ((HAL_GetTick() - TRX_TX_EndTime) > TX_LPF_TIMEOUT)
+	if (((HAL_GetTick() - TRX_TX_EndTime) > TX_LPF_TIMEOUT || TRX_TX_EndTime == 0) && !TRX_on_TX())
 		turn_on_tx_lpf = false;
 
 	uint8_t band_out = 0;

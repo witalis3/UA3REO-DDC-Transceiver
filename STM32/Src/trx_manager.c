@@ -160,7 +160,6 @@ static void TRX_Start_RX()
 	TRX_phase_restarted = false;
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
-	TRX_TX_EndTime = HAL_GetTick();
 	Processor_NeedRXBuffer = false;
 	WM8731_Buffer_underrun = false;
 	WM8731_DMA_state = true;
