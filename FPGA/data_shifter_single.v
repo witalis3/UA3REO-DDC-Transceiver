@@ -9,12 +9,13 @@ parameter in_width = 88;
 parameter out_width = 32;
 
 wire signed [(in_width-1):0] shifted;
-wire signed [(in_width-1):0] rounded;
+//wire signed [(in_width-1):0] rounded;
 
 assign shifted = data_in[(in_width-1):0] <<< distance;
 
-assign rounded = shifted[(in_width-1):0] + { {(out_width){1'b0}}, shifted[(in_width-out_width)], {(in_width-out_width-1){!shifted[(in_width-out_width)]}}};
+//assign rounded = shifted[(in_width-1):0] + { {(out_width){1'b0}}, shifted[(in_width-out_width)], {(in_width-out_width-1){!shifted[(in_width-out_width)]}}};
 
-assign data_out = rounded[(in_width-1):(in_width-out_width)];
+//assign data_out = rounded[(in_width-1):(in_width-out_width)];
+assign data_out = shifted[(in_width-1):(in_width-out_width)];
 
 endmodule
