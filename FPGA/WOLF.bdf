@@ -4340,7 +4340,7 @@ refer to the applicable agreement for further details.
 		(pt 272 32)
 		(output)
 		(text "data_out[out_width-1..0]" (rect 0 0 118 12)(font "Arial" ))
-		(text "data_out[out_width-1..0]" (rect 152 27 251 39)(font "Arial" ))
+		(text "data_out[out_width-1..0]" (rect 152 27 270 39)(font "Arial" ))
 		(line (pt 272 32)(pt 256 32)(line_width 3))
 	)
 	(parameter
@@ -4436,42 +4436,42 @@ refer to the applicable agreement for further details.
 		(pt 336 72)
 		(output)
 		(text "out_data[13..0]" (rect 0 0 84 14)(font "Arial" (font_size 8)))
-		(text "out_data[13..0]" (rect 263 61 334 75)(font "Arial" (font_size 8)))
+		(text "out_data[13..0]" (rect 263 61 347 75)(font "Arial" (font_size 8)))
 		(line (pt 336 72)(pt 240 72)(line_width 3))
 	)
 	(port
 		(pt 336 88)
 		(output)
 		(text "out_error[1..0]" (rect 0 0 81 14)(font "Arial" (font_size 8)))
-		(text "out_error[1..0]" (rect 266 77 334 91)(font "Arial" (font_size 8)))
+		(text "out_error[1..0]" (rect 266 77 347 91)(font "Arial" (font_size 8)))
 		(line (pt 336 88)(pt 240 88)(line_width 3))
 	)
 	(port
 		(pt 336 104)
 		(output)
 		(text "out_valid" (rect 0 0 50 14)(font "Arial" (font_size 8)))
-		(text "out_valid" (rect 290 93 332 107)(font "Arial" (font_size 8)))
+		(text "out_valid" (rect 290 93 340 107)(font "Arial" (font_size 8)))
 		(line (pt 336 104)(pt 240 104))
 	)
 	(port
 		(pt 336 136)
 		(output)
 		(text "out_startofpacket" (rect 0 0 100 14)(font "Arial" (font_size 8)))
-		(text "out_startofpacket" (rect 247 125 331 139)(font "Arial" (font_size 8)))
+		(text "out_startofpacket" (rect 247 125 347 139)(font "Arial" (font_size 8)))
 		(line (pt 336 136)(pt 240 136))
 	)
 	(port
 		(pt 336 152)
 		(output)
 		(text "out_endofpacket" (rect 0 0 95 14)(font "Arial" (font_size 8)))
-		(text "out_endofpacket" (rect 251 141 331 155)(font "Arial" (font_size 8)))
+		(text "out_endofpacket" (rect 251 141 346 155)(font "Arial" (font_size 8)))
 		(line (pt 336 152)(pt 240 152))
 	)
 	(port
 		(pt 336 168)
 		(output)
 		(text "out_channel" (rect 0 0 69 14)(font "Arial" (font_size 8)))
-		(text "out_channel" (rect 274 157 332 171)(font "Arial" (font_size 8)))
+		(text "out_channel" (rect 274 157 343 171)(font "Arial" (font_size 8)))
 		(line (pt 336 168)(pt 240 168))
 	)
 	(drawing
@@ -6541,15 +6541,6 @@ refer to the applicable agreement for further details.
 	(pt 4296 216)
 )
 (connector
-	(pt 3968 200)
-	(pt 3992 200)
-)
-(connector
-	(text "IQ_CLK_48K" (rect 3960 306 3977 367)(font "Intel Clear" )(vertical))
-	(pt 3968 304)
-	(pt 3968 200)
-)
-(connector
 	(pt 3872 168)
 	(pt 3992 168)
 	(bus)
@@ -7050,18 +7041,6 @@ refer to the applicable agreement for further details.
 	(pt 4280 184)
 )
 (connector
-	(pt 3992 216)
-	(pt 3984 216)
-)
-(connector
-	(pt 3984 216)
-	(pt 3984 -16)
-)
-(connector
-	(pt 3984 -16)
-	(pt 4008 -16)
-)
-(connector
 	(text "RX1" (rect 2578 256 2598 273)(font "Intel Clear" ))
 	(pt 2608 264)
 	(pt 2640 264)
@@ -7161,11 +7140,6 @@ refer to the applicable agreement for further details.
 	(text "RESET_DAC_N" (rect 3578 424 3648 441)(font "Intel Clear" ))
 	(pt 3376 432)
 	(pt 3568 432)
-)
-(connector
-	(text "RESET_DAC_N" (rect 3858 280 3928 297)(font "Intel Clear" ))
-	(pt 3992 280)
-	(pt 3928 280)
 )
 (connector
 	(text "RESET_DAC_N" (rect 3938 -152 4008 -135)(font "Intel Clear" ))
@@ -7283,48 +7257,12 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 4872 -192)
-	(pt 4704 -192)
-)
-(connector
-	(pt 4704 -192)
-	(pt 4704 -128)
-)
-(connector
-	(pt 4456 -128)
-	(pt 4704 -128)
-)
-(connector
 	(pt 4640 -160)
 	(pt 4640 -208)
 )
 (connector
 	(pt 4872 -208)
 	(pt 4640 -208)
-)
-(connector
-	(pt 4872 -160)
-	(pt 4744 -160)
-)
-(connector
-	(pt 4744 -160)
-	(pt 4744 -112)
-)
-(connector
-	(pt 4456 -112)
-	(pt 4744 -112)
-)
-(connector
-	(pt 4872 -144)
-	(pt 4792 -144)
-)
-(connector
-	(pt 4792 -144)
-	(pt 4792 -96)
-)
-(connector
-	(pt 4456 -96)
-	(pt 4792 -96)
 )
 (connector
 	(text "VCC" (rect 4808 -112 4829 -95)(font "Intel Clear" ))
@@ -7479,30 +7417,6 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 3952 536)
-	(pt 3952 232)
-)
-(connector
-	(pt 3952 536)
-	(pt 4200 536)
-)
-(connector
-	(pt 4200 536)
-	(pt 4312 536)
-)
-(connector
-	(pt 3920 232)
-	(pt 3920 -176)
-)
-(connector
-	(pt 3920 232)
-	(pt 3952 232)
-)
-(connector
-	(pt 3952 232)
-	(pt 3992 232)
-)
-(connector
 	(pt 3920 -176)
 	(pt 4008 -176)
 )
@@ -7530,6 +7444,84 @@ refer to the applicable agreement for further details.
 	(text "VCC" (rect 5170 360 5191 377)(font "Intel Clear" ))
 	(pt 5272 376)
 	(pt 5200 376)
+)
+(connector
+	(pt 3920 232)
+	(pt 3992 232)
+)
+(connector
+	(pt 3920 -176)
+	(pt 3920 232)
+)
+(connector
+	(pt 3920 232)
+	(pt 3920 536)
+)
+(connector
+	(pt 3920 536)
+	(pt 4200 536)
+)
+(connector
+	(pt 4200 536)
+	(pt 4312 536)
+)
+(connector
+	(text "RESET_DAC_N" (rect 3890 280 3960 297)(font "Intel Clear" ))
+	(pt 3944 280)
+	(pt 3992 280)
+)
+(connector
+	(text "IQ_CLK_48K" (rect 3858 184 3919 201)(font "Intel Clear" ))
+	(pt 3888 200)
+	(pt 3992 200)
+)
+(connector
+	(pt 3992 216)
+	(pt 3984 216)
+)
+(connector
+	(pt 3984 -16)
+	(pt 3984 216)
+)
+(connector
+	(pt 3984 -16)
+	(pt 4008 -16)
+)
+(connector
+	(pt 4456 -128)
+	(pt 4664 -128)
+)
+(connector
+	(pt 4664 -128)
+	(pt 4664 -192)
+)
+(connector
+	(pt 4664 -192)
+	(pt 4872 -192)
+)
+(connector
+	(pt 4872 -160)
+	(pt 4688 -160)
+)
+(connector
+	(pt 4688 -112)
+	(pt 4688 -160)
+)
+(connector
+	(pt 4456 -112)
+	(pt 4688 -112)
+)
+(connector
+	(pt 4872 -144)
+	(pt 4712 -144)
+)
+(connector
+	(pt 4712 -96)
+	(pt 4712 -144)
+)
+(connector
+	(pt 4456 -96)
+	(pt 4712 -96)
 )
 (junction (pt 440 32))
 (junction (pt 440 448))
@@ -7624,6 +7616,6 @@ refer to the applicable agreement for further details.
 (junction (pt 5288 -160))
 (junction (pt 3872 -296))
 (junction (pt 4200 536))
-(junction (pt 3952 232))
 (junction (pt 4840 -336))
+(junction (pt 3920 232))
 (text "188.160mhz" (rect 3648 784 3724 803)(font "Intel Clear" (font_size 8)))

@@ -92,7 +92,7 @@ static int unpack28(uint32_t n28, uint8_t ip, uint8_t i3, char *result)
 
     // Skip trailing and leading whitespace in case of a short callsign
     strcpy(result, trim(callsign));
-    if (result[0] != '\0')
+    if (result[0] == '\0')
         return -1;
 
     // Check if we should append /R or /P suffix

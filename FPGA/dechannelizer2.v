@@ -9,9 +9,9 @@ module dechannelizer2(
 	input wire reset_n,
 
 	output reg [23:0] out_data = 'd0,
-	output reg out_valid,
-	output reg out_sop,
-	output reg out_eop
+	output reg out_valid = 'd0,
+	output reg out_sop = 'd0,
+	output reg out_eop = 'd0
 );
 
 reg signed [23:0] data_1_reg = 'd0;
@@ -38,7 +38,7 @@ begin
 		out_eop <= 0;
 		state <= 'd1;
 	end
-	else if(state == 1 && in_ready)
+	else if(state == 1)
 	begin
 		out_data <= data_1_reg;
 		out_valid <= 1;
@@ -46,7 +46,7 @@ begin
 		out_eop <= 0;
 		state <= 'd2;
 	end
-	else if(state == 2 && in_ready)
+	else if(state == 2)
 	begin
 		out_data <= data_2_reg;
 		out_valid <= 1;
