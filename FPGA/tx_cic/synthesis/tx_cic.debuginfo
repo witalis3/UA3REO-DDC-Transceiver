@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="tx_cic" kind="system" version="18.1" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2022.04.01.18:00:36 -->
+ <!-- 2022.04.18.22:03:31 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1648821633</value>
+  <value>1650305008</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -242,7 +242,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="INTERFACES">
    <type>int</type>
-   <value>2</value>
+   <value>1</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -250,7 +250,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="CH_PER_INT">
    <type>int</type>
-   <value>1</value>
+   <value>2</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -349,7 +349,7 @@ the requested settings for a module instance. -->
    <value>0</value>
    <derived>false</derived>
    <enabled>true</enabled>
-   <visible>false</visible>
+   <visible>true</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="PIPELINING">
@@ -357,7 +357,7 @@ the requested settings for a module instance. -->
    <value>0</value>
    <derived>true</derived>
    <enabled>false</enabled>
-   <visible>true</visible>
+   <visible>false</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="C_STAGE_0_WIDTH">
@@ -853,16 +853,10 @@ parameters are a RESULT of the module parameters. -->
    <type>conduit</type>
    <isStart>false</isStart>
    <port>
-    <name>out0_data</name>
+    <name>out_data</name>
     <direction>Output</direction>
     <width>14</width>
-    <role>out0_data</role>
-   </port>
-   <port>
-    <name>out1_data</name>
-    <direction>Output</direction>
-    <width>14</width>
-    <role>out1_data</role>
+    <role>out_data</role>
    </port>
    <port>
     <name>out_error</name>
@@ -881,6 +875,24 @@ parameters are a RESULT of the module parameters. -->
     <direction>Input</direction>
     <width>1</width>
     <role>ready</role>
+   </port>
+   <port>
+    <name>out_startofpacket</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>startofpacket</role>
+   </port>
+   <port>
+    <name>out_endofpacket</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>endofpacket</role>
+   </port>
+   <port>
+    <name>out_channel</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>channel</role>
    </port>
   </interface>
  </module>
@@ -917,5 +929,5 @@ parameters are a RESULT of the module parameters. -->
   <version>18.1</version>
  </plugin>
  <reportVersion>18.1 625</reportVersion>
- <uniqueIdentifier>00FF06BB7A640000017FE56D89F6</uniqueIdentifier>
+ <uniqueIdentifier>00FF06BB7A64000001803DD80CA9</uniqueIdentifier>
 </EnsembleReport>

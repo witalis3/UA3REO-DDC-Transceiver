@@ -1,6 +1,7 @@
 module data_shifter_single(
 	input wire [(in_width-1):0] data_in,
 	input unsigned [7:0] distance,
+	//input wire valid,
 
 	output wire [(out_width-1):0] data_out
 );
@@ -17,5 +18,5 @@ assign shifted = data_in[(in_width-1):0] <<< distance;
 
 //assign data_out = rounded[(in_width-1):(in_width-out_width)];
 assign data_out = shifted[(in_width-1):(in_width-out_width)];
-
+	
 endmodule

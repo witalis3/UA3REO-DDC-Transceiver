@@ -6,11 +6,13 @@ module tx_cic (
 	in_data,
 	in_startofpacket,
 	in_endofpacket,
-	out0_data,
-	out1_data,
+	out_data,
 	out_error,
 	out_valid,
 	out_ready,
+	out_startofpacket,
+	out_endofpacket,
+	out_channel,
 	clken,
 	clk,
 	reset_n);	
@@ -21,11 +23,13 @@ module tx_cic (
 	input	[15:0]	in_data;
 	input		in_startofpacket;
 	input		in_endofpacket;
-	output	[13:0]	out0_data;
-	output	[13:0]	out1_data;
+	output	[13:0]	out_data;
 	output	[1:0]	out_error;
 	output		out_valid;
 	input		out_ready;
+	output		out_startofpacket;
+	output		out_endofpacket;
+	output		out_channel;
 	input		clken;
 	input		clk;
 	input		reset_n;

@@ -307,6 +307,7 @@ set_global_assignment -name QSYS_FILE DEBUG.qsys
 set_global_assignment -name BDF_FILE WOLF.bdf
 set_global_assignment -name VERILOG_FILE DAC_corrector.v
 set_global_assignment -name VERILOG_FILE dechannelizer2.v
+set_global_assignment -name VERILOG_FILE channelizer2.v
 set_global_assignment -name VERILOG_FILE channelizer4.v
 set_global_assignment -name VERILOG_FILE spi_interface.v
 set_global_assignment -name VERILOG_FILE stm32_interface.v

@@ -22,10 +22,12 @@ module tx_cic_cic_ii_0 (
     in_ready,
     in_startofpacket,
     in_endofpacket,
+	out_channel,
+	out_startofpacket,
+	out_endofpacket,
 	in_error,
 	out_error,
-    out0_data,
-    out1_data,
+    out_data,
     out_valid
         );
 
@@ -39,8 +41,8 @@ module tx_cic_cic_ii_0 (
     parameter VRC_EN   =  0;
     parameter RCF_MAX         =  3920;
     parameter RCF_MIN         =  3920;
-    parameter INTERFACES    =  2;
-    parameter CH_PER_INT  =  1;
+    parameter INTERFACES    =  1;
+    parameter CH_PER_INT  =  2;
     parameter INT_USE_MEM      =  "false";
     parameter INT_MEM     =  "auto";
     parameter DIF_USE_MEM  =  "false";
@@ -123,16 +125,15 @@ input       in_startofpacket;
 input       in_endofpacket;
 output      in_ready;
 input       in_valid;
-logic [CHANNEL_OUT_WIDTH-1:0] out_channel;
-logic      out_startofpacket;
-logic      out_endofpacket;
+output      [CHANNEL_OUT_WIDTH-1:0] out_channel;
+output      out_startofpacket;
+output      out_endofpacket;
 input       [1:0]	  in_error;
 output      [1:0]	  out_error;
 input       out_ready;
 output      out_valid;
 input [IN_WIDTH-1:0]     in_data;
-output [OUT_WIDTH-1:0]    out0_data;
-output [OUT_WIDTH-1:0]    out1_data;
+output [OUT_WIDTH-1:0]    out_data;
 
 wire [IN_WIDTH-1:0]  din     [INTERFACES_IN-1:0];
 wire [OUT_WIDTH-1:0] dout    [INTERFACES_OUT-1:0];
@@ -143,8 +144,7 @@ wire [OUT_WIDTH-1:0] dout    [INTERFACES_OUT-1:0];
 
 assign din[0] = in_data;
 
-assign out0_data = dout[0];
-assign out1_data = dout[1];
+assign out_data = dout[0];
 assign   rate = '0;
 
 

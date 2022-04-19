@@ -2,7 +2,7 @@ set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_TOOL_NAME "Qsy
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_TOOL_VERSION "18.1"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -library "tx_nco" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../../tx_nco.sopcinfo"]
-set_global_assignment -entity "tx_nco" -library "tx_nco" -name SLD_INFO "QSYS_NAME tx_nco HAS_SOPCINFO 1 GENERATION_ID 1649955494"
+set_global_assignment -entity "tx_nco" -library "tx_nco" -name SLD_INFO "QSYS_NAME tx_nco HAS_SOPCINFO 1 GENERATION_ID 1650289535"
 set_global_assignment -library "tx_nco" -name MISC_FILE [file join $::quartus(qip_path) "../tx_nco.cmp"]
 set_global_assignment -library "tx_nco" -name SLD_FILE [file join $::quartus(qip_path) "tx_nco.debuginfo"]
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_TARGETED_DEVICE_FAMILY "Cyclone IV E"
@@ -15,7 +15,7 @@ set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_DISP
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_REPORT_HIERARCHY "On"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_VERSION "MS4w"
-set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTY0OTk1NTQ5NA==::QXV0byBHRU5FUkFUSU9OX0lE"
+set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTY1MDI4OTUzNQ==::QXV0byBHRU5FUkFUSU9OX0lE"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::Q3ljbG9uZSBJViBF::QXV0byBERVZJQ0VfRkFNSUxZ"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::RVA0Q0UyMkUyMkM4::QXV0byBERVZJQ0U="
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfU1BFRURHUkFERQ==::OA==::QXV0byBERVZJQ0VfU1BFRURHUkFERQ=="
@@ -30,10 +30,11 @@ set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPO
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_VERSION "MTguMQ=="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_DESCRIPTION "QWx0ZXJhIE51bWVyaWNhbGx5IENvbnRyb2xsZWQgT3NjaWxsYXRvcg=="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "ZGVzaWduX2Vudg==::TkFUSVZF::ZGVzaWduX2Vudg=="
-set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "YXJjaA==::Y29yZGlj::R2VuZXJhdGlvbiBBbGdvcml0aG0="
+set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "YXJjaA==::dHJpZw==::R2VuZXJhdGlvbiBBbGdvcml0aG0="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "d2FudF9zaW5fYW5kX2Nvcw==::ZHVhbF9vdXRwdXQ=::T3V0cHV0cw=="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "bnVtY2g=::MQ==::TnVtYmVyIG9mIENoYW5uZWxz"
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "bnVtYmE=::MQ==::TnVtYmVyIG9mIEJhbmRz"
+set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "dXNlX2RlZGljYXRlZF9tdWx0aXBsaWVycw==::dHJ1ZQ==::VXNlIGRlZGljYXRlZCBtdWx0aXBsaWVycw=="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "c2VsZWN0ZWRfZGV2aWNlX2ZhbWlseQ==::Q3ljbG9uZSBJViBF::RGV2aWNlIEZhbWlseQ=="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "YXBy::MzI=::UGhhc2UgQWNjdW11bGF0b3IgUHJlY2lzaW9u"
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "YXByaQ==::MjI=::QW5ndWxhciBSZXNvbHV0aW9u"
@@ -41,8 +42,7 @@ set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPO
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "Y29yZGljX2FyY2g=::cGFyYWxsZWw=::Q09SRElDIEFyY2hpdGVjdHVyZQ=="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "dHJpZ19jeWNsZXNfcGVyX291dHB1dA==::MQ==::Q2xvY2sgY3ljbGVzIHBlciBvdXRwdXQ="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "Y3ljbGVzX3Blcl9vdXRwdXQ=::MQ==::Q2xvY2sgY3ljbGVzIHBlciBvdXRwdXQ="
-set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "d2FudF9kaXRoZXI=::dHJ1ZQ==::SW1wbGVtZW50IFBoYXNlIERpdGhlcmluZw=="
-set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "ZHByaQ==::NA==::RGl0aGVyIExldmVs"
+set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "d2FudF9kaXRoZXI=::ZmFsc2U=::SW1wbGVtZW50IFBoYXNlIERpdGhlcmluZw=="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "ZnNhbXA=::MTg4LjE2::Q2xvY2sgUmF0ZQ=="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "ZnJlcV9vdXQ=::Ny4x::RGVzaXJlZCBPdXRwdXQgRnJlcXVlbmN5"
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "cGhpX2luYw==::MTYyMDY1NjI0::UGhhc2UgSW5jcmVtZW50IFZhbHVl"
@@ -53,20 +53,19 @@ set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPO
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "aHlwZXJfb3B0X3NlbGVjdA==::ZmFsc2U=::T3B0aW1pemUgZm9yIFN0cmF0aXggMTA="
 
 set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "tx_nco.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_nco_apr_dxx.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/cordic_axor_1p_lpm.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/dop_reg.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/cord_seg_sel.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_dxx_g.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/cord_init.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/cord_2c.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_altqmcpipe.v"]
+set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_nco_madx_cen.v"]
+set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_nco_mady_cen.v"]
 set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_nco_isdr.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/cord_fs.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_dxx.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/cordic_zxor_1p_lpm.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_crd_par.v"]
-set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/cordic_sxor_1p_lpm.v"]
+set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_nco_mob_w.v"]
+set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_nco_as_m_dp_cen.v"]
+set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_nco_as_m_cen.v"]
+set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_altqmcpipe.v"]
+set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_gam_dp.v"]
+set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/asj_nco_derot.v"]
+set_global_assignment -library "tx_nco" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/tx_nco_nco_ii_0_sin_c.hex"]
+set_global_assignment -library "tx_nco" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/tx_nco_nco_ii_0_cos_c.hex"]
+set_global_assignment -library "tx_nco" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/tx_nco_nco_ii_0_sin_f.hex"]
+set_global_assignment -library "tx_nco" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/tx_nco_nco_ii_0_cos_f.hex"]
 set_global_assignment -library "tx_nco" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/tx_nco_nco_ii_0.v"]
 set_global_assignment -library "tx_nco" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/asj_altq.ocp"]
 set_global_assignment -library "tx_nco" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/asj_altqmcash.ocp"]

@@ -51,11 +51,13 @@
    internal="cic_ii_0.av_st_out"
    type="conduit"
    dir="end">
-  <port name="out0_data" internal="out0_data" />
-  <port name="out1_data" internal="out1_data" />
+  <port name="out_data" internal="out_data" />
   <port name="out_error" internal="out_error" />
   <port name="out_valid" internal="out_valid" />
   <port name="out_ready" internal="out_ready" />
+  <port name="out_startofpacket" internal="out_startofpacket" />
+  <port name="out_endofpacket" internal="out_endofpacket" />
+  <port name="out_channel" internal="out_channel" />
  </interface>
  <interface name="clken" internal="cic_ii_0.clken" type="conduit" dir="end">
   <port name="clken" internal="clken" />
@@ -72,11 +74,11 @@
    version="18.1"
    enabled="1"
    autoexport="1">
-  <parameter name="CH_PER_INT" value="1" />
+  <parameter name="CH_PER_INT" value="2" />
   <parameter name="CLK_EN_PORT" value="true" />
   <parameter name="D_DELAY" value="1" />
   <parameter name="FILTER_TYPE" value="interpolator" />
-  <parameter name="INTERFACES" value="2" />
+  <parameter name="INTERFACES" value="1" />
   <parameter name="IN_WIDTH" value="16" />
   <parameter name="RCF_FIX" value="3920" />
   <parameter name="RCF_LB" value="8" />

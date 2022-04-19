@@ -28,112 +28,6 @@
       <probe name="probe[21]"/>
       <probe name="probe[22]"/>
       <probe name="probe[23]"/>
-      <probe name="probe[24]"/>
-      <probe name="probe[25]"/>
-      <probe name="probe[26]"/>
-      <probe name="probe[27]"/>
-      <probe name="probe[28]"/>
-      <probe name="probe[29]"/>
-      <probe name="probe[30]"/>
-      <probe name="probe[31]"/>
-      <probe name="probe[32]"/>
-      <probe name="probe[33]"/>
-      <probe name="probe[34]"/>
-      <probe name="probe[35]"/>
-      <probe name="probe[36]"/>
-      <probe name="probe[37]"/>
-      <probe name="probe[38]"/>
-      <probe name="probe[39]"/>
-      <probe name="probe[40]"/>
-      <probe name="probe[41]"/>
-      <probe name="probe[42]"/>
-      <probe name="probe[43]"/>
-      <probe name="probe[44]"/>
-      <probe name="probe[45]"/>
-      <probe name="probe[46]"/>
-      <probe name="probe[47]"/>
-    </probes>
-    <view>
-      <view_node expanded="false" group_name="probe[47..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
-      <view_node expanded="true" index="47" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="46" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="45" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="44" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="43" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="42" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="41" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="40" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="39" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="38" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="37" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="36" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="35" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="34" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="33" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="32" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="31" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="30" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="29" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="28" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="27" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="26" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="25" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="24" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="23" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="22" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="21" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="20" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="19" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="18" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="17" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="16" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="15" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="14" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="13" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="12" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="11" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="10" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="9" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="8" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="7" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="6" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="5" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="4" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="3" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="2" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
-      <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
-    </view>
-    <log data="000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" max_size="8" size="8" time="2460A426000000002460A426000000002460A426000000002460A426000000003460A426000000003460A426000000003460A426000000003460A42600000000" width="48"/>
-  </instance>
-  <instance enable_logging="true" entity_name="DBG2" is_auto_node="true" name="DBG2">
-    <node_ip_info instance_id="1" mfg_id="110" node_id="9" version="0"/>
-    <sources/>
-    <probes>
-      <probe name="probe[0]"/>
-      <probe name="probe[1]"/>
-      <probe name="probe[2]"/>
-      <probe name="probe[3]"/>
-      <probe name="probe[4]"/>
-      <probe name="probe[5]"/>
-      <probe name="probe[6]"/>
-      <probe name="probe[7]"/>
-      <probe name="probe[8]"/>
-      <probe name="probe[9]"/>
-      <probe name="probe[10]"/>
-      <probe name="probe[11]"/>
-      <probe name="probe[12]"/>
-      <probe name="probe[13]"/>
-      <probe name="probe[14]"/>
-      <probe name="probe[15]"/>
-      <probe name="probe[16]"/>
-      <probe name="probe[17]"/>
-      <probe name="probe[18]"/>
-      <probe name="probe[19]"/>
-      <probe name="probe[20]"/>
-      <probe name="probe[21]"/>
-      <probe name="probe[22]"/>
-      <probe name="probe[23]"/>
     </probes>
     <view>
       <view_node expanded="false" group_name="probe[23..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
@@ -162,6 +56,48 @@
       <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
       <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
     </view>
-    <log data="000000000000000000000000000000000000000000000000" max_size="8" size="8" time="2460A426000000002460A426000000002460A426000000002460A426000000003460A426000000003460A426000000003460A426000000003460A42600000000" width="24"/>
+    <log data="000000000000000000000000000000000000000000000000" max_size="8" size="8" time="FDCAD52600000000FDCAD52600000000FDCAD52600000000FDCAD52600000000FDCAD526000000000ECAD526000000000ECAD526000000000ECAD52600000000" width="24"/>
+  </instance>
+  <instance enable_logging="true" entity_name="DBG2" is_auto_node="true" name="DBG2">
+    <node_ip_info instance_id="1" mfg_id="110" node_id="9" version="0"/>
+    <sources/>
+    <probes>
+      <probe name="probe[0]"/>
+      <probe name="probe[1]"/>
+      <probe name="probe[2]"/>
+      <probe name="probe[3]"/>
+      <probe name="probe[4]"/>
+      <probe name="probe[5]"/>
+      <probe name="probe[6]"/>
+      <probe name="probe[7]"/>
+      <probe name="probe[8]"/>
+      <probe name="probe[9]"/>
+      <probe name="probe[10]"/>
+      <probe name="probe[11]"/>
+      <probe name="probe[12]"/>
+      <probe name="probe[13]"/>
+      <probe name="probe[14]"/>
+      <probe name="probe[15]"/>
+    </probes>
+    <view>
+      <view_node expanded="false" group_name="probe[15..0]" index="0" lsb_to_msb="false" node_type="probe" view_type="group_header"/>
+      <view_node expanded="true" index="15" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="14" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="13" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="12" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="11" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="10" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="9" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="8" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="7" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="6" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="5" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="4" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="3" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="2" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="1" node_type="probe" view_type="group_member"/>
+      <view_node expanded="true" index="0" node_type="probe" view_type="group_member"/>
+    </view>
+    <log data="00000000000000000000000000000000" max_size="8" size="8" time="FDCAD52600000000FDCAD52600000000FDCAD52600000000FDCAD52600000000FDCAD526000000000ECAD526000000000ECAD526000000000ECAD52600000000" width="16"/>
   </instance>
 </session>

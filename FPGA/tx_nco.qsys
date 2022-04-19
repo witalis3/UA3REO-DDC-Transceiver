@@ -63,7 +63,7 @@
   <parameter name="aprf" value="32" />
   <parameter name="apri" value="22" />
   <parameter name="aprp" value="16" />
-  <parameter name="arch" value="cordic" />
+  <parameter name="arch" value="trig" />
   <parameter name="cordic_arch" value="parallel" />
   <parameter name="design_env" value="NATIVE" />
   <parameter name="dpri" value="4" />
@@ -78,7 +78,7 @@
   <parameter name="selected_device_family" value="Cyclone IV E" />
   <parameter name="trig_cycles_per_output" value="1" />
   <parameter name="use_dedicated_multipliers" value="true" />
-  <parameter name="want_dither" value="true" />
+  <parameter name="want_dither" value="false" />
   <parameter name="want_freq_mod" value="false" />
   <parameter name="want_phase_mod" value="false" />
   <parameter name="want_sin_and_cos" value="dual_output" />
