@@ -1645,16 +1645,24 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 		return false;
 	if (LCD_systemMenuOpened || LCD_window.opened)
 		return false;
-
+	
 	// fft/wtf swipe
 	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y))
 	{
 		const uint8_t slowler = 4;
-		uint32_t newfreq = getFreqOnFFTPosition(LAYOUT->FFT_PRINT_SIZE / 2 - dx / slowler);
+		float64_t step = TRX.FRQ_STEP;
 		if (TRX.Fast)
-			newfreq = newfreq / TRX.FRQ_FAST_STEP * TRX.FRQ_FAST_STEP;
-		else
-			newfreq = newfreq / TRX.FRQ_STEP * TRX.FRQ_STEP;
+			step = TRX.FRQ_FAST_STEP;
+		if (CurrentVFO->Mode == TRX_MODE_CW)
+			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+		if(step < 1.0f) step = 1.0f;
+
+		uint32_t newfreq = getFreqOnFFTPosition(LAYOUT->FFT_PRINT_SIZE / 2 - dx / slowler);
+		if (dx < 0.0f)
+			newfreq = ceill(newfreq / step) * step;
+		if (dx > 0.0f)
+			newfreq = floorl(newfreq / step) * step;
+
 		TRX_setFrequency(newfreq, CurrentVFO);
 		LCD_UpdateQuery.FreqInfo = true;
 		return true;
