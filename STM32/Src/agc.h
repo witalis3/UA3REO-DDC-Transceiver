@@ -13,6 +13,7 @@ typedef struct
 {
 	float32_t need_gain_db;
 	float32_t need_gain_db_old;
+	float32_t AGC_RX_dbFS_old;
 	uint32_t last_agc_peak_time;
 	float32_t agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE];
 	float32_t ringbuffer[AGC_RINGBUFFER_TAPS_SIZE * AUDIO_BUFFER_HALF_SIZE];

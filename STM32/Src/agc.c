@@ -67,6 +67,11 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		AGC_RX_magnitude = 0.001f;
 	float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
 	float32_t AGC_RX_dbFS = rate2dbV(full_scale_rate);
+	if(AGC->AGC_RX_dbFS_old > AGC_RX_dbFS)
+	{
+		AGC_RX_dbFS = AGC->AGC_RX_dbFS_old;
+	}
+	AGC->AGC_RX_dbFS_old = rate2dbV(full_scale_rate);
 
 	// gain target
 	float32_t gain_target = (float32_t)TRX.AGC_GAIN_TARGET;
@@ -115,21 +120,21 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	if ((rx_id == AUDIO_RX1 && !CurrentVFO->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO->AGC))
 		AGC->need_gain_db = 1.0f;
 
-	// Muting if need
-	float32_t current_need_gain = AGC->need_gain_db;
-	if (WM8731_Muting || VAD_Muting)
-	{
-		current_need_gain = -200.0f;
-		// AGC->need_gain_db -= 10.0f;
-	}
-
 	// gain limitation
 	if (AGC->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain)
 		AGC->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
 
+	float32_t current_need_gain = AGC->need_gain_db;
+	
+	// Muting if need
+	if (WM8731_Muting || VAD_Muting)
+	{
+		current_need_gain = -200.0f;
+	}
+	
 	// apply gain
 	// println("cur agc: ", AGC_RX_dbFS, " need: ", AGC->need_gain_db);
-	if (fabsf(AGC->need_gain_db_old - current_need_gain) > 0.0f) // gain changed
+	if (fabsf(AGC->need_gain_db_old - current_need_gain) >= 1.0f) // gain changed
 	{
 		float32_t gainApplyStep = 0;
 		if (AGC->need_gain_db_old > current_need_gain)
@@ -140,9 +145,9 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		bool zero_cross = false;
 		for (uint_fast16_t i = 0; i < blockSize; i++)
 		{
-			if (val_prev < 0.0f && agcBuffer_i[i] > 0.0f)
+			if (val_prev <= 0.0f && agcBuffer_i[i] >= 0.0f)
 				zero_cross = true;
-			else if (val_prev > 0.0f && agcBuffer_i[i] < 0.0f)
+			else if (val_prev >= 0.0f && agcBuffer_i[i] <= 0.0f)
 				zero_cross = true;
 			if (zero_cross)
 				AGC->need_gain_db_old += gainApplyStep;
