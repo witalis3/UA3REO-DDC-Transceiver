@@ -6,7 +6,7 @@
 
 // Private variables
 SRAM static NR_Instance NR_RX1 = {0};
-SRAM4 static NR_Instance NR_RX2 = {0};
+SRAM static NR_Instance NR_RX2 = {0};
 static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; // coefficients for the window function
 static float32_t getDBFromFFTAmpl(float32_t ampl);
 
@@ -24,12 +24,14 @@ void InitNoiseReduction(void)
 	for (uint16_t bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
 	{
 		NR_RX1.NR_Prev_Buffer[bindx] = 0.0;
-		NR_RX1.AGC_GAIN[bindx] = 1.0;
+		//NR_RX1.AGC_GAIN[bindx] = 1.0;
+		NR_RX1.AGC_GAIN = 1.0;
 		NR_RX1.NR_GAIN[bindx] = 1.0;
 		NR_RX1.NR_GAIN_old[bindx] = 1.0;
 
 		NR_RX2.NR_Prev_Buffer[bindx] = 0.0;
-		NR_RX2.AGC_GAIN[bindx] = 1.0;
+		//NR_RX2.AGC_GAIN[bindx] = 1.0;
+		NR_RX2.AGC_GAIN = 1.0;
 		NR_RX2.NR_GAIN[bindx] = 1.0;
 		NR_RX2.NR_GAIN_old[bindx] = 1.0;
 	}
@@ -228,23 +230,13 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					//println("AGC overload ", diff);
 				}
 				
-				//noise gate
-				//float32_t noise_gate = minValue * db2rateV(5.0f);
-				//uint32_t noise_gated = 0;
-				
 				//appy gain
 				float32_t rateV = db2rateV(instance->need_gain_db);
-				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
+				instance->AGC_GAIN = rateV;
+				/*for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				{
 					instance->AGC_GAIN[idx] = rateV;
-					/*
-					if(instance->FFT_COMPLEX_MAG[idx] > noise_gate)
-						instance->AGC_GAIN[idx] = rateV;
-					else {
-						instance->AGC_GAIN[idx] = 1.0f;
-						noise_gated++;
-					}*/
-				}
+				}*/
 				
 				//println("[SpectraAGC] Min: ", minValue, " AGC_RX_dbFS: ", AGC_RX_dbFS, " Gain: ", instance->need_gain_db);
 			}
@@ -256,11 +248,9 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 #define smooth_gain_beta (1.0f - smooth_gain_alpha)
 				if ((idx - 1) >= 0) {
 					instance->NR_GAIN[idx - 1] = instance->NR_GAIN[idx - 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
-					//instance->AGC_GAIN[idx - 1] = instance->AGC_GAIN[idx - 1] * smooth_gain_alpha + instance->AGC_GAIN[idx] * smooth_gain_beta;
 				}
 				if ((idx + 1) < NOISE_REDUCTION_FFT_SIZE_HALF) {
 					instance->NR_GAIN[idx + 1] = instance->NR_GAIN[idx + 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
-					//instance->AGC_GAIN[idx + 1] = instance->AGC_GAIN[idx + 1] * smooth_gain_alpha + instance->AGC_GAIN[idx] * smooth_gain_beta;
 				}
 			}
 			
@@ -275,11 +265,11 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->NR_GAIN[idx];
 				
 				// AGC
-				instance->FFT_Buffer[idx * 2] *= instance->AGC_GAIN[idx];
-				//instance->FFT_Buffer[idx * 2 + 1] *= instance->AGC_GAIN[idx];
+				instance->FFT_Buffer[idx * 2] *= instance->AGC_GAIN;
+				instance->FFT_Buffer[idx * 2 + 1] *= instance->AGC_GAIN;
 				// symmetry
-				//instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->AGC_GAIN[idx];
-				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->AGC_GAIN[idx];
+				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->AGC_GAIN;
+				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->AGC_GAIN;
 			}
 			
 			// do inverse fft
