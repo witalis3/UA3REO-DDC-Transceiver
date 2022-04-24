@@ -38,6 +38,8 @@ typedef struct
 	
 	//AGC
 	float32_t need_gain_db;
+	uint32_t last_agc_peak_time;
+	uint16_t hold_time;
 } NR_Instance;
 
 // Public methods

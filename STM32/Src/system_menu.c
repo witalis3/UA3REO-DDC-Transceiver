@@ -112,7 +112,6 @@ static void SYSMENU_HANDL_AUDIO_CTCSS_Freq(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SELFHEAR_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FM_Stereo(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_Spectral(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_AGC_Spectral_THRESHOLD(int8_t direction);
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
@@ -519,7 +518,6 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"SelfHear Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_HANDL_AUDIO_SELFHEAR_Volume},
 		{"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_AUDIO_FM_Stereo},
 		{"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_AUDIO_AGC_Spectral},
-		{"AGC Spectral Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.AGC_Spectral_THRESHOLD, SYSMENU_HANDL_AUDIO_AGC_Spectral_THRESHOLD},
 };
 
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
@@ -1983,15 +1981,6 @@ static void SYSMENU_HANDL_AUDIO_AGC_Spectral(int8_t direction)
 		TRX.AGC_Spectral = true;
 	if (direction < 0)
 		TRX.AGC_Spectral = false;
-}
-
-static void SYSMENU_HANDL_AUDIO_AGC_Spectral_THRESHOLD(int8_t direction)
-{
-	TRX.AGC_Spectral_THRESHOLD += direction;
-	if (TRX.AGC_Spectral_THRESHOLD > 100)
-		TRX.AGC_Spectral_THRESHOLD = 100;
-	if (TRX.AGC_Spectral_THRESHOLD < 1)
-		TRX.AGC_Spectral_THRESHOLD = 1;
 }
 
 // CW MENU

@@ -409,7 +409,6 @@ extern struct TRX_SETTINGS
 	uint8_t TX_Compressor_speed_AMFM;
 	uint8_t TX_Compressor_maxgain_AMFM;
 	uint8_t SELFHEAR_Volume;
-	uint8_t AGC_Spectral_THRESHOLD;
 	int8_t MIC_NOISE_GATE;
 	int8_t RX_EQ_LOW;
 	int8_t RX_EQ_MID;

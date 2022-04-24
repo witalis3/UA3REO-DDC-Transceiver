@@ -193,43 +193,59 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					gain_target += CW_ADD_GAIN_AF;
 				float32_t diff = (gain_target - (AGC_RX_dbFS + instance->need_gain_db));
 
+				// hold time limiter
+				#define AGC_HOLDTIME_LIMITER_DB 10.0f
+				#define AGC_HOLDTIME_STEP 5
+				if (fabsf(diff) < AGC_HOLDTIME_LIMITER_DB && instance->hold_time < TRX.RX_AGC_Hold)
+				{
+					instance->hold_time += AGC_HOLDTIME_STEP;
+				}
+				
 				// move
 				if (diff > 0)
 				{
-					instance->need_gain_db += diff / RX_AGC_STEPSIZE_UP;
+					if ((HAL_GetTick() - instance->last_agc_peak_time) > instance->hold_time)
+					{
+						instance->need_gain_db += diff / RX_AGC_STEPSIZE_UP;
+
+						if (diff > AGC_HOLDTIME_LIMITER_DB && instance->hold_time > 0)
+							instance->hold_time -= AGC_HOLDTIME_STEP;
+					}
 				}
 				else
 				{
 					instance->need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
-				}
-
-				// overload (clipping), sharply reduce the gain
-				if ((AGC_RX_dbFS + instance->need_gain_db) > (gain_target + AGC_CLIPPING))
-				{
-					instance->need_gain_db = gain_target - AGC_RX_dbFS;
-					// println("AGC overload ", diff);
+					instance->last_agc_peak_time = HAL_GetTick();
 				}
 				
 				// gain limiter
 				if (instance->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain)
 					instance->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
+				if ((AGC_RX_dbFS + instance->need_gain_db) > gain_target)
+				{
+					instance->need_gain_db = gain_target - AGC_RX_dbFS;
+					//println("AGC overload ", diff);
+				}
 				
 				//noise gate
-				float32_t noise_gate = minValue * db2rateV(TRX.AGC_Spectral_THRESHOLD);
-				uint32_t noise_gated = 0;
+				//float32_t noise_gate = minValue * db2rateV(5.0f);
+				//uint32_t noise_gated = 0;
 				
 				//appy gain
+				float32_t rateV = db2rateV(instance->need_gain_db);
 				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				{
+					instance->AGC_GAIN[idx] = rateV;
+					/*
 					if(instance->FFT_COMPLEX_MAG[idx] > noise_gate)
-						instance->AGC_GAIN[idx] = db2rateV(instance->need_gain_db);
+						instance->AGC_GAIN[idx] = rateV;
 					else {
 						instance->AGC_GAIN[idx] = 1.0f;
 						noise_gated++;
-					}
+					}*/
 				}
 				
-				//println("[SpectraAGC] Min: ", minValue, " AGC_RX_dbFS: ", AGC_RX_dbFS, " Gain: ", instance->need_gain_db, " noise_gated ", noise_gated);
+				//println("[SpectraAGC] Min: ", minValue, " AGC_RX_dbFS: ", AGC_RX_dbFS, " Gain: ", instance->need_gain_db);
 			}
 			
 			// smooth gain
@@ -259,7 +275,9 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				
 				// AGC
 				instance->FFT_Buffer[idx * 2] *= instance->AGC_GAIN[idx];
+				instance->FFT_Buffer[idx * 2 + 1] *= instance->AGC_GAIN[idx];
 				// symmetry
+				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->AGC_GAIN[idx];
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->AGC_GAIN[idx];
 			}
 			
