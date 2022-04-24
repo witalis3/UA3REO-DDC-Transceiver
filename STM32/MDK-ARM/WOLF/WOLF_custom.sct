@@ -26,9 +26,9 @@ LR_IROM1 0x08000000 0x00100000  {    ; load region size_region
   SRAM 0x30000000 0x00048000  { ;SRAM1+SRAM2+SRAM3 128kb+128kb+32kb
    *(.SRAM)
   }
-  ;SRAM4 0x38000000 0x00010000  { ;64kb
-   ;*(.SRAM4)
-  ;}
+  SRAM4 0x38000000 0x00010000  { ;64kb
+   *(.SRAM4)
+  }
   ;BACKUP_SRAM 0x38800000 0x00001000  { ;4kb Backup SRAM
    ;*(.BACKUP_SRAM)
   ;}

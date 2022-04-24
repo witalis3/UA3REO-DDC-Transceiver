@@ -217,7 +217,7 @@ void LoadSettings(bool clear)
 		TRX.NOISE_BLANKER = true;			 // suppressor of short impulse noise NOISE BLANKER
 		TRX.RX_AGC_SSB_speed = 10;			 // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;			 // AGC receive rate on CW
-		TRX.RX_AGC_Max_gain = 30;			 // Maximum AGC gain
+		TRX.RX_AGC_Max_gain = 50;			 // Maximum AGC gain
 		TRX.RX_AGC_Hold = 700;				 // AGC Hold time on peaks
 		TRX.TX_Compressor_speed_SSB = 3;	 // TX compressor speed SSB
 		TRX.TX_Compressor_maxgain_SSB = 10;	 // TX compressor max gain SSB
@@ -237,6 +237,8 @@ void LoadSettings(bool clear)
 		TRX.CTCSS_Freq = 0;					 // CTCSS FM Frequency
 		TRX.SELFHEAR_Volume = 50;			 // Selfhearing volume
 		TRX.FM_Stereo = false;				 // Stereo FM Mode
+		TRX.AGC_Spectral = true;			//Spectral AGC mode
+		TRX.AGC_Spectral_THRESHOLD = 5;	//Spectral AGC noise threshold
 		// CW
 		TRX.CW_Pitch = 600;			   // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;	   // time of releasing transmission after the last character on the key

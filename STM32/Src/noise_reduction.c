@@ -6,8 +6,9 @@
 
 // Private variables
 SRAM static NR_Instance NR_RX1 = {0};
-SRAM static NR_Instance NR_RX2 = {0};
+SRAM4 static NR_Instance NR_RX2 = {0};
 static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; // coefficients for the window function
+static float32_t getDBFromFFTAmpl(float32_t ampl);
 
 // initialize DNR
 void InitNoiseReduction(void)
@@ -23,17 +24,19 @@ void InitNoiseReduction(void)
 	for (uint16_t bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
 	{
 		NR_RX1.NR_Prev_Buffer[bindx] = 0.0;
+		NR_RX1.AGC_GAIN[bindx] = 1.0;
 		NR_RX1.NR_GAIN[bindx] = 1.0;
 		NR_RX1.NR_GAIN_old[bindx] = 1.0;
 
 		NR_RX2.NR_Prev_Buffer[bindx] = 0.0;
+		NR_RX2.AGC_GAIN[bindx] = 1.0;
 		NR_RX2.NR_GAIN[bindx] = 1.0;
 		NR_RX2.NR_GAIN_old[bindx] = 1.0;
 	}
 }
 
 // run DNR for the data block
-void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t nr_type)
+void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t nr_type, uint_fast8_t mode, bool do_agc)
 {
 	NR_Instance *instance = &NR_RX1;
 	if (rx_id == AUDIO_RX2)
@@ -154,25 +157,112 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->NR_GAIN_old[bindx] = instance->SNR_post[bindx] * instance->NR_GAIN[bindx] * instance->NR_GAIN[bindx];
 				}
 			}
+			
+			if(do_agc) //do spectra AGC
+			{
+				float32_t RX_AGC_STEPSIZE_UP = 0.0f;
+				float32_t RX_AGC_STEPSIZE_DOWN = 0.0f;
+				if (mode == TRX_MODE_CW)
+				{
+					RX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.RX_AGC_CW_speed;
+					RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_CW_speed;
+				}
+				else
+				{
+					RX_AGC_STEPSIZE_UP = 1000.0f / (float32_t)TRX.RX_AGC_SSB_speed;
+					RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_SSB_speed;
+				}
+				
+				//float32_t maxValue = 0;
+				float32_t minValue = 0;
+				uint32_t minValueIndex = 0;
+				arm_min_f32(instance->FFT_COMPLEX_MAG, NOISE_REDUCTION_FFT_SIZE_HALF, &minValue, &minValueIndex);
+				//arm_max_no_idx_f32(instance->FFT_COMPLEX_MAG, NOISE_REDUCTION_FFT_SIZE_HALF, &maxValue);
+				
+				//float32_t AGC_RX_dbFS1 = getDBFromFFTAmpl(maxValue); //get bw ampl, not bin
+				
+				float32_t AGC_RX_magnitude = 0;
+				arm_rms_f32(instance->NR_InputBuffer, NOISE_REDUCTION_FFT_SIZE_HALF, &AGC_RX_magnitude);
+				if (AGC_RX_magnitude == 0.0f)
+					AGC_RX_magnitude = 0.001f;
+				float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
+				float32_t AGC_RX_dbFS = rate2dbV(full_scale_rate);
+				
+				float32_t gain_target = (float32_t)TRX.AGC_GAIN_TARGET;
+				if (mode == TRX_MODE_CW)
+					gain_target += CW_ADD_GAIN_AF;
+				float32_t diff = (gain_target - (AGC_RX_dbFS + instance->need_gain_db));
+
+				// move
+				if (diff > 0)
+				{
+					instance->need_gain_db += diff / RX_AGC_STEPSIZE_UP;
+				}
+				else
+				{
+					instance->need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
+				}
+
+				// overload (clipping), sharply reduce the gain
+				if ((AGC_RX_dbFS + instance->need_gain_db) > (gain_target + AGC_CLIPPING))
+				{
+					instance->need_gain_db = gain_target - AGC_RX_dbFS;
+					// println("AGC overload ", diff);
+				}
+				
+				// gain limiter
+				if (instance->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain)
+					instance->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
+				
+				//noise gate
+				float32_t noise_gate = minValue * db2rateV(TRX.AGC_Spectral_THRESHOLD);
+				uint32_t noise_gated = 0;
+				
+				//appy gain
+				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
+				{
+					if(instance->FFT_COMPLEX_MAG[idx] > noise_gate)
+						instance->AGC_GAIN[idx] = db2rateV(instance->need_gain_db);
+					else {
+						instance->AGC_GAIN[idx] = 1.0f;
+						noise_gated++;
+					}
+				}
+				
+				//println("[SpectraAGC] Min: ", minValue, " AGC_RX_dbFS: ", AGC_RX_dbFS, " Gain: ", instance->need_gain_db, " noise_gated ", noise_gated);
+			}
+			
 			// smooth gain
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
 #define smooth_gain_alpha 0.9f
 #define smooth_gain_beta (1.0f - smooth_gain_alpha)
-				if ((idx - 1) >= 0)
+				if ((idx - 1) >= 0) {
 					instance->NR_GAIN[idx - 1] = instance->NR_GAIN[idx - 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
-				if ((idx + 1) < NOISE_REDUCTION_FFT_SIZE_HALF)
+					instance->AGC_GAIN[idx - 1] = instance->AGC_GAIN[idx - 1] * smooth_gain_alpha + instance->AGC_GAIN[idx] * smooth_gain_beta;
+				}
+				if ((idx + 1) < NOISE_REDUCTION_FFT_SIZE_HALF) {
 					instance->NR_GAIN[idx + 1] = instance->NR_GAIN[idx + 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
+					instance->AGC_GAIN[idx + 1] = instance->AGC_GAIN[idx + 1] * smooth_gain_alpha + instance->AGC_GAIN[idx] * smooth_gain_beta;
+				}
 			}
+			
 			// apply gain weighting
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 			{
+				// NR
 				instance->FFT_Buffer[idx * 2] *= instance->NR_GAIN[idx];
 				instance->FFT_Buffer[idx * 2 + 1] *= instance->NR_GAIN[idx];
 				// symmetry
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->NR_GAIN[idx];
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->NR_GAIN[idx];
+				
+				// AGC
+				instance->FFT_Buffer[idx * 2] *= instance->AGC_GAIN[idx];
+				// symmetry
+				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->AGC_GAIN[idx];
 			}
+			
 			// do inverse fft
 			arm_cfft_f32(instance->FFT_Inst, instance->FFT_Buffer, 1, 1);
 			// windowing
@@ -192,4 +282,10 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 	if (instance->NR_OutputBuffer_index < (NOISE_REDUCTION_FFT_SIZE / NOISE_REDUCTION_BLOCK_SIZE))
 		dma_memcpy(buffer, &instance->NR_OutputBuffer[instance->NR_OutputBuffer_index * NOISE_REDUCTION_BLOCK_SIZE], NOISE_REDUCTION_BLOCK_SIZE * 4);
 	instance->NR_OutputBuffer_index++;
+}
+
+static float32_t getDBFromFFTAmpl(float32_t ampl)
+{
+	#define DBM_COMPENSATION 6.0f
+	return rate2dbP(powf(ampl / (float32_t)NOISE_REDUCTION_FFT_SIZE, 2) / 50.0f / 0.001f) + DBM_COMPENSATION; // roughly... because window and other...
 }

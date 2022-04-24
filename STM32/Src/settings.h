@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 47						  // Settings config version
+#define SETT_VERSION 48						  // Settings config version
 #define CALIB_VERSION 43					  // Calibration config version
 #define ADC_CLOCK 122880000					  // ADC generator frequency
 #define DAC_CLOCK 188160000					  // DAC generator frequency
@@ -409,6 +409,7 @@ extern struct TRX_SETTINGS
 	uint8_t TX_Compressor_speed_AMFM;
 	uint8_t TX_Compressor_maxgain_AMFM;
 	uint8_t SELFHEAR_Volume;
+	uint8_t AGC_Spectral_THRESHOLD;
 	int8_t MIC_NOISE_GATE;
 	int8_t RX_EQ_LOW;
 	int8_t RX_EQ_MID;
@@ -424,6 +425,7 @@ extern struct TRX_SETTINGS
 	bool NOISE_BLANKER;
 	bool Beeper;
 	bool FM_Stereo;
+	bool AGC_Spectral;
 	// CW
 	float32_t CW_DotToDashRate;
 	uint16_t CW_Pitch;

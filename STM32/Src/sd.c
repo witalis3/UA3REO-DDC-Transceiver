@@ -995,6 +995,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.CTCSS_Freq", (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.SELFHEAR_Volume", (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FM_Stereo", (uint32_t *)&TRX.FM_Stereo, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.AGC_Spectral", (uint32_t *)&TRX.AGC_Spectral, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.AGC_Spectral_THRESHOLD", (uint32_t *)&TRX.AGC_Spectral_THRESHOLD, SYSMENU_UINT8);
 			// CW
 			SD_WRITE_SETT_LINE("TRX.CW_Pitch", (uint32_t *)&TRX.CW_Pitch, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_Key_timeout", (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_UINT16);
@@ -1549,8 +1551,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.CTCSS_Freq = floatval;
 	if (strcmp(name, "TRX.SELFHEAR_Volume") == 0)
 		TRX.SELFHEAR_Volume = (uint8_t)uintval;
+	if (strcmp(name, "TRX.AGC_Spectral_THRESHOLD") == 0)
+		TRX.AGC_Spectral_THRESHOLD = (uint8_t)uintval;
 	if (strcmp(name, "TRX.FM_Stereo") == 0)
 		TRX.FM_Stereo = bval;
+	if (strcmp(name, "TRX.AGC_Spectral") == 0)
+		TRX.AGC_Spectral = bval;
 	// CW
 	if (strcmp(name, "TRX.CW_Pitch") == 0)
 		TRX.CW_Pitch = (uint16_t)uintval;
