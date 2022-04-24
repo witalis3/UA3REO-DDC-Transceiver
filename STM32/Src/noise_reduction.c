@@ -255,11 +255,11 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 #define smooth_gain_beta (1.0f - smooth_gain_alpha)
 				if ((idx - 1) >= 0) {
 					instance->NR_GAIN[idx - 1] = instance->NR_GAIN[idx - 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
-					instance->AGC_GAIN[idx - 1] = instance->AGC_GAIN[idx - 1] * smooth_gain_alpha + instance->AGC_GAIN[idx] * smooth_gain_beta;
+					//instance->AGC_GAIN[idx - 1] = instance->AGC_GAIN[idx - 1] * smooth_gain_alpha + instance->AGC_GAIN[idx] * smooth_gain_beta;
 				}
 				if ((idx + 1) < NOISE_REDUCTION_FFT_SIZE_HALF) {
 					instance->NR_GAIN[idx + 1] = instance->NR_GAIN[idx + 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
-					instance->AGC_GAIN[idx + 1] = instance->AGC_GAIN[idx + 1] * smooth_gain_alpha + instance->AGC_GAIN[idx] * smooth_gain_beta;
+					//instance->AGC_GAIN[idx + 1] = instance->AGC_GAIN[idx + 1] * smooth_gain_alpha + instance->AGC_GAIN[idx] * smooth_gain_beta;
 				}
 			}
 			
@@ -275,9 +275,9 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				
 				// AGC
 				instance->FFT_Buffer[idx * 2] *= instance->AGC_GAIN[idx];
-				instance->FFT_Buffer[idx * 2 + 1] *= instance->AGC_GAIN[idx];
+				//instance->FFT_Buffer[idx * 2 + 1] *= instance->AGC_GAIN[idx];
 				// symmetry
-				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->AGC_GAIN[idx];
+				//instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->AGC_GAIN[idx];
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->AGC_GAIN[idx];
 			}
 			
