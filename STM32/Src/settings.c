@@ -237,7 +237,7 @@ void LoadSettings(bool clear)
 		TRX.CTCSS_Freq = 0;					 // CTCSS FM Frequency
 		TRX.SELFHEAR_Volume = 50;			 // Selfhearing volume
 		TRX.FM_Stereo = false;				 // Stereo FM Mode
-		TRX.AGC_Spectral = false;			//Spectral AGC mode
+		TRX.AGC_Spectral = true;			//Spectral AGC mode
 		// CW
 		TRX.CW_Pitch = 600;			   // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;	   // time of releasing transmission after the last character on the key
