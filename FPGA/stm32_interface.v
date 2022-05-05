@@ -124,7 +124,8 @@ reg signed [23:0] READ_RX2_Q;
 reg signed [23:0] READ_TX_I;
 reg signed [23:0] READ_TX_Q;
 reg ADC_MINMAX_RESET;
-reg sync_reset_n = 0;
+reg sync_reset_rx_n = 0;
+reg sync_reset_tx_n = 0;
 reg unsigned [7:0] BUS_TEST;
 
 always @ (posedge clk_in)
@@ -161,14 +162,14 @@ begin
 			DATA_BUS_OE = 1;
 			k = 400;
 		end
-		else if(DATA_BUS[7:0] == 'd5) //RESET ON
+		else if(DATA_BUS[7:0] == 'd5) //RESET RX ON
 		begin
-			sync_reset_n = 0;
+			sync_reset_rx_n = 0;
 			k = 999;
 		end
-		else if(DATA_BUS[7:0] == 'd6) //RESET OFF
+		else if(DATA_BUS[7:0] == 'd6) //RESET RX OFF
 		begin
-			sync_reset_n = 1;
+			sync_reset_rx_n = 1;
 			k = 999;
 		end
 		else if(DATA_BUS[7:0] == 'd7) //FPGA FLASH READ
@@ -180,6 +181,16 @@ begin
 		begin
 			DATA_BUS_OE = 1;
 			k = 800;
+		end
+		else if(DATA_BUS[7:0] == 'd9) //RESET TX ON
+		begin
+			sync_reset_tx_n = 0;
+			k = 999;
+		end
+		else if(DATA_BUS[7:0] == 'd10) //RESET TX OFF
+		begin
+			sync_reset_tx_n = 1;
+			k = 999;
 		end
 	end
 	else if (k == 100) //GET PARAMS
@@ -523,12 +534,12 @@ begin
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd0; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd1; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)
 	begin
-		DATA_BUS_OUT[7:0] = 'd3; //flash id 3
+		DATA_BUS_OUT[7:0] = 'd0; //flash id 3
 		k = 999;
 	end
 	stage_debug=k;
@@ -555,13 +566,13 @@ end
 always @ (negedge adcclk_in)
 begin
 	//RESET ADC SYNC
-	reset_adc_n = sync_reset_n;
+	reset_adc_n = sync_reset_rx_n;
 end
 
 always @ (negedge dacclk_in)
 begin
 	//RESET DAC SYNC
-	reset_dac_n = sync_reset_n;
+	reset_dac_n = sync_reset_tx_n;
 end
 
 endmodule
