@@ -112,7 +112,7 @@ void WIFI_Init(void)
 		WIFI_SendCommand("AT+CIPSTATUS\r\n");
 		while (WIFI_TryGetLine())
 		{
-			if (strstr(WIFI_readedLine, "STATUS:2") != NULL || strstr(WIFI_readedLine, "STATUS:4") != NULL)
+			if (strstr(WIFI_readedLine, "STATUS:2") != NULL)
 			{
 				WIFI_State = WIFI_READY;
 				WIFI_connected = true;
