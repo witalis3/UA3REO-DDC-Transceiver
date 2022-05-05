@@ -8,13 +8,13 @@
 SRAM static NR_Instance NR_RX1 = {0};
 SRAM static NR_Instance NR_RX2 = {0};
 static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; // coefficients for the window function
-static float32_t getDBFromFFTAmpl(float32_t ampl);
 
 // initialize DNR
 void InitNoiseReduction(void)
 {
 	dma_memset(&NR_RX1, 0, sizeof(NR_RX1));
-	dma_memset(&NR_RX2, 0, sizeof(NR_RX1));
+	dma_memset(&NR_RX2, 0, sizeof(NR_RX2));
+	
 	NR_RX1.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE;
 	NR_RX2.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE;
 
@@ -24,13 +24,11 @@ void InitNoiseReduction(void)
 	for (uint16_t bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
 	{
 		NR_RX1.NR_Prev_Buffer[bindx] = 0.0;
-		//NR_RX1.AGC_GAIN[bindx] = 1.0;
 		NR_RX1.AGC_GAIN = 1.0;
 		NR_RX1.NR_GAIN[bindx] = 1.0;
 		NR_RX1.NR_GAIN_old[bindx] = 1.0;
 
 		NR_RX2.NR_Prev_Buffer[bindx] = 0.0;
-		//NR_RX2.AGC_GAIN[bindx] = 1.0;
 		NR_RX2.AGC_GAIN = 1.0;
 		NR_RX2.NR_GAIN[bindx] = 1.0;
 		NR_RX2.NR_GAIN_old[bindx] = 1.0;
@@ -160,7 +158,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				}
 			}
 			
-			if(do_agc) //do spectra AGC
+			if(do_agc) //do spectral AGC
 			{
 				float32_t RX_AGC_STEPSIZE_UP = 0.0f;
 				float32_t RX_AGC_STEPSIZE_DOWN = 0.0f;
@@ -175,13 +173,9 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_SSB_speed;
 				}
 				
-				//float32_t maxValue = 0;
 				float32_t minValue = 0;
 				uint32_t minValueIndex = 0;
 				arm_min_f32(instance->FFT_COMPLEX_MAG, NOISE_REDUCTION_FFT_SIZE_HALF, &minValue, &minValueIndex);
-				//arm_max_no_idx_f32(instance->FFT_COMPLEX_MAG, NOISE_REDUCTION_FFT_SIZE_HALF, &maxValue);
-				
-				//float32_t AGC_RX_dbFS1 = getDBFromFFTAmpl(maxValue); //get bw ampl, not bin
 				
 				float32_t AGC_RX_magnitude = 0;
 				arm_rms_f32(instance->NR_InputBuffer, NOISE_REDUCTION_FFT_SIZE_HALF, &AGC_RX_magnitude);
@@ -291,10 +285,4 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 	if (instance->NR_OutputBuffer_index < (NOISE_REDUCTION_FFT_SIZE / NOISE_REDUCTION_BLOCK_SIZE))
 		dma_memcpy(buffer, &instance->NR_OutputBuffer[instance->NR_OutputBuffer_index * NOISE_REDUCTION_BLOCK_SIZE], NOISE_REDUCTION_BLOCK_SIZE * 4);
 	instance->NR_OutputBuffer_index++;
-}
-
-static float32_t getDBFromFFTAmpl(float32_t ampl)
-{
-	#define DBM_COMPENSATION 6.0f
-	return rate2dbP(powf(ampl / (float32_t)NOISE_REDUCTION_FFT_SIZE, 2) / 50.0f / 0.001f) + DBM_COMPENSATION; // roughly... because window and other...
 }
