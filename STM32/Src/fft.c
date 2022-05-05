@@ -1904,7 +1904,11 @@ static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initializ
 	{
 		palette_fft[i] = getFFTColor(GET_FFTHeight - i, false);
 		palette_wtf[i] = getFFTColor(GET_FFTHeight - i, true);
-		palette_bg_gradient[i] = getBGColor(GET_FFTHeight - i);
+		if (TRX.FFT_BW_Style == 3 && !TRX.FFT_Background) // lines BW without background
+			palette_bg_gradient[i] = getFFTColor(0, false);
+		else
+			palette_bg_gradient[i] = getBGColor(GET_FFTHeight - i);
+		
 		palette_bw_fft_colors[i] = addColor(palette_fft[i], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 		palette_bw_wtf_colors[i] = addColor(palette_wtf[i], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 		palette_bw_bg_colors[i] = addColor(palette_bg_gradient[i], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);

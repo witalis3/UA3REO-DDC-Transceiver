@@ -2337,6 +2337,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction)
 		TRX.FFT_Background = true;
 	if (direction < 0)
 		TRX.FFT_Background = false;
+	
+	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Lens(int8_t direction)
