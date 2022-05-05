@@ -44,9 +44,9 @@ static void FRONTPANEL_BUTTONHANDLER_KEYER(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SCAN(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_REC(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_PLAY(uint32_t parameter);
-static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_RIT(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_XIT(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter);
-static void FRONTPANEL_BUTTONHANDLER_CLAR(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_STEP(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_BANDMAP(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_AUTOGAINER(uint32_t parameter);
@@ -61,7 +61,7 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;
-static uint8_t enc2_func_mode_idx = 0; // 0 - fast-step, 1 - WPM, 2 - SPLIT/SHIFT, 3 - NOTCH
+static uint8_t enc2_func_mode_idx = 0; // 0 - fast-step, 1 - WPM, 2 - RIT/XIT, 3 - NOTCH
 
 #ifdef FRONTPANEL_SMALL_V1
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
@@ -74,11 +74,11 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH}, // RFPOWER-SQUELCH
 	{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF},			  // BW-HPF
 
-	{.port = 2, .channel = 7, .type = FUNIT_CTRL_SHIFT_SPLIT},																																																									 // SHIFT/SPLIT
+	{.port = 2, .channel = 7, .type = FUNIT_CTRL_RIT_XIT},																																																									 // RIT/XIT
 	{.port = 2, .channel = 6, .type = FUNIT_CTRL_AF_GAIN},																																																										 // AF GAIN
 	{.port = 2, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_DNR, .holdHandler = FRONTPANEL_BUTTONHANDLER_NB},			 // DNR-NB
 	{.port = 2, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_NOTCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL}, // NOTCH-MANUAL
-	{.port = 2, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},		 // CLAR-SHIFT
+	{.port = 2, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_SPLIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_RIT},		 // SPLIT-RIT
 	{.port = 2, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC},			 // REC-PLAY
 	{.port = 2, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},	 // SERVICES
 	{.port = 2, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},			 // MENU-LOCK
@@ -98,7 +98,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	// buttons
 	{.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN},	   // AF GAIN
-	{.port = 1, .channel = 1, .type = FUNIT_CTRL_SHIFT_SPLIT}, // SHIFT/SPLIT
+	{.port = 1, .channel = 1, .type = FUNIT_CTRL_RIT_XIT}, // RIT/XIT
 
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_TANGENT}, // TANGENT_SW1
 	{.port = 1, .channel = 3, .type = FUNIT_CTRL_TANGENT}, // TANGENT_SW2
@@ -123,14 +123,14 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "TUNE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE},
 	{.name = "POWER", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER},
 	{.name = "ANT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ANT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ANT},
-	{.name = "SHIFT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SHIFT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},
+	{.name = "RIT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_RIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_RIT},
 	{.name = "SERVICE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},
 	{.name = "MENU", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU},
 
 	{.name = "WPM", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_WPM},
-	{.name = "SPLIT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SPLIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SPLIT},
+	{.name = "XIT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_XIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_XIT},
 	{.name = "DOUBLE", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOUBLE, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOUBLEMODE},
-	{.name = "CLAR", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_CLAR},
+	{.name = "SPLIT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SPLIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SPLIT},
 	{.name = "SCAN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SCAN, .holdHandler = FRONTPANEL_BUTTONHANDLER_SCAN},
 	{.name = "PLAY", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_PLAY},
 	{.name = "REC", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_REC, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC},
@@ -160,7 +160,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	// buttons
 	{.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN},	   // AF GAIN
-	{.port = 1, .channel = 1, .type = FUNIT_CTRL_SHIFT_SPLIT}, // SHIFT/SPLIT
+	{.port = 1, .channel = 1, .type = FUNIT_CTRL_RIT_XIT}, // RIT/XIT
 
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 100, .tres_max = 231, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 8, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, // SB16 F9
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 231, .tres_max = 354, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 7, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, // SB17 F8
@@ -200,7 +200,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "WPM", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_WPM},
 	{.name = "POWER", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER},
 	{.name = "ANT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ANT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ANT},
-	{.name = "SHIFT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SHIFT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SHIFT},
+	{.name = "RIT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_RIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_RIT},
 	{.name = "PLAY", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_PLAY},
 	{.name = "REC", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_REC, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC},
 	{.name = "SERVICE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES},
@@ -209,8 +209,8 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "SAMPL+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_P},
 	{.name = "ZOOM-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N},
 	{.name = "ZOOM+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P},
-	{.name = "SPLIT", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SPLIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SPLIT},
-	{.name = "CLAR", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_CLAR, .holdHandler = FRONTPANEL_BUTTONHANDLER_CLAR},
+	{.name = "XIT", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_XIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_XIT},
+	{.name = "SPLIT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SPLIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_SPLIT},
 	{.name = "DOUBLE", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOUBLE, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOUBLEMODE},
 	{.name = "HPF", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_HPF, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF},
 	{.name = "TUNE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE},
@@ -380,8 +380,8 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 			new_channel = 0;
 
 		newfreq = BANDS[band].channels[new_channel].rxFreq;
-		TRX.CLAR = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
-		if (TRX.CLAR)
+		TRX.SPLIT_Enabled = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
+		if (TRX.SPLIT_Enabled)
 			TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -432,7 +432,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 	if (enc2_func_mode_idx == 1 && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
 		enc2_func_mode_idx = 0;
-	if (enc2_func_mode_idx == 2 && ((!TRX.ShiftEnabled && !TRX.SplitEnabled) || !TRX.FineRITTune)) // nothing to RIT tune
+	if (enc2_func_mode_idx == 2 && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
 		enc2_func_mode_idx = 0;
 	if (enc2_func_mode_idx == 3 && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
 		enc2_func_mode_idx = 0;
@@ -452,8 +452,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				new_channel = 0;
 
 			newfreq = BANDS[band].channels[new_channel].rxFreq;
-			TRX.CLAR = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
-			if (TRX.CLAR)
+			TRX.SPLIT_Enabled = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
+			if (TRX.SPLIT_Enabled)
 				TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
@@ -506,24 +506,24 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		LCD_showTooltip(sbuff);
 	}
 
-	if (enc2_func_mode_idx == 2) // Fine SPLIT/SHIFT
+	if (enc2_func_mode_idx == 2) // Fine RIT/XIT
 	{
-		if (TRX.ShiftEnabled && TRX.FineRITTune)
+		if (TRX.RIT_Enabled && TRX.FineRITTune)
 		{
-			TRX_SHIFT += direction * 10;
-			if (TRX_SHIFT > TRX.SHIFT_INTERVAL)
-				TRX_SHIFT = TRX.SHIFT_INTERVAL;
-			if (TRX_SHIFT < -TRX.SHIFT_INTERVAL)
-				TRX_SHIFT = -TRX.SHIFT_INTERVAL;
+			TRX_RIT += direction * 10;
+			if (TRX_RIT > TRX.RIT_INTERVAL)
+				TRX_RIT = TRX.RIT_INTERVAL;
+			if (TRX_RIT < -TRX.RIT_INTERVAL)
+				TRX_RIT = -TRX.RIT_INTERVAL;
 		}
 
-		if (TRX.SplitEnabled && TRX.FineRITTune)
+		if (TRX.XIT_Enabled && TRX.FineRITTune)
 		{
-			TRX_SPLIT += direction * 10;
-			if (TRX_SPLIT > TRX.SPLIT_INTERVAL)
-				TRX_SPLIT = TRX.SPLIT_INTERVAL;
-			if (TRX_SPLIT < -TRX.SPLIT_INTERVAL)
-				TRX_SPLIT = -TRX.SPLIT_INTERVAL;
+			TRX_XIT += direction * 10;
+			if (TRX_XIT > TRX.XIT_INTERVAL)
+				TRX_XIT = TRX.XIT_INTERVAL;
+			if (TRX_XIT < -TRX.XIT_INTERVAL)
+				TRX_XIT = -TRX.XIT_INTERVAL;
 		}
 	}
 
@@ -624,7 +624,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 
 		if (enc2_func_mode_idx == 1 && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
 			enc2_func_mode_idx++;
-		if (enc2_func_mode_idx == 2 && ((!TRX.ShiftEnabled && !TRX.SplitEnabled) || !TRX.FineRITTune)) // nothing to RIT tune
+		if (enc2_func_mode_idx == 2 && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
 			enc2_func_mode_idx++;
 		if (enc2_func_mode_idx == 3 && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
 			enc2_func_mode_idx++;
@@ -805,55 +805,55 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 			TRX.Volume = 0;
 	}
 
-	// SHIFT / SPLIT or IF Gain
-	if (button->type == FUNIT_CTRL_SHIFT_SPLIT)
+	// RIT / XIT or IF Gain
+	if (button->type == FUNIT_CTRL_RIT_XIT)
 	{
-		if (TRX.ShiftEnabled)
+		if (TRX.RIT_Enabled)
 		{
-			static int_fast16_t TRX_SHIFT_old = 0;
+			static int_fast16_t TRX_RIT_old = 0;
 			if (!TRX.FineRITTune)
-				TRX_SHIFT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SHIFT_INTERVAL * 2 / 1023.0f) - TRX.SHIFT_INTERVAL);
+				TRX_RIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
 
-			if (TRX_SHIFT_old != TRX_SHIFT)
+			if (TRX_RIT_old != TRX_RIT)
 			{
-				TRX_SHIFT_old = TRX_SHIFT;
+				TRX_RIT_old = TRX_RIT;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_SHIFT / (float32_t)TRX.SHIFT_INTERVAL));
+				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_RIT / (float32_t)TRX.RIT_INTERVAL));
 				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
 				{
 					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
 					LCD_UpdateQuery.StatusInfoGUI = true;
 				}
 			}
-			TRX_SPLIT = 0;
+			TRX_XIT = 0;
 		}
 
-		if (TRX.SplitEnabled)
+		if (TRX.XIT_Enabled)
 		{
-			static int_fast16_t TRX_SPLIT_old = 0;
+			static int_fast16_t TRX_XIT_old = 0;
 			if (!TRX.FineRITTune)
-				TRX_SPLIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.SPLIT_INTERVAL * 2 / 1023.0f) - TRX.SPLIT_INTERVAL);
+				TRX_XIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
 
-			if (TRX_SPLIT_old != TRX_SPLIT)
+			if (TRX_XIT_old != TRX_XIT)
 			{
-				TRX_SPLIT_old = TRX_SPLIT;
+				TRX_XIT_old = TRX_XIT;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_SPLIT / (float32_t)TRX.SPLIT_INTERVAL));
+				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_XIT / (float32_t)TRX.XIT_INTERVAL));
 				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
 				{
 					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
 					LCD_UpdateQuery.StatusInfoGUI = true;
 				}
 			}
-			TRX_SHIFT = 0;
+			TRX_RIT = 0;
 		}
 
-		if (!TRX.ShiftEnabled && TRX.SplitEnabled && !TRX.FineRITTune) // Disable shift/split + IF
+		if (!TRX.RIT_Enabled && TRX.XIT_Enabled && !TRX.FineRITTune) // Disable RIT/XIT + IF
 		{
-			TRX_SHIFT = 0;
-			TRX_SPLIT = 0;
+			TRX_RIT = 0;
+			TRX_XIT = 0;
 			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 60.0f / 1023.0f));
 		}
 
@@ -1579,12 +1579,29 @@ void FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter)
+static void FRONTPANEL_BUTTONHANDLER_RIT(uint32_t parameter)
 {
-	TRX.ShiftEnabled = !TRX.ShiftEnabled;
-	TRX.SplitEnabled = false;
-	TRX.CLAR = false;
-	TRX_SHIFT = 0;
+	TRX.RIT_Enabled = !TRX.RIT_Enabled;
+	if(TRX.RIT_Enabled) 
+		enc2_func_mode_idx = 2;
+	TRX.XIT_Enabled = false;
+	TRX.SPLIT_Enabled = false;
+	TRX_RIT = 0;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
+	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.StatusInfoGUI = true;
+	NeedSaveSettings = true;
+}
+
+static void FRONTPANEL_BUTTONHANDLER_XIT(uint32_t parameter)
+{
+	TRX.XIT_Enabled = !TRX.XIT_Enabled;
+	if(TRX.XIT_Enabled) 
+		enc2_func_mode_idx = 2;
+	TRX.RIT_Enabled = false;
+	TRX.SPLIT_Enabled = false;
+	TRX_XIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
@@ -1594,24 +1611,11 @@ static void FRONTPANEL_BUTTONHANDLER_SHIFT(uint32_t parameter)
 
 static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter)
 {
-	TRX.SplitEnabled = !TRX.SplitEnabled;
-	TRX.ShiftEnabled = false;
-	TRX.CLAR = false;
-	TRX_SPLIT = 0;
-	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
-	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
-	LCD_UpdateQuery.TopButtons = true;
-	LCD_UpdateQuery.StatusInfoGUI = true;
-	NeedSaveSettings = true;
-}
-
-static void FRONTPANEL_BUTTONHANDLER_CLAR(uint32_t parameter)
-{
-	TRX.CLAR = !TRX.CLAR;
-	TRX.SplitEnabled = false;
-	TRX.ShiftEnabled = false;
-	TRX_SPLIT = 0;
-	TRX_SHIFT = 0;
+	TRX.SPLIT_Enabled = !TRX.SPLIT_Enabled;
+	TRX.XIT_Enabled = false;
+	TRX.RIT_Enabled = false;
+	TRX_XIT = 0;
+	TRX_RIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;

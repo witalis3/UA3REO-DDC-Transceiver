@@ -242,7 +242,7 @@ static void LCD_displayFreqInfo(bool redraw)
 	if (TRX.Transverter_Enabled)
 		display_freq += (uint64_t)TRX.Transverter_Offset_Mhz * 1000 * 1000;
 	if (TRX_on_TX() && !TRX.selected_vfo)
-		display_freq += TRX_SPLIT;
+		display_freq += TRX_XIT;
 
 	LCD_last_showed_freq = display_freq;
 	uint16_t hz = (display_freq % 1000);
@@ -319,7 +319,7 @@ static void LCD_displayFreqInfo(bool redraw)
 	if (TRX.Transverter_Enabled)
 		display_freq += (uint64_t)TRX.Transverter_Offset_Mhz * 1000 * 1000;
 	if (TRX_on_TX() && TRX.selected_vfo)
-		display_freq += TRX_SPLIT;
+		display_freq += TRX_XIT;
 
 	LCD_last_showed_freq_B = display_freq;
 	uint16_t hz_B = (LCD_last_showed_freq_B % 1000);
@@ -667,7 +667,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 			LCDDriver_Fill_Triangle(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 + bw_trapez_bw_hpf_margin_width_offset, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT - 1, COLOR->BW_TRAPEZ_FILL);
 	}
 	// shift stripe
-	if ((!TRX.ShiftEnabled && !TRX.SplitEnabled) || LCD_bw_trapez_stripe_pos == 0)
+	if ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || LCD_bw_trapez_stripe_pos == 0)
 		LCD_bw_trapez_stripe_pos = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
 	LCDDriver_Fill_RectWH(LCD_bw_trapez_stripe_pos - 1, LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT / 2, 3, LAYOUT->BW_TRAPEZ_HEIGHT / 2, COLOR->BW_TRAPEZ_STRIPE);
 	/////END BW trapezoid
@@ -1123,16 +1123,16 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	else
 	{
 		// RIT
-		if (TRX.CLAR)
-			sprintf(buff, "RIT:CLAR");
-		else if (TRX.ShiftEnabled && TRX_SHIFT > 0)
-			sprintf(buff, "SHIFT:+%d", TRX_SHIFT);
-		else if (TRX.ShiftEnabled)
-			sprintf(buff, "SHIFT:%d", TRX_SHIFT);
-		else if (TRX.SplitEnabled && TRX_SPLIT > 0)
-			sprintf(buff, "SPLIT:+%d", TRX_SPLIT);
-		else if (TRX.SplitEnabled)
-			sprintf(buff, "SPLIT:%d", TRX_SPLIT);
+		if (TRX.SPLIT_Enabled)
+			sprintf(buff, "SPLIT");
+		else if (TRX.RIT_Enabled && TRX_RIT > 0)
+			sprintf(buff, "RIT:+%d", TRX_RIT);
+		else if (TRX.RIT_Enabled)
+			sprintf(buff, "RIT:%d", TRX_RIT);
+		else if (TRX.XIT_Enabled && TRX_XIT > 0)
+			sprintf(buff, "XIT:+%d", TRX_XIT);
+		else if (TRX.XIT_Enabled)
+			sprintf(buff, "XIT:%d", TRX_XIT);
 		else
 			sprintf(buff, "RIT:OFF");
 	}

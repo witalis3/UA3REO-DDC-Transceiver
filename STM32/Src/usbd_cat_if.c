@@ -347,7 +347,7 @@ void ua3reo_dev_cat_parseCommand(void)
 	{
 		if (!has_args)
 		{
-			if (!TRX.CLAR)
+			if (!TRX.SPLIT_Enabled)
 				CAT_Transmit("FT0;");
 			else
 				CAT_Transmit("FT1;");
@@ -356,11 +356,11 @@ void ua3reo_dev_cat_parseCommand(void)
 		{
 			if (strcmp(arguments, "0") == 0)
 			{
-				TRX.CLAR = false;
+				TRX.SPLIT_Enabled = false;
 			}
 			else if (strcmp(arguments, "1") == 0)
 			{
-				TRX.CLAR = true;
+				TRX.SPLIT_Enabled = true;
 			}
 			else
 				println("Unknown CAT arguments: ", _command);

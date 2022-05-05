@@ -85,7 +85,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 ## Management
 
 * **AF GAIN** - Volume
-* **SHIFT / GAIN** - When the SHIFT function is active - smooth offset from the selected transceiver frequency. Inactive - IF gain control
+* **RIT / GAIN** - When the RIT function is active - smooth offset from the selected transceiver frequency. Inactive - IF gain control
 * **ENC MAIN** - Main encoder for frequency control and menu settings
 * **ENC 2** - Auxiliary encoder for menu operation. In normal mode, quickly switches the frequency, in CW fast change WPM
 * **ENC 2[click]** - In CW mode, toggles between fast step and WPM selection, in other modes it opens the bandwidth properties.
@@ -118,16 +118,16 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **DNR [clamp]** - Turn on the impulse noise suppressor (NB)
 * **NOTCH** - Turn on the automatic Notch filter to eliminate narrowband interference
 * **NOTCH [clamp]** - Turn on the manual Notch filter to eliminate narrowband interference
-* **CLAR** - Allows you to split transmission and reception to different VFO banks
-* **CLAR [clamp]** - Enables SHIFT control from the front panel
+* **SPLIT** - Allows you to split transmission and reception to different VFO banks
+* **RIT [clamp]** - Enables RIT control from the front panel
 * **WPM** - Switch to key speed selection menu (WPM)
 * **WPM [clamp]** - Automatic key enable
 * **MENU** - Go to the menu
 * **MENU [clamp]** - Enable key lock LOCK
 * **MENU [at power on]** - Reset transceiver settings
 * **MENU [at power on+PRE]** - Reset transceiver settings and calibration
-* **SHIFT** - Offset of the receiving frequency relative to the current frequency (TX without offset)
-* **SPLIT** - Offset of the transmission frequency relative to the current frequency (RX without offset)
+* **RIT** - Offset of the receiving frequency relative to the current frequency (TX without offset)
+* **XIT** - Offset of the transmission frequency relative to the current frequency (RX without offset)
 
 ## Settings
 
@@ -139,9 +139,9 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
 * **RF Filters** - Hardware filter management (LPF / HPF / BPF)
 * **Two Signal tune** - Two-signal generator in TUNE mode (1 + 2kHz)
-* **Shift Interval** - Offset range SHIFT (+ -)
-* **Split Interval** - Offset range SPLIT (+ -)
-* **Fine RIT Tune** - Fine or coarse tuning for SPLIT/SHIFT (encoder or resistor)
+* **RIT Interval** - Offset range RIT (+ -)
+* **XIT Interval** - Offset range XIT (+ -)
+* **Fine RIT Tune** - Fine or coarse tuning for RIT/XIT (encoder or resistor)
 * **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
 * **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
 * **Freq Step** - Frequency step by the main encoder

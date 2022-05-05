@@ -337,8 +337,8 @@ extern struct TRX_SETTINGS
 	uint32_t FRQ_ENC_FAST_STEP;
 	VFO VFO_A;
 	VFO VFO_B;
-	uint16_t SHIFT_INTERVAL;
-	uint16_t SPLIT_INTERVAL;
+	uint16_t RIT_INTERVAL;
+	uint16_t XIT_INTERVAL;
 	uint16_t Transverter_Offset_Mhz;
 	uint8_t ATT_STEP;
 	uint8_t RF_Power;
@@ -358,14 +358,14 @@ extern struct TRX_SETTINGS
 	bool RF_Filters;
 	bool ANT;
 	bool ChannelMode;
-	bool ShiftEnabled;
-	bool SplitEnabled;
+	bool RIT_Enabled;
+	bool XIT_Enabled;
+	bool SPLIT_Enabled;
 	bool FineRITTune;
 	bool TWO_SIGNAL_TUNE;
 	bool BandMapEnabled;
 	bool AutoGain;
 	bool Locked;
-	bool CLAR;
 	bool Dual_RX;
 	bool Encoder_Accelerate;
 	bool Transverter_Enabled;

@@ -141,10 +141,10 @@ void LoadSettings(bool clear)
 		TRX.ANT = false;					  // ANT-1
 		TRX.RF_Power = 20;					  // output power (%)
 		TRX.ChannelMode = false;			  // enable channel mode on VFO
-		TRX.ShiftEnabled = false;			  // activate the SHIFT mode
-		TRX.SplitEnabled = false;			  // activate the SPLIT mode
-		TRX.SHIFT_INTERVAL = 1000;			  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
-		TRX.SPLIT_INTERVAL = 1000;			  // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
+		TRX.RIT_Enabled = false;			  // activate the SHIFT mode
+		TRX.XIT_Enabled = false;			  // activate the SPLIT mode
+		TRX.RIT_INTERVAL = 1000;			  // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
+		TRX.XIT_INTERVAL = 1000;			  // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
 		TRX.TWO_SIGNAL_TUNE = false;		  // Two-signal generator in TUNE mode (1 + 2kHz)
 #ifdef LAY_160x128
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
@@ -173,7 +173,7 @@ void LoadSettings(bool clear)
 		TRX.AutoGain = false;			  // auto-control preamp and attenuator
 #endif
 		TRX.Locked = false;				  // Lock control
-		TRX.CLAR = false;				  // Split frequency mode (receive one VFO, transmit another)
+		TRX.SPLIT_Enabled = false;				  // Split frequency mode (receive one VFO, transmit another)
 		TRX.Dual_RX = false;			  // Dual RX feature
 		TRX.Dual_RX_Type = VFO_A_PLUS_B;  // dual receiver mode
 		TRX.Encoder_Accelerate = true;	  // Accelerate Encoder on fast rate

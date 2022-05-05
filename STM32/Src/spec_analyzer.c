@@ -34,7 +34,9 @@ static bool LastRF_Filters = false;
 static bool LastManualNotch = false;
 static bool LastAutoNotch = false;
 static uint8_t LastDNR = false;
-static bool LastShift = false;
+static bool LastRIT = false;
+static bool LastXIT = false;
+static bool LastSPLIT = false;
 static bool LastNB = false;
 static bool LastMute = false;
 
@@ -60,7 +62,9 @@ void SPEC_Start(void)
 	LastManualNotch = CurrentVFO->ManualNotchFilter;
 	LastAutoNotch = CurrentVFO->AutoNotchFilter;
 	LastDNR = CurrentVFO->DNR_Type;
-	LastShift = TRX.ShiftEnabled;
+	LastRIT = TRX.RIT_Enabled;
+	LastXIT = TRX.XIT_Enabled;
+	LastSPLIT = TRX.SPLIT_Enabled;
 	LastNB = TRX.NOISE_BLANKER;
 	LastMute = TRX_Mute;
 
@@ -92,7 +96,9 @@ void SPEC_Start(void)
 	TRX.BandMapEnabled = false;
 	TRX.AutoGain = false;
 	TRX.RF_Filters = false;
-	TRX.ShiftEnabled = false;
+	TRX.RIT_Enabled = false;
+	TRX.XIT_Enabled = false;
+	TRX.SPLIT_Enabled = false;
 	TRX.NOISE_BLANKER = false;
 	TRX_setFrequency(TRX.SPEC_Begin * SPEC_Resolution, CurrentVFO);
 	TRX_setMode(TRX_MODE_CW, CurrentVFO);
@@ -121,7 +127,9 @@ void SPEC_Stop(void)
 	CurrentVFO->ManualNotchFilter = LastManualNotch;
 	CurrentVFO->AutoNotchFilter = LastAutoNotch;
 	CurrentVFO->DNR_Type = LastDNR;
-	TRX.ShiftEnabled = LastShift;
+	TRX.RIT_Enabled = LastRIT;
+	TRX.XIT_Enabled = LastXIT;
+	TRX.SPLIT_Enabled = LastSPLIT;
 	TRX.NOISE_BLANKER = LastNB;
 	TRX_Mute = LastMute;
 }

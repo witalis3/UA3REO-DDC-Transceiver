@@ -36,8 +36,8 @@ volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
 volatile int32_t TRX_VCXO_ERROR = 0;
 volatile uint32_t TRX_SNTP_Synced = 0; // time of the last time synchronization
-volatile int_fast16_t TRX_SHIFT = 0;
-volatile int_fast16_t TRX_SPLIT = 0;
+volatile int_fast16_t TRX_RIT = 0;
+volatile int_fast16_t TRX_XIT = 0;
 volatile float32_t TRX_MAX_TX_Amplitude = 1.0f;
 volatile float32_t TRX_PWR_Forward = 0;
 volatile float32_t TRX_PWR_Backward = 0;
@@ -78,7 +78,7 @@ volatile float32_t TRX_PWR_Voltage = 12.0f;
 volatile float32_t TRX_RF_Current = 0.0f;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx
-static bool TRX_CLAR_Applied = false;
+static bool TRX_SPLIT_Applied = false;
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);
@@ -121,10 +121,10 @@ void TRX_Restart_Mode()
 		TRX_Start_RX();
 	}
 
-	// CLAR
-	if (TRX.CLAR && !TRX_CLAR_Applied)
+	// SPLIT
+	if (TRX.SPLIT_Enabled && !TRX_SPLIT_Applied)
 	{
-		TRX_CLAR_Applied = true;
+		TRX_SPLIT_Applied = true;
 
 		TRX.selected_vfo = !TRX.selected_vfo;
 		if (!TRX.selected_vfo)
@@ -148,7 +148,7 @@ void TRX_Restart_Mode()
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	}
 
-	if (TRX.SplitEnabled)
+	if (TRX.XIT_Enabled)
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 }
 
@@ -163,7 +163,7 @@ static void TRX_Start_RX()
 	Processor_NeedRXBuffer = false;
 	WM8731_Buffer_underrun = false;
 	WM8731_DMA_state = true;
-	TRX_CLAR_Applied = false;
+	TRX_SPLIT_Applied = false;
 	TRX_TXRXMode = 1;
 
 	// clean TX buffer
@@ -183,7 +183,7 @@ static void TRX_Start_TX()
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
-	TRX_CLAR_Applied = false;
+	TRX_SPLIT_Applied = false;
 	TRX_TXRXMode = 2;
 
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
@@ -199,7 +199,7 @@ static void TRX_Start_TXRX()
 	RF_UNIT_UpdateState(false);
 	WM8731_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
-	TRX_CLAR_Applied = false;
+	TRX_SPLIT_Applied = false;
 	TRX_TXRXMode = 3;
 
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
@@ -362,7 +362,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 		TRX_DCDC_Freq = 0;
 
 	// get settings and fpga freq phrase
-	int64_t vfoa_freq = CurrentVFO->Freq + TRX_SHIFT;
+	int64_t vfoa_freq = CurrentVFO->Freq + TRX_RIT;
 	if (TRX.Transverter_70cm && getBandFromFreq(vfoa_freq, true) == BANDID_70cm)
 		vfoa_freq = STATIC_TRANSVERTER_OFFSET + (vfoa_freq - BANDS[BANDID_70cm].startFreq);
 	if (TRX.Transverter_23cm && getBandFromFreq(vfoa_freq, true) == BANDID_23cm)
@@ -375,7 +375,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 		vfoa_freq = STATIC_TRANSVERTER_OFFSET + (vfoa_freq - BANDS[BANDID_3cm].startFreq);
 	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
 
-	int64_t vfob_freq = SecondaryVFO->Freq + TRX_SHIFT;
+	int64_t vfob_freq = SecondaryVFO->Freq + TRX_RIT;
 	if (TRX.Transverter_70cm && getBandFromFreq(vfob_freq, true) == BANDID_70cm)
 		vfob_freq = STATIC_TRANSVERTER_OFFSET + (vfob_freq - BANDS[BANDID_70cm].startFreq);
 	if (TRX.Transverter_23cm && getBandFromFreq(vfob_freq, true) == BANDID_23cm)
@@ -389,7 +389,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 
 	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
 
-	int64_t vfo_tx_freq = CurrentVFO->Freq + TRX_SPLIT;
+	int64_t vfo_tx_freq = CurrentVFO->Freq + TRX_XIT;
 	if (TRX.Transverter_70cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_70cm)
 		vfo_tx_freq = STATIC_TRANSVERTER_OFFSET + (vfo_tx_freq - BANDS[BANDID_70cm].startFreq);
 	if (TRX.Transverter_23cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_23cm)
@@ -426,8 +426,8 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 		}
 	}
 
-	// CLAR freq secondary VFO sync
-	if (TRX.CLAR && vfo == CurrentVFO)
+	// SPLIT freq secondary VFO sync
+	if (TRX.SPLIT_Enabled && vfo == CurrentVFO)
 	{
 		TRX_setFrequency(SecondaryVFO->Freq + freq_diff, SecondaryVFO);
 	}

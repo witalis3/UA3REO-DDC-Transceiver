@@ -918,11 +918,11 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.RF_Filters", (uint32_t *)&TRX.RF_Filters, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Power", (uint32_t *)&TRX.RF_Power, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint32_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.ShiftEnabled", (uint32_t *)&TRX.ShiftEnabled, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.SplitEnabled", (uint32_t *)&TRX.SplitEnabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.RIT_Enabled", (uint32_t *)&TRX.RIT_Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.XIT_Enabled", (uint32_t *)&TRX.XIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FineRITTune", (uint32_t *)&TRX.FineRITTune, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.SHIFT_INTERVAL", (uint32_t *)&TRX.SHIFT_INTERVAL, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("TRX.SPLIT_INTERVAL", (uint32_t *)&TRX.SPLIT_INTERVAL, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.RIT_INTERVAL", (uint32_t *)&TRX.RIT_INTERVAL, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.XIT_INTERVAL", (uint32_t *)&TRX.XIT_INTERVAL, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.TWO_SIGNAL_TUNE", (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SAMPLERATE_MAIN", (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.SAMPLERATE_FM", (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_UINT8);
@@ -936,7 +936,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.InputType_MAIN", (uint32_t *)&TRX.InputType_MAIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.InputType_DIGI", (uint32_t *)&TRX.InputType_DIGI, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AutoGain", (uint32_t *)&TRX.AutoGain, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.CLAR", (uint32_t *)&TRX.CLAR, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.SPLIT_Enabled", (uint32_t *)&TRX.SPLIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint32_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Encoder_Accelerate", (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint32_t *)&TRX.Dual_RX_Type, SYSMENU_UINT8);
@@ -1387,16 +1387,16 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.ChannelMode = bval;
 	if (strcmp(name, "TRX.RF_Power") == 0)
 		TRX.RF_Power = (uint8_t)uintval;
-	if (strcmp(name, "TRX.ShiftEnabled") == 0)
-		TRX.ShiftEnabled = bval;
-	if (strcmp(name, "TRX.SplitEnabled") == 0)
-		TRX.SplitEnabled = bval;
+	if (strcmp(name, "TRX.RIT_Enabled") == 0)
+		TRX.RIT_Enabled = bval;
+	if (strcmp(name, "TRX.XIT_Enabled") == 0)
+		TRX.XIT_Enabled = bval;
 	if (strcmp(name, "TRX.FineRITTune") == 0)
 		TRX.FineRITTune = bval;
-	if (strcmp(name, "TRX.SHIFT_INTERVAL") == 0)
-		TRX.SHIFT_INTERVAL = (uint16_t)uintval;
-	if (strcmp(name, "TRX.SPLIT_INTERVAL") == 0)
-		TRX.SPLIT_INTERVAL = (uint16_t)uintval;
+	if (strcmp(name, "TRX.RIT_INTERVAL") == 0)
+		TRX.RIT_INTERVAL = (uint16_t)uintval;
+	if (strcmp(name, "TRX.XIT_INTERVAL") == 0)
+		TRX.XIT_INTERVAL = (uint16_t)uintval;
 	if (strcmp(name, "TRX.TWO_SIGNAL_TUNE") == 0)
 		TRX.TWO_SIGNAL_TUNE = bval;
 	if (strcmp(name, "TRX.SAMPLERATE_MAIN") == 0)
@@ -1423,8 +1423,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.InputType_DIGI = (uint8_t)uintval;
 	if (strcmp(name, "TRX.AutoGain") == 0)
 		TRX.AutoGain = bval;
-	if (strcmp(name, "TRX.CLAR") == 0)
-		TRX.CLAR = bval;
+	if (strcmp(name, "TRX.SPLIT_Enabled") == 0)
+		TRX.SPLIT_Enabled = bval;
 	if (strcmp(name, "TRX.Dual_RX") == 0)
 		TRX.Dual_RX = bval;
 	if (strcmp(name, "TRX.Encoder_Accelerate") == 0)
