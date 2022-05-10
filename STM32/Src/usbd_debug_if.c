@@ -124,8 +124,8 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 			if (!CW_key_serial && !TRX_ptt_soft)
 			{
 				TRX_ptt_soft = true;
-				LCD_UpdateQuery.StatusInfoBarRedraw = true;
-				LCD_UpdateQuery.StatusInfoGUI = true;
+				//LCD_UpdateQuery.StatusInfoBarRedraw = true;
+				//LCD_UpdateQuery.StatusInfoGUI = true;
 			}
 		}
 		else
@@ -133,8 +133,8 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 			if (!CW_key_serial && TRX_ptt_soft)
 			{
 				TRX_ptt_soft = false;
-				LCD_UpdateQuery.StatusInfoBarRedraw = true;
-				LCD_UpdateQuery.StatusInfoGUI = true;
+				//LCD_UpdateQuery.StatusInfoBarRedraw = true;
+				//LCD_UpdateQuery.StatusInfoGUI = true;
 			}
 		}
 		break;
