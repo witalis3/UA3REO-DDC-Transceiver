@@ -49,6 +49,7 @@ volatile float32_t TRX_VLT_forward = 0;	 // Tisho
 volatile float32_t TRX_VLT_backward = 0; // Tisho
 volatile float32_t TRX_ALC_OUT = 0;
 volatile float32_t TRX_ALC_IN = 0;
+volatile bool TRX_SWR_PROTECTOR = false;
 volatile bool TRX_DAC_DIV0 = false;
 volatile bool TRX_DAC_DIV1 = false;
 volatile bool TRX_DAC_HP1 = false;
@@ -239,6 +240,7 @@ void TRX_ptt_change(void)
 				TRX.InputType_MAIN = TRX_INPUT_MIC;
 		}
 
+		TRX_SWR_PROTECTOR = false;
 		TRX_ptt_hard = TRX_new_ptt_hard;
 		TRX_ptt_soft = false;
 		CW_key_serial = false;
@@ -256,6 +258,7 @@ void TRX_ptt_change(void)
 				TRX.InputType_MAIN = TRX_INPUT_USB;
 		}
 
+		TRX_SWR_PROTECTOR = false;
 		TRX_old_ptt_soft = TRX_ptt_soft;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;

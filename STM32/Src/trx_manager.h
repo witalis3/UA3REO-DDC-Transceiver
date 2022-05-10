@@ -61,6 +61,7 @@ volatile extern float32_t TRX_VLT_forward;  // Tisho
 volatile extern float32_t TRX_VLT_backward; // Tisho
 volatile extern float32_t TRX_ALC_IN;
 volatile extern float32_t TRX_ALC_OUT;
+volatile extern bool TRX_SWR_PROTECTOR;
 volatile extern bool TRX_DAC_DIV0;
 volatile extern bool TRX_DAC_DIV1;
 volatile extern bool TRX_DAC_HP1;

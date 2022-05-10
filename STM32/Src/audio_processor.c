@@ -975,12 +975,17 @@ void processTxAudio(void)
 	float32_t RF_Power_selected = (float32_t)TRX.RF_Power;
 	if ((mode == TRX_MODE_LSB || mode == TRX_MODE_USB) && !TRX_Tune)
 		RF_Power_selected += CALIBRATE.SSB_POWER_ADDITION;
+	
+	#define SWR_PROTECTOR_MAX_POWER 20.0f
+	if(TRX_SWR_PROTECTOR && TRX.RF_Power > SWR_PROTECTOR_MAX_POWER)
+		RF_Power_selected = SWR_PROTECTOR_MAX_POWER;
+	
 	float32_t RFpower_amplitude = log10f_fast((RF_Power_selected * 0.9f + 10.0f) / 10.0f) * TRX_MAX_TX_Amplitude;
 	if (RFpower_amplitude < 0.0f || TRX.RF_Power == 0)
 		RFpower_amplitude = 0.0f;
 	if ((mode == TRX_MODE_AM || mode == TRX_MODE_SAM) && !TRX_Tune)
 		RFpower_amplitude = RFpower_amplitude * 0.7f;
-
+	
 	// Tune power regulator
 	if (TRX_Tune)
 	{
