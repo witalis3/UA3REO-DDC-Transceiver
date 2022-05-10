@@ -1210,18 +1210,18 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		if (TRX_Tune && CurrentVFO->Freq <= 70000000)
 			RF_UNIT_ProcessATU();
 
-		uint8_t lpf_index = 7;
-		if (CurrentVFO->Freq <= 2000000)
+		uint8_t lpf_index = 7; //6m
+		if (CurrentVFO->Freq <= 2000000) //160m
 			lpf_index = 1;
-		if (CurrentVFO->Freq > 2000000 && CurrentVFO->Freq <= 5000000)
+		if (CurrentVFO->Freq > 2000000 && CurrentVFO->Freq <= 5000000) //80m
 			lpf_index = 2;
-		if (CurrentVFO->Freq > 5000000 && CurrentVFO->Freq <= 9000000)
+		if (CurrentVFO->Freq > 5000000 && CurrentVFO->Freq <= 9000000) //40m
 			lpf_index = 3;
-		if (CurrentVFO->Freq > 9000000 && CurrentVFO->Freq <= 16000000)
+		if (CurrentVFO->Freq > 9000000 && CurrentVFO->Freq <= 16000000) //30m,20m
 			lpf_index = 4;
-		if (CurrentVFO->Freq > 16000000 && CurrentVFO->Freq <= 22000000)
+		if (CurrentVFO->Freq > 16000000 && CurrentVFO->Freq <= 22000000) //17m,15m
 			lpf_index = 5;
-		if (CurrentVFO->Freq > 22000000 && CurrentVFO->Freq <= 30000000)
+		if (CurrentVFO->Freq > 22000000 && CurrentVFO->Freq <= 30000000) //12m,CB,10m
 			lpf_index = 6;
 
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); // latch
@@ -1473,13 +1473,12 @@ void RF_UNIT_ProcessSensors(void)
 	float32_t TRX_RF_Temperature_measured = (power_left * (1.0f - part_point)) + (power_right * (part_point));
 	if (TRX_RF_Temperature_measured < 0.0f)
 		TRX_RF_Temperature_measured = 0.0f;
+	
 	static float32_t TRX_RF_Temperature_averaged = 20.0f;
-	TRX_RF_Temperature_averaged = TRX_RF_Temperature_averaged * 0.9f + TRX_RF_Temperature_measured * 0.1f;
+	TRX_RF_Temperature_averaged = TRX_RF_Temperature_averaged * 0.995f + TRX_RF_Temperature_measured * 0.005f;
 
-	if (fabsf(TRX_RF_Temperature_averaged - TRX_RF_Temperature) >= 10.0f) // hysteresis
+	if (fabsf(TRX_RF_Temperature_averaged - TRX_RF_Temperature) >= 1.0f) // hysteresis
 		TRX_RF_Temperature = TRX_RF_Temperature_averaged;
-	else
-		TRX_RF_Temperature = TRX_RF_Temperature * 0.99f + TRX_RF_Temperature_averaged * 0.01f;
 
 	// SWR
 	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B16_RANGE;
