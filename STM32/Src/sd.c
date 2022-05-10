@@ -914,7 +914,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.ATT_STEP", (uint32_t *)&TRX.ATT_STEP, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.Fast", (uint32_t *)&TRX.Fast, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_PGA", (uint32_t *)&TRX.ADC_PGA, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.ANT", (uint32_t *)&TRX.ANT, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.ANT_selected", (uint32_t *)&TRX.ANT_selected, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.ANT_mode", (uint32_t *)&TRX.ANT_mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Filters", (uint32_t *)&TRX.RF_Filters, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Power", (uint32_t *)&TRX.RF_Power, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint32_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
@@ -1218,8 +1219,10 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ATT, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT_DB", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ATT_DB, SYSMENU_FLOAT32);
-				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT", i);
-				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_selected", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_selected, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_mode", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_mode, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_Driver", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
@@ -1249,8 +1252,10 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ATT, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT_DB", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ATT_DB, SYSMENU_FLOAT32);
-				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT", i);
-				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ANT, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT_selected", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ANT_selected, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT_mode", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ANT_mode, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_Driver", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SQL", i);
@@ -1379,8 +1384,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.ATT_STEP = (uint8_t)uintval;
 	if (strcmp(name, "TRX.Fast") == 0)
 		TRX.Fast = bval;
-	if (strcmp(name, "TRX.ANT") == 0)
-		TRX.ANT = bval;
+	if (strcmp(name, "TRX.ANT_selected") == 0)
+		TRX.ANT_selected = bval;
+	if (strcmp(name, "TRX.ANT_mode") == 0)
+		TRX.ANT_mode = bval;
 	if (strcmp(name, "TRX.RF_Filters") == 0)
 		TRX.RF_Filters = bval;
 	if (strcmp(name, "TRX.ChannelMode") == 0)
@@ -2018,9 +2025,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT_DB", i);
 		if (strcmp(name, buff) == 0)
 			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = floatval;
-		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT", i);
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_selected", i);
 		if (strcmp(name, buff) == 0)
-			TRX.BANDS_SAVED_SETTINGS[i].ANT = bval;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_selected = bval;
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_mode", i);
+		if (strcmp(name, buff) == 0)
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_mode = bval;
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_Driver", i);
 		if (strcmp(name, buff) == 0)
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = bval;
@@ -2062,9 +2072,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT_DB", i);
 		if (strcmp(name, buff) == 0)
 			CALIBRATE.MEMORY_CHANNELS[i].ATT_DB = floatval;
-		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT", i);
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT_selected", i);
 		if (strcmp(name, buff) == 0)
-			CALIBRATE.MEMORY_CHANNELS[i].ANT = bval;
+			CALIBRATE.MEMORY_CHANNELS[i].ANT_selected = bval;
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT_mode", i);
+		if (strcmp(name, buff) == 0)
+			CALIBRATE.MEMORY_CHANNELS[i].ANT_mode = bval;
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_Driver", i);
 		if (strcmp(name, buff) == 0)
 			CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver = bval;

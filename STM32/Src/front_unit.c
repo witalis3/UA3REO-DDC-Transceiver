@@ -49,6 +49,7 @@ static void FRONTPANEL_BUTTONHANDLER_XIT(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_STEP(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_BANDMAP(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_FT8(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_AUTOGAINER(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_UP(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_DOWN(uint32_t parameter);
@@ -221,7 +222,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "MODE-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N},
 	{.name = "BAND+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_P},
 	{.name = "BAND-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_N},
-	{.name = "BANDMP", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP, .holdHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP},
+	{.name = "FT8", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_FT8, .holdHandler = FRONTPANEL_BUTTONHANDLER_FT8},
 	{.name = "AUTOGN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER, .holdHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER},
 	{.name = "LOCK", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_LOCK, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},
 };
@@ -1008,7 +1009,8 @@ void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-	TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
+	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
+	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
@@ -1116,11 +1118,27 @@ void FRONTPANEL_BUTTONHANDLER_ATTHOLD(uint32_t parameter)
 
 void FRONTPANEL_BUTTONHANDLER_ANT(uint32_t parameter)
 {
-	TRX.ANT = !TRX.ANT;
+	if(!TRX.ANT_mode && !TRX.ANT_selected) //ANT1->ANT2
+	{
+		TRX.ANT_selected = true;
+		TRX.ANT_mode = false;
+	}
+	else if(!TRX.ANT_mode && TRX.ANT_selected) //ANT2->1T2
+	{
+		TRX.ANT_selected = false;
+		TRX.ANT_mode = true;
+	}
+	else if(TRX.ANT_mode) //1T2->ANT1
+	{
+		TRX.ANT_selected = false;
+		TRX.ANT_mode = false;
+	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
-		TRX.BANDS_SAVED_SETTINGS[band].ANT = TRX.ANT;
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].ANT_selected = TRX.ANT_selected;
+		TRX.BANDS_SAVED_SETTINGS[band].ANT_mode = TRX.ANT_mode;
+	}
 
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
@@ -1293,7 +1311,8 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 	}
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-	TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
+	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
+	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
@@ -1344,7 +1363,8 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
 	}
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-	TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
+	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
+	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
@@ -1847,7 +1867,8 @@ void FRONTPANEL_BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter)
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-	TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
+	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
+	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
@@ -1901,7 +1922,8 @@ void FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter)
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-	TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
+	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
+	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.VFO_A.SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	TRX.VFO_A.FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
@@ -2199,7 +2221,8 @@ void FRONTPANEL_SelectMemoryChannelsButtonHandler(uint32_t parameter)
 	TRX.LNA = CALIBRATE.MEMORY_CHANNELS[channel].LNA;
 	TRX.ATT = CALIBRATE.MEMORY_CHANNELS[channel].ATT;
 	TRX.ATT_DB = CALIBRATE.MEMORY_CHANNELS[channel].ATT_DB;
-	TRX.ANT = CALIBRATE.MEMORY_CHANNELS[channel].ANT;
+	TRX.ANT_selected = CALIBRATE.MEMORY_CHANNELS[channel].ANT_selected;
+	TRX.ANT_mode = CALIBRATE.MEMORY_CHANNELS[channel].ANT_mode;
 	TRX.ADC_Driver = CALIBRATE.MEMORY_CHANNELS[channel].ADC_Driver;
 	CurrentVFO->SQL = CALIBRATE.MEMORY_CHANNELS[channel].SQL;
 	CurrentVFO->FM_SQL_threshold_dbm = CALIBRATE.MEMORY_CHANNELS[channel].FM_SQL_threshold_dbm;
@@ -2231,7 +2254,8 @@ void FRONTPANEL_SaveMemoryChannelsButtonHandler(uint32_t parameter)
 	CALIBRATE.MEMORY_CHANNELS[channel].LNA = TRX.LNA;
 	CALIBRATE.MEMORY_CHANNELS[channel].ATT = TRX.ATT;
 	CALIBRATE.MEMORY_CHANNELS[channel].ATT_DB = TRX.ATT_DB;
-	CALIBRATE.MEMORY_CHANNELS[channel].ANT = TRX.ANT;
+	CALIBRATE.MEMORY_CHANNELS[channel].ANT_selected = TRX.ANT_selected;
+	CALIBRATE.MEMORY_CHANNELS[channel].ANT_mode = TRX.ANT_mode;
 	CALIBRATE.MEMORY_CHANNELS[channel].ADC_Driver = TRX.ADC_Driver;
 	CALIBRATE.MEMORY_CHANNELS[channel].SQL = CurrentVFO->SQL;
 	CALIBRATE.MEMORY_CHANNELS[channel].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
@@ -2292,4 +2316,17 @@ void FRONTPANEL_BUTTONHANDLER_GET_BAND_MEMORY(uint32_t parameter)
 		mem_num = 0;
 	
 	TRX_setFrequency(CALIBRATE.BAND_MEMORIES[band][mem_num], CurrentVFO);
+}
+
+void FRONTPANEL_BUTTONHANDLER_FT8(uint32_t parameter)
+{
+	if (!LCD_systemMenuOpened)
+	{
+		LCD_systemMenuOpened = true;
+		SYSMENU_SERVICE_FT8_HOTKEY();
+	}
+	else
+	{
+		SYSMENU_eventCloseAllSystemMenu();
+	}
 }

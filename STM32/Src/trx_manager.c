@@ -80,6 +80,7 @@ volatile float32_t TRX_RF_Current = 0.0f;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static bool TRX_SPLIT_Applied = false;
+static bool TRX_ANT_swap_applyed = false;
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);
@@ -142,11 +143,17 @@ void TRX_Restart_Mode()
 		TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-		TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
+		TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
 
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+	}
+	
+	//Ant swap for mode 1RX/2TX and others
+	if(TRX.ANT_mode && !TRX_ANT_swap_applyed) {
+		TRX_ANT_swap_applyed = true;
+		TRX.ANT_selected = !TRX.ANT_selected;
 	}
 
 	if (TRX.XIT_Enabled)
@@ -165,6 +172,7 @@ static void TRX_Start_RX()
 	WM8731_Buffer_underrun = false;
 	WM8731_DMA_state = true;
 	TRX_SPLIT_Applied = false;
+	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 1;
 
 	// clean TX buffer
@@ -185,6 +193,7 @@ static void TRX_Start_TX()
 	WM8731_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_SPLIT_Applied = false;
+	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 2;
 
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
@@ -201,6 +210,7 @@ static void TRX_Start_TXRX()
 	WM8731_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_SPLIT_Applied = false;
+	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 3;
 
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;

@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 48						  // Settings config version
+#define SETT_VERSION 49						  // Settings config version
 #define CALIB_VERSION 43					  // Calibration config version
 #define ADC_CLOCK 122880000					  // ADC generator frequency
 #define DAC_CLOCK 188160000					  // DAC generator frequency
@@ -307,7 +307,7 @@ typedef enum
 // Save settings by band
 typedef struct
 {
-    uint64_t Freq;
+  uint64_t Freq;
 	float32_t ATT_DB;
 	uint8_t Mode;
 	uint8_t DNR_Type;
@@ -316,7 +316,8 @@ typedef struct
 	int8_t FM_SQL_threshold_dbm;
 	bool LNA;
 	bool ATT;
-	bool ANT;
+	bool ANT_selected;
+	bool ANT_mode;
 	bool ADC_Driver;
 	bool ADC_PGA;
 	bool AGC;
@@ -356,7 +357,8 @@ extern struct TRX_SETTINGS
 	bool LNA;
 	bool ATT;
 	bool RF_Filters;
-	bool ANT;
+	bool ANT_selected; // false - 1, true - 2
+	bool ANT_mode; // false - RX=TX, true - 1RX 2TX
 	bool ChannelMode;
 	bool RIT_Enabled;
 	bool XIT_Enabled;

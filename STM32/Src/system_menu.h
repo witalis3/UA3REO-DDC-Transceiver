@@ -77,6 +77,7 @@ extern void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void);
 extern void SYSMENU_AUDIO_SQUELCH_HOTKEY(void);
 extern void SYSMENU_AUDIO_DNR_HOTKEY(void);
 extern void SYSMENU_AUDIO_AGC_HOTKEY(void);
+extern void SYSMENU_SERVICE_FT8_HOTKEY(void);
 extern void SYSMENU_HANDL_SERVICESMENU(int8_t direction);
 
 extern bool SYSMENU_HANDL_CHECK_HAS_ATU(void);

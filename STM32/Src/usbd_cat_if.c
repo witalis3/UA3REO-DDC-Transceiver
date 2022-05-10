@@ -926,7 +926,8 @@ void ua3reo_dev_cat_parseCommand(void)
 				}
 				TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 				TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-				TRX.ANT = TRX.BANDS_SAVED_SETTINGS[band].ANT;
+				TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
+				TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
 				TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 				TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;

@@ -4781,6 +4781,13 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 	LCD_redraw(false);
 }
 
+void SYSMENU_SERVICE_FT8_HOTKEY(void)
+{
+	SYSMENU_HANDL_SERVICESMENU(0);
+	setCurrentMenuIndex(8);
+	SYSMENU_HANDL_FT8_Decoder(1);
+}
+
 // SWR ANALYZER
 static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction)
 {

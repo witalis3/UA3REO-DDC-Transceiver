@@ -582,9 +582,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					}
 				}
 				// U3-QA ANT1_TX_OUT
-				if (registerNumber == 23 && !TRX.ANT && TRX_on_TX()) // ANT1
+				if (registerNumber == 23 && !TRX.ANT_selected && TRX_on_TX()) // ANT1
 					SET_DATA_PIN;
-				if (registerNumber == 23 && TRX.ANT && !TRX_on_TX()) // ANT2
+				if (registerNumber == 23 && TRX.ANT_selected && !TRX_on_TX()) // ANT2
 					SET_DATA_PIN;
 			}
 			MINI_DELAY
@@ -713,7 +713,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 
 				// U11-7 ANT1-2_OUT
-				if (registerNumber == 32 && TRX.ANT)
+				if (registerNumber == 32 && TRX.ANT_selected)
 					SET_DATA_PIN;
 				// U11-6 FAN_OUT
 				if (registerNumber == 33)
@@ -802,7 +802,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			if (!clean)
 			{
 				// U5-7 ANT1-2_OUT
-				if (registerNumber == 0 && TRX.ANT)
+				if (registerNumber == 0 && TRX.ANT_selected)
 					SET_DATA_PIN;
 				// U5-6 TUN_I_4
 				if (registerNumber == 1 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3))
@@ -1057,7 +1057,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 
 				// U11-7 ANT1-2_OUT
-				if (registerNumber == 16 && TRX.ANT)
+				if (registerNumber == 16 && TRX.ANT_selected)
 					SET_DATA_PIN;
 				// U11-6 FAN_OUT
 				if (registerNumber == 17)
@@ -1304,7 +1304,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 10 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4))
 					SET_DATA_PIN;
 				// U2-4 ANT1-2_OUT
-				if (registerNumber == 11 && !TRX.ANT)
+				if (registerNumber == 11 && !TRX.ANT_selected)
 					SET_DATA_PIN;
 				// U2-3 TUN_I_4
 				if (registerNumber == 12 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3))

@@ -138,7 +138,8 @@ void LoadSettings(bool clear)
 		TRX.ATT_DB = 12.0f;					  // suppress the attenuator
 		TRX.ATT_STEP = 6.0f;				  // step of tuning the attenuator
 		TRX.RF_Filters = true;				  // LPF / HPF / BPF
-		TRX.ANT = false;					  // ANT-1
+		TRX.ANT_selected = false;					  // ANT-1
+		TRX.ANT_mode = false;					  // RX=TX
 		TRX.RF_Power = 20;					  // output power (%)
 		TRX.ChannelMode = false;			  // enable channel mode on VFO
 		TRX.RIT_Enabled = false;			  // activate the SHIFT mode
@@ -354,7 +355,8 @@ void LoadSettings(bool clear)
 			TRX.BANDS_SAVED_SETTINGS[i].LNA = TRX.LNA;
 			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
 			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
-			TRX.BANDS_SAVED_SETTINGS[i].ANT = TRX.ANT;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_selected = TRX.ANT_selected;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_mode = TRX.ANT_mode;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
 			if (TRX.BANDS_SAVED_SETTINGS[i].Freq < 70000000)
 				TRX.BANDS_SAVED_SETTINGS[i].SQL = false;
@@ -492,15 +494,15 @@ void LoadCalibration(bool clear)
 #elif defined(FRONTPANEL_WF_100D)
 		CALIBRATE.ENCODER2_INVERT = true; // invert left-right rotation of the optional encoder
 		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
-		CALIBRATE.rf_out_power_2200m = 40;			   // 2200m
-		CALIBRATE.rf_out_power_160m = 40;			   // 160m
-		CALIBRATE.rf_out_power_80m = 40;			   // 80m
-		CALIBRATE.rf_out_power_40m = 40;			   // 40m
-		CALIBRATE.rf_out_power_30m = 40;			   // 30m
-		CALIBRATE.rf_out_power_20m = 40;			   // 20m
-		CALIBRATE.rf_out_power_17m = 40;			   // 17m
-		CALIBRATE.rf_out_power_15m = 40;			   // 15m
-		CALIBRATE.rf_out_power_12m = 40;			   // 12m
+		CALIBRATE.rf_out_power_2200m = 17;			   // 2200m
+		CALIBRATE.rf_out_power_160m = 17;			   // 160m
+		CALIBRATE.rf_out_power_80m = 20;			   // 80m
+		CALIBRATE.rf_out_power_40m = 22;			   // 40m
+		CALIBRATE.rf_out_power_30m = 24;			   // 30m
+		CALIBRATE.rf_out_power_20m = 25;			   // 20m
+		CALIBRATE.rf_out_power_17m = 30;			   // 17m
+		CALIBRATE.rf_out_power_15m = 35;			   // 15m
+		CALIBRATE.rf_out_power_12m = 38;			   // 12m
 		CALIBRATE.rf_out_power_cb = 40;				   // 27mhz
 		CALIBRATE.rf_out_power_10m = 40;			   // 10m
 		CALIBRATE.rf_out_power_6m = 40;				   // 6m
@@ -627,7 +629,8 @@ void LoadCalibration(bool clear)
 			CALIBRATE.MEMORY_CHANNELS[i].LNA = TRX.LNA;
 			CALIBRATE.MEMORY_CHANNELS[i].ATT = TRX.ATT;
 			CALIBRATE.MEMORY_CHANNELS[i].ATT_DB = TRX.ATT_DB;
-			CALIBRATE.MEMORY_CHANNELS[i].ANT = TRX.ANT;
+			CALIBRATE.MEMORY_CHANNELS[i].ANT_selected = TRX.ANT_selected;
+			CALIBRATE.MEMORY_CHANNELS[i].ANT_mode = TRX.ANT_mode;
 			CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver = TRX.ADC_Driver;
 			CALIBRATE.MEMORY_CHANNELS[i].SQL = false;
 			CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold_dbm = TRX.VFO_A.FM_SQL_threshold_dbm;
