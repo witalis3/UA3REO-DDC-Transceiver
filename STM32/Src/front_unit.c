@@ -800,7 +800,10 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 	// AF_GAIN
 	if (button->type == FUNIT_CTRL_AF_GAIN)
 	{
-		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - mcp3008_value);
+		static float32_t AF_VOLUME_mcp3008_averaged = 0.0f;
+		AF_VOLUME_mcp3008_averaged = AF_VOLUME_mcp3008_averaged * 0.7f + mcp3008_value * 0.3f;
+		
+		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - AF_VOLUME_mcp3008_averaged);
 		if (TRX.Volume < 50)
 			TRX.Volume = 0;
 	}
@@ -808,11 +811,14 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 	// RIT / XIT or IF Gain
 	if (button->type == FUNIT_CTRL_RIT_XIT)
 	{
+		static float32_t IF_GAIN_mcp3008_averaged = 0.0f;
+		IF_GAIN_mcp3008_averaged = IF_GAIN_mcp3008_averaged * 0.7f + mcp3008_value * 0.3f;
+		
 		if (TRX.RIT_Enabled)
 		{
 			static int_fast16_t TRX_RIT_old = 0;
 			if (!TRX.FineRITTune)
-				TRX_RIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
+				TRX_RIT = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
 
 			if (TRX_RIT_old != TRX_RIT)
 			{
@@ -833,7 +839,7 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 		{
 			static int_fast16_t TRX_XIT_old = 0;
 			if (!TRX.FineRITTune)
-				TRX_XIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
+				TRX_XIT = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
 
 			if (TRX_XIT_old != TRX_XIT)
 			{
@@ -849,17 +855,17 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 			}
 			TRX_RIT = 0;
 		}
-
+		
 		if (!TRX.RIT_Enabled && TRX.XIT_Enabled && !TRX.FineRITTune) // Disable RIT/XIT + IF
 		{
 			TRX_RIT = 0;
 			TRX_XIT = 0;
-			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 60.0f / 1023.0f));
+			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - IF_GAIN_mcp3008_averaged) * 60.0f / 1023.0f));
 		}
 
 		if (TRX.FineRITTune) // IF only
 		{
-			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 60.0f / 1023.0f));
+			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - IF_GAIN_mcp3008_averaged) * 60.0f / 1023.0f));
 		}
 	}
 
