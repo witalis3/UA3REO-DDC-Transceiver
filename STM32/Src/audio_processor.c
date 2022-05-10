@@ -654,17 +654,21 @@ void processTxAudio(void)
 		return;
 
 	// sync fpga to audio-codec
-	uint32_t dma_index = CODEC_AUDIO_BUFFER_SIZE * 2 - (uint16_t)__HAL_DMA_GET_COUNTER(hi2s3.hdmatx);
-	if (!WM8731_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE * 2 - 100))
-		return;
-	if (WM8731_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE - 100))
-		return;
 	static bool old_WM8731_DMA_state = false;
-	if (WM8731_DMA_state == old_WM8731_DMA_state)
+	bool start_WM8731_DMA_state = WM8731_DMA_state;
+	
+	if (start_WM8731_DMA_state == old_WM8731_DMA_state)
 		return;
-	old_WM8731_DMA_state = WM8731_DMA_state;
-	bool start_WM8731_DMA_state = old_WM8731_DMA_state;
+	
+	uint32_t dma_index = CODEC_AUDIO_BUFFER_SIZE * 2 - (uint16_t)__HAL_DMA_GET_COUNTER(hi2s3.hdmatx);
+	if (!start_WM8731_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE * 2 - 150))
+		return;
+	if (start_WM8731_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE - 150))
+		return;
+	
+	old_WM8731_DMA_state = start_WM8731_DMA_state;
 
+	// stuff
 	AUDIOPROC_samples++;
 	uint_fast8_t mode = CurrentVFO->Mode;
 
