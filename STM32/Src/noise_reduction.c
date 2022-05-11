@@ -28,12 +28,10 @@ void InitNoiseReduction(void)
 	for (uint16_t bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
 	{
 		NR_RX1.NR_Prev_Buffer[bindx] = 0.0;
-		NR_RX1.AGC_GAIN = 1.0;
 		NR_RX1.NR_GAIN[bindx] = 1.0;
 		NR_RX1.NR_GAIN_old[bindx] = 1.0;
 
 		NR_RX2.NR_Prev_Buffer[bindx] = 0.0;
-		NR_RX2.AGC_GAIN = 1.0;
 		NR_RX2.NR_GAIN[bindx] = 1.0;
 		NR_RX2.NR_GAIN_old[bindx] = 1.0;
 	}
@@ -177,17 +175,16 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_SSB_speed;
 				}
 				
-				//float32_t minValue = 0;
-				//uint32_t minValueIndex = 0;
-				//arm_min_f32(instance->FFT_COMPLEX_MAG, NOISE_REDUCTION_FFT_SIZE_HALF, &minValue, &minValueIndex);
-				
 				float32_t AGC_RX_magnitude = 0;
-				//arm_rms_f32(instance->NR_InputBuffer, NOISE_REDUCTION_FFT_SIZE_HALF, &AGC_RX_magnitude);
-				arm_rms_f32(instance->LAST_IFFT_RESULT, NOISE_REDUCTION_FFT_SIZE_HALF, &AGC_RX_magnitude);
+				arm_rms_f32(instance->NR_InputBuffer, NOISE_REDUCTION_FFT_SIZE_HALF, &AGC_RX_magnitude);
+				
 				if (AGC_RX_magnitude == 0.0f)
 					AGC_RX_magnitude = 0.001f;
+				
 				float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
 				float32_t AGC_RX_dbFS = rate2dbV(full_scale_rate);
+				if (nr_type != 0)
+					AGC_RX_dbFS -= 12.0f; //DNR compensation
 				
 				float32_t gain_target = (float32_t)TRX.AGC_GAIN_TARGET;
 				if (mode == TRX_MODE_CW)
@@ -240,41 +237,41 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				{
 					rateV = db2rateV(-200.0f);
 				}
-				
-				instance->AGC_GAIN = rateV;
 								
 				//println("[SpectraAGC] Min: ", minValue, " AGC_RX_dbFS: ", AGC_RX_dbFS, " Gain: ", instance->need_gain_db);
-			}
-			
-			// smooth gain
-			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
-			{
-#define smooth_gain_alpha 0.9f
-#define smooth_gain_beta (1.0f - smooth_gain_alpha)
-				if ((idx - 1) >= 0) {
-					instance->NR_GAIN[idx - 1] = instance->NR_GAIN[idx - 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
-				}
-				if ((idx + 1) < NOISE_REDUCTION_FFT_SIZE_HALF) {
-					instance->NR_GAIN[idx + 1] = instance->NR_GAIN[idx + 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
-				}
-			}
-			
-			// apply gain weighting
-			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
-			{
-				// NR
-				instance->FFT_Buffer[idx * 2] *= instance->NR_GAIN[idx];
-				instance->FFT_Buffer[idx * 2 + 1] *= instance->NR_GAIN[idx];
-				// symmetry
-				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->NR_GAIN[idx];
-				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->NR_GAIN[idx];
 				
-				// AGC
-				instance->FFT_Buffer[idx * 2] *= instance->AGC_GAIN;
-				instance->FFT_Buffer[idx * 2 + 1] *= instance->AGC_GAIN;
-				// symmetry
-				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->AGC_GAIN;
-				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->AGC_GAIN;
+				// apply AGC
+				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
+				{
+					instance->FFT_Buffer[idx] *= rateV;
+				}
+			}
+			
+			if (nr_type != 0)
+			{
+				// smooth gain
+				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
+				{
+					#define smooth_gain_alpha 0.9f
+					#define smooth_gain_beta (1.0f - smooth_gain_alpha)
+					if ((idx - 1) >= 0) {
+						instance->NR_GAIN[idx - 1] = instance->NR_GAIN[idx - 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
+					}
+					if ((idx + 1) < NOISE_REDUCTION_FFT_SIZE_HALF) {
+						instance->NR_GAIN[idx + 1] = instance->NR_GAIN[idx + 1] * smooth_gain_alpha + instance->NR_GAIN[idx] * smooth_gain_beta;
+					}
+				}
+				
+				// apply gain weighting
+				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
+				{
+					// NR
+					instance->FFT_Buffer[idx * 2] *= instance->NR_GAIN[idx];
+					instance->FFT_Buffer[idx * 2 + 1] *= instance->NR_GAIN[idx];
+					// symmetry
+					instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 2] *= instance->NR_GAIN[idx];
+					instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2 - idx * 2 - 1] *= instance->NR_GAIN[idx];
+				}
 			}
 			
 			// do inverse fft

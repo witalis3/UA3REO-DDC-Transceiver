@@ -36,7 +36,6 @@ typedef struct
 	float32_t SNR_prio[NOISE_REDUCTION_FFT_SIZE_HALF];
 	
 	//AGC
-	float32_t AGC_GAIN;
 	float32_t need_gain_db;
 	uint32_t last_agc_peak_time;
 	uint16_t hold_time;
