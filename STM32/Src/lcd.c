@@ -303,11 +303,14 @@ static void LCD_displayFreqInfo(bool redraw)
 		}
 		if (TRX.ChannelMode && band >= 0 && BANDS[band].channelsCount > 0)
 		{
-			sprintf(buff, "CH:-");
+			LCDDriver_printText("CH", LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL - 18, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, 2);
+			
 			if (band != -1 && channel != -1)
-				sprintf(buff, "CH:%s", (char *)BANDS[band].channels[channel].name);
-			addSymbols(buff, buff, 6, " ", true);
-			LCDDriver_printText(buff, LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL - 18, !TRX.selected_vfo ? COLOR->FREQ_KHZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, 2);
+				sprintf(buff, "%s", (char *)BANDS[band].channels[channel].name);
+			else
+				sprintf(buff, "-");
+			addSymbols(buff, buff, 3, " ", true);
+			LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_HZ + RASTR_FONT_W * 2 * 2, LAYOUT->FREQ_Y_BASELINE_SMALL, !TRX.selected_vfo ? COLOR->STATUS_MODE : COLOR->FREQ_A_INACTIVE, BG_COLOR, LAYOUT->FREQ_CH_FONT);
 		}
 		else
 			LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, LAYOUT->FREQ_SMALL_FONT);
@@ -379,11 +382,14 @@ static void LCD_displayFreqInfo(bool redraw)
 		}
 		if (TRX.ChannelMode && band >= 0 && BANDS[band].channelsCount > 0)
 		{
-			sprintf(buff, "CH:-");
+			LCDDriver_printText("CH", LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL - RASTR_FONT_H - 2, TRX.selected_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, 1);
+			
 			if (band != -1 && channel != -1)
-				sprintf(buff, "CH:%s", (char *)BANDS[band].channels[channel].name);
-			addSymbols(buff, buff, 6, " ", true);
-			LCDDriver_printText(buff, LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL - 18, TRX.selected_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, 2);
+				sprintf(buff, "%s", (char *)BANDS[band].channels[channel].name);
+			else
+				sprintf(buff, "-");
+			addSymbols(buff, buff, 3, " ", true);
+			LCDDriver_printTextFont(buff, LAYOUT->FREQ_B_X_OFFSET_HZ + RASTR_FONT_W * 1 * 2, LAYOUT->FREQ_B_Y_BASELINE_SMALL, TRX.selected_vfo ? COLOR->STATUS_MODE : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_CH_B_FONT);
 		}
 		else
 			LCDDriver_printTextFont(buff, LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL, TRX.selected_vfo ? COLOR->FREQ_B_HZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_B_SMALL_FONT);

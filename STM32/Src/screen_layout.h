@@ -86,6 +86,8 @@ extern "C"
 		const uint16_t FREQ_Y_BASELINE_SMALL;
 		const GFXfont *FREQ_FONT;
 		const GFXfont *FREQ_SMALL_FONT;
+		const GFXfont *FREQ_CH_FONT;
+		const GFXfont *FREQ_CH_B_FONT;
 		const uint16_t FREQ_DELIMITER_Y_OFFSET;
 		const uint16_t FREQ_DELIMITER_X1_OFFSET;
 		const uint16_t FREQ_DELIMITER_X2_OFFSET;
