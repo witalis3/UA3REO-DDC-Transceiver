@@ -173,12 +173,13 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					RX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.RX_AGC_SSB_speed;
 				}
 				
-				float32_t minValue = 0;
-				uint32_t minValueIndex = 0;
-				arm_min_f32(instance->FFT_COMPLEX_MAG, NOISE_REDUCTION_FFT_SIZE_HALF, &minValue, &minValueIndex);
+				//float32_t minValue = 0;
+				//uint32_t minValueIndex = 0;
+				//arm_min_f32(instance->FFT_COMPLEX_MAG, NOISE_REDUCTION_FFT_SIZE_HALF, &minValue, &minValueIndex);
 				
 				float32_t AGC_RX_magnitude = 0;
-				arm_rms_f32(instance->NR_InputBuffer, NOISE_REDUCTION_FFT_SIZE_HALF, &AGC_RX_magnitude);
+				//arm_rms_f32(instance->NR_InputBuffer, NOISE_REDUCTION_FFT_SIZE_HALF, &AGC_RX_magnitude);
+				arm_rms_f32(instance->LAST_IFFT_RESULT, NOISE_REDUCTION_FFT_SIZE_HALF, &AGC_RX_magnitude);
 				if (AGC_RX_magnitude == 0.0f)
 					AGC_RX_magnitude = 0.001f;
 				float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
@@ -275,11 +276,11 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				instance->FFT_Buffer[idx * 2 + 1] *= von_Hann[idx];
 			}
 			// return data (do overlap-add: take real part of first half of current iFFT result and add to 2nd half of last frames´ iFFT result)
-			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
+			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++) {
 				instance->NR_OutputBuffer[loop * NOISE_REDUCTION_FFT_SIZE_HALF + idx] = instance->FFT_Buffer[idx * 2] + instance->LAST_IFFT_RESULT[idx];
-			// save 2nd half of ifft result
-			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
+				// save 2nd half of ifft result
 				instance->LAST_IFFT_RESULT[idx] = instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE_HALF * 2 + idx * 2];
+			}
 		}
 	}
 	if (instance->NR_OutputBuffer_index < (NOISE_REDUCTION_FFT_SIZE / NOISE_REDUCTION_BLOCK_SIZE))
