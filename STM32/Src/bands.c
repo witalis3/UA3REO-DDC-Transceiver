@@ -381,7 +381,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.endFreq = 27410000,
 			.regions = (const REGION_MAP[]){
 				{.startFreq = 26960000, .endFreq = 27130000, .mode = TRX_MODE_NFM},
-				{.startFreq = 27130000, .endFreq = 27140000, .mode = TRX_MODE_SAM},
+				{.startFreq = 27130000, .endFreq = 27140000, .mode = TRX_MODE_AM},
 				{.startFreq = 27140000, .endFreq = 27410000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 3,

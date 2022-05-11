@@ -1,6 +1,10 @@
 #include "noise_reduction.h"
 #include "arm_const_structs.h"
 #include "settings.h"
+#include "audio_processor.h"
+#include "audio_filters.h"
+#include "trx_manager.h"
+#include "vad.h"
 
 // useful info https://github.com/df8oe/UHSDR/wiki/Noise-reduction
 
@@ -224,15 +228,21 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->need_gain_db -= 20.0f;
 					//println("AGC overload ", diff);
 				}
-				
+								
 				//appy gain
 				float32_t rateV = db2rateV(instance->need_gain_db);
-				instance->AGC_GAIN = rateV;
-				/*for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
-				{
-					instance->AGC_GAIN[idx] = rateV;
-				}*/
 				
+				// Muting if need
+				bool VAD_Muting = VAD_RX1_Muting;
+				if (rx_id == AUDIO_RX2)
+					VAD_Muting = VAD_RX2_Muting;
+				if (WM8731_Muting || VAD_Muting)
+				{
+					rateV = db2rateV(-200.0f);
+				}
+				
+				instance->AGC_GAIN = rateV;
+								
 				//println("[SpectraAGC] Min: ", minValue, " AGC_RX_dbFS: ", AGC_RX_dbFS, " Gain: ", instance->need_gain_db);
 			}
 			
