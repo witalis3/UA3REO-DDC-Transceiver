@@ -97,6 +97,12 @@ static void RF_UNIT_ProcessATU(void)
 		ATU_Finished = true;
 		return;
 	}
+	
+	if (TRX.TWO_SIGNAL_TUNE)
+	{
+		ATU_Finished = true;
+		return;
+	}
 
 	if (!TRX_Tune)
 		return;
