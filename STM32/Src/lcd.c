@@ -303,10 +303,15 @@ static void LCD_displayFreqInfo(bool redraw)
 		}
 		if (TRX.ChannelMode && band >= 0 && BANDS[band].channelsCount > 0)
 		{
-			LCDDriver_printText("CH", LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL - 18, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, 2);
+			if (band != -1 && channel != -1 && strlen((char *)BANDS[band].channels[channel].subname) > 0)
+				sprintf(buff, "%s", (char *)BANDS[band].channels[channel].subname);
+			else
+				sprintf(buff, "CH");
+			addSymbols(buff, buff, 2, " ", false);
+			LCDDriver_printText(buff, LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL - 18, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, 2);
 			
 			if (band != -1 && channel != -1)
-				sprintf(buff, "%s", (char *)BANDS[band].channels[channel].name);
+				sprintf(buff, "%d", BANDS[band].channels[channel].number);
 			else
 				sprintf(buff, "-");
 			addSymbols(buff, buff, 3, " ", true);
@@ -382,10 +387,15 @@ static void LCD_displayFreqInfo(bool redraw)
 		}
 		if (TRX.ChannelMode && band >= 0 && BANDS[band].channelsCount > 0)
 		{
-			LCDDriver_printText("CH", LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL - RASTR_FONT_H - 2, TRX.selected_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, 1);
+			if (band != -1 && channel != -1 && strlen((char *)BANDS[band].channels[channel].subname) > 0)
+				sprintf(buff, "%.1s", (char *)BANDS[band].channels[channel].subname);
+			else
+				sprintf(buff, "C");
+			addSymbols(buff, buff, 1, " ", false);
+			LCDDriver_printText(buff, LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL - RASTR_FONT_H - 2, TRX.selected_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, 1);
 			
 			if (band != -1 && channel != -1)
-				sprintf(buff, "%s", (char *)BANDS[band].channels[channel].name);
+				sprintf(buff, "%d", BANDS[band].channels[channel].number);
 			else
 				sprintf(buff, "-");
 			addSymbols(buff, buff, 3, " ", true);
