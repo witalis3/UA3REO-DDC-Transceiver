@@ -180,8 +180,8 @@ void LoadSettings(bool clear)
 		TRX.Encoder_Accelerate = true;	  // Accelerate Encoder on fast rate
 		strcpy(TRX.CALLSIGN, "HamRad");	  // Callsign
 		strcpy(TRX.LOCATOR, "LO02RR");	  // Locator
-		TRX.Transverter_Enabled = false;  // Enable transverter mode
-		TRX.Transverter_Offset_Mhz = 120; // Offset from VFO
+		TRX.Custom_Transverter_Enabled = false;  // Enable transverter mode
+		TRX.Transverter_Offset_Mhz = 144; // Offset from VFO
 		TRX.ATU_I = 0;					  // ATU default state
 		TRX.ATU_C = 0;					  // ATU default state
 		TRX.ATU_T = false;				  // ATU default state

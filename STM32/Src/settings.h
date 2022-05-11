@@ -40,7 +40,6 @@
 #define IDLE_LCD_BRIGHTNESS 5				  // Low brightness for IDLE mode (dimmer)
 #define CW_ADD_GAIN_IF 35.0f				  // additional IF gain in CW
 #define CW_ADD_GAIN_AF 6.0f					  // additional AF gain in CW
-#define STATIC_TRANSVERTER_OFFSET 144000000	  // static transverter IF
 #define TX_LPF_TIMEOUT (180 * 1000)			  // TX LPF On Timeout, millisec (3 min)
 // FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
@@ -370,7 +369,7 @@ extern struct TRX_SETTINGS
 	bool Locked;
 	bool Dual_RX;
 	bool Encoder_Accelerate;
-	bool Transverter_Enabled;
+	bool Custom_Transverter_Enabled;
 	bool TUNER_Enabled;
 	bool ATU_Enabled;
 	bool ATU_T;

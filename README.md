@@ -156,14 +156,14 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **Input Type** - Select audio input (microphone, line in, USB)
 * **Callsign** - User callsign
 * **Locator** - User QTH locator
-* **Transverter Enable** - Enable external transverter
-* **Transverter Offset, mHz** - External transverter frequency offset, mHz
 * **TUNER Enabled** - Turning on the antenna tuner
 * **ATU Enabled** - Turning on the automatic antenna tuner
 * **ATU Ind** - Combination of tuner inductances
 * **ATU Cap** - Tuner Capacitance Combination
 * **ATU T** - Tuner capacitive arm position
-* **Transverter XXcm** - Enable external transverter support with IF 144mhz
+* **Transverter XXcm** - Enable external ham band transverter support
+* **Custom Transverter** - Enable external transverter on non-ham band (just offset display frequency)
+* **Transverter Offset, mHz** - External transverter frequency offset, mHz
 
 ### AUDIO Settings
 
