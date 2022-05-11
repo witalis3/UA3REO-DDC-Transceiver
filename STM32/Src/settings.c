@@ -533,7 +533,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.SWR_REF_Calibration_6M = 19.0f;	   // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 10.0f;	   // SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_VHF = 10.0f;	   // SWR Transormator rate return
-		CALIBRATE.TUNE_MAX_POWER = 10;				   // Maximum RF power in Tune mode
+		CALIBRATE.TUNE_MAX_POWER = 15;				   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 100;				   // Max TRX Power for indication
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;		   // LPF
@@ -621,6 +621,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.CAT_Type = CAT_FT450;
 		CALIBRATE.LNA_compensation = 0; // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50; //balance of signals on twosignal-tune
+		CALIBRATE.LinearPowerControl = false; //linear or logrithmic power control
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)

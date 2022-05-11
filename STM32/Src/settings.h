@@ -9,7 +9,7 @@
 #include "bands.h"
 
 #define SETT_VERSION 49						  // Settings config version
-#define CALIB_VERSION 44					  // Calibration config version
+#define CALIB_VERSION 45					  // Calibration config version
 #define ADC_CLOCK 122880000					  // ADC generator frequency
 #define DAC_CLOCK 188160000					  // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000			  // Maximum receive frequency (from the ADC datasheet)
@@ -655,6 +655,7 @@ extern struct TRX_CALIBRATE
 	bool OTA_update;
 	bool LCD_Rotate;
 	bool INA226_EN; // Tisho
+	bool LinearPowerControl;
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 	uint32_t BAND_MEMORIES[BANDS_COUNT][BANDS_MEMORIES_COUNT];
 

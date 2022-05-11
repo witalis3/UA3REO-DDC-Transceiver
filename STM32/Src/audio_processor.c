@@ -983,6 +983,10 @@ void processTxAudio(void)
 		RF_Power_selected = SWR_PROTECTOR_MAX_POWER;
 	
 	float32_t RFpower_amplitude = log10f_fast((RF_Power_selected * 0.9f + 10.0f) / 10.0f) * TRX_MAX_TX_Amplitude;
+	if(CALIBRATE.LinearPowerControl) {
+		RFpower_amplitude = (RF_Power_selected / 100.0f) * TRX_MAX_TX_Amplitude;
+	}
+	
 	if (RFpower_amplitude < 0.0f || TRX.RF_Power == 0)
 		RFpower_amplitude = 0.0f;
 	if ((mode == TRX_MODE_AM || mode == TRX_MODE_SAM) && !TRX_Tune)
