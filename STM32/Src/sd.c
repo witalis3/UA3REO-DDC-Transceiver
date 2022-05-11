@@ -1205,6 +1205,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.ATU_AVERAGING", (uint32_t *)&CALIBRATE.ATU_AVERAGING, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.LNA_compensation", (uint32_t *)&CALIBRATE.LNA_compensation, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.CAT_Type", (uint32_t *)&CALIBRATE.CAT_Type, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.TwoSignalTune_Balance", (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_UINT8);
 			// Bands settings
 			char buff[64] = {0};
 			for (uint8_t i = 0; i < BANDS_COUNT; i++)
@@ -2005,6 +2006,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.LNA_compensation = (int8_t)intval;
 	if (strcmp(name, "CALIBRATE.CAT_Type") == 0)
 		CALIBRATE.CAT_Type = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.TwoSignalTune_Balance") == 0)
+		CALIBRATE.TwoSignalTune_Balance = (uint8_t)uintval;
 
 	// Bands settings
 	char buff[64] = {0};

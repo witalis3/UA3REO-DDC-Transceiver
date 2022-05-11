@@ -350,6 +350,7 @@ static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ATU_AVERAGING(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CAT_Type(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LNA_compensation(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -792,6 +793,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"ATU Averaging", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&CALIBRATE.ATU_AVERAGING, SYSMENU_HANDL_CALIB_ATU_AVERAGING},
 		{"CAT Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.CAT_Type, SYSMENU_HANDL_CALIB_CAT_Type, {"FT-450", "TS2000"}},
 		{"LNA Compensation", SYSMENU_INT8, NULL, (uint32_t *)&CALIBRATE.LNA_compensation, SYSMENU_HANDL_CALIB_LNA_compensation},
+		{"TSignal Balance", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_HANDL_CALIB_TwoSignalTune_Balance},
 };
 
 const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
@@ -4767,6 +4769,14 @@ static void SYSMENU_HANDL_CALIB_LNA_compensation(int8_t direction)
 		CALIBRATE.LNA_compensation = 0;
 	if (CALIBRATE.LNA_compensation < -50)
 		CALIBRATE.LNA_compensation = -50;
+}
+
+static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction)
+{
+	if (CALIBRATE.TwoSignalTune_Balance > 0 || direction > 0)
+		CALIBRATE.TwoSignalTune_Balance += direction;
+	if (CALIBRATE.TwoSignalTune_Balance > 1)
+		CALIBRATE.TwoSignalTune_Balance = 100;
 }
 
 // SERVICES

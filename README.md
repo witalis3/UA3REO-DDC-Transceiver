@@ -318,6 +318,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **ATU Averaging** - The number of steps of averaging SWR values during measurements in the operation of an automatic tuner
 * **CAT Type** - Type of CAT subsystem (FT-450 / TS-2000)
 * **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm
+* **TSignal Balance** - Sets the power balance between signals in Two signal tune mode
 
 ### Set Clock Time
 

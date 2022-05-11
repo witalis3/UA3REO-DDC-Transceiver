@@ -723,8 +723,10 @@ void processTxAudio(void)
 		static float32_t two_signal_gen_index2 = 0;
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
-			float32_t point = generateSin(0.5f, &two_signal_gen_index1, TRX_SAMPLERATE, 1000);
-			point += generateSin(0.5f, &two_signal_gen_index2, TRX_SAMPLERATE, 2200);
+			float32_t balance = (float32_t)CALIBRATE.TwoSignalTune_Balance / 100.0f;
+			
+			float32_t point = generateSin(balance, &two_signal_gen_index1, TRX_SAMPLERATE, 1000);
+			point += generateSin((1.0f - balance), &two_signal_gen_index2, TRX_SAMPLERATE, 2200);
 			APROC_Audio_Buffer_TX_I[i] = point;
 			APROC_Audio_Buffer_TX_Q[i] = point;
 		}
