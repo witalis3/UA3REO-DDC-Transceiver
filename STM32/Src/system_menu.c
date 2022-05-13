@@ -4805,7 +4805,9 @@ void SYSMENU_SERVICE_FT8_HOTKEY(void)
 {
 	SYSMENU_HANDL_SERVICESMENU(0);
 	setCurrentMenuIndex(8);
+	#if FT8_SUPPORT
 	SYSMENU_HANDL_FT8_Decoder(1);
+	#endif
 }
 
 // SWR ANALYZER
