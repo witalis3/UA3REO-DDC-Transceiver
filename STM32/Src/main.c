@@ -43,6 +43,7 @@
 #include "images.h"
 #include "sd.h"
 #include "INA226_PWR_monitor.h"				//Tisho
+#include "jpeg_utils.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,6 +70,8 @@ DMA2D_HandleTypeDef hdma2d;
 I2S_HandleTypeDef hi2s3;
 
 IWDG_HandleTypeDef hiwdg1;
+
+JPEG_HandleTypeDef hjpeg;
 
 RTC_HandleTypeDef hrtc;
 
@@ -131,6 +134,7 @@ static void MX_DMA2D_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_CRC_Init(void);
 static void MX_IWDG1_Init(void);
+static void MX_JPEG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -227,6 +231,7 @@ int main(void)
   MX_DMA2D_Init();
   MX_TIM2_Init();
   MX_CRC_Init();
+  MX_JPEG_Init();
   /* USER CODE BEGIN 2 */
 #ifdef HAS_TOUCHPAD
   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -303,19 +308,19 @@ int main(void)
   println("[OK] LCD init");
   LCD_busy = true;
   LCD_Init();
+	JPEG_InitColorTables();
   if (SHOW_LOGO)
   {
+		strcpy(greetings_buff, "ver. ");
+    strcat(greetings_buff, version_string);
+		
 		#if (defined(LAY_800x480))
 		LCDDriver_Fill(rgb888torgb565(255, 255, 255));
-    LCDDriver_printImage_RLECompressed(0, 0, &IMAGES_logo7, BG_COLOR, BG_COLOR);
-    strcpy(greetings_buff, "ver. ");
-    strcat(greetings_buff, version_string);
+		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo7_jpeg);
 		LCDDriver_printTextFont(greetings_buff, 30, (LCD_HEIGHT - 30), COLOR_BLACK, rgb888torgb565(243, 243, 243), &FreeSans12pt7b);
 		#else
     LCDDriver_Fill(rgb888torgb565(243, 243, 243));
     LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo.width) / 2), ((LCD_HEIGHT - IMAGES_logo.height) / 2), &IMAGES_logo, BG_COLOR, BG_COLOR);
-    strcpy(greetings_buff, "ver. ");
-    strcat(greetings_buff, version_string);
 		LCDDriver_printText(greetings_buff, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
 		#endif
 		
@@ -785,6 +790,31 @@ static void MX_IWDG1_Init(void)
   /* USER CODE BEGIN IWDG1_Init 2 */
 
   /* USER CODE END IWDG1_Init 2 */
+
+}
+
+/**
+  * @brief JPEG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_JPEG_Init(void)
+{
+  /* USER CODE BEGIN JPEG_Init 0 */
+
+  /* USER CODE END JPEG_Init 0 */
+
+  /* USER CODE BEGIN JPEG_Init 1 */
+
+  /* USER CODE END JPEG_Init 1 */
+  hjpeg.Instance = JPEG;
+  if (HAL_JPEG_Init(&hjpeg) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN JPEG_Init 2 */
+
+  /* USER CODE END JPEG_Init 2 */
 
 }
 

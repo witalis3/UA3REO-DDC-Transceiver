@@ -49,7 +49,6 @@ extern DMA_HandleTypeDef hdma_spi2_rx;
 extern DMA_HandleTypeDef hdma_spi2_tx;
 
 extern RTC_HandleTypeDef hrtc;
-
 extern SPI_HandleTypeDef hspi2;
 
 extern TIM_HandleTypeDef htim2;
@@ -77,6 +76,7 @@ extern SRAM_HandleTypeDef hsram1;
 
 extern CRC_HandleTypeDef hcrc;
 extern IWDG_HandleTypeDef hiwdg1;
+extern JPEG_HandleTypeDef hjpeg;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

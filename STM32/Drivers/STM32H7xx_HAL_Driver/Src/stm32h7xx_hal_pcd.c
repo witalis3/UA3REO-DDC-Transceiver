@@ -1428,7 +1428,7 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
         }
       }
     }
-
+		
     /* Handle Incomplete ISO IN Interrupt */
     if (__HAL_PCD_GET_FLAG(hpcd, USB_OTG_GINTSTS_IISOIXFR))
     {
@@ -1469,9 +1469,8 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
       HAL_PCD_ISOOUTIncompleteCallback(hpcd, (uint8_t)epnum);
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 			//
-			
-			/*
-      for (epnum = 1U; epnum < hpcd->Init.dev_endpoints; epnum++)
+
+      /*for (epnum = 1U; epnum < hpcd->Init.dev_endpoints; epnum++)
       {
         RegVal = USBx_OUTEP(epnum)->DOEPCTL;
 

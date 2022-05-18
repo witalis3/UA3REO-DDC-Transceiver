@@ -5,6 +5,7 @@
 #include "main.h"
 #include "fonts.h"
 #include "functions.h"
+#include "jpeg_utils.h"
 
 static bool _cp437 = false;
 static uint16_t text_cursor_y = 0;
@@ -475,4 +476,39 @@ inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity)
 	if (b > 31)
 		b = 31;
 	return (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
+}
+
+#define JPEG_chunk_size_out 384
+IRAM2 uint8_t JPEG_out_buffer[JPEG_chunk_size_out];
+uint32_t JPEG_blockIndex = 0;
+JPEG_YCbCrToRGB_Convert_Function JPEG_ConvertFunction = NULL;
+
+void LCDDriver_printImage_JPEGCompressed(uint16_t x, uint16_t y, const uint8_t *image)
+{
+	JPEG_blockIndex = 0;
+	uint8_t res = HAL_JPEG_Decode(&hjpeg, (uint8_t *)image, sizeof(IMAGES_logo7_jpeg), JPEG_out_buffer, JPEG_chunk_size_out, HAL_MAX_DELAY);
+}
+
+void HAL_JPEG_InfoReadyCallback(JPEG_HandleTypeDef *hjpeg, JPEG_ConfTypeDef *pInfo)
+{  
+	//println("HAL_JPEG_InfoReadyCallback ", pInfo->ImageHeight, " ", pInfo->ImageWidth, " ", pInfo->ImageQuality, " ", pInfo->ChromaSubsampling);
+	
+	uint32_t JPEG_ImageNbMCUs = 0;
+	JPEG_GetDecodeColorConvertFunc(pInfo, &JPEG_ConvertFunction, &JPEG_ImageNbMCUs);
+}
+
+void HAL_JPEG_DataReadyCallback(JPEG_HandleTypeDef *hjpeg, uint8_t *pDataOut, uint32_t OutDataLength)
+{
+	//println("HAL_JPEG_DataReadyCallback");
+	
+	if(JPEG_ConvertFunction != NULL) {
+		uint8_t JPEG_out_buffer_rgb[1];
+		uint32_t ConvertedDataCount = 0;
+		
+		JPEG_blockIndex += JPEG_ConvertFunction(pDataOut, JPEG_out_buffer_rgb, JPEG_blockIndex, OutDataLength, &ConvertedDataCount);
+		//println(JPEG_ImageNbMCUs, " ", JPEG_blockIndex, " ", OutDataLength, " ", ConvertedDataCount);
+	}
+	
+  /* Update JPEG encoder output buffer address*/  
+  HAL_JPEG_ConfigOutputBuffer(hjpeg, JPEG_out_buffer, JPEG_chunk_size_out); 
 }

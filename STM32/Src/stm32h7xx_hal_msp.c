@@ -23,6 +23,11 @@
 #include "main.h"
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
+extern DMA_HandleTypeDef hdma_spi2_rx;
+
+extern DMA_HandleTypeDef hdma_spi2_tx;
+
+extern DMA_HandleTypeDef hdma_usart6_rx;
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
@@ -398,6 +403,50 @@ void HAL_I2S_MspDeInit(I2S_HandleTypeDef* hi2s)
 		HAL_DMA_DeInit(hi2s->hdmatx);
     HAL_DMA_DeInit(hi2s->hdmarx);
   /* USER CODE END SPI3_MspDeInit 1 */
+  }
+
+}
+
+/**
+* @brief JPEG MSP Initialization
+* This function configures the hardware resources used in this example
+* @param hjpeg: JPEG handle pointer
+* @retval None
+*/
+void HAL_JPEG_MspInit(JPEG_HandleTypeDef* hjpeg)
+{
+  if(hjpeg->Instance==JPEG)
+  {
+  /* USER CODE BEGIN JPEG_MspInit 0 */
+
+  /* USER CODE END JPEG_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_JPEG_CLK_ENABLE();
+  /* USER CODE BEGIN JPEG_MspInit 1 */
+
+  /* USER CODE END JPEG_MspInit 1 */
+  }
+
+}
+
+/**
+* @brief JPEG MSP De-Initialization
+* This function freeze the hardware resources used in this example
+* @param hjpeg: JPEG handle pointer
+* @retval None
+*/
+void HAL_JPEG_MspDeInit(JPEG_HandleTypeDef* hjpeg)
+{
+  if(hjpeg->Instance==JPEG)
+  {
+  /* USER CODE BEGIN JPEG_MspDeInit 0 */
+
+  /* USER CODE END JPEG_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_JPEG_CLK_DISABLE();
+  /* USER CODE BEGIN JPEG_MspDeInit 1 */
+
+  /* USER CODE END JPEG_MspDeInit 1 */
   }
 
 }

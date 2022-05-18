@@ -126,12 +126,14 @@ void SD_Process(void)
 	// Mount volume
 	if (SD_Present && !SD_Mounted)
 	{
-		if (f_mount(&SDFatFs, (TCHAR const *)USERPath, 0) != FR_OK)
+		if (f_mount(&SDFatFs, (TCHAR const *)USERPath, 1) != FR_OK)
 		{
+			println("[ERR] SD cannot be mounted");
 			SD_Present = false;
 		}
 		else
 		{
+			//println("[OK] SD mounted");
 			SD_Mounted = true;
 		}
 	}
@@ -298,10 +300,11 @@ static void SDCOMM_CHECKSD_handler(void)
 {
 	if (f_mount(&SDFatFs, (TCHAR const *)USERPath, 1) == FR_OK)
 	{
-		// sendToDebug_str("sd chk ok");
+		//println("[OK] Check SD");
 	}
 	else
 	{
+		//println("[ERR] Check SD");
 		SD_RecordInProcess = false;
 		SD_Present = false;
 		LCD_UpdateQuery.StatusInfoGUI = true;

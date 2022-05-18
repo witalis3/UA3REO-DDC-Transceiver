@@ -340,7 +340,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_ILI9481,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;../USBDevice;../Src;../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;../USBDevice;../Src;../Middlewares/Third_Party/FatFs/src;../Utilities/JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2776,6 +2776,62 @@
               </FileOption>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_jpeg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>1</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>0</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <uGnu>2</uGnu>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>2</vShortEn>
+                    <vShortWch>2</vShortWch>
+                    <v6Lto>2</v6Lto>
+                    <v6WtE>2</v6WtE>
+                    <v6Rtti>2</v6Rtti>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</FilePath>
@@ -3835,6 +3891,141 @@
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utilities</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>2</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>4</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <uGnu>2</uGnu>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>2</vShortEn>
+                <vShortWch>2</vShortWch>
+                <v6Lto>2</v6Lto>
+                <v6WtE>2</v6WtE>
+                <v6Rtti>2</v6Rtti>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <ClangAsOpt>0</ClangAsOpt>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
+          <Files>
+            <File>
+              <FileName>jpeg_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Utilities/JPEG/jpeg_utils.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>1</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>0</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <uGnu>2</uGnu>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>2</vShortEn>
+                    <vShortWch>2</vShortWch>
+                    <v6Lto>2</v6Lto>
+                    <v6WtE>2</v6WtE>
+                    <v6Rtti>2</v6Rtti>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>jpeg_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Utilities\JPEG\jpeg_utils.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -5287,6 +5478,11 @@
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</FilePath>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_jpeg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</FilePath>
@@ -5530,6 +5726,21 @@
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>jpeg_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Utilities/JPEG/jpeg_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>jpeg_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Utilities\JPEG\jpeg_utils.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -7051,6 +7262,11 @@
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</FilePath>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_jpeg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</FilePath>
@@ -7294,6 +7510,21 @@
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>jpeg_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Utilities/JPEG/jpeg_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>jpeg_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Utilities\JPEG\jpeg_utils.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -8815,6 +9046,11 @@
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</FilePath>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_jpeg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</FilePath>
@@ -9058,6 +9294,21 @@
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>jpeg_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Utilities/JPEG/jpeg_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>jpeg_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Utilities\JPEG\jpeg_utils.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -10579,6 +10830,11 @@
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</FilePath>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_jpeg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</FilePath>
@@ -10822,6 +11078,21 @@
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>jpeg_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Utilities/JPEG/jpeg_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>jpeg_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Utilities\JPEG\jpeg_utils.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -12343,6 +12614,11 @@
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</FilePath>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_jpeg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</FilePath>
@@ -12586,6 +12862,21 @@
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>jpeg_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Utilities/JPEG/jpeg_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>jpeg_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Utilities\JPEG\jpeg_utils.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -14107,6 +14398,11 @@
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</FilePath>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_jpeg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</FilePath>
@@ -14350,6 +14646,21 @@
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>jpeg_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Utilities/JPEG/jpeg_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>jpeg_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Utilities\JPEG\jpeg_utils.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -14692,7 +15003,7 @@
               <MiscControls>-Wno-sign-conversion -Wno-implicit-int-conversion -Wno-float-equal -Wno-sign-compare -Wno-gnu-flexible-array-initializer -pipe  -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_WF_100D,LCD_RA8875,TOUCHPAD_GT911,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;..\USBDevice;..\Src;../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;..\USBDevice;..\Src;../Middlewares/Third_Party/FatFs/src;..\Utilities\JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -15802,6 +16113,11 @@
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</FilePath>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_jpeg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</FilePath>
@@ -16045,6 +16361,21 @@
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\BiquadDesigner\biquad.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>jpeg_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Utilities/JPEG/jpeg_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>jpeg_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Utilities\JPEG\jpeg_utils.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -17497,6 +17828,11 @@
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</FilePath>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_jpeg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</FilePath>
@@ -17744,6 +18080,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>jpeg_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Utilities/JPEG/jpeg_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>jpeg_utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Utilities\JPEG\jpeg_utils.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -17756,7 +18107,6 @@
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.5.0" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.8.0"/>
         <targetInfos>
-          <targetInfo name="HX8357B"/>
           <targetInfo name="HX8357C"/>
           <targetInfo name="HX8357C-SLOW"/>
           <targetInfo name="ILI9481"/>
@@ -17773,7 +18123,6 @@
           <targetInfo name="HX8357B"/>
           <targetInfo name="HX8357C"/>
           <targetInfo name="HX8357C-SLOW"/>
-          <targetInfo name="ILI9481"/>
           <targetInfo name="ILI9486"/>
           <targetInfo name="NO-FRONT"/>
           <targetInfo name="RA8875_GT911"/>
