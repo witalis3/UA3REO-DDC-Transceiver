@@ -378,14 +378,14 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.name = "CB",
 			.selectable = true,
 			.startFreq = 26065000,
-			.endFreq = 27410000,
+			.endFreq = 27995000,
 			.regions = (const REGION_MAP[3]){
 				{.startFreq = 26065000, .endFreq = 27130000, .mode = TRX_MODE_NFM},
 				{.startFreq = 27130000, .endFreq = 27140000, .mode = TRX_MODE_AM},
-				{.startFreq = 27140000, .endFreq = 27410000, .mode = TRX_MODE_NFM},
+				{.startFreq = 27140000, .endFreq = 27995000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 3,
-			.channels = (const CHANNEL_MAP[45 * 3]){
+			.channels = (const CHANNEL_MAP[45 * 4 + 14]){
 				{.subname = " A", .number = 1, .rxFreq = 26065000, .txFreq = 26065000},
 				{.subname = " A", .number = 2, .rxFreq = 26075000, .txFreq = 26075000},
 				{.subname = " A", .number = 3, .rxFreq = 26085000, .txFreq = 26085000},
@@ -415,7 +415,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.subname = " A", .number = 27, .rxFreq = 26375000, .txFreq = 26375000},
 				{.subname = " A", .number = 28, .rxFreq = 26385000, .txFreq = 26385000},
 				{.subname = " A", .number = 29, .rxFreq = 26395000, .txFreq = 26395000},
-				{.subname = " A", .number = 20, .rxFreq = 26405000, .txFreq = 26405000},
+				{.subname = " A", .number = 30, .rxFreq = 26405000, .txFreq = 26405000},
 				{.subname = " A", .number = 31, .rxFreq = 26415000, .txFreq = 26415000},
 				{.subname = " A", .number = 32, .rxFreq = 26425000, .txFreq = 26425000},
 				{.subname = " A", .number = 33, .rxFreq = 26435000, .txFreq = 26435000},
@@ -523,8 +523,69 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.subname = " C", .number = 43, .rxFreq = 27095000, .txFreq = 27095000},
 				{.subname = " C", .number = 44, .rxFreq = 27145000, .txFreq = 27145000},
 				{.subname = " C", .number = 45, .rxFreq = 27195000, .txFreq = 27195000},
+				
+				{.subname = " D", .number = 1, .rxFreq = 27415000, .txFreq = 27415000},
+				{.subname = " D", .number = 2, .rxFreq = 27425000, .txFreq = 27425000},
+				{.subname = " D", .number = 3, .rxFreq = 27435000, .txFreq = 27435000},
+				{.subname = " D", .number = 4, .rxFreq = 27455000, .txFreq = 27455000},
+				{.subname = " D", .number = 5, .rxFreq = 27465000, .txFreq = 27465000},
+				{.subname = " D", .number = 6, .rxFreq = 27475000, .txFreq = 27475000},
+				{.subname = " D", .number = 7, .rxFreq = 27485000, .txFreq = 27485000},
+				{.subname = " D", .number = 8, .rxFreq = 27505000, .txFreq = 27505000},
+				{.subname = " D", .number = 9, .rxFreq = 27515000, .txFreq = 27515000},
+				{.subname = " D", .number = 10, .rxFreq = 27525000, .txFreq = 27525000},
+				{.subname = " D", .number = 11, .rxFreq = 27535000, .txFreq = 27535000},
+				{.subname = " D", .number = 12, .rxFreq = 27555000, .txFreq = 27555000},
+				{.subname = " D", .number = 13, .rxFreq = 27565000, .txFreq = 27565000},
+				{.subname = " D", .number = 14, .rxFreq = 27575000, .txFreq = 27575000},
+				{.subname = " D", .number = 15, .rxFreq = 27585000, .txFreq = 27585000},
+				{.subname = " D", .number = 16, .rxFreq = 27605000, .txFreq = 27605000},
+				{.subname = " D", .number = 17, .rxFreq = 27615000, .txFreq = 27615000},
+				{.subname = " D", .number = 18, .rxFreq = 27625000, .txFreq = 27625000},
+				{.subname = " D", .number = 19, .rxFreq = 27635000, .txFreq = 27635000},
+				{.subname = " D", .number = 20, .rxFreq = 27655000, .txFreq = 27655000},
+				{.subname = " D", .number = 21, .rxFreq = 27665000, .txFreq = 27665000},
+				{.subname = " D", .number = 22, .rxFreq = 27675000, .txFreq = 27675000},
+				{.subname = " D", .number = 23, .rxFreq = 27705000, .txFreq = 27705000},
+				{.subname = " D", .number = 24, .rxFreq = 27685000, .txFreq = 27685000},
+				{.subname = " D", .number = 25, .rxFreq = 27695000, .txFreq = 27695000},
+				{.subname = " D", .number = 26, .rxFreq = 27715000, .txFreq = 27715000},
+				{.subname = " D", .number = 27, .rxFreq = 27725000, .txFreq = 27725000},
+				{.subname = " D", .number = 28, .rxFreq = 27735000, .txFreq = 27735000},
+				{.subname = " D", .number = 29, .rxFreq = 27745000, .txFreq = 27745000},
+				{.subname = " D", .number = 30, .rxFreq = 27755000, .txFreq = 27755000},
+				{.subname = " D", .number = 31, .rxFreq = 27765000, .txFreq = 27765000},
+				{.subname = " D", .number = 32, .rxFreq = 27775000, .txFreq = 27775000},
+				{.subname = " D", .number = 33, .rxFreq = 27785000, .txFreq = 27785000},
+				{.subname = " D", .number = 34, .rxFreq = 27795000, .txFreq = 27795000},
+				{.subname = " D", .number = 35, .rxFreq = 27805000, .txFreq = 27805000},
+				{.subname = " D", .number = 36, .rxFreq = 27815000, .txFreq = 27815000},
+				{.subname = " D", .number = 37, .rxFreq = 27825000, .txFreq = 27825000},
+				{.subname = " D", .number = 38, .rxFreq = 27835000, .txFreq = 27835000},
+				{.subname = " D", .number = 39, .rxFreq = 27845000, .txFreq = 27845000},
+				{.subname = " D", .number = 40, .rxFreq = 27855000, .txFreq = 27855000},
+				{.subname = " D", .number = 41, .rxFreq = 27445000, .txFreq = 27445000},
+				{.subname = " D", .number = 42, .rxFreq = 27495000, .txFreq = 27495000},
+				{.subname = " D", .number = 43, .rxFreq = 27545000, .txFreq = 27545000},
+				{.subname = " D", .number = 44, .rxFreq = 27595000, .txFreq = 27595000},
+				{.subname = " D", .number = 45, .rxFreq = 27645000, .txFreq = 27645000},
+				
+				{.subname = " E", .number = 1, .rxFreq = 27865000, .txFreq = 27865000},
+				{.subname = " E", .number = 2, .rxFreq = 27875000, .txFreq = 27875000},
+				{.subname = " E", .number = 3, .rxFreq = 27885000, .txFreq = 27885000},
+				{.subname = " E", .number = 4, .rxFreq = 27905000, .txFreq = 27905000},
+				{.subname = " E", .number = 5, .rxFreq = 27915000, .txFreq = 27915000},
+				{.subname = " E", .number = 6, .rxFreq = 27925000, .txFreq = 27925000},
+				{.subname = " E", .number = 7, .rxFreq = 27935000, .txFreq = 27935000},
+				{.subname = " E", .number = 8, .rxFreq = 27955000, .txFreq = 27955000},
+				{.subname = " E", .number = 9, .rxFreq = 27965000, .txFreq = 27965000},
+				{.subname = " E", .number = 10, .rxFreq = 27975000, .txFreq = 27975000},
+				{.subname = " E", .number = 11, .rxFreq = 27985000, .txFreq = 27985000},
+				{.subname = " E", .number = 41, .rxFreq = 27895000, .txFreq = 27895000},
+				{.subname = " E", .number = 42, .rxFreq = 27945000, .txFreq = 27945000},
+				{.subname = " E", .number = 43, .rxFreq = 27995000, .txFreq = 27995000},
 			},
-			.channelsCount = 45 * 3,
+			.channelsCount = 45 * 4 + 14,
 		},
 		// 10METERS
 		{
@@ -968,12 +1029,12 @@ uint_fast8_t getModeFromFreq(uint64_t freq)
 	return ret;
 }
 
-int8_t getChannelbyFreq(uint64_t freq, bool txfreq)
+int16_t getChannelbyFreq(uint64_t freq, bool txfreq)
 {
 	int8_t band = getBandFromFreq(freq, false);
 	if (band != -1)
 	{
-		for (int8_t ind = 0; ind < BANDS[band].channelsCount; ind++)
+		for (int16_t ind = 0; ind < BANDS[band].channelsCount; ind++)
 		{
 			if (BANDS[band].channels[ind].rxFreq == freq && !txfreq)
 				return ind;

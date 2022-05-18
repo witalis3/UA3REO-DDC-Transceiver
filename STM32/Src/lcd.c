@@ -292,7 +292,7 @@ static void LCD_displayFreqInfo(bool redraw)
 	{
 		addSymbols(buff, LCD_freq_string_hz, 3, "0", false);
 		int_fast8_t band = -1;
-		int_fast8_t channel = -1;
+		int_fast16_t channel = -1;
 		if (TRX.ChannelMode)
 		{
 			band = getBandFromFreq(display_freq, false);

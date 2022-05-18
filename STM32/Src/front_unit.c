@@ -373,8 +373,8 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
 	{
 		int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
-		int_fast8_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
-		int_fast8_t new_channel = channel + direction;
+		int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
+		int_fast16_t new_channel = channel + direction;
 		if (new_channel < 0)
 			new_channel = BANDS[band].channelsCount - 1;
 		if (new_channel >= BANDS[band].channelsCount)
@@ -445,8 +445,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
 		{
 			int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
-			int_fast8_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
-			int_fast8_t new_channel = channel + direction;
+			int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
+			int_fast16_t new_channel = channel + direction;
 			if (new_channel < 0)
 				new_channel = BANDS[band].channelsCount - 1;
 			if (new_channel >= BANDS[band].channelsCount)
