@@ -284,7 +284,11 @@ void FFT_Init(void)
 	dma_memset(FFTInput_tmp, 0x00, sizeof(FFTInput_tmp));
 	NeedWTFRedraw = true;
 	FFT_new_buffer_ready = false;
+	
 	FFT_buff_index = 0;
+	FFTInput_I_current = (float32_t *)&FFTInput_I_A[0];
+	FFTInput_Q_current = (float32_t *)&FFTInput_Q_A[0];
+	
 	NeedFFTReinit = false;
 }
 

@@ -67,6 +67,8 @@ extern bool FPGA_bus_stop;                      // temporary stop FPGA bus
 extern uint8_t ADCDAC_OVR_StatusLatency;
 extern volatile bool FPGA_bus_test_result;
 extern int16_t ADC_RAW_IN;
+extern float32_t *FFTInput_I_current;
+extern float32_t *FFTInput_Q_current;
 
 // Public methods
 extern void FPGA_Init(bool bus_test, bool firmware_test);                            // initialize exchange with FPGA

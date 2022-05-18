@@ -29,6 +29,8 @@ uint8_t ADCDAC_OVR_StatusLatency = 0;
 bool FPGA_bus_stop = true;				   // suspend the FPGA bus
 volatile bool FPGA_bus_test_result = true; // self-test flag
 int16_t ADC_RAW_IN = 0;
+float32_t *FFTInput_I_current = (float32_t *)&FFTInput_I_A[0];
+float32_t *FFTInput_Q_current = (float32_t *)&FFTInput_Q_A[0];
 
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
@@ -550,8 +552,6 @@ static inline void FPGA_fpgadata_getparam(void)
 }
 
 // get IQ data
-static float32_t *FFTInput_I_current = (float32_t *)&FFTInput_I_A[0];
-static float32_t *FFTInput_Q_current = (float32_t *)&FFTInput_Q_A[0];
 static float32_t *FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_A[0];
 static float32_t *FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A[0];
 static float32_t *FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_A[0];
