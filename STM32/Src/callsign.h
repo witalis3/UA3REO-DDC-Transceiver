@@ -7,19 +7,18 @@
 #include "stdint.h"
 #include "functions.h"
 
-#define CALLSIGN_DB_GLOBAL_COUNT 346
+#define CALLSIGN_DB_GLOBAL_COUNT 342
 #define CALLSIGN_DB_RUS_COUNT 89
 
 typedef struct // description of the call database
 {
 	const float32_t lat;
 	const float32_t lon;
-	const uint16_t prefixesCount;
 	const uint8_t cq_zone;
 	const uint8_t itu_zone;
 	const char *continent;
 	const char *country;
-	const char (*prefixes)[6];
+	const char *prefixes;
 } CALLSIGN_INFO_LINE;
 
 // Public variabled
