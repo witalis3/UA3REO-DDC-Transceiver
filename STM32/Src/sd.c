@@ -126,9 +126,10 @@ void SD_Process(void)
 	// Mount volume
 	if (SD_Present && !SD_Mounted)
 	{
-		if (f_mount(&SDFatFs, (TCHAR const *)USERPath, 1) != FR_OK)
+		uint8_t res = f_mount(&SDFatFs, (TCHAR const *)USERPath, 1);
+		if (res != FR_OK)
 		{
-			println("[ERR] SD cannot be mounted");
+			println("[ERR] SD cannot be mounted: code ", res);
 			SD_Present = false;
 		}
 		else
@@ -2346,6 +2347,7 @@ void SD_PowerOn(void)
 SRAM uint8_t SD_Read_Block_tmp[SD_MAXBLOCK_SIZE] = {0};
 uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 {
+	//println("SD_Read_Block");
 	uint8_t result;
 	uint16_t cnt;
 	SPI_Release(); // FF token
@@ -2392,6 +2394,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 SRAM uint8_t SD_Write_Block_tmp[SD_MAXBLOCK_SIZE] = {0};
 uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 {
+	//println("SD_Write_Block");
 	uint8_t result;
 	uint16_t cnt;
 	SPI_wait_ready(); /* Wait for card ready */

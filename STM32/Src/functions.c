@@ -444,6 +444,7 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 
 	if (dma)
 	{
+		memset(SPI_tmp_buff, 0x00, sizeof(SPI_tmp_buff));
 		Aligned_CleanDCache_by_Addr((uint32_t)out_data, count);
 		Aligned_CleanDCache_by_Addr((uint32_t)in_data, count);
 		uint32_t starttime = HAL_GetTick();
