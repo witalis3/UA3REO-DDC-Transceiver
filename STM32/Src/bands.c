@@ -11,7 +11,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 135700,
 			.endFreq = 137800,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 135700, .endFreq = 137800, .mode = TRX_MODE_CW},
 			},
 			.regionsCount = 1,
@@ -24,7 +24,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 148500,
 			.endFreq = 283500,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 148500, .endFreq = 283500, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -37,7 +37,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 526500,
 			.endFreq = 1606500,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 526500, .endFreq = 1606500, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -50,7 +50,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 1810000,
 			.endFreq = 2000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[3]){
 				{.startFreq = 1810000, .endFreq = 1838000, .mode = TRX_MODE_CW},
 				{.startFreq = 1838000, .endFreq = 1843000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 1843000, .endFreq = 2000000, .mode = TRX_MODE_LSB},
@@ -65,7 +65,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 2300000,
 			.endFreq = 2468000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 2300000, .endFreq = 2468000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -78,7 +78,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 3200000,
 			.endFreq = 3400000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 3200000, .endFreq = 3400000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -91,7 +91,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 3500000,
 			.endFreq = 3800000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[3]){
 				{.startFreq = 3500000, .endFreq = 3570000, .mode = TRX_MODE_CW},
 				{.startFreq = 3570000, .endFreq = 3600000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 3600000, .endFreq = 3800000, .mode = TRX_MODE_LSB},
@@ -106,7 +106,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 3950000,
 			.endFreq = 4000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 3950000, .endFreq = 4000000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -119,7 +119,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 4750000,
 			.endFreq = 4995000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 4750000, .endFreq = 4995000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -132,7 +132,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 5005000,
 			.endFreq = 5060000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 5005000, .endFreq = 5060000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -145,7 +145,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 5330500,
 			.endFreq = 5403500,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 5330500, .endFreq = 5403500, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 1,
@@ -158,7 +158,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 5900000,
 			.endFreq = 6200000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 5900000, .endFreq = 6200000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -171,7 +171,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 7000000,
 			.endFreq = 7200000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[5]){
 				{.startFreq = 7000000, .endFreq = 7040000, .mode = TRX_MODE_CW},
 				{.startFreq = 7040000, .endFreq = 7060000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 7060000, .endFreq = 7074000, .mode = TRX_MODE_LSB},
@@ -188,7 +188,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 7200000,
 			.endFreq = 7450000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 7200000, .endFreq = 7450000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -201,7 +201,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 9400000,
 			.endFreq = 9900000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 9400000, .endFreq = 9900000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -214,7 +214,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 10100000,
 			.endFreq = 10150000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[2]){
 				{.startFreq = 10100000, .endFreq = 10130000, .mode = TRX_MODE_CW},
 				{.startFreq = 10130000, .endFreq = 10150000, .mode = TRX_MODE_DIGI_U},
 			},
@@ -228,7 +228,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 11600000,
 			.endFreq = 12100000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 11600000, .endFreq = 12100000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -241,7 +241,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 13570000,
 			.endFreq = 13870000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 13570000, .endFreq = 13870000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -254,7 +254,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 14000000,
 			.endFreq = 14350000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[3]){
 				{.startFreq = 14000000, .endFreq = 14070000, .mode = TRX_MODE_CW},
 				{.startFreq = 14070000, .endFreq = 14112000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 14112000, .endFreq = 14350000, .mode = TRX_MODE_USB},
@@ -269,7 +269,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 15100000,
 			.endFreq = 15800000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 15100000, .endFreq = 15800000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -282,7 +282,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 17480000,
 			.endFreq = 17900000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 17480000, .endFreq = 17900000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -295,7 +295,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 18068000,
 			.endFreq = 18168000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[3]){
 				{.startFreq = 18068000, .endFreq = 18095000, .mode = TRX_MODE_CW},
 				{.startFreq = 18095000, .endFreq = 18120000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 18120000, .endFreq = 18168000, .mode = TRX_MODE_USB},
@@ -310,7 +310,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 18900000,
 			.endFreq = 19020000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 18900000, .endFreq = 19020000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -323,7 +323,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 21000000,
 			.endFreq = 21450000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[4]){
 				{.startFreq = 21000000, .endFreq = 21070000, .mode = TRX_MODE_CW},
 				{.startFreq = 21070000, .endFreq = 21149000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 21149000, .endFreq = 21450000, .mode = TRX_MODE_USB},
@@ -338,7 +338,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 21450000,
 			.endFreq = 21850000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 21450000, .endFreq = 21850000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
@@ -351,7 +351,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 24890000,
 			.endFreq = 24990000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[4]){
 				{.startFreq = 24890000, .endFreq = 24915000, .mode = TRX_MODE_CW},
 				{.startFreq = 24915000, .endFreq = 24940000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 24940000, .endFreq = 24990000, .mode = TRX_MODE_USB},
@@ -365,9 +365,9 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.name = "BR 25.8",
 			.selectable = false,
 			.startFreq = 25670000,
-			.endFreq = 26100000,
-			.regions = (const REGION_MAP[]){
-				{.startFreq = 25670000, .endFreq = 26100000, .mode = TRX_MODE_SAM},
+			.endFreq = 26060000,
+			.regions = (const REGION_MAP[1]){
+				{.startFreq = 25670000, .endFreq = 26060000, .mode = TRX_MODE_SAM},
 			},
 			.regionsCount = 1,
 			.channels = NULL,
@@ -377,15 +377,107 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "CB",
 			.selectable = true,
-			.startFreq = 26960000,
+			.startFreq = 26065000,
 			.endFreq = 27410000,
-			.regions = (const REGION_MAP[]){
-				{.startFreq = 26960000, .endFreq = 27130000, .mode = TRX_MODE_NFM},
+			.regions = (const REGION_MAP[3]){
+				{.startFreq = 26065000, .endFreq = 27130000, .mode = TRX_MODE_NFM},
 				{.startFreq = 27130000, .endFreq = 27140000, .mode = TRX_MODE_AM},
 				{.startFreq = 27140000, .endFreq = 27410000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 3,
-			.channels = (const CHANNEL_MAP[]){
+			.channels = (const CHANNEL_MAP[45 * 3]){
+				{.subname = " A", .number = 1, .rxFreq = 26065000, .txFreq = 26065000},
+				{.subname = " A", .number = 2, .rxFreq = 26075000, .txFreq = 26075000},
+				{.subname = " A", .number = 3, .rxFreq = 26085000, .txFreq = 26085000},
+				{.subname = " A", .number = 4, .rxFreq = 26105000, .txFreq = 26105000},
+				{.subname = " A", .number = 5, .rxFreq = 26115000, .txFreq = 26115000},
+				{.subname = " A", .number = 6, .rxFreq = 26125000, .txFreq = 26125000},
+				{.subname = " A", .number = 7, .rxFreq = 26135000, .txFreq = 26135000},
+				{.subname = " A", .number = 8, .rxFreq = 26155000, .txFreq = 26155000},
+				{.subname = " A", .number = 9, .rxFreq = 26165000, .txFreq = 26165000},
+				{.subname = " A", .number = 10, .rxFreq = 26175000, .txFreq = 26175000},
+				{.subname = " A", .number = 11, .rxFreq = 26185000, .txFreq = 26185000},
+				{.subname = " A", .number = 12, .rxFreq = 26205000, .txFreq = 26205000},
+				{.subname = " A", .number = 13, .rxFreq = 26215000, .txFreq = 26215000},
+				{.subname = " A", .number = 14, .rxFreq = 26225000, .txFreq = 26225000},
+				{.subname = " A", .number = 15, .rxFreq = 26235000, .txFreq = 26235000},
+				{.subname = " A", .number = 16, .rxFreq = 26255000, .txFreq = 26255000},
+				{.subname = " A", .number = 17, .rxFreq = 26265000, .txFreq = 26265000},
+				{.subname = " A", .number = 18, .rxFreq = 26275000, .txFreq = 26275000},
+				{.subname = " A", .number = 19, .rxFreq = 26285000, .txFreq = 26285000},
+				{.subname = " A", .number = 20, .rxFreq = 26305000, .txFreq = 26305000},
+				{.subname = " A", .number = 21, .rxFreq = 26315000, .txFreq = 26315000},
+				{.subname = " A", .number = 22, .rxFreq = 26325000, .txFreq = 26325000},
+				{.subname = " A", .number = 23, .rxFreq = 26355000, .txFreq = 26355000},
+				{.subname = " A", .number = 24, .rxFreq = 26335000, .txFreq = 26335000},
+				{.subname = " A", .number = 25, .rxFreq = 26345000, .txFreq = 26345000},
+				{.subname = " A", .number = 26, .rxFreq = 26365000, .txFreq = 26365000},
+				{.subname = " A", .number = 27, .rxFreq = 26375000, .txFreq = 26375000},
+				{.subname = " A", .number = 28, .rxFreq = 26385000, .txFreq = 26385000},
+				{.subname = " A", .number = 29, .rxFreq = 26395000, .txFreq = 26395000},
+				{.subname = " A", .number = 20, .rxFreq = 26405000, .txFreq = 26405000},
+				{.subname = " A", .number = 31, .rxFreq = 26415000, .txFreq = 26415000},
+				{.subname = " A", .number = 32, .rxFreq = 26425000, .txFreq = 26425000},
+				{.subname = " A", .number = 33, .rxFreq = 26435000, .txFreq = 26435000},
+				{.subname = " A", .number = 34, .rxFreq = 26445000, .txFreq = 26445000},
+				{.subname = " A", .number = 35, .rxFreq = 26455000, .txFreq = 26455000},
+				{.subname = " A", .number = 36, .rxFreq = 26465000, .txFreq = 26465000},
+				{.subname = " A", .number = 37, .rxFreq = 26475000, .txFreq = 26475000},
+				{.subname = " A", .number = 38, .rxFreq = 26485000, .txFreq = 26485000},
+				{.subname = " A", .number = 39, .rxFreq = 26495000, .txFreq = 26495000},
+				{.subname = " A", .number = 40, .rxFreq = 26505000, .txFreq = 26505000},
+				{.subname = " A", .number = 41, .rxFreq = 26095000, .txFreq = 26095000},
+				{.subname = " A", .number = 42, .rxFreq = 26145000, .txFreq = 26145000},
+				{.subname = " A", .number = 43, .rxFreq = 26195000, .txFreq = 26195000},
+				{.subname = " A", .number = 44, .rxFreq = 26245000, .txFreq = 26245000},
+				{.subname = " A", .number = 45, .rxFreq = 26295000, .txFreq = 26295000},
+				
+				{.subname = " B", .number = 1, .rxFreq = 26515000, .txFreq = 26515000},
+				{.subname = " B", .number = 2, .rxFreq = 26525000, .txFreq = 26525000},
+				{.subname = " B", .number = 3, .rxFreq = 26535000, .txFreq = 26535000},
+				{.subname = " B", .number = 4, .rxFreq = 26555000, .txFreq = 26555000},
+				{.subname = " B", .number = 5, .rxFreq = 26565000, .txFreq = 26565000},
+				{.subname = " B", .number = 6, .rxFreq = 26575000, .txFreq = 26575000},
+				{.subname = " B", .number = 7, .rxFreq = 26585000, .txFreq = 26585000},
+				{.subname = " B", .number = 8, .rxFreq = 26605000, .txFreq = 26605000},
+				{.subname = " B", .number = 9, .rxFreq = 26615000, .txFreq = 26615000},
+				{.subname = " B", .number = 10, .rxFreq = 26625000, .txFreq = 26625000},
+				{.subname = " B", .number = 11, .rxFreq = 26635000, .txFreq = 26635000},
+				{.subname = " B", .number = 12, .rxFreq = 26655000, .txFreq = 26655000},
+				{.subname = " B", .number = 13, .rxFreq = 26665000, .txFreq = 26665000},
+				{.subname = " B", .number = 14, .rxFreq = 26675000, .txFreq = 26675000},
+				{.subname = " B", .number = 15, .rxFreq = 26685000, .txFreq = 26685000},
+				{.subname = " B", .number = 16, .rxFreq = 26705000, .txFreq = 26705000},
+				{.subname = " B", .number = 17, .rxFreq = 26715000, .txFreq = 26715000},
+				{.subname = " B", .number = 18, .rxFreq = 26725000, .txFreq = 26725000},
+				{.subname = " B", .number = 19, .rxFreq = 26735000, .txFreq = 26735000},
+				{.subname = " B", .number = 20, .rxFreq = 26755000, .txFreq = 26755000},
+				{.subname = " B", .number = 21, .rxFreq = 26765000, .txFreq = 26765000},
+				{.subname = " B", .number = 22, .rxFreq = 26775000, .txFreq = 26775000},
+				{.subname = " B", .number = 23, .rxFreq = 26805000, .txFreq = 26805000},
+				{.subname = " B", .number = 24, .rxFreq = 26785000, .txFreq = 26785000},
+				{.subname = " B", .number = 25, .rxFreq = 26795000, .txFreq = 26795000},
+				{.subname = " B", .number = 26, .rxFreq = 26815000, .txFreq = 26815000},
+				{.subname = " B", .number = 27, .rxFreq = 26825000, .txFreq = 26825000},
+				{.subname = " B", .number = 28, .rxFreq = 26835000, .txFreq = 26835000},
+				{.subname = " B", .number = 29, .rxFreq = 26845000, .txFreq = 26845000},
+				{.subname = " B", .number = 30, .rxFreq = 26855000, .txFreq = 26855000},
+				{.subname = " B", .number = 31, .rxFreq = 26865000, .txFreq = 26865000},
+				{.subname = " B", .number = 32, .rxFreq = 26875000, .txFreq = 26875000},
+				{.subname = " B", .number = 33, .rxFreq = 26885000, .txFreq = 26885000},
+				{.subname = " B", .number = 34, .rxFreq = 26895000, .txFreq = 26895000},
+				{.subname = " B", .number = 35, .rxFreq = 26905000, .txFreq = 26905000},
+				{.subname = " B", .number = 36, .rxFreq = 26915000, .txFreq = 26915000},
+				{.subname = " B", .number = 37, .rxFreq = 26925000, .txFreq = 26925000},
+				{.subname = " B", .number = 38, .rxFreq = 26935000, .txFreq = 26935000},
+				{.subname = " B", .number = 39, .rxFreq = 26945000, .txFreq = 26945000},
+				{.subname = " B", .number = 40, .rxFreq = 26955000, .txFreq = 26955000},
+				{.subname = " B", .number = 41, .rxFreq = 26545000, .txFreq = 26545000},
+				{.subname = " B", .number = 42, .rxFreq = 26595000, .txFreq = 26595000},
+				{.subname = " B", .number = 43, .rxFreq = 26645000, .txFreq = 26645000},
+				{.subname = " B", .number = 44, .rxFreq = 26695000, .txFreq = 26695000},
+				{.subname = " B", .number = 45, .rxFreq = 26745000, .txFreq = 26745000},
+
 				{.subname = " C", .number = 1, .rxFreq = 26965000, .txFreq = 26965000},
 				{.subname = " C", .number = 2, .rxFreq = 26975000, .txFreq = 26975000},
 				{.subname = " C", .number = 3, .rxFreq = 26985000, .txFreq = 26985000},
@@ -426,8 +518,13 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.subname = " C", .number = 38, .rxFreq = 27385000, .txFreq = 27385000},
 				{.subname = " C", .number = 39, .rxFreq = 27395000, .txFreq = 27395000},
 				{.subname = " C", .number = 40, .rxFreq = 27405000, .txFreq = 27405000},
+				{.subname = " C", .number = 41, .rxFreq = 26995000, .txFreq = 26995000},
+				{.subname = " C", .number = 42, .rxFreq = 27045000, .txFreq = 27045000},
+				{.subname = " C", .number = 43, .rxFreq = 27095000, .txFreq = 27095000},
+				{.subname = " C", .number = 44, .rxFreq = 27145000, .txFreq = 27145000},
+				{.subname = " C", .number = 45, .rxFreq = 27195000, .txFreq = 27195000},
 			},
-			.channelsCount = 40,
+			.channelsCount = 45 * 3,
 		},
 		// 10METERS
 		{
@@ -435,7 +532,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 28000000,
 			.endFreq = 29700000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[9]){
 				{.startFreq = 28000000, .endFreq = 28070000, .mode = TRX_MODE_CW},
 				{.startFreq = 28070000, .endFreq = 28190000, .mode = TRX_MODE_DIGI_U},
 				{.startFreq = 28190000, .endFreq = 28300000, .mode = TRX_MODE_CW},
@@ -456,7 +553,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 50000000,
 			.endFreq = 54000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[7]){
 				{.startFreq = 50000000, .endFreq = 50100000, .mode = TRX_MODE_CW},
 				{.startFreq = 50100000, .endFreq = 50300000, .mode = TRX_MODE_USB},
 				{.startFreq = 50300000, .endFreq = 50350000, .mode = TRX_MODE_DIGI_U},
@@ -475,7 +572,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 65900000,
 			.endFreq = 108000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 65900000, .endFreq = 108000000, .mode = TRX_MODE_WFM},
 			},
 			.regionsCount = 1,
@@ -488,7 +585,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 108000000,
 			.endFreq = 137000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 108000000, .endFreq = 137000000, .mode = TRX_MODE_AM},
 			},
 			.regionsCount = 1,
@@ -501,13 +598,13 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 144000000,
 			.endFreq = 146000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[3]){
 				{.startFreq = 144000000, .endFreq = 144110000, .mode = TRX_MODE_CW},
 				{.startFreq = 144110000, .endFreq = 144491000, .mode = TRX_MODE_USB},
 				{.startFreq = 144491000, .endFreq = 146000000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 3,
-			.channels = (const CHANNEL_MAP[]){
+			.channels = (const CHANNEL_MAP[48]){
 				{.subname = " V", .number = 17, .rxFreq = 145212500, .txFreq = 145212500},
 				{.subname = " V", .number = 18, .rxFreq = 145225000, .txFreq = 145225000},
 				{.subname = " V", .number = 19, .rxFreq = 145237500, .txFreq = 145237500},
@@ -565,11 +662,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 156000000,
 			.endFreq = 174000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 156000000, .endFreq = 174000000, .mode = TRX_MODE_NFM},
 			},
-			.regionsCount = 3,
-			.channels = (const CHANNEL_MAP[]){
+			.regionsCount = 1,
+			.channels = (const CHANNEL_MAP[87]){
 				{.subname = "", .number = 1, .rxFreq = 160650000, .txFreq = 156050000},
 				{.subname = " A", .number = 1, .rxFreq = 156050000, .txFreq = 156050000},
 				{.subname = "", .number = 2, .rxFreq = 160070000, .txFreq = 156100000},
@@ -666,7 +763,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = true,
 			.startFreq = 430000000,
 			.endFreq = 446200000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[7]){
 				{.startFreq = 430000000, .endFreq = 432000000, .mode = TRX_MODE_NFM},
 				{.startFreq = 432000000, .endFreq = 432100000, .mode = TRX_MODE_CW},
 				{.startFreq = 432100000, .endFreq = 432400000, .mode = TRX_MODE_USB},
@@ -676,7 +773,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 				{.startFreq = 434100000, .endFreq = 446200000, .mode = TRX_MODE_NFM},
 			},
 			.regionsCount = 7,
-			.channels = (const CHANNEL_MAP[]){
+			.channels = (const CHANNEL_MAP[85]){
 				{.subname = "LP", .number = 1, .rxFreq = 433075000, .txFreq = 433075000},
 				{.subname = "LP", .number = 2, .rxFreq = 433100000, .txFreq = 433100000},
 				{.subname = "LP", .number = 3, .rxFreq = 433125000, .txFreq = 433125000},
@@ -771,7 +868,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 1260000000,
 			.endFreq = 1300000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 1260000000, .endFreq = 1300000000, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 1,
@@ -784,7 +881,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 2320000000,
 			.endFreq = 2450000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 2320000000, .endFreq = 2450000000, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 1,
@@ -797,7 +894,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 5650000000,
 			.endFreq = 5850000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 5650000000, .endFreq = 5850000000, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 1,
@@ -810,7 +907,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.selectable = false,
 			.startFreq = 10000000000,
 			.endFreq = 10500000000,
-			.regions = (const REGION_MAP[]){
+			.regions = (const REGION_MAP[1]){
 				{.startFreq = 10000000000, .endFreq = 10500000000, .mode = TRX_MODE_USB},
 			},
 			.regionsCount = 1,
