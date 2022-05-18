@@ -216,7 +216,9 @@ static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction);
 static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
 
 static void SYSMENU_HANDL_SD_Format(int8_t direction);
+static void SYSMENU_HANDL_SD_ExportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction);
+static void SYSMENU_HANDL_SD_ImportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettings(int8_t direction);
 static void SYSMENU_HANDL_SD_USB(int8_t direction);
 
@@ -224,6 +226,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
 static void SYSMENU_HANDL_OTA_Update(int8_t direction);
 static void SYSMENU_HANDL_SYSINFO(int8_t direction);
+static void SYSMENU_HANDL_Back(int8_t direction);
 
 static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction);
@@ -659,9 +662,21 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 const static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 	{
 		{"USB SD Card Reader", SYSMENU_BOOLEAN, NULL, (uint32_t *)&SD_USBCardReader, SYSMENU_HANDL_SD_USB},
-		{"Export Settings to SD card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings},
-		{"Import Settings from SD card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings},
+		{"Export Settings to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog},
+		{"Import Settings from SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
 		{"Format SD card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Format},
+};
+
+const static struct sysmenu_item_handler sysmenu_sd_export_handlers[] =
+	{
+		{"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
+		{"Yes, Export Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings},
+};
+
+const static struct sysmenu_item_handler sysmenu_sd_import_handlers[] =
+	{
+		{"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
+		{"Yes, Import Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings},
 };
 
 const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
@@ -867,6 +882,8 @@ static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
 	{.menu_handler = sysmenu_adc_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_wifi_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_sd_handlers, .currentIndex = 0},
+	{.menu_handler = sysmenu_sd_export_handlers, .currentIndex = 0},
+	{.menu_handler = sysmenu_sd_import_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_calibration_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_swr_analyser_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_spectrum_handlers, .currentIndex = 0},
@@ -3277,6 +3294,24 @@ static void SYSMENU_HANDL_SDMENU(int8_t direction)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+static void SYSMENU_HANDL_SD_ExportSettingsDialog(int8_t direction)
+{
+#pragma unused(direction)
+	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_sd_export_handlers[0];
+	sysmenu_item_count = sizeof(sysmenu_sd_export_handlers) / sizeof(sysmenu_sd_export_handlers[0]);
+	sysmenu_onroot = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_SD_ImportSettingsDialog(int8_t direction)
+{
+#pragma unused(direction)
+	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_sd_import_handlers[0];
+	sysmenu_item_count = sizeof(sysmenu_sd_import_handlers) / sizeof(sysmenu_sd_import_handlers[0]);
+	sysmenu_onroot = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
 static void SYSMENU_HANDL_SD_USB(int8_t direction)
 {
 	if (direction > 0 && SD_isIdle() && !LCD_busy)
@@ -3410,6 +3445,8 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction)
 	LCD_busy = true;
 }
 
+// OTA update
+
 static void SYSMENU_HANDL_OTA_Update(int8_t direction)
 {
 	FILEMANAGER_OTAUpdate_reset();
@@ -3417,6 +3454,7 @@ static void SYSMENU_HANDL_OTA_Update(int8_t direction)
 }
 
 // SYSTEM INFO
+
 static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 {
 	sysmenu_infowindow_opened = true;
@@ -3452,6 +3490,14 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 	y += y_offs;
 
 	LCD_UpdateQuery.SystemMenu = true;
+}
+
+//Back to prev menu
+
+static void SYSMENU_HANDL_Back(int8_t direction)
+{
+	SYSMENU_eventCloseSystemMenu();
+	LCD_redraw(false);
 }
 
 // CALIBRATION MENU
