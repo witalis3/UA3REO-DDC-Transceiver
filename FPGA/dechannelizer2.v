@@ -61,7 +61,7 @@ begin
 		out_eop <= 0;
 		state <= 'd4;
 	end
-	else if(state == 4 && !in_valid)
+	else if(state >= 4 && !in_valid)
 	begin
 		state <= 'd0;
 	end

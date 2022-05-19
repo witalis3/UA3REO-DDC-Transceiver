@@ -37,11 +37,13 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module tx_summator (
+	clken,
 	clock,
 	dataa,
 	datab,
 	result);
 
+	input	  clken;
 	input	  clock;
 	input	[27:0]  dataa;
 	input	[27:0]  datab;
@@ -51,6 +53,7 @@ module tx_summator (
 	wire [27:0] result = sub_wire0[27:0];
 
 	lpm_add_sub	LPM_ADD_SUB_component (
+				.clken (clken),
 				.clock (clock),
 				.dataa (dataa),
 				.datab (datab),
@@ -60,7 +63,6 @@ module tx_summator (
 				.aclr (),
 				.add_sub (),
 				.cin (),
-				.clken (),
 				.cout (),
 				.overflow ()
 				// synopsys translate_on
@@ -96,7 +98,7 @@ endmodule
 // Retrieval info: PRIVATE: ValidCtB NUMERIC "0"
 // Retrieval info: PRIVATE: WhichConstant NUMERIC "0"
 // Retrieval info: PRIVATE: aclr NUMERIC "0"
-// Retrieval info: PRIVATE: clken NUMERIC "0"
+// Retrieval info: PRIVATE: clken NUMERIC "1"
 // Retrieval info: PRIVATE: nBit NUMERIC "28"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
 // Retrieval info: LIBRARY: lpm lpm.lpm_components.all
@@ -106,10 +108,12 @@ endmodule
 // Retrieval info: CONSTANT: LPM_REPRESENTATION STRING "SIGNED"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_ADD_SUB"
 // Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "28"
+// Retrieval info: USED_PORT: clken 0 0 0 0 INPUT NODEFVAL "clken"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: dataa 0 0 28 0 INPUT NODEFVAL "dataa[27..0]"
 // Retrieval info: USED_PORT: datab 0 0 28 0 INPUT NODEFVAL "datab[27..0]"
 // Retrieval info: USED_PORT: result 0 0 28 0 OUTPUT NODEFVAL "result[27..0]"
+// Retrieval info: CONNECT: @clken 0 0 0 0 clken 0 0 0 0
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @dataa 0 0 28 0 dataa 0 0 28 0
 // Retrieval info: CONNECT: @datab 0 0 28 0 datab 0 0 28 0

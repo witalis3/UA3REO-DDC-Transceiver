@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2019.11.10.03:26:30"
- outputDirectory="D:/Dropbox/Develop/Projects/UA3REO/FPGA/clock_buffer/">
+ date="2022.05.19.15:07:54"
+ outputDirectory="D:/Dropbox/Develop/Projects/WOLF/FPGA/clock_buffer/">
  <perimeter>
   <parameter
      name="AUTO_GENERATION_ID"
@@ -37,6 +37,7 @@
    <property name="associatedClock" value="" />
    <property name="associatedReset" value="" />
    <port name="inclk" direction="input" role="inclk" width="1" />
+   <port name="ena" direction="input" role="ena" width="1" />
   </interface>
   <interface name="altclkctrl_output" kind="conduit" start="0">
    <property name="associatedClock" value="" />
@@ -46,29 +47,29 @@
  </perimeter>
  <entity
    path=""
-   parameterizationKey="clock_buffer:1.0:AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1573341989,AUTO_UNIQUE_ID=(altclkctrl:18.1:CLOCK_TYPE=1,DEVICE_FAMILY=Cyclone IV E,ENA_REGISTER_MODE=1,GUI_USE_ENA=false,NUMBER_OF_CLOCKS=1,USE_GLITCH_FREE_SWITCH_OVER_IMPLEMENTATION=false)"
+   parameterizationKey="clock_buffer:1.0:AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1652958473,AUTO_UNIQUE_ID=(altclkctrl:18.1:CLOCK_TYPE=1,DEVICE_FAMILY=Cyclone IV E,ENA_REGISTER_MODE=1,GUI_USE_ENA=true,NUMBER_OF_CLOCKS=1,USE_GLITCH_FREE_SWITCH_OVER_IMPLEMENTATION=false)"
    instancePathKey="clock_buffer"
    kind="clock_buffer"
    version="1.0"
    name="clock_buffer">
-  <parameter name="AUTO_GENERATION_ID" value="1573341989" />
+  <parameter name="AUTO_GENERATION_ID" value="1652958473" />
   <parameter name="AUTO_DEVICE" value="EP4CE22E22C8" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV E" />
   <parameter name="AUTO_UNIQUE_ID" value="" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="8" />
   <generatedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/UA3REO/FPGA/clock_buffer/synthesis/clock_buffer.v"
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/clock_buffer/synthesis/clock_buffer.v"
        type="VERILOG" />
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/UA3REO/FPGA/clock_buffer/synthesis/submodules/clock_buffer_altclkctrl_0.v"
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/clock_buffer/synthesis/submodules/clock_buffer_altclkctrl_0.v"
        type="VERILOG"
        attributes="" />
   </childGeneratedFiles>
   <sourceFiles>
-   <file path="D:/Dropbox/Develop/Projects/UA3REO/FPGA/clock_buffer.qsys" />
+   <file path="D:/Dropbox/Develop/Projects/WOLF/FPGA/clock_buffer.qsys" />
   </sourceFiles>
   <childSourceFiles>
    <file
@@ -97,20 +98,20 @@
  </entity>
  <entity
    path="submodules/"
-   parameterizationKey="altclkctrl:18.1:CLOCK_TYPE=1,DEVICE_FAMILY=Cyclone IV E,ENA_REGISTER_MODE=1,GUI_USE_ENA=false,NUMBER_OF_CLOCKS=1,USE_GLITCH_FREE_SWITCH_OVER_IMPLEMENTATION=false"
+   parameterizationKey="altclkctrl:18.1:CLOCK_TYPE=1,DEVICE_FAMILY=Cyclone IV E,ENA_REGISTER_MODE=1,GUI_USE_ENA=true,NUMBER_OF_CLOCKS=1,USE_GLITCH_FREE_SWITCH_OVER_IMPLEMENTATION=false"
    instancePathKey="clock_buffer:.:altclkctrl_0"
    kind="altclkctrl"
    version="18.1"
    name="clock_buffer_altclkctrl_0">
   <parameter name="NUMBER_OF_CLOCKS" value="1" />
   <parameter name="USE_GLITCH_FREE_SWITCH_OVER_IMPLEMENTATION" value="false" />
-  <parameter name="GUI_USE_ENA" value="false" />
+  <parameter name="GUI_USE_ENA" value="true" />
   <parameter name="DEVICE_FAMILY" value="Cyclone IV E" />
   <parameter name="ENA_REGISTER_MODE" value="1" />
   <parameter name="CLOCK_TYPE" value="1" />
   <generatedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/UA3REO/FPGA/clock_buffer/synthesis/submodules/clock_buffer_altclkctrl_0.v"
+       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/clock_buffer/synthesis/submodules/clock_buffer_altclkctrl_0.v"
        type="VERILOG"
        attributes="" />
   </generatedFiles>
