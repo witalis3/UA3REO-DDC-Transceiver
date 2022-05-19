@@ -176,7 +176,7 @@ static void TRX_Start_RX()
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
 	NeedFFTReinit = true;
-	FPGA_NeedRestart_TX = true;
+	//FPGA_NeedRestart_TX = true;
 }
 
 static void TRX_Start_TX()
@@ -211,7 +211,7 @@ static void TRX_Start_TXRX()
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
 	NeedFFTReinit = true;
-	FPGA_NeedRestart_TX = true;
+	//FPGA_NeedRestart_TX = true;
 }
 
 void TRX_ptt_change(void)
