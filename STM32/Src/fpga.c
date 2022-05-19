@@ -187,7 +187,7 @@ static void FPGA_restart_TX(void) // restart FPGA modules
 		FPGA_writePacket(9); // RESET ON
 		FPGA_syncAndClockRiseFall();
 		FPGA_restart_state = true;
-		print("TX RESET ON ");
+		//print("TX RESET ON ");
 	}
 	else
 	{
@@ -196,7 +196,7 @@ static void FPGA_restart_TX(void) // restart FPGA modules
 		FPGA_syncAndClockRiseFall();
 		FPGA_NeedRestart_TX = false;
 		FPGA_restart_state = false;
-		println("OFF");
+		//println("OFF");
 	}
 }
 
