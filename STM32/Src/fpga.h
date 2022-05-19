@@ -46,7 +46,8 @@ extern volatile uint32_t FPGA_samples;                                          
 extern volatile bool FPGA_Buffer_underrun;                                        // flag of lack of data from FPGA
 extern volatile bool FPGA_NeedSendParams;                                         // flag of the need to send parameters to FPGA
 extern volatile bool FPGA_NeedGetParams;                                          // flag of the need to get parameters from FPGA
-extern volatile bool FPGA_NeedRestart;                                            // flag of necessity to restart FPGA modules
+extern volatile bool FPGA_NeedRestart_RX;                                            // flag of necessity to restart FPGA modules
+extern volatile bool FPGA_NeedRestart_TX;                                            // flag of necessity to restart FPGA modules
 extern volatile float32_t FPGA_Audio_Buffer_RX1_Q_A[FPGA_RX_IQ_BUFFER_HALF_SIZE]; // FPGA buffers
 extern volatile float32_t FPGA_Audio_Buffer_RX1_I_A[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 extern volatile float32_t FPGA_Audio_Buffer_RX1_Q_B[FPGA_RX_IQ_BUFFER_HALF_SIZE];
@@ -74,7 +75,6 @@ extern float32_t *FFTInput_Q_current;
 extern void FPGA_Init(bool bus_test, bool firmware_test);                            // initialize exchange with FPGA
 extern void FPGA_fpgadata_iqclock(void);                                             // exchange IQ data with FPGA
 extern void FPGA_fpgadata_stuffclock(void);                                          // exchange parameters with FPGA
-extern void FPGA_restart(void);                                                      // restart FPGA modules
 extern bool FPGA_is_present(void);                                                   // check that the FPGA has firmware
 extern void FPGA_spi_flash_erase(void);                                              // clear flash memory
 extern void FPGA_spi_flash_write(uint32_t flash_pos, uint8_t *buff, uint32_t size);  // write new contents of FPGA SPI memory

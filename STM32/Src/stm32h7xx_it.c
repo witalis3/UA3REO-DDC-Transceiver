@@ -520,7 +520,7 @@ void TIM5_IRQHandler(void)
   if (!Processor_NeedTXBuffer && !Processor_NeedRXBuffer)
     return;
 
-  if (TRX_on_TX())
+  if (TRX_on_TX)
   {
 		processTxAudio();
   }
@@ -593,7 +593,7 @@ void TIM6_DAC_IRQHandler(void)
   RF_UNIT_ProcessSensors();
 
   //TRX protector
-  if (TRX_on_TX())
+  if (TRX_on_TX)
   {
 		TRX_TX_EndTime = HAL_GetTick();
 		
@@ -691,11 +691,11 @@ void TIM6_DAC_IRQHandler(void)
       fpga_stuck_errors++;
     else
       fpga_stuck_errors = 0;
-    if (fpga_stuck_errors > 5 && !TRX_on_TX() && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM && !SD_PlayInProcess)
+    if (fpga_stuck_errors > 5 && !TRX_on_TX && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM && !SD_PlayInProcess)
     {
-      println("[ERR] IQ stuck error, restart");
+      println("[ERR] IQ stuck error, restart disabled");
       fpga_stuck_errors = 0;
-      FPGA_NeedRestart = true;
+      //FPGA_NeedRestart_RX = true;
     }
     old_FPGA_Audio_Buffer_RX1_I = FPGA_Audio_Buffer_RX1_I_current[0];
     old_FPGA_Audio_Buffer_RX1_Q = FPGA_Audio_Buffer_RX1_Q_current[0];
@@ -762,10 +762,10 @@ void TIM6_DAC_IRQHandler(void)
 		TRX_Inactive_Time++;
 
     //Detect FPGA IQ phase error
-    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX() && !TRX_phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM)
+    if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX && !TRX_phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM)
     {
-      println("[ERR] IQ phase error, restart | ", TRX_IQ_phase_error);
-      FPGA_NeedRestart = true;
+      println("[ERR] IQ phase error, restart disabled | ", TRX_IQ_phase_error);
+      //FPGA_NeedRestart_RX = true;
       TRX_phase_restarted = true;
     }
 
@@ -811,7 +811,7 @@ void TIM6_DAC_IRQHandler(void)
       uint32_t dbg_AUDIOPROC_samples = (uint32_t)((float32_t)AUDIOPROC_samples * dbg_coeff);
       float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I_current[0];
       float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_RX1_Q_current[0];
-      if (TRX_on_TX())
+      if (TRX_on_TX)
       {
         dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_SendBuffer_I[0];
         dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_SendBuffer_Q[0];
@@ -1051,7 +1051,7 @@ void TIM17_IRQHandler(void)
   /* USER CODE BEGIN TIM17_IRQn 1 */
 
   //audio buffer RX preprocessor
-  if (!TRX_on_TX())
+  if (!TRX_on_TX)
     preProcessRxAudio();
 
   if (FFT_new_buffer_ready)

@@ -23,7 +23,6 @@ volatile bool CW_key_serial = false;
 volatile bool CW_old_key_serial = false;
 volatile bool CW_key_dot_hard = false;
 volatile bool CW_key_dash_hard = false;
-volatile uint_fast16_t CW_Key_Timeout_est = 0;
 volatile uint_fast8_t KEYER_symbol_status = 0; // status (signal or period) of the automatic key symbol
 
 static uint32_t KEYER_symbol_start_time = 0; // start time of the automatic key character

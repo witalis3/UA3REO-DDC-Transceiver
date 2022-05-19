@@ -451,7 +451,7 @@ void ua3reo_dev_cat_parseCommand(void)
 				strcat(answer, "0");	  // 0: XIT OFF, 1: XIT ON
 				strcat(answer, "0");	  // 0: Always 0 for the TS-480 (Memory channel bank number).
 				strcat(answer, "00");	  // Memory channel number (00 ~ 99).
-				if (TRX_on_TX())		  // 0: RX, 1: TX
+				if (TRX_on_TX)		  // 0: RX, 1: TX
 					strcat(answer, "1");
 				else
 					strcat(answer, "0");

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "settings.h"
 
+#define TRX_on_TX (TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO->Mode == TRX_MODE_LOOPBACK || (TRX.CW_PTT_Type == KEY_PTT && CW_Key_Timeout_est > 0))
 #define TRX_SLOW_SETFREQ_MIN_STEPSIZE 100 // step in hz for slowly touchpad tuning
 #define TRX_GetSamplerateByENUM(rate) (((rate) == TRX_SAMPLERATE_K48) ? 48000 : ((rate) == TRX_SAMPLERATE_K96) ? 96000  \
                                                                           : ((rate) == TRX_SAMPLERATE_K192)  ? 192000 \
@@ -19,7 +20,6 @@ extern void TRX_setFrequency(uint64_t _freq, VFO *vfo);
 extern void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo); // for WSPR and other
 extern void TRX_setMode(uint_fast8_t _mode, VFO *vfo);
 extern void TRX_ptt_change(void);
-extern bool TRX_on_TX(void);
 extern void TRX_DoAutoGain(void);
 extern void TRX_Restart_Mode(void);
 extern void TRX_DBMCalculate(void);
@@ -90,5 +90,6 @@ extern uint32_t TRX_DXCluster_UpdateTime;
 volatile extern float32_t TRX_PWR_Voltage;
 volatile extern float32_t TRX_RF_Current;
 extern uint32_t TRX_Inactive_Time;
+volatile extern uint_fast16_t CW_Key_Timeout_est;
 
 #endif

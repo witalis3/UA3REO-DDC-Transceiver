@@ -7,6 +7,7 @@
 #include "lcd.h"
 #include "cw_decoder.h"
 #include "wifi.h"
+#include "trx_manager.h"
 
 // Public variables
 bool FFT_need_fft = true;						   // need to prepare data for display on the screen
@@ -260,7 +261,7 @@ void FFT_Init(void)
 	else
 		zoomed_width = FFT_SIZE;
 
-	if (TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+	if (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 		FFT_current_spectrum_width_hz = TRX_SAMPLERATE / fft_zoom;
 	else
 		FFT_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
@@ -310,7 +311,7 @@ void FFT_bufferPrepare(void)
 	float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)FFTInput_Q_B : (float32_t *)FFTInput_Q_A;
 
 	// Process DC corrector filter
-	if (!TRX_on_TX())
+	if (!TRX_on_TX)
 	{
 		// dc_filter(FFTInput_I_current, FFT_HALF_SIZE, DC_FILTER_FFT_I);
 		// dc_filter(FFTInput_Q_current, FFT_HALF_SIZE, DC_FILTER_FFT_Q);
@@ -595,7 +596,7 @@ bool FFT_printFFT(void)
 	uint_fast8_t decoder_offset = 0;
 	if (NeedProcessDecoder)
 		decoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
-	hz_in_pixel = TRX_on_TX() ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
+	hz_in_pixel = TRX_on_TX ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 
 	if (CurrentVFO->Freq != currentFFTFreq || NeedWTFRedraw)
 	{
@@ -669,7 +670,7 @@ bool FFT_printFFT(void)
 	// FFT Targets
 	float32_t maxValueFFT = maxValueFFT_rx;
 	float32_t minValueFFT = maxValueFFT / (float32_t)fftHeight;
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 		maxValueFFT = maxValueFFT_tx;
 	float32_t maxValue = (medianValue * FFT_MAX);
 	float32_t targetValue = (medianValue * FFT_TARGET);
@@ -695,7 +696,7 @@ bool FFT_printFFT(void)
 	}
 
 	// Auto-calibrate FFT levels
-	if (TRX_on_TX() || (TRX.FFT_Automatic && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE)) // Fit FFT to MAX
+	if (TRX_on_TX || (TRX.FFT_Automatic && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE)) // Fit FFT to MAX
 	{
 		if (TRX.FFT_Scale_Type == 1)
 		{
@@ -784,11 +785,11 @@ bool FFT_printFFT(void)
 		maxValueFFT = 0.0000001f;
 
 	// tx noise scale limit
-	if (TRX_on_TX() && maxValueFFT < FFT_TX_MIN_LEVEL)
+	if (TRX_on_TX && maxValueFFT < FFT_TX_MIN_LEVEL)
 		maxValueFFT = FFT_TX_MIN_LEVEL;
 
     // save values for TX/RX
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 		maxValueFFT_tx = maxValueFFT;
 	else
 		maxValueFFT_rx = maxValueFFT;
@@ -852,7 +853,7 @@ bool FFT_printFFT(void)
 
 	// calculate bw bar size
 	uint16_t curwidth = CurrentVFO->LPF_RX_Filter_Width;
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 		curwidth = CurrentVFO->LPF_TX_Filter_Width;
 	int32_t bw_rx1_line_width = 0;
 	int32_t bw_rx2_line_width = 0;
@@ -1242,13 +1243,13 @@ bool FFT_printFFT(void)
 	}
 
 	// Show manual Notch filter line
-	if (CurrentVFO->ManualNotchFilter && !TRX_on_TX() && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
+	if (CurrentVFO->ManualNotchFilter && !TRX_on_TX && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
 	{
 		uint16_t color = palette_fft[fftHeight * 1 / 4];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)
 			print_output_buffer[fft_y][rx1_notch_line_pos] = color;
 	}
-	if (SecondaryVFO->ManualNotchFilter && !TRX_on_TX() && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
+	if (SecondaryVFO->ManualNotchFilter && !TRX_on_TX && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
 	{
 		uint16_t color = palette_fft[fftHeight * 1 / 4];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)

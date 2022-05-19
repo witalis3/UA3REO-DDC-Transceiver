@@ -77,6 +77,7 @@ uint32_t TRX_Inactive_Time = 0;
 uint32_t TRX_DXCluster_UpdateTime = 0;
 volatile float32_t TRX_PWR_Voltage = 12.0f;
 volatile float32_t TRX_RF_Current = 0.0f;
+volatile uint_fast16_t CW_Key_Timeout_est = 0;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static bool TRX_SPLIT_Applied = false;
@@ -84,13 +85,6 @@ static bool TRX_ANT_swap_applyed = false;
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);
-
-bool TRX_on_TX(void)
-{
-	if (TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO->Mode == TRX_MODE_LOOPBACK || (TRX.CW_PTT_Type == KEY_PTT && CW_Key_Timeout_est > 0))
-		return true;
-	return false;
-}
 
 void TRX_Init()
 {
@@ -111,7 +105,7 @@ void TRX_Restart_Mode()
 	uint_fast8_t mode = CurrentVFO->Mode;
 
 	// Switch mode
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 	{
 		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW)
 			TRX_Start_TXRX();
@@ -182,6 +176,7 @@ static void TRX_Start_RX()
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
 	NeedFFTReinit = true;
+	FPGA_NeedRestart_TX = true;
 }
 
 static void TRX_Start_TX()
@@ -216,6 +211,7 @@ static void TRX_Start_TXRX()
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
 	NeedFFTReinit = true;
+	FPGA_NeedRestart_TX = true;
 }
 
 void TRX_ptt_change(void)
@@ -541,7 +537,7 @@ void TRX_DoAutoGain(void)
 	}
 
 	// Process AutoGain feature
-	if (TRX.AutoGain && !TRX_on_TX())
+	if (TRX.AutoGain && !TRX_on_TX)
 	{
 		if (!TRX.ATT)
 		{

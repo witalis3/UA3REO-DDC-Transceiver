@@ -416,7 +416,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
 
 	bool turn_on_tx_lpf = true;
-	if (((HAL_GetTick() - TRX_TX_EndTime) > TX_LPF_TIMEOUT || TRX_TX_EndTime == 0) && !TRX_on_TX())
+	if (((HAL_GetTick() - TRX_TX_EndTime) > TX_LPF_TIMEOUT || TRX_TX_EndTime == 0) && !TRX_on_TX)
 		turn_on_tx_lpf = false;
 
 	uint8_t band_out = 0;
@@ -483,7 +483,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 0 && TRX.RF_Filters && (CurrentVFO->Freq <= CALIBRATE.RFU_LPF_END) && !dualrx_lpf_disabled)
 					SET_DATA_PIN;
 				// U7-QG LNA_ON
-				if (registerNumber == 1 && !TRX_on_TX() && TRX.LNA)
+				if (registerNumber == 1 && !TRX_on_TX && TRX.LNA)
 					SET_DATA_PIN;
 				// U7-QF ATT_ON_0.5
 				if (registerNumber == 2 && TRX.ATT && att_val_05)
@@ -532,7 +532,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 16 && bitRead(band_out, 0))
 					SET_DATA_PIN;
 				// U3-QG PTT_OUT
-				if (registerNumber == 17 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 17 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					SET_DATA_PIN;
 				// U3-QF BAND_OUT_2
 				if (registerNumber == 18 && bitRead(band_out, 2))
@@ -588,9 +588,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					}
 				}
 				// U3-QA ANT1_TX_OUT
-				if (registerNumber == 23 && !TRX.ANT_selected && TRX_on_TX()) // ANT1
+				if (registerNumber == 23 && !TRX.ANT_selected && TRX_on_TX) // ANT1
 					SET_DATA_PIN;
-				if (registerNumber == 23 && TRX.ANT_selected && !TRX_on_TX()) // ANT2
+				if (registerNumber == 23 && TRX.ANT_selected && !TRX_on_TX) // ANT2
 					SET_DATA_PIN;
 			}
 			MINI_DELAY
@@ -641,7 +641,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 6 && !(TRX.ATT && att_val_8))
 					SET_DATA_PIN;
 				// U1-0 LNA_ON
-				if (registerNumber == 7 && !(!TRX_on_TX() && TRX.LNA))
+				if (registerNumber == 7 && !(!TRX_on_TX && TRX.LNA))
 					SET_DATA_PIN;
 
 				// U3-7 TUN_C_5
@@ -651,13 +651,13 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 9 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3))
 					SET_DATA_PIN;
 				// U3-5 BPF_1
-				if (registerNumber == 10 && (bpf == 0 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 0)))
+				if (registerNumber == 10 && (bpf == 0 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 0)))
 					SET_DATA_PIN;
 				// U3-4 BPF_2
-				if (registerNumber == 11 && (bpf == 1 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 1)))
+				if (registerNumber == 11 && (bpf == 1 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 1)))
 					SET_DATA_PIN;
 				// U3-3 TX_PTT_OUT
-				if (registerNumber == 12 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 12 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					SET_DATA_PIN;
 				// U3-2 TUN_C_1
 				if (registerNumber == 13 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0))
@@ -678,7 +678,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				// U2-5 UNUSED
 				// if (registerNumber == 18 &&
 				// U2-4 VHF_AMP_BIAS_ON
-				if (registerNumber == 19 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
+				if (registerNumber == 19 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
 					SET_DATA_PIN;
 				// U2-3 TUN_I_1
 				if (registerNumber == 20 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0))
@@ -694,28 +694,28 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 
 				// U7-7 BPF_6
-				if (registerNumber == 24 && (bpf == 5 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 5)))
+				if (registerNumber == 24 && (bpf == 5 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 5)))
 					SET_DATA_PIN;
 				// U7-6 BPF_5
-				if (registerNumber == 25 && (bpf == 4 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 4)))
+				if (registerNumber == 25 && (bpf == 4 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 4)))
 					SET_DATA_PIN;
 				// U7-5 BPF_4
-				if (registerNumber == 26 && (bpf == 3 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 3)))
+				if (registerNumber == 26 && (bpf == 3 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 3)))
 					SET_DATA_PIN;
 				// U7-4 BPF_3
-				if (registerNumber == 27 && (bpf == 2 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 2)))
+				if (registerNumber == 27 && (bpf == 2 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 2)))
 					SET_DATA_PIN;
 				// U7-3 BPF_7
-				if (registerNumber == 28 && (bpf == 6 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 6)))
+				if (registerNumber == 28 && (bpf == 6 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 6)))
 					SET_DATA_PIN;
 				// U7-2 BPF_8
-				if (registerNumber == 29 && (bpf == 7 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 7)))
+				if (registerNumber == 29 && (bpf == 7 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 7)))
 					SET_DATA_PIN;
 				// U7-1 BPF_9
-				if (registerNumber == 30 && (bpf == 8 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 8)))
+				if (registerNumber == 30 && (bpf == 8 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 8)))
 					SET_DATA_PIN;
 				// U7-0 HF_AMP_BIAS_ON
-				if (registerNumber == 31 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
+				if (registerNumber == 31 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
 					SET_DATA_PIN;
 
 				// U11-7 ANT1-2_OUT
@@ -766,7 +766,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 34 && bitRead(band_out, 3))
 					SET_DATA_PIN;
 				// U11-4 TX_PTT_OUT
-				if (registerNumber == 35 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 35 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					SET_DATA_PIN;
 				// U11-3 BAND_OUT_1
 				if (registerNumber == 36 && bitRead(band_out, 1))
@@ -896,51 +896,51 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					SET_DATA_PIN;
 
 				// U3-7 BPF_7
-				if (registerNumber == 16 && (bpf == 6 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 6)))
+				if (registerNumber == 16 && (bpf == 6 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 6)))
 					SET_DATA_PIN;
 				// U3-6 BPF_6
-				if (registerNumber == 17 && (bpf == 5 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 5)))
+				if (registerNumber == 17 && (bpf == 5 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 5)))
 					SET_DATA_PIN;
 				// U3-5 BPF_5
-				if (registerNumber == 18 && (bpf == 4 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 4)))
+				if (registerNumber == 18 && (bpf == 4 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 4)))
 					SET_DATA_PIN;
 				// U3-4 BPF_4
-				if (registerNumber == 19 && (bpf == 3 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 3)))
+				if (registerNumber == 19 && (bpf == 3 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 3)))
 					SET_DATA_PIN;
 				// U3-3 BPF_3
-				if (registerNumber == 20 && (bpf == 2 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 2)))
+				if (registerNumber == 20 && (bpf == 2 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 2)))
 					SET_DATA_PIN;
 				// U3-2 BPF_2
-				if (registerNumber == 21 && (bpf == 1 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 1)))
+				if (registerNumber == 21 && (bpf == 1 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 1)))
 					SET_DATA_PIN;
 				// U3-1 BPF_1
-				if (registerNumber == 22 && (bpf == 0 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 0)))
+				if (registerNumber == 22 && (bpf == 0 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 0)))
 					SET_DATA_PIN;
 				// U3-0 TUN_C_7
 				if (registerNumber == 23 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 6))
 					SET_DATA_PIN;
 
 				// U2-7 TX_PTT_OUT
-				if (registerNumber == 24 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 24 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					SET_DATA_PIN;
 				// U2-6 EXT_2
 				// if (registerNumber == 25 &&
 				// U2-5 EXT_1
 				// if (registerNumber == 26 &&
 				// U2-4 HF_AMP_BIAS_ON
-				if (registerNumber == 27 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
+				if (registerNumber == 27 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
 					SET_DATA_PIN;
 				// U2-3 VHF_AMP_BIAS_ON
-				if (registerNumber == 28 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
+				if (registerNumber == 28 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
 					SET_DATA_PIN;
 				// U2-2 HF-VHF-SELECT
 				if (registerNumber == 29 && CurrentVFO->Freq >= 70000000)
 					SET_DATA_PIN;
 				// U2-1 BPF_9
-				if (registerNumber == 30 && (bpf == 8 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 8)))
+				if (registerNumber == 30 && (bpf == 8 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 8)))
 					SET_DATA_PIN;
 				// U2-0 BPF_8
-				if (registerNumber == 31 && (bpf == 7 || (!TRX_on_TX() && TRX.Dual_RX && bpf_second == 7)))
+				if (registerNumber == 31 && (bpf == 7 || (!TRX_on_TX && TRX.Dual_RX && bpf_second == 7)))
 					SET_DATA_PIN;
 
 				// U7-7 ATT_ON_0.5
@@ -965,7 +965,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				// if (registerNumber == 39 &&
 
 				// U11-7 LNA_ON
-				if (registerNumber == 40 && !(!TRX_on_TX() && TRX.LNA))
+				if (registerNumber == 40 && !(!TRX_on_TX && TRX.LNA))
 					SET_DATA_PIN;
 				// U11-6 BAND_OUT_0
 				if (registerNumber == 41 && bitRead(band_out, 0))
@@ -1022,10 +1022,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 1 && CurrentVFO->Freq >= 70000000)
 					SET_DATA_PIN;
 				// U2-5 HF_AMP_BIAS_ON
-				if (registerNumber == 2 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
+				if (registerNumber == 2 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
 					SET_DATA_PIN;
 				// U2-4 VHF_AMP_BIAS_ON
-				if (registerNumber == 3 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
+				if (registerNumber == 3 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
 					SET_DATA_PIN;
 				// U2-3 TUN_C_1
 				if (registerNumber == 4 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0))
@@ -1122,7 +1122,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 22 && bitRead(band_out, 0))
 					SET_DATA_PIN;
 				// U11-0 TX_PTT_OUT
-				if (registerNumber == 23 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 23 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					SET_DATA_PIN;
 
 				// U1-7 LPF_ON
@@ -1147,32 +1147,32 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 30 && !(TRX.ATT && att_val_8))
 					SET_DATA_PIN;
 				// U1-0 LNA_ON
-				if (registerNumber == 31 && !(!TRX_on_TX() && TRX.LNA))
+				if (registerNumber == 31 && !(!TRX_on_TX && TRX.LNA))
 					SET_DATA_PIN;
 
 				// U7-7 LPF_7
-				if (registerNumber == 32 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Freq > 31000000 && CurrentVFO->Freq <= 60000000)
+				if (registerNumber == 32 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Freq > 31000000 && CurrentVFO->Freq <= 60000000)
 					SET_DATA_PIN;
 				// U7-6 LPF_6
-				if (registerNumber == 33 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Freq > 22000000 && CurrentVFO->Freq <= 31000000)
+				if (registerNumber == 33 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Freq > 22000000 && CurrentVFO->Freq <= 31000000)
 					SET_DATA_PIN;
 				// U7-5 LPF_5
-				if (registerNumber == 34 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Freq > 15000000 && CurrentVFO->Freq <= 22000000)
+				if (registerNumber == 34 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Freq > 15000000 && CurrentVFO->Freq <= 22000000)
 					SET_DATA_PIN;
 				// U7-4 LPF_4
-				if (registerNumber == 35 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Freq > 7500000 && CurrentVFO->Freq <= 15000000)
+				if (registerNumber == 35 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Freq > 7500000 && CurrentVFO->Freq <= 15000000)
 					SET_DATA_PIN;
 				// U7-3 TUN_I_5
 				if (registerNumber == 36 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4))
 					SET_DATA_PIN;
 				// U7-2 LPF_1
-				if (registerNumber == 37 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Freq <= 2500000)
+				if (registerNumber == 37 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Freq <= 2500000)
 					SET_DATA_PIN;
 				// U7-1 LPF_2
-				if (registerNumber == 38 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Freq > 2500000 && CurrentVFO->Freq <= 4500000)
+				if (registerNumber == 38 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Freq > 2500000 && CurrentVFO->Freq <= 4500000)
 					SET_DATA_PIN;
 				// U7-0 LPF_3
-				if (registerNumber == 39 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Freq > 4500000 && CurrentVFO->Freq <= 7500000)
+				if (registerNumber == 39 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Freq > 4500000 && CurrentVFO->Freq <= 7500000)
 					SET_DATA_PIN;
 
 				// U21-7 TUN_T
@@ -1288,16 +1288,16 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				// U1-4 -
 				// if (registerNumber == 3
 				// U1-3 TX_PTT_OUT
-				if (registerNumber == 4 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 4 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					SET_DATA_PIN;
 				// U1-2 HF_AMP_BIAS_ON
-				if (registerNumber == 5 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
+				if (registerNumber == 5 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
 					SET_DATA_PIN;
 				// U1-1 HF-VHF-SELECT
 				if (registerNumber == 6 && CurrentVFO->Freq >= 70000000)
 					SET_DATA_PIN;
 				// U1-0 VHF_AMP_BIAS_ON
-				if (registerNumber == 7 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
+				if (registerNumber == 7 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq >= 70000000)
 					SET_DATA_PIN;
 
 				// U2-7 TUN_I_7
@@ -1374,28 +1374,28 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				// if (registerNumber == 31
 
 				// U24-7 LPF_5
-				if (registerNumber == 32 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 5)
+				if (registerNumber == 32 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 5)
 					SET_DATA_PIN;
 				// U24-6 LPF_6
-				if (registerNumber == 33 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 6)
+				if (registerNumber == 33 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 6)
 					SET_DATA_PIN;
 				// U24-5 LPF_7
-				if (registerNumber == 34 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 7)
+				if (registerNumber == 34 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 7)
 					SET_DATA_PIN;
 				// U24-4 HF_AMP_BIAS_ON
-				if (registerNumber == 35 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
+				if (registerNumber == 35 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq < 70000000)
 					SET_DATA_PIN;
 				// U24-3 LPF_1
-				if (registerNumber == 36 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 1)
+				if (registerNumber == 36 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 1)
 					SET_DATA_PIN;
 				// U24-2 LPF_2
-				if (registerNumber == 37 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 2)
+				if (registerNumber == 37 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 2)
 					SET_DATA_PIN;
 				// U24-1 LPF_3
-				if (registerNumber == 38 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 3)
+				if (registerNumber == 38 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 3)
 					SET_DATA_PIN;
 				// U24-0 LPF_4
-				if (registerNumber == 39 && (turn_on_tx_lpf || TRX_on_TX()) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 4)
+				if (registerNumber == 39 && (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 4)
 					SET_DATA_PIN;
 
 				// U31-H U3 BPF_1_A1
@@ -1432,10 +1432,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				// U32-E -
 				// if (registerNumber == 51)
 				// U32-D Net_RX/TX
-				if (registerNumber == 52 && TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+				if (registerNumber == 52 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
 					SET_DATA_PIN;
 				// U32-C - LNA_ON
-				if (registerNumber == 53 && (!TRX_on_TX() && TRX.LNA))
+				if (registerNumber == 53 && (!TRX_on_TX && TRX.LNA))
 					SET_DATA_PIN;
 				// U32-B -
 				// if (registerNumber == 54)

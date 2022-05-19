@@ -7,7 +7,8 @@
 volatile uint32_t FPGA_samples = 0;			 // counter of the number of samples when exchanging with FPGA
 volatile bool FPGA_NeedSendParams = false;	 // flag of the need to send parameters to FPGA
 volatile bool FPGA_NeedGetParams = false;	 // flag of the need to get parameters from FPGA
-volatile bool FPGA_NeedRestart = true;		 // flag of necessity to restart FPGA modules
+volatile bool FPGA_NeedRestart_RX = false;		 // flag of necessity to restart FPGA modules
+volatile bool FPGA_NeedRestart_TX = false;		 // flag of necessity to restart FPGA modules
 volatile bool FPGA_Buffer_underrun = false;	 // flag of lack of data from FPGA
 uint_fast16_t FPGA_Audio_RXBuffer_Index = 0; // current index in FPGA buffers
 uint_fast16_t FPGA_Audio_TXBuffer_Index = 0; // current index in FPGA buffers
@@ -45,6 +46,8 @@ static void FPGA_fpgadata_getparam(void);			// get parameters
 static void FPGA_fpgadata_sendparam(void);			// send parameters
 static void FPGA_setBusInput(void);					// switch the bus to input
 static void FPGA_setBusOutput(void);				// switch bus to pin
+static void FPGA_restart_RX(void);             // restart FPGA modules
+static void FPGA_restart_TX(void);             // restart FPGA modules
 
 // initialize exchange with FPGA
 void FPGA_Init(bool bus_test, bool firmware_test)
@@ -66,14 +69,12 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 	HAL_GPIO_Init(FPGA_CLK_GPIO_Port, &FPGA_GPIO_InitStruct);
 
 	// pre-reset FPGA to sync IQ data
-	//HAL_Delay(100);
-	//FPGA_setBusOutput();
-	//FPGA_writePacket(5); // RX RESET ON
-	//FPGA_syncAndClockRiseFall();
-	
-	//HAL_Delay(100);
 	FPGA_setBusOutput();
 	FPGA_writePacket(6); // RX RESET OFF
+	FPGA_syncAndClockRiseFall();
+	
+	FPGA_setBusOutput();
+	FPGA_writePacket(10); // TX RESET OFF
 	FPGA_syncAndClockRiseFall();
 	
 	// BUS TEST
@@ -151,24 +152,15 @@ void FPGA_Init(bool bus_test, bool firmware_test)
 			LCD_showError("Check compleate!", false);
 		}
 	}
-
-	FPGA_setBusOutput();
-	FPGA_writePacket(9); // TX RESET ON
-	FPGA_syncAndClockRiseFall();
-	
-	HAL_Delay(100);
-	FPGA_setBusOutput();
-	FPGA_writePacket(10); // TX RESET OFF
-	FPGA_syncAndClockRiseFall();
 	
 	// start FPGA bus
 	FPGA_bus_stop = false;
 }
 
 // restart FPGA modules
-void FPGA_restart(void) // restart FPGA modules
+static void FPGA_restart_RX(void) // restart FPGA modules
 {
-	/*static bool FPGA_restart_state = false;
+	static bool FPGA_restart_state = false;
 	if (!FPGA_restart_state)
 	{
 		FPGA_setBusOutput();
@@ -181,46 +173,59 @@ void FPGA_restart(void) // restart FPGA modules
 		FPGA_setBusOutput();
 		FPGA_writePacket(6); // RESET OFF
 		FPGA_syncAndClockRiseFall();
-		FPGA_NeedRestart = false;
+		FPGA_NeedRestart_RX = false;
 		FPGA_restart_state = false;
-	}*/
-	FPGA_NeedRestart = false;
+	}
+}
+
+static void FPGA_restart_TX(void) // restart FPGA modules
+{
+	static bool FPGA_restart_state = false;
+	if (!FPGA_restart_state)
+	{
+		FPGA_setBusOutput();
+		FPGA_writePacket(9); // RESET ON
+		FPGA_syncAndClockRiseFall();
+		FPGA_restart_state = true;
+		print("TX RESET ON ");
+	}
+	else
+	{
+		FPGA_setBusOutput();
+		FPGA_writePacket(10); // RESET OFF
+		FPGA_syncAndClockRiseFall();
+		FPGA_NeedRestart_TX = false;
+		FPGA_restart_state = false;
+		println("OFF");
+	}
 }
 
 // exchange parameters with FPGA
 void FPGA_fpgadata_stuffclock(void)
 {
-	if (!FPGA_NeedSendParams && !FPGA_NeedGetParams && !FPGA_NeedRestart)
+	if (!FPGA_NeedSendParams && !FPGA_NeedGetParams && !FPGA_NeedRestart_RX && !FPGA_NeedRestart_TX)
 		return;
 	if (FPGA_bus_stop)
 		return;
-	uint8_t FPGA_fpgadata_out_tmp8 = 0;
+	
 	// data exchange
-
-	// STAGE 1
-	// out
-	if (FPGA_NeedSendParams) // send params
-		FPGA_fpgadata_out_tmp8 = 1;
-	else // get params
-		FPGA_fpgadata_out_tmp8 = 2;
-
-	FPGA_setBusOutput();
-	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
-	FPGA_syncAndClockRiseFall();
-
 	if (FPGA_NeedSendParams)
 	{
 		FPGA_fpgadata_sendparam();
 		FPGA_NeedSendParams = false;
 	}
-	else if (FPGA_NeedRestart)
-	{
-		FPGA_restart();
-	}
 	else if (FPGA_NeedGetParams)
 	{
 		FPGA_fpgadata_getparam();
 		FPGA_NeedGetParams = false;
+	}
+	else if (FPGA_NeedRestart_RX)
+	{
+		FPGA_restart_RX();
+	}
+	else if (FPGA_NeedRestart_TX)
+	{
+		FPGA_restart_TX();
 	}
 }
 
@@ -237,7 +242,7 @@ void FPGA_fpgadata_iqclock(void)
 	// STAGE 1
 	// out
 	FPGA_setBusOutput();
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 	{
 		FPGA_writePacket(3); // TX SEND IQ
 		FPGA_syncAndClockRiseFall();
@@ -287,18 +292,23 @@ static inline void FPGA_fpgadata_sendparam(void)
 {
 	uint8_t FPGA_fpgadata_out_tmp8 = 0;
 
+	//STAGE 1
+	FPGA_setBusOutput();
+	FPGA_writePacket(1);
+	FPGA_syncAndClockRiseFall();
+	
 	// STAGE 2
 	// out PTT+PREAMP
-	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK));				  // RX1
-	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX && !TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX2
-	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK));								  // TX
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK));				  // RX1
+	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX2
+	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK));								  // TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 		bitWrite(FPGA_fpgadata_out_tmp8, 4, true); // shutdown ADC on TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX.ADC_RAND);
 	bitWrite(FPGA_fpgadata_out_tmp8, 6, TRX.ADC_PGA);
-	if (!TRX_on_TX())
+	if (!TRX_on_TX)
 		bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX.ADC_Driver);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
@@ -466,7 +476,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 	// STAGE 22
 	// OUT PARAMS
 	FPGA_fpgadata_out_tmp8 = 0;
-	if (TRX_on_TX() && CurrentVFO->Mode != TRX_MODE_LOOPBACK) // TX
+	if (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK) // TX
 	{
 		bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DRV_A0);
 		bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX_DAC_DRV_A1);
@@ -486,9 +496,14 @@ static inline void FPGA_fpgadata_getparam(void)
 {
 	register uint8_t FPGA_fpgadata_in_tmp8 = 0;
 	register int32_t FPGA_fpgadata_in_tmp32 = 0;
-	FPGA_setBusInput();
+	
+	//STAGE 1
+	FPGA_setBusOutput();
+	FPGA_writePacket(2);
+	FPGA_syncAndClockRiseFall();
 
 	// STAGE 2
+	FPGA_setBusInput();
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp8 = FPGA_readPacket;
 	if (ADCDAC_OVR_StatusLatency >= 50)

@@ -355,7 +355,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	if (fabsf(direction) <= ENCODER_MIN_RATE_ACCELERATION)
 		direction = (direction < 0.0f) ? -1.0f : 1.0f;
 
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 	{
 		if (direction > 0 || TRX.RF_Power > 0)
 			TRX.RF_Power += direction;
@@ -984,7 +984,7 @@ void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(uint32_t parameter)
 void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 {
 	// TX block
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 		return;
 
 	TRX_TemporaryMute();
@@ -1287,7 +1287,7 @@ static void FRONTPANEL_BUTTONHANDLER_MODE_N(uint32_t parameter)
 static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 {
 	// TX block
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 		return;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
@@ -1339,7 +1339,7 @@ static void FRONTPANEL_BUTTONHANDLER_BAND_P(uint32_t parameter)
 static void FRONTPANEL_BUTTONHANDLER_BAND_N(uint32_t parameter)
 {
 	// TX block
-	if (TRX_on_TX())
+	if (TRX_on_TX)
 		return;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
