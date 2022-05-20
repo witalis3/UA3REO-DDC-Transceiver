@@ -38,21 +38,28 @@ void CW_key_change(void)
 	if (TRX_Tune)
 		return;
 
-	if (CurrentVFO->Mode != TRX_MODE_CW)
-	{
-		CW_key_dot_hard = false;
-		CW_key_dash_hard = false;
-		KEYER_symbol_status = 0;
-		return;
-	}
 
 	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
 	if (TRX.CW_Invert)
 		TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DASH_GPIO_Port, KEY_IN_DASH_Pin);
-
+	
 	if (CW_key_dot_hard != TRX_new_key_dot_hard)
 	{
 		CW_key_dot_hard = TRX_new_key_dot_hard;
+		
+		if (CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited)
+		{
+			CW_key_dash_hard = false;
+			KEYER_symbol_status = 0;
+			
+			TRX_ptt_soft = TRX_new_key_dot_hard;
+			LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+			FPGA_NeedSendParams = true;
+			TRX_Restart_Mode();
+			
+			return;
+		}
+	
 		if (CW_key_dot_hard == true && (KEYER_symbol_status == 0 || !TRX.CW_KEYER))
 		{
 			CW_Key_Timeout_est = TRX.CW_Key_timeout;
@@ -68,6 +75,20 @@ void CW_key_change(void)
 	if (CW_key_dash_hard != TRX_new_key_dash_hard)
 	{
 		CW_key_dash_hard = TRX_new_key_dash_hard;
+		
+		if (CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited)
+		{
+			CW_key_dot_hard = false;
+			KEYER_symbol_status = 0;
+			
+			TRX_ptt_soft = TRX_new_key_dash_hard;
+			LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+			FPGA_NeedSendParams = true;
+			TRX_Restart_Mode();
+			
+			return;
+		}
+		
 		if (CW_key_dash_hard == true && (KEYER_symbol_status == 0 || !TRX.CW_KEYER))
 		{
 			CW_Key_Timeout_est = TRX.CW_Key_timeout;
