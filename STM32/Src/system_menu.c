@@ -77,16 +77,6 @@ static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB(int8_t direction);
@@ -1846,7 +1836,7 @@ static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction)
 		TRX.BANDS_SAVED_SETTINGS[band].SQL = CurrentVFO->SQL;
 }
 
-static void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction)
 {
 	if (TRX.SSB_HPF_RX_Filter > 0 || direction > 0)
 		TRX.SSB_HPF_RX_Filter += direction * 50;
@@ -1857,7 +1847,7 @@ static void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction)
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
-static void SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(int8_t direction)
 {
 	if (TRX.SSB_HPF_TX_Filter > 0 || direction > 0)
 		TRX.SSB_HPF_TX_Filter += direction * 50;
@@ -1868,7 +1858,7 @@ static void SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(int8_t direction)
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
-static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 {
 	if (TRX.CW_LPF_Filter > 50 || direction > 0)
 		TRX.CW_LPF_Filter += direction * 50;
@@ -1879,7 +1869,7 @@ static void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction)
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
-static void SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(int8_t direction)
 {
 	if (TRX.DIGI_LPF_Filter > 50 || direction > 0)
 		TRX.DIGI_LPF_Filter += direction * 50;
@@ -1890,7 +1880,7 @@ static void SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(int8_t direction)
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
-static void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction)
 {
 	if (TRX.SSB_LPF_RX_Filter > 100 || direction > 0)
 		TRX.SSB_LPF_RX_Filter += direction * 100;
@@ -1901,7 +1891,7 @@ static void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction)
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
-static void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction)
 {
 	if (TRX.SSB_LPF_TX_Filter > 100 || direction > 0)
 		TRX.SSB_LPF_TX_Filter += direction * 100;
@@ -1912,7 +1902,7 @@ static void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction)
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
-static void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction)
 {
 	if (TRX.AM_LPF_RX_Filter > 100 || direction > 0)
 		TRX.AM_LPF_RX_Filter += direction * 100;
@@ -1923,7 +1913,7 @@ static void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction)
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
-static void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction)
 {
 	if (TRX.AM_LPF_TX_Filter > 100 || direction > 0)
 		TRX.AM_LPF_TX_Filter += direction * 100;
@@ -1934,7 +1924,7 @@ static void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction)
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
-static void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction)
 {
 	if (TRX.FM_LPF_RX_Filter > 1000 || direction > 0)
 		TRX.FM_LPF_RX_Filter += direction * 1000;
@@ -1945,7 +1935,7 @@ static void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction)
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
-static void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction)
+void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction)
 {
 	if (TRX.FM_LPF_TX_Filter > 1000 || direction > 0)
 		TRX.FM_LPF_TX_Filter += direction * 1000;

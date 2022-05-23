@@ -79,6 +79,16 @@ extern void SYSMENU_AUDIO_DNR_HOTKEY(void);
 extern void SYSMENU_AUDIO_AGC_HOTKEY(void);
 extern void SYSMENU_SERVICE_FT8_HOTKEY(void);
 extern void SYSMENU_HANDL_SERVICESMENU(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction);
+extern void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction);
 
 extern bool SYSMENU_HANDL_CHECK_HAS_ATU(void);
 

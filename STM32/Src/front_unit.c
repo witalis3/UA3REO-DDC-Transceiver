@@ -62,7 +62,7 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;
-static uint8_t enc2_func_mode_idx = 0; // 0 - fast-step, 1 - WPM, 2 - RIT/XIT, 3 - NOTCH
+static uint8_t enc2_func_mode_idx = 0; // 0 - fast-step, 1 - WPM, 2 - RIT/XIT, 3 - NOTCH, 4 - LPF
 
 #ifdef FRONTPANEL_SMALL_V1
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
@@ -437,6 +437,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		enc2_func_mode_idx = 0;
 	if (enc2_func_mode_idx == 3 && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
 		enc2_func_mode_idx = 0;
+	if (enc2_func_mode_idx == 4 && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to NOTCH tune
+		enc2_func_mode_idx = 0;
 
 	if (enc2_func_mode_idx == 0)
 	{
@@ -553,6 +555,33 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			NeedWTFRedraw = true;
 		}
 	}
+	
+	if (enc2_func_mode_idx == 4) // LPF
+	{
+		if (!TRX_on_TX) {
+			if (CurrentVFO->Mode == TRX_MODE_CW)
+				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+				SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
+				SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_NFM)
+				SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L)
+				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
+		} else {
+			if (CurrentVFO->Mode == TRX_MODE_CW)
+				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+				SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
+				SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_NFM)
+				SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L)
+				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
+		}
+	}
 }
 
 void FRONTPANEL_check_ENC2SW(void)
@@ -629,8 +658,10 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 			enc2_func_mode_idx++;
 		if (enc2_func_mode_idx == 3 && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
 			enc2_func_mode_idx++;
+		if (enc2_func_mode_idx == 4 && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to NOTCH tune
+			enc2_func_mode_idx++;
 
-		if (enc2_func_mode_idx > 3)
+		if (enc2_func_mode_idx > 4)
 			enc2_func_mode_idx = 0;
 
 		if (enc2_func_mode_idx == 0)
@@ -641,6 +672,8 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 			LCD_showTooltip("SET RIT");
 		if (enc2_func_mode_idx == 3)
 			LCD_showTooltip("SET NOTCH");
+		if (enc2_func_mode_idx == 4)
+			LCD_showTooltip("SET LPF");
 	}
 	else
 	{
