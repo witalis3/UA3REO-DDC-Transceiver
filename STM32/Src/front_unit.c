@@ -802,7 +802,7 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 	if (button->type == FUNIT_CTRL_AF_GAIN)
 	{
 		static float32_t AF_VOLUME_mcp3008_averaged = 0.0f;
-		AF_VOLUME_mcp3008_averaged = AF_VOLUME_mcp3008_averaged * 0.7f + mcp3008_value * 0.3f;
+		AF_VOLUME_mcp3008_averaged = AF_VOLUME_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
 		
 		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - AF_VOLUME_mcp3008_averaged);
 		if (TRX.Volume < 50)
@@ -813,7 +813,7 @@ static void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mc
 	if (button->type == FUNIT_CTRL_RIT_XIT)
 	{
 		static float32_t IF_GAIN_mcp3008_averaged = 0.0f;
-		IF_GAIN_mcp3008_averaged = IF_GAIN_mcp3008_averaged * 0.7f + mcp3008_value * 0.3f;
+		IF_GAIN_mcp3008_averaged = IF_GAIN_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
 		
 		if (TRX.RIT_Enabled)
 		{
