@@ -239,6 +239,7 @@ void LoadSettings(bool clear)
 		TRX.SELFHEAR_Volume = 50;			 // Selfhearing volume
 		TRX.FM_Stereo = false;				 // Stereo FM Mode
 		TRX.AGC_Spectral = true;			//Spectral AGC mode
+		TRX.VAD_THRESHOLD = 150;				//Threshold of SSB/SCAN squelch
 		// CW
 		TRX.CW_Pitch = 600;			   // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;	   // time of releasing transmission after the last character on the key

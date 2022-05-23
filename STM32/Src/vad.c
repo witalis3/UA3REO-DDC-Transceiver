@@ -289,7 +289,7 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer)
 		VAD->state_no_counter = 0;
 		VAD->state = true;
 	}
-	if (VAD->state && VAD->state_no_counter > 1000)
+	if (VAD->state && VAD->state_no_counter > 10 * TRX.VAD_THRESHOLD)
 	{
 		VAD->state_yes_counter = 0;
 		VAD->state_no_counter = 0;

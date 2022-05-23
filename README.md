@@ -192,6 +192,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
 * **SelfHear Volume** - Self Hearing (CW/DIGI) volume relative to the overall transceiver volume
 * **WFM Stereo** - select WFM stereo or mono decoder
+* **AGC Spectral** - Enable experimental FFT-based AGC
+* **VAD Threshold** - VAD voice detector threshold (noise suppressor for SSB mode and SCAN mode)
 
 ### CW Settings
 

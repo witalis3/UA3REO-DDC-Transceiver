@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "bands.h"
 
-#define SETT_VERSION 49						  // Settings config version
+#define SETT_VERSION 50						  // Settings config version
 #define CALIB_VERSION 45					  // Calibration config version
 #define ADC_CLOCK 122880000					  // ADC generator frequency
 #define DAC_CLOCK 188160000					  // DAC generator frequency
@@ -402,6 +402,7 @@ extern struct TRX_SETTINGS
 	uint8_t DNR2_SNR_THRESHOLD;
 	uint8_t DNR_AVERAGE;
 	uint8_t DNR_MINIMAL;
+	uint8_t VAD_THRESHOLD;
 	uint8_t RX_AGC_SSB_speed;
 	uint8_t RX_AGC_CW_speed;
 	uint8_t RX_AGC_Max_gain;
