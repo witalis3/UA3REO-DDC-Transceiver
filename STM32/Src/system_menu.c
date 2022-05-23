@@ -1506,7 +1506,7 @@ void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
 void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(21);
+	setCurrentMenuIndex(23);
 	LCD_redraw(false);
 }
 
