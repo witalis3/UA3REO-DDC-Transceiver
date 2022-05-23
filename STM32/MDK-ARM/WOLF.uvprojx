@@ -10,7 +10,7 @@
       <TargetName>ILI9481</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -4038,7 +4038,7 @@
       <TargetName>HX8357B</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -4368,7 +4368,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_HX8357B,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                 ../Drivers/CMSIS/Include;                 ..\USBDevice;                 ..\Src;                 ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;..\USBDevice;..\Src;../Middlewares/Third_Party/FatFs/src;..\Utilities\JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -5822,7 +5822,7 @@
       <TargetName>HX8357C</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -6152,7 +6152,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_HX8357C,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                 ../Drivers/CMSIS/Include;                 ..\USBDevice;                 ..\Src;                 ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;..\USBDevice;..\Src;../Middlewares/Third_Party/FatFs/src;..\Utilities\JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -7606,7 +7606,7 @@
       <TargetName>HX8357C-SLOW</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -7936,7 +7936,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_HX8357C,LCD_SLOW,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                 ../Drivers/CMSIS/Include;                 ..\USBDevice;                 ..\Src;                 ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;..\USBDevice;..\Src;../Middlewares/Third_Party/FatFs/src;..\Utilities\JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -9390,7 +9390,7 @@
       <TargetName>ILI9486</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -9720,7 +9720,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_ILI9486,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                 ../Drivers/CMSIS/Include;                 ..\USBDevice;                 ..\Src;                 ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;..\USBDevice;..\Src;../Middlewares/Third_Party/FatFs/src;..\Utilities\JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -11174,7 +11174,7 @@
       <TargetName>ST7796S</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -11504,7 +11504,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_ST7796S,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                 ../Drivers/CMSIS/Include;                 ..\USBDevice;                 ..\Src;                 ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;..\USBDevice;..\Src;../Middlewares/Third_Party/FatFs/src;..\Utilities\JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -12958,7 +12958,7 @@
       <TargetName>RA8875_GT911</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -13288,7 +13288,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_BIG_V1,LCD_RA8875,TOUCHPAD_GT911,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                 ../Drivers/CMSIS/Include;                 ..\USBDevice;                 ..\Src;                 ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;..\USBDevice;..\Src;../Middlewares/Third_Party/FatFs/src;..\Utilities\JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -16388,7 +16388,7 @@
       <TargetName>NO-FRONT</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -16718,7 +16718,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_NONE,LCD_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc;                 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;                 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include;                 ../Drivers/CMSIS/Include;                 ..\USBDevice;                 ..\Src;                 ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32H7xx_HAL_Driver/Inc;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32H7xx/Include;../Drivers/CMSIS/Include;..\USBDevice;..\Src;../Middlewares/Third_Party/FatFs/src;..\Utilities\JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
