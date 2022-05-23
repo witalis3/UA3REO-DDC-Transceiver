@@ -1503,7 +1503,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		// first, calculate "x" and "y" for the arctan2, comparing the vectors of present data with previous data
 		y = (data_q[i] * *i_prev) - (data_i[i] * *q_prev);
 		x = (data_i[i] * *i_prev) + (data_q[i] * *q_prev);
-		angle = atan2f(y, x);
+		arm_atan2_f32(y, x, &angle);
 
 		*q_prev = data_q[i]; // save "previous" value of each channel to allow detection of the change of angle in next go-around
 		*i_prev = data_i[i];
@@ -1567,7 +1567,9 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		for (uint_fast16_t i = 0; i < size; i++)
 		{
 			static float32_t prev_sfm_pilot_sample = 0.0f;
-			float32_t angle = atan2f(stereo_fm_pilot_out[i], prev_sfm_pilot_sample) * 2.0f; // double freq
+			arm_atan2_f32(stereo_fm_pilot_out[i], prev_sfm_pilot_sample, &angle); // double freq
+			angle *= 2.0f;
+			
 			prev_sfm_pilot_sample = stereo_fm_pilot_out[i];
 
 			// get stereo sample from decoded wfm
@@ -1929,7 +1931,8 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		out_buffer_r[i] = out_buffer_r[i] + dc_insert_r - dc27_r;
 
 		// determine phase error
-		float32_t phzerror = atan2f(corr[1], corr[0]);
+		float32_t phzerror;
+		arm_atan2_f32(corr[1], corr[0], &phzerror);
 
 		float32_t del_out = sam_data->fil_out;
 		// correct frequency 1st step
