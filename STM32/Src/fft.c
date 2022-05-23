@@ -1995,5 +1995,7 @@ static float32_t getDBFromFFTAmpl(float32_t ampl)
 
 static float32_t getFFTAmplFromDB(float32_t ampl)
 {
-	return sqrtf(db2rateP(ampl - FFT_DBM_COMPENSATION + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) - ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) * 0.001f * 50.0f) * (float32_t)FFT_SIZE;
+	float32_t result;
+	arm_sqrt_f32(db2rateP(ampl - FFT_DBM_COMPENSATION + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) - ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) * 0.001f * 50.0f, &result);
+	return result * (float32_t)FFT_SIZE;
 }

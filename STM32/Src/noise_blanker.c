@@ -95,7 +95,9 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 		arm_var_f32(instance->tempsamp, NB_FIR_SIZE, &sigma2);												// calculate sigma2 of the original signal ? or tempsignal
 		arm_power_f32(lpcs, NB_order, &lpc_power);															// calculate the sum of the squares (the "power") of the lpc's
 
-		impulse_threshold = 3.0f * sqrtf(sigma2 * lpc_power); // set a detection level (3 is not really a final setting)
+		float32_t square;
+		arm_sqrt_f32((sigma2 * lpc_power), &square);
+		impulse_threshold = 3.0f * square; // set a detection level (3 is not really a final setting)
 
 		search_pos = NB_order + NB_PL; // lower boundary problem has been solved! - so here we start from 1 or 0?
 		impulse_count = 0;

@@ -773,7 +773,8 @@ static void LCD_PrintMeterArrow(int16_t target_pixel_x)
 	const uint32_t max_length = 220;
 	float32_t x_diff = 0;
 	float32_t y_diff = 0;
-	float32_t length = sqrtf((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+	float32_t length;
+	arm_sqrt_f32((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0), &length);
 	if (length > max_length)
 	{
 		float32_t coeff = (float32_t)max_length / length;

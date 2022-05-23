@@ -89,8 +89,8 @@ void RDSDecoder_Init(void)
 // Costas loop
 #define BW (100.0f / (float32_t)RDS_decoder_samplerate)
 	float32_t loop_theta = 2.0f * F_PI * BW;
-	RDS_CLoop_C1 = 4.0f * powf(loop_theta, 2) / (1 + sqrt(2.0f) * loop_theta + powf(loop_theta, 2));
-	RDS_CLoop_C2 = 2.0f * sqrtf(2.0f) * loop_theta / (1.0f + sqrtf(2.0f) * loop_theta + powf(loop_theta, 2));
+	RDS_CLoop_C1 = 4.0f * powf(loop_theta, 2) / (1 + SQRT2 * loop_theta + powf(loop_theta, 2));
+	RDS_CLoop_C2 = 2.0f * SQRT2 * loop_theta / (1.0f + SQRT2 * loop_theta + powf(loop_theta, 2));
 	error_integral_prev = 0.0f;
 
 	// Result

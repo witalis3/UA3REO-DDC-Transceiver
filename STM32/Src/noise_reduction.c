@@ -22,8 +22,9 @@ void InitNoiseReduction(void)
 	NR_RX1.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE;
 	NR_RX2.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE;
 
-	for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
-		von_Hann[idx] = sqrtf(0.5f * (1.0f - arm_cos_f32((2.0f * F_PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)));
+	for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++) {
+		arm_sqrt_f32(0.5f * (1.0f - arm_cos_f32((2.0f * F_PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)), &von_Hann[idx]);
+	}
 
 	for (uint16_t bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
 	{
@@ -85,8 +86,9 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 			// do fft
 			arm_cfft_f32(instance->FFT_Inst, instance->FFT_Buffer, 0, 1);
 			// get magnitude
-			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
-				instance->FFT_COMPLEX_MAG[idx] = sqrtf(instance->FFT_Buffer[idx * 2] * instance->FFT_Buffer[idx * 2] + instance->FFT_Buffer[idx * 2 + 1] * instance->FFT_Buffer[idx * 2 + 1]);
+			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++) {
+				arm_sqrt_f32(instance->FFT_Buffer[idx * 2] * instance->FFT_Buffer[idx * 2] + instance->FFT_Buffer[idx * 2 + 1] * instance->FFT_Buffer[idx * 2 + 1], &instance->FFT_COMPLEX_MAG[idx]);
+			}
 			// average magnitude
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				instance->FFT_AVERAGE_MAG[idx] = instance->FFT_COMPLEX_MAG[idx] * (1.0f - (float32_t)TRX.DNR_AVERAGE / 500.0f) + instance->FFT_AVERAGE_MAG[idx] * ((float32_t)TRX.DNR_AVERAGE / 500.0f);
@@ -155,7 +157,8 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				for (int bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++)
 				{
 					float32_t v = instance->SNR_prio[bindx] / (instance->SNR_prio[bindx] + 1.0) * instance->SNR_post[bindx];
-					instance->NR_GAIN[bindx] = fmax(1.0 / instance->SNR_post[bindx] * sqrtf(0.7212 * v + v * v), 0.001); // limit HK's to 0.001
+					arm_sqrt_f32((0.7212f * v + v * v), &v);
+					instance->NR_GAIN[bindx] = fmax(1.0 / instance->SNR_post[bindx] * v, 0.001); // limit HK's to 0.001
 					instance->NR_GAIN_old[bindx] = instance->SNR_post[bindx] * instance->NR_GAIN[bindx] * instance->NR_GAIN[bindx];
 				}
 			}

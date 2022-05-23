@@ -213,7 +213,7 @@ void InitAudioFilters(void)
 	arm_fir_init_f32(&FIR_TX_Hilbert_Q, IQ_HILBERT_TAPS, (float32_t *)&FIR_HILB_Q_coeffs[0], (float32_t *)&Fir_Tx_Hilbert_State_Q[0], AUDIO_BUFFER_HALF_SIZE);
 
 	// AGC K-Weight LKFS BS.1770
-	calcBiquad(BIQUAD_highShelf, 1500, TRX_SAMPLERATE, 1.0f / sqrtf(2), 4.0f, AGC_RX_KW_HSHELF_FILTER_Coeffs);
+	calcBiquad(BIQUAD_highShelf, 1500, TRX_SAMPLERATE, 1.0f / SQRT2, 4.0f, AGC_RX_KW_HSHELF_FILTER_Coeffs);
 	calcBiquad(BIQUAD_highpass, 38, TRX_SAMPLERATE, 0.5f, 0.0f, AGC_RX_KW_HPASS_FILTER_Coeffs);
 
 	// Other
