@@ -1575,7 +1575,6 @@ static uint32_t JPEG_MCU_Gray_ARGB_ConvertBlocks(uint8_t *pInBuffer,
 
   uint32_t i,j, ySample;
   uint8_t *pOutAddr,  *pLum;
-
   
   numberMCU = DataCount / GRAY_444_BLOCK_SIZE;
   currentMCU = BlockIndex;
@@ -1613,7 +1612,9 @@ static uint32_t JPEG_MCU_Gray_ARGB_ConvertBlocks(uint8_t *pInBuffer,
  
 #elif (JPEG_RGB_FORMAT == JPEG_RGB565)
             
-          *(__IO uint16_t *)pOutAddr = ((ySample >> 3) << 11) |  ((ySample >> 2) << 5) | (ySample >> 3);     
+          // *(__IO uint16_t *)pOutAddr = ((ySample >> 3) << 11) |  ((ySample >> 2) << 5) | (ySample >> 3);     
+					
+					LCDDriver_drawPixel_by_offset(pOutBuffer, pOutAddr,((ySample >> 3) << 11) |  ((ySample >> 2) << 5) | (ySample >> 3));
           
 #endif /* JPEG_RGB_FORMAT */          
           

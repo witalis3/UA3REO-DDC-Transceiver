@@ -491,7 +491,7 @@ void LCDDriver_printImage_JPEGCompressed(uint16_t x, uint16_t y, const uint8_t *
 
 void HAL_JPEG_InfoReadyCallback(JPEG_HandleTypeDef *hjpeg, JPEG_ConfTypeDef *pInfo)
 {  
-	//println("HAL_JPEG_InfoReadyCallback ", pInfo->ImageHeight, " ", pInfo->ImageWidth, " ", pInfo->ImageQuality, " ", pInfo->ChromaSubsampling);
+	//println("HAL_JPEG_InfoReadyCallback ", pInfo->ImageHeight, " ", pInfo->ImageWidth, " ", pInfo->ImageQuality, " ", pInfo->ChromaSubsampling, " ", pInfo->ColorSpace);
 	
 	uint32_t JPEG_ImageNbMCUs = 0;
 	JPEG_GetDecodeColorConvertFunc(pInfo, &JPEG_ConvertFunction, &JPEG_ImageNbMCUs);
