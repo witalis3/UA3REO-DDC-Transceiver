@@ -44,8 +44,8 @@ IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};				   // temporar
 SRAM static float32_t FFT_meanBuffer[FFT_MAX_MEANS][MAX_FFT_PRINT_SIZE] = {0}; // averaged FFT buffer (for output)
 IRAM2 static float32_t FFTOutput_mean[MAX_FFT_PRINT_SIZE] = {0};			   // averaged FFT buffer (for output)
 IRAM2 static float32_t FFTOutput_average[MAX_FFT_PRINT_SIZE] = {0};			   // averaged FFT buffer (for output)
-static float32_t maxValueFFT_rx = 0;										   // maximum value of the amplitude in the resulting frequency response
-static float32_t maxValueFFT_tx = 0;										   // maximum value of the amplitude in the resulting frequency response
+static float32_t maxValueFFT_rx = 10.0f;										   // maximum value of the amplitude in the resulting frequency response
+static float32_t maxValueFFT_tx = 10.0f;										   // maximum value of the amplitude in the resulting frequency response
 static uint64_t currentFFTFreq = 0;
 static uint64_t lastWTFFreq = 0;													// last WTF printed freq
 static uint16_t palette_fft[MAX_FFT_HEIGHT + 1] = {0};								// color palette with FFT colors
@@ -733,12 +733,6 @@ bool FFT_printFFT(void)
 
 		maxValueFFT += (targetValue - maxValueFFT) / FFT_STEP_COEFF;
 		// println(maxValueFFT, " ", targetValue, " ", medianValue, " ", (medianValue / FFT_TARGET));
-
-		// minimum-maximum threshold for median
-		if (maxValueFFT < minValue)
-			maxValueFFT = minValue;
-		if (maxValueFFT > maxValue)
-			maxValueFFT = maxValue;
 
 		FFT_minDBM = minAmplValue_averaged;
 		FFT_maxDBM = maxValueFFT + minAmplValue_averaged;
