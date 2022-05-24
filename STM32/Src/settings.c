@@ -11,7 +11,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "4.1.0-beta";
+char version_string[19] = "4.1.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
