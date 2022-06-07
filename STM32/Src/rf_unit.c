@@ -1461,7 +1461,7 @@ void RF_UNIT_ProcessSensors(void)
 
 	// THERMAL
 	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B16_RANGE;
-
+	
 	float32_t therm_resistance = -2000.0f * rf_thermal / (-3.3f + rf_thermal);
 	uint_fast8_t point_left = 0;
 	uint_fast8_t point_right = SENS_TABLE_COUNT - 1;
@@ -1477,6 +1477,9 @@ void RF_UNIT_ProcessSensors(void)
 	float32_t part_point_right = KTY81_120_sensTable[point_right][1] - therm_resistance;
 	float32_t part_point = part_point_left / (part_point_left + part_point_right);
 	float32_t TRX_RF_Temperature_measured = (power_left * (1.0f - part_point)) + (power_right * (part_point));
+	
+	if (TRX_RF_Temperature_measured < -100.0f)
+		TRX_RF_Temperature_measured = 75.0f;
 	if (TRX_RF_Temperature_measured < 0.0f)
 		TRX_RF_Temperature_measured = 0.0f;
 	

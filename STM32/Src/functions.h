@@ -100,7 +100,7 @@ __asm(".global __use_no_heap\n\t");
 #define RAD2DEG(x) ((float32_t)(x)*180.f / F_PI)
 #define ARRLENTH(x) (sizeof(x) / sizeof((x)[0]))
 #define MINI_DELAY                                       \
-  for (uint_fast16_t wait_i = 0; wait_i < 100; wait_i++) \
+  for (uint_fast8_t wait_i = 0; wait_i < 100; wait_i++) \
     __asm("nop");
 
 #define DMA_MAX_BLOCK 65000
