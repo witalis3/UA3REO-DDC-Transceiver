@@ -3681,19 +3681,19 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 	}
 	if (CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
 	{
-		CALIBRATE.rf_out_power_2200m = 40;			   // 2200m
-		CALIBRATE.rf_out_power_160m = 40;			   // 160m
-		CALIBRATE.rf_out_power_80m = 40;			   // 80m
-		CALIBRATE.rf_out_power_40m = 40;			   // 40m
-		CALIBRATE.rf_out_power_30m = 40;			   // 30m
-		CALIBRATE.rf_out_power_20m = 40;			   // 20m
-		CALIBRATE.rf_out_power_17m = 40;			   // 17m
-		CALIBRATE.rf_out_power_15m = 40;			   // 15m
-		CALIBRATE.rf_out_power_12m = 40;			   // 12m
+		CALIBRATE.rf_out_power_2200m = 17;			   // 2200m
+		CALIBRATE.rf_out_power_160m = 17;			   // 160m
+		CALIBRATE.rf_out_power_80m = 20;			   // 80m
+		CALIBRATE.rf_out_power_40m = 22;			   // 40m
+		CALIBRATE.rf_out_power_30m = 24;			   // 30m
+		CALIBRATE.rf_out_power_20m = 25;			   // 20m
+		CALIBRATE.rf_out_power_17m = 30;			   // 17m
+		CALIBRATE.rf_out_power_15m = 35;			   // 15m
+		CALIBRATE.rf_out_power_12m = 38;			   // 12m
 		CALIBRATE.rf_out_power_cb = 40;				   // 27mhz
 		CALIBRATE.rf_out_power_10m = 40;			   // 10m
 		CALIBRATE.rf_out_power_6m = 40;				   // 6m
-		CALIBRATE.rf_out_power_2m = 50;				   // 2m
+		CALIBRATE.rf_out_power_2m = 270;				   // 2m
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;	   // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;	   // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;	   // 1.6-2.5mH
@@ -3714,13 +3714,13 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_7_END = 150 * 1000 * 1000;   //
 		CALIBRATE.RFU_BPF_8_START = 0;				   // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;				   // disabled
-		CALIBRATE.SWR_FWD_Calibration_HF = 22.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 22.0f;	   // SWR Transormator rate return
-		CALIBRATE.SWR_FWD_Calibration_6M = 22.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 22.0f;	   // SWR Transormator rate return
-		CALIBRATE.SWR_FWD_Calibration_VHF = 22.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 22.0f;	   // SWR Transormator rate return
-		CALIBRATE.TUNE_MAX_POWER = 10;				   // Maximum RF power in Tune mode
+		CALIBRATE.SWR_FWD_Calibration_HF = 17.5f;	   // SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_HF = 17.5f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_6M = 19.0f;	   // SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_6M = 19.0f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 10.0f;	   // SWR Transormator rate forward
+		CALIBRATE.SWR_REF_Calibration_VHF = 10.0f;	   // SWR Transormator rate return
+		CALIBRATE.TUNE_MAX_POWER = 15;				   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 100;				   // Max TRX Power for indication
 	}
 	LCD_UpdateQuery.SystemMenuRedraw = true;
