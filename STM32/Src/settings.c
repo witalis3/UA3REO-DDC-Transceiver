@@ -353,7 +353,10 @@ void LoadSettings(bool clear)
 		{
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
-			TRX.BANDS_SAVED_SETTINGS[i].LNA = TRX.LNA;
+			if(TRX.BANDS_SAVED_SETTINGS[i].Freq > 30000000)
+				TRX.BANDS_SAVED_SETTINGS[i].LNA = true;
+			else
+				TRX.BANDS_SAVED_SETTINGS[i].LNA = false;
 			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
 			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
 			TRX.BANDS_SAVED_SETTINGS[i].ANT_selected = TRX.ANT_selected;
