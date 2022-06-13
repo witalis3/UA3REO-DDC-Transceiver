@@ -1446,6 +1446,30 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size,
 		if (if_gained && current_if_gain != 0.0f)
 			i *= 1.0f / current_if_gain;
 		Processor_RX1_Power_value = i;
+		
+		// Calc
+		if (Processor_RX1_Power_value == 0)
+		{
+			TRX_RX1_dBm = -150.0f;
+		}
+		else
+		{
+			float32_t adc_volts = Processor_RX1_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
+			if (TRX.ADC_Driver)
+				adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
+			TRX_RX1_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
+			if (CurrentVFO->Freq < 70000000)
+				TRX_RX1_dBm += CALIBRATE.smeter_calibration_hf;
+			else
+				TRX_RX1_dBm += CALIBRATE.smeter_calibration_vhf;
+
+			if (TRX.LNA)
+				TRX_RX1_dBm += CALIBRATE.LNA_compensation;
+
+			if (TRX_RX1_dBm < -150.0f)
+				TRX_RX1_dBm = -150.0f;
+			Processor_RX1_Power_value = 0;
+		}
 	}
 
 	if (rx_id == AUDIO_RX2)
@@ -1458,6 +1482,30 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size,
 		if (if_gained && current_if_gain != 0.0f)
 			i *= 1.0f / current_if_gain;
 		Processor_RX2_Power_value = i;
+		
+		//Calc
+		if (Processor_RX2_Power_value == 0)
+		{
+			TRX_RX2_dBm = -150.0f;
+		}
+		else
+		{
+			float32_t adc_volts = Processor_RX2_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
+			if (TRX.ADC_Driver)
+				adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
+			TRX_RX2_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
+			if (SecondaryVFO->Freq < 70000000)
+				TRX_RX2_dBm += CALIBRATE.smeter_calibration_hf;
+			else
+				TRX_RX2_dBm += CALIBRATE.smeter_calibration_vhf;
+
+			if (TRX.LNA)
+				TRX_RX2_dBm += CALIBRATE.LNA_compensation;
+
+			if (TRX_RX2_dBm < -150.0f)
+				TRX_RX2_dBm = -150.0f;
+			Processor_RX2_Power_value = 0;
+		}
 	}
 }
 
@@ -1495,6 +1543,19 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		SFM_Audio_Filter = &SFM_RX2_Audio_Filter;
 	}
 	
+	// *** Squelch Processing ***
+	if (FM_SQL_threshold_dbm > dbm && !DFM->squelched)
+	{
+		DFM->squelchRate = 1.0f;
+		DFM->squelched = true; // yes, close the squelch
+	}
+	else if (FM_SQL_threshold_dbm <= dbm && DFM->squelched)
+	{
+		DFM->squelchRate = 0.01f;
+		DFM->squelched = false; //  yes, open the squelch
+	}
+	
+	// do IQ demod
 	for (uint_fast16_t i = 0; i < size; i++)
 	{
 		// first, calculate "x" and "y" for the arctan2, comparing the vectors of present data with previous data
@@ -1510,12 +1571,12 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
 
 		// smooth SQL edges
-		if (!DFM->squelched || !sql_enabled) // high-pass audio only if we are un-squelched (to save processor time)
+		if (!DFM->squelched || !sql_enabled)
 		{
 			if (DFM->squelchRate < 1.00f)
 			{
 				data_i[i] *= DFM->squelchRate;
-				DFM->squelchRate = 1.001f * DFM->squelchRate;
+				DFM->squelchRate = 1.01f * DFM->squelchRate;
 			}
 		}
 		else if (DFM->squelched) // were we squelched or tone NOT detected?
@@ -1523,25 +1584,13 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			if (DFM->squelchRate > 0.01f)
 			{
 				data_i[i] *= DFM->squelchRate;
-				DFM->squelchRate = 0.999f * DFM->squelchRate;
+				DFM->squelchRate = 0.99f * DFM->squelchRate;
 			}
 			else
 			{
 				data_i[i] = 0;
 			}
 		}
-	}
-
-	// *** Squelch Processing ***
-	if (FM_SQL_threshold_dbm > dbm && !DFM->squelched)
-	{
-		DFM->squelchRate = 1.0f;
-		DFM->squelched = true; // yes, close the squelch
-	}
-	else if (FM_SQL_threshold_dbm <= dbm && DFM->squelched)
-	{
-		DFM->squelchRate = 0.01f;
-		DFM->squelched = false; //  yes, open the squelch
 	}
 
 	// RDS Decoder

@@ -583,57 +583,6 @@ void TRX_DoAutoGain(void)
 	}
 }
 
-void TRX_DBMCalculate(void)
-{
-	// RX1
-	if (Processor_RX1_Power_value == 0)
-	{
-		TRX_RX1_dBm = -150.0f;
-	}
-	else
-	{
-		float32_t adc_volts = Processor_RX1_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
-		if (TRX.ADC_Driver)
-			adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
-		TRX_RX1_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
-		if (CurrentVFO->Freq < 70000000)
-			TRX_RX1_dBm += CALIBRATE.smeter_calibration_hf;
-		else
-			TRX_RX1_dBm += CALIBRATE.smeter_calibration_vhf;
-
-		if (TRX.LNA)
-			TRX_RX1_dBm += CALIBRATE.LNA_compensation;
-
-		if (TRX_RX1_dBm < -150.0f)
-			TRX_RX1_dBm = -150.0f;
-		Processor_RX1_Power_value = 0;
-	}
-
-	// RX2
-	if (Processor_RX2_Power_value == 0)
-	{
-		TRX_RX2_dBm = -150.0f;
-	}
-	else
-	{
-		float32_t adc_volts = Processor_RX2_Power_value * (TRX.ADC_PGA ? (ADC_RANGE_PGA / 2.0f) : (ADC_RANGE / 2.0f));
-		if (TRX.ADC_Driver)
-			adc_volts *= db2rateV(-ADC_DRIVER_GAIN_DB);
-		TRX_RX2_dBm = 10.0f * log10f_fast((adc_volts * adc_volts / ADC_INPUT_IMPEDANCE) / 0.001f);
-		if (SecondaryVFO->Freq < 70000000)
-			TRX_RX2_dBm += CALIBRATE.smeter_calibration_hf;
-		else
-			TRX_RX2_dBm += CALIBRATE.smeter_calibration_vhf;
-
-		if (TRX.LNA)
-			TRX_RX2_dBm += CALIBRATE.LNA_compensation;
-
-		if (TRX_RX2_dBm < -150.0f)
-			TRX_RX2_dBm = -150.0f;
-		Processor_RX2_Power_value = 0;
-	}
-}
-
 float32_t TRX_getSTM32H743Temperature(void)
 {
 	uint16_t TS_CAL1 = *((uint16_t *)0x1FF1E820); // TS_CAL1 Temperature sensor raw data acquired value at 30 °C, VDDA=3.3 V //-V566

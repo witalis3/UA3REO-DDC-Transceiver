@@ -151,8 +151,6 @@ void SPEC_Draw(void)
 	tick_start_time = HAL_GetTick();
 
 	LCD_busy = true;
-	// Read the signal strength
-	TRX_DBMCalculate();
 
 	// Draw
 	if (graph_sweep_x < graph_width)

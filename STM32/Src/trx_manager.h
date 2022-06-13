@@ -22,7 +22,6 @@ extern void TRX_setMode(uint_fast8_t _mode, VFO *vfo);
 extern void TRX_ptt_change(void);
 extern void TRX_DoAutoGain(void);
 extern void TRX_Restart_Mode(void);
-extern void TRX_DBMCalculate(void);
 extern float32_t TRX_getSTM32H743Temperature(void);
 extern float32_t TRX_getSTM32H743vref(void);
 extern void TRX_TemporaryMute(void);

@@ -680,9 +680,6 @@ void TIM6_DAC_IRQHandler(void)
     // every 100ms we receive data from FPGA (amplitude, ADC overload, etc.)
     FPGA_NeedGetParams = true;
 
-    //S-Meter Calculate
-    TRX_DBMCalculate();
-
     //Detect FPGA stuck error
     static float32_t old_FPGA_Audio_Buffer_RX1_I = 0;
     static float32_t old_FPGA_Audio_Buffer_RX1_Q = 0;
