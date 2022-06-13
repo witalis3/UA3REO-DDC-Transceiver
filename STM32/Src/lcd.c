@@ -862,12 +862,19 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 	if (!TRX_on_TX)
 	{
+		static float32_t TRX_RX1_dBm_lowrate = 0;
+		static uint32_t TRX_RX1_dBm_lowrate_time = 0;
+		if((HAL_GetTick() - TRX_RX1_dBm_lowrate_time) > 100) {
+			TRX_RX1_dBm_lowrate_time = HAL_GetTick();
+			TRX_RX1_dBm_lowrate = TRX_RX1_dBm_lowrate * 0.5f + TRX_RX1_dBm * 0.5f;
+		}
+		
 		float32_t s_width = 0.0f;
 
 		if (CurrentVFO->Mode == TRX_MODE_CW)
-			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX1_dBm, true) * 0.5f; // smooth CW faster!
+			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX1_dBm_lowrate, true) * 0.5f; // smooth CW faster!
 		else
-			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX1_dBm, true) * 0.25f; // smooth the movement of the S-meter
+			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX1_dBm_lowrate, true) * 0.25f; // smooth the movement of the S-meter
 		// println(LCD_last_s_meter, " ", s_width, " ", TRX_RX1_dBm, " ", LCD_GetSMeterValPosition(TRX_RX1_dBm, true));
 
 		// digital s-meter version
@@ -923,15 +930,15 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		}
 
 		// print dBm value
-		sprintf(ctmp, "%ddBm", (int16_t)TRX_RX1_dBm);
+		sprintf(ctmp, "%ddBm", (int16_t)TRX_RX1_dBm_lowrate);
 		addSymbols(ctmp, ctmp, 7, " ", true);
 		LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 		// print s-meter value
 		static float32_t TRX_RX_dBm_averaging = -120.0f;
-		TRX_RX_dBm_averaging = 0.97f * TRX_RX_dBm_averaging + 0.03f * TRX_RX1_dBm;
-		if (TRX_RX1_dBm > TRX_RX_dBm_averaging)
-			TRX_RX_dBm_averaging = TRX_RX1_dBm;
+		TRX_RX_dBm_averaging = 0.97f * TRX_RX_dBm_averaging + 0.03f * TRX_RX1_dBm_lowrate;
+		if (TRX_RX1_dBm_lowrate > TRX_RX_dBm_averaging)
+			TRX_RX_dBm_averaging = TRX_RX1_dBm_lowrate;
 
 		if (CurrentVFO->Freq < 144000000)
 		{
