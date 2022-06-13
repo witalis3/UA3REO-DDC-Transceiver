@@ -897,7 +897,7 @@ void TIM7_IRQHandler(void)
   print_flush(); // send data to debug from the buffer
 
   // unmute after transition process end
-  if (TRX_Temporary_Mute_StartTime > 0 && (HAL_GetTick() - TRX_Temporary_Mute_StartTime) > 10)
+  if (TRX_Temporary_Mute_StartTime > 0 && (HAL_GetTick() - TRX_Temporary_Mute_StartTime) > 100)
   {
     WM8731_UnMute();
     TRX_Temporary_Mute_StartTime = 0;

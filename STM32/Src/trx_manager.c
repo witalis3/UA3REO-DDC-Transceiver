@@ -518,9 +518,13 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && (old_mode == TRX_MODE_WFM || old_mode == TRX_MODE_NFM) && _mode != TRX_MODE_WFM && _mode != TRX_MODE_NFM)
 		NeedFFTReinit = true;
 
-	WM8731_TXRX_mode();
-	if (old_mode != _mode)
+	if (old_mode != _mode) {
+		TRX_TemporaryMute();
 		NeedReinitAudioFiltersClean = true;
+	}
+	
+	WM8731_TXRX_mode();
+	
 	NeedReinitNotch = true;
 	NeedReinitAudioFilters = true;
 	NeedSaveSettings = true;
