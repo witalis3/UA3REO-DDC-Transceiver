@@ -45,6 +45,7 @@ volatile float32_t TRX_SWR = 0;
 volatile float32_t TRX_PWR_Forward_SMOOTHED = 0;
 volatile float32_t TRX_PWR_Backward_SMOOTHED = 0;
 volatile float32_t TRX_SWR_SMOOTHED = 0;
+char TRX_SWR_SMOOTHED_STR[8] = "1.0";
 volatile float32_t TRX_VLT_forward = 0;	 // Tisho
 volatile float32_t TRX_VLT_backward = 0; // Tisho
 volatile float32_t TRX_ALC_OUT = 0;
