@@ -224,9 +224,9 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
 				if ((AGC_RX_dbFS + instance->need_gain_db) > (gain_target + AGC_CLIPPING))
 				{
-					//instance->need_gain_db = gain_target - AGC_RX_dbFS;
-					instance->need_gain_db -= 20.0f;
-					//println("AGC overload ", diff);
+					println("AGC overload ", diff, " ", instance->need_gain_db - (gain_target - AGC_RX_dbFS));
+					instance->need_gain_db = gain_target - AGC_RX_dbFS;
+					//instance->need_gain_db -= 20.0f;
 				}
 								
 				//appy gain
