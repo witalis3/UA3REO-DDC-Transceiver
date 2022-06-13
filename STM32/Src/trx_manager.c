@@ -666,15 +666,15 @@ void TRX_ProcessScanMode(void)
 
 	if (CurrentVFO->Mode == TRX_MODE_WFM || CurrentVFO->Mode == TRX_MODE_NFM)
 	{
-		if (oldState != DFM_RX1_Squelched)
+		if (oldState != DFM_RX1.squelched)
 		{
-			oldState = DFM_RX1_Squelched;
+			oldState = DFM_RX1.squelched;
 			StateChangeTime = HAL_GetTick();
 		}
 
-		if (DFM_RX1_Squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
+		if (DFM_RX1.squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME))
 			goSweep = true;
-		if (!DFM_RX1_Squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_FM))
+		if (!DFM_RX1.squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_FM))
 			goSweep = true;
 	}
 	else

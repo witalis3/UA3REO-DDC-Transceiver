@@ -70,6 +70,18 @@ typedef struct
 } demod_sam_const_t;
 //
 
+typedef struct
+{
+	float32_t stereo_fm_pilot_out[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+	float32_t stereo_fm_audio_out[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+	float32_t i_prev;
+	float32_t q_prev;
+	float32_t deemph_i_prev;
+	float32_t deemph_q_prev;
+	float32_t squelchRate;
+	bool squelched;
+} demod_fm_instance;
+
 typedef enum // receiver number
 {
 	AUDIO_RX1,
@@ -91,10 +103,10 @@ extern volatile float32_t Processor_RX1_Power_value;	  // RX signal magnitude
 extern volatile float32_t Processor_RX2_Power_value;	  // RX signal magnitude
 extern bool NeedReinitReverber;
 extern bool APROC_IFGain_Overflow;
-extern bool DFM_RX1_Squelched;
-extern bool DFM_RX2_Squelched;
 extern float32_t APROC_TX_clip_gain;
 extern float32_t APROC_TX_tune_power;
+extern demod_fm_instance DFM_RX1;
+extern demod_fm_instance DFM_RX1;
 
 // Public methods
 extern void processRxAudio(void);	  // start audio processor for RX

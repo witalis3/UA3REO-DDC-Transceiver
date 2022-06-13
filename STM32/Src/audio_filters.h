@@ -127,8 +127,10 @@ extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX1_AUDIO_I;
 extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX1_AUDIO_Q;
 extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX2_AUDIO_I;
 extern arm_biquad_cascade_df2T_instance_f32 DECIMATE_IIR_RX2_AUDIO_Q;
-extern arm_biquad_cascade_df2T_instance_f32 SFM_Pilot_Filter;
-extern arm_biquad_cascade_df2T_instance_f32 SFM_Audio_Filter;
+extern arm_biquad_cascade_df2T_instance_f32 SFM_RX1_Pilot_Filter;
+extern arm_biquad_cascade_df2T_instance_f32 SFM_RX2_Pilot_Filter;
+extern arm_biquad_cascade_df2T_instance_f32 SFM_RX1_Audio_Filter;
+extern arm_biquad_cascade_df2T_instance_f32 SFM_RX2_Audio_Filter;
 extern volatile bool NeedReinitNotch;			  // need to reinitialize the manual Notch filter
 extern volatile bool NeedReinitAudioFilters;	  // need to reinitialize the Audio filters
 extern volatile bool NeedReinitAudioFiltersClean; // also clean state

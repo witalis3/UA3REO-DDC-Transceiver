@@ -38,8 +38,6 @@ float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t Processor_RX1_Power_value;	   // RX signal magnitude
 volatile float32_t Processor_RX2_Power_value;	   // RX signal magnitude
 volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
-float32_t stereo_fm_pilot_out[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
-float32_t stereo_fm_audio_out[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 
 bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
@@ -53,9 +51,8 @@ static q15_t APROC_AudioBuffer_FT8_out[AUDIO_BUFFER_SIZE / 2] = {0};
 //static uint8_t APROC_AudioBuffer_WIFI_out[2050] = {0};
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
 
-static float32_t DFM_RX1_i_prev = 0, DFM_RX1_q_prev = 0, DFM_RX2_i_prev = 0, DFM_RX2_q_prev = 0, DFM_RX1_emph_prev = 0, DFM_RX2_emph_prev = 0; // used in FM detection and low / high pass processing
-bool DFM_RX1_Squelched = false, DFM_RX2_Squelched = false;
-static float32_t DFM_RX1_SquelchRate = 1.0f, DFM_RX2_SquelchRate = 1.0f;
+demod_fm_instance DFM_RX1 = {.squelchRate = 1.0f};
+demod_fm_instance DFM_RX2 = {.squelchRate = 1.0f};
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
@@ -1474,59 +1471,52 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 // FM demodulator
 static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm, float32_t dbm)
 {
-	float32_t *i_prev = &DFM_RX1_i_prev;
-	float32_t *q_prev = &DFM_RX1_q_prev;
-	float32_t *emph_prev = &DFM_RX1_emph_prev;
-	bool *squelched = &DFM_RX1_Squelched;
-	float32_t *squelchRate = &DFM_RX1_SquelchRate;
+	demod_fm_instance *DFM = &DFM_RX1;
 	bool sql_enabled = CurrentVFO->SQL;
 	int8_t FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
-	float32_t angle, x, y, b;
+	arm_biquad_cascade_df2T_instance_f32 *SFM_Pilot_Filter = &SFM_RX1_Pilot_Filter;
+	arm_biquad_cascade_df2T_instance_f32 *SFM_Audio_Filter = &SFM_RX1_Audio_Filter;
+	
+	float32_t angle;
 
 	if (rx_id == AUDIO_RX2)
 	{
-		i_prev = &DFM_RX2_i_prev;
-		q_prev = &DFM_RX2_q_prev;
-		emph_prev = &DFM_RX2_emph_prev;
-		squelched = &DFM_RX2_Squelched;
-		squelchRate = &DFM_RX2_SquelchRate;
+		DFM = &DFM_RX2;
 		FM_SQL_threshold_dbm = SecondaryVFO->FM_SQL_threshold_dbm;
 		sql_enabled = SecondaryVFO->SQL;
+		SFM_Pilot_Filter = &SFM_RX2_Pilot_Filter;
+		SFM_Audio_Filter = &SFM_RX2_Audio_Filter;
 	}
-
+	
 	for (uint_fast16_t i = 0; i < size; i++)
 	{
 		// first, calculate "x" and "y" for the arctan2, comparing the vectors of present data with previous data
-		y = (data_q[i] * *i_prev) - (data_i[i] * *q_prev);
-		x = (data_i[i] * *i_prev) + (data_q[i] * *q_prev);
-		arm_atan2_f32(y, x, &angle);
-
-		*q_prev = data_q[i]; // save "previous" value of each channel to allow detection of the change of angle in next go-around
-		*i_prev = data_i[i];
-
+		float32_t x = (data_q[i] * DFM->i_prev) - (data_i[i] * DFM->q_prev);
+		float32_t y = (data_i[i] * DFM->i_prev) + (data_q[i] * DFM->q_prev);
+		
+		// save "previous" value of each channel to allow detection of the change of angle in next go-around
+		DFM->q_prev = data_q[i]; 
+		DFM->i_prev = data_i[i];
+		
 		// demod
+		arm_atan2_f32(x, y, &angle);
 		data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
 
-		// fm de emphasis
-		// const float32_t alpha = 0.25f;
-		// data_i[i] = data_i[i] * (1.0f - alpha) + *emph_prev * alpha;
-		//*emph_prev = data_i[i];
-
 		// smooth SQL edges
-		if (!*squelched || !sql_enabled) // high-pass audio only if we are un-squelched (to save processor time)
+		if (!DFM->squelched || !sql_enabled) // high-pass audio only if we are un-squelched (to save processor time)
 		{
-			if (*squelchRate < 1.00f)
+			if (DFM->squelchRate < 1.00f)
 			{
-				data_i[i] *= *squelchRate;
-				*squelchRate = 1.001f * *squelchRate;
+				data_i[i] *= DFM->squelchRate;
+				DFM->squelchRate = 1.001f * DFM->squelchRate;
 			}
 		}
-		else if (*squelched) // were we squelched or tone NOT detected?
+		else if (DFM->squelched) // were we squelched or tone NOT detected?
 		{
-			if (*squelchRate > 0.01f)
+			if (DFM->squelchRate > 0.01f)
 			{
-				data_i[i] *= *squelchRate;
-				*squelchRate = 0.999f * *squelchRate;
+				data_i[i] *= DFM->squelchRate;
+				DFM->squelchRate = 0.999f * DFM->squelchRate;
 			}
 			else
 			{
@@ -1536,15 +1526,15 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	}
 
 	// *** Squelch Processing ***
-	if (FM_SQL_threshold_dbm > dbm && !*squelched)
+	if (FM_SQL_threshold_dbm > dbm && !DFM->squelched)
 	{
-		*squelchRate = 1.0f;
-		*squelched = true; // yes, close the squelch
+		DFM->squelchRate = 1.0f;
+		DFM->squelched = true; // yes, close the squelch
 	}
-	else if (FM_SQL_threshold_dbm <= dbm && *squelched)
+	else if (FM_SQL_threshold_dbm <= dbm && DFM->squelched)
 	{
-		*squelchRate = 0.01f;
-		*squelched = false; //  yes, open the squelch
+		DFM->squelchRate = 0.01f;
+		DFM->squelched = false; //  yes, open the squelch
 	}
 
 	// RDS Decoder
@@ -1554,28 +1544,43 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	}
 
 	// Stereo FM
-	if (TRX.FM_Stereo && !*squelched)
+	if (TRX.FM_Stereo && !DFM->squelched && wfm)
 	{
-		arm_biquad_cascade_df2T_f32_single(&SFM_Pilot_Filter, data_i, stereo_fm_pilot_out, size);
-		arm_biquad_cascade_df2T_f32_single(&SFM_Audio_Filter, data_i, stereo_fm_audio_out, size);
+		arm_biquad_cascade_df2T_f32_single(SFM_Pilot_Filter, data_i, DFM->stereo_fm_pilot_out, size);
+		arm_biquad_cascade_df2T_f32_single(SFM_Audio_Filter, data_i, DFM->stereo_fm_audio_out, size);
 
 		// move signal to low freq
 		for (uint_fast16_t i = 0; i < size; i++)
 		{
 			static float32_t prev_sfm_pilot_sample = 0.0f;
-			arm_atan2_f32(stereo_fm_pilot_out[i], prev_sfm_pilot_sample, &angle); // double freq
+			arm_atan2_f32(DFM->stereo_fm_pilot_out[i], prev_sfm_pilot_sample, &angle); // double freq
 			angle *= 2.0f;
 			
-			prev_sfm_pilot_sample = stereo_fm_pilot_out[i];
+			prev_sfm_pilot_sample = DFM->stereo_fm_pilot_out[i];
 
 			// get stereo sample from decoded wfm
-			float32_t stereo_sample = stereo_fm_audio_out[i] * arm_sin_f32(angle) * 2.0f;
+			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * 2.0f;
 
 			// get channels
 			data_q[i] = (data_i[i] - stereo_sample) / 2.0f; // Mono (L+R) - Stereo (L-R) = 2R
 			data_i[i] = (data_i[i] + stereo_sample) / 2.0f; // Mono (L+R) + Stereo (L-R) = 2L
-			// data_i[i] = stereo_sample;
-			// data_q[i] = stereo_sample;
+		}
+	}
+	
+	// fm de emphasis
+	if (!DFM->squelched) {
+		#define deeemp_alpha 0.75f
+		
+		for (uint_fast16_t i = 0; i < size; i++) {
+			data_i[i] = data_i[i] * (1.0f - deeemp_alpha) + DFM->deemph_i_prev * deeemp_alpha;
+			DFM->deemph_i_prev = data_i[i];
+		}
+		
+		if (TRX.FM_Stereo && wfm) {
+			for (uint_fast16_t i = 0; i < size; i++) {
+				data_q[i] = data_q[i] * (1.0f - deeemp_alpha) + DFM->deemph_q_prev * deeemp_alpha;
+				DFM->deemph_q_prev = data_q[i];
+			}
 		}
 	}
 }
