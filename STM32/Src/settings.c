@@ -11,7 +11,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "4.1.0";
+char version_string[19] = "4.2.0-dev";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -313,7 +313,7 @@ void LoadSettings(bool clear)
 		// ADC
 		TRX.ADC_Driver = true; // preamplifier (ADC driver)
 		TRX.ADC_PGA = true;	   // ADC preamp
-		TRX.ADC_RAND = true;   // ADC encryption (xor randomizer)
+		TRX.ADC_RAND = false;   // ADC encryption (xor randomizer)
 		TRX.ADC_SHDN = false;  // ADC disable
 		TRX.ADC_DITH = false;  // ADC dither
 		// WIFI
