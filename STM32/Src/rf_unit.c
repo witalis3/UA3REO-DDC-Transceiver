@@ -92,7 +92,7 @@ void RF_UNIT_ATU_Invalidate(void)
 
 static void RF_UNIT_ProcessATU(void)
 {
-	if (!TRX.ATU_Enabled)
+	if (!TRX.ATU_Enabled || !TRX.TUNER_Enabled)
 	{
 		ATU_Finished = true;
 		return;

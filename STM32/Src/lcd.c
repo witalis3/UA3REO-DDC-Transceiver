@@ -1015,29 +1015,35 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		// ATU
 		if (SYSMENU_HANDL_CHECK_HAS_ATU() && LAYOUT->STATUS_ATU_I_Y > 0)
 		{
-			float32_t *atu_i = ATU_I_VALS;
-			float32_t *atu_c = ATU_C_VALS;
+			if(TRX.TUNER_Enabled) {
+				float32_t *atu_i = ATU_I_VALS;
+				float32_t *atu_c = ATU_C_VALS;
 
-			float32_t i_val = 0;
-			float32_t c_val = 0;
-			for (uint8_t i = 0; i < ATU_MAXPOS; i++)
-			{
-				if (bitRead(TRX.ATU_I, i))
-					i_val += atu_i[i + 1];
-				if (bitRead(TRX.ATU_C, i))
-					c_val += atu_c[i + 1];
+				float32_t i_val = 0;
+				float32_t c_val = 0;
+				
+				for (uint8_t i = 0; i < ATU_MAXPOS; i++)
+				{
+					if (bitRead(TRX.ATU_I, i))
+						i_val += atu_i[i + 1];
+					if (bitRead(TRX.ATU_C, i))
+						c_val += atu_c[i + 1];
+				}
+				
+				sprintf(ctmp, "I=%.2fuH", i_val);
+				addSymbols(ctmp, ctmp, 8, " ", true);
+				LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+
+				if (TRX.ATU_T)
+					sprintf(ctmp, "CT=%dpF", (uint32_t)c_val);
+				else
+					sprintf(ctmp, "C=%dpF", (uint32_t)c_val);
+				addSymbols(ctmp, ctmp, 8, " ", true);
+				LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_C_X, LAYOUT->STATUS_ATU_C_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+			} else { //TUNER OFF
+				sprintf(ctmp, "TUN OFF ");
+				LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 			}
-
-			sprintf(ctmp, "I=%.2fuH", i_val);
-			addSymbols(ctmp, ctmp, 8, " ", true);
-			LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-
-			if (TRX.ATU_T)
-				sprintf(ctmp, "CT=%dpF", (uint32_t)c_val);
-			else
-				sprintf(ctmp, "C=%dpF", (uint32_t)c_val);
-			addSymbols(ctmp, ctmp, 8, " ", true);
-			LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_C_X, LAYOUT->STATUS_ATU_C_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 		}
 
 		if (!LAYOUT->STATUS_SMETER_ANALOG)
