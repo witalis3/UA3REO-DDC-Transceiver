@@ -1115,8 +1115,12 @@ void FRONTPANEL_BUTTONHANDLER_PRE(uint32_t parameter)
 
 void FRONTPANEL_BUTTONHANDLER_ATT(uint32_t parameter)
 {
-	TRX.ATT = !TRX.ATT;
 	if (TRX.ATT && TRX.ATT_DB < 1.0f)
+		TRX.ATT_DB = TRX.ATT_STEP;
+	else
+		TRX.ATT = !TRX.ATT;
+	
+	if (TRX.ATT_DB < 1.0f)
 		TRX.ATT_DB = TRX.ATT_STEP;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
