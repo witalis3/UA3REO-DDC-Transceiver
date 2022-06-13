@@ -384,12 +384,14 @@ void LogQSO(void)
 
 		// example message
 		//<call:5>M0JJF <gridsquare:4>IO91 <mode:3>FT8 <rst_sent:3>-21 <rst_rcvd:3>-18 <qso_date:8>20210403 <time_on:6>090500 <qso_date_off:8>20210403 <time_off:6>090821 <band:3>40m <freq:8>7.075500 <station_callsign:5>DB5AT <my_gridsquare:6>JN48ov <eor>
-		/*
-		RST Received (that you received from your worked party)
-		RST Sent (that you issued to your worked party)
-		*/
 
-		sprintf(StrToLog, " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s <time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>", strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL), RapRcv_RSL, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq, Station_Call, Locator);
+		char RapRcv_RSL_filtered[5] = {0};
+		if(RapRcv_RSL[0] == 'R')
+			strcpy(RapRcv_RSL_filtered, RapRcv_RSL + 1);
+		else
+			strcpy(RapRcv_RSL_filtered, RapRcv_RSL);
+
+		sprintf(StrToLog, " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s <time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>", strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq, Station_Call, Locator);
 		StrToLog[0] = CR;
 
 		Len = strlen(StrToLog);
