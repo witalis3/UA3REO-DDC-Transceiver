@@ -1921,6 +1921,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter)
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
+	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 
 	resetVAD();
 	TRX_ScanMode = false;
@@ -1976,6 +1977,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter)
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
+	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 
 	resetVAD();
 	TRX_ScanMode = false;
@@ -2013,6 +2015,7 @@ void FRONTPANEL_BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter)
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
+	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 
 	resetVAD();
 	TRX_ScanMode = false;
@@ -2353,6 +2356,7 @@ void FRONTPANEL_BUTTONHANDLER_GET_BAND_MEMORY(uint32_t parameter)
 		mem_num = 0;
 	
 	TRX_setFrequency(CALIBRATE.BAND_MEMORIES[band][mem_num], CurrentVFO);
+	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 }
 
 void FRONTPANEL_BUTTONHANDLER_FT8(uint32_t parameter)
