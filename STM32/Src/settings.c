@@ -232,8 +232,8 @@ void LoadSettings(bool clear)
 		TRX.SSB_HPF_TX_Filter = 200;		 // default value of SSB filter width
 		TRX.AM_LPF_RX_Filter = 6000;		 // default value of AM filter width
 		TRX.AM_LPF_TX_Filter = 6000;		 // default value of AM filter width
-		TRX.FM_LPF_RX_Filter = 10000;		 // default value of the FM filter width
-		TRX.FM_LPF_TX_Filter = 10000;		 // default value of the FM filter width
+		TRX.FM_LPF_RX_Filter = 12000;		 // default value of the FM filter width
+		TRX.FM_LPF_TX_Filter = 12000;		 // default value of the FM filter width
 		TRX.Beeper = true;					 // Keyboard beeper
 		TRX.CTCSS_Freq = 0;					 // CTCSS FM Frequency
 		TRX.SELFHEAR_Volume = 50;			 // Selfhearing volume
