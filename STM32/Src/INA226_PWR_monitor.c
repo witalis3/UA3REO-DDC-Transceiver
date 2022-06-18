@@ -1,11 +1,13 @@
 #include "INA226_PWR_monitor.h"
 #include "i2c.h"
+#include "lcd.h"
 
 static float Voltage = 0;
 static float Current = 0;
 
 uint16_t INA226_Read2Byte(uint8_t reg_addr)
 {
+	#ifdef HAS_TOUCHPAD
 	uint16_t reg_data = 0;
 	uint16_t temp = 0;
 
@@ -24,10 +26,14 @@ uint16_t INA226_Read2Byte(uint8_t reg_addr)
 		}
 	}
 	return reg_data;
+	#else
+	return 0;
+	#endif
 }
 
 uint8_t INA226_Write2Byte(uint8_t reg_addr, uint16_t reg_data)
 {
+	#ifdef HAS_TOUCHPAD
 	uint8_t data_high = (uint8_t)((reg_data & 0xFF00) >> 8);
 	uint8_t data_low = (uint8_t)reg_data & 0x00FF;
 
@@ -39,6 +45,9 @@ uint8_t INA226_Write2Byte(uint8_t reg_addr, uint16_t reg_data)
 	uint8_t res = i2c_endTransmission(&I2C_TOUCHPAD);
 
 	return res;
+	#else
+	return 0;
+	#endif
 }
 
 void INA226_Init(void)

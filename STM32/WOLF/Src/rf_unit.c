@@ -1457,7 +1457,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 void RF_UNIT_ProcessSensors(void)
 {
 #define B16_RANGE 65535.0f
-	//#define B14_RANGE 16383.0f
+#define B14_RANGE 16383.0f
 
 	// THERMAL
 	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B16_RANGE;
@@ -1489,6 +1489,9 @@ void RF_UNIT_ProcessSensors(void)
 	if (fabsf(TRX_RF_Temperature_averaged - TRX_RF_Temperature) >= 1.0f) // hysteresis
 		TRX_RF_Temperature = TRX_RF_Temperature_averaged;
 
+	//VBAT
+	TRX_VBAT_Voltage = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B14_RANGE;
+	
 	// SWR
 	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B16_RANGE;
 	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B16_RANGE;

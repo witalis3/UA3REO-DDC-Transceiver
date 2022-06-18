@@ -39,7 +39,9 @@ typedef struct
 } I2C_DEVICE;
 
 extern I2C_DEVICE I2C_WM8731;
+#ifdef HAS_TOUCHPAD
 extern I2C_DEVICE I2C_TOUCHPAD;
+#endif
 
 #define SDA_SET HAL_GPIO_WritePin(dev->SDA_PORT, dev->SDA_PIN, GPIO_PIN_SET)
 #define SCK_SET HAL_GPIO_WritePin(dev->SCK_PORT, dev->SCK_PIN, GPIO_PIN_SET)

@@ -736,7 +736,7 @@ void FRONTPANEL_Process(void)
 	}
 
 #ifndef HAS_TOUCHPAD
-	FRONTPANEL_check_ENC2SW();
+	FRONTPANEL_check_ENC2SW(true);
 #endif
 
 	if (SD_USBCardReader)
