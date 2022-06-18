@@ -318,8 +318,10 @@ static void SWR_DrawBottomGUI(void)
 	char ctmp[64] = {0};
 	int32_t freq = (int32_t)startFreq + ((int32_t)(endFreq - startFreq) / (graph_width - 1) * graph_selected_x);
 	sprintf(ctmp, "Freq=%dkHz SWR=%.1f | MinSWR=%.1f on %dkHz", (freq / 1000), (double)data[graph_selected_x], minSWR_SWR, (minSWR_Freq / 1000));
+	#ifndef LCD_SMALL_INTERFACE
 	LCDDriver_Fill_RectWH(100, graph_start_y + graph_height + 3, 200, 6, COLOR_BLACK);
 	LCDDriver_printText(ctmp, 100, graph_start_y + graph_height + 3, COLOR_GREEN, COLOR_BLACK, 1);
+	#endif
 	LCDDriver_drawFastVLine(graph_start_x + (uint16_t)graph_selected_x + 1, graph_start_y, graph_height, COLOR_GREEN);
 }
 
