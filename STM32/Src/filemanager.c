@@ -25,6 +25,14 @@ static void FILEMANAGER_Refresh(void);
 static void FILEMANAGER_OpenDialog(void);
 static void FILEMANAGER_DialogAction(void);
 
+#ifdef LCD_SMALL_INTERFACE
+			#define margin_bottom 10
+			#define font_size 1
+		#else
+			#define margin_bottom 24
+			#define font_size 2
+		#endif
+
 void FILEMANAGER_Draw(bool redraw)
 {
 	if (first_start)
@@ -40,20 +48,21 @@ void FILEMANAGER_Draw(bool redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
 		uint16_t cur_y = 5;
-		LCDDriver_printText("SD CARD FILE MANAGER", 5, cur_y, COLOR_GREEN, BG_COLOR, 2);
-		cur_y += 24;
+		
+		LCDDriver_printText("SD CARD FILE MANAGER", 5, cur_y, COLOR_GREEN, BG_COLOR, font_size);
+		cur_y += margin_bottom;
 		if (strlen(FILEMANAGER_CurrentPath) == 0)
-			LCDDriver_printText("/", 5, cur_y, FG_COLOR, BG_COLOR, 2);
+			LCDDriver_printText("/", 5, cur_y, FG_COLOR, BG_COLOR, font_size);
 		else
-			LCDDriver_printText(FILEMANAGER_CurrentPath, 5, cur_y, FG_COLOR, BG_COLOR, 2);
-		cur_y += 24;
+			LCDDriver_printText(FILEMANAGER_CurrentPath, 5, cur_y, FG_COLOR, BG_COLOR, font_size);
+		cur_y += margin_bottom;
 		if (FILEMANAGER_files_startindex == 0)
-			LCDDriver_printText("..", 5, cur_y, FG_COLOR, BG_COLOR, 2);
+			LCDDriver_printText("..", 5, cur_y, FG_COLOR, BG_COLOR, font_size);
 		cur_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
 
 		for (uint16_t file_id = 0; file_id < FILEMANAGER_LISTING_ITEMS_ON_PAGE; file_id++)
 		{
-			LCDDriver_printText(FILEMANAGER_LISTING[file_id], 5, cur_y, FG_COLOR, BG_COLOR, 2);
+			LCDDriver_printText(FILEMANAGER_LISTING[file_id], 5, cur_y, FG_COLOR, BG_COLOR, font_size);
 			cur_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
 
 			// CQ recorder
@@ -68,7 +77,7 @@ void FILEMANAGER_Draw(bool redraw)
 		LCD_UpdateQuery.SystemMenuRedraw = false;
 	}
 
-	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, FG_COLOR);
+	LCDDriver_drawFastHLine(0, 5 + margin_bottom + margin_bottom + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, FG_COLOR);
 
 	if (FILEMANAGER_dialog_opened)
 		FILEMANAGER_OpenDialog();
@@ -128,7 +137,7 @@ void FILEMANAGER_EventSecondaryRotate(int8_t direction)
 		return;
 	}
 
-	LCDDriver_drawFastHLine(0, 5 + 24 + 24 + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, BG_COLOR);
+	LCDDriver_drawFastHLine(0, 5 + margin_bottom + margin_bottom + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, BG_COLOR);
 	if (direction > 0 || current_index > 0)
 		current_index += direction;
 
@@ -220,7 +229,12 @@ static void FILEMANAGER_OpenDialog(void)
 	if (FILEMANAGER_dialog_button_index > max_buttons_index)
 		FILEMANAGER_dialog_button_index = max_buttons_index;
 
-#define margin 30
+	#ifdef LCD_SMALL_INTERFACE
+		#define margin 10
+	#else
+		#define margin 30
+	#endif
+	
 	// frame
 	LCDDriver_Fill_RectXY(margin, margin, LCD_WIDTH - margin, LCD_HEIGHT - margin, BG_COLOR);
 	LCDDriver_drawRectXY(margin, margin, LCD_WIDTH - margin, LCD_HEIGHT - margin, FG_COLOR);
@@ -236,8 +250,13 @@ static void FILEMANAGER_OpenDialog(void)
 	button_active = (FILEMANAGER_dialog_button_index == print_index);
 	LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 	LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
-	LCDDriver_getTextBoundsFont("Cancel", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-	LCDDriver_printTextFont("Cancel", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+	#ifdef LCD_SMALL_INTERFACE
+		LCDDriver_getTextBounds("Cancel", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+		LCDDriver_printText("Cancel", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+	#else
+		LCDDriver_getTextBoundsFont("Cancel", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+		LCDDriver_printTextFont("Cancel", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+	#endif
 	button_y += button_h + margin;
 	if (button_active)
 		current_dialog_action = FILMAN_ACT_CANCEL;
@@ -251,13 +270,23 @@ static void FILEMANAGER_OpenDialog(void)
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 		if (!SD_PlayInProcess)
 		{
-			LCDDriver_getTextBoundsFont("Play WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-			LCDDriver_printTextFont("Play WAV", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#ifdef LCD_SMALL_INTERFACE
+				LCDDriver_getTextBounds("Play WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+				LCDDriver_printText("Play WAV", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+			#else
+				LCDDriver_getTextBoundsFont("Play WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+				LCDDriver_printTextFont("Play WAV", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#endif
 		}
 		else
 		{
-			LCDDriver_getTextBoundsFont("Playing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-			LCDDriver_printTextFont("Playing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#ifdef LCD_SMALL_INTERFACE
+				LCDDriver_getTextBounds("Playing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+				LCDDriver_printText("Playing...", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+			#else
+				LCDDriver_getTextBoundsFont("Playing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+				LCDDriver_printTextFont("Playing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#endif
 		}
 		button_y += button_h + margin;
 		if (button_active)
@@ -270,13 +299,23 @@ static void FILEMANAGER_OpenDialog(void)
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 		if (!SD_PlayCQMessageInProcess)
 		{
-			LCDDriver_getTextBoundsFont("Transmit WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-			LCDDriver_printTextFont("Transmit WAV", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#ifdef LCD_SMALL_INTERFACE
+				LCDDriver_getTextBounds("Transmit WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+				LCDDriver_printText("Transmit WAV", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+			#else
+				LCDDriver_getTextBoundsFont("Transmit WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+				LCDDriver_printTextFont("Transmit WAV", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#endif
 		}
 		else
 		{
-			LCDDriver_getTextBoundsFont("TXing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-			LCDDriver_printTextFont("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#ifdef LCD_SMALL_INTERFACE
+				LCDDriver_getTextBounds("TXing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+				LCDDriver_printText("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+			#else
+				LCDDriver_getTextBoundsFont("TXing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+				LCDDriver_printTextFont("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#endif
 		}
 		button_y += button_h + margin;
 		if (button_active)
@@ -291,13 +330,23 @@ static void FILEMANAGER_OpenDialog(void)
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 		if (!SD_RecordInProcess)
 		{
-			LCDDriver_getTextBoundsFont("Record CQ message", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-			LCDDriver_printTextFont("Record CQ message", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#ifdef LCD_SMALL_INTERFACE
+				LCDDriver_getTextBounds("Record CQ message", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+				LCDDriver_printText("Record CQ message", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+			#else
+				LCDDriver_getTextBoundsFont("Record CQ message", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+				LCDDriver_printTextFont("Record CQ message", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#endif
 		}
 		else
 		{
-			LCDDriver_getTextBoundsFont("Recording...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-			LCDDriver_printTextFont("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#ifdef LCD_SMALL_INTERFACE
+				LCDDriver_getTextBounds("Recording...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+				LCDDriver_printText("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+			#else
+				LCDDriver_getTextBoundsFont("Recording...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+				LCDDriver_printTextFont("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			#endif
 		}
 		button_y += button_h + margin;
 		if (button_active)
@@ -310,8 +359,14 @@ static void FILEMANAGER_OpenDialog(void)
 		button_active = (FILEMANAGER_dialog_button_index == print_index);
 		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
-		LCDDriver_getTextBoundsFont("Flash STM32 firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-		LCDDriver_printTextFont("Flash STM32 firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		#ifdef LCD_SMALL_INTERFACE
+			LCDDriver_getTextBounds("Flash STM32 firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+			LCDDriver_printText("Flash STM32 firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+		#else
+			LCDDriver_getTextBoundsFont("Flash STM32 firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont("Flash STM32 firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		#endif
+	
 		button_y += button_h + margin;
 		if (button_active)
 			current_dialog_action = FILMAN_ACT_FLASHBIN;
@@ -323,8 +378,14 @@ static void FILEMANAGER_OpenDialog(void)
 		button_active = (FILEMANAGER_dialog_button_index == print_index);
 		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
-		LCDDriver_getTextBoundsFont("Flash FPGA firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-		LCDDriver_printTextFont("Flash FPGA firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		#ifdef LCD_SMALL_INTERFACE
+			LCDDriver_getTextBounds("Flash FPGA firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+			LCDDriver_printText("Flash FPGA firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+		#else
+			LCDDriver_getTextBoundsFont("Flash FPGA firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont("Flash FPGA firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+		#endif
+		
 		button_y += button_h + margin;
 		if (button_active)
 			current_dialog_action = FILMAN_ACT_FLASHJIC;
@@ -334,8 +395,14 @@ static void FILEMANAGER_OpenDialog(void)
 	button_active = (FILEMANAGER_dialog_button_index == print_index);
 	LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 	LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
-	LCDDriver_getTextBoundsFont("Delete", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-	LCDDriver_printTextFont("Delete", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+	#ifdef LCD_SMALL_INTERFACE
+		LCDDriver_getTextBounds("Delete", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+		LCDDriver_printText("Delete", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+	#else
+		LCDDriver_getTextBoundsFont("Delete", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+		LCDDriver_printTextFont("Delete", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+	#endif
+	
 	button_y += button_h + margin;
 	if (button_active)
 		current_dialog_action = FILMAN_ACT_DELETE;
