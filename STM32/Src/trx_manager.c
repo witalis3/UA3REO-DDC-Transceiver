@@ -98,7 +98,9 @@ void TRX_Init()
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(saved_mode, CurrentVFO);
 	HAL_ADCEx_InjectedStart(&hadc1); // ADC RF-UNIT'а
-	// HAL_ADCEx_InjectedStart(&hadc2); //ADC Tangent (some versions)
+	#ifdef FRONTPANEL_X1
+	HAL_ADCEx_InjectedStart(&hadc2); //ADC Tangent (some versions)
+	#endif
 	HAL_ADCEx_InjectedStart(&hadc3); // ADC CPU temperature
 }
 
