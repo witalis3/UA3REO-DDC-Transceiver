@@ -407,6 +407,12 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void);
 static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void);
 static bool SYSMENU_HANDL_CHECK_HIDDEN_ENABLED(void);
 
+#ifdef LCD_SMALL_INTERFACE
+	#define interactive_menu_top 46
+#else
+	#define interactive_menu_top 54
+#endif
+
 const static struct sysmenu_item_handler sysmenu_handlers[] =
 	{
 		{"TRX Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_TRXMENU},
@@ -1252,7 +1258,7 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw)
 	}
 
 	LCDDriver_printText(TRX.CALLSIGN, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * 12, 54, 12, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 }
 
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw)
@@ -1264,7 +1270,7 @@ static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw)
 	}
 
 	LCDDriver_printText(TRX.LOCATOR, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_locator_char_index * 12, 54, 12, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_locator_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 }
 
 static void SYSMENU_TRX_RotateCallsignChar(int8_t dir)
@@ -2990,17 +2996,18 @@ static void SYSMENU_HANDL_WIFI_RedrawSelectAPMenu(void)
 
 static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw)
 {
+	#define Y_SPAN (RASTR_FONT_H * LAYOUT->SYSMENU_FONT_SIZE)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		uint16_t curr_x = 5;
-		LCDDriver_printText("NET1 Found:", curr_x, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		curr_x += 28;
-		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		curr_x += 24;
+		uint16_t curr_y = 5;
+		LCDDriver_printText("NET1 Found:", curr_y, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		curr_y += Y_SPAN + 5;
+		LCDDriver_printText(">Refresh", 10, curr_y, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		curr_y += Y_SPAN;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_y + i * Y_SPAN, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_drawFastHLine(0, 10 + Y_SPAN * 2 + sysmenu_wifi_selected_ap_index * Y_SPAN, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	if (sysmenu_wifi_needupdate_ap)
 	{
@@ -3013,17 +3020,18 @@ static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw)
 
 static void SYSMENU_WIFI_DrawSelectAP2Menu(bool full_redraw)
 {
+	#define Y_SPAN (RASTR_FONT_H * LAYOUT->SYSMENU_FONT_SIZE)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		uint16_t curr_x = 5;
-		LCDDriver_printText("NET2 Found:", curr_x, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		curr_x += 28;
-		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		curr_x += 24;
+		uint16_t curr_y = 5;
+		LCDDriver_printText("NET2 Found:", curr_y, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		curr_y += Y_SPAN + 5;
+		LCDDriver_printText(">Refresh", 10, curr_y, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		curr_y += Y_SPAN;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_y + i * Y_SPAN, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_drawFastHLine(0, 10 + Y_SPAN * 2 + sysmenu_wifi_selected_ap_index * Y_SPAN, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	if (sysmenu_wifi_needupdate_ap)
 	{
@@ -3036,17 +3044,18 @@ static void SYSMENU_WIFI_DrawSelectAP2Menu(bool full_redraw)
 
 static void SYSMENU_WIFI_DrawSelectAP3Menu(bool full_redraw)
 {
+	#define Y_SPAN (RASTR_FONT_H * LAYOUT->SYSMENU_FONT_SIZE)
 	if (full_redraw)
 	{
 		LCDDriver_Fill(BG_COLOR);
-		uint16_t curr_x = 5;
-		LCDDriver_printText("NET3 Found:", curr_x, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		curr_x += 28;
-		LCDDriver_printText(">Refresh", 10, curr_x, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		curr_x += 24;
+		uint16_t curr_y = 5;
+		LCDDriver_printText("NET3 Found:", curr_y, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		curr_y += Y_SPAN + 5;
+		LCDDriver_printText(">Refresh", 10, curr_y, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		curr_y += Y_SPAN;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_x + i * 24, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		LCDDriver_drawFastHLine(0, 49 + sysmenu_wifi_selected_ap_index * 24, LAYOUT->SYSMENU_W, FG_COLOR);
+			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_y + i * Y_SPAN, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_drawFastHLine(0, 10 + Y_SPAN * 2 + sysmenu_wifi_selected_ap_index * Y_SPAN, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	if (sysmenu_wifi_needupdate_ap)
 	{
@@ -3141,7 +3150,7 @@ static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw)
 	}
 
 	LCDDriver_printText(TRX.WIFI_PASSWORD1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 }
 
 static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw)
@@ -3153,7 +3162,7 @@ static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw)
 	}
 
 	LCDDriver_printText(TRX.WIFI_PASSWORD2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 }
 
 static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
@@ -3165,7 +3174,7 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
 	}
 
 	LCDDriver_printText(TRX.WIFI_PASSWORD3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * 12, 54, 12, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 }
 
 static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir)
@@ -3457,17 +3466,24 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 	}
 	if (direction == 0)
 	{
+		#ifdef LCD_SMALL_INTERFACE
+			#define x_pos_clk 10
+			#define y_pos_clk 20
+		#else
+			#define x_pos_clk 76
+			#define y_pos_clk 100
+		#endif
 		sprintf(ctmp, "%d", Hours);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printText(ctmp, 76, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		LCDDriver_printText(":", 124, 100, COLOR->BUTTON_TEXT, BG_COLOR, 3);
+		LCDDriver_printText(ctmp, x_pos_clk, y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, 3);
 		sprintf(ctmp, "%d", Minutes);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printText(ctmp, 148, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		LCDDriver_printText(":", 194, 100, COLOR->BUTTON_TEXT, BG_COLOR, 3);
+		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, 3);
 		sprintf(ctmp, "%d", Seconds);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printText(ctmp, 220, 100, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 }
 
@@ -3502,7 +3518,7 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 	sysmenu_sysinfo_opened = true;
 	if (direction != 0)
 		LCDDriver_Fill(BG_COLOR);
-#define y_offs 20
+#define y_offs (LAYOUT->SYSMENU_FONT_SIZE * RASTR_FONT_H + LAYOUT->SYSMENU_FONT_SIZE * 2)
 	uint16_t y = 10;
 	char out[80];
 	sprintf(out, "STM32 FW ver: %s", version_string);
@@ -3529,6 +3545,8 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 	sprintf(out, "VCXO ERROR: %d     ", TRX_VCXO_ERROR);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
+	sprintf(out, "VBAT VOLT: %.2f     ", TRX_VBAT_Voltage);
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 
 	LCD_UpdateQuery.SystemMenu = true;
 }
