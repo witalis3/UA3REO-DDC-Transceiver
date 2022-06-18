@@ -20,7 +20,7 @@
 // EXTI0 - KEY DASH
 // EXTI1 - KEY DOT
 // EXTI2 - ENC_CLK
-// EXTI4 - PTT_IN
+// EXTI7 - PTT_IN
 // EXTI10 - 48K_Clock
 // EXTI11 - PWR_button
 // EXTI13 - ENC2_CLK
@@ -319,7 +319,7 @@ void EXTI0_IRQHandler(void)
   /* USER CODE BEGIN EXTI0_IRQn 0 */
   CPULOAD_WakeUp();
   /* USER CODE END EXTI0_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(KEY_IN_DASH_Pin);
+  HAL_GPIO_EXTI_IRQHandler(SWR_BACKW_Pin);
   /* USER CODE BEGIN EXTI0_IRQn 1 */
 
   /* USER CODE END EXTI0_IRQn 1 */
@@ -333,7 +333,7 @@ void EXTI1_IRQHandler(void)
   /* USER CODE BEGIN EXTI1_IRQn 0 */
   CPULOAD_WakeUp();
   /* USER CODE END EXTI1_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(KEY_IN_DOT_Pin);
+  HAL_GPIO_EXTI_IRQHandler(SWR_FORW_Pin);
   /* USER CODE BEGIN EXTI1_IRQn 1 */
 
   /* USER CODE END EXTI1_IRQn 1 */
@@ -351,20 +351,6 @@ void EXTI2_IRQHandler(void)
   /* USER CODE BEGIN EXTI2_IRQn 1 */
 
   /* USER CODE END EXTI2_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line4 interrupt.
-  */
-void EXTI4_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI4_IRQn 0 */
-  CPULOAD_WakeUp();
-  /* USER CODE END EXTI4_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(PTT_IN_Pin);
-  /* USER CODE BEGIN EXTI4_IRQn 1 */
-
-  /* USER CODE END EXTI4_IRQn 1 */
 }
 
 /**
@@ -407,6 +393,20 @@ void DMA1_Stream3_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
 
   /* USER CODE END DMA1_Stream3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line[9:5] interrupts.
+  */
+void EXTI9_5_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI9_5_IRQn 0 */
+	CPULOAD_WakeUp();
+  /* USER CODE END EXTI9_5_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(FPGA_BUS_D7_Pin);
+  /* USER CODE BEGIN EXTI9_5_IRQn 1 */
+
+  /* USER CODE END EXTI9_5_IRQn 1 */
 }
 
 /**
@@ -498,7 +498,7 @@ void EXTI15_10_IRQHandler(void)
   CPULOAD_WakeUp();
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(AUDIO_48K_CLOCK_Pin);
-  HAL_GPIO_EXTI_IRQHandler(PWR_ON_Pin);
+  HAL_GPIO_EXTI_IRQHandler(LCD_CS_Pin);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
 
   /* USER CODE END EXTI15_10_IRQn 1 */
@@ -643,6 +643,12 @@ void TIM6_DAC_IRQHandler(void)
 
 	//VOX
 	APROC_doVOX();
+	
+	//update shadow variables
+	TRX.SQL_shadow = CurrentVFO->SQL;
+	TRX.AGC_shadow = CurrentVFO->AGC;
+	TRX.DNR_shadow = CurrentVFO->DNR_Type;
+	TRX.Notch_on_shadow = CurrentVFO->ManualNotchFilter || CurrentVFO->AutoNotchFilter;
 	
   // if the settings have changed, update the parameters in the FPGA
   if (NeedSaveSettings)
@@ -922,6 +928,20 @@ void TIM7_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles DMA2 stream5 global interrupt.
+  */
+void DMA2_Stream5_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Stream5_IRQn 0 */
+	CPULOAD_WakeUp();
+  /* USER CODE END DMA2_Stream5_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_spi4_tx);
+  /* USER CODE BEGIN DMA2_Stream5_IRQn 1 */
+
+  /* USER CODE END DMA2_Stream5_IRQn 1 */
+}
+
+/**
   * @brief This function handles USART6 global interrupt.
   */
 void USART6_IRQHandler(void)
@@ -933,6 +953,20 @@ void USART6_IRQHandler(void)
   /* USER CODE BEGIN USART6_IRQn 1 */
 
   /* USER CODE END USART6_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SPI4 global interrupt.
+  */
+void SPI4_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI4_IRQn 0 */
+	CPULOAD_WakeUp();
+  /* USER CODE END SPI4_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi4);
+  /* USER CODE BEGIN SPI4_IRQn 1 */
+
+  /* USER CODE END SPI4_IRQn 1 */
 }
 
 /**
@@ -1054,6 +1088,12 @@ void DMA1_Stream0_IRQHandler(void)
   HAL_DMA_IRQHandler(&hdma_spi3_rx);
 }
 
+void DMA1_Stream5_IRQHandler(void)
+{
+  CPULOAD_WakeUp();
+  HAL_DMA_IRQHandler(&hdma_spi3_tx);
+}
+
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
   CPULOAD_WakeUp();
@@ -1075,7 +1115,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     if (TRX_Inited)
       FRONTPANEL_ENCODER_checkRotate();
   }
-  else if (GPIO_Pin == GPIO_PIN_4) //PTT
+  else if (GPIO_Pin == GPIO_PIN_7) //PTT
   {
     if (TRX_Inited)
       TRX_ptt_change();
@@ -1088,12 +1128,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     CW_key_change();
   }
-}
-
-void DMA1_Stream5_IRQHandler(void)
-{
-  CPULOAD_WakeUp();
-  HAL_DMA_IRQHandler(&hdma_spi3_tx);
 }
 
 /* USER CODE END 1 */
