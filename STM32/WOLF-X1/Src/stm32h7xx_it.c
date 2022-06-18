@@ -855,7 +855,7 @@ void TIM6_DAC_IRQHandler(void)
     }
 
 		//Redraw menu infolines if needed
-		LCD_UpdateQuery.SystemMenu = true;
+		// LCD_UpdateQuery.SystemMenu = true;
 		
     //Save Settings to Backup Memory
     if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))

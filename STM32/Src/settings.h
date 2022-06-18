@@ -187,7 +187,7 @@ static char ota_config_lcd[] = "ST7796S";
 #endif
 #if defined(LCD_ST7735S)
 static char ota_config_lcd[] = "ST7735S";
-#define FT8_SUPPORT true
+#define FT8_SUPPORT false
 #endif
 #if defined(LCD_RA8875)
 static char ota_config_lcd[] = "RA8875";

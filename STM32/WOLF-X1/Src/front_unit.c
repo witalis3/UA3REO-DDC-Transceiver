@@ -259,6 +259,20 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		return;
 	}
 	
+	if (TRX.XIT_Enabled) {
+		TRX_XIT += direction * 10;
+		TRX_XIT = (TRX_XIT / 10) * 10;
+		
+		if(TRX_XIT < -TRX.XIT_INTERVAL)
+			TRX_XIT = -TRX.XIT_INTERVAL;
+		if(TRX_XIT > TRX.XIT_INTERVAL)
+			TRX_XIT = TRX.XIT_INTERVAL;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		TRX_RIT = 0;
+		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+		return;
+	}
+	
 	float64_t newfreq = CurrentVFO->Freq;
 	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
 	{
