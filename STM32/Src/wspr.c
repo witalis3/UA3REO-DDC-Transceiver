@@ -24,6 +24,7 @@ static const uint8_t WSPR2_SyncVec[162] = {
 static float64_t WSPR_bands_freq[11] = {0};
 static uint8_t WSPR2_count = 0;
 static uint8_t WSPR2_BeginDelay = 0;
+
 // Saved variables
 static uint32_t Lastfreq = 0;
 static uint_fast8_t Lastmode = 0;
@@ -32,7 +33,7 @@ static bool LastBandMapEnabled = false;
 static bool LastRF_Filters = false;
 static bool LastManualNotch = false;
 static bool LastAutoNotch = false;
-static uint8_t LastDNR = false;
+static uint8_t LastDNR = 0;
 static bool LastRIT = false;
 static bool LastXIT = false;
 static bool LastSPLIT = false;
@@ -98,7 +99,12 @@ void WSPR_Start(void)
 
 	// draw the GUI
 	LCDDriver_Fill(BG_COLOR);
+	
+	#ifdef LCD_SMALL_INTERFACE
+	LCDDriver_printText("WSPR Beacon", 5, 5, FG_COLOR, BG_COLOR, 1);
+	#else
 	LCDDriver_printTextFont("WSPR Beacon", 10, 30, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	#endif
 
 	LCD_busy = false;
 	LCD_UpdateQuery.SystemMenu = true;
@@ -135,8 +141,14 @@ void WSPR_DoEvents(void)
 	}
 	LCD_busy = true;
 
+	#ifdef LCD_SMALL_INTERFACE
+	uint16_t y = 30;
+	const uint16_t y_step = 10;
+	#else
 	uint16_t y = 50;
 	const uint16_t y_step = 20;
+	#endif
+	
 	uint32_t Time = RTC->TR;
 	uint8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
 	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
@@ -154,7 +166,13 @@ void WSPR_DoEvents(void)
 
 	// show time
 	sprintf(tmp_buff, "Time: %02d:%02d:%02d", Hours, Minutes, Seconds);
+	
+	#ifdef LCD_SMALL_INTERFACE
+	LCDDriver_printText(tmp_buff, 5, y, FG_COLOR, BG_COLOR, 1);
+	#else
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
+	#endif
+	
 	y += y_step;
 
 	// next slot time
@@ -171,29 +189,57 @@ void WSPR_DoEvents(void)
 	if (Next_Hours >= 24)
 		Next_Hours = 0;
 	sprintf(tmp_buff, "Next slot: %02d:%02d:%02d", Next_Hours, Next_Minutes, Next_Seconds);
+	
+	#ifdef LCD_SMALL_INTERFACE
+	LCDDriver_printText(tmp_buff, 5, y, FG_COLOR, BG_COLOR, 1);
+	#else
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
+	#endif
+	
 	y += y_step;
 
 	// status
+	#ifdef LCD_SMALL_INTERFACE
+	if (wspr_status == WSPR_WAIT)
+		LCDDriver_printText("STATUS: WAIT    ", 5, y, FG_COLOR, BG_COLOR, 1);
+	if (wspr_status == WSPR_TRANSMIT)
+		LCDDriver_printText("STATUS: TRANSMIT", 5, y, FG_COLOR, BG_COLOR, 1);
+	#else
 	if (wspr_status == WSPR_WAIT)
 		LCDDriver_printText("STATUS: WAIT    ", 10, y, FG_COLOR, BG_COLOR, 2);
 	if (wspr_status == WSPR_TRANSMIT)
 		LCDDriver_printText("STATUS: TRANSMIT", 10, y, FG_COLOR, BG_COLOR, 2);
+	#endif
 	y += y_step;
 
 	// Band
+	#ifdef LCD_SMALL_INTERFACE
+	sprintf(tmp_buff, "Current band: % 2dm    ", wspr_band);
+	LCDDriver_printText(tmp_buff, 5, y, FG_COLOR, BG_COLOR, 1);
+	#else
 	sprintf(tmp_buff, "Current band: % 2dm (%dhz)", wspr_band, (uint32_t)(WSPR_GetFreqFromBand(wspr_band)));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
+	#endif
 	y += y_step;
 
 	// Next band
+	#ifdef LCD_SMALL_INTERFACE
+	sprintf(tmp_buff, "Next band: % 2dm    ", WSPR_GetNextBand());
+	LCDDriver_printText(tmp_buff, 5, y, FG_COLOR, BG_COLOR, 1);
+	#else
 	sprintf(tmp_buff, "Next band: % 2dm (%dhz)", WSPR_GetNextBand(), (uint32_t)(WSPR_GetFreqFromBand(WSPR_GetNextBand())));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
+	#endif
 	y += y_step;
 
 	// TX parameters
+	#ifdef LCD_SMALL_INTERFACE
+	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW     ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward));
+	LCDDriver_printText(tmp_buff, 5, y, FG_COLOR, BG_COLOR, 1);
+	#else
 	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW, TEMP: % 2d     ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward), (int16_t)TRX_RF_Temperature);
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
+	#endif
 	y += y_step;
 
 	LCD_busy = false;
@@ -417,11 +463,8 @@ static void WSPR_Encode_locator(void)
 	// merge coded locator and power into message array c[]
 	unsigned long t1 = m1;
 	WSPR2_encMessage[3] = WSPR2_encMessage[3] + (0x0f & t1 >> 18);
-	//t1 = m1;
 	WSPR2_encMessage[4] = t1 >> 10;
-	//t1 = m1;
 	WSPR2_encMessage[5] = t1 >> 2;
-	//t1 = m1;
 	WSPR2_encMessage[6] = t1 << 6;
 }
 

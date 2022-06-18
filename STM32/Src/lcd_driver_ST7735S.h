@@ -7,6 +7,7 @@
 #define LCD_WIDTH 160
 #define LCD_HEIGHT 128
 #define LCD_TYPE_SPI true
+#define LCD_SMALL_INTERFACE true
 
 //ST7735S LCD commands
 #define LCD_COMMAND_COLUMN_ADDR 0x2A
