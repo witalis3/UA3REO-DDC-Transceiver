@@ -83,6 +83,7 @@ extern "C"
 #define USBD_IDX_INTERFACE1_STR 0x05U
 #define USBD_IDX_INTERFACE2_STR 0x06U
 #define USBD_IDX_INTERFACE3_STR 0x07U
+#define USBD_IDX_INTERFACE4_STR 0x08U
 
 #define USB_REQ_TYPE_STANDARD 0x00U
 #define USB_REQ_TYPE_CLASS 0x20U
@@ -225,6 +226,7 @@ extern "C"
     uint8_t *(*GetInterface1StrDescriptor)(uint16_t *length);
     uint8_t *(*GetInterface2StrDescriptor)(uint16_t *length);
     uint8_t *(*GetInterface3StrDescriptor)(uint16_t *length);
+		uint8_t *(*GetInterface4StrDescriptor)(uint16_t *length);
 #if (USBD_LPM_ENABLED == 1U)
     uint8_t *(*GetBOSDescriptor)(USBD_SpeedTypeDef speed, uint16_t *length);
 #endif
@@ -266,10 +268,12 @@ extern "C"
     void *pClassDataDEBUG;
     void *pClassDataCAT;
     void *pClassDataAUDIO;
+		void *pClassDataIQ;
     void *pClassDataSTORAGE;
     void *pUserDataDEBUG;
     void *pUserDataCAT;
     void *pUserDataAUDIO;
+		void *pUserDataIQ;
     void *pUserDataSTORAGE;
     void *pData;
   } USBD_HandleTypeDef;

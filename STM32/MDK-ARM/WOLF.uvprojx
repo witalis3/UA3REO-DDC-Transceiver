@@ -845,6 +845,16 @@
               <FilePath>..\Src\usbd_debug_if.h</FilePath>
             </File>
             <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\usbd_iq_if.h</FilePath>
+            </File>
+            <File>
               <FileName>usbd_storage_if.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\usbd_storage_if.c</FilePath>
@@ -4873,6 +4883,16 @@
               <FilePath>..\Src\usbd_debug_if.h</FilePath>
             </File>
             <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\usbd_iq_if.h</FilePath>
+            </File>
+            <File>
               <FileName>usbd_storage_if.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\usbd_storage_if.c</FilePath>
@@ -6655,6 +6675,16 @@
               <FileName>usbd_debug_if.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\usbd_debug_if.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\usbd_iq_if.h</FilePath>
             </File>
             <File>
               <FileName>usbd_storage_if.c</FileName>
@@ -8441,6 +8471,16 @@
               <FilePath>..\Src\usbd_debug_if.h</FilePath>
             </File>
             <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\usbd_iq_if.h</FilePath>
+            </File>
+            <File>
               <FileName>usbd_storage_if.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\usbd_storage_if.c</FilePath>
@@ -10223,6 +10263,16 @@
               <FileName>usbd_debug_if.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\usbd_debug_if.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\usbd_iq_if.h</FilePath>
             </File>
             <File>
               <FileName>usbd_storage_if.c</FileName>
@@ -12009,6 +12059,16 @@
               <FilePath>..\Src\usbd_debug_if.h</FilePath>
             </File>
             <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\usbd_iq_if.h</FilePath>
+            </File>
+            <File>
               <FileName>usbd_storage_if.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\usbd_storage_if.c</FilePath>
@@ -13793,6 +13853,16 @@
               <FilePath>..\Src\usbd_debug_if.h</FilePath>
             </File>
             <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\usbd_iq_if.h</FilePath>
+            </File>
+            <File>
               <FileName>usbd_storage_if.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\usbd_storage_if.c</FilePath>
@@ -15508,6 +15578,16 @@
               <FilePath>..\Src\usbd_debug_if.h</FilePath>
             </File>
             <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\usbd_iq_if.h</FilePath>
+            </File>
+            <File>
               <FileName>usbd_storage_if.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\usbd_storage_if.c</FilePath>
@@ -17221,6 +17301,16 @@
               <FileName>usbd_debug_if.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\usbd_debug_if.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\usbd_iq_if.h</FilePath>
             </File>
             <File>
               <FileName>usbd_storage_if.c</FileName>

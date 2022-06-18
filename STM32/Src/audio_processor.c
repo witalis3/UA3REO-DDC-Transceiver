@@ -4,6 +4,7 @@
 #include "agc.h"
 #include "settings.h"
 #include "usbd_audio_if.h"
+#include "usbd_iq_if.h"
 #include "noise_reduction.h"
 #include "noise_blanker.h"
 #include "auto_notch.h"
@@ -201,6 +202,29 @@ void processRxAudio(void)
 	if (CurrentVFO->Mode != TRX_MODE_IQ)
 		doRX_IFGain(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 
+	// Send to USB IQ
+	if (USB_IQ_need_rx_buffer && TRX_Inited)
+	{
+		uint8_t *USB_IQ_rx_buffer_current = USB_IQ_rx_buffer_b;
+		if (!USB_IQ_current_rx_buffer)
+			USB_IQ_rx_buffer_current = USB_IQ_rx_buffer_a;
+
+		// drop LSB 32b->24b
+		for (uint_fast16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET / 2); i++ )
+		{
+			int32_t iq_i = APROC_Audio_Buffer_RX1_I[i] * 2147483648;
+			int32_t iq_q = APROC_Audio_Buffer_RX1_Q[i] * 2147483648;
+			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 0] = (iq_i >> 8) & 0xFF;
+			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 1] = (iq_i >> 16) & 0xFF;
+			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 2] = (iq_i >> 24) & 0xFF;
+			
+			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 3] = (iq_q >> 8) & 0xFF;
+			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 4] = (iq_q >> 16) & 0xFF;
+			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 5] = (iq_q >> 24) & 0xFF;
+		}
+		USB_IQ_need_rx_buffer = false;
+	}
+	
 	switch (CurrentVFO->Mode) // first receiver
 	{
 	case TRX_MODE_CW:

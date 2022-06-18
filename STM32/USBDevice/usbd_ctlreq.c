@@ -445,6 +445,10 @@ static void USBD_GetDescriptor(USBD_HandleTypeDef *pdev,
     case USBD_IDX_INTERFACE3_STR:
       pbuf = pdev->pDesc->GetInterface3StrDescriptor(&len);
       break;
+		
+		case USBD_IDX_INTERFACE4_STR:
+      pbuf = pdev->pDesc->GetInterface4StrDescriptor(&len);
+      break;
 
     default:
 #if (USBD_SUPPORT_USER_STRING == 1U)

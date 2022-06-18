@@ -313,6 +313,7 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
     HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, DEBUG_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE); //DEBUG 64bytes
     HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, CAT_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE);   //CAT 64bytes
     HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, AUDIO_EP_IDX, AUDIO_OUT_PACKET);            //AUDIO 288bytes
+		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, IQ_EP_IDX, AUDIO_OUT_PACKET);            //IQ 288bytes
     HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, STORAGE_EP_IDX, MSC_MAX_FS_PACKET);         //STORAGE 64bytes
     //
   }

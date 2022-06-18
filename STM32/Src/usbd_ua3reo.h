@@ -15,14 +15,16 @@ extern "C"
 #define DEBUG_INTERFACE_IDX 0x0	  // Index of DEBUG interface
 #define CAT_INTERFACE_IDX 0x2	  // Index of CAT interface
 #define AUDIO_INTERFACE_IDX 0x4	  // Index of AUDIO interface
-#define STORAGE_INTERFACE_IDX 0x7 // Index of STORAGE interface
+#define IQ_INTERFACE_IDX 0x7	  // Index of AUDIO interface
+#define STORAGE_INTERFACE_IDX 0x9 // Index of STORAGE interface
 
 #define DEBUG_EP_IDX 0x01
 #define CAT_EP_IDX 0x02
 #define AUDIO_EP_IDX 0x03
-#define STORAGE_EP_IDX 0x04
-#define DEBUG_CMD_IDX 0x05
-#define CAT_CMD_IDX 0x06
+#define IQ_EP_IDX 0x04
+#define STORAGE_EP_IDX 0x05
+#define DEBUG_CMD_IDX 0x06
+#define CAT_CMD_IDX 0x07
 
 #define IN_EP_DIR 0x80 // Adds a direction bit
 
@@ -36,6 +38,8 @@ extern "C"
 
 #define AUDIO_OUT_EP AUDIO_EP_IDX
 #define AUDIO_IN_EP (AUDIO_EP_IDX | IN_EP_DIR)
+
+#define IQ_IN_EP (IQ_EP_IDX | IN_EP_DIR)
 
 #define MSC_EPIN_ADDR (STORAGE_EP_IDX | IN_EP_DIR)
 #define MSC_EPOUT_ADDR STORAGE_EP_IDX
@@ -54,7 +58,7 @@ extern "C"
 #define CDC_DATA_FS_MAX_PACKET_SIZE 16U /* Endpoint IN & OUT Packet size */
 #define CDC_CMD_PACKET_SIZE 16U			/* Control Endpoint Packet size */
 
-#define USB_CDC_CONFIG_DESC_SIZ 337U
+#define USB_CDC_CONFIG_DESC_SIZ 436U
 
 #define CDC_DATA_FS_IN_PACKET_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
 #define CDC_DATA_FS_OUT_PACKET_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
@@ -87,6 +91,8 @@ extern "C"
 
 	extern volatile uint32_t RX_USB_AUDIO_SAMPLES;
 	extern volatile uint32_t TX_USB_AUDIO_SAMPLES;
+	extern volatile uint32_t RX_USB_IQ_SAMPLES;
+	extern volatile uint32_t TX_USB_IQ_SAMPLES;
 	extern volatile bool RX_USB_AUDIO_underrun;
 	extern volatile uint32_t USB_LastActiveTime;
 
@@ -147,12 +153,25 @@ extern "C"
 
 	typedef struct
 	{
+		int8_t (*Init)(void);
+		int8_t (*DeInit)(void); 
+	} USBD_IQ_ItfTypeDef;
+	
+	typedef struct
+	{
 		uint32_t alt_setting;
 		USBD_AUDIO_ControlTypeDef control;
 		uint8_t *RxBuffer;
 		uint8_t *TxBuffer;
 		uint32_t TxBufferIndex;
 	} USBD_AUDIO_HandleTypeDef;
+	
+	typedef struct
+	{
+		uint32_t alt_setting;
+		USBD_AUDIO_ControlTypeDef control;
+		uint8_t *RxBuffer;
+	} USBD_IQ_HandleTypeDef;
 
 	typedef struct
 	{
@@ -238,6 +257,9 @@ extern "C"
 	extern uint8_t USBD_AUDIO_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_AUDIO_ItfTypeDef *fops);
 	extern uint8_t USBD_AUDIO_StartTransmit(USBD_HandleTypeDef *pdev);
 	extern uint8_t USBD_AUDIO_StartReceive(USBD_HandleTypeDef *pdev);
+
+	extern uint8_t USBD_IQ_RegisterInterface(USBD_HandleTypeDef *pdev, USBD_IQ_ItfTypeDef *fops);
+	extern uint8_t USBD_IQ_StartTransmit(USBD_HandleTypeDef *pdev);
 
 	uint8_t USBD_MSC_RegisterStorage(USBD_HandleTypeDef *pdev, USBD_StorageTypeDef *fops);
 

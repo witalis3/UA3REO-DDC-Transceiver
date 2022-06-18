@@ -5,6 +5,7 @@
 #include "usbd_debug_if.h"
 #include "usbd_cat_if.h"
 #include "usbd_audio_if.h"
+#include "usbd_iq_if.h"
 #include "usbd_storage_if.h"
 #include "functions.h"
 
@@ -31,6 +32,10 @@ void MX_USB_DEVICE_Init(void)
     Error_Handler();
   }
   if (USBD_AUDIO_RegisterInterface(&hUsbDeviceFS, &USBD_AUDIO_fops_FS) != USBD_OK)
+  {
+    Error_Handler();
+  }
+	if (USBD_IQ_RegisterInterface(&hUsbDeviceFS, &USBD_IQ_fops_FS) != USBD_OK)
   {
     Error_Handler();
   }

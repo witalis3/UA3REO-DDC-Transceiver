@@ -37,7 +37,7 @@ extern "C"
 #include "stm32h7xx_hal.h"
 
 /*---------- -----------*/
-#define USBD_MAX_NUM_INTERFACES 8U
+#define USBD_MAX_NUM_INTERFACES 10U
 /*---------- -----------*/
 #define USBD_MAX_NUM_CONFIGURATION 1U
 /*---------- -----------*/
