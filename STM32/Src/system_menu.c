@@ -1476,6 +1476,13 @@ void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 	LCD_redraw(false);
 }
 
+void SYSMENU_AUDIO_IF_HOTKEY(void)
+{
+	SYSMENU_HANDL_AUDIOMENU(0);
+	setCurrentMenuIndex(1);
+	LCD_redraw(false);
+}
+
 void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);

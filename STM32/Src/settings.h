@@ -150,10 +150,12 @@ static char ota_config_frontpanel[] = "WF_100D";
 #endif
 
 #ifdef FRONTPANEL_X1
-#define HRDW_MCP3008_1 true
-#define HRDW_HAS_FUNCBUTTONS false
-#define MAX_VOLUME_VALUE 100.0f
-static char ota_config_frontpanel[] = "X1";
+	#define HRDW_MCP3008_1 true
+	#define HRDW_HAS_FUNCBUTTONS true
+	#define MAX_VOLUME_VALUE 100.0f
+	#define FUNCBUTTONS_COUNT 32
+	#define FUNCBUTTONS_ON_PAGE 4
+	static char ota_config_frontpanel[] = "X1";
 #endif
 
 #define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
@@ -520,10 +522,13 @@ extern struct TRX_SETTINGS
 	bool WSPR_BANDS_6;
 	bool WSPR_BANDS_2;
 	// Shadow variables
+	uint8_t FRONTPANEL_funcbuttons_page;
+	uint8_t ENC2_func_mode_idx;
 	uint8_t DNR_shadow;
 	int8_t FM_SQL_threshold_dbm_shadow;
 	bool SQL_shadow;
 	bool AGC_shadow;
+	bool Notch_on_shadow;
 	// Memory
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	//
@@ -547,6 +552,7 @@ extern struct TRX_CALIBRATE
 	float32_t BW_AD8307_OFFS;
 	float32_t INA226_CurCalc; // X_mA/Bit Coeficient is dependant on the used shunt (tolerances and soldering)
 	float32_t PWR_VLT_Calibration;
+	float32_t PWR_CUR_Calibration;
 	uint32_t RFU_LPF_END;
 	uint32_t RFU_HPF_START;
 	uint32_t RFU_BPF_0_START; // UHF

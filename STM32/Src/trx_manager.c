@@ -77,7 +77,9 @@ uint32_t TRX_TX_EndTime = 0;
 uint32_t TRX_Inactive_Time = 0;
 uint32_t TRX_DXCluster_UpdateTime = 0;
 volatile float32_t TRX_PWR_Voltage = 12.0f;
+volatile float32_t TRX_PWR_Current = 0.0f;
 volatile float32_t TRX_RF_Current = 0.0f;
+volatile float32_t TRX_VBAT_Voltage = 0.0f;
 volatile uint_fast16_t CW_Key_Timeout_est = 0;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx

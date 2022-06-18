@@ -208,7 +208,7 @@ static void LCD_displayBottomButtons(bool redraw)
 	curr_x += LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH;
 	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++)
 	{
-		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, true, false, false, 0, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].holdHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, true, false, false, 0, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].holdHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 		curr_x += LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH;
 	}
 	printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "->", true, false, false, 0, FRONTPANEL_BUTTONHANDLER_RIGHT_ARR, FRONTPANEL_BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
@@ -1706,19 +1706,19 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 	{
 		if (dx < -50)
 		{
-			FRONTPANEL_funcbuttons_page++;
-			if (FRONTPANEL_funcbuttons_page >= FUNCBUTTONS_PAGES)
-				FRONTPANEL_funcbuttons_page = 0;
+			TRX.FRONTPANEL_funcbuttons_page++;
+			if (TRX.FRONTPANEL_funcbuttons_page >= FUNCBUTTONS_PAGES)
+				TRX.FRONTPANEL_funcbuttons_page = 0;
 			LCD_UpdateQuery.BottomButtons = true;
 			LCD_UpdateQuery.TopButtons = true;
 			return true; // stop
 		}
 		if (dx > 50)
 		{
-			if (FRONTPANEL_funcbuttons_page == 0)
-				FRONTPANEL_funcbuttons_page = FUNCBUTTONS_PAGES - 1;
+			if (TRX.FRONTPANEL_funcbuttons_page == 0)
+				TRX.FRONTPANEL_funcbuttons_page = FUNCBUTTONS_PAGES - 1;
 			else
-				FRONTPANEL_funcbuttons_page--;
+				TRX.FRONTPANEL_funcbuttons_page--;
 			LCD_UpdateQuery.BottomButtons = true;
 			LCD_UpdateQuery.TopButtons = true;
 			return true; // stop

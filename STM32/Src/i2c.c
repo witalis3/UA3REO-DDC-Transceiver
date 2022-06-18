@@ -19,6 +19,7 @@ I2C_DEVICE I2C_WM8731 = {
 	.i2c_tx_buf_overflow = false,
 };
 
+#ifdef HAS_TOUCHPAD
 I2C_DEVICE I2C_TOUCHPAD = {
 	.SDA_PORT = AD2_CS_GPIO_Port,
 	.SDA_PIN = AD2_CS_Pin,
@@ -29,6 +30,7 @@ I2C_DEVICE I2C_TOUCHPAD = {
 	.i2c_tx_buf_idx = 0,
 	.i2c_tx_buf_overflow = false,
 };
+#endif
 
 static uint8_t i2c_writeOneByte(I2C_DEVICE *dev, uint8_t byte);
 

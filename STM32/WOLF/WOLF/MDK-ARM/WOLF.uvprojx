@@ -340,7 +340,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_ILI9481,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -400,6 +400,16 @@
               <FilePath>..\..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\ffconf.h</FilePath>
@@ -410,9 +420,19 @@
               <FilePath>..\..\Inc\jpeg_utils_conf.h</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_conf.h</FileName>
@@ -3171,16 +3191,6 @@
               <FilePath>..\..\..\Src\fpga.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>front_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\front_unit.h</FilePath>
@@ -3219,11 +3229,6 @@
               <FileName>INA226_PWR_monitor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\INA226_PWR_monitor.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
@@ -3324,11 +3329,6 @@
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
-            </File>
-            <File>
-              <FileName>rf_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>
@@ -4186,7 +4186,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_HX8357B,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -4246,6 +4246,16 @@
               <FilePath>..\..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\ffconf.h</FilePath>
@@ -4256,9 +4266,19 @@
               <FilePath>..\..\Inc\jpeg_utils_conf.h</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_conf.h</FileName>
@@ -4686,16 +4706,6 @@
               <FilePath>..\..\..\Src\fpga.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>front_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\front_unit.h</FilePath>
@@ -4734,11 +4744,6 @@
               <FileName>INA226_PWR_monitor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\INA226_PWR_monitor.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
@@ -4839,11 +4844,6 @@
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
-            </File>
-            <File>
-              <FileName>rf_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>
@@ -5770,7 +5770,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_HX8357C,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -5830,6 +5830,16 @@
               <FilePath>..\..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\ffconf.h</FilePath>
@@ -5840,9 +5850,19 @@
               <FilePath>..\..\Inc\jpeg_utils_conf.h</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_conf.h</FileName>
@@ -6270,16 +6290,6 @@
               <FilePath>..\..\..\Src\fpga.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>front_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\front_unit.h</FilePath>
@@ -6318,11 +6328,6 @@
               <FileName>INA226_PWR_monitor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\INA226_PWR_monitor.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
@@ -6423,11 +6428,6 @@
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
-            </File>
-            <File>
-              <FileName>rf_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>
@@ -7354,7 +7354,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_HX8357C,LCD_SLOW,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -7414,6 +7414,16 @@
               <FilePath>..\..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\ffconf.h</FilePath>
@@ -7424,9 +7434,19 @@
               <FilePath>..\..\Inc\jpeg_utils_conf.h</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_conf.h</FileName>
@@ -7854,16 +7874,6 @@
               <FilePath>..\..\..\Src\fpga.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>front_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\front_unit.h</FilePath>
@@ -7902,11 +7912,6 @@
               <FileName>INA226_PWR_monitor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\INA226_PWR_monitor.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
@@ -8007,11 +8012,6 @@
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
-            </File>
-            <File>
-              <FileName>rf_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>
@@ -8938,7 +8938,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_ILI9486,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -8998,6 +8998,16 @@
               <FilePath>..\..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\ffconf.h</FilePath>
@@ -9008,9 +9018,19 @@
               <FilePath>..\..\Inc\jpeg_utils_conf.h</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_conf.h</FileName>
@@ -9438,16 +9458,6 @@
               <FilePath>..\..\..\Src\fpga.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>front_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\front_unit.h</FilePath>
@@ -9486,11 +9496,6 @@
               <FileName>INA226_PWR_monitor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\INA226_PWR_monitor.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
@@ -9591,11 +9596,6 @@
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
-            </File>
-            <File>
-              <FileName>rf_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>
@@ -10522,7 +10522,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_SMALL_V1,LCD_ST7796S,TANGENT_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -10582,6 +10582,16 @@
               <FilePath>..\..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\ffconf.h</FilePath>
@@ -10592,9 +10602,19 @@
               <FilePath>..\..\Inc\jpeg_utils_conf.h</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_conf.h</FileName>
@@ -11022,16 +11042,6 @@
               <FilePath>..\..\..\Src\fpga.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>front_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\front_unit.h</FilePath>
@@ -11070,11 +11080,6 @@
               <FileName>INA226_PWR_monitor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\INA226_PWR_monitor.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
@@ -11175,11 +11180,6 @@
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
-            </File>
-            <File>
-              <FileName>rf_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>
@@ -12106,7 +12106,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_BIG_V1,LCD_RA8875,TOUCHPAD_GT911,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -12166,6 +12166,16 @@
               <FilePath>..\..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\ffconf.h</FilePath>
@@ -12176,9 +12186,19 @@
               <FilePath>..\..\Inc\jpeg_utils_conf.h</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_conf.h</FileName>
@@ -12606,16 +12626,6 @@
               <FilePath>..\..\..\Src\fpga.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>front_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\front_unit.h</FilePath>
@@ -12654,11 +12664,6 @@
               <FileName>INA226_PWR_monitor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\INA226_PWR_monitor.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
@@ -12759,11 +12764,6 @@
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
-            </File>
-            <File>
-              <FileName>rf_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>
@@ -13621,7 +13621,7 @@
               <MiscControls>-Wno-sign-conversion -Wno-implicit-int-conversion -Wno-float-equal -Wno-sign-compare -Wno-gnu-flexible-array-initializer -pipe  -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_WF_100D,LCD_RA8875,TOUCHPAD_GT911,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -13681,6 +13681,16 @@
               <FilePath>..\..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\ffconf.h</FilePath>
@@ -13691,9 +13701,19 @@
               <FilePath>..\..\Inc\jpeg_utils_conf.h</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_conf.h</FileName>
@@ -14121,16 +14141,6 @@
               <FilePath>..\..\..\Src\fpga.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>front_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\front_unit.h</FilePath>
@@ -14169,11 +14179,6 @@
               <FileName>INA226_PWR_monitor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\INA226_PWR_monitor.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
@@ -14274,11 +14279,6 @@
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
-            </File>
-            <File>
-              <FileName>rf_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>
@@ -15136,7 +15136,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_NONE,LCD_NONE,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\..\Inc;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Middlewares\Third_Party\FatFs\src;..\..\..\Src;..\..\..\Src\USBDevice;..\..\..\Src\JPEG;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -15196,6 +15196,16 @@
               <FilePath>..\..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
+            </File>
+            <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\front_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\ffconf.h</FilePath>
@@ -15206,9 +15216,19 @@
               <FilePath>..\..\Inc\jpeg_utils_conf.h</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_conf.h</FileName>
@@ -15636,16 +15656,6 @@
               <FilePath>..\..\..\Src\fpga.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fpga.h</FilePath>
-            </File>
-            <File>
-              <FileName>front_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\front_unit.h</FilePath>
@@ -15684,11 +15694,6 @@
               <FileName>INA226_PWR_monitor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\INA226_PWR_monitor.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
@@ -15789,11 +15794,6 @@
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
-            </File>
-            <File>
-              <FileName>rf_unit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>

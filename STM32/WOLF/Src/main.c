@@ -316,11 +316,11 @@ int main(void)
 		
 		#if (defined(LAY_800x480))
 		LCDDriver_Fill(rgb888torgb565(255, 255, 255));
-		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo7_jpeg);
+		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_jpeg);
 		LCDDriver_printTextFont(greetings_buff, 30, (LCD_HEIGHT - 30), COLOR_BLACK, rgb888torgb565(243, 243, 243), &FreeSans12pt7b);
 		#else
     LCDDriver_Fill(rgb888torgb565(243, 243, 243));
-    LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo.width) / 2), ((LCD_HEIGHT - IMAGES_logo.height) / 2), &IMAGES_logo, BG_COLOR, BG_COLOR);
+    LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo480.width) / 2), ((LCD_HEIGHT - IMAGES_logo480.height) / 2), &IMAGES_logo480, BG_COLOR, BG_COLOR);
 		LCDDriver_printText(greetings_buff, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
 		#endif
 		

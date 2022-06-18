@@ -485,8 +485,10 @@ JPEG_YCbCrToRGB_Convert_Function JPEG_ConvertFunction = NULL;
 
 void LCDDriver_printImage_JPEGCompressed(uint16_t x, uint16_t y, const uint8_t *image)
 {
+	#if LCD_WIDTH > 300
 	JPEG_blockIndex = 0;
-	uint8_t res = HAL_JPEG_Decode(&hjpeg, (uint8_t *)image, sizeof(IMAGES_logo7_jpeg), JPEG_out_buffer, JPEG_chunk_size_out, HAL_MAX_DELAY);
+	uint8_t res = HAL_JPEG_Decode(&hjpeg, (uint8_t *)image, sizeof(IMAGES_logo800_jpeg), JPEG_out_buffer, JPEG_chunk_size_out, HAL_MAX_DELAY);
+	#endif
 }
 
 void HAL_JPEG_InfoReadyCallback(JPEG_HandleTypeDef *hjpeg, JPEG_ConfTypeDef *pInfo)

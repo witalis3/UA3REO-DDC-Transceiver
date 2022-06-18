@@ -73,5 +73,6 @@ extern uint16_t LCD_bw_trapez_stripe_pos;
 extern WindowType LCD_window;
 extern STRUCT_COLOR_THEME *COLOR;
 extern STRUCT_LAYOUT_THEME *LAYOUT;
+extern bool TRX_X1_VLT_CUR_Mode; //false - VLT, true - CUR
 
 #endif

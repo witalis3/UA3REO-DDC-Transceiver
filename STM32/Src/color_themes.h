@@ -55,6 +55,7 @@ typedef const struct
 	const uint16_t BW_TRAPEZ_BORDER;
 	const uint16_t BW_TRAPEZ_STRIPE;
 	const uint16_t BW_TRAPEZ_FILL;
+	const uint16_t ACTIVE_BORDER;
 	// 7inch
 	const uint16_t FREQ_B_MHZ;
 	const uint16_t FREQ_B_KHZ;
@@ -126,6 +127,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BW_TRAPEZ_BORDER = rgb888torgb565(120, 120, 120),
 		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
 		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
+		.ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
 		// 7inch
 		.FREQ_B_MHZ = COLOR_WHITE,
 		.FREQ_B_KHZ = COLOR_WHITE,
@@ -195,6 +197,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BW_TRAPEZ_BORDER = rgb888torgb565(120, 120, 120),
 		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
 		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
+		.ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
 		// 7inch
 		.FREQ_B_MHZ = COLOR_BLACK,
 		.FREQ_B_KHZ = COLOR_BLACK,
@@ -267,6 +270,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.BW_TRAPEZ_BORDER = rgb888torgb565(120, 120, 120),
 		.BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
 		.BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
+		.ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
 		// 7inch
 
 		.FREQ_B_MHZ = rgb888torgb565(0, 255, 212),
@@ -290,7 +294,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 #define COLOR_THEMES_COUNT 3
 #define BG_COLOR COLOR->BACKGROUND
 #define FG_COLOR COLOR->FOREGROUND
-
+	
 // LCD dimensions defines
 #include "screen_layout.h"
 

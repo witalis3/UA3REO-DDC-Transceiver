@@ -383,7 +383,10 @@ void LoadSettings(bool clear)
 		TRX.SQL_shadow = TRX.VFO_A.SQL;
 		TRX.AGC_shadow = TRX.VFO_A.AGC;
 		TRX.DNR_shadow = TRX.VFO_A.DNR_Type;
+		TRX.Notch_on_shadow = false;
 		TRX.FM_SQL_threshold_dbm_shadow = TRX.VFO_A.FM_SQL_threshold_dbm;
+		TRX.FRONTPANEL_funcbuttons_page = 0;
+		TRX.ENC2_func_mode_idx = 0; // 0 - fast-step, 1 - WPM, 2 - RIT/XIT, 3 - NOTCH, 4 - LPF
 
 		LCD_showError("Loaded default settings", true);
 		SaveSettings();
@@ -624,6 +627,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.INA226_EN = false;			 // INA226 is not used				//Tisho
 		CALIBRATE.INA226_CurCalc = 0.4f;		 // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f; // VLT meter calibration
+		CALIBRATE.PWR_CUR_Calibration = 2.5f;	// CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;			 // Tuner averaging stages
 		CALIBRATE.CAT_Type = CAT_FT450;
 		CALIBRATE.LNA_compensation = 0; // Compensation for LNA, db

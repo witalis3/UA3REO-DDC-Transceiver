@@ -88,7 +88,9 @@ extern uint32_t TRX_TX_StartTime;
 extern uint32_t TRX_TX_EndTime;
 extern uint32_t TRX_DXCluster_UpdateTime;
 volatile extern float32_t TRX_PWR_Voltage;
+volatile extern float32_t TRX_PWR_Current;
 volatile extern float32_t TRX_RF_Current;
+extern volatile float32_t TRX_VBAT_Voltage;
 extern uint32_t TRX_Inactive_Time;
 volatile extern uint_fast16_t CW_Key_Timeout_est;
 

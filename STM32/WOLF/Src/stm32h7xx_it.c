@@ -795,6 +795,17 @@ void TIM6_DAC_IRQHandler(void)
 		}
 		WIFI_maySendIQ = maySendIQ;
 		
+		//Check vBAT
+		static bool vbat_checked = false;
+		if(!vbat_checked && TRX_Inited)
+		{
+			vbat_checked = true;
+			if(TRX_VBAT_Voltage <= 2.5f)
+			{
+				LCD_showError("Replace BAT", true);
+			}
+		}
+		
     CPULOAD_Calc(); // Calculate CPU load
     TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
     TRX_STM32_VREF = TRX_getSTM32H743vref();

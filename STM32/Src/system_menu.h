@@ -69,6 +69,7 @@ extern void SYSMENU_TRX_RFPOWER_HOTKEY(void);
 extern void SYSMENU_TRX_STEP_HOTKEY(void);
 extern void SYSMENU_CW_WPM_HOTKEY(void);
 extern void SYSMENU_CW_KEYER_HOTKEY(void);
+extern void SYSMENU_AUDIO_IF_HOTKEY(void);
 extern void SYSMENU_AUDIO_BW_SSB_HOTKEY(void);
 extern void SYSMENU_AUDIO_BW_CW_HOTKEY(void);
 extern void SYSMENU_AUDIO_BW_AM_HOTKEY(void);
