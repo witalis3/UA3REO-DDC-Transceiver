@@ -103,6 +103,9 @@ static void SYSMENU_HANDL_AUDIO_SELFHEAR_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FM_Stereo(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_Spectral(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_VOX(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_VOX_TIMEOUT(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_VOX_THRESHOLD(int8_t direction);
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
@@ -518,6 +521,9 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_AUDIO_FM_Stereo},
 		{"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_AUDIO_AGC_Spectral},
 		{"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_AUDIO_VAD_THRESHOLD},
+		{"VOX", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.VOX, SYSMENU_HANDL_AUDIO_VOX},
+		{"VOX Timeout, ms", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.VOX_TIMEOUT, SYSMENU_HANDL_AUDIO_VOX_TIMEOUT},
+		{"VOX Threshold, dbFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.VOX_THRESHOLD, SYSMENU_HANDL_AUDIO_VOX_THRESHOLD},
 };
 
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] =
@@ -2006,6 +2012,30 @@ static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction)
 		TRX.VAD_THRESHOLD = 200;
 	if (TRX.VAD_THRESHOLD < 1)
 		TRX.VAD_THRESHOLD = 1;
+}
+
+static void SYSMENU_HANDL_AUDIO_VOX(int8_t direction)
+{
+	if (direction > 0)
+		TRX.VOX = true;
+	if (direction < 0)
+		TRX.VOX = false;
+}
+static void SYSMENU_HANDL_AUDIO_VOX_TIMEOUT(int8_t direction)
+{
+	TRX.VOX_TIMEOUT += direction * 50;
+	if (TRX.VOX_TIMEOUT > 2000)
+		TRX.VOX_TIMEOUT = 2000;
+	if (TRX.VOX_TIMEOUT < 50)
+		TRX.VOX_TIMEOUT = 50;
+}
+static void SYSMENU_HANDL_AUDIO_VOX_THRESHOLD(int8_t direction)
+{
+	TRX.VOX_THRESHOLD += direction;
+	if (TRX.VOX_THRESHOLD > 0)
+		TRX.VOX_THRESHOLD = 0;
+	if (TRX.VOX_THRESHOLD < -120)
+		TRX.VOX_THRESHOLD = -120;
 }
 
 // CW MENU

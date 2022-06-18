@@ -395,6 +395,7 @@ extern struct TRX_SETTINGS
 	uint16_t AM_LPF_TX_Filter;
 	uint16_t FM_LPF_RX_Filter;
 	uint16_t FM_LPF_TX_Filter;
+	uint16_t VOX_TIMEOUT;
 	uint8_t IF_Gain;
 	uint8_t MIC_GAIN;
 	uint8_t MIC_REVERBER;
@@ -422,11 +423,13 @@ extern struct TRX_SETTINGS
 	int8_t MIC_EQ_MID_AMFM;
 	int8_t MIC_EQ_HIG_AMFM;
 	int8_t AGC_GAIN_TARGET;
+	int8_t VOX_THRESHOLD;
 	bool MIC_Boost;
 	bool NOISE_BLANKER;
 	bool Beeper;
 	bool FM_Stereo;
 	bool AGC_Spectral;
+	bool VOX;
 	// CW
 	float32_t CW_DotToDashRate;
 	uint16_t CW_Pitch;

@@ -643,6 +643,9 @@ void TIM6_DAC_IRQHandler(void)
 
   //every 10ms
 
+	//VOX
+	APROC_doVOX();
+	
   // if the settings have changed, update the parameters in the FPGA
   if (NeedSaveSettings)
     FPGA_NeedSendParams = true;

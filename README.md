@@ -42,12 +42,13 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Range map, with the ability to automatically switch modes
 * Digital Noise Reduction (DNR), Pulse Noise Reduction (NB)
 * CAT virtual COM port (FT-450 emulation, RTS - PTT, DTR - CW)
-* USB operation (audio transmission, CAT, KEY, PTT)
+* USB operation (audio transmission, IQ, CAT, KEY, PTT)
 * RDS/CW/RTTY decoder, self-control, gauss filter
 * SWR Graphs
 * Spectrum analyzer
 * FT8 receiver/transmitter
 * WSPR Beacon
+* VOX
 * Equalizer TX/RX, reverber
 * SSB/FM Scanner mode
 * Support SDHC/SDSC/SDXC memory cards up to 16Gb
@@ -194,6 +195,9 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **WFM Stereo** - select WFM stereo or mono decoder
 * **AGC Spectral** - Enable experimental FFT-based AGC
 * **VAD Threshold** - VAD voice detector threshold (noise suppressor for SSB mode and SCAN mode)
+* **VOX** - TX Voice activation
+* **VOX Timeout, ms** - VOX transmission delay after silence, milliseconds
+* **VOX Threshold, dbFS** - VOX Threshold, dbFS
 
 ### CW Settings
 

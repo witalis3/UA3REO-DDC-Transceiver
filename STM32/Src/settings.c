@@ -240,6 +240,9 @@ void LoadSettings(bool clear)
 		TRX.FM_Stereo = false;				 // Stereo FM Mode
 		TRX.AGC_Spectral = true;			//Spectral AGC mode
 		TRX.VAD_THRESHOLD = 150;				//Threshold of SSB/SCAN squelch
+		TRX.VOX = false;							//TX by voice activation
+		TRX.VOX_TIMEOUT = 300;				//VOX timeout in ms
+		TRX.VOX_THRESHOLD = -27;			//VOX threshold in dbFS
 		// CW
 		TRX.CW_Pitch = 600;			   // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;	   // time of releasing transmission after the last character on the key

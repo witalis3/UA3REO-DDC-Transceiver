@@ -1002,6 +1002,9 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FM_Stereo", (uint32_t *)&TRX.FM_Stereo, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.AGC_Spectral", (uint32_t *)&TRX.AGC_Spectral, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VAD_THRESHOLD", (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.VOX", (uint32_t *)&TRX.VOX, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.VOX_TIMEOUT", (uint32_t *)&TRX.VOX_TIMEOUT, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.VOX_THRESHOLD", (uint32_t *)&TRX.VOX_THRESHOLD, SYSMENU_INT8);
 			// CW
 			SD_WRITE_SETT_LINE("TRX.CW_Pitch", (uint32_t *)&TRX.CW_Pitch, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_Key_timeout", (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_UINT16);
@@ -1570,6 +1573,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.AGC_Spectral = bval;
 	if (strcmp(name, "TRX.VAD_THRESHOLD") == 0)
 		TRX.VAD_THRESHOLD = (uint8_t)uintval;
+	if (strcmp(name, "TRX.VOX") == 0)
+		TRX.VOX = bval;
+	if (strcmp(name, "TRX.VOX_TIMEOUT") == 0)
+		TRX.VOX_TIMEOUT = (uint16_t)uintval;
+	if (strcmp(name, "TRX.VOX_THRESHOLD") == 0)
+		TRX.VOX_THRESHOLD = (int8_t)intval;
 	// CW
 	if (strcmp(name, "TRX.CW_Pitch") == 0)
 		TRX.CW_Pitch = (uint16_t)uintval;

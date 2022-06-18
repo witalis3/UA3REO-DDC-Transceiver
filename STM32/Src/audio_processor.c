@@ -2051,3 +2051,36 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		sam_data->lowpass = carrier;
 	}
 }
+
+void APROC_doVOX(void) {
+	if(!TRX.VOX || !TRX_Inited) 
+		return;
+	
+	uint32_t current_tick = HAL_GetTick();
+	if(current_tick <= TRX.VOX_TIMEOUT)
+		return;
+	
+	static uint32_t VOX_LastSignalTime = 0;
+	static bool VOX_applied = false;
+	
+	static q31_t rms = 0;
+	arm_rms_q31(CODEC_Audio_Buffer_TX, CODEC_AUDIO_BUFFER_HALF_SIZE, &rms);
+	float32_t full_scale_rate = (float32_t)rms / CODEC_BITS_FULL_SCALE;
+	float32_t VOX_dbFS = rate2dbV(full_scale_rate);
+	//println("VOX dbFS: ", VOX_dbFS);
+	
+	if(VOX_dbFS > TRX.VOX_THRESHOLD)
+		VOX_LastSignalTime = current_tick;
+	
+	uint32_t vox_timeout_now = current_tick - VOX_LastSignalTime;
+	
+	if(!VOX_applied && (vox_timeout_now < TRX.VOX_TIMEOUT)) {
+		TRX_ptt_soft = true;
+		VOX_applied = true;
+	}
+	
+	if(VOX_applied && (vox_timeout_now >= TRX.VOX_TIMEOUT)) {
+		TRX_ptt_soft = false;
+		VOX_applied = false;
+	}
+}
