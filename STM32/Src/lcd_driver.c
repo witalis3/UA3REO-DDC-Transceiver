@@ -23,46 +23,75 @@ void LCDDriver_SetCurrentXOffset(uint16_t x)
 }
 
 // Text printing functions
-static void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h)
+void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h)
 {
 	uint8_t line = 0;
-
-	if ((x >= buffer_w) ||		// Clip right
-		(y >= buffer_h)		// Clip bottom
-		// || ((x + 6 * size) < 0) || // Clip left
-		//((y + 8 * size) < 0)	// Clip top
-		) return;
-
-	if ((x + 6 * size) >= buffer_w ||
-		(y + 8 * size) >= buffer_h)
+	uint8_t zoom = (size > 0 ? size : 1);
+	uint8_t size_w = (size > 0 ? RASTR_FONT_W : RASTR_FONT_4x6_W);
+	uint8_t size_h = (size > 0 ? RASTR_FONT_H : RASTR_FONT_4x6_H);
+	
+	if ((x >= buffer_w) ||			// Clip right
+		(y >= buffer_h) ||		// Clip bottom
+		((x + size_w * zoom) < 0) || // Clip left
+		((y + size_h * zoom) < 0))	// Clip top
 		return;
 
-	if (c < 32) // non-printable
+	if((x + size_w * zoom) >= buffer_w ||
+		(y + size_h * zoom) >= buffer_h)
+	return;
+	
+	if (c < 32) //non-printable
 		return;
 	if (!_cp437 && (c >= 176))
 		c++; // Handle 'classic' charset behavior
 
-	for (int8_t j = 0; j < 8; j++) // y line out
+	if(size > 0)
 	{
-		for (int8_t s_y = 0; s_y < size; s_y++) // y size scale
+		for (int8_t j = 0; j < size_h; j++)											   //y line out
 		{
-			uint16_t *point = buffer + buffer_w * (y + j * (s_y + 1)) + x;
-			for (int8_t i = 0; i < 6; i++)
+			for (int8_t s_y = 0; s_y < zoom; s_y++) //y size scale
 			{
-				// x line out
-				if (i == 5)
-					line = 0x0;
-				else
-					line = rastr_font[(c * 5) + i]; // read font
-				line >>= j;
-				for (int8_t s_x = 0; s_x < size; s_x++) // x size scale
-				{
-					if (line & 0x1)
-						*point = color; // font pixel
+				uint16_t *point = buffer + buffer_w * (y + j * (s_y + 1)) + x;
+				for (int8_t i = 0; i < size_w; i++)
+				{ 
+					//x line out
+					if (i == 5)
+						line = 0x0;
 					else
-						*point = bg; // background pixel
-					point++;
+					{
+						if(size > 0)
+							line = rastr_font[(c * 5) + i]; //read font
+						else
+							line = rastr_font_4x6[(c * 5) + i]; //read font
+					}
+					line >>= j;
+					for (int8_t s_x = 0; s_x < zoom; s_x++) //x size scale
+					{
+						if (line & 0x1)
+							*point = color; //font pixel
+						else
+							*point = bg; //background pixel
+						point++;
+					}
 				}
+			}
+		}
+	}
+	else //size 0 4x6
+	{
+		for (int8_t j = 0; j < size_h; j++)											   //y line out
+		{
+			line = rastr_font_4x6[((c - 0x20) * 6) + j]; //read font
+			uint16_t *point = buffer + buffer_w * (y + j) + x;
+			for (int8_t i = 0; i < size_w; i++)
+			{
+				if (line & 0x8)
+					*point = color; //font pixel
+				else
+					*point = bg; //background pixel
+				point++;
+				
+				line <<= 1;
 			}
 		}
 	}
@@ -92,37 +121,62 @@ void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t col
 void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size)
 {
 	uint8_t line = 0;
+	uint8_t zoom = (size > 0 ? size : 1);
+	uint8_t size_w = (size > 0 ? RASTR_FONT_W : RASTR_FONT_4x6_W);
+	uint8_t size_h = (size > 0 ? RASTR_FONT_H : RASTR_FONT_4x6_H);
+	
 	if ((x >= LCD_WIDTH) ||			// Clip right
 		(y >= LCD_HEIGHT) ||		// Clip bottom
-		((x + 6 * size - 1) < 0) || // Clip left
-		((y + 8 * size - 1) < 0))	// Clip top
+		((x + size_w * zoom - 1) < 0) || // Clip left
+		((y + size_h * zoom - 1) < 0))	// Clip top
 		return;
 
-	if (c < 32) // non-printable
+	if (c < 32) //non-printable
 		return;
 	if (!_cp437 && (c >= 176))
 		c++; // Handle 'classic' charset behavior
 
-	LCDDriver_SetCursorAreaPosition(x, y, x + 6 * size - 1, y + 8 * size - 1); // char area
-	for (int8_t j = 0; j < 8; j++)											   // y line out
+	LCDDriver_SetCursorAreaPosition(x, y, x + size_w * zoom - 1, y + size_h * zoom - 1); //char area
+	if(size > 0)
 	{
-		for (int8_t s_y = 0; s_y < size; s_y++) // y size scale
+		for (int8_t j = 0; j < size_h; j++)											   //y line out
 		{
-			for (int8_t i = 0; i < 6; i++)
+			for (int8_t s_y = 0; s_y < zoom; s_y++) //y size scale
 			{
-				// x line out
-				if (i == 5)
-					line = 0x0;
-				else
-					line = rastr_font[(c * 5) + i]; // read font
-				line >>= j;
-				for (int8_t s_x = 0; s_x < size; s_x++) // x size scale
-				{
-					if (line & 0x1)
-						LCDDriver_SendData16(color); // font pixel
+				for (int8_t i = 0; i < size_w; i++)
+				{ 
+					//x line out
+					if (i == 5)
+						line = 0x0;
 					else
-						LCDDriver_SendData16(bg); // background pixel
+					{
+						line = rastr_font[(c * 5) + i]; //read font
+					}
+					line >>= j;
+					for (int8_t s_x = 0; s_x < zoom; s_x++) //x size scale
+					{
+						if (line & 0x1)
+							LCDDriver_SendData16(color); //font pixel
+						else
+							LCDDriver_SendData16(bg); //background pixel
+					}
 				}
+			}
+		}
+	}
+	else //size 0 4x6
+	{
+		for (int8_t j = 0; j < size_h; j++)											   //y line out
+		{
+			line = rastr_font_4x6[((c - 0x20) * 6) + j]; //read font
+			for (int8_t i = 0; i < size_w; i++)
+			{
+				if (line & 0x8)
+					LCDDriver_SendData16(color); //font pixel
+				else
+					LCDDriver_SendData16(bg); //background pixel
+				
+				line <<= 1;
 			}
 		}
 	}
