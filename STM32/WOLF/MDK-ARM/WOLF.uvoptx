@@ -1863,7 +1863,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Inc\fatfs.h</PathWithFileName>
+      <PathWithFileName>..\Inc\fatfs.h</PathWithFileName>
       <FilenameWithoutPath>fatfs.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1875,7 +1875,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\fpga.h</PathWithFileName>
+      <PathWithFileName>..\Src\fpga.h</PathWithFileName>
       <FilenameWithoutPath>fpga.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1887,7 +1887,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\front_unit.c</PathWithFileName>
+      <PathWithFileName>..\Src\front_unit.c</PathWithFileName>
       <FilenameWithoutPath>front_unit.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1899,7 +1899,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Inc\ffconf.h</PathWithFileName>
+      <PathWithFileName>..\Inc\ffconf.h</PathWithFileName>
       <FilenameWithoutPath>ffconf.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1911,7 +1911,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Inc\jpeg_utils_conf.h</PathWithFileName>
+      <PathWithFileName>..\Inc\jpeg_utils_conf.h</PathWithFileName>
       <FilenameWithoutPath>jpeg_utils_conf.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1923,7 +1923,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\lcd.c</PathWithFileName>
+      <PathWithFileName>..\Src\lcd.c</PathWithFileName>
       <FilenameWithoutPath>lcd.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1935,7 +1935,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Inc\main.h</PathWithFileName>
+      <PathWithFileName>..\Inc\main.h</PathWithFileName>
       <FilenameWithoutPath>main.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1947,7 +1947,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\rf_unit.c</PathWithFileName>
+      <PathWithFileName>..\Src\rf_unit.c</PathWithFileName>
       <FilenameWithoutPath>rf_unit.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1959,7 +1959,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Inc\stm32h7xx_hal_conf.h</PathWithFileName>
+      <PathWithFileName>..\Inc\stm32h7xx_hal_conf.h</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_conf.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1971,7 +1971,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Inc\stm32h7xx_it.h</PathWithFileName>
+      <PathWithFileName>..\Inc\stm32h7xx_it.h</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_it.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1983,7 +1983,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Inc\user_diskio.h</PathWithFileName>
+      <PathWithFileName>..\Inc\user_diskio.h</PathWithFileName>
       <FilenameWithoutPath>user_diskio.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1995,7 +1995,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\main.c</PathWithFileName>
+      <PathWithFileName>..\Src\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2007,7 +2007,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\user_diskio.c</PathWithFileName>
+      <PathWithFileName>..\Src\user_diskio.c</PathWithFileName>
       <FilenameWithoutPath>user_diskio.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2019,7 +2019,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\fatfs.c</PathWithFileName>
+      <PathWithFileName>..\Src\fatfs.c</PathWithFileName>
       <FilenameWithoutPath>fatfs.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2031,7 +2031,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\stm32h7xx_it.c</PathWithFileName>
+      <PathWithFileName>..\Src\stm32h7xx_it.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_it.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2043,7 +2043,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\stm32h7xx_hal_msp.c</PathWithFileName>
+      <PathWithFileName>..\Src\stm32h7xx_hal_msp.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_msp.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2055,7 +2055,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\system_stm32h7xx.c</PathWithFileName>
+      <PathWithFileName>..\Src\system_stm32h7xx.c</PathWithFileName>
       <FilenameWithoutPath>system_stm32h7xx.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2075,7 +2075,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_adc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2087,7 +2087,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_adc_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2099,7 +2099,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_rcc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2111,7 +2111,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_rcc_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2123,7 +2123,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_flash.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2135,7 +2135,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_flash_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2147,7 +2147,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_gpio.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2159,7 +2159,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hsem.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hsem.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_hsem.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2171,7 +2171,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_dma.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2183,7 +2183,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_dma_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2195,7 +2195,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_mdma.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_mdma.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_mdma.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2207,7 +2207,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_pwr.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2219,7 +2219,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_pwr_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2231,7 +2231,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_cortex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2243,7 +2243,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2255,7 +2255,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_i2c.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2267,7 +2267,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_i2c_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2279,7 +2279,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_exti.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2291,7 +2291,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_crc.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_crc.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_crc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2303,7 +2303,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_crc_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_crc_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_crc_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2315,7 +2315,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma2d.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma2d.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_dma2d.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2327,7 +2327,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_fmc.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_fmc.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_ll_fmc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2339,7 +2339,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sram.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sram.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_sram.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2351,7 +2351,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2s.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2s.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_i2s.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2363,7 +2363,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2s_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2s_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_i2s_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2375,7 +2375,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_iwdg.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2387,7 +2387,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_jpeg.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2399,7 +2399,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_rtc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2411,7 +2411,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_rtc_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2423,7 +2423,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_spi.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2435,7 +2435,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_spi_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2447,7 +2447,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_tim.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2459,7 +2459,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_tim_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2471,7 +2471,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_uart.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2483,7 +2483,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_uart_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2495,7 +2495,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_pcd.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2507,7 +2507,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd_ex.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_hal_pcd_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2519,7 +2519,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</PathWithFileName>
+      <PathWithFileName>../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</PathWithFileName>
       <FilenameWithoutPath>stm32h7xx_ll_usb.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2539,7 +2539,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Middlewares/Third_Party/FatFs/src/diskio.c</PathWithFileName>
+      <PathWithFileName>../Middlewares/Third_Party/FatFs/src/diskio.c</PathWithFileName>
       <FilenameWithoutPath>diskio.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2551,7 +2551,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Middlewares/Third_Party/FatFs/src/ff.c</PathWithFileName>
+      <PathWithFileName>../Middlewares/Third_Party/FatFs/src/ff.c</PathWithFileName>
       <FilenameWithoutPath>ff.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2563,7 +2563,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Middlewares/Third_Party/FatFs/src/ff_gen_drv.c</PathWithFileName>
+      <PathWithFileName>../Middlewares/Third_Party/FatFs/src/ff_gen_drv.c</PathWithFileName>
       <FilenameWithoutPath>ff_gen_drv.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2575,7 +2575,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Middlewares/Third_Party/FatFs/src/option/syscall.c</PathWithFileName>
+      <PathWithFileName>../Middlewares/Third_Party/FatFs/src/option/syscall.c</PathWithFileName>
       <FilenameWithoutPath>syscall.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2587,7 +2587,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c</PathWithFileName>
+      <PathWithFileName>../Middlewares/Third_Party/FatFs/src/option/ccsbcs.c</PathWithFileName>
       <FilenameWithoutPath>ccsbcs.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2607,7 +2607,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\adpcm-lib.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\adpcm-lib.c</PathWithFileName>
       <FilenameWithoutPath>adpcm-lib.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2619,7 +2619,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\adpcm-lib.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\adpcm-lib.h</PathWithFileName>
       <FilenameWithoutPath>adpcm-lib.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2631,7 +2631,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\agc.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\agc.c</PathWithFileName>
       <FilenameWithoutPath>agc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2643,7 +2643,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\agc.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\agc.h</PathWithFileName>
       <FilenameWithoutPath>agc.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2655,7 +2655,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\audio_filters.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\audio_filters.c</PathWithFileName>
       <FilenameWithoutPath>audio_filters.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2667,7 +2667,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\audio_filters.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\audio_filters.h</PathWithFileName>
       <FilenameWithoutPath>audio_filters.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2679,7 +2679,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\audio_processor.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\audio_processor.c</PathWithFileName>
       <FilenameWithoutPath>audio_processor.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2691,7 +2691,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\audio_processor.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\audio_processor.h</PathWithFileName>
       <FilenameWithoutPath>audio_processor.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2703,7 +2703,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\auto_notch.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\auto_notch.c</PathWithFileName>
       <FilenameWithoutPath>auto_notch.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2715,7 +2715,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\auto_notch.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\auto_notch.h</PathWithFileName>
       <FilenameWithoutPath>auto_notch.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2727,7 +2727,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\bands.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\bands.c</PathWithFileName>
       <FilenameWithoutPath>bands.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2739,7 +2739,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\bands.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\bands.h</PathWithFileName>
       <FilenameWithoutPath>bands.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2751,7 +2751,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\bootloader.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\bootloader.c</PathWithFileName>
       <FilenameWithoutPath>bootloader.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2763,7 +2763,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\bootloader.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\bootloader.h</PathWithFileName>
       <FilenameWithoutPath>bootloader.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2775,7 +2775,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\callsign.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\callsign.c</PathWithFileName>
       <FilenameWithoutPath>callsign.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2787,7 +2787,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\callsign.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\callsign.h</PathWithFileName>
       <FilenameWithoutPath>callsign.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2799,7 +2799,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\color_themes.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\color_themes.h</PathWithFileName>
       <FilenameWithoutPath>color_themes.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2811,7 +2811,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\cw.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\cw.c</PathWithFileName>
       <FilenameWithoutPath>cw.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2823,7 +2823,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\cw.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\cw.h</PathWithFileName>
       <FilenameWithoutPath>cw.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2835,7 +2835,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\cw_decoder.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\cw_decoder.c</PathWithFileName>
       <FilenameWithoutPath>cw_decoder.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2847,7 +2847,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\cw_decoder.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\cw_decoder.h</PathWithFileName>
       <FilenameWithoutPath>cw_decoder.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2859,7 +2859,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\decoder.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\decoder.c</PathWithFileName>
       <FilenameWithoutPath>decoder.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2871,7 +2871,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\decoder.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\decoder.h</PathWithFileName>
       <FilenameWithoutPath>decoder.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2883,7 +2883,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\fft.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\fft.c</PathWithFileName>
       <FilenameWithoutPath>fft.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2895,7 +2895,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\fft.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\fft.h</PathWithFileName>
       <FilenameWithoutPath>fft.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2907,7 +2907,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\filemanager.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\filemanager.c</PathWithFileName>
       <FilenameWithoutPath>filemanager.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2919,7 +2919,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\filemanager.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\filemanager.h</PathWithFileName>
       <FilenameWithoutPath>filemanager.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2931,7 +2931,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\fonts.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\fonts.c</PathWithFileName>
       <FilenameWithoutPath>fonts.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2943,7 +2943,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\fonts.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\fonts.h</PathWithFileName>
       <FilenameWithoutPath>fonts.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2955,7 +2955,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\fpga.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\fpga.c</PathWithFileName>
       <FilenameWithoutPath>fpga.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2967,7 +2967,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\front_unit.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\front_unit.h</PathWithFileName>
       <FilenameWithoutPath>front_unit.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2979,7 +2979,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\functions.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\functions.c</PathWithFileName>
       <FilenameWithoutPath>functions.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -2991,7 +2991,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\functions.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\functions.h</PathWithFileName>
       <FilenameWithoutPath>functions.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3003,7 +3003,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\i2c.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\i2c.c</PathWithFileName>
       <FilenameWithoutPath>i2c.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3015,7 +3015,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\i2c.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\i2c.h</PathWithFileName>
       <FilenameWithoutPath>i2c.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3027,7 +3027,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\images.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\images.h</PathWithFileName>
       <FilenameWithoutPath>images.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3039,7 +3039,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\INA226_PWR_monitor.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\INA226_PWR_monitor.c</PathWithFileName>
       <FilenameWithoutPath>INA226_PWR_monitor.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3051,7 +3051,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\INA226_PWR_monitor.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\INA226_PWR_monitor.h</PathWithFileName>
       <FilenameWithoutPath>INA226_PWR_monitor.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3063,7 +3063,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\lcd.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\lcd.h</PathWithFileName>
       <FilenameWithoutPath>lcd.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3075,7 +3075,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\lcd_driver.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\lcd_driver.c</PathWithFileName>
       <FilenameWithoutPath>lcd_driver.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3087,7 +3087,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\lcd_driver.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\lcd_driver.h</PathWithFileName>
       <FilenameWithoutPath>lcd_driver.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3099,7 +3099,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\lcd_driver_ILI9481.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\lcd_driver_ILI9481.c</PathWithFileName>
       <FilenameWithoutPath>lcd_driver_ILI9481.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3111,7 +3111,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\lcd_driver_ILI9481.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\lcd_driver_ILI9481.h</PathWithFileName>
       <FilenameWithoutPath>lcd_driver_ILI9481.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3123,7 +3123,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\lcd_driver_NONE.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\lcd_driver_NONE.c</PathWithFileName>
       <FilenameWithoutPath>lcd_driver_NONE.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3135,7 +3135,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\lcd_driver_NONE.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\lcd_driver_NONE.h</PathWithFileName>
       <FilenameWithoutPath>lcd_driver_NONE.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3147,7 +3147,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\lcd_driver_RA8875.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\lcd_driver_RA8875.c</PathWithFileName>
       <FilenameWithoutPath>lcd_driver_RA8875.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3159,7 +3159,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\lcd_driver_RA8875.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\lcd_driver_RA8875.h</PathWithFileName>
       <FilenameWithoutPath>lcd_driver_RA8875.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3171,7 +3171,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\locator.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\locator.c</PathWithFileName>
       <FilenameWithoutPath>locator.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3183,7 +3183,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\locator.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\locator.h</PathWithFileName>
       <FilenameWithoutPath>locator.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3195,7 +3195,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\noise_blanker.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\noise_blanker.c</PathWithFileName>
       <FilenameWithoutPath>noise_blanker.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3207,7 +3207,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\noise_blanker.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\noise_blanker.h</PathWithFileName>
       <FilenameWithoutPath>noise_blanker.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3219,7 +3219,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\noise_reduction.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\noise_reduction.c</PathWithFileName>
       <FilenameWithoutPath>noise_reduction.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3231,7 +3231,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\noise_reduction.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\noise_reduction.h</PathWithFileName>
       <FilenameWithoutPath>noise_reduction.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3243,7 +3243,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\print.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\print.h</PathWithFileName>
       <FilenameWithoutPath>print.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3255,7 +3255,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\profiler.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\profiler.c</PathWithFileName>
       <FilenameWithoutPath>profiler.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3267,7 +3267,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\profiler.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\profiler.h</PathWithFileName>
       <FilenameWithoutPath>profiler.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3279,7 +3279,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\rds_decoder.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\rds_decoder.c</PathWithFileName>
       <FilenameWithoutPath>rds_decoder.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3291,7 +3291,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\rds_decoder.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\rds_decoder.h</PathWithFileName>
       <FilenameWithoutPath>rds_decoder.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3303,7 +3303,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\rf_unit.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\rf_unit.h</PathWithFileName>
       <FilenameWithoutPath>rf_unit.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3315,7 +3315,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\rtty_decoder.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\rtty_decoder.c</PathWithFileName>
       <FilenameWithoutPath>rtty_decoder.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3327,7 +3327,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\rtty_decoder.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\rtty_decoder.h</PathWithFileName>
       <FilenameWithoutPath>rtty_decoder.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3339,7 +3339,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\screen_layout.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\screen_layout.h</PathWithFileName>
       <FilenameWithoutPath>screen_layout.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3351,7 +3351,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\screen_layout_480x320.cpp</PathWithFileName>
+      <PathWithFileName>..\..\Src\screen_layout_480x320.cpp</PathWithFileName>
       <FilenameWithoutPath>screen_layout_480x320.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3363,7 +3363,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\screen_layout_800x480.cpp</PathWithFileName>
+      <PathWithFileName>..\..\Src\screen_layout_800x480.cpp</PathWithFileName>
       <FilenameWithoutPath>screen_layout_800x480.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3375,7 +3375,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\sd.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\sd.c</PathWithFileName>
       <FilenameWithoutPath>sd.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3387,7 +3387,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\sd.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\sd.h</PathWithFileName>
       <FilenameWithoutPath>sd.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3399,7 +3399,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\self_test.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\self_test.c</PathWithFileName>
       <FilenameWithoutPath>self_test.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3411,7 +3411,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\self_test.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\self_test.h</PathWithFileName>
       <FilenameWithoutPath>self_test.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3423,7 +3423,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\settings.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\settings.c</PathWithFileName>
       <FilenameWithoutPath>settings.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3435,7 +3435,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\settings.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\settings.h</PathWithFileName>
       <FilenameWithoutPath>settings.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3447,7 +3447,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\spec_analyzer.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\spec_analyzer.c</PathWithFileName>
       <FilenameWithoutPath>spec_analyzer.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3459,7 +3459,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\spec_analyzer.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\spec_analyzer.h</PathWithFileName>
       <FilenameWithoutPath>spec_analyzer.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3471,7 +3471,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\swr_analyzer.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\swr_analyzer.c</PathWithFileName>
       <FilenameWithoutPath>swr_analyzer.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3483,7 +3483,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\swr_analyzer.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\swr_analyzer.h</PathWithFileName>
       <FilenameWithoutPath>swr_analyzer.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3495,7 +3495,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\system_menu.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\system_menu.c</PathWithFileName>
       <FilenameWithoutPath>system_menu.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3507,7 +3507,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\system_menu.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\system_menu.h</PathWithFileName>
       <FilenameWithoutPath>system_menu.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3519,7 +3519,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\touchpad.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\touchpad.c</PathWithFileName>
       <FilenameWithoutPath>touchpad.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3531,7 +3531,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\touchpad.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\touchpad.h</PathWithFileName>
       <FilenameWithoutPath>touchpad.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3543,7 +3543,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\touchpad_GT911.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\touchpad_GT911.c</PathWithFileName>
       <FilenameWithoutPath>touchpad_GT911.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3555,7 +3555,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\touchpad_GT911.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\touchpad_GT911.h</PathWithFileName>
       <FilenameWithoutPath>touchpad_GT911.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3567,7 +3567,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\trx_manager.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\trx_manager.c</PathWithFileName>
       <FilenameWithoutPath>trx_manager.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3579,7 +3579,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\trx_manager.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\trx_manager.h</PathWithFileName>
       <FilenameWithoutPath>trx_manager.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3591,7 +3591,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_audio_if.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_audio_if.c</PathWithFileName>
       <FilenameWithoutPath>usbd_audio_if.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3603,7 +3603,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_audio_if.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_audio_if.h</PathWithFileName>
       <FilenameWithoutPath>usbd_audio_if.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3615,7 +3615,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_cat_if.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_cat_if.c</PathWithFileName>
       <FilenameWithoutPath>usbd_cat_if.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3627,7 +3627,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_cat_if.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_cat_if.h</PathWithFileName>
       <FilenameWithoutPath>usbd_cat_if.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3639,7 +3639,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_debug_if.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_debug_if.c</PathWithFileName>
       <FilenameWithoutPath>usbd_debug_if.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3651,7 +3651,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_debug_if.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_debug_if.h</PathWithFileName>
       <FilenameWithoutPath>usbd_debug_if.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3663,7 +3663,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_iq_if.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_iq_if.c</PathWithFileName>
       <FilenameWithoutPath>usbd_iq_if.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3675,7 +3675,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_iq_if.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_iq_if.h</PathWithFileName>
       <FilenameWithoutPath>usbd_iq_if.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3687,7 +3687,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_storage_if.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_storage_if.c</PathWithFileName>
       <FilenameWithoutPath>usbd_storage_if.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3699,7 +3699,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_storage_if.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_storage_if.h</PathWithFileName>
       <FilenameWithoutPath>usbd_storage_if.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3711,7 +3711,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_ua3reo.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_ua3reo.c</PathWithFileName>
       <FilenameWithoutPath>usbd_ua3reo.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3723,7 +3723,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\usbd_ua3reo.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\usbd_ua3reo.h</PathWithFileName>
       <FilenameWithoutPath>usbd_ua3reo.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3735,7 +3735,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\vad.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\vad.c</PathWithFileName>
       <FilenameWithoutPath>vad.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3747,7 +3747,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\vad.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\vad.h</PathWithFileName>
       <FilenameWithoutPath>vad.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3759,7 +3759,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\vocoder.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\vocoder.c</PathWithFileName>
       <FilenameWithoutPath>vocoder.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3771,7 +3771,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\vocoder.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\vocoder.h</PathWithFileName>
       <FilenameWithoutPath>vocoder.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3783,7 +3783,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\wifi.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\wifi.c</PathWithFileName>
       <FilenameWithoutPath>wifi.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3795,7 +3795,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\wifi.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\wifi.h</PathWithFileName>
       <FilenameWithoutPath>wifi.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3807,7 +3807,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\wm8731.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\wm8731.c</PathWithFileName>
       <FilenameWithoutPath>wm8731.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3819,7 +3819,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\wm8731.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\wm8731.h</PathWithFileName>
       <FilenameWithoutPath>wm8731.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3831,7 +3831,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\wspr.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\wspr.c</PathWithFileName>
       <FilenameWithoutPath>wspr.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3843,7 +3843,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\wspr.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\wspr.h</PathWithFileName>
       <FilenameWithoutPath>wspr.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3863,7 +3863,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\BiquadDesigner\biquad.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\BiquadDesigner\biquad.c</PathWithFileName>
       <FilenameWithoutPath>biquad.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3875,7 +3875,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\BiquadDesigner\biquad.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\BiquadDesigner\biquad.h</PathWithFileName>
       <FilenameWithoutPath>biquad.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3895,7 +3895,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\constants.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\constants.c</PathWithFileName>
       <FilenameWithoutPath>constants.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3907,7 +3907,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\constants.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\constants.h</PathWithFileName>
       <FilenameWithoutPath>constants.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3919,7 +3919,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\decode.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\decode.c</PathWithFileName>
       <FilenameWithoutPath>decode.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3931,7 +3931,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\decode.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\decode.h</PathWithFileName>
       <FilenameWithoutPath>decode.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3943,7 +3943,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\decode_ft8.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\decode_ft8.c</PathWithFileName>
       <FilenameWithoutPath>decode_ft8.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3955,7 +3955,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\decode_ft8.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\decode_ft8.h</PathWithFileName>
       <FilenameWithoutPath>decode_ft8.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3967,7 +3967,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\encode.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\encode.c</PathWithFileName>
       <FilenameWithoutPath>encode.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3979,7 +3979,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\encode.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\encode.h</PathWithFileName>
       <FilenameWithoutPath>encode.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -3991,7 +3991,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\FT8_GUI.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\FT8_GUI.c</PathWithFileName>
       <FilenameWithoutPath>FT8_GUI.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4003,7 +4003,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\FT8_GUI.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\FT8_GUI.h</PathWithFileName>
       <FilenameWithoutPath>FT8_GUI.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4015,7 +4015,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\FT8_main.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\FT8_main.c</PathWithFileName>
       <FilenameWithoutPath>FT8_main.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4027,7 +4027,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\FT8_main.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\FT8_main.h</PathWithFileName>
       <FilenameWithoutPath>FT8_main.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4039,7 +4039,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\gen_ft8.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\gen_ft8.c</PathWithFileName>
       <FilenameWithoutPath>gen_ft8.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4051,7 +4051,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\gen_ft8.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\gen_ft8.h</PathWithFileName>
       <FilenameWithoutPath>gen_ft8.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4063,7 +4063,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\ldpc.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\ldpc.c</PathWithFileName>
       <FilenameWithoutPath>ldpc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4075,7 +4075,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\ldpc.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\ldpc.h</PathWithFileName>
       <FilenameWithoutPath>ldpc.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4087,7 +4087,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\locator_ft8.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\locator_ft8.c</PathWithFileName>
       <FilenameWithoutPath>locator_ft8.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4099,7 +4099,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\locator_ft8.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\locator_ft8.h</PathWithFileName>
       <FilenameWithoutPath>locator_ft8.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4111,7 +4111,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\pack.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\pack.c</PathWithFileName>
       <FilenameWithoutPath>pack.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4123,7 +4123,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\pack.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\pack.h</PathWithFileName>
       <FilenameWithoutPath>pack.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4135,7 +4135,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\Process_DSP.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\Process_DSP.c</PathWithFileName>
       <FilenameWithoutPath>Process_DSP.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4147,7 +4147,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\Process_DSP.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\Process_DSP.h</PathWithFileName>
       <FilenameWithoutPath>Process_DSP.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4159,7 +4159,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\text.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\text.c</PathWithFileName>
       <FilenameWithoutPath>text.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4171,7 +4171,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\text.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\text.h</PathWithFileName>
       <FilenameWithoutPath>text.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4183,7 +4183,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\traffic_manager.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\traffic_manager.c</PathWithFileName>
       <FilenameWithoutPath>traffic_manager.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4195,7 +4195,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\traffic_manager.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\traffic_manager.h</PathWithFileName>
       <FilenameWithoutPath>traffic_manager.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4207,7 +4207,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\unpack.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\unpack.c</PathWithFileName>
       <FilenameWithoutPath>unpack.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4219,7 +4219,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\unpack.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\unpack.h</PathWithFileName>
       <FilenameWithoutPath>unpack.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4231,7 +4231,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\FT8\WF_Table.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\FT8\WF_Table.h</PathWithFileName>
       <FilenameWithoutPath>WF_Table.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4251,7 +4251,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\JPEG\jpeg_utils.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\JPEG\jpeg_utils.c</PathWithFileName>
       <FilenameWithoutPath>jpeg_utils.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4263,7 +4263,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\JPEG\jpeg_utils.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\JPEG\jpeg_utils.h</PathWithFileName>
       <FilenameWithoutPath>jpeg_utils.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4275,7 +4275,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\JPEG\jpeg_utils_conf_template.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\JPEG\jpeg_utils_conf_template.h</PathWithFileName>
       <FilenameWithoutPath>jpeg_utils_conf_template.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4295,7 +4295,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usb_device.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usb_device.c</PathWithFileName>
       <FilenameWithoutPath>usb_device.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4307,7 +4307,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usb_device.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usb_device.h</PathWithFileName>
       <FilenameWithoutPath>usb_device.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4319,7 +4319,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_conf.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_conf.c</PathWithFileName>
       <FilenameWithoutPath>usbd_conf.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4331,7 +4331,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_conf.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_conf.h</PathWithFileName>
       <FilenameWithoutPath>usbd_conf.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4343,7 +4343,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_core.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_core.c</PathWithFileName>
       <FilenameWithoutPath>usbd_core.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4355,7 +4355,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_core.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_core.h</PathWithFileName>
       <FilenameWithoutPath>usbd_core.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4367,7 +4367,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_ctlreq.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_ctlreq.c</PathWithFileName>
       <FilenameWithoutPath>usbd_ctlreq.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4379,7 +4379,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_ctlreq.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_ctlreq.h</PathWithFileName>
       <FilenameWithoutPath>usbd_ctlreq.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4391,7 +4391,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_def.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_def.h</PathWithFileName>
       <FilenameWithoutPath>usbd_def.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4403,7 +4403,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_desc.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_desc.c</PathWithFileName>
       <FilenameWithoutPath>usbd_desc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4415,7 +4415,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_desc.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_desc.h</PathWithFileName>
       <FilenameWithoutPath>usbd_desc.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4427,7 +4427,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_ioreq.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_ioreq.c</PathWithFileName>
       <FilenameWithoutPath>usbd_ioreq.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4439,7 +4439,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_ioreq.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_ioreq.h</PathWithFileName>
       <FilenameWithoutPath>usbd_ioreq.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4451,7 +4451,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_msc_bot.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_msc_bot.c</PathWithFileName>
       <FilenameWithoutPath>usbd_msc_bot.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4463,7 +4463,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_msc_bot.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_msc_bot.h</PathWithFileName>
       <FilenameWithoutPath>usbd_msc_bot.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4475,7 +4475,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_msc_data.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_msc_data.c</PathWithFileName>
       <FilenameWithoutPath>usbd_msc_data.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4487,7 +4487,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_msc_data.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_msc_data.h</PathWithFileName>
       <FilenameWithoutPath>usbd_msc_data.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4499,7 +4499,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_msc_scsi.c</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_msc_scsi.c</PathWithFileName>
       <FilenameWithoutPath>usbd_msc_scsi.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -4511,7 +4511,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\Src\USBDevice\usbd_msc_scsi.h</PathWithFileName>
+      <PathWithFileName>..\..\Src\USBDevice\usbd_msc_scsi.h</PathWithFileName>
       <FilenameWithoutPath>usbd_msc_scsi.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

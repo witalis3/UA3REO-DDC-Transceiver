@@ -340,7 +340,7 @@
               <MiscControls>-Wno-padded -Wno-implicit-int-float-conversion -Wno-sign-conversion -Wno-implicit-int-conversion -Wno-cast-qual -Wno-cast-align -Wno-implicit-float-conversion -Wno-implicit-fallthrough -Wno-float-equal -Wno-gnu-compound-literal-initializer -Wno-sign-compare -Wno-date-time -Wno-c++98-compat-pedantic -Wno-old-style-cast -Wno-gnu-flexible-array-initializer -Wno-c99-extensions -pipe -Wno-unused-value</MiscControls>
               <Define>FRONTPANEL_X1,LCD_ST7735S,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Inc;..\..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\..\Middlewares\Third_Party\FatFs\src;..\..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\..\Src;..\..\..\Src\USBDevice;..\..\Src;..\..\..\Src\JPEG</IncludePath>
+              <IncludePath>..\Inc;..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\Middlewares\Third_Party\FatFs\src;..\Drivers\STM32H7xx_HAL_Driver\Inc;..\..\Src;..\..\Src\USBDevice;..\Src;..\..\Src\JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -397,52 +397,52 @@
             <File>
               <FileName>fatfs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Src\fatfs.c</FilePath>
+              <FilePath>..\Src\fatfs.c</FilePath>
             </File>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Src\main.c</FilePath>
+              <FilePath>..\Src\main.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Src\stm32h7xx_hal_msp.c</FilePath>
+              <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_it.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Src\stm32h7xx_it.c</FilePath>
+              <FilePath>..\Src\stm32h7xx_it.c</FilePath>
             </File>
             <File>
               <FileName>system_stm32h7xx.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Src\system_stm32h7xx.c</FilePath>
+              <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
             <File>
               <FileName>user_diskio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Src\user_diskio.c</FilePath>
+              <FilePath>..\Src\user_diskio.c</FilePath>
             </File>
             <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Src\front_unit.c</FilePath>
+              <FilePath>..\Src\front_unit.c</FilePath>
             </File>
             <File>
               <FileName>fpga.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Src\fpga.h</FilePath>
+              <FilePath>..\Src\fpga.h</FilePath>
             </File>
             <File>
               <FileName>rf_unit.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Src\rf_unit.c</FilePath>
+              <FilePath>..\Src\rf_unit.c</FilePath>
             </File>
             <File>
               <FileName>lcd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Src\lcd.c</FilePath>
+              <FilePath>..\Src\lcd.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -452,527 +452,527 @@
             <File>
               <FileName>adpcm-lib.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\adpcm-lib.c</FilePath>
+              <FilePath>..\..\Src\adpcm-lib.c</FilePath>
             </File>
             <File>
               <FileName>adpcm-lib.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\adpcm-lib.h</FilePath>
+              <FilePath>..\..\Src\adpcm-lib.h</FilePath>
             </File>
             <File>
               <FileName>agc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\agc.c</FilePath>
+              <FilePath>..\..\Src\agc.c</FilePath>
             </File>
             <File>
               <FileName>agc.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\agc.h</FilePath>
+              <FilePath>..\..\Src\agc.h</FilePath>
             </File>
             <File>
               <FileName>audio_filters.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\audio_filters.c</FilePath>
+              <FilePath>..\..\Src\audio_filters.c</FilePath>
             </File>
             <File>
               <FileName>audio_filters.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\audio_filters.h</FilePath>
+              <FilePath>..\..\Src\audio_filters.h</FilePath>
             </File>
             <File>
               <FileName>audio_processor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\audio_processor.c</FilePath>
+              <FilePath>..\..\Src\audio_processor.c</FilePath>
             </File>
             <File>
               <FileName>audio_processor.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\audio_processor.h</FilePath>
+              <FilePath>..\..\Src\audio_processor.h</FilePath>
             </File>
             <File>
               <FileName>auto_notch.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\auto_notch.c</FilePath>
+              <FilePath>..\..\Src\auto_notch.c</FilePath>
             </File>
             <File>
               <FileName>auto_notch.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\auto_notch.h</FilePath>
+              <FilePath>..\..\Src\auto_notch.h</FilePath>
             </File>
             <File>
               <FileName>bands.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\bands.c</FilePath>
+              <FilePath>..\..\Src\bands.c</FilePath>
             </File>
             <File>
               <FileName>bands.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\bands.h</FilePath>
+              <FilePath>..\..\Src\bands.h</FilePath>
             </File>
             <File>
               <FileName>bootloader.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\bootloader.c</FilePath>
+              <FilePath>..\..\Src\bootloader.c</FilePath>
             </File>
             <File>
               <FileName>bootloader.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\bootloader.h</FilePath>
+              <FilePath>..\..\Src\bootloader.h</FilePath>
             </File>
             <File>
               <FileName>callsign.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\callsign.c</FilePath>
+              <FilePath>..\..\Src\callsign.c</FilePath>
             </File>
             <File>
               <FileName>callsign.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\callsign.h</FilePath>
+              <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\color_themes.h</FilePath>
+              <FilePath>..\..\Src\color_themes.h</FilePath>
             </File>
             <File>
               <FileName>cw.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\cw.c</FilePath>
+              <FilePath>..\..\Src\cw.c</FilePath>
             </File>
             <File>
               <FileName>cw.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\cw.h</FilePath>
+              <FilePath>..\..\Src\cw.h</FilePath>
             </File>
             <File>
               <FileName>cw_decoder.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\cw_decoder.c</FilePath>
+              <FilePath>..\..\Src\cw_decoder.c</FilePath>
             </File>
             <File>
               <FileName>cw_decoder.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\cw_decoder.h</FilePath>
+              <FilePath>..\..\Src\cw_decoder.h</FilePath>
             </File>
             <File>
               <FileName>decoder.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\decoder.c</FilePath>
+              <FilePath>..\..\Src\decoder.c</FilePath>
             </File>
             <File>
               <FileName>decoder.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\decoder.h</FilePath>
+              <FilePath>..\..\Src\decoder.h</FilePath>
             </File>
             <File>
               <FileName>fft.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\fft.c</FilePath>
+              <FilePath>..\..\Src\fft.c</FilePath>
             </File>
             <File>
               <FileName>fft.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fft.h</FilePath>
+              <FilePath>..\..\Src\fft.h</FilePath>
             </File>
             <File>
               <FileName>filemanager.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\filemanager.c</FilePath>
+              <FilePath>..\..\Src\filemanager.c</FilePath>
             </File>
             <File>
               <FileName>filemanager.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\filemanager.h</FilePath>
+              <FilePath>..\..\Src\filemanager.h</FilePath>
             </File>
             <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\fonts.c</FilePath>
+              <FilePath>..\..\Src\fonts.c</FilePath>
             </File>
             <File>
               <FileName>fonts.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\fonts.h</FilePath>
+              <FilePath>..\..\Src\fonts.h</FilePath>
             </File>
             <File>
               <FileName>fpga.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\fpga.c</FilePath>
+              <FilePath>..\..\Src\fpga.c</FilePath>
             </File>
             <File>
               <FileName>front_unit.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\front_unit.h</FilePath>
+              <FilePath>..\..\Src\front_unit.h</FilePath>
             </File>
             <File>
               <FileName>functions.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\functions.c</FilePath>
+              <FilePath>..\..\Src\functions.c</FilePath>
             </File>
             <File>
               <FileName>functions.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\functions.h</FilePath>
+              <FilePath>..\..\Src\functions.h</FilePath>
             </File>
             <File>
               <FileName>i2c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\i2c.c</FilePath>
+              <FilePath>..\..\Src\i2c.c</FilePath>
             </File>
             <File>
               <FileName>i2c.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\i2c.h</FilePath>
+              <FilePath>..\..\Src\i2c.h</FilePath>
             </File>
             <File>
               <FileName>images.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\images.h</FilePath>
+              <FilePath>..\..\Src\images.h</FilePath>
             </File>
             <File>
               <FileName>lcd.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\lcd.h</FilePath>
+              <FilePath>..\..\Src\lcd.h</FilePath>
             </File>
             <File>
               <FileName>lcd_driver.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd_driver.c</FilePath>
+              <FilePath>..\..\Src\lcd_driver.c</FilePath>
             </File>
             <File>
               <FileName>lcd_driver.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\lcd_driver.h</FilePath>
+              <FilePath>..\..\Src\lcd_driver.h</FilePath>
             </File>
             <File>
               <FileName>lcd_driver_ILI9481.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd_driver_ILI9481.c</FilePath>
+              <FilePath>..\..\Src\lcd_driver_ILI9481.c</FilePath>
             </File>
             <File>
               <FileName>lcd_driver_ILI9481.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\lcd_driver_ILI9481.h</FilePath>
+              <FilePath>..\..\Src\lcd_driver_ILI9481.h</FilePath>
             </File>
             <File>
               <FileName>lcd_driver_NONE.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd_driver_NONE.c</FilePath>
+              <FilePath>..\..\Src\lcd_driver_NONE.c</FilePath>
             </File>
             <File>
               <FileName>lcd_driver_NONE.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\lcd_driver_NONE.h</FilePath>
+              <FilePath>..\..\Src\lcd_driver_NONE.h</FilePath>
             </File>
             <File>
               <FileName>lcd_driver_RA8875.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd_driver_RA8875.c</FilePath>
+              <FilePath>..\..\Src\lcd_driver_RA8875.c</FilePath>
             </File>
             <File>
               <FileName>lcd_driver_RA8875.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\lcd_driver_RA8875.h</FilePath>
+              <FilePath>..\..\Src\lcd_driver_RA8875.h</FilePath>
             </File>
             <File>
               <FileName>lcd_driver_ST7735S.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\lcd_driver_ST7735S.c</FilePath>
+              <FilePath>..\..\Src\lcd_driver_ST7735S.c</FilePath>
             </File>
             <File>
               <FileName>lcd_driver_ST7735S.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\lcd_driver_ST7735S.h</FilePath>
+              <FilePath>..\..\Src\lcd_driver_ST7735S.h</FilePath>
             </File>
             <File>
               <FileName>locator.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\locator.c</FilePath>
+              <FilePath>..\..\Src\locator.c</FilePath>
             </File>
             <File>
               <FileName>locator.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\locator.h</FilePath>
+              <FilePath>..\..\Src\locator.h</FilePath>
             </File>
             <File>
               <FileName>noise_blanker.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\noise_blanker.c</FilePath>
+              <FilePath>..\..\Src\noise_blanker.c</FilePath>
             </File>
             <File>
               <FileName>noise_blanker.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\noise_blanker.h</FilePath>
+              <FilePath>..\..\Src\noise_blanker.h</FilePath>
             </File>
             <File>
               <FileName>noise_reduction.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\noise_reduction.c</FilePath>
+              <FilePath>..\..\Src\noise_reduction.c</FilePath>
             </File>
             <File>
               <FileName>noise_reduction.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\noise_reduction.h</FilePath>
+              <FilePath>..\..\Src\noise_reduction.h</FilePath>
             </File>
             <File>
               <FileName>print.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\print.h</FilePath>
+              <FilePath>..\..\Src\print.h</FilePath>
             </File>
             <File>
               <FileName>profiler.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\profiler.c</FilePath>
+              <FilePath>..\..\Src\profiler.c</FilePath>
             </File>
             <File>
               <FileName>profiler.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\profiler.h</FilePath>
+              <FilePath>..\..\Src\profiler.h</FilePath>
             </File>
             <File>
               <FileName>rds_decoder.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rds_decoder.c</FilePath>
+              <FilePath>..\..\Src\rds_decoder.c</FilePath>
             </File>
             <File>
               <FileName>rds_decoder.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\rds_decoder.h</FilePath>
+              <FilePath>..\..\Src\rds_decoder.h</FilePath>
             </File>
             <File>
               <FileName>rf_unit.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\rf_unit.h</FilePath>
+              <FilePath>..\..\Src\rf_unit.h</FilePath>
             </File>
             <File>
               <FileName>rtty_decoder.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\rtty_decoder.c</FilePath>
+              <FilePath>..\..\Src\rtty_decoder.c</FilePath>
             </File>
             <File>
               <FileName>rtty_decoder.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\rtty_decoder.h</FilePath>
+              <FilePath>..\..\Src\rtty_decoder.h</FilePath>
             </File>
             <File>
               <FileName>screen_layout.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\screen_layout.h</FilePath>
+              <FilePath>..\..\Src\screen_layout.h</FilePath>
             </File>
             <File>
               <FileName>screen_layout_160x128.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\..\Src\screen_layout_160x128.cpp</FilePath>
+              <FilePath>..\..\Src\screen_layout_160x128.cpp</FilePath>
             </File>
             <File>
               <FileName>screen_layout_480x320.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\..\Src\screen_layout_480x320.cpp</FilePath>
+              <FilePath>..\..\Src\screen_layout_480x320.cpp</FilePath>
             </File>
             <File>
               <FileName>screen_layout_800x480.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\..\Src\screen_layout_800x480.cpp</FilePath>
+              <FilePath>..\..\Src\screen_layout_800x480.cpp</FilePath>
             </File>
             <File>
               <FileName>sd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\sd.c</FilePath>
+              <FilePath>..\..\Src\sd.c</FilePath>
             </File>
             <File>
               <FileName>sd.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\sd.h</FilePath>
+              <FilePath>..\..\Src\sd.h</FilePath>
             </File>
             <File>
               <FileName>self_test.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\self_test.c</FilePath>
+              <FilePath>..\..\Src\self_test.c</FilePath>
             </File>
             <File>
               <FileName>self_test.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\self_test.h</FilePath>
+              <FilePath>..\..\Src\self_test.h</FilePath>
             </File>
             <File>
               <FileName>settings.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\settings.c</FilePath>
+              <FilePath>..\..\Src\settings.c</FilePath>
             </File>
             <File>
               <FileName>settings.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\settings.h</FilePath>
+              <FilePath>..\..\Src\settings.h</FilePath>
             </File>
             <File>
               <FileName>spec_analyzer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\spec_analyzer.c</FilePath>
+              <FilePath>..\..\Src\spec_analyzer.c</FilePath>
             </File>
             <File>
               <FileName>spec_analyzer.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\spec_analyzer.h</FilePath>
+              <FilePath>..\..\Src\spec_analyzer.h</FilePath>
             </File>
             <File>
               <FileName>swr_analyzer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\swr_analyzer.c</FilePath>
+              <FilePath>..\..\Src\swr_analyzer.c</FilePath>
             </File>
             <File>
               <FileName>swr_analyzer.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\swr_analyzer.h</FilePath>
+              <FilePath>..\..\Src\swr_analyzer.h</FilePath>
             </File>
             <File>
               <FileName>system_menu.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\system_menu.c</FilePath>
+              <FilePath>..\..\Src\system_menu.c</FilePath>
             </File>
             <File>
               <FileName>system_menu.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\system_menu.h</FilePath>
+              <FilePath>..\..\Src\system_menu.h</FilePath>
             </File>
             <File>
               <FileName>touchpad.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\touchpad.c</FilePath>
+              <FilePath>..\..\Src\touchpad.c</FilePath>
             </File>
             <File>
               <FileName>touchpad.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\touchpad.h</FilePath>
+              <FilePath>..\..\Src\touchpad.h</FilePath>
             </File>
             <File>
               <FileName>touchpad_GT911.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\touchpad_GT911.c</FilePath>
+              <FilePath>..\..\Src\touchpad_GT911.c</FilePath>
             </File>
             <File>
               <FileName>touchpad_GT911.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\touchpad_GT911.h</FilePath>
+              <FilePath>..\..\Src\touchpad_GT911.h</FilePath>
             </File>
             <File>
               <FileName>trx_manager.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\trx_manager.c</FilePath>
+              <FilePath>..\..\Src\trx_manager.c</FilePath>
             </File>
             <File>
               <FileName>trx_manager.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\trx_manager.h</FilePath>
+              <FilePath>..\..\Src\trx_manager.h</FilePath>
             </File>
             <File>
               <FileName>usbd_audio_if.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\usbd_audio_if.c</FilePath>
+              <FilePath>..\..\Src\usbd_audio_if.c</FilePath>
             </File>
             <File>
               <FileName>usbd_audio_if.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\usbd_audio_if.h</FilePath>
+              <FilePath>..\..\Src\usbd_audio_if.h</FilePath>
             </File>
             <File>
               <FileName>usbd_cat_if.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\usbd_cat_if.c</FilePath>
+              <FilePath>..\..\Src\usbd_cat_if.c</FilePath>
             </File>
             <File>
               <FileName>usbd_cat_if.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\usbd_cat_if.h</FilePath>
+              <FilePath>..\..\Src\usbd_cat_if.h</FilePath>
             </File>
             <File>
               <FileName>usbd_debug_if.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\usbd_debug_if.c</FilePath>
+              <FilePath>..\..\Src\usbd_debug_if.c</FilePath>
             </File>
             <File>
               <FileName>usbd_debug_if.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\usbd_debug_if.h</FilePath>
+              <FilePath>..\..\Src\usbd_debug_if.h</FilePath>
             </File>
             <File>
               <FileName>usbd_iq_if.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\usbd_iq_if.c</FilePath>
+              <FilePath>..\..\Src\usbd_iq_if.c</FilePath>
             </File>
             <File>
               <FileName>usbd_iq_if.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\usbd_iq_if.h</FilePath>
+              <FilePath>..\..\Src\usbd_iq_if.h</FilePath>
             </File>
             <File>
               <FileName>usbd_storage_if.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\usbd_storage_if.c</FilePath>
+              <FilePath>..\..\Src\usbd_storage_if.c</FilePath>
             </File>
             <File>
               <FileName>usbd_storage_if.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\usbd_storage_if.h</FilePath>
+              <FilePath>..\..\Src\usbd_storage_if.h</FilePath>
             </File>
             <File>
               <FileName>usbd_ua3reo.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\usbd_ua3reo.c</FilePath>
+              <FilePath>..\..\Src\usbd_ua3reo.c</FilePath>
             </File>
             <File>
               <FileName>usbd_ua3reo.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\usbd_ua3reo.h</FilePath>
+              <FilePath>..\..\Src\usbd_ua3reo.h</FilePath>
             </File>
             <File>
               <FileName>vad.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\vad.c</FilePath>
+              <FilePath>..\..\Src\vad.c</FilePath>
             </File>
             <File>
               <FileName>vad.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\vad.h</FilePath>
+              <FilePath>..\..\Src\vad.h</FilePath>
             </File>
             <File>
               <FileName>vocoder.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\vocoder.c</FilePath>
+              <FilePath>..\..\Src\vocoder.c</FilePath>
             </File>
             <File>
               <FileName>vocoder.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\vocoder.h</FilePath>
+              <FilePath>..\..\Src\vocoder.h</FilePath>
             </File>
             <File>
               <FileName>wifi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\wifi.c</FilePath>
+              <FilePath>..\..\Src\wifi.c</FilePath>
             </File>
             <File>
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\wifi.h</FilePath>
+              <FilePath>..\..\Src\wifi.h</FilePath>
             </File>
             <File>
               <FileName>wm8731.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\wm8731.c</FilePath>
+              <FilePath>..\..\Src\wm8731.c</FilePath>
             </File>
             <File>
               <FileName>wm8731.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\wm8731.h</FilePath>
+              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\wspr.c</FilePath>
+              <FilePath>..\..\Src\wspr.c</FilePath>
             </File>
             <File>
               <FileName>wspr.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\wspr.h</FilePath>
+              <FilePath>..\..\Src\wspr.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -982,12 +982,12 @@
             <File>
               <FileName>biquad.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\BiquadDesigner\biquad.c</FilePath>
+              <FilePath>..\..\Src\BiquadDesigner\biquad.c</FilePath>
             </File>
             <File>
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\BiquadDesigner\biquad.h</FilePath>
+              <FilePath>..\..\Src\BiquadDesigner\biquad.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -997,147 +997,147 @@
             <File>
               <FileName>constants.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\constants.c</FilePath>
+              <FilePath>..\..\Src\FT8\constants.c</FilePath>
             </File>
             <File>
               <FileName>constants.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\constants.h</FilePath>
+              <FilePath>..\..\Src\FT8\constants.h</FilePath>
             </File>
             <File>
               <FileName>decode.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\decode.c</FilePath>
+              <FilePath>..\..\Src\FT8\decode.c</FilePath>
             </File>
             <File>
               <FileName>decode.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\decode.h</FilePath>
+              <FilePath>..\..\Src\FT8\decode.h</FilePath>
             </File>
             <File>
               <FileName>decode_ft8.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\decode_ft8.c</FilePath>
+              <FilePath>..\..\Src\FT8\decode_ft8.c</FilePath>
             </File>
             <File>
               <FileName>decode_ft8.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\decode_ft8.h</FilePath>
+              <FilePath>..\..\Src\FT8\decode_ft8.h</FilePath>
             </File>
             <File>
               <FileName>encode.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\encode.c</FilePath>
+              <FilePath>..\..\Src\FT8\encode.c</FilePath>
             </File>
             <File>
               <FileName>encode.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\encode.h</FilePath>
+              <FilePath>..\..\Src\FT8\encode.h</FilePath>
             </File>
             <File>
               <FileName>FT8_GUI.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\FT8_GUI.c</FilePath>
+              <FilePath>..\..\Src\FT8\FT8_GUI.c</FilePath>
             </File>
             <File>
               <FileName>FT8_GUI.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\FT8_GUI.h</FilePath>
+              <FilePath>..\..\Src\FT8\FT8_GUI.h</FilePath>
             </File>
             <File>
               <FileName>FT8_main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\FT8_main.c</FilePath>
+              <FilePath>..\..\Src\FT8\FT8_main.c</FilePath>
             </File>
             <File>
               <FileName>FT8_main.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\FT8_main.h</FilePath>
+              <FilePath>..\..\Src\FT8\FT8_main.h</FilePath>
             </File>
             <File>
               <FileName>gen_ft8.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\gen_ft8.c</FilePath>
+              <FilePath>..\..\Src\FT8\gen_ft8.c</FilePath>
             </File>
             <File>
               <FileName>gen_ft8.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\gen_ft8.h</FilePath>
+              <FilePath>..\..\Src\FT8\gen_ft8.h</FilePath>
             </File>
             <File>
               <FileName>ldpc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\ldpc.c</FilePath>
+              <FilePath>..\..\Src\FT8\ldpc.c</FilePath>
             </File>
             <File>
               <FileName>ldpc.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\ldpc.h</FilePath>
+              <FilePath>..\..\Src\FT8\ldpc.h</FilePath>
             </File>
             <File>
               <FileName>locator_ft8.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\locator_ft8.c</FilePath>
+              <FilePath>..\..\Src\FT8\locator_ft8.c</FilePath>
             </File>
             <File>
               <FileName>locator_ft8.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\locator_ft8.h</FilePath>
+              <FilePath>..\..\Src\FT8\locator_ft8.h</FilePath>
             </File>
             <File>
               <FileName>pack.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\pack.c</FilePath>
+              <FilePath>..\..\Src\FT8\pack.c</FilePath>
             </File>
             <File>
               <FileName>pack.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\pack.h</FilePath>
+              <FilePath>..\..\Src\FT8\pack.h</FilePath>
             </File>
             <File>
               <FileName>Process_DSP.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\Process_DSP.c</FilePath>
+              <FilePath>..\..\Src\FT8\Process_DSP.c</FilePath>
             </File>
             <File>
               <FileName>Process_DSP.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\Process_DSP.h</FilePath>
+              <FilePath>..\..\Src\FT8\Process_DSP.h</FilePath>
             </File>
             <File>
               <FileName>text.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\text.c</FilePath>
+              <FilePath>..\..\Src\FT8\text.c</FilePath>
             </File>
             <File>
               <FileName>text.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\text.h</FilePath>
+              <FilePath>..\..\Src\FT8\text.h</FilePath>
             </File>
             <File>
               <FileName>traffic_manager.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\traffic_manager.c</FilePath>
+              <FilePath>..\..\Src\FT8\traffic_manager.c</FilePath>
             </File>
             <File>
               <FileName>traffic_manager.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\traffic_manager.h</FilePath>
+              <FilePath>..\..\Src\FT8\traffic_manager.h</FilePath>
             </File>
             <File>
               <FileName>unpack.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\FT8\unpack.c</FilePath>
+              <FilePath>..\..\Src\FT8\unpack.c</FilePath>
             </File>
             <File>
               <FileName>unpack.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\unpack.h</FilePath>
+              <FilePath>..\..\Src\FT8\unpack.h</FilePath>
             </File>
             <File>
               <FileName>WF_Table.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\FT8\WF_Table.h</FilePath>
+              <FilePath>..\..\Src\FT8\WF_Table.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1147,17 +1147,17 @@
             <File>
               <FileName>jpeg_utils.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\JPEG\jpeg_utils.c</FilePath>
+              <FilePath>..\..\Src\JPEG\jpeg_utils.c</FilePath>
             </File>
             <File>
               <FileName>jpeg_utils.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\JPEG\jpeg_utils.h</FilePath>
+              <FilePath>..\..\Src\JPEG\jpeg_utils.h</FilePath>
             </File>
             <File>
               <FileName>jpeg_utils_conf_template.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\JPEG\jpeg_utils_conf_template.h</FilePath>
+              <FilePath>..\..\Src\JPEG\jpeg_utils_conf_template.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1167,97 +1167,97 @@
             <File>
               <FileName>usb_device.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usb_device.c</FilePath>
+              <FilePath>..\..\Src\USBDevice\usb_device.c</FilePath>
             </File>
             <File>
               <FileName>usb_device.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usb_device.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usb_device.h</FilePath>
             </File>
             <File>
               <FileName>usbd_conf.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_conf.c</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_conf.c</FilePath>
             </File>
             <File>
               <FileName>usbd_conf.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_conf.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_conf.h</FilePath>
             </File>
             <File>
               <FileName>usbd_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_core.c</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_core.c</FilePath>
             </File>
             <File>
               <FileName>usbd_core.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_core.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_core.h</FilePath>
             </File>
             <File>
               <FileName>usbd_ctlreq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_ctlreq.c</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_ctlreq.c</FilePath>
             </File>
             <File>
               <FileName>usbd_ctlreq.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_ctlreq.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_ctlreq.h</FilePath>
             </File>
             <File>
               <FileName>usbd_def.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_def.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_def.h</FilePath>
             </File>
             <File>
               <FileName>usbd_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_desc.c</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_desc.c</FilePath>
             </File>
             <File>
               <FileName>usbd_desc.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_desc.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_desc.h</FilePath>
             </File>
             <File>
               <FileName>usbd_ioreq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_ioreq.c</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_ioreq.c</FilePath>
             </File>
             <File>
               <FileName>usbd_ioreq.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_ioreq.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_ioreq.h</FilePath>
             </File>
             <File>
               <FileName>usbd_msc_bot.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_msc_bot.c</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_bot.c</FilePath>
             </File>
             <File>
               <FileName>usbd_msc_bot.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_msc_bot.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_bot.h</FilePath>
             </File>
             <File>
               <FileName>usbd_msc_data.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_msc_data.c</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_data.c</FilePath>
             </File>
             <File>
               <FileName>usbd_msc_data.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_msc_data.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_data.h</FilePath>
             </File>
             <File>
               <FileName>usbd_msc_scsi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_msc_scsi.c</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_scsi.c</FilePath>
             </File>
             <File>
               <FileName>usbd_msc_scsi.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\Src\USBDevice\usbd_msc_scsi.h</FilePath>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_scsi.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1267,192 +1267,192 @@
             <File>
               <FileName>stm32h7xx_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_adc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_adc.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_adc.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_adc_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_adc_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_adc_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_cortex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_crc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_crc_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_crc_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_dma_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_dma2d.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma2d.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma2d.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_exti.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_exti.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_exti.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_flash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_flash_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_flash_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_gpio.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_hsem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hsem.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_i2c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_i2c_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_i2s.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2s.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2s.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_i2s_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2s_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2s_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_iwdg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_jpeg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_jpeg.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_jpeg.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_mdma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_mdma.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_pcd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_pcd_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pcd_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_pwr_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_rcc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_rcc_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rcc_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_rtc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rtc.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rtc.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_rtc_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rtc_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_rtc_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_spi_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_sram.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_sram.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_sram.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_tim.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_tim_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_uart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_uart_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_ll_fmc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_fmc.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_fmc.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_ll_usb.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_usb.c</FilePath>
+              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_usb.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1462,27 +1462,27 @@
             <File>
               <FileName>diskio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Middlewares\Third_Party\FatFs\src\diskio.c</FilePath>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\diskio.c</FilePath>
             </File>
             <File>
               <FileName>ff.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Middlewares\Third_Party\FatFs\src\ff.c</FilePath>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.c</FilePath>
             </File>
             <File>
               <FileName>ff_gen_drv.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Middlewares\Third_Party\FatFs\src\ff_gen_drv.c</FilePath>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\ff_gen_drv.c</FilePath>
             </File>
             <File>
               <FileName>ccsbcs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Middlewares\Third_Party\FatFs\src\option\ccsbcs.c</FilePath>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\option\ccsbcs.c</FilePath>
             </File>
             <File>
               <FileName>syscall.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Middlewares\Third_Party\FatFs\src\option\syscall.c</FilePath>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\option\syscall.c</FilePath>
             </File>
           </Files>
         </Group>
