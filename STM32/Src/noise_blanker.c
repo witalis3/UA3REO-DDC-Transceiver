@@ -12,7 +12,48 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 	NB_Instance *instance = &NB_RX1;
 	if (rx_id == AUDIO_RX2)
 		instance = &NB_RX2;
+	
+	/*
+	#define AUDIO_RX_NB_DELAY_BUFFER_ITEMS 120
+	#define AUDIO_RX_NB_DELAY_BUFFER_SIZE (AUDIO_RX_NB_DELAY_BUFFER_ITEMS*2)
+	#define nb_sig_filt 0.005f
+	#define nb_agc_filt (1.0f - nb_sig_filt)
+	
+	static float32_t	delay_buf[AUDIO_RX_NB_DELAY_BUFFER_SIZE];
+	static uint16_t	delbuf_inptr = 0, delbuf_outptr = 2;
+	static uint8_t	nb_delay = 0;
+	static float32_t	nb_agc = 0;
+	bool has_blank = false;
+	for(uint64_t i = 0; i < NB_BLOCK_SIZE; i++)	 		// Noise blanker function
+	{
+			float32_t sig = fabsf(buffer[i]);		// get signal amplitude.  We need only look at one of the two audio channels since they will be the same.
+			delay_buf[delbuf_inptr++] = buffer[i];	    // copy first byte into delay buffer
+		
+			nb_agc = (nb_agc_filt * nb_agc) + (nb_sig_filt * sig);		// IIR-filtered "AGC" of current overall signal level
 
+			if(sig > (nb_agc * 7) && (nb_delay == 0))	 	// did a pulse exceed the threshold?
+			{
+				nb_delay = AUDIO_RX_NB_DELAY_BUFFER_ITEMS;		// yes - set the blanking duration counter
+			}
+
+			if(!nb_delay)	 		// blank counter not active
+			{
+				buffer[i] = delay_buf[delbuf_outptr++];		// pass through delayed audio, unchanged
+			}
+			else	 	// It is within the blanking pulse period
+			{
+				has_blank = true;
+				buffer[i] = 0; 				// set the audio buffer to "mute" during the blanking period
+				nb_delay--;						// count down the number of samples that we are to blank
+			}
+
+			// RINGBUFFER
+			delbuf_outptr %= AUDIO_RX_NB_DELAY_BUFFER_SIZE;
+			delbuf_inptr %= AUDIO_RX_NB_DELAY_BUFFER_SIZE;
+	}
+	if(has_blank) print("b");
+	*/
+	
 	dma_memcpy(&instance->NR_InputBuffer[instance->NR_InputBuffer_index * NB_BLOCK_SIZE], buffer, NB_BLOCK_SIZE * 4);
 	instance->NR_InputBuffer_index++;
 	if (instance->NR_InputBuffer_index == (NB_FIR_SIZE / NB_BLOCK_SIZE)) // input buffer ready
@@ -34,7 +75,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 		float32_t alfa = 0.0f;
 
 		float32_t any[NB_order + 1] = {0}; // some internal buffers for the levinson durben algorithm
-
+		
 		float32_t Rfw[NB_impulse_length + NB_order] = {0}; // takes the forward predicted audio restauration
 		float32_t Rbw[NB_impulse_length + NB_order] = {0}; // takes the backward predicted audio restauration
 		float32_t Wfw[NB_impulse_length] = {0};
@@ -102,6 +143,8 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 		search_pos = NB_order + NB_PL; // lower boundary problem has been solved! - so here we start from 1 or 0?
 		impulse_count = 0;
 
+		
+		float32_t max_impulse = 0;
 		do
 		{ // going through the filtered samples to find an impulse larger than the threshold
 			if ((instance->tempsamp[search_pos] > impulse_threshold) || (instance->tempsamp[search_pos] < (-impulse_threshold)))
@@ -112,8 +155,12 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 									 //  and the next impulse should not be that close
 			}
 			search_pos++;
+			
+			if(max_impulse < instance->tempsamp[search_pos])
+				max_impulse = instance->tempsamp[search_pos];
 		} while ((search_pos < NB_FIR_SIZE) && (impulse_count < NB_max_inpulse_count));
-		// if(impulse_count>0) sendToDebug_uint16(impulse_count, false);
+		
+		//if(impulse_count>0) println("CNT: ", impulse_count, " THRES: ", impulse_threshold, " MAX: ", max_impulse);
 
 		// from here: reconstruction of the impulse-distorted audio part:
 
@@ -153,7 +200,8 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 		if (!nans && isnanf(instance->NR_OutputBuffer[i]))
 			nans = true;
 
-	if (!nans && instance->NR_OutputBuffer_index < (NB_FIR_SIZE / NB_BLOCK_SIZE))
+	if (!nans && instance->NR_OutputBuffer_index < (NB_FIR_SIZE / NB_BLOCK_SIZE)) {
 		dma_memcpy(buffer, &instance->NR_OutputBuffer[instance->NR_OutputBuffer_index * NB_BLOCK_SIZE], NB_BLOCK_SIZE * 4);
+	}
 	instance->NR_OutputBuffer_index++;
 }
