@@ -557,7 +557,7 @@ void CALLSIGN_INFO_Draw(void)
 		}
 	}
 	
-	LCD_printKeyboard(CALLSIGN_INFO_keyboardHandler);
+	LCD_printKeyboard(CALLSIGN_INFO_keyboardHandler, false);
 
 	LCD_busy = false;
 }

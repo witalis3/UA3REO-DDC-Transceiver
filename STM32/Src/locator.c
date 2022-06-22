@@ -93,7 +93,7 @@ void LOCINFO_Draw(void)
 	addSymbols(tmp, tmp, 15 + 8, " ", true);
 	LCDDriver_printText(tmp, 10, 130, FG_COLOR, BG_COLOR, 2);
 
-	LCD_printKeyboard(LOCINFO_keyboardHandler);
+	LCD_printKeyboard(LOCINFO_keyboardHandler, false);
 
 	LCD_busy = false;
 }

@@ -1249,6 +1249,24 @@ static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction)
 		TRX.ATT_STEP = 15;
 }
 
+static void SYSMENU_TRX_Callsign_keyboardHandler(uint32_t parameter)
+{
+	if(parameter == '<') //backspace
+	{
+		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 0;
+		
+		if (sysmenu_trx_selected_callsign_char_index > 0)
+			sysmenu_trx_selected_callsign_char_index--;
+	} else {
+		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = parameter;
+		
+		if (sysmenu_trx_selected_callsign_char_index < (MAX_CALLSIGN_LENGTH - 1))
+			sysmenu_trx_selected_callsign_char_index++;
+	}
+	
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw)
 {
 	if (full_redraw)
@@ -1259,6 +1277,28 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw)
 
 	LCDDriver_printText(TRX.CALLSIGN, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_TRX_Callsign_keyboardHandler, false);
+	#endif
+}
+
+static void SYSMENU_TRX_Locator_keyboardHandler(uint32_t parameter)
+{
+	if(parameter == '<') //backspace
+	{
+		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 0;
+		
+		if (sysmenu_trx_selected_locator_char_index > 0)
+			sysmenu_trx_selected_locator_char_index--;
+	} else {
+		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = parameter;
+		
+		if (sysmenu_trx_selected_locator_char_index < (MAX_CALLSIGN_LENGTH - 1))
+			sysmenu_trx_selected_locator_char_index++;
+	}
+	
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw)
@@ -1271,6 +1311,10 @@ static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw)
 
 	LCDDriver_printText(TRX.LOCATOR, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_locator_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_TRX_Locator_keyboardHandler, false);
+	#endif
 }
 
 static void SYSMENU_TRX_RotateCallsignChar(int8_t dir)
@@ -3141,6 +3185,24 @@ static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir)
 	}
 }
 
+static void SYSMENU_WIFI_AP1_Password_keyboardHandler(uint32_t parameter)
+{
+	if(parameter == '<') //backspace
+	{
+		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = 0;
+		
+		if (sysmenu_wifi_selected_ap_password_char_index > 0)
+			sysmenu_wifi_selected_ap_password_char_index--;
+	} else {
+		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = parameter;
+		
+		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
+			sysmenu_wifi_selected_ap_password_char_index++;
+	}
+	
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
 static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw)
 {
 	if (full_redraw)
@@ -3151,6 +3213,28 @@ static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw)
 
 	LCDDriver_printText(TRX.WIFI_PASSWORD1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_WIFI_AP1_Password_keyboardHandler, true);
+	#endif
+}
+
+static void SYSMENU_WIFI_AP2_Password_keyboardHandler(uint32_t parameter)
+{
+	if(parameter == '<') //backspace
+	{
+		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = 0;
+		
+		if (sysmenu_wifi_selected_ap_password_char_index > 0)
+			sysmenu_wifi_selected_ap_password_char_index--;
+	} else {
+		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = parameter;
+		
+		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
+			sysmenu_wifi_selected_ap_password_char_index++;
+	}
+	
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw)
@@ -3163,6 +3247,28 @@ static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw)
 
 	LCDDriver_printText(TRX.WIFI_PASSWORD2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_WIFI_AP2_Password_keyboardHandler, true);
+	#endif
+}
+
+static void SYSMENU_WIFI_AP3_Password_keyboardHandler(uint32_t parameter)
+{
+	if(parameter == '<') //backspace
+	{
+		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = 0;
+		
+		if (sysmenu_wifi_selected_ap_password_char_index > 0)
+			sysmenu_wifi_selected_ap_password_char_index--;
+	} else {
+		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = parameter;
+		
+		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
+			sysmenu_wifi_selected_ap_password_char_index++;
+	}
+	
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
@@ -3175,6 +3281,10 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
 
 	LCDDriver_printText(TRX.WIFI_PASSWORD3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_WIFI_AP3_Password_keyboardHandler, true);
+	#endif
 }
 
 static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir)

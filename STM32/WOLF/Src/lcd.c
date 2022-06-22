@@ -2174,7 +2174,7 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
 #endif
 }
 
-void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter))
+void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase)
 {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	TouchpadButton_handlers_count = 0;
@@ -2198,9 +2198,10 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter))
 		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	}
 	y++;
-	buttons_left_offset += button_width / 2;
+	buttons_left_offset -= button_width / 2;
 	//
-	char line2[] = "QWERTYUIOP";
+	char line2[] = "QWERTYUIOP[]";
+	if(lowcase) strcpy(line2, "qwertyuiop[]");
 	for (uint8_t i = 0; i < strlen(line2); i++)
 	{
 		char text[2] = {0};
@@ -2211,7 +2212,8 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter))
 	y++;
 	buttons_left_offset += button_width / 2;
 	//
-	char line3[] = "ASDFGHJKL";
+	char line3[] = "ASDFGHJKL;'";
+	if(lowcase) strcpy(line3, "asdfghjkl;'");
 	for (uint8_t i = 0; i < strlen(line3); i++)
 	{
 		char text[2] = {0};
@@ -2222,7 +2224,8 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter))
 	y++;
 	buttons_left_offset += button_width / 2;
 	//
-	char line4[] = "ZXCVBNM";
+	char line4[] = "ZXCVBNM,./";
+	if(lowcase) strcpy(line4, "zxcvbnm,./");
 	for (uint8_t i = 0; i < strlen(line4); i++)
 	{
 		char text[2] = {0};
