@@ -436,6 +436,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		TRX.ENC2_func_mode_idx = 0;
 	if (TRX.ENC2_func_mode_idx == 4 && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to NOTCH tune
 		TRX.ENC2_func_mode_idx = 0;
+	if (TRX.ENC2_func_mode_idx == 5 && !CurrentVFO->SQL) // nothing to NOTCH tune
+		TRX.ENC2_func_mode_idx = 0;
 
 	if (TRX.ENC2_func_mode_idx == 0)
 	{
@@ -579,6 +581,19 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
 		}
 	}
+	
+	if (TRX.ENC2_func_mode_idx == 5) // SQL
+	{
+		CurrentVFO->FM_SQL_threshold_dbm += direction * 1;
+		TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
+		
+		if(CurrentVFO->FM_SQL_threshold_dbm > 0)
+			CurrentVFO->FM_SQL_threshold_dbm = 0;
+		if(CurrentVFO->FM_SQL_threshold_dbm < -126)
+			CurrentVFO->FM_SQL_threshold_dbm = -126;
+		
+		LCD_UpdateQuery.StatusInfoBarRedraw = true;
+	}
 }
 
 void FRONTPANEL_check_ENC2SW(bool state)
@@ -657,8 +672,10 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 			TRX.ENC2_func_mode_idx++;
 		if (TRX.ENC2_func_mode_idx == 4 && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to NOTCH tune
 			TRX.ENC2_func_mode_idx++;
+		if (TRX.ENC2_func_mode_idx == 5 && !CurrentVFO->SQL) // nothing to NOTCH tune
+			TRX.ENC2_func_mode_idx++;
 
-		if (TRX.ENC2_func_mode_idx > 4)
+		if (TRX.ENC2_func_mode_idx > 5)
 			TRX.ENC2_func_mode_idx = 0;
 
 		if (TRX.ENC2_func_mode_idx == 0)
@@ -671,6 +688,8 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 			LCD_showTooltip("SET NOTCH");
 		if (TRX.ENC2_func_mode_idx == 4)
 			LCD_showTooltip("SET LPF");
+		if (TRX.ENC2_func_mode_idx == 5)
+			LCD_showTooltip("SET SQL");
 	}
 	else
 	{
