@@ -5279,7 +5279,7 @@ static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction)
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 {
 	sysmenu_infowindow_opened = true;
-	SYSMENU_drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getRDA();
 }
 
@@ -5287,7 +5287,7 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction)
 {
 	sysmenu_infowindow_opened = true;
-	SYSMENU_drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getDXCluster();
 }
 
@@ -5295,7 +5295,7 @@ static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction)
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
 {
 	sysmenu_infowindow_opened = true;
-	SYSMENU_drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getPropagination();
 }
 
@@ -5303,7 +5303,7 @@ static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
 static void SYSMENU_HANDL_FILEMANAGER(int8_t direction)
 {
 	sysmenu_filemanager_opened = true;
-	SYSMENU_drawSystemMenu(true);
+	SYSMENU_drawSystemMenu(true, false);
 }
 
 // RECORD CQ MESSAGE
@@ -5338,7 +5338,7 @@ static void SYSMENU_HANDL_SELF_TEST(int8_t direction)
 }
 
 // COMMON MENU FUNCTIONS
-void SYSMENU_drawSystemMenu(bool draw_background)
+void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines)
 {
 	if (LCD_busy)
 	{
@@ -5348,94 +5348,116 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 			LCD_UpdateQuery.SystemMenu = true;
 		return;
 	}
+	
 	if (!LCD_systemMenuOpened)
 		return;
+	
 	if (sysmenu_timeMenuOpened)
 	{
+		if(only_infolines) return;
 		SYSMENU_HANDL_SETTIME(0);
 		return;
 	}
 	else if (sysmenu_wifi_selectap1_menu_opened)
 	{
+		if(only_infolines) return;
 		SYSMENU_WIFI_DrawSelectAP1Menu(draw_background);
 	}
 	else if (sysmenu_wifi_selectap2_menu_opened)
 	{
+		if(only_infolines) return;
 		SYSMENU_WIFI_DrawSelectAP2Menu(draw_background);
 	}
 	else if (sysmenu_wifi_selectap3_menu_opened)
 	{
+		if(only_infolines) return;
 		SYSMENU_WIFI_DrawSelectAP3Menu(draw_background);
 	}
 	else if (sysmenu_wifi_setAP1password_menu_opened)
 	{
+		if(only_infolines) return;
 		SYSMENU_WIFI_DrawAP1passwordMenu(draw_background);
 	}
 	else if (sysmenu_wifi_setAP2password_menu_opened)
 	{
+		if(only_infolines) return;
 		SYSMENU_WIFI_DrawAP2passwordMenu(draw_background);
 	}
 	else if (sysmenu_wifi_setAP3password_menu_opened)
 	{
+		if(only_infolines) return;
 		SYSMENU_WIFI_DrawAP3passwordMenu(draw_background);
 	}
 	else if (sysmenu_trx_setCallsign_menu_opened)
 	{
+		if(only_infolines) return;
 		SYSMENU_TRX_DrawCallsignMenu(draw_background);
 	}
 	else if (sysmenu_trx_setLocator_menu_opened)
 	{
+		if(only_infolines) return;
 		SYSMENU_TRX_DrawLocatorMenu(draw_background);
 	}
 	else if (SYSMENU_spectrum_opened)
 	{
+		if(only_infolines) return;
 		SPEC_Draw();
 	}
 	else if (SYSMENU_wspr_opened)
 	{
+		if(only_infolines) return;
 		WSPR_DoEvents();
 		return;
 	}
 #if FT8_SUPPORT
 	else if (SYSMENU_FT8_DECODER_opened)
 	{
+		if(only_infolines) return;
 		MenagerFT8();
 		return;
 	}
 #endif
 	else if (SYSMENU_TDM_CTRL_opened)
 	{
+		if(only_infolines) return;
 		TDM_Voltages();
 	}
 	else if (SYSMENU_swr_opened)
 	{
+		if(only_infolines) return;
 		SWR_Draw();
 	}
 	else if (SYSMENU_locator_info_opened)
 	{
+		if(only_infolines) return;
 		LOCINFO_Draw();
 	}
 	else if (SYSMENU_callsign_info_opened)
 	{
+		if(only_infolines) return;
 		CALLSIGN_INFO_Draw();
 	}
 	else if (SYSMENU_selftest_opened)
 	{
+		if(only_infolines) return;
 		SELF_TEST_Draw();
 		return;
 	}
 	else if (sysmenu_sysinfo_opened)
 	{
+		if(only_infolines) return;
 		SYSMENU_HANDL_SYSINFO(0);
 		return;
 	}
 	else if (sysmenu_filemanager_opened)
 	{
+		if(only_infolines) return;
 		FILEMANAGER_Draw(draw_background);
 		return;
 	}
 	else if (sysmenu_ota_opened)
 	{
+		if(only_infolines) return;
 		FILEMANAGER_OTAUpdate_handler();
 		return;
 	}
@@ -5462,8 +5484,21 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 		{
 			if (sysmenu_handlers_selected[m].checkVisibleHandler == NULL || sysmenu_handlers_selected[m].checkVisibleHandler())
 			{
-				if (current_selected_page == current_page)
-					drawSystemMenuElement(&sysmenu_handlers_selected[m], false);
+				if(!only_infolines) {
+					if (current_selected_page == current_page)
+						drawSystemMenuElement(&sysmenu_handlers_selected[m], false);
+				} 
+				else 
+				{
+					if (current_selected_page == current_page) {
+						if(sysmenu_handlers_selected[m].type == SYSMENU_INFOLINE) {
+							drawSystemMenuElement(&sysmenu_handlers_selected[m], false);
+						} else { // dummy pass
+							sysmenu_i++;
+							sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
+						}
+					}
+				}
 
 				visible++;
 				if (visible >= LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE)
@@ -5474,6 +5509,7 @@ void SYSMENU_drawSystemMenu(bool draw_background)
 			}
 		}
 
+		LCD_UpdateQuery.SystemMenuInfolines = false;
 		LCD_busy = false;
 	}
 
@@ -5692,7 +5728,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 			sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_handlers[0];
 			sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 			sysmenu_onroot = true;
-			SYSMENU_drawSystemMenu(true);
+			SYSMENU_drawSystemMenu(true, false);
 		}
 	}
 	sysmenu_item_selected_by_enc2 = false;

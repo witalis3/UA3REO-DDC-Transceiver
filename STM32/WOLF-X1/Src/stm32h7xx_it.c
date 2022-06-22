@@ -464,7 +464,7 @@ void TIM4_IRQHandler(void)
   /* USER CODE BEGIN TIM4_IRQn 1 */
   if (SYSMENU_spectrum_opened || SYSMENU_swr_opened)
   {
-    SYSMENU_drawSystemMenu(false);
+    SYSMENU_drawSystemMenu(false, false);
     return;
   }
 
@@ -760,6 +760,12 @@ void TIM6_DAC_IRQHandler(void)
   if (needPrintFFT > 0 && !LCD_UpdateQuery.Background && FFT_printFFT()) // draw FFT
     needPrintFFT--;
 
+	if (ms10_counter == 51) // every 0.5 sec
+  {
+		//Redraw menu infolines if needed
+		LCD_UpdateQuery.SystemMenuInfolines = true;
+	}
+	
   if (ms10_counter == 101) // every 1 sec
   {
     ms10_counter = 0;
@@ -853,9 +859,6 @@ void TIM6_DAC_IRQHandler(void)
       println("");
       PrintProfilerResult();
     }
-
-		//Redraw menu infolines if needed
-		// LCD_UpdateQuery.SystemMenu = true;
 		
     //Save Settings to Backup Memory
     if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))

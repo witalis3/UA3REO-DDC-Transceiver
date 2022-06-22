@@ -56,7 +56,7 @@ struct sysmenu_menu_wrapper
 extern bool sysmenu_ota_opened;
 extern uint8_t sysmenu_ota_opened_state;
 
-extern void SYSMENU_drawSystemMenu(bool draw_background);
+extern void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines);
 extern void SYSMENU_redrawCurrentItem(void);
 extern void SYSMENU_eventRotateSystemMenu(int8_t direction);
 extern void SYSMENU_eventSecEncoderClickSystemMenu(void);

@@ -23,6 +23,7 @@ typedef struct
 	bool SystemMenu;
 	bool SystemMenuRedraw;
 	bool SystemMenuCurrent;
+	bool SystemMenuInfolines;
 	bool TextBar;
 	bool Tooltip;
 } DEF_LCD_UpdateQuery;

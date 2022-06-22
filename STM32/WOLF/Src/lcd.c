@@ -1376,9 +1376,11 @@ bool LCD_doEvents(void)
 	if (LCD_UpdateQuery.StatusInfoBarRedraw)
 		LCD_displayStatusInfoBar(true);
 	if (LCD_UpdateQuery.SystemMenu)
-		SYSMENU_drawSystemMenu(false);
+		SYSMENU_drawSystemMenu(false, false);
+	if (LCD_UpdateQuery.SystemMenuInfolines)
+		SYSMENU_drawSystemMenu(false, true);
 	if (LCD_UpdateQuery.SystemMenuRedraw)
-		SYSMENU_drawSystemMenu(true);
+		SYSMENU_drawSystemMenu(true, false);
 	if (LCD_UpdateQuery.SystemMenuCurrent)
 	{
 		SYSMENU_redrawCurrentItem();
