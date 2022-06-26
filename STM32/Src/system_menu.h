@@ -53,6 +53,7 @@ struct sysmenu_menu_wrapper
 	uint8_t currentIndex;
 };
 
+extern bool SYSMENU_FT8_DECODER_opened;
 extern bool sysmenu_ota_opened;
 extern uint8_t sysmenu_ota_opened_state;
 

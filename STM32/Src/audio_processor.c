@@ -18,6 +18,7 @@
 #include "FT8/FT8_main.h"
 #include "FT8/decode_ft8.h"
 #include "wifi.h"
+#include "system_menu.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;	  // audio samples processed in the processor
@@ -2053,7 +2054,7 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 }
 
 void APROC_doVOX(void) {
-	if(!TRX.VOX || !TRX_Inited) 
+	if(!TRX.VOX || !TRX_Inited || SYSMENU_FT8_DECODER_opened) 
 		return;
 	
 	uint32_t current_tick = HAL_GetTick();
