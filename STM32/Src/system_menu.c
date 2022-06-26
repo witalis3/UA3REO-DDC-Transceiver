@@ -6030,6 +6030,7 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 
 	uint16_t x_pos = LAYOUT->SYSMENU_X2 - RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE * ENUM_MAX_LENGTH;
 	float32_t tmp_float = 0;
+	uint32_t tmp_uint32 = 0;
 	switch (menuElement->type)
 	{
 	case SYSMENU_UINT8:
@@ -6046,8 +6047,12 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 		sprintf(ctmp, "%d", (uint16_t)*menuElement->value);
 		break;
 	case SYSMENU_UINT32:
-    case SYSMENU_UINT32R:
-		sprintf(ctmp, "%u", (uint32_t)*menuElement->value);
+  case SYSMENU_UINT32R:
+		tmp_uint32 = (uint32_t)*menuElement->value;
+		while((uint32_t)(pow(10, ENUM_MAX_LENGTH) - 1) <= tmp_uint32) {
+			tmp_uint32 /= 10;
+		}
+		sprintf(ctmp, "%u", tmp_uint32);
 		break;
 	case SYSMENU_UINT64:
 		sprintf(ctmp, "%llu", (uint64_t)*menuElement->value);

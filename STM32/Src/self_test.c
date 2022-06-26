@@ -207,7 +207,7 @@ void SELF_TEST_Draw(void)
 		{
 			// get base signal strength
 			base_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
-			LCDDriver_printText("Signal strength", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("Signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %d         ", TRX_ADC_MINAMPLITUDE, TRX_ADC_MAXAMPLITUDE);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (base_signal > 20 && base_signal < 2000) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -353,7 +353,7 @@ void SELF_TEST_Draw(void)
 		{
 			// get base signal strength
 			base_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
-			LCDDriver_printText("Signal strength", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("Signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %d         ", TRX_ADC_MINAMPLITUDE, TRX_ADC_MAXAMPLITUDE);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (base_signal > 1000 && base_signal < 32000) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -377,7 +377,7 @@ void SELF_TEST_Draw(void)
 			float32_t ATT_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
-			LCDDriver_printText("ATT ON signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("ATT ON", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -2.0f && ATT_db < 1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -401,7 +401,7 @@ void SELF_TEST_Draw(void)
 			float32_t ATT_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
-			LCDDriver_printText("ATT 0.5 signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("ATT 0.5", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -2.0f && ATT_db < 1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -425,7 +425,7 @@ void SELF_TEST_Draw(void)
 			float32_t ATT_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
-			LCDDriver_printText("ATT 1.0 signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("ATT 1.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -2.0f && ATT_db < 1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -449,7 +449,7 @@ void SELF_TEST_Draw(void)
 			float32_t ATT_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
-			LCDDriver_printText("ATT 2.0 signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("ATT 2.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -3.0f && ATT_db < -1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -473,7 +473,7 @@ void SELF_TEST_Draw(void)
 			float32_t ATT_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
-			LCDDriver_printText("ATT 4.0 signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("ATT 4.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -6.0f && ATT_db < -2.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -497,7 +497,7 @@ void SELF_TEST_Draw(void)
 			float32_t ATT_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
-			LCDDriver_printText("ATT 8.0 signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("ATT 8.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -10.0f && ATT_db < -4.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -521,7 +521,7 @@ void SELF_TEST_Draw(void)
 			float32_t ATT_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
-			LCDDriver_printText("ATT 16.0 signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("ATT 16.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -20.0f && ATT_db < -8.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -545,7 +545,7 @@ void SELF_TEST_Draw(void)
 			float32_t ATT_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
-			LCDDriver_printText("ATT 32.0 signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("ATT 32.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -33.0f && ATT_db < -16.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
