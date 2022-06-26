@@ -100,6 +100,8 @@ void CWDecoder_Process(float32_t *bufferIn)
 	// Do FFT
 	arm_rfft_fast_f32(&CWDECODER_FFT_Inst, CWDEC_FFTBuffer, CWDEC_FFTBuffer, 0);
 	arm_cmplx_mag_f32(CWDEC_FFTBuffer, CWDEC_FFTBuffer, CWDECODER_FFTSIZE);
+	
+	for(uint16_t i=0;i<CWDECODER_FFTSIZE; i++) if(isinff(CWDEC_FFTBuffer[i])) return;
 
 	// Debug CWDecoder
 	/*for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE_HALF; i ++)
@@ -107,7 +109,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 		CWDEC_FFTBuffer_Export[i] = CWDEC_FFTBuffer[i];
 		CWDEC_FFTBuffer_Export[i + CWDECODER_FFTSIZE_HALF] = CWDEC_FFTBuffer[i];
 	}*/
-
+	
 	// Looking for the maximum and minimum magnitude to determine the signal source
 	float32_t maxValue = 0;
 	uint32_t maxIndex = 0;
@@ -118,6 +120,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 
 	// Sliding top bar
 	static float32_t maxValueAvg = 0;
+	//if(isinff(maxValueAvg)) maxValueAvg = 0;
 	maxValueAvg = maxValueAvg * CWDECODER_MAX_SLIDE + maxValue * (1.0f - CWDECODER_MAX_SLIDE);
 	if (maxValueAvg < maxValue)
 		maxValueAvg = maxValue;
@@ -126,9 +129,7 @@ void CWDecoder_Process(float32_t *bufferIn)
 	if (maxValueAvg > 0.0f)
 		arm_scale_f32(&CWDEC_FFTBuffer[1], 1.0f / maxValueAvg, &CWDEC_FFTBuffer[1], (CWDECODER_SPEC_PART - 1));
 
-	// sendToDebug_float32(maxValueAvg, true);
-	// sendToDebug_str(" ");
-	// sendToDebug_float32(CWDEC_FFTBuffer[maxIndex], false);
+	//println(maxValue, " ", maxValueAvg, " ", CWDEC_FFTBuffer[maxIndex]);
 
 	if (CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES && (maxValue > meanValue * (float32_t)TRX.CW_Decoder_Threshold)) // signal is active
 	{

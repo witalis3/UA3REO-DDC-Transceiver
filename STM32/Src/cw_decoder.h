@@ -8,12 +8,15 @@
 #include "functions.h"
 #include "lcd.h"
 
-#define CWDECODER_NBTIME 2 // ms noise blanker
 #if (defined(LAY_800x480))
-#define CWDECODER_STRLEN 57 // length of decoded string
-#else
-#define CWDECODER_STRLEN 30 // length of decoded string
+#define CWDECODER_STRLEN (57) // length of decoded string (7 on start - status)
+#elif (defined(LAY_640x320))
+#define CWDECODER_STRLEN (30) // length of decoded string (7 on start - status)
+#elif (defined(LAY_160x128))
+#define CWDECODER_STRLEN (26 - 7) // length of decoded string (7 on start - status)
 #endif
+
+#define CWDECODER_NBTIME 2 // ms noise blanker
 #define CWDECODER_MAGNIFY 16                            // what time we approximate FFT
 #define CWDECODER_FFTSIZE 256                           // FFT size for analysis
 #define CWDECODER_FFT_SAMPLES (DECODER_PACKET_SIZE * 4) // number of samples for analysis
