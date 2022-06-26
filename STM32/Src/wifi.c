@@ -567,13 +567,16 @@ void WIFI_Process(void)
 													sTime.Minutes = min;
 													sTime.Seconds = sec;
 													RTC_DateTypeDef sDate;
+													uint16_t d = day;
+													uint16_t weekday  = (d += month < 3 ? year-- : year - 2, 23*month/9 + d + 4 + year/4- year/100 + year/400)%7; 
 													sDate.Date = day;
 													sDate.Month = month;
 													sDate.Year = year_short;
+													sDate.WeekDay = weekday;
 													BKPSRAM_Enable();
 													HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 													HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-													println("[RTC] New time set")
+													println("[RTC] New time set", sec, ":", min, ":", hrs, " ", day, "-", month, "-", year_short, " ", weekday);
 												}
 												TRX_SNTP_Synced = HAL_GetTick();
 												println("[WIFI] TIME SYNCED");
@@ -592,7 +595,7 @@ void WIFI_Process(void)
 						}
 					}
 				}
-				TRX_SNTP_Synced = HAL_GetTick();
+				// TRX_SNTP_Synced = HAL_GetTick();
 			}
 			else if (WIFI_ProcessingCommand == WIFI_COMM_GETIP) // GetIP Command process
 			{
