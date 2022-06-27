@@ -10,7 +10,7 @@
 
 #if (defined(LAY_800x480))
 #define CWDECODER_STRLEN (57) // length of decoded string (7 on start - status)
-#elif (defined(LAY_640x320))
+#elif (defined(LAY_480x320))
 #define CWDECODER_STRLEN (30) // length of decoded string (7 on start - status)
 #elif (defined(LAY_160x128))
 #define CWDECODER_STRLEN (26 - 7) // length of decoded string (7 on start - status)
