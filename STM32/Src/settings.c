@@ -853,10 +853,10 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		uint16_t bsize = size - page_size * page;
 		if (bsize > page_size)
 			bsize = page_size;
-		SPI_Transmit(&hspi2, &Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, true);								   // Write Enable Command
-		SPI_Transmit(&hspi2, &Page_Program, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, true);									   // Write Command
-		SPI_Transmit(&hspi2, Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, true);										   // Write Address ( The first address of flash module is 0x00000000 )
-		SPI_Transmit(&hspi2, (uint8_t *)(write_clone + page_size * page), NULL, bsize, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, true); // Write Data
+		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);								   // Write Enable Command
+		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);									   // Write Command
+		HRDW_EEPROM_SPI(Address, NULL, 3, true);										   // Write Address ( The first address of flash module is 0x00000000 )
+		HRDW_EEPROM_SPI((uint8_t *)(write_clone + page_size * page), NULL, bsize, false); // Write Data
 		EEPROM_WaitWrite();
 	}
 
