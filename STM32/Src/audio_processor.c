@@ -685,7 +685,7 @@ void processTxAudio(void)
 	if (start_WM8731_DMA_state == old_WM8731_DMA_state)
 		return;
 	
-	uint32_t dma_index = CODEC_AUDIO_BUFFER_SIZE * 2 - (uint16_t)__HAL_DMA_GET_COUNTER(hi2s3.hdmatx);
+	uint32_t dma_index = HRDW_getAudioCodecTX_DMAIndex();
 	if (!start_WM8731_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE * 2 - 150))
 		return;
 	if (start_WM8731_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE - 150))
@@ -706,7 +706,7 @@ void processTxAudio(void)
 	}
 	else // AUDIO CODEC AUDIO
 	{
-		uint32_t dma_index = CODEC_AUDIO_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(hi2s3.hdmarx);
+		uint32_t dma_index = HRDW_getAudioCodecRX_DMAIndex();
 		if ((dma_index % 2) == 1)
 			dma_index--;
 		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);

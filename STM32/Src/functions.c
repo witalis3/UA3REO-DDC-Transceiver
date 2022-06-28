@@ -450,43 +450,43 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		SPI_TXRX_ready = false;
 		if (in_data == NULL)
 		{
-			if (hdma_spi2_rx.Init.MemInc != DMA_MINC_DISABLE)
+			if (hspi2.hdmarx->Init.MemInc != DMA_MINC_DISABLE)
 			{
-				hdma_spi2_rx.Init.MemInc = DMA_MINC_DISABLE;
-				HAL_DMA_Init(&hdma_spi2_rx);
+				hspi2.hdmarx->Init.MemInc = DMA_MINC_DISABLE;
+				HAL_DMA_Init(hspi2.hdmarx);
 			}
-			if (hdma_spi2_tx.Init.MemInc != DMA_MINC_ENABLE)
+			if (hspi2.hdmatx->Init.MemInc != DMA_MINC_ENABLE)
 			{
-				hdma_spi2_tx.Init.MemInc = DMA_MINC_ENABLE;
-				HAL_DMA_Init(&hdma_spi2_tx);
+				hspi2.hdmatx->Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(hspi2.hdmatx);
 			}
 			res = HAL_SPI_TransmitReceive_DMA(&hspi2, out_data, SPI_tmp_buff, count);
 		}
 		else if (out_data == NULL)
 		{
-			if (hdma_spi2_rx.Init.MemInc != DMA_MINC_ENABLE)
+			if (hspi2.hdmarx->Init.MemInc != DMA_MINC_ENABLE)
 			{
-				hdma_spi2_rx.Init.MemInc = DMA_MINC_ENABLE;
-				HAL_DMA_Init(&hdma_spi2_rx);
+				hspi2.hdmarx->Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(hspi2.hdmarx);
 			}
-			if (hdma_spi2_tx.Init.MemInc != DMA_MINC_DISABLE)
+			if (hspi2.hdmatx->Init.MemInc != DMA_MINC_DISABLE)
 			{
-				hdma_spi2_tx.Init.MemInc = DMA_MINC_DISABLE;
-				HAL_DMA_Init(&hdma_spi2_tx);
+				hspi2.hdmatx->Init.MemInc = DMA_MINC_DISABLE;
+				HAL_DMA_Init(hspi2.hdmatx);
 			}
 			res = HAL_SPI_TransmitReceive_DMA(&hspi2, SPI_tmp_buff, in_data, count);
 		}
 		else
 		{
-			if (hdma_spi2_rx.Init.MemInc != DMA_MINC_ENABLE)
+			if (hspi2.hdmarx->Init.MemInc != DMA_MINC_ENABLE)
 			{
-				hdma_spi2_rx.Init.MemInc = DMA_MINC_ENABLE;
-				HAL_DMA_Init(&hdma_spi2_rx);
+				hspi2.hdmarx->Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(hspi2.hdmarx);
 			}
-			if (hdma_spi2_tx.Init.MemInc != DMA_MINC_ENABLE)
+			if (hspi2.hdmatx->Init.MemInc != DMA_MINC_ENABLE)
 			{
-				hdma_spi2_tx.Init.MemInc = DMA_MINC_ENABLE;
-				HAL_DMA_Init(&hdma_spi2_tx);
+				hspi2.hdmatx->Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(hspi2.hdmatx);
 			}
 			res = HAL_SPI_TransmitReceive_DMA(&hspi2, out_data, in_data, count);
 		}

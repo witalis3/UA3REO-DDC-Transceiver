@@ -479,6 +479,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4325,6 +4335,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5908,6 +5928,16 @@
               <FileName>system_stm32h7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -7493,6 +7523,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -9076,6 +9116,16 @@
               <FileName>system_stm32h7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -10661,6 +10711,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -12245,6 +12305,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -13760,6 +13830,16 @@
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -15274,6 +15354,16 @@
               <FileName>system_stm32h7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
             </File>
           </Files>
         </Group>
