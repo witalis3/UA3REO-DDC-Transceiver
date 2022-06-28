@@ -818,9 +818,9 @@ static bool EEPROM_Sector_Erase(uint8_t sector, bool force)
 	Address[1] = (BigAddress >> 8) & 0xFF;
 	Address[0] = BigAddress & 0xFF;
 
-	SPI_Transmit(&hspi2, &Write_Enable, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Write Enable Command
-	SPI_Transmit(&hspi2, &Sector_Erase, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);  // Erase Command
-	SPI_Transmit(&hspi2, Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false);		  // Write Address ( The first address of flash module is 0x00000000 )
+	HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false); // Write Enable Command
+	HRDW_EEPROM_SPI(&Sector_Erase, NULL, 1, true);  // Erase Command
+	HRDW_EEPROM_SPI(Address, NULL, 3, false);		  // Write Address ( The first address of flash module is 0x00000000 )
 	EEPROM_WaitWrite();
 
 	SPI_process = false;
@@ -915,7 +915,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	int8_t tryes = 0;
 	while (!read_ok && tryes < 5)
 	{
-		bool res = SPI_Transmit(&hspi2, &Read_Data, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false); // Read Command
+		bool res = HRDW_EEPROM_SPI(&Read_Data, NULL, 1, true); // Read Command
 		if (!res)
 		{
 			EEPROM_Enabled = false;
@@ -925,8 +925,8 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 			return true;
 		}
 
-		SPI_Transmit(&hspi2, Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);							 // Write Address
-		read_ok = SPI_Transmit(&hspi2, NULL, (uint8_t *)(Buffer), size, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Read
+		HRDW_EEPROM_SPI(Address, NULL, 3, true);							 // Write Address
+		read_ok = HRDW_EEPROM_SPI(NULL, (uint8_t *)(Buffer), size, false); // Read
 		tryes++;
 	}
 
@@ -942,7 +942,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		Address[1] = (BigAddress >> 8) & 0xFF;
 		Address[0] = BigAddress & 0xFF;
 
-		bool res = SPI_Transmit(&hspi2, &Read_Data, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false); // Read Command
+		bool res = HRDW_EEPROM_SPI(&Read_Data, NULL, 1, true); // Read Command
 		if (!res)
 		{
 			EEPROM_Enabled = false;
@@ -952,8 +952,8 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 			return true;
 		}
 
-		SPI_Transmit(&hspi2, Address, NULL, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false);					   // Write Address
-		SPI_Transmit(&hspi2, NULL, (uint8_t *)(read_clone), size, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Read
+		HRDW_EEPROM_SPI(Address, NULL, 3, true);					   // Write Address
+		HRDW_EEPROM_SPI(NULL, (uint8_t *)(read_clone), size, false); // Read
 
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)read_clone, size);
 
@@ -979,8 +979,8 @@ static void EEPROM_WaitWrite(void)
 	do
 	{
 		tryes++;
-		SPI_Transmit(&hspi2, &Get_Status, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, true, SPI_EEPROM_PRESCALER, false); // Get Status command
-		SPI_Transmit(&hspi2, NULL, &status, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false);	   // Read data
+		HRDW_EEPROM_SPI(&Get_Status, NULL, 1, true); // Get Status command
+		HRDW_EEPROM_SPI(NULL, &status, 1, false);	   // Read data
 		if ((status & 0x01) == 0x01)
 			HAL_Delay(1);
 	} while ((status & 0x01) == 0x01 && (tryes < 200));
@@ -995,14 +995,14 @@ static void EEPROM_PowerDown(void)
 {
 	if (!EEPROM_Enabled)
 		return;
-	SPI_Transmit(&hspi2, &Power_Down, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Power_Down Command
+	HRDW_EEPROM_SPI(&Power_Down, NULL, 1, false); // Power_Down Command
 }
 
 static void EEPROM_PowerUp(void)
 {
 	if (!EEPROM_Enabled)
 		return;
-	SPI_Transmit(&hspi2, &Power_Up, NULL, 1, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, false, SPI_EEPROM_PRESCALER, false); // Power_Up Command
+	HRDW_EEPROM_SPI(&Power_Up, NULL, 1, false); // Power_Up Command
 }
 
 void BKPSRAM_Enable(void)
