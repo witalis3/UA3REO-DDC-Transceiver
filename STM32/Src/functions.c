@@ -441,15 +441,20 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 
+	if (count < 100) dma = false;
+	
 	if (dma)
 	{
 		memset(SPI_tmp_buff, 0x00, sizeof(SPI_tmp_buff));
 		Aligned_CleanDCache_by_Addr((uint32_t)out_data, count);
 		Aligned_CleanDCache_by_Addr((uint32_t)in_data, count);
+		Aligned_CleanDCache_by_Addr((uint32_t)SPI_tmp_buff, sizeof(SPI_tmp_buff));
 		uint32_t starttime = HAL_GetTick();
 		SPI_TXRX_ready = false;
 		if (in_data == NULL)
 		{
+			memset(SPI_tmp_buff, 0x00, sizeof(SPI_tmp_buff));
+			
 			if (hspi->hdmarx->Init.MemInc != DMA_MINC_DISABLE)
 			{
 				hspi->hdmarx->Init.MemInc = DMA_MINC_DISABLE;
@@ -467,8 +472,9 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 		}
 		else if (out_data == NULL)
 		{
-			uint32_t startTime = HAL_GetTick();
 			dma_memset(in_data, 0x00, count);
+			
+			uint32_t startTime = HAL_GetTick();
 			res = HAL_SPI_Receive_IT(hspi, in_data, count);
 			
 			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout)
@@ -487,10 +493,12 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
 			
 			while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < timeout))
-				CPULOAD_GoToSleepMode(); */
+				CPULOAD_GoToSleepMode();*/
 		}
 		else
 		{
+			dma_memset(in_data, 0x00, count);
+			
 			if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
 			{
 				hspi->hdmarx->Init.MemInc = DMA_MINC_ENABLE;
