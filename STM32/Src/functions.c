@@ -421,7 +421,7 @@ inline uint8_t rev8(uint8_t data)
 }
 
 IRAM2 uint8_t SPI_tmp_buff[8] = {0};
-bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma)
+bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma)
 {
 	if (SPI_busy)
 	{
@@ -430,10 +430,10 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 	}
 
 	// SPI speed
-	if (hspi2.Init.BaudRatePrescaler != prescaler)
+	if (hspi->Init.BaudRatePrescaler != prescaler)
 	{
-		hspi2.Init.BaudRatePrescaler = prescaler;
-		HAL_SPI_Init(&hspi2);
+		hspi->Init.BaudRatePrescaler = prescaler;
+		HAL_SPI_Init(hspi);
 	}
 
 	const int32_t timeout = 0x200; // HAL_MAX_DELAY
@@ -450,45 +450,45 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		SPI_TXRX_ready = false;
 		if (in_data == NULL)
 		{
-			if (hspi2.hdmarx->Init.MemInc != DMA_MINC_DISABLE)
+			if (hspi->hdmarx->Init.MemInc != DMA_MINC_DISABLE)
 			{
-				hspi2.hdmarx->Init.MemInc = DMA_MINC_DISABLE;
-				HAL_DMA_Init(hspi2.hdmarx);
+				hspi->hdmarx->Init.MemInc = DMA_MINC_DISABLE;
+				HAL_DMA_Init(hspi->hdmarx);
 			}
-			if (hspi2.hdmatx->Init.MemInc != DMA_MINC_ENABLE)
+			if (hspi->hdmatx->Init.MemInc != DMA_MINC_ENABLE)
 			{
-				hspi2.hdmatx->Init.MemInc = DMA_MINC_ENABLE;
-				HAL_DMA_Init(hspi2.hdmatx);
+				hspi->hdmatx->Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(hspi->hdmatx);
 			}
-			res = HAL_SPI_TransmitReceive_DMA(&hspi2, out_data, SPI_tmp_buff, count);
+			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, SPI_tmp_buff, count);
 		}
 		else if (out_data == NULL)
 		{
-			if (hspi2.hdmarx->Init.MemInc != DMA_MINC_ENABLE)
+			if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
 			{
-				hspi2.hdmarx->Init.MemInc = DMA_MINC_ENABLE;
-				HAL_DMA_Init(hspi2.hdmarx);
+				hspi->hdmarx->Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(hspi->hdmarx);
 			}
-			if (hspi2.hdmatx->Init.MemInc != DMA_MINC_DISABLE)
+			if (hspi->hdmatx->Init.MemInc != DMA_MINC_DISABLE)
 			{
-				hspi2.hdmatx->Init.MemInc = DMA_MINC_DISABLE;
-				HAL_DMA_Init(hspi2.hdmatx);
+				hspi->hdmatx->Init.MemInc = DMA_MINC_DISABLE;
+				HAL_DMA_Init(hspi->hdmatx);
 			}
-			res = HAL_SPI_TransmitReceive_DMA(&hspi2, SPI_tmp_buff, in_data, count);
+			res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
 		}
 		else
 		{
-			if (hspi2.hdmarx->Init.MemInc != DMA_MINC_ENABLE)
+			if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
 			{
-				hspi2.hdmarx->Init.MemInc = DMA_MINC_ENABLE;
-				HAL_DMA_Init(hspi2.hdmarx);
+				hspi->hdmarx->Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(hspi->hdmarx);
 			}
-			if (hspi2.hdmatx->Init.MemInc != DMA_MINC_ENABLE)
+			if (hspi->hdmatx->Init.MemInc != DMA_MINC_ENABLE)
 			{
-				hspi2.hdmatx->Init.MemInc = DMA_MINC_ENABLE;
-				HAL_DMA_Init(hspi2.hdmatx);
+				hspi->hdmatx->Init.MemInc = DMA_MINC_ENABLE;
+				HAL_DMA_Init(hspi->hdmatx);
 			}
-			res = HAL_SPI_TransmitReceive_DMA(&hspi2, out_data, in_data, count);
+			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, in_data, count);
 		}
 		while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < 1000))
 			CPULOAD_GoToSleepMode();
@@ -499,24 +499,24 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 		__SPI2_CLK_ENABLE();
 		if (in_data == NULL)
 		{
-			res = HAL_SPI_Transmit_IT(&hspi2, out_data, count);
+			res = HAL_SPI_Transmit_IT(hspi, out_data, count);
 		}
 		else if (out_data == NULL)
 		{
 			dma_memset(in_data, 0x00, count);
-			res = HAL_SPI_Receive_IT(&hspi2, in_data, count);
+			res = HAL_SPI_Receive_IT(hspi, in_data, count);
 		}
 		else
 		{
 			dma_memset(in_data, 0x00, count);
-			res = HAL_SPI_TransmitReceive_IT(&hspi2, out_data, in_data, count);
+			res = HAL_SPI_TransmitReceive_IT(hspi, out_data, in_data, count);
 		}
 		uint32_t startTime = HAL_GetTick();
-		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout)
+		while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout)
 			CPULOAD_GoToSleepMode();
 	}
 
-	if (HAL_SPI_GetError(&hspi2) != 0)
+	if (HAL_SPI_GetError(hspi) != 0)
 		res = HAL_ERROR;
 
 	if (!hold_cs)
@@ -529,7 +529,7 @@ bool SPI_Transmit(uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_Type
 	}
 	if (res == HAL_ERROR)
 	{
-		println("[ERR] SPI error, code: ", hspi2.ErrorCode);
+		println("[ERR] SPI error, code: ", hspi->ErrorCode);
 		return false;
 	}
 

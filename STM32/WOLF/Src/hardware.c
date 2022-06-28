@@ -38,27 +38,22 @@ uint32_t HRDW_getAudioCodecTX_DMAIndex(void) {
 }
 
 bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs) {
-	return false;
-	//return SPI_Transmit(&hspi2, out_data, in_data, 3, AD1_CS_GPIO_Port, AD1_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
+	return SPI_Transmit(&hspi2, out_data, in_data, 3, AD1_CS_GPIO_Port, AD1_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
 }
 
 bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs) {
-	return false;
-	//return SPI_Transmit(&hspi2, out_data, in_data, 3, AD2_CS_GPIO_Port, AD2_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
+	return SPI_Transmit(&hspi2, out_data, in_data, 3, AD2_CS_GPIO_Port, AD2_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
 }
 
 bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs) {
-	return false;
-	//return SPI_Transmit(&hspi2, out_data, in_data, 3, AD3_CS_GPIO_Port, AD3_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
+	return SPI_Transmit(&hspi2, out_data, in_data, 3, AD3_CS_GPIO_Port, AD3_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
 }
 
 bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs) {
-	return false;
-	//return SPI_Transmit(&hspi2, out_data, in_data, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, hold_cs, SPI_EEPROM_PRESCALER, false);
+	return SPI_Transmit(&hspi2, out_data, in_data, 3, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, hold_cs, SPI_EEPROM_PRESCALER, false);
 }
 
 bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs) {
-	return false;
-	//return SPI_Transmit(&hspi2, out_data, in_data, 3, SD_CS_GPIO_Port, SD_CS_Pin, hold_cs, SPI_SD_PRESCALER, false);
+	return SPI_Transmit(&hspi2, out_data, in_data, 3, SD_CS_GPIO_Port, SD_CS_Pin, hold_cs, SPI_SD_PRESCALER, false);
 }
 

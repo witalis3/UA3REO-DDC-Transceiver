@@ -2261,7 +2261,7 @@ static uint8_t SPIx_WriteRead(uint8_t Byte)
 {
 	uint8_t SPIx_receivedByte = 0;
 
-	if (!SPI_Transmit(&Byte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
+	if (!SPI_Transmit(&hspi2, &Byte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
 		println("SD SPI R Err");
 
 	return SPIx_receivedByte;
@@ -2378,7 +2378,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 	dma_memset(buff, 0xFF, btr);
 	// for (cnt = 0; cnt < btr; cnt++)
 	//   buff[cnt] = SPI_ReceiveByte();
-	if (!SPI_Transmit(NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+	if (!SPI_Transmit(&hspi2, NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
 	{
 		println("SD SPI R Err");
 		return 0;
@@ -2419,7 +2419,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 		if (dma)
 		{
 			dma_memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
-			if (!SPI_Transmit(SD_Write_Block_tmp, NULL, sdinfo.BLOCK_SIZE, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
+			if (!SPI_Transmit(&hspi2, SD_Write_Block_tmp, NULL, sdinfo.BLOCK_SIZE, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 			{
 				println("SD SPI W Err");
 				return 0;
@@ -2427,7 +2427,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 		}
 		else
 		{
-			if (!SPI_Transmit(buff, NULL, sdinfo.BLOCK_SIZE, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
+			if (!SPI_Transmit(&hspi2, buff, NULL, sdinfo.BLOCK_SIZE, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
 			{
 				println("SD SPI W Err");
 				return 0;
