@@ -428,6 +428,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 		println("SPI Busy");
 		return false;
 	}
+	SPI_busy = true;
 
 	// SPI speed
 	if (hspi->Init.BaudRatePrescaler != prescaler)
@@ -436,8 +437,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 		HAL_SPI_Init(hspi);
 	}
 
-	const int32_t timeout = 0x200; // HAL_MAX_DELAY
-	SPI_busy = true;
+	const uint32_t timeout = 1000; // HAL_MAX_DELAY
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 
@@ -461,10 +461,20 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 				HAL_DMA_Init(hspi->hdmatx);
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, SPI_tmp_buff, count);
+			
+			while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < timeout))
+				CPULOAD_GoToSleepMode();
 		}
 		else if (out_data == NULL)
 		{
-			if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
+			uint32_t startTime = HAL_GetTick();
+			dma_memset(in_data, 0x00, count);
+			res = HAL_SPI_Receive_IT(hspi, in_data, count);
+			
+			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout)
+				CPULOAD_GoToSleepMode();
+			
+			/* if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
 			{
 				hspi->hdmarx->Init.MemInc = DMA_MINC_ENABLE;
 				HAL_DMA_Init(hspi->hdmarx);
@@ -475,6 +485,9 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 				HAL_DMA_Init(hspi->hdmatx);
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
+			
+			while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < timeout))
+				CPULOAD_GoToSleepMode(); */
 		}
 		else
 		{
@@ -489,9 +502,10 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 				HAL_DMA_Init(hspi->hdmatx);
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, in_data, count);
+			
+			while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < timeout))
+				CPULOAD_GoToSleepMode();
 		}
-		while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < 1000))
-			CPULOAD_GoToSleepMode();
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t)in_data, count);
 	}
 	else
