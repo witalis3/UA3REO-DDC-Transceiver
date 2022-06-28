@@ -22,8 +22,6 @@ extern void TRX_setMode(uint_fast8_t _mode, VFO *vfo);
 extern void TRX_ptt_change(void);
 extern void TRX_DoAutoGain(void);
 extern void TRX_Restart_Mode(void);
-extern float32_t TRX_getSTM32H743Temperature(void);
-extern float32_t TRX_getSTM32H743vref(void);
 extern void TRX_TemporaryMute(void);
 extern void TRX_ProcessScanMode(void);
 extern void TRX_setFrequencySlowly(uint32_t target_freq);

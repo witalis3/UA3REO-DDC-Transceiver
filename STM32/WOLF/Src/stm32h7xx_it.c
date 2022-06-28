@@ -813,8 +813,8 @@ void TIM6_DAC_IRQHandler(void)
 		}
 		
     CPULOAD_Calc(); // Calculate CPU load
-    TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
-    TRX_STM32_VREF = TRX_getSTM32H743vref();
+    TRX_STM32_TEMPERATURE = HRDW_getCPUTemperature();
+    TRX_STM32_VREF = HRDW_getCPUVref();
 
     //Save Debug variables
     uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;

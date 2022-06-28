@@ -5,10 +5,9 @@
 #include <stdio.h>
 #include "audio_processor.h"
 #include "functions.h"
+#include "hardware.h"
 
 #define I2C_ADDRESS_WM8731 0x34                         // audio codec address
-#define CODEC_AUDIO_BUFFER_SIZE (AUDIO_BUFFER_SIZE * 2) // the size of the circular buffer is 2 times larger than the FPGA buffer, we work in the first half, then on the other
-#define CODEC_AUDIO_BUFFER_HALF_SIZE AUDIO_BUFFER_SIZE  // half buffer
 
 // Public variables
 extern int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE];

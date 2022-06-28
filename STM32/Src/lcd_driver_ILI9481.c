@@ -524,6 +524,7 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 		return;
 	}
 
+#if HRDW_HAS_DMA2D
 	// DMA2D Set color in 32bit format
 	WRITE_REG(hdma2d.Instance->OCOLR, (color << 16) | color);
 	// DMA2D Set width and 32bit align
@@ -539,6 +540,10 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 		CPULOAD_GoToSleepMode();
 	// DMA2D clean flags
 	hdma2d.Instance->IFCR = DMA2D_FLAG_TC | DMA2D_FLAG_CTC;
+#elseif
+	while (n--)
+		LCDDriver_SendData(color);
+#endif
 }
 
 void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)

@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include "functions.h"
 #include "bands.h"
+#include "hardware.h"
 
 #define SETT_VERSION 51						  // Settings config version
 #define CALIB_VERSION 45					  // Calibration config version
@@ -45,11 +46,6 @@
 
 // select how the SWR and the power is measured
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
-
-// SPI Speed
-#define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_4
-#define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_2
-#define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_4
 
 //#define ADC_BITS 16																						// ADC bit depth
 //#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
