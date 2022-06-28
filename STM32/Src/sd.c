@@ -2261,7 +2261,7 @@ static uint8_t SPIx_WriteRead(uint8_t Byte)
 {
 	uint8_t SPIx_receivedByte = 0;
 
-	if (!SPI_Transmit(&hspi2, &Byte, &SPIx_receivedByte, 1, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, false))
+	if (!HRDW_SD_SPI(&Byte, &SPIx_receivedByte, 1, false))
 		println("SD SPI R Err");
 
 	return SPIx_receivedByte;
@@ -2378,7 +2378,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr)
 	dma_memset(buff, 0xFF, btr);
 	// for (cnt = 0; cnt < btr; cnt++)
 	//   buff[cnt] = SPI_ReceiveByte();
-	if (!SPI_Transmit(&hspi2, NULL, SD_Read_Block_tmp, btr, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, true))
+	if (!HRDW_SD_SPI(NULL, SD_Read_Block_tmp, btr, false))
 	{
 		println("SD SPI R Err");
 		return 0;
@@ -2416,22 +2416,11 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma)
 		// for (cnt = 0; cnt < sdinfo.BLOCK_SIZE; cnt++)
 		// SPI_SendByte(buff[cnt]);
 
-		if (dma)
+		dma_memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
+		if (!HRDW_SD_SPI(SD_Write_Block_tmp, NULL, sdinfo.BLOCK_SIZE, false))
 		{
-			dma_memcpy(SD_Write_Block_tmp, buff, sizeof(SD_Write_Block_tmp));
-			if (!SPI_Transmit(&hspi2, SD_Write_Block_tmp, NULL, sdinfo.BLOCK_SIZE, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
-			{
-				println("SD SPI W Err");
-				return 0;
-			}
-		}
-		else
-		{
-			if (!SPI_Transmit(&hspi2, buff, NULL, sdinfo.BLOCK_SIZE, SD_CS_GPIO_Port, SD_CS_Pin, false, SPI_SD_PRESCALER, dma))
-			{
-				println("SD SPI W Err");
-				return 0;
-			}
+			println("SD SPI W Err");
+			return 0;
 		}
 
 		// CRC check
@@ -2474,14 +2463,14 @@ uint8_t sd_ini(void)
 	sdinfo.type = 0;
 	uint8_t ocr[4];
 	uint8_t csd[16];
-	temp = hspi2.Init.BaudRatePrescaler;
-	hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; // 156.25 kbbs (96 kbps)
-	HAL_SPI_Init(&hspi2);
+	//temp = hspi.Init.BaudRatePrescaler;
+	//hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; // 156.25 kbbs (96 kbps)
+	//HAL_SPI_Init(&hspi);
 	// HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
 	for (i = 0; i < 10; i++)
 		SPI_Release();
-	hspi2.Init.BaudRatePrescaler = temp;
-	HAL_SPI_Init(&hspi2);
+	//hspi.Init.BaudRatePrescaler = temp;
+	//HAL_SPI_Init(&hspi);
 	// HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
 	if (SD_cmd(CMD0, 0) == 1) // Enter Idle state
 	{
