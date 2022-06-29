@@ -86,16 +86,12 @@
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 #include "functions.h"
-#include "front_unit.h"
 #include "rf_unit.h"
 #include "fpga.h"
-#include "lcd.h"
 #include "wm8731.h"
 #include "audio_processor.h"
 #include "agc.h"
-#include "fft.h"
 #include "settings.h"
-#include "fpga.h"
 #include "profiler.h"
 #include "usbd_debug_if.h"
 #include "usbd_cat_if.h"
@@ -111,14 +107,19 @@
 #include "swr_analyzer.h"
 #include "sd.h"
 #include "wspr.h"
-#include "cw.h"
 #include "FT8\FT8_main.h"		//Tisho
-
-static uint32_t ms10_counter = 0;
 static uint32_t tim6_delay = 0;
 static uint32_t powerdown_start_delay = 0;
 static bool prev_pwr_state = true;
-uint32_t dbg_FPGA_samples = 0;
+
+#include "events.h"
+#include "lcd.h"
+#include "fft.h"
+#include "fpga.h"
+#include "front_unit.h"
+#include "cw.h"
+
+static uint32_t ms10_counter = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -419,8 +420,7 @@ void TIM2_IRQHandler(void)
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
-  if (SYSMENU_wspr_opened)
-    WSPR_DoFastEvents();
+  EVENTS_do_WSPR();
   /* USER CODE END TIM2_IRQn 1 */
 }
 
@@ -435,20 +435,7 @@ void TIM3_IRQHandler(void)
   /* USER CODE END TIM3_IRQn 0 */
   HAL_TIM_IRQHandler(&htim3);
   /* USER CODE BEGIN TIM3_IRQn 1 */
-
-  //process wifi
-  if (wifi_start_timeout < 10)
-  {
-    wifi_start_timeout++;
-  }
-  else
-  {
-    // we work with WiFi by timer, or send it if it is turned off (to turn it on, we need a restart)
-    if (TRX.WIFI_Enabled)
-      WIFI_Process();
-    else
-      WIFI_GoSleep();
-  }
+	EVENTS_do_WIFI();
   /* USER CODE END TIM3_IRQn 1 */
 }
 
@@ -462,16 +449,7 @@ void TIM4_IRQHandler(void)
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
-  if (SYSMENU_spectrum_opened || SYSMENU_swr_opened)
-  {
-    SYSMENU_drawSystemMenu(false, false);
-    return;
-  }
-
-  if (FFT_need_fft)
-    FFT_doFFT();
-
-  ua3reo_dev_cat_parseCommand();
+  EVENTS_do_FFT();
   /* USER CODE END TIM4_IRQn 1 */
 }
 
@@ -515,31 +493,8 @@ void TIM5_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
   //StartProfilerUs();
-  if (!Processor_NeedTXBuffer && !Processor_NeedRXBuffer)
-    return;
-
-  if (TRX_on_TX)
-  {
-		processTxAudio();
-  }
-  else
-  {
-    processRxAudio();
-  }
-	
-  //in the spectrum analyzer mode, we raise its processing to priority, performing together with the audio processor
-  if (SYSMENU_spectrum_opened)
-    LCD_doEvents();
-	
-	#if FT8_SUPPORT
-	if(FT8_DecodeActiveFlg) {
-		TRX_Inactive_Time = 0;
-		MenagerFT8();
-	}
-	#endif
-	
+  EVENTS_do_AUDIO_PROCESSOR();
   //EndProfilerUs(true);
-
   /* USER CODE END TIM5_IRQn 1 */
 }
 
@@ -564,7 +519,7 @@ void TIM6_DAC_IRQHandler(void)
   prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
 
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) 
-		&& ((!NeedSaveCalibration && !SPI_process && !EEPROM_Busy && !LCD_busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
+		&& ((!NeedSaveCalibration && !HRDW_SPI_Locked && !EEPROM_Busy && !LCD_busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
   {
     TRX_Inited = false;
     LCD_busy = true;
@@ -817,8 +772,8 @@ void TIM6_DAC_IRQHandler(void)
 		}
 		
     CPULOAD_Calc(); // Calculate CPU load
-    TRX_STM32_TEMPERATURE = TRX_getSTM32H743Temperature();
-    TRX_STM32_VREF = TRX_getSTM32H743vref();
+    TRX_STM32_TEMPERATURE = HRDW_getCPUTemperature();
+    TRX_STM32_VREF = HRDW_getCPUVref();
 
     //Save Debug variables
     uint32_t dbg_tim6_delay = HAL_GetTick() - tim6_delay;
@@ -917,16 +872,7 @@ void TIM7_IRQHandler(void)
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
-
-  print_flush(); // send data to debug from the buffer
-
-  // unmute after transition process end
-  if (TRX_Temporary_Mute_StartTime > 0 && (HAL_GetTick() - TRX_Temporary_Mute_StartTime) > 100)
-  {
-    WM8731_UnMute();
-    TRX_Temporary_Mute_StartTime = 0;
-  }
-
+	EVENTS_do_USB_FIFO();
   /* USER CODE END TIM7_IRQn 1 */
 }
 
@@ -996,26 +942,7 @@ void TIM15_IRQHandler(void)
   /* USER CODE END TIM15_IRQn 0 */
   HAL_TIM_IRQHandler(&htim15);
   /* USER CODE BEGIN TIM15_IRQn 1 */
-
-  if (SD_BusyByUSB)
-    return;
-
-  //FRONT PANEL SPI
-  static uint16_t front_slowler = 0;
-  front_slowler++;
-  if (front_slowler > 20)
-  {
-    FRONTPANEL_Process();
-    front_slowler = 0;
-  }
-
-  //EEPROM SPI
-  if (NeedSaveCalibration) // save calibration data to EEPROM
-    SaveCalibration();
-
-  //SD-Card SPI
-  SD_Process();
-
+	EVENTS_do_PERIPHERAL();
   /* USER CODE END TIM15_IRQn 1 */
 }
 
@@ -1029,34 +956,7 @@ void TIM16_IRQHandler(void)
   /* USER CODE END TIM16_IRQn 0 */
   HAL_TIM_IRQHandler(&htim16);
   /* USER CODE BEGIN TIM16_IRQn 1 */
-	// Update watchdog
-	HAL_IWDG_Refresh(&hiwdg1);
-  // Poll an additional encoder by timer, because interrupt hangs in line with FPGA
-  static uint8_t ENC2lastClkVal = 0;
-  static bool ENC2first = true;
-  uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
-  if (ENC2first)
-  {
-    ENC2lastClkVal = ENCODER2_CLKVal;
-    ENC2first = false;
-  }
-  if (ENC2lastClkVal != ENCODER2_CLKVal)
-  {
-    if (TRX_Inited)
-      FRONTPANEL_ENCODER2_checkRotate();
-    ENC2lastClkVal = ENCODER2_CLKVal;
-  }
-#ifdef HAS_TOUCHPAD
-  static bool TOUCH_Int_Last = true;
-  bool TOUCH_Int_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
-  if (TOUCH_Int_Last != TOUCH_Int_Now)
-  {
-    TOUCH_Int_Last = TOUCH_Int_Now;
-    if (TOUCH_Int_Now)
-      TOUCHPAD_reserveInterrupt();
-  }
-  return;
-#endif
+	EVENTS_do_ENC();
   /* USER CODE END TIM16_IRQn 1 */
 }
 
@@ -1070,17 +970,8 @@ void TIM17_IRQHandler(void)
   /* USER CODE END TIM17_IRQn 0 */
   HAL_TIM_IRQHandler(&htim17);
   /* USER CODE BEGIN TIM17_IRQn 1 */
-
-  //audio buffer RX preprocessor
-  if (!TRX_on_TX)
-    preProcessRxAudio();
-
-  if (FFT_new_buffer_ready)
-    FFT_bufferPrepare();
-
-  if (NeedProcessDecoder)
-    DECODER_Process();
-  /* USER CODE END TIM17_IRQn 1 */
+	EVENTS_do_PREPROCESS();
+	/* USER CODE END TIM17_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
@@ -1102,7 +993,7 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
   CPULOAD_WakeUp();
 	if(hspi->Instance	== SPI2)
 	{
-		SPI_TXRX_ready = true;
+		SPI_DMA_TXRX_ready_callback = true;
 	}
 }
 
