@@ -639,8 +639,8 @@ bool FFT_printFFT(void)
 		uint32_t length = estimated;
 		if (length > DMA_MAX_BLOCK)
 			length = DMA_MAX_BLOCK;
-		HAL_MDMA_Start(&hmdma_mdma_channel43_sw_0, (uint32_t)srcAddr, (uint32_t)destAddr, length, 1);
-		SLEEPING_MDMA_PollForTransfer(&hmdma_mdma_channel43_sw_0);
+		HAL_MDMA_Start(&HRDW_LCD_WTF_DOWN_MDMA, (uint32_t)srcAddr, (uint32_t)destAddr, length, 1);
+		SLEEPING_MDMA_PollForTransfer(&HRDW_LCD_WTF_DOWN_MDMA);
 		srcAddr -= length;
 		destAddr -= length;
 		estimated -= length;
@@ -1492,28 +1492,28 @@ void FFT_afterPrintFFT(void)
 #ifdef LCD_TYPE_FSMC
 		if (print_fft_dma_estimated_size <= DMA_MAX_BLOCK)
 		{
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&print_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
+			HAL_DMA_Start_IT(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
 			print_fft_dma_estimated_size = 0;
 			print_fft_dma_position = 0;
 		}
 		else
 		{
 			print_fft_dma_estimated_size -= DMA_MAX_BLOCK;
-			HAL_DMA_Start_IT(&hdma_memtomem_dma2_stream5, (uint32_t)&print_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, DMA_MAX_BLOCK);
+			HAL_DMA_Start_IT(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, DMA_MAX_BLOCK);
 			print_fft_dma_position += DMA_MAX_BLOCK;
 		}
 		return;
 #endif
 #ifdef LCD_TYPE_SPI
-		if (hspi4.Init.DataSize != SPI_DATASIZE_16BIT)
+		if (HRDW_LCD_SPI.Init.DataSize != SPI_DATASIZE_16BIT)
 		{
-			hspi4.Init.DataSize = SPI_DATASIZE_16BIT;
-			HAL_SPI_Init(&hspi4);
+			HRDW_LCD_SPI.Init.DataSize = SPI_DATASIZE_16BIT;
+			HAL_SPI_Init(&HRDW_LCD_SPI);
 		}
 		LCD_DC_GPIO_Port->BSRR = LCD_DC_Pin;
 
-		HAL_SPI_Transmit_DMA(&hspi4, (uint8_t *)(&print_output_buffer[0] + print_fft_dma_position * 2), print_fft_dma_estimated_size);
-		while (HAL_SPI_GetState(&hspi4) != HAL_SPI_STATE_READY)
+		HAL_SPI_Transmit_DMA(&HRDW_LCD_SPI, (uint8_t *)(&print_output_buffer[0] + print_fft_dma_position * 2), print_fft_dma_estimated_size);
+		while (HAL_SPI_GetState(&HRDW_LCD_SPI) != HAL_SPI_STATE_READY)
 		{
 			CPULOAD_GoToSleepMode();
 		}

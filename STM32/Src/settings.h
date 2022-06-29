@@ -11,10 +11,6 @@
 
 #define SETT_VERSION 51						  // Settings config version
 #define CALIB_VERSION 45					  // Calibration config version
-#define ADC_CLOCK 122880000					  // ADC generator frequency
-#define DAC_CLOCK 188160000					  // DAC generator frequency
-#define MAX_RX_FREQ_HZ 750000000			  // Maximum receive frequency (from the ADC datasheet)
-#define MAX_TX_FREQ_HZ DAC_CLOCK			  // Maximum transmission frequency
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
 #define AGC_CLIPPING 6.0f					  // Limit over target in AGC, dB
@@ -44,9 +40,6 @@
 #define TX_LPF_TIMEOUT (180 * 1000)			  // TX LPF On Timeout, millisec (3 min)
 // FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
-// select how the SWR and the power is measured
-//#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
-
 //#define ADC_BITS 16																						// ADC bit depth
 //#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
 //#define CODEC_BITS 32																					// bitness of data in the audio codec
@@ -54,20 +47,10 @@
 //#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS_FULL_SCALE)
 #define CODEC_BITS_FULL_SCALE 4294967296 // maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
 //#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS )_FULL_SCALE
-#define ADC_FULL_SCALE 65536 // maximum signal amplitude in the ADC // powf (2, ADC_BITS)
-#define FLOAT_FULL_SCALE_POW 4
 #define USB_DEBUG_ENABLED true	// allow using USB as a console
 #define SWD_DEBUG_ENABLED false // enable SWD as a console
 #define LCD_DEBUG_ENABLED false // enable LCD as a console
-#define DCDC_FREQ_0 960000
-#define DCDC_FREQ_1 1200000
-#define ADC_INPUT_IMPEDANCE 200.0f // 50ohm -> 1:4 trans
-#define ADC_RANGE 2.25f
-#define ADC_RANGE_PGA 1.5f
 
-#define ADC_LNA_GAIN_DB 20.0f
-#define ADC_DRIVER_GAIN_DB 25.5f
-#define ADC_PGA_GAIN_DB 3.522f
 #define AUTOGAINER_TAGET (ADC_FULL_SCALE / 3)
 #define AUTOGAINER_HYSTERESIS 5000
 
@@ -181,7 +164,7 @@ static char ota_config_lcd[] = "ILI9486";
 static char ota_config_lcd[] = "ST7796S";
 #define FT8_SUPPORT true
 #endif
-#if defined(LCD_ST7735S)
+#if defined(LCD_ST7735S) // X1
 static char ota_config_lcd[] = "ST7735S";
 #define FT8_SUPPORT false
 #endif

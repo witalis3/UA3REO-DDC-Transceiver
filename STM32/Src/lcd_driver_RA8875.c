@@ -133,7 +133,7 @@ void LCDDriver_Init(void)
   Timing.CLKDivision = 16;
   Timing.DataLatency = 17;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
-  HAL_SRAM_Init(&hsram1, &Timing, NULL);
+  HAL_SRAM_Init(&HRDW_FSMC_LCD, &Timing, NULL);
   HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
 }
 

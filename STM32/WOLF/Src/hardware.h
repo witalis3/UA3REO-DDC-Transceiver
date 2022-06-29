@@ -7,11 +7,39 @@
 
 // features
 #define HRDW_HAS_DMA2D true
+//#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
+
+// settings
+#define ADC_CLOCK 122880000					  // ADC generator frequency
+#define DAC_CLOCK 188160000					  // DAC generator frequency
+#define MAX_RX_FREQ_HZ 750000000			  // Maximum receive frequency (from the ADC datasheet)
+#define MAX_TX_FREQ_HZ DAC_CLOCK			  // Maximum transmission frequency
+#define ADC_FULL_SCALE 65536 // maximum signal amplitude in the ADC // powf (2, ADC_BITS)
+#define FLOAT_FULL_SCALE_POW 4
+#define DCDC_FREQ_0 960000
+#define DCDC_FREQ_1 1200000
+#define ADC_INPUT_IMPEDANCE 200.0f // 50ohm -> 1:4 trans
+#define ADC_RANGE 2.25f
+#define ADC_RANGE_PGA 1.5f
+#define ADC_LNA_GAIN_DB 20.0f
+#define ADC_DRIVER_GAIN_DB 25.5f
+#define ADC_PGA_GAIN_DB 3.522f
 
 // instances
 #define HRDW_AUDIO_CODEC_I2S hi2s3
 #define HRDW_WSPR_TIMER htim2
 #define HRDW_WIFI_UART huart6
+#define HRDW_FSMC_LCD hsram1
+#define HRDW_CRC_HANDLE hcrc
+#define HRDW_JPEG_HANDLE hjpeg
+#define HRDW_LCD_SPI hspi4 //X1
+
+#define HRDW_LCD_FSMC_COPY_DMA hdma_memtomem_dma2_stream5
+#define HRDW_LCD_WTF_DOWN_MDMA hmdma_mdma_channel43_sw_0
+#define HRDW_MEMCPY_MDMA hmdma_mdma_channel40_sw_0
+#define HRDW_MEMSET_MDMA hmdma_mdma_channel44_sw_0
+#define HRDW_AUDIO_COPY_MDMA hmdma_mdma_channel41_sw_0
+#define HRDW_AUDIO_COPY2_MDMA hmdma_mdma_channel42_sw_0
 
 // SPI Speed
 #define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_4
@@ -34,6 +62,8 @@
 
 extern bool HRDW_SPI_Periph_busy;
 extern volatile bool HRDW_SPI_Locked;
+extern bool dma_memset32_busy;
+extern bool dma_memcpy32_busy;
 
 extern void HRDW_Init(void);
 extern float32_t HRDW_getCPUTemperature(void);
