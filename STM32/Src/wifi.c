@@ -69,25 +69,25 @@ void WIFI_Init(void)
 
 	if (init_version == 0)
 	{
-		huart6.Init.BaudRate = 115200;
-		huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-		huart6.AdvancedInit.Swap = UART_ADVFEATURE_SWAP_DISABLE;
+		HRDW_WIFI_UART.Init.BaudRate = 115200;
+		HRDW_WIFI_UART.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+		HRDW_WIFI_UART.AdvancedInit.Swap = UART_ADVFEATURE_SWAP_DISABLE;
 	}
 
 	if (init_version == 1)
 	{
-		huart6.Init.BaudRate = 115200;
-		huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_SWAP_INIT;
-		huart6.AdvancedInit.Swap = UART_ADVFEATURE_SWAP_ENABLE;
+		HRDW_WIFI_UART.Init.BaudRate = 115200;
+		HRDW_WIFI_UART.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_SWAP_INIT;
+		HRDW_WIFI_UART.AdvancedInit.Swap = UART_ADVFEATURE_SWAP_ENABLE;
 	}
 
-	HAL_UART_Init(&huart6);
+	HAL_UART_Init(&HRDW_WIFI_UART);
 
 	// wifi uart speed = 115200 * 8 = 921600  / * 16 = 1843200
 	WIFI_SendCommand("AT+UART_CUR=921600,8,1,0,1\r\n"); // uart config
 	HAL_Delay(100);
-	huart6.Init.BaudRate = 921600;
-	HAL_UART_Init(&huart6);
+	HRDW_WIFI_UART.Init.BaudRate = 921600;
+	HAL_UART_Init(&HRDW_WIFI_UART);
 
 	WIFI_SendCommand("ATE0\r\n"); // echo off
 	WIFI_WaitForOk();
@@ -745,12 +745,12 @@ void WIFI_GoSleep(void)
 
 static void WIFI_SendCommand(char *command)
 {
-	HAL_UART_AbortReceive(&huart6);
-	HAL_UART_AbortReceive_IT(&huart6);
+	HAL_UART_AbortReceive(&HRDW_WIFI_UART);
+	HAL_UART_AbortReceive_IT(&HRDW_WIFI_UART);
 	dma_memset(WIFI_AnswerBuffer, 0x00, sizeof(WIFI_AnswerBuffer));
 	WIFI_Answer_ReadIndex = 0;
-	HAL_UART_Receive_DMA(&huart6, (uint8_t *)WIFI_AnswerBuffer, WIFI_ANSWER_BUFFER_SIZE);
-	HAL_UART_Transmit_IT(&huart6, (uint8_t *)command, (uint16_t)strlen(command));
+	HAL_UART_Receive_DMA(&HRDW_WIFI_UART, (uint8_t *)WIFI_AnswerBuffer, WIFI_ANSWER_BUFFER_SIZE);
+	HAL_UART_Transmit_IT(&HRDW_WIFI_UART, (uint8_t *)command, (uint16_t)strlen(command));
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
 	if (TRX.Debug_Type == TRX_DEBUG_WIFI) // DEBUG
@@ -788,7 +788,7 @@ static bool WIFI_TryGetLine(void)
 	dma_memset(tmp, 0x00, sizeof(tmp));
 
 	Aligned_CleanInvalidateDCache_by_Addr((uint32_t)WIFI_AnswerBuffer, sizeof(WIFI_AnswerBuffer));
-	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(huart6.hdmarx);
+	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(HRDW_WIFI_UART.hdmarx);
 	if (WIFI_Answer_ReadIndex == dma_index)
 		return false;
 
@@ -870,9 +870,9 @@ bool WIFI_SendIQData(uint8_t *data, uint32_t size)
 	WIFI_ProcessingCommandCallback = NULL;
 	char header[64] = {0};
 	sprintf(header, "AT+CIPSEND=%u,%u\r\n", link_id, size);
-	HAL_UART_Transmit_IT(&huart6, (uint8_t *)header, (uint16_t)strlen(header)); // Start IQ sending
+	HAL_UART_Transmit_IT(&HRDW_WIFI_UART, (uint8_t *)header, (uint16_t)strlen(header)); // Start IQ sending
 	HAL_Delay(2);
-	HAL_UART_Transmit_IT(&huart6, data, size); // Send IQ data
+	HAL_UART_Transmit_IT(&HRDW_WIFI_UART, data, size); // Send IQ data
 	WIFI_ProcessingCommand = WIFI_COMM_NONE;
 	WIFI_State = WIFI_READY;
 	return true;

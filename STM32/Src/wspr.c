@@ -279,7 +279,7 @@ static void WSPR_StartTransmit(void)
 	wspr_status = WSPR_TRANSMIT;
 	WSPR2_BeginDelay = 0;
 	WSPR2_count = 0;
-	HAL_TIM_Base_Start_IT(&htim2);
+	HAL_TIM_Base_Start_IT(&HRDW_WSPR_TIMER);
 }
 
 static void WSPR_StopTransmit(void)
@@ -291,7 +291,7 @@ static void WSPR_StopTransmit(void)
 	wspr_status = WSPR_WAIT;
 	WSPR2_BeginDelay = 0;
 	WSPR2_count = 0;
-	HAL_TIM_Base_Stop_IT(&htim2);
+	HAL_TIM_Base_Stop_IT(&HRDW_WSPR_TIMER);
 }
 
 // events to the encoder

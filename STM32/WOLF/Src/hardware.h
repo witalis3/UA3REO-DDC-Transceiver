@@ -10,6 +10,8 @@
 
 // instances
 #define HRDW_AUDIO_CODEC_I2S hi2s3
+#define HRDW_WSPR_TIMER htim2
+#define HRDW_WIFI_UART huart6
 
 // SPI Speed
 #define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_4
