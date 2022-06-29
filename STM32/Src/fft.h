@@ -1,7 +1,7 @@
 #ifndef FFT_h
 #define FFT_h
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include <stdbool.h>
 #include <math.h>
 #include "functions.h"

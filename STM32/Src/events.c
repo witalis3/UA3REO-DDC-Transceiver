@@ -109,8 +109,10 @@ void EVENTS_do_USB_FIFO(void) // 1000 hz
 
 void EVENTS_do_PERIPHERAL(void) // 1000 hz
 {
+	#if HRDW_HAS_SD
 	if (SD_BusyByUSB)
     return;
+	#endif
 
   //FRONT PANEL SPI
   static uint16_t front_slowler = 0;
@@ -125,14 +127,20 @@ void EVENTS_do_PERIPHERAL(void) // 1000 hz
   if (NeedSaveCalibration) // save calibration data to EEPROM
     SaveCalibration();
 
+	#if HRDW_HAS_SD
   //SD-Card SPI
   SD_Process();
+	#endif
 }
 
 void EVENTS_do_ENC(void) // 20 0000 hz
 {
 	// Update watchdog
+	#if HRDW_HAS_IWDG
 	HAL_IWDG_Refresh(&hiwdg1);
+	#else
+	println("!!! FIX HAL_IWDG_Refresh");
+	#endif
 	
   // Poll an additional encoder by timer, because interrupt hangs in line with FPGA
   static uint8_t ENC2lastClkVal = 0;

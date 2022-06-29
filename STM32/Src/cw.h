@@ -1,7 +1,7 @@
 #ifndef CW_H
 #define CW_H
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include <stdbool.h>
 #include "settings.h"
 

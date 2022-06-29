@@ -1,4 +1,3 @@
-#include "stm32h7xx_hal.h"
 #include "cw.h"
 #include "main.h"
 #include "trx_manager.h"

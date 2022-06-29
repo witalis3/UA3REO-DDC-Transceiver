@@ -1,7 +1,7 @@
 #ifndef SYSTEM_MENU_H
 #define SYSTEM_MENU_H
 
-#include "stm32h7xx.h"
+#include "hardware.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include "lcd_driver.h"

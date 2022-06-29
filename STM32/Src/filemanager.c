@@ -1,3 +1,6 @@
+#include "hardware.h"
+#if HRDW_HAS_SD
+
 #include "filemanager.h"
 #include "lcd.h"
 #include "sd.h"
@@ -891,3 +894,5 @@ void FILEMANAGER_OTAUpdate_handler(void)
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
+
+#endif

@@ -1,7 +1,6 @@
 #ifndef AUDIO_PROCESSOR_h
 #define AUDIO_PROCESSOR_h
 
-#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>

@@ -1,7 +1,7 @@
 #ifndef CALLSIGN_H
 #define CALLSIGN_H
 
-#include "stm32h7xx.h"
+#include "hardware.h"
 #include "main.h"
 #include "stdbool.h"
 #include "stdint.h"

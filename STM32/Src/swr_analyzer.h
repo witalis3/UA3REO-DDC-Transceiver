@@ -1,7 +1,7 @@
 #ifndef SWR_ANALYZER_H
 #define SWR_ANALYZER_H
 
-#include "stm32h7xx.h"
+#include "hardware.h"
 #include "main.h"
 #include "stdbool.h"
 

@@ -1,7 +1,7 @@
 #ifndef RDS_DECODER_h
 #define RDS_DECODER_h
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>

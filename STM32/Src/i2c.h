@@ -3,8 +3,7 @@
 
 #include "main.h"
 #include "touchpad.h"
-#include "stm32h7xx_hal.h"
-#include "stm32h7xx_hal_gpio.h"
+#include "hardware.h"
 #include <stdbool.h>
 
 #define WIRE_BUFSIZ 101

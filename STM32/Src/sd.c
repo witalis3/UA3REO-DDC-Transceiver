@@ -1,3 +1,6 @@
+#include "hardware.h"
+#if HRDW_HAS_SD
+
 #include "sd.h"
 #include "main.h"
 #include "fatfs.h"
@@ -2588,3 +2591,5 @@ uint8_t sd_ini(void)
 	// sendToDebug_str(sd_str_buff);
 	return 0;
 }
+
+#endif

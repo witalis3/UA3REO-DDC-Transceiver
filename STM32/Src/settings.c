@@ -1,6 +1,5 @@
 #include "settings.h"
-#include "stm32h7xx_hal.h"
-#include "stm32h7xx_hal_rtc.h"
+#include "hardware.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "functions.h"

@@ -15,7 +15,7 @@
 #include "bands.h"
 #include "sd.h"
 #include "wspr.h"
-#include "stm32h7xx_it.h"
+#include "hardware.h"
 #include "usbd_ua3reo.h"
 #include "filemanager.h"
 #include "rf_unit.h"

@@ -6,7 +6,7 @@
 #include "functions.h"
 #include "wm8731.h"
 #include "lcd_driver.h"
-#include "stm32h7xx_ll_usb.h"
+#include "hardware.h"
 
 static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev);
 static uint8_t USBD_UA3REO_DeInit(USBD_HandleTypeDef *pdev);

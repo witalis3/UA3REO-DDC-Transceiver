@@ -1,5 +1,9 @@
 #ifndef SD_H_
 #define SD_H_
+
+#include "hardware.h"
+#if HRDW_HAS_SD
+
 //--------------------------------------------------
 #include "main.h"
 #include <string.h>
@@ -106,4 +110,5 @@ extern bool SD_doCommand(SD_COMMAND command, bool force);
 extern void SDCOMM_FLASH_JIC_handler(bool restart);
 extern void SDCOMM_FLASH_BIN_handler(void);
 //--------------------------------------------------
+#endif
 #endif /* SD_H_ */

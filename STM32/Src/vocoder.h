@@ -1,7 +1,7 @@
 #ifndef VOCODER_H
 #define VOCODER_H
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include "adpcm-lib.h"
 #include "settings.h"
 

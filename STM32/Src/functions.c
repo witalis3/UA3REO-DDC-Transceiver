@@ -1,5 +1,5 @@
 #include "functions.h"
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -649,6 +649,7 @@ void dma_memcpy(void *dest, void *src, uint32_t size)
 	}
 }
 
+#if HRDW_HAS_MDMA
 void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 {
 #define Timeout 100
@@ -687,6 +688,7 @@ void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 
 	hmdma->State = HAL_MDMA_STATE_READY;
 }
+#endif
 
 uint8_t getInputType(void)
 {

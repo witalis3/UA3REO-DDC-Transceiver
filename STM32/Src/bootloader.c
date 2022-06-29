@@ -7,6 +7,7 @@
 // switch to DFU-mode buloder
 _Noreturn void JumpToBootloader(void)
 {
+	#ifdef STM32H743xx
 	uint32_t i = 0;
 	void (*SysMemBootJump)(void);
 
@@ -36,6 +37,9 @@ _Noreturn void JumpToBootloader(void)
 	SysMemBootJump = (void (*)(void))(*((uint32_t *)((BootAddr + 4)))); //-V566
 	__set_MSP(*(uint32_t *)BootAddr);									//-V566
 	SysMemBootJump();
+	#else
+	println("!!! FIX Bootloader");
+	#endif
 	while (true)
 	{
 	}

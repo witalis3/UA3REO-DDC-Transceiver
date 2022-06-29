@@ -639,8 +639,12 @@ bool FFT_printFFT(void)
 		uint32_t length = estimated;
 		if (length > DMA_MAX_BLOCK)
 			length = DMA_MAX_BLOCK;
+		#if HRDW_HAS_MDMA
 		HAL_MDMA_Start(&HRDW_LCD_WTF_DOWN_MDMA, (uint32_t)srcAddr, (uint32_t)destAddr, length, 1);
 		SLEEPING_MDMA_PollForTransfer(&HRDW_LCD_WTF_DOWN_MDMA);
+		#else
+		println("!!! FIX HRDW_LCD_WTF_DOWN_MDMA");
+		#endif
 		srcAddr -= length;
 		destAddr -= length;
 		estimated -= length;

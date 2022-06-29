@@ -1,7 +1,7 @@
 #ifndef SELF_TEST_H
 #define SELF_TEST_H
 
-#include "stm32h7xx.h"
+#include "hardware.h"
 #include "main.h"
 #include "stdbool.h"
 #include "stdint.h"

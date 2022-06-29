@@ -1,7 +1,7 @@
 #ifndef FILEMANAGER_h
 #define FILEMANAGER_h
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include <stdbool.h>
 #include "system_menu.h"
 

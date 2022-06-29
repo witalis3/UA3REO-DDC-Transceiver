@@ -1,12 +1,16 @@
 #ifndef __HARDWARE_H
 #define __HARDWARE_H
 
+#include "stm32h7xx.h"
 #include "main.h"
 #include "arm_math_types.h"
 #include <stdbool.h>
 
 // features
+#define HRDW_HAS_MDMA true
+#define HRDW_HAS_SD true
 #define HRDW_HAS_DMA2D true
+#define HRDW_HAS_IWDG true
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 // settings

@@ -1,7 +1,6 @@
 #ifndef SETTINGS_h
 #define SETTINGS_h
 
-#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -106,6 +105,15 @@ static char ota_config_frontpanel[] = "NONE";
 #define FUNCBUTTONS_COUNT 1
 #define FUNCBUTTONS_ON_PAGE 1
 static char ota_config_frontpanel[] = "SMALL";
+#endif
+
+#ifdef FRONTPANEL_LITE
+#define HRDW_MCP3008_1 true
+#define HRDW_HAS_FUNCBUTTONS true
+#define MAX_VOLUME_VALUE 1024.0f
+#define FUNCBUTTONS_COUNT 27
+#define FUNCBUTTONS_ON_PAGE 9
+static char ota_config_frontpanel[] = "LITE";
 #endif
 
 #define FUNCBUTTONS_MAX_COUNT 32

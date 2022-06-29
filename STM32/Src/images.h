@@ -1,7 +1,7 @@
 #ifndef IMAGES_H
 #define IMAGES_H
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include "functions.h"
 
 // Convert image in https://sourceforge.net/projects/lcd-image-converter/

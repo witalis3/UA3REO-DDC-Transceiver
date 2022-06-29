@@ -156,11 +156,13 @@ void processRxAudio(void)
 	if (!preprocessor_buffer_ready)
 		return;
 
+	#if HRDW_HAS_SD
 	if (SD_PlayInProcess)
 	{
 		APROC_SD_Play();
 		return;
 	}
+	#endif
 
 	// get data from preprocessor
 	dma_memcpy(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_accum_I, sizeof(APROC_Audio_Buffer_RX1_I));
@@ -562,6 +564,7 @@ void processRxAudio(void)
 	volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
 
 	// SD card send
+	#if HRDW_HAS_SD
 	if (SD_RecordInProcess)
 	{
 		// FPGA_RX_IQ_BUFFER_HALF_SIZE - 192
@@ -576,6 +579,7 @@ void processRxAudio(void)
 			}
 		}
 	}
+	#endif
 
 	// Tisho
 	/*FT-8 decoding (fill the FT8 Buffer)
@@ -659,13 +663,21 @@ void processRxAudio(void)
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
 		if (WM8731_DMA_state) // complete
 		{
+			#if HRDW_HAS_MDMA
 			HAL_MDMA_Start_IT(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
+			#else
+			println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+			#endif
 		}
 		else // half
 		{
-			HAL_MDMA_Start_IT(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
-			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
+			#if HRDW_HAS_MDMA
+			HAL_MDMA_Start_IT(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
+			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
+			#else
+			println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+			#endif
 		}
 	}
 
@@ -712,12 +724,14 @@ void processTxAudio(void)
 		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
 	}
 
+	#if HRDW_HAS_SD
 	// Play CQ message
 	if (SD_PlayCQMessageInProcess && SD_PlayInProcess)
 	{
 		while (!APROC_SD_PlayTX())
 			; // false - data not ready, continue decoding
 	}
+	#endif
 
 #if FT8_SUPPORT
 	// Tisho - FT8
@@ -926,6 +940,7 @@ void processTxAudio(void)
 		}
 	}
 
+	#if HRDW_HAS_SD
 	// SD card send
 	if (SD_RecordInProcess)
 	{
@@ -940,9 +955,14 @@ void processTxAudio(void)
 			}
 		}
 	}
+	#endif
 
 	// Loopback/DIGI mode self-hearing
+	#if HRDW_HAS_SD
 	if ((!SD_RecordInProcess && mode == TRX_MODE_LOOPBACK) || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY)
+	#else
+	if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY)
+	#endif
 	{
 		float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE) * volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
@@ -956,13 +976,21 @@ void processTxAudio(void)
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
 		if (start_WM8731_DMA_state) // compleate
 		{
+			#if HRDW_HAS_MDMA
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
+			#else
+			println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+			#endif
 		}
 		else // half
 		{
+			#if HRDW_HAS_MDMA
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], AUDIO_BUFFER_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
+			#else
+			println("!!! FIX HRDW_AUDIO_COPY2_MDMA");
+			#endif
 		}
 	}
 
@@ -1148,17 +1176,25 @@ void processTxAudio(void)
 		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));
 		if (FPGA_Audio_Buffer_State)
 		{
+			#if HRDW_HAS_MDMA
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
+			#else
+			println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+			#endif
 		}
 		else
 		{
+			#if HRDW_HAS_MDMA
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[0], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
+			#else
+			println("!!! FIX HRDW_AUDIO_COPY2_MDMA");
+			#endif
 		}
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_I[0], sizeof(FPGA_Audio_SendBuffer_I));
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));
@@ -1817,13 +1853,21 @@ static void APROC_SD_Play(void)
 				Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
 				if (WM8731_DMA_state) // complete
 				{
+					#if HRDW_HAS_MDMA
 					HAL_MDMA_Start_IT(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 					SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
+					#else
+					println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+					#endif
 				}
 				else // half
 				{
+					#if HRDW_HAS_MDMA
 					HAL_MDMA_Start_IT(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 					SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
+					#else
+					println("!!! FIX HRDW_AUDIO_COPY2_MDMA");
+					#endif
 				}
 			}
 			//

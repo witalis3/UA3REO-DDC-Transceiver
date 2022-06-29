@@ -1,4 +1,4 @@
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include "main.h"
 #include "trx_manager.h"
 #include "functions.h"

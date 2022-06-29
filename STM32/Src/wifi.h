@@ -1,7 +1,7 @@
 #ifndef WIFI_H
 #define WIFI_H
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include <stdbool.h>
 #include "settings.h"
 

@@ -1,7 +1,7 @@
 #ifndef LCD_h
 #define LCD_h
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include "trx_manager.h"
 #include "lcd_driver.h"
 #include "touchpad.h"

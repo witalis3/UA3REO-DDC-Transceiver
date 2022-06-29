@@ -1,7 +1,7 @@
 #ifndef PROFILER_h
 #define PROFILER_h
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include <stdbool.h>
 #include <stdint.h>
 #define PROFILES_COUNT 7 // number of profilers

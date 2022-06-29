@@ -1,7 +1,6 @@
 #ifndef WM8731_h
 #define WM8731_h
 
-#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include "audio_processor.h"
 #include "functions.h"

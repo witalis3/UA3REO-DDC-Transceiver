@@ -1,7 +1,7 @@
 #ifndef FRONT_UNIT_h
 #define FRONT_UNIT_h
 
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include <stdbool.h>
 #include "settings.h"
 

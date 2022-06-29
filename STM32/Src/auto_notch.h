@@ -1,7 +1,6 @@
 #ifndef AUTO_NOTCH_h
 #define AUTO_NOTCH_h
 
-#include "stm32h7xx_hal.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>

@@ -1,5 +1,5 @@
 #include "rtty_decoder.h"
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
