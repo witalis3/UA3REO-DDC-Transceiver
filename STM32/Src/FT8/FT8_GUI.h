@@ -4,7 +4,7 @@
 #include "lcd.h"
 #include <stdint.h>
 #include <stdbool.h>
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 
 #define FT8_Menu_Max_Idx 2 // 3 Buttons in total
 

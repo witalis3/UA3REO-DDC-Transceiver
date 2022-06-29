@@ -166,7 +166,9 @@ static char ota_config_lcd[] = "HX8357C-SLOW";
 #endif
 #if defined(LCD_ILI9486)
 static char ota_config_lcd[] = "ILI9486";
-#define FT8_SUPPORT true
+	#ifdef STM32H743xx 
+		#define FT8_SUPPORT true 
+	#endif
 #endif
 #if defined(LCD_ST7796S)
 static char ota_config_lcd[] = "ST7796S";

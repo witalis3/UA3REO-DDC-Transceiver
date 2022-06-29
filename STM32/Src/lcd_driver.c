@@ -1,11 +1,12 @@
 #include "settings.h"
-
-// Header files
 #include "lcd_driver.h"
 #include "main.h"
 #include "fonts.h"
 #include "functions.h"
+
+#if HRDW_HAS_JPEG
 #include "jpeg_utils.h"
+#endif
 
 static bool _cp437 = false;
 static uint16_t text_cursor_y = 0;
@@ -532,6 +533,8 @@ inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity)
 	return (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
 }
 
+#if LCD_WIDTH > 300 && HRDW_HAS_JPEG
+
 #define JPEG_chunk_size_out 384
 IRAM2 uint8_t JPEG_out_buffer[JPEG_chunk_size_out];
 uint32_t JPEG_blockIndex = 0;
@@ -539,10 +542,8 @@ JPEG_YCbCrToRGB_Convert_Function JPEG_ConvertFunction = NULL;
 
 void LCDDriver_printImage_JPEGCompressed(uint16_t x, uint16_t y, const uint8_t *image)
 {
-	#if LCD_WIDTH > 300
 	JPEG_blockIndex = 0;
 	uint8_t res = HAL_JPEG_Decode(&HRDW_JPEG_HANDLE, (uint8_t *)image, sizeof(IMAGES_logo800_jpeg), JPEG_out_buffer, JPEG_chunk_size_out, HAL_MAX_DELAY);
-	#endif
 }
 
 void HAL_JPEG_InfoReadyCallback(JPEG_HandleTypeDef *hjpeg, JPEG_ConfTypeDef *pInfo)
@@ -568,3 +569,5 @@ void HAL_JPEG_DataReadyCallback(JPEG_HandleTypeDef *hjpeg, uint8_t *pDataOut, ui
   /* Update JPEG encoder output buffer address*/  
   HAL_JPEG_ConfigOutputBuffer(hjpeg, JPEG_out_buffer, JPEG_chunk_size_out); 
 }
+
+#endif

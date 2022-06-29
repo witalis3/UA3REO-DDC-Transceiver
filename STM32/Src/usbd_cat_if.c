@@ -220,7 +220,9 @@ static void CAT_Transmit(char *data)
 		println("CAT command answer: |", data, "|");
 	if (CAT_processingWiFiCommand)
 	{
+		#if HRDW_HAS_WIFI
 		WIFI_SendCatAnswer(data, CAT_processingWiFi_link_id, NULL);
+		#endif
 		CAT_processingWiFiCommand = false;
 	}
 }

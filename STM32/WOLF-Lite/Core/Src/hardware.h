@@ -11,6 +11,8 @@
 #define HRDW_HAS_SD false
 #define HRDW_HAS_DMA2D false
 #define HRDW_HAS_IWDG false
+#define HRDW_HAS_JPEG false
+#define HRDW_HAS_WIFI false
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 // settings
@@ -31,7 +33,7 @@
 
 // instances
 #define HRDW_AUDIO_CODEC_I2S hi2s3
-#define HRDW_WSPR_TIMER htim2
+#define HRDW_WSPR_TIMER htim6 /// !!! FIX HRDW_WSPR_TIMER
 #define HRDW_WIFI_UART NULL
 #define HRDW_FSMC_LCD hsram1
 #define HRDW_CRC_HANDLE hcrc

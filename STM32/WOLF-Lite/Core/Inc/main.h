@@ -143,8 +143,8 @@ void Error_Handler(void);
 #define PERI_MISO_GPIO_Port GPIOB
 #define PERI_MOSI_Pin GPIO_PIN_15
 #define PERI_MOSI_GPIO_Port GPIOB
-#define MUTE_Pin GPIO_PIN_7
-#define MUTE_GPIO_Port GPIOC
+#define AF_AMP_MUTE_Pin GPIO_PIN_7
+#define AF_AMP_MUTE_GPIO_Port GPIOC
 #define AD1_CS_Pin GPIO_PIN_8
 #define AD1_CS_GPIO_Port GPIOC
 #define WM8731_WS_LRC_Pin GPIO_PIN_15
@@ -159,11 +159,11 @@ void Error_Handler(void);
 #define WM8731_SCK_GPIO_Port GPIOD
 #define WM8731_SDA_Pin GPIO_PIN_6
 #define WM8731_SDA_GPIO_Port GPIOD
-#define CPU_PW_HOLD_Pin GPIO_PIN_6
-#define CPU_PW_HOLD_GPIO_Port GPIOB
-#define CPU_PW_Pin GPIO_PIN_7
-#define CPU_PW_GPIO_Port GPIOB
-#define CPU_PW_EXTI_IRQn EXTI9_5_IRQn
+#define PWR_HOLD_Pin GPIO_PIN_6
+#define PWR_HOLD_GPIO_Port GPIOB
+#define PWR_ON_Pin GPIO_PIN_7
+#define PWR_ON_GPIO_Port GPIOB
+#define PWR_ON_EXTI_IRQn EXTI9_5_IRQn
 #define LCD_BL_PWM_Pin GPIO_PIN_8
 #define LCD_BL_PWM_GPIO_Port GPIOB
 #define KEY_IN_DASH_Pin GPIO_PIN_0

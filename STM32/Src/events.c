@@ -47,11 +47,13 @@ void EVENTS_do_WIFI(void) // 1000 hz
   }
   else
   {
+		#if HRDW_HAS_WIFI
     // we work with WiFi by timer, or send it if it is turned off (to turn it on, we need a restart)
     if (TRX.WIFI_Enabled)
       WIFI_Process();
     else
       WIFI_GoSleep();
+		#endif
   }
 }
 
@@ -352,7 +354,7 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 		fpga_stuck_errors++;
 	else
 		fpga_stuck_errors = 0;
-	if (fpga_stuck_errors > 5 && !TRX_on_TX && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM && !SD_PlayInProcess)
+	if (fpga_stuck_errors > 5 && !TRX_on_TX && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) // && !SD_PlayInProcess
 	{
 		println("[ERR] IQ stuck error, restart disabled");
 		fpga_stuck_errors = 0;
@@ -393,8 +395,10 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 	FPGA_Buffer_underrun = false;
 	RX_USB_AUDIO_underrun = false;
 	APROC_IFGain_Overflow = false;
-	SD_underrun = false;
 	TRX_MIC_BELOW_NOISEGATE = false;
+	#if HRDW_HAS_SD
+	SD_underrun = false;
+	#endif
 }
 
 void EVENTS_do_EVERY_500ms(void) // 2 hz
@@ -416,6 +420,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		TRX_phase_restarted = true;
 	}
 
+	#if HRDW_HAS_WIFI
 	bool maySendIQ = true;
 	if (!WIFI_IP_Gotted) { //Get resolved IP
 		WIFI_GetIP(NULL);
@@ -441,6 +446,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		maySendIQ = false;
 	}
 	WIFI_maySendIQ = maySendIQ;
+	#endif
 	
 	//Check vBAT
 	static bool vbat_checked = false;
@@ -494,7 +500,9 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		println("ADC MIN/MAX Amplitude: ", TRX_ADC_MINAMPLITUDE, " / ", TRX_ADC_MAXAMPLITUDE);
 		//print_bin16(TRX_ADC_MINAMPLITUDE, true); print_str(" / "); print_bin16(TRX_ADC_MAXAMPLITUDE, false);
 		println("VCXO Error: ", TRX_VCXO_ERROR);
+		#if HRDW_HAS_WIFI
 		println("WIFI State: ", WIFI_State);
+		#endif
 		println("");
 		PrintProfilerResult();
 	}

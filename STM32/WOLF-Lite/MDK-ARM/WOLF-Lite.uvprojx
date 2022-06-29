@@ -340,7 +340,7 @@
               <MiscControls>-Wno-sign-conversion -Wno-implicit-int-conversion -Wno-float-equal -Wno-sign-compare -Wno-gnu-flexible-array-initializer -pipe  -Wno-unused-value</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx,FRONTPANEL_LITE,LCD_ILI9486,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Core\Src;..\..\Src;..\..\Src\USBDevice;..\..\Src\JPEG</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../Core/Src;../../Src;../../Src/USBDevice;../../Src/JPEG</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -405,14 +405,14 @@
               <FilePath>..\Core\Src\hardware.h</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Core/Src/main.c</FilePath>
-            </File>
-            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Core\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/main.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_it.c</FileName>
@@ -1148,176 +1148,6 @@
               <FileName>biquad.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\BiquadDesigner\biquad.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Src/FT8</GroupName>
-          <Files>
-            <File>
-              <FileName>constants.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\constants.c</FilePath>
-            </File>
-            <File>
-              <FileName>constants.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\constants.h</FilePath>
-            </File>
-            <File>
-              <FileName>decode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\decode.c</FilePath>
-            </File>
-            <File>
-              <FileName>decode.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\decode.h</FilePath>
-            </File>
-            <File>
-              <FileName>decode_ft8.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\decode_ft8.c</FilePath>
-            </File>
-            <File>
-              <FileName>decode_ft8.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\decode_ft8.h</FilePath>
-            </File>
-            <File>
-              <FileName>encode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\encode.c</FilePath>
-            </File>
-            <File>
-              <FileName>encode.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\encode.h</FilePath>
-            </File>
-            <File>
-              <FileName>FT8_GUI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\FT8_GUI.c</FilePath>
-            </File>
-            <File>
-              <FileName>FT8_GUI.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\FT8_GUI.h</FilePath>
-            </File>
-            <File>
-              <FileName>FT8_main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\FT8_main.c</FilePath>
-            </File>
-            <File>
-              <FileName>FT8_main.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\FT8_main.h</FilePath>
-            </File>
-            <File>
-              <FileName>gen_ft8.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\gen_ft8.c</FilePath>
-            </File>
-            <File>
-              <FileName>gen_ft8.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\gen_ft8.h</FilePath>
-            </File>
-            <File>
-              <FileName>ldpc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\ldpc.c</FilePath>
-            </File>
-            <File>
-              <FileName>ldpc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\ldpc.h</FilePath>
-            </File>
-            <File>
-              <FileName>locator_ft8.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\locator_ft8.c</FilePath>
-            </File>
-            <File>
-              <FileName>locator_ft8.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\locator_ft8.h</FilePath>
-            </File>
-            <File>
-              <FileName>pack.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\pack.c</FilePath>
-            </File>
-            <File>
-              <FileName>pack.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\pack.h</FilePath>
-            </File>
-            <File>
-              <FileName>Process_DSP.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\Process_DSP.c</FilePath>
-            </File>
-            <File>
-              <FileName>Process_DSP.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\Process_DSP.h</FilePath>
-            </File>
-            <File>
-              <FileName>text.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\text.c</FilePath>
-            </File>
-            <File>
-              <FileName>text.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\text.h</FilePath>
-            </File>
-            <File>
-              <FileName>traffic_manager.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\traffic_manager.c</FilePath>
-            </File>
-            <File>
-              <FileName>traffic_manager.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\traffic_manager.h</FilePath>
-            </File>
-            <File>
-              <FileName>unpack.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\FT8\unpack.c</FilePath>
-            </File>
-            <File>
-              <FileName>unpack.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\unpack.h</FilePath>
-            </File>
-            <File>
-              <FileName>WF_Table.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\FT8\WF_Table.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Src/JPEG</GroupName>
-          <Files>
-            <File>
-              <FileName>jpeg_utils.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils.c</FilePath>
-            </File>
-            <File>
-              <FileName>jpeg_utils.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils.h</FilePath>
-            </File>
-            <File>
-              <FileName>jpeg_utils_conf_template.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils_conf_template.h</FilePath>
             </File>
           </Files>
         </Group>

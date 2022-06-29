@@ -91,7 +91,9 @@ void initAudioProcessor(void)
 	InitAudioFilters();
 	DECODER_Init();
 	NeedReinitReverber = true;
+	#if HRDW_HAS_SD
 	ADPCM_Init();
+	#endif
 }
 
 // RX decimator and preprocessor
@@ -1809,6 +1811,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	current_if_gain = if_gain;
 }
 
+#if HRDW_HAS_SD
 static void APROC_SD_Play(void)
 {
 	static uint32_t vocoder_index = SIZE_ADPCM_BLOCK;
@@ -1907,10 +1910,11 @@ static bool APROC_SD_PlayTX(void)
 			return true;
 		}
 	}
-
+	
 	// data not ready
 	return false;
 }
+#endif
 
 static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff)
 {

@@ -145,9 +145,11 @@ static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ManualBottom(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_ManualTop(int8_t direction);
+#if HRDW_HAS_WIFI
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout(int8_t direction);
+#endif
 static void SYSMENU_HANDL_SCREEN_Show_Sec_VFO(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Scale_Type(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction);
@@ -198,6 +200,7 @@ static void SYSMENU_HANDL_ADC_SHDN(int8_t direction);
 static void SYSMENU_HANDL_ADC_DITH(int8_t direction);
 static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction);
 
+#if HRDW_HAS_WIFI
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SelectAP1(int8_t direction);
 static void SYSMENU_HANDL_WIFI_SetAP1password(int8_t direction);
@@ -208,13 +211,16 @@ static void SYSMENU_HANDL_WIFI_SetAP3password(int8_t direction);
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction);
 static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction);
 static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
+#endif
 
+#if HRDW_HAS_SD
 static void SYSMENU_HANDL_SD_Format(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettings(int8_t direction);
 static void SYSMENU_HANDL_SD_USB(int8_t direction);
+#endif
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
@@ -360,14 +366,18 @@ static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_SDMENU(int8_t direction);
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 
+#if HRDW_HAS_WIFI
 static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction);
-static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
-static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
+#endif
+static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
+static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction);
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
+#if HRDW_HAS_SD
 static void SYSMENU_HANDL_FILEMANAGER(int8_t direction);
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
+#endif
 static void SYSMENU_HANDL_FT8_Decoder(int8_t direction);	 // Tisho
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); // Tisho
 static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction);
@@ -421,8 +431,12 @@ const static struct sysmenu_item_handler sysmenu_handlers[] =
 		{"SCREEN Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_LCDMENU},
 		{"Decoders", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_DECODERSMENU},
 		{"ADC/DAC Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_ADCMENU},
+		#if HRDW_HAS_WIFI
 		{"WIFI Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WIFIMENU},
+		#endif
+		#if HRDW_HAS_SD
 		{"SD Card", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SDMENU},
+		#endif
 		{"Set Clock Time", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SETTIME},
 		{"DFU Mode", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Bootloader},
 		{"OTA Update", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_OTA_Update},
@@ -582,9 +596,11 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Compressor", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
 		{"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 		{"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blckman", "Nutall", "BlNutll", "Hann", "Hamming", "No"}},
+#if HRDW_HAS_WIFI
 		{"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
 		{"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
 		{"FFT DXCluster Timeout", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_DXCluster_Timeout, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout},
+#endif
 		{"Show Sec VFO", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Show_Sec_VFO, SYSMENU_HANDL_SCREEN_Show_Sec_VFO},
 		{"FFT Scale Type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Scale_Type, SYSMENU_HANDL_SCREEN_FFT_Scale_Type, {"Ampl", "dBm"}},
 #ifdef HRDW_HAS_FUNCBUTTONS
@@ -646,6 +662,7 @@ const static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 		{"ADC Shutdown", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
 };
 
+#if HRDW_HAS_WIFI
 const static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 	{
 		{"WIFI Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
@@ -665,7 +682,9 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 		{"IP:", SYSMENU_INFOLINE, 0, 0},
 		{WIFI_IP, SYSMENU_INFOLINE, 0, 0},
 };
+#endif
 
+#if HRDW_HAS_SD
 const static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 	{
 		{"USB SD Card Reader", SYSMENU_BOOLEAN, NULL, (uint32_t *)&SD_USBCardReader, SYSMENU_HANDL_SD_USB},
@@ -685,6 +704,7 @@ const static struct sysmenu_item_handler sysmenu_sd_import_handlers[] =
 		{"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
 		{"Yes, Import Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings},
 };
+#endif
 
 const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 	{
@@ -858,14 +878,18 @@ const static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 
 const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 	{
+#if HRDW_HAS_WIFI
 		{"DX Cluster", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DX_CLUSTER},
 		{"Propagination", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGINATION},
+		{"RDA Statistics", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RDA_STATS},
+#endif
 		{"SWR Analyzer", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SWR_ANALYSER_MENU},
 		{"Spectrum Analyzer", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SPECTRUMMENU},
-		{"RDA Statistics", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RDA_STATS},
 		{"WSPR Beacon", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WSPRMENU},
+#if HRDW_HAS_SD
 		{"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_FILEMANAGER},
 		{"Record CQ message", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RECORD_CQ_WAV},
+#endif
 #if FT8_SUPPORT
 		{"FT-8 Decoder", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_FT8_Decoder}, // Tisho
 #endif
@@ -887,10 +911,14 @@ static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
 	{.menu_handler = sysmenu_screen_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_decoders_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_adc_handlers, .currentIndex = 0},
+	#if HRDW_HAS_WIFI
 	{.menu_handler = sysmenu_wifi_handlers, .currentIndex = 0},
+	#endif
+	#if HRDW_HAS_SD
 	{.menu_handler = sysmenu_sd_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_sd_export_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_sd_import_handlers, .currentIndex = 0},
+	#endif
 	{.menu_handler = sysmenu_calibration_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_swr_analyser_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_spectrum_handlers, .currentIndex = 0},
@@ -900,6 +928,7 @@ static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
 
 // COMMON MENU
 static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement, bool onlyVal);
+#if HRDW_HAS_WIFI
 static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw);
@@ -912,6 +941,7 @@ static void SYSMENU_WIFI_DrawSelectAP3Menu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw);
 static void SYSMENU_WIFI_RotatePasswordChar3(int8_t dir);
+#endif
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateCallsignChar(int8_t dir);
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
@@ -2416,6 +2446,7 @@ static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction)
 		TRX.WTF_Moving = false;
 }
 
+#if HRDW_HAS_WIFI
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction)
 {
 	if (direction > 0)
@@ -2442,6 +2473,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout(int8_t direction)
 	WIFI_DXCLUSTER_list_count = 0;
 	TRX_DXCluster_UpdateTime = 0;
 }
+#endif
 
 static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction)
 {
@@ -3022,7 +3054,7 @@ static void SYSMENU_HANDL_ADC_DITH(int8_t direction)
 }
 
 // WIFI MENU
-
+#if HRDW_HAS_WIFI
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction)
 {
 #pragma unused(direction)
@@ -3442,9 +3474,10 @@ static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
 	WIFI_UpdateFW(NULL);
 	LCD_showTooltip("Started, see console");
 }
+#endif
 
 // SD MENU
-
+#if HRDW_HAS_SD
 static void SYSMENU_HANDL_SDMENU(int8_t direction)
 {
 #pragma unused(direction)
@@ -3512,7 +3545,7 @@ static void SYSMENU_HANDL_SD_Format(int8_t direction)
 		SD_doCommand(SDCOMM_FORMAT, false);
 	}
 }
-
+#endif
 // SET TIME MENU
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction)
@@ -3637,9 +3670,11 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 	sprintf(out, "FPGA FW ver: %d.%d.%d", FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
+	#if HRDW_HAS_WIFI
 	sprintf(out, "WIFI IP: %s", WIFI_IP);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
+	#endif
 	sprintf(out, "FPGA SAMPLES: %d     ", dbg_FPGA_samples);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
@@ -5275,6 +5310,7 @@ static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction)
 		TRX.WSPR_BANDS_2 = false;
 }
 
+#if HRDW_HAS_WIFI
 // RDA STATS
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction)
 {
@@ -5299,18 +5335,19 @@ static void SYSMENU_HANDL_PROPAGINATION(int8_t direction)
 	WIFI_getPropagination();
 }
 
-// SD FILE MANAGER
-static void SYSMENU_HANDL_FILEMANAGER(int8_t direction)
-{
-	sysmenu_filemanager_opened = true;
-	SYSMENU_drawSystemMenu(true, false);
-}
-
 // RECORD CQ MESSAGE
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction)
 {
 	sysmenu_filemanager_opened = true;
 	FILEMANAGER_StartRecCQWav();
+}
+#endif
+
+// SD FILE MANAGER
+static void SYSMENU_HANDL_FILEMANAGER(int8_t direction)
+{
+	sysmenu_filemanager_opened = true;
+	SYSMENU_drawSystemMenu(true, false);
 }
 
 // LOCATOR INFO
@@ -5358,7 +5395,9 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines)
 		SYSMENU_HANDL_SETTIME(0);
 		return;
 	}
-	else if (sysmenu_wifi_selectap1_menu_opened)
+	else 
+	#if HRDW_HAS_WIFI
+	if (sysmenu_wifi_selectap1_menu_opened)
 	{
 		if(only_infolines) return;
 		SYSMENU_WIFI_DrawSelectAP1Menu(draw_background);
@@ -5388,7 +5427,9 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines)
 		if(only_infolines) return;
 		SYSMENU_WIFI_DrawAP3passwordMenu(draw_background);
 	}
-	else if (sysmenu_trx_setCallsign_menu_opened)
+	else 
+	#endif
+	if (sysmenu_trx_setCallsign_menu_opened)
 	{
 		if(only_infolines) return;
 		SYSMENU_TRX_DrawCallsignMenu(draw_background);
@@ -5525,6 +5566,7 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 	if (direction > 1)
 		direction = 1;
 
+	#if HRDW_HAS_WIFI
 	if (sysmenu_wifi_selectap1_menu_opened)
 	{
 		SYSMENU_WIFI_SelectAP1MenuMove(0);
@@ -5555,6 +5597,8 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 		SYSMENU_WIFI_RotatePasswordChar3(direction);
 		return;
 	}
+	#endif
+	
 	if (sysmenu_trx_setCallsign_menu_opened)
 	{
 		SYSMENU_TRX_RotateCallsignChar(direction);
@@ -5584,6 +5628,7 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 
 void SYSMENU_eventCloseSystemMenu(void)
 {
+	#if HRDW_HAS_WIFI
 	if (sysmenu_wifi_selectap1_menu_opened)
 	{
 		sysmenu_wifi_selectap1_menu_opened = false;
@@ -5620,7 +5665,9 @@ void SYSMENU_eventCloseSystemMenu(void)
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
 	}
-	else if (sysmenu_trx_setCallsign_menu_opened)
+	else 
+	#endif
+	if (sysmenu_trx_setCallsign_menu_opened)
 	{
 		sysmenu_trx_setCallsign_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -5734,12 +5781,14 @@ void SYSMENU_eventCloseSystemMenu(void)
 	sysmenu_item_selected_by_enc2 = false;
 	NeedSaveSettings = true;
 
+	#if HRDW_HAS_SD
 	if (SD_USBCardReader)
 	{
 		SD_USBCardReader = false;
 		USBD_Restart();
 		TRX_Mute = false;
 	}
+	#endif
 }
 
 void SYSMENU_eventCloseAllSystemMenu(void)
@@ -5794,6 +5843,7 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void)
 // secondary encoder rotate
 void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 {
+	#if HRDW_HAS_WIFI
 	// wifi select AP menu
 	if (sysmenu_wifi_selectap1_menu_opened)
 	{
@@ -5819,6 +5869,7 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 			SYSMENU_WIFI_SelectAP3MenuMove(1);
 		return;
 	}
+	
 	// wifi set password menu
 	if (sysmenu_wifi_setAP1password_menu_opened)
 	{
@@ -5862,6 +5913,8 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 		}
 		return;
 	}
+	#endif
+	
 	// Callsign menu
 	if (sysmenu_trx_setCallsign_menu_opened)
 	{

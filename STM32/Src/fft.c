@@ -1287,6 +1287,7 @@ bool FFT_printFFT(void)
 	}
 
 	// DXCluster labels
+	#if HRDW_HAS_WIFI
 	if (TRX.FFT_DXCluster)
 	{
 		int32_t prev_pos = -999;
@@ -1323,6 +1324,7 @@ bool FFT_printFFT(void)
 			prev_pos = pos;
 		}
 	}
+	#endif
 
 	// Print DBM grid (LOG Scale)
 	if (TRX.FFT_dBmGrid && TRX.FFT_Scale_Type == 0)

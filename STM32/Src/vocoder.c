@@ -1,3 +1,7 @@
+#include "hardware.h"
+
+#if HRDW_HAS_SD
+
 #include "vocoder.h"
 #include "functions.h"
 #include "sd.h"
@@ -60,3 +64,5 @@ bool VODECODER_Process(void)
 		SD_doCommand(SDCOMM_PROCESS_PLAY, false);
 	return false;
 }
+
+#endif

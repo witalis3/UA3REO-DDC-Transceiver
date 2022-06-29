@@ -48,7 +48,9 @@ void MX_USB_DEVICE_Init(void)
     Error_Handler();
   }
 
+	#ifdef STM32H743xx
   HAL_PWREx_EnableUSBVoltageDetector();
+	#endif
 }
 
 void MX_USB_DevDisconnect(void)

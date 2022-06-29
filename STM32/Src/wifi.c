@@ -1,6 +1,9 @@
+#include "hardware.h"
+
+#if HRDW_HAS_WIFI
+
 #include "wifi.h"
 #include "main.h"
-#include "stm32h7xx_hal.h"
 #include "functions.h"
 #include "settings.h"
 #include "trx_manager.h"
@@ -1468,3 +1471,5 @@ void WIFI_downloadFileToSD(char *url, char *filename)
 	sprintf(url, "%s&start=%d&count=%d", url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false, false);
 }
+
+#endif

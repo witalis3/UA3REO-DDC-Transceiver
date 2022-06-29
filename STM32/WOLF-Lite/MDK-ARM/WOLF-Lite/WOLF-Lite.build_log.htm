@@ -27,71 +27,37 @@ Project File Date:  06/30/2022
 <h2>Output:</h2>
 *** Using Compiler 'V6.18', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'WOLF-Lite'
-compiling adpcm-lib.c...
-compiling agc.c...
-compiling hardware.c...
-compiling audio_filters.c...
-compiling auto_notch.c...
-compiling bands.c...
-compiling bootloader.c...
-compiling callsign.c...
-compiling cw.c...
 compiling audio_processor.c...
-compiling decoder.c...
-compiling cw_decoder.c...
-compiling filemanager.c...
-compiling fonts.c...
-../../Src/events.c(197): error: use of undeclared identifier 'PWR_ON_GPIO_Port'
-  if (prev_pwr_state == true && HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
-                                                 ^
-../../Src/events.c(197): error: use of undeclared identifier 'PWR_ON_Pin'
-  if (prev_pwr_state == true && HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
-                                                                   ^
-../../Src/events.c(201): error: use of undeclared identifier 'PWR_ON_GPIO_Port'
-  prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
-                                    ^
-../../Src/events.c(201): error: use of undeclared identifier 'PWR_ON_Pin'
-  prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
-                                                      ^
-../../Src/events.c(203): error: use of undeclared identifier 'PWR_ON_GPIO_Port'
-  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) 
-                        ^
-../../Src/events.c(203): error: use of undeclared identifier 'PWR_ON_Pin'
-  if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) 
-                                          ^
-../../Src/events.c(216): error: use of undeclared identifier 'PWR_ON_GPIO_Port'
-    while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
-                            ^
-../../Src/events.c(216): error: use of undeclared identifier 'PWR_ON_Pin'
-    while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET)
-                                              ^
-../../Src/events.c(220): error: use of undeclared identifier 'PWR_HOLD_GPIO_Port'
-    HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-                      ^
-../../Src/events.c(220): error: use of undeclared identifier 'PWR_HOLD_Pin'
-    HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-                                          ^
-../../Src/events.c(355): error: use of undeclared identifier 'SD_PlayInProcess'
-        if (fpga_stuck_errors > 5 && !TRX_on_TX && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM && !SD_PlayInProcess)
-                                                                                                                           ^
-../../Src/events.c(396): error: use of undeclared identifier 'SD_underrun'
-        SD_underrun = false;
-        ^
-../../Src/events.c(503): error: use of undeclared identifier 'PWR_ON_GPIO_Port'
-        if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))
-                                                  ^
-../../Src/events.c(503): error: use of undeclared identifier 'PWR_ON_Pin'
-        if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))
-                                                                    ^
-14 errors generated.
-compiling events.c...
-compiling fft.c...
-compiling fpga.c...
-compiling i2c.c...
-compiling INA226_PWR_monitor.c...
-compiling functions.c...
-compiling lcd_driver.c...
-compiling lcd_driver_ILI9481.c...
+linking...
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol FT8_DecodeActiveFlg (referred from audio_processor.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol ATU_TunePowerStabilized (referred from audio_processor.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_busy (referred from callsign.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_UpdateQuery (referred from callsign.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_hideKeyboard (referred from callsign.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol COLOR (referred from callsign.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_printKeyboard (referred from callsign.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_doEvents (referred from events.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol FRONTPANEL_Process (referred from events.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol FRONTPANEL_ENCODER2_checkRotate (referred from events.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_showInfo (referred from events.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol RF_UNIT_ProcessSensors (referred from events.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_showTooltip (referred from events.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol RF_UNIT_UpdateState (referred from events.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_showError (referred from events.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LAYOUT (referred from fft.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_systemMenuOpened (referred from fft.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_window (referred from fft.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol FRONTPanel_MCP3008_1_Enabled (referred from self_test.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol FRONTPANEL_BUTTONHANDLER_SERVICES (referred from self_test.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_redraw (referred from system_menu.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol FILEMANAGER_OTAUpdate_handler (referred from system_menu.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol PERIPH_FrontPanel_FuncButtonsList (referred from system_menu.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol FILEMANAGER_OTAUpdate_reset (referred from system_menu.o).
+WOLF-Lite\WOLF-Lite.axf: Error: L6218E: Undefined symbol LCD_Init (referred from system_menu.o).
+Not enough information to list image symbols.
+Not enough information to list load addresses in the image map.
+Finished: 2 information, 0 warning and 25 error messages.
+"WOLF-Lite\WOLF-Lite.axf" - 25 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -120,42 +86,42 @@ Package Vendor: Keil
       Include file:  CMSIS/Core/Include/tz_context.h
 
    * Component: ARM::CMSIS:DSP:Source:1.10.0
-      Source file:   CMSIS/DSP/Source/DistanceFunctions/DistanceFunctions.c
-      Source file:   CMSIS/DSP/Source/SVMFunctions/SVMFunctions.c
-      Source file:   CMSIS/DSP/Source/CommonTables/CommonTablesF16.c
-      Source file:   CMSIS/DSP/Source/StatisticsFunctions/StatisticsFunctionsF16.c
-      Source file:   CMSIS/DSP/Source/SupportFunctions/SupportFunctionsF16.c
-      Source file:   CMSIS/DSP/Source/QuaternionMathFunctions/QuaternionMathFunctions.c
-      Source file:   CMSIS/DSP/Source/ComplexMathFunctions/ComplexMathFunctions.c
-      Source file:   CMSIS/DSP/Source/SupportFunctions/SupportFunctions.c
-      Include file:  CMSIS/DSP/Include/arm_math_f16.h
-      Include file:  CMSIS/DSP/Include/arm_const_structs.h
-      Source file:   CMSIS/DSP/Source/BasicMathFunctions/BasicMathFunctions.c
-      Source file:   CMSIS/DSP/Source/CommonTables/CommonTables.c
-      Source file:   CMSIS/DSP/Source/FilteringFunctions/FilteringFunctions.c
+      Include file:  CMSIS/DSP/Include/arm_common_tables.h
       Source file:   CMSIS/DSP/Source/FastMathFunctions/FastMathFunctions.c
-      Include file:  CMSIS/DSP/Include/arm_math.h
-      Source file:   CMSIS/DSP/Source/MatrixFunctions/MatrixFunctions.c
-      Source file:   CMSIS/DSP/Source/BasicMathFunctions/BasicMathFunctionsF16.c
+      Source file:   CMSIS/DSP/Source/TransformFunctions/TransformFunctionsF16.c
+      Source file:   CMSIS/DSP/Source/DistanceFunctions/DistanceFunctions.c
       Include file:  CMSIS/DSP/Include/arm_common_tables_f16.h
+      Source file:   CMSIS/DSP/Source/InterpolationFunctions/InterpolationFunctionsF16.c
+      Source file:   CMSIS/DSP/Source/StatisticsFunctions/StatisticsFunctionsF16.c
+      Source file:   CMSIS/DSP/Source/TransformFunctions/TransformFunctions.c
+      Source file:   CMSIS/DSP/Source/QuaternionMathFunctions/QuaternionMathFunctions.c
+      Source file:   CMSIS/DSP/Source/BayesFunctions/BayesFunctions.c
+      Include file:  CMSIS/DSP/Include/arm_math.h
+      Source file:   CMSIS/DSP/Source/BasicMathFunctions/BasicMathFunctionsF16.c
+      Source file:   CMSIS/DSP/Source/ControllerFunctions/ControllerFunctions.c
+      Include file:  CMSIS/DSP/Include/arm_const_structs.h
+      Source file:   CMSIS/DSP/Source/SupportFunctions/SupportFunctions.c
+      Source file:   CMSIS/DSP/Source/FilteringFunctions/FilteringFunctions.c
+      Source file:   CMSIS/DSP/Source/CommonTables/CommonTables.c
+      Source file:   CMSIS/DSP/Source/SVMFunctions/SVMFunctions.c
+      Include file:  CMSIS/DSP/Include/arm_math_f16.h
+      Include file:  CMSIS/DSP/Include/arm_const_structs_f16.h
+      Source file:   CMSIS/DSP/Source/BasicMathFunctions/BasicMathFunctions.c
+      Source file:   CMSIS/DSP/Source/MatrixFunctions/MatrixFunctions.c
+      Source file:   CMSIS/DSP/Source/StatisticsFunctions/StatisticsFunctions.c
+      Source file:   CMSIS/DSP/Source/InterpolationFunctions/InterpolationFunctions.c
       Source file:   CMSIS/DSP/Source/ComplexMathFunctions/ComplexMathFunctionsF16.c
       Source file:   CMSIS/DSP/Source/FilteringFunctions/FilteringFunctionsF16.c
-      Include file:  CMSIS/DSP/Include/arm_const_structs_f16.h
-      Source file:   CMSIS/DSP/Source/TransformFunctions/TransformFunctions.c
-      Source file:   CMSIS/DSP/Source/TransformFunctions/TransformFunctionsF16.c
+      Source file:   CMSIS/DSP/Source/CommonTables/CommonTablesF16.c
       Source file:   CMSIS/DSP/Source/MatrixFunctions/MatrixFunctionsF16.c
-      Include file:  CMSIS/DSP/Include/arm_common_tables.h
-      Source file:   CMSIS/DSP/Source/StatisticsFunctions/StatisticsFunctions.c
-      Source file:   CMSIS/DSP/Source/InterpolationFunctions/InterpolationFunctionsF16.c
-      Source file:   CMSIS/DSP/Source/BayesFunctions/BayesFunctions.c
-      Source file:   CMSIS/DSP/Source/InterpolationFunctions/InterpolationFunctions.c
-      Source file:   CMSIS/DSP/Source/ControllerFunctions/ControllerFunctions.c
+      Source file:   CMSIS/DSP/Source/SupportFunctions/SupportFunctionsF16.c
+      Source file:   CMSIS/DSP/Source/ComplexMathFunctions/ComplexMathFunctions.c
+      Source file:   CMSIS/DSP/Source/FastMathFunctions/FastMathFunctionsF16.c
+      Source file:   CMSIS/DSP/Source/BayesFunctions/BayesFunctionsF16.c
       Source file:   CMSIS/DSP/Source/SVMFunctions/SVMFunctionsF16.c
       Source file:   CMSIS/DSP/Source/DistanceFunctions/DistanceFunctionsF16.c
-      Source file:   CMSIS/DSP/Source/BayesFunctions/BayesFunctionsF16.c
-      Source file:   CMSIS/DSP/Source/FastMathFunctions/FastMathFunctionsF16.c
-Project build/rebuild aborted.
-Build Time Elapsed:  00:00:21
+Target not created.
+Build Time Elapsed:  00:00:09
 </pre>
 </body>
 </html>
