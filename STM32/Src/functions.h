@@ -158,21 +158,8 @@ __asm(".global __use_no_heap\n\t");
     (b) = t;                    \
   }
 
-typedef struct
-{
-  float32_t Load; /*!< CPU load percentage */
-  uint32_t WCNT;  /*!< Number of working cycles in one period. Meant for private use */
-  uint32_t SCNT;  /*!< Number of sleeping cycles in one period. Meant for private use */
-  uint32_t SINC;
-} CPULOAD_t;
-
-extern CPULOAD_t CPU_LOAD;
 volatile extern bool SPI_DMA_TXRX_ready_callback;
 
-extern void CPULOAD_Init(void);
-extern void CPULOAD_GoToSleepMode(void);
-extern void CPULOAD_WakeUp(void);
-extern void CPULOAD_Calc(void);
 extern uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num);
 extern uint32_t getTXPhraseFromFrequency(float64_t freq);
 extern void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd);

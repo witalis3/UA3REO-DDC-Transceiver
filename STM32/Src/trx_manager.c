@@ -82,6 +82,7 @@ volatile float32_t TRX_PWR_Current = 0.0f;
 volatile float32_t TRX_RF_Current = 0.0f;
 volatile float32_t TRX_VBAT_Voltage = 0.0f;
 volatile uint_fast16_t CW_Key_Timeout_est = 0;
+uint32_t dbg_FPGA_samples = 0;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static bool TRX_SPLIT_Applied = false;

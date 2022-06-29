@@ -3161,6 +3161,16 @@
               <FilePath>..\..\Src\decoder.h</FilePath>
             </File>
             <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
+            </File>
+            <File>
               <FileName>fft.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\fft.c</FilePath>
@@ -4684,6 +4694,16 @@
               <FileName>decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\decoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
             </File>
             <File>
               <FileName>fft.c</FileName>
@@ -6280,6 +6300,16 @@
               <FilePath>..\..\Src\decoder.h</FilePath>
             </File>
             <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
+            </File>
+            <File>
               <FileName>fft.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\fft.c</FilePath>
@@ -7872,6 +7902,16 @@
               <FileName>decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\decoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
             </File>
             <File>
               <FileName>fft.c</FileName>
@@ -9468,6 +9508,16 @@
               <FilePath>..\..\Src\decoder.h</FilePath>
             </File>
             <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
+            </File>
+            <File>
               <FileName>fft.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\fft.c</FilePath>
@@ -11060,6 +11110,16 @@
               <FileName>decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\decoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
             </File>
             <File>
               <FileName>fft.c</FileName>
@@ -12656,6 +12716,16 @@
               <FilePath>..\..\Src\decoder.h</FilePath>
             </File>
             <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
+            </File>
+            <File>
               <FileName>fft.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\fft.c</FilePath>
@@ -13684,7 +13754,7 @@
             <v6LangP>7</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
-            <v6Lto>1</v6Lto>
+            <v6Lto>0</v6Lto>
             <v6WtE>1</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
@@ -14179,6 +14249,16 @@
               <FileName>decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\decoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
             </File>
             <File>
               <FileName>fft.c</FileName>
@@ -15704,6 +15784,16 @@
               <FileName>decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\decoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
             </File>
             <File>
               <FileName>fft.c</FileName>

@@ -60,11 +60,27 @@
 #define FPGA_setGPIOBusInput GPIOA->MODER = -1431764992
 #define FPGA_setGPIOBusOutput GPIOA->MODER = -1431743147
 
+// types
+typedef struct
+{
+  float32_t Load; /*!< CPU load percentage */
+  uint32_t WCNT;  /*!< Number of working cycles in one period. Meant for private use */
+  uint32_t SCNT;  /*!< Number of sleeping cycles in one period. Meant for private use */
+  uint32_t SINC;
+} CPULOAD_t;
+
+// variables
 extern bool HRDW_SPI_Periph_busy;
 extern volatile bool HRDW_SPI_Locked;
 extern bool dma_memset32_busy;
 extern bool dma_memcpy32_busy;
+extern CPULOAD_t CPU_LOAD;
 
+// methods
+extern void CPULOAD_Init(void);
+extern void CPULOAD_GoToSleepMode(void);
+extern void CPULOAD_WakeUp(void);
+extern void CPULOAD_Calc(void);
 extern void HRDW_Init(void);
 extern float32_t HRDW_getCPUTemperature(void);
 extern float32_t HRDW_getCPUVref(void);

@@ -540,7 +540,7 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 		CPULOAD_GoToSleepMode();
 	// DMA2D clean flags
 	hdma2d.Instance->IFCR = DMA2D_FLAG_TC | DMA2D_FLAG_CTC;
-#elseif
+#else
 	while (n--)
 		LCDDriver_SendData(color);
 #endif
