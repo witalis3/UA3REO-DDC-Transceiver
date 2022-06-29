@@ -566,7 +566,7 @@ void TIM6_DAC_IRQHandler(void)
   prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
 
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) 
-		&& ((!NeedSaveCalibration && !SPI_process && !EEPROM_Busy && !LCD_busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
+		&& ((!NeedSaveCalibration && !HRDW_SPI_Locked && !EEPROM_Busy && !LCD_busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
   {
     TRX_Inited = false;
     LCD_busy = true;
@@ -1092,7 +1092,7 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
   CPULOAD_WakeUp();
 	if(hspi->Instance	== SPI2)
 	{
-		SPI_TXRX_ready = true;
+		SPI_DMA_TXRX_ready_callback = true;
 	}
 }
 

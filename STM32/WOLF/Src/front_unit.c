@@ -760,9 +760,9 @@ void FRONTPANEL_Process(void)
 
 	if (SD_USBCardReader)
 		return;
-	if (SPI_process)
+	if (HRDW_SPI_Locked)
 		return;
-	SPI_process = true;
+	HRDW_SPI_Locked = true;
 
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
@@ -842,7 +842,7 @@ void FRONTPANEL_Process(void)
 		}
 	}
 
-	SPI_process = false;
+	HRDW_SPI_Locked = false;
 }
 
 void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value)

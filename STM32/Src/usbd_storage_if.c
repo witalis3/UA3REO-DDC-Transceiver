@@ -79,7 +79,7 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 	if (!SD_USBCardReader)
 		return (USBD_FAIL);
 
-	if (SPI_busy || SPI_process || SD_BusyByUSB || !SD_Present || SD_RecordInProcess || SD_CommandInProcess)
+	if (HRDW_SPI_Periph_busy || HRDW_SPI_Locked || SD_BusyByUSB || !SD_Present || SD_RecordInProcess || SD_CommandInProcess)
 	{
 		/*if(SPI_busy) println("RE: SPI_B");
 		if(SPI_process) println("RE: SPI_P");
@@ -136,7 +136,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 	if (!SD_USBCardReader)
 		return (USBD_FAIL);
 
-	if (SPI_busy || SPI_process || SD_BusyByUSB || !SD_Present || SD_RecordInProcess || SD_CommandInProcess)
+	if (HRDW_SPI_Periph_busy || HRDW_SPI_Locked || SD_BusyByUSB || !SD_Present || SD_RecordInProcess || SD_CommandInProcess)
 		return (USBD_FAIL);
 
 	// HAL_SD_WriteBlocks(&hsd, buf, blk_addr, (uint32_t) blk_len, 10);

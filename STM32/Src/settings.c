@@ -808,10 +808,10 @@ static bool EEPROM_Sector_Erase(uint8_t sector, bool force)
 {
 	if (!force && !EEPROM_Enabled)
 		return true;
-	if (!force && SPI_process)
+	if (!force && HRDW_SPI_Locked)
 		return false;
 	else
-		SPI_process = true;
+		HRDW_SPI_Locked = true;
 
 	uint32_t BigAddress = sector * W25Q16_SECTOR_SIZE;
 	Address[2] = (BigAddress >> 16) & 0xFF;
@@ -823,7 +823,7 @@ static bool EEPROM_Sector_Erase(uint8_t sector, bool force)
 	HRDW_EEPROM_SPI(Address, NULL, 3, false);		  // Write Address ( The first address of flash module is 0x00000000 )
 	EEPROM_WaitWrite();
 
-	SPI_process = false;
+	HRDW_SPI_Locked = false;
 	return true;
 }
 
@@ -831,10 +831,10 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 {
 	if (!force && !EEPROM_Enabled)
 		return true;
-	if (!force && SPI_process)
+	if (!force && HRDW_SPI_Locked)
 		return false;
 	else
-		SPI_process = true;
+		HRDW_SPI_Locked = true;
 	if (size > sizeof(write_clone))
 	{
 		println("EEPROM buffer error");
@@ -887,11 +887,11 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		}
 		if (!verify_succ)
 		{
-			SPI_process = false;
+			HRDW_SPI_Locked = false;
 			return false;
 		}
 	}
-	SPI_process = false;
+	HRDW_SPI_Locked = false;
 	return true;
 }
 
@@ -899,10 +899,10 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 {
 	if (!force && !EEPROM_Enabled)
 		return true;
-	if (!force && SPI_process)
+	if (!force && HRDW_SPI_Locked)
 		return false;
 	else
-		SPI_process = true;
+		HRDW_SPI_Locked = true;
 
 	Aligned_CleanDCache_by_Addr((uint32_t *)Buffer, size);
 
@@ -921,7 +921,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 			EEPROM_Enabled = false;
 			println("[ERR] EEPROM not found...");
 			LCD_showError("EEPROM init error", true);
-			SPI_process = false;
+			HRDW_SPI_Locked = false;
 			return true;
 		}
 
@@ -948,7 +948,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 			EEPROM_Enabled = false;
 			println("[ERR] EEPROM not found...");
 			LCD_showError("EEPROM init error", true);
-			SPI_process = false;
+			HRDW_SPI_Locked = false;
 			return true;
 		}
 
@@ -961,12 +961,12 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 			if (read_clone[i] != Buffer[i])
 			{
 				// println("read err", read_clone[i]);
-				SPI_process = false;
+				HRDW_SPI_Locked = false;
 				return false;
 			}
 	}
 	if (!force)
-		SPI_process = false;
+		HRDW_SPI_Locked = false;
 	return true;
 }
 

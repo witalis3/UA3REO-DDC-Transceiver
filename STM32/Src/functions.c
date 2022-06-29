@@ -12,9 +12,7 @@
 #include "lcd.h"
 
 CPULOAD_t CPU_LOAD = {0};
-volatile bool SPI_busy = false;
-volatile bool SPI_process = false;
-volatile bool SPI_TXRX_ready = false;
+volatile bool SPI_DMA_TXRX_ready_callback = false;
 
 void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read)
 {
@@ -423,13 +421,6 @@ inline uint8_t rev8(uint8_t data)
 IRAM2 uint8_t SPI_tmp_buff[8] = {0};
 bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma)
 {
-	if (SPI_busy)
-	{
-		println("SPI Busy");
-		return false;
-	}
-	SPI_busy = true;
-
 	// SPI speed
 	if (hspi->Init.BaudRatePrescaler != prescaler)
 	{
@@ -446,7 +437,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 	if (dma)
 	{
 		uint32_t startTime = HAL_GetTick();
-		SPI_TXRX_ready = false;
+		SPI_DMA_TXRX_ready_callback = false;
 		if (in_data == NULL)
 		{
 			dma_memset(SPI_tmp_buff, 0x00, sizeof(SPI_tmp_buff));
@@ -464,7 +455,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, SPI_tmp_buff, count);
 			
-			while (!SPI_TXRX_ready && ((HAL_GetTick() - startTime) < SPI_timeout))
+			while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_timeout))
 				CPULOAD_GoToSleepMode();
 		}
 		else if (out_data == NULL)
@@ -486,7 +477,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout) CPULOAD_GoToSleepMode();
 			
 			//res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
-			//while (!SPI_TXRX_ready && ((HAL_GetTick() - startTime) < SPI_timeout)) CPULOAD_GoToSleepMode();
+			//while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_timeout)) CPULOAD_GoToSleepMode();
 		}
 		else
 		{
@@ -505,7 +496,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, in_data, count);
 			
-			while (!SPI_TXRX_ready && ((HAL_GetTick() - startTime) < SPI_timeout))
+			while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_timeout))
 				CPULOAD_GoToSleepMode();
 		}
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t)in_data, count);
@@ -540,7 +531,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 
 	if (!hold_cs)
 		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
-	SPI_busy = false;
+	
 	if (res == HAL_TIMEOUT)
 	{
 		println("[ERR] SPI timeout");

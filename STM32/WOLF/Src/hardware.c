@@ -2,6 +2,9 @@
 #include "functions.h"
 #include "main.h"
 
+bool HRDW_SPI_Periph_busy = false;
+volatile bool HRDW_SPI_Locked = false;
+
 void HRDW_Init(void) {
 		HAL_ADCEx_InjectedStart(&hadc1); // ADC RF-UNIT'а
 		#ifdef FRONTPANEL_X1
@@ -38,22 +41,72 @@ inline uint32_t HRDW_getAudioCodecTX_DMAIndex(void) {
 }
 
 inline bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	return SPI_Transmit(&hspi2, out_data, in_data, count, AD1_CS_GPIO_Port, AD1_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, true);
+	if (HRDW_SPI_Periph_busy)
+	{
+		println("SPI Busy");
+		return false;
+	}
+	HRDW_SPI_Periph_busy = true;
+	
+	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD1_CS_GPIO_Port, AD1_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, true);
+	
+	HRDW_SPI_Periph_busy = false;
+	return result;
 }
 
 inline bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	return SPI_Transmit(&hspi2, out_data, in_data, count, AD2_CS_GPIO_Port, AD2_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, true);
+	if (HRDW_SPI_Periph_busy)
+	{
+		println("SPI Busy");
+		return false;
+	}
+	HRDW_SPI_Periph_busy = true;
+	
+	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD2_CS_GPIO_Port, AD2_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, true);
+	
+	HRDW_SPI_Periph_busy = false;
+	return result;
 }
 
 inline bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	return SPI_Transmit(&hspi2, out_data, in_data, count, AD3_CS_GPIO_Port, AD3_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, true);
+	if (HRDW_SPI_Periph_busy)
+	{
+		println("SPI Busy");
+		return false;
+	}
+	HRDW_SPI_Periph_busy = true;
+	
+	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD3_CS_GPIO_Port, AD3_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, true);
+	
+	HRDW_SPI_Periph_busy = false;
+	return result;
 }
 
 inline bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	return SPI_Transmit(&hspi2, out_data, in_data, count, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, hold_cs, SPI_EEPROM_PRESCALER, true);
+	if (HRDW_SPI_Periph_busy)
+	{
+		println("SPI Busy");
+		return false;
+	}
+	HRDW_SPI_Periph_busy = true;
+	
+	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, hold_cs, SPI_EEPROM_PRESCALER, true);
+	
+	HRDW_SPI_Periph_busy = false;
+	return result;
 }
 
 inline bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	return SPI_Transmit(&hspi2, out_data, in_data, count, SD_CS_GPIO_Port, SD_CS_Pin, hold_cs, SPI_SD_PRESCALER, true);
+	if (HRDW_SPI_Periph_busy)
+	{
+		println("SPI Busy");
+		return false;
+	}
+	HRDW_SPI_Periph_busy = true;
+	
+	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, SD_CS_GPIO_Port, SD_CS_Pin, hold_cs, SPI_SD_PRESCALER, true);
+	
+	HRDW_SPI_Periph_busy = false;
+	return result;
 }
 
