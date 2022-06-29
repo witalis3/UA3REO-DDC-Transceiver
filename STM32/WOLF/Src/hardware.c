@@ -107,6 +107,7 @@ inline uint32_t HRDW_getAudioCodecTX_DMAIndex(void) {
 	return CODEC_AUDIO_BUFFER_SIZE * 2 - (uint16_t)__HAL_DMA_GET_COUNTER(HRDW_AUDIO_CODEC_I2S.hdmatx);
 }
 
+#ifdef HRDW_MCP3008_1
 inline bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
 	if (HRDW_SPI_Periph_busy)
 	{
@@ -120,7 +121,9 @@ inline bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t cou
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
+#endif
 
+#ifdef HRDW_MCP3008_2
 inline bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
 	if (HRDW_SPI_Periph_busy)
 	{
@@ -134,7 +137,9 @@ inline bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t co
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
+#endif
 
+#ifdef HRDW_MCP3008_3
 inline bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
 	if (HRDW_SPI_Periph_busy)
 	{
@@ -148,6 +153,7 @@ inline bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t co
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
+#endif
 
 inline bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
 	if (HRDW_SPI_Periph_busy)

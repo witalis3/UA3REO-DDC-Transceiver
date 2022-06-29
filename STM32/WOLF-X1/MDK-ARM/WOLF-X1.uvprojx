@@ -395,6 +395,16 @@
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
+              <FileName>hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\WOLF\Src\hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Src\hardware.h</FilePath>
+            </File>
+            <File>
               <FileName>fatfs.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\fatfs.c</FilePath>
@@ -428,11 +438,6 @@
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Src\fpga.h</FilePath>
             </File>
             <File>
               <FileName>rf_unit.c</FileName>
@@ -565,6 +570,16 @@
               <FilePath>..\..\Src\decoder.h</FilePath>
             </File>
             <File>
+              <FileName>events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\events.c</FilePath>
+            </File>
+            <File>
+              <FileName>events.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\events.h</FilePath>
+            </File>
+            <File>
               <FileName>fft.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\fft.c</FilePath>
@@ -598,6 +613,11 @@
               <FileName>fpga.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\fpga.c</FilePath>
+            </File>
+            <File>
+              <FileName>fpga.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fpga.h</FilePath>
             </File>
             <File>
               <FileName>front_unit.h</FileName>

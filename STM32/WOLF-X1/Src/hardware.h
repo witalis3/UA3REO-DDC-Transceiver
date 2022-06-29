@@ -29,12 +29,12 @@
 #define HRDW_AUDIO_CODEC_I2S hi2s3
 #define HRDW_WSPR_TIMER htim2
 #define HRDW_WIFI_UART huart6
-#define HRDW_FSMC_LCD hsram1
+#define HRDW_FSMC_LCD NULL
 #define HRDW_CRC_HANDLE hcrc
-#define HRDW_JPEG_HANDLE hjpeg
-#define HRDW_LCD_SPI NULL
+#define HRDW_JPEG_HANDLE NULL
+#define HRDW_LCD_SPI hspi4
 
-#define HRDW_LCD_FSMC_COPY_DMA hdma_memtomem_dma2_stream5
+#define HRDW_LCD_FSMC_COPY_DMA NULL
 #define HRDW_LCD_WTF_DOWN_MDMA hmdma_mdma_channel43_sw_0
 #define HRDW_MEMCPY_MDMA hmdma_mdma_channel40_sw_0
 #define HRDW_MEMSET_MDMA hmdma_mdma_channel44_sw_0
@@ -57,8 +57,8 @@
 #define FPGA_RX_IQ_BUFFER_HALF_SIZE (FPGA_RX_IQ_BUFFER_SIZE / 2) // half the size of the RX data buffer from the PGA
 
 // macros
-#define FPGA_setGPIOBusInput GPIOA->MODER = -1431764992
-#define FPGA_setGPIOBusOutput GPIOA->MODER = -1431743147
+#define FPGA_setGPIOBusInput GPIOA->MODER = 2862022656
+#define FPGA_setGPIOBusOutput GPIOA->MODER = 2862044501
 
 // types
 typedef struct

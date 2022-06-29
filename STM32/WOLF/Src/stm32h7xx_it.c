@@ -482,7 +482,6 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
-
   ms10_counter++;
 
 	EVENTS_do_EVERY_10ms();
@@ -502,7 +501,6 @@ void TIM6_DAC_IRQHandler(void)
 		EVENTS_do_EVERY_1000ms();
     ms10_counter = 0;
   }
-
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
