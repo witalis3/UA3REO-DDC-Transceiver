@@ -421,7 +421,7 @@ inline uint8_t rev8(uint8_t data)
 }
 
 IRAM2 uint8_t SPI_tmp_buff[8] = {0};
-bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma)
+bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma)
 {
 	if (SPI_busy)
 	{
@@ -437,7 +437,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 		HAL_SPI_Init(hspi);
 	}
 
-	const uint32_t timeout = 1000; // HAL_MAX_DELAY
+	#define SPI_timeout 1000 // HAL_MAX_DELAY
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 
@@ -445,15 +445,12 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 	
 	if (dma)
 	{
-		memset(SPI_tmp_buff, 0x00, sizeof(SPI_tmp_buff));
-		Aligned_CleanDCache_by_Addr((uint32_t)out_data, count);
-		Aligned_CleanDCache_by_Addr((uint32_t)in_data, count);
-		Aligned_CleanDCache_by_Addr((uint32_t)SPI_tmp_buff, sizeof(SPI_tmp_buff));
-		uint32_t starttime = HAL_GetTick();
+		uint32_t startTime = HAL_GetTick();
 		SPI_TXRX_ready = false;
 		if (in_data == NULL)
 		{
-			memset(SPI_tmp_buff, 0x00, sizeof(SPI_tmp_buff));
+			dma_memset(SPI_tmp_buff, 0x00, sizeof(SPI_tmp_buff));
+			Aligned_CleanDCache_by_Addr((uint32_t)out_data, count);
 			
 			if (hspi->hdmarx->Init.MemInc != DMA_MINC_DISABLE)
 			{
@@ -467,20 +464,14 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, SPI_tmp_buff, count);
 			
-			while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < timeout))
+			while (!SPI_TXRX_ready && ((HAL_GetTick() - startTime) < SPI_timeout))
 				CPULOAD_GoToSleepMode();
 		}
 		else if (out_data == NULL)
 		{
 			dma_memset(in_data, 0x00, count);
 			
-			uint32_t startTime = HAL_GetTick();
-			res = HAL_SPI_Receive_IT(hspi, in_data, count);
-			
-			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout)
-				CPULOAD_GoToSleepMode();
-			
-			/* if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
+			/*if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
 			{
 				hspi->hdmarx->Init.MemInc = DMA_MINC_ENABLE;
 				HAL_DMA_Init(hspi->hdmarx);
@@ -489,15 +480,18 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			{
 				hspi->hdmatx->Init.MemInc = DMA_MINC_DISABLE;
 				HAL_DMA_Init(hspi->hdmatx);
-			}
-			res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
+			}*/
 			
-			while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < timeout))
-				CPULOAD_GoToSleepMode();*/
+			res = HAL_SPI_Receive_IT(hspi, in_data, count);
+			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout) CPULOAD_GoToSleepMode();
+			
+			//res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
+			//while (!SPI_TXRX_ready && ((HAL_GetTick() - startTime) < SPI_timeout)) CPULOAD_GoToSleepMode();
 		}
 		else
 		{
 			dma_memset(in_data, 0x00, count);
+			Aligned_CleanDCache_by_Addr((uint32_t)out_data, count);
 			
 			if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
 			{
@@ -511,10 +505,13 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, in_data, count);
 			
-			while (!SPI_TXRX_ready && ((HAL_GetTick() - starttime) < timeout))
+			while (!SPI_TXRX_ready && ((HAL_GetTick() - startTime) < SPI_timeout))
 				CPULOAD_GoToSleepMode();
 		}
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t)in_data, count);
+		
+		if((HAL_GetTick() - startTime) > SPI_timeout)
+			res = HAL_TIMEOUT;
 	}
 	else
 	{
@@ -534,7 +531,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			res = HAL_SPI_TransmitReceive_IT(hspi, out_data, in_data, count);
 		}
 		uint32_t startTime = HAL_GetTick();
-		while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < timeout)
+		while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout)
 			CPULOAD_GoToSleepMode();
 	}
 
@@ -551,7 +548,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 	}
 	if (res == HAL_ERROR)
 	{
-		println("[ERR] SPI error, code: ", hspi->ErrorCode);
+		println("[ERR] SPI error, code: ", hspi->ErrorCode, " COUNT: ", count);
 		return false;
 	}
 

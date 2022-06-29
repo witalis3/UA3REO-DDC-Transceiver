@@ -204,7 +204,7 @@ extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq);
 extern int32_t convertToSPIBigEndian(int32_t in);
 extern uint8_t rev8(uint8_t data);
-extern bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint16_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma);
+extern bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma);
 extern float32_t quick_median_select(float32_t *arr, int n);
 extern uint8_t getInputType(void);
 extern unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte);

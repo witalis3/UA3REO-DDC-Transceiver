@@ -28,10 +28,10 @@ extern float32_t HRDW_getCPUTemperature(void);
 extern float32_t HRDW_getCPUVref(void);
 extern uint32_t HRDW_getAudioCodecTX_DMAIndex(void);
 extern uint32_t HRDW_getAudioCodecRX_DMAIndex(void);
-extern bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs);
-extern bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs);
-extern bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs);
-extern bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs);
-extern bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint16_t count, bool hold_cs);
+extern bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
+extern bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
+extern bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
+extern bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
+extern bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
 
 #endif
