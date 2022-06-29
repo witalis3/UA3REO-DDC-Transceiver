@@ -1050,10 +1050,12 @@ void processTxAudio(void)
 	// Tune power regulator
 	if (TRX_Tune)
 	{
+		#if FT8_SUPPORT
 		if(FT8_DecodeActiveFlg) { //for FT8 set selected TX power
 			APROC_TX_tune_power = RFpower_amplitude;
 			ATU_TunePowerStabilized = true;
 		}
+		#endif
 		
 		if (!ATU_TunePowerStabilized)
 		{

@@ -180,10 +180,12 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON25(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON26(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON27(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction);
+#if FUNCBUTTONS_COUNT > 28
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON30(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON31(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction);
+#endif
 
 static void SYSMENU_HANDL_DECODERS_CW_Decoder(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold(int8_t direction);
@@ -224,7 +226,9 @@ static void SYSMENU_HANDL_SD_USB(int8_t direction);
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
 static void SYSMENU_HANDL_Bootloader(int8_t direction);
+#if HRDW_HAS_SD
 static void SYSMENU_HANDL_OTA_Update(int8_t direction);
+#endif
 static void SYSMENU_HANDL_SYSINFO(int8_t direction);
 static void SYSMENU_HANDL_Back(int8_t direction);
 
@@ -439,7 +443,9 @@ const static struct sysmenu_item_handler sysmenu_handlers[] =
 		#endif
 		{"Set Clock Time", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SETTIME},
 		{"DFU Mode", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Bootloader},
+		#if HRDW_HAS_SD
 		{"OTA Update", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_OTA_Update},
+		#endif
 		{"Services", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SERVICESMENU},
 		{"System info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SYSINFO},
 		{"Calibration", SYSMENU_MENU, SYSMENU_HANDL_CHECK_HIDDEN_ENABLED, 0, SYSMENU_HANDL_CALIBRATIONMENU},
@@ -633,10 +639,12 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"Func button 27", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[26], SYSMENU_HANDL_SCREEN_FUNC_BUTTON27},
 #if FUNCBUTTONS_COUNT > 27
 		{"Func button 28", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[27], SYSMENU_HANDL_SCREEN_FUNC_BUTTON28},
+#if FUNCBUTTONS_COUNT > 28
 		{"Func button 29", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[28], SYSMENU_HANDL_SCREEN_FUNC_BUTTON29},
 		{"Func button 30", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[29], SYSMENU_HANDL_SCREEN_FUNC_BUTTON30},
 		{"Func button 31", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[30], SYSMENU_HANDL_SCREEN_FUNC_BUTTON31},
 		{"Func button 32", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[31], SYSMENU_HANDL_SCREEN_FUNC_BUTTON32},
+#endif
 #endif
 #endif
 };
@@ -3647,11 +3655,13 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction)
 
 // OTA update
 
+#if HRDW_HAS_SD
 static void SYSMENU_HANDL_OTA_Update(int8_t direction)
 {
 	FILEMANAGER_OTAUpdate_reset();
 	FILEMANAGER_OTAUpdate_handler();
 }
+#endif
 
 // SYSTEM INFO
 
@@ -5496,12 +5506,14 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines)
 		FILEMANAGER_Draw(draw_background);
 		return;
 	}
+	#if HRDW_HAS_SD
 	else if (sysmenu_ota_opened)
 	{
 		if(only_infolines) return;
 		FILEMANAGER_OTAUpdate_handler();
 		return;
 	}
+	#endif
 	else if (sysmenu_infowindow_opened)
 	{
 	}

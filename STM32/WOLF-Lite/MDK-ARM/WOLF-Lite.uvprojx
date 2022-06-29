@@ -405,6 +405,21 @@
               <FilePath>..\Core\Src\hardware.h</FilePath>
             </File>
             <File>
+              <FileName>front_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\front_unit.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>rf_unit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\rf_unit.c</FilePath>
+            </File>
+            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Core\Inc\main.h</FilePath>
