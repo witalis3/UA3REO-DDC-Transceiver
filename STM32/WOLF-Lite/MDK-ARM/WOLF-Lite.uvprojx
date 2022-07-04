@@ -333,12 +333,12 @@
             <v6LangP>7</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
-            <v6Lto>0</v6Lto>
+            <v6Lto>1</v6Lto>
             <v6WtE>1</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>-Wno-sign-conversion -Wno-implicit-int-conversion -Wno-float-equal -Wno-sign-compare -Wno-gnu-flexible-array-initializer -pipe  -Wno-unused-value</MiscControls>
-              <Define>USE_HAL_DRIVER,STM32F407xx,FRONTPANEL_LITE,LCD_ILI9486,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
+              <Define>USE_HAL_DRIVER,STM32F407xx,FRONTPANEL_LITE,LCD_ILI9481_IPS,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
               <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../Core/Src;../../Src;../../Src/USBDevice;../../Src/JPEG</IncludePath>
             </VariousControls>

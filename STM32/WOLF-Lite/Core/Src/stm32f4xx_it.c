@@ -52,6 +52,7 @@
 /* USER CODE BEGIN Includes */
 #include "functions.h"
 #include "lcd.h"
+#include "events.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -402,7 +403,7 @@ void TIM1_UP_TIM10_IRQHandler(void)
   /* USER CODE END TIM1_UP_TIM10_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
-
+	EVENTS_do_ENC();
   /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
 }
 
@@ -528,7 +529,7 @@ void TIM7_IRQHandler(void)
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
-
+	EVENTS_do_USB_FIFO();
   /* USER CODE END TIM7_IRQn 1 */
 }
 

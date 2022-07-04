@@ -22,8 +22,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "functions.h"
+#include "lcd.h"
 #include "usbd_ua3reo.h"
 #include "usbd_debug_if.h"
+#include "fft.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,7 +76,7 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
-
+static char greetings_buff[32] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -159,6 +161,124 @@ int main(void)
   println("[OK] USB init");
   USBD_Restart();
 	
+	println("[OK] FIFO timer TIM7 init");
+  HAL_TIM_Base_Start_IT(&htim7);
+	
+	println("[OK] ENC2 timer TIM1 init");
+  HAL_TIM_Base_Start_IT(&htim1);
+	
+	println("[OK] Real Time Clock init");
+  HAL_RTC_Init(&hrtc);
+	
+	println("[FIX] Frontpanel init");
+  //FRONTPANEL_Init();
+	
+	println("[OK] Settings loading");
+  //if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (MENU)
+    //LoadSettings(true);
+  //else
+    //LoadSettings(false);
+	
+	//DFU bootloader
+#if defined(FRONTPANEL_WF_100D)
+	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[10].state)
+#else
+	if (TRX.NeedGoToBootloader)
+#endif
+	{
+		//TRX.NeedGoToBootloader = false;
+		//SaveSettings();
+    //JumpToBootloader();
+	}
+	else
+	{
+		//MX_IWDG1_Init();
+	}
+	
+	println("[OK] Calibration loading");
+#ifdef FRONTPANEL_SMALL_V1
+  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
+    LoadCalibration(true);
+  else
+#endif
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
+  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8) (CB+F6)
+    LoadCalibration(true);
+  else
+#endif
+    //LoadCalibration(false);
+	
+	TRX.Locked = false;
+  
+  println("[OK] LCD init");
+  LCD_busy = true;
+  LCD_Init();
+  if (SHOW_LOGO)
+  {
+		strcpy(greetings_buff, "ver. ");
+    strcat(greetings_buff, version_string);
+		
+    LCDDriver_Fill(rgb888torgb565(243, 243, 243));
+    LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logoLite.width) / 2), ((LCD_HEIGHT - IMAGES_logoLite.height) / 2), &IMAGES_logoLite, BG_COLOR, BG_COLOR);
+		LCDDriver_printText(greetings_buff, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
+		
+    //show callsign greetings
+    uint16_t x1, y1, w, h;
+    strcpy(greetings_buff, "Hello, ");
+    strcat(greetings_buff, TRX.CALLSIGN);
+    strcat(greetings_buff, " !");
+    LCDDriver_getTextBoundsFont(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, &FreeSans9pt7b);
+    LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), &FreeSans9pt7b);
+  }
+  println("[OK] Profiler init");
+  InitProfiler();
+
+  println("[OK] RTC calibration");
+  RTC_Calibration();
+
+  println("[OK] RF-Unit init");
+  //RF_UNIT_UpdateState(false);
+	
+  println("[OK] FFT/Waterfall & ADC & TIM4 init");
+  //FFT_PreInit();
+  //FFT_Init();
+  HAL_TIM_Base_Start_IT(&htim4);
+	
+  println("[OK] AudioCodec init");
+  //WM8731_Init();
+	
+  println("[OK] TRX init");
+  TRX_Init();
+	
+  println("[OK] Audioprocessor & TIM5 init");
+  //initAudioProcessor();
+  HAL_TIM_Base_Start_IT(&htim5);
+	
+  if (SHOW_LOGO)
+    HAL_Delay(1000); //logo wait
+  LCD_busy = false;
+  //LCD_redraw(true);
+	
+  println("[OK] Misc timer TIM6 init");
+  HAL_TIM_Base_Start_IT(&htim6);
+	
+  println("[OK] CPU Load init");
+  CPULOAD_Init();
+	
+  println("[OK] PERIPHERAL timer TIM8 init");
+  HAL_TIM_Base_Start_IT(&htim8);
+	
+  println("[OK] Digital decoder timer TIM2 init");
+  HAL_TIM_Base_Start_IT(&htim2);
+	
+	println("[OK] FPGA init");
+  //FPGA_Init(false, false);
+	
+	println("[OK] Stuff timer TIM3 init");
+  HAL_TIM_Base_Start_IT(&htim3);
+	
+  println("UA3REO Transceiver started!\r\n");
+	TRX_Inited = true;
 	
   /* USER CODE END 2 */
 
@@ -168,9 +288,7 @@ int main(void)
   {
     /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */
-		println("test");
-		print_flush();
-		HAL_Delay(1000);
+		CPULOAD_GoToSleepMode();
   }
   /* USER CODE END 3 */
 }
@@ -1326,7 +1444,72 @@ static void MX_FSMC_Init(void)
   }
 
   /* USER CODE BEGIN FSMC_Init 2 */
-
+	
+	//LCD timings
+	#if (defined(LCD_HX8357B))
+		Timing.AddressSetupTime = 5;
+		Timing.DataSetupTime = 5;
+		Timing.BusTurnAroundDuration = 3;
+		Timing.AccessMode = FSMC_ACCESS_MODE_A;
+	#endif
+	#if (defined(LCD_HX8357C))
+		Timing.AddressSetupTime = 10;
+		Timing.DataSetupTime = 10;
+		Timing.BusTurnAroundDuration = 8;
+		Timing.AccessMode = FSMC_ACCESS_MODE_A;
+	#if (defined(LCD_SLOW))
+		Timing.AddressSetupTime = 20;
+		Timing.DataSetupTime = 20;
+		Timing.BusTurnAroundDuration = 16;
+		Timing.AccessMode = FSMC_ACCESS_MODE_A;
+	#endif
+	#endif
+	#if (defined(LCD_SSD1963))
+		Timing.AddressSetupTime = 5;
+		Timing.DataSetupTime = 5;
+		Timing.BusTurnAroundDuration = 3;
+		Timing.AccessMode = FSMC_ACCESS_MODE_A;
+	#endif
+	#if (defined(LCD_ILI9486))
+		Timing.AddressSetupTime = 5;
+		Timing.DataSetupTime = 5;
+		Timing.BusTurnAroundDuration = 3;
+		Timing.AccessMode = FSMC_ACCESS_MODE_A;
+	#endif
+	#if (defined(LCD_R61581))
+		Timing.AddressSetupTime = 5;
+		Timing.DataSetupTime = 5;
+		Timing.BusTurnAroundDuration = 3;
+		Timing.AccessMode = FSMC_ACCESS_MODE_A;
+	#endif
+	#if defined(LCD_ILI9481)
+		Timing.AddressSetupTime = 7;
+		Timing.AddressHoldTime = 17;
+		Timing.DataSetupTime = 7;
+		Timing.BusTurnAroundDuration = 3;
+		Timing.CLKDivision = 16;
+		Timing.DataLatency = 17;
+		Timing.AccessMode = FSMC_ACCESS_MODE_A;
+	#endif
+	#if defined(LCD_ST7796S)
+		Timing.AddressSetupTime = 5;
+		Timing.DataSetupTime = 5;
+		Timing.BusTurnAroundDuration = 3;
+		Timing.AccessMode = FSMC_ACCESS_MODE_A;
+	#endif
+	#if (defined(LCD_RA8875))
+		Timing.AddressSetupTime = 20;
+		Timing.DataSetupTime = 20;
+		Timing.BusTurnAroundDuration = 10;
+		Timing.AccessMode = FSMC_ACCESS_MODE_A;
+		//fast timings in lcd_driver_RA8875.c
+	#endif
+	
+	if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
+  {
+    Error_Handler( );
+  }
+	
   /* USER CODE END FSMC_Init 2 */
 }
 

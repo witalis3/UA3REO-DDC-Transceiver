@@ -1,10 +1,17 @@
 #ifndef _LCDDRIVER_ILI9481_H_
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581) || defined(LCD_ST7796S))
+#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581) || defined(LCD_ST7796S))
 #define _LCDDRIVER_ILI9481_H_
 
-#define LCD_FSMC_COMM_ADDR 0xC0000000 // remapped
-#define LCD_FSMC_DATA_ADDR 0xC0080000
+#ifdef STM32H743xx
+	#define LCD_FSMC_COMM_ADDR 0xC0000000 // remapped
+	#define LCD_FSMC_DATA_ADDR 0xC0080000
+#endif
+
+#ifdef STM32F407xx
+	#define LCD_FSMC_COMM_ADDR 0x60000000
+	#define LCD_FSMC_DATA_ADDR 0x60080000
+#endif
 
 // LCD dimensions defines
 #define LCD_WIDTH 480
