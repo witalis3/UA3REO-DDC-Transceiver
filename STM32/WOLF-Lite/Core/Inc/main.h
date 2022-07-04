@@ -163,7 +163,6 @@ void Error_Handler(void);
 #define PWR_HOLD_GPIO_Port GPIOB
 #define PWR_ON_Pin GPIO_PIN_7
 #define PWR_ON_GPIO_Port GPIOB
-#define PWR_ON_EXTI_IRQn EXTI9_5_IRQn
 #define LCD_BL_PWM_Pin GPIO_PIN_8
 #define LCD_BL_PWM_GPIO_Port GPIOB
 #define KEY_IN_DASH_Pin GPIO_PIN_0
