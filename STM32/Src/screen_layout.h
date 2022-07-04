@@ -261,9 +261,16 @@ extern "C"
 #if (defined(LAY_480x320))
 #define LAYOUT_THEMES_COUNT 2
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
-#define MAX_FFT_HEIGHT 132
-#define MAX_WTF_HEIGHT 102
-#define FFT_AND_WTF_HEIGHT 152
+	#ifdef STM32H743xx
+		#define MAX_FFT_HEIGHT 132
+		#define MAX_WTF_HEIGHT 102
+		#define FFT_AND_WTF_HEIGHT 152
+	#endif
+	#ifdef STM32F407xx
+		#define MAX_FFT_HEIGHT 10
+		#define MAX_WTF_HEIGHT 10
+		#define FFT_AND_WTF_HEIGHT 20
+	#endif
 #endif
 #if (defined(LAY_800x480))
 #define LAYOUT_THEMES_COUNT 4

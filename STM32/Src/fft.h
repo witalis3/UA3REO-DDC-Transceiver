@@ -8,8 +8,18 @@
 #include "wm8731.h"
 #include "screen_layout.h"
 
-#define FFT_SIZE 1024       // specify the size of the calculated FFT
-#define FFT_USEFUL_SIZE 960 // size after FFT cropping
+#ifdef STM32H743xx
+	#define FFT_SIZE 1024       // specify the size of the calculated FFT
+	#define FFT_USEFUL_SIZE 960 // size after FFT cropping
+	#define FFT_MAX_MEANS 10           // store old fft data for meaning
+#endif
+
+#ifdef STM32F407xx
+	#define FFT_SIZE 512       // specify the size of the calculated FFT
+	#define FFT_USEFUL_SIZE 480 // size after FFT cropping
+	#define FFT_MAX_MEANS 2           // store old fft data for meaning
+#endif
+
 #define FFT_HALF_SIZE (FFT_SIZE / 2)
 #define FFT_DOUBLE_SIZE_BUFFER (FFT_SIZE * 2)                                                                                                                // Buffer size for FFT calculation
 #define FFT_MIN ((float32_t)TRX.FFT_Sensitivity * 0.5f)                                                                                                      // MIN threshold of FFT signal
@@ -28,7 +38,6 @@
 #define FFT_3D_SLIDES 40                                                                                                                                     // 3D FFT parameters
 #define FFT_3D_Y_OFFSET 2
 #define FFT_3D_X_OFFSET 5
-#define FFT_MAX_MEANS 10           // store old fft data for meaning
 #define FFT_MAX_AVER 30            // store old fft data for averaging
 #define FFT_MAX_TOP_SCALE 30       // maximum scale parameter
 #define FFT_TX_MIN_LEVEL 30.0f     // fft tx minimum scale level

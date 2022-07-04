@@ -240,8 +240,8 @@ int main(void)
   //RF_UNIT_UpdateState(false);
 	
   println("[OK] FFT/Waterfall & ADC & TIM4 init");
-  //FFT_PreInit();
-  //FFT_Init();
+  FFT_PreInit();
+  FFT_Init();
   HAL_TIM_Base_Start_IT(&htim4);
 	
   println("[OK] AudioCodec init");
@@ -257,7 +257,7 @@ int main(void)
   if (SHOW_LOGO)
     HAL_Delay(1000); //logo wait
   LCD_busy = false;
-  //LCD_redraw(true);
+  LCD_redraw(true);
 	
   println("[OK] Misc timer TIM6 init");
   HAL_TIM_Base_Start_IT(&htim6);

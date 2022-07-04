@@ -371,7 +371,7 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>WOLF-Lite\WOLF-Lite.sct</ScatterFile>
+            <ScatterFile>.\WOLF-Lite\WOLF-Lite-custom.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
