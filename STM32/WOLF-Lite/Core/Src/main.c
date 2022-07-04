@@ -167,8 +167,10 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
+		println("test");
+		print_flush();
+		HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
