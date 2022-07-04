@@ -75,7 +75,9 @@ typedef struct
 typedef enum // receiver number
 {
 	AUDIO_RX1,
+	#if HRDW_HAS_DUAL_RX
 	AUDIO_RX2
+	#endif
 } AUDIO_PROC_RX_NUM;
 
 // Public variables
@@ -84,8 +86,10 @@ extern volatile bool Processor_NeedRXBuffer;							// codec needs data from proc
 extern volatile bool Processor_NeedTXBuffer;							// codec needs data from processor for TX
 extern float32_t APROC_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE]; // copy of the working part of the FPGA buffers for processing
 extern float32_t APROC_Audio_Buffer_RX1_I[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+#if HRDW_HAS_DUAL_RX
 extern float32_t APROC_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 extern float32_t APROC_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_HALF_SIZE];
+#endif
 extern float32_t APROC_Audio_Buffer_TX_Q[FPGA_TX_IQ_BUFFER_HALF_SIZE];
 extern float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE];
 extern volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC

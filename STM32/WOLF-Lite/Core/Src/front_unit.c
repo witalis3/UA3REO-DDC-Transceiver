@@ -898,27 +898,6 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 }
 
-void FRONTPANEL_BUTTONHANDLER_DOUBLE(uint32_t parameter)
-{
-	TRX.Dual_RX = !TRX.Dual_RX;
-	FPGA_NeedSendParams = true;
-	LCD_UpdateQuery.StatusInfoGUI = true;
-	NeedReinitAudioFilters = true;
-}
-
-void FRONTPANEL_BUTTONHANDLER_DOUBLEMODE(uint32_t parameter)
-{
-	if (!TRX.Dual_RX)
-		return;
-
-	if (TRX.Dual_RX_Type == VFO_A_AND_B)
-		TRX.Dual_RX_Type = VFO_A_PLUS_B;
-	else
-		TRX.Dual_RX_Type = VFO_A_AND_B;
-	LCD_UpdateQuery.StatusInfoGUI = true;
-	NeedReinitAudioFilters = true;
-}
-
 void FRONTPANEL_BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 {
 	// TX block

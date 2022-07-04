@@ -92,16 +92,6 @@ void RF_UNIT_ATU_Invalidate(void)
 
 void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {
-	bool dualrx_lpf_disabled = false;
-	bool dualrx_bpf_disabled = false;
-	if (CALIBRATE.RF_unit_type == RF_UNIT_QRP || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D)
-	{
-		if (TRX.Dual_RX && SecondaryVFO->Freq > CALIBRATE.RFU_LPF_END)
-			dualrx_lpf_disabled = true;
-		if (TRX.Dual_RX && getBPFByFreq(CurrentVFO->Freq) != getBPFByFreq(SecondaryVFO->Freq))
-			dualrx_bpf_disabled = true;
-	}
-
 	float32_t att_val = TRX.ATT_DB;
 	bool att_val_16 = false, att_val_8 = false, att_val_4 = false, att_val_2 = false, att_val_1 = false, att_val_05 = false;
 	if (att_val >= 16.0f)

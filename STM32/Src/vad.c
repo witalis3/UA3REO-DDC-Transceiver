@@ -24,6 +24,7 @@ static VAD_Instance VAD_RX1 = {
 	.Min_MD2 = 999.0f,
 };
 
+#if HRDW_HAS_DUAL_RX
 static VAD_Instance VAD_RX2 = {
 	.FFT_Inst = &arm_cfft_sR_f32_len128,
 	.FirDecimate = {
@@ -37,13 +38,16 @@ static VAD_Instance VAD_RX2 = {
 	.Min_MD1 = 999.0f,
 	.Min_MD2 = 999.0f,
 };
+#endif
 
 // initialize VAD
 void InitVAD(void)
 {
 	// decimator
 	arm_fir_decimate_init_f32(&VAD_RX1.DECIMATE, VAD_RX1.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX1.FirDecimate.pCoeffs, VAD_RX1.decimState, VAD_BLOCK_SIZE);
+	#if HRDW_HAS_DUAL_RX
 	arm_fir_decimate_init_f32(&VAD_RX2.DECIMATE, VAD_RX2.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX2.FirDecimate.pCoeffs, VAD_RX2.decimState, VAD_BLOCK_SIZE);
+	#endif
 	// Blackman window function
 	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++)
 		window_multipliers[i] = ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32((2.0f * PI * i) / ((float32_t)VAD_FFT_SIZE - 1.0f)) + (0.16f / 2) * arm_cos_f32(4.0f * PI * i / ((float32_t)VAD_FFT_SIZE - 1.0f));
@@ -58,11 +62,13 @@ void resetVAD(void)
 	VAD_RX1.Min_MD2 = 999.0f;
 	VAD_RX1.start_counter = 0;
 	
+	#if HRDW_HAS_DUAL_RX
 	VAD_RX2.Min_E1 = 999.0f;
 	VAD_RX2.Min_E2 = 999.0f;
 	VAD_RX2.Min_MD1 = 999.0f;
 	VAD_RX2.Min_MD2 = 999.0f;
 	VAD_RX2.start_counter = 0;
+	#endif
 }
 
 // run VAD for the data block
@@ -71,13 +77,15 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer)
 	if (!CurrentVFO->SQL && !TRX_ScanMode)
 		return;
 
-#define debug false
+	#define debug false
 	
 	VAD_Instance *VAD = &VAD_RX1;
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
 	{
 		VAD = &VAD_RX2;
 	}
+	#endif
 	
 	// clear the old FFT buffer
 	dma_memset(VAD->FFTBuffer, 0x00, sizeof(VAD->FFTBuffer));
@@ -319,8 +327,10 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer)
 		VAD_RX1_Muting = !VAD->state;
 		//println("RX1 VAD: ", (uint8_t)VAD_RX1_Muting);
 	}
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2) {
 		VAD_RX2_Muting = !VAD->state;
 		//println("RX2 VAD: ", (uint8_t)VAD_RX2_Muting);
 	}
+	#endif
 }

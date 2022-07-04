@@ -4,14 +4,18 @@
 
 // Private variables
 static NB_Instance NB_RX1 = {0};
+#if HRDW_HAS_DUAL_RX
 SRAM static NB_Instance NB_RX2 = {0};
+#endif
 
 // start NB for the data block
 void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id)
 {
 	NB_Instance *instance = &NB_RX1;
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
 		instance = &NB_RX2;
+	#endif
 	
 	/*
 	#define AUDIO_RX_NB_DELAY_BUFFER_ITEMS 120

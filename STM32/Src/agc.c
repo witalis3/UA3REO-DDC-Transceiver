@@ -6,7 +6,9 @@
 
 // Private variables
 static IRAM2 AGC_RX_Instance AGC_RX1 = {0};
+#if HRDW_HAS_DUAL_RX
 static IRAM2 AGC_RX_Instance AGC_RX2 = {0};
+#endif
 static IRAM2 AGC_TX_Instance AGC_TX = {0};
 
 // Run AGC on data block
@@ -15,11 +17,14 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	// RX1 or RX2
 	AGC_RX_Instance *AGC = &AGC_RX1;
 	bool VAD_Muting = VAD_RX1_Muting;
+	
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
 	{
 		AGC = &AGC_RX2;
 		VAD_Muting = VAD_RX2_Muting;
 	}
+	#endif
 
 	// higher speed in settings - higher speed of AGC processing
 	float32_t RX_AGC_STEPSIZE_UP = 0.0f;
@@ -41,11 +46,13 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		arm_biquad_cascade_df2T_f32_single(&AGC_RX1_KW_HSHELF_FILTER, agcBuffer_i, AGC->agcBuffer_kw, blockSize);
 		arm_biquad_cascade_df2T_f32_single(&AGC_RX1_KW_HPASS_FILTER, agcBuffer_i, AGC->agcBuffer_kw, blockSize);
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		arm_biquad_cascade_df2T_f32_single(&AGC_RX2_KW_HSHELF_FILTER, agcBuffer_i, AGC->agcBuffer_kw, blockSize);
 		arm_biquad_cascade_df2T_f32_single(&AGC_RX2_KW_HPASS_FILTER, agcBuffer_i, AGC->agcBuffer_kw, blockSize);
 	}
+	#endif
 
 	// do ring buffer
 	static uint32_t ring_position = 0;
@@ -116,8 +123,13 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	}
 
 	// AGC off, not adjustable
-	if ((rx_id == AUDIO_RX1 && !CurrentVFO->AGC) || (rx_id == AUDIO_RX2 && !SecondaryVFO->AGC))
+	if (rx_id == AUDIO_RX1 && !CurrentVFO->AGC)
 		AGC->need_gain_db = 1.0f;
+	
+	#if HRDW_HAS_DUAL_RX
+	if (rx_id == AUDIO_RX2 && !SecondaryVFO->AGC)
+		AGC->need_gain_db = 1.0f;
+	#endif
 
 	// gain limitation
 	if (AGC->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain)
@@ -330,5 +342,8 @@ void ResetAGC(void)
 	// AGC_RX1.need_gain_db = 0.0f;
 	// AGC_RX2.need_gain_db = 0.0f;
 	dma_memset(AGC_RX1.ringbuffer, 0x00, sizeof(AGC_RX1.ringbuffer));
+	
+	#if HRDW_HAS_DUAL_RX
 	dma_memset(AGC_RX2.ringbuffer, 0x00, sizeof(AGC_RX2.ringbuffer));
+	#endif
 }

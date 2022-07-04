@@ -19,10 +19,12 @@ volatile float32_t FPGA_Audio_Buffer_RX1_Q_A[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t FPGA_Audio_Buffer_RX1_I_A[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t FPGA_Audio_Buffer_RX1_Q_B[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // FPGA buffers
 volatile float32_t FPGA_Audio_Buffer_RX1_I_B[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+#if HRDW_HAS_DUAL_RX
 volatile float32_t FPGA_Audio_Buffer_RX2_Q_A[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t FPGA_Audio_Buffer_RX2_I_A[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t FPGA_Audio_Buffer_RX2_Q_B[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t FPGA_Audio_Buffer_RX2_I_B[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+#endif
 volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 uint16_t FPGA_FW_Version[3] = {0};
@@ -300,7 +302,11 @@ static inline void FPGA_fpgadata_sendparam(void)
 	// STAGE 2
 	// out PTT+PREAMP
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK));				  // RX1
+	#if HRDW_HAS_DUAL_RX
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX2
+	#else
+	bitWrite(FPGA_fpgadata_out_tmp8, 1, false); // RX2
+	#endif
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK));								  // TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
@@ -569,8 +575,11 @@ static inline void FPGA_fpgadata_getparam(void)
 // get IQ data
 static float32_t *FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_A[0];
 static float32_t *FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A[0];
+#if HRDW_HAS_DUAL_RX
 static float32_t *FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_A[0];
 static float32_t *FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A[0];
+#endif
+
 static inline void FPGA_fpgadata_getiq(void)
 {
 	int32_t FPGA_fpgadata_in_tmp32 = 0;
@@ -622,6 +631,7 @@ static inline void FPGA_fpgadata_getiq(void)
 	*FFTInput_I_current++ = FPGA_fpgadata_in_float32_i;
 	*FPGA_Audio_Buffer_RX1_I_current++ = FPGA_fpgadata_in_float32_i;
 
+	#if HRDW_HAS_DUAL_RX
 	if (TRX.Dual_RX)
 	{
 		// STAGE 8 in Q RX2
@@ -666,6 +676,7 @@ static inline void FPGA_fpgadata_getiq(void)
 		*FPGA_Audio_Buffer_RX2_Q_current++ = FPGA_fpgadata_in_float32_q;
 		*FPGA_Audio_Buffer_RX2_I_current++ = FPGA_fpgadata_in_float32_i;
 	}
+	#endif
 
 	FPGA_Audio_RXBuffer_Index++;
 	if (FPGA_Audio_RXBuffer_Index == FPGA_RX_IQ_BUFFER_HALF_SIZE)
@@ -688,15 +699,19 @@ static inline void FPGA_fpgadata_getiq(void)
 			{
 				FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A[0];
 				FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_A[0];
+				#if HRDW_HAS_DUAL_RX
 				FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A[0];
 				FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_A[0];
+				#endif
 			}
 			else
 			{
 				FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B[0];
 				FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_B[0];
+				#if HRDW_HAS_DUAL_RX
 				FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B[0];
 				FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_B[0];
+				#endif
 			}
 		}
 		else
@@ -705,15 +720,19 @@ static inline void FPGA_fpgadata_getiq(void)
 			{
 				FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_A[0];
 				FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A[0];
+				#if HRDW_HAS_DUAL_RX
 				FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_A[0];
 				FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A[0];
+				#endif
 			}
 			else
 			{
 				FPGA_Audio_Buffer_RX1_I_current = (float32_t *)&FPGA_Audio_Buffer_RX1_I_B[0];
 				FPGA_Audio_Buffer_RX1_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B[0];
+				#if HRDW_HAS_DUAL_RX
 				FPGA_Audio_Buffer_RX2_I_current = (float32_t *)&FPGA_Audio_Buffer_RX2_I_B[0];
 				FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B[0];
+				#endif
 			}
 		}
 	}

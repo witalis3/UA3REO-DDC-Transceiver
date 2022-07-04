@@ -27,13 +27,15 @@ volatile bool Processor_NeedTXBuffer = false; // codec needs data from processor
 
 float32_t APROC_Audio_Buffer_RX1_accum_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // copy of the working part of the FPGA buffers for processing
 float32_t APROC_Audio_Buffer_RX1_accum_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
-float32_t APROC_Audio_Buffer_RX2_accum_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
-float32_t APROC_Audio_Buffer_RX2_accum_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
-
 float32_t APROC_Audio_Buffer_RX1_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // decimated and ready to demod buffer
 float32_t APROC_Audio_Buffer_RX1_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+
+#if HRDW_HAS_DUAL_RX
+float32_t APROC_Audio_Buffer_RX2_accum_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+float32_t APROC_Audio_Buffer_RX2_accum_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
+#endif
 
 float32_t APROC_Audio_Buffer_TX_Q[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
@@ -54,7 +56,9 @@ static q15_t APROC_AudioBuffer_FT8_out[AUDIO_BUFFER_SIZE / 2] = {0};
 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
 
 demod_fm_instance DFM_RX1 = {.squelchRate = 1.0f};
+#if HRDW_HAS_DUAL_RX
 demod_fm_instance DFM_RX2 = {.squelchRate = 1.0f};
+#endif
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
@@ -109,8 +113,10 @@ void preProcessRxAudio(void)
 	// copy buffer from FPGA
 	float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
 	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+	#if HRDW_HAS_DUAL_RX
 	float32_t *FPGA_Audio_Buffer_RX2_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_I_A : (float32_t *)&FPGA_Audio_Buffer_RX2_I_B;
 	float32_t *FPGA_Audio_Buffer_RX2_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B;
+	#endif
 
 	// Get and decimate input
 	uint32_t need_decimate_rate = TRX_GetRXSampleRate / TRX_SAMPLERATE;
@@ -127,6 +133,7 @@ void preProcessRxAudio(void)
 	}
 	doRX_DecimateInput(AUDIO_RX1, FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, &APROC_Audio_Buffer_RX1_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX1_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 
+	#if HRDW_HAS_DUAL_RX
 	if (TRX.Dual_RX)
 	{
 		if (SecondaryVFO->Mode == TRX_MODE_WFM)
@@ -138,6 +145,7 @@ void preProcessRxAudio(void)
 		}
 		doRX_DecimateInput(AUDIO_RX2, FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, &APROC_Audio_Buffer_RX2_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX2_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 	}
+	#endif
 
 	FPGA_RX_buffer_ready = false; // start processing of new buffer
 
@@ -169,17 +177,19 @@ void processRxAudio(void)
 	// get data from preprocessor
 	dma_memcpy(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_accum_I, sizeof(APROC_Audio_Buffer_RX1_I));
 	dma_memcpy(APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_accum_Q, sizeof(APROC_Audio_Buffer_RX1_Q));
+	#if HRDW_HAS_DUAL_RX
 	dma_memcpy(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_accum_I, sizeof(APROC_Audio_Buffer_RX2_I));
 	dma_memcpy(APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_accum_Q, sizeof(APROC_Audio_Buffer_RX2_Q));
+	#endif
 	preprocessor_buffer_ready = false;
 
 	// Process DC corrector filter
-	if (CurrentVFO->Mode != TRX_MODE_AM && CurrentVFO->Mode != TRX_MODE_SAM && CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM)
+	// if (CurrentVFO->Mode != TRX_MODE_AM && CurrentVFO->Mode != TRX_MODE_SAM && CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM)
 	{
 		// dc_filter(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, DC_FILTER_RX1_I);
 		// dc_filter(APROC_Audio_Buffer_RX1_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE, DC_FILTER_RX1_Q);
 	}
-	if (TRX.Dual_RX && SecondaryVFO->Mode != TRX_MODE_AM && SecondaryVFO->Mode != TRX_MODE_SAM && SecondaryVFO->Mode != TRX_MODE_NFM && SecondaryVFO->Mode != TRX_MODE_WFM)
+	// if (TRX.Dual_RX && SecondaryVFO->Mode != TRX_MODE_AM && SecondaryVFO->Mode != TRX_MODE_SAM && SecondaryVFO->Mode != TRX_MODE_NFM && SecondaryVFO->Mode != TRX_MODE_WFM)
 	{
 		// dc_filter(APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, DC_FILTER_RX2_I);
 		// dc_filter(APROC_Audio_Buffer_RX2_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE, DC_FILTER_RX2_Q);
@@ -357,6 +367,7 @@ void processRxAudio(void)
 		break;
 	}
 
+	#if HRDW_HAS_DUAL_RX
 	if (TRX.Dual_RX)
 	{
 		if (SecondaryVFO->Mode != TRX_MODE_IQ)
@@ -468,9 +479,11 @@ void processRxAudio(void)
 			break;
 		}
 	}
+	#endif
 
 	// Prepare data to DMA
 
+	#if HRDW_HAS_DUAL_RX
 	// addition of signals in double receive mode
 	if (TRX.Dual_RX && TRX.Dual_RX_Type == VFO_A_PLUS_B)
 	{
@@ -481,6 +494,7 @@ void processRxAudio(void)
 	{
 		dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX1_Q[0], (uint32_t *)&APROC_Audio_Buffer_RX2_I[0], FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	}
+	#endif
 
 	// receiver equalizer
 	if (CurrentVFO->Mode != TRX_MODE_DIGI_L && CurrentVFO->Mode != TRX_MODE_DIGI_U && CurrentVFO->Mode != TRX_MODE_RTTY && CurrentVFO->Mode != TRX_MODE_IQ)
@@ -496,6 +510,7 @@ void processRxAudio(void)
 	// create buffers for transmission to the codec
 	for (uint_fast16_t i = 0; i < FPGA_RX_IQ_BUFFER_HALF_SIZE; i++)
 	{
+		#if HRDW_HAS_DUAL_RX
 		if (!TRX.Dual_RX)
 		{
 			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1);	  // left channel
@@ -522,6 +537,13 @@ void processRxAudio(void)
 			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1); // left channel
 			APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];				  // right channel
 		}
+		#else
+			arm_float_to_q31(&APROC_Audio_Buffer_RX1_I[i], &APROC_AudioBuffer_out[i * 2], 1);	  // left channel
+			arm_float_to_q31(&APROC_Audio_Buffer_RX1_Q[i], &APROC_AudioBuffer_out[i * 2 + 1], 1); // right channel
+#if FT8_SUPPORT
+			arm_float_to_q15(&APROC_Audio_Buffer_RX1_Q[i], &APROC_AudioBuffer_FT8_out[i], 1); // FT8 Buffer - Tisho
+#endif
+		#endif
 	}
 
 	// Send to USB Audio
@@ -1219,11 +1241,13 @@ static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		arm_fir_f32(&FIR_RX1_Hilbert_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		arm_fir_f32(&FIR_RX1_Hilbert_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		arm_fir_f32(&FIR_RX2_Hilbert_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		arm_fir_f32(&FIR_RX2_Hilbert_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, size);
 	}
+	#endif
 }
 
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor)
@@ -1241,12 +1265,14 @@ static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32
 			arm_fir_decimate_f32(&DECIMATE_FIR_RX1_AUDIO_I, in_i, out_i, size);
 			arm_fir_decimate_f32(&DECIMATE_FIR_RX1_AUDIO_Q, in_q, out_q, size);
 		}
+		#if HRDW_HAS_DUAL_RX
 		else
 		{
 			arm_biquad_cascade_df2T_f32_IQ(&DECIMATE_IIR_RX2_AUDIO_I, &DECIMATE_IIR_RX2_AUDIO_Q, in_i, in_q, in_i, in_q, size);
 			arm_fir_decimate_f32(&DECIMATE_FIR_RX2_AUDIO_I, in_i, out_i, size);
 			arm_fir_decimate_f32(&DECIMATE_FIR_RX2_AUDIO_Q, in_q, out_q, size);
 		}
+		#endif
 	}
 }
 
@@ -1260,6 +1286,7 @@ static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_LPF_I, &IIR_RX1_LPF_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 		}
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		if (SecondaryVFO->LPF_RX_Filter_Width > 0)
@@ -1267,6 +1294,7 @@ static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_LPF_I, &IIR_RX2_LPF_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
 		}
 	}
+	#endif
 }
 
 // Low-pass filter for I and Q (second stage)
@@ -1279,6 +1307,7 @@ static void doRX_LPF2_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_LPF2_I, &IIR_RX1_LPF2_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 		}
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		if (SecondaryVFO->LPF_RX_Filter_Width > 0)
@@ -1286,6 +1315,7 @@ static void doRX_LPF2_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_LPF2_I, &IIR_RX2_LPF2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
 		}
 	}
+	#endif
 }
 
 // LPF filter for I
@@ -1298,6 +1328,7 @@ static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_single(&IIR_RX1_LPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		}
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		if (SecondaryVFO->LPF_RX_Filter_Width > 0)
@@ -1305,6 +1336,7 @@ static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_single(&IIR_RX2_LPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		}
 	}
+	#endif
 }
 
 // Gauss filter for I
@@ -1319,6 +1351,7 @@ static void doRX_GAUSS_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_GAUSS_I, &IIR_RX1_GAUSS_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 		}
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		if (SecondaryVFO->Mode == TRX_MODE_CW)
@@ -1326,6 +1359,7 @@ static void doRX_GAUSS_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_GAUSS_I, &IIR_RX2_GAUSS_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
 		}
 	}
+	#endif
 }
 
 // HPF filter for I
@@ -1338,6 +1372,7 @@ static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_single(&IIR_RX1_HPF_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		}
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		if (SecondaryVFO->HPF_RX_Filter_Width > 0)
@@ -1345,6 +1380,7 @@ static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			arm_biquad_cascade_df2T_f32_single(&IIR_RX2_HPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		}
 	}
+	#endif
 }
 
 // notch filter
@@ -1360,6 +1396,7 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 				processAutoNotchReduction(APROC_Audio_Buffer_RX1_I + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
 		}
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		if (SecondaryVFO->ManualNotchFilter)
@@ -1370,6 +1407,7 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 				processAutoNotchReduction(APROC_Audio_Buffer_RX2_I + (block * AUTO_NOTCH_BLOCK_SIZE), rx_id);
 		}
 	}
+	#endif
 }
 
 // RX Equalizer
@@ -1456,11 +1494,14 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode, 
 			for (uint32_t block = 0; block < (size / NOISE_REDUCTION_BLOCK_SIZE); block++)
 			{
 				processNoiseReduction(APROC_Audio_Buffer_RX1_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, CurrentVFO->DNR_Type, mode, do_agc);
+				#if HRDW_HAS_DUAL_RX
 				if(stereo && !TRX.Dual_RX)
 					processNoiseReduction(APROC_Audio_Buffer_RX1_Q + (block * NOISE_REDUCTION_BLOCK_SIZE), AUDIO_RX2, CurrentVFO->DNR_Type, mode, do_agc); //process second channel in rx2
+				#endif
 			}
 		}
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		bool do_agc = SecondaryVFO->AGC && TRX.AGC_Spectral;
@@ -1470,6 +1511,7 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode, 
 				processNoiseReduction(APROC_Audio_Buffer_RX2_I + (block * NOISE_REDUCTION_BLOCK_SIZE), rx_id, SecondaryVFO->DNR_Type, mode, do_agc);
 		}
 	}
+	#endif
 }
 
 // automatic gain control
@@ -1478,8 +1520,10 @@ static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode, 
 	if(!TRX.AGC_Spectral) { //else do agc in NR
 		if (rx_id == AUDIO_RX1)
 			DoRxAGC(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size, rx_id, mode, stereo);
+		#if HRDW_HAS_DUAL_RX
 		else
 			DoRxAGC(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size, rx_id, mode, stereo);
+		#endif
 	}
 }
 
@@ -1493,11 +1537,13 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		for (uint32_t block = 0; block < (size / NB_BLOCK_SIZE); block++)
 			processNoiseBlanking(APROC_Audio_Buffer_RX1_I + (block * NB_BLOCK_SIZE), rx_id);
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		for (uint32_t block = 0; block < (size / NB_BLOCK_SIZE); block++)
 			processNoiseBlanking(APROC_Audio_Buffer_RX2_I + (block * NB_BLOCK_SIZE), rx_id);
 	}
+	#endif
 }
 
 // s-meter
@@ -1539,6 +1585,7 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size,
 		}
 	}
 
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
 	{
 		if (Processor_RX2_Power_value != 0)
@@ -1574,6 +1621,7 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size,
 			Processor_RX2_Power_value = 0;
 		}
 	}
+	#endif
 }
 
 // copy I to Q channel
@@ -1584,10 +1632,12 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	{
 		dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX1_Q[0], (uint32_t *)&APROC_Audio_Buffer_RX1_I[0], size);
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX2_Q[0], (uint32_t *)&APROC_Audio_Buffer_RX2_I[0], size);
 	}
+	#endif
 }
 
 // FM demodulator
@@ -1601,6 +1651,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	
 	float32_t angle;
 
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
 	{
 		DFM = &DFM_RX2;
@@ -1609,6 +1660,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		SFM_Pilot_Filter = &SFM_RX2_Pilot_Filter;
 		SFM_Audio_Filter = &SFM_RX2_Audio_Filter;
 	}
+	#endif
 	
 	// *** Squelch Processing ***
 	if (FM_SQL_threshold_dbm > dbm && !DFM->squelched)
@@ -1753,10 +1805,12 @@ static void doVAD(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 			processVAD(rx_id, APROC_Audio_Buffer_RX1_I + (block * VAD_BLOCK_SIZE));
 	}
 	
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2) {
 		for (uint32_t block = 0; block < (size / VAD_BLOCK_SIZE); block++)
 			processVAD(rx_id, APROC_Audio_Buffer_RX2_I + (block * VAD_BLOCK_SIZE));
 	}
+	#endif
 }
 
 // Apply IF Gain IF Gain
@@ -1770,16 +1824,20 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 
 	float32_t *I_buff = APROC_Audio_Buffer_RX1_I;
 	float32_t *Q_buff = APROC_Audio_Buffer_RX1_Q;
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
 	{
 		I_buff = APROC_Audio_Buffer_RX2_I;
 		Q_buff = APROC_Audio_Buffer_RX2_Q;
 	}
+	#endif
 
 	if (rx_id == AUDIO_RX1 && CurrentVFO->Mode == TRX_MODE_CW)
 		CW = true;
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2 && SecondaryVFO->Mode == TRX_MODE_CW)
 		CW = true;
+	#endif
 	if (CW)
 		if_gain += db2rateV(CW_ADD_GAIN_IF);
 
@@ -1937,6 +1995,7 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 				gen_position_rx1 -= 1.0f;
 		}
 	}
+	#if HRDW_HAS_DUAL_RX
 	else
 	{
 		for (uint16_t i = 0; i < size; i++)
@@ -1949,6 +2008,7 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 				gen_position_rx2 -= 1.0f;
 		}
 	}
+	#endif
 }
 
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize)
@@ -1957,8 +2017,10 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 	static demod_sam_data_t sam_data_rx1;
 	static demod_sam_data_t sam_data_rx2;
 	demod_sam_data_t *sam_data = &sam_data_rx1;
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
 		sam_data = &sam_data_rx2;
+	#endif
 
 	// sideband separation, these values never change
 	static const demod_sam_const_t demod_sam_const =

@@ -250,12 +250,14 @@ typedef struct
 	bool SQL;
 } VFO;
 
+#if HRDW_HAS_DUAL_RX
 // dual receiver operating mode
 typedef enum
 {
 	VFO_A_AND_B,
 	VFO_A_PLUS_B,
 } DUAL_RX_TYPE;
+#endif
 
 // CAT type
 typedef enum
@@ -363,7 +365,10 @@ extern struct TRX_SETTINGS
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_FM;
 	TRX_INPUT_TYPE InputType_MAIN;
 	TRX_INPUT_TYPE InputType_DIGI;
+	#if HRDW_HAS_DUAL_RX
 	DUAL_RX_TYPE Dual_RX_Type;
+	bool Dual_RX;
+	#endif
 	bool selected_vfo; // false - A; true - B
 	bool Fast;
 	bool LNA;
@@ -380,7 +385,6 @@ extern struct TRX_SETTINGS
 	bool BandMapEnabled;
 	bool AutoGain;
 	bool Locked;
-	bool Dual_RX;
 	bool Encoder_Accelerate;
 	bool Custom_Transverter_Enabled;
 	bool TUNER_Enabled;

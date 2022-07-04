@@ -10,18 +10,22 @@
 
 // Private variables
 SRAM static NR_Instance NR_RX1 = {0};
+#if HRDW_HAS_DUAL_RX
 SRAM static NR_Instance NR_RX2 = {0};
+#endif
 static float32_t von_Hann[NOISE_REDUCTION_FFT_SIZE] = {0}; // coefficients for the window function
 
 // initialize DNR
 void InitNoiseReduction(void)
 {
 	dma_memset(&NR_RX1, 0, sizeof(NR_RX1));
-	dma_memset(&NR_RX2, 0, sizeof(NR_RX2));
-	
 	NR_RX1.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE;
+	
+	#if HRDW_HAS_DUAL_RX
+	dma_memset(&NR_RX2, 0, sizeof(NR_RX2));
 	NR_RX2.FFT_Inst = NOISE_REDUCTION_FFT_INSTANCE;
-
+	#endif
+	
 	for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++) {
 		arm_sqrt_f32(0.5f * (1.0f - arm_cos_f32((2.0f * F_PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)), &von_Hann[idx]);
 	}
@@ -32,9 +36,11 @@ void InitNoiseReduction(void)
 		NR_RX1.NR_GAIN[bindx] = 1.0;
 		NR_RX1.NR_GAIN_old[bindx] = 1.0;
 
+		#if HRDW_HAS_DUAL_RX
 		NR_RX2.NR_Prev_Buffer[bindx] = 0.0;
 		NR_RX2.NR_GAIN[bindx] = 1.0;
 		NR_RX2.NR_GAIN_old[bindx] = 1.0;
+		#endif
 	}
 }
 
@@ -42,8 +48,10 @@ void InitNoiseReduction(void)
 void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t nr_type, uint_fast8_t mode, bool do_agc)
 {
 	NR_Instance *instance = &NR_RX1;
+	#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
 		instance = &NR_RX2;
+	#endif
 
 #define snr_prio_min 0.001 // range should be down to -30dB min
 #define alpha 0.94
@@ -234,8 +242,10 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				
 				// Muting if need
 				bool VAD_Muting = VAD_RX1_Muting;
+				#if HRDW_HAS_DUAL_RX
 				if (rx_id == AUDIO_RX2)
 					VAD_Muting = VAD_RX2_Muting;
+				#endif
 				if (WM8731_Muting || VAD_Muting)
 				{
 					rateV = db2rateV(-200.0f);
