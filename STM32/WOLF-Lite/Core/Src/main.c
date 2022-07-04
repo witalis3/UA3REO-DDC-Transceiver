@@ -26,6 +26,7 @@
 #include "usbd_ua3reo.h"
 #include "usbd_debug_if.h"
 #include "fft.h"
+#include "fpga.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -272,7 +273,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim2);
 	
 	println("[OK] FPGA init");
-  //FPGA_Init(false, false);
+  FPGA_Init(false, false);
 	
 	println("[OK] Stuff timer TIM3 init");
   HAL_TIM_Base_Start_IT(&htim3);
