@@ -53,6 +53,8 @@
 #include "functions.h"
 #include "lcd.h"
 #include "events.h"
+#include "cw.h"
+#include "fft.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -417,7 +419,7 @@ void TIM2_IRQHandler(void)
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
-
+	EVENTS_do_PREPROCESS();
   /* USER CODE END TIM2_IRQn 1 */
 }
 
@@ -431,7 +433,7 @@ void TIM3_IRQHandler(void)
   /* USER CODE END TIM3_IRQn 0 */
   HAL_TIM_IRQHandler(&htim3);
   /* USER CODE BEGIN TIM3_IRQn 1 */
-
+	EVENTS_do_WIFI();
   /* USER CODE END TIM3_IRQn 1 */
 }
 
@@ -445,7 +447,7 @@ void TIM4_IRQHandler(void)
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
-
+	EVENTS_do_FFT();
   /* USER CODE END TIM4_IRQn 1 */
 }
 
@@ -473,7 +475,7 @@ void TIM8_UP_TIM13_IRQHandler(void)
   /* USER CODE END TIM8_UP_TIM13_IRQn 0 */
   HAL_TIM_IRQHandler(&htim8);
   /* USER CODE BEGIN TIM8_UP_TIM13_IRQn 1 */
-
+	EVENTS_do_PERIPHERAL();
   /* USER CODE END TIM8_UP_TIM13_IRQn 1 */
 }
 
@@ -487,7 +489,7 @@ void TIM5_IRQHandler(void)
   /* USER CODE END TIM5_IRQn 0 */
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
-
+	//EVENTS_do_AUDIO_PROCESSOR();
   /* USER CODE END TIM5_IRQn 1 */
 }
 
@@ -511,11 +513,30 @@ void SPI3_IRQHandler(void)
 void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
+	static uint32_t ms10_counter = 0;
 	CPULOAD_WakeUp();
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
+	ms10_counter++;
 
+	EVENTS_do_EVERY_10ms();
+
+  if ((ms10_counter % 10) == 0) // every 100ms
+  {
+		EVENTS_do_EVERY_100ms();
+  }
+
+	if (ms10_counter == 51) // every 0.5 sec
+  {
+		EVENTS_do_EVERY_500ms();
+	}
+	
+  if (ms10_counter == 101) // every 1 sec
+  {
+		EVENTS_do_EVERY_1000ms();
+    ms10_counter = 0;
+  }
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
@@ -585,10 +606,46 @@ void DMA2_Stream5_IRQHandler(void)
   /* USER CODE END DMA2_Stream5_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream5);
   /* USER CODE BEGIN DMA2_Stream5_IRQn 1 */
-
+	FFT_afterPrintFFT();
   /* USER CODE END DMA2_Stream5_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
+
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+  CPULOAD_WakeUp();
+	if(hspi->Instance	== SPI2)
+	{
+		SPI_DMA_TXRX_ready_callback = true;
+	}
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if (GPIO_Pin == FPGA_CLK_Pin) // 2 - FPGA BUS
+  {
+    //FPGA_fpgadata_iqclock();    // IQ data
+    //FPGA_fpgadata_stuffclock(); // parameters and other services
+  }
+  else if (GPIO_Pin == ENC_CLK_Pin) //3 - Main encoder
+  {
+    //if (TRX_Inited)
+      //FRONTPANEL_ENCODER_checkRotate();
+  }
+  else if (GPIO_Pin == PTT_IN_Pin) //PTT
+  {
+    if (TRX_Inited)
+      TRX_ptt_change();
+  }
+  else if (GPIO_Pin == KEY_IN_DOT_Pin) //KEY DOT
+  {
+    CW_key_change();
+  }
+  else if (GPIO_Pin == KEY_IN_DASH_Pin) //KEY DASH
+  {
+    CW_key_change();
+  }
+}
 
 /* USER CODE END 1 */

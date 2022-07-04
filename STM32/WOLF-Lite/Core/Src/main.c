@@ -251,7 +251,7 @@ int main(void)
   TRX_Init();
 	
   println("[OK] Audioprocessor & TIM5 init");
-  //initAudioProcessor();
+  initAudioProcessor();
   HAL_TIM_Base_Start_IT(&htim5);
 	
   if (SHOW_LOGO)
