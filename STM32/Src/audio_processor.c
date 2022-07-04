@@ -207,6 +207,7 @@ void processRxAudio(void)
 	if (CurrentVFO->Mode != TRX_MODE_IQ)
 		doRX_IFGain(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 
+	#if HRDW_HAS_USB_IQ
 	// Send to USB IQ
 	if (USB_IQ_need_rx_buffer && TRX_Inited)
 	{
@@ -229,6 +230,7 @@ void processRxAudio(void)
 		}
 		USB_IQ_need_rx_buffer = false;
 	}
+	#endif
 	
 	switch (CurrentVFO->Mode) // first receiver
 	{

@@ -773,6 +773,7 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 		return USBD_FAIL;
 	}
 	
+	#if HRDW_HAS_USB_IQ
 	haudioiq = (USBD_IQ_HandleTypeDef *)pdev->pClassDataIQ;
 	haudioiq->alt_setting = 0U;
 	
@@ -780,10 +781,12 @@ static uint8_t USBD_UA3REO_Init(USBD_HandleTypeDef *pdev)
 	{
 		return USBD_FAIL;
 	}
+	#endif
 
+	#if HRDW_HAS_SD
 	//MSC
-	
 	MSC_BOT_Init(pdev);
+	#endif
 
 	return ret;
 }
@@ -843,16 +846,23 @@ static uint8_t USBD_UA3REO_DeInit(USBD_HandleTypeDef *pdev)
 		((USBD_AUDIO_ItfTypeDef *)pdev->pUserDataAUDIO)->DeInit();
 		pdev->pClassDataAUDIO = NULL;
 	}
+	
+	#if HRDW_HAS_USB_IQ
 	if (pdev->pClassDataIQ != NULL)
 	{
 		((USBD_IQ_ItfTypeDef *)pdev->pUserDataIQ)->DeInit();
 		pdev->pClassDataIQ = NULL;
 	}
+	#endif
+	
+	#if HRDW_HAS_SD
 	if (pdev->pClassDataSTORAGE != NULL)
 	{
 		MSC_BOT_DeInit(pdev);
 		pdev->pClassDataSTORAGE = NULL;
 	}
+	#endif
+	
 	return ret;
 }
 
@@ -1350,16 +1360,20 @@ static uint8_t USBD_UA3REO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef 
 	{
 		ret = USBD_AUDIO_Setup(pdev, req);
 	}
+	#if HRDW_HAS_USB_IQ
 	else if (((req->bmRequest & USB_REQ_RECIPIENT_MASK) == USB_REQ_RECIPIENT_INTERFACE && req->wIndex == IQ_INTERFACE_IDX) ||
 			 ((req->bmRequest & USB_REQ_RECIPIENT_MASK) == USB_REQ_RECIPIENT_ENDPOINT && ((req->wIndex & 0x7F) == IQ_EP_IDX)))
 	{
 		ret = USBD_IQ_Setup(pdev, req);
 	}
+	#endif
+	#if HRDW_HAS_SD
 	else if (((req->bmRequest & USB_REQ_RECIPIENT_MASK) == USB_REQ_RECIPIENT_INTERFACE && req->wIndex == STORAGE_INTERFACE_IDX) ||
 			 ((req->bmRequest & USB_REQ_RECIPIENT_MASK) == USB_REQ_RECIPIENT_ENDPOINT && ((req->wIndex & 0x7F) == STORAGE_EP_IDX)))
 	{
 		ret = USBD_MSC_Setup(pdev, req);
 	}
+	#endif
 	else
 		ret = USBD_CAT_Setup(pdev, req);
 	return ret;

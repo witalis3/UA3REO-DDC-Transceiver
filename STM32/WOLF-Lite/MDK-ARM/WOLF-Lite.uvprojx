@@ -1070,6 +1070,26 @@
               <FilePath>..\..\Src\usbd_debug_if.h</FilePath>
             </File>
             <File>
+              <FileName>usbd_iq_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\usbd_iq_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_iq_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\usbd_iq_if.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_storage_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\usbd_storage_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_storage_if.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\usbd_storage_if.h</FilePath>
+            </File>
+            <File>
               <FileName>usbd_ua3reo.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\usbd_ua3reo.c</FilePath>
@@ -1213,6 +1233,36 @@
               <FileName>usbd_ioreq.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\USBDevice\usbd_ioreq.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_msc_bot.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_bot.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_msc_bot.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_bot.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_msc_data.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_data.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_msc_data.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_data.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_msc_scsi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_scsi.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_msc_scsi.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\USBDevice\usbd_msc_scsi.h</FilePath>
             </File>
           </Files>
         </Group>

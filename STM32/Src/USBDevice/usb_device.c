@@ -35,14 +35,18 @@ void MX_USB_DEVICE_Init(void)
   {
     Error_Handler();
   }
+	#if HRDW_HAS_USB_IQ
 	if (USBD_IQ_RegisterInterface(&hUsbDeviceFS, &USBD_IQ_fops_FS) != USBD_OK)
   {
     Error_Handler();
   }
+	#endif
+	#if HRDW_HAS_SD
   if (USBD_MSC_RegisterStorage(&hUsbDeviceFS, &USBD_Storage_Interface_fops_FS) != USBD_OK)
   {
     Error_Handler();
   }
+	#endif
   if (USBD_Start(&hUsbDeviceFS) != USBD_OK)
   {
     Error_Handler();

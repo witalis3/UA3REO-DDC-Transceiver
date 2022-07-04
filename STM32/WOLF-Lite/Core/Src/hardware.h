@@ -13,6 +13,7 @@
 #define HRDW_HAS_IWDG false
 #define HRDW_HAS_JPEG false
 #define HRDW_HAS_WIFI false
+#define HRDW_HAS_USB_IQ false
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 // settings
