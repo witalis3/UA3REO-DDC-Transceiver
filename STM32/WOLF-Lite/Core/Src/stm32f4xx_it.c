@@ -55,6 +55,8 @@
 #include "events.h"
 #include "cw.h"
 #include "fft.h"
+#include "fpga.h"
+#include "front_unit.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -489,7 +491,7 @@ void TIM5_IRQHandler(void)
   /* USER CODE END TIM5_IRQn 0 */
   HAL_TIM_IRQHandler(&htim5);
   /* USER CODE BEGIN TIM5_IRQn 1 */
-	//EVENTS_do_AUDIO_PROCESSOR();
+	EVENTS_do_AUDIO_PROCESSOR();
   /* USER CODE END TIM5_IRQn 1 */
 }
 
@@ -625,13 +627,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == FPGA_CLK_Pin) // 2 - FPGA BUS
   {
-    //FPGA_fpgadata_iqclock();    // IQ data
-    //FPGA_fpgadata_stuffclock(); // parameters and other services
+    FPGA_fpgadata_iqclock();    // IQ data
+    FPGA_fpgadata_stuffclock(); // parameters and other services
   }
   else if (GPIO_Pin == ENC_CLK_Pin) //3 - Main encoder
   {
-    //if (TRX_Inited)
-      //FRONTPANEL_ENCODER_checkRotate();
+    if (TRX_Inited)
+      FRONTPANEL_ENCODER_checkRotate();
   }
   else if (GPIO_Pin == PTT_IN_Pin) //PTT
   {

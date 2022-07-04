@@ -61,6 +61,10 @@ void SELF_TEST_Stop(void)
 // draw
 void SELF_TEST_Draw(void)
 {
+	#ifdef STM32F407xx
+	return;
+	#endif
+	
 	if (LCD_busy)
 	{
 		LCD_UpdateQuery.SystemMenuRedraw = true;
