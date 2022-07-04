@@ -306,15 +306,29 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
     HAL_PCD_RegisterIsoOutIncpltCallback(&hpcd_USB_OTG_FS, PCD_ISOOUTIncompleteCallback);
     HAL_PCD_RegisterIsoInIncpltCallback(&hpcd_USB_OTG_FS, PCD_ISOINIncompleteCallback);
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
-    //FIFO size 1536 bytes
+    
+		#ifdef STM32H743xx
+		//STM32H7 FIFO size 1536 bytes
     HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, AUDIO_OUT_PACKET);                          //All RX (288 USB RX read)
-    HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, 0x40);                                   //EP0
-    HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, DEBUG_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE); //DEBUG 64bytes
-    HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, CAT_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE);   //CAT 64bytes
+    HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, 0x40);                                   //EP0 64bytes
+    HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, DEBUG_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE); //DEBUG 16bytes
+    HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, CAT_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE);   //CAT 16bytes
     HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, AUDIO_EP_IDX, AUDIO_OUT_PACKET);            //AUDIO 288bytes
 		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, IQ_EP_IDX, AUDIO_OUT_PACKET);            //IQ 288bytes
     HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, STORAGE_EP_IDX, MSC_MAX_FS_PACKET);         //STORAGE 64bytes
-    //
+    #endif
+		
+		#ifdef STM32F407xx
+		//STM32F4 only 0x140 x 4(=1280bytes) available for USB FIFO
+		HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, 0xC0); //All RX (256bytes from 288 USB RX read)
+		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, CDC_DATA_FS_OUT_PACKET_SIZE); //EP0 32bytes
+		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, DEBUG_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE); //DEBUG 16bytes
+		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, CAT_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE); //CAT 16bytes
+		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, AUDIO_EP_IDX, 0x40); //AUDIO
+		//HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, IQ_EP_IDX, AUDIO_OUT_PACKET);            //IQ 288bytes
+    //HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, STORAGE_EP_IDX, MSC_MAX_FS_PACKET);         //STORAGE 64bytes
+		#endif
+		//
   }
   return USBD_OK;
 }

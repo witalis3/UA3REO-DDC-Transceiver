@@ -57,12 +57,6 @@ extern "C"
 
 /* Memory management macros */
 
-/** Alias for memory allocation. */
-#define USBD_malloc malloc
-
-/** Alias for memory release. */
-#define USBD_free free
-
 /** Alias for memory set. */
 #define USBD_memset memset
 

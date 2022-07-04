@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "functions.h"
+#include "usbd_ua3reo.h"
+#include "usbd_debug_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,7 +110,7 @@ static void MX_ADC3_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	MX_GPIO_Init(); // pwr hold
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -144,7 +146,15 @@ int main(void)
   MX_TIM8_Init();
   MX_ADC3_Init();
   /* USER CODE BEGIN 2 */
-
+  __HAL_RCC_SYSCFG_CLK_ENABLE();
+  HAL_EnableCompensationCell();
+	
+	println("\r\n----------------------------------");
+  println("Wolf Transceiver Initialization...");
+  println("[OK] USB init");
+  USBD_Restart();
+	
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -152,7 +162,9 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+		println("test");
+		print_flush();
+		HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -1283,6 +1295,34 @@ static void MX_FSMC_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+//обработка вывода отладки
+FILE __stdout;
+FILE __stdin;
+
+int fputc(int ch, FILE *f)
+{
+#pragma unused(f)
+
+  //SWD
+  if (SWD_DEBUG_ENABLED)
+    ITM_SendChar((uint32_t)ch);
+
+  //USB
+  if (USB_DEBUG_ENABLED)
+  {
+    char usb_char = (char)ch;
+    DEBUG_Transmit_FIFO((uint8_t *)&usb_char, 1);
+  }
+
+  //LCD
+  if (LCD_DEBUG_ENABLED)
+  {
+    print_chr_LCDOnly((char)ch);
+  }
+
+  return (ch);
+}
 
 /* USER CODE END 4 */
 
