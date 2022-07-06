@@ -73,35 +73,26 @@ void CPULOAD_Calc(void)
 }
 
 void HRDW_Init(void) {
-	println("!!! FIX HRDW_Init");
-	//HAL_ADCEx_InjectedStart(&hadc1); // ADC RF-UNIT'а
-	//HAL_ADCEx_InjectedStart(&hadc2); //ADC Tangent (some versions)
-	//HAL_ADCEx_InjectedStart(&hadc3); // ADC CPU temperature
+	HAL_ADCEx_InjectedStart(&hadc1);
+	HAL_ADCEx_InjectedStart(&hadc2);
+	HAL_ADCEx_InjectedStart(&hadc3);
 }
 
 float32_t HRDW_getCPUTemperature(void)
 {
-	println("!!! FIX HRDW_getCPUTemperature");
-	
-	//STM32H743 Temperature
-	//uint16_t TS_CAL1 = *((uint16_t *)0x1FF1E820); // TS_CAL1 Temperature sensor raw data acquired value at 30 °C, VDDA=3.3 V //-V566
-	//uint16_t TS_CAL2 = *((uint16_t *)0x1FF1E840); // TS_CAL2 Temperature sensor raw data acquired value at 110 °C, VDDA=3.3 V //-V566
-	//uint32_t TS_DATA = HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_1);
-	//float32_t result = ((110.0f - 30.0f) / ((float32_t)TS_CAL2 - (float32_t)TS_CAL1)) * ((float32_t)TS_DATA - (float32_t)TS_CAL1) + 30; // from reference
-	//return result;
-	return 0;
+	//STM32F407 Temperature
+	float32_t cpu_temperature = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * 3.3f / 4096.0f;
+	float32_t cpu_temperature_result = (cpu_temperature - 0.760f) / 0.0025f + 25.0f;
+	return cpu_temperature_result;
 }
 
 float32_t HRDW_getCPUVref(void)
 {
-	println("!!! FIX HRDW_getCPUVref");
-	
-	//STM32H743 VREF
-	//uint16_t VREFINT_CAL = *VREFINT_CAL_ADDR; // VREFIN_CAL Raw data acquired at temperature of 30 °C, VDDA = 3.3 V //-V566
-	//uint32_t VREFINT_DATA = HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_2);
-	//float32_t result = 3.3f * (float32_t)VREFINT_CAL / (float32_t)VREFINT_DATA; // from reference
-	//return result;
-	return 0;
+	//STM32F407 VREF
+	uint16_t VREFINT_CAL = *VREFINT_CAL_ADDR;
+	float32_t cpu_vref = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2));
+	float32_t cpu_vref_result = 3.3f * (float32_t)VREFINT_CAL / (float32_t)cpu_vref;
+	return cpu_vref_result;
 }
 
 inline uint32_t HRDW_getAudioCodecRX_DMAIndex(void) {
