@@ -97,7 +97,6 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream2;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern DMA_HandleTypeDef hdma_spi3_tx;
 extern DMA_HandleTypeDef hdma_i2s3_ext_rx;
-extern I2S_HandleTypeDef hi2s3;
 extern DMA_HandleTypeDef hdma_spi2_rx;
 extern DMA_HandleTypeDef hdma_spi2_tx;
 extern TIM_HandleTypeDef htim1;
@@ -493,20 +492,6 @@ void TIM5_IRQHandler(void)
   /* USER CODE BEGIN TIM5_IRQn 1 */
 	EVENTS_do_AUDIO_PROCESSOR();
   /* USER CODE END TIM5_IRQn 1 */
-}
-
-/**
-  * @brief This function handles SPI3 global interrupt.
-  */
-void SPI3_IRQHandler(void)
-{
-  /* USER CODE BEGIN SPI3_IRQn 0 */
-	CPULOAD_WakeUp();
-  /* USER CODE END SPI3_IRQn 0 */
-  HAL_I2S_IRQHandler(&hi2s3);
-  /* USER CODE BEGIN SPI3_IRQn 1 */
-
-  /* USER CODE END SPI3_IRQn 1 */
 }
 
 /**

@@ -158,6 +158,10 @@ void LoadSettings(bool clear)
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
 #endif
+#ifdef STM32F407xx
+		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
+		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
+#endif
 		TRX.FRQ_STEP = 10;					// frequency tuning step by the main encoder
 		TRX.FRQ_FAST_STEP = 100;			// frequency tuning step by the main encoder in FAST mode
 		TRX.FRQ_ENC_STEP = 25000;			// frequency tuning step by main add. encoder
@@ -269,6 +273,10 @@ void LoadSettings(bool clear)
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
 #ifdef LAY_800x480
+		TRX.FFT_Zoom = 1;	// approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
+#endif
+#ifdef STM32F407xx
 		TRX.FFT_Zoom = 1;	// approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif

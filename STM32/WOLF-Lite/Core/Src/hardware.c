@@ -172,80 +172,21 @@ inline bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, boo
 static uint32_t dma_memset32_reg = 0;
 void dma_memset32(void *dest, uint32_t val, uint32_t size)
 {
-	if (size == 0)
-		return;
-
-	if (dma_memset32_busy) // for async calls
+	if (val == 0)
 	{
-		if (val == 0)
-		{
-			memset(dest, val, size * 4);
-		}
-		else
-		{
-			uint32_t *buf = dest;
-			while (size--)
-				*buf++ = val;
-		}
-		return;
+		memset(dest, val, size * 4);
 	}
-
-	dma_memset32_busy = true;
-	dma_memset32_reg = val;
-	Aligned_CleanDCache_by_Addr(&dma_memset32_reg, sizeof(dma_memset32_reg));
-	Aligned_CleanDCache_by_Addr(dest, size * 4);
-
-	uint32_t max_block = DMA_MAX_BLOCK / 4;
-	uint32_t *current_dest = (uint32_t *)dest;
-	uint32_t estimated = size;
-	while (estimated > 0)
+	else
 	{
-		uint32_t block_size = (estimated > max_block) ? max_block : estimated;
-		HAL_DMA_Start(&HRDW_MEMSET_DMA, (uint32_t)&dma_memset32_reg, (uint32_t)current_dest, block_size);
-		SLEEPING_DMA_PollForTransfer(&HRDW_MEMSET_DMA);
-		estimated -= block_size;
-		current_dest += block_size;
+		uint32_t *buf = dest;
+		while (size--)
+			*buf++ = val;
 	}
-
-	Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);
-	dma_memset32_busy = false;
-
-	/*uint32_t *pDst = (uint32_t *)dest;
-	uint8_t errors = 0;
-	for(uint32_t i = 0; i < size; i++)
-		if(pDst[i] != val && errors < 3)
-		{
-			println(i);
-			errors++;
-		}*/
 }
 
 void dma_memcpy32(void *dest, void *src, uint32_t size)
 {
-	if (size == 0)
-		return;
-
-	if (dma_memcpy32_busy) // for async calls
-	{
-		memcpy(dest, src, size * 4);
-		return;
-	}
-
-	dma_memcpy32_busy = true;
-	Aligned_CleanDCache_by_Addr(src, size * 4);
-	Aligned_CleanDCache_by_Addr(dest, size * 4);
-
-	uint8_t res = HAL_DMA_Start(&HRDW_MEMCPY_DMA, (uint32_t)src, (uint32_t)dest, size);
-	SLEEPING_DMA_PollForTransfer(&HRDW_MEMCPY_DMA);
-
-	Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);
-	dma_memcpy32_busy = false;
-	
-	/*char *pSrc = (char *)src;
-	char *pDst = (char *)dest;
-	for(uint32_t i = 0; i < size * 4; i++)
-		if(pSrc[i] != pDst[i])
-			println(size * 4, " ", i);*/
+	memcpy(dest, src, size * 4);
 }
 
 void SCB_CleanDCache_by_Addr(uint32_t *addr, uint32_t size) {}

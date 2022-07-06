@@ -363,7 +363,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 		HAL_SPI_Init(hspi);
 	}
 
-	#define SPI_timeout 500 // HAL_MAX_DELAY
+	#define SPI_timeout 200 // HAL_MAX_DELAY
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 

@@ -189,7 +189,7 @@ int main(void)
   //if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (MENU)
     //LoadSettings(true);
   //else
-    //LoadSettings(false);
+    LoadSettings(false);
 	TRX.Debug_Type = TRX_DEBUG_SYSTEM;
 	
 	//DFU bootloader
@@ -210,12 +210,7 @@ int main(void)
     LoadCalibration(true);
   else
 #endif
-#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
-  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8) (CB+F6)
-    LoadCalibration(true);
-  else
-#endif
-    //LoadCalibration(false);
+    LoadCalibration(false);
 	
 	TRX.Locked = false;
   
