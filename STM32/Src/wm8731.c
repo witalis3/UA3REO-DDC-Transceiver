@@ -179,7 +179,7 @@ void WM8731_Init(void)
 }
 
 // RX Buffer is fully sent to the codec
-ITCM static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
+static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 {
 	CPULOAD_WakeUp();
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
@@ -195,7 +195,7 @@ ITCM static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma)
 }
 
 // RX Buffer half sent to the codec
-ITCM static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
+static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 {
 	CPULOAD_WakeUp();
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3)
@@ -211,7 +211,7 @@ ITCM static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 }
 
 // TX Buffer is completely taken from the codec
-ITCM static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
+static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
 {
 	CPULOAD_WakeUp();
 	
@@ -220,7 +220,7 @@ ITCM static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
 }
 
 // TX Buffer half received from the codec
-ITCM static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
+static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
 {
 	CPULOAD_WakeUp();
 	
@@ -229,7 +229,7 @@ ITCM static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
 }
 
 // DMA I2S error
-ITCM static void I2S_DMAError(DMA_HandleTypeDef *hdma)
+static void I2S_DMAError(DMA_HandleTypeDef *hdma)
 {
 	CPULOAD_WakeUp();
 	
@@ -269,7 +269,7 @@ ITCM static void I2S_DMAError(DMA_HandleTypeDef *hdma)
 }
 
 // Full-duplex implementation of I2S startup
-ITCM static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize)
+static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize)
 {
 	#ifdef STM32H743xx
 	if ((rxData == NULL) || (txData == NULL) || (rxSize == 0UL) || (txSize == 0UL))
