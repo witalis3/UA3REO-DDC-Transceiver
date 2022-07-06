@@ -27,6 +27,7 @@
 #include "usbd_debug_if.h"
 #include "fft.h"
 #include "fpga.h"
+#include "front_unit.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -183,13 +184,13 @@ int main(void)
   HAL_RTC_Init(&hrtc);
 	
 	println("[OK] Frontpanel init");
-  //FRONTPANEL_Init();
+  FRONTPANEL_Init();
 	
 	println("[OK] Settings loading");
   //if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (MENU)
     //LoadSettings(true);
   //else
-    //LoadSettings(false);
+    LoadSettings(false);
 	TRX.Debug_Type = TRX_DEBUG_SYSTEM;
 	
 	//DFU bootloader
@@ -210,7 +211,7 @@ int main(void)
     LoadCalibration(true);
   else
 #endif
-    //LoadCalibration(false);
+    LoadCalibration(false);
 	
 	TRX.Locked = false;
   
