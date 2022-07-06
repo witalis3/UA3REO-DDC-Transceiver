@@ -10,7 +10,6 @@
 #define HRDW_HAS_MDMA true
 #define HRDW_HAS_SD true
 #define HRDW_HAS_DMA2D true
-#define HRDW_HAS_IWDG true
 #define HRDW_HAS_JPEG true
 #define HRDW_HAS_WIFI true
 #define HRDW_HAS_USB_IQ true
@@ -41,7 +40,7 @@
 #define HRDW_CRC_HANDLE hcrc
 #define HRDW_JPEG_HANDLE hjpeg
 #define HRDW_LCD_SPI NULL
-
+#define HRDW_IWDG hiwdg1
 #define HRDW_LCD_FSMC_COPY_DMA hdma_memtomem_dma2_stream5
 #define HRDW_LCD_WTF_DOWN_MDMA hmdma_mdma_channel43_sw_0
 #define HRDW_MEMCPY_MDMA hmdma_mdma_channel40_sw_0

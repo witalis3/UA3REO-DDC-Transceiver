@@ -50,7 +50,7 @@ extern DMA_HandleTypeDef hdma_spi3_tx;
 extern DMA_HandleTypeDef hdma_i2s3_ext_rx;
 
 extern RTC_HandleTypeDef hrtc;
-
+extern IWDG_HandleTypeDef hiwdg;
 extern SPI_HandleTypeDef hspi2;
 
 extern TIM_HandleTypeDef htim3;
