@@ -217,7 +217,8 @@ void RF_UNIT_ProcessSensors(void)
 		TRX_RF_Temperature = TRX_RF_Temperature_averaged;
 
 	//VBAT
-	TRX_VBAT_Voltage = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B14_RANGE;
+	float32_t cpu_vbat = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * 3.3f / 4096.0f;
+	TRX_VBAT_Voltage = TRX_VBAT_Voltage * 0.9f + cpu_vbat * 2.0f * 0.1f;
 	
 	// SWR
 	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B16_RANGE;

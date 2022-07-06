@@ -693,7 +693,8 @@ void processRxAudio(void)
 			HAL_MDMA_Start_IT(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
 			#else
-			println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+			HAL_DMA_Start_IT(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE); //*2 -> left_right
+			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY_DMA);
 			#endif
 		}
 		else // half
@@ -702,7 +703,8 @@ void processRxAudio(void)
 			HAL_MDMA_Start_IT(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
 			#else
-			println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+			HAL_DMA_Start_IT(&HRDW_AUDIO_COPY2_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE); //*2 -> left_right
+			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY2_DMA);
 			#endif
 		}
 	}
@@ -1006,7 +1008,8 @@ void processTxAudio(void)
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
 			#else
-			println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE);
+			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY_DMA);
 			#endif
 		}
 		else // half
@@ -1015,7 +1018,8 @@ void processTxAudio(void)
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], AUDIO_BUFFER_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
 			#else
-			println("!!! FIX HRDW_AUDIO_COPY2_MDMA");
+			HAL_DMA_Start(&HRDW_AUDIO_COPY2_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], AUDIO_BUFFER_SIZE);
+			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY2_DMA);
 			#endif
 		}
 	}
@@ -1210,7 +1214,10 @@ void processTxAudio(void)
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
 			#else
-			println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE);
+			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY_DMA);
+			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE);
+			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY_DMA);
 			#endif
 		}
 		else
@@ -1221,7 +1228,10 @@ void processTxAudio(void)
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
 			#else
-			println("!!! FIX HRDW_AUDIO_COPY2_MDMA");
+			HAL_DMA_Start(&HRDW_AUDIO_COPY2_DMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[0], AUDIO_BUFFER_HALF_SIZE);
+			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY2_DMA);
+			HAL_DMA_Start(&HRDW_AUDIO_COPY2_DMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0], AUDIO_BUFFER_HALF_SIZE);
+			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY2_DMA);
 			#endif
 		}
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_I[0], sizeof(FPGA_Audio_SendBuffer_I));
@@ -1922,7 +1932,8 @@ static void APROC_SD_Play(void)
 					HAL_MDMA_Start_IT(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 					SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
 					#else
-					println("!!! FIX HRDW_AUDIO_COPY_MDMA");
+					HAL_DMA_Start_IT(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE); //*2 -> left_right
+					SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY_DMA);
 					#endif
 				}
 				else // half
@@ -1931,7 +1942,8 @@ static void APROC_SD_Play(void)
 					HAL_MDMA_Start_IT(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 					SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
 					#else
-					println("!!! FIX HRDW_AUDIO_COPY2_MDMA");
+					HAL_DMA_Start_IT(&HRDW_AUDIO_COPY2_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE); //*2 -> left_right
+					SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY2_DMA);
 					#endif
 				}
 			}

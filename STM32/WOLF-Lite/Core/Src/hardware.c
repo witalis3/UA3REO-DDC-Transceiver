@@ -112,7 +112,7 @@ inline bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t cou
 	}
 	HRDW_SPI_Periph_busy = true;
 	
-	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD1_CS_GPIO_Port, AD1_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, true);
+	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD1_CS_GPIO_Port, AD1_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
 	
 	HRDW_SPI_Periph_busy = false;
 	return result;
@@ -128,7 +128,7 @@ inline bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t co
 	}
 	HRDW_SPI_Periph_busy = true;
 	
-	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD2_CS_GPIO_Port, AD2_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, true);
+	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD2_CS_GPIO_Port, AD2_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
 	
 	HRDW_SPI_Periph_busy = false;
 	return result;
@@ -144,7 +144,7 @@ inline bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t co
 	}
 	HRDW_SPI_Periph_busy = true;
 	
-	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD3_CS_GPIO_Port, AD3_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, true);
+	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD3_CS_GPIO_Port, AD3_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
 	
 	HRDW_SPI_Periph_busy = false;
 	return result;
@@ -159,7 +159,7 @@ inline bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count,
 	}
 	HRDW_SPI_Periph_busy = true;
 	
-	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, hold_cs, SPI_EEPROM_PRESCALER, true);
+	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, hold_cs, SPI_EEPROM_PRESCALER, false);
 	
 	HRDW_SPI_Periph_busy = false;
 	return result;
@@ -201,7 +201,7 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	while (estimated > 0)
 	{
 		uint32_t block_size = (estimated > max_block) ? max_block : estimated;
-		HAL_DMA_Start(&HRDW_MEMSET_DMA, (uint32_t)&dma_memset32_reg, (uint32_t)current_dest, 4 * block_size);
+		HAL_DMA_Start(&HRDW_MEMSET_DMA, (uint32_t)&dma_memset32_reg, (uint32_t)current_dest, block_size);
 		SLEEPING_DMA_PollForTransfer(&HRDW_MEMSET_DMA);
 		estimated -= block_size;
 		current_dest += block_size;
@@ -235,7 +235,7 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 	Aligned_CleanDCache_by_Addr(src, size * 4);
 	Aligned_CleanDCache_by_Addr(dest, size * 4);
 
-	uint8_t res = HAL_DMA_Start(&HRDW_MEMCPY_DMA, (uint32_t)src, (uint32_t)dest, size * 4);
+	uint8_t res = HAL_DMA_Start(&HRDW_MEMCPY_DMA, (uint32_t)src, (uint32_t)dest, size);
 	SLEEPING_DMA_PollForTransfer(&HRDW_MEMCPY_DMA);
 
 	Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);

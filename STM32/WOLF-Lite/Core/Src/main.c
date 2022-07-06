@@ -182,7 +182,7 @@ int main(void)
 	println("[OK] Real Time Clock init");
   HAL_RTC_Init(&hrtc);
 	
-	println("[FIX] Frontpanel init");
+	println("[OK] Frontpanel init");
   //FRONTPANEL_Init();
 	
 	println("[OK] Settings loading");
