@@ -831,13 +831,6 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd)
     HAL_NVIC_SetPriority(OTG_FS_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
   /* USER CODE BEGIN USB_OTG_FS_MspInit 1 */
-	
-	__HAL_PCD_DISABLE(hpcd);
-    HAL_Delay(10);
-    //Repeat disabling PCD (else may be error in USB_CoreReset)
-    __HAL_PCD_DISABLE(hpcd);
-    hpcd->Instance->GUSBCFG |= USB_OTG_GUSBCFG_PHYSEL;
-    HAL_Delay(10);
 
   /* USER CODE END USB_OTG_FS_MspInit 1 */
   }

@@ -181,11 +181,7 @@ inline bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, boo
 static uint32_t dma_memset32_reg = 0;
 void dma_memset32(void *dest, uint32_t val, uint32_t size)
 {
-	println("!!! FIX dma_memset32");
-	memset(dest, val, size * 4);
-	return;
-	
-	/*if (size == 0)
+	if (size == 0)
 		return;
 
 	if (dma_memset32_busy) // for async calls
@@ -214,15 +210,14 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	while (estimated > 0)
 	{
 		uint32_t block_size = (estimated > max_block) ? max_block : estimated;
-		HAL_MDMA_Start(&HRDW_MEMSET_MDMA, (uint32_t)&dma_memset32_reg, (uint32_t)current_dest, 4 * block_size, 1);
-		SLEEPING_MDMA_PollForTransfer(&HRDW_MEMSET_MDMA);
+		HAL_DMA_Start(&HRDW_MEMSET_DMA, (uint32_t)&dma_memset32_reg, (uint32_t)current_dest, 4 * block_size);
+		SLEEPING_DMA_PollForTransfer(&HRDW_MEMSET_DMA);
 		estimated -= block_size;
 		current_dest += block_size;
 	}
 
 	Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);
 	dma_memset32_busy = false;
-	*/
 
 	/*uint32_t *pDst = (uint32_t *)dest;
 	uint8_t errors = 0;
@@ -236,11 +231,6 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 
 void dma_memcpy32(void *dest, void *src, uint32_t size)
 {
-	println("!!! FIX dma_memcpy32");
-	memcpy(dest, src, size * 4);
-	return;
-	
-	/*
 	if (size == 0)
 		return;
 
@@ -254,12 +244,11 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 	Aligned_CleanDCache_by_Addr(src, size * 4);
 	Aligned_CleanDCache_by_Addr(dest, size * 4);
 
-	uint8_t res = HAL_MDMA_Start(&HRDW_MEMCPY_MDMA, (uint32_t)src, (uint32_t)dest, size * 4, 1);
-	SLEEPING_MDMA_PollForTransfer(&HRDW_MEMCPY_MDMA);
+	uint8_t res = HAL_DMA_Start(&HRDW_MEMCPY_DMA, (uint32_t)src, (uint32_t)dest, size * 4);
+	SLEEPING_DMA_PollForTransfer(&HRDW_MEMCPY_DMA);
 
 	Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);
 	dma_memcpy32_busy = false;
-	*/
 	
 	/*char *pSrc = (char *)src;
 	char *pDst = (char *)dest;

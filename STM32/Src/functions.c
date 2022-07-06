@@ -690,6 +690,115 @@ void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 }
 #endif
 
+typedef struct
+{
+  __IO uint32_t ISR;   /*!< DMA interrupt status register */
+  __IO uint32_t Reserved0;
+  __IO uint32_t IFCR;  /*!< DMA interrupt flag clear register */
+} DMA_Base_Registers;
+
+void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma)
+{
+	#define Timeout 100
+	
+	HAL_StatusTypeDef status = HAL_OK; 
+  uint32_t mask_cpltlevel;
+  uint32_t tickstart = HAL_GetTick(); 
+  uint32_t tmpisr;
+  
+  /* calculate DMA base and stream number */
+  DMA_Base_Registers *regs;
+
+  if(HAL_DMA_STATE_BUSY != hdma->State)
+  {
+    return;
+  }
+  
+	/* Transfer Complete flag */
+	mask_cpltlevel = DMA_FLAG_TCIF0_4 << hdma->StreamIndex;
+  
+  regs = (DMA_Base_Registers *)hdma->StreamBaseAddress;
+  tmpisr = regs->ISR;
+  
+  while(((tmpisr & mask_cpltlevel) == RESET) && ((hdma->ErrorCode & HAL_DMA_ERROR_TE) == RESET))
+  {
+    /* Check for the Timeout (Not applicable in circular mode)*/
+		if(((HAL_GetTick() - tickstart ) > Timeout))
+		{
+			/* Update error code */
+			hdma->ErrorCode = HAL_DMA_ERROR_TIMEOUT;
+			
+			/* Change the DMA state */
+			hdma->State = HAL_DMA_STATE_READY;
+			
+			/* Process Unlocked */
+			__HAL_UNLOCK(hdma);
+			
+			return;
+		}
+
+    /* Get the ISR register value */
+    tmpisr = regs->ISR;
+
+    if((tmpisr & (DMA_FLAG_TEIF0_4 << hdma->StreamIndex)) != RESET)
+    {
+      /* Update error code */
+      hdma->ErrorCode |= HAL_DMA_ERROR_TE;
+      
+      /* Clear the transfer error flag */
+      regs->IFCR = DMA_FLAG_TEIF0_4 << hdma->StreamIndex;
+    }
+    
+    if((tmpisr & (DMA_FLAG_FEIF0_4 << hdma->StreamIndex)) != RESET)
+    {
+      /* Update error code */
+      hdma->ErrorCode |= HAL_DMA_ERROR_FE;
+      
+      /* Clear the FIFO error flag */
+      regs->IFCR = DMA_FLAG_FEIF0_4 << hdma->StreamIndex;
+    }
+    
+    if((tmpisr & (DMA_FLAG_DMEIF0_4 << hdma->StreamIndex)) != RESET)
+    {
+      /* Update error code */
+      hdma->ErrorCode |= HAL_DMA_ERROR_DME;
+      
+      /* Clear the Direct Mode error flag */
+      regs->IFCR = DMA_FLAG_DMEIF0_4 << hdma->StreamIndex;
+    }
+		
+		// go sleep
+		CPULOAD_GoToSleepMode();
+  }
+  
+  if(hdma->ErrorCode != HAL_DMA_ERROR_NONE)
+  {
+    if((hdma->ErrorCode & HAL_DMA_ERROR_TE) != RESET)
+    {
+      HAL_DMA_Abort(hdma);
+    
+      /* Clear the half transfer and transfer complete flags */
+      regs->IFCR = (DMA_FLAG_HTIF0_4 | DMA_FLAG_TCIF0_4) << hdma->StreamIndex;
+    
+      /* Change the DMA state */
+      hdma->State= HAL_DMA_STATE_READY;
+
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdma);
+			
+      return;
+   }
+  }
+
+	/* Clear the half transfer and transfer complete flags */
+	regs->IFCR = (DMA_FLAG_HTIF0_4 | DMA_FLAG_TCIF0_4) << hdma->StreamIndex;
+	
+	hdma->State = HAL_DMA_STATE_READY;
+	
+	/* Process Unlocked */
+	__HAL_UNLOCK(hdma);
+}
+
 uint8_t getInputType(void)
 {
 	uint8_t type = TRX.InputType_MAIN;

@@ -62,13 +62,10 @@ extern TIM_HandleTypeDef htim8;
 
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream6;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream2;
-extern DMA_HandleTypeDef hdma_memtomem_dma2_stream3;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream4;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
 extern SRAM_HandleTypeDef hsram1;
 /* USER CODE END EC */

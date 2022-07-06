@@ -183,6 +183,7 @@ int main(void)
     //LoadSettings(true);
   //else
     //LoadSettings(false);
+	TRX.Debug_Type = TRX_DEBUG_SYSTEM;
 	
 	//DFU bootloader
 #if defined(FRONTPANEL_WF_100D)

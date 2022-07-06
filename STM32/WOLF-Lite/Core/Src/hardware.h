@@ -42,11 +42,10 @@
 #define HRDW_LCD_SPI NULL
 #define HRDW_IWDG hiwdg
 #define HRDW_LCD_FSMC_COPY_DMA hdma_memtomem_dma2_stream5
-#define HRDW_LCD_WTF_DOWN_MDMA NULL
-#define HRDW_MEMCPY_MDMA NULL
-#define HRDW_MEMSET_MDMA NULL
-#define HRDW_AUDIO_COPY_MDMA NULL
-#define HRDW_AUDIO_COPY2_MDMA NULL
+#define HRDW_MEMCPY_DMA hdma_memtomem_dma2_stream0
+#define HRDW_MEMSET_DMA hdma_memtomem_dma2_stream4
+#define HRDW_AUDIO_COPY_DMA hdma_memtomem_dma2_stream1
+#define HRDW_AUDIO_COPY2_DMA hdma_memtomem_dma2_stream2
 
 // SPI Speed
 #define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_4
