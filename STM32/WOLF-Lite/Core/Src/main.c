@@ -158,6 +158,12 @@ int main(void)
   MX_TIM2_Init();
   MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
+	
+	/* BUG FIX: Enabling Audio Clock Input in CubeMX does not set I2SSRC bit
+	* in RCC_CFGR register! Hence we need to set it manually here! * WARNING: A bug fix is also needed in __HAL_RCC_GET_I2S_SOURCE()
+		Line 6115 stm32f4xx_hal_rcc_ex.h -> #define __HAL_RCC_GET_I2S_SOURCE() ((uint32_t)(READ_BIT(RCC->CFGR, RCC_CFGR_I2SSRC)) >> RCC_CFGR_I2SSRC_Pos)
+	*/
+	
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   HAL_EnableCompensationCell();
 	
@@ -248,7 +254,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim4);
 	
   println("[OK] AudioCodec init");
-  //WM8731_Init();
+  WM8731_Init();
 	
   println("[OK] TRX init");
   TRX_Init();

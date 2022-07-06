@@ -34,7 +34,7 @@
 
 // instances
 #define HRDW_AUDIO_CODEC_I2S hi2s3
-#define HRDW_WSPR_TIMER htim6 /// !!! FIX HRDW_WSPR_TIMER
+#define HRDW_WSPR_TIMER NULL
 #define HRDW_WIFI_UART NULL
 #define HRDW_FSMC_LCD hsram1
 #define HRDW_CRC_HANDLE hcrc
