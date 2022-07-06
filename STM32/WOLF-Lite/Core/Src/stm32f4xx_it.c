@@ -460,7 +460,7 @@ void TIM4_IRQHandler(void)
 void SPI2_IRQHandler(void)
 {
   /* USER CODE BEGIN SPI2_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END SPI2_IRQn 0 */
   HAL_SPI_IRQHandler(&hspi2);
   /* USER CODE BEGIN SPI2_IRQn 1 */
@@ -516,7 +516,7 @@ void TIM5_IRQHandler(void)
 void SPI3_IRQHandler(void)
 {
   /* USER CODE BEGIN SPI3_IRQn 0 */
-
+	CPULOAD_WakeUp();
   /* USER CODE END SPI3_IRQn 0 */
   HAL_I2S_IRQHandler(&hi2s3);
   /* USER CODE BEGIN SPI3_IRQn 1 */
