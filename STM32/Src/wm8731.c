@@ -214,6 +214,7 @@ ITCM static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma)
 ITCM static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
 {
 	CPULOAD_WakeUp();
+	
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
 	HAL_I2S_RxCpltCallback(hi2s);
 }
@@ -222,6 +223,7 @@ ITCM static void I2S_DMARxCplt(DMA_HandleTypeDef *hdma)
 ITCM static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
 {
 	CPULOAD_WakeUp();
+	
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
 	HAL_I2S_RxHalfCpltCallback(hi2s);
 }
@@ -230,6 +232,7 @@ ITCM static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma)
 ITCM static void I2S_DMAError(DMA_HandleTypeDef *hdma)
 {
 	CPULOAD_WakeUp();
+	
 	#ifdef STM32H743xx
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent; /* Derogation MISRAC2012-Rule-11.5 */
 
@@ -245,8 +248,23 @@ ITCM static void I2S_DMAError(DMA_HandleTypeDef *hdma)
 
 	/* Call user error callback */
 	HAL_I2S_ErrorCallback(hi2s);
-	#else
-	println("!!! FIX I2S_DMAError");
+	#endif
+	
+	#ifdef STM32F407xx
+	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent; /* Derogation MISRAC2012-Rule-11.5 */
+
+	/* Disable Rx and Tx DMA Request */
+	CLEAR_BIT(hi2s->Instance->CR2, (SPI_CR2_TXDMAEN | SPI_CR2_RXDMAEN));
+	hi2s->TxXferCount = (uint16_t)0UL;
+	hi2s->RxXferCount = (uint16_t)0UL;
+
+	hi2s->State = HAL_I2S_STATE_READY;
+
+	/* Set the error code and execute error callback*/
+	SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
+
+	/* Call user error callback */
+	HAL_I2S_ErrorCallback(hi2s);
 	#endif
 }
 
@@ -329,8 +347,80 @@ ITCM static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t
 	SET_BIT(hi2s->Instance->CR1, SPI_CR1_CSTART);
 
 	__HAL_UNLOCK(hi2s);
-	#else
-	println("!!! FIX HAL_I2S_TXRX_DMA");
 	#endif
+	
+	#ifdef STM32F407xx
+	if ((rxData == NULL) || (txData == NULL) || (rxSize == 0UL) || (txSize == 0UL))
+	{
+		return HAL_ERROR;
+	}
+
+	/* Process Locked */
+	__HAL_LOCK(hi2s);
+
+	if (hi2s->State != HAL_I2S_STATE_READY)
+	{
+		__HAL_UNLOCK(hi2s);
+		return HAL_BUSY;
+	}
+
+	/* Set state and reset error code */
+	hi2s->pTxBuffPtr = txData;
+  hi2s->pRxBuffPtr = rxData;
+	
+	hi2s->State = HAL_I2S_STATE_BUSY_TX_RX;
+	hi2s->ErrorCode = HAL_I2S_ERROR_NONE;
+	
+	hi2s->TxXferSize  = txSize;
+	hi2s->TxXferCount = txSize;
+	hi2s->RxXferSize  = (rxSize << 1U);
+	hi2s->RxXferCount = (rxSize << 1U);
+
+	hi2s->hdmarx->XferHalfCpltCallback = I2S_DMARxHalfCplt;
+	hi2s->hdmarx->XferCpltCallback = I2S_DMARxCplt;
+	hi2s->hdmarx->XferErrorCallback = I2S_DMAError;
+	hi2s->hdmatx->XferHalfCpltCallback = I2S_DMATxHalfCplt;
+	hi2s->hdmatx->XferCpltCallback = I2S_DMATxCplt;
+	hi2s->hdmatx->XferErrorCallback = I2S_DMAError;
+
+	/* Enable the Rx DMA Stream/Channel */
+	if (HAL_OK != HAL_DMA_Start_IT(hi2s->hdmarx, (uint32_t)&I2SxEXT(hi2s->Instance)->DR, (uint32_t)hi2s->pRxBuffPtr, hi2s->RxXferSize))
+	{
+		// Update SPI error code
+		SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
+		hi2s->State = HAL_I2S_STATE_READY;
+
+		__HAL_UNLOCK(hi2s);
+		return HAL_ERROR;
+	}
+	if (HAL_OK != HAL_DMA_Start_IT(hi2s->hdmatx, (uint32_t)hi2s->pTxBuffPtr, (uint32_t)&hi2s->Instance->DR, hi2s->TxXferSize))
+	{
+		//Update SPI error code
+		SET_BIT(hi2s->ErrorCode, HAL_I2S_ERROR_DMA);
+		hi2s->State = HAL_I2S_STATE_READY;
+
+		__HAL_UNLOCK(hi2s);
+		return HAL_ERROR;
+	}
+
+	/* Enable Rx DMA Request */
+	SET_BIT(I2SxEXT(hi2s->Instance)->CR2, SPI_CR2_RXDMAEN);
+
+	/* Enable Tx DMA Request */
+	SET_BIT(hi2s->Instance->CR2, SPI_CR2_TXDMAEN);
+
+	/* Check if the I2S is already enabled */
+	if ((hi2s->Instance->I2SCFGR & SPI_I2SCFGR_I2SE) != SPI_I2SCFGR_I2SE)
+	{
+		/* Enable I2Sext(receiver) before enabling I2Sx peripheral */
+		__HAL_I2SEXT_ENABLE(hi2s);
+
+		/* Enable I2S peripheral after the I2Sext */
+		__HAL_I2S_ENABLE(hi2s);
+	}
+
+__HAL_UNLOCK(hi2s);
+	#endif
+	
 	return HAL_OK;
 }
