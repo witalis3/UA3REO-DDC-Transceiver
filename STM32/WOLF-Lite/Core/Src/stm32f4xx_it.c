@@ -625,7 +625,7 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == FPGA_CLK_Pin) // 2 - FPGA BUS
+  if (GPIO_Pin == AUDIO_48K_CLOCK_Pin) // 2 - FPGA BUS
   {
     FPGA_fpgadata_iqclock();    // IQ data
     FPGA_fpgadata_stuffclock(); // parameters and other services

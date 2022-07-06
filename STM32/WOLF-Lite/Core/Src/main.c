@@ -161,10 +161,11 @@ int main(void)
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   HAL_EnableCompensationCell();
 	
+	USBD_Restart();
+	HAL_Delay(1000);
+	
 	println("\r\n----------------------------------");
   println("Wolf Transceiver Initialization...");
-  println("[OK] USB init");
-  USBD_Restart();
 	
 	println("[OK] FIFO timer TIM7 init");
   HAL_TIM_Base_Start_IT(&htim7);
