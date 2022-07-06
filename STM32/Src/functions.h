@@ -22,12 +22,12 @@ __asm(".global __use_no_heap\n\t");
 #endif
 
 #ifdef STM32F407xx
-	#define IRAM1 __attribute__((section(".IRAM1"))) // 64kb CCM IRAM1
-	#define IRAM2 __attribute__((section(".IRAM2"))) // 128kb IRAM2
+	#define IRAM1 __attribute__((section(".IRAM1"))) __attribute__((aligned(32))) // 64kb CCM IRAM1
+	#define IRAM2 __attribute__((section(".IRAM2"))) __attribute__((aligned(32))) // 128kb IRAM2
 	
-	#define ITCM __attribute__((section(".IRAM1"))) // double
-	#define SRAM __attribute__((section(".IRAM2"))) // double
-	#define SRAM4 __attribute__((section(".IRAM2"))) // double
+	#define ITCM IRAM1 // double
+	#define SRAM IRAM2 // double
+	#define SRAM4 IRAM2 // double
 	#define BACKUP_SRAM_BANK1_ADDR (uint32_t *)(BKPSRAM_BASE)
 	#define BACKUP_SRAM_BANK2_ADDR (uint32_t *)(BKPSRAM_BASE+0x800) // 4kb Backup SRAM
 #endif

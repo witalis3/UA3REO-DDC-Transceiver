@@ -65,11 +65,11 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 void LoadSettings(bool clear)
 {
 	BKPSRAM_Enable();
-	dma_memcpy(&TRX, BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
+	memcpy(&TRX, BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 	// Check, the data in the backup sram is correct, otherwise we use the second bank
 	if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 	{
-		dma_memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
+		memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 		if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM())
 		{
 			println("[ERR] BACKUP SRAM data incorrect");
@@ -99,7 +99,7 @@ void LoadSettings(bool clear)
 	{
 		if (clear)
 			println("[OK] Soft reset TRX");
-		dma_memset(&TRX, 0x00, sizeof(TRX));
+		memset(&TRX, 0x00, sizeof(TRX));
 		//
 		TRX.flash_id = SETT_VERSION; // Firmware ID in SRAM, if it doesn't match, use the default
 		TRX.NeedGoToBootloader = false;
@@ -698,16 +698,16 @@ void SaveSettings(void)
 	Aligned_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
 	if (settings_bank == 1)
 	{
-		dma_memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
+		memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
-		dma_memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
+		memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
 	}
 	else
 	{
-		dma_memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
+		memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-		dma_memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
+		memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
 		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
 	}
 	BKPSRAM_Disable();
@@ -849,7 +849,7 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		println("EEPROM buffer error");
 		return false;
 	}
-	dma_memcpy(write_clone, Buffer, size);
+	memcpy(write_clone, Buffer, size);
 	Aligned_CleanDCache_by_Addr((uint32_t *)write_clone, sizeof(write_clone));
 
 	const uint16_t page_size = 256;
@@ -1016,9 +1016,18 @@ static void EEPROM_PowerUp(void)
 
 void BKPSRAM_Enable(void)
 {
-	//__HAL_RCC_BKPRAM_CLK_ENABLE();
+	#ifdef STM32F407xx
+	RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+	RCC->AHB1ENR |= RCC_AHB1ENR_BKPSRAMEN;
+	#endif
+	
 	HAL_PWREx_EnableBkUpReg();
 	HAL_PWR_EnableBkUpAccess();
+	
+	#ifdef STM32F407xx
+	*(__IO uint32_t *) CSR_BRE_BB = (uint32_t) ENABLE;
+	while (!(PWR->CSR & (PWR_FLAG_BRR)));
+	#endif
 }
 
 void BKPSRAM_Disable(void)
