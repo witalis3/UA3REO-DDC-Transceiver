@@ -42,6 +42,7 @@
 // DMA2-2 - send audio processor buffer to codec buffer - B
 // DMA2-4 - fill buffers at 32bit
 // DMA2-5 - draw the fft at 16 bits, increment
+// DMA2-7 - move waterfall down
 
 /* USER CODE END Header */
 
