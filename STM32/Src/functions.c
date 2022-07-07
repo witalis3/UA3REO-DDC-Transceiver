@@ -975,6 +975,7 @@ bool textStartsWith(const char *a, const char *b)
 	return 0;
 }
 
+#if HRDW_HAS_FULL_FFT_BUFFER
 void *alloc_to_wtf(uint32_t size, bool reset)
 {
 	static uint32_t allocated = 0;
@@ -991,3 +992,4 @@ void *alloc_to_wtf(uint32_t size, bool reset)
 	allocated += size;
 	return p;
 }
+#endif

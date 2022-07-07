@@ -14,7 +14,7 @@
 #define HRDW_HAS_WIFI false
 #define HRDW_HAS_USB_IQ false
 #define HRDW_HAS_DUAL_RX false
-#define HRDW_SHORT_FFT_BUFFER true
+#define HRDW_HAS_FULL_FFT_BUFFER false
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 // settings

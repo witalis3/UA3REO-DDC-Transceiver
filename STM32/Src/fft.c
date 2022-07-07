@@ -38,11 +38,10 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
-#if HRDW_SHORT_FFT_BUFFER
-IRAM2 uint16_t print_output_line[MAX_FFT_PRINT_SIZE] = {0}; // buffer with fft/3d fft/wtf print data
+#if HRDW_HAS_FULL_FFT_BUFFER
 IRAM2 uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // buffer with fft/3d fft/wtf print data
 #else
-IRAM2 uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // buffer with fft/3d fft/wtf print data
+IRAM2 uint16_t print_output_line[MAX_FFT_PRINT_SIZE] = {0}; // only line buffer with fft/wtf print data
 #endif
 static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0};				   // charge FFT I and Q buffer
 IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};				   // combined FFT I and Q buffer
@@ -173,7 +172,9 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type);	   // Get FFT color
 static void FFT_fill_color_palette(void);						   // prepare the color palette
 static int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos); // get the position on the FFT for a given frequency
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center);
+#if HRDW_HAS_FULL_FFT_BUFFER
 static void FFT_3DPrintFFT(void);
+#endif
 static float32_t getDBFromFFTAmpl(float32_t ampl);
 static float32_t getFFTAmplFromDB(float32_t ampl);
 
@@ -275,7 +276,11 @@ void FFT_Init(void)
 	uint16_t color = palette_wtf[GET_FFTHeight];
 	if (TRX.FFT_Automatic)
 		color = palette_wtf[(uint32_t)(GET_FFTHeight * 0.9f)];
+	#if HRDW_HAS_FULL_FFT_BUFFER
 	memset16(print_output_buffer, color, sizeof(print_output_buffer) / 2);
+	#else
+	dma_memset(print_output_line, 0, sizeof(print_output_line));
+	#endif
 	dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
 	dma_memset(wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
 	dma_memset(fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
@@ -978,6 +983,8 @@ bool FFT_printFFT(void)
 		bw_rx2_line_end = LCD_WIDTH + 10;
 	}
 
+	#if HRDW_HAS_FULL_FFT_BUFFER
+	// 3D View
 	if (TRX.FFT_3D > 0)
 	{
 		FFT_3DPrintFFT();
@@ -1389,11 +1396,55 @@ bool FFT_printFFT(void)
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_2d_print_height - 1);
 	print_fft_dma_estimated_size = LAYOUT->FFT_PRINT_SIZE * fft_2d_print_height;
 	print_fft_dma_position = 0;
-
+	
 	FFT_afterPrintFFT();
+	
+	#else
+	// Short buffer version
+	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++)
+	{
+		// Background and dBM grid
+		uint16_t background = BG_COLOR;
+		uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
+		
+		bool dbm_grid = false;
+		if (TRX.FFT_Background)
+			background = palette_bg_gradient[fft_y];
+		else
+			background = BG_COLOR;
+
+		if (TRX.FFT_dBmGrid)
+			for (uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL)
+				if (y == fft_y)
+				{
+					background = grid_color;
+					dbm_grid = true;
+				}
+
+		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+		{
+			if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
+			{
+				print_output_line[fft_x] = dbm_grid ? background : palette_bw_bg_colors[fft_y];
+			}
+			else
+				print_output_line[fft_x] = background;
+		}
+		
+		// Lets print line to LCD
+		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fft_y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_y);
+		HAL_DMA_Start(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
+		SLEEPING_DMA_PollForTransfer(&HRDW_LCD_FSMC_COPY_DMA);
+	}
+	
+	FFT_need_fft = true;
+	LCD_busy = false;
+	#endif
+	
 	return true;
 }
 
+#if HRDW_HAS_FULL_FFT_BUFFER
 // 3D mode print
 static void FFT_3DPrintFFT(void)
 {
@@ -1501,10 +1552,12 @@ static void FFT_3DPrintFFT(void)
 	// do after events
 	FFT_afterPrintFFT();
 }
+#endif
 
 // actions after FFT_printFFT
 void FFT_afterPrintFFT(void)
 {
+#if HRDW_HAS_FULL_FFT_BUFFER
 	// continue DMA draw?
 	if (print_fft_dma_estimated_size > 0)
 	{
@@ -1541,6 +1594,7 @@ void FFT_afterPrintFFT(void)
 		print_fft_dma_position = 0;
 #endif
 	}
+#endif
 
 	// calc bandmap
 	if (lastWTFFreq != currentFFTFreq || NeedWTFRedraw)
