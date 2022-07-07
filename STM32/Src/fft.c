@@ -1431,6 +1431,53 @@ bool FFT_printFFT(void)
 				print_output_line[fft_x] = background;
 		}
 		
+		if (TRX.FFT_Style == 1) // gradient
+		{
+			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+			{
+				if (fft_y < (fftHeight - fft_header[fft_x])) continue;
+				
+				if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
+				{
+						print_output_line[fft_x] = palette_bw_fft_colors[fft_y];
+				}
+				else
+				{
+						print_output_line[fft_x] = palette_fft[fft_y];
+				}
+			}
+		}
+
+		if (TRX.FFT_Style == 2) // fill
+		{
+			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+			{
+				if (fft_y < (fftHeight - fft_header[fft_x])) continue;
+				
+				if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
+				{
+					print_output_line[fft_x] = palette_bw_fft_colors[fftHeight / 2];
+				}
+				else
+				{
+					print_output_line[fft_x] = palette_fft[fftHeight / 2];
+				}
+			}
+		}
+
+		if (TRX.FFT_Style >= 3) // dots
+		{
+			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+			{
+				if(fft_y != fftHeight - fft_header[fft_x]) continue;
+				
+				if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
+					print_output_line[fft_x] = palette_bw_fft_colors[fftHeight / 2];
+				else
+					print_output_line[fft_x] = palette_fft[fftHeight / 2];
+			}
+		}
+		
 		// Lets print line to LCD
 		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fft_y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_y);
 		HAL_DMA_Start(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);

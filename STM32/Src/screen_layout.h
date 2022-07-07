@@ -268,9 +268,9 @@ extern "C"
 	#endif
 	#ifdef STM32F407xx
 		#define LAYOUT_THEMES_COUNT 1
-		#define MAX_FFT_HEIGHT 20
-		#define MAX_WTF_HEIGHT 20
-		#define FFT_AND_WTF_HEIGHT 40
+		#define MAX_FFT_HEIGHT 132
+		#define MAX_WTF_HEIGHT 102
+		#define FFT_AND_WTF_HEIGHT 152
 	#endif
 #endif
 #if (defined(LAY_800x480))
