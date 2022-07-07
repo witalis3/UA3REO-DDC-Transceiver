@@ -1,6 +1,8 @@
 #ifndef __USBD_IQ_IF_H__
 #define __USBD_IQ_IF_H__
 
+#if HRDW_HAS_USB_IQ
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -20,6 +22,8 @@ extern "C"
 	void HalfTransfer_CallBack_FS(void);
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif

@@ -268,13 +268,21 @@ extern "C"
     void *pClassDataDEBUG;
     void *pClassDataCAT;
     void *pClassDataAUDIO;
+		#if HRDW_HAS_USB_IQ
 		void *pClassDataIQ;
+		#endif
+		#if HRDW_HAS_SD
     void *pClassDataSTORAGE;
+		#endif
     void *pUserDataDEBUG;
     void *pUserDataCAT;
     void *pUserDataAUDIO;
+		#if HRDW_HAS_USB_IQ
 		void *pUserDataIQ;
+		#endif
+		#if HRDW_HAS_SD
     void *pUserDataSTORAGE;
+		#endif
     void *pData;
   } USBD_HandleTypeDef;
 

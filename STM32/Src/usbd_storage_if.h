@@ -23,6 +23,8 @@
 #ifndef __USBD_STORAGE_IF_H__
 #define __USBD_STORAGE_IF_H__
 
+#if HRDW_HAS_SD
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -123,6 +125,8 @@ extern "C"
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif /* __USBD_STORAGE_IF_H__ */

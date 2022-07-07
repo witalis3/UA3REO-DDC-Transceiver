@@ -2,6 +2,8 @@
 #include "sd.h"
 #include "lcd.h"
 
+#if HRDW_HAS_SD
+
 const int8_t STORAGE_Inquirydata_FS[] = {
 	/* 36 */
 	/* LUN 0 */
@@ -202,3 +204,5 @@ int8_t STORAGE_GetMaxLun_FS(void)
 {
 	return 0;
 }
+
+#endif

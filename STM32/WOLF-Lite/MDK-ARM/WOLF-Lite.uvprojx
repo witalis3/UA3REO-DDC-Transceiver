@@ -1280,36 +1280,6 @@
               <FileType>5</FileType>
               <FilePath>..\..\Src\USBDevice\usbd_ioreq.h</FilePath>
             </File>
-            <File>
-              <FileName>usbd_msc_bot.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\USBDevice\usbd_msc_bot.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_msc_bot.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\USBDevice\usbd_msc_bot.h</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_msc_data.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\USBDevice\usbd_msc_data.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_msc_data.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\USBDevice\usbd_msc_data.h</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_msc_scsi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\USBDevice\usbd_msc_scsi.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_msc_scsi.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\USBDevice\usbd_msc_scsi.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

@@ -3,6 +3,7 @@
 #include "wm8731.h"
 #include "trx_manager.h"
 
+#if HRDW_HAS_USB_IQ
 // extern USBD_HandleTypeDef hUsbDeviceFS;
 
 static int8_t IQ_Init_FS(void);
@@ -50,3 +51,5 @@ static int8_t IQ_DeInit_FS(void)
   return (USBD_OK);
   /* USER CODE END 1 */
 }
+
+#endif
