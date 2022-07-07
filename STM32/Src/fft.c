@@ -1472,6 +1472,65 @@ bool FFT_printFFT(void)
 		}
 		
 		// PRINT WATERFALL
+		if(fft_y >= fftHeight)
+		{
+			uint16_t wtf_y_index = fft_y - fftHeight;
+			
+			// calculate offset
+			float64_t freq_diff = (((float64_t)currentFFTFreq - (float64_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float64_t)fft_zoom;
+			float64_t freq_diff_part = fmodl(freq_diff, 1.0f);
+			int64_t margin_left = 0;
+			if (freq_diff < 0)
+				margin_left = -floorf(freq_diff);
+			if (margin_left > LAYOUT->FFT_PRINT_SIZE)
+				margin_left = LAYOUT->FFT_PRINT_SIZE;
+			int32_t margin_right = 0;
+			if (freq_diff > 0)
+				margin_right = ceilf(freq_diff);
+			if (margin_right > LAYOUT->FFT_PRINT_SIZE)
+				margin_right = LAYOUT->FFT_PRINT_SIZE;
+			if ((margin_left + margin_right) > LAYOUT->FFT_PRINT_SIZE)
+				margin_right = 0;
+			// rounding
+			int32_t body_width = LAYOUT->FFT_PRINT_SIZE - margin_left - margin_right;
+
+			// skip WTF moving
+			if (!TRX.WTF_Moving)
+			{
+				body_width = LAYOUT->FFT_PRINT_SIZE;
+				margin_left = 0;
+				margin_right = 0;
+			}
+
+			// printing
+			if (body_width > 0)
+			{
+				if (margin_left == 0 && margin_right == 0) // print full line
+				{
+					for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
+						if ((wtf_x >= bw_rx1_line_start && wtf_x <= bw_rx1_line_end) || ((int32_t)wtf_x >= bw_rx2_line_start && (int32_t)wtf_x <= bw_rx2_line_end)) // print bw bar
+							print_output_line[wtf_x] = palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+						else
+							print_output_line[wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+				}
+				else if (margin_left > 0)
+				{
+					for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++)
+						if (((margin_left + wtf_x) >= bw_rx1_line_start && (margin_left + wtf_x) <= bw_rx1_line_end) || ((int32_t)(margin_left + wtf_x) >= bw_rx2_line_start && (int32_t)(margin_left + wtf_x) <= bw_rx2_line_end)) // print bw bar
+							print_output_line[margin_left + wtf_x] = palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+						else
+							print_output_line[margin_left + wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+				}
+				if (margin_right > 0)
+				{
+					for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_right); wtf_x++)
+						if ((wtf_x >= bw_rx1_line_start && wtf_x <= bw_rx1_line_end) || ((int32_t)wtf_x >= bw_rx2_line_start && (int32_t)wtf_x <= bw_rx2_line_end)) // print bw bar
+							print_output_line[wtf_x] = palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]];
+						else
+							print_output_line[wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]];
+				}
+			}
+		}
 		//////////////////
 		
 		// Draw grids
@@ -1518,11 +1577,6 @@ bool FFT_printFFT(void)
 		{
 			uint16_t color = palette_fft[fftHeight * 1 / 4];
 			print_output_line[rx1_notch_line_pos] = color;
-		}
-		if (SecondaryVFO->ManualNotchFilter && !TRX_on_TX && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
-		{
-			uint16_t color = palette_fft[fftHeight * 1 / 4];
-			print_output_line[rx2_notch_line_pos] = color;
 		}
 
 		// Draw RX1 center line
