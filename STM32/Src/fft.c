@@ -38,6 +38,12 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len512;
 const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #endif
 
+#if HRDW_SHORT_FFT_BUFFER
+IRAM2 uint16_t print_output_line[MAX_FFT_PRINT_SIZE] = {0}; // buffer with fft/3d fft/wtf print data
+IRAM2 uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // buffer with fft/3d fft/wtf print data
+#else
+IRAM2 uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // buffer with fft/3d fft/wtf print data
+#endif
 static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0};				   // charge FFT I and Q buffer
 IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};				   // combined FFT I and Q buffer
 IRAM2 static float32_t FFTInput_tmp[MAX_FFT_PRINT_SIZE] = {0};				   // temporary buffer for sorting, moving and fft compressing
@@ -54,7 +60,6 @@ static uint16_t palette_bg_gradient[MAX_FFT_HEIGHT + 1] = {0};						// color pal
 static uint16_t palette_bw_fft_colors[MAX_FFT_HEIGHT + 1] = {0};					// color palette with bw highlighted FFT colors
 static uint16_t palette_bw_wtf_colors[MAX_FFT_HEIGHT + 1] = {0};					// color palette with bw highlighted FFT colors
 static uint16_t palette_bw_bg_colors[MAX_FFT_HEIGHT + 1] = {0};						// color palette with bw highlighted background colors
-IRAM2 uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // buffer with fft/3d fft/wtf print data
 SRAM static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // indexed color buffer with wtf
 static uint64_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};								// frequencies for each row of the waterfall
 static uint64_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};							// frequencies for each row of the fft mean buffer
@@ -654,7 +659,7 @@ bool FFT_printFFT(void)
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
 	{
 		HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&indexed_wtf_buffer[tmp - 1], (uint32_t)&indexed_wtf_buffer[tmp], LAYOUT->FFT_PRINT_SIZE  / 4); //32bit dma, 8bit index data
-		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+		SLEEPING_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7);
 	}
 	#endif
 	
