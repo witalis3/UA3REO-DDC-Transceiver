@@ -95,6 +95,7 @@ extern DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream2;
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream5;
+extern DMA_HandleTypeDef hdma_memtomem_dma2_stream7;
 extern DMA_HandleTypeDef hdma_spi3_tx;
 extern DMA_HandleTypeDef hdma_i2s3_ext_rx;
 extern I2S_HandleTypeDef hi2s3;
