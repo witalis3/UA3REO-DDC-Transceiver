@@ -7,9 +7,17 @@
 #include <stdbool.h>
 #include "audio_processor.h"
 
+#ifdef STM32H743xx
+	#define NOISE_REDUCTION_FFT_SIZE 512						 // FFT size for processing in DNR
+	#define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len512 // FFT instance
+#endif
+
+#ifdef STM32F407xx
+	#define NOISE_REDUCTION_FFT_SIZE 256						 // FFT size for processing in DNR
+	#define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len256 // FFT instance
+#endif
+
 #define NOISE_REDUCTION_BLOCK_SIZE 64						 // block size for processing in DNR
-#define NOISE_REDUCTION_FFT_SIZE 512						 // FFT size for processing in DNR
-#define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len512 // FFT instance
 #define NOISE_REDUCTION_FFT_SIZE_HALF (NOISE_REDUCTION_FFT_SIZE / 2)
 #define NOISE_REDUCTION_ALPHA 0.98f // time averaging constant
 #define NOISE_REDUCTION_BETA 0.25f	// frequency averaging constant

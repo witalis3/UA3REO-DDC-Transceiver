@@ -628,7 +628,8 @@ bool FFT_printFFT(void)
 		rx2_line_pos = getFreqPositionOnFFT(SecondaryVFO->Freq, true);
 	}
 
-	// move the waterfall down using DMA
+	#if HRDW_HAS_MDMA
+	// move the waterfall down using MDMA
 	uint8_t *srcAddr = &indexed_wtf_buffer[wtfHeight - 2][LAYOUT->FFT_PRINT_SIZE - 1];
 	uint8_t *destAddr = &indexed_wtf_buffer[wtfHeight - 1][LAYOUT->FFT_PRINT_SIZE - 1];
 	uint8_t *endAddr = &indexed_wtf_buffer[0][0];
@@ -639,17 +640,24 @@ bool FFT_printFFT(void)
 		uint32_t length = estimated;
 		if (length > DMA_MAX_BLOCK)
 			length = DMA_MAX_BLOCK;
-		#if HRDW_HAS_MDMA
+		
 		HAL_MDMA_Start(&HRDW_LCD_WTF_DOWN_MDMA, (uint32_t)srcAddr, (uint32_t)destAddr, length, 1);
 		SLEEPING_MDMA_PollForTransfer(&HRDW_LCD_WTF_DOWN_MDMA);
-		#else
-		println("!!! FIX HRDW_LCD_WTF_DOWN_MDMA");
-		#endif
+	
 		srcAddr -= length;
 		destAddr -= length;
 		estimated -= length;
 	}
 	Aligned_CleanInvalidateDCache_by_Addr(indexed_wtf_buffer, sizeof(indexed_wtf_buffer));
+	#else
+	// move the waterfall down using DMA
+	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
+	{
+		HAL_DMA_Start(&hdma_memtomem_dma2_stream7, (uint32_t)&indexed_wtf_buffer[tmp - 1], (uint32_t)&indexed_wtf_buffer[tmp], LAYOUT->FFT_PRINT_SIZE  / 4); //32bit dma, 8bit index data
+		HAL_DMA_PollForTransfer(&hdma_memtomem_dma2_stream7, HAL_DMA_FULL_TRANSFER, HAL_MAX_DELAY);
+	}
+	#endif
+	
 	for (tmp = wtfHeight - 1; tmp > 0; tmp--)
 		wtf_buffer_freqs[tmp] = wtf_buffer_freqs[tmp - 1];
 
