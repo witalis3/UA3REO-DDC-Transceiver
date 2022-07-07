@@ -1407,25 +1407,16 @@ bool FFT_printFFT(void)
 		uint16_t background = BG_COLOR;
 		uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
 		
-		bool dbm_grid = false;
 		if (TRX.FFT_Background)
 			background = palette_bg_gradient[fft_y];
 		else
 			background = BG_COLOR;
 
-		if (TRX.FFT_dBmGrid)
-			for (uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL)
-				if (y == fft_y)
-				{
-					background = grid_color;
-					dbm_grid = true;
-				}
-
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 		{
 			if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
 			{
-				print_output_line[fft_x] = dbm_grid ? background : palette_bw_bg_colors[fft_y];
+				print_output_line[fft_x] = palette_bw_bg_colors[fft_y];
 			}
 			else
 				print_output_line[fft_x] = background;
@@ -1476,6 +1467,65 @@ bool FFT_printFFT(void)
 				else
 					print_output_line[fft_x] = palette_fft[fftHeight / 2];
 			}
+		}
+		
+		// PRINT WATERFALL
+		//////////////////
+		
+		// Draw grids
+		if (TRX.FFT_FreqGrid == 1 || TRX.FFT_FreqGrid == 2)
+		{
+			for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
+				if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
+					print_output_line[grid_lines_pos[grid_line_index]] = grid_color;
+		}
+
+		// Gauss filter center
+		if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW)
+		{
+			uint16_t color = palette_fft[fftHeight / 2];
+			print_output_line[bw_rx1_line_center] = color;
+		}
+		if (TRX.CW_GaussFilter && SecondaryVFO->Mode == TRX_MODE_CW)
+		{
+			uint16_t color = palette_fft[fftHeight / 2];
+			print_output_line[bw_rx2_line_center] = color;
+		}
+
+		// RTTY center frequency
+		if (CurrentVFO->Mode == TRX_MODE_RTTY)
+		{
+			uint16_t color = palette_fft[fftHeight / 2];
+			uint16_t x1 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
+			uint16_t x2 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
+			print_output_line[x1] = color;
+			print_output_line[x2] = color;
+		}
+
+		// Show manual Notch filter line
+		if (CurrentVFO->ManualNotchFilter && !TRX_on_TX && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
+		{
+			uint16_t color = palette_fft[fftHeight * 1 / 4];
+			print_output_line[rx1_notch_line_pos] = color;
+		}
+		if (SecondaryVFO->ManualNotchFilter && !TRX_on_TX && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
+		{
+			uint16_t color = palette_fft[fftHeight * 1 / 4];
+			print_output_line[rx2_notch_line_pos] = color;
+		}
+
+		// Draw RX1 center line
+		uint16_t color = palette_fft[fftHeight / 2];
+		print_output_line[(LAYOUT->FFT_PRINT_SIZE / 2)] = color;
+
+		// Draw BW lines
+		if (TRX.FFT_BW_Style == 3)
+		{
+			uint16_t color_bw = palette_fft[fftHeight / 2];
+			uint16_t color_center = palette_fft[0];
+			print_output_line[bw_rx1_line_start] = color_bw;
+			print_output_line[bw_rx1_line_end] = color_bw;
+			print_output_line[(LAYOUT->FFT_PRINT_SIZE / 2)] = color_center;
 		}
 		
 		// Lets print line to LCD
