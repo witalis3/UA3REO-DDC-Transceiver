@@ -181,7 +181,6 @@ static void FFT_3DPrintFFT(void);
 #endif
 static float32_t getDBFromFFTAmpl(float32_t ampl);
 static float32_t getFFTAmplFromDB(float32_t ampl);
-static void FFT_ShortBufferPrintFFT(void);
 
 // FFT initialization
 void FFT_PreInit(void)
@@ -1415,9 +1414,10 @@ bool FFT_printFFT(void)
 }
 
 #if !HRDW_HAS_FULL_FFT_BUFFER
-static void FFT_ShortBufferPrintFFT(void)
+void FFT_ShortBufferPrintFFT(void)
 {
 	// Short buffer version
+	static uint32_t current_fft_shortbuffer_pos = 0;
 	uint16_t fftHeight = GET_FFTHeight;
 	uint16_t wtfHeight = GET_WTFHeight;
 	uint_fast8_t decoder_offset = 0;
@@ -1425,7 +1425,9 @@ static void FFT_ShortBufferPrintFFT(void)
 		decoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 	uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
 	
-	for (uint32_t fft_y = 0; fft_y < (fftHeight + wtfHeight - decoder_offset); fft_y++)
+	uint32_t fft_y = current_fft_shortbuffer_pos;
+	//for (uint32_t fft_y = 0; fft_y < (fftHeight + wtfHeight - decoder_offset); fft_y++)
+	if (fft_y < (fftHeight + wtfHeight - decoder_offset))
 	{
 		if(fft_y < fftHeight) // FFT PART
 		{
@@ -1611,11 +1613,14 @@ static void FFT_ShortBufferPrintFFT(void)
 		}
 		
 		// Lets print line to LCD
+		current_fft_shortbuffer_pos++;
 		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fft_y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_y);
-		HAL_DMA_Start(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
-		SLEEPING_DMA_PollForTransfer(&HRDW_LCD_FSMC_COPY_DMA);
+		HAL_DMA_Start_IT(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
+		//SLEEPING_DMA_PollForTransfer(&HRDW_LCD_FSMC_COPY_DMA);
+		return;
 	}
 	
+	current_fft_shortbuffer_pos = 0;
 	FFT_afterPrintFFT();
 }
 #endif
