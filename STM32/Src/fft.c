@@ -68,8 +68,12 @@ static int32_t grid_lines_pos[20] = {-1};											// grid lines positions
 static uint64_t grid_lines_freq[20] = {-1};											// grid lines frequencies
 static int32_t rx2_line_pos = -1;													// secondary receiver position on fft
 static int32_t bw_rx1_line_start = 0;												// BW bar params RX1
+static int32_t bw_rx1_line_center = 0;
+static int32_t rx1_notch_line_pos = 0;
 static int32_t bw_rx1_line_end = 0;													// BW bar params RX1
 static int32_t bw_rx2_line_start = 0;												// BW bar params RX2
+static int32_t bw_rx2_line_center = 0;
+static int32_t rx2_notch_line_pos = 0;
 static int32_t bw_rx2_line_end = 0;													// BW bar params RX2
 static float32_t window_multipliers[FFT_SIZE] = {0};								// coefficients of the selected window function
 static float32_t hz_in_pixel = 1.0f;												// current FFT density value
@@ -177,6 +181,7 @@ static void FFT_3DPrintFFT(void);
 #endif
 static float32_t getDBFromFFTAmpl(float32_t ampl);
 static float32_t getFFTAmplFromDB(float32_t ampl);
+static void FFT_ShortBufferPrintFFT(void);
 
 // FFT initialization
 void FFT_PreInit(void)
@@ -879,8 +884,8 @@ bool FFT_printFFT(void)
 		curwidth = CurrentVFO->LPF_TX_Filter_Width;
 	int32_t bw_rx1_line_width = 0;
 	int32_t bw_rx2_line_width = 0;
-	int32_t rx1_notch_line_pos = 100;
-	int32_t rx2_notch_line_pos = 100;
+	rx1_notch_line_pos = 100;
+	rx2_notch_line_pos = 100;
 
 	switch (CurrentVFO->Mode)
 	{
@@ -962,8 +967,8 @@ bool FFT_printFFT(void)
 	default:
 		break;
 	}
-	int32_t bw_rx1_line_center = bw_rx1_line_start + bw_rx1_line_width / 2;
-	int32_t bw_rx2_line_center = bw_rx2_line_start + bw_rx2_line_width / 2;
+	bw_rx1_line_center = bw_rx1_line_start + bw_rx1_line_width / 2;
+	bw_rx2_line_center = bw_rx2_line_start + bw_rx2_line_width / 2;
 	bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
 	bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
 	if (TRX.FFT_Lens) // lens correction
@@ -1397,32 +1402,49 @@ bool FFT_printFFT(void)
 	print_fft_dma_estimated_size = LAYOUT->FFT_PRINT_SIZE * fft_2d_print_height;
 	print_fft_dma_position = 0;
 	
+	FFT_afterPrintFFT();
+	
 	#else
 	
 	// Short buffer version
+	FFT_ShortBufferPrintFFT();
+	
+	#endif
+	
+	return true;
+}
+
+#if !HRDW_HAS_FULL_FFT_BUFFER
+static void FFT_ShortBufferPrintFFT(void)
+{
+	// Short buffer version
+	uint16_t fftHeight = GET_FFTHeight;
+	uint16_t wtfHeight = GET_WTFHeight;
+	uint_fast8_t decoder_offset = 0;
+	if (NeedProcessDecoder)
+		decoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
+	uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
+	
 	for (uint32_t fft_y = 0; fft_y < (fftHeight + wtfHeight - decoder_offset); fft_y++)
 	{
-		// Background and dBM grid
-		uint16_t background = BG_COLOR;
-		uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
-		
-		if (TRX.FFT_Background)
-			background = palette_bg_gradient[fft_y];
-		else
-			background = BG_COLOR;
-
-		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
-		{
-			if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
-			{
-				print_output_line[fft_x] = palette_bw_bg_colors[fft_y];
-			}
-			else
-				print_output_line[fft_x] = background;
-		}
-		
 		if(fft_y < fftHeight) // FFT PART
 		{
+			// Background and dBM grid
+			uint16_t background = BG_COLOR;
+			
+			if (TRX.FFT_Background)
+				background = palette_bg_gradient[fft_y];
+
+			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+			{
+				if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
+				{
+					print_output_line[fft_x] = palette_bw_bg_colors[fft_y];
+				}
+				else
+					print_output_line[fft_x] = background;
+			}
+		
 			if (TRX.FFT_Style == 1) // gradient
 			{
 				for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
@@ -1556,11 +1578,6 @@ bool FFT_printFFT(void)
 			uint16_t color = palette_fft[fftHeight / 2];
 			print_output_line[bw_rx1_line_center] = color;
 		}
-		if (TRX.CW_GaussFilter && SecondaryVFO->Mode == TRX_MODE_CW)
-		{
-			uint16_t color = palette_fft[fftHeight / 2];
-			print_output_line[bw_rx2_line_center] = color;
-		}
 
 		// RTTY center frequency
 		if (CurrentVFO->Mode == TRX_MODE_RTTY)
@@ -1598,12 +1615,10 @@ bool FFT_printFFT(void)
 		HAL_DMA_Start(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
 		SLEEPING_DMA_PollForTransfer(&HRDW_LCD_FSMC_COPY_DMA);
 	}
-	#endif
 	
 	FFT_afterPrintFFT();
-	
-	return true;
 }
+#endif
 
 #if HRDW_HAS_FULL_FFT_BUFFER
 // 3D mode print
