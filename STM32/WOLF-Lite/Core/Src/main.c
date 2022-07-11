@@ -28,6 +28,7 @@
 #include "fft.h"
 #include "fpga.h"
 #include "front_unit.h"
+#include "rf_unit.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -186,30 +187,23 @@ int main(void)
   FRONTPANEL_Init();
 	
 	println("[OK] Settings loading");
-  //if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (MENU)
-    //LoadSettings(true);
-  //else
+  if (PERIPH_FrontPanel_Buttons[12].state) //soft reset (MENU)
+    LoadSettings(true);
+  else
     LoadSettings(false);
-	TRX.Debug_Type = TRX_DEBUG_SYSTEM;
 	
 	//DFU bootloader
-#if defined(FRONTPANEL_WF_100D)
-	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[10].state)
-#else
-	if (TRX.NeedGoToBootloader)
-#endif
+	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[5].state)
 	{
-		//TRX.NeedGoToBootloader = false;
-		//SaveSettings();
+		TRX.NeedGoToBootloader = false;
+		SaveSettings();
     //JumpToBootloader();
 	}
 	
 	println("[OK] Calibration loading");
-#ifdef FRONTPANEL_SMALL_V1
-  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
+  if (PERIPH_FrontPanel_Buttons[12].state && PERIPH_FrontPanel_Buttons[7].state) //Very hard reset (MENU+F1)
     LoadCalibration(true);
   else
-#endif
     LoadCalibration(false);
 	
 	TRX.Locked = false;
@@ -241,7 +235,7 @@ int main(void)
   RTC_Calibration();
 
   println("[OK] RF-Unit init");
-  //RF_UNIT_UpdateState(false);
+  RF_UNIT_UpdateState(false);
 	
   println("[OK] FFT/Waterfall & ADC & TIM4 init");
   FFT_PreInit();
