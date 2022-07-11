@@ -300,18 +300,38 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		return;
 	}
 
-	if (TRX.ENC2_func_mode_idx == 1 && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
+	if (TRX.ENC2_func_mode_idx == 3 && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
 		TRX.ENC2_func_mode_idx = 0;
-	if (TRX.ENC2_func_mode_idx == 2 && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
+	if (TRX.ENC2_func_mode_idx == 4 && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
 		TRX.ENC2_func_mode_idx = 0;
-	if (TRX.ENC2_func_mode_idx == 3 && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
+	if (TRX.ENC2_func_mode_idx == 5 && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
 		TRX.ENC2_func_mode_idx = 0;
-	if (TRX.ENC2_func_mode_idx == 4 && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to NOTCH tune
+	if (TRX.ENC2_func_mode_idx == 6 && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to NOTCH tune
 		TRX.ENC2_func_mode_idx = 0;
-	if (TRX.ENC2_func_mode_idx == 5 && !CurrentVFO->SQL) // nothing to NOTCH tune
+	if (TRX.ENC2_func_mode_idx == 7 && !CurrentVFO->SQL) // nothing to NOTCH tune
 		TRX.ENC2_func_mode_idx = 0;
 
-	if (TRX.ENC2_func_mode_idx == 0)
+	if (TRX.ENC2_func_mode_idx == 0) //pager
+	{
+		if(direction < 0)
+			FRONTPANEL_BUTTONHANDLER_LEFT_ARR(0);
+		if(direction > 0)
+			FRONTPANEL_BUTTONHANDLER_RIGHT_ARR(0);
+	}
+	if (TRX.ENC2_func_mode_idx == 1) //volume
+	{
+		//ENC2 Volume control
+		if(direction < 0 && TRX.Volume < 5)
+			TRX.Volume = 0;
+		if(direction > 0 || TRX.Volume >= 5)
+			TRX.Volume += direction * 5;
+		if (TRX.Volume > 100)
+			TRX.Volume = 100;
+		char sbuff[32] = {0};
+		sprintf(sbuff, "Vol: %u%%", TRX.Volume);
+		LCD_showTooltip(sbuff);
+	}
+	if (TRX.ENC2_func_mode_idx == 2) //fast step
 	{
 		float64_t newfreq = (float64_t)CurrentVFO->Freq;
 		float64_t step = 0;
@@ -367,7 +387,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 
-	if (TRX.ENC2_func_mode_idx == 1)
+	if (TRX.ENC2_func_mode_idx == 3)
 	{
 		// ENC2 Func mode (WPM)
 		TRX.CW_KEYER_WPM += direction;
@@ -380,7 +400,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		LCD_showTooltip(sbuff);
 	}
 
-	if (TRX.ENC2_func_mode_idx == 2) // Fine RIT/XIT
+	if (TRX.ENC2_func_mode_idx == 4) // Fine RIT/XIT
 	{
 		if (TRX.RIT_Enabled && TRX.FineRITTune)
 		{
@@ -401,7 +421,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		}
 	}
 
-	if (TRX.ENC2_func_mode_idx == 3) // Manual Notch
+	if (TRX.ENC2_func_mode_idx == 5) // Manual Notch
 	{
 		float64_t step = 50;
 		if (CurrentVFO->Mode == TRX_MODE_CW)
@@ -427,7 +447,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		}
 	}
 	
-	if (TRX.ENC2_func_mode_idx == 4) // LPF
+	if (TRX.ENC2_func_mode_idx == 6) // LPF
 	{
 		if (!TRX_on_TX) {
 			if (CurrentVFO->Mode == TRX_MODE_CW)
@@ -454,7 +474,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		}
 	}
 	
-	if (TRX.ENC2_func_mode_idx == 5) // SQL
+	if (TRX.ENC2_func_mode_idx == 7) // SQL
 	{
 		CurrentVFO->FM_SQL_threshold_dbm += direction * 1;
 		TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
@@ -536,31 +556,35 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 	{
 		TRX.ENC2_func_mode_idx++; // enc2 rotary mode
 
-		if (TRX.ENC2_func_mode_idx == 1 && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
+		if (TRX.ENC2_func_mode_idx == 3 && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
 			TRX.ENC2_func_mode_idx++;
-		if (TRX.ENC2_func_mode_idx == 2 && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
+		if (TRX.ENC2_func_mode_idx == 4 && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
 			TRX.ENC2_func_mode_idx++;
-		if (TRX.ENC2_func_mode_idx == 3 && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
+		if (TRX.ENC2_func_mode_idx == 5 && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
 			TRX.ENC2_func_mode_idx++;
-		if (TRX.ENC2_func_mode_idx == 4 && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to NOTCH tune
+		if (TRX.ENC2_func_mode_idx == 6 && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to NOTCH tune
 			TRX.ENC2_func_mode_idx++;
-		if (TRX.ENC2_func_mode_idx == 5 && !CurrentVFO->SQL) // nothing to NOTCH tune
+		if (TRX.ENC2_func_mode_idx == 7 && !CurrentVFO->SQL) // nothing to NOTCH tune
 			TRX.ENC2_func_mode_idx++;
 
-		if (TRX.ENC2_func_mode_idx > 5)
+		if (TRX.ENC2_func_mode_idx > 7)
 			TRX.ENC2_func_mode_idx = 0;
 
 		if (TRX.ENC2_func_mode_idx == 0)
-			LCD_showTooltip("FAST STEP");
+			LCD_showTooltip("BUTTONS");
 		if (TRX.ENC2_func_mode_idx == 1)
-			LCD_showTooltip("SET WPM");
+			LCD_showTooltip("VOLUME");
 		if (TRX.ENC2_func_mode_idx == 2)
-			LCD_showTooltip("SET RIT");
+			LCD_showTooltip("FAST STEP");
 		if (TRX.ENC2_func_mode_idx == 3)
-			LCD_showTooltip("SET NOTCH");
+			LCD_showTooltip("SET WPM");
 		if (TRX.ENC2_func_mode_idx == 4)
-			LCD_showTooltip("SET LPF");
+			LCD_showTooltip("SET RIT");
 		if (TRX.ENC2_func_mode_idx == 5)
+			LCD_showTooltip("SET NOTCH");
+		if (TRX.ENC2_func_mode_idx == 6)
+			LCD_showTooltip("SET LPF");
+		if (TRX.ENC2_func_mode_idx == 7)
 			LCD_showTooltip("SET SQL");
 	}
 	else
@@ -1523,7 +1547,7 @@ static void FRONTPANEL_BUTTONHANDLER_RIT(uint32_t parameter)
 {
 	TRX.RIT_Enabled = !TRX.RIT_Enabled;
 	if(TRX.RIT_Enabled) 
-		TRX.ENC2_func_mode_idx = 2;
+		TRX.ENC2_func_mode_idx = 4;
 	TRX.XIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
 	TRX_RIT = 0;
@@ -1538,7 +1562,7 @@ static void FRONTPANEL_BUTTONHANDLER_XIT(uint32_t parameter)
 {
 	TRX.XIT_Enabled = !TRX.XIT_Enabled;
 	if(TRX.XIT_Enabled) 
-		TRX.ENC2_func_mode_idx = 2;
+		TRX.ENC2_func_mode_idx = 4;
 	TRX.RIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
 	TRX_XIT = 0;
