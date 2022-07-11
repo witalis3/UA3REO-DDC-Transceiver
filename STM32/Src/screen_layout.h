@@ -239,11 +239,11 @@ extern "C"
 		const uint16_t BW_TRAPEZ_POS_Y;
 		const uint16_t BW_TRAPEZ_HEIGHT;
 		const uint16_t BW_TRAPEZ_WIDTH;
-#if (defined(LAY_800x480))
 		// Touch buttons layout
 		const uint16_t BUTTON_PADDING;
 		const float32_t BUTTON_LIGHTER_WIDTH;
 		const uint16_t BUTTON_LIGHTER_HEIGHT;
+#if (defined(LAY_800x480))
 		// Windows
 		const uint16_t WINDOWS_BUTTON_WIDTH;
 		const uint16_t WINDOWS_BUTTON_HEIGHT;
@@ -260,14 +260,13 @@ extern "C"
 #endif
 #if (defined(LAY_480x320))
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
-	#ifdef STM32H743xx
-		#define LAYOUT_THEMES_COUNT 2
-		#define MAX_FFT_HEIGHT 132
-		#define MAX_WTF_HEIGHT 102
-		#define FFT_AND_WTF_HEIGHT 152
-	#endif
-	#ifdef STM32F407xx
+	#ifdef FRONTPANEL_LITE
 		#define LAYOUT_THEMES_COUNT 1
+		#define MAX_FFT_HEIGHT 104
+		#define MAX_WTF_HEIGHT 104
+		#define FFT_AND_WTF_HEIGHT 130
+	#else
+		#define LAYOUT_THEMES_COUNT 2
 		#define MAX_FFT_HEIGHT 132
 		#define MAX_WTF_HEIGHT 102
 		#define FFT_AND_WTF_HEIGHT 152

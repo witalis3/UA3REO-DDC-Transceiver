@@ -39,15 +39,7 @@ static uint64_t LCD_last_showed_freq = 0;
 static uint16_t LCD_last_showed_freq_mhz = 9999;
 static uint16_t LCD_last_showed_freq_khz = 9999;
 static uint16_t LCD_last_showed_freq_hz = 9999;
-#if (defined(LAY_800x480))
-static char LCD_freq_string_hz_B[6] = {0};
-static char LCD_freq_string_khz_B[6] = {0};
-static char LCD_freq_string_mhz_B[6] = {0};
-static uint64_t LCD_last_showed_freq_B = 0;
-static uint16_t LCD_last_showed_freq_mhz_B = 9999;
-static uint16_t LCD_last_showed_freq_khz_B = 9999;
-static uint16_t LCD_last_showed_freq_hz_B = 9999;
-#endif
+
 static uint64_t manualFreqEnter = 0;
 static bool LCD_screenKeyboardOpened = false;
 static void (*LCD_keyboardHandler)(uint32_t parameter) = NULL;
@@ -68,9 +60,6 @@ static bool Tooltip_first_draw = true;
 static char Tooltip_string[64] = {0};
 static bool LCD_showInfo_opened = false;
 
-static TouchpadButton_handler TouchpadButton_handlers[64] = {0};
-static uint8_t TouchpadButton_handlers_count = 0;
-
 static void printInfoSmall(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
 static void LCD_displayFreqInfo(bool redraw);
@@ -85,9 +74,7 @@ static void LCD_showBWWindow(void);
 static void LCD_showATTWindow(uint32_t parameter);
 static void LCD_ManualFreqButtonHandler(uint32_t parameter);
 static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter);
-#if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, bool in_window, uint32_t parameter, void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color);
-#endif
 
 void LCD_Init(void)
 {
@@ -133,32 +120,6 @@ static void LCD_displayTopButtons(bool redraw)
 		LCDDriver_Fill_RectWH(LAYOUT->TOPBUTTONS_X1, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_X2, LAYOUT->TOPBUTTONS_Y2, BG_COLOR);
 
 // display information about the operation of the transceiver
-#if (defined(LAY_800x480))
-	printButton(LAYOUT->TOPBUTTONS_PRE_X, LAYOUT->TOPBUTTONS_PRE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "PRE", TRX.LNA, true, false, 0, FRONTPANEL_BUTTONHANDLER_PRE, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	char buff[64] = {0};
-	if(TRX.ATT_DB >= 1.0f)
-		sprintf(buff, "ATT%d", (uint8_t)TRX.ATT_DB);
-	else
-		sprintf(buff, "ATT");
-	printButton(LAYOUT->TOPBUTTONS_ATT_X, LAYOUT->TOPBUTTONS_ATT_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, buff, (TRX.ATT && TRX.ATT_DB >= 1.0f), true, false, 0, FRONTPANEL_BUTTONHANDLER_ATT, LCD_showATTWindow, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->TOPBUTTONS_PGA_X, LAYOUT->TOPBUTTONS_PGA_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "PGA", TRX.ADC_PGA, true, false, 0, FRONTPANEL_BUTTONHANDLER_PGA_ONLY, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->TOPBUTTONS_DRV_X, LAYOUT->TOPBUTTONS_DRV_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DRV", TRX.ADC_Driver, true, false, 0, FRONTPANEL_BUTTONHANDLER_DRV_ONLY, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->TOPBUTTONS_FAST_X, LAYOUT->TOPBUTTONS_FAST_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", TRX.Fast, true, false, 0, FRONTPANEL_BUTTONHANDLER_FAST, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->TOPBUTTONS_AGC_X, LAYOUT->TOPBUTTONS_AGC_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "AGC", CurrentVFO->AGC, true, false, 0, FRONTPANEL_BUTTONHANDLER_AGC, FRONTPANEL_BUTTONHANDLER_AGC_SPEED, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	if (CurrentVFO->DNR_Type == 1)
-		printButton(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR1", true, true, false, 0, FRONTPANEL_BUTTONHANDLER_DNR, FRONTPANEL_BUTTONHANDLER_DNR_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	else if (CurrentVFO->DNR_Type == 2)
-		printButton(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR2", true, true, false, 0, FRONTPANEL_BUTTONHANDLER_DNR, FRONTPANEL_BUTTONHANDLER_DNR_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	else
-		printButton(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", false, true, false, 0, FRONTPANEL_BUTTONHANDLER_DNR, FRONTPANEL_BUTTONHANDLER_DNR_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->TOPBUTTONS_NB_X, LAYOUT->TOPBUTTONS_NB_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "NB", TRX.NOISE_BLANKER, true, false, 0, FRONTPANEL_BUTTONHANDLER_NB, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->TOPBUTTONS_NOTCH_X, LAYOUT->TOPBUTTONS_NOTCH_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "NOTCH", (CurrentVFO->AutoNotchFilter || CurrentVFO->ManualNotchFilter), true, false, 0, FRONTPANEL_BUTTONHANDLER_NOTCH, FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->TOPBUTTONS_SQL_X, LAYOUT->TOPBUTTONS_SQL_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "SQL", CurrentVFO->SQL, true, false, 0, FRONTPANEL_BUTTONHANDLER_SQL, FRONTPANEL_BUTTONHANDLER_SQUELCH, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	if (TRX_AFAmp_Mute)
-		printButton(LAYOUT->TOPBUTTONS_MUTE_X, LAYOUT->TOPBUTTONS_MUTE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "MAMP", true, true, false, 0, FRONTPANEL_BUTTONHANDLER_MUTE, FRONTPANEL_BUTTONHANDLER_MUTE_AFAMP, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT);
-	else
-		printButton(LAYOUT->TOPBUTTONS_MUTE_X, LAYOUT->TOPBUTTONS_MUTE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "MUTE", TRX_Mute, true, false, 0, FRONTPANEL_BUTTONHANDLER_MUTE, FRONTPANEL_BUTTONHANDLER_MUTE_AFAMP, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT);
-#else
 	printInfo(LAYOUT->TOPBUTTONS_PRE_X, LAYOUT->TOPBUTTONS_PRE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "PRE", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, TRX.LNA);
 	char buff[64] = {0};
 	if(TRX.ATT_DB >= 1.0f)
@@ -179,7 +140,6 @@ static void LCD_displayTopButtons(bool redraw)
 	printInfo(LAYOUT->TOPBUTTONS_NB_X, LAYOUT->TOPBUTTONS_NB_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "NB", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, TRX.NOISE_BLANKER);
 	printInfo(LAYOUT->TOPBUTTONS_MUTE_X, LAYOUT->TOPBUTTONS_MUTE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "MUTE", COLOR->BUTTON_BACKGROUND, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT, TRX_Mute);
 	printInfo(LAYOUT->TOPBUTTONS_LOCK_X, LAYOUT->TOPBUTTONS_LOCK_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "LOCK", COLOR->BUTTON_BACKGROUND, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT, TRX.Locked);
-#endif
 
 	LCD_UpdateQuery.TopButtons = false;
 	if (redraw)
@@ -199,20 +159,15 @@ static void LCD_displayBottomButtons(bool redraw)
 	}
 	LCD_busy = true;
 
-#if (defined(LAY_800x480))
 	if (redraw)
 		LCDDriver_Fill_RectWH(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LCD_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, BG_COLOR);
-	TouchpadButton_handlers_count = 0;
+	
 	uint16_t curr_x = 0;
-	printButton(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<-", true, false, false, 0, FRONTPANEL_BUTTONHANDLER_LEFT_ARR, FRONTPANEL_BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	curr_x += LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH;
 	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++)
 	{
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, true, false, false, 0, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].holdHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 		curr_x += LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH;
 	}
-	printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "->", true, false, false, 0, FRONTPANEL_BUTTONHANDLER_RIGHT_ARR, FRONTPANEL_BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-#endif
 
 	LCD_UpdateQuery.BottomButtons = false;
 	if (redraw)
@@ -224,11 +179,7 @@ static void LCD_displayFreqInfo(bool redraw)
 { // display the frequency on the screen
 	if (LCD_systemMenuOpened || LCD_window.opened)
 		return;
-	if (!redraw && (LCD_last_showed_freq == CurrentVFO->Freq)
-#if (defined(LAY_800x480))
-		&& (LCD_last_showed_freq_B == SecondaryVFO->Freq)
-#endif
-	)
+	if (!redraw && (LCD_last_showed_freq == CurrentVFO->Freq))
 		return;
 	if (LCD_busy)
 	{
@@ -240,9 +191,6 @@ static void LCD_displayFreqInfo(bool redraw)
 	LCD_busy = true;
 
 	uint64_t display_freq = CurrentVFO->Freq;
-#if (defined(LAY_800x480))
-	display_freq = TRX.VFO_A.Freq;
-#endif
 	if (TRX.Custom_Transverter_Enabled)
 		display_freq += (uint64_t)TRX.Transverter_Offset_Mhz * 1000 * 1000;
 	if (TRX_on_TX && !TRX.selected_vfo)
@@ -326,100 +274,11 @@ static void LCD_displayFreqInfo(bool redraw)
 		LCD_last_showed_freq_hz = hz;
 	}
 
-#if (defined(LAY_800x480))
-	display_freq = TRX.VFO_B.Freq;
-	if (TRX.Custom_Transverter_Enabled)
-		display_freq += (uint64_t)TRX.Transverter_Offset_Mhz * 1000 * 1000;
-	if (TRX_on_TX && TRX.selected_vfo)
-		display_freq += TRX_XIT;
-
-	LCD_last_showed_freq_B = display_freq;
-	uint16_t hz_B = (LCD_last_showed_freq_B % 1000);
-	uint16_t khz_B = ((LCD_last_showed_freq_B / 1000) % 1000);
-	uint16_t mhz_B = ((LCD_last_showed_freq_B / 1000000) % 1000);
-	uint16_t ghz_B = ((LCD_last_showed_freq_B / 1000000000) % 1000);
-	if (display_freq >= 1000000000) //>= 1GHZ
-	{
-		hz_B = khz_B;
-		khz_B = mhz_B;
-		mhz_B = ghz_B;
-	}
-
-	uint16_t mhz_x_offset_B = 0;
-	if (mhz_B >= 100)
-		mhz_x_offset_B = LAYOUT->FREQ_B_X_OFFSET_100;
-	else if (mhz_B >= 10)
-		mhz_x_offset_B = LAYOUT->FREQ_B_X_OFFSET_10;
-	else
-		mhz_x_offset_B = LAYOUT->FREQ_B_X_OFFSET_1;
-
-	if (redraw)
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_B_LEFT_MARGIN, LAYOUT->FREQ_B_Y_TOP, LCD_WIDTH - LAYOUT->FREQ_B_LEFT_MARGIN - LAYOUT->FREQ_B_RIGHT_MARGIN, LAYOUT->FREQ_B_BLOCK_HEIGHT, BG_COLOR);
-
-	if ((mhz_x_offset_B - LAYOUT->FREQ_B_LEFT_MARGIN) > 0)
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_B_LEFT_MARGIN, LAYOUT->FREQ_B_Y_TOP, mhz_x_offset_B - LAYOUT->FREQ_B_LEFT_MARGIN, LAYOUT->FREQ_B_BLOCK_HEIGHT, BG_COLOR);
-
-	// add spaces to output the frequency
-	sprintf(LCD_freq_string_hz_B, "%d", hz_B);
-	sprintf(LCD_freq_string_khz_B, "%d", khz_B);
-	sprintf(LCD_freq_string_mhz_B, "%d", mhz_B);
-
-	if (redraw || (LCD_last_showed_freq_mhz_B != mhz_B))
-	{
-		LCDDriver_printTextFont(LCD_freq_string_mhz_B, mhz_x_offset_B, LAYOUT->FREQ_B_Y_BASELINE, TRX.selected_vfo ? COLOR->FREQ_B_MHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_B_FONT);
-		LCD_last_showed_freq_mhz_B = mhz_B;
-	}
-
-	if (redraw || (LCD_last_showed_freq_khz_B != khz_B))
-	{
-		addSymbols(buff, LCD_freq_string_khz_B, 3, "0", false);
-		LCDDriver_printTextFont(buff, LAYOUT->FREQ_B_X_OFFSET_KHZ, LAYOUT->FREQ_B_Y_BASELINE, TRX.selected_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_B_FONT);
-		LCD_last_showed_freq_khz_B = khz_B;
-	}
-	if (redraw || (LCD_last_showed_freq_hz_B != hz_B) || TRX.ChannelMode)
-	{
-		addSymbols(buff, LCD_freq_string_hz_B, 3, "0", false);
-		int_fast8_t band = -1;
-		int_fast8_t channel = -1;
-		if (TRX.ChannelMode)
-		{
-			band = getBandFromFreq(LCD_last_showed_freq_B, false);
-			if (TRX.selected_vfo)
-				channel = getChannelbyFreq(LCD_last_showed_freq_B, false);
-			else
-				channel = getChannelbyFreq(LCD_last_showed_freq_B, true);
-		}
-		if (TRX.ChannelMode && band >= 0 && BANDS[band].channelsCount > 0)
-		{
-			if (band != -1 && channel != -1 && strlen((char *)BANDS[band].channels[channel].subname) > 0)
-				sprintf(buff, "%.2s", (char *)BANDS[band].channels[channel].subname);
-			else
-				sprintf(buff, "CH");
-			addSymbols(buff, buff, 2, " ", false);
-			LCDDriver_printText(buff, LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL - RASTR_FONT_H - 3, TRX.selected_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, 1);
-			
-			if (band != -1 && channel != -1)
-				sprintf(buff, "%d", BANDS[band].channels[channel].number);
-			else
-				sprintf(buff, "-");
-			addSymbols(buff, buff, 2, " ", true);
-			LCDDriver_printTextFont(buff, LAYOUT->FREQ_B_X_OFFSET_HZ + 2 + RASTR_FONT_W * 1 * 2, LAYOUT->FREQ_B_Y_BASELINE_SMALL, TRX.selected_vfo ? COLOR->STATUS_MODE : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_CH_B_FONT);
-		}
-		else
-			LCDDriver_printTextFont(buff, LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL, TRX.selected_vfo ? COLOR->FREQ_B_HZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_B_SMALL_FONT);
-		LCD_last_showed_freq_hz_B = hz_B;
-	}
-#endif
-
 	if (redraw)
 	{
 		// Frequency delimiters
 		LCDDriver_printTextFont(".", LAYOUT->FREQ_DELIMITER_X1_OFFSET, LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET, !TRX.selected_vfo ? COLOR->FREQ_KHZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, LAYOUT->FREQ_FONT);
 		LCDDriver_printTextFont(".", LAYOUT->FREQ_DELIMITER_X2_OFFSET, LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, LAYOUT->FREQ_FONT);
-#if (defined(LAY_800x480))
-		LCDDriver_printTextFont(".", LAYOUT->FREQ_B_DELIMITER_X1_OFFSET, LAYOUT->FREQ_B_Y_BASELINE + LAYOUT->FREQ_B_DELIMITER_Y_OFFSET, TRX.selected_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_B_FONT);
-		LCDDriver_printTextFont(".", LAYOUT->FREQ_B_DELIMITER_X2_OFFSET, LAYOUT->FREQ_B_Y_BASELINE + LAYOUT->FREQ_B_DELIMITER_Y_OFFSET, TRX.selected_vfo ? COLOR->FREQ_B_HZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, LAYOUT->FREQ_B_FONT);
-#endif
 	}
 
 	NeedSaveSettings = true;
@@ -546,12 +405,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	}
 
 	// Mode indicator
-#if (defined(LAY_800x480))
-	printInfo(LAYOUT->STATUS_MODE_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), LAYOUT->STATUS_MODE_BLOCK_WIDTH, LAYOUT->STATUS_MODE_BLOCK_HEIGHT, (char *)MODE_DESCR[TRX.VFO_A.Mode], BG_COLOR, COLOR->STATUS_MODE, COLOR->STATUS_MODE, true);
-	printInfoSmall(LAYOUT->STATUS_MODE_B_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET), LAYOUT->STATUS_MODE_BLOCK_WIDTH, LAYOUT->STATUS_MODE_BLOCK_HEIGHT, (char *)MODE_DESCR[TRX.VFO_B.Mode], BG_COLOR, COLOR->STATUS_MODE, COLOR->STATUS_MODE, true);
-#else
 	printInfo(LAYOUT->STATUS_MODE_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), LAYOUT->STATUS_MODE_BLOCK_WIDTH, LAYOUT->STATUS_MODE_BLOCK_HEIGHT, (char *)MODE_DESCR[CurrentVFO->Mode], BG_COLOR, COLOR->STATUS_MODE, COLOR->STATUS_MODE, true);
-#endif
 	// Redraw TextBar
 	if (NeedProcessDecoder)
 	{
@@ -1174,12 +1028,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	}
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_RIT_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_RIT_Y_OFFSET, COLOR->STATUS_LABEL_RIT, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-// THERMAL
-#if (defined(LAY_800x480))
-	sprintf(buff, "PA:%02d^oC MB:%02d^oC", (int16_t)TRX_RF_Temperature, (int16_t)TRX_STM32_TEMPERATURE);
-#else
-	sprintf(buff, "PA:%02d^o MB:%02d^o", (int16_t)TRX_RF_Temperature, (int16_t)TRX_STM32_TEMPERATURE);
-#endif
+	// THERMAL
+	sprintf(buff, "CP:%02d%% MB:%02d^o", (uint32_t)CPU_LOAD.Load, (int16_t)TRX_STM32_TEMPERATURE);
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_THERM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_THERM_Y_OFFSET, COLOR->STATUS_LABEL_THERM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	// NOTCH
@@ -1204,24 +1054,6 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	sprintf(buff, "%dkHz x%d", FFT_current_spectrum_width_hz / 1000, fft_zoom);
 	addSymbols(buff, buff, 10, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-
-#if (defined(LAY_800x480))
-	// CPU
-	sprintf(buff, "CPU:%d%% FPS:%d  ", (uint32_t)CPU_LOAD.Load, FFT_FPS_Last);
-	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_CPU_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_CPU_Y_OFFSET, COLOR->STATUS_LABEL_THERM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	// AUTOGAIN
-	LCDDriver_printText("AUTOGAIN", LAYOUT->STATUS_LABEL_AUTOGAIN_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_AUTOGAIN_Y_OFFSET, TRX.AutoGain ? COLOR->STATUS_LABEL_ACTIVE : COLOR->STATUS_LABEL_INACTIVE, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	// LOCK
-	LCDDriver_printText("LOCK", LAYOUT->STATUS_LABEL_LOCK_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_LOCK_Y_OFFSET, TRX.Locked ? COLOR_RED : COLOR->STATUS_LABEL_INACTIVE, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-#endif
-
-	#if HRDW_HAS_SD
-	// SD REC
-	if (SD_RecordInProcess)
-		LCDDriver_printText("REC", LAYOUT->STATUS_LABEL_REC_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_REC_Y_OFFSET, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	else
-		LCDDriver_printText("   ", LAYOUT->STATUS_LABEL_REC_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_REC_Y_OFFSET, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	#endif
 
 	// ERRORS LABELS
 	LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
@@ -1317,7 +1149,6 @@ static void LCD_displayTextBar(void)
 
 void LCD_redraw(bool do_now)
 {
-	TouchpadButton_handlers_count = 0;
 	LCD_UpdateQuery.Background = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
 	LCD_UpdateQuery.StatusInfoBarRedraw = true;
@@ -1409,7 +1240,6 @@ static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, c
 	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2 - 1, active ? text_color : inactive_color, back_color, (GFXfont *)&FreeSans9pt7b);
 }
 
-#if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, bool in_window, uint32_t parameter, void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color)
 {
 	uint16_t x1_text, y1_text, w_text, h_text;
@@ -1434,43 +1264,7 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 	}
 	else
 		LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans9pt7b); // text
-	// add handler
-	if (in_window)
-	{
-		LCD_window.buttons[LCD_window.buttons_count].x1 = x;
-		LCD_window.buttons[LCD_window.buttons_count].y1 = y;
-		LCD_window.buttons[LCD_window.buttons_count].x2 = x + width;
-		LCD_window.buttons[LCD_window.buttons_count].y2 = y + height;
-		LCD_window.buttons[LCD_window.buttons_count].parameter = parameter;
-		LCD_window.buttons[LCD_window.buttons_count].clickHandler = clickHandler;
-		LCD_window.buttons[LCD_window.buttons_count].holdHandler = holdHandler;
-		LCD_window.buttons_count++;
-	}
-	else
-	{
-		bool exist = false;
-		for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
-		{
-			if (TouchpadButton_handlers[i].x1 == x && TouchpadButton_handlers[i].y1 == y)
-			{
-				exist = true;
-				break;
-			}
-		}
-		if (!exist)
-		{
-			TouchpadButton_handlers[TouchpadButton_handlers_count].x1 = x;
-			TouchpadButton_handlers[TouchpadButton_handlers_count].y1 = y;
-			TouchpadButton_handlers[TouchpadButton_handlers_count].x2 = x + width;
-			TouchpadButton_handlers[TouchpadButton_handlers_count].y2 = y + height;
-			TouchpadButton_handlers[TouchpadButton_handlers_count].parameter = parameter;
-			TouchpadButton_handlers[TouchpadButton_handlers_count].clickHandler = clickHandler;
-			TouchpadButton_handlers[TouchpadButton_handlers_count].holdHandler = holdHandler;
-			TouchpadButton_handlers_count++;
-		}
-	}
 }
-#endif
 
 void LCD_showError(char text[], bool redraw)
 {
@@ -1511,119 +1305,6 @@ void LCD_showInfo(char text[], bool autohide)
 
 void LCD_processTouch(uint16_t x, uint16_t y)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	TRX_Inactive_Time = 0;
-	if (TRX.Locked)
-		return;
-
-	if (!LCD_screenKeyboardOpened && LCD_systemMenuOpened)
-	{
-		SYSMENU_eventCloseAllSystemMenu();
-		LCD_redraw(false);
-		return;
-	}
-
-	// windows
-	if (LCD_window.opened)
-	{
-		// outline touch (window close)
-		if (y <= LCD_window.y || y >= (LCD_window.y + LCD_window.h) || x <= LCD_window.x || x >= (LCD_window.x + LCD_window.w))
-		{
-			LCD_closeWindow();
-			return;
-		}
-
-		// window buttons
-		for (uint8_t i = 0; i < LCD_window.buttons_count; i++)
-		{
-			if ((LCD_window.buttons[i].x1 <= x) && (LCD_window.buttons[i].y1 <= y) && (LCD_window.buttons[i].x2 >= x) && (LCD_window.buttons[i].y2 >= y))
-			{
-				if (LCD_window.buttons[i].clickHandler != NULL)
-					LCD_window.buttons[i].clickHandler(LCD_window.buttons[i].parameter);
-				return;
-			}
-		}
-
-		return;
-	}
-
-	if (!LCD_screenKeyboardOpened)
-	{
-		// ant click
-		// ANT indicator
-		if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET + LAYOUT->STATUS_ANT_BLOCK_HEIGHT + 20) && x >= LAYOUT->STATUS_ANT_X_OFFSET && x <= (LAYOUT->STATUS_ANT_X_OFFSET + LAYOUT->STATUS_ANT_BLOCK_WIDTH + 20))
-		{
-			FRONTPANEL_BUTTONHANDLER_ANT(false);
-			return;
-		}
-
-		// main mode click
-		if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT + 20) && x >= (LAYOUT->STATUS_MODE_X_OFFSET - 20) && x <= LAYOUT->STATUS_MODE_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH + 20)
-		{
-			LCD_showModeWindow(false);
-			return;
-		}
-
-		// sec mode click
-		if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT + 20) && x >= (LAYOUT->STATUS_MODE_B_X_OFFSET - 20) && x <= (LAYOUT->STATUS_MODE_B_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH + 20))
-		{
-			LCD_showModeWindow(true);
-			return;
-		}
-
-		// bw click
-		if (y >= LAYOUT->BW_TRAPEZ_POS_Y && y <= LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT && x >= LAYOUT->BW_TRAPEZ_POS_X && x <= LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH)
-		{
-			LCD_showBWWindow();
-			return;
-		}
-
-		// main freq click
-		if (y >= LAYOUT->FREQ_Y_TOP && y <= LAYOUT->FREQ_Y_TOP + LAYOUT->FREQ_BLOCK_HEIGHT && x >= LAYOUT->FREQ_LEFT_MARGIN && x <= LAYOUT->FREQ_LEFT_MARGIN + LAYOUT->FREQ_WIDTH)
-		{
-			if (!TRX.selected_vfo) // vfo-a
-				LCD_showBandWindow(false);
-			else
-				FRONTPANEL_BUTTONHANDLER_AsB(0);
-			return;
-		}
-
-		// sec freq click
-		if (y >= LAYOUT->FREQ_B_Y_TOP && y <= LAYOUT->FREQ_B_Y_TOP + LAYOUT->FREQ_B_BLOCK_HEIGHT && x >= LAYOUT->FREQ_B_LEFT_MARGIN && x <= LAYOUT->FREQ_B_LEFT_MARGIN + LAYOUT->FREQ_B_WIDTH)
-		{
-			if (TRX.selected_vfo) // vfo-b
-				LCD_showBandWindow(true);
-			else
-				FRONTPANEL_BUTTONHANDLER_AsB(0);
-			return;
-		}
-	}
-
-	// buttons
-	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
-	{
-		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 - 20 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))
-		{
-			if (TouchpadButton_handlers[i].clickHandler != NULL)
-				TouchpadButton_handlers[i].clickHandler(TouchpadButton_handlers[i].parameter);
-			return;
-		}
-	}
-
-	if (!LCD_screenKeyboardOpened)
-	{
-		// fft/wtf tap
-		if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + LAYOUT->FFT_FFTWTF_BOTTOM - 50) >= y))
-		{
-			// frequency tap
-			uint32_t newfreq = getFreqOnFFTPosition(x);
-			newfreq = newfreq / 500 * 500;
-			TRX_setFrequencySlowly(newfreq);
-			LCD_UpdateQuery.FreqInfo = true;
-			return;
-		}
-	}
-#endif
 }
 
 void LCD_processHoldTouch(uint16_t x, uint16_t y)
@@ -1840,400 +1521,34 @@ void LCD_closeWindow(void)
 
 static void LCD_showBandWindow(bool secondary_vfo)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	// TX block
-	if (TRX_on_TX)
-		return;
-
-	uint8_t buttons_in_line = 6;
-	if (TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm)
-		buttons_in_line = 7;
-
-	uint8_t selectable_bands_count = 0;
-	uint8_t unselectable_bands_count = 0;
-	for (uint8_t i = 0; i < BANDS_COUNT; i++)
-		if (BANDS[i].selectable)
-			selectable_bands_count++;
-		else
-			unselectable_bands_count++;
-	selectable_bands_count++; // memory bank
-
-	const uint8_t buttons_lines_selectable = ceil((float32_t)selectable_bands_count / (float32_t)buttons_in_line);
-	const uint8_t buttons_lines_unselectable = ceil((float32_t)unselectable_bands_count / (float32_t)buttons_in_line);
-	const uint8_t divider_height = 30;
-	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * (buttons_lines_selectable + buttons_lines_unselectable) + divider_height + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines_selectable + buttons_lines_unselectable + 1);
-	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
-	int8_t curband = getBandFromFreq(TRX.VFO_A.Freq, true);
-	if (secondary_vfo)
-		curband = getBandFromFreq(TRX.VFO_B.Freq, true);
-
-	// selectable bands first
-	uint8_t yi = 0;
-	uint8_t xi = 0;
-	for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++)
-	{
-		if (!BANDS[bindx].selectable)
-			continue;
-
-		if (!secondary_vfo)
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND, FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-		else
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, FRONTPANEL_BUTTONHANDLER_SET_VFOB_BAND, FRONTPANEL_BUTTONHANDLER_SET_VFOB_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-
-		xi++;
-		if (xi >= buttons_in_line)
-		{
-			yi++;
-			xi = 0;
-		}
-	}
-
-	// memory bank
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "MEM", false, true, true, 0, LCD_ShowMemoryChannelsButtonHandler, LCD_ShowMemoryChannelsButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	xi++;
-	if (xi >= buttons_in_line)
-	{
-		yi++;
-		xi = 0;
-	}
-
-	// divider
-	if (xi != 0)
-		yi++;
-	LCDDriver_drawFastHLine(LCD_WIDTH / 2 - window_width / 2, LCD_window.y + LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height / 3 + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), window_width, COLOR->WINDOWS_BORDER);
-	// unselectable bands next (broadcast)
-	xi = 0;
-	for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++)
-	{
-		if (BANDS[bindx].selectable)
-			continue;
-
-		if (!secondary_vfo)
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND, FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-		else
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, FRONTPANEL_BUTTONHANDLER_SET_VFOB_BAND, FRONTPANEL_BUTTONHANDLER_SET_VFOB_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-
-		xi++;
-		if (xi >= buttons_in_line)
-		{
-			yi++;
-			xi = 0;
-		}
-	}
-
-	LCD_busy = false;
-#endif
 }
 
 static void LCD_showModeWindow(bool secondary_vfo)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	const uint8_t buttons_in_line = 4;
-	const uint8_t buttons_lines = ceil((float32_t)TRX_MODE_COUNT / (float32_t)buttons_in_line);
-	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
-	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
-	int8_t curmode = TRX.VFO_A.Mode;
-	if (secondary_vfo)
-		curmode = TRX.VFO_B.Mode;
-	for (uint8_t yi = 0; yi < buttons_lines; yi++)
-	{
-		for (uint8_t xi = 0; xi < buttons_in_line; xi++)
-		{
-			uint8_t index = yi * buttons_in_line + xi;
-			if (index < TRX_MODE_COUNT)
-			{
-				if (!secondary_vfo)
-					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)MODE_DESCR[index], (curmode == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETMODE, FRONTPANEL_BUTTONHANDLER_SETMODE, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-				else
-					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)MODE_DESCR[index], (curmode == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETSECMODE, FRONTPANEL_BUTTONHANDLER_SETSECMODE, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-			}
-		}
-	}
-	LCD_busy = false;
-#endif
 }
 
 static void LCD_showBWWindow(void)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-
-	uint8_t filters_count = 0;
-	uint32_t cur_width = CurrentVFO->LPF_RX_Filter_Width;
-	if (TRX_on_TX)
-		cur_width = CurrentVFO->LPF_TX_Filter_Width;
-	if (CurrentVFO->Mode == TRX_MODE_CW)
-		filters_count = CW_LPF_COUNT;
-	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
-		filters_count = SSB_LPF_COUNT;
-	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
-		filters_count = AM_LPF_COUNT;
-	if (CurrentVFO->Mode == TRX_MODE_NFM)
-		filters_count = NFM_LPF_COUNT;
-	if (filters_count == 0)
-		return;
-
-	const uint8_t buttons_in_line = 6;
-	const uint8_t buttons_lines = ceil((float32_t)filters_count / (float32_t)buttons_in_line);
-	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
-	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
-	for (uint8_t yi = 0; yi < buttons_lines; yi++)
-	{
-		for (uint8_t xi = 0; xi < buttons_in_line; xi++)
-		{
-			uint8_t index = yi * buttons_in_line + xi;
-			uint32_t width = 0;
-			if (CurrentVFO->Mode == TRX_MODE_CW)
-				width = AUTIO_FILTERS_LPF_CW_LIST[index];
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
-				width = AUTIO_FILTERS_LPF_SSB_LIST[index];
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
-				width = AUTIO_FILTERS_LPF_AM_LIST[index];
-			if (CurrentVFO->Mode == TRX_MODE_NFM)
-				width = AUTIO_FILTERS_LPF_NFM_LIST[index];
-			char str[16];
-			sprintf(str, "%d", width);
-			if (index < filters_count)
-			{
-				if (TRX_on_TX)
-					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (width == cur_width), true, true, width, FRONTPANEL_BUTTONHANDLER_SET_TX_BW, FRONTPANEL_BUTTONHANDLER_SET_TX_BW, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-				else
-					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (width == cur_width), true, true, width, FRONTPANEL_BUTTONHANDLER_SET_RX_BW, FRONTPANEL_BUTTONHANDLER_SET_RX_BW, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-			}
-		}
-	}
-	LCD_busy = false;
-#endif
 }
 
 void LCD_showRFPowerWindow(void)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	const uint8_t buttons_in_line = 5;
-	const uint8_t buttons_lines = 2;
-	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
-	while (LCD_busy)
-		;
-	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
-	for (uint8_t yi = 0; yi < buttons_lines; yi++)
-	{
-		for (uint8_t xi = 0; xi < buttons_in_line; xi++)
-		{
-			uint8_t index = 0 + (yi * buttons_in_line + xi) * 10;
-			if (index > 50)
-				index += 10;
-			char str[8];
-			sprintf(str, "%d%%", index);
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (TRX.RF_Power == index), true, true, index, FRONTPANEL_BUTTONHANDLER_SETRF_POWER, FRONTPANEL_BUTTONHANDLER_SETRF_POWER, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-		}
-	}
-	LCD_busy = false;
-#endif
 }
 
 void LCD_showManualFreqWindow(bool secondary_vfo)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	manualFreqEnter = 0;
-	const uint8_t buttons_in_line = 7;
-	const uint8_t buttons_top_offset = 150;
-#define buttons_count 14 // 1,2,3,4,5,6,7,8,9,0,mhz,khz,hz
-	char *buttons[buttons_count] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<-", "MHz", "KHz", "Hz"};
-	const uint8_t buttons_lines = ceil((float32_t)buttons_count / (float32_t)buttons_in_line);
-	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
-	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
-
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "1", false, true, true, 1, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "2", false, true, true, 2, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "3", false, true, true, 3, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 3 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "4", false, true, true, 4, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 4 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "5", false, true, true, 5, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 5 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "6", false, true, true, 6, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 6 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "7", false, true, true, 7, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "8", false, true, true, 8, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "9", false, true, true, 9, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "0", false, true, true, 0, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 3 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "<-", false, true, true, 11, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 4 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "MHz", false, true, true, 12, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 5 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "KHz", false, true, true, 13, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 6 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "Hz", false, true, true, 14, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-
-	LCD_ManualFreqButtonHandler(0);
-	LCD_busy = false;
-#endif
 }
 
 void LCD_ManualFreqButtonHandler(uint32_t parameter)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	char buff[50] = {0};
-	uint64_t newfreq = 0;
-	if (parameter < 10)
-	{
-		if (manualFreqEnter < 100000000)
-			manualFreqEnter *= 10;
-		else
-		{
-			manualFreqEnter /= 10;
-			manualFreqEnter *= 10;
-		}
-
-		manualFreqEnter += parameter;
-	}
-	if (parameter == 11)
-		manualFreqEnter /= 10;
-	if (parameter == 12) // mhz
-	{
-		newfreq = manualFreqEnter * 1000000;
-		LCD_closeWindow();
-	}
-	if (parameter == 13) // khz
-	{
-		newfreq = manualFreqEnter * 1000;
-		LCD_closeWindow();
-	}
-	if (parameter == 14) // hz
-	{
-		newfreq = manualFreqEnter * 1;
-		LCD_closeWindow();
-	}
-	if (newfreq > 0)
-	{
-		TRX_setFrequency(newfreq, CurrentVFO);
-
-		int8_t band = getBandFromFreq(newfreq, true);
-		if (band != -1)
-		{
-			TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-			if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
-			{
-				TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
-				FFT_Init();
-				NeedReinitAudioFilters = true;
-			}
-			TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-			TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-			TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-			TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
-			TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
-			TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-			CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-			TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-			CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-			CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-			CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-			TRX.SQL_shadow = CurrentVFO->SQL;
-			TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-		}
-		TRX_Temporary_Stop_BandMap = false;
-	}
-
-	sprintf(buff, "%llu", manualFreqEnter);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), 50, LAYOUT->WINDOWS_BUTTON_WIDTH * 5 + LAYOUT->WINDOWS_BUTTON_MARGIN * 4, LAYOUT->WINDOWS_BUTTON_HEIGHT, buff, false, false, true, 0, NULL, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-#endif
 }
 
 static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	const uint8_t buttons_in_line = 7;
-	const uint8_t buttons_lines = 5;
-	const uint8_t buttons_top_offset = 0;
-	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
-	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
-
-	uint8_t channel_num = 1;
-	char tmp[32] = {0};
-	for (uint8_t y = 0; y < buttons_lines; y++)
-	{
-		for (uint8_t x = 0; x < buttons_in_line; x++)
-		{
-			if (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == 0)
-				sprintf(tmp, "-");
-			else
-				sprintf(tmp, "%.1f", CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq / 1000000.0f);
-
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + x * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, tmp, (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == CurrentVFO->Freq), true, true, (channel_num - 1), FRONTPANEL_SelectMemoryChannelsButtonHandler, FRONTPANEL_SaveMemoryChannelsButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-			channel_num++;
-		}
-	}
-
-	LCD_busy = false;
-#endif
 }
 
 void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	TouchpadButton_handlers_count = 0;
-	LCD_keyboardHandler = keyboardHandler;
-
-	LCD_screenKeyboardOpened = true;
-	LCDDriver_Fill_RectWH(0, LCD_HEIGHT / 2, LCD_WIDTH, LCD_HEIGHT / 2, COLOR->KEYBOARD_BG);
-	const uint16_t button_width = (LCD_HEIGHT / 2 - LAYOUT->WINDOWS_BUTTON_MARGIN * 2) / 5;
-	const uint16_t button_height = button_width;
-	const uint16_t buttons_top_offset = LCD_HEIGHT / 2 + LAYOUT->WINDOWS_BUTTON_MARGIN;
-	uint16_t buttons_left_offset = button_width * 2.5;
-	uint16_t x = 0;
-	uint16_t y = 0;
-	//
-	char line1[] = "1234567890<";
-	for (uint8_t i = 0; i < strlen(line1); i++)
-	{
-		char text[2] = {0};
-		text[0] = line1[i];
-		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	}
-	y++;
-	buttons_left_offset -= button_width / 2;
-	//
-	char line2[] = "QWERTYUIOP[]";
-	if(lowcase) strcpy(line2, "qwertyuiop[]");
-	for (uint8_t i = 0; i < strlen(line2); i++)
-	{
-		char text[2] = {0};
-		text[0] = line2[i];
-		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	}
-	y++;
-	buttons_left_offset += button_width / 2;
-	//
-	char line3[] = "ASDFGHJKL;'";
-	if(lowcase) strcpy(line3, "asdfghjkl;'");
-	for (uint8_t i = 0; i < strlen(line3); i++)
-	{
-		char text[2] = {0};
-		text[0] = line3[i];
-		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	}
-	y++;
-	buttons_left_offset += button_width / 2;
-	//
-	char line4[] = "ZXCVBNM,./";
-	if(lowcase) strcpy(line4, "zxcvbnm,./");
-	for (uint8_t i = 0; i < strlen(line4); i++)
-	{
-		char text[2] = {0};
-		text[0] = line4[i];
-		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	}
-#endif
 }
 
 void LCD_hideKeyboard(void)
@@ -2244,28 +1559,4 @@ void LCD_hideKeyboard(void)
 
 void LCD_showATTWindow(uint32_t parameter)
 {
-#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	const uint8_t buttons_in_line = 5;
-	const uint8_t buttons_lines = 2;
-	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
-	while (LCD_busy)
-		;
-	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
-	uint8_t db = 3;
-	for (uint8_t yi = 0; yi < buttons_lines; yi++)
-	{
-		for (uint8_t xi = 0; xi < buttons_in_line; xi++)
-		{
-			char str[8];
-			sprintf(str, "%d dB", db);
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str, (TRX.ATT_DB == db), true, true, db, FRONTPANEL_BUTTONHANDLER_SET_ATT_DB, FRONTPANEL_BUTTONHANDLER_SET_ATT_DB, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-			db += 3;
-			if (db > 31)
-				db = 31;
-		}
-	}
-	LCD_busy = false;
-#endif
 }
