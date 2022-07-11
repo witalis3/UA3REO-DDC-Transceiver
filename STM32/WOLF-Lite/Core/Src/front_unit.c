@@ -54,6 +54,7 @@ static void FRONTPANEL_BUTTONHANDLER_UP(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_DOWN(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_FUNC(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_FUNCH(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_IF(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
 
@@ -64,55 +65,50 @@ static uint32_t ENCODER2_AValDeb = 0;
 #ifdef FRONTPANEL_LITE
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	//buttons
-	{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK}, //SB1 MENU
-	{.port = 1, .channel = 1, .type = FUNIT_CTRL_PTT, .tres_min = 0, .tres_max = 500}, //SB2 PTT?
-	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB3 VFO/A=B
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 2, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB4 PRE/ATT
-	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB5 BAND/MODE+
-	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB6 BAND/MODE-
-	{.port = 1, .channel = 6, .type = FUNIT_CTRL_ENC2SW, .tres_min = 0, .tres_max = 500}, //ENC2_SW
-	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_N}, //SB1
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_P}, //SB2
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB3
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB6
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 2, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB5
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB4
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 4, .clickHandler = FRONTPANEL_BUTTONHANDLER_FUNC, .holdHandler = FRONTPANEL_BUTTONHANDLER_FUNCH}, //SB7
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK}, //SB9
 };
 
 const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
+	{.name = "PRE", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DRV_ONLY, .holdHandler = FRONTPANEL_BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.LNA},
+	{.name = "ATT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD, .checkBool = (uint32_t *)&TRX.ATT},
+	{.name = "BW", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_BW, .checkBool = NULL},
+	{.name = "A/B", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AsB, .holdHandler = FRONTPANEL_BUTTONHANDLER_AsB, .checkBool = NULL},
+	{.name = "B=A", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ArB, .holdHandler = FRONTPANEL_BUTTONHANDLER_ArB, .checkBool = NULL},
+	
+	{.name = "POWER", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .checkBool = NULL},
+	{.name = "AGC", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AGC, .holdHandler = FRONTPANEL_BUTTONHANDLER_AGC, .checkBool = (uint32_t *)&TRX.AGC_shadow},
+	{.name = "ZOOM-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N, .checkBool = NULL},
+	{.name = "ZOOM+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
+	{.name = "FAST", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_FAST, .holdHandler = FRONTPANEL_BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
+	
+	{.name = "IF", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_IF, .holdHandler = FRONTPANEL_BUTTONHANDLER_IF, .checkBool = NULL},
+	{.name = "NOTCH", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_NOTCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
+	{.name = "DNR", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DNR, .holdHandler = FRONTPANEL_BUTTONHANDLER_DNR, .checkBool = NULL},
+	{.name = "SQL", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SQL, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
+	{.name = "RIT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_RIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
+	
 	{.name = "BAND-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .checkBool = NULL},
 	{.name = "BAND+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_P, .checkBool = NULL},
-	{.name = "PRE", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PRE, .holdHandler = FRONTPANEL_BUTTONHANDLER_PRE, .checkBool = (uint32_t *)&TRX.LNA},
-	{.name = "A/B", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AsB, .holdHandler = FRONTPANEL_BUTTONHANDLER_AsB, .checkBool = NULL},
-	
 	{.name = "MODE-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .checkBool = NULL},
 	{.name = "MODE+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_P, .checkBool = NULL},	
 	{.name = "TUNE", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .holdHandler = FRONTPANEL_BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
-	{.name = "POWER", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .holdHandler = FRONTPANEL_BUTTONHANDLER_RF_POWER, .checkBool = NULL},
 	
-	{.name = "NOTCH", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_NOTCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_NOTCH_MANUAL, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
-	{.name = "ATT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD, .checkBool = (uint32_t *)&TRX.ATT},
-	{.name = "DRV", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DRV_ONLY, .holdHandler = FRONTPANEL_BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.ADC_Driver},
-	{.name = "PGA", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PGA_ONLY, .holdHandler = FRONTPANEL_BUTTONHANDLER_PGA_ONLY, .checkBool = (uint32_t *)&TRX.ADC_PGA},
-	{.name = "AGC", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AGC, .holdHandler = FRONTPANEL_BUTTONHANDLER_AGC, .checkBool = (uint32_t *)&TRX.AGC_shadow},
-	
-	//{.name = "IF", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_IF, .holdHandler = FRONTPANEL_BUTTONHANDLER_IF, .checkBool = NULL},
-	{.name = "DNR", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DNR, .holdHandler = FRONTPANEL_BUTTONHANDLER_DNR, .checkBool = NULL},
-	{.name = "FAST", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_FAST, .holdHandler = FRONTPANEL_BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
-	
-	{.name = "SQL", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SQL, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
-	{.name = "BW", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_BW, .checkBool = NULL},
 	{.name = "SCAN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SCAN, .holdHandler = FRONTPANEL_BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
-	{.name = "SERV", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .checkBool = NULL},
-	
+	{.name = "SERV", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .holdHandler = FRONTPANEL_BUTTONHANDLER_SERVICES, .checkBool = NULL},	
 	{.name = "WPM", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_WPM, .holdHandler = FRONTPANEL_BUTTONHANDLER_WPM, .checkBool = NULL},
-	{.name = "RIT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_RIT, .holdHandler = FRONTPANEL_BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
-	//{.name = "PLAY", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .holdHandler = FRONTPANEL_BUTTONHANDLER_PLAY, .checkBool = (uint32_t *)&SD_PlayInProcess},
-	//{.name = "REC", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_REC, .holdHandler = FRONTPANEL_BUTTONHANDLER_REC, .checkBool = (uint32_t *)&SD_RecordInProcess},
-	
-	{.name = "SMPL-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_N, .checkBool = NULL},
-	{.name = "SMPL+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_SAMPLE_P, .checkBool = NULL},
-	{.name = "ZOOM-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_N, .checkBool = NULL},
-	{.name = "ZOOM+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
-	
-	//{.name = "VLT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_VLT, .holdHandler = FRONTPANEL_BUTTONHANDLER_VLT, .checkBool = (uint32_t *)&TRX_X1_VLT_CUR_Mode},
 	{.name = "AUTGN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER, .holdHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER, .checkBool = (uint32_t *)&TRX.AutoGain},
-	{.name = "B=A", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ArB, .holdHandler = FRONTPANEL_BUTTONHANDLER_ArB, .checkBool = NULL},
 	{.name = "LOCK", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_LOCK, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
 };
 #endif
@@ -124,16 +120,6 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH48[6] = {
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 1500, .tres_max = 2100, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_AsB, .holdHandler = FRONTPANEL_BUTTONHANDLER_ArB},		 //PTT_SW2 - P2
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 2100, .tres_max = 2600, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N}, //PTT_SW2 - P3
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 2700, .tres_max = 3100, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_P}, //PTT_SW2 - P4
-};
-
-PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH36[] = {
-	{.port = 1, .channel = 2, .type = FUNIT_CTRL_PTT, .tres_min = 200, .tres_max = 430},																																												 // PTT_SW1 - PTT
-	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 430, .tres_max = 640, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_DOWN, .holdHandler = FRONTPANEL_BUTTONHANDLER_DOWN},	 // PTT_SW1 - DOWN
-	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 640, .tres_max = 805, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_UP, .holdHandler = FRONTPANEL_BUTTONHANDLER_UP},		 // PTT_SW1 - UP
-	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 805, .tres_max = 920, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_AGC, .holdHandler = FRONTPANEL_BUTTONHANDLER_AGC},		 // PTT_SW1 - AGC
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 200, .tres_max = 430, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_AsB, .holdHandler = FRONTPANEL_BUTTONHANDLER_ArB},		 // PTT_SW2 - VFO
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 430, .tres_max = 640, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N}, // PTT_SW2 - P1
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 640, .tres_max = 805, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_P}, // PTT_SW2 - P2
 };
 
 void FRONTPANEL_ENCODER_checkRotate(void)
@@ -706,12 +692,6 @@ void FRONTPANEL_Process(void)
 		// TANGENT
 		if (button->type == FUNIT_CTRL_TANGENT)
 		{
-			// Yaesu MH-36
-			if (CALIBRATE.TangentType == TANGENT_MH36)
-				for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH36) / sizeof(PERIPH_FrontPanel_Button)); tb++)
-					if (button->channel == PERIPH_FrontPanel_TANGENT_MH36[tb].channel)
-						FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH36[tb], mcp3008_value);
-
 			// Yaesu MH-48
 			if (CALIBRATE.TangentType == TANGENT_MH48)
 				for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++)
@@ -1355,6 +1335,19 @@ void FRONTPANEL_BUTTONHANDLER_SQUELCH(uint32_t parameter)
 	{
 		LCD_systemMenuOpened = true;
 		SYSMENU_AUDIO_SQUELCH_HOTKEY();
+	}
+	else
+	{
+		SYSMENU_eventCloseAllSystemMenu();
+	}
+}
+
+void FRONTPANEL_BUTTONHANDLER_IF(uint32_t parameter)
+{
+	if (!LCD_systemMenuOpened)
+	{
+		LCD_systemMenuOpened = true;
+		SYSMENU_AUDIO_IF_HOTKEY();
 	}
 	else
 	{

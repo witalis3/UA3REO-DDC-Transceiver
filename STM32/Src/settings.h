@@ -112,7 +112,7 @@ static char ota_config_frontpanel[] = "SMALL";
 #define HRDW_MCP3008_1 true
 #define HRDW_HAS_FUNCBUTTONS true
 #define MAX_VOLUME_VALUE 1024.0f
-#define FUNCBUTTONS_COUNT 28
+#define FUNCBUTTONS_COUNT 25
 #define FUNCBUTTONS_ON_PAGE 5
 static char ota_config_frontpanel[] = "LITE";
 #endif
