@@ -8,7 +8,7 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 51						  // Settings config version
+#define SETT_VERSION 52						  // Settings config version
 #define CALIB_VERSION 45					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
@@ -651,7 +651,7 @@ extern struct TRX_CALIBRATE
 	uint8_t EXT_TRANSV_3cm;
 	uint8_t ATU_AVERAGING;
 	uint8_t TwoSignalTune_Balance;
-	int8_t VCXO_correction;
+	int16_t VCXO_correction;
 	int8_t LNA_compensation;
 	TRX_RF_UNIT_TYPE RF_unit_type;
 	TRX_TANGENT_TYPE TangentType;

@@ -220,7 +220,13 @@ void LoadSettings(bool clear)
 		TRX.DNR2_SNR_THRESHOLD = 35;		 // Digital noise reduction 2 level
 		TRX.DNR_AVERAGE = 2;				 // DNR averaging when looking for average magnitude
 		TRX.DNR_MINIMAL = 99;				 // DNR averaging when searching for minimum magnitude
+		#ifdef STM32F407xx
+		TRX.NOISE_BLANKER = false;			 // suppressor of short impulse noise NOISE BLANKER
+		TRX.AGC_Spectral = false;			//Spectral AGC mode
+		#else
 		TRX.NOISE_BLANKER = true;			 // suppressor of short impulse noise NOISE BLANKER
+		TRX.AGC_Spectral = true;			//Spectral AGC mode
+		#endif
 		TRX.RX_AGC_SSB_speed = 10;			 // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;			 // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;			 // Maximum AGC gain
@@ -243,7 +249,6 @@ void LoadSettings(bool clear)
 		TRX.CTCSS_Freq = 0;					 // CTCSS FM Frequency
 		TRX.SELFHEAR_Volume = 50;			 // Selfhearing volume
 		TRX.FM_Stereo = false;				 // Stereo FM Mode
-		TRX.AGC_Spectral = true;			//Spectral AGC mode
 		TRX.VAD_THRESHOLD = 150;				//Threshold of SSB/SCAN squelch
 		TRX.VOX = false;							//TX by voice activation
 		TRX.VOX_TIMEOUT = 300;				//VOX timeout in ms
@@ -316,7 +321,11 @@ void LoadSettings(bool clear)
 			TRX.FuncButtons[i] = i;
 		// DECODERS
 		TRX.CW_Decoder = false;		 // automatic telegraph decoder
+		#ifdef STM32F407xx
+		TRX.RDS_Decoder = false;		 // RDS Decoder panel
+		#else
 		TRX.RDS_Decoder = true;		 // RDS Decoder panel
+		#endif
 		TRX.RTTY_Speed = 45;		 // RTTY decoder speed
 		TRX.RTTY_Shift = 170;		 // RTTY decoder shift
 		TRX.RTTY_Freq = 1000;		 // RTTY decoder center frequency

@@ -410,6 +410,11 @@
               <FilePath>..\Core\Src\front_unit.c</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\lcd.c</FilePath>
@@ -809,11 +814,6 @@
               <FileName>fonts.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\fonts.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\fpga.c</FilePath>
             </File>
             <File>
               <FileName>fpga.h</FileName>
