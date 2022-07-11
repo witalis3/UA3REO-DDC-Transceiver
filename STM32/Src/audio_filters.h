@@ -8,7 +8,13 @@
 #include "functions.h"
 #include "BiquadDesigner/biquad.h"
 
-#define IQ_HILBERT_TAPS 201														 // Hilbert filter order
+#ifdef STM32F407xx
+#define IQ_HILBERT_TAPS_RX 101														 // Hilbert filter order RX
+#else
+#define IQ_HILBERT_TAPS_RX 201														 // Hilbert filter order RX
+#endif
+
+#define IQ_HILBERT_TAPS_TX 201														 // Hilbert filter order TX
 #define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS									 // order of IIR LPF filters
 #define IIR_HPF_STAGES 5														 // order of IIR HPF filters
 #define IIR_DECIMATOR_FILTER_STAGES 9											 // order of decimator filter
@@ -17,8 +23,8 @@
 #define GAUSS_STAGES 1															 // order of the gauss CW filter
 #define GAUSS_WIDTH 20															 // passband of gauss CW filter
 #define BIQUAD_COEFF_IN_STAGE 5													 // coefficients in manual Notch filter order
-#define FIR_RX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
-#define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS + AUDIO_BUFFER_HALF_SIZE - 1)
+#define FIR_RX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS_RX + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
+#define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS_TX + AUDIO_BUFFER_HALF_SIZE - 1)
 #define IIR_RX_LPF_Taps_STATE_SIZE (IIR_LPF_STAGES * 2)
 #define IIR_RX_GAUSS_Taps_STATE_SIZE (GAUSS_STAGES * 2)
 #define IIR_TX_LPF_Taps_STATE_SIZE (IIR_LPF_STAGES * 2)
