@@ -111,7 +111,7 @@ output reg BPF_OE2 = 0;
 output reg LPF1 = 0;
 output reg LPF2 = 0;
 output reg LPF3 = 0;
-output reg unsigned [10:0] RX_CIC_RATE = 'd640;
+output reg unsigned [9:0] RX_CIC_RATE = 'd640;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -302,7 +302,7 @@ begin
 		BPF_OE1 = DATA_BUS[5:5];
 		
 		if(DATA_BUS[7:6] =='d0)
-			RX_CIC_RATE = 'd80;
+			RX_CIC_RATE = 'd160;
 		else if(DATA_BUS[7:6] =='d1)
 			RX_CIC_RATE = 'd160;
 		else if(DATA_BUS[7:6] =='d2)
@@ -466,43 +466,6 @@ begin
 	else if (k == 405)
 	begin
 		DATA_BUS_OUT[7:0] = READ_RX1_I[7:0];
-		if(rx2 == 1)
-			k = 406;
-		else
-		begin
-			IQ_RX_READ_REQ = 1;
-			IQ_RX_READ_CLK = 1;
-			k = 400;
-		end
-	end
-	else if (k == 406) //RX2 IQ
-	begin
-		DATA_BUS_OUT[7:0] = READ_RX2_Q[23:16];
-		k = 407;
-	end
-	else if (k == 407)
-	begin
-		DATA_BUS_OUT[7:0] = READ_RX2_Q[15:8];
-		k = 408;
-	end
-	else if (k == 408)
-	begin
-		DATA_BUS_OUT[7:0] = READ_RX2_Q[7:0];
-		k = 409;
-	end
-	else if (k == 409)
-	begin
-		DATA_BUS_OUT[7:0] = READ_RX2_I[23:16];
-		k = 410;
-	end
-	else if (k == 410)
-	begin
-		DATA_BUS_OUT[7:0] = READ_RX2_I[15:8];
-		k = 411;
-	end
-	else if (k == 411)
-	begin
-		DATA_BUS_OUT[7:0] = READ_RX2_I[7:0];
 		IQ_RX_READ_REQ = 1;
 		IQ_RX_READ_CLK = 1;
 		k = 400;

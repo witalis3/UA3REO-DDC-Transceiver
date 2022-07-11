@@ -40,7 +40,7 @@ module rx_cic_cic_ii_0 (
     parameter D_DELAY              =  1;
     parameter VRC_EN   =  1;
     parameter RCF_MAX         =  640;
-    parameter RCF_MIN         =  80;
+    parameter RCF_MIN         =  160;
     parameter INTERFACES    =  2;
     parameter CH_PER_INT  =  1;
     parameter INT_USE_MEM      =  "false";

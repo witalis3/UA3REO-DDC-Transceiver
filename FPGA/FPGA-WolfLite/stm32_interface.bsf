@@ -355,8 +355,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 544)
 		(output)
-		(text "RX_CIC_RATE[10..0]" (rect 0 0 95 12)(font "Arial" ))
-		(text "RX_CIC_RATE[10..0]" (rect 172 539 267 551)(font "Arial" ))
+		(text "RX_CIC_RATE[9..0]" (rect 0 0 92 12)(font "Arial" ))
+		(text "RX_CIC_RATE[9..0]" (rect 175 539 267 551)(font "Arial" ))
 		(line (pt 288 544)(pt 272 544)(line_width 3))
 	)
 	(port

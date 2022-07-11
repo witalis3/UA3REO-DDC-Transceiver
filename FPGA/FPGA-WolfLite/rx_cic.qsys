@@ -83,7 +83,7 @@
   <parameter name="INTERFACES" value="2" />
   <parameter name="IN_WIDTH" value="27" />
   <parameter name="RCF_FIX" value="640" />
-  <parameter name="RCF_LB" value="80" />
+  <parameter name="RCF_LB" value="160" />
   <parameter name="RCF_UB" value="640" />
   <parameter name="REQ_DIF_MEM" value="logic_element" />
   <parameter name="REQ_INT_MEM" value="logic_element" />
