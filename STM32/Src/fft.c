@@ -1437,12 +1437,7 @@ void FFT_ShortBufferPrintFFT(void)
 
 			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 			{
-				if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
-				{
-					print_output_line[fft_x] = palette_bw_bg_colors[fft_y];
-				}
-				else
-					print_output_line[fft_x] = background;
+				print_output_line[fft_x] = background;
 			}
 		
 			if (TRX.FFT_Style == 1) // gradient
@@ -1451,14 +1446,7 @@ void FFT_ShortBufferPrintFFT(void)
 				{
 					if (fft_y < (fftHeight - fft_header[fft_x])) continue;
 					
-					if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
-					{
-							print_output_line[fft_x] = palette_bw_fft_colors[fft_y];
-					}
-					else
-					{
-							print_output_line[fft_x] = palette_fft[fft_y];
-					}
+					print_output_line[fft_x] = palette_fft[fft_y];
 				}
 			}
 
@@ -1468,14 +1456,7 @@ void FFT_ShortBufferPrintFFT(void)
 				{
 					if (fft_y < (fftHeight - fft_header[fft_x])) continue;
 					
-					if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
-					{
-						print_output_line[fft_x] = palette_bw_fft_colors[fftHeight / 2];
-					}
-					else
-					{
-						print_output_line[fft_x] = palette_fft[fftHeight / 2];
-					}
+					print_output_line[fft_x] = palette_fft[fftHeight / 2];
 				}
 			}
 
@@ -1485,10 +1466,7 @@ void FFT_ShortBufferPrintFFT(void)
 				{
 					if(fft_y != fftHeight - fft_header[fft_x]) continue;
 					
-					if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
-						print_output_line[fft_x] = palette_bw_fft_colors[fftHeight / 2];
-					else
-						print_output_line[fft_x] = palette_fft[fftHeight / 2];
+					print_output_line[fft_x] = palette_fft[fftHeight / 2];
 				}
 			}
 		}
@@ -1499,9 +1477,9 @@ void FFT_ShortBufferPrintFFT(void)
 			uint16_t wtf_y_index = fft_y - fftHeight;
 			
 			// calculate offset
-			float64_t freq_diff = (((float64_t)currentFFTFreq - (float64_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float64_t)fft_zoom;
-			float64_t freq_diff_part = fmodl(freq_diff, 1.0f);
-			int64_t margin_left = 0;
+			float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float32_t)fft_zoom;
+			float32_t freq_diff_part = fmodl(freq_diff, 1.0f);
+			int32_t margin_left = 0;
 			if (freq_diff < 0)
 				margin_left = -floorf(freq_diff);
 			if (margin_left > LAYOUT->FFT_PRINT_SIZE)
@@ -1530,26 +1508,17 @@ void FFT_ShortBufferPrintFFT(void)
 				if (margin_left == 0 && margin_right == 0) // print full line
 				{
 					for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
-						if ((wtf_x >= bw_rx1_line_start && wtf_x <= bw_rx1_line_end) || ((int32_t)wtf_x >= bw_rx2_line_start && (int32_t)wtf_x <= bw_rx2_line_end)) // print bw bar
-							print_output_line[wtf_x] = palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x]];
-						else
-							print_output_line[wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+						print_output_line[wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
 				}
 				else if (margin_left > 0)
 				{
 					for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++)
-						if (((margin_left + wtf_x) >= bw_rx1_line_start && (margin_left + wtf_x) <= bw_rx1_line_end) || ((int32_t)(margin_left + wtf_x) >= bw_rx2_line_start && (int32_t)(margin_left + wtf_x) <= bw_rx2_line_end)) // print bw bar
-							print_output_line[margin_left + wtf_x] = palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x]];
-						else
-							print_output_line[margin_left + wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+						print_output_line[margin_left + wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
 				}
 				if (margin_right > 0)
 				{
 					for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_right); wtf_x++)
-						if ((wtf_x >= bw_rx1_line_start && wtf_x <= bw_rx1_line_end) || ((int32_t)wtf_x >= bw_rx2_line_start && (int32_t)wtf_x <= bw_rx2_line_end)) // print bw bar
-							print_output_line[wtf_x] = palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]];
-						else
-							print_output_line[wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]];
+						print_output_line[wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]];
 				}
 			}
 		}
@@ -1601,14 +1570,11 @@ void FFT_ShortBufferPrintFFT(void)
 		print_output_line[(LAYOUT->FFT_PRINT_SIZE / 2)] = color;
 
 		// Draw BW lines
-		if (TRX.FFT_BW_Style == 3)
-		{
-			uint16_t color_bw = palette_fft[fftHeight / 2];
-			uint16_t color_center = palette_fft[0];
-			print_output_line[bw_rx1_line_start] = color_bw;
-			print_output_line[bw_rx1_line_end] = color_bw;
-			print_output_line[(LAYOUT->FFT_PRINT_SIZE / 2)] = color_center;
-		}
+		uint16_t color_bw = palette_fft[fftHeight / 2];
+		uint16_t color_center = palette_fft[0];
+		print_output_line[bw_rx1_line_start] = color_bw;
+		print_output_line[bw_rx1_line_end] = color_bw;
+		print_output_line[(LAYOUT->FFT_PRINT_SIZE / 2)] = color_center;
 		
 		// Lets print line to LCD
 		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fft_y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_y);
