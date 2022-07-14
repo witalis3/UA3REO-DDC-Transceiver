@@ -934,7 +934,6 @@ static inline void FPGA_setBusInput(void)
 	GPIOA->MODER = temp;*/
 
 	FPGA_setGPIOBusInput; // macros
-	__asm("nop");__asm("nop");__asm("nop");
 }
 
 // switch bus to pin
@@ -962,7 +961,6 @@ static inline void FPGA_setBusOutput(void)
 	GPIOA->MODER = temp;*/
 
 	FPGA_setGPIOBusOutput; // macros
-	__asm("nop");__asm("nop");__asm("nop");
 }
 
 // raise the CLK signal
@@ -976,7 +974,6 @@ static inline void FPGA_clockRise(void)
 static inline void FPGA_clockFall(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = (FPGA_CLK_Pin << 16U);
-	__asm("nop");__asm("nop");__asm("nop");
 }
 
 // raise CLK and SYNC signal, then lower
@@ -985,7 +982,6 @@ static inline void FPGA_syncAndClockRiseFall(void)
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_SYNC_Pin;
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin;
 	FPGA_CLK_GPIO_Port->BSRR = (FPGA_SYNC_Pin << 16U) | (FPGA_CLK_Pin << 16U);
-	__asm("nop");__asm("nop");__asm("nop");
 }
 
 static uint8_t FPGA_spi_start_command(uint8_t command) // execute command to SPI flash
