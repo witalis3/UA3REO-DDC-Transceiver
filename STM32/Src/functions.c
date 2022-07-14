@@ -251,10 +251,15 @@ float32_t volume2rate(float32_t i) // from the position of the volume knob to th
 	float32_t mute_zone = 15.0f;
 	if (MAX_VOLUME_VALUE == 100.0f)
 		mute_zone = 1.0f;
-
-	if (i < (mute_zone / MAX_VOLUME_VALUE)) // mute zone
+	
+	if (i == 0.0f)
 		return 0.0f;
 
+#if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
+	if (i < (mute_zone / MAX_VOLUME_VALUE)) // mute zone
+		return 0.0f;
+#endif
+	
 	return powf(VOLUME_EPSILON, (1.0f - i));
 }
 
