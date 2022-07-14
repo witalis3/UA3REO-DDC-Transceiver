@@ -292,19 +292,52 @@ static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_setBusOutput();
 	FPGA_writePacket(1);
 	FPGA_syncAndClockRiseFall();
+
+	//ATT CALC
+	float32_t att_val = TRX.ATT_DB;
+	bool att_val_16 = false, att_val_8 = false, att_val_4 = false, att_val_2 = false, att_val_1 = false, att_val_05 = false;
+	if (TRX.ATT && att_val >= 16.0f)
+	{
+		att_val_16 = true;
+		att_val -= 16.0f;
+	}
+	if (TRX.ATT && att_val >= 8.0f)
+	{
+		att_val_8 = true;
+		att_val -= 8.0f;
+	}
+	if (TRX.ATT && att_val >= 4.0f)
+	{
+		att_val_4 = true;
+		att_val -= 4.0f;
+	}
+	if (TRX.ATT && att_val >= 2.0f)
+	{
+		att_val_2 = true;
+		att_val -= 2.0f;
+	}
+	if (TRX.ATT && att_val >= 1.0f)
+	{
+		att_val_1 = true;
+		att_val -= 1.0f;
+	}
+	if (TRX.ATT && att_val >= 0.5f)
+	{
+		att_val_05 = true;
+		att_val -= 0.5f;
+	}
 	
 	// STAGE 2
 	// out PTT+PREAMP
-	uint8_t att_val = (uint8_t)TRX.ATT_DB;
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK));				  // RX1
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, false); // RX2
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK));								  // TX
-	bitWrite(FPGA_fpgadata_out_tmp8, 3, 0); //ATT_05
+	bitWrite(FPGA_fpgadata_out_tmp8, 3, att_val_05); //ATT_05
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
 	if (TRX_on_TX)
 		bitWrite(FPGA_fpgadata_out_tmp8, 4, true); // shutdown ADC on TX
-	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 5, (att_val >> 0) & 0x1); //ATT_1
-	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 6, (att_val >> 1) & 0x1); //ATT_2
+	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 5, att_val_1); //ATT_1
+	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 6, att_val_2); //ATT_2
 	if (!TRX_on_TX)
 		bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX.ADC_Driver);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
@@ -511,9 +544,9 @@ static inline void FPGA_fpgadata_sendparam(void)
 	// STAGE 17
 	// OUT SETTINGS
 	FPGA_fpgadata_out_tmp8 = 0;
-	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 0, (att_val >> 2) & 0x1); //ATT_4
-	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 1, (att_val >> 3) & 0x1); //ATT_8
-	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 2, (att_val >> 4) & 0x1);	//ATT_16
+	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 0, att_val_4); //ATT_4
+	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 1, att_val_8); //ATT_8
+	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 2, att_val_16);	//ATT_16
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, BPF_A); //BPF_A
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, BPF_B); //BPF_B
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, !BPF_OE1); //BPF_OE1
