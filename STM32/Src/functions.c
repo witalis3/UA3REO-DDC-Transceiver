@@ -474,7 +474,13 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 	}
 	if (res == HAL_ERROR)
 	{
-		println("[ERR] SPI error, code: ", hspi->ErrorCode, " COUNT: ", count);
+		print("[ERR] SPI error, code: ", hspi->ErrorCode, " COUNT: ", count, " MODE: ");
+		if (in_data == NULL) {
+			println("TX");
+		} else if (out_data == NULL) {
+			println("RX");
+		} else { println("TXRX"); }
+		
 		return false;
 	}
 
