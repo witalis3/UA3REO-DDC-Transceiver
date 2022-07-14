@@ -9,22 +9,24 @@
 #include "BiquadDesigner/biquad.h"
 
 #ifdef STM32F407xx
-#define IQ_HILBERT_TAPS_RX 101														 // Hilbert filter order RX
-#define IIR_LPF_STAGES 8									 // order of IIR LPF filters
-#define IIR_HPF_STAGES 3														 // order of IIR HPF filters
+	#define IQ_HILBERT_TAPS_RX 101														 // Hilbert filter order RX
+	#define IIR_LPF_STAGES 8									 // order of IIR LPF filters
+	#define IIR_HPF_STAGES 3														 // order of IIR HPF filters
+	#define IIR_DECIMATOR_FILTER_STAGES 5											 // order of decimator filter
 #else
-#define IQ_HILBERT_TAPS_RX 201														 // Hilbert filter order RX
-#define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS									 // order of IIR LPF filters (12)
-#define IIR_HPF_STAGES 5														 // order of IIR HPF filters
+	#define IQ_HILBERT_TAPS_RX 201														 // Hilbert filter order RX
+	#define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS									 // order of IIR LPF filters (12)
+	#define IIR_HPF_STAGES 5														 // order of IIR HPF filters
+	#define IIR_DECIMATOR_FILTER_STAGES 9											 // order of decimator filter
 #endif
 
 #define IQ_HILBERT_TAPS_TX 201														 // Hilbert filter order TX
-#define IIR_DECIMATOR_FILTER_STAGES 9											 // order of decimator filter
 #define NOTCH_STAGES 3															 // order of manual Notch filter
 #define EQ_STAGES 1																 // order of the biquad of the equalizer filter
 #define GAUSS_STAGES 1															 // order of the gauss CW filter
 #define GAUSS_WIDTH 20															 // passband of gauss CW filter
 #define BIQUAD_COEFF_IN_STAGE 5													 // coefficients in manual Notch filter order
+#define SFM_FILTER_STAGES 3
 #define FIR_RX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS_RX + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
 #define FIR_TX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS_TX + AUDIO_BUFFER_HALF_SIZE - 1)
 #define IIR_RX_LPF_Taps_STATE_SIZE (IIR_LPF_STAGES * 2)
@@ -33,7 +35,6 @@
 #define IIR_RX_HPF_Taps_STATE_SIZE (IIR_HPF_STAGES * 2)
 #define IIR_TX_HPF_Taps_STATE_SIZE (IIR_HPF_STAGES * 2)
 #define IIR_RX_HPF_SQL_STATE_SIZE (IIR_HPF_STAGES * 2)
-#define SFM_FILTER_STAGES 3
 
 #define CW_HPF_COUNT 8
 #define SSB_HPF_COUNT 8
