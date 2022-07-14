@@ -292,6 +292,9 @@ void LoadSettings(bool clear)
 		TRX.FFT_Sensitivity = 8;   // Threshold of FFT autocalibrate
 		TRX.FFT_Speed = 3;		   // FFT Speed
 		TRX.FFT_Averaging = 8;	   // averaging the FFT to make it smoother
+#ifdef STM32F407xx
+		TRX.FFT_Averaging = 6;
+#endif
 		TRX.FFT_Window = 1;		   // FFT Window
 		TRX.FFT_Style = 1;		   // FFT style
 		TRX.FFT_BW_Style = 2;	   // FFT BW style
