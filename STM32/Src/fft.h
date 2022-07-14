@@ -17,7 +17,7 @@
 #ifdef STM32F407xx
 	#define FFT_SIZE 512       // specify the size of the calculated FFT
 	#define FFT_USEFUL_SIZE 480 // size after FFT cropping
-	#define FFT_MAX_MEANS 2           // store old fft data for meaning
+	#define FFT_MAX_MEANS 6           // store old fft data for meaning
 #endif
 
 #define FFT_HALF_SIZE (FFT_SIZE / 2)

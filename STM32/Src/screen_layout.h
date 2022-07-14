@@ -262,8 +262,8 @@ extern "C"
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
 	#ifdef FRONTPANEL_LITE
 		#define LAYOUT_THEMES_COUNT 1
-		#define MAX_FFT_HEIGHT 104
-		#define MAX_WTF_HEIGHT 104
+		#define MAX_FFT_HEIGHT 90
+		#define MAX_WTF_HEIGHT 90
 		#define FFT_AND_WTF_HEIGHT 130
 	#else
 		#define LAYOUT_THEMES_COUNT 2
