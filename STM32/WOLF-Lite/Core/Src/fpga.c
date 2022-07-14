@@ -509,14 +509,14 @@ static inline void FPGA_fpgadata_sendparam(void)
 	}
 
 	// STAGE 17
-	// OUT DAC/DCDC SETTINGS
+	// OUT SETTINGS
 	FPGA_fpgadata_out_tmp8 = 0;
 	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 0, (att_val >> 2) & 0x1); //ATT_4
 	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 1, (att_val >> 3) & 0x1); //ATT_8
 	if(TRX.ATT) bitWrite(FPGA_fpgadata_out_tmp8, 2, (att_val >> 4) & 0x1);	//ATT_16
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, BPF_A); //BPF_A
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, BPF_B); //BPF_B
-	bitWrite(FPGA_fpgadata_out_tmp8, 5, BPF_OE1); //BPF_OE1
+	bitWrite(FPGA_fpgadata_out_tmp8, 5, !BPF_OE1); //BPF_OE1
 	// 11 - 48khz 01 - 96khz 10 - 192khz 00 - 384khz IQ speed
 	switch (TRX_GetRXSampleRateENUM)
 	{
@@ -570,7 +570,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 	// STAGE 22
 	// OUT PARAMS
 	FPGA_fpgadata_out_tmp8 = 0;
-	bitWrite(FPGA_fpgadata_out_tmp8, 0, BPF_OE1);
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, !BPF_OE2);
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, LPF_1);
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, LPF_2);
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, LPF_3);
