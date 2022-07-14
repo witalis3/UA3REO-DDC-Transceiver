@@ -9,7 +9,7 @@
 // useful info https://github.com/df8oe/UHSDR/wiki/Noise-reduction
 
 // Private variables
-SRAM static NR_Instance NR_RX1 = {0};
+SRAM_ON_H743 static NR_Instance NR_RX1 = {0};
 #if HRDW_HAS_DUAL_RX
 SRAM static NR_Instance NR_RX2 = {0};
 #endif
