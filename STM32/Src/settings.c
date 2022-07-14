@@ -160,7 +160,7 @@ void LoadSettings(bool clear)
 #endif
 #ifdef STM32F407xx
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
-		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
+		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K48;  // Samplerate for FM mode
 #endif
 		TRX.FRQ_STEP = 10;					// frequency tuning step by the main encoder
 		TRX.FRQ_FAST_STEP = 100;			// frequency tuning step by the main encoder in FAST mode
