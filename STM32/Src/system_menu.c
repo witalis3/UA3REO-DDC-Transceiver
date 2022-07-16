@@ -496,7 +496,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 
 const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 	{
-#if defined(FRONTPANEL_X1)
+#if defined(FRONTPANEL_X1) || defined(FRONTPANEL_LITE)
 		{"Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.Volume, SYSMENU_HANDL_AUDIO_Volume},
 #endif
 		{"IF Gain, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
@@ -958,7 +958,8 @@ static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex);
 static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex);
 static void setCurrentMenuIndex(uint8_t index);
 static uint8_t getCurrentMenuIndex(void);
-
+static uint16_t getIndexByName(const struct sysmenu_item_handler *menu, uint16_t menu_length, char* name);
+	
 static const struct sysmenu_item_handler *sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_handlers[0];
 static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
 static uint16_t sysmenu_y = 5;
@@ -1007,16 +1008,19 @@ static void SYSMENU_HANDL_TRXMENU(int8_t direction)
 void SYSMENU_TRX_RFPOWER_HOTKEY(void)
 {
 	SYSMENU_HANDL_TRXMENU(0);
-	setCurrentMenuIndex(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "RF Power");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_TRX_STEP_HOTKEY(void)
 {
 	SYSMENU_HANDL_TRXMENU(0);
-	setCurrentMenuIndex(7);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "Freq Step");
 	if (TRX.Fast)
-		setCurrentMenuIndex(8);
+		index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "Freq Step FAST");
+	
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
@@ -1560,63 +1564,72 @@ static void SYSMENU_HANDL_AUDIOMENU(int8_t direction)
 void SYSMENU_AUDIO_BW_SSB_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(13);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "SSB LPF RX Pass");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_IF_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(1);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "IF Gain, dB");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_CW_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(15);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "CW LPF Pass");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_AM_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(17);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "AM LPF RX Pass");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_BW_FM_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(19);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "FM LPF RX Pass");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(11);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "SSB HPF RX Pass");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_SQUELCH_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(23);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "FM Squelch level, dbm");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_DNR_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(8);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "DNR1 Threshold");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_AUDIO_AGC_HOTKEY(void)
 {
 	SYSMENU_HANDL_AUDIOMENU(0);
-	setCurrentMenuIndex(34);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "AGC");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
@@ -2147,14 +2160,16 @@ static void SYSMENU_HANDL_CWMENU(int8_t direction)
 void SYSMENU_CW_WPM_HOTKEY(void)
 {
 	SYSMENU_HANDL_CWMENU(0);
-	setCurrentMenuIndex(4);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "CW Keyer WPM");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_CW_KEYER_HOTKEY(void)
 {
 	SYSMENU_HANDL_CWMENU(0);
-	setCurrentMenuIndex(3);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "CW Keyer");
+	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
@@ -5064,7 +5079,8 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 void SYSMENU_SERVICE_FT8_HOTKEY(void)
 {
 	SYSMENU_HANDL_SERVICESMENU(0);
-	setCurrentMenuIndex(8);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "FT-8 Decoder");
+	setCurrentMenuIndex(index);
 	#if FT8_SUPPORT
 	SYSMENU_HANDL_FT8_Decoder(1);
 	#endif
@@ -6362,5 +6378,13 @@ static uint8_t getCurrentMenuIndex(void)
 		if (sysmenu_wrappers[i].menu_handler == sysmenu_handlers_selected)
 			return sysmenu_wrappers[i].currentIndex;
 
+	return 0;
+}
+
+static uint16_t getIndexByName(const struct sysmenu_item_handler *menu, uint16_t menu_length, char* name) 
+{
+	for(uint16_t i = 0; i < menu_length; i++)
+		if(strcmp(menu[i].title, name) == 0)
+			return i;
 	return 0;
 }
