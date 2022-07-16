@@ -1,0 +1,3 @@
+Record=TopLevelDocument|FileName=RF-BIG-DB5AT_main_v1.schdoc|SheetNumber=1
+Record=SheetSymbol|SourceDocument=RF-BIG-DB5AT_main_v1.schdoc|Designator=U_HF_AMP|SchDesignator=U_HF_AMP|FileName=HF_AMP.SchDoc|SheetNumber=3|SymbolType=Normal|RawFileName=HF_AMP.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=RF-BIG-DB5AT_main_v1.schdoc|Designator=U_HF_AMP_DRIVER|SchDesignator=U_HF_AMP_DRIVER|FileName=HF_AMP_DRIVER.SchDoc|SheetNumber=2|SymbolType=Normal|RawFileName=HF_AMP_DRIVER.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 

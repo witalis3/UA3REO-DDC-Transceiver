@@ -3,10 +3,8 @@ FPGA/*/output_files/*
 FPGA/*/greybox_tmp/*
 FPGA/*/incremental_db/*
 Scheme/ALTIUM_DESIGNER/__Previews/*
-Scheme/EXPERIMANTAL/__Previews/*
-Scheme/ALTIUM_DESIGNER/*/__Previews/*
-Scheme/EXPERIMANTAL/*/__Previews/*
-Scheme/ALTIUM_DESIGNER/*/History/*
+Scheme/ALTIUM_DESIGNER/*/*/__Previews/*
+Scheme/ALTIUM_DESIGNER/*/*/History/*
 Scheme/*/*/*.PcbDoc.htm
 STM32/*/MDK-ARM/WOLF/*.htm
 STM32/*/MDK-ARM/WOLF/*.hex
