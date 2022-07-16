@@ -1,3 +1,4 @@
+#include "usbd_ua3reo.h"
 #include "usbd_iq_if.h"
 #include "functions.h"
 #include "wm8731.h"

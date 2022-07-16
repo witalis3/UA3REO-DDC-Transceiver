@@ -449,6 +449,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\lcd.c</FilePath>
             </File>
+            <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\WOLF\Src\fpga.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -608,11 +613,6 @@
               <FileName>fonts.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\fonts.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\fpga.c</FilePath>
             </File>
             <File>
               <FileName>fpga.h</FileName>

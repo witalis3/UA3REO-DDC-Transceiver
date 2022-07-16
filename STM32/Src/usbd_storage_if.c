@@ -1,3 +1,4 @@
+#include "usbd_ua3reo.h"
 #include "usbd_storage_if.h"
 #include "sd.h"
 #include "lcd.h"
