@@ -61,10 +61,6 @@ void SELF_TEST_Stop(void)
 // draw
 void SELF_TEST_Draw(void)
 {
-	#ifdef STM32F407xx
-	return;
-	#endif
-	
 	if (LCD_busy)
 	{
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -131,10 +127,12 @@ void SELF_TEST_Draw(void)
 		SELF_TEST_printResult(WM8731_test_result, pos_y);
 		pos_y += margin_bottom;
 		
+		#if !defined(FRONTPANEL_LITE)
 		// TCXO test
 		LCDDriver_printText("TCXO", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		SELF_TEST_printResult(abs(TRX_VCXO_ERROR) < 10, pos_y);
 		pos_y += margin_bottom;
+		#endif
 	}
 
 	if (SELF_TEST_current_page == 1)
@@ -173,10 +171,12 @@ void SELF_TEST_Draw(void)
 		LCDDriver_printText("10 ", margin_left, pos_y, (ok[9]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("11 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[10]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("12 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[11]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+		#if !defined(FRONTPANEL_LITE)
 		LCDDriver_printText("13 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[12]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("14 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[13]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("15 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[14]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("16 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[15]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+		#endif
 		pos_y += margin_bottom;
 
 		// redraw loop
@@ -280,14 +280,18 @@ void SELF_TEST_Draw(void)
 			float32_t ADC_PGA_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ADC_PGA_db = rate2dbV(ADC_PGA_signal / base_signal);
 
+			#if !defined(FRONTPANEL_LITE)
 			LCDDriver_printText("ADC PGA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d          ", (uint16_t)ADC_PGA_signal);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_PGA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+			#endif
 			pos_y += margin_bottom;
 
+			#if !defined(FRONTPANEL_LITE)
 			LCDDriver_printText("ADC PGA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %.2f dB          ", ADC_PGA_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_PGA_db > 2.0f && ADC_PGA_db < 5.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+			#endif
 			pos_y += margin_bottom;
 
 			current_test = 6;
@@ -310,14 +314,18 @@ void SELF_TEST_Draw(void)
 			float32_t ADC_LNA_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ADC_LNA_db = rate2dbV(ADC_LNA_signal / base_signal);
 
+			#if !defined(FRONTPANEL_LITE)
 			LCDDriver_printText("LNA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d          ", (uint16_t)ADC_LNA_signal);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+			#endif
 			pos_y += margin_bottom;
 
+			#if !defined(FRONTPANEL_LITE)
 			LCDDriver_printText("LNA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %.2f dB          ", ADC_LNA_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_db > 15.0f && ADC_LNA_db < 30.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+			#endif
 			pos_y += margin_bottom;
 
 			current_test = 0;
