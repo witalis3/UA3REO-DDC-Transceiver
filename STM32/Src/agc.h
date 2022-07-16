@@ -14,7 +14,9 @@ typedef struct
 	float32_t need_gain_db_old;
 	float32_t AGC_RX_dbFS_old;
 	uint32_t last_agc_peak_time;
+	#ifndef STM32F407xx
 	float32_t agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE];
+	#endif
 	float32_t ringbuffer[AGC_RINGBUFFER_TAPS_SIZE * AUDIO_BUFFER_HALF_SIZE];
 	uint16_t hold_time;
 } AGC_RX_Instance;

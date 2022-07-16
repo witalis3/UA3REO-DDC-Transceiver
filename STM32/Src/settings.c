@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-char version_string[19] = "4.3.0-dev";
+const char version_string[19] = "4.3.0-dev";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -1052,6 +1052,7 @@ void BKPSRAM_Disable(void)
 
 static uint8_t calculateCSUM(void)
 {
+	#if HRDW_HAS_SD
 	sd_crc_generate_table();
 	uint8_t csum_old = TRX.csum;
 	uint8_t csum_new = 0;
@@ -1061,10 +1062,14 @@ static uint8_t calculateCSUM(void)
 		csum_new = sd_crc7_byte(csum_new, *(TRX_addr + i));
 	TRX.csum = csum_old;
 	return csum_new;
+	#else
+	return 100;
+	#endif
 }
 
 static uint8_t calculateCSUM_EEPROM(void)
 {
+	#if HRDW_HAS_SD
 	sd_crc_generate_table();
 	uint8_t csum_old = CALIBRATE.csum;
 	uint8_t csum_new = 0;
@@ -1074,6 +1079,9 @@ static uint8_t calculateCSUM_EEPROM(void)
 		csum_new = sd_crc7_byte(csum_new, *(CALIBRATE_addr + i));
 	CALIBRATE.csum = csum_old;
 	return csum_new;
+	#else
+	return 100;
+	#endif
 }
 
 void RTC_Calibration(void)

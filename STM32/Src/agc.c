@@ -43,8 +43,10 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	// do k-weighting (for LKFS)
 	if (rx_id == AUDIO_RX1)
 	{
+		#ifndef STM32F407xx
 		arm_biquad_cascade_df2T_f32_single(&AGC_RX1_KW_HSHELF_FILTER, agcBuffer_i, AGC->agcBuffer_kw, blockSize);
 		arm_biquad_cascade_df2T_f32_single(&AGC_RX1_KW_HPASS_FILTER, agcBuffer_i, AGC->agcBuffer_kw, blockSize);
+		#endif
 	}
 	#if HRDW_HAS_DUAL_RX
 	else
@@ -68,7 +70,13 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 
 	// calculate the magnitude in dBFS
 	float32_t AGC_RX_magnitude = 0;
+	
+	#ifndef STM32F407xx
 	arm_rms_f32(AGC->agcBuffer_kw, blockSize, &AGC_RX_magnitude);
+	#else
+	arm_rms_f32(agcBuffer_i, blockSize, &AGC_RX_magnitude);
+	#endif
+	
 	if (AGC_RX_magnitude == 0.0f)
 		AGC_RX_magnitude = 0.001f;
 	float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;

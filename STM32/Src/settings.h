@@ -689,7 +689,7 @@ extern struct TRX_CALIBRATE
 	uint8_t ENDBit; // end bit
 } CALIBRATE;
 
-extern char version_string[19]; // 1.2.3-yymmdd.hhmmss
+extern const char version_string[19]; // 1.2.3
 extern volatile bool NeedSaveSettings;
 extern volatile bool NeedSaveCalibration;
 extern volatile bool EEPROM_Busy;

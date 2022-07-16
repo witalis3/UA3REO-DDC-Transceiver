@@ -62,8 +62,11 @@ demod_fm_instance DFM_RX2 = {.squelchRate = 1.0f};
 #endif
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
-IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
 static bool preprocessor_buffer_ready = false;
+
+#ifndef STM32F407xx
+IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
+#endif
 
 // Prototypes
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);																							  // Hilbert filter for phase shift of signals
@@ -1468,6 +1471,7 @@ static void doMIC_EQ(uint16_t size, uint8_t mode)
 		break;
 	}
 
+	#ifndef STM32F407xx
 	// Reverber
 	if (TRX.MIC_REVERBER > 0)
 	{
@@ -1492,6 +1496,7 @@ static void doMIC_EQ(uint16_t size, uint8_t mode)
 		arm_add_f32(&Processor_Reverber_Buffer[reverber_position * size], APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		arm_scale_f32(APROC_Audio_Buffer_TX_I, 0.5f, APROC_Audio_Buffer_TX_I, size);
 	}
+	#endif
 }
 
 // Digital Noise Reduction
