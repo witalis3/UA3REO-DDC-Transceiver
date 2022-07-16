@@ -1598,8 +1598,6 @@ void FFT_ShortBufferPrintFFT(void)
 			fft_output_prepared++;
 		}
 		
-		println(fft_y, " ", fft_output_printed, " ", fft_output_prepared);
-		
 		// Lets print line to LCD
 		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fft_output_printed, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_output_printed + fft_output_prepared);
 		HAL_DMA_Start(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_short_buffer[0][0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE * fft_output_prepared);
