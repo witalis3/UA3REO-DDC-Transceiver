@@ -1252,8 +1252,31 @@ static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (rx_id == AUDIO_RX1)
 	{
+		#ifndef STM32F407xx
 		arm_fir_f32(&FIR_RX1_Hilbert_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
 		arm_fir_f32(&FIR_RX1_Hilbert_Q, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_Q, size);
+		#endif
+		
+		#ifdef STM32F407xx
+		//single transformer for slow CPU
+		arm_fir_f32(&FIR_RX1_Hilbert_I, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_I, size);
+		
+		#define HILBERT_DELAY (IQ_HILBERT_TAPS_RX / 2 + 1)
+		static float32_t rx1_hilbert_delay_buffer[HILBERT_DELAY] = {0};
+		static uint32_t rx1_hilbert_delay_buffer_head = 1;
+		static uint32_t rx1_hilbert_delay_buffer_tail = 0;
+		
+		for(uint32_t i = 0; i < size; i++) {
+			rx1_hilbert_delay_buffer[rx1_hilbert_delay_buffer_tail] = APROC_Audio_Buffer_RX1_Q[i];
+			APROC_Audio_Buffer_RX1_Q[i] = rx1_hilbert_delay_buffer[rx1_hilbert_delay_buffer_head];
+			
+			rx1_hilbert_delay_buffer_head++;
+			rx1_hilbert_delay_buffer_tail++;
+			
+			if(rx1_hilbert_delay_buffer_head == HILBERT_DELAY) rx1_hilbert_delay_buffer_head = 0;
+			if(rx1_hilbert_delay_buffer_tail == HILBERT_DELAY) rx1_hilbert_delay_buffer_tail = 0;
+		}
+		#endif
 	}
 	#if HRDW_HAS_DUAL_RX
 	else
