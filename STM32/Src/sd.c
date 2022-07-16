@@ -455,6 +455,9 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)
 		need_cqmess_reopen = true;
 		LCD_showTooltip("Stop recording");
 
+		// update file size
+		f_truncate(&File);
+		
 		// update wav length
 		f_lseek(&File, 0);
 		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
