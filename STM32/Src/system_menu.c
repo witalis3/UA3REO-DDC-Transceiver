@@ -351,6 +351,7 @@ static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction);
 static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction);
+static void SYSMENU_HANDL_CALIB_PWR_CUR_Calibration(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction);
 static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction); // Tisho
 static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction);
@@ -872,7 +873,12 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"INA226_PWR_MON", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},				  // Tisho
 		{"INA226_Cur_Calc(mA/Bit)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL}, // Tisho
 #endif
-		//{"PWR VLT Calibr", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_HANDL_CALIB_PWR_VLT_Calibration},
+#if defined(FRONTPANEL_X1) || defined(FRONTPANEL_LITE)
+		{"PWR VLT Calibr", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_HANDL_CALIB_PWR_VLT_Calibration},
+#endif
+		#if defined(FRONTPANEL_X1)
+		{"PWR CUR Calibr", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.PWR_CUR_Calibration, SYSMENU_HANDL_CALIB_PWR_CUR_Calibration},
+#endif
 		{"ATU Averaging", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&CALIBRATE.ATU_AVERAGING, SYSMENU_HANDL_CALIB_ATU_AVERAGING},
 		{"CAT Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.CAT_Type, SYSMENU_HANDL_CALIB_CAT_Type, {"FT-450", "TS2000"}},
 		{"LNA Compensation", SYSMENU_INT8, NULL, (uint32_t *)&CALIBRATE.LNA_compensation, SYSMENU_HANDL_CALIB_LNA_compensation},
@@ -918,7 +924,7 @@ const static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 
 const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 	{
-#if HRDW_HAS_WIFI
+#if HRDW_HAS_WIFI && !defined(FRONTPANEL_X1)
 		{"DX Cluster", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DX_CLUSTER},
 		{"Propagination", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGINATION},
 		{"RDA Statistics", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RDA_STATS},
@@ -5063,6 +5069,15 @@ static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction)
 		CALIBRATE.PWR_VLT_Calibration = 1.0f;
 	if (CALIBRATE.PWR_VLT_Calibration > 1500.0f)
 		CALIBRATE.PWR_VLT_Calibration = 1500.0f;
+}
+
+static void SYSMENU_HANDL_CALIB_PWR_CUR_Calibration(int8_t direction)
+{
+	CALIBRATE.PWR_CUR_Calibration += (float32_t)direction * 0.01f;
+	if (CALIBRATE.PWR_CUR_Calibration < 0.01f)
+		CALIBRATE.PWR_CUR_Calibration = 0.01f;
+	if (CALIBRATE.PWR_CUR_Calibration > 5.0f)
+		CALIBRATE.PWR_CUR_Calibration = 5.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_ATU_AVERAGING(int8_t direction)
