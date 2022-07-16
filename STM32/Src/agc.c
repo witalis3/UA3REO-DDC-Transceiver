@@ -152,7 +152,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	}
 	
 	// apply gain
-	// println("cur agc: ", AGC_RX_dbFS, " need: ", AGC->need_gain_db);
+	// println("cur agc: ", AGC_RX_dbFS, " need: ", AGC->need_gain_db, " cur: ", current_need_gain, " old: ", AGC->need_gain_db_old);
 	if (fabsf(AGC->need_gain_db_old - current_need_gain) >= 1.0f) // gain changed
 	{
 		float32_t gainApplyStep = 0;
@@ -179,9 +179,9 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	}
 	else // gain did not change, apply gain across all samples
 	{
-		arm_scale_f32(agcBuffer_i, db2rateV(AGC->need_gain_db), agcBuffer_i, blockSize);
+		arm_scale_f32(agcBuffer_i, db2rateV(AGC->need_gain_db_old), agcBuffer_i, blockSize);
 		if (stereo)
-			arm_scale_f32(agcBuffer_q, db2rateV(AGC->need_gain_db), agcBuffer_q, blockSize);
+			arm_scale_f32(agcBuffer_q, db2rateV(AGC->need_gain_db_old), agcBuffer_q, blockSize);
 	}
 }
 
