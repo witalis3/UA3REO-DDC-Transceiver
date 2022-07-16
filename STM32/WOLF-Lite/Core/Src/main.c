@@ -29,6 +29,7 @@
 #include "fpga.h"
 #include "front_unit.h"
 #include "rf_unit.h"
+#include "bootloader.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -197,7 +198,7 @@ int main(void)
 	{
 		TRX.NeedGoToBootloader = false;
 		SaveSettings();
-    //JumpToBootloader();
+    JumpToBootloader();
 	}
 	
 	println("[OK] Calibration loading");
