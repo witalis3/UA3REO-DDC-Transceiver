@@ -215,13 +215,16 @@ extern uint8_t rev8(uint8_t data);
 extern bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma);
 extern float32_t quick_median_select(float32_t *arr, int n);
 extern uint8_t getInputType(void);
+#if HRDW_HAS_SD
 extern unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte);
 extern unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte);
 extern void sd_crc_generate_table(void);
+#endif
 extern void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst, uint32_t blockSize);
 extern void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q, const float32_t *pSrc_I, const float32_t *pSrc_Q, float32_t *pDst_I, float32_t *pDst_Q, uint32_t blockSize);
 extern char cleanASCIIgarbage(char chr);
 extern bool textStartsWith(const char *a, const char *b);
 extern void *alloc_to_wtf(uint32_t size, bool reset);
+extern float fast_sqrt(const float x);
 
 #endif

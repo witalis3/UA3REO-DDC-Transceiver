@@ -818,6 +818,7 @@ uint8_t getInputType(void)
 	return type;
 }
 
+#if HRDW_HAS_SD
 /* CRC16 table (for SD data) */
 static unsigned int sd_crc16_table[256];
 /* CRC7 table (for SD commands) */
@@ -876,6 +877,7 @@ void sd_crc_generate_table(void)
 	}
 	crc_table_generated = true;
 }
+#endif
 
 void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst, uint32_t blockSize)
 {
@@ -1004,3 +1006,18 @@ void *alloc_to_wtf(uint32_t size, bool reset)
 	return p;
 }
 #endif
+
+float fast_sqrt(const float x)
+{
+	#define SQRT_MAGIC_F 0x5f3759df 
+  const float xhalf = 0.5f*x;
+ 
+  union // get bits for floating value
+  {
+    float x;
+    int i;
+  } u;
+  u.x = x;
+  u.i = SQRT_MAGIC_F - (u.i >> 1);  // gives initial guess y0
+  return x*u.x*(1.5f - xhalf*u.x*u.x);// Newton step, repeating increases accuracy 
+}
