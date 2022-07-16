@@ -187,6 +187,9 @@ void LoadSettings(bool clear)
 		strcpy(TRX.LOCATOR, "LO02RR");	  // Locator
 		TRX.Custom_Transverter_Enabled = false;  // Enable transverter mode
 		TRX.Transverter_Offset_Mhz = 144; // Offset from VFO
+#ifdef FRONTPANEL_LITE
+	TRX.Transverter_Offset_Mhz = 28;
+#endif
 		TRX.ATU_I = 0;					  // ATU default state
 		TRX.ATU_C = 0;					  // ATU default state
 		TRX.ATU_T = false;				  // ATU default state
