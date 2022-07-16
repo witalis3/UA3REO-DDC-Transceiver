@@ -41,7 +41,7 @@ const static arm_cfft_instance_f32 *FFT_Inst = &arm_cfft_sR_f32_len256;
 #if HRDW_HAS_FULL_FFT_BUFFER
 IRAM2 uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0}}; // buffer with fft/3d fft/wtf print data
 #else
-IRAM2 uint16_t print_output_line[MAX_FFT_PRINT_SIZE] = {0}; // only line buffer with fft/wtf print data
+IRAM2 uint16_t print_output_short_buffer[FFT_SHORT_BUFFER_SIZE][MAX_FFT_PRINT_SIZE] = {0}; // only line buffer with fft/wtf print data
 #endif
 static float32_t FFTInputCharge[FFT_DOUBLE_SIZE_BUFFER] = {0};				   // charge FFT I and Q buffer
 IRAM2 static float32_t FFTInput[FFT_DOUBLE_SIZE_BUFFER] = {0};				   // combined FFT I and Q buffer
@@ -63,7 +63,9 @@ SRAM static uint8_t indexed_wtf_buffer[MAX_WTF_HEIGHT][MAX_FFT_PRINT_SIZE] = {{0
 static uint64_t wtf_buffer_freqs[MAX_WTF_HEIGHT] = {0};								// frequencies for each row of the waterfall
 static uint64_t fft_meanbuffer_freqs[FFT_MAX_MEANS] = {0};							// frequencies for each row of the fft mean buffer
 IRAM2 static uint16_t fft_header[MAX_FFT_PRINT_SIZE] = {0};							// buffer with fft colors output
+#if HRDW_HAS_FULL_FFT_BUFFER
 IRAM2 static uint16_t fft_peaks[MAX_FFT_PRINT_SIZE] = {0};							// buffer with fft peaks
+#endif
 static int32_t grid_lines_pos[20] = {-1};											// grid lines positions
 static uint64_t grid_lines_freq[20] = {-1};											// grid lines frequencies
 static int32_t rx2_line_pos = -1;													// secondary receiver position on fft
@@ -283,7 +285,7 @@ void FFT_Init(void)
 	#if HRDW_HAS_FULL_FFT_BUFFER
 	memset16(print_output_buffer, color, sizeof(print_output_buffer) / 2);
 	#else
-	dma_memset(print_output_line, 0, sizeof(print_output_line));
+	dma_memset(print_output_short_buffer, 0, sizeof(print_output_short_buffer));
 	#endif
 	dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
 	dma_memset(wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
@@ -834,6 +836,7 @@ bool FFT_printFFT(void)
 	}
 	wtf_buffer_freqs[0] = currentFFTFreq;
 
+#if HRDW_HAS_FULL_FFT_BUFFER
 	// FFT Peaks
 	if (TRX.FFT_HoldPeaks)
 	{
@@ -876,6 +879,7 @@ bool FFT_printFFT(void)
 				fft_peaks[fft_x]--;
 		}
 	}
+#endif
 
 	// calculate bw bar size
 	uint16_t curwidth = CurrentVFO->LPF_RX_Filter_Width;
@@ -1407,7 +1411,7 @@ bool FFT_printFFT(void)
 	
 	// Short buffer version
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y, 0, LAYOUT->FFT_FFTWTF_POS_Y);
-	HAL_DMA_Start_IT(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_line[0], LCD_FSMC_DATA_ADDR, 1);
+	HAL_DMA_Start_IT(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_short_buffer[0][0], LCD_FSMC_DATA_ADDR, 1);
 	
 	#endif
 	
@@ -1424,163 +1428,188 @@ void FFT_ShortBufferPrintFFT(void)
 	if (NeedProcessDecoder)
 		decoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 	uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
+	static uint32_t fft_output_printed = 0;
+	static uint32_t fft_output_prepared = 0;
+	uint32_t fft_y = 0;
 	
-	for (uint32_t fft_y = 0; fft_y < (fftHeight + wtfHeight - decoder_offset); fft_y++)
+	while(fft_output_printed < (fftHeight + wtfHeight - decoder_offset))
 	{
-		if(fft_y < fftHeight) // FFT PART
+		fft_output_prepared = 0;
+		
+		for (uint32_t buff_idx = 0; buff_idx < FFT_SHORT_BUFFER_SIZE; buff_idx++)
 		{
-			// Background and dBM grid
-			uint16_t background = BG_COLOR;
+			fft_y = fft_output_printed + fft_output_prepared;
+			if(fft_y >= (fftHeight + wtfHeight - decoder_offset)) break;
 			
-			if (TRX.FFT_Background)
-				background = palette_bg_gradient[fft_y];
+			if(fft_y < fftHeight) // FFT PART
+			{
+				// Background and dBM grid
+				uint16_t background = BG_COLOR;
+				
+				if (TRX.FFT_Background)
+					background = palette_bg_gradient[fft_y];
 
-			for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
-			{
-				print_output_line[fft_x] = background;
-			}
-		
-			if (TRX.FFT_Style == 1) // gradient
-			{
 				for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
 				{
-					if (fft_y < (fftHeight - fft_header[fft_x])) continue;
-					
-					print_output_line[fft_x] = palette_fft[fft_y];
+					print_output_short_buffer[buff_idx][fft_x] = background;
 				}
-			}
-
-			if (TRX.FFT_Style == 2) // fill
-			{
-				for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
-				{
-					if (fft_y < (fftHeight - fft_header[fft_x])) continue;
-					
-					print_output_line[fft_x] = palette_fft[fftHeight / 2];
-				}
-			}
-
-			if (TRX.FFT_Style >= 3) // dots
-			{
-				for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
-				{
-					if(fft_y != fftHeight - fft_header[fft_x]) continue;
-					
-					print_output_line[fft_x] = palette_fft[fftHeight / 2];
-				}
-			}
-		}
-		
-		// PRINT WATERFALL
-		if(fft_y >= fftHeight)
-		{
-			uint16_t wtf_y_index = fft_y - fftHeight;
 			
-			// calculate offset
-			float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float32_t)fft_zoom;
-			float32_t freq_diff_part = fmodl(freq_diff, 1.0f);
-			int32_t margin_left = 0;
-			if (freq_diff < 0)
-				margin_left = -floorf(freq_diff);
-			if (margin_left > LAYOUT->FFT_PRINT_SIZE)
-				margin_left = LAYOUT->FFT_PRINT_SIZE;
-			int32_t margin_right = 0;
-			if (freq_diff > 0)
-				margin_right = ceilf(freq_diff);
-			if (margin_right > LAYOUT->FFT_PRINT_SIZE)
-				margin_right = LAYOUT->FFT_PRINT_SIZE;
-			if ((margin_left + margin_right) > LAYOUT->FFT_PRINT_SIZE)
-				margin_right = 0;
-			// rounding
-			int32_t body_width = LAYOUT->FFT_PRINT_SIZE - margin_left - margin_right;
-
-			// skip WTF moving
-			if (!TRX.WTF_Moving)
-			{
-				body_width = LAYOUT->FFT_PRINT_SIZE;
-				margin_left = 0;
-				margin_right = 0;
-			}
-
-			// printing
-			if (body_width > 0)
-			{
-				if (margin_left == 0 && margin_right == 0) // print full line
+				if (TRX.FFT_Style == 1) // gradient
 				{
-					for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
-						print_output_line[wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+					{
+						if (fft_y < (fftHeight - fft_header[fft_x])) continue;
+						
+						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fft_y];
+					}
 				}
-				else if (margin_left > 0)
+
+				if (TRX.FFT_Style == 2) // fill
 				{
-					for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++)
-						print_output_line[margin_left + wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+					{
+						if (fft_y < (fftHeight - fft_header[fft_x])) continue;
+						
+						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fftHeight / 2];
+					}
 				}
-				if (margin_right > 0)
+
+				if (TRX.FFT_Style >= 3) // dots
 				{
-					for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_right); wtf_x++)
-						print_output_line[wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]];
+					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++)
+					{
+						if(fft_y != fftHeight - fft_header[fft_x]) continue;
+						
+						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fftHeight / 2];
+					}
 				}
 			}
-		}
-		//////////////////
-		
-		// Draw grids
-		if (TRX.FFT_FreqGrid == 1 || TRX.FFT_FreqGrid == 2)
-		{
-			if(fft_y < fftHeight)
-				for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
-					if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
-						print_output_line[grid_lines_pos[grid_line_index]] = grid_color;
-		}
-		
-		if (TRX.FFT_FreqGrid >= 2)
-		{
+			
+			// PRINT WATERFALL
 			if(fft_y >= fftHeight)
-				for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
-					if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
-						print_output_line[grid_lines_pos[grid_line_index]] = grid_color;
-		}
+			{
+				uint16_t wtf_y_index = fft_y - fftHeight;
+				
+				// calculate offset
+				float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float32_t)fft_zoom;
+				float32_t freq_diff_part = fmodl(freq_diff, 1.0f);
+				int32_t margin_left = 0;
+				if (freq_diff < 0)
+					margin_left = -floorf(freq_diff);
+				if (margin_left > LAYOUT->FFT_PRINT_SIZE)
+					margin_left = LAYOUT->FFT_PRINT_SIZE;
+				int32_t margin_right = 0;
+				if (freq_diff > 0)
+					margin_right = ceilf(freq_diff);
+				if (margin_right > LAYOUT->FFT_PRINT_SIZE)
+					margin_right = LAYOUT->FFT_PRINT_SIZE;
+				if ((margin_left + margin_right) > LAYOUT->FFT_PRINT_SIZE)
+					margin_right = 0;
+				// rounding
+				int32_t body_width = LAYOUT->FFT_PRINT_SIZE - margin_left - margin_right;
 
-		// Gauss filter center
-		if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW)
-		{
+				// skip WTF moving
+				if (!TRX.WTF_Moving)
+				{
+					body_width = LAYOUT->FFT_PRINT_SIZE;
+					margin_left = 0;
+					margin_right = 0;
+				}
+
+				if(body_width != LAYOUT->FFT_PRINT_SIZE) {
+					uint16_t color = palette_wtf[(uint32_t)(GET_FFTHeight * 0.9f)];
+					memset16(print_output_short_buffer[buff_idx], color, sizeof(print_output_short_buffer[buff_idx]) / 2);
+				}
+				
+				// printing
+				if (body_width > 0)
+				{
+					if (margin_left == 0 && margin_right == 0) // print full line
+					{
+						for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++)
+							print_output_short_buffer[buff_idx][wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+					}
+					else if (margin_left > 0)
+					{
+						for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++)
+							print_output_short_buffer[buff_idx][margin_left + wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x]];
+					}
+					if (margin_right > 0)
+					{
+						for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_right); wtf_x++)
+							print_output_short_buffer[buff_idx][wtf_x] = palette_wtf[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]];
+					}
+				}
+			}
+			//////////////////
+			
+			// Draw grids
+			if (TRX.FFT_FreqGrid == 1 || TRX.FFT_FreqGrid == 2)
+			{
+				if(fft_y < fftHeight)
+					for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
+						if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
+							print_output_short_buffer[buff_idx][grid_lines_pos[grid_line_index]] = grid_color;
+			}
+			
+			if (TRX.FFT_FreqGrid >= 2)
+			{
+				if(fft_y >= fftHeight)
+					for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++)
+						if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2))
+							print_output_short_buffer[buff_idx][grid_lines_pos[grid_line_index]] = grid_color;
+			}
+
+			// Gauss filter center
+			if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW)
+			{
+				uint16_t color = palette_fft[fftHeight / 2];
+				print_output_short_buffer[buff_idx][bw_rx1_line_center] = color;
+			}
+
+			// RTTY center frequency
+			if (CurrentVFO->Mode == TRX_MODE_RTTY)
+			{
+				uint16_t color = palette_fft[fftHeight / 2];
+				uint16_t x1 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
+				uint16_t x2 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
+				print_output_short_buffer[buff_idx][x1] = color;
+				print_output_short_buffer[buff_idx][x2] = color;
+			}
+
+			// Show manual Notch filter line
+			if (CurrentVFO->ManualNotchFilter && !TRX_on_TX && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
+			{
+				uint16_t color = palette_fft[fftHeight * 1 / 4];
+				print_output_short_buffer[buff_idx][rx1_notch_line_pos] = color;
+			}
+
+			// Draw RX1 center line
 			uint16_t color = palette_fft[fftHeight / 2];
-			print_output_line[bw_rx1_line_center] = color;
+			print_output_short_buffer[buff_idx][(LAYOUT->FFT_PRINT_SIZE / 2)] = color;
+
+			// Draw BW lines
+			uint16_t color_bw = palette_fft[fftHeight / 2];
+			uint16_t color_center = palette_fft[0];
+			print_output_short_buffer[buff_idx][bw_rx1_line_start] = color_bw;
+			print_output_short_buffer[buff_idx][bw_rx1_line_end] = color_bw;
+			print_output_short_buffer[buff_idx][(LAYOUT->FFT_PRINT_SIZE / 2)] = color_center;
+			
+			fft_output_prepared++;
 		}
-
-		// RTTY center frequency
-		if (CurrentVFO->Mode == TRX_MODE_RTTY)
-		{
-			uint16_t color = palette_fft[fftHeight / 2];
-			uint16_t x1 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
-			uint16_t x2 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
-			print_output_line[x1] = color;
-			print_output_line[x2] = color;
-		}
-
-		// Show manual Notch filter line
-		if (CurrentVFO->ManualNotchFilter && !TRX_on_TX && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE)
-		{
-			uint16_t color = palette_fft[fftHeight * 1 / 4];
-			print_output_line[rx1_notch_line_pos] = color;
-		}
-
-		// Draw RX1 center line
-		uint16_t color = palette_fft[fftHeight / 2];
-		print_output_line[(LAYOUT->FFT_PRINT_SIZE / 2)] = color;
-
-		// Draw BW lines
-		uint16_t color_bw = palette_fft[fftHeight / 2];
-		uint16_t color_center = palette_fft[0];
-		print_output_line[bw_rx1_line_start] = color_bw;
-		print_output_line[bw_rx1_line_end] = color_bw;
-		print_output_line[(LAYOUT->FFT_PRINT_SIZE / 2)] = color_center;
+		
+		println(fft_y, " ", fft_output_printed, " ", fft_output_prepared);
 		
 		// Lets print line to LCD
-		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fft_y, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_y);
-		HAL_DMA_Start(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_line[0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE);
+		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fft_output_printed, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_output_printed + fft_output_prepared);
+		HAL_DMA_Start(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_short_buffer[0][0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE * fft_output_prepared);
 		SLEEPING_DMA_PollForTransfer(&HRDW_LCD_FSMC_COPY_DMA);
+		
+		fft_output_printed += fft_output_prepared;
 	}
+	
+	fft_output_printed = 0;
+	fft_output_prepared = 0;
 	
 	FFT_afterPrintFFT();
 }
