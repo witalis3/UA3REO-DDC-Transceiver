@@ -439,14 +439,15 @@ static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_clockFall();
 	
 	// STAGE 16
-	// OUT ADC OFFSET
-	FPGA_writePacket((CALIBRATE.VCXO_correction & (0XFFU << 8)) >> 8);
+	uint16_t VCXO_PWM = 32750 + CALIBRATE.VCXO_correction;
+	// OUT VCXO PWM
+	FPGA_writePacket((VCXO_PWM & (0XFFU << 8)) >> 8);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	// STAGE 16
-	// OUT VCXO OFFSET
-	FPGA_writePacket(CALIBRATE.VCXO_correction & 0XFFU);
+	// OUT VCXO PWM
+	FPGA_writePacket(VCXO_PWM & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
