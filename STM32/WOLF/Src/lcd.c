@@ -2177,6 +2177,12 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
 #endif
 }
 
+static bool LCD_keyboards_current_lowcase_status = false;
+static void LCD_printKeyboardShiftHandler(uint32_t parameter)
+{
+	LCD_printKeyboard(LCD_keyboardHandler, !LCD_keyboards_current_lowcase_status);
+}
+
 void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase)
 {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
@@ -2191,6 +2197,8 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 	uint16_t buttons_left_offset = button_width * 2.5;
 	uint16_t x = 0;
 	uint16_t y = 0;
+	
+	LCD_keyboards_current_lowcase_status = lowcase;
 	//
 	char line1[] = "1234567890<";
 	for (uint8_t i = 0; i < strlen(line1); i++)
@@ -2225,16 +2233,19 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	}
 	y++;
-	buttons_left_offset += button_width / 2;
 	//
-	char line4[] = "ZXCVBNM,./";
-	if(lowcase) strcpy(line4, "zxcvbnm,./");
+	char line4[] = "^ZXCVBNM,./";
+	if(lowcase) strcpy(line4, "^zxcvbnm,./");
 	for (uint8_t i = 0; i < strlen(line4); i++)
 	{
 		char text[2] = {0};
 		text[0] = line4[i];
 		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		//LCD_keyboards_current_lowcase_status
+		if(i == 0) //shift
+			printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_printKeyboardShiftHandler, LCD_printKeyboardShiftHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		else
+			printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	}
 #endif
 }
