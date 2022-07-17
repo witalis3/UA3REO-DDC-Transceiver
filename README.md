@@ -317,7 +317,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **RTC FINE CALIBR** - Clock crystal calibration, one division is 0.954 ppm
 * **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain
 * **NOTX xxx** - Disable TX on selected bands
-* **ENABLE xxx Band** - Enable hidden bands
+* **ENABLE 60m/4m/AIR/Marine Band** - Enable hidden bands
 * **OTA Update** - Enable OTA firmware update over WiFi
 * **TX Start Delay** - Delay before the RF signal is applied (ms), so that the relay has time to trigger
 * **LCD Rotate** - Rotate screen at 180 degrees

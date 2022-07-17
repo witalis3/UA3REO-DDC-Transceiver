@@ -676,6 +676,8 @@ extern struct TRX_CALIBRATE
 	bool NOTX_2m;
 	bool NOTX_70cm;
 	bool ENABLE_60m_band;
+	bool ENABLE_4m_band;
+	bool ENABLE_AIR_band;
 	bool ENABLE_marine_band;
 	bool OTA_update;
 	bool LCD_Rotate;

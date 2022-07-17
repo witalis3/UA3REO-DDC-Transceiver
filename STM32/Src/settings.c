@@ -655,6 +655,8 @@ void LoadCalibration(bool clear)
 		CALIBRATE.NOTX_2m = false;
 		CALIBRATE.NOTX_70cm = true;
 		CALIBRATE.ENABLE_60m_band = false; // enable hidden bands
+		CALIBRATE.ENABLE_4m_band = false;
+		CALIBRATE.ENABLE_AIR_band = false;
 		CALIBRATE.ENABLE_marine_band = false;
 		CALIBRATE.OTA_update = true;			 // enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;			 // Relay switch delay before RF signal ON, ms
@@ -706,6 +708,8 @@ void LoadCalibration(bool clear)
 	EEPROM_PowerDown();
 	// enable bands
 	BANDS[BANDID_60m].selectable = CALIBRATE.ENABLE_60m_band;
+	BANDS[BANDID_4m].selectable = CALIBRATE.ENABLE_4m_band;
+	BANDS[BANDID_AIR].selectable = CALIBRATE.ENABLE_AIR_band;
 	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
 }
 

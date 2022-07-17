@@ -9,6 +9,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "2200m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 135700,
 			.endFreq = 137800,
 			.regions = (const REGION_MAP[1]){
@@ -22,6 +23,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "LWBR",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 148500,
 			.endFreq = 283500,
 			.regions = (const REGION_MAP[1]){
@@ -35,6 +37,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "MWBR",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 526500,
 			.endFreq = 1606500,
 			.regions = (const REGION_MAP[1]){
@@ -48,6 +51,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "160m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 1810000,
 			.endFreq = 2000000,
 			.regions = (const REGION_MAP[3]){
@@ -63,6 +67,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 2.4",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 2300000,
 			.endFreq = 2468000,
 			.regions = (const REGION_MAP[1]){
@@ -76,6 +81,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 3.3",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 3200000,
 			.endFreq = 3400000,
 			.regions = (const REGION_MAP[1]){
@@ -89,6 +95,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "80m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 3500000,
 			.endFreq = 3800000,
 			.regions = (const REGION_MAP[3]){
@@ -104,6 +111,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 4.0",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 3950000,
 			.endFreq = 4000000,
 			.regions = (const REGION_MAP[1]){
@@ -117,6 +125,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 4.8",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 4750000,
 			.endFreq = 4995000,
 			.regions = (const REGION_MAP[1]){
@@ -130,6 +139,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 5.0",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 5005000,
 			.endFreq = 5060000,
 			.regions = (const REGION_MAP[1]){
@@ -143,6 +153,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "60m",
 			.selectable = false,
+			.broadcast = false,
 			.startFreq = 5330500,
 			.endFreq = 5403500,
 			.regions = (const REGION_MAP[1]){
@@ -156,6 +167,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 6.0",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 5900000,
 			.endFreq = 6200000,
 			.regions = (const REGION_MAP[1]){
@@ -169,6 +181,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "40m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 7000000,
 			.endFreq = 7200000,
 			.regions = (const REGION_MAP[5]){
@@ -186,6 +199,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 7.3",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 7200000,
 			.endFreq = 7450000,
 			.regions = (const REGION_MAP[1]){
@@ -199,6 +213,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 9.6",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 9400000,
 			.endFreq = 9900000,
 			.regions = (const REGION_MAP[1]){
@@ -212,6 +227,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "30m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 10100000,
 			.endFreq = 10150000,
 			.regions = (const REGION_MAP[2]){
@@ -226,6 +242,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 11.9",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 11600000,
 			.endFreq = 12100000,
 			.regions = (const REGION_MAP[1]){
@@ -239,6 +256,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 13.7",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 13570000,
 			.endFreq = 13870000,
 			.regions = (const REGION_MAP[1]){
@@ -252,6 +270,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "20m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 14000000,
 			.endFreq = 14350000,
 			.regions = (const REGION_MAP[3]){
@@ -267,6 +286,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 15.5",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 15100000,
 			.endFreq = 15800000,
 			.regions = (const REGION_MAP[1]){
@@ -280,6 +300,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 17.7",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 17480000,
 			.endFreq = 17900000,
 			.regions = (const REGION_MAP[1]){
@@ -293,6 +314,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "17m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 18068000,
 			.endFreq = 18168000,
 			.regions = (const REGION_MAP[3]){
@@ -308,6 +330,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 19.0",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 18900000,
 			.endFreq = 19020000,
 			.regions = (const REGION_MAP[1]){
@@ -321,6 +344,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "15m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 21000000,
 			.endFreq = 21450000,
 			.regions = (const REGION_MAP[4]){
@@ -336,6 +360,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 21.6",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 21450000,
 			.endFreq = 21850000,
 			.regions = (const REGION_MAP[1]){
@@ -349,6 +374,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "12m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 24890000,
 			.endFreq = 24990000,
 			.regions = (const REGION_MAP[4]){
@@ -364,6 +390,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "BR 25.8",
 			.selectable = false,
+			.broadcast = true,
 			.startFreq = 25670000,
 			.endFreq = 26060000,
 			.regions = (const REGION_MAP[1]){
@@ -377,6 +404,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "CB",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 26065000,
 			.endFreq = 27995000,
 			.regions = (const REGION_MAP[3]){
@@ -591,6 +619,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "10m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 28000000,
 			.endFreq = 29700000,
 			.regions = (const REGION_MAP[9]){
@@ -608,10 +637,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.channels = NULL,
 			.channelsCount = 0,
 		},
-		// 6METERS
+		// 6 METERS
 		{
 			.name = "6m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 50000000,
 			.endFreq = 54000000,
 			.regions = (const REGION_MAP[7]){
@@ -627,14 +657,29 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.channels = NULL,
 			.channelsCount = 0,
 		},
+		// 4 METERS
+		{
+			.name = "4m",
+			.selectable = false,
+			.broadcast = false,
+			.startFreq = 70000000,
+			.endFreq = 70500000,
+			.regions = (const REGION_MAP[7]){
+				{.startFreq = 70000000, .endFreq = 70500000, .mode = TRX_MODE_USB},
+			},
+			.regionsCount = 1,
+			.channels = NULL,
+			.channelsCount = 0,
+		},
 		// FM RADIO
 		{
 			.name = "FM",
 			.selectable = true,
-			.startFreq = 65900000,
+			.broadcast = true,
+			.startFreq = 70500000,
 			.endFreq = 108000000,
 			.regions = (const REGION_MAP[1]){
-				{.startFreq = 65900000, .endFreq = 108000000, .mode = TRX_MODE_WFM},
+				{.startFreq = 70500000, .endFreq = 108000000, .mode = TRX_MODE_WFM},
 			},
 			.regionsCount = 1,
 			.channels = NULL,
@@ -644,6 +689,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "AIR",
 			.selectable = false,
+			.broadcast = false,
 			.startFreq = 108000000,
 			.endFreq = 137000000,
 			.regions = (const REGION_MAP[1]){
@@ -657,6 +703,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "2m",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 144000000,
 			.endFreq = 146000000,
 			.regions = (const REGION_MAP[3]){
@@ -721,6 +768,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "Marine",
 			.selectable = false,
+			.broadcast = false,
 			.startFreq = 156000000,
 			.endFreq = 174000000,
 			.regions = (const REGION_MAP[1]){
@@ -822,6 +870,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "70cm",
 			.selectable = true,
+			.broadcast = false,
 			.startFreq = 430000000,
 			.endFreq = 446200000,
 			.regions = (const REGION_MAP[7]){
@@ -927,6 +976,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "23cm",
 			.selectable = false,
+			.broadcast = false,
 			.startFreq = 1260000000,
 			.endFreq = 1300000000,
 			.regions = (const REGION_MAP[1]){
@@ -940,6 +990,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "13cm",
 			.selectable = false,
+			.broadcast = false,
 			.startFreq = 2320000000,
 			.endFreq = 2450000000,
 			.regions = (const REGION_MAP[1]){
@@ -953,6 +1004,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "6cm",
 			.selectable = false,
+			.broadcast = false,
 			.startFreq = 5650000000,
 			.endFreq = 5850000000,
 			.regions = (const REGION_MAP[1]){
@@ -966,6 +1018,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		{
 			.name = "3cm",
 			.selectable = false,
+			.broadcast = false,
 			.startFreq = 10000000000,
 			.endFreq = 10500000000,
 			.regions = (const REGION_MAP[1]){

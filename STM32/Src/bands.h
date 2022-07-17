@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define BANDS_COUNT 39 // number of bands in the collection
+#define BANDS_COUNT 40 // number of bands in the collection
 
 #define BANDID_2200m 0
 #define BANDID_160m 3
@@ -20,14 +20,16 @@
 #define BANDID_CB 27
 #define BANDID_10m 28
 #define BANDID_6m 29
-#define BANDID_FM 30
-#define BANDID_2m 32
-#define BANDID_Marine 33
-#define BANDID_70cm 34
-#define BANDID_23cm 35
-#define BANDID_13cm 36
-#define BANDID_6cm 37
-#define BANDID_3cm 38
+#define BANDID_4m 30
+#define BANDID_FM 31
+#define BANDID_AIR 32
+#define BANDID_2m 33
+#define BANDID_Marine 34
+#define BANDID_70cm 35
+#define BANDID_23cm 36
+#define BANDID_13cm 37
+#define BANDID_6cm 38
+#define BANDID_3cm 39
 
 typedef struct // description of the region in the band
 {
@@ -48,6 +50,7 @@ typedef struct // description of the band
 {
 	const char *name;
 	bool selectable;
+	bool broadcast;
 	const uint64_t startFreq;
 	const uint64_t endFreq;
 	const REGION_MAP *regions;

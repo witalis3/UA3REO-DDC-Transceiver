@@ -347,6 +347,8 @@ static void SYSMENU_HANDL_CALIB_NOTX_FM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_2m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_70cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENABLE_4m_band(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENABLE_AIR_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction);
@@ -863,6 +865,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"NOTX 2m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2m, SYSMENU_HANDL_CALIB_NOTX_2m},
 		{"NOTX 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_70cm, SYSMENU_HANDL_CALIB_NOTX_70cm},
 		{"ENABLE 60M Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_60m_band, SYSMENU_HANDL_CALIB_ENABLE_60m_band},
+		{"ENABLE 4M Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_4m_band, SYSMENU_HANDL_CALIB_ENABLE_4m_band},
+		{"ENABLE Air Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_AIR_band, SYSMENU_HANDL_CALIB_ENABLE_AIR_band},
 		{"ENABLE Marine Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_HANDL_CALIB_ENABLE_marine_band},
 #if HRDW_HAS_WIFI
 		{"OTA Update", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_HANDL_CALIB_OTA_update},
@@ -4995,6 +4999,26 @@ static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction)
 		CALIBRATE.ENABLE_60m_band = false;
 
 	BANDS[BANDID_60m].selectable = CALIBRATE.ENABLE_60m_band;
+}
+
+static void SYSMENU_HANDL_CALIB_ENABLE_4m_band(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.ENABLE_4m_band = true;
+	if (direction < 0)
+		CALIBRATE.ENABLE_4m_band = false;
+
+	BANDS[BANDID_4m].selectable = CALIBRATE.ENABLE_4m_band;
+}
+
+static void SYSMENU_HANDL_CALIB_ENABLE_AIR_band(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.ENABLE_AIR_band = true;
+	if (direction < 0)
+		CALIBRATE.ENABLE_AIR_band = false;
+
+	BANDS[BANDID_AIR].selectable = CALIBRATE.ENABLE_AIR_band;
 }
 
 static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction)

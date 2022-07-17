@@ -1848,23 +1848,24 @@ static void LCD_showBandWindow(bool secondary_vfo)
 		return;
 
 	uint8_t buttons_in_line = 6;
-	if (TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm)
+	if (TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || BANDS[BANDID_60m].selectable || BANDS[BANDID_4m].selectable || BANDS[BANDID_AIR].selectable || BANDS[BANDID_Marine].selectable)
 		buttons_in_line = 7;
 
 	uint8_t selectable_bands_count = 0;
-	uint8_t unselectable_bands_count = 0;
-	for (uint8_t i = 0; i < BANDS_COUNT; i++)
+	uint8_t bradcast_bands_count = 0;
+	for (uint8_t i = 0; i < BANDS_COUNT; i++) {
 		if (BANDS[i].selectable)
 			selectable_bands_count++;
-		else
-			unselectable_bands_count++;
+		if (BANDS[i].broadcast)
+			bradcast_bands_count++;
+	}
 	selectable_bands_count++; // memory bank
 
 	const uint8_t buttons_lines_selectable = ceil((float32_t)selectable_bands_count / (float32_t)buttons_in_line);
-	const uint8_t buttons_lines_unselectable = ceil((float32_t)unselectable_bands_count / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines_broadcast = ceil((float32_t)bradcast_bands_count / (float32_t)buttons_in_line);
 	const uint8_t divider_height = 30;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
-	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * (buttons_lines_selectable + buttons_lines_unselectable) + divider_height + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines_selectable + buttons_lines_unselectable + 1);
+	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * (buttons_lines_selectable + buttons_lines_broadcast) + divider_height + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines_selectable + buttons_lines_broadcast + 1);
 	LCD_openWindow(window_width, window_height);
 	LCD_busy = true;
 	int8_t curband = getBandFromFreq(TRX.VFO_A.Freq, true);
@@ -1876,9 +1877,9 @@ static void LCD_showBandWindow(bool secondary_vfo)
 	uint8_t xi = 0;
 	for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++)
 	{
-		if (!BANDS[bindx].selectable)
+		if (!BANDS[bindx].selectable || BANDS[bindx].broadcast)
 			continue;
-
+		
 		if (!secondary_vfo)
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND, FRONTPANEL_BUTTONHANDLER_SET_VFOA_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 		else
@@ -1905,11 +1906,11 @@ static void LCD_showBandWindow(bool secondary_vfo)
 	if (xi != 0)
 		yi++;
 	LCDDriver_drawFastHLine(LCD_WIDTH / 2 - window_width / 2, LCD_window.y + LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height / 3 + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), window_width, COLOR->WINDOWS_BORDER);
-	// unselectable bands next (broadcast)
+	// broadcast bands next
 	xi = 0;
 	for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++)
 	{
-		if (BANDS[bindx].selectable)
+		if (!BANDS[bindx].broadcast)
 			continue;
 
 		if (!secondary_vfo)
