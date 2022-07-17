@@ -34,10 +34,10 @@ static float32_t char_time = 0;			 // pause between characters
 static float32_t word_time = 0;			 // pause between words
 static bool last_space = false;			 // the last character was a space
 static char code[CWDECODER_MAX_CODE_SIZE] = {0};
-static arm_rfft_fast_instance_f32 CWDECODER_FFT_Inst;
+static arm_cfft_instance_f32 CWDECODER_FFT_Inst;
 SRAM static float32_t CWDEC_FFTBuffer[CWDECODER_FFTSIZE * 2] = {0};		  // FFT buffer
 SRAM_ON_H743 static float32_t CWDEC_FFTBufferCharge[CWDECODER_FFTSIZE * 2] = {0}; // cumulative buffer
-// SRAM float32_t CWDEC_FFTBuffer_Export[CWDECODER_FFTSIZE] = {0};
+//SRAM float32_t CWDEC_FFTBuffer_Export[CWDECODER_FFTSIZE] = {0};
 SRAM_ON_H743 static float32_t CWDEC_window_multipliers[CWDECODER_FFT_SAMPLES] = {0};
 // Decimator
 SRAM_ON_H743 static float32_t CWDEC_InputBuffer[DECODER_PACKET_SIZE] = {0};
@@ -59,8 +59,8 @@ static void CWDecoder_PrintChar(char *str); // output the character to the resul
 // initialize the CW decoder
 void CWDecoder_Init(void)
 {
-	// initialize RFFT
-	arm_rfft_fast_init_f32(&CWDECODER_FFT_Inst, CWDECODER_FFTSIZE);
+	// initialize CFFT
+	arm_cfft_init_f32(&CWDECODER_FFT_Inst, CWDECODER_FFTSIZE);
 	// decimator
 	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState, DECODER_PACKET_SIZE);
 	// Blackman-Harris window function
@@ -98,10 +98,10 @@ void CWDecoder_Process(float32_t *bufferIn)
 	}
 
 	// Do FFT
-	arm_rfft_fast_f32(&CWDECODER_FFT_Inst, CWDEC_FFTBuffer, CWDEC_FFTBuffer, 0);
+	arm_cfft_f32(&CWDECODER_FFT_Inst, CWDEC_FFTBuffer, 0, 0);
 	arm_cmplx_mag_f32(CWDEC_FFTBuffer, CWDEC_FFTBuffer, CWDECODER_FFTSIZE);
 	
-	for(uint16_t i=0;i<CWDECODER_FFTSIZE; i++) if(isinff(CWDEC_FFTBuffer[i])) return;
+	for(uint16_t i = 0; i < CWDECODER_FFTSIZE; i++) if(isinff(CWDEC_FFTBuffer[i])) return;
 
 	// Debug CWDecoder
 	/*for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE_HALF; i ++)
@@ -129,21 +129,19 @@ void CWDecoder_Process(float32_t *bufferIn)
 	if (maxValueAvg > 0.0f)
 		arm_scale_f32(&CWDEC_FFTBuffer[1], 1.0f / maxValueAvg, &CWDEC_FFTBuffer[1], (CWDECODER_SPEC_PART - 1));
 
-	//println(maxValue, " ", maxValueAvg, " ", CWDEC_FFTBuffer[maxIndex]);
+	//println(maxValue, " ", maxValueAvg, " ", CWDEC_FFTBuffer[maxIndex], " ", maxIndex);
 
 	if (CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES && (maxValue > meanValue * (float32_t)TRX.CW_Decoder_Threshold)) // signal is active
 	{
-		// sendToDebug_float32(CWDEC_FFTBuffer [maxIndex], false);
-		// sendToDebug_str("s");
-		// sendToDebug_float32(maxValue / meanValue, false);
+		// print("s");
+		// prinln(maxValue / meanValue);
 		realstate = true;
 	}
 	else // signal is not active
 	{
 		if (realstate)
 		{
-			// sendToDebug_float32(CWDEC_FFTBuffer[maxIndex],false);
-			// sendToDebug_strln("-");
+			//print("-");
 		}
 		realstate = false;
 	}
@@ -170,15 +168,14 @@ void CWDecoder_Process(float32_t *bufferIn)
 
 		if (filteredstate == true)
 		{
-			// sendToDebug_str("s");
+			//print("s");
 			starttimehigh = HAL_GetTick();
 			lowduration = (HAL_GetTick() - startttimelow);
 		}
 
 		if (filteredstate == false)
 		{
-			// sendToDebug_uint8(filteredstate,true);
-			// sendToDebug_strln("-");
+			//print("-");
 			startttimelow = HAL_GetTick();
 			highduration = HAL_GetTick() - starttimehigh;
 		}
