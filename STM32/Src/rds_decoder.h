@@ -14,11 +14,12 @@
 #define RDS_DECODER_STRLEN 30 // length of decoded string
 #endif
 
+#define RDS_PILOT_TONE_MAX_ERROR 500
 #define RDS_FILTER_STAGES 5
-#define RDS_FREQ 57000
-#define RDS_LOW_FREQ 1187.5f
-#define RDS_FILTER_WIDTH 2000
-#define RDS_DECIMATOR 16
+#define RDS_FREQ (3.0f * SWFM_PILOT_TONE_FREQ) //57khz
+#define RDS_LOW_FREQ 1187.5f //RDS signal baseband breq
+#define RDS_FILTER_WIDTH 3000
+#define RDS_DECIMATOR 16 // and x8 for filtering
 #define RDS_STR_MAXLEN 34
 
 // Public variables
