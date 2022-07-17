@@ -1224,7 +1224,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.TwoSignalTune_Balance", (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.LinearPowerControl", (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_BOOLEAN);
 			// Bands settings
-			char buff[64] = {0};
+			/*char buff[64] = {0};
 			for (uint8_t i = 0; i < BANDS_COUNT; i++)
 			{
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
@@ -1288,7 +1288,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].AGC, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SAMPLERATE", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE, SYSMENU_UINT8);
-			}
+			}*/
 		}
 
 		if (!res)
@@ -2041,7 +2041,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.LinearPowerControl = bval;
 
 	// Bands settings
-	char buff[64] = {0};
+	/*char buff[64] = {0};
 	for (uint8_t i = 0; i < BANDS_COUNT; i++)
 	{
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
@@ -2133,7 +2133,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SAMPLERATE", i);
 		if (strcmp(name, buff) == 0)
 			CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE = (uint8_t)uintval;
-	}
+	}*/
 }
 
 static void SDCOMM_IMPORT_SETT_handler(void)

@@ -258,24 +258,38 @@ int main(void)
   FRONTPANEL_Init();
 
   println("[OK] Settings loading");
+	bool reset_settings = false;
+	bool reset_calibrations = false;
+	bool go_dfu = false;
+	
 #ifdef FRONTPANEL_SMALL_V1
   if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (MENU)
-    LoadSettings(true);
-  else
+    reset_settings = true;
+	if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
+		reset_calibrations = true;
 #endif
-#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
-  if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (F1) (CB)
-    LoadSettings(true);
-  else
+#ifdef FRONTPANEL_BIG_V1
+  if (PERIPH_FrontPanel_Buttons[15].state) //soft reset (F1)
+    reset_settings = true;
+	if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8)
+    reset_calibrations = true;
 #endif
+#ifdef FRONTPANEL_WF_100D
+	if (PERIPH_FrontPanel_Buttons[10].state) //go DFU (MENU)
+		go_dfu = true;
+  if (PERIPH_FrontPanel_Buttons[13].state) //soft reset (F1)
+    reset_settings = true;
+	if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[3].state) //Very hard reset (F1+F8)
+    reset_calibrations = true;
+#endif
+	
+	if(reset_settings)
+		LoadSettings(true);
+	else
     LoadSettings(false);
 
 	//DFU bootloader
-#if defined(FRONTPANEL_WF_100D)
-	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[10].state)
-#else
-	if (TRX.NeedGoToBootloader)
-#endif
+	if (TRX.NeedGoToBootloader || go_dfu)
 	{
 		TRX.NeedGoToBootloader = false;
 		SaveSettings();
@@ -287,19 +301,12 @@ int main(void)
 	}
 
   println("[OK] Calibration loading");
-#ifdef FRONTPANEL_SMALL_V1
-  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+PRE)
-    LoadCalibration(true);
-  else
-#endif
-#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
-  if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) //Very hard reset (F1+F8) (CB+F6)
-    LoadCalibration(true);
-  else
-#endif
+	if(reset_calibrations)
+		LoadCalibration(true);
+	else
     LoadCalibration(false);
 	
-#if defined(FRONTPANEL_WF_100D)
+#ifdef FRONTPANEL_WF_100D
 	if(CALIBRATE.RF_unit_type != RF_UNIT_WF_100D)
 		LoadCalibration(true);
 #endif

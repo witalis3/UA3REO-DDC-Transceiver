@@ -464,6 +464,8 @@ void LoadCalibration(bool clear)
 
 	if (CALIBRATE.ENDBit != 100 || CALIBRATE.flash_id != CALIB_VERSION || clear || CALIBRATE.csum != calculateCSUM_EEPROM()) // code for checking the firmware in the eeprom, if it does not match, we use the default
 	{
+		memset(&CALIBRATE, 0x00, sizeof(CALIBRATE));
+		
 		println("[ERR] CALIBRATE Flash check CODE:", CALIBRATE.flash_id, false);
 		CALIBRATE.flash_id = CALIB_VERSION; // code for checking the firmware in the eeprom, if it does not match, we use the default
 
