@@ -494,6 +494,7 @@ extern struct TRX_SETTINGS
 	bool FFT_DXCluster;
 	bool FFT_DXCluster_Azimuth;
 	bool Show_Sec_VFO;
+	bool AnalogMeterShowPWR;
 	// DECODERS
 	uint16_t RTTY_Speed;
 	uint16_t RTTY_Shift;

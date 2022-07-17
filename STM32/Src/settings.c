@@ -322,6 +322,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_DXCluster_Timeout = 5;	   // DXCluser timeout in minutes
 		TRX.Show_Sec_VFO = false;		   // Show secondary VFO on FFT
 		TRX.FFT_Scale_Type = 0;			   // Scale type (0 - amplitude, 1 - dbm)
+		TRX.AnalogMeterShowPWR = false;	// false - SWR, true - PWR
 		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)
 			TRX.FuncButtons[i] = i;
 		// DECODERS

@@ -762,6 +762,56 @@ static float32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf)
 	return TRX_s_meter;
 }
 
+static float32_t LCD_GetAnalowPowerValPosition(float32_t pwr)
+{
+	int32_t width = LAYOUT->STATUS_SMETER_WIDTH - 2;
+	float32_t pos = 20.0f; // zero
+	
+	// ugly corrections :/
+	
+	if(pwr > 0) { // 0-10w
+		pos += fmin(10, pwr) * 4.0f;
+		pwr -= 10.0f;
+	}
+	
+	if(pwr > 0) { // 10-20w
+		pos += fmin(10, pwr) * 2.1f;
+		pwr -= 10.0f;
+	}
+	
+	if(pwr > 0) { // 20-30w
+		pos += fmin(10, pwr) * 1.0f;
+		pwr -= 10.0f;
+	}
+	
+	if(pwr > 0) { // 30-40w
+		pos += fmin(10, pwr) * 1.5f;
+		pwr -= 10.0f;
+	}
+	
+	if(pwr > 0) { // 40-50w
+		pos += fmin(10, pwr) * 1.3f;
+		pwr -= 10.0f;
+	}
+	
+	if(pwr > 0) { // 50-90w
+		pos += fmin(40, pwr) * 1.0f;
+		pwr -= 40.0f;
+	}
+	
+	if(pwr > 0) { // 90w+
+		pos += pwr * 0.9f;
+	}
+
+	//limits
+	if (pos > width + 60.0f)
+		pos = width + 60.0f;
+	if (pos < -30.0f)
+		pos = -30.0f;
+		
+	return pos;
+}
+
 static void LCD_PrintMeterArrow(int16_t target_pixel_x)
 {
 	if (target_pixel_x < 0)
@@ -1118,7 +1168,10 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 5, COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 			LCD_drawSMeter();
-			LCD_PrintMeterArrow(LCD_GetSMeterValPosition(LCD_SWR2DBM_meter(TRX_SWR_SMOOTHED), false));
+			if (TRX.AnalogMeterShowPWR)
+				LCD_PrintMeterArrow(LCD_GetAnalowPowerValPosition(TRX_PWR_Forward_SMOOTHED));
+			else
+				LCD_PrintMeterArrow(LCD_GetSMeterValPosition(LCD_SWR2DBM_meter(TRX_SWR_SMOOTHED), false));
 		}
 	}
 
@@ -1597,6 +1650,19 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 				LCD_showBandWindow(true);
 			else
 				FRONTPANEL_BUTTONHANDLER_AsB(0);
+			return;
+		}
+		
+		// analog meter swr/pwr switch
+		if (TRX_on_TX && LAYOUT->STATUS_SMETER_ANALOG && y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + image_data_meter.height) && x >= (LAYOUT->STATUS_BAR_X_OFFSET) && x <= (LAYOUT->STATUS_BAR_X_OFFSET + image_data_meter.width))
+		{
+			TRX.AnalogMeterShowPWR = !TRX.AnalogMeterShowPWR;
+			
+			if (TRX.AnalogMeterShowPWR)
+				LCD_showTooltip("POWER");
+			else
+				LCD_showTooltip("SWR");
+			
 			return;
 		}
 	}
