@@ -37,7 +37,6 @@
 #define CW_ADD_GAIN_IF 35.0f				  // additional IF gain in CW
 #define CW_ADD_GAIN_AF 6.0f					  // additional AF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)			  // TX LPF On Timeout, millisec (3 min)
-// FRONT-PANEL, LCD AND TANGENT types moved to KEIL TARGETS
 
 //#define ADC_BITS 16																						// ADC bit depth
 //#define FPGA_BUS_BITS 32																				// bitness of data from FPGA

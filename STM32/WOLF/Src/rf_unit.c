@@ -465,6 +465,31 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		band_out = CALIBRATE.EXT_TRANSV_6cm;
 	if (TRX.Transverter_3cm && band == BANDID_3cm) // 3cm
 		band_out = CALIBRATE.EXT_TRANSV_3cm;
+	
+	// Skip shift register updating while transmit
+	if (CALIBRATE.RF_unit_type == RF_UNIT_BIG || 
+		CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || 
+		CALIBRATE.RF_unit_type == RF_UNIT_WF_100D || 
+		CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) 
+	{
+		static bool shift_registers_lock = false;
+		static uint8_t shift_registers_lock_counter = 0;
+		
+		if (TRX_on_TX && !TRX_Tune && !shift_registers_lock) {
+			shift_registers_lock_counter++;
+			if(shift_registers_lock_counter >= 3) // 30ms lock delay
+				shift_registers_lock = true;
+		}
+		
+		if (!TRX_on_TX) {
+			shift_registers_lock = false;
+			shift_registers_lock_counter = 0;
+		}
+		
+		if(shift_registers_lock) {
+			return;
+		}
+	}
 
 	// QRP Version RF Unit ///////////////////////////////////////////////////////////////////////
 	if (CALIBRATE.RF_unit_type == RF_UNIT_QRP)
