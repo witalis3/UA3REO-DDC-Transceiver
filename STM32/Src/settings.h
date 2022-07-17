@@ -91,49 +91,52 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 
 // FRONT PANELS
 #ifdef FRONTPANEL_NONE
-#define MAX_VOLUME_VALUE 1024.0f
-#define FUNCBUTTONS_COUNT 1
-#define FUNCBUTTONS_ON_PAGE 1
-static char ota_config_frontpanel[] = "NONE";
+	#define MAX_VOLUME_VALUE 1024.0f
+	#define FUNCBUTTONS_COUNT 1
+	#define FUNCBUTTONS_ON_PAGE 1
+	#define FUNCBUTTONS_PAGES 1
+	static char ota_config_frontpanel[] = "NONE";
 #endif
 
 #ifdef FRONTPANEL_SMALL_V1
-#define HRDW_MCP3008_1 true
-#define HRDW_MCP3008_2 true
-#define HRDW_MCP3008_3 true
-#define MAX_VOLUME_VALUE 1024.0f
-#define FUNCBUTTONS_COUNT 1
-#define FUNCBUTTONS_ON_PAGE 1
-static char ota_config_frontpanel[] = "SMALL";
+	#define HRDW_MCP3008_1 true
+	#define HRDW_MCP3008_2 true
+	#define HRDW_MCP3008_3 true
+	#define MAX_VOLUME_VALUE 1024.0f
+	#define FUNCBUTTONS_COUNT 1
+	#define FUNCBUTTONS_ON_PAGE 1
+	#define FUNCBUTTONS_PAGES 1
+	static char ota_config_frontpanel[] = "SMALL";
 #endif
 
 #ifdef FRONTPANEL_LITE
-#define HRDW_MCP3008_1 true
-#define HRDW_HAS_FUNCBUTTONS true
-#define MAX_VOLUME_VALUE 100.0f
-#define FUNCBUTTONS_COUNT 25
-#define FUNCBUTTONS_ON_PAGE 5
-static char ota_config_frontpanel[] = "LITE";
+	#define HRDW_MCP3008_1 true
+	#define HRDW_HAS_FUNCBUTTONS true
+	#define MAX_VOLUME_VALUE 100.0f
+	#define FUNCBUTTONS_COUNT 25
+	#define FUNCBUTTONS_ON_PAGE 5
+	#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+	static char ota_config_frontpanel[] = "LITE";
 #endif
 
-#define FUNCBUTTONS_MAX_COUNT 32
-
 #ifdef FRONTPANEL_BIG_V1
-#define HRDW_MCP3008_1 true
-#define HRDW_HAS_FUNCBUTTONS true
-#define MAX_VOLUME_VALUE 1024.0f
-#define FUNCBUTTONS_COUNT 32
-#define FUNCBUTTONS_ON_PAGE 8
-static char ota_config_frontpanel[] = "BIG";
+	#define HRDW_MCP3008_1 true
+	#define HRDW_HAS_FUNCBUTTONS true
+	#define MAX_VOLUME_VALUE 1024.0f
+	#define FUNCBUTTONS_COUNT (32+2)
+	#define FUNCBUTTONS_ON_PAGE 8
+	#define FUNCBUTTONS_PAGES 4
+	static char ota_config_frontpanel[] = "BIG";
 #endif
 
 #ifdef FRONTPANEL_WF_100D
-#define HRDW_MCP3008_1 true
-#define HRDW_HAS_FUNCBUTTONS true
-#define MAX_VOLUME_VALUE 1024.0f
-#define FUNCBUTTONS_COUNT 27
-#define FUNCBUTTONS_ON_PAGE 9
-static char ota_config_frontpanel[] = "WF_100D";
+	#define HRDW_MCP3008_1 true
+	#define HRDW_HAS_FUNCBUTTONS true
+	#define MAX_VOLUME_VALUE 1024.0f
+	#define FUNCBUTTONS_COUNT (27+4)
+	#define FUNCBUTTONS_ON_PAGE 9
+	#define FUNCBUTTONS_PAGES 3
+	static char ota_config_frontpanel[] = "WF_100D";
 #endif
 
 #ifdef FRONTPANEL_X1
@@ -142,10 +145,9 @@ static char ota_config_frontpanel[] = "WF_100D";
 	#define MAX_VOLUME_VALUE 100.0f
 	#define FUNCBUTTONS_COUNT 32
 	#define FUNCBUTTONS_ON_PAGE 4
+	#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
 	static char ota_config_frontpanel[] = "X1";
 #endif
-
-#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
 
 // LCDs
 #if defined(LCD_ILI9481)
@@ -480,7 +482,7 @@ extern struct TRX_SETTINGS
 	uint8_t FFT_3D;
 	uint8_t FFT_DXCluster_Timeout;
 	uint8_t FFT_Scale_Type;
-	uint8_t FuncButtons[FUNCBUTTONS_MAX_COUNT];
+	uint8_t FuncButtons[FUNCBUTTONS_COUNT];
 	bool FFT_Enabled;
 	bool WTF_Moving;
 	bool FFT_Automatic;

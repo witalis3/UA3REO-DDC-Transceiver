@@ -654,11 +654,11 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"Func button 23", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[22], SYSMENU_HANDL_SCREEN_FUNC_BUTTON23},
 		{"Func button 24", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[23], SYSMENU_HANDL_SCREEN_FUNC_BUTTON24},
 		{"Func button 25", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[24], SYSMENU_HANDL_SCREEN_FUNC_BUTTON25},
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 25
 		{"Func button 26", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[25], SYSMENU_HANDL_SCREEN_FUNC_BUTTON26},
 		{"Func button 27", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[26], SYSMENU_HANDL_SCREEN_FUNC_BUTTON27},
-#if FUNCBUTTONS_COUNT > 27
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 27
 		{"Func button 28", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[27], SYSMENU_HANDL_SCREEN_FUNC_BUTTON28},
-#if FUNCBUTTONS_COUNT > 28
 		{"Func button 29", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[28], SYSMENU_HANDL_SCREEN_FUNC_BUTTON29},
 		{"Func button 30", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[29], SYSMENU_HANDL_SCREEN_FUNC_BUTTON30},
 		{"Func button 31", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[30], SYSMENU_HANDL_SCREEN_FUNC_BUTTON31},
@@ -2854,6 +2854,8 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON25(int8_t direction)
 		TRX.FuncButtons[24] = FUNCBUTTONS_COUNT - 1;
 }
 
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 25
+
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON26(int8_t direction)
 {
 	if (TRX.FuncButtons[25] > 0 || direction > 0)
@@ -2869,9 +2871,9 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON27(int8_t direction)
 	if (TRX.FuncButtons[26] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[26] = FUNCBUTTONS_COUNT - 1;
 }
-#endif
 
-#if FUNCBUTTONS_COUNT > 27
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 27
+
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction)
 {
 	if (TRX.FuncButtons[27] > 0 || direction > 0)
@@ -2879,9 +2881,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction)
 	if (TRX.FuncButtons[27] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[27] = FUNCBUTTONS_COUNT - 1;
 }
-#endif
 
-#if FUNCBUTTONS_COUNT > 28
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction)
 {
 	if (TRX.FuncButtons[28] > 0 || direction > 0)
@@ -2913,6 +2913,8 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction)
 	if (TRX.FuncButtons[31] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[31] = FUNCBUTTONS_COUNT - 1;
 }
+#endif
+#endif
 #endif
 
 // DECODERS MENU
@@ -6241,7 +6243,7 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 		break;
 	case SYSMENU_FUNCBUTTON:
 #if HRDW_HAS_FUNCBUTTONS
-		sprintf(ctmp, "%s", (const char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[(uint8_t)*menuElement->value]].name);
+		sprintf(ctmp, "%s", (const char *)PERIPH_FrontPanel_FuncButtonsList[(uint8_t)*menuElement->value].name);
 #endif
 		break;
 	case SYSMENU_ATU_I:

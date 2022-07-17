@@ -48,6 +48,7 @@ static void FRONTPANEL_BUTTONHANDLER_XIT(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_SPLIT(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_STEP(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_BANDMAP(uint32_t parameter);
+static void FRONTPANEL_BUTTONHANDLER_VOX(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_FT8(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_AUTOGAINER(uint32_t parameter);
 static void FRONTPANEL_BUTTONHANDLER_UP(uint32_t parameter);
@@ -151,6 +152,10 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "HPF", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_HPF, .holdHandler = FRONTPANEL_BUTTONHANDLER_HPF},
 	{.name = "SQL", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH},
 	{.name = "MENU", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU},
+	
+	// hidden entry for menu editor
+	{.name = "FT8", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_FT8, .holdHandler = FRONTPANEL_BUTTONHANDLER_FT8},
+	{.name = "VOX", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_VOX, .holdHandler = FRONTPANEL_BUTTONHANDLER_VOX},
 };
 #endif
 
@@ -219,9 +224,15 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "MODE-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_MODE_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_MODE_N},
 	{.name = "BAND+", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_P, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_P},
 	{.name = "BAND-", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BAND_N, .holdHandler = FRONTPANEL_BUTTONHANDLER_BAND_N},
-	{.name = "FT8", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_FT8, .holdHandler = FRONTPANEL_BUTTONHANDLER_FT8},
+	{.name = "BANDMP", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP, .holdHandler = FRONTPANEL_BUTTONHANDLER_BANDMAP},
 	{.name = "AUTOGN", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER, .holdHandler = FRONTPANEL_BUTTONHANDLER_AUTOGAINER},
 	{.name = "LOCK", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_LOCK, .holdHandler = FRONTPANEL_BUTTONHANDLER_LOCK},
+	
+	// hidden entry for menu editor
+	{.name = "MENU", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_MENU, .holdHandler = FRONTPANEL_BUTTONHANDLER_MENU},
+	{.name = "FT8", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_FT8, .holdHandler = FRONTPANEL_BUTTONHANDLER_FT8},
+	{.name = "SQL", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH, .holdHandler = FRONTPANEL_BUTTONHANDLER_SQUELCH},
+	{.name = "VOX", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_VOX, .holdHandler = FRONTPANEL_BUTTONHANDLER_VOX},
 };
 #endif
 
@@ -1769,6 +1780,18 @@ static void FRONTPANEL_BUTTONHANDLER_BANDMAP(uint32_t parameter)
 		LCD_showTooltip("BANDMAP OFF");
 
 	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
+static void FRONTPANEL_BUTTONHANDLER_VOX(uint32_t parameter)
+{
+	TRX.VOX = !TRX.VOX;
+
+	if (TRX.VOX)
+		LCD_showTooltip("VOX ON");
+	else
+		LCD_showTooltip("VOX OFF");
+
 	NeedSaveSettings = true;
 }
 
