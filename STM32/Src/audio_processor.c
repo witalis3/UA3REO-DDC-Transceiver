@@ -1776,8 +1776,8 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * 2.0f;
 
 			// get channels
-			data_q[i] = (data_i[i] - stereo_sample) / 2.0f; // Mono (L+R) - Stereo (L-R) = 2R
-			data_i[i] = (data_i[i] + stereo_sample) / 2.0f; // Mono (L+R) + Stereo (L-R) = 2L
+			data_q[i] = (data_i[i] - stereo_sample); // Mono (L+R) - Stereo (L-R) = 2R
+			data_i[i] = (data_i[i] + stereo_sample); // Mono (L+R) + Stereo (L-R) = 2L
 		}
 	}
 	

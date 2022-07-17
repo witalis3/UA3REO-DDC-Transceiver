@@ -407,7 +407,7 @@ void ReinitAudioFilters(void)
 
 	// Stereo FM pilot
 	filter = biquad_create(SFM_FILTER_STAGES);
-	biquad_init_bandpass(filter, TRX_GetRXSampleRate, SWFM_PILOT_TONE_FREQ - 100, SWFM_PILOT_TONE_FREQ + 100);
+	biquad_init_bandpass(filter, TRX_GetRXSampleRate, SWFM_PILOT_TONE_FREQ - 500, SWFM_PILOT_TONE_FREQ + 500);
 	fill_biquad_coeffs(filter, SFM_Pilot_Filter_Coeffs, SFM_FILTER_STAGES);
 	arm_biquad_cascade_df2T_initNoClean_f32(&SFM_RX1_Pilot_Filter, SFM_FILTER_STAGES, SFM_Pilot_Filter_Coeffs, SFM_RX1_Pilot_Filter_State);
 	#if HRDW_HAS_DUAL_RX
