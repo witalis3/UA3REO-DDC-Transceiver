@@ -20,21 +20,21 @@ static char RDS_Decoder_2A[RDS_STR_MAXLEN];
 static char RDS_Decoder_2B[RDS_STR_MAXLEN];
 
 // pilot
-static float32_t RDS_Pilot_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
-static float32_t RDS_Pilot_Filter_State[2 * RDS_FILTER_STAGES] = {0};
-static arm_biquad_cascade_df2T_instance_f32 RDS_Pilot_Filter;
+SRAM_ON_F407 static float32_t RDS_Pilot_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
+SRAM_ON_F407 static float32_t RDS_Pilot_Filter_State[2 * RDS_FILTER_STAGES] = {0};
+SRAM_ON_F407 static arm_biquad_cascade_df2T_instance_f32 RDS_Pilot_Filter;
 // RDS center
-static float32_t RDS_57kPilot_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
-static float32_t RDS_57kPilot_Filter_State[2 * RDS_FILTER_STAGES] = {0};
-static arm_biquad_cascade_df2T_instance_f32 RDS_57kPilot_Filter;
+SRAM_ON_F407 static float32_t RDS_57kPilot_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
+SRAM_ON_F407 static float32_t RDS_57kPilot_Filter_State[2 * RDS_FILTER_STAGES] = {0};
+SRAM_ON_F407 static arm_biquad_cascade_df2T_instance_f32 RDS_57kPilot_Filter;
 // signal
-static float32_t RDS_Signal_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
-static float32_t RDS_Signal_Filter_State[2 * RDS_FILTER_STAGES] = {0};
-static arm_biquad_cascade_df2T_instance_f32 RDS_Signal_Filter;
+SRAM_ON_F407 static float32_t RDS_Signal_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
+SRAM_ON_F407 static float32_t RDS_Signal_Filter_State[2 * RDS_FILTER_STAGES] = {0};
+SRAM_ON_F407 static arm_biquad_cascade_df2T_instance_f32 RDS_Signal_Filter;
 // lpf
-static float32_t RDS_LPF_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
-static float32_t RDS_LPF_Filter_State[2 * RDS_FILTER_STAGES] = {0};
-static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_Filter;
+SRAM_ON_F407 static float32_t RDS_LPF_Filter_Coeffs[BIQUAD_COEFF_IN_STAGE * RDS_FILTER_STAGES] = {0};
+SRAM_ON_F407 static float32_t RDS_LPF_Filter_State[2 * RDS_FILTER_STAGES] = {0};
+SRAM_ON_F407 static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_Filter;
 // decimator
 static const float32_t DECIMATE_FIR_Coeffs[4] = {-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792};
 static arm_fir_decimate_instance_f32 DECIMATE_FIR = {
@@ -44,8 +44,8 @@ static arm_fir_decimate_instance_f32 DECIMATE_FIR = {
 		.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]){0}
 };
 
-static float32_t RDS_pilot_buff[DECODER_PACKET_SIZE] = {0};
-static float32_t RDS_buff[DECODER_PACKET_SIZE] = {0};
+SRAM_ON_F407 static float32_t RDS_pilot_buff[DECODER_PACKET_SIZE] = {0};
+SRAM_ON_F407 static float32_t RDS_buff[DECODER_PACKET_SIZE] = {0};
 
 static uint32_t RDS_decoder_samplerate = 0;
 static uint32_t RDS_decoder_mainfreq = 0;
