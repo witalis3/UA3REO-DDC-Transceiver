@@ -81,7 +81,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 };
 
 const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
-	{.name = "PRE", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DRV_ONLY, .holdHandler = FRONTPANEL_BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.LNA},
+	{.name = "DRV", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_DRV_ONLY, .holdHandler = FRONTPANEL_BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.LNA},
 	{.name = "ATT", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_ATT, .holdHandler = FRONTPANEL_BUTTONHANDLER_ATTHOLD, .checkBool = (uint32_t *)&TRX.ATT},
 	{.name = "BW", .work_in_menu = true, .clickHandler = FRONTPANEL_BUTTONHANDLER_BW, .holdHandler = FRONTPANEL_BUTTONHANDLER_BW, .checkBool = NULL},
 	{.name = "A/B", .work_in_menu = false, .clickHandler = FRONTPANEL_BUTTONHANDLER_AsB, .holdHandler = FRONTPANEL_BUTTONHANDLER_AsB, .checkBool = NULL},
