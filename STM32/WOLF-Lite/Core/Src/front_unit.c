@@ -570,6 +570,8 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 		if (TRX.ENC2_func_mode_idx > 7)
 			TRX.ENC2_func_mode_idx = 0;
 
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		
 		if (TRX.ENC2_func_mode_idx == 0)
 			LCD_showTooltip("BUTTONS");
 		if (TRX.ENC2_func_mode_idx == 1)

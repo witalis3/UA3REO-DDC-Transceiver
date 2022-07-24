@@ -413,8 +413,18 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 		LCD_UpdateQuery.TextBar = true;
 	}
 
-	// ANT indicator
-	printInfoSmall(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), LAYOUT->STATUS_ANT_BLOCK_WIDTH, LAYOUT->STATUS_ANT_BLOCK_HEIGHT, (TRX.ANT_mode && !TRX_on_TX) ? ("1T2") : (TRX.ANT_selected ? "ANT2" : "ANT1"), BG_COLOR, COLOR->STATUS_RX, COLOR->STATUS_RX, true);
+	// ENC2 State indicator
+	char enc2_state_str[5] = {0};
+	if (TRX.ENC2_func_mode_idx == 0) sprintf(enc2_state_str, "FUNC");
+	if (TRX.ENC2_func_mode_idx == 1) sprintf(enc2_state_str, "VOL");
+	if (TRX.ENC2_func_mode_idx == 2) sprintf(enc2_state_str, "STEP");
+	if (TRX.ENC2_func_mode_idx == 3) sprintf(enc2_state_str, "WPM");
+	if (TRX.ENC2_func_mode_idx == 4) sprintf(enc2_state_str, "RIT");
+	if (TRX.ENC2_func_mode_idx == 5) sprintf(enc2_state_str, "NTCH");
+	if (TRX.ENC2_func_mode_idx == 6) sprintf(enc2_state_str, "LPF");
+	if (TRX.ENC2_func_mode_idx == 7) sprintf(enc2_state_str, "SQL");
+	
+	printInfoSmall(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), LAYOUT->STATUS_ANT_BLOCK_WIDTH, LAYOUT->STATUS_ANT_BLOCK_HEIGHT, enc2_state_str, BG_COLOR, COLOR->STATUS_RX, COLOR->STATUS_RX, true);
 
 	// WIFI indicator
 	#if HRDW_HAS_WIFI
