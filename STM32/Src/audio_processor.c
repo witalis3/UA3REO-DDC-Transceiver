@@ -764,10 +764,10 @@ void processTxAudio(void)
 	}
 	else // AUDIO CODEC AUDIO
 	{
-		uint32_t dma_index = HRDW_getAudioCodecRX_DMAIndex();
-		if ((dma_index % 2) == 1)
-			dma_index--;
-		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
+		uint32_t dma_index_rx = HRDW_getAudioCodecRX_DMAIndex();
+		if ((dma_index_rx % 2) == 1)
+			dma_index_rx--;
+		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index_rx, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
 	}
 
 	#if HRDW_HAS_SD

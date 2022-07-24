@@ -96,7 +96,7 @@ float32_t HRDW_getCPUVref(void)
 }
 
 inline uint32_t HRDW_getAudioCodecRX_DMAIndex(void) {
-	return CODEC_AUDIO_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(HRDW_AUDIO_CODEC_I2S.hdmarx);
+	return CODEC_AUDIO_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(HRDW_AUDIO_CODEC_I2S.hdmarx) / 2;
 }
 
 inline uint32_t HRDW_getAudioCodecTX_DMAIndex(void) {
