@@ -583,6 +583,10 @@ void LoadCalibration(bool clear)
 		CALIBRATE.SWR_REF_Calibration_VHF = 9.5f;	   // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;				   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 100;				   // Max TRX Power for indication
+#elif defined(FRONTPANEL_LITE)
+		CALIBRATE.smeter_calibration_hf = 28;
+		CALIBRATE.TUNE_MAX_POWER = 5;				   // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER = 15;				   // Max TRX Power for indication
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;		   // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;		   // HPF U14-RF1
