@@ -526,13 +526,13 @@ static inline void FPGA_fpgadata_sendparam(void)
 	else if(CurrentVFO->Freq >= 4500000 && CurrentVFO->Freq <= 7500000) //40m
 	{
 		LPF_1 = false; //LPF1
-		LPF_3 = true; //LPF2
+		LPF_2 = true; //LPF2
 		LPF_3 = false; //LPF3
 	}
 	else if(CurrentVFO->Freq >= 7500000 && CurrentVFO->Freq <= 14800000) //30m,20m
 	{
-		LPF_2 = true; //LPF1
-		LPF_1 = true; //LPF2
+		LPF_1 = true; //LPF1
+		LPF_2 = true; //LPF2
 		LPF_3 = false; //LPF3
 	}
 	else if(CurrentVFO->Freq >= 12000000 && CurrentVFO->Freq <= 32000000) //17,15m,12,10m
