@@ -1420,8 +1420,6 @@ void FRONTPANEL_BUTTONHANDLER_DNR(uint32_t parameter)
 	InitNoiseReduction();
 	if (CurrentVFO->DNR_Type == 0)
 		CurrentVFO->DNR_Type = 1;
-	else if (CurrentVFO->DNR_Type == 1)
-		CurrentVFO->DNR_Type = 2;
 	else
 		CurrentVFO->DNR_Type = 0;
 
