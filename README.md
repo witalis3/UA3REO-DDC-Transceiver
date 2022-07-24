@@ -367,6 +367,10 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 
 * Show propagination statistics (from internet)
 
+### DayNight Map 
+
+* Displaying the day/night terminator on the map (from internet)
+
 ### SWR Analyser
 
 * Run SWR analizer (Band SWR - on current band, HF SWR - on all HF bands, Custom SWR - in selected range)
