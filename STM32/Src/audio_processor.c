@@ -1010,6 +1010,31 @@ void processTxAudio(void)
 	if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY)
 	#endif
 	{
+		// Send to USB Audio
+		if (USB_AUDIO_need_rx_buffer && TRX_Inited)
+		{
+			uint8_t *USB_AUDIO_rx_buffer_current = USB_AUDIO_rx_buffer_b;
+			if (!USB_AUDIO_current_rx_buffer)
+				USB_AUDIO_rx_buffer_current = USB_AUDIO_rx_buffer_a;
+
+			// drop LSB 32b->24/16b
+			for (uint_fast16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET); i++)
+			{
+				#if HRDW_USB_AUDIO_BITS == 16
+				USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 0] = (APROC_AudioBuffer_out[i] >> 16) & 0xFF;
+				USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 1] = (APROC_AudioBuffer_out[i] >> 24) & 0xFF;
+				#endif
+				
+				#if HRDW_USB_AUDIO_BITS == 24
+				USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 0] = (APROC_AudioBuffer_out[i] >> 8) & 0xFF;
+				USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 1] = (APROC_AudioBuffer_out[i] >> 16) & 0xFF;
+				USB_AUDIO_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET + 2] = (APROC_AudioBuffer_out[i] >> 24) & 0xFF;
+				#endif
+			}
+			USB_AUDIO_need_rx_buffer = false;
+		}
+		
+		// Send to Codec
 		float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE) * volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
