@@ -408,8 +408,8 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x02, //     bDescriptorSubtype
 		0x01, //     bFormatType   (FORMAT_TYPE_1)
 		0x02, //     bNrChannels   (2 channels)
-		0x03, //     bSubframeSize
-		0x18, //     bBitResolution   (24 bits per sample)
+		BYTES_IN_SAMPLE_AUDIO_OUT_PACKET, //     bSubframeSize
+		HRDW_USB_AUDIO_BITS, //     bBitResolution   (16/24 bits per sample)
 		0x01, //     bSamFreqType   (Discrete sampling frequencies)
 		0x80, //         tSamFreq(1)   (48000 Hz)
 		0xBB, //         tSamFreq(1)   (48000 Hz)
@@ -478,8 +478,8 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x02, //     bDescriptorSubtype
 		0x01, //     bFormatType   (FORMAT_TYPE_1)
 		0x02, //     bNrChannels   (2 channels)
-		0x03, //     bSubframeSize
-		0x18, //     bBitResolution   (24 bits per sample)
+		BYTES_IN_SAMPLE_AUDIO_OUT_PACKET, //     bSubframeSize
+		HRDW_USB_AUDIO_BITS, //     bBitResolution   (16/24 bits per sample)
 		0x01, //     bSamFreqType   (Discrete sampling frequencies)
 		0x80, //         tSamFreq(1)   (48000 Hz)
 		0xBB, //         tSamFreq(1)   (48000 Hz)
@@ -614,8 +614,8 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x02, //     bDescriptorSubtype
 		0x01, //     bFormatType   (FORMAT_TYPE_1)
 		0x02, //     bNrChannels   (2 channels)
-		0x03, //     bSubframeSize
-		0x18, //     bBitResolution   (24 bits per sample)
+		BYTES_IN_SAMPLE_AUDIO_OUT_PACKET, //     bSubframeSize
+		HRDW_USB_AUDIO_BITS, //     bBitResolution   (16/24 bits per sample)
 		0x01, //     bSamFreqType   (Discrete sampling frequencies)
 		0x80, //         tSamFreq(1)   (48000 Hz)
 		0xBB, //         tSamFreq(1)   (48000 Hz)
@@ -1513,9 +1513,8 @@ static uint8_t USBD_AUDIO_DataIn(USBD_HandleTypeDef *pdev)
 
 	pdev->ep_in[AUDIO_IN_EP & 0xFU].total_length = rx_audio_buffer_step;
 	HAL_PCD_EP_Transmit(pdev->pData, AUDIO_IN_EP, hcdc_audio->RxBuffer + rx_audio_buffer_head, rx_audio_buffer_step);
-	RX_USB_AUDIO_SAMPLES += rx_audio_buffer_step / (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2); // 3 byte (24 bit) * 2 channel
+	RX_USB_AUDIO_SAMPLES += rx_audio_buffer_step / (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2); // 2/3 byte (16/24 bit) * 2 channel
 	rx_audio_buffer_head += rx_audio_buffer_step;
-
 	return USBD_OK;
 }
 

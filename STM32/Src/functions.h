@@ -191,6 +191,7 @@ extern void print_bin26(uint32_t data, bool _inline);
 // extern void delay_us(uint32_t us);
 extern float32_t log10f_fast(float32_t X);
 extern void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read);
+extern void readHalfFromCircleUSBBuffer16Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length);
 extern void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length);
 extern void dma_memcpy32(void *dest, void *src, uint32_t size);
 extern void dma_memcpy(void *dest, void *src, uint32_t size);
