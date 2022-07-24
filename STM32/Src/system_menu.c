@@ -866,8 +866,10 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"NOTX 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_70cm, SYSMENU_HANDL_CALIB_NOTX_70cm},
 		{"ENABLE 60M Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_60m_band, SYSMENU_HANDL_CALIB_ENABLE_60m_band},
 		{"ENABLE 4M Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_4m_band, SYSMENU_HANDL_CALIB_ENABLE_4m_band},
+#if !defined(FRONTPANEL_LITE)
 		{"ENABLE Air Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_AIR_band, SYSMENU_HANDL_CALIB_ENABLE_AIR_band},
 		{"ENABLE Marine Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_HANDL_CALIB_ENABLE_marine_band},
+#endif
 #if HRDW_HAS_WIFI
 		{"OTA Update", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_HANDL_CALIB_OTA_update},
 #endif

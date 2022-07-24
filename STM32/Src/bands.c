@@ -8,7 +8,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		// 2200METERS
 		{
 			.name = "2200m",
+#ifndef FRONTPANEL_LITE
 			.selectable = true,
+#else
+			.selectable = false,
+#endif
 			.broadcast = false,
 			.startFreq = 135700,
 			.endFreq = 137800,
@@ -674,7 +678,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		// FM RADIO
 		{
 			.name = "FM",
+#ifndef FRONTPANEL_LITE
 			.selectable = true,
+#else
+			.selectable = false,
+#endif
 			.broadcast = true,
 			.startFreq = 70500000,
 			.endFreq = 108000000,
@@ -702,7 +710,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		// 2 meter
 		{
 			.name = "2m",
+#ifndef FRONTPANEL_LITE
 			.selectable = true,
+#else
+			.selectable = false,
+#endif
 			.broadcast = false,
 			.startFreq = 144000000,
 			.endFreq = 146000000,
@@ -869,7 +881,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		// 70cm
 		{
 			.name = "70cm",
+#ifndef FRONTPANEL_LITE
 			.selectable = true,
+#else
+			.selectable = false,
+#endif
 			.broadcast = false,
 			.startFreq = 430000000,
 			.endFreq = 446200000,
