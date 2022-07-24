@@ -808,8 +808,10 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 #if !defined(FRONTPANEL_LITE)
 		{"SWR FWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF},
 		{"SWR REF RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
-#endif
 		{"VCXO Correction", SYSMENU_INT8, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
+#else
+		{"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
+#endif
 #ifdef SWR_AD8307_LOG
 		{"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
 		{"FW_AD8307_Offset (mV)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_OFFS, SYSMENU_HANDL_CALIB_FW_AD8307_OFFS},
@@ -4556,10 +4558,18 @@ static void SYSMENU_HANDL_CALIB_MAX_RF_POWER(int8_t direction)
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)
 {
 	CALIBRATE.VCXO_correction += direction;
+	
+	#if !defined(FRONTPANEL_LITE)
 	if (CALIBRATE.VCXO_correction < -100)
 		CALIBRATE.VCXO_correction = -100;
 	if (CALIBRATE.VCXO_correction > 100)
 		CALIBRATE.VCXO_correction = 100;
+	#else
+	if (CALIBRATE.VCXO_correction < -32750)
+		CALIBRATE.VCXO_correction = -32750;
+	if (CALIBRATE.VCXO_correction > 32750)
+		CALIBRATE.VCXO_correction = 32750;
+	#endif
 }
 // Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction)
