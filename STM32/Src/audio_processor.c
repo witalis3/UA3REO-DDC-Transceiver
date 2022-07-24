@@ -859,11 +859,30 @@ void processTxAudio(void)
 	if (!TRX_Tune)
 	{
 		// Copy and convert buffer
+		#ifndef STM32F407xx
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 		{
 			APROC_Audio_Buffer_TX_I[i] = (float32_t)APROC_AudioBuffer_out[i * 2] / 2147483648.0f;
 			APROC_Audio_Buffer_TX_Q[i] = (float32_t)APROC_AudioBuffer_out[i * 2 + 1] / 2147483648.0f;
 		}
+		#else
+		if (getInputType() == TRX_INPUT_USB)
+		{
+			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+			{
+				APROC_Audio_Buffer_TX_I[i] = (float32_t)APROC_AudioBuffer_out[i * 2] / 2147483648.0f;
+				APROC_Audio_Buffer_TX_Q[i] = (float32_t)APROC_AudioBuffer_out[i * 2 + 1] / 2147483648.0f;
+			}
+		} 
+		else 
+		{
+			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+			{
+				APROC_Audio_Buffer_TX_I[i] = (float32_t)convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]) / 2147483648.0f;
+				APROC_Audio_Buffer_TX_Q[i] = (float32_t)convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2 + 1]) / 2147483648.0f;
+			}
+		}
+		#endif
 
 		if (getInputType() == TRX_INPUT_MIC)
 		{
