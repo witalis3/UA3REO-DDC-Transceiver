@@ -583,7 +583,7 @@ void memset16(void *dest, uint16_t val, uint32_t size)
 	}*/
 }
 
-void dma_memset(void *dest, uint8_t val, uint32_t size)
+__WEAK void dma_memset(void *dest, uint8_t val, uint32_t size)
 {
 	if (dma_memset32_busy || size < 128) // for async and fast calls
 	{
@@ -617,7 +617,7 @@ void dma_memset(void *dest, uint8_t val, uint32_t size)
 	}
 }
 
-void dma_memcpy(void *dest, void *src, uint32_t size)
+__WEAK void dma_memcpy(void *dest, void *src, uint32_t size)
 {
 	if (dma_memcpy32_busy || size < 1024) // for async and fast calls
 	{

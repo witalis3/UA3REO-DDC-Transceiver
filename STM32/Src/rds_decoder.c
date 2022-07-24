@@ -44,8 +44,8 @@ static arm_fir_decimate_instance_f32 DECIMATE_FIR = {
 		.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]){0}
 };
 
-SRAM_ON_F407 static float32_t RDS_pilot_buff[DECODER_PACKET_SIZE] = {0};
-SRAM_ON_F407 static float32_t RDS_buff[DECODER_PACKET_SIZE] = {0};
+static float32_t RDS_pilot_buff[DECODER_PACKET_SIZE] = {0};
+static float32_t RDS_buff[DECODER_PACKET_SIZE] = {0};
 
 static uint32_t RDS_decoder_samplerate = 0;
 static uint32_t RDS_decoder_mainfreq = 0;

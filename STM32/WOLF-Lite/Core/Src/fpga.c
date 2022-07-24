@@ -19,8 +19,8 @@ volatile float32_t FPGA_Audio_Buffer_RX1_Q_A[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t FPGA_Audio_Buffer_RX1_I_A[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t FPGA_Audio_Buffer_RX1_Q_B[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0}; // FPGA buffers
 volatile float32_t FPGA_Audio_Buffer_RX1_I_B[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
-volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE] = {0};
-volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE] = {0};
+SRAM_ON_F407 volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE] = {0};
+SRAM_ON_F407 volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE] = {0};
 uint16_t FPGA_FW_Version[3] = {0};
 uint8_t ADCDAC_OVR_StatusLatency = 0;
 bool FPGA_bus_stop = true;				   // suspend the FPGA bus
@@ -617,6 +617,7 @@ static inline void FPGA_fpgadata_sendparam(void)
 static inline void FPGA_fpgadata_getparam(void)
 {
 	register uint8_t FPGA_fpgadata_in_tmp8 = 0;
+	register int16_t FPGA_fpgadata_in_tmp16 = 0;
 	register int32_t FPGA_fpgadata_in_tmp32 = 0;
 	
 	//STAGE 1
@@ -677,15 +678,19 @@ static inline void FPGA_fpgadata_getparam(void)
 	FPGA_clockFall();
 
 	// STAGE 11 - ADC RAW DATA
-	FPGA_fpgadata_in_tmp32 = 0;
+	FPGA_fpgadata_in_tmp16 = 0;
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
+	FPGA_fpgadata_in_tmp16 |= ((FPGA_readPacket & 0x0F) << 8);
 	FPGA_clockFall();
 	// STAGE 12
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
+	FPGA_fpgadata_in_tmp16 |= (FPGA_readPacket);
 	FPGA_clockFall();
-	ADC_RAW_IN = (int16_t)(FPGA_fpgadata_in_tmp32 & 0xFFFF);
+	
+	if (bitRead(FPGA_fpgadata_in_tmp16, 11) == 1)
+		FPGA_fpgadata_in_tmp16 |= 0xF000; // int12 to int16 extension
+	
+	ADC_RAW_IN = FPGA_fpgadata_in_tmp16;
 }
 
 // get IQ data
@@ -849,7 +854,7 @@ static inline void FPGA_fpgadata_sendiq(void)
 		FPGA_fpgadata_out_i_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
 		FPGA_fpgadata_out_q_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
 	}
-
+	
 	// STAGE 2 out Q
 	FPGA_writePacket((FPGA_fpgadata_out_q_tmp32 >> 16) & 0xFF);
 	FPGA_clockRise();

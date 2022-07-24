@@ -189,6 +189,16 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 	memcpy(dest, src, size * 4);
 }
 
+void dma_memset(void *dest, uint8_t val, uint32_t size)
+{
+	memset(dest, val, size);
+}
+
+void dma_memcpy(void *dest, void *src, uint32_t size)
+{
+	memcpy(dest, src, size);
+}
+
 void SCB_CleanDCache_by_Addr(uint32_t *addr, uint32_t size) {}
 void SCB_InvalidateDCache_by_Addr(uint32_t *addr, uint32_t size) {}
 void SCB_CleanInvalidateDCache_by_Addr(uint32_t *addr, uint32_t size) {}

@@ -37,8 +37,8 @@ float32_t APROC_Audio_Buffer_RX2_Q[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 float32_t APROC_Audio_Buffer_RX2_I[FPGA_RX_IQ_BUFFER_HALF_SIZE] = {0};
 #endif
 
-float32_t APROC_Audio_Buffer_TX_Q[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
-float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
+SRAM_ON_F407 float32_t APROC_Audio_Buffer_TX_Q[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
+SRAM_ON_F407 float32_t APROC_Audio_Buffer_TX_I[FPGA_TX_IQ_BUFFER_HALF_SIZE] = {0};
 volatile float32_t Processor_RX1_Power_value;	   // RX signal magnitude
 volatile float32_t Processor_RX2_Power_value;	   // RX signal magnitude
 volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
@@ -56,7 +56,7 @@ static q15_t APROC_AudioBuffer_FT8_out[AUDIO_BUFFER_SIZE / 2] = {0};
 
 SRAM_ON_F407 static int32_t APROC_AudioBuffer_out[AUDIO_BUFFER_SIZE] = {0};																				   // output buffer of the audio processor
 
-SRAM_ON_F407 demod_fm_instance DFM_RX1 = {.squelchRate = 1.0f};
+demod_fm_instance DFM_RX1 = {.squelchRate = 1.0f};
 #if HRDW_HAS_DUAL_RX
 demod_fm_instance DFM_RX2 = {.squelchRate = 1.0f};
 #endif

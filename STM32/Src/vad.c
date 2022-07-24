@@ -10,7 +10,7 @@ static float32_t window_multipliers[VAD_FFT_SIZE] = {0}; // coefficients for the
 volatile bool VAD_RX1_Muting = false; // Muting flag
 volatile bool VAD_RX2_Muting = false; // Muting flag
 
-SRAM_ON_F407 static VAD_Instance VAD_RX1 = {
+static VAD_Instance VAD_RX1 = {
 	.FFT_Inst = &arm_cfft_sR_f32_len128,
 	.FirDecimate = {
 			// 48ksps, 3kHz lowpass

@@ -174,7 +174,7 @@ void RF_UNIT_ProcessSensors(void)
 		TRX_PWR_Voltage = PWR_Voltage;
 	
 	// SWR
-	TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / B12_RANGE;
+	// TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / B12_RANGE;
 	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B12_RANGE;
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B12_RANGE;
 
