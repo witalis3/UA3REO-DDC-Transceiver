@@ -230,6 +230,7 @@ static void SYSMENU_HANDL_Bootloader(int8_t direction);
 static void SYSMENU_HANDL_OTA_Update(int8_t direction);
 #endif
 static void SYSMENU_HANDL_SYSINFO(int8_t direction);
+static void SYSMENU_HANDL_SUPPORT(int8_t direction);
 static void SYSMENU_HANDL_Back(int8_t direction);
 
 static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction);
@@ -452,6 +453,7 @@ const static struct sysmenu_item_handler sysmenu_handlers[] =
 		#endif
 		{"Services", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SERVICESMENU},
 		{"System info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SYSINFO},
+		{"Support project", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SUPPORT},
 		{"Calibration", SYSMENU_MENU, SYSMENU_HANDL_CHECK_HIDDEN_ENABLED, 0, SYSMENU_HANDL_CALIBRATIONMENU},
 };
 
@@ -3779,6 +3781,15 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 
 	LCD_UpdateQuery.SystemMenu = true;
+}
+
+// SYSTEM INFO
+
+static void SYSMENU_HANDL_SUPPORT(int8_t direction)
+{
+	sysmenu_infowindow_opened = true;
+	LCDDriver_Fill(BG_COLOR);
+	LCDDriver_printText("MasterCard: 5599 0020 2091 0792", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 }
 
 //Back to prev menu
