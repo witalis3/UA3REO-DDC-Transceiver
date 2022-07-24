@@ -92,6 +92,7 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize);
+static void doTX_HILBERT(bool swap_iq, uint16_t size);
 
 // initialize audio processor
 void initAudioProcessor(void)
@@ -818,17 +819,11 @@ void processTxAudio(void)
 		// hilbert fir
 		if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_CW)
 		{
-			// + 45 deg to I data
-			arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			// - 45 deg to Q data
-			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 		}
 		else
 		{
-			// + 45 deg to Q data
-			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			// - 45 deg to I data
-			arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
 		}
 	}
 
@@ -939,26 +934,15 @@ void processTxAudio(void)
 		case TRX_MODE_USB:
 		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
-			// hilbert fir
-			//  + 45 deg to Q data
-			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			// - 45 deg to I data
-			arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_DIGI_L:
-			// hilbert fir
-			//  + 45 deg to I data
-			arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			// - 45 deg to Q data
-			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_AM:
 		case TRX_MODE_SAM:
-			// + 45 deg to I data
-			arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			// - 45 deg to Q data
-			arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 			for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
 			{
 				float32_t i_am = ((APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]) + 1.0f * APROC_TX_clip_gain);
@@ -1341,6 +1325,53 @@ static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 	{
 		arm_fir_f32(&FIR_RX2_Hilbert_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
 		arm_fir_f32(&FIR_RX2_Hilbert_Q, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_Q, size);
+	}
+	#endif
+}
+
+static void doTX_HILBERT(bool swap_iq, uint16_t size)
+{
+	#ifndef STM32F407xx
+	if(!swap_iq) {
+		//  + 45 deg to I data
+		arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+		// - 45 deg to Q data
+		arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+	} else {
+		//  + 45 deg to I data
+		arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+		// - 45 deg to Q data
+		arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+	}
+	#endif
+	
+	#ifdef STM32F407xx
+	//single transformer for slow CPU
+	if(!swap_iq) {
+		arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+	} else {
+		arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, size);
+	}
+	
+	#define HILBERT_TX_DELAY (IQ_HILBERT_TAPS_TX / 2 + 1)
+	static float32_t tx_hilbert_delay_buffer[HILBERT_TX_DELAY] = {0};
+	static uint32_t tx_hilbert_delay_buffer_head = 1;
+	static uint32_t tx_hilbert_delay_buffer_tail = 0;
+	
+	for(uint32_t i = 0; i < size; i++) {
+		if(!swap_iq) {
+			tx_hilbert_delay_buffer[tx_hilbert_delay_buffer_tail] = APROC_Audio_Buffer_TX_Q[i];
+			APROC_Audio_Buffer_TX_Q[i] = tx_hilbert_delay_buffer[tx_hilbert_delay_buffer_head];
+		} else {
+			tx_hilbert_delay_buffer[tx_hilbert_delay_buffer_tail] = APROC_Audio_Buffer_TX_I[i];
+			APROC_Audio_Buffer_TX_I[i] = tx_hilbert_delay_buffer[tx_hilbert_delay_buffer_head];
+		}
+		
+		tx_hilbert_delay_buffer_head++;
+		tx_hilbert_delay_buffer_tail++;
+		
+		if(tx_hilbert_delay_buffer_head == HILBERT_TX_DELAY) tx_hilbert_delay_buffer_head = 0;
+		if(tx_hilbert_delay_buffer_tail == HILBERT_TX_DELAY) tx_hilbert_delay_buffer_tail = 0;
 	}
 	#endif
 }

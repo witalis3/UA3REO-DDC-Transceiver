@@ -37,15 +37,15 @@ SRAM_ON_F407 static float32_t RDS_LPF_Filter_State[2 * RDS_FILTER_STAGES] = {0};
 SRAM_ON_F407 static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_Filter;
 // decimator
 static const float32_t DECIMATE_FIR_Coeffs[4] = {-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792};
-static arm_fir_decimate_instance_f32 DECIMATE_FIR = {
+SRAM_ON_F407 static arm_fir_decimate_instance_f32 DECIMATE_FIR = {
 		.M = RDS_DECIMATOR,
 		.numTaps = 4,
 		.pCoeffs = DECIMATE_FIR_Coeffs,
 		.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]){0}
 };
 
-static float32_t RDS_pilot_buff[DECODER_PACKET_SIZE] = {0};
-static float32_t RDS_buff[DECODER_PACKET_SIZE] = {0};
+SRAM_ON_F407 static float32_t RDS_pilot_buff[DECODER_PACKET_SIZE] = {0};
+SRAM_ON_F407 static float32_t RDS_buff[DECODER_PACKET_SIZE] = {0};
 
 static uint32_t RDS_decoder_samplerate = 0;
 static uint32_t RDS_decoder_mainfreq = 0;
