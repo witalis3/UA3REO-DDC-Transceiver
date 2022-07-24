@@ -938,7 +938,9 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 #if HRDW_HAS_WIFI && !defined(FRONTPANEL_X1)
 		{"DX Cluster", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DX_CLUSTER},
 		{"Propagination", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGINATION},
+		#if LCD_WIDTH >= 800
 		{"DayNight Map", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DAYNIGHT_MAP},
+		#endif
 		{"RDA Statistics", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RDA_STATS},
 #endif
 		{"SWR Analyzer", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SWR_ANALYSER_MENU},
