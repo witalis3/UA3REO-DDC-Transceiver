@@ -136,6 +136,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	static uint32_t raw_block3 = 0;
 	static uint32_t raw_block4 = 0;
 	static bool signal_state_prev = false;
+	static bool signal_state_retry = false;
 	static uint8_t bit_sample_counter = 0;
 	for (uint32_t i = 0; i < (DECODER_PACKET_SIZE / RDS_DECIMATOR); i++)
 	{
@@ -149,6 +150,15 @@ void RDSDecoder_Process(float32_t *bufferIn)
 		}
 		else
 		{
+			if(!signal_state_retry) {
+				signal_state_retry = true;
+				bit_sample_counter++;
+				continue;
+			}
+			signal_state_retry = false;
+			
+			// print(bit_sample_counter, " ");
+			
 			if (bit_sample_counter >= 8)
 			{
 				process_bits = 2;
@@ -157,9 +167,9 @@ void RDSDecoder_Process(float32_t *bufferIn)
 			{
 				process_bits = 1;
 			}
+			
 			filtered_state = signal_state_prev;
-
-			bit_sample_counter = 1;
+			bit_sample_counter = 2;
 			signal_state_prev = signal_state;
 		}
 		
@@ -173,6 +183,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 		static bool filtered_state_prev = false;
 		if (process_bits > 0)
 		{
+			//print(process_bits);
 			for (uint8_t i = 0; i < process_bits; i++)
 			{
 				if (!bit1_ready)
@@ -184,6 +195,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 				{
 					bit2_state = filtered_state_prev;
 					bit2_ready = true;
+					
 					// shift error
 					if (bit1_state == bit2_state)
 					{
@@ -214,21 +226,24 @@ void RDSDecoder_Process(float32_t *bufferIn)
 		raw_block2 <<= 1;
 		raw_block2 |= (raw_block1 >> 25) & 0x1;
 		raw_block1 <<= 1;
+		
 		// do diff
 		static bool prev_bit = false;
 		if (bit_out_state != prev_bit)
 			raw_block1 |= 1;
 		prev_bit = bit_out_state;
-// wait block A
-#define MaxCorrectableBits 1 // 5
-#define CheckwordBitsCount 10
+		
+		#define MaxCorrectableBits 1 // 5
+		#define CheckwordBitsCount 10
+		
+		// wait block A
 		bool gotA = false;
 		uint32_t block4 = raw_block4;
 		uint16_t _syndrome = RDS_BuildSyndrome(block4);
 		_syndrome ^= 0x3d8;
 		gotA = _syndrome == 0 ? true : false;
-		//if(!gotA && RDS_ApplyFEC(&block4, _syndrome) <= MaxCorrectableBits)
-			//gotA = true;
+		if(!gotA && RDS_ApplyFEC(&block4, _syndrome) <= MaxCorrectableBits)
+			gotA = true;
 		
 		if (gotA)
 		{
@@ -367,7 +382,12 @@ static uint32_t RDS_ApplyFEC(uint32_t *block, uint32_t _syndrome)
 		correctedBitsCount += (st && bitError) ? 1 : 0;
 		correction >>= 1;
 	}
-	//_syndrome &= 0x3ff;
+	_syndrome &= 0x3ff;
+	
+	if(correctedBitsCount > 0 && _syndrome != 0) { // corrected wrong
+		correctedBitsCount += 50;
+	}
+	
 	return correctedBitsCount;
 }
 
