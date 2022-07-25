@@ -233,7 +233,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 			raw_block1 |= 1;
 		prev_bit = bit_out_state;
 		
-		#define MaxCorrectableBits 1 // 5
+		#define MaxCorrectableBits 3 // 5
 		#define CheckwordBitsCount 10
 		
 		// wait block A
@@ -331,19 +331,34 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 		if (index > (RDS_STR_MAXLEN - 5))
 			return;
 
+		char chr_a = cleanASCIIgarbage((char)(groupC >> 8));
+		char chr_b = cleanASCIIgarbage((char)(groupC & 0xff));
+		char chr_c = cleanASCIIgarbage((char)(groupD >> 8));
+		char chr_d = cleanASCIIgarbage((char)(groupD & 0xff));
+		
+		if(chr_a == 0 || chr_b == 0 || chr_c == 0 || chr_d == 0) return;
+		
 		if (abFlag)
 		{
-			RDS_Decoder_2A[index] = cleanASCIIgarbage((char)(groupC >> 8));
-			RDS_Decoder_2A[index + 1] = cleanASCIIgarbage((char)(groupC & 0xff));
-			RDS_Decoder_2A[index + 2] = cleanASCIIgarbage((char)(groupD >> 8));
-			RDS_Decoder_2A[index + 3] = cleanASCIIgarbage((char)(groupD & 0xff));
+			RDS_Decoder_2A[index] = chr_a;
+			RDS_Decoder_2A[index + 1] = chr_b;
+			RDS_Decoder_2A[index + 2] = chr_c;
+			RDS_Decoder_2A[index + 3] = chr_d;
+			
+			for(uint8_t i = 0; i < index ; i++)
+				if(RDS_Decoder_2A[i] == 0)
+					RDS_Decoder_2A[i] = ' ';
 		}
 		else
 		{
-			RDS_Decoder_2B[index] = cleanASCIIgarbage((char)(groupC >> 8));
-			RDS_Decoder_2B[index + 1] = cleanASCIIgarbage((char)(groupC & 0xff));
-			RDS_Decoder_2B[index + 2] = cleanASCIIgarbage((char)(groupD >> 8));
-			RDS_Decoder_2B[index + 3] = cleanASCIIgarbage((char)(groupD & 0xff));
+			RDS_Decoder_2B[index] = chr_a;
+			RDS_Decoder_2B[index + 1] = chr_b;
+			RDS_Decoder_2B[index + 2] = chr_c;
+			RDS_Decoder_2B[index + 3] = chr_d;
+			
+			for(uint8_t i = 0; i < index ; i++)
+				if(RDS_Decoder_2B[i] == 0)
+					RDS_Decoder_2B[i] = ' ';
 		}
 
 		// println("2A ", abFlag?" A ":" B ", index, ": ", str);
@@ -356,9 +371,18 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 
 		if (index > (RDS_STR_MAXLEN - 5))
 			return;
+		
+		char chr_c = cleanASCIIgarbage((char)(groupD >> 8));
+		char chr_d = cleanASCIIgarbage((char)(groupD & 0xff));
 
-		RDS_Decoder_0A[index] = cleanASCIIgarbage((char)(groupD >> 8));
-		RDS_Decoder_0A[index + 1] = cleanASCIIgarbage((char)(groupD & 0xff));
+		if(chr_c == 0 || chr_d == 0) return;
+		
+		RDS_Decoder_0A[index] = chr_c;
+		RDS_Decoder_0A[index + 1] = chr_d;
+		
+		for(uint8_t i = 0; i < index ; i++)
+				if(RDS_Decoder_0A[i] == 0)
+					RDS_Decoder_0A[i] = ' ';
 
 		// println("0A ", index, ": ", str);
 	}
