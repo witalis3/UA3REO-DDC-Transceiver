@@ -39,8 +39,8 @@ module tx_cic_cic_ii_0 (
     parameter STAGES        =  3;
     parameter D_DELAY              =  1;
     parameter VRC_EN   =  0;
-    parameter RCF_MAX         =  3920;
-    parameter RCF_MIN         =  3920;
+    parameter RCF_MAX         =  3400;
+    parameter RCF_MIN         =  3400;
     parameter INTERFACES    =  1;
     parameter CH_PER_INT  =  2;
     parameter INT_USE_MEM      =  "false";
