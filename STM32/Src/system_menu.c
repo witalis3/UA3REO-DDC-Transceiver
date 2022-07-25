@@ -5922,6 +5922,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 			SYSMENU_drawSystemMenu(true, false);
 		}
 	}
+	LCD_hideKeyboard();
 	sysmenu_item_selected_by_enc2 = false;
 	NeedSaveSettings = true;
 
@@ -5947,6 +5948,7 @@ void SYSMENU_eventCloseAllSystemMenu(void)
 	sysmenu_onroot = true;
 	sysmenu_item_selected_by_enc2 = false;
 	LCD_systemMenuOpened = false;
+	LCD_hideKeyboard();
 	LCD_UpdateQuery.Background = true;
 
 #if FT8_SUPPORT
