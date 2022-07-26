@@ -486,7 +486,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			shift_registers_lock_counter = 0;
 		}
 		
-		if(shift_registers_lock) {
+		if(shift_registers_lock && (TRX_RF_Temperature < CALIBRATE.FAN_MEDIUM_START)) {
 			return;
 		}
 	}
