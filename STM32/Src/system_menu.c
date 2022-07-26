@@ -5709,7 +5709,7 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 		direction = -1;
 	if (direction > 1)
 		direction = 1;
-
+	
 	#if HRDW_HAS_WIFI
 	if (sysmenu_wifi_selectap1_menu_opened)
 	{
@@ -5764,6 +5764,12 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 		FILEMANAGER_EventRotate(direction);
 		return;
 	}
+	
+	if(sysmenu_infowindow_opened)
+	{
+		return;
+	}
+	
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_INFOLINE)
 		sysmenu_handlers_selected[getCurrentMenuIndex()].menuHandler(direction);
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_RUN)
@@ -5923,6 +5929,7 @@ void SYSMENU_eventCloseSystemMenu(void)
 		}
 	}
 	LCD_hideKeyboard();
+	WIFI_AbortCallback();
 	sysmenu_item_selected_by_enc2 = false;
 	NeedSaveSettings = true;
 
@@ -5949,6 +5956,7 @@ void SYSMENU_eventCloseAllSystemMenu(void)
 	sysmenu_item_selected_by_enc2 = false;
 	LCD_systemMenuOpened = false;
 	LCD_hideKeyboard();
+	WIFI_AbortCallback();
 	LCD_UpdateQuery.Background = true;
 
 #if FT8_SUPPORT

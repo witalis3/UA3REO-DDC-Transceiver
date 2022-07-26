@@ -643,6 +643,12 @@ void WIFI_Process(void)
 	}
 }
 
+bool WIFI_AbortCallback()
+{
+	WIFI_ProcessingCommandCallback = NULL;
+	return true;
+}
+
 bool WIFI_GetSNTPTime(void (*callback)(void))
 {
 	if (WIFI_State != WIFI_READY)
@@ -968,7 +974,7 @@ static void WIFI_getHTTPResponse(void)
 
 			// may be partial content? continue downloading
 			start_time = HAL_GetTick();
-			#define WIFI_STREAM_Timeout 15000
+			#define WIFI_STREAM_Timeout 10000
 			if (readed_body_length < WIFI_HTTP_Response_ContentLength && (HAL_GetTick() - start_time) < WIFI_STREAM_Timeout)
 			{
 				while (readed_body_length < WIFI_HTTP_Response_ContentLength && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < WIFI_STREAM_Timeout)
@@ -989,6 +995,9 @@ static void WIFI_getHTTPResponse(void)
 
 								// partial callback for image printing
 								readed_body_length += strlen(WIFI_HTTResponseHTML);
+								
+								// update timeout start
+								start_time = HAL_GetTick();
 								
 								if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback)
 									WIFI_printImage_stream_partial_callback();
