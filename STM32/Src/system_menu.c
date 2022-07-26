@@ -5929,7 +5929,9 @@ void SYSMENU_eventCloseSystemMenu(void)
 		}
 	}
 	LCD_hideKeyboard();
+	#if HRDW_HAS_WIFI
 	WIFI_AbortCallback();
+	#endif
 	sysmenu_item_selected_by_enc2 = false;
 	NeedSaveSettings = true;
 
@@ -5956,7 +5958,9 @@ void SYSMENU_eventCloseAllSystemMenu(void)
 	sysmenu_item_selected_by_enc2 = false;
 	LCD_systemMenuOpened = false;
 	LCD_hideKeyboard();
+	#if HRDW_HAS_WIFI
 	WIFI_AbortCallback();
+	#endif
 	LCD_UpdateQuery.Background = true;
 
 #if FT8_SUPPORT
