@@ -97,6 +97,13 @@ static void doTX_HILBERT(bool swap_iq, uint16_t size);
 // initialize audio processor
 void initAudioProcessor(void)
 {
+	memset(&DFM_RX1, 0x00, sizeof(DFM_RX1));
+	DFM_RX1.squelchRate = 1.0f;
+	#if HRDW_HAS_DUAL_RX
+	memset(&DFM_RX2, 0x00, sizeof(DFM_RX2));
+	DFM_RX2.squelchRate = 1.0f;
+	#endif
+
 	InitAudioFilters();
 	DECODER_Init();
 	NeedReinitReverber = true;
@@ -122,7 +129,7 @@ void preProcessRxAudio(void)
 	float32_t *FPGA_Audio_Buffer_RX2_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_I_A : (float32_t *)&FPGA_Audio_Buffer_RX2_I_B;
 	float32_t *FPGA_Audio_Buffer_RX2_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B;
 	#endif
-
+	
 	// Get and decimate input
 	uint32_t need_decimate_rate = TRX_GetRXSampleRate / TRX_SAMPLERATE;
 	static uint32_t audio_buffer_in_index = 0;
@@ -1839,7 +1846,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			}
 		}
 	}
-
+	
 	// RDS Decoder
 	if (rx_id == AUDIO_RX1 && wfm)
 	{
@@ -1863,6 +1870,8 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 
 			// get stereo sample from decoded wfm
 			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * 2.0f; // 2 - stereo depth
+			if(isnanf(stereo_sample))
+				continue;
 
 			// get channels
 			data_q[i] = (data_i[i] - stereo_sample); // Mono (L+R) - Stereo (L-R) = 2R
@@ -1872,17 +1881,19 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	
 	// fm de emphasis
 	if (!DFM->squelched) {
-		#define deeemp_alpha 0.75f
+		#define deemp_alpha 0.75f
 		
 		for (uint_fast16_t i = 0; i < size; i++) {
-			data_i[i] = data_i[i] * (1.0f - deeemp_alpha) + DFM->deemph_i_prev * deeemp_alpha;
-			DFM->deemph_i_prev = data_i[i];
+			float32_t deemp_i = data_i[i] * (1.0f - deemp_alpha) + DFM->deemph_i_prev * deemp_alpha;
+			data_i[i] = deemp_i;
+			DFM->deemph_i_prev = deemp_i;
 		}
 		
 		if (TRX.FM_Stereo && wfm) {
 			for (uint_fast16_t i = 0; i < size; i++) {
-				data_q[i] = data_q[i] * (1.0f - deeemp_alpha) + DFM->deemph_q_prev * deeemp_alpha;
-				DFM->deemph_q_prev = data_q[i];
+				float32_t deemp_q = data_q[i] * (1.0f - deemp_alpha) + DFM->deemph_q_prev * deemp_alpha;
+				data_q[i] = deemp_q;
+				DFM->deemph_q_prev = deemp_q;
 			}
 		}
 	}
