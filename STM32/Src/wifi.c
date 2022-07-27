@@ -178,7 +178,7 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 		WIFI_SendCommand("AT+CIPDNS_CUR=1,\"8.8.8.8\",\"77.88.8.8\"\r\n"); // DNS
 		// WIFI_WaitForOk();
-		WIFI_SendCommand("AT+CWHOSTNAME=\"UA3REO\"\r\n"); // Hostname
+		WIFI_SendCommand("AT+CWHOSTNAME=\"TRX-Wolf\"\r\n"); // Hostname
 		WIFI_WaitForOk();
 		// WIFI_SendCommand("AT+CWCOUNTRY=1,\"RU\",1,13\r\n"); //Country
 		// WIFI_WaitForOk();
