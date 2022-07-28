@@ -402,6 +402,17 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 
 	if (count < 100) dma = false;
 	
+	#ifdef STM32H743xx
+	// non-DMA section
+	if (dma && out_data == NULL && (uint32_t)in_data < 0x24000000)
+		dma = false;
+	if (dma && in_data == NULL && (uint32_t)out_data < 0x24000000)
+		dma = false;
+	if (dma && in_data != NULL && out_data != NULL)
+		if ((uint32_t)out_data < 0x24000000 || (uint32_t)in_data < 0x24000000)
+			dma = false;
+	#endif
+	
 	if (dma)
 	{
 		uint32_t startTime = HAL_GetTick();
@@ -445,7 +456,9 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout) CPULOAD_GoToSleepMode();
 			
 			//res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
-			//while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_timeout)) CPULOAD_GoToSleepMode();
+			//res = HAL_SPI_Receive_DMA(hspi, in_data, count);
+			//while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_timeout))
+				//CPULOAD_GoToSleepMode();
 		}
 		else
 		{
@@ -467,6 +480,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_timeout))
 				CPULOAD_GoToSleepMode();
 		}
+		
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t)in_data, count);
 		
 		if((HAL_GetTick() - startTime) > SPI_timeout)
@@ -503,6 +517,8 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 	if (res == HAL_TIMEOUT)
 	{
 		println("[ERR] SPI timeout");
+		
+		//HAL_SPI_Abort(hspi);
 		return false;
 	}
 	if (res == HAL_ERROR)
@@ -514,6 +530,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			println("RX");
 		} else { println("TXRX"); }
 		
+		//HAL_SPI_Abort(hspi);
 		return false;
 	}
 
@@ -691,7 +708,7 @@ __WEAK void dma_memcpy(void *dest, void *src, uint32_t size)
 #if HRDW_HAS_MDMA
 void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 {
-#define Timeout 100
+	const uint32_t Timeout = 100;
 	uint32_t tickstart;
 
 	if (HAL_MDMA_STATE_BUSY != hmdma->State)
@@ -738,7 +755,7 @@ typedef struct
 
 void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma)
 {
-	#define Timeout 100
+	const uint32_t Timeout = 100;
 	
 	HAL_StatusTypeDef status = HAL_OK; 
   uint32_t mask_cpltlevel;
@@ -772,6 +789,8 @@ void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma)
 			
 			/* Process Unlocked */
 			__HAL_UNLOCK(hdma);
+			
+			println("[ERR] DMA Timeout");
 			
 			return;
 		}

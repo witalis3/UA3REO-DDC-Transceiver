@@ -200,9 +200,8 @@ extern void memset16(void *dest, uint16_t val, uint32_t size);
 extern void dma_memset(void *dest, uint8_t val, uint32_t size);
 #if HRDW_HAS_MDMA
 extern void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma);
-#else
-extern void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma);
 #endif
+extern void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma);
 extern float32_t db2rateV(float32_t i);
 extern float32_t db2rateP(float32_t i);
 extern float32_t rate2dbV(float32_t i);
