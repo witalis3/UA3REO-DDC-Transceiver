@@ -250,11 +250,15 @@ int main(void)
   println("[OK] Real Time Clock init");
   HAL_RTC_Init(&hrtc);
   println("[OK] Frontpanel init");
+	HAL_Delay(500);
   FRONTPANEL_Init();
 
   println("[OK] Settings loading");
   if (PERIPH_FrontPanel_Buttons[0].state) //soft reset (MENU)
+	{
+		println("MENU Button pressed");
     LoadSettings(true);
+	}
   else
     LoadSettings(false);
 
