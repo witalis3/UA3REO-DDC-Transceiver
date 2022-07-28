@@ -109,8 +109,8 @@ void LoadSettings(bool clear)
 		TRX.selected_vfo = false;			  // current VFO (false - A)
 		TRX.VFO_A.Freq = 7100000;			  // stored VFO-A frequency
 		TRX.VFO_A.Mode = TRX_MODE_LSB;		  // saved VFO-A mode
-		TRX.VFO_A.LPF_RX_Filter_Width = 3000; // saved bandwidth for VFO-A
-		TRX.VFO_A.LPF_TX_Filter_Width = 3000; // saved bandwidth for VFO-A
+		TRX.VFO_A.LPF_RX_Filter_Width = 2700; // saved bandwidth for VFO-A
+		TRX.VFO_A.LPF_TX_Filter_Width = 2700; // saved bandwidth for VFO-A
 		TRX.VFO_A.HPF_RX_Filter_Width = 60;	  // saved bandwidth for VFO-A
 		TRX.VFO_A.HPF_TX_Filter_Width = 60;	  // saved bandwidth for VFO-A
 		TRX.VFO_A.ManualNotchFilter = false;  // notch filter to cut out noise
@@ -122,8 +122,8 @@ void LoadSettings(bool clear)
 		TRX.VFO_A.FM_SQL_threshold_dbm = -90; // FM noise squelch
 		TRX.VFO_B.Freq = 14150000;			  // stored VFO-B frequency
 		TRX.VFO_B.Mode = TRX_MODE_USB;		  // saved VFO-B mode
-		TRX.VFO_B.LPF_RX_Filter_Width = 3000; // saved bandwidth for VFO-B
-		TRX.VFO_B.LPF_TX_Filter_Width = 3000; // saved bandwidth for VFO-B
+		TRX.VFO_B.LPF_RX_Filter_Width = 2700; // saved bandwidth for VFO-B
+		TRX.VFO_B.LPF_TX_Filter_Width = 2700; // saved bandwidth for VFO-B
 		TRX.VFO_B.HPF_RX_Filter_Width = 60;	  // saved bandwidth for VFO-B
 		TRX.VFO_B.HPF_TX_Filter_Width = 60;	  // saved bandwidth for VFO-B
 		TRX.VFO_B.ManualNotchFilter = false;  // notch filter to cut out noise
