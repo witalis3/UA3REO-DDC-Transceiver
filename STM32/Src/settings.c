@@ -27,9 +27,11 @@ struct TRX_CALIBRATE CALIBRATE = {0};
 bool EEPROM_Enabled = true;
 static uint8_t settings_bank = 1;
 
-IRAM2 static uint8_t write_clone[sizeof(TRX)] = {0};
-IRAM2 static uint8_t read_clone[sizeof(TRX)] = {0};
-IRAM2 static uint8_t verify_clone[sizeof(TRX)] = {0};
+#define MAX_CLONE_SIZE sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
+
+IRAM2 static uint8_t write_clone[MAX_CLONE_SIZE] = {0};
+IRAM2 static uint8_t read_clone[MAX_CLONE_SIZE] = {0};
+IRAM2 static uint8_t verify_clone[MAX_CLONE_SIZE] = {0};
 
 volatile bool NeedSaveSettings = false;
 volatile bool NeedSaveCalibration = false;
@@ -875,7 +877,7 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		HRDW_SPI_Locked = true;
 	if (size > sizeof(write_clone))
 	{
-		println("EEPROM buffer error");
+		println("EEPROM WR buffer error");
 		HRDW_SPI_Locked = false;
 		return false;
 	}
@@ -943,6 +945,13 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	else
 		HRDW_SPI_Locked = true;
 
+	if (size > sizeof(read_clone))
+	{
+		println("EEPROM RD buffer error");
+		HRDW_SPI_Locked = false;
+		return false;
+	}
+	
 	Aligned_CleanDCache_by_Addr((uint32_t *)Buffer, size);
 
 	uint32_t BigAddress = sector * W25Q16_SECTOR_SIZE;
