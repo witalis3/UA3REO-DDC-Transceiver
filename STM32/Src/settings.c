@@ -876,6 +876,7 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 	if (size > sizeof(write_clone))
 	{
 		println("EEPROM buffer error");
+		HRDW_SPI_Locked = false;
 		return false;
 	}
 	memcpy(write_clone, Buffer, size);
