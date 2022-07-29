@@ -586,7 +586,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TUNE_MAX_POWER = 15;				   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 100;				   // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)
-		CALIBRATE.smeter_calibration_hf = 12;
+		CALIBRATE.smeter_calibration_hf = 15;
 		CALIBRATE.TUNE_MAX_POWER = 5;				   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER = 15;				   // Max TRX Power for indication
 #else

@@ -8,8 +8,8 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 52						  // Settings config version
-#define CALIB_VERSION 45					  // Calibration config version
+#define SETT_VERSION 53						  // Settings config version
+#define CALIB_VERSION 46					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
 #define AGC_CLIPPING 6.0f					  // Limit over target in AGC, dB
