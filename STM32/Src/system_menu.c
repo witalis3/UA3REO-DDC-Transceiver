@@ -1223,9 +1223,9 @@ static void SYSMENU_HANDL_TRX_XIT_INTERVAL(int8_t direction)
 		TRX.XIT_INTERVAL = 10000;
 }
 
+static const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 2500, 5000, 25000, 50000, 100000, 250000, 500000};
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction)
 {
-	const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 5000, 25000, 50000, 100000, 500000};
 	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
 		if (TRX.FRQ_STEP == freq_steps[i])
 		{
@@ -1251,7 +1251,6 @@ static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction)
 {
-	const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 5000, 25000, 50000, 100000, 500000};
 	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
 		if (TRX.FRQ_FAST_STEP == freq_steps[i])
 		{
@@ -1277,7 +1276,6 @@ static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction)
 {
-	const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 5000, 25000, 50000, 100000, 500000};
 	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
 		if (TRX.FRQ_ENC_STEP == freq_steps[i])
 		{
@@ -1303,7 +1301,6 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction)
 {
-	const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 5000, 25000, 50000, 100000, 500000};
 	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
 		if (TRX.FRQ_ENC_FAST_STEP == freq_steps[i])
 		{
