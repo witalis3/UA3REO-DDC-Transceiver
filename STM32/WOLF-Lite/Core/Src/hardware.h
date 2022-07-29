@@ -36,12 +36,12 @@
 
 // instances
 #define HRDW_AUDIO_CODEC_I2S hi2s3
-#define HRDW_WSPR_TIMER NULL
-#define HRDW_WIFI_UART NULL
+// #define HRDW_WSPR_TIMER
+// #define HRDW_WIFI_UART
 #define HRDW_FSMC_LCD hsram1
 #define HRDW_CRC_HANDLE hcrc
-#define HRDW_JPEG_HANDLE NULL
-#define HRDW_LCD_SPI NULL
+// #define HRDW_JPEG_HANDLE
+// #define HRDW_LCD_SPI
 #define HRDW_IWDG hiwdg
 #define HRDW_LCD_FSMC_COPY_DMA hdma_memtomem_dma2_stream5
 #define HRDW_MEMCPY_DMA hdma_memtomem_dma2_stream0

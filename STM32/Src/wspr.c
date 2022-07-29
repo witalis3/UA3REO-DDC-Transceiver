@@ -279,7 +279,7 @@ static void WSPR_StartTransmit(void)
 	wspr_status = WSPR_TRANSMIT;
 	WSPR2_BeginDelay = 0;
 	WSPR2_count = 0;
-	#if HRDW_WSPR_TIMER != NULL
+	#ifdef HRDW_WSPR_TIMER
 	HAL_TIM_Base_Start_IT(&HRDW_WSPR_TIMER);
 	#endif
 }
@@ -293,7 +293,7 @@ static void WSPR_StopTransmit(void)
 	wspr_status = WSPR_WAIT;
 	WSPR2_BeginDelay = 0;
 	WSPR2_count = 0;
-	#if HRDW_WSPR_TIMER != NULL
+	#ifdef HRDW_WSPR_TIMER
 	HAL_TIM_Base_Stop_IT(&HRDW_WSPR_TIMER);
 	#endif
 }

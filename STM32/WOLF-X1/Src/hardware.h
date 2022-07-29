@@ -38,12 +38,12 @@
 #define HRDW_AUDIO_CODEC_I2S hi2s3
 #define HRDW_WSPR_TIMER htim2
 #define HRDW_WIFI_UART huart6
-#define HRDW_FSMC_LCD NULL
+// #define HRDW_FSMC_LCD
 #define HRDW_CRC_HANDLE hcrc
-#define HRDW_JPEG_HANDLE NULL
+// #define HRDW_JPEG_HANDLE
 #define HRDW_LCD_SPI hspi4
 #define HRDW_IWDG hiwdg1
-#define HRDW_LCD_FSMC_COPY_DMA NULL
+// #define HRDW_LCD_FSMC_COPY_DMA
 #define HRDW_LCD_WTF_DOWN_MDMA hmdma_mdma_channel43_sw_0
 #define HRDW_MEMCPY_MDMA hmdma_mdma_channel40_sw_0
 #define HRDW_MEMSET_MDMA hmdma_mdma_channel44_sw_0

@@ -4047,7 +4047,6 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction)
 #if FT8_SUPPORT
 static void SYSMENU_HANDL_FT8_Decoder(int8_t direction) // Tisho
 {
-#pragma unused(direction)
 	if (SYSMENU_FT8_DECODER_opened)
 	{
 		FT8_EncRotate(direction);
@@ -5192,6 +5191,7 @@ void SYSMENU_SERVICE_FT8_HOTKEY(void)
 	#if FT8_SUPPORT
 	SYSMENU_HANDL_FT8_Decoder(1);
 	#endif
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 // SWR ANALYZER
@@ -5595,7 +5595,11 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines)
 #if FT8_SUPPORT
 	else if (SYSMENU_FT8_DECODER_opened)
 	{
-		if(only_infolines) return;
+		if (only_infolines) return;
+		if (draw_background) {
+			InitFT8_Decoder();
+			LCD_UpdateQuery.SystemMenuRedraw = false;
+		}
 		MenagerFT8();
 		return;
 	}

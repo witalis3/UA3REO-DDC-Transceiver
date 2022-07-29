@@ -41,7 +41,7 @@
 #define HRDW_FSMC_LCD hsram1
 #define HRDW_CRC_HANDLE hcrc
 #define HRDW_JPEG_HANDLE hjpeg
-#define HRDW_LCD_SPI NULL
+// #define HRDW_LCD_SPI
 #define HRDW_IWDG hiwdg1
 #define HRDW_LCD_FSMC_COPY_DMA hdma_memtomem_dma2_stream5
 #define HRDW_LCD_WTF_DOWN_MDMA hmdma_mdma_channel43_sw_0
