@@ -30,7 +30,6 @@ static uint32_t Lastfreq = 0;
 static uint_fast8_t Lastmode = 0;
 static bool LastAutoGain = false;
 static bool LastBandMapEnabled = false;
-static bool LastRF_Filters = false;
 static bool LastManualNotch = false;
 static bool LastAutoNotch = false;
 static uint8_t LastDNR = false;
@@ -58,7 +57,6 @@ void SPEC_Start(void)
 	Lastmode = CurrentVFO->Mode;
 	LastAutoGain = TRX.AutoGain;
 	LastBandMapEnabled = TRX.BandMapEnabled;
-	LastRF_Filters = TRX.RF_Filters;
 	LastManualNotch = CurrentVFO->ManualNotchFilter;
 	LastAutoNotch = CurrentVFO->AutoNotchFilter;
 	LastDNR = CurrentVFO->DNR_Type;
@@ -95,7 +93,6 @@ void SPEC_Start(void)
 	// start scanning
 	TRX.BandMapEnabled = false;
 	TRX.AutoGain = false;
-	TRX.RF_Filters = false;
 	TRX.RIT_Enabled = false;
 	TRX.XIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
@@ -123,7 +120,6 @@ void SPEC_Stop(void)
 	TRX_setMode(Lastmode, CurrentVFO);
 	TRX.AutoGain = LastAutoGain;
 	TRX.BandMapEnabled = LastBandMapEnabled;
-	TRX.RF_Filters = LastRF_Filters;
 	CurrentVFO->ManualNotchFilter = LastManualNotch;
 	CurrentVFO->AutoNotchFilter = LastAutoNotch;
 	CurrentVFO->DNR_Type = LastDNR;
@@ -139,17 +135,18 @@ void SPEC_Draw(void)
 {
 	if (LCD_busy)
 		return;
-
+	
 	// Wait while data is being typed
 	if ((HAL_GetTick() - tick_start_time) < SPEC_StepDelay)
 	{
 		LCD_UpdateQuery.SystemMenu = true;
 		return;
 	}
-	if (Processor_RX1_Power_value == 0) //-V550
+	
+	if (TRX_RX1_dBm == 0) //-V550
 		return;
+	
 	tick_start_time = HAL_GetTick();
-
 	LCD_busy = true;
 
 	// Draw
