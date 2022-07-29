@@ -8,6 +8,8 @@
 #include "functions.h"
 #include "lcd.h"
 
+#ifndef STM32F407xx
+
 #if (defined(LAY_800x480))
 #define RDS_DECODER_STRLEN 57 // length of decoded string
 #else
@@ -29,4 +31,5 @@ extern char RDS_Decoder_Text[RDS_DECODER_STRLEN + 1];
 extern void RDSDecoder_Init(void);                   // initialize the CW decoder
 extern void RDSDecoder_Process(float32_t *bufferIn); // start CW decoder for the data block
 
+#endif
 #endif

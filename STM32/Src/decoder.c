@@ -10,8 +10,10 @@ static uint32_t DECODER_tail = 0; // index of reading data from the buffer
 
 void DECODER_Init(void)
 {
+	#ifndef STM32F407xx
 	CWDecoder_Init();
 	RDSDecoder_Init();
+	#endif
 	RTTYDecoder_Init();
 }
 
@@ -49,6 +51,7 @@ void DECODER_Process(void)
 	if (DECODER_tail >= DECODER_BUFF_SIZE)
 		DECODER_tail = 0;
 
+#ifndef STM32F407xx
 	// CW Decoder
 	if (TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
 		CWDecoder_Process(bufferOut);
@@ -56,7 +59,8 @@ void DECODER_Process(void)
 	// RDS Decoder
 	if (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM)
 		RDSDecoder_Process(bufferOut);
-
+#endif
+	
 	// RTTY Decoder
 	if (CurrentVFO->Mode == TRX_MODE_RTTY)
 		RTTYDecoder_Process(bufferOut);

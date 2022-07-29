@@ -756,11 +756,6 @@
               <FilePath>..\..\Src\cw.h</FilePath>
             </File>
             <File>
-              <FileName>cw_decoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\cw_decoder.c</FilePath>
-            </File>
-            <File>
               <FileName>cw_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\cw_decoder.h</FilePath>
@@ -959,11 +954,6 @@
               <FileName>profiler.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\profiler.h</FilePath>
-            </File>
-            <File>
-              <FileName>rds_decoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\rds_decoder.c</FilePath>
             </File>
             <File>
               <FileName>rds_decoder.h</FileName>
@@ -2037,11 +2027,6 @@
               <FilePath>..\..\Src\cw.h</FilePath>
             </File>
             <File>
-              <FileName>cw_decoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\cw_decoder.c</FilePath>
-            </File>
-            <File>
               <FileName>cw_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\cw_decoder.h</FilePath>
@@ -2240,11 +2225,6 @@
               <FileName>profiler.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\profiler.h</FilePath>
-            </File>
-            <File>
-              <FileName>rds_decoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\rds_decoder.c</FilePath>
             </File>
             <File>
               <FileName>rds_decoder.h</FileName>
