@@ -61,6 +61,7 @@ static char Tooltip_string[64] = {0};
 static bool LCD_showInfo_opened = false;
 
 static void printInfoSmall(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
+static void printInfoStatus(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t button_color, char *text, uint16_t back_color, uint16_t text_color, uint16_t inactive_color, bool active);
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
 static void LCD_displayFreqInfo(bool redraw);
 static void LCD_displayTopButtons(bool redraw);
@@ -1036,35 +1037,53 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		else
 			sprintf(buff, "RIT:OFF");
 	}
-	addSymbols(buff, buff, 12, " ", true);
-	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_RIT_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_RIT_Y_OFFSET, COLOR->STATUS_LABEL_RIT, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	// THERMAL
-	sprintf(buff, "CP:%02d%% MB:%02d^o", (uint32_t)CPU_LOAD.Load, (int16_t)TRX_STM32_TEMPERATURE);
-	addSymbols(buff, buff, 12, " ", true);
-	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_THERM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_THERM_Y_OFFSET, COLOR->STATUS_LABEL_THERM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+	//addSymbols(buff, buff, 12, " ", true);
+	//LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_RIT_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_RIT_Y_OFFSET, COLOR->STATUS_LABEL_RIT, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+	printInfoStatus(LAYOUT->STATUS_INFOB_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->BUTTON_EDGING, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+
+//IN-OUT 
+	sprintf(buff, "MIC:%d", TRX.MIC_GAIN);
+	printInfoStatus(LAYOUT->STATUS_INFOA_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->BUTTON_EDGING, buff, COLOR->BACKGROUND, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT, true);
+		
+	// VOLTAGE
+//	sprintf(buff, "%0.1fV", TRX_PWR_Voltage);
+//	addSymbols(buff, buff, 12, " ", true);
+//	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_THERM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_THERM_Y_OFFSET, COLOR->STATUS_LABEL_THERM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+//	
+	//VOLTAGE
+	sprintf(buff, "%0.1fV", TRX_PWR_Voltage);
+	printInfoStatus(LAYOUT->STATUS_INFOC_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->BUTTON_EDGING, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	
+	sprintf(buff, "TEST-4");
+	printInfoStatus(LAYOUT->STATUS_INFOD_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->BUTTON_EDGING, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	
 	// NOTCH
 	if (CurrentVFO->AutoNotchFilter)
-		sprintf(buff, "NOTCH:AUTO");
+		sprintf(buff, "NH:AUTO");
 	else if (CurrentVFO->ManualNotchFilter)
 	{
 		if (CurrentVFO->Mode == TRX_MODE_CW)
-			sprintf(buff, "NOTCH:%uhz", TRX.CW_Pitch + CurrentVFO->NotchFC - CurrentVFO->LPF_RX_Filter_Width / 2);
+			sprintf(buff, "NH:%uhz", TRX.CW_Pitch + CurrentVFO->NotchFC - CurrentVFO->LPF_RX_Filter_Width / 2);
 		else
-			sprintf(buff, "NOTCH:%uhz", CurrentVFO->NotchFC);
+			sprintf(buff, "NH:%uhz", CurrentVFO->NotchFC);
 	}
 	else
-		sprintf(buff, "NOTCH:OFF");
-	addSymbols(buff, buff, 12, " ", true);
-	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_NOTCH_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_NOTCH_Y_OFFSET, COLOR->STATUS_LABEL_NOTCH, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	// FFT BW
+		sprintf(buff, "NH:OFF");
+  //addSymbols(buff, buff, 12, " ", true);
+	//LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_NOTCH_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_NOTCH_Y_OFFSET, COLOR->STATUS_LABEL_NOTCH, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+	//sprintf(buff, "TEST-5");
+	printInfoStatus(LAYOUT->STATUS_INFOE_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->BUTTON_EDGING, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+
+// FFT BW
 	uint8_t fft_zoom = TRX.FFT_Zoom;
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		fft_zoom = TRX.FFT_ZoomCW;
 
 	sprintf(buff, "%dkHz x%d", FFT_current_spectrum_width_hz / 1000, fft_zoom);
-	addSymbols(buff, buff, 10, " ", true);
-	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-
+  //addSymbols(buff, buff, 10, " ", true);
+	//LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+	printInfoStatus(LAYOUT->STATUS_INFOF_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->BUTTON_EDGING, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	
 	// ERRORS LABELS
 	LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
 	if (TRX_ADC_OTR && !TRX_on_TX && !TRX.ADC_SHDN)
@@ -1239,6 +1258,19 @@ static void printInfoSmall(uint16_t x, uint16_t y, uint16_t width, uint16_t heig
 	LCDDriver_getTextBoundsFont(text, x, y, &x1, &y1, &w, &h, (GFXfont *)&FreeSans7pt7b);
 	// sendToDebug_str(text); sendToDebug_str(" "); sendToDebug_uint16(w, false);
 	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2 - 1, active ? text_color : inactive_color, back_color, (GFXfont *)&FreeSans7pt7b);
+}
+
+static void printInfoStatus(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t button_color, char *text, uint16_t back_color, uint16_t text_color, uint16_t inactive_color, bool active)
+{
+	uint16_t x1, y1, w, h, color;
+	LCDDriver_drawFastHLine(x, y - 1, width,					  			active ? COLOR_GBLUE: COLOR_DARKBLUE);
+	LCDDriver_drawFastHLine(x, y + (height + 1),width,			  active ? COLOR_GBLUE: COLOR_DARKBLUE);
+	LCDDriver_drawFastVLine(x - 1, y - 1, height + 3,  				active ? COLOR_GBLUE: COLOR_DARKBLUE);
+	LCDDriver_drawFastVLine(x + (width + 1), y-1, height + 3, active ? COLOR_GBLUE: COLOR_DARKBLUE);
+	
+	LCDDriver_Fill_RectWH(x, y, width, height, back_color);
+	LCDDriver_getTextBoundsFont(text, x, y, &x1, &y1, &w, &h, (GFXfont *)&PrestigeEliteStd_Bd7pt7b);
+	LCDDriver_printTextFont(text, x + (width - w) / 2, y + (height / 2) + h / 2, active ? COLOR_GREENYELLOW: inactive_color, back_color, (GFXfont *)&PrestigeEliteStd_Bd7pt7b);
 }
 
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t inactive_color, bool active)
