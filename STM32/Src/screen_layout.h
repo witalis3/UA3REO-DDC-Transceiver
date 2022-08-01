@@ -148,9 +148,9 @@ extern "C"
 		const uint16_t STATUS_LABEL_S_VAL_Y_OFFSET;
 		const GFXfont *STATUS_LABEL_S_VAL_FONT;
 		const uint16_t STATUS_LABEL_DBM_X_OFFSET;
-		const uint16_t STATUS_LABEL_DBM_Y_OFFSET;
+		const int16_t STATUS_LABEL_DBM_Y_OFFSET;
 		const uint16_t STATUS_LABEL_BW_X_OFFSET;
-		const uint16_t STATUS_LABEL_BW_Y_OFFSET;
+		const int16_t STATUS_LABEL_BW_Y_OFFSET;
 		const uint16_t STATUS_LABEL_RIT_X_OFFSET;
 		const uint16_t STATUS_LABEL_RIT_Y_OFFSET;
 		const uint16_t STATUS_LABEL_THERM_X_OFFSET;
@@ -159,6 +159,18 @@ extern "C"
 		const uint16_t STATUS_LABEL_NOTCH_Y_OFFSET;
 		const uint16_t STATUS_LABEL_FFT_BW_X_OFFSET;
 		const uint16_t STATUS_LABEL_FFT_BW_Y_OFFSET;
+#ifdef FRONTPANEL_LITE
+		//Information panel
+		const uint16_t STATUS_INFOA_X_OFFSET;
+		const uint16_t STATUS_INFOB_X_OFFSET;
+		const uint16_t STATUS_INFOC_X_OFFSET;
+		const uint16_t STATUS_INFOD_X_OFFSET;
+		const uint16_t STATUS_INFOE_X_OFFSET;
+		const uint16_t STATUS_INFOF_X_OFFSET;
+		const uint16_t STATUS_INFO_Y_OFFSET;
+		const uint16_t STATUS_INFO_WIDTH;
+		const uint16_t STATUS_INFO_HEIGHT;
+#endif
 #if (defined(LAY_800x480))
 		const uint16_t STATUS_LABEL_CPU_X_OFFSET;
 		const uint16_t STATUS_LABEL_CPU_Y_OFFSET;
@@ -187,6 +199,7 @@ extern "C"
 		const int16_t STATUS_MODE_Y_OFFSET;
 		const uint16_t STATUS_MODE_BLOCK_WIDTH;
 		const uint16_t STATUS_MODE_BLOCK_HEIGHT;
+		
 #if (defined(LAY_800x480))
 		const uint16_t STATUS_MODE_B_X_OFFSET;
 		const int16_t STATUS_MODE_B_Y_OFFSET;

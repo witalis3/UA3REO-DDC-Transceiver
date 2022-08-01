@@ -37,29 +37,39 @@
 #endif
 #define LCD_PIXEL_COUNT (LCD_WIDTH * LCD_HEIGHT)
 
-// List of colors
-#define COLOR_BLACK 0x0000
-#define COLOR_NAVY 0x000F
-#define COLOR_DGREEN 0x03E0
-#define COLOR_DCYAN 0x03EF
-#define COLOR_MAROON 0x7800
-#define COLOR_PURPLE 0x780F
-#define COLOR_OLIVE 0x7BE0
-#define COLOR_LGRAY 0xC618
-#define COLOR_DGRAY 0x7BEF
-#define COLOR_BLUE 0x001F
-#define COLOR_BLUE2 0x051D
-#define COLOR_GREEN 0x07E0
-#define COLOR_GREEN2 0xB723
-#define COLOR_GREEN3 0x8000
-#define COLOR_CYAN 0x07FF
-#define COLOR_RED 0xF800
-#define COLOR_MAGENTA 0xF81F
-#define COLOR_YELLOW 0xFFE0
-#define COLOR_WHITE 0xFFFF
-#define COLOR_ORANGE 0xFD20
+//List of colors
+#define COLOR_BLACK 			0x0000
+#define COLOR_NAVY 				0x000F
+#define COLOR_DGREEN 			0x03E0
+#define COLOR_DCYAN 			0x03EF
+#define COLOR_MAROON 			0x7800
+#define COLOR_PURPLE 			0x780F
+#define COLOR_OLIVE 			0x7BE0
+#define COLOR_LGRAY 			0xC618
+#define COLOR_DGRAY 			0x7BEF
+#define COLOR_BLUE 				0x001F
+#define COLOR_BLUE2 			0x051D
+#define COLOR_GREEN 			0x07E0
+#define COLOR_GREEN2 			0xB723
+#define COLOR_GREEN3 			0x8000
+#define COLOR_CYAN 				0x07FF
+#define COLOR_RED 				0xF800
+#define COLOR_MAGENTA 		0xF81F
+#define COLOR_YELLOW 			0xFFE0
+#define COLOR_WHITE 			0xFFFF
+#define COLOR_ORANGE 			0xFD20
 #define COLOR_GREENYELLOW 0xAFE5
-#define COLOR_BROWN 0XBC40
+#define COLOR_BRED 				0xF81F
+#define COLOR_GRED 				0xFFE0
+#define COLOR_GBLUE 			0x07FF
+#define COLOR_BROWN 			0xBC40
+#define COLOR_BRRED 			0xFC07
+#define COLOR_DARKBLUE 		0x01CF
+#define COLOR_LIGHTBLUE 	0x7D7C
+#define COLOR_GRAYBLUE 		0x5458
+#define COLOR_LIGHTGREEN 	0x841F
+#define COLOR_LGRAYBLUE 	0xA651
+#define COLOR_LBBLUE 			0x2B12
 
 /// Font data stored PER GLYPH
 typedef struct

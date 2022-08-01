@@ -12,6 +12,7 @@
 #define RASTR_FONT_4x6_W 4
 #define RASTR_FONT_4x6_H 6
 
+extern const GFXfont PrestigeEliteStd_Bd7pt7b;
 extern const GFXfont FreeSans7pt7b;
 extern const GFXfont FreeSans9pt7b;
 extern const GFXfont FreeSans12pt7b;
