@@ -335,8 +335,10 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 		calibrate_level = CALIBRATE.rf_out_power_cb;
 	else if (freq < 40.0 * 1000000)
 		calibrate_level = CALIBRATE.rf_out_power_10m;
-	else if (freq < 80.0 * 1000000)
+	else if (freq < 60.0 * 1000000)
 		calibrate_level = CALIBRATE.rf_out_power_6m;
+	else if (freq < 110.0 * 1000000)
+		calibrate_level = CALIBRATE.rf_out_power_4m;
 	else
 		calibrate_level = CALIBRATE.rf_out_power_2m;
 

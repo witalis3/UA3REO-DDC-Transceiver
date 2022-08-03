@@ -336,7 +336,8 @@ bool TRX_TX_Disabled(uint32_t freq)
 			notx = true;
 		break;
 	case BANDID_4m:
-		notx = false;
+		if (CALIBRATE.NOTX_4m)
+			notx = true;
 		break;
 	case BANDID_2m:
 	case BANDID_Marine:

@@ -261,6 +261,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_12M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_CB(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_10M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_4M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER_HF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER_VHF(int8_t direction);
@@ -323,6 +324,7 @@ static void SYSMENU_HANDL_CALIB_EXT_12m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_CB(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_10m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_6m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_4m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_FM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_2m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_70cm(int8_t direction);
@@ -345,6 +347,7 @@ static void SYSMENU_HANDL_CALIB_NOTX_12m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_CB(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_10m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_6m(int8_t direction);
+static void SYSMENU_HANDL_CALIB_NOTX_4m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_FM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_2m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_70cm(int8_t direction);
@@ -777,6 +780,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"RF GAIN 10m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_HANDL_CALIB_RF_GAIN_10M},
 		{"RF GAIN 6m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_HANDL_CALIB_RF_GAIN_6M},
 #if !defined(FRONTPANEL_LITE)
+		{"RF GAIN 4m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_4m, SYSMENU_HANDL_CALIB_RF_GAIN_4M},
 		{"RF GAIN 2m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_HANDL_CALIB_RF_GAIN_2M},
 #endif
 		{"S METER HF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_HANDL_CALIB_S_METER_HF},
@@ -849,6 +853,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"EXT CB", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_CB, SYSMENU_HANDL_CALIB_EXT_CB},
 		{"EXT 10m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_10m, SYSMENU_HANDL_CALIB_EXT_10m},
 		{"EXT 6m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_6m, SYSMENU_HANDL_CALIB_EXT_6m},
+		{"EXT 4m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_4m, SYSMENU_HANDL_CALIB_EXT_4m},
 		{"EXT FM", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_FM, SYSMENU_HANDL_CALIB_EXT_FM},
 		{"EXT 2m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_2m, SYSMENU_HANDL_CALIB_EXT_2m},
 		{"EXT 70cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_70cm, SYSMENU_HANDL_CALIB_EXT_70cm},
@@ -873,6 +878,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"NOTX 10m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_10m, SYSMENU_HANDL_CALIB_NOTX_10m},
 		{"NOTX 6m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_6m, SYSMENU_HANDL_CALIB_NOTX_6m},
 #if !defined(FRONTPANEL_LITE)
+		{"NOTX 4m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_4m, SYSMENU_HANDL_CALIB_NOTX_4m},
 		{"NOTX 2m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2m, SYSMENU_HANDL_CALIB_NOTX_2m},
 		{"NOTX 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_70cm, SYSMENU_HANDL_CALIB_NOTX_70cm},
 #endif
@@ -3886,6 +3892,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.rf_out_power_cb = 24;				   // 27mhz
 		CALIBRATE.rf_out_power_10m = 24;			   // 10m
 		CALIBRATE.rf_out_power_6m = 13;				   // 6m
+		CALIBRATE.rf_out_power_4m = 13;				   // 4m
 		CALIBRATE.rf_out_power_2m = 300;			   // 2m
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;		   // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;		   // HPF U14-RF1
@@ -3930,6 +3937,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.rf_out_power_cb = 40;			   // 27mhz
 		CALIBRATE.rf_out_power_10m = 40;		   // 10m
 		CALIBRATE.rf_out_power_6m = 40;			   // 6m
+		CALIBRATE.rf_out_power_4m = 40;			   // 4m
 		CALIBRATE.rf_out_power_2m = 50;			   // 2m
 		CALIBRATE.RFU_LPF_END = 0;				   // disabled in BIG version
 		CALIBRATE.RFU_HPF_START = 0;			   // disabled in BIG version
@@ -3997,6 +4005,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.rf_out_power_cb = 40;				   // 27mhz
 		CALIBRATE.rf_out_power_10m = 40;			   // 10m
 		CALIBRATE.rf_out_power_6m = 40;				   // 6m
+		CALIBRATE.rf_out_power_4m = 40;				   // 4m
 		CALIBRATE.rf_out_power_2m = 270;				   // 2m
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;	   // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;	   // HPF
@@ -4288,6 +4297,20 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction)
 		CALIBRATE.rf_out_power_6m += direction;
 	if (CALIBRATE.rf_out_power_6m > 300)
 		CALIBRATE.rf_out_power_6m = 300;
+
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
+	APROC_TX_clip_gain = 1.0f;
+	ATU_TunePowerStabilized = false;
+}
+
+static void SYSMENU_HANDL_CALIB_RF_GAIN_4M(int8_t direction)
+{
+	if (CALIBRATE.rf_out_power_4m > 0)
+		CALIBRATE.rf_out_power_4m += direction;
+	if (CALIBRATE.rf_out_power_4m == 0 && direction > 0)
+		CALIBRATE.rf_out_power_4m += direction;
+	if (CALIBRATE.rf_out_power_4m > 300)
+		CALIBRATE.rf_out_power_4m = 300;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4838,6 +4861,14 @@ static void SYSMENU_HANDL_CALIB_EXT_6m(int8_t direction)
 		CALIBRATE.EXT_6m = 15;
 }
 
+static void SYSMENU_HANDL_CALIB_EXT_4m(int8_t direction)
+{
+	if (CALIBRATE.EXT_4m > 0 || direction > 0)
+		CALIBRATE.EXT_4m += direction;
+	if (CALIBRATE.EXT_4m > 15)
+		CALIBRATE.EXT_4m = 15;
+}
+
 static void SYSMENU_HANDL_CALIB_EXT_FM(int8_t direction)
 {
 	if (CALIBRATE.EXT_FM > 0 || direction > 0)
@@ -5012,6 +5043,14 @@ static void SYSMENU_HANDL_CALIB_NOTX_6m(int8_t direction)
 		CALIBRATE.NOTX_6m = true;
 	if (direction < 0)
 		CALIBRATE.NOTX_6m = false;
+}
+
+static void SYSMENU_HANDL_CALIB_NOTX_4m(int8_t direction)
+{
+	if (direction > 0)
+		CALIBRATE.NOTX_4m = true;
+	if (direction < 0)
+		CALIBRATE.NOTX_4m = false;
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_2m(int8_t direction)

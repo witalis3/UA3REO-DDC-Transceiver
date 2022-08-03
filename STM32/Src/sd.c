@@ -1127,6 +1127,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_cb", (uint32_t *)&CALIBRATE.rf_out_power_cb, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_10m", (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_6m", (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_4m", (uint32_t *)&CALIBRATE.rf_out_power_4m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2m", (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration_hf", (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration_vhf", (uint32_t *)&CALIBRATE.smeter_calibration_vhf, SYSMENU_INT16);
@@ -1183,6 +1184,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_CB", (uint32_t *)&CALIBRATE.EXT_CB, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_10m", (uint32_t *)&CALIBRATE.EXT_10m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_6m", (uint32_t *)&CALIBRATE.EXT_6m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_4m", (uint32_t *)&CALIBRATE.EXT_4m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_FM", (uint32_t *)&CALIBRATE.EXT_FM, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_2m", (uint32_t *)&CALIBRATE.EXT_2m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_70cm", (uint32_t *)&CALIBRATE.EXT_70cm, SYSMENU_UINT8);
@@ -1205,6 +1207,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_CB", (uint32_t *)&CALIBRATE.NOTX_CB, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_10m", (uint32_t *)&CALIBRATE.NOTX_10m, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_6m", (uint32_t *)&CALIBRATE.NOTX_6m, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_4m", (uint32_t *)&CALIBRATE.NOTX_4m, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_FM", (uint32_t *)&CALIBRATE.NOTX_FM, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_2m", (uint32_t *)&CALIBRATE.NOTX_2m, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_70cm", (uint32_t *)&CALIBRATE.NOTX_70cm, SYSMENU_BOOLEAN);
@@ -1848,6 +1851,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.rf_out_power_10m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_6m") == 0)
 		CALIBRATE.rf_out_power_6m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.rf_out_power_4m") == 0)
+		CALIBRATE.rf_out_power_4m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_2m") == 0)
 		CALIBRATE.rf_out_power_2m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.smeter_calibration_hf") == 0)
@@ -1961,6 +1966,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.EXT_10m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.EXT_6m") == 0)
 		CALIBRATE.EXT_6m = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.EXT_4m") == 0)
+		CALIBRATE.EXT_4m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.EXT_FM") == 0)
 		CALIBRATE.EXT_FM = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.EXT_2m") == 0)
@@ -2005,6 +2012,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.NOTX_10m = bval;
 	if (strcmp(name, "CALIBRATE.NOTX_6m") == 0)
 		CALIBRATE.NOTX_6m = bval;
+	if (strcmp(name, "CALIBRATE.NOTX_4m") == 0)
+		CALIBRATE.NOTX_4m = bval;
 	if (strcmp(name, "CALIBRATE.NOTX_2m") == 0)
 		CALIBRATE.NOTX_2m = bval;
 	if (strcmp(name, "CALIBRATE.NOTX_70cm") == 0)

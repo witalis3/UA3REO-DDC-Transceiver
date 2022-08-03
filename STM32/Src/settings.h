@@ -604,6 +604,7 @@ extern struct TRX_CALIBRATE
 	uint16_t rf_out_power_cb;
 	uint16_t rf_out_power_10m;
 	uint16_t rf_out_power_6m;
+	uint16_t rf_out_power_4m;
 	uint16_t rf_out_power_2m;
 	uint16_t TX_StartDelay;
 	int16_t smeter_calibration_hf;
@@ -643,6 +644,7 @@ extern struct TRX_CALIBRATE
 	uint8_t EXT_CB;
 	uint8_t EXT_10m;
 	uint8_t EXT_6m;
+	uint8_t EXT_4m;
 	uint8_t EXT_FM;
 	uint8_t EXT_2m;
 	uint8_t EXT_70cm;
@@ -675,6 +677,7 @@ extern struct TRX_CALIBRATE
 	bool NOTX_CB;
 	bool NOTX_10m;
 	bool NOTX_6m;
+	bool NOTX_4m;
 	bool NOTX_FM;
 	bool NOTX_2m;
 	bool NOTX_70cm;

@@ -503,6 +503,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_cb = 24;			  // 27mhz
 		CALIBRATE.rf_out_power_10m = 24;		  // 10m
 		CALIBRATE.rf_out_power_6m = 13;			  // 6m
+		CALIBRATE.rf_out_power_4m = 13;				// 4m
 		CALIBRATE.rf_out_power_2m = 300;		  // 2m
 		CALIBRATE.smeter_calibration_hf = 0;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
@@ -556,6 +557,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_cb = 40;				   // 27mhz
 		CALIBRATE.rf_out_power_10m = 40;			   // 10m
 		CALIBRATE.rf_out_power_6m = 40;				   // 6m
+		CALIBRATE.rf_out_power_4m = 40;				   // 4m
 		CALIBRATE.rf_out_power_2m = 270;				   // 2m
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;	   // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;	   // HPF
@@ -639,6 +641,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.EXT_CB = 10;					// External port by band
 		CALIBRATE.EXT_10m = 11;					// External port by band
 		CALIBRATE.EXT_6m = 12;					// External port by band
+		CALIBRATE.EXT_4m = 13;					// External port by band
 		CALIBRATE.EXT_FM = 13;					// External port by band
 		CALIBRATE.EXT_2m = 14;					// External port by band
 		CALIBRATE.EXT_70cm = 15;				// External port by band
@@ -661,6 +664,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.NOTX_CB = false;
 		CALIBRATE.NOTX_10m = false;
 		CALIBRATE.NOTX_6m = false;
+		CALIBRATE.NOTX_4m = true;
 		CALIBRATE.NOTX_2m = false;
 		CALIBRATE.NOTX_70cm = true;
 		CALIBRATE.ENABLE_60m_band = false; // enable hidden bands
