@@ -321,10 +321,10 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	if (TRX.ENC2_func_mode_idx == 1) //volume
 	{
 		//ENC2 Volume control
-		if(direction < 0 && TRX.Volume < 5)
+		if(direction < 0 && TRX.Volume < TRX.Volume_Step)
 			TRX.Volume = 0;
-		if(direction > 0 || TRX.Volume >= 5)
-			TRX.Volume += direction * 5;
+		if(direction > 0 || TRX.Volume >= TRX.Volume_Step)
+			TRX.Volume += direction * TRX.Volume_Step;
 		if (TRX.Volume > 100)
 			TRX.Volume = 100;
 		char sbuff[32] = {0};

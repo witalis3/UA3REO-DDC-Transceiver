@@ -415,6 +415,7 @@ extern struct TRX_SETTINGS
 	uint16_t FM_LPF_RX_Filter;
 	uint16_t FM_LPF_TX_Filter;
 	uint16_t VOX_TIMEOUT;
+	uint8_t Volume_Step;
 	uint8_t IF_Gain;
 	uint8_t MIC_GAIN;
 	uint8_t MIC_REVERBER;

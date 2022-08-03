@@ -298,7 +298,7 @@ int main(void)
   InitProfiler();
 
   println("[OK] Calibration loading");
-  if (PERIPH_FrontPanel_Buttons[2].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+VFO)
+  if (PERIPH_FrontPanel_Buttons[2].state && PERIPH_FrontPanel_Buttons[0].state) //Very hard reset (MENU+F4)
     LoadCalibration(true);
   else
     LoadCalibration(false);

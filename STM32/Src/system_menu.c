@@ -65,6 +65,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_Volume_Step(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction);
@@ -511,6 +512,7 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 	{
 #if defined(FRONTPANEL_X1) || defined(FRONTPANEL_LITE)
 		{"Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.Volume, SYSMENU_HANDL_AUDIO_Volume},
+		{"Volume Step", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.Volume_Step, SYSMENU_HANDL_AUDIO_Volume_Step},
 #endif
 		{"IF Gain, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
 		{"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_AUDIO_DNR, {"OFF", "DNR1", "DNR2"}},
@@ -1704,6 +1706,14 @@ static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction)
 		TRX.Volume += direction;
 	if (TRX.Volume > 100)
 		TRX.Volume = 100;
+}
+
+static void SYSMENU_HANDL_AUDIO_Volume_Step(int8_t direction)
+{
+	if (direction > 0 || TRX.Volume_Step > 1)
+		TRX.Volume_Step += direction;
+	if (TRX.Volume_Step > 25)
+		TRX.Volume_Step = 25;
 }
 
 static void SYSMENU_HANDL_AUDIO_DNR(int8_t direction)

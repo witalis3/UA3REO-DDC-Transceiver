@@ -964,6 +964,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.Transverter_3cm", (uint32_t *)&TRX.Transverter_3cm, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Auto_Input_Switch", (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_BOOLEAN);
 			// AUDIO
+			SD_WRITE_SETT_LINE("TRX.Volume", (uint32_t *)&TRX.Volume, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.Volume_Step", (uint32_t *)&TRX.Volume_Step, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint32_t *)&TRX.IF_Gain, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_GAIN", (uint32_t *)&TRX.MIC_GAIN, SYSMENU_UINT8);
@@ -1496,6 +1498,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (strcmp(name, "TRX.Auto_Input_Switch") == 0)
 		TRX.Auto_Input_Switch = bval;
 	// AUDIO
+	if (strcmp(name, "TRX.Volume") == 0)
+		TRX.Volume = (uint16_t)uintval;
+	if (strcmp(name, "TRX.Volume_Step") == 0)
+		TRX.Volume_Step = (uint8_t)uintval;
 	if (strcmp(name, "TRX.IF_Gain") == 0)
 		TRX.IF_Gain = (uint8_t)uintval;
 	if (strcmp(name, "TRX.AGC_GAIN_TARGET2") == 0)

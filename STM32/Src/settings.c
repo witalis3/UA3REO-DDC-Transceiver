@@ -206,6 +206,7 @@ void LoadSettings(bool clear)
 		TRX.Auto_Input_Switch = false;	  // Auto Mic/USB Switch
 		// AUDIO
 		TRX.Volume = 25;					 // AF Volume
+		TRX.Volume_Step = 5;			 // AF Volume step by sec encoder
 		TRX.IF_Gain = 15;					 // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;			 // Maximum (target) AGC gain
 		TRX.MIC_GAIN = 3;					 // Microphone gain
