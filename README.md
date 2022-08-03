@@ -302,7 +302,6 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **LPF END** - LPF filter parameters
 * **HPF START** - HPF filter parameters
 * **BPF x** - Bandpass filter parameters
-* **MAX RF Power** - Maximim RF power (for indication)
 * **SWR FWD/REF RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
 * **VCXO Correction** - Frequency adjustment of the reference oscillator
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
@@ -313,7 +312,8 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **SSB Power addition** - Addition of RF power in SSB power, %
 * **FM Deviation Scale** - Set TX FM Deviation Scale
 * **AM Modulation Index** - Set TX AM Modulation Scale
-* **TUNE Max Power** - Maximum RF power in Tune mode
+* **MAX PWR on Meter** - Maximim RF power (for indication)
+* **MAX Power in TUNE** - Maximum RF power in Tune mode
 * **RTC COARSE CALIBR** - Very coarse clock crystal calibration
 * **RTC FINE CALIBR** - Clock crystal calibration, one division is 0.954 ppm
 * **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain

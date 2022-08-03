@@ -618,7 +618,7 @@ extern struct TRX_CALIBRATE
 	uint8_t CICFIR_GAINER_384K_val;
 	uint8_t TXCICFIR_GAINER_val;
 	uint8_t DAC_GAINER_val;
-	uint8_t MAX_RF_POWER;
+	uint8_t MAX_RF_POWER_ON_METER;
 	uint8_t ENCODER_ACCELERATION;
 	uint8_t FAN_MEDIUM_START;
 	uint8_t FAN_MEDIUM_STOP;

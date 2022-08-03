@@ -514,7 +514,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f; // SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_VHF = 3.6f; // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 2;			  // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER = 7;				  // Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER_ON_METER = 7;				  // Max TRX Power for indication
 #if defined(FRONTPANEL_X1)
 		CALIBRATE.ENCODER_INVERT = true;	   // invert left-right rotation of the main encoder
 		CALIBRATE.ENCODER_ON_FALLING = true;  // encoder only triggers when level A falls
@@ -540,7 +540,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.SWR_FWD_Calibration_VHF = 8.5f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_VHF = 8.5f;	   //SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 5;			   // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER = 15;				//Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER_ON_METER = 15;				//Max TRX Power for indication
 #elif defined(FRONTPANEL_WF_100D)
 		CALIBRATE.ENCODER2_INVERT = true; // invert left-right rotation of the optional encoder
 		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
@@ -584,11 +584,11 @@ void LoadCalibration(bool clear)
 		CALIBRATE.SWR_FWD_Calibration_VHF = 21.0f;	   // SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_VHF = 9.5f;	   // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;				   // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER = 100;				   // Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER_ON_METER = 100;				   // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)
 		CALIBRATE.smeter_calibration_hf = 15;
 		CALIBRATE.TUNE_MAX_POWER = 5;				   // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER = 15;				   // Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER_ON_METER = 15;				   // Max TRX Power for indication
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;		   // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;		   // HPF U14-RF1

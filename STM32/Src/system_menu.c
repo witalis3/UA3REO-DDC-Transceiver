@@ -287,7 +287,7 @@ static void SYSMENU_HANDL_CALIB_BPF_8_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_9_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_9_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
-static void SYSMENU_HANDL_CALIB_MAX_RF_POWER(int8_t direction);
+static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_6M(int8_t direction);
@@ -804,8 +804,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"BPF 8 START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_BPF_9, (uint32_t *)&CALIBRATE.RFU_BPF_8_START, SYSMENU_HANDL_CALIB_BPF_8_START},
 		{"BPF 8 END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_BPF_9, (uint32_t *)&CALIBRATE.RFU_BPF_8_END, SYSMENU_HANDL_CALIB_BPF_8_END},
 #endif
-		{"MAX RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER, SYSMENU_HANDL_CALIB_MAX_RF_POWER},
-		{"TUNE Max Power", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},
+		{"MAX PWR on Meter", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER_ON_METER, SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER},
+		{"MAX Power in TUNE", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},
 		{"SSB Power addition", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.SSB_POWER_ADDITION, SYSMENU_HANDL_CALIB_SSB_POWER_ADDITION},
 		{"SWR FWD RATE HF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_HF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF},
 		{"SWR REF RATE HF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration_HF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF},
@@ -3914,7 +3914,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f;	   // SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_VHF = 3.6f;	   // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 2;				   // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER = 7;					   // Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER_ON_METER = 7;					   // Max TRX Power for indication
 	}
 	if (CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN)
 	{
@@ -3958,7 +3958,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.SWR_FWD_Calibration_VHF = 22.0f; // SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_VHF = 22.0f; // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 10;			   // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER = 100;			   // Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER_ON_METER = 100;			   // Max TRX Power for indication
 	}
 	if (CALIBRATE.RF_unit_type == RF_UNIT_RU4PN)
 	{
@@ -4025,7 +4025,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.SWR_FWD_Calibration_VHF = 21.0f;	   // SWR Transormator rate forward
 		CALIBRATE.SWR_REF_Calibration_VHF = 9.5f;	   // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;				   // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER = 100;				   // Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER_ON_METER = 100;				   // Max TRX Power for indication
 	}
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
@@ -4569,13 +4569,13 @@ static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction)
 		CALIBRATE.SWR_REF_Calibration_VHF = 200.0f;
 }
 
-static void SYSMENU_HANDL_CALIB_MAX_RF_POWER(int8_t direction)
+static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction)
 {
-	CALIBRATE.MAX_RF_POWER += direction;
-	if (CALIBRATE.MAX_RF_POWER < 5)
-		CALIBRATE.MAX_RF_POWER = 5;
-	if (CALIBRATE.MAX_RF_POWER > 200)
-		CALIBRATE.MAX_RF_POWER = 200;
+	CALIBRATE.MAX_RF_POWER_ON_METER += direction;
+	if (CALIBRATE.MAX_RF_POWER_ON_METER < 5)
+		CALIBRATE.MAX_RF_POWER_ON_METER = 5;
+	if (CALIBRATE.MAX_RF_POWER_ON_METER > 200)
+		CALIBRATE.MAX_RF_POWER_ON_METER = 200;
 }
 
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)
