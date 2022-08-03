@@ -671,11 +671,11 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 		//SWR Meter
 		float32_t fwd_power = TRX_PWR_Forward_SMOOTHED;
-		if (fwd_power > CALIBRATE.MAX_RF_POWER)
-			fwd_power = CALIBRATE.MAX_RF_POWER;
-		uint16_t ref_width = (uint16_t)(TRX_PWR_Backward_SMOOTHED * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER);
-		uint16_t fwd_width = (uint16_t)(fwd_power * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER);
-		uint16_t est_width = (uint16_t)((CALIBRATE.MAX_RF_POWER - fwd_power) * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER);
+		if (fwd_power > CALIBRATE.MAX_RF_POWER_ON_METER)
+			fwd_power = CALIBRATE.MAX_RF_POWER_ON_METER;
+		uint16_t ref_width = (uint16_t)(TRX_PWR_Backward_SMOOTHED * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER_ON_METER);
+		uint16_t fwd_width = (uint16_t)(fwd_power * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER_ON_METER);
+		uint16_t est_width = (uint16_t)((CALIBRATE.MAX_RF_POWER_ON_METER - fwd_power) * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER_ON_METER);
 		if (ref_width > fwd_width)
 			ref_width = fwd_width;
 		fwd_width -= ref_width;

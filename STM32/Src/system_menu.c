@@ -6270,6 +6270,7 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 	if (menuElement->checkVisibleHandler != NULL && !menuElement->checkVisibleHandler())
 		return;
 	char ctmp[32] = {0};
+	char enum_value[ENUM_MAX_LENGTH + 1] = {0};
 	float32_t *atu_i = ATU_I_VALS;
 	float32_t *atu_c = ATU_C_VALS;
 	float32_t float_tmp_val = 0;
@@ -6293,7 +6294,8 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 		break;
 	case SYSMENU_ENUM:
 	case SYSMENU_ENUMR:
-		sprintf(ctmp, "%s", menuElement->enumerate[(uint8_t)*menuElement->value]);
+		strncpy(enum_value, menuElement->enumerate[(uint8_t)*menuElement->value], ENUM_MAX_LENGTH);
+		sprintf(ctmp, "%s", enum_value);
 		break;
 	case SYSMENU_UINT16:
 		sprintf(ctmp, "%d", (uint16_t)*menuElement->value);
