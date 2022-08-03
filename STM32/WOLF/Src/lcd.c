@@ -762,10 +762,14 @@ static float32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf)
 	return TRX_s_meter;
 }
 
-static float32_t LCD_GetAnalowPowerValPosition(float32_t pwr)
+static float32_t LCD_GetAnalowPowerValPosition(float32_t _pwr)
 {
 	int32_t width = LAYOUT->STATUS_SMETER_WIDTH - 2;
 	float32_t pos = 20.0f; // zero
+	
+	float32_t pwr = _pwr;
+	if(CALIBRATE.MAX_RF_POWER_ON_METER <= 20)
+		pwr *= 10.0f; // power scaling
 	
 	// ugly corrections :/
 	
