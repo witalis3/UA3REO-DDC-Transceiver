@@ -571,6 +571,7 @@ void TRX_DoAutoGain(void)
 		else if (max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && new_att_val > 0.0f)
 			new_att_val -= 0.5f;
 
+		#ifndef FRONTPANEL_LITE
 		if (new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_Driver)
 		{
 			TRX.ADC_Driver = true;
@@ -583,6 +584,7 @@ void TRX_DoAutoGain(void)
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
 		}
+		#endif
 
 		if (new_att_val != TRX.ATT_DB)
 		{
