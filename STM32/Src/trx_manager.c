@@ -742,6 +742,7 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
+	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
@@ -1048,6 +1049,7 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter)
 		FFT_Init();
 		NeedReinitAudioFilters = true;
 	}
+	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
@@ -1100,6 +1102,7 @@ void BUTTONHANDLER_BAND_N(uint32_t parameter)
 		FFT_Init();
 		NeedReinitAudioFilters = true;
 	}
+	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
@@ -1605,6 +1608,7 @@ void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter)
 		FFT_Init();
 		NeedReinitAudioFilters = true;
 	}
+	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
@@ -1661,6 +1665,7 @@ void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter)
 		FFT_Init();
 		NeedReinitAudioFilters = true;
 	}
+	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
@@ -1962,6 +1967,7 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter)
 		FFT_Init();
 		NeedReinitAudioFilters = true;
 	}
+	TRX.IF_Gain = CALIBRATE.MEMORY_CHANNELS[channel].IF_Gain;
 	TRX.LNA = CALIBRATE.MEMORY_CHANNELS[channel].LNA;
 	TRX.ATT = CALIBRATE.MEMORY_CHANNELS[channel].ATT;
 	TRX.ATT_DB = CALIBRATE.MEMORY_CHANNELS[channel].ATT_DB;
@@ -1995,6 +2001,7 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter)
 	CALIBRATE.MEMORY_CHANNELS[channel].Freq = CurrentVFO->Freq;
 	CALIBRATE.MEMORY_CHANNELS[channel].Mode = CurrentVFO->Mode;
 	CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE = TRX.SAMPLERATE_MAIN;
+	CALIBRATE.MEMORY_CHANNELS[channel].IF_Gain = TRX.IF_Gain;
 	CALIBRATE.MEMORY_CHANNELS[channel].LNA = TRX.LNA;
 	CALIBRATE.MEMORY_CHANNELS[channel].ATT = TRX.ATT;
 	CALIBRATE.MEMORY_CHANNELS[channel].ATT_DB = TRX.ATT_DB;

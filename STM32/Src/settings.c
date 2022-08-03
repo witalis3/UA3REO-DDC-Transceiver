@@ -384,6 +384,7 @@ void LoadSettings(bool clear)
 		{
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
+			TRX.BANDS_SAVED_SETTINGS[i].IF_Gain = TRX.IF_Gain;
 			if(TRX.BANDS_SAVED_SETTINGS[i].Freq > 30000000)
 				TRX.BANDS_SAVED_SETTINGS[i].LNA = true;
 			else
@@ -690,6 +691,7 @@ void LoadCalibration(bool clear)
 		{
 			CALIBRATE.MEMORY_CHANNELS[i].Freq = 0;
 			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)getModeFromFreq(CALIBRATE.MEMORY_CHANNELS[i].Freq);
+			CALIBRATE.MEMORY_CHANNELS[i].IF_Gain = TRX.IF_Gain;
 			CALIBRATE.MEMORY_CHANNELS[i].LNA = TRX.LNA;
 			CALIBRATE.MEMORY_CHANNELS[i].ATT = TRX.ATT;
 			CALIBRATE.MEMORY_CHANNELS[i].ATT_DB = TRX.ATT_DB;

@@ -8,8 +8,8 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 53						  // Settings config version
-#define CALIB_VERSION 46					  // Calibration config version
+#define SETT_VERSION 54						  // Settings config version
+#define CALIB_VERSION 47					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
 #define AGC_CLIPPING 6.0f					  // Limit over target in AGC, dB
@@ -330,6 +330,7 @@ typedef struct
 	uint8_t BEST_ATU_I;
 	uint8_t BEST_ATU_C;
 	int8_t FM_SQL_threshold_dbm;
+	uint8_t IF_Gain;
 	bool LNA;
 	bool ATT;
 	bool ANT_selected;
