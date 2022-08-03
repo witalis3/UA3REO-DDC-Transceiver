@@ -606,7 +606,7 @@ void SELF_TEST_EncRotate(int8_t direction)
 	if (SELF_TEST_current_page >= SELF_TEST_pages)
 	{
 		SELF_TEST_current_page = SELF_TEST_pages - 1;
-		FRONTPANEL_BUTTONHANDLER_SERVICES(0);
+		BUTTONHANDLER_SERVICES(0);
 	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;

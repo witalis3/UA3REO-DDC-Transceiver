@@ -166,7 +166,7 @@ static void RF_UNIT_ProcessATU(void)
 			LCD_showTooltip(buff);
 			ATU_Finished = true;
 			delay_stages_count = 0;
-			FRONTPANEL_BUTTONHANDLER_TUNE(0);
+			BUTTONHANDLER_TUNE(0);
 
 			int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 			if (band >= 0)
@@ -360,7 +360,7 @@ static void RF_UNIT_ProcessATU(void)
 				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T = TRX.ATU_T;
 			}
 
-			FRONTPANEL_BUTTONHANDLER_TUNE(0);
+			BUTTONHANDLER_TUNE(0);
 		}
 
 		LCD_UpdateQuery.StatusInfoBar = true;
