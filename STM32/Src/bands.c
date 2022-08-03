@@ -644,7 +644,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 		// 6 METERS
 		{
 			.name = "6m",
+#ifndef FRONTPANEL_LITE
 			.selectable = true,
+#else
+			.selectable = false,
+#endif
 			.broadcast = false,
 			.startFreq = 50000000,
 			.endFreq = 54000000,
