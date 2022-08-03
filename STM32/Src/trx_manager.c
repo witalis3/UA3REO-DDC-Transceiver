@@ -1229,6 +1229,11 @@ void BUTTONHANDLER_DNR(uint32_t parameter)
 		CurrentVFO->DNR_Type = 2;
 	else
 		CurrentVFO->DNR_Type = 0;
+	
+	#ifdef STM32F407xx
+	if (CurrentVFO->DNR_Type == 2)
+		CurrentVFO->DNR_Type = 0;
+	#endif
 
 	TRX.DNR_shadow = CurrentVFO->DNR_Type;
 

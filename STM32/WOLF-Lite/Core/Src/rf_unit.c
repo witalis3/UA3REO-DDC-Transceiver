@@ -167,7 +167,7 @@ void RF_UNIT_ProcessSensors(void)
 	
 	//PWR Voltage
 	float32_t PWR_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / B12_RANGE;
-	PWR_Voltage = PWR_Voltage * (CALIBRATE.PWR_VLT_Calibration);
+	PWR_Voltage = PWR_Voltage * (CALIBRATE.PWR_VLT_Calibration) / 100.0f;
 	if(fabsf(PWR_Voltage - TRX_PWR_Voltage) > 0.3f)
 		TRX_PWR_Voltage = TRX_PWR_Voltage * 0.99f + PWR_Voltage * 0.01f;
 	if(fabsf(PWR_Voltage - TRX_PWR_Voltage) > 1.0f)
