@@ -1118,9 +1118,12 @@ void processTxAudio(void)
 	if(TRX_SWR_PROTECTOR && TRX.RF_Power > SWR_PROTECTOR_MAX_POWER)
 		RF_Power_selected = SWR_PROTECTOR_MAX_POWER;
 	
-	float32_t RFpower_amplitude = log10f_fast((RF_Power_selected * 0.9f + 10.0f) / 10.0f) * TRX_MAX_TX_Amplitude;
+	float32_t RFpower_amplitude = 0.0f;
 	if(CALIBRATE.LinearPowerControl) {
 		RFpower_amplitude = (RF_Power_selected / 100.0f) * TRX_MAX_TX_Amplitude;
+	} else {
+		float32_t dbP = rate2dbP(RF_Power_selected / 100.0f);
+		RFpower_amplitude = db2rateV(dbP) * TRX_MAX_TX_Amplitude;
 	}
 	
 	if (RFpower_amplitude < 0.0f || TRX.RF_Power == 0)
