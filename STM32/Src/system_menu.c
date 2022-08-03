@@ -216,6 +216,7 @@ static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
 #endif
 
 #if HRDW_HAS_SD
+static void SYSMENU_HANDL_SD_Filemanager(int8_t direction);
 static void SYSMENU_HANDL_SD_Format(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettings(int8_t direction);
@@ -384,7 +385,6 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction);
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
 #if HRDW_HAS_SD
-static void SYSMENU_HANDL_FILEMANAGER(int8_t direction);
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
 #endif
 static void SYSMENU_HANDL_FT8_Decoder(int8_t direction);	 // Tisho
@@ -723,6 +723,7 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 #if HRDW_HAS_SD
 const static struct sysmenu_item_handler sysmenu_sd_handlers[] =
 	{
+		{"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Filemanager},
 		{"USB SD Card Reader", SYSMENU_BOOLEAN, NULL, (uint32_t *)&SD_USBCardReader, SYSMENU_HANDL_SD_USB},
 		{"Export Settings to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog},
 		{"Import Settings from SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
@@ -957,7 +958,6 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 		{"WSPR Beacon", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WSPRMENU},
 #endif
 #if HRDW_HAS_SD
-		{"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_FILEMANAGER},
 		{"Record CQ message", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RECORD_CQ_WAV},
 #endif
 #if FT8_SUPPORT
@@ -3571,6 +3571,12 @@ static void SYSMENU_HANDL_SDMENU(int8_t direction)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+static void SYSMENU_HANDL_SD_Filemanager(int8_t direction)
+{
+	sysmenu_filemanager_opened = true;
+	SYSMENU_drawSystemMenu(true, false);
+}
+
 static void SYSMENU_HANDL_SD_ExportSettingsDialog(int8_t direction)
 {
 #pragma unused(direction)
@@ -5483,13 +5489,6 @@ static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction)
 	FILEMANAGER_StartRecCQWav();
 }
 #endif
-
-// SD FILE MANAGER
-static void SYSMENU_HANDL_FILEMANAGER(int8_t direction)
-{
-	sysmenu_filemanager_opened = true;
-	SYSMENU_drawSystemMenu(true, false);
-}
 
 // LOCATOR INFO
 static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction)
