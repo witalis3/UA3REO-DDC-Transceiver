@@ -11,6 +11,7 @@
 #define FM_SQUELCH_HYSTERESIS 0.3f		  // Hysteresis for FM squelch
 #define FM_SQUELCH_PROC_DECIMATION 10	  // Number of times we go through the FM demod algorithm before we do a squelch calculation
 #define FM_RX_SQL_SMOOTHING 0.25f		  // Smoothing factor for IIR squelch noise averaging
+#define FM_RX_SQL_TIMEOUT_MS 20				// time to open/close squelch
 #define AUDIO_MAX_REVERBER_TAPS 10
 
 // SAM
@@ -68,7 +69,10 @@ typedef struct
 	float32_t q_prev;
 	float32_t deemph_i_prev;
 	float32_t deemph_q_prev;
+	
 	float32_t squelchRate;
+	uint32_t squelchSuggested_starttime;
+	bool squelchSuggested;
 	bool squelched;
 } demod_fm_instance;
 

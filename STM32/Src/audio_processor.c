@@ -1798,15 +1798,25 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	#endif
 	
 	// *** Squelch Processing ***
-	if (FM_SQL_threshold_dbm > dbm && !DFM->squelched)
+	if (!DFM->squelchSuggested && FM_SQL_threshold_dbm > dbm)
 	{
-		DFM->squelchRate = 1.0f;
-		DFM->squelched = true; // yes, close the squelch
+		
+		DFM->squelchSuggested = true; // yes, close the squelch
+		DFM->squelchSuggested_starttime = HAL_GetTick();
 	}
-	else if (FM_SQL_threshold_dbm <= dbm && DFM->squelched)
+	else if (DFM->squelchSuggested && FM_SQL_threshold_dbm <= dbm)
 	{
-		DFM->squelchRate = 0.01f;
-		DFM->squelched = false; //  yes, open the squelch
+		DFM->squelchSuggested = false; //  yes, open the squelch
+		DFM->squelchSuggested_starttime = HAL_GetTick();
+	}
+	
+	if(DFM->squelched != DFM->squelchSuggested && DFM->squelchSuggested_starttime < HAL_GetTick() - FM_RX_SQL_TIMEOUT_MS) {
+		DFM->squelched = DFM->squelchSuggested;
+		if(DFM->squelched) {
+			DFM->squelchRate = 1.0f;
+		} else {
+			DFM->squelchRate = 0.01f;
+		}
 	}
 	
 	// do IQ demod
