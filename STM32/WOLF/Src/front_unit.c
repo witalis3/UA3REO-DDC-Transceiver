@@ -215,9 +215,8 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 #endif
 
 #ifdef FRONTPANEL_NONE
-PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
-
-};
+PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {};
+const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {};
 #endif
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH36[] = {
