@@ -1465,16 +1465,16 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	{
 		dma_memset(TRX.CALLSIGN, 0x00, sizeof(TRX.CALLSIGN));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.CALLSIGN))
-			lens = sizeof(TRX.CALLSIGN);
+		if (lens > sizeof(TRX.CALLSIGN) - 1)
+			lens = sizeof(TRX.CALLSIGN) - 1;
 		strncpy(TRX.CALLSIGN, value, lens);
 	}
 	if (strcmp(name, "TRX.LOCATOR") == 0)
 	{
 		dma_memset(TRX.LOCATOR, 0x00, sizeof(TRX.LOCATOR));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.LOCATOR))
-			lens = sizeof(TRX.LOCATOR);
+		if (lens > sizeof(TRX.LOCATOR) - 1)
+			lens = sizeof(TRX.LOCATOR) - 1;
 		strncpy(TRX.LOCATOR, value, lens);
 	}
 	if (strcmp(name, "TRX.Custom_Transverter_Enabled") == 0)
@@ -1721,16 +1721,16 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	{
 		dma_memset(TRX.WIFI_AP1, 0x00, sizeof(TRX.WIFI_AP1));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_AP1))
-			lens = sizeof(TRX.WIFI_AP1);
+		if (lens > sizeof(TRX.WIFI_AP1) - 1)
+			lens = sizeof(TRX.WIFI_AP1) - 1;
 		strncpy(TRX.WIFI_AP1, value, lens);
 	}
 	if (strcmp(name, "TRX.WIFI_AP2") == 0)
 	{
 		dma_memset(TRX.WIFI_AP2, 0x00, sizeof(TRX.WIFI_AP2));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_AP2))
-			lens = sizeof(TRX.WIFI_AP2);
+		if (lens > sizeof(TRX.WIFI_AP2) - 1)
+			lens = sizeof(TRX.WIFI_AP2) - 1;
 		strncpy(TRX.WIFI_AP2, value, lens);
 	}
 	if (strcmp(name, "TRX.WIFI_AP3") == 0)

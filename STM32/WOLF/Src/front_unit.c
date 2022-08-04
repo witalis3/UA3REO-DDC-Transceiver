@@ -67,6 +67,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 3, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N},		// MODE-
 	{.port = 3, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_BANDMAP},		// A/B-BANDMAP
 };
+
+const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {};
 #endif
 
 #ifdef FRONTPANEL_BIG_V1
