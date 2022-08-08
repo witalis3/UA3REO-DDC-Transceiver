@@ -168,7 +168,7 @@ USBD_StatusTypeDef USBD_RunTestMode(USBD_HandleTypeDef *pdev)
 * @retval status
 */
 
-USBD_StatusTypeDef USBD_SetClassConfig(USBD_HandleTypeDef *pdev)
+USBD_StatusTypeDef USBD_SetClassConfig(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 {
   USBD_StatusTypeDef ret = USBD_FAIL;
 
@@ -191,7 +191,7 @@ USBD_StatusTypeDef USBD_SetClassConfig(USBD_HandleTypeDef *pdev)
 * @param  cfgidx: configuration index
 * @retval status: USBD_StatusTypeDef
 */
-USBD_StatusTypeDef USBD_ClrClassConfig(USBD_HandleTypeDef *pdev)
+USBD_StatusTypeDef USBD_ClrClassConfig(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 {
   /* Clear configuration  and De-initialize the Class process*/
   pdev->pClass->DeInit(pdev);
