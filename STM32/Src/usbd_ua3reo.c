@@ -955,7 +955,7 @@ static uint8_t USBD_DEBUG_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -967,7 +967,7 @@ static uint8_t USBD_DEBUG_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -975,20 +975,20 @@ static uint8_t USBD_DEBUG_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 		case USB_REQ_SET_INTERFACE:
 			if (pdev->dev_state != USBD_STATE_CONFIGURED)
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
 
 		default:
-			USBD_CtlError(pdev);
+			USBD_CtlError(pdev, req);
 			ret = USBD_FAIL;
 			break;
 		}
 		break;
 
 	default:
-		USBD_CtlError(pdev);
+		USBD_CtlError(pdev, req);
 		ret = USBD_FAIL;
 		break;
 	}
@@ -1035,7 +1035,7 @@ static uint8_t USBD_CAT_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *re
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1047,7 +1047,7 @@ static uint8_t USBD_CAT_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *re
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1055,20 +1055,20 @@ static uint8_t USBD_CAT_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *re
 		case USB_REQ_SET_INTERFACE:
 			if (pdev->dev_state != USBD_STATE_CONFIGURED)
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
 
 		default:
-			USBD_CtlError(pdev);
+			USBD_CtlError(pdev, req);
 			ret = USBD_FAIL;
 			break;
 		}
 		break;
 
 	default:
-		USBD_CtlError(pdev);
+		USBD_CtlError(pdev, req);
 		ret = USBD_FAIL;
 		break;
 	}
@@ -1097,7 +1097,7 @@ static uint8_t USBD_AUDIO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 			break;
 
 		default:
-			USBD_CtlError(pdev);
+			USBD_CtlError(pdev, req);
 			ret = USBD_FAIL;
 			break;
 		}
@@ -1113,7 +1113,7 @@ static uint8_t USBD_AUDIO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1134,7 +1134,7 @@ static uint8_t USBD_AUDIO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1149,25 +1149,25 @@ static uint8_t USBD_AUDIO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
 				else
 				{
 					/* Call the error management function (command will be nacked */
-					USBD_CtlError(pdev);
+					USBD_CtlError(pdev, req);
 					ret = USBD_FAIL;
 				}
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
 
 		default:
-			USBD_CtlError(pdev);
+			USBD_CtlError(pdev, req);
 			ret = USBD_FAIL;
 			break;
 		}
 		break;
 	default:
-		USBD_CtlError(pdev);
+		USBD_CtlError(pdev, req);
 		ret = USBD_FAIL;
 		break;
 	}
@@ -1197,7 +1197,7 @@ static uint8_t USBD_IQ_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req
 			break;
 
 		default:
-			USBD_CtlError(pdev);
+			USBD_CtlError(pdev, req);
 			ret = USBD_FAIL;
 			break;
 		}
@@ -1213,7 +1213,7 @@ static uint8_t USBD_IQ_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1234,7 +1234,7 @@ static uint8_t USBD_IQ_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1249,25 +1249,25 @@ static uint8_t USBD_IQ_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req
 				else
 				{
 					/* Call the error management function (command will be nacked */
-					USBD_CtlError(pdev);
+					USBD_CtlError(pdev, req);
 					ret = USBD_FAIL;
 				}
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
 
 		default:
-			USBD_CtlError(pdev);
+			USBD_CtlError(pdev, req);
 			ret = USBD_FAIL;
 			break;
 		}
 		break;
 	default:
-		USBD_CtlError(pdev);
+		USBD_CtlError(pdev, req);
 		ret = USBD_FAIL;
 		break;
 	}
@@ -1296,7 +1296,7 @@ uint8_t USBD_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1308,13 +1308,13 @@ uint8_t USBD_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
 
 		default:
-			USBD_CtlError(pdev);
+			USBD_CtlError(pdev, req);
 			ret = USBD_FAIL;
 			break;
 		}
@@ -1330,7 +1330,7 @@ uint8_t USBD_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1342,7 +1342,7 @@ uint8_t USBD_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1354,7 +1354,7 @@ uint8_t USBD_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 			}
 			else
 			{
-				USBD_CtlError(pdev);
+				USBD_CtlError(pdev, req);
 				ret = USBD_FAIL;
 			}
 			break;
@@ -1374,14 +1374,14 @@ uint8_t USBD_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 			break;
 
 		default:
-			USBD_CtlError(pdev);
+			USBD_CtlError(pdev, req);
 			ret = USBD_FAIL;
 			break;
 		}
 		break;
 
 	default:
-		USBD_CtlError(pdev);
+		USBD_CtlError(pdev, req);
 		ret = USBD_FAIL;
 		break;
 	}
