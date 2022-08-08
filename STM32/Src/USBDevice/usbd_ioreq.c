@@ -79,7 +79,7 @@
 * @retval status
 */
 USBD_StatusTypeDef USBD_CtlSendData(USBD_HandleTypeDef *pdev, uint8_t *pbuf,
-                                    uint16_t len)
+                                    uint32_t len)
 {
   /* Set EP0 State */
   pdev->ep0_state = USBD_EP0_DATA_IN;
@@ -101,7 +101,7 @@ USBD_StatusTypeDef USBD_CtlSendData(USBD_HandleTypeDef *pdev, uint8_t *pbuf,
 * @retval status
 */
 USBD_StatusTypeDef USBD_CtlContinueSendData(USBD_HandleTypeDef *pdev,
-                                            uint8_t *pbuf, uint16_t len)
+                                            uint8_t *pbuf, uint32_t len)
 {
   /* Start the next transfer */
   USBD_LL_Transmit(pdev, 0x00U, pbuf, len);
@@ -118,7 +118,7 @@ USBD_StatusTypeDef USBD_CtlContinueSendData(USBD_HandleTypeDef *pdev,
 * @retval status
 */
 USBD_StatusTypeDef USBD_CtlPrepareRx(USBD_HandleTypeDef *pdev, uint8_t *pbuf,
-                                     uint16_t len)
+                                     uint32_t len)
 {
   /* Set EP0 State */
   pdev->ep0_state = USBD_EP0_DATA_OUT;
@@ -140,7 +140,7 @@ USBD_StatusTypeDef USBD_CtlPrepareRx(USBD_HandleTypeDef *pdev, uint8_t *pbuf,
 * @retval status
 */
 USBD_StatusTypeDef USBD_CtlContinueRx(USBD_HandleTypeDef *pdev, uint8_t *pbuf,
-                                      uint16_t len)
+                                      uint32_t len)
 {
   USBD_LL_PrepareReceive(pdev, 0U, pbuf, len);
 
