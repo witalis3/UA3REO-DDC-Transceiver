@@ -87,7 +87,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x01, /* bConfigurationValue: Configuration value */
 		0x00, /* iConfiguration: Index of string descriptor describing the configuration */
 		0xC0, /* bmAttributes: self powered */
-		0xFA, /* MaxPower 500 mA */
+		0x32, /* MaxPower 100 mA */
 
 		//---------------------------------------------------------------------------
 		// DEBUG/KEY PORT
@@ -95,7 +95,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		//------------------------------
 		0x08,					 // bLength
 		0x0B,					 // bDescriptorType
-		0x00,					 // bFirstInterface
+		DEBUG_INTERFACE_IDX,					 // bFirstInterface
 		0x02,					 // bInterfaceCount
 		0x02,					 // bFunctionClass      (Communication Device Class)
 		0x02,					 // bFunctionSubClass   (Abstract Control Model - ACM)
@@ -125,8 +125,8 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x05, /* bFunctionLength */
 		0x24, /* bDescriptorType: CS_INTERFACE */
 		0x01, /* bDescriptorSubtype: Call Management Func Desc */
-		0x00, /* bmCapabilities: D0+D1 */
-		0x01, /* bDataInterface: 1 */
+		0x03, /* bmCapabilities: D0+D1 */
+		(DEBUG_INTERFACE_IDX + 1), /* bDataInterface: 1 */
 
 		/*ACM Functional Descriptor*/
 		0x04, /* bFunctionLength */
@@ -138,8 +138,8 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x05, /* bFunctionLength */
 		0x24, /* bDescriptorType: CS_INTERFACE */
 		0x06, /* bDescriptorSubtype: Union func desc */
-		0x00, /* bMasterInterface: Communication class interface */
-		0x01, /* bSlaveInterface0: Data Class Interface */
+		DEBUG_INTERFACE_IDX, /* bMasterInterface: Communication class interface */
+		(DEBUG_INTERFACE_IDX + 1), /* bSlaveInterface0: Data Class Interface */
 
 		//---------------------------------------------------------------------------
 
@@ -150,7 +150,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x03,						 /* bmAttributes: Interrupt */
 		LOBYTE(CDC_CMD_PACKET_SIZE), /* wMaxPacketSize: */
 		HIBYTE(CDC_CMD_PACKET_SIZE),
-		0x10, /* bInterval: */
+		0xFF, /* bInterval: */
 
 		/*Data class interface descriptor*/
 		0x09,					   /* bLength: Endpoint Descriptor size */
@@ -170,7 +170,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x02,								 /* bmAttributes: Bulk */
 		LOBYTE(CDC_DATA_FS_MAX_PACKET_SIZE), /* wMaxPacketSize: */
 		HIBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),
-		0x01, /* bInterval: ignore for Bulk transfer */
+		0x00, /* bInterval: ignore for Bulk transfer */
 
 		/*Endpoint IN Descriptor*/
 		0x07,								 /* bLength: Endpoint Descriptor size */
@@ -179,7 +179,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x02,								 /* bmAttributes: Bulk */
 		LOBYTE(CDC_DATA_FS_MAX_PACKET_SIZE), /* wMaxPacketSize: */
 		HIBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),
-		0x01, /* bInterval: ignore for Bulk transfer */
+		0x00, /* bInterval: ignore for Bulk transfer */
 
 		//---------------------------------------------------------------------------
 
@@ -188,7 +188,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		//------------------------------
 		0x08,					 // bLength
 		0x0B,					 // bDescriptorType
-		0x02,					 // bFirstInterface
+		CAT_INTERFACE_IDX,					 // bFirstInterface
 		0x02,					 // bInterfaceCount
 		0x02,					 // bFunctionClass      (Communication Device Class)
 		0x02,					 // bFunctionSubClass   (Abstract Control Model - ACM)
@@ -218,8 +218,8 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x05, /* bFunctionLength */
 		0x24, /* bDescriptorType: CS_INTERFACE */
 		0x01, /* bDescriptorSubtype: Call Management Func Desc */
-		0x00, /* bmCapabilities: D0+D1 */
-		0x03, /* bDataInterface: 1 */
+		0x03, /* bmCapabilities: D0+D1 */
+		(CAT_INTERFACE_IDX + 1), /* bDataInterface: 1 */
 
 		/*ACM Functional Descriptor*/
 		0x04, /* bFunctionLength */
@@ -231,8 +231,8 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x05, /* bFunctionLength */
 		0x24, /* bDescriptorType: CS_INTERFACE */
 		0x06, /* bDescriptorSubtype: Union func desc */
-		0x02, /* bMasterInterface: Communication class interface */
-		0x03, /* bSlaveInterface0: Data Class Interface */
+		CAT_INTERFACE_IDX, /* bMasterInterface: Communication class interface */
+		(CAT_INTERFACE_IDX + 1), /* bSlaveInterface0: Data Class Interface */
 
 		//---------------------------------------------------------------------------
 
@@ -243,7 +243,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x03,						 /* bmAttributes: Interrupt */
 		LOBYTE(CDC_CMD_PACKET_SIZE), /* wMaxPacketSize: */
 		HIBYTE(CDC_CMD_PACKET_SIZE),
-		0x10, /* bInterval: */
+		0xFF, /* bInterval: */
 
 		/*Data class interface descriptor*/
 		0x09,					 /* bLength: Endpoint Descriptor size */
@@ -263,7 +263,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x02,								 /* bmAttributes: Bulk */
 		LOBYTE(CDC_DATA_FS_MAX_PACKET_SIZE), /* wMaxPacketSize: */
 		HIBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),
-		0x01, /* bInterval: ignore for Bulk transfer */
+		0x00, /* bInterval: ignore for Bulk transfer */
 
 		/*Endpoint IN Descriptor*/
 		0x07,								 /* bLength: Endpoint Descriptor size */
@@ -272,7 +272,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x02,								 /* bmAttributes: Bulk */
 		LOBYTE(CDC_DATA_FS_MAX_PACKET_SIZE), /* wMaxPacketSize: */
 		HIBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),
-		0x01, /* bInterval: ignore for Bulk transfer */
+		0x00, /* bInterval: ignore for Bulk transfer */
 
 		//---------------------------------------------------------------------------
 
