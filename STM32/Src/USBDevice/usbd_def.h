@@ -54,6 +54,24 @@ extern "C"
 #define USBD_MAX_NUM_CONFIGURATION 1U
 #endif /* USBD_MAX_NUM_CONFIGURATION */
 
+#ifdef USE_USBD_COMPOSITE
+#ifndef USBD_MAX_SUPPORTED_CLASS
+#define USBD_MAX_SUPPORTED_CLASS                       4U
+#endif /* USBD_MAX_SUPPORTED_CLASS */
+#else
+#ifndef USBD_MAX_SUPPORTED_CLASS
+#define USBD_MAX_SUPPORTED_CLASS                       1U
+#endif /* USBD_MAX_SUPPORTED_CLASS */
+#endif /* USE_USBD_COMPOSITE */
+
+#ifndef USBD_MAX_CLASS_ENDPOINTS
+#define USBD_MAX_CLASS_ENDPOINTS                       5U
+#endif /* USBD_MAX_CLASS_ENDPOINTS */
+
+#ifndef USBD_MAX_CLASS_INTERFACES
+#define USBD_MAX_CLASS_INTERFACES                      5U
+#endif /* USBD_MAX_CLASS_INTERFACES */
+
 #ifndef USBD_LPM_ENABLED
 #define USBD_LPM_ENABLED 0U
 #endif /* USBD_LPM_ENABLED */
@@ -62,95 +80,119 @@ extern "C"
 #define USBD_SELF_POWERED 1U
 #endif /*USBD_SELF_POWERED */
 
-#ifndef USBD_SUPPORT_USER_STRING
-#define USBD_SUPPORT_USER_STRING 0U
-#endif /* USBD_SUPPORT_USER_STRING */
+#ifndef USBD_MAX_POWER
+#define USBD_MAX_POWER                                  0x32U /* 100 mA */
+#endif /* USBD_MAX_POWER */
 
-#define USB_LEN_DEV_QUALIFIER_DESC 0x0AU
-#define USB_LEN_DEV_DESC 0x12U
-#define USB_LEN_CFG_DESC 0x09U
-#define USB_LEN_IF_DESC 0x09U
-#define USB_LEN_EP_DESC 0x07U
-#define USB_LEN_OTG_DESC 0x03U
-#define USB_LEN_LANGID_STR_DESC 0x04U
-#define USB_LEN_OTHER_SPEED_DESC_SIZ 0x09U
+#ifndef USBD_SUPPORT_USER_STRING_DESC
+#define USBD_SUPPORT_USER_STRING_DESC                   0U
+#endif /* USBD_SUPPORT_USER_STRING_DESC */
 
-#define USBD_IDX_LANGID_STR 0x00U
-#define USBD_IDX_MFC_STR 0x01U
-#define USBD_IDX_PRODUCT_STR 0x02U
-#define USBD_IDX_SERIAL_STR 0x03U
-#define USBD_IDX_CONFIG_STR 0x04U
+#ifndef USBD_CLASS_USER_STRING_DESC
+#define USBD_CLASS_USER_STRING_DESC                     0U
+#endif /* USBD_CLASS_USER_STRING_DESC */
+
+#define  USB_LEN_DEV_QUALIFIER_DESC                     0x0AU
+#define  USB_LEN_DEV_DESC                               0x12U
+#define  USB_LEN_CFG_DESC                               0x09U
+#define  USB_LEN_IF_DESC                                0x09U
+#define  USB_LEN_EP_DESC                                0x07U
+#define  USB_LEN_OTG_DESC                               0x03U
+#define  USB_LEN_LANGID_STR_DESC                        0x04U
+#define  USB_LEN_OTHER_SPEED_DESC_SIZ                   0x09U
+
+#define  USBD_IDX_LANGID_STR                            0x00U
+#define  USBD_IDX_MFC_STR                               0x01U
+#define  USBD_IDX_PRODUCT_STR                           0x02U
+#define  USBD_IDX_SERIAL_STR                            0x03U
+#define  USBD_IDX_CONFIG_STR                            0x04U
 #define USBD_IDX_INTERFACE1_STR 0x05U
 #define USBD_IDX_INTERFACE2_STR 0x06U
 #define USBD_IDX_INTERFACE3_STR 0x07U
 #define USBD_IDX_INTERFACE4_STR 0x08U
 
-#define USB_REQ_TYPE_STANDARD 0x00U
-#define USB_REQ_TYPE_CLASS 0x20U
-#define USB_REQ_TYPE_VENDOR 0x40U
-#define USB_REQ_TYPE_MASK 0x60U
+#define  USB_REQ_TYPE_STANDARD                          0x00U
+#define  USB_REQ_TYPE_CLASS                             0x20U
+#define  USB_REQ_TYPE_VENDOR                            0x40U
+#define  USB_REQ_TYPE_MASK                              0x60U
 
-#define USB_REQ_RECIPIENT_DEVICE 0x00U
-#define USB_REQ_RECIPIENT_INTERFACE 0x01U
-#define USB_REQ_RECIPIENT_ENDPOINT 0x02U
-#define USB_REQ_RECIPIENT_MASK 0x03U
+#define  USB_REQ_RECIPIENT_DEVICE                       0x00U
+#define  USB_REQ_RECIPIENT_INTERFACE                    0x01U
+#define  USB_REQ_RECIPIENT_ENDPOINT                     0x02U
+#define  USB_REQ_RECIPIENT_MASK                         0x03U
 
-#define USB_REQ_GET_STATUS 0x00U
-#define USB_REQ_CLEAR_FEATURE 0x01U
-#define USB_REQ_SET_FEATURE 0x03U
-#define USB_REQ_SET_ADDRESS 0x05U
-#define USB_REQ_GET_DESCRIPTOR 0x06U
-#define USB_REQ_SET_DESCRIPTOR 0x07U
-#define USB_REQ_GET_CONFIGURATION 0x08U
-#define USB_REQ_SET_CONFIGURATION 0x09U
-#define USB_REQ_GET_INTERFACE 0x0AU
-#define USB_REQ_SET_INTERFACE 0x0BU
-#define USB_REQ_SYNCH_FRAME 0x0CU
+#define  USB_REQ_GET_STATUS                             0x00U
+#define  USB_REQ_CLEAR_FEATURE                          0x01U
+#define  USB_REQ_SET_FEATURE                            0x03U
+#define  USB_REQ_SET_ADDRESS                            0x05U
+#define  USB_REQ_GET_DESCRIPTOR                         0x06U
+#define  USB_REQ_SET_DESCRIPTOR                         0x07U
+#define  USB_REQ_GET_CONFIGURATION                      0x08U
+#define  USB_REQ_SET_CONFIGURATION                      0x09U
+#define  USB_REQ_GET_INTERFACE                          0x0AU
+#define  USB_REQ_SET_INTERFACE                          0x0BU
+#define  USB_REQ_SYNCH_FRAME                            0x0CU
 
-#define USB_DESC_TYPE_DEVICE 0x01U
-#define USB_DESC_TYPE_CONFIGURATION 0x02U
-#define USB_DESC_TYPE_STRING 0x03U
-#define USB_DESC_TYPE_INTERFACE 0x04U
-#define USB_DESC_TYPE_ENDPOINT 0x05U
-#define USB_DESC_TYPE_DEVICE_QUALIFIER 0x06U
-#define USB_DESC_TYPE_OTHER_SPEED_CONFIGURATION 0x07U
-#define USB_DESC_TYPE_BOS 0x0FU
+#define  USB_DESC_TYPE_DEVICE                           0x01U
+#define  USB_DESC_TYPE_CONFIGURATION                    0x02U
+#define  USB_DESC_TYPE_STRING                           0x03U
+#define  USB_DESC_TYPE_INTERFACE                        0x04U
+#define  USB_DESC_TYPE_ENDPOINT                         0x05U
+#define  USB_DESC_TYPE_DEVICE_QUALIFIER                 0x06U
+#define  USB_DESC_TYPE_OTHER_SPEED_CONFIGURATION        0x07U
+#define  USB_DESC_TYPE_IAD                              0x0BU
+#define  USB_DESC_TYPE_BOS                              0x0FU
 
-#define USB_CONFIG_REMOTE_WAKEUP 0x02U
-#define USB_CONFIG_SELF_POWERED 0x01U
+#define USB_CONFIG_REMOTE_WAKEUP                        0x02U
+#define USB_CONFIG_SELF_POWERED                         0x01U
 
-#define USB_FEATURE_EP_HALT 0x00U
-#define USB_FEATURE_REMOTE_WAKEUP 0x01U
-#define USB_FEATURE_TEST_MODE 0x02U
+#define USB_FEATURE_EP_HALT                             0x00U
+#define USB_FEATURE_REMOTE_WAKEUP                       0x01U
+#define USB_FEATURE_TEST_MODE                           0x02U
 
-#define USB_DEVICE_CAPABITY_TYPE 0x10U
+#define USB_DEVICE_CAPABITY_TYPE                        0x10U
+
+#define USB_CONF_DESC_SIZE                              0x09U
+#define USB_IF_DESC_SIZE                                0x09U
+#define USB_EP_DESC_SIZE                                0x07U
+#define USB_IAD_DESC_SIZE                               0x08U
 
 #define USB_HS_MAX_PACKET_SIZE 512U
-#define USB_FS_MAX_PACKET_SIZE 16U
-#define USB_MAX_EP0_SIZE 16U
+#define USB_FS_MAX_PACKET_SIZE 64U
+#define USB_MAX_EP0_SIZE 64U
 
 #define BOT_GET_MAX_LUN 0xFE
 #define BOT_RESET 0xFF
 
 /*  Device Status */
-#define USBD_STATE_DEFAULT 0x01U
-#define USBD_STATE_ADDRESSED 0x02U
-#define USBD_STATE_CONFIGURED 0x03U
-#define USBD_STATE_SUSPENDED 0x04U
+#define USBD_STATE_DEFAULT                              0x01U
+#define USBD_STATE_ADDRESSED                            0x02U
+#define USBD_STATE_CONFIGURED                           0x03U
+#define USBD_STATE_SUSPENDED                            0x04U
+
 
 /*  EP0 State */
-#define USBD_EP0_IDLE 0x00U
-#define USBD_EP0_SETUP 0x01U
-#define USBD_EP0_DATA_IN 0x02U
-#define USBD_EP0_DATA_OUT 0x03U
-#define USBD_EP0_STATUS_IN 0x04U
-#define USBD_EP0_STATUS_OUT 0x05U
-#define USBD_EP0_STALL 0x06U
+#define USBD_EP0_IDLE                                   0x00U
+#define USBD_EP0_SETUP                                  0x01U
+#define USBD_EP0_DATA_IN                                0x02U
+#define USBD_EP0_DATA_OUT                               0x03U
+#define USBD_EP0_STATUS_IN                              0x04U
+#define USBD_EP0_STATUS_OUT                             0x05U
+#define USBD_EP0_STALL                                  0x06U
 
-#define USBD_EP_TYPE_CTRL 0x00U
-#define USBD_EP_TYPE_ISOC 0x01U
-#define USBD_EP_TYPE_BULK 0x02U
-#define USBD_EP_TYPE_INTR 0x03U
+#define USBD_EP_TYPE_CTRL                               0x00U
+#define USBD_EP_TYPE_ISOC                               0x01U
+#define USBD_EP_TYPE_BULK                               0x02U
+#define USBD_EP_TYPE_INTR                               0x03U
+
+#ifdef USE_USBD_COMPOSITE
+#define USBD_EP_IN                                      0x80U
+#define USBD_EP_OUT                                     0x00U
+#define USBD_FUNC_DESCRIPTOR_TYPE                       0x24U
+#define USBD_DESC_SUBTYPE_ACM                           0x0FU
+#define USBD_DESC_ECM_BCD_LOW                           0x00U
+#define USBD_DESC_ECM_BCD_HIGH                          0x10U
+#endif /* USE_USBD_COMPOSITE */
 
   /**
   * @}
@@ -293,8 +335,19 @@ extern "C"
 /** @defgroup USBD_DEF_Exported_Macros
   * @{
   */
-#define SWAPBYTE(addr) (((uint16_t)(*((uint8_t *)(addr)))) + \
-                        (((uint16_t)(*(((uint8_t *)(addr)) + 1U))) << 8U))
+__STATIC_INLINE uint16_t SWAPBYTE(uint8_t *addr)
+{
+  uint16_t _SwapVal, _Byte1, _Byte2;
+  uint8_t *_pbuff = addr;
+
+  _Byte1 = *(uint8_t *)_pbuff;
+  _pbuff++;
+  _Byte2 = *(uint8_t *)_pbuff;
+
+  _SwapVal = (_Byte2 << 8) | _Byte1;
+
+  return _SwapVal;
+}
 
 #define LOBYTE(x) ((uint8_t)((x)&0x00FFU))
 #define HIBYTE(x) ((uint8_t)(((x)&0xFF00U) >> 8U))
