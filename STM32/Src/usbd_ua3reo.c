@@ -15,9 +15,9 @@ static uint8_t USBD_UA3REO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum);
 static uint8_t USBD_UA3REO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum);
 static uint8_t USBD_UA3REO_EP0_RxReady(USBD_HandleTypeDef *pdev);
 static uint8_t USBD_UA3REO_EP0_TxReady(void);
-static uint8_t USBD_UA3REO_SOF(void);
-static uint8_t USBD_UA3REO_IsoINIncomplete(void);
-static uint8_t USBD_UA3REO_IsoOutIncomplete(void);
+static uint8_t USBD_UA3REO_SOF(USBD_HandleTypeDef *pdev);
+static uint8_t USBD_UA3REO_IsoINIncomplete(USBD_HandleTypeDef *pdev, uint8_t epnum);
+static uint8_t USBD_UA3REO_IsoOutIncomplete(USBD_HandleTypeDef *pdev, uint8_t epnum);
 static void AUDIO_REQ_GetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
 static void AUDIO_REQ_SetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
 static void IQ_REQ_GetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
@@ -1715,12 +1715,12 @@ static uint8_t USBD_UA3REO_EP0_TxReady(void)
 	return USBD_OK;
 }
 
-static uint8_t USBD_UA3REO_IsoINIncomplete(void)
+static uint8_t USBD_UA3REO_IsoINIncomplete(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
 	return USBD_OK;
 }
 
-static uint8_t USBD_UA3REO_IsoOutIncomplete(void)
+static uint8_t USBD_UA3REO_IsoOutIncomplete(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
 	return USBD_OK;
 }
@@ -2049,7 +2049,7 @@ static void IQ_REQ_SetCurrent(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *re
 }
 #endif
 
-static uint8_t USBD_UA3REO_SOF(void)
+static uint8_t USBD_UA3REO_SOF(USBD_HandleTypeDef *pdev)
 {
 	USB_LastActiveTime = HAL_GetTick();
 	return USBD_OK;

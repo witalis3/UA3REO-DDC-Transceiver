@@ -225,9 +225,9 @@ extern "C"
     /* Class Specific Endpoints*/
     uint8_t (*DataIn)(struct _USBD_HandleTypeDef *pdev, uint8_t epnum);
     uint8_t (*DataOut)(struct _USBD_HandleTypeDef *pdev, uint8_t epnum);
-    uint8_t (*SOF)(void);
-    uint8_t (*IsoINIncomplete)(void);
-    uint8_t (*IsoOUTIncomplete)(void);
+    uint8_t (*SOF)(struct _USBD_HandleTypeDef *pdev);
+    uint8_t (*IsoINIncomplete)(struct _USBD_HandleTypeDef *pdev, uint8_t epnum);
+    uint8_t (*IsoOUTIncomplete)(struct _USBD_HandleTypeDef *pdev, uint8_t epnum);
 
     const uint8_t *(*GetHSConfigDescriptor)(uint16_t *length);
     const uint8_t *(*GetFSConfigDescriptor)(uint16_t *length);
