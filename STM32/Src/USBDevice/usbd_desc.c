@@ -182,32 +182,26 @@ USBD_DescriptorsTypeDef FS_Desc =
 #pragma data_alignment = 4
 #endif /* defined ( __ICCARM__ ) */
 /** USB standard device descriptor. */
-__ALIGN_BEGIN static uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
-    {
-        0x12,                 /*bLength */
-        USB_DESC_TYPE_DEVICE, /*bDescriptorType*/
-#if (USBD_LPM_ENABLED == 1)
-        0x01, /*bcdUSB */ /* changed to USB version 2.01
-                                             in order to support LPM L1 suspend
-                                             resume test of USBCV3.0*/
-#else
-        0x00, /*bcdUSB */
-#endif /* (USBD_LPM_ENABLED == 1) */
-        0x02,
-        0xEF,                /*bDeviceClass*/
-        0x02,                /*bDeviceSubClass*/
-        0x01,                /*bDeviceProtocol*/
-        USB_MAX_EP0_SIZE,    /*bMaxPacketSize*/
-        LOBYTE(USBD_VID),    /*idVendor*/
-        HIBYTE(USBD_VID),    /*idVendor*/
-        LOBYTE(USBD_PID_FS), /*idProduct*/
-        HIBYTE(USBD_PID_FS), /*idProduct*/
-        0x06,                /*bcdDevice rel. 1.06*/
-        0x01,
-        USBD_IDX_MFC_STR,          /*Index of manufacturer  string*/
-        USBD_IDX_PRODUCT_STR,      /*Index of product string*/
-        USBD_IDX_SERIAL_STR,       /*Index of serial number string*/
-        USBD_MAX_NUM_CONFIGURATION /*bNumConfigurations*/
+__ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
+{
+  0x12,                       /*bLength */
+  USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
+  0x00,                       /*bcdUSB */
+  0x02,
+  0xEF,                       /*bDeviceClass*/
+  0x02,                       /*bDeviceSubClass*/
+  0x01,                       /*bDeviceProtocol*/
+  USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
+  LOBYTE(USBD_VID),           /*idVendor*/
+  HIBYTE(USBD_VID),           /*idVendor*/
+  LOBYTE(USBD_PID_FS),        /*idProduct*/
+  HIBYTE(USBD_PID_FS),        /*idProduct*/
+  0x00,                       /*bcdDevice rel. 2.00*/
+  0x02,
+  USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
+  USBD_IDX_PRODUCT_STR,       /*Index of product string*/
+  USBD_IDX_SERIAL_STR,        /*Index of serial number string*/
+  USBD_MAX_NUM_CONFIGURATION  /*bNumConfigurations*/
 };
 
 /* USB_DeviceDescriptor */
@@ -405,9 +399,9 @@ static void Get_SerialNum(void)
 {
   uint32_t deviceserial0, deviceserial1, deviceserial2;
 
-  deviceserial0 = *(uint32_t *)DEVICE_ID1; //-V566
-  deviceserial1 = *(uint32_t *)DEVICE_ID2; //-V566
-  deviceserial2 = *(uint32_t *)DEVICE_ID3; //-V566
+  deviceserial0 = *(uint32_t *) DEVICE_ID1;
+  deviceserial1 = *(uint32_t *) DEVICE_ID2;
+  deviceserial2 = *(uint32_t *) DEVICE_ID3;
 
   deviceserial0 += deviceserial2;
 
@@ -425,7 +419,7 @@ static void Get_SerialNum(void)
   * @param  len: buffer length
   * @retval None
   */
-static void IntToUnicode(uint32_t value, uint8_t *pbuf, uint8_t len)
+static void IntToUnicode(uint32_t value, uint8_t * pbuf, uint8_t len)
 {
   uint8_t idx = 0;
 
