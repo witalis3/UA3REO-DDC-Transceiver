@@ -32,7 +32,7 @@ static uint8_t setFT450Mode(char *FT450_Mode);
 static uint8_t setTS2000Mode(char *TS2000_Mode);
 static int8_t CAT_Init_FS(void);
 static int8_t CAT_DeInit_FS(void);
-static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf);
+static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len);
 static int8_t CAT_Receive_FS(uint8_t *pbuf, uint32_t *Len);
 static void CAT_Transmit(char *data);
 static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len);
@@ -72,7 +72,7 @@ static int8_t CAT_DeInit_FS(void)
  * @param  length: Number of data to be sent (in bytes)
  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
  */
-static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf)
+static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 {
 	/* USER CODE BEGIN 5 */
 	switch (cmd)

@@ -83,18 +83,19 @@ extern "C"
 #define CDC_DATA_FS_IN_PACKET_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
 #define CDC_DATA_FS_OUT_PACKET_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
 
+#define CDC_REQ_MAX_DATA_SIZE                       0x7U
 /*---------------------------------------------------------------------*/
 /*  CDC definitions                                                    */
 /*---------------------------------------------------------------------*/
-#define CDC_SEND_ENCAPSULATED_COMMAND 0x00U
-#define CDC_GET_ENCAPSULATED_RESPONSE 0x01U
-#define CDC_SET_COMM_FEATURE 0x02U
-#define CDC_GET_COMM_FEATURE 0x03U
-#define CDC_CLEAR_COMM_FEATURE 0x04U
-#define CDC_SET_LINE_CODING 0x20U
-#define CDC_GET_LINE_CODING 0x21U
-#define CDC_SET_CONTROL_LINE_STATE 0x22U
-#define CDC_SEND_BREAK 0x23U
+#define CDC_SEND_ENCAPSULATED_COMMAND               0x00U
+#define CDC_GET_ENCAPSULATED_RESPONSE               0x01U
+#define CDC_SET_COMM_FEATURE                        0x02U
+#define CDC_GET_COMM_FEATURE                        0x03U
+#define CDC_CLEAR_COMM_FEATURE                      0x04U
+#define CDC_SET_LINE_CODING                         0x20U
+#define CDC_GET_LINE_CODING                         0x21U
+#define CDC_SET_CONTROL_LINE_STATE                  0x22U
+#define CDC_SEND_BREAK                              0x23U
 
 // AUDIO
 #define USBD_AUDIO_FREQ 48000U
@@ -162,7 +163,7 @@ extern "C"
 	{
 		int8_t (*Init)(void);
 		int8_t (*DeInit)(void);
-		int8_t (*Control)(uint8_t cmd, uint8_t *pbuf);
+		int8_t (*Control)(uint8_t cmd, uint8_t *pbuf, uint32_t len);
 		int8_t (*Receive)(uint8_t *Buf, uint32_t *Len);
 
 	} USBD_CAT_ItfTypeDef;

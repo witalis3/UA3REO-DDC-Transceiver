@@ -125,7 +125,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x05, /* bFunctionLength */
 		0x24, /* bDescriptorType: CS_INTERFACE */
 		0x01, /* bDescriptorSubtype: Call Management Func Desc */
-		0x03, /* bmCapabilities: D0+D1 */
+		0x00, /* bmCapabilities: D0+D1 */
 		(DEBUG_INTERFACE_IDX + 1), /* bDataInterface: 1 */
 
 		/*ACM Functional Descriptor*/
@@ -218,7 +218,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x05, /* bFunctionLength */
 		0x24, /* bDescriptorType: CS_INTERFACE */
 		0x01, /* bDescriptorSubtype: Call Management Func Desc */
-		0x03, /* bmCapabilities: D0+D1 */
+		0x00, /* bmCapabilities: D0+D1 */
 		(CAT_INTERFACE_IDX + 1), /* bDataInterface: 1 */
 
 		/*ACM Functional Descriptor*/
@@ -914,165 +914,192 @@ static uint8_t USBD_UA3REO_DeInit(USBD_HandleTypeDef *pdev)
  * @param  req: usb requests
  * @retval status
  */
+
 static uint8_t USBD_DEBUG_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
-	USB_LastActiveTime = HAL_GetTick();
-	USBD_DEBUG_HandleTypeDef *hcdc_debug = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
-	uint8_t ifalt = 0U;
-	uint16_t status_info = 0U;
-	uint8_t ret = USBD_OK;
+  USBD_DEBUG_HandleTypeDef *hcdc = (USBD_DEBUG_HandleTypeDef *)pdev->pClassDataDEBUG;
+  uint16_t len;
+  uint8_t ifalt = 0U;
+  uint16_t status_info = 0U;
+  USBD_StatusTypeDef ret = USBD_OK;
 
-	switch (req->bmRequest & USB_REQ_TYPE_MASK)
-	{
-	case USB_REQ_TYPE_CLASS:
-		if (req->wLength)
-		{
-			if (req->bmRequest & 0x80U)
-			{
-				((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(req->bRequest, (uint8_t *)(void *)hcdc_debug->data, req->wLength);
-				USBD_CtlSendData(pdev, (uint8_t *)(void *)hcdc_debug->data, req->wLength);
-			}
-			else
-			{
-				hcdc_debug->CmdOpCode = req->bRequest;
-				hcdc_debug->CmdLength = (uint8_t)req->wLength;
-				USBD_CtlPrepareRx(pdev, (uint8_t *)(void *)hcdc_debug->data, req->wLength);
-			}
-		}
-		else
-		{
-			((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(req->bRequest, (uint8_t *)(void *)req, req->wLength);
-		}
-		break;
+  if (hcdc == NULL)
+  {
+    return (uint8_t)USBD_FAIL;
+  }
 
-	case USB_REQ_TYPE_STANDARD:
-		switch (req->bRequest)
-		{
-		case USB_REQ_GET_STATUS:
-			if (pdev->dev_state == USBD_STATE_CONFIGURED)
-			{
-				USBD_CtlSendData(pdev, (uint8_t *)(void *)&status_info, 2U);
-			}
-			else
-			{
-				USBD_CtlError(pdev, req);
-				ret = USBD_FAIL;
-			}
-			break;
+  switch (req->bmRequest & USB_REQ_TYPE_MASK)
+  {
+    case USB_REQ_TYPE_CLASS:
+      if (req->wLength != 0U)
+      {
+        if ((req->bmRequest & 0x80U) != 0U)
+        {
+          ((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(req->bRequest, (uint8_t *)hcdc->data, req->wLength);
 
-		case USB_REQ_GET_INTERFACE:
-			if (pdev->dev_state == USBD_STATE_CONFIGURED)
-			{
-				USBD_CtlSendData(pdev, &ifalt, 1U);
-			}
-			else
-			{
-				USBD_CtlError(pdev, req);
-				ret = USBD_FAIL;
-			}
-			break;
+          len = MIN(CDC_REQ_MAX_DATA_SIZE, req->wLength);
+          (void)USBD_CtlSendData(pdev, (uint8_t *)hcdc->data, len);
+        }
+        else
+        {
+          hcdc->CmdOpCode = req->bRequest;
+          hcdc->CmdLength = (uint8_t)MIN(req->wLength, USB_MAX_EP0_SIZE);
 
-		case USB_REQ_SET_INTERFACE:
-			if (pdev->dev_state != USBD_STATE_CONFIGURED)
-			{
-				USBD_CtlError(pdev, req);
-				ret = USBD_FAIL;
-			}
-			break;
+          (void)USBD_CtlPrepareRx(pdev, (uint8_t *)hcdc->data, hcdc->CmdLength);
+        }
+      }
+      else
+      {
+        ((USBD_DEBUG_ItfTypeDef *)pdev->pUserDataDEBUG)->Control(req->bRequest,
+                                                                         (uint8_t *)req, 0U);
+      }
+      break;
 
-		default:
-			USBD_CtlError(pdev, req);
-			ret = USBD_FAIL;
-			break;
-		}
-		break;
+    case USB_REQ_TYPE_STANDARD:
+      switch (req->bRequest)
+      {
+        case USB_REQ_GET_STATUS:
+          if (pdev->dev_state == USBD_STATE_CONFIGURED)
+          {
+            (void)USBD_CtlSendData(pdev, (uint8_t *)&status_info, 2U);
+          }
+          else
+          {
+            USBD_CtlError(pdev, req);
+            ret = USBD_FAIL;
+          }
+          break;
 
-	default:
-		USBD_CtlError(pdev, req);
-		ret = USBD_FAIL;
-		break;
-	}
-	return ret;
+        case USB_REQ_GET_INTERFACE:
+          if (pdev->dev_state == USBD_STATE_CONFIGURED)
+          {
+            (void)USBD_CtlSendData(pdev, &ifalt, 1U);
+          }
+          else
+          {
+            USBD_CtlError(pdev, req);
+            ret = USBD_FAIL;
+          }
+          break;
+
+        case USB_REQ_SET_INTERFACE:
+          if (pdev->dev_state != USBD_STATE_CONFIGURED)
+          {
+            USBD_CtlError(pdev, req);
+            ret = USBD_FAIL;
+          }
+          break;
+
+        case USB_REQ_CLEAR_FEATURE:
+          break;
+
+        default:
+          USBD_CtlError(pdev, req);
+          ret = USBD_FAIL;
+          break;
+      }
+      break;
+
+    default:
+      USBD_CtlError(pdev, req);
+      ret = USBD_FAIL;
+      break;
+  }
+
+  return (uint8_t)ret;
 }
 
 static uint8_t USBD_CAT_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
-	USBD_CAT_HandleTypeDef *hcdc_cat = (USBD_CAT_HandleTypeDef *)pdev->pClassDataCAT;
-	uint8_t ifalt = 0U;
-	uint16_t status_info = 0U;
-	uint8_t ret = USBD_OK;
+  USBD_CAT_HandleTypeDef *hcdc = (USBD_CAT_HandleTypeDef *)pdev->pClassDataCAT;
+  uint16_t len;
+  uint8_t ifalt = 0U;
+  uint16_t status_info = 0U;
+  USBD_StatusTypeDef ret = USBD_OK;
 
-	switch (req->bmRequest & USB_REQ_TYPE_MASK)
-	{
-	case USB_REQ_TYPE_CLASS:
-		if (req->wLength)
-		{
-			if (req->bmRequest & 0x80U)
-			{
-				((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(req->bRequest, (uint8_t *)(void *)hcdc_cat->data);
-				USBD_CtlSendData(pdev, (uint8_t *)(void *)hcdc_cat->data, req->wLength);
-			}
-			else
-			{
-				hcdc_cat->CmdOpCode = req->bRequest;
-				hcdc_cat->CmdLength = (uint8_t)req->wLength;
-				USBD_CtlPrepareRx(pdev, (uint8_t *)(void *)hcdc_cat->data, req->wLength);
-			}
-		}
-		else
-		{
-			((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(req->bRequest, (uint8_t *)(void *)req);
-		}
-		break;
+  if (hcdc == NULL)
+  {
+    return (uint8_t)USBD_FAIL;
+  }
 
-	case USB_REQ_TYPE_STANDARD:
-		switch (req->bRequest)
-		{
-		case USB_REQ_GET_STATUS:
-			if (pdev->dev_state == USBD_STATE_CONFIGURED)
-			{
-				USBD_CtlSendData(pdev, (uint8_t *)(void *)&status_info, 2U);
-			}
-			else
-			{
-				USBD_CtlError(pdev, req);
-				ret = USBD_FAIL;
-			}
-			break;
+  switch (req->bmRequest & USB_REQ_TYPE_MASK)
+  {
+    case USB_REQ_TYPE_CLASS:
+      if (req->wLength != 0U)
+      {
+        if ((req->bmRequest & 0x80U) != 0U)
+        {
+          ((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(req->bRequest, (uint8_t *)hcdc->data, req->wLength);
 
-		case USB_REQ_GET_INTERFACE:
-			if (pdev->dev_state == USBD_STATE_CONFIGURED)
-			{
-				USBD_CtlSendData(pdev, &ifalt, 1U);
-			}
-			else
-			{
-				USBD_CtlError(pdev, req);
-				ret = USBD_FAIL;
-			}
-			break;
+          len = MIN(CDC_REQ_MAX_DATA_SIZE, req->wLength);
+          (void)USBD_CtlSendData(pdev, (uint8_t *)hcdc->data, len);
+        }
+        else
+        {
+          hcdc->CmdOpCode = req->bRequest;
+          hcdc->CmdLength = (uint8_t)MIN(req->wLength, USB_MAX_EP0_SIZE);
 
-		case USB_REQ_SET_INTERFACE:
-			if (pdev->dev_state != USBD_STATE_CONFIGURED)
-			{
-				USBD_CtlError(pdev, req);
-				ret = USBD_FAIL;
-			}
-			break;
+          (void)USBD_CtlPrepareRx(pdev, (uint8_t *)hcdc->data, hcdc->CmdLength);
+        }
+      }
+      else
+      {
+        ((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(req->bRequest, (uint8_t *)req, 0U);
+      }
+      break;
 
-		default:
-			USBD_CtlError(pdev, req);
-			ret = USBD_FAIL;
-			break;
-		}
-		break;
+    case USB_REQ_TYPE_STANDARD:
+      switch (req->bRequest)
+      {
+        case USB_REQ_GET_STATUS:
+          if (pdev->dev_state == USBD_STATE_CONFIGURED)
+          {
+            (void)USBD_CtlSendData(pdev, (uint8_t *)&status_info, 2U);
+          }
+          else
+          {
+            USBD_CtlError(pdev, req);
+            ret = USBD_FAIL;
+          }
+          break;
 
-	default:
-		USBD_CtlError(pdev, req);
-		ret = USBD_FAIL;
-		break;
-	}
-	return ret;
+        case USB_REQ_GET_INTERFACE:
+          if (pdev->dev_state == USBD_STATE_CONFIGURED)
+          {
+            (void)USBD_CtlSendData(pdev, &ifalt, 1U);
+          }
+          else
+          {
+            USBD_CtlError(pdev, req);
+            ret = USBD_FAIL;
+          }
+          break;
+
+        case USB_REQ_SET_INTERFACE:
+          if (pdev->dev_state != USBD_STATE_CONFIGURED)
+          {
+            USBD_CtlError(pdev, req);
+            ret = USBD_FAIL;
+          }
+          break;
+
+        case USB_REQ_CLEAR_FEATURE:
+          break;
+
+        default:
+          USBD_CtlError(pdev, req);
+          ret = USBD_FAIL;
+          break;
+      }
+      break;
+
+    default:
+      USBD_CtlError(pdev, req);
+      ret = USBD_FAIL;
+      break;
+  }
+
+  return (uint8_t)ret;
 }
 
 static uint8_t USBD_AUDIO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
@@ -1685,7 +1712,7 @@ static uint8_t USBD_UA3REO_EP0_RxReady(USBD_HandleTypeDef *pdev)
 	// CAT
 	if ((pdev->pUserDataCAT != NULL) && (hcdc_cat->CmdOpCode != 0xFFU))
 	{
-		((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(hcdc_cat->CmdOpCode, (uint8_t *)(void *)hcdc_cat->data);
+		((USBD_CAT_ItfTypeDef *)pdev->pUserDataCAT)->Control(hcdc_cat->CmdOpCode, (uint8_t *)(void *)hcdc_cat->data, 0);
 		hcdc_cat->CmdOpCode = 0xFFU;
 	}
 	// AUDIO
