@@ -82,7 +82,6 @@
 	#define USBD_INTERFACE1_STRING_FS "WOLF-Lite Transceiver Debug/Key Port"
 	#define USBD_INTERFACE2_STRING_FS "WOLF-Lite Transceiver CAT Port"
 	#define USBD_INTERFACE3_STRING_FS "WOLF-Lite Transceiver AUDIO"
-	#define USBD_INTERFACE4_STRING_FS "WOLF-Lite Transceiver IQ"
 #endif
 
 #define USB_SIZ_BOS_DESC 0x0C
@@ -138,7 +137,9 @@ uint8_t *USBD_FS_ConfigStrDescriptor(uint16_t *length);
 uint8_t *USBD_FS_Interface1StrDescriptor(uint16_t *length);
 uint8_t *USBD_FS_Interface2StrDescriptor(uint16_t *length);
 uint8_t *USBD_FS_Interface3StrDescriptor(uint16_t *length);
+#ifndef FRONTPANEL_LITE
 uint8_t *USBD_FS_Interface4StrDescriptor(uint16_t *length);
+#endif
 
 #ifdef USBD_SUPPORT_USER_STRING_DESC
 uint8_t *USBD_FS_USRStringDesc(USBD_SpeedTypeDef speed, uint8_t idx, uint16_t *length);
@@ -159,7 +160,18 @@ uint8_t *USBD_FS_USR_BOSDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
 
 USBD_DescriptorsTypeDef FS_Desc =
     {
-        USBD_FS_DeviceDescriptor, USBD_FS_LangIDStrDescriptor, USBD_FS_ManufacturerStrDescriptor, USBD_FS_ProductStrDescriptor, USBD_FS_SerialStrDescriptor, USBD_FS_ConfigStrDescriptor, USBD_FS_Interface1StrDescriptor, USBD_FS_Interface2StrDescriptor, USBD_FS_Interface3StrDescriptor, USBD_FS_Interface4StrDescriptor
+      USBD_FS_DeviceDescriptor, 
+			USBD_FS_LangIDStrDescriptor, 
+			USBD_FS_ManufacturerStrDescriptor, 
+			USBD_FS_ProductStrDescriptor, 
+			USBD_FS_SerialStrDescriptor, 
+			USBD_FS_ConfigStrDescriptor, 
+			USBD_FS_Interface1StrDescriptor, 
+			USBD_FS_Interface2StrDescriptor, 
+			USBD_FS_Interface3StrDescriptor
+#ifndef FRONTPANEL_LITE
+			,USBD_FS_Interface4StrDescriptor
+#endif
 #if (USBD_LPM_ENABLED == 1)
         ,
         USBD_FS_USR_BOSDescriptor
@@ -363,11 +375,13 @@ uint8_t *USBD_FS_Interface3StrDescriptor(uint16_t *length)
   USBD_GetString((uint8_t *)USBD_INTERFACE3_STRING_FS, USBD_StrDesc, length);
   return USBD_StrDesc;
 }
+#ifndef FRONTPANEL_LITE
 uint8_t *USBD_FS_Interface4StrDescriptor(uint16_t *length)
 {
   USBD_GetString((uint8_t *)USBD_INTERFACE4_STRING_FS, USBD_StrDesc, length);
   return USBD_StrDesc;
 }
+#endif
 #if (USBD_LPM_ENABLED == 1)
 /**
   * @brief  Return the BOS descriptor
