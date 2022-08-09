@@ -422,6 +422,7 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) sprintf(enc2_state_str, "RIT");
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) sprintf(enc2_state_str, "NTCH");
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF) sprintf(enc2_state_str, "LPF");
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF) sprintf(enc2_state_str, "HPF");
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL) sprintf(enc2_state_str, "SQL");
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME) sprintf(enc2_state_str, "VOL");
 	

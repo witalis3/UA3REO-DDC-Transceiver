@@ -424,6 +424,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to LPF tune
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) // fast tune HPF in SSB only
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) // nothing to SQL tune
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 
@@ -572,6 +574,17 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		}
 	}
 	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF) // HPF
+	{
+		if (!TRX_on_TX) {
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+				SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(direction);
+		} else {
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+				SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(direction);
+		}
+	}
+	
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL) // SQL
 	{
 		CurrentVFO->FM_SQL_threshold_dbm += direction * 1;
@@ -664,6 +677,8 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 			TRX.ENC2_func_mode++;
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to LPF tune
 			TRX.ENC2_func_mode++;
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) // fast tune HPF in SSB only
+			TRX.ENC2_func_mode++;
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) // nothing to SQL tune
 			TRX.ENC2_func_mode++;
 
@@ -680,6 +695,8 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 			LCD_showTooltip("SET NOTCH");
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF)
 			LCD_showTooltip("SET LPF");
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF)
+			LCD_showTooltip("SET HPF");
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL)
 			LCD_showTooltip("SET SQL");
 	}
