@@ -1213,8 +1213,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		sprintf(buff, "BW:FULL");
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_BW_Y_OFFSET, COLOR->STATUS_LABEL_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-
-	if (CALIBRATE.INA226_EN) ////INA226 current voltage indication  Is the INA226 used (installed)
+	
+	if (CALIBRATE.INA226_EN && !TRX.SPLIT_Enabled && !TRX.RIT_Enabled && !TRX.XIT_Enabled) ////INA226 current voltage indication  Is the INA226 used (installed)
 	{
 		Read_INA226_Data();
 		sprintf(buff, "%2.1fV/%2.1fA ", Get_INA226_Voltage(), Get_INA226_Current());
