@@ -2035,6 +2035,12 @@ void BUTTONHANDLER_SET_BAND_MEMORY(uint32_t parameter)
 	if (band < 0)
 		return;
 	
+	int8_t currentband = getBandFromFreq(CurrentVFO->Freq, true);
+	if(currentband != band) {
+		BUTTONHANDLER_GET_BAND_MEMORY(parameter);
+		return;
+	}
+	
 	//slide mems
 	for (uint8_t j = BANDS_MEMORIES_COUNT - 1; j > 0; j--)
 		CALIBRATE.BAND_MEMORIES[band][j] = CALIBRATE.BAND_MEMORIES[band][j - 1];
@@ -2053,7 +2059,11 @@ void BUTTONHANDLER_GET_BAND_MEMORY(uint32_t parameter)
 	if (band < 0)
 		return;
 	
-	BUTTONHANDLER_SET_CUR_VFO_BAND(band);
+	int8_t currentband = getBandFromFreq(CurrentVFO->Freq, true);
+	if(currentband != band) {
+		BUTTONHANDLER_SET_CUR_VFO_BAND(band);
+		return;
+	}
 	
 	int8_t mem_num = -1;
 	for (uint8_t j = 0; j < BANDS_MEMORIES_COUNT; j++) {
@@ -2064,15 +2074,17 @@ void BUTTONHANDLER_GET_BAND_MEMORY(uint32_t parameter)
 		}
 	}
 	
-	if(mem_num < 0)
-		return;
 	mem_num++;
 	if(mem_num >= BANDS_MEMORIES_COUNT)
 		mem_num = 0;
 	
-	if(CALIBRATE.BAND_MEMORIES[band][mem_num] == 0)
-		mem_num = 0;
+	if(CALIBRATE.BAND_MEMORIES[band][mem_num] == 0) {
+		return;
+	}
 	
+	println("Get band memory: ", (int16_t)band, " ", (int16_t)mem_num, " ", CALIBRATE.BAND_MEMORIES[band][mem_num]);
+	
+	BUTTONHANDLER_SET_CUR_VFO_BAND(band);
 	TRX_setFrequency(CALIBRATE.BAND_MEMORIES[band][mem_num], CurrentVFO);
 	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 }
