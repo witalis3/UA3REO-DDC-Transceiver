@@ -233,7 +233,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 			raw_block1 |= 1;
 		prev_bit = bit_out_state;
 		
-		#define MaxCorrectableBits 3 // 5
+		#define MaxCorrectableBits 2 // 5
 		#define CheckwordBitsCount 10
 		
 		// wait block A
