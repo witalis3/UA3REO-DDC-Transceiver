@@ -19,6 +19,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_core.h"
 
+static bool USBD_inited = false;
+
 #ifdef USE_USBD_COMPOSITE
 #include "usbd_composite_builder.h"
 #endif /* USE_USBD_COMPOSITE */
@@ -137,6 +139,9 @@ USBD_StatusTypeDef USBD_Init(USBD_HandleTypeDef *pdev,
   /* Initialize low level driver */
   ret = USBD_LL_Init(pdev);
 
+	if (ret == USBD_OK)
+		USBD_inited = true;
+	
   return ret;
 }
 
@@ -150,6 +155,9 @@ USBD_StatusTypeDef USBD_DeInit(USBD_HandleTypeDef *pdev)
 {
   USBD_StatusTypeDef ret;
 
+	if (!USBD_inited)
+		return USBD_FAIL;
+	
   /* Disconnect the USB Device */
   (void)USBD_LL_Stop(pdev);
 
