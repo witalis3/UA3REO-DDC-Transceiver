@@ -1864,7 +1864,7 @@ void BUTTONHANDLER_RIGHT_ARR(uint32_t parameter)
 
 void BUTTONHANDLER_SAMPLE_N(uint32_t parameter)
 {
-	if (CurrentVFO->Mode == TRX_MODE_WFM)
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM)
 	{
 		if (TRX.SAMPLERATE_FM > 0)
 			TRX.SAMPLERATE_FM -= 1;
@@ -1884,7 +1884,7 @@ void BUTTONHANDLER_SAMPLE_N(uint32_t parameter)
 
 void BUTTONHANDLER_SAMPLE_P(uint32_t parameter)
 {
-	if (CurrentVFO->Mode == TRX_MODE_WFM)
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM)
 	{
 		if (TRX.SAMPLERATE_FM < 3)
 			TRX.SAMPLERATE_FM += 1;
