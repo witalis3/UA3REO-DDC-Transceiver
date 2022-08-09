@@ -324,6 +324,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	}
 	if (TRX.ENC2_func_mode_idx == 1) //fast step mode
 	{
+		if(TRX_on_TX) return;
+		
 		float64_t newfreq = (float64_t)CurrentVFO->Freq;
 		float64_t step = 0;
 		if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
