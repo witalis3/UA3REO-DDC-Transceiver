@@ -1359,7 +1359,7 @@ void BUTTONHANDLER_RIT(uint32_t parameter)
 {
 	TRX.RIT_Enabled = !TRX.RIT_Enabled;
 	if(TRX.RIT_Enabled) 
-		TRX.ENC2_func_mode_idx = 2;
+		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
 	TRX.XIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
 	TRX_RIT = 0;
@@ -1374,7 +1374,7 @@ void BUTTONHANDLER_XIT(uint32_t parameter)
 {
 	TRX.XIT_Enabled = !TRX.XIT_Enabled;
 	if(TRX.XIT_Enabled) 
-		TRX.ENC2_func_mode_idx = 2;
+		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
 	TRX.RIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
 	TRX_XIT = 0;

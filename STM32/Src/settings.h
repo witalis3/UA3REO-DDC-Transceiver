@@ -320,6 +320,19 @@ typedef enum
 	EXT_PTT,
 } CW_PTT_TYPE;
 
+// ENC2 FUNC MODE
+typedef enum
+{
+	ENC_FUNC_PAGER,
+	ENC_FUNC_FAST_STEP,
+	ENC_FUNC_SET_WPM,
+	ENC_FUNC_SET_RIT,
+	ENC_FUNC_SET_NOTCH,
+	ENC_FUNC_SET_LPF,
+	ENC_FUNC_SET_SQL,
+	ENC_FUNC_SET_VOLUME,
+} ENC2_FUNC_MODE;
+
 // Save settings by band
 typedef struct
 {
@@ -543,7 +556,7 @@ extern struct TRX_SETTINGS
 	bool WSPR_BANDS_2;
 	// Shadow variables
 	uint8_t FRONTPANEL_funcbuttons_page;
-	uint8_t ENC2_func_mode_idx;
+	ENC2_FUNC_MODE ENC2_func_mode;
 	uint8_t DNR_shadow;
 	int8_t FM_SQL_threshold_dbm_shadow;
 	bool SQL_shadow;

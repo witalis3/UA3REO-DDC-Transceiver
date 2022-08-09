@@ -415,7 +415,7 @@ void LoadSettings(bool clear)
 		TRX.Notch_on_shadow = false;
 		TRX.FM_SQL_threshold_dbm_shadow = TRX.VFO_A.FM_SQL_threshold_dbm;
 		TRX.FRONTPANEL_funcbuttons_page = 0;
-		TRX.ENC2_func_mode_idx = 0; // 0 - fast-step, 1 - WPM, 2 - RIT/XIT, 3 - NOTCH, 4 - LPF, 5 - SQL
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 
 		LCD_showError("Loaded default settings", true);
 		SaveSettings();

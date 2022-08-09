@@ -416,14 +416,14 @@ static void LCD_displayStatusInfoGUI(bool redraw)
 
 	// ENC2 State indicator
 	char enc2_state_str[5] = {0};
-	if (TRX.ENC2_func_mode_idx == 0) sprintf(enc2_state_str, "FUNC");
-	if (TRX.ENC2_func_mode_idx == 1) sprintf(enc2_state_str, "VOL");
-	if (TRX.ENC2_func_mode_idx == 2) sprintf(enc2_state_str, "STEP");
-	if (TRX.ENC2_func_mode_idx == 3) sprintf(enc2_state_str, "WPM");
-	if (TRX.ENC2_func_mode_idx == 4) sprintf(enc2_state_str, "RIT");
-	if (TRX.ENC2_func_mode_idx == 5) sprintf(enc2_state_str, "NTCH");
-	if (TRX.ENC2_func_mode_idx == 6) sprintf(enc2_state_str, "LPF");
-	if (TRX.ENC2_func_mode_idx == 7) sprintf(enc2_state_str, "SQL");
+	if (TRX.ENC2_func_mode == ENC_FUNC_PAGER) sprintf(enc2_state_str, "FUNC");
+	if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) sprintf(enc2_state_str, "STEP");
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM) sprintf(enc2_state_str, "WPM");
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) sprintf(enc2_state_str, "RIT");
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) sprintf(enc2_state_str, "NTCH");
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF) sprintf(enc2_state_str, "LPF");
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL) sprintf(enc2_state_str, "SQL");
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME) sprintf(enc2_state_str, "VOL");
 	
 	printInfoSmall(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), LAYOUT->STATUS_ANT_BLOCK_WIDTH, LAYOUT->STATUS_ANT_BLOCK_HEIGHT, enc2_state_str, BG_COLOR, COLOR->STATUS_RX, COLOR->STATUS_RX, true);
 

@@ -315,14 +315,14 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	if(CurrentVFO->Mode == TRX_MODE_CW)
 		step = 10;
 	
-	if (TRX.ENC2_func_mode_idx == 0) //buttons pager
+	if (TRX.ENC2_func_mode== ENC_FUNC_PAGER) //buttons pager
 	{
 		if(direction < 0)
 			BUTTONHANDLER_LEFT_ARR(0);
 		if(direction > 0)
 			BUTTONHANDLER_RIGHT_ARR(0);
 	}
-	if (TRX.ENC2_func_mode_idx == 1) //fast step mode
+	if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) //fast step mode
 	{
 		if(TRX_on_TX) return;
 		
@@ -378,52 +378,119 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		TRX_setFrequency(newfreq, CurrentVFO);
 		LCD_UpdateQuery.FreqInfo = true;
 	}
-	if (TRX.ENC2_func_mode_idx == 2) //function mode
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM)
 	{
+		// ENC2 Func mode (WPM)
+		TRX.CW_KEYER_WPM += direction;
+		if (TRX.CW_KEYER_WPM < 1)
+			TRX.CW_KEYER_WPM = 1;
+		if (TRX.CW_KEYER_WPM > 200)
+			TRX.CW_KEYER_WPM = 200;
+		char sbuff[32] = {0};
+		sprintf(sbuff, "WPM: %u", TRX.CW_KEYER_WPM);
+		LCD_showTooltip(sbuff);
+	}
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) // Fine RIT/XIT
+	{
+		if (TRX.RIT_Enabled && TRX.FineRITTune)
+		{
+			TRX_RIT += direction * 10;
+			if (TRX_RIT > TRX.RIT_INTERVAL)
+				TRX_RIT = TRX.RIT_INTERVAL;
+			if (TRX_RIT < -TRX.RIT_INTERVAL)
+				TRX_RIT = -TRX.RIT_INTERVAL;
+		}
+
+		if (TRX.XIT_Enabled && TRX.FineRITTune)
+		{
+			TRX_XIT += direction * 10;
+			if (TRX_XIT > TRX.XIT_INTERVAL)
+				TRX_XIT = TRX.XIT_INTERVAL;
+			if (TRX_XIT < -TRX.XIT_INTERVAL)
+				TRX_XIT = -TRX.XIT_INTERVAL;
+		}
+	}
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) //function mode
+	{
+		float64_t step = 50;
+		if (CurrentVFO->Mode == TRX_MODE_CW)
+			step = 10;
 		if (CurrentVFO->ManualNotchFilter)
 		{
 			if (CurrentVFO->NotchFC > step && direction < 0)
 				CurrentVFO->NotchFC -= step;
 			else if (CurrentVFO->NotchFC < CurrentVFO->LPF_RX_Filter_Width && direction > 0)
 				CurrentVFO->NotchFC += step;
-			
+
 			CurrentVFO->NotchFC = roundf((float64_t)CurrentVFO->NotchFC / step) * step;
-			
-			if(CurrentVFO->NotchFC < step)
+
+			if (CurrentVFO->NotchFC < step)
 				CurrentVFO->NotchFC = step;
-			
-			if(CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
+
+			if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
 				CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
-			
+
 			LCD_UpdateQuery.StatusInfoGUI = true;
 			NeedReinitNotch = true;
 			NeedWTFRedraw = true;
 		}
-		/*else if(CurrentVFO->Mode == TRX_MODE_CW)
-		{
-			//ENC2 Func mode (WPM)
-			TRX.CW_KEYER_WPM += direction;
-			if (TRX.CW_KEYER_WPM < 1)
-				TRX.CW_KEYER_WPM = 1;
-			if (TRX.CW_KEYER_WPM > 200)
-				TRX.CW_KEYER_WPM = 200;
-			char sbuff[32] = {0};
-			sprintf(sbuff, "WPM: %u", TRX.CW_KEYER_WPM);
-			LCD_showTooltip(sbuff);
-		}*/
-		else
-		{
-			//ENC2 Volume control
-			if(direction < 0 && TRX.Volume < TRX.Volume_Step)
-				TRX.Volume = 0;
-			if(direction > 0 || TRX.Volume >= TRX.Volume_Step)
-				TRX.Volume += direction * TRX.Volume_Step;
-			if (TRX.Volume > 100)
-				TRX.Volume = 100;
-			char sbuff[32] = {0};
-			sprintf(sbuff, "Vol: %u%%", TRX.Volume);
-			LCD_showTooltip(sbuff);
+	}
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF) // LPF
+	{
+		if (!TRX_on_TX) {
+			if (CurrentVFO->Mode == TRX_MODE_CW)
+				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+				SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
+				SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_NFM)
+				SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L)
+				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
+		} else {
+			if (CurrentVFO->Mode == TRX_MODE_CW)
+				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)
+				SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM)
+				SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_NFM)
+				SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(direction);
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L)
+				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
 		}
+	}
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL) // SQL
+	{
+		CurrentVFO->FM_SQL_threshold_dbm += direction * 1;
+		TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
+		
+		if(CurrentVFO->FM_SQL_threshold_dbm > 0)
+			CurrentVFO->FM_SQL_threshold_dbm = 0;
+		if(CurrentVFO->FM_SQL_threshold_dbm < -126)
+			CurrentVFO->FM_SQL_threshold_dbm = -126;
+		
+		LCD_UpdateQuery.StatusInfoBarRedraw = true;
+	}
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) //volume
+	{
+		//ENC2 Volume control
+		if(direction < 0 && TRX.Volume < TRX.Volume_Step)
+			TRX.Volume = 0;
+		if(direction > 0 || TRX.Volume >= TRX.Volume_Step)
+			TRX.Volume += direction * TRX.Volume_Step;
+		if (TRX.Volume > 100)
+			TRX.Volume = 100;
+		char sbuff[32] = {0};
+		sprintf(sbuff, "Vol: %u%%", TRX.Volume);
+		LCD_showTooltip(sbuff);
 	}
 }
 
@@ -493,30 +560,53 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 	//ENC2 CLICK
 	if (!LCD_systemMenuOpened && !LCD_window.opened)
 	{
-		TRX.ENC2_func_mode_idx++; //enc2 rotary mode
-		if(TRX.ENC2_func_mode_idx >= 3)
-			TRX.ENC2_func_mode_idx = 0;
+		TRX.ENC2_func_mode++; //enc2 rotary mode
+		
+		if(TRX.ENC2_func_mode == ENC_FUNC_SET_WPM) // disabled
+			TRX.ENC2_func_mode++;
+		
+		if(TRX.ENC2_func_mode > ENC_FUNC_SET_VOLUME)
+			TRX.ENC2_func_mode = ENC_FUNC_PAGER;
 
-		if (TRX.ENC2_func_mode_idx == 0)
+		if (TRX.ENC2_func_mode == ENC_FUNC_PAGER)
 		{
 			LCD_showTooltip("BUTTONS");
 			LCD_UpdateQuery.TopButtonsRedraw = true;
 		}
-		if (TRX.ENC2_func_mode_idx == 1)
+		if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP)
 		{
 			LCD_showTooltip("FAST STEP");
 			LCD_UpdateQuery.TopButtonsRedraw = true;
 			LCD_UpdateQuery.FreqInfo = true;
 		}
-		if (TRX.ENC2_func_mode_idx == 2)
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM)
 		{
-			if(CurrentVFO->Mode == TRX_MODE_CW)
-				LCD_showTooltip("SET WPM");
-			else if(CurrentVFO->ManualNotchFilter)
-				LCD_showTooltip("SET NOTCH");
-			else
-				LCD_showTooltip("SET VOLUME");
-				
+			LCD_showTooltip("SET WPM");
+			LCD_UpdateQuery.FreqInfo = true;
+		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT)
+		{
+			LCD_showTooltip("SET RIT");
+			LCD_UpdateQuery.FreqInfo = true;
+		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH)
+		{
+			LCD_showTooltip("SET NOTCH");
+			LCD_UpdateQuery.FreqInfo = true;
+		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF)
+		{
+			LCD_showTooltip("SET LPF");
+			LCD_UpdateQuery.FreqInfo = true;
+		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL)
+		{
+			LCD_showTooltip("SET SQL");
+			LCD_UpdateQuery.FreqInfo = true;
+		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME)
+		{
+			LCD_showTooltip("SET VOLUME");
 			LCD_UpdateQuery.FreqInfo = true;
 		}
 	}
