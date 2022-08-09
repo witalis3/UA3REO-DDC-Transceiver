@@ -589,7 +589,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 			TRX.ENC2_func_mode++;
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to LPF tune
 			TRX.ENC2_func_mode++;
-		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) // fast tune HPF in SSB only
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF) // disabled
 			TRX.ENC2_func_mode++;
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) // nothing to SQL tune
 			TRX.ENC2_func_mode++;
