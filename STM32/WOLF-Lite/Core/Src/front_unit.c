@@ -38,7 +38,9 @@ static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;
 
-#ifdef FRONTPANEL_LITE
+#define FRONTPANEL_LITE_ALEX false
+
+#if !FRONTPANEL_LITE_ALEX
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	//buttons
 	{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON}, //NONE
@@ -54,6 +56,57 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB4
 	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 4, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB7
 	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_LOCK}, //SB9
+};
+
+const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
+	{.name = "DRV", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DRV_ONLY, .holdHandler = BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.LNA},
+	{.name = "ATT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ATT, .holdHandler = BUTTONHANDLER_ATTHOLD, .checkBool = (uint32_t *)&TRX.ATT},
+	{.name = "BW", .work_in_menu = true, .clickHandler = BUTTONHANDLER_BW, .holdHandler = BUTTONHANDLER_BW, .checkBool = NULL},
+	{.name = "A/B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
+	{.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB, .checkBool = NULL},
+	
+	{.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
+	{.name = "AGC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AGC, .holdHandler = BUTTONHANDLER_AGC, .checkBool = (uint32_t *)&TRX.AGC_shadow},
+	{.name = "ZOOM-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_N, .holdHandler = BUTTONHANDLER_ZOOM_N, .checkBool = NULL},
+	{.name = "ZOOM+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_P, .holdHandler = BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
+	{.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
+	
+	{.name = "IF", .work_in_menu = true, .clickHandler = BUTTONHANDLER_IF, .holdHandler = BUTTONHANDLER_IF, .checkBool = NULL},
+	{.name = "NOTCH", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH_MANUAL, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
+	{.name = "DNR", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DNR, .holdHandler = BUTTONHANDLER_DNR, .checkBool = NULL},
+	{.name = "SQL", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SQL, .holdHandler = BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
+	{.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
+	
+	{.name = "BAND-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
+	{.name = "BAND+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
+	{.name = "MODE-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
+	{.name = "MODE+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},	
+	{.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
+	
+	{.name = "SCAN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SCAN, .holdHandler = BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
+	{.name = "SERV", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SERVICES, .checkBool = NULL},	
+	{.name = "WPM", .work_in_menu = true, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_WPM, .checkBool = NULL},
+	{.name = "MUTE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MUTE, .holdHandler = BUTTONHANDLER_MUTE_AFAMP, .checkBool = (uint32_t *)&TRX.AutoGain},
+	{.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
+};
+#endif
+
+#if FRONTPANEL_LITE_ALEX
+PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
+	//buttons
+	{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 2, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB1
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB2
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB3
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU}, //SB6
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 4, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB5
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB4
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_BAND_N}, //SB7
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_DRV_ONLY, .holdHandler = BUTTONHANDLER_DRV_ONLY}, //SB9
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 700, .tres_max = 900, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_ATT, .holdHandler = BUTTONHANDLER_ATTHOLD}, //SB9
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_BW, .holdHandler = BUTTONHANDLER_BW}, //SB9
 };
 
 const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
