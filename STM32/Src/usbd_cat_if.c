@@ -10,10 +10,10 @@
 #include "vad.h"
 #include "cw.h"
 
-#define CAT_APP_RX_DATA_SIZE 64
-#define CAT_APP_TX_DATA_SIZE 64
+#define CAT_APP_RX_DATA_SIZE 32
+#define CAT_APP_TX_DATA_SIZE 32
 
-#define CAT_BUFFER_SIZE 128
+#define CAT_BUFFER_SIZE 64
 static char cat_buffer[CAT_BUFFER_SIZE] = {0};
 static uint8_t cat_buffer_head = 0;
 static char command_to_parse1[CAT_BUFFER_SIZE] = {0};

@@ -158,8 +158,8 @@ extern "C"
 #define USB_IAD_DESC_SIZE                               0x08U
 
 #define USB_HS_MAX_PACKET_SIZE 512U
-#define USB_FS_MAX_PACKET_SIZE 64U
-#define USB_MAX_EP0_SIZE 64U
+#define USB_FS_MAX_PACKET_SIZE 16U
+#define USB_MAX_EP0_SIZE 16U
 
 #define BOT_GET_MAX_LUN 0xFE
 #define BOT_RESET 0xFF
