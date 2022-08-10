@@ -498,7 +498,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	}
 	
-	if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) //volume
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME) //volume
 	{
 		//ENC2 Volume control
 		if(direction < 0 && TRX.Volume < TRX.Volume_Step)
