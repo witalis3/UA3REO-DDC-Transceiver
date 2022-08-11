@@ -976,7 +976,7 @@ static inline void FPGA_clockFall(void)
 static inline void FPGA_clockPulse(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin;
-	__asm("nop");__asm("nop");__asm("nop");
+	__asm("nop");
 	FPGA_CLK_GPIO_Port->BSRR = (FPGA_CLK_Pin << 16U);
 }
 
