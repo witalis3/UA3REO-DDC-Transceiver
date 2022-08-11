@@ -696,6 +696,13 @@ bool FFT_printFFT(void)
 	float32_t medianValue = quick_median_select(FFTInput_tmp, LAYOUT->FFT_PRINT_SIZE);
 
 	// FFT Targets
+	float32_t FFT_Sensitivity = TRX.FFT_Sensitivity;
+	if(CurrentVFO->Mode == TRX_MODE_WFM && !DFM_RX1.squelched)
+		FFT_Sensitivity /= 3.0f;
+	float32_t FFT_MIN = FFT_Sensitivity * 0.5f; // MIN threshold of FFT signal
+	float32_t FFT_TARGET = FFT_Sensitivity;     
+	float32_t FFT_MAX = FFT_Sensitivity * 2.0f; // MAX FFT signal threshold
+
 	float32_t maxValueFFT = maxValueFFT_rx;
 	float32_t minValueFFT = maxValueFFT / (float32_t)fftHeight;
 	if (TRX_on_TX)

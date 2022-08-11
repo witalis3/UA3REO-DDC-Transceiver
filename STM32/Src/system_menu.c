@@ -2666,8 +2666,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction)
 static void SYSMENU_HANDL_SCREEN_FFT_Sensitivity(int8_t direction)
 {
 	TRX.FFT_Sensitivity += direction;
-	if (TRX.FFT_Sensitivity < FFT_MIN + 1)
-		TRX.FFT_Sensitivity = FFT_MIN + 1;
+	if (TRX.FFT_Sensitivity < 1)
+		TRX.FFT_Sensitivity = 1;
 	if (TRX.FFT_Sensitivity > FFT_MAX_TOP_SCALE)
 		TRX.FFT_Sensitivity = FFT_MAX_TOP_SCALE;
 }
