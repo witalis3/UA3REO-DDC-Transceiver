@@ -706,13 +706,13 @@ static inline void FPGA_fpgadata_getiq(void)
 	int32_t FPGA_fpgadata_in_tmp32 = 0;
 	float32_t FPGA_fpgadata_in_float32_i = 0;
 	float32_t FPGA_fpgadata_in_float32_q = 0;
+	struct {signed int lsb:24;} sign_converter;
+	
 	FPGA_samples++;
 
 	// STAGE 2 in Q RX1
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 16);
-	if (bitRead(FPGA_fpgadata_in_tmp32, 23) == 1)
-		FPGA_fpgadata_in_tmp32 |= 0xFF000000; // int24 to int32 extension
+	FPGA_fpgadata_in_tmp32 = sign_converter.lsb = (FPGA_readPacket << 16);
 	FPGA_clockFall();
 
 	// STAGE 3
@@ -730,8 +730,7 @@ static inline void FPGA_fpgadata_getiq(void)
 	// STAGE 5 in I RX1
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 16);
-	if (bitRead(FPGA_fpgadata_in_tmp32, 23) == 1)
-		FPGA_fpgadata_in_tmp32 |= 0xFF000000; // int24 to int32 extension
+	FPGA_fpgadata_in_tmp32 = sign_converter.lsb = (FPGA_readPacket << 16);
 	FPGA_clockFall();
 
 	// STAGE 6
