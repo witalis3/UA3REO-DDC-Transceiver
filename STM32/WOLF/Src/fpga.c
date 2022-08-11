@@ -10,8 +10,8 @@ volatile bool FPGA_NeedGetParams = false;	 // flag of the need to get parameters
 volatile bool FPGA_NeedRestart_RX = false;		 // flag of necessity to restart FPGA modules
 volatile bool FPGA_NeedRestart_TX = false;		 // flag of necessity to restart FPGA modules
 volatile bool FPGA_Buffer_underrun = false;	 // flag of lack of data from FPGA
-uint_fast16_t FPGA_Audio_RXBuffer_Index = 0; // current index in FPGA buffers
-uint_fast16_t FPGA_Audio_TXBuffer_Index = 0; // current index in FPGA buffers
+static uint_fast16_t FPGA_Audio_RXBuffer_Index = 0; // current index in FPGA buffers
+static uint_fast16_t FPGA_Audio_TXBuffer_Index = 0; // current index in FPGA buffers
 bool FPGA_Audio_Buffer_State = true;		 // buffer state, half or full full true - compleate; false - half
 bool FPGA_RX_Buffer_Current = true;			 // buffer state, false - fill B, work A
 bool FPGA_RX_buffer_ready = true;
@@ -582,49 +582,45 @@ static float32_t *FPGA_Audio_Buffer_RX2_Q_current = (float32_t *)&FPGA_Audio_Buf
 
 static inline void FPGA_fpgadata_getiq(void)
 {
-	int32_t FPGA_fpgadata_in_tmp32 = 0;
 	float32_t FPGA_fpgadata_in_float32_i = 0;
 	float32_t FPGA_fpgadata_in_float32_q = 0;
+	struct {signed int q:24; signed int i:24;} FPGA_fpgadata_rx1_in_int24;
+	struct {signed int q:24; signed int i:24;} FPGA_fpgadata_rx2_in_int24;
+	
 	FPGA_samples++;
 
 	// STAGE 2 in Q RX1
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 16);
-	if (bitRead(FPGA_fpgadata_in_tmp32, 23) == 1)
-		FPGA_fpgadata_in_tmp32 |= 0xFF000000; // int24 to int32 extension
+	FPGA_fpgadata_rx1_in_int24.q = (FPGA_readPacket << 16);
 	FPGA_clockFall();
 
 	// STAGE 3
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
+	FPGA_fpgadata_rx1_in_int24.q |= (FPGA_readPacket << 8);
 	FPGA_clockFall();
 
 	// STAGE 4
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
+	FPGA_fpgadata_rx1_in_int24.q |= (FPGA_readPacket);
 	FPGA_clockFall();
-
-	FPGA_fpgadata_in_float32_q = (float32_t)FPGA_fpgadata_in_tmp32;
 
 	// STAGE 5 in I RX1
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 16);
-	if (bitRead(FPGA_fpgadata_in_tmp32, 23) == 1)
-		FPGA_fpgadata_in_tmp32 |= 0xFF000000; // int24 to int32 extension
+	FPGA_fpgadata_rx1_in_int24.i = (FPGA_readPacket << 16);
 	FPGA_clockFall();
 
 	// STAGE 6
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
+	FPGA_fpgadata_rx1_in_int24.i |= (FPGA_readPacket << 8);
 	FPGA_clockFall();
 
 	// STAGE 7
 	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
+	FPGA_fpgadata_rx1_in_int24.i |= (FPGA_readPacket);
 	FPGA_clockFall();
 
-	FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q * 1.192093037616377e-7f; // int24 to float (+-8388607.0f)
-	FPGA_fpgadata_in_float32_i = (float32_t)FPGA_fpgadata_in_tmp32 * 1.192093037616377e-7f;
+	FPGA_fpgadata_in_float32_i = FPGA_fpgadata_rx1_in_int24.i * 1.192093037616377e-7f;
+	FPGA_fpgadata_in_float32_q = FPGA_fpgadata_rx1_in_int24.q * 1.192093037616377e-7f; // int24 to float (+-8388607.0f)
 
 	*FFTInput_Q_current++ = FPGA_fpgadata_in_float32_q;
 	*FPGA_Audio_Buffer_RX1_Q_current++ = FPGA_fpgadata_in_float32_q;
@@ -636,42 +632,36 @@ static inline void FPGA_fpgadata_getiq(void)
 	{
 		// STAGE 8 in Q RX2
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 16);
-		if (bitRead(FPGA_fpgadata_in_tmp32, 23) == 1)
-			FPGA_fpgadata_in_tmp32 |= 0xFF000000; // int24 to int32 extension
+		FPGA_fpgadata_rx2_in_int24.q = (FPGA_readPacket << 16);
 		FPGA_clockFall();
 
 		// STAGE 9
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
+		FPGA_fpgadata_rx2_in_int24.q |= (FPGA_readPacket << 8);
 		FPGA_clockFall();
 
 		// STAGE 10
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
+		FPGA_fpgadata_rx2_in_int24.q |= (FPGA_readPacket);
 		FPGA_clockFall();
-
-		FPGA_fpgadata_in_float32_q = (float32_t)FPGA_fpgadata_in_tmp32;
 
 		// STAGE 11 in I RX2
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 16);
-		if (bitRead(FPGA_fpgadata_in_tmp32, 23) == 1)
-			FPGA_fpgadata_in_tmp32 |= 0xFF000000; // int24 to int32 extension
+		FPGA_fpgadata_rx2_in_int24.i = (FPGA_readPacket << 16);
 		FPGA_clockFall();
 
 		// STAGE 12
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
+		FPGA_fpgadata_rx2_in_int24.i |= (FPGA_readPacket << 8);
 		FPGA_clockFall();
 
 		// STAGE 13
 		FPGA_clockRise();
-		FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
+		FPGA_fpgadata_rx2_in_int24.i |= (FPGA_readPacket);
 		FPGA_clockFall();
 
-		FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_float32_q * 1.192093037616377e-7f; // int24 to float (+-8388607.0f)
-		FPGA_fpgadata_in_float32_i = (float32_t)FPGA_fpgadata_in_tmp32 * 1.192093037616377e-7f;
+		FPGA_fpgadata_in_float32_i = FPGA_fpgadata_rx2_in_int24.i * 1.192093037616377e-7f;
+		FPGA_fpgadata_in_float32_q = FPGA_fpgadata_rx2_in_int24.q * 1.192093037616377e-7f; // int24 to float (+-8388607.0f)
 
 		*FPGA_Audio_Buffer_RX2_Q_current++ = FPGA_fpgadata_in_float32_q;
 		*FPGA_Audio_Buffer_RX2_I_current++ = FPGA_fpgadata_in_float32_i;
