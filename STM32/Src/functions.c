@@ -979,7 +979,8 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 	float32_t *pOut_I = pDst_I;
 	float32_t *pOut_Q = pDst_Q;
 
-	for (uint32_t stage = 0; stage < I->numStages; stage++)
+	uint32_t stage = I->numStages;
+	while (stage > 0)
 	{
 		float32_t b0 = pCoeffs[0];
 		float32_t b1 = pCoeffs[1];
@@ -993,7 +994,8 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 		float32_t d1_Q = pState_Q[0];
 		float32_t d2_Q = pState_Q[1];
 
-		for (uint32_t sample = 0; sample < blockSize; sample++)
+		uint32_t sample = blockSize;
+		while (sample > 0)
 		{
 			float32_t Xn1_I = *pIn_I++;
 			float32_t Xn1_Q = *pIn_Q++;
@@ -1009,6 +1011,8 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 
 			*pOut_I++ = acc1_I;
 			*pOut_Q++ = acc1_Q;
+			
+			sample--;
 		}
 
 		pState_I[0] = d1_I;
@@ -1022,6 +1026,8 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 		pIn_Q = pDst_Q;
 		pOut_I = pDst_I;
 		pOut_Q = pDst_Q;
+		
+		stage--;
 	}
 }
 
