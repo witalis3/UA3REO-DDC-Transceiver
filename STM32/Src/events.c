@@ -484,22 +484,28 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		//Print Debug info
 		println("FPGA Samples: ", dbg_FPGA_samples);            //~96000
 		println("Audio DMA samples: ", dbg_WM8731_DMA_samples); //~48000
+		print_flush();
 		println("Audioproc blocks: ", dbg_AUDIOPROC_samples);
 		println("CPU Load: ", cpu_load);
+		print_flush();
 		println("RF/STM32 Temperature: ", (int16_t)TRX_RF_Temperature, " / ", (int16_t)TRX_STM32_TEMPERATURE);
 		println("STM32 Voltage: ", TRX_STM32_VREF);
+		print_flush();
 		println("TIM6 delay: ", dbg_tim6_delay);
 		println("FFT FPS: ", FFT_FPS);
+		print_flush();
 		println("First byte of RX-FPGA I/Q: ", dbg_FPGA_Audio_Buffer_I_tmp, " / ", dbg_FPGA_Audio_Buffer_Q_tmp); //first byte of IQ
 		println("IQ Phase error: ", TRX_IQ_phase_error);                                                         //first byte of Q
+		print_flush();
 		println("USB Audio RX/TX samples: ", dbg_RX_USB_AUDIO_SAMPLES, " / ", dbg_TX_USB_AUDIO_SAMPLES);         //~48000
 		println("ADC MIN/MAX Amplitude: ", TRX_ADC_MINAMPLITUDE, " / ", TRX_ADC_MAXAMPLITUDE);
-		//print_bin16(TRX_ADC_MINAMPLITUDE, true); print_str(" / "); print_bin16(TRX_ADC_MAXAMPLITUDE, false);
+		print_flush();
 		println("VCXO Error: ", TRX_VCXO_ERROR);
 		#if HRDW_HAS_WIFI
 		println("WIFI State: ", WIFI_State);
 		#endif
 		println("");
+		print_flush();
 		PrintProfilerResult();
 	}
 	
