@@ -35,6 +35,7 @@ static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
 // Prototypes
 static inline void FPGA_clockFall(void);			// remove CLK signal
 static inline void FPGA_clockRise(void);			// raise the CLK signal
+static inline void FPGA_clockPulse(void);			// raise and fall the CLK signal
 static inline void FPGA_syncAndClockRiseFall(void); // raise CLK and SYNC signals, then release
 static void FPGA_fpgadata_sendiq(void);				// send IQ data
 static void FPGA_fpgadata_getiq(void);				// get IQ data
@@ -705,43 +706,36 @@ static inline void FPGA_fpgadata_getiq(void)
 {
 	float32_t FPGA_fpgadata_in_float32_i;
 	float32_t FPGA_fpgadata_in_float32_q;
-	struct {signed int x:24;} FPGA_fpgadata_in_int24_q;
-	struct {signed int x:24;} FPGA_fpgadata_in_int24_i;
+	struct {signed int q:24; signed int i:24;} FPGA_fpgadata_in_int24;
 	
 	FPGA_samples++;
 
 	// STAGE 2 in Q RX1
-	FPGA_clockRise();
-	FPGA_fpgadata_in_int24_q.x = (FPGA_readPacket << 16);
-	FPGA_clockFall();
+	FPGA_clockPulse();
+	FPGA_fpgadata_in_int24.q = (FPGA_readPacket << 16);
 
 	// STAGE 3
-	FPGA_clockRise();
-	FPGA_fpgadata_in_int24_q.x |= (FPGA_readPacket << 8);
-	FPGA_clockFall();
+	FPGA_clockPulse();
+	FPGA_fpgadata_in_int24.q |= (FPGA_readPacket << 8);
 
 	// STAGE 4
-	FPGA_clockRise();
-	FPGA_fpgadata_in_int24_q.x |= (FPGA_readPacket);
-	FPGA_clockFall();
+	FPGA_clockPulse();
+	FPGA_fpgadata_in_int24.q |= (FPGA_readPacket);
 
 	// STAGE 5 in I RX1
-	FPGA_clockRise();
-	FPGA_fpgadata_in_int24_i.x = (FPGA_readPacket << 16);
-	FPGA_clockFall();
+	FPGA_clockPulse();
+	FPGA_fpgadata_in_int24.i = (FPGA_readPacket << 16);
 
 	// STAGE 6
-	FPGA_clockRise();
-	FPGA_fpgadata_in_int24_i.x |= (FPGA_readPacket << 8);
-	FPGA_clockFall();
+	FPGA_clockPulse();
+	FPGA_fpgadata_in_int24.i |= (FPGA_readPacket << 8);
 
 	// STAGE 7
-	FPGA_clockRise();
-	FPGA_fpgadata_in_int24_i.x |= (FPGA_readPacket);
-	FPGA_clockFall();
+	FPGA_clockPulse();
+	FPGA_fpgadata_in_int24.i |= (FPGA_readPacket);
 	
-	FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_int24_i.x * 1.192093037616377e-7f; // int24 to float (+-8388607.0f)
-	FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_int24_q.x * 1.192093037616377e-7f; // int24 to float (+-8388607.0f)
+	FPGA_fpgadata_in_float32_i = FPGA_fpgadata_in_int24.i * 1.192093037616377e-7f; // int24 to float (+-8388607.0f)
+	FPGA_fpgadata_in_float32_q = FPGA_fpgadata_in_int24.q * 1.192093037616377e-7f; // int24 to float (+-8388607.0f)
 	
 	*FFTInput_Q_current++ = FPGA_fpgadata_in_float32_q;
 	*FPGA_Audio_Buffer_RX1_Q_current++ = FPGA_fpgadata_in_float32_q;
@@ -977,6 +971,15 @@ static inline void FPGA_clockFall(void)
 {
 	FPGA_CLK_GPIO_Port->BSRR = (FPGA_CLK_Pin << 16U);
 }
+
+// raise and fall the CLK signal
+static inline void FPGA_clockPulse(void)
+{
+	FPGA_CLK_GPIO_Port->BSRR = FPGA_CLK_Pin;
+	__asm("nop");__asm("nop");__asm("nop");
+	FPGA_CLK_GPIO_Port->BSRR = (FPGA_CLK_Pin << 16U);
+}
+
 
 // raise CLK and SYNC signal, then lower
 static inline void FPGA_syncAndClockRiseFall(void)
