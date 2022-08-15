@@ -149,6 +149,15 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 	static char ota_config_frontpanel[] = "X1";
 #endif
 
+#ifdef FRONTPANEL_X2
+	#define HRDW_HAS_FUNCBUTTONS true
+	#define MAX_VOLUME_VALUE 100.0f
+	#define FUNCBUTTONS_COUNT 32
+	#define FUNCBUTTONS_ON_PAGE 4
+	#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+	static char ota_config_frontpanel[] = "X2";
+#endif
+	
 // LCDs
 #if defined(LCD_ILI9481)
 static char ota_config_lcd[] = "ILI9481";
@@ -192,10 +201,16 @@ static char ota_config_lcd[] = "ST7796S";
 		#define FT8_SUPPORT true 
 	#endif
 #endif
-#if defined(LCD_ST7735S) // X1
+#if defined(LCD_ILI9341)
+static char ota_config_lcd[] = "ILI9341";
+	#ifdef STM32H743xx 
+		#define FT8_SUPPORT false 
+	#endif
+#endif
+#if defined(LCD_ST7735S)
 static char ota_config_lcd[] = "ST7735S";
 	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
+		#define FT8_SUPPORT false 
 	#endif
 #endif
 #if defined(LCD_RA8875)

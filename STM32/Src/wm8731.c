@@ -140,12 +140,16 @@ void WM8731_UnMute(void)
 
 void WM8731_Mute_AF_AMP(void)
 {
+	#ifdef AF_AMP_MUTE_Pin
 	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_RESET);
+	#endif
 }
 
 void WM8731_UnMute_AF_AMP(void)
 {
+	#ifdef AF_AMP_MUTE_Pin
 	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_SET);
+	#endif
 }
 
 void WM8731_Beep(void)

@@ -10,6 +10,9 @@
 #include "images.h"
 
 // LCD dimensions defines
+#if (defined(LCD_ILI9341))
+#include "lcd_driver_ILI9341.h"
+#endif
 #if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_ST7796S) || defined(LCD_R61581))
 #include "lcd_driver_ILI9481.h"
 #endif
@@ -29,12 +32,16 @@
 #if (LCD_WIDTH == 160 && LCD_HEIGHT == 128)
 #define LAY_160x128
 #endif
+#if (LCD_WIDTH == 320 && LCD_HEIGHT == 240)
+#define LAY_320x240
+#endif
 #if (LCD_WIDTH == 480 && LCD_HEIGHT == 320)
 #define LAY_480x320
 #endif
 #if (LCD_WIDTH == 800 && LCD_HEIGHT == 480)
 #define LAY_800x480
 #endif
+
 #define LCD_PIXEL_COUNT (LCD_WIDTH * LCD_HEIGHT)
 
 //List of colors
