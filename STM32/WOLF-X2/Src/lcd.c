@@ -95,9 +95,9 @@ void LCD_Init(void)
 
 	LCDDriver_Init();
 #if SCREEN_ROTATE
-	LCDDriver_setRotation(1);
-#else
 	LCDDriver_setRotation(3);
+#else
+	LCDDriver_setRotation(1);
 #endif
 #ifdef HAS_TOUCHPAD
 	TOUCHPAD_Init();
