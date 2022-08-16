@@ -6,7 +6,7 @@
 #include "hardware.h"
 #include <stdbool.h>
 
-#define WIRE_BUFSIZ 101
+#define WIRE_BUFSIZ 201
 
 /* return codes from endTransmission() */
 #define SUCCESS 0	/* transmission was successful */

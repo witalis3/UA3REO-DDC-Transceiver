@@ -47,6 +47,7 @@ extern void GT911_ReadStatus(void);
 extern void GT911_ReadFirmwareVersion(void);
 extern void GT911_Scan(void);
 extern void GT911_Init(void);
+extern bool GT911_Flash(void);
 
 #endif
 #endif

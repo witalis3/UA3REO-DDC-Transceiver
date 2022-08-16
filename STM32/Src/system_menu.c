@@ -368,6 +368,7 @@ static void SYSMENU_HANDL_CALIB_CAT_Type(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LNA_compensation(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LinearPowerControl(int8_t direction);
+static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -912,6 +913,9 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 #endif
 		{"TSignal Balance", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_HANDL_CALIB_TwoSignalTune_Balance},
 		{"Linear Pwr Control", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_HANDL_CALIB_LinearPowerControl},
+#ifdef TOUCHPAD_GT911
+		{"Flash GT911", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_FlashGT911},
+#endif
 };
 
 const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
@@ -5233,6 +5237,20 @@ static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction)
 		CALIBRATE.TwoSignalTune_Balance += direction;
 	if (CALIBRATE.TwoSignalTune_Balance > 100)
 		CALIBRATE.TwoSignalTune_Balance = 100;
+}
+
+static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction)
+{
+	#ifdef TOUCHPAD_GT911
+	LCD_showError("Flashing GT911...", true);
+	LCD_busy = true;
+	bool result = GT911_Flash();
+	LCD_busy = false;
+	if(result)
+		LCD_showError("Success!", true);
+	else
+		LCD_showError("Error!", true);
+	#endif
 }
 
 // SERVICES

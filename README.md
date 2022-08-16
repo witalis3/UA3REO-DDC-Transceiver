@@ -329,6 +329,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm
 * **TSignal Balance** - Sets the power balance between signals in Two signal tune mode
 * **Linear Pwr Control** - Sets a linear way to change the signal amplitude when adjusting the power (if disabled - logarithmic)
+* **Flash GT911** - Starting the touchpad update procedure according to LCD screen resolution
 
 ### Set Clock Time
 
