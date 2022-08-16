@@ -540,12 +540,14 @@ void SDCOMM_FLASH_BIN_handler(void)
 						// println("[FLASH] Flashing error: ", res, " ", HAL_FLASH_GetError());
 						return;
 					}
+					
 					// Check the written value
-					if (*(uint32_t *)LastPGAddress != *(uint32_t *)(SD_workbuffer_A + block_addr))
-					{
-						LCD_showInfo("Flash Verify error", true);
-						return;
-					}
+					//if (*(uint32_t *)LastPGAddress != *(uint32_t *)(SD_workbuffer_A + block_addr))
+					//{
+						//LCD_showInfo("Flash Verify error", true);
+						//return;
+					//}
+					
 					// println("[FLASH] Block flashed: ", LastPGAddress);
 					// print_flush();
 
