@@ -619,7 +619,7 @@ void WIFI_Process(void)
 							println("[WIFI] GOT IP: ", WIFI_IP);
 							WIFI_IP_Gotted = true;
 							if (LCD_systemMenuOpened)
-								LCD_UpdateQuery.SystemMenuRedraw = true;
+								LCD_UpdateQuery.SystemMenuInfolines = true;
 						}
 					}
 				}
@@ -714,7 +714,7 @@ static bool WIFI_ListAP_Sync(void)
 		if (istr != NULL) // OK
 		{
 			if (WIFI_FoundedAP_Index > 0)
-				LCD_UpdateQuery.SystemMenuRedraw = true;
+				LCD_UpdateQuery.SystemMenuInfolines = true;
 
 			return true;
 		}
