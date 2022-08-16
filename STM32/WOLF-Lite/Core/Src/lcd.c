@@ -754,8 +754,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 			if ((LCD_last_s_meter - s_width) > 0)
 				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)(LCD_last_s_meter - s_width + 1), LAYOUT->STATUS_BAR_HEIGHT - 3, BG_COLOR);
 			// and stripe
-			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)LCD_last_s_meter, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 5, 2, LAYOUT->STATUS_SMETER_MARKER_HEIGHT, BG_COLOR);
-			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 5, 2, LAYOUT->STATUS_SMETER_MARKER_HEIGHT, COLOR->STATUS_SMETER_STRIPE);
+			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)LCD_last_s_meter, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 5, 2, LAYOUT->STATUS_SMETER_MARKER_HEIGHT - 8, BG_COLOR);
+			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 5, 2, LAYOUT->STATUS_SMETER_MARKER_HEIGHT - 8, COLOR->STATUS_SMETER_STRIPE);
 			// clear old SQL stripe
 			if(sql_stripe_x_pos_old != sql_stripe_x_pos) { 
 				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + sql_stripe_x_pos_old, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, 2, LAYOUT->STATUS_BAR_HEIGHT - 3, BG_COLOR);
@@ -786,7 +786,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 			// redraw s-meter gui and stripe
 			LCD_drawSMeter();
-			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 5, 2, LAYOUT->STATUS_SMETER_MARKER_HEIGHT, COLOR->STATUS_SMETER_STRIPE);
+			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 5, 2, LAYOUT->STATUS_SMETER_MARKER_HEIGHT - 8, COLOR->STATUS_SMETER_STRIPE);
 
 			LCD_last_s_meter = s_width;
 		}
@@ -1015,41 +1015,58 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	else
 		sprintf(buff, "BW:FULL");
 	addSymbols(buff, buff, 12, " ", true);
-	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_BW_Y_OFFSET, COLOR->STATUS_LABEL_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-
-	if (CALIBRATE.INA226_EN) ////INA226 current voltage indication  Is the INA226 used (installed)
-	{
-		Read_INA226_Data();
-		sprintf(buff, "%2.1fV/%2.1fA ", Get_INA226_Voltage(), Get_INA226_Current());
+	
+	static char prev_bw_buff[16] = "";
+	if(redraw || strcmp(prev_bw_buff, buff) != 0) {
+		strcpy(prev_bw_buff, buff);
+		LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_BW_Y_OFFSET, COLOR->STATUS_LABEL_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	}
+	
+	// RIT
+	if (TRX.SPLIT_Enabled)
+		sprintf(buff, "SPLIT");
+	else if (TRX.RIT_Enabled && TRX_RIT > 0)
+		sprintf(buff, "RIT:+%d", TRX_RIT);
+	else if (TRX.RIT_Enabled)
+		sprintf(buff, "RIT:%d", TRX_RIT);
+	else if (TRX.XIT_Enabled && TRX_XIT > 0)
+		sprintf(buff, "XIT:+%d", TRX_XIT);
+	else if (TRX.XIT_Enabled)
+		sprintf(buff, "XIT:%d", TRX_XIT);
 	else
-	{
-		// RIT
-		if (TRX.SPLIT_Enabled)
-			sprintf(buff, "SPLIT");
-		else if (TRX.RIT_Enabled && TRX_RIT > 0)
-			sprintf(buff, "RIT:+%d", TRX_RIT);
-		else if (TRX.RIT_Enabled)
-			sprintf(buff, "RIT:%d", TRX_RIT);
-		else if (TRX.XIT_Enabled && TRX_XIT > 0)
-			sprintf(buff, "XIT:+%d", TRX_XIT);
-		else if (TRX.XIT_Enabled)
-			sprintf(buff, "XIT:%d", TRX_XIT);
-		else
-			sprintf(buff, "RIT:OFF");
+		sprintf(buff, "RIT:OFF");
+	
+	static char prev_rit_buff[16] = "";
+	if(redraw || strcmp(prev_rit_buff, buff) != 0) {
+		strcpy(prev_rit_buff, buff);
+		printInfoStatus(LAYOUT->STATUS_INFOB_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
 	}
-	printInfoStatus(LAYOUT->STATUS_INFOB_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
-
+	
 	//IN-OUT 
 	sprintf(buff, "MIC:%d", TRX.MIC_GAIN);
-	printInfoStatus(LAYOUT->STATUS_INFOA_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT, true);
-		
+	
+	static char prev_mic_buff[16] = "";
+	if(redraw || strcmp(prev_mic_buff, buff) != 0) {
+		strcpy(prev_mic_buff, buff);
+		printInfoStatus(LAYOUT->STATUS_INFOA_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT, true);
+	}
+	
 	//VOLTAGE
 	sprintf(buff, "%0.1fV", TRX_PWR_Voltage);
-	printInfoStatus(LAYOUT->STATUS_INFOC_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	static char prev_vlt_buff[16] = "";
+	if(redraw || strcmp(prev_vlt_buff, buff) != 0) {
+		strcpy(prev_vlt_buff, buff);
+		printInfoStatus(LAYOUT->STATUS_INFOC_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	}
 	
+	//IF GAIN
 	sprintf(buff, "IF:%d", TRX.IF_Gain);
-	printInfoStatus(LAYOUT->STATUS_INFOD_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	
+	static char prev_if_buff[16] = "";
+	if(redraw || strcmp(prev_if_buff, buff) != 0) {
+		strcpy(prev_if_buff, buff);
+		printInfoStatus(LAYOUT->STATUS_INFOD_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	}
 	
 	// NOTCH
 	if (CurrentVFO->AutoNotchFilter)
@@ -1063,15 +1080,25 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	}
 	else
 		sprintf(buff, "NH:OFF");
-	printInfoStatus(LAYOUT->STATUS_INFOE_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
-
+	
+	static char prev_notch_buff[16] = "";
+	if(redraw || strcmp(prev_notch_buff, buff) != 0) {
+		strcpy(prev_notch_buff, buff);
+		printInfoStatus(LAYOUT->STATUS_INFOE_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	}
+	
 // FFT BW
 	uint8_t fft_zoom = TRX.FFT_Zoom;
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		fft_zoom = TRX.FFT_ZoomCW;
 
 	sprintf(buff, "%dkHz x%d", FFT_current_spectrum_width_hz / 1000, fft_zoom);
-  printInfoStatus(LAYOUT->STATUS_INFOF_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	
+	static char prev_fftbw_buff[16] = "";
+	if(redraw || strcmp(prev_fftbw_buff, buff) != 0) {
+		strcpy(prev_fftbw_buff, buff);
+		printInfoStatus(LAYOUT->STATUS_INFOF_X_OFFSET, LAYOUT->STATUS_INFO_Y_OFFSET, LAYOUT->STATUS_INFO_WIDTH, LAYOUT->STATUS_INFO_HEIGHT, COLOR->STATUS_INFO_BORDER, buff, COLOR->BACKGROUND, COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, true);
+	}
 	
 	// ERRORS LABELS
 	LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
