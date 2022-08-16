@@ -2040,6 +2040,9 @@ void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction)
 		TRX.SSB_HPF_RX_Filter += direction * 50;
 	if (TRX.SSB_HPF_RX_Filter > MAX_HPF_WIDTH)
 		TRX.SSB_HPF_RX_Filter = MAX_HPF_WIDTH;
+	
+	if (TRX.SSB_HPF_RX_Filter > TRX.SSB_LPF_RX_Filter)
+		TRX.SSB_HPF_RX_Filter = TRX.SSB_LPF_RX_Filter;
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
@@ -2051,6 +2054,9 @@ void SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(int8_t direction)
 		TRX.SSB_HPF_TX_Filter += direction * 50;
 	if (TRX.SSB_HPF_TX_Filter > MAX_HPF_WIDTH)
 		TRX.SSB_HPF_TX_Filter = MAX_HPF_WIDTH;
+	
+	if (TRX.SSB_HPF_TX_Filter > TRX.SSB_LPF_TX_Filter)
+		TRX.SSB_HPF_TX_Filter = TRX.SSB_LPF_TX_Filter;
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
