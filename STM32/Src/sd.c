@@ -950,9 +950,11 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.InputType_DIGI", (uint32_t *)&TRX.InputType_DIGI, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AutoGain", (uint32_t *)&TRX.AutoGain, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SPLIT_Enabled", (uint32_t *)&TRX.SPLIT_Enabled, SYSMENU_BOOLEAN);
+#if HRDW_HAS_DUAL_RX
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint32_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.Encoder_Accelerate", (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint32_t *)&TRX.Dual_RX_Type, SYSMENU_UINT8);
+#endif
+			SD_WRITE_SETT_LINE("TRX.Encoder_Accelerate", (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_STRING("TRX.CALLSIGN", TRX.CALLSIGN);
 			SD_WRITE_SETT_STRING("TRX.LOCATOR", TRX.LOCATOR);
 			SD_WRITE_SETT_LINE("TRX.Custom_Transverter_Enabled", (uint32_t *)&TRX.Custom_Transverter_Enabled, SYSMENU_BOOLEAN);
@@ -1457,12 +1459,14 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.AutoGain = bval;
 	if (strcmp(name, "TRX.SPLIT_Enabled") == 0)
 		TRX.SPLIT_Enabled = bval;
+#if HRDW_HAS_DUAL_RX
 	if (strcmp(name, "TRX.Dual_RX") == 0)
 		TRX.Dual_RX = bval;
-	if (strcmp(name, "TRX.Encoder_Accelerate") == 0)
-		TRX.Encoder_Accelerate = bval;
 	if (strcmp(name, "TRX.Dual_RX_Type") == 0)
 		TRX.Dual_RX_Type = (DUAL_RX_TYPE)uintval;
+#endif
+	if (strcmp(name, "TRX.Encoder_Accelerate") == 0)
+		TRX.Encoder_Accelerate = bval;
 	if (strcmp(name, "TRX.CALLSIGN") == 0)
 	{
 		dma_memset(TRX.CALLSIGN, 0x00, sizeof(TRX.CALLSIGN));

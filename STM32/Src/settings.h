@@ -149,13 +149,13 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 	static char ota_config_frontpanel[] = "X1";
 #endif
 
-#ifdef FRONTPANEL_X2
+#ifdef FRONTPANEL_MINI
 	#define HRDW_HAS_FUNCBUTTONS true
 	#define MAX_VOLUME_VALUE 100.0f
 	#define FUNCBUTTONS_COUNT 32
 	#define FUNCBUTTONS_ON_PAGE 4
 	#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
-	static char ota_config_frontpanel[] = "X2";
+	static char ota_config_frontpanel[] = "Mini";
 #endif
 	
 // LCDs
