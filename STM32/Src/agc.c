@@ -93,7 +93,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		gain_target += CW_ADD_GAIN_AF;
 
 	// move the gain one step
-	if (!WM8731_Muting && !VAD_Muting)
+	if (!CODEC_Muting && !VAD_Muting)
 	{
 		float32_t diff = (gain_target - (AGC_RX_dbFS + AGC->need_gain_db));
 
@@ -146,7 +146,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	float32_t current_need_gain = AGC->need_gain_db;
 	
 	// Muting if need
-	if (WM8731_Muting || VAD_Muting)
+	if (CODEC_Muting || VAD_Muting)
 	{
 		current_need_gain = -200.0f;
 	}

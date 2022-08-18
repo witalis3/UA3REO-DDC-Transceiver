@@ -476,7 +476,7 @@ void SDCOMM_FLASH_BIN_handler(void)
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
 		TRX_Mute = true;
-		WM8731_CleanBuffer();
+		CODEC_CleanBuffer();
 
 		// SCB_DisableICache();
 		// SCB_DisableDCache();
@@ -653,7 +653,7 @@ void SDCOMM_FLASH_JIC_handler(bool restart)
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
 		TRX_Mute = true;
-		WM8731_CleanBuffer();
+		CODEC_CleanBuffer();
 
 		FPGA_bus_stop = true;
 		HAL_Delay(100);

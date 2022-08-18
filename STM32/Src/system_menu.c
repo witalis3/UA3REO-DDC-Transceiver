@@ -1172,7 +1172,7 @@ static void SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN(int8_t direction)
 		TRX.InputType_MAIN += direction;
 	if (TRX.InputType_MAIN > 2)
 		TRX.InputType_MAIN = 2;
-	WM8731_TXRX_mode();
+	CODEC_TXRX_mode();
 }
 
 static void SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI(int8_t direction)
@@ -1181,7 +1181,7 @@ static void SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI(int8_t direction)
 		TRX.InputType_DIGI += direction;
 	if (TRX.InputType_DIGI > 2)
 		TRX.InputType_DIGI = 2;
-	WM8731_TXRX_mode();
+	CODEC_TXRX_mode();
 }
 
 static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction)
@@ -1797,7 +1797,7 @@ static void SYSMENU_HANDL_AUDIO_MIC_Boost(int8_t direction)
 		TRX.MIC_Boost = true;
 
 	// reinit codec
-	WM8731_TXRX_mode();
+	CODEC_TXRX_mode();
 }
 
 static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction)
@@ -3755,7 +3755,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 static void SYSMENU_HANDL_Bootloader(int8_t direction)
 {
 #pragma unused(direction)
-	WM8731_CleanBuffer();
+	CODEC_CleanBuffer();
 	TRX.NeedGoToBootloader = true;
 	SaveSettings();
 	HAL_Delay(500);

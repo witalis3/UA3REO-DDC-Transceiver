@@ -5,7 +5,7 @@
 #include "lcd.h"
 #include "fpga.h"
 #include "settings.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "fpga.h"
 #include "bands.h"
 #include "agc.h"
@@ -97,8 +97,8 @@ static void TRX_Start_TXRX(void);
 void TRX_Init()
 {
 	TRX_Start_RX();
-	WM8731_TXRX_mode();
-	WM8731_start_i2s_and_dma();
+	CODEC_TXRX_mode();
+	CODEC_start_i2s_and_dma();
 	uint_fast8_t saved_mode = CurrentVFO->Mode;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(saved_mode, CurrentVFO);
@@ -167,10 +167,10 @@ static void TRX_Start_RX()
 	println("RX MODE");
 	TRX_phase_restarted = false;
 	RF_UNIT_UpdateState(false);
-	WM8731_CleanBuffer();
+	CODEC_CleanBuffer();
 	Processor_NeedRXBuffer = false;
-	WM8731_Buffer_underrun = false;
-	WM8731_DMA_state = true;
+	CODEC_Buffer_underrun = false;
+	CODEC_DMA_state = true;
 	TRX_SPLIT_Applied = false;
 	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 1;
@@ -192,7 +192,7 @@ static void TRX_Start_TX()
 		return;
 	println("TX MODE");
 	RF_UNIT_UpdateState(false);
-	WM8731_CleanBuffer();
+	CODEC_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_SPLIT_Applied = false;
 	TRX_ANT_swap_applyed = false;
@@ -209,7 +209,7 @@ static void TRX_Start_TXRX()
 		return;
 	println("TXRX MODE");
 	RF_UNIT_UpdateState(false);
-	WM8731_CleanBuffer();
+	CODEC_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_SPLIT_Applied = false;
 	TRX_ANT_swap_applyed = false;
@@ -533,7 +533,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		NeedReinitAudioFiltersClean = true;
 	}
 	
-	WM8731_TXRX_mode();
+	CODEC_TXRX_mode();
 	
 	NeedReinitNotch = true;
 	NeedReinitAudioFilters = true;
@@ -601,7 +601,7 @@ void TRX_DoAutoGain(void)
 
 void TRX_TemporaryMute(void)
 {
-	WM8731_Mute();
+	CODEC_Mute();
 	TRX_Temporary_Mute_StartTime = HAL_GetTick();
 }
 
@@ -1447,9 +1447,9 @@ void BUTTONHANDLER_MUTE_AFAMP(uint32_t parameter)
 {
 	TRX_AFAmp_Mute = !TRX_AFAmp_Mute;
 	if (TRX_AFAmp_Mute)
-		WM8731_Mute_AF_AMP();
+		CODEC_Mute_AF_AMP();
 	else
-		WM8731_UnMute_AF_AMP();
+		CODEC_UnMute_AF_AMP();
 	TRX_Mute = false;
 
 	LCD_UpdateQuery.TopButtons = true;

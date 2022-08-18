@@ -6,7 +6,7 @@
 #include <math.h>
 #include "arm_math.h"
 #include "functions.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "settings.h"
 #include "noise_reduction.h"
 #include "noise_blanker.h"

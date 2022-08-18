@@ -252,7 +252,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				if (rx_id == AUDIO_RX2)
 					VAD_Muting = VAD_RX2_Muting;
 				#endif
-				if (WM8731_Muting || VAD_Muting)
+				if (CODEC_Muting || VAD_Muting)
 				{
 					rateV = db2rateV(-200.0f);
 				}

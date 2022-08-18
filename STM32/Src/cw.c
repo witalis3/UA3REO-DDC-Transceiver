@@ -5,7 +5,7 @@
 #include "lcd.h"
 #include "fpga.h"
 #include "settings.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "fpga.h"
 #include "bands.h"
 #include "agc.h"

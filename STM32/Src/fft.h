@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include "functions.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "screen_layout.h"
 
 #ifdef STM32H743xx

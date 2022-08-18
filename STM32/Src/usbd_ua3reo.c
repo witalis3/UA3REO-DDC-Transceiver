@@ -4,7 +4,7 @@
 #include "usbd_iq_if.h"
 #include "usbd_ctlreq.h"
 #include "functions.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "lcd_driver.h"
 #include "hardware.h"
 

@@ -1,5 +1,5 @@
 #include "audio_processor.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "audio_filters.h"
 #include "agc.h"
 #include "settings.h"
@@ -664,7 +664,7 @@ void processRxAudio(void)
 	// Beep signal
 	static float32_t beep_index = 0;
 	static uint32_t beep_samples = 0;
-	if (WM8731_Beeping)
+	if (CODEC_Beeping)
 	{
 		float32_t old_signal = 0;
 		int32_t out = 0;
@@ -688,12 +688,12 @@ void processRxAudio(void)
 		{
 			beep_index = 0;
 			beep_samples = 0;
-			WM8731_Beeping = false;
+			CODEC_Beeping = false;
 		}
 	}
 
 	// Mute codec
-	if (WM8731_Muting)
+	if (CODEC_Muting)
 	{
 		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++)
 		{
@@ -706,7 +706,7 @@ void processRxAudio(void)
 	if (TRX_Inited)
 	{
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
-		if (WM8731_DMA_state) // complete
+		if (CODEC_DMA_state) // complete
 		{
 			#if HRDW_HAS_MDMA
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
@@ -738,19 +738,19 @@ void processTxAudio(void)
 		return;
 
 	// sync fpga to audio-codec
-	static bool old_WM8731_DMA_state = false;
-	bool start_WM8731_DMA_state = WM8731_DMA_state;
+	static bool old_CODEC_DMA_state = false;
+	bool start_CODEC_DMA_state = CODEC_DMA_state;
 	
-	if (start_WM8731_DMA_state == old_WM8731_DMA_state)
+	if (start_CODEC_DMA_state == old_CODEC_DMA_state)
 		return;
 	
 	uint32_t dma_index = HRDW_getAudioCodecTX_DMAIndex();
-	if (!start_WM8731_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE * 2 - 150))
+	if (!start_CODEC_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE * 2 - 150))
 		return;
-	if (start_WM8731_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE - 150))
+	if (start_CODEC_DMA_state && dma_index > (CODEC_AUDIO_BUFFER_SIZE - 150))
 		return;
 	
-	old_WM8731_DMA_state = start_WM8731_DMA_state;
+	old_CODEC_DMA_state = start_CODEC_DMA_state;
 
 	// stuff
 	AUDIOPROC_samples++;
@@ -1055,7 +1055,7 @@ void processTxAudio(void)
 		}
 
 		Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
-		if (start_WM8731_DMA_state) // compleate
+		if (start_CODEC_DMA_state) // compleate
 		{
 			#if HRDW_HAS_MDMA
 			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
@@ -1088,7 +1088,7 @@ void processTxAudio(void)
 			int32_t sample = 0;
 			arm_float_to_q31(&point, &sample, 1);
 			int32_t data = convertToSPIBigEndian(sample);
-			if (start_WM8731_DMA_state)
+			if (start_CODEC_DMA_state)
 			{
 				CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
 				CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2 + 1] = data;
@@ -2068,7 +2068,7 @@ static void APROC_SD_Play(void)
 			if (TRX_Inited)
 			{
 				Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
-				if (WM8731_DMA_state) // complete
+				if (CODEC_DMA_state) // complete
 				{
 					#if HRDW_HAS_MDMA
 					HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right

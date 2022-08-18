@@ -1,6 +1,6 @@
 #include "usbd_audio_if.h"
 #include "functions.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "trx_manager.h"
 
 // extern USBD_HandleTypeDef hUsbDeviceFS;

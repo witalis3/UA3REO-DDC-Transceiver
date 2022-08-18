@@ -1,7 +1,7 @@
 #include "usbd_ua3reo.h"
 #include "usbd_iq_if.h"
 #include "functions.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "trx_manager.h"
 
 #if HRDW_HAS_USB_IQ

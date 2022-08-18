@@ -123,8 +123,8 @@ void SELF_TEST_Draw(void)
 		}
 
 		// WM8731 test
-		LCDDriver_printText("WM8731", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-		SELF_TEST_printResult(WM8731_test_result, pos_y);
+		LCDDriver_printText("CODEC", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		SELF_TEST_printResult(CODEC_test_result, pos_y);
 		pos_y += margin_bottom;
 		
 		#if !defined(FRONTPANEL_LITE)
