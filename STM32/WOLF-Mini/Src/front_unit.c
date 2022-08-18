@@ -602,9 +602,7 @@ void FRONTPANEL_Process(void)
 		FRONTPANEL_ProcessEncoder2 = 0;
 	}
 
-#ifndef HAS_TOUCHPAD
-	FRONTPANEL_check_ENC2SW(true);
-#endif
+	//FRONTPANEL_check_ENC2SW(true);
 
 #if HRDW_HAS_SD
 	if (SD_USBCardReader)
@@ -620,13 +618,13 @@ void FRONTPANEL_Process(void)
 		PERIPH_FrontPanel_Button *button = &PERIPH_FrontPanel_Buttons[b];
 
 		bool button_state = false;
-		if (button->port == 1) button_state = !HAL_GPIO_ReadPin(KEY_1_GPIO_Port, KEY_1_Pin);
-		if (button->port == 2) button_state = !HAL_GPIO_ReadPin(KEY_2_GPIO_Port, KEY_2_Pin);
-		if (button->port == 3) button_state = !HAL_GPIO_ReadPin(KEY_3_GPIO_Port, KEY_3_Pin);
-		if (button->port == 4) button_state = !HAL_GPIO_ReadPin(KEY_4_GPIO_Port, KEY_4_Pin);
-		if (button->port == 5) button_state = !HAL_GPIO_ReadPin(KEY_5_GPIO_Port, KEY_5_Pin);
-		if (button->port == 6) button_state = !HAL_GPIO_ReadPin(KEY_6_GPIO_Port, KEY_6_Pin);
-		if (button->port == 7) button_state = !HAL_GPIO_ReadPin(KEY_7_GPIO_Port, KEY_7_Pin);
+		if (button->channel == 1) button_state = !HAL_GPIO_ReadPin(KEY_1_GPIO_Port, KEY_1_Pin);
+		if (button->channel == 2) button_state = !HAL_GPIO_ReadPin(KEY_2_GPIO_Port, KEY_2_Pin);
+		if (button->channel == 3) button_state = !HAL_GPIO_ReadPin(KEY_3_GPIO_Port, KEY_3_Pin);
+		if (button->channel == 4) button_state = !HAL_GPIO_ReadPin(KEY_4_GPIO_Port, KEY_4_Pin);
+		if (button->channel == 5) button_state = !HAL_GPIO_ReadPin(KEY_5_GPIO_Port, KEY_5_Pin);
+		if (button->channel == 6) button_state = !HAL_GPIO_ReadPin(KEY_6_GPIO_Port, KEY_6_Pin);
+		if (button->channel == 7) button_state = !HAL_GPIO_ReadPin(KEY_7_GPIO_Port, KEY_7_Pin);
 
 		if (TRX.Debug_Type == TRX_DEBUG_BUTTONS)
 		{
