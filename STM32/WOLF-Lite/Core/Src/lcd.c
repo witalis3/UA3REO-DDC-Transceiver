@@ -5,10 +5,9 @@
 #include "agc.h"
 #include "settings.h"
 #include "system_menu.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "audio_filters.h"
 #include "fonts.h"
-#include "wm8731.h"
 #include "usbd_ua3reo.h"
 #include "noise_reduction.h"
 #include "cw_decoder.h"
@@ -1115,7 +1114,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 		LCDDriver_printText("IFO", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	if (TRX_DAC_OTR)
 		LCDDriver_printText("OVR", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	if (WM8731_Buffer_underrun && !TRX_on_TX)
+	if (CODEC_Buffer_underrun && !TRX_on_TX)
 		LCDDriver_printText("WBF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	if (FPGA_Buffer_underrun && TRX_on_TX)
 		LCDDriver_printText("FBF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);

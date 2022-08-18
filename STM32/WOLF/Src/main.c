@@ -33,7 +33,7 @@
 #include "rf_unit.h"
 #include "fpga.h"
 #include "fft.h"
-#include "wm8731.h"
+#include "codec.h"
 #include "audio_processor.h"
 #include "profiler.h"
 #include "usb_device.h"
@@ -355,7 +355,7 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc1, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc3, LL_ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
   println("[OK] AudioCodec init");
-  WM8731_Init();
+  CODEC_Init();
   println("[OK] TRX init");
   TRX_Init();
   println("[OK] Audioprocessor & TIM5 init");

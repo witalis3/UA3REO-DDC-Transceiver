@@ -974,7 +974,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 				{
 					if (button->holdHandler != NULL)
 					{
-						WM8731_Beep();
+						CODEC_Beep();
 						button->holdHandler(button->parameter);
 					}
 				}
@@ -994,7 +994,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 				{
 					if (button->clickHandler != NULL)
 					{
-						WM8731_Beep();
+						CODEC_Beep();
 						button->clickHandler(button->parameter);
 					}
 				}

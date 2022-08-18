@@ -16,8 +16,8 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value)
 	while (st != 0 && repeats < 3)
 	{
 		i2c_beginTransmission_u8(&I2C_CODEC, B8(0011010)); // I2C_ADDRESS_WM8731 00110100
-		i2c_write_u8(&I2C_WM8731, reg);						// MSB
-		i2c_write_u8(&I2C_WM8731, value);					// MSB
+		i2c_write_u8(&I2C_CODEC, reg);						// MSB
+		i2c_write_u8(&I2C_CODEC, value);					// MSB
 		st = i2c_endTransmission(&I2C_CODEC);
 		if (st != 0)
 			repeats++;

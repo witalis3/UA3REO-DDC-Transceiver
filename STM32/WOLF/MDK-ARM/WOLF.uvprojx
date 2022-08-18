@@ -3131,6 +3131,26 @@
               <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
+              <FileName>codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\codec.h</FilePath>
+            </File>
+            <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec_wm8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_wm8731.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>
@@ -3559,16 +3579,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\wm8731.c</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>
@@ -4666,6 +4676,26 @@
               <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
+              <FileName>codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\codec.h</FilePath>
+            </File>
+            <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec_wm8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_wm8731.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>
@@ -5094,16 +5124,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\wm8731.c</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>
@@ -6270,6 +6290,26 @@
               <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
+              <FileName>codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\codec.h</FilePath>
+            </File>
+            <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec_wm8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_wm8731.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>
@@ -6698,16 +6738,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\wm8731.c</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>
@@ -7874,6 +7904,26 @@
               <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
+              <FileName>codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\codec.h</FilePath>
+            </File>
+            <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec_wm8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_wm8731.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>
@@ -8302,16 +8352,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\wm8731.c</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>
@@ -9478,6 +9518,26 @@
               <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
+              <FileName>codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\codec.h</FilePath>
+            </File>
+            <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec_wm8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_wm8731.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>
@@ -9906,16 +9966,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\wm8731.c</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>
@@ -11082,6 +11132,26 @@
               <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
+              <FileName>codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\codec.h</FilePath>
+            </File>
+            <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec_wm8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_wm8731.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>
@@ -11510,16 +11580,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\wm8731.c</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>
@@ -12686,6 +12746,26 @@
               <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
+              <FileName>codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\codec.h</FilePath>
+            </File>
+            <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec_wm8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_wm8731.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>
@@ -13114,16 +13194,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\wm8731.c</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>
@@ -14221,6 +14291,26 @@
               <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
+              <FileName>codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\codec.h</FilePath>
+            </File>
+            <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec_wm8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_wm8731.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>
@@ -14649,16 +14739,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\wm8731.c</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>
@@ -15756,6 +15836,26 @@
               <FilePath>..\..\Src\callsign.h</FilePath>
             </File>
             <File>
+              <FileName>codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\codec.h</FilePath>
+            </File>
+            <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
+              <FileName>codec_wm8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_wm8731.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>
@@ -16184,16 +16284,6 @@
               <FileName>wifi.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wifi.h</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\wm8731.c</FilePath>
-            </File>
-            <File>
-              <FileName>wm8731.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\wm8731.h</FilePath>
             </File>
             <File>
               <FileName>wspr.c</FileName>

@@ -244,7 +244,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim4);
 	
   println("[OK] AudioCodec init");
-  WM8731_Init();
+  CODEC_Init();
 	
   println("[OK] TRX init");
   TRX_Init();
