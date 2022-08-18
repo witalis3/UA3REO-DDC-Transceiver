@@ -352,7 +352,7 @@ int main(void)
   FPGA_Init(false, false);
 	println("[OK] WIFI timer TIM3 init");
   HAL_TIM_Base_Start_IT(&htim3);
-  println("UA3REO Transceiver started!\r\n");
+  println("WOLF-Mini Transceiver started!\r\n");
 	TRX_Inited = true;
 	
   //while(true){HAL_Delay(3000); SCB->AIRCR = 0x05FA0004; } //debug restart

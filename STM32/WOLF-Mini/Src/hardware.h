@@ -66,8 +66,8 @@
 #define FPGA_RX_IQ_BUFFER_HALF_SIZE (FPGA_RX_IQ_BUFFER_SIZE / 2) // half the size of the RX data buffer from the PGA
 
 // macros
-#define FPGA_setGPIOBusInput GPIOA->MODER = 2862022656
-#define FPGA_setGPIOBusOutput GPIOA->MODER = 2862044501
+#define FPGA_setGPIOBusInput GPIOA->MODER = 2860711936
+#define FPGA_setGPIOBusOutput GPIOA->MODER = 2860733781
 
 // types
 typedef struct

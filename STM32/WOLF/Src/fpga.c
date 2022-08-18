@@ -868,7 +868,7 @@ static inline void FPGA_setBusInput(void)
 	temp |= ((GPIO_MODE_INPUT & 0x00000003U) << (6 * 2U));
 	temp &= ~(GPIO_MODER_MODE0 << (7 * 2U));
 	temp |= ((GPIO_MODE_INPUT & 0x00000003U) << (7 * 2U));
-	//println(temp,false);
+	println("I: ", temp);
 	GPIOA->MODER = temp;*/
 
 	FPGA_setGPIOBusInput; // macros
@@ -895,7 +895,7 @@ static inline void FPGA_setBusOutput(void)
 	temp |= ((GPIO_MODE_OUTPUT_PP & 0x00000003U) << (6 * 2U));
 	temp &= ~(GPIO_MODER_MODE0 << (7 * 2U));
 	temp |= ((GPIO_MODE_OUTPUT_PP & 0x00000003U) << (7 * 2U));
-	//println(temp,false);
+	println("O: ", temp);
 	GPIOA->MODER = temp;*/
 
 	FPGA_setGPIOBusOutput; // macros
