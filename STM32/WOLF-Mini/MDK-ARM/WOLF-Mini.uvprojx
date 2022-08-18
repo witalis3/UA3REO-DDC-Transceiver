@@ -560,6 +560,11 @@
               <FilePath>..\..\Src\codec_wm8731.c</FilePath>
             </File>
             <File>
+              <FileName>codec_nau8822.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
+            </File>
+            <File>
               <FileName>color_themes.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\color_themes.h</FilePath>

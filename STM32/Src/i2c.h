@@ -37,7 +37,7 @@ typedef struct
 	bool i2c_tx_buf_overflow;
 } I2C_DEVICE;
 
-extern I2C_DEVICE I2C_WM8731;
+extern I2C_DEVICE I2C_CODEC;
 #ifdef HAS_TOUCHPAD
 extern I2C_DEVICE I2C_TOUCHPAD;
 #endif

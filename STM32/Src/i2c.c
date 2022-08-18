@@ -8,7 +8,7 @@
  * - always start with i2c_delay rather than end
  */
 
-I2C_DEVICE I2C_WM8731 = {
+I2C_DEVICE I2C_CODEC = {
 	.SDA_PORT = WM8731_SDA_GPIO_Port,
 	.SDA_PIN = WM8731_SDA_Pin,
 	.SCK_PORT = WM8731_SCK_GPIO_Port,
