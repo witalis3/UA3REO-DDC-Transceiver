@@ -1,4 +1,4 @@
-#include "stm32h7xx_hal.h"
+#include "hardware.h"
 #include "main.h"
 #include "front_unit.h"
 #include "lcd.h"
@@ -29,8 +29,10 @@ bool FRONTPanel_MCP3008_3_Enabled = true;
 
 static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
+static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
+static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num);
 
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
@@ -38,55 +40,50 @@ static uint32_t ENCODER2_AValDeb = 0;
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	//buttons
-	{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_LOCK}, //SB1 MENU
-	{.port = 1, .channel = 1, .type = FUNIT_CTRL_PTT, .tres_min = 0, .tres_max = 500}, //SB2 PTT?
-	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB3 VFO/A=B
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 2, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB4 PRE/ATT
-	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB5 BAND/MODE+
-	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB6 BAND/MODE-
-	{.port = 1, .channel = 6, .type = FUNIT_CTRL_ENC2SW, .tres_min = 0, .tres_max = 500}, //ENC2_SW
-	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON}, //NONE
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_BAND_N}, //SB1
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_P}, //SB2
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB3
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB6
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 2, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB5
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB4
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 4, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB7
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_LOCK}, //SB9
 };
 
 const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
-	{.name = "BAND-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
-	{.name = "BAND+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
-	{.name = "PRE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_PRE, .holdHandler = BUTTONHANDLER_PRE, .checkBool = (uint32_t *)&TRX.LNA},
-	{.name = "A/B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
-	
-	{.name = "MODE-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
-	{.name = "MODE+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},	
-	{.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
-	{.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
-	
-	{.name = "NOTCH", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH_MANUAL, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
+	{.name = "DRV", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DRV_ONLY, .holdHandler = BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.LNA},
 	{.name = "ATT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ATT, .holdHandler = BUTTONHANDLER_ATTHOLD, .checkBool = (uint32_t *)&TRX.ATT},
-	{.name = "DRV", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DRV_ONLY, .holdHandler = BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.ADC_Driver},
-	{.name = "PGA", .work_in_menu = false, .clickHandler = BUTTONHANDLER_PGA_ONLY, .holdHandler = BUTTONHANDLER_PGA_ONLY, .checkBool = (uint32_t *)&TRX.ADC_PGA},
-	{.name = "AGC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AGC, .holdHandler = BUTTONHANDLER_AGC, .checkBool = (uint32_t *)&TRX.AGC_shadow},
+	{.name = "BW", .work_in_menu = true, .clickHandler = BUTTONHANDLER_BW, .holdHandler = BUTTONHANDLER_BW, .checkBool = NULL},
+	{.name = "A/B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
+	{.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB, .checkBool = NULL},
 	
-	{.name = "IF", .work_in_menu = true, .clickHandler = BUTTONHANDLER_IF, .holdHandler = BUTTONHANDLER_IF, .checkBool = NULL},
-	{.name = "DNR", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DNR, .holdHandler = BUTTONHANDLER_DNR, .checkBool = NULL},
+	{.name = "PWR", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
+	{.name = "AGC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AGC, .holdHandler = BUTTONHANDLER_AGC, .checkBool = (uint32_t *)&TRX.AGC_shadow},
+	{.name = "ZM-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_N, .holdHandler = BUTTONHANDLER_ZOOM_N, .checkBool = NULL},
+	{.name = "ZM+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_P, .holdHandler = BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
 	{.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
 	
+	{.name = "IF", .work_in_menu = true, .clickHandler = BUTTONHANDLER_IF, .holdHandler = BUTTONHANDLER_IF, .checkBool = NULL},
+	{.name = "NTCH", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH_MANUAL, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
+	{.name = "DNR", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DNR, .holdHandler = BUTTONHANDLER_DNR, .checkBool = NULL},
 	{.name = "SQL", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SQL, .holdHandler = BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
-	{.name = "BW", .work_in_menu = true, .clickHandler = BUTTONHANDLER_BW, .holdHandler = BUTTONHANDLER_BW, .checkBool = NULL},
-	{.name = "SCAN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SCAN, .holdHandler = BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
-	{.name = "SERV", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SERVICES, .checkBool = NULL},
-	
-	{.name = "WPM", .work_in_menu = true, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_WPM, .checkBool = NULL},
 	{.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
-	{.name = "PLAY", .work_in_menu = false, .clickHandler = BUTTONHANDLER_PLAY, .holdHandler = BUTTONHANDLER_PLAY, .checkBool = (uint32_t *)&SD_PlayInProcess},
-	{.name = "REC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_REC, .holdHandler = BUTTONHANDLER_REC, .checkBool = (uint32_t *)&SD_RecordInProcess},
 	
-	{.name = "SMPL-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SAMPLE_N, .holdHandler = BUTTONHANDLER_SAMPLE_N, .checkBool = NULL},
-	{.name = "SMPL+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SAMPLE_P, .holdHandler = BUTTONHANDLER_SAMPLE_P, .checkBool = NULL},
-	{.name = "ZOOM-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_N, .holdHandler = BUTTONHANDLER_ZOOM_N, .checkBool = NULL},
-	{.name = "ZOOM+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_P, .holdHandler = BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
+	{.name = "BND-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
+	{.name = "BND+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
+	{.name = "MOD-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
+	{.name = "MOD+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},	
+	{.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
 	
-	{.name = "VLT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_VLT, .holdHandler = BUTTONHANDLER_VLT, .checkBool = (uint32_t *)&TRX_X1_VLT_CUR_Mode},
-	{.name = "AUTGN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AUTOGAINER, .holdHandler = BUTTONHANDLER_AUTOGAINER, .checkBool = (uint32_t *)&TRX.AutoGain},
-	{.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB, .checkBool = NULL},
+	{.name = "SCAN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SCAN, .holdHandler = BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
+	{.name = "SERV", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SERVICES, .checkBool = NULL},	
+	{.name = "WPM", .work_in_menu = true, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_WPM, .checkBool = NULL},
+	{.name = "MUTE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MUTE, .holdHandler = BUTTONHANDLER_MUTE_AFAMP, .checkBool = (uint32_t *)&TRX.AutoGain},
 	{.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
 };
 
@@ -109,14 +106,6 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 	uint8_t ENCODER_DTVal = HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin);
 	uint8_t ENCODER_CLKVal = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
 
-	for(uint16_t recheck = 0; recheck < 64; recheck++)
-	{
-		if(ENCODER_DTVal != HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin))
-			return;
-		if(ENCODER_CLKVal != HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin))
-			return;
-	}
-	
 	if (ENCfirst)
 	{
 		ENClastClkVal = ENCODER_CLKVal;
@@ -134,7 +123,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				ENCODER_slowler--;
 				if (ENCODER_slowler <= -CALIBRATE.ENCODER_SLOW_RATE)
 				{
-					//acceleration
+					// acceleration
 					ENCticksInInterval++;
 					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION)
 					{
@@ -142,13 +131,10 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
 						ENCticksInInterval = 0;
 					}
-					//do rotate
+					// do rotate
 					FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? ENCAcceleration : -ENCAcceleration);
 					ENCODER_slowler = 0;
-					if(TRX_ScanMode) {
-						TRX_ScanMode = false;
-						LCD_UpdateQuery.TopButtons = true;
-					}
+					TRX_ScanMode = false;
 				}
 			}
 			else
@@ -156,7 +142,7 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 				ENCODER_slowler++;
 				if (ENCODER_slowler >= CALIBRATE.ENCODER_SLOW_RATE)
 				{
-					//acceleration
+					// acceleration
 					ENCticksInInterval++;
 					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION)
 					{
@@ -164,13 +150,10 @@ void FRONTPANEL_ENCODER_checkRotate(void)
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
 						ENCticksInInterval = 0;
 					}
-					//do rotate
+					// do rotate
 					FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? -ENCAcceleration : ENCAcceleration);
 					ENCODER_slowler = 0;
-					if(TRX_ScanMode) {
-						TRX_ScanMode = false;
-						LCD_UpdateQuery.TopButtons = true;
-					}
+					TRX_ScanMode = false;
 				}
 			}
 		}
@@ -197,10 +180,7 @@ void FRONTPANEL_ENCODER2_checkRotate(void)
 		{ // otherwise B changed its state first - counterclockwise rotation
 			FRONTPANEL_ProcessEncoder2 = CALIBRATE.ENCODER2_INVERT ? -1 : 1;
 		}
-		if(TRX_ScanMode) {
-			TRX_ScanMode = false;
-			LCD_UpdateQuery.TopButtons = true;
-		}
+		TRX_ScanMode = false;
 	}
 	ENCODER2_AValDeb = HAL_GetTick();
 }
@@ -218,48 +198,34 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	if (fabsf(direction) <= ENCODER_MIN_RATE_ACCELERATION)
 		direction = (direction < 0.0f) ? -1.0f : 1.0f;
 
-	if (TRX.RIT_Enabled) {
-		TRX_RIT += direction * 10;
-		TRX_RIT = (TRX_RIT / 10) * 10;
-		
-		if(TRX_RIT < -TRX.RIT_INTERVAL)
-			TRX_RIT = -TRX.RIT_INTERVAL;
-		if(TRX_RIT > TRX.RIT_INTERVAL)
-			TRX_RIT = TRX.RIT_INTERVAL;
-		LCD_UpdateQuery.StatusInfoGUI = true;
-		TRX_XIT = 0;
-		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
+	if (TRX_on_TX)
+	{
+		if (direction > 0 || TRX.RF_Power > 0)
+			TRX.RF_Power += direction;
+		if (TRX.RF_Power > 100)
+			TRX.RF_Power = 100;
+
+		char sbuff[32] = {0};
+		sprintf(sbuff, "Power: %u", TRX.RF_Power);
+		LCD_showTooltip(sbuff);
+
 		return;
 	}
-	
-	if (TRX.XIT_Enabled) {
-		TRX_XIT += direction * 10;
-		TRX_XIT = (TRX_XIT / 10) * 10;
-		
-		if(TRX_XIT < -TRX.XIT_INTERVAL)
-			TRX_XIT = -TRX.XIT_INTERVAL;
-		if(TRX_XIT > TRX.XIT_INTERVAL)
-			TRX_XIT = TRX.XIT_INTERVAL;
-		LCD_UpdateQuery.StatusInfoGUI = true;
-		TRX_RIT = 0;
-		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
-		return;
-	}
-	
+
 	float64_t newfreq = CurrentVFO->Freq;
 	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
 	{
 		int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
-		int_fast8_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
-		int_fast8_t new_channel = channel + direction;
-		if(new_channel < 0)
+		int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
+		int_fast16_t new_channel = channel + direction;
+		if (new_channel < 0)
 			new_channel = BANDS[band].channelsCount - 1;
-		if(new_channel >= BANDS[band].channelsCount)
+		if (new_channel >= BANDS[band].channelsCount)
 			new_channel = 0;
-		
+
 		newfreq = BANDS[band].channels[new_channel].rxFreq;
 		TRX.SPLIT_Enabled = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
-		if(TRX.SPLIT_Enabled)
+		if (TRX.SPLIT_Enabled)
 			TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -269,8 +235,9 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	{
 		float64_t step = TRX.FRQ_FAST_STEP;
 		if (CurrentVFO->Mode == TRX_MODE_CW)
-					step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-		
+			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+		if(step < 1.0f) step = 1.0f;
+
 		if (direction == -1.0f)
 			newfreq = ceill(newfreq / step) * step;
 		if (direction == 1.0f)
@@ -281,15 +248,15 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 	{
 		float64_t step = TRX.FRQ_STEP;
 		if (CurrentVFO->Mode == TRX_MODE_CW)
-					step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-		
+			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+		if(step < 1.0f) step = 1.0f;
+
 		if (direction == -1.0f)
 			newfreq = ceill(newfreq / step) * step;
 		if (direction == 1.0f)
 			newfreq = floorl(newfreq / step) * step;
 		newfreq = newfreq + step * direction;
 	}
-	
 	TRX_setFrequency(newfreq, CurrentVFO);
 	LCD_UpdateQuery.FreqInfo = true;
 	NeedSaveSettings = true;
@@ -306,7 +273,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		SYSMENU_eventSecRotateSystemMenu(direction);
 		return;
 	}
-	
+
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
 		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
@@ -319,15 +286,16 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) // nothing to SQL tune
 		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
-	
-	if (TRX.ENC2_func_mode== ENC_FUNC_PAGER) //buttons pager
+
+	if (TRX.ENC2_func_mode == ENC_FUNC_PAGER) //pager
 	{
 		if(direction < 0)
 			BUTTONHANDLER_LEFT_ARR(0);
 		if(direction > 0)
 			BUTTONHANDLER_RIGHT_ARR(0);
 	}
-	if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) //fast step mode
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) //fast step
 	{
 		if(TRX_on_TX) return;
 		
@@ -336,16 +304,16 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
 		{
 			int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
-			int_fast8_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
-			int_fast8_t new_channel = channel + direction;
-			if(new_channel < 0)
+			int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
+			int_fast16_t new_channel = channel + direction;
+			if (new_channel < 0)
 				new_channel = BANDS[band].channelsCount - 1;
-			if(new_channel >= BANDS[band].channelsCount)
+			if (new_channel >= BANDS[band].channelsCount)
 				new_channel = 0;
-			
+
 			newfreq = BANDS[band].channels[new_channel].rxFreq;
 			TRX.SPLIT_Enabled = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
-			if(TRX.SPLIT_Enabled)
+			if (TRX.SPLIT_Enabled)
 				TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
@@ -358,7 +326,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				step = step * 2.0;
 			if (CurrentVFO->Mode == TRX_MODE_CW)
 				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-			
+			if(step < 1.0f) step = 1.0f;
+
 			if (direction == -1.0f)
 				newfreq = ceill(newfreq / step) * step;
 			if (direction == 1.0f)
@@ -372,18 +341,18 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				step = step * 2.0;
 			if (CurrentVFO->Mode == TRX_MODE_CW)
 				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-			
+			if(step < 1.0f) step = 1.0f;
+
 			if (direction == -1.0f)
 				newfreq = ceill(newfreq / step) * step;
 			if (direction == 1.0f)
 				newfreq = floorl(newfreq / step) * step;
 			newfreq = newfreq + step * direction;
 		}
-			
 		TRX_setFrequency(newfreq, CurrentVFO);
 		LCD_UpdateQuery.FreqInfo = true;
 	}
-	
+
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM)
 	{
 		// ENC2 Func mode (WPM)
@@ -396,7 +365,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		sprintf(sbuff, "WPM: %u", TRX.CW_KEYER_WPM);
 		LCD_showTooltip(sbuff);
 	}
-	
+
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) // Fine RIT/XIT
 	{
 		if (TRX.RIT_Enabled && TRX.FineRITTune)
@@ -417,8 +386,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_XIT = -TRX.XIT_INTERVAL;
 		}
 	}
-	
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) //function mode
+
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) // Manual Notch
 	{
 		float64_t step = 50;
 		if (CurrentVFO->Mode == TRX_MODE_CW)
@@ -528,8 +497,8 @@ void FRONTPANEL_check_ENC2SW(bool state)
 	if (TRX.Locked)
 		return;
 
-	bool ENC2SW_AND_TOUCH_Now = state;
-	//check hold and click
+	bool ENC2SW_AND_TOUCH_Now = HAL_GPIO_ReadPin(ENC2_SW_GPIO_Port, ENC2_SW_Pin);
+	// check hold and click
 	if (ENC2SW_Last != ENC2SW_AND_TOUCH_Now)
 	{
 		ENC2SW_Last = ENC2SW_AND_TOUCH_Now;
@@ -556,13 +525,13 @@ void FRONTPANEL_check_ENC2SW(bool state)
 		}
 	}
 
-	//ENC2 Button hold
+	// ENC2 Button hold
 	if (ENC2SW_holded)
 	{
 		FRONTPANEL_ENC2SW_hold_handler(0);
 	}
 
-	//ENC2 Button click
+	// ENC2 Button click
 	if (ENC2SW_clicked)
 	{
 		menu_enc2_click_starttime = HAL_GetTick();
@@ -573,11 +542,11 @@ void FRONTPANEL_check_ENC2SW(bool state)
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 {
 	TRX_Inactive_Time = 0;
-	//ENC2 CLICK
+	// ENC2 CLICK
 	if (!LCD_systemMenuOpened && !LCD_window.opened)
 	{
-		TRX.ENC2_func_mode++; //enc2 rotary mode
-		
+		TRX.ENC2_func_mode++; // enc2 rotary mode
+
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
 			TRX.ENC2_func_mode++;
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
@@ -590,62 +559,36 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 			TRX.ENC2_func_mode++;
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) // nothing to SQL tune
 			TRX.ENC2_func_mode++;
-		
-		if(TRX.ENC2_func_mode > ENC_FUNC_SET_VOLUME)
+
+		if (TRX.ENC2_func_mode > ENC_FUNC_SET_VOLUME)
 			TRX.ENC2_func_mode = ENC_FUNC_PAGER;
 
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		
 		if (TRX.ENC2_func_mode == ENC_FUNC_PAGER)
-		{
 			LCD_showTooltip("BUTTONS");
-			LCD_UpdateQuery.TopButtonsRedraw = true;
-		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP)
-		{
 			LCD_showTooltip("FAST STEP");
-			LCD_UpdateQuery.TopButtonsRedraw = true;
-			LCD_UpdateQuery.FreqInfo = true;
-		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM)
-		{
 			LCD_showTooltip("SET WPM");
-			LCD_UpdateQuery.FreqInfo = true;
-		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT)
-		{
 			LCD_showTooltip("SET RIT");
-			LCD_UpdateQuery.FreqInfo = true;
-		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH)
-		{
 			LCD_showTooltip("SET NOTCH");
-			LCD_UpdateQuery.FreqInfo = true;
-		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF)
-		{
 			LCD_showTooltip("SET LPF");
-			LCD_UpdateQuery.FreqInfo = true;
-		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF)
-		{
 			LCD_showTooltip("SET HPF");
-			LCD_UpdateQuery.FreqInfo = true;
-		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL)
-		{
 			LCD_showTooltip("SET SQL");
-			LCD_UpdateQuery.FreqInfo = true;
-		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME)
-		{
-			LCD_showTooltip("SET VOLUME");
-			LCD_UpdateQuery.FreqInfo = true;
-		}
+			LCD_showTooltip("VOLUME");
 	}
 	else
 	{
 		if (LCD_systemMenuOpened)
 		{
-			//navigate in menu
+			// navigate in menu
 			SYSMENU_eventSecEncoderClickSystemMenu();
 		}
 	}
@@ -669,6 +612,24 @@ void FRONTPANEL_Init(void)
 		LCD_showError("MCP3008 - 1 init error (FPGA I2S CLK?)", true);
 	}
 #endif
+#ifdef HRDW_MCP3008_2
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 2);
+	if (test_value == 65535)
+	{
+		FRONTPanel_MCP3008_2_Enabled = false;
+		println("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
+		LCD_showError("MCP3008 - 2 init error", true);
+	}
+#endif
+#ifdef HRDW_MCP3008_3
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 3);
+	if (test_value == 65535)
+	{
+		FRONTPanel_MCP3008_3_Enabled = false;
+		println("[ERR] Frontpanel MCP3008 - 3 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
+		LCD_showError("MCP3008 - 3 init error", true);
+	}
+#endif
 	FRONTPANEL_Process();
 }
 
@@ -686,27 +647,55 @@ void FRONTPANEL_Process(void)
 		FRONTPANEL_ProcessEncoder2 = 0;
 	}
 
-	if(SD_USBCardReader)
+#ifndef HAS_TOUCHPAD
+	FRONTPANEL_check_ENC2SW(true);
+#endif
+
+#if HRDW_HAS_SD
+	if (SD_USBCardReader)
 		return;
+#endif
 	
+	if (HRDW_SPI_Locked)
+		return;
+	HRDW_SPI_Locked = true;
+
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
 	uint16_t mcp3008_value = 0;
 
-	//process buttons
+	// process buttons
 	for (uint16_t b = 0; b < buttons_count; b++)
 	{
 		PERIPH_FrontPanel_Button *button = &PERIPH_FrontPanel_Buttons[b];
-//check disabled ports
+// check disabled ports
 #ifdef HRDW_MCP3008_1
 		if (button->port == 1 && !FRONTPanel_MCP3008_1_Enabled)
 			continue;
 #endif
-		
-//get state from ADC MCP3008 (10bit - 1024values)
+#ifdef HRDW_MCP3008_2
+		if (button->port == 2 && !FRONTPanel_MCP3008_2_Enabled)
+			continue;
+#endif
+#ifdef HRDW_MCP3008_3
+		if (button->port == 3 && !FRONTPanel_MCP3008_3_Enabled)
+			continue;
+#endif
+
+// get state from ADC MCP3008 (10bit - 1024values)
 #ifdef HRDW_MCP3008_1
 		if (button->port == 1)
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
+		else
+#endif
+#ifdef HRDW_MCP3008_2
+			if (button->port == 2)
+			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
+		else
+#endif
+#ifdef HRDW_MCP3008_3
+			if (button->port == 3)
+			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
 		else
 #endif
 			continue;
@@ -721,17 +710,17 @@ void FRONTPANEL_Process(void)
 			}
 		}
 
-		//TANGENT
+		// TANGENT
 		if (button->type == FUNIT_CTRL_TANGENT)
 		{
-			//Yaesu MH-48
-			if(CALIBRATE.TangentType == TANGENT_MH48)
+			// Yaesu MH-48
+			if (CALIBRATE.TangentType == TANGENT_MH48)
 				for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++)
-					if(button->channel == PERIPH_FrontPanel_TANGENT_MH48[tb].channel)
+					if (button->channel == PERIPH_FrontPanel_TANGENT_MH48[tb].channel)
 						FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], mcp3008_value);
 		}
 		else
-			FRONTPANEL_CheckButton(button, mcp3008_value); //other buttons / resistors
+			FRONTPANEL_CheckButton(button, mcp3008_value); // other buttons / resistors
 	}
 
 	if (TRX.Debug_Type == TRX_DEBUG_BUTTONS)
@@ -742,6 +731,8 @@ void FRONTPANEL_Process(void)
 			fu_debug_lasttime = HAL_GetTick();
 		}
 	}
+
+	HRDW_SPI_Locked = false;
 }
 
 void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value)
@@ -749,7 +740,10 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	// AF_GAIN
 	if (button->type == FUNIT_CTRL_AF_GAIN)
 	{
-		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - mcp3008_value);
+		static float32_t AF_VOLUME_mcp3008_averaged = 0.0f;
+		AF_VOLUME_mcp3008_averaged = AF_VOLUME_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
+		
+		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - AF_VOLUME_mcp3008_averaged);
 		if (TRX.Volume < 50)
 			TRX.Volume = 0;
 	}
@@ -757,15 +751,21 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	// RIT / XIT or IF Gain
 	if (button->type == FUNIT_CTRL_RIT_XIT)
 	{
+		static float32_t IF_GAIN_mcp3008_averaged = 0.0f;
+		IF_GAIN_mcp3008_averaged = IF_GAIN_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
+		
 		if (TRX.RIT_Enabled)
 		{
-			int_fast16_t TRX_RIT_old = TRX_RIT;
-			TRX_RIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
+			static int_fast16_t TRX_RIT_old = 0;
+			if (!TRX.FineRITTune)
+				TRX_RIT = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
+
 			if (TRX_RIT_old != TRX_RIT)
 			{
+				TRX_RIT_old = TRX_RIT;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new = LCD_bw_trapez_stripe_pos_new + (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_RIT / (float32_t)TRX.RIT_INTERVAL));
+				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_RIT / (float32_t)TRX.RIT_INTERVAL));
 				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
 				{
 					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
@@ -774,15 +774,19 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 			}
 			TRX_XIT = 0;
 		}
-		else if (TRX.XIT_Enabled)
+
+		if (TRX.XIT_Enabled)
 		{
-			int_fast16_t TRX_XIT_old = TRX_XIT;
-			TRX_XIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
-			if (TRX_XIT_old != TRX_XIT && !TRX_on_TX)
+			static int_fast16_t TRX_XIT_old = 0;
+			if (!TRX.FineRITTune)
+				TRX_XIT = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
+
+			if (TRX_XIT_old != TRX_XIT)
 			{
+				TRX_XIT_old = TRX_XIT;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new = LCD_bw_trapez_stripe_pos_new + (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_XIT / (float32_t)TRX.XIT_INTERVAL));
+				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_XIT / (float32_t)TRX.XIT_INTERVAL));
 				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
 				{
 					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
@@ -791,29 +795,26 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 			}
 			TRX_RIT = 0;
 		}
-		else
+		
+		if (!TRX.RIT_Enabled && TRX.XIT_Enabled && !TRX.FineRITTune) // Disable RIT/XIT + IF
 		{
 			TRX_RIT = 0;
 			TRX_XIT = 0;
-			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - mcp3008_value) * 60.0f / 1023.0f));
+			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - IF_GAIN_mcp3008_averaged) * 60.0f / 1023.0f));
+		}
+
+		if (TRX.FineRITTune) // IF only
+		{
+			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - IF_GAIN_mcp3008_averaged) * 60.0f / 1023.0f));
 		}
 	}
-	
-	//ENC2_SW
-	if (button->type == FUNIT_CTRL_ENC2SW)
-	{
-		bool frontunit_enc2_state_now = true;
-		if (mcp3008_value >= button->tres_min && mcp3008_value < button->tres_max)
-			frontunit_enc2_state_now = false;
-		FRONTPANEL_check_ENC2SW(frontunit_enc2_state_now);
-	}
-	
+
 	// PTT
 	if (button->type == FUNIT_CTRL_PTT)
 	{
 		static bool frontunit_ptt_state_prev = false;
 		bool frontunit_ptt_state_now = false;
-		if (mcp3008_value >= button->tres_min && mcp3008_value < button->tres_max)
+		if (mcp3008_value > button->tres_min && mcp3008_value < button->tres_max)
 			frontunit_ptt_state_now = true;
 		if (frontunit_ptt_state_prev != frontunit_ptt_state_now)
 		{
@@ -822,13 +823,11 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 			frontunit_ptt_state_prev = frontunit_ptt_state_now;
 		}
 	}
-	
-	//BUTTONS
+
+	// BUTTONS
 	if (button->type == FUNIT_CTRL_BUTTON)
 	{
-		//println(mcp3008_value, " ", button->tres_min, " ", button->tres_max);
-		
-		//set state
+		// set state
 		if (mcp3008_value >= button->tres_min && mcp3008_value < button->tres_max)
 		{
 			TRX_Inactive_Time = 0;
@@ -839,14 +838,14 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 		else
 			button->state = false;
 
-		//check state
+		// check state
 		if ((button->prev_state != button->state) && button->state)
 		{
 			button->start_hold_time = HAL_GetTick();
 			button->afterhold = false;
 		}
 
-		//check hold state
+		// check hold state
 		if ((button->prev_state == button->state) && button->state && ((HAL_GetTick() - button->start_hold_time) > KEY_HOLD_TIME) && !button->afterhold)
 		{
 			button->afterhold = true;
@@ -867,7 +866,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 			}
 		}
 
-		//check click state
+		// check click state
 		if ((button->prev_state != button->state) && !button->state && ((HAL_GetTick() - button->start_hold_time) < KEY_HOLD_TIME) && !button->afterhold && !TRX.Locked)
 		{
 			if (!LCD_systemMenuOpened || button->work_in_menu)
@@ -887,15 +886,33 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 			}
 		}
 
-		//save prev state
+		// save prev state
 		button->prev_state = button->state;
 	}
-	
-	//DEBUG BUTTONS
+
+	// DEBUG BUTTONS
 	if (button->type == FUNIT_CTRL_BUTTON_DEBUG)
 	{
 		char str[64] = {0};
 		sprintf(str, "%d: %d       ", button->channel, mcp3008_value);
 		LCDDriver_printText(str, 10, 200 + button->channel * 20, COLOR_RED, BG_COLOR, 2);
 	}
+}
+
+static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num)
+{
+	uint8_t outData[3] = {0};
+	uint8_t inData[3] = {0};
+	uint16_t mcp3008_value = 0;
+
+	outData[0] = 0x18 | channel;
+	bool res = false;
+	if(adc_num == 1) res = HRDW_FrontUnit_SPI(outData, inData, 3, false);
+	if(adc_num == 2) res = HRDW_FrontUnit2_SPI(outData, inData, 3, false);
+	if(adc_num == 3) res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
+	if (res == false)
+		return 65535;
+	mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+
+	return mcp3008_value;
 }
