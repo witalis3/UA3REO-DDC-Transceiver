@@ -159,8 +159,8 @@ extern "C"
 		const uint16_t STATUS_LABEL_NOTCH_Y_OFFSET;
 		const uint16_t STATUS_LABEL_FFT_BW_X_OFFSET;
 		const uint16_t STATUS_LABEL_FFT_BW_Y_OFFSET;
-#ifdef FRONTPANEL_LITE
-		//Information panel
+
+		//Information panel (Lite, Mini)
 		const uint16_t STATUS_INFOA_X_OFFSET;
 		const uint16_t STATUS_INFOB_X_OFFSET;
 		const uint16_t STATUS_INFOC_X_OFFSET;
@@ -170,7 +170,7 @@ extern "C"
 		const uint16_t STATUS_INFO_Y_OFFSET;
 		const uint16_t STATUS_INFO_WIDTH;
 		const uint16_t STATUS_INFO_HEIGHT;
-#endif
+
 #if (defined(LAY_800x480))
 		const uint16_t STATUS_LABEL_CPU_X_OFFSET;
 		const uint16_t STATUS_LABEL_CPU_Y_OFFSET;
