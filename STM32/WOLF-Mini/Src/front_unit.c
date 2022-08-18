@@ -479,8 +479,13 @@ void FRONTPANEL_check_ENC2SW(bool state)
 
 	if (TRX.Locked)
 		return;
-
+	
+	//uint8_t a = (ENC2_SW_GPIO_Port->IDR & ENC2_SW_Pin);
+	//uint8_t b = (ENC2_SW_GPIO_Port->IDR & 0xFF);
+	//println("A: ", a, " B: ", b);
+	
 	bool ENC2SW_AND_TOUCH_Now = HAL_GPIO_ReadPin(ENC2_SW_GPIO_Port, ENC2_SW_Pin);
+	
 	// check hold and click
 	if (ENC2SW_Last != ENC2SW_AND_TOUCH_Now)
 	{
@@ -602,7 +607,7 @@ void FRONTPANEL_Process(void)
 		FRONTPANEL_ProcessEncoder2 = 0;
 	}
 
-	//FRONTPANEL_check_ENC2SW(true);
+	FRONTPANEL_check_ENC2SW(true);
 
 #if HRDW_HAS_SD
 	if (SD_USBCardReader)

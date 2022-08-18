@@ -435,6 +435,11 @@
               <FilePath>..\Src\main.c</FilePath>
             </File>
             <File>
+              <FileName>main.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\main.h</FilePath>
+            </File>
+            <File>
               <FileName>user_diskio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\user_diskio.c</FilePath>
