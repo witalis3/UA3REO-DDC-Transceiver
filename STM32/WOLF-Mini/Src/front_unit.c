@@ -17,16 +17,6 @@
 int8_t FRONTPANEL_ProcessEncoder1 = 0;
 int8_t FRONTPANEL_ProcessEncoder2 = 0;
 
-#ifdef HRDW_MCP3008_1
-bool FRONTPanel_MCP3008_1_Enabled = true;
-#endif
-#ifdef HRDW_MCP3008_2
-bool FRONTPanel_MCP3008_2_Enabled = true;
-#endif
-#ifdef HRDW_MCP3008_3
-bool FRONTPanel_MCP3008_3_Enabled = true;
-#endif
-
 static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
@@ -39,19 +29,13 @@ static uint32_t ENCODER2_AValDeb = 0;
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	//buttons
-	{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON}, //NONE
-	{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON}, //NONE
-	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON}, //NONE
-	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON}, //NONE
-	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON}, //NONE
-	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_BAND_N}, //SB1
-	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_P}, //SB2
-	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB3
-	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB6
-	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 2, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB5
-	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 500, .tres_max = 700, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB4
-	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 10, .tres_max = 300, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 4, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB7
-	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 300, .tres_max = 500, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_LOCK}, //SB9
+	{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_FUNCH, .holdHandler = BUTTONHANDLER_FUNCH}, //SB1
+	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 1, .clickHandler = BUTTONHANDLER_FUNCH, .holdHandler = BUTTONHANDLER_FUNCH}, //SB2
+	{.port = 1, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 2, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB3
+	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB4
+	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 4, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB5
+	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_BAND_N}, //SB6
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU}, //SB7
 };
 
 const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
@@ -606,7 +590,6 @@ void FRONTPANEL_Init(void)
 
 void FRONTPANEL_Process(void)
 {
-	return;
 	if (LCD_systemMenuOpened && !LCD_busy && FRONTPANEL_ProcessEncoder1 != 0)
 	{
 		SYSMENU_eventRotateSystemMenu(FRONTPANEL_ProcessEncoder1);
@@ -630,41 +613,32 @@ void FRONTPANEL_Process(void)
 
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
-	uint16_t mcp3008_value = 0;
 
 	// process buttons
 	for (uint16_t b = 0; b < buttons_count; b++)
 	{
 		PERIPH_FrontPanel_Button *button = &PERIPH_FrontPanel_Buttons[b];
 
-// get state from ADC MCP3008 (10bit - 1024values)
-#ifdef HRDW_MCP3008_1
-		if (button->port == 1)
-			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-#endif
-			continue;
+		bool button_state = false;
+		if (button->port == 1) button_state = !HAL_GPIO_ReadPin(KEY_1_GPIO_Port, KEY_1_Pin);
+		if (button->port == 2) button_state = !HAL_GPIO_ReadPin(KEY_2_GPIO_Port, KEY_2_Pin);
+		if (button->port == 3) button_state = !HAL_GPIO_ReadPin(KEY_3_GPIO_Port, KEY_3_Pin);
+		if (button->port == 4) button_state = !HAL_GPIO_ReadPin(KEY_4_GPIO_Port, KEY_4_Pin);
+		if (button->port == 5) button_state = !HAL_GPIO_ReadPin(KEY_5_GPIO_Port, KEY_5_Pin);
+		if (button->port == 6) button_state = !HAL_GPIO_ReadPin(KEY_6_GPIO_Port, KEY_6_Pin);
+		if (button->port == 7) button_state = !HAL_GPIO_ReadPin(KEY_7_GPIO_Port, KEY_7_Pin);
 
 		if (TRX.Debug_Type == TRX_DEBUG_BUTTONS)
 		{
 			static uint8_t fu_gebug_lastchannel = 255;
 			if ((HAL_GetTick() - fu_debug_lasttime > 500 && fu_gebug_lastchannel != button->channel) || fu_debug_lasttime == 0)
 			{
-				println("F_UNIT: port ", button->port, " channel ", button->channel, " value ", mcp3008_value);
+				println("F_UNIT: port ", button->port, " channel ", button->channel, " value ", (uint8_t)button_state);
 				fu_gebug_lastchannel = button->channel;
 			}
 		}
 
-		// TANGENT
-		if (button->type == FUNIT_CTRL_TANGENT)
-		{
-			// Yaesu MH-48
-			if (CALIBRATE.TangentType == TANGENT_MH48)
-				for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++)
-					if (button->channel == PERIPH_FrontPanel_TANGENT_MH48[tb].channel)
-						FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], mcp3008_value);
-		}
-		else
-			FRONTPANEL_CheckButton(button, mcp3008_value); // other buttons / resistors
+		FRONTPANEL_CheckButton(button, button_state ? 100 : 0); // other buttons / resistors
 	}
 
 	if (TRX.Debug_Type == TRX_DEBUG_BUTTONS)
