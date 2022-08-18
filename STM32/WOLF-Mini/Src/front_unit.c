@@ -31,7 +31,6 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num);
 
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
@@ -670,24 +669,6 @@ void FRONTPANEL_Init(void)
 		LCD_showError("MCP3008 - 1 init error (FPGA I2S CLK?)", true);
 	}
 #endif
-#ifdef HRDW_MCP3008_2
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 2);
-	if (test_value == 65535)
-	{
-		FRONTPanel_MCP3008_2_Enabled = false;
-		println("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
-		LCD_showError("MCP3008 - 2 init error", true);
-	}
-#endif
-#ifdef HRDW_MCP3008_3
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 3);
-	if (test_value == 65535)
-	{
-		FRONTPanel_MCP3008_3_Enabled = false;
-		println("[ERR] Frontpanel MCP3008 - 3 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
-		LCD_showError("MCP3008 - 3 init error", true);
-	}
-#endif
 	FRONTPANEL_Process();
 }
 
@@ -707,9 +688,6 @@ void FRONTPANEL_Process(void)
 
 	if(SD_USBCardReader)
 		return;
-	if (HRDW_SPI_Locked)
-		return;
-	HRDW_SPI_Locked = true;
 	
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
@@ -724,29 +702,11 @@ void FRONTPANEL_Process(void)
 		if (button->port == 1 && !FRONTPanel_MCP3008_1_Enabled)
 			continue;
 #endif
-#ifdef HRDW_MCP3008_2
-		if (button->port == 2 && !FRONTPanel_MCP3008_2_Enabled)
-			continue;
-#endif
-#ifdef HRDW_MCP3008_3
-		if (button->port == 3 && !FRONTPanel_MCP3008_3_Enabled)
-			continue;
-#endif
 		
 //get state from ADC MCP3008 (10bit - 1024values)
 #ifdef HRDW_MCP3008_1
 		if (button->port == 1)
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-		else
-#endif
-#ifdef HRDW_MCP3008_2
-			if (button->port == 2)
-			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-		else
-#endif
-#ifdef HRDW_MCP3008_3
-			if (button->port == 3)
-			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
 		else
 #endif
 			continue;
@@ -782,8 +742,6 @@ void FRONTPANEL_Process(void)
 			fu_debug_lasttime = HAL_GetTick();
 		}
 	}
-
-	HRDW_SPI_Locked = false;
 }
 
 void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value)
@@ -940,28 +898,4 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 		sprintf(str, "%d: %d       ", button->channel, mcp3008_value);
 		LCDDriver_printText(str, 10, 200 + button->channel * 20, COLOR_RED, BG_COLOR, 2);
 	}
-}
-
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num)
-{
-	uint8_t outData[3] = {0};
-	uint8_t inData[3] = {0};
-	uint16_t mcp3008_value = 0;
-
-	outData[0] = 0x18 | channel;
-	bool res = false;
-	#ifdef HRDW_MCP3008_1
-	if(adc_num == 1) res = HRDW_FrontUnit_SPI(outData, inData, 3, false);
-	#endif
-	#ifdef HRDW_MCP3008_2
-	if(adc_num == 2) res = HRDW_FrontUnit2_SPI(outData, inData, 3, false);
-	#endif
-	#ifdef HRDW_MCP3008_3
-	if(adc_num == 3) res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
-	#endif
-	if (res == false)
-		return 65535;
-	mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
-
-	return mcp3008_value;
 }
