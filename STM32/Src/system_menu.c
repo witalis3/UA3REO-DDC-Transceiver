@@ -250,6 +250,7 @@ static void SYSMENU_HANDL_CALIB_CICCOMP_192K_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_384K_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_DAC_driver_mode(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2200M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_160M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_80M(int8_t direction);
@@ -770,21 +771,24 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"CICCOMP 384K Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.CICFIR_GAINER_384K_val, SYSMENU_HANDL_CALIB_CICCOMP_384K_SHIFT},
 		{"TX CICCOMP Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
 		{"DAC Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
-		{"RF GAIN 2200m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_HANDL_CALIB_RF_GAIN_2200M},
-		{"RF GAIN 160m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_160m, SYSMENU_HANDL_CALIB_RF_GAIN_160M},
-		{"RF GAIN 80m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_80m, SYSMENU_HANDL_CALIB_RF_GAIN_80M},
-		{"RF GAIN 40m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_40m, SYSMENU_HANDL_CALIB_RF_GAIN_40M},
-		{"RF GAIN 30m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_30m, SYSMENU_HANDL_CALIB_RF_GAIN_30M},
-		{"RF GAIN 20m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_20m, SYSMENU_HANDL_CALIB_RF_GAIN_20M},
-		{"RF GAIN 17m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_17m, SYSMENU_HANDL_CALIB_RF_GAIN_17M},
-		{"RF GAIN 15m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_15m, SYSMENU_HANDL_CALIB_RF_GAIN_15M},
-		{"RF GAIN 12m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_12m, SYSMENU_HANDL_CALIB_RF_GAIN_12M},
-		{"RF GAIN CB", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_cb, SYSMENU_HANDL_CALIB_RF_GAIN_CB},
-		{"RF GAIN 10m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_HANDL_CALIB_RF_GAIN_10M},
 #if !defined(FRONTPANEL_LITE)
-		{"RF GAIN 6m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_HANDL_CALIB_RF_GAIN_6M},
-		{"RF GAIN 4m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_4m, SYSMENU_HANDL_CALIB_RF_GAIN_4M},
-		{"RF GAIN 2m", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_HANDL_CALIB_RF_GAIN_2M},
+		{"DAC Driver Mode", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.DAC_driver_mode, SYSMENU_HANDL_CALIB_DAC_driver_mode},
+#endif
+		{"RF GAIN 2200m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_HANDL_CALIB_RF_GAIN_2200M},
+		{"RF GAIN 160m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_160m, SYSMENU_HANDL_CALIB_RF_GAIN_160M},
+		{"RF GAIN 80m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_80m, SYSMENU_HANDL_CALIB_RF_GAIN_80M},
+		{"RF GAIN 40m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_40m, SYSMENU_HANDL_CALIB_RF_GAIN_40M},
+		{"RF GAIN 30m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_30m, SYSMENU_HANDL_CALIB_RF_GAIN_30M},
+		{"RF GAIN 20m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_20m, SYSMENU_HANDL_CALIB_RF_GAIN_20M},
+		{"RF GAIN 17m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_17m, SYSMENU_HANDL_CALIB_RF_GAIN_17M},
+		{"RF GAIN 15m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_15m, SYSMENU_HANDL_CALIB_RF_GAIN_15M},
+		{"RF GAIN 12m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_12m, SYSMENU_HANDL_CALIB_RF_GAIN_12M},
+		{"RF GAIN CB", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_cb, SYSMENU_HANDL_CALIB_RF_GAIN_CB},
+		{"RF GAIN 10m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_HANDL_CALIB_RF_GAIN_10M},
+#if !defined(FRONTPANEL_LITE)
+		{"RF GAIN 6m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_HANDL_CALIB_RF_GAIN_6M},
+		{"RF GAIN 4m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_4m, SYSMENU_HANDL_CALIB_RF_GAIN_4M},
+		{"RF GAIN 2m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_HANDL_CALIB_RF_GAIN_2M},
 #endif
 		{"S METER HF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_HANDL_CALIB_S_METER_HF},
 		{"S METER VHF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_vhf, SYSMENU_HANDL_CALIB_S_METER_VHF},
@@ -3922,7 +3926,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.rf_out_power_10m = 24;			   // 10m
 		CALIBRATE.rf_out_power_6m = 13;				   // 6m
 		CALIBRATE.rf_out_power_4m = 13;				   // 4m
-		CALIBRATE.rf_out_power_2m = 300;			   // 2m
+		CALIBRATE.rf_out_power_2m = 100;			   // 2m
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;		   // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;		   // HPF U14-RF1
 		CALIBRATE.RFU_BPF_0_START = 135 * 1000 * 1000; // 2m U14-RF3
@@ -4035,7 +4039,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.rf_out_power_10m = 40;			   // 10m
 		CALIBRATE.rf_out_power_6m = 40;				   // 6m
 		CALIBRATE.rf_out_power_4m = 40;				   // 4m
-		CALIBRATE.rf_out_power_2m = 270;				   // 2m
+		CALIBRATE.rf_out_power_2m = 70;				   // 2m
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;	   // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;	   // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;	   // 1.6-2.5mH
@@ -4164,14 +4168,28 @@ static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction)
 		CALIBRATE.DAC_GAINER_val = 27;
 }
 
+static void SYSMENU_HANDL_CALIB_DAC_driver_mode(int8_t direction)
+{
+	if (CALIBRATE.DAC_driver_mode > 0)
+		CALIBRATE.DAC_driver_mode += direction;
+	if (CALIBRATE.DAC_driver_mode == 0 && direction > 0)
+		CALIBRATE.DAC_driver_mode += direction;
+	if (CALIBRATE.DAC_driver_mode > 2)
+		CALIBRATE.DAC_driver_mode = 2;
+
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
+	APROC_TX_clip_gain = 1.0f;
+	ATU_TunePowerStabilized = false;
+}
+
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2200M(int8_t direction)
 {
 	if (CALIBRATE.rf_out_power_2200m > 0)
 		CALIBRATE.rf_out_power_2200m += direction;
 	if (CALIBRATE.rf_out_power_2200m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_2200m += direction;
-	if (CALIBRATE.rf_out_power_2200m > 300)
-		CALIBRATE.rf_out_power_2200m = 300;
+	if (CALIBRATE.rf_out_power_2200m > 100)
+		CALIBRATE.rf_out_power_2200m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4184,8 +4202,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_160M(int8_t direction)
 		CALIBRATE.rf_out_power_160m += direction;
 	if (CALIBRATE.rf_out_power_160m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_160m += direction;
-	if (CALIBRATE.rf_out_power_160m > 300)
-		CALIBRATE.rf_out_power_160m = 300;
+	if (CALIBRATE.rf_out_power_160m > 100)
+		CALIBRATE.rf_out_power_160m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4198,8 +4216,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_80M(int8_t direction)
 		CALIBRATE.rf_out_power_80m += direction;
 	if (CALIBRATE.rf_out_power_80m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_80m += direction;
-	if (CALIBRATE.rf_out_power_80m > 300)
-		CALIBRATE.rf_out_power_80m = 300;
+	if (CALIBRATE.rf_out_power_80m > 100)
+		CALIBRATE.rf_out_power_80m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4212,8 +4230,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_40M(int8_t direction)
 		CALIBRATE.rf_out_power_40m += direction;
 	if (CALIBRATE.rf_out_power_40m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_40m += direction;
-	if (CALIBRATE.rf_out_power_40m > 300)
-		CALIBRATE.rf_out_power_40m = 300;
+	if (CALIBRATE.rf_out_power_40m > 100)
+		CALIBRATE.rf_out_power_40m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4226,8 +4244,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_30M(int8_t direction)
 		CALIBRATE.rf_out_power_30m += direction;
 	if (CALIBRATE.rf_out_power_30m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_30m += direction;
-	if (CALIBRATE.rf_out_power_30m > 300)
-		CALIBRATE.rf_out_power_30m = 300;
+	if (CALIBRATE.rf_out_power_30m > 100)
+		CALIBRATE.rf_out_power_30m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4240,8 +4258,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_20M(int8_t direction)
 		CALIBRATE.rf_out_power_20m += direction;
 	if (CALIBRATE.rf_out_power_20m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_20m += direction;
-	if (CALIBRATE.rf_out_power_20m > 300)
-		CALIBRATE.rf_out_power_20m = 300;
+	if (CALIBRATE.rf_out_power_20m > 100)
+		CALIBRATE.rf_out_power_20m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4254,8 +4272,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_17M(int8_t direction)
 		CALIBRATE.rf_out_power_17m += direction;
 	if (CALIBRATE.rf_out_power_17m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_17m += direction;
-	if (CALIBRATE.rf_out_power_17m > 300)
-		CALIBRATE.rf_out_power_17m = 300;
+	if (CALIBRATE.rf_out_power_17m > 100)
+		CALIBRATE.rf_out_power_17m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4268,8 +4286,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_15M(int8_t direction)
 		CALIBRATE.rf_out_power_15m += direction;
 	if (CALIBRATE.rf_out_power_15m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_15m += direction;
-	if (CALIBRATE.rf_out_power_15m > 300)
-		CALIBRATE.rf_out_power_15m = 300;
+	if (CALIBRATE.rf_out_power_15m > 100)
+		CALIBRATE.rf_out_power_15m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4282,8 +4300,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_12M(int8_t direction)
 		CALIBRATE.rf_out_power_12m += direction;
 	if (CALIBRATE.rf_out_power_12m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_12m += direction;
-	if (CALIBRATE.rf_out_power_12m > 300)
-		CALIBRATE.rf_out_power_12m = 300;
+	if (CALIBRATE.rf_out_power_12m > 100)
+		CALIBRATE.rf_out_power_12m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4296,8 +4314,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_CB(int8_t direction)
 		CALIBRATE.rf_out_power_cb += direction;
 	if (CALIBRATE.rf_out_power_cb == 0 && direction > 0)
 		CALIBRATE.rf_out_power_cb += direction;
-	if (CALIBRATE.rf_out_power_cb > 300)
-		CALIBRATE.rf_out_power_cb = 300;
+	if (CALIBRATE.rf_out_power_cb > 100)
+		CALIBRATE.rf_out_power_cb = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4310,8 +4328,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_10M(int8_t direction)
 		CALIBRATE.rf_out_power_10m += direction;
 	if (CALIBRATE.rf_out_power_10m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_10m += direction;
-	if (CALIBRATE.rf_out_power_10m > 300)
-		CALIBRATE.rf_out_power_10m = 300;
+	if (CALIBRATE.rf_out_power_10m > 100)
+		CALIBRATE.rf_out_power_10m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4324,8 +4342,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction)
 		CALIBRATE.rf_out_power_6m += direction;
 	if (CALIBRATE.rf_out_power_6m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_6m += direction;
-	if (CALIBRATE.rf_out_power_6m > 300)
-		CALIBRATE.rf_out_power_6m = 300;
+	if (CALIBRATE.rf_out_power_6m > 100)
+		CALIBRATE.rf_out_power_6m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4338,8 +4356,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_4M(int8_t direction)
 		CALIBRATE.rf_out_power_4m += direction;
 	if (CALIBRATE.rf_out_power_4m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_4m += direction;
-	if (CALIBRATE.rf_out_power_4m > 300)
-		CALIBRATE.rf_out_power_4m = 300;
+	if (CALIBRATE.rf_out_power_4m > 100)
+		CALIBRATE.rf_out_power_4m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4352,8 +4370,8 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction)
 		CALIBRATE.rf_out_power_2m += direction;
 	if (CALIBRATE.rf_out_power_2m == 0 && direction > 0)
 		CALIBRATE.rf_out_power_2m += direction;
-	if (CALIBRATE.rf_out_power_2m > 300)
-		CALIBRATE.rf_out_power_2m = 300;
+	if (CALIBRATE.rf_out_power_2m > 100)
+		CALIBRATE.rf_out_power_2m = 100;
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;

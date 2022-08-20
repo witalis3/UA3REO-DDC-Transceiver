@@ -1121,6 +1121,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER_384K_3", (uint32_t *)&CALIBRATE.CICFIR_GAINER_384K_val, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.DAC_GAINER_3", (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.TXCICFIR_GAINER_3", (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.DAC_driver_mode", (uint32_t *)&CALIBRATE.DAC_driver_mode, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2200m", (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_160m", (uint32_t *)&CALIBRATE.rf_out_power_160m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_80m", (uint32_t *)&CALIBRATE.rf_out_power_80m, SYSMENU_UINT8);
@@ -1839,6 +1840,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.TXCICFIR_GAINER_val = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.DAC_GAINER_3") == 0)
 		CALIBRATE.DAC_GAINER_val = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.DAC_driver_mode") == 0)
+		CALIBRATE.DAC_driver_mode = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_2200m") == 0)
 		CALIBRATE.rf_out_power_2200m = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.rf_out_power_160m") == 0)

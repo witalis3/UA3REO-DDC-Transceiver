@@ -493,6 +493,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TXCICFIR_GAINER_val = 5;	   // Offset from the TX-CIC output of the compensator
 		CALIBRATE.DAC_GAINER_val = 5;		   // DAC shift
 		// Calibrate the maximum output power for each band
+		CALIBRATE.DAC_driver_mode = 2;			//OPA2673 bias mode
 		CALIBRATE.rf_out_power_2200m = 29;		  // 2200m
 		CALIBRATE.rf_out_power_160m = 29;		  // 160m
 		CALIBRATE.rf_out_power_80m = 27;		  // 80m
@@ -506,7 +507,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_10m = 24;		  // 10m
 		CALIBRATE.rf_out_power_6m = 13;			  // 6m
 		CALIBRATE.rf_out_power_4m = 13;				// 4m
-		CALIBRATE.rf_out_power_2m = 300;		  // 2m
+		CALIBRATE.rf_out_power_2m = 100;		  // 2m
 		CALIBRATE.smeter_calibration_hf = 0;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;				  // Calibrate the offset at the ADC input (DC)
@@ -560,7 +561,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.rf_out_power_10m = 80;			   // 10m
 		CALIBRATE.rf_out_power_6m = 80;				   // 6m
 		CALIBRATE.rf_out_power_4m = 80;				   // 4m
-		CALIBRATE.rf_out_power_2m = 270;				   // 2m
+		CALIBRATE.rf_out_power_2m = 70;				   // 2m
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;	   // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;	   // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;	   // 1.6-2.5mH
