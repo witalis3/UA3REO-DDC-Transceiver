@@ -1920,7 +1920,7 @@ static void ModulateFM(uint16_t size, float32_t amplitude)
 	static float32_t fm_mod_accum = 0;
 	static float32_t modulation_index = 0;
 	if (CurrentVFO->LPF_TX_Filter_Width > 0)
-		modulation_index = CurrentVFO->LPF_TX_Filter_Width / (float32_t)TRX_SAMPLERATE * (float32_t)CALIBRATE.FM_DEVIATION_SCALE;
+		modulation_index = CurrentVFO->LPF_TX_Filter_Width / (float32_t)TRX_SAMPLERATE / (float32_t)TRX_TX_Harmonic * (float32_t)CALIBRATE.FM_DEVIATION_SCALE;
 	else
 		modulation_index = (float32_t)CALIBRATE.FM_DEVIATION_SCALE;
 

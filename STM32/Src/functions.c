@@ -188,6 +188,14 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 		return 0;
 	bool inverted = false;
 	int32_t _freq = (int32_t)freq;
+	
+	TRX_TX_Harmonic = 1;
+	if (_freq > MAX_TX_FREQ_HZ) { // harmonics mode
+		while (_freq > MAX_TX_FREQ_HZ) {
+			_freq /= 3; // third-harmonics
+			TRX_TX_Harmonic += 3;
+		}
+	}
 
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
 	if (nyquist == 0) // <99.84mhz (good 0mhz - 79.872mhz) 0-0.4 dac freq
@@ -308,8 +316,11 @@ void shiftTextLeft(char *string, uint_fast16_t shiftLength)
 
 float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 {
-	if (freq > MAX_TX_FREQ_HZ)
-		return 0.0f;
+	if (freq > MAX_TX_FREQ_HZ) { // harmonics mode
+		while (freq > MAX_TX_FREQ_HZ) {
+			freq /= 3.0f; // third-harmonics
+		}
+	}
 
 	uint16_t calibrate_level = 0;
 

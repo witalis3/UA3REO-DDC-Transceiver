@@ -166,5 +166,6 @@ extern volatile float32_t TRX_VBAT_Voltage;
 extern uint32_t TRX_Inactive_Time;
 volatile extern uint_fast16_t CW_Key_Timeout_est;
 extern uint32_t dbg_FPGA_samples;
+extern uint8_t TRX_TX_Harmonic;
 
 #endif
