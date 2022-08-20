@@ -352,7 +352,6 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 	}
 	else if (CALIBRATE.DAC_driver_mode == 1) // dac driver bias 75%
 	{
-		calibrate_level -= 100;
 		TRX_DAC_DRV_A0 = true;
 		TRX_DAC_DRV_A1 = false;
 	}
