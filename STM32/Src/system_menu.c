@@ -4654,6 +4654,13 @@ static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)
 		CALIBRATE.VCXO_correction = -32750;
 	if (CALIBRATE.VCXO_correction > 32750)
 		CALIBRATE.VCXO_correction = 32750;
+	
+	#ifndef FRONTPANEL_LITE
+	if (CALIBRATE.VCXO_correction < -126)
+		CALIBRATE.VCXO_correction = -126;
+	if (CALIBRATE.VCXO_correction > 126)
+		CALIBRATE.VCXO_correction = 126;
+	#endif
 }
 // Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction)

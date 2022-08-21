@@ -495,12 +495,6 @@ static inline void FPGA_fpgadata_sendparam(void)
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8 & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
-	
-	// STAGE 23
-	// OUT VCXO OFFSET 2
-	FPGA_writePacket(((CALIBRATE.VCXO_correction & (0XFFU << 8)) >> 8));
-	FPGA_clockRise();
-	FPGA_clockFall();
 }
 
 // get parameters
