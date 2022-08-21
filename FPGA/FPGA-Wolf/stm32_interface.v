@@ -280,15 +280,10 @@ begin
 	end
 	else if (k == 114)
 	begin
-		VCXO_correction[15:8] = DATA_BUS[7:0];
+		VCXO_correction[7:0] = DATA_BUS[7:0];
 		k = 115;
 	end
 	else if (k == 115)
-	begin
-		VCXO_correction[7:0] = DATA_BUS[7:0];
-		k = 116;
-	end
-	else if (k == 116)
 	begin
 		DAC_div0 = DATA_BUS[0:0];
 		DAC_div1 = DATA_BUS[1:1];
@@ -306,42 +301,49 @@ begin
 		else if(DATA_BUS[7:6] =='d3)
 			RX_CIC_RATE = 'd1280;
 		
+		k = 116;
+	end
+	else if (k == 116)
+	begin
+		TX_NCO_freq[31:24] = DATA_BUS[7:0];
 		k = 117;
 	end
 	else if (k == 117)
 	begin
-		TX_NCO_freq[31:24] = DATA_BUS[7:0];
+		TX_NCO_freq[23:16] = DATA_BUS[7:0];
 		k = 118;
 	end
 	else if (k == 118)
 	begin
-		TX_NCO_freq[23:16] = DATA_BUS[7:0];
+		TX_NCO_freq[15:8] = DATA_BUS[7:0];
 		k = 119;
 	end
 	else if (k == 119)
 	begin
-		TX_NCO_freq[15:8] = DATA_BUS[7:0];
+		TX_NCO_freq[7:0] = DATA_BUS[7:0];
 		k = 120;
 	end
 	else if (k == 120)
 	begin
-		TX_NCO_freq[7:0] = DATA_BUS[7:0];
+		DAC_DRV_A0 = DATA_BUS[0:0];
+		DAC_DRV_A1 = DATA_BUS[1:1];
 		k = 121;
 	end
 	else if (k == 121)
 	begin
-		DAC_DRV_A0 = DATA_BUS[0:0];
-		DAC_DRV_A1 = DATA_BUS[1:1];
+		VCXO_correction[15:8] = DATA_BUS[7:0];
 		k = 999;
 	end
 	else if (k == 200) //SEND PARAMS
 	begin
 		DATA_BUS_OUT[0:0] = ADC_OTR;
 		DATA_BUS_OUT[1:1] = DAC_OTR;
+		//DATA_BUS_OUT[2:2] = iq_overrun;
 		k = 201;
 	end
 	else if (k == 201)
 	begin
+		//iq_overrun = 0;
 		DATA_BUS_OUT[7:0] = ADC_MIN[15:8];
 		k = 202;
 	end
@@ -532,12 +534,12 @@ begin
 	end
 	else if (k == 800) //GET INFO
 	begin
-		DATA_BUS_OUT[7:0] = 'd5; //flash id 1
+		DATA_BUS_OUT[7:0] = 'd4; //flash id 1
 		k = 801;
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd0; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd1; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

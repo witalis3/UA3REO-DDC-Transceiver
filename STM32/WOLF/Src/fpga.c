@@ -416,12 +416,6 @@ static inline void FPGA_fpgadata_sendparam(void)
 
 	// STAGE 16
 	// OUT VCXO OFFSET
-	FPGA_writePacket(((CALIBRATE.VCXO_correction & (0XFFU << 8)) >> 8));
-	FPGA_clockRise();
-	FPGA_clockFall();
-
-	// STAGE 16
-	// OUT VCXO OFFSET
 	FPGA_writePacket(CALIBRATE.VCXO_correction);
 	FPGA_clockRise();
 	FPGA_clockFall();
@@ -499,6 +493,12 @@ static inline void FPGA_fpgadata_sendparam(void)
 		bitWrite(FPGA_fpgadata_out_tmp8, 1, 1); // DAC driver shutdown
 	}
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8 & 0XFFU);
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	// STAGE 23
+	// OUT VCXO OFFSET 2
+	FPGA_writePacket(((CALIBRATE.VCXO_correction & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 }

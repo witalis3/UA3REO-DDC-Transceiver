@@ -118,7 +118,7 @@ begin
 		end
 		else if(state == 3)
 		begin
-			if($signed(freq_error_diff) == 0) //check mesure
+			if(freq_error_diff == 0) //check mesure
 			begin		
 				//tune
 				if($signed(freq_error_now) < -10 || $signed(freq_error_now) > 10)

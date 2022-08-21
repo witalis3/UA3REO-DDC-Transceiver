@@ -400,6 +400,11 @@
               <FilePath>..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -483,11 +488,6 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4276,6 +4276,11 @@
               <FilePath>..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -4359,11 +4364,6 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5890,6 +5890,11 @@
               <FilePath>..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -5973,11 +5978,6 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -7504,6 +7504,11 @@
               <FilePath>..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -7587,11 +7592,6 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -9118,6 +9118,11 @@
               <FilePath>..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -9201,11 +9206,6 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -10732,6 +10732,11 @@
               <FilePath>..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -10815,11 +10820,6 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -12346,6 +12346,11 @@
               <FilePath>..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -12429,11 +12434,6 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -13891,6 +13891,11 @@
               <FilePath>..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -13974,11 +13979,6 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -15436,6 +15436,11 @@
               <FilePath>..\Inc\fatfs.h</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -15519,11 +15524,6 @@
               <FileName>hardware.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
