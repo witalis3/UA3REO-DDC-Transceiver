@@ -96,7 +96,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH48[6] = {
 	{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 1600, .tres_max = 2200, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_DOWN, .holdHandler = BUTTONHANDLER_DOWN},	 //PTT_SW1 - DOWN
 	{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 1000, .tres_max = 1500, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_UP, .holdHandler = BUTTONHANDLER_UP},		 //PTT_SW1 - UP
-	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 1000, .tres_max = 1500, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE},		 //PTT_SW2 - P1
+	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 1000, .tres_max = 1500, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_VLT, .holdHandler = BUTTONHANDLER_PRE},		 //PTT_SW2 - P1
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 1500, .tres_max = 2100, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_ArB},		 //PTT_SW2 - P2
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 2100, .tres_max = 2600, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N}, //PTT_SW2 - P3
 	{.port = 1, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 2700, .tres_max = 3100, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P}, //PTT_SW2 - P4
@@ -868,7 +868,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 	
 	//BUTTONS
-	if (button->type == FUNIT_CTRL_BUTTON)
+	if (button->type == FUNIT_CTRL_BUTTON && !TRX_on_TX)
 	{
 		//println(mcp3008_value, " ", button->tres_min, " ", button->tres_max);
 		
