@@ -538,6 +538,17 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		sprintf(sbuff, "Vol: %u%%", TRX.Volume);
 		LCD_showTooltip(sbuff);
 	}
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) // IF
+	{
+		TRX.IF_Gain += direction * 1;
+		if (TRX.IF_Gain < 1)
+			TRX.IF_Gain = 1;
+		if (TRX.IF_Gain > 80)
+			TRX.IF_Gain = 80;
+		
+		LCD_UpdateQuery.StatusInfoBar = true;
+	}
 }
 
 void FRONTPANEL_check_ENC2SW(bool state)
@@ -621,7 +632,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) // nothing to SQL tune
 			TRX.ENC2_func_mode++;
 
-		if (TRX.ENC2_func_mode > ENC_FUNC_SET_VOLUME)
+		if (TRX.ENC2_func_mode > ENC_FUNC_SET_IF)
 			TRX.ENC2_func_mode = ENC_FUNC_PAGER;
 
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -644,6 +655,8 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter)
 			LCD_showTooltip("SET SQL");
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME)
 			LCD_showTooltip("VOLUME");
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF)
+			LCD_showTooltip("SET IF");
 	}
 	else
 	{

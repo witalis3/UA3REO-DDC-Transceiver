@@ -347,6 +347,7 @@ typedef enum
 	ENC_FUNC_SET_HPF,
 	ENC_FUNC_SET_SQL,
 	ENC_FUNC_SET_VOLUME,
+	ENC_FUNC_SET_IF,
 } ENC2_FUNC_MODE;
 
 // Save settings by band
