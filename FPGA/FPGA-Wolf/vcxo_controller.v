@@ -16,7 +16,7 @@ parameter TCXO_freq = 1228800; //x10hz
 input vcxo_clk_in;
 input tcxo_clk_in;
 input pwm_clk_in;
-input signed [15:0] VCXO_correction;
+input signed [7:0] VCXO_correction;
 input tx;
 
 output reg signed [31:0] freq_error = 0;
@@ -112,8 +112,8 @@ begin
 		end
 		else if(state == 2)
 		begin
-			freq_error_now = $signed(VCXO_counter_result) - $signed(VCXO_freq) + $signed(VCXO_correction);
-			freq_error_diff = $signed(freq_error_prev) - $signed(freq_error_now);
+			freq_error_now = VCXO_counter_result - VCXO_freq + $signed(VCXO_correction);
+			freq_error_diff = freq_error_prev - freq_error_now;
 			state = 3;
 		end
 		else if(state == 3)
@@ -121,12 +121,12 @@ begin
 			if(freq_error_diff == 0) //check mesure
 			begin		
 				//tune
-				if($signed(freq_error_now) < -10 || $signed(freq_error_now) > 10)
+				if(freq_error_now < -10 || freq_error_now > 10)
 				begin
 					PWM = $signed(PWM) - ($signed(freq_error_now) <<< 1);
 					freq_error = freq_error_now;
 				end
-				else if($signed(freq_error_now) < -1 || $signed(freq_error_now) > 1)
+				else if(freq_error_now < -1 || freq_error_now > 1)
 				begin
 					PWM = $signed(PWM) - $signed(freq_error_now);
 					freq_error = freq_error_now;
