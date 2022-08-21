@@ -45,6 +45,7 @@ extern void BUTTONHANDLER_SPLIT(uint32_t parameter);
 extern void BUTTONHANDLER_STEP(uint32_t parameter);
 extern void BUTTONHANDLER_BANDMAP(uint32_t parameter);
 extern void BUTTONHANDLER_VOX(uint32_t parameter);
+extern void BUTTONHANDLER_FILEMANAGER(uint32_t parameter);
 extern void BUTTONHANDLER_FT8(uint32_t parameter);
 extern void BUTTONHANDLER_AUTOGAINER(uint32_t parameter);
 extern void BUTTONHANDLER_UP(uint32_t parameter);

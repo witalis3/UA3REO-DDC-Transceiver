@@ -2093,6 +2093,19 @@ void BUTTONHANDLER_GET_BAND_MEMORY(uint32_t parameter)
 	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 }
 
+void BUTTONHANDLER_FILEMANAGER(uint32_t parameter)
+{
+	if (!LCD_systemMenuOpened)
+	{
+		LCD_systemMenuOpened = true;
+		SYSMENU_SD_FILEMANAGER_HOTKEY();
+	}
+	else
+	{
+		SYSMENU_eventCloseAllSystemMenu();
+	}
+}
+
 void BUTTONHANDLER_FT8(uint32_t parameter)
 {
 	if (!LCD_systemMenuOpened)

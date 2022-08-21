@@ -123,7 +123,7 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 	#define HRDW_MCP3008_1 true
 	#define HRDW_HAS_FUNCBUTTONS true
 	#define MAX_VOLUME_VALUE 1024.0f
-	#define FUNCBUTTONS_COUNT (32+2)
+	#define FUNCBUTTONS_COUNT (32+3)
 	#define FUNCBUTTONS_ON_PAGE 8
 	#define FUNCBUTTONS_PAGES 4
 	static char ota_config_frontpanel[] = "BIG";
@@ -133,7 +133,7 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 	#define HRDW_MCP3008_1 true
 	#define HRDW_HAS_FUNCBUTTONS true
 	#define MAX_VOLUME_VALUE 1024.0f
-	#define FUNCBUTTONS_COUNT (27+4)
+	#define FUNCBUTTONS_COUNT (27+5)
 	#define FUNCBUTTONS_ON_PAGE 9
 	#define FUNCBUTTONS_PAGES 3
 	static char ota_config_frontpanel[] = "WF_100D";

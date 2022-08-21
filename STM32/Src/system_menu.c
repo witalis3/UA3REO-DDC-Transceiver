@@ -3603,6 +3603,15 @@ static void SYSMENU_HANDL_SDMENU(int8_t direction)
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+void SYSMENU_SD_FILEMANAGER_HOTKEY(void)
+{
+	SYSMENU_HANDL_SDMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "File Manager");
+	setCurrentMenuIndex(index);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+	SYSMENU_HANDL_SD_Filemanager(0);
+}
+
 static void SYSMENU_HANDL_SD_Filemanager(int8_t direction)
 {
 	sysmenu_filemanager_opened = true;
