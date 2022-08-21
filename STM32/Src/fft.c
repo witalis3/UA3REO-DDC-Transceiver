@@ -1884,7 +1884,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 		blue = 255;
 	}
 
-	// blue -> yellow -> red
+	// blue -> yellow -> red Blu>Y>R
 	if ((!type && TRX.FFT_Color == 1) || (type && TRX.WTF_Color == 1))
 	{
 		// r g b
@@ -1921,7 +1921,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 		return rgb888torgb565(red, green, blue);
 	}
 
-	// blue -> yellow -> red // version 2
+	// blue -> yellow -> red // version 2 BlB>Y>R
 	if ((!type && TRX.FFT_Color == 2) || (type && TRX.WTF_Color == 2))
 	{
 		// r g b
@@ -1957,9 +1957,53 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 		}
 		return rgb888torgb565(red, green, blue);
 	}
+	
+	// blue -> yellow -> red // version 3 BlR>Y>R
+	if ((!type && TRX.FFT_Color == 3) || (type && TRX.WTF_Color == 3))
+	{
+		// r g b
+		// 0 0 0
+		// 0 0 255
+		// 255 255 0
+		// 255 0 0
+		// contrast of each of the 4 zones, the total should be 1.0f
+		const float32_t contrast0 = 0.15f; // black
+		const float32_t contrast1 = 0.25f; // blue
+		const float32_t contrast2 = 0.10f; // yellow
+		const float32_t contrast3 = 0.50f; // red
+
+		if (height < GET_FFTHeight * contrast0)
+		{
+			red = 0;
+			green = 0;
+			blue = 0;
+		}
+		else if (height < GET_FFTHeight * (contrast0 + contrast1))
+		{
+			blue = (uint_fast8_t)((height - GET_FFTHeight * contrast0) * 255 / ((GET_FFTHeight - GET_FFTHeight * contrast0) * (contrast0 + contrast1)));
+			if (COLOR->WTF_BG_WHITE)
+			{
+				red -= blue;
+				green -= blue;
+			}
+		}
+		else if (height < GET_FFTHeight * (contrast0 + contrast1 + contrast2))
+		{
+			green = (uint_fast8_t)((height - GET_FFTHeight * contrast1) * 255 / ((GET_FFTHeight - GET_FFTHeight * contrast1) * (contrast1 + contrast2)));
+			red = green;
+			blue = 255 - green;
+		}
+		else
+		{
+			red = 255;
+			blue = 0;
+			green = (uint_fast8_t)(255 - (height - (GET_FFTHeight * (contrast1 + contrast2))) * 255 / ((GET_FFTHeight - (GET_FFTHeight * (contrast1 + contrast2))) * (contrast1 + contrast2 + contrast3)));
+		}
+		return rgb888torgb565(red, green, blue);
+	}
 
 	// black -> yellow -> red
-	if ((!type && TRX.FFT_Color == 3) || (type && TRX.WTF_Color == 3))
+	if ((!type && TRX.FFT_Color == 4) || (type && TRX.WTF_Color == 4))
 	{
 		// r g b
 		// 0 0 0
@@ -2003,7 +2047,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 
 	// black -> yellow -> green
-	if ((!type && TRX.FFT_Color == 4) || (type && TRX.WTF_Color == 4))
+	if ((!type && TRX.FFT_Color == 5) || (type && TRX.WTF_Color == 5))
 	{
 		// r g b
 		// 0 0 0
@@ -2047,7 +2091,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 
 	// black -> red
-	if ((!type && TRX.FFT_Color == 5) || (type && TRX.WTF_Color == 5))
+	if ((!type && TRX.FFT_Color == 6) || (type && TRX.WTF_Color == 6))
 	{
 		// r g b
 		// 0 0 0
@@ -2067,7 +2111,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 
 	// black -> green
-	if ((!type && TRX.FFT_Color == 6) || (type && TRX.WTF_Color == 6))
+	if ((!type && TRX.FFT_Color == 7) || (type && TRX.WTF_Color == 7))
 	{
 		// r g b
 		// 0 0 0
@@ -2087,7 +2131,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 
 	// black -> blue
-	if ((!type && TRX.FFT_Color == 7) || (type && TRX.WTF_Color == 7))
+	if ((!type && TRX.FFT_Color == 8) || (type && TRX.WTF_Color == 8))
 	{
 		// r g b
 		// 0 0 0
@@ -2107,7 +2151,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 
 	// black -> white
-	if ((!type && TRX.FFT_Color == 8) || (type && TRX.WTF_Color == 8))
+	if ((!type && TRX.FFT_Color == 9) || (type && TRX.WTF_Color == 9))
 	{
 		// r g b
 		// 0 0 0

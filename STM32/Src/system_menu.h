@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include "lcd_driver.h"
 
-#define ENUM_MAX_COUNT 9
+#define ENUM_MAX_COUNT 10
 
 #ifdef LAY_160x128
 #define ENUM_MAX_LENGTH 7
