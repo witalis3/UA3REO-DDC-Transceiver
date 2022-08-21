@@ -718,10 +718,19 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	if (LCD_busy)
 	{
 		LCD_UpdateQuery.StatusInfoBar = true;
+		
+		if(redraw)
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
 		return;
 	}
 	LCD_busy = true;
 	char ctmp[50];
+	
+	static bool prev_on_tx = false;
+	if(prev_on_tx != TRX_on_TX) {
+		prev_on_tx = TRX_on_TX;
+		redraw = true;
+	}
 
 	if (!TRX_on_TX)
 	{
