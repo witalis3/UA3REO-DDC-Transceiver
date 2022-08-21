@@ -2235,7 +2235,21 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter)
 			if (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == 0)
 				sprintf(tmp, "-");
 			else
-				sprintf(tmp, "%.1f", CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq / 1000000.0f);
+			{
+				uint64_t freq = CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq;
+				if(freq < 1000000) { // < 1mhz
+					sprintf(tmp, "%.2f", freq / 1000.0f); //3k.2h
+				}
+				else if(freq < 100000000) { // < 100mhz
+					sprintf(tmp, "%.3f", freq / 1000000.0f); //2m.3k
+				}
+				else if(freq < 1000000000) { // < 1000mhz
+					sprintf(tmp, "%.2f", freq / 1000000.0f); //3m.2k
+				}
+				else { // >= 1000mhz
+					sprintf(tmp, "%u", (uint32_t)(freq / 1000000)); //3m
+				}
+			}
 
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + x * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN), buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, tmp, (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == CurrentVFO->Freq), true, true, (channel_num - 1), BUTTONHANDLER_SelectMemoryChannels, BUTTONHANDLER_SaveMemoryChannels, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 			channel_num++;
