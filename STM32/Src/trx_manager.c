@@ -643,24 +643,49 @@ void TRX_ProcessScanMode(void)
 	if (goSweep)
 	{
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, false);
-		for (uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++)
+		
+		if (TRX.ChannelMode && band != -1 && BANDS[band].channelsCount > 0) // channel mode
 		{
-			if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO->Freq))
+			int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
+			int_fast16_t new_channel = channel + 1;
+			if (new_channel < 0)
+				new_channel = BANDS[band].channelsCount - 1;
+			if (new_channel >= BANDS[band].channelsCount)
+				new_channel = 0;
+			
+			float64_t newfreq = BANDS[band].channels[new_channel].rxFreq;
+			TRX_setFrequency(newfreq, CurrentVFO);
+			
+			TRX.SPLIT_Enabled = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
+			if (TRX.SPLIT_Enabled)
+				TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
+			
+			LCD_UpdateQuery.FreqInfoRedraw = true;
+			//LCD_UpdateQuery.StatusInfoGUI = true;
+			//LCD_UpdateQuery.StatusInfoBarRedraw = true;
+			StateChangeTime = HAL_GetTick();
+		}
+		else // common region mode
+		{
+			for (uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++)
 			{
-				uint32_t step = SCANNER_FREQ_STEP_OTHER;
-				if (CurrentVFO->Mode == TRX_MODE_WFM)
-					step = SCANNER_FREQ_STEP_WFM;
-				if (CurrentVFO->Mode == TRX_MODE_NFM)
-					step = SCANNER_FREQ_STEP_NFM;
+				if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO->Freq))
+				{
+					uint32_t step = SCANNER_FREQ_STEP_OTHER;
+					if (CurrentVFO->Mode == TRX_MODE_WFM)
+						step = SCANNER_FREQ_STEP_WFM;
+					if (CurrentVFO->Mode == TRX_MODE_NFM)
+						step = SCANNER_FREQ_STEP_NFM;
 
-				uint32_t new_freq = (CurrentVFO->Freq + step) / step * step;
-				if (new_freq >= BANDS[band].regions[region_id].endFreq)
-					new_freq = BANDS[band].regions[region_id].startFreq;
+					uint32_t new_freq = (CurrentVFO->Freq + step) / step * step;
+					if (new_freq >= BANDS[band].regions[region_id].endFreq)
+						new_freq = BANDS[band].regions[region_id].startFreq;
 
-				TRX_setFrequency(new_freq, CurrentVFO);
-				LCD_UpdateQuery.FreqInfo = true;
-				StateChangeTime = HAL_GetTick();
-				break;
+					TRX_setFrequency(new_freq, CurrentVFO);
+					LCD_UpdateQuery.FreqInfo = true;
+					StateChangeTime = HAL_GetTick();
+					break;
+				}
 			}
 		}
 	}
