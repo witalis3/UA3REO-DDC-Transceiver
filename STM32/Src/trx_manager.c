@@ -1364,6 +1364,8 @@ void BUTTONHANDLER_RIT(uint32_t parameter)
 	TRX.RIT_Enabled = !TRX.RIT_Enabled;
 	if(TRX.RIT_Enabled) 
 		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
+	if(!TRX.RIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT)
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	TRX.XIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
 	TRX_RIT = 0;
@@ -1379,6 +1381,8 @@ void BUTTONHANDLER_XIT(uint32_t parameter)
 	TRX.XIT_Enabled = !TRX.XIT_Enabled;
 	if(TRX.XIT_Enabled) 
 		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
+	if(!TRX.XIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT)
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	TRX.RIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
 	TRX_XIT = 0;
@@ -2095,6 +2099,7 @@ void BUTTONHANDLER_GET_BAND_MEMORY(uint32_t parameter)
 
 void BUTTONHANDLER_FILEMANAGER(uint32_t parameter)
 {
+	#if HRDW_HAS_SD
 	if (!LCD_systemMenuOpened)
 	{
 		LCD_systemMenuOpened = true;
@@ -2104,6 +2109,7 @@ void BUTTONHANDLER_FILEMANAGER(uint32_t parameter)
 	{
 		SYSMENU_eventCloseAllSystemMenu();
 	}
+	#endif
 }
 
 void BUTTONHANDLER_FT8(uint32_t parameter)

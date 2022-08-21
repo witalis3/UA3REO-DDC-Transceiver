@@ -430,6 +430,9 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_RIT = TRX.RIT_INTERVAL;
 			if (TRX_RIT < -TRX.RIT_INTERVAL)
 				TRX_RIT = -TRX.RIT_INTERVAL;
+			
+			TRX_XIT = 0;
+			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 
 		if (TRX.XIT_Enabled && TRX.FineRITTune)
@@ -439,6 +442,9 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_XIT = TRX.XIT_INTERVAL;
 			if (TRX_XIT < -TRX.XIT_INTERVAL)
 				TRX_XIT = -TRX.XIT_INTERVAL;
+			
+			TRX_RIT = 0;
+			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 	}
 
@@ -792,78 +798,6 @@ void FRONTPANEL_Process(void)
 
 void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value)
 {
-	// AF_GAIN
-	if (button->type == FUNIT_CTRL_AF_GAIN)
-	{
-		static float32_t AF_VOLUME_mcp3008_averaged = 0.0f;
-		AF_VOLUME_mcp3008_averaged = AF_VOLUME_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
-		
-		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - AF_VOLUME_mcp3008_averaged);
-		if (TRX.Volume < 50)
-			TRX.Volume = 0;
-	}
-
-	// RIT / XIT or IF Gain
-	if (button->type == FUNIT_CTRL_RIT_XIT)
-	{
-		static float32_t IF_GAIN_mcp3008_averaged = 0.0f;
-		IF_GAIN_mcp3008_averaged = IF_GAIN_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
-		
-		if (TRX.RIT_Enabled)
-		{
-			static int_fast16_t TRX_RIT_old = 0;
-			if (!TRX.FineRITTune)
-				TRX_RIT = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
-
-			if (TRX_RIT_old != TRX_RIT)
-			{
-				TRX_RIT_old = TRX_RIT;
-				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
-				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_RIT / (float32_t)TRX.RIT_INTERVAL));
-				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
-				{
-					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
-					LCD_UpdateQuery.StatusInfoGUI = true;
-				}
-			}
-			TRX_XIT = 0;
-		}
-
-		if (TRX.XIT_Enabled)
-		{
-			static int_fast16_t TRX_XIT_old = 0;
-			if (!TRX.FineRITTune)
-				TRX_XIT = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
-
-			if (TRX_XIT_old != TRX_XIT)
-			{
-				TRX_XIT_old = TRX_XIT;
-				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
-				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_XIT / (float32_t)TRX.XIT_INTERVAL));
-				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
-				{
-					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
-					LCD_UpdateQuery.StatusInfoGUI = true;
-				}
-			}
-			TRX_RIT = 0;
-		}
-		
-		if (!TRX.RIT_Enabled && TRX.XIT_Enabled && !TRX.FineRITTune) // Disable RIT/XIT + IF
-		{
-			TRX_RIT = 0;
-			TRX_XIT = 0;
-			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - IF_GAIN_mcp3008_averaged) * 60.0f / 1023.0f));
-		}
-
-		if (TRX.FineRITTune) // IF only
-		{
-			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - IF_GAIN_mcp3008_averaged) * 60.0f / 1023.0f));
-		}
-	}
-
 	// PTT
 	if (button->type == FUNIT_CTRL_PTT)
 	{
