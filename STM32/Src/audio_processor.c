@@ -2332,11 +2332,21 @@ void APROC_doVOX(void) {
 	static uint32_t VOX_LastSignalTime = 0;
 	static bool VOX_applied = false;
 	
-	static q31_t rms = 0;
+#ifndef STM32F407xx
+	q31_t rms = 0;
 	arm_rms_q31(CODEC_Audio_Buffer_TX, CODEC_AUDIO_BUFFER_HALF_SIZE, &rms);
+#else
+	float32_t rms = 0;
+	for(uint32_t i = 0 ; i < CODEC_AUDIO_BUFFER_HALF_SIZE; i++) {
+		float32_t sample = convertToSPIBigEndian(CODEC_Audio_Buffer_TX[i]);
+		rms += sample * sample;
+	}
+	rms = sqrtf(rms / (float32_t)CODEC_AUDIO_BUFFER_HALF_SIZE);
+#endif
+	
 	float32_t full_scale_rate = (float32_t)rms / CODEC_BITS_FULL_SCALE;
 	float32_t VOX_dbFS = rate2dbV(full_scale_rate);
-	//println("VOX dbFS: ", VOX_dbFS);
+	// println("VOX dbFS: ", VOX_dbFS);
 	
 	if(VOX_dbFS > TRX.VOX_THRESHOLD)
 		VOX_LastSignalTime = current_tick;
