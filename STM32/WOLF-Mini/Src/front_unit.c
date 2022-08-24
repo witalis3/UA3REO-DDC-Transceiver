@@ -35,7 +35,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 1, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 3, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB4
 	{.port = 1, .channel = 5, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 4, .clickHandler = BUTTONHANDLER_FUNC, .holdHandler = BUTTONHANDLER_FUNCH}, //SB5
 	{.port = 1, .channel = 6, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_BAND_N}, //SB6
-	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU}, //SB7
+	{.port = 1, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 90, .tres_max = 110, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_LOCK}, //SB7
 };
 
 const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
