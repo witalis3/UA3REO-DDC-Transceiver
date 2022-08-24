@@ -3684,6 +3684,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 	if (!sysmenu_timeMenuOpened)
 		LCDDriver_Fill(BG_COLOR);
 	sysmenu_timeMenuOpened = true;
+	
 	static uint8_t Hours;
 	static uint8_t Minutes;
 	static uint8_t Seconds;
@@ -3740,9 +3741,12 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 	}
 	if (direction == 0)
 	{
+		if(LCD_busy)
+			return;
+		LCD_busy = true;
 		#ifdef LCD_SMALL_INTERFACE
-			#define x_pos_clk 10
-			#define y_pos_clk 20
+			#define x_pos_clk 50
+			#define y_pos_clk 50
 		#else
 			#define x_pos_clk 76
 			#define y_pos_clk 100
@@ -3750,14 +3754,15 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction)
 		sprintf(ctmp, "%d", Hours);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printText(ctmp, x_pos_clk, y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, 3);
+		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		sprintf(ctmp, "%d", Minutes);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, 3);
+		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		sprintf(ctmp, "%d", Seconds);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCD_busy = false;
 	}
 }
 
@@ -6249,7 +6254,6 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	// time menu
 	if (sysmenu_timeMenuOpened)
 	{
-		LCDDriver_Fill(BG_COLOR);
 		if (direction < 0)
 		{
 			TimeMenuSelection--;
