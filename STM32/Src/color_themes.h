@@ -72,6 +72,10 @@ typedef const struct
 	const uint16_t WINDOWS_BORDER;
 	const uint16_t WINDOWS_BG;
 	const uint16_t KEYBOARD_BG;
+    const uint16_t IFGAIN_BAR_BG;
+    const uint16_t IFGAIN_BAR_FG;
+    const uint16_t AFGAIN_BAR_BG;
+    const uint16_t AFGAIN_BAR_FG;
 } STRUCT_COLOR_THEME;
 
 static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
@@ -145,6 +149,10 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
 		.WINDOWS_BG = COLOR_BLACK,
 		.KEYBOARD_BG = rgb888torgb565(20, 20, 20),
+        .IFGAIN_BAR_BG = rgb888torgb565(20, 20, 20),
+        .IFGAIN_BAR_FG = rgb888torgb565(255, 0, 0),
+        .AFGAIN_BAR_BG = rgb888torgb565(20, 20, 20),
+        .AFGAIN_BAR_FG = rgb888torgb565(0, 255, 0),
 	},
 	// 1 - white
 	{
@@ -216,6 +224,10 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
 		.WINDOWS_BG = COLOR_BLACK,
 		.KEYBOARD_BG = rgb888torgb565(20, 20, 20),
+        .IFGAIN_BAR_BG = rgb888torgb565(129, 135, 247),
+        .IFGAIN_BAR_FG = rgb888torgb565(255, 0, 0),
+        .AFGAIN_BAR_BG = rgb888torgb565(129, 135, 247),
+        .AFGAIN_BAR_FG = rgb888torgb565(0, 255, 0),
 	},
 
 	{
@@ -293,6 +305,10 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[3] = {
 		.WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
 		.WINDOWS_BG = COLOR_BLACK,
 		.KEYBOARD_BG = rgb888torgb565(20, 20, 20),
+        .IFGAIN_BAR_BG = rgb888torgb565(129, 135, 247),
+        .IFGAIN_BAR_FG = rgb888torgb565(255, 0, 0),
+        .AFGAIN_BAR_BG = rgb888torgb565(129, 135, 247),
+        .AFGAIN_BAR_FG = rgb888torgb565(0, 255, 0),
 	}};
 
 #define COLOR_THEMES_COUNT 3
