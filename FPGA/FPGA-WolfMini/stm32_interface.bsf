@@ -299,8 +299,8 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 416)
 		(output)
-		(text "VCXO_correction[7..0]" (rect 0 0 93 12)(font "Arial" ))
-		(text "VCXO_correction[7..0]" (rect 174 411 267 423)(font "Arial" ))
+		(text "VCXO_correction[15..0]" (rect 0 0 96 12)(font "Arial" ))
+		(text "VCXO_correction[15..0]" (rect 171 411 267 423)(font "Arial" ))
 		(line (pt 288 416)(pt 272 416)(line_width 3))
 	)
 	(port

@@ -410,6 +410,11 @@
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
             <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fpga.c</FilePath>
+            </File>
+            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -423,11 +428,6 @@
               <FileName>lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\lcd.c</FilePath>
-            </File>
-            <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\WOLF\Src\fpga.c</FilePath>
             </File>
             <File>
               <FileName>main.c</FileName>

@@ -4669,7 +4669,7 @@ static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction)
 	if (CALIBRATE.VCXO_correction > 32750)
 		CALIBRATE.VCXO_correction = 32750;
 	
-	#ifndef FRONTPANEL_LITE
+	#if (!defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_MINI))
 	if (CALIBRATE.VCXO_correction < -126)
 		CALIBRATE.VCXO_correction = -126;
 	if (CALIBRATE.VCXO_correction > 126)
