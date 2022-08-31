@@ -660,7 +660,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.NOTX_2200m = false; // disable TX on some bands
 		CALIBRATE.NOTX_160m = false;
 		CALIBRATE.NOTX_80m = false;
-		CALIBRATE.NOTX_60m = true;
+		CALIBRATE.NOTX_60m = false;
 		CALIBRATE.NOTX_40m = false;
 		CALIBRATE.NOTX_30m = false;
 		CALIBRATE.NOTX_20m = false;
@@ -670,9 +670,9 @@ void LoadCalibration(bool clear)
 		CALIBRATE.NOTX_CB = false;
 		CALIBRATE.NOTX_10m = false;
 		CALIBRATE.NOTX_6m = false;
-		CALIBRATE.NOTX_4m = true;
+		CALIBRATE.NOTX_4m = false;
 		CALIBRATE.NOTX_2m = false;
-		CALIBRATE.NOTX_70cm = true;
+		CALIBRATE.NOTX_70cm = false;
 		CALIBRATE.ENABLE_60m_band = false; // enable hidden bands
 		CALIBRATE.ENABLE_4m_band = false;
 		CALIBRATE.ENABLE_AIR_band = false;
