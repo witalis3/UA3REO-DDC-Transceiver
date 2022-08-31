@@ -898,7 +898,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 #endif
 		{"TX Start Delay", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_HANDL_CALIB_TX_StartDelay},
 		{"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
-#if defined(FRONTPANEL_BIG_V1)
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
 		{"INA226_PWR_MON", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},				  // Tisho
 		{"INA226_Cur_Calc(mA/Bit)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL}, // Tisho
 #endif
