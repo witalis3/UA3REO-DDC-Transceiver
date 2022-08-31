@@ -1200,7 +1200,12 @@ static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction)
 		TRX.SAMPLERATE_MAIN += direction;
 	if (TRX.SAMPLERATE_MAIN > 3)
 		TRX.SAMPLERATE_MAIN = 3;
-
+	
+	#ifdef STM32F407xx
+	if (TRX.SAMPLERATE_MAIN > 1)
+		TRX.SAMPLERATE_MAIN = 1;
+	#endif
+	
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 
@@ -1215,6 +1220,11 @@ static void SYSMENU_HANDL_TRX_SAMPLERATE_FM(int8_t direction)
 	if (TRX.SAMPLERATE_FM > 3)
 		TRX.SAMPLERATE_FM = 3;
 
+	#ifdef STM32F407xx
+	if (TRX.SAMPLERATE_FM > 1)
+		TRX.SAMPLERATE_FM = 1;
+	#endif
+	
 	FFT_Init();
 	NeedReinitAudioFilters = true;
 }
