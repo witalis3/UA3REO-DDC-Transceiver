@@ -356,52 +356,8 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		return;
 	}
 
-	float64_t newfreq = CurrentVFO->Freq;
-	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
-	{
-		int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
-		int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
-		int_fast16_t new_channel = channel + direction;
-		if (new_channel < 0)
-			new_channel = BANDS[band].channelsCount - 1;
-		if (new_channel >= BANDS[band].channelsCount)
-			new_channel = 0;
-
-		newfreq = BANDS[band].channels[new_channel].rxFreq;
-		TRX.SPLIT_Enabled = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
-		if (TRX.SPLIT_Enabled)
-			TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
-		LCD_UpdateQuery.FreqInfoRedraw = true;
-		LCD_UpdateQuery.StatusInfoGUI = true;
-		LCD_UpdateQuery.StatusInfoBarRedraw = true;
-	}
-	else if (TRX.Fast)
-	{
-		float64_t step = TRX.FRQ_FAST_STEP;
-		if (CurrentVFO->Mode == TRX_MODE_CW)
-			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-		if(step < 1.0f) step = 1.0f;
-
-		if (direction == -1.0f)
-			newfreq = ceill(newfreq / step) * step;
-		if (direction == 1.0f)
-			newfreq = floorl(newfreq / step) * step;
-		newfreq = newfreq + step * direction;
-	}
-	else
-	{
-		float64_t step = TRX.FRQ_STEP;
-		if (CurrentVFO->Mode == TRX_MODE_CW)
-			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-		if(step < 1.0f) step = 1.0f;
-
-		if (direction == -1.0f)
-			newfreq = ceill(newfreq / step) * step;
-		if (direction == 1.0f)
-			newfreq = floorl(newfreq / step) * step;
-		newfreq = newfreq + step * direction;
-	}
-	TRX_setFrequency(newfreq, CurrentVFO);
+	TRX_DoFrequencyEncoder(direction, false);
+	
 	LCD_UpdateQuery.FreqInfo = true;
 	NeedSaveSettings = true;
 }
@@ -435,57 +391,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	{
 		if(TRX_on_TX) return;
 		
-		float64_t newfreq = (float64_t)CurrentVFO->Freq;
-		float64_t step = 0;
-		if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
-		{
-			int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
-			int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
-			int_fast16_t new_channel = channel + direction;
-			if (new_channel < 0)
-				new_channel = BANDS[band].channelsCount - 1;
-			if (new_channel >= BANDS[band].channelsCount)
-				new_channel = 0;
-
-			newfreq = BANDS[band].channels[new_channel].rxFreq;
-			TRX.SPLIT_Enabled = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
-			if (TRX.SPLIT_Enabled)
-				TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
-			LCD_UpdateQuery.FreqInfoRedraw = true;
-			LCD_UpdateQuery.StatusInfoGUI = true;
-			LCD_UpdateQuery.StatusInfoBarRedraw = true;
-		}
-		else if (TRX.Fast)
-		{
-			step = TRX.FRQ_ENC_FAST_STEP;
-			if (CurrentVFO->Mode == TRX_MODE_WFM)
-				step = step * 2.0;
-			if (CurrentVFO->Mode == TRX_MODE_CW)
-				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-			if(step < 1.0f) step = 1.0f;
-
-			if (direction == -1.0f)
-				newfreq = ceill(newfreq / step) * step;
-			if (direction == 1.0f)
-				newfreq = floorl(newfreq / step) * step;
-			newfreq = newfreq + step * direction;
-		}
-		else
-		{
-			step = TRX.FRQ_ENC_STEP;
-			if (CurrentVFO->Mode == TRX_MODE_WFM)
-				step = step * 2.0;
-			if (CurrentVFO->Mode == TRX_MODE_CW)
-				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-			if(step < 1.0f) step = 1.0f;
-
-			if (direction == -1.0f)
-				newfreq = ceill(newfreq / step) * step;
-			if (direction == 1.0f)
-				newfreq = floorl(newfreq / step) * step;
-			newfreq = newfreq + step * direction;
-		}
-		TRX_setFrequency(newfreq, CurrentVFO);
+		TRX_DoFrequencyEncoder(direction, true);
+		
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 

@@ -717,6 +717,79 @@ void TRX_setFrequencySlowly_Process(void)
 	}
 }
 
+void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder)
+{
+	float64_t newfreq = (float64_t)CurrentVFO->Freq;
+	float64_t step = 0;
+	
+	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
+	{
+		int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
+		int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
+		int_fast16_t new_channel = channel + direction;
+		if (new_channel < 0)
+			new_channel = BANDS[band].channelsCount - 1;
+		if (new_channel >= BANDS[band].channelsCount)
+			new_channel = 0;
+
+		newfreq = BANDS[band].channels[new_channel].rxFreq;
+		TRX.SPLIT_Enabled = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
+		if (TRX.SPLIT_Enabled)
+			TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
+		LCD_UpdateQuery.FreqInfoRedraw = true;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBarRedraw = true;
+	}
+	else if (TRX.Fast)
+	{
+		step = TRX.FRQ_FAST_STEP;
+		if (CurrentVFO->Mode == TRX_MODE_CW)
+			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+		
+		if (secondary_encoder) {
+			step = TRX.FRQ_ENC_FAST_STEP;
+			if (CurrentVFO->Mode == TRX_MODE_WFM)
+				step = step * 2.0;
+			if (CurrentVFO->Mode == TRX_MODE_CW)
+				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+		}
+		
+		step = roundl(step);
+		if(step < 1.0f) step = 1.0f;
+
+		if (direction == -1.0f)
+			newfreq = ceill(newfreq / step) * step;
+		if (direction == 1.0f)
+			newfreq = floorl(newfreq / step) * step;
+		newfreq = newfreq + step * direction;
+	}
+	else
+	{
+		step = TRX.FRQ_STEP;
+		if (CurrentVFO->Mode == TRX_MODE_CW)
+			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+		
+		if (secondary_encoder) {
+			step = TRX.FRQ_ENC_STEP;
+			if (CurrentVFO->Mode == TRX_MODE_WFM)
+				step = step * 2.0;
+			if (CurrentVFO->Mode == TRX_MODE_CW)
+				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+		}
+		
+		step = roundl(step);
+		if(step < 1.0f) step = 1.0f;
+
+		if (direction == -1.0f)
+			newfreq = ceill(newfreq / step) * step;
+		if (direction == 1.0f)
+			newfreq = floorl(newfreq / step) * step;
+		newfreq = newfreq + step * direction;
+	}
+	
+	TRX_setFrequency(newfreq, CurrentVFO);
+}
+
 /// BUTTON HANDLERS ///
 
 void BUTTONHANDLER_DOUBLE(uint32_t parameter)

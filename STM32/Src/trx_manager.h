@@ -27,6 +27,7 @@ extern void TRX_ProcessScanMode(void);
 extern void TRX_setFrequencySlowly(uint32_t target_freq);
 extern void TRX_setFrequencySlowly_Process(void);
 extern bool TRX_TX_Disabled(uint32_t freq);
+extern void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder);
 
 extern void BUTTONHANDLER_MODE_P(uint32_t parameter);
 extern void BUTTONHANDLER_MODE_N(uint32_t parameter);
