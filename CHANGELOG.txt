@@ -12,7 +12,7 @@
 +STM32: Новая контрастная тема для водопада "BlR>Y>R", Tnx R7KBI
 +STM32: Функция Scan при активном канальном режиме перебирает каналы, а не частоты, Tnx Radek
 +STM32: Доработки отображения в сервисе Propagination, Tnx EA7HOG
-+STM32: Исправление разных ошибок, Tnx R4HID, R7KBI, UT8EU, R3DBQ, RU4PN, C1-49, ivan
++STM32: Исправление разных ошибок, Tnx R4HID, R7KBI, UT8EU, R3DBQ, RU4PN, R3DBQ, C1-49, ivan
 
 ----Version 4.4.0----
 +STM32: Wolf-Lite: доработка внешнего вида, Автор R7KBI
