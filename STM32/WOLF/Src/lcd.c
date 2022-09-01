@@ -1237,7 +1237,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	addSymbols(buff, buff, 12, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_RIT_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_RIT_Y_OFFSET, COLOR->STATUS_LABEL_RIT, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
-	if(TRX.LayoutThemeId == 4) // layout theme Default+
+	if((TRX.LayoutThemeId == 4) || (TRX.LayoutThemeId == 5)) // layout theme Default+ or Analog+
 	{
 		uint16_t if_width = (uint16_t)(TRX.IF_Gain / (60.0f / LAYOUT->STATUS_IFGAIN_BAR_WIDTH));
 		uint16_t af_width = (uint16_t)(TRX.Volume / (MAX_VOLUME_VALUE / LAYOUT->STATUS_AFGAIN_BAR_WIDTH));

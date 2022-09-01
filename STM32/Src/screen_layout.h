@@ -301,7 +301,7 @@ extern "C"
 	#endif
 #endif
 #if (defined(LAY_800x480))
-#define LAYOUT_THEMES_COUNT 5
+#define LAYOUT_THEMES_COUNT 6
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
 #define MAX_FFT_HEIGHT 275
 #define MAX_WTF_HEIGHT 195
