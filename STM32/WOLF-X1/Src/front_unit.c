@@ -783,7 +783,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 	
 	//BUTTONS
-	if (button->type == FUNIT_CTRL_BUTTON && !TRX_on_TX)
+	if (button->type == FUNIT_CTRL_BUTTON)
 	{
 		//println(mcp3008_value, " ", button->tres_min, " ", button->tres_max);
 		
