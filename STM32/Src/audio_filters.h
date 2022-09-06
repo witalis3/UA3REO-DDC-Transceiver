@@ -38,7 +38,7 @@
 
 #define CW_HPF_COUNT 8
 #define SSB_HPF_COUNT 8
-#define CW_LPF_COUNT 20
+#define CW_LPF_COUNT 24
 #define SSB_LPF_COUNT 11
 #define AM_LPF_COUNT 20
 #define NFM_LPF_COUNT 12

@@ -12,6 +12,7 @@
 +STM32: Функция Scan при активном канальном режиме перебирает каналы, а не частоты, Tnx Radek
 +STM32: Доработки отображения в сервисе Propagination, Tnx EA7HOG
 +STM32: Начальная поддержка прототипа Wolf-Mini, Tnx R7KBI
++STM32: Различные доработки по использованию трансивера в CW моде, Tnx UA3RF, RA3RFA, UA3RJ
 +STM32: Исправление разных ошибок и недоработок, Tnx R4HID, R7KBI, UT8EU, R3DBQ, RU4PN, R3DBQ, C1-49, ivan
 
 ----Version 4.4.0----

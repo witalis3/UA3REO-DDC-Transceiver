@@ -109,7 +109,7 @@ void CW_key_change(void)
 static float32_t CW_generateRiseSignal(float32_t power)
 {
 	if (current_cw_power < power)
-		current_cw_power += power * 0.007f;
+		current_cw_power += power * CW_EDGES_SMOOTH;
 	if (current_cw_power > power)
 		current_cw_power = power;
 	return current_cw_power;
@@ -117,7 +117,7 @@ static float32_t CW_generateRiseSignal(float32_t power)
 static float32_t CW_generateFallSignal(float32_t power)
 {
 	if (current_cw_power > 0.0f)
-		current_cw_power -= power * 0.007f;
+		current_cw_power -= power * CW_EDGES_SMOOTH;
 	if (current_cw_power < 0.0f)
 		current_cw_power = 0.0f;
 	return current_cw_power;
