@@ -8,59 +8,55 @@
 
 #ifdef HRDW_AUDIO_CODEC_NAU8822
 
-static uint8_t NAU8822_SendI2CCommand(uint8_t u8addr, uint16_t u16data)
+static uint8_t Codec_on_board(uint8_t reg, uint8_t value)
 {
 	uint8_t st = 2;
 	uint8_t repeats = 0;
 	while (st != 0 && repeats < 3)
 	{
-		i2c_begin(&I2C_CODEC);
-		i2c_start(&I2C_CODEC);
-		i2c_shift_out(&I2C_CODEC, B8(00110100)); //I2C_ADDRESS_NAU8822 00110100
-		if (!i2c_get_ack(&I2C_CODEC))
-		{
-			println("No ACK1");
-		}
-
-		i2c_shift_out(&I2C_CODEC, (uint8_t)((u8addr << 1) | (u16data >> 8)));
-		if (!i2c_get_ack(&I2C_CODEC))
-		{
-			println("No ACK2");
-		}
-		
-		i2c_shift_out(&I2C_CODEC, (uint8_t)(u16data & 0x00FF));
-		if (!i2c_get_ack(&I2C_CODEC))
-		{
-			println("No ACK3");
-		}
-		//i2c_stop(&I2C_WM8731);
-			
+		i2c_beginTransmission_u8(&I2C_CODEC, B8(0011010)); //I2C_ADDRESS_WM8731 00110100
+		i2c_write_u8(&I2C_CODEC, reg);						// MSB
+		i2c_write_u8(&I2C_CODEC, value);					// MSB
 		st = i2c_endTransmission(&I2C_CODEC);
 		if (st != 0)
 			repeats++;
 		HAL_Delay(1);
 	}
-	
 	return st;
 }
 
-static void NAU8822_SetReg(uint_fast8_t regv, uint_fast16_t datav)
+void NAU8822_SendI2CCommand(uint8_t u8addr, uint16_t u16data)
 {
-	const uint_fast16_t fulldata = regv * 512 + (datav & 0x1ff);
-
+	uint8_t st = 2;
+	uint8_t repeats = 0;
+	while (st != 0 && repeats < 3)
+{
 	i2c_begin(&I2C_CODEC);
 	i2c_start(&I2C_CODEC);
-	i2c_shift_out(&I2C_CODEC, 0x34); //I2C_ADDRESS_NAU8822
+	i2c_shift_out(&I2C_CODEC, B8(00110100)); //I2C_ADDRESS_WM8731 00110100
 	if (!i2c_get_ack(&I2C_CODEC))
-	{
-		println("No ACK");
+		{
+		println("No ACK1");
+		}
+
+	i2c_shift_out(&I2C_CODEC, (uint8_t)((u8addr << 1) | (u16data >> 8)));
+		if (!i2c_get_ack(&I2C_CODEC))
+		{
+		println("No ACK2");
+		}
+	i2c_shift_out(&I2C_CODEC, (uint8_t)(u16data & 0x00FF));
+		if (!i2c_get_ack(&I2C_CODEC))
+		{
+		println("No ACK3");
+		}
+//	i2c_stop(&I2C_WM8731);
+		
+	st = i2c_endTransmission(&I2C_CODEC);
+		if (st != 0)
+			repeats++;
+		HAL_Delay(1);
 	}
 	
-	i2c_shift_out(&I2C_CODEC, fulldata >> 8);
-	i2c_get_ack(&I2C_CODEC);
-	i2c_shift_out(&I2C_CODEC, fulldata >> 0);
-	i2c_get_ack(&I2C_CODEC);
-	i2c_stop(&I2C_CODEC);
 }
 
 // switch to mixed RX-TX mode (for LOOP)
@@ -114,7 +110,7 @@ void NAU8822_Speaker_off(bool status)
 // initialize the audio codec over I2C
 void CODEC_Init(void)
 {
-	if (NAU8822_SendI2CCommand(B8(00011110), B8(00000000)) != 0) //R15 Reset Chip
+	if (Codec_on_board(B8(00011110), B8(00000000)) != 0) //R15 Reset Chip
 	{
 		println("[ERR] Audio codec not found");
 		LCD_showError("Audio codec init error", true);
