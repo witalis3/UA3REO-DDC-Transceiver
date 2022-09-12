@@ -1647,9 +1647,9 @@ static void MX_FMC_Init(void)
   Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 #if (defined(LCD_RA8875))
-  Timing.AddressSetupTime = 20;
-  Timing.DataSetupTime = 20;
-  Timing.BusTurnAroundDuration = 10;
+  Timing.AddressSetupTime = 30;
+  Timing.DataSetupTime = 30;
+  Timing.BusTurnAroundDuration = 20;
   Timing.AccessMode = FMC_ACCESS_MODE_A;
   //fast timings in lcd_driver_RA8875.c
 #endif
