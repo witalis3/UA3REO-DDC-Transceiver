@@ -302,7 +302,7 @@ void LoadSettings(bool clear)
 		TRX.FFT_Automatic = true;  // Automatic FFT Scale
 		TRX.FFT_Sensitivity = 8;   // Threshold of FFT autocalibrate
 		TRX.FFT_Speed = 3;		   // FFT Speed
-		TRX.FFT_Averaging = 8;	   // averaging the FFT to make it smoother
+		TRX.FFT_Averaging = 10;	   // averaging the FFT to make it smoother
 #ifdef STM32F407xx
 		TRX.FFT_Averaging = 6;
 #endif
