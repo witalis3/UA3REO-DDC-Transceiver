@@ -9,7 +9,7 @@
 #include "hardware.h"
 
 #define SETT_VERSION 60						  // Settings config version
-#define CALIB_VERSION 49					  // Calibration config version
+#define CALIB_VERSION 50					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
 #define AGC_CLIPPING 6.0f					  // Limit over target in AGC, dB
@@ -34,7 +34,7 @@
 #define NORMAL_SWR_SAVED 1.5f				  // ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE 1.2f				  // ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5				  // Low brightness for IDLE mode (dimmer)
-#define CW_ADD_GAIN_IF 40.0f				  // additional IF gain in CW
+#define CW_ADD_GAIN_IF 30.0f				  // additional IF gain in CW
 #define CW_ADD_GAIN_AF 10.0f					  // additional AF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)			  // TX LPF On Timeout, millisec (3 min)
 
@@ -628,6 +628,11 @@ extern struct TRX_CALIBRATE
 	uint32_t RFU_BPF_8_START;
 	uint32_t RFU_BPF_8_END;
 	int16_t RTC_Calibration;
+	int16_t VCXO_correction;
+	uint16_t TX_StartDelay;
+	int16_t smeter_calibration_hf;
+	int16_t smeter_calibration_vhf;
+	int16_t adc_offset;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;
@@ -643,10 +648,6 @@ extern struct TRX_CALIBRATE
 	uint8_t rf_out_power_6m;
 	uint8_t rf_out_power_4m;
 	uint8_t rf_out_power_2m;
-	uint16_t TX_StartDelay;
-	int16_t smeter_calibration_hf;
-	int16_t smeter_calibration_vhf;
-	int16_t adc_offset;
 	uint8_t ENCODER_DEBOUNCE;
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
@@ -692,7 +693,8 @@ extern struct TRX_CALIBRATE
 	uint8_t EXT_TRANSV_3cm;
 	uint8_t ATU_AVERAGING;
 	uint8_t TwoSignalTune_Balance;
-	int16_t VCXO_correction;
+	uint8_t IF_GAIN_MIN;
+	uint8_t IF_GAIN_MAX;
 	int8_t LNA_compensation;
 	TRX_RF_UNIT_TYPE RF_unit_type;
 	TRX_TANGENT_TYPE TangentType;

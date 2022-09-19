@@ -1233,6 +1233,8 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.CAT_Type", (uint32_t *)&CALIBRATE.CAT_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.TwoSignalTune_Balance", (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.LinearPowerControl", (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MIN", (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MAX", (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_UINT8);
 			// Bands settings
 			/*char buff[64] = {0};
 			for (uint8_t i = 0; i < BANDS_COUNT; i++)
@@ -2063,6 +2065,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		CALIBRATE.TwoSignalTune_Balance = (uint8_t)uintval;
 	if (strcmp(name, "CALIBRATE.LinearPowerControl") == 0)
 		CALIBRATE.LinearPowerControl = bval;
+	if (strcmp(name, "CALIBRATE.IF_GAIN_MIN") == 0)
+		CALIBRATE.IF_GAIN_MIN = (uint8_t)uintval;
+	if (strcmp(name, "CALIBRATE.IF_GAIN_MAX") == 0)
+		CALIBRATE.IF_GAIN_MAX = (uint8_t)uintval;
 
 	// Bands settings
 	/*char buff[64] = {0};

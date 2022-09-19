@@ -632,12 +632,12 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 		{
 			TRX_RIT = 0;
 			TRX_XIT = 0;
-			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - IF_GAIN_mcp3008_averaged) * 60.0f / 1023.0f));
+			TRX.IF_Gain = (uint8_t)(CALIBRATE.IF_GAIN_MIN + ((1023.0f - IF_GAIN_mcp3008_averaged) * (float32_t)(CALIBRATE.IF_GAIN_MAX - CALIBRATE.IF_GAIN_MIN) / 1023.0f));
 		}
 
 		if (TRX.FineRITTune) // IF only
 		{
-			TRX.IF_Gain = (uint8_t)(0.0f + ((1023.0f - IF_GAIN_mcp3008_averaged) * 60.0f / 1023.0f));
+			TRX.IF_Gain = (uint8_t)(CALIBRATE.IF_GAIN_MIN + ((1023.0f - IF_GAIN_mcp3008_averaged) * (float32_t)(CALIBRATE.IF_GAIN_MAX - CALIBRATE.IF_GAIN_MIN) / 1023.0f));
 		}
 	}
 

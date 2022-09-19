@@ -1239,8 +1239,8 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 	if((TRX.LayoutThemeId == 4) || (TRX.LayoutThemeId == 5)) // layout theme Default+ or Analog+
 	{
-		uint16_t if_width = (uint16_t)(TRX.IF_Gain / (60.0f / LAYOUT->STATUS_IFGAIN_BAR_WIDTH));
-		uint16_t af_width = (uint16_t)(TRX.Volume / (MAX_VOLUME_VALUE / LAYOUT->STATUS_AFGAIN_BAR_WIDTH));
+		uint16_t if_width = (uint16_t)((float32_t)TRX.IF_Gain / ((float32_t)CALIBRATE.IF_GAIN_MAX / (float32_t)LAYOUT->STATUS_IFGAIN_BAR_WIDTH));
+		uint16_t af_width = (uint16_t)((float32_t)TRX.Volume / ((float32_t)MAX_VOLUME_VALUE / (float32_t)LAYOUT->STATUS_AFGAIN_BAR_WIDTH));
 		
 		// IF Gain
 		sprintf(buff, "IF");

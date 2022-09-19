@@ -1969,7 +1969,7 @@ static void doVAD(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 // Apply IF Gain IF Gain
 static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
-	float32_t if_gain = db2rateV(TRX.IF_Gain);
+	float32_t if_gain = db2rateP(TRX.IF_Gain);
 	float32_t minVal = 0;
 	float32_t maxVal = 0;
 	uint32_t index = 0;
@@ -1992,7 +1992,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 		CW = true;
 	#endif
 	if (CW)
-		if_gain += db2rateV(CW_ADD_GAIN_IF);
+		if_gain += db2rateP(CW_ADD_GAIN_IF);
 
 	// overflow protect
 	arm_min_f32(I_buff, size, &minVal, &index);

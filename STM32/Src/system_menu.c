@@ -372,6 +372,8 @@ static void SYSMENU_HANDL_CALIB_LNA_compensation(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LinearPowerControl(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction);
+static void SYSMENU_HANDL_CALIB_IF_GAIN_MIN(int8_t direction);
+static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -924,6 +926,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 #ifdef TOUCHPAD_GT911
 		{"Flash GT911", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_FlashGT911},
 #endif
+		{"IF Gain MIN", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_HANDL_CALIB_IF_GAIN_MIN},
+		{"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
 };
 
 const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
@@ -1799,10 +1803,10 @@ static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction)
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction)
 {
 	TRX.IF_Gain += direction;
-	if (TRX.IF_Gain < 1)
-		TRX.IF_Gain = 1;
-	if (TRX.IF_Gain > 80)
-		TRX.IF_Gain = 80;
+	if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN)
+		TRX.IF_Gain = CALIBRATE.IF_GAIN_MIN;
+	if (TRX.IF_Gain > CALIBRATE.IF_GAIN_MAX)
+		TRX.IF_Gain = CALIBRATE.IF_GAIN_MAX;
 	
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band > 0)
@@ -5322,6 +5326,22 @@ static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction)
 	else
 		LCD_showError("Error!", true);
 	#endif
+}
+
+static void SYSMENU_HANDL_CALIB_IF_GAIN_MIN(int8_t direction)
+{
+	if (CALIBRATE.IF_GAIN_MIN > 0 || direction > 0)
+		CALIBRATE.IF_GAIN_MIN += direction;
+	if (CALIBRATE.IF_GAIN_MIN > 200)
+		CALIBRATE.IF_GAIN_MIN = 200;
+}
+
+static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction)
+{
+	if (CALIBRATE.IF_GAIN_MAX > 0 || direction > 0)
+		CALIBRATE.IF_GAIN_MAX += direction;
+	if (CALIBRATE.IF_GAIN_MAX > 200)
+		CALIBRATE.IF_GAIN_MAX = 200;
 }
 
 // SERVICES

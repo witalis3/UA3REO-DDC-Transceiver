@@ -449,10 +449,10 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) // IF
 	{
 		TRX.IF_Gain += direction * 1;
-		if (TRX.IF_Gain < 1)
-			TRX.IF_Gain = 1;
-		if (TRX.IF_Gain > 80)
-			TRX.IF_Gain = 80;
+		if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN)
+			TRX.IF_Gain = CALIBRATE.IF_GAIN_MIN;
+		if (TRX.IF_Gain > CALIBRATE.IF_GAIN_MAX)
+			TRX.IF_Gain = CALIBRATE.IF_GAIN_MAX;
 		
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}

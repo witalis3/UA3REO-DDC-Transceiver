@@ -692,6 +692,8 @@ void LoadCalibration(bool clear)
 		CALIBRATE.LNA_compensation = 0; // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50; //balance of signals on twosignal-tune
 		CALIBRATE.LinearPowerControl = false; //linear or logrithmic power control
+		CALIBRATE.IF_GAIN_MIN = 0;			// min limit for if gain regulator
+		CALIBRATE.IF_GAIN_MAX = 40;			// max limit for if gain regulator
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)
