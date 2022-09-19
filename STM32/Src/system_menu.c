@@ -51,6 +51,7 @@ static void SYSMENU_HANDL_TRX_ATT_DB(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction);
+static void SYSMENU_HANDL_TRX_SetURSICode(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction);
@@ -503,6 +504,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI, {"MIC", "LINE", "USB"}},
 		{"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
 		{"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
+		{"URSI Code", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetURSICode},
 		{"Transverter 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_70cm, SYSMENU_HANDL_TRX_TRANSV_70CM},
 		{"Transverter 23cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_23cm, SYSMENU_HANDL_TRX_TRANSV_23CM},
 		{"Transverter 13cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_13cm, SYSMENU_HANDL_TRX_TRANSV_13CM},
@@ -1044,6 +1046,8 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateCallsignChar(int8_t dir);
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateLocatorChar(int8_t dir);
+static void SYSMENU_TRX_DrawURSICodeMenu(bool full_redraw);
+static void SYSMENU_TRX_RotateURSICodeChar(int8_t dir);
 static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex);
 static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex);
 static void setCurrentMenuIndex(uint8_t index);
@@ -1075,10 +1079,12 @@ static bool sysmenu_wifi_setAP2password_menu_opened = false;
 static bool sysmenu_wifi_setAP3password_menu_opened = false;
 static bool sysmenu_trx_setCallsign_menu_opened = false;
 static bool sysmenu_trx_setLocator_menu_opened = false;
+static bool sysmenu_trx_setURSICode_menu_opened = false;
 static uint8_t sysmenu_wifi_selected_ap_index = 0;
 static uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
 static uint8_t sysmenu_trx_selected_callsign_char_index = 0;
 static uint8_t sysmenu_trx_selected_locator_char_index = 0;
+static uint8_t sysmenu_trx_selected_ursi_code_char_index = 0;
 
 // Time menu
 static bool sysmenu_timeMenuOpened = false;
@@ -1476,6 +1482,40 @@ static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw)
 	#endif
 }
 
+static void SYSMENU_TRX_URSICode_keyboardHandler(uint32_t parameter)
+{
+	if(parameter == '<') //backspace
+	{
+		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 0;
+		
+		if (sysmenu_trx_selected_ursi_code_char_index > 0)
+			sysmenu_trx_selected_ursi_code_char_index--;
+	} else {
+		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = parameter;
+		
+		if (sysmenu_trx_selected_ursi_code_char_index < (MAX_CALLSIGN_LENGTH - 1))
+			sysmenu_trx_selected_ursi_code_char_index++;
+	}
+	
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_TRX_DrawURSICodeMenu(bool full_redraw)
+{
+	if (full_redraw)
+	{
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("URSI Code:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.URSI_CODE, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_ursi_code_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_TRX_URSICode_keyboardHandler, false);
+	#endif
+}
+
 static void SYSMENU_TRX_RotateCallsignChar(int8_t dir)
 {
 	bool full_redraw = false;
@@ -1522,6 +1562,29 @@ static void SYSMENU_TRX_RotateLocatorChar(int8_t dir)
 		LCD_UpdateQuery.SystemMenu = true;
 }
 
+static void SYSMENU_TRX_RotateURSICodeChar(int8_t dir)
+{
+	bool full_redraw = false;
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] == 0)
+		full_redraw = true;
+	TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] += dir;
+
+	// do not show special characters
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 1 && TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] <= 32 && dir > 0)
+		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 33;
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 1 && TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] <= 32 && dir < 0)
+		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 0;
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 127)
+		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 0;
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] == 0)
+		full_redraw = true;
+
+	if (full_redraw)
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	else
+		LCD_UpdateQuery.SystemMenu = true;
+}
+
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction)
 {
 #pragma unused(direction)
@@ -1535,6 +1598,14 @@ static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction)
 #pragma unused(direction)
 	sysmenu_trx_setLocator_menu_opened = true;
 	SYSMENU_TRX_DrawLocatorMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_TRX_SetURSICode(int8_t direction)
+{
+#pragma unused(direction)
+	sysmenu_trx_setURSICode_menu_opened = true;
+	SYSMENU_TRX_DrawURSICodeMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -5761,6 +5832,11 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines)
 		if(only_infolines) return;
 		SYSMENU_TRX_DrawLocatorMenu(draw_background);
 	}
+	else if (sysmenu_trx_setURSICode_menu_opened)
+	{
+		if(only_infolines) return;
+		SYSMENU_TRX_DrawURSICodeMenu(draw_background);
+	}
 	else if (SYSMENU_spectrum_opened)
 	{
 		if(only_infolines) return;
@@ -5937,6 +6013,11 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 		SYSMENU_TRX_RotateLocatorChar(direction);
 		return;
 	}
+	if (sysmenu_trx_setURSICode_menu_opened)
+	{
+		SYSMENU_TRX_RotateURSICodeChar(direction);
+		return;
+	}
 	if (sysmenu_timeMenuOpened)
 	{
 		SYSMENU_HANDL_SETTIME(direction);
@@ -6009,6 +6090,11 @@ void SYSMENU_eventCloseSystemMenu(void)
 	else if (sysmenu_trx_setLocator_menu_opened)
 	{
 		sysmenu_trx_setLocator_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+	else if (sysmenu_trx_setURSICode_menu_opened)
+	{
+		sysmenu_trx_setURSICode_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	else if (SYSMENU_spectrum_opened)
@@ -6284,6 +6370,21 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 		{
 			sysmenu_trx_selected_locator_char_index++;
 			SYSMENU_TRX_DrawLocatorMenu(true);
+		}
+		return;
+	}
+	// URSI Code menu
+	if (sysmenu_trx_setURSICode_menu_opened)
+	{
+		if (direction < 0 && sysmenu_trx_selected_ursi_code_char_index > 0)
+		{
+			sysmenu_trx_selected_ursi_code_char_index--;
+			SYSMENU_TRX_DrawURSICodeMenu(true);
+		}
+		else if (sysmenu_trx_selected_ursi_code_char_index < (MAX_CALLSIGN_LENGTH - 1))
+		{
+			sysmenu_trx_selected_ursi_code_char_index++;
+			SYSMENU_TRX_DrawURSICodeMenu(true);
 		}
 		return;
 	}

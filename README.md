@@ -152,6 +152,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Input Type** - Select audio input (microphone, line in, USB)
 * **Callsign** - User callsign
 * **Locator** - User QTH locator
+* **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
 * **TUNER Enabled** - Turning on the antenna tuner
 * **ATU Enabled** - Turning on the automatic antenna tuner
 * **ATU Ind** - Combination of tuner inductances

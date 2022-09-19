@@ -8,7 +8,7 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 60						  // Settings config version
+#define SETT_VERSION 61						  // Settings config version
 #define CALIB_VERSION 50					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
@@ -435,6 +435,7 @@ extern struct TRX_SETTINGS
 	bool Auto_Input_Switch;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
+	char URSI_CODE[MAX_CALLSIGN_LENGTH];
 	// AUDIO
 	float32_t CTCSS_Freq;
 	float32_t MIC_GAIN_DB;

@@ -190,6 +190,7 @@ void LoadSettings(bool clear)
 		TRX.Encoder_Accelerate = true;	  // Accelerate Encoder on fast rate
 		strcpy(TRX.CALLSIGN, "HamRad");	  // Callsign
 		strcpy(TRX.LOCATOR, "LO02RR");	  // Locator
+		strcpy(TRX.URSI_CODE, "SO148");	  // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
 		TRX.Custom_Transverter_Enabled = false;  // Enable transverter mode
 		TRX.Transverter_Offset_Mhz = 144; // Offset from VFO
 #ifdef FRONTPANEL_LITE
