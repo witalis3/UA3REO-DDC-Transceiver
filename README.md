@@ -264,7 +264,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 ### WIFI Settings
 
-* **WIFI Enabled** - Enable WiFi module (need restart)
+* **WIFI Enabled** - Enable WiFi module (need restart after enable)
 * **WIFI Network** - WiFi hotspot selection
 * **WIFI Network Pass** - Set password for WiFi hotspot
 * **WIFI Timezone** - Time zone (for updating the time via the Internet)
