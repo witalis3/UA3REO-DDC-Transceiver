@@ -19,16 +19,15 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Transmission frequencies in harmonics mode (CW, FM): 360 Mhz - 480 Mhz
 * TX power (QRP version): 7W+ (HF), 5W (VHF)
 * TX power (QRP++ DB5AT version): 20W (HF), 7W (VHF)
-* TX power (RU4PN version): 100W (HF), 50W+ (VHF)
+* TX power (RU4PN/WF-100D version): 100W (HF), 50W+ (VHF)
 * Two antenna inputs
 * Modulation types (TX / RX): CW, LSB, USB, AM, FM, WFM, DIGI
 * LNA, Preamplifier
 * Adjustable attenuator 0-31dB
-* Two antenna inputs
 * Band pass filters
 * ADC dynamic range (16 bit) ~100dB
 * Supply voltage: 13.8V (overvoltage and polarity reversal protection)
-* Consumption current when receiving: ~0.7А (3'2 QRP), 1.1A (7' BIG)
+* Consumption current when receiving: ~0.7А (3'2 QRP), 0.9A (7' BIG)
 * Current consumption during transmission: ~2.5А+ (QRP), 15A+ (BIG)
 
 ## Transceiver Features
@@ -36,13 +35,13 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Panorama (spectrum + waterfall) up to 384 kHz wide
 * Panorama tweaks and themes
 * Dual receiver (mixing A + B or A&B audio in stereo)
-* Adjustable bandwidth: HPF from 0Hz to 600Hz, LPF from 100Hz to 20kHz
+* Adjustable bandwidth: HPF from 0Hz to 2700Hz, LPF from 100Hz to 20kHz
 * Integrated SWR/power meter (HF)
 * Automatic and manual Notch filter
 * Switchable AGC (AGC) with adjustable attack rate
 * Range map, with the ability to automatically switch modes
 * Digital Noise Reduction (DNR), Pulse Noise Reduction (NB)
-* CAT virtual COM port (FT-450 emulation, RTS - PTT, DTR - CW)
+* CAT virtual COM port (FT-450 / TS-2000 emulation, RTS - PTT, DTR - CW)
 * USB operation (audio transmission, IQ, CAT, KEY, PTT)
 * RDS/CW/RTTY decoder, self-control, gauss filter
 * SWR Graphs
@@ -68,21 +67,15 @@ At 10dB signal-to-noise ratio, LNA is on, ATT, LPF, BPF are off
 
 Frequency, mHz | Sensitivity, dBm | Sensitivity
 ------------ | ------------- | -------------
-<100	| -131	| 63.0 nV
-145	| -128	| 88.9 nV
+<150	| -131	| 63.0 nV
 435	| -121	| 0.2 uV
 
 ## Build
 
 I ordered the boards in the Chinese service JLCPCB, they and their schemes are in the Scheme folder. <br>
 After assembly, you need to flash FPGA and STM32 chips. <br>
-STM32 firmware is performed via Keil or via USB lanyard in DFU Mode (by STM32 / FLASH.bat script). Or via ST-LINK v2. You must hold down the power button while flashing. <br>
-FPGA firmware is performed through the Quartus program using a USB-Blaster. <br>
-A properly assembled device does not require debugging, but if problems arise, the first thing to do is to check for clock signals: <br>
-90 FGPA pin and ADC clock input - 122.88 MHz, PC9 STM32 pin - 12.288 MHz, PB10 STM32 pin - 48 kHz. <br>
 If necessary, calibrate the transceiver through the appropriate menu <br>
 WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT commands 1.7.4 and higher <br>
-Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 
 ## Management
 
