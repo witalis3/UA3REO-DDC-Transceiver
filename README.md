@@ -327,6 +327,8 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Linear Pwr Control** - Sets a linear way to change the signal amplitude when adjusting the power (if disabled - logarithmic)
 * **Flash GT911** - Starting the touchpad update procedure according to LCD screen resolution
 * **IF Gain MIN/MAX** - IF Gain adjusting limits
+* **Settings reset** - Reset all settings to defaults
+* **Calibrate reset** - Reset all calibrations to defaults
 
 ### Set Clock Time
 

@@ -374,6 +374,8 @@ static void SYSMENU_HANDL_CALIB_LinearPowerControl(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction);
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MIN(int8_t direction);
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction);
+static void SYSMENU_HANDL_CALIB_SETTINGS_RESET(int8_t direction);
+static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -928,6 +930,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 #endif
 		{"IF Gain MIN", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_HANDL_CALIB_IF_GAIN_MIN},
 		{"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
+		{"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
+		{"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
 };
 
 const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
@@ -5342,6 +5346,16 @@ static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction)
 		CALIBRATE.IF_GAIN_MAX += direction;
 	if (CALIBRATE.IF_GAIN_MAX > 200)
 		CALIBRATE.IF_GAIN_MAX = 200;
+}
+
+static void SYSMENU_HANDL_CALIB_SETTINGS_RESET(int8_t direction)
+{
+	LoadSettings(true);
+}
+
+static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction)
+{
+	LoadCalibration(true);
 }
 
 // SERVICES
