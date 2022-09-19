@@ -1235,6 +1235,15 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("CALIBRATE.LinearPowerControl", (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MIN", (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MAX", (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_UINT8);
+			
+			// Func buttons settings
+			char buff[64] = {0};
+			for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)
+			{
+				sprintf(buff, "TRX.FuncButtons[%d]", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.FuncButtons[i], SYSMENU_UINT8);
+			}
+			
 			// Bands settings
 			/*char buff[64] = {0};
 			for (uint8_t i = 0; i < BANDS_COUNT; i++)
@@ -2070,6 +2079,15 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (strcmp(name, "CALIBRATE.IF_GAIN_MAX") == 0)
 		CALIBRATE.IF_GAIN_MAX = (uint8_t)uintval;
 
+	// Func buttons settings
+	char buff[64] = {0};
+	for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++)
+	{
+		sprintf(buff, "TRX.FuncButtons[%d]", i);
+		if (strcmp(name, buff) == 0)
+			TRX.FuncButtons[i] = (uint8_t)uintval;
+	}
+	
 	// Bands settings
 	/*char buff[64] = {0};
 	for (uint8_t i = 0; i < BANDS_COUNT; i++)
