@@ -31,8 +31,13 @@
 #define FFT_BW_BRIGHTNESS_2 3                                                                                                                                // pixel brightness on bw bar
 #define FFT_SCALE_LINES_BRIGHTNESS 0.4f                                                                                                                      // pixel brightness on scale lines
 #define FFT_MAX_GRID_NUMBER 13                                                                                                                               // max grid lines
-#define FFT_LENS_STEP_START 0.4f                                                                                                                             // start lens step
-#define FFT_LENS_STEP 0.013f                                                                                                                                 // each lens step
+#if (defined(LAY_800x480))
+	#define FFT_LENS_STEP_START 0.19f	// each lens step
+	#define FFT_LENS_STEP 0.0055f
+#else
+	#define FFT_LENS_STEP_START 0.4f	// each lens step
+	#define FFT_LENS_STEP 0.013f
+#endif
 #define FFT_3D_SLIDES 40                                                                                                                                     // 3D FFT parameters
 #define FFT_3D_Y_OFFSET 2
 #define FFT_3D_X_OFFSET 5
