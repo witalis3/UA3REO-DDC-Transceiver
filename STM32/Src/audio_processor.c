@@ -889,8 +889,9 @@ void processTxAudio(void)
 		if (getInputType() == TRX_INPUT_MIC)
 		{
 			// Mic Gain
-			arm_scale_f32(APROC_Audio_Buffer_TX_I, TRX.MIC_GAIN, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			arm_scale_f32(APROC_Audio_Buffer_TX_Q, TRX.MIC_GAIN, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			float32_t mic_gain = rate2dbP(TRX.MIC_GAIN_DB);
+			arm_scale_f32(APROC_Audio_Buffer_TX_I, mic_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+			arm_scale_f32(APROC_Audio_Buffer_TX_Q, mic_gain, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 			// Mic Equalizer
 			if (mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U && mode != TRX_MODE_RTTY && mode != TRX_MODE_IQ)
 				doMIC_EQ(AUDIO_BUFFER_HALF_SIZE, mode);

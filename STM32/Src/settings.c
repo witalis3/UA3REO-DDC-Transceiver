@@ -212,8 +212,8 @@ void LoadSettings(bool clear)
 		TRX.Volume_Step = 5;			 // AF Volume step by sec encoder
 		TRX.IF_Gain = 15;					 // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;			 // Maximum (target) AGC gain
-		TRX.MIC_GAIN = 3;					 // Microphone gain
-		TRX.MIC_Boost = true;				 // +20db mic amplifier
+		TRX.MIC_GAIN_DB = 3.0f;					 // Microphone gain, dB
+		TRX.MIC_Boost = true;				 // +20dB mic amplifier
 		TRX.MIC_NOISE_GATE = -120;			 // Mic noise gate
 		TRX.RX_EQ_LOW = 0;					 // Receiver Equalizer (Low)
 		TRX.RX_EQ_MID = 0;					 // Receiver EQ (mids)

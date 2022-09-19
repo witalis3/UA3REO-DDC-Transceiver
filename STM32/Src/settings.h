@@ -8,7 +8,7 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 59						  // Settings config version
+#define SETT_VERSION 60						  // Settings config version
 #define CALIB_VERSION 49					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
@@ -437,6 +437,7 @@ extern struct TRX_SETTINGS
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	// AUDIO
 	float32_t CTCSS_Freq;
+	float32_t MIC_GAIN_DB;
 	uint16_t Volume;
 	uint16_t RX_AGC_Hold;
 	uint16_t CW_LPF_Filter;
@@ -452,7 +453,6 @@ extern struct TRX_SETTINGS
 	uint16_t VOX_TIMEOUT;
 	uint8_t Volume_Step;
 	uint8_t IF_Gain;
-	uint8_t MIC_GAIN;
 	uint8_t MIC_REVERBER;
 	uint8_t DNR1_SNR_THRESHOLD;
 	uint8_t DNR2_SNR_THRESHOLD;
