@@ -112,95 +112,17 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		band_out = CALIBRATE.EXT_2m;
 	if (band == BANDID_70cm) //70cm
 		band_out = CALIBRATE.EXT_70cm;
-	//if (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK) band_out = 15;
-
-	//ATT
-	//HAL_GPIO_WritePin(ATT_ON_16_GPIO_Port, ATT_ON_16_Pin, att_val_16);
-	//HAL_GPIO_WritePin(ATT_ON_8_GPIO_Port, ATT_ON_8_Pin, att_val_8);
-	//HAL_GPIO_WritePin(ATT_ON_4_GPIO_Port, ATT_ON_4_Pin, att_val_4);
-	//HAL_GPIO_WritePin(ATT_ON_2_GPIO_Port, ATT_ON_2_Pin, att_val_2);
-	//HAL_GPIO_WritePin(ATT_ON_1_GPIO_Port, ATT_ON_1_Pin, att_val_1);
-	//HAL_GPIO_WritePin(ATT_ON_0_5_GPIO_Port, ATT_ON_0_5_Pin, att_val_05);
 	
-	//FILTERS
-	if(bpf == 1) //1.5-2.5
-	{
-		//HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	}
-	else if(bpf == 2) //2.4-4.7
-	{
-		//HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	}
-	else if(bpf == 3) //4.7-8
-	{
-		//HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	}
-	else if(bpf == 4) //8-14.7
-	{
-		//HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	}
-	
-	else if(bpf == 5) //14.7-22.1
-	{
-		//HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	}
-	else if(bpf == 6) //22.1-32
-	{
-		//HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	}
-	else if(bpf == 8) //HPF 60+mHz
-	{
-		//HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	}
-	else if(bpf == 7) //135-150mHz
-	{
-		//HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_SET);
-	}
-	else //bypass
-	{
-		//HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_SET);
-		//HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_RESET);
-		//HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	}
+	uint32_t vga_need_gain = (TRX.VGA_GAIN - 10.5f) / 1.5f;
+	bool VGA_0 = bitRead(vga_need_gain, 0);
+	bool VGA_1 = bitRead(vga_need_gain, 0);
+	bool VGA_2 = bitRead(vga_need_gain, 0);
+	bool VGA_3 = bitRead(vga_need_gain, 0);
 	
 	//RF Unit
 	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
 	MINI_DELAY
-	for (uint8_t registerNumber = 0; registerNumber < 8; registerNumber++)
+	for (uint8_t registerNumber = 0; registerNumber < 16; registerNumber++)
 	{
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); // data block
 		MINI_DELAY
@@ -208,29 +130,49 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		MINI_DELAY
 		if (!clean)
 		{
-			//U3-D7 BAND_OUT_4
-			if (registerNumber == 0 && bitRead(band_out, 3))
+			//U16-D7 -
+			// if (registerNumber == 0)
+			//U16-D6 Net_LNA
+			if (registerNumber == 1 && TRX.LNA)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-D6 Net_RX/TX
-			if (registerNumber == 1 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)
+			//U16-D5 ATT_ON_4
+			if (registerNumber == 2 && att_val_4)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-D5 BAND_OUT_3
-			if (registerNumber == 2 && bitRead(band_out, 2))
+			//U16-D4 ATT_ON_8
+			if (registerNumber == 3 && att_val_8)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-D4 VHF_AMP_BIAS_OUT
-			if (registerNumber == 3 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq > 70000000)
+			//U16-D3 ATT_ON_16
+			if (registerNumber == 4 && att_val_16)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-D3 HF-VHF-SELECT
-			if (registerNumber == 4 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->Freq > 70000000)
+			//U16-D2 ATT_ON_0.5
+			if (registerNumber == 5 && att_val_05)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-D2 LNA
-			if (registerNumber == 5 && TRX.LNA)
+			//U16-D1 ATT_ON_1
+			if (registerNumber == 6 && att_val_1)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-D1 BAND_OUT_2
-			if (registerNumber == 6 && bitRead(band_out, 1))
+			//U16-D0 ATT_ON_2
+			if (registerNumber == 7 && att_val_2)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U3-D0 BAND_OUT_1
-			if (registerNumber == 7 && bitRead(band_out, 0))
+			
+			//U17-D7 BPF_B
+			if (registerNumber == 8)
+			//U17-D6 BPF_A
+			if (registerNumber == 9)
+			//U17-D5 BPF_C
+			if (registerNumber == 10)
+			//U17-D4 BPF_D
+			if (registerNumber == 11)
+			//U17-D3 Net_PGA2
+			if (registerNumber == 12 && VGA_2)
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U17-D2 Net_PGA3
+			if (registerNumber == 13 && VGA_3)
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U17-D1 Net_PGA0
+			if (registerNumber == 14 && VGA_0)
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			//U17-D0 Net_PGA1
+			if (registerNumber == 15 && VGA_1)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 		}
 		MINI_DELAY

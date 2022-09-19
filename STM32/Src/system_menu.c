@@ -63,6 +63,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
+static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Volume_Step(int8_t direction);
@@ -487,6 +488,9 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 		{"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
+#if HRDW_HAS_VGA
+		{"VGA Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.VGA_GAIN, SYSMENU_HANDL_TRX_VGA_GAIN},
+#endif
 		{"DEBUG Console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT"}},
 		{"Auto Input Switch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_HANDL_TRX_Auto_Input_Switch},
 		{"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN, {"MIC", "LINE", "USB"}},
@@ -1372,6 +1376,15 @@ static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction)
 		TRX.ATT_STEP = 1;
 	if (TRX.ATT_STEP > 15)
 		TRX.ATT_STEP = 15;
+}
+
+static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction)
+{
+	TRX.VGA_GAIN += (float32_t)direction * 1.5f;
+	if (TRX.VGA_GAIN < 10.5f)
+		TRX.VGA_GAIN = 10.5f;
+	if (TRX.VGA_GAIN > 33.0f)
+		TRX.VGA_GAIN = 33.0f;
 }
 
 static void SYSMENU_TRX_Callsign_keyboardHandler(uint32_t parameter)

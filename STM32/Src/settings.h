@@ -380,6 +380,9 @@ extern struct TRX_SETTINGS
 	bool NeedGoToBootloader;
 	// TRX
 	float32_t ATT_DB;
+#if HRDW_HAS_VGA
+	float32_t VGA_GAIN;
+#endif
 	uint32_t FRQ_STEP;
 	uint32_t FRQ_FAST_STEP;
 	uint32_t FRQ_ENC_STEP;
