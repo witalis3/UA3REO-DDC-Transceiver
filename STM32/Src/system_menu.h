@@ -56,6 +56,9 @@ struct sysmenu_menu_wrapper
 extern bool SYSMENU_FT8_DECODER_opened;
 extern bool sysmenu_ota_opened;
 extern uint8_t sysmenu_ota_opened_state;
+extern bool sysmenu_wifi_selectap1_menu_opened;
+extern bool sysmenu_wifi_selectap2_menu_opened;
+extern bool sysmenu_wifi_selectap3_menu_opened;
 
 extern void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines);
 extern void SYSMENU_redrawCurrentItem(void);

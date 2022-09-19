@@ -1059,9 +1059,9 @@ bool SYSMENU_FT8_DECODER_opened = false;
 
 // WIFI
 static bool sysmenu_wifi_needupdate_ap = true;
-static bool sysmenu_wifi_selectap1_menu_opened = false;
-static bool sysmenu_wifi_selectap2_menu_opened = false;
-static bool sysmenu_wifi_selectap3_menu_opened = false;
+bool sysmenu_wifi_selectap1_menu_opened = false;
+bool sysmenu_wifi_selectap2_menu_opened = false;
+bool sysmenu_wifi_selectap3_menu_opened = false;
 static bool sysmenu_wifi_setAP1password_menu_opened = false;
 static bool sysmenu_wifi_setAP2password_menu_opened = false;
 static bool sysmenu_wifi_setAP3password_menu_opened = false;

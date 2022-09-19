@@ -457,6 +457,9 @@ void WIFI_Process(void)
 								WIFI_FoundedAP_Index++;
 						}
 					}
+					if(sysmenu_wifi_selectap1_menu_opened || sysmenu_wifi_selectap2_menu_opened || sysmenu_wifi_selectap3_menu_opened) {
+						LCD_UpdateQuery.SystemMenuRedraw = true;
+					}
 				}
 			}
 			else if (WIFI_ProcessingCommand == WIFI_COMM_GETSNTP) // Get and sync SNTP time
@@ -732,6 +735,9 @@ static bool WIFI_ListAP_Sync(void)
 					strcat((char *)&WIFI_FoundedAP[WIFI_FoundedAP_Index], start);
 					if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
 						WIFI_FoundedAP_Index++;
+				}
+				if(sysmenu_wifi_selectap1_menu_opened || sysmenu_wifi_selectap2_menu_opened || sysmenu_wifi_selectap3_menu_opened) {
+					LCD_UpdateQuery.SystemMenuRedraw = true;
 				}
 			}
 		}
