@@ -155,13 +155,13 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			
 			//U17-D7 BPF_B
-			if (registerNumber == 8)
+			// if (registerNumber == 8)
 			//U17-D6 BPF_A
-			if (registerNumber == 9)
+			// if (registerNumber == 9)
 			//U17-D5 BPF_C
-			if (registerNumber == 10)
+			// if (registerNumber == 10)
 			//U17-D4 BPF_D
-			if (registerNumber == 11)
+			// if (registerNumber == 11)
 			//U17-D3 Net_PGA2
 			if (registerNumber == 12 && !VGA_2)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);

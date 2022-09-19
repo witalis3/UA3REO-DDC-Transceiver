@@ -630,7 +630,7 @@ void FRONTPANEL_Process(void)
 	
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
-	uint16_t mcp3008_value = 0;
+	uint32_t mcp3008_value = 0;
 
 	//process buttons
 	for (uint16_t b = 0; b < buttons_count; b++)
@@ -650,21 +650,30 @@ void FRONTPANEL_Process(void)
 			continue;
 #endif
 		
-//get state from ADC MCP3008 (10bit - 1024values)
+// get state from ADC MCP3008 (10bit - 1024values)
 #ifdef HRDW_MCP3008_1
-		if (button->port == 1)
-			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-		else
+		if (button->port == 1) {
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
+			mcp3008_value /= 3;
+		} else
 #endif
 #ifdef HRDW_MCP3008_2
-			if (button->port == 2)
-			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-		else
+		if (button->port == 2) {
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
+			mcp3008_value /= 3;
+		} else
 #endif
 #ifdef HRDW_MCP3008_3
-			if (button->port == 3)
-			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
-		else
+		if (button->port == 3) {
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
+			mcp3008_value /= 3;
+		} else
 #endif
 			continue;
 
