@@ -115,9 +115,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	
 	uint32_t vga_need_gain = (TRX.VGA_GAIN - 10.5f) / 1.5f;
 	bool VGA_0 = bitRead(vga_need_gain, 0);
-	bool VGA_1 = bitRead(vga_need_gain, 0);
-	bool VGA_2 = bitRead(vga_need_gain, 0);
-	bool VGA_3 = bitRead(vga_need_gain, 0);
+	bool VGA_1 = bitRead(vga_need_gain, 1);
+	bool VGA_2 = bitRead(vga_need_gain, 2);
+	bool VGA_3 = bitRead(vga_need_gain, 3);
 	
 	//RF Unit
 	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
@@ -163,16 +163,16 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			//U17-D4 BPF_D
 			if (registerNumber == 11)
 			//U17-D3 Net_PGA2
-			if (registerNumber == 12 && VGA_2)
+			if (registerNumber == 12 && !VGA_2)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U17-D2 Net_PGA3
-			if (registerNumber == 13 && VGA_3)
+			if (registerNumber == 13 && !VGA_3)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U17-D1 Net_PGA0
-			if (registerNumber == 14 && VGA_0)
+			if (registerNumber == 14 && !VGA_0)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			//U17-D0 Net_PGA1
-			if (registerNumber == 15 && VGA_1)
+			if (registerNumber == 15 && !VGA_1)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 		}
 		MINI_DELAY
