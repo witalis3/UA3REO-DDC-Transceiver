@@ -653,6 +653,7 @@ void FRONTPANEL_Process(void)
 // get state from ADC MCP3008 (10bit - 1024values)
 #ifdef HRDW_MCP3008_1
 		if (button->port == 1) {
+			mcp3008_value = 0;
 			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
 			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
 			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
@@ -661,6 +662,7 @@ void FRONTPANEL_Process(void)
 #endif
 #ifdef HRDW_MCP3008_2
 		if (button->port == 2) {
+			mcp3008_value = 0;
 			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
 			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
 			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
@@ -669,6 +671,7 @@ void FRONTPANEL_Process(void)
 #endif
 #ifdef HRDW_MCP3008_3
 		if (button->port == 3) {
+			mcp3008_value = 0;
 			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
 			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
 			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
