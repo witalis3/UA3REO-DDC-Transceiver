@@ -125,8 +125,8 @@ void LCDDriver_Init(void)
   HAL_Delay(100);
 
   FMC_NORSRAM_TimingTypeDef Timing = {0};
-  Timing.AddressSetupTime = 4;
-  Timing.AddressHoldTime = 4;
+  Timing.AddressSetupTime = 5;
+  Timing.AddressHoldTime = 5;
   Timing.BusTurnAroundDuration = 1;
 
   Timing.DataSetupTime = 5;
