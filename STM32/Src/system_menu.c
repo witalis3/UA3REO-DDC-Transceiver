@@ -47,6 +47,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction);
+static void SYSMENU_HANDL_TRX_ATT_DB(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction);
@@ -488,6 +489,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 		{"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 		{"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 		{"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
+		{"Attenuation, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.ATT_DB, SYSMENU_HANDL_TRX_ATT_DB},
 #if HRDW_HAS_VGA
 		{"VGA Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.VGA_GAIN, SYSMENU_HANDL_TRX_VGA_GAIN},
 #endif
@@ -1378,6 +1380,16 @@ static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction)
 		TRX.ATT_STEP = 15;
 }
 
+static void SYSMENU_HANDL_TRX_ATT_DB(int8_t direction)
+{
+	TRX.ATT_DB += (float32_t)direction * 0.5f;
+	if (TRX.ATT_DB < 0.5f)
+		TRX.ATT_DB = 0.5f;
+	if (TRX.ATT_DB > 31.5f)
+		TRX.ATT_DB = 31.5f;
+}
+
+#if HRDW_HAS_VGA
 static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction)
 {
 	TRX.VGA_GAIN += (float32_t)direction * 1.5f;
@@ -1386,6 +1398,7 @@ static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction)
 	if (TRX.VGA_GAIN > 33.0f)
 		TRX.VGA_GAIN = 33.0f;
 }
+#endif
 
 static void SYSMENU_TRX_Callsign_keyboardHandler(uint32_t parameter)
 {

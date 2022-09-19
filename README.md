@@ -153,6 +153,7 @@ Supported LCD: ILI9481, ILI9486, HX8357B, HX8357C, ST7796S, RA8875+GT911
 * **CW Freq Step divider** - Frequency step divider for CW mode
 * **Encoder Accelerate** - Accelerate encoder on fast rates
 * **Att step, dB** - Attenuator tuning step
+* **Attenuation, dB** - Current attenuation
 * **DEBUG Type** - Output of debug and service information to USB / UART ports
 * **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
 * **Input Type** - Select audio input (microphone, line in, USB)
