@@ -114,10 +114,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		band_out = CALIBRATE.EXT_70cm;
 	
 	uint32_t vga_need_gain = (TRX.VGA_GAIN - 10.5f) / 1.5f;
-	bool VGA_0 = bitRead(vga_need_gain, 0);
-	bool VGA_1 = bitRead(vga_need_gain, 1);
-	bool VGA_2 = bitRead(vga_need_gain, 2);
-	bool VGA_3 = bitRead(vga_need_gain, 3);
+	bool VGA_0 = bitRead(vga_need_gain, 3);
+	bool VGA_1 = bitRead(vga_need_gain, 2);
+	bool VGA_2 = bitRead(vga_need_gain, 1);
+	bool VGA_3 = bitRead(vga_need_gain, 0);
 	
 	//RF Unit
 	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
