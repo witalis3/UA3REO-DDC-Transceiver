@@ -899,8 +899,8 @@ void processTxAudio(void)
 		// USB Gain (24bit)
 		if (getInputType() == TRX_INPUT_USB)
 		{
-			arm_scale_f32(APROC_Audio_Buffer_TX_I, 10.0f, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			arm_scale_f32(APROC_Audio_Buffer_TX_Q, 10.0f, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			// arm_scale_f32(APROC_Audio_Buffer_TX_I, 10.0f, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+			// arm_scale_f32(APROC_Audio_Buffer_TX_Q, 10.0f, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 		}
 
 		// Process DC corrector filter
@@ -1224,6 +1224,8 @@ void processTxAudio(void)
 		}
 		else if (APROC_TX_clip_gain < 1.0f && Processor_TX_MAX_amplitude_IN < RFpower_amplitude)
 			APROC_TX_clip_gain += 0.0001f;
+		else if (APROC_TX_clip_gain > 0.0f && Processor_TX_MAX_amplitude_IN > RFpower_amplitude)
+			APROC_TX_clip_gain -= 0.0001f;
 
 		// Input External ALC overload, over 1 volt
 		if (TRX_ALC_IN > 1.0f && CALIBRATE.RF_unit_type != RF_UNIT_WF_100D)
