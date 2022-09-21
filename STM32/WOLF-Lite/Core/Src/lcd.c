@@ -1052,7 +1052,7 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	}
 	
 	//IN-OUT 
-	sprintf(buff, "MIC:%d", TRX.MIC_GAIN);
+	sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_GAIN_DB);
 	
 	static char prev_mic_buff[16] = "";
 	if(redraw || strcmp(prev_mic_buff, buff) != 0) {

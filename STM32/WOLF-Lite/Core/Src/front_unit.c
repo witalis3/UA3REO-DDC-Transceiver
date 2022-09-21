@@ -38,8 +38,6 @@ static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;
 
-#define FRONTPANEL_LITE_ALEX false
-
 #if !FRONTPANEL_LITE_ALEX
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	//buttons
