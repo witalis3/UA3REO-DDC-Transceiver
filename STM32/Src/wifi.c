@@ -1214,12 +1214,45 @@ static void WIFI_printImage_DayNight_callback(void)
 			}
 		}
 	}
-	else
-#ifdef LCD_SMALL_INTERFACE
-	LCDDriver_printText("Network error", 10, 20, FG_COLOR, BG_COLOR, 1);
-#else
-	LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
-#endif
+	else {
+		LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	}
+}
+
+static void WIFI_printImage_Ionogram_callback(void)
+{
+	LCDDriver_Fill(BG_COLOR);
+	if (WIFI_HTTP_Response_Status == 200)
+	{
+		char *istr1 = strchr(WIFI_HTTResponseHTML, ',');
+		if (istr1 != NULL)
+		{
+			*istr1 = 0;
+			uint32_t filesize = atoi(WIFI_HTTResponseHTML);
+			istr1++;
+			char *istr2 = strchr(istr1, ',');
+			if (istr2 != NULL)
+			{
+				*istr2 = 0;
+				uint16_t width = (uint16_t)(atoi(istr1));
+				istr2++;
+
+				uint16_t height = (uint16_t)(atoi(istr2));
+
+				if (filesize > 0 && width > 0 && height > 0)
+				{
+					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
+					WIFI_RLEStreamBuffer_part = 0;
+					char buff[64] = {0};
+					sprintf(buff, "/trx_services/ionogram.php?part=0&ursiCode=%s", TRX.URSI_CODE);
+					WIFI_getHTTPpage("ua3reo.ru", buff, WIFI_printImage_stream_callback, false, false);
+				}
+			}
+		}
+	}
+	else {
+		LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	}
 }
 
 void WIFI_getRDA(void)
@@ -1377,21 +1410,26 @@ void WIFI_getDayNightMap(void)
 {
 	LCDDriver_Fill(BG_COLOR);
 	if (WIFI_connected && WIFI_State == WIFI_READY) {
-		#ifdef LCD_SMALL_INTERFACE
-			LCDDriver_printText("Loading...", 10, 20, FG_COLOR, BG_COLOR, 1);
-		#else
-			LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
-		#endif
+		LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 	} else {
-		#ifdef LCD_SMALL_INTERFACE
-			LCDDriver_printText("No connection", 10, 20, FG_COLOR, BG_COLOR, 1);
-		#else
-			LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
-		#endif
-		
+		LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 		return;
 	}
 	WIFI_getHTTPpage("ua3reo.ru", "/trx_services/daynight.php", WIFI_printImage_DayNight_callback, false, false);
+}
+
+void WIFI_getIonogram(void)
+{
+	LCDDriver_Fill(BG_COLOR);
+	if (WIFI_connected && WIFI_State == WIFI_READY) {
+		LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	} else {
+		LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+		return;
+	}
+	char buff[64] = {0};
+	sprintf(buff, "/trx_services/ionogram.php?ursiCode=%s", TRX.URSI_CODE);
+	WIFI_getHTTPpage("ua3reo.ru", buff, WIFI_printImage_Ionogram_callback, false, false);
 }
 
 bool WIFI_SW_Restart(void (*callback)(void))

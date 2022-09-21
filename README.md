@@ -375,6 +375,10 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * Displaying the day/night terminator on the map (from internet)
 
+### Ionogram 
+
+* Displaying the ionogram for the selected URSI Code (from internet)
+
 ### SWR Analyser
 
 * Run SWR analizer (Band SWR - on current band, HF SWR - on all HF bands, Custom SWR - in selected range)

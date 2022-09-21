@@ -393,6 +393,7 @@ static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
 static void SYSMENU_HANDL_DAYNIGHT_MAP(int8_t direction);
+static void SYSMENU_HANDL_IONOGRAM(int8_t direction);
 #endif
 static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction);
@@ -979,6 +980,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 		{"Propagination", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGINATION},
 		#if LCD_WIDTH >= 800
 		{"DayNight Map", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DAYNIGHT_MAP},
+		{"Ionogram", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_IONOGRAM},
 		#endif
 		{"RDA Statistics", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RDA_STATS},
 #endif
@@ -5733,6 +5735,14 @@ static void SYSMENU_HANDL_DAYNIGHT_MAP(int8_t direction)
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getDayNightMap();
+}
+
+// IONOGRAM
+static void SYSMENU_HANDL_IONOGRAM(int8_t direction)
+{
+	sysmenu_infowindow_opened = true;
+	SYSMENU_drawSystemMenu(true, false);
+	WIFI_getIonogram();
 }
 
 // RECORD CQ MESSAGE

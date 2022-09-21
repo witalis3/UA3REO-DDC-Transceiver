@@ -85,6 +85,7 @@ extern void WIFI_getRDA(void);
 extern void WIFI_getDXCluster(void);
 extern void WIFI_getPropagination(void);
 extern void WIFI_getDayNightMap(void);
+extern void WIFI_getIonogram(void);
 extern bool WIFI_SW_Restart(void (*callback)(void));
 extern void WIFI_checkFWUpdates(void);
 extern void WIFI_downloadFileToSD(char *url, char *filename);
