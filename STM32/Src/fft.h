@@ -80,7 +80,7 @@ extern void FFT_bufferPrepare(void);                     // FFT Buffer process
 extern void FFT_doFFT(void);                             // FFT calculation
 extern bool FFT_printFFT(void);                          // FFT output
 extern void FFT_afterPrintFFT(void);                     // FFT output after callback
-extern uint32_t getFreqOnFFTPosition(uint16_t position); // get frequency from pixel X position
+extern uint64_t getFreqOnFFTPosition(uint16_t position); // get frequency from pixel X position
 extern void FFT_ShortBufferPrintFFT(void);
 
 #endif

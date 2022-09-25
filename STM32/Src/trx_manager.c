@@ -691,9 +691,9 @@ void TRX_ProcessScanMode(void)
 	}
 }
 
-static uint32_t setFreqSlowly_target = 0;
+static uint64_t setFreqSlowly_target = 0;
 static bool setFreqSlowly_processing = 0;
-void TRX_setFrequencySlowly(uint32_t target_freq)
+void TRX_setFrequencySlowly(uint64_t target_freq)
 {
 	setFreqSlowly_target = target_freq;
 	setFreqSlowly_processing = true;
@@ -703,7 +703,7 @@ void TRX_setFrequencySlowly_Process(void)
 {
 	if (!setFreqSlowly_processing)
 		return;
-	int32_t diff = CurrentVFO->Freq - setFreqSlowly_target;
+	int64_t diff = CurrentVFO->Freq - setFreqSlowly_target;
 	if (diff > TRX_SLOW_SETFREQ_MIN_STEPSIZE || diff < -TRX_SLOW_SETFREQ_MIN_STEPSIZE)
 	{
 		TRX_setFrequency(CurrentVFO->Freq - diff / 4, CurrentVFO);

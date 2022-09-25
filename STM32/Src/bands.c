@@ -1025,10 +1025,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] =
 			.name = "6cm",
 			.selectable = false,
 			.broadcast = false,
-			.startFreq = 5650000000,
-			.endFreq = 5850000000,
+			.startFreq = 5760000000, //5650000000
+			.endFreq = 5762000000, //5850000000
 			.regions = (const REGION_MAP[1]){
-				{.startFreq = 5650000000, .endFreq = 5850000000, .mode = TRX_MODE_USB},
+				//{.startFreq = 5650000000, .endFreq = 5850000000, .mode = TRX_MODE_USB},
+				{.startFreq = 5760000000, .endFreq = 5762000000, .mode = TRX_MODE_CW},
 			},
 			.regionsCount = 1,
 			.channels = NULL,

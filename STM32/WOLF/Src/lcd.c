@@ -1705,7 +1705,7 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + LAYOUT->FFT_FFTWTF_BOTTOM - 50) >= y))
 		{
 			// frequency tap
-			uint32_t newfreq = getFreqOnFFTPosition(x);
+			uint64_t newfreq = getFreqOnFFTPosition(x);
 			newfreq = newfreq / 500 * 500;
 			TRX_setFrequencySlowly(newfreq);
 			LCD_UpdateQuery.FreqInfo = true;

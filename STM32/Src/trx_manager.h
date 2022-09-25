@@ -24,7 +24,7 @@ extern void TRX_DoAutoGain(void);
 extern void TRX_Restart_Mode(void);
 extern void TRX_TemporaryMute(void);
 extern void TRX_ProcessScanMode(void);
-extern void TRX_setFrequencySlowly(uint32_t target_freq);
+extern void TRX_setFrequencySlowly(uint64_t target_freq);
 extern void TRX_setFrequencySlowly_Process(void);
 extern bool TRX_TX_Disabled(uint32_t freq);
 extern void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder);

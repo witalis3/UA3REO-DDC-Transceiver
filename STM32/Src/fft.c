@@ -2221,7 +2221,7 @@ static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initializ
 
 static inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos)
 {
-	int32_t pos = (int32_t)((float32_t)LAYOUT->FFT_PRINT_SIZE / 2 + (float32_t)((float32_t)freq - (float32_t)CurrentVFO->Freq) / hz_in_pixel * (float32_t)fft_zoom);
+	int32_t pos = (int32_t)((float64_t)LAYOUT->FFT_PRINT_SIZE / 2.0f + (float64_t)((float64_t)freq - (float64_t)CurrentVFO->Freq) / hz_in_pixel * (float64_t)fft_zoom);
 	if (!full_pos && (pos < 0 || pos >= LAYOUT->FFT_PRINT_SIZE))
 		return -1;
 	if (TRX.FFT_Lens) // lens correction
@@ -2229,9 +2229,9 @@ static inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos)
 	return pos;
 }
 
-uint32_t getFreqOnFFTPosition(uint16_t position)
+uint64_t getFreqOnFFTPosition(uint16_t position)
 {
-	return (uint32_t)((int32_t)CurrentVFO->Freq + (int32_t)(-((float32_t)LAYOUT->FFT_PRINT_SIZE * (hz_in_pixel / (float32_t)fft_zoom) / 2.0f) + (float32_t)position * (hz_in_pixel / (float32_t)fft_zoom)));
+	return (uint64_t)((int64_t)CurrentVFO->Freq + (int64_t)(-((float64_t)LAYOUT->FFT_PRINT_SIZE * (hz_in_pixel / (float64_t)fft_zoom) / 2.0f) + (float64_t)position * (hz_in_pixel / (float64_t)fft_zoom)));
 }
 
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center)
