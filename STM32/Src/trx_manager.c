@@ -1544,7 +1544,10 @@ void BUTTONHANDLER_MENUHOLD(uint32_t parameter)
 void BUTTONHANDLER_MUTE(uint32_t parameter)
 {
 	TRX_Mute = !TRX_Mute;
-	TRX_AFAmp_Mute = false;
+	if (!TRX_Mute) {
+		TRX_AFAmp_Mute = false;
+		CODEC_UnMute_AF_AMP();
+	}
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
