@@ -425,7 +425,8 @@ void LoadSettings(bool clear)
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 
 		LCD_showError("Loaded default settings", true);
-		SaveSettings();
+		SaveSettings(); // save to primary bank
+		SaveSettings(); // save to second bank
 		SaveSettingsToEEPROM();
 	}
 

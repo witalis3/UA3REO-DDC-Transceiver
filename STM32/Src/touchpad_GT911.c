@@ -60,7 +60,7 @@ void GT911_RD_RegOneByte(uint16_t reg, uint8_t *buf)
 	}
 	else
 	{
-		print("no touchpad found on i2c bus");
+		println("[ERR] No touchpad found on i2c bus");
 
 		// try new i2c addr if failed
 		if (gt911_i2c_addr == GT911_I2C_ADDR_1)
