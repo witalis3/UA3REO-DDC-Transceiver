@@ -15,7 +15,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 ## Specifications
 
 * Receiving frequencies: 0 MHz - 750 MHz with fading each 61.44 Mhz
-* Transmission frequencies: 0 MHz - 80 MHz, 120 MHz - 160 MHz
+* Transmission frequencies: 0 MHz - 200 MHz with fading on 55, 110, 165 Mhz
 * Transmission frequencies in harmonics mode (CW, FM): 360 Mhz - 480 Mhz
 * TX power (QRP version): 7W+ (HF), 5W (VHF)
 * TX power (QRP++ DB5AT version): 20W (HF), 7W (VHF)

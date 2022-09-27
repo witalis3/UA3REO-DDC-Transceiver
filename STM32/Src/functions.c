@@ -197,14 +197,27 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 		}
 	}
 
+	TRX_DAC_X4 = true;
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
-	if (nyquist == 0) // <99.84mhz (good 0mhz - 79.872mhz) 0-0.4 dac freq
+	if (nyquist == 0) // <55,2mhz (good 0mhz - 44,16mhz) 0-0.4 dac freq
 	{
-		TRX_DAC_HP2 = false; // low-pass
+		TRX_DAC_HP1 = false; // HP1 low-pass
+		TRX_DAC_HP2 = false; // HP2 low-pass
 	}
-	if (nyquist == 1) // 99.84-199.68mhz (good 119.808mhz - 159.744mhz) dac freq - (0.2-0.4 dac freq)
+	if (nyquist == 1) // 55,2-110,4mhz (good 66,24mhz - 88,32mhz) dac freq - (0.6-0.9 dac freq)
 	{
-		TRX_DAC_HP2 = true; // high-pass
+		TRX_DAC_HP1 = true; // HP1 high-pass
+		TRX_DAC_HP2 = false; // HP2 low-pass
+	}
+	if (nyquist == 2) // 110,4-165,6mhz (good 132,48mhz - 154,56mhz) dac freq - (1.2-1.4 dac freq)
+	{
+		TRX_DAC_HP1 = true; // HP1 high-pass
+		TRX_DAC_HP2 = true; // HP3 high-pass
+	}
+	if (nyquist == 3) // 165,6-220,8mhz (good 176,64mhz - 200,0mhz) dac freq - (1.6-1.9 dac freq)
+	{
+		TRX_DAC_HP1 = false; // HP1 low-pass
+		TRX_DAC_HP2 = true; // HP3 high-pass
 	}
 
 	if (_freq > (DAC_CLOCK / 2)) // Go Nyquist

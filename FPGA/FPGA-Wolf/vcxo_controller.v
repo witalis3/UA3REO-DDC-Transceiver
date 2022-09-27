@@ -16,7 +16,7 @@ parameter TCXO_freq = 1228800; //x10hz
 input vcxo_clk_in;
 input tcxo_clk_in;
 input pwm_clk_in;
-input signed [7:0] VCXO_correction;
+input signed [15:0] VCXO_correction;
 input tx;
 
 output reg signed [31:0] freq_error = 0;
@@ -35,7 +35,7 @@ reg [7:0] state = 0;
 reg counter_resetted = 0;
 reg counter_idle = 0;
 
-reg [31:0] PWM_max = 32000;
+reg signed [31:0] PWM_max = 32000;
 reg [31:0] PWM_counter = 0;
 
 always @ (posedge pwm_clk_in)
@@ -113,20 +113,20 @@ begin
 		else if(state == 2)
 		begin
 			freq_error_now = VCXO_counter_result - VCXO_freq + $signed(VCXO_correction);
-			freq_error_diff = freq_error_prev - freq_error_now;
+			freq_error_diff = $signed(freq_error_prev) - $signed(freq_error_now);
 			state = 3;
 		end
-		else if(state == 3)
+		else if(state == 3 && pwm_clk_in == 0)
 		begin
 			if(freq_error_diff == 0) //check mesure
 			begin		
 				//tune
-				if(freq_error_now < -10 || freq_error_now > 10)
+				if($signed(freq_error_now) < -10 || $signed(freq_error_now) > 10)
 				begin
 					PWM = $signed(PWM) - ($signed(freq_error_now) <<< 1);
 					freq_error = freq_error_now;
 				end
-				else if(freq_error_now < -1 || freq_error_now > 1)
+				else if($signed(freq_error_now) < -1 || $signed(freq_error_now) > 1)
 				begin
 					PWM = $signed(PWM) - $signed(freq_error_now);
 					freq_error = freq_error_now;
@@ -135,17 +135,17 @@ begin
 				begin
 					freq_error = 0;
 				end
-			end
+			end	
 			
-			if($signed(PWM) > PWM_max)
-				PWM = $signed(PWM_max);
-			if($signed(PWM) < $signed(1))
-				PWM = $signed(1);
-					
+			if($signed(PWM) > $signed(PWM_max))
+				PWM = PWM_max;
+			if($signed(PWM) < 1)
+				PWM = 1;
+			
 			state = 4;
 		end
 		else if(state == 4)
-		begin
+		begin	
 			freq_error_prev = freq_error_now;
 			vcxo_cnt_need_state = 2; //reset
 			state = 0;

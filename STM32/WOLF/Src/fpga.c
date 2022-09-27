@@ -416,7 +416,13 @@ static inline void FPGA_fpgadata_sendparam(void)
 
 	// STAGE 16
 	// OUT VCXO OFFSET
-	FPGA_writePacket(CALIBRATE.VCXO_correction);
+	FPGA_writePacket(((CALIBRATE.VCXO_correction & (0XFFU << 8)) >> 8));
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	// STAGE 16
+	// OUT VCXO OFFSET 2
+	FPGA_writePacket(CALIBRATE.VCXO_correction & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
