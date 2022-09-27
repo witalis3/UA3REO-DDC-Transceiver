@@ -392,9 +392,20 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 	vfo->Freq = _freq;
 
 	// set DC-DC Sync freq
-	uint32_t dcdc_offset_0 = abs((int32_t)DCDC_FREQ_0 / 2 - (int32_t)_freq % (int32_t)DCDC_FREQ_0);
-	uint32_t dcdc_offset_1 = abs((int32_t)DCDC_FREQ_1 / 2 - (int32_t)_freq % (int32_t)DCDC_FREQ_1);
-	if (dcdc_offset_0 > dcdc_offset_1)
+	uint64_t dcdc_0_harmonic_num = _freq / DCDC_FREQ_0;
+	uint64_t dcdc_1_harmonic_num = _freq / DCDC_FREQ_1;
+	uint64_t dcdc_0_harmonic_1ow = dcdc_0_harmonic_num * DCDC_FREQ_0;
+	uint64_t dcdc_0_harmonic_high = (dcdc_0_harmonic_num + 1) * DCDC_FREQ_0;
+	uint64_t dcdc_1_harmonic_1ow = dcdc_1_harmonic_num * DCDC_FREQ_1;
+	uint64_t dcdc_1_harmonic_high = (dcdc_1_harmonic_num + 1) * DCDC_FREQ_1;
+	uint64_t dcdc_0_harmonic_1ow_diff = llabs((int64_t)dcdc_0_harmonic_1ow - (int64_t)_freq);
+	uint64_t dcdc_0_harmonic_high_diff = llabs((int64_t)dcdc_0_harmonic_high - (int64_t)_freq);
+	uint64_t dcdc_1_harmonic_1ow_diff = llabs((int64_t)dcdc_1_harmonic_1ow - (int64_t)_freq);
+	uint64_t dcdc_1_harmonic_high_diff = llabs((int64_t)dcdc_1_harmonic_high - (int64_t)_freq);
+	uint64_t dcdc_0_harmonic_nearest = dcdc_0_harmonic_1ow_diff < dcdc_0_harmonic_high_diff ? dcdc_0_harmonic_1ow_diff : dcdc_0_harmonic_high_diff;
+	uint64_t dcdc_1_harmonic_nearest = dcdc_1_harmonic_1ow_diff < dcdc_1_harmonic_high_diff ? dcdc_1_harmonic_1ow_diff : dcdc_1_harmonic_high_diff;
+	
+	if (dcdc_0_harmonic_nearest < dcdc_1_harmonic_nearest)
 		TRX_DCDC_Freq = 1;
 	else
 		TRX_DCDC_Freq = 0;
