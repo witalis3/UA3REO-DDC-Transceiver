@@ -281,7 +281,7 @@ void TRX_ptt_change(void)
 	}
 }
 
-bool TRX_TX_Disabled(uint32_t freq)
+bool TRX_TX_Disabled(uint64_t freq)
 {
 	bool notx = false;
 	int8_t band = getBandFromFreq(freq, false);
@@ -349,7 +349,23 @@ bool TRX_TX_Disabled(uint32_t freq)
 			notx = true;
 		break;
 	case BANDID_70cm:
-		if (CALIBRATE.NOTX_70cm)
+		if (CALIBRATE.NOTX_70cm && !TRX.Transverter_70cm)
+			notx = true;
+		break;
+	case BANDID_23cm:
+		if (!TRX.Transverter_23cm)
+			notx = true;
+		break;
+	case BANDID_13cm:
+		if (!TRX.Transverter_13cm)
+			notx = true;
+		break;
+	case BANDID_6cm:
+		if (!TRX.Transverter_6cm)
+			notx = true;
+		break;
+	case BANDID_3cm:
+		if (!TRX.Transverter_3cm)
 			notx = true;
 		break;
 	default:
