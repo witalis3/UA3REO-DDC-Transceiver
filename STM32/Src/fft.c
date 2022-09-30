@@ -88,7 +88,7 @@ static bool fft_charge_copying = false;
 static uint8_t FFT_meanBuffer_index = 0;
 static uint32_t FFT_ChargeBuffer_collected = 0;
 static uint64_t FFT_lastFFTChargeBufferFreq = 0;
-//static uint8_t FFTOutput_mean_count[FFT_SIZE] = {0};
+static uint8_t FFTOutput_mean_count[FFT_SIZE] = {0};
 static float32_t minAmplValue_averaged = 0;
 static float32_t FFT_minDBM = 0;
 static float32_t FFT_maxDBM = 0;
@@ -428,7 +428,7 @@ void FFT_doFFT(void)
 
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 
-	// dBm scale
+	// FFT scale
 	if (TRX.FFT_Scale_Type == 1) // Squared scale
 		arm_cmplx_mag_squared_f32(FFTInput, FFTInput, FFT_SIZE);
 	else // ampl or dbm scale
@@ -553,7 +553,7 @@ void FFT_doFFT(void)
 
 	// Averaging values
 	dma_memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean));
-	//dma_memset(FFTOutput_mean_count, 0x00, sizeof(FFTOutput_mean_count));
+	dma_memset(FFTOutput_mean_count, 0x00, sizeof(FFTOutput_mean_count));
 
 	for (uint_fast16_t avg_idx = 0; avg_idx < max_mean; avg_idx++)
 	{
@@ -568,16 +568,22 @@ void FFT_doFFT(void)
 			if (new_x > -1 && new_x < LAYOUT->FFT_PRINT_SIZE)
 			{
 				FFTOutput_mean[i] += FFT_meanBuffer[avg_idx][new_x];
-				//FFTOutput_mean_count[i]++;
+				FFTOutput_mean_count[i]++;
 			}
 		}
 	}
 
-	for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++)
-	{
-		//if (FFTOutput_mean_count[i] > 1)
-			//FFTOutput_mean[i] /= (float32_t)FFTOutput_mean_count[i];
-		FFTOutput_mean[i] /= max_mean;
+	if (TRX.FFT_Scale_Type == 2) { //dBm scale
+		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++) {
+			if (FFTOutput_mean_count[i] > 1) {
+				FFTOutput_mean[i] /= (float32_t)FFTOutput_mean_count[i];
+			}
+		}
+	}
+	else { //ampl, squared scales
+		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++) {
+			FFTOutput_mean[i] /= max_mean;
+		}
 	}
 
 	if (averaging > 0)
