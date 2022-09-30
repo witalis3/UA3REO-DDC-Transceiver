@@ -454,6 +454,10 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		if (TRX.IF_Gain > CALIBRATE.IF_GAIN_MAX)
 			TRX.IF_Gain = CALIBRATE.IF_GAIN_MAX;
 		
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		if (band > 0)
+			TRX.BANDS_SAVED_SETTINGS[band].IF_Gain = TRX.IF_Gain;
+		
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 }
