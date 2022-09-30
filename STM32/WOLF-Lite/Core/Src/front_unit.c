@@ -257,6 +257,8 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 			TRX.RF_Power += direction;
 		if (TRX.RF_Power > 100)
 			TRX.RF_Power = 100;
+		
+		ATU_TunePowerStabilized = false;
 
 		char sbuff[32] = {0};
 		sprintf(sbuff, "Power: %u", TRX.RF_Power);

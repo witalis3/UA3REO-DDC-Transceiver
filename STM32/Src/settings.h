@@ -37,6 +37,7 @@
 #define CW_ADD_GAIN_IF 30.0f				  // additional IF gain in CW
 #define CW_ADD_GAIN_AF 10.0f					  // additional AF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)			  // TX LPF On Timeout, millisec (3 min)
+#define SWR_PROTECTOR_MAX_POWER 20.0f		// drop down to PWR %, if SWR high
 
 //#define ADC_BITS 16																						// ADC bit depth
 //#define FPGA_BUS_BITS 32																				// bitness of data from FPGA

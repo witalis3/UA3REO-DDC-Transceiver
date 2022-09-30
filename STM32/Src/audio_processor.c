@@ -1115,7 +1115,6 @@ void processTxAudio(void)
 	if ((mode == TRX_MODE_LSB || mode == TRX_MODE_USB) && !TRX_Tune)
 		RF_Power_selected += CALIBRATE.SSB_POWER_ADDITION;
 	
-	#define SWR_PROTECTOR_MAX_POWER 20.0f
 	if(TRX_SWR_PROTECTOR && TRX.RF_Power > SWR_PROTECTOR_MAX_POWER)
 		RF_Power_selected = SWR_PROTECTOR_MAX_POWER;
 	
