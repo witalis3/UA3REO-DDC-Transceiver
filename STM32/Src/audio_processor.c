@@ -899,8 +899,8 @@ void processTxAudio(void)
 		// USB Gain (24bit)
 		if (getInputType() == TRX_INPUT_USB)
 		{
-			// arm_scale_f32(APROC_Audio_Buffer_TX_I, 10.0f, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			// arm_scale_f32(APROC_Audio_Buffer_TX_Q, 10.0f, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			arm_scale_f32(APROC_Audio_Buffer_TX_I, 1.1f, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+			arm_scale_f32(APROC_Audio_Buffer_TX_Q, 1.1f, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 		}
 
 		// Process DC corrector filter
@@ -923,7 +923,7 @@ void processTxAudio(void)
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f, mode);
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, ((float32_t)CALIBRATE.AM_MODULATION_INDEX / 200.0f) * APROC_TX_clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		}
-		else
+		else if (mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U) // disable AGC on DIGI
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 1.00f * APROC_TX_clip_gain, mode);
 
 		// double left and right channel
