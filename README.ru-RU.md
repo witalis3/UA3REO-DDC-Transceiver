@@ -1,9 +1,9 @@
 # Трансивер "Волк"
 Проект DDC-DUC SDR трансивера https://ua3reo.ru/tag/transiver-ua3reo/
-Телеграм канал сообщества: https://t.me/TRX_Wolf
-Подробная инструкция: https://docs.google.com/document/d/1NvooqW0UfsYOzQgA_49qfsITvCNuINGpfsMsFVaksvc/edit?usp=sharing
 
-In english https://github.com/XGudron/UA3REO-DDC-Transceiver/blob/master/README.md
+* Телеграм канал сообщества: https://t.me/TRX_Wolf
+* Подробная инструкция: https://docs.google.com/document/d/1NvooqW0UfsYOzQgA_49qfsITvCNuINGpfsMsFVaksvc/edit?usp=sharing
+* In english https://github.com/XGudron/UA3REO-DDC-Transceiver/blob/master/README.md
 
 ## Принцип работы
 
@@ -144,6 +144,7 @@ WiFi модуль ESP-01 должен иметь свежую прошивку �
 * **Freq Step FAST** - Шаг перестройки частоты основным энкодером в режиме FAST
 * **Freq Step ENC2** - Шаг перестройки частоты основным доп. энкодером
 * **Freq Step ENC2 FAST** - Шаг перестройки частоты основным доп. энкодером в режиме FAST
+* **Freq Step WFM, kHz** - Шаг перестройки частоты основным энкодером в WFM моде
 * **CW Freq Step divider** - Делитель шага перестройки частоты для CW моды
 * **Encoder Accelerate** - Ускорение энкодера на больших оборотах
 * **Att step, dB** - Шаг перестройки аттенюатора

@@ -8,7 +8,7 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 62						  // Settings config version
+#define SETT_VERSION 63						  // Settings config version
 #define CALIB_VERSION 50					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
@@ -388,6 +388,7 @@ extern struct TRX_SETTINGS
 	uint32_t FRQ_FAST_STEP;
 	uint32_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
+	uint32_t FRQ_ENC_WFM_STEP_KHZ;
 	VFO VFO_A;
 	VFO VFO_B;
 	uint16_t RIT_INTERVAL;

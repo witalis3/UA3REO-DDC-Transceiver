@@ -1,8 +1,8 @@
 # Transceiver "Wolf"
 DDC-DUC SDR Tranceiver project https://ua3reo.ru/tag/transiver-ua3reo/
-Community telegram channel: https://t.me/TRX_Wolf
 
-На русском https://github.com/XGudron/UA3REO-DDC-Transceiver/blob/master/README.ru-RU.md
+* Community telegram channel: https://t.me/TRX_Wolf
+* На русском https://github.com/XGudron/UA3REO-DDC-Transceiver/blob/master/README.ru-RU.md
 
 ## Principle of operation
 
@@ -143,6 +143,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Freq Step FAST** - Frequency step by the main encoder in FAST mode
 * **Freq Step ENC2** - Frequency tuning step by main add. encoder
 * **Freq Step ENC2 FAST** - Frequency step by main add. encoder in FAST mode
+* **Freq Step WFM, kHz** - Frequency step by main encoder in WFM mode
 * **CW Freq Step divider** - Frequency step divider for CW mode
 * **Encoder Accelerate** - Accelerate encoder on fast rates
 * **Att step, dB** - Attenuator tuning step
