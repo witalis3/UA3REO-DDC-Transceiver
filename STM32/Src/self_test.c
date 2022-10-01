@@ -133,12 +133,23 @@ void SELF_TEST_Draw(void)
 		SELF_TEST_printResult(abs(TRX_VCXO_ERROR) < 10, pos_y);
 		pos_y += margin_bottom;
 		#endif
+		
+		// Samplerate test
+		LCDDriver_printText("FPGA Clocks", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		SELF_TEST_printResult(abs((int32_t)TRX_GetRXSampleRate - (int32_t)dbg_FPGA_samples) < (TRX_GetRXSampleRate * 0.05f), pos_y); //5%
+		pos_y += margin_bottom;
+		
+		// redraw loop
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 
 	if (SELF_TEST_current_page == 1)
 	{
 		static bool ok[16] = {false};
 		static int8_t prev_adc_state[16] = {0};
+		
+		LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		pos_y += margin_bottom;
 
 		LCDDriver_printText("ADC RAW Data", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		sprintf(str, " %d         ", ADC_RAW_IN);
@@ -188,7 +199,7 @@ void SELF_TEST_Draw(void)
 		static uint8_t current_test = 0;
 		static uint32_t current_test_start_time = 0;
 
-		LCDDriver_printText("Testing on 14mhz...", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		pos_y += margin_bottom;
 
 		// predefine
@@ -342,7 +353,7 @@ void SELF_TEST_Draw(void)
 		static uint8_t current_test = 0;
 		static uint32_t current_test_start_time = 0;
 
-		LCDDriver_printText("Testing on 14mhz...", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		pos_y += margin_bottom;
 
 		// predefine
