@@ -29,6 +29,7 @@
 #include "sd.h"
 #include "cw.h"
 #include "functions.h"
+#include "snap.h"
 
 void EVENTS_do_WSPR(void) // 1,4648 hz
 {
@@ -453,6 +454,11 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		{
 			LCD_showError("Replace BAT", true);
 		}
+	}
+	
+	//Auto Snap
+	if (TRX.Auto_Snap) {
+		SNAP_DoSnap(true);
 	}
 	
 	CPULOAD_Calc(); // Calculate CPU load

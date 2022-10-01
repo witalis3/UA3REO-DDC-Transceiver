@@ -22,6 +22,7 @@
 #include "sd.h"
 #include "auto_notch.h"
 #include "noise_reduction.h"
+#include "snap.h"
 
 volatile bool TRX_ptt_hard = false;
 volatile bool TRX_ptt_soft = false;
@@ -2281,6 +2282,7 @@ void BUTTONHANDLER_VLT(uint32_t parameter)
 
 void BUTTONHANDLER_SNAP(uint32_t parameter)
 {
+	SNAP_DoSnap(false);
 }
 
 void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter)

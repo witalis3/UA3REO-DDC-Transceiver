@@ -8,6 +8,7 @@
 #include "cw_decoder.h"
 #include "wifi.h"
 #include "trx_manager.h"
+#include "snap.h"
 
 // Public variables
 bool FFT_need_fft = true;						   // need to prepare data for display on the screen
@@ -433,7 +434,7 @@ void FFT_doFFT(void)
 		arm_cmplx_mag_squared_f32(FFTInput, FFTInput, FFT_SIZE);
 	else // ampl or dbm scale
 		arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
-
+	
 	// Debug VAD
 	/*dma_memset(FFTInput, 0x00, sizeof(FFTInput));
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++)
@@ -463,6 +464,9 @@ void FFT_doFFT(void)
 	dma_memcpy(&FFTInput[FFT_SIZE], &FFTInput[0], sizeof(float32_t) * (FFT_SIZE / 2));			  // left - > tmp
 	dma_memcpy(&FFTInput[0], &FFTInput[FFT_SIZE / 2], sizeof(float32_t) * (FFT_SIZE / 2));		  // right - > left
 	dma_memcpy(&FFTInput[FFT_SIZE / 2], &FFTInput[FFT_SIZE], sizeof(float32_t) * (FFT_SIZE / 2)); // tmp - > right
+	
+	// Send to Snap
+	SNAP_FillBuffer(FFTInput);
 
 	// Compress the calculated FFT to visible
 	dma_memcpy(&FFTInput[0], &FFTInput[FFT_SIZE / 2 - FFT_USEFUL_SIZE / 2], sizeof(float32_t) * FFT_USEFUL_SIZE); // useful fft part
