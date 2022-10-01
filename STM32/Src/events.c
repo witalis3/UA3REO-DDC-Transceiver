@@ -446,7 +446,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 	
 	//Check vBAT
 	static bool vbat_checked = false;
-	if(!vbat_checked && TRX_Inited)
+	if(!vbat_checked && TRX_Inited && !LCD_busy)
 	{
 		vbat_checked = true;
 		if(TRX_VBAT_Voltage <= 2.5f)
