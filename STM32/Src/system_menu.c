@@ -36,6 +36,7 @@ static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
 static void SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI(int8_t direction);
 static void SYSMENU_HANDL_TRX_Auto_Input_Switch(int8_t direction);
+static void SYSMENU_HANDL_TRX_Auto_Snap(int8_t direction);
 static void SYSMENU_HANDL_TRX_RIT_INTERVAL(int8_t direction);
 static void SYSMENU_HANDL_TRX_XIT_INTERVAL(int8_t direction);
 static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction);
@@ -188,8 +189,10 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction);
 #if FUNCBUTTONS_COUNT > 28
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON30(int8_t direction);
+#if FUNCBUTTONS_COUNT > 30
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON31(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction);
+#endif
 #endif
 
 static void SYSMENU_HANDL_DECODERS_CW_Decoder(int8_t direction);
@@ -503,6 +506,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] =
 #endif
 		{"DEBUG Console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT"}},
 		{"Auto Input Switch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_HANDL_TRX_Auto_Input_Switch},
+		{"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_TRX_Auto_Snap},
 		{"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN, {"MIC", "LINE", "USB"}},
 		{"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI, {"MIC", "LINE", "USB"}},
 		{"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
@@ -688,8 +692,10 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"Func button 28", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[27], SYSMENU_HANDL_SCREEN_FUNC_BUTTON28},
 		{"Func button 29", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[28], SYSMENU_HANDL_SCREEN_FUNC_BUTTON29},
 		{"Func button 30", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[29], SYSMENU_HANDL_SCREEN_FUNC_BUTTON30},
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 30
 		{"Func button 31", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[30], SYSMENU_HANDL_SCREEN_FUNC_BUTTON31},
 		{"Func button 32", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[31], SYSMENU_HANDL_SCREEN_FUNC_BUTTON32},
+#endif
 #endif
 #endif
 #endif
@@ -1190,6 +1196,14 @@ static void SYSMENU_HANDL_TRX_Auto_Input_Switch(int8_t direction)
 		TRX.Auto_Input_Switch = true;
 	if (direction < 0)
 		TRX.Auto_Input_Switch = false;
+}
+
+static void SYSMENU_HANDL_TRX_Auto_Snap(int8_t direction)
+{
+	if (direction > 0)
+		TRX.Auto_Snap = true;
+	if (direction < 0)
+		TRX.Auto_Snap = false;
 }
 
 static void SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN(int8_t direction)
@@ -3091,6 +3105,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON30(int8_t direction)
 		TRX.FuncButtons[29] = FUNCBUTTONS_COUNT - 1;
 }
 
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 30
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON31(int8_t direction)
 {
 	if (TRX.FuncButtons[30] > 0 || direction > 0)
@@ -3106,6 +3121,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction)
 	if (TRX.FuncButtons[31] >= FUNCBUTTONS_COUNT)
 		TRX.FuncButtons[31] = FUNCBUTTONS_COUNT - 1;
 }
+#endif
 #endif
 #endif
 #endif

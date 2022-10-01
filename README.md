@@ -150,6 +150,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Attenuation, dB** - Current attenuation
 * **DEBUG Type** - Output of debug and service information to USB / UART ports
 * **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
+* **Auto Snap** - Automaticly track and snap to near signal frequency (CW mode)
 * **Input Type** - Select audio input (microphone, line in, USB)
 * **Callsign** - User callsign
 * **Locator** - User QTH locator

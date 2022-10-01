@@ -2278,3 +2278,20 @@ void BUTTONHANDLER_VLT(uint32_t parameter)
 	LCD_UpdateQuery.TopButtons = true;
 	#endif
 }
+
+void BUTTONHANDLER_SNAP(uint32_t parameter)
+{
+}
+
+void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter)
+{
+	TRX.Auto_Snap = !TRX.Auto_Snap;
+
+	if (TRX.Auto_Snap)
+		LCD_showTooltip("AUTO SNAP ON");
+	else
+		LCD_showTooltip("AUTO SNAP OFF");
+
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}

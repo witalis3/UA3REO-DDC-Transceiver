@@ -64,9 +64,9 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "NOTCH", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH_MANUAL, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
 	{.name = "ATT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ATT, .holdHandler = BUTTONHANDLER_ATTHOLD, .checkBool = (uint32_t *)&TRX.ATT},
 	{.name = "DRV", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DRV_ONLY, .holdHandler = BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.ADC_Driver},
-	{.name = "PGA", .work_in_menu = false, .clickHandler = BUTTONHANDLER_PGA_ONLY, .holdHandler = BUTTONHANDLER_PGA_ONLY, .checkBool = (uint32_t *)&TRX.ADC_PGA},
-	{.name = "AGC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AGC, .holdHandler = BUTTONHANDLER_AGC, .checkBool = (uint32_t *)&TRX.AGC_shadow},
+	{.name = "SPLIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SPLIT, .holdHandler = BUTTONHANDLER_SPLIT, .checkBool = (uint32_t *)&TRX.SPLIT_Enabled},
 	
+	{.name = "AGC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AGC, .holdHandler = BUTTONHANDLER_AGC, .checkBool = (uint32_t *)&TRX.AGC_shadow},
 	{.name = "IF", .work_in_menu = true, .clickHandler = BUTTONHANDLER_IF, .holdHandler = BUTTONHANDLER_IF, .checkBool = NULL},
 	{.name = "DNR", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DNR, .holdHandler = BUTTONHANDLER_DNR, .checkBool = NULL},
 	{.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
@@ -87,7 +87,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "ZOOM+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_P, .holdHandler = BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
 	
 	{.name = "VLT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_VLT, .holdHandler = BUTTONHANDLER_VLT, .checkBool = (uint32_t *)&TRX_X1_VLT_CUR_Mode},
-	{.name = "AUTGN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AUTOGAINER, .holdHandler = BUTTONHANDLER_AUTOGAINER, .checkBool = (uint32_t *)&TRX.AutoGain},
+	{.name = "SNAP", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
 	{.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB, .checkBool = NULL},
 	{.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
 };

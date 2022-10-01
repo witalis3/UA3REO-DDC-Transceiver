@@ -209,6 +209,7 @@ void LoadSettings(bool clear)
 		TRX.Transverter_3cm = false;	  // Transvertrs enable (2m IF)
 		TRX.FineRITTune = true;			  // Fine or coarse tune for split/shift
 		TRX.Auto_Input_Switch = false;	  // Auto Mic/USB Switch
+		TRX.Auto_Snap = false;				// Auto track and snap to signal frequency
 		// AUDIO
 		TRX.Volume = 25;					 // AF Volume
 		TRX.Volume_Step = 5;			 // AF Volume step by sec encoder

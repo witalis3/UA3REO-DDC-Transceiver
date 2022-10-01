@@ -8,7 +8,7 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 63						  // Settings config version
+#define SETT_VERSION 64						  // Settings config version
 #define CALIB_VERSION 50					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
@@ -114,7 +114,7 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 	#define HRDW_MCP3008_1 true
 	#define HRDW_HAS_FUNCBUTTONS true
 	#define MAX_VOLUME_VALUE 100.0f
-	#define FUNCBUTTONS_COUNT 25
+	#define FUNCBUTTONS_COUNT 30
 	#define FUNCBUTTONS_ON_PAGE 5
 	#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
 	static char ota_config_frontpanel[] = "LITE";
@@ -124,7 +124,7 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 	#define HRDW_MCP3008_1 true
 	#define HRDW_HAS_FUNCBUTTONS true
 	#define MAX_VOLUME_VALUE 1024.0f
-	#define FUNCBUTTONS_COUNT (32+3)
+	#define FUNCBUTTONS_COUNT (32+4)
 	#define FUNCBUTTONS_ON_PAGE 8
 	#define FUNCBUTTONS_PAGES 4
 	static char ota_config_frontpanel[] = "BIG";
@@ -134,7 +134,7 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 	#define HRDW_MCP3008_1 true
 	#define HRDW_HAS_FUNCBUTTONS true
 	#define MAX_VOLUME_VALUE 1024.0f
-	#define FUNCBUTTONS_COUNT (27+5)
+	#define FUNCBUTTONS_COUNT (27+6)
 	#define FUNCBUTTONS_ON_PAGE 9
 	#define FUNCBUTTONS_PAGES 3
 	static char ota_config_frontpanel[] = "WF_100D";
@@ -435,6 +435,7 @@ extern struct TRX_SETTINGS
 	bool Transverter_6cm;
 	bool Transverter_3cm;
 	bool Auto_Input_Switch;
+	bool Auto_Snap;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	char URSI_CODE[MAX_CALLSIGN_LENGTH];

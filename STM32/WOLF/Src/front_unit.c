@@ -55,7 +55,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 	{.port = 2, .channel = 4, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH_MANUAL}, // NOTCH-MANUAL
 	{.port = 2, .channel = 3, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_SPLIT, .holdHandler = BUTTONHANDLER_RIT},		 // SPLIT-RIT
 	{.port = 2, .channel = 2, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = false, .parameter = 0, .clickHandler = BUTTONHANDLER_PLAY, .holdHandler = BUTTONHANDLER_REC},			 // REC-PLAY
-	{.port = 2, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SERVICES},	 // SERVICES
+	{.port = 2, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SNAP},	 // SERVICES-SNAP
 	{.port = 2, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_LOCK},			 // MENU-LOCK
 
 	{.port = 3, .channel = 7, .type = FUNIT_CTRL_BUTTON, .tres_min = 0, .tres_max = MCP3008_SINGLE_THRESHOLD, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_KEYER},			// WPM-KEYER
@@ -99,7 +99,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB},
 	{.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE},
 	{.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER},
-	{.name = "ANT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ANT, .holdHandler = BUTTONHANDLER_ANT},
+	{.name = "SNAP", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SNAP, .holdHandler = BUTTONHANDLER_AUTO_SNAP},
 	{.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_RIT},
 	{.name = "SERVICE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SERVICES},
 	{.name = "MENU", .work_in_menu = true, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU},
@@ -135,6 +135,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "FT8", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FT8, .holdHandler = BUTTONHANDLER_FT8},
 	{.name = "VOX", .work_in_menu = true, .clickHandler = BUTTONHANDLER_VOX, .holdHandler = BUTTONHANDLER_VOX},
 	{.name = "FILES", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FILEMANAGER, .holdHandler = BUTTONHANDLER_FILEMANAGER},
+	{.name = "ANT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ANT, .holdHandler = BUTTONHANDLER_ANT},
 };
 #endif
 
@@ -181,7 +182,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB},
 	{.name = "WPM", .work_in_menu = true, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_WPM},
 	{.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER},
-	{.name = "ANT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ANT, .holdHandler = BUTTONHANDLER_ANT},
+	{.name = "SNAP", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SNAP, .holdHandler = BUTTONHANDLER_AUTO_SNAP},
 	{.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_RIT},
 	{.name = "PLAY", .work_in_menu = false, .clickHandler = BUTTONHANDLER_PLAY, .holdHandler = BUTTONHANDLER_FILEMANAGER},
 	{.name = "REC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_REC, .holdHandler = BUTTONHANDLER_REC},
@@ -213,6 +214,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 	{.name = "SQL", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SQUELCH, .holdHandler = BUTTONHANDLER_SQUELCH},
 	{.name = "VOX", .work_in_menu = true, .clickHandler = BUTTONHANDLER_VOX, .holdHandler = BUTTONHANDLER_VOX},
 	{.name = "FILES", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FILEMANAGER, .holdHandler = BUTTONHANDLER_FILEMANAGER},
+	{.name = "ANT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ANT, .holdHandler = BUTTONHANDLER_ANT},
 };
 #endif
 
