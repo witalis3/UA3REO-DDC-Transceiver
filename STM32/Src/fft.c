@@ -1752,7 +1752,7 @@ void FFT_afterPrintFFT(void)
 	// continue DMA draw?
 	if (print_fft_dma_estimated_size > 0)
 	{
-#ifdef LCD_TYPE_FSMC
+#if LCD_TYPE_FSMC
 		if (print_fft_dma_estimated_size <= DMA_MAX_BLOCK)
 		{
 			HAL_DMA_Start_IT(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_buffer[0] + print_fft_dma_position * 2, LCD_FSMC_DATA_ADDR, print_fft_dma_estimated_size);
@@ -1767,7 +1767,7 @@ void FFT_afterPrintFFT(void)
 		}
 		return;
 #endif
-#ifdef LCD_TYPE_SPI
+#if LCD_TYPE_SPI
 		if (HRDW_LCD_SPI.Init.DataSize != SPI_DATASIZE_16BIT)
 		{
 			HRDW_LCD_SPI.Init.DataSize = SPI_DATASIZE_16BIT;
