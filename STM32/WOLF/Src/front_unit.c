@@ -32,7 +32,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num);
+static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count);
 
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
@@ -639,7 +639,7 @@ void FRONTPANEL_Init(void)
 {
 	uint16_t test_value = 0;
 #ifdef HRDW_MCP3008_1
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 1);
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 1, 1);
 	if (test_value == 65535)
 	{
 		FRONTPanel_MCP3008_1_Enabled = false;
@@ -648,7 +648,7 @@ void FRONTPANEL_Init(void)
 	}
 #endif
 #ifdef HRDW_MCP3008_2
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 2);
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 2, 1);
 	if (test_value == 65535)
 	{
 		FRONTPanel_MCP3008_2_Enabled = false;
@@ -657,7 +657,7 @@ void FRONTPANEL_Init(void)
 	}
 #endif
 #ifdef HRDW_MCP3008_3
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 3);
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 3, 1);
 	if (test_value == 65535)
 	{
 		FRONTPanel_MCP3008_3_Enabled = false;
@@ -718,27 +718,20 @@ void FRONTPANEL_Process(void)
 #ifdef HRDW_MCP3008_1
 		if (button->port == 1) {
 			mcp3008_value = 0;
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-			mcp3008_value /= 3;
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1, 5);
 		} else
 #endif
 #ifdef HRDW_MCP3008_2
 		if (button->port == 2) {
 			mcp3008_value = 0;
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2, 5);
 			mcp3008_value /= 3;
 		} else
 #endif
 #ifdef HRDW_MCP3008_3
 		if (button->port == 3) {
 			mcp3008_value = 0;
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
+			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3, 5);
 			mcp3008_value /= 3;
 		} else
 #endif
@@ -949,20 +942,23 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 }
 
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num)
+static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count)
 {
 	uint8_t outData[3] = {0};
 	uint8_t inData[3] = {0};
-	uint16_t mcp3008_value = 0;
+	uint32_t mcp3008_value = 0;
 
-	outData[0] = 0x18 | channel;
-	bool res = false;
-	if(adc_num == 1) res = HRDW_FrontUnit_SPI(outData, inData, 3, false);
-	if(adc_num == 2) res = HRDW_FrontUnit2_SPI(outData, inData, 3, false);
-	if(adc_num == 3) res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
-	if (res == false)
-		return 65535;
-	mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+	for(uint8_t i = 0; i < count; i++) {
+		outData[0] = 0x18 | channel;
+		bool res = false;
+		if(adc_num == 1) res = HRDW_FrontUnit_SPI(outData, inData, 3, false);
+		if(adc_num == 2) res = HRDW_FrontUnit2_SPI(outData, inData, 3, false);
+		if(adc_num == 3) res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
+		if (res == false)
+			return 65535;
+		mcp3008_value += (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+	}
+	mcp3008_value /= count;
 
 	return mcp3008_value;
 }
