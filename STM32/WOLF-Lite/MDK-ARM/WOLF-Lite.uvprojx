@@ -1036,6 +1036,16 @@
               <FilePath>..\..\Src\settings.h</FilePath>
             </File>
             <File>
+              <FileName>snap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\snap.c</FilePath>
+            </File>
+            <File>
+              <FileName>snap.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\snap.h</FilePath>
+            </File>
+            <File>
               <FileName>spec_analyzer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\spec_analyzer.c</FilePath>
@@ -2317,6 +2327,16 @@
               <FilePath>..\..\Src\settings.h</FilePath>
             </File>
             <File>
+              <FileName>snap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\snap.c</FilePath>
+            </File>
+            <File>
+              <FileName>snap.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\snap.h</FilePath>
+            </File>
+            <File>
               <FileName>spec_analyzer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\spec_analyzer.c</FilePath>
@@ -3596,6 +3616,16 @@
               <FileName>settings.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\settings.h</FilePath>
+            </File>
+            <File>
+              <FileName>snap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\snap.c</FilePath>
+            </File>
+            <File>
+              <FileName>snap.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\snap.h</FilePath>
             </File>
             <File>
               <FileName>spec_analyzer.c</FileName>

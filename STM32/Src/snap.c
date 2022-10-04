@@ -4,7 +4,7 @@
 #include "lcd.h"
 
 static arm_sort_instance_f32 SNAP_SortInstance;
-static float32_t SNAP_buffer[FFT_SIZE] = {0};
+SRAM_ON_F407 static float32_t SNAP_buffer[FFT_SIZE] = {0};
 static float32_t SNAP_buffer_tmp[FFT_SIZE] = {0};
 static bool SNAP_need_buffer = false;
 static bool SNAP_process_from_auto = false;
