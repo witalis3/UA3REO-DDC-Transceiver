@@ -5,9 +5,8 @@
 #include "lcd_driver.h"
 #include "lcd.h"
 
-#define DEBUG_APP_RX_DATA_SIZE 8
+#define DEBUG_APP_RX_DATA_SIZE 64
 #define DEBUG_APP_TX_DATA_SIZE 64
-#define DEBUG_RX_FIFO_BUFFER_SIZE 128
 
 #ifdef STM32H743xx
 	#define DEBUG_TX_FIFO_BUFFER_SIZE 4096
