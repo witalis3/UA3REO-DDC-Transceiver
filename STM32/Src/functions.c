@@ -240,7 +240,7 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 
 void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd) // add zeroes
 {
-	char res[50] = "";
+	char res[70] = "";
 	strcpy(res, str);
 	while (strlen(res) < length)
 	{
