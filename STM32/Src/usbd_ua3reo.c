@@ -281,7 +281,7 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		//------------------------------
 		0x08,					 //     bLength
 		0x0B,					 //    bDescriptorType
-		0x04,					 //     bFirstInterface
+		AUDIO_INTERFACE_IDX,					 //     bFirstInterface
 		0x03,					 //     bInterfaceCount
 		0x01,					 //     bFunctionClass      (Audio Device Class)
 		0x00,					 //     bFunctionSubClass
@@ -310,8 +310,8 @@ __ALIGN_BEGIN static const uint8_t USBD_UA3REO_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ
 		0x34, // wTotalLength   (52 bytes)
 		0x00, // wTotalLength
 		0x02, //     bInCollection
-		0x05, //     baInterfaceNr(1)
-		0x06, //     baInterfaceNr(2)
+		(AUDIO_INTERFACE_IDX+1), //     baInterfaceNr(1)
+		(AUDIO_INTERFACE_IDX+2), //     baInterfaceNr(2)
 
 		// AC Input Terminal Descriptor (Microphone):
 		//------------------------------
