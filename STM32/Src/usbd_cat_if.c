@@ -10,8 +10,8 @@
 #include "vad.h"
 #include "cw.h"
 
-#define CAT_APP_RX_DATA_SIZE 32
-#define CAT_APP_TX_DATA_SIZE 32
+#define CAT_APP_RX_DATA_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
+#define CAT_APP_TX_DATA_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
 
 #define CAT_BUFFER_SIZE 64
 static char cat_buffer[CAT_BUFFER_SIZE] = {0};
