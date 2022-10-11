@@ -541,6 +541,12 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	}
+	
+	// reset zoom on WFM
+	if (vfo->Mode != old_mode && vfo->Mode == TRX_MODE_WFM && TRX.FFT_Zoom != 1) {
+		TRX.FFT_Zoom = 1;
+		FFT_Init();
+	}
 
 	// FFT Zoom change
 	if (TRX.FFT_Zoom != TRX.FFT_ZoomCW)

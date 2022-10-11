@@ -1,5 +1,6 @@
 ----Version 5.3.0----
 +STM32: Расширены варианты регулировки настройки "Freq Step WFM, kHz", Tnx EA7HOG
++STM32: При переключении в моду WFM сбрасывается значение Zoom, Tnx EA7HOG
 
 ----Version 5.2.1----
 +HARDW: Добавлена новая версия RF-UNIT-BIG-RU4PN-rev5.3, Tnx RU4PN
