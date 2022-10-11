@@ -111,9 +111,11 @@ void print_chr_LCDOnly(char chr)
 
 void print_flush(void)
 {
+	#if HRDW_HAS_USB_DEBUG
 	uint_fast16_t tryes = 0;
 	while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512)
 		tryes++;
+	#endif
 }
 
 void print_hex(uint8_t data, bool _inline)

@@ -69,7 +69,9 @@ void EVENTS_do_FFT(void) // 1000 hz
   if (FFT_need_fft)
     FFT_doFFT();
 
+	#if HRDW_HAS_USB_CAT
   ua3reo_dev_cat_parseCommand();
+	#endif
 }
 
 void EVENTS_do_AUDIO_PROCESSOR(void) // 20 000 hz

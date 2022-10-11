@@ -3,7 +3,7 @@ Signature="$Windows NT$"
 Class=Ports
 ClassGuid={4D36E978-E325-11CE-BFC1-08002BE10318}
 Provider=%PRVDR%
-DriverVer=07/07/2022,1.1.3.0
+DriverVer=11/10/2022,1.1.4.0
 CatalogFile=ua3reo.cat
 
 [SourceDisksNames]
@@ -19,23 +19,19 @@ DefaultDestDir = 12
 
 [DeviceList.NT]
 %DESCRIPTION%=DriverInstall, USB\VID_0483&PID_F002 ; root driver
-%COMPOSITE0% =DriverInstall, USB\VID_0483&PID_F002&MI_00 ; DEBUG driver
-%COMPOSITE2% =DriverInstall, USB\VID_0483&PID_F002&MI_02 ; CAT/KEY driver
+%COMPOSITE0% =DriverInstall, USB\VID_0483&PID_F002&MI_00 ; CAT/KEY/DEBUG driver
 
 [DeviceList.NTx86]
 %DESCRIPTION%=DriverInstall, USB\VID_0483&PID_F002 ; root driver
-%COMPOSITE0% =DriverInstall, USB\VID_0483&PID_F002&MI_00 ; DEBUG driver
-%COMPOSITE2% =DriverInstall, USB\VID_0483&PID_F002&MI_02 ; CAT/KEY driver
+%COMPOSITE0% =DriverInstall, USB\VID_0483&PID_F002&MI_00 ; CAT/KEY/DEBUG driver
 
 [DeviceList.NTamd64]
 %DESCRIPTION%=DriverInstall, USB\VID_0483&PID_F002 ; root driver
-%COMPOSITE0% =DriverInstall, USB\VID_0483&PID_F002&MI_00 ; DEBUG driver
-%COMPOSITE2% =DriverInstall, USB\VID_0483&PID_F002&MI_02 ; CAT/KEY driver
+%COMPOSITE0% =DriverInstall, USB\VID_0483&PID_F002&MI_00 ; CAT/KEY/DEBUG driver
 
 [DeviceList.NTarm]
 %DESCRIPTION%=DriverInstall, USB\VID_0483&PID_F002 ; root driver
-%COMPOSITE0% =DriverInstall, USB\VID_0483&PID_F002&MI_00 ; DEBUG driver
-%COMPOSITE2% =DriverInstall, USB\VID_0483&PID_F002&MI_02 ; CAT/KEY driver
+%COMPOSITE0% =DriverInstall, USB\VID_0483&PID_F002&MI_00 ; CAT/KEY/DEBUG driver
 
 [DriverInstall]
 Include=mdmcpq.inf,usb.inf
@@ -68,7 +64,6 @@ PRVDR       = "WOLF-Lite"
 MFGNAME = "WOLF-Lite"
 SERVICE = "WOLF-Lite Driver"
 DESCRIPTION = "WOLF-Lite"
-COMPOSITE0 = "WOLF-Lite DEBUG Port"
-COMPOSITE2 = "WOLF-Lite CAT/CW Port"
+COMPOSITE0 = "WOLF-Lite CAT/CW Port"
 INSTDISK="WOLF-Lite Driver Installer"
 DRIVERFILENAME ="usbser"

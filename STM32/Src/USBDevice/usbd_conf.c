@@ -318,8 +318,14 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
 		//STM32F4 only 0x140 x 4(=1280bytes) available for USB FIFO
 		HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, AUDIO_OUT_PACKET); //All RX (256bytes from 288 USB RX read)
 		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, CDC_DATA_FS_OUT_PACKET_SIZE); //EP0 16bytes
+		#if HRDW_HAS_USB_DEBUG
 		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, DEBUG_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE); //DEBUG 16bytes
+		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, DEBUG_CMD_IDX, CDC_CMD_PACKET_SIZE); //DEBUG 16bytes
+		#endif
+		#if HRDW_HAS_USB_CAT
 		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, CAT_EP_IDX, CDC_DATA_FS_OUT_PACKET_SIZE); //CAT 16bytes
+		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, CAT_CMD_IDX, CDC_CMD_PACKET_SIZE); //CAT 16bytes
+		#endif
 		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, AUDIO_EP_IDX, 0x40); //AUDIO
 	#endif
   /* USER CODE END TxRx_Configuration */

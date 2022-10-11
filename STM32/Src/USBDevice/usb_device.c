@@ -23,14 +23,18 @@ void MX_USB_DEVICE_Init(void)
   {
     Error_Handler();
   }
+	#if HRDW_HAS_USB_DEBUG
   if (USBD_DEBUG_RegisterInterface(&hUsbDeviceFS, &USBD_DEBUG_fops_FS) != USBD_OK)
   {
     Error_Handler();
   }
+	#endif
+	#if HRDW_HAS_USB_CAT
   if (USBD_CAT_RegisterInterface(&hUsbDeviceFS, &USBD_CAT_fops_FS) != USBD_OK)
   {
     Error_Handler();
   }
+	#endif
   if (USBD_AUDIO_RegisterInterface(&hUsbDeviceFS, &USBD_AUDIO_fops_FS) != USBD_OK)
   {
     Error_Handler();

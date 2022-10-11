@@ -29,12 +29,14 @@ static int8_t DEBUG_DeInit_FS(void);
 static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len);
 static int8_t DEBUG_Receive_FS(uint8_t *pbuf);
 
+#if HRDW_HAS_USB_DEBUG
 USBD_DEBUG_ItfTypeDef USBD_DEBUG_fops_FS =
 	{
 		DEBUG_Init_FS,
 		DEBUG_DeInit_FS,
 		DEBUG_Control_FS,
 		DEBUG_Receive_FS};
+#endif
 
 /* Private functions ---------------------------------------------------------*/
 /**
@@ -45,8 +47,10 @@ static int8_t DEBUG_Init_FS(void)
 {
 	/* USER CODE BEGIN 3 */
 	/* Set Application Buffers */
+	#if HRDW_HAS_USB_DEBUG
 	USBD_DEBUG_SetTxBuffer(&hUsbDeviceFS, DEBUG_UserTxBufferFS, 0);
 	USBD_DEBUG_SetRxBuffer(&hUsbDeviceFS, DEBUG_UserRxBufferFS);
+	#endif
 	return (USBD_OK);
 	/* USER CODE END 3 */
 }
@@ -129,8 +133,6 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 			if (!CW_key_serial && !TRX_ptt_soft)
 			{
 				TRX_ptt_soft = true;
-				//LCD_UpdateQuery.StatusInfoBarRedraw = true;
-				//LCD_UpdateQuery.StatusInfoGUI = true;
 			}
 		}
 		else
@@ -138,8 +140,6 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 			if (!CW_key_serial && TRX_ptt_soft)
 			{
 				TRX_ptt_soft = false;
-				//LCD_UpdateQuery.StatusInfoBarRedraw = true;
-				//LCD_UpdateQuery.StatusInfoGUI = true;
 			}
 		}
 		break;
@@ -170,8 +170,10 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 static int8_t DEBUG_Receive_FS(uint8_t *Buf)
 {
 	/* USER CODE BEGIN 6 */
+	#if HRDW_HAS_USB_DEBUG
 	USBD_DEBUG_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
 	USBD_DEBUG_ReceivePacket(&hUsbDeviceFS);
+	#endif
 	return (USBD_OK);
 	/* USER CODE END 6 */
 }
@@ -187,6 +189,7 @@ static int8_t DEBUG_Receive_FS(uint8_t *Buf)
  * @param  Len: Number of data to be sent (in bytes)
  * @retval USBD_OK if all operations are OK else USBD_FAIL or USBD_BUSY
  */
+#if HRDW_HAS_USB_DEBUG
 uint8_t DEBUG_Transmit_FS(uint8_t *Buf, uint16_t Len)
 {
 	uint8_t result = USBD_OK;
@@ -266,3 +269,4 @@ uint8_t DEBUG_Transmit_FIFO_Events(void)
 	FIFO_Events_busy = false;
 	return USBD_BUSY;
 }
+#endif

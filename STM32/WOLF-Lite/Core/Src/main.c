@@ -1525,11 +1525,13 @@ int fputc(int ch, FILE *f)
     ITM_SendChar((uint32_t)ch);
 
   //USB
+	#if HRDW_HAS_USB_DEBUG
   if (USB_DEBUG_ENABLED)
   {
     char usb_char = (char)ch;
     DEBUG_Transmit_FIFO((uint8_t *)&usb_char, 1);
   }
+	#endif
 
   //LCD
   if (LCD_DEBUG_ENABLED)

@@ -37,19 +37,23 @@ static int8_t CAT_Receive_FS(uint8_t *pbuf, uint32_t *Len);
 static void CAT_Transmit(char *data);
 static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len);
 
+#if HRDW_HAS_USB_CAT
 USBD_CAT_ItfTypeDef USBD_CAT_fops_FS =
 	{
 		CAT_Init_FS,
 		CAT_DeInit_FS,
 		CAT_Control_FS,
 		CAT_Receive_FS};
+#endif
 
 static int8_t CAT_Init_FS(void)
 {
 	/* USER CODE BEGIN 3 */
 	/* Set Application Buffers */
+	#if HRDW_HAS_USB_CAT
 	USBD_CAT_SetTxBuffer(&hUsbDeviceFS, CAT_UserTxBufferFS, 0);
 	USBD_CAT_SetRxBuffer(&hUsbDeviceFS, CAT_UserRxBufferFS);
+	#endif
 	return (USBD_OK);
 	/* USER CODE END 3 */
 }
@@ -118,7 +122,31 @@ static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:
+		#if !HRDW_HAS_USB_DEBUG
+		if ((pbuf[2] & 0x1) == 0x1) // DTR
+		{
+			CW_key_serial = true;
+		}
+		else
+		{
+			CW_key_serial = false;
+		}
 
+		if ((pbuf[2] & 0x2) == 0x2) // RTS
+		{
+			if (!CW_key_serial && !TRX_ptt_soft)
+			{
+				TRX_ptt_soft = true;
+			}
+		}
+		else
+		{
+			if (!CW_key_serial && TRX_ptt_soft)
+			{
+				TRX_ptt_soft = false;
+			}
+		}
+		#endif
 		break;
 
 	case CDC_SEND_BREAK:
@@ -203,6 +231,8 @@ static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
 static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len)
 {
 	uint8_t result = USBD_OK;
+	
+	#if HRDW_HAS_USB_CAT
 	USBD_CAT_HandleTypeDef *hcdc = (USBD_CAT_HandleTypeDef *)hUsbDeviceFS.pClassDataCAT;
 	if (hcdc->TxState != 0)
 	{
@@ -210,6 +240,8 @@ static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len)
 	}
 	USBD_CAT_SetTxBuffer(&hUsbDeviceFS, Buf, Len);
 	result = USBD_CAT_TransmitPacket(&hUsbDeviceFS);
+	#endif
+	
 	return result;
 }
 
@@ -227,6 +259,7 @@ static void CAT_Transmit(char *data)
 	}
 }
 
+#if HRDW_HAS_USB_CAT
 void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id)
 {
 	CAT_processingWiFiCommand = true;
@@ -1072,6 +1105,7 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	println("Unknown CAT command: ", _command);
 }
+#endif
 
 static void getFT450Mode(uint8_t VFO_Mode, char *out)
 {

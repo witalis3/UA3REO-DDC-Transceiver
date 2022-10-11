@@ -12,6 +12,8 @@
 #define HRDW_HAS_DMA2D false
 #define HRDW_HAS_JPEG false
 #define HRDW_HAS_WIFI false
+#define HRDW_HAS_USB_DEBUG false
+#define HRDW_HAS_USB_CAT true
 #define HRDW_HAS_USB_IQ false
 #define HRDW_HAS_DUAL_RX false
 #define HRDW_HAS_FULL_FFT_BUFFER false
