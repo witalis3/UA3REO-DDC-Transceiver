@@ -1397,7 +1397,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction)
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ(int8_t direction)
 {
-	const uint32_t wfm_freq_steps[] = {1, 5, 10, 25, 50, 100, 500, 1000};
+	const uint32_t wfm_freq_steps[] = {1, 2, 5, 10, 20, 25, 50, 100, 200, 500, 1000};
 	
 	for (uint8_t i = 0; i < ARRLENTH(wfm_freq_steps); i++)
 		if (TRX.FRQ_ENC_WFM_STEP_KHZ == wfm_freq_steps[i])

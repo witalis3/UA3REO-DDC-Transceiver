@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-const char version_string[19] = "5.2.1";
+const char version_string[19] = "5.3.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
