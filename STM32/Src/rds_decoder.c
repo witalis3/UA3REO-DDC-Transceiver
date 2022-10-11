@@ -38,14 +38,14 @@ SRAM_ON_F407 static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_Filter;
 // decimator
 static const float32_t DECIMATE_FIR_Coeffs[4] = {-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792};
 SRAM_ON_F407 static arm_fir_decimate_instance_f32 DECIMATE_FIR = {
-		.M = RDS_DECIMATOR,
+		.M = 16,
 		.numTaps = 4,
 		.pCoeffs = DECIMATE_FIR_Coeffs,
 		.pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]){0}
 };
 
-SRAM_ON_F407 static float32_t RDS_pilot_buff[DECODER_PACKET_SIZE] = {0};
-SRAM_ON_F407 static float32_t RDS_buff[DECODER_PACKET_SIZE] = {0};
+SRAM_ON_F407 static float32_t RDS_pilot_buff[RDS_DECODER_PACKET_SIZE] = {0};
+SRAM_ON_F407 static float32_t RDS_buff[RDS_DECODER_PACKET_SIZE] = {0};
 
 static uint32_t RDS_decoder_samplerate = 0;
 static uint32_t RDS_decoder_mainfreq = 0;
@@ -60,6 +60,11 @@ void RDSDecoder_Init(void)
 	// no rds in signal
 	if (RDS_decoder_samplerate < 192000)
 		return;
+	
+	// decimator
+	DECIMATE_FIR.M = 16;
+	if (RDS_decoder_samplerate == 384000)
+		DECIMATE_FIR.M = 32;
 
 	// RDS signal filter
 	iir_filter_t *filter = biquad_create(RDS_FILTER_STAGES);
@@ -108,27 +113,27 @@ void RDSDecoder_Process(float32_t *bufferIn)
 		return;
 	
 	// get pilot tone
-	arm_biquad_cascade_df2T_f32_single(&RDS_Pilot_Filter, bufferIn, RDS_pilot_buff, DECODER_PACKET_SIZE);
+	arm_biquad_cascade_df2T_f32_single(&RDS_Pilot_Filter, bufferIn, RDS_pilot_buff, RDS_DECODER_PACKET_SIZE);
 	
 	// multiply pilot tone
-	for (uint_fast16_t i = 0; i < DECODER_PACKET_SIZE; i++)
+	for (uint_fast16_t i = 0; i < RDS_DECODER_PACKET_SIZE; i++)
 		RDS_pilot_buff[i] = RDS_pilot_buff[i] * RDS_pilot_buff[i] * RDS_pilot_buff[i];
 	
 	// filter rds nco
-	arm_biquad_cascade_df2T_f32_single(&RDS_57kPilot_Filter, RDS_pilot_buff, RDS_pilot_buff, DECODER_PACKET_SIZE);
+	arm_biquad_cascade_df2T_f32_single(&RDS_57kPilot_Filter, RDS_pilot_buff, RDS_pilot_buff, RDS_DECODER_PACKET_SIZE);
 	
 	// filter RDS signal
-	arm_biquad_cascade_df2T_f32_single(&RDS_Signal_Filter, bufferIn, RDS_buff, DECODER_PACKET_SIZE);
+	arm_biquad_cascade_df2T_f32_single(&RDS_Signal_Filter, bufferIn, RDS_buff, RDS_DECODER_PACKET_SIZE);
 	
 	// move signal to low freq
-	for (uint_fast16_t i = 0; i < DECODER_PACKET_SIZE; i++)
+	for (uint_fast16_t i = 0; i < RDS_DECODER_PACKET_SIZE; i++)
 		RDS_buff[i] *= RDS_pilot_buff[i];
 
 	// LPF filter
-	arm_biquad_cascade_df2T_f32_single(&RDS_LPF_Filter, RDS_buff, RDS_buff, DECODER_PACKET_SIZE);
+	arm_biquad_cascade_df2T_f32_single(&RDS_LPF_Filter, RDS_buff, RDS_buff, RDS_DECODER_PACKET_SIZE);
 	
 	// decimate
-	arm_fir_decimate_f32(&DECIMATE_FIR, RDS_buff, RDS_buff, DECODER_PACKET_SIZE);
+	arm_fir_decimate_f32(&DECIMATE_FIR, RDS_buff, RDS_buff, RDS_DECODER_PACKET_SIZE);
 	
 	// get bits data
 	static uint32_t raw_block1 = 0;
@@ -138,7 +143,7 @@ void RDSDecoder_Process(float32_t *bufferIn)
 	static bool signal_state_prev = false;
 	static bool signal_state_retry = false;
 	static uint8_t bit_sample_counter = 0;
-	for (uint32_t i = 0; i < (DECODER_PACKET_SIZE / RDS_DECIMATOR); i++)
+	for (uint32_t i = 0; i < (RDS_DECODER_PACKET_SIZE / DECIMATE_FIR.M); i++)
 	{
 		// get data
 		bool signal_state = (RDS_buff[i] > 0.0f) ? true : false;
