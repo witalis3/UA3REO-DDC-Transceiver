@@ -369,8 +369,8 @@ void LoadSettings(bool clear)
 		// SERVICES
 		TRX.SWR_CUSTOM_Begin = 6500; // start spectrum analyzer range
 		TRX.SWR_CUSTOM_End = 7500;	 // end of spectrum analyzer range
-		TRX.SPEC_Begin = 1000;		 // start spectrum analyzer range
-		TRX.SPEC_End = 30000;		 // end of spectrum analyzer range
+		TRX.SPEC_Begin = 1;		 // start spectrum analyzer range
+		TRX.SPEC_End = 150;		 // end of spectrum analyzer range
 		TRX.SPEC_TopDBM = -60;		 // chart thresholds
 		TRX.SPEC_BottomDBM = -130;	 // chart thresholds
 		TRX.WSPR_FREQ_OFFSET = 0;	 // offset beacon from freq center

@@ -965,8 +965,8 @@ const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
 const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] =
 	{
 		{"Spectrum START", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SPECTRUM_Start},
-		{"Begin, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
-		{"End, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
+		{"Begin, mHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
+		{"End, mHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
 		{"Top, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.SPEC_TopDBM, SYSMENU_HANDL_SPECTRUM_TopDBM},
 		{"Bottom, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.SPEC_BottomDBM, SYSMENU_HANDL_SPECTRUM_BottomDBM},
 };
@@ -5604,16 +5604,18 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction)
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction)
 {
-	TRX.SPEC_Begin += direction * 100;
-	if (TRX.SPEC_Begin < 100)
-		TRX.SPEC_Begin = 100;
+	if (TRX.SPEC_Begin > 0 || direction > 0)
+		TRX.SPEC_Begin += direction;
+	if (TRX.SPEC_Begin > MAX_RX_FREQ_HZ)
+		TRX.SPEC_Begin = 1;
 }
 
 static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction)
 {
-	TRX.SPEC_End += direction * 100;
-	if (TRX.SPEC_End < 100)
-		TRX.SPEC_End = 100;
+	if (TRX.SPEC_End > 0 || direction > 0)
+		TRX.SPEC_End += direction;
+	if (TRX.SPEC_End > MAX_RX_FREQ_HZ)
+		TRX.SPEC_End = 1;
 }
 
 static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction)
