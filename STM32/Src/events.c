@@ -11,7 +11,7 @@
 #include "usbd_cat_if.h"
 #include "usbd_audio_if.h"
 #include "usbd_ua3reo.h"
-#include "FT8\FT8_main.h"
+#include "FT8/FT8_main.h"
 #include "front_unit.h"
 #include "rf_unit.h"
 #include "fpga.h"
