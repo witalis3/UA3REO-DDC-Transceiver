@@ -997,7 +997,7 @@ const static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 const static struct sysmenu_item_handler sysmenu_auto_calibration_handlers[] =
 	{
 		{"Calibrate SWR", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_AUTO_CALIBRATION_SWR},
-		//{"Calibrate Power", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_AUTO_CALIBRATION_POWER},
+		{"Calibrate Power", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_AUTO_CALIBRATION_POWER},
 };
 
 const static struct sysmenu_item_handler sysmenu_services_handlers[] =

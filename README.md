@@ -412,3 +412,4 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### Auto calibration
 
 * **Calibrate SWR** - Assistant in measuring SWR and power meter
+* **Calibrate Power** - Assistant in adjusting RF Power output

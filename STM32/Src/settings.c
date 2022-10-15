@@ -558,17 +558,17 @@ void LoadCalibration(bool clear)
 #elif defined(FRONTPANEL_WF_100D)
 		CALIBRATE.ENCODER2_INVERT = true; // invert left-right rotation of the optional encoder
 		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
-		CALIBRATE.rf_out_power_2200m = 20;			   // 2200m
-		CALIBRATE.rf_out_power_160m = 20;			   // 160m
-		CALIBRATE.rf_out_power_80m = 20;			   // 80m
-		CALIBRATE.rf_out_power_40m = 30;			   // 40m
+		CALIBRATE.rf_out_power_2200m = 10;			   // 2200m
+		CALIBRATE.rf_out_power_160m = 30;			   // 160m
+		CALIBRATE.rf_out_power_80m = 29;			   // 80m
+		CALIBRATE.rf_out_power_40m = 31;			   // 40m
 		CALIBRATE.rf_out_power_30m = 30;			   // 30m
-		CALIBRATE.rf_out_power_20m = 60;			   // 20m
-		CALIBRATE.rf_out_power_17m = 70;			   // 17m
+		CALIBRATE.rf_out_power_20m = 58;			   // 20m
+		CALIBRATE.rf_out_power_17m = 52;			   // 17m
 		CALIBRATE.rf_out_power_15m = 70;			   // 15m
-		CALIBRATE.rf_out_power_12m = 70;			   // 12m
-		CALIBRATE.rf_out_power_cb = 70;				   // 27mhz
-		CALIBRATE.rf_out_power_10m = 80;			   // 10m
+		CALIBRATE.rf_out_power_12m = 63;			   // 12m
+		CALIBRATE.rf_out_power_cb = 60;				   // 27mhz
+		CALIBRATE.rf_out_power_10m = 56;			   // 10m
 		CALIBRATE.rf_out_power_6m = 80;				   // 6m
 		CALIBRATE.rf_out_power_4m = 80;				   // 4m
 		CALIBRATE.rf_out_power_2m = 70;				   // 2m
