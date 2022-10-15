@@ -522,11 +522,11 @@ void LoadCalibration(bool clear)
 		CALIBRATE.smeter_calibration_vhf = 0;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;				  // Calibrate the offset at the ADC input (DC)
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f; // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 11.0f; // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_HF = 11.0f; // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f; // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 10.0f; // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_6M = 10.0f; // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f; // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 3.6f; // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_VHF = 3.6f; // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 2;			  // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;				  // Max TRX Power for indication
 #if defined(FRONTPANEL_X1)
@@ -592,12 +592,12 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_7_END = 150 * 1000 * 1000;   //
 		CALIBRATE.RFU_BPF_8_START = 0;				   // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;				   // disabled
-		CALIBRATE.SWR_FWD_Calibration_HF = 19.5f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 19.5f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_HF = 17.7f;	   // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_HF = 17.7f;	   // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 19.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 19.0f;	   // SWR Transormator rate return
-		CALIBRATE.SWR_FWD_Calibration_VHF = 21.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 9.5f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_6M = 19.0f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 16.6f;	   // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_VHF = 9.5f;	   // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;				   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;				   // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)

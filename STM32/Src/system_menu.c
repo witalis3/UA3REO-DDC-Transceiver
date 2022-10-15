@@ -26,6 +26,7 @@
 #include "cw.h"
 #include "FT8/FT8_main.h"
 #include "INA226_PWR_monitor.h"
+#include "auto_calibration.h"
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
@@ -411,6 +412,7 @@ static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); // Tisho
 static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction);
 static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction);
 static void SYSMENU_HANDL_SELF_TEST(int8_t direction);
+static void SYSMENU_HANDL_AUTO_CALIBRATION(int8_t direction);
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction);
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction);
@@ -437,6 +439,9 @@ static void SYSMENU_HANDL_WSPR_BAND12(int8_t direction);
 static void SYSMENU_HANDL_WSPR_BAND10(int8_t direction);
 static void SYSMENU_HANDL_WSPR_BAND6(int8_t direction);
 static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction);
+
+static void SYSMENU_HANDL_AUTO_CALIBRATION_SWR(int8_t direction);
+static void SYSMENU_HANDL_AUTO_CALIBRATION_POWER(int8_t direction);
 
 static bool SYSMENU_HANDL_CHECK_HAS_LPF(void);
 static bool SYSMENU_HANDL_CHECK_HAS_HPF(void);
@@ -848,12 +853,12 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"MAX Power in TUNE", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},
 		{"SSB Power addition", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.SSB_POWER_ADDITION, SYSMENU_HANDL_CALIB_SSB_POWER_ADDITION},
 		{"SWR FWD RATE HF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_HF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF},
-		{"SWR REF RATE HF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration_HF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF},
+		{"SWR BWD RATE HF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_HF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF},
 #if !defined(FRONTPANEL_LITE)
 		{"SWR FWD RATE 6M", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_6M, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_6M},
-		{"SWR REF RATE 6M", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration_6M, SYSMENU_HANDL_CALIB_SWR_REF_RATE_6M},
+		{"SWR BWD RATE 6M", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_6M, SYSMENU_HANDL_CALIB_SWR_REF_RATE_6M},
 		{"SWR FWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF},
-		{"SWR REF RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_REF_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
+		{"SWR BWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
 #endif
 		{"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #ifdef SWR_AD8307_LOG
@@ -989,6 +994,12 @@ const static struct sysmenu_item_handler sysmenu_wspr_handlers[] =
 		{"", SYSMENU_INFOLINE, 0, 0},
 };
 
+const static struct sysmenu_item_handler sysmenu_auto_calibration_handlers[] =
+	{
+		{"Calibrate SWR", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_AUTO_CALIBRATION_SWR},
+		//{"Calibrate Power", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_AUTO_CALIBRATION_POWER},
+};
+
 const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 	{
 #if HRDW_HAS_WIFI && !defined(FRONTPANEL_X1)
@@ -1019,6 +1030,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] =
 		{"Callsign info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CALLSIGN_INFO},
 #endif
 		{"Self Test", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SELF_TEST},
+		{"Auto Calibration", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_AUTO_CALIBRATION},
 };
 
 static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
@@ -1043,6 +1055,7 @@ static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
 	{.menu_handler = sysmenu_spectrum_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_wspr_handlers, .currentIndex = 0},
 	{.menu_handler = sysmenu_services_handlers, .currentIndex = 0},
+	{.menu_handler = sysmenu_auto_calibration_handlers, .currentIndex = 0},
 };
 
 // COMMON MENU
@@ -4139,11 +4152,11 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_8_START = 0;				   // disabled on qrp version
 		CALIBRATE.RFU_BPF_8_END = 0;				   // disabled on qrp version
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 11.0f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_HF = 11.0f;	   // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 10.0f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_6M = 10.0f;	   // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 3.6f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_VHF = 3.6f;	   // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 2;				   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;					   // Max TRX Power for indication
 	}
@@ -4184,11 +4197,11 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_8_START = 35000 * 1000;  // 6m
 		CALIBRATE.RFU_BPF_8_END = 70000 * 1000;	   // 6m
 		CALIBRATE.SWR_FWD_Calibration_HF = 22.0f;  // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 22.0f;  // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_HF = 22.0f;  // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 22.0f;  // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 22.0f;  // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_6M = 22.0f;  // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 22.0f; // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 22.0f; // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_VHF = 22.0f; // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 10;			   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;			   // Max TRX Power for indication
 	}
@@ -4252,11 +4265,11 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction)
 		CALIBRATE.RFU_BPF_8_START = 0;				   // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;				   // disabled
 		CALIBRATE.SWR_FWD_Calibration_HF = 17.5f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 17.5f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_HF = 17.5f;	   // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 19.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 19.0f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_6M = 19.0f;	   // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 21.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 9.5f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_VHF = 9.5f;	   // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;				   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;				   // Max TRX Power for indication
 	}
@@ -4787,11 +4800,11 @@ static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF(int8_t direction)
 
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF(int8_t direction)
 {
-	CALIBRATE.SWR_REF_Calibration_HF += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_REF_Calibration_HF < 1.0f)
-		CALIBRATE.SWR_REF_Calibration_HF = 1.0f;
-	if (CALIBRATE.SWR_REF_Calibration_HF > 200.0f)
-		CALIBRATE.SWR_REF_Calibration_HF = 200.0f;
+	CALIBRATE.SWR_BWD_Calibration_HF += (float32_t)direction * 0.1f;
+	if (CALIBRATE.SWR_BWD_Calibration_HF < 1.0f)
+		CALIBRATE.SWR_BWD_Calibration_HF = 1.0f;
+	if (CALIBRATE.SWR_BWD_Calibration_HF > 200.0f)
+		CALIBRATE.SWR_BWD_Calibration_HF = 200.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_6M(int8_t direction)
@@ -4805,11 +4818,11 @@ static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_6M(int8_t direction)
 
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_6M(int8_t direction)
 {
-	CALIBRATE.SWR_REF_Calibration_6M += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_REF_Calibration_6M < 1.0f)
-		CALIBRATE.SWR_REF_Calibration_6M = 1.0f;
-	if (CALIBRATE.SWR_REF_Calibration_6M > 200.0f)
-		CALIBRATE.SWR_REF_Calibration_6M = 200.0f;
+	CALIBRATE.SWR_BWD_Calibration_6M += (float32_t)direction * 0.1f;
+	if (CALIBRATE.SWR_BWD_Calibration_6M < 1.0f)
+		CALIBRATE.SWR_BWD_Calibration_6M = 1.0f;
+	if (CALIBRATE.SWR_BWD_Calibration_6M > 200.0f)
+		CALIBRATE.SWR_BWD_Calibration_6M = 200.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction)
@@ -4823,11 +4836,11 @@ static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction)
 
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction)
 {
-	CALIBRATE.SWR_REF_Calibration_VHF += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_REF_Calibration_VHF < 1.0f)
-		CALIBRATE.SWR_REF_Calibration_VHF = 1.0f;
-	if (CALIBRATE.SWR_REF_Calibration_VHF > 200.0f)
-		CALIBRATE.SWR_REF_Calibration_VHF = 200.0f;
+	CALIBRATE.SWR_BWD_Calibration_VHF += (float32_t)direction * 0.1f;
+	if (CALIBRATE.SWR_BWD_Calibration_VHF < 1.0f)
+		CALIBRATE.SWR_BWD_Calibration_VHF = 1.0f;
+	if (CALIBRATE.SWR_BWD_Calibration_VHF > 200.0f)
+		CALIBRATE.SWR_BWD_Calibration_VHF = 200.0f;
 }
 
 static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction)
@@ -5640,6 +5653,30 @@ static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction)
 		TRX.SPEC_BottomDBM = TRX.SPEC_TopDBM - 1;
 }
 
+// Auto calibration
+static void SYSMENU_HANDL_AUTO_CALIBRATION(int8_t direction)
+{
+#pragma unused(direction)
+	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_auto_calibration_handlers[0];
+	sysmenu_item_count = sizeof(sysmenu_auto_calibration_handlers) / sizeof(sysmenu_auto_calibration_handlers[0]);
+	sysmenu_onroot = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_AUTO_CALIBRATION_SWR(int8_t direction)
+{
+	SYSMENU_auto_calibration_opened = true;
+	AUTO_CALIBRATION_Start_SWR();
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_AUTO_CALIBRATION_POWER(int8_t direction)
+{
+	SYSMENU_auto_calibration_opened = true;
+	AUTO_CALIBRATION_Start_POWER();
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
 // WSPR Beacon
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction)
 {
@@ -5953,6 +5990,12 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines)
 		SELF_TEST_Draw();
 		return;
 	}
+	else if (SYSMENU_auto_calibration_opened)
+	{
+		if(only_infolines) return;
+		AUTO_CALIBRATION_Draw();
+		return;
+	}
 	else if (sysmenu_sysinfo_opened)
 	{
 		if(only_infolines) return;
@@ -6096,7 +6139,11 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction)
 		FILEMANAGER_EventRotate(direction);
 		return;
 	}
-	
+	if (SYSMENU_auto_calibration_opened)
+	{
+		AUTO_CALIBRATION_EncRotate(direction);
+		return;
+	}
 	if(sysmenu_infowindow_opened)
 	{
 		return;
@@ -6203,6 +6250,12 @@ void SYSMENU_eventCloseSystemMenu(void)
 	{
 		SYSMENU_selftest_opened = false;
 		SELF_TEST_Stop();
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+	else if (SYSMENU_auto_calibration_opened)
+	{
+		SYSMENU_auto_calibration_opened = false;
+		AUTO_CALIBRATION_Stop();
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 #if FT8_SUPPORT
@@ -6478,6 +6531,11 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction)
 	if (SYSMENU_selftest_opened)
 	{
 		SELF_TEST_EncRotate(direction);
+		return;
+	}
+	if (SYSMENU_auto_calibration_opened)
+	{
+		AUTO_CALIBRATION_Enc2Rotate(direction);
 		return;
 	}
 #if FT8_SUPPORT

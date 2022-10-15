@@ -303,7 +303,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **LPF END** - LPF filter parameters
 * **HPF START** - HPF filter parameters
 * **BPF x** - Bandpass filter parameters
-* **SWR FWD/REF RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
+* **SWR FWD/BWD RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
 * **VCXO Correction** - Frequency adjustment of the reference oscillator
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
 * **FAN Medium stop** - Temperature of the PA for stopping the fan
@@ -408,3 +408,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### Self Test
 
 * Run hardware self diagnostic
+
+### Auto calibration
+
+* **Calibrate SWR** - Assistant in measuring SWR and power meter

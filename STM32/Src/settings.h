@@ -600,11 +600,11 @@ extern struct TRX_CALIBRATE
 	uint8_t flash_id; // version check
 
 	float32_t SWR_FWD_Calibration_HF;
-	float32_t SWR_REF_Calibration_HF;
+	float32_t SWR_BWD_Calibration_HF;
 	float32_t SWR_FWD_Calibration_6M;
-	float32_t SWR_REF_Calibration_6M;
+	float32_t SWR_BWD_Calibration_6M;
 	float32_t SWR_FWD_Calibration_VHF;
-	float32_t SWR_REF_Calibration_VHF;
+	float32_t SWR_BWD_Calibration_VHF;
 	float32_t FW_AD8307_SLP;
 	float32_t FW_AD8307_OFFS;
 	float32_t BW_AD8307_SLP;

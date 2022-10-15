@@ -26,7 +26,7 @@ static int16_t graph_selected_x = 1;
 #endif
 
 // Saved variables
-static uint32_t Lastfreq = 0;
+static uint64_t Lastfreq = 0;
 static uint_fast8_t Lastmode = 0;
 static bool LastAutoGain = false;
 static bool LastBandMapEnabled = false;

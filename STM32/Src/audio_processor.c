@@ -19,6 +19,7 @@
 #include "FT8/decode_ft8.h"
 #include "wifi.h"
 #include "system_menu.h"
+#include "auto_calibration.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;	  // audio samples processed in the processor
@@ -1140,6 +1141,10 @@ void processTxAudio(void)
 			ATU_TunePowerStabilized = true;
 		}
 		#endif
+		if(SYSMENU_auto_calibration_opened) { //for auto calibration do not clip power
+			APROC_TX_tune_power = RFpower_amplitude;
+			ATU_TunePowerStabilized = true;
+		}
 		
 		if (!ATU_TunePowerStabilized)
 		{
