@@ -17,7 +17,7 @@ void SNAP_FillBuffer(float32_t *buff)
 	if(!SNAP_need_buffer)
 		return;
 	
-	if(CurrentVFO->Mode != TRX_MODE_CW) {
+	if(CurrentVFO->Mode != TRX_MODE_CW && CurrentVFO->Mode != TRX_MODE_NFM) {
 		SNAP_buffer_avg_index = 0;
 		SNAP_need_buffer = false;
 		return;
