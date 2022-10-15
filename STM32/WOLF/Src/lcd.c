@@ -22,6 +22,9 @@
 #include "vad.h"
 #include "rf_unit.h"
 #include "INA226_PWR_monitor.h" //Tisho
+#include "FT8/FT8_main.h"
+#include "FT8/FT8_GUI.h"
+#include "FT8/decode_ft8.h"
 
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
@@ -1591,6 +1594,43 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 	TRX_Inactive_Time = 0;
 	if (TRX.Locked)
 		return;
+	
+	if (SYSMENU_FT8_DECODER_opened) { //FT8 buttons
+		// CQ
+		if (y >= (FT8_button_line)
+			&& y <= (FT8_button_line + FT8_button_height)
+			&& x >= (FT8_button_spac_x * 0)
+			&& x <= ((FT8_button_spac_x * 0) + FT8_button_width))
+		{
+			FT8_Menu_Idx = 0;
+			Update_FT8_Menu_Cursor();
+			FT8_Enc2Click();
+		}
+		
+		// TUNE
+		if (y >= (FT8_button_line)
+			&& y <= (FT8_button_line + FT8_button_height)
+			&& x >= (FT8_button_spac_x * 1)
+			&& x <= ((FT8_button_spac_x * 1) + FT8_button_width))
+		{
+			FT8_Menu_Idx = 1;
+			Update_FT8_Menu_Cursor();
+			FT8_Enc2Click();
+		}
+		
+		// RT_C
+		if (y >= (FT8_button_line)
+			&& y <= (FT8_button_line + FT8_button_height)
+			&& x >= (FT8_button_spac_x * 2)
+			&& x <= ((FT8_button_spac_x * 2) + FT8_button_width))
+		{
+			FT8_Menu_Idx = 2;
+			Update_FT8_Menu_Cursor();
+			FT8_Enc2Click();
+		}
+		
+		return;
+	}
 
 	if (!LCD_screenKeyboardOpened && LCD_systemMenuOpened)
 	{
