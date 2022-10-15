@@ -423,6 +423,8 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 		vfoa_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfoa_freq - BANDS[BANDID_6cm].startFreq);
 	if (TRX.Transverter_3cm && getBandFromFreq(vfoa_freq, true) == BANDID_3cm)
 		vfoa_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfoa_freq - BANDS[BANDID_3cm].startFreq);
+	
+	CurrentVFO->RealRXFreq = vfoa_freq;
 	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
 
 	int64_t vfob_freq = SecondaryVFO->Freq + TRX_RIT;
@@ -437,6 +439,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 	if (TRX.Transverter_3cm && getBandFromFreq(vfob_freq, true) == BANDID_3cm)
 		vfob_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfob_freq - BANDS[BANDID_3cm].startFreq);
 
+	SecondaryVFO->RealRXFreq = vfob_freq;
 	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
 
 	int64_t vfo_tx_freq = CurrentVFO->Freq + TRX_XIT;

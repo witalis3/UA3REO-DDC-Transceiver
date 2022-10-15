@@ -254,6 +254,7 @@ typedef enum
 typedef struct
 {
 	uint64_t Freq;
+	uint64_t RealRXFreq;
 	uint_fast16_t HPF_RX_Filter_Width;
 	uint_fast16_t HPF_TX_Filter_Width;
 	uint_fast16_t LPF_RX_Filter_Width;
