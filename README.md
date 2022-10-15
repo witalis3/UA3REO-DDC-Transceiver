@@ -393,7 +393,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * Record a short message for quick broadcast
 
-### FT8-Decoder
+### FT8
 
 * FT8 Receiver / transmitter
 

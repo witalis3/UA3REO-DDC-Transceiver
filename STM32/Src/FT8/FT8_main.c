@@ -123,8 +123,18 @@ void MenagerFT8(void)
 			// Debug
 			sprintf(ctmp, "ft8_xmit_c: %d ", ft8_xmit_counter);
 			LCDDriver_printText(ctmp, 10, 65, COLOR_GREEN, COLOR_BLACK, 2);
+			
+			bool send_message_done = false;
 			// 80
-			if (ft8_xmit_counter == 80 + offset_index) // send mesage is done!
+			if (ft8_xmit_counter == 80 + offset_index)
+				send_message_done = true;
+			
+			uint32_t Time = RTC->TR;
+			uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+			if (ft8_xmit_counter > offset_index && (Seconds == 14 || Seconds == 29 || Seconds == 44 || Seconds == 59)) // 15s marker
+				send_message_done = true;
+			
+			if (send_message_done) // send mesage is done!
 			{
 				// xmit_flag = 0;
 				receive_sequence();
