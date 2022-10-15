@@ -70,11 +70,19 @@ static void SNAP_Process()
 	uint64_t target_freq = fft_freq_start + ((bandwidth_bin_start + maxAmplIndex) * hz_in_bin);
 	
 	if(signal_snr < SNAP_BW_SNR_THRESHOLD && !SNAP_process_from_auto) {
-		println("Low SNR in BW, searching in all FFT: ",signal_snr);
-		//search in all FFT
-		arm_max_f32(&SNAP_buffer[0], FFT_SIZE, &maxAmplValue, &maxAmplIndex);
-		signal_snr = rate2dbP(maxAmplValue / noise_level);
-		target_freq = fft_freq_start + (maxAmplIndex * hz_in_bin);
+		//search in all FFT (nearest)
+		for(uint32_t allfft_bin_start = bandwidth_bin_start; allfft_bin_start > 0; allfft_bin_start -= bins_in_bandwidth / 2) {
+			uint32_t allfft_bin_end = bandwidth_bin_end + (bandwidth_bin_start - allfft_bin_start);
+			uint32_t allfft_bin_count = allfft_bin_end - allfft_bin_start;
+			
+			arm_max_f32(&SNAP_buffer[allfft_bin_start], allfft_bin_count, &maxAmplValue, &maxAmplIndex);
+			signal_snr = rate2dbP(maxAmplValue / noise_level);
+			target_freq = fft_freq_start + ((allfft_bin_start + maxAmplIndex) * hz_in_bin);
+			
+			if (signal_snr >= SNAP_BW_SNR_AUTO_THRESHOLD) {
+				break;
+			}
+		}
 	}
 	
 	bool result_ok = false;
