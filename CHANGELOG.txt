@@ -1,5 +1,6 @@
 ----Version 5.3.0----
 +HARDW: MOTHERBOARD-rev32: Исправлена полярность c77, c75, c80, c85, c125, c126, Tnx EW6D
++HARDW: MOTHERBOARD-rev32: U21 заменён на LM2940S-12, Tnx EA7HOG
 +STM32: Расширены варианты регулировки настройки "Freq Step WFM, kHz", Tnx EA7HOG
 +STM32: При переключении в моду WFM сбрасывается значение Zoom, Tnx EA7HOG
 +STM32: RDS декодер теперь корректно работает при частоте семплирования в 384кГц, Tnx EA7HOG
