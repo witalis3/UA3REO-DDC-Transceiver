@@ -548,11 +548,11 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_6_START = 135000 * 1000;
 		CALIBRATE.RFU_BPF_6_END = 150000 * 1000;
 		CALIBRATE.SWR_FWD_Calibration_HF = 10.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 10.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_HF = 10.0f;	   //SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 10.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_6M = 10.0f;	   //SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 8.5f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 8.5f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_VHF = 8.5f;	   //SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 5;			   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15;				//Max TRX Power for indication
 #elif defined(FRONTPANEL_WF_100D)
