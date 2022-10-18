@@ -549,6 +549,8 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_5_END = 32000 * 1000;	
 		CALIBRATE.RFU_BPF_6_START = 135000 * 1000;
 		CALIBRATE.RFU_BPF_6_END = 150000 * 1000;
+		CALIBRATE.smeter_calibration_hf = 12;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
+		CALIBRATE.smeter_calibration_vhf = 12;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 10.0f;	   //SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_HF = 10.0f;	   //SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f;	   //SWR Transormator rate forward
