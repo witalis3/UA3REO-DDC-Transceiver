@@ -94,6 +94,7 @@ static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize);
 static void doTX_HILBERT(bool swap_iq, uint16_t size);
+static void doTX_CESSB(uint16_t size);
 
 // initialize audio processor
 void initAudioProcessor(void)
@@ -928,7 +929,7 @@ void processTxAudio(void)
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 1.00f * APROC_TX_clip_gain, mode);
 
 		// double left and right channel
-		dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], AUDIO_BUFFER_HALF_SIZE * 4);
+		dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], sizeof(APROC_Audio_Buffer_TX_Q));
 
 		switch (mode)
 		{
@@ -941,11 +942,13 @@ void processTxAudio(void)
 			DECODER_PutSamples(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE); //отправляем данные в цифровой декодер
 			break;
 		case TRX_MODE_USB:
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
 		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
 			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_LSB:
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
 		case TRX_MODE_DIGI_L:
 			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 			break;
@@ -1208,7 +1211,8 @@ void processTxAudio(void)
 
 	// calculate the target gain
 	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN;
-	// println(Processor_TX_MAX_amplitude_IN, " ", RFpower_amplitude, " ", APROC_TX_ALC_IN_clip_gain);
+	//println(Processor_TX_MAX_amplitude_IN, " ", RFpower_amplitude, " ", APROC_TX_clip_gain, " ", APROC_TX_ALC_IN_clip_gain);
+	
 	if (Processor_TX_MAX_amplitude_IN > 0.0f)
 	{
 		// DAC overload (clipping), sharply reduce the gain
@@ -1391,6 +1395,35 @@ static void doTX_HILBERT(bool swap_iq, uint16_t size)
 		if(tx_hilbert_delay_buffer_tail == HILBERT_TX_DELAY) tx_hilbert_delay_buffer_tail = 0;
 	}
 	#endif
+}
+
+static void doTX_CESSB(uint16_t size)
+{
+	if (!TRX.TX_CESSB) return;
+	
+	//additional gain
+	arm_scale_f32(APROC_Audio_Buffer_TX_I, 2.0f, APROC_Audio_Buffer_TX_I, size);
+	// arm_scale_f32(APROC_Audio_Buffer_TX_Q, 2.0f, APROC_Audio_Buffer_TX_Q, size);
+	
+	//clipping
+	for(uint32_t sample = 0; sample < size ; sample++)
+	{
+		float32_t i = APROC_Audio_Buffer_TX_I[sample];
+		//float32_t q = APROC_Audio_Buffer_TX_Q[sample];
+		//float32_t mag = fast_sqrt(i*i + q*q);
+		float32_t mag = fast_sqrt(i*i + i*i);
+		
+		if(mag > 1.0f) {
+			float32_t divider = 1.0f + (mag - 1.0f) * 2.0f;
+			APROC_Audio_Buffer_TX_I[sample] /= divider;
+			//APROC_Audio_Buffer_TX_Q[sample] /= divider;
+		}
+	}
+	
+	//and filtering
+	//arm_biquad_cascade_df2T_f32_IQ(&IIR_TX_LPF_CESSB_I, &IIR_TX_LPF_CESSB_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_Q, size);
+	arm_biquad_cascade_df2T_f32_single(&IIR_TX_LPF_CESSB_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+	dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], sizeof(APROC_Audio_Buffer_TX_Q));
 }
 
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor)

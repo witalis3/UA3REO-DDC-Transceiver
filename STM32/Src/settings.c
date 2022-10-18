@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-const char version_string[19] = "5.3.0-dev";
+const char version_string[19] = "6.0.0-dev";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -239,6 +239,7 @@ void LoadSettings(bool clear)
 		TRX.NOISE_BLANKER = false;			 // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;			//Spectral AGC mode
 		#endif
+		TRX.TX_CESSB = true;					//Controlled-envelope single-sideband modulation
 		TRX.RX_AGC_SSB_speed = 10;			 // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;			 // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;			 // Maximum AGC gain

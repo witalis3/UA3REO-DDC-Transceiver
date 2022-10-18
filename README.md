@@ -193,7 +193,8 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
 * **SelfHear Volume** - Self Hearing (CW/DIGI) volume relative to the overall transceiver volume
 * **WFM Stereo** - select WFM stereo or mono decoder
-* **AGC Spectral** - Enable experimental FFT-based AGC
+* **AGC Spectral** - Enable FFT-based AGC
+* **TX CESSB** - Enable controlled-envelope single-sideband modulation
 * **VAD Threshold** - VAD voice detector threshold (noise suppressor for SSB mode and SCAN mode)
 * **VOX** - TX Voice activation
 * **VOX Timeout, ms** - VOX transmission delay after silence, milliseconds

@@ -109,6 +109,7 @@ static void SYSMENU_HANDL_AUDIO_CTCSS_Freq(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SELFHEAR_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_FM_Stereo(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AGC_Spectral(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_TX_CESSB(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX_TIMEOUT(int8_t direction);
@@ -596,6 +597,7 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_AUDIO_FM_Stereo},
 #endif
 		{"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_AUDIO_AGC_Spectral},
+		{"TX CESSB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TX_CESSB, SYSMENU_HANDL_AUDIO_TX_CESSB},
 		{"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_AUDIO_VAD_THRESHOLD},
 		{"VOX", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.VOX, SYSMENU_HANDL_AUDIO_VOX},
 		{"VOX Timeout, ms", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.VOX_TIMEOUT, SYSMENU_HANDL_AUDIO_VOX_TIMEOUT},
@@ -2384,6 +2386,14 @@ static void SYSMENU_HANDL_AUDIO_AGC_Spectral(int8_t direction)
 		TRX.AGC_Spectral = true;
 	if (direction < 0)
 		TRX.AGC_Spectral = false;
+}
+
+static void SYSMENU_HANDL_AUDIO_TX_CESSB(int8_t direction)
+{
+	if (direction > 0)
+		TRX.TX_CESSB = true;
+	if (direction < 0)
+		TRX.TX_CESSB = false;
 }
 
 static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction)

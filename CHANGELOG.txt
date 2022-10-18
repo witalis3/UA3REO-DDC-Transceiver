@@ -1,4 +1,4 @@
-----Version 5.3.0----
+----Version 6.0.0----
 +HARDW: MOTHERBOARD-rev32: Исправлена полярность c77, c75, c80, c85, c125, c126, Tnx EW6D
 +HARDW: MOTHERBOARD-rev32: U21 заменён на LM2940S-12, Tnx EA7HOG
 +HARDW: MOTHERBOARD-rev32: Убрана диодная сборка D2 BAT54C, Tnx R7KGA
@@ -14,6 +14,7 @@
 +STM32: Добавлен тач-интерфейс для кнопок FT8, Tnx R6WAM
 +STM32: Улучшена работа FT8 на поиск, Tnx RD3Q
 +STM32: Убран всплеск ВЧ сигнала при переходе на передачу
++STM32: Новая экспериментальная функция "TX CESSB" - использование модуляции с контролем огибающей при формировании SSB сигнала
 
 ----Version 5.2.1----
 +HARDW: Добавлена новая версия RF-UNIT-BIG-RU4PN-rev5.3, Tnx RU4PN

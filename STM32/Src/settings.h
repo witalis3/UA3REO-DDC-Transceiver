@@ -8,7 +8,7 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 65						  // Settings config version
+#define SETT_VERSION 66						  // Settings config version
 #define CALIB_VERSION 50					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
@@ -490,6 +490,7 @@ extern struct TRX_SETTINGS
 	bool FM_Stereo;
 	bool AGC_Spectral;
 	bool VOX;
+	bool TX_CESSB;
 	// CW
 	float32_t CW_DotToDashRate;
 	uint16_t CW_Pitch;
