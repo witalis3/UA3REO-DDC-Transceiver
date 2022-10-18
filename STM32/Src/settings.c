@@ -235,11 +235,12 @@ void LoadSettings(bool clear)
 		#ifdef STM32F407xx
 		TRX.NOISE_BLANKER = false;			 // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = false;			//Spectral AGC mode
+		TRX.TX_CESSB = false;					//Controlled-envelope single-sideband modulation
 		#else
 		TRX.NOISE_BLANKER = false;			 // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;			//Spectral AGC mode
-		#endif
 		TRX.TX_CESSB = true;					//Controlled-envelope single-sideband modulation
+		#endif
 		TRX.TX_CESSB_COMPRESS_DB = 3.0f;					//CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;			 // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;			 // AGC receive rate on CW
