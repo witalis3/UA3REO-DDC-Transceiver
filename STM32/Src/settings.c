@@ -240,6 +240,7 @@ void LoadSettings(bool clear)
 		TRX.AGC_Spectral = true;			//Spectral AGC mode
 		#endif
 		TRX.TX_CESSB = true;					//Controlled-envelope single-sideband modulation
+		TRX.TX_CESSB_COMPRESS_DB = 3.0f;					//CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;			 // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;			 // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;			 // Maximum AGC gain

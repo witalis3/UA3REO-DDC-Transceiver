@@ -1402,8 +1402,8 @@ static void doTX_CESSB(uint16_t size)
 	if (!TRX.TX_CESSB) return;
 	
 	//additional gain
-	arm_scale_f32(APROC_Audio_Buffer_TX_I, 2.0f, APROC_Audio_Buffer_TX_I, size);
-	// arm_scale_f32(APROC_Audio_Buffer_TX_Q, 2.0f, APROC_Audio_Buffer_TX_Q, size);
+	arm_scale_f32(APROC_Audio_Buffer_TX_I, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_I, size);
+	// arm_scale_f32(APROC_Audio_Buffer_TX_Q, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_Q, size);
 	
 	//clipping
 	for(uint32_t sample = 0; sample < size ; sample++)

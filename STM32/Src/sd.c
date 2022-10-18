@@ -1017,6 +1017,7 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.FM_Stereo", (uint32_t *)&TRX.FM_Stereo, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.AGC_Spectral", (uint32_t *)&TRX.AGC_Spectral, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TX_CESSB", (uint32_t *)&TRX.TX_CESSB, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.TX_CESSB_COMPRESS_DB", (uint32_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.VAD_THRESHOLD", (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VOX", (uint32_t *)&TRX.VOX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VOX_TIMEOUT", (uint32_t *)&TRX.VOX_TIMEOUT, SYSMENU_UINT16);
@@ -1624,6 +1625,8 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.AGC_Spectral = bval;
 	if (strcmp(name, "TRX.TX_CESSB") == 0)
 		TRX.TX_CESSB = bval;
+	if (strcmp(name, "TRX.TX_CESSB_COMPRESS_DB") == 0)
+		TRX.TX_CESSB_COMPRESS_DB = floatval;
 	if (strcmp(name, "TRX.VAD_THRESHOLD") == 0)
 		TRX.VAD_THRESHOLD = (uint8_t)uintval;
 	if (strcmp(name, "TRX.VOX") == 0)

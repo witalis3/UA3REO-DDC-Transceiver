@@ -195,6 +195,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **WFM Stereo** - select WFM stereo or mono decoder
 * **AGC Spectral** - Enable FFT-based AGC
 * **TX CESSB** - Enable controlled-envelope single-sideband modulation
+* **TX CESSB Compress, dB** - Level of signal compression in CESSB
 * **VAD Threshold** - VAD voice detector threshold (noise suppressor for SSB mode and SCAN mode)
 * **VOX** - TX Voice activation
 * **VOX Timeout, ms** - VOX transmission delay after silence, milliseconds
