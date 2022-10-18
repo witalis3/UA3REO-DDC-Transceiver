@@ -3,6 +3,7 @@
 +HARDW: MOTHERBOARD-rev32: U21 заменён на LM2940S-12, Tnx EA7HOG
 +HARDW: MOTHERBOARD-rev32: Убрана диодная сборка D2 BAT54C, Tnx R7KGA
 +HARDW: MOTHERBOARD-rev32: Доработки разводки USB изолятора, Tnx R7KGA
++HARDW: Добавлена новая плата RF-UNIT-QRP-RU4PN-rev2, Tnx RU4PN
 +STM32: Расширены варианты регулировки настройки "Freq Step WFM, kHz", Tnx EA7HOG
 +STM32: При переключении в моду WFM сбрасывается значение Zoom, Tnx EA7HOG
 +STM32: RDS декодер теперь корректно работает при частоте семплирования в 384кГц, Tnx EA7HOG
