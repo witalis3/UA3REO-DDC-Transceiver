@@ -420,31 +420,33 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 	}
 
 	#if HRDW_HAS_WIFI
-	bool maySendIQ = true;
-	if (!WIFI_IP_Gotted) { //Get resolved IP
-		WIFI_GetIP(NULL);
-		maySendIQ = false;
+	if(!WIFI_download_inprogress) {
+		bool maySendIQ = true;
+		if (!WIFI_IP_Gotted) { //Get resolved IP
+			WIFI_GetIP(NULL);
+			maySendIQ = false;
+		}
+		uint32_t mstime = HAL_GetTick();
+		if (TRX_SNTP_Synced == 0 || (mstime > (SNTP_SYNC_INTERVAL * 1000) && TRX_SNTP_Synced < (mstime - SNTP_SYNC_INTERVAL * 1000))) {//Sync time from internet
+			WIFI_GetSNTPTime(NULL);
+			maySendIQ = false;
+		}
+		if (TRX.WIFI_CAT_SERVER && !WIFI_CAT_server_started) { //start WiFi CAT Server
+			WIFI_StartCATServer(NULL);
+			maySendIQ = false;
+		}
+		if(CALIBRATE.OTA_update && !WIFI_NewFW_checked) {	//check OTA FW updates
+			WIFI_checkFWUpdates();
+			maySendIQ = false;
+		}
+		if(TRX.FFT_DXCluster && ((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || TRX_DXCluster_UpdateTime == 0)) //get and show dx cluster
+		{
+			if(WIFI_getDXCluster_background())
+				TRX_DXCluster_UpdateTime = HAL_GetTick();
+			maySendIQ = false;
+		}
+		WIFI_maySendIQ = maySendIQ;
 	}
-	uint32_t mstime = HAL_GetTick();
-	if (TRX_SNTP_Synced == 0 || (mstime > (SNTP_SYNC_INTERVAL * 1000) && TRX_SNTP_Synced < (mstime - SNTP_SYNC_INTERVAL * 1000))) {//Sync time from internet
-		WIFI_GetSNTPTime(NULL);
-		maySendIQ = false;
-	}
-	if (TRX.WIFI_CAT_SERVER && !WIFI_CAT_server_started) { //start WiFi CAT Server
-		WIFI_StartCATServer(NULL);
-		maySendIQ = false;
-	}
-	if(CALIBRATE.OTA_update && !WIFI_NewFW_checked) {	//check OTA FW updates
-		WIFI_checkFWUpdates();
-		maySendIQ = false;
-	}
-	if(TRX.FFT_DXCluster && ((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || TRX_DXCluster_UpdateTime == 0)) //get and show dx cluster
-	{
-		if(WIFI_getDXCluster_background())
-			TRX_DXCluster_UpdateTime = HAL_GetTick();
-		maySendIQ = false;
-	}
-	WIFI_maySendIQ = maySendIQ;
 	#endif
 	
 	//Check vBAT

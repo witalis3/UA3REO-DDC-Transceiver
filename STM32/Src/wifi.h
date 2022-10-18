@@ -65,6 +65,7 @@ extern char WIFI_AP[MAX_WIFIPASS_LENGTH];
 extern bool WIFI_NewFW_checked;
 extern bool WIFI_NewFW_STM32;
 extern bool WIFI_NewFW_FPGA;
+extern bool WIFI_download_inprogress;
 extern bool WIFI_downloadFileToSD_compleated;
 extern DXCLUSTER_ENTRY WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_MAX_RECORDS];
 extern uint16_t WIFI_DXCLUSTER_list_count;
