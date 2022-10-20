@@ -1280,8 +1280,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		wf_100d_shift_array[4] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U1-3 TX_PTT_OUT
 		wf_100d_shift_array[5] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq < 70000000;// U1-2 HF_AMP_BIAS_ON
 		wf_100d_shift_array[6] = CurrentVFO->RealRXFreq >= 70000000; // U1-1 HF-VHF-SELECT
-		//wf_100d_shift_array[7] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq >= 70000000;// U1-0 VHF_AMP_BIAS_ON
-		wf_100d_shift_array[7] = turn_on_tx_lpf && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq >= 70000000;// U1-0 VHF_AMP_BIAS_ON
+		wf_100d_shift_array[7] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq >= 70000000;// U1-0 VHF_AMP_BIAS_ON
 
 		wf_100d_shift_array[8] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 6); // U2-7 TUN_I_7
 		wf_100d_shift_array[9] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5); // U2-6 TUN_I_6
