@@ -6396,6 +6396,11 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void)
 		return;
 	}
 	#endif
+	if (SYSMENU_auto_calibration_opened)
+	{
+		AUTO_CALIBRATION_Enc2Click();
+		return;
+	}
 	
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE)
 	{

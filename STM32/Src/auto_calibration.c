@@ -466,6 +466,8 @@ void AUTO_CALIBRATION_Draw(void)
 				LCDDriver_printText("Calibration finished", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
+			pos_y += margin_bottom;
+			LCDDriver_printText("ENC2 Click to retry", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			// redraw loop
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
@@ -552,12 +554,29 @@ void AUTO_CALIBRATION_Enc2Rotate(int8_t direction)
 	LCDDriver_Fill(BG_COLOR);
 	LCD_busy = false;
 	
+	// restart power calibration
 	AUTO_CALIBRATION_started = false;
 	AUTO_CALIBRATION_finished = false;
 
 	AUTO_CALIBRATION_current_page += direction;
 	if (AUTO_CALIBRATION_current_page < 0)
 		AUTO_CALIBRATION_current_page = 0;
+
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+void AUTO_CALIBRATION_Enc2Click()
+{
+	if (LCD_busy)
+		return;
+
+	LCD_busy = true;
+	LCDDriver_Fill(BG_COLOR);
+	LCD_busy = false;
+	
+	// restart power calibration
+	AUTO_CALIBRATION_started = false;
+	AUTO_CALIBRATION_finished = false;
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
@@ -580,7 +599,7 @@ static void AUTO_CALIBRATION_DoPowerCalibration(uint8_t *calibration_parameter, 
 		
 		*calibration_parameter = 0;
 		TRX_PWR_Forward_SMOOTHED = 0;
-		TRX_SWR_SMOOTHED = 0;
+		TRX_SWR_SMOOTHED = 1.0f;
 		APROC_TX_clip_gain = 1.0f;
 		TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 		
