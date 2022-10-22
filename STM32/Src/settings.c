@@ -643,7 +643,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TRX_MAX_SWR = 3;				// Maximum SWR to enable protect on TX (NOT IN TUNE MODE!)
 		CALIBRATE.FM_DEVIATION_SCALE = 4;		// FM Deviation scale
 		CALIBRATE.SSB_POWER_ADDITION = 0;		// Additional power in SSB mode
-		CALIBRATE.AM_MODULATION_INDEX = 50;		// AM Modulation Index
+		CALIBRATE.AM_MODULATION_INDEX = 100;		// AM Modulation Index
 		CALIBRATE.RTC_Coarse_Calibration = 127; // Coarse RTC calibration
 		CALIBRATE.RTC_Calibration = 0;			// Real Time Clock calibration
 		CALIBRATE.EXT_2200m = 0;				// External port by band
