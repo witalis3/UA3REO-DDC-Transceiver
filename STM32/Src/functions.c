@@ -191,13 +191,18 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	bool inverted = false;
 	int32_t _freq = (int32_t)freq;
 	
-	TRX_TX_Harmonic = 1;
+	uint8_t TRX_TX_Harmonic_new = 0;
 	if (_freq > MAX_TX_FREQ_HZ) { // harmonics mode
 		while (_freq > MAX_TX_FREQ_HZ) {
 			_freq /= 3; // third-harmonics
-			TRX_TX_Harmonic += 3;
+			TRX_TX_Harmonic_new += 3;
 		}
 	}
+	if (TRX_TX_Harmonic_new == 0)
+		TRX_TX_Harmonic = 1;
+	else
+		TRX_TX_Harmonic = TRX_TX_Harmonic_new;
+	
 
 	TRX_DAC_X4 = true;
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);

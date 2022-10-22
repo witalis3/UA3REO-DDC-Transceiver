@@ -825,6 +825,7 @@ void processTxAudio(void)
 			APROC_Audio_Buffer_TX_I[i] = point;
 			APROC_Audio_Buffer_TX_Q[i] = point;
 		}
+		
 		// hilbert fir
 		if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_CW)
 		{
@@ -913,11 +914,14 @@ void processTxAudio(void)
 	if (mode != TRX_MODE_IQ && !TRX_Tune)
 	{
 		// IIR HPF
-		if (CurrentVFO->HPF_TX_Filter_Width > 0)
+		if (CurrentVFO->HPF_TX_Filter_Width > 0 && TRX_TX_Harmonic == 1) {
 			arm_biquad_cascade_df2T_f32_single(&IIR_TX_HPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+		}
+		
 		// IIR LPF
-		if (CurrentVFO->LPF_TX_Filter_Width > 0)
+		if (CurrentVFO->LPF_TX_Filter_Width > 0) {
 			arm_biquad_cascade_df2T_f32_single(&IIR_TX_LPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+		}
 
 		// TX AGC (compressor)
 		if (mode == TRX_MODE_AM || mode == TRX_MODE_SAM)
@@ -1713,6 +1717,7 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (!TRX.NOISE_BLANKER)
 		return;
+	
 	if (rx_id == AUDIO_RX1)
 	{
 		for (uint32_t block = 0; block < (size / NB_BLOCK_SIZE); block++)
