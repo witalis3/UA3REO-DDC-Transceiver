@@ -1115,11 +1115,14 @@ void processTxAudio(void)
 	//// RF PowerControl (Audio Level Control)
 
 	// amplitude for the selected power and range
-	float32_t RF_Power_selected = (float32_t)TRX.RF_Power;
-	if ((mode == TRX_MODE_LSB || mode == TRX_MODE_USB) && !TRX_Tune)
-		RF_Power_selected += CALIBRATE.SSB_POWER_ADDITION;
+	float32_t RF_Power_selected = getPowerFromALC(TRX_ALC_IN); // get from ALC
+	if (RF_Power_selected == 0) { // ALC disabled
+		RF_Power_selected = (float32_t)TRX.RF_Power;
+		if ((mode == TRX_MODE_LSB || mode == TRX_MODE_USB) && !TRX_Tune)
+			RF_Power_selected += CALIBRATE.SSB_POWER_ADDITION;
+	}
 	
-	if(TRX_SWR_PROTECTOR && TRX.RF_Power > SWR_PROTECTOR_MAX_POWER)
+	if(TRX_SWR_PROTECTOR && RF_Power_selected > SWR_PROTECTOR_MAX_POWER)
 		RF_Power_selected = SWR_PROTECTOR_MAX_POWER;
 	
 	float32_t RFpower_amplitude = 0.0f;

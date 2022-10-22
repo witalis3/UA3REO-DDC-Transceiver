@@ -4043,6 +4043,9 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction)
 	y += y_offs;
 	sprintf(out, "VBAT VOLT: %.2f     ", TRX_VBAT_Voltage);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	y += y_offs;
+	sprintf(out, "ALC: %.2fv (%d%%)    ", TRX_ALC_IN, getPowerFromALC(TRX_ALC_IN));
+	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 
 	LCD_UpdateQuery.SystemMenu = true;
 }

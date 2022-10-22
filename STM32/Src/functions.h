@@ -226,5 +226,6 @@ extern char cleanASCIIgarbage(char chr);
 extern bool textStartsWith(const char *a, const char *b);
 extern void *alloc_to_wtf(uint32_t size, bool reset);
 extern float fast_sqrt(const float x);
+extern uint8_t getPowerFromALC(float32_t alc);
 
 #endif

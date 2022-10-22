@@ -1105,3 +1105,16 @@ float fast_sqrt(const float x)
   u.i = SQRT_MAGIC_F - (u.i >> 1);  // gives initial guess y0
   return x*u.x*(1.5f - xhalf*u.x*u.x);// Newton step, repeating increases accuracy 
 }
+
+uint8_t getPowerFromALC(float32_t alc) {
+	float32_t volt = alc - 1.0f; // 0.0-1.0v - ALC disabled
+	float32_t power = volt * 100.0f / 2.3f; // 1.0v - 3.3v - power 0-100%
+	
+	if (power < 0)
+		return 0;
+	
+	if (power > 100)
+		return 100;
+	
+	return power;
+}
