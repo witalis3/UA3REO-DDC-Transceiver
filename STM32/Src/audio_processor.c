@@ -47,7 +47,6 @@ volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
 bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
 float32_t APROC_TX_clip_gain = 1.0f;
-float32_t APROC_TX_ALC_IN_clip_gain = 1.0f;
 float32_t APROC_TX_tune_power = 0.0f;
 
 #if FT8_SUPPORT
@@ -1194,9 +1193,8 @@ void processTxAudio(void)
 	}
 
 	// Apply gain
-	// println("amp:", RFpower_amplitude, "clip: ", APROC_TX_ALC_IN_clip_gain);
-	arm_scale_f32(APROC_Audio_Buffer_TX_I, RFpower_amplitude * APROC_TX_ALC_IN_clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-	arm_scale_f32(APROC_Audio_Buffer_TX_Q, RFpower_amplitude * APROC_TX_ALC_IN_clip_gain, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(APROC_Audio_Buffer_TX_I, RFpower_amplitude, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(APROC_Audio_Buffer_TX_Q, RFpower_amplitude, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 
 	// looking for a maximum in amplitude
 	float32_t ampl_max_i = 0.0f;
@@ -1218,7 +1216,7 @@ void processTxAudio(void)
 
 	// calculate the target gain
 	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN;
-	//println(Processor_TX_MAX_amplitude_IN, " ", RFpower_amplitude, " ", APROC_TX_clip_gain, " ", APROC_TX_ALC_IN_clip_gain);
+	//println(Processor_TX_MAX_amplitude_IN, " ", RFpower_amplitude, " ", APROC_TX_clip_gain);
 	
 	if (Processor_TX_MAX_amplitude_IN > 0.0f)
 	{
@@ -1241,19 +1239,6 @@ void processTxAudio(void)
 			APROC_TX_clip_gain += 0.0001f;
 		else if (APROC_TX_clip_gain > 0.0f && Processor_TX_MAX_amplitude_IN > RFpower_amplitude)
 			APROC_TX_clip_gain -= 0.0001f;
-
-		// Input External ALC overload, over 1 volt
-		if (TRX_ALC_IN > 1.0f && CALIBRATE.RF_unit_type != RF_UNIT_WF_100D)
-		{
-			// correct gain
-			if (APROC_TX_ALC_IN_clip_gain > 0.0f)
-				APROC_TX_ALC_IN_clip_gain -= 0.001f;
-			// show info to console
-			println("EXT_ALC_IN_OVR ", APROC_TX_ALC_IN_clip_gain);
-			TRX_DAC_OTR = true;
-		}
-		else if (APROC_TX_ALC_IN_clip_gain < 1.0f)
-			APROC_TX_ALC_IN_clip_gain += 0.001f;
 	}
 
 	if (RFpower_amplitude > 0.0f)
