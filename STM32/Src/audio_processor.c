@@ -913,7 +913,7 @@ void processTxAudio(void)
 	if (mode != TRX_MODE_IQ && !TRX_Tune)
 	{
 		// IIR HPF
-		if (CurrentVFO->HPF_TX_Filter_Width > 0 && TRX_TX_Harmonic == 1) {
+		if (CurrentVFO->HPF_TX_Filter_Width > 0) {
 			arm_biquad_cascade_df2T_f32_single(&IIR_TX_HPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		}
 		
