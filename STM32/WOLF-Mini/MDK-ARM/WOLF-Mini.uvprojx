@@ -505,6 +505,16 @@
               <FilePath>..\..\Src\audio_processor.h</FilePath>
             </File>
             <File>
+              <FileName>auto_calibration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\auto_calibration.c</FilePath>
+            </File>
+            <File>
+              <FileName>auto_calibration.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\auto_calibration.h</FilePath>
+            </File>
+            <File>
               <FileName>auto_notch.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\auto_notch.c</FilePath>

@@ -22,6 +22,9 @@
 #include "vad.h"
 #include "rf_unit.h"
 #include "INA226_PWR_monitor.h" //Tisho
+#include "FT8/FT8_main.h"
+#include "FT8/FT8_GUI.h"
+#include "FT8/decode_ft8.h"
 
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
@@ -1286,8 +1289,11 @@ static void LCD_displayStatusInfoBar(bool redraw)
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 #if (defined(LAY_800x480))
-	// CPU
+	// CPU + FPS/SQL
 	sprintf(buff, "CPU:%d%% FPS:%d  ", (uint32_t)CPU_LOAD.Load, FFT_FPS_Last);
+	if(CurrentVFO->SQL && (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM))
+		sprintf(buff, "CPU:%d%% SQL:%d ", (uint32_t)CPU_LOAD.Load, CurrentVFO->FM_SQL_threshold_dbm);
+	
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_CPU_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_CPU_Y_OFFSET, COLOR->STATUS_LABEL_THERM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	// AUTOGAIN
 	LCDDriver_printText("AUTOGAIN", LAYOUT->STATUS_LABEL_AUTOGAIN_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_AUTOGAIN_Y_OFFSET, TRX.AutoGain ? COLOR->STATUS_LABEL_ACTIVE : COLOR->STATUS_LABEL_INACTIVE, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
@@ -1591,6 +1597,43 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 	TRX_Inactive_Time = 0;
 	if (TRX.Locked)
 		return;
+	
+	if (SYSMENU_FT8_DECODER_opened) { //FT8 buttons
+		// CQ
+		if (y >= (FT8_button_line)
+			&& y <= (FT8_button_line + FT8_button_height)
+			&& x >= (FT8_button_spac_x * 0)
+			&& x <= ((FT8_button_spac_x * 0) + FT8_button_width))
+		{
+			FT8_Menu_Idx = 0;
+			Update_FT8_Menu_Cursor();
+			FT8_Enc2Click();
+		}
+		
+		// TUNE
+		if (y >= (FT8_button_line)
+			&& y <= (FT8_button_line + FT8_button_height)
+			&& x >= (FT8_button_spac_x * 1)
+			&& x <= ((FT8_button_spac_x * 1) + FT8_button_width))
+		{
+			FT8_Menu_Idx = 1;
+			Update_FT8_Menu_Cursor();
+			FT8_Enc2Click();
+		}
+		
+		// RT_C
+		if (y >= (FT8_button_line)
+			&& y <= (FT8_button_line + FT8_button_height)
+			&& x >= (FT8_button_spac_x * 2)
+			&& x <= ((FT8_button_spac_x * 2) + FT8_button_width))
+		{
+			FT8_Menu_Idx = 2;
+			Update_FT8_Menu_Cursor();
+			FT8_Enc2Click();
+		}
+		
+		return;
+	}
 
 	if (!LCD_screenKeyboardOpened && LCD_systemMenuOpened)
 	{
@@ -1788,7 +1831,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy)
 			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
 		if(step < 1.0f) step = 1.0f;
 
-		uint32_t newfreq = getFreqOnFFTPosition(LAYOUT->FFT_PRINT_SIZE / 2 - dx / slowler);
+		uint64_t newfreq = getFreqOnFFTPosition(LAYOUT->FFT_PRINT_SIZE / 2 - dx / slowler);
 		if (dx < 0.0f)
 			newfreq = ceill(newfreq / step) * step;
 		if (dx > 0.0f)

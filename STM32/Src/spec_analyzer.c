@@ -26,7 +26,7 @@ static int16_t graph_selected_x = 1;
 #endif
 
 // Saved variables
-static uint32_t Lastfreq = 0;
+static uint64_t Lastfreq = 0;
 static uint_fast8_t Lastmode = 0;
 static bool LastAutoGain = false;
 static bool LastBandMapEnabled = false;
@@ -210,7 +210,7 @@ static void SPEC_DrawBottomGUI(void)
 {
 	static IRAM2 char ctmp[64] = {0};
 	int32_t freq = (int32_t)TRX.SPEC_Begin + (graph_selected_x * (int32_t)(TRX.SPEC_End - TRX.SPEC_Begin) / (graph_width - 1));
-	sprintf(ctmp, "Freq=%dkHz DBM=%d", freq, data[graph_selected_x]);
+	sprintf(ctmp, "Freq=%dmHz DBM=%d", freq, data[graph_selected_x]);
 	#ifndef LCD_SMALL_INTERFACE
 	LCDDriver_Fill_RectWH(170, graph_start_y + graph_height + 3, 200, 6, COLOR_BLACK);
 	LCDDriver_printText(ctmp, 170, graph_start_y + graph_height + 3, COLOR_GREEN, COLOR_BLACK, 1);

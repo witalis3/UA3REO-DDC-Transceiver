@@ -599,6 +599,8 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			sysmenu_ota_opened = false;
 			return;
 		}
+		//WIFI_NewFW_STM32 = true; //DEBUG
+		//WIFI_NewFW_FPGA = true; //DEBUG
 		if (!WIFI_NewFW_STM32 && !WIFI_NewFW_FPGA)
 		{
 			LCD_showInfo("No updates", true);
@@ -760,7 +762,7 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			println("File CRC: ", tmp);
 			if (strstr((char *)SD_workbuffer_A, tmp) != NULL)
 			{
-				LCD_showInfo("CRC OK", true);
+				LCD_showInfo("FPGA CRC OK", true);
 
 				if (WIFI_NewFW_STM32)
 					sysmenu_ota_opened_state = 10;
@@ -769,17 +771,23 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			}
 			else
 			{
-				LCD_showInfo("CRC ERROR", true);
-				sysmenu_ota_opened_state = 1;
+				LCD_showInfo("FPGA CRC ERROR", true);
+				sysmenu_ota_opened_state = 0;
 				downloaded_fpga_fw = false;
+				downloaded_stm_fw = false;
+				downloaded_fpga_crc = false;
+				downloaded_stm_crc = false;
 				LCD_UpdateQuery.SystemMenuRedraw = true;
 				return;
 			}
 		}
 		else
 		{
-			sysmenu_ota_opened_state = 1;
+			sysmenu_ota_opened_state = 0;
 			downloaded_fpga_fw = false;
+			downloaded_stm_fw = false;
+			downloaded_fpga_crc = false;
+			downloaded_stm_crc = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 			return;
 		}
@@ -836,22 +844,24 @@ void FILEMANAGER_OTAUpdate_handler(void)
 			println("File CRC: ", tmp);
 			if (strstr((char *)SD_workbuffer_A, tmp) != NULL)
 			{
-				LCD_showInfo("CRC OK", true);
+				LCD_showInfo("STM32 CRC OK", true);
 				sysmenu_ota_opened_state = 15;
 			}
 			else
 			{
-				LCD_showInfo("CRC ERROR", true);
-				sysmenu_ota_opened_state = 5;
-				downloaded_fpga_fw = false;
+				LCD_showInfo("STM32 CRC ERROR", true);
+				sysmenu_ota_opened_state = 0;
+				downloaded_stm_fw = false;
+				downloaded_stm_crc = false;
 				LCD_UpdateQuery.SystemMenuRedraw = true;
 				return;
 			}
 		}
 		else
 		{
-			sysmenu_ota_opened_state = 5;
-			downloaded_fpga_fw = false;
+			sysmenu_ota_opened_state = 0;
+			downloaded_stm_fw = false;
+			downloaded_stm_crc = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 			return;
 		}

@@ -24,22 +24,22 @@
 
 typedef struct
 {
-	float32_t NR_InputBuffer[NOISE_REDUCTION_FFT_SIZE];
-	uint16_t NR_InputBuffer_index;
-	float32_t NR_OutputBuffer[NOISE_REDUCTION_FFT_SIZE];
-	uint16_t NR_OutputBuffer_index;
-	float32_t NR_Prev_Buffer[NOISE_REDUCTION_FFT_SIZE_HALF];
+	float32_t InputBuffer[NOISE_REDUCTION_FFT_SIZE];
+	uint16_t InputBuffer_index;
+	float32_t OutputBuffer[NOISE_REDUCTION_FFT_SIZE];
+	uint16_t OutputBuffer_index;
+	float32_t Prev_Buffer[NOISE_REDUCTION_FFT_SIZE_HALF];
 
 	float32_t FFT_Buffer[NOISE_REDUCTION_FFT_SIZE * 2];
 	const arm_cfft_instance_f32 *FFT_Inst;
 	float32_t FFT_COMPLEX_MAG[NOISE_REDUCTION_FFT_SIZE_HALF];
 	float32_t FFT_AVERAGE_MAG[NOISE_REDUCTION_FFT_SIZE_HALF];
 	float32_t FFT_MINIMUM_MAG[NOISE_REDUCTION_FFT_SIZE_HALF];
-	float32_t NR_GAIN[NOISE_REDUCTION_FFT_SIZE_HALF];
+	float32_t GAIN[NOISE_REDUCTION_FFT_SIZE_HALF];
 	float32_t LAST_IFFT_RESULT[NOISE_REDUCTION_FFT_SIZE_HALF];
 
 	// DNR2
-	float32_t NR_GAIN_old[NOISE_REDUCTION_FFT_SIZE_HALF];
+	float32_t GAIN_old[NOISE_REDUCTION_FFT_SIZE_HALF];
 	float32_t SNR_post[NOISE_REDUCTION_FFT_SIZE_HALF];
 	float32_t SNR_prio[NOISE_REDUCTION_FFT_SIZE_HALF];
 	

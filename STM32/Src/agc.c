@@ -186,7 +186,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 }
 
 // Run TX AGC on data block
-void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, uint_fast8_t mode)
+void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_rate, uint_fast8_t mode)
 {
 	// higher speed in settings - higher speed of AGC processing
 	float32_t TX_AGC_STEPSIZE_UP = 0.0f;
@@ -211,13 +211,13 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 	}
 
 	// do ring buffer
-	static uint32_t ring_position = 0;
+	// static uint32_t ring_position = 0;
 	// save new data to ring buffer
 	// dma_memcpy(&agc_ringbuffer_i[ring_position * blockSize], agcBuffer_i, sizeof(float32_t) * blockSize);
 	// move ring buffer index
-	ring_position++;
-	if (ring_position >= AGC_RINGBUFFER_TAPS_SIZE)
-		ring_position = 0;
+	// ring_position++;
+	// if (ring_position >= AGC_RINGBUFFER_TAPS_SIZE)
+		// ring_position = 0;
 	// get old data to process
 	// dma_memcpy(agcBuffer_i, &agc_ringbuffer_i[ring_position * blockSize], sizeof(float32_t) * blockSize);
 
@@ -236,34 +236,47 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 		AGC_TX_I_magnitude = 0.000001f;
 
 	float32_t AGC_TX_dbFS = rate2dbV(AGC_TX_I_magnitude);
+	float32_t target_db = rate2dbV(target_rate);
+	
+	// CESSB AGC from power
+	if (TRX.TX_CESSB) {
+		target_db = rate2dbP(target_rate);
+		
+		arm_rms_f32(agcBuffer_i, blockSize, &AGC_TX_I_magnitude);
+		
+		if (AGC_TX_I_magnitude == 0.0f)
+			AGC_TX_I_magnitude = 0.001f;
+		float32_t full_scale_rate = AGC_TX_I_magnitude / FLOAT_FULL_SCALE_POW;
+		float32_t AGC_TX_dbFS = rate2dbP(full_scale_rate);
+	}
+	
 	if (AGC_TX_dbFS < -100.0f)
 		AGC_TX_dbFS = -100.0f;
 
 	// mic noise threshold (gate), below it - mute
 	if (AGC_TX_dbFS < TRX.MIC_NOISE_GATE && TRX.MIC_NOISE_GATE > -120)
 	{ //-120db - disabled
-		target = 0.0f;
+		target_rate = 0.0f;
 		TRX_MIC_BELOW_NOISEGATE = true;
 	}
 	else
 	{
-		// println(AGC_TX_I_magnitude, " ", AGC_TX_dbFS, " ", *AGC_need_gain_db);
 		TRX_MIC_BELOW_NOISEGATE = false;
 	}
 
 	// move the gain one step
-	if (target > 0.0f)
+	if (target_rate > 0.0f)
 	{
-		float32_t diff = (target - (AGC_TX_dbFS + AGC_TX.need_gain_db));
+		float32_t diff = (target_db - (AGC_TX_dbFS + AGC_TX.need_gain_db));
 		if (diff > 0)
 			AGC_TX.need_gain_db += diff / TX_AGC_STEPSIZE_UP;
 		else
 			AGC_TX.need_gain_db += diff / TX_AGC_STEPSIZE_DOWN;
 
 		// overload (clipping), sharply reduce the gain
-		if ((AGC_TX_dbFS + AGC_TX.need_gain_db) > target)
+		if ((AGC_TX_dbFS + AGC_TX.need_gain_db) > target_db)
 		{
-			AGC_TX.need_gain_db = target - AGC_TX_dbFS;
+			AGC_TX.need_gain_db = target_db - AGC_TX_dbFS;
 			// sendToDebug_float32(diff,false);
 		}
 	}
@@ -289,8 +302,8 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target, 
 	}
 
 	// apply gain
-	// println(*AGC_need_gain_db);
-	if (target == 0.0f) // zero gain (mute)
+	// println(AGC_TX_I_magnitude, " ", AGC_TX_dbFS, " ", AGC_TX.need_gain_db, " ", target_db);
+	if (target_rate == 0.0f) // zero gain (mute)
 	{
 #define zero_gain 200.0f
 		float32_t gainApplyStep = 0;

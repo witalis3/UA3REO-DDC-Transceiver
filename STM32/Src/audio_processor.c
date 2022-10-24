@@ -19,6 +19,7 @@
 #include "FT8/decode_ft8.h"
 #include "wifi.h"
 #include "system_menu.h"
+#include "auto_calibration.h"
 
 // Public variables
 volatile uint32_t AUDIOPROC_samples = 0;	  // audio samples processed in the processor
@@ -46,7 +47,6 @@ volatile float32_t Processor_TX_MAX_amplitude_OUT; // TX uplift after ALC
 bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
 float32_t APROC_TX_clip_gain = 1.0f;
-float32_t APROC_TX_ALC_IN_clip_gain = 1.0f;
 float32_t APROC_TX_tune_power = 0.0f;
 
 #if FT8_SUPPORT
@@ -93,6 +93,7 @@ static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize);
 static void doTX_HILBERT(bool swap_iq, uint16_t size);
+static void doTX_CESSB(uint16_t size);
 
 // initialize audio processor
 void initAudioProcessor(void)
@@ -823,14 +824,26 @@ void processTxAudio(void)
 			APROC_Audio_Buffer_TX_I[i] = point;
 			APROC_Audio_Buffer_TX_Q[i] = point;
 		}
+		
 		// hilbert fir
-		if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_CW)
+		if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L)
 		{
 			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 		}
-		else
+		else if (mode == TRX_MODE_USB || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_CW || mode == TRX_MODE_RTTY)
 		{
 			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
+		} 
+		else if (mode == TRX_MODE_AM)
+		{
+			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+			for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+			{
+				float32_t i_am = ((APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]) + 1.0f);
+				float32_t q_am = ((APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]) - 1.0f);
+				APROC_Audio_Buffer_TX_I[i] = i_am / 2.0f;
+				APROC_Audio_Buffer_TX_Q[i] = q_am / 2.0f;
+			}
 		}
 	}
 
@@ -911,11 +924,14 @@ void processTxAudio(void)
 	if (mode != TRX_MODE_IQ && !TRX_Tune)
 	{
 		// IIR HPF
-		if (CurrentVFO->HPF_TX_Filter_Width > 0)
+		if (CurrentVFO->HPF_TX_Filter_Width > 0) {
 			arm_biquad_cascade_df2T_f32_single(&IIR_TX_HPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+		}
+		
 		// IIR LPF
-		if (CurrentVFO->LPF_TX_Filter_Width > 0)
+		if (CurrentVFO->LPF_TX_Filter_Width > 0) {
 			arm_biquad_cascade_df2T_f32_single(&IIR_TX_LPF_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+		}
 
 		// TX AGC (compressor)
 		if (mode == TRX_MODE_AM || mode == TRX_MODE_SAM)
@@ -927,7 +943,7 @@ void processTxAudio(void)
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 1.00f * APROC_TX_clip_gain, mode);
 
 		// double left and right channel
-		dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], AUDIO_BUFFER_HALF_SIZE * 4);
+		dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], sizeof(APROC_Audio_Buffer_TX_Q));
 
 		switch (mode)
 		{
@@ -940,13 +956,37 @@ void processTxAudio(void)
 			DECODER_PutSamples(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE); //отправляем данные в цифровой декодер
 			break;
 		case TRX_MODE_USB:
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
 		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
-			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
+			if (TRX_TX_Harmonic == 1) {
+				doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
+			} else { //DSB for harmonics
+				doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+				for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+				{
+					float32_t i_am = (APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]);
+					float32_t q_am = (APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]);
+					APROC_Audio_Buffer_TX_I[i] = i_am;
+					APROC_Audio_Buffer_TX_Q[i] = q_am;
+				}
+			}
 			break;
 		case TRX_MODE_LSB:
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
 		case TRX_MODE_DIGI_L:
-			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+			if (TRX_TX_Harmonic == 1) {
+				doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+			} else { //DSB for harmonics
+				doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+				for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+				{
+					float32_t i_am = (APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]);
+					float32_t q_am = (APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]);
+					APROC_Audio_Buffer_TX_I[i] = i_am;
+					APROC_Audio_Buffer_TX_Q[i] = q_am;
+				}
+			}
 			break;
 		case TRX_MODE_AM:
 		case TRX_MODE_SAM:
@@ -1111,11 +1151,14 @@ void processTxAudio(void)
 	//// RF PowerControl (Audio Level Control)
 
 	// amplitude for the selected power and range
-	float32_t RF_Power_selected = (float32_t)TRX.RF_Power;
-	if ((mode == TRX_MODE_LSB || mode == TRX_MODE_USB) && !TRX_Tune)
-		RF_Power_selected += CALIBRATE.SSB_POWER_ADDITION;
+	float32_t RF_Power_selected = getPowerFromALC(TRX_ALC_IN); // get from ALC
+	if (RF_Power_selected == 0) { // ALC disabled
+		RF_Power_selected = (float32_t)TRX.RF_Power;
+		if ((mode == TRX_MODE_LSB || mode == TRX_MODE_USB) && !TRX_Tune)
+			RF_Power_selected += CALIBRATE.SSB_POWER_ADDITION;
+	}
 	
-	if(TRX_SWR_PROTECTOR && TRX.RF_Power > SWR_PROTECTOR_MAX_POWER)
+	if(TRX_SWR_PROTECTOR && RF_Power_selected > SWR_PROTECTOR_MAX_POWER)
 		RF_Power_selected = SWR_PROTECTOR_MAX_POWER;
 	
 	float32_t RFpower_amplitude = 0.0f;
@@ -1140,6 +1183,10 @@ void processTxAudio(void)
 			ATU_TunePowerStabilized = true;
 		}
 		#endif
+		if(SYSMENU_auto_calibration_opened) { //for auto calibration do not clip power
+			APROC_TX_tune_power = RFpower_amplitude;
+			ATU_TunePowerStabilized = true;
+		}
 		
 		if (!ATU_TunePowerStabilized)
 		{
@@ -1179,9 +1226,8 @@ void processTxAudio(void)
 	}
 
 	// Apply gain
-	// println("amp:", RFpower_amplitude, "clip: ", APROC_TX_ALC_IN_clip_gain);
-	arm_scale_f32(APROC_Audio_Buffer_TX_I, RFpower_amplitude * APROC_TX_ALC_IN_clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-	arm_scale_f32(APROC_Audio_Buffer_TX_Q, RFpower_amplitude * APROC_TX_ALC_IN_clip_gain, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(APROC_Audio_Buffer_TX_I, RFpower_amplitude, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+	arm_scale_f32(APROC_Audio_Buffer_TX_Q, RFpower_amplitude, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 
 	// looking for a maximum in amplitude
 	float32_t ampl_max_i = 0.0f;
@@ -1203,7 +1249,8 @@ void processTxAudio(void)
 
 	// calculate the target gain
 	Processor_TX_MAX_amplitude_OUT = Processor_TX_MAX_amplitude_IN;
-	// println(Processor_TX_MAX_amplitude_IN, " ", RFpower_amplitude, " ", APROC_TX_ALC_IN_clip_gain);
+	//println(Processor_TX_MAX_amplitude_IN, " ", RFpower_amplitude, " ", APROC_TX_clip_gain);
+	
 	if (Processor_TX_MAX_amplitude_IN > 0.0f)
 	{
 		// DAC overload (clipping), sharply reduce the gain
@@ -1225,19 +1272,6 @@ void processTxAudio(void)
 			APROC_TX_clip_gain += 0.0001f;
 		else if (APROC_TX_clip_gain > 0.0f && Processor_TX_MAX_amplitude_IN > RFpower_amplitude)
 			APROC_TX_clip_gain -= 0.0001f;
-
-		// Input External ALC overload, over 1 volt
-		if (TRX_ALC_IN > 1.0f && CALIBRATE.RF_unit_type != RF_UNIT_WF_100D)
-		{
-			// correct gain
-			if (APROC_TX_ALC_IN_clip_gain > 0.0f)
-				APROC_TX_ALC_IN_clip_gain -= 0.001f;
-			// show info to console
-			println("EXT_ALC_IN_OVR ", APROC_TX_ALC_IN_clip_gain);
-			TRX_DAC_OTR = true;
-		}
-		else if (APROC_TX_ALC_IN_clip_gain < 1.0f)
-			APROC_TX_ALC_IN_clip_gain += 0.001f;
 	}
 
 	if (RFpower_amplitude > 0.0f)
@@ -1386,6 +1420,35 @@ static void doTX_HILBERT(bool swap_iq, uint16_t size)
 		if(tx_hilbert_delay_buffer_tail == HILBERT_TX_DELAY) tx_hilbert_delay_buffer_tail = 0;
 	}
 	#endif
+}
+
+static void doTX_CESSB(uint16_t size)
+{
+	if (!TRX.TX_CESSB) return;
+	
+	//additional gain
+	arm_scale_f32(APROC_Audio_Buffer_TX_I, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_I, size);
+	// arm_scale_f32(APROC_Audio_Buffer_TX_Q, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_Q, size);
+	
+	//clipping
+	for(uint32_t sample = 0; sample < size ; sample++)
+	{
+		float32_t i = APROC_Audio_Buffer_TX_I[sample];
+		//float32_t q = APROC_Audio_Buffer_TX_Q[sample];
+		//float32_t mag = fast_sqrt(i*i + q*q);
+		float32_t mag = fast_sqrt(i*i + i*i);
+		
+		if(mag > 1.0f) {
+			float32_t divider = 1.0f + (mag - 1.0f) * 2.0f;
+			APROC_Audio_Buffer_TX_I[sample] /= divider;
+			//APROC_Audio_Buffer_TX_Q[sample] /= divider;
+		}
+	}
+	
+	//and filtering
+	//arm_biquad_cascade_df2T_f32_IQ(&IIR_TX_LPF_CESSB_I, &IIR_TX_LPF_CESSB_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_Q, size);
+	arm_biquad_cascade_df2T_f32_single(&IIR_TX_LPF_CESSB_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+	dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], sizeof(APROC_Audio_Buffer_TX_Q));
 }
 
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor)
@@ -1672,6 +1735,7 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 {
 	if (!TRX.NOISE_BLANKER)
 		return;
+	
 	if (rx_id == AUDIO_RX1)
 	{
 		for (uint32_t block = 0; block < (size / NB_BLOCK_SIZE); block++)

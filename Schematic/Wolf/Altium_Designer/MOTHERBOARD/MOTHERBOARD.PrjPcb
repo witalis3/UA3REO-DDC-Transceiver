@@ -54,7 +54,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=TBOGKJYN
+DocumentUniqueId=JLBHUOHG
 
 [Document2]
 DocumentPath=MOTHERBOARD.PcbLib
@@ -261,70 +261,74 @@ GenerateClassCluster=0
 DocumentUniqueId=SUPUHQIL
 
 [GeneratedDocument1]
-DocumentPath=Project Outputs for MOTHERBOARD\Design Rule Check - MOTHERBOARD.html
+DocumentPath=Project Outputs for MOTHERBOARD\BOM\Bill of Materials-MOTHERBOARD.csv
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-RoundHoles.TXT
+DocumentPath=Project Outputs for MOTHERBOARD\Design Rule Check - MOTHERBOARD.html
 DItemRevisionGUID=
 
 [GeneratedDocument3]
-DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-SlotHoles.TXT
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-RoundHoles.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument4]
-DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.DRR
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD-SlotHoles.TXT
 DItemRevisionGUID=
 
 [GeneratedDocument5]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.EXTREP
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.DRR
 DItemRevisionGUID=
 
 [GeneratedDocument6]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G1
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument7]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G2
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G1
 DItemRevisionGUID=
 
 [GeneratedDocument8]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBL
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.G2
 DItemRevisionGUID=
 
 [GeneratedDocument9]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBO
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBL
 DItemRevisionGUID=
 
 [GeneratedDocument10]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBS
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBO
 DItemRevisionGUID=
 
 [GeneratedDocument11]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GKO
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GBS
 DItemRevisionGUID=
 
 [GeneratedDocument12]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTL
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GKO
 DItemRevisionGUID=
 
 [GeneratedDocument13]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTO
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTL
 DItemRevisionGUID=
 
 [GeneratedDocument14]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTS
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTO
 DItemRevisionGUID=
 
 [GeneratedDocument15]
-DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.LDP
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.GTS
 DItemRevisionGUID=
 
 [GeneratedDocument16]
-DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.REP
+DocumentPath=Project Outputs for MOTHERBOARD\NC Drill\MOTHERBOARD.LDP
 DItemRevisionGUID=
 
 [GeneratedDocument17]
+DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.REP
+DItemRevisionGUID=
+
+[GeneratedDocument18]
 DocumentPath=Project Outputs for MOTHERBOARD\Gerber\MOTHERBOARD.RUL
 DItemRevisionGUID=
 

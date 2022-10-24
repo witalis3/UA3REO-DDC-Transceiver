@@ -62,6 +62,7 @@ SRAM4 static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
 bool WIFI_NewFW_checked = false;
 bool WIFI_NewFW_STM32 = false;
 bool WIFI_NewFW_FPGA = false;
+bool WIFI_download_inprogress = false;
 bool WIFI_downloadFileToSD_compleated = false;
 bool WIFI_maySendIQ = false;
 
@@ -1495,6 +1496,7 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void)
 	{
 		LCD_busy = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
+		WIFI_download_inprogress = false;
 	}
 	else
 	{
@@ -1581,6 +1583,7 @@ void WIFI_downloadFileToSD(char *url, char *filename)
 	if (WIFI_connected && WIFI_State != WIFI_READY)
 		return;
 	get_HTTP_tryes = 0;
+	WIFI_download_inprogress = true;
 	WIFI_downloadFileToSD_compleated = false;
 	WIFI_downloadFileToSD_filename = filename;
 	WIFI_downloadFileToSD_startIndex = 0;

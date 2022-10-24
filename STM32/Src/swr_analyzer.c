@@ -31,7 +31,7 @@ static uint32_t minSWR_Freq = 99.0f;
 static float32_t minSWR_SWR = 0;
 
 // Saved variables
-static uint32_t Lastfreq = 0;
+static uint64_t Lastfreq = 0;
 static bool LastMute = false;
 
 // Public variables

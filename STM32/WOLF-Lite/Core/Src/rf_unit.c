@@ -206,11 +206,11 @@ void RF_UNIT_ProcessSensors(void)
 
 			// Transformation ratio of the SWR meter
 			if (CurrentVFO->Freq >= 80000000)
-				backward = backward * CALIBRATE.SWR_REF_Calibration_VHF;
+				backward = backward * CALIBRATE.SWR_BWD_Calibration_VHF;
 			else if (CurrentVFO->Freq >= 40000000)
-				backward = backward * CALIBRATE.SWR_REF_Calibration_6M;
+				backward = backward * CALIBRATE.SWR_BWD_Calibration_6M;
 			else
-				backward = backward * CALIBRATE.SWR_REF_Calibration_HF;
+				backward = backward * CALIBRATE.SWR_BWD_Calibration_HF;
 		}
 		else
 			backward = 0.001f;

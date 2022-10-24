@@ -5,7 +5,7 @@
 #include "main.h"
 #include "stdbool.h"
 
-#define SPEC_Resolution 1000 // resolution, 1khz
+#define SPEC_Resolution 1000000 // resolution, 1mhz
 #define SPEC_StepDelay 10     // scan delay, msec
 #define SPEC_VParts 6        // vertical signatures
 

@@ -37,7 +37,7 @@ static inline void FPGA_clockFall(void);			// remove CLK signal
 static inline void FPGA_clockRise(void);			// raise the CLK signal
 static inline void FPGA_clockPulse(void);			// raise and fall the CLK signal
 static inline void FPGA_syncAndClockRiseFall(void); // raise CLK and SYNC signals, then release
-static void FPGA_fpgadata_sendiq(void);				// send IQ data
+static void FPGA_fpgadata_sendiq(bool clean);				// send IQ data
 static void FPGA_fpgadata_getiq(void);				// get IQ data
 static void FPGA_fpgadata_getparam(void);			// get parameters
 static void FPGA_fpgadata_sendparam(void);			// send parameters
@@ -236,14 +236,23 @@ void FPGA_fpgadata_iqclock(void)
 		return;
 	// data exchange
 
+	bool need_send_tx_zeroes = TRX_TX_sendZeroes < 100;
+	
 	// STAGE 1
 	// out
 	FPGA_setBusOutput();
+	if (need_send_tx_zeroes)
+	{
+		TRX_TX_sendZeroes++;
+		FPGA_writePacket(3); // TX SEND CLEAN IQ
+		FPGA_syncAndClockRiseFall();
+		FPGA_fpgadata_sendiq(true);
+	}
 	if (TRX_on_TX)
 	{
 		FPGA_writePacket(3); // TX SEND IQ
 		FPGA_syncAndClockRiseFall();
-		FPGA_fpgadata_sendiq();
+		FPGA_fpgadata_sendiq(false);
 	}
 	else
 	{
@@ -828,21 +837,24 @@ static inline void FPGA_fpgadata_getiq(void)
 }
 
 // send IQ data
-static inline void FPGA_fpgadata_sendiq(void)
+static inline void FPGA_fpgadata_sendiq(bool clean)
 {
 	int32_t FPGA_fpgadata_out_q_tmp32 = 0;
 	int32_t FPGA_fpgadata_out_i_tmp32 = 0;
 	FPGA_samples++;
 
-	if (!TRX_TX_IQ_swap)
+	if (!clean)
 	{
-		FPGA_fpgadata_out_i_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f); // float -> int24
-		FPGA_fpgadata_out_q_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
-	}
-	else
-	{
-		FPGA_fpgadata_out_i_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
-		FPGA_fpgadata_out_q_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
+		if (!TRX_TX_IQ_swap)
+		{
+			FPGA_fpgadata_out_i_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f); // float -> int24
+			FPGA_fpgadata_out_q_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
+		}
+		else
+		{
+			FPGA_fpgadata_out_i_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
+			FPGA_fpgadata_out_q_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
+		}
 	}
 	
 	// STAGE 2 out Q

@@ -8,7 +8,7 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 64						  // Settings config version
+#define SETT_VERSION 67						  // Settings config version
 #define CALIB_VERSION 50					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
@@ -254,6 +254,7 @@ typedef enum
 typedef struct
 {
 	uint64_t Freq;
+	uint64_t RealRXFreq;
 	uint_fast16_t HPF_RX_Filter_Width;
 	uint_fast16_t HPF_TX_Filter_Width;
 	uint_fast16_t LPF_RX_Filter_Width;
@@ -442,6 +443,7 @@ extern struct TRX_SETTINGS
 	// AUDIO
 	float32_t CTCSS_Freq;
 	float32_t MIC_GAIN_DB;
+	float32_t TX_CESSB_COMPRESS_DB;
 	uint16_t Volume;
 	uint16_t RX_AGC_Hold;
 	uint16_t CW_LPF_Filter;
@@ -489,6 +491,7 @@ extern struct TRX_SETTINGS
 	bool FM_Stereo;
 	bool AGC_Spectral;
 	bool VOX;
+	bool TX_CESSB;
 	// CW
 	float32_t CW_DotToDashRate;
 	uint16_t CW_Pitch;
@@ -599,11 +602,11 @@ extern struct TRX_CALIBRATE
 	uint8_t flash_id; // version check
 
 	float32_t SWR_FWD_Calibration_HF;
-	float32_t SWR_REF_Calibration_HF;
+	float32_t SWR_BWD_Calibration_HF;
 	float32_t SWR_FWD_Calibration_6M;
-	float32_t SWR_REF_Calibration_6M;
+	float32_t SWR_BWD_Calibration_6M;
 	float32_t SWR_FWD_Calibration_VHF;
-	float32_t SWR_REF_Calibration_VHF;
+	float32_t SWR_BWD_Calibration_VHF;
 	float32_t FW_AD8307_SLP;
 	float32_t FW_AD8307_OFFS;
 	float32_t BW_AD8307_SLP;

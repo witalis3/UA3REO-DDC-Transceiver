@@ -47,21 +47,28 @@ void DECODER_Process(void)
 	}
 	// get data from the buffer
 	float32_t *bufferOut = &DECODER_Buffer[DECODER_tail];
-	DECODER_tail += DECODER_PACKET_SIZE;
-	if (DECODER_tail >= DECODER_BUFF_SIZE)
-		DECODER_tail = 0;
 
 #ifndef STM32F407xx
 	// CW Decoder
-	if (TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK))
+	if (TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK)) {
+		DECODER_tail += DECODER_PACKET_SIZE;
 		CWDecoder_Process(bufferOut);
+	}
 
 	// RDS Decoder
-	if (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM)
+	if (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM) { // RDS_DECODER_PACKET_SIZE
+		DECODER_tail += RDS_DECODER_PACKET_SIZE;
 		RDSDecoder_Process(bufferOut);
+	}
 #endif
 	
 	// RTTY Decoder
-	if (CurrentVFO->Mode == TRX_MODE_RTTY)
+	if (CurrentVFO->Mode == TRX_MODE_RTTY) {
+		DECODER_tail += DECODER_PACKET_SIZE;
 		RTTYDecoder_Process(bufferOut);
+	}
+	
+	// move tail
+	if (DECODER_tail >= DECODER_BUFF_SIZE)
+		DECODER_tail = 0;
 }

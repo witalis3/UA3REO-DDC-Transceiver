@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-const char version_string[19] = "5.2.1";
+const char version_string[19] = "6.0.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -171,7 +171,7 @@ void LoadSettings(bool clear)
 		TRX.FRQ_FAST_STEP = 100;			// frequency tuning step by the main encoder in FAST mode
 		TRX.FRQ_ENC_STEP = 25000;			// frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;		// frequency tuning step by main add. encoder in FAST mode
-		TRX.FRQ_ENC_WFM_STEP_KHZ = 100;		// frequency WFM tuning step by the main encoder
+		TRX.FRQ_ENC_WFM_STEP_KHZ = 20;		// frequency WFM tuning step by the main encoder
 		TRX.FRQ_CW_STEP_DIVIDER = 4;		// Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;		// Debug output to DEBUG / UART port
 		TRX.BandMapEnabled = true;			// automatic change of mode according to the range map
@@ -235,10 +235,13 @@ void LoadSettings(bool clear)
 		#ifdef STM32F407xx
 		TRX.NOISE_BLANKER = false;			 // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = false;			//Spectral AGC mode
+		TRX.TX_CESSB = false;					//Controlled-envelope single-sideband modulation
 		#else
 		TRX.NOISE_BLANKER = false;			 // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;			//Spectral AGC mode
+		TRX.TX_CESSB = true;					//Controlled-envelope single-sideband modulation
 		#endif
+		TRX.TX_CESSB_COMPRESS_DB = 3.0f;					//CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;			 // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;			 // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;			 // Maximum AGC gain
@@ -369,8 +372,8 @@ void LoadSettings(bool clear)
 		// SERVICES
 		TRX.SWR_CUSTOM_Begin = 6500; // start spectrum analyzer range
 		TRX.SWR_CUSTOM_End = 7500;	 // end of spectrum analyzer range
-		TRX.SPEC_Begin = 1000;		 // start spectrum analyzer range
-		TRX.SPEC_End = 30000;		 // end of spectrum analyzer range
+		TRX.SPEC_Begin = 1;		 // start spectrum analyzer range
+		TRX.SPEC_End = 150;		 // end of spectrum analyzer range
 		TRX.SPEC_TopDBM = -60;		 // chart thresholds
 		TRX.SPEC_BottomDBM = -130;	 // chart thresholds
 		TRX.WSPR_FREQ_OFFSET = 0;	 // offset beacon from freq center
@@ -522,11 +525,11 @@ void LoadCalibration(bool clear)
 		CALIBRATE.smeter_calibration_vhf = 0;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;				  // Calibrate the offset at the ADC input (DC)
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f; // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 11.0f; // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_HF = 11.0f; // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f; // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 10.0f; // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_6M = 10.0f; // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f; // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 3.6f; // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_VHF = 3.6f; // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 2;			  // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;				  // Max TRX Power for indication
 #if defined(FRONTPANEL_X1)
@@ -547,31 +550,47 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_5_END = 32000 * 1000;	
 		CALIBRATE.RFU_BPF_6_START = 135000 * 1000;
 		CALIBRATE.RFU_BPF_6_END = 150000 * 1000;
+		CALIBRATE.rf_out_power_2200m = 20;		  // 2200m
+		CALIBRATE.rf_out_power_160m = 41;		  // 160m
+		CALIBRATE.rf_out_power_80m = 29;		  // 80m
+		CALIBRATE.rf_out_power_40m = 26;		  // 40m
+		CALIBRATE.rf_out_power_30m = 26;		  // 30m
+		CALIBRATE.rf_out_power_20m = 32;		  // 20m
+		CALIBRATE.rf_out_power_17m = 36;		  // 17m
+		CALIBRATE.rf_out_power_15m = 42;		  // 15m
+		CALIBRATE.rf_out_power_12m = 39;		  // 12m
+		CALIBRATE.rf_out_power_cb = 39;			  // 27mhz
+		CALIBRATE.rf_out_power_10m = 42;		  // 10m
+		CALIBRATE.rf_out_power_6m = 20;			  // 6m
+		CALIBRATE.rf_out_power_4m = 13;				// 4m
+		CALIBRATE.rf_out_power_2m = 20;		  // 2m
+		CALIBRATE.smeter_calibration_hf = 12;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
+		CALIBRATE.smeter_calibration_vhf = 12;	  // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 10.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 10.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_HF = 10.0f;	   //SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 10.0f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_6M = 10.0f;	   //SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 8.5f;	   //SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 8.5f;	   //SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_VHF = 8.5f;	   //SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 5;			   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15;				//Max TRX Power for indication
 #elif defined(FRONTPANEL_WF_100D)
 		CALIBRATE.ENCODER2_INVERT = true; // invert left-right rotation of the optional encoder
 		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
-		CALIBRATE.rf_out_power_2200m = 20;			   // 2200m
-		CALIBRATE.rf_out_power_160m = 20;			   // 160m
-		CALIBRATE.rf_out_power_80m = 20;			   // 80m
-		CALIBRATE.rf_out_power_40m = 30;			   // 40m
-		CALIBRATE.rf_out_power_30m = 30;			   // 30m
-		CALIBRATE.rf_out_power_20m = 60;			   // 20m
-		CALIBRATE.rf_out_power_17m = 70;			   // 17m
-		CALIBRATE.rf_out_power_15m = 70;			   // 15m
-		CALIBRATE.rf_out_power_12m = 70;			   // 12m
-		CALIBRATE.rf_out_power_cb = 70;				   // 27mhz
-		CALIBRATE.rf_out_power_10m = 80;			   // 10m
+		CALIBRATE.rf_out_power_2200m = 16;			   // 2200m
+		CALIBRATE.rf_out_power_160m = 26;			   // 160m
+		CALIBRATE.rf_out_power_80m = 27;			   // 80m
+		CALIBRATE.rf_out_power_40m = 32;			   // 40m
+		CALIBRATE.rf_out_power_30m = 31;			   // 30m
+		CALIBRATE.rf_out_power_20m = 39;			   // 20m
+		CALIBRATE.rf_out_power_17m = 43;			   // 17m
+		CALIBRATE.rf_out_power_15m = 49;			   // 15m
+		CALIBRATE.rf_out_power_12m = 43;			   // 12m
+		CALIBRATE.rf_out_power_cb = 61;				   // 27mhz
+		CALIBRATE.rf_out_power_10m = 67;			   // 10m
 		CALIBRATE.rf_out_power_6m = 80;				   // 6m
 		CALIBRATE.rf_out_power_4m = 80;				   // 4m
-		CALIBRATE.rf_out_power_2m = 70;				   // 2m
+		CALIBRATE.rf_out_power_2m = 57;				   // 2m
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;	   // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;	   // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;	   // 1.6-2.5mH
@@ -593,11 +612,11 @@ void LoadCalibration(bool clear)
 		CALIBRATE.RFU_BPF_8_START = 0;				   // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;				   // disabled
 		CALIBRATE.SWR_FWD_Calibration_HF = 19.5f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_HF = 19.5f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_HF = 19.5f;	   // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 19.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_6M = 19.0f;	   // SWR Transormator rate return
-		CALIBRATE.SWR_FWD_Calibration_VHF = 21.0f;	   // SWR Transormator rate forward
-		CALIBRATE.SWR_REF_Calibration_VHF = 9.5f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_6M = 19.0f;	   // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 16.6f;	   // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_VHF = 9.5f;	   // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;				   // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;				   // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)
@@ -638,7 +657,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.TRX_MAX_SWR = 3;				// Maximum SWR to enable protect on TX (NOT IN TUNE MODE!)
 		CALIBRATE.FM_DEVIATION_SCALE = 4;		// FM Deviation scale
 		CALIBRATE.SSB_POWER_ADDITION = 0;		// Additional power in SSB mode
-		CALIBRATE.AM_MODULATION_INDEX = 50;		// AM Modulation Index
+		CALIBRATE.AM_MODULATION_INDEX = 100;		// AM Modulation Index
 		CALIBRATE.RTC_Coarse_Calibration = 127; // Coarse RTC calibration
 		CALIBRATE.RTC_Calibration = 0;			// Real Time Clock calibration
 		CALIBRATE.EXT_2200m = 0;				// External port by band
