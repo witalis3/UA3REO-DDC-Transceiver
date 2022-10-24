@@ -137,7 +137,7 @@ void LoadSettings(bool clear)
 		TRX.LNA = false;					  // LNA (Low Noise Amplifier)
 		TRX.ATT = false;					  // attenuator
 		TRX.ATT_DB = 12.0f;					  // suppress the attenuator
-		TRX.ATT_STEP = 6.0f;				  // step of tuning the attenuator
+		TRX.ATT_STEP = 6;				  // step of tuning the attenuator
 #if HRDW_HAS_VGA
 		TRX.VGA_GAIN = 21.0f;				// VGA Gain, dB
 #endif
