@@ -826,13 +826,24 @@ void processTxAudio(void)
 		}
 		
 		// hilbert fir
-		if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_CW)
+		if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L)
 		{
 			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 		}
-		else
+		else if (mode == TRX_MODE_USB || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_CW || mode == TRX_MODE_RTTY)
 		{
 			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
+		} 
+		else if (mode == TRX_MODE_AM)
+		{
+			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+			for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+			{
+				float32_t i_am = ((APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]) + 1.0f);
+				float32_t q_am = ((APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]) - 1.0f);
+				APROC_Audio_Buffer_TX_I[i] = i_am / 2.0f;
+				APROC_Audio_Buffer_TX_Q[i] = q_am / 2.0f;
+			}
 		}
 	}
 
