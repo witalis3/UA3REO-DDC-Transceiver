@@ -23,8 +23,8 @@ output reg signed [31:0] freq_error = 99999;
 output reg pump = 0;
 output reg signed [31:0] PWM = 20000;
 
-reg signed [31:0] PWM_RX = 20000;
-reg signed [31:0] PWM_TX = 20000;
+//reg signed [31:0] PWM_RX = 20000;
+//reg signed [31:0] PWM_TX = 20000;
 reg signed [31:0] PWM_new = 20000;
 reg signed [31:0] freq_error_now = 0;
 reg [31:0] VCXO_counter = 0;
@@ -35,7 +35,7 @@ reg [2:0] vcxo_cnt_need_state = 0; //0 - idle , 1 - work , 2 - reset
 reg [7:0] state = 0;
 reg counter_resetted = 0;
 reg counter_idle = 0;
-reg tx_switched = 0;
+//reg tx_switched = 0;
 
 reg signed [31:0] PWM_max = 40000;
 reg [15:0] PWM_counter_on = 0;
@@ -177,26 +177,33 @@ begin
 		else if(state == 3)
 		begin	
 			//tune
-			if(tx == 0)
-			begin
-				if ($signed(freq_error_now) < 10 || $signed(freq_error_now) > 10)
-					PWM_new <= $signed(PWM_RX) - $signed(freq_error_now);
-				else if ($signed(freq_error_now) < 0)
-					PWM_new <= $signed(PWM_RX) + 1;
-				else if ($signed(freq_error_now) > 0)
-					PWM_new <= $signed(PWM_RX) + 1;
-			end
-			else if(tx == 1 && $signed(freq_error_now) < 0 || $signed(freq_error_now) > 0)
-			begin
-				if ($signed(freq_error_now) < 10 || $signed(freq_error_now) > 10)
-					PWM_new <= $signed(PWM_TX) - $signed(freq_error_now);
-				else if ($signed(freq_error_now) < 0)
-					PWM_new <= $signed(PWM_TX) + 1;
-				else if ($signed(freq_error_now) > 0)
-					PWM_new <= $signed(PWM_TX) + 1;
-					
-				tx_switched <= 1;
-			end
+			//if(tx == 0)
+			//begin
+			//	if ($signed(freq_error_now) < 10 || $signed(freq_error_now) > 10)
+			//		PWM_new <= $signed(PWM_RX) - $signed(freq_error_now);
+			//	else if ($signed(freq_error_now) < 0)
+			//		PWM_new <= $signed(PWM_RX) + 1;
+			//	else if ($signed(freq_error_now) > 0)
+			//		PWM_new <= $signed(PWM_RX) + 1;
+			//end
+			//else if(tx == 1 && $signed(freq_error_now) < 0 || $signed(freq_error_now) > 0)
+			//begin
+			//	if ($signed(freq_error_now) < 10 || $signed(freq_error_now) > 10)
+			//		PWM_new <= $signed(PWM_TX) - $signed(freq_error_now);
+			//	else if ($signed(freq_error_now) < 0)
+			//		PWM_new <= $signed(PWM_TX) + 1;
+			//	else if ($signed(freq_error_now) > 0)
+			//		PWM_new <= $signed(PWM_TX) + 1;
+			//		
+			//	tx_switched <= 1;
+			//end
+			
+			if ($signed(freq_error_now) < 10 || $signed(freq_error_now) > 10)
+				PWM_new <= $signed(PWM) - $signed(freq_error_now);
+			else if ($signed(freq_error_now) < 0)
+				PWM_new <= $signed(PWM) + 1;
+			else if ($signed(freq_error_now) > 0)
+				PWM_new <= $signed(PWM) + 1;
 				
 			freq_error <= freq_error_now;
 			
@@ -207,15 +214,15 @@ begin
 			if ($signed(PWM_new) > 1 && $signed(PWM_new) < $signed(PWM_max) && $signed(PWM) != $signed(PWM_new))
 				PWM <= PWM_new;
 			
-			if (tx == 0 && tx_switched == 0)
-			begin
-				PWM_RX <= PWM_new;
-				PWM_TX <= PWM_new;
-			end
-			else if (tx == 0 && tx_switched == 1)
-				PWM_RX <= PWM_new;
-			else if (tx == 1)
-				PWM_TX <= PWM_new;
+			//if (tx == 0 && tx_switched == 0)
+			//begin
+			//	PWM_RX <= PWM_new;
+			//	PWM_TX <= PWM_new;
+			//end
+			//else if (tx == 0 && tx_switched == 1)
+			//	PWM_RX <= PWM_new;
+			//else if (tx == 1)
+			//	PWM_TX <= PWM_new;
 				
 			vcxo_cnt_need_state <= 2; //reset
 			state <= 0;
