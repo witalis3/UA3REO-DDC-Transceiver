@@ -5,7 +5,7 @@
 +HARDW: MOTHERBOARD-rev32: Доработки разводки USB изолятора, Tnx R7KGA
 +HARDW: Добавлена новая плата RF-UNIT-QRP-RU4PN-rev2, Tnx RU4PN
 +FPGA: Увеличена точность коррекции VCXO
-+FPGA: Включена коррекция VCXO во время передачи
++FPGA: Включена коррекция VCXO во время передачи, Tnx RA9N
 +STM32: Расширены варианты регулировки настройки "Freq Step WFM, kHz", Tnx EA7HOG
 +STM32: При переключении в моду WFM сбрасывается значение Zoom, Tnx EA7HOG
 +STM32: RDS декодер теперь корректно работает при частоте семплирования в 384кГц, Tnx EA7HOG
