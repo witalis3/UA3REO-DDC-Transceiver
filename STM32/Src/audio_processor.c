@@ -959,12 +959,34 @@ void processTxAudio(void)
 			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
 		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
-			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
+			if (TRX_TX_Harmonic == 1) {
+				doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
+			} else { //DSB for harmonics
+				doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+				for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+				{
+					float32_t i_am = (APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]);
+					float32_t q_am = (APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]);
+					APROC_Audio_Buffer_TX_I[i] = i_am;
+					APROC_Audio_Buffer_TX_Q[i] = q_am;
+				}
+			}
 			break;
 		case TRX_MODE_LSB:
 			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
 		case TRX_MODE_DIGI_L:
-			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+			if (TRX_TX_Harmonic == 1) {
+				doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+			} else { //DSB for harmonics
+				doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+				for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++)
+				{
+					float32_t i_am = (APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]);
+					float32_t q_am = (APROC_Audio_Buffer_TX_Q[i] - APROC_Audio_Buffer_TX_I[i]);
+					APROC_Audio_Buffer_TX_I[i] = i_am;
+					APROC_Audio_Buffer_TX_Q[i] = q_am;
+				}
+			}
 			break;
 		case TRX_MODE_AM:
 		case TRX_MODE_SAM:
