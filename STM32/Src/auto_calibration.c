@@ -478,7 +478,7 @@ void AUTO_CALIBRATION_Draw(void)
 
 	// Pager
 	pos_y += margin_bottom;
-	LCDDriver_printText("Rotate ENC2 to select page", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+	LCDDriver_printText("Rotate ENC2 - select page", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 	pos_y += margin_bottom;
 
 	LCD_busy = false;
