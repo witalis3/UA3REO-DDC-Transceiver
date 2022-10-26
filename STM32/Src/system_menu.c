@@ -2027,60 +2027,60 @@ static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction)
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB(int8_t direction)
 {
 	TRX.MIC_EQ_LOW_SSB += direction;
-	if (TRX.MIC_EQ_LOW_SSB < -10)
-		TRX.MIC_EQ_LOW_SSB = -10;
-	if (TRX.MIC_EQ_LOW_SSB > 10)
-		TRX.MIC_EQ_LOW_SSB = 10;
+	if (TRX.MIC_EQ_LOW_SSB < -50)
+		TRX.MIC_EQ_LOW_SSB = -50;
+	if (TRX.MIC_EQ_LOW_SSB > 50)
+		TRX.MIC_EQ_LOW_SSB = 50;
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_AMFM(int8_t direction)
 {
 	TRX.MIC_EQ_LOW_AMFM += direction;
-	if (TRX.MIC_EQ_LOW_AMFM < -10)
-		TRX.MIC_EQ_LOW_AMFM = -10;
-	if (TRX.MIC_EQ_LOW_AMFM > 10)
-		TRX.MIC_EQ_LOW_AMFM = 10;
+	if (TRX.MIC_EQ_LOW_AMFM < -50)
+		TRX.MIC_EQ_LOW_AMFM = -50;
+	if (TRX.MIC_EQ_LOW_AMFM > 50)
+		TRX.MIC_EQ_LOW_AMFM = 50;
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB(int8_t direction)
 {
 	TRX.MIC_EQ_MID_SSB += direction;
-	if (TRX.MIC_EQ_MID_SSB < -10)
-		TRX.MIC_EQ_MID_SSB = -10;
-	if (TRX.MIC_EQ_MID_SSB > 10)
-		TRX.MIC_EQ_MID_SSB = 10;
+	if (TRX.MIC_EQ_MID_SSB < -50)
+		TRX.MIC_EQ_MID_SSB = -50;
+	if (TRX.MIC_EQ_MID_SSB > 50)
+		TRX.MIC_EQ_MID_SSB = 50;
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_AMFM(int8_t direction)
 {
 	TRX.MIC_EQ_MID_AMFM += direction;
-	if (TRX.MIC_EQ_MID_AMFM < -10)
-		TRX.MIC_EQ_MID_AMFM = -10;
-	if (TRX.MIC_EQ_MID_AMFM > 10)
-		TRX.MIC_EQ_MID_AMFM = 10;
+	if (TRX.MIC_EQ_MID_AMFM < -50)
+		TRX.MIC_EQ_MID_AMFM = -50;
+	if (TRX.MIC_EQ_MID_AMFM > 50)
+		TRX.MIC_EQ_MID_AMFM = 50;
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB(int8_t direction)
 {
 	TRX.MIC_EQ_HIG_SSB += direction;
-	if (TRX.MIC_EQ_HIG_SSB < -10)
-		TRX.MIC_EQ_HIG_SSB = -10;
-	if (TRX.MIC_EQ_HIG_SSB > 10)
-		TRX.MIC_EQ_HIG_SSB = 10;
+	if (TRX.MIC_EQ_HIG_SSB < -50)
+		TRX.MIC_EQ_HIG_SSB = -50;
+	if (TRX.MIC_EQ_HIG_SSB > 50)
+		TRX.MIC_EQ_HIG_SSB = 50;
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_AMFM(int8_t direction)
 {
 	TRX.MIC_EQ_HIG_AMFM += direction;
-	if (TRX.MIC_EQ_HIG_AMFM < -10)
-		TRX.MIC_EQ_HIG_AMFM = -10;
-	if (TRX.MIC_EQ_HIG_AMFM > 10)
-		TRX.MIC_EQ_HIG_AMFM = 10;
+	if (TRX.MIC_EQ_HIG_AMFM < -50)
+		TRX.MIC_EQ_HIG_AMFM = -50;
+	if (TRX.MIC_EQ_HIG_AMFM > 50)
+		TRX.MIC_EQ_HIG_AMFM = 50;
 	NeedReinitAudioFilters = true;
 }
 
@@ -2105,30 +2105,30 @@ static void SYSMENU_HANDL_AUDIO_MIC_NOISE_GATE(int8_t direction)
 static void SYSMENU_HANDL_AUDIO_RX_EQ_LOW(int8_t direction)
 {
 	TRX.RX_EQ_LOW += direction;
-	if (TRX.RX_EQ_LOW < -10)
-		TRX.RX_EQ_LOW = -10;
-	if (TRX.RX_EQ_LOW > 10)
-		TRX.RX_EQ_LOW = 10;
+	if (TRX.RX_EQ_LOW < -50)
+		TRX.RX_EQ_LOW = -50;
+	if (TRX.RX_EQ_LOW > 50)
+		TRX.RX_EQ_LOW = 50;
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_EQ_MID(int8_t direction)
 {
 	TRX.RX_EQ_MID += direction;
-	if (TRX.RX_EQ_MID < -10)
-		TRX.RX_EQ_MID = -10;
-	if (TRX.RX_EQ_MID > 10)
-		TRX.RX_EQ_MID = 10;
+	if (TRX.RX_EQ_MID < -50)
+		TRX.RX_EQ_MID = -50;
+	if (TRX.RX_EQ_MID > 50)
+		TRX.RX_EQ_MID = 50;
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_EQ_HIG(int8_t direction)
 {
 	TRX.RX_EQ_HIG += direction;
-	if (TRX.RX_EQ_HIG < -10)
-		TRX.RX_EQ_HIG = -10;
-	if (TRX.RX_EQ_HIG > 10)
-		TRX.RX_EQ_HIG = 10;
+	if (TRX.RX_EQ_HIG < -50)
+		TRX.RX_EQ_HIG = -50;
+	if (TRX.RX_EQ_HIG > 50)
+		TRX.RX_EQ_HIG = 50;
 	NeedReinitAudioFilters = true;
 }
 
