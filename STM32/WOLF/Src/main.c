@@ -300,7 +300,7 @@ int main(void)
 		MX_IWDG1_Init();
 	}
 
-  println("[OK] Calibration loading");
+  println("[OK] Calibration & WiFi loading");
 	if(reset_calibrations)
 		LoadCalibration(true);
 	else

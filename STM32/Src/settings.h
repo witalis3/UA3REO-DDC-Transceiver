@@ -71,6 +71,7 @@
 #define W25Q16_SECTOR_SIZE 4096
 #define EEPROM_SECTOR_CALIBRATION 0
 #define EEPROM_SECTOR_SETTINGS 4
+#define EEPROM_SECTOR_WIFI 8
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
 #define MEMORY_CHANNELS_COUNT 35
@@ -553,16 +554,6 @@ extern struct TRX_SETTINGS
 	bool ADC_RAND;
 	bool ADC_SHDN;
 	bool ADC_DITH;
-	// WIFI
-	int8_t WIFI_TIMEZONE;
-	bool WIFI_Enabled;
-	bool WIFI_CAT_SERVER;
-	char WIFI_AP1[MAX_WIFIPASS_LENGTH];
-	char WIFI_PASSWORD1[MAX_WIFIPASS_LENGTH];
-	char WIFI_AP2[MAX_WIFIPASS_LENGTH];
-	char WIFI_PASSWORD2[MAX_WIFIPASS_LENGTH];
-	char WIFI_AP3[MAX_WIFIPASS_LENGTH];
-	char WIFI_PASSWORD3[MAX_WIFIPASS_LENGTH];
 	// SERVICES
 	uint32_t SWR_CUSTOM_Begin;
 	uint32_t SWR_CUSTOM_End;
@@ -742,9 +733,27 @@ extern struct TRX_CALIBRATE
 	uint8_t ENDBit; // end bit
 } CALIBRATE;
 
+extern struct TRX_WIFI
+{
+	// WIFI
+	int8_t Timezone;
+	bool Enabled;
+	bool CAT_Server;
+	char AP_1[MAX_WIFIPASS_LENGTH];
+	char Password_1[MAX_WIFIPASS_LENGTH];
+	char AP_2[MAX_WIFIPASS_LENGTH];
+	char Password_2[MAX_WIFIPASS_LENGTH];
+	char AP_3[MAX_WIFIPASS_LENGTH];
+	char Password_3[MAX_WIFIPASS_LENGTH];
+	
+	uint8_t csum;	// check sum
+	uint8_t ENDBit; // end bit
+} WIFI;
+
 extern const char version_string[19]; // 1.2.3
 extern volatile bool NeedSaveSettings;
 extern volatile bool NeedSaveCalibration;
+extern volatile bool NeedSaveWiFi;
 extern volatile bool EEPROM_Busy;
 extern VFO *CurrentVFO;
 extern VFO *SecondaryVFO;
@@ -752,8 +761,10 @@ extern bool EEPROM_Enabled;
 
 extern void LoadSettings(bool clear);
 extern void LoadCalibration(bool clear);
+extern void LoadWiFiSettings(bool clear);
 extern void SaveSettings(void);
 extern void SaveCalibration(void);
+extern void SaveWiFiSettings(void);
 extern void SaveSettingsToEEPROM(void);
 extern void BKPSRAM_Enable(void);
 extern void BKPSRAM_Disable(void);

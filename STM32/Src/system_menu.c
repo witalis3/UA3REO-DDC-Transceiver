@@ -385,6 +385,7 @@ static void SYSMENU_HANDL_CALIB_IF_GAIN_MIN(int8_t direction);
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SETTINGS_RESET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction);
+static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -741,15 +742,15 @@ const static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 #if HRDW_HAS_WIFI
 const static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 	{
-		{"WIFI Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
+		{"WIFI Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.Enabled, SYSMENU_HANDL_WIFI_Enabled},
 		{"WIFI Network 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP1},
 		{"WIFI Network 1 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP1password},
 		{"WIFI Network 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP2},
 		{"WIFI Network 2 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP2password},
 		{"WIFI Network 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP3},
 		{"WIFI Network 3 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP3password},
-		{"WIFI Timezone", SYSMENU_INT8, NULL, (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_HANDL_WIFI_Timezone},
-		{"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_HANDL_WIFI_CAT_Server},
+		{"WIFI Timezone", SYSMENU_INT8, NULL, (uint32_t *)&WIFI.Timezone, SYSMENU_HANDL_WIFI_Timezone},
+		{"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.CAT_Server, SYSMENU_HANDL_WIFI_CAT_Server},
 		{"WIFI Update ESP firmware", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_UpdateFW},
 		{"", SYSMENU_INFOLINE, 0, 0},
 		{"NET:", SYSMENU_INFOLINE, 0, 0},
@@ -960,6 +961,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
 		{"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
 		{"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
+		{"WiFi settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_WIFI_RESET},
 };
 
 const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
@@ -3480,7 +3482,7 @@ static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir)
 		}
 		else
 		{
-			strcpy(TRX.WIFI_AP1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+			strcpy(WIFI.AP_1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
 			sysmenu_wifi_selectap1_menu_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3505,7 +3507,7 @@ static void SYSMENU_WIFI_SelectAP2MenuMove(int8_t dir)
 		}
 		else
 		{
-			strcpy(TRX.WIFI_AP2, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+			strcpy(WIFI.AP_2, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
 			sysmenu_wifi_selectap2_menu_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3530,7 +3532,7 @@ static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir)
 		}
 		else
 		{
-			strcpy(TRX.WIFI_AP3, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+			strcpy(WIFI.AP_3, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
 			sysmenu_wifi_selectap3_menu_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3542,12 +3544,12 @@ static void SYSMENU_WIFI_AP1_Password_keyboardHandler(uint32_t parameter)
 {
 	if(parameter == '<') //backspace
 	{
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = 0;
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index > 0)
 			sysmenu_wifi_selected_ap_password_char_index--;
 	} else {
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = parameter;
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = parameter;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
 			sysmenu_wifi_selected_ap_password_char_index++;
@@ -3564,7 +3566,7 @@ static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw)
 		LCDDriver_printText("NET1 Password:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_printText(WIFI.Password_1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
@@ -3576,12 +3578,12 @@ static void SYSMENU_WIFI_AP2_Password_keyboardHandler(uint32_t parameter)
 {
 	if(parameter == '<') //backspace
 	{
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = 0;
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index > 0)
 			sysmenu_wifi_selected_ap_password_char_index--;
 	} else {
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = parameter;
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = parameter;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
 			sysmenu_wifi_selected_ap_password_char_index++;
@@ -3598,7 +3600,7 @@ static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw)
 		LCDDriver_printText("NET2 Password:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_printText(WIFI.Password_2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
@@ -3610,12 +3612,12 @@ static void SYSMENU_WIFI_AP3_Password_keyboardHandler(uint32_t parameter)
 {
 	if(parameter == '<') //backspace
 	{
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = 0;
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index > 0)
 			sysmenu_wifi_selected_ap_password_char_index--;
 	} else {
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = parameter;
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = parameter;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
 			sysmenu_wifi_selected_ap_password_char_index++;
@@ -3632,7 +3634,7 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
 		LCDDriver_printText("NET3 Password:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_printText(WIFI.Password_3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
@@ -3643,18 +3645,18 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
 static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir)
 {
 	bool full_redraw = false;
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
-	TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] += dir;
+	WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] >= 127)
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 33;
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
 
 	if (full_redraw)
@@ -3666,18 +3668,18 @@ static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir)
 static void SYSMENU_WIFI_RotatePasswordChar2(int8_t dir)
 {
 	bool full_redraw = false;
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
-	TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] += dir;
+	WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] >= 127)
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 33;
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
 
 	if (full_redraw)
@@ -3689,18 +3691,18 @@ static void SYSMENU_WIFI_RotatePasswordChar2(int8_t dir)
 static void SYSMENU_WIFI_RotatePasswordChar3(int8_t dir)
 {
 	bool full_redraw = false;
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
-	TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] += dir;
+	WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] >= 127)
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 33;
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
 
 	if (full_redraw)
@@ -3712,9 +3714,11 @@ static void SYSMENU_WIFI_RotatePasswordChar3(int8_t dir)
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction)
 {
 	if (direction > 0)
-		TRX.WIFI_Enabled = true;
+		WIFI.Enabled = true;
 	if (direction < 0)
-		TRX.WIFI_Enabled = false;
+		WIFI.Enabled = false;
+	
+	NeedSaveWiFi = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SelectAP1(int8_t direction)
@@ -3770,20 +3774,24 @@ static void SYSMENU_HANDL_WIFI_SetAP3password(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction)
 {
-	TRX.WIFI_TIMEZONE += direction;
-	if (TRX.WIFI_TIMEZONE < -12)
-		TRX.WIFI_TIMEZONE = -12;
-	if (TRX.WIFI_TIMEZONE > 12)
-		TRX.WIFI_TIMEZONE = 12;
+	WIFI.Timezone += direction;
+	if (WIFI.Timezone < -12)
+		WIFI.Timezone = -12;
+	if (WIFI.Timezone > 12)
+		WIFI.Timezone = 12;
 	WIFI_State = WIFI_INITED;
+	
+	NeedSaveWiFi = true;
 }
 
 static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction)
 {
 	if (direction > 0)
-		TRX.WIFI_CAT_SERVER = true;
+		WIFI.CAT_Server = true;
 	if (direction < 0)
-		TRX.WIFI_CAT_SERVER = false;
+		WIFI.CAT_Server = false;
+	
+	NeedSaveWiFi = true;
 }
 
 static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
@@ -5523,6 +5531,11 @@ static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction)
 	LoadCalibration(true);
 }
 
+static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction)
+{
+	LoadWiFiSettings(true);
+}
+
 // SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 {
@@ -6187,36 +6200,42 @@ void SYSMENU_eventCloseSystemMenu(void)
 		sysmenu_wifi_selectap1_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	if (sysmenu_wifi_selectap2_menu_opened)
 	{
 		sysmenu_wifi_selectap2_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	if (sysmenu_wifi_selectap3_menu_opened)
 	{
 		sysmenu_wifi_selectap3_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	else if (sysmenu_wifi_setAP1password_menu_opened)
 	{
 		sysmenu_wifi_setAP1password_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	else if (sysmenu_wifi_setAP2password_menu_opened)
 	{
 		sysmenu_wifi_setAP2password_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	else if (sysmenu_wifi_setAP3password_menu_opened)
 	{
 		sysmenu_wifi_setAP3password_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	else 
 	#endif

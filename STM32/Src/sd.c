@@ -1081,15 +1081,15 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.ADC_SHDN", (uint32_t *)&TRX.ADC_SHDN, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_DITH", (uint32_t *)&TRX.ADC_DITH, SYSMENU_BOOLEAN);
 			// WIFI
-			SD_WRITE_SETT_LINE("TRX.WIFI_Enabled", (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.WIFI_TIMEZONE", (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.WIFI_CAT_SERVER", (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_STRING("TRX.WIFI_AP1", TRX.WIFI_AP1);
-			SD_WRITE_SETT_STRING("TRX.WIFI_AP2", TRX.WIFI_AP2);
-			SD_WRITE_SETT_STRING("TRX.WIFI_AP3", TRX.WIFI_AP3);
-			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD1", TRX.WIFI_PASSWORD1);
-			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD2", TRX.WIFI_PASSWORD2);
-			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD3", TRX.WIFI_PASSWORD3);
+			SD_WRITE_SETT_LINE("WIFI.Enabled", (uint32_t *)&WIFI.Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("WIFI.Timezone", (uint32_t *)&WIFI.Timezone, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("WIFI.CAT_Server", (uint32_t *)&WIFI.CAT_Server, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_STRING("WIFI.AP_1", WIFI.AP_1);
+			SD_WRITE_SETT_STRING("WIFI.AP_2", WIFI.AP_2);
+			SD_WRITE_SETT_STRING("WIFI.AP_3", WIFI.AP_3);
+			SD_WRITE_SETT_STRING("WIFI.Password_1", WIFI.Password_1);
+			SD_WRITE_SETT_STRING("WIFI.Password_2", WIFI.Password_2);
+			SD_WRITE_SETT_STRING("WIFI.Password_3", WIFI.Password_3);
 			// SERVICES
 			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_Begin", (uint32_t *)&TRX.SWR_CUSTOM_Begin, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_End", (uint32_t *)&TRX.SWR_CUSTOM_End, SYSMENU_UINT32);
@@ -1749,59 +1749,59 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (strcmp(name, "TRX.ADC_DITH") == 0)
 		TRX.ADC_DITH = uintval;
 	// WIFI
-	if (strcmp(name, "TRX.WIFI_Enabled") == 0)
-		TRX.WIFI_Enabled = uintval;
-	if (strcmp(name, "TRX.WIFI_TIMEZONE") == 0)
-		TRX.WIFI_TIMEZONE = (int8_t)intval;
-	if (strcmp(name, "TRX.WIFI_CAT_SERVER") == 0)
-		TRX.WIFI_CAT_SERVER = uintval;
-	if (strcmp(name, "TRX.WIFI_AP1") == 0)
+	if (strcmp(name, "WIFI.Enabled") == 0)
+		WIFI.Enabled = uintval;
+	if (strcmp(name, "WIFI.Timezone") == 0)
+		WIFI.Timezone = (int8_t)intval;
+	if (strcmp(name, "WIFI.CAT_Server") == 0)
+		WIFI.CAT_Server = uintval;
+	if (strcmp(name, "WIFI.AP_1") == 0)
 	{
-		dma_memset(TRX.WIFI_AP1, 0x00, sizeof(TRX.WIFI_AP1));
+		dma_memset(WIFI.AP_1, 0x00, sizeof(WIFI.AP_1));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_AP1) - 1)
-			lens = sizeof(TRX.WIFI_AP1) - 1;
-		strncpy(TRX.WIFI_AP1, value, lens);
+		if (lens > sizeof(WIFI.AP_1) - 1)
+			lens = sizeof(WIFI.AP_1) - 1;
+		strncpy(WIFI.AP_1, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_AP2") == 0)
+	if (strcmp(name, "WIFI.AP_2") == 0)
 	{
-		dma_memset(TRX.WIFI_AP2, 0x00, sizeof(TRX.WIFI_AP2));
+		dma_memset(WIFI.AP_2, 0x00, sizeof(WIFI.AP_2));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_AP2) - 1)
-			lens = sizeof(TRX.WIFI_AP2) - 1;
-		strncpy(TRX.WIFI_AP2, value, lens);
+		if (lens > sizeof(WIFI.AP_2) - 1)
+			lens = sizeof(WIFI.AP_2) - 1;
+		strncpy(WIFI.AP_2, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_AP3") == 0)
+	if (strcmp(name, "WIFI.AP_3") == 0)
 	{
-		dma_memset(TRX.WIFI_AP3, 0x00, sizeof(TRX.WIFI_AP3));
+		dma_memset(WIFI.AP_3, 0x00, sizeof(WIFI.AP_3));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_AP3) - 1)
-			lens = sizeof(TRX.WIFI_AP3) - 1;
-		strncpy(TRX.WIFI_AP3, value, lens);
+		if (lens > sizeof(WIFI.AP_3) - 1)
+			lens = sizeof(WIFI.AP_3) - 1;
+		strncpy(WIFI.AP_3, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_PASSWORD1") == 0)
+	if (strcmp(name, "WIFI.Password_1") == 0)
 	{
-		dma_memset(TRX.WIFI_PASSWORD1, 0x00, sizeof(TRX.WIFI_PASSWORD1));
+		dma_memset(WIFI.Password_1, 0x00, sizeof(WIFI.Password_1));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_PASSWORD1) - 1)
-			lens = sizeof(TRX.WIFI_PASSWORD1) - 1;
-		strncpy(TRX.WIFI_PASSWORD1, value, lens);
+		if (lens > sizeof(WIFI.Password_1) - 1)
+			lens = sizeof(WIFI.Password_1) - 1;
+		strncpy(WIFI.Password_1, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_PASSWORD2") == 0)
+	if (strcmp(name, "WIFI.Password_2") == 0)
 	{
-		dma_memset(TRX.WIFI_PASSWORD2, 0x00, sizeof(TRX.WIFI_PASSWORD2));
+		dma_memset(WIFI.Password_2, 0x00, sizeof(WIFI.Password_2));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_PASSWORD2) - 1)
-			lens = sizeof(TRX.WIFI_PASSWORD2) - 1;
-		strncpy(TRX.WIFI_PASSWORD2, value, lens);
+		if (lens > sizeof(WIFI.Password_2) - 1)
+			lens = sizeof(WIFI.Password_2) - 1;
+		strncpy(WIFI.Password_2, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_PASSWORD3") == 0)
+	if (strcmp(name, "WIFI.Password_3") == 0)
 	{
-		dma_memset(TRX.WIFI_PASSWORD3, 0x00, sizeof(TRX.WIFI_PASSWORD3));
+		dma_memset(WIFI.Password_3, 0x00, sizeof(WIFI.Password_3));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_PASSWORD3) - 1)
-			lens = sizeof(TRX.WIFI_PASSWORD3) - 1;
-		strncpy(TRX.WIFI_PASSWORD3, value, lens);
+		if (lens > sizeof(WIFI.Password_3) - 1)
+			lens = sizeof(WIFI.Password_3) - 1;
+		strncpy(WIFI.Password_3, value, lens);
 	}
 	// SERVICES
 	if (strcmp(name, "TRX.SWR_CUSTOM_Begin") == 0)

@@ -308,7 +308,7 @@ void GetQSODate(void)
 void GetQSOTime(uint8_t QSO_Start)
 {
 	uint32_t Time = RTC->TR;
-	int8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f) - TRX.WIFI_TIMEZONE; // corect the time to be in UTC
+	int8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f) - WIFI.Timezone; // corect the time to be in UTC
 	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
 	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
 
