@@ -2781,11 +2781,6 @@
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
             </File>
             <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\integer.h</FilePath>
-            </File>
-            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\ffconf.h</FilePath>
@@ -4364,11 +4359,6 @@
               <FileName>ff.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
-            </File>
-            <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\integer.h</FilePath>
             </File>
             <File>
               <FileName>ffconf.h</FileName>
@@ -6020,11 +6010,6 @@
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
             </File>
             <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\integer.h</FilePath>
-            </File>
-            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\ffconf.h</FilePath>
@@ -7672,11 +7657,6 @@
               <FileName>ff.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
-            </File>
-            <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\integer.h</FilePath>
             </File>
             <File>
               <FileName>ffconf.h</FileName>
@@ -9328,11 +9308,6 @@
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
             </File>
             <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\integer.h</FilePath>
-            </File>
-            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\ffconf.h</FilePath>
@@ -10980,11 +10955,6 @@
               <FileName>ff.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
-            </File>
-            <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\integer.h</FilePath>
             </File>
             <File>
               <FileName>ffconf.h</FileName>
@@ -12636,11 +12606,6 @@
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
             </File>
             <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\integer.h</FilePath>
-            </File>
-            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\ffconf.h</FilePath>
@@ -14221,11 +14186,6 @@
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
             </File>
             <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\integer.h</FilePath>
-            </File>
-            <File>
               <FileName>ffconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\ffconf.h</FilePath>
@@ -15804,11 +15764,6 @@
               <FileName>ff.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
-            </File>
-            <File>
-              <FileName>integer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\integer.h</FilePath>
             </File>
             <File>
               <FileName>ffconf.h</FileName>
