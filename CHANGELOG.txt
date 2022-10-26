@@ -1,3 +1,6 @@
+----Version 6.1.0----
++STM32: Обновлена библиотека работы с файловой системой SD карты
+
 ----Version 6.0.0----
 +HARDW: MOTHERBOARD-rev32: Исправлена полярность c77, c75, c80, c85, c125, c126, Tnx EW6D
 +HARDW: MOTHERBOARD-rev32: U21 заменён на LM2940S-12, Tnx EA7HOG

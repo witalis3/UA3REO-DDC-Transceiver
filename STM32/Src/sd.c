@@ -2285,7 +2285,14 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 static void SDCOMM_MKFS_handler(void)
 {
 	LCD_showInfo("Start formatting...", false);
-	FRESULT res = f_mkfs((TCHAR const *)USERPath, FM_FAT32, 0, SD_workbuffer_A, sizeof SD_workbuffer_A);
+	
+	MKFS_PARM mkfs_param;
+	mkfs_param.fmt = FM_FAT32; /* Format option (FM_FAT, FM_FAT32, FM_EXFAT and FM_SFD) */
+	mkfs_param.n_fat = 0;			/* Number of FATs */
+	mkfs_param.align = 0;			/* Data area alignment (sector) */
+	mkfs_param.n_root = 0;		/* Number of root directory entries */
+	mkfs_param.au_size = 0;		/* Cluster size (byte) */
+	FRESULT res = f_mkfs((TCHAR const *)USERPath, &mkfs_param, SD_workbuffer_A, sizeof SD_workbuffer_A);
 	if (res == FR_OK)
 	{
 		LCD_showInfo("SD Format complete", true);

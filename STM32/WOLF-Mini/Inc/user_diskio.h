@@ -28,13 +28,12 @@
 #endif
 
 /* USER CODE BEGIN 0 */
-#include "ff_gen_drv.h"
+#include "diskio.h"
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-extern Diskio_drvTypeDef  USER_Driver;
 
 /* USER CODE END 0 */
 

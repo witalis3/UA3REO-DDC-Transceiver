@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 #include "fatfs.h"
+#include "hardware.h"
 
 uint8_t retUSER;    /* Return value for USER */
 char USERPath[4];   /* USER logical drive path */
@@ -29,9 +30,6 @@ FIL USERFile;       /* File object for USER */
 
 void MX_FATFS_Init(void)
 {
-  /*## FatFS: Link the USER driver ###########################*/
-  retUSER = FATFS_LinkDriver(&USER_Driver, USERPath);
-
   /* USER CODE BEGIN Init */
   /* additional user code for init */
   /* USER CODE END Init */
