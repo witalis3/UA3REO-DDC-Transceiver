@@ -6,7 +6,6 @@
 #include "fatfs.h"
 #include "functions.h"
 #include "lcd.h"
-#include "ff_gen_drv.h"
 #include "user_diskio.h"
 #include "system_menu.h"
 #include "vocoder.h"
@@ -21,7 +20,6 @@ sd_info_ptr sdinfo = {
 	.BLOCK_SIZE = 512,
 	.CAPACITY = 0,
 };
-extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
 bool SD_RecordingCQmessage = false;
 TRX_MODE rec_cqmessage_old_mode;
@@ -46,8 +44,8 @@ void (*SDCOMM_WRITE_TO_FILE_callback)(void);
 SRAM FIL File = {0};
 SRAM static FILINFO fileInfo = {0};
 SRAM static DIR dir = {0};
-SRAM BYTE SD_workbuffer_A[_MAX_SS] = {0};
-SRAM BYTE SD_workbuffer_B[_MAX_SS] = {0};
+SRAM BYTE SD_workbuffer_A[FF_MAX_SS] = {0};
+SRAM BYTE SD_workbuffer_B[FF_MAX_SS] = {0};
 SRAM static WAV_header wav_hdr = {0};
 BYTE SD_workbuffer_current = false; // false - fill A save B, true - fill B save A
 
@@ -118,8 +116,7 @@ void SD_Process(void)
 		SD_Present_tryTime = HAL_GetTick();
 		SD_Mounted = false;
 
-		disk.is_initialized[SDFatFs.drv] = false;
-		if (disk_initialize(SDFatFs.drv) == RES_OK)
+		if (disk_initialize(SDFatFs.pdrv) == RES_OK)
 		{
 			println("[OK] SD Card Inserted: ", (uint32_t)(sdinfo.CAPACITY / (uint64_t)1024 / (uint64_t)1024), "Mb");
 			SD_Present = true;
