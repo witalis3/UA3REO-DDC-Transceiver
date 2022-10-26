@@ -449,6 +449,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)
 		}
 		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
+		LCD_UpdateQuery.TopButtons = true;
 		need_cqmess_reopen = true;
 		LCD_showTooltip("Stop recording");
 
