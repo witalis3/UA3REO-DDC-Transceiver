@@ -372,6 +372,7 @@ static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec)
 		{
 			SD_RecordInProcess = true;
 			LCD_UpdateQuery.StatusInfoBar = true;
+			LCD_UpdateQuery.TopButtons = true;
 			LCD_showTooltip("Start recording");
 		}
 		else
