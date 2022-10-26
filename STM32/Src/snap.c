@@ -71,7 +71,7 @@ static void SNAP_Process()
 	
 	if(signal_snr < SNAP_BW_SNR_THRESHOLD && !SNAP_process_from_auto) {
 		//search in all FFT (nearest)
-		for(uint32_t allfft_bin_start = bandwidth_bin_start; allfft_bin_start > 0; allfft_bin_start -= bins_in_bandwidth / 2) {
+		for(int32_t allfft_bin_start = bandwidth_bin_start; allfft_bin_start > 0; allfft_bin_start -= bins_in_bandwidth / 2) {
 			uint32_t allfft_bin_end = bandwidth_bin_end + (bandwidth_bin_start - allfft_bin_start);
 			uint32_t allfft_bin_count = allfft_bin_end - allfft_bin_start;
 			
