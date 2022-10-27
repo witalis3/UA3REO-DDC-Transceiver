@@ -153,21 +153,20 @@ extern "C"
 		const int16_t STATUS_LABEL_BW_Y_OFFSET;
 		const uint16_t STATUS_LABEL_RIT_X_OFFSET;
 		const uint16_t STATUS_LABEL_RIT_Y_OFFSET;
-        const uint16_t STATUS_IFGAIN_BAR_OFFSET_X;
-        const uint16_t STATUS_IFGAIN_BAR_OFFSET_Y;
-        const uint16_t STATUS_IFGAIN_BAR_WIDTH;
-        const uint16_t STATUS_IFGAIN_BAR_HEIGTH;
-        const uint16_t STATUS_AFGAIN_BAR_OFFSET_X;
-        const uint16_t STATUS_AFGAIN_BAR_OFFSET_Y;
-        const uint16_t STATUS_AFGAIN_BAR_WIDTH;
-        const uint16_t STATUS_AFGAIN_BAR_HEIGTH;
+		const uint16_t STATUS_IFGAIN_BAR_OFFSET_X;
+		const uint16_t STATUS_IFGAIN_BAR_OFFSET_Y;
+		const uint16_t STATUS_IFGAIN_BAR_WIDTH;
+		const uint16_t STATUS_IFGAIN_BAR_HEIGTH;
+		const uint16_t STATUS_AFGAIN_BAR_OFFSET_X;
+		const uint16_t STATUS_AFGAIN_BAR_OFFSET_Y;
+		const uint16_t STATUS_AFGAIN_BAR_WIDTH;
+		const uint16_t STATUS_AFGAIN_BAR_HEIGTH;
 		const uint16_t STATUS_LABEL_THERM_X_OFFSET;
 		const uint16_t STATUS_LABEL_THERM_Y_OFFSET;
 		const uint16_t STATUS_LABEL_NOTCH_X_OFFSET;
 		const uint16_t STATUS_LABEL_NOTCH_Y_OFFSET;
 		const uint16_t STATUS_LABEL_FFT_BW_X_OFFSET;
 		const uint16_t STATUS_LABEL_FFT_BW_Y_OFFSET;
-
 		//Information panel (Lite, Mini)
 		const uint16_t STATUS_INFOA_X_OFFSET;
 		const uint16_t STATUS_INFOB_X_OFFSET;
@@ -178,7 +177,6 @@ extern "C"
 		const uint16_t STATUS_INFO_Y_OFFSET;
 		const uint16_t STATUS_INFO_WIDTH;
 		const uint16_t STATUS_INFO_HEIGHT;
-
 #if (defined(LAY_800x480))
 		const uint16_t STATUS_LABEL_CPU_X_OFFSET;
 		const uint16_t STATUS_LABEL_CPU_Y_OFFSET;
@@ -220,8 +218,6 @@ extern "C"
 		const int16_t STATUS_MODE_Y_OFFSET;
 		const uint16_t STATUS_MODE_BLOCK_WIDTH;
 		const uint16_t STATUS_MODE_BLOCK_HEIGHT;
-		
-		
 #if (defined(LAY_800x480))
 		const uint16_t STATUS_MODE_B_X_OFFSET;
 		const int16_t STATUS_MODE_B_Y_OFFSET;
