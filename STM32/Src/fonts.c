@@ -12,6 +12,9 @@ Quito36pt7b
 Quito32pt7b
 DS_DIGIT36pt7b
 DS_DIGIT32pt7b
+DS_DIGIT26pt7b
+DS_DIGIT24pt7b
+DS_DIGIT18pt7b
 PrestigeEliteStd_Bd7pt7b
 */
 

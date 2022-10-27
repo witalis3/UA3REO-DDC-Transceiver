@@ -145,7 +145,7 @@ static void LCD_displayTopButtons(bool redraw)
 			if (TRX.LayoutThemeId == 6){
 				LCDDriver_printImage_RLECompressed(-150, LAYOUT->TOPBUTTONS_Y1 - 3, &GR_LINE, 0, 0);
 				LCDDriver_printImage_RLECompressed(100, LAYOUT->TOPBUTTONS_Y1 + 33, &GR_LINE, 0, 0);
-				LCDDriver_printImage_RLECompressed(0, LAYOUT->FFT_FFTWTF_BOTTOM - 2, &GR_LINE, 0, 0);
+				LCDDriver_printImage_RLECompressed(0, LAYOUT->FFT_FFTWTF_BOTTOM + 3, &GR_LINE, 0, 0);
 			} else {
 				LCDDriver_printImage_RLECompressed(-150, LAYOUT->TOPBUTTONS_Y1 - 3, &GR_LINE, 0, 0);
 				LCDDriver_printImage_RLECompressed(100, LAYOUT->TOPBUTTONS_Y1 + 63, &GR_LINE, 0, 0);

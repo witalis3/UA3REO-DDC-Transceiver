@@ -287,7 +287,7 @@ void LoadSettings(bool clear)
 		TRX.LayoutThemeId = 0;	// Selected Layout theme
 #ifdef LAY_800x480
 		TRX.ColorThemeId = 3;
-		TRX.LayoutThemeId = 4;
+		TRX.LayoutThemeId = 7;
 #endif
 		TRX.FFT_Enabled = true; // use FFT spectrum
 #ifdef LAY_160x128
