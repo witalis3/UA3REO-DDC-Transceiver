@@ -1917,6 +1917,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		
 		// demod
 		arm_atan2_f32(x, y, &angle);
+		if(isnanf(angle)) angle = 0.0f;
 		data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
 
 		// smooth SQL edges
