@@ -158,7 +158,7 @@ static void LCD_displayTopButtons(bool redraw)
 				uint8_t xi = 0;
 				for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++)
 				{
-					if (!BANDS[bindx].selectable || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[0].name || BANDS[bindx].name == (char *)BANDS[29].name || BANDS[bindx].name == (char *)BANDS[30].name || BANDS[bindx].name == (char *)BANDS[31].name || BANDS[bindx].name == (char *)BANDS[32].name || BANDS[bindx].name == (char *)BANDS[33].name || BANDS[bindx].name == (char *)BANDS[34].name || BANDS[bindx].name == (char *)BANDS[35].name || BANDS[bindx].name == (char *)BANDS[36].name || BANDS[bindx].name == (char *)BANDS[37].name || BANDS[bindx].name == (char *)BANDS[38].name || BANDS[bindx].name == (char *)BANDS[39].name)
+					if (!BANDS[bindx].selectable || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[0].name || BANDS[bindx].name == (char *)BANDS[27].name || BANDS[bindx].name == (char *)BANDS[30].name || BANDS[bindx].name == (char *)BANDS[31].name || BANDS[bindx].name == (char *)BANDS[32].name || BANDS[bindx].name == (char *)BANDS[33].name || BANDS[bindx].name == (char *)BANDS[34].name || BANDS[bindx].name == (char *)BANDS[35].name || BANDS[bindx].name == (char *)BANDS[36].name || BANDS[bindx].name == (char *)BANDS[37].name || BANDS[bindx].name == (char *)BANDS[38].name || BANDS[bindx].name == (char *)BANDS[39].name)
 						continue;
 					
 					if (!TRX.selected_vfo)
@@ -1728,16 +1728,17 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 	if (CN_Theme) {
 		LCDDriver_drawRoundedRectWH(x_act, y_act, w_act, h_act, COLOR->BUTTON_BORDER, 2, false);
 		LCDDriver_Fill_RectWH(x_act+1, y_act+1, w_act-2, h_act-2, COLOR->BUTTON_BACK);											  // button body
+		LCDDriver_getTextBoundsFont(text, x_act, y_act, &x1_text, &y1_text, &w_text, &h_text, (GFXfont *)&FreeSans7pt7b); // get text bounds
 	} else {
     LCDDriver_drawRectXY(x_act, y_act, x_act + w_act, y_act + h_act, COLOR->BUTTON_BORDER);							  // border
 		LCDDriver_Fill_RectWH(x_act, y_act, w_act, h_act, COLOR->BUTTON_BACK);											  // button body
+		LCDDriver_getTextBoundsFont(text, x_act, y_act, &x1_text, &y1_text, &w_text, &h_text, (GFXfont *)&FreeSans9pt7b); // get text bounds
 	}
 	
-	LCDDriver_getTextBoundsFont(text, x_act, y_act, &x1_text, &y1_text, &w_text, &h_text, (GFXfont *)&FreeSans9pt7b); // get text bounds
 	if (show_lighter && LAYOUT->BUTTON_LIGHTER_HEIGHT > 0)
 	{
 		if (CN_Theme){
-			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2 + 5, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans7pt7b); // text
+			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans7pt7b); // text
 		} else {
 			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans9pt7b); // text
 		}	
@@ -1746,7 +1747,7 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 	}
 	else {
 		if (CN_Theme){
-			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2 + 5, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans7pt7b); // text
+			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans7pt7b); // text
 		}else{
 			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans9pt7b); // text
 		}
