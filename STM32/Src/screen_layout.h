@@ -203,10 +203,24 @@ extern "C"
 		const uint16_t STATUS_TX_LABELS_REF_X;
 		const uint16_t STATUS_TX_LABELS_ALC_X;
 		const uint16_t STATUS_TX_ALC_X_OFFSET;
+		const uint16_t STATUS_MODE_ALL_X;
+		const uint16_t STATUS_MODE_AM_X;
+		const uint16_t STATUS_MODE_SAM_X;
+		const uint16_t STATUS_MODE_CW_X;
+		const uint16_t STATUS_MODE_DIGL_X;
+		const uint16_t STATUS_MODE_DIGU_X;
+		const uint16_t STATUS_MODE_NFM_X;
+		const uint16_t STATUS_MODE_WFM_X;
+		const uint16_t STATUS_MODE_LSB_X;
+		const uint16_t STATUS_MODE_USB_X;
+		const uint16_t STATUS_MODE_RTTY_X;
+		const uint16_t STATUS_MODE_IQ_X;
+		const uint16_t STATUS_MODE_LOOP_X;
 		const uint16_t STATUS_MODE_X_OFFSET;
 		const int16_t STATUS_MODE_Y_OFFSET;
 		const uint16_t STATUS_MODE_BLOCK_WIDTH;
 		const uint16_t STATUS_MODE_BLOCK_HEIGHT;
+		
 		
 #if (defined(LAY_800x480))
 		const uint16_t STATUS_MODE_B_X_OFFSET;
@@ -301,7 +315,7 @@ extern "C"
 	#endif
 #endif
 #if (defined(LAY_800x480))
-#define LAYOUT_THEMES_COUNT 6
+#define LAYOUT_THEMES_COUNT 8
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
 #define MAX_FFT_HEIGHT 275
 #define MAX_WTF_HEIGHT 195
