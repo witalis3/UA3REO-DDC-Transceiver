@@ -977,15 +977,21 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.MIC_GAIN_DB", (uint32_t *)&TRX.MIC_GAIN_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.MIC_Boost", (uint32_t *)&TRX.MIC_Boost, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.MIC_NOISE_GATE", (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.RX_EQ_LOW", (uint32_t *)&TRX.RX_EQ_LOW, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.RX_EQ_MID", (uint32_t *)&TRX.RX_EQ_MID, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.RX_EQ_HIG", (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_LOW_SSB", (uint32_t *)&TRX.MIC_EQ_LOW_SSB, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID_SSB", (uint32_t *)&TRX.MIC_EQ_MID_SSB, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG_SSB", (uint32_t *)&TRX.MIC_EQ_HIG_SSB, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_LOW_AMFM", (uint32_t *)&TRX.MIC_EQ_LOW_AMFM, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID_AMFM", (uint32_t *)&TRX.MIC_EQ_MID_AMFM, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG_AMFM", (uint32_t *)&TRX.MIC_EQ_HIG_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P1", (uint32_t *)&TRX.RX_EQ_P1, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P2", (uint32_t *)&TRX.RX_EQ_P2, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P3", (uint32_t *)&TRX.RX_EQ_P3, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P4", (uint32_t *)&TRX.RX_EQ_P4, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P5", (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P1_SSB", (uint32_t *)&TRX.MIC_EQ_P1_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P2_SSB", (uint32_t *)&TRX.MIC_EQ_P2_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P3_SSB", (uint32_t *)&TRX.MIC_EQ_P3_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P4_SSB", (uint32_t *)&TRX.MIC_EQ_P4_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P5_SSB", (uint32_t *)&TRX.MIC_EQ_P5_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P1_AMFM", (uint32_t *)&TRX.MIC_EQ_P1_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P2_AMFM", (uint32_t *)&TRX.MIC_EQ_P2_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P3_AMFM", (uint32_t *)&TRX.MIC_EQ_P3_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P4_AMFM", (uint32_t *)&TRX.MIC_EQ_P4_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P5_AMFM", (uint32_t *)&TRX.MIC_EQ_P5_AMFM, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_REVERBER", (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DNR1_SNR_THRESHOLD", (uint32_t *)&TRX.DNR1_SNR_THRESHOLD, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DNR2_SNR_THRESHOLD", (uint32_t *)&TRX.DNR2_SNR_THRESHOLD, SYSMENU_UINT8);
@@ -1546,24 +1552,36 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.MIC_Boost = bval;
 	if (strcmp(name, "TRX.MIC_NOISE_GATE") == 0)
 		TRX.MIC_NOISE_GATE = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_LOW") == 0)
-		TRX.RX_EQ_LOW = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_MID") == 0)
-		TRX.RX_EQ_MID = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_HIG") == 0)
-		TRX.RX_EQ_HIG = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_LOW_SSB") == 0)
-		TRX.MIC_EQ_LOW_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_MID_SSB") == 0)
-		TRX.MIC_EQ_MID_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_HIG_SSB") == 0)
-		TRX.MIC_EQ_HIG_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_LOW_AMFM") == 0)
-		TRX.MIC_EQ_LOW_AMFM = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_MID_AMFM") == 0)
-		TRX.MIC_EQ_MID_AMFM = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_HIG_AMFM") == 0)
-		TRX.MIC_EQ_HIG_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P1") == 0)
+		TRX.RX_EQ_P1 = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P2") == 0)
+		TRX.RX_EQ_P2 = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P3") == 0)
+		TRX.RX_EQ_P3 = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P4") == 0)
+		TRX.RX_EQ_P4 = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P5") == 0)
+		TRX.RX_EQ_P5 = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P1_SSB") == 0)
+		TRX.MIC_EQ_P1_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P2_SSB") == 0)
+		TRX.MIC_EQ_P2_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P3_SSB") == 0)
+		TRX.MIC_EQ_P3_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P4_SSB") == 0)
+		TRX.MIC_EQ_P4_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P5_SSB") == 0)
+		TRX.MIC_EQ_P5_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P1_AMFM") == 0)
+		TRX.MIC_EQ_P1_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P2_AMFM") == 0)
+		TRX.MIC_EQ_P2_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P3_AMFM") == 0)
+		TRX.MIC_EQ_P3_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P4_AMFM") == 0)
+		TRX.MIC_EQ_P4_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P5_AMFM") == 0)
+		TRX.MIC_EQ_P5_AMFM = (int8_t)intval;
 	if (strcmp(name, "TRX.MIC_REVERBER") == 0)
 		TRX.MIC_REVERBER = (uint8_t)uintval;
 	if (strcmp(name, "TRX.DNR1_SNR_THRESHOLD") == 0)
