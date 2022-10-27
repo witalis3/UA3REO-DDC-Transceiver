@@ -134,6 +134,8 @@ static void LCD_displayTopButtons(bool redraw)
 	if (redraw)
 		LCDDriver_Fill_RectWH(LAYOUT->TOPBUTTONS_X1, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_X2, LAYOUT->TOPBUTTONS_Y2, BG_COLOR);
 
+	TouchpadButton_handlers_count = 0;
+	
 // display information about the operation of the transceiver
 #if (defined(LAY_800x480))
 	printButton(LAYOUT->TOPBUTTONS_PRE_X, LAYOUT->TOPBUTTONS_PRE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "PRE", TRX.LNA, true, false, 0, BUTTONHANDLER_PRE, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
@@ -208,7 +210,7 @@ static void LCD_displayBottomButtons(bool redraw)
 #if (defined(LAY_800x480))
 	if (redraw)
 		LCDDriver_Fill_RectWH(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LCD_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, BG_COLOR);
-	TouchpadButton_handlers_count = 0;
+	
 	uint16_t curr_x = 0;
 	printButton(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<-", false, false, false, 0, BUTTONHANDLER_LEFT_ARR, BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 	curr_x += LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH;
@@ -1447,32 +1449,32 @@ bool LCD_doEvents(void)
 		LCD_UpdateQuery.Background = false;
 		LCD_busy = false;
 	}
-	if (LCD_UpdateQuery.BottomButtons)
-		LCD_displayBottomButtons(false);
-	if (LCD_UpdateQuery.BottomButtonsRedraw)
-		LCD_displayBottomButtons(true);
-	if (LCD_UpdateQuery.TopButtons)
-		LCD_displayTopButtons(false);
 	if (LCD_UpdateQuery.TopButtonsRedraw)
 		LCD_displayTopButtons(true);
-	if (LCD_UpdateQuery.FreqInfo)
-		LCD_displayFreqInfo(false);
+	if (LCD_UpdateQuery.TopButtons)
+		LCD_displayTopButtons(false);
+	if (LCD_UpdateQuery.BottomButtonsRedraw)
+		LCD_displayBottomButtons(true);
+	if (LCD_UpdateQuery.BottomButtons)
+		LCD_displayBottomButtons(false);
 	if (LCD_UpdateQuery.FreqInfoRedraw)
 		LCD_displayFreqInfo(true);
+	if (LCD_UpdateQuery.FreqInfo)
+		LCD_displayFreqInfo(false);
 	if (LCD_UpdateQuery.StatusInfoGUIRedraw)
 		LCD_displayStatusInfoGUI(true);
 	if (LCD_UpdateQuery.StatusInfoGUI)
 		LCD_displayStatusInfoGUI(false);
-	if (LCD_UpdateQuery.StatusInfoBar)
-		LCD_displayStatusInfoBar(false);
 	if (LCD_UpdateQuery.StatusInfoBarRedraw)
 		LCD_displayStatusInfoBar(true);
+	if (LCD_UpdateQuery.StatusInfoBar)
+		LCD_displayStatusInfoBar(false);
+	if (LCD_UpdateQuery.SystemMenuRedraw)
+		SYSMENU_drawSystemMenu(true, false);
 	if (LCD_UpdateQuery.SystemMenu)
 		SYSMENU_drawSystemMenu(false, false);
 	if (LCD_UpdateQuery.SystemMenuInfolines)
 		SYSMENU_drawSystemMenu(false, true);
-	if (LCD_UpdateQuery.SystemMenuRedraw)
-		SYSMENU_drawSystemMenu(true, false);
 	if (LCD_UpdateQuery.SystemMenuCurrent)
 	{
 		SYSMENU_redrawCurrentItem();
