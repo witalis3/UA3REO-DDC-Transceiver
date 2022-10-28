@@ -149,7 +149,7 @@ static void LCD_displayTopButtons(bool redraw)
 			} else {
 				LCDDriver_printImage_RLECompressed(-150, LAYOUT->TOPBUTTONS_Y1 - 3, &GR_LINE, 0, 0);
 				LCDDriver_printImage_RLECompressed(100, LAYOUT->TOPBUTTONS_Y1 + 63, &GR_LINE, 0, 0);
-				LCDDriver_printImage_RLECompressed(0, LAYOUT->FFT_FFTWTF_BOTTOM - 2, &GR_LINE, 0, 0);
+				LCDDriver_printImage_RLECompressed(0, LAYOUT->FFT_FFTWTF_BOTTOM, &GR_LINE, 0, 0);
 				int8_t curband = getBandFromFreq(TRX.VFO_A.Freq, true);
 				if (TRX.selected_vfo)
 					curband = getBandFromFreq(TRX.VFO_B.Freq, true);
