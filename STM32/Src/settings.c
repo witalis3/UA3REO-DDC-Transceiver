@@ -192,7 +192,7 @@ void LoadSettings(bool clear)
 		TRX.Dual_RX_Type = VFO_A_PLUS_B;  // dual receiver mode
 #endif
 		TRX.Encoder_Accelerate = true;	  // Accelerate Encoder on fast rate
-		strcpy(TRX.CALLSIGN, "CALL");	  // Callsign
+		strcpy(TRX.CALLSIGN, "HamRad");	  // Callsign
 		strcpy(TRX.LOCATOR, "LO02RR");	  // Locator
 		strcpy(TRX.URSI_CODE, "SO148");	  // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
 		TRX.Custom_Transverter_Enabled = false;  // Enable transverter mode
