@@ -399,11 +399,10 @@ static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
 static void SYSMENU_HANDL_DECODERSMENU(int8_t direction);
 static void SYSMENU_HANDL_ADCMENU(int8_t direction);
-static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
-static void SYSMENU_HANDL_SDMENU(int8_t direction);
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 
 #if HRDW_HAS_WIFI
+static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
@@ -414,6 +413,7 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction);
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
 #if HRDW_HAS_SD
+static void SYSMENU_HANDL_SDMENU(int8_t direction);
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
 #endif
 static void SYSMENU_HANDL_FT8_Decoder(int8_t direction);	 // Tisho
@@ -641,7 +641,11 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"LCD Brightness", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_SCREEN_LCD_Brightness},
 		{"LCD Sleep Timeout", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.LCD_SleepTimeout, SYSMENU_HANDL_SCREEN_LCD_SleepTimeout},
 #endif
+#ifdef LAY_160x128
+		{"Color Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME, {"Black", "White", "Colored", "CN", "C+Green", "C+White"}},
+#else
 		{"Color Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME, {"Black", "White", "Colored", "CN", "CN+Green", "CN+White"}},
+#endif
 #ifdef LAY_480x320
 		{"Layout Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME, {"Default", "7 Segm"}},
 #endif
@@ -1926,18 +1930,22 @@ void SYSMEUN_TIME_HOTKEY(void)
 
 void SYSMEUN_WIFI_HOTKEY(void)
 {
+	#if HRDW_HAS_WIFI
 	SYSMENU_HANDL_WIFIMENU(0);
 	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "WIFI Enabled");
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
+	#endif
 }
 
 void SYSMEUN_SD_HOTKEY(void)
 {
+	#if HRDW_HAS_SD
 	SYSMENU_HANDL_SDMENU(0);
 	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "File Manager");
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
+	#endif
 }
 
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction)

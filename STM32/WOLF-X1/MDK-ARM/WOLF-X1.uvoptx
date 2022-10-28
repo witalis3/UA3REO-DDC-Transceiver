@@ -2899,12 +2899,12 @@
     <File>
       <GroupNumber>9</GroupNumber>
       <FileNumber>218</FileNumber>
-      <FileType>1</FileType>
+      <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Middlewares\Third_Party\FatFs\src\diskio.c</PathWithFileName>
-      <FilenameWithoutPath>diskio.c</FilenameWithoutPath>
+      <PathWithFileName>..\Middlewares\Third_Party\FatFs\src\diskio.h</PathWithFileName>
+      <FilenameWithoutPath>diskio.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2923,12 +2923,12 @@
     <File>
       <GroupNumber>9</GroupNumber>
       <FileNumber>220</FileNumber>
-      <FileType>1</FileType>
+      <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Middlewares\Third_Party\FatFs\src\ff_gen_drv.c</PathWithFileName>
-      <FilenameWithoutPath>ff_gen_drv.c</FilenameWithoutPath>
+      <PathWithFileName>..\Middlewares\Third_Party\FatFs\src\ff.h</PathWithFileName>
+      <FilenameWithoutPath>ff.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2939,8 +2939,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Middlewares\Third_Party\FatFs\src\option\ccsbcs.c</PathWithFileName>
-      <FilenameWithoutPath>ccsbcs.c</FilenameWithoutPath>
+      <PathWithFileName>..\Middlewares\Third_Party\FatFs\src\ffsystem.c</PathWithFileName>
+      <FilenameWithoutPath>ffsystem.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2951,8 +2951,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Middlewares\Third_Party\FatFs\src\option\syscall.c</PathWithFileName>
-      <FilenameWithoutPath>syscall.c</FilenameWithoutPath>
+      <PathWithFileName>..\Middlewares\Third_Party\FatFs\src\ffunicode.c</PathWithFileName>
+      <FilenameWithoutPath>ffunicode.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
