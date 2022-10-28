@@ -8,8 +8,8 @@
 #include "bands.h"
 #include "hardware.h"
 
-#define SETT_VERSION 67						  // Settings config version
-#define CALIB_VERSION 50					  // Calibration config version
+#define SETT_VERSION 68						  // Settings config version
+#define CALIB_VERSION 51					  // Calibration config version
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
 #define AGC_CLIPPING 6.0f					  // Limit over target in AGC, dB
@@ -71,6 +71,7 @@
 #define W25Q16_SECTOR_SIZE 4096
 #define EEPROM_SECTOR_CALIBRATION 0
 #define EEPROM_SECTOR_SETTINGS 4
+#define EEPROM_SECTOR_WIFI 8
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
 #define MEMORY_CHANNELS_COUNT 35
@@ -474,15 +475,21 @@ extern struct TRX_SETTINGS
 	uint8_t TX_Compressor_maxgain_AMFM;
 	uint8_t SELFHEAR_Volume;
 	int8_t MIC_NOISE_GATE;
-	int8_t RX_EQ_LOW;
-	int8_t RX_EQ_MID;
-	int8_t RX_EQ_HIG;
-	int8_t MIC_EQ_LOW_SSB;
-	int8_t MIC_EQ_MID_SSB;
-	int8_t MIC_EQ_HIG_SSB;
-	int8_t MIC_EQ_LOW_AMFM;
-	int8_t MIC_EQ_MID_AMFM;
-	int8_t MIC_EQ_HIG_AMFM;
+	int8_t RX_EQ_P1;
+	int8_t RX_EQ_P2;
+	int8_t RX_EQ_P3;
+	int8_t RX_EQ_P4;
+	int8_t RX_EQ_P5;
+	int8_t MIC_EQ_P1_SSB;
+	int8_t MIC_EQ_P2_SSB;
+	int8_t MIC_EQ_P3_SSB;
+	int8_t MIC_EQ_P4_SSB;
+	int8_t MIC_EQ_P5_SSB;
+	int8_t MIC_EQ_P1_AMFM;
+	int8_t MIC_EQ_P2_AMFM;
+	int8_t MIC_EQ_P3_AMFM;
+	int8_t MIC_EQ_P4_AMFM;
+	int8_t MIC_EQ_P5_AMFM;
 	int8_t AGC_GAIN_TARGET;
 	int8_t VOX_THRESHOLD;
 	bool MIC_Boost;
@@ -553,16 +560,6 @@ extern struct TRX_SETTINGS
 	bool ADC_RAND;
 	bool ADC_SHDN;
 	bool ADC_DITH;
-	// WIFI
-	int8_t WIFI_TIMEZONE;
-	bool WIFI_Enabled;
-	bool WIFI_CAT_SERVER;
-	char WIFI_AP1[MAX_WIFIPASS_LENGTH];
-	char WIFI_PASSWORD1[MAX_WIFIPASS_LENGTH];
-	char WIFI_AP2[MAX_WIFIPASS_LENGTH];
-	char WIFI_PASSWORD2[MAX_WIFIPASS_LENGTH];
-	char WIFI_AP3[MAX_WIFIPASS_LENGTH];
-	char WIFI_PASSWORD3[MAX_WIFIPASS_LENGTH];
 	// SERVICES
 	uint32_t SWR_CUSTOM_Begin;
 	uint32_t SWR_CUSTOM_End;
@@ -742,9 +739,27 @@ extern struct TRX_CALIBRATE
 	uint8_t ENDBit; // end bit
 } CALIBRATE;
 
+extern struct TRX_WIFI
+{
+	// WIFI
+	int8_t Timezone;
+	bool Enabled;
+	bool CAT_Server;
+	char AP_1[MAX_WIFIPASS_LENGTH];
+	char Password_1[MAX_WIFIPASS_LENGTH];
+	char AP_2[MAX_WIFIPASS_LENGTH];
+	char Password_2[MAX_WIFIPASS_LENGTH];
+	char AP_3[MAX_WIFIPASS_LENGTH];
+	char Password_3[MAX_WIFIPASS_LENGTH];
+	
+	uint8_t csum;	// check sum
+	uint8_t ENDBit; // end bit
+} WIFI;
+
 extern const char version_string[19]; // 1.2.3
 extern volatile bool NeedSaveSettings;
 extern volatile bool NeedSaveCalibration;
+extern volatile bool NeedSaveWiFi;
 extern volatile bool EEPROM_Busy;
 extern VFO *CurrentVFO;
 extern VFO *SecondaryVFO;
@@ -752,8 +767,10 @@ extern bool EEPROM_Enabled;
 
 extern void LoadSettings(bool clear);
 extern void LoadCalibration(bool clear);
+extern void LoadWiFiSettings(bool clear);
 extern void SaveSettings(void);
 extern void SaveCalibration(void);
+extern void SaveWiFiSettings(void);
 extern void SaveSettingsToEEPROM(void);
 extern void BKPSRAM_Enable(void);
 extern void BKPSRAM_Disable(void);

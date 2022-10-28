@@ -50,7 +50,7 @@ void EVENTS_do_WIFI(void) // 1000 hz
   {
 		#if HRDW_HAS_WIFI
     // we work with WiFi by timer, or send it if it is turned off (to turn it on, we need a restart)
-    if (TRX.WIFI_Enabled)
+    if (WIFI.Enabled)
       WIFI_Process();
     else
       WIFI_GoSleep();
@@ -131,6 +131,8 @@ void EVENTS_do_PERIPHERAL(void) // 1000 hz
   //EEPROM SPI
   if (NeedSaveCalibration) // save calibration data to EEPROM
     SaveCalibration();
+	if (NeedSaveWiFi) // save WiFi settings data to EEPROM
+    SaveWiFiSettings();
 
 	#if HRDW_HAS_SD
   //SD-Card SPI
@@ -202,7 +204,7 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
   prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
 
   if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) 
-		&& ((!NeedSaveCalibration && !HRDW_SPI_Locked && !EEPROM_Busy && !LCD_busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
+		&& ((!NeedSaveCalibration && !NeedSaveWiFi && !HRDW_SPI_Locked && !EEPROM_Busy && !LCD_busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT)))
   {
     TRX_Inited = false;
     LCD_busy = true;
@@ -431,7 +433,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 			WIFI_GetSNTPTime(NULL);
 			maySendIQ = false;
 		}
-		if (TRX.WIFI_CAT_SERVER && !WIFI_CAT_server_started) { //start WiFi CAT Server
+		if (WIFI.CAT_Server && !WIFI_CAT_server_started) { //start WiFi CAT Server
 			WIFI_StartCATServer(NULL);
 			maySendIQ = false;
 		}

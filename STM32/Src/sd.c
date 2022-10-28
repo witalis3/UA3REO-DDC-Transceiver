@@ -6,7 +6,6 @@
 #include "fatfs.h"
 #include "functions.h"
 #include "lcd.h"
-#include "ff_gen_drv.h"
 #include "user_diskio.h"
 #include "system_menu.h"
 #include "vocoder.h"
@@ -21,7 +20,6 @@ sd_info_ptr sdinfo = {
 	.BLOCK_SIZE = 512,
 	.CAPACITY = 0,
 };
-extern Disk_drvTypeDef disk;
 bool SD_RecordInProcess = false;
 bool SD_RecordingCQmessage = false;
 TRX_MODE rec_cqmessage_old_mode;
@@ -46,8 +44,8 @@ void (*SDCOMM_WRITE_TO_FILE_callback)(void);
 SRAM FIL File = {0};
 SRAM static FILINFO fileInfo = {0};
 SRAM static DIR dir = {0};
-SRAM BYTE SD_workbuffer_A[_MAX_SS] = {0};
-SRAM BYTE SD_workbuffer_B[_MAX_SS] = {0};
+SRAM BYTE SD_workbuffer_A[FF_MAX_SS] = {0};
+SRAM BYTE SD_workbuffer_B[FF_MAX_SS] = {0};
 SRAM static WAV_header wav_hdr = {0};
 BYTE SD_workbuffer_current = false; // false - fill A save B, true - fill B save A
 
@@ -118,8 +116,7 @@ void SD_Process(void)
 		SD_Present_tryTime = HAL_GetTick();
 		SD_Mounted = false;
 
-		disk.is_initialized[SDFatFs.drv] = false;
-		if (disk_initialize(SDFatFs.drv) == RES_OK)
+		if (disk_initialize(SDFatFs.pdrv) == RES_OK)
 		{
 			println("[OK] SD Card Inserted: ", (uint32_t)(sdinfo.CAPACITY / (uint64_t)1024 / (uint64_t)1024), "Mb");
 			SD_Present = true;
@@ -375,6 +372,7 @@ static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec)
 		{
 			SD_RecordInProcess = true;
 			LCD_UpdateQuery.StatusInfoBar = true;
+			LCD_UpdateQuery.TopButtons = true;
 			LCD_showTooltip("Start recording");
 		}
 		else
@@ -452,6 +450,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void)
 		}
 		LCD_UpdateQuery.StatusInfoBar = true;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
+		LCD_UpdateQuery.TopButtons = true;
 		need_cqmess_reopen = true;
 		LCD_showTooltip("Stop recording");
 
@@ -978,15 +977,21 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.MIC_GAIN_DB", (uint32_t *)&TRX.MIC_GAIN_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.MIC_Boost", (uint32_t *)&TRX.MIC_Boost, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.MIC_NOISE_GATE", (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.RX_EQ_LOW", (uint32_t *)&TRX.RX_EQ_LOW, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.RX_EQ_MID", (uint32_t *)&TRX.RX_EQ_MID, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.RX_EQ_HIG", (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_LOW_SSB", (uint32_t *)&TRX.MIC_EQ_LOW_SSB, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID_SSB", (uint32_t *)&TRX.MIC_EQ_MID_SSB, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG_SSB", (uint32_t *)&TRX.MIC_EQ_HIG_SSB, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_LOW_AMFM", (uint32_t *)&TRX.MIC_EQ_LOW_AMFM, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_MID_AMFM", (uint32_t *)&TRX.MIC_EQ_MID_AMFM, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.MIC_EQ_HIG_AMFM", (uint32_t *)&TRX.MIC_EQ_HIG_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P1", (uint32_t *)&TRX.RX_EQ_P1, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P2", (uint32_t *)&TRX.RX_EQ_P2, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P3", (uint32_t *)&TRX.RX_EQ_P3, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P4", (uint32_t *)&TRX.RX_EQ_P4, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P5", (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P1_SSB", (uint32_t *)&TRX.MIC_EQ_P1_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P2_SSB", (uint32_t *)&TRX.MIC_EQ_P2_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P3_SSB", (uint32_t *)&TRX.MIC_EQ_P3_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P4_SSB", (uint32_t *)&TRX.MIC_EQ_P4_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P5_SSB", (uint32_t *)&TRX.MIC_EQ_P5_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P1_AMFM", (uint32_t *)&TRX.MIC_EQ_P1_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P2_AMFM", (uint32_t *)&TRX.MIC_EQ_P2_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P3_AMFM", (uint32_t *)&TRX.MIC_EQ_P3_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P4_AMFM", (uint32_t *)&TRX.MIC_EQ_P4_AMFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P5_AMFM", (uint32_t *)&TRX.MIC_EQ_P5_AMFM, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_REVERBER", (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DNR1_SNR_THRESHOLD", (uint32_t *)&TRX.DNR1_SNR_THRESHOLD, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DNR2_SNR_THRESHOLD", (uint32_t *)&TRX.DNR2_SNR_THRESHOLD, SYSMENU_UINT8);
@@ -1082,15 +1087,15 @@ static void SDCOMM_EXPORT_SETT_handler(void)
 			SD_WRITE_SETT_LINE("TRX.ADC_SHDN", (uint32_t *)&TRX.ADC_SHDN, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_DITH", (uint32_t *)&TRX.ADC_DITH, SYSMENU_BOOLEAN);
 			// WIFI
-			SD_WRITE_SETT_LINE("TRX.WIFI_Enabled", (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.WIFI_TIMEZONE", (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_INT8);
-			SD_WRITE_SETT_LINE("TRX.WIFI_CAT_SERVER", (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_STRING("TRX.WIFI_AP1", TRX.WIFI_AP1);
-			SD_WRITE_SETT_STRING("TRX.WIFI_AP2", TRX.WIFI_AP2);
-			SD_WRITE_SETT_STRING("TRX.WIFI_AP3", TRX.WIFI_AP3);
-			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD1", TRX.WIFI_PASSWORD1);
-			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD2", TRX.WIFI_PASSWORD2);
-			SD_WRITE_SETT_STRING("TRX.WIFI_PASSWORD3", TRX.WIFI_PASSWORD3);
+			SD_WRITE_SETT_LINE("WIFI.Enabled", (uint32_t *)&WIFI.Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("WIFI.Timezone", (uint32_t *)&WIFI.Timezone, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("WIFI.CAT_Server", (uint32_t *)&WIFI.CAT_Server, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_STRING("WIFI.AP_1", WIFI.AP_1);
+			SD_WRITE_SETT_STRING("WIFI.AP_2", WIFI.AP_2);
+			SD_WRITE_SETT_STRING("WIFI.AP_3", WIFI.AP_3);
+			SD_WRITE_SETT_STRING("WIFI.Password_1", WIFI.Password_1);
+			SD_WRITE_SETT_STRING("WIFI.Password_2", WIFI.Password_2);
+			SD_WRITE_SETT_STRING("WIFI.Password_3", WIFI.Password_3);
 			// SERVICES
 			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_Begin", (uint32_t *)&TRX.SWR_CUSTOM_Begin, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_End", (uint32_t *)&TRX.SWR_CUSTOM_End, SYSMENU_UINT32);
@@ -1547,24 +1552,36 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 		TRX.MIC_Boost = bval;
 	if (strcmp(name, "TRX.MIC_NOISE_GATE") == 0)
 		TRX.MIC_NOISE_GATE = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_LOW") == 0)
-		TRX.RX_EQ_LOW = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_MID") == 0)
-		TRX.RX_EQ_MID = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_HIG") == 0)
-		TRX.RX_EQ_HIG = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_LOW_SSB") == 0)
-		TRX.MIC_EQ_LOW_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_MID_SSB") == 0)
-		TRX.MIC_EQ_MID_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_HIG_SSB") == 0)
-		TRX.MIC_EQ_HIG_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_LOW_AMFM") == 0)
-		TRX.MIC_EQ_LOW_AMFM = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_MID_AMFM") == 0)
-		TRX.MIC_EQ_MID_AMFM = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_HIG_AMFM") == 0)
-		TRX.MIC_EQ_HIG_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P1") == 0)
+		TRX.RX_EQ_P1 = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P2") == 0)
+		TRX.RX_EQ_P2 = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P3") == 0)
+		TRX.RX_EQ_P3 = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P4") == 0)
+		TRX.RX_EQ_P4 = (int8_t)intval;
+	if (strcmp(name, "TRX.RX_EQ_P5") == 0)
+		TRX.RX_EQ_P5 = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P1_SSB") == 0)
+		TRX.MIC_EQ_P1_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P2_SSB") == 0)
+		TRX.MIC_EQ_P2_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P3_SSB") == 0)
+		TRX.MIC_EQ_P3_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P4_SSB") == 0)
+		TRX.MIC_EQ_P4_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P5_SSB") == 0)
+		TRX.MIC_EQ_P5_SSB = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P1_AMFM") == 0)
+		TRX.MIC_EQ_P1_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P2_AMFM") == 0)
+		TRX.MIC_EQ_P2_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P3_AMFM") == 0)
+		TRX.MIC_EQ_P3_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P4_AMFM") == 0)
+		TRX.MIC_EQ_P4_AMFM = (int8_t)intval;
+	if (strcmp(name, "TRX.MIC_EQ_P5_AMFM") == 0)
+		TRX.MIC_EQ_P5_AMFM = (int8_t)intval;
 	if (strcmp(name, "TRX.MIC_REVERBER") == 0)
 		TRX.MIC_REVERBER = (uint8_t)uintval;
 	if (strcmp(name, "TRX.DNR1_SNR_THRESHOLD") == 0)
@@ -1750,59 +1767,59 @@ static void SDCOMM_PARSE_SETT_LINE(char *line)
 	if (strcmp(name, "TRX.ADC_DITH") == 0)
 		TRX.ADC_DITH = uintval;
 	// WIFI
-	if (strcmp(name, "TRX.WIFI_Enabled") == 0)
-		TRX.WIFI_Enabled = uintval;
-	if (strcmp(name, "TRX.WIFI_TIMEZONE") == 0)
-		TRX.WIFI_TIMEZONE = (int8_t)intval;
-	if (strcmp(name, "TRX.WIFI_CAT_SERVER") == 0)
-		TRX.WIFI_CAT_SERVER = uintval;
-	if (strcmp(name, "TRX.WIFI_AP1") == 0)
+	if (strcmp(name, "WIFI.Enabled") == 0)
+		WIFI.Enabled = uintval;
+	if (strcmp(name, "WIFI.Timezone") == 0)
+		WIFI.Timezone = (int8_t)intval;
+	if (strcmp(name, "WIFI.CAT_Server") == 0)
+		WIFI.CAT_Server = uintval;
+	if (strcmp(name, "WIFI.AP_1") == 0)
 	{
-		dma_memset(TRX.WIFI_AP1, 0x00, sizeof(TRX.WIFI_AP1));
+		dma_memset(WIFI.AP_1, 0x00, sizeof(WIFI.AP_1));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_AP1) - 1)
-			lens = sizeof(TRX.WIFI_AP1) - 1;
-		strncpy(TRX.WIFI_AP1, value, lens);
+		if (lens > sizeof(WIFI.AP_1) - 1)
+			lens = sizeof(WIFI.AP_1) - 1;
+		strncpy(WIFI.AP_1, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_AP2") == 0)
+	if (strcmp(name, "WIFI.AP_2") == 0)
 	{
-		dma_memset(TRX.WIFI_AP2, 0x00, sizeof(TRX.WIFI_AP2));
+		dma_memset(WIFI.AP_2, 0x00, sizeof(WIFI.AP_2));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_AP2) - 1)
-			lens = sizeof(TRX.WIFI_AP2) - 1;
-		strncpy(TRX.WIFI_AP2, value, lens);
+		if (lens > sizeof(WIFI.AP_2) - 1)
+			lens = sizeof(WIFI.AP_2) - 1;
+		strncpy(WIFI.AP_2, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_AP3") == 0)
+	if (strcmp(name, "WIFI.AP_3") == 0)
 	{
-		dma_memset(TRX.WIFI_AP3, 0x00, sizeof(TRX.WIFI_AP3));
+		dma_memset(WIFI.AP_3, 0x00, sizeof(WIFI.AP_3));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_AP3) - 1)
-			lens = sizeof(TRX.WIFI_AP3) - 1;
-		strncpy(TRX.WIFI_AP3, value, lens);
+		if (lens > sizeof(WIFI.AP_3) - 1)
+			lens = sizeof(WIFI.AP_3) - 1;
+		strncpy(WIFI.AP_3, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_PASSWORD1") == 0)
+	if (strcmp(name, "WIFI.Password_1") == 0)
 	{
-		dma_memset(TRX.WIFI_PASSWORD1, 0x00, sizeof(TRX.WIFI_PASSWORD1));
+		dma_memset(WIFI.Password_1, 0x00, sizeof(WIFI.Password_1));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_PASSWORD1) - 1)
-			lens = sizeof(TRX.WIFI_PASSWORD1) - 1;
-		strncpy(TRX.WIFI_PASSWORD1, value, lens);
+		if (lens > sizeof(WIFI.Password_1) - 1)
+			lens = sizeof(WIFI.Password_1) - 1;
+		strncpy(WIFI.Password_1, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_PASSWORD2") == 0)
+	if (strcmp(name, "WIFI.Password_2") == 0)
 	{
-		dma_memset(TRX.WIFI_PASSWORD2, 0x00, sizeof(TRX.WIFI_PASSWORD2));
+		dma_memset(WIFI.Password_2, 0x00, sizeof(WIFI.Password_2));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_PASSWORD2) - 1)
-			lens = sizeof(TRX.WIFI_PASSWORD2) - 1;
-		strncpy(TRX.WIFI_PASSWORD2, value, lens);
+		if (lens > sizeof(WIFI.Password_2) - 1)
+			lens = sizeof(WIFI.Password_2) - 1;
+		strncpy(WIFI.Password_2, value, lens);
 	}
-	if (strcmp(name, "TRX.WIFI_PASSWORD3") == 0)
+	if (strcmp(name, "WIFI.Password_3") == 0)
 	{
-		dma_memset(TRX.WIFI_PASSWORD3, 0x00, sizeof(TRX.WIFI_PASSWORD3));
+		dma_memset(WIFI.Password_3, 0x00, sizeof(WIFI.Password_3));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.WIFI_PASSWORD3) - 1)
-			lens = sizeof(TRX.WIFI_PASSWORD3) - 1;
-		strncpy(TRX.WIFI_PASSWORD3, value, lens);
+		if (lens > sizeof(WIFI.Password_3) - 1)
+			lens = sizeof(WIFI.Password_3) - 1;
+		strncpy(WIFI.Password_3, value, lens);
 	}
 	// SERVICES
 	if (strcmp(name, "TRX.SWR_CUSTOM_Begin") == 0)
@@ -2288,7 +2305,14 @@ static void SDCOMM_IMPORT_SETT_handler(void)
 static void SDCOMM_MKFS_handler(void)
 {
 	LCD_showInfo("Start formatting...", false);
-	FRESULT res = f_mkfs((TCHAR const *)USERPath, FM_FAT32, 0, SD_workbuffer_A, sizeof SD_workbuffer_A);
+	
+	MKFS_PARM mkfs_param;
+	mkfs_param.fmt = FM_FAT32; /* Format option (FM_FAT, FM_FAT32, FM_EXFAT and FM_SFD) */
+	mkfs_param.n_fat = 0;			/* Number of FATs */
+	mkfs_param.align = 0;			/* Data area alignment (sector) */
+	mkfs_param.n_root = 0;		/* Number of root directory entries */
+	mkfs_param.au_size = 0;		/* Cluster size (byte) */
+	FRESULT res = f_mkfs((TCHAR const *)USERPath, &mkfs_param, SD_workbuffer_A, sizeof SD_workbuffer_A);
 	if (res == FR_OK)
 	{
 		LCD_showInfo("SD Format complete", true);

@@ -26,7 +26,7 @@ void VOCODER_Process(void)
 		adpcm_encode_block(ADPCM_cnxt, (uint8_t *)&SD_workbuffer_B[SD_RecordBufferIndex], &outbuff_size, VOCODER_Buffer, SIZE_ADPCM_BLOCK);
 	SD_RecordBufferIndex += SIZE_ADPCM_COMPRESSED_BLOCK; // outbuff_size;
 
-	if (SD_RecordBufferIndex == _MAX_SS)
+	if (SD_RecordBufferIndex == FF_MAX_SS)
 	{
 		SD_RecordBufferIndex = 0;
 		SD_workbuffer_current = !SD_workbuffer_current;
@@ -54,7 +54,7 @@ bool VODECODER_Process(void)
 
 		VOCODER_PLAYER_SD_BUFFER_INDEX += SIZE_ADPCM_COMPRESSED_BLOCK;
 
-		if (VOCODER_PLAYER_SD_BUFFER_INDEX >= _MAX_SS)
+		if (VOCODER_PLAYER_SD_BUFFER_INDEX >= FF_MAX_SS)
 		{
 			VOCODER_PLAYER_SD_BUFFER_INDEX = 0;
 		}

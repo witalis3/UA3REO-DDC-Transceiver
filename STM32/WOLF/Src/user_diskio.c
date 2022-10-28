@@ -35,7 +35,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
-#include "ff_gen_drv.h"
 #include "user_diskio.h"
 #include "sd.h"
 #include "functions.h"
@@ -52,29 +51,6 @@ static volatile DSTATUS Stat = STA_NOINIT;
 /* USER CODE END DECL */
 
 /* Private function prototypes -----------------------------------------------*/
-DSTATUS USER_initialize (BYTE pdrv);
-DSTATUS USER_status (BYTE pdrv);
-DRESULT USER_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count);
-#if _USE_WRITE == 1
-  DRESULT USER_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count);
-#endif /* _USE_WRITE == 1 */
-#if _USE_IOCTL == 1
-  DRESULT USER_ioctl (BYTE pdrv, BYTE cmd, void *buff);
-#endif /* _USE_IOCTL == 1 */
-
-Diskio_drvTypeDef  USER_Driver =
-{
-  USER_initialize,
-  USER_status,
-  USER_read,
-#if  _USE_WRITE
-  USER_write,
-#endif  /* _USE_WRITE == 1 */
-#if  _USE_IOCTL == 1
-  USER_ioctl,
-#endif /* _USE_IOCTL == 1 */
-};
-
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -82,7 +58,7 @@ Diskio_drvTypeDef  USER_Driver =
   * @param  pdrv: Physical drive number (0..)
   * @retval DSTATUS: Operation status
   */
-DSTATUS USER_initialize (
+DSTATUS disk_initialize (
 	BYTE pdrv           /* Physical drive nmuber to identify the drive */
 )
 {
@@ -102,7 +78,7 @@ DSTATUS USER_initialize (
   * @param  pdrv: Physical drive number (0..)
   * @retval DSTATUS: Operation status
   */
-DSTATUS USER_status (
+DSTATUS disk_status (
 	BYTE pdrv       /* Physical drive number to identify the drive */
 )
 {
@@ -121,10 +97,10 @@ DSTATUS USER_status (
   * @param  count: Number of sectors to read (1..128)
   * @retval DRESULT: Operation result
   */
-DRESULT USER_read (
+DRESULT disk_read (
 	BYTE pdrv,      /* Physical drive nmuber to identify the drive */
 	BYTE *buff,     /* Data buffer to store read data */
-	DWORD sector,   /* Sector address in LBA */
+	LBA_t sector,   /* Sector address in LBA */
 	UINT count      /* Number of sectors to read */
 )
 {
@@ -177,11 +153,10 @@ DRESULT USER_read (
   * @param  count: Number of sectors to write (1..128)
   * @retval DRESULT: Operation result
   */
-#if _USE_WRITE == 1
-DRESULT USER_write (
+DRESULT disk_write (
 	BYTE pdrv,          /* Physical drive nmuber to identify the drive */
 	const BYTE *buff,   /* Data to be written */
-	DWORD sector,       /* Sector address in LBA */
+	LBA_t sector,       /* Sector address in LBA */
 	UINT count          /* Number of sectors to write */
 )
 {
@@ -236,7 +211,6 @@ DRESULT USER_write (
 	return _count ? RES_ERROR : RES_OK;
   /* USER CODE END WRITE */
 }
-#endif /* _USE_WRITE == 1 */
 
 /**
   * @brief  I/O control operation
@@ -245,8 +219,7 @@ DRESULT USER_write (
   * @param  *buff: Buffer to send/receive control data
   * @retval DRESULT: Operation result
   */
-#if _USE_IOCTL == 1
-DRESULT USER_ioctl (
+DRESULT disk_ioctl (
 	BYTE pdrv,      /* Physical drive nmuber (0..) */
 	BYTE cmd,       /* Control code */
 	void *buff      /* Buffer to send/receive control data */
@@ -287,5 +260,4 @@ DRESULT USER_ioctl (
 	return res;
   /* USER CODE END IOCTL */
 }
-#endif /* _USE_IOCTL == 1 */
 

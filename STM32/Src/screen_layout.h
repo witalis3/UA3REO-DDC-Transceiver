@@ -153,21 +153,20 @@ extern "C"
 		const int16_t STATUS_LABEL_BW_Y_OFFSET;
 		const uint16_t STATUS_LABEL_RIT_X_OFFSET;
 		const uint16_t STATUS_LABEL_RIT_Y_OFFSET;
-        const uint16_t STATUS_IFGAIN_BAR_OFFSET_X;
-        const uint16_t STATUS_IFGAIN_BAR_OFFSET_Y;
-        const uint16_t STATUS_IFGAIN_BAR_WIDTH;
-        const uint16_t STATUS_IFGAIN_BAR_HEIGTH;
-        const uint16_t STATUS_AFGAIN_BAR_OFFSET_X;
-        const uint16_t STATUS_AFGAIN_BAR_OFFSET_Y;
-        const uint16_t STATUS_AFGAIN_BAR_WIDTH;
-        const uint16_t STATUS_AFGAIN_BAR_HEIGTH;
+		const uint16_t STATUS_IFGAIN_BAR_OFFSET_X;
+		const uint16_t STATUS_IFGAIN_BAR_OFFSET_Y;
+		const uint16_t STATUS_IFGAIN_BAR_WIDTH;
+		const uint16_t STATUS_IFGAIN_BAR_HEIGTH;
+		const uint16_t STATUS_AFGAIN_BAR_OFFSET_X;
+		const uint16_t STATUS_AFGAIN_BAR_OFFSET_Y;
+		const uint16_t STATUS_AFGAIN_BAR_WIDTH;
+		const uint16_t STATUS_AFGAIN_BAR_HEIGTH;
 		const uint16_t STATUS_LABEL_THERM_X_OFFSET;
 		const uint16_t STATUS_LABEL_THERM_Y_OFFSET;
 		const uint16_t STATUS_LABEL_NOTCH_X_OFFSET;
 		const uint16_t STATUS_LABEL_NOTCH_Y_OFFSET;
 		const uint16_t STATUS_LABEL_FFT_BW_X_OFFSET;
 		const uint16_t STATUS_LABEL_FFT_BW_Y_OFFSET;
-
 		//Information panel (Lite, Mini)
 		const uint16_t STATUS_INFOA_X_OFFSET;
 		const uint16_t STATUS_INFOB_X_OFFSET;
@@ -178,7 +177,6 @@ extern "C"
 		const uint16_t STATUS_INFO_Y_OFFSET;
 		const uint16_t STATUS_INFO_WIDTH;
 		const uint16_t STATUS_INFO_HEIGHT;
-
 #if (defined(LAY_800x480))
 		const uint16_t STATUS_LABEL_CPU_X_OFFSET;
 		const uint16_t STATUS_LABEL_CPU_Y_OFFSET;
@@ -203,11 +201,23 @@ extern "C"
 		const uint16_t STATUS_TX_LABELS_REF_X;
 		const uint16_t STATUS_TX_LABELS_ALC_X;
 		const uint16_t STATUS_TX_ALC_X_OFFSET;
+		const uint16_t STATUS_MODE_ALL_X;
+		const uint16_t STATUS_MODE_AM_X;
+		const uint16_t STATUS_MODE_SAM_X;
+		const uint16_t STATUS_MODE_CW_X;
+		const uint16_t STATUS_MODE_DIGL_X;
+		const uint16_t STATUS_MODE_DIGU_X;
+		const uint16_t STATUS_MODE_NFM_X;
+		const uint16_t STATUS_MODE_WFM_X;
+		const uint16_t STATUS_MODE_LSB_X;
+		const uint16_t STATUS_MODE_USB_X;
+		const uint16_t STATUS_MODE_RTTY_X;
+		//const uint16_t STATUS_MODE_IQ_X;
+		const uint16_t STATUS_MODE_LOOP_X;
 		const uint16_t STATUS_MODE_X_OFFSET;
 		const int16_t STATUS_MODE_Y_OFFSET;
 		const uint16_t STATUS_MODE_BLOCK_WIDTH;
 		const uint16_t STATUS_MODE_BLOCK_HEIGHT;
-		
 #if (defined(LAY_800x480))
 		const uint16_t STATUS_MODE_B_X_OFFSET;
 		const int16_t STATUS_MODE_B_Y_OFFSET;
@@ -301,7 +311,7 @@ extern "C"
 	#endif
 #endif
 #if (defined(LAY_800x480))
-#define LAYOUT_THEMES_COUNT 6
+#define LAYOUT_THEMES_COUNT 8
 #define MAX_FFT_PRINT_SIZE LCD_WIDTH
 #define MAX_FFT_HEIGHT 275
 #define MAX_WTF_HEIGHT 195

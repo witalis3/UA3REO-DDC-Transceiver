@@ -84,16 +84,22 @@ static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_AMFM(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_AMFM(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_AMFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P2_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P3_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P4_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P5_SSB(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_AMFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P2_AMFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P3_AMFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P4_AMFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P5_AMFM(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_REVERBER(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_LOW(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_MID(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_HIG(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P1(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P2(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P3(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P4(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P5(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_Max_gain(int8_t direction);
@@ -385,6 +391,7 @@ static void SYSMENU_HANDL_CALIB_IF_GAIN_MIN(int8_t direction);
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SETTINGS_RESET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction);
+static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -392,11 +399,10 @@ static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
 static void SYSMENU_HANDL_DECODERSMENU(int8_t direction);
 static void SYSMENU_HANDL_ADCMENU(int8_t direction);
-static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
-static void SYSMENU_HANDL_SDMENU(int8_t direction);
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 
 #if HRDW_HAS_WIFI
+static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
@@ -407,6 +413,7 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction);
 static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction);
 static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
 #if HRDW_HAS_SD
+static void SYSMENU_HANDL_SDMENU(int8_t direction);
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
 #endif
 static void SYSMENU_HANDL_FT8_Decoder(int8_t direction);	 // Tisho
@@ -571,18 +578,25 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass},
 		{"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_AUDIO_Squelch},
 		{"FM Squelch level, dbm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_AUDIO_FMSquelch},
-		{"MIC EQ Low SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_LOW_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB},
-		{"MIC EQ Mid SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_MID_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB},
-		{"MIC EQ High SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_HIG_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB},
-		{"MIC EQ Low AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_LOW_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_AMFM},
-		{"MIC EQ Mid AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_MID_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_MID_AMFM},
-		{"MIC EQ High AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_HIG_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_AMFM},
+		{"Beeper", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 #if !defined(STM32F407xx)
 		{"MIC Reverber", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_HANDL_AUDIO_MIC_REVERBER},
 #endif
-		{"RX EQ Low", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_LOW, SYSMENU_HANDL_AUDIO_RX_EQ_LOW},
-		{"RX EQ Mid", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_MID, SYSMENU_HANDL_AUDIO_RX_EQ_MID},
-		{"RX EQ High", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_HIG, SYSMENU_HANDL_AUDIO_RX_EQ_HIG},
+		{"MIC EQ 0.3k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P1_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_P1_SSB},
+		{"MIC EQ 0.7k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P2_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_P2_SSB},
+		{"MIC EQ 1.2k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P3_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_P3_SSB},
+		{"MIC EQ 1.8k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P4_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_P4_SSB},
+		{"MIC EQ 2.3k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P5_SSB, SYSMENU_HANDL_AUDIO_MIC_EQ_P5_SSB},
+		{"MIC EQ 0.3k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P1_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_P1_AMFM},
+		{"MIC EQ 0.7k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P2_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_P2_AMFM},
+		{"MIC EQ 1.2k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P3_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_P3_AMFM},
+		{"MIC EQ 1.8k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P4_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_P4_AMFM},
+		{"MIC EQ 2.3k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P5_AMFM, SYSMENU_HANDL_AUDIO_MIC_EQ_P5_AMFM},
+		{"RX EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1, SYSMENU_HANDL_AUDIO_RX_EQ_P1},
+		{"RX EQ 0.7k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2, SYSMENU_HANDL_AUDIO_RX_EQ_P2},
+		{"RX EQ 1.2k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3, SYSMENU_HANDL_AUDIO_RX_EQ_P3},
+		{"RX EQ 1.8k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4, SYSMENU_HANDL_AUDIO_RX_EQ_P4},
+		{"RX EQ 2.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_HANDL_AUDIO_RX_EQ_P5},
 		{"RX AGC SSB Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed},
 		{"RX AGC CW Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed},
 		{"RX AGC Max gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_Max_gain, SYSMENU_HANDL_AUDIO_RX_AGC_Max_gain},
@@ -591,7 +605,6 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] =
 		{"TX Compr MaxGain SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_SSB},
 		{"TX Compr Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_AMFM},
 		{"TX Compr MaxGain AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM},
-		{"Beeper", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 		{"CTCSS Frequency", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_HANDL_AUDIO_CTCSS_Freq},
 		{"SelfHear Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_HANDL_AUDIO_SELFHEAR_Volume},
 #if !defined(STM32F407xx)
@@ -628,15 +641,20 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"LCD Brightness", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LCD_Brightness, SYSMENU_HANDL_SCREEN_LCD_Brightness},
 		{"LCD Sleep Timeout", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.LCD_SleepTimeout, SYSMENU_HANDL_SCREEN_LCD_SleepTimeout},
 #endif
-		{"Color Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME, {"Black", "White", "Colored"}},
+#ifdef LAY_160x128
+		{"Color Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME, {"Black", "White", "Colored", "CN", "C+Green", "C+White"}},
+#else
+		{"Color Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME, {"Black", "White", "Colored", "CN", "CN+Green", "CN+White"}},
+#endif
 #ifdef LAY_480x320
 		{"Layout Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME, {"Default", "7 Segm"}},
 #endif
 #ifdef LAY_800x480
-		{"Layout Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME, {"Default", "Analog", "7 Segm", "Classic", "Default+", "Analog+"}},
+		{"Layout Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME, {"Default", "Analog", "7 Segm", "Classic", "Default+", "Analog+", "CN", "CN+"}},
 #endif
 		{"FFT Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
 		{"FFT Automatic", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Automatic, SYSMENU_HANDL_SCREEN_FFT_Automatic},
+		{"FFT Scale Type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Scale_Type, SYSMENU_HANDL_SCREEN_FFT_Scale_Type, {"Ampl", "Squared", "dBm"}},
 		{"FFT Sensitivity", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Sensitivity, SYSMENU_HANDL_SCREEN_FFT_Sensitivity},
 		{"FFT Manual Bottom, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_HANDL_SCREEN_FFT_ManualBottom},
 		{"FFT Manual Top, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_HANDL_SCREEN_FFT_ManualTop},
@@ -662,7 +680,6 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] =
 		{"FFT Compressor", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
 		{"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 		{"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blckman", "Nutall", "BlNutll", "Hann", "Hamming", "No"}},
-		{"FFT Scale Type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Scale_Type, SYSMENU_HANDL_SCREEN_FFT_Scale_Type, {"Ampl", "Squared", "dBm"}},
 #if HRDW_HAS_WIFI
 		{"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
 		{"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
@@ -741,15 +758,15 @@ const static struct sysmenu_item_handler sysmenu_adc_handlers[] =
 #if HRDW_HAS_WIFI
 const static struct sysmenu_item_handler sysmenu_wifi_handlers[] =
 	{
-		{"WIFI Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WIFI_Enabled, SYSMENU_HANDL_WIFI_Enabled},
+		{"WIFI Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.Enabled, SYSMENU_HANDL_WIFI_Enabled},
 		{"WIFI Network 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP1},
 		{"WIFI Network 1 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP1password},
 		{"WIFI Network 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP2},
 		{"WIFI Network 2 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP2password},
 		{"WIFI Network 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP3},
 		{"WIFI Network 3 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP3password},
-		{"WIFI Timezone", SYSMENU_INT8, NULL, (uint32_t *)&TRX.WIFI_TIMEZONE, SYSMENU_HANDL_WIFI_Timezone},
-		{"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WIFI_CAT_SERVER, SYSMENU_HANDL_WIFI_CAT_Server},
+		{"WIFI Timezone", SYSMENU_INT8, NULL, (uint32_t *)&WIFI.Timezone, SYSMENU_HANDL_WIFI_Timezone},
+		{"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.CAT_Server, SYSMENU_HANDL_WIFI_CAT_Server},
 		{"WIFI Update ESP firmware", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_UpdateFW},
 		{"", SYSMENU_INFOLINE, 0, 0},
 		{"NET:", SYSMENU_INFOLINE, 0, 0},
@@ -960,6 +977,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] =
 		{"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
 		{"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
 		{"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
+		{"WiFi settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_WIFI_RESET},
 };
 
 const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] =
@@ -1892,6 +1910,44 @@ void SYSMENU_AUDIO_AGC_HOTKEY(void)
 	LCD_redraw(false);
 }
 
+void SYSMEUN_CALLSIGN_INFO_HOTKEY(void)
+{	
+	SYSMENU_HANDL_CALLSIGN_INFO(0);
+	LCD_redraw(false);
+}
+
+void SYSMEUN_CALLSIGN_HOTKEY(void)
+{	
+	SYSMENU_HANDL_TRX_SetCallsign(0);
+	LCD_redraw(false);
+}
+
+void SYSMEUN_TIME_HOTKEY(void)
+{
+	SYSMENU_HANDL_SETTIME(0);
+	LCD_redraw(false);
+}
+
+void SYSMEUN_WIFI_HOTKEY(void)
+{
+	#if HRDW_HAS_WIFI
+	SYSMENU_HANDL_WIFIMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "WIFI Enabled");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+	#endif
+}
+
+void SYSMEUN_SD_HOTKEY(void)
+{
+	#if HRDW_HAS_SD
+	SYSMENU_HANDL_SDMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "File Manager");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+	#endif
+}
+
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction)
 {
 	if (direction > 0 || TRX.Volume > 0)
@@ -2024,63 +2080,103 @@ static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction)
 		TRX.DNR_MINIMAL = 100;
 }
 
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_SSB(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_SSB(int8_t direction)
 {
-	TRX.MIC_EQ_LOW_SSB += direction;
-	if (TRX.MIC_EQ_LOW_SSB < -10)
-		TRX.MIC_EQ_LOW_SSB = -10;
-	if (TRX.MIC_EQ_LOW_SSB > 10)
-		TRX.MIC_EQ_LOW_SSB = 10;
+	TRX.MIC_EQ_P1_SSB += direction;
+	if (TRX.MIC_EQ_P1_SSB < -50)
+		TRX.MIC_EQ_P1_SSB = -50;
+	if (TRX.MIC_EQ_P1_SSB > 50)
+		TRX.MIC_EQ_P1_SSB = 50;
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_LOW_AMFM(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_AMFM(int8_t direction)
 {
-	TRX.MIC_EQ_LOW_AMFM += direction;
-	if (TRX.MIC_EQ_LOW_AMFM < -10)
-		TRX.MIC_EQ_LOW_AMFM = -10;
-	if (TRX.MIC_EQ_LOW_AMFM > 10)
-		TRX.MIC_EQ_LOW_AMFM = 10;
+	TRX.MIC_EQ_P1_AMFM += direction;
+	if (TRX.MIC_EQ_P1_AMFM < -50)
+		TRX.MIC_EQ_P1_AMFM = -50;
+	if (TRX.MIC_EQ_P1_AMFM > 50)
+		TRX.MIC_EQ_P1_AMFM = 50;
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_SSB(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P2_SSB(int8_t direction)
 {
-	TRX.MIC_EQ_MID_SSB += direction;
-	if (TRX.MIC_EQ_MID_SSB < -10)
-		TRX.MIC_EQ_MID_SSB = -10;
-	if (TRX.MIC_EQ_MID_SSB > 10)
-		TRX.MIC_EQ_MID_SSB = 10;
+	TRX.MIC_EQ_P2_SSB += direction;
+	if (TRX.MIC_EQ_P2_SSB < -50)
+		TRX.MIC_EQ_P2_SSB = -50;
+	if (TRX.MIC_EQ_P2_SSB > 50)
+		TRX.MIC_EQ_P2_SSB = 50;
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_MID_AMFM(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P2_AMFM(int8_t direction)
 {
-	TRX.MIC_EQ_MID_AMFM += direction;
-	if (TRX.MIC_EQ_MID_AMFM < -10)
-		TRX.MIC_EQ_MID_AMFM = -10;
-	if (TRX.MIC_EQ_MID_AMFM > 10)
-		TRX.MIC_EQ_MID_AMFM = 10;
+	TRX.MIC_EQ_P2_AMFM += direction;
+	if (TRX.MIC_EQ_P2_AMFM < -50)
+		TRX.MIC_EQ_P2_AMFM = -50;
+	if (TRX.MIC_EQ_P2_AMFM > 50)
+		TRX.MIC_EQ_P2_AMFM = 50;
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_SSB(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P3_SSB(int8_t direction)
 {
-	TRX.MIC_EQ_HIG_SSB += direction;
-	if (TRX.MIC_EQ_HIG_SSB < -10)
-		TRX.MIC_EQ_HIG_SSB = -10;
-	if (TRX.MIC_EQ_HIG_SSB > 10)
-		TRX.MIC_EQ_HIG_SSB = 10;
+	TRX.MIC_EQ_P3_SSB += direction;
+	if (TRX.MIC_EQ_P3_SSB < -50)
+		TRX.MIC_EQ_P3_SSB = -50;
+	if (TRX.MIC_EQ_P3_SSB > 50)
+		TRX.MIC_EQ_P3_SSB = 50;
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_AUDIO_MIC_EQ_HIG_AMFM(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P3_AMFM(int8_t direction)
 {
-	TRX.MIC_EQ_HIG_AMFM += direction;
-	if (TRX.MIC_EQ_HIG_AMFM < -10)
-		TRX.MIC_EQ_HIG_AMFM = -10;
-	if (TRX.MIC_EQ_HIG_AMFM > 10)
-		TRX.MIC_EQ_HIG_AMFM = 10;
+	TRX.MIC_EQ_P3_AMFM += direction;
+	if (TRX.MIC_EQ_P3_AMFM < -50)
+		TRX.MIC_EQ_P3_AMFM = -50;
+	if (TRX.MIC_EQ_P3_AMFM > 50)
+		TRX.MIC_EQ_P3_AMFM = 50;
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P4_SSB(int8_t direction)
+{
+	TRX.MIC_EQ_P4_SSB += direction;
+	if (TRX.MIC_EQ_P4_SSB < -50)
+		TRX.MIC_EQ_P4_SSB = -50;
+	if (TRX.MIC_EQ_P4_SSB > 50)
+		TRX.MIC_EQ_P4_SSB = 50;
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P4_AMFM(int8_t direction)
+{
+	TRX.MIC_EQ_P4_AMFM += direction;
+	if (TRX.MIC_EQ_P4_AMFM < -50)
+		TRX.MIC_EQ_P4_AMFM = -50;
+	if (TRX.MIC_EQ_P4_AMFM > 50)
+		TRX.MIC_EQ_P4_AMFM = 50;
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P5_SSB(int8_t direction)
+{
+	TRX.MIC_EQ_P5_SSB += direction;
+	if (TRX.MIC_EQ_P5_SSB < -50)
+		TRX.MIC_EQ_P5_SSB = -50;
+	if (TRX.MIC_EQ_P5_SSB > 50)
+		TRX.MIC_EQ_P5_SSB = 50;
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_MIC_EQ_P5_AMFM(int8_t direction)
+{
+	TRX.MIC_EQ_P5_AMFM += direction;
+	if (TRX.MIC_EQ_P5_AMFM < -50)
+		TRX.MIC_EQ_P5_AMFM = -50;
+	if (TRX.MIC_EQ_P5_AMFM > 50)
+		TRX.MIC_EQ_P5_AMFM = 50;
 	NeedReinitAudioFilters = true;
 }
 
@@ -2102,33 +2198,53 @@ static void SYSMENU_HANDL_AUDIO_MIC_NOISE_GATE(int8_t direction)
 		TRX.MIC_NOISE_GATE = 0;
 }
 
-static void SYSMENU_HANDL_AUDIO_RX_EQ_LOW(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P1(int8_t direction)
 {
-	TRX.RX_EQ_LOW += direction;
-	if (TRX.RX_EQ_LOW < -10)
-		TRX.RX_EQ_LOW = -10;
-	if (TRX.RX_EQ_LOW > 10)
-		TRX.RX_EQ_LOW = 10;
+	TRX.RX_EQ_P1 += direction;
+	if (TRX.RX_EQ_P1 < -50)
+		TRX.RX_EQ_P1 = -50;
+	if (TRX.RX_EQ_P1 > 50)
+		TRX.RX_EQ_P1 = 50;
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_AUDIO_RX_EQ_MID(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P2(int8_t direction)
 {
-	TRX.RX_EQ_MID += direction;
-	if (TRX.RX_EQ_MID < -10)
-		TRX.RX_EQ_MID = -10;
-	if (TRX.RX_EQ_MID > 10)
-		TRX.RX_EQ_MID = 10;
+	TRX.RX_EQ_P2 += direction;
+	if (TRX.RX_EQ_P2 < -50)
+		TRX.RX_EQ_P2 = -50;
+	if (TRX.RX_EQ_P2 > 50)
+		TRX.RX_EQ_P2 = 50;
 	NeedReinitAudioFilters = true;
 }
 
-static void SYSMENU_HANDL_AUDIO_RX_EQ_HIG(int8_t direction)
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P3(int8_t direction)
 {
-	TRX.RX_EQ_HIG += direction;
-	if (TRX.RX_EQ_HIG < -10)
-		TRX.RX_EQ_HIG = -10;
-	if (TRX.RX_EQ_HIG > 10)
-		TRX.RX_EQ_HIG = 10;
+	TRX.RX_EQ_P3 += direction;
+	if (TRX.RX_EQ_P3 < -50)
+		TRX.RX_EQ_P3 = -50;
+	if (TRX.RX_EQ_P3 > 50)
+		TRX.RX_EQ_P3 = 50;
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P4(int8_t direction)
+{
+	TRX.RX_EQ_P4 += direction;
+	if (TRX.RX_EQ_P4 < -50)
+		TRX.RX_EQ_P4 = -50;
+	if (TRX.RX_EQ_P4 > 50)
+		TRX.RX_EQ_P4 = 50;
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P5(int8_t direction)
+{
+	TRX.RX_EQ_P5 += direction;
+	if (TRX.RX_EQ_P5 < -50)
+		TRX.RX_EQ_P5 = -50;
+	if (TRX.RX_EQ_P5 > 50)
+		TRX.RX_EQ_P5 = 50;
 	NeedReinitAudioFilters = true;
 }
 
@@ -3480,7 +3596,7 @@ static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir)
 		}
 		else
 		{
-			strcpy(TRX.WIFI_AP1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+			strcpy(WIFI.AP_1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
 			sysmenu_wifi_selectap1_menu_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3505,7 +3621,7 @@ static void SYSMENU_WIFI_SelectAP2MenuMove(int8_t dir)
 		}
 		else
 		{
-			strcpy(TRX.WIFI_AP2, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+			strcpy(WIFI.AP_2, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
 			sysmenu_wifi_selectap2_menu_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3530,7 +3646,7 @@ static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir)
 		}
 		else
 		{
-			strcpy(TRX.WIFI_AP3, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+			strcpy(WIFI.AP_3, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
 			sysmenu_wifi_selectap3_menu_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3542,12 +3658,12 @@ static void SYSMENU_WIFI_AP1_Password_keyboardHandler(uint32_t parameter)
 {
 	if(parameter == '<') //backspace
 	{
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = 0;
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index > 0)
 			sysmenu_wifi_selected_ap_password_char_index--;
 	} else {
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = parameter;
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = parameter;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
 			sysmenu_wifi_selected_ap_password_char_index++;
@@ -3564,7 +3680,7 @@ static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw)
 		LCDDriver_printText("NET1 Password:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_printText(WIFI.Password_1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
@@ -3576,12 +3692,12 @@ static void SYSMENU_WIFI_AP2_Password_keyboardHandler(uint32_t parameter)
 {
 	if(parameter == '<') //backspace
 	{
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = 0;
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index > 0)
 			sysmenu_wifi_selected_ap_password_char_index--;
 	} else {
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = parameter;
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = parameter;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
 			sysmenu_wifi_selected_ap_password_char_index++;
@@ -3598,7 +3714,7 @@ static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw)
 		LCDDriver_printText("NET2 Password:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_printText(WIFI.Password_2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
@@ -3610,12 +3726,12 @@ static void SYSMENU_WIFI_AP3_Password_keyboardHandler(uint32_t parameter)
 {
 	if(parameter == '<') //backspace
 	{
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = 0;
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index > 0)
 			sysmenu_wifi_selected_ap_password_char_index--;
 	} else {
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = parameter;
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = parameter;
 		
 		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
 			sysmenu_wifi_selected_ap_password_char_index++;
@@ -3632,7 +3748,7 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
 		LCDDriver_printText("NET3 Password:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	LCDDriver_printText(TRX.WIFI_PASSWORD3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_printText(WIFI.Password_3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 	#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
@@ -3643,18 +3759,18 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw)
 static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir)
 {
 	bool full_redraw = false;
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
-	TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] += dir;
+	WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] >= 127)
-		TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD1[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 33;
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
 
 	if (full_redraw)
@@ -3666,18 +3782,18 @@ static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir)
 static void SYSMENU_WIFI_RotatePasswordChar2(int8_t dir)
 {
 	bool full_redraw = false;
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
-	TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] += dir;
+	WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] >= 127)
-		TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD2[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 33;
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
 
 	if (full_redraw)
@@ -3689,18 +3805,18 @@ static void SYSMENU_WIFI_RotatePasswordChar2(int8_t dir)
 static void SYSMENU_WIFI_RotatePasswordChar3(int8_t dir)
 {
 	bool full_redraw = false;
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
-	TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] += dir;
+	WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] >= 127)
-		TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (TRX.WIFI_PASSWORD3[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 33;
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0)
 		full_redraw = true;
 
 	if (full_redraw)
@@ -3712,9 +3828,11 @@ static void SYSMENU_WIFI_RotatePasswordChar3(int8_t dir)
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction)
 {
 	if (direction > 0)
-		TRX.WIFI_Enabled = true;
+		WIFI.Enabled = true;
 	if (direction < 0)
-		TRX.WIFI_Enabled = false;
+		WIFI.Enabled = false;
+	
+	NeedSaveWiFi = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SelectAP1(int8_t direction)
@@ -3770,20 +3888,24 @@ static void SYSMENU_HANDL_WIFI_SetAP3password(int8_t direction)
 
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction)
 {
-	TRX.WIFI_TIMEZONE += direction;
-	if (TRX.WIFI_TIMEZONE < -12)
-		TRX.WIFI_TIMEZONE = -12;
-	if (TRX.WIFI_TIMEZONE > 12)
-		TRX.WIFI_TIMEZONE = 12;
+	WIFI.Timezone += direction;
+	if (WIFI.Timezone < -12)
+		WIFI.Timezone = -12;
+	if (WIFI.Timezone > 12)
+		WIFI.Timezone = 12;
 	WIFI_State = WIFI_INITED;
+	
+	NeedSaveWiFi = true;
 }
 
 static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction)
 {
 	if (direction > 0)
-		TRX.WIFI_CAT_SERVER = true;
+		WIFI.CAT_Server = true;
 	if (direction < 0)
-		TRX.WIFI_CAT_SERVER = false;
+		WIFI.CAT_Server = false;
+	
+	NeedSaveWiFi = true;
 }
 
 static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction)
@@ -5523,6 +5645,11 @@ static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction)
 	LoadCalibration(true);
 }
 
+static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction)
+{
+	LoadWiFiSettings(true);
+}
+
 // SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction)
 {
@@ -6187,36 +6314,42 @@ void SYSMENU_eventCloseSystemMenu(void)
 		sysmenu_wifi_selectap1_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	if (sysmenu_wifi_selectap2_menu_opened)
 	{
 		sysmenu_wifi_selectap2_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	if (sysmenu_wifi_selectap3_menu_opened)
 	{
 		sysmenu_wifi_selectap3_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	else if (sysmenu_wifi_setAP1password_menu_opened)
 	{
 		sysmenu_wifi_setAP1password_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	else if (sysmenu_wifi_setAP2password_menu_opened)
 	{
 		sysmenu_wifi_setAP2password_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	else if (sysmenu_wifi_setAP3password_menu_opened)
 	{
 		sysmenu_wifi_setAP3password_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		WIFI_State = WIFI_CONFIGURED;
+		NeedSaveWiFi = true;
 	}
 	else 
 	#endif

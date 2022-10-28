@@ -843,6 +843,8 @@ void BUTTONHANDLER_DOUBLE(uint32_t parameter)
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitAudioFilters = true;
 	#endif
+	
+	LCD_UpdateQuery.TopButtons = true;
 }
 
 void BUTTONHANDLER_DOUBLEMODE(uint32_t parameter)
@@ -858,6 +860,8 @@ void BUTTONHANDLER_DOUBLEMODE(uint32_t parameter)
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitAudioFilters = true;
 	#endif
+	
+	LCD_UpdateQuery.TopButtons = true;
 }
 
 void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
@@ -1630,6 +1634,7 @@ void BUTTONHANDLER_VOX(uint32_t parameter)
 	else
 		LCD_showTooltip("VOX OFF");
 
+	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
 
@@ -1675,6 +1680,7 @@ void BUTTONHANDLER_SQL(uint32_t parameter)
 void BUTTONHANDLER_SCAN(uint32_t parameter)
 {
 	TRX_ScanMode = !TRX_ScanMode;
+	LCD_UpdateQuery.TopButtons = true;
 }
 
 void BUTTONHANDLER_PLAY(uint32_t parameter)
@@ -1693,6 +1699,8 @@ void BUTTONHANDLER_PLAY(uint32_t parameter)
 	strcat((char *)SD_workbuffer_A, SD_CQ_MESSAGE_FILE);
 	SD_doCommand(SDCOMM_START_PLAY, false);
 	#endif
+	
+	LCD_UpdateQuery.TopButtons = true;
 }
 
 void BUTTONHANDLER_REC(uint32_t parameter)
@@ -1703,6 +1711,8 @@ void BUTTONHANDLER_REC(uint32_t parameter)
 	else
 		SD_NeedStopRecord = true;
 	#endif
+	
+	LCD_UpdateQuery.TopButtons = true;
 }
 
 void BUTTONHANDLER_FUNC(uint32_t parameter)

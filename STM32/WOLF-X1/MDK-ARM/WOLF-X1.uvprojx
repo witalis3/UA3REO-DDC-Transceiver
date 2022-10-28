@@ -1510,9 +1510,9 @@
           <GroupName>Middlewares/FatFs</GroupName>
           <Files>
             <File>
-              <FileName>diskio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\diskio.c</FilePath>
+              <FileName>diskio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\diskio.h</FilePath>
             </File>
             <File>
               <FileName>ff.c</FileName>
@@ -1520,19 +1520,19 @@
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.c</FilePath>
             </File>
             <File>
-              <FileName>ff_gen_drv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\ff_gen_drv.c</FilePath>
+              <FileName>ff.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
             </File>
             <File>
-              <FileName>ccsbcs.c</FileName>
+              <FileName>ffsystem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\option\ccsbcs.c</FilePath>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\ffsystem.c</FilePath>
             </File>
             <File>
-              <FileName>syscall.c</FileName>
+              <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\option\syscall.c</FilePath>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\ffunicode.c</FilePath>
             </File>
           </Files>
         </Group>

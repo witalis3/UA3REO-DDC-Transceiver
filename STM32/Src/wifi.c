@@ -197,7 +197,7 @@ void WIFI_Process(void)
 		WIFI_WaitForOk();
 
 		strcat(com_t, "AT+CIPSNTPCFG=1,");
-		sprintf(tz, "%d", TRX.WIFI_TIMEZONE);
+		sprintf(tz, "%d", WIFI.Timezone);
 		strcat(com_t, tz);
 		strcat(com_t, ",\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n");
 		WIFI_SendCommand(com_t); // configure SNMP
@@ -208,8 +208,8 @@ void WIFI_Process(void)
 		WIFI_State = WIFI_CONFIGURED;
 		break;
 	case WIFI_CONFIGURED:
-		if (strcmp(TRX.WIFI_AP1, "WIFI-AP") == 0 && strcmp(TRX.WIFI_AP2, "WIFI-AP") == 0 && strcmp(TRX.WIFI_AP3, "WIFI-AP") == 0 &&
-			strcmp(TRX.WIFI_PASSWORD1, "WIFI-PASSWORD") == 0 && strcmp(TRX.WIFI_PASSWORD2, "WIFI-PASSWORD") == 0 && strcmp(TRX.WIFI_PASSWORD3, "WIFI-PASSWORD") == 0)
+		if (strcmp(WIFI.AP_1, "WIFI-AP") == 0 && strcmp(WIFI.AP_2, "WIFI-AP") == 0 && strcmp(WIFI.AP_3, "WIFI-AP") == 0 &&
+			strcmp(WIFI.Password_1, "WIFI-PASSWORD") == 0 && strcmp(WIFI.Password_2, "WIFI-PASSWORD") == 0 && strcmp(WIFI.Password_3, "WIFI-PASSWORD") == 0)
 			break;
 		if (WIFI_stop_auto_ap_list)
 			break;
@@ -219,51 +219,51 @@ void WIFI_Process(void)
 		bool AP3_exist = false;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
 		{
-			if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP1) == 0)
+			if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_1) == 0)
 				AP1_exist = true;
-			else if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP2) == 0)
+			else if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_2) == 0)
 				AP2_exist = true;
-			else if (strcmp((char *)WIFI_FoundedAP[i], TRX.WIFI_AP3) == 0)
+			else if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_3) == 0)
 				AP3_exist = true;
 		}
-		if (AP1_exist && strlen(TRX.WIFI_PASSWORD1) > 5)
+		if (AP1_exist && strlen(WIFI.Password_1) > 5)
 		{
-			println("[WIFI] Start connecting to AP1: ", TRX.WIFI_AP1);
+			println("[WIFI] Start connecting to AP1: ", WIFI.AP_1);
 			strcat(com, "AT+CWJAP_CUR=\"");
-			strcat(com, TRX.WIFI_AP1);
+			strcat(com, WIFI.AP_1);
 			strcat(com, "\",\"");
-			strcat(com, TRX.WIFI_PASSWORD1);
+			strcat(com, WIFI.Password_1);
 			strcat(com, "\"\r\n");
 			WIFI_SendCommand(com); // connect to AP
 			// WIFI_WaitForOk();
 			WIFI_State = WIFI_CONNECTING;
-			strcpy(WIFI_AP, TRX.WIFI_AP1);
+			strcpy(WIFI_AP, WIFI.AP_1);
 		}
-		if (AP2_exist && !AP1_exist && strlen(TRX.WIFI_PASSWORD2) > 5)
+		if (AP2_exist && !AP1_exist && strlen(WIFI.Password_2) > 5)
 		{
-			println("[WIFI] Start connecting to AP2: ", TRX.WIFI_AP2);
+			println("[WIFI] Start connecting to AP2: ", WIFI.AP_2);
 			strcat(com, "AT+CWJAP_CUR=\"");
-			strcat(com, TRX.WIFI_AP2);
+			strcat(com, WIFI.AP_2);
 			strcat(com, "\",\"");
-			strcat(com, TRX.WIFI_PASSWORD2);
+			strcat(com, WIFI.Password_2);
 			strcat(com, "\"\r\n");
 			WIFI_SendCommand(com); // connect to AP
 			// WIFI_WaitForOk();
 			WIFI_State = WIFI_CONNECTING;
-			strcpy(WIFI_AP, TRX.WIFI_AP2);
+			strcpy(WIFI_AP, WIFI.AP_2);
 		}
-		if (AP3_exist && !AP1_exist && !AP2_exist && strlen(TRX.WIFI_PASSWORD3) > 5)
+		if (AP3_exist && !AP1_exist && !AP2_exist && strlen(WIFI.Password_3) > 5)
 		{
-			println("[WIFI] Start connecting to AP: ", TRX.WIFI_AP3);
+			println("[WIFI] Start connecting to AP: ", WIFI.AP_3);
 			strcat(com, "AT+CWJAP_CUR=\"");
-			strcat(com, TRX.WIFI_AP3);
+			strcat(com, WIFI.AP_3);
 			strcat(com, "\",\"");
-			strcat(com, TRX.WIFI_PASSWORD3);
+			strcat(com, WIFI.Password_3);
 			strcat(com, "\"\r\n");
 			WIFI_SendCommand(com); // connect to AP
 			// WIFI_WaitForOk();
 			WIFI_State = WIFI_CONNECTING;
-			strcpy(WIFI_AP, TRX.WIFI_AP3);
+			strcpy(WIFI_AP, WIFI.AP_3);
 		}
 		break;
 
@@ -590,7 +590,7 @@ void WIFI_Process(void)
 
 												// reset SNTP
 												char com_t[64] = {0};
-												sprintf(com_t, "AT+CIPSNTPCFG=1,%d,\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n", TRX.WIFI_TIMEZONE);
+												sprintf(com_t, "AT+CIPSNTPCFG=1,%d,\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n", WIFI.Timezone);
 												WIFI_SendCommand(com_t); // configure SNMP
 												WIFI_WaitForOk();
 												WIFI_State = WIFI_READY;

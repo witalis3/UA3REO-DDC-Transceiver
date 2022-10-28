@@ -1614,17 +1614,25 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size)
 // RX Equalizer
 static void doRX_EQ(uint16_t size)
 {
-	if (TRX.RX_EQ_LOW != 0)
+	if (TRX.RX_EQ_P1 != 0)
 	{
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_LOW_FILTER, &EQ_RX_Q_LOW_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P1_FILTER, &EQ_RX_Q_P1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
-	if (TRX.RX_EQ_MID != 0)
+	if (TRX.RX_EQ_P2 != 0)
 	{
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_MID_FILTER, &EQ_RX_Q_MID_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P2_FILTER, &EQ_RX_Q_P2_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
-	if (TRX.RX_EQ_HIG != 0)
+	if (TRX.RX_EQ_P3 != 0)
 	{
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_HIG_FILTER, &EQ_RX_Q_HIG_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P3_FILTER, &EQ_RX_Q_P3_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	}
+	if (TRX.RX_EQ_P4 != 0)
+	{
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P4_FILTER, &EQ_RX_Q_P4_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	}
+	if (TRX.RX_EQ_P5 != 0)
+	{
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P5_FILTER, &EQ_RX_Q_P5_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
 }
 
@@ -1637,24 +1645,32 @@ static void doMIC_EQ(uint16_t size, uint8_t mode)
 	case TRX_MODE_USB:
 	case TRX_MODE_LOOPBACK:
 	default:
-		if (TRX.MIC_EQ_LOW_SSB != 0)
-			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_LOW_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
-		if (TRX.MIC_EQ_MID_SSB != 0)
-			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_MID_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
-		if (TRX.MIC_EQ_HIG_SSB != 0)
-			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_HIG_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P1_SSB != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P1_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P2_SSB != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P2_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P3_SSB != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P3_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P4_SSB != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P4_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P5_SSB != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P5_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		break;
 
 	case TRX_MODE_NFM:
 	case TRX_MODE_WFM:
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
-		if (TRX.MIC_EQ_LOW_AMFM != 0)
-			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_LOW_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
-		if (TRX.MIC_EQ_MID_AMFM != 0)
-			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_MID_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
-		if (TRX.MIC_EQ_HIG_AMFM != 0)
-			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_HIG_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P1_AMFM != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P1_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P2_AMFM != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P2_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P3_AMFM != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P3_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P4_AMFM != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P4_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		if (TRX.MIC_EQ_P5_AMFM != 0)
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P5_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		break;
 	}
 
@@ -1901,7 +1917,8 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		
 		// demod
 		arm_atan2_f32(x, y, &angle);
-		data_i[i] = (float32_t)(angle / F_PI) * 0.01f;
+		if(isnanf(angle)) angle = 0.0f;
+		data_i[i] = (float32_t)(angle / F_PI) * 0.001f; // + if gain correction
 
 		// smooth SQL edges
 		if (!DFM->squelched || !sql_enabled)

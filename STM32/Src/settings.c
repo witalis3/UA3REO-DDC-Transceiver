@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-const char version_string[19] = "6.0.0";
+const char version_string[19] = "6.1.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -24,6 +24,7 @@ IRAM2 static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
 IRAM2 static uint8_t Address[3] = {0x00};
 struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
+struct TRX_WIFI WIFI = {0};
 bool EEPROM_Enabled = true;
 static uint8_t settings_bank = 1;
 
@@ -35,6 +36,7 @@ IRAM2 static uint8_t verify_clone[MAX_CLONE_SIZE] = {0};
 
 volatile bool NeedSaveSettings = false;
 volatile bool NeedSaveCalibration = false;
+volatile bool NeedSaveWiFi = false;
 volatile bool EEPROM_Busy = false;
 VFO *CurrentVFO = &TRX.VFO_A;
 VFO *SecondaryVFO = &TRX.VFO_B;
@@ -48,6 +50,7 @@ static void EEPROM_PowerUp(void);
 static void EEPROM_WaitWrite(void);
 static uint8_t calculateCSUM(void);
 static uint8_t calculateCSUM_EEPROM(void);
+static uint8_t calculateCSUM_WIFI(void);
 
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
 	"LSB",
@@ -218,15 +221,21 @@ void LoadSettings(bool clear)
 		TRX.MIC_GAIN_DB = 3.0f;					 // Microphone gain, dB
 		TRX.MIC_Boost = true;				 // +20dB mic amplifier
 		TRX.MIC_NOISE_GATE = -120;			 // Mic noise gate
-		TRX.RX_EQ_LOW = 0;					 // Receiver Equalizer (Low)
-		TRX.RX_EQ_MID = 0;					 // Receiver EQ (mids)
-		TRX.RX_EQ_HIG = 0;					 // Receiver EQ (high)
-		TRX.MIC_EQ_LOW_SSB = 0;				 // Mic EQ (Low) SSB
-		TRX.MIC_EQ_MID_SSB = 0;				 // Mic Equalizer (Mids) SSB
-		TRX.MIC_EQ_HIG_SSB = 0;				 // Mic EQ (high) SSB
-		TRX.MIC_EQ_LOW_AMFM = 0;			 // Mic EQ (Low) AM/FM
-		TRX.MIC_EQ_MID_AMFM = 0;			 // Mic Equalizer (Mids) AM/FM
-		TRX.MIC_EQ_HIG_AMFM = 0;			 // Mic EQ (high) AM/FM
+		TRX.RX_EQ_P1 = 0;					 // Receiver Equalizer 300hz
+		TRX.RX_EQ_P2 = 0;					 // Receiver Equalizer 700hz 
+		TRX.RX_EQ_P3 = 0;					 // Receiver Equalizer 1200hz 
+		TRX.RX_EQ_P4 = 0;					 // Receiver Equalizer 1800hz 
+		TRX.RX_EQ_P5 = 0;					 // Receiver Equalizer 2300hz
+		TRX.MIC_EQ_P1_SSB = 0;				 // Mic EQ SSB
+		TRX.MIC_EQ_P2_SSB = 0;				 // Mic EQ SSB
+		TRX.MIC_EQ_P3_SSB = 0;				 // Mic EQ SSB
+		TRX.MIC_EQ_P4_SSB = 0;				 // Mic EQ SSB
+		TRX.MIC_EQ_P5_SSB = 0;				 // Mic EQ SSB
+		TRX.MIC_EQ_P1_AMFM = 0;			 // Mic EQ AM/FM
+		TRX.MIC_EQ_P2_AMFM = 0;			 // Mic EQ AM/FM
+		TRX.MIC_EQ_P3_AMFM = 0;			 // Mic EQ AM/FM
+		TRX.MIC_EQ_P4_AMFM = 0;			 // Mic EQ AM/FM
+		TRX.MIC_EQ_P5_AMFM = 0;			 // Mic EQ AM/FM
 		TRX.MIC_REVERBER = 0;				 // Mic Reveerber
 		TRX.DNR1_SNR_THRESHOLD = 50;		 // Digital noise reduction 1 level
 		TRX.DNR2_SNR_THRESHOLD = 35;		 // Digital noise reduction 2 level
@@ -283,7 +292,8 @@ void LoadSettings(bool clear)
 		TRX.ColorThemeId = 0;	// Selected Color theme
 		TRX.LayoutThemeId = 0;	// Selected Layout theme
 #ifdef LAY_800x480
-		TRX.LayoutThemeId = 4;
+		TRX.ColorThemeId = 3;
+		TRX.LayoutThemeId = 7;
 #endif
 		TRX.FFT_Enabled = true; // use FFT spectrum
 #ifdef LAY_160x128
@@ -359,16 +369,6 @@ void LoadSettings(bool clear)
 		TRX.ADC_RAND = false;   // ADC encryption (xor randomizer)
 		TRX.ADC_SHDN = false;  // ADC disable
 		TRX.ADC_DITH = false;  // ADC dither
-		// WIFI
-		TRX.WIFI_Enabled = true;					 // activate WiFi
-		strcpy(TRX.WIFI_AP1, "WIFI-AP");			 // WiFi hotspot
-		strcpy(TRX.WIFI_PASSWORD1, "WIFI-PASSWORD"); // password to the WiFi point 1
-		strcpy(TRX.WIFI_AP2, "WIFI-AP");			 // WiFi hotspot
-		strcpy(TRX.WIFI_PASSWORD2, "WIFI-PASSWORD"); // password to the WiFi point 2
-		strcpy(TRX.WIFI_AP3, "WIFI-AP");			 // WiFi hotspot
-		strcpy(TRX.WIFI_PASSWORD3, "WIFI-PASSWORD"); // password to the WiFi point 3
-		TRX.WIFI_TIMEZONE = 3;						 // time zone (for time synchronization)
-		TRX.WIFI_CAT_SERVER = false;				 // Server for receiving CAT commands via WIFI
 		// SERVICES
 		TRX.SWR_CUSTOM_Begin = 6500; // start spectrum analyzer range
 		TRX.SWR_CUSTOM_End = 7500;	 // end of spectrum analyzer range
@@ -484,7 +484,7 @@ void LoadCalibration(bool clear)
 	{
 		memset(&CALIBRATE, 0x00, sizeof(CALIBRATE));
 		
-		println("[ERR] CALIBRATE Flash check CODE:", CALIBRATE.flash_id, false);
+		println("[ERR] CALIBRATE Flash check CODE:", CALIBRATE.flash_id);
 		CALIBRATE.flash_id = CALIB_VERSION; // code for checking the firmware in the eeprom, if it does not match, we use the default
 
 		CALIBRATE.ENCODER_INVERT = false;	   // invert left-right rotation of the main encoder
@@ -759,6 +759,46 @@ void LoadCalibration(bool clear)
 	BANDS[BANDID_4m].selectable = CALIBRATE.ENABLE_4m_band;
 	BANDS[BANDID_AIR].selectable = CALIBRATE.ENABLE_AIR_band;
 	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
+	
+	//load WiFi settings after calibrations
+	LoadWiFiSettings(false);
+}
+
+void LoadWiFiSettings(bool clear)
+{
+	EEPROM_PowerUp();
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data((uint8_t *)&WIFI, sizeof(WIFI), EEPROM_SECTOR_WIFI, true, false))
+	{
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES)
+	{
+		println("[ERR] Read EEPROM WIFI multiple errors");
+		LCD_showError("EEPROM Error", true);
+	}
+
+	if (WIFI.ENDBit != 100 || clear || WIFI.csum != calculateCSUM_WIFI()) // code for checking the firmware in the eeprom, if it does not match, we use the default
+	{
+		memset(&WIFI, 0x00, sizeof(WIFI));
+		
+		println("[ERR] WIFI Flash check CODE error");
+
+		WIFI.Enabled = true;					 // activate WiFi
+		strcpy(WIFI.AP_1, "WIFI-AP");			 // WiFi hotspot
+		strcpy(WIFI.Password_1, "WIFI-PASSWORD"); // password to the WiFi point 1
+		strcpy(WIFI.AP_2, "WIFI-AP");			 // WiFi hotspot
+		strcpy(WIFI.Password_2, "WIFI-PASSWORD"); // password to the WiFi point 2
+		strcpy(WIFI.AP_3, "WIFI-AP");			 // WiFi hotspot
+		strcpy(WIFI.Password_3, "WIFI-PASSWORD"); // password to the WiFi point 3
+		WIFI.Timezone = 3;						 // time zone (for time synchronization)
+		WIFI.CAT_Server = false;				 // Server for receiving CAT commands via WIFI
+		
+		WIFI.ENDBit = 100; // Bit for the end of a successful write to eeprom
+
+		SaveWiFiSettings();
+	}
+	EEPROM_PowerDown();
 }
 
 void SaveSettings(void)
@@ -881,6 +921,53 @@ void SaveCalibration(void)
 	println("[OK] EEPROM Calibrations Saved");
 	print_flush();
 	NeedSaveCalibration = false;
+}
+
+void SaveWiFiSettings(void)
+{
+	if (EEPROM_Busy)
+		return;
+	EEPROM_PowerUp();
+	EEPROM_Busy = true;
+
+	WIFI.csum = calculateCSUM_WIFI();
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(EEPROM_SECTOR_WIFI, false))
+	{
+		println("[ERR] Erase EEPROM WIFI error");
+		print_flush();
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES)
+	{
+		println("[ERR] Erase EEPROM WIFI multiple errors");
+		print_flush();
+		LCD_showError("EEPROM Error", true);
+		EEPROM_Busy = false;
+		return;
+	}
+	tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data((uint8_t *)&WIFI, sizeof(WIFI), EEPROM_SECTOR_WIFI, true, false))
+	{
+		println("[ERR] Write EEPROM WIFI error");
+		print_flush();
+		EEPROM_Sector_Erase(EEPROM_SECTOR_WIFI, false);
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES)
+	{
+		println("[ERR] Write EEPROM WIFI multiple errors");
+		print_flush();
+		LCD_showError("EEPROM Error", true);
+		EEPROM_Busy = false;
+		return;
+	}
+
+	EEPROM_Busy = false;
+	EEPROM_PowerDown();
+	println("[OK] EEPROM WIFI Settings Saved");
+	print_flush();
+	NeedSaveWiFi = false;
 }
 
 static bool EEPROM_Sector_Erase(uint8_t sector, bool force)
@@ -1141,6 +1228,23 @@ static uint8_t calculateCSUM_EEPROM(void)
 	for (uint16_t i = 0; i < sizeof(CALIBRATE); i++)
 		csum_new = sd_crc7_byte(csum_new, *(CALIBRATE_addr + i));
 	CALIBRATE.csum = csum_old;
+	return csum_new;
+	#else
+	return 100;
+	#endif
+}
+
+static uint8_t calculateCSUM_WIFI(void)
+{
+	#if HRDW_HAS_SD
+	sd_crc_generate_table();
+	uint8_t csum_old = WIFI.csum;
+	uint8_t csum_new = 0;
+	WIFI.csum = 0;
+	uint8_t *WIFI_addr = (uint8_t *)&WIFI;
+	for (uint16_t i = 0; i < sizeof(WIFI); i++)
+		csum_new = sd_crc7_byte(csum_new, *(WIFI_addr + i));
+	WIFI.csum = csum_old;
 	return csum_new;
 	#else
 	return 100;
