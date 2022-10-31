@@ -1893,9 +1893,10 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		{
 			if ((LCD_window.buttons[i].x1 <= x) && (LCD_window.buttons[i].y1 <= y) && (LCD_window.buttons[i].x2 >= x) && (LCD_window.buttons[i].y2 >= y))
 			{
-				if (LCD_window.buttons[i].clickHandler != NULL)
+				if (LCD_window.buttons[i].clickHandler != NULL) {
 					LCD_window.buttons[i].clickHandler(LCD_window.buttons[i].parameter);
-				return;
+					return;
+				}
 			}
 		}
 
@@ -2067,9 +2068,10 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 	{
 		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))//touch height
 		{
-			if (TouchpadButton_handlers[i].clickHandler != NULL)
+			if (TouchpadButton_handlers[i].clickHandler != NULL) {
 				TouchpadButton_handlers[i].clickHandler(TouchpadButton_handlers[i].parameter);
-			return;
+				return;
+			}
 		}
 	}
 	
@@ -2079,9 +2081,10 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		{
 			if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 - 20 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))//touch height
 			{
-				if (TouchpadButton_handlers[i].clickHandler != NULL)
+				if (TouchpadButton_handlers[i].clickHandler != NULL) {
 					TouchpadButton_handlers[i].clickHandler(TouchpadButton_handlers[i].parameter);
-				return;
+					return;
+				}
 			}
 		}
 	}
@@ -2134,8 +2137,8 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 				LCD_systemMenuOpened = true;
 				SYSMEUN_WIFI_HOTKEY();
 				LCD_redraw(false);
+				return;
 			}
-			return;
 		}
 		
 		//Hold FT8 Mode
@@ -2147,16 +2150,19 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 			// main freq hold
 		if (y >= LAYOUT->FREQ_Y_TOP && y <= LAYOUT->FREQ_Y_TOP + LAYOUT->FREQ_BLOCK_HEIGHT && x >= LAYOUT->FREQ_LEFT_MARGIN && x <= LAYOUT->FREQ_LEFT_MARGIN + LAYOUT->FREQ_WIDTH)
 		{
-			if (!TRX.selected_vfo) // vfo-a
+			if (!TRX.selected_vfo) { // vfo-a
 				LCD_showManualFreqWindow(true);
+				return;
+			}
 		}
 
 		// sec freq hold
 		if (y >= LAYOUT->FREQ_B_Y_TOP && y <= LAYOUT->FREQ_B_Y_TOP + LAYOUT->FREQ_B_BLOCK_HEIGHT && x >= LAYOUT->FREQ_B_LEFT_MARGIN && x <= LAYOUT->FREQ_B_LEFT_MARGIN + LAYOUT->FREQ_B_WIDTH)
 		{
-			if (TRX.selected_vfo) // vfo-b
+			if (TRX.selected_vfo) { // vfo-b
 				LCD_showManualFreqWindow(true);
-			return;
+				return;
+			}
 		}	
 	}
 	
@@ -2173,9 +2179,10 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 	{
 		if ((LCD_window.buttons[i].x1 <= x) && (LCD_window.buttons[i].y1 <= y) && (LCD_window.buttons[i].x2 >= x) && (LCD_window.buttons[i].y2 >= y))
 		{
-			if (LCD_window.buttons[i].holdHandler != NULL)
+			if (LCD_window.buttons[i].holdHandler != NULL) {
 				LCD_window.buttons[i].holdHandler(LCD_window.buttons[i].parameter);
-			return;
+				return;
+			}
 		}
 	}
 
@@ -2191,11 +2198,12 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y)
 
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
-		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 + 20 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))
+		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 - 10 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))
 		{
-			if (TouchpadButton_handlers[i].holdHandler != NULL)
+			if (TouchpadButton_handlers[i].holdHandler != NULL) {
 				TouchpadButton_handlers[i].holdHandler(TouchpadButton_handlers[i].parameter);
-			return;
+				return;
+			}
 		}
 	}
 #endif
