@@ -2063,7 +2063,6 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 	}
 
 	// buttons
-	
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
 	{
 		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))//touch height
@@ -2071,6 +2070,19 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 			if (TouchpadButton_handlers[i].clickHandler != NULL)
 				TouchpadButton_handlers[i].clickHandler(TouchpadButton_handlers[i].parameter);
 			return;
+		}
+	}
+	
+	// bottom buttons extended zone
+	if (y >= 430) {
+		for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++)
+		{
+			if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 - 20 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y))//touch height
+			{
+				if (TouchpadButton_handlers[i].clickHandler != NULL)
+					TouchpadButton_handlers[i].clickHandler(TouchpadButton_handlers[i].parameter);
+				return;
+			}
 		}
 	}
 
