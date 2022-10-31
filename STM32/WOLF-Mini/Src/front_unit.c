@@ -225,18 +225,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		return;
 	}
 
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
-		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
-		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
-		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to LPF tune
-		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) // fast tune HPF in SSB only
-		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) // nothing to SQL tune
-		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+	FRONTPANEL_ENC2SW_validate();
 
 	if (TRX.ENC2_func_mode == ENC_FUNC_PAGER) //pager
 	{
@@ -743,3 +732,18 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 }
 
+void FRONTPANEL_ENC2SW_validate()
+{
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
+		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
+		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
+		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to LPF tune
+		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) // fast tune HPF in SSB only
+		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) // nothing to SQL tune
+		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+}

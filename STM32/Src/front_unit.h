@@ -58,5 +58,6 @@ extern void FRONTPANEL_check_ENC2SW(bool state);
 extern void FRONTPANEL_Init(void);
 extern void FRONTPANEL_Process(void);
 extern void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value);
+extern void FRONTPANEL_ENC2SW_validate();
 
 #endif

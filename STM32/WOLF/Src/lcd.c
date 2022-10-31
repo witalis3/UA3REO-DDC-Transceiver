@@ -1518,6 +1518,47 @@ static void LCD_displayStatusInfoBar(bool redraw)
 
 	// Info labels
 	char buff[32] = "";
+	
+		//ENC2 Mode
+	switch(TRX.ENC2_func_mode) {
+		case ENC_FUNC_PAGER:
+			strcat(buff, "PAGE");
+			break;
+		case ENC_FUNC_FAST_STEP:
+			strcat(buff, "STEP");
+			break;
+		case ENC_FUNC_SET_WPM:
+			strcat(buff, "WPM");
+			break;
+		case ENC_FUNC_SET_RIT:
+			strcat(buff, "RIT");
+			break;
+		case ENC_FUNC_SET_NOTCH:
+			strcat(buff, "NTCH");
+			break;
+		case ENC_FUNC_SET_LPF:
+			strcat(buff, "LPF");
+			break;
+		case ENC_FUNC_SET_HPF:
+			strcat(buff, "HPF");
+			break;
+		case ENC_FUNC_SET_SQL:
+			strcat(buff, "SQL");
+			break;
+		case ENC_FUNC_SET_VOLUME:
+			strcat(buff, "VOL");
+			break;
+		case ENC_FUNC_SET_IF:
+			break;
+	}
+	static uint8_t old_ENC2_func_mode = 255;
+	if(old_ENC2_func_mode != TRX.ENC2_func_mode || redraw) {
+		old_ENC2_func_mode = TRX.ENC2_func_mode;
+		LCDDriver_printText("    ", LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - RASTR_FONT_W * 2, LAYOUT->BW_TRAPEZ_POS_Y - 10, FG_COLOR, BG_COLOR, 1);
+		uint16_t enc_mode_width = RASTR_FONT_W * strlen(buff);
+		LCDDriver_printText(buff, LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - enc_mode_width / 2, LAYOUT->BW_TRAPEZ_POS_Y - 10, FG_COLOR, BG_COLOR, 1);
+	}
+	
 	// BW HPF-LPF
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		sprintf(buff, "BW:%d", TRX.CW_LPF_Filter);
@@ -2235,7 +2276,7 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 
 void LCD_processHoldTouch(uint16_t x, uint16_t y)
 {
-#if (defined(HAS_TOUCHPAD))
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	if (TRX.Locked)
 		return;
 
