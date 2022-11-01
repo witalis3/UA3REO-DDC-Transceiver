@@ -1,5 +1,5 @@
 ----Version 6.2.0----
-+HARDW: Обновлена версия RF-UNIT-QRP-RU4PN-rev3, Tnx автору RU4PN
++HARDW: Обновлена версия платы RF-UNIT-QRP-RU4PN-rev3, Tnx автору RU4PN
 +HARDW: Обновлена схема и BOM плат QRP/SPLIT: Аттенюатор PE4302 заменён на PE4312 без изменений на плате
 +STM32: Теперь трансивер может работать с SD, на которых ранее была ошибка Disk Error, Tnx RU4PN
 +STM32: Доработаны шрифты в CN теме
