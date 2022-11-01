@@ -226,7 +226,7 @@ void WIFI_Process(void)
 			else if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_3) == 0)
 				AP3_exist = true;
 		}
-		if (AP1_exist && strlen(WIFI.Password_1) > 5)
+		if (AP1_exist && strlen(WIFI.AP_1) > 0 && strlen(WIFI.Password_1) > 5)
 		{
 			println("[WIFI] Start connecting to AP1: ", WIFI.AP_1);
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -239,7 +239,7 @@ void WIFI_Process(void)
 			WIFI_State = WIFI_CONNECTING;
 			strcpy(WIFI_AP, WIFI.AP_1);
 		}
-		if (AP2_exist && !AP1_exist && strlen(WIFI.Password_2) > 5)
+		if (AP2_exist && !AP1_exist && strlen(WIFI.AP_2) > 0 && strlen(WIFI.Password_2) > 5)
 		{
 			println("[WIFI] Start connecting to AP2: ", WIFI.AP_2);
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -252,7 +252,7 @@ void WIFI_Process(void)
 			WIFI_State = WIFI_CONNECTING;
 			strcpy(WIFI_AP, WIFI.AP_2);
 		}
-		if (AP3_exist && !AP1_exist && !AP2_exist && strlen(WIFI.Password_3) > 5)
+		if (AP3_exist && !AP1_exist && !AP2_exist && strlen(WIFI.AP_3) > 0 && strlen(WIFI.Password_3) > 5)
 		{
 			println("[WIFI] Start connecting to AP: ", WIFI.AP_3);
 			strcat(com, "AT+CWJAP_CUR=\"");
