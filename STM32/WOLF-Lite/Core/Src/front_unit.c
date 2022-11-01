@@ -424,6 +424,10 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		if(CurrentVFO->FM_SQL_threshold_dbm < -126)
 			CurrentVFO->FM_SQL_threshold_dbm = -126;
 		
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		if (band >= 0)
+			TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
+		
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	}
 	
