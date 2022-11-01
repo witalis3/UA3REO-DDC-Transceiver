@@ -778,18 +778,19 @@ void LoadWiFiSettings(bool clear)
 		LCD_showError("EEPROM Error", true);
 	}
 
-	if (WIFI.ENDBit != 100 || clear || WIFI.csum != calculateCSUM_WIFI()) // code for checking the firmware in the eeprom, if it does not match, we use the default
+	if (WIFI.ENDBit != 100 || WIFI.flash_id != WIFI_SETTINGS_VERSION || clear || WIFI.csum != calculateCSUM_WIFI()) // code for checking the firmware in the eeprom, if it does not match, we use the default
 	{
 		memset(&WIFI, 0x00, sizeof(WIFI));
 		
-		println("[ERR] WIFI Flash check CODE error");
+		println("[ERR] WIFI Flash check CODE:", WIFI.flash_id);
+		WIFI.flash_id = WIFI_SETTINGS_VERSION; // code for checking the firmware in the eeprom, if it does not match, we use the default
 
 		WIFI.Enabled = true;					 // activate WiFi
-		strcpy(WIFI.AP_1, "WIFI-AP");			 // WiFi hotspot
+		strcpy(WIFI.AP_1, "WIFI-AP");			 // WiFi access point 1
 		strcpy(WIFI.Password_1, "WIFI-PASSWORD"); // password to the WiFi point 1
-		strcpy(WIFI.AP_2, "WIFI-AP");			 // WiFi hotspot
+		strcpy(WIFI.AP_2, "WIFI-AP");			 // WiFi access point 2
 		strcpy(WIFI.Password_2, "WIFI-PASSWORD"); // password to the WiFi point 2
-		strcpy(WIFI.AP_3, "WIFI-AP");			 // WiFi hotspot
+		strcpy(WIFI.AP_3, "WIFI-AP");			 // WiFi access point 3
 		strcpy(WIFI.Password_3, "WIFI-PASSWORD"); // password to the WiFi point 3
 		WIFI.Timezone = 3;						 // time zone (for time synchronization)
 		WIFI.CAT_Server = false;				 // Server for receiving CAT commands via WIFI
