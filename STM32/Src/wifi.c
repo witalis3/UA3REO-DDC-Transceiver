@@ -99,18 +99,39 @@ void WIFI_Init(void)
 	if (strstr(WIFI_readedLine, "OK") != NULL)
 	{
 		WIFI_SendCommand("AT+GMR\r\n"); // system info ESP8266
-		WIFI_WaitForOk();
 		/*
-		AT version:1.7.4.0(May 11 2020 19:13:04)
-		SDK version:3.0.4(9532ceb)
-		compile time:May 27 2020 10:12:20
-		Bin version(Wroom 02):1.7.4
+		AT version:1.7.5.0(Oct 20 2021 19:14:04)
+		SDK version:3.0.5(b29dcd3)
+		compile time:Oct 20 2021 20:13:50
+		Bin version(Wroom 02):1.7.5
 		*/
+		bool has_correct_sdk_version = false;
+		char *sep = "SDK version:3";
+		uint32_t startTime = HAL_GetTick();
+		while ((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
+		{
+			if (WIFI_TryGetLine())
+			{
+				// OK
+				char *istr = strstr(WIFI_readedLine, sep);
+				if (istr != NULL) {
+					has_correct_sdk_version = true;
+					break;
+				}
+			}
+			CPULOAD_GoToSleepMode();
+			CPULOAD_WakeUp();
+		}
+		
 		WIFI_SendCommand("AT\r\n");
 		WIFI_WaitForOk();
 		
 		println("[WIFI] WIFI Module Inited");
 		WIFI_State = WIFI_INITED;
+		
+		if (!has_correct_sdk_version) {
+			LCD_showError("Wrong ESP FW Version", true);
+		}
 
 		// check if there are active connections, if yes - don't create a new one
 		WIFI_SendCommand("AT+CIPSTATUS\r\n");
