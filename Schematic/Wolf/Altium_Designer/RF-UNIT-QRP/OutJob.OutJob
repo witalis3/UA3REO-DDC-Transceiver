@@ -69,7 +69,7 @@ PageOptions3=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintS
 Configuration3_Name1=ColumnNameFormat
 Configuration3_Item1=CaptionAsName
 Configuration3_Name2=General
-Configuration3_Item2=OpenExported=True|AddToProject=False|ReportBOMViolationsInMessages=False|ForceFit=False|NotFitted=False|Database=False|DatabasePriority=False|IncludePcbData=False|IncludeVaultData=False|IncludeCloudData=False|IncludeDocumentData=True|IncludeAlternatives=False|ShowExportOptions=True|TemplateFilename=|TemplateVaultGuid=|TemplateItemGuid=|TemplateRevisionGuid=|BatchMode=5|FormWidth=1200|FormHeight=710|SupplierProdQty=1|SupplierAutoQty=False|SupplierUseCachedPricing=False|SupplierCurrency=USD|SolutionsPerItem=1|SuppliersPerSolution=1|ViewType=1|UseDirectApi=False|BomSetName=
+Configuration3_Item2=OpenExported=True|AddToProject=False|ReportBOMViolationsInMessages=False|ForceFit=False|NotFitted=False|Database=False|DatabasePriority=False|IncludePcbData=False|IncludeVaultData=False|IncludeCloudData=False|IncludeDocumentData=True|IncludeAlternatives=False|ShowExportOptions=True|TemplateFilename=|TemplateVaultGuid=|TemplateItemGuid=|TemplateRevisionGuid=|BatchMode=0|FormWidth=1200|FormHeight=710|SupplierProdQty=1|SupplierAutoQty=False|SupplierUseCachedPricing=False|SupplierCurrency=USD|SolutionsPerItem=1|SuppliersPerSolution=1|ViewType=1|UseDirectApi=False|BomSetName=
 Configuration3_Name3=GroupOrder
 Configuration3_Item3=Comment=True|Footprint=True
 Configuration3_Name4=SortOrder
@@ -105,7 +105,7 @@ Configuration5_Name1=OutputConfigurationParameter1
 Configuration5_Item1=Record=SchPrintView|ShowNoERC=True|ShowParamSet=True|ShowProbe=True|ShowBlanket=True|NoERCSymbolsToShow="Thin Cross","Thick Cross","Small Cross",Checkbox,Triangle|ShowNote=True|ShowNoteCollapsed=True|ShowOpenEnds=True|ExpandDesignator=True|ExpandNetLabel=False|ExpandPort=False|ExpandSheetNum=False|ExpandDocNum=False|PrintArea=0|PrintAreaRect.X1=0|PrintAreaRect.Y1=0|PrintAreaRect.X2=0|PrintAreaRect.Y2=0|DocumentPath=All SCH Documents
 
 [PublishSettings]
-OutputFilePath2=D:\Dropbox\Develop\Projects\WOLF\Scheme\ALTIUM_DESIGNER\RF-UNIT-QRP\Project Outputs for RF-UNIT-QRP-7W\
+OutputFilePath2=C:\Dropbox\Develop\Projects\WOLF\Schematic\Wolf\Altium_Designer\RF-UNIT-QRP\Project Outputs for RF-UNIT-QRP-7W\
 ReleaseManaged2=1
 OutputBasePath2=Project Outputs for RF-UNIT-QRP-7W
 OutputPathMedia2=
@@ -147,7 +147,7 @@ PDFACompliance3=Disabled
 PDFVersion3=Default
 
 [GeneratedFilesSettings]
-RelativeOutputPath2=D:\Dropbox\Develop\Projects\WOLF\Scheme\ALTIUM_DESIGNER\RF-UNIT-QRP\Project Outputs for RF-UNIT-QRP-7W\
+RelativeOutputPath2=C:\Dropbox\Develop\Projects\WOLF\Schematic\Wolf\Altium_Designer\RF-UNIT-QRP\Project Outputs for RF-UNIT-QRP-7W\
 OpenOutputs2=0
 AddToProject2=1
 TimestampFolder2=0

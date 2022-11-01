@@ -190,10 +190,62 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=GUCCKGGI
+DocumentUniqueId=FBJVATKV
 
 [GeneratedDocument1]
-DocumentPath=Project Outputs for RF-UNIT-SPLIT\Design Rule Check - RF-UNIT-SPLIT.html
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\BOM\Bill of Materials-RF-UNIT-SPLIT.csv
+DItemRevisionGUID=
+
+[GeneratedDocument2]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.DRR
+DItemRevisionGUID=
+
+[GeneratedDocument3]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.EXTREP
+DItemRevisionGUID=
+
+[GeneratedDocument4]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBL
+DItemRevisionGUID=
+
+[GeneratedDocument5]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBO
+DItemRevisionGUID=
+
+[GeneratedDocument6]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GBS
+DItemRevisionGUID=
+
+[GeneratedDocument7]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GKO
+DItemRevisionGUID=
+
+[GeneratedDocument8]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTL
+DItemRevisionGUID=
+
+[GeneratedDocument9]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTO
+DItemRevisionGUID=
+
+[GeneratedDocument10]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.GTS
+DItemRevisionGUID=
+
+[GeneratedDocument11]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.LDP
+DItemRevisionGUID=
+
+[GeneratedDocument12]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.REP
+DItemRevisionGUID=
+
+[GeneratedDocument13]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\Gerber\RF-UNIT-SPLIT.RUL
+DItemRevisionGUID=
+
+[GeneratedDocument14]
+DocumentPath=Project Outputs for RF-UNIT-SPLIT\NC Drill\RF-UNIT-SPLIT.TXT
 DItemRevisionGUID=
 
 [SearchPath1]

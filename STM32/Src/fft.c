@@ -1726,6 +1726,46 @@ static void FFT_3DPrintFFT(void)
 		}
 		fft_y_prev = fft_y;
 	}
+	
+	// DXCluster labels
+	#if HRDW_HAS_WIFI
+	if (TRX.FFT_DXCluster)
+	{
+		int32_t prev_pos = -999;
+		int32_t prev_w = 0;
+		uint16_t prev_y = FFT_AND_WTF_HEIGHT - 50;
+		for (uint16_t i = 0; i < WIFI_DXCLUSTER_list_count; i++)
+		{
+			int32_t pos = getFreqPositionOnFFT(WIFI_DXCLUSTER_list[i].Freq, true);
+			if (pos >= -50 && pos < LAYOUT->FFT_PRINT_SIZE)
+			{
+				uint16_t y = FFT_AND_WTF_HEIGHT - 50;
+				if ((pos - prev_pos) < prev_w)
+					y = prev_y - 10;
+				if (y > 0)
+				{
+					prev_y = y;
+					prev_w = strlen(WIFI_DXCLUSTER_list[i].Callsign) * 6 + 4;
+
+					char str[64] = {0};
+					strcat(str, WIFI_DXCLUSTER_list[i].Callsign);
+					if (TRX.FFT_DXCluster_Azimuth)
+					{
+						sprintf(str, "%s %u^o", WIFI_DXCLUSTER_list[i].Callsign, WIFI_DXCLUSTER_list[i].Azimuth);
+						prev_w += 5 * 6;
+					}
+
+					LCDDriver_printTextInMemory(str, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+					// vertical line
+					if (pos >= 0)
+						for (uint8_t y_line = 0; y_line < 8; y_line++)
+							print_output_buffer[y + y_line][pos] = COLOR_RED;
+				}
+			}
+			prev_pos = pos;
+		}
+	}
+	#endif
 
 	//Сenter line
 	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++)

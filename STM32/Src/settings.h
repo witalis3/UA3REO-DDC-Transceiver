@@ -10,6 +10,8 @@
 
 #define SETT_VERSION 68						  // Settings config version
 #define CALIB_VERSION 51					  // Calibration config version
+#define WIFI_SETTINGS_VERSION 1					  // WiFi config version
+
 #define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
 #define AGC_CLIPPING 6.0f					  // Limit over target in AGC, dB
@@ -741,6 +743,8 @@ extern struct TRX_CALIBRATE
 
 extern struct TRX_WIFI
 {
+	uint8_t flash_id; // version check
+	
 	// WIFI
 	int8_t Timezone;
 	bool Enabled;

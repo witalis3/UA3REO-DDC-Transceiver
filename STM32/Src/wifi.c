@@ -99,18 +99,39 @@ void WIFI_Init(void)
 	if (strstr(WIFI_readedLine, "OK") != NULL)
 	{
 		WIFI_SendCommand("AT+GMR\r\n"); // system info ESP8266
-		WIFI_WaitForOk();
 		/*
-		AT version:1.7.4.0(May 11 2020 19:13:04)
-		SDK version:3.0.4(9532ceb)
-		compile time:May 27 2020 10:12:20
-		Bin version(Wroom 02):1.7.4
+		AT version:1.7.5.0(Oct 20 2021 19:14:04)
+		SDK version:3.0.5(b29dcd3)
+		compile time:Oct 20 2021 20:13:50
+		Bin version(Wroom 02):1.7.5
 		*/
+		bool has_correct_sdk_version = false;
+		char *sep = "SDK version:3";
+		uint32_t startTime = HAL_GetTick();
+		while ((HAL_GetTick() - startTime) < WIFI_COMMAND_TIMEOUT)
+		{
+			if (WIFI_TryGetLine())
+			{
+				// OK
+				char *istr = strstr(WIFI_readedLine, sep);
+				if (istr != NULL) {
+					has_correct_sdk_version = true;
+					break;
+				}
+			}
+			CPULOAD_GoToSleepMode();
+			CPULOAD_WakeUp();
+		}
+		
 		WIFI_SendCommand("AT\r\n");
 		WIFI_WaitForOk();
 		
 		println("[WIFI] WIFI Module Inited");
 		WIFI_State = WIFI_INITED;
+		
+		if (!has_correct_sdk_version) {
+			LCD_showError("Wrong ESP FW Version", true);
+		}
 
 		// check if there are active connections, if yes - don't create a new one
 		WIFI_SendCommand("AT+CIPSTATUS\r\n");
@@ -226,7 +247,7 @@ void WIFI_Process(void)
 			else if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_3) == 0)
 				AP3_exist = true;
 		}
-		if (AP1_exist && strlen(WIFI.Password_1) > 5)
+		if (AP1_exist && strlen(WIFI.AP_1) > 0 && strlen(WIFI.Password_1) > 5)
 		{
 			println("[WIFI] Start connecting to AP1: ", WIFI.AP_1);
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -239,7 +260,7 @@ void WIFI_Process(void)
 			WIFI_State = WIFI_CONNECTING;
 			strcpy(WIFI_AP, WIFI.AP_1);
 		}
-		if (AP2_exist && !AP1_exist && strlen(WIFI.Password_2) > 5)
+		if (AP2_exist && !AP1_exist && strlen(WIFI.AP_2) > 0 && strlen(WIFI.Password_2) > 5)
 		{
 			println("[WIFI] Start connecting to AP2: ", WIFI.AP_2);
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -252,7 +273,7 @@ void WIFI_Process(void)
 			WIFI_State = WIFI_CONNECTING;
 			strcpy(WIFI_AP, WIFI.AP_2);
 		}
-		if (AP3_exist && !AP1_exist && !AP2_exist && strlen(WIFI.Password_3) > 5)
+		if (AP3_exist && !AP1_exist && !AP2_exist && strlen(WIFI.AP_3) > 0 && strlen(WIFI.Password_3) > 5)
 		{
 			println("[WIFI] Start connecting to AP: ", WIFI.AP_3);
 			strcat(com, "AT+CWJAP_CUR=\"");
@@ -700,7 +721,7 @@ static bool WIFI_ListAP_Sync(void)
 	WIFI_SendCommand("AT+CWLAP\r\n"); // List AP
 	WIFI_FoundedAP_Index = 0;
 	for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-		dma_memset((char *)&WIFI_FoundedAP[i], 0x00, sizeof WIFI_FoundedAP[i]);
+		dma_memset((char *)&WIFI_FoundedAP_InWork[i], 0x00, sizeof WIFI_FoundedAP_InWork[i]);
 	uint32_t startTime = HAL_GetTick();
 	char *sep = "OK";
 	char *istr;
@@ -717,6 +738,11 @@ static bool WIFI_ListAP_Sync(void)
 		istr = strstr(WIFI_readedLine, sep);
 		if (istr != NULL) // OK
 		{
+			for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+			{
+				strcpy((char *)&WIFI_FoundedAP[i], (char *)&WIFI_FoundedAP_InWork[i]);
+			}
+				
 			if (WIFI_FoundedAP_Index > 0)
 				LCD_UpdateQuery.SystemMenuInfolines = true;
 
@@ -733,7 +759,7 @@ static bool WIFI_ListAP_Sync(void)
 				if (end != NULL)
 				{
 					*end = 0x00;
-					strcat((char *)&WIFI_FoundedAP[WIFI_FoundedAP_Index], start);
+					strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
 					if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
 						WIFI_FoundedAP_Index++;
 				}

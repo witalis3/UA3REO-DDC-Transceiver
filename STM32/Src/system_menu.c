@@ -3598,6 +3598,7 @@ static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir)
 		{
 			strcpy(WIFI.AP_1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
+			NeedSaveWiFi = true;
 			sysmenu_wifi_selectap1_menu_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
@@ -3623,6 +3624,7 @@ static void SYSMENU_WIFI_SelectAP2MenuMove(int8_t dir)
 		{
 			strcpy(WIFI.AP_2, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
+			NeedSaveWiFi = true;
 			sysmenu_wifi_selectap2_menu_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
@@ -3648,6 +3650,7 @@ static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir)
 		{
 			strcpy(WIFI.AP_3, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
 			WIFI_State = WIFI_CONFIGURED;
+			NeedSaveWiFi = true;
 			sysmenu_wifi_selectap3_menu_opened = false;
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}

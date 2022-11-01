@@ -574,6 +574,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	}
 	
 	CODEC_TXRX_mode();
+	FRONTPANEL_ENC2SW_validate();
 	
 	NeedReinitNotch = true;
 	NeedReinitAudioFilters = true;

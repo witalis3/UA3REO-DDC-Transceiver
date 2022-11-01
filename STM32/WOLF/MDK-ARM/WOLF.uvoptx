@@ -233,7 +233,7 @@
         <BeepAtEnd>1</BeepAtEnd>
         <RunSim>0</RunSim>
         <RunTarget>1</RunTarget>
-        <RunAbUc>0</RunAbUc>
+        <RunAbUc>1</RunAbUc>
       </OPTTT>
       <OPTHX>
         <HexSelection>1</HexSelection>

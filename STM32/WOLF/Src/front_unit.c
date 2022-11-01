@@ -378,18 +378,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		return;
 	}
 
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
-		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
-		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
-		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to LPF tune
-		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) // fast tune HPF in SSB only
-		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) // nothing to SQL tune
-		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+	FRONTPANEL_ENC2SW_validate();
 
 	if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP)
 	{
@@ -514,6 +503,10 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		if(CurrentVFO->FM_SQL_threshold_dbm < -126)
 			CurrentVFO->FM_SQL_threshold_dbm = -126;
 		
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		if (band >= 0)
+			TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
+		
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	}
 }
@@ -633,6 +626,22 @@ static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter)
 {
 	TRX_Inactive_Time = 0;
 	BUTTONHANDLER_MENU(0);
+}
+
+void FRONTPANEL_ENC2SW_validate()
+{
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM && CurrentVFO->Mode != TRX_MODE_CW) // no WPM if not CW
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT && ((!TRX.RIT_Enabled && !TRX.XIT_Enabled) || !TRX.FineRITTune)) // nothing to RIT tune
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH && !CurrentVFO->ManualNotchFilter) // nothing to NOTCH tune
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF && CurrentVFO->Mode == TRX_MODE_WFM) // nothing to LPF tune
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) // fast tune HPF in SSB only
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) // nothing to SQL tune
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 }
 
 void FRONTPANEL_Init(void)
@@ -804,7 +813,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
 				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_RIT / (float32_t)TRX.RIT_INTERVAL));
-				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
+				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 0)
 				{
 					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
 					LCD_UpdateQuery.StatusInfoGUI = true;
@@ -825,7 +834,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
 				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_XIT / (float32_t)TRX.XIT_INTERVAL));
-				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 2)
+				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 0)
 				{
 					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
 					LCD_UpdateQuery.StatusInfoGUI = true;
