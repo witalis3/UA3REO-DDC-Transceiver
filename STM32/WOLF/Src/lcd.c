@@ -2065,7 +2065,7 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 
 	if (!LCD_screenKeyboardOpened)
 	{
-		// mode swich
+		// main mode swich
 		if (CN_Theme)
 		{
 			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_AM_X && x < LAYOUT->STATUS_MODE_SAM_X)
@@ -2123,6 +2123,11 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 				BUTTONHANDLER_SETMODE(TRX_MODE_LOOPBACK); // set mode LOOP;
 				return;
 			}
+			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_LOOP_X + 34 && x < LAYOUT->STATUS_MODE_LOOP_X + 34 + 34) // select main mode
+			{
+				LCD_showModeWindow(false);
+				return;
+			}
 
 			if (y >= 70 && y <= 90 && x > 265 && x < 350)
 			{
@@ -2175,10 +2180,12 @@ void LCD_processTouch(uint16_t x, uint16_t y)
 		}
 
 		// main mode click
-		if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT + 20) && x >= (LAYOUT->STATUS_MODE_X_OFFSET - 20) && x <= LAYOUT->STATUS_MODE_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH + 20)
-		{
-			LCD_showModeWindow(false);
-			return;
+		if (!CN_Theme) {
+			if (y >= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET - 20) && y <= (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET + LAYOUT->STATUS_MODE_BLOCK_HEIGHT + 20) && x >= (LAYOUT->STATUS_MODE_X_OFFSET - 20) && x <= LAYOUT->STATUS_MODE_X_OFFSET + LAYOUT->STATUS_MODE_BLOCK_WIDTH + 20)
+			{
+				LCD_showModeWindow(false);
+				return;
+			}
 		}
 
 		// sec mode click
