@@ -700,7 +700,7 @@ static bool WIFI_ListAP_Sync(void)
 	WIFI_SendCommand("AT+CWLAP\r\n"); // List AP
 	WIFI_FoundedAP_Index = 0;
 	for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
-		dma_memset((char *)&WIFI_FoundedAP[i], 0x00, sizeof WIFI_FoundedAP[i]);
+		dma_memset((char *)&WIFI_FoundedAP_InWork[i], 0x00, sizeof WIFI_FoundedAP_InWork[i]);
 	uint32_t startTime = HAL_GetTick();
 	char *sep = "OK";
 	char *istr;
@@ -717,6 +717,11 @@ static bool WIFI_ListAP_Sync(void)
 		istr = strstr(WIFI_readedLine, sep);
 		if (istr != NULL) // OK
 		{
+			for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+			{
+				strcpy((char *)&WIFI_FoundedAP[i], (char *)&WIFI_FoundedAP_InWork[i]);
+			}
+				
 			if (WIFI_FoundedAP_Index > 0)
 				LCD_UpdateQuery.SystemMenuInfolines = true;
 
@@ -733,7 +738,7 @@ static bool WIFI_ListAP_Sync(void)
 				if (end != NULL)
 				{
 					*end = 0x00;
-					strcat((char *)&WIFI_FoundedAP[WIFI_FoundedAP_Index], start);
+					strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
 					if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
 						WIFI_FoundedAP_Index++;
 				}
