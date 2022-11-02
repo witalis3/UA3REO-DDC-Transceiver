@@ -1,11 +1,11 @@
 #ifndef SELF_TEST_H
 #define SELF_TEST_H
 
+#include "functions.h"
 #include "hardware.h"
 #include "main.h"
 #include "stdbool.h"
 #include "stdint.h"
-#include "functions.h"
 
 #define SELF_TEST_pages 4
 #define SELF_TEST_frequency 14000000

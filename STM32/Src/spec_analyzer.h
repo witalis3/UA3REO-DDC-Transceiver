@@ -6,8 +6,8 @@
 #include "stdbool.h"
 
 #define SPEC_Resolution 1000000 // resolution, 1mhz
-#define SPEC_StepDelay 10     // scan delay, msec
-#define SPEC_VParts 6        // vertical signatures
+#define SPEC_StepDelay 10       // scan delay, msec
+#define SPEC_VParts 6           // vertical signatures
 
 // Public variabled
 extern bool SYSMENU_spectrum_opened;

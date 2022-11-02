@@ -1,9 +1,9 @@
 #ifndef FT8_MAIN_H_
 #define FT8_MAIN_H_
 
+#include "Process_DSP.h"
 #include "stdint.h"
 #include <stdbool.h>
-#include "Process_DSP.h"
 
 // extern q15_t AudioBuffer_for_FT8[input_gulp_size];
 

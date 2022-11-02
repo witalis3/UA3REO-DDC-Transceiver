@@ -1,28 +1,26 @@
-#include "hardware.h"
-#include "main.h"
 #include "trx_manager.h"
-#include "functions.h"
-#include "lcd.h"
-#include "fpga.h"
-#include "settings.h"
-#include "codec.h"
-#include "fpga.h"
-#include "bands.h"
 #include "agc.h"
 #include "audio_filters.h"
-#include "usbd_audio_if.h"
-#include "cw_decoder.h"
-#include "front_unit.h"
-#include "rf_unit.h"
-#include "system_menu.h"
-#include "vad.h"
-#include "swr_analyzer.h"
-#include "cw.h"
-#include "hardware.h"
-#include "sd.h"
 #include "auto_notch.h"
+#include "bands.h"
+#include "codec.h"
+#include "cw.h"
+#include "cw_decoder.h"
+#include "fpga.h"
+#include "front_unit.h"
+#include "functions.h"
+#include "hardware.h"
+#include "lcd.h"
+#include "main.h"
 #include "noise_reduction.h"
+#include "rf_unit.h"
+#include "sd.h"
+#include "settings.h"
 #include "snap.h"
+#include "swr_analyzer.h"
+#include "system_menu.h"
+#include "usbd_audio_if.h"
+#include "vad.h"
 
 volatile bool TRX_ptt_hard = false;
 volatile bool TRX_ptt_soft = false;
@@ -51,7 +49,7 @@ volatile float32_t TRX_PWR_Forward_SMOOTHED = 0;
 volatile float32_t TRX_PWR_Backward_SMOOTHED = 0;
 volatile float32_t TRX_SWR_SMOOTHED = 0;
 char TRX_SWR_SMOOTHED_STR[8] = "1.0";
-volatile float32_t TRX_VLT_forward = 0;	 // Tisho
+volatile float32_t TRX_VLT_forward = 0;  // Tisho
 volatile float32_t TRX_VLT_backward = 0; // Tisho
 volatile float32_t TRX_ALC_OUT = 0;
 volatile float32_t TRX_ALC_IN = 0;
@@ -64,7 +62,7 @@ volatile bool TRX_DAC_X4 = false;
 volatile bool TRX_DCDC_Freq = false;
 volatile bool TRX_DAC_DRV_A0 = true;
 volatile bool TRX_DAC_DRV_A1 = true;
-volatile float32_t TRX_STM32_VREF = 3.3f;		  // voltage on STM32
+volatile float32_t TRX_STM32_VREF = 3.3f;         // voltage on STM32
 volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; // STM32 temperature
 volatile float32_t TRX_IQ_phase_error = 0.0f;
 volatile bool TRX_Temporary_Stop_BandMap = false;
@@ -97,8 +95,7 @@ static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);
 
-void TRX_Init()
-{
+void TRX_Init() {
 	TRX_Start_RX();
 	CODEC_TXRX_mode();
 	CODEC_start_i2s_and_dma();
@@ -108,38 +105,30 @@ void TRX_Init()
 	HRDW_Init();
 }
 
-void TRX_Restart_Mode()
-{
+void TRX_Restart_Mode() {
 	ADCDAC_OVR_StatusLatency = 0;
 	uint_fast8_t mode = CurrentVFO->Mode;
 
 	// Switch mode
-	if (TRX_on_TX)
-	{
+	if (TRX_on_TX) {
 		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW)
 			TRX_Start_TXRX();
 		else
 			TRX_Start_TX();
-	}
-	else
-	{
+	} else {
 		TRX_TX_sendZeroes = 0;
 		TRX_Start_RX();
 	}
 
 	// SPLIT
-	if (TRX.SPLIT_Enabled && !TRX_SPLIT_Applied)
-	{
+	if (TRX.SPLIT_Enabled && !TRX_SPLIT_Applied) {
 		TRX_SPLIT_Applied = true;
 
 		TRX.selected_vfo = !TRX.selected_vfo;
-		if (!TRX.selected_vfo)
-		{
+		if (!TRX.selected_vfo) {
 			CurrentVFO = &TRX.VFO_A;
 			SecondaryVFO = &TRX.VFO_B;
-		}
-		else
-		{
+		} else {
 			CurrentVFO = &TRX.VFO_B;
 			SecondaryVFO = &TRX.VFO_A;
 		}
@@ -153,9 +142,9 @@ void TRX_Restart_Mode()
 		LCD_UpdateQuery.TopButtons = true;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	}
-	
-	//Ant swap for mode 1RX/2TX and others
-	if(TRX.ANT_mode && !TRX_ANT_swap_applyed) {
+
+	// Ant swap for mode 1RX/2TX and others
+	if (TRX.ANT_mode && !TRX_ANT_swap_applyed) {
 		TRX_ANT_swap_applyed = true;
 		TRX.ANT_selected = !TRX.ANT_selected;
 	}
@@ -164,8 +153,7 @@ void TRX_Restart_Mode()
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 }
 
-static void TRX_Start_RX()
-{
+static void TRX_Start_RX() {
 	if (TRX_TXRXMode == 1)
 		return;
 	println("RX MODE");
@@ -186,12 +174,11 @@ static void TRX_Start_RX()
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
 	NeedFFTReinit = true;
-	
-	//FPGA_NeedRestart_TX = true;
+
+	// FPGA_NeedRestart_TX = true;
 }
 
-static void TRX_Start_TX()
-{
+static void TRX_Start_TX() {
 	if (TRX_TXRXMode == 2)
 		return;
 	println("TX MODE");
@@ -207,8 +194,7 @@ static void TRX_Start_TX()
 	NeedFFTReinit = true;
 }
 
-static void TRX_Start_TXRX()
-{
+static void TRX_Start_TXRX() {
 	if (TRX_TXRXMode == 3)
 		return;
 	println("TXRX MODE");
@@ -222,19 +208,17 @@ static void TRX_Start_TXRX()
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
 	NeedFFTReinit = true;
-	
-	//FPGA_NeedRestart_TX = true;
+
+	// FPGA_NeedRestart_TX = true;
 }
 
-void TRX_ptt_change(void)
-{
+void TRX_ptt_change(void) {
 	TRX_Inactive_Time = 0;
 	if (TRX_Tune)
 		TRX_Tune = false;
 
 	bool notx = TRX_TX_Disabled(CurrentVFO->Freq);
-	if (notx)
-	{
+	if (notx) {
 		TRX_ptt_soft = false;
 		TRX_ptt_hard = false;
 		return;
@@ -248,11 +232,10 @@ void TRX_ptt_change(void)
 	}
 
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
-	if (TRX_ptt_hard != TRX_new_ptt_hard)
-	{
-		if (TRX.Auto_Input_Switch)
-		{
-			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
+	if (TRX_ptt_hard != TRX_new_ptt_hard) {
+		if (TRX.Auto_Input_Switch) {
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY ||
+			    CurrentVFO->Mode == TRX_MODE_IQ)
 				TRX.InputType_DIGI = TRX_INPUT_MIC;
 			else
 				TRX.InputType_MAIN = TRX_INPUT_MIC;
@@ -266,11 +249,10 @@ void TRX_ptt_change(void)
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
 	}
-	if (TRX_ptt_soft != TRX_old_ptt_soft)
-	{
-		if (TRX.Auto_Input_Switch)
-		{
-			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
+	if (TRX_ptt_soft != TRX_old_ptt_soft) {
+		if (TRX.Auto_Input_Switch) {
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY ||
+			    CurrentVFO->Mode == TRX_MODE_IQ)
 				TRX.InputType_DIGI = TRX_INPUT_USB;
 			else
 				TRX.InputType_MAIN = TRX_INPUT_USB;
@@ -284,12 +266,10 @@ void TRX_ptt_change(void)
 	}
 }
 
-bool TRX_TX_Disabled(uint64_t freq)
-{
+bool TRX_TX_Disabled(uint64_t freq) {
 	bool notx = false;
 	int8_t band = getBandFromFreq(freq, false);
-	switch (band)
-	{
+	switch (band) {
 	case BANDID_2200m:
 		if (CALIBRATE.NOTX_2200m)
 			notx = true;
@@ -379,8 +359,7 @@ bool TRX_TX_Disabled(uint64_t freq)
 	return notx;
 }
 
-void TRX_setFrequency(uint64_t _freq, VFO *vfo)
-{
+void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	if (_freq < 1)
 		return;
 
@@ -407,7 +386,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 	uint64_t dcdc_1_harmonic_high_diff = llabs((int64_t)dcdc_1_harmonic_high - (int64_t)_freq);
 	uint64_t dcdc_0_harmonic_nearest = dcdc_0_harmonic_1ow_diff < dcdc_0_harmonic_high_diff ? dcdc_0_harmonic_1ow_diff : dcdc_0_harmonic_high_diff;
 	uint64_t dcdc_1_harmonic_nearest = dcdc_1_harmonic_1ow_diff < dcdc_1_harmonic_high_diff ? dcdc_1_harmonic_1ow_diff : dcdc_1_harmonic_high_diff;
-	
+
 	if (dcdc_0_harmonic_nearest < dcdc_1_harmonic_nearest)
 		TRX_DCDC_Freq = 1;
 	else
@@ -425,7 +404,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 		vfoa_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfoa_freq - BANDS[BANDID_6cm].startFreq);
 	if (TRX.Transverter_3cm && getBandFromFreq(vfoa_freq, true) == BANDID_3cm)
 		vfoa_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfoa_freq - BANDS[BANDID_3cm].startFreq);
-	
+
 	CurrentVFO->RealRXFreq = vfoa_freq;
 	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
 
@@ -466,15 +445,12 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 
 	// get band
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, true);
-	if (bandFromFreq >= 0)
-	{
+	if (bandFromFreq >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
 	}
-	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap)
-	{
+	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap) {
 		uint_fast8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
-		if (vfo->Mode != mode_from_bandmap)
-		{
+		if (vfo->Mode != mode_from_bandmap) {
 			TRX_setMode(mode_from_bandmap, vfo);
 			TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Mode = mode_from_bandmap;
 			LCD_UpdateQuery.TopButtons = true;
@@ -482,28 +458,24 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo)
 	}
 
 	// SPLIT freq secondary VFO sync
-	if (TRX.SPLIT_Enabled && vfo == CurrentVFO)
-	{
+	if (TRX.SPLIT_Enabled && vfo == CurrentVFO) {
 		TRX_setFrequency(SecondaryVFO->Freq + freq_diff, SecondaryVFO);
 	}
 }
 
-void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo)
-{
+void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo) {
 	TRX_setFrequency((uint32_t)_freq, vfo);
 	TRX_freq_phrase_tx = getTXPhraseFromFrequency(_freq);
 	FPGA_NeedSendParams = true;
 }
 
-void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
-{
+void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 	uint_fast8_t old_mode = vfo->Mode;
 	vfo->Mode = _mode;
 	if (vfo->Mode == TRX_MODE_LOOPBACK)
 		TRX_Start_TXRX();
 
-	switch (_mode)
-	{
+	switch (_mode) {
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
 		vfo->LPF_RX_Filter_Width = TRX.AM_LPF_RX_Filter;
@@ -546,7 +518,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	}
-	
+
 	// reset zoom on WFM
 	if (vfo->Mode != old_mode && vfo->Mode == TRX_MODE_WFM && TRX.FFT_Zoom != 1) {
 		TRX.FFT_Zoom = 1;
@@ -554,8 +526,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	}
 
 	// FFT Zoom change
-	if (TRX.FFT_Zoom != TRX.FFT_ZoomCW)
-	{
+	if (TRX.FFT_Zoom != TRX.FFT_ZoomCW) {
 		if (old_mode == TRX_MODE_CW && _mode != TRX_MODE_CW)
 			NeedFFTReinit = true;
 		if (old_mode != TRX_MODE_CW && _mode == TRX_MODE_CW)
@@ -563,19 +534,21 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	}
 
 	// FM Samplerate change
-	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && old_mode != TRX_MODE_WFM && old_mode != TRX_MODE_NFM && (_mode == TRX_MODE_WFM || _mode == TRX_MODE_NFM))
+	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && old_mode != TRX_MODE_WFM && old_mode != TRX_MODE_NFM &&
+	    (_mode == TRX_MODE_WFM || _mode == TRX_MODE_NFM))
 		NeedFFTReinit = true;
-	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && (old_mode == TRX_MODE_WFM || old_mode == TRX_MODE_NFM) && _mode != TRX_MODE_WFM && _mode != TRX_MODE_NFM)
+	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && (old_mode == TRX_MODE_WFM || old_mode == TRX_MODE_NFM) && _mode != TRX_MODE_WFM &&
+	    _mode != TRX_MODE_NFM)
 		NeedFFTReinit = true;
 
 	if (old_mode != _mode) {
 		TRX_TemporaryMute();
 		NeedReinitAudioFiltersClean = true;
 	}
-	
+
 	CODEC_TXRX_mode();
 	FRONTPANEL_ENC2SW_validate();
-	
+
 	NeedReinitNotch = true;
 	NeedReinitAudioFilters = true;
 	NeedSaveSettings = true;
@@ -584,20 +557,16 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo)
 	NeedWTFRedraw = true;
 }
 
-void TRX_DoAutoGain(void)
-{
+void TRX_DoAutoGain(void) {
 	uint8_t skip_cycles = 0;
-	if (skip_cycles > 0)
-	{
+	if (skip_cycles > 0) {
 		skip_cycles--;
 		return;
 	}
 
 	// Process AutoGain feature
-	if (TRX.AutoGain && !TRX_on_TX)
-	{
-		if (!TRX.ATT)
-		{
+	if (TRX.AutoGain && !TRX_on_TX) {
+		if (!TRX.ATT) {
 			TRX.ATT = true;
 			LCD_UpdateQuery.TopButtons = true;
 		}
@@ -612,23 +581,19 @@ void TRX_DoAutoGain(void)
 		else if (max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && new_att_val > 0.0f)
 			new_att_val -= 0.5f;
 
-		#ifndef FRONTPANEL_LITE
-		if (new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_Driver)
-		{
+#ifndef FRONTPANEL_LITE
+		if (new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_Driver) {
 			TRX.ADC_Driver = true;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
-		}
-		else if (new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_PGA)
-		{
+		} else if (new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_PGA) {
 			TRX.ADC_PGA = true;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
 		}
-		#endif
+#endif
 
-		if (new_att_val != TRX.ATT_DB)
-		{
+		if (new_att_val != TRX.ATT_DB) {
 			TRX.ATT_DB = new_att_val;
 			LCD_UpdateQuery.TopButtons = true;
 			// save settings
@@ -640,23 +605,19 @@ void TRX_DoAutoGain(void)
 	}
 }
 
-void TRX_TemporaryMute(void)
-{
+void TRX_TemporaryMute(void) {
 	CODEC_Mute();
 	TRX_Temporary_Mute_StartTime = HAL_GetTick();
 }
 
 // process frequency scanner
-void TRX_ProcessScanMode(void)
-{
+void TRX_ProcessScanMode(void) {
 	static bool oldState = false;
 	static uint32_t StateChangeTime = 0;
 	bool goSweep = false;
 
-	if (CurrentVFO->Mode == TRX_MODE_WFM || CurrentVFO->Mode == TRX_MODE_NFM)
-	{
-		if (oldState != DFM_RX1.squelched)
-		{
+	if (CurrentVFO->Mode == TRX_MODE_WFM || CurrentVFO->Mode == TRX_MODE_NFM) {
+		if (oldState != DFM_RX1.squelched) {
 			oldState = DFM_RX1.squelched;
 			StateChangeTime = HAL_GetTick();
 		}
@@ -665,11 +626,8 @@ void TRX_ProcessScanMode(void)
 			goSweep = true;
 		if (!DFM_RX1.squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_FM))
 			goSweep = true;
-	}
-	else
-	{
-		if (oldState != VAD_RX1_Muting)
-		{
+	} else {
+		if (oldState != VAD_RX1_Muting) {
 			oldState = VAD_RX1_Muting;
 			StateChangeTime = HAL_GetTick();
 		}
@@ -680,10 +638,9 @@ void TRX_ProcessScanMode(void)
 			goSweep = true;
 	}
 
-	if (goSweep)
-	{
+	if (goSweep) {
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, false);
-		
+
 		if (TRX.ChannelMode && band != -1 && BANDS[band].channelsCount > 0) // channel mode
 		{
 			int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
@@ -692,25 +649,22 @@ void TRX_ProcessScanMode(void)
 				new_channel = BANDS[band].channelsCount - 1;
 			if (new_channel >= BANDS[band].channelsCount)
 				new_channel = 0;
-			
+
 			float64_t newfreq = BANDS[band].channels[new_channel].rxFreq;
 			TRX_setFrequency(newfreq, CurrentVFO);
-			
+
 			TRX.SPLIT_Enabled = (BANDS[band].channels[new_channel].rxFreq != BANDS[band].channels[new_channel].txFreq);
 			if (TRX.SPLIT_Enabled)
 				TRX_setFrequency(BANDS[band].channels[new_channel].txFreq, SecondaryVFO);
-			
+
 			LCD_UpdateQuery.FreqInfoRedraw = true;
-			//LCD_UpdateQuery.StatusInfoGUI = true;
-			//LCD_UpdateQuery.StatusInfoBarRedraw = true;
+			// LCD_UpdateQuery.StatusInfoGUI = true;
+			// LCD_UpdateQuery.StatusInfoBarRedraw = true;
 			StateChangeTime = HAL_GetTick();
-		}
-		else // common region mode
+		} else // common region mode
 		{
-			for (uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++)
-			{
-				if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO->Freq))
-				{
+			for (uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++) {
+				if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO->Freq)) {
 					uint32_t step = SCANNER_FREQ_STEP_OTHER;
 					if (CurrentVFO->Mode == TRX_MODE_WFM)
 						step = SCANNER_FREQ_STEP_WFM;
@@ -733,37 +687,30 @@ void TRX_ProcessScanMode(void)
 
 static uint64_t setFreqSlowly_target = 0;
 static bool setFreqSlowly_processing = 0;
-void TRX_setFrequencySlowly(uint64_t target_freq)
-{
+void TRX_setFrequencySlowly(uint64_t target_freq) {
 	setFreqSlowly_target = target_freq;
 	setFreqSlowly_processing = true;
 }
 
-void TRX_setFrequencySlowly_Process(void)
-{
+void TRX_setFrequencySlowly_Process(void) {
 	if (!setFreqSlowly_processing)
 		return;
 	int64_t diff = CurrentVFO->Freq - setFreqSlowly_target;
-	if (diff > TRX_SLOW_SETFREQ_MIN_STEPSIZE || diff < -TRX_SLOW_SETFREQ_MIN_STEPSIZE)
-	{
+	if (diff > TRX_SLOW_SETFREQ_MIN_STEPSIZE || diff < -TRX_SLOW_SETFREQ_MIN_STEPSIZE) {
 		TRX_setFrequency(CurrentVFO->Freq - diff / 4, CurrentVFO);
 		LCD_UpdateQuery.FreqInfo = true;
-	}
-	else
-	{
+	} else {
 		TRX_setFrequency(setFreqSlowly_target, CurrentVFO);
 		LCD_UpdateQuery.FreqInfo = true;
 		setFreqSlowly_processing = false;
 	}
 }
 
-void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder)
-{
+void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 	float64_t newfreq = (float64_t)CurrentVFO->Freq;
 	float64_t step = 0;
-	
-	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0)
-	{
+
+	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0) {
 		int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
 		int_fast16_t channel = getChannelbyFreq(CurrentVFO->Freq, false);
 		int_fast16_t new_channel = channel + direction;
@@ -779,15 +726,13 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder)
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;
-	}
-	else if (TRX.Fast)
-	{
+	} else if (TRX.Fast) {
 		step = TRX.FRQ_FAST_STEP;
 		if (CurrentVFO->Mode == TRX_MODE_CW)
 			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
 		if (CurrentVFO->Mode == TRX_MODE_WFM)
 			step = (float64_t)TRX.FRQ_ENC_WFM_STEP_KHZ * 1000.0f;
-		
+
 		if (secondary_encoder) {
 			step = TRX.FRQ_ENC_FAST_STEP;
 			if (CurrentVFO->Mode == TRX_MODE_WFM)
@@ -795,24 +740,23 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder)
 			if (CurrentVFO->Mode == TRX_MODE_CW)
 				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
 		}
-		
+
 		step = roundl(step);
-		if(step < 1.0f) step = 1.0f;
+		if (step < 1.0f)
+			step = 1.0f;
 
 		if (direction == -1.0f)
 			newfreq = ceill(newfreq / step) * step;
 		if (direction == 1.0f)
 			newfreq = floorl(newfreq / step) * step;
 		newfreq = newfreq + step * direction;
-	}
-	else
-	{
+	} else {
 		step = TRX.FRQ_STEP;
 		if (CurrentVFO->Mode == TRX_MODE_CW)
 			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
 		if (CurrentVFO->Mode == TRX_MODE_WFM)
 			step = (float64_t)TRX.FRQ_ENC_WFM_STEP_KHZ * 1000.0f;
-		
+
 		if (secondary_encoder) {
 			step = TRX.FRQ_ENC_STEP;
 			if (CurrentVFO->Mode == TRX_MODE_WFM)
@@ -820,9 +764,10 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder)
 			if (CurrentVFO->Mode == TRX_MODE_CW)
 				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
 		}
-		
+
 		step = roundl(step);
-		if(step < 1.0f) step = 1.0f;
+		if (step < 1.0f)
+			step = 1.0f;
 
 		if (direction == -1.0f)
 			newfreq = ceill(newfreq / step) * step;
@@ -830,27 +775,25 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder)
 			newfreq = floorl(newfreq / step) * step;
 		newfreq = newfreq + step * direction;
 	}
-	
+
 	TRX_setFrequency(newfreq, CurrentVFO);
 }
 
 /// BUTTON HANDLERS ///
 
-void BUTTONHANDLER_DOUBLE(uint32_t parameter)
-{
-	#if HRDW_HAS_DUAL_RX
+void BUTTONHANDLER_DOUBLE(uint32_t parameter) {
+#if HRDW_HAS_DUAL_RX
 	TRX.Dual_RX = !TRX.Dual_RX;
 	FPGA_NeedSendParams = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitAudioFilters = true;
-	#endif
-	
+#endif
+
 	LCD_UpdateQuery.TopButtons = true;
 }
 
-void BUTTONHANDLER_DOUBLEMODE(uint32_t parameter)
-{
-	#if HRDW_HAS_DUAL_RX
+void BUTTONHANDLER_DOUBLEMODE(uint32_t parameter) {
+#if HRDW_HAS_DUAL_RX
 	if (!TRX.Dual_RX)
 		return;
 
@@ -860,8 +803,8 @@ void BUTTONHANDLER_DOUBLEMODE(uint32_t parameter)
 		TRX.Dual_RX_Type = VFO_A_AND_B;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedReinitAudioFilters = true;
-	#endif
-	
+#endif
+
 	LCD_UpdateQuery.TopButtons = true;
 }
 
@@ -875,13 +818,10 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 
 	TRX.selected_vfo = !TRX.selected_vfo;
 	// VFO settings
-	if (!TRX.selected_vfo)
-	{
+	if (!TRX.selected_vfo) {
 		CurrentVFO = &TRX.VFO_A;
 		SecondaryVFO = &TRX.VFO_B;
-	}
-	else
-	{
+	} else {
 		CurrentVFO = &TRX.VFO_B;
 		SecondaryVFO = &TRX.VFO_A;
 	}
@@ -922,14 +862,11 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX_ScanMode = false;
 }
 
-void BUTTONHANDLER_TUNE(uint32_t parameter)
-{
-	if (!TRX_Tune)
-	{
+void BUTTONHANDLER_TUNE(uint32_t parameter) {
+	if (!TRX_Tune) {
 		APROC_TX_tune_power = 0.0f;
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-		if (band >= 0)
-		{
+		if (band >= 0) {
 			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I;
 			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C;
 			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T;
@@ -942,8 +879,7 @@ void BUTTONHANDLER_TUNE(uint32_t parameter)
 	TRX_Tune = !TRX_Tune;
 	TRX_ptt_hard = TRX_Tune;
 
-	if (TRX_TX_Disabled(CurrentVFO->Freq))
-	{
+	if (TRX_TX_Disabled(CurrentVFO->Freq)) {
 		TRX_Tune = false;
 		TRX_ptt_hard = false;
 	}
@@ -954,12 +890,10 @@ void BUTTONHANDLER_TUNE(uint32_t parameter)
 	TRX_Restart_Mode();
 }
 
-void BUTTONHANDLER_PRE(uint32_t parameter)
-{
+void BUTTONHANDLER_PRE(uint32_t parameter) {
 	TRX.LNA = !TRX.LNA;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
-	{
+	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].LNA = TRX.LNA;
 	}
 	LCD_UpdateQuery.TopButtons = true;
@@ -968,19 +902,17 @@ void BUTTONHANDLER_PRE(uint32_t parameter)
 	resetVAD();
 }
 
-void BUTTONHANDLER_ATT(uint32_t parameter)
-{
+void BUTTONHANDLER_ATT(uint32_t parameter) {
 	if (TRX.ATT && TRX.ATT_DB < 1.0f)
 		TRX.ATT_DB = TRX.ATT_STEP;
 	else
 		TRX.ATT = !TRX.ATT;
-	
+
 	if (TRX.ATT_DB < 1.0f)
 		TRX.ATT_DB = TRX.ATT_STEP;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
-	{
+	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
 		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
 	}
@@ -990,15 +922,13 @@ void BUTTONHANDLER_ATT(uint32_t parameter)
 	resetVAD();
 }
 
-void BUTTONHANDLER_ATTHOLD(uint32_t parameter)
-{
+void BUTTONHANDLER_ATTHOLD(uint32_t parameter) {
 	TRX.ATT_DB += TRX.ATT_STEP;
 	if (TRX.ATT_DB > 31.0f)
 		TRX.ATT_DB = TRX.ATT_STEP;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
-	{
+	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
 		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
 	}
@@ -1008,19 +938,16 @@ void BUTTONHANDLER_ATTHOLD(uint32_t parameter)
 	resetVAD();
 }
 
-void BUTTONHANDLER_ANT(uint32_t parameter)
-{
-	if(!TRX.ANT_mode && !TRX.ANT_selected) //ANT1->ANT2
+void BUTTONHANDLER_ANT(uint32_t parameter) {
+	if (!TRX.ANT_mode && !TRX.ANT_selected) // ANT1->ANT2
 	{
 		TRX.ANT_selected = true;
 		TRX.ANT_mode = false;
-	}
-	else if(!TRX.ANT_mode && TRX.ANT_selected) //ANT2->1T2
+	} else if (!TRX.ANT_mode && TRX.ANT_selected) // ANT2->1T2
 	{
 		TRX.ANT_selected = false;
 		TRX.ANT_mode = true;
-	}
-	else if(TRX.ANT_mode) //1T2->ANT1
+	} else if (TRX.ANT_mode) // 1T2->ANT1
 	{
 		TRX.ANT_selected = false;
 		TRX.ANT_mode = false;
@@ -1036,31 +963,22 @@ void BUTTONHANDLER_ANT(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_PGA(uint32_t parameter)
-{
-	if (!TRX.ADC_Driver && !TRX.ADC_PGA)
-	{
+void BUTTONHANDLER_PGA(uint32_t parameter) {
+	if (!TRX.ADC_Driver && !TRX.ADC_PGA) {
 		TRX.ADC_Driver = true;
 		TRX.ADC_PGA = false;
-	}
-	else if (TRX.ADC_Driver && !TRX.ADC_PGA)
-	{
+	} else if (TRX.ADC_Driver && !TRX.ADC_PGA) {
 		TRX.ADC_Driver = true;
 		TRX.ADC_PGA = true;
-	}
-	else if (TRX.ADC_Driver && TRX.ADC_PGA)
-	{
+	} else if (TRX.ADC_Driver && TRX.ADC_PGA) {
 		TRX.ADC_Driver = false;
 		TRX.ADC_PGA = true;
-	}
-	else if (!TRX.ADC_Driver && TRX.ADC_PGA)
-	{
+	} else if (!TRX.ADC_Driver && TRX.ADC_PGA) {
 		TRX.ADC_Driver = false;
 		TRX.ADC_PGA = false;
 	}
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
-	{
+	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
 	}
@@ -1070,8 +988,7 @@ void BUTTONHANDLER_PGA(uint32_t parameter)
 	resetVAD();
 }
 
-void BUTTONHANDLER_PGA_ONLY(uint32_t parameter)
-{
+void BUTTONHANDLER_PGA_ONLY(uint32_t parameter) {
 	TRX.ADC_PGA = !TRX.ADC_PGA;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0)
@@ -1082,8 +999,7 @@ void BUTTONHANDLER_PGA_ONLY(uint32_t parameter)
 	resetVAD();
 }
 
-void BUTTONHANDLER_DRV_ONLY(uint32_t parameter)
-{
+void BUTTONHANDLER_DRV_ONLY(uint32_t parameter) {
 	TRX.ADC_Driver = !TRX.ADC_Driver;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0)
@@ -1094,15 +1010,13 @@ void BUTTONHANDLER_DRV_ONLY(uint32_t parameter)
 	resetVAD();
 }
 
-void BUTTONHANDLER_FAST(uint32_t parameter)
-{
+void BUTTONHANDLER_FAST(uint32_t parameter) {
 	TRX.Fast = !TRX.Fast;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_MODE_P(uint32_t parameter)
-{
+void BUTTONHANDLER_MODE_P(uint32_t parameter) {
 	int8_t mode = (int8_t)CurrentVFO->Mode;
 	if (mode == TRX_MODE_LSB)
 		mode = TRX_MODE_USB;
@@ -1124,13 +1038,10 @@ void BUTTONHANDLER_MODE_P(uint32_t parameter)
 		mode = TRX_MODE_SAM;
 	else if (mode == TRX_MODE_SAM)
 		mode = TRX_MODE_IQ;
-	else if (mode == TRX_MODE_IQ)
-	{
+	else if (mode == TRX_MODE_IQ) {
 		mode = TRX_MODE_LOOPBACK;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
-	}
-	else if (mode == TRX_MODE_LOOPBACK)
-	{
+	} else if (mode == TRX_MODE_LOOPBACK) {
 		mode = TRX_MODE_AM;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	}
@@ -1144,8 +1055,7 @@ void BUTTONHANDLER_MODE_P(uint32_t parameter)
 	TRX_ScanMode = false;
 }
 
-void BUTTONHANDLER_MODE_N(uint32_t parameter)
-{
+void BUTTONHANDLER_MODE_N(uint32_t parameter) {
 	int8_t mode = (int8_t)CurrentVFO->Mode;
 	if (mode == TRX_MODE_LOOPBACK)
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
@@ -1159,8 +1069,7 @@ void BUTTONHANDLER_MODE_N(uint32_t parameter)
 		mode = TRX_MODE_NFM;
 	else if (mode == TRX_MODE_NFM || mode == TRX_MODE_WFM)
 		mode = TRX_MODE_AM;
-	else
-	{
+	else {
 		if (CurrentVFO->Freq < 10000000)
 			mode = TRX_MODE_LSB;
 		else
@@ -1176,8 +1085,7 @@ void BUTTONHANDLER_MODE_N(uint32_t parameter)
 	TRX_ScanMode = false;
 }
 
-void BUTTONHANDLER_BAND_P(uint32_t parameter)
-{
+void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 	// TX block
 	if (TRX_on_TX)
 		return;
@@ -1186,8 +1094,7 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter)
 	band++;
 	if (band >= BANDS_COUNT)
 		band = 0;
-	while (!BANDS[band].selectable)
-	{
+	while (!BANDS[band].selectable) {
 		band++;
 		if (band >= BANDS_COUNT)
 			band = 0;
@@ -1195,8 +1102,7 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter)
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
-	{
+	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
 		TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
 		FFT_Init();
 		NeedReinitAudioFilters = true;
@@ -1229,8 +1135,7 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter)
 	TRX_DXCluster_UpdateTime = 0;
 }
 
-void BUTTONHANDLER_BAND_N(uint32_t parameter)
-{
+void BUTTONHANDLER_BAND_N(uint32_t parameter) {
 	// TX block
 	if (TRX_on_TX)
 		return;
@@ -1239,8 +1144,7 @@ void BUTTONHANDLER_BAND_N(uint32_t parameter)
 	band--;
 	if (band < 0)
 		band = BANDS_COUNT - 1;
-	while (!BANDS[band].selectable)
-	{
+	while (!BANDS[band].selectable) {
 		band--;
 		if (band < 0)
 			band = BANDS_COUNT - 1;
@@ -1248,8 +1152,7 @@ void BUTTONHANDLER_BAND_N(uint32_t parameter)
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
-	{
+	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
 		TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
 		FFT_Init();
 		NeedReinitAudioFilters = true;
@@ -1282,25 +1185,20 @@ void BUTTONHANDLER_BAND_N(uint32_t parameter)
 	TRX_DXCluster_UpdateTime = 0;
 }
 
-void BUTTONHANDLER_RF_POWER(uint32_t parameter)
-{
+void BUTTONHANDLER_RF_POWER(uint32_t parameter) {
 #ifdef HAS_TOUCHPAD
 	LCD_showRFPowerWindow();
 #else
-	if (!LCD_systemMenuOpened)
-	{
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_TRX_RFPOWER_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 #endif
 }
 
-void BUTTONHANDLER_AGC(uint32_t parameter)
-{
+void BUTTONHANDLER_AGC(uint32_t parameter) {
 	CurrentVFO->AGC = !CurrentVFO->AGC;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0)
@@ -1310,47 +1208,34 @@ void BUTTONHANDLER_AGC(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_AGC_SPEED(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_AGC_SPEED(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_AUDIO_AGC_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
-void BUTTONHANDLER_SQUELCH(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_SQUELCH(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_AUDIO_SQUELCH_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
-void BUTTONHANDLER_WPM(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_WPM(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_CW_WPM_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
-void BUTTONHANDLER_KEYER(uint32_t parameter)
-{
+void BUTTONHANDLER_KEYER(uint32_t parameter) {
 	TRX.CW_KEYER = !TRX.CW_KEYER;
 	if (TRX.CW_KEYER)
 		LCD_showTooltip("KEYER ON");
@@ -1358,21 +1243,16 @@ void BUTTONHANDLER_KEYER(uint32_t parameter)
 		LCD_showTooltip("KEYER OFF");
 }
 
-void BUTTONHANDLER_STEP(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_STEP(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_TRX_STEP_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
-void BUTTONHANDLER_DNR(uint32_t parameter)
-{
+void BUTTONHANDLER_DNR(uint32_t parameter) {
 	TRX_TemporaryMute();
 	InitNoiseReduction();
 	if (CurrentVFO->DNR_Type == 0)
@@ -1381,11 +1261,11 @@ void BUTTONHANDLER_DNR(uint32_t parameter)
 		CurrentVFO->DNR_Type = 2;
 	else
 		CurrentVFO->DNR_Type = 0;
-	
-	#ifdef STM32F407xx
+
+#ifdef STM32F407xx
 	if (CurrentVFO->DNR_Type == 2)
 		CurrentVFO->DNR_Type = 0;
-	#endif
+#endif
 
 	TRX.DNR_shadow = CurrentVFO->DNR_Type;
 
@@ -1396,30 +1276,23 @@ void BUTTONHANDLER_DNR(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_DNR_HOLD(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_DNR_HOLD(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_AUDIO_DNR_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
-void BUTTONHANDLER_NB(uint32_t parameter)
-{
+void BUTTONHANDLER_NB(uint32_t parameter) {
 	TRX.NOISE_BLANKER = !TRX.NOISE_BLANKER;
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_BW(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_BW(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		if (CurrentVFO->Mode == TRX_MODE_CW)
 			SYSMENU_AUDIO_BW_CW_HOTKEY();
@@ -1429,22 +1302,16 @@ void BUTTONHANDLER_BW(uint32_t parameter)
 			SYSMENU_AUDIO_BW_AM_HOTKEY();
 		else
 			SYSMENU_AUDIO_BW_SSB_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
-void BUTTONHANDLER_HPF(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_HPF(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_AUDIO_HPF_SSB_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
@@ -1463,23 +1330,19 @@ void BUTTONHANDLER_ArB(uint32_t parameter) // A=B
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_NOTCH(uint32_t parameter)
-{
+void BUTTONHANDLER_NOTCH(uint32_t parameter) {
 	TRX_TemporaryMute();
 
-	if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
-	{
+	if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width) {
 		CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
 		NeedReinitNotch = true;
 	}
 	CurrentVFO->ManualNotchFilter = false;
 
-	if (!CurrentVFO->AutoNotchFilter)
-	{
+	if (!CurrentVFO->AutoNotchFilter) {
 		InitAutoNotchReduction();
 		CurrentVFO->AutoNotchFilter = true;
-	}
-	else
+	} else
 		CurrentVFO->AutoNotchFilter = false;
 
 	LCD_UpdateQuery.StatusInfoGUI = true;
@@ -1488,8 +1351,7 @@ void BUTTONHANDLER_NOTCH(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter)
-{
+void BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter) {
 	if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
 		CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
 	CurrentVFO->AutoNotchFilter = false;
@@ -1505,12 +1367,11 @@ void BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_RIT(uint32_t parameter)
-{
+void BUTTONHANDLER_RIT(uint32_t parameter) {
 	TRX.RIT_Enabled = !TRX.RIT_Enabled;
-	if(TRX.RIT_Enabled) 
+	if (TRX.RIT_Enabled)
 		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
-	if(!TRX.RIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT)
+	if (!TRX.RIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT)
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	TRX.XIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
@@ -1522,12 +1383,11 @@ void BUTTONHANDLER_RIT(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_XIT(uint32_t parameter)
-{
+void BUTTONHANDLER_XIT(uint32_t parameter) {
 	TRX.XIT_Enabled = !TRX.XIT_Enabled;
-	if(TRX.XIT_Enabled) 
+	if (TRX.XIT_Enabled)
 		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
-	if(!TRX.XIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT)
+	if (!TRX.XIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT)
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	TRX.RIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
@@ -1539,8 +1399,7 @@ void BUTTONHANDLER_XIT(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_SPLIT(uint32_t parameter)
-{
+void BUTTONHANDLER_SPLIT(uint32_t parameter) {
 	TRX.SPLIT_Enabled = !TRX.SPLIT_Enabled;
 	TRX.XIT_Enabled = false;
 	TRX.RIT_Enabled = false;
@@ -1552,12 +1411,10 @@ void BUTTONHANDLER_SPLIT(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_LOCK(uint32_t parameter)
-{
+void BUTTONHANDLER_LOCK(uint32_t parameter) {
 	if (!LCD_systemMenuOpened)
 		TRX.Locked = !TRX.Locked;
-	else
-	{
+	else {
 		SYSMENU_hiddenmenu_enabled = true;
 		LCD_redraw(false);
 	}
@@ -1566,8 +1423,7 @@ void BUTTONHANDLER_LOCK(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_MENU(uint32_t parameter)
-{
+void BUTTONHANDLER_MENU(uint32_t parameter) {
 	if (!LCD_systemMenuOpened)
 		LCD_systemMenuOpened = true;
 	else
@@ -1575,22 +1431,17 @@ void BUTTONHANDLER_MENU(uint32_t parameter)
 	LCD_redraw(false);
 }
 
-void BUTTONHANDLER_MENUHOLD(uint32_t parameter)
-{
-	if (LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_MENUHOLD(uint32_t parameter) {
+	if (LCD_systemMenuOpened) {
 		SYSMENU_hiddenmenu_enabled = true;
 		LCD_redraw(false);
 		return;
-	}
-	else
-	{
+	} else {
 		BUTTONHANDLER_MENU(parameter);
 	}
 }
 
-void BUTTONHANDLER_MUTE(uint32_t parameter)
-{
+void BUTTONHANDLER_MUTE(uint32_t parameter) {
 	TRX_Mute = !TRX_Mute;
 	if (!TRX_Mute) {
 		TRX_AFAmp_Mute = false;
@@ -1600,8 +1451,7 @@ void BUTTONHANDLER_MUTE(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_MUTE_AFAMP(uint32_t parameter)
-{
+void BUTTONHANDLER_MUTE_AFAMP(uint32_t parameter) {
 	TRX_AFAmp_Mute = !TRX_AFAmp_Mute;
 	if (TRX_AFAmp_Mute)
 		CODEC_Mute_AF_AMP();
@@ -1613,8 +1463,7 @@ void BUTTONHANDLER_MUTE_AFAMP(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_BANDMAP(uint32_t parameter)
-{
+void BUTTONHANDLER_BANDMAP(uint32_t parameter) {
 	TRX.BandMapEnabled = !TRX.BandMapEnabled;
 
 	if (TRX.BandMapEnabled)
@@ -1626,8 +1475,7 @@ void BUTTONHANDLER_BANDMAP(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_VOX(uint32_t parameter)
-{
+void BUTTONHANDLER_VOX(uint32_t parameter) {
 	TRX.VOX = !TRX.VOX;
 
 	if (TRX.VOX)
@@ -1639,8 +1487,7 @@ void BUTTONHANDLER_VOX(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_AUTOGAINER(uint32_t parameter)
-{
+void BUTTONHANDLER_AUTOGAINER(uint32_t parameter) {
 	TRX.AutoGain = !TRX.AutoGain;
 
 	if (TRX.AutoGain)
@@ -1652,21 +1499,16 @@ void BUTTONHANDLER_AUTOGAINER(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_SERVICES(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_SERVICES(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_HANDL_SERVICESMENU(1);
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseSystemMenu();
 	}
 }
 
-void BUTTONHANDLER_SQL(uint32_t parameter)
-{
+void BUTTONHANDLER_SQL(uint32_t parameter) {
 	CurrentVFO->SQL = !CurrentVFO->SQL;
 	TRX.SQL_shadow = CurrentVFO->SQL;
 
@@ -1678,15 +1520,13 @@ void BUTTONHANDLER_SQL(uint32_t parameter)
 	NeedSaveSettings = true;
 }
 
-void BUTTONHANDLER_SCAN(uint32_t parameter)
-{
+void BUTTONHANDLER_SCAN(uint32_t parameter) {
 	TRX_ScanMode = !TRX_ScanMode;
 	LCD_UpdateQuery.TopButtons = true;
 }
 
-void BUTTONHANDLER_PLAY(uint32_t parameter)
-{
-	#if HRDW_HAS_SD
+void BUTTONHANDLER_PLAY(uint32_t parameter) {
+#if HRDW_HAS_SD
 	if (SD_RecordInProcess)
 		SD_NeedStopRecord = true;
 
@@ -1699,67 +1539,62 @@ void BUTTONHANDLER_PLAY(uint32_t parameter)
 	dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
 	strcat((char *)SD_workbuffer_A, SD_CQ_MESSAGE_FILE);
 	SD_doCommand(SDCOMM_START_PLAY, false);
-	#endif
-	
+#endif
+
 	LCD_UpdateQuery.TopButtons = true;
 }
 
-void BUTTONHANDLER_REC(uint32_t parameter)
-{
-	#if HRDW_HAS_SD
+void BUTTONHANDLER_REC(uint32_t parameter) {
+#if HRDW_HAS_SD
 	if (!SD_RecordInProcess)
 		SD_doCommand(SDCOMM_START_RECORD, false);
 	else
 		SD_NeedStopRecord = true;
-	#endif
-	
+#endif
+
 	LCD_UpdateQuery.TopButtons = true;
 }
 
-void BUTTONHANDLER_FUNC(uint32_t parameter)
-{
+void BUTTONHANDLER_FUNC(uint32_t parameter) {
 	if (!TRX.Locked) // LOCK BUTTON
-		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu)
+		if (!LCD_systemMenuOpened ||
+		    PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu)
 			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].clickHandler(0);
 }
 
-void BUTTONHANDLER_FUNCH(uint32_t parameter)
-{
-	if (parameter == 7 && LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_FUNCH(uint32_t parameter) {
+	if (parameter == 7 && LCD_systemMenuOpened) {
 		SYSMENU_hiddenmenu_enabled = true;
 		LCD_redraw(false);
-	}
-	else if (!TRX.Locked || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler == BUTTONHANDLER_LOCK) // LOCK BUTTON
-		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu)
+	} else if (!TRX.Locked ||
+	           PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler ==
+	               BUTTONHANDLER_LOCK) // LOCK BUTTON
+		if (!LCD_systemMenuOpened ||
+		    PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu)
 			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler(0);
 }
 
-void BUTTONHANDLER_UP(uint32_t parameter)
-{
+void BUTTONHANDLER_UP(uint32_t parameter) {
 	uint32_t newfreq = CurrentVFO->Freq + 500;
 	newfreq = newfreq / 500 * 500;
 	TRX_setFrequency(newfreq, CurrentVFO);
 	LCD_UpdateQuery.FreqInfo = true;
 }
 
-void BUTTONHANDLER_DOWN(uint32_t parameter)
-{
+void BUTTONHANDLER_DOWN(uint32_t parameter) {
 	uint32_t newfreq = CurrentVFO->Freq - 500;
 	newfreq = newfreq / 500 * 500;
 	TRX_setFrequency(newfreq, CurrentVFO);
 	LCD_UpdateQuery.FreqInfo = true;
 }
 
-void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter)
-{
+void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter) {
 	int8_t band = parameter;
 	if (band >= BANDS_COUNT)
 		band = 0;
 
 	// manual freq enter
-	if (LCD_window.opened && TRX.BANDS_SAVED_SETTINGS[band].Freq == CurrentVFO->Freq)
-	{
+	if (LCD_window.opened && TRX.BANDS_SAVED_SETTINGS[band].Freq == CurrentVFO->Freq) {
 		TRX_Temporary_Stop_BandMap = false;
 		resetVAD();
 		TRX_ScanMode = false;
@@ -1772,8 +1607,7 @@ void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter)
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
-	{
+	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
 		TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
 		FFT_Init();
 		NeedReinitAudioFilters = true;
@@ -1808,15 +1642,13 @@ void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter)
 	TRX_DXCluster_UpdateTime = 0;
 }
 
-void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter)
-{
+void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter) {
 	int8_t band = parameter;
 	if (band >= BANDS_COUNT)
 		band = 0;
 
 	// manual freq enter
-	if (LCD_window.opened && TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_A.Freq)
-	{
+	if (LCD_window.opened && TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_A.Freq) {
 		TRX_Temporary_Stop_BandMap = false;
 		resetVAD();
 		TRX_ScanMode = false;
@@ -1829,8 +1661,7 @@ void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter)
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_A);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_A);
-	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
-	{
+	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
 		TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
 		FFT_Init();
 		NeedReinitAudioFilters = true;
@@ -1865,15 +1696,13 @@ void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter)
 	TRX_DXCluster_UpdateTime = 0;
 }
 
-void BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter)
-{
+void BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter) {
 	int8_t band = parameter;
 	if (band >= BANDS_COUNT)
 		band = 0;
 
 	// manual freq enter
-	if (TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_B.Freq)
-	{
+	if (TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_B.Freq) {
 		TRX_Temporary_Stop_BandMap = false;
 		resetVAD();
 		TRX_ScanMode = false;
@@ -1902,8 +1731,7 @@ void BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter)
 	TRX_DXCluster_UpdateTime = 0;
 }
 
-void BUTTONHANDLER_SETMODE(uint32_t parameter)
-{
+void BUTTONHANDLER_SETMODE(uint32_t parameter) {
 	int8_t mode = parameter;
 	TRX_setMode((uint8_t)mode, &TRX.VFO_A);
 	int8_t band = getBandFromFreq(TRX.VFO_A.Freq, true);
@@ -1911,8 +1739,7 @@ void BUTTONHANDLER_SETMODE(uint32_t parameter)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
 	resetVAD();
-	if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
-	{
+	if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width) {
 		CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
 		NeedReinitNotch = true;
 	}
@@ -1920,8 +1747,7 @@ void BUTTONHANDLER_SETMODE(uint32_t parameter)
 	LCD_closeWindow();
 }
 
-void BUTTONHANDLER_SETSECMODE(uint32_t parameter)
-{
+void BUTTONHANDLER_SETSECMODE(uint32_t parameter) {
 	int8_t mode = parameter;
 	TRX_setMode((uint8_t)mode, &TRX.VFO_B);
 	int8_t band = getBandFromFreq(TRX.VFO_B.Freq, true);
@@ -1929,8 +1755,7 @@ void BUTTONHANDLER_SETSECMODE(uint32_t parameter)
 		TRX.BANDS_SAVED_SETTINGS[band].Mode = (uint8_t)mode;
 	TRX_Temporary_Stop_BandMap = true;
 	resetVAD();
-	if (SecondaryVFO->NotchFC > SecondaryVFO->LPF_RX_Filter_Width)
-	{
+	if (SecondaryVFO->NotchFC > SecondaryVFO->LPF_RX_Filter_Width) {
 		SecondaryVFO->NotchFC = SecondaryVFO->LPF_RX_Filter_Width;
 		NeedReinitNotch = true;
 	}
@@ -1938,8 +1763,7 @@ void BUTTONHANDLER_SETSECMODE(uint32_t parameter)
 	LCD_closeWindow();
 }
 
-void BUTTONHANDLER_SET_RX_BW(uint32_t parameter)
-{
+void BUTTONHANDLER_SET_RX_BW(uint32_t parameter) {
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		TRX.CW_LPF_Filter = parameter;
 	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB)
@@ -1957,8 +1781,7 @@ void BUTTONHANDLER_SET_RX_BW(uint32_t parameter)
 	LCD_closeWindow();
 }
 
-void BUTTONHANDLER_SET_TX_BW(uint32_t parameter)
-{
+void BUTTONHANDLER_SET_TX_BW(uint32_t parameter) {
 	if (CurrentVFO->Mode == TRX_MODE_CW)
 		TRX.CW_LPF_Filter = parameter;
 	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB)
@@ -1976,8 +1799,7 @@ void BUTTONHANDLER_SET_TX_BW(uint32_t parameter)
 	LCD_closeWindow();
 }
 
-void BUTTONHANDLER_SETRF_POWER(uint32_t parameter)
-{
+void BUTTONHANDLER_SETRF_POWER(uint32_t parameter) {
 	TRX.RF_Power = parameter;
 	APROC_TX_clip_gain = 1.0f;
 	APROC_TX_tune_power = 0.0f;
@@ -1985,13 +1807,11 @@ void BUTTONHANDLER_SETRF_POWER(uint32_t parameter)
 	LCD_closeWindow();
 }
 
-void BUTTONHANDLER_SET_ATT_DB(uint32_t parameter)
-{
+void BUTTONHANDLER_SET_ATT_DB(uint32_t parameter) {
 	TRX.ATT_DB = parameter;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
-	{
+	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].ATT = TRX.ATT;
 		TRX.BANDS_SAVED_SETTINGS[band].ATT_DB = TRX.ATT_DB;
 	}
@@ -2003,8 +1823,7 @@ void BUTTONHANDLER_SET_ATT_DB(uint32_t parameter)
 	LCD_closeWindow();
 }
 
-void BUTTONHANDLER_LEFT_ARR(uint32_t parameter)
-{
+void BUTTONHANDLER_LEFT_ARR(uint32_t parameter) {
 	if (TRX.FRONTPANEL_funcbuttons_page == 0)
 		TRX.FRONTPANEL_funcbuttons_page = (FUNCBUTTONS_PAGES - 1);
 	else
@@ -2014,8 +1833,7 @@ void BUTTONHANDLER_LEFT_ARR(uint32_t parameter)
 	LCD_UpdateQuery.TopButtons = true;
 }
 
-void BUTTONHANDLER_RIGHT_ARR(uint32_t parameter)
-{
+void BUTTONHANDLER_RIGHT_ARR(uint32_t parameter) {
 	if (TRX.FRONTPANEL_funcbuttons_page >= (FUNCBUTTONS_PAGES - 1))
 		TRX.FRONTPANEL_funcbuttons_page = 0;
 	else
@@ -2025,15 +1843,11 @@ void BUTTONHANDLER_RIGHT_ARR(uint32_t parameter)
 	LCD_UpdateQuery.TopButtons = true;
 }
 
-void BUTTONHANDLER_SAMPLE_N(uint32_t parameter)
-{
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM)
-	{
+void BUTTONHANDLER_SAMPLE_N(uint32_t parameter) {
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
 		if (TRX.SAMPLERATE_FM > 0)
 			TRX.SAMPLERATE_FM -= 1;
-	}
-	else
-	{
+	} else {
 		if (TRX.SAMPLERATE_MAIN > 0)
 			TRX.SAMPLERATE_MAIN -= 1;
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
@@ -2045,15 +1859,11 @@ void BUTTONHANDLER_SAMPLE_N(uint32_t parameter)
 	LCD_UpdateQuery.StatusInfoBar = true;
 }
 
-void BUTTONHANDLER_SAMPLE_P(uint32_t parameter)
-{
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM)
-	{
+void BUTTONHANDLER_SAMPLE_P(uint32_t parameter) {
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
 		if (TRX.SAMPLERATE_FM < 3)
 			TRX.SAMPLERATE_FM += 1;
-	}
-	else
-	{
+	} else {
 		if (TRX.SAMPLERATE_MAIN < 3)
 			TRX.SAMPLERATE_MAIN += 1;
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
@@ -2065,10 +1875,8 @@ void BUTTONHANDLER_SAMPLE_P(uint32_t parameter)
 	LCD_UpdateQuery.StatusInfoBar = true;
 }
 
-void BUTTONHANDLER_ZOOM_N(uint32_t parameter)
-{
-	if (CurrentVFO->Mode == TRX_MODE_CW)
-	{
+void BUTTONHANDLER_ZOOM_N(uint32_t parameter) {
+	if (CurrentVFO->Mode == TRX_MODE_CW) {
 		if (TRX.FFT_ZoomCW == 2)
 			TRX.FFT_ZoomCW = 1;
 		else if (TRX.FFT_ZoomCW == 4)
@@ -2077,9 +1885,7 @@ void BUTTONHANDLER_ZOOM_N(uint32_t parameter)
 			TRX.FFT_ZoomCW = 4;
 		else if (TRX.FFT_ZoomCW == 16)
 			TRX.FFT_ZoomCW = 8;
-	}
-	else
-	{
+	} else {
 		if (TRX.FFT_Zoom == 2)
 			TRX.FFT_Zoom = 1;
 		else if (TRX.FFT_Zoom == 4)
@@ -2094,10 +1900,8 @@ void BUTTONHANDLER_ZOOM_N(uint32_t parameter)
 	LCD_UpdateQuery.StatusInfoBar = true;
 }
 
-void BUTTONHANDLER_ZOOM_P(uint32_t parameter)
-{
-	if (CurrentVFO->Mode == TRX_MODE_CW)
-	{
+void BUTTONHANDLER_ZOOM_P(uint32_t parameter) {
+	if (CurrentVFO->Mode == TRX_MODE_CW) {
 		if (TRX.FFT_ZoomCW == 1)
 			TRX.FFT_ZoomCW = 2;
 		else if (TRX.FFT_ZoomCW == 2)
@@ -2106,9 +1910,7 @@ void BUTTONHANDLER_ZOOM_P(uint32_t parameter)
 			TRX.FFT_ZoomCW = 8;
 		else if (TRX.FFT_ZoomCW == 8)
 			TRX.FFT_ZoomCW = 16;
-	}
-	else
-	{
+	} else {
 		if (TRX.FFT_Zoom == 1)
 			TRX.FFT_Zoom = 2;
 		else if (TRX.FFT_Zoom == 2)
@@ -2123,16 +1925,14 @@ void BUTTONHANDLER_ZOOM_P(uint32_t parameter)
 	LCD_UpdateQuery.StatusInfoBar = true;
 }
 
-void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter)
-{
+void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 	int8_t channel = parameter;
 	if (channel >= MEMORY_CHANNELS_COUNT)
 		channel = 0;
 
 	TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].Freq, CurrentVFO);
 	TRX_setMode(CALIBRATE.MEMORY_CHANNELS[channel].Mode, CurrentVFO);
-	if (TRX.SAMPLERATE_MAIN != CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE)
-	{
+	if (TRX.SAMPLERATE_MAIN != CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE) {
 		TRX.SAMPLERATE_MAIN = CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE;
 		FFT_Init();
 		NeedReinitAudioFilters = true;
@@ -2162,8 +1962,7 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter)
 	TRX_DXCluster_UpdateTime = 0;
 }
 
-void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter)
-{
+void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 	int8_t channel = parameter;
 	if (channel >= MEMORY_CHANNELS_COUNT)
 		channel = 0;
@@ -2190,125 +1989,105 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter)
 	LCD_showTooltip("Channel saved");
 }
 
-void BUTTONHANDLER_SET_BAND_MEMORY(uint32_t parameter)
-{
+void BUTTONHANDLER_SET_BAND_MEMORY(uint32_t parameter) {
 	int8_t band = parameter;
 	if (band >= BANDS_COUNT)
 		band = 0;
 	if (band < 0)
 		return;
-	
+
 	int8_t currentband = getBandFromFreq(CurrentVFO->Freq, true);
-	if(currentband != band) {
+	if (currentband != band) {
 		BUTTONHANDLER_GET_BAND_MEMORY(parameter);
 		return;
 	}
-	
-	//slide mems
+
+	// slide mems
 	for (uint8_t j = BANDS_MEMORIES_COUNT - 1; j > 0; j--)
 		CALIBRATE.BAND_MEMORIES[band][j] = CALIBRATE.BAND_MEMORIES[band][j - 1];
-	
+
 	CALIBRATE.BAND_MEMORIES[band][0] = CurrentVFO->Freq;
-	
+
 	LCD_showTooltip("Band mem saved");
 	NeedSaveCalibration = true;
 }
 
-void BUTTONHANDLER_GET_BAND_MEMORY(uint32_t parameter)
-{
+void BUTTONHANDLER_GET_BAND_MEMORY(uint32_t parameter) {
 	int8_t band = parameter;
 	if (band >= BANDS_COUNT)
 		band = 0;
 	if (band < 0)
 		return;
-	
+
 	int8_t currentband = getBandFromFreq(CurrentVFO->Freq, true);
-	if(currentband != band) {
+	if (currentband != band) {
 		BUTTONHANDLER_SET_CUR_VFO_BAND(band);
 		return;
 	}
-	
+
 	int8_t mem_num = -1;
 	for (uint8_t j = 0; j < BANDS_MEMORIES_COUNT; j++) {
-		if(CALIBRATE.BAND_MEMORIES[band][j] == CurrentVFO->Freq)
-		{
+		if (CALIBRATE.BAND_MEMORIES[band][j] == CurrentVFO->Freq) {
 			mem_num = j;
 			break;
 		}
 	}
-	
+
 	mem_num++;
-	if(mem_num >= BANDS_MEMORIES_COUNT)
+	if (mem_num >= BANDS_MEMORIES_COUNT)
 		mem_num = 0;
-	
-	if(CALIBRATE.BAND_MEMORIES[band][mem_num] == 0) {
+
+	if (CALIBRATE.BAND_MEMORIES[band][mem_num] == 0) {
 		return;
 	}
-	
+
 	println("Get band memory: ", (int16_t)band, " ", (int16_t)mem_num, " ", CALIBRATE.BAND_MEMORIES[band][mem_num]);
-	
+
 	BUTTONHANDLER_SET_CUR_VFO_BAND(band);
 	TRX_setFrequency(CALIBRATE.BAND_MEMORIES[band][mem_num], CurrentVFO);
 	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 }
 
-void BUTTONHANDLER_FILEMANAGER(uint32_t parameter)
-{
-	#if HRDW_HAS_SD
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_FILEMANAGER(uint32_t parameter) {
+#if HRDW_HAS_SD
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_SD_FILEMANAGER_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
-	#endif
+#endif
 }
 
-void BUTTONHANDLER_FT8(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_FT8(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_SERVICE_FT8_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
-void BUTTONHANDLER_IF(uint32_t parameter)
-{
-	if (!LCD_systemMenuOpened)
-	{
+void BUTTONHANDLER_IF(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_AUDIO_IF_HOTKEY();
-	}
-	else
-	{
+	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
 }
 
-void BUTTONHANDLER_VLT(uint32_t parameter)
-{
-	#if FRONTPANEL_X1
+void BUTTONHANDLER_VLT(uint32_t parameter) {
+#if FRONTPANEL_X1
 	TRX_X1_VLT_CUR_Mode = !TRX_X1_VLT_CUR_Mode;
 	LCD_UpdateQuery.StatusInfoBar = true;
 	LCD_UpdateQuery.TopButtons = true;
-	#endif
+#endif
 }
 
-void BUTTONHANDLER_SNAP(uint32_t parameter)
-{
-	SNAP_DoSnap(false);
-}
+void BUTTONHANDLER_SNAP(uint32_t parameter) { SNAP_DoSnap(false); }
 
-void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter)
-{
+void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter) {
 	TRX.Auto_Snap = !TRX.Auto_Snap;
 
 	if (TRX.Auto_Snap)

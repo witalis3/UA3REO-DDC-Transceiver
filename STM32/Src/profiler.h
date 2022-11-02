@@ -16,11 +16,11 @@ typedef struct // profiler structure
 } PROFILE_INFO;
 
 // Public methods
-extern void InitProfiler(void);						  // initialize the profiler
-extern void StartProfiler(uint8_t pid);				  // start profiler
+extern void InitProfiler(void);                       // initialize the profiler
+extern void StartProfiler(uint8_t pid);               // start profiler
 extern void EndProfiler(uint8_t pid, bool summarize); // terminate the profiler
-extern void PrintProfilerResult(void);				  // output the profiler results
-extern void StartProfilerUs(void);					  // run profiler in microseconds
-extern void EndProfilerUs(bool summarize);			  // complete profiler in microseconds
+extern void PrintProfilerResult(void);                // output the profiler results
+extern void StartProfilerUs(void);                    // run profiler in microseconds
+extern void EndProfilerUs(bool summarize);            // complete profiler in microseconds
 
 #endif

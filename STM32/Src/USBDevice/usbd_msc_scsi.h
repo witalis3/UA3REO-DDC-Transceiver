@@ -1,46 +1,45 @@
 /**
-  ******************************************************************************
-  * @file    usbd_msc_scsi.h
-  * @author  MCD Application Team
-  * @brief   Header for the usbd_msc_scsi.c file
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2015 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under Ultimate Liberty license
-  * SLA0044, the "License"; You may not use this file except in compliance with
-  * the License. You may obtain a copy of the License at:
-  *                      www.st.com/SLA0044
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    usbd_msc_scsi.h
+ * @author  MCD Application Team
+ * @brief   Header for the usbd_msc_scsi.c file
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2015 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under Ultimate Liberty license
+ * SLA0044, the "License"; You may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at:
+ *                      www.st.com/SLA0044
+ *
+ ******************************************************************************
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __USBD_MSC_SCSI_H
 #define __USBD_MSC_SCSI_H
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_def.h"
 
-  /** @addtogroup STM32_USB_DEVICE_LIBRARY
-  * @{
-  */
+/** @addtogroup STM32_USB_DEVICE_LIBRARY
+ * @{
+ */
 
-  /** @defgroup USBD_SCSI
-  * @brief header file for the storage disk file
-  * @{
-  */
+/** @defgroup USBD_SCSI
+ * @brief header file for the storage disk file
+ * @{
+ */
 
-  /** @defgroup USBD_SCSI_Exported_Defines
-  * @{
-  */
+/** @defgroup USBD_SCSI_Exported_Defines
+ * @{
+ */
 
 #define SENSE_LIST_DEEPTH 4U
 
@@ -110,58 +109,54 @@ extern "C"
 #define SCSI_MEDIUM_UNLOCKED 0x00U
 #define SCSI_MEDIUM_LOCKED 0x01U
 #define SCSI_MEDIUM_EJECTED 0x02U
-  /**
-  * @}
-  */
+/**
+ * @}
+ */
 
-  /** @defgroup USBD_SCSI_Exported_TypesDefinitions
-  * @{
-  */
+/** @defgroup USBD_SCSI_Exported_TypesDefinitions
+ * @{
+ */
 
-  typedef struct _SENSE_ITEM
-  {
-    uint8_t Skey;
-    union
-    {
-      struct _ASCs
-      {
-        uint8_t ASC;
-        uint8_t ASCQ;
-      } b;
-      uint8_t ASC;
-      uint8_t *pData;
-    } w;
-  } USBD_SCSI_SenseTypeDef;
-  /**
-  * @}
-  */
+typedef struct _SENSE_ITEM {
+	uint8_t Skey;
+	union {
+		struct _ASCs {
+			uint8_t ASC;
+			uint8_t ASCQ;
+		} b;
+		uint8_t ASC;
+		uint8_t *pData;
+	} w;
+} USBD_SCSI_SenseTypeDef;
+/**
+ * @}
+ */
 
-  /** @defgroup USBD_SCSI_Exported_Macros
-  * @{
-  */
+/** @defgroup USBD_SCSI_Exported_Macros
+ * @{
+ */
 
-  /**
-  * @}
-  */
+/**
+ * @}
+ */
 
-  /** @defgroup USBD_SCSI_Exported_Variables
-  * @{
-  */
+/** @defgroup USBD_SCSI_Exported_Variables
+ * @{
+ */
 
-  /**
-  * @}
-  */
-  /** @defgroup USBD_SCSI_Exported_FunctionsPrototype
-  * @{
-  */
-  int8_t SCSI_ProcessCmd(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *cmd);
+/**
+ * @}
+ */
+/** @defgroup USBD_SCSI_Exported_FunctionsPrototype
+ * @{
+ */
+int8_t SCSI_ProcessCmd(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *cmd);
 
-  void SCSI_SenseCode(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t sKey,
-                      uint8_t ASC);
+void SCSI_SenseCode(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t sKey, uint8_t ASC);
 
-  /**
-  * @}
-  */
+/**
+ * @}
+ */
 
 #ifdef __cplusplus
 }
@@ -169,15 +164,15 @@ extern "C"
 
 #endif /* __USBD_MSC_SCSI_H */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-* @}
-*/
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

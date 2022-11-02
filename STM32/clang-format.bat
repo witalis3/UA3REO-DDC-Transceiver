@@ -1,0 +1,9 @@
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i Src/*
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i Src/BiquadDesigner/*
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i Src/FT8/*
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i Src/JPEG/*
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i Src/USBDevice/*
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i WOLF/Inc/* WOLF/Src/*
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i WOLF-Lite/Core/Inc/* WOLF-Lite/Core/Src/*
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i WOLF-Mini/Inc/* WOLF-Mini/Src/*
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i WOLF-X1/Inc/* WOLF-X1/Src/*

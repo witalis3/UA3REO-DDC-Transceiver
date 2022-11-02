@@ -1,8 +1,8 @@
 #ifndef __EVENTS_H
 #define __EVENTS_H
 
-#include "main.h"
 #include "arm_math_types.h"
+#include "main.h"
 #include <stdbool.h>
 
 extern void EVENTS_do_WSPR(void);

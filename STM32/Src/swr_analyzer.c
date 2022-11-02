@@ -1,11 +1,11 @@
 #include "swr_analyzer.h"
-#include "main.h"
-#include "lcd_driver.h"
-#include "trx_manager.h"
-#include "functions.h"
 #include "fpga.h"
+#include "functions.h"
 #include "lcd.h"
+#include "lcd_driver.h"
+#include "main.h"
 #include "rf_unit.h"
+#include "trx_manager.h"
 
 // Private variables
 static const uint16_t graph_start_x = 25;
@@ -39,9 +39,9 @@ bool SYSMENU_swr_opened = false;
 bool SYSMENU_TDM_CTRL_opened = false; // Tisho
 
 // Prototypes
-static void SWR_DrawBottomGUI(void);				  // display status at the bottom of the screen
+static void SWR_DrawBottomGUI(void);                  // display status at the bottom of the screen
 static void SWR_DrawGraphCol(uint16_t x, bool clear); // display the data column
-static uint16_t SWR_getYfromX(uint16_t x);			  // get height from data id
+static uint16_t SWR_getYfromX(uint16_t x);            // get height from data id
 
 extern void TDM_Voltages_Start(void) // Tisho
 {
@@ -101,12 +101,12 @@ extern void TDM_Voltages(void) // Tisho
 	// Calculate the Forward values
 	P_FW_dBm = ((TRX_VLT_forward * 1000) - CALIBRATE.FW_AD8307_OFFS) / (CALIBRATE.FW_AD8307_SLP);
 	V_FW_Scaled = pow(10, (double)((P_FW_dBm - 10) / 20)); // Calculate in voltage (50ohm terminated)
-	P_FW_W = pow(10, (double)((P_FW_dBm - 30) / 10));	   // Calculate in W
+	P_FW_W = pow(10, (double)((P_FW_dBm - 30) / 10));      // Calculate in W
 
 	// Calculate the Backward values
 	P_BW_dBm = ((TRX_VLT_backward * 1000) - CALIBRATE.BW_AD8307_OFFS) / (CALIBRATE.BW_AD8307_SLP);
 	V_BW_Scaled = pow(10, (double)((P_BW_dBm - 10) / 20)); // Calculate in voltage (50ohm terminated)
-	P_BW_W = pow(10, (double)((P_BW_dBm - 30) / 10));	   // Calculate in W
+	P_BW_W = pow(10, (double)((P_BW_dBm - 30) / 10));      // Calculate in W
 
 	// Print the forward values
 	sprintf(ctmp, "FW: %.0f ", (double)TRX_VLT_forward * 1000);
@@ -156,8 +156,7 @@ extern void TDM_Voltages(void) // Tisho
 }
 
 // prepare the spectrum analyzer
-void SWR_Start(uint32_t start, uint32_t end)
-{
+void SWR_Start(uint32_t start, uint32_t end) {
 	LCD_busy = true;
 	startFreq = start;
 	endFreq = end;
@@ -182,8 +181,7 @@ void SWR_Start(uint32_t start, uint32_t end)
 	// vertical labels
 	float32_t vres = SWR_TopSWR - 1.0f;
 	float32_t partsize = vres / (SWR_VParts - 1);
-	for (uint8_t n = 0; n < SWR_VParts; n++)
-	{
+	for (uint8_t n = 0; n < SWR_VParts; n++) {
 		int32_t y = graph_start_y + (int32_t)(partsize * n * graph_height / vres);
 		sprintf(ctmp, "%.1f", (double)(SWR_TopSWR - partsize * n));
 		LCDDriver_printText(ctmp, 0, (uint16_t)y, COLOR_GREEN, COLOR_BLACK, 1);
@@ -208,8 +206,7 @@ void SWR_Start(uint32_t start, uint32_t end)
 	LCD_UpdateQuery.SystemMenu = true;
 }
 
-void SWR_Stop(void)
-{
+void SWR_Stop(void) {
 	TRX_setFrequency(Lastfreq, CurrentVFO);
 	TRX_Mute = LastMute;
 	TRX_Tune = false;
@@ -219,8 +216,7 @@ void SWR_Stop(void)
 }
 
 // draw the spectrum analyzer
-void SWR_Draw(void)
-{
+void SWR_Draw(void) {
 	static uint32_t minSWR_Freq_tmp = 0;
 	static float32_t minSWR_SWR_tmp = 99.0f;
 
@@ -228,8 +224,7 @@ void SWR_Draw(void)
 		return;
 
 	// Wait while data is being typed
-	if ((HAL_GetTick() - tick_start_time) < SWR_StepDelay)
-	{
+	if ((HAL_GetTick() - tick_start_time) < SWR_StepDelay) {
 		LCD_UpdateQuery.SystemMenu = true;
 		return;
 	}
@@ -242,21 +237,18 @@ void SWR_Draw(void)
 	RF_UNIT_ProcessSensors();
 
 	// Draw
-	if (graph_sweep_x < graph_width)
-	{
+	if (graph_sweep_x < graph_width) {
 		data[graph_sweep_x] = TRX_SWR;
 		SWR_DrawGraphCol(graph_sweep_x, true);
 		// draw a marker
 		if (graph_sweep_x == graph_selected_x)
 			SWR_DrawBottomGUI();
 		// calculate minimum SWR
-		if (minSWR_SWR_tmp > TRX_SWR)
-		{
+		if (minSWR_SWR_tmp > TRX_SWR) {
 			minSWR_SWR_tmp = TRX_SWR;
 			minSWR_Freq_tmp = (uint32_t)now_freq;
 		}
-		if (minSWR_SWR > TRX_SWR)
-		{
+		if (minSWR_SWR > TRX_SWR) {
 			minSWR_SWR = TRX_SWR;
 			minSWR_Freq = (uint32_t)now_freq;
 		}
@@ -264,8 +256,7 @@ void SWR_Draw(void)
 
 	// Move on to calculating the next step
 	graph_sweep_x++;
-	if (now_freq >= endFreq)
-	{
+	if (now_freq >= endFreq) {
 		graph_sweep_x = 0;
 		now_freq = startFreq;
 		// Minimum SWR
@@ -280,8 +271,7 @@ void SWR_Draw(void)
 }
 
 // get height from data id
-static uint16_t SWR_getYfromX(uint16_t x)
-{
+static uint16_t SWR_getYfromX(uint16_t x) {
 	int32_t y = graph_start_y + (int32_t)((SWR_TopSWR - data[x]) * (float32_t)(graph_height) / (SWR_TopSWR - 1.0f));
 	if (y < graph_start_y)
 		y = graph_start_y;
@@ -291,19 +281,18 @@ static uint16_t SWR_getYfromX(uint16_t x)
 }
 
 // display the data column
-static void SWR_DrawGraphCol(uint16_t x, bool clear)
-{
+static void SWR_DrawGraphCol(uint16_t x, bool clear) {
 	if (x >= graph_width)
 		return;
 
-	if (clear)
-	{
+	if (clear) {
 		// clear
 		LCDDriver_drawFastVLine((graph_start_x + x + 1), graph_start_y, graph_height - 1, COLOR_BLACK);
 		// draw stripes behind the chart
 		int16_t vres = SWR_TopSWR;
 		for (uint8_t n = 0; n < (SWR_VParts - 1); n++)
-			LCDDriver_drawPixel((graph_start_x + x + 1), (uint16_t)(graph_start_y + ((vres / (SWR_VParts - 1)) * n * graph_height / vres)), COLOR_DGRAY);
+			LCDDriver_drawPixel((graph_start_x + x + 1), (uint16_t)(graph_start_y + ((vres / (SWR_VParts - 1)) * n * graph_height / vres)),
+			                    COLOR_DGRAY);
 	}
 	// draw the graph
 	if (x > 0)
@@ -313,21 +302,19 @@ static void SWR_DrawGraphCol(uint16_t x, bool clear)
 }
 
 // display status at the bottom of the screen
-static void SWR_DrawBottomGUI(void)
-{
+static void SWR_DrawBottomGUI(void) {
 	char ctmp[64] = {0};
 	int32_t freq = (int32_t)startFreq + ((int32_t)(endFreq - startFreq) / (graph_width - 1) * graph_selected_x);
 	sprintf(ctmp, "Freq=%dkHz SWR=%.1f | MinSWR=%.1f on %dkHz", (freq / 1000), (double)data[graph_selected_x], minSWR_SWR, (minSWR_Freq / 1000));
-	#ifndef LCD_SMALL_INTERFACE
+#ifndef LCD_SMALL_INTERFACE
 	LCDDriver_Fill_RectWH(100, graph_start_y + graph_height + 3, 200, 6, COLOR_BLACK);
 	LCDDriver_printText(ctmp, 100, graph_start_y + graph_height + 3, COLOR_GREEN, COLOR_BLACK, 1);
-	#endif
+#endif
 	LCDDriver_drawFastVLine(graph_start_x + (uint16_t)graph_selected_x + 1, graph_start_y, graph_height, COLOR_GREEN);
 }
 
 // analyzer events to the encoder
-void SWR_EncRotate(int8_t direction)
-{
+void SWR_EncRotate(int8_t direction) {
 	if (LCD_busy)
 		return;
 	LCD_busy = true;

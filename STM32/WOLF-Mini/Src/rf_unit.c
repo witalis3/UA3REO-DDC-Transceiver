@@ -1,26 +1,22 @@
-#include "stm32h7xx_hal.h"
-#include "main.h"
 #include "rf_unit.h"
-#include "lcd.h"
-#include "trx_manager.h"
-#include "settings.h"
-#include "system_menu.h"
-#include "functions.h"
 #include "audio_filters.h"
 #include "front_unit.h"
+#include "functions.h"
+#include "lcd.h"
+#include "main.h"
+#include "settings.h"
+#include "stm32h7xx_hal.h"
+#include "system_menu.h"
+#include "trx_manager.h"
 
 bool ATU_TunePowerStabilized = false;
 
-void RF_UNIT_ATU_Invalidate(void)
-{
-	
-}
+void RF_UNIT_ATU_Invalidate(void) {}
 
-static uint8_t getBPFByFreq(uint32_t freq)
-{
+static uint8_t getBPFByFreq(uint32_t freq) {
 	if (!TRX.RF_Filters)
 		return 255;
-	
+
 	if (freq >= CALIBRATE.RFU_BPF_0_START && freq < CALIBRATE.RFU_BPF_0_END)
 		return 1;
 	if (freq >= CALIBRATE.RFU_BPF_1_START && freq < CALIBRATE.RFU_BPF_1_END)
@@ -44,33 +40,27 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {
 	float32_t att_val = TRX.ATT_DB;
 	bool att_val_16 = false, att_val_8 = false, att_val_4 = false, att_val_2 = false, att_val_1 = false, att_val_05 = false;
-	if (TRX.ATT && att_val >= 16.0f)
-	{
+	if (TRX.ATT && att_val >= 16.0f) {
 		att_val_16 = true;
 		att_val -= 16.0f;
 	}
-	if (TRX.ATT && att_val >= 8.0f)
-	{
+	if (TRX.ATT && att_val >= 8.0f) {
 		att_val_8 = true;
 		att_val -= 8.0f;
 	}
-	if (TRX.ATT && att_val >= 4.0f)
-	{
+	if (TRX.ATT && att_val >= 4.0f) {
 		att_val_4 = true;
 		att_val -= 4.0f;
 	}
-	if (TRX.ATT && att_val >= 2.0f)
-	{
+	if (TRX.ATT && att_val >= 2.0f) {
 		att_val_2 = true;
 		att_val -= 2.0f;
 	}
-	if (TRX.ATT && att_val >= 1.0f)
-	{
+	if (TRX.ATT && att_val >= 1.0f) {
 		att_val_1 = true;
 		att_val -= 1.0f;
 	}
-	if (TRX.ATT && att_val >= 0.5f)
-	{
+	if (TRX.ATT && att_val >= 0.5f) {
 		att_val_05 = true;
 		att_val -= 0.5f;
 	}
@@ -80,98 +70,96 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 	uint8_t band_out = 0;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band == BANDID_2200m || band == 1 || band == 2) //2200m
+	if (band == BANDID_2200m || band == 1 || band == 2) // 2200m
 		band_out = CALIBRATE.EXT_2200m;
-	if (band == BANDID_160m || band == 4) //160m
+	if (band == BANDID_160m || band == 4) // 160m
 		band_out = CALIBRATE.EXT_160m;
-	if (band == BANDID_80m || band == 5 || band == 7 || band == 8) //80m
+	if (band == BANDID_80m || band == 5 || band == 7 || band == 8) // 80m
 		band_out = CALIBRATE.EXT_80m;
-	if (band == BANDID_60m || band == 9 || band == 11) //60m
+	if (band == BANDID_60m || band == 9 || band == 11) // 60m
 		band_out = CALIBRATE.EXT_60m;
-	if (band == BANDID_40m || band == 13) //40m
+	if (band == BANDID_40m || band == 13) // 40m
 		band_out = CALIBRATE.EXT_40m;
-	if (band == BANDID_30m || band == 14 || band == 16) //30m
+	if (band == BANDID_30m || band == 14 || band == 16) // 30m
 		band_out = CALIBRATE.EXT_30m;
-	if (band == BANDID_20m || band == 17 || band == 19) //20m
+	if (band == BANDID_20m || band == 17 || band == 19) // 20m
 		band_out = CALIBRATE.EXT_20m;
-	if (band == BANDID_17m || band == 20 || band == 22) //17m
+	if (band == BANDID_17m || band == 20 || band == 22) // 17m
 		band_out = CALIBRATE.EXT_17m;
-	if (band == BANDID_15m || band == 24) //15m
+	if (band == BANDID_15m || band == 24) // 15m
 		band_out = CALIBRATE.EXT_15m;
-	if (band == BANDID_12m || band == 26) //12m
+	if (band == BANDID_12m || band == 26) // 12m
 		band_out = CALIBRATE.EXT_12m;
-	if (band == BANDID_CB) //CB
+	if (band == BANDID_CB) // CB
 		band_out = CALIBRATE.EXT_CB;
-	if (band == BANDID_10m) //10m
+	if (band == BANDID_10m) // 10m
 		band_out = CALIBRATE.EXT_10m;
-	if (band == BANDID_6m) //6m
+	if (band == BANDID_6m) // 6m
 		band_out = CALIBRATE.EXT_6m;
-	if (band == BANDID_FM || band == 31) //FM
+	if (band == BANDID_FM || band == 31) // FM
 		band_out = CALIBRATE.EXT_FM;
-	if (band == BANDID_2m || band == BANDID_Marine) //2m
+	if (band == BANDID_2m || band == BANDID_Marine) // 2m
 		band_out = CALIBRATE.EXT_2m;
-	if (band == BANDID_70cm) //70cm
+	if (band == BANDID_70cm) // 70cm
 		band_out = CALIBRATE.EXT_70cm;
-	
+
 	uint32_t vga_need_gain = (TRX.VGA_GAIN - 10.5f) / 1.5f;
 	bool VGA_0 = bitRead(vga_need_gain, 3);
 	bool VGA_1 = bitRead(vga_need_gain, 2);
 	bool VGA_2 = bitRead(vga_need_gain, 1);
 	bool VGA_3 = bitRead(vga_need_gain, 0);
-	
-	//RF Unit
-	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); //latch
+
+	// RF Unit
+	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); // latch
 	MINI_DELAY
-	for (uint8_t registerNumber = 0; registerNumber < 16; registerNumber++)
-	{
+	for (uint8_t registerNumber = 0; registerNumber < 16; registerNumber++) {
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); // data block
 		MINI_DELAY
-		HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); //data
+		HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); // data
 		MINI_DELAY
-		if (!clean)
-		{
-			//U16-D7 -
-			// if (registerNumber == 0)
-			//U16-D6 Net_LNA
+		if (!clean) {
+			// U16-D7 -
+			//  if (registerNumber == 0)
+			// U16-D6 Net_LNA
 			if (registerNumber == 1 && TRX.LNA)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U16-D5 ATT_ON_4
+			// U16-D5 ATT_ON_4
 			if (registerNumber == 2 && att_val_4)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U16-D4 ATT_ON_8
+			// U16-D4 ATT_ON_8
 			if (registerNumber == 3 && att_val_8)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U16-D3 ATT_ON_16
+			// U16-D3 ATT_ON_16
 			if (registerNumber == 4 && att_val_16)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U16-D2 ATT_ON_0.5
+			// U16-D2 ATT_ON_0.5
 			if (registerNumber == 5 && att_val_05)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U16-D1 ATT_ON_1
+			// U16-D1 ATT_ON_1
 			if (registerNumber == 6 && att_val_1)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U16-D0 ATT_ON_2
+			// U16-D0 ATT_ON_2
 			if (registerNumber == 7 && att_val_2)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			
-			//U17-D7 BPF_B
-			// if (registerNumber == 8)
-			//U17-D6 BPF_A
-			// if (registerNumber == 9)
-			//U17-D5 BPF_C
-			// if (registerNumber == 10)
-			//U17-D4 BPF_D
-			// if (registerNumber == 11)
-			//U17-D3 Net_PGA2
+
+			// U17-D7 BPF_B
+			//  if (registerNumber == 8)
+			// U17-D6 BPF_A
+			//  if (registerNumber == 9)
+			// U17-D5 BPF_C
+			//  if (registerNumber == 10)
+			// U17-D4 BPF_D
+			//  if (registerNumber == 11)
+			// U17-D3 Net_PGA2
 			if (registerNumber == 12 && !VGA_2)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U17-D2 Net_PGA3
+			// U17-D2 Net_PGA3
 			if (registerNumber == 13 && !VGA_3)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U17-D1 Net_PGA0
+			// U17-D1 Net_PGA0
 			if (registerNumber == 14 && !VGA_0)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-			//U17-D0 Net_PGA1
+			// U17-D0 Net_PGA1
 			if (registerNumber == 15 && !VGA_1)
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 		}
@@ -185,48 +173,45 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	HAL_GPIO_WritePin(RFUNIT_OE_GPIO_Port, RFUNIT_OE_Pin, GPIO_PIN_RESET);
 }
 
-void RF_UNIT_ProcessSensors(void)
-{
-	#define B16_RANGE 65535.0f
-	#define B14_RANGE 16383.0f
-	
-	//PWR Voltage
+void RF_UNIT_ProcessSensors(void) {
+#define B16_RANGE 65535.0f
+#define B14_RANGE 16383.0f
+
+	// PWR Voltage
 	float32_t PWR_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_3) * TRX_STM32_VREF / B16_RANGE;
 	PWR_Voltage = PWR_Voltage / (CALIBRATE.PWR_VLT_Calibration / (10000.0f + CALIBRATE.PWR_VLT_Calibration));
-	if(fabsf(PWR_Voltage - TRX_PWR_Voltage) > 0.3f)
+	if (fabsf(PWR_Voltage - TRX_PWR_Voltage) > 0.3f)
 		TRX_PWR_Voltage = TRX_PWR_Voltage * 0.99f + PWR_Voltage * 0.01f;
-	if(fabsf(PWR_Voltage - TRX_PWR_Voltage) > 1.0f)
+	if (fabsf(PWR_Voltage - TRX_PWR_Voltage) > 1.0f)
 		TRX_PWR_Voltage = PWR_Voltage;
-	
+
 	float32_t PWR_Current_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3) * TRX_STM32_VREF / B16_RANGE;
-	float32_t PWR_Current = (PWR_Current_Voltage - CALIBRATE.PWR_CUR_Calibration) / 0.100f; //0.066 - ACS712-30, 0.100 - ACS712-20
-	if(fabsf(PWR_Current - TRX_PWR_Current) > 0.1f)
+	float32_t PWR_Current = (PWR_Current_Voltage - CALIBRATE.PWR_CUR_Calibration) / 0.100f; // 0.066 - ACS712-30, 0.100 - ACS712-20
+	if (fabsf(PWR_Current - TRX_PWR_Current) > 0.1f)
 		TRX_PWR_Current = TRX_PWR_Current * 0.95f + PWR_Current * 0.05f;
-	if(fabsf(PWR_Current - TRX_PWR_Current) > 1.0f)
+	if (fabsf(PWR_Current - TRX_PWR_Current) > 1.0f)
 		TRX_PWR_Current = PWR_Current;
 
-	//println(PWR_Current_Voltage, " ", PWR_Current, " ", TRX_PWR_Current, " ", TRX_STM32_VREF);
-	
+	// println(PWR_Current_Voltage, " ", PWR_Current, " ", TRX_PWR_Current, " ", TRX_STM32_VREF);
+
 	TRX_VBAT_Voltage = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B14_RANGE; // why 14bit?
-	
-	//SWR
+
+	// SWR
 	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B16_RANGE;
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B16_RANGE;
-	//println("-", VBAT_Voltage, " ", forward, " ", backward);
+	// println("-", VBAT_Voltage, " ", forward, " ", backward);
 
-	//forward = forward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
-	if (forward < 0.05f)							  // do not measure less than 50mV
+	// forward = forward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
+	if (forward < 0.05f) // do not measure less than 50mV
 	{
 		TRX_VLT_forward = 0.0f;
 		TRX_VLT_backward = 0.0f;
 		TRX_PWR_Forward = 0.0f;
 		TRX_PWR_Backward = 0.0f;
 		TRX_SWR = 1.0f;
-	}
-	else
-	{
-		forward += 0.21f;								   // drop on diode
-		
+	} else {
+		forward += 0.21f; // drop on diode
+
 		// Transformation ratio of the SWR meter
 		if (CurrentVFO->Freq >= 80000000)
 			forward = forward * CALIBRATE.SWR_FWD_Calibration_VHF;
@@ -235,11 +220,11 @@ void RF_UNIT_ProcessSensors(void)
 		else
 			forward = forward * CALIBRATE.SWR_FWD_Calibration_HF;
 
-		//backward = backward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
-		if (backward >= 0.05f)								// do not measure less than 50mV
+		// backward = backward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
+		if (backward >= 0.05f) // do not measure less than 50mV
 		{
-			backward += 0.21f;									 // drop on diode
-			
+			backward += 0.21f; // drop on diode
+
 			// Transformation ratio of the SWR meter
 			if (CurrentVFO->Freq >= 80000000)
 				backward = backward * CALIBRATE.SWR_BWD_Calibration_VHF;
@@ -247,11 +232,10 @@ void RF_UNIT_ProcessSensors(void)
 				backward = backward * CALIBRATE.SWR_BWD_Calibration_6M;
 			else
 				backward = backward * CALIBRATE.SWR_BWD_Calibration_HF;
-		}
-		else
+		} else
 			backward = 0.001f;
 
-		//smooth process
+		// smooth process
 		TRX_VLT_forward = TRX_VLT_forward + (forward - TRX_VLT_forward) / 2;
 		TRX_VLT_backward = TRX_VLT_backward + (backward - TRX_VLT_backward) / 2;
 		if ((TRX_VLT_forward - TRX_VLT_backward) > 0.0f)
@@ -275,31 +259,31 @@ void RF_UNIT_ProcessSensors(void)
 		if (TRX_PWR_Forward < TRX_PWR_Backward)
 			TRX_PWR_Backward = TRX_PWR_Forward;
 	}
-	
-	#define smooth_stick_time 500
+
+#define smooth_stick_time 500
 	static uint32_t forw_smooth_time = 0;
-	if(HAL_GetTick() - forw_smooth_time > smooth_stick_time)
+	if (HAL_GetTick() - forw_smooth_time > smooth_stick_time)
 		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * 0.99f + TRX_PWR_Forward * 0.01f;
-	if(TRX_PWR_Forward > TRX_PWR_Forward_SMOOTHED) {
+	if (TRX_PWR_Forward > TRX_PWR_Forward_SMOOTHED) {
 		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward;
 		forw_smooth_time = HAL_GetTick();
 	}
 	TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * 0.99f + TRX_PWR_Backward * 0.01f;
 	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * 0.98f + TRX_SWR * 0.02f;
-	
-	//println("FWD: ", forward, " (", TRX_PWR_Forward, " / ", TRX_PWR_Forward_SMOOTHED, ") BKW: ", backward, " (", TRX_PWR_Backward, " / ", TRX_PWR_Backward_SMOOTHED, ") SWR: ", TRX_SWR, " (", TRX_SWR_SMOOTHED, ")");
 
-	//TANGENT
+	// println("FWD: ", forward, " (", TRX_PWR_Forward, " / ", TRX_PWR_Forward_SMOOTHED, ") BKW: ", backward, " (", TRX_PWR_Backward, " / ",
+	// TRX_PWR_Backward_SMOOTHED, ") SWR: ", TRX_SWR, " (", TRX_SWR_SMOOTHED, ")");
+
+	// TANGENT
 	float32_t SW1_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / B16_RANGE * 1000.0f;
 	float32_t SW2_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / B16_RANGE * 1000.0f;
-	//println(SW1_Voltage, " ", SW2_Voltage);
-	
-	//Yaesu MH-48
-	for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++)
-	{
-		if((SW2_Voltage < 500.0f || SW2_Voltage > 3100.0f) && PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 1)
+	// println(SW1_Voltage, " ", SW2_Voltage);
+
+	// Yaesu MH-48
+	for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++) {
+		if ((SW2_Voltage < 500.0f || SW2_Voltage > 3100.0f) && PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 1)
 			FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], SW1_Voltage);
-		if(SW1_Voltage > 2800.0f & PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 2)
+		if (SW1_Voltage > 2800.0f & PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 2)
 			FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], SW2_Voltage);
 	}
 }

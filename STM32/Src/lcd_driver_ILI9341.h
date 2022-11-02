@@ -3,13 +3,13 @@
 #if defined(LCD_ILI9341)
 #define _LCDDRIVER_ILI9341_H_
 
-//LCD dimensions defines
+// LCD dimensions defines
 #define LCD_WIDTH 320
 #define LCD_HEIGHT 240
 #define LCD_TYPE_SPI true
 #define LCD_SMALL_INTERFACE true
 
-//ILI9341 LCD commands
+// ILI9341 LCD commands
 #define LCD_CONFIG_MADCTL_MY 0x80  ///< Bottom to top
 #define LCD_CONFIG_MADCTL_MX 0x40  ///< Right to left
 #define LCD_CONFIG_MADCTL_MV 0x20  ///< Reverse Mode
@@ -51,11 +51,9 @@
 #define LCD_COMMAND_VSCRSADD 0x37 ///< Vertical Scrolling Start Address
 #define LCD_COMMAND_PIXFMT 0x3A   ///< COLMOD: Pixel Format Set
 
-#define LCD_COMMAND_FRMCTR1                                                        \
-  0xB1 ///< Frame Rate Control (In Normal Mode/Full Colors)
+#define LCD_COMMAND_FRMCTR1 0xB1 ///< Frame Rate Control (In Normal Mode/Full Colors)
 #define LCD_COMMAND_FRMCTR2 0xB2 ///< Frame Rate Control (In Idle Mode/8 colors)
-#define LCD_COMMAND_FRMCTR3                                                        \
-  0xB3 ///< Frame Rate control (In Partial Mode/Full Colors)
+#define LCD_COMMAND_FRMCTR3 0xB3 ///< Frame Rate control (In Partial Mode/Full Colors)
 #define LCD_COMMAND_INVCTR 0xB4  ///< Display Inversion Control
 #define LCD_COMMAND_DFUNCTR 0xB6 ///< Display Function Control
 
@@ -74,15 +72,15 @@
 
 #define LCD_COMMAND_GMCTRP1 0xE0 ///< Positive Gamma Correction
 #define LCD_COMMAND_GMCTRN1 0xE1 ///< Negative Gamma Correction
-#define LCD_COMMAND_PWCTR6     0xFC
+#define LCD_COMMAND_PWCTR6 0xFC
 
 #ifndef _swap_int16_t
 #define _swap_int16_t(a, b) \
-  {                         \
-    int16_t t = a;          \
-    a = b;                  \
-    b = t;                  \
-  }
+	{                         \
+		int16_t t = a;          \
+		a = b;                  \
+		b = t;                  \
+	}
 #endif
 
 #endif

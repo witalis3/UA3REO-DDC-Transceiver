@@ -15,10 +15,9 @@ static uint32_t CPULOAD_SleepingTime = 0;
 static uint32_t CPULOAD_SleepCounter = 0;
 static bool CPULOAD_status = true; // true - wake up ; false - sleep
 
-void CPULOAD_Init(void)
-{
-	//DBGMCU->CR |= (DBGMCU_CR_DBG_SLEEPD1_Msk | DBGMCU_CR_DBG_STOPD1_Msk | DBGMCU_CR_DBG_STANDBYD1_Msk);
-	// allow using the counter
+void CPULOAD_Init(void) {
+	// DBGMCU->CR |= (DBGMCU_CR_DBG_SLEEPD1_Msk | DBGMCU_CR_DBG_STOPD1_Msk | DBGMCU_CR_DBG_STANDBYD1_Msk);
+	//  allow using the counter
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
 	// start the counter
 	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
@@ -27,8 +26,7 @@ void CPULOAD_Init(void)
 	CPULOAD_status = true;
 }
 
-void CPULOAD_GoToSleepMode(void)
-{
+void CPULOAD_GoToSleepMode(void) {
 	// Add to working time
 	CPULOAD_WorkingTime += DWT->CYCCNT - CPULOAD_startWorkTime;
 	// Save count cycle time
@@ -39,8 +37,7 @@ void CPULOAD_GoToSleepMode(void)
 	__WFI();
 }
 
-void CPULOAD_WakeUp(void)
-{
+void CPULOAD_WakeUp(void) {
 	if (CPULOAD_status)
 		return;
 	CPULOAD_status = true;
@@ -50,19 +47,16 @@ void CPULOAD_WakeUp(void)
 	CPULOAD_startWorkTime = DWT->CYCCNT;
 }
 
-void CPULOAD_Calc(void)
-{
+void CPULOAD_Calc(void) {
 	// Save values
 	CPU_LOAD.SCNT = CPULOAD_SleepingTime;
 	CPU_LOAD.WCNT = CPULOAD_WorkingTime;
 	CPU_LOAD.SINC = CPULOAD_SleepCounter;
 	CPU_LOAD.Load = ((float)CPULOAD_WorkingTime / (float)(CPULOAD_SleepingTime + CPULOAD_WorkingTime) * 100);
-	if (CPU_LOAD.SCNT == 0)
-	{
+	if (CPU_LOAD.SCNT == 0) {
 		CPU_LOAD.Load = 100;
 	}
-	if (CPU_LOAD.SCNT == 0 && CPU_LOAD.WCNT == 0)
-	{
+	if (CPU_LOAD.SCNT == 0 && CPU_LOAD.WCNT == 0) {
 		CPU_LOAD.Load = 255;
 		CPULOAD_Init();
 	}
@@ -78,17 +72,15 @@ void HRDW_Init(void) {
 	HAL_ADCEx_InjectedStart(&hadc3);
 }
 
-float32_t HRDW_getCPUTemperature(void)
-{
-	//STM32F407 Temperature
+float32_t HRDW_getCPUTemperature(void) {
+	// STM32F407 Temperature
 	float32_t cpu_temperature = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * 3.3f / 4096.0f;
 	float32_t cpu_temperature_result = (cpu_temperature - 0.760f) / 0.0025f + 25.0f;
 	return cpu_temperature_result;
 }
 
-float32_t HRDW_getCPUVref(void)
-{
-	//STM32F407 VREF
+float32_t HRDW_getCPUVref(void) {
+	// STM32F407 VREF
 	uint16_t VREFINT_CAL = *VREFINT_CAL_ADDR;
 	float32_t cpu_vref = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2));
 	float32_t cpu_vref_result = 3.3f * (float32_t)VREFINT_CAL / (float32_t)cpu_vref;
@@ -105,15 +97,14 @@ inline uint32_t HRDW_getAudioCodecTX_DMAIndex(void) {
 
 #ifdef HRDW_MCP3008_1
 inline bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	if (HRDW_SPI_Periph_busy)
-	{
+	if (HRDW_SPI_Periph_busy) {
 		println("SPI Busy");
 		return false;
 	}
 	HRDW_SPI_Periph_busy = true;
-	
+
 	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD1_CS_GPIO_Port, AD1_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
-	
+
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
@@ -121,15 +112,14 @@ inline bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t cou
 
 #ifdef HRDW_MCP3008_2
 inline bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	if (HRDW_SPI_Periph_busy)
-	{
+	if (HRDW_SPI_Periph_busy) {
 		println("SPI Busy");
 		return false;
 	}
 	HRDW_SPI_Periph_busy = true;
-	
+
 	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD2_CS_GPIO_Port, AD2_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
-	
+
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
@@ -137,67 +127,50 @@ inline bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t co
 
 #ifdef HRDW_MCP3008_3
 inline bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	if (HRDW_SPI_Periph_busy)
-	{
+	if (HRDW_SPI_Periph_busy) {
 		println("SPI Busy");
 		return false;
 	}
 	HRDW_SPI_Periph_busy = true;
-	
+
 	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD3_CS_GPIO_Port, AD3_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
-	
+
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
 #endif
 
 inline bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	if (HRDW_SPI_Periph_busy)
-	{
+	if (HRDW_SPI_Periph_busy) {
 		println("SPI Busy");
 		return false;
 	}
 	HRDW_SPI_Periph_busy = true;
-	
+
 	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, hold_cs, SPI_EEPROM_PRESCALER, false);
-	
+
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
 
-inline bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	return false;
-}
+inline bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) { return false; }
 
 static uint32_t dma_memset32_reg = 0;
-void dma_memset32(void *dest, uint32_t val, uint32_t size)
-{
-	if (val == 0)
-	{
+void dma_memset32(void *dest, uint32_t val, uint32_t size) {
+	if (val == 0) {
 		memset(dest, val, size * 4);
-	}
-	else
-	{
+	} else {
 		uint32_t *buf = dest;
 		while (size--)
 			*buf++ = val;
 	}
 }
 
-void dma_memcpy32(void *dest, void *src, uint32_t size)
-{
-	memcpy(dest, src, size * 4);
-}
+void dma_memcpy32(void *dest, void *src, uint32_t size) { memcpy(dest, src, size * 4); }
 
-void dma_memset(void *dest, uint8_t val, uint32_t size)
-{
-	memset(dest, val, size);
-}
+void dma_memset(void *dest, uint8_t val, uint32_t size) { memset(dest, val, size); }
 
-void dma_memcpy(void *dest, void *src, uint32_t size)
-{
-	memcpy(dest, src, size);
-}
+void dma_memcpy(void *dest, void *src, uint32_t size) { memcpy(dest, src, size); }
 
 void SCB_CleanDCache_by_Addr(uint32_t *addr, uint32_t size) {}
 void SCB_InvalidateDCache_by_Addr(uint32_t *addr, uint32_t size) {}

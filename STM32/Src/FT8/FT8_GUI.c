@@ -1,44 +1,39 @@
 #include "FT8_GUI.h"
 #include "FT8_main.h"
-#include "traffic_manager.h"
-#include "lcd_driver.h"
 #include "decode_ft8.h"
 #include "gen_ft8.h"
+#include "lcd_driver.h"
+#include "traffic_manager.h"
 
 uint8_t FT8_Menu_Idx;
 static uint8_t Sel_Mess_Idx; // Selected recieved mesage index (used when we want to answer somebodey)
 
-static ButtonStruct sButtonData[] = {
-	{/*text*/ " CQ ", // button 0
-	 /*state*/ false},
+static ButtonStruct sButtonData[] = {{/*text*/ " CQ ", // button 0
+                                      /*state*/ false},
 
-	{/*text*/ "TUNE", // button 1
-	 /*state*/ false},
+                                     {/*text*/ "TUNE", // button 1
+                                      /*state*/ false},
 
-	{/*text*/ "RT_C", // button 2
-	 /*state*/ false}
+                                     {/*text*/ "RT_C", // button 2
+                                      /*state*/ false}
 
 };
 
-void Draw_FT8_Buttons(void)
-{
+void Draw_FT8_Buttons(void) {
 	drawButton(0);
 	drawButton(1);
 	drawButton(2);
 }
 
 // used to deactivate all buttons (if something is active and we reenter the "FT8 decode"- to start clear)
-void Unarm_FT8_Buttons(void)
-{
-	for (uint8_t i = 0; i <= FT8_Menu_Max_Idx; i++)
-	{
+void Unarm_FT8_Buttons(void) {
+	for (uint8_t i = 0; i <= FT8_Menu_Max_Idx; i++) {
 		sButtonData[i].state = false;
 	}
 }
 
-void drawButton(uint16_t i)
-{
-	//char ctmp[5] = {0};
+void drawButton(uint16_t i) {
+	// char ctmp[5] = {0};
 
 	uint16_t color;
 	if (sButtonData[i].state)
@@ -47,11 +42,11 @@ void drawButton(uint16_t i)
 		color = COLOR_GREEN;
 
 	LCDDriver_printText(sButtonData[i].text, (FT8_button_spac_x * i) + 7, FT8_button_line + 7, COLOR_WHITE, COLOR_BLACK, 2);
-	LCDDriver_drawRectXY(FT8_button_spac_x * i, FT8_button_line, (FT8_button_spac_x * i) + FT8_button_width, FT8_button_line + FT8_button_height, color);
+	LCDDriver_drawRectXY(FT8_button_spac_x * i, FT8_button_line, (FT8_button_spac_x * i) + FT8_button_width, FT8_button_line + FT8_button_height,
+	                     color);
 }
 
-void Update_FT8_Menu_Cursor(void)
-{
+void Update_FT8_Menu_Cursor(void) {
 	static uint8_t old_Sel_Mess_Idx;
 
 	// Clear old Button cursor (all posible cursors)
@@ -62,20 +57,22 @@ void Update_FT8_Menu_Cursor(void)
 
 	if (FT8_Menu_Idx <= FT8_Menu_Max_Idx) // cursor is in the range of the buttons
 	{
-		// LCDDriver_drawLine(10, 115, 70, 115, COLOR_BLACK);		//clear the cursor of the first recieved mesage (it is needed by transition between the two fields)
-		LCDDriver_drawLine(10, 115, 70, 115, COLOR_BLACK); // clear the cursor of the last recieved mesage (it is needed by transition between the two fields)
+		// LCDDriver_drawLine(10, 115, 70, 115, COLOR_BLACK);		//clear the cursor of the first recieved mesage (it is needed by transition between
+		// the two fields)
+		LCDDriver_drawLine(10, 115, 70, 115,
+		                   COLOR_BLACK); // clear the cursor of the last recieved mesage (it is needed by transition between the two fields)
 		// Draw the new position of the cursor (for buttons)
-		LCDDriver_drawLine(FT8_Menu_Idx * FT8_button_spac_x, FT8_button_line - 5, (FT8_Menu_Idx * FT8_button_spac_x) + FT8_button_width, FT8_button_line - 5, COLOR_WHITE);
-	}
-	else // cursor is in the rage of the recieved mesages
+		LCDDriver_drawLine(FT8_Menu_Idx * FT8_button_spac_x, FT8_button_line - 5, (FT8_Menu_Idx * FT8_button_spac_x) + FT8_button_width,
+		                   FT8_button_line - 5, COLOR_WHITE);
+	} else // cursor is in the rage of the recieved mesages
 	{
 		Sel_Mess_Idx = FT8_Menu_Idx - (FT8_Menu_Max_Idx + 1);
 		/*
-					//Clear the old recieved mesage cursor
-					if(Sel_Mess_Idx > 0)
-						LCDDriver_drawLine(10, 115 + (Sel_Mess_Idx-1) *25, 70, 115 + (Sel_Mess_Idx-1) *25, COLOR_BLACK);
-					if(Sel_Mess_Idx < 5)				//max number of messages - 1 => we are on the before last position
-						LCDDriver_drawLine(10, 115 + (Sel_Mess_Idx+1) *25, 70, 115 + (Sel_Mess_Idx+1) *25, COLOR_BLACK);
+		      //Clear the old recieved mesage cursor
+		      if(Sel_Mess_Idx > 0)
+		        LCDDriver_drawLine(10, 115 + (Sel_Mess_Idx-1) *25, 70, 115 + (Sel_Mess_Idx-1) *25, COLOR_BLACK);
+		      if(Sel_Mess_Idx < 5)				//max number of messages - 1 => we are on the before last position
+		        LCDDriver_drawLine(10, 115 + (Sel_Mess_Idx+1) *25, 70, 115 + (Sel_Mess_Idx+1) *25, COLOR_BLACK);
 		*/
 		// Draw the new position of the cursor (recieved messages)
 		LCDDriver_drawLine(10, 115 + Sel_Mess_Idx * 25, 70, 115 + Sel_Mess_Idx * 25, COLOR_WHITE);
@@ -84,8 +81,7 @@ void Update_FT8_Menu_Cursor(void)
 	old_Sel_Mess_Idx = Sel_Mess_Idx;
 }
 
-void FT8_Menu_Pos_Toggle(void)
-{
+void FT8_Menu_Pos_Toggle(void) {
 
 	if (FT8_Menu_Idx <= FT8_Menu_Max_Idx) // cursor is in the range of the buttons
 	{
@@ -94,16 +90,13 @@ void FT8_Menu_Pos_Toggle(void)
 		else
 			sButtonData[FT8_Menu_Idx].state = true;
 
-		switch (FT8_Menu_Idx)
-		{
+		switch (FT8_Menu_Idx) {
 		case 0:
 			if (sButtonData[0].state) // CQ button pressed
 			{
 				CQ_Flag = 1;
 				Beacon_State = 0;
-			}
-			else
-			{
+			} else {
 				CQ_Flag = 0;
 				if (xmit_flag > 0) // if we are transmitting -> go to receive
 					receive_sequence();
@@ -115,8 +108,7 @@ void FT8_Menu_Pos_Toggle(void)
 		case 1:
 			if (sButtonData[1].state) // Tune button pressed
 				tune_On_sequence();
-			else
-			{
+			else {
 				sButtonData[0].state = false; // if the "CQ" button was active disable it as well
 				receive_sequence();
 
@@ -127,9 +119,8 @@ void FT8_Menu_Pos_Toggle(void)
 		}
 		drawButton(FT8_Menu_Idx);
 
-	} // end if (FT8_Menu_Idx <= FT8_Menu_Max_Idx)			//cursor is in the range of the buttons
-	else
-	{ // cursor is in the range of the recieved messages
+	}      // end if (FT8_Menu_Idx <= FT8_Menu_Max_Idx)			//cursor is in the range of the buttons
+	else { // cursor is in the range of the recieved messages
 
 		//			__disable_irq();   //Disable all interrupts
 
@@ -149,9 +140,7 @@ void FT8_Menu_Pos_Toggle(void)
 
 			// trick to force the send imidiately
 			Set_Data_Colection(1); // Set new data colection
-		}
-		else
-		{
+		} else {
 			CQ_Flag = 0;
 			if (xmit_flag > 0) // if we are transmitting -> go to receive
 				receive_sequence();
@@ -164,74 +153,69 @@ void FT8_Menu_Pos_Toggle(void)
 	}
 }
 
-void FT8_Print_Freq(void)
-{
+void FT8_Print_Freq(void) {
 	char ctmp[10] = {0};
 
 	sprintf(ctmp, "%d kHz ", FT8_BND_Freq);
-	#if (defined(LAY_800x480))
+#if (defined(LAY_800x480))
 	LCDDriver_printText(ctmp, 680, 30, COLOR_WHITE, COLOR_BLACK, 2);
-	#else
+#else
 	LCDDriver_printText(ctmp, 360, 30, COLOR_WHITE, COLOR_BLACK, 2);
-	#endif
+#endif
 
 	sprintf(ctmp, "%d Hz ", cursor_freq);
-	#if (defined(LAY_800x480))
+#if (defined(LAY_800x480))
 	LCDDriver_printText(ctmp, 680, 55, COLOR_WHITE, COLOR_BLACK, 2);
-	#else
+#else
 	LCDDriver_printText(ctmp, 360, 55, COLOR_WHITE, COLOR_BLACK, 2);
-	#endif
+#endif
 }
 
-void FT8_Print_TargetCall(void)
-{
-	#if (defined(LAY_800x480))
-	LCDDriver_printText(Target_Call, 680, 80, COLOR_YELLOW, COLOR_BLACK, 2); // Display in the upper right corner (under the clock) the call sign of the partner
-	#else
-	LCDDriver_printText(Target_Call, 360, 80, COLOR_YELLOW, COLOR_BLACK, 2); // Display in the upper right corner (under the clock) the call sign of the partner
-	#endif
+void FT8_Print_TargetCall(void) {
+#if (defined(LAY_800x480))
+	LCDDriver_printText(Target_Call, 680, 80, COLOR_YELLOW, COLOR_BLACK,
+	                    2); // Display in the upper right corner (under the clock) the call sign of the partner
+#else
+	LCDDriver_printText(Target_Call, 360, 80, COLOR_YELLOW, COLOR_BLACK,
+	                    2);                                // Display in the upper right corner (under the clock) the call sign of the partner
+#endif
 }
 
-void FT8_Clear_TargetCall(void)
-{
-	#if (defined(LAY_800x480))
+void FT8_Clear_TargetCall(void) {
+#if (defined(LAY_800x480))
 	LCDDriver_Fill_RectXY(680, 80, 799, 100, COLOR_BLACK); // Clear the old target call mesage
-	#else
+#else
 	LCDDriver_Fill_RectXY(360, 80, 480, 100, COLOR_BLACK); // Clear the old target call mesage
-	#endif
+#endif
 }
 
-void FT8_Clear_Mess_Field(void)
-{
-	#if (defined(LAY_800x480))
+void FT8_Clear_Mess_Field(void) {
+#if (defined(LAY_800x480))
 	LCDDriver_Fill_RectXY(0, 100, 480, 380, COLOR_BLACK); // Clear the old mesages
-	#else
-	LCDDriver_Fill_RectXY(0, 100, 480, 240, COLOR_BLACK); // Clear the old mesages
-	#endif
+#else
+	LCDDriver_Fill_RectXY(0, 100, 480, 240, COLOR_BLACK);  // Clear the old mesages
+#endif
 }
 
-void FT8_Print_TX_Mess(char *message)
-{
-	#if (defined(LAY_800x480))
+void FT8_Print_TX_Mess(char *message) {
+#if (defined(LAY_800x480))
 	LCDDriver_Fill_RectXY(0, 380, 240, 394, COLOR_BLACK); // Clear the old TX mesage
 	LCDDriver_printText(message, 0, 380, COLOR_RED, COLOR_BLACK, 2);
-	#else
-	LCDDriver_Fill_RectXY(0, 260, 240, 274, COLOR_BLACK); // Clear the old TX mesage
+#else
+	LCDDriver_Fill_RectXY(0, 260, 240, 274, COLOR_BLACK);  // Clear the old TX mesage
 	LCDDriver_printText(message, 0, 260, COLOR_RED, COLOR_BLACK, 2);
-	#endif
+#endif
 }
 
-void FT8_Clear_TX_Mess(void)
-{
-	#if (defined(LAY_800x480))
+void FT8_Clear_TX_Mess(void) {
+#if (defined(LAY_800x480))
 	LCDDriver_Fill_RectXY(0, 380, 240, 394, COLOR_BLACK); // Clear the old TX mesage
-	#else
+#else
 	LCDDriver_Fill_RectXY(0, 260, 240, 274, COLOR_BLACK); // Clear the old TX mesage
-	#endif
+#endif
 }
 
-void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg)
-{
+void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg) {
 	char MessIdx = 0;
 
 	if (sButtonData[2].state) // if "Time correction" button is pressed
@@ -246,8 +230,7 @@ void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg)
 			return;
 		Seconds = (uint8_t)(Seconds + direction);
 
-		if (Seconds >= 60)
-		{
+		if (Seconds >= 60) {
 			Seconds = Seconds - 60;
 			Minutes++;
 		}
@@ -264,22 +247,20 @@ void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg)
 		HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 
 		drawButton(2);
-	}
-	else
-	{
+	} else {
 		FT8_Menu_Idx += direction;
 
-		#if (defined(LAY_800x480))
+#if (defined(LAY_800x480))
 		if (decoded_msg > 11) // message_limit it is 6
 			MessIdx = 11;
 		else
 			MessIdx = decoded_msg;
-		#else
-		if (decoded_msg > 6) // message_limit it is 6
+#else
+		if (decoded_msg > 6)                                // message_limit it is 6
 			MessIdx = 6;
 		else
 			MessIdx = decoded_msg;
-		#endif
+#endif
 
 		if (FT8_Menu_Idx > (FT8_Menu_Max_Idx + MessIdx))
 			FT8_Menu_Idx = 0;

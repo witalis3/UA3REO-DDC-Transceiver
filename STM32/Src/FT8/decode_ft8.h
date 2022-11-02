@@ -8,33 +8,30 @@ extern int Target_RSL;      // four character RSL  + /0
 extern char Target_Grid[5]; // Grid square of the target station (partner)
 extern char RapRcv_RSL[5];  // Recieved raport from our corespondent - used to determine if he got our "raport" mesage
 
-typedef struct
-{
-    char field1[14];
-    char field2[14];
-    char field3[7];
-    int freq_hz;
-    char decode_time[10];
-    int sync_score;
-    int snr;
-    int distance;
+typedef struct {
+	char field1[14];
+	char field2[14];
+	char field3[7];
+	int freq_hz;
+	char decode_time[10];
+	int sync_score;
+	int snr;
+	int distance;
 
 } Decode;
 
-typedef struct
-{
-    char decode_time[10];
-    char call[7];
+typedef struct {
+	char decode_time[10];
+	char call[7];
 
 } Calling_Station;
 
-typedef struct
-{
-    char decode_time[10];
-    char call[7];
-    int distance;
-    int snr;
-    int freq_hz;
+typedef struct {
+	char decode_time[10];
+	char call[7];
+	int distance;
+	int snr;
+	int freq_hz;
 } CQ_Station;
 
 void save_Answer_CQ_List(void);

@@ -15,8 +15,7 @@ static uint32_t CPULOAD_SleepingTime = 0;
 static uint32_t CPULOAD_SleepCounter = 0;
 static bool CPULOAD_status = true; // true - wake up ; false - sleep
 
-void CPULOAD_Init(void)
-{
+void CPULOAD_Init(void) {
 	DBGMCU->CR |= (DBGMCU_CR_DBG_SLEEPD1_Msk | DBGMCU_CR_DBG_STOPD1_Msk | DBGMCU_CR_DBG_STANDBYD1_Msk);
 	// allow using the counter
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
@@ -27,8 +26,7 @@ void CPULOAD_Init(void)
 	CPULOAD_status = true;
 }
 
-void CPULOAD_GoToSleepMode(void)
-{
+void CPULOAD_GoToSleepMode(void) {
 	// Add to working time
 	CPULOAD_WorkingTime += DWT->CYCCNT - CPULOAD_startWorkTime;
 	// Save count cycle time
@@ -39,8 +37,7 @@ void CPULOAD_GoToSleepMode(void)
 	__WFI();
 }
 
-void CPULOAD_WakeUp(void)
-{
+void CPULOAD_WakeUp(void) {
 	if (CPULOAD_status)
 		return;
 	CPULOAD_status = true;
@@ -50,19 +47,16 @@ void CPULOAD_WakeUp(void)
 	CPULOAD_startWorkTime = DWT->CYCCNT;
 }
 
-void CPULOAD_Calc(void)
-{
+void CPULOAD_Calc(void) {
 	// Save values
 	CPU_LOAD.SCNT = CPULOAD_SleepingTime;
 	CPU_LOAD.WCNT = CPULOAD_WorkingTime;
 	CPU_LOAD.SINC = CPULOAD_SleepCounter;
 	CPU_LOAD.Load = ((float)CPULOAD_WorkingTime / (float)(CPULOAD_SleepingTime + CPULOAD_WorkingTime) * 100);
-	if (CPU_LOAD.SCNT == 0)
-	{
+	if (CPU_LOAD.SCNT == 0) {
 		CPU_LOAD.Load = 100;
 	}
-	if (CPU_LOAD.SCNT == 0 && CPU_LOAD.WCNT == 0)
-	{
+	if (CPU_LOAD.SCNT == 0 && CPU_LOAD.WCNT == 0) {
 		CPU_LOAD.Load = 255;
 		CPULOAD_Init();
 	}
@@ -73,26 +67,25 @@ void CPULOAD_Calc(void)
 }
 
 void HRDW_Init(void) {
-		HAL_ADCEx_InjectedStart(&hadc1); // ADC RF-UNIT'а
-		#ifdef FRONTPANEL_X1
-		HAL_ADCEx_InjectedStart(&hadc2); //ADC Tangent (some versions)
-		#endif
-		HAL_ADCEx_InjectedStart(&hadc3); // ADC CPU temperature
+	HAL_ADCEx_InjectedStart(&hadc1); // ADC RF-UNIT'а
+#ifdef FRONTPANEL_X1
+	HAL_ADCEx_InjectedStart(&hadc2); // ADC Tangent (some versions)
+#endif
+	HAL_ADCEx_InjectedStart(&hadc3); // ADC CPU temperature
 }
 
-float32_t HRDW_getCPUTemperature(void)
-{
-	//STM32H743 Temperature
+float32_t HRDW_getCPUTemperature(void) {
+	// STM32H743 Temperature
 	uint16_t TS_CAL1 = *((uint16_t *)0x1FF1E820); // TS_CAL1 Temperature sensor raw data acquired value at 30 °C, VDDA=3.3 V //-V566
 	uint16_t TS_CAL2 = *((uint16_t *)0x1FF1E840); // TS_CAL2 Temperature sensor raw data acquired value at 110 °C, VDDA=3.3 V //-V566
 	uint32_t TS_DATA = HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_1);
-	float32_t result = ((110.0f - 30.0f) / ((float32_t)TS_CAL2 - (float32_t)TS_CAL1)) * ((float32_t)TS_DATA - (float32_t)TS_CAL1) + 30; // from reference
+	float32_t result =
+	    ((110.0f - 30.0f) / ((float32_t)TS_CAL2 - (float32_t)TS_CAL1)) * ((float32_t)TS_DATA - (float32_t)TS_CAL1) + 30; // from reference
 	return result;
 }
 
-float32_t HRDW_getCPUVref(void)
-{
-	//STM32H743 VREF
+float32_t HRDW_getCPUVref(void) {
+	// STM32H743 VREF
 	uint16_t VREFINT_CAL = *VREFINT_CAL_ADDR; // VREFIN_CAL Raw data acquired at temperature of 30 °C, VDDA = 3.3 V //-V566
 	uint32_t VREFINT_DATA = HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_2);
 	float32_t result = 3.3f * (float32_t)VREFINT_CAL / (float32_t)VREFINT_DATA; // from reference
@@ -109,15 +102,14 @@ inline uint32_t HRDW_getAudioCodecTX_DMAIndex(void) {
 
 #ifdef HRDW_MCP3008_1
 inline bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	if (HRDW_SPI_Periph_busy)
-	{
+	if (HRDW_SPI_Periph_busy) {
 		println("SPI Busy");
 		return false;
 	}
 	HRDW_SPI_Periph_busy = true;
-	
+
 	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD1_CS_GPIO_Port, AD1_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
-	
+
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
@@ -125,15 +117,14 @@ inline bool HRDW_FrontUnit_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t cou
 
 #ifdef HRDW_MCP3008_2
 inline bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	if (HRDW_SPI_Periph_busy)
-	{
+	if (HRDW_SPI_Periph_busy) {
 		println("SPI Busy");
 		return false;
 	}
 	HRDW_SPI_Periph_busy = true;
-	
+
 	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD2_CS_GPIO_Port, AD2_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
-	
+
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
@@ -141,62 +132,55 @@ inline bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t co
 
 #ifdef HRDW_MCP3008_3
 inline bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	if (HRDW_SPI_Periph_busy)
-	{
+	if (HRDW_SPI_Periph_busy) {
 		println("SPI Busy");
 		return false;
 	}
 	HRDW_SPI_Periph_busy = true;
-	
+
 	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, AD3_CS_GPIO_Port, AD3_CS_Pin, hold_cs, SPI_FRONT_UNIT_PRESCALER, false);
-	
+
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
 #endif
 
 inline bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	if (HRDW_SPI_Periph_busy)
-	{
+	if (HRDW_SPI_Periph_busy) {
 		println("SPI Busy");
 		return false;
 	}
 	HRDW_SPI_Periph_busy = true;
-	
+
 	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, W25Q16_CS_GPIO_Port, W25Q16_CS_Pin, hold_cs, SPI_EEPROM_PRESCALER, true);
-	
+
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
 
 inline bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs) {
-	if (HRDW_SPI_Periph_busy)
-	{
+	if (HRDW_SPI_Periph_busy) {
 		println("SPI Busy");
 		return false;
 	}
 	HRDW_SPI_Periph_busy = true;
-	
+
 	bool result = SPI_Transmit(&hspi2, out_data, in_data, count, SD_CS_GPIO_Port, SD_CS_Pin, hold_cs, SPI_SD_PRESCALER, true);
-	
+
 	HRDW_SPI_Periph_busy = false;
 	return result;
 }
 
 static uint32_t dma_memset32_reg = 0;
-void dma_memset32(void *dest, uint32_t val, uint32_t size)
-{
+void dma_memset32(void *dest, uint32_t val, uint32_t size) {
 	if (size == 0)
 		return;
 
 	if (dma_memset32_busy) // for async calls
 	{
-		if (val == 0)
-		{
+		if (val == 0) {
 			memset(dest, val, size * 4);
-		}
-		else
-		{
+		} else {
 			uint32_t *buf = dest;
 			while (size--)
 				*buf++ = val;
@@ -212,8 +196,7 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	uint32_t max_block = DMA_MAX_BLOCK / 4;
 	uint32_t *current_dest = (uint32_t *)dest;
 	uint32_t estimated = size;
-	while (estimated > 0)
-	{
+	while (estimated > 0) {
 		uint32_t block_size = (estimated > max_block) ? max_block : estimated;
 		HAL_MDMA_Start(&HRDW_MEMSET_MDMA, (uint32_t)&dma_memset32_reg, (uint32_t)current_dest, 4 * block_size, 1);
 		SLEEPING_MDMA_PollForTransfer(&HRDW_MEMSET_MDMA);
@@ -227,15 +210,14 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size)
 	/*uint32_t *pDst = (uint32_t *)dest;
 	uint8_t errors = 0;
 	for(uint32_t i = 0; i < size; i++)
-		if(pDst[i] != val && errors < 3)
-		{
-			println(i);
-			errors++;
-		}*/
+	  if(pDst[i] != val && errors < 3)
+	  {
+	    println(i);
+	    errors++;
+	  }*/
 }
 
-void dma_memcpy32(void *dest, void *src, uint32_t size)
-{
+void dma_memcpy32(void *dest, void *src, uint32_t size) {
 	if (size == 0)
 		return;
 
@@ -258,6 +240,6 @@ void dma_memcpy32(void *dest, void *src, uint32_t size)
 	/*char *pSrc = (char *)src;
 	char *pDst = (char *)dest;
 	for(uint32_t i = 0; i < size * 4; i++)
-		if(pSrc[i] != pDst[i])
-			println(size * 4, " ", i);*/
+	  if(pSrc[i] != pDst[i])
+	    println(size * 4, " ", i);*/
 }

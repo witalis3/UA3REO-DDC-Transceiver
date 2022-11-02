@@ -1,9 +1,9 @@
 #ifndef __HARDWARE_H
 #define __HARDWARE_H
 
-#include "stm32f4xx.h"
-#include "main.h"
 #include "arm_math_types.h"
+#include "main.h"
+#include "stm32f4xx.h"
 #include <stdbool.h>
 
 // features
@@ -23,11 +23,11 @@
 //#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 // settings
-#define ADC_CLOCK 61440000					  // ADC generator frequency
-#define DAC_CLOCK 163200000					  // DAC generator frequency
-#define MAX_RX_FREQ_HZ 750000000			  // Maximum receive frequency (from the ADC datasheet)
-#define MAX_TX_FREQ_HZ (DAC_CLOCK / 2)			  // Maximum transmission frequency
-#define ADC_FULL_SCALE 4096 // maximum signal amplitude in the ADC // powf (2, ADC_BITS)
+#define ADC_CLOCK 61440000             // ADC generator frequency
+#define DAC_CLOCK 163200000            // DAC generator frequency
+#define MAX_RX_FREQ_HZ 750000000       // Maximum receive frequency (from the ADC datasheet)
+#define MAX_TX_FREQ_HZ (DAC_CLOCK / 2) // Maximum transmission frequency
+#define ADC_FULL_SCALE 4096            // maximum signal amplitude in the ADC // powf (2, ADC_BITS)
 #define FLOAT_FULL_SCALE_POW 4
 #define DCDC_FREQ_0 960000
 #define DCDC_FREQ_1 1200000
@@ -58,13 +58,14 @@
 #define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_16
 
 // buffers
-#define CODEC_AUDIO_BUFFER_SIZE (AUDIO_BUFFER_SIZE * 2) // the size of the circular buffer is 2 times larger than the FPGA buffer, we work in the first half, then on the other
-#define CODEC_AUDIO_BUFFER_HALF_SIZE AUDIO_BUFFER_SIZE  // half buffer
-#define AUDIO_BUFFER_SIZE (192 * 2)								 // the size of the buffer for working with sound 48kHz
-#define AUDIO_BUFFER_HALF_SIZE (AUDIO_BUFFER_SIZE / 2)			 // buffer size for working with sound 48kHz
-#define FPGA_TX_IQ_BUFFER_SIZE AUDIO_BUFFER_SIZE				 // size of TX data buffer for FPGA
+#define CODEC_AUDIO_BUFFER_SIZE \
+	(AUDIO_BUFFER_SIZE * 2) // the size of the circular buffer is 2 times larger than the FPGA buffer, we work in the first half, then on the other
+#define CODEC_AUDIO_BUFFER_HALF_SIZE AUDIO_BUFFER_SIZE           // half buffer
+#define AUDIO_BUFFER_SIZE (192 * 2)                              // the size of the buffer for working with sound 48kHz
+#define AUDIO_BUFFER_HALF_SIZE (AUDIO_BUFFER_SIZE / 2)           // buffer size for working with sound 48kHz
+#define FPGA_TX_IQ_BUFFER_SIZE AUDIO_BUFFER_SIZE                 // size of TX data buffer for FPGA
 #define FPGA_TX_IQ_BUFFER_HALF_SIZE (FPGA_TX_IQ_BUFFER_SIZE / 2) // half the size of the TX data buffer for FPGA
-#define FPGA_RX_IQ_BUFFER_SIZE FPGA_TX_IQ_BUFFER_SIZE			 // size of the RX data buffer from the PGA
+#define FPGA_RX_IQ_BUFFER_SIZE FPGA_TX_IQ_BUFFER_SIZE            // size of the RX data buffer from the PGA
 #define FPGA_RX_IQ_BUFFER_HALF_SIZE (FPGA_RX_IQ_BUFFER_SIZE / 2) // half the size of the RX data buffer from the PGA
 
 // macros
@@ -72,12 +73,11 @@
 #define FPGA_setGPIOBusOutput GPIOA->MODER = -1431743147
 
 // types
-typedef struct
-{
-  float32_t Load; /*!< CPU load percentage */
-  uint32_t WCNT;  /*!< Number of working cycles in one period. Meant for private use */
-  uint32_t SCNT;  /*!< Number of sleeping cycles in one period. Meant for private use */
-  uint32_t SINC;
+typedef struct {
+	float32_t Load; /*!< CPU load percentage */
+	uint32_t WCNT;  /*!< Number of working cycles in one period. Meant for private use */
+	uint32_t SCNT;  /*!< Number of sleeping cycles in one period. Meant for private use */
+	uint32_t SINC;
 } CPULOAD_t;
 
 // variables

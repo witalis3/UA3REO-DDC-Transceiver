@@ -7,7 +7,7 @@
 
 #define FFT_SIZE_FT8 2048   // 2048
 #define num_que_blocks 40   // 8
-#define FT8_block_size 24       // 128
+#define FT8_block_size 24   // 128
 #define input_gulp_size 960 // 1024
 #define WF_index_size 900   // 900
 

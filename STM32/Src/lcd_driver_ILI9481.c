@@ -1,63 +1,46 @@
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581) || defined(LCD_ST7796S))
+#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || \
+     defined(LCD_R61581) || defined(LCD_ST7796S))
 
 // Header files
-#include "lcd_driver.h"
-#include "main.h"
 #include "fonts.h"
 #include "functions.h"
+#include "lcd_driver.h"
 #include "lcd_driver_ILI9481.h"
+#include "main.h"
 
 //***** Functions prototypes *****//
 static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y);
 inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 // Write command to LCD
-inline void LCDDriver_SendCommand(uint16_t com)
-{
-	*(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR)) = com;
-}
+inline void LCDDriver_SendCommand(uint16_t com) { *(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR)) = com; }
 
 // Write data to LCD
-inline void LCDDriver_SendData(uint16_t data)
-{
-	*(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)) = data;
-}
+inline void LCDDriver_SendData(uint16_t data) { *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)) = data; }
 
 // Write data to LCD
-inline void LCDDriver_SendData16(uint16_t data)
-{
-	*(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)) = data;
-}
+inline void LCDDriver_SendData16(uint16_t data) { *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)) = data; }
 
 // Write pair command-data
-inline void LCDDriver_writeReg(uint16_t reg, uint16_t val)
-{
+inline void LCDDriver_writeReg(uint16_t reg, uint16_t val) {
 	LCDDriver_SendCommand(reg);
 	LCDDriver_SendData(val);
 }
 
 // Read command from LCD
-inline uint16_t LCDDriver_ReadStatus(void)
-{
-	return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR));
-}
+inline uint16_t LCDDriver_ReadStatus(void) { return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_COMM_ADDR)); }
 // Read data from LCD
-inline uint16_t LCDDriver_ReadData(void)
-{
-	return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR));
-}
+inline uint16_t LCDDriver_ReadData(void) { return *(__IO uint16_t *)((uint32_t)(LCD_FSMC_DATA_ADDR)); }
 
 // Read Register
-inline uint16_t LCDDriver_readReg(uint16_t reg)
-{
+inline uint16_t LCDDriver_readReg(uint16_t reg) {
 	LCDDriver_SendCommand(reg);
 	return LCDDriver_ReadData();
 }
 
 // Initialise function
-void LCDDriver_Init(void)
-{
+void LCDDriver_Init(void) {
 #if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_ST7796S))
 #define ILI9481_COMM_DELAY 20
 
@@ -120,7 +103,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x07);
 	LCDDriver_SendData(0x42);
 	LCDDriver_SendData(0x17);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_VCOM); //(0xD1);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x1C);
@@ -138,11 +121,11 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x02);
 	LCDDriver_SendData(0x11);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_FR_SET); //(0xC5);
 	LCDDriver_SendData(0x03);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
+
 	LCDDriver_SendCommand(LCD_COMMAND_GAMMAWR); //(0xC8);
 	LCDDriver_SendData(0x00);
 	LCDDriver_SendData(0x32);
@@ -157,10 +140,13 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x0C);
 	LCDDriver_SendData(0x00);
 	HAL_Delay(ILI9481_COMM_DELAY);
-	
-	LCDDriver_SendCommand(0xB0); LCDDriver_SendData(0x00);  // CommandAccessProtect
-  LCDDriver_SendCommand(0xE4); LCDDriver_SendData(0xA0);
-  LCDDriver_SendCommand(0xF0); LCDDriver_SendData(0x01);
+
+	LCDDriver_SendCommand(0xB0);
+	LCDDriver_SendData(0x00); // CommandAccessProtect
+	LCDDriver_SendCommand(0xE4);
+	LCDDriver_SendData(0xA0);
+	LCDDriver_SendCommand(0xF0);
+	LCDDriver_SendData(0x01);
 #endif
 
 	LCDDriver_SendCommand(LCD_COMMAND_MADCTL); //(0x36);
@@ -242,7 +228,7 @@ void LCDDriver_Init(void)
 	LCDDriver_SendData(0x8A);
 
 	LCDDriver_SendCommand(0x35); // Tearing effect on
-	LCDDriver_SendData(0x00);	 // Added parameter
+	LCDDriver_SendData(0x00);    // Added parameter
 
 	LCDDriver_SendCommand(0x3A);
 	LCDDriver_SendData(0x55);
@@ -468,12 +454,10 @@ void LCDDriver_Init(void)
 }
 
 // Set screen rotation
-void LCDDriver_setRotation(uint8_t rotate)
-{
+void LCDDriver_setRotation(uint8_t rotate) {
 #if defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486) || defined(LCD_ST7796S)
 	LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
-	switch (rotate)
-	{
+	switch (rotate) {
 	case 1: // Portrait
 		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
 		break;
@@ -492,8 +476,7 @@ void LCDDriver_setRotation(uint8_t rotate)
 #endif
 #if defined(LCD_ILI9481_IPS)
 	LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
-	switch (rotate)
-	{
+	switch (rotate) {
 	case 1: // Portrait
 		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
 		break;
@@ -511,8 +494,7 @@ void LCDDriver_setRotation(uint8_t rotate)
 #endif
 #if defined(LCD_HX8357C)
 	LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
-	switch (rotate)
-	{
+	switch (rotate) {
 	case 1: // Portrait
 		LCDDriver_SendData(LCD_PARAM_MADCTL_BGR | LCD_PARAM_MADCTL_MX);
 		break;
@@ -531,8 +513,7 @@ void LCDDriver_setRotation(uint8_t rotate)
 }
 
 // Set cursor position
-inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
-{
+inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 	LCDDriver_SendCommand(LCD_COMMAND_COLUMN_ADDR);
 	LCDDriver_SendData(x1 >> 8);
 	LCDDriver_SendData(x1 & 0xFF);
@@ -546,8 +527,7 @@ inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x
 	LCDDriver_SendCommand(LCD_COMMAND_GRAM);
 }
 
-static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
-{
+static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y) {
 	LCDDriver_SendCommand(LCD_COMMAND_COLUMN_ADDR);
 	LCDDriver_SendData(x >> 8); //-V760
 	LCDDriver_SendData(x & 0xFF);
@@ -562,21 +542,16 @@ static inline void LCDDriver_SetCursorPosition(uint16_t x, uint16_t y)
 }
 
 // Write data to a single pixel
-void LCDDriver_drawPixel(uint16_t x, uint16_t y, uint16_t color)
-{
+void LCDDriver_drawPixel(uint16_t x, uint16_t y, uint16_t color) {
 	LCDDriver_SetCursorPosition(x, y);
 	LCDDriver_SendData(color);
 }
 
 // Fill the entire screen with a background color
-void LCDDriver_Fill(uint16_t color)
-{
-	LCDDriver_Fill_RectXY(0, 0, LCD_WIDTH, LCD_HEIGHT, color);
-}
+void LCDDriver_Fill(uint16_t color) { LCDDriver_Fill_RectXY(0, 0, LCD_WIDTH, LCD_HEIGHT, color); }
 
 // Rectangle drawing functions
-void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
-{
+void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color) {
 	if (x1 > (LCD_WIDTH - 1)) // Set fill area
 		x1 = LCD_WIDTH - 1;
 	if (y1 > (LCD_HEIGHT - 1))
@@ -586,8 +561,7 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
 
 	uint32_t n = ((x1 + 1) - x0) * ((y1 + 1) - y0);
-	if (n < 100)
-	{
+	if (n < 100) {
 		while (n--)
 			LCDDriver_SendData(color);
 		return;
@@ -615,25 +589,17 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 #endif
 }
 
-void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
-{
-	LCDDriver_Fill_RectXY(x, y, x + w, y + h, color);
-}
+void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color) { LCDDriver_Fill_RectXY(x, y, x + w, y + h, color); }
 
 // Line drawing functions
-void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
-{
+void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color) {
 	int16_t steep = abs(y1 - y0) > abs(x1 - x0);
-	if (steep)
-	{
-		uswap(x0, y0)
-			uswap(x1, y1)
+	if (steep) {
+		uswap(x0, y0) uswap(x1, y1)
 	}
 
-	if (x0 > x1)
-	{
-		uswap(x0, x1)
-			uswap(y0, y1)
+	if (x0 > x1) {
+		uswap(x0, x1) uswap(y0, y1)
 	}
 
 	int16_t dx, dy;
@@ -643,36 +609,27 @@ void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint
 	int16_t err = dx / 2;
 	int16_t ystep;
 
-	if (y0 < y1)
-	{
+	if (y0 < y1) {
 		ystep = 1;
-	}
-	else
-	{
+	} else {
 		ystep = -1;
 	}
 
-	for (; x0 <= x1; x0++)
-	{
-		if (steep)
-		{
+	for (; x0 <= x1; x0++) {
+		if (steep) {
 			LCDDriver_drawPixel(y0, x0, color);
-		}
-		else
-		{
+		} else {
 			LCDDriver_drawPixel(x0, y0, color);
 		}
 		err -= dy;
-		if (err < 0)
-		{
+		if (err < 0) {
 			y0 += ystep;
 			err += dx;
 		}
 	}
 }
 
-void LCDDriver_drawFastHLine(uint16_t x, uint16_t y, int16_t w, uint16_t color)
-{
+void LCDDriver_drawFastHLine(uint16_t x, uint16_t y, int16_t w, uint16_t color) {
 	int16_t x2 = x + w;
 	if (x2 < 0)
 		x2 = 0;
@@ -685,8 +642,7 @@ void LCDDriver_drawFastHLine(uint16_t x, uint16_t y, int16_t w, uint16_t color)
 		LCDDriver_Fill_RectXY(x, y, (uint16_t)x2, y, color);
 }
 
-void LCDDriver_drawFastVLine(uint16_t x, uint16_t y, int16_t h, uint16_t color)
-{
+void LCDDriver_drawFastVLine(uint16_t x, uint16_t y, int16_t h, uint16_t color) {
 	int16_t y2 = y + h - 1;
 	if (y2 < 0)
 		y2 = 0;
@@ -699,37 +655,28 @@ void LCDDriver_drawFastVLine(uint16_t x, uint16_t y, int16_t h, uint16_t color)
 		LCDDriver_Fill_RectXY(x, y, x, (uint16_t)y2, color);
 }
 
-void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
-{
+void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color) {
 	LCDDriver_drawFastHLine(x0, y0, (int16_t)(x1 - x0), color);
 	LCDDriver_drawFastHLine(x0, y1, (int16_t)(x1 - x0), color);
 	LCDDriver_drawFastVLine(x0, y0, (int16_t)(y1 - y0), color);
 	LCDDriver_drawFastVLine(x1, y0, (int16_t)(y1 - y0), color);
 }
 
-void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
-{
+void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 	int16_t a, b, y, last;
 
 	// Sort coordinates by Y order (y2 >= y1 >= y0)
-	if (y0 > y1)
-	{
-		_swap_int16_t(y0, y1)
-			_swap_int16_t(x0, x1)
+	if (y0 > y1) {
+		_swap_int16_t(y0, y1) _swap_int16_t(x0, x1)
 	}
-	if (y1 > y2)
-	{
-		_swap_int16_t(y2, y1)
-			_swap_int16_t(x2, x1)
+	if (y1 > y2) {
+		_swap_int16_t(y2, y1) _swap_int16_t(x2, x1)
 	}
-	if (y0 > y1)
-	{
-		_swap_int16_t(y0, y1)
-			_swap_int16_t(x0, x1)
+	if (y0 > y1) {
+		_swap_int16_t(y0, y1) _swap_int16_t(x0, x1)
 	}
 
-	if (y0 == y2)
-	{ // Handle awkward all-on-same-line case as its own thing
+	if (y0 == y2) { // Handle awkward all-on-same-line case as its own thing
 		a = b = x0;
 		if (x1 < a)
 			a = x1;
@@ -743,8 +690,7 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 		return;
 	}
 
-	int16_t dx01 = x1 - x0, dy01 = y1 - y0, dx02 = x2 - x0, dy02 = y2 - y0,
-			dx12 = x2 - x1, dy12 = y2 - y1;
+	int16_t dx01 = x1 - x0, dy01 = y1 - y0, dx02 = x2 - x0, dy02 = y2 - y0, dx12 = x2 - x1, dy12 = y2 - y1;
 	int32_t sa = 0, sb = 0;
 
 	// For upper part of triangle, find scanline crossings for segments
@@ -758,8 +704,7 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 	else
 		last = y1 - 1; // Skip it
 
-	for (y = y0; y <= last; y++)
-	{
+	for (y = y0; y <= last; y++) {
 		a = x0 + sa / dy01;
 		b = x0 + sb / dy02;
 		sa += dx01;
@@ -769,16 +714,14 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 	b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
 	*/
 		if (a > b)
-			_swap_int16_t(a, b)
-				LCDDriver_drawFastHLine(a, y, b - a + 1, color);
+			_swap_int16_t(a, b) LCDDriver_drawFastHLine(a, y, b - a + 1, color);
 	}
 
 	// For lower part of triangle, find scanline crossings for segments
 	// 0-2 and 1-2.  This loop is skipped if y1=y2.
 	sa = (int32_t)dx12 * (y - y1);
 	sb = (int32_t)dx02 * (y - y0);
-	for (; y <= y2; y++)
-	{
+	for (; y <= y2; y++) {
 		a = x1 + sa / dy12;
 		b = x0 + sb / dy02;
 		sa += dx12;
@@ -788,8 +731,7 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 	b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
 	*/
 		if (a > b)
-			_swap_int16_t(a, b)
-				LCDDriver_drawFastHLine(a, y, b - a + 1, color);
+			_swap_int16_t(a, b) LCDDriver_drawFastHLine(a, y, b - a + 1, color);
 	}
 }
 

@@ -1,11 +1,11 @@
 #ifndef FONTS_H_
 #define FONTS_H_
 
-#include <stdbool.h>
 #include "hardware.h"
 #include "lcd_driver.h"
-#include <stdlib.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define RASTR_FONT_W 6
 #define RASTR_FONT_H 8

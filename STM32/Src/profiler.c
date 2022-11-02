@@ -5,10 +5,8 @@
 static PROFILE_INFO profiles[PROFILES_COUNT] = {0}; // collection of profilers
 
 // initialize the profiler
-void InitProfiler()
-{
-	for (uint8_t i = 0; i < PROFILES_COUNT; i++)
-	{
+void InitProfiler() {
+	for (uint8_t i = 0; i < PROFILES_COUNT; i++) {
 		profiles[i].startTime = 0;
 		profiles[i].endTime = 0;
 		profiles[i].diff = 0;
@@ -18,8 +16,7 @@ void InitProfiler()
 }
 
 // start profiler
-void StartProfiler(uint8_t pid)
-{
+void StartProfiler(uint8_t pid) {
 	if (pid >= PROFILES_COUNT)
 		return;
 	if (profiles[pid].started)
@@ -29,8 +26,7 @@ void StartProfiler(uint8_t pid)
 }
 
 // run profiler in microseconds
-void StartProfilerUs()
-{
+void StartProfilerUs() {
 	if (profiles[PROFILES_COUNT - 1].started)
 		return;
 	profiles[PROFILES_COUNT - 1].started = true;
@@ -38,8 +34,7 @@ void StartProfilerUs()
 }
 
 // terminate the profiler
-void EndProfiler(uint8_t pid, bool summarize)
-{
+void EndProfiler(uint8_t pid, bool summarize) {
 	if (pid >= PROFILES_COUNT)
 		return;
 	if (!profiles[pid].started)
@@ -54,8 +49,7 @@ void EndProfiler(uint8_t pid, bool summarize)
 }
 
 // complete profiler in microseconds
-void EndProfilerUs(bool summarize)
-{
+void EndProfilerUs(bool summarize) {
 	if (!profiles[PROFILES_COUNT - 1].started)
 		return;
 	profiles[PROFILES_COUNT - 1].endTime = DWT->CYCCNT;
@@ -69,19 +63,14 @@ void EndProfilerUs(bool summarize)
 }
 
 // output the profiler results
-void PrintProfilerResult()
-{
+void PrintProfilerResult() {
 	bool printed = false;
 	for (uint8_t i = 0; i < PROFILES_COUNT; i++)
-		if (profiles[i].samples > 0)
-		{
+		if (profiles[i].samples > 0) {
 			print("Profile #", i, " Samples: ", profiles[i].samples);
-			if (i == PROFILES_COUNT - 1)
-			{
+			if (i == PROFILES_COUNT - 1) {
 				println(" Time, us: ", profiles[i].diff / (SystemCoreClock / 1000000));
-			}
-			else
-			{
+			} else {
 				println(" Time, ms: ", profiles[i].diff);
 			}
 			profiles[i].diff = 0;

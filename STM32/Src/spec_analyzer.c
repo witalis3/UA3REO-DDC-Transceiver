@@ -1,10 +1,10 @@
 #include "spec_analyzer.h"
-#include "main.h"
-#include "lcd_driver.h"
-#include "trx_manager.h"
-#include "functions.h"
 #include "fpga.h"
+#include "functions.h"
 #include "lcd.h"
+#include "lcd_driver.h"
+#include "main.h"
+#include "trx_manager.h"
 
 // Private variables
 static const uint16_t graph_start_x = 25;
@@ -43,13 +43,12 @@ static bool LastMute = false;
 bool SYSMENU_spectrum_opened = false;
 
 // Prototypes
-static void SPEC_DrawBottomGUI(void);				   // display status at the bottom of the screen
+static void SPEC_DrawBottomGUI(void);                  // display status at the bottom of the screen
 static void SPEC_DrawGraphCol(uint16_t x, bool clear); // display the data column
-static uint16_t SPEC_getYfromX(uint16_t x);			   // get height from data id
+static uint16_t SPEC_getYfromX(uint16_t x);            // get height from data id
 
 // prepare the spectrum analyzer
-void SPEC_Start(void)
-{
+void SPEC_Start(void) {
 	LCD_busy = true;
 
 	// save settings
@@ -82,8 +81,7 @@ void SPEC_Start(void)
 	// vertical labels
 	int16_t vres = (TRX.SPEC_BottomDBM - TRX.SPEC_TopDBM);
 	int16_t partsize = vres / (SPEC_VParts - 1);
-	for (uint8_t n = 0; n < SPEC_VParts; n++)
-	{
+	for (uint8_t n = 0; n < SPEC_VParts; n++) {
 		int32_t y = graph_start_y + (partsize * n * graph_height / vres);
 		sprintf(ctmp, "%d", TRX.SPEC_TopDBM + partsize * n);
 		LCDDriver_printText(ctmp, 0, (uint16_t)y, COLOR_GREEN, COLOR_BLACK, 1);
@@ -114,8 +112,7 @@ void SPEC_Start(void)
 	LCD_UpdateQuery.SystemMenu = true;
 }
 
-void SPEC_Stop(void)
-{
+void SPEC_Stop(void) {
 	TRX_setFrequency(Lastfreq, CurrentVFO);
 	TRX_setMode(Lastmode, CurrentVFO);
 	TRX.AutoGain = LastAutoGain;
@@ -131,27 +128,24 @@ void SPEC_Stop(void)
 }
 
 // draw the spectrum analyzer
-void SPEC_Draw(void)
-{
+void SPEC_Draw(void) {
 	if (LCD_busy)
 		return;
-	
+
 	// Wait while data is being typed
-	if ((HAL_GetTick() - tick_start_time) < SPEC_StepDelay)
-	{
+	if ((HAL_GetTick() - tick_start_time) < SPEC_StepDelay) {
 		LCD_UpdateQuery.SystemMenu = true;
 		return;
 	}
-	
+
 	if (TRX_RX1_dBm == 0) //-V550
 		return;
-	
+
 	tick_start_time = HAL_GetTick();
 	LCD_busy = true;
 
 	// Draw
-	if (graph_sweep_x < graph_width)
-	{
+	if (graph_sweep_x < graph_width) {
 		data[graph_sweep_x] = TRX_RX1_dBm;
 		SPEC_DrawGraphCol(graph_sweep_x, true);
 		// draw a marker
@@ -161,8 +155,7 @@ void SPEC_Draw(void)
 
 	// Move on to calculating the next step
 	graph_sweep_x++;
-	if (now_freq >= (TRX.SPEC_End * SPEC_Resolution))
-	{
+	if (now_freq >= (TRX.SPEC_End * SPEC_Resolution)) {
 		graph_sweep_x = 0;
 		now_freq = TRX.SPEC_Begin * SPEC_Resolution;
 	}
@@ -173,8 +166,7 @@ void SPEC_Draw(void)
 }
 
 // get height from data id
-static uint16_t SPEC_getYfromX(uint16_t x)
-{
+static uint16_t SPEC_getYfromX(uint16_t x) {
 	int32_t y = graph_start_y + ((data[x] - TRX.SPEC_TopDBM) * (graph_height) / (TRX.SPEC_BottomDBM - TRX.SPEC_TopDBM));
 	if (y < graph_start_y)
 		y = graph_start_y;
@@ -184,19 +176,18 @@ static uint16_t SPEC_getYfromX(uint16_t x)
 }
 
 // display the data column
-static void SPEC_DrawGraphCol(uint16_t x, bool clear)
-{
+static void SPEC_DrawGraphCol(uint16_t x, bool clear) {
 	if (x >= graph_width)
 		return;
 
-	if (clear)
-	{
+	if (clear) {
 		// clear
 		LCDDriver_drawFastVLine((graph_start_x + x + 1), graph_start_y, graph_height - 1, COLOR_BLACK);
 		// draw stripes behind the chart
 		int16_t vres = (TRX.SPEC_BottomDBM - TRX.SPEC_TopDBM);
 		for (uint8_t n = 0; n < (SPEC_VParts - 1); n++)
-			LCDDriver_drawPixel((graph_start_x + x + 1), (uint16_t)(graph_start_y + ((vres / (SPEC_VParts - 1)) * n * graph_height / vres)), COLOR_DGRAY);
+			LCDDriver_drawPixel((graph_start_x + x + 1), (uint16_t)(graph_start_y + ((vres / (SPEC_VParts - 1)) * n * graph_height / vres)),
+			                    COLOR_DGRAY);
 	}
 	// draw the graph
 	if (x > 0)
@@ -206,21 +197,19 @@ static void SPEC_DrawGraphCol(uint16_t x, bool clear)
 }
 
 // display status at the bottom of the screen
-static void SPEC_DrawBottomGUI(void)
-{
+static void SPEC_DrawBottomGUI(void) {
 	static IRAM2 char ctmp[64] = {0};
 	int32_t freq = (int32_t)TRX.SPEC_Begin + (graph_selected_x * (int32_t)(TRX.SPEC_End - TRX.SPEC_Begin) / (graph_width - 1));
 	sprintf(ctmp, "Freq=%dmHz DBM=%d", freq, data[graph_selected_x]);
-	#ifndef LCD_SMALL_INTERFACE
+#ifndef LCD_SMALL_INTERFACE
 	LCDDriver_Fill_RectWH(170, graph_start_y + graph_height + 3, 200, 6, COLOR_BLACK);
 	LCDDriver_printText(ctmp, 170, graph_start_y + graph_height + 3, COLOR_GREEN, COLOR_BLACK, 1);
-	#endif
+#endif
 	LCDDriver_drawFastVLine(graph_start_x + (uint16_t)graph_selected_x + 1, graph_start_y, graph_height, COLOR_GREEN);
 }
 
 // analyzer events to the encoder
-void SPEC_EncRotate(int8_t direction)
-{
+void SPEC_EncRotate(int8_t direction) {
 	if (LCD_busy)
 		return;
 	LCD_busy = true;

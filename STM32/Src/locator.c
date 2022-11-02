@@ -1,11 +1,11 @@
 #include "locator.h"
-#include "main.h"
-#include "lcd_driver.h"
-#include "trx_manager.h"
-#include "functions.h"
-#include "fpga.h"
-#include "lcd.h"
 #include "fonts.h"
+#include "fpga.h"
+#include "functions.h"
+#include "lcd.h"
+#include "lcd_driver.h"
+#include "main.h"
+#include "trx_manager.h"
 
 // Public variables
 bool SYSMENU_locator_info_opened = false;
@@ -16,8 +16,7 @@ static char entered_locator[32] = {0};
 // Prototypes
 
 // start
-void LOCINFO_Start(void)
-{
+void LOCINFO_Start(void) {
 	LCD_busy = true;
 
 	memset(entered_locator, 0x00, sizeof(entered_locator));
@@ -30,31 +29,24 @@ void LOCINFO_Start(void)
 }
 
 // stop
-void LOCINFO_Stop(void)
-{
-	LCD_hideKeyboard();
-}
+void LOCINFO_Stop(void) { LCD_hideKeyboard(); }
 
-static void LOCINFO_keyboardHandler(uint32_t parameter)
-{
+static void LOCINFO_keyboardHandler(uint32_t parameter) {
 	char str[2] = {0};
 	str[0] = parameter;
 	if (parameter == '<') // backspace
 	{
 		if (strlen(entered_locator) > 0)
 			entered_locator[strlen(entered_locator) - 1] = 0;
-	}
-	else if (strlen(entered_locator) < 8)
+	} else if (strlen(entered_locator) < 8)
 		strcat(entered_locator, str);
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 // draw
-void LOCINFO_Draw(void)
-{
-	if (LCD_busy)
-	{
+void LOCINFO_Draw(void) {
+	if (LCD_busy) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
@@ -99,20 +91,18 @@ void LOCINFO_Draw(void)
 }
 
 // events to the encoder
-void LOCINFO_EncRotate(int8_t direction)
-{
+void LOCINFO_EncRotate(int8_t direction) {
 	/*if (LCD_busy)
-		return;
+	  return;
 	LCD_busy = true;
 
 	LCD_busy = false;*/
 }
 
-float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat)
-{
+float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat) {
 	// origin
 	float32_t lon = -180.0f; // Positive: East, negative: West.
-	float32_t lat = -90.0f;	 // Positive: North, negative: South.
+	float32_t lat = -90.0f;  // Positive: North, negative: South.
 
 	if (strlen(locator) >= 1)
 		lon += (locator[0] - 65) * 20.0f;
@@ -128,19 +118,14 @@ float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat)
 		lat += (locator[5] - 65) * (2.5f / 60.0f);
 
 	// averaging
-	if (strlen(locator) >= 5)
-	{
+	if (strlen(locator) >= 5) {
 		lon += (2.5f / 60.0f);
 		lat += (1.25f / 60.0f);
-	}
-	else if (strlen(locator) >= 3)
-	{
+	} else if (strlen(locator) >= 3) {
 		// averaging
 		lon += 1.0f;
 		lat += 0.5f;
-	}
-	else if (strlen(locator) >= 1)
-	{
+	} else if (strlen(locator) >= 1) {
 		// averaging
 		lon += 10.0f;
 		lat += 5.0f;
@@ -152,8 +137,7 @@ float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat)
 		return lon;
 }
 
-float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2)
-{
+float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) {
 	float32_t earthRadiusKm = 6371.0f;
 
 	float32_t dLat = DEG2RAD(lat2 - lat1);
@@ -162,7 +146,8 @@ float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t 
 	lat1 = DEG2RAD(lat1);
 	lat2 = DEG2RAD(lat2);
 
-	float32_t a = arm_sin_f32(dLat / 2.0f) * arm_sin_f32(dLat / 2.0f) + arm_sin_f32(dLon / 2.0f) * arm_sin_f32(dLon / 2.0f) * arm_cos_f32(lat1) * arm_cos_f32(lat2);
+	float32_t a = arm_sin_f32(dLat / 2.0f) * arm_sin_f32(dLat / 2.0f) +
+	              arm_sin_f32(dLon / 2.0f) * arm_sin_f32(dLon / 2.0f) * arm_cos_f32(lat1) * arm_cos_f32(lat2);
 	float32_t angle;
 	arm_atan2_f32(sqrtf(a), sqrtf(1.0f - a), &angle);
 	float32_t c = 2.0f * angle;
@@ -170,8 +155,7 @@ float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t 
 	return earthRadiusKm * c;
 }
 
-float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2)
-{
+float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) {
 	float32_t dLat = DEG2RAD(lat2 - lat1);
 	float32_t dLon = DEG2RAD(lon2 - lon1);
 
@@ -179,7 +163,8 @@ float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32
 	lat2 = DEG2RAD(lat2);
 
 	float32_t azimuth;
-	arm_atan2_f32((arm_sin_f32(dLon) * arm_cos_f32(lat2)), (arm_cos_f32(lat1) * arm_sin_f32(lat2) - arm_sin_f32(lat1) * arm_cos_f32(lat2) * arm_cos_f32(dLon)), &azimuth);
+	arm_atan2_f32((arm_sin_f32(dLon) * arm_cos_f32(lat2)),
+	              (arm_cos_f32(lat1) * arm_sin_f32(lat2) - arm_sin_f32(lat1) * arm_cos_f32(lat2) * arm_cos_f32(dLon)), &azimuth);
 
 	azimuth = RAD2DEG(azimuth);
 	while (azimuth < 0)

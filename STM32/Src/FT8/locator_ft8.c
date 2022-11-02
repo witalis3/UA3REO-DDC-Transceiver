@@ -1,6 +1,6 @@
 #include "locator_ft8.h"
-#include <math.h>
 #include "arm_math.h"
+#include <math.h>
 
 static const double EARTH_RAD = 6371; // radius in km
 
@@ -13,16 +13,14 @@ static float Latitude, Longitude;
 static float Station_Latitude, Station_Longitude;
 static float Target_Latitude, Target_Longitude;
 
-void set_Station_Coordinates(char station[])
-{
+void set_Station_Coordinates(char station[]) {
 
 	process_locator(station);
 	Station_Latitude = Latitude;
 	Station_Longitude = Longitude;
 }
 
-float Target_Distance(char target[])
-{
+float Target_Distance(char target[]) {
 
 	float Target_Distance;
 	process_locator(target);
@@ -34,8 +32,7 @@ float Target_Distance(char target[])
 	return Target_Distance;
 }
 
-void process_locator(char locator[])
-{
+void process_locator(char locator[]) {
 
 	uint8_t A1, A2, N1, N2;
 	uint8_t A1_value, A2_value, N1_value, N2_value;
@@ -64,8 +61,7 @@ void process_locator(char locator[])
 }
 
 // distance (km) on earth's surface from point 1 to point 2
-double distance(double lat1, double lon1, double lat2, double lon2)
-{
+double distance(double lat1, double lon1, double lat2, double lon2) {
 	double lat1r = deg2rad(lat1);
 	double lon1r = deg2rad(lon1);
 	double lat2r = deg2rad(lat2);
@@ -74,7 +70,4 @@ double distance(double lat1, double lon1, double lat2, double lon2)
 }
 
 // convert degrees to radians
-double deg2rad(double deg)
-{
-	return deg * (PI / 180.0);
-}
+double deg2rad(double deg) { return deg * (PI / 180.0); }

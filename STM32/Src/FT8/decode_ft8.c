@@ -1,16 +1,16 @@
+#include "gen_ft8.h"
+#include <ctype.h>
+#include <math.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <math.h>
-#include <ctype.h>
-#include <stdbool.h>
-#include "gen_ft8.h"
 
-#include "unpack.h"
-#include "ldpc.h"
-#include "decode.h"
 #include "constants.h"
+#include "decode.h"
 #include "encode.h"
+#include "ldpc.h"
+#include "unpack.h"
 //#include "button.h"
 
 #include "Process_DSP.h"
@@ -29,8 +29,8 @@
 
 // char erase[] = "                   ";
 
-const int kLDPC_iterations = 20;	  // original 10
-const int kMax_candidates = 80;		  // original 20
+const int kLDPC_iterations = 20;      // original 10
+const int kMax_candidates = 80;       // original 20
 const int kMax_decoded_messages = 30; // original 6
 const int kMax_message_length = 20;
 const int kMin_score = 20; // original 40 Minimum sync score threshold for candidates
@@ -56,12 +56,11 @@ int message_limit = 6;
 
 extern char Station_Call[];
 char Target_Call[7]; // target station (partner) callsign
-int Target_RSL;		 // four character RSL  + /0
+int Target_RSL;      // four character RSL  + /0
 char Target_Grid[5]; // Grid square of the target station (partner)
-char RapRcv_RSL[5];	 // Recieved raport from our corespondent - used to determine if he got our "raport" mesage
+char RapRcv_RSL[5];  // Recieved raport from our corespondent - used to determine if he got our "raport" mesage
 
-int ft8_decode(void)
-{
+int ft8_decode(void) {
 	char ctmp[20] = {0}; // Debug
 
 	// Find top candidates by Costas sync score and localize them in time and frequency
@@ -82,10 +81,9 @@ int ft8_decode(void)
 
 	//
 	uint16_t chksumAray[kMax_decoded_messages]; // array containing the check sum of already decoded messages
-												// it is used to avoid duplication of messages
+	                                            // it is used to avoid duplication of messages
 
-	for (int idx = 0; idx < num_candidates; ++idx)
-	{
+	for (int idx = 0; idx < num_candidates; ++idx) {
 		Candidate cand = candidate_list[idx];
 		float freq_hz = (cand.freq_offset + cand.freq_sub / 2.0f) * fsk_dev;
 
@@ -97,7 +95,7 @@ int ft8_decode(void)
 		int n_errors = 0;
 		bp_decode(log174, kLDPC_iterations, plain, &n_errors);
 		print("FT8 Candidate: ", idx, " errors: ", n_errors);
-		
+
 		if (n_errors > 10) {
 			println(" Many errors");
 			continue;
@@ -135,25 +133,21 @@ int ft8_decode(void)
 
 		// Check for duplicate messages
 		bool found = false;
-		for (int i = 0; i < num_decoded; ++i)
-		{ // Alternative check for duplicate messages (should be much faster)
-			if (chksumAray[i] == chksum)
-			{				  // the check sums are controlled
-				found = true; // should be much faster!
+		for (int i = 0; i < num_decoded; ++i) { // Alternative check for duplicate messages (should be much faster)
+			if (chksumAray[i] == chksum) {        // the check sums are controlled
+				found = true;                       // should be much faster!
 				break;
 			}
 		}
-		
+
 		println(" Duplicate");
 
 		int raw_RSL;
 		int display_RSL;
 		float distance;
 
-		if (!found && num_decoded < kMax_decoded_messages)
-		{
-			if (strlen(message) > 4 && strlen(message) < kMax_message_length)
-			{
+		if (!found && num_decoded < kMax_decoded_messages) {
+			if (strlen(message) > 4 && strlen(message) < kMax_message_length) {
 				chksumAray[num_decoded] = chksum; // Used to check for duplicate messages
 				// strcpy(decoded[num_decoded], message);
 				// strcpy(decoded[num_decoded], field1);
@@ -178,11 +172,9 @@ int ft8_decode(void)
 				new_decoded[num_decoded].snr = display_RSL;
 
 				++num_decoded;
-				
+
 				println(" OK");
-			}
-			else
-			{
+			} else {
 				println(" Length error");
 			}
 		}
@@ -191,32 +183,29 @@ int ft8_decode(void)
 
 	// Debug
 	/*
-			for (int tmp = 0; tmp < num_decoded; ++tmp)
-					{
-					sprintf(ctmp,"%s %s %s", new_decoded[tmp].field1,new_decoded[tmp].field2,new_decoded[tmp].field3);
-					println(ctmp);	//Debug
-				  }
+	    for (int tmp = 0; tmp < num_decoded; ++tmp)
+	        {
+	        sprintf(ctmp,"%s %s %s", new_decoded[tmp].field1,new_decoded[tmp].field2,new_decoded[tmp].field3);
+	        println(ctmp);	//Debug
+	        }
 	*/
 	return num_decoded;
 }
 
-void display_messages(int decoded_messages)
-{
+void display_messages(int decoded_messages) {
 
 	char message[kMax_message_length];
 	//      char big_gulp[60];
 
 	//			LCDDriver_Fill_RectXY(0, 100, 240, 240,COLOR_BLACK);	//Clear the old mesages
 
-	for (int i = 0; i < decoded_messages && i < message_limit; i++)
-	{
+	for (int i = 0; i < decoded_messages && i < message_limit; i++) {
 		sprintf(message, "%s %s %s", new_decoded[i].field1, new_decoded[i].field2, new_decoded[i].field3);
 		LCDDriver_printText(message, 10, 100 + i * 25, COLOR_GREEN, COLOR_BLACK, 2);
 	}
 }
 
-void SetNew_TargetCall(int index)
-{
+void SetNew_TargetCall(int index) {
 
 	char selected_station[18];
 	char blank[] = "        ";
@@ -232,19 +221,15 @@ void SetNew_TargetCall(int index)
 // it is used to determine if the oposide side recieved our mesage and if yes we can send "73"
 //"index" is the message index
 //"CQ_Answer" showing if we check the answer when we call the "CQ" or we answer a "CQ"
-int CheckRecievedRaportRSL(int index, char CQ_Answer)
-{
+int CheckRecievedRaportRSL(int index, char CQ_Answer) {
 	strcpy(RapRcv_RSL, new_decoded[index].field3);
 
-	if (CQ_Answer)
-	{
+	if (CQ_Answer) {
 		if ((RapRcv_RSL[0] == '-') || (RapRcv_RSL[0] == '+'))
 			return 1;
 		else
 			return 0;
-	}
-	else
-	{
+	} else {
 		if ((RapRcv_RSL[0] == 'R') && ((RapRcv_RSL[1] == '-') || (RapRcv_RSL[1] == '+')))
 			return 1;
 		else
@@ -255,21 +240,17 @@ int CheckRecievedRaportRSL(int index, char CQ_Answer)
 // it is used to determine if the oposide side recieved our last mesage
 //"index" is the message index
 //"CQ_Answer" showing if we check the answer when we call the "CQ" or we answer a "CQ"
-int CheckRecieved73(int index, char CQ_Answer)
-{
+int CheckRecieved73(int index, char CQ_Answer) {
 	char RapRcv_73[7]; // Recieved raport from our corespondent - used to determine if he got our "raport" mesage
 
 	strcpy(RapRcv_73, new_decoded[index].field3);
 
-	if (CQ_Answer)
-	{
+	if (CQ_Answer) {
 		if ((RapRcv_73[0] == 'R') && (RapRcv_73[1] == 'R'))
 			return 1;
 		else
 			return 0;
-	}
-	else
-	{
+	} else {
 		if ((RapRcv_73[0] == '7') && (RapRcv_73[1] == '3'))
 			return 1;
 		else
@@ -278,50 +259,44 @@ int CheckRecieved73(int index, char CQ_Answer)
 }
 
 /*
-	Find the index of the partner we were talking till now
+  Find the index of the partner we were talking till now
 
-	The function is called after "Check_Calling_Stations" so for shure we know someodey called us
-	we just have to be sure it is the station we were in contact till now!
+  The function is called after "Check_Calling_Stations" so for shure we know someodey called us
+  we just have to be sure it is the station we were in contact till now!
 */
-int FindPartnerIDX(int num_decoded)
-{
+int FindPartnerIDX(int num_decoded) {
 	uint8_t Partner_Idx;
 
-	for (int i = 0; i < num_decoded; i++)
-	{
-		if (strindex(new_decoded[i].field2, Target_Call) >= 0)
-		{
+	for (int i = 0; i < num_decoded; i++) {
+		if (strindex(new_decoded[i].field2, Target_Call) >= 0) {
 			Partner_Idx = i + 100; // Add 100 to be sure that match was found
 		}
 	}
 
-	if (Partner_Idx > 0)		  // Match was found
+	if (Partner_Idx > 0)        // Match was found
 		return Partner_Idx - 100; // return the index of the match
-	else						  // no match was found
+	else                        // no match was found
 		return -1;
 }
 
-void display_details(int decoded_messages)
-{
+void display_details(int decoded_messages) {
 
 	char message[48];
 
 	// tft.fillRect(0, 100, 500, 320, RA8875_BLACK);
 
-	for (int i = 0; i < decoded_messages && i < message_limit; i++)
-	{
-		sprintf(message, "%7s %7s %4s %4i %3i %4i", new_decoded[i].field1, new_decoded[i].field2, new_decoded[i].field3, new_decoded[i].freq_hz, new_decoded[i].snr, new_decoded[i].distance);
+	for (int i = 0; i < decoded_messages && i < message_limit; i++) {
+		sprintf(message, "%7s %7s %4s %4i %3i %4i", new_decoded[i].field1, new_decoded[i].field2, new_decoded[i].field3, new_decoded[i].freq_hz,
+		        new_decoded[i].snr, new_decoded[i].distance);
 	}
 }
 
-int strindex(char s[], char t[])
-{
+int strindex(char s[], char t[]) {
 	int i, j, k, result;
 
 	result = -1;
 
-	for (i = 0; s[i] != '\0'; i++)
-	{
+	for (i = 0; s[i] != '\0'; i++) {
 		for (j = i, k = 0; t[k] != '\0' && s[j] == t[k]; j++, k++)
 			;
 		if (k > 0 && t[k] == '\0')
@@ -336,18 +311,15 @@ int strindex(char s[], char t[])
  Return the index of the message where we were called
 If more stations called us it is returned the index of the last one
 */
-int Check_Calling_Stations(int num_decoded)
-{
+int Check_Calling_Stations(int num_decoded) {
 	// char big_gulp[60];
 	char message[kMax_message_length];
 	int Ans_Mess_IDX = 0;
 
 	char To_meCallIdx = 0; // used to indicate on the right the mesages addresed to us
 
-	for (int i = 0; i < num_decoded; i++)
-	{
-		if (strindex(new_decoded[i].field1, Station_Call) >= 0)
-		{
+	for (int i = 0; i < num_decoded; i++) {
+		if (strindex(new_decoded[i].field1, Station_Call) >= 0) {
 			sprintf(message, "%s %s %s", new_decoded[i].field1, new_decoded[i].field2, new_decoded[i].field3);
 
 			if (To_meCallIdx <= message_limit) // Display up to 6 mesages addrssed to us (shuld be enough)

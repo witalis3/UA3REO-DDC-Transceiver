@@ -2,8 +2,8 @@
 #define BANDS_H
 
 #include "hardware.h"
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define BANDS_COUNT 40 // number of bands in the collection
 
@@ -63,7 +63,7 @@ typedef struct // description of the band
 extern BAND_MAP BANDS[BANDS_COUNT];
 
 // Public methods
-extern uint_fast8_t getModeFromFreq(uint64_t freq);			// mod from frequency
-extern int8_t getBandFromFreq(uint64_t freq, bool nearest); // band number from frequency
+extern uint_fast8_t getModeFromFreq(uint64_t freq);          // mod from frequency
+extern int8_t getBandFromFreq(uint64_t freq, bool nearest);  // band number from frequency
 extern int16_t getChannelbyFreq(uint64_t freq, bool txfreq); // get channel by frequency
 #endif

@@ -2,13 +2,12 @@
 #define FRONT_UNIT_h
 
 #include "hardware.h"
-#include <stdbool.h>
 #include "settings.h"
+#include <stdbool.h>
 
 #define MCP3008_SINGLE_THRESHOLD 300
 
-typedef enum
-{
+typedef enum {
 	FUNIT_CTRL_BUTTON,
 	FUNIT_CTRL_AF_GAIN,
 	FUNIT_CTRL_RIT_XIT,
@@ -18,8 +17,7 @@ typedef enum
 	FUNIT_CTRL_ENC2SW,
 } FRONT_UNIT_CONTROL_TYPE;
 
-typedef struct
-{
+typedef struct {
 	bool work_in_menu;
 	char name[16];
 	void (*clickHandler)(uint32_t parameter);
@@ -27,13 +25,12 @@ typedef struct
 	uint32_t *checkBool;
 } PERIPH_FrontPanel_FuncButton;
 
-typedef struct
-{
-  uint32_t parameter;
-  uint32_t start_hold_time;
+typedef struct {
+	uint32_t parameter;
+	uint32_t start_hold_time;
 	void (*clickHandler)(uint32_t parameter);
 	void (*holdHandler)(uint32_t parameter);
-  uint16_t tres_min;
+	uint16_t tres_min;
 	uint16_t tres_max;
 	uint8_t port;
 	uint8_t channel;
@@ -41,7 +38,7 @@ typedef struct
 	bool prev_state;
 	bool afterhold;
 	bool work_in_menu;
-  FRONT_UNIT_CONTROL_TYPE type;
+	FRONT_UNIT_CONTROL_TYPE type;
 	char name[16];
 } PERIPH_FrontPanel_Button;
 
