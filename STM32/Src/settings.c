@@ -10,7 +10,7 @@
 #include "bands.h"
 #include "front_unit.h"
 
-const char version_string[19] = "6.2.0";
+const char version_string[19] = "6.2.1";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -271,7 +271,7 @@ void LoadSettings(bool clear)
 		TRX.FM_LPF_TX_Filter = 8000;		 // default value of the FM filter width
 		TRX.Beeper = true;					 // Keyboard beeper
 		TRX.CTCSS_Freq = 0;					 // CTCSS FM Frequency
-		TRX.SELFHEAR_Volume = 50;			 // Selfhearing volume
+		TRX.SELFHEAR_Volume = 15;			 // Selfhearing volume
 		TRX.FM_Stereo = false;				 // Stereo FM Mode
 		TRX.VAD_THRESHOLD = 150;				//Threshold of SSB/SCAN squelch
 		TRX.VOX = false;							//TX by voice activation
@@ -650,9 +650,9 @@ void LoadCalibration(bool clear)
 		CALIBRATE.FW_AD8307_OFFS = 1150.0f;		// Offset to back calculate the output voltage to dBm (mV)
 		CALIBRATE.BW_AD8307_SLP = 25.5f;		// Slope for the log amp used to mreasure the BW power (mV/dB)
 		CALIBRATE.BW_AD8307_OFFS = 1150.0f;		// Offset to back calculate the output voltage to dBm (mV)
-		CALIBRATE.FAN_MEDIUM_START = 50;		// Temperature at which the fan starts at half power
+		CALIBRATE.FAN_MEDIUM_START = 55;		// Temperature at which the fan starts at half power
 		CALIBRATE.FAN_MEDIUM_STOP = 40;			// Temperature at which the fan stops
-		CALIBRATE.FAN_FULL_START = 70;			// Temperature at which the fan starts at full power
+		CALIBRATE.FAN_FULL_START = 55;			// Temperature at which the fan starts at full power
 		CALIBRATE.TRX_MAX_RF_TEMP = 80;			// Maximum RF unit themperature to enable protect
 		CALIBRATE.TRX_MAX_SWR = 3;				// Maximum SWR to enable protect on TX (NOT IN TUNE MODE!)
 		CALIBRATE.FM_DEVIATION_SCALE = 4;		// FM Deviation scale
@@ -711,7 +711,7 @@ void LoadCalibration(bool clear)
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f; // VLT meter calibration
 		CALIBRATE.PWR_CUR_Calibration = 2.5f;	// CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;			 // Tuner averaging stages
-		CALIBRATE.CAT_Type = CAT_FT450;
+		CALIBRATE.CAT_Type = CAT_TS2000;
 		CALIBRATE.LNA_compensation = 0; // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50; //balance of signals on twosignal-tune
 		CALIBRATE.LinearPowerControl = false; //linear or logrithmic power control
