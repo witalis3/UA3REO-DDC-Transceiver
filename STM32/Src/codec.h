@@ -1,10 +1,10 @@
 #ifndef CODEC_h
 #define CODEC_h
 
-#include <stdio.h>
 #include "audio_processor.h"
 #include "functions.h"
 #include "hardware.h"
+#include <stdio.h>
 
 // Public variables
 extern int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE];
@@ -20,10 +20,10 @@ extern bool CODEC_test_result;
 extern void CODEC_Init(void);              // I2C audio codec initialization
 extern void CODEC_start_i2s_and_dma(void); // I2S bus start
 extern void CODEC_CleanBuffer(void);       // clear the audio codec and USB audio buffer
-extern void CODEC_TXRX_mode(void);     // switch to mixed mode RX-TX
-extern void CODEC_Mute(void);          // mute audio out
-extern void CODEC_UnMute(void);        // disable audio mute
-extern void CODEC_Mute_AF_AMP(void);   // mute audio out (AF AMP only)
-extern void CODEC_UnMute_AF_AMP(void); // disable audio mute (AF AMP only)
-extern void CODEC_Beep(void);          // beep on key press
+extern void CODEC_TXRX_mode(void);         // switch to mixed mode RX-TX
+extern void CODEC_Mute(void);              // mute audio out
+extern void CODEC_UnMute(void);            // disable audio mute
+extern void CODEC_Mute_AF_AMP(void);       // mute audio out (AF AMP only)
+extern void CODEC_UnMute_AF_AMP(void);     // disable audio mute (AF AMP only)
+extern void CODEC_Beep(void);              // beep on key press
 #endif

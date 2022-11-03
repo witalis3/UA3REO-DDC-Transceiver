@@ -1,11 +1,11 @@
 #ifndef LOCATOR_H
 #define LOCATOR_H
 
+#include "functions.h"
 #include "hardware.h"
 #include "main.h"
 #include "stdbool.h"
 #include "stdint.h"
-#include "functions.h"
 
 // Public variabled
 extern bool SYSMENU_locator_info_opened;

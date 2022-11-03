@@ -1,10 +1,10 @@
 #ifndef FT8_GUI_H_
 #define FT8_GUI_H_
 
-#include "lcd.h"
-#include <stdint.h>
-#include <stdbool.h>
 #include "hardware.h"
+#include "lcd.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 #define FT8_Menu_Max_Idx 2 // 3 Buttons in total
 
@@ -24,17 +24,16 @@ extern uint8_t FT8_Menu_Idx;
 
 extern RTC_HandleTypeDef hrtc;
 
-typedef struct
-{
+typedef struct {
 	char *text;
 	bool state;
 } ButtonStruct;
 
 /*	- The buch of received messages are printed in the "decode ft8.c" - to be
-		correct will be good to move the print here
+    correct will be good to move the print here
 
-		- The time, SWR and the PWR are print in the FT8_main.c - - to be
-		correct will be good to move the print here
+    - The time, SWR and the PWR are print in the FT8_main.c - - to be
+    correct will be good to move the print here
 */
 
 void Unarm_FT8_Buttons(void); // used to deactivate all buttons

@@ -1,24 +1,24 @@
 #ifndef FPGA_h
 #define FPGA_h
 
-#include <stdbool.h>
-#include "fft.h"
 #include "audio_processor.h"
+#include "fft.h"
 #include "settings.h"
+#include <stdbool.h>
 
 #define FPGA_flash_size 0x100000
 #define FPGA_flash_file_offset (0xA0 - 1)
 #define FPGA_sector_size (64 * 1024)
 #define FPGA_page_size 256
-#define FPGA_FLASH_COMMAND_DELAY               \
-    for (uint32_t wait = 0; wait < 50; wait++) \
-        __asm("nop");
-#define FPGA_FLASH_WRITE_DELAY                  \
-    for (uint32_t wait = 0; wait < 500; wait++) \
-        __asm("nop");
-#define FPGA_FLASH_READ_DELAY                  \
-    for (uint32_t wait = 0; wait < 50; wait++) \
-        __asm("nop");
+#define FPGA_FLASH_COMMAND_DELAY             \
+	for (uint32_t wait = 0; wait < 50; wait++) \
+		__asm("nop");
+#define FPGA_FLASH_WRITE_DELAY                \
+	for (uint32_t wait = 0; wait < 500; wait++) \
+		__asm("nop");
+#define FPGA_FLASH_READ_DELAY                \
+	for (uint32_t wait = 0; wait < 50; wait++) \
+		__asm("nop");
 
 #define FPGA_writePacket(value) (FPGA_BUS_D0_GPIO_Port->BSRR = (value) | 0xFF0000)
 #define FPGA_readPacket (FPGA_BUS_D0_GPIO_Port->IDR & 0xFF)
@@ -43,8 +43,8 @@ extern volatile uint32_t FPGA_samples;                                          
 extern volatile bool FPGA_Buffer_underrun;                                        // flag of lack of data from FPGA
 extern volatile bool FPGA_NeedSendParams;                                         // flag of the need to send parameters to FPGA
 extern volatile bool FPGA_NeedGetParams;                                          // flag of the need to get parameters from FPGA
-extern volatile bool FPGA_NeedRestart_RX;                                            // flag of necessity to restart FPGA modules
-extern volatile bool FPGA_NeedRestart_TX;                                            // flag of necessity to restart FPGA modules
+extern volatile bool FPGA_NeedRestart_RX;                                         // flag of necessity to restart FPGA modules
+extern volatile bool FPGA_NeedRestart_TX;                                         // flag of necessity to restart FPGA modules
 extern volatile float32_t FPGA_Audio_Buffer_RX1_Q_A[FPGA_RX_IQ_BUFFER_HALF_SIZE]; // FPGA buffers
 extern volatile float32_t FPGA_Audio_Buffer_RX1_I_A[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 extern volatile float32_t FPGA_Audio_Buffer_RX1_Q_B[FPGA_RX_IQ_BUFFER_HALF_SIZE];
@@ -59,9 +59,9 @@ extern volatile float32_t FPGA_Audio_SendBuffer_Q[FPGA_TX_IQ_BUFFER_SIZE];
 extern volatile float32_t FPGA_Audio_SendBuffer_I[FPGA_TX_IQ_BUFFER_SIZE];
 extern bool FPGA_RX_Buffer_Current;
 extern bool FPGA_RX_buffer_ready;
-extern bool FPGA_Audio_Buffer_State;            // buffer state, half or full full true - compleate; false - half
-extern uint16_t FPGA_FW_Version[3];             // version from fpga
-extern bool FPGA_bus_stop;                      // temporary stop FPGA bus
+extern bool FPGA_Audio_Buffer_State; // buffer state, half or full full true - compleate; false - half
+extern uint16_t FPGA_FW_Version[3];  // version from fpga
+extern bool FPGA_bus_stop;           // temporary stop FPGA bus
 extern uint8_t ADCDAC_OVR_StatusLatency;
 extern volatile bool FPGA_bus_test_result;
 extern int16_t ADC_RAW_IN;

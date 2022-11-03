@@ -3,13 +3,12 @@
 
 #include <stdint.h>
 
-typedef struct Candidate
-{
-    int16_t score;
-    int16_t time_offset;
-    int16_t freq_offset;
-    uint8_t time_sub;
-    uint8_t freq_sub;
+typedef struct Candidate {
+	int16_t score;
+	int16_t time_offset;
+	int16_t freq_offset;
+	uint8_t time_sub;
+	uint8_t freq_sub;
 } Candidate;
 
 // Localize top N candidates in frequency and time according to their sync strength (looking at Costas symbols)

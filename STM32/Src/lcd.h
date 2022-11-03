@@ -2,13 +2,12 @@
 #define LCD_h
 
 #include "hardware.h"
-#include "trx_manager.h"
 #include "lcd_driver.h"
-#include "touchpad.h"
 #include "screen_layout.h"
+#include "touchpad.h"
+#include "trx_manager.h"
 
-typedef struct
-{
+typedef struct {
 	bool Background;
 	bool TopButtons;
 	bool TopButtonsRedraw;
@@ -28,8 +27,7 @@ typedef struct
 	bool Tooltip;
 } DEF_LCD_UpdateQuery;
 
-typedef struct
-{
+typedef struct {
 	uint16_t x1;
 	uint16_t y1;
 	uint16_t x2;
@@ -39,8 +37,7 @@ typedef struct
 	void (*holdHandler)(uint32_t parameter);
 } TouchpadButton_handler;
 
-typedef struct
-{
+typedef struct {
 	uint16_t x;
 	uint16_t y;
 	uint16_t w;
@@ -74,6 +71,6 @@ extern uint16_t LCD_bw_trapez_stripe_pos;
 extern WindowType LCD_window;
 extern STRUCT_COLOR_THEME *COLOR;
 extern STRUCT_LAYOUT_THEME *LAYOUT;
-extern bool TRX_X1_VLT_CUR_Mode; //false - VLT, true - CUR
+extern bool TRX_X1_VLT_CUR_Mode; // false - VLT, true - CUR
 
 #endif

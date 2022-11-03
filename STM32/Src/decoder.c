@@ -8,26 +8,21 @@ static SRAM float32_t DECODER_Buffer[DECODER_BUFF_SIZE] = {0};
 static uint32_t DECODER_head = 0; // index of adding new data to the buffer
 static uint32_t DECODER_tail = 0; // index of reading data from the buffer
 
-void DECODER_Init(void)
-{
-	#ifndef STM32F407xx
+void DECODER_Init(void) {
+#ifndef STM32F407xx
 	CWDecoder_Init();
 	RDSDecoder_Init();
-	#endif
+#endif
 	RTTYDecoder_Init();
 }
 
-void DECODER_PutSamples(float32_t *bufferIn, uint32_t size)
-{
-	if ((DECODER_head + size) <= DECODER_BUFF_SIZE)
-	{
+void DECODER_PutSamples(float32_t *bufferIn, uint32_t size) {
+	if ((DECODER_head + size) <= DECODER_BUFF_SIZE) {
 		dma_memcpy32((float32_t *)&DECODER_Buffer[DECODER_head], (float32_t *)bufferIn, size);
 		DECODER_head += size;
 		if (DECODER_head >= DECODER_BUFF_SIZE)
 			DECODER_head = 0;
-	}
-	else
-	{
+	} else {
 		uint32_t firstpart = DECODER_BUFF_SIZE - DECODER_head;
 		dma_memcpy32((float32_t *)&DECODER_Buffer[DECODER_head], (float32_t *)bufferIn, firstpart);
 		DECODER_head = 0;
@@ -38,8 +33,7 @@ void DECODER_PutSamples(float32_t *bufferIn, uint32_t size)
 	}
 }
 
-void DECODER_Process(void)
-{
+void DECODER_Process(void) {
 	if (DECODER_tail == DECODER_head) // overrun
 	{
 		// print("o");
@@ -61,13 +55,13 @@ void DECODER_Process(void)
 		RDSDecoder_Process(bufferOut);
 	}
 #endif
-	
+
 	// RTTY Decoder
 	if (CurrentVFO->Mode == TRX_MODE_RTTY) {
 		DECODER_tail += DECODER_PACKET_SIZE;
 		RTTYDecoder_Process(bufferOut);
 	}
-	
+
 	// move tail
 	if (DECODER_tail >= DECODER_BUFF_SIZE)
 		DECODER_tail = 0;

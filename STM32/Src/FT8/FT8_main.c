@@ -1,15 +1,15 @@
-#include <stdbool.h>
 #include "FT8_main.h"
 #include "Process_DSP.h"
 #include "decode_ft8.h"
+#include <stdbool.h>
 //#include "WF_Table.h"
+#include "FT8_GUI.h"
 #include "arm_math.h"
 #include "locator_ft8.h"
 #include "traffic_manager.h"
-#include "FT8_GUI.h"
 
-#include "lcd_driver.h"
 #include "lcd.h"
+#include "lcd_driver.h"
 
 #include "constants.h"
 
@@ -31,8 +31,7 @@ bool FT8_ColectDataFlg;
 void process_data(void);
 void update_synchronization(void);
 
-void InitFT8_Decoder(void)
-{
+void InitFT8_Decoder(void) {
 	if (LCD_busy)
 		return;
 	LCD_busy = true; //
@@ -43,7 +42,7 @@ void InitFT8_Decoder(void)
 	LCDDriver_printText("FT-8 Decoder", 100, 5, COLOR_GREEN, COLOR_BLACK, 2);
 
 	strcpy(Station_Call, TRX.CALLSIGN); // set out callsign
-	strcpy(Locator, TRX.LOCATOR);		// set out grid Locator
+	strcpy(Locator, TRX.LOCATOR);       // set out grid Locator
 
 	init_DSP();
 	initalize_constants();
@@ -58,7 +57,7 @@ void InitFT8_Decoder(void)
 
 	Unarm_FT8_Buttons(); // deactivate all buttons (if something is active and we reenter the "FT8 decode"- to start clear)
 	Draw_FT8_Buttons();
-	FT8_Menu_Idx = 0;		  // index of the "CQ" button
+	FT8_Menu_Idx = 0;         // index of the "CQ" button
 	Update_FT8_Menu_Cursor(); // show the menu cursor
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
@@ -91,30 +90,27 @@ void InitFT8_Decoder(void)
 	LCD_busy = false;
 }
 
-void MenagerFT8(void)
-{
+void MenagerFT8(void) {
 	char ctmp[20] = {0};
 
 	if (decode_flag == 0)
 		process_data();
 
-	if (LCD_busy) return;
+	if (LCD_busy)
+		return;
 	LCD_busy = true;
 
-	if (DSP_Flag == 1)
-	{
+	if (DSP_Flag == 1) {
 		if (!TRX_Tune) {
-			//println("process_FT8_FFT");
+			// println("process_FT8_FFT");
 			process_FT8_FFT();
 		}
 
-		if (xmit_flag == 1)
-		{
+		if (xmit_flag == 1) {
 			__disable_irq(); // Disable all interrupts
 			int offset_index = 5;
 			// 79
-			if (ft8_xmit_counter >= offset_index && ft8_xmit_counter < 79 + offset_index)
-			{
+			if (ft8_xmit_counter >= offset_index && ft8_xmit_counter < 79 + offset_index) {
 				set_FT8_Tone(tones[ft8_xmit_counter - offset_index]);
 			}
 
@@ -123,17 +119,17 @@ void MenagerFT8(void)
 			// Debug
 			sprintf(ctmp, "ft8_xmit_c: %d ", ft8_xmit_counter);
 			LCDDriver_printText(ctmp, 10, 65, COLOR_GREEN, COLOR_BLACK, 2);
-			
+
 			bool send_message_done = false;
 			// 80
 			if (ft8_xmit_counter == 80 + offset_index)
 				send_message_done = true;
-			
+
 			uint32_t Time = RTC->TR;
 			uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
 			if (ft8_xmit_counter > offset_index && (Seconds == 14 || Seconds == 29 || Seconds == 44 || Seconds == 59)) // 15s marker
 				send_message_done = true;
-			
+
 			if (send_message_done) // send mesage is done!
 			{
 				// xmit_flag = 0;
@@ -141,7 +137,7 @@ void MenagerFT8(void)
 
 				if (Beacon_State == 8) // if we are on the end of answering a "CQ" (we just send "73")
 				{
-					FT8_Menu_Idx = 0;	   // index of the "CQ" button
+					FT8_Menu_Idx = 0;      // index of the "CQ" button
 					FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
 				}
 			}
@@ -151,8 +147,7 @@ void MenagerFT8(void)
 		DSP_Flag = 0;
 	}
 
-	else if (decode_flag == 1)
-	{
+	else if (decode_flag == 1) {
 		HAL_SuspendTick();
 		__disable_irq(); // Disable all interrupts
 
@@ -191,19 +186,16 @@ void MenagerFT8(void)
 	LCD_busy = false; //
 }
 
-void process_data(void)
-{
-	if (FT8_DatBlockNum >= num_que_blocks)
-	{
+void process_data(void) {
+	if (FT8_DatBlockNum >= num_que_blocks) {
 		//    for (int i = 0; i<block_size*(FT8_DatBlockNum/8); i++) {
 		//			input_gulp[i] = AudioBuffer_for_FT8[i];		//coppy to FFT buffer
 		//			AudioBuffer_for_FT8[i] = 0; 		//	and empty the buffer
 		//		}
 		FT8_DatBlockNum = 0;
 
-		//println("Prepare new Data!");	//Debug
-		for (int i = 0; i < input_gulp_size; i++)
-		{
+		// println("Prepare new Data!");	//Debug
+		for (int i = 0; i < input_gulp_size; i++) {
 			dsp_buffer[i] = dsp_buffer[i + input_gulp_size];
 			dsp_buffer[i + input_gulp_size] = dsp_buffer[i + 2 * input_gulp_size];
 			dsp_buffer[i + 2 * input_gulp_size] = input_gulp[i];
@@ -213,8 +205,7 @@ void process_data(void)
 }
 
 // update the syncronisation and show the time
-void update_synchronization(void)
-{
+void update_synchronization(void) {
 	char ctmp[30] = {0};
 
 	uint32_t Time = RTC->TR;
@@ -225,32 +216,32 @@ void update_synchronization(void)
 	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
 	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
 
-	if (Seconds >= 60)			// Fix the seconds
+	if (Seconds >= 60)        // Fix the seconds
 		Seconds = Seconds - 60; // it is efect of the time correction
 
 	if (Seconds_Old != Seconds) // update the time on screen only when change
 	{
 		sprintf(ctmp, "%02d:%02d:%02d", Hours, Minutes, Seconds);
-		#if (defined(LAY_800x480))
+#if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 680, 5, COLOR_WHITE, COLOR_BLACK, 2);
-		#else
+#else
 		LCDDriver_printText(ctmp, 360, 5, COLOR_WHITE, COLOR_BLACK, 2);
-		#endif
+#endif
 
 		// TX parameters
 		sprintf(ctmp, "SWR: %.1f, PWR: %.1fW    ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward));
-		#if (defined(LAY_800x480))
+#if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 235, 400, FG_COLOR, BG_COLOR, 2);
-		#else
+#else
 		LCDDriver_printText(ctmp, 235, 280, FG_COLOR, BG_COLOR, 2);
-		#endif
+#endif
 
 		sprintf(ctmp, "TEMP: % 2d    ", (int16_t)TRX_RF_Temperature);
-		#if (defined(LAY_800x480))
+#if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 235, 420, FG_COLOR, BG_COLOR, 2);
-		#else
+#else
 		LCDDriver_printText(ctmp, 235, 300, FG_COLOR, BG_COLOR, 2);
-		#endif
+#endif
 
 		Seconds_Old = Seconds;
 	}
@@ -262,8 +253,7 @@ void update_synchronization(void)
 }
 
 // analyzer events to the encoder
-void FT8_EncRotate(int8_t direction)
-{
+void FT8_EncRotate(int8_t direction) {
 	if (LCD_busy)
 		return;
 	LCD_busy = true;
@@ -285,8 +275,7 @@ void FT8_EncRotate(int8_t direction)
 	LCD_busy = false;
 }
 
-void FT8_Enc2Rotate(int8_t direction)
-{
+void FT8_Enc2Rotate(int8_t direction) {
 
 	if (LCD_busy)
 		return;
@@ -297,8 +286,7 @@ void FT8_Enc2Rotate(int8_t direction)
 	LCD_busy = false;
 }
 
-void FT8_Enc2Click(void)
-{
+void FT8_Enc2Click(void) {
 	if (LCD_busy)
 		return;
 	LCD_busy = true;

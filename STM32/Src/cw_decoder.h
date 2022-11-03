@@ -1,12 +1,12 @@
 #ifndef CW_DECODER_h
 #define CW_DECODER_h
 
+#include "functions.h"
 #include "hardware.h"
+#include "lcd.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
-#include "functions.h"
-#include "lcd.h"
 
 #ifndef STM32F407xx
 
@@ -20,7 +20,7 @@
 #define CWDECODER_STRLEN (26 - 7) // length of decoded string (7 on start - status)
 #endif
 
-#define CWDECODER_NBTIME 2 // ms noise blanker
+#define CWDECODER_NBTIME 2                              // ms noise blanker
 #define CWDECODER_MAGNIFY 16                            // what time we approximate FFT
 #define CWDECODER_FFTSIZE 256                           // FFT size for analysis
 #define CWDECODER_FFT_SAMPLES (DECODER_PACKET_SIZE * 4) // number of samples for analysis

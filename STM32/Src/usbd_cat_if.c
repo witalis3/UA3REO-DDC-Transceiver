@@ -1,14 +1,14 @@
 #include "usbd_cat_if.h"
+#include "audio_filters.h"
+#include "cw.h"
+#include "fpga.h"
 #include "functions.h"
+#include "lcd.h"
 #include "settings.h"
 #include "trx_manager.h"
-#include <stdlib.h>
-#include "lcd.h"
-#include "fpga.h"
-#include "audio_filters.h"
-#include "wifi.h"
 #include "vad.h"
-#include "cw.h"
+#include "wifi.h"
+#include <stdlib.h>
 
 #define CAT_APP_RX_DATA_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
 #define CAT_APP_TX_DATA_SIZE CDC_DATA_FS_MAX_PACKET_SIZE
@@ -38,22 +38,16 @@ static void CAT_Transmit(char *data);
 static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len);
 
 #if HRDW_HAS_USB_CAT
-USBD_CAT_ItfTypeDef USBD_CAT_fops_FS =
-	{
-		CAT_Init_FS,
-		CAT_DeInit_FS,
-		CAT_Control_FS,
-		CAT_Receive_FS};
+USBD_CAT_ItfTypeDef USBD_CAT_fops_FS = {CAT_Init_FS, CAT_DeInit_FS, CAT_Control_FS, CAT_Receive_FS};
 #endif
 
-static int8_t CAT_Init_FS(void)
-{
-	/* USER CODE BEGIN 3 */
-	/* Set Application Buffers */
-	#if HRDW_HAS_USB_CAT
+static int8_t CAT_Init_FS(void) {
+/* USER CODE BEGIN 3 */
+/* Set Application Buffers */
+#if HRDW_HAS_USB_CAT
 	USBD_CAT_SetTxBuffer(&hUsbDeviceFS, CAT_UserTxBufferFS, 0);
 	USBD_CAT_SetRxBuffer(&hUsbDeviceFS, CAT_UserRxBufferFS);
-	#endif
+#endif
 	return (USBD_OK);
 	/* USER CODE END 3 */
 }
@@ -62,8 +56,7 @@ static int8_t CAT_Init_FS(void)
  * @brief  DeInitializes the CDC media low layer
  * @retval USBD_OK if all operations are OK else USBD_FAIL
  */
-static int8_t CAT_DeInit_FS(void)
-{
+static int8_t CAT_DeInit_FS(void) {
 	/* USER CODE BEGIN 4 */
 	return (USBD_OK);
 	/* USER CODE END 4 */
@@ -76,11 +69,9 @@ static int8_t CAT_DeInit_FS(void)
  * @param  length: Number of data to be sent (in bytes)
  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
  */
-static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
-{
+static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len) {
 	/* USER CODE BEGIN 5 */
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CDC_SEND_ENCAPSULATED_COMMAND:
 		break;
 
@@ -122,31 +113,25 @@ static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:
-		#if !HRDW_HAS_USB_DEBUG
+#if !HRDW_HAS_USB_DEBUG
 		if ((pbuf[2] & 0x1) == 0x1) // DTR
 		{
 			CW_key_serial = true;
-		}
-		else
-		{
+		} else {
 			CW_key_serial = false;
 		}
 
 		if ((pbuf[2] & 0x2) == 0x2) // RTS
 		{
-			if (!CW_key_serial && !TRX_ptt_soft)
-			{
+			if (!CW_key_serial && !TRX_ptt_soft) {
 				TRX_ptt_soft = true;
 			}
-		}
-		else
-		{
-			if (!CW_key_serial && TRX_ptt_soft)
-			{
+		} else {
+			if (!CW_key_serial && TRX_ptt_soft) {
 				TRX_ptt_soft = false;
 			}
 		}
-		#endif
+#endif
 		break;
 
 	case CDC_SEND_BREAK:
@@ -174,29 +159,21 @@ static int8_t CAT_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len)
  * @param  Len: Number of data received (in bytes)
  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
  */
-static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
-{
+static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len) {
 	char charBuff[CAT_BUFFER_SIZE] = {0};
 	strncpy(charBuff, (char *)Buf, Len[0]);
 	dma_memset(&Buf, 0, Len[0]);
 	// println((char *)charBuff);
-	if (Len[0] <= CAT_BUFFER_SIZE)
-	{
-		for (uint16_t i = 0; i < Len[0]; i++)
-		{
-			if (charBuff[i] != 0)
-			{
+	if (Len[0] <= CAT_BUFFER_SIZE) {
+		for (uint16_t i = 0; i < Len[0]; i++) {
+			if (charBuff[i] != 0) {
 				cat_buffer[cat_buffer_head] = charBuff[i];
-				if (cat_buffer[cat_buffer_head] == ';')
-				{
+				if (cat_buffer[cat_buffer_head] == ';') {
 					CAT_processingWiFiCommand = false;
-					if (strlen(command_to_parse1) == 0)
-					{
+					if (strlen(command_to_parse1) == 0) {
 						dma_memset(command_to_parse1, 0, sizeof(command_to_parse1));
 						dma_memcpy(command_to_parse1, cat_buffer, cat_buffer_head);
-					}
-					else if (strlen(command_to_parse2) == 0)
-					{
+					} else if (strlen(command_to_parse2) == 0) {
 						dma_memset(command_to_parse2, 0, sizeof(command_to_parse2));
 						dma_memcpy(command_to_parse2, cat_buffer, cat_buffer_head);
 					}
@@ -206,8 +183,7 @@ static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
 					continue;
 				}
 				cat_buffer_head++;
-				if (cat_buffer_head >= CAT_BUFFER_SIZE)
-				{
+				if (cat_buffer_head >= CAT_BUFFER_SIZE) {
 					cat_buffer_head = 0;
 					dma_memset(cat_buffer, 0, CAT_BUFFER_SIZE);
 				}
@@ -228,40 +204,35 @@ static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
  * @param  Len: Number of data to be sent (in bytes)
  * @retval USBD_OK if all operations are OK else USBD_FAIL or USBD_BUSY
  */
-static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len)
-{
+static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len) {
 	uint8_t result = USBD_OK;
-	
-	#if HRDW_HAS_USB_CAT
+
+#if HRDW_HAS_USB_CAT
 	USBD_CAT_HandleTypeDef *hcdc = (USBD_CAT_HandleTypeDef *)hUsbDeviceFS.pClassDataCAT;
-	if (hcdc->TxState != 0)
-	{
+	if (hcdc->TxState != 0) {
 		return USBD_BUSY;
 	}
 	USBD_CAT_SetTxBuffer(&hUsbDeviceFS, Buf, Len);
 	result = USBD_CAT_TransmitPacket(&hUsbDeviceFS);
-	#endif
-	
+#endif
+
 	return result;
 }
 
-static void CAT_Transmit(char *data)
-{
+static void CAT_Transmit(char *data) {
 	CAT_Transmit_FS((uint8_t *)data, (uint16_t)strlen(data));
 	if (TRX.Debug_Type == TRX_DEBUG_CAT)
 		println("CAT command answer: |", data, "|");
-	if (CAT_processingWiFiCommand)
-	{
-		#if HRDW_HAS_WIFI
+	if (CAT_processingWiFiCommand) {
+#if HRDW_HAS_WIFI
 		WIFI_SendCatAnswer(data, CAT_processingWiFi_link_id, NULL);
-		#endif
+#endif
 		CAT_processingWiFiCommand = false;
 	}
 }
 
 #if HRDW_HAS_USB_CAT
-void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id)
-{
+void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id) {
 	CAT_processingWiFiCommand = true;
 	CAT_processingWiFi_link_id = link_id;
 	dma_memset(&command_to_parse1, 0, CAT_BUFFER_SIZE);
@@ -269,21 +240,17 @@ void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id)
 	ua3reo_dev_cat_parseCommand();
 }
 
-void ua3reo_dev_cat_parseCommand(void)
-{
+void ua3reo_dev_cat_parseCommand(void) {
 	USBD_CAT_ReceivePacket(&hUsbDeviceFS); // prepare next command
 	if (command_to_parse1[0] == 0 && command_to_parse2[0] == 0)
 		return;
 
 	char _command_buffer[CAT_BUFFER_SIZE] = {0};
 	char *_command = _command_buffer;
-	if (strlen(command_to_parse1) > 0)
-	{
+	if (strlen(command_to_parse1) > 0) {
 		dma_memcpy(_command, command_to_parse1, CAT_BUFFER_SIZE);
 		dma_memset(command_to_parse1, 0, CAT_BUFFER_SIZE);
-	}
-	else if (strlen(command_to_parse2) > 0)
-	{
+	} else if (strlen(command_to_parse2) > 0) {
 		dma_memcpy(_command, command_to_parse2, CAT_BUFFER_SIZE);
 		dma_memset(command_to_parse2, 0, CAT_BUFFER_SIZE);
 	}
@@ -301,8 +268,7 @@ void ua3reo_dev_cat_parseCommand(void)
 	bool has_args = false;
 	char arguments[32] = {0};
 	char ctmp[30] = {0};
-	if (strlen(_command) > 2)
-	{
+	if (strlen(_command) > 2) {
 		strncpy(arguments, _command + 2, strlen(_command) - 2);
 		has_args = true;
 	}
@@ -346,33 +312,25 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "AI") == 0) // AUTO INFORMATION
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			CAT_Transmit("AI0;");
-		}
-		else
-		{
-			//ничего не делаем, автоуведомления и так не работают
+		} else {
+			// ничего не делаем, автоуведомления и так не работают
 		}
 		return;
 	}
 
 	if (strcmp(command, "ID") == 0) // IDENTIFICATION
 	{
-		if (!has_args)
-		{
-			if (CALIBRATE.CAT_Type == CAT_FT450)
-			{
+		if (!has_args) {
+			if (CALIBRATE.CAT_Type == CAT_FT450) {
 				CAT_Transmit("ID0241;");
 			}
 
-			if (CALIBRATE.CAT_Type == CAT_TS2000)
-			{
+			if (CALIBRATE.CAT_Type == CAT_TS2000) {
 				CAT_Transmit("ID019;");
 			}
-		}
-		else
-		{
+		} else {
 			println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -380,24 +338,17 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "FT") == 0) // FUNCTION TX
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			if (!TRX.SPLIT_Enabled)
 				CAT_Transmit("FT0;");
 			else
 				CAT_Transmit("FT1;");
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				TRX.SPLIT_Enabled = false;
-			}
-			else if (strcmp(arguments, "1") == 0)
-			{
+			} else if (strcmp(arguments, "1") == 0) {
 				TRX.SPLIT_Enabled = true;
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -405,30 +356,23 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "VS") == 0) // VFO SELECT
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			if (!TRX.selected_vfo)
 				CAT_Transmit("VS0;");
 			else
 				CAT_Transmit("VS1;");
-		}
-		else
-		{
+		} else {
 			uint8_t new_vfo = 0;
 			if (strcmp(arguments, "0") == 0)
 				new_vfo = 0;
 			else if (strcmp(arguments, "1") == 0)
 				new_vfo = 1;
-			if (TRX.selected_vfo != new_vfo)
-			{
+			if (TRX.selected_vfo != new_vfo) {
 				TRX.selected_vfo = new_vfo;
-				if (!TRX.selected_vfo)
-				{
+				if (!TRX.selected_vfo) {
 					CurrentVFO = &TRX.VFO_A;
 					SecondaryVFO = &TRX.VFO_B;
-				}
-				else
-				{
+				} else {
 					CurrentVFO = &TRX.VFO_B;
 					SecondaryVFO = &TRX.VFO_A;
 				}
@@ -451,20 +395,18 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "IF") == 0) // INFORMATION
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			char answer[30] = {0};
 
-			if (CALIBRATE.CAT_Type == CAT_FT450)
-			{
+			if (CALIBRATE.CAT_Type == CAT_FT450) {
 				strcat(answer, "IF001"); // memory channel
 				if (CurrentVFO->Freq < 10000000)
 					strcat(answer, "0");
 				sprintf(ctmp, "%llu", CurrentVFO->Freq);
-				strcat(answer, ctmp);	 // freq
+				strcat(answer, ctmp);    // freq
 				strcat(answer, "+0000"); // clirifier offset
-				strcat(answer, "0");	 // RX clar off
-				strcat(answer, "0");	 // TX clar off
+				strcat(answer, "0");     // RX clar off
+				strcat(answer, "0");     // TX clar off
 				char mode[3] = {0};
 				getFT450Mode((uint8_t)CurrentVFO->Mode, mode);
 				strcat(answer, mode); // mode
@@ -474,19 +416,18 @@ void ua3reo_dev_cat_parseCommand(void)
 				strcat(answer, "0;"); // Simplex
 			}
 
-			if (CALIBRATE.CAT_Type == CAT_TS2000)
-			{
+			if (CALIBRATE.CAT_Type == CAT_TS2000) {
 				strcat(answer, "IF"); // TRX status
 				sprintf(ctmp, "%llu", CurrentVFO->Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
-				strcat(answer, ctmp);	  // freq
-				strcat(answer, "0000");	  // Frequency step size
+				strcat(answer, ctmp);     // freq
+				strcat(answer, "0000");   // Frequency step size
 				strcat(answer, "000000"); // RIT/ XIT frequency ±9990 in Hz
-				strcat(answer, "0");	  // 0: RIT OFF, 1: RIT ON
-				strcat(answer, "0");	  // 0: XIT OFF, 1: XIT ON
-				strcat(answer, "0");	  // 0: Always 0 for the TS-480 (Memory channel bank number).
-				strcat(answer, "00");	  // Memory channel number (00 ~ 99).
-				if (TRX_on_TX)		  // 0: RX, 1: TX
+				strcat(answer, "0");      // 0: RIT OFF, 1: RIT ON
+				strcat(answer, "0");      // 0: XIT OFF, 1: XIT ON
+				strcat(answer, "0");      // 0: Always 0 for the TS-480 (Memory channel bank number).
+				strcat(answer, "00");     // Memory channel number (00 ~ 99).
+				if (TRX_on_TX)            // 0: RX, 1: TX
 					strcat(answer, "1");
 				else
 					strcat(answer, "0");
@@ -505,9 +446,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			}
 
 			CAT_Transmit(answer);
-		}
-		else
-		{
+		} else {
 			println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -515,17 +454,16 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "OI") == 0) // OPPOSITE BAND INFORMATION
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			char answer[30] = {0};
 			strcat(answer, "OI001"); // memory channel
 			if (SecondaryVFO->Freq < 10000000)
 				strcat(answer, "0");
 			sprintf(ctmp, "%llu", SecondaryVFO->Freq);
-			strcat(answer, ctmp);	 // freq
+			strcat(answer, ctmp);    // freq
 			strcat(answer, "+0000"); // clirifier offset
-			strcat(answer, "0");	 // RX clar off
-			strcat(answer, "0");	 // TX clar off
+			strcat(answer, "0");     // RX clar off
+			strcat(answer, "0");     // TX clar off
 			char mode[3] = {0};
 			getFT450Mode((uint8_t)SecondaryVFO->Mode, mode);
 			strcat(answer, mode); // mode
@@ -534,9 +472,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			strcat(answer, "00"); // TONE NUMBER
 			strcat(answer, "0;"); // Simplex
 			CAT_Transmit(answer);
-		}
-		else
-		{
+		} else {
 			println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -544,20 +480,17 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "FA") == 0) // FREQUENCY VFO-A
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			char answer[30] = {0};
 			strcat(answer, "FA");
 
-			if (CALIBRATE.CAT_Type == CAT_FT450)
-			{
+			if (CALIBRATE.CAT_Type == CAT_FT450) {
 				if (TRX.VFO_A.Freq < 10000000)
 					strcat(answer, "0");
 				sprintf(ctmp, "%llu", TRX.VFO_A.Freq);
 			}
 
-			if (CALIBRATE.CAT_Type == CAT_TS2000)
-			{
+			if (CALIBRATE.CAT_Type == CAT_TS2000) {
 				sprintf(ctmp, "%llu", TRX.VFO_A.Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
 			}
@@ -565,9 +498,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			strcat(answer, ctmp); // freq
 			strcat(answer, ";");
 			CAT_Transmit(answer);
-		}
-		else
-		{
+		} else {
 			TRX_setFrequency((uint32_t)atoi(arguments), CurrentVFO);
 			LCD_UpdateQuery.FreqInfo = true;
 			LCD_UpdateQuery.TopButtons = true;
@@ -577,20 +508,17 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "FB") == 0) // FREQUENCY VFO-B
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			char answer[30] = {0};
 			strcat(answer, "FB");
 
-			if (CALIBRATE.CAT_Type == CAT_FT450)
-			{
+			if (CALIBRATE.CAT_Type == CAT_FT450) {
 				if (TRX.VFO_B.Freq < 10000000)
 					strcat(answer, "0");
 				sprintf(ctmp, "%llu", TRX.VFO_B.Freq);
 			}
 
-			if (CALIBRATE.CAT_Type == CAT_TS2000)
-			{
+			if (CALIBRATE.CAT_Type == CAT_TS2000) {
 				sprintf(ctmp, "%llu", TRX.VFO_B.Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
 			}
@@ -598,9 +526,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			strcat(answer, ctmp); // freq
 			strcat(answer, ";");
 			CAT_Transmit(answer);
-		}
-		else
-		{
+		} else {
 			TRX_setFrequency((uint32_t)atoi(arguments), SecondaryVFO);
 			LCD_UpdateQuery.FreqInfo = true;
 			LCD_UpdateQuery.TopButtons = true;
@@ -610,12 +536,9 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "RA") == 0) // RF ATTENUATOR
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
+		} else {
 			if (strcmp(arguments, "0") == 0)
 				CAT_Transmit("RA00;");
 			else
@@ -626,20 +549,15 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "PA") == 0) // PRE-AMP
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				if (TRX.LNA)
 					CAT_Transmit("PA01;");
 				else
 					CAT_Transmit("PA00;");
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -647,21 +565,14 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "PS") == 0) // POWER-SWITCH
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			CAT_Transmit("PS1;");
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				// power off
-			}
-			else if (strcmp(arguments, "1") == 0)
-			{
+			} else if (strcmp(arguments, "1") == 0) {
 				// power on
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -669,14 +580,10 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "GT") == 0) // AGC FUNCTION
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				if (TRX.RX_AGC_SSB_speed == 0 || !CurrentVFO->AGC)
 					CAT_Transmit("GT00;");
 				else if (TRX.RX_AGC_SSB_speed == 1)
@@ -687,8 +594,7 @@ void ua3reo_dev_cat_parseCommand(void)
 					CAT_Transmit("GT02;");
 				else
 					CAT_Transmit("GT01;");
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -696,15 +602,12 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "MD") == 0) // MODE
 	{
-		if (!has_args)
-		{
-			if (CALIBRATE.CAT_Type == CAT_FT450)
-			{
+		if (!has_args) {
+			if (CALIBRATE.CAT_Type == CAT_FT450) {
 				println("Unknown CAT arguments: ", _command);
 			}
 
-			if (CALIBRATE.CAT_Type == CAT_TS2000)
-			{
+			if (CALIBRATE.CAT_Type == CAT_TS2000) {
 				char answer[30] = {0};
 				strcat(answer, "MD");
 				char mode[3] = {0};
@@ -713,11 +616,8 @@ void ua3reo_dev_cat_parseCommand(void)
 				strcat(answer, ";");
 				CAT_Transmit(answer);
 			}
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				char answer[30] = {0};
 				strcat(answer, "MD0");
 				char mode[3] = {0};
@@ -725,22 +625,16 @@ void ua3reo_dev_cat_parseCommand(void)
 				strcat(answer, mode); // mode
 				strcat(answer, ";");
 				CAT_Transmit(answer);
-			}
-			else
-			{
-				if (CALIBRATE.CAT_Type == CAT_FT450)
-				{
-					if (CurrentVFO->Mode != setFT450Mode(arguments))
-					{
+			} else {
+				if (CALIBRATE.CAT_Type == CAT_FT450) {
+					if (CurrentVFO->Mode != setFT450Mode(arguments)) {
 						TRX_setMode(setFT450Mode(arguments), CurrentVFO);
 						LCD_UpdateQuery.TopButtons = true;
 					}
 				}
 
-				if (CALIBRATE.CAT_Type == CAT_TS2000)
-				{
-					if (CurrentVFO->Mode != setTS2000Mode(arguments))
-					{
+				if (CALIBRATE.CAT_Type == CAT_TS2000) {
+					if (CurrentVFO->Mode != setTS2000Mode(arguments)) {
 						TRX_setMode(setTS2000Mode(arguments), CurrentVFO);
 						LCD_UpdateQuery.TopButtons = true;
 					}
@@ -752,17 +646,14 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "PC") == 0) // POWER CONTROL
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			char answer[30] = {0};
 			strcat(answer, "PC");
 			sprintf(ctmp, "%d", TRX.RF_Power);
 			strcat(answer, ctmp);
 			strcat(answer, ";");
 			CAT_Transmit(answer);
-		}
-		else
-		{
+		} else {
 			println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -770,14 +661,10 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "SH") == 0) // WIDTH
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("SH031;");
 			}
 		}
@@ -786,17 +673,12 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "NB") == 0) // NOISE BLANKER
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("NB00;");
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -804,17 +686,12 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "NR") == 0) // NOISE REDUCTION
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("NR00;");
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -822,12 +699,9 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "VX") == 0) // VOX STATUS
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			CAT_Transmit("VX0;");
-		}
-		else
-		{
+		} else {
 			println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -835,17 +709,12 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "CT") == 0) // CTCSS
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("CT00;");
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -853,17 +722,12 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "ML") == 0) // MONITOR LEVEL
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("ML00;");
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -871,17 +735,12 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "BP") == 0) // MANUAL NOTCH
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
-			if (strcmp(arguments, "00") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "00") == 0) {
 				CAT_Transmit("BP00000;");
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -889,12 +748,9 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "BI") == 0) // BREAK IN
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			CAT_Transmit("BI0;");
-		}
-		else
-		{
+		} else {
 			println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -902,17 +758,12 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "OS") == 0) // OFFSET
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
-			if (strcmp(arguments, "0") == 0)
-			{
+		} else {
+			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("OS00;");
-			}
-			else
+			} else
 				println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -920,11 +771,8 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "BS") == 0) // BAND SELECT
 	{
-		if (!has_args)
-		{
-		}
-		else
-		{
+		if (!has_args) {
+		} else {
 			int8_t band = -1;
 			if (strcmp(arguments, "00") == 0)
 				band = BANDID_160m;
@@ -949,12 +797,10 @@ void ua3reo_dev_cat_parseCommand(void)
 			else
 				println("Unknown CAT arguments: ", _command);
 			// println((uint8_t)band);
-			if (band > -1)
-			{
+			if (band > -1) {
 				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-				if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE)
-				{
+				if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
 					TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
 					FFT_Init();
 					NeedReinitAudioFilters = true;
@@ -987,12 +833,9 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "NA") == 0) // NARROW
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
+		} else {
 			if (strcmp(arguments, "0") == 0)
 				CAT_Transmit("NA00;");
 		}
@@ -1001,12 +844,9 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "SM") == 0) // READ S-METER
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
-		}
-		else
-		{
+		} else {
 			if (strcmp(arguments, "0") == 0)
 				CAT_Transmit("SM0100;");
 		}
@@ -1015,12 +855,9 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "KP") == 0) // READ KEY PITCH
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			CAT_Transmit("KP04;");
-		}
-		else
-		{
+		} else {
 			println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -1028,10 +865,8 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "TX") == 0) // TX SET
 	{
-		if (!has_args)
-		{
-			if (CALIBRATE.CAT_Type == CAT_FT450)
-			{
+		if (!has_args) {
+			if (CALIBRATE.CAT_Type == CAT_FT450) {
 				if (TRX_ptt_soft)
 					CAT_Transmit("TX1;");
 				else if (TRX_ptt_hard)
@@ -1040,23 +875,17 @@ void ua3reo_dev_cat_parseCommand(void)
 					CAT_Transmit("TX0;");
 			}
 
-			if (CALIBRATE.CAT_Type == CAT_TS2000)
-			{
+			if (CALIBRATE.CAT_Type == CAT_TS2000) {
 				TRX_ptt_soft = true;
 				LCD_UpdateQuery.StatusInfoBarRedraw = true;
 				LCD_UpdateQuery.StatusInfoGUI = true;
 			}
-		}
-		else
-		{
-			if (CALIBRATE.CAT_Type == CAT_FT450)
-			{
-				if (strcmp(arguments, "0") == 0)
-				{
+		} else {
+			if (CALIBRATE.CAT_Type == CAT_FT450) {
+				if (strcmp(arguments, "0") == 0) {
 					TRX_ptt_soft = false;
 				}
-				if (strcmp(arguments, "1") == 0)
-				{
+				if (strcmp(arguments, "1") == 0) {
 					TRX_ptt_soft = true;
 				}
 			}
@@ -1069,8 +898,7 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "RX") == 0) // RX SET
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			TRX_ptt_soft = false;
 			LCD_UpdateQuery.StatusInfoBarRedraw = true;
 			LCD_UpdateQuery.StatusInfoGUI = true;
@@ -1081,12 +909,10 @@ void ua3reo_dev_cat_parseCommand(void)
 
 	if (strcmp(command, "FW") == 0) // Filter width
 	{
-		if (!has_args)
-		{
+		if (!has_args) {
 			char answer[30] = {0};
 
-			if (CALIBRATE.CAT_Type == CAT_TS2000)
-			{
+			if (CALIBRATE.CAT_Type == CAT_TS2000) {
 				strcat(answer, "FW");
 				sprintf(ctmp, "%u", CurrentVFO->LPF_RX_Filter_Width);
 				addSymbols(ctmp, ctmp, 4, "0", false);
@@ -1095,9 +921,7 @@ void ua3reo_dev_cat_parseCommand(void)
 			}
 
 			CAT_Transmit(answer);
-		}
-		else
-		{
+		} else {
 			println("Unknown CAT arguments: ", _command);
 		}
 		return;
@@ -1107,8 +931,7 @@ void ua3reo_dev_cat_parseCommand(void)
 }
 #endif
 
-static void getFT450Mode(uint8_t VFO_Mode, char *out)
-{
+static void getFT450Mode(uint8_t VFO_Mode, char *out) {
 	if (VFO_Mode == TRX_MODE_LSB)
 		strcpy(out, "1");
 	if (VFO_Mode == TRX_MODE_USB)
@@ -1133,8 +956,7 @@ static void getFT450Mode(uint8_t VFO_Mode, char *out)
 		strcpy(out, "8");
 }
 
-static void getTS2000Mode(uint8_t VFO_Mode, char *out)
-{
+static void getTS2000Mode(uint8_t VFO_Mode, char *out) {
 	if (VFO_Mode == TRX_MODE_LSB)
 		strcpy(out, "1");
 	if (VFO_Mode == TRX_MODE_USB)
@@ -1159,8 +981,7 @@ static void getTS2000Mode(uint8_t VFO_Mode, char *out)
 		strcpy(out, "0");
 }
 
-static uint8_t setFT450Mode(char *FT450_Mode)
-{
+static uint8_t setFT450Mode(char *FT450_Mode) {
 	if (strcmp(FT450_Mode, "01") == 0 || strcmp(FT450_Mode, "1") == 0)
 		return TRX_MODE_LSB;
 	if (strcmp(FT450_Mode, "02") == 0 || strcmp(FT450_Mode, "2") == 0)
@@ -1183,8 +1004,7 @@ static uint8_t setFT450Mode(char *FT450_Mode)
 	return TRX_MODE_USB;
 }
 
-static uint8_t setTS2000Mode(char *TS2000_Mode)
-{
+static uint8_t setTS2000Mode(char *TS2000_Mode) {
 	if (strcmp(TS2000_Mode, "1") == 0)
 		return TRX_MODE_LSB;
 	if (strcmp(TS2000_Mode, "2") == 0)

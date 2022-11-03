@@ -1,82 +1,64 @@
 #include "functions.h"
-#include "hardware.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
 #include "arm_math.h"
 #include "fpga.h"
-#include "trx_manager.h"
-#include "usbd_debug_if.h"
-#include "usbd_cat_if.h"
+#include "hardware.h"
 #include "lcd.h"
+#include "trx_manager.h"
+#include "usbd_cat_if.h"
+#include "usbd_debug_if.h"
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 volatile bool SPI_DMA_TXRX_ready_callback = false;
 
-void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read)
-{
-	if (index >= words_to_read)
-	{
+void readFromCircleBuffer32(uint32_t *source, uint32_t *dest, uint32_t index, uint32_t length, uint32_t words_to_read) {
+	if (index >= words_to_read) {
 		dma_memcpy32(&dest[0], &source[index - words_to_read], words_to_read);
-	}
-	else
-	{
+	} else {
 		uint_fast16_t prev_part = words_to_read - index;
 		dma_memcpy32(&dest[0], &source[length - prev_part], prev_part);
 		dma_memcpy32(&dest[prev_part], &source[0], (words_to_read - prev_part));
 	}
 }
 
-void readHalfFromCircleUSBBuffer16Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length)
-{
+void readHalfFromCircleUSBBuffer16Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length) {
 	uint_fast16_t halflen = length / 2;
 	uint_fast16_t readed_index = 0;
-	if (index >= halflen)
-	{
-		for (uint_fast16_t i = (index - halflen); i < index; i++)
-		{
+	if (index >= halflen) {
+		for (uint_fast16_t i = (index - halflen); i < index; i++) {
 			dest[readed_index] = (source[i * 2 + 0] << 16) | (source[i * 2 + 1] << 24);
 			readed_index++;
 		}
-	}
-	else
-	{
+	} else {
 		uint_fast16_t prev_part = halflen - index;
-		for (uint_fast16_t i = (length - prev_part); i < length; i++)
-		{
+		for (uint_fast16_t i = (length - prev_part); i < length; i++) {
 			dest[readed_index] = (source[i * 2 + 0] << 16) | (source[i * 2 + 1] << 24);
 			readed_index++;
 		}
-		for (uint_fast16_t i = 0; i < (halflen - prev_part); i++)
-		{
+		for (uint_fast16_t i = 0; i < (halflen - prev_part); i++) {
 			dest[readed_index] = (source[i * 2 + 0] << 16) | (source[i * 2 + 1] << 24);
 			readed_index++;
 		}
 	}
 }
 
-void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length)
-{
+void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t index, uint32_t length) {
 	uint_fast16_t halflen = length / 2;
 	uint_fast16_t readed_index = 0;
-	if (index >= halflen)
-	{
-		for (uint_fast16_t i = (index - halflen); i < index; i++)
-		{
+	if (index >= halflen) {
+		for (uint_fast16_t i = (index - halflen); i < index; i++) {
 			dest[readed_index] = (source[i * 3 + 0] << 8) | (source[i * 3 + 1] << 16) | (source[i * 3 + 2] << 24);
 			readed_index++;
 		}
-	}
-	else
-	{
+	} else {
 		uint_fast16_t prev_part = halflen - index;
-		for (uint_fast16_t i = (length - prev_part); i < length; i++)
-		{
+		for (uint_fast16_t i = (length - prev_part); i < length; i++) {
 			dest[readed_index] = (source[i * 3 + 0] << 8) | (source[i * 3 + 1] << 16) | (source[i * 3 + 2] << 24);
 			readed_index++;
 		}
-		for (uint_fast16_t i = 0; i < (halflen - prev_part); i++)
-		{
+		for (uint_fast16_t i = 0; i < (halflen - prev_part); i++) {
 			dest[readed_index] = (source[i * 3 + 0] << 8) | (source[i * 3 + 1] << 16) | (source[i * 3 + 2] << 24);
 			readed_index++;
 		}
@@ -85,19 +67,15 @@ void readHalfFromCircleUSBBuffer24Bit(uint8_t *source, int32_t *dest, uint32_t i
 
 static uint16_t dbg_lcd_y = 0;
 static uint16_t dbg_lcd_x = 0;
-void print_chr_LCDOnly(char chr)
-{
-	if (LCD_DEBUG_ENABLED)
-	{
+void print_chr_LCDOnly(char chr) {
+	if (LCD_DEBUG_ENABLED) {
 		if (chr == '\r')
 			return;
 
-		if (chr == '\n')
-		{
+		if (chr == '\n') {
 			dbg_lcd_y += 9;
 			dbg_lcd_x = 0;
-			if (dbg_lcd_y >= LCD_HEIGHT)
-			{
+			if (dbg_lcd_y >= LCD_HEIGHT) {
 				dbg_lcd_y = 0;
 				LCDDriver_Fill(BG_COLOR);
 			}
@@ -109,17 +87,15 @@ void print_chr_LCDOnly(char chr)
 	}
 }
 
-void print_flush(void)
-{
-	#if HRDW_HAS_USB_DEBUG
+void print_flush(void) {
+#if HRDW_HAS_USB_DEBUG
 	uint_fast16_t tryes = 0;
 	while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512)
 		tryes++;
-	#endif
+#endif
 }
 
-void print_hex(uint8_t data, bool _inline)
-{
+void print_hex(uint8_t data, bool _inline) {
 	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%02X", data);
@@ -128,8 +104,7 @@ void print_hex(uint8_t data, bool _inline)
 	print(tmp);
 }
 
-void print_bin8(uint8_t data, bool _inline)
-{
+void print_bin8(uint8_t data, bool _inline) {
 	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%c%c%c%c%c%c%c%c", BYTE_TO_BINARY(data));
@@ -138,8 +113,7 @@ void print_bin8(uint8_t data, bool _inline)
 	print(tmp);
 }
 
-void print_bin16(uint16_t data, bool _inline)
-{
+void print_bin16(uint16_t data, bool _inline) {
 	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", BIT16_TO_BINARY(data));
@@ -148,8 +122,7 @@ void print_bin16(uint16_t data, bool _inline)
 	print(tmp);
 }
 
-void print_bin26(uint32_t data, bool _inline)
-{
+void print_bin26(uint32_t data, bool _inline) {
 	char tmp[50] = ""; //-V808
 	if (_inline)
 		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", BIT26_TO_BINARY(data));
@@ -166,13 +139,11 @@ uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the
 	int32_t _freq = freq;
 	if (_freq > ADC_CLOCK / 2) // Go Nyquist
 	{
-		while (_freq > (ADC_CLOCK / 2))
-		{
+		while (_freq > (ADC_CLOCK / 2)) {
 			_freq -= (ADC_CLOCK / 2);
 			inverted = !inverted;
 		}
-		if (inverted)
-		{
+		if (inverted) {
 			_freq = (ADC_CLOCK / 2) - _freq;
 		}
 	}
@@ -190,7 +161,7 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 		return 0;
 	bool inverted = false;
 	int32_t _freq = (int32_t)freq;
-	
+
 	uint8_t TRX_TX_Harmonic_new = 0;
 	if (_freq > MAX_TX_FREQ_HZ) { // harmonics mode
 		while (_freq > MAX_TX_FREQ_HZ) {
@@ -202,7 +173,6 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 		TRX_TX_Harmonic = 1;
 	else
 		TRX_TX_Harmonic = TRX_TX_Harmonic_new;
-	
 
 	TRX_DAC_X4 = true;
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
@@ -213,7 +183,7 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	}
 	if (nyquist == 1) // 55,2-110,4mhz (good 66,24mhz - 88,32mhz) dac freq - (0.6-0.9 dac freq)
 	{
-		TRX_DAC_HP1 = true; // HP1 high-pass
+		TRX_DAC_HP1 = true;  // HP1 high-pass
 		TRX_DAC_HP2 = false; // HP2 low-pass
 	}
 	if (nyquist == 2) // 110,4-165,6mhz (good 132,48mhz - 154,56mhz) dac freq - (1.2-1.4 dac freq)
@@ -224,18 +194,16 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	if (nyquist == 3) // 165,6-220,8mhz (good 176,64mhz - 200,0mhz) dac freq - (1.6-1.9 dac freq)
 	{
 		TRX_DAC_HP1 = false; // HP1 low-pass
-		TRX_DAC_HP2 = true; // HP3 high-pass
+		TRX_DAC_HP2 = true;  // HP3 high-pass
 	}
 
 	if (_freq > (DAC_CLOCK / 2)) // Go Nyquist
 	{
-		while (_freq > (DAC_CLOCK / 2))
-		{
+		while (_freq > (DAC_CLOCK / 2)) {
 			_freq -= (DAC_CLOCK / 2);
 			inverted = !inverted;
 		}
-		if (inverted)
-		{
+		if (inverted) {
 			_freq = (DAC_CLOCK / 2) - _freq;
 		}
 	}
@@ -249,12 +217,10 @@ void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool t
 {
 	char res[70] = "";
 	strcpy(res, str);
-	while (strlen(res) < length)
-	{
+	while (strlen(res) < length) {
 		if (toEnd)
 			strcat(res, symbol);
-		else
-		{
+		else {
 			char tmp[50] = "";
 			strcat(tmp, symbol);
 			strcat(tmp, res);
@@ -264,8 +230,7 @@ void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool t
 	strcpy(dest, res);
 }
 
-float32_t log10f_fast(float32_t X)
-{
+float32_t log10f_fast(float32_t X) {
 	float32_t Y, F;
 	int32_t E;
 	F = frexpf(fabsf(X), &E);
@@ -307,7 +272,7 @@ float32_t volume2rate(float32_t i) // from the position of the volume knob to th
 	float32_t mute_zone = 15.0f;
 	if (MAX_VOLUME_VALUE == 100.0f)
 		mute_zone = 1.0f;
-	
+
 	if (i == 0.0f)
 		return 0.0f;
 
@@ -315,27 +280,23 @@ float32_t volume2rate(float32_t i) // from the position of the volume knob to th
 	if (i < (mute_zone / MAX_VOLUME_VALUE)) // mute zone
 		return 0.0f;
 #endif
-	
+
 	return powf(VOLUME_EPSILON, (1.0f - i));
 }
 
-void shiftTextLeft(char *string, uint_fast16_t shiftLength)
-{
+void shiftTextLeft(char *string, uint_fast16_t shiftLength) {
 	uint_fast16_t size = strlen(string);
-	if (shiftLength >= size)
-	{
+	if (shiftLength >= size) {
 		dma_memset(string, '\0', size);
 		return;
 	}
-	for (uint_fast16_t i = 0; i < size - shiftLength; i++)
-	{
+	for (uint_fast16_t i = 0; i < size - shiftLength; i++) {
 		string[i] = string[i + shiftLength];
 		string[i + shiftLength] = '\0';
 	}
 }
 
-float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
-{
+float32_t getMaxTXAmplitudeOnFreq(uint32_t freq) {
 	if (freq > MAX_TX_FREQ_HZ) { // harmonics mode
 		while (freq > MAX_TX_FREQ_HZ) {
 			freq /= 3.0f; // third-harmonics
@@ -375,23 +336,20 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 
 	if (calibrate_level > 100)
 		calibrate_level = 100;
-	
+
 	if (CALIBRATE.DAC_driver_mode == 2) // dac driver bias
 	{
 		TRX_DAC_DRV_A0 = false;
 		TRX_DAC_DRV_A1 = false;
-	}
-	else if (CALIBRATE.DAC_driver_mode == 1) // dac driver bias 75%
+	} else if (CALIBRATE.DAC_driver_mode == 1) // dac driver bias 75%
 	{
 		TRX_DAC_DRV_A0 = true;
 		TRX_DAC_DRV_A1 = false;
-	}
-	else if (CALIBRATE.DAC_driver_mode == 0) // dac driver bias 50%
+	} else if (CALIBRATE.DAC_driver_mode == 0) // dac driver bias 50%
 	{
 		TRX_DAC_DRV_A0 = false;
 		TRX_DAC_DRV_A1 = true;
-	}
-	else if (calibrate_level == 0) // dac driver off
+	} else if (calibrate_level == 0) // dac driver off
 	{
 		TRX_DAC_DRV_A0 = true;
 		TRX_DAC_DRV_A1 = true;
@@ -400,8 +358,7 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq)
 	return (float32_t)calibrate_level / 100.0f;
 }
 
-float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq)
-{
+float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq) {
 	float32_t ret = amplitude * arm_sin_f32(*index * F_2PI);
 	*index += ((float32_t)freq / (float32_t)samplerate);
 	while (*index >= 1.0f)
@@ -409,36 +366,34 @@ float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate
 	return ret;
 }
 
-inline int32_t convertToSPIBigEndian(int32_t in)
-{
+inline int32_t convertToSPIBigEndian(int32_t in) {
 	return (int32_t)(0xFFFF0000 & (uint32_t)(in << 16)) | (int32_t)(0x0000FFFF & (uint32_t)(in >> 16));
 }
 
-inline uint8_t rev8(uint8_t data)
-{
+inline uint8_t rev8(uint8_t data) {
 	uint32_t tmp = data;
 	return (uint8_t)(__RBIT(tmp) >> 24);
 }
 
 IRAM2 uint8_t SPI_tmp_buff[8] = {0};
-bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma)
-{
+bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN,
+                  bool hold_cs, uint32_t prescaler, bool dma) {
 	// SPI speed
-	if (hspi->Init.BaudRatePrescaler != prescaler)
-	{
+	if (hspi->Init.BaudRatePrescaler != prescaler) {
 		hspi->Init.BaudRatePrescaler = prescaler;
 		HAL_SPI_Init(hspi);
 	}
 
 	const uint32_t SPI_timeout = 1000;
 	const uint32_t SPI_DMA_timeout = 1000;
-	
+
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 
-	if (count < 100) dma = false;
-	
-	#ifdef STM32H743xx
+	if (count < 100)
+		dma = false;
+
+#ifdef STM32H743xx
 	// non-DMA section
 	if (dma && out_data == NULL && (uint32_t)in_data < 0x24000000)
 		dma = false;
@@ -447,95 +402,79 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 	if (dma && in_data != NULL && out_data != NULL)
 		if ((uint32_t)out_data < 0x24000000 || (uint32_t)in_data < 0x24000000)
 			dma = false;
-	#endif
-	
-	if (dma)
-	{
+#endif
+
+	if (dma) {
 		uint32_t startTime = HAL_GetTick();
 		SPI_DMA_TXRX_ready_callback = false;
-		if (in_data == NULL)
-		{
+		if (in_data == NULL) {
 			dma_memset(SPI_tmp_buff, 0x00, sizeof(SPI_tmp_buff));
 			Aligned_CleanDCache_by_Addr((uint32_t)out_data, count);
-			
-			if (hspi->hdmarx->Init.MemInc != DMA_MINC_DISABLE)
-			{
+
+			if (hspi->hdmarx->Init.MemInc != DMA_MINC_DISABLE) {
 				hspi->hdmarx->Init.MemInc = DMA_MINC_DISABLE;
 				HAL_DMA_Init(hspi->hdmarx);
 			}
-			if (hspi->hdmatx->Init.MemInc != DMA_MINC_ENABLE)
-			{
+			if (hspi->hdmatx->Init.MemInc != DMA_MINC_ENABLE) {
 				hspi->hdmatx->Init.MemInc = DMA_MINC_ENABLE;
 				HAL_DMA_Init(hspi->hdmatx);
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, SPI_tmp_buff, count);
-			
+
 			while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_DMA_timeout))
 				CPULOAD_GoToSleepMode();
-		}
-		else if (out_data == NULL)
-		{
+		} else if (out_data == NULL) {
 			dma_memset(in_data, 0x00, count);
-			
+
 			/*if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
 			{
-				hspi->hdmarx->Init.MemInc = DMA_MINC_ENABLE;
-				HAL_DMA_Init(hspi->hdmarx);
+			  hspi->hdmarx->Init.MemInc = DMA_MINC_ENABLE;
+			  HAL_DMA_Init(hspi->hdmarx);
 			}
 			if (hspi->hdmatx->Init.MemInc != DMA_MINC_DISABLE)
 			{
-				hspi->hdmatx->Init.MemInc = DMA_MINC_DISABLE;
-				HAL_DMA_Init(hspi->hdmatx);
+			  hspi->hdmatx->Init.MemInc = DMA_MINC_DISABLE;
+			  HAL_DMA_Init(hspi->hdmatx);
 			}*/
-			
+
 			res = HAL_SPI_Receive_IT(hspi, in_data, count);
-			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout) CPULOAD_GoToSleepMode();
-			
-			//res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
-			//res = HAL_SPI_Receive_DMA(hspi, in_data, count);
-			//while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_DMA_timeout))
-				//CPULOAD_GoToSleepMode();
-		}
-		else
-		{
+			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout)
+				CPULOAD_GoToSleepMode();
+
+			// res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
+			// res = HAL_SPI_Receive_DMA(hspi, in_data, count);
+			// while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_DMA_timeout))
+			// CPULOAD_GoToSleepMode();
+		} else {
 			dma_memset(in_data, 0x00, count);
 			Aligned_CleanDCache_by_Addr((uint32_t)out_data, count);
-			
-			if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE)
-			{
+
+			if (hspi->hdmarx->Init.MemInc != DMA_MINC_ENABLE) {
 				hspi->hdmarx->Init.MemInc = DMA_MINC_ENABLE;
 				HAL_DMA_Init(hspi->hdmarx);
 			}
-			if (hspi->hdmatx->Init.MemInc != DMA_MINC_ENABLE)
-			{
+			if (hspi->hdmatx->Init.MemInc != DMA_MINC_ENABLE) {
 				hspi->hdmatx->Init.MemInc = DMA_MINC_ENABLE;
 				HAL_DMA_Init(hspi->hdmatx);
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, in_data, count);
-			
+
 			while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_DMA_timeout))
 				CPULOAD_GoToSleepMode();
 		}
-		
+
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t)in_data, count);
-		
-		if((HAL_GetTick() - startTime) > SPI_DMA_timeout)
+
+		if ((HAL_GetTick() - startTime) > SPI_DMA_timeout)
 			res = HAL_TIMEOUT;
-	}
-	else
-	{
+	} else {
 		__SPI2_CLK_ENABLE();
-		if (in_data == NULL)
-		{
+		if (in_data == NULL) {
 			res = HAL_SPI_Transmit_IT(hspi, out_data, count);
-		}
-		else if (out_data == NULL)
-		{
+		} else if (out_data == NULL) {
 			dma_memset(in_data, 0x00, count);
 			res = HAL_SPI_Receive_IT(hspi, in_data, count);
-		}
-		else
-		{
+		} else {
 			dma_memset(in_data, 0x00, count);
 			res = HAL_SPI_TransmitReceive_IT(hspi, out_data, in_data, count);
 		}
@@ -549,24 +488,24 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 
 	if (!hold_cs)
 		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
-	
-	if (res == HAL_TIMEOUT)
-	{
+
+	if (res == HAL_TIMEOUT) {
 		println("[ERR] SPI timeout");
-		
-		//HAL_SPI_Abort(hspi);
+
+		// HAL_SPI_Abort(hspi);
 		return false;
 	}
-	if (res == HAL_ERROR)
-	{
+	if (res == HAL_ERROR) {
 		print("[ERR] SPI error, code: ", hspi->ErrorCode, " COUNT: ", count, " MODE: ");
 		if (in_data == NULL) {
 			println("TX");
 		} else if (out_data == NULL) {
 			println("RX");
-		} else { println("TXRX"); }
-		
-		//HAL_SPI_Abort(hspi);
+		} else {
+			println("TXRX");
+		}
+
+		// HAL_SPI_Abort(hspi);
 		return false;
 	}
 
@@ -579,8 +518,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
  *  Cambridge University Press, 1992, Section 8.5, ISBN 0-521-43108-5
  *  This code by Nicolas Devillard - 1998. Public domain.
  */
-float32_t quick_median_select(float32_t *arr, int n)
-{
+float32_t quick_median_select(float32_t *arr, int n) {
 	int low, high;
 	int median;
 	int middle, ll, hh;
@@ -588,13 +526,11 @@ float32_t quick_median_select(float32_t *arr, int n)
 	low = 0;
 	high = n - 1;
 	median = (low + high) / 2;
-	for (;;)
-	{
+	for (;;) {
 		if (high <= low) /* One element only */
 			return arr[median];
 
-		if (high == low + 1)
-		{ /* Two elements only */
+		if (high == low + 1) { /* Two elements only */
 			if (arr[low] > arr[high])
 				ELEM_SWAP_F32(arr[low], arr[high]);
 			return arr[median];
@@ -615,8 +551,7 @@ float32_t quick_median_select(float32_t *arr, int n)
 		/* Nibble from each end towards middle, swapping items when stuck */
 		ll = low + 1;
 		hh = high;
-		for (;;)
-		{
+		for (;;) {
 			do
 				ll++;
 			while (arr[low] > arr[ll]);
@@ -641,8 +576,7 @@ float32_t quick_median_select(float32_t *arr, int n)
 	}
 }
 
-void memset16(void *dest, uint16_t val, uint32_t size)
-{
+void memset16(void *dest, uint16_t val, uint32_t size) {
 	if (size == 0)
 		return;
 
@@ -653,19 +587,18 @@ void memset16(void *dest, uint16_t val, uint32_t size)
 	/*char *buf = dest;
 	union
 	{
-			uint8_t d8[2];
-			uint16_t d16;
+	    uint8_t d8[2];
+	    uint16_t d16;
 	}u16 = {.d16 = val};
 
 	while(size--)
 	{
-			*buf++ = u16.d8[0];
-			*buf++ = u16.d8[1];
+	    *buf++ = u16.d8[0];
+	    *buf++ = u16.d8[1];
 	}*/
 }
 
-__WEAK void dma_memset(void *dest, uint8_t val, uint32_t size)
-{
+__WEAK void dma_memset(void *dest, uint8_t val, uint32_t size) {
 	if (dma_memset32_busy || size < 128) // for async and fast calls
 	{
 		memset(dest, val, size);
@@ -674,14 +607,12 @@ __WEAK void dma_memset(void *dest, uint8_t val, uint32_t size)
 
 	// left align
 	char *pDst = (char *)dest;
-	while ((uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3) && size > 0)
-	{
+	while ((uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3) && size > 0) {
 		*pDst++ = val;
 		size--;
 	}
 
-	if (size > 0)
-	{
+	if (size > 0) {
 		// center fills in 32bit
 		uint32_t val32 = (val << 24) | (val << 16) | (val << 8) | (val << 0);
 		uint32_t block32 = size / 4;
@@ -689,8 +620,7 @@ __WEAK void dma_memset(void *dest, uint8_t val, uint32_t size)
 		dma_memset32(pDst, val32, block32);
 
 		// right align
-		if (block8 > 0)
-		{
+		if (block8 > 0) {
 			pDst += block32 * 4;
 			while (block8--)
 				*pDst++ = val;
@@ -698,8 +628,7 @@ __WEAK void dma_memset(void *dest, uint8_t val, uint32_t size)
 	}
 }
 
-__WEAK void dma_memcpy(void *dest, void *src, uint32_t size)
-{
+__WEAK void dma_memcpy(void *dest, void *src, uint32_t size) {
 	if (dma_memcpy32_busy || size < 1024) // for async and fast calls
 	{
 		memcpy(dest, src, size);
@@ -709,20 +638,17 @@ __WEAK void dma_memcpy(void *dest, void *src, uint32_t size)
 	// left align
 	char *pSrc = (char *)src;
 	char *pDst = (char *)dest;
-	while (((uint32_t)pSrc != (((uint32_t)pSrc) & ~(uint32_t)0x3) || (uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3)) && size > 0)
-	{
+	while (((uint32_t)pSrc != (((uint32_t)pSrc) & ~(uint32_t)0x3) || (uint32_t)pDst != (((uint32_t)pDst) & ~(uint32_t)0x3)) && size > 0) {
 		*pDst++ = *pSrc++;
 		size--;
 	}
 
-	if (size > 0)
-	{
+	if (size > 0) {
 		// center copy in 32bit
 		uint32_t block32 = size / 4;
 		uint32_t block8 = size % 4;
 		uint32_t max_block = DMA_MAX_BLOCK / 4;
-		while (block32 > max_block)
-		{
+		while (block32 > max_block) {
 			dma_memcpy32(pDst, pSrc, max_block);
 			block32 -= max_block;
 			pDst += max_block * 4;
@@ -731,8 +657,7 @@ __WEAK void dma_memcpy(void *dest, void *src, uint32_t size)
 		dma_memcpy32(pDst, pSrc, block32);
 
 		// right align
-		if (block8 > 0)
-		{
+		if (block8 > 0) {
 			pDst += block32 * 4;
 			pSrc += block32 * 4;
 			while (block8--)
@@ -742,8 +667,7 @@ __WEAK void dma_memcpy(void *dest, void *src, uint32_t size)
 }
 
 #if HRDW_HAS_MDMA
-void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
-{
+void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma) {
 	const uint32_t Timeout = 100;
 	uint32_t tickstart;
 
@@ -753,17 +677,14 @@ void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 	/* Get timeout */
 	tickstart = HAL_GetTick();
 
-	while (__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_CTC) == 0U)
-	{
-		if ((__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_TE) != 0U))
-		{
+	while (__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_CTC) == 0U) {
+		if ((__HAL_MDMA_GET_FLAG(hmdma, MDMA_FLAG_TE) != 0U)) {
 			(void)HAL_MDMA_Abort(hmdma); /* if error then abort the current transfer */
 			return;
 		}
 
 		/* Check for the Timeout */
-		if (((HAL_GetTick() - tickstart) > Timeout) || (Timeout == 0U))
-		{
+		if (((HAL_GetTick() - tickstart) > Timeout) || (Timeout == 0U)) {
 			(void)HAL_MDMA_Abort(hmdma); /* if timeout then abort the current transfer */
 			return;
 		}
@@ -782,121 +703,111 @@ void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma)
 }
 #endif
 
-typedef struct
-{
-  __IO uint32_t ISR;   /*!< DMA interrupt status register */
-  __IO uint32_t Reserved0;
-  __IO uint32_t IFCR;  /*!< DMA interrupt flag clear register */
+typedef struct {
+	__IO uint32_t ISR; /*!< DMA interrupt status register */
+	__IO uint32_t Reserved0;
+	__IO uint32_t IFCR; /*!< DMA interrupt flag clear register */
 } DMA_Base_Registers;
 
-void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma)
-{
+void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma) {
 	const uint32_t Timeout = 100;
-	
-	HAL_StatusTypeDef status = HAL_OK; 
-  uint32_t mask_cpltlevel;
-  uint32_t tickstart = HAL_GetTick(); 
-  uint32_t tmpisr;
-  
-  /* calculate DMA base and stream number */
-  DMA_Base_Registers *regs;
 
-  if(HAL_DMA_STATE_BUSY != hdma->State)
-  {
-    return;
-  }
-  
+	HAL_StatusTypeDef status = HAL_OK;
+	uint32_t mask_cpltlevel;
+	uint32_t tickstart = HAL_GetTick();
+	uint32_t tmpisr;
+
+	/* calculate DMA base and stream number */
+	DMA_Base_Registers *regs;
+
+	if (HAL_DMA_STATE_BUSY != hdma->State) {
+		return;
+	}
+
 	/* Transfer Complete flag */
 	mask_cpltlevel = DMA_FLAG_TCIF0_4 << hdma->StreamIndex;
-  
-  regs = (DMA_Base_Registers *)hdma->StreamBaseAddress;
-  tmpisr = regs->ISR;
-  
-  while(((tmpisr & mask_cpltlevel) == RESET) && ((hdma->ErrorCode & HAL_DMA_ERROR_TE) == RESET))
-  {
-    /* Check for the Timeout (Not applicable in circular mode)*/
-		if(((HAL_GetTick() - tickstart ) > Timeout))
-		{
+
+	regs = (DMA_Base_Registers *)hdma->StreamBaseAddress;
+	tmpisr = regs->ISR;
+
+	while (((tmpisr & mask_cpltlevel) == RESET) && ((hdma->ErrorCode & HAL_DMA_ERROR_TE) == RESET)) {
+		/* Check for the Timeout (Not applicable in circular mode)*/
+		if (((HAL_GetTick() - tickstart) > Timeout)) {
 			/* Update error code */
 			hdma->ErrorCode = HAL_DMA_ERROR_TIMEOUT;
-			
+
 			/* Change the DMA state */
 			hdma->State = HAL_DMA_STATE_READY;
-			
+
 			/* Process Unlocked */
 			__HAL_UNLOCK(hdma);
-			
+
 			println("[ERR] DMA Timeout");
-			
+
 			return;
 		}
 
-    /* Get the ISR register value */
-    tmpisr = regs->ISR;
+		/* Get the ISR register value */
+		tmpisr = regs->ISR;
 
-    if((tmpisr & (DMA_FLAG_TEIF0_4 << hdma->StreamIndex)) != RESET)
-    {
-      /* Update error code */
-      hdma->ErrorCode |= HAL_DMA_ERROR_TE;
-      
-      /* Clear the transfer error flag */
-      regs->IFCR = DMA_FLAG_TEIF0_4 << hdma->StreamIndex;
-    }
-    
-    if((tmpisr & (DMA_FLAG_FEIF0_4 << hdma->StreamIndex)) != RESET)
-    {
-      /* Update error code */
-      hdma->ErrorCode |= HAL_DMA_ERROR_FE;
-      
-      /* Clear the FIFO error flag */
-      regs->IFCR = DMA_FLAG_FEIF0_4 << hdma->StreamIndex;
-    }
-    
-    if((tmpisr & (DMA_FLAG_DMEIF0_4 << hdma->StreamIndex)) != RESET)
-    {
-      /* Update error code */
-      hdma->ErrorCode |= HAL_DMA_ERROR_DME;
-      
-      /* Clear the Direct Mode error flag */
-      regs->IFCR = DMA_FLAG_DMEIF0_4 << hdma->StreamIndex;
-    }
-		
+		if ((tmpisr & (DMA_FLAG_TEIF0_4 << hdma->StreamIndex)) != RESET) {
+			/* Update error code */
+			hdma->ErrorCode |= HAL_DMA_ERROR_TE;
+
+			/* Clear the transfer error flag */
+			regs->IFCR = DMA_FLAG_TEIF0_4 << hdma->StreamIndex;
+		}
+
+		if ((tmpisr & (DMA_FLAG_FEIF0_4 << hdma->StreamIndex)) != RESET) {
+			/* Update error code */
+			hdma->ErrorCode |= HAL_DMA_ERROR_FE;
+
+			/* Clear the FIFO error flag */
+			regs->IFCR = DMA_FLAG_FEIF0_4 << hdma->StreamIndex;
+		}
+
+		if ((tmpisr & (DMA_FLAG_DMEIF0_4 << hdma->StreamIndex)) != RESET) {
+			/* Update error code */
+			hdma->ErrorCode |= HAL_DMA_ERROR_DME;
+
+			/* Clear the Direct Mode error flag */
+			regs->IFCR = DMA_FLAG_DMEIF0_4 << hdma->StreamIndex;
+		}
+
 		// go sleep
 		CPULOAD_GoToSleepMode();
-  }
-  
-  if(hdma->ErrorCode != HAL_DMA_ERROR_NONE)
-  {
-    if((hdma->ErrorCode & HAL_DMA_ERROR_TE) != RESET)
-    {
-      HAL_DMA_Abort(hdma);
-    
-      /* Clear the half transfer and transfer complete flags */
-      regs->IFCR = (DMA_FLAG_HTIF0_4 | DMA_FLAG_TCIF0_4) << hdma->StreamIndex;
-    
-      /* Change the DMA state */
-      hdma->State= HAL_DMA_STATE_READY;
+	}
 
-      /* Process Unlocked */
-      __HAL_UNLOCK(hdma);
-			
-      return;
-   }
-  }
+	if (hdma->ErrorCode != HAL_DMA_ERROR_NONE) {
+		if ((hdma->ErrorCode & HAL_DMA_ERROR_TE) != RESET) {
+			HAL_DMA_Abort(hdma);
+
+			/* Clear the half transfer and transfer complete flags */
+			regs->IFCR = (DMA_FLAG_HTIF0_4 | DMA_FLAG_TCIF0_4) << hdma->StreamIndex;
+
+			/* Change the DMA state */
+			hdma->State = HAL_DMA_STATE_READY;
+
+			/* Process Unlocked */
+			__HAL_UNLOCK(hdma);
+
+			return;
+		}
+	}
 
 	/* Clear the half transfer and transfer complete flags */
 	regs->IFCR = (DMA_FLAG_HTIF0_4 | DMA_FLAG_TCIF0_4) << hdma->StreamIndex;
-	
+
 	hdma->State = HAL_DMA_STATE_READY;
-	
+
 	/* Process Unlocked */
 	__HAL_UNLOCK(hdma);
 }
 
-uint8_t getInputType(void)
-{
+uint8_t getInputType(void) {
 	uint8_t type = TRX.InputType_MAIN;
-	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
+	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY ||
+	    CurrentVFO->Mode == TRX_MODE_IQ)
 		type = TRX.InputType_DIGI;
 	return type;
 }
@@ -908,32 +819,24 @@ static unsigned int sd_crc16_table[256];
 static unsigned int sd_crc7_table[256];
 
 /* Running CRC16 calculation for a byte. */
-unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte)
-{
+unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte) {
 	return (sd_crc16_table[(byte ^ (crcval >> 8)) & 0xFFU] ^ (crcval << 8)) & 0xFFFFU;
 }
 
 /* Running CRC7 calculation for a byte. */
-unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte)
-{
-	return sd_crc7_table[(byte ^ (crcval << 1)) & 0xFFU];
-}
+unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte) { return sd_crc7_table[(byte ^ (crcval << 1)) & 0xFFU]; }
 
-void sd_crc_generate_table(void)
-{
+void sd_crc_generate_table(void) {
 	static bool crc_table_generated = false;
 	if (crc_table_generated)
 		return;
 	int crc = 0;
 	/* Generate CRC16 table */
-	for (uint32_t byt = 0U; byt < 256U; byt++)
-	{
+	for (uint32_t byt = 0U; byt < 256U; byt++) {
 		crc = byt << 8;
-		for (uint32_t bit = 0U; bit < 8U; bit++)
-		{
+		for (uint32_t bit = 0U; bit < 8U; bit++) {
 			crc <<= 1;
-			if ((crc & 0x10000U) != 0U)
-			{
+			if ((crc & 0x10000U) != 0U) {
 				crc ^= 0x1021U;
 			}
 		}
@@ -941,18 +844,14 @@ void sd_crc_generate_table(void)
 	}
 
 	/* Generate CRC7 table */
-	for (uint32_t byt = 0U; byt < 256U; byt++)
-	{
+	for (uint32_t byt = 0U; byt < 256U; byt++) {
 		crc = byt;
-		if ((crc & 0x80U) != 0U)
-		{
+		if ((crc & 0x80U) != 0U) {
 			crc ^= 0x89U;
 		}
-		for (uint32_t bit = 1U; bit < 8U; bit++)
-		{
+		for (uint32_t bit = 1U; bit < 8U; bit++) {
 			crc <<= 1;
-			if ((crc & 0x80U) != 0U)
-			{
+			if ((crc & 0x80U) != 0U) {
 				crc ^= 0x89U;
 			}
 		}
@@ -962,15 +861,14 @@ void sd_crc_generate_table(void)
 }
 #endif
 
-void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst, uint32_t blockSize)
-{
+void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst,
+                                        uint32_t blockSize) {
 	float32_t *pState = S->pState;
 	const float32_t *pCoeffs = S->pCoeffs;
 	const float32_t *pIn = pSrc;
 	float32_t *pOut = pDst;
 
-	for (uint32_t stage = 0; stage < S->numStages; stage++)
-	{
+	for (uint32_t stage = 0; stage < S->numStages; stage++) {
 		float32_t b0 = pCoeffs[0];
 		float32_t b1 = pCoeffs[1];
 		float32_t b2 = pCoeffs[2];
@@ -981,8 +879,7 @@ void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f
 		float32_t d1 = pState[0];
 		float32_t d2 = pState[1];
 
-		for (uint32_t sample = 0; sample < blockSize; sample++)
-		{
+		for (uint32_t sample = 0; sample < blockSize; sample++) {
 			float32_t Xn1 = *pIn++;
 
 			float32_t acc1 = b0 * Xn1 + d1;
@@ -1001,8 +898,8 @@ void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f
 	}
 }
 
-void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q, const float32_t *pSrc_I, const float32_t *pSrc_Q, float32_t *pDst_I, float32_t *pDst_Q, uint32_t blockSize)
-{
+void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q,
+                                    const float32_t *pSrc_I, const float32_t *pSrc_Q, float32_t *pDst_I, float32_t *pDst_Q, uint32_t blockSize) {
 	float32_t *pState_I = I->pState;
 	float32_t *pState_Q = Q->pState;
 	const float32_t *pCoeffs = I->pCoeffs;
@@ -1012,8 +909,7 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 	float32_t *pOut_Q = pDst_Q;
 
 	uint32_t stage = I->numStages;
-	while (stage > 0)
-	{
+	while (stage > 0) {
 		float32_t b0 = pCoeffs[0];
 		float32_t b1 = pCoeffs[1];
 		float32_t b2 = pCoeffs[2];
@@ -1027,8 +923,7 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 		float32_t d2_Q = pState_Q[1];
 
 		uint32_t sample = blockSize;
-		while (sample > 0)
-		{
+		while (sample > 0) {
 			float32_t Xn1_I = *pIn_I++;
 			float32_t Xn1_Q = *pIn_Q++;
 
@@ -1043,7 +938,7 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 
 			*pOut_I++ = acc1_I;
 			*pOut_Q++ = acc1_Q;
-			
+
 			sample--;
 		}
 
@@ -1058,68 +953,63 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 		pIn_Q = pDst_Q;
 		pOut_I = pDst_I;
 		pOut_Q = pDst_Q;
-		
+
 		stage--;
 	}
 }
 
-char cleanASCIIgarbage(char chr)
-{
+char cleanASCIIgarbage(char chr) {
 	if ((chr < ' ') || (chr > 0x7f))
 		return 0;
 	return chr;
 }
 
-bool textStartsWith(const char *a, const char *b)
-{
+bool textStartsWith(const char *a, const char *b) {
 	if (strncmp(a, b, strlen(b)) == 0)
 		return 1;
 	return 0;
 }
 
 #if HRDW_HAS_FULL_FFT_BUFFER
-void *alloc_to_wtf(uint32_t size, bool reset)
-{
+void *alloc_to_wtf(uint32_t size, bool reset) {
 	static uint32_t allocated = 0;
-	if(reset) {
+	if (reset) {
 		allocated = 0;
 		dma_memset(print_output_buffer, 0x00, sizeof(print_output_buffer));
 	}
-	size = (size + 0x03) & ~ 0x03;
-	if ((allocated + size) > sizeof(print_output_buffer))
-	{
+	size = (size + 0x03) & ~0x03;
+	if ((allocated + size) > sizeof(print_output_buffer)) {
 		LCD_showError("WTF ALLOC mem error", true);
 	}
-	void * p = (void *) ((uint8_t *)print_output_buffer + allocated);
+	void *p = (void *)((uint8_t *)print_output_buffer + allocated);
 	allocated += size;
 	return p;
 }
 #endif
 
-float fast_sqrt(const float x)
-{
-	#define SQRT_MAGIC_F 0x5f3759df 
-  const float xhalf = 0.5f*x;
- 
-  union // get bits for floating value
-  {
-    float x;
-    int i;
-  } u;
-  u.x = x;
-  u.i = SQRT_MAGIC_F - (u.i >> 1);  // gives initial guess y0
-  return x*u.x*(1.5f - xhalf*u.x*u.x);// Newton step, repeating increases accuracy 
+float fast_sqrt(const float x) {
+#define SQRT_MAGIC_F 0x5f3759df
+	const float xhalf = 0.5f * x;
+
+	union // get bits for floating value
+	{
+		float x;
+		int i;
+	} u;
+	u.x = x;
+	u.i = SQRT_MAGIC_F - (u.i >> 1);             // gives initial guess y0
+	return x * u.x * (1.5f - xhalf * u.x * u.x); // Newton step, repeating increases accuracy
 }
 
 uint8_t getPowerFromALC(float32_t alc) {
-	float32_t volt = alc - 1.0f; // 0.0-1.0v - ALC disabled
+	float32_t volt = alc - 1.0f;            // 0.0-1.0v - ALC disabled
 	float32_t power = volt * 100.0f / 2.3f; // 1.0v - 3.3v - power 0-100%
-	
+
 	if (power < 0)
 		return 0;
-	
+
 	if (power > 100)
 		return 100;
-	
+
 	return power;
 }

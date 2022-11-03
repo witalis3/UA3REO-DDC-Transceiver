@@ -1,21 +1,20 @@
 #ifndef NOISE_BLANKER_h
 #define NOISE_BLANKER_h
 
+#include "audio_processor.h"
 #include "hardware.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
-#include "audio_processor.h"
 
 #define NB_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3) // size of the NB filter processing block
-#define NB_impulse_length 7						   // has to be odd !!!! 7/3 should be enough // 7
-#define NB_PL ((NB_impulse_length - 1) / 2)		   // has to be (impulse_length-1) / 2 !!!!
-#define NB_order 10								   // lpc's order // 10
-#define NB_FIR_SIZE 64							   // filter buffer size
-#define NB_max_inpulse_count 5					   // maximum impulses in the block for suppression
+#define NB_impulse_length 7                        // has to be odd !!!! 7/3 should be enough // 7
+#define NB_PL ((NB_impulse_length - 1) / 2)        // has to be (impulse_length-1) / 2 !!!!
+#define NB_order 10                                // lpc's order // 10
+#define NB_FIR_SIZE 64                             // filter buffer size
+#define NB_max_inpulse_count 5                     // maximum impulses in the block for suppression
 
-typedef struct
-{
+typedef struct {
 	float32_t NR_InputBuffer[NB_FIR_SIZE];
 	uint16_t NR_InputBuffer_index;
 	float32_t NR_OutputBuffer[NB_FIR_SIZE];

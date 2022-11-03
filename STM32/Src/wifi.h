@@ -4,8 +4,8 @@
 #include "hardware.h"
 #if HRDW_HAS_WIFI
 
-#include <stdbool.h>
 #include "settings.h"
+#include <stdbool.h>
 
 #define WIFI_ANSWER_BUFFER_SIZE (1024 * 8)
 #define WIFI_LINE_BUFFER_SIZE WIFI_ANSWER_BUFFER_SIZE
@@ -17,15 +17,13 @@
 #define WIFI_DXCLUSTER_MAX_RECORDS 30
 #define WIFI_DXCLUSTER_MAX_CALL_LEN 10
 
-typedef struct
-{
+typedef struct {
 	uint32_t Freq;
 	char Callsign[WIFI_DXCLUSTER_MAX_CALL_LEN];
 	uint16_t Azimuth;
 } DXCLUSTER_ENTRY;
 
-typedef enum
-{
+typedef enum {
 	WIFI_UNDEFINED,
 	WIFI_NOTFOUND,
 	WIFI_REINIT,
@@ -39,8 +37,7 @@ typedef enum
 	WIFI_SLEEP,
 } WiFiState;
 
-typedef enum
-{
+typedef enum {
 	WIFI_COMM_NONE,
 	WIFI_COMM_LISTAP,
 	WIFI_COMM_GETSNTP,

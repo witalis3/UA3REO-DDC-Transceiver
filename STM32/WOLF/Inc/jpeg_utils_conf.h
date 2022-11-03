@@ -10,10 +10,10 @@
  * JPEG HW configuration.  Most users will not need to touch this file.
  */
 
- /* Define to prevent recursive inclusion -------------------------------------*/
+/* Define to prevent recursive inclusion -------------------------------------*/
 
-#ifndef  __JPEG_UTILS_CONF_H__
-#define  __JPEG_UTILS_CONF_H__
+#ifndef __JPEG_UTILS_CONF_H__
+#define __JPEG_UTILS_CONF_H__
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -22,12 +22,12 @@
 
 /* Private define ------------------------------------------------------------*/
 /** @addtogroup JPEG_Private_Defines
-  * @{
-  */
+ * @{
+ */
 /* RGB Color format definition for JPEG encoding/Decoding : Should not be modified*/
-#define JPEG_ARGB8888            0  /* ARGB8888 Color Format */
-#define JPEG_RGB888              1  /* RGB888 Color Format   */
-#define JPEG_RGB565              2  /* RGB565 Color Format   */
+#define JPEG_ARGB8888 0 /* ARGB8888 Color Format */
+#define JPEG_RGB888 1   /* RGB888 Color Format   */
+#define JPEG_RGB565 2   /* RGB565 Color Format   */
 
 /*
  * Define USE_JPEG_DECODER

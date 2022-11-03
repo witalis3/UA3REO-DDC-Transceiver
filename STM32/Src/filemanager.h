@@ -2,15 +2,14 @@
 #define FILEMANAGER_h
 
 #include "hardware.h"
-#include <stdbool.h>
 #include "system_menu.h"
+#include <stdbool.h>
 
 #define FILEMANAGER_LISTING_MAX_FILES 26
 #define FILEMANAGER_LISTING_MAX_FILELEN 40
 #define FILEMANAGER_LISTING_ITEMS_ON_PAGE (LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE - 4)
 
-typedef enum
-{
+typedef enum {
 	FILMAN_ACT_CANCEL,
 	FILMAN_ACT_DELETE,
 	FILMAN_ACT_PLAY_WAV,

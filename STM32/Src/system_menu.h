@@ -2,9 +2,9 @@
 #define SYSTEM_MENU_H
 
 #include "hardware.h"
+#include "lcd_driver.h"
 #include <stdbool.h>
 #include <stdint.h>
-#include "lcd_driver.h"
 
 #define ENUM_MAX_COUNT 10
 
@@ -14,8 +14,7 @@
 #define ENUM_MAX_LENGTH 8
 #endif
 
-typedef enum
-{
+typedef enum {
 	SYSMENU_BOOLEAN,
 	SYSMENU_RUN,
 	SYSMENU_UINT8,
@@ -37,8 +36,7 @@ typedef enum
 	SYSMENU_ATU_C,
 } SystemMenuType;
 
-struct sysmenu_item_handler
-{
+struct sysmenu_item_handler {
 	char *title;
 	SystemMenuType type;
 	bool (*checkVisibleHandler)(void);
@@ -47,8 +45,7 @@ struct sysmenu_item_handler
 	char enumerate[ENUM_MAX_COUNT][ENUM_MAX_LENGTH];
 };
 
-struct sysmenu_menu_wrapper
-{
+struct sysmenu_menu_wrapper {
 	const struct sysmenu_item_handler *menu_handler;
 	uint8_t currentIndex;
 };

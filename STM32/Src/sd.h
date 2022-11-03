@@ -5,28 +5,28 @@
 #if HRDW_HAS_SD
 
 //--------------------------------------------------
-#include "main.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include "fatfs.h"
+#include "main.h"
 #include "settings.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 //--------------------------------------------------
 #define SD_CARD_SCAN_INTERVAL 1000
 #define SD_CQ_MESSAGE_FILE "!cq_message.wav"
 //--------------------------------------------------
 /* Card type flags (CardType) */
-#define CT_MMC 0x01				 /* MMC ver 3 */
-#define CT_SD1 0x02				 /* SD ver 1 */
-#define CT_SD2 0x04				 /* SD ver 2 */
+#define CT_MMC 0x01              /* MMC ver 3 */
+#define CT_SD1 0x02              /* SD ver 1 */
+#define CT_SD2 0x04              /* SD ver 2 */
 #define CT_SDC (CT_SD1 | CT_SD2) /* SD */
-#define CT_BLOCK 0x08			 /* Block addressing */
+#define CT_BLOCK 0x08            /* Block addressing */
 // Definitions for MMC/SDC command
-#define CMD0 (0x40 + 0)	   // GO_IDLE_STATE
-#define CMD1 (0x40 + 1)	   // SEND_OP_COND (MMC)
-#define CMD8 (0x40 + 8)	   // SEND_IF_COND
-#define CMD9 (0x40 + 9)	   // SEND_CSD
+#define CMD0 (0x40 + 0)    // GO_IDLE_STATE
+#define CMD1 (0x40 + 1)    // SEND_OP_COND (MMC)
+#define CMD8 (0x40 + 8)    // SEND_IF_COND
+#define CMD9 (0x40 + 9)    // SEND_CSD
 #define CMD12 (0x40 + 12)  /* STOP_TRANSMISSION */
 #define CMD16 (0x40 + 16)  // SET_BLOCKLEN
 #define CMD17 (0x40 + 17)  // READ_SINGLE_BLOCK
@@ -42,16 +42,14 @@
 
 #define SD_MAXBLOCK_SIZE 512
 
-typedef struct sd_info
-{
-    uint64_t CAPACITY;
+typedef struct sd_info {
+	uint64_t CAPACITY;
 	uint32_t SECTOR_COUNT;
 	uint16_t BLOCK_SIZE;
-    volatile uint8_t type;
+	volatile uint8_t type;
 } sd_info_ptr;
 
-typedef enum
-{
+typedef enum {
 	SDCOMM_IDLE,
 	SDCOMM_CHECK_SD,
 	SDCOMM_LIST_ROOT,

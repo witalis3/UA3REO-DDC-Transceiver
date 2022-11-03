@@ -1,92 +1,95 @@
 #include "vad.h"
 #include "arm_const_structs.h"
+#include "fft.h"
 #include "settings.h"
 #include "trx_manager.h"
-#include "fft.h"
 
 // https://habr.com/ru/post/192954/
 
 static float32_t window_multipliers[VAD_FFT_SIZE] = {0}; // coefficients for the window function
-volatile bool VAD_RX1_Muting = false; // Muting flag
-volatile bool VAD_RX2_Muting = false; // Muting flag
+volatile bool VAD_RX1_Muting = false;                    // Muting flag
+volatile bool VAD_RX2_Muting = false;                    // Muting flag
 
 static VAD_Instance VAD_RX1 = {
-	.FFT_Inst = &arm_cfft_sR_f32_len128,
-	.FirDecimate = {
-			// 48ksps, 3kHz lowpass
-			.numTaps = 4,
-			.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
-			.pState = NULL,
-	},
-	.Min_E1 = 999.0f,
-	.Min_E2 = 999.0f,
-	.Min_MD1 = 999.0f,
-	.Min_MD2 = 999.0f,
+    .FFT_Inst = &arm_cfft_sR_f32_len128,
+    .FirDecimate =
+        {
+            // 48ksps, 3kHz lowpass
+            .numTaps = 4,
+            .pCoeffs =
+                (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
+            .pState = NULL,
+        },
+    .Min_E1 = 999.0f,
+    .Min_E2 = 999.0f,
+    .Min_MD1 = 999.0f,
+    .Min_MD2 = 999.0f,
 };
 
 #if HRDW_HAS_DUAL_RX
 static VAD_Instance VAD_RX2 = {
-	.FFT_Inst = &arm_cfft_sR_f32_len128,
-	.FirDecimate = {
-			// 48ksps, 3kHz lowpass
-			.numTaps = 4,
-			.pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
-			.pState = NULL,
-	},
-	.Min_E1 = 999.0f,
-	.Min_E2 = 999.0f,
-	.Min_MD1 = 999.0f,
-	.Min_MD2 = 999.0f,
+    .FFT_Inst = &arm_cfft_sR_f32_len128,
+    .FirDecimate =
+        {
+            // 48ksps, 3kHz lowpass
+            .numTaps = 4,
+            .pCoeffs =
+                (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
+            .pState = NULL,
+        },
+    .Min_E1 = 999.0f,
+    .Min_E2 = 999.0f,
+    .Min_MD1 = 999.0f,
+    .Min_MD2 = 999.0f,
 };
 #endif
 
 // initialize VAD
-void InitVAD(void)
-{
+void InitVAD(void) {
 	// decimator
-	arm_fir_decimate_init_f32(&VAD_RX1.DECIMATE, VAD_RX1.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX1.FirDecimate.pCoeffs, VAD_RX1.decimState, VAD_BLOCK_SIZE);
-	#if HRDW_HAS_DUAL_RX
-	arm_fir_decimate_init_f32(&VAD_RX2.DECIMATE, VAD_RX2.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX2.FirDecimate.pCoeffs, VAD_RX2.decimState, VAD_BLOCK_SIZE);
-	#endif
+	arm_fir_decimate_init_f32(&VAD_RX1.DECIMATE, VAD_RX1.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX1.FirDecimate.pCoeffs, VAD_RX1.decimState,
+	                          VAD_BLOCK_SIZE);
+#if HRDW_HAS_DUAL_RX
+	arm_fir_decimate_init_f32(&VAD_RX2.DECIMATE, VAD_RX2.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX2.FirDecimate.pCoeffs, VAD_RX2.decimState,
+	                          VAD_BLOCK_SIZE);
+#endif
 	// Blackman window function
 	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++)
-		window_multipliers[i] = ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32((2.0f * PI * i) / ((float32_t)VAD_FFT_SIZE - 1.0f)) + (0.16f / 2) * arm_cos_f32(4.0f * PI * i / ((float32_t)VAD_FFT_SIZE - 1.0f));
+		window_multipliers[i] = ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32((2.0f * PI * i) / ((float32_t)VAD_FFT_SIZE - 1.0f)) +
+		                        (0.16f / 2) * arm_cos_f32(4.0f * PI * i / ((float32_t)VAD_FFT_SIZE - 1.0f));
 }
 
-void resetVAD(void)
-{
+void resetVAD(void) {
 	// need reset
 	VAD_RX1.Min_E1 = 999.0f;
 	VAD_RX1.Min_E2 = 999.0f;
 	VAD_RX1.Min_MD1 = 999.0f;
 	VAD_RX1.Min_MD2 = 999.0f;
 	VAD_RX1.start_counter = 0;
-	
-	#if HRDW_HAS_DUAL_RX
+
+#if HRDW_HAS_DUAL_RX
 	VAD_RX2.Min_E1 = 999.0f;
 	VAD_RX2.Min_E2 = 999.0f;
 	VAD_RX2.Min_MD1 = 999.0f;
 	VAD_RX2.Min_MD2 = 999.0f;
 	VAD_RX2.start_counter = 0;
-	#endif
+#endif
 }
 
 // run VAD for the data block
-void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer)
-{
+void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	if (!CurrentVFO->SQL && !TRX_ScanMode)
 		return;
 
-	#define debug false
-	
+#define debug false
+
 	VAD_Instance *VAD = &VAD_RX1;
-	#if HRDW_HAS_DUAL_RX
-	if (rx_id == AUDIO_RX2)
-	{
+#if HRDW_HAS_DUAL_RX
+	if (rx_id == AUDIO_RX2) {
 		VAD = &VAD_RX2;
 	}
-	#endif
-	
+#endif
+
 	// clear the old FFT buffer
 	dma_memset(VAD->FFTBuffer, 0x00, sizeof(VAD->FFTBuffer));
 	// copy the incoming data for the next work
@@ -94,8 +97,7 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer)
 	// Decimator
 	arm_fir_decimate_f32(&(VAD->DECIMATE), VAD->InputBuffer, VAD->InputBuffer, VAD_BLOCK_SIZE);
 	// Fill the unnecessary part of the buffer with zeros
-	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++)
-	{
+	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++) {
 		if (i < (VAD_FFT_SIZE - VAD_ZOOMED_SAMPLES)) // offset old data
 			VAD->FFTBufferCharge[i] = VAD->FFTBufferCharge[(i + VAD_ZOOMED_SAMPLES)];
 		else // Add new data to the FFT buffer for calculation
@@ -112,12 +114,12 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer)
 	// DEBUG VAD
 	/*if(NeedFFTInputBuffer)
 	{
-		memset(VAD_FFTBuffer_Export, 0x00, sizeof VAD_FFTBuffer_Export);
-		for (uint_fast16_t i = 0; i < VAD_FFT_SIZE_HALF; i ++)
-			VAD_FFTBuffer_Export[i] = VAD_FFTBuffer[i];
-		for (uint_fast16_t i = 0; i < VAD_FFT_SIZE_HALF; i ++)
-			VAD_FFTBuffer_Export[i + VAD_FFT_SIZE_HALF] = VAD_FFTBuffer[i];
-		NeedFFTInputBuffer = false;
+	  memset(VAD_FFTBuffer_Export, 0x00, sizeof VAD_FFTBuffer_Export);
+	  for (uint_fast16_t i = 0; i < VAD_FFT_SIZE_HALF; i ++)
+	    VAD_FFTBuffer_Export[i] = VAD_FFTBuffer[i];
+	  for (uint_fast16_t i = 0; i < VAD_FFT_SIZE_HALF; i ++)
+	    VAD_FFTBuffer_Export[i + VAD_FFT_SIZE_HALF] = VAD_FFTBuffer[i];
+	  NeedFFTInputBuffer = false;
 	}
 	return;*/
 
@@ -203,118 +205,100 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer)
 
 	// debug
 	static uint32_t prevPrint = 0;
-	if (debug && (HAL_GetTick() - prevPrint) > 100)
-	{
-		print(" SMF1: ", SMFdb1, " SMF2: ", SMFdb2, " Res_E1: ", Res_E1, " Res_E2: ", Res_E2, " Res_MD1: ", Res_MD1, " Res_MD2: ", Res_MD2, " MD1_Idx: ", MD1_index, " MD2_Idx: ", MD2_index, " EQU: ", Res_Equation, " ");
+	if (debug && (HAL_GetTick() - prevPrint) > 100) {
+		print(" SMF1: ", SMFdb1, " SMF2: ", SMFdb2, " Res_E1: ", Res_E1, " Res_E2: ", Res_E2, " Res_MD1: ", Res_MD1, " Res_MD2: ", Res_MD2,
+		      " MD1_Idx: ", MD1_index, " MD2_Idx: ", MD2_index, " EQU: ", Res_Equation, " ");
 	}
 
 	// check thresholds
 	uint8_t points1 = 0;
 	uint8_t points2 = 0;
-	if (Res_MD1 > 15.0f)
-	{
+	if (Res_MD1 > 15.0f) {
 		points1++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
 			print("M");
-		if (Res_MD1_IDX < 5)
-		{
+		if (Res_MD1_IDX < 5) {
 			points1++;
 			if (debug && (HAL_GetTick() - prevPrint) > 100)
 				print("I");
 		}
 	}
-	if (Res_MD2 > 7.0f)
-	{
+	if (Res_MD2 > 7.0f) {
 		points2++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
 			print("m");
-		if (Res_MD2_IDX < 10)
-		{
+		if (Res_MD2_IDX < 10) {
 			points2++;
 			if (debug && (HAL_GetTick() - prevPrint) > 100)
 				print("i");
 		}
 	}
-	if (SMFdb1 < -23.0f)
-	{
+	if (SMFdb1 < -23.0f) {
 		points1++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
 			print("S");
 	}
-	if (SMFdb2 < -4.0f)
-	{
+	if (SMFdb2 < -4.0f) {
 		points2++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
 			print("s");
 	}
-	if (Res_E1 > 10.0f)
-	{
+	if (Res_E1 > 10.0f) {
 		points1++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
 			print("E");
 	}
-	if (Res_E2 > 10.0f)
-	{
+	if (Res_E2 > 10.0f) {
 		points2++;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
 			print("e");
 	}
-	if (Res_Equation > 20.0f)
-	{
+	if (Res_Equation > 20.0f) {
 		points1--;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
 			print("Q");
 	}
-	if (Res_Equation < 0.1f)
-	{
+	if (Res_Equation < 0.1f) {
 		points2--;
 		if (debug && (HAL_GetTick() - prevPrint) > 100)
 			print("q");
 	}
-	if (debug && (HAL_GetTick() - prevPrint) > 100)
-	{
+	if (debug && (HAL_GetTick() - prevPrint) > 100) {
 		println("");
 		prevPrint = HAL_GetTick();
 	}
 
 	// calculate result state
-	if (points1 > 1 && points2 > 1)
-	{
+	if (points1 > 1 && points2 > 1) {
 		VAD->state_yes_counter++;
 		if (VAD->state_no_counter > 0)
 			VAD->state_no_counter--;
-	}
-	else
-	{
+	} else {
 		VAD->state_no_counter++;
 		if (VAD->state_yes_counter > 0)
 			VAD->state_yes_counter--;
 	}
 
-	if (!VAD->state && VAD->state_yes_counter > 10)
-	{
+	if (!VAD->state && VAD->state_yes_counter > 10) {
 		VAD->state_yes_counter = 0;
 		VAD->state_no_counter = 0;
 		VAD->state = true;
 	}
-	if (VAD->state && VAD->state_no_counter > 10 * TRX.VAD_THRESHOLD)
-	{
+	if (VAD->state && VAD->state_no_counter > 10 * TRX.VAD_THRESHOLD) {
 		VAD->state_yes_counter = 0;
 		VAD->state_no_counter = 0;
 		VAD->state = false;
 	}
 
 	// move min averages
-	if (!VAD->state && VAD->state_no_counter > 500)
-	{
+	if (!VAD->state && VAD->state_no_counter > 500) {
 		VAD->Min_E1 = 0.9f * VAD->Min_E1 + 0.1f * power1;
 		VAD->Min_E2 = 0.9f * VAD->Min_E2 + 0.1f * power2;
 		VAD->Min_MD1 = 0.9f * VAD->Min_MD1 + 0.1f * MD1;
 		VAD->Min_MD2 = 0.9f * VAD->Min_MD2 + 0.1f * MD2;
 		VAD->state_no_counter = 0;
 	}
-	if (VAD->state && VAD->state_yes_counter > 500)
-	{
+	if (VAD->state && VAD->state_yes_counter > 500) {
 		VAD->Min_E1 = 0.999f * VAD->Min_E1 + 0.01f * power1;
 		VAD->Min_E2 = 0.999f * VAD->Min_E2 + 0.01f * power2;
 		VAD->Min_MD1 = 0.999f * VAD->Min_MD1 + 0.01f * MD1;
@@ -325,12 +309,12 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer)
 	// set mute state
 	if (rx_id == AUDIO_RX1) {
 		VAD_RX1_Muting = !VAD->state;
-		//println("RX1 VAD: ", (uint8_t)VAD_RX1_Muting);
+		// println("RX1 VAD: ", (uint8_t)VAD_RX1_Muting);
 	}
-	#if HRDW_HAS_DUAL_RX
+#if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2) {
 		VAD_RX2_Muting = !VAD->state;
-		//println("RX2 VAD: ", (uint8_t)VAD_RX2_Muting);
+		// println("RX2 VAD: ", (uint8_t)VAD_RX2_Muting);
 	}
-	#endif
+#endif
 }

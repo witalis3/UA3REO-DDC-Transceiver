@@ -27,8 +27,7 @@
 // 5: Off screen (send other invalid)
 #define GOODIX_CMD_SCREEN_OFF 0x05
 
-typedef struct
-{
+typedef struct {
 	uint8_t Touch;
 	uint8_t TouchpointFlag;
 	uint8_t TouchCount;

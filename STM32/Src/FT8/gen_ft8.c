@@ -1,24 +1,24 @@
+#include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <math.h>
 
-#include "pack.h"
-#include "encode.h"
 #include "constants.h"
+#include "encode.h"
+#include "pack.h"
 
 #include "gen_ft8.h"
 
 #include <stdio.h>
 
 #include "arm_math.h"
-#include <string.h>
 #include "decode_ft8.h"
 #include "locator_ft8.h"
+#include <string.h>
 
 #include "FT8_GUI.h"
+#include "lcd.h"        //For debug
 #include "lcd_driver.h" //For debug
-#include "lcd.h"		//For debug
 
 static char message[20];
 extern char Station_Call[];
@@ -26,8 +26,7 @@ extern char Locator[];
 
 // int message_state;
 
-void set_message(uint16_t index)
-{
+void set_message(uint16_t index) {
 
 	//	char ctmp[20] = {0};		//Debug
 
@@ -36,13 +35,12 @@ void set_message(uint16_t index)
 	char blank[] = "                   ";
 	char seventy_three[] = "RR73";
 	char seventy_three2[] = "73";
-	//char Reply_State[20];
+	// char Reply_State[20];
 
 	strcpy(message, blank);
 	//		message_state = 0;
 
-	switch (index)
-	{
+	switch (index) {
 
 	case 0:
 		sprintf(message, "%s %s %s", "CQ", Station_Call, Locator);
@@ -62,11 +60,13 @@ void set_message(uint16_t index)
 		break;
 
 	case 4:
-		sprintf(message, "%s %s R%3i", Target_Call, Station_Call, Target_RSL); // Send a raport for the - Answer "CQ" case (diffrence from "2" is the "R")
+		sprintf(message, "%s %s R%3i", Target_Call, Station_Call,
+		        Target_RSL); // Send a raport for the - Answer "CQ" case (diffrence from "2" is the "R")
 		break;
 
 	case 5:
-		sprintf(message, "%s %s %s", Target_Call, Station_Call, seventy_three2); // Send a "73" for the - Answer "CQ" case (diffrence from "3" is the missing "RR")
+		sprintf(message, "%s %s %s", Target_Call, Station_Call,
+		        seventy_three2); // Send a "73" for the - Answer "CQ" case (diffrence from "3" is the missing "RR")
 		break;
 	}
 

@@ -1,54 +1,60 @@
 #ifndef SETTINGS_h
 #define SETTINGS_h
 
-#include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include "functions.h"
 #include "bands.h"
+#include "functions.h"
 #include "hardware.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 
-#define SETT_VERSION 68						  // Settings config version
-#define CALIB_VERSION 51					  // Calibration config version
-#define WIFI_SETTINGS_VERSION 1					  // WiFi config version
+#define SETT_VERSION 68         // Settings config version
+#define CALIB_VERSION 51        // Calibration config version
+#define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
-#define TRX_SAMPLERATE 48000				  // audio stream sampling rate during processing and TX (NOT RX!)
-#define MAX_TX_AMPLITUDE_MULT 0.85f				  // Maximum amplitude when transmitting to FPGA
-#define AGC_CLIPPING 6.0f					  // Limit over target in AGC, dB
-#define TOUCHPAD_DELAY 200					  // Anti-bounce time for pressing the touchpad
-#define AUTOGAIN_TARGET_AMPLITUDE 20000.0f	  // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
-#define AUTOGAIN_MAX_AMPLITUDE 30000.0f		  // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the gain
-#define AUTOGAIN_CORRECTOR_WAITSTEP 5		  // waiting for the averaging of the results when the auto-corrector of the input circuits is running
-#define KEY_HOLD_TIME 500					  // time of long pressing of the keyboard button for triggering, ms
-#define SHOW_LOGO true						  // Show logo on boot (from images.h)
-#define POWERDOWN_TIMEOUT 1000				  // time of pressing the shutdown button, for operation, ms
-#define POWERDOWN_FORCE_TIMEOUT 2000		  // force time
-#define USB_RESTART_TIMEOUT 5000			  // time after which USB restart occurs if there are no packets
-#define SNTP_SYNC_INTERVAL (60 * 5)			  // Time synchronization interval via NTP, sec
-#define SCANNER_NOSIGNAL_TIME 50			  // time to continue sweeping if signal too low
-#define SCANNER_SIGNAL_TIME_FM 5000			  // time to continue sweeping if signal founded for FM
-#define SCANNER_SIGNAL_TIME_OTHER 1000		  // time to continue sweeping if signal founded for SSB
-#define SCANNER_FREQ_STEP_WFM 100000		  // step for freq scanner for WFM
-#define SCANNER_FREQ_STEP_NFM 25000			  // step for freq scanner for NFM
-#define SCANNER_FREQ_STEP_OTHER 500			  // step for freq scanner for SSB
-#define ENCODER_MIN_RATE_ACCELERATION 2.0f	  // encoder enable rounding if lower than value
+#define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
+#define MAX_TX_AMPLITUDE_MULT 0.85f // Maximum amplitude when transmitting to FPGA
+#define AGC_CLIPPING 6.0f           // Limit over target in AGC, dB
+#define TOUCHPAD_DELAY 200          // Anti-bounce time for pressing the touchpad
+#define AUTOGAIN_TARGET_AMPLITUDE \
+	20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
+	         // gain
+#define AUTOGAIN_MAX_AMPLITUDE \
+	30000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
+	         // gain
+#define AUTOGAIN_CORRECTOR_WAITSTEP 5      // waiting for the averaging of the results when the auto-corrector of the input circuits is running
+#define KEY_HOLD_TIME 500                  // time of long pressing of the keyboard button for triggering, ms
+#define SHOW_LOGO true                     // Show logo on boot (from images.h)
+#define POWERDOWN_TIMEOUT 1000             // time of pressing the shutdown button, for operation, ms
+#define POWERDOWN_FORCE_TIMEOUT 2000       // force time
+#define USB_RESTART_TIMEOUT 5000           // time after which USB restart occurs if there are no packets
+#define SNTP_SYNC_INTERVAL (60 * 5)        // Time synchronization interval via NTP, sec
+#define SCANNER_NOSIGNAL_TIME 50           // time to continue sweeping if signal too low
+#define SCANNER_SIGNAL_TIME_FM 5000        // time to continue sweeping if signal founded for FM
+#define SCANNER_SIGNAL_TIME_OTHER 1000     // time to continue sweeping if signal founded for SSB
+#define SCANNER_FREQ_STEP_WFM 100000       // step for freq scanner for WFM
+#define SCANNER_FREQ_STEP_NFM 25000        // step for freq scanner for NFM
+#define SCANNER_FREQ_STEP_OTHER 500        // step for freq scanner for SSB
+#define ENCODER_MIN_RATE_ACCELERATION 2.0f // encoder enable rounding if lower than value
 #define DXCLUSTER_UPDATE_TIME (1000 * 60 * 1) // interval to get cluster info, 1min
-#define NORMAL_SWR_SAVED 1.5f				  // ATU SWR target for saved settings
-#define NORMAL_SWR_TUNE 1.2f				  // ATU SWR target for new tune
-#define IDLE_LCD_BRIGHTNESS 5				  // Low brightness for IDLE mode (dimmer)
-#define CW_ADD_GAIN_IF 30.0f				  // additional IF gain in CW
-#define CW_ADD_GAIN_AF 10.0f					  // additional AF gain in CW
-#define TX_LPF_TIMEOUT (180 * 1000)			  // TX LPF On Timeout, millisec (3 min)
-#define SWR_PROTECTOR_MAX_POWER 20.0f		// drop down to PWR %, if SWR high
+#define NORMAL_SWR_SAVED 1.5f                 // ATU SWR target for saved settings
+#define NORMAL_SWR_TUNE 1.2f                  // ATU SWR target for new tune
+#define IDLE_LCD_BRIGHTNESS 5                 // Low brightness for IDLE mode (dimmer)
+#define CW_ADD_GAIN_IF 30.0f                  // additional IF gain in CW
+#define CW_ADD_GAIN_AF 10.0f                  // additional AF gain in CW
+#define TX_LPF_TIMEOUT (180 * 1000)           // TX LPF On Timeout, millisec (3 min)
+#define SWR_PROTECTOR_MAX_POWER 20.0f         // drop down to PWR %, if SWR high
 
 //#define ADC_BITS 16																						// ADC bit depth
 //#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
 //#define CODEC_BITS 32																					// bitness of data in the audio codec
 //#define FPGA_BUS_FULL_SCALE 65536																		// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
-//#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS_FULL_SCALE)
+//#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude //
+//(FPGA_BUS_FULL_SCALE * FPGA_BUS_FULL_SCALE)
 #define CODEC_BITS_FULL_SCALE 4294967296 // maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
-//#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude // (FPGA_BUS_FULL_SCALE * FPGA_BUS )_FULL_SCALE
-#define USB_DEBUG_ENABLED true	// allow using USB as a console
+//#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude //
+//(FPGA_BUS_FULL_SCALE * FPGA_BUS )_FULL_SCALE
+#define USB_DEBUG_ENABLED true  // allow using USB as a console
 #define SWD_DEBUG_ENABLED false // enable SWD as a console
 #define LCD_DEBUG_ENABLED false // enable LCD as a console
 
@@ -89,145 +95,154 @@ static float32_t ATU_7x7_I_VALS[ATU_MAXLENGTH + 1] = {0.0, 0.05, 0.1, 0.22, 0.45
 static float32_t ATU_7x7_C_VALS[ATU_MAXLENGTH + 1] = {0.0, 10.0, 22.0, 47.0, 100.0, 220.0, 470.0, 1000.0};
 static float32_t ATU_0x0_I_VALS[ATU_MAXLENGTH + 1] = {0.0};
 static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
-#define ATU_MAXPOS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
-#define ATU_I_VALS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_I_VALS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) ? ATU_7x7_I_VALS : ATU_0x0_I_VALS))
-#define ATU_C_VALS ((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_C_VALS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) ? ATU_7x7_C_VALS : ATU_0x0_C_VALS))
+#define ATU_MAXPOS                                                                    \
+	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) \
+	     ? ATU_5x5_MAXPOS                                                               \
+	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
+#define ATU_I_VALS                                                                    \
+	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) \
+	     ? ATU_5x5_I_VALS                                                               \
+	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) ? ATU_7x7_I_VALS : ATU_0x0_I_VALS))
+#define ATU_C_VALS                                                                    \
+	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) \
+	     ? ATU_5x5_C_VALS                                                               \
+	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) ? ATU_7x7_C_VALS : ATU_0x0_C_VALS))
 
 // FRONT PANELS
 #ifdef FRONTPANEL_NONE
-	#define MAX_VOLUME_VALUE 1024.0f
-	#define FUNCBUTTONS_COUNT 1
-	#define FUNCBUTTONS_ON_PAGE 1
-	#define FUNCBUTTONS_PAGES 1
-	static char ota_config_frontpanel[] = "NONE";
+#define MAX_VOLUME_VALUE 1024.0f
+#define FUNCBUTTONS_COUNT 1
+#define FUNCBUTTONS_ON_PAGE 1
+#define FUNCBUTTONS_PAGES 1
+static char ota_config_frontpanel[] = "NONE";
 #endif
 
 #ifdef FRONTPANEL_SMALL_V1
-	#define HRDW_MCP3008_1 true
-	#define HRDW_MCP3008_2 true
-	#define HRDW_MCP3008_3 true
-	#define MAX_VOLUME_VALUE 1024.0f
-	#define FUNCBUTTONS_COUNT 1
-	#define FUNCBUTTONS_ON_PAGE 1
-	#define FUNCBUTTONS_PAGES 1
-	static char ota_config_frontpanel[] = "SMALL";
+#define HRDW_MCP3008_1 true
+#define HRDW_MCP3008_2 true
+#define HRDW_MCP3008_3 true
+#define MAX_VOLUME_VALUE 1024.0f
+#define FUNCBUTTONS_COUNT 1
+#define FUNCBUTTONS_ON_PAGE 1
+#define FUNCBUTTONS_PAGES 1
+static char ota_config_frontpanel[] = "SMALL";
 #endif
 
 #ifdef FRONTPANEL_LITE
-	#define HRDW_MCP3008_1 true
-	#define HRDW_HAS_FUNCBUTTONS true
-	#define MAX_VOLUME_VALUE 100.0f
-	#define FUNCBUTTONS_COUNT 30
-	#define FUNCBUTTONS_ON_PAGE 5
-	#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
-	static char ota_config_frontpanel[] = "LITE";
+#define HRDW_MCP3008_1 true
+#define HRDW_HAS_FUNCBUTTONS true
+#define MAX_VOLUME_VALUE 100.0f
+#define FUNCBUTTONS_COUNT 30
+#define FUNCBUTTONS_ON_PAGE 5
+#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+static char ota_config_frontpanel[] = "LITE";
 #endif
 
 #ifdef FRONTPANEL_BIG_V1
-	#define HRDW_MCP3008_1 true
-	#define HRDW_HAS_FUNCBUTTONS true
-	#define MAX_VOLUME_VALUE 1024.0f
-	#define FUNCBUTTONS_COUNT (32+4)
-	#define FUNCBUTTONS_ON_PAGE 8
-	#define FUNCBUTTONS_PAGES 4
-	static char ota_config_frontpanel[] = "BIG";
+#define HRDW_MCP3008_1 true
+#define HRDW_HAS_FUNCBUTTONS true
+#define MAX_VOLUME_VALUE 1024.0f
+#define FUNCBUTTONS_COUNT (32 + 4)
+#define FUNCBUTTONS_ON_PAGE 8
+#define FUNCBUTTONS_PAGES 4
+static char ota_config_frontpanel[] = "BIG";
 #endif
 
 #ifdef FRONTPANEL_WF_100D
-	#define HRDW_MCP3008_1 true
-	#define HRDW_HAS_FUNCBUTTONS true
-	#define MAX_VOLUME_VALUE 1024.0f
-	#define FUNCBUTTONS_COUNT (27+6)
-	#define FUNCBUTTONS_ON_PAGE 9
-	#define FUNCBUTTONS_PAGES 3
-	static char ota_config_frontpanel[] = "WF_100D";
+#define HRDW_MCP3008_1 true
+#define HRDW_HAS_FUNCBUTTONS true
+#define MAX_VOLUME_VALUE 1024.0f
+#define FUNCBUTTONS_COUNT (27 + 6)
+#define FUNCBUTTONS_ON_PAGE 9
+#define FUNCBUTTONS_PAGES 3
+static char ota_config_frontpanel[] = "WF_100D";
 #endif
 
 #ifdef FRONTPANEL_X1
-	#define HRDW_MCP3008_1 true
-	#define HRDW_HAS_FUNCBUTTONS true
-	#define MAX_VOLUME_VALUE 100.0f
-	#define FUNCBUTTONS_COUNT 32
-	#define FUNCBUTTONS_ON_PAGE 4
-	#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
-	static char ota_config_frontpanel[] = "X1";
+#define HRDW_MCP3008_1 true
+#define HRDW_HAS_FUNCBUTTONS true
+#define MAX_VOLUME_VALUE 100.0f
+#define FUNCBUTTONS_COUNT 32
+#define FUNCBUTTONS_ON_PAGE 4
+#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+static char ota_config_frontpanel[] = "X1";
 #endif
 
 #ifdef FRONTPANEL_MINI
-	#define HRDW_HAS_FUNCBUTTONS true
-	#define MAX_VOLUME_VALUE 100.0f
-	#define FUNCBUTTONS_COUNT 32
-	#define FUNCBUTTONS_ON_PAGE 4
-	#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
-	static char ota_config_frontpanel[] = "Mini";
+#define HRDW_HAS_FUNCBUTTONS true
+#define MAX_VOLUME_VALUE 100.0f
+#define FUNCBUTTONS_COUNT 32
+#define FUNCBUTTONS_ON_PAGE 4
+#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+static char ota_config_frontpanel[] = "Mini";
 #endif
-	
+
 // LCDs
 #if defined(LCD_ILI9481)
 static char ota_config_lcd[] = "ILI9481";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
 #endif
-		#if defined(LCD_ILI9481_IPS)
+#endif
+#if defined(LCD_ILI9481_IPS)
 static char ota_config_lcd[] = "ILI9481_IPS";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
 #endif
 #if defined(LCD_HX8357B)
 static char ota_config_lcd[] = "HX8357B";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
 #endif
 #if defined(LCD_HX8357C) && !defined(LCD_SLOW)
 static char ota_config_lcd[] = "HX8357C";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
 #endif
 #if defined(LCD_HX8357C) && defined(LCD_SLOW)
 static char ota_config_lcd[] = "HX8357C-SLOW";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
 #endif
 #if defined(LCD_ILI9486)
 static char ota_config_lcd[] = "ILI9486";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
 #endif
 #if defined(LCD_ST7796S)
 static char ota_config_lcd[] = "ST7796S";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
 #endif
 #if defined(LCD_ILI9341)
 static char ota_config_lcd[] = "ILI9341";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT false 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT false
+#endif
 #endif
 #if defined(LCD_ST7735S)
 static char ota_config_lcd[] = "ST7735S";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT false 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT false
+#endif
 #endif
 #if defined(LCD_RA8875)
 static char ota_config_lcd[] = "RA8875";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
 #endif
 #if defined(LCD_NONE)
 static char ota_config_lcd[] = "NONE";
-	#ifdef STM32H743xx 
-		#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
 #endif
 
 // TOUCHPADs
@@ -237,8 +252,7 @@ static char ota_config_touchpad[] = "GT911";
 static char ota_config_touchpad[] = "NONE";
 #endif
 
-typedef enum
-{
+typedef enum {
 	TRX_MODE_LSB,
 	TRX_MODE_USB,
 	TRX_MODE_CW,
@@ -254,8 +268,7 @@ typedef enum
 } TRX_MODE;
 #define TRX_MODE_COUNT 12
 
-typedef struct
-{
+typedef struct {
 	uint64_t Freq;
 	uint64_t RealRXFreq;
 	uint_fast16_t HPF_RX_Filter_Width;
@@ -274,31 +287,27 @@ typedef struct
 
 #if HRDW_HAS_DUAL_RX
 // dual receiver operating mode
-typedef enum
-{
+typedef enum {
 	VFO_A_AND_B,
 	VFO_A_PLUS_B,
 } DUAL_RX_TYPE;
 #endif
 
 // CAT type
-typedef enum
-{
+typedef enum {
 	CAT_FT450,
 	CAT_TS2000,
 } CAT_TYPE;
 
 // trx input
-typedef enum
-{
+typedef enum {
 	TRX_INPUT_MIC,
 	TRX_INPUT_LINE,
 	TRX_INPUT_USB,
 } TRX_INPUT_TYPE;
 
 // debug level
-typedef enum
-{
+typedef enum {
 	TRX_DEBUG_OFF,
 	TRX_DEBUG_SYSTEM,
 	TRX_DEBUG_WIFI,
@@ -308,8 +317,7 @@ typedef enum
 } TRX_DEBUG_TYPE;
 
 // IQ SAMPLERATE
-typedef enum
-{
+typedef enum {
 	TRX_SAMPLERATE_K48,
 	TRX_SAMPLERATE_K96,
 	TRX_SAMPLERATE_K192,
@@ -317,8 +325,7 @@ typedef enum
 } TRX_IQ_SAMPLERATE_VALUE;
 
 // RF UNIT TYPE
-typedef enum
-{
+typedef enum {
 	RF_UNIT_QRP,
 	RF_UNIT_BIG,
 	RF_UNIT_SPLIT,
@@ -327,23 +334,20 @@ typedef enum
 } TRX_RF_UNIT_TYPE;
 
 // TANGENT TYPE
-typedef enum
-{
+typedef enum {
 	TANGENT_MH36,
 	TANGENT_MH48,
 } TRX_TANGENT_TYPE;
 
 // CW PTT TYPE
-typedef enum
-{
+typedef enum {
 	KEY_PTT,
 	EXT_PTT,
 	KEY_AND_EXT_PTT,
 } CW_PTT_TYPE;
 
 // ENC2 FUNC MODE
-typedef enum
-{
+typedef enum {
 	ENC_FUNC_PAGER,
 	ENC_FUNC_FAST_STEP,
 	ENC_FUNC_SET_WPM,
@@ -357,9 +361,8 @@ typedef enum
 } ENC2_FUNC_MODE;
 
 // Save settings by band
-typedef struct
-{
-  uint64_t Freq;
+typedef struct {
+	uint64_t Freq;
 	float32_t ATT_DB;
 	uint8_t Mode;
 	uint8_t DNR_Type;
@@ -376,11 +379,10 @@ typedef struct
 	bool AGC;
 	bool SQL;
 	bool BEST_ATU_T;
-  TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
+	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
 
-extern struct TRX_SETTINGS
-{
+extern struct TRX_SETTINGS {
 	uint8_t flash_id; // version check
 	bool NeedGoToBootloader;
 	// TRX
@@ -408,17 +410,17 @@ extern struct TRX_SETTINGS
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_FM;
 	TRX_INPUT_TYPE InputType_MAIN;
 	TRX_INPUT_TYPE InputType_DIGI;
-	#if HRDW_HAS_DUAL_RX
+#if HRDW_HAS_DUAL_RX
 	DUAL_RX_TYPE Dual_RX_Type;
 	bool Dual_RX;
-	#endif
+#endif
 	bool selected_vfo; // false - A; true - B
 	bool Fast;
 	bool LNA;
 	bool ATT;
 	bool RF_Filters;
 	bool ANT_selected; // false - 1, true - 2
-	bool ANT_mode; // false - RX=TX, true - 1RX 2TX
+	bool ANT_mode;     // false - RX=TX, true - 1RX 2TX
 	bool ChannelMode;
 	bool RIT_Enabled;
 	bool XIT_Enabled;
@@ -592,12 +594,11 @@ extern struct TRX_SETTINGS
 	// Memory
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	//
-	uint8_t csum;	// check sum
+	uint8_t csum;   // check sum
 	uint8_t ENDBit; // end bit
 } TRX;
 
-extern struct TRX_CALIBRATE
-{
+extern struct TRX_CALIBRATE {
 	uint8_t flash_id; // version check
 
 	float32_t SWR_FWD_Calibration_HF;
@@ -616,7 +617,7 @@ extern struct TRX_CALIBRATE
 	uint32_t RFU_LPF_END;
 	uint32_t RFU_HPF_START;
 	uint32_t RFU_BPF_0_START; // UHF
-	uint32_t RFU_BPF_0_END;	  // UHF
+	uint32_t RFU_BPF_0_END;   // UHF
 	uint32_t RFU_BPF_1_START;
 	uint32_t RFU_BPF_1_END;
 	uint32_t RFU_BPF_2_START;
@@ -737,14 +738,13 @@ extern struct TRX_CALIBRATE
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 	uint32_t BAND_MEMORIES[BANDS_COUNT][BANDS_MEMORIES_COUNT];
 
-	uint8_t csum;	// check sum
+	uint8_t csum;   // check sum
 	uint8_t ENDBit; // end bit
 } CALIBRATE;
 
-extern struct TRX_WIFI
-{
+extern struct TRX_WIFI {
 	uint8_t flash_id; // version check
-	
+
 	// WIFI
 	int8_t Timezone;
 	bool Enabled;
@@ -755,8 +755,8 @@ extern struct TRX_WIFI
 	char Password_2[MAX_WIFIPASS_LENGTH];
 	char AP_3[MAX_WIFIPASS_LENGTH];
 	char Password_3[MAX_WIFIPASS_LENGTH];
-	
-	uint8_t csum;	// check sum
+
+	uint8_t csum;   // check sum
 	uint8_t ENDBit; // end bit
 } WIFI;
 

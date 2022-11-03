@@ -1,23 +1,23 @@
 #ifndef WIRE_h
 #define WIRE_h
 
+#include "hardware.h"
 #include "main.h"
 #include "touchpad.h"
-#include "hardware.h"
 #include <stdbool.h>
 
 #define WIRE_BUFSIZ 201
 
 /* return codes from endTransmission() */
-#define SUCCESS 0	/* transmission was successful */
-#define EDATA 1		/* too much data */
+#define SUCCESS 0   /* transmission was successful */
+#define EDATA 1     /* too much data */
 #define ENACKADDR 2 /* received nack on transmit of address */
 #define ENACKTRNS 3 /* received nack on transmit of data */
-#define EOTHER 4	/* other error */
+#define EOTHER 4    /* other error */
 
 #define I2C_WRITE 0
 #define I2C_READ 1
-#define I2C_DELAY                                     \
+#define I2C_DELAY                                   \
 	for (uint32_t wait_i = 0; wait_i < 400; wait_i++) \
 		__asm("nop");
 #define I2C_OUTPUT_MODE GPIO_MODE_OUTPUT_OD
@@ -25,15 +25,14 @@
 #define I2C_PULLS GPIO_PULLUP
 #define I2C_GPIO_SPEED GPIO_SPEED_FREQ_LOW
 
-typedef struct
-{
+typedef struct {
 	GPIO_TypeDef *SDA_PORT;
 	uint16_t SDA_PIN;
 	GPIO_TypeDef *SCK_PORT;
 	uint16_t SCK_PIN;
-	uint8_t i2c_tx_addr;			 /* address transmitting to */
+	uint8_t i2c_tx_addr;             /* address transmitting to */
 	uint8_t i2c_tx_buf[WIRE_BUFSIZ]; /* transmit buffer */
-	uint8_t i2c_tx_buf_idx;			 /* next idx available in tx_buf, -1 overflow */
+	uint8_t i2c_tx_buf_idx;          /* next idx available in tx_buf, -1 overflow */
 	bool i2c_tx_buf_overflow;
 } I2C_DEVICE;
 

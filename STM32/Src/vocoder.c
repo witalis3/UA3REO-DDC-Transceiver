@@ -2,22 +2,20 @@
 
 #if HRDW_HAS_SD
 
-#include "vocoder.h"
 #include "functions.h"
 #include "sd.h"
+#include "vocoder.h"
 
 IRAM2 int16_t VOCODER_Buffer[SIZE_ADPCM_BLOCK] = {0};
 uint16_t VOCODER_Buffer_Index = 0;
 void *ADPCM_cnxt = NULL;
 
-void ADPCM_Init(void)
-{
+void ADPCM_Init(void) {
 	int32_t average_deltas[2] = {0, 0};
 	ADPCM_cnxt = adpcm_create_context(1, 2, NOISE_SHAPING_DYNAMIC, average_deltas); // num_channels, lookahead, noise_shaping, average_deltas
 }
 
-void VOCODER_Process(void)
-{
+void VOCODER_Process(void) {
 	// encode audio
 	uint32_t outbuff_size = 0;
 	if (!SD_workbuffer_current)
@@ -26,21 +24,17 @@ void VOCODER_Process(void)
 		adpcm_encode_block(ADPCM_cnxt, (uint8_t *)&SD_workbuffer_B[SD_RecordBufferIndex], &outbuff_size, VOCODER_Buffer, SIZE_ADPCM_BLOCK);
 	SD_RecordBufferIndex += SIZE_ADPCM_COMPRESSED_BLOCK; // outbuff_size;
 
-	if (SD_RecordBufferIndex == FF_MAX_SS)
-	{
+	if (SD_RecordBufferIndex == FF_MAX_SS) {
 		SD_RecordBufferIndex = 0;
 		SD_workbuffer_current = !SD_workbuffer_current;
 		SD_doCommand(SDCOMM_PROCESS_RECORD, false);
 	}
 }
 
-bool VODECODER_Process(void)
-{
+bool VODECODER_Process(void) {
 	static uint16_t VOCODER_PLAYER_SD_BUFFER_INDEX = 0;
-	if (SD_Play_Buffer_Ready || VOCODER_PLAYER_SD_BUFFER_INDEX > 0)
-	{
-		if (VOCODER_PLAYER_SD_BUFFER_INDEX == 0)
-		{
+	if (SD_Play_Buffer_Ready || VOCODER_PLAYER_SD_BUFFER_INDEX > 0) {
+		if (VOCODER_PLAYER_SD_BUFFER_INDEX == 0) {
 			// println("Readed from SD: ", SD_Play_Buffer_Size);
 			SD_workbuffer_current = !SD_workbuffer_current;
 			SD_Play_Buffer_Ready = false;
@@ -54,8 +48,7 @@ bool VODECODER_Process(void)
 
 		VOCODER_PLAYER_SD_BUFFER_INDEX += SIZE_ADPCM_COMPRESSED_BLOCK;
 
-		if (VOCODER_PLAYER_SD_BUFFER_INDEX >= FF_MAX_SS)
-		{
+		if (VOCODER_PLAYER_SD_BUFFER_INDEX >= FF_MAX_SS) {
 			VOCODER_PLAYER_SD_BUFFER_INDEX = 0;
 		}
 		return true;

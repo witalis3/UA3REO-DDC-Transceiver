@@ -26,102 +26,101 @@
 #if HRDW_HAS_SD
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_ua3reo.h"
 
-  /* USER CODE BEGIN INCLUDE */
+/* USER CODE BEGIN INCLUDE */
 
-  /* USER CODE END INCLUDE */
+/* USER CODE END INCLUDE */
 
-  /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
-   * @brief For Usb device.
-   * @{
-   */
+/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+ * @brief For Usb device.
+ * @{
+ */
 
-  /** @defgroup USBD_STORAGE USBD_STORAGE
-   * @brief Header file for the usb_storage_if.c file
-   * @{
-   */
+/** @defgroup USBD_STORAGE USBD_STORAGE
+ * @brief Header file for the usb_storage_if.c file
+ * @{
+ */
 
-  /** @defgroup USBD_STORAGE_Exported_Defines USBD_STORAGE_Exported_Defines
-   * @brief Defines.
-   * @{
-   */
+/** @defgroup USBD_STORAGE_Exported_Defines USBD_STORAGE_Exported_Defines
+ * @brief Defines.
+ * @{
+ */
 
-  /* USER CODE BEGIN EXPORTED_DEFINES */
+/* USER CODE BEGIN EXPORTED_DEFINES */
 
-  /* USER CODE END EXPORTED_DEFINES */
+/* USER CODE END EXPORTED_DEFINES */
 
-  /**
-   * @}
-   */
+/**
+ * @}
+ */
 
-  /** @defgroup USBD_STORAGE_Exported_Types USBD_STORAGE_Exported_Types
-   * @brief Types.
-   * @{
-   */
+/** @defgroup USBD_STORAGE_Exported_Types USBD_STORAGE_Exported_Types
+ * @brief Types.
+ * @{
+ */
 
-  /* USER CODE BEGIN EXPORTED_TYPES */
+/* USER CODE BEGIN EXPORTED_TYPES */
 
-  /* USER CODE END EXPORTED_TYPES */
+/* USER CODE END EXPORTED_TYPES */
 
-  /**
-   * @}
-   */
+/**
+ * @}
+ */
 
-  /** @defgroup USBD_STORAGE_Exported_Macros USBD_STORAGE_Exported_Macros
-   * @brief Aliases.
-   * @{
-   */
+/** @defgroup USBD_STORAGE_Exported_Macros USBD_STORAGE_Exported_Macros
+ * @brief Aliases.
+ * @{
+ */
 
-  /* USER CODE BEGIN EXPORTED_MACRO */
+/* USER CODE BEGIN EXPORTED_MACRO */
 
-  /* USER CODE END EXPORTED_MACRO */
+/* USER CODE END EXPORTED_MACRO */
 
-  /**
-   * @}
-   */
+/**
+ * @}
+ */
 
-  /** @defgroup USBD_STORAGE_Exported_Variables USBD_STORAGE_Exported_Variables
-   * @brief Public variables.
-   * @{
-   */
+/** @defgroup USBD_STORAGE_Exported_Variables USBD_STORAGE_Exported_Variables
+ * @brief Public variables.
+ * @{
+ */
 
-  /** STORAGE Interface callback. */
-  extern USBD_StorageTypeDef USBD_Storage_Interface_fops_FS;
+/** STORAGE Interface callback. */
+extern USBD_StorageTypeDef USBD_Storage_Interface_fops_FS;
 
-  /* USER CODE BEGIN EXPORTED_VARIABLES */
+/* USER CODE BEGIN EXPORTED_VARIABLES */
 
-  /* USER CODE END EXPORTED_VARIABLES */
+/* USER CODE END EXPORTED_VARIABLES */
 
-  /**
-   * @}
-   */
+/**
+ * @}
+ */
 
-  /** @defgroup USBD_STORAGE_Exported_FunctionsPrototype USBD_STORAGE_Exported_FunctionsPrototype
-   * @brief Public functions declaration.
-   * @{
-   */
+/** @defgroup USBD_STORAGE_Exported_FunctionsPrototype USBD_STORAGE_Exported_FunctionsPrototype
+ * @brief Public functions declaration.
+ * @{
+ */
 
-  /* USER CODE BEGIN EXPORTED_FUNCTIONS */
+/* USER CODE BEGIN EXPORTED_FUNCTIONS */
 
-  /* USER CODE END EXPORTED_FUNCTIONS */
+/* USER CODE END EXPORTED_FUNCTIONS */
 
-  /**
-   * @}
-   */
+/**
+ * @}
+ */
 
-  /**
-   * @}
-   */
+/**
+ * @}
+ */
 
-  /**
-   * @}
-   */
+/**
+ * @}
+ */
 
 #ifdef __cplusplus
 }
