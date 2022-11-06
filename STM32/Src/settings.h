@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 69         // Settings config version
+#define SETT_VERSION 70         // Settings config version
 #define CALIB_VERSION 51        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
@@ -470,6 +470,7 @@ extern struct TRX_SETTINGS {
 	uint8_t DNR_AVERAGE;
 	uint8_t DNR_MINIMAL;
 	uint8_t VAD_THRESHOLD;
+	uint8_t NOISE_BLANKER_THRESHOLD;
 	uint8_t RX_AGC_SSB_speed;
 	uint8_t RX_AGC_CW_speed;
 	uint8_t RX_AGC_Max_gain;

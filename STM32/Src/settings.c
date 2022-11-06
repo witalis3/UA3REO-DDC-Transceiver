@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.3.0";
+const char version_string[19] = "6.3.0-dev";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -224,9 +224,10 @@ void LoadSettings(bool clear) {
 		TRX.NOISE_BLANKER = false; // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = false;  // Spectral AGC mode
 #else
-		TRX.NOISE_BLANKER = false;        // suppressor of short impulse noise NOISE BLANKER
+		TRX.NOISE_BLANKER = true;        // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;          // Spectral AGC mode
 #endif
+		TRX.NOISE_BLANKER_THRESHOLD = 7;	// threshold for noise blanker
 		TRX.TX_CESSB = false;              // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 3.0f;     // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;           // AGC receive rate on SSB

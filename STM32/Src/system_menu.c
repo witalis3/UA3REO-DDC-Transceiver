@@ -84,6 +84,7 @@ static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_SSB(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P2_SSB(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P3_SSB(int8_t direction);
@@ -566,7 +567,6 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
 #endif
     {"IF Gain, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
     {"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_AUDIO_DNR, {"OFF", "DNR1", "DNR2"}},
-    {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_AUDIO_NOISE_BLANKER},
     {"AGC", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_shadow, SYSMENU_HANDL_AUDIO_AGC},
     {"AGC Gain target, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
     {"Mic Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_GAIN_DB, SYSMENU_HANDL_AUDIO_MIC_Gain},
@@ -578,6 +578,8 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
 #endif
     {"DNR Average", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_AUDIO_DNR_AVERAGE},
     {"DNR Minimal", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_HANDL_AUDIO_DNR_MINMAL},
+		{"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_AUDIO_NOISE_BLANKER},
+		{"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD},
     {"SSB HPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_RX_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass},
     {"SSB HPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_TX_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass},
     {"SSB LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass},
@@ -2006,6 +2008,14 @@ static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction) {
 		TRX.DNR_MINIMAL = 1;
 	if (TRX.DNR_MINIMAL > 100)
 		TRX.DNR_MINIMAL = 100;
+}
+
+static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD(int8_t direction) {
+	TRX.NOISE_BLANKER_THRESHOLD += direction;
+	if (TRX.NOISE_BLANKER_THRESHOLD < 1)
+		TRX.NOISE_BLANKER_THRESHOLD = 1;
+	if (TRX.NOISE_BLANKER_THRESHOLD > 20)
+		TRX.NOISE_BLANKER_THRESHOLD = 20;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_SSB(int8_t direction) {

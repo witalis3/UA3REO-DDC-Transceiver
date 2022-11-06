@@ -3,20 +3,19 @@
 // https://github.com/df8oe/UHSDR/wiki/Noise-blanker
 
 // Private variables
-static NB_Instance NB_RX1 = {0};
+// static NB_Instance NB_RX1 = {0};
 #if HRDW_HAS_DUAL_RX
-SRAM static NB_Instance NB_RX2 = {0};
+// SRAM static NB_Instance NB_RX2 = {0};
 #endif
 
 // start NB for the data block
 void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
-	NB_Instance *instance = &NB_RX1;
+	/*NB_Instance *instance = &NB_RX1;
 #if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
 		instance = &NB_RX2;
-#endif
+#endif*/
 
-	/*
 	#define AUDIO_RX_NB_DELAY_BUFFER_ITEMS 120
 	#define AUDIO_RX_NB_DELAY_BUFFER_SIZE (AUDIO_RX_NB_DELAY_BUFFER_ITEMS*2)
 	#define nb_sig_filt 0.005f
@@ -25,38 +24,48 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	static float32_t	delay_buf[AUDIO_RX_NB_DELAY_BUFFER_SIZE];
 	static uint16_t	delbuf_inptr = 0, delbuf_outptr = 2;
 	static uint8_t	nb_delay = 0;
-	static float32_t	nb_agc = 0;
-	bool has_blank = false;
+	static float32_t nb_agc = 0;
+	static float32_t last_normal_value = 0;
+	static float32_t muting_avg = 1.0f;
+	
+	// bool has_blank = false;
 	for(uint64_t i = 0; i < NB_BLOCK_SIZE; i++)	 		// Noise blanker function
 	{
-	    float32_t sig = fabsf(buffer[i]);		// get signal amplitude.  We need only look at one of the two audio channels since they will be the
-	same. delay_buf[delbuf_inptr++] = buffer[i];	    // copy first byte into delay buffer
+		float32_t sig = fabsf(buffer[i]);		// get signal amplitude.  We need only look at one of the two audio channels since they will be the same. 
+		delay_buf[delbuf_inptr++] = buffer[i];	    // copy first byte into delay buffer
 
-	    nb_agc = (nb_agc_filt * nb_agc) + (nb_sig_filt * sig);		// IIR-filtered "AGC" of current overall signal level
+		nb_agc = (nb_agc_filt * nb_agc) + (nb_sig_filt * sig);		// IIR-filtered "AGC" of current overall signal level
 
-	    if(sig > (nb_agc * 7) && (nb_delay == 0))	 	// did a pulse exceed the threshold?
-	    {
-	      nb_delay = AUDIO_RX_NB_DELAY_BUFFER_ITEMS;		// yes - set the blanking duration counter
-	    }
+		if(sig > (nb_agc * TRX.NOISE_BLANKER_THRESHOLD))	 	// did a pulse exceed the threshold? // && (nb_delay == 0)
+		{
+			nb_delay = AUDIO_RX_NB_DELAY_BUFFER_ITEMS;		// yes - set the blanking duration counter
+		}
 
-	    if(!nb_delay)	 		// blank counter not active
-	    {
-	      buffer[i] = delay_buf[delbuf_outptr++];		// pass through delayed audio, unchanged
-	    }
-	    else	 	// It is within the blanking pulse period
-	    {
-	      has_blank = true;
-	      buffer[i] = 0; 				// set the audio buffer to "mute" during the blanking period
-	      nb_delay--;						// count down the number of samples that we are to blank
-	    }
+		if(!nb_delay)	 		// blank counter not active
+		{
+			buffer[i] = delay_buf[delbuf_outptr++] * muting_avg;		// pass through delayed audio, unchanged
+			last_normal_value = buffer[i];
+			
+			if(muting_avg < 1.0f)
+				muting_avg += 0.05f;
+			if(muting_avg > 1.0f)
+				muting_avg = 1.0f;
+		}
+		else	 	// It is within the blanking pulse period
+		{
+			// has_blank = true;
+			buffer[i] = last_normal_value * muting_avg; 				// set the audio buffer to "mute" during the blanking period
+			muting_avg *= 0.95f;
+			nb_delay--;						// count down the number of samples that we are to blank
+		}
 
-	    // RINGBUFFER
-	    delbuf_outptr %= AUDIO_RX_NB_DELAY_BUFFER_SIZE;
-	    delbuf_inptr %= AUDIO_RX_NB_DELAY_BUFFER_SIZE;
+		// RINGBUFFER
+		delbuf_outptr %= AUDIO_RX_NB_DELAY_BUFFER_SIZE;
+		delbuf_inptr %= AUDIO_RX_NB_DELAY_BUFFER_SIZE;
 	}
-	if(has_blank) print("b");
-	*/
+	// if(has_blank) print("b");
 
+	/*
 	dma_memcpy(&instance->NR_InputBuffer[instance->NR_InputBuffer_index * NB_BLOCK_SIZE], buffer, NB_BLOCK_SIZE * 4);
 	instance->NR_InputBuffer_index++;
 	if (instance->NR_InputBuffer_index == (NB_FIR_SIZE / NB_BLOCK_SIZE)) // input buffer ready
@@ -210,4 +219,5 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 		dma_memcpy(buffer, &instance->NR_OutputBuffer[instance->NR_OutputBuffer_index * NB_BLOCK_SIZE], NB_BLOCK_SIZE * 4);
 	}
 	instance->NR_OutputBuffer_index++;
+	*/
 }
