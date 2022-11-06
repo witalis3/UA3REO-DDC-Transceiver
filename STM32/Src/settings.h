@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 68         // Settings config version
+#define SETT_VERSION 69         // Settings config version
 #define CALIB_VERSION 51        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 

@@ -2087,7 +2087,8 @@ void BUTTONHANDLER_VLT(uint32_t parameter) {
 #endif
 }
 
-void BUTTONHANDLER_SNAP(uint32_t parameter) { SNAP_DoSnap(false); }
+void BUTTONHANDLER_SNAP_LEFT(uint32_t parameter) { SNAP_DoSnap(false, 1); }
+void BUTTONHANDLER_SNAP_RIGHT(uint32_t parameter) { SNAP_DoSnap(false, 2); }
 
 void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter) {
 	TRX.Auto_Snap = !TRX.Auto_Snap;

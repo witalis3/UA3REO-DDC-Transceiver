@@ -440,7 +440,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 
 	// Auto Snap
 	if (TRX.Auto_Snap) {
-		SNAP_DoSnap(true);
+		SNAP_DoSnap(true, 0);
 	}
 
 	CPULOAD_Calc(); // Calculate CPU load

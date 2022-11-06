@@ -109,7 +109,8 @@ extern void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter);
 extern void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter);
 extern void BUTTONHANDLER_IF(uint32_t parameter);
 extern void BUTTONHANDLER_VLT(uint32_t parameter);
-extern void BUTTONHANDLER_SNAP(uint32_t parameter);
+extern void BUTTONHANDLER_SNAP_LEFT(uint32_t parameter);
+extern void BUTTONHANDLER_SNAP_RIGHT(uint32_t parameter);
 extern void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter);
 extern void BUTTONHANDLER_CESSB(uint32_t parameter);
 
