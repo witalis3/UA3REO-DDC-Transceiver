@@ -229,7 +229,6 @@ typedef const struct {
 	const uint16_t BOTTOM_BUTTONS_BLOCK_HEIGHT;
 	const uint16_t BOTTOM_BUTTONS_BLOCK_TOP;
 	const uint16_t BOTTOM_BUTTONS_COUNT;
-	const uint16_t BOTTOM_BUTTONS_ARROWS_WIDTH;
 	const uint16_t BOTTOM_BUTTONS_ONE_WIDTH;
 	// FFT and waterfall
 	const uint16_t FFT_HEIGHT_STYLE1;
