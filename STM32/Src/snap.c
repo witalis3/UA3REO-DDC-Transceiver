@@ -17,7 +17,7 @@ void SNAP_FillBuffer(float32_t *buff) {
 	if (!SNAP_need_buffer)
 		return;
 
-	if (CurrentVFO->Mode != TRX_MODE_CW && CurrentVFO->Mode != TRX_MODE_NFM) {
+	if (CurrentVFO->Mode == TRX_MODE_LOOPBACK || CurrentVFO->Mode == TRX_MODE_WFM || CurrentVFO->Mode == TRX_MODE_IQ) {
 		SNAP_buffer_avg_index = 0;
 		SNAP_need_buffer = false;
 		return;
@@ -63,27 +63,24 @@ static void SNAP_Process() {
 		bandwidth_bin_start = (FFT_SIZE / 2) - (bins_in_bandwidth / 2);
 		bandwidth_bin_end = (FFT_SIZE / 2) + (bins_in_bandwidth / 2);
 	}
-	if (SNAP_process_mode == 1) { // left
-		bandwidth_bin_start = (FFT_SIZE / 2) - (bins_in_bandwidth / 2);
-		bandwidth_bin_end = (FFT_SIZE / 2) - 1;
-	}
-	if (SNAP_process_mode == 2) { // right
-		bandwidth_bin_start = (FFT_SIZE / 2) + 1;
-		bandwidth_bin_end = (FFT_SIZE / 2) + (bins_in_bandwidth / 2);
-	}
 	uint32_t bandwidth_bin_count = bandwidth_bin_end - bandwidth_bin_start;
 
 	uint64_t fft_freq_start = (float64_t)CurrentVFO->Freq - (float64_t)FFT_current_spectrum_width_hz / 2.0f;
 	float32_t maxAmplValue;
 	uint32_t maxAmplIndex;
+	float32_t signal_snr = 0;
+	uint64_t target_freq = 0;
 
 	// search in BW
-	arm_max_f32(&SNAP_buffer[bandwidth_bin_start], bandwidth_bin_count, &maxAmplValue, &maxAmplIndex);
-	float32_t signal_snr = rate2dbP(maxAmplValue / noise_level);
-	uint64_t target_freq = fft_freq_start + ((bandwidth_bin_start + maxAmplIndex) * hz_in_bin);
+	if (SNAP_process_mode == 0) { // unidirect
+		arm_max_f32(&SNAP_buffer[bandwidth_bin_start], bandwidth_bin_count, &maxAmplValue, &maxAmplIndex);
+		signal_snr = rate2dbP(maxAmplValue / noise_level);
+		target_freq = fft_freq_start + ((bandwidth_bin_start + maxAmplIndex) * hz_in_bin);
+	}
 
+	// search in all FFT (nearest)
 	if (signal_snr < SNAP_BW_SNR_THRESHOLD && !SNAP_process_from_auto) {
-		// search in all FFT (nearest)
+		
 		if (SNAP_process_mode == 0) { // unidirect
 			for (int32_t allfft_bin_start = bandwidth_bin_start; allfft_bin_start > 0; allfft_bin_start -= bins_in_bandwidth / 2) {
 				uint32_t allfft_bin_end = bandwidth_bin_end + (bandwidth_bin_start - allfft_bin_start);
@@ -98,8 +95,9 @@ static void SNAP_Process() {
 				}
 			}
 		}
+		
 		if (SNAP_process_mode == 1) { // left
-			uint32_t allfft_bin_end = bandwidth_bin_start;
+			uint32_t allfft_bin_end = (FFT_SIZE / 2) - (bins_in_bandwidth / 2);
 			
 			for (int32_t allfft_bin_start = allfft_bin_end - 1; allfft_bin_start > 0; allfft_bin_start -= bins_in_bandwidth / 2) {
 				uint32_t allfft_bin_count = allfft_bin_end - allfft_bin_start;
@@ -113,8 +111,9 @@ static void SNAP_Process() {
 				}
 			}
 		}
+		
 		if (SNAP_process_mode == 2) { // right
-			uint32_t allfft_bin_start = bandwidth_bin_end;
+			uint32_t allfft_bin_start = (FFT_SIZE / 2) + (bins_in_bandwidth / 2);
 			
 			for (int32_t allfft_bin_end = allfft_bin_start + 1; allfft_bin_end < FFT_SIZE; allfft_bin_end += bins_in_bandwidth / 2) {
 				uint32_t allfft_bin_count = allfft_bin_end - allfft_bin_start;
