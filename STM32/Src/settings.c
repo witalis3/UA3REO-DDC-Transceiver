@@ -162,7 +162,7 @@ void LoadSettings(bool clear) {
 #ifdef FRONTPANEL_X1
 		TRX.AutoGain = true; // auto-control preamp and attenuator
 #else
-		TRX.AutoGain = false;             // auto-control preamp and attenuator
+		TRX.AutoGain = true;             // auto-control preamp and attenuator
 #endif
 		TRX.Locked = false;        // Lock control
 		TRX.SPLIT_Enabled = false; // Split frequency mode (receive one VFO, transmit another)
