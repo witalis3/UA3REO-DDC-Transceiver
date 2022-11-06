@@ -22,6 +22,12 @@ void SNAP_FillBuffer(float32_t *buff) {
 		SNAP_need_buffer = false;
 		return;
 	}
+	
+	if (SNAP_process_from_auto && CurrentVFO->Mode != TRX_MODE_CW && CurrentVFO->Mode != TRX_MODE_NFM) {
+		SNAP_buffer_avg_index = 0;
+		SNAP_need_buffer = false;
+		return;
+	}
 
 	if (SNAP_buffer_avg_index == 0) {
 		dma_memset(SNAP_buffer, 0x00, sizeof(SNAP_buffer));
@@ -128,6 +134,24 @@ static void SNAP_Process() {
 			}
 		}
 	}
+	
+	//SSB Part
+	if (SNAP_process_mode == 1 && CurrentVFO->Mode == TRX_MODE_USB) {
+		target_freq -= CurrentVFO->LPF_RX_Filter_Width;
+	}
+	if (SNAP_process_mode == 1 && CurrentVFO->Mode == TRX_MODE_LSB) {
+		target_freq += 500;
+	}
+	if (SNAP_process_mode == 2 && CurrentVFO->Mode == TRX_MODE_LSB) {
+		target_freq += CurrentVFO->LPF_RX_Filter_Width;
+	}
+	if (SNAP_process_mode == 2 && CurrentVFO->Mode == TRX_MODE_USB) {
+		target_freq -= 500;
+	}
+	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
+		target_freq = roundl(target_freq / 500) * 500;
+	}
+	//END of SSB Part
 
 	bool result_ok = false;
 	if (!SNAP_process_from_auto && signal_snr >= SNAP_BW_SNR_THRESHOLD) {
