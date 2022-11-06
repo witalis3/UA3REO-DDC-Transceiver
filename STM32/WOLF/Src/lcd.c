@@ -292,13 +292,13 @@ static void LCD_displayBottomButtons(bool redraw) {
 			if ((uint8_t)*PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].checkBool == 1)
 				enabled = true;
 		}
-		
+
 		uint16_t width = LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH;
-		
-		if(FUNCBUTTONS_ON_PAGE == 9 && i < 8) {
+
+		if (FUNCBUTTONS_ON_PAGE == 9 && i < 8) {
 			width += 1;
 		}
-		
+
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, width, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT,
 		            (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name,
 		            enabled, false, false, 0,

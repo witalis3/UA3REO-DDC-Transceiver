@@ -22,7 +22,7 @@ void SNAP_FillBuffer(float32_t *buff) {
 		SNAP_need_buffer = false;
 		return;
 	}
-	
+
 	if (SNAP_process_from_auto && CurrentVFO->Mode != TRX_MODE_CW && CurrentVFO->Mode != TRX_MODE_NFM) {
 		SNAP_buffer_avg_index = 0;
 		SNAP_need_buffer = false;
@@ -63,7 +63,7 @@ static void SNAP_Process() {
 	uint32_t bins_in_bandwidth;
 	uint32_t bandwidth_bin_start;
 	uint32_t bandwidth_bin_end;
-	
+
 	bins_in_bandwidth = (float32_t)CurrentVFO->LPF_RX_Filter_Width / hz_in_bin;
 	if (SNAP_process_mode == 0) { // unidirect
 		bandwidth_bin_start = (FFT_SIZE / 2) - (bins_in_bandwidth / 2);
@@ -86,7 +86,7 @@ static void SNAP_Process() {
 
 	// search in all FFT (nearest)
 	if (signal_snr < SNAP_BW_SNR_THRESHOLD && !SNAP_process_from_auto) {
-		
+
 		if (SNAP_process_mode == 0) { // unidirect
 			for (int32_t allfft_bin_start = bandwidth_bin_start; allfft_bin_start > 0; allfft_bin_start -= bins_in_bandwidth / 2) {
 				uint32_t allfft_bin_end = bandwidth_bin_end + (bandwidth_bin_start - allfft_bin_start);
@@ -101,10 +101,10 @@ static void SNAP_Process() {
 				}
 			}
 		}
-		
+
 		if (SNAP_process_mode == 1) { // left
 			uint32_t allfft_bin_end = (FFT_SIZE / 2) - (bins_in_bandwidth / 2);
-			
+
 			for (int32_t allfft_bin_start = allfft_bin_end - 1; allfft_bin_start > 0; allfft_bin_start -= bins_in_bandwidth / 2) {
 				uint32_t allfft_bin_count = allfft_bin_end - allfft_bin_start;
 
@@ -117,10 +117,10 @@ static void SNAP_Process() {
 				}
 			}
 		}
-		
+
 		if (SNAP_process_mode == 2) { // right
 			uint32_t allfft_bin_start = (FFT_SIZE / 2) + (bins_in_bandwidth / 2);
-			
+
 			for (int32_t allfft_bin_end = allfft_bin_start + 1; allfft_bin_end < FFT_SIZE; allfft_bin_end += bins_in_bandwidth / 2) {
 				uint32_t allfft_bin_count = allfft_bin_end - allfft_bin_start;
 
@@ -134,8 +134,8 @@ static void SNAP_Process() {
 			}
 		}
 	}
-	
-	//SSB Part
+
+	// SSB Part
 	if (SNAP_process_mode == 1 && CurrentVFO->Mode == TRX_MODE_USB) {
 		target_freq -= CurrentVFO->LPF_RX_Filter_Width;
 	}
@@ -151,7 +151,7 @@ static void SNAP_Process() {
 	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
 		target_freq = roundl(target_freq / 500) * 500;
 	}
-	//END of SSB Part
+	// END of SSB Part
 
 	bool result_ok = false;
 	if (!SNAP_process_from_auto && signal_snr >= SNAP_BW_SNR_THRESHOLD) {

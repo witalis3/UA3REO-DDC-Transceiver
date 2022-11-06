@@ -162,7 +162,7 @@ void LoadSettings(bool clear) {
 #ifdef FRONTPANEL_X1
 		TRX.AutoGain = true; // auto-control preamp and attenuator
 #else
-		TRX.AutoGain = true;             // auto-control preamp and attenuator
+		TRX.AutoGain = true;              // auto-control preamp and attenuator
 #endif
 		TRX.Locked = false;        // Lock control
 		TRX.SPLIT_Enabled = false; // Split frequency mode (receive one VFO, transmit another)
@@ -224,11 +224,11 @@ void LoadSettings(bool clear) {
 		TRX.NOISE_BLANKER = false; // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = false;  // Spectral AGC mode
 #else
-		TRX.NOISE_BLANKER = true;        // suppressor of short impulse noise NOISE BLANKER
+		TRX.NOISE_BLANKER = true;         // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;          // Spectral AGC mode
 #endif
-		TRX.NOISE_BLANKER_THRESHOLD = 7;	// threshold for noise blanker
-		TRX.TX_CESSB = false;              // Controlled-envelope single-sideband modulation
+		TRX.NOISE_BLANKER_THRESHOLD = 7;     // threshold for noise blanker
+		TRX.TX_CESSB = false;                // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 3.0f;     // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;           // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;             // AGC receive rate on CW
