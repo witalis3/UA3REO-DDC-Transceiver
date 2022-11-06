@@ -111,6 +111,7 @@ extern void BUTTONHANDLER_IF(uint32_t parameter);
 extern void BUTTONHANDLER_VLT(uint32_t parameter);
 extern void BUTTONHANDLER_SNAP(uint32_t parameter);
 extern void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter);
+extern void BUTTONHANDLER_CESSB(uint32_t parameter);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;

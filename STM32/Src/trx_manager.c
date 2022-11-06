@@ -2100,3 +2100,15 @@ void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter) {
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
+
+void BUTTONHANDLER_CESSB(uint32_t parameter) {
+	TRX.TX_CESSB = !TRX.TX_CESSB;
+
+	if (TRX.Auto_Snap)
+		LCD_showTooltip("CESSB ON");
+	else
+		LCD_showTooltip("CESSB OFF");
+
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
