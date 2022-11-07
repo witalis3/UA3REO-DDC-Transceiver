@@ -280,7 +280,7 @@ int main(void) {
 		                                   BG_COLOR, BG_COLOR);
 		strcpy(greetings_buff, "ver. ");
 		strcat(greetings_buff, version_string);
-		LCDDriver_printText(greetings_buff, 4, (LCD_HEIGHT - 10), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
+		LCDDriver_printText(greetings_buff, 4, (LCD_HEIGHT - 14), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
 		// show callsign greetings
 		uint16_t x1, y1, w, h;
 		strcpy(greetings_buff, "Hello, ");

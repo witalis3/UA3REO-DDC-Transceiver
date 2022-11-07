@@ -173,6 +173,8 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Mic Gain** - Microphone gain
 * **Mic Boost** - +20db hardware mic amplifier
 * **DNR xxx** - Digital squelch adjustment
+* **Noise Blanker** - Activating the Surge Suppressor
+* **NB Threshold** - Threshold of Noise blanker
 * **SSB HPF Pass** - HPF cutoff frequency when operating in SSB
 * **SSB LPF Pass** - LPF cutoff frequency when operating in SSB
 * **CW LPF Pass** - LPF cutoff frequency when working in CW

@@ -576,17 +576,19 @@ void TRX_DoAutoGain(void) {
 			max_amplitude = abs(TRX_ADC_MINAMPLITUDE);
 
 		float32_t new_att_val = TRX.ATT_DB;
+		if (new_att_val < 0.5f)
+			new_att_val = 0.5f;
 		if (max_amplitude > (AUTOGAINER_TAGET + AUTOGAINER_HYSTERESIS) && new_att_val < 31.5f)
 			new_att_val += 0.5f;
-		else if (max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && new_att_val > 0.0f)
+		else if (max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && new_att_val > 0.5f)
 			new_att_val -= 0.5f;
 
 #ifndef FRONTPANEL_LITE
-		if (new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_Driver) {
+		if (new_att_val <= 0.5f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_Driver) {
 			TRX.ADC_Driver = true;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
-		} else if (new_att_val == 0.0f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_PGA) {
+		} else if (new_att_val <= 0.5f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_PGA) {
 			TRX.ADC_PGA = true;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
@@ -2085,7 +2087,8 @@ void BUTTONHANDLER_VLT(uint32_t parameter) {
 #endif
 }
 
-void BUTTONHANDLER_SNAP(uint32_t parameter) { SNAP_DoSnap(false); }
+void BUTTONHANDLER_SNAP_LEFT(uint32_t parameter) { SNAP_DoSnap(false, 1); }
+void BUTTONHANDLER_SNAP_RIGHT(uint32_t parameter) { SNAP_DoSnap(false, 2); }
 
 void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter) {
 	TRX.Auto_Snap = !TRX.Auto_Snap;
@@ -2094,6 +2097,18 @@ void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter) {
 		LCD_showTooltip("AUTO SNAP ON");
 	else
 		LCD_showTooltip("AUTO SNAP OFF");
+
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
+void BUTTONHANDLER_CESSB(uint32_t parameter) {
+	TRX.TX_CESSB = !TRX.TX_CESSB;
+
+	if (TRX.Auto_Snap)
+		LCD_showTooltip("CESSB ON");
+	else
+		LCD_showTooltip("CESSB OFF");
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;

@@ -84,6 +84,7 @@ static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_SSB(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P2_SSB(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P3_SSB(int8_t direction);
@@ -566,7 +567,6 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
 #endif
     {"IF Gain, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
     {"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_AUDIO_DNR, {"OFF", "DNR1", "DNR2"}},
-    {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_AUDIO_NOISE_BLANKER},
     {"AGC", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_shadow, SYSMENU_HANDL_AUDIO_AGC},
     {"AGC Gain target, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
     {"Mic Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_GAIN_DB, SYSMENU_HANDL_AUDIO_MIC_Gain},
@@ -578,6 +578,8 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
 #endif
     {"DNR Average", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_AUDIO_DNR_AVERAGE},
     {"DNR Minimal", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_HANDL_AUDIO_DNR_MINMAL},
+    {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_AUDIO_NOISE_BLANKER},
+    {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD},
     {"SSB HPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_RX_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass},
     {"SSB HPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_TX_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass},
     {"SSB LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass},
@@ -693,13 +695,13 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
      NULL,
      (uint32_t *)&TRX.FFT_Color,
      SYSMENU_HANDL_SCREEN_FFT_Color,
-     {"", "Blu>Y>R", "BlB>Y>R", "BlR>Y>R", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
+     {"Blu>Y>R", "BlB>Y>R", "BlR>Y>R", "BGYRM", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
     {"WTF Color",
      SYSMENU_ENUMR,
      NULL,
      (uint32_t *)&TRX.WTF_Color,
      SYSMENU_HANDL_SCREEN_WTF_Color,
-     {"", "Blu>Y>R", "BlB>Y>R", "BlR>Y>R", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
+     {"Blu>Y>R", "BlB>Y>R", "BlR>Y>R", "BGYRM", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
     {"FFT Freq Grid", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_FreqGrid, SYSMENU_HANDL_SCREEN_FFT_FreqGrid, {"NO", "Top", "All", "Bott"}},
 #if !defined(FRONTPANEL_LITE)
     {"FFT dBm Grid", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_dBmGrid, SYSMENU_HANDL_SCREEN_FFT_dBmGrid},
@@ -2008,6 +2010,14 @@ static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction) {
 		TRX.DNR_MINIMAL = 100;
 }
 
+static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD(int8_t direction) {
+	TRX.NOISE_BLANKER_THRESHOLD += direction;
+	if (TRX.NOISE_BLANKER_THRESHOLD < 1)
+		TRX.NOISE_BLANKER_THRESHOLD = 1;
+	if (TRX.NOISE_BLANKER_THRESHOLD > 20)
+		TRX.NOISE_BLANKER_THRESHOLD = 20;
+}
+
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_SSB(int8_t direction) {
 	TRX.MIC_EQ_P1_SSB += direction;
 	if (TRX.MIC_EQ_P1_SSB < -50)
@@ -2678,21 +2688,19 @@ static void SYSMENU_HANDL_SCREEN_FFT_BW_Style(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction) {
-	TRX.FFT_Color += direction;
-	if (TRX.FFT_Color < 1)
-		TRX.FFT_Color = 1;
-	if (TRX.FFT_Color > 9)
-		TRX.FFT_Color = 9;
+	if (direction > 0 || TRX.FFT_Color > 0)
+		TRX.FFT_Color += direction;
+	if (TRX.FFT_Color > 10)
+		TRX.FFT_Color = 10;
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_WTF_Color(int8_t direction) {
-	TRX.WTF_Color += direction;
-	if (TRX.WTF_Color < 1)
-		TRX.WTF_Color = 1;
-	if (TRX.WTF_Color > 9)
-		TRX.WTF_Color = 9;
+	if (direction > 0 || TRX.WTF_Color > 0)
+		TRX.WTF_Color += direction;
+	if (TRX.WTF_Color > 10)
+		TRX.WTF_Color = 10;
 
 	FFT_Init();
 }

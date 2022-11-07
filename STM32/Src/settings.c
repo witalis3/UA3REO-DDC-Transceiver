@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.2.1";
+const char version_string[19] = "6.3.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -162,7 +162,7 @@ void LoadSettings(bool clear) {
 #ifdef FRONTPANEL_X1
 		TRX.AutoGain = true; // auto-control preamp and attenuator
 #else
-		TRX.AutoGain = false;             // auto-control preamp and attenuator
+		TRX.AutoGain = true;              // auto-control preamp and attenuator
 #endif
 		TRX.Locked = false;        // Lock control
 		TRX.SPLIT_Enabled = false; // Split frequency mode (receive one VFO, transmit another)
@@ -223,12 +223,12 @@ void LoadSettings(bool clear) {
 #ifdef STM32F407xx
 		TRX.NOISE_BLANKER = false; // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = false;  // Spectral AGC mode
-		TRX.TX_CESSB = false;      // Controlled-envelope single-sideband modulation
 #else
-		TRX.NOISE_BLANKER = false;        // suppressor of short impulse noise NOISE BLANKER
+		TRX.NOISE_BLANKER = true;         // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;          // Spectral AGC mode
-		TRX.TX_CESSB = true;              // Controlled-envelope single-sideband modulation
 #endif
+		TRX.NOISE_BLANKER_THRESHOLD = 7;     // threshold for noise blanker
+		TRX.TX_CESSB = false;                // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 3.0f;     // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;           // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;             // AGC receive rate on CW
@@ -244,8 +244,8 @@ void LoadSettings(bool clear) {
 		TRX.SSB_LPF_TX_Filter = 2700;        // default value of SSB filter width
 		TRX.SSB_HPF_RX_Filter = 200;         // default value of SSB filter width
 		TRX.SSB_HPF_TX_Filter = 200;         // default value of SSB filter width
-		TRX.AM_LPF_RX_Filter = 6000;         // default value of AM filter width
-		TRX.AM_LPF_TX_Filter = 6000;         // default value of AM filter width
+		TRX.AM_LPF_RX_Filter = 8000;         // default value of AM filter width
+		TRX.AM_LPF_TX_Filter = 8000;         // default value of AM filter width
 		TRX.FM_LPF_RX_Filter = 12000;        // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 8000;         // default value of the FM filter width
 		TRX.Beeper = true;                   // Keyboard beeper
@@ -304,18 +304,19 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Window = 1;        // FFT Window
 		TRX.FFT_Style = 1;         // FFT style
 		TRX.FFT_BW_Style = 2;      // FFT BW style
-		TRX.FFT_Color = 1;         // FFT display color
-		TRX.WTF_Color = 2;         // WTF display color
+		TRX.FFT_Color = 0;         // FFT display color
+		TRX.WTF_Color = 1;         // WTF display color
 		TRX.FFT_Compressor = true; // Compress FFT Peaks
+		TRX.FFT_Background = true;         // FFT gradient background
 #ifdef LAY_160x128
 		TRX.FFT_FreqGrid = 0; // FFT freq grid style
-		TRX.FFT_Height = 3;   // FFT display height
+		TRX.FFT_Height = 4;   // FFT display height
+		TRX.FFT_Background = false;         // FFT gradient background
 #else
 		TRX.FFT_FreqGrid = 1;             // FFT freq grid style
 		TRX.FFT_Height = 2;               // FFT display height
 #endif
 		TRX.FFT_dBmGrid = false;           // FFT power grid
-		TRX.FFT_Background = true;         // FFT gradient background
 		TRX.FFT_Lens = false;              // FFT lens effect
 		TRX.FFT_HoldPeaks = false;         // Show FFT Peaks
 		TRX.FFT_3D = 0;                    // FFT 3D mode

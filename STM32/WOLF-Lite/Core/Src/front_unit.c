@@ -150,7 +150,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "BW", .work_in_menu = true, .clickHandler = BUTTONHANDLER_BW, .holdHandler = BUTTONHANDLER_BW, .checkBool = NULL},
     {.name = "A/B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
     {.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB, .checkBool = NULL},
-
+    //
     {.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
     {.name = "AGC",
      .work_in_menu = false,
@@ -164,7 +164,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
      .clickHandler = BUTTONHANDLER_FAST,
      .holdHandler = BUTTONHANDLER_STEP,
      .checkBool = (uint32_t *)&TRX.Fast},
-
+    //
     {.name = "IF", .work_in_menu = true, .clickHandler = BUTTONHANDLER_IF, .holdHandler = BUTTONHANDLER_IF, .checkBool = NULL},
     {.name = "NOTCH",
      .work_in_menu = false,
@@ -182,7 +182,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
      .clickHandler = BUTTONHANDLER_RIT,
      .holdHandler = BUTTONHANDLER_XIT,
      .checkBool = (uint32_t *)&TRX.RIT_Enabled},
-
+    //
     {.name = "BAND-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
     {.name = "BAND+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
     {.name = "MODE-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
@@ -192,7 +192,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
      .clickHandler = BUTTONHANDLER_TUNE,
      .holdHandler = BUTTONHANDLER_TUNE,
      .checkBool = (uint32_t *)&TRX_Tune},
-
+    //
     {.name = "SCAN",
      .work_in_menu = false,
      .clickHandler = BUTTONHANDLER_SCAN,
@@ -210,9 +210,8 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
      .clickHandler = BUTTONHANDLER_LOCK,
      .holdHandler = BUTTONHANDLER_LOCK,
      .checkBool = (uint32_t *)&TRX.Locked},
-
+    //
     {.name = "A/B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
-    {.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB, .checkBool = NULL},
     {.name = "RIT",
      .work_in_menu = false,
      .clickHandler = BUTTONHANDLER_RIT,
@@ -223,9 +222,14 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
      .clickHandler = BUTTONHANDLER_SPLIT,
      .holdHandler = BUTTONHANDLER_SPLIT,
      .checkBool = (uint32_t *)&TRX.SPLIT_Enabled},
-    {.name = "SNAP",
+    {.name = "SNAP<",
      .work_in_menu = true,
-     .clickHandler = BUTTONHANDLER_SNAP,
+     .clickHandler = BUTTONHANDLER_SNAP_LEFT,
+     .holdHandler = BUTTONHANDLER_AUTO_SNAP,
+     .checkBool = (uint32_t *)&TRX.Auto_Snap},
+    {.name = "SNAP>",
+     .work_in_menu = true,
+     .clickHandler = BUTTONHANDLER_SNAP_RIGHT,
      .holdHandler = BUTTONHANDLER_AUTO_SNAP,
      .checkBool = (uint32_t *)&TRX.Auto_Snap},
 };

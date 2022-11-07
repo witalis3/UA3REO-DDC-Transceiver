@@ -285,9 +285,6 @@ static void LCD_displayBottomButtons(bool redraw) {
 		LCDDriver_Fill_RectWH(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LCD_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, BG_COLOR);
 
 	uint16_t curr_x = 0;
-	printButton(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<-", false, false,
-	            false, 0, BUTTONHANDLER_LEFT_ARR, BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	curr_x += LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH;
 	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++) {
 		bool enabled = false;
 
@@ -296,16 +293,20 @@ static void LCD_displayBottomButtons(bool redraw) {
 				enabled = true;
 		}
 
-		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT,
+		uint16_t width = LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH;
+
+		if (FUNCBUTTONS_ON_PAGE == 9 && i < 8) {
+			width += 1;
+		}
+
+		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, width, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT,
 		            (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name,
 		            enabled, false, false, 0,
 		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].clickHandler,
 		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].holdHandler,
 		            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-		curr_x += LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH;
+		curr_x += width;
 	}
-	printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "->", false,
-	            false, false, 0, BUTTONHANDLER_RIGHT_ARR, BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 #endif
 
 	LCD_UpdateQuery.BottomButtons = false;
@@ -2409,7 +2410,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y) {
 	}
 
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++) {
-		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 - 10 <= y) && (TouchpadButton_handlers[i].x2 >= x) &&
+		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) &&
 		    (TouchpadButton_handlers[i].y2 >= y)) {
 			if (TouchpadButton_handlers[i].holdHandler != NULL) {
 				TouchpadButton_handlers[i].holdHandler(TouchpadButton_handlers[i].parameter);
@@ -3112,7 +3113,7 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 		            COLOR->BUTTON_INACTIVE_TEXT);
 	}
 	y++;
-	buttons_left_offset += button_width / 2;
+	// buttons_left_offset += button_width / 2;
 	//
 	char line3[] = "ASDFGHJKL;'";
 	if (lowcase)
@@ -3126,6 +3127,13 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 		            button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT,
 		            COLOR->BUTTON_INACTIVE_TEXT);
 	}
+	//enter
+	x = strlen(line3);
+	printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
+		            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width,
+		            button_height, "<=", true, false, false, NULL, BUTTONHANDLER_MENU, BUTTONHANDLER_MENU, COLOR->BUTTON_TEXT,
+		            COLOR->BUTTON_INACTIVE_TEXT);
+	//
 	y++;
 	//
 	char line4[] = "^ZXCVBNM,./";
