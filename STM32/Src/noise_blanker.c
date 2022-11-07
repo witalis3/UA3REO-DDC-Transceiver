@@ -52,7 +52,8 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 				muting_avg = 1.0f;
 		} else // It is within the blanking pulse period
 		{
-			muting_avg *= 0.9f;
+			if (muting_avg > 0.0000001f)
+				muting_avg *= 0.9f;
 			// has_blank = true;
 			buffer[i] = last_normal_value * muting_avg; // set the audio buffer to "mute" during the blanking period
 			nb_delay--; // count down the number of samples that we are to blank
