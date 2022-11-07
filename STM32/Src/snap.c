@@ -136,22 +136,28 @@ static void SNAP_Process() {
 	}
 
 	// SSB Part
-	if (SNAP_process_mode == 1 && CurrentVFO->Mode == TRX_MODE_USB) {
-		target_freq -= CurrentVFO->LPF_RX_Filter_Width;
-	}
-	if (SNAP_process_mode == 1 && CurrentVFO->Mode == TRX_MODE_LSB) {
-		target_freq += 500;
-	}
-	if (SNAP_process_mode == 2 && CurrentVFO->Mode == TRX_MODE_LSB) {
-		target_freq += CurrentVFO->LPF_RX_Filter_Width;
-	}
-	if (SNAP_process_mode == 2 && CurrentVFO->Mode == TRX_MODE_USB) {
-		target_freq -= 500;
-	}
-	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
+	if (CurrentVFO->Mode == TRX_MODE_LSB) {
+		if (SNAP_process_mode == 1) { // left
+			target_freq += 500;
+		}
+		if (SNAP_process_mode == 2 && CurrentVFO->Mode == TRX_MODE_LSB) { // right
+			target_freq += CurrentVFO->LPF_RX_Filter_Width;
+		}
+		
 		target_freq = roundl(target_freq / 500) * 500;
 	}
-	// END of SSB Part
+	
+	if (CurrentVFO->Mode == TRX_MODE_USB) {
+		if (SNAP_process_mode == 1) { // left
+			target_freq -= CurrentVFO->LPF_RX_Filter_Width;
+		}
+		if (SNAP_process_mode == 2) { // right
+			target_freq -= 500;
+		}
+	
+		target_freq = roundl(target_freq / 500) * 500;
+	}
+	//
 
 	bool result_ok = false;
 	if (!SNAP_process_from_auto && signal_snr >= SNAP_BW_SNR_THRESHOLD) {
