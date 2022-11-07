@@ -244,8 +244,8 @@ void LoadSettings(bool clear) {
 		TRX.SSB_LPF_TX_Filter = 2700;        // default value of SSB filter width
 		TRX.SSB_HPF_RX_Filter = 200;         // default value of SSB filter width
 		TRX.SSB_HPF_TX_Filter = 200;         // default value of SSB filter width
-		TRX.AM_LPF_RX_Filter = 6000;         // default value of AM filter width
-		TRX.AM_LPF_TX_Filter = 6000;         // default value of AM filter width
+		TRX.AM_LPF_RX_Filter = 8000;         // default value of AM filter width
+		TRX.AM_LPF_TX_Filter = 8000;         // default value of AM filter width
 		TRX.FM_LPF_RX_Filter = 12000;        // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 8000;         // default value of the FM filter width
 		TRX.Beeper = true;                   // Keyboard beeper
@@ -304,8 +304,8 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Window = 1;        // FFT Window
 		TRX.FFT_Style = 1;         // FFT style
 		TRX.FFT_BW_Style = 2;      // FFT BW style
-		TRX.FFT_Color = 1;         // FFT display color
-		TRX.WTF_Color = 2;         // WTF display color
+		TRX.FFT_Color = 0;         // FFT display color
+		TRX.WTF_Color = 1;         // WTF display color
 		TRX.FFT_Compressor = true; // Compress FFT Peaks
 #ifdef LAY_160x128
 		TRX.FFT_FreqGrid = 0; // FFT freq grid style

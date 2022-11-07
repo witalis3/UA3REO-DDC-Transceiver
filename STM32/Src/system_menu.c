@@ -695,13 +695,13 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
      NULL,
      (uint32_t *)&TRX.FFT_Color,
      SYSMENU_HANDL_SCREEN_FFT_Color,
-     {"", "Blu>Y>R", "BlB>Y>R", "BlR>Y>R", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
+     {"Blu>Y>R", "BlB>Y>R", "BlR>Y>R", "BGYRM", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
     {"WTF Color",
      SYSMENU_ENUMR,
      NULL,
      (uint32_t *)&TRX.WTF_Color,
      SYSMENU_HANDL_SCREEN_WTF_Color,
-     {"", "Blu>Y>R", "BlB>Y>R", "BlR>Y>R", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
+     {"Blu>Y>R", "BlB>Y>R", "BlR>Y>R", "BGYRM", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
     {"FFT Freq Grid", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_FreqGrid, SYSMENU_HANDL_SCREEN_FFT_FreqGrid, {"NO", "Top", "All", "Bott"}},
 #if !defined(FRONTPANEL_LITE)
     {"FFT dBm Grid", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_dBmGrid, SYSMENU_HANDL_SCREEN_FFT_dBmGrid},
@@ -2688,21 +2688,19 @@ static void SYSMENU_HANDL_SCREEN_FFT_BW_Style(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction) {
-	TRX.FFT_Color += direction;
-	if (TRX.FFT_Color < 1)
-		TRX.FFT_Color = 1;
-	if (TRX.FFT_Color > 9)
-		TRX.FFT_Color = 9;
+	if (direction > 0 || TRX.FFT_Color > 0)
+		TRX.FFT_Color += direction;
+	if (TRX.FFT_Color > 10)
+		TRX.FFT_Color = 10;
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_WTF_Color(int8_t direction) {
-	TRX.WTF_Color += direction;
-	if (TRX.WTF_Color < 1)
-		TRX.WTF_Color = 1;
-	if (TRX.WTF_Color > 9)
-		TRX.WTF_Color = 9;
+	if (direction > 0 || TRX.WTF_Color > 0)
+		TRX.WTF_Color += direction;
+	if (TRX.WTF_Color > 10)
+		TRX.WTF_Color = 10;
 
 	FFT_Init();
 }

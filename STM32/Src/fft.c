@@ -1985,7 +1985,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 
 	// blue -> yellow -> red Blu>Y>R
-	if ((!type && TRX.FFT_Color == 1) || (type && TRX.WTF_Color == 1)) {
+	if ((!type && TRX.FFT_Color == 0) || (type && TRX.WTF_Color == 0)) {
 		// r g b
 		// 0 0 0
 		// 0 0 255
@@ -2017,7 +2017,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 
 	// blue -> yellow -> red // version 2 BlB>Y>R
-	if ((!type && TRX.FFT_Color == 2) || (type && TRX.WTF_Color == 2)) {
+	if ((!type && TRX.FFT_Color == 1) || (type && TRX.WTF_Color == 1)) {
 		// r g b
 		// 0 0 0
 		// 0 0 255
@@ -2049,7 +2049,7 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 	}
 
 	// blue -> yellow -> red // version 3 BlR>Y>R
-	if ((!type && TRX.FFT_Color == 3) || (type && TRX.WTF_Color == 3)) {
+	if ((!type && TRX.FFT_Color == 2) || (type && TRX.WTF_Color == 2)) {
 		// r g b
 		// 0 0 0
 		// 0 0 255
@@ -2086,6 +2086,54 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 		return rgb888torgb565(red, green, blue);
 	}
 
+	// black -> blue -> green -> yellow -> red - > magenta // BGYRM
+	if ((!type && TRX.FFT_Color == 3) || (type && TRX.WTF_Color == 3)) {
+		// r g b
+		// 0 0 0
+		// 0 0 255
+		// 255 255 0
+		// 255 0 0
+		// contrast of each of the 4 zones, the total should be 1.0f
+		const float32_t contrast0 = 0.05f; // black
+		const float32_t contrast1 = 0.25f; // blue
+		const float32_t contrast2 = 0.20f; // green
+		const float32_t contrast3 = 0.15f; // yellow
+		const float32_t contrast4 = 0.30f; // red
+		const float32_t contrast5 = 0.05f; // magenta
+
+		if (height < GET_FFTHeight * contrast0) { // black
+			red = 0;
+			green = 0;
+			blue = 0;
+		} else if (height < GET_FFTHeight * (contrast0 + contrast1)) { // blue
+			red = 0;
+			green = 0;
+			blue = (uint_fast8_t)((height - GET_FFTHeight * contrast0) * 255 / ((GET_FFTHeight - GET_FFTHeight * contrast0) * (contrast0 + contrast1)));
+		} else if (height < GET_FFTHeight * (contrast0 + contrast1 + contrast2)) { // green
+			int16_t color = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1)) * 255 / ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1)) * (contrast0 + contrast1 + contrast2)));
+			int16_t second_color = 255 - color * 2;
+			red = 0;
+			green = color;
+			blue = second_color > 0 ? second_color : 0;
+		} else if (height < GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3)) { // yellow
+			uint16_t color = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1 + contrast2)) * 255 / ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1 + contrast2)) * (contrast0 + contrast1 + contrast2 + contrast3)));
+			green = 255;
+			red = color;
+			blue = 0;
+		} else if (height < GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)) { // red
+			uint16_t color = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3)) * 255 / ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3)) * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)));
+			int16_t second_color = 255 - color * 1;
+			red = 255;
+			blue = 0;
+			green = second_color > 0 ? second_color : 0;
+		} else { // magenta
+			red = 255;
+			green = 0;
+			blue = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)) * 255 / ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)) * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4 + contrast5)));
+		}
+		return rgb888torgb565(red, green, blue);
+	}
+	
 	// black -> yellow -> red
 	if ((!type && TRX.FFT_Color == 4) || (type && TRX.WTF_Color == 4)) {
 		// r g b
