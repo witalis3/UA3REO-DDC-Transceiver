@@ -3113,7 +3113,7 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 		            COLOR->BUTTON_INACTIVE_TEXT);
 	}
 	y++;
-	buttons_left_offset += button_width / 2;
+	// buttons_left_offset += button_width / 2;
 	//
 	char line3[] = "ASDFGHJKL;'";
 	if (lowcase)
@@ -3127,6 +3127,13 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 		            button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT,
 		            COLOR->BUTTON_INACTIVE_TEXT);
 	}
+	//enter
+	x = strlen(line3);
+	printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
+		            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width,
+		            button_height, "<=", true, false, false, NULL, BUTTONHANDLER_MENU, BUTTONHANDLER_MENU, COLOR->BUTTON_TEXT,
+		            COLOR->BUTTON_INACTIVE_TEXT);
+	//
 	y++;
 	//
 	char line4[] = "^ZXCVBNM,./";
