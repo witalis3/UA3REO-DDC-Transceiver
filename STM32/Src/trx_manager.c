@@ -2105,7 +2105,7 @@ void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter) {
 void BUTTONHANDLER_CESSB(uint32_t parameter) {
 	TRX.TX_CESSB = !TRX.TX_CESSB;
 
-	if (TRX.Auto_Snap)
+	if (TRX.TX_CESSB)
 		LCD_showTooltip("CESSB ON");
 	else
 		LCD_showTooltip("CESSB OFF");
