@@ -143,10 +143,10 @@ static void SNAP_Process() {
 		if (SNAP_process_mode == 2 && CurrentVFO->Mode == TRX_MODE_LSB) { // right
 			target_freq += CurrentVFO->LPF_RX_Filter_Width;
 		}
-		
+
 		target_freq = roundl(target_freq / 500) * 500;
 	}
-	
+
 	if (CurrentVFO->Mode == TRX_MODE_USB) {
 		if (SNAP_process_mode == 1) { // left
 			target_freq -= CurrentVFO->LPF_RX_Filter_Width;
@@ -154,7 +154,7 @@ static void SNAP_Process() {
 		if (SNAP_process_mode == 2) { // right
 			target_freq -= 500;
 		}
-	
+
 		target_freq = roundl(target_freq / 500) * 500;
 	}
 	//

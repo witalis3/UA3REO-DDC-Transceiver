@@ -2108,20 +2108,26 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 		} else if (height < GET_FFTHeight * (contrast0 + contrast1)) { // blue
 			red = 0;
 			green = 0;
-			blue = (uint_fast8_t)((height - GET_FFTHeight * contrast0) * 255 / ((GET_FFTHeight - GET_FFTHeight * contrast0) * (contrast0 + contrast1)));
+			blue =
+			    (uint_fast8_t)((height - GET_FFTHeight * contrast0) * 255 / ((GET_FFTHeight - GET_FFTHeight * contrast0) * (contrast0 + contrast1)));
 		} else if (height < GET_FFTHeight * (contrast0 + contrast1 + contrast2)) { // green
-			int16_t color = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1)) * 255 / ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1)) * (contrast0 + contrast1 + contrast2)));
+			int16_t color = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1)) * 255 /
+			                               ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1)) * (contrast0 + contrast1 + contrast2)));
 			int16_t second_color = 255 - color * 2;
 			red = 0;
 			green = color;
 			blue = second_color > 0 ? second_color : 0;
 		} else if (height < GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3)) { // yellow
-			uint16_t color = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1 + contrast2)) * 255 / ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1 + contrast2)) * (contrast0 + contrast1 + contrast2 + contrast3)));
+			uint16_t color = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1 + contrast2)) * 255 /
+			                                ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1 + contrast2)) *
+			                                 (contrast0 + contrast1 + contrast2 + contrast3)));
 			green = 255;
 			red = color;
 			blue = 0;
 		} else if (height < GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)) { // red
-			uint16_t color = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3)) * 255 / ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3)) * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)));
+			uint16_t color = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3)) * 255 /
+			                                ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3)) *
+			                                 (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)));
 			int16_t second_color = 255 - color * 1;
 			red = 255;
 			blue = 0;
@@ -2129,11 +2135,13 @@ static uint16_t getFFTColor(uint_fast8_t height, bool type) // Get FFT color war
 		} else { // magenta
 			red = 255;
 			green = 0;
-			blue = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)) * 255 / ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)) * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4 + contrast5)));
+			blue = (uint_fast8_t)((height - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)) * 255 /
+			                      ((GET_FFTHeight - GET_FFTHeight * (contrast0 + contrast1 + contrast2 + contrast3 + contrast4)) *
+			                       (contrast0 + contrast1 + contrast2 + contrast3 + contrast4 + contrast5)));
 		}
 		return rgb888torgb565(red, green, blue);
 	}
-	
+
 	// black -> yellow -> red
 	if ((!type && TRX.FFT_Color == 4) || (type && TRX.WTF_Color == 4)) {
 		// r g b

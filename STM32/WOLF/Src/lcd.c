@@ -3127,12 +3127,12 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 		            button_height, text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT,
 		            COLOR->BUTTON_INACTIVE_TEXT);
 	}
-	//enter
+	// enter
 	x = strlen(line3);
 	printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
-		            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width,
-		            button_height, "<=", true, false, false, NULL, BUTTONHANDLER_MENU, BUTTONHANDLER_MENU, COLOR->BUTTON_TEXT,
-		            COLOR->BUTTON_INACTIVE_TEXT);
+	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width,
+	            button_height, "<=", true, false, false, NULL, BUTTONHANDLER_MENU, BUTTONHANDLER_MENU, COLOR->BUTTON_TEXT,
+	            COLOR->BUTTON_INACTIVE_TEXT);
 	//
 	y++;
 	//

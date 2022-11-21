@@ -307,11 +307,11 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Color = 0;         // FFT display color
 		TRX.WTF_Color = 1;         // WTF display color
 		TRX.FFT_Compressor = true; // Compress FFT Peaks
-		TRX.FFT_Background = true;         // FFT gradient background
+		TRX.FFT_Background = true; // FFT gradient background
 #ifdef LAY_160x128
-		TRX.FFT_FreqGrid = 0; // FFT freq grid style
-		TRX.FFT_Height = 4;   // FFT display height
-		TRX.FFT_Background = false;         // FFT gradient background
+		TRX.FFT_FreqGrid = 0;       // FFT freq grid style
+		TRX.FFT_Height = 4;         // FFT display height
+		TRX.FFT_Background = false; // FFT gradient background
 #else
 		TRX.FFT_FreqGrid = 1;             // FFT freq grid style
 		TRX.FFT_Height = 2;               // FFT display height
