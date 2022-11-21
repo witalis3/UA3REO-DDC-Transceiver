@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.3.1";
+const char version_string[19] = "6.4.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -138,6 +138,10 @@ void LoadSettings(bool clear) {
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
 #endif
 #ifdef LAY_480x320
+		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; // Samplerate for ssb/cw/digi/nfm/etc modes
+		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
+#endif
+#ifdef LAY_320x240
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
 #endif
@@ -283,6 +287,10 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Zoom = 2;   // approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
+#ifdef LAY_320x240
+		TRX.FFT_Zoom = 2;   // approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
+#endif
 #ifdef LAY_800x480
 		TRX.FFT_Zoom = 1;   // approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
@@ -312,6 +320,9 @@ void LoadSettings(bool clear) {
 		TRX.FFT_FreqGrid = 0;       // FFT freq grid style
 		TRX.FFT_Height = 4;         // FFT display height
 		TRX.FFT_Background = false; // FFT gradient background
+#elif defined LAY_320x240
+		TRX.FFT_FreqGrid = 0;             // FFT freq grid style
+		TRX.FFT_Height = 3;               // FFT display height
 #else
 		TRX.FFT_FreqGrid = 1;             // FFT freq grid style
 		TRX.FFT_Height = 2;               // FFT display height

@@ -67,10 +67,14 @@ void SELF_TEST_Draw(void) {
 	LCD_UpdateQuery.SystemMenuRedraw = false;
 
 	// predefine
-#ifdef LCD_SMALL_INTERFACE
+#ifdef LAY_160x128
 #define margin_left 5
 #define margin_bottom 10
 #define font_size 1
+#elseifdef LAY_320x240
+#define margin_left 5
+#define margin_bottom 20
+#define font_size 2
 #else
 #define margin_left 5
 #define margin_bottom 20
@@ -168,8 +172,8 @@ void SELF_TEST_Draw(void) {
 		LCDDriver_printText("6 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[5]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("7 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[6]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("8 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[7]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
-		LCDDriver_printText("9 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[8]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		pos_y += margin_bottom;
+		LCDDriver_printText("9 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[8]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("10 ", margin_left, pos_y, (ok[9]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("11 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[10]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("12 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[11]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);

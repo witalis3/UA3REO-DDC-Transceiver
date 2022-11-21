@@ -6122,7 +6122,11 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 	// clear selection line
 	LCD_busy = true;
 	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) * LAYOUT->SYSMENU_ITEM_HEIGHT;
+#if defined LAY_320x240
+	LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, BG_COLOR);
+#else
 	LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, BG_COLOR);
+#endif
 	LCD_busy = false;
 	// current page
 	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
@@ -6273,10 +6277,17 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 	}
 
 	if (SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) == sysmenu_i) {
+#if defined LAY_320x240
+		if (sysmenu_item_selected_by_enc2)
+			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
+		else
+			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, FG_COLOR);
+#else
 		if (sysmenu_item_selected_by_enc2)
 			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
 		else
 			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, FG_COLOR);
+#endif
 	}
 	sysmenu_i++;
 	sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
