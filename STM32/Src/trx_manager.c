@@ -419,7 +419,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo_tx_freq);
 
 	FPGA_NeedSendParams = true;
-	
+
 	// set DC-DC Sync freq
 	uint64_t dcdc_0_harmonic_num = vfoa_freq / DCDC_FREQ_0;
 	uint64_t dcdc_1_harmonic_num = vfoa_freq / DCDC_FREQ_1;
@@ -447,7 +447,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
 	if (bandFromFreq >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
-		
+
 		if (TRX.RF_Gain_For_Each_Band) {
 			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].RF_Gain;
 		}
@@ -1807,12 +1807,12 @@ void BUTTONHANDLER_SET_TX_BW(uint32_t parameter) {
 
 void BUTTONHANDLER_SETRF_POWER(uint32_t parameter) {
 	TRX.RF_Gain = parameter;
-	
+
 	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
-		if (band >= 0) {
-			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
-		}
-	
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
+	}
+
 	APROC_TX_clip_gain = 1.0f;
 	APROC_TX_tune_power = 0.0f;
 	ATU_TunePowerStabilized = false;

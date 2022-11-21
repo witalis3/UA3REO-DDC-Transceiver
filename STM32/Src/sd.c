@@ -1979,17 +1979,28 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		CALIBRATE.ENABLE_AIR_band = bval;
 	if (strcmp(name, "CALIBRATE.ENABLE_marine_band") == 0)
 		CALIBRATE.ENABLE_marine_band = bval;
-	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_Mhz") == 0) CALIBRATE.Transverter_Custom_Offset_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_70cm_RF_Mhz") == 0) CALIBRATE.Transverter_70cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_70cm_IF_Mhz") == 0) CALIBRATE.Transverter_70cm_IF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_23cm_RF_Mhz") == 0) CALIBRATE.Transverter_23cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_23cm_IF_Mhz") == 0) CALIBRATE.Transverter_23cm_IF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_13cm_RF_Mhz") == 0) CALIBRATE.Transverter_13cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_13cm_IF_Mhz") == 0) CALIBRATE.Transverter_13cm_IF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_6cm_RF_Mhz") == 0) CALIBRATE.Transverter_6cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_6cm_IF_Mhz") == 0) CALIBRATE.Transverter_6cm_IF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_3cm_RF_Mhz") == 0) CALIBRATE.Transverter_3cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_3cm_IF_Mhz") == 0) CALIBRATE.Transverter_3cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_Mhz") == 0)
+		CALIBRATE.Transverter_Custom_Offset_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_70cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_70cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_23cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_23cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_13cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_13cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_6cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_6cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_3cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_3cm_IF_Mhz = (uint16_t)uintval;
 	if (strcmp(name, "CALIBRATE.OTA_update") == 0)
 		CALIBRATE.OTA_update = bval;
 	if (strcmp(name, "CALIBRATE.TX_StartDelay") == 0)

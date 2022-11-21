@@ -123,17 +123,17 @@ void LoadSettings(bool clear) {
 #if HRDW_HAS_VGA
 		TRX.VGA_GAIN = 21.0f; // VGA Gain, dB
 #endif
-		TRX.RF_Filters = true;       // LPF / HPF / BPF
-		TRX.ANT_selected = false;    // ANT-1
-		TRX.ANT_mode = false;        // RX=TX
-		TRX.RF_Gain = 20;           // output power (%)
-		TRX.RF_Gain_For_Each_Band = false;	//save RF Gain for each band separatly
-		TRX.ChannelMode = false;     // enable channel mode on VFO
-		TRX.RIT_Enabled = false;     // activate the SHIFT mode
-		TRX.XIT_Enabled = false;     // activate the SPLIT mode
-		TRX.RIT_INTERVAL = 1000;     // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
-		TRX.XIT_INTERVAL = 1000;     // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
-		TRX.TWO_SIGNAL_TUNE = false; // Two-signal generator in TUNE mode (1 + 2kHz)
+		TRX.RF_Filters = true;             // LPF / HPF / BPF
+		TRX.ANT_selected = false;          // ANT-1
+		TRX.ANT_mode = false;              // RX=TX
+		TRX.RF_Gain = 20;                  // output power (%)
+		TRX.RF_Gain_For_Each_Band = false; // save RF Gain for each band separatly
+		TRX.ChannelMode = false;           // enable channel mode on VFO
+		TRX.RIT_Enabled = false;           // activate the SHIFT mode
+		TRX.XIT_Enabled = false;           // activate the SPLIT mode
+		TRX.RIT_INTERVAL = 1000;           // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
+		TRX.XIT_INTERVAL = 1000;           // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
+		TRX.TWO_SIGNAL_TUNE = false;       // Two-signal generator in TUNE mode (1 + 2kHz)
 #ifdef LAY_160x128
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
@@ -180,26 +180,26 @@ void LoadSettings(bool clear) {
 		strcpy(TRX.LOCATOR, "LO02RR");          // Locator
 		strcpy(TRX.URSI_CODE, "SO148");         // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
 		TRX.Custom_Transverter_Enabled = false; // Enable transverter mode
-		TRX.ATU_I = 0;                 // ATU default state
-		TRX.ATU_C = 0;                 // ATU default state
-		TRX.ATU_T = false;             // ATU default state
-		TRX.ATU_Enabled = true;        // ATU enabled state
-		TRX.TUNER_Enabled = true;      // TUNER enabled state
-		TRX.Transverter_70cm = false;  // Transvertrs enable (2m IF)
-		TRX.Transverter_23cm = false;  // Transvertrs enable (2m IF)
-		TRX.Transverter_13cm = false;  // Transvertrs enable (2m IF)
-		TRX.Transverter_6cm = false;   // Transvertrs enable (2m IF)
-		TRX.Transverter_3cm = false;   // Transvertrs enable (2m IF)
-		TRX.FineRITTune = true;        // Fine or coarse tune for split/shift
-		TRX.Auto_Input_Switch = false; // Auto Mic/USB Switch
-		TRX.Auto_Snap = false;         // Auto track and snap to signal frequency
+		TRX.ATU_I = 0;                          // ATU default state
+		TRX.ATU_C = 0;                          // ATU default state
+		TRX.ATU_T = false;                      // ATU default state
+		TRX.ATU_Enabled = true;                 // ATU enabled state
+		TRX.TUNER_Enabled = true;               // TUNER enabled state
+		TRX.Transverter_70cm = false;           // Transvertrs enable (2m IF)
+		TRX.Transverter_23cm = false;           // Transvertrs enable (2m IF)
+		TRX.Transverter_13cm = false;           // Transvertrs enable (2m IF)
+		TRX.Transverter_6cm = false;            // Transvertrs enable (2m IF)
+		TRX.Transverter_3cm = false;            // Transvertrs enable (2m IF)
+		TRX.FineRITTune = true;                 // Fine or coarse tune for split/shift
+		TRX.Auto_Input_Switch = false;          // Auto Mic/USB Switch
+		TRX.Auto_Snap = false;                  // Auto track and snap to signal frequency
 		// AUDIO
 		TRX.Volume = 25;             // AF Volume
 		TRX.Volume_Step = 5;         // AF Volume step by sec encoder
 		TRX.IF_Gain = 15;            // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;   // Maximum (target) AGC gain
 		TRX.MIC_GAIN_DB = 9.0f;      // Microphone gain, dB
-		TRX.MIC_Boost = false;        // +20dB mic amplifier
+		TRX.MIC_Boost = false;       // +20dB mic amplifier
 		TRX.MIC_NOISE_GATE = -120;   // Mic noise gate
 		TRX.RX_EQ_P1 = 0;            // Receiver Equalizer 300hz
 		TRX.RX_EQ_P2 = 0;            // Receiver Equalizer 700hz
@@ -321,8 +321,8 @@ void LoadSettings(bool clear) {
 		TRX.FFT_FreqGrid = 0;             // FFT freq grid style
 		TRX.FFT_Height = 3;               // FFT display height
 #else
-		TRX.FFT_FreqGrid = 1;             // FFT freq grid style
-		TRX.FFT_Height = 2;               // FFT display height
+		TRX.FFT_FreqGrid = 1; // FFT freq grid style
+		TRX.FFT_Height = 2;   // FFT display height
 #endif
 		TRX.FFT_dBmGrid = false;           // FFT power grid
 		TRX.FFT_Lens = false;              // FFT lens effect
@@ -684,7 +684,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENABLE_4m_band = false;
 		CALIBRATE.ENABLE_AIR_band = false;
 		CALIBRATE.ENABLE_marine_band = false;
-		CALIBRATE.Transverter_Custom_Offset_Mhz = 100;       // Offset from VFO
+		CALIBRATE.Transverter_Custom_Offset_Mhz = 100; // Offset from VFO
 		CALIBRATE.Transverter_70cm_RF_Mhz = 432;
 		CALIBRATE.Transverter_70cm_IF_Mhz = 144;
 		CALIBRATE.Transverter_23cm_RF_Mhz = 1296;
