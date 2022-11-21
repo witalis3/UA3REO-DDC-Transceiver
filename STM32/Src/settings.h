@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 71         // Settings config version
-#define CALIB_VERSION 51        // Calibration config version
+#define SETT_VERSION 72         // Settings config version
+#define CALIB_VERSION 52        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -399,7 +399,6 @@ extern struct TRX_SETTINGS {
 	VFO VFO_B;
 	uint16_t RIT_INTERVAL;
 	uint16_t XIT_INTERVAL;
-	uint16_t Transverter_Offset_Mhz;
 	uint8_t ATT_STEP;
 	uint8_t RF_Power;
 	uint8_t FRQ_CW_STEP_DIVIDER;
@@ -641,6 +640,17 @@ extern struct TRX_CALIBRATE {
 	int16_t smeter_calibration_hf;
 	int16_t smeter_calibration_vhf;
 	int16_t adc_offset;
+	uint16_t Transverter_Custom_Offset_Mhz;
+	uint16_t Transverter_70cm_RF_Mhz;
+	uint16_t Transverter_70cm_IF_Mhz;
+	uint16_t Transverter_23cm_RF_Mhz;
+	uint16_t Transverter_23cm_IF_Mhz;
+	uint16_t Transverter_13cm_RF_Mhz;
+	uint16_t Transverter_13cm_IF_Mhz;
+	uint16_t Transverter_6cm_RF_Mhz;
+	uint16_t Transverter_6cm_IF_Mhz;
+	uint16_t Transverter_3cm_RF_Mhz;
+	uint16_t Transverter_3cm_IF_Mhz;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;

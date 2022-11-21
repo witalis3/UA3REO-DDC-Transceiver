@@ -364,7 +364,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		return;
 
 	bool transverter_enabled = false;
-	if (TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm)
+	if (TRX.Transverter_70cm || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm)
 		transverter_enabled = true;
 
 	if (!transverter_enabled && _freq >= MAX_RX_FREQ_HZ)
@@ -373,17 +373,64 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	int64_t freq_diff = _freq - vfo->Freq;
 	vfo->Freq = _freq;
 
+	// get settings and fpga freq phrase
+	int64_t vfoa_freq = CurrentVFO->Freq + TRX_RIT;
+	if (TRX.Transverter_70cm && getBandFromFreq(vfoa_freq, true) == BANDID_70cm)
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_Mhz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_23cm && getBandFromFreq(vfoa_freq, true) == BANDID_23cm)
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_Mhz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_13cm && getBandFromFreq(vfoa_freq, true) == BANDID_13cm)
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_Mhz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_6cm && getBandFromFreq(vfoa_freq, true) == BANDID_6cm)
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_Mhz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_3cm && getBandFromFreq(vfoa_freq, true) == BANDID_3cm)
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_Mhz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_Mhz * 1000000);
+
+	CurrentVFO->RealRXFreq = vfoa_freq;
+	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
+
+	int64_t vfob_freq = SecondaryVFO->Freq + TRX_RIT;
+	if (TRX.Transverter_70cm && getBandFromFreq(vfob_freq, true) == BANDID_70cm)
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_Mhz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_23cm && getBandFromFreq(vfob_freq, true) == BANDID_23cm)
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_Mhz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_13cm && getBandFromFreq(vfob_freq, true) == BANDID_13cm)
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_Mhz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_6cm && getBandFromFreq(vfob_freq, true) == BANDID_6cm)
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_Mhz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_3cm && getBandFromFreq(vfob_freq, true) == BANDID_3cm)
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_Mhz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_Mhz * 1000000);
+
+	SecondaryVFO->RealRXFreq = vfob_freq;
+	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
+
+	int64_t vfo_tx_freq = CurrentVFO->Freq + TRX_XIT;
+	if (TRX.Transverter_70cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_70cm)
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_Mhz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_23cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_23cm)
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_Mhz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_13cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_13cm)
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_Mhz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_6cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_6cm)
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_Mhz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_Mhz * 1000000);
+	if (TRX.Transverter_3cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_3cm)
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_Mhz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_Mhz * 1000000);
+	TRX_freq_phrase_tx = getTXPhraseFromFrequency(vfo_tx_freq);
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo_tx_freq);
+
+	FPGA_NeedSendParams = true;
+	
 	// set DC-DC Sync freq
-	uint64_t dcdc_0_harmonic_num = _freq / DCDC_FREQ_0;
-	uint64_t dcdc_1_harmonic_num = _freq / DCDC_FREQ_1;
+	uint64_t dcdc_0_harmonic_num = vfoa_freq / DCDC_FREQ_0;
+	uint64_t dcdc_1_harmonic_num = vfoa_freq / DCDC_FREQ_1;
 	uint64_t dcdc_0_harmonic_1ow = dcdc_0_harmonic_num * DCDC_FREQ_0;
 	uint64_t dcdc_0_harmonic_high = (dcdc_0_harmonic_num + 1) * DCDC_FREQ_0;
 	uint64_t dcdc_1_harmonic_1ow = dcdc_1_harmonic_num * DCDC_FREQ_1;
 	uint64_t dcdc_1_harmonic_high = (dcdc_1_harmonic_num + 1) * DCDC_FREQ_1;
-	uint64_t dcdc_0_harmonic_1ow_diff = llabs((int64_t)dcdc_0_harmonic_1ow - (int64_t)_freq);
-	uint64_t dcdc_0_harmonic_high_diff = llabs((int64_t)dcdc_0_harmonic_high - (int64_t)_freq);
-	uint64_t dcdc_1_harmonic_1ow_diff = llabs((int64_t)dcdc_1_harmonic_1ow - (int64_t)_freq);
-	uint64_t dcdc_1_harmonic_high_diff = llabs((int64_t)dcdc_1_harmonic_high - (int64_t)_freq);
+	uint64_t dcdc_0_harmonic_1ow_diff = llabs((int64_t)dcdc_0_harmonic_1ow - (int64_t)vfoa_freq);
+	uint64_t dcdc_0_harmonic_high_diff = llabs((int64_t)dcdc_0_harmonic_high - (int64_t)vfoa_freq);
+	uint64_t dcdc_1_harmonic_1ow_diff = llabs((int64_t)dcdc_1_harmonic_1ow - (int64_t)vfoa_freq);
+	uint64_t dcdc_1_harmonic_high_diff = llabs((int64_t)dcdc_1_harmonic_high - (int64_t)vfoa_freq);
 	uint64_t dcdc_0_harmonic_nearest = dcdc_0_harmonic_1ow_diff < dcdc_0_harmonic_high_diff ? dcdc_0_harmonic_1ow_diff : dcdc_0_harmonic_high_diff;
 	uint64_t dcdc_1_harmonic_nearest = dcdc_1_harmonic_1ow_diff < dcdc_1_harmonic_high_diff ? dcdc_1_harmonic_1ow_diff : dcdc_1_harmonic_high_diff;
 
@@ -391,53 +438,6 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		TRX_DCDC_Freq = 1;
 	else
 		TRX_DCDC_Freq = 0;
-
-	// get settings and fpga freq phrase
-	int64_t vfoa_freq = CurrentVFO->Freq + TRX_RIT;
-	if (TRX.Transverter_70cm && getBandFromFreq(vfoa_freq, true) == BANDID_70cm)
-		vfoa_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfoa_freq - BANDS[BANDID_70cm].startFreq);
-	if (TRX.Transverter_23cm && getBandFromFreq(vfoa_freq, true) == BANDID_23cm)
-		vfoa_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfoa_freq - BANDS[BANDID_23cm].startFreq);
-	if (TRX.Transverter_13cm && getBandFromFreq(vfoa_freq, true) == BANDID_13cm)
-		vfoa_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfoa_freq - BANDS[BANDID_13cm].startFreq);
-	if (TRX.Transverter_6cm && getBandFromFreq(vfoa_freq, true) == BANDID_6cm)
-		vfoa_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfoa_freq - BANDS[BANDID_6cm].startFreq);
-	if (TRX.Transverter_3cm && getBandFromFreq(vfoa_freq, true) == BANDID_3cm)
-		vfoa_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfoa_freq - BANDS[BANDID_3cm].startFreq);
-
-	CurrentVFO->RealRXFreq = vfoa_freq;
-	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
-
-	int64_t vfob_freq = SecondaryVFO->Freq + TRX_RIT;
-	if (TRX.Transverter_70cm && getBandFromFreq(vfob_freq, true) == BANDID_70cm)
-		vfob_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfob_freq - BANDS[BANDID_70cm].startFreq);
-	if (TRX.Transverter_23cm && getBandFromFreq(vfob_freq, true) == BANDID_23cm)
-		vfob_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfob_freq - BANDS[BANDID_23cm].startFreq);
-	if (TRX.Transverter_13cm && getBandFromFreq(vfob_freq, true) == BANDID_13cm)
-		vfob_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfob_freq - BANDS[BANDID_13cm].startFreq);
-	if (TRX.Transverter_6cm && getBandFromFreq(vfob_freq, true) == BANDID_6cm)
-		vfob_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfob_freq - BANDS[BANDID_6cm].startFreq);
-	if (TRX.Transverter_3cm && getBandFromFreq(vfob_freq, true) == BANDID_3cm)
-		vfob_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfob_freq - BANDS[BANDID_3cm].startFreq);
-
-	SecondaryVFO->RealRXFreq = vfob_freq;
-	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
-
-	int64_t vfo_tx_freq = CurrentVFO->Freq + TRX_XIT;
-	if (TRX.Transverter_70cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_70cm)
-		vfo_tx_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfo_tx_freq - BANDS[BANDID_70cm].startFreq);
-	if (TRX.Transverter_23cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_23cm)
-		vfo_tx_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfo_tx_freq - BANDS[BANDID_23cm].startFreq);
-	if (TRX.Transverter_13cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_13cm)
-		vfo_tx_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfo_tx_freq - BANDS[BANDID_13cm].startFreq);
-	if (TRX.Transverter_6cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_6cm)
-		vfo_tx_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfo_tx_freq - BANDS[BANDID_6cm].startFreq);
-	if (TRX.Transverter_3cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_3cm)
-		vfo_tx_freq = (TRX.Transverter_Offset_Mhz * 1000000) + (vfo_tx_freq - BANDS[BANDID_3cm].startFreq);
-	TRX_freq_phrase_tx = getTXPhraseFromFrequency(vfo_tx_freq);
-	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo_tx_freq);
-
-	FPGA_NeedSendParams = true;
 
 	// services
 	if (SYSMENU_spectrum_opened || SYSMENU_swr_opened)

@@ -849,7 +849,6 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_STRING("TRX.LOCATOR", TRX.LOCATOR);
 			SD_WRITE_SETT_STRING("TRX.URSI_CODE", TRX.URSI_CODE);
 			SD_WRITE_SETT_LINE("TRX.Custom_Transverter_Enabled", (uint32_t *)&TRX.Custom_Transverter_Enabled, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.Transverter_Offset_Mhz", (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.ATU_Enabled", (uint32_t *)&TRX.ATU_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TUNER_Enabled", (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_70cm", (uint32_t *)&TRX.Transverter_70cm, SYSMENU_BOOLEAN);
@@ -1123,6 +1122,17 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_4m_band", (uint32_t *)&CALIBRATE.ENABLE_4m_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_AIR_band", (uint32_t *)&CALIBRATE.ENABLE_AIR_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_marine_band", (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_Custom_Offset_Mhz", (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_23cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_23cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_13cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_13cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_6cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_6cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_3cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_3cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.OTA_update", (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.TX_StartDelay", (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.LCD_Rotate", (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_BOOLEAN);
@@ -1399,8 +1409,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.Custom_Transverter_Enabled") == 0)
 		TRX.Custom_Transverter_Enabled = bval;
-	if (strcmp(name, "TRX.Transverter_Offset_Mhz") == 0)
-		TRX.Transverter_Offset_Mhz = (uint16_t)uintval;
 	if (strcmp(name, "TRX.ATU_Enabled") == 0)
 		TRX.ATU_Enabled = bval;
 	if (strcmp(name, "TRX.TUNER_Enabled") == 0)
@@ -1968,6 +1976,17 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		CALIBRATE.ENABLE_AIR_band = bval;
 	if (strcmp(name, "CALIBRATE.ENABLE_marine_band") == 0)
 		CALIBRATE.ENABLE_marine_band = bval;
+	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_Mhz") == 0) CALIBRATE.Transverter_Custom_Offset_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_RF_Mhz") == 0) CALIBRATE.Transverter_70cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_IF_Mhz") == 0) CALIBRATE.Transverter_70cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_RF_Mhz") == 0) CALIBRATE.Transverter_23cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_IF_Mhz") == 0) CALIBRATE.Transverter_23cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_RF_Mhz") == 0) CALIBRATE.Transverter_13cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_IF_Mhz") == 0) CALIBRATE.Transverter_13cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_RF_Mhz") == 0) CALIBRATE.Transverter_6cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_IF_Mhz") == 0) CALIBRATE.Transverter_6cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_RF_Mhz") == 0) CALIBRATE.Transverter_3cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_IF_Mhz") == 0) CALIBRATE.Transverter_3cm_IF_Mhz = (uint16_t)uintval;
 	if (strcmp(name, "CALIBRATE.OTA_update") == 0)
 		CALIBRATE.OTA_update = bval;
 	if (strcmp(name, "CALIBRATE.TX_StartDelay") == 0)

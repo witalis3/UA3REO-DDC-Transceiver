@@ -1039,10 +1039,19 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
         .startFreq = 1260000000,
         .endFreq = 1300000000,
         .regions =
-            (const REGION_MAP[1]){
-                {.startFreq = 1260000000, .endFreq = 1300000000, .mode = TRX_MODE_USB},
+            (const REGION_MAP[10]){
+								{.startFreq = 1260000000, .endFreq = 1270000000, .mode = TRX_MODE_NFM},
+								{.startFreq = 1270000000, .endFreq = 1290994000, .mode = TRX_MODE_NFM},
+								{.startFreq = 1290994000, .endFreq = 1291481000, .mode = TRX_MODE_NFM},
+								{.startFreq = 1291481000, .endFreq = 1296000000, .mode = TRX_MODE_NFM},
+								{.startFreq = 1296025000, .endFreq = 1296150000, .mode = TRX_MODE_CW},
+								{.startFreq = 1296150000, .endFreq = 1296800000, .mode = TRX_MODE_CW},
+								{.startFreq = 1296800000, .endFreq = 1296994000, .mode = TRX_MODE_CW},
+								{.startFreq = 1296994000, .endFreq = 1297490000, .mode = TRX_MODE_NFM},
+								{.startFreq = 1297490000, .endFreq = 1298000000, .mode = TRX_MODE_NFM},
+								{.startFreq = 1298000000, .endFreq = 1300000000, .mode = TRX_MODE_NFM},
             },
-        .regionsCount = 1,
+        .regionsCount = 10,
         .channels = NULL,
         .channelsCount = 0,
     },
@@ -1066,12 +1075,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
         .name = "6cm",
         .selectable = false,
         .broadcast = false,
-        .startFreq = 5760000000, // 5650000000
-        .endFreq = 5762000000,   // 5850000000
+        .startFreq = 5650000000,
+        .endFreq = 5850000000,
         .regions =
             (const REGION_MAP[1]){
-                //{.startFreq = 5650000000, .endFreq = 5850000000, .mode = TRX_MODE_USB},
-                {.startFreq = 5760000000, .endFreq = 5762000000, .mode = TRX_MODE_CW},
+                {.startFreq = 5650000000, .endFreq = 5850000000, .mode = TRX_MODE_CW},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -1086,7 +1094,7 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
         .endFreq = 10500000000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 10000000000, .endFreq = 10500000000, .mode = TRX_MODE_USB},
+                {.startFreq = 10000000000, .endFreq = 10500000000, .mode = TRX_MODE_CW},
             },
         .regionsCount = 1,
         .channels = NULL,

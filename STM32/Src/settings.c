@@ -179,10 +179,6 @@ void LoadSettings(bool clear) {
 		strcpy(TRX.LOCATOR, "LO02RR");          // Locator
 		strcpy(TRX.URSI_CODE, "SO148");         // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
 		TRX.Custom_Transverter_Enabled = false; // Enable transverter mode
-		TRX.Transverter_Offset_Mhz = 144;       // Offset from VFO
-#ifdef FRONTPANEL_LITE
-		TRX.Transverter_Offset_Mhz = 28;
-#endif
 		TRX.ATU_I = 0;                 // ATU default state
 		TRX.ATU_C = 0;                 // ATU default state
 		TRX.ATU_T = false;             // ATU default state
@@ -686,6 +682,24 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENABLE_4m_band = false;
 		CALIBRATE.ENABLE_AIR_band = false;
 		CALIBRATE.ENABLE_marine_band = false;
+		CALIBRATE.Transverter_Custom_Offset_Mhz = 100;       // Offset from VFO
+		CALIBRATE.Transverter_70cm_RF_Mhz = 432;
+		CALIBRATE.Transverter_70cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_23cm_RF_Mhz = 1296;
+		CALIBRATE.Transverter_23cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_13cm_RF_Mhz = 2320;
+		CALIBRATE.Transverter_13cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_6cm_RF_Mhz = 5760;
+		CALIBRATE.Transverter_6cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_3cm_RF_Mhz = 10368;
+		CALIBRATE.Transverter_3cm_IF_Mhz = 144;
+#ifdef FRONTPANEL_LITE
+		CALIBRATE.Transverter_70cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_23cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_13cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_6cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_3cm_IF_Mhz = 28;
+#endif
 		CALIBRATE.OTA_update = true;  // enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;  // Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false; // LCD 180 degree rotation

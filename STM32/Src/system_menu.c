@@ -56,7 +56,6 @@ static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetURSICode(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction);
-static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction);
@@ -375,6 +374,17 @@ static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_4m_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_AIR_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_70cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_70cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_23cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_23cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_13cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_13cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_6cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_6cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_3cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction);
 static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction);
@@ -549,7 +559,6 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Transverter 6cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_6cm, SYSMENU_HANDL_TRX_TRANSV_6CM},
     {"Transverter 3cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_3cm, SYSMENU_HANDL_TRX_TRANSV_3CM},
     {"Custom Transverter", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Custom_Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
-    {"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_HANDL_TRX_TRANSV_OFFSET},
     {"TUNER Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_HANDL_TRX_TUNER_Enabled},
     {"ATU Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_Enabled, SYSMENU_HANDL_TRX_ATU_Enabled},
     {"ATU Ind", SYSMENU_ATU_I, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TRX_ATU_I},
@@ -961,6 +970,17 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"EXT Transv 13cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_13cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_13cm},
     {"EXT Transv 6cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_6cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_6cm},
     {"EXT Transv 3cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_3cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm},
+		{"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
+		{"Transverter 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
+		{"Transverter 70cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
+		{"Transverter 23cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
+		{"Transverter 23cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
+		{"Transverter 13cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
+		{"Transverter 13cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
+		{"Transverter 6cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
+		{"Transverter 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
+		{"Transverter 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
+		{"Transverter 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
 #endif
     {"NOTX NOT HAM", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_NOTHAM, SYSMENU_HANDL_CALIB_NOTX_NOTHAM},
     {"NOTX 2200m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2200m, SYSMENU_HANDL_CALIB_NOTX_2200m},
@@ -1676,14 +1696,6 @@ static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction) {
 		TRX.Custom_Transverter_Enabled = true;
 	if (direction < 0)
 		TRX.Custom_Transverter_Enabled = false;
-}
-
-static void SYSMENU_HANDL_TRX_TRANSV_OFFSET(int8_t direction) {
-	TRX.Transverter_Offset_Mhz += direction;
-	if (TRX.Transverter_Offset_Mhz < 1)
-		TRX.Transverter_Offset_Mhz = 1;
-	if (TRX.Transverter_Offset_Mhz > 15000)
-		TRX.Transverter_Offset_Mhz = 15000;
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction) {
@@ -5089,6 +5101,94 @@ static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction) {
 		CALIBRATE.ENABLE_marine_band = false;
 
 	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom(int8_t direction) {
+	CALIBRATE.Transverter_Custom_Offset_Mhz += direction;
+	if (CALIBRATE.Transverter_Custom_Offset_Mhz < 1)
+		CALIBRATE.Transverter_Custom_Offset_Mhz = 1;
+	if (CALIBRATE.Transverter_Custom_Offset_Mhz > 750)
+		CALIBRATE.Transverter_Custom_Offset_Mhz = 750;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_70cm(int8_t direction) {
+	CALIBRATE.Transverter_70cm_RF_Mhz += direction;
+	if (CALIBRATE.Transverter_70cm_RF_Mhz < 1)
+		CALIBRATE.Transverter_70cm_RF_Mhz = 1;
+	if (CALIBRATE.Transverter_70cm_RF_Mhz > 15000)
+		CALIBRATE.Transverter_70cm_RF_Mhz = 15000;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_70cm(int8_t direction) {
+	CALIBRATE.Transverter_70cm_IF_Mhz += direction;
+	if (CALIBRATE.Transverter_70cm_IF_Mhz < 1)
+		CALIBRATE.Transverter_70cm_IF_Mhz = 1;
+	if (CALIBRATE.Transverter_70cm_IF_Mhz > 750)
+		CALIBRATE.Transverter_70cm_IF_Mhz = 750;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_23cm(int8_t direction) {
+	CALIBRATE.Transverter_23cm_RF_Mhz += direction;
+	if (CALIBRATE.Transverter_23cm_RF_Mhz < 1)
+		CALIBRATE.Transverter_23cm_RF_Mhz = 1;
+	if (CALIBRATE.Transverter_23cm_RF_Mhz > 15000)
+		CALIBRATE.Transverter_23cm_RF_Mhz = 15000;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_23cm(int8_t direction) {
+	CALIBRATE.Transverter_23cm_IF_Mhz += direction;
+	if (CALIBRATE.Transverter_23cm_IF_Mhz < 1)
+		CALIBRATE.Transverter_23cm_IF_Mhz = 1;
+	if (CALIBRATE.Transverter_23cm_IF_Mhz > 750)
+		CALIBRATE.Transverter_23cm_IF_Mhz = 750;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_13cm(int8_t direction) {
+	CALIBRATE.Transverter_13cm_RF_Mhz += direction;
+	if (CALIBRATE.Transverter_13cm_RF_Mhz < 1)
+		CALIBRATE.Transverter_13cm_RF_Mhz = 1;
+	if (CALIBRATE.Transverter_13cm_RF_Mhz > 15000)
+		CALIBRATE.Transverter_13cm_RF_Mhz = 15000;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_13cm(int8_t direction) {
+	CALIBRATE.Transverter_13cm_IF_Mhz += direction;
+	if (CALIBRATE.Transverter_13cm_IF_Mhz < 1)
+		CALIBRATE.Transverter_13cm_IF_Mhz = 1;
+	if (CALIBRATE.Transverter_13cm_IF_Mhz > 750)
+		CALIBRATE.Transverter_13cm_IF_Mhz = 750;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_6cm(int8_t direction) {
+	CALIBRATE.Transverter_6cm_RF_Mhz += direction;
+	if (CALIBRATE.Transverter_6cm_RF_Mhz < 1)
+		CALIBRATE.Transverter_6cm_RF_Mhz = 1;
+	if (CALIBRATE.Transverter_6cm_RF_Mhz > 15000)
+		CALIBRATE.Transverter_6cm_RF_Mhz = 15000;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_6cm(int8_t direction) {
+	CALIBRATE.Transverter_6cm_IF_Mhz += direction;
+	if (CALIBRATE.Transverter_6cm_IF_Mhz < 1)
+		CALIBRATE.Transverter_6cm_IF_Mhz = 1;
+	if (CALIBRATE.Transverter_6cm_IF_Mhz > 750)
+		CALIBRATE.Transverter_6cm_IF_Mhz = 750;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_3cm(int8_t direction) {
+	CALIBRATE.Transverter_3cm_RF_Mhz += direction;
+	if (CALIBRATE.Transverter_3cm_RF_Mhz < 1)
+		CALIBRATE.Transverter_3cm_RF_Mhz = 1;
+	if (CALIBRATE.Transverter_3cm_RF_Mhz > 15000)
+		CALIBRATE.Transverter_3cm_RF_Mhz = 15000;
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction) {
+	CALIBRATE.Transverter_3cm_IF_Mhz += direction;
+	if (CALIBRATE.Transverter_3cm_IF_Mhz < 1)
+		CALIBRATE.Transverter_3cm_IF_Mhz = 1;
+	if (CALIBRATE.Transverter_3cm_IF_Mhz > 750)
+		CALIBRATE.Transverter_3cm_IF_Mhz = 750;
 }
 
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction) {
