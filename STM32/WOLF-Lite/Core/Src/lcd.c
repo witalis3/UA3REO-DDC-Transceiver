@@ -206,7 +206,7 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 
 	uint64_t display_freq = CurrentVFO->Freq;
 	if (TRX.Custom_Transverter_Enabled)
-		display_freq += (uint64_t)TRX.Transverter_Offset_Mhz * 1000 * 1000;
+		display_freq += (uint64_t)CALIBRATE.Transverter_Custom_Offset_Mhz * 1000 * 1000;
 	if (TRX_on_TX && !TRX.selected_vfo)
 		display_freq += TRX_XIT;
 
