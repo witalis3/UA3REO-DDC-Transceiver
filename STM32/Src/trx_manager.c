@@ -447,6 +447,10 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
 	if (bandFromFreq >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
+		
+		if (TRX.RF_Gain_For_Each_Band) {
+			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].RF_Gain;
+		}
 	}
 	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap && bandFromFreq >= 0) {
 		uint_fast8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
@@ -1802,7 +1806,13 @@ void BUTTONHANDLER_SET_TX_BW(uint32_t parameter) {
 }
 
 void BUTTONHANDLER_SETRF_POWER(uint32_t parameter) {
-	TRX.RF_Power = parameter;
+	TRX.RF_Gain = parameter;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+		if (band >= 0) {
+			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
+		}
+	
 	APROC_TX_clip_gain = 1.0f;
 	APROC_TX_tune_power = 0.0f;
 	ATU_TunePowerStabilized = false;

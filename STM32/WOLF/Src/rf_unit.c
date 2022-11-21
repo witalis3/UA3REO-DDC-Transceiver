@@ -81,7 +81,7 @@ static void RF_UNIT_ProcessATU(void) {
 	if (ATU_Finished)
 		return;
 
-	if (!ATU_Finished && TRX.RF_Power == 0) {
+	if (!ATU_Finished && TRX.RF_Gain == 0) {
 		ATU_Finished = true;
 		return;
 	}

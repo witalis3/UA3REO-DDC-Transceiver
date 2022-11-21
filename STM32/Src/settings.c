@@ -126,7 +126,8 @@ void LoadSettings(bool clear) {
 		TRX.RF_Filters = true;       // LPF / HPF / BPF
 		TRX.ANT_selected = false;    // ANT-1
 		TRX.ANT_mode = false;        // RX=TX
-		TRX.RF_Power = 20;           // output power (%)
+		TRX.RF_Gain = 20;           // output power (%)
+		TRX.RF_Gain_For_Each_Band = false;	//save RF Gain for each band separatly
 		TRX.ChannelMode = false;     // enable channel mode on VFO
 		TRX.RIT_Enabled = false;     // activate the SHIFT mode
 		TRX.XIT_Enabled = false;     // activate the SPLIT mode
@@ -383,6 +384,7 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
 			TRX.BANDS_SAVED_SETTINGS[i].IF_Gain = TRX.IF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain = TRX.RF_Gain;
 			if (TRX.BANDS_SAVED_SETTINGS[i].Freq > 30000000)
 				TRX.BANDS_SAVED_SETTINGS[i].LNA = true;
 			else

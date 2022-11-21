@@ -426,15 +426,15 @@ static void WSPR_Encode_locator(void) {
 	// Min = 0 dBm, Max = 43 dBm, steps 0,3,7,10,13,17,20,23,27,30,33,37,40,43
 	uint8_t power = 20;
 	// from 7w out max
-	if (TRX.RF_Power >= 3)
+	if (TRX.RF_Gain >= 3)
 		power = 23;
-	if (TRX.RF_Power >= 7)
+	if (TRX.RF_Gain >= 7)
 		power = 27;
-	if (TRX.RF_Power >= 14)
+	if (TRX.RF_Gain >= 14)
 		power = 30;
-	if (TRX.RF_Power >= 28)
+	if (TRX.RF_Gain >= 28)
 		power = 33;
-	if (TRX.RF_Power >= 71)
+	if (TRX.RF_Gain >= 71)
 		power = 37;
 
 	// coding of locator

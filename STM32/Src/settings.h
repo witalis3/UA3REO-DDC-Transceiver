@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 72         // Settings config version
+#define SETT_VERSION 73         // Settings config version
 #define CALIB_VERSION 52        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
@@ -370,6 +370,7 @@ typedef struct {
 	uint8_t BEST_ATU_C;
 	int8_t FM_SQL_threshold_dbm;
 	uint8_t IF_Gain;
+	uint8_t RF_Gain;
 	bool LNA;
 	bool ATT;
 	bool ANT_selected;
@@ -400,7 +401,7 @@ extern struct TRX_SETTINGS {
 	uint16_t RIT_INTERVAL;
 	uint16_t XIT_INTERVAL;
 	uint8_t ATT_STEP;
-	uint8_t RF_Power;
+	uint8_t RF_Gain;
 	uint8_t FRQ_CW_STEP_DIVIDER;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
@@ -418,6 +419,7 @@ extern struct TRX_SETTINGS {
 	bool LNA;
 	bool ATT;
 	bool RF_Filters;
+	bool RF_Gain_For_Each_Band;
 	bool ANT_selected; // false - 1, true - 2
 	bool ANT_mode;     // false - RX=TX, true - 1RX 2TX
 	bool ChannelMode;

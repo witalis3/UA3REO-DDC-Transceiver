@@ -1176,15 +1176,20 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		direction = (direction < 0.0f) ? -1.0f : 1.0f;
 
 	if (TRX_on_TX) {
-		if (direction > 0 || TRX.RF_Power > 0)
-			TRX.RF_Power += direction;
-		if (TRX.RF_Power > 100)
-			TRX.RF_Power = 100;
+		if (direction > 0 || TRX.RF_Gain > 0)
+			TRX.RF_Gain += direction;
+		if (TRX.RF_Gain > 100)
+			TRX.RF_Gain = 100;
+		
+		int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+		if (band >= 0) {
+			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
+		}
 
 		ATU_TunePowerStabilized = false;
 
 		char sbuff[32] = {0};
-		sprintf(sbuff, "Power: %u", TRX.RF_Power);
+		sprintf(sbuff, "Power: %u", TRX.RF_Gain);
 		LCD_showTooltip(sbuff);
 
 		return;

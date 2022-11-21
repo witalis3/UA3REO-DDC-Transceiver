@@ -1096,7 +1096,7 @@ void processTxAudio(void) {
 	// amplitude for the selected power and range
 	float32_t RF_Power_selected = getPowerFromALC(TRX_ALC_IN); // get from ALC
 	if (RF_Power_selected == 0) {                              // ALC disabled
-		RF_Power_selected = (float32_t)TRX.RF_Power;
+		RF_Power_selected = (float32_t)TRX.RF_Gain;
 		if ((mode == TRX_MODE_LSB || mode == TRX_MODE_USB) && !TRX_Tune)
 			RF_Power_selected += CALIBRATE.SSB_POWER_ADDITION;
 	}
@@ -1112,7 +1112,7 @@ void processTxAudio(void) {
 		RFpower_amplitude = db2rateV(dbP) * TRX_MAX_TX_Amplitude;
 	}
 
-	if (RFpower_amplitude < 0.0f || TRX.RF_Power == 0)
+	if (RFpower_amplitude < 0.0f || TRX.RF_Gain == 0)
 		RFpower_amplitude = 0.0f;
 	if ((mode == TRX_MODE_AM || mode == TRX_MODE_SAM) && !TRX_Tune)
 		RFpower_amplitude = RFpower_amplitude * 0.7f;

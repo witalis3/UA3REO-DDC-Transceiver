@@ -818,7 +818,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.ANT_selected", (uint32_t *)&TRX.ANT_selected, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ANT_mode", (uint32_t *)&TRX.ANT_mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Filters", (uint32_t *)&TRX.RF_Filters, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.RF_Power", (uint32_t *)&TRX.RF_Power, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.RF_Gain", (uint32_t *)&TRX.RF_Gain, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Band", (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint32_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RIT_Enabled", (uint32_t *)&TRX.RIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.XIT_Enabled", (uint32_t *)&TRX.XIT_Enabled, SYSMENU_BOOLEAN);
@@ -1336,8 +1337,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		TRX.RF_Filters = bval;
 	if (strcmp(name, "TRX.ChannelMode") == 0)
 		TRX.ChannelMode = bval;
-	if (strcmp(name, "TRX.RF_Power") == 0)
-		TRX.RF_Power = (uint8_t)uintval;
+	if (strcmp(name, "TRX.RF_Gain") == 0)
+		TRX.RF_Gain = (uint8_t)uintval;
+	if (strcmp(name, "TRX.RF_Gain_For_Each_Band") == 0)
+		TRX.RF_Gain_For_Each_Band = bval;
 	if (strcmp(name, "TRX.RIT_Enabled") == 0)
 		TRX.RIT_Enabled = bval;
 	if (strcmp(name, "TRX.XIT_Enabled") == 0)

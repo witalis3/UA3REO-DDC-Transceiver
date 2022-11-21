@@ -31,6 +31,7 @@
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction);
+static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
@@ -501,7 +502,8 @@ const static struct sysmenu_item_handler sysmenu_handlers[] = {
 };
 
 const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
-    {"RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RF_Power, SYSMENU_HANDL_TRX_RFPower},
+    {"RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RF_Gain, SYSMENU_HANDL_TRX_RFPower},
+		{"Save power for band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band},
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
     {"Band Map", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
@@ -1232,6 +1234,13 @@ static void SYSMENU_HANDL_TRX_BandMap(int8_t direction) {
 		TRX.BandMapEnabled = false;
 }
 
+static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band(int8_t direction) {
+	if (direction > 0)
+		TRX.RF_Gain_For_Each_Band = true;
+	if (direction < 0)
+		TRX.RF_Gain_For_Each_Band = false;
+}
+
 static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction) {
 	if (direction > 0)
 		TRX.ChannelMode = true;
@@ -1269,10 +1278,15 @@ static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction) {
-	if (direction > 0 || TRX.RF_Power > 0)
-		TRX.RF_Power += direction;
-	if (TRX.RF_Power > 100)
-		TRX.RF_Power = 100;
+	if (direction > 0 || TRX.RF_Gain > 0)
+		TRX.RF_Gain += direction;
+	if (TRX.RF_Gain > 100)
+		TRX.RF_Gain = 100;
+	
+	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
+	}
 
 	APROC_TX_clip_gain = 1.0f;
 	ATU_TunePowerStabilized = false;
