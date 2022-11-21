@@ -1885,6 +1885,13 @@ void SYSMENU_AUDIO_AGC_HOTKEY(void) {
 	LCD_redraw(false);
 }
 
+void SYSMENU_AUDIO_NB_HOTKEY(void) {
+	SYSMENU_HANDL_AUDIOMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB Threshold");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
 void SYSMEUN_CALLSIGN_INFO_HOTKEY(void) {
 	SYSMENU_HANDL_CALLSIGN_INFO(0);
 	LCD_redraw(false);

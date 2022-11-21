@@ -72,6 +72,7 @@ extern void BUTTONHANDLER_AGC_SPEED(uint32_t parameter);
 extern void BUTTONHANDLER_DNR(uint32_t parameter);
 extern void BUTTONHANDLER_DNR_HOLD(uint32_t parameter);
 extern void BUTTONHANDLER_NB(uint32_t parameter);
+extern void BUTTONHANDLER_NB_HOLD(uint32_t parameter);
 extern void BUTTONHANDLER_NOTCH(uint32_t parameter);
 extern void BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter);
 extern void BUTTONHANDLER_FAST(uint32_t parameter);

@@ -1297,6 +1297,15 @@ void BUTTONHANDLER_NB(uint32_t parameter) {
 	NeedSaveSettings = true;
 }
 
+void BUTTONHANDLER_NB_HOLD(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
+		LCD_systemMenuOpened = true;
+		SYSMENU_AUDIO_NB_HOTKEY();
+	} else {
+		SYSMENU_eventCloseAllSystemMenu();
+	}
+}
+
 void BUTTONHANDLER_BW(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
