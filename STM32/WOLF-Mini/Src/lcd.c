@@ -232,11 +232,11 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 		mhz_x_offset = LAYOUT->FREQ_X_OFFSET_1;
 
 	if (redraw)
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP, LCD_WIDTH - LAYOUT->FREQ_LEFT_MARGIN - LAYOUT->FREQ_RIGHT_MARGIN,
+		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP - 10, LCD_WIDTH - LAYOUT->FREQ_LEFT_MARGIN - LAYOUT->FREQ_RIGHT_MARGIN,
 		                      LAYOUT->FREQ_BLOCK_HEIGHT, BG_COLOR);
 
 	if ((mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN) > 0)
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP, mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT,
+		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP - 10, mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT,
 		                      BG_COLOR);
 
 	// add spaces to output the frequency
