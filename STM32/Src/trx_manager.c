@@ -444,11 +444,11 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		return;
 
 	// get band
-	int_fast8_t bandFromFreq = getBandFromFreq(_freq, true);
+	int_fast8_t bandFromFreq = getBandFromFreq(_freq, false);
 	if (bandFromFreq >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
 	}
-	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap) {
+	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap && bandFromFreq >= 0) {
 		uint_fast8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
 		if (vfo->Mode != mode_from_bandmap) {
 			TRX_setMode(mode_from_bandmap, vfo);
