@@ -1977,8 +1977,8 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 		LCDDriver_Fill_RectWH(x_act + 1, y_act + 1, w_act - 2, h_act - 2, COLOR->BUTTON_BACK);                            // button body
 		LCDDriver_getTextBoundsFont(text, x_act, y_act, &x1_text, &y1_text, &w_text, &h_text, (GFXfont *)&FreeSans7pt7b); // get text bounds
 	} else {
-		LCDDriver_drawRectXY(x_act, y_act, x_act + w_act, y_act + h_act, COLOR->BUTTON_BORDER);                           // border
 		LCDDriver_Fill_RectWH(x_act, y_act, w_act, h_act, COLOR->BUTTON_BACK);                                            // button body
+		LCDDriver_drawRectXY(x_act, y_act, x_act + w_act, y_act + h_act, COLOR->BUTTON_BORDER);                           // border
 		LCDDriver_getTextBoundsFont(text, x_act, y_act, &x1_text, &y1_text, &w_text, &h_text, (GFXfont *)&FreeSans9pt7b); // get text bounds
 	}
 
