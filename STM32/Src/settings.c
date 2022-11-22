@@ -26,7 +26,6 @@ struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
 struct TRX_WIFI WIFI = {0};
 bool EEPROM_Enabled = true;
-static uint8_t settings_bank = 1;
 
 #define MAX_CLONE_SIZE sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
 
@@ -58,24 +57,19 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 
 void LoadSettings(bool clear) {
 	BKPSRAM_Enable();
-	memcpy(&TRX, BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
+	memcpy(&TRX, BACKUP_SRAM_BANK_ADDR, sizeof(TRX));
 	// Check, the data in the backup sram is correct, otherwise we use the second bank
 	if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM()) {
-		memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-		if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM()) {
-			println("[ERR] BACKUP SRAM data incorrect");
+		println("[ERR] BACKUP SRAM data incorrect");
 
-			LoadSettingsFromEEPROM();
-			if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM()) {
-				println("[ERR] EEPROM Settings data incorrect");
-			} else {
-				println("[OK] Settings data succesfully loaded from EEPROM");
-			}
+		LoadSettingsFromEEPROM();
+		if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM()) {
+			println("[ERR] EEPROM Settings data incorrect");
 		} else {
-			println("[OK] Settings data succesfully loaded from BACKUP SRAM bank 2");
+			println("[OK] Settings data succesfully loaded from EEPROM");
 		}
 	} else {
-		println("[OK] Settings data succesfully loaded from BACKUP SRAM bank 1");
+		println("[OK] Settings data succesfully loaded from BACKUP SRAM");
 	}
 	BKPSRAM_Disable();
 
@@ -128,6 +122,7 @@ void LoadSettings(bool clear) {
 		TRX.ANT_mode = false;              // RX=TX
 		TRX.RF_Gain = 20;                  // output power (%)
 		TRX.RF_Gain_For_Each_Band = false; // save RF Gain for each band separatly
+		TRX.RF_Gain_For_Each_Mode = false; // save RF Gain for each mode separatly
 		TRX.ChannelMode = false;           // enable channel mode on VFO
 		TRX.RIT_Enabled = false;           // activate the SHIFT mode
 		TRX.XIT_Enabled = false;           // activate the SPLIT mode
@@ -385,6 +380,11 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
 			TRX.BANDS_SAVED_SETTINGS[i].IF_Gain = TRX.IF_Gain;
 			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_CW = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_SSB = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_FM = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_AM = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_DIGI = TRX.RF_Gain;
 			if (TRX.BANDS_SAVED_SETTINGS[i].Freq > 30000000)
 				TRX.BANDS_SAVED_SETTINGS[i].LNA = true;
 			else
@@ -724,6 +724,12 @@ void LoadCalibration(bool clear) {
 			CALIBRATE.MEMORY_CHANNELS[i].Freq = 0;
 			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)getModeFromFreq(CALIBRATE.MEMORY_CHANNELS[i].Freq);
 			CALIBRATE.MEMORY_CHANNELS[i].IF_Gain = TRX.IF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_CW = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_SSB = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_FM = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_AM = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_DIGI = TRX.RF_Gain;
 			CALIBRATE.MEMORY_CHANNELS[i].LNA = TRX.LNA;
 			CALIBRATE.MEMORY_CHANNELS[i].ATT = TRX.ATT;
 			CALIBRATE.MEMORY_CHANNELS[i].ATT_DB = TRX.ATT_DB;
@@ -804,26 +810,15 @@ void SaveSettings(void) {
 	BKPSRAM_Enable();
 	TRX.csum = calculateCSUM();
 	Aligned_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
-	if (settings_bank == 1) {
-		memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
-		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
-		memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
-		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-	} else {
-		memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
-		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-		memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
-		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
-	}
+	
+	memcpy(BACKUP_SRAM_BANK_ADDR, &TRX, sizeof(TRX));
+	Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK_ADDR, sizeof(TRX));
+
 	BKPSRAM_Disable();
 	NeedSaveSettings = false;
 	// sendToDebug_str("[OK] Settings Saved to bank ");
 	// sendToDebug_uint8(settings_bank, false);
 	// sendToDebug_uint32(sizeof(TRX), false);
-	if (settings_bank == 1)
-		settings_bank = 2;
-	else
-		settings_bank = 1;
 }
 
 void SaveSettingsToEEPROM(void) {

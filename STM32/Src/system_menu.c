@@ -32,6 +32,7 @@ static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction);
 static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band(int8_t direction);
+static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
 static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
@@ -505,6 +506,7 @@ const static struct sysmenu_item_handler sysmenu_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RF_Gain, SYSMENU_HANDL_TRX_RFPower},
     {"Power for each band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band},
+		{"Power for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode},
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
     {"Band Map", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
@@ -1242,6 +1244,13 @@ static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band(int8_t direction) {
 		TRX.RF_Gain_For_Each_Band = true;
 	if (direction < 0)
 		TRX.RF_Gain_For_Each_Band = false;
+}
+
+static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode(int8_t direction) {
+	if (direction > 0)
+		TRX.RF_Gain_For_Each_Mode = true;
+	if (direction < 0)
+		TRX.RF_Gain_For_Each_Mode = false;
 }
 
 static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction) {

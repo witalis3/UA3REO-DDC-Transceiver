@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 73         // Settings config version
-#define CALIB_VERSION 53        // Calibration config version
+#define SETT_VERSION 74         // Settings config version
+#define CALIB_VERSION 54        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -371,6 +371,11 @@ typedef struct {
 	int8_t FM_SQL_threshold_dbm;
 	uint8_t IF_Gain;
 	uint8_t RF_Gain;
+	uint8_t RF_Gain_By_Mode_CW;
+	uint8_t RF_Gain_By_Mode_SSB;
+	uint8_t RF_Gain_By_Mode_FM;
+	uint8_t RF_Gain_By_Mode_AM;
+	uint8_t RF_Gain_By_Mode_DIGI;
 	bool LNA;
 	bool ATT;
 	bool ANT_selected;
@@ -402,6 +407,11 @@ extern struct TRX_SETTINGS {
 	uint16_t XIT_INTERVAL;
 	uint8_t ATT_STEP;
 	uint8_t RF_Gain;
+	uint8_t RF_Gain_By_Mode_CW;
+	uint8_t RF_Gain_By_Mode_SSB;
+	uint8_t RF_Gain_By_Mode_FM;
+	uint8_t RF_Gain_By_Mode_AM;
+	uint8_t RF_Gain_By_Mode_DIGI;
 	uint8_t FRQ_CW_STEP_DIVIDER;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
@@ -420,6 +430,7 @@ extern struct TRX_SETTINGS {
 	bool ATT;
 	bool RF_Filters;
 	bool RF_Gain_For_Each_Band;
+	bool RF_Gain_For_Each_Mode;
 	bool ANT_selected; // false - 1, true - 2
 	bool ANT_mode;     // false - RX=TX, true - 1RX 2TX
 	bool ChannelMode;

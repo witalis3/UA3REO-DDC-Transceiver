@@ -2150,51 +2150,51 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 	if (!LCD_screenKeyboardOpened) {
 		// main mode swich
 		if (CN_Theme) {
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_AM_X && x < LAYOUT->STATUS_MODE_SAM_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_AM_X && x < LAYOUT->STATUS_MODE_SAM_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_AM); // set mode AM;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_SAM_X && x < LAYOUT->STATUS_MODE_CW_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_SAM_X && x < LAYOUT->STATUS_MODE_CW_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_SAM); // set mode SAM;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_CW_X && x < LAYOUT->STATUS_MODE_DIGL_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_CW_X && x < LAYOUT->STATUS_MODE_DIGL_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_CW); // set mode CW;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_DIGL_X && x < LAYOUT->STATUS_MODE_DIGU_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_DIGL_X && x < LAYOUT->STATUS_MODE_DIGU_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_DIGI_L); // set mode DIGL;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_DIGU_X && x < LAYOUT->STATUS_MODE_NFM_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_DIGU_X && x < LAYOUT->STATUS_MODE_NFM_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_DIGI_U); // set mode DIGU;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_NFM_X && x < LAYOUT->STATUS_MODE_WFM_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_NFM_X && x < LAYOUT->STATUS_MODE_WFM_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_NFM); // set mode NFM;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_WFM_X && x < LAYOUT->STATUS_MODE_LSB_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_WFM_X && x < LAYOUT->STATUS_MODE_LSB_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_WFM); // set mode WFM;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_LSB_X && x < LAYOUT->STATUS_MODE_USB_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_LSB_X && x < LAYOUT->STATUS_MODE_USB_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_LSB); // set mode LSB;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_USB_X && x < LAYOUT->STATUS_MODE_RTTY_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_USB_X && x < LAYOUT->STATUS_MODE_RTTY_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_USB); // set mode RTTY;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_RTTY_X && x < LAYOUT->STATUS_MODE_LOOP_X) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_RTTY_X && x < LAYOUT->STATUS_MODE_LOOP_X) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_RTTY); // set mode USB;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_LOOP_X && x < LAYOUT->STATUS_MODE_LOOP_X + 34) {
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_LOOP_X && x < LAYOUT->STATUS_MODE_LOOP_X + 34) {
 				BUTTONHANDLER_SETMODE(TRX_MODE_LOOPBACK); // set mode LOOP;
 				return;
 			}
-			if (y >= 0 && y <= 22 && x > LAYOUT->STATUS_MODE_LOOP_X + 34 && x < LAYOUT->STATUS_MODE_LOOP_X + 34 + 34) // select main mode
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_LOOP_X + 34 && x < LAYOUT->STATUS_MODE_LOOP_X + 34 + 34) // select main mode
 			{
 				LCD_showModeWindow(false);
 				return;

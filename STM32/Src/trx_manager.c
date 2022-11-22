@@ -370,6 +370,10 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	if (!transverter_enabled && _freq >= MAX_RX_FREQ_HZ)
 		_freq = MAX_RX_FREQ_HZ;
 
+	//save old band data
+	int_fast8_t bandFromOldFreq = getBandFromFreq(vfo->Freq, false);
+	TRX_SaveRFGain_Data(vfo->Mode, bandFromOldFreq);
+	
 	int64_t freq_diff = _freq - vfo->Freq;
 	vfo->Freq = _freq;
 
@@ -448,8 +452,8 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	if (bandFromFreq >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Freq = _freq;
 
-		if (TRX.RF_Gain_For_Each_Band) {
-			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].RF_Gain;
+		if (vfo == CurrentVFO) {
+			TRX_LoadRFGain_Data(CurrentVFO->Mode, bandFromFreq);
 		}
 	}
 	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap && bandFromFreq >= 0) {
@@ -475,10 +479,17 @@ void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo) {
 
 void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 	uint_fast8_t old_mode = vfo->Mode;
+
+	//save old mode data
+	int_fast8_t bandFromFreq = getBandFromFreq(vfo->Freq, false);
+	TRX_SaveRFGain_Data(old_mode, bandFromFreq);
+	
+	//switch mode
 	vfo->Mode = _mode;
 	if (vfo->Mode == TRX_MODE_LOOPBACK)
 		TRX_Start_TXRX();
-
+	
+	//get new mode filters
 	switch (_mode) {
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
@@ -522,6 +533,9 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	}
+	
+	// get new mode data
+	TRX_LoadRFGain_Data(_mode, bandFromFreq);
 
 	// reset zoom on WFM
 	if (vfo->Mode != old_mode && vfo->Mode == TRX_MODE_WFM && TRX.FFT_Zoom != 1) {
@@ -559,6 +573,118 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 	LCD_UpdateQuery.StatusInfoBar = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedWTFRedraw = true;
+}
+
+void TRX_SaveRFGain_Data(uint8_t mode, int8_t band) {
+	switch (mode) {
+		case TRX_MODE_AM:
+		case TRX_MODE_SAM:
+			TRX.RF_Gain_By_Mode_AM = TRX.RF_Gain;
+			break;
+		case TRX_MODE_LSB:
+		case TRX_MODE_USB:
+			TRX.RF_Gain_By_Mode_SSB = TRX.RF_Gain;
+			break;
+		case TRX_MODE_DIGI_L:
+		case TRX_MODE_DIGI_U:
+		case TRX_MODE_RTTY:
+		case TRX_MODE_IQ:
+			TRX.RF_Gain_By_Mode_DIGI = TRX.RF_Gain;
+			break;
+		case TRX_MODE_CW:
+			TRX.RF_Gain_By_Mode_CW = TRX.RF_Gain;
+			break;
+		case TRX_MODE_NFM:
+		case TRX_MODE_WFM:
+			TRX.RF_Gain_By_Mode_FM = TRX.RF_Gain;
+			break;
+	}
+	
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
+		
+		switch (mode) {
+		case TRX_MODE_AM:
+		case TRX_MODE_SAM:
+			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_AM = TRX.RF_Gain;
+			break;
+		case TRX_MODE_LSB:
+		case TRX_MODE_USB:
+			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_SSB = TRX.RF_Gain;
+			break;
+		case TRX_MODE_DIGI_L:
+		case TRX_MODE_DIGI_U:
+		case TRX_MODE_RTTY:
+		case TRX_MODE_IQ:
+			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_DIGI = TRX.RF_Gain;
+			break;
+		case TRX_MODE_CW:
+			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_CW = TRX.RF_Gain;
+			break;
+		case TRX_MODE_NFM:
+		case TRX_MODE_WFM:
+			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_FM = TRX.RF_Gain;
+			break;
+		}
+	}
+}
+
+void TRX_LoadRFGain_Data(uint8_t mode, int8_t band) {
+	if (TRX.RF_Gain_For_Each_Mode) {
+		switch (mode) {
+		case TRX_MODE_AM:
+		case TRX_MODE_SAM:
+			TRX.RF_Gain = TRX.RF_Gain_By_Mode_AM;
+			break;
+		case TRX_MODE_LSB:
+		case TRX_MODE_USB:
+			TRX.RF_Gain = TRX.RF_Gain_By_Mode_SSB;
+			break;
+		case TRX_MODE_DIGI_L:
+		case TRX_MODE_DIGI_U:
+		case TRX_MODE_RTTY:
+		case TRX_MODE_IQ:
+			TRX.RF_Gain = TRX.RF_Gain_By_Mode_DIGI;
+			break;
+		case TRX_MODE_CW:
+			TRX.RF_Gain = TRX.RF_Gain_By_Mode_CW;
+			break;
+		case TRX_MODE_NFM:
+		case TRX_MODE_WFM:
+			TRX.RF_Gain = TRX.RF_Gain_By_Mode_FM;
+			break;
+		}
+	}
+	
+	if (TRX.RF_Gain_For_Each_Band) {
+		TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain;
+	}
+	
+	if (TRX.RF_Gain_For_Each_Mode && TRX.RF_Gain_For_Each_Band && band >= 0) {
+		switch (mode) {
+		case TRX_MODE_AM:
+		case TRX_MODE_SAM:
+			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_AM;
+			break;
+		case TRX_MODE_LSB:
+		case TRX_MODE_USB:
+			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_SSB;
+			break;
+		case TRX_MODE_DIGI_L:
+		case TRX_MODE_DIGI_U:
+		case TRX_MODE_RTTY:
+		case TRX_MODE_IQ:
+			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_DIGI;
+			break;
+		case TRX_MODE_CW:
+			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_CW;
+			break;
+		case TRX_MODE_NFM:
+		case TRX_MODE_WFM:
+			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_FM;
+			break;
+		}
+	}
 }
 
 void TRX_DoAutoGain(void) {
@@ -832,10 +958,12 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 		SecondaryVFO = &TRX.VFO_A;
 	}
 
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	TRX_LoadRFGain_Data(CurrentVFO->Mode, band);
+	
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
 	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;

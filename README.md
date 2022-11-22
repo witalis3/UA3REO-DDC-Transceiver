@@ -130,6 +130,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * **RF Power** - Transmission power,%
 * **Power for each band** - Save power settings for each band individually
+* **Power for each mode** - Save power settings for each mode individually
 * **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
