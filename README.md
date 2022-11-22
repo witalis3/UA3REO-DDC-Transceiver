@@ -129,7 +129,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### TRX Settings
 
 * **RF Power** - Transmission power,%
-* **Save power for band** - Save power settings for each band individually
+* **Power for each band** - Save power settings for each band individually
 * **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
