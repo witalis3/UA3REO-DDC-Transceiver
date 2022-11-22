@@ -602,7 +602,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 				                      (uint16_t)s9_position, LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
 				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + s9_position,
 				                      LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2,
-				                      (uint16_t)(s_width - s9_position), LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR_RED);
+				                      (uint16_t)(s_width - s9_position), LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER_HIGH);
 			}
 
 			// peak

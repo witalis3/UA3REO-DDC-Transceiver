@@ -1326,9 +1326,19 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			}
 
 			// bar
-			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET,
-			                      LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)s_width,
-			                      LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
+			const float32_t s9_position = LAYOUT->STATUS_SMETER_WIDTH / 15.0f * 9.0f;
+			if (s_width <= s9_position) {
+				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET,
+				                      LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)s_width,
+				                      LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
+			} else {
+				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET,
+				                      LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2,
+				                      (uint16_t)s9_position, LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
+				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + s9_position,
+				                      LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2,
+				                      (uint16_t)(s_width - s9_position), LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER_HIGH);
+			}
 
 			// peak
 			static uint32_t smeter_peak_settime = 0;
@@ -1376,13 +1386,14 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		}
 
 		// print dBm value
+		bool vhf_s_smeter = CurrentVFO->Freq >= 144000000;
 		if (CN_Theme) {
 			LCDDriver_printTextFont(TRX.CALLSIGN, 260, 90, COLOR->FREQ_B_MHZ, BG_COLOR, &FreeSans9pt7b);
 		}
 		sprintf(ctmp, "%ddBm", (int16_t)TRX_RX1_dBm_lowrate);
 		addSymbols(ctmp, ctmp, 7, " ", true);
 		LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET,
-		                    COLOR->STATUS_LABEL_DBM, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		(int16_t)TRX_RX1_dBm_lowrate < (vhf_s_smeter ? -93 : -73) ? COLOR->STATUS_LABEL_DBM : COLOR->STATUS_SMETER_HIGH, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 		// print s-meter value
 		static float32_t TRX_RX_dBm_averaging = -120.0f;
