@@ -66,15 +66,13 @@ void RTTYDecoder_Init(void) {
 
 	// RTTY mark filter
 	filter = biquad_create(RTTY_BPF_STAGES);
-	biquad_init_bandpass(filter, TRX_SAMPLERATE, (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) - RTTY_BPF_WIDTH / 2,
-	                     (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) + RTTY_BPF_WIDTH / 2);
+	biquad_init_bandpass(filter, TRX_SAMPLERATE, (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) - RTTY_BPF_WIDTH / 2, (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) + RTTY_BPF_WIDTH / 2);
 	fill_biquad_coeffs(filter, RTTY_Mark_Filter_Coeffs, RTTY_BPF_STAGES);
 	arm_biquad_cascade_df2T_init_f32(&RTTY_Mark_Filter, RTTY_BPF_STAGES, RTTY_Mark_Filter_Coeffs, RTTY_Mark_Filter_State);
 
 	// RTTY space filter
 	filter = biquad_create(RTTY_BPF_STAGES);
-	biquad_init_bandpass(filter, TRX_SAMPLERATE, (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) - RTTY_BPF_WIDTH / 2,
-	                     (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) + RTTY_BPF_WIDTH / 2);
+	biquad_init_bandpass(filter, TRX_SAMPLERATE, (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) - RTTY_BPF_WIDTH / 2, (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) + RTTY_BPF_WIDTH / 2);
 	fill_biquad_coeffs(filter, RTTY_Space_Filter_Coeffs, RTTY_BPF_STAGES);
 	arm_biquad_cascade_df2T_init_f32(&RTTY_Space_Filter, RTTY_BPF_STAGES, RTTY_Space_Filter_Coeffs, RTTY_Space_Filter_State);
 
@@ -262,8 +260,7 @@ static int RTTYDecoder_demodulator(float32_t sample) {
 	space_env = RTTYDecoder_decayavg(space_env, space_mag, (space_mag > space_env) ? RTTY_oneBitSampleCount / 4 : RTTY_oneBitSampleCount * 16);
 	// calculate the noise on the mark and space signals
 	mark_noise = RTTYDecoder_decayavg(mark_noise, mark_mag, (mark_mag < mark_noise) ? RTTY_oneBitSampleCount / 4 : RTTY_oneBitSampleCount * 48);
-	space_noise =
-	    RTTYDecoder_decayavg(space_noise, space_mag, (space_mag < space_noise) ? RTTY_oneBitSampleCount / 4 : RTTY_oneBitSampleCount * 48);
+	space_noise = RTTYDecoder_decayavg(space_noise, space_mag, (space_mag < space_noise) ? RTTY_oneBitSampleCount / 4 : RTTY_oneBitSampleCount * 48);
 	// the noise floor is the lower signal of space and mark noise
 	float32_t noise_floor = (space_noise < mark_noise) ? space_noise : mark_noise;
 

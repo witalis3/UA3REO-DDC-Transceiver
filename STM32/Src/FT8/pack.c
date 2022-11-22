@@ -72,8 +72,8 @@ static int32_t pack28(const char *callsign) {
 
 	// Check for standard callsign
 	int i0, i1, i2, i3, i4, i5;
-	if ((i0 = char_index(A1, c6[0])) >= 0 && (i1 = char_index(A2, c6[1])) >= 0 && (i2 = char_index(A3, c6[2])) >= 0 &&
-	    (i3 = char_index(A4, c6[3])) >= 0 && (i4 = char_index(A4, c6[4])) >= 0 && (i5 = char_index(A4, c6[5])) >= 0) {
+	if ((i0 = char_index(A1, c6[0])) >= 0 && (i1 = char_index(A2, c6[1])) >= 0 && (i2 = char_index(A3, c6[2])) >= 0 && (i3 = char_index(A4, c6[3])) >= 0 && (i4 = char_index(A4, c6[4])) >= 0 &&
+	    (i5 = char_index(A4, c6[5])) >= 0) {
 		// printf("Pack28: idx=[%d, %d, %d, %d, %d, %d]\n", i0, i1, i2, i3, i4, i5);
 		//  This is a standard callsign
 		int32_t n28 = i0;

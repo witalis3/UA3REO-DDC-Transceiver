@@ -18,8 +18,7 @@ uint16_t LCDDriver_GetCurrentXOffset(void) { return text_cursor_x; }
 void LCDDriver_SetCurrentXOffset(uint16_t x) { text_cursor_x = x; }
 
 // Text printing functions
-void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer,
-                                uint16_t buffer_w, uint16_t buffer_h) {
+void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h) {
 	uint8_t line = 0;
 	uint8_t zoom = (size > 0 ? size : 1);
 	uint8_t size_w = (size > 0 ? RASTR_FONT_W : RASTR_FONT_4x6_W);
@@ -86,8 +85,7 @@ void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_
 	}
 }
 
-void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer,
-                                 uint16_t buffer_w, uint16_t buffer_h) {
+void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h) {
 	uint16_t i = 0;
 	uint16_t offset = size * 6;
 	uint16_t skipped = 0;
@@ -253,8 +251,7 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
   @param    maxy  Maximum clipping value for Y
 */
 /**************************************************************************/
-static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy,
-                                 const GFXfont *gfxFont) {
+static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, const GFXfont *gfxFont) {
 	if (c == '\n') { // Newline?
 		*x = 0;        // Reset x to zero, advance y by one line
 		*y += gfxFont->yAdvance;
@@ -291,8 +288,7 @@ static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx
   @param    h      The boundary height, set by function
 */
 /**************************************************************************/
-void LCDDriver_getTextBoundsFont(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h,
-                                 const GFXfont *gfxFont) {
+void LCDDriver_getTextBoundsFont(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, const GFXfont *gfxFont) {
 	uint8_t c; // Current character
 
 	*x1 = x;
@@ -471,8 +467,7 @@ JPEG_YCbCrToRGB_Convert_Function JPEG_ConvertFunction = NULL;
 
 void LCDDriver_printImage_JPEGCompressed(uint16_t x, uint16_t y, const uint8_t *image) {
 	JPEG_blockIndex = 0;
-	uint8_t res =
-	    HAL_JPEG_Decode(&HRDW_JPEG_HANDLE, (uint8_t *)image, sizeof(IMAGES_logo800_jpeg), JPEG_out_buffer, JPEG_chunk_size_out, HAL_MAX_DELAY);
+	uint8_t res = HAL_JPEG_Decode(&HRDW_JPEG_HANDLE, (uint8_t *)image, sizeof(IMAGES_logo800_jpeg), JPEG_out_buffer, JPEG_chunk_size_out, HAL_MAX_DELAY);
 }
 
 void HAL_JPEG_InfoReadyCallback(JPEG_HandleTypeDef *hjpeg, JPEG_ConfTypeDef *pInfo) {

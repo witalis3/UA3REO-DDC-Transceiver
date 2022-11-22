@@ -205,8 +205,8 @@ static void MSC_BOT_CBW_Decode(USBD_HandleTypeDef *pdev) {
 	hmsc->csw.dTag = hmsc->cbw.dTag;
 	hmsc->csw.dDataResidue = hmsc->cbw.dDataLength;
 
-	if ((USBD_LL_GetRxDataSize(pdev, MSC_EPOUT_ADDR) != USBD_BOT_CBW_LENGTH) || (hmsc->cbw.dSignature != USBD_BOT_CBW_SIGNATURE) ||
-	    (hmsc->cbw.bLUN > 1U) || (hmsc->cbw.bCBLength < 1U) || (hmsc->cbw.bCBLength > 16U)) {
+	if ((USBD_LL_GetRxDataSize(pdev, MSC_EPOUT_ADDR) != USBD_BOT_CBW_LENGTH) || (hmsc->cbw.dSignature != USBD_BOT_CBW_SIGNATURE) || (hmsc->cbw.bLUN > 1U) || (hmsc->cbw.bCBLength < 1U) ||
+	    (hmsc->cbw.bCBLength > 16U)) {
 		SCSI_SenseCode(pdev, hmsc->cbw.bLUN, ILLEGAL_REQUEST, INVALID_CDB);
 
 		hmsc->bot_status = USBD_BOT_STATUS_ERROR;

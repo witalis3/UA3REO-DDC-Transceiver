@@ -36,7 +36,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	// bool has_blank = false;
 	for (uint64_t i = 0; i < NB_BLOCK_SIZE; i++) // Noise blanker function
 	{
-		float32_t sig = fabsf(buffer[i]); // get signal amplitude.  We need only look at one of the two audio channels since they will be the same.
+		float32_t sig = fabsf(buffer[i]);                        // get signal amplitude.  We need only look at one of the two audio channels since they will be the same.
 		instance->delay_buf[instance->delbuf_inptr] = buffer[i]; // copy first byte into delay buffer
 		instance->delbuf_inptr++;
 

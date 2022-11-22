@@ -228,8 +228,7 @@ __ALIGN_BEGIN uint8_t USBD_FS_BOSDesc[USB_SIZ_BOS_DESC] __ALIGN_END = {0x5, USB_
 #endif /* defined ( __ICCARM__ ) */
 
 /** USB lang indentifier descriptor. */
-__ALIGN_BEGIN static uint8_t USBD_LangIDDesc[USB_LEN_LANGID_STR_DESC] __ALIGN_END = {USB_LEN_LANGID_STR_DESC, USB_DESC_TYPE_STRING,
-                                                                                     LOBYTE(USBD_LANGID_STRING), HIBYTE(USBD_LANGID_STRING)};
+__ALIGN_BEGIN static uint8_t USBD_LangIDDesc[USB_LEN_LANGID_STR_DESC] __ALIGN_END = {USB_LEN_LANGID_STR_DESC, USB_DESC_TYPE_STRING, LOBYTE(USBD_LANGID_STRING), HIBYTE(USBD_LANGID_STRING)};
 
 #if defined(__ICCARM__) /* IAR Compiler */
 #pragma data_alignment = 4

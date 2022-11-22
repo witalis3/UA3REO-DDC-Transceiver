@@ -480,33 +480,27 @@ static bool SYSMENU_HANDL_CHECK_HIDDEN_ENABLED(void);
 #endif
 
 const static struct sysmenu_item_handler sysmenu_handlers[] = {
-    {"TRX Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_TRXMENU},
-    {"AUDIO Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_AUDIOMENU},
-    {"CW Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_CWMENU},
-    {"SCREEN Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_LCDMENU},
-    {"Decoders", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_DECODERSMENU},
-    {"ADC/DAC Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_ADCMENU},
+    {"TRX Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_TRXMENU},   {"AUDIO Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_AUDIOMENU},
+    {"CW Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_CWMENU},     {"SCREEN Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_LCDMENU},
+    {"Decoders", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_DECODERSMENU},  {"ADC/DAC Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_ADCMENU},
 #if HRDW_HAS_WIFI
     {"WIFI Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WIFIMENU},
 #endif
 #if HRDW_HAS_SD
     {"SD Card", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SDMENU},
 #endif
-    {"Set Clock Time", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SETTIME},
-    {"DFU Mode", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Bootloader},
+    {"Set Clock Time", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SETTIME},  {"DFU Mode", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Bootloader},
 #if HRDW_HAS_SD
     {"OTA Update", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_OTA_Update},
 #endif
-    {"Services", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SERVICESMENU},
-    {"System info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SYSINFO},
-    {"Support project", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SUPPORT},
-    {"Calibration", SYSMENU_MENU, SYSMENU_HANDL_CHECK_HIDDEN_ENABLED, 0, SYSMENU_HANDL_CALIBRATIONMENU},
+    {"Services", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SERVICESMENU},   {"System info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SYSINFO},
+    {"Support project", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SUPPORT}, {"Calibration", SYSMENU_MENU, SYSMENU_HANDL_CHECK_HIDDEN_ENABLED, 0, SYSMENU_HANDL_CALIBRATIONMENU},
 };
 
 const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RF_Gain, SYSMENU_HANDL_TRX_RFPower},
     {"Power for each band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band},
-		{"Power for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode},
+    {"Power for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode},
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
     {"Band Map", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
@@ -519,18 +513,8 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
 #if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
     {"Fine RIT Tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FineRITTune, SYSMENU_HANDL_TRX_FineRITTune},
 #endif
-    {"TRX Samplerate",
-     SYSMENU_ENUM,
-     NULL,
-     (uint32_t *)&TRX.SAMPLERATE_MAIN,
-     SYSMENU_HANDL_TRX_SAMPLERATE_MAIN,
-     {"48khz", "96khz", "192khz", "384khz"}},
-    {"FM Samplerate",
-     SYSMENU_ENUM,
-     NULL,
-     (uint32_t *)&TRX.SAMPLERATE_FM,
-     SYSMENU_HANDL_TRX_SAMPLERATE_FM,
-     {"48khz", "96khz", "192khz", "384khz"}},
+    {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_TRX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
+    {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_TRX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
     {"Freq Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
     {"Freq Step FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
     {"Freq Step ENC2", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
@@ -544,12 +528,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"VGA Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.VGA_GAIN, SYSMENU_HANDL_TRX_VGA_GAIN},
 #endif
 #if HRDW_HAS_USB_DEBUG
-    {"DEBUG Console",
-     SYSMENU_ENUM,
-     NULL,
-     (uint32_t *)&TRX.Debug_Type,
-     SYSMENU_HANDL_TRX_DEBUG_TYPE,
-     {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT"}},
+    {"DEBUG Console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT"}},
 #endif
     {"Auto Input Switch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_HANDL_TRX_Auto_Input_Switch},
     {"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_TRX_Auto_Snap},
@@ -668,30 +647,15 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"LCD Sleep Timeout", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.LCD_SleepTimeout, SYSMENU_HANDL_SCREEN_LCD_SleepTimeout},
 #endif
 #ifdef LAY_160x128
-    {"Color Theme",
-     SYSMENU_ENUMR,
-     NULL,
-     (uint32_t *)&TRX.ColorThemeId,
-     SYSMENU_HANDL_SCREEN_COLOR_THEME,
-     {"Black", "White", "Colored", "CN", "C+Green", "C+White"}},
+    {"Color Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME, {"Black", "White", "Colored", "CN", "C+Green", "C+White"}},
 #else
-    {"Color Theme",
-     SYSMENU_ENUMR,
-     NULL,
-     (uint32_t *)&TRX.ColorThemeId,
-     SYSMENU_HANDL_SCREEN_COLOR_THEME,
-     {"Black", "White", "Colored", "CN", "CN+Green", "CN+White"}},
+    {"Color Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.ColorThemeId, SYSMENU_HANDL_SCREEN_COLOR_THEME, {"Black", "White", "Colored", "CN", "CN+Green", "CN+White"}},
 #endif
 #ifdef LAY_480x320
     {"Layout Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME, {"Default", "7 Segm"}},
 #endif
 #ifdef LAY_800x480
-    {"Layout Theme",
-     SYSMENU_ENUMR,
-     NULL,
-     (uint32_t *)&TRX.LayoutThemeId,
-     SYSMENU_HANDL_SCREEN_LAYOUT_THEME,
-     {"Default", "Analog", "7 Segm", "Classic", "Default+", "Analog+", "CN", "CN+"}},
+    {"Layout Theme", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.LayoutThemeId, SYSMENU_HANDL_SCREEN_LAYOUT_THEME, {"Default", "Analog", "7 Segm", "Classic", "Default+", "Analog+", "CN", "CN+"}},
 #endif
     {"FFT Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
     {"FFT Automatic", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Automatic, SYSMENU_HANDL_SCREEN_FFT_Automatic},
@@ -730,12 +694,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"WTF Moving", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WTF_Moving, SYSMENU_HANDL_SCREEN_WTF_Moving},
     {"FFT Compressor", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
     {"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
-    {"FFT Window",
-     SYSMENU_ENUMR,
-     NULL,
-     (uint32_t *)&TRX.FFT_Window,
-     SYSMENU_HANDL_SCREEN_FFT_Window,
-     {"", "Dolph", "Blckman", "Nutall", "BlNutll", "Hann", "Hamming", "No"}},
+    {"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blckman", "Nutall", "BlNutll", "Hann", "Hamming", "No"}},
 #if HRDW_HAS_WIFI
     {"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
     {"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
@@ -802,8 +761,7 @@ const static struct sysmenu_item_handler sysmenu_decoders_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_adc_handlers[] = {
     {"ADC Driver", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_Driver, SYSMENU_HANDL_ADC_DRIVER},
 #if !defined(FRONTPANEL_LITE)
-    {"ADC Preamp", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},
-    {"ADC Dither", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
+    {"ADC Preamp", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},       {"ADC Dither", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
     {"ADC Randomizer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
 #endif
     {"ADC Shutdown", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
@@ -863,12 +821,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Encoder on falling", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
     {"Encoder acceleration", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
 #if !defined(FRONTPANEL_LITE)
-    {"RF-Unit Type",
-     SYSMENU_ENUM,
-     NULL,
-     (uint32_t *)&CALIBRATE.RF_unit_type,
-     SYSMENU_HANDL_CALIB_RF_unit_type,
-     {"QRP", "BIG", "SPLIT", "RU4PN", "WF-100D"}},
+    {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "WF-100D"}},
 #endif
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
     {"Tangent Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.TangentType, SYSMENU_HANDL_CALIB_TangentType, {"MH-36", "MH-48"}},
@@ -975,8 +928,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"EXT Transv 13cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_13cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_13cm},
     {"EXT Transv 6cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_6cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_6cm},
     {"EXT Transv 3cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_3cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm},
-    {"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz,
-     SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
+    {"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
     {"Transverter 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
     {"Transverter 70cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
     {"Transverter 23cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
@@ -1019,7 +971,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"TX Start Delay", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_HANDL_CALIB_TX_StartDelay},
     {"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
 #ifdef TOUCHPAD_GT911
-		{"TOUCHPAD horiz flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip},
+    {"TOUCHPAD horiz flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip},
     {"Flash GT911", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_FlashGT911},
 #endif
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
@@ -1558,8 +1510,7 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CALLSIGN, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top,
-	                        RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_TRX_Callsign_keyboardHandler, false);
@@ -1590,8 +1541,7 @@ static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.LOCATOR, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_locator_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top,
-	                        RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_locator_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_TRX_Locator_keyboardHandler, false);
@@ -1622,8 +1572,8 @@ static void SYSMENU_TRX_DrawURSICodeMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.URSI_CODE, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_ursi_code_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top,
-	                        RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_ursi_code_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
+	                        COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_TRX_URSICode_keyboardHandler, false);
@@ -3485,8 +3435,8 @@ static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(WIFI.Password_1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top,
-	                        RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
+	                        COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_WIFI_AP1_Password_keyboardHandler, true);
@@ -3517,8 +3467,8 @@ static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(WIFI.Password_2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top,
-	                        RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
+	                        COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_WIFI_AP2_Password_keyboardHandler, true);
@@ -3549,8 +3499,8 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(WIFI.Password_3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top,
-	                        RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
+	                        COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_WIFI_AP3_Password_keyboardHandler, true);
@@ -3564,11 +3514,9 @@ static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir) {
 	WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 &&
-	    WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
 		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 &&
-	    WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
 		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
 	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 127)
 		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
@@ -3588,11 +3536,9 @@ static void SYSMENU_WIFI_RotatePasswordChar2(int8_t dir) {
 	WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 &&
-	    WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
 		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 &&
-	    WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
 		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
 	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 127)
 		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
@@ -3612,11 +3558,9 @@ static void SYSMENU_WIFI_RotatePasswordChar3(int8_t dir) {
 	WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 &&
-	    WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
 		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 &&
-	    WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
 		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
 	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 127)
 		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
@@ -3862,13 +3806,11 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		sprintf(ctmp, "%d", Minutes);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR,
-		                    LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		sprintf(ctmp, "%d", Seconds);
 		addSymbols(ctmp, ctmp, 2, "0", false);
-		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR,
-		                    LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		LCD_busy = false;
 	}
 }
@@ -6095,8 +6037,7 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		return;
 	}
 
-	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU ||
-	    sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN ||
+	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN ||
 	    sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE) {
 		sysmenu_item_selected_by_enc2 = false;
 		SYSMENU_eventRotateSystemMenu(1);
@@ -6278,8 +6219,7 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 			setCurrentMenuIndex(sysmenu_item_count - 1);
 
 		while (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE ||
-		       (sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler != NULL &&
-		        !sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler())) {
+		       (sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler != NULL && !sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler())) {
 			if (getCurrentMenuIndex() == 0)
 				setCurrentMenuIndex(sysmenu_item_count - 1);
 			else
@@ -6291,8 +6231,7 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 			setCurrentMenuIndex(0);
 
 		while (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE ||
-		       (sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler != NULL &&
-		        !sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler())) {
+		       (sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler != NULL && !sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler())) {
 			if (getCurrentMenuIndex() >= sysmenu_item_count - 1)
 				setCurrentMenuIndex(0);
 			else
@@ -6338,8 +6277,8 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 		sprintf(ctmp, "%d", (uint8_t)*menuElement->value);
 		break;
 	case SYSMENU_B4:
-		sprintf(ctmp, "%d%d%d%d", bitRead((uint8_t)*menuElement->value, 3), bitRead((uint8_t)*menuElement->value, 2),
-		        bitRead((uint8_t)*menuElement->value, 1), bitRead((uint8_t)*menuElement->value, 0));
+		sprintf(ctmp, "%d%d%d%d", bitRead((uint8_t)*menuElement->value, 3), bitRead((uint8_t)*menuElement->value, 2), bitRead((uint8_t)*menuElement->value, 1),
+		        bitRead((uint8_t)*menuElement->value, 0));
 		break;
 	case SYSMENU_ENUM:
 	case SYSMENU_ENUMR:

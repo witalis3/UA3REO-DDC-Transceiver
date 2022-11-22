@@ -212,9 +212,8 @@ void WIFI_Process(void) {
 		WIFI_State = WIFI_CONFIGURED;
 		break;
 	case WIFI_CONFIGURED:
-		if (strcmp(WIFI.AP_1, "WIFI-AP") == 0 && strcmp(WIFI.AP_2, "WIFI-AP") == 0 && strcmp(WIFI.AP_3, "WIFI-AP") == 0 &&
-		    strcmp(WIFI.Password_1, "WIFI-PASSWORD") == 0 && strcmp(WIFI.Password_2, "WIFI-PASSWORD") == 0 &&
-		    strcmp(WIFI.Password_3, "WIFI-PASSWORD") == 0)
+		if (strcmp(WIFI.AP_1, "WIFI-AP") == 0 && strcmp(WIFI.AP_2, "WIFI-AP") == 0 && strcmp(WIFI.AP_3, "WIFI-AP") == 0 && strcmp(WIFI.Password_1, "WIFI-PASSWORD") == 0 &&
+		    strcmp(WIFI.Password_2, "WIFI-PASSWORD") == 0 && strcmp(WIFI.Password_3, "WIFI-PASSWORD") == 0)
 			break;
 		if (WIFI_stop_auto_ap_list)
 			break;
@@ -540,8 +539,7 @@ void WIFI_Process(void) {
 													sTime.Seconds = sec;
 													RTC_DateTypeDef sDate;
 													uint16_t d = day;
-													uint16_t weekday =
-													    (d += month < 3 ? year-- : year - 2, 23 * month / 9 + d + 4 + year / 4 - year / 100 + year / 400) % 7;
+													uint16_t weekday = (d += month < 3 ? year-- : year - 2, 23 * month / 9 + d + 4 + year / 4 - year / 100 + year / 400) % 7;
 													sDate.Date = day;
 													sDate.Month = month;
 													sDate.Year = year_short;
@@ -636,8 +634,7 @@ bool WIFI_GetIP(void (*callback)(void)) {
 bool WIFI_ListAP(void (*callback)(void)) {
 	if (WIFI_State != WIFI_READY && WIFI_State != WIFI_CONFIGURED)
 		return false;
-	if (WIFI_State == WIFI_CONFIGURED && !WIFI_stop_auto_ap_list &&
-	    WIFI_ProcessingCommand == WIFI_COMM_LISTAP) // stop auto-connection when searching for networks
+	if (WIFI_State == WIFI_CONFIGURED && !WIFI_stop_auto_ap_list && WIFI_ProcessingCommand == WIFI_COMM_LISTAP) // stop auto-connection when searching for networks
 	{
 		WIFI_stop_auto_ap_list = true;
 		WIFI_WaitForOk();
@@ -917,8 +914,7 @@ static void WIFI_getHTTPResponse(void) {
 			start_time = HAL_GetTick();
 #define WIFI_STREAM_Timeout 10000
 			if (readed_body_length < WIFI_HTTP_Response_ContentLength && (HAL_GetTick() - start_time) < WIFI_STREAM_Timeout) {
-				while (readed_body_length < WIFI_HTTP_Response_ContentLength && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) &&
-				       (HAL_GetTick() - start_time) < WIFI_STREAM_Timeout) {
+				while (readed_body_length < WIFI_HTTP_Response_ContentLength && strlen(WIFI_HTTResponseHTML) < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < WIFI_STREAM_Timeout) {
 					if (WIFI_TryGetLine()) {
 						istr = strstr(WIFI_readedLine, "+IPD");
 						if (istr != NULL) {
@@ -1351,8 +1347,7 @@ void WIFI_checkFWUpdates(void) {
 	if (WIFI_connected && WIFI_State != WIFI_READY)
 		return;
 	char url[128];
-	sprintf(url, "/trx_services/check_fw_updates.php?dev=0&stm32=%s&fpga=%d.%d.%d", version_string, FPGA_FW_Version[2], FPGA_FW_Version[1],
-	        FPGA_FW_Version[0]);
+	sprintf(url, "/trx_services/check_fw_updates.php?dev=0&stm32=%s&fpga=%d.%d.%d", version_string, FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_checkFWUpdates_callback, false, false);
 }
 

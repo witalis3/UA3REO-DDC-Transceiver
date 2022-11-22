@@ -286,8 +286,7 @@ void display_details(int decoded_messages) {
 	// tft.fillRect(0, 100, 500, 320, RA8875_BLACK);
 
 	for (int i = 0; i < decoded_messages && i < message_limit; i++) {
-		sprintf(message, "%7s %7s %4s %4i %3i %4i", new_decoded[i].field1, new_decoded[i].field2, new_decoded[i].field3, new_decoded[i].freq_hz,
-		        new_decoded[i].snr, new_decoded[i].distance);
+		sprintf(message, "%7s %7s %4s %4i %3i %4i", new_decoded[i].field1, new_decoded[i].field2, new_decoded[i].field3, new_decoded[i].freq_hz, new_decoded[i].snr, new_decoded[i].distance);
 	}
 }
 

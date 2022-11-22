@@ -702,16 +702,15 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_6cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_3cm_IF_Mhz = 28;
 #endif
-		CALIBRATE.OTA_update = true;  // enable OTA FW update over WiFi
-		CALIBRATE.TX_StartDelay = 5;  // Relay switch delay before RF signal ON, ms
-		CALIBRATE.LCD_Rotate = false; // LCD 180 degree rotation
-		CALIBRATE.TOUCHPAD_horizontal_flip = false;	// Touchpad harozontal flip
-		CALIBRATE.INA226_EN = false;  // INA226 is not used				//Tisho
-		CALIBRATE.INA226_CurCalc =
-		    0.4f; // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
-		CALIBRATE.PWR_VLT_Calibration = 1000.0f; // VLT meter calibration
-		CALIBRATE.PWR_CUR_Calibration = 2.5f;    // CUR meter calibration
-		CALIBRATE.ATU_AVERAGING = 3;             // Tuner averaging stages
+		CALIBRATE.OTA_update = true;                // enable OTA FW update over WiFi
+		CALIBRATE.TX_StartDelay = 5;                // Relay switch delay before RF signal ON, ms
+		CALIBRATE.LCD_Rotate = false;               // LCD 180 degree rotation
+		CALIBRATE.TOUCHPAD_horizontal_flip = false; // Touchpad harozontal flip
+		CALIBRATE.INA226_EN = false;                // INA226 is not used				//Tisho
+		CALIBRATE.INA226_CurCalc = 0.4f;            // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
+		CALIBRATE.PWR_VLT_Calibration = 1000.0f;    // VLT meter calibration
+		CALIBRATE.PWR_CUR_Calibration = 2.5f;       // CUR meter calibration
+		CALIBRATE.ATU_AVERAGING = 3;                // Tuner averaging stages
 		CALIBRATE.CAT_Type = CAT_TS2000;
 		CALIBRATE.LNA_compensation = 0;       // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50; // balance of signals on twosignal-tune
@@ -810,7 +809,7 @@ void SaveSettings(void) {
 	BKPSRAM_Enable();
 	TRX.csum = calculateCSUM();
 	Aligned_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
-	
+
 	memcpy(BACKUP_SRAM_BANK_ADDR, &TRX, sizeof(TRX));
 	Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK_ADDR, sizeof(TRX));
 
@@ -991,9 +990,9 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		uint16_t bsize = size - page_size * page;
 		if (bsize > page_size)
 			bsize = page_size;
-		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false); // Write Enable Command
-		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);  // Write Command
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);        // Write Address ( The first address of flash module is 0x00000000 )
+		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                   // Write Enable Command
+		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                    // Write Command
+		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                          // Write Address ( The first address of flash module is 0x00000000 )
 		HRDW_EEPROM_SPI((uint8_t *)(write_clone + page_size * page), NULL, bsize, false); // Write Data
 		EEPROM_WaitWrite();
 	}

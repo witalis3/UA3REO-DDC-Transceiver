@@ -20,22 +20,22 @@
 	20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
 	         // gain
 #define AUTOGAIN_MAX_AMPLITUDE \
-	30000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
-	         // gain
-#define AUTOGAIN_CORRECTOR_WAITSTEP 5      // waiting for the averaging of the results when the auto-corrector of the input circuits is running
-#define KEY_HOLD_TIME 500                  // time of long pressing of the keyboard button for triggering, ms
-#define SHOW_LOGO true                     // Show logo on boot (from images.h)
-#define POWERDOWN_TIMEOUT 1000             // time of pressing the shutdown button, for operation, ms
-#define POWERDOWN_FORCE_TIMEOUT 2000       // force time
-#define USB_RESTART_TIMEOUT 5000           // time after which USB restart occurs if there are no packets
-#define SNTP_SYNC_INTERVAL (60 * 5)        // Time synchronization interval via NTP, sec
-#define SCANNER_NOSIGNAL_TIME 50           // time to continue sweeping if signal too low
-#define SCANNER_SIGNAL_TIME_FM 5000        // time to continue sweeping if signal founded for FM
-#define SCANNER_SIGNAL_TIME_OTHER 1000     // time to continue sweeping if signal founded for SSB
-#define SCANNER_FREQ_STEP_WFM 100000       // step for freq scanner for WFM
-#define SCANNER_FREQ_STEP_NFM 25000        // step for freq scanner for NFM
-#define SCANNER_FREQ_STEP_OTHER 500        // step for freq scanner for SSB
-#define ENCODER_MIN_RATE_ACCELERATION 2.0f // encoder enable rounding if lower than value
+	30000.0f                                    // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
+	                                            // gain
+#define AUTOGAIN_CORRECTOR_WAITSTEP 5         // waiting for the averaging of the results when the auto-corrector of the input circuits is running
+#define KEY_HOLD_TIME 500                     // time of long pressing of the keyboard button for triggering, ms
+#define SHOW_LOGO true                        // Show logo on boot (from images.h)
+#define POWERDOWN_TIMEOUT 1000                // time of pressing the shutdown button, for operation, ms
+#define POWERDOWN_FORCE_TIMEOUT 2000          // force time
+#define USB_RESTART_TIMEOUT 5000              // time after which USB restart occurs if there are no packets
+#define SNTP_SYNC_INTERVAL (60 * 5)           // Time synchronization interval via NTP, sec
+#define SCANNER_NOSIGNAL_TIME 50              // time to continue sweeping if signal too low
+#define SCANNER_SIGNAL_TIME_FM 5000           // time to continue sweeping if signal founded for FM
+#define SCANNER_SIGNAL_TIME_OTHER 1000        // time to continue sweeping if signal founded for SSB
+#define SCANNER_FREQ_STEP_WFM 100000          // step for freq scanner for WFM
+#define SCANNER_FREQ_STEP_NFM 25000           // step for freq scanner for NFM
+#define SCANNER_FREQ_STEP_OTHER 500           // step for freq scanner for SSB
+#define ENCODER_MIN_RATE_ACCELERATION 2.0f    // encoder enable rounding if lower than value
 #define DXCLUSTER_UPDATE_TIME (1000 * 60 * 1) // interval to get cluster info, 1min
 #define NORMAL_SWR_SAVED 1.5f                 // ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE 1.2f                  // ATU SWR target for new tune

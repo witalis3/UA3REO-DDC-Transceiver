@@ -29,9 +29,8 @@ static int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint
 static int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
 static int8_t STORAGE_GetMaxLun_FS(void);
 
-USBD_StorageTypeDef USBD_Storage_Interface_fops_FS = {
-    STORAGE_Init_FS, STORAGE_GetCapacity_FS, STORAGE_IsReady_FS,   STORAGE_IsWriteProtected_FS,
-    STORAGE_Read_FS, STORAGE_Write_FS,       STORAGE_GetMaxLun_FS, (int8_t *)STORAGE_Inquirydata_FS};
+USBD_StorageTypeDef USBD_Storage_Interface_fops_FS = {STORAGE_Init_FS, STORAGE_GetCapacity_FS, STORAGE_IsReady_FS,   STORAGE_IsWriteProtected_FS,
+                                                      STORAGE_Read_FS, STORAGE_Write_FS,       STORAGE_GetMaxLun_FS, (int8_t *)STORAGE_Inquirydata_FS};
 
 int8_t STORAGE_Init_FS(uint8_t lun) { return (USBD_OK); }
 

@@ -42,8 +42,7 @@ void drawButton(uint16_t i) {
 		color = COLOR_GREEN;
 
 	LCDDriver_printText(sButtonData[i].text, (FT8_button_spac_x * i) + 7, FT8_button_line + 7, COLOR_WHITE, COLOR_BLACK, 2);
-	LCDDriver_drawRectXY(FT8_button_spac_x * i, FT8_button_line, (FT8_button_spac_x * i) + FT8_button_width, FT8_button_line + FT8_button_height,
-	                     color);
+	LCDDriver_drawRectXY(FT8_button_spac_x * i, FT8_button_line, (FT8_button_spac_x * i) + FT8_button_width, FT8_button_line + FT8_button_height, color);
 }
 
 void Update_FT8_Menu_Cursor(void) {
@@ -62,8 +61,7 @@ void Update_FT8_Menu_Cursor(void) {
 		LCDDriver_drawLine(10, 115, 70, 115,
 		                   COLOR_BLACK); // clear the cursor of the last recieved mesage (it is needed by transition between the two fields)
 		// Draw the new position of the cursor (for buttons)
-		LCDDriver_drawLine(FT8_Menu_Idx * FT8_button_spac_x, FT8_button_line - 5, (FT8_Menu_Idx * FT8_button_spac_x) + FT8_button_width,
-		                   FT8_button_line - 5, COLOR_WHITE);
+		LCDDriver_drawLine(FT8_Menu_Idx * FT8_button_spac_x, FT8_button_line - 5, (FT8_Menu_Idx * FT8_button_spac_x) + FT8_button_width, FT8_button_line - 5, COLOR_WHITE);
 	} else // cursor is in the rage of the recieved mesages
 	{
 		Sel_Mess_Idx = FT8_Menu_Idx - (FT8_Menu_Max_Idx + 1);

@@ -189,8 +189,7 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 	prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
 
 	if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) &&
-	    ((!NeedSaveCalibration && !NeedSaveWiFi && !HRDW_SPI_Locked && !EEPROM_Busy && !LCD_busy) ||
-	     ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT))) {
+	    ((!NeedSaveCalibration && !NeedSaveWiFi && !HRDW_SPI_Locked && !EEPROM_Busy && !LCD_busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT))) {
 		TRX_Inited = false;
 		LCD_busy = true;
 		HAL_Delay(10);
@@ -325,10 +324,8 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 	// Detect FPGA stuck error
 	static float32_t old_FPGA_Audio_Buffer_RX1_I = 0;
 	static float32_t old_FPGA_Audio_Buffer_RX1_Q = 0;
-	float32_t *FPGA_Audio_Buffer_RX1_I_current =
-	    !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
-	float32_t *FPGA_Audio_Buffer_RX1_Q_current =
-	    !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+	float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
+	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
 	static uint16_t fpga_stuck_errors = 0;
 	if (FPGA_Audio_Buffer_RX1_I_current[0] == old_FPGA_Audio_Buffer_RX1_I || FPGA_Audio_Buffer_RX1_Q_current[0] == old_FPGA_Audio_Buffer_RX1_Q)
 		fpga_stuck_errors++;
@@ -390,8 +387,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 	TRX_Inactive_Time++;
 
 	// Detect FPGA IQ phase error
-	if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX && !TRX_phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop &&
-	    CurrentVFO->Mode != TRX_MODE_WFM) {
+	if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX && !TRX_phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) {
 		println("[ERR] IQ phase error, restart disabled | ", TRX_IQ_phase_error);
 		// FPGA_NeedRestart_RX = true;
 		TRX_phase_restarted = true;
@@ -405,8 +401,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 			maySendIQ = false;
 		}
 		uint32_t mstime = HAL_GetTick();
-		if (TRX_SNTP_Synced == 0 ||
-		    (mstime > (SNTP_SYNC_INTERVAL * 1000) && TRX_SNTP_Synced < (mstime - SNTP_SYNC_INTERVAL * 1000))) { // Sync time from internet
+		if (TRX_SNTP_Synced == 0 || (mstime > (SNTP_SYNC_INTERVAL * 1000) && TRX_SNTP_Synced < (mstime - SNTP_SYNC_INTERVAL * 1000))) { // Sync time from internet
 			WIFI_GetSNTPTime(NULL);
 			maySendIQ = false;
 		}
@@ -418,8 +413,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 			WIFI_checkFWUpdates();
 			maySendIQ = false;
 		}
-		if (TRX.FFT_DXCluster &&
-		    ((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || TRX_DXCluster_UpdateTime == 0)) // get and show dx cluster
+		if (TRX.FFT_DXCluster && ((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || TRX_DXCluster_UpdateTime == 0)) // get and show dx cluster
 		{
 			if (WIFI_getDXCluster_background())
 				TRX_DXCluster_UpdateTime = HAL_GetTick();
@@ -456,10 +450,8 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		// Print debug
 		uint32_t dbg_WM8731_DMA_samples = (uint32_t)((float32_t)CODEC_DMA_samples / 2.0f * dbg_coeff);
 		uint32_t dbg_AUDIOPROC_samples = (uint32_t)((float32_t)AUDIOPROC_samples * dbg_coeff);
-		float32_t *FPGA_Audio_Buffer_RX1_I_current =
-		    !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
-		float32_t *FPGA_Audio_Buffer_RX1_Q_current =
-		    !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+		float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
+		float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
 		float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I_current[0];
 		float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_RX1_Q_current[0];
 		if (TRX_on_TX) {

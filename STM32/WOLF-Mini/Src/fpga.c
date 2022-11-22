@@ -55,12 +55,9 @@ static void FPGA_restart_TX(void);                  // restart FPGA modules
 void FPGA_Init(bool bus_test, bool firmware_test) {
 	FPGA_bus_stop = true;
 
-	HAL_GPIO_WritePin(FPGA_BUS_D0_GPIO_Port,
-	                  FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin |
-	                      FPGA_BUS_D7_Pin,
+	HAL_GPIO_WritePin(FPGA_BUS_D0_GPIO_Port, FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin,
 	                  GPIO_PIN_RESET);
-	FPGA_GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin |
-	                           FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
+	FPGA_GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
 	FPGA_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	FPGA_GPIO_InitStruct.Pull = GPIO_PULLUP;
 	FPGA_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;

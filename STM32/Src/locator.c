@@ -146,8 +146,7 @@ float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t 
 	lat1 = DEG2RAD(lat1);
 	lat2 = DEG2RAD(lat2);
 
-	float32_t a = arm_sin_f32(dLat / 2.0f) * arm_sin_f32(dLat / 2.0f) +
-	              arm_sin_f32(dLon / 2.0f) * arm_sin_f32(dLon / 2.0f) * arm_cos_f32(lat1) * arm_cos_f32(lat2);
+	float32_t a = arm_sin_f32(dLat / 2.0f) * arm_sin_f32(dLat / 2.0f) + arm_sin_f32(dLon / 2.0f) * arm_sin_f32(dLon / 2.0f) * arm_cos_f32(lat1) * arm_cos_f32(lat2);
 	float32_t angle;
 	arm_atan2_f32(sqrtf(a), sqrtf(1.0f - a), &angle);
 	float32_t c = 2.0f * angle;
@@ -163,8 +162,7 @@ float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32
 	lat2 = DEG2RAD(lat2);
 
 	float32_t azimuth;
-	arm_atan2_f32((arm_sin_f32(dLon) * arm_cos_f32(lat2)),
-	              (arm_cos_f32(lat1) * arm_sin_f32(lat2) - arm_sin_f32(lat1) * arm_cos_f32(lat2) * arm_cos_f32(dLon)), &azimuth);
+	arm_atan2_f32((arm_sin_f32(dLon) * arm_cos_f32(lat2)), (arm_cos_f32(lat1) * arm_sin_f32(lat2) - arm_sin_f32(lat1) * arm_cos_f32(lat2) * arm_cos_f32(dLon)), &azimuth);
 
 	azimuth = RAD2DEG(azimuth);
 	while (azimuth < 0)

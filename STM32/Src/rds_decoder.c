@@ -37,8 +37,7 @@ SRAM_ON_F407 static float32_t RDS_LPF_Filter_State[2 * RDS_FILTER_STAGES] = {0};
 SRAM_ON_F407 static arm_biquad_cascade_df2T_instance_f32 RDS_LPF_Filter;
 // decimator
 static const float32_t DECIMATE_FIR_Coeffs[4] = {-0.05698952454792, 0.5574889164132, 0.5574889164132, -0.05698952454792};
-SRAM_ON_F407 static arm_fir_decimate_instance_f32 DECIMATE_FIR = {
-    .M = 16, .numTaps = 4, .pCoeffs = DECIMATE_FIR_Coeffs, .pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]){0}};
+SRAM_ON_F407 static arm_fir_decimate_instance_f32 DECIMATE_FIR = {.M = 16, .numTaps = 4, .pCoeffs = DECIMATE_FIR_Coeffs, .pState = (float32_t[FPGA_RX_IQ_BUFFER_HALF_SIZE + 4 - 1]){0}};
 
 SRAM_ON_F407 static float32_t RDS_pilot_buff[RDS_DECODER_PACKET_SIZE] = {0};
 SRAM_ON_F407 static float32_t RDS_buff[RDS_DECODER_PACKET_SIZE] = {0};
@@ -75,8 +74,7 @@ void RDSDecoder_Init(void) {
 
 	// RDS pilot tone
 	filter = biquad_create(RDS_FILTER_STAGES);
-	biquad_init_bandpass(filter, RDS_decoder_samplerate, SWFM_PILOT_TONE_FREQ - RDS_PILOT_TONE_MAX_ERROR,
-	                     SWFM_PILOT_TONE_FREQ + RDS_PILOT_TONE_MAX_ERROR);
+	biquad_init_bandpass(filter, RDS_decoder_samplerate, SWFM_PILOT_TONE_FREQ - RDS_PILOT_TONE_MAX_ERROR, SWFM_PILOT_TONE_FREQ + RDS_PILOT_TONE_MAX_ERROR);
 	fill_biquad_coeffs(filter, RDS_Pilot_Filter_Coeffs, RDS_FILTER_STAGES);
 	arm_biquad_cascade_df2T_init_f32(&RDS_Pilot_Filter, RDS_FILTER_STAGES, RDS_Pilot_Filter_Coeffs, RDS_Pilot_Filter_State);
 

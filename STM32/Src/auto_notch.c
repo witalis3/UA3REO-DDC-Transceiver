@@ -10,13 +10,11 @@ IRAM2 static AN_Instance RX2_AN_instance = {0};
 // initialize the automatic notch filter
 void InitAutoNotchReduction(void) {
 	dma_memset(&RX1_AN_instance, 0x00, sizeof RX1_AN_instance);
-	arm_lms_norm_init_f32(&RX1_AN_instance.lms2_Norm_instance, AUTO_NOTCH_TAPS, RX1_AN_instance.lms2_normCoeff_f32, RX1_AN_instance.lms2_stateF32,
-	                      AUTO_NOTCH_STEP, AUTO_NOTCH_BLOCK_SIZE);
+	arm_lms_norm_init_f32(&RX1_AN_instance.lms2_Norm_instance, AUTO_NOTCH_TAPS, RX1_AN_instance.lms2_normCoeff_f32, RX1_AN_instance.lms2_stateF32, AUTO_NOTCH_STEP, AUTO_NOTCH_BLOCK_SIZE);
 
 #if HRDW_HAS_DUAL_RX
 	dma_memset(&RX2_AN_instance, 0x00, sizeof RX2_AN_instance);
-	arm_lms_norm_init_f32(&RX2_AN_instance.lms2_Norm_instance, AUTO_NOTCH_TAPS, RX2_AN_instance.lms2_normCoeff_f32, RX2_AN_instance.lms2_stateF32,
-	                      AUTO_NOTCH_STEP, AUTO_NOTCH_BLOCK_SIZE);
+	arm_lms_norm_init_f32(&RX2_AN_instance.lms2_Norm_instance, AUTO_NOTCH_TAPS, RX2_AN_instance.lms2_normCoeff_f32, RX2_AN_instance.lms2_stateF32, AUTO_NOTCH_STEP, AUTO_NOTCH_BLOCK_SIZE);
 #endif
 }
 
@@ -37,8 +35,8 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 
 	dma_memcpy(&instance->lms2_reference[instance->reference_index_new], buffer,
 	           sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE); // save the data to the reference buffer
-	arm_lms_norm_f32(&instance->lms2_Norm_instance, buffer, &instance->lms2_reference[instance->reference_index_old], instance->lms2_errsig2,
-	                 buffer, AUTO_NOTCH_BLOCK_SIZE); // start LMS filter
+	arm_lms_norm_f32(&instance->lms2_Norm_instance, buffer, &instance->lms2_reference[instance->reference_index_old], instance->lms2_errsig2, buffer,
+	                 AUTO_NOTCH_BLOCK_SIZE); // start LMS filter
 
 	// overflow protect
 	float32_t minValOut = 0;

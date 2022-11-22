@@ -58,8 +58,7 @@
 #define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_16
 
 // buffers
-#define CODEC_AUDIO_BUFFER_SIZE \
-	(AUDIO_BUFFER_SIZE * 2) // the size of the circular buffer is 2 times larger than the FPGA buffer, we work in the first half, then on the other
+#define CODEC_AUDIO_BUFFER_SIZE (AUDIO_BUFFER_SIZE * 2)          // the size of the circular buffer is 2 times larger than the FPGA buffer, we work in the first half, then on the other
 #define CODEC_AUDIO_BUFFER_HALF_SIZE AUDIO_BUFFER_SIZE           // half buffer
 #define AUDIO_BUFFER_SIZE (192 * 2)                              // the size of the buffer for working with sound 48kHz
 #define AUDIO_BUFFER_HALF_SIZE (AUDIO_BUFFER_SIZE / 2)           // buffer size for working with sound 48kHz

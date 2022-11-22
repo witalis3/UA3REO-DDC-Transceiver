@@ -234,8 +234,7 @@ void TRX_ptt_change(void) {
 	bool TRX_new_ptt_hard = !HAL_GPIO_ReadPin(PTT_IN_GPIO_Port, PTT_IN_Pin);
 	if (TRX_ptt_hard != TRX_new_ptt_hard) {
 		if (TRX.Auto_Input_Switch) {
-			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY ||
-			    CurrentVFO->Mode == TRX_MODE_IQ)
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
 				TRX.InputType_DIGI = TRX_INPUT_MIC;
 			else
 				TRX.InputType_MAIN = TRX_INPUT_MIC;
@@ -251,8 +250,7 @@ void TRX_ptt_change(void) {
 	}
 	if (TRX_ptt_soft != TRX_old_ptt_soft) {
 		if (TRX.Auto_Input_Switch) {
-			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY ||
-			    CurrentVFO->Mode == TRX_MODE_IQ)
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
 				TRX.InputType_DIGI = TRX_INPUT_USB;
 			else
 				TRX.InputType_MAIN = TRX_INPUT_USB;
@@ -370,10 +368,10 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	if (!transverter_enabled && _freq >= MAX_RX_FREQ_HZ)
 		_freq = MAX_RX_FREQ_HZ;
 
-	//save old band data
+	// save old band data
 	int_fast8_t bandFromOldFreq = getBandFromFreq(vfo->Freq, false);
 	TRX_SaveRFGain_Data(vfo->Mode, bandFromOldFreq);
-	
+
 	int64_t freq_diff = _freq - vfo->Freq;
 	vfo->Freq = _freq;
 
@@ -480,16 +478,16 @@ void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo) {
 void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 	uint_fast8_t old_mode = vfo->Mode;
 
-	//save old mode data
+	// save old mode data
 	int_fast8_t bandFromFreq = getBandFromFreq(vfo->Freq, false);
 	TRX_SaveRFGain_Data(old_mode, bandFromFreq);
-	
-	//switch mode
+
+	// switch mode
 	vfo->Mode = _mode;
 	if (vfo->Mode == TRX_MODE_LOOPBACK)
 		TRX_Start_TXRX();
-	
-	//get new mode filters
+
+	// get new mode filters
 	switch (_mode) {
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
@@ -533,7 +531,7 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	}
-	
+
 	// get new mode data
 	TRX_LoadRFGain_Data(_mode, bandFromFreq);
 
@@ -552,11 +550,9 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 	}
 
 	// FM Samplerate change
-	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && old_mode != TRX_MODE_WFM && old_mode != TRX_MODE_NFM &&
-	    (_mode == TRX_MODE_WFM || _mode == TRX_MODE_NFM))
+	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && old_mode != TRX_MODE_WFM && old_mode != TRX_MODE_NFM && (_mode == TRX_MODE_WFM || _mode == TRX_MODE_NFM))
 		NeedFFTReinit = true;
-	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && (old_mode == TRX_MODE_WFM || old_mode == TRX_MODE_NFM) && _mode != TRX_MODE_WFM &&
-	    _mode != TRX_MODE_NFM)
+	if (TRX.SAMPLERATE_MAIN != TRX.SAMPLERATE_FM && (old_mode == TRX_MODE_WFM || old_mode == TRX_MODE_NFM) && _mode != TRX_MODE_WFM && _mode != TRX_MODE_NFM)
 		NeedFFTReinit = true;
 
 	if (old_mode != _mode) {
@@ -577,32 +573,32 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 
 void TRX_SaveRFGain_Data(uint8_t mode, int8_t band) {
 	switch (mode) {
-		case TRX_MODE_AM:
-		case TRX_MODE_SAM:
-			TRX.RF_Gain_By_Mode_AM = TRX.RF_Gain;
-			break;
-		case TRX_MODE_LSB:
-		case TRX_MODE_USB:
-			TRX.RF_Gain_By_Mode_SSB = TRX.RF_Gain;
-			break;
-		case TRX_MODE_DIGI_L:
-		case TRX_MODE_DIGI_U:
-		case TRX_MODE_RTTY:
-		case TRX_MODE_IQ:
-			TRX.RF_Gain_By_Mode_DIGI = TRX.RF_Gain;
-			break;
-		case TRX_MODE_CW:
-			TRX.RF_Gain_By_Mode_CW = TRX.RF_Gain;
-			break;
-		case TRX_MODE_NFM:
-		case TRX_MODE_WFM:
-			TRX.RF_Gain_By_Mode_FM = TRX.RF_Gain;
-			break;
+	case TRX_MODE_AM:
+	case TRX_MODE_SAM:
+		TRX.RF_Gain_By_Mode_AM = TRX.RF_Gain;
+		break;
+	case TRX_MODE_LSB:
+	case TRX_MODE_USB:
+		TRX.RF_Gain_By_Mode_SSB = TRX.RF_Gain;
+		break;
+	case TRX_MODE_DIGI_L:
+	case TRX_MODE_DIGI_U:
+	case TRX_MODE_RTTY:
+	case TRX_MODE_IQ:
+		TRX.RF_Gain_By_Mode_DIGI = TRX.RF_Gain;
+		break;
+	case TRX_MODE_CW:
+		TRX.RF_Gain_By_Mode_CW = TRX.RF_Gain;
+		break;
+	case TRX_MODE_NFM:
+	case TRX_MODE_WFM:
+		TRX.RF_Gain_By_Mode_FM = TRX.RF_Gain;
+		break;
 	}
-	
+
 	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
-		
+
 		switch (mode) {
 		case TRX_MODE_AM:
 		case TRX_MODE_SAM:
@@ -655,11 +651,11 @@ void TRX_LoadRFGain_Data(uint8_t mode, int8_t band) {
 			break;
 		}
 	}
-	
+
 	if (TRX.RF_Gain_For_Each_Band) {
 		TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain;
 	}
-	
+
 	if (TRX.RF_Gain_For_Each_Mode && TRX.RF_Gain_For_Each_Band && band >= 0) {
 		switch (mode) {
 		case TRX_MODE_AM:
@@ -960,7 +956,7 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	TRX_LoadRFGain_Data(CurrentVFO->Mode, band);
-	
+
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 
@@ -1700,8 +1696,7 @@ void BUTTONHANDLER_REC(uint32_t parameter) {
 
 void BUTTONHANDLER_FUNC(uint32_t parameter) {
 	if (!TRX.Locked) // LOCK BUTTON
-		if (!LCD_systemMenuOpened ||
-		    PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu)
+		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu)
 			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].clickHandler(0);
 }
 
@@ -1710,10 +1705,8 @@ void BUTTONHANDLER_FUNCH(uint32_t parameter) {
 		SYSMENU_hiddenmenu_enabled = true;
 		LCD_redraw(false);
 	} else if (!TRX.Locked ||
-	           PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler ==
-	               BUTTONHANDLER_LOCK) // LOCK BUTTON
-		if (!LCD_systemMenuOpened ||
-		    PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu)
+	           PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler == BUTTONHANDLER_LOCK) // LOCK BUTTON
+		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu)
 			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler(0);
 }
 
