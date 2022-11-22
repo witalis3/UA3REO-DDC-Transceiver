@@ -233,6 +233,10 @@ void GT911_Scan(void) {
 					GT911.X[touch_id] = LCD_WIDTH - GT911.X[touch_id];
 					GT911.Y[touch_id] = LCD_HEIGHT - GT911.Y[touch_id];
 				}
+				
+				if(CALIBRATE.TOUCHPAD_horizontal_flip) {
+					GT911.X[touch_id] = LCD_WIDTH - GT911.X[touch_id];
+				}
 
 				if (TRX.Debug_Type == TRX_DEBUG_TOUCH) {
 					print("Touch X:", GT911.X[touch_id]);

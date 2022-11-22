@@ -330,6 +330,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **OTA Update** - Enable OTA firmware update over WiFi
 * **TX Start Delay** - Delay before the RF signal is applied (ms), so that the relay has time to trigger
 * **LCD Rotate** - Rotate screen at 180 degrees
+* **TOUCHPAD horiz flip** - Flip touchpad operation horizontally
 * **ATU Averaging** - The number of steps of averaging SWR values during measurements in the operation of an automatic tuner
 * **CAT Type** - Type of CAT subsystem (FT-450 / TS-2000)
 * **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm

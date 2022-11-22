@@ -391,6 +391,7 @@ static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction);
 static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction);
 static void SYSMENU_HANDL_CALIB_PWR_CUR_Calibration(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip(int8_t direction);
 static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction); // Tisho
 static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ATU_AVERAGING(int8_t direction);
@@ -1015,6 +1016,10 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"TX Start Delay", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_HANDL_CALIB_TX_StartDelay},
     {"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
+#ifdef TOUCHPAD_GT911
+		{"TOUCHPAD horiz flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip},
+    {"Flash GT911", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_FlashGT911},
+#endif
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D)
     {"INA226_PWR_MON", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},                // Tisho
     {"INA226_Cur_Calc(mA/Bit)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL}, // Tisho
@@ -1032,9 +1037,6 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"TSignal Balance", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_HANDL_CALIB_TwoSignalTune_Balance},
     {"Linear Pwr Control", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_HANDL_CALIB_LinearPowerControl},
-#ifdef TOUCHPAD_GT911
-    {"Flash GT911", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_FlashGT911},
-#endif
     {"IF Gain MIN", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_HANDL_CALIB_IF_GAIN_MIN},
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
@@ -5235,6 +5237,13 @@ static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction) {
 
 	LCD_Init();
 	LCD_redraw(false);
+}
+
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip(int8_t direction) {
+	if (direction > 0)
+		CALIBRATE.TOUCHPAD_horizontal_flip = true;
+	if (direction < 0)
+		CALIBRATE.TOUCHPAD_horizontal_flip = false;
 }
 
 static void SYSMENU_HANDL_CALIB_LinearPowerControl(int8_t direction) {

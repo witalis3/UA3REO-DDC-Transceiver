@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #define SETT_VERSION 73         // Settings config version
-#define CALIB_VERSION 52        // Calibration config version
+#define CALIB_VERSION 53        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -746,6 +746,7 @@ extern struct TRX_CALIBRATE {
 	bool ENABLE_marine_band;
 	bool OTA_update;
 	bool LCD_Rotate;
+	bool TOUCHPAD_horizontal_flip;
 	bool INA226_EN; // Tisho
 	bool LinearPowerControl;
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
