@@ -196,7 +196,7 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 		CODEC_Mute();
 		CODEC_CleanBuffer();
 		LCDDriver_Fill(COLOR_BLACK);
-		LCD_showInfo("GOOD BYE!", false);
+		LCD_showInfo("GOOD BYE, 73", false);
 		SaveSettings();
 		SaveSettingsToEEPROM();
 		print_flush();
