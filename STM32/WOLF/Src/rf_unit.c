@@ -23,9 +23,8 @@ static bool FAN_Active_old = false;
 
 #define SENS_TABLE_COUNT 24
 static const int16_t KTY81_120_sensTable[SENS_TABLE_COUNT][2] = { // table of sensor characteristics
-    {-55, 490}, {-50, 515},  {-40, 567},  {-30, 624},  {-20, 684},  {-10, 747},  {0, 815},    {10, 886},
-    {20, 961},  {25, 1000},  {30, 1040},  {40, 1122},  {50, 1209},  {60, 1299},  {70, 1392},  {80, 1490},
-    {90, 1591}, {100, 1696}, {110, 1805}, {120, 1915}, {125, 1970}, {130, 2023}, {140, 2124}, {150, 2211}};
+    {-55, 490}, {-50, 515}, {-40, 567}, {-30, 624}, {-20, 684}, {-10, 747},  {0, 815},    {10, 886},   {20, 961},   {25, 1000},  {30, 1040},  {40, 1122},
+    {50, 1209}, {60, 1299}, {70, 1392}, {80, 1490}, {90, 1591}, {100, 1696}, {110, 1805}, {120, 1915}, {125, 1970}, {130, 2023}, {140, 2124}, {150, 2211}};
 
 static uint8_t getBPFByFreq(uint32_t freq) {
 	if (freq >= CALIBRATE.RFU_BPF_0_START && freq < CALIBRATE.RFU_BPF_0_END)
@@ -81,7 +80,7 @@ static void RF_UNIT_ProcessATU(void) {
 	if (ATU_Finished)
 		return;
 
-	if (!ATU_Finished && TRX.RF_Power == 0) {
+	if (!ATU_Finished && TRX.RF_Gain == 0) {
 		ATU_Finished = true;
 		return;
 	}
@@ -429,23 +428,19 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				// U1-QH NOT USED
 				// if (registerNumber == 8)
 				// U1-QG BPF_2_A0
-				if (registerNumber == 9 && TRX.RF_Filters && !dualrx_bpf_disabled &&
-				    (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)) // 1,2 - bpf2; 5,6 - bpf1
+				if (registerNumber == 9 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)) // 1,2 - bpf2; 5,6 - bpf1
 					SET_DATA_PIN;
 				// U1-QF BPF_2_A1
-				if (registerNumber == 10 && TRX.RF_Filters && !dualrx_bpf_disabled &&
-				    (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6)) // 4,2 - bpf2; 0,6 - bpf1
+				if (registerNumber == 10 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6)) // 4,2 - bpf2; 0,6 - bpf1
 					SET_DATA_PIN;
 				// U1-QE BPF_2_!EN
 				if (registerNumber == 11 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4))) // 1,2,3,4 - bpf2
 					SET_DATA_PIN;
 				// U1-QD BPF_1_A0
-				if (registerNumber == 12 && TRX.RF_Filters && !dualrx_bpf_disabled &&
-				    (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)) // 1,2 - bpf2; 5,6 - bpf1
+				if (registerNumber == 12 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)) // 1,2 - bpf2; 5,6 - bpf1
 					SET_DATA_PIN;
 				// U1-QC BPF_1_A1
-				if (registerNumber == 13 && TRX.RF_Filters && !dualrx_bpf_disabled &&
-				    (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6)) // 4,2 - bpf2; 0,6 - bpf1
+				if (registerNumber == 13 && TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6)) // 4,2 - bpf2; 0,6 - bpf1
 					SET_DATA_PIN;
 				// U1-QB BPF_1_!EN
 				if (registerNumber == 14 && (!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7))) // 5,6,7,0 - bpf1
@@ -1077,28 +1072,22 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				if (registerNumber == 40 && TRX.TUNER_Enabled && TRX.ATU_T)
 					SET_DATA_PIN;
 				// U21-6 BPF_2_!EN
-				if (registerNumber == 41 &&
-				    !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4))) // 1,2,3,4 - bpf2
+				if (registerNumber == 41 && !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4))) // 1,2,3,4 - bpf2
 					SET_DATA_PIN;
 				// U21-5 BPF_2_A1
-				if (registerNumber == 42 &&
-				    !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6))) // 4,2 - bpf2; 0,6 - bpf1
+				if (registerNumber == 42 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6))) // 4,2 - bpf2; 0,6 - bpf1
 					SET_DATA_PIN;
 				// U21-4 BPF_2_A0
-				if (registerNumber == 43 &&
-				    !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6))) // 1,2 - bpf2; 5,6 - bpf1
+				if (registerNumber == 43 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6))) // 1,2 - bpf2; 5,6 - bpf1
 					SET_DATA_PIN;
 				// U21-3 BPF_1_A0
-				if (registerNumber == 44 &&
-				    !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6))) // 1,2 - bpf2; 5,6 - bpf1
+				if (registerNumber == 44 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6))) // 1,2 - bpf2; 5,6 - bpf1
 					SET_DATA_PIN;
 				// U21-2 BPF_1_A1
-				if (registerNumber == 45 &&
-				    !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6))) // 4,2 - bpf2; 0,6 - bpf1
+				if (registerNumber == 45 && !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6))) // 4,2 - bpf2; 0,6 - bpf1
 					SET_DATA_PIN;
 				// U21-1 BPF_1_!EN
-				if (registerNumber == 46 &&
-				    !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7))) // 5,6,7,0 - bpf1
+				if (registerNumber == 46 && !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7))) // 5,6,7,0 - bpf1
 					SET_DATA_PIN;
 				// U21-0 BPF_ON
 				if (registerNumber == 47 && !(TRX.RF_Filters && !dualrx_bpf_disabled && bpf != 255))
@@ -1215,18 +1204,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		wf_100d_shift_array[38] = (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 3; // U24-1 LPF_3
 		wf_100d_shift_array[39] = (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK && lpf_index == 4; // U24-0 LPF_4
 
-		wf_100d_shift_array[40] = !dualrx_bpf_disabled && TRX.RF_Filters &&
-		                          ((CurrentVFO->RealRXFreq >= CALIBRATE.RFU_HPF_START && bpf == 255) || bpf == 7); // U31-H U3 BPF_1_A1 hpf 145(7)
+		wf_100d_shift_array[40] = !dualrx_bpf_disabled && TRX.RF_Filters && ((CurrentVFO->RealRXFreq >= CALIBRATE.RFU_HPF_START && bpf == 255) || bpf == 7); // U31-H U3 BPF_1_A1 hpf 145(7)
 		wf_100d_shift_array[41] = !dualrx_bpf_disabled && TRX.RF_Filters && (bpf == 1 || bpf == 0); // U31-G U7 BPF_3_A1 2.5-4(1) 1.6-2.5(0)
 		wf_100d_shift_array[42] = !dualrx_bpf_disabled && TRX.RF_Filters && (bpf == 3 || bpf == 0); // U31-F U7 BPF_3_A0 7-12(3) 1.6-2.5(0)
-		wf_100d_shift_array[43] = !dualrx_bpf_disabled && TRX.RF_Filters &&
-		                          ((CurrentVFO->RealRXFreq <= CALIBRATE.RFU_LPF_END && bpf == 255) || bpf == 7); // U31-E U3 BPF_1_A0 lpf 145(7)
-		wf_100d_shift_array[44] = !dualrx_bpf_disabled && TRX.RF_Filters && (bpf == 6 || bpf == 4); // U31-D U5 BPF_2_A0 21.5-30(6) 12-14.5(4)
-		wf_100d_shift_array[45] = !dualrx_bpf_disabled && TRX.RF_Filters && (bpf == 5 || bpf == 4); // U31-C U5 BPF_2_A1 14.5-21.5(5) 12-14.5(4)
-		wf_100d_shift_array[46] = !(TRX.RF_Filters && !dualrx_bpf_disabled &&
-		                            (bpf == 5 || bpf == 6 || bpf == 4)); // U31-B U5 BPF_2_EN net5?, 21.5-30(6), 14.5-21.5(5), 12-14.5(4)
-		wf_100d_shift_array[47] = !(TRX.RF_Filters && !dualrx_bpf_disabled &&
-		                            (bpf == 1 || bpf == 3 || bpf == 0 || bpf == 2)); // U31-A U7 BPF_3_EN 6-7.3(2), 7-12(3), 2.5-4(1), 1.6-2.5(0);
+		wf_100d_shift_array[43] = !dualrx_bpf_disabled && TRX.RF_Filters && ((CurrentVFO->RealRXFreq <= CALIBRATE.RFU_LPF_END && bpf == 255) || bpf == 7); // U31-E U3 BPF_1_A0 lpf 145(7)
+		wf_100d_shift_array[44] = !dualrx_bpf_disabled && TRX.RF_Filters && (bpf == 6 || bpf == 4);                            // U31-D U5 BPF_2_A0 21.5-30(6) 12-14.5(4)
+		wf_100d_shift_array[45] = !dualrx_bpf_disabled && TRX.RF_Filters && (bpf == 5 || bpf == 4);                            // U31-C U5 BPF_2_A1 14.5-21.5(5) 12-14.5(4)
+		wf_100d_shift_array[46] = !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 5 || bpf == 6 || bpf == 4));             // U31-B U5 BPF_2_EN net5?, 21.5-30(6), 14.5-21.5(5), 12-14.5(4)
+		wf_100d_shift_array[47] = !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 3 || bpf == 0 || bpf == 2)); // U31-A U7 BPF_3_EN 6-7.3(2), 7-12(3), 2.5-4(1), 1.6-2.5(0);
 
 		wf_100d_shift_array[48] = false;                                              // U32-H -
 		wf_100d_shift_array[49] = false;                                              // U32-G -
@@ -1235,9 +1220,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		wf_100d_shift_array[52] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U32-D Net_RX/TX
 		wf_100d_shift_array[53] = !TRX_on_TX && TRX.LNA;                              // U32-C - LNA_ON
 		wf_100d_shift_array[54] = false;                                              // U32-B -
-		wf_100d_shift_array[55] = !(TRX.RF_Filters && ((CurrentVFO->RealRXFreq >= CALIBRATE.RFU_HPF_START && bpf == 255) ||
-		                                               (CurrentVFO->RealRXFreq <= CALIBRATE.RFU_LPF_END && bpf == 255) || bpf == 7 ||
-		                                               dualrx_bpf_disabled)); // U32-A U3 BPF_1_EN bypass, lpf, hpf, 145(7)
+		wf_100d_shift_array[55] = !(TRX.RF_Filters && ((CurrentVFO->RealRXFreq >= CALIBRATE.RFU_HPF_START && bpf == 255) || (CurrentVFO->RealRXFreq <= CALIBRATE.RFU_LPF_END && bpf == 255) ||
+		                                               bpf == 7 || dualrx_bpf_disabled)); // U32-A U3 BPF_1_EN bypass, lpf, hpf, 145(7)
 
 		bool array_equal = true;
 		for (uint8_t i = 0; i < 56; i++) {

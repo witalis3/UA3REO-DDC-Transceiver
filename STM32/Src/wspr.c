@@ -15,11 +15,10 @@ static float64_t WSPR2_OffsetFreq[4] = {0, 1.4648, 2.9296, 4.3944};
 static uint8_t WSPR2_encMessage[11];
 static uint8_t WSPR2_symTable[170];     // symbol table 162
 static uint8_t WSPR2_symTableTemp[170]; // symbol table temp
-static const uint8_t WSPR2_SyncVec[162] = {1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
-                                           0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0,
-                                           0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1,
-                                           0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
-                                           0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0};
+static const uint8_t WSPR2_SyncVec[162] = {1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0,
+                                           0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0,
+                                           1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0,
+                                           0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0};
 
 static float64_t WSPR_bands_freq[11] = {0};
 static uint8_t WSPR2_count = 0;
@@ -231,8 +230,7 @@ void WSPR_DoEvents(void) {
 	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW     ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward));
 	LCDDriver_printText(tmp_buff, 5, y, FG_COLOR, BG_COLOR, 1);
 #else
-	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW, TEMP: % 2d     ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward),
-	        (int16_t)TRX_RF_Temperature);
+	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW, TEMP: % 2d     ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward), (int16_t)TRX_RF_Temperature);
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 #endif
 	y += y_step;
@@ -426,15 +424,15 @@ static void WSPR_Encode_locator(void) {
 	// Min = 0 dBm, Max = 43 dBm, steps 0,3,7,10,13,17,20,23,27,30,33,37,40,43
 	uint8_t power = 20;
 	// from 7w out max
-	if (TRX.RF_Power >= 3)
+	if (TRX.RF_Gain >= 3)
 		power = 23;
-	if (TRX.RF_Power >= 7)
+	if (TRX.RF_Gain >= 7)
 		power = 27;
-	if (TRX.RF_Power >= 14)
+	if (TRX.RF_Gain >= 14)
 		power = 30;
-	if (TRX.RF_Power >= 28)
+	if (TRX.RF_Gain >= 28)
 		power = 33;
-	if (TRX.RF_Power >= 71)
+	if (TRX.RF_Gain >= 71)
 		power = 37;
 
 	// coding of locator

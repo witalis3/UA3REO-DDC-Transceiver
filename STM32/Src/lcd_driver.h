@@ -13,8 +13,7 @@
 #if (defined(LCD_ILI9341))
 #include "lcd_driver_ILI9341.h"
 #endif
-#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || \
-     defined(LCD_ST7796S) || defined(LCD_R61581))
+#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_ST7796S) || defined(LCD_R61581))
 #include "lcd_driver_ILI9481.h"
 #endif
 #if (defined(LCD_ST7735S))
@@ -129,11 +128,9 @@ extern void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t
 extern void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size);
 extern void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, const GFXfont *gfxFont);
 extern void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size);
-extern void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer,
-                                        uint16_t buffer_w, uint16_t buffer_h);
+extern void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h);
 extern void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, const GFXfont *gfxFont);
-extern void LCDDriver_getTextBoundsFont(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h,
-                                        const GFXfont *gfxFont);
+extern void LCDDriver_getTextBoundsFont(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, const GFXfont *gfxFont);
 extern void LCDDriver_getTextBounds(char text[], uint16_t x, uint16_t y, uint16_t *x1, uint16_t *y1, uint16_t *w, uint16_t *h, uint8_t size);
 extern void LCDDriver_printImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data);
 extern void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *image, uint16_t transparent_color, uint16_t bg_color);

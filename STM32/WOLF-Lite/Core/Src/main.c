@@ -157,7 +157,6 @@ int main(void) {
 	MX_ADC3_Init();
 	MX_TIM1_Init();
 	MX_TIM2_Init();
-	MX_IWDG_Init();
 	/* USER CODE BEGIN 2 */
 
 	/* BUG FIX: Enabling Audio Clock Input in CubeMX does not set I2SSRC bit
@@ -198,6 +197,8 @@ int main(void) {
 		TRX.NeedGoToBootloader = false;
 		SaveSettings();
 		JumpToBootloader();
+	} else {
+		MX_IWDG_Init();
 	}
 
 	println("[OK] Calibration loading");
@@ -216,8 +217,7 @@ int main(void) {
 		strcat(greetings_buff, version_string);
 
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
-		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logoLite.width) / 2), ((LCD_HEIGHT - IMAGES_logoLite.height) / 2), &IMAGES_logoLite,
-		                                   BG_COLOR, BG_COLOR);
+		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logoLite.width) / 2), ((LCD_HEIGHT - IMAGES_logoLite.height) / 2), &IMAGES_logoLite, BG_COLOR, BG_COLOR);
 		LCDDriver_printText(greetings_buff, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
 
 		// show callsign greetings
@@ -226,8 +226,7 @@ int main(void) {
 		strcat(greetings_buff, TRX.CALLSIGN);
 		strcat(greetings_buff, " !");
 		LCDDriver_getTextBoundsFont(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, &FreeSans9pt7b);
-		LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243),
-		                        &FreeSans9pt7b);
+		LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), &FreeSans9pt7b);
 	}
 	println("[OK] Profiler init");
 	InitProfiler();
@@ -253,8 +252,6 @@ int main(void) {
 	initAudioProcessor();
 	HAL_TIM_Base_Start_IT(&htim5);
 
-	if (SHOW_LOGO)
-		HAL_Delay(1000); // logo wait
 	LCD_busy = false;
 	LCD_redraw(true);
 
@@ -1202,10 +1199,7 @@ static void MX_GPIO_Init(void) {
 	HAL_GPIO_WritePin(GPIOC, FPGA_CLK_Pin | FPGA_SYNC_Pin | AF_AMP_MUTE_Pin | AD1_CS_Pin, GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA,
-	                  FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin |
-	                      FPGA_BUS_D7_Pin,
-	                  GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin, GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(GPIOB, W25Q16_CS_Pin | LCD_BL_PWM_Pin, GPIO_PIN_RESET);
@@ -1249,8 +1243,7 @@ static void MX_GPIO_Init(void) {
 
 	/*Configure GPIO pins : FPGA_BUS_D0_Pin FPGA_BUS_D1_Pin FPGA_BUS_D2_Pin FPGA_BUS_D3_Pin
 	                         FPGA_BUS_D4_Pin FPGA_BUS_D5_Pin FPGA_BUS_D6_Pin FPGA_BUS_D7_Pin */
-	GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin |
-	                      FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
+	GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

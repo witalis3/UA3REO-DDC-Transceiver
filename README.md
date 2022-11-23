@@ -129,6 +129,8 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### TRX Settings
 
 * **RF Power** - Transmission power,%
+* **Power for each band** - Save power settings for each band individually
+* **Power for each mode** - Save power settings for each mode individually
 * **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
@@ -162,7 +164,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **ATU T** - Tuner capacitive arm position
 * **Transverter XXcm** - Enable external ham band transverter support
 * **Custom Transverter** - Enable external transverter on non-ham band (just offset display frequency)
-* **Transverter Offset, mHz** - External transverter frequency offset, mHz
 
 ### AUDIO Settings
 
@@ -324,9 +325,13 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain
 * **NOTX xxx** - Disable TX on selected bands
 * **ENABLE 60m/4m/AIR/Marine Band** - Enable hidden bands
+* **Transverter Offset, mHz** - Offset frequency shown on the display (for custom transverters)
+* **Transverter xxx RF, mHz** - Setting the RF frequency of the transceiver to match the IF
+* **Transverter xxx IF, mHz** - Setting the IF frequency of the transverter
 * **OTA Update** - Enable OTA firmware update over WiFi
 * **TX Start Delay** - Delay before the RF signal is applied (ms), so that the relay has time to trigger
 * **LCD Rotate** - Rotate screen at 180 degrees
+* **TOUCHPAD horiz flip** - Flip touchpad operation horizontally
 * **ATU Averaging** - The number of steps of averaging SWR values during measurements in the operation of an automatic tuner
 * **CAT Type** - Type of CAT subsystem (FT-450 / TS-2000)
 * **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm

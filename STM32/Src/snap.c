@@ -5,7 +5,7 @@
 
 static arm_sort_instance_f32 SNAP_SortInstance;
 SRAM_ON_F407 static float32_t SNAP_buffer[FFT_SIZE] = {0};
-static float32_t SNAP_buffer_tmp[FFT_SIZE] = {0};
+SRAM_ON_H743 static float32_t SNAP_buffer_tmp[FFT_SIZE] = {0};
 static bool SNAP_need_buffer = false;
 static bool SNAP_process_from_auto = false;
 static uint8_t SNAP_process_mode = 0; // mode 0 - unidirectional, 1 - left, 2 - right
@@ -143,10 +143,10 @@ static void SNAP_Process() {
 		if (SNAP_process_mode == 2 && CurrentVFO->Mode == TRX_MODE_LSB) { // right
 			target_freq += CurrentVFO->LPF_RX_Filter_Width;
 		}
-		
+
 		target_freq = roundl(target_freq / 500) * 500;
 	}
-	
+
 	if (CurrentVFO->Mode == TRX_MODE_USB) {
 		if (SNAP_process_mode == 1) { // left
 			target_freq -= CurrentVFO->LPF_RX_Filter_Width;
@@ -154,7 +154,7 @@ static void SNAP_Process() {
 		if (SNAP_process_mode == 2) { // right
 			target_freq -= 500;
 		}
-	
+
 		target_freq = roundl(target_freq / 500) * 500;
 	}
 	//

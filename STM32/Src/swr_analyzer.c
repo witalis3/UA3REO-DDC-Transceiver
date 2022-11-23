@@ -291,8 +291,7 @@ static void SWR_DrawGraphCol(uint16_t x, bool clear) {
 		// draw stripes behind the chart
 		int16_t vres = SWR_TopSWR;
 		for (uint8_t n = 0; n < (SWR_VParts - 1); n++)
-			LCDDriver_drawPixel((graph_start_x + x + 1), (uint16_t)(graph_start_y + ((vres / (SWR_VParts - 1)) * n * graph_height / vres)),
-			                    COLOR_DGRAY);
+			LCDDriver_drawPixel((graph_start_x + x + 1), (uint16_t)(graph_start_y + ((vres / (SWR_VParts - 1)) * n * graph_height / vres)), COLOR_DGRAY);
 	}
 	// draw the graph
 	if (x > 0)

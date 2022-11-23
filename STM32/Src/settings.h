@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 71         // Settings config version
-#define CALIB_VERSION 51        // Calibration config version
+#define SETT_VERSION 74         // Settings config version
+#define CALIB_VERSION 54        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -20,22 +20,22 @@
 	20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
 	         // gain
 #define AUTOGAIN_MAX_AMPLITUDE \
-	30000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
-	         // gain
-#define AUTOGAIN_CORRECTOR_WAITSTEP 5      // waiting for the averaging of the results when the auto-corrector of the input circuits is running
-#define KEY_HOLD_TIME 500                  // time of long pressing of the keyboard button for triggering, ms
-#define SHOW_LOGO true                     // Show logo on boot (from images.h)
-#define POWERDOWN_TIMEOUT 1000             // time of pressing the shutdown button, for operation, ms
-#define POWERDOWN_FORCE_TIMEOUT 2000       // force time
-#define USB_RESTART_TIMEOUT 5000           // time after which USB restart occurs if there are no packets
-#define SNTP_SYNC_INTERVAL (60 * 5)        // Time synchronization interval via NTP, sec
-#define SCANNER_NOSIGNAL_TIME 50           // time to continue sweeping if signal too low
-#define SCANNER_SIGNAL_TIME_FM 5000        // time to continue sweeping if signal founded for FM
-#define SCANNER_SIGNAL_TIME_OTHER 1000     // time to continue sweeping if signal founded for SSB
-#define SCANNER_FREQ_STEP_WFM 100000       // step for freq scanner for WFM
-#define SCANNER_FREQ_STEP_NFM 25000        // step for freq scanner for NFM
-#define SCANNER_FREQ_STEP_OTHER 500        // step for freq scanner for SSB
-#define ENCODER_MIN_RATE_ACCELERATION 2.0f // encoder enable rounding if lower than value
+	30000.0f                                    // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
+	                                            // gain
+#define AUTOGAIN_CORRECTOR_WAITSTEP 5         // waiting for the averaging of the results when the auto-corrector of the input circuits is running
+#define KEY_HOLD_TIME 500                     // time of long pressing of the keyboard button for triggering, ms
+#define SHOW_LOGO true                        // Show logo on boot (from images.h)
+#define POWERDOWN_TIMEOUT 1000                // time of pressing the shutdown button, for operation, ms
+#define POWERDOWN_FORCE_TIMEOUT 2000          // force time
+#define USB_RESTART_TIMEOUT 5000              // time after which USB restart occurs if there are no packets
+#define SNTP_SYNC_INTERVAL (60 * 5)           // Time synchronization interval via NTP, sec
+#define SCANNER_NOSIGNAL_TIME 50              // time to continue sweeping if signal too low
+#define SCANNER_SIGNAL_TIME_FM 5000           // time to continue sweeping if signal founded for FM
+#define SCANNER_SIGNAL_TIME_OTHER 1000        // time to continue sweeping if signal founded for SSB
+#define SCANNER_FREQ_STEP_WFM 100000          // step for freq scanner for WFM
+#define SCANNER_FREQ_STEP_NFM 25000           // step for freq scanner for NFM
+#define SCANNER_FREQ_STEP_OTHER 500           // step for freq scanner for SSB
+#define ENCODER_MIN_RATE_ACCELERATION 2.0f    // encoder enable rounding if lower than value
 #define DXCLUSTER_UPDATE_TIME (1000 * 60 * 1) // interval to get cluster info, 1min
 #define NORMAL_SWR_SAVED 1.5f                 // ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE 1.2f                  // ATU SWR target for new tune
@@ -370,6 +370,12 @@ typedef struct {
 	uint8_t BEST_ATU_C;
 	int8_t FM_SQL_threshold_dbm;
 	uint8_t IF_Gain;
+	uint8_t RF_Gain;
+	uint8_t RF_Gain_By_Mode_CW;
+	uint8_t RF_Gain_By_Mode_SSB;
+	uint8_t RF_Gain_By_Mode_FM;
+	uint8_t RF_Gain_By_Mode_AM;
+	uint8_t RF_Gain_By_Mode_DIGI;
 	bool LNA;
 	bool ATT;
 	bool ANT_selected;
@@ -399,9 +405,13 @@ extern struct TRX_SETTINGS {
 	VFO VFO_B;
 	uint16_t RIT_INTERVAL;
 	uint16_t XIT_INTERVAL;
-	uint16_t Transverter_Offset_Mhz;
 	uint8_t ATT_STEP;
-	uint8_t RF_Power;
+	uint8_t RF_Gain;
+	uint8_t RF_Gain_By_Mode_CW;
+	uint8_t RF_Gain_By_Mode_SSB;
+	uint8_t RF_Gain_By_Mode_FM;
+	uint8_t RF_Gain_By_Mode_AM;
+	uint8_t RF_Gain_By_Mode_DIGI;
 	uint8_t FRQ_CW_STEP_DIVIDER;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
@@ -419,6 +429,8 @@ extern struct TRX_SETTINGS {
 	bool LNA;
 	bool ATT;
 	bool RF_Filters;
+	bool RF_Gain_For_Each_Band;
+	bool RF_Gain_For_Each_Mode;
 	bool ANT_selected; // false - 1, true - 2
 	bool ANT_mode;     // false - RX=TX, true - 1RX 2TX
 	bool ChannelMode;
@@ -641,6 +653,17 @@ extern struct TRX_CALIBRATE {
 	int16_t smeter_calibration_hf;
 	int16_t smeter_calibration_vhf;
 	int16_t adc_offset;
+	uint16_t Transverter_Custom_Offset_Mhz;
+	uint16_t Transverter_70cm_RF_Mhz;
+	uint16_t Transverter_70cm_IF_Mhz;
+	uint16_t Transverter_23cm_RF_Mhz;
+	uint16_t Transverter_23cm_IF_Mhz;
+	uint16_t Transverter_13cm_RF_Mhz;
+	uint16_t Transverter_13cm_IF_Mhz;
+	uint16_t Transverter_6cm_RF_Mhz;
+	uint16_t Transverter_6cm_IF_Mhz;
+	uint16_t Transverter_3cm_RF_Mhz;
+	uint16_t Transverter_3cm_IF_Mhz;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;
@@ -734,6 +757,7 @@ extern struct TRX_CALIBRATE {
 	bool ENABLE_marine_band;
 	bool OTA_update;
 	bool LCD_Rotate;
+	bool TOUCHPAD_horizontal_flip;
 	bool INA226_EN; // Tisho
 	bool LinearPowerControl;
 	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];

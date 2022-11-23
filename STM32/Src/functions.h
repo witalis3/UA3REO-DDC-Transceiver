@@ -17,8 +17,7 @@ __asm(".global __use_no_heap\n\t");
 #define IRAM2 __attribute__((section(".IRAM"))) __attribute__((aligned(32)))  // 512kb AXI SRAM
 #define SRAM __attribute__((section(".SRAM"))) __attribute__((aligned(32)))   // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb
 #define SRAM4 __attribute__((section(".SRAM4"))) __attribute__((aligned(32))) // SRAM4 64kb
-#define BACKUP_SRAM_BANK1_ADDR (uint32_t *)0x38800000
-#define BACKUP_SRAM_BANK2_ADDR (uint32_t *)0x38800800
+#define BACKUP_SRAM_BANK_ADDR (uint32_t *)0x38800000
 
 #define SRAM_ON_F407
 #define SRAM_ON_H743 SRAM
@@ -31,8 +30,7 @@ __asm(".global __use_no_heap\n\t");
 #define ITCM IRAM1  // double
 #define SRAM IRAM2  // double
 #define SRAM4 IRAM2 // double
-#define BACKUP_SRAM_BANK1_ADDR (uint32_t *)(BKPSRAM_BASE)
-#define BACKUP_SRAM_BANK2_ADDR (uint32_t *)(BKPSRAM_BASE + 0x800) // 4kb Backup SRAM
+#define BACKUP_SRAM_BANK_ADDR (uint32_t *)(BKPSRAM_BASE)
 
 #define SRAM_ON_F407 SRAM
 #define SRAM_ON_H743
@@ -42,27 +40,24 @@ __asm(".global __use_no_heap\n\t");
 
 // UINT from BINARY STRING
 #define HEX_(n) 0x##n##LU
-#define B8_(x)                                                                                                                \
-	(((x)&0x0000000FLU) ? 1 : 0) + (((x)&0x000000F0LU) ? 2 : 0) + (((x)&0x00000F00LU) ? 4 : 0) + (((x)&0x0000F000LU) ? 8 : 0) + \
-	    (((x)&0x000F0000LU) ? 16 : 0) + (((x)&0x00F00000LU) ? 32 : 0) + (((x)&0x0F000000LU) ? 64 : 0) + (((x)&0xF0000000LU) ? 128 : 0)
+#define B8_(x)                                                                                                                                                \
+	(((x)&0x0000000FLU) ? 1 : 0) + (((x)&0x000000F0LU) ? 2 : 0) + (((x)&0x00000F00LU) ? 4 : 0) + (((x)&0x0000F000LU) ? 8 : 0) + (((x)&0x000F0000LU) ? 16 : 0) + \
+	    (((x)&0x00F00000LU) ? 32 : 0) + (((x)&0x0F000000LU) ? 64 : 0) + (((x)&0xF0000000LU) ? 128 : 0)
 #define B8(d) ((unsigned char)B8_(HEX_(d)))
 
-#define BYTE_TO_BINARY(byte)                                                                                                             \
-	(byte & 0x80 ? '1' : '0'), (byte & 0x40 ? '1' : '0'), (byte & 0x20 ? '1' : '0'), (byte & 0x10 ? '1' : '0'), (byte & 0x08 ? '1' : '0'), \
-	    (byte & 0x04 ? '1' : '0'), (byte & 0x02 ? '1' : '0'), (byte & 0x01 ? '1' : '0')
-#define BIT16_TO_BINARY(byte)                                                                                             \
-	(byte & 0x8000 ? '1' : '0'), (byte & 0x4000 ? '1' : '0'), (byte & 0x2000 ? '1' : '0'), (byte & 0x1000 ? '1' : '0'),     \
-	    (byte & 0x0800 ? '1' : '0'), (byte & 0x0400 ? '1' : '0'), (byte & 0x0200 ? '1' : '0'), (byte & 0x0100 ? '1' : '0'), \
-	    (byte & 0x0080 ? '1' : '0'), (byte & 0x0040 ? '1' : '0'), (byte & 0x0020 ? '1' : '0'), (byte & 0x0010 ? '1' : '0'), \
+#define BYTE_TO_BINARY(byte)                                                                                                                                        \
+	(byte & 0x80 ? '1' : '0'), (byte & 0x40 ? '1' : '0'), (byte & 0x20 ? '1' : '0'), (byte & 0x10 ? '1' : '0'), (byte & 0x08 ? '1' : '0'), (byte & 0x04 ? '1' : '0'), \
+	    (byte & 0x02 ? '1' : '0'), (byte & 0x01 ? '1' : '0')
+#define BIT16_TO_BINARY(byte)                                                                                                                                                       \
+	(byte & 0x8000 ? '1' : '0'), (byte & 0x4000 ? '1' : '0'), (byte & 0x2000 ? '1' : '0'), (byte & 0x1000 ? '1' : '0'), (byte & 0x0800 ? '1' : '0'), (byte & 0x0400 ? '1' : '0'),     \
+	    (byte & 0x0200 ? '1' : '0'), (byte & 0x0100 ? '1' : '0'), (byte & 0x0080 ? '1' : '0'), (byte & 0x0040 ? '1' : '0'), (byte & 0x0020 ? '1' : '0'), (byte & 0x0010 ? '1' : '0'), \
 	    (byte & 0x0008 ? '1' : '0'), (byte & 0x0004 ? '1' : '0'), (byte & 0x0002 ? '1' : '0'), (byte & 0x0001 ? '1' : '0')
-#define BIT26_TO_BINARY(byte)                                                                                                   \
-	(byte & 0x2000000 ? '1' : '0'), (byte & 0x1000000 ? '1' : '0'), (byte & 0x800000 ? '1' : '0'), (byte & 0x400000 ? '1' : '0'), \
-	    (byte & 0x200000 ? '1' : '0'), (byte & 0x100000 ? '1' : '0'), (byte & 0x80000 ? '1' : '0'), (byte & 0x40000 ? '1' : '0'), \
-	    (byte & 0x20000 ? '1' : '0'), (byte & 0x10000 ? '1' : '0'), (byte & 0x8000 ? '1' : '0'), (byte & 0x4000 ? '1' : '0'),     \
-	    (byte & 0x2000 ? '1' : '0'), (byte & 0x1000 ? '1' : '0'), (byte & 0x0800 ? '1' : '0'), (byte & 0x0400 ? '1' : '0'),       \
-	    (byte & 0x0200 ? '1' : '0'), (byte & 0x0100 ? '1' : '0'), (byte & 0x0080 ? '1' : '0'), (byte & 0x0040 ? '1' : '0'),       \
-	    (byte & 0x0020 ? '1' : '0'), (byte & 0x0010 ? '1' : '0'), (byte & 0x0008 ? '1' : '0'), (byte & 0x0004 ? '1' : '0'),       \
-	    (byte & 0x0002 ? '1' : '0'), (byte & 0x0001 ? '1' : '0')
+#define BIT26_TO_BINARY(byte)                                                                                                                                                             \
+	(byte & 0x2000000 ? '1' : '0'), (byte & 0x1000000 ? '1' : '0'), (byte & 0x800000 ? '1' : '0'), (byte & 0x400000 ? '1' : '0'), (byte & 0x200000 ? '1' : '0'),                            \
+	    (byte & 0x100000 ? '1' : '0'), (byte & 0x80000 ? '1' : '0'), (byte & 0x40000 ? '1' : '0'), (byte & 0x20000 ? '1' : '0'), (byte & 0x10000 ? '1' : '0'), (byte & 0x8000 ? '1' : '0'), \
+	    (byte & 0x4000 ? '1' : '0'), (byte & 0x2000 ? '1' : '0'), (byte & 0x1000 ? '1' : '0'), (byte & 0x0800 ? '1' : '0'), (byte & 0x0400 ? '1' : '0'), (byte & 0x0200 ? '1' : '0'),       \
+	    (byte & 0x0100 ? '1' : '0'), (byte & 0x0080 ? '1' : '0'), (byte & 0x0040 ? '1' : '0'), (byte & 0x0020 ? '1' : '0'), (byte & 0x0010 ? '1' : '0'), (byte & 0x0008 ? '1' : '0'),       \
+	    (byte & 0x0004 ? '1' : '0'), (byte & 0x0002 ? '1' : '0'), (byte & 0x0001 ? '1' : '0')
 
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
@@ -71,10 +66,8 @@ __asm(".global __use_no_heap\n\t");
 #define charToInt(chr) ((int)chr - 48)
 
 #define Aligned_CleanDCache_by_Addr(buff, size) (SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
-#define Aligned_InvalidateDCache_by_Addr(buff, size) \
-	(SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
-#define Aligned_CleanInvalidateDCache_by_Addr(buff, size) \
-	(SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
+#define Aligned_InvalidateDCache_by_Addr(buff, size) (SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
+#define Aligned_CleanInvalidateDCache_by_Addr(buff, size) (SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
 
 #define isnanf __ARM_isnanf
 #define isinff __ARM_isinff
@@ -178,8 +171,7 @@ extern float32_t getMaxTXAmplitudeOnFreq(uint32_t freq);
 extern float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq);
 extern int32_t convertToSPIBigEndian(int32_t in);
 extern uint8_t rev8(uint8_t data);
-extern bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN,
-                         bool hold_cs, uint32_t prescaler, bool dma);
+extern bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma);
 extern float32_t quick_median_select(float32_t *arr, int n);
 extern uint8_t getInputType(void);
 #if HRDW_HAS_SD
@@ -187,11 +179,9 @@ extern unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte);
 extern unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte);
 extern void sd_crc_generate_table(void);
 #endif
-extern void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst,
-                                               uint32_t blockSize);
-extern void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q,
-                                           const float32_t *pSrc_I, const float32_t *pSrc_Q, float32_t *pDst_I, float32_t *pDst_Q,
-                                           uint32_t blockSize);
+extern void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst, uint32_t blockSize);
+extern void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q, const float32_t *pSrc_I, const float32_t *pSrc_Q,
+                                           float32_t *pDst_I, float32_t *pDst_Q, uint32_t blockSize);
 extern char cleanASCIIgarbage(char chr);
 extern bool textStartsWith(const char *a, const char *b);
 extern void *alloc_to_wtf(uint32_t size, bool reset);

@@ -79,6 +79,7 @@ extern void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void);
 extern void SYSMENU_AUDIO_SQUELCH_HOTKEY(void);
 extern void SYSMENU_AUDIO_DNR_HOTKEY(void);
 extern void SYSMENU_AUDIO_AGC_HOTKEY(void);
+extern void SYSMENU_AUDIO_NB_HOTKEY(void);
 extern void SYSMEUN_CALLSIGN_HOTKEY(void);
 extern void SYSMEUN_CALLSIGN_INFO_HOTKEY(void);
 extern void SYSMEUN_TIME_HOTKEY(void);

@@ -5,21 +5,17 @@
 #include "settings.h"
 #include <stdbool.h>
 
-#define TRX_on_TX                                                                       \
-	(TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO->Mode == TRX_MODE_LOOPBACK || \
-	 ((TRX.CW_PTT_Type == KEY_PTT || TRX.CW_PTT_Type == KEY_AND_EXT_PTT) && CW_Key_Timeout_est > 0))
+#define TRX_on_TX \
+	(TRX_ptt_hard || TRX_ptt_soft || TRX_Tune || CurrentVFO->Mode == TRX_MODE_LOOPBACK || ((TRX.CW_PTT_Type == KEY_PTT || TRX.CW_PTT_Type == KEY_AND_EXT_PTT) && CW_Key_Timeout_est > 0))
 #define TRX_SLOW_SETFREQ_MIN_STEPSIZE 100 // step in hz for slowly touchpad tuning
-#define TRX_GetSamplerateByENUM(rate) \
-	(((rate) == TRX_SAMPLERATE_K48) ? 48000 : ((rate) == TRX_SAMPLERATE_K96) ? 96000 : ((rate) == TRX_SAMPLERATE_K192) ? 192000 : 384000)
-#define TRX_GetRXSampleRate                                                                                              \
-	((CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->Mode != TRX_MODE_NFM) ? TRX_GetSamplerateByENUM(TRX.SAMPLERATE_MAIN) \
-	                                                                        : TRX_GetSamplerateByENUM(TRX.SAMPLERATE_FM))
-#define TRX_GetRXSampleRateENUM \
-	((CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->Mode != TRX_MODE_NFM) ? TRX.SAMPLERATE_MAIN : TRX.SAMPLERATE_FM)
+#define TRX_GetSamplerateByENUM(rate) (((rate) == TRX_SAMPLERATE_K48) ? 48000 : ((rate) == TRX_SAMPLERATE_K96) ? 96000 : ((rate) == TRX_SAMPLERATE_K192) ? 192000 : 384000)
+#define TRX_GetRXSampleRate \
+	((CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->Mode != TRX_MODE_NFM) ? TRX_GetSamplerateByENUM(TRX.SAMPLERATE_MAIN) : TRX_GetSamplerateByENUM(TRX.SAMPLERATE_FM))
+#define TRX_GetRXSampleRateENUM ((CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->Mode != TRX_MODE_NFM) ? TRX.SAMPLERATE_MAIN : TRX.SAMPLERATE_FM)
 
-#define NeedProcessDecoder                                                                           \
-	((TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK)) || \
-	 (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM) || CurrentVFO->Mode == TRX_MODE_RTTY)
+#define NeedProcessDecoder                                                                                                                                    \
+	((TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK)) || (TRX.RDS_Decoder && CurrentVFO->Mode == TRX_MODE_WFM) || \
+	 CurrentVFO->Mode == TRX_MODE_RTTY)
 
 extern void TRX_Init(void);
 extern void TRX_setFrequency(uint64_t _freq, VFO *vfo);
@@ -34,6 +30,8 @@ extern void TRX_setFrequencySlowly(uint64_t target_freq);
 extern void TRX_setFrequencySlowly_Process(void);
 extern bool TRX_TX_Disabled(uint64_t freq);
 extern void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder);
+extern void TRX_SaveRFGain_Data(uint8_t mode, int8_t band);
+extern void TRX_LoadRFGain_Data(uint8_t mode, int8_t band);
 
 extern void BUTTONHANDLER_MODE_P(uint32_t parameter);
 extern void BUTTONHANDLER_MODE_N(uint32_t parameter);
@@ -72,6 +70,7 @@ extern void BUTTONHANDLER_AGC_SPEED(uint32_t parameter);
 extern void BUTTONHANDLER_DNR(uint32_t parameter);
 extern void BUTTONHANDLER_DNR_HOLD(uint32_t parameter);
 extern void BUTTONHANDLER_NB(uint32_t parameter);
+extern void BUTTONHANDLER_NB_HOLD(uint32_t parameter);
 extern void BUTTONHANDLER_NOTCH(uint32_t parameter);
 extern void BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter);
 extern void BUTTONHANDLER_FAST(uint32_t parameter);

@@ -232,8 +232,7 @@ USBD_StatusTypeDef USBD_RegisterClass(USBD_HandleTypeDef *pdev, USBD_ClassTypeDe
  * @param  EpAddr: Endpoint Address handle
  * @retval USBD Status
  */
-USBD_StatusTypeDef USBD_RegisterClassComposite(USBD_HandleTypeDef *pdev, USBD_ClassTypeDef *pclass, USBD_CompositeClassTypeDef classtype,
-                                               uint8_t *EpAddr) {
+USBD_StatusTypeDef USBD_RegisterClassComposite(USBD_HandleTypeDef *pdev, USBD_ClassTypeDef *pclass, USBD_CompositeClassTypeDef classtype, uint8_t *EpAddr) {
 	USBD_StatusTypeDef ret = USBD_OK;
 	uint16_t len = 0U;
 

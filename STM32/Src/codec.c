@@ -33,8 +33,8 @@ static void I2S_DMAError(DMA_HandleTypeDef *hdma);          // DMA I2S error
 void CODEC_start_i2s_and_dma(void) {
 	CODEC_CleanBuffer();
 	if (HAL_I2S_GetState(&HRDW_AUDIO_CODEC_I2S) == HAL_I2S_STATE_READY)
-		HAL_I2S_TXRX_DMA(&HRDW_AUDIO_CODEC_I2S, (uint16_t *)&CODEC_Audio_Buffer_RX[0], (uint16_t *)&CODEC_Audio_Buffer_TX[0],
-		                 CODEC_AUDIO_BUFFER_SIZE * 2, CODEC_AUDIO_BUFFER_SIZE); // 32bit rx spi, 16bit tx spi
+		HAL_I2S_TXRX_DMA(&HRDW_AUDIO_CODEC_I2S, (uint16_t *)&CODEC_Audio_Buffer_RX[0], (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2,
+		                 CODEC_AUDIO_BUFFER_SIZE); // 32bit rx spi, 16bit tx spi
 }
 
 // clear the audio codec and USB audio buffer

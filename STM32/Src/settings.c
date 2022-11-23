@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.3.1";
+const char version_string[19] = "6.4.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -26,7 +26,6 @@ struct TRX_SETTINGS TRX;
 struct TRX_CALIBRATE CALIBRATE = {0};
 struct TRX_WIFI WIFI = {0};
 bool EEPROM_Enabled = true;
-static uint8_t settings_bank = 1;
 
 #define MAX_CLONE_SIZE sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
 
@@ -58,24 +57,19 @@ const char *MODE_DESCR[TRX_MODE_COUNT] = {
 
 void LoadSettings(bool clear) {
 	BKPSRAM_Enable();
-	memcpy(&TRX, BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
+	memcpy(&TRX, BACKUP_SRAM_BANK_ADDR, sizeof(TRX));
 	// Check, the data in the backup sram is correct, otherwise we use the second bank
 	if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM()) {
-		memcpy(&TRX, BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-		if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM()) {
-			println("[ERR] BACKUP SRAM data incorrect");
+		println("[ERR] BACKUP SRAM data incorrect");
 
-			LoadSettingsFromEEPROM();
-			if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM()) {
-				println("[ERR] EEPROM Settings data incorrect");
-			} else {
-				println("[OK] Settings data succesfully loaded from EEPROM");
-			}
+		LoadSettingsFromEEPROM();
+		if (TRX.ENDBit != 100 || TRX.flash_id != SETT_VERSION || TRX.csum != calculateCSUM()) {
+			println("[ERR] EEPROM Settings data incorrect");
 		} else {
-			println("[OK] Settings data succesfully loaded from BACKUP SRAM bank 2");
+			println("[OK] Settings data succesfully loaded from EEPROM");
 		}
 	} else {
-		println("[OK] Settings data succesfully loaded from BACKUP SRAM bank 1");
+		println("[OK] Settings data succesfully loaded from BACKUP SRAM");
 	}
 	BKPSRAM_Disable();
 
@@ -123,21 +117,27 @@ void LoadSettings(bool clear) {
 #if HRDW_HAS_VGA
 		TRX.VGA_GAIN = 21.0f; // VGA Gain, dB
 #endif
-		TRX.RF_Filters = true;       // LPF / HPF / BPF
-		TRX.ANT_selected = false;    // ANT-1
-		TRX.ANT_mode = false;        // RX=TX
-		TRX.RF_Power = 20;           // output power (%)
-		TRX.ChannelMode = false;     // enable channel mode on VFO
-		TRX.RIT_Enabled = false;     // activate the SHIFT mode
-		TRX.XIT_Enabled = false;     // activate the SPLIT mode
-		TRX.RIT_INTERVAL = 1000;     // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
-		TRX.XIT_INTERVAL = 1000;     // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
-		TRX.TWO_SIGNAL_TUNE = false; // Two-signal generator in TUNE mode (1 + 2kHz)
+		TRX.RF_Filters = true;             // LPF / HPF / BPF
+		TRX.ANT_selected = false;          // ANT-1
+		TRX.ANT_mode = false;              // RX=TX
+		TRX.RF_Gain = 20;                  // output power (%)
+		TRX.RF_Gain_For_Each_Band = false; // save RF Gain for each band separatly
+		TRX.RF_Gain_For_Each_Mode = false; // save RF Gain for each mode separatly
+		TRX.ChannelMode = false;           // enable channel mode on VFO
+		TRX.RIT_Enabled = false;           // activate the SHIFT mode
+		TRX.XIT_Enabled = false;           // activate the SPLIT mode
+		TRX.RIT_INTERVAL = 1000;           // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
+		TRX.XIT_INTERVAL = 1000;           // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
+		TRX.TWO_SIGNAL_TUNE = false;       // Two-signal generator in TUNE mode (1 + 2kHz)
 #ifdef LAY_160x128
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
 #endif
 #ifdef LAY_480x320
+		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; // Samplerate for ssb/cw/digi/nfm/etc modes
+		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
+#endif
+#ifdef LAY_320x240
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
 #endif
@@ -175,30 +175,26 @@ void LoadSettings(bool clear) {
 		strcpy(TRX.LOCATOR, "LO02RR");          // Locator
 		strcpy(TRX.URSI_CODE, "SO148");         // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
 		TRX.Custom_Transverter_Enabled = false; // Enable transverter mode
-		TRX.Transverter_Offset_Mhz = 144;       // Offset from VFO
-#ifdef FRONTPANEL_LITE
-		TRX.Transverter_Offset_Mhz = 28;
-#endif
-		TRX.ATU_I = 0;                 // ATU default state
-		TRX.ATU_C = 0;                 // ATU default state
-		TRX.ATU_T = false;             // ATU default state
-		TRX.ATU_Enabled = true;        // ATU enabled state
-		TRX.TUNER_Enabled = true;      // TUNER enabled state
-		TRX.Transverter_70cm = false;  // Transvertrs enable (2m IF)
-		TRX.Transverter_23cm = false;  // Transvertrs enable (2m IF)
-		TRX.Transverter_13cm = false;  // Transvertrs enable (2m IF)
-		TRX.Transverter_6cm = false;   // Transvertrs enable (2m IF)
-		TRX.Transverter_3cm = false;   // Transvertrs enable (2m IF)
-		TRX.FineRITTune = true;        // Fine or coarse tune for split/shift
-		TRX.Auto_Input_Switch = false; // Auto Mic/USB Switch
-		TRX.Auto_Snap = false;         // Auto track and snap to signal frequency
+		TRX.ATU_I = 0;                          // ATU default state
+		TRX.ATU_C = 0;                          // ATU default state
+		TRX.ATU_T = false;                      // ATU default state
+		TRX.ATU_Enabled = true;                 // ATU enabled state
+		TRX.TUNER_Enabled = true;               // TUNER enabled state
+		TRX.Transverter_70cm = false;           // Transvertrs enable (2m IF)
+		TRX.Transverter_23cm = false;           // Transvertrs enable (2m IF)
+		TRX.Transverter_13cm = false;           // Transvertrs enable (2m IF)
+		TRX.Transverter_6cm = false;            // Transvertrs enable (2m IF)
+		TRX.Transverter_3cm = false;            // Transvertrs enable (2m IF)
+		TRX.FineRITTune = true;                 // Fine or coarse tune for split/shift
+		TRX.Auto_Input_Switch = false;          // Auto Mic/USB Switch
+		TRX.Auto_Snap = false;                  // Auto track and snap to signal frequency
 		// AUDIO
 		TRX.Volume = 25;             // AF Volume
 		TRX.Volume_Step = 5;         // AF Volume step by sec encoder
 		TRX.IF_Gain = 15;            // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;   // Maximum (target) AGC gain
-		TRX.MIC_GAIN_DB = 3.0f;      // Microphone gain, dB
-		TRX.MIC_Boost = true;        // +20dB mic amplifier
+		TRX.MIC_GAIN_DB = 9.0f;      // Microphone gain, dB
+		TRX.MIC_Boost = false;       // +20dB mic amplifier
 		TRX.MIC_NOISE_GATE = -120;   // Mic noise gate
 		TRX.RX_EQ_P1 = 0;            // Receiver Equalizer 300hz
 		TRX.RX_EQ_P2 = 0;            // Receiver Equalizer 700hz
@@ -283,6 +279,10 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Zoom = 2;   // approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
+#ifdef LAY_320x240
+		TRX.FFT_Zoom = 2;   // approximation of the FFT spectrum
+		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
+#endif
 #ifdef LAY_800x480
 		TRX.FFT_Zoom = 1;   // approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
@@ -307,14 +307,17 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Color = 0;         // FFT display color
 		TRX.WTF_Color = 1;         // WTF display color
 		TRX.FFT_Compressor = true; // Compress FFT Peaks
-		TRX.FFT_Background = true;         // FFT gradient background
+		TRX.FFT_Background = true; // FFT gradient background
 #ifdef LAY_160x128
-		TRX.FFT_FreqGrid = 0; // FFT freq grid style
-		TRX.FFT_Height = 4;   // FFT display height
-		TRX.FFT_Background = false;         // FFT gradient background
+		TRX.FFT_FreqGrid = 0;       // FFT freq grid style
+		TRX.FFT_Height = 4;         // FFT display height
+		TRX.FFT_Background = false; // FFT gradient background
+#elif defined LAY_320x240
+		TRX.FFT_FreqGrid = 0;             // FFT freq grid style
+		TRX.FFT_Height = 3;               // FFT display height
 #else
-		TRX.FFT_FreqGrid = 1;             // FFT freq grid style
-		TRX.FFT_Height = 2;               // FFT display height
+		TRX.FFT_FreqGrid = 1; // FFT freq grid style
+		TRX.FFT_Height = 2;   // FFT display height
 #endif
 		TRX.FFT_dBmGrid = false;           // FFT power grid
 		TRX.FFT_Lens = false;              // FFT lens effect
@@ -376,6 +379,12 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
 			TRX.BANDS_SAVED_SETTINGS[i].IF_Gain = TRX.IF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_CW = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_SSB = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_FM = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_AM = TRX.RF_Gain;
+			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain_By_Mode_DIGI = TRX.RF_Gain;
 			if (TRX.BANDS_SAVED_SETTINGS[i].Freq > 30000000)
 				TRX.BANDS_SAVED_SETTINGS[i].LNA = true;
 			else
@@ -675,15 +684,33 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENABLE_4m_band = false;
 		CALIBRATE.ENABLE_AIR_band = false;
 		CALIBRATE.ENABLE_marine_band = false;
-		CALIBRATE.OTA_update = true;  // enable OTA FW update over WiFi
-		CALIBRATE.TX_StartDelay = 5;  // Relay switch delay before RF signal ON, ms
-		CALIBRATE.LCD_Rotate = false; // LCD 180 degree rotation
-		CALIBRATE.INA226_EN = false;  // INA226 is not used				//Tisho
-		CALIBRATE.INA226_CurCalc =
-		    0.4f; // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
-		CALIBRATE.PWR_VLT_Calibration = 1000.0f; // VLT meter calibration
-		CALIBRATE.PWR_CUR_Calibration = 2.5f;    // CUR meter calibration
-		CALIBRATE.ATU_AVERAGING = 3;             // Tuner averaging stages
+		CALIBRATE.Transverter_Custom_Offset_Mhz = 100; // Offset from VFO
+		CALIBRATE.Transverter_70cm_RF_Mhz = 432;
+		CALIBRATE.Transverter_70cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_23cm_RF_Mhz = 1296;
+		CALIBRATE.Transverter_23cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_13cm_RF_Mhz = 2320;
+		CALIBRATE.Transverter_13cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_6cm_RF_Mhz = 5760;
+		CALIBRATE.Transverter_6cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_3cm_RF_Mhz = 10368;
+		CALIBRATE.Transverter_3cm_IF_Mhz = 144;
+#ifdef FRONTPANEL_LITE
+		CALIBRATE.Transverter_70cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_23cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_13cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_6cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_3cm_IF_Mhz = 28;
+#endif
+		CALIBRATE.OTA_update = true;                // enable OTA FW update over WiFi
+		CALIBRATE.TX_StartDelay = 5;                // Relay switch delay before RF signal ON, ms
+		CALIBRATE.LCD_Rotate = false;               // LCD 180 degree rotation
+		CALIBRATE.TOUCHPAD_horizontal_flip = false; // Touchpad harozontal flip
+		CALIBRATE.INA226_EN = false;                // INA226 is not used				//Tisho
+		CALIBRATE.INA226_CurCalc = 0.4f;            // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
+		CALIBRATE.PWR_VLT_Calibration = 1000.0f;    // VLT meter calibration
+		CALIBRATE.PWR_CUR_Calibration = 2.5f;       // CUR meter calibration
+		CALIBRATE.ATU_AVERAGING = 3;                // Tuner averaging stages
 		CALIBRATE.CAT_Type = CAT_TS2000;
 		CALIBRATE.LNA_compensation = 0;       // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50; // balance of signals on twosignal-tune
@@ -696,6 +723,12 @@ void LoadCalibration(bool clear) {
 			CALIBRATE.MEMORY_CHANNELS[i].Freq = 0;
 			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)getModeFromFreq(CALIBRATE.MEMORY_CHANNELS[i].Freq);
 			CALIBRATE.MEMORY_CHANNELS[i].IF_Gain = TRX.IF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_CW = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_SSB = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_FM = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_AM = TRX.RF_Gain;
+			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_DIGI = TRX.RF_Gain;
 			CALIBRATE.MEMORY_CHANNELS[i].LNA = TRX.LNA;
 			CALIBRATE.MEMORY_CHANNELS[i].ATT = TRX.ATT;
 			CALIBRATE.MEMORY_CHANNELS[i].ATT_DB = TRX.ATT_DB;
@@ -776,26 +809,15 @@ void SaveSettings(void) {
 	BKPSRAM_Enable();
 	TRX.csum = calculateCSUM();
 	Aligned_CleanDCache_by_Addr((uint32_t *)&TRX, sizeof(TRX));
-	if (settings_bank == 1) {
-		memcpy(BACKUP_SRAM_BANK1_ADDR, &TRX, sizeof(TRX));
-		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
-		memset(BACKUP_SRAM_BANK2_ADDR, 0x00, sizeof(TRX));
-		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-	} else {
-		memcpy(BACKUP_SRAM_BANK2_ADDR, &TRX, sizeof(TRX));
-		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK2_ADDR, sizeof(TRX));
-		memset(BACKUP_SRAM_BANK1_ADDR, 0x00, sizeof(TRX));
-		Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK1_ADDR, sizeof(TRX));
-	}
+
+	memcpy(BACKUP_SRAM_BANK_ADDR, &TRX, sizeof(TRX));
+	Aligned_CleanDCache_by_Addr(BACKUP_SRAM_BANK_ADDR, sizeof(TRX));
+
 	BKPSRAM_Disable();
 	NeedSaveSettings = false;
 	// sendToDebug_str("[OK] Settings Saved to bank ");
 	// sendToDebug_uint8(settings_bank, false);
 	// sendToDebug_uint32(sizeof(TRX), false);
-	if (settings_bank == 1)
-		settings_bank = 2;
-	else
-		settings_bank = 1;
 }
 
 void SaveSettingsToEEPROM(void) {
@@ -968,9 +990,9 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		uint16_t bsize = size - page_size * page;
 		if (bsize > page_size)
 			bsize = page_size;
-		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false); // Write Enable Command
-		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);  // Write Command
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);        // Write Address ( The first address of flash module is 0x00000000 )
+		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                   // Write Enable Command
+		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                    // Write Command
+		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                          // Write Address ( The first address of flash module is 0x00000000 )
 		HRDW_EEPROM_SPI((uint8_t *)(write_clone + page_size * page), NULL, bsize, false); // Write Data
 		EEPROM_WaitWrite();
 	}

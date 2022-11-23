@@ -649,7 +649,7 @@ void ua3reo_dev_cat_parseCommand(void) {
 		if (!has_args) {
 			char answer[30] = {0};
 			strcat(answer, "PC");
-			sprintf(ctmp, "%d", TRX.RF_Power);
+			sprintf(ctmp, "%d", TRX.RF_Gain);
 			strcat(answer, ctmp);
 			strcat(answer, ";");
 			CAT_Transmit(answer);

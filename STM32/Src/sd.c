@@ -276,8 +276,7 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void) {
 	RTC_DateTypeDef sDate = {0};
 	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%llu.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds,
-	        CurrentVFO->Freq);
+	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%llu.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO->Freq);
 	println(filename);
 	return SDCOMM_CREATE_RECORD_FILE_main(filename, true);
 }
@@ -818,7 +817,9 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.ANT_selected", (uint32_t *)&TRX.ANT_selected, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ANT_mode", (uint32_t *)&TRX.ANT_mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Filters", (uint32_t *)&TRX.RF_Filters, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.RF_Power", (uint32_t *)&TRX.RF_Power, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.RF_Gain", (uint32_t *)&TRX.RF_Gain, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Band", (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Mode", (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint32_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RIT_Enabled", (uint32_t *)&TRX.RIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.XIT_Enabled", (uint32_t *)&TRX.XIT_Enabled, SYSMENU_BOOLEAN);
@@ -849,7 +850,6 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_STRING("TRX.LOCATOR", TRX.LOCATOR);
 			SD_WRITE_SETT_STRING("TRX.URSI_CODE", TRX.URSI_CODE);
 			SD_WRITE_SETT_LINE("TRX.Custom_Transverter_Enabled", (uint32_t *)&TRX.Custom_Transverter_Enabled, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.Transverter_Offset_Mhz", (uint32_t *)&TRX.Transverter_Offset_Mhz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.ATU_Enabled", (uint32_t *)&TRX.ATU_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TUNER_Enabled", (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_70cm", (uint32_t *)&TRX.Transverter_70cm, SYSMENU_BOOLEAN);
@@ -1123,9 +1123,21 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_4m_band", (uint32_t *)&CALIBRATE.ENABLE_4m_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_AIR_band", (uint32_t *)&CALIBRATE.ENABLE_AIR_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_marine_band", (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_Custom_Offset_Mhz", (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_23cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_23cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_13cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_13cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_6cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_6cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_3cm_RF_Mhz", (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_3cm_IF_Mhz", (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.OTA_update", (uint32_t *)&CALIBRATE.OTA_update, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.TX_StartDelay", (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.LCD_Rotate", (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.TOUCHPAD_horizontal_flip", (uint32_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.INA226_EN", (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_BOOLEAN); // Tisho
 			SD_WRITE_SETT_LINE("CALIBRATE.INA226_CurCalc", (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.PWR_VLT_Calibration", (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_FLOAT32);
@@ -1326,8 +1338,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		TRX.RF_Filters = bval;
 	if (strcmp(name, "TRX.ChannelMode") == 0)
 		TRX.ChannelMode = bval;
-	if (strcmp(name, "TRX.RF_Power") == 0)
-		TRX.RF_Power = (uint8_t)uintval;
+	if (strcmp(name, "TRX.RF_Gain") == 0)
+		TRX.RF_Gain = (uint8_t)uintval;
+	if (strcmp(name, "TRX.RF_Gain_For_Each_Band") == 0)
+		TRX.RF_Gain_For_Each_Band = bval;
+	if (strcmp(name, "TRX.RF_Gain_For_Each_Mode") == 0)
+		TRX.RF_Gain_For_Each_Mode = bval;
 	if (strcmp(name, "TRX.RIT_Enabled") == 0)
 		TRX.RIT_Enabled = bval;
 	if (strcmp(name, "TRX.XIT_Enabled") == 0)
@@ -1399,8 +1415,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.Custom_Transverter_Enabled") == 0)
 		TRX.Custom_Transverter_Enabled = bval;
-	if (strcmp(name, "TRX.Transverter_Offset_Mhz") == 0)
-		TRX.Transverter_Offset_Mhz = (uint16_t)uintval;
 	if (strcmp(name, "TRX.ATU_Enabled") == 0)
 		TRX.ATU_Enabled = bval;
 	if (strcmp(name, "TRX.TUNER_Enabled") == 0)
@@ -1968,12 +1982,36 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		CALIBRATE.ENABLE_AIR_band = bval;
 	if (strcmp(name, "CALIBRATE.ENABLE_marine_band") == 0)
 		CALIBRATE.ENABLE_marine_band = bval;
+	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_Mhz") == 0)
+		CALIBRATE.Transverter_Custom_Offset_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_70cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_70cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_23cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_23cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_13cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_13cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_6cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_6cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_RF_Mhz") == 0)
+		CALIBRATE.Transverter_3cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_IF_Mhz") == 0)
+		CALIBRATE.Transverter_3cm_IF_Mhz = (uint16_t)uintval;
 	if (strcmp(name, "CALIBRATE.OTA_update") == 0)
 		CALIBRATE.OTA_update = bval;
 	if (strcmp(name, "CALIBRATE.TX_StartDelay") == 0)
 		CALIBRATE.TX_StartDelay = uintval;
 	if (strcmp(name, "CALIBRATE.LCD_Rotate") == 0)
 		CALIBRATE.LCD_Rotate = bval;
+	if (strcmp(name, "CALIBRATE.TOUCHPAD_horizontal_flip") == 0)
+		CALIBRATE.TOUCHPAD_horizontal_flip = bval;
 	if (strcmp(name, "CALIBRATE.INA226_EN") == 0) // Tisho
 		CALIBRATE.INA226_EN = bval;
 	if (strcmp(name, "CALIBRATE.INA226_CurCalc") == 0)

@@ -366,9 +366,7 @@ float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate
 	return ret;
 }
 
-inline int32_t convertToSPIBigEndian(int32_t in) {
-	return (int32_t)(0xFFFF0000 & (uint32_t)(in << 16)) | (int32_t)(0x0000FFFF & (uint32_t)(in >> 16));
-}
+inline int32_t convertToSPIBigEndian(int32_t in) { return (int32_t)(0xFFFF0000 & (uint32_t)(in << 16)) | (int32_t)(0x0000FFFF & (uint32_t)(in >> 16)); }
 
 inline uint8_t rev8(uint8_t data) {
 	uint32_t tmp = data;
@@ -376,8 +374,7 @@ inline uint8_t rev8(uint8_t data) {
 }
 
 IRAM2 uint8_t SPI_tmp_buff[8] = {0};
-bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN,
-                  bool hold_cs, uint32_t prescaler, bool dma) {
+bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, uint32_t count, GPIO_TypeDef *CS_PORT, uint16_t CS_PIN, bool hold_cs, uint32_t prescaler, bool dma) {
 	// SPI speed
 	if (hspi->Init.BaudRatePrescaler != prescaler) {
 		hspi->Init.BaudRatePrescaler = prescaler;
@@ -806,8 +803,7 @@ void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma) {
 
 uint8_t getInputType(void) {
 	uint8_t type = TRX.InputType_MAIN;
-	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY ||
-	    CurrentVFO->Mode == TRX_MODE_IQ)
+	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
 		type = TRX.InputType_DIGI;
 	return type;
 }
@@ -819,9 +815,7 @@ static unsigned int sd_crc16_table[256];
 static unsigned int sd_crc7_table[256];
 
 /* Running CRC16 calculation for a byte. */
-unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte) {
-	return (sd_crc16_table[(byte ^ (crcval >> 8)) & 0xFFU] ^ (crcval << 8)) & 0xFFFFU;
-}
+unsigned int sd_crc16_byte(unsigned int crcval, unsigned int byte) { return (sd_crc16_table[(byte ^ (crcval >> 8)) & 0xFFU] ^ (crcval << 8)) & 0xFFFFU; }
 
 /* Running CRC7 calculation for a byte. */
 unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte) { return sd_crc7_table[(byte ^ (crcval << 1)) & 0xFFU]; }
@@ -861,8 +855,7 @@ void sd_crc_generate_table(void) {
 }
 #endif
 
-void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst,
-                                        uint32_t blockSize) {
+void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f32 *S, const float32_t *pSrc, float32_t *pDst, uint32_t blockSize) {
 	float32_t *pState = S->pState;
 	const float32_t *pCoeffs = S->pCoeffs;
 	const float32_t *pIn = pSrc;
@@ -898,8 +891,8 @@ void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f
 	}
 }
 
-void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q,
-                                    const float32_t *pSrc_I, const float32_t *pSrc_Q, float32_t *pDst_I, float32_t *pDst_Q, uint32_t blockSize) {
+void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *I, const arm_biquad_cascade_df2T_instance_f32 *Q, const float32_t *pSrc_I, const float32_t *pSrc_Q,
+                                    float32_t *pDst_I, float32_t *pDst_Q, uint32_t blockSize) {
 	float32_t *pState_I = I->pState;
 	float32_t *pState_Q = Q->pState;
 	const float32_t *pCoeffs = I->pCoeffs;

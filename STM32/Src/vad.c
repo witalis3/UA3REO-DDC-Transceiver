@@ -16,8 +16,7 @@ static VAD_Instance VAD_RX1 = {
         {
             // 48ksps, 3kHz lowpass
             .numTaps = 4,
-            .pCoeffs =
-                (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
+            .pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
             .pState = NULL,
         },
     .Min_E1 = 999.0f,
@@ -33,8 +32,7 @@ static VAD_Instance VAD_RX2 = {
         {
             // 48ksps, 3kHz lowpass
             .numTaps = 4,
-            .pCoeffs =
-                (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
+            .pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
             .pState = NULL,
         },
     .Min_E1 = 999.0f,
@@ -47,16 +45,14 @@ static VAD_Instance VAD_RX2 = {
 // initialize VAD
 void InitVAD(void) {
 	// decimator
-	arm_fir_decimate_init_f32(&VAD_RX1.DECIMATE, VAD_RX1.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX1.FirDecimate.pCoeffs, VAD_RX1.decimState,
-	                          VAD_BLOCK_SIZE);
+	arm_fir_decimate_init_f32(&VAD_RX1.DECIMATE, VAD_RX1.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX1.FirDecimate.pCoeffs, VAD_RX1.decimState, VAD_BLOCK_SIZE);
 #if HRDW_HAS_DUAL_RX
-	arm_fir_decimate_init_f32(&VAD_RX2.DECIMATE, VAD_RX2.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX2.FirDecimate.pCoeffs, VAD_RX2.decimState,
-	                          VAD_BLOCK_SIZE);
+	arm_fir_decimate_init_f32(&VAD_RX2.DECIMATE, VAD_RX2.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX2.FirDecimate.pCoeffs, VAD_RX2.decimState, VAD_BLOCK_SIZE);
 #endif
 	// Blackman window function
 	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++)
-		window_multipliers[i] = ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32((2.0f * PI * i) / ((float32_t)VAD_FFT_SIZE - 1.0f)) +
-		                        (0.16f / 2) * arm_cos_f32(4.0f * PI * i / ((float32_t)VAD_FFT_SIZE - 1.0f));
+		window_multipliers[i] =
+		    ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32((2.0f * PI * i) / ((float32_t)VAD_FFT_SIZE - 1.0f)) + (0.16f / 2) * arm_cos_f32(4.0f * PI * i / ((float32_t)VAD_FFT_SIZE - 1.0f));
 }
 
 void resetVAD(void) {
@@ -206,8 +202,8 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	// debug
 	static uint32_t prevPrint = 0;
 	if (debug && (HAL_GetTick() - prevPrint) > 100) {
-		print(" SMF1: ", SMFdb1, " SMF2: ", SMFdb2, " Res_E1: ", Res_E1, " Res_E2: ", Res_E2, " Res_MD1: ", Res_MD1, " Res_MD2: ", Res_MD2,
-		      " MD1_Idx: ", MD1_index, " MD2_Idx: ", MD2_index, " EQU: ", Res_Equation, " ");
+		print(" SMF1: ", SMFdb1, " SMF2: ", SMFdb2, " Res_E1: ", Res_E1, " Res_E2: ", Res_E2, " Res_MD1: ", Res_MD1, " Res_MD2: ", Res_MD2, " MD1_Idx: ", MD1_index, " MD2_Idx: ", MD2_index,
+		      " EQU: ", Res_Equation, " ");
 	}
 
 	// check thresholds

@@ -37,23 +37,21 @@ void TOUCHPAD_ProcessInterrupt(void) {
 		return;
 	GT911_Scan();
 
-	if (touched && !hold_swipe_handled && (touch_lasttime < (HAL_GetTick() - TOUCHPAD_TIMEOUT)) &&
-	    ((touch_lasttime - touch_startime) <= TOUCHPAD_CLICK_TIMEOUT) && ((touch_lasttime - touch_startime) >= TOUCHPAD_CLICK_THRESHOLD)) {
+	if (touched && !hold_swipe_handled && (touch_lasttime < (HAL_GetTick() - TOUCHPAD_TIMEOUT)) && ((touch_lasttime - touch_startime) <= TOUCHPAD_CLICK_TIMEOUT) &&
+	    ((touch_lasttime - touch_startime) >= TOUCHPAD_CLICK_THRESHOLD)) {
 		if (TRX.Debug_Type == TRX_DEBUG_TOUCH)
 			println("Process Touch X:", touch_end_x1, " Y: ", touch_end_y1);
 
 		LCD_processTouch(touch_end_x1, touch_end_y1);
 		touched = false;
-	} else if (touched && !hold_touch_handled && !hold_swipe_handled && (touch_lasttime > (HAL_GetTick() - TOUCHPAD_TIMEOUT)) &&
-	           ((touch_lasttime - touch_startime) >= TOUCHPAD_HOLD_TIMEOUT)) {
+	} else if (touched && !hold_touch_handled && !hold_swipe_handled && (touch_lasttime > (HAL_GetTick() - TOUCHPAD_TIMEOUT)) && ((touch_lasttime - touch_startime) >= TOUCHPAD_HOLD_TIMEOUT)) {
 		hold_touch_handled = true;
 		if (TRX.Debug_Type == TRX_DEBUG_TOUCH)
 			println("Process Hold Touch X:", touch_end_x1, " Y: ", touch_end_y1);
 		LCD_processHoldTouch(touch_end_x1, touch_end_y1);
 	} else if (touched && (touch_lasttime > (HAL_GetTick() - TOUCHPAD_TIMEOUT))) {
 		// One/Two finger swipe
-		if (hold_swipe_handled || abs(touch_end_x1 - touch_start_x1) > TOUCHPAD_SWIPE_THRESHOLD_PX ||
-		    abs(touch_end_y1 - touch_start_y1) > TOUCHPAD_SWIPE_THRESHOLD_PX) {
+		if (hold_swipe_handled || abs(touch_end_x1 - touch_start_x1) > TOUCHPAD_SWIPE_THRESHOLD_PX || abs(touch_end_y1 - touch_start_y1) > TOUCHPAD_SWIPE_THRESHOLD_PX) {
 			bool two_finger = false;
 			if (abs(touch_end_x2 - touch_start_x2) > TOUCHPAD_SWIPE_THRESHOLD_PX || abs(touch_end_y2 - touch_start_y2) > TOUCHPAD_SWIPE_THRESHOLD_PX)
 				two_finger = true;

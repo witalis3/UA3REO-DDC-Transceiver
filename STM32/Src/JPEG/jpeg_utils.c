@@ -1065,20 +1065,15 @@ static const uint8_t CLAMP_LUT[] = {
  */
 /* Private function prototypes -----------------------------------------------*/
 #if (USE_JPEG_ENCODER == 1)
-static uint32_t JPEG_ARGB_MCU_YCbCr420_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount);
+static uint32_t JPEG_ARGB_MCU_YCbCr420_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 
-static uint32_t JPEG_ARGB_MCU_YCbCr422_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount);
+static uint32_t JPEG_ARGB_MCU_YCbCr422_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 
-static uint32_t JPEG_ARGB_MCU_YCbCr444_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount);
+static uint32_t JPEG_ARGB_MCU_YCbCr444_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 
-static uint32_t JPEG_ARGB_MCU_Gray_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                 uint32_t *ConvertedDataCount);
+static uint32_t JPEG_ARGB_MCU_Gray_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 
-static uint32_t JPEG_ARGB_MCU_YCCK_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                 uint32_t *ConvertedDataCount);
+static uint32_t JPEG_ARGB_MCU_YCCK_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 
 static void JPEG_Init_MCU_LUT(void);
 static void JPEG_InitPreProcColorTables(void);
@@ -1087,20 +1082,15 @@ static uint8_t *JPEG_Set_K_Blocks(uint8_t *pMCUBuffer, uint8_t pKBlocks[16][16],
 #endif /* USE_JPEG_ENCODER == 1 */
 
 #if (USE_JPEG_DECODER == 1)
-static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount);
+static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 
-static uint32_t JPEG_MCU_YCbCr422_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount);
+static uint32_t JPEG_MCU_YCbCr422_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 
-static uint32_t JPEG_MCU_YCbCr444_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount);
+static uint32_t JPEG_MCU_YCbCr444_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 
-static uint32_t JPEG_MCU_Gray_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                 uint32_t *ConvertedDataCount);
+static uint32_t JPEG_MCU_Gray_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 
-static uint32_t JPEG_MCU_YCCK_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                 uint32_t *ConvertedDataCount);
+static uint32_t JPEG_MCU_YCCK_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount);
 static void JPEG_InitPostProcColorTables(void);
 #endif /* USE_JPEG_DECODER == 1 */
 
@@ -1122,8 +1112,7 @@ static void JPEG_InitPostProcColorTables(void);
  * @param  ConvertedDataCount  : number of converted bytes from input buffer.
  * @retval Number of blcoks converted from RGB to YCbCr
  */
-static uint32_t JPEG_ARGB_MCU_YCbCr420_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_ARGB_MCU_YCbCr420_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t i, j, currentMCU, xRef, yRef, colones;
 
@@ -1219,12 +1208,9 @@ static uint32_t JPEG_ARGB_MCU_YCbCr420_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 
 				/* Fourth Pixel */
 #if (JPEG_RGB_FORMAT == JPEG_RGB565)
-				red = (((*(__IO uint16_t *)(pInAddr + refline + JPEG_ConvertorParams.ScaledWidth + JPEG_BYTES_PER_PIXEL)) & JPEG_RGB565_RED_MASK) >>
-				       JPEG_RED_OFFSET);
-				green = (((*(__IO uint16_t *)(pInAddr + refline + JPEG_ConvertorParams.ScaledWidth + JPEG_BYTES_PER_PIXEL)) & JPEG_RGB565_GREEN_MASK) >>
-				         JPEG_GREEN_OFFSET);
-				blue = (((*(__IO uint16_t *)(pInAddr + refline + JPEG_ConvertorParams.ScaledWidth + JPEG_BYTES_PER_PIXEL)) & JPEG_RGB565_BLUE_MASK) >>
-				        JPEG_BLUE_OFFSET);
+				red = (((*(__IO uint16_t *)(pInAddr + refline + JPEG_ConvertorParams.ScaledWidth + JPEG_BYTES_PER_PIXEL)) & JPEG_RGB565_RED_MASK) >> JPEG_RED_OFFSET);
+				green = (((*(__IO uint16_t *)(pInAddr + refline + JPEG_ConvertorParams.ScaledWidth + JPEG_BYTES_PER_PIXEL)) & JPEG_RGB565_GREEN_MASK) >> JPEG_GREEN_OFFSET);
+				blue = (((*(__IO uint16_t *)(pInAddr + refline + JPEG_ConvertorParams.ScaledWidth + JPEG_BYTES_PER_PIXEL)) & JPEG_RGB565_BLUE_MASK) >> JPEG_BLUE_OFFSET);
 				red = (red << 3) | (red >> 2);
 				green = (green << 2) | (green >> 4);
 				blue = (blue << 3) | (blue >> 2);
@@ -1258,8 +1244,7 @@ static uint32_t JPEG_ARGB_MCU_YCbCr420_ConvertBlocks(uint8_t *pInBuffer, uint8_t
  * @param  ConvertedDataCount  : number of converted bytes from input buffer.
  * @retval Number of blcoks converted from RGB to YCbCr
  */
-static uint32_t JPEG_ARGB_MCU_YCbCr422_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_ARGB_MCU_YCbCr422_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t i, j, currentMCU, xRef, yRef, colones;
 
@@ -1359,8 +1344,7 @@ static uint32_t JPEG_ARGB_MCU_YCbCr422_ConvertBlocks(uint8_t *pInBuffer, uint8_t
  * @param  ConvertedDataCount  : number of converted bytes from input buffer.
  * @retval Number of blcoks converted from RGB to YCbCr
  */
-static uint32_t JPEG_ARGB_MCU_YCbCr444_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_ARGB_MCU_YCbCr444_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t i, j, currentMCU, xRef, yRef, colones;
 
@@ -1440,8 +1424,7 @@ static uint32_t JPEG_ARGB_MCU_YCbCr444_ConvertBlocks(uint8_t *pInBuffer, uint8_t
  * @param  ConvertedDataCount  : number of converted bytes from input buffer.
  * @retval Number of blcoks converted from RGB to Gray
  */
-static uint32_t JPEG_ARGB_MCU_Gray_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                 uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_ARGB_MCU_Gray_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t i, j, currentMCU, xRef, yRef, colones;
 
@@ -1518,8 +1501,7 @@ static uint32_t JPEG_ARGB_MCU_Gray_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pO
  * @param  ConvertedDataCount  : number of converted bytes from input buffer.
  * @retval Number of blcoks converted from RGB to YCCK
  */
-static uint32_t JPEG_ARGB_MCU_YCCK_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                 uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_ARGB_MCU_YCCK_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t i, j, currentMCU, xRef, yRef, colones;
 
@@ -1598,8 +1580,7 @@ static uint32_t JPEG_ARGB_MCU_YCCK_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pO
  * @param ImageNbMCUs : pointer to uint32_t, used to retrive the total number of MCU blocks in the jpeg image.
  * @retval HAL status : HAL_OK or HAL_ERROR.
  */
-HAL_StatusTypeDef JPEG_GetEncodeColorConvertFunc(JPEG_ConfTypeDef *pJpegInfo, JPEG_RGBToYCbCr_Convert_Function *pFunction,
-                                                 uint32_t *ImageNbMCUs) {
+HAL_StatusTypeDef JPEG_GetEncodeColorConvertFunc(JPEG_ConfTypeDef *pJpegInfo, JPEG_RGBToYCbCr_Convert_Function *pFunction, uint32_t *ImageNbMCUs) {
 	uint32_t hMCU, vMCU;
 
 	JPEG_ConvertorParams.ColorSpace = pJpegInfo->ColorSpace;
@@ -1728,8 +1709,7 @@ static void LCDDriver_drawPixel_by_offset(uint8_t *pOutBuffer, uint8_t *pOutAddr
  * @retval Number of blcoks converted from YCbCr to RGB
  */
 
-static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t i, j, k, currentMCU, xRef, yRef;
 
@@ -1780,25 +1760,21 @@ static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 
 						ycomp = (int32_t)(*(pLum + j));
 
-						*(__IO uint32_t *)pOutAddr = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) |
-						                             (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
+						*(__IO uint32_t *)pOutAddr = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) | (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
 						/**********/
 						ycomp = (int32_t)(*(pLum + j + 1));
 
-						*((__IO uint32_t *)(pOutAddr + 4)) = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) |
-						                                     (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
+						*((__IO uint32_t *)(pOutAddr + 4)) = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) | (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
 
 						/**********/
 						ycomp = (int32_t)(*(pLum + j + 8));
 
-						*(__IO uint32_t *)pOutAddr2 = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) |
-						                              (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
+						*(__IO uint32_t *)pOutAddr2 = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) | (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
 
 						/**********/
 						ycomp = (int32_t)(*(pLum + j + 8 + 1));
 
-						*((__IO uint32_t *)(pOutAddr2 + 4)) = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) |
-						                                      (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
+						*((__IO uint32_t *)(pOutAddr2 + 4)) = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) | (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
 
 #elif (JPEG_RGB_FORMAT == JPEG_RGB888)
 
@@ -1838,8 +1814,7 @@ static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 						  ((CLAMP( ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) | \
 						  ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);*/
 						LCDDriver_drawPixel_by_offset(pOutBuffer, pOutAddr,
-						                              ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) |
-						                                  ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
+						                              ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) | ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
 						                                  ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET));
 
 						/**********/
@@ -1850,8 +1825,7 @@ static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 						  ((CLAMP( ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) | \
 						  ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);*/
 						LCDDriver_drawPixel_by_offset(pOutBuffer, (pOutAddr + 2),
-						                              ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) |
-						                                  ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
+						                              ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) | ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
 						                                  ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET));
 
 						/**********/
@@ -1862,8 +1836,7 @@ static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 						  ((CLAMP( ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) | \
 						  ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);*/
 						LCDDriver_drawPixel_by_offset(pOutBuffer, pOutAddr2,
-						                              ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) |
-						                                  ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
+						                              ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) | ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
 						                                  ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET));
 
 						/**********/
@@ -1874,8 +1847,7 @@ static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 						  ((CLAMP( ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) | \
 						  ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);    */
 						LCDDriver_drawPixel_by_offset(pOutBuffer, (pOutAddr2 + 2),
-						                              ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) |
-						                                  ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
+						                              ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) | ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
 						                                  ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET));
 
 #endif /* JPEG_RGB_FORMAT */
@@ -1908,8 +1880,7 @@ static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
  * @param  ConvertedDataCount  : number of converted bytes from input buffer.
  * @retval Number of blcoks converted from YCbCr to RGB
  */
-static uint32_t JPEG_MCU_YCbCr422_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_MCU_YCbCr422_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t i, j, k, currentMCU, xRef, yRef;
 
@@ -1955,13 +1926,11 @@ static uint32_t JPEG_MCU_YCbCr422_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 
 						ycomp = (int32_t)(*(pLum + j));
 
-						*(__IO uint32_t *)pOutAddr = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) |
-						                             (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
+						*(__IO uint32_t *)pOutAddr = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) | (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
 						/**********/
 						ycomp = (int32_t)(*(pLum + j + 1));
 
-						*((__IO uint32_t *)(pOutAddr + 4)) = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) |
-						                                     (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
+						*((__IO uint32_t *)(pOutAddr + 4)) = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) | (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
 
 #elif (JPEG_RGB_FORMAT == JPEG_RGB888)
 
@@ -1982,15 +1951,13 @@ static uint32_t JPEG_MCU_YCbCr422_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 
 						ycomp = (int32_t)(*(pLum + j));
 
-						*(__IO uint16_t *)pOutAddr = ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) |
-						                             ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
-						                             ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);
+						*(__IO uint16_t *)pOutAddr =
+						    ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) | ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) | ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);
 						/**********/
 						ycomp = (int32_t)(*(pLum + j + 1));
 
-						*((__IO uint16_t *)(pOutAddr + 2)) = ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) |
-						                                     ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
-						                                     ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);
+						*((__IO uint16_t *)(pOutAddr + 2)) =
+						    ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) | ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) | ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);
 
 #endif /* JPEG_RGB_FORMAT*/
 
@@ -2021,8 +1988,7 @@ static uint32_t JPEG_MCU_YCbCr422_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
  * @param  ConvertedDataCount  : number of converted bytes from input buffer.
  * @retval Number of blcoks converted from YCbCr to RGB
  */
-static uint32_t JPEG_MCU_YCbCr444_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                     uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_MCU_YCbCr444_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t i, j, currentMCU, xRef, yRef;
 
@@ -2068,8 +2034,7 @@ static uint32_t JPEG_MCU_YCbCr444_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 
 					ycomp = (int32_t)(*(pLum + j));
 
-					*(__IO uint32_t *)pOutAddr = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) |
-					                             (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
+					*(__IO uint32_t *)pOutAddr = (CLAMP(ycomp + c_red) << JPEG_RED_OFFSET) | (CLAMP(ycomp + c_green) << JPEG_GREEN_OFFSET) | (CLAMP(ycomp + c_blue) << JPEG_BLUE_OFFSET);
 
 #elif (JPEG_RGB_FORMAT == JPEG_RGB888)
 
@@ -2083,8 +2048,8 @@ static uint32_t JPEG_MCU_YCbCr444_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 
 					ycomp = (int32_t)(*(pLum + j));
 
-					*(__IO uint16_t *)pOutAddr = ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) | ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) |
-					                             ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);
+					*(__IO uint16_t *)pOutAddr =
+					    ((CLAMP(ycomp + c_red) >> 3) << JPEG_RED_OFFSET) | ((CLAMP(ycomp + c_green) >> 2) << JPEG_GREEN_OFFSET) | ((CLAMP(ycomp + c_blue) >> 3) << JPEG_BLUE_OFFSET);
 
 #endif /* JPEG_RGB_FORMAT */
 
@@ -2112,8 +2077,7 @@ static uint32_t JPEG_MCU_YCbCr444_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
  * @param  ConvertedDataCount  : number of converted bytes from input buffer.
  * @retval Number of blcoks converted from YCbCr to RGB
  */
-static uint32_t JPEG_MCU_Gray_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                 uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_MCU_Gray_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t currentMCU, xRef, yRef;
 	uint32_t refline;
@@ -2181,8 +2145,7 @@ static uint32_t JPEG_MCU_Gray_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pO
  * @param  ConvertedDataCount  : number of converted bytes from input buffer.
  * @retval Number of blcoks converted from CMYK to RGB
  */
-static uint32_t JPEG_MCU_YCCK_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount,
-                                                 uint32_t *ConvertedDataCount) {
+static uint32_t JPEG_MCU_YCCK_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pOutBuffer, uint32_t BlockIndex, uint32_t DataCount, uint32_t *ConvertedDataCount) {
 	uint32_t numberMCU;
 	uint32_t i, j, currentMCU, xRef, yRef;
 
@@ -2232,8 +2195,7 @@ static uint32_t JPEG_MCU_YCCK_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pO
 
 #elif (JPEG_RGB_FORMAT == JPEG_RGB565)
 
-					*(__IO uint16_t *)pOutAddr =
-					    ((c_red >> 3) << JPEG_RED_OFFSET) | ((c_green >> 2) << JPEG_GREEN_OFFSET) | ((c_blue >> 3) << JPEG_BLUE_OFFSET);
+					*(__IO uint16_t *)pOutAddr = ((c_red >> 3) << JPEG_RED_OFFSET) | ((c_green >> 2) << JPEG_GREEN_OFFSET) | ((c_blue >> 3) << JPEG_BLUE_OFFSET);
 
 #endif /* JPEG_RGB_FORMAT */
 
@@ -2260,8 +2222,7 @@ static uint32_t JPEG_MCU_YCCK_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t *pO
  * @param ImageNbMCUs : pointer to uint32_t, used to retrive the total number of MCU blocks in the jpeg image.
  * @retval HAL status : HAL_OK or HAL_ERROR.
  */
-HAL_StatusTypeDef JPEG_GetDecodeColorConvertFunc(JPEG_ConfTypeDef *pJpegInfo, JPEG_YCbCrToRGB_Convert_Function *pFunction,
-                                                 uint32_t *ImageNbMCUs) {
+HAL_StatusTypeDef JPEG_GetDecodeColorConvertFunc(JPEG_ConfTypeDef *pJpegInfo, JPEG_YCbCrToRGB_Convert_Function *pFunction, uint32_t *ImageNbMCUs) {
 	uint32_t hMCU, vMCU;
 
 	JPEG_ConvertorParams.ColorSpace = pJpegInfo->ColorSpace;

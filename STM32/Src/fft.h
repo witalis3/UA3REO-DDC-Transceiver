@@ -25,16 +25,12 @@
 #define FFT_DOUBLE_SIZE_BUFFER (FFT_SIZE * 2) // Buffer size for FFT calculation // average threshold of the FFT signal
 #define FFT_COMPRESS_INTERVAL 0.95f           // compress interval of the FFT signal
 #define FFT_STEP_COEFF 10.0f                  // step coefficient for auto-calibration of the FFT signal (more - slower)
-#define FFT_HZ_IN_PIXEL                                                                             \
-	(float32_t)((float32_t)TRX_GetRXSampleRate * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / \
-	            (float32_t)LAYOUT->FFT_PRINT_SIZE) // hertz per FFT pixel RX
-#define FFT_TX_HZ_IN_PIXEL                                                                     \
-	(float32_t)((float32_t)TRX_SAMPLERATE * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / \
-	            (float32_t)LAYOUT->FFT_PRINT_SIZE) // hertz per FFT pixel TX
-#define FFT_BW_BRIGHTNESS_1 10                   // pixel brightness on bw bar
-#define FFT_BW_BRIGHTNESS_2 3                    // pixel brightness on bw bar
-#define FFT_SCALE_LINES_BRIGHTNESS 0.4f          // pixel brightness on scale lines
-#define FFT_MAX_GRID_NUMBER 13                   // max grid lines
+#define FFT_HZ_IN_PIXEL (float32_t)((float32_t)TRX_GetRXSampleRate * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / (float32_t)LAYOUT->FFT_PRINT_SIZE) // hertz per FFT pixel RX
+#define FFT_TX_HZ_IN_PIXEL (float32_t)((float32_t)TRX_SAMPLERATE * ((float32_t)FFT_USEFUL_SIZE / (float32_t)FFT_SIZE) / (float32_t)LAYOUT->FFT_PRINT_SIZE)   // hertz per FFT pixel TX
+#define FFT_BW_BRIGHTNESS_1 10                                                                                                                               // pixel brightness on bw bar
+#define FFT_BW_BRIGHTNESS_2 3                                                                                                                                // pixel brightness on bw bar
+#define FFT_SCALE_LINES_BRIGHTNESS 0.4f // pixel brightness on scale lines
+#define FFT_MAX_GRID_NUMBER 13          // max grid lines
 #if (defined(LAY_800x480))
 #define FFT_LENS_STEP_START 0.19f // each lens step
 #define FFT_LENS_STEP 0.0055f
@@ -52,18 +48,14 @@
 #define FFT_DBM_GRID_INTERVAL 24   // interval between dbm grids
 #define FFT_DBM_COMPENSATION 6.0f  // for amplitude conversion
 
-#define GET_FFTHeight                                                                \
-	((TRX.FFT_Height == 1)                                                             \
-	     ? LAYOUT->FFT_HEIGHT_STYLE1                                                   \
-	     : ((TRX.FFT_Height == 2) ? LAYOUT->FFT_HEIGHT_STYLE2                          \
-	                              : ((TRX.FFT_Height == 3) ? LAYOUT->FFT_HEIGHT_STYLE3 \
-	                                                       : ((TRX.FFT_Height == 4) ? LAYOUT->FFT_HEIGHT_STYLE4 : LAYOUT->FFT_HEIGHT_STYLE5))))
-#define GET_WTFHeight                                                                \
-	((TRX.FFT_Height == 1)                                                             \
-	     ? LAYOUT->WTF_HEIGHT_STYLE1                                                   \
-	     : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2                          \
-	                              : ((TRX.FFT_Height == 3) ? LAYOUT->WTF_HEIGHT_STYLE3 \
-	                                                       : ((TRX.FFT_Height == 4) ? LAYOUT->WTF_HEIGHT_STYLE4 : LAYOUT->WTF_HEIGHT_STYLE5))))
+#define GET_FFTHeight                                                         \
+	((TRX.FFT_Height == 1) ? LAYOUT->FFT_HEIGHT_STYLE1                          \
+	                       : ((TRX.FFT_Height == 2) ? LAYOUT->FFT_HEIGHT_STYLE2 \
+	                                                : ((TRX.FFT_Height == 3) ? LAYOUT->FFT_HEIGHT_STYLE3 : ((TRX.FFT_Height == 4) ? LAYOUT->FFT_HEIGHT_STYLE4 : LAYOUT->FFT_HEIGHT_STYLE5))))
+#define GET_WTFHeight                                                         \
+	((TRX.FFT_Height == 1) ? LAYOUT->WTF_HEIGHT_STYLE1                          \
+	                       : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2 \
+	                                                : ((TRX.FFT_Height == 3) ? LAYOUT->WTF_HEIGHT_STYLE3 : ((TRX.FFT_Height == 4) ? LAYOUT->WTF_HEIGHT_STYLE4 : LAYOUT->WTF_HEIGHT_STYLE5))))
 
 #define ZOOMFFT_DECIM_STAGES_IIR 9
 #define ZOOMFFT_DECIM_STAGES_FIR 4

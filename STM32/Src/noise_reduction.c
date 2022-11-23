@@ -80,7 +80,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 			// last half - last data
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++) {
 				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE + idx * 2] = instance->InputBuffer[loop * NOISE_REDUCTION_FFT_SIZE_HALF + idx]; // real
-				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE + idx * 2 + 1] = 0.0f; // imaginary
+				instance->FFT_Buffer[NOISE_REDUCTION_FFT_SIZE + idx * 2 + 1] = 0.0f;                                                          // imaginary
 			}
 			// windowing
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++)
@@ -89,21 +89,19 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 			arm_cfft_f32(instance->FFT_Inst, instance->FFT_Buffer, 0, 1);
 			// get magnitude
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++) {
-				arm_sqrt_f32(instance->FFT_Buffer[idx * 2] * instance->FFT_Buffer[idx * 2] +
-				                 instance->FFT_Buffer[idx * 2 + 1] * instance->FFT_Buffer[idx * 2 + 1],
-				             &instance->FFT_COMPLEX_MAG[idx]);
+				arm_sqrt_f32(instance->FFT_Buffer[idx * 2] * instance->FFT_Buffer[idx * 2] + instance->FFT_Buffer[idx * 2 + 1] * instance->FFT_Buffer[idx * 2 + 1], &instance->FFT_COMPLEX_MAG[idx]);
 			}
 			// average magnitude
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
-				instance->FFT_AVERAGE_MAG[idx] = instance->FFT_COMPLEX_MAG[idx] * (1.0f - (float32_t)TRX.DNR_AVERAGE / 500.0f) +
-				                                 instance->FFT_AVERAGE_MAG[idx] * ((float32_t)TRX.DNR_AVERAGE / 500.0f);
+				instance->FFT_AVERAGE_MAG[idx] =
+				    instance->FFT_COMPLEX_MAG[idx] * (1.0f - (float32_t)TRX.DNR_AVERAGE / 500.0f) + instance->FFT_AVERAGE_MAG[idx] * ((float32_t)TRX.DNR_AVERAGE / 500.0f);
 			// minimum magnitude
 			for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE_HALF; idx++)
 				if (instance->FFT_MINIMUM_MAG[idx] > instance->FFT_COMPLEX_MAG[idx])
 					instance->FFT_MINIMUM_MAG[idx] = instance->FFT_COMPLEX_MAG[idx];
 				else
-					instance->FFT_MINIMUM_MAG[idx] = instance->FFT_COMPLEX_MAG[idx] * (1.0f - (float32_t)TRX.DNR_MINIMAL / 100.0f) +
-					                                 instance->FFT_MINIMUM_MAG[idx] * ((float32_t)TRX.DNR_MINIMAL / 100.0f);
+					instance->FFT_MINIMUM_MAG[idx] =
+					    instance->FFT_COMPLEX_MAG[idx] * (1.0f - (float32_t)TRX.DNR_MINIMAL / 100.0f) + instance->FFT_MINIMUM_MAG[idx] * ((float32_t)TRX.DNR_MINIMAL / 100.0f);
 
 			if (nr_type == 1) {
 				// calculate signal-noise-ratio
@@ -128,8 +126,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->GAIN[idx] = NOISE_REDUCTION_ALPHA * instance->GAIN[idx] + (1.0f - NOISE_REDUCTION_ALPHA) * gain;
 					// frequency smoothing of gain weights
 					if (idx > 0 && (idx < NOISE_REDUCTION_FFT_SIZE_HALF - 1))
-						instance->GAIN[idx] = NOISE_REDUCTION_BETA * instance->GAIN[idx - 1] + (1.0f - 2 * NOISE_REDUCTION_BETA) * instance->GAIN[idx] +
-						                      NOISE_REDUCTION_BETA * instance->GAIN[idx + 1];
+						instance->GAIN[idx] = NOISE_REDUCTION_BETA * instance->GAIN[idx - 1] + (1.0f - 2 * NOISE_REDUCTION_BETA) * instance->GAIN[idx] + NOISE_REDUCTION_BETA * instance->GAIN[idx + 1];
 				}
 			}
 

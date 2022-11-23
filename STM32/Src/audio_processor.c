@@ -93,8 +93,7 @@ static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32
 static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff);
 static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
-static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r,
-                          int16_t blockSize);
+static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize);
 static void doTX_HILBERT(bool swap_iq, uint16_t size);
 static void doTX_CESSB(uint16_t size);
 
@@ -125,15 +124,11 @@ void preProcessRxAudio(void) {
 	AUDIOPROC_samples++;
 
 	// copy buffer from FPGA
-	float32_t *FPGA_Audio_Buffer_RX1_I_current =
-	    !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
-	float32_t *FPGA_Audio_Buffer_RX1_Q_current =
-	    !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+	float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
+	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
 #if HRDW_HAS_DUAL_RX
-	float32_t *FPGA_Audio_Buffer_RX2_I_current =
-	    !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_I_A : (float32_t *)&FPGA_Audio_Buffer_RX2_I_B;
-	float32_t *FPGA_Audio_Buffer_RX2_Q_current =
-	    !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B;
+	float32_t *FPGA_Audio_Buffer_RX2_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_I_A : (float32_t *)&FPGA_Audio_Buffer_RX2_I_B;
+	float32_t *FPGA_Audio_Buffer_RX2_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX2_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX2_Q_B;
 #endif
 
 	// Get and decimate input
@@ -148,9 +143,8 @@ void preProcessRxAudio(void) {
 		// demodulate wfm before decimation
 		DemodulateFM(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, true, TRX_RX1_dBm);
 	}
-	doRX_DecimateInput(AUDIO_RX1, FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current,
-	                   &APROC_Audio_Buffer_RX1_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX1_accum_Q[audio_buffer_in_index],
-	                   FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
+	doRX_DecimateInput(AUDIO_RX1, FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, &APROC_Audio_Buffer_RX1_accum_I[audio_buffer_in_index],
+	                   &APROC_Audio_Buffer_RX1_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 
 #if HRDW_HAS_DUAL_RX
 	if (TRX.Dual_RX) {
@@ -160,9 +154,8 @@ void preProcessRxAudio(void) {
 			// demodulate wfm before decimation
 			DemodulateFM(FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, true, TRX_RX2_dBm);
 		}
-		doRX_DecimateInput(AUDIO_RX2, FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current,
-		                   &APROC_Audio_Buffer_RX2_accum_I[audio_buffer_in_index], &APROC_Audio_Buffer_RX2_accum_Q[audio_buffer_in_index],
-		                   FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
+		doRX_DecimateInput(AUDIO_RX2, FPGA_Audio_Buffer_RX2_I_current, FPGA_Audio_Buffer_RX2_Q_current, &APROC_Audio_Buffer_RX2_accum_I[audio_buffer_in_index],
+		                   &APROC_Audio_Buffer_RX2_accum_Q[audio_buffer_in_index], FPGA_RX_IQ_BUFFER_HALF_SIZE, need_decimate_rate);
 	}
 #endif
 
@@ -347,8 +340,7 @@ void processRxAudio(void) {
 		break;
 	case TRX_MODE_SAM:
 		doRX_LPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_DemodSAM(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q,
-		              FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		doRX_DemodSAM(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_LPF2_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		// doRX_NOTCH(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		// doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -470,8 +462,7 @@ void processRxAudio(void) {
 			break;
 		case TRX_MODE_SAM:
 			doRX_LPF_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			doRX_DemodSAM(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q,
-			              FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_DemodSAM(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_LPF2_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			// doRX_NOTCH(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			// doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -519,8 +510,7 @@ void processRxAudio(void) {
 #endif
 
 	// receiver equalizer
-	if (CurrentVFO->Mode != TRX_MODE_DIGI_L && CurrentVFO->Mode != TRX_MODE_DIGI_U && CurrentVFO->Mode != TRX_MODE_RTTY &&
-	    CurrentVFO->Mode != TRX_MODE_IQ)
+	if (CurrentVFO->Mode != TRX_MODE_DIGI_L && CurrentVFO->Mode != TRX_MODE_DIGI_U && CurrentVFO->Mode != TRX_MODE_RTTY && CurrentVFO->Mode != TRX_MODE_IQ)
 		doRX_EQ(FPGA_RX_IQ_BUFFER_HALF_SIZE);
 
 	// muting
@@ -695,8 +685,7 @@ void processRxAudio(void) {
 		if (CODEC_DMA_state) // complete
 		{
 #if HRDW_HAS_MDMA
-			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE],
-			               CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
+			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
 #else
 			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE],
@@ -706,8 +695,7 @@ void processRxAudio(void) {
 		} else // half
 		{
 #if HRDW_HAS_MDMA
-			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0],
-			               CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
+			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
 #else
 			HAL_DMA_Start(&HRDW_AUDIO_COPY2_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0],
@@ -751,21 +739,18 @@ void processTxAudio(void) {
 			buffer_index -= (buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET);
 
 #if HRDW_USB_AUDIO_BITS == 16
-		readHalfFromCircleUSBBuffer16Bit(&USB_AUDIO_tx_buffer[0], &APROC_AudioBuffer_out[0], buffer_index,
-		                                 (USB_AUDIO_TX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET));
+		readHalfFromCircleUSBBuffer16Bit(&USB_AUDIO_tx_buffer[0], &APROC_AudioBuffer_out[0], buffer_index, (USB_AUDIO_TX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET));
 #endif
 
 #if HRDW_USB_AUDIO_BITS == 24
-		readHalfFromCircleUSBBuffer24Bit(&USB_AUDIO_tx_buffer[0], &APROC_AudioBuffer_out[0], buffer_index,
-		                                 (USB_AUDIO_TX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET));
+		readHalfFromCircleUSBBuffer24Bit(&USB_AUDIO_tx_buffer[0], &APROC_AudioBuffer_out[0], buffer_index, (USB_AUDIO_TX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET));
 #endif
 	} else // AUDIO CODEC AUDIO
 	{
 		uint32_t dma_index_rx = HRDW_getAudioCodecRX_DMAIndex();
 		if ((dma_index_rx % 2) == 1)
 			dma_index_rx--;
-		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index_rx, CODEC_AUDIO_BUFFER_SIZE,
-		                       AUDIO_BUFFER_SIZE);
+		readFromCircleBuffer32((uint32_t *)&CODEC_Audio_Buffer_TX[0], (uint32_t *)&APROC_AudioBuffer_out[0], dma_index_rx, CODEC_AUDIO_BUFFER_SIZE, AUDIO_BUFFER_SIZE);
 	}
 
 #if HRDW_HAS_SD
@@ -902,8 +887,7 @@ void processTxAudio(void) {
 		// TX AGC (compressor)
 		if (mode == TRX_MODE_AM || mode == TRX_MODE_SAM) {
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f, mode);
-			arm_scale_f32(APROC_Audio_Buffer_TX_I, ((float32_t)CALIBRATE.AM_MODULATION_INDEX / 200.0f) * APROC_TX_clip_gain, APROC_Audio_Buffer_TX_I,
-			              AUDIO_BUFFER_HALF_SIZE);
+			arm_scale_f32(APROC_Audio_Buffer_TX_I, ((float32_t)CALIBRATE.AM_MODULATION_INDEX / 200.0f) * APROC_TX_clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		} else if (mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U) // disable AGC on DIGI
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 1.00f * APROC_TX_clip_gain, mode);
 
@@ -1048,12 +1032,10 @@ void processTxAudio(void) {
 		if (start_CODEC_DMA_state) // compleate
 		{
 #if HRDW_HAS_MDMA
-			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE],
-			               AUDIO_BUFFER_SIZE * 4, 1);
+			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
 #else
-			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE],
-			              AUDIO_BUFFER_SIZE);
+			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], AUDIO_BUFFER_SIZE);
 			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY_DMA);
 #endif
 		} else // half
@@ -1096,7 +1078,7 @@ void processTxAudio(void) {
 	// amplitude for the selected power and range
 	float32_t RF_Power_selected = getPowerFromALC(TRX_ALC_IN); // get from ALC
 	if (RF_Power_selected == 0) {                              // ALC disabled
-		RF_Power_selected = (float32_t)TRX.RF_Power;
+		RF_Power_selected = (float32_t)TRX.RF_Gain;
 		if ((mode == TRX_MODE_LSB || mode == TRX_MODE_USB) && !TRX_Tune)
 			RF_Power_selected += CALIBRATE.SSB_POWER_ADDITION;
 	}
@@ -1112,7 +1094,7 @@ void processTxAudio(void) {
 		RFpower_amplitude = db2rateV(dbP) * TRX_MAX_TX_Amplitude;
 	}
 
-	if (RFpower_amplitude < 0.0f || TRX.RF_Power == 0)
+	if (RFpower_amplitude < 0.0f || TRX.RF_Gain == 0)
 		RFpower_amplitude = 0.0f;
 	if ((mode == TRX_MODE_AM || mode == TRX_MODE_SAM) && !TRX_Tune)
 		RFpower_amplitude = RFpower_amplitude * 0.7f;
@@ -1137,8 +1119,7 @@ void processTxAudio(void) {
 			{
 				// println("Process Tune Stabilizer ", APROC_TX_tune_power);
 				float32_t coeff_a = 0.993f;
-				if (CALIBRATE.RF_unit_type == RF_UNIT_WF_100D || CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN ||
-				    CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) {
+				if (CALIBRATE.RF_unit_type == RF_UNIT_WF_100D || CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) {
 					coeff_a = 0.996f;
 				}
 				float32_t coeff_b = 1.0f - coeff_a;
@@ -1234,27 +1215,21 @@ void processTxAudio(void) {
 		Aligned_CleanDCache_by_Addr((uint32_t *)&FPGA_Audio_SendBuffer_Q[0], sizeof(FPGA_Audio_SendBuffer_Q));
 		if (FPGA_Audio_Buffer_State) {
 #if HRDW_HAS_MDMA
-			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE],
-			               AUDIO_BUFFER_HALF_SIZE * 4, 1);
+			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
-			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[AUDIO_BUFFER_HALF_SIZE],
-			               AUDIO_BUFFER_HALF_SIZE * 4, 1);
+			HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
 #else
-			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE],
-			              AUDIO_BUFFER_HALF_SIZE);
+			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE);
 			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY_DMA);
-			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[AUDIO_BUFFER_HALF_SIZE],
-			              AUDIO_BUFFER_HALF_SIZE);
+			HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[AUDIO_BUFFER_HALF_SIZE], AUDIO_BUFFER_HALF_SIZE);
 			SLEEPING_DMA_PollForTransfer(&HRDW_AUDIO_COPY_DMA);
 #endif
 		} else {
 #if HRDW_HAS_MDMA
-			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[0],
-			               AUDIO_BUFFER_HALF_SIZE * 4, 1);
+			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[0], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
-			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0],
-			               AUDIO_BUFFER_HALF_SIZE * 4, 1);
+			HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_Audio_Buffer_TX_Q[0], (uint32_t)&FPGA_Audio_SendBuffer_Q[0], AUDIO_BUFFER_HALF_SIZE * 4, 1);
 			SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
 #else
 			HAL_DMA_Start(&HRDW_AUDIO_COPY2_DMA, (uint32_t)&APROC_Audio_Buffer_TX_I[0], (uint32_t)&FPGA_Audio_SendBuffer_I[0], AUDIO_BUFFER_HALF_SIZE);
@@ -1388,8 +1363,7 @@ static void doTX_CESSB(uint16_t size) {
 	dma_memcpy(&APROC_Audio_Buffer_TX_Q[0], &APROC_Audio_Buffer_TX_I[0], sizeof(APROC_Audio_Buffer_TX_Q));
 }
 
-static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size,
-                               uint8_t factor) {
+static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size, uint8_t factor) {
 	if (factor == 1) {
 		dma_memcpy(out_i, in_i, size * 4);
 		dma_memcpy(out_q, in_q, size * 4);
@@ -1413,15 +1387,13 @@ static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32
 static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 	if (rx_id == AUDIO_RX1) {
 		if (CurrentVFO->LPF_RX_Filter_Width > 0) {
-			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_LPF_I, &IIR_RX1_LPF_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q,
-			                               APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_LPF_I, &IIR_RX1_LPF_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 		}
 	}
 #if HRDW_HAS_DUAL_RX
 	else {
 		if (SecondaryVFO->LPF_RX_Filter_Width > 0) {
-			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_LPF_I, &IIR_RX2_LPF_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q,
-			                               APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
+			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_LPF_I, &IIR_RX2_LPF_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
 		}
 	}
 #endif
@@ -1431,15 +1403,13 @@ static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 static void doRX_LPF2_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 	if (rx_id == AUDIO_RX1) {
 		if (CurrentVFO->LPF_RX_Filter_Width > 0) {
-			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_LPF2_I, &IIR_RX1_LPF2_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q,
-			                               APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_LPF2_I, &IIR_RX1_LPF2_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 		}
 	}
 #if HRDW_HAS_DUAL_RX
 	else {
 		if (SecondaryVFO->LPF_RX_Filter_Width > 0) {
-			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_LPF2_I, &IIR_RX2_LPF2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q,
-			                               APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
+			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_LPF2_I, &IIR_RX2_LPF2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
 		}
 	}
 #endif
@@ -1467,15 +1437,13 @@ static void doRX_GAUSS_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 		return;
 	if (rx_id == AUDIO_RX1) {
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_GAUSS_I, &IIR_RX1_GAUSS_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q,
-			                               APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_GAUSS_I, &IIR_RX1_GAUSS_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 		}
 	}
 #if HRDW_HAS_DUAL_RX
 	else {
 		if (SecondaryVFO->Mode == TRX_MODE_CW) {
-			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_GAUSS_I, &IIR_RX2_GAUSS_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q,
-			                               APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
+			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_GAUSS_I, &IIR_RX2_GAUSS_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
 		}
 	}
 #endif
@@ -1523,24 +1491,19 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 // RX Equalizer
 static void doRX_EQ(uint16_t size) {
 	if (TRX.RX_EQ_P1 != 0) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P1_FILTER, &EQ_RX_Q_P1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q,
-		                               APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P1_FILTER, &EQ_RX_Q_P1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
 	if (TRX.RX_EQ_P2 != 0) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P2_FILTER, &EQ_RX_Q_P2_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q,
-		                               APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P2_FILTER, &EQ_RX_Q_P2_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
 	if (TRX.RX_EQ_P3 != 0) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P3_FILTER, &EQ_RX_Q_P3_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q,
-		                               APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P3_FILTER, &EQ_RX_Q_P3_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
 	if (TRX.RX_EQ_P4 != 0) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P4_FILTER, &EQ_RX_Q_P4_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q,
-		                               APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P4_FILTER, &EQ_RX_Q_P4_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
 	if (TRX.RX_EQ_P5 != 0) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P5_FILTER, &EQ_RX_Q_P5_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q,
-		                               APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P5_FILTER, &EQ_RX_Q_P5_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
 }
 
@@ -1871,8 +1834,7 @@ static void ModulateFM(uint16_t size, float32_t amplitude) {
 	static float32_t fm_mod_accum = 0;
 	static float32_t modulation_index = 0;
 	if (CurrentVFO->LPF_TX_Filter_Width > 0)
-		modulation_index =
-		    CurrentVFO->LPF_TX_Filter_Width / (float32_t)TRX_SAMPLERATE / (float32_t)TRX_TX_Harmonic * (float32_t)CALIBRATE.FM_DEVIATION_SCALE;
+		modulation_index = CurrentVFO->LPF_TX_Filter_Width / (float32_t)TRX_SAMPLERATE / (float32_t)TRX_TX_Harmonic * (float32_t)CALIBRATE.FM_DEVIATION_SCALE;
 	else
 		modulation_index = (float32_t)CALIBRATE.FM_DEVIATION_SCALE;
 
@@ -2006,8 +1968,8 @@ static void APROC_SD_Play(void) {
 				if (CODEC_DMA_state) // complete
 				{
 #if HRDW_HAS_MDMA
-					HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE],
-					               CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
+					HAL_MDMA_Start(&HRDW_AUDIO_COPY_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE], CODEC_AUDIO_BUFFER_HALF_SIZE * 4,
+					               1); //*2 -> left_right
 					SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY_MDMA);
 #else
 					HAL_DMA_Start(&HRDW_AUDIO_COPY_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE],
@@ -2017,8 +1979,7 @@ static void APROC_SD_Play(void) {
 				} else // half
 				{
 #if HRDW_HAS_MDMA
-					HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0],
-					               CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
+					HAL_MDMA_Start(&HRDW_AUDIO_COPY2_MDMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0], CODEC_AUDIO_BUFFER_HALF_SIZE * 4, 1); //*2 -> left_right
 					SLEEPING_MDMA_PollForTransfer(&HRDW_AUDIO_COPY2_MDMA);
 #else
 					HAL_DMA_Start(&HRDW_AUDIO_COPY2_DMA, (uint32_t)&APROC_AudioBuffer_out[0], (uint32_t)&CODEC_Audio_Buffer_RX[0],
@@ -2093,8 +2054,7 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 #endif
 }
 
-static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r,
-                          int16_t blockSize) {
+static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize) {
 	// part of UHSDR project https://github.com/df8oe/UHSDR/blob/active-devel/mchf-eclipse/drivers/audio/audio_driver.c
 	static demod_sam_data_t sam_data_rx1;
 	static demod_sam_data_t sam_data_rx2;
@@ -2136,8 +2096,7 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		sam_data->adb_sam_omega_min = -(2.0 * F_PI * SAM_omegaN / TRX_SAMPLERATE);
 		sam_data->adb_sam_omega_max = (2.0 * F_PI * SAM_omegaN / TRX_SAMPLERATE);
 		sam_data->adb_sam_g1 = (1.0 - expf(-2.0 * SAM_omegaN * SAM_zeta / TRX_SAMPLERATE));
-		sam_data->adb_sam_g2 = (-sam_data->adb_sam_g1 + 2.0 * (1 - expf(-SAM_omegaN * SAM_zeta / TRX_SAMPLERATE) *
-		                                                               cosf(SAM_omegaN / TRX_SAMPLERATE * sqrtf(1.0 - SAM_zeta * SAM_zeta))));
+		sam_data->adb_sam_g2 = (-sam_data->adb_sam_g1 + 2.0 * (1 - expf(-SAM_omegaN * SAM_zeta / TRX_SAMPLERATE) * cosf(SAM_omegaN / TRX_SAMPLERATE * sqrtf(1.0 - SAM_zeta * SAM_zeta))));
 		// fade leveler
 		float32_t tauR = 0.02; // value emperically determined
 		float32_t tauI = 1.4;  // value emperically determined

@@ -60,8 +60,7 @@ void CWDecoder_Init(void) {
 	// initialize CFFT
 	arm_cfft_init_f32(&CWDECODER_FFT_Inst, CWDECODER_FFTSIZE);
 	// decimator
-	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState,
-	                          DECODER_PACKET_SIZE);
+	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState, DECODER_PACKET_SIZE);
 	// Blackman-Harris window function
 	for (uint_fast16_t i = 0; i < CWDECODER_FFT_SAMPLES; i++)
 		CWDEC_window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) +
@@ -232,8 +231,7 @@ static void CWDecoder_Recognise(void) {
 		if (CW_Decoder_WPM > 35)
 			lacktime = 1.5f;
 
-		if (lowduration > (char_time * CWDECODER_ERROR_SPACE_DIFF * lacktime) &&
-		    lowduration < (char_time * (2.0f - CWDECODER_ERROR_SPACE_DIFF) * lacktime)) // char space
+		if (lowduration > (char_time * CWDECODER_ERROR_SPACE_DIFF * lacktime) && lowduration < (char_time * (2.0f - CWDECODER_ERROR_SPACE_DIFF) * lacktime)) // char space
 		{
 			CWDecoder_Decode();
 			last_space = false;

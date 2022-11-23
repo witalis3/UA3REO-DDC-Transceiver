@@ -4,24 +4,24 @@
 
 // Private variables
 static NB_Instance NB_RX1 = {
-	.delay_buf = (float32_t[NB_DELAY_BUFFER_SIZE]){0},
-	.delbuf_inptr = 0,
-	.delbuf_outptr = 2,
-	.nb_delay = 0,
-	.nb_agc = 0,
-	.last_normal_value = 0,
-	.muting_avg = 1.0f,
+    .delay_buf = (float32_t[NB_DELAY_BUFFER_SIZE]){0},
+    .delbuf_inptr = 0,
+    .delbuf_outptr = 2,
+    .nb_delay = 0,
+    .nb_agc = 0,
+    .last_normal_value = 0,
+    .muting_avg = 1.0f,
 };
 
 #if HRDW_HAS_DUAL_RX
 SRAM static NB_Instance NB_RX2 = {
-	.delay_buf = (float32_t[NB_DELAY_BUFFER_SIZE]){0},
-	.delbuf_inptr = 0,
-	.delbuf_outptr = 2,
-	.nb_delay = 0,
-	.nb_agc = 0,
-	.last_normal_value = 0,
-	.muting_avg = 1.0f,
+    .delay_buf = (float32_t[NB_DELAY_BUFFER_SIZE]){0},
+    .delbuf_inptr = 0,
+    .delbuf_outptr = 2,
+    .nb_delay = 0,
+    .nb_agc = 0,
+    .last_normal_value = 0,
+    .muting_avg = 1.0f,
 };
 #endif
 
@@ -30,13 +30,13 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	NB_Instance *instance = &NB_RX1;
 #if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2)
-	  instance = &NB_RX2;
+		instance = &NB_RX2;
 #endif
 
 	// bool has_blank = false;
 	for (uint64_t i = 0; i < NB_BLOCK_SIZE; i++) // Noise blanker function
 	{
-		float32_t sig = fabsf(buffer[i]); // get signal amplitude.  We need only look at one of the two audio channels since they will be the same.
+		float32_t sig = fabsf(buffer[i]);                        // get signal amplitude.  We need only look at one of the two audio channels since they will be the same.
 		instance->delay_buf[instance->delbuf_inptr] = buffer[i]; // copy first byte into delay buffer
 		instance->delbuf_inptr++;
 
@@ -63,7 +63,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 				instance->muting_avg *= 0.9f;
 			// has_blank = true;
 			buffer[i] = instance->last_normal_value * instance->muting_avg; // set the audio buffer to "mute" during the blanking period
-			instance->nb_delay--; // count down the number of samples that we are to blank
+			instance->nb_delay--;                                           // count down the number of samples that we are to blank
 		}
 
 		// RINGBUFFER

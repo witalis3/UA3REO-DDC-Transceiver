@@ -11,13 +11,7 @@
 // Global cty.dat
 static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT] = {
     {.continent = "EU", .country = "Sov Mil Order of Malta", .cq_zone = 15, .itu_zone = 28, .lat = 41.90, .lon = 12.43, .prefixes = "1A"},
-    {.continent = "AS",
-     .country = "Spratly Islands",
-     .cq_zone = 26,
-     .itu_zone = 50,
-     .lat = 9.88,
-     .lon = 114.23,
-     .prefixes = "9M0,BM9S,BN9S,BO9S,BP9S,BQ9S,BU9S,BV9S,BW9S,BX9S"},
+    {.continent = "AS", .country = "Spratly Islands", .cq_zone = 26, .itu_zone = 50, .lat = 9.88, .lon = 114.23, .prefixes = "9M0,BM9S,BN9S,BO9S,BP9S,BQ9S,BU9S,BV9S,BW9S,BX9S"},
     {.continent = "EU", .country = "Monaco", .cq_zone = 14, .itu_zone = 27, .lat = 43.73, .lon = 7.4, .prefixes = "3A"},
     {.continent = "AF", .country = "Agalega & St. Brandon", .cq_zone = 39, .itu_zone = 53, .lat = -10.45, .lon = 56.67, .prefixes = "3B6,3B7"},
     {.continent = "AF", .country = "Mauritius", .cq_zone = 39, .itu_zone = 53, .lat = -20.35, .lon = 57.5, .prefixes = "3B8"},
@@ -39,13 +33,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "AS", .country = "Sri Lanka", .cq_zone = 22, .itu_zone = 41, .lat = 7.60, .lon = 80.7, .prefixes = "4P,4Q,4R,4S"},
     {.continent = "EU", .country = "ITU HQ", .cq_zone = 14, .itu_zone = 28, .lat = 46.17, .lon = 6.05, .prefixes = "4U1ITU,4U1WRC"},
     {.continent = "NA", .country = "United Nations HQ", .cq_zone = 5, .itu_zone = 8, .lat = 40.75, .lon = -73.97, .prefixes = "4U1UN"},
-    {.continent = "EU",
-     .country = "Vienna Intl Ctr",
-     .cq_zone = 15,
-     .itu_zone = 28,
-     .lat = 48.20,
-     .lon = 16.3,
-     .prefixes = "4U0R,4U1A,4U1VIC,4U2U,4U500M,4Y1A,C7A"},
+    {.continent = "EU", .country = "Vienna Intl Ctr", .cq_zone = 15, .itu_zone = 28, .lat = 48.20, .lon = 16.3, .prefixes = "4U0R,4U1A,4U1VIC,4U2U,4U500M,4Y1A,C7A"},
     {.continent = "OC", .country = "Timor - Leste", .cq_zone = 28, .itu_zone = 54, .lat = -8.80, .lon = 126.05, .prefixes = "4W"},
     {.continent = "AS", .country = "Israel", .cq_zone = 20, .itu_zone = 39, .lat = 31.32, .lon = 34.82, .prefixes = "4X,4Z"},
     {.continent = "AF", .country = "Libya", .cq_zone = 34, .itu_zone = 38, .lat = 27.20, .lon = 16.6, .prefixes = "5A"},
@@ -75,21 +63,9 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "AS", .country = "Kuwait", .cq_zone = 21, .itu_zone = 39, .lat = 29.38, .lon = 47.38, .prefixes = "9K,NLD"},
     {.continent = "AF", .country = "Sierra Leone", .cq_zone = 35, .itu_zone = 46, .lat = 8.50, .lon = -13.25, .prefixes = "9L"},
     {.continent = "AS", .country = "West Malaysia", .cq_zone = 28, .itu_zone = 54, .lat = 3.95, .lon = 102.23, .prefixes = "9M,9M62M,9W"},
-    {.continent = "OC",
-     .country = "East Malaysia",
-     .cq_zone = 28,
-     .itu_zone = 54,
-     .lat = 2.68,
-     .lon = 113.32,
-     .prefixes = "9M6,9M8,9W6,9W8,9M4CKT,9M4CRB,9M4CRP"},
+    {.continent = "OC", .country = "East Malaysia", .cq_zone = 28, .itu_zone = 54, .lat = 2.68, .lon = 113.32, .prefixes = "9M6,9M8,9W6,9W8,9M4CKT,9M4CRB,9M4CRP"},
     {.continent = "AS", .country = "Nepal", .cq_zone = 22, .itu_zone = 42, .lat = 27.70, .lon = 85.33, .prefixes = "9N"},
-    {.continent = "AF",
-     .country = "Dem. Rep. of the Congo",
-     .cq_zone = 36,
-     .itu_zone = 52,
-     .lat = -3.12,
-     .lon = 23.03,
-     .prefixes = "9O,9P,9Q,9R,9S,9T"},
+    {.continent = "AF", .country = "Dem. Rep. of the Congo", .cq_zone = 36, .itu_zone = 52, .lat = -3.12, .lon = 23.03, .prefixes = "9O,9P,9Q,9R,9S,9T"},
     {.continent = "AF", .country = "Burundi", .cq_zone = 36, .itu_zone = 52, .lat = -3.17, .lon = 29.78, .prefixes = "9U"},
     {.continent = "AS", .country = "Singapore", .cq_zone = 28, .itu_zone = 54, .lat = 1.37, .lon = 103.78, .prefixes = "9V,S6"},
     {.continent = "AF", .country = "Rwanda", .cq_zone = 36, .itu_zone = 52, .lat = -1.75, .lon = 29.82, .prefixes = "9X"},
@@ -103,64 +79,51 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "AS", .country = "Bahrain", .cq_zone = 21, .itu_zone = 39, .lat = 26.03, .lon = 50.53, .prefixes = "A9"},
     {.continent = "AS", .country = "Pakistan", .cq_zone = 21, .itu_zone = 41, .lat = 30.00, .lon = 70, .prefixes = "6P,6Q,6R,6S,AP,AQ,AR,AS"},
     {.continent = "AS", .country = "Scarborough Reef", .cq_zone = 27, .itu_zone = 50, .lat = 15.08, .lon = 117.72, .prefixes = "BS7H"},
-    {.continent = "AS",
-     .country = "Taiwan",
-     .cq_zone = 24,
-     .itu_zone = 44,
-     .lat = 23.72,
-     .lon = 120.88,
-     .prefixes = "BM,BN,BO,BP,BQ,BU,BV,BW,BX"},
-    {.continent = "AS",
-     .country = "Pratas Island",
-     .cq_zone = 24,
-     .itu_zone = 44,
-     .lat = 20.70,
-     .lon = 116.7,
-     .prefixes = "BM9P,BN9P,BO9P,BP9P,BQ9P,BU9P,BV9P,BW9P,BX9P"},
+    {.continent = "AS", .country = "Taiwan", .cq_zone = 24, .itu_zone = 44, .lat = 23.72, .lon = 120.88, .prefixes = "BM,BN,BO,BP,BQ,BU,BV,BW,BX"},
+    {.continent = "AS", .country = "Pratas Island", .cq_zone = 24, .itu_zone = 44, .lat = 20.70, .lon = 116.7, .prefixes = "BM9P,BN9P,BO9P,BP9P,BQ9P,BU9P,BV9P,BW9P,BX9P"},
     {.continent = "AS",
      .country = "China",
      .cq_zone = 24,
      .itu_zone = 44,
      .lat = 36.00,
      .lon = 102,
-     .prefixes =
-         "3H,3H0,3H9,3I,3I0,3I9,3J,3J0,3J9,3K,3K0,3K9,3L,3L0,3L9,3M,3M0,3M9,3N,3N0,3N9,3O,3O0,3O9,3P,3P0,3P9,3Q,3Q0,3Q9,3R,3R0,3R9,3S,3S0,3S9,"
-         "3T,3T0,3T9,3U,3U0,3U9,B0,B2,B3,B4,B5,B6,B7,B8,B9,BA,BA0,BA9,BD,BD0,BD9,BG,BG0,BG9,BH,BH0,BH9,BI,BI0,BI9,BJ,BJ0,BJ9,BL,BL0,BL9,BT,BT0,"
-         "BT9,BY,BY0,BY9,BZ,BZ0,BZ9,XS,XS0,XS9,B1,B2A,B2B,B2C,B2D,B2E,B2F,B2G,B2H,B2I,B2J,B2K,B2L,B2M,B2N,B2O,B2P,B3G,B3H,B3I,B3J,B3K,B3L,B6Q,"
-         "B6R,B6S,B6T,B6U,B6V,B6W,B6X,B7A,B7B,B7C,B7D,B7E,B7F,B7G,B7H,B7Q,B7R,B7S,B7T,B7U,B7V,B7W,B7X,B8A,B8B,B8C,B8D,B8E,B8F,B8G,B8H,B8I,B8J,"
-         "B8K,B8L,B8M,B8N,B8O,B8P,B8Q,B8R,B8S,B8T,B8U,B8V,B8W,B8X,B9A,B9B,B9C,B9D,B9E,B9F,B9S,B9T,B9U,B9V,B9W,B9X,BA2A,BA2B,BA2C,BA2D,BA2E,BA2F,"
-         "BA2G,BA2H,BA2I,BA2J,BA2K,BA2L,BA2M,BA2N,BA2O,BA2P,BA3G,BA3H,BA3I,BA3J,BA3K,BA3L,BA6Q,BA6R,BA6S,BA6T,BA6U,BA6V,BA6W,BA6X,BA7A,BA7B,"
-         "BA7C,BA7D,BA7E,BA7F,BA7G,BA7H,BA7Q,BA7R,BA7S,BA7T,BA7U,BA7V,BA7W,BA7X,BA8A,BA8B,BA8C,BA8D,BA8E,BA8F,BA8G,BA8H,BA8I,BA8J,BA8K,BA8L,"
-         "BA8M,BA8N,BA8O,BA8P,BA8Q,BA8R,BA8S,BA8T,BA8U,BA8V,BA8W,BA8X,BA9A,BA9B,BA9C,BA9D,BA9E,BA9F,BA9S,BA9T,BA9U,BA9V,BA9W,BA9X,BD2A,BD2B,"
-         "BD2C,BD2D,BD2E,BD2F,BD2G,BD2H,BD2I,BD2J,BD2K,BD2L,BD2M,BD2N,BD2O,BD2P,BD3G,BD3H,BD3I,BD3J,BD3K,BD3L,BD6Q,BD6R,BD6S,BD6T,BD6U,BD6V,"
-         "BD6W,BD6X,BD7A,BD7B,BD7C,BD7D,BD7E,BD7F,BD7G,BD7H,BD7Q,BD7R,BD7S,BD7T,BD7U,BD7V,BD7W,BD7X,BD8A,BD8B,BD8C,BD8D,BD8E,BD8F,BD8G,BD8H,"
-         "BD8I,BD8J,BD8K,BD8L,BD8M,BD8N,BD8O,BD8P,BD8Q,BD8R,BD8S,BD8T,BD8U,BD8V,BD8W,BD8X,BD9A,BD9B,BD9C,BD9D,BD9E,BD9F,BD9S,BD9T,BD9U,BD9V,"
-         "BD9W,BD9X,BG2A,BG2B,BG2C,BG2D,BG2E,BG2F,BG2G,BG2H,BG2I,BG2J,BG2K,BG2L,BG2M,BG2N,BG2O,BG2P,BG3G,BG3H,BG3I,BG3J,BG3K,BG3L,BG6Q,BG6R,"
-         "BG6S,BG6T,BG6U,BG6V,BG6W,BG6X,BG7A,BG7B,BG7C,BG7D,BG7E,BG7F,BG7G,BG7H,BG7Q,BG7R,BG7S,BG7T,BG7U,BG7V,BG7W,BG7X,BG8A,BG8B,BG8C,BG8D,"
-         "BG8E,BG8F,BG8G,BG8H,BG8I,BG8J,BG8K,BG8L,BG8M,BG8N,BG8O,BG8P,BG8Q,BG8R,BG8S,BG8T,BG8U,BG8V,BG8W,BG8X,BG9A,BG9B,BG9C,BG9D,BG9E,BG9F,"
-         "BG9S,BG9T,BG9U,BG9V,BG9W,BG9X,BH2A,BH2B,BH2C,BH2D,BH2E,BH2F,BH2G,BH2H,BH2I,BH2J,BH2K,BH2L,BH2M,BH2N,BH2O,BH2P,BH3G,BH3H,BH3I,BH3J,"
-         "BH3K,BH3L,BH6Q,BH6R,BH6S,BH6T,BH6U,BH6V,BH6W,BH6X,BH7A,BH7B,BH7C,BH7D,BH7E,BH7F,BH7G,BH7H,BH7Q,BH7R,BH7S,BH7T,BH7U,BH7V,BH7W,BH7X,"
-         "BH8A,BH8B,BH8C,BH8D,BH8E,BH8F,BH8G,BH8H,BH8I,BH8J,BH8K,BH8L,BH8M,BH8N,BH8O,BH8P,BH8Q,BH8R,BH8S,BH8T,BH8U,BH8V,BH8W,BH8X,BH9A,BH9B,"
-         "BH9C,BH9D,BH9E,BH9F,BH9S,BH9T,BH9U,BH9V,BH9W,BH9X,BI2A,BI2B,BI2C,BI2D,BI2E,BI2F,BI2G,BI2H,BI2I,BI2J,BI2K,BI2L,BI2M,BI2N,BI2O,BI2P,"
-         "BI3G,BI3H,BI3I,BI3J,BI3K,BI3L,BI6Q,BI6R,BI6S,BI6T,BI6U,BI6V,BI6W,BI6X,BI7A,BI7B,BI7C,BI7D,BI7E,BI7F,BI7G,BI7H,BI7Q,BI7R,BI7S,BI7T,"
-         "BI7U,BI7V,BI7W,BI7X,BI8A,BI8B,BI8C,BI8D,BI8E,BI8F,BI8G,BI8H,BI8I,BI8J,BI8K,BI8L,BI8M,BI8N,BI8O,BI8P,BI8Q,BI8R,BI8S,BI8T,BI8U,BI8V,"
-         "BI8W,BI8X,BI9A,BI9B,BI9C,BI9D,BI9E,BI9F,BI9S,BI9T,BI9U,BI9V,BI9W,BI9X,BJ2A,BJ2B,BJ2C,BJ2D,BJ2E,BJ2F,BJ2G,BJ2H,BJ2I,BJ2J,BJ2K,BJ2L,"
-         "BJ2M,BJ2N,BJ2O,BJ2P,BJ3G,BJ3H,BJ3I,BJ3J,BJ3K,BJ3L,BJ6Q,BJ6R,BJ6S,BJ6T,BJ6U,BJ6V,BJ6W,BJ6X,BJ7A,BJ7B,BJ7C,BJ7D,BJ7E,BJ7F,BJ7G,BJ7H,"
-         "BJ7Q,BJ7R,BJ7S,BJ7T,BJ7U,BJ7V,BJ7W,BJ7X,BJ8A,BJ8B,BJ8C,BJ8D,BJ8E,BJ8F,BJ8G,BJ8H,BJ8I,BJ8J,BJ8K,BJ8L,BJ8M,BJ8N,BJ8O,BJ8P,BJ8Q,BJ8R,"
-         "BJ8S,BJ8T,BJ8U,BJ8V,BJ8W,BJ8X,BJ9A,BJ9B,BJ9C,BJ9D,BJ9E,BJ9F,BJ9S,BJ9T,BJ9U,BJ9V,BJ9W,BJ9X,BL2A,BL2B,BL2C,BL2D,BL2E,BL2F,BL2G,BL2H,"
-         "BL2I,BL2J,BL2K,BL2L,BL2M,BL2N,BL2O,BL2P,BL3G,BL3H,BL3I,BL3J,BL3K,BL3L,BL6Q,BL6R,BL6S,BL6T,BL6U,BL6V,BL6W,BL6X,BL7A,BL7B,BL7C,BL7D,"
-         "BL7E,BL7F,BL7G,BL7H,BL7Q,BL7R,BL7S,BL7T,BL7U,BL7V,BL7W,BL7X,BL8A,BL8B,BL8C,BL8D,BL8E,BL8F,BL8G,BL8H,BL8I,BL8J,BL8K,BL8L,BL8M,BL8N,"
-         "BL8O,BL8P,BL8Q,BL8R,BL8S,BL8T,BL8U,BL8V,BL8W,BL8X,BL9A,BL9B,BL9C,BL9D,BL9E,BL9F,BL9S,BL9T,BL9U,BL9V,BL9W,BL9X,BT2A,BT2B,BT2C,BT2D,"
-         "BT2E,BT2F,BT2G,BT2H,BT2I,BT2J,BT2K,BT2L,BT2M,BT2N,BT2O,BT2P,BT3G,BT3H,BT3I,BT3J,BT3K,BT3L,BT6Q,BT6R,BT6S,BT6T,BT6U,BT6V,BT6W,BT6X,"
-         "BT7A,BT7B,BT7C,BT7D,BT7E,BT7F,BT7G,BT7H,BT7Q,BT7R,BT7S,BT7T,BT7U,BT7V,BT7W,BT7X,BT8A,BT8B,BT8C,BT8D,BT8E,BT8F,BT8G,BT8H,BT8I,BT8J,"
-         "BT8K,BT8L,BT8M,BT8N,BT8O,BT8P,BT8Q,BT8R,BT8S,BT8T,BT8U,BT8V,BT8W,BT8X,BT9A,BT9B,BT9C,BT9D,BT9E,BT9F,BT9S,BT9T,BT9U,BT9V,BT9W,BT9X,"
-         "BY2A,BY2B,BY2C,BY2D,BY2E,BY2F,BY2G,BY2H,BY2I,BY2J,BY2K,BY2L,BY2M,BY2N,BY2O,BY2P,BY3G,BY3H,BY3I,BY3J,BY3K,BY3L,BY6Q,BY6R,BY6S,BY6T,"
-         "BY6U,BY6V,BY6W,BY6X,BY7A,BY7B,BY7C,BY7D,BY7E,BY7F,BY7G,BY7H,BY7Q,BY7R,BY7S,BY7T,BY7U,BY7V,BY7W,BY7X,BY8A,BY8B,BY8C,BY8D,BY8E,BY8F,"
-         "BY8G,BY8H,BY8I,BY8J,BY8K,BY8L,BY8M,BY8N,BY8O,BY8P,BY8Q,BY8R,BY8S,BY8T,BY8U,BY8V,BY8W,BY8X,BY9A,BY9B,BY9C,BY9D,BY9E,BY9F,BY9S,BY9T,"
-         "BY9U,BY9V,BY9W,BY9X,BZ2A,BZ2B,BZ2C,BZ2D,BZ2E,BZ2F,BZ2G,BZ2H,BZ2I,BZ2J,BZ2K,BZ2L,BZ2M,BZ2N,BZ2O,BZ2P,BZ3G,BZ3H,BZ3I,BZ3J,BZ3K,BZ3L,"
-         "BZ6Q,BZ6R,BZ6S,BZ6T,BZ6U,BZ6V,BZ6W,BZ6X,BZ7A,BZ7B,BZ7C,BZ7D,BZ7E,BZ7F,BZ7G,BZ7H,BZ7Q,BZ7R,BZ7S,BZ7T,BZ7U,BZ7V,BZ7W,BZ7X,BZ8A,BZ8B,"
-         "BZ8C,BZ8D,BZ8E,BZ8F,BZ8G,BZ8H,BZ8I,BZ8J,BZ8K,BZ8L,BZ8M,BZ8N,BZ8O,BZ8P,BZ8Q,BZ8R,BZ8S,BZ8T,BZ8U,BZ8V,BZ8W,BZ8X,BZ9A,BZ9B,BZ9C,BZ9D,"
-         "BZ9E,BZ9F,BZ9S,BZ9T,BZ9U,BZ9V,BZ9W,BZ9X"},
+     .prefixes = "3H,3H0,3H9,3I,3I0,3I9,3J,3J0,3J9,3K,3K0,3K9,3L,3L0,3L9,3M,3M0,3M9,3N,3N0,3N9,3O,3O0,3O9,3P,3P0,3P9,3Q,3Q0,3Q9,3R,3R0,3R9,3S,3S0,3S9,"
+                 "3T,3T0,3T9,3U,3U0,3U9,B0,B2,B3,B4,B5,B6,B7,B8,B9,BA,BA0,BA9,BD,BD0,BD9,BG,BG0,BG9,BH,BH0,BH9,BI,BI0,BI9,BJ,BJ0,BJ9,BL,BL0,BL9,BT,BT0,"
+                 "BT9,BY,BY0,BY9,BZ,BZ0,BZ9,XS,XS0,XS9,B1,B2A,B2B,B2C,B2D,B2E,B2F,B2G,B2H,B2I,B2J,B2K,B2L,B2M,B2N,B2O,B2P,B3G,B3H,B3I,B3J,B3K,B3L,B6Q,"
+                 "B6R,B6S,B6T,B6U,B6V,B6W,B6X,B7A,B7B,B7C,B7D,B7E,B7F,B7G,B7H,B7Q,B7R,B7S,B7T,B7U,B7V,B7W,B7X,B8A,B8B,B8C,B8D,B8E,B8F,B8G,B8H,B8I,B8J,"
+                 "B8K,B8L,B8M,B8N,B8O,B8P,B8Q,B8R,B8S,B8T,B8U,B8V,B8W,B8X,B9A,B9B,B9C,B9D,B9E,B9F,B9S,B9T,B9U,B9V,B9W,B9X,BA2A,BA2B,BA2C,BA2D,BA2E,BA2F,"
+                 "BA2G,BA2H,BA2I,BA2J,BA2K,BA2L,BA2M,BA2N,BA2O,BA2P,BA3G,BA3H,BA3I,BA3J,BA3K,BA3L,BA6Q,BA6R,BA6S,BA6T,BA6U,BA6V,BA6W,BA6X,BA7A,BA7B,"
+                 "BA7C,BA7D,BA7E,BA7F,BA7G,BA7H,BA7Q,BA7R,BA7S,BA7T,BA7U,BA7V,BA7W,BA7X,BA8A,BA8B,BA8C,BA8D,BA8E,BA8F,BA8G,BA8H,BA8I,BA8J,BA8K,BA8L,"
+                 "BA8M,BA8N,BA8O,BA8P,BA8Q,BA8R,BA8S,BA8T,BA8U,BA8V,BA8W,BA8X,BA9A,BA9B,BA9C,BA9D,BA9E,BA9F,BA9S,BA9T,BA9U,BA9V,BA9W,BA9X,BD2A,BD2B,"
+                 "BD2C,BD2D,BD2E,BD2F,BD2G,BD2H,BD2I,BD2J,BD2K,BD2L,BD2M,BD2N,BD2O,BD2P,BD3G,BD3H,BD3I,BD3J,BD3K,BD3L,BD6Q,BD6R,BD6S,BD6T,BD6U,BD6V,"
+                 "BD6W,BD6X,BD7A,BD7B,BD7C,BD7D,BD7E,BD7F,BD7G,BD7H,BD7Q,BD7R,BD7S,BD7T,BD7U,BD7V,BD7W,BD7X,BD8A,BD8B,BD8C,BD8D,BD8E,BD8F,BD8G,BD8H,"
+                 "BD8I,BD8J,BD8K,BD8L,BD8M,BD8N,BD8O,BD8P,BD8Q,BD8R,BD8S,BD8T,BD8U,BD8V,BD8W,BD8X,BD9A,BD9B,BD9C,BD9D,BD9E,BD9F,BD9S,BD9T,BD9U,BD9V,"
+                 "BD9W,BD9X,BG2A,BG2B,BG2C,BG2D,BG2E,BG2F,BG2G,BG2H,BG2I,BG2J,BG2K,BG2L,BG2M,BG2N,BG2O,BG2P,BG3G,BG3H,BG3I,BG3J,BG3K,BG3L,BG6Q,BG6R,"
+                 "BG6S,BG6T,BG6U,BG6V,BG6W,BG6X,BG7A,BG7B,BG7C,BG7D,BG7E,BG7F,BG7G,BG7H,BG7Q,BG7R,BG7S,BG7T,BG7U,BG7V,BG7W,BG7X,BG8A,BG8B,BG8C,BG8D,"
+                 "BG8E,BG8F,BG8G,BG8H,BG8I,BG8J,BG8K,BG8L,BG8M,BG8N,BG8O,BG8P,BG8Q,BG8R,BG8S,BG8T,BG8U,BG8V,BG8W,BG8X,BG9A,BG9B,BG9C,BG9D,BG9E,BG9F,"
+                 "BG9S,BG9T,BG9U,BG9V,BG9W,BG9X,BH2A,BH2B,BH2C,BH2D,BH2E,BH2F,BH2G,BH2H,BH2I,BH2J,BH2K,BH2L,BH2M,BH2N,BH2O,BH2P,BH3G,BH3H,BH3I,BH3J,"
+                 "BH3K,BH3L,BH6Q,BH6R,BH6S,BH6T,BH6U,BH6V,BH6W,BH6X,BH7A,BH7B,BH7C,BH7D,BH7E,BH7F,BH7G,BH7H,BH7Q,BH7R,BH7S,BH7T,BH7U,BH7V,BH7W,BH7X,"
+                 "BH8A,BH8B,BH8C,BH8D,BH8E,BH8F,BH8G,BH8H,BH8I,BH8J,BH8K,BH8L,BH8M,BH8N,BH8O,BH8P,BH8Q,BH8R,BH8S,BH8T,BH8U,BH8V,BH8W,BH8X,BH9A,BH9B,"
+                 "BH9C,BH9D,BH9E,BH9F,BH9S,BH9T,BH9U,BH9V,BH9W,BH9X,BI2A,BI2B,BI2C,BI2D,BI2E,BI2F,BI2G,BI2H,BI2I,BI2J,BI2K,BI2L,BI2M,BI2N,BI2O,BI2P,"
+                 "BI3G,BI3H,BI3I,BI3J,BI3K,BI3L,BI6Q,BI6R,BI6S,BI6T,BI6U,BI6V,BI6W,BI6X,BI7A,BI7B,BI7C,BI7D,BI7E,BI7F,BI7G,BI7H,BI7Q,BI7R,BI7S,BI7T,"
+                 "BI7U,BI7V,BI7W,BI7X,BI8A,BI8B,BI8C,BI8D,BI8E,BI8F,BI8G,BI8H,BI8I,BI8J,BI8K,BI8L,BI8M,BI8N,BI8O,BI8P,BI8Q,BI8R,BI8S,BI8T,BI8U,BI8V,"
+                 "BI8W,BI8X,BI9A,BI9B,BI9C,BI9D,BI9E,BI9F,BI9S,BI9T,BI9U,BI9V,BI9W,BI9X,BJ2A,BJ2B,BJ2C,BJ2D,BJ2E,BJ2F,BJ2G,BJ2H,BJ2I,BJ2J,BJ2K,BJ2L,"
+                 "BJ2M,BJ2N,BJ2O,BJ2P,BJ3G,BJ3H,BJ3I,BJ3J,BJ3K,BJ3L,BJ6Q,BJ6R,BJ6S,BJ6T,BJ6U,BJ6V,BJ6W,BJ6X,BJ7A,BJ7B,BJ7C,BJ7D,BJ7E,BJ7F,BJ7G,BJ7H,"
+                 "BJ7Q,BJ7R,BJ7S,BJ7T,BJ7U,BJ7V,BJ7W,BJ7X,BJ8A,BJ8B,BJ8C,BJ8D,BJ8E,BJ8F,BJ8G,BJ8H,BJ8I,BJ8J,BJ8K,BJ8L,BJ8M,BJ8N,BJ8O,BJ8P,BJ8Q,BJ8R,"
+                 "BJ8S,BJ8T,BJ8U,BJ8V,BJ8W,BJ8X,BJ9A,BJ9B,BJ9C,BJ9D,BJ9E,BJ9F,BJ9S,BJ9T,BJ9U,BJ9V,BJ9W,BJ9X,BL2A,BL2B,BL2C,BL2D,BL2E,BL2F,BL2G,BL2H,"
+                 "BL2I,BL2J,BL2K,BL2L,BL2M,BL2N,BL2O,BL2P,BL3G,BL3H,BL3I,BL3J,BL3K,BL3L,BL6Q,BL6R,BL6S,BL6T,BL6U,BL6V,BL6W,BL6X,BL7A,BL7B,BL7C,BL7D,"
+                 "BL7E,BL7F,BL7G,BL7H,BL7Q,BL7R,BL7S,BL7T,BL7U,BL7V,BL7W,BL7X,BL8A,BL8B,BL8C,BL8D,BL8E,BL8F,BL8G,BL8H,BL8I,BL8J,BL8K,BL8L,BL8M,BL8N,"
+                 "BL8O,BL8P,BL8Q,BL8R,BL8S,BL8T,BL8U,BL8V,BL8W,BL8X,BL9A,BL9B,BL9C,BL9D,BL9E,BL9F,BL9S,BL9T,BL9U,BL9V,BL9W,BL9X,BT2A,BT2B,BT2C,BT2D,"
+                 "BT2E,BT2F,BT2G,BT2H,BT2I,BT2J,BT2K,BT2L,BT2M,BT2N,BT2O,BT2P,BT3G,BT3H,BT3I,BT3J,BT3K,BT3L,BT6Q,BT6R,BT6S,BT6T,BT6U,BT6V,BT6W,BT6X,"
+                 "BT7A,BT7B,BT7C,BT7D,BT7E,BT7F,BT7G,BT7H,BT7Q,BT7R,BT7S,BT7T,BT7U,BT7V,BT7W,BT7X,BT8A,BT8B,BT8C,BT8D,BT8E,BT8F,BT8G,BT8H,BT8I,BT8J,"
+                 "BT8K,BT8L,BT8M,BT8N,BT8O,BT8P,BT8Q,BT8R,BT8S,BT8T,BT8U,BT8V,BT8W,BT8X,BT9A,BT9B,BT9C,BT9D,BT9E,BT9F,BT9S,BT9T,BT9U,BT9V,BT9W,BT9X,"
+                 "BY2A,BY2B,BY2C,BY2D,BY2E,BY2F,BY2G,BY2H,BY2I,BY2J,BY2K,BY2L,BY2M,BY2N,BY2O,BY2P,BY3G,BY3H,BY3I,BY3J,BY3K,BY3L,BY6Q,BY6R,BY6S,BY6T,"
+                 "BY6U,BY6V,BY6W,BY6X,BY7A,BY7B,BY7C,BY7D,BY7E,BY7F,BY7G,BY7H,BY7Q,BY7R,BY7S,BY7T,BY7U,BY7V,BY7W,BY7X,BY8A,BY8B,BY8C,BY8D,BY8E,BY8F,"
+                 "BY8G,BY8H,BY8I,BY8J,BY8K,BY8L,BY8M,BY8N,BY8O,BY8P,BY8Q,BY8R,BY8S,BY8T,BY8U,BY8V,BY8W,BY8X,BY9A,BY9B,BY9C,BY9D,BY9E,BY9F,BY9S,BY9T,"
+                 "BY9U,BY9V,BY9W,BY9X,BZ2A,BZ2B,BZ2C,BZ2D,BZ2E,BZ2F,BZ2G,BZ2H,BZ2I,BZ2J,BZ2K,BZ2L,BZ2M,BZ2N,BZ2O,BZ2P,BZ3G,BZ3H,BZ3I,BZ3J,BZ3K,BZ3L,"
+                 "BZ6Q,BZ6R,BZ6S,BZ6T,BZ6U,BZ6V,BZ6W,BZ6X,BZ7A,BZ7B,BZ7C,BZ7D,BZ7E,BZ7F,BZ7G,BZ7H,BZ7Q,BZ7R,BZ7S,BZ7T,BZ7U,BZ7V,BZ7W,BZ7X,BZ8A,BZ8B,"
+                 "BZ8C,BZ8D,BZ8E,BZ8F,BZ8G,BZ8H,BZ8I,BZ8J,BZ8K,BZ8L,BZ8M,BZ8N,BZ8O,BZ8P,BZ8Q,BZ8R,BZ8S,BZ8T,BZ8U,BZ8V,BZ8W,BZ8X,BZ9A,BZ9B,BZ9C,BZ9D,"
+                 "BZ9E,BZ9F,BZ9S,BZ9T,BZ9U,BZ9V,BZ9W,BZ9X"},
     {.continent = "OC", .country = "Nauru", .cq_zone = 31, .itu_zone = 65, .lat = -0.52, .lon = 166.92, .prefixes = "C2"},
     {.continent = "EU", .country = "Andorra", .cq_zone = 14, .itu_zone = 27, .lat = 42.58, .lon = 1.62, .prefixes = "C3"},
     {.continent = "AF", .country = "The Gambia", .cq_zone = 35, .itu_zone = 46, .lat = 13.40, .lon = -16.38, .prefixes = "C5"},
@@ -173,60 +136,23 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .lat = -30.00,
      .lon = -71,
      .prefixes = "3G,CA,CB,CC,CD,CE,XQ,XR,3G7,3G8,CA7,CA8,CB7,CB8,CC7,CC8,CD7,CD8,CE7,CE8,XQ7,XQ8,XR7,XR8,CE6PGO,XQ6CFX,XQ6OA,XR6F"},
-    {.continent = "SA",
-     .country = "San Felix & San Ambrosio",
-     .cq_zone = 12,
-     .itu_zone = 14,
-     .lat = -26.28,
-     .lon = -80.07,
-     .prefixes = "3G0X,CA0X,CB0X,CC0X,CD0X,CE0X,XQ0X,XR0X"},
-    {.continent = "SA",
-     .country = "Easter Island",
-     .cq_zone = 12,
-     .itu_zone = 63,
-     .lat = -27.10,
-     .lon = -109.37,
-     .prefixes = "3G0,CA0,CB0,CC0,CD0,CE0,XQ0,XR0"},
-    {.continent = "SA",
-     .country = "Juan Fernandez Islands",
-     .cq_zone = 12,
-     .itu_zone = 14,
-     .lat = -33.60,
-     .lon = -78.85,
-     .prefixes = "3G0Z,CA0Z,CB0Z,CC0Z,CD0Z,CE0I,CE0Z,XQ0Z,XR0Z"},
+    {.continent = "SA", .country = "San Felix & San Ambrosio", .cq_zone = 12, .itu_zone = 14, .lat = -26.28, .lon = -80.07, .prefixes = "3G0X,CA0X,CB0X,CC0X,CD0X,CE0X,XQ0X,XR0X"},
+    {.continent = "SA", .country = "Easter Island", .cq_zone = 12, .itu_zone = 63, .lat = -27.10, .lon = -109.37, .prefixes = "3G0,CA0,CB0,CC0,CD0,CE0,XQ0,XR0"},
+    {.continent = "SA", .country = "Juan Fernandez Islands", .cq_zone = 12, .itu_zone = 14, .lat = -33.60, .lon = -78.85, .prefixes = "3G0Z,CA0Z,CB0Z,CC0Z,CD0Z,CE0I,CE0Z,XQ0Z,XR0Z"},
     {.continent = "SA",
      .country = "Antarctica",
      .cq_zone = 13,
      .itu_zone = 74,
      .lat = -90.00,
      .lon = -0,
-     .prefixes =
-         "3Y,AX0,AY1Z,AY2Z,AY3Z,AY4Z,AY5Z,AY6Z,AY7Z,AY8Z,AY9Z,FT0Y,FT1Y,FT2Y,FT3Y,FT4Y,FT5Y,FT6Y,FT7Y,FT8Y,LU1Z,LU2Z,LU3Z,LU4Z,LU5Z,LU6Z,LU7Z,"
-         "LU8Z,LU9Z,RI1AN,VI0,VK0,ZL5,ZM5,ZS7,8J1RL,DP0GVN,DP1POL,EM1U,EM1UA,KC4AAA,KC4AAC,KC4USB,KC4USV,RI1ANC,RI1ANZ,VP8AL,VP8CTR"},
+     .prefixes = "3Y,AX0,AY1Z,AY2Z,AY3Z,AY4Z,AY5Z,AY6Z,AY7Z,AY8Z,AY9Z,FT0Y,FT1Y,FT2Y,FT3Y,FT4Y,FT5Y,FT6Y,FT7Y,FT8Y,LU1Z,LU2Z,LU3Z,LU4Z,LU5Z,LU6Z,LU7Z,"
+                 "LU8Z,LU9Z,RI1AN,VI0,VK0,ZL5,ZM5,ZS7,8J1RL,DP0GVN,DP1POL,EM1U,EM1UA,KC4AAA,KC4AAC,KC4USB,KC4USV,RI1ANC,RI1ANZ,VP8AL,VP8CTR"},
     {.continent = "NA", .country = "Cuba", .cq_zone = 8, .itu_zone = 11, .lat = 21.50, .lon = -80, .prefixes = "CL,CM,CO,T4"},
     {.continent = "AF", .country = "Morocco", .cq_zone = 33, .itu_zone = 37, .lat = 32.00, .lon = -5, .prefixes = "5C,5D,5E,5F,5G,CN"},
-    {.continent = "SA",
-     .country = "Bolivia",
-     .cq_zone = 10,
-     .itu_zone = 12,
-     .lat = -17.00,
-     .lon = -65,
-     .prefixes = "CP,CP2,CP3,CP4,CP5,CP6,CP7"},
+    {.continent = "SA", .country = "Bolivia", .cq_zone = 10, .itu_zone = 12, .lat = -17.00, .lon = -65, .prefixes = "CP,CP2,CP3,CP4,CP5,CP6,CP7"},
     {.continent = "EU", .country = "Portugal", .cq_zone = 14, .itu_zone = 37, .lat = 39.50, .lon = -8, .prefixes = "CQ,CR,CS,CT"},
-    {.continent = "AF",
-     .country = "Madeira Islands",
-     .cq_zone = 33,
-     .itu_zone = 36,
-     .lat = 32.75,
-     .lon = -16.95,
-     .prefixes = "CQ2,CQ3,CQ9,CR3,CR9,CS3,CS9,CT3,CT9"},
-    {.continent = "EU",
-     .country = "Azores",
-     .cq_zone = 14,
-     .itu_zone = 36,
-     .lat = 38.70,
-     .lon = -27.23,
-     .prefixes = "CQ1,CQ8,CR1,CR2,CR8,CS4,CS8,CT8,CU"},
+    {.continent = "AF", .country = "Madeira Islands", .cq_zone = 33, .itu_zone = 36, .lat = 32.75, .lon = -16.95, .prefixes = "CQ2,CQ3,CQ9,CR3,CR9,CS3,CS9,CT3,CT9"},
+    {.continent = "EU", .country = "Azores", .cq_zone = 14, .itu_zone = 36, .lat = 38.70, .lon = -27.23, .prefixes = "CQ1,CQ8,CR1,CR2,CR8,CS4,CS8,CT8,CU"},
     {.continent = "SA", .country = "Uruguay", .cq_zone = 13, .itu_zone = 14, .lat = -33.00, .lon = -56, .prefixes = "CV,CW,CX"},
     {.continent = "NA", .country = "Sable Island", .cq_zone = 5, .itu_zone = 9, .lat = 43.93, .lon = -59.9, .prefixes = "CY0"},
     {.continent = "NA", .country = "St. Paul Island", .cq_zone = 5, .itu_zone = 9, .lat = 47.00, .lon = -60, .prefixes = "CY9"},
@@ -240,53 +166,17 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .lat = 51.00,
      .lon = 10,
      .prefixes = "DA,DB,DC,DD,DE,DF,DG,DH,DI,DJ,DK,DL,DM,DN,DO,DP,DQ,DR,Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9"},
-    {.continent = "OC",
-     .country = "Philippines",
-     .cq_zone = 27,
-     .itu_zone = 50,
-     .lat = 13.00,
-     .lon = 122,
-     .prefixes = "4D,4E,4F,4G,4H,4I,DU,DV,DW,DX,DY,DZ"},
+    {.continent = "OC", .country = "Philippines", .cq_zone = 27, .itu_zone = 50, .lat = 13.00, .lon = 122, .prefixes = "4D,4E,4F,4G,4H,4I,DU,DV,DW,DX,DY,DZ"},
     {.continent = "AF", .country = "Eritrea", .cq_zone = 37, .itu_zone = 48, .lat = 15.00, .lon = 39, .prefixes = "E3"},
     {.continent = "AS", .country = "Palestine", .cq_zone = 20, .itu_zone = 39, .lat = 31.28, .lon = 34.27, .prefixes = "E4"},
-    {.continent = "OC",
-     .country = "North Cook Islands",
-     .cq_zone = 32,
-     .itu_zone = 62,
-     .lat = -10.02,
-     .lon = -161.08,
-     .prefixes = "E51PT,E51WL"},
+    {.continent = "OC", .country = "North Cook Islands", .cq_zone = 32, .itu_zone = 62, .lat = -10.02, .lon = -161.08, .prefixes = "E51PT,E51WL"},
     {.continent = "OC", .country = "South Cook Islands", .cq_zone = 32, .itu_zone = 63, .lat = -21.90, .lon = -157.93, .prefixes = "E5"},
     {.continent = "OC", .country = "Niue", .cq_zone = 32, .itu_zone = 62, .lat = -19.03, .lon = -169.85, .prefixes = "E6"},
     {.continent = "EU", .country = "Bosnia-Herzegovina", .cq_zone = 15, .itu_zone = 28, .lat = 44.32, .lon = 17.57, .prefixes = "E7"},
-    {.continent = "EU",
-     .country = "Spain",
-     .cq_zone = 14,
-     .itu_zone = 37,
-     .lat = 40.37,
-     .lon = -4.88,
-     .prefixes = "AM,AN,AO,EA,EB,EC,ED,EE,EF,EG,EH,EA9HU"},
-    {.continent = "EU",
-     .country = "Balearic Islands",
-     .cq_zone = 14,
-     .itu_zone = 37,
-     .lat = 39.60,
-     .lon = 2.95,
-     .prefixes = "AM6,AN6,AO6,EA6,EB6,EC6,ED6,EE6,EF6,EG6,EH6"},
-    {.continent = "AF",
-     .country = "Canary Islands",
-     .cq_zone = 33,
-     .itu_zone = 36,
-     .lat = 28.32,
-     .lon = -15.85,
-     .prefixes = "AM8,AN8,AO8,EA8,EB8,EC8,ED8,EE8,EF8,EG8,EH8"},
-    {.continent = "AF",
-     .country = "Ceuta & Melilla",
-     .cq_zone = 33,
-     .itu_zone = 37,
-     .lat = 35.90,
-     .lon = -5.27,
-     .prefixes = "AM9,AN9,AO9,EA9,EB9,EC9,ED9,EE9,EF9,EG9,EH9"},
+    {.continent = "EU", .country = "Spain", .cq_zone = 14, .itu_zone = 37, .lat = 40.37, .lon = -4.88, .prefixes = "AM,AN,AO,EA,EB,EC,ED,EE,EF,EG,EH,EA9HU"},
+    {.continent = "EU", .country = "Balearic Islands", .cq_zone = 14, .itu_zone = 37, .lat = 39.60, .lon = 2.95, .prefixes = "AM6,AN6,AO6,EA6,EB6,EC6,ED6,EE6,EF6,EG6,EH6"},
+    {.continent = "AF", .country = "Canary Islands", .cq_zone = 33, .itu_zone = 36, .lat = 28.32, .lon = -15.85, .prefixes = "AM8,AN8,AO8,EA8,EB8,EC8,ED8,EE8,EF8,EG8,EH8"},
+    {.continent = "AF", .country = "Ceuta & Melilla", .cq_zone = 33, .itu_zone = 37, .lat = 35.90, .lon = -5.27, .prefixes = "AM9,AN9,AO9,EA9,EB9,EC9,ED9,EE9,EF9,EG9,EH9"},
     {.continent = "EU", .country = "Ireland", .cq_zone = 14, .itu_zone = 27, .lat = 53.13, .lon = -8.02, .prefixes = "EI,EJ"},
     {.continent = "AS", .country = "Armenia", .cq_zone = 21, .itu_zone = 29, .lat = 40.40, .lon = 44.9, .prefixes = "EK"},
     {.continent = "AF", .country = "Liberia", .cq_zone = 35, .itu_zone = 46, .lat = 6.50, .lon = -9.5, .prefixes = "5L,5M,6Z,A8,D5,EL"},
@@ -295,13 +185,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "EU", .country = "Estonia", .cq_zone = 15, .itu_zone = 29, .lat = 59.00, .lon = 25, .prefixes = "ES"},
     {.continent = "AF", .country = "Ethiopia", .cq_zone = 37, .itu_zone = 48, .lat = 9.00, .lon = 39, .prefixes = "9E,9F,ET"},
     {.continent = "EU", .country = "Belarus", .cq_zone = 16, .itu_zone = 29, .lat = 54.00, .lon = 28, .prefixes = "EU,EV,EW"},
-    {.continent = "AS",
-     .country = "Kyrgyzstan",
-     .cq_zone = 17,
-     .itu_zone = 30,
-     .lat = 41.70,
-     .lon = 74.13,
-     .prefixes = "EX,EX0P,EX0Q,EX2P,EX2Q,EX6P,EX6Q,EX7P,EX7Q,EX8P,EX8Q"},
+    {.continent = "AS", .country = "Kyrgyzstan", .cq_zone = 17, .itu_zone = 30, .lat = 41.70, .lon = 74.13, .prefixes = "EX,EX0P,EX0Q,EX2P,EX2Q,EX6P,EX6Q,EX7P,EX7Q,EX8P,EX8Q"},
     {.continent = "AS", .country = "Tajikistan", .cq_zone = 17, .itu_zone = 30, .lat = 38.82, .lon = 71.22, .prefixes = "EY"},
     {.continent = "AS", .country = "Turkmenistan", .cq_zone = 17, .itu_zone = 30, .lat = 38.00, .lon = 58, .prefixes = "EZ"},
     {.continent = "EU", .country = "France", .cq_zone = 14, .itu_zone = 27, .lat = 46.00, .lon = 2, .prefixes = "F,HW,HX,HY,TH,TM,TP,TQ,TV"},
@@ -318,13 +202,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "NA", .country = "St. Pierre & Miquelon", .cq_zone = 5, .itu_zone = 9, .lat = 46.77, .lon = -56.2, .prefixes = "FP,TO5M"},
     {.continent = "AF", .country = "Reunion Island", .cq_zone = 39, .itu_zone = 53, .lat = -21.12, .lon = 55.48, .prefixes = "FR,TO0MPB"},
     {.continent = "NA", .country = "St. Martin", .cq_zone = 8, .itu_zone = 11, .lat = 18.08, .lon = -63.03, .prefixes = "FS"},
-    {.continent = "AF",
-     .country = "Glorioso Islands",
-     .cq_zone = 39,
-     .itu_zone = 53,
-     .lat = -11.55,
-     .lon = 47.28,
-     .prefixes = "FT0G,FT1G,FT2G,FT3G,FT4G,FT5G,FT6G,FT7G,FT8G,FT9G"},
+    {.continent = "AF", .country = "Glorioso Islands", .cq_zone = 39, .itu_zone = 53, .lat = -11.55, .lon = 47.28, .prefixes = "FT0G,FT1G,FT2G,FT3G,FT4G,FT5G,FT6G,FT7G,FT8G,FT9G"},
     {.continent = "AF",
      .country = "Juan de Nova, Europa",
      .cq_zone = 39,
@@ -332,45 +210,15 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .lat = -17.05,
      .lon = 42.72,
      .prefixes = "FT0E,FT0J,FT1E,FT1J,FT2E,FT2J,FT3E,FT3J,FT4E,FT4J,FT6E,FT6J,FT7E,FT7J,FT8E,FT8J,FT9E,FT9J"},
-    {.continent = "AF",
-     .country = "Tromelin Island",
-     .cq_zone = 39,
-     .itu_zone = 53,
-     .lat = -15.88,
-     .lon = 54.5,
-     .prefixes = "FT0T,FT1T,FT2T,FT3T,FT4T,FT5T,FT6T,FT7T,FT8T,FT9T"},
-    {.continent = "AF",
-     .country = "Crozet Island",
-     .cq_zone = 39,
-     .itu_zone = 68,
-     .lat = -46.42,
-     .lon = 51.75,
-     .prefixes = "FT0W,FT4W,FT5W,FT8W"},
-    {.continent = "AF",
-     .country = "Kerguelen Islands",
-     .cq_zone = 39,
-     .itu_zone = 68,
-     .lat = -49.00,
-     .lon = 69.27,
-     .prefixes = "FT0X,FT2X,FT4X,FT5X,FT8X"},
-    {.continent = "AF",
-     .country = "Amsterdam & St. Paul Is.",
-     .cq_zone = 39,
-     .itu_zone = 68,
-     .lat = -37.85,
-     .lon = 77.53,
-     .prefixes = "FT0Z,FT1Z,FT2Z,FT3Z,FT4Z,FT5Z,FT6Z,FT7Z,FT8Z"},
+    {.continent = "AF", .country = "Tromelin Island", .cq_zone = 39, .itu_zone = 53, .lat = -15.88, .lon = 54.5, .prefixes = "FT0T,FT1T,FT2T,FT3T,FT4T,FT5T,FT6T,FT7T,FT8T,FT9T"},
+    {.continent = "AF", .country = "Crozet Island", .cq_zone = 39, .itu_zone = 68, .lat = -46.42, .lon = 51.75, .prefixes = "FT0W,FT4W,FT5W,FT8W"},
+    {.continent = "AF", .country = "Kerguelen Islands", .cq_zone = 39, .itu_zone = 68, .lat = -49.00, .lon = 69.27, .prefixes = "FT0X,FT2X,FT4X,FT5X,FT8X"},
+    {.continent = "AF", .country = "Amsterdam & St. Paul Is.", .cq_zone = 39, .itu_zone = 68, .lat = -37.85, .lon = 77.53, .prefixes = "FT0Z,FT1Z,FT2Z,FT3Z,FT4Z,FT5Z,FT6Z,FT7Z,FT8Z"},
     {.continent = "OC", .country = "Wallis & Futuna Islands", .cq_zone = 32, .itu_zone = 62, .lat = -13.30, .lon = -176.2, .prefixes = "FW,TW"},
     {.continent = "SA", .country = "French Guiana", .cq_zone = 9, .itu_zone = 12, .lat = 4.00, .lon = -53, .prefixes = "FY,TO1A"},
     {.continent = "EU", .country = "England", .cq_zone = 14, .itu_zone = 27, .lat = 52.77, .lon = -1.47, .prefixes = "2E,G,M"},
     {.continent = "EU", .country = "Isle of Man", .cq_zone = 14, .itu_zone = 27, .lat = 54.20, .lon = -4.53, .prefixes = "2D,GD,GT,MD,MT"},
-    {.continent = "EU",
-     .country = "Northern Ireland",
-     .cq_zone = 14,
-     .itu_zone = 27,
-     .lat = 54.73,
-     .lon = -6.68,
-     .prefixes = "2I,GI,GN,MI,MN,GB0OGC,GB3NGI,GB4UAS,GB5BL"},
+    {.continent = "EU", .country = "Northern Ireland", .cq_zone = 14, .itu_zone = 27, .lat = 54.73, .lon = -6.68, .prefixes = "2I,GI,GN,MI,MN,GB0OGC,GB3NGI,GB4UAS,GB5BL"},
     {.continent = "EU", .country = "Jersey", .cq_zone = 14, .itu_zone = 27, .lat = 49.22, .lon = -2.18, .prefixes = "2J,GH,GJ,MH,MJ,GB19CJ"},
     {.continent = "EU",
      .country = "Shetland Islands",
@@ -408,21 +256,9 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "NA", .country = "Haiti", .cq_zone = 8, .itu_zone = 11, .lat = 19.02, .lon = -72.18, .prefixes = "4V,HH"},
     {.continent = "NA", .country = "Dominican Republic", .cq_zone = 8, .itu_zone = 11, .lat = 19.13, .lon = -70.68, .prefixes = "HI"},
     {.continent = "SA", .country = "Colombia", .cq_zone = 9, .itu_zone = 12, .lat = 5.00, .lon = -74, .prefixes = "5J,5K,HJ,HK"},
-    {.continent = "NA",
-     .country = "San Andres & Providencia",
-     .cq_zone = 7,
-     .itu_zone = 11,
-     .lat = 12.55,
-     .lon = -81.72,
-     .prefixes = "5J0,5K0,HJ0,HK0"},
+    {.continent = "NA", .country = "San Andres & Providencia", .cq_zone = 7, .itu_zone = 11, .lat = 12.55, .lon = -81.72, .prefixes = "5J0,5K0,HJ0,HK0"},
     {.continent = "SA", .country = "Malpelo Island", .cq_zone = 9, .itu_zone = 12, .lat = 3.98, .lon = -81.58, .prefixes = "HJ0M,HK0M,HK0TU"},
-    {.continent = "AS",
-     .country = "Republic of Korea",
-     .cq_zone = 25,
-     .itu_zone = 44,
-     .lat = 36.23,
-     .lon = 127.9,
-     .prefixes = "6K,6L,6M,6N,D7,D8,D9,DS,DT,HL,KL9K"},
+    {.continent = "AS", .country = "Republic of Korea", .cq_zone = 25, .itu_zone = 44, .lat = 36.23, .lon = 127.9, .prefixes = "6K,6L,6M,6N,D7,D8,D9,DS,DT,HL,KL9K"},
     {.continent = "NA", .country = "Panama", .cq_zone = 7, .itu_zone = 11, .lat = 9.00, .lon = -80, .prefixes = "3E,3F,H3,H8,H9,HO,HP"},
     {.continent = "NA", .country = "Honduras", .cq_zone = 7, .itu_zone = 11, .lat = 15.00, .lon = -87, .prefixes = "HQ,HR"},
     {.continent = "AS", .country = "Thailand", .cq_zone = 26, .itu_zone = 49, .lat = 12.60, .lon = 99.7, .prefixes = "E2,HS"},
@@ -438,13 +274,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .lon = 9.27,
      .prefixes = "IM0,IS,IW0U,IW0V,IW0W,IW0X,IW0Y,IW0Z,II0ICH,II0IDP,II0M,II0SRE,IQ0AG,IQ0AH,IQ0AI,IQ0AK,IQ0AL,IQ0AM,IQ0EH,IQ0HO,IQ0ID,IQ0NU,"
                  "IQ0NV,IQ0OG,IQ0OH,IQ0QP,IQ0SS,IY0GA"},
-    {.continent = "EU",
-     .country = "Sicily",
-     .cq_zone = 15,
-     .itu_zone = 28,
-     .lat = 37.50,
-     .lon = 14,
-     .prefixes = "IB9,ID9,IE9,IF9,II9,IJ9,IO9,IQ9,IR9,IT9,IU9,IW9,IY9"},
+    {.continent = "EU", .country = "Sicily", .cq_zone = 15, .itu_zone = 28, .lat = 37.50, .lon = 14, .prefixes = "IB9,ID9,IE9,IF9,II9,IJ9,IO9,IQ9,IR9,IT9,IU9,IW9,IY9"},
     {.continent = "AF", .country = "Djibouti", .cq_zone = 37, .itu_zone = 48, .lat = 11.75, .lon = 42.35, .prefixes = "J2"},
     {.continent = "NA", .country = "Grenada", .cq_zone = 8, .itu_zone = 11, .lat = 12.13, .lon = -61.68, .prefixes = "J3"},
     {.continent = "AF", .country = "Guinea-Bissau", .cq_zone = 35, .itu_zone = 46, .lat = 12.02, .lon = -14.8, .prefixes = "J5"},
@@ -459,13 +289,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .lon = 138.38,
      .prefixes = "7J,7K,7L,7M,7N,8J,8K,8L,8M,8N,JA,JE,JF,JG,JH,JI,JJ,JK,JL,JM,JN,JO,JP,JQ,JR,JS"},
     {.continent = "AS", .country = "Ogasawara", .cq_zone = 27, .itu_zone = 45, .lat = 27.05, .lon = 142.2, .prefixes = "JD1"},
-    {.continent = "AS",
-     .country = "Mongolia",
-     .cq_zone = 23,
-     .itu_zone = 32,
-     .lat = 46.77,
-     .lon = 102.17,
-     .prefixes = "JT,JU,JV,JT2,JT3,JU2,JU3,JV2,JV3"},
+    {.continent = "AS", .country = "Mongolia", .cq_zone = 23, .itu_zone = 32, .lat = 46.77, .lon = 102.17, .prefixes = "JT,JU,JV,JT2,JT3,JU2,JU3,JV2,JV3"},
     {.continent = "EU", .country = "Svalbard", .cq_zone = 40, .itu_zone = 18, .lat = 78.00, .lon = 16, .prefixes = "JW"},
     {.continent = "EU", .country = "Jan Mayen", .cq_zone = 40, .itu_zone = 18, .lat = 71.05, .lon = -8.28, .prefixes = "JX"},
     {.continent = "AS", .country = "Jordan", .cq_zone = 20, .itu_zone = 39, .lat = 31.18, .lon = 36.42, .prefixes = "JY"},
@@ -475,44 +299,31 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .itu_zone = 8,
      .lat = 37.53,
      .lon = -91.67,
-     .prefixes =
-         "AA,AB,AC,AD,AE,AF,AG,AI,AJ,AK,K,N,W,4U1WB,AA0O,AA2IL,AA4DD,AA4R,AA7TV,AA8R,AA9HQ,AB4B,AB4EJ,AB4GG,AB4IQ,AB4KJ,AB5OR,AB8RL,AB9DU,AC4CA,"
-         "AC4G,AC4GW,AC6WI,AC6ZM,AC7AF,AC7P,AC8Y,AD1C,AD4EB,AD4TA,AD8J,AE7AP,AG1RL,AG4W,AG5Z,AH0U,AH2O,AH6AX,AI4DB,AI9K,AJ4A,AJ4F,AJ7G,AL0A,"
-         "AL4B,AL7GI,AL7RF,G8ERJ,K0ACP,K0AU,K0EJ,K0IP,K0LUZ,K0NW,K0PJ,K0SN,K0TQ,K0ZR,K1DW,K1GU,K1KD,K1LT,K1PQS,K2DSW,K2GMY,K2KR,K2PM,K2PO,K2RD,"
-         "K2UR,K2VV,K3DMG,K3EST,K3IE,K3JWI,K3PA,K3WT,K3WYC,K3YP,K4AB,K4AFE,K4AMC,K4AVX,K4BX,K4CWW,K4DG,K4DXV,K4FN,K4FT,K4HAL,K4IE,K4IU,K4LPQ,"
-         "K4MMW,K4OAQ,K4OWR,K4RO,K4TCG,K4TZ,K4WG,K4WI,K4WW,K4XU,K4YJ,K4ZGB,K5AUP,K5EK,K5KG,K5OA,K5VIP,K5WK,K5ZD,K5ZM,K6BFL,K6XT,K7ABV,K7BV,K7DR,"
-         "K7IA,K7JOE,K7OM,K7QA,K7SCX,K7SV,K7TD,K7VU,K7ZYV,K8AC,K8ARY,K8CN,K8FU,K8GU,K8IA,K8JQ,K8LBQ,K8LF,K8LS,K8NYG,K8PO,K8SYH,K9DR,K9DU,K9JF,"
-         "K9JM,K9OM,K9OR,K9OZ,K9RS,K9WA,K9WZB,K9YC,KA1KIX,KA3MTT,KA4BVG,KA4GAV,KA4OTB,KA8HDE,KA8Q,KA9FOX,KA9VVQ,KB7Q,KB8KMH,KB8V,KB9S,KC2LM,"
-         "KC4HW,KC4NX,KC4SAW,KC4TEO,KC4WQ,KC6X,KC7QY,KC9K,KD0EE,KD2KW,KD4ADC,KD4EE,KD5DD,KD5M,KD9BSO,KD9LA,KE0L,KE0YI,KE1B,KE2VB,KE3K,KE4KY,"
-         "KE8FT,KF4AV,KF5BA,KF5MU,KG4CUY,KG5HVO,KG6MC,KH2D,KH2GM,KH6CT,KH6M,KH6VM,KH6XS,KI6DY,KI6QDH,KJ4AOM,KJ4IWZ,KJ4KKD,KJ4M,KK9A,KK9N,KL0MP,"
-         "KL2RA,KL4CZ,KL7IKV,KL7JR,KL7QW,KL7SK,KM4FO,KM4JA,KM7W,KM9R,KN1CBR,KN4DUA,KN4FRG,KN8U,KO0Z,KO4OL,KO9V,KP2XX,KP4KD,KP4M,KQ9J,KR4F,KS0CW,"
-         "KS4L,KS4X,KS7T,KS9W,KT3M,KT4O,KT4RR,KU1CW,KU8E,KV8S,KW4J,KW7D,KW7Q,KX4FR,KX4WB,KX4X,KY0Q,KY4F,KY4KD,KZ1W,KZ9V,N0SMX,N1JM,N1RU,N1XK,"
-         "N2AU,N2BJ,N2IC,N2NS,N3BB,N3BUO,N3CI,N3RC,N3ZZ,N4ARO,N4AU,N4BAA,N4BCB,N4BCD,N4DW,N4HAI,N4HID,N4KC,N4KG,N4KH,N4NA,N4NO,N4OGW,N4QS,N4SL,"
-         "N4TZ,N4UC,N4UW,N4VI,N4VV,N4WE,N4ZY,N4ZZ,N5CR,N5CW,N5DX,N5KO,N5RP,N5SMQ,N5TB,N5TOO,N5YT,N5ZO,N6AR,N6DW,N7DF,N7DR,N7FLT,N7IP,N7IV,N7MZW,"
-         "N7NG,N7RCS,N7US,N7WY,N7ZZ,N8AID,N8GU,N8II,N8NA,N8OO,N8PR,N8RA,N8WXQ,N9CIQ,N9GB,N9JF,N9NA,N9NB,N9NC,N9NM,N9RV,N9SB,N9VPV,NA2CC,NA4K,"
-         "NA5NN,NA9RB,ND2T,ND3N,ND4Y,NE8P,NE9U,NF4J,NG7A,NH6T,NI7R,NJ8J,NK8Q,NL7CQ,NL7D,NL7QC,NL7XM,NN1N,NN4SA,NN5O,NN7A,NN7CW,NO9E,NP2GG,NP3K,"
-         "NQ6N,NR5W,NR7DX,NS4X,NW7R,NW8U,NX1P,NY6DX,W0BR,W0CN,W0JX,W0MHK,W0PV,W0QQG,W0RIC,W0SK,W0ZP,W1GKT,W1NN,W1PDI,W1PR,W1RH,W1SRD,W2ACY,W2FV,"
-         "W2GS,W2VJN,W3DQN,W3HDH,W3HKK,W3TB,W4BCG,W4DAN,W4ER,W4GKM,W4GZX,W4JSI,W4KW,W4LC,W4LID,W4NBS,W4NI,W4NZ,W4PF,W4RJJ,W4RYW,W4TLK,W4TTM,"
-         "W4UAL,W4UT,W5HIO,W5JR,W5MX,W5NZ,W5UE,W5VE,W5VS,W5XB,W6GMT,W6KGP,W6LFB,W6NWS,W6RLL,W6UB,W6XR,W6YTG,W7DO,W7EE,W7HJ,W7IGC,W7II,W7IY,"
-         "W7KAM,W7KF,W7RY,W7SE,W7UT,W7XU,W8AT,W8BAR,W8FJ,W8FN,W8HAP,W8HGH,W8KA,W8LYJ,W8OV,W8TK,W8WEJ,W9CF,W9DC,W9ET,W9IL,W9JA,W9JEF,W9KKN,W9MAF,"
-         "W9PL,W9RM,W9RNY,WA0WWW,WA1FCN,WA1UJU,WA2VYA,WA3C,WA4JA,WA5POK,WA8KAN,WA8OJR,WA8ZBT,WB3JFS,WB4YDL,WB4YDY,WB7S,WB8BPU,WB8IMY,WB8YYY,"
-         "WB9QAF,WC7S,WD5F,WE6EZ,WF3H,WF7T,WF9A,WH0AI,WH6AQ,WH6LE,WH7R,WI4T,WJ9B,WL7OU,WM5DX,WN1G,WN7S,WP2B,WP3ME,WQ3U,WQ5L,WQ9T,WR5J,WS6K,WS6X,"
-         "WS9M,WT2P,WT8WV,WU0B,WU9B,WV4P,WV8SW,WW4R,WW5M,WX4W,WX5S,WY6K,WY7FD,WZ1Y,WZ4F,WZ7I,WZ8T"},
+     .prefixes = "AA,AB,AC,AD,AE,AF,AG,AI,AJ,AK,K,N,W,4U1WB,AA0O,AA2IL,AA4DD,AA4R,AA7TV,AA8R,AA9HQ,AB4B,AB4EJ,AB4GG,AB4IQ,AB4KJ,AB5OR,AB8RL,AB9DU,AC4CA,"
+                 "AC4G,AC4GW,AC6WI,AC6ZM,AC7AF,AC7P,AC8Y,AD1C,AD4EB,AD4TA,AD8J,AE7AP,AG1RL,AG4W,AG5Z,AH0U,AH2O,AH6AX,AI4DB,AI9K,AJ4A,AJ4F,AJ7G,AL0A,"
+                 "AL4B,AL7GI,AL7RF,G8ERJ,K0ACP,K0AU,K0EJ,K0IP,K0LUZ,K0NW,K0PJ,K0SN,K0TQ,K0ZR,K1DW,K1GU,K1KD,K1LT,K1PQS,K2DSW,K2GMY,K2KR,K2PM,K2PO,K2RD,"
+                 "K2UR,K2VV,K3DMG,K3EST,K3IE,K3JWI,K3PA,K3WT,K3WYC,K3YP,K4AB,K4AFE,K4AMC,K4AVX,K4BX,K4CWW,K4DG,K4DXV,K4FN,K4FT,K4HAL,K4IE,K4IU,K4LPQ,"
+                 "K4MMW,K4OAQ,K4OWR,K4RO,K4TCG,K4TZ,K4WG,K4WI,K4WW,K4XU,K4YJ,K4ZGB,K5AUP,K5EK,K5KG,K5OA,K5VIP,K5WK,K5ZD,K5ZM,K6BFL,K6XT,K7ABV,K7BV,K7DR,"
+                 "K7IA,K7JOE,K7OM,K7QA,K7SCX,K7SV,K7TD,K7VU,K7ZYV,K8AC,K8ARY,K8CN,K8FU,K8GU,K8IA,K8JQ,K8LBQ,K8LF,K8LS,K8NYG,K8PO,K8SYH,K9DR,K9DU,K9JF,"
+                 "K9JM,K9OM,K9OR,K9OZ,K9RS,K9WA,K9WZB,K9YC,KA1KIX,KA3MTT,KA4BVG,KA4GAV,KA4OTB,KA8HDE,KA8Q,KA9FOX,KA9VVQ,KB7Q,KB8KMH,KB8V,KB9S,KC2LM,"
+                 "KC4HW,KC4NX,KC4SAW,KC4TEO,KC4WQ,KC6X,KC7QY,KC9K,KD0EE,KD2KW,KD4ADC,KD4EE,KD5DD,KD5M,KD9BSO,KD9LA,KE0L,KE0YI,KE1B,KE2VB,KE3K,KE4KY,"
+                 "KE8FT,KF4AV,KF5BA,KF5MU,KG4CUY,KG5HVO,KG6MC,KH2D,KH2GM,KH6CT,KH6M,KH6VM,KH6XS,KI6DY,KI6QDH,KJ4AOM,KJ4IWZ,KJ4KKD,KJ4M,KK9A,KK9N,KL0MP,"
+                 "KL2RA,KL4CZ,KL7IKV,KL7JR,KL7QW,KL7SK,KM4FO,KM4JA,KM7W,KM9R,KN1CBR,KN4DUA,KN4FRG,KN8U,KO0Z,KO4OL,KO9V,KP2XX,KP4KD,KP4M,KQ9J,KR4F,KS0CW,"
+                 "KS4L,KS4X,KS7T,KS9W,KT3M,KT4O,KT4RR,KU1CW,KU8E,KV8S,KW4J,KW7D,KW7Q,KX4FR,KX4WB,KX4X,KY0Q,KY4F,KY4KD,KZ1W,KZ9V,N0SMX,N1JM,N1RU,N1XK,"
+                 "N2AU,N2BJ,N2IC,N2NS,N3BB,N3BUO,N3CI,N3RC,N3ZZ,N4ARO,N4AU,N4BAA,N4BCB,N4BCD,N4DW,N4HAI,N4HID,N4KC,N4KG,N4KH,N4NA,N4NO,N4OGW,N4QS,N4SL,"
+                 "N4TZ,N4UC,N4UW,N4VI,N4VV,N4WE,N4ZY,N4ZZ,N5CR,N5CW,N5DX,N5KO,N5RP,N5SMQ,N5TB,N5TOO,N5YT,N5ZO,N6AR,N6DW,N7DF,N7DR,N7FLT,N7IP,N7IV,N7MZW,"
+                 "N7NG,N7RCS,N7US,N7WY,N7ZZ,N8AID,N8GU,N8II,N8NA,N8OO,N8PR,N8RA,N8WXQ,N9CIQ,N9GB,N9JF,N9NA,N9NB,N9NC,N9NM,N9RV,N9SB,N9VPV,NA2CC,NA4K,"
+                 "NA5NN,NA9RB,ND2T,ND3N,ND4Y,NE8P,NE9U,NF4J,NG7A,NH6T,NI7R,NJ8J,NK8Q,NL7CQ,NL7D,NL7QC,NL7XM,NN1N,NN4SA,NN5O,NN7A,NN7CW,NO9E,NP2GG,NP3K,"
+                 "NQ6N,NR5W,NR7DX,NS4X,NW7R,NW8U,NX1P,NY6DX,W0BR,W0CN,W0JX,W0MHK,W0PV,W0QQG,W0RIC,W0SK,W0ZP,W1GKT,W1NN,W1PDI,W1PR,W1RH,W1SRD,W2ACY,W2FV,"
+                 "W2GS,W2VJN,W3DQN,W3HDH,W3HKK,W3TB,W4BCG,W4DAN,W4ER,W4GKM,W4GZX,W4JSI,W4KW,W4LC,W4LID,W4NBS,W4NI,W4NZ,W4PF,W4RJJ,W4RYW,W4TLK,W4TTM,"
+                 "W4UAL,W4UT,W5HIO,W5JR,W5MX,W5NZ,W5UE,W5VE,W5VS,W5XB,W6GMT,W6KGP,W6LFB,W6NWS,W6RLL,W6UB,W6XR,W6YTG,W7DO,W7EE,W7HJ,W7IGC,W7II,W7IY,"
+                 "W7KAM,W7KF,W7RY,W7SE,W7UT,W7XU,W8AT,W8BAR,W8FJ,W8FN,W8HAP,W8HGH,W8KA,W8LYJ,W8OV,W8TK,W8WEJ,W9CF,W9DC,W9ET,W9IL,W9JA,W9JEF,W9KKN,W9MAF,"
+                 "W9PL,W9RM,W9RNY,WA0WWW,WA1FCN,WA1UJU,WA2VYA,WA3C,WA4JA,WA5POK,WA8KAN,WA8OJR,WA8ZBT,WB3JFS,WB4YDL,WB4YDY,WB7S,WB8BPU,WB8IMY,WB8YYY,"
+                 "WB9QAF,WC7S,WD5F,WE6EZ,WF3H,WF7T,WF9A,WH0AI,WH6AQ,WH6LE,WH7R,WI4T,WJ9B,WL7OU,WM5DX,WN1G,WN7S,WP2B,WP3ME,WQ3U,WQ5L,WQ9T,WR5J,WS6K,WS6X,"
+                 "WS9M,WT2P,WT8WV,WU0B,WU9B,WV4P,WV8SW,WW4R,WW5M,WX4W,WX5S,WY6K,WY7FD,WZ1Y,WZ4F,WZ7I,WZ8T"},
     {.continent = "NA", .country = "Guantanamo Bay", .cq_zone = 8, .itu_zone = 11, .lat = 20.00, .lon = -75, .prefixes = "KG4,KG4AY,KG4WH"},
-    {.continent = "OC",
-     .country = "Mariana Islands",
-     .cq_zone = 27,
-     .itu_zone = 64,
-     .lat = 15.18,
-     .lon = 145.72,
-     .prefixes = "AH0,KH0,NH0,WH0,K8KH,K8RN,NH2B"},
-    {.continent = "OC",
-     .country = "Baker & Howland Islands",
-     .cq_zone = 31,
-     .itu_zone = 61,
-     .lat = 0.00,
-     .lon = -176,
-     .prefixes = "AH1,KH1,NH1,WH1"},
+    {.continent = "OC", .country = "Mariana Islands", .cq_zone = 27, .itu_zone = 64, .lat = 15.18, .lon = 145.72, .prefixes = "AH0,KH0,NH0,WH0,K8KH,K8RN,NH2B"},
+    {.continent = "OC", .country = "Baker & Howland Islands", .cq_zone = 31, .itu_zone = 61, .lat = 0.00, .lon = -176, .prefixes = "AH1,KH1,NH1,WH1"},
     {.continent = "OC",
      .country = "Guam",
      .cq_zone = 27,
@@ -520,21 +331,9 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .lat = 13.37,
      .lon = 144.7,
      .prefixes = "AH2,KH2,NH2,WH2,AH0FM,KB5OXR,KF7BMU,KG6DX,KG6JDX,KH0UM,KJ6AYQ,KK6GVF,N0RY,NH0Q"},
-    {.continent = "OC",
-     .country = "Johnston Island",
-     .cq_zone = 31,
-     .itu_zone = 61,
-     .lat = 16.72,
-     .lon = -169.53,
-     .prefixes = "AH3,KH3,NH3,WH3"},
+    {.continent = "OC", .country = "Johnston Island", .cq_zone = 31, .itu_zone = 61, .lat = 16.72, .lon = -169.53, .prefixes = "AH3,KH3,NH3,WH3"},
     {.continent = "OC", .country = "Midway Island", .cq_zone = 31, .itu_zone = 61, .lat = 28.20, .lon = -177.37, .prefixes = "AH4,KH4,NH4,WH4"},
-    {.continent = "OC",
-     .country = "Palmyra & Jarvis Islands",
-     .cq_zone = 31,
-     .itu_zone = 61,
-     .lat = 5.87,
-     .lon = -162.07,
-     .prefixes = "AH5,KH5,NH5,WH5"},
+    {.continent = "OC", .country = "Palmyra & Jarvis Islands", .cq_zone = 31, .itu_zone = 61, .lat = 5.87, .lon = -162.07, .prefixes = "AH5,KH5,NH5,WH5"},
     {.continent = "OC",
      .country = "Hawaii",
      .cq_zone = 31,
@@ -545,13 +344,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
                  "KC0YIH,KD0OXU,KD4NFW,KD6NVX,KE0JSB,KE4DYE,KE5VQB,KE6MKW,KE7LWN,KE7QML,KF6RLP,KH0WJ,KH3AE,KH8Z,KI4YOG,KI7AUZ,KK6RM,KL0TK,KM6IK,"
                  "KQ6M,KR1LLR,N1CBF,N1TEE,N1VOP,N3BQY,N3FUR,N3GWR,N7BMD,W6KEV,W7NX,WA6IIQ,WA8JQP,WB0TZQ,WB4JTT,WB6PIO,WB8NCD,WD0LFN,WY6F"},
     {.continent = "OC", .country = "Kure Island", .cq_zone = 31, .itu_zone = 61, .lat = 29.00, .lon = -178, .prefixes = "AH7K,KH7K,NH7K,WH7K"},
-    {.continent = "OC",
-     .country = "American Samoa",
-     .cq_zone = 32,
-     .itu_zone = 62,
-     .lat = -14.32,
-     .lon = -170.78,
-     .prefixes = "AH8,KH8,NH8,WH8"},
+    {.continent = "OC", .country = "American Samoa", .cq_zone = 32, .itu_zone = 62, .lat = -14.32, .lon = -170.78, .prefixes = "AH8,KH8,NH8,WH8"},
     {.continent = "OC", .country = "Wake Island", .cq_zone = 31, .itu_zone = 65, .lat = 19.28, .lon = 166.63, .prefixes = "AH9,KH9,NH9,WH9"},
     {.continent = "NA",
      .country = "Alaska",
@@ -563,13 +356,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
                  "KF6IAO,KF6RMG,KF7GKY,KG5MIO,KG7JVJ,KG7OUF,KI6BGR,KJ4YOY,KJ6DCH,KN4HGD,KW1W,N1NDA,N1TX,N6QEK,N6ZZX,N7DBN,N7XEA,N8SUG,NM0H,NU9Q,"
                  "NW7F,W1JM,W1LYD,W3MKG,WH6DPL,WH6GBB,WH6GCO"},
     {.continent = "NA", .country = "Navassa Island", .cq_zone = 8, .itu_zone = 11, .lat = 18.40, .lon = -75, .prefixes = "KP1,NP1,WP1"},
-    {.continent = "NA",
-     .country = "US Virgin Islands",
-     .cq_zone = 8,
-     .itu_zone = 11,
-     .lat = 17.73,
-     .lon = -64.8,
-     .prefixes = "KP2,NP2,WP2,K8RF,KV4FZ,W4LIS,W9Q"},
+    {.continent = "NA", .country = "US Virgin Islands", .cq_zone = 8, .itu_zone = 11, .lat = 17.73, .lon = -64.8, .prefixes = "KP2,NP2,WP2,K8RF,KV4FZ,W4LIS,W9Q"},
     {.continent = "NA",
      .country = "Puerto Rico",
      .cq_zone = 8,
@@ -578,62 +365,49 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .lon = -66.55,
      .prefixes = "KP3,KP4,NP3,NP4,WP3,WP4,K4LCR,KB0JRR,KC2TE,KC2VCR,KC8BFN,KD9GIZ,KG4GYO,KK4DCX,KP2Z,N2IBR,N4CIE,N6NVD"},
     {.continent = "NA", .country = "Desecheo Island", .cq_zone = 8, .itu_zone = 11, .lat = 18.08, .lon = -67.88, .prefixes = "KP5,NP5,WP5"},
-    {.continent = "EU",
-     .country = "Norway",
-     .cq_zone = 14,
-     .itu_zone = 18,
-     .lat = 61.00,
-     .lon = 9,
-     .prefixes = "LA,LB,LC,LD,LE,LF,LG,LH,LI,LJ,LK,LL,LM,LN"},
+    {.continent = "EU", .country = "Norway", .cq_zone = 14, .itu_zone = 18, .lat = 61.00, .lon = 9, .prefixes = "LA,LB,LC,LD,LE,LF,LG,LH,LI,LJ,LK,LL,LM,LN"},
     {.continent = "SA",
      .country = "Argentina",
      .cq_zone = 13,
      .itu_zone = 14,
      .lat = -34.80,
      .lon = -65.92,
-     .prefixes =
-         "AY,AZ,L1,L2,L3,L4,L5,L6,L7,L8,L9,LO,LP,LQ,LR,LS,LT,LU,LV,LW,AY0V,AY0W,AY0X,AY0Y,AY1V,AY1W,AY1X,AY1Y,AY2V,AY2W,AY2X,AY2Y,AY3V,AY3W,"
-         "AY3X,AY3Y,AY4V,AY4W,AY4X,AY4Y,AY5V,AY5W,AY5X,AY5Y,AY6V,AY6W,AY6X,AY6Y,AY7V,AY7W,AY7X,AY7Y,AY8V,AY8W,AY8X,AY8Y,AY9V,AY9W,AY9X,AY9Y,"
-         "AZ0V,AZ0W,AZ0X,AZ0Y,AZ1V,AZ1W,AZ1X,AZ1Y,AZ2V,AZ2W,AZ2X,AZ2Y,AZ3V,AZ3W,AZ3X,AZ3Y,AZ4V,AZ4W,AZ4X,AZ4Y,AZ5V,AZ5W,AZ5X,AZ5Y,AZ6V,AZ6W,"
-         "AZ6X,AZ6Y,AZ7V,AZ7W,AZ7X,AZ7Y,AZ8V,AZ8W,AZ8X,AZ8Y,AZ9V,AZ9W,AZ9X,AZ9Y,L20V,L20W,L20X,L20Y,L21V,L21W,L21X,L21Y,L22V,L22W,L22X,L22Y,"
-         "L23V,L23W,L23X,L23Y,L24V,L24W,L24X,L24Y,L25V,L25W,L25X,L25Y,L26V,L26W,L26X,L26Y,L27V,L27W,L27X,L27Y,L28V,L28W,L28X,L28Y,L29V,L29W,"
-         "L29X,L29Y,L30V,L30W,L30X,L30Y,L31V,L31W,L31X,L31Y,L32V,L32W,L32X,L32Y,L33V,L33W,L33X,L33Y,L34V,L34W,L34X,L34Y,L35V,L35W,L35X,L35Y,"
-         "L36V,L36W,L36X,L36Y,L37V,L37W,L37X,L37Y,L38V,L38W,L38X,L38Y,L39V,L39W,L39X,L39Y,L40V,L40W,L40X,L40Y,L41V,L41W,L41X,L41Y,L42V,L42W,"
-         "L42X,L42Y,L43V,L43W,L43X,L43Y,L44V,L44W,L44X,L44Y,L45V,L45W,L45X,L45Y,L46V,L46W,L46X,L46Y,L47V,L47W,L47X,L47Y,L48V,L48W,L48X,L48Y,"
-         "L49V,L49W,L49X,L49Y,L50V,L50W,L50X,L50Y,L51V,L51W,L51X,L51Y,L52V,L52W,L52X,L52Y,L53V,L53W,L53X,L53Y,L54V,L54W,L54X,L54Y,L55V,L55W,"
-         "L55X,L55Y,L56V,L56W,L56X,L56Y,L57V,L57W,L57X,L57Y,L58V,L58W,L58X,L58Y,L59V,L59W,L59X,L59Y,L60V,L60W,L60X,L60Y,L61V,L61W,L61X,L61Y,"
-         "L62V,L62W,L62X,L62Y,L63V,L63W,L63X,L63Y,L64V,L64W,L64X,L64Y,L65V,L65W,L65X,L65Y,L66V,L66W,L66X,L66Y,L67V,L67W,L67X,L67Y,L68V,L68W,"
-         "L68X,L68Y,L69V,L69W,L69X,L69Y,L70V,L70W,L70X,L70Y,L71V,L71W,L71X,L71Y,L72V,L72W,L72X,L72Y,L73V,L73W,L73X,L73Y,L74V,L74W,L74X,L74Y,"
-         "L75V,L75W,L75X,L75Y,L76V,L76W,L76X,L76Y,L77V,L77W,L77X,L77Y,L78V,L78W,L78X,L78Y,L79V,L79W,L79X,L79Y,L80V,L80W,L80X,L80Y,L81V,L81W,"
-         "L81X,L81Y,L82V,L82W,L82X,L82Y,L83V,L83W,L83X,L83Y,L84V,L84W,L84X,L84Y,L85V,L85W,L85X,L85Y,L86V,L86W,L86X,L86Y,L87V,L87W,L87X,L87Y,"
-         "L88V,L88W,L88X,L88Y,L89V,L89W,L89X,L89Y,L90V,L90W,L90X,L90Y,L91V,L91W,L91X,L91Y,L92V,L92W,L92X,L92Y,L93V,L93W,L93X,L93Y,L94V,L94W,"
-         "L94X,L94Y,L95V,L95W,L95X,L95Y,L96V,L96W,L96X,L96Y,L97V,L97W,L97X,L97Y,L98V,L98W,L98X,L98Y,L99V,L99W,L99X,L99Y,LO0V,LO0W,LO0X,LO0Y,"
-         "LO1V,LO1W,LO1X,LO1Y,LO2V,LO2W,LO2X,LO2Y,LO3V,LO3W,LO3X,LO3Y,LO4V,LO4W,LO4X,LO4Y,LO5V,LO5W,LO5X,LO5Y,LO6V,LO6W,LO6X,LO6Y,LO7V,LO7W,"
-         "LO7X,LO7Y,LO8V,LO8W,LO8X,LO8Y,LO9V,LO9W,LO9X,LO9Y,LP0V,LP0W,LP0X,LP0Y,LP1V,LP1W,LP1X,LP1Y,LP2V,LP2W,LP2X,LP2Y,LP3V,LP3W,LP3X,LP3Y,"
-         "LP4V,LP4W,LP4X,LP4Y,LP5V,LP5W,LP5X,LP5Y,LP6V,LP6W,LP6X,LP6Y,LP7V,LP7W,LP7X,LP7Y,LP8V,LP8W,LP8X,LP8Y,LP9V,LP9W,LP9X,LP9Y,LQ0V,LQ0W,"
-         "LQ0X,LQ0Y,LQ1V,LQ1W,LQ1X,LQ1Y,LQ2V,LQ2W,LQ2X,LQ2Y,LQ3V,LQ3W,LQ3X,LQ3Y,LQ4V,LQ4W,LQ4X,LQ4Y,LQ5V,LQ5W,LQ5X,LQ5Y,LQ6V,LQ6W,LQ6X,LQ6Y,"
-         "LQ7V,LQ7W,LQ7X,LQ7Y,LQ8V,LQ8W,LQ8X,LQ8Y,LQ9V,LQ9W,LQ9X,LQ9Y,LR0V,LR0W,LR0X,LR0Y,LR1V,LR1W,LR1X,LR1Y,LR2V,LR2W,LR2X,LR2Y,LR3V,LR3W,"
-         "LR3X,LR3Y,LR4V,LR4W,LR4X,LR4Y,LR5V,LR5W,LR5X,LR5Y,LR6V,LR6W,LR6X,LR6Y,LR7V,LR7W,LR7X,LR7Y,LR8V,LR8W,LR8X,LR8Y,LR9V,LR9W,LR9X,LR9Y,"
-         "LS0V,LS0W,LS0X,LS0Y,LS1V,LS1W,LS1X,LS1Y,LS2V,LS2W,LS2X,LS2Y,LS3V,LS3W,LS3X,LS3Y,LS4V,LS4W,LS4X,LS4Y,LS5V,LS5W,LS5X,LS5Y,LS6V,LS6W,"
-         "LS6X,LS6Y,LS7V,LS7W,LS7X,LS7Y,LS8V,LS8W,LS8X,LS8Y,LS9V,LS9W,LS9X,LS9Y,LT0V,LT0W,LT0X,LT0Y,LT1V,LT1W,LT1X,LT1Y,LT2V,LT2W,LT2X,LT2Y,"
-         "LT3V,LT3W,LT3X,LT3Y,LT4V,LT4W,LT4X,LT4Y,LT5V,LT5W,LT5X,LT5Y,LT6V,LT6W,LT6X,LT6Y,LT7V,LT7W,LT7X,LT7Y,LT8V,LT8W,LT8X,LT8Y,LT9V,LT9W,"
-         "LT9X,LT9Y,LU0V,LU0W,LU0X,LU0Y,LU1V,LU1W,LU1X,LU1Y,LU2V,LU2W,LU2X,LU2Y,LU3V,LU3W,LU3X,LU3Y,LU4V,LU4W,LU4X,LU4Y,LU5V,LU5W,LU5X,LU5Y,"
-         "LU6V,LU6W,LU6X,LU6Y,LU7V,LU7W,LU7X,LU7Y,LU8V,LU8W,LU8X,LU8Y,LU9V,LU9W,LU9X,LU9Y,LV0V,LV0W,LV0X,LV0Y,LV1V,LV1W,LV1X,LV1Y,LV2V,LV2W,"
-         "LV2X,LV2Y,LV3V,LV3W,LV3X,LV3Y,LV4V,LV4W,LV4X,LV4Y,LV5V,LV5W,LV5X,LV5Y,LV6V,LV6W,LV6X,LV6Y,LV7V,LV7W,LV7X,LV7Y,LV8V,LV8W,LV8X,LV8Y,"
-         "LV9V,LV9W,LV9X,LV9Y,LW0V,LW0W,LW0X,LW0Y,LW1V,LW1W,LW1X,LW1Y,LW2V,LW2W,LW2X,LW2Y,LW3V,LW3W,LW3X,LW3Y,LW4V,LW4W,LW4X,LW4Y,LW5V,LW5W,"
-         "LW5X,LW5Y,LW6V,LW6W,LW6X,LW6Y,LW7V,LW7W,LW7X,LW7Y,LW8V,LW8W,LW8X,LW8Y,LW9V,LW9W,LW9X,LW9Y"},
+     .prefixes = "AY,AZ,L1,L2,L3,L4,L5,L6,L7,L8,L9,LO,LP,LQ,LR,LS,LT,LU,LV,LW,AY0V,AY0W,AY0X,AY0Y,AY1V,AY1W,AY1X,AY1Y,AY2V,AY2W,AY2X,AY2Y,AY3V,AY3W,"
+                 "AY3X,AY3Y,AY4V,AY4W,AY4X,AY4Y,AY5V,AY5W,AY5X,AY5Y,AY6V,AY6W,AY6X,AY6Y,AY7V,AY7W,AY7X,AY7Y,AY8V,AY8W,AY8X,AY8Y,AY9V,AY9W,AY9X,AY9Y,"
+                 "AZ0V,AZ0W,AZ0X,AZ0Y,AZ1V,AZ1W,AZ1X,AZ1Y,AZ2V,AZ2W,AZ2X,AZ2Y,AZ3V,AZ3W,AZ3X,AZ3Y,AZ4V,AZ4W,AZ4X,AZ4Y,AZ5V,AZ5W,AZ5X,AZ5Y,AZ6V,AZ6W,"
+                 "AZ6X,AZ6Y,AZ7V,AZ7W,AZ7X,AZ7Y,AZ8V,AZ8W,AZ8X,AZ8Y,AZ9V,AZ9W,AZ9X,AZ9Y,L20V,L20W,L20X,L20Y,L21V,L21W,L21X,L21Y,L22V,L22W,L22X,L22Y,"
+                 "L23V,L23W,L23X,L23Y,L24V,L24W,L24X,L24Y,L25V,L25W,L25X,L25Y,L26V,L26W,L26X,L26Y,L27V,L27W,L27X,L27Y,L28V,L28W,L28X,L28Y,L29V,L29W,"
+                 "L29X,L29Y,L30V,L30W,L30X,L30Y,L31V,L31W,L31X,L31Y,L32V,L32W,L32X,L32Y,L33V,L33W,L33X,L33Y,L34V,L34W,L34X,L34Y,L35V,L35W,L35X,L35Y,"
+                 "L36V,L36W,L36X,L36Y,L37V,L37W,L37X,L37Y,L38V,L38W,L38X,L38Y,L39V,L39W,L39X,L39Y,L40V,L40W,L40X,L40Y,L41V,L41W,L41X,L41Y,L42V,L42W,"
+                 "L42X,L42Y,L43V,L43W,L43X,L43Y,L44V,L44W,L44X,L44Y,L45V,L45W,L45X,L45Y,L46V,L46W,L46X,L46Y,L47V,L47W,L47X,L47Y,L48V,L48W,L48X,L48Y,"
+                 "L49V,L49W,L49X,L49Y,L50V,L50W,L50X,L50Y,L51V,L51W,L51X,L51Y,L52V,L52W,L52X,L52Y,L53V,L53W,L53X,L53Y,L54V,L54W,L54X,L54Y,L55V,L55W,"
+                 "L55X,L55Y,L56V,L56W,L56X,L56Y,L57V,L57W,L57X,L57Y,L58V,L58W,L58X,L58Y,L59V,L59W,L59X,L59Y,L60V,L60W,L60X,L60Y,L61V,L61W,L61X,L61Y,"
+                 "L62V,L62W,L62X,L62Y,L63V,L63W,L63X,L63Y,L64V,L64W,L64X,L64Y,L65V,L65W,L65X,L65Y,L66V,L66W,L66X,L66Y,L67V,L67W,L67X,L67Y,L68V,L68W,"
+                 "L68X,L68Y,L69V,L69W,L69X,L69Y,L70V,L70W,L70X,L70Y,L71V,L71W,L71X,L71Y,L72V,L72W,L72X,L72Y,L73V,L73W,L73X,L73Y,L74V,L74W,L74X,L74Y,"
+                 "L75V,L75W,L75X,L75Y,L76V,L76W,L76X,L76Y,L77V,L77W,L77X,L77Y,L78V,L78W,L78X,L78Y,L79V,L79W,L79X,L79Y,L80V,L80W,L80X,L80Y,L81V,L81W,"
+                 "L81X,L81Y,L82V,L82W,L82X,L82Y,L83V,L83W,L83X,L83Y,L84V,L84W,L84X,L84Y,L85V,L85W,L85X,L85Y,L86V,L86W,L86X,L86Y,L87V,L87W,L87X,L87Y,"
+                 "L88V,L88W,L88X,L88Y,L89V,L89W,L89X,L89Y,L90V,L90W,L90X,L90Y,L91V,L91W,L91X,L91Y,L92V,L92W,L92X,L92Y,L93V,L93W,L93X,L93Y,L94V,L94W,"
+                 "L94X,L94Y,L95V,L95W,L95X,L95Y,L96V,L96W,L96X,L96Y,L97V,L97W,L97X,L97Y,L98V,L98W,L98X,L98Y,L99V,L99W,L99X,L99Y,LO0V,LO0W,LO0X,LO0Y,"
+                 "LO1V,LO1W,LO1X,LO1Y,LO2V,LO2W,LO2X,LO2Y,LO3V,LO3W,LO3X,LO3Y,LO4V,LO4W,LO4X,LO4Y,LO5V,LO5W,LO5X,LO5Y,LO6V,LO6W,LO6X,LO6Y,LO7V,LO7W,"
+                 "LO7X,LO7Y,LO8V,LO8W,LO8X,LO8Y,LO9V,LO9W,LO9X,LO9Y,LP0V,LP0W,LP0X,LP0Y,LP1V,LP1W,LP1X,LP1Y,LP2V,LP2W,LP2X,LP2Y,LP3V,LP3W,LP3X,LP3Y,"
+                 "LP4V,LP4W,LP4X,LP4Y,LP5V,LP5W,LP5X,LP5Y,LP6V,LP6W,LP6X,LP6Y,LP7V,LP7W,LP7X,LP7Y,LP8V,LP8W,LP8X,LP8Y,LP9V,LP9W,LP9X,LP9Y,LQ0V,LQ0W,"
+                 "LQ0X,LQ0Y,LQ1V,LQ1W,LQ1X,LQ1Y,LQ2V,LQ2W,LQ2X,LQ2Y,LQ3V,LQ3W,LQ3X,LQ3Y,LQ4V,LQ4W,LQ4X,LQ4Y,LQ5V,LQ5W,LQ5X,LQ5Y,LQ6V,LQ6W,LQ6X,LQ6Y,"
+                 "LQ7V,LQ7W,LQ7X,LQ7Y,LQ8V,LQ8W,LQ8X,LQ8Y,LQ9V,LQ9W,LQ9X,LQ9Y,LR0V,LR0W,LR0X,LR0Y,LR1V,LR1W,LR1X,LR1Y,LR2V,LR2W,LR2X,LR2Y,LR3V,LR3W,"
+                 "LR3X,LR3Y,LR4V,LR4W,LR4X,LR4Y,LR5V,LR5W,LR5X,LR5Y,LR6V,LR6W,LR6X,LR6Y,LR7V,LR7W,LR7X,LR7Y,LR8V,LR8W,LR8X,LR8Y,LR9V,LR9W,LR9X,LR9Y,"
+                 "LS0V,LS0W,LS0X,LS0Y,LS1V,LS1W,LS1X,LS1Y,LS2V,LS2W,LS2X,LS2Y,LS3V,LS3W,LS3X,LS3Y,LS4V,LS4W,LS4X,LS4Y,LS5V,LS5W,LS5X,LS5Y,LS6V,LS6W,"
+                 "LS6X,LS6Y,LS7V,LS7W,LS7X,LS7Y,LS8V,LS8W,LS8X,LS8Y,LS9V,LS9W,LS9X,LS9Y,LT0V,LT0W,LT0X,LT0Y,LT1V,LT1W,LT1X,LT1Y,LT2V,LT2W,LT2X,LT2Y,"
+                 "LT3V,LT3W,LT3X,LT3Y,LT4V,LT4W,LT4X,LT4Y,LT5V,LT5W,LT5X,LT5Y,LT6V,LT6W,LT6X,LT6Y,LT7V,LT7W,LT7X,LT7Y,LT8V,LT8W,LT8X,LT8Y,LT9V,LT9W,"
+                 "LT9X,LT9Y,LU0V,LU0W,LU0X,LU0Y,LU1V,LU1W,LU1X,LU1Y,LU2V,LU2W,LU2X,LU2Y,LU3V,LU3W,LU3X,LU3Y,LU4V,LU4W,LU4X,LU4Y,LU5V,LU5W,LU5X,LU5Y,"
+                 "LU6V,LU6W,LU6X,LU6Y,LU7V,LU7W,LU7X,LU7Y,LU8V,LU8W,LU8X,LU8Y,LU9V,LU9W,LU9X,LU9Y,LV0V,LV0W,LV0X,LV0Y,LV1V,LV1W,LV1X,LV1Y,LV2V,LV2W,"
+                 "LV2X,LV2Y,LV3V,LV3W,LV3X,LV3Y,LV4V,LV4W,LV4X,LV4Y,LV5V,LV5W,LV5X,LV5Y,LV6V,LV6W,LV6X,LV6Y,LV7V,LV7W,LV7X,LV7Y,LV8V,LV8W,LV8X,LV8Y,"
+                 "LV9V,LV9W,LV9X,LV9Y,LW0V,LW0W,LW0X,LW0Y,LW1V,LW1W,LW1X,LW1Y,LW2V,LW2W,LW2X,LW2Y,LW3V,LW3W,LW3X,LW3Y,LW4V,LW4W,LW4X,LW4Y,LW5V,LW5W,"
+                 "LW5X,LW5Y,LW6V,LW6W,LW6X,LW6Y,LW7V,LW7W,LW7X,LW7Y,LW8V,LW8W,LW8X,LW8Y,LW9V,LW9W,LW9X,LW9Y"},
     {.continent = "EU", .country = "Luxembourg", .cq_zone = 14, .itu_zone = 27, .lat = 50.00, .lon = 6, .prefixes = "LX"},
     {.continent = "EU", .country = "Lithuania", .cq_zone = 15, .itu_zone = 29, .lat = 55.45, .lon = 23.63, .prefixes = "LY"},
     {.continent = "EU", .country = "Bulgaria", .cq_zone = 20, .itu_zone = 28, .lat = 42.83, .lon = 25.08, .prefixes = "LZ"},
     {.continent = "SA", .country = "Peru", .cq_zone = 10, .itu_zone = 12, .lat = -10.00, .lon = -76, .prefixes = "4T,OA,OB,OC"},
     {.continent = "AS", .country = "Lebanon", .cq_zone = 20, .itu_zone = 39, .lat = 33.83, .lon = 35.83, .prefixes = "OD"},
-    {.continent = "EU",
-     .country = "Austria",
-     .cq_zone = 15,
-     .itu_zone = 28,
-     .lat = 47.33,
-     .lon = 13.33,
-     .prefixes = "OE,4U0R,4U1A,4U1VIC,4U2U,4U500M,4Y1A,C7A"},
+    {.continent = "EU", .country = "Austria", .cq_zone = 15, .itu_zone = 28, .lat = 47.33, .lon = 13.33, .prefixes = "OE,4U0R,4U1A,4U1VIC,4U2U,4U500M,4Y1A,C7A"},
     {.continent = "EU", .country = "Finland", .cq_zone = 15, .itu_zone = 18, .lat = 63.78, .lon = 27.08, .prefixes = "OF,OG,OH,OI,OJ"},
     {.continent = "EU", .country = "Aland Islands", .cq_zone = 15, .itu_zone = 18, .lat = 60.13, .lon = 20.37, .prefixes = "OF0,OG0,OH0,OI0"},
     {.continent = "EU", .country = "Market Reef", .cq_zone = 15, .itu_zone = 18, .lat = 60.00, .lon = 19, .prefixes = "OJ0"},
@@ -646,13 +420,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "OC", .country = "Papua New Guinea", .cq_zone = 28, .itu_zone = 51, .lat = -9.50, .lon = 147.12, .prefixes = "P2"},
     {.continent = "SA", .country = "Aruba", .cq_zone = 9, .itu_zone = 11, .lat = 12.53, .lon = -69.98, .prefixes = "P4"},
     {.continent = "AS", .country = "DPR of Korea", .cq_zone = 25, .itu_zone = 44, .lat = 39.78, .lon = 126.3, .prefixes = "P5,P6,P7,P8,P9"},
-    {.continent = "EU",
-     .country = "Netherlands",
-     .cq_zone = 14,
-     .itu_zone = 27,
-     .lat = 52.28,
-     .lon = 5.47,
-     .prefixes = "PA,PB,PC,PD,PE,PF,PG,PH,PI"},
+    {.continent = "EU", .country = "Netherlands", .cq_zone = 14, .itu_zone = 27, .lat = 52.28, .lon = 5.47, .prefixes = "PA,PB,PC,PD,PE,PF,PG,PH,PI"},
     {.continent = "SA", .country = "Curacao", .cq_zone = 9, .itu_zone = 11, .lat = 12.17, .lon = -69, .prefixes = "PJ2"},
     {.continent = "SA", .country = "Bonaire", .cq_zone = 9, .itu_zone = 11, .lat = 12.20, .lon = -68.25, .prefixes = "PJ4"},
     {.continent = "NA", .country = "Saba & St. Eustatius", .cq_zone = 8, .itu_zone = 11, .lat = 17.57, .lon = -63.1, .prefixes = "PJ5,PJ6"},
@@ -696,24 +464,12 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "EU", .country = "Slovenia", .cq_zone = 15, .itu_zone = 28, .lat = 46.00, .lon = 14, .prefixes = "S5"},
     {.continent = "AF", .country = "Seychelles", .cq_zone = 39, .itu_zone = 53, .lat = -4.67, .lon = 55.47, .prefixes = "S7"},
     {.continent = "AF", .country = "Sao Tome & Principe", .cq_zone = 36, .itu_zone = 47, .lat = 0.22, .lon = 6.57, .prefixes = "S9"},
-    {.continent = "EU",
-     .country = "Sweden",
-     .cq_zone = 14,
-     .itu_zone = 18,
-     .lat = 61.20,
-     .lon = 14.57,
-     .prefixes = "7S,8S,SA,SB,SC,SD,SE,SF,SG,SH,SI,SJ,SK,SL,SM"},
+    {.continent = "EU", .country = "Sweden", .cq_zone = 14, .itu_zone = 18, .lat = 61.20, .lon = 14.57, .prefixes = "7S,8S,SA,SB,SC,SD,SE,SF,SG,SH,SI,SJ,SK,SL,SM"},
     {.continent = "EU", .country = "Poland", .cq_zone = 15, .itu_zone = 28, .lat = 52.28, .lon = 18.67, .prefixes = "3Z,HF,SN,SO,SP,SQ,SR"},
     {.continent = "AF", .country = "Sudan", .cq_zone = 34, .itu_zone = 48, .lat = 14.47, .lon = 28.62, .prefixes = "6T,6U,ST"},
     {.continent = "AF", .country = "Egypt", .cq_zone = 34, .itu_zone = 38, .lat = 26.28, .lon = 28.6, .prefixes = "6A,6B,SS,SU"},
     {.continent = "EU", .country = "Greece", .cq_zone = 20, .itu_zone = 28, .lat = 39.78, .lon = 21.78, .prefixes = "J4,SV,SW,SX,SY,SZ"},
-    {.continent = "EU",
-     .country = "Dodecanese",
-     .cq_zone = 20,
-     .itu_zone = 28,
-     .lat = 36.17,
-     .lon = 27.93,
-     .prefixes = "J45,SV5,SW5,SX5,SY5,SZ5"},
+    {.continent = "EU", .country = "Dodecanese", .cq_zone = 20, .itu_zone = 28, .lat = 36.17, .lon = 27.93, .prefixes = "J45,SV5,SW5,SX5,SY5,SZ5"},
     {.continent = "EU", .country = "Crete", .cq_zone = 20, .itu_zone = 28, .lat = 35.23, .lon = 24.78, .prefixes = "J49,SV9,SW9,SX9,SY9,SZ9"},
     {.continent = "OC", .country = "Tuvalu", .cq_zone = 31, .itu_zone = 65, .lat = -8.50, .lon = 179.2, .prefixes = "T2"},
     {.continent = "OC", .country = "Western Kiribati", .cq_zone = 31, .itu_zone = 65, .lat = 1.42, .lon = 173, .prefixes = "T30"},
@@ -723,13 +479,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "AF", .country = "Somalia", .cq_zone = 37, .itu_zone = 48, .lat = 2.03, .lon = 45.35, .prefixes = "6O,T5"},
     {.continent = "EU", .country = "San Marino", .cq_zone = 15, .itu_zone = 28, .lat = 43.95, .lon = 12.45, .prefixes = "T7"},
     {.continent = "OC", .country = "Palau", .cq_zone = 27, .itu_zone = 64, .lat = 7.45, .lon = 134.53, .prefixes = "T8"},
-    {.continent = "AS",
-     .country = "Asiatic Turkey",
-     .cq_zone = 20,
-     .itu_zone = 39,
-     .lat = 39.18,
-     .lon = 35.65,
-     .prefixes = "TA,TB,TC,YM,TA1D/3,TA1D/4"},
+    {.continent = "AS", .country = "Asiatic Turkey", .cq_zone = 20, .itu_zone = 39, .lat = 39.18, .lon = 35.65, .prefixes = "TA,TB,TC,YM,TA1D/3,TA1D/4"},
     {.continent = "EU", .country = "European Turkey", .cq_zone = 20, .itu_zone = 39, .lat = 41.02, .lon = 28.97, .prefixes = "TA1,TB1,TC1,YM1"},
     {.continent = "EU", .country = "Iceland", .cq_zone = 40, .itu_zone = 17, .lat = 64.80, .lon = -18.73, .prefixes = "TF"},
     {.continent = "NA", .country = "Guatemala", .cq_zone = 7, .itu_zone = 11, .lat = 15.50, .lon = -90.3, .prefixes = "TD,TG"},
@@ -750,69 +500,66 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .itu_zone = 29,
      .lat = 53.65,
      .lon = 41.37,
-     .prefixes =
-         "R,U,R1I,R1N,R1O,R1P,R1Z,R4H,R4I,R4W,R8F,R8G,R8X,R9F,R9G,R9X,RA1I,RA1N,RA1O,RA1P,RA1Z,RA4H,RA4I,RA4W,RA8F,RA8G,RA8X,RA9F,RA9G,RA9X,"
-         "RC1I,RC1N,RC1O,RC1P,RC1Z,RC4H,RC4I,RC4W,RC8F,RC8G,RC8X,RC9F,RC9G,RC9X,RD1I,RD1N,RD1O,RD1P,RD1Z,RD4H,RD4I,RD4W,RD8F,RD8G,RD8X,RD9F,"
-         "RD9G,RD9X,RE1I,RE1N,RE1O,RE1P,RE1Z,RE4H,RE4I,RE4W,RE8F,RE8G,RE8X,RE9F,RE9G,RE9X,RF1I,RF1N,RF1O,RF1P,RF1Z,RF4H,RF4I,RF4W,RF8F,RF8G,"
-         "RF8X,RF9F,RF9G,RF9X,RG1I,RG1N,RG1O,RG1P,RG1Z,RG4H,RG4I,RG4W,RG8F,RG8G,RG8X,RG9F,RG9G,RG9X,RI8X,RI9X,RJ1I,RJ1N,RJ1O,RJ1P,RJ1Z,RJ4H,"
-         "RJ4I,RJ4W,RJ8F,RJ8G,RJ8X,RJ9F,RJ9G,RJ9X,RK1I,RK1N,RK1O,RK1P,RK1Z,RK4H,RK4I,RK4W,RK8F,RK8G,RK8X,RK9F,RK9G,RK9X,RL1I,RL1N,RL1O,RL1P,"
-         "RL1Z,RL4H,RL4I,RL4W,RL8F,RL8G,RL8X,RL9F,RL9G,RL9X,RM1I,RM1N,RM1O,RM1P,RM1Z,RM4H,RM4I,RM4W,RM8F,RM8G,RM8X,RM9F,RM9G,RM9X,RN1I,RN1N,"
-         "RN1O,RN1P,RN1Z,RN4H,RN4I,RN4W,RN8F,RN8G,RN8X,RN9F,RN9G,RN9X,RO1I,RO1N,RO1O,RO1P,RO1Z,RO4H,RO4I,RO4W,RO8F,RO8G,RO8X,RO9F,RO9G,RO9X,"
-         "RQ1I,RQ1N,RQ1O,RQ1P,RQ1Z,RQ4H,RQ4I,RQ4W,RQ8F,RQ8G,RQ8X,RQ9F,RQ9G,RQ9X,RT1I,RT1N,RT1O,RT1P,RT1Z,RT4H,RT4I,RT4W,RT8F,RT8G,RT8X,RT9F,"
-         "RT9G,RT9X,RU1I,RU1N,RU1O,RU1P,RU1Z,RU4H,RU4I,RU4W,RU8F,RU8G,RU8X,RU9F,RU9G,RU9X,RV1I,RV1N,RV1O,RV1P,RV1Z,RV4H,RV4I,RV4W,RV8F,RV8G,"
-         "RV8X,RV9F,RV9G,RV9X,RW1I,RW1N,RW1O,RW1P,RW1Z,RW4H,RW4I,RW4W,RW8F,RW8G,RW8X,RW9F,RW9G,RW9X,RX1I,RX1N,RX1O,RX1P,RX1Z,RX4H,RX4I,RX4W,"
-         "RX8F,RX8G,RX8X,RX9F,RX9G,RX9X,RY1I,RY1N,RY1O,RY1P,RY1Z,RY4H,RY4I,RY4W,RY8F,RY8G,RY8X,RY9F,RY9G,RY9X,RZ1I,RZ1N,RZ1O,RZ1P,RZ1Z,RZ4H,"
-         "RZ4I,RZ4W,RZ8F,RZ8G,RZ8X,RZ9F,RZ9G,RZ9X,U1I,U1N,U1O,U1P,U1Z,U4H,U4I,U4W,U8F,U8G,U8X,U9F,U9G,U9X,UA1I,UA1N,UA1O,UA1P,UA1Z,UA4H,UA4I,"
-         "UA4W,UA8F,UA8G,UA8X,UA9F,UA9G,UA9X,UB1I,UB1N,UB1O,UB1P,UB1Z,UB4H,UB4I,UB4W,UB8F,UB8G,UB8X,UB9F,UB9G,UB9X,UC1I,UC1N,UC1O,UC1P,UC1Z,"
-         "UC4H,UC4I,UC4W,UC8F,UC8G,UC8X,UC9F,UC9G,UC9X,UD1I,UD1N,UD1O,UD1P,UD1Z,UD4H,UD4I,UD4W,UD8F,UD8G,UD8X,UD9F,UD9G,UD9X,UE1I,UE1N,UE1O,"
-         "UE1P,UE1Z,UE4H,UE4I,UE4W,UE8F,UE8G,UE8X,UE9F,UE9G,UE9X,UF1I,UF1N,UF1O,UF1P,UF1Z,UF4H,UF4I,UF4W,UF8F,UF8G,UF8X,UF9F,UF9G,UF9X,UG1I,"
-         "UG1N,UG1O,UG1P,UG1Z,UG4H,UG4I,UG4W,UG8F,UG8G,UG8X,UG9F,UG9G,UG9X,UH1I,UH1N,UH1O,UH1P,UH1Z,UH4H,UH4I,UH4W,UH8F,UH8G,UH8X,UH9F,UH9G,"
-         "UH9X,UI1I,UI1N,UI1O,UI1P,UI1Z,UI4H,UI4I,UI4W,UI8F,UI8G,UI8X,UI9F,UI9G,UI9X,R4HAT,R4HC,R4HCE,R4HCZ,R4HD,R4HDC,R4HDR,R4HL,R4IC,R4ID,"
-         "R4II,R4IK,R4IM,R4IN,R4IO,R4IT,R7AB/P,R8FF/3,R8FF/P,R8MB/1,R9GM/P,R9PA/4,RA3X/"
-         "1,RA4HL,RA4NCC,RC4HT,RC4I,RJ4I,RJ4P,RK30DR,RK4HM,RK75OP,RM4I,RM4R,RN4HFJ,RN4HIF,RT9K/6,RT9S/P,RT9T/1,RT9T/"
-         "3,RU4HD,RU4HP,RU4I,RW4HM,RW4HTK,RW4HW,RW4HZ,UA4H,UA4HBM,UA4HGL,UA4HIP,UA4HRZ,UA4HY,UA4NF,UA4PN,UC4I,UE00S,UE90PR,UI4I"},
+     .prefixes = "R,U,R1I,R1N,R1O,R1P,R1Z,R4H,R4I,R4W,R8F,R8G,R8X,R9F,R9G,R9X,RA1I,RA1N,RA1O,RA1P,RA1Z,RA4H,RA4I,RA4W,RA8F,RA8G,RA8X,RA9F,RA9G,RA9X,"
+                 "RC1I,RC1N,RC1O,RC1P,RC1Z,RC4H,RC4I,RC4W,RC8F,RC8G,RC8X,RC9F,RC9G,RC9X,RD1I,RD1N,RD1O,RD1P,RD1Z,RD4H,RD4I,RD4W,RD8F,RD8G,RD8X,RD9F,"
+                 "RD9G,RD9X,RE1I,RE1N,RE1O,RE1P,RE1Z,RE4H,RE4I,RE4W,RE8F,RE8G,RE8X,RE9F,RE9G,RE9X,RF1I,RF1N,RF1O,RF1P,RF1Z,RF4H,RF4I,RF4W,RF8F,RF8G,"
+                 "RF8X,RF9F,RF9G,RF9X,RG1I,RG1N,RG1O,RG1P,RG1Z,RG4H,RG4I,RG4W,RG8F,RG8G,RG8X,RG9F,RG9G,RG9X,RI8X,RI9X,RJ1I,RJ1N,RJ1O,RJ1P,RJ1Z,RJ4H,"
+                 "RJ4I,RJ4W,RJ8F,RJ8G,RJ8X,RJ9F,RJ9G,RJ9X,RK1I,RK1N,RK1O,RK1P,RK1Z,RK4H,RK4I,RK4W,RK8F,RK8G,RK8X,RK9F,RK9G,RK9X,RL1I,RL1N,RL1O,RL1P,"
+                 "RL1Z,RL4H,RL4I,RL4W,RL8F,RL8G,RL8X,RL9F,RL9G,RL9X,RM1I,RM1N,RM1O,RM1P,RM1Z,RM4H,RM4I,RM4W,RM8F,RM8G,RM8X,RM9F,RM9G,RM9X,RN1I,RN1N,"
+                 "RN1O,RN1P,RN1Z,RN4H,RN4I,RN4W,RN8F,RN8G,RN8X,RN9F,RN9G,RN9X,RO1I,RO1N,RO1O,RO1P,RO1Z,RO4H,RO4I,RO4W,RO8F,RO8G,RO8X,RO9F,RO9G,RO9X,"
+                 "RQ1I,RQ1N,RQ1O,RQ1P,RQ1Z,RQ4H,RQ4I,RQ4W,RQ8F,RQ8G,RQ8X,RQ9F,RQ9G,RQ9X,RT1I,RT1N,RT1O,RT1P,RT1Z,RT4H,RT4I,RT4W,RT8F,RT8G,RT8X,RT9F,"
+                 "RT9G,RT9X,RU1I,RU1N,RU1O,RU1P,RU1Z,RU4H,RU4I,RU4W,RU8F,RU8G,RU8X,RU9F,RU9G,RU9X,RV1I,RV1N,RV1O,RV1P,RV1Z,RV4H,RV4I,RV4W,RV8F,RV8G,"
+                 "RV8X,RV9F,RV9G,RV9X,RW1I,RW1N,RW1O,RW1P,RW1Z,RW4H,RW4I,RW4W,RW8F,RW8G,RW8X,RW9F,RW9G,RW9X,RX1I,RX1N,RX1O,RX1P,RX1Z,RX4H,RX4I,RX4W,"
+                 "RX8F,RX8G,RX8X,RX9F,RX9G,RX9X,RY1I,RY1N,RY1O,RY1P,RY1Z,RY4H,RY4I,RY4W,RY8F,RY8G,RY8X,RY9F,RY9G,RY9X,RZ1I,RZ1N,RZ1O,RZ1P,RZ1Z,RZ4H,"
+                 "RZ4I,RZ4W,RZ8F,RZ8G,RZ8X,RZ9F,RZ9G,RZ9X,U1I,U1N,U1O,U1P,U1Z,U4H,U4I,U4W,U8F,U8G,U8X,U9F,U9G,U9X,UA1I,UA1N,UA1O,UA1P,UA1Z,UA4H,UA4I,"
+                 "UA4W,UA8F,UA8G,UA8X,UA9F,UA9G,UA9X,UB1I,UB1N,UB1O,UB1P,UB1Z,UB4H,UB4I,UB4W,UB8F,UB8G,UB8X,UB9F,UB9G,UB9X,UC1I,UC1N,UC1O,UC1P,UC1Z,"
+                 "UC4H,UC4I,UC4W,UC8F,UC8G,UC8X,UC9F,UC9G,UC9X,UD1I,UD1N,UD1O,UD1P,UD1Z,UD4H,UD4I,UD4W,UD8F,UD8G,UD8X,UD9F,UD9G,UD9X,UE1I,UE1N,UE1O,"
+                 "UE1P,UE1Z,UE4H,UE4I,UE4W,UE8F,UE8G,UE8X,UE9F,UE9G,UE9X,UF1I,UF1N,UF1O,UF1P,UF1Z,UF4H,UF4I,UF4W,UF8F,UF8G,UF8X,UF9F,UF9G,UF9X,UG1I,"
+                 "UG1N,UG1O,UG1P,UG1Z,UG4H,UG4I,UG4W,UG8F,UG8G,UG8X,UG9F,UG9G,UG9X,UH1I,UH1N,UH1O,UH1P,UH1Z,UH4H,UH4I,UH4W,UH8F,UH8G,UH8X,UH9F,UH9G,"
+                 "UH9X,UI1I,UI1N,UI1O,UI1P,UI1Z,UI4H,UI4I,UI4W,UI8F,UI8G,UI8X,UI9F,UI9G,UI9X,R4HAT,R4HC,R4HCE,R4HCZ,R4HD,R4HDC,R4HDR,R4HL,R4IC,R4ID,"
+                 "R4II,R4IK,R4IM,R4IN,R4IO,R4IT,R7AB/P,R8FF/3,R8FF/P,R8MB/1,R9GM/P,R9PA/4,RA3X/"
+                 "1,RA4HL,RA4NCC,RC4HT,RC4I,RJ4I,RJ4P,RK30DR,RK4HM,RK75OP,RM4I,RM4R,RN4HFJ,RN4HIF,RT9K/6,RT9S/P,RT9T/1,RT9T/"
+                 "3,RU4HD,RU4HP,RU4I,RW4HM,RW4HTK,RW4HW,RW4HZ,UA4H,UA4HBM,UA4HGL,UA4HIP,UA4HRZ,UA4HY,UA4NF,UA4PN,UC4I,UE00S,UE90PR,UI4I"},
     {.continent = "EU",
      .country = "Kaliningrad",
      .cq_zone = 15,
      .itu_zone = 29,
      .lat = 54.72,
      .lon = 20.52,
-     .prefixes =
-         "R2F,R2K,RA2,RC2F,RC2K,RD2F,RD2K,RE2F,RE2K,RF2F,RF2K,RG2F,RG2K,RJ2F,RJ2K,RK2F,RK2K,RL2F,RL2K,RM2F,RM2K,RN2F,RN2K,RO2F,RO2K,RQ2F,RQ2K,"
-         "RT2F,RT2K,RU2F,RU2K,RV2F,RV2K,RW2F,RW2K,RX2F,RX2K,RY2F,RY2K,RZ2F,RZ2K,U2F,U2K,UA2,UB2,UC2,UD2,UE2,UF2,UG2,UH2,UI2,R2MWO"},
+     .prefixes = "R2F,R2K,RA2,RC2F,RC2K,RD2F,RD2K,RE2F,RE2K,RF2F,RF2K,RG2F,RG2K,RJ2F,RJ2K,RK2F,RK2K,RL2F,RL2K,RM2F,RM2K,RN2F,RN2K,RO2F,RO2K,RQ2F,RQ2K,"
+                 "RT2F,RT2K,RU2F,RU2K,RV2F,RV2K,RW2F,RW2K,RX2F,RX2K,RY2F,RY2K,RZ2F,RZ2K,U2F,U2K,UA2,UB2,UC2,UD2,UE2,UF2,UG2,UH2,UI2,R2MWO"},
     {.continent = "AS",
      .country = "Asiatic Russia",
      .cq_zone = 17,
      .itu_zone = 30,
      .lat = 55.88,
      .lon = 84.08,
-     .prefixes =
-         "R0,R8,R9,RA0,RA8,RA9,RC0,RC8,RC9,RD0,RD8,RD9,RE0,RE8,RE9,RF0,RF8,RF9,RG0,RG8,RG9,RI0,RI8,RI9,RJ0,RJ8,RJ9,RK0,RK8,RK9,RL0,RL8,RL9,RM0,"
-         "RM8,RM9,RN0,RN8,RN9,RO0,RO8,RO9,RQ0,RQ8,RQ9,RT0,RT8,RT9,RU0,RU8,RU9,RV0,RV8,RV9,RW0,RW8,RW9,RX0,RX8,RX9,RY0,RY8,RY9,RZ0,RZ8,RZ9,U0,U8,"
-         "U9,UA0,UA8,UA9,UB0,UB8,UB9,UC0,UC8,UC9,UD0,UD8,UD9,UE0,UE8,UE9,UF0,UF8,UF9,UG0,UG8,UG9,UH0,UH8,UH9,UI0,UI8,UI9,R0T,R8H,R8I,R8O,R8P,"
-         "R8S,R8T,R8U,R8V,R8W,R8Y,R8Z,R9I,R9M,R9P,R9S,R9T,R9V,R9W,RA0T,RA8H,RA8I,RA8O,RA8P,RA8S,RA8T,RA8U,RA8V,RA8W,RA8Y,RA8Z,RA9I,RA9M,RA9P,"
-         "RA9S,RA9T,RA9V,RA9W,RC0T,RC8H,RC8I,RC8O,RC8P,RC8S,RC8T,RC8U,RC8V,RC8W,RC8Y,RC8Z,RC9I,RC9M,RC9P,RC9S,RC9T,RC9V,RC9W,RD0T,RD8H,RD8I,"
-         "RD8O,RD8P,RD8S,RD8T,RD8U,RD8V,RD8W,RD8Y,RD8Z,RD9I,RD9M,RD9P,RD9S,RD9T,RD9V,RD9W,RE0T,RE8H,RE8I,RE8O,RE8P,RE8S,RE8T,RE8U,RE8V,RE8W,"
-         "RE8Y,RE8Z,RE9I,RE9M,RE9P,RE9S,RE9T,RE9V,RE9W,RF0T,RF8H,RF8I,RF8O,RF8P,RF8S,RF8T,RF8U,RF8V,RF8W,RF8Y,RF8Z,RF9I,RF9M,RF9P,RF9S,RF9T,"
-         "RF9V,RF9W,RG0T,RG8H,RG8I,RG8O,RG8P,RG8S,RG8T,RG8U,RG8V,RG8W,RG8Y,RG8Z,RG9I,RG9M,RG9P,RG9S,RG9T,RG9V,RG9W,RJ0T,RJ8H,RJ8I,RJ8O,RJ8P,"
-         "RJ8S,RJ8T,RJ8U,RJ8V,RJ8W,RJ8Y,RJ8Z,RJ9I,RJ9M,RJ9P,RJ9S,RJ9T,RJ9V,RJ9W,RK0T,RK8H,RK8I,RK8O,RK8P,RK8S,RK8T,RK8U,RK8V,RK8W,RK8Y,RK8Z,"
-         "RK9I,RK9M,RK9P,RK9S,RK9T,RK9V,RK9W,RL0T,RL8H,RL8I,RL8O,RL8P,RL8S,RL8T,RL8U,RL8V,RL8W,RL8Y,RL8Z,RL9I,RL9M,RL9P,RL9S,RL9T,RL9V,RL9W,"
-         "RM0T,RM8H,RM8I,RM8O,RM8P,RM8S,RM8T,RM8U,RM8V,RM8W,RM8Y,RM8Z,RM9I,RM9M,RM9P,RM9S,RM9T,RM9V,RM9W,RN0T,RN8H,RN8I,RN8O,RN8P,RN8S,RN8T,"
-         "RN8U,RN8V,RN8W,RN8Y,RN8Z,RN9I,RN9M,RN9P,RN9S,RN9T,RN9V,RN9W,RO0T,RO8H,RO8I,RO8O,RO8P,RO8S,RO8T,RO8U,RO8V,RO8W,RO8Y,RO8Z,RO9I,RO9M,"
-         "RO9P,RO9S,RO9T,RO9V,RO9W,RQ0T,RQ8H,RQ8I,RQ8O,RQ8P,RQ8S,RQ8T,RQ8U,RQ8V,RQ8W,RQ8Y,RQ8Z,RQ9I,RQ9M,RQ9P,RQ9S,RQ9T,RQ9V,RQ9W,RT0T,RT8H,"
-         "RT8I,RT8O,RT8P,RT8S,RT8T,RT8U,RT8V,RT8W,RT8Y,RT8Z,RT9I,RT9M,RT9P,RT9S,RT9T,RT9V,RT9W,RU0T,RU8H,RU8I,RU8O,RU8P,RU8S,RU8T,RU8U,RU8V,"
-         "RU8W,RU8Y,RU8Z,RU9I,RU9M,RU9P,RU9S,RU9T,RU9V,RU9W,RV0T,RV8H,RV8I,RV8O,RV8P,RV8S,RV8T,RV8U,RV8V,RV8W,RV8Y,RV8Z,RV9I,RV9M,RV9P,RV9S,"
-         "RV9T,RV9V,RV9W,RW0T,RW8H,RW8I,RW8O,RW8P,RW8S,RW8T,RW8U,RW8V,RW8W,RW8Y,RW8Z,RW9I,RW9M,RW9P,RW9S,RW9T,RW9V,RW9W,RX0T,RX8H,RX8I,RX8O,"
-         "RX8P,RX8S,RX8T,RX8U,RX8V,RX8W,RX8Y,RX8Z,RX9I,RX9M,RX9P,RX9S,RX9T,RX9V,RX9W,RY0T,RY8H,RY8I,RY8O,RY8P,RY8S,RY8T,RY8U,RY8V,RY8W,RY8Y,"
-         "RY8Z,RY9I,RY9M,RY9P,RY9S,RY9T,RY9V,RY9W,RZ0T,RZ8H,RZ8I,RZ8O,RZ8P,RZ8S,RZ8T,RZ8U,RZ8V,RZ8W,RZ8Y,RZ8Z,RZ9I,RZ9M,RZ9P,RZ9S,RZ9T,RZ9V,"
-         "RZ9W,U0T,U8H,U8I,U8O,U8P,U8S,U8T,U8U,U8V,U8W,U8Y,U8Z,U9I,U9M,U9P,U9S,U9T,U9V,U9W,UA0T,UA8H,UA8I,UA8O,UA8P,UA8S,UA8T,UA8U,UA8V,UA8W,"
-         "UA8Y,UA8Z,UA9I,UA9M,UA9P,UA9S,UA9T,UA9V,UA9W,UB0T,UB8H,UB8I,UB8O,UB8P,UB8S,UB8T,UB8U,UB8V,UB8W,UB8Y,UB8Z,UB9I,UB9M,UB9P,UB9S,UB9T,"
-         "UB9V,UB9W,UC0T,UC8H,UC8I,UC8O,UC8P,UC8S,UC8T,UC8U,UC8V,UC8W,UC8Y,UC8Z,UC9I,UC9M,UC9P,UC9S,UC9T,UC9V,UC9W,UD0T,UD8H,UD8I,UD8O,UD8P,"
-         "UD8S,UD8T,UD8U,UD8V,UD8W,UD8Y,UD8Z,UD9I,UD9M,UD9P,UD9S,UD9T,UD9V,UD9W,UE0T,UE8H,UE8I,UE8O,UE8P,UE8S,UE8T,UE8U,UE8V,UE8W,UE8Y,UE8Z,"
-         "UE9I,UE9M,UE9P,UE9S,UE9T,UE9V,UE9W,UF0T,UF8H,UF8I,UF8O,UF8P,UF8S,UF8T,UF8U,UF8V,UF8W,UF8Y,UF8Z,UF9I,UF9M,UF9P,UF9S,UF9T,UF9V,UF9W,"
-         "UG0T,UG8H,UG8I,UG8O,UG8P,UG8S,UG8T,UG8U,UG8V,UG8W,UG8Y,UG8Z,UG9I,UG9M,UG9P,UG9S,UG9T,UG9V,UG9W,UH0T,UH8H,UH8I,UH8O,UH8P,UH8S,UH8T,"
-         "UH8U,UH8V,UH8W,UH8Y,UH8Z,UH9I,UH9M,UH9P,UH9S,UH9T,UH9V,UH9W,UI0T,UI8H,UI8I,UI8O,UI8P,UI8S,UI8T,UI8U,UI8V,UI8W,UI8Y,UI8Z,UI9I,UI9M,"
-         "UI9P,UI9S,UI9T,UI9V,UI9W,R2ET/9,R30SIB,R63RRC,R9HQ,RN9S,RO9S,RT9S,RT9W,RX3Q/8,RZ5D/9,UA3A/P,UB5O/4"},
+     .prefixes = "R0,R8,R9,RA0,RA8,RA9,RC0,RC8,RC9,RD0,RD8,RD9,RE0,RE8,RE9,RF0,RF8,RF9,RG0,RG8,RG9,RI0,RI8,RI9,RJ0,RJ8,RJ9,RK0,RK8,RK9,RL0,RL8,RL9,RM0,"
+                 "RM8,RM9,RN0,RN8,RN9,RO0,RO8,RO9,RQ0,RQ8,RQ9,RT0,RT8,RT9,RU0,RU8,RU9,RV0,RV8,RV9,RW0,RW8,RW9,RX0,RX8,RX9,RY0,RY8,RY9,RZ0,RZ8,RZ9,U0,U8,"
+                 "U9,UA0,UA8,UA9,UB0,UB8,UB9,UC0,UC8,UC9,UD0,UD8,UD9,UE0,UE8,UE9,UF0,UF8,UF9,UG0,UG8,UG9,UH0,UH8,UH9,UI0,UI8,UI9,R0T,R8H,R8I,R8O,R8P,"
+                 "R8S,R8T,R8U,R8V,R8W,R8Y,R8Z,R9I,R9M,R9P,R9S,R9T,R9V,R9W,RA0T,RA8H,RA8I,RA8O,RA8P,RA8S,RA8T,RA8U,RA8V,RA8W,RA8Y,RA8Z,RA9I,RA9M,RA9P,"
+                 "RA9S,RA9T,RA9V,RA9W,RC0T,RC8H,RC8I,RC8O,RC8P,RC8S,RC8T,RC8U,RC8V,RC8W,RC8Y,RC8Z,RC9I,RC9M,RC9P,RC9S,RC9T,RC9V,RC9W,RD0T,RD8H,RD8I,"
+                 "RD8O,RD8P,RD8S,RD8T,RD8U,RD8V,RD8W,RD8Y,RD8Z,RD9I,RD9M,RD9P,RD9S,RD9T,RD9V,RD9W,RE0T,RE8H,RE8I,RE8O,RE8P,RE8S,RE8T,RE8U,RE8V,RE8W,"
+                 "RE8Y,RE8Z,RE9I,RE9M,RE9P,RE9S,RE9T,RE9V,RE9W,RF0T,RF8H,RF8I,RF8O,RF8P,RF8S,RF8T,RF8U,RF8V,RF8W,RF8Y,RF8Z,RF9I,RF9M,RF9P,RF9S,RF9T,"
+                 "RF9V,RF9W,RG0T,RG8H,RG8I,RG8O,RG8P,RG8S,RG8T,RG8U,RG8V,RG8W,RG8Y,RG8Z,RG9I,RG9M,RG9P,RG9S,RG9T,RG9V,RG9W,RJ0T,RJ8H,RJ8I,RJ8O,RJ8P,"
+                 "RJ8S,RJ8T,RJ8U,RJ8V,RJ8W,RJ8Y,RJ8Z,RJ9I,RJ9M,RJ9P,RJ9S,RJ9T,RJ9V,RJ9W,RK0T,RK8H,RK8I,RK8O,RK8P,RK8S,RK8T,RK8U,RK8V,RK8W,RK8Y,RK8Z,"
+                 "RK9I,RK9M,RK9P,RK9S,RK9T,RK9V,RK9W,RL0T,RL8H,RL8I,RL8O,RL8P,RL8S,RL8T,RL8U,RL8V,RL8W,RL8Y,RL8Z,RL9I,RL9M,RL9P,RL9S,RL9T,RL9V,RL9W,"
+                 "RM0T,RM8H,RM8I,RM8O,RM8P,RM8S,RM8T,RM8U,RM8V,RM8W,RM8Y,RM8Z,RM9I,RM9M,RM9P,RM9S,RM9T,RM9V,RM9W,RN0T,RN8H,RN8I,RN8O,RN8P,RN8S,RN8T,"
+                 "RN8U,RN8V,RN8W,RN8Y,RN8Z,RN9I,RN9M,RN9P,RN9S,RN9T,RN9V,RN9W,RO0T,RO8H,RO8I,RO8O,RO8P,RO8S,RO8T,RO8U,RO8V,RO8W,RO8Y,RO8Z,RO9I,RO9M,"
+                 "RO9P,RO9S,RO9T,RO9V,RO9W,RQ0T,RQ8H,RQ8I,RQ8O,RQ8P,RQ8S,RQ8T,RQ8U,RQ8V,RQ8W,RQ8Y,RQ8Z,RQ9I,RQ9M,RQ9P,RQ9S,RQ9T,RQ9V,RQ9W,RT0T,RT8H,"
+                 "RT8I,RT8O,RT8P,RT8S,RT8T,RT8U,RT8V,RT8W,RT8Y,RT8Z,RT9I,RT9M,RT9P,RT9S,RT9T,RT9V,RT9W,RU0T,RU8H,RU8I,RU8O,RU8P,RU8S,RU8T,RU8U,RU8V,"
+                 "RU8W,RU8Y,RU8Z,RU9I,RU9M,RU9P,RU9S,RU9T,RU9V,RU9W,RV0T,RV8H,RV8I,RV8O,RV8P,RV8S,RV8T,RV8U,RV8V,RV8W,RV8Y,RV8Z,RV9I,RV9M,RV9P,RV9S,"
+                 "RV9T,RV9V,RV9W,RW0T,RW8H,RW8I,RW8O,RW8P,RW8S,RW8T,RW8U,RW8V,RW8W,RW8Y,RW8Z,RW9I,RW9M,RW9P,RW9S,RW9T,RW9V,RW9W,RX0T,RX8H,RX8I,RX8O,"
+                 "RX8P,RX8S,RX8T,RX8U,RX8V,RX8W,RX8Y,RX8Z,RX9I,RX9M,RX9P,RX9S,RX9T,RX9V,RX9W,RY0T,RY8H,RY8I,RY8O,RY8P,RY8S,RY8T,RY8U,RY8V,RY8W,RY8Y,"
+                 "RY8Z,RY9I,RY9M,RY9P,RY9S,RY9T,RY9V,RY9W,RZ0T,RZ8H,RZ8I,RZ8O,RZ8P,RZ8S,RZ8T,RZ8U,RZ8V,RZ8W,RZ8Y,RZ8Z,RZ9I,RZ9M,RZ9P,RZ9S,RZ9T,RZ9V,"
+                 "RZ9W,U0T,U8H,U8I,U8O,U8P,U8S,U8T,U8U,U8V,U8W,U8Y,U8Z,U9I,U9M,U9P,U9S,U9T,U9V,U9W,UA0T,UA8H,UA8I,UA8O,UA8P,UA8S,UA8T,UA8U,UA8V,UA8W,"
+                 "UA8Y,UA8Z,UA9I,UA9M,UA9P,UA9S,UA9T,UA9V,UA9W,UB0T,UB8H,UB8I,UB8O,UB8P,UB8S,UB8T,UB8U,UB8V,UB8W,UB8Y,UB8Z,UB9I,UB9M,UB9P,UB9S,UB9T,"
+                 "UB9V,UB9W,UC0T,UC8H,UC8I,UC8O,UC8P,UC8S,UC8T,UC8U,UC8V,UC8W,UC8Y,UC8Z,UC9I,UC9M,UC9P,UC9S,UC9T,UC9V,UC9W,UD0T,UD8H,UD8I,UD8O,UD8P,"
+                 "UD8S,UD8T,UD8U,UD8V,UD8W,UD8Y,UD8Z,UD9I,UD9M,UD9P,UD9S,UD9T,UD9V,UD9W,UE0T,UE8H,UE8I,UE8O,UE8P,UE8S,UE8T,UE8U,UE8V,UE8W,UE8Y,UE8Z,"
+                 "UE9I,UE9M,UE9P,UE9S,UE9T,UE9V,UE9W,UF0T,UF8H,UF8I,UF8O,UF8P,UF8S,UF8T,UF8U,UF8V,UF8W,UF8Y,UF8Z,UF9I,UF9M,UF9P,UF9S,UF9T,UF9V,UF9W,"
+                 "UG0T,UG8H,UG8I,UG8O,UG8P,UG8S,UG8T,UG8U,UG8V,UG8W,UG8Y,UG8Z,UG9I,UG9M,UG9P,UG9S,UG9T,UG9V,UG9W,UH0T,UH8H,UH8I,UH8O,UH8P,UH8S,UH8T,"
+                 "UH8U,UH8V,UH8W,UH8Y,UH8Z,UH9I,UH9M,UH9P,UH9S,UH9T,UH9V,UH9W,UI0T,UI8H,UI8I,UI8O,UI8P,UI8S,UI8T,UI8U,UI8V,UI8W,UI8Y,UI8Z,UI9I,UI9M,"
+                 "UI9P,UI9S,UI9T,UI9V,UI9W,R2ET/9,R30SIB,R63RRC,R9HQ,RN9S,RO9S,RT9S,RT9W,RX3Q/8,RZ5D/9,UA3A/P,UB5O/4"},
     {.continent = "AS", .country = "Uzbekistan", .cq_zone = 17, .itu_zone = 30, .lat = 41.40, .lon = 63.97, .prefixes = "UJ,UK,UL,UM"},
     {.continent = "AS",
      .country = "Kazakhstan",
@@ -827,13 +574,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
                  "UP5G,UP5J,UP5Q,UP6F,UP6G,UP6J,UP6Q,UP7F,UP7G,UP7J,UP7Q,UP8F,UP8G,UP8J,UP8Q,UP9F,UP9G,UP9J,UP9Q,UQ0F,UQ0G,UQ0J,UQ0Q,UQ1F,UQ1G,"
                  "UQ1J,UQ1Q,UQ2F,UQ2G,UQ2J,UQ2Q,UQ3F,UQ3G,UQ3J,UQ3Q,UQ4F,UQ4G,UQ4J,UQ4Q,UQ5F,UQ5G,UQ5J,UQ5Q,UQ6F,UQ6G,UQ6J,UQ6Q,UQ7F,UQ7G,UQ7J,"
                  "UQ7Q,UQ8F,UQ8G,UQ8J,UQ8Q,UQ9F,UQ9G,UQ9J,UQ9Q"},
-    {.continent = "EU",
-     .country = "Ukraine",
-     .cq_zone = 16,
-     .itu_zone = 29,
-     .lat = 50.00,
-     .lon = 30,
-     .prefixes = "EM,EN,EO,U5,UR,US,UT,UU,UV,UW,UX,UY,UZ"},
+    {.continent = "EU", .country = "Ukraine", .cq_zone = 16, .itu_zone = 29, .lat = 50.00, .lon = 30, .prefixes = "EM,EN,EO,U5,UR,US,UT,UU,UV,UW,UX,UY,UZ"},
     {.continent = "NA", .country = "Antigua & Barbuda", .cq_zone = 8, .itu_zone = 11, .lat = 17.07, .lon = -61.8, .prefixes = "V2"},
     {.continent = "NA", .country = "Belize", .cq_zone = 7, .itu_zone = 11, .lat = 16.97, .lon = -88.67, .prefixes = "V3"},
     {.continent = "NA", .country = "St. Kitts & Nevis", .cq_zone = 8, .itu_zone = 11, .lat = 17.37, .lon = -62.78, .prefixes = "V4"},
@@ -850,13 +591,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .prefixes = "CF,CG,CJ,CK,VA,VB,VC,VE,VG,VX,VY9,XL,XM,CF2,CG2,CH1,CH2,CI0,CI1,CI2,CJ2,CK2,CY1,CY2,CZ0,CZ1,CZ2,VA2,VB2,VC2,VD1,VD2,VE2,VF0,"
                  "VF1,VF2,VG2,VO1,VO2,VX2,VY0,VY1,VY2,XJ1,XJ2,XK0,XK1,XK2,XL2,XM2,XN1,XN2,XO0,XO1,XO2,VA2VVV,VE2CSI,VE2EKA,VE2FK,VE2IDX,VE2IM,"
                  "VE2KK,VE2NN,VE2TWO,VE8AT,VY0AA,VY0PW"},
-    {.continent = "OC",
-     .country = "Australia",
-     .cq_zone = 30,
-     .itu_zone = 59,
-     .lat = -23.70,
-     .lon = 132.33,
-     .prefixes = "AX,VH,VI,VJ,VK,VL,VM,VN,VZ,AX4,VH4,VI4,VJ4,VK4,VL4,VM4,VN4,VZ4"},
+    {.continent = "OC", .country = "Australia", .cq_zone = 30, .itu_zone = 59, .lat = -23.70, .lon = 132.33, .prefixes = "AX,VH,VI,VJ,VK,VL,VM,VN,VZ,AX4,VH4,VI4,VJ4,VK4,VL4,VM4,VN4,VZ4"},
     {.continent = "AF", .country = "Heard Island", .cq_zone = 39, .itu_zone = 68, .lat = -53.08, .lon = 73.5, .prefixes = "VK0EK"},
     {.continent = "OC", .country = "Macquarie Island", .cq_zone = 30, .itu_zone = 60, .lat = -54.60, .lon = 158.88, .prefixes = "VK0AI"},
     {.continent = "OC",
@@ -873,20 +608,8 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .lat = -31.55,
      .lon = 159.08,
      .prefixes = "AX9L,VH9L,VI9L,VJ9L,VK9FL,VK9L,VK9ZL,VL9L,VM9L,VN9L,VZ9L,VK9APX"},
-    {.continent = "OC",
-     .country = "Mellish Reef",
-     .cq_zone = 30,
-     .itu_zone = 56,
-     .lat = -17.40,
-     .lon = 155.85,
-     .prefixes = "AX9M,VH9M,VI9M,VJ9M,VK9M,VL9M,VM9M,VN9M,VZ9M"},
-    {.continent = "OC",
-     .country = "Norfolk Island",
-     .cq_zone = 32,
-     .itu_zone = 60,
-     .lat = -29.03,
-     .lon = 167.93,
-     .prefixes = "AX9,VH9,VI9,VJ9,VK9,VL9,VM9,VN9,VZ9"},
+    {.continent = "OC", .country = "Mellish Reef", .cq_zone = 30, .itu_zone = 56, .lat = -17.40, .lon = 155.85, .prefixes = "AX9M,VH9M,VI9M,VJ9M,VK9M,VL9M,VM9M,VN9M,VZ9M"},
+    {.continent = "OC", .country = "Norfolk Island", .cq_zone = 32, .itu_zone = 60, .lat = -29.03, .lon = 167.93, .prefixes = "AX9,VH9,VI9,VJ9,VK9,VL9,VM9,VN9,VZ9"},
     {.continent = "OC",
      .country = "Willis Island",
      .cq_zone = 30,
@@ -894,13 +617,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
      .lat = -16.22,
      .lon = 150.02,
      .prefixes = "AX9W,AX9Z,VH9W,VH9Z,VI9W,VI9Z,VJ9W,VJ9Z,VK9FW,VK9W,VK9Z,VL9W,VL9Z,VM9W,VM9Z,VN9W,VN9Z,VZ9W,VZ9Z"},
-    {.continent = "OC",
-     .country = "Christmas Island",
-     .cq_zone = 29,
-     .itu_zone = 54,
-     .lat = -10.48,
-     .lon = 105.63,
-     .prefixes = "AX9X,VH9X,VI9X,VJ9X,VK9FX,VK9KX,VK9X,VL9X,VM9X,VN9X,VZ9X"},
+    {.continent = "OC", .country = "Christmas Island", .cq_zone = 29, .itu_zone = 54, .lat = -10.48, .lon = 105.63, .prefixes = "AX9X,VH9X,VI9X,VJ9X,VK9FX,VK9KX,VK9X,VL9X,VM9X,VN9X,VZ9X"},
     {.continent = "NA", .country = "Anguilla", .cq_zone = 8, .itu_zone = 11, .lat = 18.23, .lon = -63, .prefixes = "VP2E"},
     {.continent = "NA", .country = "Montserrat", .cq_zone = 8, .itu_zone = 11, .lat = 16.75, .lon = -62.18, .prefixes = "VP2M"},
     {.continent = "NA", .country = "British Virgin Islands", .cq_zone = 8, .itu_zone = 11, .lat = 18.33, .lon = -64.75, .prefixes = "VP2V"},
@@ -909,34 +626,16 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "OC", .country = "Ducie Island", .cq_zone = 32, .itu_zone = 63, .lat = -24.70, .lon = -124.8, .prefixes = "VP6D"},
     {.continent = "SA", .country = "Falkland Islands", .cq_zone = 13, .itu_zone = 16, .lat = -51.63, .lon = -58.72, .prefixes = "VP8"},
     {.continent = "SA", .country = "South Georgia Island", .cq_zone = 13, .itu_zone = 73, .lat = -54.48, .lon = -37.08, .prefixes = "VP8CA"},
-    {.continent = "SA",
-     .country = "South Shetland Islands",
-     .cq_zone = 13,
-     .itu_zone = 73,
-     .lat = -62.08,
-     .lon = -58.67,
-     .prefixes = "CE9,XR9,HF0POL,RI1ANF"},
+    {.continent = "SA", .country = "South Shetland Islands", .cq_zone = 13, .itu_zone = 73, .lat = -62.08, .lon = -58.67, .prefixes = "CE9,XR9,HF0POL,RI1ANF"},
     {.continent = "SA", .country = "South Orkney Islands", .cq_zone = 13, .itu_zone = 73, .lat = -60.60, .lon = -45.55, .prefixes = "LU4ZD"},
     {.continent = "SA", .country = "South Sandwich Islands", .cq_zone = 13, .itu_zone = 73, .lat = -58.43, .lon = -26.33, .prefixes = "VP8DXU"},
     {.continent = "NA", .country = "Bermuda", .cq_zone = 5, .itu_zone = 11, .lat = 32.32, .lon = -64.73, .prefixes = "VP9"},
     {.continent = "AF", .country = "Chagos Islands", .cq_zone = 39, .itu_zone = 41, .lat = -7.32, .lon = 72.42, .prefixes = "VQ9"},
     {.continent = "AS", .country = "Hong Kong", .cq_zone = 24, .itu_zone = 44, .lat = 22.28, .lon = 114.18, .prefixes = "VR"},
-    {.continent = "AS",
-     .country = "India",
-     .cq_zone = 22,
-     .itu_zone = 41,
-     .lat = 22.50,
-     .lon = 77.58,
-     .prefixes = "8T,8U,8V,8W,8X,8Y,AT,AU,AV,AW,VT,VU,VV,VW"},
+    {.continent = "AS", .country = "India", .cq_zone = 22, .itu_zone = 41, .lat = 22.50, .lon = 77.58, .prefixes = "8T,8U,8V,8W,8X,8Y,AT,AU,AV,AW,VT,VU,VV,VW"},
     {.continent = "AS", .country = "Andaman & Nicobar Is.", .cq_zone = 26, .itu_zone = 49, .lat = 12.37, .lon = 92.78, .prefixes = "VU4"},
     {.continent = "AS", .country = "Lakshadweep Islands", .cq_zone = 22, .itu_zone = 41, .lat = 11.23, .lon = 72.78, .prefixes = "VU7"},
-    {.continent = "NA",
-     .country = "Mexico",
-     .cq_zone = 6,
-     .itu_zone = 10,
-     .lat = 21.32,
-     .lon = -100.23,
-     .prefixes = "4A,4B,4C,6D,6E,6F,6G,6H,6I,6J,XA,XB,XC,XD,XE,XF,XG,XH,XI"},
+    {.continent = "NA", .country = "Mexico", .cq_zone = 6, .itu_zone = 10, .lat = 21.32, .lon = -100.23, .prefixes = "4A,4B,4C,6D,6E,6F,6G,6H,6I,6J,XA,XB,XC,XD,XE,XF,XG,XH,XI"},
     {.continent = "NA",
      .country = "Revillagigedo",
      .cq_zone = 6,
@@ -986,38 +685,14 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_GLOBAL_DB[CALLSIGN_DB_GLOBAL_COUNT
     {.continent = "OC", .country = "Kermadec Islands", .cq_zone = 32, .itu_zone = 60, .lat = -29.25, .lon = -177.92, .prefixes = "ZL8,ZM8"},
     {.continent = "OC", .country = "N.Z. Subantarctic Is.", .cq_zone = 32, .itu_zone = 60, .lat = -51.62, .lon = 167.62, .prefixes = "ZL9"},
     {.continent = "SA", .country = "Paraguay", .cq_zone = 11, .itu_zone = 14, .lat = -25.27, .lon = -57.67, .prefixes = "ZP"},
-    {.continent = "AF",
-     .country = "South Africa",
-     .cq_zone = 38,
-     .itu_zone = 57,
-     .lat = -29.07,
-     .lon = 22.63,
-     .prefixes = "H5,S4,S8,V9,ZR,ZS,ZT,ZU"},
-    {.continent = "AF",
-     .country = "Pr. Edward & Marion Is.",
-     .cq_zone = 38,
-     .itu_zone = 57,
-     .lat = -46.88,
-     .lon = 37.72,
-     .prefixes = "ZR8,ZS8,ZT8,ZU8"},
+    {.continent = "AF", .country = "South Africa", .cq_zone = 38, .itu_zone = 57, .lat = -29.07, .lon = 22.63, .prefixes = "H5,S4,S8,V9,ZR,ZS,ZT,ZU"},
+    {.continent = "AF", .country = "Pr. Edward & Marion Is.", .cq_zone = 38, .itu_zone = 57, .lat = -46.88, .lon = 37.72, .prefixes = "ZR8,ZS8,ZT8,ZU8"},
 };
 
 // Russian cty_rus.dat
 static const CALLSIGN_INFO_LINE CALLSIGN_INFO_RUSSIAN_DB[CALLSIGN_DB_RUS_COUNT] = {
-    {.continent = "AN",
-     .country = "Russia - Mirny Station",
-     .cq_zone = 29,
-     .itu_zone = 69,
-     .lat = -66.55,
-     .lon = 93,
-     .prefixes = "RI1AN,RI1ANT"},
-    {.continent = "AN",
-     .country = "Russia - Progress Station",
-     .cq_zone = 39,
-     .itu_zone = 69,
-     .lat = -69.37,
-     .lon = 76.38,
-     .prefixes = "RI1ANZ"},
+    {.continent = "AN", .country = "Russia - Mirny Station", .cq_zone = 29, .itu_zone = 69, .lat = -66.55, .lon = 93, .prefixes = "RI1AN,RI1ANT"},
+    {.continent = "AN", .country = "Russia - Progress Station", .cq_zone = 39, .itu_zone = 69, .lat = -69.37, .lon = 76.38, .prefixes = "RI1ANZ"},
     {.continent = "AN", .country = "Russia - Vostok Station", .cq_zone = 29, .itu_zone = 70, .lat = -78.47, .lon = 106.8, .prefixes = "RI1ANC"},
     {.continent = "EU", .country = "Russia - Franz Josef Land", .cq_zone = 40, .itu_zone = 75, .lat = 80.68, .lon = 49.92, .prefixes = "RI1F"},
     {.continent = "EU",
@@ -1474,14 +1149,13 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_RUSSIAN_DB[CALLSIGN_DB_RUS_COUNT] 
      .itu_zone = 29,
      .lat = 47.87,
      .lon = 41.18,
-     .prefixes =
-         "R6L,R6M,R6N,R7L,R7M,R7N,RA6L,RA6M,RA6N,RA7L,RA7M,RA7N,RC6L,RC6M,RC6N,RC7L,RC7M,RC7N,RD6L,RD6M,RD6N,RD7L,RD7M,RD7N,RE6L,RE6M,RE6N,RE7L,"
-         "RE7M,RE7N,RF6L,RF6M,RF6N,RF7L,RF7M,RF7N,RG6L,RG6M,RG6N,RG7L,RG7M,RG7N,RJ6L,RJ6M,RJ6N,RJ7L,RJ7M,RJ7N,RK6L,RK6M,RK6N,RK7L,RK7M,RK7N,"
-         "RL6L,RL6M,RL6N,RL7L,RL7M,RL7N,RM6L,RM6M,RM6N,RM7L,RM7M,RM7N,RN6L,RN6M,RN6N,RN7L,RN7M,RN7N,RO6L,RO6M,RO6N,RO7L,RO7M,RO7N,RQ6L,RQ6M,"
-         "RQ6N,RQ7L,RQ7M,RQ7N,RT6L,RT6M,RT6N,RT7L,RT7M,RT7N,RU6L,RU6M,RU6N,RU7L,RU7M,RU7N,RV6L,RV6M,RV6N,RV7L,RV7M,RV7N,RW6L,RW6M,RW6N,RW7L,"
-         "RW7M,RW7N,RX6L,RX6M,RX6N,RX7L,RX7M,RX7N,RY6L,RY6M,RY6N,RY7L,RY7M,RY7N,RZ6L,RZ6M,RZ6N,RZ7L,RZ7M,RZ7N,U6L,U6M,U6N,U7L,U7M,U7N,UA6L,UA6M,"
-         "UA6N,UA7L,UA7M,UA7N,UB6L,UB6M,UB6N,UB7L,UB7M,UB7N,UC6L,UC6M,UC6N,UC7L,UC7M,UC7N,UD6L,UD6M,UD6N,UD7L,UD7M,UD7N,UE6L,UE6M,UE6N,UE7L,"
-         "UE7M,UE7N,UF6L,UF6M,UF6N,UF7L,UF7M,UF7N,UG6L,UG6M,UG6N,UG7L,UG7M,UG7N,UH6L,UH6M,UH6N,UH7L,UH7M,UH7N,UI6L,UI6M,UI6N,UI7L,UI7M,UI7N"},
+     .prefixes = "R6L,R6M,R6N,R7L,R7M,R7N,RA6L,RA6M,RA6N,RA7L,RA7M,RA7N,RC6L,RC6M,RC6N,RC7L,RC7M,RC7N,RD6L,RD6M,RD6N,RD7L,RD7M,RD7N,RE6L,RE6M,RE6N,RE7L,"
+                 "RE7M,RE7N,RF6L,RF6M,RF6N,RF7L,RF7M,RF7N,RG6L,RG6M,RG6N,RG7L,RG7M,RG7N,RJ6L,RJ6M,RJ6N,RJ7L,RJ7M,RJ7N,RK6L,RK6M,RK6N,RK7L,RK7M,RK7N,"
+                 "RL6L,RL6M,RL6N,RL7L,RL7M,RL7N,RM6L,RM6M,RM6N,RM7L,RM7M,RM7N,RN6L,RN6M,RN6N,RN7L,RN7M,RN7N,RO6L,RO6M,RO6N,RO7L,RO7M,RO7N,RQ6L,RQ6M,"
+                 "RQ6N,RQ7L,RQ7M,RQ7N,RT6L,RT6M,RT6N,RT7L,RT7M,RT7N,RU6L,RU6M,RU6N,RU7L,RU7M,RU7N,RV6L,RV6M,RV6N,RV7L,RV7M,RV7N,RW6L,RW6M,RW6N,RW7L,"
+                 "RW7M,RW7N,RX6L,RX6M,RX6N,RX7L,RX7M,RX7N,RY6L,RY6M,RY6N,RY7L,RY7M,RY7N,RZ6L,RZ6M,RZ6N,RZ7L,RZ7M,RZ7N,U6L,U6M,U6N,U7L,U7M,U7N,UA6L,UA6M,"
+                 "UA6N,UA7L,UA7M,UA7N,UB6L,UB6M,UB6N,UB7L,UB7M,UB7N,UC6L,UC6M,UC6N,UC7L,UC7M,UC7N,UD6L,UD6M,UD6N,UD7L,UD7M,UD7N,UE6L,UE6M,UE6N,UE7L,"
+                 "UE7M,UE7N,UF6L,UF6M,UF6N,UF7L,UF7M,UF7N,UG6L,UG6M,UG6N,UG7L,UG7M,UG7N,UH6L,UH6M,UH6N,UH7L,UH7M,UH7N,UI6L,UI6M,UI6N,UI7L,UI7M,UI7N"},
     {.continent = "EU",
      .country = "Russia - Chechnya",
      .cq_zone = 16,
@@ -1583,9 +1257,8 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_RUSSIAN_DB[CALLSIGN_DB_RUS_COUNT] 
      .itu_zone = 29,
      .lat = 54.72,
      .lon = 20.52,
-     .prefixes =
-         "R2F,R2K,RA2,RC2F,RC2K,RD2F,RD2K,RE2F,RE2K,RF2F,RF2K,RG2F,RG2K,RJ2F,RJ2K,RK2F,RK2K,RL2F,RL2K,RM2F,RM2K,RN2F,RN2K,RO2F,RO2K,RQ2F,RQ2K,"
-         "RT2F,RT2K,RU2F,RU2K,RV2F,RV2K,RW2F,RW2K,RX2F,RX2K,RY2F,RY2K,RZ2F,RZ2K,U2F,U2K,UA2,UB2,UC2,UD2,UE2,UF2,UG2,UH2,UI2,R2MWO"},
+     .prefixes = "R2F,R2K,RA2,RC2F,RC2K,RD2F,RD2K,RE2F,RE2K,RF2F,RF2K,RG2F,RG2K,RJ2F,RJ2K,RK2F,RK2K,RL2F,RL2K,RM2F,RM2K,RN2F,RN2K,RO2F,RO2K,RQ2F,RQ2K,"
+                 "RT2F,RT2K,RU2F,RU2K,RV2F,RV2K,RW2F,RW2K,RX2F,RX2K,RY2F,RY2K,RZ2F,RZ2K,U2F,U2K,UA2,UB2,UC2,UD2,UE2,UF2,UG2,UH2,UI2,R2MWO"},
     {.continent = "AS",
      .country = "Russia - Chelyabinskaya",
      .cq_zone = 17,
@@ -1603,14 +1276,13 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_RUSSIAN_DB[CALLSIGN_DB_RUS_COUNT] 
      .itu_zone = 30,
      .lat = 58.70,
      .lon = 61.33,
-     .prefixes =
-         "R8C,R8D,R8E,R9C,R9D,R9E,RA8C,RA8D,RA8E,RA9C,RA9D,RA9E,RC8C,RC8D,RC8E,RC9C,RC9D,RC9E,RD8C,RD8D,RD8E,RD9C,RD9D,RD9E,RE8C,RE8D,RE8E,RE9C,"
-         "RE9D,RE9E,RF8C,RF8D,RF8E,RF9C,RF9D,RF9E,RG8C,RG8D,RG8E,RG9C,RG9D,RG9E,RJ8C,RJ8D,RJ8E,RJ9C,RJ9D,RJ9E,RK8C,RK8D,RK8E,RK9C,RK9D,RK9E,"
-         "RL8C,RL8D,RL8E,RL9C,RL9D,RL9E,RM8C,RM8D,RM8E,RM9C,RM9D,RM9E,RN8C,RN8D,RN8E,RN9C,RN9D,RN9E,RO8C,RO8D,RO8E,RO9C,RO9D,RO9E,RQ8C,RQ8D,"
-         "RQ8E,RQ9C,RQ9D,RQ9E,RT8C,RT8D,RT8E,RT9C,RT9D,RT9E,RU8C,RU8D,RU8E,RU9C,RU9D,RU9E,RV8C,RV8D,RV8E,RV9C,RV9D,RV9E,RW8C,RW8D,RW8E,RW9C,"
-         "RW9D,RW9E,RX8C,RX8D,RX8E,RX9C,RX9D,RX9E,RY8C,RY8D,RY8E,RY9C,RY9D,RY9E,RZ8C,RZ8D,RZ8E,RZ9C,RZ9D,RZ9E,U8C,U8D,U8E,U9C,U9D,U9E,UA8C,UA8D,"
-         "UA8E,UA9C,UA9D,UA9E,UB8C,UB8D,UB8E,UB9C,UB9D,UB9E,UC8C,UC8D,UC8E,UC9C,UC9D,UC9E,UD8C,UD8D,UD8E,UD9C,UD9D,UD9E,UE8C,UE8D,UE8E,UE9C,"
-         "UE9D,UE9E,UF8C,UF8D,UF8E,UF9C,UF9D,UF9E,UG8C,UG8D,UG8E,UG9C,UG9D,UG9E,UH8C,UH8D,UH8E,UH9C,UH9D,UH9E,UI8C,UI8D,UI8E,UI9C,UI9D,UI9E"},
+     .prefixes = "R8C,R8D,R8E,R9C,R9D,R9E,RA8C,RA8D,RA8E,RA9C,RA9D,RA9E,RC8C,RC8D,RC8E,RC9C,RC9D,RC9E,RD8C,RD8D,RD8E,RD9C,RD9D,RD9E,RE8C,RE8D,RE8E,RE9C,"
+                 "RE9D,RE9E,RF8C,RF8D,RF8E,RF9C,RF9D,RF9E,RG8C,RG8D,RG8E,RG9C,RG9D,RG9E,RJ8C,RJ8D,RJ8E,RJ9C,RJ9D,RJ9E,RK8C,RK8D,RK8E,RK9C,RK9D,RK9E,"
+                 "RL8C,RL8D,RL8E,RL9C,RL9D,RL9E,RM8C,RM8D,RM8E,RM9C,RM9D,RM9E,RN8C,RN8D,RN8E,RN9C,RN9D,RN9E,RO8C,RO8D,RO8E,RO9C,RO9D,RO9E,RQ8C,RQ8D,"
+                 "RQ8E,RQ9C,RQ9D,RQ9E,RT8C,RT8D,RT8E,RT9C,RT9D,RT9E,RU8C,RU8D,RU8E,RU9C,RU9D,RU9E,RV8C,RV8D,RV8E,RV9C,RV9D,RV9E,RW8C,RW8D,RW8E,RW9C,"
+                 "RW9D,RW9E,RX8C,RX8D,RX8E,RX9C,RX9D,RX9E,RY8C,RY8D,RY8E,RY9C,RY9D,RY9E,RZ8C,RZ8D,RZ8E,RZ9C,RZ9D,RZ9E,U8C,U8D,U8E,U9C,U9D,U9E,UA8C,UA8D,"
+                 "UA8E,UA9C,UA9D,UA9E,UB8C,UB8D,UB8E,UB9C,UB9D,UB9E,UC8C,UC8D,UC8E,UC9C,UC9D,UC9E,UD8C,UD8D,UD8E,UD9C,UD9D,UD9E,UE8C,UE8D,UE8E,UE9C,"
+                 "UE9D,UE9E,UF8C,UF8D,UF8E,UF9C,UF9D,UF9E,UG8C,UG8D,UG8E,UG9C,UG9D,UG9E,UH8C,UH8D,UH8E,UH9C,UH9D,UH9E,UI8C,UI8D,UI8E,UI9C,UI9D,UI9E"},
     {.continent = "AS",
      .country = "Russia - Tomskaya",
      .cq_zone = 18,

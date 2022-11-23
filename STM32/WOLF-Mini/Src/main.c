@@ -175,8 +175,8 @@ int main(void) {
 	uint8_t tryes = 0;
 	// while (tryes < 3 && (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) || (RCC->CR & RCC_CR_HSERDY) == 0 || (RCC->CR & RCC_CR_PLL1RDY) == 0 || (RCC->CR &
 	// RCC_CR_PLL2RDY) == 0 || (RCC->CR & RCC_CR_PLL3RDY) == 0 || (RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1))
-	while (tryes < 3 && (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) || (RCC->CR & RCC_CR_HSERDY) == 0 || (RCC->BDCR & RCC_BDCR_LSERDY) == 0 ||
-	                     (RCC->CR & RCC_CR_PLL1RDY) == 0 || (RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1)) {
+	while (tryes < 3 && (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) || (RCC->CR & RCC_CR_HSERDY) == 0 || (RCC->BDCR & RCC_BDCR_LSERDY) == 0 || (RCC->CR & RCC_CR_PLL1RDY) == 0 ||
+	                     (RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL1)) {
 		SystemClock_Config();
 		tryes++;
 	}
@@ -276,8 +276,7 @@ int main(void) {
 	LCD_Init();
 	if (SHOW_LOGO) {
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
-		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo160.width) / 2), ((LCD_HEIGHT - IMAGES_logo160.height) / 2), &IMAGES_logo160,
-		                                   BG_COLOR, BG_COLOR);
+		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo160.width) / 2), ((LCD_HEIGHT - IMAGES_logo160.height) / 2), &IMAGES_logo160, BG_COLOR, BG_COLOR);
 		strcpy(greetings_buff, "ver. ");
 		strcat(greetings_buff, version_string);
 		LCDDriver_printText(greetings_buff, 4, (LCD_HEIGHT - 10), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
@@ -323,8 +322,6 @@ int main(void) {
 	println("[OK] Audioprocessor & TIM5 init");
 	initAudioProcessor();
 	HAL_TIM_Base_Start_IT(&htim5);
-	if (SHOW_LOGO)
-		HAL_Delay(1000); // logo wait
 	LCD_busy = false;
 	LCD_redraw(true);
 	println("[OK] Misc timer TIM6 init");
@@ -418,8 +415,7 @@ void SystemClock_Config(void) {
 
 	/** Initializes the CPU, AHB and APB buses clocks
 	 */
-	RCC_ClkInitStruct.ClockType =
-	    RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
@@ -1476,10 +1472,7 @@ static void MX_GPIO_Init(void) {
 	HAL_GPIO_WritePin(GPIOC, FPGA_CLK_Pin | FPGA_SYNC_Pin, GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA,
-	                  FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin |
-	                      FPGA_BUS_D7_Pin,
-	                  GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin, GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(GPIOB, W25Q16_CS_Pin | SD_CS_Pin | RFUNIT_OE_Pin, GPIO_PIN_SET);
@@ -1529,8 +1522,7 @@ static void MX_GPIO_Init(void) {
 
 	/*Configure GPIO pins : FPGA_BUS_D0_Pin FPGA_BUS_D1_Pin FPGA_BUS_D2_Pin FPGA_BUS_D3_Pin
 	                         FPGA_BUS_D4_Pin FPGA_BUS_D5_Pin FPGA_BUS_D6_Pin FPGA_BUS_D7_Pin */
-	GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin |
-	                      FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
+	GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
