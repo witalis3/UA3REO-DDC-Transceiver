@@ -157,7 +157,6 @@ int main(void) {
 	MX_ADC3_Init();
 	MX_TIM1_Init();
 	MX_TIM2_Init();
-	MX_IWDG_Init();
 	/* USER CODE BEGIN 2 */
 
 	/* BUG FIX: Enabling Audio Clock Input in CubeMX does not set I2SSRC bit
@@ -198,6 +197,8 @@ int main(void) {
 		TRX.NeedGoToBootloader = false;
 		SaveSettings();
 		JumpToBootloader();
+	} else {
+		MX_IWDG_Init();
 	}
 
 	println("[OK] Calibration loading");
