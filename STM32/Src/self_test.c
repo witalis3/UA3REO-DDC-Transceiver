@@ -71,7 +71,7 @@ void SELF_TEST_Draw(void) {
 #define margin_left 5
 #define margin_bottom 10
 #define font_size 1
-#elseifdef LAY_320x240
+#elif defined(LAY_320x240)
 #define margin_left 5
 #define margin_bottom 20
 #define font_size 2

@@ -252,8 +252,6 @@ int main(void) {
 	initAudioProcessor();
 	HAL_TIM_Base_Start_IT(&htim5);
 
-	if (SHOW_LOGO)
-		HAL_Delay(1000); // logo wait
 	LCD_busy = false;
 	LCD_redraw(true);
 
