@@ -4932,39 +4932,19 @@ refer to the applicable agreement for further details.
 		(line (pt 272 80)(pt 256 80)(line_width 3))
 	)
 	(parameter
-		"VCXO_freq_mode_0"
-		"122880"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"TCXO_freq_mode_0"
-		"12288"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"VCXO_freq_mode_1"
-		"1228800"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"TCXO_freq_mode_1"
-		"122880"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"VCXO_freq_mode_2"
+		"VCXO_freq"
 		"12288000"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(parameter
-		"TCXO_freq_mode_2"
+		"TCXO_freq"
 		"1228800"
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(drawing
 		(rectangle (rect 16 16 256 128))
 	)
-	(annotation_block (parameter)(rect 2104 784 2352 920))
+	(annotation_block (parameter)(rect 2400 824 2600 888))
 )
 (connector
 	(pt 528 32)

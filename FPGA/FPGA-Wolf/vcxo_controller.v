@@ -11,12 +11,8 @@ PWM,
 PWM_mode
 );
 
-parameter VCXO_freq_mode_0 = 122880; //x1000hz
-parameter TCXO_freq_mode_0 = 12288; //x1000hz
-parameter VCXO_freq_mode_1 = 1228800; //x100hz
-parameter TCXO_freq_mode_1 = 122880; //x100hz
-parameter VCXO_freq_mode_2 = 12288000; //x10hz
-parameter TCXO_freq_mode_2 = 1228800; //x10hz
+parameter VCXO_freq = 12288000; //x10hz
+parameter TCXO_freq = 1228800; //x10hz
 
 input vcxo_clk_in;
 input tcxo_clk_in;
@@ -163,11 +159,7 @@ begin
 		end
 		else if(state == 1)
 		begin
-			if((PWM_mode == 0 && TCXO_counter >= TCXO_freq_mode_0) 
-				|| (PWM_mode == 1 && TCXO_counter >= TCXO_freq_mode_1)
-				|| (PWM_mode == 2 && TCXO_counter >= TCXO_freq_mode_2)
-				|| (PWM_mode == 3 && TCXO_counter >= TCXO_freq_mode_2)
-			)
+			if(TCXO_counter >= TCXO_freq)
 			begin
 				vcxo_cnt_need_state <= 0; //idle
 				state <= 2;
@@ -181,7 +173,7 @@ begin
 		begin
 			if(PWM_mode == 0)
 			begin
-				freq_error_now <= VCXO_counter_result - VCXO_freq_mode_0 + $signed(VCXO_correction);
+				freq_error_now <= VCXO_counter_result - VCXO_freq + $signed(VCXO_correction);
 				if ($signed(freq_error_now) == 0) 
 					PWM_locked_counter <= PWM_locked_counter + 1;
 				else
@@ -191,30 +183,7 @@ begin
 			end
 			else if(PWM_mode == 1)
 			begin
-				freq_error_now <= VCXO_counter_result - VCXO_freq_mode_1 + $signed(VCXO_correction);
-				if ($signed(freq_error_now) == 0) 
-					PWM_locked_counter <= PWM_locked_counter + 1;
-				else
-					PWM_locked_counter <= 0;
-					
-				state <= 3;
-			end
-			else if(PWM_mode == 2)
-			begin
-				freq_error_now <= VCXO_counter_result - VCXO_freq_mode_2 + $signed(VCXO_correction);
-				if ($signed(freq_error_now) == 0) 
-					PWM_locked_counter <= PWM_locked_counter + 1;
-				else
-					PWM_locked_counter <= 0;
-					
-				state <= 3;
-			end
-			else if(PWM_mode == 3)
-			begin
-				if (!tx)
-					freq_error_now <= VCXO_counter_result - VCXO_freq_mode_2 + $signed(VCXO_correction);
-				else
-					freq_error_now <= 0;
+				freq_error_now <= VCXO_counter_result - VCXO_freq + $signed(VCXO_correction);
 				
 				state <= 4;
 			end
@@ -232,19 +201,9 @@ begin
 				
 			freq_error <= freq_error_now;
 			
-			if (PWM_mode == 0 && PWM_locked_counter > 100)
+			if (PWM_mode == 0 && PWM_locked_counter > 10)
 			begin
 				PWM_mode <= 1;
-				PWM_locked_counter <= 0;
-			end
-			else if (PWM_mode == 1 && PWM_locked_counter > 10)
-			begin
-				PWM_mode <= 2;
-				PWM_locked_counter <= 0;
-			end
-			else if (PWM_mode == 2 && PWM_locked_counter > 10)
-			begin
-				PWM_mode <= 3;
 				PWM_locked_counter <= 0;
 			end
 			
