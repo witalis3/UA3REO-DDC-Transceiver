@@ -2,5 +2,5 @@
 module DEBUG2 (
 	probe);	
 
-	input	[0:0]	probe;
+	input	[2:0]	probe;
 endmodule
