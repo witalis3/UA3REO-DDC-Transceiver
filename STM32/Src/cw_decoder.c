@@ -74,6 +74,13 @@ void CWDecoder_Process(float32_t *bufferIn) {
 	dma_memset(CWDEC_FFTBuffer, 0x00, sizeof(CWDEC_FFTBuffer));
 	// copy the incoming data for the next work
 	dma_memcpy(CWDEC_InputBuffer, bufferIn, sizeof(CWDEC_InputBuffer));
+	// fill sin if on TX (from DC)
+	if (TRX_on_TX) {
+		static float32_t cw_decoder_signal_gen_index = 0;
+		for (uint_fast16_t i = 0; i < DECODER_PACKET_SIZE; i++) {
+			CWDEC_InputBuffer[i] *= generateSin(1.0f, &cw_decoder_signal_gen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
+		}
+	}
 	// Decimator
 	arm_fir_decimate_f32(&CWDEC_DECIMATE, CWDEC_InputBuffer, CWDEC_InputBuffer, DECODER_PACKET_SIZE);
 	// Fill the unnecessary part of the buffer with zeros
@@ -99,7 +106,7 @@ void CWDecoder_Process(float32_t *bufferIn) {
 	for (uint16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 		if (isinff(CWDEC_FFTBuffer[i]))
 			return;
-
+		
 	// Debug CWDecoder
 	/*for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE_HALF; i ++)
 	{
@@ -131,7 +138,7 @@ void CWDecoder_Process(float32_t *bufferIn) {
 	if (CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES && (maxValue > meanValue * (float32_t)TRX.CW_Decoder_Threshold)) // signal is active
 	{
 		// print("s");
-		// prinln(maxValue / meanValue);
+		// println(maxValue / meanValue);
 		realstate = true;
 	} else // signal is not active
 	{
