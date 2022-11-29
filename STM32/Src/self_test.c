@@ -173,8 +173,8 @@ void SELF_TEST_Draw(void) {
 		LCDDriver_printText("7 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[6]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("8 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[7]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		pos_y += margin_bottom;
-		LCDDriver_printText("9 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[8]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
-		LCDDriver_printText("10 ", margin_left, pos_y, (ok[9]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+		LCDDriver_printText("9 ", margin_left, pos_y, (ok[8]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+		LCDDriver_printText("10 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[9]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("11 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[10]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("12 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[11]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 #if !defined(FRONTPANEL_LITE)
