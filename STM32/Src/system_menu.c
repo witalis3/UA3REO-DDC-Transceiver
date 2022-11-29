@@ -995,7 +995,9 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
     {"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
+#if HRDW_HAS_WIFI
     {"WiFi settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_WIFI_RESET},
+#endif
 };
 
 const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] = {
