@@ -1213,16 +1213,16 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		wf_100d_shift_array[46] = !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 5 || bpf == 6 || bpf == 4));             // U31-B U5 BPF_2_EN net5?, 21.5-30(6), 14.5-21.5(5), 12-14.5(4)
 		wf_100d_shift_array[47] = !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 3 || bpf == 0 || bpf == 2)); // U31-A U7 BPF_3_EN 6-7.3(2), 7-12(3), 2.5-4(1), 1.6-2.5(0);
 
-		wf_100d_shift_array[48] = false;                                              // U32-H -
-		wf_100d_shift_array[49] = false;                                              // U32-G -
-		wf_100d_shift_array[50] = false;                                              // U32-F -
-		wf_100d_shift_array[51] = false;                                              // U32-E -
+		wf_100d_shift_array[48] = bitRead(band_out, 0);                                              // U32-H BAND_OUT_0
+		wf_100d_shift_array[49] = bitRead(band_out, 1);                                              // U32-G BAND_OUT_1
+		wf_100d_shift_array[50] = bitRead(band_out, 2);                                              // U32-F BAND_OUT_2
+		wf_100d_shift_array[51] = bitRead(band_out, 3);                                              // U32-E BAND_OUT_3
 		wf_100d_shift_array[52] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U32-D Net_RX/TX
-		wf_100d_shift_array[53] = !TRX_on_TX && TRX.LNA;                              // U32-C - LNA_ON
-		wf_100d_shift_array[54] = false;                                              // U32-B -
+		wf_100d_shift_array[53] = !TRX_on_TX && TRX.LNA;                              // U32-C LNA_ON
+		wf_100d_shift_array[54] = TRX_Tune;                                              // U32-B TRX_Tune
 		wf_100d_shift_array[55] = !(TRX.RF_Filters && ((CurrentVFO->RealRXFreq >= CALIBRATE.RFU_HPF_START && bpf == 255) || (CurrentVFO->RealRXFreq <= CALIBRATE.RFU_LPF_END && bpf == 255) ||
 		                                               bpf == 7 || dualrx_bpf_disabled)); // U32-A U3 BPF_1_EN bypass, lpf, hpf, 145(7)
-
+																									 
 		bool array_equal = true;
 		for (uint8_t i = 0; i < 56; i++) {
 			if (wf_100d_shift_array[i] != wf_100d_shift_array_old[i]) {
