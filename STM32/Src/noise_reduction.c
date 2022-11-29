@@ -215,6 +215,10 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
 					instance->last_agc_peak_time = HAL_GetTick();
 				}
+				
+				//overloading inducator
+				if (instance->need_gain_db < 0)
+					APROC_IFGain_Overflow = true;
 
 				// gain limiter
 				if (instance->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain)
