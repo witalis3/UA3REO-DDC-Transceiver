@@ -1396,7 +1396,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			                      LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
 			if (TRX_PWR_Forward_SMOOTHED >= 100.0f)
 				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Forward_SMOOTHED);
-			else if (TRX_PWR_Forward_SMOOTHED >= 9.999f)
+			else if (TRX_PWR_Forward_SMOOTHED >= 9.5f)
 				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
 			else
 				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
@@ -1408,7 +1408,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			                      LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
 			if (TRX_PWR_Backward_SMOOTHED >= 100.0f)
 				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Backward_SMOOTHED);
-			else if (TRX_PWR_Backward_SMOOTHED >= 9.999f)
+			else if (TRX_PWR_Backward_SMOOTHED >= 9.5f)
 				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Backward_SMOOTHED);
 			else
 				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Backward_SMOOTHED);
