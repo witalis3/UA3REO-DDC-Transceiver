@@ -1396,7 +1396,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			                      LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
 			if (TRX_PWR_Forward_SMOOTHED >= 100.0f)
 				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Forward_SMOOTHED);
-			else if (TRX_PWR_Forward_SMOOTHED >= 9.5f)
+			else if (TRX_PWR_Forward_SMOOTHED >= 9.999f)
 				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
 			else
 				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
@@ -1408,7 +1408,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			                      LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
 			if (TRX_PWR_Backward_SMOOTHED >= 100.0f)
 				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Backward_SMOOTHED);
-			else if (TRX_PWR_Backward_SMOOTHED >= 9.5f)
+			else if (TRX_PWR_Backward_SMOOTHED >= 9.999f)
 				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Backward_SMOOTHED);
 			else
 				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Backward_SMOOTHED);
@@ -1453,7 +1453,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		} else // analog meter version
 		{
 			// SWR
-			sprintf(ctmp, "%.1f", (double)TRX_SWR_SMOOTHED);
+			sprintf(ctmp, "%.1f ", (double)TRX_SWR_SMOOTHED);
 			/**********************************************/
 			if (CN_Theme) {
 				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET + 10, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 3, COLOR->STATUS_LABEL_DBM, BG_COLOR,
@@ -1465,7 +1465,12 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			/**********************************************/
 
 			// FWD
-			sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
+			if (TRX_PWR_Forward_SMOOTHED >= 100.0f)
+				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
+			else if (TRX_PWR_Forward_SMOOTHED >= 10.0f)
+				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
+			else
+				sprintf(ctmp, "%.1fW ", (double)TRX_PWR_Forward_SMOOTHED);
 			/**********************************************/
 			if (CN_Theme) {
 				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET + 5, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 13, COLOR->STATUS_LABEL_DBM, BG_COLOR,
