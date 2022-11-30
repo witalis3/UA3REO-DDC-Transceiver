@@ -1288,9 +1288,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			TRX_RX_dBm_averaging = TRX_RX1_dBm_lowrate;
 
 		if (CurrentVFO->Freq < 144000000) {
-			if (TRX_RX_dBm_averaging <= -127.0f)
-				sprintf(ctmp, "  ");
-			else if (TRX_RX_dBm_averaging <= -118.0f)
+			if (TRX_RX_dBm_averaging <= -118.0f)
 				sprintf(ctmp, "S1");
 			else if (TRX_RX_dBm_averaging <= -112.0f)
 				sprintf(ctmp, "S2");
@@ -1319,9 +1317,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			else
 				sprintf(ctmp, "S9+60");
 		} else {
-			if (TRX_RX_dBm_averaging <= -147.0f)
-				sprintf(ctmp, "  ");
-			else if (TRX_RX_dBm_averaging <= -138.0f)
+			if (TRX_RX_dBm_averaging <= -138.0f)
 				sprintf(ctmp, "S1");
 			else if (TRX_RX_dBm_averaging <= -132.0f)
 				sprintf(ctmp, "S2");
